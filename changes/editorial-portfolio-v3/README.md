@@ -1,0 +1,69 @@
+# Editorial V3 portfolio and owner-private economics
+
+`editorial-portfolio.v3.json` is an additive, generated successor to Editorial
+V2. It covers the current ten articles and thirty-two products without changing
+the historical V2 contract. `generated/navigation.v3.json` is the single
+machine-readable home/related-article source.
+
+The tracked Rakuten parser boundary is intentionally disabled. It contains no
+guessed live column names or status values. A parser can be enabled only inside
+`.secrets/editorial-portfolio-v3/` after a sanitized real export sample is
+detected, mapped, owner-attested, and shown to echo one of the V3 measurement
+IDs. The private directory must be mode `0700`; every input and output file must
+be mode `0600`.
+
+## Deterministic generation
+
+```sh
+.venv/bin/python scripts/build_editorial_portfolio_v3.py
+.venv/bin/python scripts/build_editorial_portfolio_v3.py --check
+```
+
+## Private Rakuten workflow
+
+Place a sanitized real sample in the private directory, then run:
+
+```sh
+.venv/bin/python scripts/raos_editorial_economics_v3.py rakuten-detect \
+  --sample rakuten-sample.csv --encoding cp932 --delimiter comma \
+  --output rakuten-detection.json
+.venv/bin/python scripts/raos_editorial_economics_v3.py rakuten-binding-template \
+  --detection rakuten-detection.json --output rakuten-binding.json
+```
+
+Edit only the private binding file: select exact headers, exact observed status
+values, amount/date formats, set both verification booleans to `true`, and keep
+it mode `0600`. Bind and dry-run the full export:
+
+```sh
+.venv/bin/python scripts/raos_editorial_economics_v3.py rakuten-bind-profile \
+  --sample rakuten-sample.csv --detection rakuten-detection.json \
+  --binding rakuten-binding.json --output rakuten-profile.json
+.venv/bin/python scripts/raos_editorial_economics_v3.py rakuten-dry-run \
+  --report rakuten-report.csv --profile rakuten-profile.json \
+  --output rakuten-dry-run.json
+```
+
+Commit requires the displayed Rakuten row count and pending/confirmed/cancelled
+totals, plus the exact dry-run source hash. A changed file, duplicate row,
+unknown status, formula-like cell, header drift, or total mismatch fails closed.
+Only exact V3 measurement IDs are Direct; unmatched IDs remain Unattributed and
+the provider import never creates Estimated attribution.
+
+## Cost and baseline inputs
+
+`cost-template` creates all ten owner-private rows. The owner must fill the
+period, approved hourly cost, actual editorial minutes, actual variable cost,
+and set `owner_attested` to `true`. Missing or unverified cost keeps contribution
+profit `UNAVAILABLE`; an explicit attested zero remains zero.
+
+The optional GSC/GA4 files use the live Google adapter source-record boundary:
+`schema_version: 1`, `source`, `site_id`, `date_from`, `date_to`, `retrieved_at`,
+`request_sha256`, `row_count`, and `rows`. GA4 additionally includes
+`configuration`. GA4 dimensions/metrics serialize as arrays of
+`{"name": ..., "value": ...}`. Raw GSC queries remain private and are never
+copied into the JSON/HTML baseline report.
+
+The `baseline` command writes private JSON plus `noindex,nofollow` HTML. Program
+profit includes reconciled Unattributed reward at program level; article profit
+uses Direct reward only and never allocates the Unattributed total.

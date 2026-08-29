@@ -1,0 +1,157 @@
+{
+  "schema": "RAOS_EDITORIAL_V3_IDENTITIES_V1",
+  "version": "1.0.0",
+  "clusters": [
+    {
+      "cluster_id": "mobility",
+      "category_label": "移動",
+      "home_order": 1
+    },
+    {
+      "cluster_id": "household",
+      "category_label": "家事",
+      "home_order": 2
+    },
+    {
+      "cluster_id": "preparedness",
+      "category_label": "備え",
+      "home_order": 3
+    }
+  ],
+  "articles": [
+    {
+      "article_id": "st1703-first-suitcase-comparison",
+      "article_code": "a01",
+      "cluster_id": "mobility",
+      "home_order": 1,
+      "related_article_ids": [
+        "lightweight-carry-on-suitcase-under-3kg",
+        "carry-on-suitcase-under-100-seats"
+      ]
+    },
+    {
+      "article_id": "st1704-portable-power-station-guide",
+      "article_code": "a02",
+      "cluster_id": "preparedness",
+      "home_order": 1,
+      "related_article_ids": [
+        "st1704-anker-solix-c300-c800-c1000-differences",
+        "st1703-first-suitcase-comparison"
+      ]
+    },
+    {
+      "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "article_code": "a03",
+      "cluster_id": "preparedness",
+      "home_order": 2,
+      "related_article_ids": [
+        "st1704-portable-power-station-guide",
+        "st1703-first-suitcase-comparison"
+      ]
+    },
+    {
+      "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "article_code": "a04",
+      "cluster_id": "household",
+      "home_order": 1,
+      "related_article_ids": [
+        "solota-vs-rakua-mini-plus",
+        "st1704-compact-robot-vacuum-shortlist"
+      ]
+    },
+    {
+      "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "article_code": "a05",
+      "cluster_id": "household",
+      "home_order": 2,
+      "related_article_ids": [
+        "roomba-mini-vs-switchbot-k11-pro",
+        "st1704-countertop-dishwasher-for-small-households"
+      ]
+    },
+    {
+      "article_id": "carry-on-suitcase-under-100-seats",
+      "article_code": "a06",
+      "cluster_id": "mobility",
+      "home_order": 2,
+      "related_article_ids": [
+        "st1703-first-suitcase-comparison",
+        "front-open-carry-on-suitcase-with-stopper"
+      ]
+    },
+    {
+      "article_id": "lightweight-carry-on-suitcase-under-3kg",
+      "article_code": "a07",
+      "cluster_id": "mobility",
+      "home_order": 3,
+      "related_article_ids": [
+        "st1703-first-suitcase-comparison",
+        "front-open-carry-on-suitcase-with-stopper"
+      ]
+    },
+    {
+      "article_id": "front-open-carry-on-suitcase-with-stopper",
+      "article_code": "a08",
+      "cluster_id": "mobility",
+      "home_order": 4,
+      "related_article_ids": [
+        "st1703-first-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats"
+      ]
+    },
+    {
+      "article_id": "roomba-mini-vs-switchbot-k11-pro",
+      "article_code": "a09",
+      "cluster_id": "household",
+      "home_order": 3,
+      "related_article_ids": [
+        "st1704-compact-robot-vacuum-shortlist",
+        "solota-vs-rakua-mini-plus"
+      ]
+    },
+    {
+      "article_id": "solota-vs-rakua-mini-plus",
+      "article_code": "a10",
+      "cluster_id": "household",
+      "home_order": 4,
+      "related_article_ids": [
+        "st1704-countertop-dishwasher-for-small-households",
+        "st1704-compact-robot-vacuum-shortlist"
+      ]
+    }
+  ],
+  "products": [
+    {"product_id": "PRD-ACE-CRESTA-06316", "product_code": "p01"},
+    {"product_id": "PRD-ACE-DIFFERENCE-05721", "product_code": "p02"},
+    {"product_id": "PRD-ACE-MAXPASS4-01471", "product_code": "p03"},
+    {"product_id": "PRD-ANKER-SOLIX-C300", "product_code": "p04"},
+    {"product_id": "PRD-JACKERY-500-NEW", "product_code": "p05"},
+    {"product_id": "PRD-BLUETTI-AC70", "product_code": "p06"},
+    {"product_id": "PRD-ECOFLOW-DELTA3-CLASSIC", "product_code": "p07"},
+    {"product_id": "PRD-ANKER-SOLIX-C800-PLUS", "product_code": "p08"},
+    {"product_id": "PRD-ANKER-SOLIX-C1000", "product_code": "p09"},
+    {"product_id": "PRD-ANKER-SOLIX-C1000-GEN2", "product_code": "p10"},
+    {"product_id": "PRD-PANASONIC-NP-TMLK1", "product_code": "p11"},
+    {"product_id": "PRD-THANKO-RAKUA-MINI-COLOR", "product_code": "p12"},
+    {"product_id": "PRD-SIROCA-SS-MA251", "product_code": "p13"},
+    {"product_id": "PRD-PANASONIC-NP-TSP1", "product_code": "p14"},
+    {"product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY", "product_code": "p15"},
+    {"product_id": "PRD-SWITCHBOT-K11-PRO", "product_code": "p16"},
+    {"product_id": "PRD-SWITCHBOT-K10-PRO-COMBO", "product_code": "p17"},
+    {"product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO", "product_code": "p18"},
+    {"product_id": "PRD-PROTECA-STARIA-CXR-02350", "product_code": "p19"},
+    {"product_id": "PRD-PROTECA-FRESTER-EX-01550", "product_code": "p20"},
+    {"product_id": "PRD-ACE-PALISADES3-Z-06910", "product_code": "p21"},
+    {"product_id": "PRD-BERMAS-INTER-CITY-60524", "product_code": "p22"},
+    {"product_id": "PRD-PROTECA-AEROFLEX-DX2-01521", "product_code": "p23"},
+    {"product_id": "PRD-SAMSONITE-C-LITE-CS2-09007", "product_code": "p24"},
+    {"product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002", "product_code": "p25"},
+    {"product_id": "PRD-FREQUENTER-LIEVE-1-250", "product_code": "p26"},
+    {"product_id": "PRD-INNOVATOR-INV50", "product_code": "p27"},
+    {"product_id": "PRD-PROTECA-FRESTER-EX-01551", "product_code": "p28"},
+    {"product_id": "PRD-BERMAS-INTER-CITY-II-60561", "product_code": "p29"},
+    {"product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060", "product_code": "p30"},
+    {"product_id": "PRD-PANASONIC-SOLOTA-NP-TML1-W", "product_code": "p31"},
+    {"product_id": "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B", "product_code": "p32"}
+  ]
+}

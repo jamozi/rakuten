@@ -1,0 +1,18 @@
+{
+  "schema": "RAOS_EDITORIAL_V3_RAKUTEN_PARSER_BOUNDARY_V1",
+  "version": "1.0.0",
+  "state": "DISABLED_UNTIL_VERIFIED_SAMPLE_PROFILE_BOUND",
+  "authority": "OWNER_PRIVATE_SANITIZED_SAMPLE_REQUIRED",
+  "tracked_live_column_names": [],
+  "tracked_status_values": [],
+  "rules": {
+    "automatic_column_guessing": false,
+    "automatic_status_guessing": false,
+    "direct_requires_verified_measurement_column": true,
+    "estimated_never_promoted_to_direct": true,
+    "unmatched_measurement_id": "UNATTRIBUTED",
+    "dry_run_source_hash_must_equal_commit_source_hash": true,
+    "provider_totals_must_reconcile_before_commit": true,
+    "raw_rows_remain_owner_private": true
+  }
+}
