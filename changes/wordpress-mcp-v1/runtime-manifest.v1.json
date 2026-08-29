@@ -156,8 +156,8 @@
     },
     {
       "path": "packages/wordpress-mcp-bridge/src/index.ts",
-      "sha256": "bd176f895aec85c9df1bb64b4d3ace0db0a47cb25f660b58e1dbbf810ff5c69d",
-      "size": 10575
+      "sha256": "a456919fffed9bacc60d9af758264ef8da3898580dce944a016cfa71a1413e21",
+      "size": 10687
     },
     {
       "path": "packages/wordpress-mcp-bridge/tsconfig.json",
