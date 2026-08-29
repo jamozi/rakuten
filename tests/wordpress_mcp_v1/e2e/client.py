@@ -667,6 +667,7 @@ def phase_apply(
     status = json.loads(status_body)
     assert status["theme"]["tree_sha256"] == theme_item["after_sha256"]
     assert status["theme"]["active"] is True
+    assert status["theme"]["runtime_version"] == status["theme"]["version"]
 
     first_receipt: dict[str, object] | None = None
     for item in state["proposals"]:

@@ -71,7 +71,7 @@ def test_plugin_activation_recovery_is_not_inferred_from_tree_hash_alone() -> No
     code = source()
     assert "plugin-before-state.json" in code
     recover = method("recover_operation", "apply_content")
-    assert recover.count("recover_plugin_activation") == 2
+    assert recover.count("recover_plugin_activation") == 3
     assert "plugin_state_matches_before" in code
     assert "plugin_state_matches_after" in code
 
@@ -145,6 +145,76 @@ def test_code_cleanup_requires_a_persisted_terminal_state() -> None:
     ).read_text(encoding="utf-8")
     assert "'get_publication_batch' === $method" in plugin
     assert "/publication-batches/[0-9a-f]{64}" in plugin
+
+
+def test_code_apply_force_invalidates_exact_php_manifest_before_runtime_use() -> None:
+    code = method("apply_code", "install_code_tree")
+    assert code.index("$installed = self::install_code_tree") < code.index(
+        "self::invalidate_php_manifest"
+    )
+    assert code.index("self::invalidate_php_manifest") < code.index(
+        "$activation = true"
+    )
+    assert code.index("self::invalidate_php_manifest") < code.index(
+        "$readback = self::tree_hash($target)"
+    )
+    assert "return true === $rollback ? $invalidation : $rollback" in code
+
+    invalidation = method("invalidate_php_manifest", "tree_manifest")
+    assert "extension_loaded('Zend OPcache')" in invalidation
+    assert "function_exists('opcache_get_status')" in invalidation
+    assert "opcache_get_status(false)" in invalidation
+    assert "true === $opcache_status['opcache_enabled']" in invalidation
+    assert "ini_get('opcache.enable')" in invalidation
+    assert "ini_get('opcache.enable_cli')" in invalidation
+    assert "FILTER_NULL_ON_FAILURE" in invalidation
+    assert "false === $enabled" in invalidation
+    assert "'cli' === PHP_SAPI && false === $cli_enabled" in invalidation
+    assert "raos_codex_opcache_status_indeterminate" in invalidation
+    assert "function_exists('wp_opcache_invalidate')" in invalidation
+    assert "ABSPATH . 'wp-admin/includes/file.php'" in invalidation
+    assert "require_once $wordpress_filesystem" in invalidation
+    assert "$invalidate($resolved, true)" in invalidation
+    assert "has_exact_keys($entry, array('path', 'size', 'sha256'))" in invalidation
+    assert "hash_equals($expected, $resolved)" in invalidation
+    assert "hash_equals($entry['sha256'], $digest)" in invalidation
+    assert "raos_codex_opcache_invalidation_unavailable" in invalidation
+    assert "raos_codex_opcache_path_invalid" in invalidation
+    assert "raos_codex_opcache_invalidation_failed" in invalidation
+
+
+def test_code_rollback_and_recovery_never_terminalize_stale_php_runtime() -> None:
+    restore = method("restore_code_before", "validate_code_package")
+    assert "self::tree_manifest($target)" in restore
+    assert "self::invalidate_php_manifest(" in restore
+    assert "$invalidator" in restore
+    assert "$opcache_active" in restore
+    assert "raos_codex_code_rollback_opcache_indeterminate" in restore
+
+    recover = method("recover_operation", "apply_content")
+    after_runtime = recover.index("self::invalidate_php_manifest")
+    after_receipt = recover.index("RAOS_Codex_MCP_Store::complete")
+    assert after_runtime < after_receipt
+    assert recover.count("self::invalidate_php_manifest") == 2
+    assert "self::recoverable_from_error($invalidation)" in recover
+    invalidation_failure = recover.split("if (is_wp_error($invalidation))", 1)[1]
+    assert "self::validate_approval_lease($row)" in invalidation_failure
+    assert "self::restore_code_before(" in invalidation_failure
+    assert "RAOS_Codex_MCP_Store::mark_failed" in invalidation_failure
+
+
+def test_deployment_status_exposes_loaded_theme_runtime_version() -> None:
+    status = method("status", "active_theme_tree_sha256")
+    assert "get_stylesheet() === self::THEME_SLUG" in status
+    assert "defined('KURASHINOSHIRUBE_THEME_VERSION')" in status
+    assert "constant('KURASHINOSHIRUBE_THEME_VERSION')" in status
+    assert "'runtime_version' => $theme_runtime_version" in status
+    assert ": null" in status
+
+    client = (ROOT / "tests/wordpress_mcp_v1/e2e/client.py").read_text(
+        encoding="utf-8"
+    )
+    assert 'status["theme"]["runtime_version"] == status["theme"]["version"]' in client
 
 
 def test_content_and_theme_apply_are_bound_to_the_exact_ready_batch() -> None:

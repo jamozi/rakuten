@@ -123,6 +123,7 @@ if (! mkdir($fixture_root, 0700, false)) {
 
 $install = raos_e2e_rollback_method('install_code_tree');
 $restore = raos_e2e_rollback_method('restore_code_before');
+$invalidate_php = raos_e2e_rollback_method('invalidate_php_manifest');
 $apply_content = raos_e2e_rollback_method('apply_content');
 $write_content = raos_e2e_rollback_method('write_content_document');
 $begin_content = raos_e2e_rollback_method('begin_content_transaction');
@@ -132,6 +133,181 @@ $batch_status_method = raos_e2e_rollback_method('publication_batch_status');
 $acquire_publication_lock = raos_e2e_rollback_method('acquire_publication_mutation_lock');
 $release_publication_lock = raos_e2e_rollback_method('release_operation_lock');
 $deployment = new RAOS_Codex_MCP_Deployment(null);
+
+// The installed descriptor manifest is the sole invalidation allow-list. Only
+// its exact PHP path is invalidated and force=true is mandatory. The injected
+// true result models WordPress's success result when there is nothing cached.
+$case = $fixture_root . '/opcache-exact-manifest';
+mkdir($case, 0700, true);
+file_put_contents($case . '/runtime.php', "<?php return 'fresh';\n");
+file_put_contents($case . '/asset.css', "body{}\n");
+$runtime = file_get_contents($case . '/runtime.php');
+$asset = file_get_contents($case . '/asset.css');
+$manifest = array(
+    array(
+        'path' => 'asset.css',
+        'size' => strlen($asset),
+        'sha256' => hash('sha256', $asset),
+    ),
+    array(
+        'path' => 'runtime.php',
+        'size' => strlen($runtime),
+        'sha256' => hash('sha256', $runtime),
+    ),
+);
+$invalidated_paths = array();
+$recording_invalidator = static function ($path, $force) use (&$invalidated_paths) {
+    $invalidated_paths[] = array($path, $force);
+    return true;
+};
+$result = $invalidate_php->invoke(null, $case, $manifest, $recording_invalidator, true);
+if (true !== $result
+    || array(array(realpath($case . '/runtime.php'), true)) !== $invalidated_paths) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_EXACT_MANIFEST_FAILED');
+}
+
+// An unavailable or SAPI-disabled OPcache engine has no stale entries, so it
+// is a safe no-op even when no invalidator can be called.
+$result = $invalidate_php->invoke(
+    null,
+    $case,
+    $manifest,
+    'raos_e2e_missing_opcache_invalidator',
+    false
+);
+if (true !== $result) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_INACTIVE_NOOP_FAILED');
+}
+$result = $invalidate_php->invoke(null, $case, $manifest);
+if (true !== $result) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_CLI_INACTIVE_PROOF_FAILED');
+}
+
+// Missing capability and a false invalidation result both fail closed.
+$result = $invalidate_php->invoke(
+    null,
+    $case,
+    $manifest,
+    'raos_e2e_missing_opcache_invalidator',
+    true
+);
+if (! is_wp_error($result)
+    || 'raos_codex_opcache_invalidation_unavailable' !== $result->get_error_code()) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_UNAVAILABLE_FAILED');
+}
+$result = $invalidate_php->invoke(
+    null,
+    $case,
+    $manifest,
+    static function () {
+        return false;
+    },
+    true
+);
+if (! is_wp_error($result)
+    || 'raos_codex_opcache_invalidation_failed' !== $result->get_error_code()) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_FALSE_RESULT_FAILED');
+}
+
+// A manifest path cannot escape through traversal or a symlink, even when its
+// size and digest otherwise describe a real PHP file.
+$outside = $fixture_root . '/outside.php';
+file_put_contents($outside, "<?php return 'outside';\n");
+$outside_payload = file_get_contents($outside);
+$unsafe_manifest = array(
+    array(
+        'path' => '../outside.php',
+        'size' => strlen($outside_payload),
+        'sha256' => hash('sha256', $outside_payload),
+    ),
+);
+$result = $invalidate_php->invoke(
+    null,
+    $case,
+    $unsafe_manifest,
+    $recording_invalidator,
+    true
+);
+if (! is_wp_error($result)
+    || 'raos_codex_opcache_manifest_invalid' !== $result->get_error_code()) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_TRAVERSAL_FAILED');
+}
+symlink($outside, $case . '/linked.php');
+$linked_manifest = array(
+    array(
+        'path' => 'linked.php',
+        'size' => strlen($outside_payload),
+        'sha256' => hash('sha256', $outside_payload),
+    ),
+);
+$result = $invalidate_php->invoke(
+    null,
+    $case,
+    $linked_manifest,
+    $recording_invalidator,
+    true
+);
+if (! is_wp_error($result)
+    || 'raos_codex_opcache_path_invalid' !== $result->get_error_code()) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_SYMLINK_FAILED');
+}
+
+// Rollback re-invalidates the restored PHP path. If that invalidation cannot
+// be confirmed, bytes remain exactly restored but the result stays recoverable.
+$case = $fixture_root . '/opcache-rollback';
+$target = $case . '/target';
+$backup = $case . '/operation/before';
+mkdir($target, 0700, true);
+mkdir($backup, 0700, true);
+file_put_contents($target . '/runtime.php', "<?php return 'after';\n");
+file_put_contents($backup . '/runtime.php', "<?php return 'before';\n");
+$before_hash = RAOS_Codex_MCP_Deployment::tree_hash($backup);
+$after_hash = RAOS_Codex_MCP_Deployment::tree_hash($target);
+$invalidated_paths = array();
+$result = $restore->invoke(
+    null,
+    $target,
+    $backup,
+    $before_hash,
+    $after_hash,
+    null,
+    $recording_invalidator,
+    true
+);
+if (true !== $result
+    || array(array(realpath($target . '/runtime.php'), true)) !== $invalidated_paths
+    || ! hash_equals($before_hash, RAOS_Codex_MCP_Deployment::tree_hash($target))) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_ROLLBACK_INVALIDATION_FAILED');
+}
+
+$case = $fixture_root . '/opcache-rollback-failure';
+$target = $case . '/target';
+$backup = $case . '/operation/before';
+mkdir($target, 0700, true);
+mkdir($backup, 0700, true);
+file_put_contents($target . '/runtime.php', "<?php return 'after';\n");
+file_put_contents($backup . '/runtime.php', "<?php return 'before';\n");
+$before_hash = RAOS_Codex_MCP_Deployment::tree_hash($backup);
+$after_hash = RAOS_Codex_MCP_Deployment::tree_hash($target);
+$result = $restore->invoke(
+    null,
+    $target,
+    $backup,
+    $before_hash,
+    $after_hash,
+    null,
+    static function () {
+        return false;
+    },
+    true
+);
+if (! is_wp_error($result)
+    || 'raos_codex_code_rollback_opcache_indeterminate' !== $result->get_error_code()
+    || ! raos_e2e_recovery_required($result)
+    || is_dir($backup)
+    || ! hash_equals($before_hash, RAOS_Codex_MCP_Deployment::tree_hash($target))) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_ROLLBACK_RECOVERY_FAILED');
+}
 
 $held_publication_lock = $acquire_publication_lock->invoke(null);
 $contended_publication_lock = $acquire_publication_lock->invoke(null);
