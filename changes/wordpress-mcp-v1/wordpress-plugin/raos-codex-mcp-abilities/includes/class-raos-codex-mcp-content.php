@@ -115,7 +115,7 @@ final class RAOS_Codex_MCP_Content
             array(
                 'type' => 'object',
                 'additionalProperties' => false,
-                'required' => array('proposal_ids'),
+                'required' => array('proposal_ids', 'expected_theme_tree_sha256'),
                 'properties' => array(
                     'proposal_ids' => array(
                         'type' => 'array',
@@ -123,6 +123,10 @@ final class RAOS_Codex_MCP_Content
                         'maxItems' => 20,
                         'uniqueItems' => true,
                         'items' => array('type' => 'string', 'pattern' => '^[0-9a-f]{64}$'),
+                    ),
+                    'expected_theme_tree_sha256' => array(
+                        'type' => 'string',
+                        'pattern' => '^[0-9a-f]{64}$',
                     ),
                 ),
             ),
@@ -534,11 +538,16 @@ final class RAOS_Codex_MCP_Content
     public function publication_batch_register($input)
     {
         if (! is_array($input)
-            || array('proposal_ids') !== array_keys($input)
-            || ! is_array($input['proposal_ids'])) {
+            || 2 !== count($input)
+            || ! isset($input['proposal_ids'], $input['expected_theme_tree_sha256'])
+            || ! is_array($input['proposal_ids'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($input['expected_theme_tree_sha256'])) {
             return self::error('raos_codex_publication_batch_input_invalid', 400);
         }
-        $batch = RAOS_Codex_MCP_Store::register_publication_batch($input['proposal_ids']);
+        $batch = RAOS_Codex_MCP_Store::register_publication_batch(
+            $input['proposal_ids'],
+            $input['expected_theme_tree_sha256']
+        );
         return is_wp_error($batch)
             ? $batch
             : RAOS_Codex_MCP_Store::public_publication_batch($batch);

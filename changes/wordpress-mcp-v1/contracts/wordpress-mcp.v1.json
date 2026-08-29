@@ -34,10 +34,9 @@
   ],
   "bridge_tools": [
     "deployment-status",
+    "publication-batch-status",
     "release-wait-and-apply",
-    "content-apply-release",
     "theme-propose-release",
-    "theme-apply-release",
     "plugin-propose-change",
     "plugin-apply-change",
     "operation-recover"
@@ -75,10 +74,14 @@
     "proposal_idempotency": true,
     "deployment_transport": "wordpressDeployment stdio MCP",
     "approval_wait_seconds": 900,
+    "release_batch_identity_bound": true,
+    "release_preflight_all_members": true,
+    "atomic_batch_claim_before_mutation": true,
     "theme_before_content": true,
     "theme_tree_sha256_bound": true,
     "plugin_in_release_batch": false,
     "production_readback": true,
+    "anonymous_public_readback": true,
     "receipt_storage": ".secrets/wordpress-mcp/publication-requests"
   },
   "host_gates": {

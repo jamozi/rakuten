@@ -269,6 +269,15 @@ def operator_request(
     return value
 
 
+def operator_get(
+    base_url: str, username: str, password: str, path: str
+) -> dict[str, object]:
+    _, body, _ = request(base_url + path, username, password)
+    value = json.loads(body)
+    assert isinstance(value, dict), value
+    return value
+
+
 def operator_operation(
     base_url: str,
     username: str,
@@ -428,8 +437,8 @@ def phase_propose(
                 "Idempotency-Key": first_id,
             },
         ),
-        409,
-        "raos_codex_apply_precondition_failed",
+        412,
+        "raos_codex_publication_batch_headers_invalid",
     )
     expect_http_failure(
         lambda: operator_request(
@@ -502,19 +511,52 @@ def phase_propose(
     theme_id = next(
         item["proposal_id"] for item in code_proposals if item["name"] == "theme"
     )
-    publication_ids = sorted(
-        [item["proposal_id"] for item in proposals]
-        + [drift_proposal["proposal_id"], theme_id]
+    expected_theme_tree_sha256 = next(
+        item["after_sha256"] for item in code_proposals if item["name"] == "theme"
     )
-    batch_input = {"proposal_ids": publication_ids}
+    publication_ids = sorted([item["proposal_id"] for item in proposals] + [theme_id])
+    batch_input = {
+        "proposal_ids": publication_ids,
+        "expected_theme_tree_sha256": expected_theme_tree_sha256,
+    }
     publication_batch = mcp.call("raos-codex-publication-batch-register", batch_input)
     assert publication_batch["proposal_ids"] == publication_ids
     assert publication_batch["proposal_count"] == len(publication_ids)
+    assert publication_batch["state"] == "REGISTERED"
+    assert (
+        publication_batch["expected_theme_tree_sha256"]
+        == expected_theme_tree_sha256
+    )
     assert re.fullmatch(r"[0-9a-f]{64}", publication_batch["batch_token"])
     assert (
         mcp.call("raos-codex-publication-batch-register", batch_input)
         == publication_batch
     )
+    _, batch_status_body, _ = request(
+        deploy_base + "/publication-batches/" + str(publication_batch["batch_token"]),
+        *operator,
+    )
+    batch_status = json.loads(batch_status_body)
+    assert set(batch_status) == {
+        "schema",
+        "batch_token",
+        "batch_manifest_sha256",
+        "proposal_count",
+        "proposal_ids",
+        "state",
+        "expires_at_gmt",
+        "preconditions_ready",
+    }
+    assert batch_status["schema"] == "RAOSWordPressPublicationBatchStatusV1"
+    assert batch_status["batch_token"] == publication_batch["batch_token"]
+    assert (
+        batch_status["batch_manifest_sha256"]
+        == publication_batch["batch_manifest_sha256"]
+    )
+    assert batch_status["proposal_ids"] == publication_ids
+    assert batch_status["proposal_count"] == len(publication_ids)
+    assert batch_status["state"] == "REGISTERED"
+    assert batch_status["preconditions_ready"] is False
     state = {
         "schema": "RAOS_WORDPRESS_E2E_STATE_V1",
         "proposals": proposals,
@@ -540,12 +582,99 @@ def phase_apply(
     mcp = McpClient(site_url + "/wp-json/raos-codex-mcp/v1/editor", *editor)
     mcp.initialize()
     deploy_base = site_url + "/wp-json/raos-codex-deploy/v1"
+    batch_path = "/publication-batches/" + state["publication_batch"]["batch_token"]
+    ready_batch = operator_get(deploy_base, *operator, batch_path)
+    assert ready_batch["state"] == "APPROVED"
+    assert ready_batch["preconditions_ready"] is True
+    claimed_batch = operator_request(
+        deploy_base,
+        *operator,
+        batch_path + "/claim",
+        value={
+            "batch_manifest_sha256": state["publication_batch"][
+                "batch_manifest_sha256"
+            ],
+            "proposal_ids": state["publication_batch"]["proposal_ids"],
+        },
+    )
+    assert claimed_batch["schema"] == "RAOSWordPressPublicationBatchClaimV1"
+    assert claimed_batch["batch_token"] == state["publication_batch"]["batch_token"]
+    assert claimed_batch["proposal_ids"] == state["publication_batch"]["proposal_ids"]
+    assert claimed_batch["proposal_count"] == len(
+        state["publication_batch"]["proposal_ids"]
+    )
+    batch_headers = {
+        "X-RAOS-Batch-Token": state["publication_batch"]["batch_token"],
+        "X-RAOS-Batch-Manifest-SHA256": state["publication_batch"][
+            "batch_manifest_sha256"
+        ],
+    }
+    blocked_content_id = state["proposals"][0]["proposal_id"]
+    expect_http_failure(
+        lambda: operator_request(
+            deploy_base,
+            *operator,
+            f"/proposals/{blocked_content_id}/apply",
+            headers={
+                "If-Match": f'"{blocked_content_id}"',
+                "Idempotency-Key": blocked_content_id,
+                **batch_headers,
+            },
+        ),
+        409,
+        "raos_codex_publication_batch_theme_not_applied",
+    )
+    blocked = operator_operation(deploy_base, *operator, blocked_content_id)
+    assert blocked["operation"]["state"] == "APPLYING"
+    assert blocked["operation"]["result_code"] == "BATCH_CLAIMED"
+
+    theme_item = next(
+        item for item in state["code_proposals"] if item["name"] == "theme"
+    )
+    theme_id = theme_item["proposal_id"]
+    theme_headers = {
+        "If-Match": f'"{theme_id}"',
+        "Idempotency-Key": theme_id,
+        **batch_headers,
+    }
+    theme_receipt = operator_request(
+        deploy_base,
+        *operator,
+        f"/proposals/{theme_id}/apply",
+        headers=theme_headers,
+    )
+    assert theme_receipt["state"] == "APPLIED"
+    assert theme_receipt["result_code"] == "THEME_RELEASE_APPLIED"
+    assert theme_receipt["after_sha256"] == theme_item["after_sha256"]
+    assert (
+        operator_request(
+            deploy_base,
+            *operator,
+            f"/proposals/{theme_id}/apply",
+            headers=theme_headers,
+        )
+        == theme_receipt
+    )
+    assert (
+        operator_request(
+            deploy_base,
+            *operator,
+            f"/operations/{theme_id}/recover",
+        )
+        == theme_receipt
+    )
+    _, status_body, _ = request(deploy_base + "/status", *operator)
+    status = json.loads(status_body)
+    assert status["theme"]["tree_sha256"] == theme_item["after_sha256"]
+    assert status["theme"]["active"] is True
+
     first_receipt: dict[str, object] | None = None
     for item in state["proposals"]:
         proposal_id = item["proposal_id"]
         headers = {
             "If-Match": f'"{proposal_id}"',
             "Idempotency-Key": proposal_id,
+            **batch_headers,
         }
         receipt = operator_request(
             deploy_base,
@@ -570,6 +699,9 @@ def phase_apply(
         assert operation["state"] == "APPLIED"
         if first_receipt is None:
             first_receipt = receipt
+            partial_batch = operator_get(deploy_base, *operator, batch_path)
+            assert partial_batch["state"] == "APPROVED"
+            assert partial_batch["preconditions_ready"] is True
             assert (
                 operator_request(
                     deploy_base,
@@ -592,16 +724,18 @@ def phase_apply(
             },
         ),
         412,
-        "raos_codex_content_hash_drift",
+        "raos_codex_publication_batch_headers_invalid",
     )
     drift_operation = operator_request(
         deploy_base,
         *operator,
         f"/operations/{drift_id}/recover",
     )
-    assert drift_operation["state"] == "FAILED"
+    assert drift_operation["state"] == "PENDING"
 
     for item in state["code_proposals"]:
+        if item["name"] == "theme":
+            continue
         proposal_id = item["proposal_id"]
         headers = {
             "If-Match": f'"{proposal_id}"',
@@ -651,11 +785,6 @@ def phase_apply(
             )
             == receipt
         )
-        if item["name"] == "theme":
-            _, status_body, _ = request(deploy_base + "/status", *operator)
-            status = json.loads(status_body)
-            assert status["theme"]["tree_sha256"] == item["after_sha256"]
-            assert status["theme"]["active"] is True
     assert_route_confinement(site_url, editor, operator)
 
 

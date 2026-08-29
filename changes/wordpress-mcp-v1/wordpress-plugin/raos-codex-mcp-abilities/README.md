@@ -48,8 +48,9 @@ password reauthentication, a reason, and the visible final eight characters of
 the batch manifest hash. The transaction either approves the complete unchanged
 registered batch and creates every scoped lease, or approves none.
 Approval does not apply anything; the bounded operator still performs the
-apply, backup, readback, and rollback workflow. Individual approval remains
-available for deliberate single-proposal handling.
+apply, backup, readback, and rollback workflow. Content and theme proposals can
+only be approved through their exact registered batch; individual approval is
+available only for deliberate plugin-change handling.
 
 The plugin has no uninstall handler: users, bindings, proposals, receipts,
 packages, and backups are deliberately preserved for owner recovery/audit.

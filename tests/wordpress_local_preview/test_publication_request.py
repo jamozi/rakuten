@@ -19,6 +19,183 @@ assert SPEC is not None and SPEC.loader is not None
 publication = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = publication
 SPEC.loader.exec_module(publication)
+ORIGINAL_VERIFY_PUBLIC_PAGES = publication.verify_public_pages
+
+
+@pytest.fixture(autouse=True)
+def no_live_public_readback(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        publication,
+        "verify_public_pages",
+        lambda articles: {
+            article.production_slug: {
+                "url": f"{publication.ORIGIN}/{article.production_slug}/",
+                "status": 200,
+            }
+            for article in articles
+        },
+    )
+
+
+class _PublicResponse:
+    def __init__(
+        self,
+        url: str,
+        markup: str,
+        *,
+        headers: dict[str, str] | None = None,
+    ) -> None:
+        self._url = url
+        self._payload = markup.encode("utf-8")
+        self.headers = {
+            "Content-Type": "text/html; charset=UTF-8",
+            **(headers or {}),
+        }
+
+    def __enter__(self) -> _PublicResponse:
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        return None
+
+    def getcode(self) -> int:
+        return 200
+
+    def geturl(self) -> str:
+        return self._url
+
+    def read(self, maximum: int) -> bytes:
+        return self._payload[:maximum]
+
+
+class _PublicOpener:
+    def __init__(self, response: _PublicResponse) -> None:
+        self.response = response
+        self.requests: list[object] = []
+
+    def open(self, request: object, timeout: int) -> _PublicResponse:
+        assert timeout == 30
+        self.requests.append(request)
+        return self.response
+
+
+def test_anonymous_public_readback_requires_exact_canonical_title_and_headings() -> (
+    None
+):
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    markup = (
+        '<!doctype html><html><head><link rel="canonical" href="'
+        + url
+        + '"></head><body><main><h1>'
+        + article.title
+        + "</h1>"
+        + article.block_markup
+        + "</main></body></html>"
+    )
+    opener = _PublicOpener(_PublicResponse(url, markup))
+
+    evidence = ORIGINAL_VERIFY_PUBLIC_PAGES(
+        [article],
+        attempts=1,
+        sleeper=lambda seconds: None,
+        opener=opener,
+    )
+
+    assert evidence[article.production_slug]["canonical_url"] == url
+    assert evidence[article.production_slug]["heading_count"] >= 1
+    request = opener.requests[0]
+    assert request.full_url == url
+    assert request.get_header("Authorization") is None
+
+
+def test_anonymous_public_readback_rejects_noindex() -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    markup = (
+        '<html><head><link rel="canonical" href="'
+        + url
+        + '"><meta name="robots" content="noindex, follow"></head><body><h1>'
+        + article.title
+        + "</h1>"
+        + article.block_markup
+        + "</body></html>"
+    )
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(_PublicResponse(url, markup)),
+        )
+
+
+@pytest.mark.parametrize(
+    ("meta_content", "response_headers"),
+    [
+        ("follow noindex noarchive", {}),
+        ("follow; NONE", {}),
+        (None, {"x-robots-tag": "googlebot: noindex, follow"}),
+        (None, {"X-Robots-Tag": "none"}),
+    ],
+)
+def test_anonymous_public_readback_rejects_all_noindex_marker_forms(
+    meta_content: str | None,
+    response_headers: dict[str, str],
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    meta = f'<meta name="robots" content="{meta_content}">' if meta_content else ""
+    markup = (
+        '<html><head><link rel="canonical" href="'
+        + url
+        + '">'
+        + meta
+        + "</head><body><h1>"
+        + article.title
+        + "</h1>"
+        + article.block_markup
+        + "</body></html>"
+    )
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(url, markup, headers=response_headers)
+            ),
+        )
+
+
+def test_anonymous_public_readback_rejects_googlebot_noindex_meta() -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    markup = (
+        '<html><head><link rel="canonical" href="'
+        + url
+        + '"><meta name="googlebot" content="follow noindex"></head><body><h1>'
+        + article.title
+        + "</h1>"
+        + article.block_markup
+        + "</body></html>"
+    )
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(_PublicResponse(url, markup)),
+        )
 
 
 def test_mapping_is_closed_numeric_and_exact_slug_conversion() -> None:
@@ -225,7 +402,7 @@ def _tools() -> dict[str, dict[str, object]]:
         "inputSchema": {
             "type": "object",
             "additionalProperties": False,
-            "required": ["proposal_ids"],
+            "required": ["proposal_ids", "expected_theme_tree_sha256"],
             "properties": {
                 "proposal_ids": {
                     "type": "array",
@@ -236,7 +413,11 @@ def _tools() -> dict[str, dict[str, object]]:
                         "type": "string",
                         "pattern": "^[0-9a-f]{64}$",
                     },
-                }
+                },
+                "expected_theme_tree_sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$",
+                },
             },
         }
     }
@@ -258,9 +439,21 @@ def _deployment_tools() -> list[dict[str, object]]:
                     "pattern": "^[0-9a-f]{64}$",
                 }
             }
-        if name == "release-wait-and-apply":
-            schema["required"] = ["proposal_ids"]
+        if name in {"publication-batch-status", "release-wait-and-apply"}:
+            schema["required"] = [
+                "batch_token",
+                "batch_manifest_sha256",
+                "proposal_ids",
+            ]
             schema["properties"] = {
+                "batch_token": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$",
+                },
+                "batch_manifest_sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$",
+                },
                 "proposal_ids": {
                     "type": "array",
                     "minItems": 1,
@@ -270,19 +463,18 @@ def _deployment_tools() -> list[dict[str, object]]:
                         "type": "string",
                         "pattern": "^[0-9a-f]{64}$",
                     },
-                }
+                },
             }
         result.append(
             {
                 "name": name,
                 "inputSchema": schema,
                 "annotations": {
-                    "readOnlyHint": name == "deployment-status",
+                    "readOnlyHint": name
+                    in {"deployment-status", "publication-batch-status"},
                     "destructiveHint": name
                     in {
                         "release-wait-and-apply",
-                        "content-apply-release",
-                        "theme-apply-release",
                         "plugin-apply-change",
                         "operation-recover",
                     },
@@ -301,12 +493,21 @@ class WorkflowClient:
         self.events = events
         self.document = _document(article)
         self.published = False
+        self.batch_registration_state = "REGISTERED"
 
     def initialize(self) -> None:
         self.events.append("remote-initialize")
 
     def tools(self) -> dict[str, dict[str, object]]:
         return _tools()
+
+    def current_document(self) -> dict[str, object]:
+        document = self.document | {"status": "publish" if self.published else "draft"}
+        if self.published:
+            document["content_sha256"] = publication._content_after_sha256(
+                self.article.document(), self.document["id"]
+            )
+        return document
 
     def status(self) -> dict[str, object]:
         return {
@@ -353,10 +554,10 @@ class WorkflowClient:
                 "page": 1,
                 "per_page": publication.LIST_PER_PAGE,
                 "total": 1,
-                "documents": [self.document],
+                "documents": [self.current_document()],
             }
         if name == "raos-codex-content-get":
-            return self.document | {"status": "publish" if self.published else "draft"}
+            return self.current_document()
         if name == "raos-codex-content-propose-release":
             assert publication.SHA256_RE.fullmatch(str(arguments["idempotency_key"]))
             return {
@@ -371,12 +572,16 @@ class WorkflowClient:
             proposal_ids = arguments["proposal_ids"]
             assert isinstance(proposal_ids, list)
             assert proposal_ids == sorted(proposal_ids)
+            expected_theme = arguments["expected_theme_tree_sha256"]
+            assert publication.SHA256_RE.fullmatch(str(expected_theme))
             return {
                 "schema": "RAOSWordPressPublicationBatchV1",
                 "batch_token": "c" * 64,
                 "batch_manifest_sha256": "d" * 64,
+                "expected_theme_tree_sha256": expected_theme,
                 "proposal_count": len(proposal_ids),
                 "proposal_ids": proposal_ids,
+                "state": self.batch_registration_state,
                 "expires_at_gmt": "2099-08-29T00:15:00Z",
                 "review_url": publication.REVIEW_URL,
             }
@@ -390,10 +595,12 @@ class DeploymentRunner:
         events: list[str],
         *,
         fail_first_wait: bool = False,
+        batch_status_state: str = "APPROVED",
     ) -> None:
         self.client = client
         self.events = events
         self.fail_first_wait = fail_first_wait
+        self.batch_status_state = batch_status_state
         self.watcher_calls = 0
         self.theme_proposed = False
         self.local_tree = publication.tracked_theme_tree_sha256()
@@ -450,6 +657,25 @@ class DeploymentRunner:
         self.events.append(f"deployment:{name}")
         if name == "deployment-status":
             value = self.status()
+        elif name == "publication-batch-status":
+            expected_ids = ["a" * 64]
+            if self.theme_proposed:
+                expected_ids.append("b" * 64)
+            assert tool_arguments == {
+                "batch_token": "c" * 64,
+                "batch_manifest_sha256": "d" * 64,
+                "proposal_ids": sorted(expected_ids),
+            }
+            value = {
+                "schema": "RAOSWordPressPublicationBatchStatusV1",
+                "batch_token": "c" * 64,
+                "batch_manifest_sha256": "d" * 64,
+                "proposal_count": len(expected_ids),
+                "proposal_ids": sorted(expected_ids),
+                "state": self.batch_status_state,
+                "expires_at_gmt": "2099-08-29T00:15:00Z",
+                "preconditions_ready": self.batch_status_state == "APPROVED",
+            }
         elif name == "theme-propose-release":
             self.theme_proposed = True
             assert publication.SHA256_RE.fullmatch(tool_arguments["idempotency_key"])
@@ -465,7 +691,11 @@ class DeploymentRunner:
             expected_ids = ["a" * 64]
             if self.theme_proposed:
                 expected_ids.append("b" * 64)
-            assert tool_arguments == {"proposal_ids": sorted(expected_ids)}
+            assert tool_arguments == {
+                "batch_token": "c" * 64,
+                "batch_manifest_sha256": "d" * 64,
+                "proposal_ids": sorted(expected_ids),
+            }
             if self.fail_first_wait and self.watcher_calls == 1:
                 value = {"code": "WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT"}
                 return self._response(arguments, value, is_error=True)
@@ -502,6 +732,10 @@ class DeploymentRunner:
             )
             value = {
                 "schema": "ReleaseWaitApplyReceiptV1",
+                "batch_token": "c" * 64,
+                "batch_manifest_sha256": "d" * 64,
+                "proposal_count": len(expected_ids),
+                "proposal_ids": sorted(expected_ids),
                 "state": "APPLIED",
                 "receipts": receipts,
             }
@@ -580,6 +814,41 @@ def test_full_workflow_checks_local_before_remote_and_runs_foreground_watcher(
     assert publication.REVIEW_URL in output
 
 
+def test_article_change_during_preview_stops_before_remote_access(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    original = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    changed = publication.Article(
+        local_slug=original.local_slug,
+        production_slug=original.production_slug,
+        title=original.title,
+        excerpt=original.excerpt,
+        block_markup=original.block_markup + "\n<!-- changed -->",
+        taxonomies=original.taxonomies,
+    )
+    loads = iter(([original], [changed]))
+    monkeypatch.setattr(publication, "load_articles", lambda selection: next(loads))
+    _private_path(monkeypatch, tmp_path)
+    remote_called = False
+
+    def client_factory() -> object:
+        nonlocal remote_called
+        remote_called = True
+        raise AssertionError("remote client must not be initialized")
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_ARTICLE_CHANGED_DURING_PREVIEW",
+    ):
+        publication.execute(
+            original.production_slug,
+            preview=lambda: None,
+            client_factory=client_factory,
+        )
+    assert remote_called is False
+
+
 def test_rerun_resumes_the_same_proposal_after_wait_response_loss(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -615,6 +884,317 @@ def test_rerun_resumes_the_same_proposal_after_wait_response_loss(
     assert events.count("raos-codex-content-propose-release") == 1
     assert events.count("raos-codex-content-list") == 1
     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "APPLIED"
+
+
+def test_changed_desired_never_discards_an_active_server_batch_from_local_ttl(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    _private_path(monkeypatch, tmp_path)
+    deployment = DeploymentRunner(client, events, fail_first_wait=True)
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT",
+    ):
+        publication.execute(
+            article.production_slug,
+            preview=lambda: events.append("local-preview"),
+            client_factory=lambda: client,
+            deployment_runner=deployment,
+        )
+
+    receipt_path = next(publication.PRIVATE_REQUEST_DIRECTORY.glob("request-*.json"))
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["desired_sha256"][article.production_slug] = "f" * 64
+    for proposal in receipt["proposals"]:
+        proposal["expires_at_gmt"] = "2026-08-29T00:00:00Z"
+    publication._atomic_receipt(receipt_path, receipt)
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT",
+    ):
+        publication.execute(
+            article.production_slug,
+            preview=lambda: events.append("local-preview"),
+            client_factory=lambda: client,
+            deployment_runner=deployment,
+        )
+
+    preserved = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert preserved["proposals"] == receipt["proposals"]
+    assert events.count("deployment:publication-batch-status") == 1
+    assert deployment.watcher_calls == 1
+
+
+def test_changed_desired_replaces_only_server_confirmed_expired_batch(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    _private_path(monkeypatch, tmp_path)
+    deployment = DeploymentRunner(client, events, fail_first_wait=True)
+
+    with pytest.raises(publication.PublicationFailure):
+        publication.execute(
+            article.production_slug,
+            preview=lambda: events.append("local-preview"),
+            client_factory=lambda: client,
+            deployment_runner=deployment,
+        )
+    receipt_path = next(publication.PRIVATE_REQUEST_DIRECTORY.glob("request-*.json"))
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["desired_sha256"][article.production_slug] = "f" * 64
+    publication._atomic_receipt(receipt_path, receipt)
+    deployment.batch_status_state = "EXPIRED"
+
+    path = publication.execute(
+        article.production_slug,
+        preview=lambda: events.append("local-preview"),
+        client_factory=lambda: client,
+        deployment_runner=deployment,
+    )
+
+    completed = json.loads(path.read_text(encoding="utf-8"))
+    assert completed["state"] == "APPLIED"
+    assert (
+        completed["desired_sha256"][article.production_slug] == article.desired_sha256()
+    )
+    assert events.count("deployment:publication-batch-status") == 1
+    assert deployment.watcher_calls == 2
+
+
+def test_changed_content_replaces_exact_server_confirmed_applied_batch(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    _private_path(monkeypatch, tmp_path)
+    deployment = DeploymentRunner(client, events)
+    deployment.live_tree = deployment.local_tree
+
+    first_path = publication.execute(
+        article.production_slug,
+        preview=lambda: events.append("local-preview"),
+        client_factory=lambda: client,
+        deployment_runner=deployment,
+    )
+    first = json.loads(first_path.read_text(encoding="utf-8"))
+    first["desired_sha256"][article.production_slug] = "f" * 64
+    publication._atomic_receipt(first_path, first)
+    deployment.batch_status_state = "APPLIED"
+
+    path = publication.execute(
+        article.production_slug,
+        preview=lambda: events.append("local-preview"),
+        client_factory=lambda: client,
+        deployment_runner=deployment,
+    )
+    completed = json.loads(path.read_text(encoding="utf-8"))
+    assert completed["state"] == "APPLIED"
+    assert (
+        completed["desired_sha256"][article.production_slug] == article.desired_sha256()
+    )
+    assert events.count("deployment:publication-batch-status") == 1
+    assert events.count("raos-codex-content-propose-release") == 2
+    assert deployment.watcher_calls == 2
+
+
+def test_changed_theme_replaces_exact_server_confirmed_applied_batch(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    current_tree = ["1" * 64]
+    monkeypatch.setattr(
+        publication,
+        "tracked_theme_tree_sha256",
+        lambda: current_tree[0],
+    )
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    _private_path(monkeypatch, tmp_path)
+    deployment = DeploymentRunner(client, events)
+
+    publication.execute(
+        article.production_slug,
+        preview=lambda: events.append("local-preview"),
+        client_factory=lambda: client,
+        deployment_runner=deployment,
+    )
+    current_tree[0] = "2" * 64
+    deployment.local_tree = current_tree[0]
+    deployment.batch_status_state = "APPLIED"
+
+    path = publication.execute(
+        article.production_slug,
+        preview=lambda: events.append("local-preview"),
+        client_factory=lambda: client,
+        deployment_runner=deployment,
+    )
+    completed = json.loads(path.read_text(encoding="utf-8"))
+    assert completed["state"] == "APPLIED"
+    assert completed["desired_theme_tree_sha256"] == current_tree[0]
+    assert deployment.live_tree == current_tree[0]
+    assert events.count("deployment:publication-batch-status") == 1
+    assert events.count("deployment:theme-propose-release") == 2
+
+
+def test_registration_response_loss_with_local_edit_reconciles_expired_batch(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    _private_path(monkeypatch, tmp_path)
+    deployment = DeploymentRunner(client, events, fail_first_wait=True)
+    deployment.live_tree = deployment.local_tree
+
+    with pytest.raises(publication.PublicationFailure):
+        publication.execute(
+            article.production_slug,
+            preview=lambda: events.append("local-preview"),
+            client_factory=lambda: client,
+            deployment_runner=deployment,
+        )
+    receipt_path = next(publication.PRIVATE_REQUEST_DIRECTORY.glob("request-*.json"))
+    interrupted = json.loads(receipt_path.read_text(encoding="utf-8"))
+    interrupted["batch_registration"] = None
+    interrupted["state"] = "PROPOSALS_READY"
+    interrupted["desired_sha256"][article.production_slug] = "f" * 64
+    publication._atomic_receipt(receipt_path, interrupted)
+    client.batch_registration_state = "EXPIRED"
+    deployment.batch_status_state = "EXPIRED"
+
+    path = publication.execute(
+        article.production_slug,
+        preview=lambda: events.append("local-preview"),
+        client_factory=lambda: client,
+        deployment_runner=deployment,
+    )
+    completed = json.loads(path.read_text(encoding="utf-8"))
+    assert completed["state"] == "APPLIED"
+    assert events.count("raos-codex-publication-batch-register") == 3
+    assert events.count("deployment:publication-batch-status") == 1
+
+
+def test_registration_response_loss_after_human_approval_resumes_exact_batch(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+
+    class RegistrationResponseLossClient(WorkflowClient):
+        def __init__(self) -> None:
+            super().__init__(article, events)
+            self.registration_calls = 0
+
+        def call(self, name: str, arguments: dict[str, object]) -> dict[str, Any]:
+            if name == "raos-codex-publication-batch-register":
+                self.registration_calls += 1
+                response = super().call(name, arguments)
+                if self.registration_calls == 1:
+                    raise publication.PublicationFailure(
+                        "RAOS_WORDPRESS_REQUEST_MCP_RESPONSE_MISSING"
+                    )
+                return response
+            return super().call(name, arguments)
+
+    client = RegistrationResponseLossClient()
+    _private_path(monkeypatch, tmp_path)
+    deployment = DeploymentRunner(client, events)
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_MCP_RESPONSE_MISSING",
+    ):
+        publication.execute(
+            article.production_slug,
+            preview=lambda: events.append("local-preview"),
+            client_factory=lambda: client,
+            deployment_runner=deployment,
+        )
+
+    receipt_path = next(publication.PRIVATE_REQUEST_DIRECTORY.glob("request-*.json"))
+    interrupted = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert interrupted["state"] == "PROPOSALS_READY"
+    assert interrupted["batch_registration"] is None
+
+    # Human approval may complete after the server committed registration but
+    # before the caller receives that response. The idempotent retry must retain
+    # the authoritative APPROVED state and continue with the exact batch.
+    client.batch_registration_state = "APPROVED"
+    path = publication.execute(
+        article.production_slug,
+        preview=lambda: events.append("local-preview"),
+        client_factory=lambda: client,
+        deployment_runner=deployment,
+    )
+
+    completed = json.loads(path.read_text(encoding="utf-8"))
+    assert completed["state"] == "APPLIED"
+    assert completed["batch_registration"]["state"] == "APPROVED"
+    assert client.registration_calls == 2
+    assert events.count("raos-codex-content-propose-release") == 1
+    assert events.count("deployment:release-wait-and-apply") == 1
+
+
+def test_partial_proposal_checkpoint_is_never_ready_for_batch_registration(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles = publication.load_articles("all")
+    path = _private_path(monkeypatch, tmp_path)
+    receipt = publication._fresh_receipt(articles, path)
+    receipt["state"] = "PROPOSALS_IN_PROGRESS"
+    receipt["proposals"] = [
+        {
+            "kind": "CONTENT_RELEASE",
+            "slug": articles[0].production_slug,
+            "proposal_id": "a" * 64,
+            "after_sha256": "b" * 64,
+            "expires_at_gmt": "2099-08-29T00:15:00Z",
+            "idempotency_key": "c" * 64,
+        }
+    ]
+
+    assert publication._unregistered_proposal_set_ready(receipt, len(articles)) is False
+    receipt["state"] = "PROPOSALS_READY"
+    assert publication._unregistered_proposal_set_ready(receipt, len(articles)) is False
+    receipt["proposals"] = [
+        {
+            "kind": "CONTENT_RELEASE",
+            "slug": article.production_slug,
+            "proposal_id": f"{index + 1:064x}",
+            "after_sha256": f"{index + 20:064x}",
+            "expires_at_gmt": "2099-08-29T00:15:00Z",
+            "idempotency_key": f"{index + 40:064x}",
+        }
+        for index, article in enumerate(articles)
+    ]
+    assert publication._unregistered_proposal_set_ready(receipt, len(articles)) is True
+    receipt["proposals"].insert(
+        0,
+        {
+            "kind": "THEME_RELEASE",
+            "slug": None,
+            "proposal_id": "e" * 64,
+            "after_sha256": receipt["desired_theme_tree_sha256"],
+            "expires_at_gmt": "2099-08-29T00:15:00Z",
+            "idempotency_key": "f" * 64,
+        },
+    )
+    assert publication._unregistered_proposal_set_ready(receipt, len(articles)) is True
 
 
 def test_content_only_resume_stops_before_apply_if_exact_live_theme_drifted(

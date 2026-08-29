@@ -60,6 +60,10 @@ def _destination_handler(
                     "method": self.command,
                     "path": self.path,
                     "authorization": self.headers.get("Authorization"),
+                    "batch_token": self.headers.get("X-RAOS-Batch-Token"),
+                    "batch_manifest": self.headers.get(
+                        "X-RAOS-Batch-Manifest-SHA256"
+                    ),
                 }
             )
             self.send_response(200)
@@ -90,6 +94,10 @@ def _redirect_handler(
                     "method": self.command,
                     "path": self.path,
                     "authorization": self.headers.get("Authorization"),
+                    "batch_token": self.headers.get("X-RAOS-Batch-Token"),
+                    "batch_manifest": self.headers.get(
+                        "X-RAOS-Batch-Manifest-SHA256"
+                    ),
                 }
             )
             self.send_response(302)
@@ -120,7 +128,7 @@ def test_editor_mcp_refuses_cross_origin_redirect_before_authorized_second_reque
             client = object.__new__(publication.EditorMcpClient)
             client.endpoint = endpoint
             client.username = "redirect-test-editor"
-            client.password = "not-a-production-password-1234"
+            client._basic_auth_value = "redirect-test-auth-value-1234"
             client.session_id = None
             client.next_id = 1
 
@@ -130,11 +138,17 @@ def test_editor_mcp_refuses_cross_origin_redirect_before_authorized_second_reque
             ):
                 client._request({"jsonrpc": "2.0", "id": 1, "method": "ping"})
 
-    expected = "Basic " + base64.b64encode(
-        b"redirect-test-editor:not-a-production-password-1234"
-    ).decode("ascii")
+        expected = "Basic " + base64.b64encode(
+            b"redirect-test-editor:redirect-test-auth-value-1234"
+        ).decode("ascii")
     assert origin_requests == [
-        {"method": "POST", "path": "/editor", "authorization": expected}
+        {
+            "method": "POST",
+            "path": "/editor",
+            "authorization": expected,
+            "batch_token": None,
+            "batch_manifest": None,
+        }
     ]
     assert destination_requests == []
 
@@ -165,6 +179,39 @@ def test_deployment_client_refuses_cross_origin_redirect_before_authorized_secon
         b"redirect-test-deployment:not-a-production-password-5678"
     ).decode("ascii")
     assert origin_requests == [
-        {"method": "GET", "path": "/deploy/status", "authorization": expected}
+        {
+            "method": "GET",
+            "path": "/deploy/status",
+            "authorization": expected,
+            "batch_token": None,
+            "batch_manifest": None,
+        }
     ]
     assert destination_requests == []
+
+
+def test_deployment_apply_sends_exact_batch_identity_headers(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    requests: list[dict[str, str | None]] = []
+    proposal_id = "a" * 64
+    batch_token = "b" * 64
+    batch_manifest = "c" * 64
+    with _serve(_destination_handler(requests)) as origin:
+        monkeypatch.setattr(operator, "DEPLOY_API", f"{origin}/deploy")
+        monkeypatch.setattr(
+            operator,
+            "credentials",
+            lambda: ("batch-test-deployment", "not-a-production-password-9012"),
+        )
+        assert operator.request_json(
+            "POST",
+            f"/proposals/{proposal_id}/apply",
+            {},
+            proposal_id,
+            batch_token,
+            batch_manifest,
+        ) == {}
+
+    assert requests[0]["batch_token"] == batch_token
+    assert requests[0]["batch_manifest"] == batch_manifest
