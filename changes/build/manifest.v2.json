@@ -27577,8 +27577,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 11200,
-          "sha256": "e1c0a28c540f3916daa5e6ca4fe279701a05ecc79e094969f801caef08d31c86",
+          "bytes": 11207,
+          "sha256": "e5f850584321745bf99d3bbdb332ef2db349ff99cc6e2da7f8b923467f71d90f",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],

@@ -42,10 +42,9 @@ assertPinnedRuntimePackage('node_modules/zod/package.json', '4.4.3');
 
 type OperatorCommand =
   | 'deployment-status'
+  | 'publication-batch-status'
   | 'release-wait-and-apply'
-  | 'content-apply-release'
   | 'theme-propose-release'
-  | 'theme-apply-release'
   | 'plugin-propose-change'
   | 'plugin-apply-change'
   | 'operation-recover';
@@ -184,6 +183,39 @@ server.registerTool(
 );
 
 server.registerTool(
+  'publication-batch-status',
+  {
+    title: 'Read an exact publication batch status',
+    description:
+      'Read the server-derived state and precondition barrier for one exact registered publication batch. It never claims or applies a member.',
+    inputSchema: {
+      batch_token: sha256,
+      batch_manifest_sha256: sha256,
+      proposal_ids: releaseProposalIds,
+    },
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  async ({ batch_token, batch_manifest_sha256, proposal_ids }) => {
+    try {
+      return toolResult(
+        await runOperator('publication-batch-status', {
+          batch_token,
+          batch_manifest_sha256,
+          proposal_ids,
+        }),
+      );
+    } catch (error) {
+      return toolError(error);
+    }
+  },
+);
+
+server.registerTool(
   'release-wait-and-apply',
   {
     title: 'Wait for approval and apply one release set',
@@ -217,28 +249,6 @@ server.registerTool(
 );
 
 server.registerTool(
-  'content-apply-release',
-  {
-    title: 'Apply approved content release',
-    description: 'Apply one separately approved, unexpired, hash-bound content release proposal.',
-    inputSchema: { proposal_id: sha256 },
-    annotations: {
-      readOnlyHint: false,
-      destructiveHint: true,
-      idempotentHint: true,
-      openWorldHint: false,
-    },
-  },
-  async ({ proposal_id }) => {
-    try {
-      return toolResult(await runOperator('content-apply-release', { proposal_id }));
-    } catch (error) {
-      return toolError(error);
-    }
-  },
-);
-
-server.registerTool(
   'theme-propose-release',
   {
     title: 'Propose tracked child-theme release',
@@ -255,29 +265,6 @@ server.registerTool(
   async (input) => {
     try {
       return toolResult(await runOperator('theme-propose-release', input));
-    } catch (error) {
-      return toolError(error);
-    }
-  },
-);
-
-server.registerTool(
-  'theme-apply-release',
-  {
-    title: 'Apply approved child-theme release',
-    description:
-      'Apply one separately approved child-theme proposal with backup, readback, and rollback.',
-    inputSchema: { proposal_id: sha256 },
-    annotations: {
-      readOnlyHint: false,
-      destructiveHint: true,
-      idempotentHint: true,
-      openWorldHint: false,
-    },
-  },
-  async ({ proposal_id }) => {
-    try {
-      return toolResult(await runOperator('theme-apply-release', { proposal_id }));
     } catch (error) {
       return toolError(error);
     }

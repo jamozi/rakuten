@@ -59,10 +59,14 @@ def test_public_contract_and_schema_are_valid() -> None:
         "proposal_idempotency": True,
         "deployment_transport": "wordpressDeployment stdio MCP",
         "approval_wait_seconds": 900,
+        "release_batch_identity_bound": True,
+        "release_preflight_all_members": True,
+        "atomic_batch_claim_before_mutation": True,
         "theme_before_content": True,
         "theme_tree_sha256_bound": True,
         "plugin_in_release_batch": False,
         "production_readback": True,
+        "anonymous_public_readback": True,
         "receipt_storage": ".secrets/wordpress-mcp/publication-requests",
     }
     assert contract["host_gates"] == {
@@ -95,6 +99,12 @@ def test_public_batch_and_aggregate_receipt_schema_fail_closed() -> None:
         "review_url": "https://kurashinoshirube.com/wp-admin/tools.php?page=raos-codex-proposals",
     }
     assert not validator.is_valid(batch)
+    approved_batch = batch | {
+        "expected_theme_tree_sha256": "e" * 64,
+        "proposal_count": 1,
+        "state": "APPROVED",
+    }
+    assert validator.is_valid(approved_batch)
 
     operation = {
         "schema": "OperationReceiptV1",
@@ -108,10 +118,25 @@ def test_public_batch_and_aggregate_receipt_schema_fail_closed() -> None:
     }
     aggregate = {
         "schema": "ReleaseWaitApplyReceiptV1",
+        "batch_token": "a" * 64,
+        "batch_manifest_sha256": "b" * 64,
+        "proposal_count": 1,
+        "proposal_ids": ["d" * 64],
         "state": "APPLIED",
         "receipts": [operation],
     }
     assert not validator.is_valid(aggregate)
+
+    claim = {
+        "schema": "RAOSWordPressPublicationBatchClaimV1",
+        "batch_token": "a" * 64,
+        "batch_manifest_sha256": "b" * 64,
+        "proposal_count": 2,
+        "proposal_ids": ["d" * 64],
+        "batch_claimed_at_gmt": "2026-08-29T12:00:00Z",
+        "proposals": [operation],
+    }
+    assert not validator.is_valid(claim)
 
 
 def test_codex_project_enables_only_two_mcp_servers_without_secrets() -> None:
@@ -137,10 +162,9 @@ def test_codex_project_enables_only_two_mcp_servers_without_secrets() -> None:
     ]
     assert deployment["enabled_tools"] == [
         "deployment-status",
+        "publication-batch-status",
         "release-wait-and-apply",
-        "content-apply-release",
         "theme-propose-release",
-        "theme-apply-release",
         "plugin-propose-change",
         "plugin-apply-change",
         "operation-recover",
@@ -228,16 +252,25 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
     tools = {tool["name"]: tool for tool in listed["result"]["tools"]}
     assert set(tools) == {
         "deployment-status",
+        "publication-batch-status",
         "release-wait-and-apply",
-        "content-apply-release",
         "theme-propose-release",
-        "theme-apply-release",
         "plugin-propose-change",
         "plugin-apply-change",
         "operation-recover",
     }
-    assert tools["content-apply-release"]["inputSchema"]["properties"] == {
-        "proposal_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+    assert tools["publication-batch-status"]["inputSchema"]["properties"] == {
+        "batch_token": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "batch_manifest_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+        },
+        "proposal_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 20,
+            "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        },
     }
     assert tools["release-wait-and-apply"]["inputSchema"]["properties"] == {
         "batch_token": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
@@ -250,11 +283,11 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
             "minItems": 1,
             "maxItems": 20,
             "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        }
+        },
     }
-    assert tools["content-apply-release"]["annotations"] == {
-        "readOnlyHint": False,
-        "destructiveHint": True,
+    assert tools["publication-batch-status"]["annotations"] == {
+        "readOnlyHint": True,
+        "destructiveHint": False,
         "idempotentHint": True,
         "openWorldHint": False,
     }
@@ -289,6 +322,9 @@ def test_wordpress_plugin_hard_safety_boundaries_are_present() -> None:
         "RAOS_CODEX_REPO_ARTIFACT_HASHES",
         "raos_codex_wordpress_org_digest_mismatch",
         "raos_codex_plugin_activation_failed",
+        "X-RAOS-Batch-Token",
+        "X-RAOS-Batch-Manifest-SHA256",
+        "Content and theme proposals cannot be approved individually.",
     )
     for marker in expected:
         assert marker in sources
@@ -391,7 +427,7 @@ def test_disposable_wordpress_71_e2e_is_pinned_and_separate_from_live() -> None:
     assert "http://127.0.0.1:" in client
     assert "tools/list" in client
     assert "raos_codex_rest_scope_forbidden" in client
-    assert "raos_codex_content_hash_drift" in client
+    assert "raos_codex_publication_batch_headers_invalid" in client
     assert "PLUGIN_CHANGE_APPLIED" in client
     assert "THEME_RELEASE_APPLIED" in client
     assert "raos_codex_code_readback_failed" in client

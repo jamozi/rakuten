@@ -16,13 +16,45 @@ SPEC = importlib.util.spec_from_file_location("raos_release_watcher", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 operator = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(operator)
+ORIGINAL_RELEASE_BATCH_STATUS = operator._release_batch_status
+ORIGINAL_RELEASE_BATCH_CLAIM = operator._release_batch_claim
+BATCH_TOKEN = "4" * 64
+BATCH_MANIFEST_SHA256 = "5" * 64
 
 
-def public_operation(proposal_id: str, kind: str, state: str) -> dict[str, object]:
+def release_input(proposal_ids: list[str]) -> dict[str, object]:
+    return {
+        "batch_token": BATCH_TOKEN,
+        "batch_manifest_sha256": BATCH_MANIFEST_SHA256,
+        "proposal_ids": sorted(proposal_ids),
+    }
+
+
+@pytest.fixture(autouse=True)
+def exact_approved_batch(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda batch_token, batch_manifest_sha256, proposal_ids: ("APPROVED", True),
+    )
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_claim",
+        lambda batch_token, batch_manifest_sha256, proposal_ids: {},
+    )
+
+
+def public_operation(
+    proposal_id: str,
+    kind: str,
+    state: str,
+    *,
+    result_code: str | None = None,
+) -> dict[str, object]:
     result_codes = {
         "PENDING": "PROPOSAL_PENDING_APPROVAL",
         "APPROVED": "PROPOSAL_APPROVED",
-        "APPLYING": "OPERATION_APPLYING",
+        "APPLYING": "BATCH_CLAIMED",
         "APPLIED": (
             "THEME_RELEASE_APPLIED"
             if kind == "THEME_RELEASE"
@@ -39,7 +71,7 @@ def public_operation(proposal_id: str, kind: str, state: str) -> dict[str, objec
             "proposal_id": proposal_id,
             "operation_id": proposal_id,
             "state": state,
-            "result_code": result_codes[state],
+            "result_code": result_code or result_codes[state],
             "before_sha256": "1" * 64,
             "after_sha256": "2" * 64,
             "audit_id": "3" * 64,
@@ -53,6 +85,256 @@ def assert_failure(code: str, callback: Callable[[], object]) -> None:
     assert str(raised.value) == code
 
 
+def test_release_batch_status_requires_the_exact_server_registered_identity(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        operator, "_release_batch_status", ORIGINAL_RELEASE_BATCH_STATUS
+    )
+    proposal_ids = ["a" * 64, "b" * 64]
+    response = {
+        "schema": "RAOSWordPressPublicationBatchStatusV1",
+        "batch_token": BATCH_TOKEN,
+        "batch_manifest_sha256": BATCH_MANIFEST_SHA256,
+        "proposal_count": 2,
+        "proposal_ids": proposal_ids,
+        "state": "APPROVED",
+        "expires_at_gmt": "2026-08-29T12:00:00Z",
+        "preconditions_ready": True,
+    }
+    calls: list[tuple[str, str]] = []
+
+    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
+        calls.append((method, path))
+        return dict(response)
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    assert operator._release_batch_status(
+        BATCH_TOKEN,
+        BATCH_MANIFEST_SHA256,
+        proposal_ids,
+    ) == ("APPROVED", True)
+    assert calls == [("GET", f"/publication-batches/{BATCH_TOKEN}")]
+
+    response["state"] = "APPLIED"
+    response["preconditions_ready"] = False
+    assert operator._release_batch_status(
+        BATCH_TOKEN,
+        BATCH_MANIFEST_SHA256,
+        proposal_ids,
+    ) == ("APPLIED", False)
+
+    response["proposal_ids"] = [proposal_ids[0]]
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_BATCH_IDENTITY_INVALID",
+        lambda: operator._release_batch_status(
+            BATCH_TOKEN,
+            BATCH_MANIFEST_SHA256,
+            proposal_ids,
+        ),
+    )
+
+
+def test_release_batch_claim_requires_exact_identity_and_atomic_member_states(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(operator, "_release_batch_claim", ORIGINAL_RELEASE_BATCH_CLAIM)
+    proposal_ids = ["a" * 64, "b" * 64]
+    claimed_operations = [
+        public_operation(proposal_id, "CONTENT_RELEASE", "APPLYING")["operation"]
+        for proposal_id in proposal_ids
+    ]
+    response = {
+        "schema": "RAOSWordPressPublicationBatchClaimV1",
+        "batch_token": BATCH_TOKEN,
+        "batch_manifest_sha256": BATCH_MANIFEST_SHA256,
+        "proposal_count": len(proposal_ids),
+        "proposal_ids": proposal_ids,
+        "batch_claimed_at_gmt": "2026-08-29T12:00:00Z",
+        "proposals": claimed_operations,
+    }
+    calls: list[tuple[str, str, object]] = []
+
+    def request_json(method, path, body=None, *args, **kwargs):
+        calls.append((method, path, body))
+        return dict(response)
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    claimed = operator._release_batch_claim(
+        BATCH_TOKEN,
+        BATCH_MANIFEST_SHA256,
+        proposal_ids,
+    )
+    assert list(claimed) == proposal_ids
+    assert calls == [
+        (
+            "POST",
+            f"/publication-batches/{BATCH_TOKEN}/claim",
+            {
+                "batch_manifest_sha256": BATCH_MANIFEST_SHA256,
+                "proposal_ids": proposal_ids,
+            },
+        )
+    ]
+
+    response["proposal_ids"] = proposal_ids[:1]
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_BATCH_CLAIM_INVALID",
+        lambda: operator._release_batch_claim(
+            BATCH_TOKEN,
+            BATCH_MANIFEST_SHA256,
+            proposal_ids,
+        ),
+    )
+
+
+def test_release_waits_for_exact_batch_approval_before_reading_operations(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    states = iter(("REGISTERED", "APPROVED"))
+    events: list[str] = []
+
+    def batch_status(batch_token, manifest_hash, proposal_ids):
+        events.append("batch")
+        state = next(states)
+        return state, state == "APPROVED"
+
+    def request_json(method, path, body=None, request_proposal_id=None):
+        events.append(f"{method}:{path}")
+        return public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+
+    monkeypatch.setattr(operator, "_release_batch_status", batch_status)
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_claim",
+        lambda *args: events.append("claim"),
+    )
+    monkeypatch.setattr(operator, "request_json", request_json)
+    monkeypatch.setattr(operator.time, "sleep", lambda seconds: events.append("sleep"))
+
+    result = operator.release_wait_and_apply(release_input([proposal_id]))
+    assert result["state"] == "APPLIED"
+    assert events[:5] == [
+        "batch",
+        "sleep",
+        "batch",
+        "claim",
+        f"GET:/operations/{proposal_id}",
+    ]
+
+
+def test_terminal_applied_batch_reconstructs_receipts_without_reclaim(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    events: list[str] = []
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *args: ("APPLIED", False),
+    )
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_claim",
+        lambda *args: events.append("unexpected-claim"),
+    )
+
+    def request_json(method, path, *args, **kwargs):
+        events.append(f"{method}:{path}")
+        return public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    result = operator.release_wait_and_apply(release_input([proposal_id]))
+
+    assert result["state"] == "APPLIED"
+    assert events == [f"GET:/operations/{proposal_id}"]
+
+
+def test_atomic_batch_claim_retries_an_ambiguous_response_before_member_read(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    events: list[str] = []
+    attempts = 0
+
+    def claim(*args):
+        nonlocal attempts
+        attempts += 1
+        events.append("claim")
+        if attempts == 1:
+            raise operator.OperatorFailure("WORDPRESS_MCP_TRANSPORT_FAILED")
+        return {}
+
+    def request_json(method, path, *args, **kwargs):
+        events.append(f"{method}:{path}")
+        return public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+
+    monkeypatch.setattr(operator, "_release_batch_claim", claim)
+    monkeypatch.setattr(operator, "request_json", request_json)
+    monkeypatch.setattr(operator.time, "sleep", lambda seconds: events.append("sleep"))
+
+    result = operator.release_wait_and_apply(release_input([proposal_id]))
+    assert result["state"] == "APPLIED"
+    assert events == [
+        "claim",
+        "sleep",
+        "claim",
+        f"GET:/operations/{proposal_id}",
+    ]
+
+
+def test_approved_batch_with_any_failed_precondition_never_mutates(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[str] = []
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *args: ("APPROVED", False),
+    )
+    monkeypatch.setattr(
+        operator,
+        "request_json",
+        lambda method, path, *args, **kwargs: calls.append(f"{method}:{path}"),
+    )
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_BATCH_PRECONDITION_FAILED",
+        lambda: operator.release_wait_and_apply(release_input(["a" * 64])),
+    )
+    assert calls == []
+
+
+@pytest.mark.parametrize(
+    ("batch_state", "code"),
+    [
+        ("EXPIRED", "WORDPRESS_MCP_RELEASE_EXPIRED"),
+        ("FAILED", "WORDPRESS_MCP_RELEASE_FAILED"),
+    ],
+)
+def test_terminal_batch_state_never_reads_or_mutates_a_member(
+    monkeypatch: pytest.MonkeyPatch,
+    batch_state: str,
+    code: str,
+) -> None:
+    calls: list[str] = []
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *args: (batch_state, False),
+    )
+    monkeypatch.setattr(
+        operator,
+        "request_json",
+        lambda method, path, *args, **kwargs: calls.append(f"{method}:{path}"),
+    )
+    assert_failure(
+        code,
+        lambda: operator.release_wait_and_apply(release_input(["a" * 64])),
+    )
+    assert calls == []
+
+
 def test_release_waiter_orders_theme_first_and_waits_for_human_approval(
     monkeypatch,
 ) -> None:
@@ -60,17 +342,18 @@ def test_release_waiter_orders_theme_first_and_waits_for_human_approval(
     theme_id = "b" * 64
     kinds = {content_id: "CONTENT_RELEASE", theme_id: "THEME_RELEASE"}
     states = {
-        content_id: ["PENDING", "APPROVED", "APPLIED"],
-        theme_id: ["APPROVED", "APPROVED", "APPLIED"],
+        content_id: ["APPLYING", "APPLIED"],
+        theme_id: ["APPLYING", "APPLIED"],
     }
     calls: list[tuple[str, str, str | None]] = []
     sleeps: list[float] = []
 
-    def request_json(method, path, body=None, proposal_id=None):
+    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
         calls.append((method, path, proposal_id))
         selected = path.split("/")[2]
         if method == "POST" and "/apply" in path:
             assert proposal_id == selected
+            assert batch_identity == (BATCH_TOKEN, BATCH_MANIFEST_SHA256)
         if method == "GET":
             state = states[selected].pop(0)
             return public_operation(selected, kinds[selected], state)
@@ -79,9 +362,13 @@ def test_release_waiter_orders_theme_first_and_waits_for_human_approval(
     monkeypatch.setattr(operator, "request_json", request_json)
     monkeypatch.setattr(operator.time, "sleep", sleeps.append)
 
-    result = operator.release_wait_and_apply({"proposal_ids": [content_id, theme_id]})
+    result = operator.release_wait_and_apply(release_input([content_id, theme_id]))
 
     assert result["schema"] == "ReleaseWaitApplyReceiptV1"
+    assert result["batch_token"] == BATCH_TOKEN
+    assert result["batch_manifest_sha256"] == BATCH_MANIFEST_SHA256
+    assert result["proposal_ids"] == sorted([content_id, theme_id])
+    assert result["proposal_count"] == 2
     assert result["state"] == "APPLIED"
     assert [receipt["proposal_id"] for receipt in result["receipts"]] == [
         theme_id,
@@ -92,14 +379,14 @@ def test_release_waiter_orders_theme_first_and_waits_for_human_approval(
         f"/proposals/{theme_id}/apply",
         f"/proposals/{content_id}/apply",
     ]
-    assert sleeps == [operator.RELEASE_POLL_INTERVAL_SECONDS]
+    assert sleeps == []
     first_post = next(index for index, call in enumerate(calls) if call[0] == "POST")
     assert [call[1] for call in calls[:first_post]].count(
         f"/operations/{content_id}"
-    ) == 2
+    ) == 1
     assert [call[1] for call in calls[:first_post]].count(
         f"/operations/{theme_id}"
-    ) == 2
+    ) == 1
 
 
 def test_release_waiter_recovers_applying_operation(monkeypatch) -> None:
@@ -107,17 +394,20 @@ def test_release_waiter_recovers_applying_operation(monkeypatch) -> None:
     states = ["APPLYING", "APPLIED"]
     posts: list[str] = []
 
-    def request_json(method, path, body=None, proposal_id=None):
+    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
         if method == "GET":
             return public_operation(
-                path.split("/")[2], "CONTENT_RELEASE", states.pop(0)
+                path.split("/")[2],
+                "CONTENT_RELEASE",
+                states.pop(0),
+                result_code="OPERATION_APPLYING",
             )
         posts.append(path)
         return {}
 
     monkeypatch.setattr(operator, "request_json", request_json)
     monkeypatch.setattr(operator, "RELEASE_RECOVERY_GRACE_SECONDS", 0)
-    result = operator.release_wait_and_apply({"proposal_ids": [proposal_id]})
+    result = operator.release_wait_and_apply(release_input([proposal_id]))
     assert result["state"] == "APPLIED"
     assert posts == [f"/operations/{proposal_id}/recover"]
 
@@ -134,10 +424,13 @@ def test_live_apply_is_polled_through_grace_and_retryable_recovery(
     clock = [0.0]
     recovery_times: list[float] = []
 
-    def request_json(method, path, body=None, proposal_id=None):
+    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
         if method == "GET":
             return public_operation(
-                path.split("/")[2], "CONTENT_RELEASE", states.pop(0)
+                path.split("/")[2],
+                "CONTENT_RELEASE",
+                states.pop(0),
+                result_code="OPERATION_APPLYING",
             )
         recovery_times.append(clock[0])
         raise operator.OperatorFailure(retryable_code)
@@ -149,24 +442,23 @@ def test_live_apply_is_polled_through_grace_and_retryable_recovery(
         operator.time, "sleep", lambda seconds: clock.__setitem__(0, clock[0] + seconds)
     )
 
-    result = operator.release_wait_and_apply({"proposal_ids": [proposal_id]})
+    result = operator.release_wait_and_apply(release_input([proposal_id]))
     assert result["state"] == "APPLIED"
     assert recovery_times == [4.0]
 
 
-def test_pending_timeout_never_calls_a_mutating_route(monkeypatch) -> None:
+def test_unclaimed_member_state_is_refused_without_member_mutation(monkeypatch) -> None:
     proposal_id = "d" * 64
     calls: list[tuple[str, str]] = []
 
-    def request_json(method, path, body=None, proposal_id=None):
+    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
         calls.append((method, path))
         return public_operation(path.split("/")[2], "CONTENT_RELEASE", "PENDING")
 
     monkeypatch.setattr(operator, "request_json", request_json)
-    monkeypatch.setattr(operator, "RELEASE_WAIT_TIMEOUT_SECONDS", 0)
     assert_failure(
-        "WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT",
-        lambda: operator.release_wait_and_apply({"proposal_ids": [proposal_id]}),
+        "WORDPRESS_MCP_RELEASE_BATCH_CLAIM_INVALID",
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
     )
     assert calls == [("GET", f"/operations/{proposal_id}")]
 
@@ -176,24 +468,24 @@ def test_readiness_barrier_fails_before_mutation_when_a_sibling_fails(
 ) -> None:
     first = "1" * 64
     second = "2" * 64
-    states = {
-        first: ["APPROVED", "FAILED"],
-        second: ["PENDING", "APPROVED"],
-    }
     calls: list[str] = []
-
-    def request_json(method, path, body=None, proposal_id=None):
-        calls.append(method)
-        selected = path.split("/")[2]
-        return public_operation(selected, "CONTENT_RELEASE", states[selected].pop(0))
-
-    monkeypatch.setattr(operator, "request_json", request_json)
-    monkeypatch.setattr(operator.time, "sleep", lambda seconds: None)
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_claim",
+        lambda *args: (_ for _ in ()).throw(
+            operator.OperatorFailure("WORDPRESS_MCP_RELEASE_FAILED")
+        ),
+    )
+    monkeypatch.setattr(
+        operator,
+        "request_json",
+        lambda method, *args, **kwargs: calls.append(method),
+    )
     assert_failure(
         "WORDPRESS_MCP_RELEASE_FAILED",
-        lambda: operator.release_wait_and_apply({"proposal_ids": [first, second]}),
+        lambda: operator.release_wait_and_apply(release_input([first, second])),
     )
-    assert "POST" not in calls
+    assert calls == []
 
 
 @pytest.mark.parametrize(
@@ -208,14 +500,14 @@ def test_terminal_states_fail_closed_before_apply(monkeypatch, state, code) -> N
     proposal_id = "e" * 64
     calls: list[str] = []
 
-    def request_json(method, path, body=None, proposal_id=None):
+    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
         calls.append(method)
         return public_operation(path.split("/")[2], "CONTENT_RELEASE", state)
 
     monkeypatch.setattr(operator, "request_json", request_json)
     assert_failure(
         code,
-        lambda: operator.release_wait_and_apply({"proposal_ids": [proposal_id]}),
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
     )
     assert calls == ["GET"]
 
@@ -226,12 +518,12 @@ def test_plugin_and_multiple_theme_sets_are_refused_before_apply(monkeypatch) ->
 
     def plugin_request(method, path, body=None, proposal_id=None):
         calls.append(method)
-        return public_operation(path.split("/")[2], "PLUGIN_CHANGE", "APPROVED")
+        return public_operation(path.split("/")[2], "PLUGIN_CHANGE", "APPLYING")
 
     monkeypatch.setattr(operator, "request_json", plugin_request)
     assert_failure(
         "WORDPRESS_MCP_RELEASE_PLUGIN_REFUSED",
-        lambda: operator.release_wait_and_apply({"proposal_ids": [plugin_id]}),
+        lambda: operator.release_wait_and_apply(release_input([plugin_id])),
     )
     assert calls == ["GET"]
 
@@ -241,12 +533,12 @@ def test_plugin_and_multiple_theme_sets_are_refused_before_apply(monkeypatch) ->
 
     def theme_request(method, path, body=None, proposal_id=None):
         calls.append(method)
-        return public_operation(path.split("/")[2], "THEME_RELEASE", "APPROVED")
+        return public_operation(path.split("/")[2], "THEME_RELEASE", "APPLYING")
 
     monkeypatch.setattr(operator, "request_json", theme_request)
     assert_failure(
         "WORDPRESS_MCP_RELEASE_THEME_LIMIT_EXCEEDED",
-        lambda: operator.release_wait_and_apply({"proposal_ids": [first, second]}),
+        lambda: operator.release_wait_and_apply(release_input([first, second])),
     )
     assert calls == ["GET", "GET"]
 
@@ -258,7 +550,7 @@ def test_malformed_public_operation_fails_with_a_redacted_code(monkeypatch) -> N
     monkeypatch.setattr(operator, "request_json", lambda *args, **kwargs: malformed)
     assert_failure(
         "WORDPRESS_MCP_OPERATION_STATUS_INVALID",
-        lambda: operator.release_wait_and_apply({"proposal_ids": [proposal_id]}),
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
     )
 
 
@@ -269,7 +561,7 @@ def test_malformed_public_operation_fails_with_a_redacted_code(monkeypatch) -> N
 def test_release_set_must_contain_one_to_twenty_unique_ids(proposal_ids) -> None:
     assert_failure(
         "WORDPRESS_MCP_RELEASE_PROPOSALS_INVALID",
-        lambda: operator.release_wait_and_apply({"proposal_ids": proposal_ids}),
+        lambda: operator.release_wait_and_apply(release_input(proposal_ids)),
     )
 
 
@@ -280,7 +572,7 @@ def test_theme_proposal_passes_optional_idempotency_key(monkeypatch) -> None:
         operator, "theme_package", lambda: (b"zip", {"old_version": None})
     )
 
-    def request_json(method, path, body=None, proposal_id=None):
+    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
         if path == "/status":
             return {"theme": {"version": "1.2.3"}}
         captured.append(dict(body))
@@ -295,7 +587,7 @@ def test_theme_proposal_passes_optional_idempotency_key(monkeypatch) -> None:
 def test_deployment_status_is_an_exact_read_only_operator_command(monkeypatch) -> None:
     calls: list[tuple[str, str]] = []
 
-    def request_json(method, path, body=None, proposal_id=None):
+    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
         calls.append((method, path))
         return {"schema": "RAOSWordPressDeploymentStatusV1"}
 
@@ -307,6 +599,14 @@ def test_deployment_status_is_an_exact_read_only_operator_command(monkeypatch) -
     assert_failure(
         "WORDPRESS_MCP_INPUT_INVALID",
         lambda: operator.run("deployment-status", {"url": "https://example.test"}),
+    )
+
+
+@pytest.mark.parametrize("command", ["content-apply-release", "theme-apply-release"])
+def test_individual_release_apply_commands_are_not_exposed(command: str) -> None:
+    assert_failure(
+        "WORDPRESS_MCP_COMMAND_REFUSED",
+        lambda: operator.run(command, {}),
     )
 
 
@@ -376,7 +676,11 @@ def test_bridge_advertises_bounds_and_rejects_duplicate_ids() -> None:
                     "method": "tools/call",
                     "params": {
                         "name": "release-wait-and-apply",
-                        "arguments": {"proposal_ids": ["0" * 64, "0" * 64]},
+                        "arguments": {
+                            "batch_token": BATCH_TOKEN,
+                            "batch_manifest_sha256": BATCH_MANIFEST_SHA256,
+                            "proposal_ids": ["0" * 64, "0" * 64],
+                        },
                     },
                 }
             ),
@@ -408,9 +712,21 @@ def test_bridge_advertises_bounds_and_rejects_duplicate_ids() -> None:
         "openWorldHint": False,
     }
     assert tools["release-wait-and-apply"]["annotations"]["destructiveHint"] is True
-    schema = tools["release-wait-and-apply"]["inputSchema"]["properties"][
-        "proposal_ids"
+    wait_schema = tools["release-wait-and-apply"]["inputSchema"]
+    assert wait_schema["required"] == [
+        "batch_token",
+        "batch_manifest_sha256",
+        "proposal_ids",
     ]
+    assert wait_schema["properties"]["batch_token"] == {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+    }
+    assert wait_schema["properties"]["batch_manifest_sha256"] == {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+    }
+    schema = wait_schema["properties"]["proposal_ids"]
     assert schema["minItems"] == 1
     assert schema["maxItems"] == 20
     theme_schema = tools["theme-propose-release"]["inputSchema"]

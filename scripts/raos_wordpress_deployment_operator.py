@@ -204,6 +204,8 @@ def request_json(
     path: str,
     body: Mapping[str, object] | None = None,
     proposal_id: str | None = None,
+    batch_token: str | None = None,
+    batch_manifest_sha256: str | None = None,
 ) -> dict[str, object]:
     if method not in {"GET", "POST"} or not path.startswith("/") or ".." in path:
         fail("WORDPRESS_MCP_TRANSPORT_INVALID")
@@ -214,7 +216,7 @@ def request_json(
         + base64.b64encode(f"{username}:{application_password}".encode()).decode(
             "ascii"
         ),
-        "User-Agent": "raos-wordpress-bridge/1.0.0",
+        "User-Agent": "raos-wordpress-bridge/1.1.0",
     }
     data = None
     if body is not None:
@@ -224,6 +226,13 @@ def request_json(
         proposal_id = require_sha256(proposal_id)
         headers["If-Match"] = f'"{proposal_id}"'
         headers["Idempotency-Key"] = proposal_id
+    if (batch_token is None) != (batch_manifest_sha256 is None):
+        fail("WORDPRESS_MCP_TRANSPORT_INVALID")
+    if batch_token is not None and batch_manifest_sha256 is not None:
+        if proposal_id is None:
+            fail("WORDPRESS_MCP_TRANSPORT_INVALID")
+        headers["X-RAOS-Batch-Token"] = require_sha256(batch_token)
+        headers["X-RAOS-Batch-Manifest-SHA256"] = require_sha256(batch_manifest_sha256)
     request = urllib.request.Request(
         DEPLOY_API + path,
         data=data,
@@ -264,14 +273,12 @@ def request_json(
     return exact_object(value, set(), set(value) if type(value) is dict else set())
 
 
-def _release_operation(proposal_id: str) -> tuple[str, dict[str, object]]:
-    response = exact_object(
-        request_json("GET", f"/operations/{proposal_id}"),
-        {"kind", "operation"},
-    )
-    kind = response["kind"]
+def _validated_release_operation(
+    value: object,
+    proposal_id: str,
+) -> dict[str, object]:
     operation = exact_object(
-        response["operation"],
+        value,
         {
             "schema",
             "proposal_id",
@@ -288,9 +295,7 @@ def _release_operation(proposal_id: str) -> tuple[str, dict[str, object]]:
     before_sha256 = operation["before_sha256"]
     after_sha256 = operation["after_sha256"]
     if (
-        type(kind) is not str
-        or kind not in {"CONTENT_RELEASE", "THEME_RELEASE", "PLUGIN_CHANGE"}
-        or operation["schema"] != "OperationReceiptV1"
+        operation["schema"] != "OperationReceiptV1"
         or operation["proposal_id"] != proposal_id
         or operation["operation_id"] != proposal_id
         or type(state) is not str
@@ -324,6 +329,22 @@ def _release_operation(proposal_id: str) -> tuple[str, dict[str, object]]:
         or SHA256_RE.fullmatch(operation["audit_id"]) is None
     ):
         fail("WORDPRESS_MCP_OPERATION_STATUS_INVALID")
+    return operation
+
+
+def _release_operation(proposal_id: str) -> tuple[str, dict[str, object]]:
+    response = exact_object(
+        request_json("GET", f"/operations/{proposal_id}"),
+        {"kind", "operation"},
+    )
+    kind = response["kind"]
+    if type(kind) is not str or kind not in {
+        "CONTENT_RELEASE",
+        "THEME_RELEASE",
+        "PLUGIN_CHANGE",
+    }:
+        fail("WORDPRESS_MCP_OPERATION_STATUS_INVALID")
+    operation = _validated_release_operation(response["operation"], proposal_id)
     return kind, operation
 
 
@@ -344,16 +365,186 @@ def _release_poll_sleep(deadline: float) -> None:
     time.sleep(min(RELEASE_POLL_INTERVAL_SECONDS, remaining))
 
 
+def _release_batch_status(
+    batch_token: str,
+    batch_manifest_sha256: str,
+    proposal_ids: list[str],
+) -> tuple[str, bool]:
+    response = _release_batch_status_response(
+        batch_token,
+        batch_manifest_sha256,
+        proposal_ids,
+    )
+    return response["state"], response["preconditions_ready"]
+
+
+def _release_batch_status_response(
+    batch_token: str,
+    batch_manifest_sha256: str,
+    proposal_ids: list[str],
+) -> dict[str, object]:
+    response = request_json("GET", f"/publication-batches/{batch_token}")
+    if (
+        set(response)
+        != {
+            "schema",
+            "batch_token",
+            "batch_manifest_sha256",
+            "proposal_count",
+            "proposal_ids",
+            "state",
+            "expires_at_gmt",
+            "preconditions_ready",
+        }
+        or type(response.get("preconditions_ready")) is not bool
+        or response.get("schema") != "RAOSWordPressPublicationBatchStatusV1"
+        or response.get("batch_token") != batch_token
+        or response.get("batch_manifest_sha256") != batch_manifest_sha256
+        or response.get("proposal_count") != len(proposal_ids)
+        or response.get("proposal_ids") != proposal_ids
+        or response.get("state")
+        not in {"REGISTERED", "APPROVED", "APPLIED", "EXPIRED", "FAILED"}
+        or type(response.get("expires_at_gmt")) is not str
+        or re.fullmatch(
+            r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
+            response["expires_at_gmt"],
+        )
+        is None
+    ):
+        fail("WORDPRESS_MCP_RELEASE_BATCH_IDENTITY_INVALID")
+    return response
+
+
+def _release_batch_claim(
+    batch_token: str,
+    batch_manifest_sha256: str,
+    proposal_ids: list[str],
+) -> dict[str, dict[str, object]]:
+    response = exact_object(
+        request_json(
+            "POST",
+            f"/publication-batches/{batch_token}/claim",
+            {
+                "batch_manifest_sha256": batch_manifest_sha256,
+                "proposal_ids": proposal_ids,
+            },
+        ),
+        {
+            "schema",
+            "batch_token",
+            "batch_manifest_sha256",
+            "proposal_count",
+            "proposal_ids",
+            "batch_claimed_at_gmt",
+            "proposals",
+        },
+    )
+    proposals = response["proposals"]
+    if (
+        response["schema"] != "RAOSWordPressPublicationBatchClaimV1"
+        or response["batch_token"] != batch_token
+        or response["batch_manifest_sha256"] != batch_manifest_sha256
+        or response["proposal_count"] != len(proposal_ids)
+        or response["proposal_ids"] != proposal_ids
+        or type(response["batch_claimed_at_gmt"]) is not str
+        or re.fullmatch(
+            r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
+            response["batch_claimed_at_gmt"],
+        )
+        is None
+        or type(proposals) is not list
+        or len(proposals) != len(proposal_ids)
+    ):
+        fail("WORDPRESS_MCP_RELEASE_BATCH_CLAIM_INVALID")
+    claimed: dict[str, dict[str, object]] = {}
+    for proposal_id, value in zip(proposal_ids, proposals, strict=True):
+        operation = _validated_release_operation(value, proposal_id)
+        state = operation["state"]
+        result_code = operation["result_code"]
+        if (
+            (
+                state == "APPLYING"
+                and result_code not in {"BATCH_CLAIMED", "OPERATION_APPLYING"}
+            )
+            or (
+                state == "APPLIED"
+                and (
+                    type(operation["after_sha256"]) is not str
+                    or SHA256_RE.fullmatch(operation["after_sha256"]) is None
+                )
+            )
+            or state not in {"APPLYING", "APPLIED"}
+        ):
+            fail("WORDPRESS_MCP_RELEASE_BATCH_CLAIM_INVALID")
+        claimed[proposal_id] = operation
+    return claimed
+
+
+def _release_outcome_ambiguous(code: str) -> bool:
+    return (
+        code
+        in {
+            "WORDPRESS_MCP_TRANSPORT_FAILED",
+            "WORDPRESS_MCP_RESPONSE_INVALID",
+            "WORDPRESS_MCP_RESPONSE_TOO_LARGE",
+            "RAOS_CODEX_OPERATION_RECOVERY_REQUIRED",
+            "RAOS_CODEX_PUBLICATION_BATCH_CLAIM_OUTCOME_INDETERMINATE",
+        }
+        or re.fullmatch(r"WORDPRESS_MCP_HTTP_5\d\d", code) is not None
+    )
+
+
 def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
-    record = exact_object(inputs, {"proposal_ids"})
+    record = exact_object(
+        inputs,
+        {"batch_token", "batch_manifest_sha256", "proposal_ids"},
+    )
+    batch_token = require_sha256(record["batch_token"])
+    batch_manifest_sha256 = require_sha256(record["batch_manifest_sha256"])
     candidate_ids = record["proposal_ids"]
     if type(candidate_ids) is not list or not 1 <= len(candidate_ids) <= 20:
         fail("WORDPRESS_MCP_RELEASE_PROPOSALS_INVALID")
     proposal_ids = [require_sha256(candidate) for candidate in candidate_ids]
-    if len(set(proposal_ids)) != len(proposal_ids):
+    if len(set(proposal_ids)) != len(proposal_ids) or proposal_ids != sorted(
+        proposal_ids
+    ):
         fail("WORDPRESS_MCP_RELEASE_PROPOSALS_INVALID")
 
     deadline = time.monotonic() + RELEASE_WAIT_TIMEOUT_SECONDS
+    batch_already_applied = False
+    while True:
+        batch_state, preconditions_ready = _release_batch_status(
+            batch_token,
+            batch_manifest_sha256,
+            proposal_ids,
+        )
+        if batch_state == "EXPIRED":
+            fail("WORDPRESS_MCP_RELEASE_EXPIRED")
+        if batch_state == "FAILED":
+            fail("WORDPRESS_MCP_RELEASE_FAILED")
+        if batch_state == "APPLIED":
+            batch_already_applied = True
+            break
+        if batch_state == "APPROVED":
+            if not preconditions_ready:
+                fail("WORDPRESS_MCP_RELEASE_BATCH_PRECONDITION_FAILED")
+            break
+        _release_poll_sleep(deadline)
+
+    if not batch_already_applied:
+        while True:
+            try:
+                _release_batch_claim(
+                    batch_token,
+                    batch_manifest_sha256,
+                    proposal_ids,
+                )
+                break
+            except OperatorFailure as error:
+                if not _release_outcome_ambiguous(str(error)):
+                    raise
+                _release_poll_sleep(deadline)
+
     initial: list[tuple[str, str]] = []
     operations: dict[str, dict[str, object]] = {}
     applying_observed: dict[str, float] = {}
@@ -362,30 +553,24 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
         if kind == "PLUGIN_CHANGE":
             fail("WORDPRESS_MCP_RELEASE_PLUGIN_REFUSED")
         _release_terminal_state(operation["state"])
-        if operation["state"] == "APPLYING":
+        if batch_already_applied and operation["state"] != "APPLIED":
+            fail("WORDPRESS_MCP_RELEASE_BATCH_CLAIM_INVALID")
+        if operation["state"] not in {"APPLYING", "APPLIED"}:
+            fail("WORDPRESS_MCP_RELEASE_BATCH_CLAIM_INVALID")
+        if operation["state"] == "APPLYING" and operation["result_code"] not in {
+            "BATCH_CLAIMED",
+            "OPERATION_APPLYING",
+        }:
+            fail("WORDPRESS_MCP_RELEASE_BATCH_CLAIM_INVALID")
+        if (
+            operation["state"] == "APPLYING"
+            and operation["result_code"] == "OPERATION_APPLYING"
+        ):
             applying_observed[proposal_id] = time.monotonic()
         initial.append((proposal_id, kind))
         operations[proposal_id] = operation
     if sum(kind == "THEME_RELEASE" for _, kind in initial) > 1:
         fail("WORDPRESS_MCP_RELEASE_THEME_LIMIT_EXCEEDED")
-
-    expected_kinds = dict(initial)
-    while True:
-        for operation in operations.values():
-            _release_terminal_state(operation["state"])
-        if all(
-            operation["state"] in {"APPROVED", "APPLYING", "APPLIED"}
-            for operation in operations.values()
-        ):
-            break
-        _release_poll_sleep(deadline)
-        for proposal_id in proposal_ids:
-            kind, operation = _release_operation(proposal_id)
-            if kind != expected_kinds[proposal_id]:
-                fail("WORDPRESS_MCP_OPERATION_STATUS_INVALID")
-            if operation["state"] == "APPLYING":
-                applying_observed.setdefault(proposal_id, time.monotonic())
-            operations[proposal_id] = operation
 
     ordered = sorted(initial, key=lambda item: item[1] != "THEME_RELEASE")
     receipts: list[dict[str, object]] = []
@@ -408,19 +593,27 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
             if time.monotonic() >= deadline:
                 fail("WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT")
             wait_before_refresh = False
-            if state == "APPROVED":
+            if state == "APPLYING" and operation["result_code"] == "BATCH_CLAIMED":
                 try:
                     request_json(
                         "POST",
                         f"/proposals/{proposal_id}/apply",
                         {},
                         proposal_id,
+                        batch_token,
+                        batch_manifest_sha256,
                     )
                 except OperatorFailure as error:
-                    if str(error) not in retryable_apply:
+                    if str(
+                        error
+                    ) not in retryable_apply and not _release_outcome_ambiguous(
+                        str(error)
+                    ):
                         raise
                     wait_before_refresh = True
-            elif state == "APPLYING":
+            elif (
+                state == "APPLYING" and operation["result_code"] == "OPERATION_APPLYING"
+            ):
                 observed = applying_observed.setdefault(proposal_id, time.monotonic())
                 if time.monotonic() - observed < RELEASE_RECOVERY_GRACE_SECONDS:
                     wait_before_refresh = True
@@ -438,11 +631,18 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
             kind, operation = _release_operation(proposal_id)
             if kind != expected_kind:
                 fail("WORDPRESS_MCP_OPERATION_STATUS_INVALID")
-            if operation["state"] == "APPLYING":
+            if (
+                operation["state"] == "APPLYING"
+                and operation["result_code"] == "OPERATION_APPLYING"
+            ):
                 applying_observed.setdefault(proposal_id, time.monotonic())
 
     return {
         "schema": "ReleaseWaitApplyReceiptV1",
+        "batch_token": batch_token,
+        "batch_manifest_sha256": batch_manifest_sha256,
+        "proposal_count": len(proposal_ids),
+        "proposal_ids": proposal_ids,
         "state": "APPLIED",
         "receipts": receipts,
     }
@@ -807,12 +1007,26 @@ def run(command: str, inputs: dict[str, object]) -> dict[str, object]:
     if command == "deployment-status":
         exact_object(inputs, set())
         return request_json("GET", "/status")
+    if command == "publication-batch-status":
+        record = exact_object(
+            inputs,
+            {"batch_token", "batch_manifest_sha256", "proposal_ids"},
+        )
+        candidate_ids = record["proposal_ids"]
+        if type(candidate_ids) is not list or not 1 <= len(candidate_ids) <= 20:
+            fail("WORDPRESS_MCP_RELEASE_PROPOSALS_INVALID")
+        proposal_ids = [require_sha256(candidate) for candidate in candidate_ids]
+        if len(set(proposal_ids)) != len(proposal_ids) or proposal_ids != sorted(
+            proposal_ids
+        ):
+            fail("WORDPRESS_MCP_RELEASE_PROPOSALS_INVALID")
+        return _release_batch_status_response(
+            require_sha256(record["batch_token"]),
+            require_sha256(record["batch_manifest_sha256"]),
+            proposal_ids,
+        )
     if command == "release-wait-and-apply":
         return release_wait_and_apply(inputs)
-    if command == "content-apply-release":
-        record = exact_object(inputs, {"proposal_id"})
-        proposal_id = require_sha256(record["proposal_id"])
-        return request_json("POST", f"/proposals/{proposal_id}/apply", {}, proposal_id)
     if command == "theme-propose-release":
         record = exact_object(inputs, set(), {"idempotency_key"})
         payload, descriptor = theme_package()
@@ -831,10 +1045,6 @@ def run(command: str, inputs: dict[str, object]) -> dict[str, object]:
         if "idempotency_key" in record:
             proposal["idempotency_key"] = require_sha256(record["idempotency_key"])
         return request_json("POST", "/proposals", proposal)
-    if command == "theme-apply-release":
-        record = exact_object(inputs, {"proposal_id"})
-        proposal_id = require_sha256(record["proposal_id"])
-        return request_json("POST", f"/proposals/{proposal_id}/apply", {}, proposal_id)
     if command == "plugin-propose-change":
         payload, descriptor = plugin_package(inputs)
         return request_json(
@@ -863,10 +1073,9 @@ def parser() -> argparse.ArgumentParser:
         "command",
         choices=(
             "deployment-status",
+            "publication-batch-status",
             "release-wait-and-apply",
-            "content-apply-release",
             "theme-propose-release",
-            "theme-apply-release",
             "plugin-propose-change",
             "plugin-apply-change",
             "operation-recover",
