@@ -274,6 +274,17 @@ final class RAOS_Codex_MCP_Content
                 'version' => $theme->exists() ? (string) $theme->get('Version') : null,
                 'active' => get_stylesheet() === 'kurashinoshirube-child',
             ),
+            'measurement' => array(
+                'plugin_active' => defined('RAOS_EDITORIAL_MEASUREMENT_VERSION'),
+                'plugin_version' => defined('RAOS_EDITORIAL_MEASUREMENT_VERSION')
+                    ? RAOS_EDITORIAL_MEASUREMENT_VERSION
+                    : null,
+                'collection_enabled' => function_exists('raos_editorial_measurement_enabled')
+                    && raos_editorial_measurement_enabled(),
+                'aggregate_ability_registered' => function_exists('wp_get_ability')
+                    && (bool) wp_get_ability('raos-measurement/aggregate-report'),
+                'raw_event_tool_exposed' => false,
+            ),
             'server' => array(
                 'endpoint' => home_url('/wp-json/raos-codex-mcp/v1/editor'),
                 'proposal_ttl_seconds' => RAOS_Codex_MCP_Store::TTL_SECONDS,

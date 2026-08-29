@@ -31,6 +31,7 @@ EXPECTED_TOOLS = {
     "raos-codex-content-propose-release",
     "raos-codex-publication-batch-register",
     "raos-codex-operation-get",
+    "raos-measurement-aggregate-report",
 }
 
 
@@ -334,7 +335,7 @@ def phase_propose(
 ) -> None:
     mcp = McpClient(site_url + "/wp-json/raos-codex-mcp/v1/editor", *editor)
     initialized = mcp.initialize()
-    assert initialized["serverInfo"]["version"] == "1.2.0"
+    assert initialized["serverInfo"]["version"] == "1.3.0"
     tools = mcp.tools()
     assert set(tools) == EXPECTED_TOOLS
     for tool in tools.values():
@@ -343,10 +344,34 @@ def phase_propose(
         assert annotations["destructiveHint"] is False
         assert annotations["openWorldHint"] is False
 
+    measurement_tool = tools["raos-measurement-aggregate-report"]
+    assert measurement_tool["annotations"] == {
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False,
+    }
+    aggregate = mcp.call(
+        "raos-measurement-aggregate-report",
+        {"start_date": "2026-08-01", "end_date": "2026-08-30"},
+    )
+    assert aggregate["schema"] == "RAOSMeasurementAggregateReportV1"
+    assert aggregate["measurement_enabled"] is False
+    assert aggregate["raw_events_exposed"] is False
+    assert aggregate["rows"] == []
+
     status = mcp.call("raos-codex-site-status", {})
     assert status["origin"] == ORIGIN
     assert status["wordpress_version"].startswith("7.1")
     assert status["mcp_adapter_version"] == "0.6.1"
+    assert status["plugin_version"] == "1.3.0"
+    assert status["measurement"] == {
+        "plugin_active": True,
+        "plugin_version": "1.0.0",
+        "collection_enabled": False,
+        "aggregate_ability_registered": True,
+        "raw_event_tool_exposed": False,
+    }
     assert status["writes_enabled"] == {
         "global": True,
         "draft": True,

@@ -18,7 +18,7 @@ import zipfile
 ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
-PLUGIN_VERSION: Final = "1.2.0"
+PLUGIN_VERSION: Final = "1.3.0"
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
 MANIFEST: Final = SLICE / "runtime-manifest.v1.json"
 OUTPUT: Final = (

@@ -1,4 +1,11 @@
 {
-  "schema": "RAOS_WORDPRESS_REPO_PLUGIN_ARTIFACTS_V1",
-  "artifacts": []
+  "artifacts": [
+    {
+      "artifact_id": "raos-editorial-measurement-v1",
+      "package_sha256": "443fd86e19e4ef66a0292b243dfcf8c1400e9b84b41d494794c2ab546f36e7ae",
+      "slug": "raos-editorial-measurement",
+      "version": "1.0.0"
+    }
+  ],
+  "schema": "RAOS_WORDPRESS_REPO_PLUGIN_ARTIFACTS_V1"
 }

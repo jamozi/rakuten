@@ -34,7 +34,7 @@ the build or tests:
    `23cb53e0b82f39238eec1c38cb055e28aa30fa7c`).
 2. Run `make -C changes/wordpress-mcp-v1 plugin-package`, verify the hash in
    `runtime-manifest.v1.json`, and install/activate the resulting owner-private
-   `raos-codex-mcp-abilities-1.2.0.zip` in wp-admin.
+   `raos-codex-mcp-abilities-1.3.0.zip` in wp-admin.
 3. Create one non-administrator user for each activation-created role, with no
    second role or direct capabilities:
    `raos_codex_mcp_editor` and `raos_codex_deployment_operator`.

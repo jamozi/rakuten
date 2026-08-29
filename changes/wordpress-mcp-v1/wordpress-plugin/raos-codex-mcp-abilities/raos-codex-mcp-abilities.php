@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RAOS Codex MCP Abilities
  * Description: Browser-independent, approval-bound content and deployment abilities for kurashinoshirube.com.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Requires at least: 7.1
  * Requires PHP: 8.1
  * Author: RAOS
@@ -14,7 +14,7 @@
 
 defined('ABSPATH') || exit;
 
-define('RAOS_CODEX_MCP_VERSION', '1.2.0');
+define('RAOS_CODEX_MCP_VERSION', '1.3.0');
 define('RAOS_CODEX_MCP_FILE', __FILE__);
 
 require_once __DIR__ . '/includes/class-raos-codex-mcp-store.php';
@@ -168,7 +168,7 @@ final class RAOS_Codex_MCP_Abilities
             'raos-codex-mcp/v1',
             'editor',
             'RAOS Codex WordPress Editor',
-            'Draft editing and immutable release proposals only. No publish, delete, media-write, theme, plugin, PHP, SQL, or generic ability execution tool is exposed.',
+            'Draft editing, immutable release proposals, and aggregate-only measurement reads. No publish, delete, media-write, raw event, theme, plugin, PHP, SQL, or generic ability execution tool is exposed.',
             RAOS_CODEX_MCP_VERSION,
             array(\WP\MCP\Transport\HttpTransport::class),
             \WP\MCP\Infrastructure\ErrorHandling\NullMcpErrorHandler::class,
@@ -182,6 +182,7 @@ final class RAOS_Codex_MCP_Abilities
                 'raos-codex/content-propose-release',
                 'raos-codex/publication-batch-register',
                 'raos-codex/operation-get',
+                'raos-measurement/aggregate-report',
             ),
             array(),
             array(),

@@ -34,7 +34,7 @@ def test_public_contract_and_schema_are_valid() -> None:
     contract = json.loads((SLICE / "contracts/wordpress-mcp.v1.json").read_text())
     schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
     Draft202012Validator.check_schema(schema)
-    assert contract["version"] == "1.1.0"
+    assert contract["version"] == "1.2.0"
     assert contract["wordpress_version"] == "7.1.x"
     assert contract["mcp_adapter"]["version"] == "0.6.1"
     assert contract["remote_proxy"]["version"] == "0.4.0"
@@ -159,6 +159,7 @@ def test_codex_project_enables_only_two_mcp_servers_without_secrets() -> None:
         "raos-codex-content-propose-release",
         "raos-codex-publication-batch-register",
         "raos-codex-operation-get",
+        "raos-measurement-aggregate-report",
     ]
     assert deployment["enabled_tools"] == [
         "deployment-status",

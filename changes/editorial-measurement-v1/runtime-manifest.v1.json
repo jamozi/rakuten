@@ -1,0 +1,75 @@
+{
+  "artifact_id": "raos-editorial-measurement-v1",
+  "default_enabled": false,
+  "host_gate": "RAOS_MEASUREMENT_ENABLED",
+  "package_sha256": "443fd86e19e4ef66a0292b243dfcf8c1400e9b84b41d494794c2ab546f36e7ae",
+  "package_size": 14452,
+  "plugin_files": [
+    {
+      "path": "README.md",
+      "sha256": "e3cff46b7a931b059b2935c5636835708a6dfe068be1d2d8587923b5346507ab",
+      "size": 2096
+    },
+    {
+      "path": "config/measurement-allowlist.v1.json",
+      "sha256": "dc2aa06cbc4a91ef86f868fffe62969ef7845a17967ea078146d5b533227e838",
+      "size": 18254
+    },
+    {
+      "path": "includes/class-raos-measurement-contract.php",
+      "sha256": "1258210e46fc8ded3c8d40a93b6850775b00f6c413e7fd925f8d270486a5fedf",
+      "size": 17521
+    },
+    {
+      "path": "includes/class-raos-measurement-store.php",
+      "sha256": "8c54437bad28d5b75971e8a3658eb9c9508706b64d542de309508422a887d645",
+      "size": 14093
+    },
+    {
+      "path": "raos-editorial-measurement.php",
+      "sha256": "bf6af90ff97d0c01de492c8daa44e7aeacb088eba5187b3c98ee711e4999bd7d",
+      "size": 15374
+    }
+  ],
+  "plugin_slug": "raos-editorial-measurement",
+  "plugin_version": "1.0.0",
+  "runtime_files": [
+    {
+      "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+      "sha256": "17507d314ace2e34379242fa29531439ffbe2fcb729d6a503d25206862794bc1",
+      "size": 79383
+    },
+    {
+      "path": "changes/editorial-measurement-v1/measurement-runtime.v1.json",
+      "sha256": "0f8802ddd4d82fecb32459bb6aca049046a38e67552596fb815cd65d9ae19e69",
+      "size": 1736
+    },
+    {
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
+      "sha256": "5971f4465ddcb6c4b43fee885bb9e2c4b0bd721c6c937a08734df0ec1b3a7355",
+      "size": 12653
+    },
+    {
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+      "sha256": "08d2c81351dacded5fda3696d7244228481a0232ac52afd747af9e3aff2d928f",
+      "size": 120858
+    },
+    {
+      "path": "scripts/build_editorial_measurement_v1.py",
+      "sha256": "c6e56ec71d0d3234a5b135cde3d44c7d81f3bd5e2e7c97649cf8f404deca3d5b",
+      "size": 16280
+    },
+    {
+      "path": "tests/editorial_measurement_v1/test_contract.py",
+      "sha256": "9c8526fcefa191e900d005ea4eafd6b6e09743db59397df04fb1c28e066af5b2",
+      "size": 11572
+    },
+    {
+      "path": "tests/editorial_measurement_v1/measurement_client_harness.mjs",
+      "sha256": "6c6599569acf019c6663a411cfdcba7169dc7753d13d16fa8ade584293b28a29",
+      "size": 8546
+    }
+  ],
+  "schema": "RAOS_EDITORIAL_MEASUREMENT_RUNTIME_MANIFEST_V1",
+  "version": "1.0.0"
+}

@@ -136,9 +136,12 @@ actual_adapter_sha256="$(sha256sum "$adapter_zip" | awk '{print $1}')"
 
 "$repository_root/.venv/bin/python" \
   "$repository_root/scripts/build_wordpress_mcp_v1.py" --package
-readonly raos_plugin_zip="$repository_root/.secrets/wordpress-mcp/plugin/raos-codex-mcp-abilities-1.2.0.zip"
+readonly raos_plugin_zip="$repository_root/.secrets/wordpress-mcp/plugin/raos-codex-mcp-abilities-1.3.0.zip"
 "$repository_root/.venv/bin/python" \
   "$repository_root/scripts/build_wordpress_mcp_v1.py" --package-check
+"$repository_root/.venv/bin/python" \
+  "$repository_root/scripts/build_editorial_measurement_v1.py" --package
+readonly measurement_plugin_zip="$repository_root/.secrets/wordpress-mcp/repo-plugin-artifacts/raos-editorial-measurement-v1.zip"
 
 RAOS_WORDPRESS_E2E_ARTIFACTS="$code_artifact_directory/artifacts.json"
 "$repository_root/.venv/bin/python" \
@@ -182,6 +185,7 @@ compose exec -T --user root wordpress sh -eu -c \
   'cp -a /usr/src/wordpress/wp-content/. /var/www/raos-code/wp-content/; chown -R www-data:www-data /var/www/raos-code; chmod 0700 /var/www/raos-code/private /var/www/raos-code/staging'
 compose cp "$adapter_zip" wordpress:/var/www/raos-code/staging/mcp-adapter.zip
 compose cp "$raos_plugin_zip" wordpress:/var/www/raos-code/staging/raos-codex-mcp-abilities.zip
+compose cp "$measurement_plugin_zip" wordpress:/var/www/raos-code/staging/raos-editorial-measurement.zip
 compose cp "$e2e_directory/approve_harness.php" wordpress:/var/www/raos-code/staging/approve_harness.php
 compose cp "$e2e_directory/batch_approve_harness.php" wordpress:/var/www/raos-code/staging/batch_approve_harness.php
 compose cp "$e2e_directory/idempotency_harness.php" wordpress:/var/www/raos-code/staging/idempotency_harness.php
@@ -209,6 +213,7 @@ wordpress_cli config set WP_CONTENT_URL https://kurashinoshirube.com/wp-content 
 
 wordpress_cli plugin install /var/www/raos-code/staging/mcp-adapter.zip --activate
 wordpress_cli plugin install /var/www/raos-code/staging/raos-codex-mcp-abilities.zip --activate
+wordpress_cli plugin install /var/www/raos-code/staging/raos-editorial-measurement.zip --activate
 wordpress_cli rewrite structure '/%postname%/' --hard >/dev/null 2>&1 \
   || fail RAOS_WORDPRESS_E2E_REWRITE_FAILED
 wordpress_cli theme is-installed twentytwentyfive \
@@ -228,6 +233,8 @@ wordpress_cli plugin is-active mcp-adapter \
   || fail RAOS_WORDPRESS_E2E_ADAPTER_INACTIVE
 wordpress_cli plugin is-active raos-codex-mcp-abilities \
   || fail RAOS_WORDPRESS_E2E_PLUGIN_INACTIVE
+wordpress_cli plugin is-active raos-editorial-measurement \
+  || fail RAOS_WORDPRESS_E2E_MEASUREMENT_PLUGIN_INACTIVE
 wordpress_cli eval-file /var/www/raos-code/staging/store_upgrade_harness.php degrade \
   || fail RAOS_WORDPRESS_E2E_STORE_DEGRADE_FAILED
 wordpress_cli eval-file /var/www/raos-code/staging/store_upgrade_harness.php check \

@@ -1,0 +1,61 @@
+{
+  "schema": "RAOS_EDITORIAL_MEASUREMENT_RUNTIME_V1",
+  "version": "1.0.0",
+  "classification": "TRACKED_DEFAULT_OFF_CONSENT_GATED_FIRST_PARTY_MEASUREMENT",
+  "target_origin": "https://kurashinoshirube.com",
+  "source_contract": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+  "public_route": {
+    "method": "POST",
+    "path": "/wp-json/raos/v1/events",
+    "same_origin_required": true,
+    "max_body_bytes": 4096,
+    "unknown_fields": "REFUSE"
+  },
+  "gate": {
+    "constant": "RAOS_MEASUREMENT_ENABLED",
+    "default": false,
+    "consent": [
+      "CookieYes analytics granted after explicit action",
+      "WP Consent API statistics granted",
+      "Site Kit analytics_storage granted"
+    ],
+    "denied_or_unknown": "NO_STORAGE_NO_EVENT_NO_GA4"
+  },
+  "events": [
+    "article_view",
+    "qualified_decision_engagement",
+    "affiliate_cta_impression",
+    "affiliate_click",
+    "product_card_view",
+    "comparison_interaction",
+    "internal_link_click",
+    "disclosure_view"
+  ],
+  "retention": {
+    "raw_days": 7,
+    "daily_aggregate_months": 13,
+    "deactivation_deletes_data": false
+  },
+  "privacy": {
+    "raw_ip": false,
+    "user_agent": false,
+    "referrer_url": false,
+    "outbound_url": false,
+    "query_string": false,
+    "provider_credential": false,
+    "raw_session_id": false
+  },
+  "navigation": {
+    "provider_redirect_proxy": false,
+    "prevent_default": false,
+    "await_measurement": false,
+    "failure_blocks_navigation": false
+  },
+  "ability": {
+    "name": "raos-measurement/aggregate-report",
+    "read_only": true,
+    "raw_events_exposed": false,
+    "credential_scope": "existing exact wordpressEditor role"
+  },
+  "production_state": "NOT_APPLIED_GATE_DISABLED"
+}

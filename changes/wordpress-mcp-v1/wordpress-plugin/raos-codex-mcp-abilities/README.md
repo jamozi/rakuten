@@ -1,4 +1,4 @@
-# RAOS Codex MCP Abilities 1.2.0
+# RAOS Codex MCP Abilities 1.3.0
 
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
@@ -8,6 +8,12 @@ It exposes one custom MCP server at
 post/page reads, draft creation/update, immutable release proposal creation,
 exact publication-batch registration, and operation lookup. It does not expose
 MCP Adapter's generic/default server.
+
+When the separately reviewed `raos-editorial-measurement` plugin is active,
+the same editor server also exposes its `raos-measurement/aggregate-report`
+ability. That tool is read-only and aggregate-only; no raw event or session
+read tool is present. If the measurement plugin is absent, MCP Adapter omits
+the unavailable ability rather than adding a generic execution surface.
 
 Activation creates two non-administrator roles but no users or Application
 Passwords. A human administrator must create one dedicated user per role and
