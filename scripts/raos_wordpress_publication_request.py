@@ -1194,7 +1194,10 @@ def reconcile_drafts(
     receipt_drafts = receipt["drafts"]
     if type(receipt_drafts) is not dict:
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
-    replacing_applied_targets = receipt.get("state") == "APPLIED_ATTEMPT_REPLACED"
+    replacing_applied_targets = receipt.get("state") in {
+        "APPLIED_ATTEMPT_REPLACED",
+        "EXPIRED_ATTEMPT_REPLACED",
+    }
     for article in articles:
         candidates = by_slug.get(article.production_slug, [])
         if len(candidates) > 1:
