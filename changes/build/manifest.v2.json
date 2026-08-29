@@ -19379,7 +19379,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
+          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
           "uri": "repo://package-lock.json"
         },
         {
@@ -19701,7 +19701,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
+          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
           "uri": "repo://package-lock.json"
         },
         {
@@ -19940,7 +19940,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
+          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
           "uri": "repo://package-lock.json"
         },
         {
@@ -20437,7 +20437,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
+          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
           "uri": "repo://package-lock.json"
         },
         {
@@ -20665,7 +20665,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
+          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
           "uri": "repo://package-lock.json"
         },
         {
@@ -20899,7 +20899,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
+          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
           "uri": "repo://package-lock.json"
         },
         {
@@ -21102,7 +21102,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8036c61aad5534cc9df3d66287d1361bcd375028075e824fef6ccfd059dd848d",
+          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
           "uri": "repo://package-lock.json"
         },
         {
@@ -27577,8 +27577,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 7520,
-          "sha256": "f9a5d3cb4c9012f1eab225d3a5b8ad8ce7569655ee61db9eef878ddb6f1f7b3e",
+          "bytes": 11207,
+          "sha256": "53b14293dc128e7b82c8ebcdd4a76bbe46de80ae3d3ea13108316269ad0a464d",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
