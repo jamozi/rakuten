@@ -440,9 +440,9 @@ class LiveSearchConsoleProvider:
                 "dimensions": list(query.dimensions),
                 "endDate": query.date_to.isoformat(),
                 "rowLimit": query.row_limit,
-                "searchType": "web",
                 "startDate": query.date_from.isoformat(),
                 "startRow": start_row,
+                "type": "web",
             }
             page_hash = sha256_hex(
                 canonical_json_bytes({"site_url": query.site_url, "body": body})

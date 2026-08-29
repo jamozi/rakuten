@@ -197,9 +197,9 @@ class SearchConsoleLiveQuery:
             "dimensions": list(self.dimensions),
             "endDate": self.date_to.isoformat(),
             "rowLimit": self.row_limit,
-            "searchType": "web",
             "siteUrl": self.site_url,
             "startDate": self.date_from.isoformat(),
+            "type": "web",
         }
 
     @property

@@ -140,6 +140,8 @@ def test_search_console_paginates_hashes_requests_and_preserves_three_letter_cou
     )
     assert transport.requests[0][2]["startRow"] == 0
     assert transport.requests[1][2]["startRow"] == 2
+    assert transport.requests[0][2]["type"] == "web"
+    assert "searchType" not in transport.requests[0][2]
     assert "query one" not in repr(batch.rows[0])
 
 
