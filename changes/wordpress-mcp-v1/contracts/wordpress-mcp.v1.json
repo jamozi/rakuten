@@ -1,6 +1,6 @@
 {
   "schema": "RAOS_WORDPRESS_MCP_CONTRACT_V1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "site_origin": "https://kurashinoshirube.com",
   "wordpress_version": "7.1.x",
   "mcp_adapter": {
@@ -29,9 +29,12 @@
     "raos-codex-content-create-draft",
     "raos-codex-content-update-draft",
     "raos-codex-content-propose-release",
+    "raos-codex-publication-batch-register",
     "raos-codex-operation-get"
   ],
   "bridge_tools": [
+    "deployment-status",
+    "release-wait-and-apply",
     "content-apply-release",
     "theme-propose-release",
     "theme-apply-release",
@@ -54,11 +57,29 @@
   },
   "approval": {
     "channel": "wp-admin",
+    "batch": true,
+    "batch_all_or_nothing": true,
+    "batch_manifest_bound": true,
+    "batch_registered_exact_ids": true,
+    "batch_plugin_excluded": true,
     "ttl_seconds": 900,
     "self_approval": false,
     "reauthentication": true,
     "minimum_reason_length": 10,
     "hash_suffix_length": 8
+  },
+  "publication_request": {
+    "command": "make wordpress-production-request ARTICLES=all",
+    "mapping": "changes/wordpress-local-preview-v1/production-mapping.v1.json",
+    "local_preview_required": true,
+    "proposal_idempotency": true,
+    "deployment_transport": "wordpressDeployment stdio MCP",
+    "approval_wait_seconds": 900,
+    "theme_before_content": true,
+    "theme_tree_sha256_bound": true,
+    "plugin_in_release_batch": false,
+    "production_readback": true,
+    "receipt_storage": ".secrets/wordpress-mcp/publication-requests"
   },
   "host_gates": {
     "global_kill_switch": "RAOS_OPERATOR_WRITES_ENABLED",

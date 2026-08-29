@@ -15,9 +15,9 @@ There are exactly two project MCP servers:
    `@modelcontextprotocol/sdk@1.30.0`, over stdio.
 
 The WordPress plugin requires WordPress 7.1.x and exactly MCP Adapter 0.6.1.
-It disables MCP Adapter's generic default server and exposes only the seven
+It disables MCP Adapter's generic default server and exposes only the eight
 tools listed in `contracts/wordpress-mcp.v1.json`. The local bridge exposes only
-six typed operations. Neither path includes a generic request, command, PHP,
+eight typed operations. Neither path includes a generic request, command, PHP,
 SQL, filesystem-path, URL, media-write, delete, unpublish, uninstall, or
 arbitrary ZIP tool.
 
@@ -34,7 +34,7 @@ the build or tests:
    `23cb53e0b82f39238eec1c38cb055e28aa30fa7c`).
 2. Run `make -C changes/wordpress-mcp-v1 plugin-package`, verify the hash in
    `runtime-manifest.v1.json`, and install/activate the resulting owner-private
-   `raos-codex-mcp-abilities-1.1.0.zip` in wp-admin.
+   `raos-codex-mcp-abilities-1.2.0.zip` in wp-admin.
 3. Create one non-administrator user for each activation-created role, with no
    second role or direct capabilities:
    `raos_codex_mcp_editor` and `raos_codex_deployment_operator`.
@@ -69,6 +69,23 @@ the build or tests:
 
 ## Operation flow
 
+For the five tracked editorial articles, run the foreground workflow from the
+repository root:
+
+```text
+make wordpress-production-request ARTICLES=all
+```
+
+It runs the mandatory local preview `up`, `sync`, and `check` sequence before
+contacting production, reconciles only the exact mapped drafts, creates
+idempotent proposals, prints the fixed wp-admin review URL, waits for the
+separate administrator approval, applies at most one theme first and then the
+selected content, and finally performs production readback. `ARTICLES` may be
+an exact comma-separated subset of the registered production slugs. The
+command neither approves proposals nor changes host gates. Its resumable
+owner-private receipts are stored under
+`.secrets/wordpress-mcp/publication-requests/`.
+
 - Draft post/page creation and update mutate only `draft` targets and require
   `RAOS_OPERATOR_WRITES_ENABLED` plus `RAOS_CODEX_DRAFT_WRITES_ENABLED`.
 - All updates require `revision_id`, `modified_gmt`, and `content_sha256`.
@@ -85,11 +102,20 @@ the build or tests:
 - Plugin packages with activation, database, option-schema, SQL DDL, or generic
   migration signals become `MANUAL_REQUIRED`; wp-admin cannot approve them for
   this automatic path.
-- A different cookie-authenticated administrator reviews the complete payload
-  in **Tools → RAOS Codex proposals**, reauthenticates, gives a reason, and
-  types the after-hash suffix. Approval creates one proposal-bound, single-use
-  authorization lease outside the web root. It expires after 15 minutes and
-  does not apply the proposal.
+- The editor registers the exact 1–20 content/theme proposal IDs as one
+  immutable server-side publication batch; unrelated pending proposals and all
+  plugin proposals are excluded. A different cookie-authenticated
+  administrator reviews that registered batch in **Tools → RAOS Codex
+  proposals**, reauthenticates once, gives a reason, and types the visible final
+  eight characters of its canonical manifest hash. Approval is all-or-nothing:
+  it creates one proposal-bound, single-use authorization lease per proposal
+  outside the web root. The leases expire after 15 minutes and approval itself
+  does not apply anything.
+- The bounded `release-wait-and-apply` operator waits for that approval, refuses
+  plugin proposals and malformed or terminal batches, converges at most one
+  theme first, then converges the content proposals (up to 20 content-only, or
+  up to 19 when a theme is included). Reruns recover or accept only
+  already-bound operations.
 - Apply requires the approval plus `If-Match`, the same idempotency key, global
   kill switch, the scoped authorization lease, unchanged before hash, backup,
   replacement, and after-hash readback. The lease is removed after success or

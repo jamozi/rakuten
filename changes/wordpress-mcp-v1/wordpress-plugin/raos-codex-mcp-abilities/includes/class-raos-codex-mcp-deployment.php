@@ -52,6 +52,15 @@ final class RAOS_Codex_MCP_Deployment
         );
         register_rest_route(
             'raos-codex-deploy/v1',
+            '/operations/(?P<operation_id>[0-9a-f]{64})',
+            array(
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => array($this, 'get_operation'),
+                'permission_callback' => array($this->plugin, 'operator_rest_permission'),
+            )
+        );
+        register_rest_route(
+            'raos-codex-deploy/v1',
             '/operations/(?P<operation_id>[0-9a-f]{64})/recover',
             array(
                 'methods' => WP_REST_Server::CREATABLE,
@@ -103,10 +112,16 @@ final class RAOS_Codex_MCP_Deployment
     {
         $input = $request->get_json_params();
         if (! is_array($input)
-            || ! self::has_exact_keys($input, array('kind', 'code_package', 'package_base64'))
+            || ! self::has_only_keys(
+                $input,
+                array('kind', 'code_package', 'package_base64'),
+                array('idempotency_key')
+            )
             || ! in_array($input['kind'], array('theme_release', 'plugin_change'), true)
             || ! is_array($input['code_package'])
             || ! is_string($input['package_base64'])
+            || (array_key_exists('idempotency_key', $input)
+                && ! RAOS_Codex_MCP_Store::is_sha256($input['idempotency_key']))
             || strlen($input['package_base64']) > (int) ceil(self::MAX_PACKAGE_BYTES * 4 / 3) + 8) {
             return self::error('raos_codex_package_proposal_invalid', 400);
         }
@@ -159,14 +174,36 @@ final class RAOS_Codex_MCP_Deployment
             $target['tree_sha256'],
             $validated['file_manifest_sha256'],
             (bool) $validated['automatic_apply_eligible'],
-            $package_path
+            $package_path,
+            array_key_exists('idempotency_key', $input) ? $input['idempotency_key'] : null
         );
         if (is_wp_error($row)) {
             @unlink($package_path);
             return $row;
         }
+        if (! isset($row['package_path'])
+            || ! is_string($row['package_path'])
+            || ! hash_equals($package_path, $row['package_path'])) {
+            @unlink($package_path);
+        }
         return array(
             'proposal' => $row['payload'],
+            'operation' => RAOS_Codex_MCP_Store::public_operation($row),
+        );
+    }
+
+    public function get_operation(WP_REST_Request $request)
+    {
+        $operation_id = $request['operation_id'];
+        if (! RAOS_Codex_MCP_Store::is_sha256($operation_id)) {
+            return self::error('raos_codex_operation_id_invalid', 400);
+        }
+        $row = RAOS_Codex_MCP_Store::get($operation_id);
+        if (is_wp_error($row)) {
+            return $row;
+        }
+        return array(
+            'kind' => $row['kind'],
             'operation' => RAOS_Codex_MCP_Store::public_operation($row),
         );
     }
@@ -181,148 +218,183 @@ final class RAOS_Codex_MCP_Deployment
         if (is_wp_error($header_result)) {
             return $header_result;
         }
-        $row = RAOS_Codex_MCP_Store::get($proposal_id);
-        if (is_wp_error($row)) {
-            return $row;
-        }
-        if ('APPLIED' === $row['state'] && is_array($row['receipt'])) {
-            return $row['receipt'];
-        }
-        $gate = self::apply_gate($row['kind']);
-        if (is_wp_error($gate)) {
-            return $gate;
-        }
-        $claimed = RAOS_Codex_MCP_Store::claim_apply($proposal_id);
-        if (is_wp_error($claimed)) {
-            return $claimed;
-        }
-        if ('APPLIED' === $claimed['state'] && is_array($claimed['receipt'])) {
-            return $claimed['receipt'];
-        }
-        $authorization = self::validate_approval_lease($claimed);
-        if (is_wp_error($authorization)) {
-            RAOS_Codex_MCP_Store::mark_failed(
-                $proposal_id,
-                'RAOS_CODEX_APPROVAL_LEASE_INVALID'
-            );
-            return $authorization;
+        $operation_lock = self::acquire_operation_lock($proposal_id);
+        if (is_wp_error($operation_lock)) {
+            return $operation_lock;
         }
         try {
-            if ('CONTENT_RELEASE' === $claimed['kind']) {
-                $receipt = $this->apply_content($claimed);
-            } elseif (in_array($claimed['kind'], array('THEME_RELEASE', 'PLUGIN_CHANGE'), true)) {
-                $receipt = $this->apply_code($claimed);
-            } else {
-                $receipt = self::error('raos_codex_operation_kind_invalid', 409);
+            $row = RAOS_Codex_MCP_Store::get($proposal_id);
+            if (is_wp_error($row)) {
+                return $row;
             }
-        } catch (Throwable $error) {
-            unset($error);
-            $receipt = self::error('raos_codex_operation_failed', 500);
-        }
-        if (is_wp_error($receipt)) {
-            $code = strtoupper(str_replace('-', '_', $receipt->get_error_code()));
-            if (preg_match('/\A[A-Z0-9_]{3,96}\z/D', $code) !== 1) {
-                $code = 'OPERATION_FAILED';
+            if ('APPLIED' === $row['state'] && is_array($row['receipt'])) {
+                return $row['receipt'];
             }
-            RAOS_Codex_MCP_Store::mark_failed($proposal_id, $code);
+            $gate = self::apply_gate($row['kind']);
+            if (is_wp_error($gate)) {
+                return $gate;
+            }
+            $claimed = RAOS_Codex_MCP_Store::claim_apply($proposal_id);
+            if (is_wp_error($claimed)) {
+                return $claimed;
+            }
+            if ('APPLIED' === $claimed['state'] && is_array($claimed['receipt'])) {
+                return $claimed['receipt'];
+            }
+            $authorization = self::validate_approval_lease($claimed);
+            if (is_wp_error($authorization)) {
+                RAOS_Codex_MCP_Store::mark_failed(
+                    $proposal_id,
+                    'RAOS_CODEX_APPROVAL_LEASE_INVALID'
+                );
+                return $authorization;
+            }
+            try {
+                if ('CONTENT_RELEASE' === $claimed['kind']) {
+                    $receipt = $this->apply_content($claimed);
+                } elseif (in_array($claimed['kind'], array('THEME_RELEASE', 'PLUGIN_CHANGE'), true)) {
+                    $receipt = $this->apply_code($claimed);
+                } else {
+                    $receipt = self::error('raos_codex_operation_kind_invalid', 409);
+                }
+            } catch (Throwable $error) {
+                unset($error);
+                // A throwable can occur after the live mutation.  Keep the lease and
+                // APPLYING state so recovery can compare the authoritative readback.
+                $receipt = self::recoverable_error(
+                    'raos_codex_operation_recovery_required',
+                    500
+                );
+            }
+            if (is_wp_error($receipt) && ! self::error_requires_recovery($receipt)) {
+                $code = strtoupper(str_replace('-', '_', $receipt->get_error_code()));
+                if (preg_match('/\A[A-Z0-9_]{3,96}\z/D', $code) !== 1) {
+                    $code = 'OPERATION_FAILED';
+                }
+                RAOS_Codex_MCP_Store::mark_failed($proposal_id, $code);
+            }
+            return $receipt;
+        } finally {
+            self::release_operation_lock($operation_lock);
         }
-        return $receipt;
     }
 
     public function recover_operation(WP_REST_Request $request)
     {
         $operation_id = $request['operation_id'];
-        $row = RAOS_Codex_MCP_Store::get($operation_id);
-        if (is_wp_error($row)) {
-            return $row;
+        if (! RAOS_Codex_MCP_Store::is_sha256($operation_id)) {
+            return self::error('raos_codex_operation_id_invalid', 400);
         }
-        if ('APPLIED' === $row['state'] && is_array($row['receipt'])) {
-            return $row['receipt'];
+        $operation_lock = self::acquire_operation_lock($operation_id);
+        if (is_wp_error($operation_lock)) {
+            return $operation_lock;
         }
-        if ('APPLYING' !== $row['state']) {
-            return RAOS_Codex_MCP_Store::public_operation($row);
-        }
-        if ('CONTENT_RELEASE' === $row['kind']) {
-            $after = $row['payload']['after'];
-            $current = isset($after['id']) ? RAOS_Codex_MCP_Content::document((int) $after['id']) : null;
-            $current_hash = is_array($current) ? $current['content_sha256'] : null;
-            $target = null;
-        } else {
-            $code_package = isset($row['payload']['code_package'])
-                ? $row['payload']['code_package']
-                : null;
-            $target = is_array($code_package) ? self::target_path($code_package) : null;
-            $current_hash = is_string($target) && is_dir($target) ? self::tree_hash($target) : null;
-            if (is_wp_error($current_hash)) {
-                $current_hash = null;
+        try {
+            $row = RAOS_Codex_MCP_Store::get($operation_id);
+            if (is_wp_error($row)) {
+                return $row;
             }
-        }
-        if (is_string($current_hash) && hash_equals($row['after_sha256'], $current_hash)) {
-            return RAOS_Codex_MCP_Store::complete(
-                $row['proposal_id'],
-                'OPERATION_RECOVERED_AFTER_READBACK',
-                $row['before_sha256'],
-                $current_hash
-            );
-        }
-        if ((is_null($row['before_sha256']) && is_null($current_hash))
-            || (is_string($current_hash)
-                && is_string($row['before_sha256'])
-                && hash_equals($row['before_sha256'], $current_hash))) {
-            RAOS_Codex_MCP_Store::mark_failed(
-                $row['proposal_id'],
-                'OPERATION_RECOVERED_AT_BEFORE_STATE'
-            );
-            $updated = RAOS_Codex_MCP_Store::get($row['proposal_id']);
-            return is_wp_error($updated)
-                ? $updated
-                : RAOS_Codex_MCP_Store::public_operation($updated);
-        }
-        $gate = self::apply_gate($row['kind']);
-        if (is_wp_error($gate)) {
-            return $gate;
-        }
-        $authorization = self::validate_approval_lease($row);
-        if (is_wp_error($authorization)) {
-            return $authorization;
-        }
-        if ('CONTENT_RELEASE' === $row['kind']
-            && isset($row['payload']['before'])
-            && is_array($row['payload']['before'])) {
-            $rollback = self::write_content_document($row['payload']['before']);
-            $readback = RAOS_Codex_MCP_Content::document(
-                (int) $row['payload']['before']['id']
-            );
-            if (! is_wp_error($rollback)
-                && is_array($readback)
-                && is_string($row['before_sha256'])
-                && hash_equals($row['before_sha256'], $readback['content_sha256'])) {
+            if ('APPLIED' === $row['state'] && is_array($row['receipt'])) {
+                return $row['receipt'];
+            }
+            if ('APPLYING' !== $row['state']) {
+                return RAOS_Codex_MCP_Store::public_operation($row);
+            }
+            $grace = RAOS_Codex_MCP_Store::recovery_grace_elapsed($row);
+            if (is_wp_error($grace)) {
+                return $grace;
+            }
+            $current_read_error = false;
+            $target_exists = false;
+            if ('CONTENT_RELEASE' === $row['kind']) {
+                $after = isset($row['payload']['after']) && is_array($row['payload']['after'])
+                    ? $row['payload']['after']
+                    : null;
+                $current = is_array($after) && isset($after['id'])
+                    ? RAOS_Codex_MCP_Content::document((int) $after['id'])
+                    : null;
+                $current_read_error = ! is_array($current);
+                $current_hash = is_array($current) && isset($current['content_sha256'])
+                    ? $current['content_sha256']
+                    : null;
+                $target = null;
+            } else {
+                $code_package = isset($row['payload']['code_package'])
+                    ? $row['payload']['code_package']
+                    : null;
+                $target = is_array($code_package) ? self::target_path($code_package) : null;
+                $target_exists = is_string($target) && file_exists($target);
+                $current_hash = is_string($target) && is_dir($target)
+                    ? self::tree_hash($target)
+                    : null;
+                if (is_wp_error($current_hash)) {
+                    $current_read_error = true;
+                    $current_hash = null;
+                }
+            }
+            if (is_string($current_hash)
+                && is_string($row['after_sha256'])
+                && hash_equals($row['after_sha256'], $current_hash)) {
+                return RAOS_Codex_MCP_Store::complete(
+                    $row['proposal_id'],
+                    'OPERATION_RECOVERED_AFTER_READBACK',
+                    $row['before_sha256'],
+                    $current_hash
+                );
+            }
+            if (! $current_read_error
+                && ((is_null($row['before_sha256']) && is_null($current_hash) && ! $target_exists)
+                    || (is_string($current_hash)
+                        && is_string($row['before_sha256'])
+                        && hash_equals($row['before_sha256'], $current_hash)))) {
                 RAOS_Codex_MCP_Store::mark_failed(
                     $row['proposal_id'],
-                    'OPERATION_RECOVERED_BY_CONTENT_ROLLBACK'
+                    'OPERATION_RECOVERED_AT_BEFORE_STATE'
                 );
                 $updated = RAOS_Codex_MCP_Store::get($row['proposal_id']);
                 return is_wp_error($updated)
                     ? $updated
                     : RAOS_Codex_MCP_Store::public_operation($updated);
             }
-        }
-        if (is_string($target)
-            && ! file_exists($target)
-            && is_string($row['before_sha256'])) {
-            $private = self::private_directory();
-            $backup = is_wp_error($private)
-                ? null
-                : $private . '/operation-' . $row['proposal_id'] . '/before';
-            $backup_hash = is_string($backup) && is_dir($backup)
-                ? self::tree_hash($backup)
-                : null;
-            if (is_string($backup_hash)
-                && hash_equals($row['before_sha256'], $backup_hash)
-                && @rename($backup, $target)) {
-                $restored = self::tree_hash($target);
-                if (is_string($restored)
-                    && hash_equals($row['before_sha256'], $restored)) {
+
+            // An unknown content hash may be a later human/third-party edit.  It
+            // must never be overwritten with the proposal's before document.
+            if ('CONTENT_RELEASE' === $row['kind']) {
+                return self::error(
+                    $current_read_error
+                        ? 'raos_codex_recovery_readback_failed'
+                        : 'raos_codex_recovery_content_drift',
+                    409
+                );
+            }
+
+            // Code recovery is automatically safe only when the target is absent
+            // and the exact before tree is still held in the private backup.
+            if (is_string($target)
+                && ! $target_exists
+                && ! $current_read_error
+                && is_string($row['before_sha256'])) {
+                $gate = self::apply_gate($row['kind']);
+                if (is_wp_error($gate)) {
+                    return $gate;
+                }
+                $authorization = self::validate_approval_lease($row);
+                if (is_wp_error($authorization)) {
+                    return $authorization;
+                }
+                $private = self::private_directory();
+                $backup = is_wp_error($private)
+                    ? null
+                    : $private . '/operation-' . $row['proposal_id'] . '/before';
+                $restored = is_string($backup)
+                    ? self::restore_code_before(
+                        $target,
+                        $backup,
+                        $row['before_sha256'],
+                        $row['after_sha256']
+                    )
+                    : self::recoverable_error('raos_codex_code_rollback_indeterminate', 409);
+                if (true === $restored) {
                     RAOS_Codex_MCP_Store::mark_failed(
                         $row['proposal_id'],
                         'OPERATION_RECOVERED_BY_CODE_ROLLBACK'
@@ -332,9 +404,20 @@ final class RAOS_Codex_MCP_Deployment
                         ? $updated
                         : RAOS_Codex_MCP_Store::public_operation($updated);
                 }
+                return $restored;
             }
+
+            // A present tree with neither immutable hash is drift.  Do not delete
+            // or replace it, and retain the backup and approval lease for review.
+            return self::error(
+                $current_read_error
+                    ? 'raos_codex_recovery_readback_failed'
+                    : 'raos_codex_recovery_code_drift',
+                409
+            );
+        } finally {
+            self::release_operation_lock($operation_lock);
         }
-        return self::error('raos_codex_recovery_indeterminate', 409);
     }
 
     private function apply_content($row)
@@ -363,21 +446,45 @@ final class RAOS_Codex_MCP_Deployment
         }
         $write = self::write_content_document($after);
         if (is_wp_error($write)) {
-            self::write_content_document($before);
-            return $write;
+            $rollback = self::rollback_content_document($before, $row['before_sha256']);
+            return true === $rollback ? $write : $rollback;
         }
         $readback = RAOS_Codex_MCP_Content::document((int) $after['id']);
         if (is_wp_error($readback)
             || ! hash_equals($row['after_sha256'], $readback['content_sha256'])) {
-            self::write_content_document($before);
-            return self::error('raos_codex_content_readback_failed', 500);
+            $rollback = self::rollback_content_document($before, $row['before_sha256']);
+            return true === $rollback
+                ? self::error('raos_codex_content_readback_failed', 500)
+                : $rollback;
         }
-        return RAOS_Codex_MCP_Store::complete(
+        $receipt = RAOS_Codex_MCP_Store::complete(
             $row['proposal_id'],
             'CONTENT_RELEASE_APPLIED',
             $current['content_sha256'],
             $readback['content_sha256']
         );
+        return is_wp_error($receipt)
+            ? self::recoverable_from_error($receipt)
+            : $receipt;
+    }
+
+    private static function rollback_content_document($before, $before_sha256)
+    {
+        if (! is_array($before) || ! isset($before['id']) || ! is_string($before_sha256)) {
+            return self::recoverable_error('raos_codex_content_rollback_indeterminate', 500);
+        }
+        $rollback = self::write_content_document($before);
+        if (is_wp_error($rollback)) {
+            return self::recoverable_error('raos_codex_content_rollback_indeterminate', 500);
+        }
+        $readback = RAOS_Codex_MCP_Content::document((int) $before['id']);
+        if (! is_array($readback)
+            || ! isset($readback['content_sha256'])
+            || ! is_string($readback['content_sha256'])
+            || ! hash_equals($before_sha256, $readback['content_sha256'])) {
+            return self::recoverable_error('raos_codex_content_rollback_indeterminate', 500);
+        }
+        return true;
     }
 
     private static function write_content_document($document)
@@ -501,16 +608,21 @@ final class RAOS_Codex_MCP_Deployment
                 return $plugin_state;
             }
         }
-        if (is_dir($target) && ! @rename($target, $backup_root)) {
-            self::remove_tree($operation_root);
-            return self::error('raos_codex_backup_failed', 500);
-        }
-        if (! @rename($new_root, $target)) {
-            if (is_dir($backup_root)) {
-                @rename($backup_root, $target);
+        $installed = self::install_code_tree(
+            $new_root,
+            $target,
+            $backup_root,
+            $row['before_sha256'],
+            $row['after_sha256']
+        );
+        if (is_wp_error($installed)) {
+            // Once the old target has moved to the backup, never recursively
+            // clean the operation directory until an exact restoration is read
+            // back.  It may contain the only recoverable copy.
+            if (! self::error_requires_recovery($installed)) {
+                self::remove_tree($operation_root);
             }
-            self::remove_tree($operation_root);
-            return self::error('raos_codex_code_install_failed', 500);
+            return $installed;
         }
         $activation = true;
         if ('plugin' === $descriptor['kind']) {
@@ -525,22 +637,124 @@ final class RAOS_Codex_MCP_Deployment
         if (is_wp_error($activation)
             || is_wp_error($readback)
             || ! hash_equals($descriptor['file_manifest_sha256'], $readback)) {
-            self::remove_tree($target);
-            if (is_dir($backup_root)) {
-                @rename($backup_root, $target);
-            }
+            $rollback = self::restore_code_before(
+                $target,
+                $backup_root,
+                $row['before_sha256'],
+                $row['after_sha256']
+            );
+            $plugin_restored = true;
             if ('plugin' === $descriptor['kind'] && is_array($plugin_state)) {
-                self::restore_plugin_state($plugin_state);
+                $plugin_restored = self::restore_plugin_state($plugin_state);
             }
+            if (true !== $rollback || ! $plugin_restored) {
+                return self::recoverable_error('raos_codex_code_rollback_indeterminate', 500);
+            }
+            self::remove_tree($operation_root);
             return self::error('raos_codex_code_readback_failed', 500);
         }
         self::remove_tree($extract_root);
-        return RAOS_Codex_MCP_Store::complete(
+        $receipt = RAOS_Codex_MCP_Store::complete(
             $row['proposal_id'],
             'theme' === $descriptor['kind'] ? 'THEME_RELEASE_APPLIED' : 'PLUGIN_CHANGE_APPLIED',
             $current_hash,
             $readback
         );
+        return is_wp_error($receipt)
+            ? self::recoverable_from_error($receipt)
+            : $receipt;
+    }
+
+    /**
+     * Atomically install an extracted tree and verify rollback if installation
+     * fails after the old target has moved.  The optional mover is private test
+     * injection; production always uses rename(2).
+     */
+    private static function install_code_tree(
+        $new_root,
+        $target,
+        $backup_root,
+        $before_sha256,
+        $after_sha256,
+        $mover = null
+    ) {
+        $move = is_callable($mover)
+            ? $mover
+            : static function ($source, $destination) {
+                return @rename($source, $destination);
+            };
+        if (is_dir($target) && ! $move($target, $backup_root)) {
+            return self::error('raos_codex_backup_failed', 500);
+        }
+        if ($move($new_root, $target)) {
+            return true;
+        }
+        $restored = self::restore_code_before(
+            $target,
+            $backup_root,
+            $before_sha256,
+            $after_sha256,
+            $move
+        );
+        return true === $restored
+            ? self::error('raos_codex_code_install_failed', 500)
+            : self::recoverable_error('raos_codex_code_install_rollback_indeterminate', 500);
+    }
+
+    /**
+     * Restore the immutable before tree without overwriting an unknown target.
+     * A non-null after hash authorizes removal only of the exact installed tree.
+     */
+    private static function restore_code_before(
+        $target,
+        $backup_root,
+        $before_sha256,
+        $after_sha256,
+        $mover = null
+    ) {
+        $move = is_callable($mover)
+            ? $mover
+            : static function ($source, $destination) {
+                return @rename($source, $destination);
+            };
+        if (! is_string($target)
+            || ! is_string($backup_root)
+            || (! is_null($before_sha256)
+                && ! RAOS_Codex_MCP_Store::is_sha256($before_sha256))
+            || (! is_null($after_sha256)
+                && ! RAOS_Codex_MCP_Store::is_sha256($after_sha256))) {
+            return self::recoverable_error('raos_codex_code_rollback_indeterminate', 500);
+        }
+
+        if (file_exists($target)) {
+            $current_hash = is_dir($target) ? self::tree_hash($target) : null;
+            // Never delete a third state.  It can be a human or another system's
+            // later edit, even while this proposal remains APPLYING.
+            if (! is_string($current_hash)
+                || ! is_string($after_sha256)
+                || ! hash_equals($after_sha256, $current_hash)
+                || ! self::remove_tree($target)
+                || file_exists($target)) {
+                return self::recoverable_error('raos_codex_code_rollback_indeterminate', 500);
+            }
+        }
+
+        if (is_null($before_sha256)) {
+            return file_exists($target) || file_exists($backup_root)
+                ? self::recoverable_error('raos_codex_code_rollback_indeterminate', 500)
+                : true;
+        }
+        $backup_hash = is_dir($backup_root) ? self::tree_hash($backup_root) : null;
+        if (! is_string($backup_hash)
+            || ! hash_equals($before_sha256, $backup_hash)
+            || file_exists($target)
+            || ! $move($backup_root, $target)) {
+            return self::recoverable_error('raos_codex_code_rollback_indeterminate', 500);
+        }
+        $restored_hash = is_dir($target) ? self::tree_hash($target) : null;
+        return is_string($restored_hash) && hash_equals($before_sha256, $restored_hash)
+            ? true
+            : self::recoverable_error('raos_codex_code_rollback_indeterminate', 500);
     }
 
     private static function validate_code_package($descriptor, $package, $expected_kind)
@@ -1016,14 +1230,23 @@ final class RAOS_Codex_MCP_Deployment
     {
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
         if (! is_array($state)) {
-            return;
+            return false;
         }
         if (! empty($state['new_file'])) {
             deactivate_plugins($state['new_file'], true, false);
         }
         if (! empty($state['old_active']) && is_string($state['old_file'])) {
-            activate_plugin($state['old_file'], '', false, true);
+            $activation = activate_plugin($state['old_file'], '', false, true);
+            if (is_wp_error($activation)) {
+                return false;
+            }
         }
+        $new_active = ! empty($state['new_file']) && is_plugin_active($state['new_file']);
+        $old_active = is_string($state['old_file']) && is_plugin_active($state['old_file']);
+        if (! empty($state['old_active'])) {
+            return $old_active;
+        }
+        return ! $new_active && ! $old_active;
     }
 
     public static function private_directory()
@@ -1184,6 +1407,64 @@ final class RAOS_Codex_MCP_Deployment
         return ! is_link($path) && is_file($path) && @unlink($path);
     }
 
+    private static function acquire_operation_lock($proposal_id)
+    {
+        if (! RAOS_Codex_MCP_Store::is_sha256($proposal_id)) {
+            return self::error('raos_codex_operation_id_invalid', 400);
+        }
+        $private = self::private_directory();
+        if (is_wp_error($private)) {
+            return $private;
+        }
+        $path = $private . '/operation-lock-' . $proposal_id . '.lock';
+        $previous_umask = umask(0077);
+        $handle = @fopen($path, 'x+b');
+        umask($previous_umask);
+        if (false !== $handle) {
+            @chmod($path, 0600);
+        } else {
+            if (is_link($path) || ! is_file($path)) {
+                return self::error('raos_codex_operation_lock_insecure', 503);
+            }
+            $handle = @fopen($path, 'r+b');
+        }
+        if (false === $handle) {
+            return self::error('raos_codex_operation_lock_unavailable', 503);
+        }
+        $path_metadata = @lstat($path);
+        $handle_metadata = @fstat($handle);
+        $private_metadata = @stat($private);
+        $real = realpath($path);
+        if (! is_array($path_metadata)
+            || ! is_array($handle_metadata)
+            || ! is_array($private_metadata)
+            || ! is_string($real)
+            || ! hash_equals($path, $real)
+            || 0100000 !== ((int) $handle_metadata['mode'] & 0170000)
+            || 0600 !== ((int) $handle_metadata['mode'] & 0777)
+            || 1 !== (int) $handle_metadata['nlink']
+            || (int) $handle_metadata['uid'] !== (int) $private_metadata['uid']
+            || (int) $path_metadata['dev'] !== (int) $handle_metadata['dev']
+            || (int) $path_metadata['ino'] !== (int) $handle_metadata['ino']) {
+            fclose($handle);
+            return self::error('raos_codex_operation_lock_insecure', 503);
+        }
+        if (! @flock($handle, LOCK_EX | LOCK_NB)) {
+            fclose($handle);
+            return self::error('raos_codex_operation_in_flight', 409);
+        }
+        return $handle;
+    }
+
+    private static function release_operation_lock($handle)
+    {
+        if (! is_resource($handle)) {
+            return;
+        }
+        @flock($handle, LOCK_UN);
+        fclose($handle);
+    }
+
     private static function approval_lease_path($proposal_id)
     {
         if (! RAOS_Codex_MCP_Store::is_sha256($proposal_id)) {
@@ -1239,6 +1520,17 @@ final class RAOS_Codex_MCP_Deployment
         sort($actual, SORT_STRING);
         sort($expected, SORT_STRING);
         return $actual === $expected;
+    }
+
+    private static function has_only_keys($value, $required, $optional)
+    {
+        if (! is_array($value) || ! is_array($required) || ! is_array($optional)) {
+            return false;
+        }
+        $actual = array_keys($value);
+        $allowed = array_merge($required, $optional);
+        return empty(array_diff($required, $actual))
+            && empty(array_diff($actual, $allowed));
     }
 
     private static function write_exclusive_file($path, $payload)
@@ -1352,5 +1644,39 @@ final class RAOS_Codex_MCP_Deployment
     private static function error($code, $status)
     {
         return new WP_Error($code, 'The bounded deployment operation was refused.', array('status' => $status));
+    }
+
+    private static function recoverable_error($code, $status)
+    {
+        return new WP_Error(
+            $code,
+            'The bounded deployment operation requires recovery.',
+            array('status' => $status, 'recovery_required' => true)
+        );
+    }
+
+    private static function recoverable_from_error($error)
+    {
+        if (! is_wp_error($error)) {
+            return self::recoverable_error('raos_codex_operation_recovery_required', 500);
+        }
+        $data = $error->get_error_data();
+        if (! is_array($data)) {
+            $data = array('status' => 500);
+        }
+        if (! isset($data['status']) || ! is_int($data['status'])) {
+            $data['status'] = 500;
+        }
+        $data['recovery_required'] = true;
+        return new WP_Error($error->get_error_code(), $error->get_error_message(), $data);
+    }
+
+    private static function error_requires_recovery($error)
+    {
+        if (! is_wp_error($error)) {
+            return false;
+        }
+        $data = $error->get_error_data();
+        return is_array($data) && true === ($data['recovery_required'] ?? false);
     }
 }

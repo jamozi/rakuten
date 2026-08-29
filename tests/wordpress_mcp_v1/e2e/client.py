@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -28,6 +29,7 @@ EXPECTED_TOOLS = {
     "raos-codex-content-create-draft",
     "raos-codex-content-update-draft",
     "raos-codex-content-propose-release",
+    "raos-codex-publication-batch-register",
     "raos-codex-operation-get",
 }
 
@@ -267,6 +269,24 @@ def operator_request(
     return value
 
 
+def operator_operation(
+    base_url: str,
+    username: str,
+    password: str,
+    operation_id: str,
+) -> dict[str, object]:
+    _, body, _ = request(
+        base_url + f"/operations/{operation_id}",
+        username,
+        password,
+    )
+    value = json.loads(body)
+    assert isinstance(value, dict), value
+    assert set(value) == {"kind", "operation"}
+    assert isinstance(value["operation"], dict), value
+    return value
+
+
 def assert_route_confinement(
     site_url: str,
     editor: tuple[str, str],
@@ -305,7 +325,7 @@ def phase_propose(
 ) -> None:
     mcp = McpClient(site_url + "/wp-json/raos-codex-mcp/v1/editor", *editor)
     initialized = mcp.initialize()
-    assert initialized["serverInfo"]["version"] == "1.1.0"
+    assert initialized["serverInfo"]["version"] == "1.2.0"
     tools = mcp.tools()
     assert set(tools) == EXPECTED_TOOLS
     for tool in tools.values():
@@ -366,17 +386,28 @@ def phase_propose(
             f"<p>Approved {post_type} release</p>"
             "<!-- /wp:paragraph -->"
         )
+        proposal_input = {
+            "id": replaced["id"],
+            "precondition": precondition(replaced),
+            "document": release,
+            "idempotency_key": hashlib.sha256(
+                f"raos-e2e-content-release-{post_type}".encode("ascii")
+            ).hexdigest(),
+        }
         proposal = mcp.call(
             "raos-codex-content-propose-release",
-            {
-                "id": replaced["id"],
-                "precondition": precondition(replaced),
-                "document": release,
-            },
+            proposal_input,
+        )
+        assert proposal["idempotency_key"] == proposal_input["idempotency_key"]
+        assert (
+            mcp.call("raos-codex-content-propose-release", proposal_input) == proposal
         )
         readback = mcp.call("raos-codex-content-get", {"id": replaced["id"]})
         assert readback["status"] == "draft"
         assert readback["content_sha256"] == replaced["content_sha256"]
+        watched = operator_operation(deploy_base, *operator, proposal["proposal_id"])
+        assert watched["kind"] == "CONTENT_RELEASE"
+        assert watched["operation"]["state"] == "PENDING"
         proposals.append(
             {
                 "proposal_id": proposal["proposal_id"],
@@ -433,16 +464,32 @@ def phase_propose(
         ("plugin_rollback", "raos_codex_code_readback_failed", True),
     )
     for name, result_code, should_fail in expected:
+        proposal_input = dict(artifacts[name])
+        if name == "theme":
+            proposal_input["idempotency_key"] = "9" * 64
         created = operator_request(
             deploy_base,
             *operator,
             "/proposals",
-            value=artifacts[name],
+            value=proposal_input,
         )
+        if name == "theme":
+            assert (
+                operator_request(
+                    deploy_base,
+                    *operator,
+                    "/proposals",
+                    value=proposal_input,
+                )
+                == created
+            )
         operation = created["operation"]
         proposal = created["proposal"]
         assert operation["state"] == "PENDING"
         assert proposal["proposal_id"] == operation["proposal_id"]
+        watched = operator_operation(deploy_base, *operator, proposal["proposal_id"])
+        assert watched["kind"] in {"THEME_RELEASE", "PLUGIN_CHANGE"}
+        assert watched["operation"] == operation
         code_proposals.append(
             {
                 "name": name,
@@ -452,10 +499,27 @@ def phase_propose(
                 "should_fail": should_fail,
             }
         )
+    theme_id = next(
+        item["proposal_id"] for item in code_proposals if item["name"] == "theme"
+    )
+    publication_ids = sorted(
+        [item["proposal_id"] for item in proposals]
+        + [drift_proposal["proposal_id"], theme_id]
+    )
+    batch_input = {"proposal_ids": publication_ids}
+    publication_batch = mcp.call("raos-codex-publication-batch-register", batch_input)
+    assert publication_batch["proposal_ids"] == publication_ids
+    assert publication_batch["proposal_count"] == len(publication_ids)
+    assert re.fullmatch(r"[0-9a-f]{64}", publication_batch["batch_token"])
+    assert (
+        mcp.call("raos-codex-publication-batch-register", batch_input)
+        == publication_batch
+    )
     state = {
         "schema": "RAOS_WORDPRESS_E2E_STATE_V1",
         "proposals": proposals,
         "code_proposals": code_proposals,
+        "publication_batch": publication_batch,
         "drift": {
             "proposal_id": drift_proposal["proposal_id"],
             "post_id": drift["id"],

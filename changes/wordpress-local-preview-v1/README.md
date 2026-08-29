@@ -33,6 +33,39 @@ publication proposal. The required sequence is:
    proposal, precondition, and kill-switch requirements. A local pass is not
    production approval.
 
+For the tracked article set, the complete sequence is available as one
+foreground command:
+
+```sh
+make wordpress-production-request
+make wordpress-production-request ARTICLES=roomba-mini-vs-switchbot-k11-pro
+make wordpress-production-request ARTICLES=carry-on-suitcase-under-100-seats,solota-vs-rakua-mini-plus
+```
+
+`ARTICLES` defaults to `all` and otherwise accepts only an exact,
+comma-separated set of production slugs registered in
+`production-mapping.v1.json`. The command always runs preview `up`, `sync`, and
+`check` before it reads the editor credential or makes any live call. It then
+uses only the exact project MCP editor endpoint to reuse an identical draft,
+CAS-update a draft previously written by this workflow, or create a missing
+draft. An unknown draft difference, duplicate slug, or already-published slug
+stops the request.
+
+After draft readback, the command creates idempotent content proposals and,
+when the exact tracked and deployed child-theme tree hashes differ, an
+idempotent theme proposal through the fixed `wordpressDeployment` MCP bridge.
+Open the printed wp-admin review URL, select the card whose token suffix and
+manifest-hash suffix match the printed values, and use the single batch
+approval. Keep the command running: it waits in the foreground and
+automatically applies the approved theme first and the selected articles
+second, then performs exact production readback. It never approves a proposal,
+changes a host gate, accepts a URL, or bypasses the global kill switch.
+
+Owner-private resumable receipts and the single-process lock are stored with
+mode `0600` below `.secrets/wordpress-mcp/publication-requests/`; that directory
+is mode `0700`. Re-running the same selection recovers response loss with the
+persisted idempotency keys and operation IDs. Do not edit these receipts.
+
 ## Prerequisite
 
 Install Docker Desktop for Windows, accept its terms, and enable WSL integration
@@ -82,6 +115,11 @@ make wordpress-preview-password
 
 The command requires an interactive terminal and prompts through WP-CLI. The
 login user is `raos-local-admin`.
+
+The seed rejects any title, excerpt, or article body that would be changed by
+the same `wp_strip_all_tags` / `wp_kses_post` checks used by the production MCP
+writer. This validation runs during the mandatory sync before production is
+contacted.
 
 To overwrite the five preview posts and two fixed pages with the tracked
 fixture, run:

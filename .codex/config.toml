@@ -26,6 +26,7 @@ enabled_tools = [
   "raos-codex-content-create-draft",
   "raos-codex-content-update-draft",
   "raos-codex-content-propose-release",
+  "raos-codex-publication-batch-register",
   "raos-codex-operation-get",
 ]
 
@@ -42,6 +43,8 @@ cwd = "/home/minami/rakuten"
 enabled = true
 default_tools_approval_mode = "prompt"
 enabled_tools = [
+  "deployment-status",
+  "release-wait-and-apply",
   "content-apply-release",
   "theme-propose-release",
   "theme-apply-release",

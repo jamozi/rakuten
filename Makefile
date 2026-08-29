@@ -9,7 +9,7 @@ BASE_ARGUMENT := $(if $(strip $(BASE)),--base $(BASE),)
 	status-v2 test-parallel test-serial contracts database storage \
 	wordpress-preview-up wordpress-preview-status wordpress-preview-sync \
 	wordpress-preview-password wordpress-preview-check wordpress-preview-down \
-	wordpress-preview-reset
+	wordpress-preview-reset wordpress-production-request
 
 WORDPRESS_PREVIEW := changes/wordpress-local-preview-v1/bin/wordpress_preview.sh
 
@@ -41,6 +41,7 @@ final-static:
 	$(NPM) run lint
 	$(NPM) run typecheck
 	$(NPM) run pyright
+	$(MAKE) -C changes/wordpress-mcp-v1 manifest-check
 
 final-secrets:
 	$(PYTHON) -I scripts/scan_secrets.py --worktree \
@@ -90,6 +91,9 @@ wordpress-preview-down:
 wordpress-preview-reset:
 	CONFIRM="$(CONFIRM)" RAOS_WORDPRESS_PREVIEW_DOCKER_BIN="$(DOCKER)" \
 		$(WORDPRESS_PREVIEW) reset
+
+wordpress-production-request:
+	$(PYTHON) scripts/raos_wordpress_publication_request.py
 
 final: final-lock final-static final-secrets status-v2
 	TMPDIR=/tmp $(PYTHON) scripts/raos_build.py final
