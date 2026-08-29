@@ -97,6 +97,15 @@ final class RAOS_Codex_MCP_Deployment
             && is_string(constant('KURASHINOSHIRUBE_THEME_VERSION'))
                 ? constant('KURASHINOSHIRUBE_THEME_VERSION')
                 : null;
+        $theme_runtime_revision = $theme_active
+            && defined('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')
+            && is_string(constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION'))
+            && preg_match(
+                '/\A[0-9a-f]{64}\z/D',
+                constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')
+            ) === 1
+                ? constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')
+                : null;
         $private_ready = ! is_wp_error(self::private_directory());
         $apply_ready = self::gate('RAOS_OPERATOR_WRITES_ENABLED') && $private_ready;
         $theme_hash = $theme->exists() ? self::active_theme_tree_sha256() : null;
@@ -112,6 +121,7 @@ final class RAOS_Codex_MCP_Deployment
                 'slug' => self::THEME_SLUG,
                 'version' => $theme->exists() ? (string) $theme->get('Version') : null,
                 'runtime_version' => $theme_runtime_version,
+                'runtime_revision' => $theme_runtime_revision,
                 'active' => $theme_active,
                 'tree_sha256' => $theme_hash,
             ),
