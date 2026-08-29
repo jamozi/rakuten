@@ -28,6 +28,48 @@ INPUT_IDENTITIES_PATH: Final = Path(
 PARSER_BOUNDARY_PATH: Final = Path(
     "changes/editorial-portfolio-v3/rakuten-parser-boundary.v1.json"
 )
+ARTICLE_CONTENT_PATHS: Final = (
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "carry-on-suitcase-comparison.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "portable-power-station-guide.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "anker-solix-c300-c800-c1000-differences.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "countertop-dishwasher-for-small-households.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "compact-robot-vacuum-shortlist.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "carry-on-suitcase-under-100-seats.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "lightweight-carry-on-suitcase-under-3kg.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "front-open-carry-on-suitcase-with-stopper.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "roomba-mini-vs-switchbot-k11-pro.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "solota-vs-rakua-mini-plus.html"
+    ),
+)
 OUTPUT_PATHS: Final = (
     Path("changes/editorial-portfolio-v3/editorial-portfolio.v3.json"),
     Path("changes/editorial-portfolio-v3/generated/navigation.v3.json"),
@@ -90,7 +132,11 @@ def _positive_integer(value: object) -> int:
 
 def _content_sha256(reference: object) -> str:
     relative = Path(_text(reference))
-    if relative.is_absolute() or ".." in relative.parts:
+    if (
+        relative.is_absolute()
+        or ".." in relative.parts
+        or relative not in ARTICLE_CONTENT_PATHS
+    ):
         _fail("RAOS_EDITORIAL_V3_CONTENT_REF_INVALID")
     try:
         content = (REPOSITORY_ROOT / relative).read_bytes()
