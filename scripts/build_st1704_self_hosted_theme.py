@@ -19,7 +19,7 @@ from xml.etree import ElementTree
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 THEME_SLUG: Final = "kurashinoshirube-child"
-THEME_VERSION: Final = "1.3.7"
+THEME_VERSION: Final = "1.3.8"
 THEME_ROOT: Final = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme" / THEME_SLUG
 )
@@ -62,6 +62,7 @@ PUBLIC_LISTING_ELIGIBILITY: Final = {
     "candidate_overflow_policy": "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS",
     "consumers": {
         "front_page_latest_posts": {
+            "additional_exclusion": "FIXED_FEATURED_POST_WHEN_ELIGIBLE",
             "filter": "query_loop_block_query_vars",
             "merge_target": "post__not_in",
         },
@@ -267,10 +268,7 @@ def validate_sources() -> dict[str, str]:
         _fail()
     front_page = _text("templates/front-page.html")
     single = _text("templates/single.html")
-    if (
-        "<span>暮らしの道具を、</span><span>根拠から選ぶ。</span>"
-        not in front_page
-    ):
+    if "暮らしの選択に、<br>たしかな道しるべを。" not in front_page:
         _fail()
     if single.count("wp:post-title") != 1:
         _fail()
@@ -411,6 +409,13 @@ def validate_sources() -> dict[str, str]:
         or homepage_json_match.group(1).encode("utf-8") != homepage_bytes
         or homepage_hash_match.group(1) != homepage["config_sha256"]
     ):
+        _fail()
+    if contract.get("homepage_featured") != {
+        "article_id": "st1704-portable-power-station-guide",
+        "exclude_from_latest": True,
+        "local_preview_substitute": "LATEST_SYNTHETIC_POST_LAYOUT_ONLY",
+        "selection": "FIXED_ARTICLE_ID_WITH_PUBLISHED_BOUND_SNAPSHOT",
+    }:
         _fail()
     assets = _json("raos-assets.v1.json")
     if (
