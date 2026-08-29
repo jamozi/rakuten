@@ -61,7 +61,7 @@ Review URL appears on the home page or in the Yoast post sitemap. Post ID 19 rem
 unchanged until its separate AT-003 snapshot update. Any mismatch stops later
 publication; it does not authorize an automated retry or a broader WordPress write.
 
-Child theme 1.3.7 independently excludes every temporary Review slug and every
+Child theme 1.3.8 independently excludes every temporary Review slug and every
 allowlisted final slug without an exact bound public snapshot from both the Yoast
 post sitemap and the front-page latest-guides Query block. This is defense in depth,
 not authority to perform the human containment action.
@@ -278,7 +278,7 @@ recover and verify do not rebuild the confirmed request from current provider fi
    must be `summary_large_image`, and the default social image must be the verified
    1600×900 theme asset with an empty attachment ID. These are persisted human
    settings, not values written by the theme.
-3. A human WordPress administrator installs and activates the generated child-theme 1.3.7
+3. A human WordPress administrator installs and activates the generated child-theme 1.3.8
    package only after reviewing its exact hash. No repository command activates
    either component.
 4. Start a fresh WordPress request and require the Site Health test

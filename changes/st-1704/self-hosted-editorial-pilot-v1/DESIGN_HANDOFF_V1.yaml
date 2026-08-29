@@ -19,7 +19,7 @@ DESIGN_HANDOFF_V1:
       exact_origin: https://kurashinoshirube.com
       cms: SELF_HOSTED_WORDPRESS
       hosting_migration: DISABLED
-      child_theme_version: 1.3.7
+      child_theme_version: 1.3.8
     editorial:
       article_slots: 5
       existing_article_counts_as_slot_one: true
@@ -37,6 +37,17 @@ DESIGN_HANDOFF_V1:
       official_source_comparison_only: true
       fabricated_first_hand_experience: FORBIDDEN
       recommendation_inputs_exclude_finance: true
+    homepage:
+      design_direction: EDITORIAL_COMPASS_VARIANT_A
+      featured_article_id: st1704-portable-power-station-guide
+      latest_article_count: 4
+      latest_excludes_featured: true
+      purpose_routes:
+        移動: "#cluster-mobility"
+        家事: "#cluster-home"
+        備え: "#cluster-ready"
+      theme_labels_are_wordpress_taxonomy: false
+      javascript_dependency_added: false
     affiliate:
       provider: RAKUTEN
       destination: DIRECT_ONLY
@@ -64,7 +75,7 @@ DESIGN_HANDOFF_V1:
       yoast_schema: DISABLED
       yoast_headless_rest: DISABLED
       ineligible_pilot_sitemap_policy: EXCLUDE_REVIEW_SLUG_AND_UNBOUND_FINAL_SLUG_BY_POST_ID
-      ineligible_pilot_home_query_policy: FRONT_PAGE_ONLY_EXCLUDE_SAME_POST_IDS
+      ineligible_pilot_home_query_policy: FRONT_PAGE_ONLY_EXCLUDE_SAME_POST_IDS_AND_FIXED_FEATURED
       raos_jsonld_types:
         - Article
         - BreadcrumbList

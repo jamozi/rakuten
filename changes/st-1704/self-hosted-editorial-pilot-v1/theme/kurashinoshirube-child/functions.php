@@ -12,7 +12,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.3.7';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.3.8';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
@@ -21,6 +21,7 @@ const KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_PATH = 'assets/images/article-portabl
 const KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_SHA256 = '703444cdf29740bb72de42d09c7c7222a3ee46a09bcaf4f78875df9131cc56d6';
 const KURASHINOSHIRUBE_BRAND_MARK_PATH = 'assets/images/brand-mark.svg';
 const KURASHINOSHIRUBE_BRAND_MARK_SHA256 = 'bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3';
+const KURASHINOSHIRUBE_HOMEPAGE_FEATURED_ARTICLE_ID = 'st1704-portable-power-station-guide';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ARTICLE_ID = 'st1703-first-suitcase-comparison';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ACTION = 'kurashinoshirube_apply_at003_review_v1';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1';
@@ -1624,6 +1625,9 @@ function kurashinoshirube_editorial_v2_section_map(): array
 /** Add the page-level style hook only for exact Editorial V2 post markup. */
 function kurashinoshirube_editorial_v2_body_class(array $classes): array
 {
+    if (is_front_page()) {
+        $classes[] = 'raos-home-v2-page';
+    }
     if (kurashinoshirube_is_editorial_v2_post()) {
         $classes[] = 'raos-editorial-v2-page';
     }
@@ -1858,10 +1862,105 @@ add_shortcode(
     'kurashinoshirube_render_related_guides'
 );
 
+/** Return true only inside the repository-owned, network-isolated preview. */
+function kurashinoshirube_is_local_preview(): bool
+{
+    return defined('RAOS_LOCAL_PREVIEW')
+        && RAOS_LOCAL_PREVIEW === true
+        && function_exists('wp_get_environment_type')
+        && wp_get_environment_type() === 'local'
+        && home_url('/') === 'http://127.0.0.1:8888/'
+        && site_url('/') === 'http://127.0.0.1:8888/';
+}
+
 /**
- * Render one explicitly ordered public guide without implying popularity.
- * The first eligible pilot article in the fixed editorial order wins.
+ * Resolve the fixed featured article without widening production eligibility.
+ * The isolated local preview may substitute one synthetic post for layout checks.
  */
+function kurashinoshirube_homepage_featured_post(): ?WP_Post
+{
+    static $resolved = false;
+    static $cached = null;
+    if ($resolved) {
+        return $cached instanceof WP_Post ? $cached : null;
+    }
+    $resolved = true;
+    $article_id = KURASHINOSHIRUBE_HOMEPAGE_FEATURED_ARTICLE_ID;
+    $binding = kurashinoshirube_article_bindings()[$article_id] ?? null;
+    if (is_array($binding)) {
+        $slug = $binding['slug'];
+        $post = get_page_by_path($slug, OBJECT, 'post');
+        $snapshot = $post instanceof WP_Post
+            ? kurashinoshirube_bound_post_snapshot((int) $post->ID, false)
+            : null;
+        $expected_permalink = KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $slug . '/';
+        if (
+            $post instanceof WP_Post
+            && get_post_status($post) === 'publish'
+            && $snapshot !== null
+            && $snapshot['article_id'] === $article_id
+            && get_permalink($post) === $expected_permalink
+        ) {
+            $cached = $post;
+            return $post;
+        }
+    }
+    if (! kurashinoshirube_is_local_preview()) {
+        return null;
+    }
+    $ids = get_posts(
+        array(
+            'fields' => 'ids',
+            'numberposts' => 1,
+            'order' => 'DESC',
+            'orderby' => 'modified',
+            'post_status' => 'publish',
+            'post_type' => 'post',
+            'suppress_filters' => false,
+        )
+    );
+    if (! is_array($ids) || count($ids) !== 1 || (int) $ids[0] <= 0) {
+        return null;
+    }
+    $post = get_post((int) $ids[0]);
+    $slug = $post instanceof WP_Post
+        ? get_post_field('post_name', $post->ID, 'raw')
+        : null;
+    if (
+        ! ($post instanceof WP_Post)
+        || ! is_string($slug)
+        || preg_match('/\Alocal-preview-[a-z0-9-]+\z/D', $slug) !== 1
+    ) {
+        return null;
+    }
+    $cached = $post;
+    return $post;
+}
+
+/** Resolve a bounded reader-facing section label for a homepage post. */
+function kurashinoshirube_homepage_post_section(WP_Post $post): ?string
+{
+    foreach (kurashinoshirube_article_bindings() as $binding) {
+        if (($binding['slug'] ?? null) === $post->post_name) {
+            return $binding['section'];
+        }
+    }
+    if (! kurashinoshirube_is_local_preview()) {
+        return null;
+    }
+    $terms = wp_get_post_terms($post->ID, 'category', array('fields' => 'names'));
+    if (is_wp_error($terms) || ! is_array($terms)) {
+        return null;
+    }
+    foreach (array('移動', '家事') as $allowed) {
+        if (in_array($allowed, $terms, true)) {
+            return $allowed;
+        }
+    }
+    return null;
+}
+
+/** Render the fixed, public portable-power guide without implying popularity. */
 function kurashinoshirube_render_featured_guide($attributes, $content, $tag): string
 {
     if (
@@ -1872,82 +1971,104 @@ function kurashinoshirube_render_featured_guide($attributes, $content, $tag): st
     ) {
         return '';
     }
-    $configuration = kurashinoshirube_homepage_clusters();
-    if ($configuration === array()) {
+    $post = kurashinoshirube_homepage_featured_post();
+    if (! ($post instanceof WP_Post)) {
         return '';
     }
-    $featured = '';
-    foreach ($configuration['display_order'] as $cluster_id) {
-        $cluster = $configuration['clusters'][$cluster_id] ?? null;
-        if (! is_array($cluster) || ! is_array($cluster['post_order'] ?? null)) {
-            return '';
-        }
-        foreach ($cluster['post_order'] as $article_id) {
-            $binding = kurashinoshirube_article_bindings()[$article_id] ?? null;
-            if (! is_array($binding)) {
-                return '';
-            }
-            $slug = $binding['slug'];
-            $post = get_page_by_path($slug, OBJECT, 'post');
-            $snapshot = $post instanceof WP_Post
-                ? kurashinoshirube_bound_post_snapshot((int) $post->ID, false)
-                : null;
-            $expected_permalink = KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $slug . '/';
-            if (
-                ! ($post instanceof WP_Post)
-                || get_post_status($post) !== 'publish'
-                || $snapshot === null
-                || $snapshot['article_id'] !== $article_id
-                || get_permalink($post) !== $expected_permalink
-            ) {
-                continue;
-            }
-            $title = get_post_field('post_title', $post->ID, 'raw');
-            $excerpt = get_post_field('post_excerpt', $post->ID, 'raw');
-            $modified = get_post_modified_time('Y年n月j日', false, $post->ID);
-            if (
-                ! kurashinoshirube_is_clean_text($title, 1, 140)
-                || ! kurashinoshirube_is_clean_text($excerpt, 1, 300)
-                || ! is_string($modified)
-                || $modified === ''
-            ) {
-                continue;
-            }
-            $visual = '<span class="raos-guide-card__visual" aria-hidden="true"></span>';
-            if ($article_id === KURASHINOSHIRUBE_EXISTING_UPDATE_ARTICLE_ID) {
-                $image_uri = kurashinoshirube_verified_asset_uri(
-                    KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH,
-                    KURASHINOSHIRUBE_ARTICLE_IMAGE_SHA256
-                );
-                if ($image_uri !== null) {
-                    $visual = '<span class="raos-guide-card__visual '
-                        . 'raos-guide-card__visual--image"><img src="'
-                        . esc_url($image_uri) . '" alt="" width="1600" height="900" '
-                        . 'loading="lazy" decoding="async"></span>';
-                }
-            }
-            $featured = '<article class="raos-featured-guide">' . $visual
-                . '<div class="raos-featured-guide__body"><p class="raos-article-category">'
-                . esc_html($binding['section']) . '／比較ガイド</p><h3><a href="'
-                . esc_url($expected_permalink) . '">' . esc_html($title)
-                . '</a></h3><p>' . esc_html($excerpt) . '</p><p class="raos-guide-card__date">'
-                . '更新 ' . esc_html($modified) . '</p></div></article>';
-            break 2;
-        }
-    }
-    if ($featured === '') {
+    $title = get_post_field('post_title', $post->ID, 'raw');
+    $excerpt = get_post_field('post_excerpt', $post->ID, 'raw');
+    $modified = get_post_modified_time('Y.m.d', false, $post->ID);
+    $permalink = get_permalink($post);
+    $section = kurashinoshirube_homepage_post_section($post);
+    if (
+        ! kurashinoshirube_is_clean_text($title, 1, 140)
+        || ! kurashinoshirube_is_clean_text($excerpt, 1, 300)
+        || ! is_string($modified)
+        || $modified === ''
+        || ! is_string($permalink)
+        || $permalink === ''
+        || $section === null
+    ) {
         return '';
     }
-    return '<section class="raos-home-section raos-featured alignwide" '
-        . 'aria-labelledby="raos-featured-title"><div class="raos-section-heading">'
-        . '<p class="raos-kicker">EDITOR\'S PICK</p><h2 id="raos-featured-title">注目ガイド</h2>'
-        . '<p>閲覧数ではなく、編集部が最初に読んでほしい順で選びます。</p></div>'
-        . $featured . '</section>';
+    $criteria = $post->post_name === 'portable-power-station-guide'
+        ? '容量・出力・重量'
+        : '表示確認用fixture';
+    $read_label = $title . 'を読む';
+    return '<section id="featured" class="raos-featured raos-home-section alignwide" '
+        . 'aria-labelledby="raos-featured-title"><div class="raos-home-heading '
+        . 'raos-home-heading--split"><div><p class="raos-home-eyebrow">FEATURED GUIDE</p>'
+        . '<h2 id="raos-featured-title">今、読んでほしい選び方</h2></div>'
+        . '<p>人気順ではなく、いまの比較テーマを編集部が案内します。</p></div>'
+        . '<article class="raos-featured-guide"><figure class="raos-featured-guide__visual '
+        . 'raos-featured-guide__visual--power"><a href="' . esc_url($permalink)
+        . '"><span class="screen-reader-text">' . esc_html($read_label)
+        . '</span></a></figure>'
+        . '<div class="raos-featured-guide__body"><p class="raos-article-category">'
+        . esc_html($section) . 'テーマ／選び方ガイド</p><h3><a href="'
+        . esc_url($permalink) . '">' . esc_html($title) . '</a></h3><p>'
+        . esc_html($excerpt) . '</p><dl class="raos-featured-guide__facts"><div><dt>基準</dt><dd>'
+        . esc_html($criteria) . '</dd></div><div><dt>更新</dt><dd>'
+        . esc_html($modified) . '</dd></div></dl><p class="raos-featured-guide__action">'
+        . '<a class="raos-home-button raos-home-button--outline" href="'
+        . esc_url($permalink) . '">この記事を読む</a></p></div></article></section>';
 }
 add_shortcode(
     'kurashinoshirube_featured_guide',
     'kurashinoshirube_render_featured_guide'
 );
+
+/** Render only synthetic local posts from one allowed preview category. */
+function kurashinoshirube_local_preview_cluster_items(string $label): string
+{
+    if (
+        ! kurashinoshirube_is_local_preview()
+        || ! in_array($label, array('移動', '家事'), true)
+    ) {
+        return '';
+    }
+    $term = get_term_by('name', $label, 'category');
+    if (! ($term instanceof WP_Term) || (int) $term->term_id <= 0) {
+        return '';
+    }
+    $posts = get_posts(
+        array(
+            'category' => (int) $term->term_id,
+            'numberposts' => 5,
+            'order' => 'DESC',
+            'orderby' => 'modified',
+            'post_status' => 'publish',
+            'post_type' => 'post',
+            'suppress_filters' => false,
+        )
+    );
+    if (! is_array($posts)) {
+        return '';
+    }
+    $items = '';
+    foreach ($posts as $post) {
+        $title = $post instanceof WP_Post
+            ? get_post_field('post_title', $post->ID, 'raw')
+            : null;
+        $slug = $post instanceof WP_Post
+            ? get_post_field('post_name', $post->ID, 'raw')
+            : null;
+        $permalink = $post instanceof WP_Post ? get_permalink($post) : null;
+        if (
+            ! ($post instanceof WP_Post)
+            || ! kurashinoshirube_is_clean_text($title, 1, 140)
+            || ! is_string($slug)
+            || preg_match('/\Alocal-preview-[a-z0-9-]+\z/D', $slug) !== 1
+            || ! is_string($permalink)
+            || $permalink === ''
+        ) {
+            continue;
+        }
+        $items .= '<li><a href="' . esc_url($permalink) . '">'
+            . esc_html($title) . '<span aria-hidden="true">→</span></a></li>';
+    }
+    return $items;
+}
 
 /** Render clusters with links only for posts that are already public. */
 function kurashinoshirube_render_published_clusters($attributes, $content, $tag): string
@@ -1966,7 +2087,6 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
     }
     $clusters = $configuration['clusters'];
 
-    $navigation = '';
     $sections = '';
     foreach ($configuration['display_order'] as $id) {
         $cluster = $clusters[$id] ?? null;
@@ -1991,9 +2111,6 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
         if ($post_ids !== $ordered_post_ids) {
             return '';
         }
-        $navigation .= '<a class="raos-cluster-nav__card" href="#' . esc_attr($id)
-            . '"><strong>' . esc_html($cluster['label']) . '</strong><span>'
-            . esc_html($cluster['description']) . '</span></a>';
         $items = '';
         foreach ($cluster['post_order'] as $article_id) {
             $title = $cluster['posts'][$article_id] ?? null;
@@ -2017,10 +2134,15 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
                 continue;
             }
             $items .= '<li><a href="' . esc_url($expected_permalink) . '">'
-                . esc_html($title) . '</a></li>';
+                . esc_html($title) . '<span aria-hidden="true">→</span></a></li>';
+        }
+        if ($items === '') {
+            $items = kurashinoshirube_local_preview_cluster_items(
+                $cluster['label']
+            );
         }
         $cluster_body = $items === ''
-            ? '<p class="raos-empty-state">このカテゴリの記事は、根拠と公開条件の確認後に掲載します。</p>'
+            ? '<p class="raos-empty-state">このテーマの記事は、根拠と公開条件の確認後に掲載します。</p>'
             : '<ul>' . $items . '</ul>';
         $sections .= '<section id="' . esc_attr($id) . '" class="raos-cluster" '
             . 'aria-labelledby="' . esc_attr($id) . '-title">'
@@ -2035,14 +2157,11 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
     }
 
     return '<section class="raos-cluster-nav raos-home-section alignwide" '
-        . 'aria-labelledby="raos-cluster-nav-title"><div class="raos-section-heading">'
-        . '<p class="raos-kicker">CHOOSE BY NEED</p><h2 id="raos-cluster-nav-title">'
-        . '条件から選ぶ</h2><p>総合1位ではなく、いま困っていることから入口を選べます。</p></div>'
-        . '<nav class="raos-cluster-nav__grid" '
-        . 'aria-label="記事テーマ">' . $navigation . '</nav>'
-        . '<div class="raos-category-heading"><p class="raos-kicker">CATEGORIES</p>'
-        . '<h2>カテゴリから選ぶ</h2></div><div class="raos-clusters">'
-        . $sections . '</div></section>';
+        . 'aria-labelledby="raos-cluster-nav-title"><div class="raos-home-heading '
+        . 'raos-home-heading--split"><div><p class="raos-home-eyebrow">PURPOSE GUIDES</p>'
+        . '<h2 id="raos-cluster-nav-title">目的別の記事</h2></div>'
+        . '<p>総合1位ではなく、暮らしの条件に近いテーマから記事を選べます。</p>'
+        . '</div><div class="raos-clusters">' . $sections . '</div></section>';
 }
 add_shortcode(
     'kurashinoshirube_published_clusters',
@@ -2361,8 +2480,13 @@ function kurashinoshirube_filter_front_page_latest_query(
     ) {
         return $query;
     }
+    $requested_exclusions = $query['post__not_in'] ?? array();
+    $featured = kurashinoshirube_homepage_featured_post();
+    if ($featured instanceof WP_Post) {
+        $requested_exclusions[] = (int) $featured->ID;
+    }
     $excluded = kurashinoshirube_merge_public_listing_exclusions(
-        $query['post__not_in'] ?? array()
+        $requested_exclusions
     );
     if ($excluded === null) {
         $query['post__in'] = array(0);
