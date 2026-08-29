@@ -1,0 +1,43 @@
+{
+  "content_batch": {
+    "command": ".venv/bin/python scripts/raos_wordpress_publication_request.py --articles all",
+    "maximum_proposals": 14,
+    "members": {
+      "policy_pages": 3,
+      "posts": 10,
+      "theme_maximum": 1
+    },
+    "requires": [
+      "local_preview_passed_for_56_screenshots",
+      "measurement_plugin_apply_receipt_from_separate_admin",
+      "measurement_gate_remains_default_off"
+    ]
+  },
+  "measurement_gate": {
+    "default": false,
+    "enable_command_exposed": false,
+    "host_gate": "RAOS_MEASUREMENT_ENABLED"
+  },
+  "measurement_plugin": {
+    "activation_intent": "activate",
+    "apply_command_exposed": false,
+    "artifact_id": "raos-editorial-measurement-v1",
+    "package_source": "repo_artifact",
+    "plugin_slug": "raos-editorial-measurement",
+    "plugin_version": "1.0.0",
+    "proposal_requires_local_preview": true,
+    "separate_admin_approval_required": true
+  },
+  "order": [
+    "local_preview",
+    "measurement_plugin_package",
+    "measurement_plugin_proposal",
+    "separate_admin_plugin_approval_and_apply",
+    "content_theme_batch_proposal",
+    "separate_admin_content_theme_approval_and_apply",
+    "readback",
+    "measurement_gate_separate_decision"
+  ],
+  "schema": "RAOS_WORDPRESS_PRODUCTION_SEQUENCE_V3",
+  "version": "3.0.0"
+}

@@ -3,11 +3,39 @@
   "origin": "https://kurashinoshirube.com",
   "editor_endpoint": "https://kurashinoshirube.com/wp-json/raos-codex-mcp/v1/editor",
   "review_url": "https://kurashinoshirube.com/wp-admin/tools.php?page=raos-codex-proposals",
+  "pages": [
+    {
+      "production_slug": "about-ad-policy",
+      "required_key_content": [
+        "情報源の選び方",
+        "型番とリンクの照合",
+        "更新・訂正の責任"
+      ]
+    },
+    {
+      "production_slug": "comparison-policy",
+      "required_key_content": [
+        "Evidence階層",
+        "実機を使っていない場合の表現",
+        "掲載順と報酬の分離",
+        "訂正履歴"
+      ]
+    },
+    {
+      "production_slug": "privacy-policy",
+      "required_key_content": [
+        "同一オリジンの利用計測",
+        "個別の生イベントは7日間保持",
+        "日ごとの集計値は改善傾向を確認するため13か月保持",
+        "同意、拒否、撤回"
+      ]
+    }
+  ],
   "articles": [
     {
       "local_slug": "local-preview-carry-on-suitcase-comparison",
       "production_slug": "carry-on-suitcase-comparison",
-      "local_category": "暮らしの道具",
+      "local_category": "移動",
       "taxonomies": {
         "category": [
           5
@@ -19,7 +47,7 @@
     {
       "local_slug": "local-preview-portable-power-station-guide",
       "production_slug": "portable-power-station-guide",
-      "local_category": "暮らしの道具",
+      "local_category": "備え",
       "taxonomies": {
         "category": [
           5
@@ -31,7 +59,7 @@
     {
       "local_slug": "local-preview-anker-solix-c300-c800-c1000-differences",
       "production_slug": "anker-solix-c300-c800-c1000-differences",
-      "local_category": "暮らしの道具",
+      "local_category": "備え",
       "taxonomies": {
         "category": [
           5
@@ -43,7 +71,7 @@
     {
       "local_slug": "local-preview-countertop-dishwasher-for-small-households",
       "production_slug": "countertop-dishwasher-for-small-households",
-      "local_category": "暮らしの道具",
+      "local_category": "家事",
       "taxonomies": {
         "category": [
           5
@@ -55,7 +83,7 @@
     {
       "local_slug": "local-preview-compact-robot-vacuum-shortlist",
       "production_slug": "compact-robot-vacuum-shortlist",
-      "local_category": "暮らしの道具",
+      "local_category": "家事",
       "taxonomies": {
         "category": [
           5

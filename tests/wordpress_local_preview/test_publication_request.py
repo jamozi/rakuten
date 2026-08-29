@@ -40,7 +40,7 @@ def no_live_public_readback(monkeypatch: pytest.MonkeyPatch) -> None:
         },
     )
     # The shared integration worktree intentionally contains the candidate
-    # 1.3.9 theme. Workflow unit tests use a stable reviewed tree while the
+    # 1.4.0 theme. Workflow unit tests use a stable reviewed tree while the
     # production function continues to refuse dirty theme sources.
     monkeypatch.setattr(
         publication,
@@ -103,9 +103,9 @@ def _public_markup(
         + article.title
         + " | 暮らしのしるべ</title>"
         + '<link rel="stylesheet" href="/wp-content/themes/'
-        'kurashinoshirube-child/assets/theme.css?ver=1.3.9">'
+        'kurashinoshirube-child/assets/theme.css?ver=1.4.0">'
         + '<link rel="stylesheet" href="/wp-content/themes/'
-        'kurashinoshirube-child/assets/editorial-v2.css?ver=1.3.9">'
+        'kurashinoshirube-child/assets/editorial-v2.css?ver=1.4.0">'
         + '<link rel="canonical" href="'
         + url
         + '">'
@@ -232,7 +232,7 @@ def test_anonymous_public_readback_rejects_cta_identity_or_theme_drift() -> None
             ),
         )
 
-    wrong_theme = _public_markup(article).replace("?ver=1.3.9", "?ver=1.3.8")
+    wrong_theme = _public_markup(article).replace("?ver=1.4.0", "?ver=1.3.8")
     with pytest.raises(
         publication.PublicationFailure,
         match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
@@ -260,6 +260,41 @@ def test_authenticated_public_readback_sends_only_the_supplied_basic_header() ->
 
     request = opener.requests[0]
     assert request.get_header("Authorization") == "Basic dXNlcjpwYXNz"
+
+
+def test_policy_page_public_readback_checks_policy_content_and_private_absence() -> None:
+    page = publication.load_policy_pages()[2]
+    url = f"{publication.ORIGIN}/{page.production_slug}/"
+    evidence = ORIGINAL_VERIFY_PUBLIC_PAGES(
+        [page],
+        attempts=1,
+        sleeper=lambda seconds: None,
+        opener=_PublicOpener(_PublicResponse(url, _public_markup(page))),
+    )
+
+    assert evidence[page.production_slug]["post_type"] == "page"
+    assert evidence[page.production_slug]["h1"] == page.title
+    assert evidence[page.production_slug]["private_financial_data_absent"] is True
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [page],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(
+                    url,
+                    _public_markup(
+                        page,
+                        block_markup=page.block_markup
+                        + "<p>owner_hourly_rate=1234</p>",
+                    ),
+                )
+            ),
+        )
 
 
 @pytest.mark.parametrize(
@@ -321,6 +356,24 @@ def test_mapping_is_closed_numeric_and_exact_slug_conversion() -> None:
     assert mapping["editor_endpoint"] == publication.EDITOR_ENDPOINT
     assert mapping["review_url"] == publication.REVIEW_URL
     assert len(articles) == 10
+    pages = publication.load_policy_pages()
+    assert [(page.production_slug, page.document()["post_type"]) for page in pages] == [
+        ("about-ad-policy", "page"),
+        ("comparison-policy", "page"),
+        ("privacy-policy", "page"),
+    ]
+    assert all(
+        isinstance(page.document()["excerpt"], str)
+        and page.document()["excerpt"]
+        and page.document()["taxonomies"] == {}
+        and page.document()["media_ids"] == []
+        for page in pages
+    )
+    assert [page.excerpt for page in pages] == [
+        "暮らしのしるべの情報源選定、型番照合、広告との分離、更新・訂正の責任を説明します。",
+        "暮らしのしるべのEvidence階層、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。",
+        "暮らしのしるべの同一オリジン計測とGA4、保持期間、同意の拒否・撤回、アフィリエイトリンクの取扱いを説明します。",
+    ]
     for row in mapping["articles"]:
         assert row["production_slug"] == row["local_slug"].removeprefix(
             "local-preview-"
@@ -509,6 +562,42 @@ def test_existing_published_target_is_bound_to_private_baseline_before_reuse(
     stored = json.loads(path.read_text(encoding="utf-8"))
     assert stored["baselines"] == receipt["baselines"]
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
+
+
+def test_policy_page_baseline_is_page_typed_and_unknown_drift_is_refused(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    page = publication.load_policy_pages()[0]
+    published = _document(page, status="publish")
+    path = _private_path(monkeypatch, tmp_path)
+    receipt = publication._fresh_receipt([page], path)
+    publication.capture_existing_baselines(
+        ReconcileClient(published),
+        [page],
+        [published],
+        receipt,
+        path,
+        require_existing_published=True,
+    )
+    assert receipt["selected_documents"] == {page.production_slug: "page"}
+    assert receipt["baselines"][page.production_slug]["post_type"] == "page"
+
+    drifted = dict(published)
+    drifted["revision_id"] += 1
+    drifted["modified_gmt"] = "2026-08-29T00:01:00Z"
+    drifted["content_sha256"] = "f" * 64
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT",
+    ):
+        publication.capture_existing_baselines(
+            ReconcileClient(drifted),
+            [page],
+            [drifted],
+            receipt,
+            path,
+            require_existing_published=True,
+        )
 
 
 def test_known_draft_does_not_authorize_a_published_target_in_normal_state(
@@ -1524,12 +1613,14 @@ def test_partial_proposal_checkpoint_is_never_ready_for_batch_registration(
     assert publication._unregistered_proposal_set_ready(receipt, len(articles)) is True
 
 
-def test_all_selection_builds_one_theme_and_ten_content_proposals(
+def test_all_selection_builds_one_theme_ten_posts_and_three_page_proposals(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    articles = publication.load_articles("all")
-    assert len(articles) == publication.EXPECTED_ALL_ARTICLE_COUNT == 10
+    articles = publication.load_publication_items("all")
+    assert len(articles) == 13
+    assert [article.post_type for article in articles].count("post") == 10
+    assert [article.post_type for article in articles].count("page") == 3
     path = _private_path(monkeypatch, tmp_path)
     receipt = publication._fresh_receipt(articles, path, TEST_THEME_TREE_SHA256)
     drafts = {
@@ -1564,7 +1655,7 @@ def test_all_selection_builds_one_theme_and_ten_content_proposals(
                     "batch_token": "c" * 64,
                     "batch_manifest_sha256": "d" * 64,
                     "expected_theme_tree_sha256": TEST_THEME_TREE_SHA256,
-                    "proposal_count": 11,
+                    "proposal_count": 14,
                     "proposal_ids": ids,
                     "state": "REGISTERED",
                     "expires_at_gmt": "2099-08-29T00:15:00Z",
@@ -1600,11 +1691,14 @@ def test_all_selection_builds_one_theme_and_ten_content_proposals(
 
     assert [proposal["kind"] for proposal in proposals] == ["THEME_RELEASE"] + [
         "CONTENT_RELEASE"
-    ] * 10
+    ] * 13
     assert [proposal["slug"] for proposal in proposals[1:]] == [
         article.production_slug for article in articles
     ]
-    assert registration["proposal_count"] == 11
+    assert [proposal.get("post_type") for proposal in proposals[1:]] == [
+        "post"
+    ] * 10 + ["page"] * 3
+    assert registration["proposal_count"] == 14
     assert set(receipt["operation_ids"]) == {
         proposal["proposal_id"] for proposal in proposals
     }
@@ -1830,7 +1924,7 @@ def test_all_mode_recovers_registered_batch_before_provider_refresh(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    articles = publication.load_articles("all")
+    articles = publication.load_publication_items("all")
     path = tmp_path / "existing.json"
     loaded = {"state": "WAITING_FOR_APPROVAL"}
     calls: list[str] = []
@@ -1843,7 +1937,9 @@ def test_all_mode_recovers_registered_batch_before_provider_refresh(
             return None
 
     monkeypatch.setattr(publication, "request_lock", lambda: NoopLock())
-    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
+    monkeypatch.setattr(
+        publication, "load_publication_items", lambda *_args, **_kwargs: articles
+    )
     monkeypatch.setattr(publication, "_receipt_path", lambda _articles: path)
     monkeypatch.setattr(publication, "_read_receipt", lambda _path: loaded)
 
@@ -1907,7 +2003,7 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    articles = publication.load_articles("all")
+    articles = publication.load_publication_items("all")
     path = tmp_path / "waiting.json"
     receipt = publication._fresh_receipt(
         articles,
@@ -1941,7 +2037,7 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
     )
     monkeypatch.setattr(
         publication,
-        "load_articles",
+        "load_publication_items",
         lambda *_args, **_kwargs: articles,
     )
     monkeypatch.setattr(
