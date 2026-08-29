@@ -735,3 +735,71 @@ def test_bridge_advertises_bounds_and_rejects_duplicate_ids() -> None:
     refused = next(response for response in responses if response.get("id") == 3)
     assert refused["result"]["isError"] is True
     assert "unique" in json.dumps(refused["result"]).lower()
+
+
+def test_bridge_rejects_unknown_fields_before_invoking_operator(tmp_path: Path) -> None:
+    node = shutil.which("node")
+    assert node is not None
+    bridge = tmp_path / "packages/wordpress-mcp-bridge/src/index.ts"
+    bridge.parent.mkdir(parents=True)
+    shutil.copy2(ROOT / "packages/wordpress-mcp-bridge/src/index.ts", bridge)
+    (tmp_path / "node_modules").symlink_to(
+        ROOT / "node_modules", target_is_directory=True
+    )
+    fake_python = tmp_path / ".venv/bin/python"
+    fake_python.parent.mkdir(parents=True)
+    marker = fake_python.parent / "operator-invoked"
+    fake_python.write_text(
+        "#!/bin/sh\n"
+        'marker="${0%/*}/operator-invoked"\n'
+        ': > "$marker"\n'
+        "printf '%s\\n' '{}'\n",
+        encoding="utf-8",
+    )
+    fake_python.chmod(0o700)
+    messages = "\n".join(
+        (
+            json.dumps(
+                {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "method": "initialize",
+                    "params": {
+                        "protocolVersion": "2025-11-25",
+                        "capabilities": {},
+                        "clientInfo": {"name": "pytest", "version": "1.0.0"},
+                    },
+                }
+            ),
+            json.dumps({"jsonrpc": "2.0", "method": "notifications/initialized"}),
+            json.dumps(
+                {
+                    "jsonrpc": "2.0",
+                    "id": 2,
+                    "method": "tools/call",
+                    "params": {
+                        "name": "deployment-status",
+                        "arguments": {"unexpected_field": True},
+                    },
+                }
+            ),
+            "",
+        )
+    )
+    completed = subprocess.run(
+        [node, "--experimental-strip-types", bridge.as_posix()],
+        cwd=tmp_path,
+        input=messages,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=True,
+        timeout=20,
+    )
+    responses = [json.loads(line) for line in completed.stdout.splitlines()]
+    refused = next(response for response in responses if response.get("id") == 2)
+    assert refused["result"]["isError"] is True
+    serialized = json.dumps(refused["result"])
+    assert "unexpected_field" in serialized
+    assert "Unrecognized key" in serialized
+    assert not marker.exists()

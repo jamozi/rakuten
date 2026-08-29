@@ -165,7 +165,7 @@ server.registerTool(
     title: 'Read WordPress deployment status',
     description:
       'Read the fixed production deployment status, including the active child-theme tree SHA-256. It does not create, approve, or apply anything.',
-    inputSchema: {},
+    inputSchema: z.strictObject({}),
     annotations: {
       readOnlyHint: true,
       destructiveHint: false,
@@ -188,11 +188,11 @@ server.registerTool(
     title: 'Read an exact publication batch status',
     description:
       'Read the server-derived state and precondition barrier for one exact registered publication batch. It never claims or applies a member.',
-    inputSchema: {
+    inputSchema: z.strictObject({
       batch_token: sha256,
       batch_manifest_sha256: sha256,
       proposal_ids: releaseProposalIds,
-    },
+    }),
     annotations: {
       readOnlyHint: true,
       destructiveHint: false,
@@ -221,11 +221,11 @@ server.registerTool(
     title: 'Wait for approval and apply one release set',
     description:
       'Wait up to the fixed approval window for one server-registered exact content/theme batch, then apply only that approved batch. At most one theme is accepted and it is always converged before content. Plugin proposals and terminal failure states are refused.',
-    inputSchema: {
+    inputSchema: z.strictObject({
       batch_token: sha256,
       batch_manifest_sha256: sha256,
       proposal_ids: releaseProposalIds,
-    },
+    }),
     annotations: {
       readOnlyHint: false,
       destructiveHint: true,
@@ -254,7 +254,7 @@ server.registerTool(
     title: 'Propose tracked child-theme release',
     description:
       'Build and propose the committed kurashinoshirube-child tree. Caller paths and ZIP files are not accepted.',
-    inputSchema: { idempotency_key: sha256.optional() },
+    inputSchema: z.strictObject({ idempotency_key: sha256.optional() }),
     annotations: {
       readOnlyHint: false,
       destructiveHint: false,
@@ -278,7 +278,7 @@ server.registerTool(
     title: 'Propose bounded plugin change',
     description:
       'Propose a fixed WordPress.org version or a registered repository artifact. URLs, paths, arbitrary ZIPs, uninstall, and deletion are not accepted.',
-    inputSchema: {
+    inputSchema: z.strictObject({
       source: z.enum(['wordpress_org', 'repo_artifact']),
       slug: z
         .string()
@@ -293,7 +293,7 @@ server.registerTool(
         .string()
         .regex(/^[a-z0-9][a-z0-9._-]{0,127}$/)
         .optional(),
-    },
+    }),
     annotations: {
       readOnlyHint: false,
       destructiveHint: false,
@@ -316,7 +316,7 @@ server.registerTool(
     title: 'Apply approved plugin change',
     description:
       'Apply one separately approved eligible plugin proposal with backup, readback, and rollback. Manual-review proposals remain blocked.',
-    inputSchema: { proposal_id: sha256 },
+    inputSchema: z.strictObject({ proposal_id: sha256 }),
     annotations: {
       readOnlyHint: false,
       destructiveHint: true,
@@ -339,7 +339,7 @@ server.registerTool(
     title: 'Recover one WordPress operation',
     description:
       'Reconcile an interrupted operation by its existing operation ID. It never creates a new mutation.',
-    inputSchema: { operation_id: sha256 },
+    inputSchema: z.strictObject({ operation_id: sha256 }),
     annotations: {
       readOnlyHint: false,
       destructiveHint: true,

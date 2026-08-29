@@ -156,8 +156,8 @@
     },
     {
       "path": "packages/wordpress-mcp-bridge/src/index.ts",
-      "sha256": "46b53ee60028a6e8a2c21e022fb540fe01d435a5008e6f20392b65508815789c",
-      "size": 10576
+      "sha256": "c68e1625835a48b5b2569363ba5f79143cefa2bccebef33a0829ec8ccead6b9e",
+      "size": 10688
     },
     {
       "path": "packages/wordpress-mcp-bridge/tsconfig.json",
@@ -256,8 +256,8 @@
     },
     {
       "path": "tests/wordpress_mcp_v1/test_release_watcher.py",
-      "sha256": "6310648536bd407c65b18854d947d0d20a3ccc395a006d55497623526944ec36",
-      "size": 25094
+      "sha256": "1758c963b33b9d3df7ba4a6e44ddbb733ee3a94444d45a5a4da046c4813e78df",
+      "size": 27471
     },
     {
       "path": "tests/wordpress_local_preview/test_publication_request.py",
