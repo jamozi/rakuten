@@ -1047,6 +1047,124 @@ final class RAOS_Codex_MCP_Store
         return self::hydrate_publication_batch($row);
     }
 
+    /**
+     * Resolve the one claimed publication batch that immutably binds a proposal.
+     *
+     * Recovery is addressed by operation ID alone.  A proposal may have appeared
+     * in more than one unapproved batch, so only one approved, already-claimed
+     * batch with an exact manifest entry is authoritative.  Any missing,
+     * duplicate, or inconsistent binding remains indeterminate.
+     */
+    public static function get_claimed_publication_batch_for_proposal($proposal_id)
+    {
+        global $wpdb;
+        if (! self::is_sha256($proposal_id)) {
+            return new WP_Error(
+                'raos_codex_publication_batch_binding_invalid',
+                'Publication batch binding is invalid.',
+                array('status' => 400)
+            );
+        }
+        $operation = self::get($proposal_id);
+        if (is_wp_error($operation)) {
+            return $operation;
+        }
+        if ('CONTENT_RELEASE' !== $operation['kind']
+            || 'APPLYING' !== $operation['state']
+            || 'OPERATION_APPLYING' !== $operation['result_code']
+            || is_wp_error(self::validate_proposal_integrity($operation))) {
+            return new WP_Error(
+                'raos_codex_publication_batch_binding_indeterminate',
+                'Publication batch binding could not be determined.',
+                array('status' => 409)
+            );
+        }
+        $quoted_id = '%"' . $wpdb->esc_like($proposal_id) . '"%';
+        $tokens = $wpdb->get_col(
+            $wpdb->prepare(
+                'SELECT batch_token FROM ' . self::batch_table_name()
+                . " WHERE state = 'APPROVED' AND applying_at_gmt IS NOT NULL"
+                . ' AND proposal_ids_json LIKE %s'
+                . ' ORDER BY created_at_gmt DESC LIMIT 2',
+                $quoted_id
+            )
+        );
+        if (! is_array($tokens) || 1 !== count($tokens) || ! self::is_sha256($tokens[0])) {
+            return new WP_Error(
+                'raos_codex_publication_batch_binding_indeterminate',
+                'Publication batch binding could not be determined.',
+                array('status' => 409)
+            );
+        }
+        $batch = self::get_publication_batch($tokens[0]);
+        if (is_wp_error($batch)
+            || ! isset(
+                $batch['approved_by'],
+                $batch['approved_at_gmt'],
+                $batch['approval_reason'],
+                $operation['approved_by'],
+                $operation['approved_at_gmt'],
+                $operation['approval_reason']
+            )
+            || 'APPROVED' !== $batch['state']
+            || ! is_string($batch['applying_at_gmt'])
+            || (int) $batch['created_by'] !== (int) $operation['created_by']
+            || (int) $batch['approved_by'] !== (int) $operation['approved_by']
+            || ! is_string($batch['approved_at_gmt'])
+            || ! is_string($operation['approved_at_gmt'])
+            || ! hash_equals($batch['approved_at_gmt'], $operation['approved_at_gmt'])
+            || ! is_string($batch['approval_reason'])
+            || ! is_string($operation['approval_reason'])
+            || ! hash_equals($batch['approval_reason'], $operation['approval_reason'])
+            || ! hash_equals($batch['expires_at_gmt'], $operation['expires_at_gmt'])
+            || ! in_array($proposal_id, $batch['proposal_ids'], true)) {
+            return new WP_Error(
+                'raos_codex_publication_batch_binding_indeterminate',
+                'Publication batch binding could not be determined.',
+                array('status' => 409)
+            );
+        }
+        $matches = array();
+        foreach ($batch['manifest']['proposals'] as $entry) {
+            if (is_array($entry)
+                && isset($entry['proposal_id'])
+                && is_string($entry['proposal_id'])
+                && hash_equals($proposal_id, $entry['proposal_id'])) {
+                $matches[] = $entry;
+            }
+        }
+        $entry = 1 === count($matches) ? $matches[0] : null;
+        $created_iso = self::timestamp_iso($operation['created_at_gmt']);
+        if (! is_array($entry)
+            || ! isset(
+                $entry['kind'],
+                $entry['created_by'],
+                $entry['created_at_gmt']
+            )
+            || ! array_key_exists('before_sha256', $entry)
+            || ! array_key_exists('after_sha256', $entry)
+            || ! is_string($created_iso)
+            || ! hash_equals($operation['kind'], (string) $entry['kind'])
+            || (int) $operation['created_by'] !== (int) $entry['created_by']
+            || ! is_string($entry['created_at_gmt'])
+            || ! hash_equals($created_iso, $entry['created_at_gmt'])
+            || ! self::nullable_hash_matches(
+                $operation['before_sha256'],
+                $entry['before_sha256']
+            )
+            || ! self::nullable_hash_matches(
+                $operation['after_sha256'],
+                $entry['after_sha256']
+            )) {
+            return new WP_Error(
+                'raos_codex_publication_batch_binding_indeterminate',
+                'Publication batch binding could not be determined.',
+                array('status' => 409)
+            );
+        }
+        return $batch;
+    }
+
     private static function hydrate_publication_batch($row)
     {
         if (! is_array($row)

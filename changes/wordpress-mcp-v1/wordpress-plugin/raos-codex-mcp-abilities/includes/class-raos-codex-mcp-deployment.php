@@ -990,10 +990,13 @@ final class RAOS_Codex_MCP_Deployment
         if (is_wp_error($current)) {
             return $current;
         }
-        $write = self::write_content_document($after);
-        if (is_wp_error($write)) {
-            $rollback = self::rollback_content_transaction($before, $row['before_sha256']);
-            return true === $rollback ? $write : $rollback;
+        $equivalent_release = hash_equals($row['before_sha256'], $row['after_sha256']);
+        if (! $equivalent_release) {
+            $write = self::write_content_document($after);
+            if (is_wp_error($write)) {
+                $rollback = self::rollback_content_transaction($before, $row['before_sha256']);
+                return true === $rollback ? $write : $rollback;
+            }
         }
         $readback = RAOS_Codex_MCP_Content::document((int) $after['id']);
         if (is_wp_error($readback)

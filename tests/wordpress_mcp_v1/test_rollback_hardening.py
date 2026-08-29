@@ -94,6 +94,45 @@ def test_content_compare_and_swap_locks_then_rechecks_precondition() -> None:
     assert "modified_gmt" in transaction
 
 
+def test_equivalent_content_apply_is_a_locked_assertion_without_a_post_write() -> None:
+    content = method("apply_content", "cleanup_completed_code_operation")
+    assert "$equivalent_release = hash_equals(" in content
+    assert content.index("begin_content_transaction") < content.index(
+        "$equivalent_release = hash_equals("
+    )
+    guarded_write = content.split("if (! $equivalent_release)", 1)[1].split(
+        "$readback = RAOS_Codex_MCP_Content::document", 1
+    )[0]
+    assert "write_content_document($after)" in guarded_write
+    assert content.count("write_content_document($after)") == 1
+    assert content.index("$readback = RAOS_Codex_MCP_Content::document") < content.index(
+        "$theme_readback = self::active_theme_tree_sha256()"
+    )
+    assert content.index("$theme_readback = self::active_theme_tree_sha256()") < (
+        content.index("$wpdb->query('COMMIT')")
+    )
+    assert content.index("$wpdb->query('COMMIT')") < content.index(
+        "RAOS_Codex_MCP_Store::complete("
+    )
+
+
+def test_equivalent_content_recovery_replays_the_exact_batch_assertion() -> None:
+    recover = method("recover_operation", "apply_content")
+    assert "$equivalent_content_release" in recover
+    assert "hash_equals($row['before_sha256'], $row['after_sha256'])" in recover
+    equivalent = recover.split("if ($equivalent_content_release", 1)[1].split(
+        "if (is_string($current_hash)", 1
+    )[0]
+    assert "get_claimed_publication_batch_for_proposal" in equivalent
+    assert "publication_batch_theme_ready" in equivalent
+    assert "$batch['manifest']['expected_theme_tree_sha256']" in equivalent
+    assert "$this->apply_content(" in equivalent
+    assert "RAOS_Codex_MCP_Store::complete(" not in equivalent
+    assert recover.index("get_claimed_publication_batch_for_proposal") < recover.index(
+        "RAOS_Codex_MCP_Store::complete("
+    )
+
+
 def test_publication_batch_status_is_exact_and_read_only() -> None:
     code = source()
     assert "'/publication-batches/(?P<batch_token>[0-9a-f]{64})'" in code
@@ -353,6 +392,9 @@ def test_disposable_e2e_has_concrete_failure_injection_cases() -> None:
         "RAOS_E2E_THEME_ACTIVE_BINDING_SWITCH_FAILED",
         "RAOS_E2E_PUBLICATION_MUTATION_LOCK_FAILED",
         "RAOS_E2E_CONTENT_THEME_POSTCHECK_ROLLBACK_FAILED",
+        "RAOS_E2E_CONTENT_EQUIVALENT_NO_WRITE_FAILED",
+        "RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_BINDING_FAILED",
+        "RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_FAILED",
         "RAOS_E2E_CONTENT_ONLY_THEME_REGISTER_DRIFT_FAILED",
         "RAOS_E2E_CONTENT_ONLY_THEME_APPROVAL_DRIFT_FAILED",
         "RAOS_E2E_CONTENT_ONLY_THEME_CLAIM_DRIFT_FAILED",

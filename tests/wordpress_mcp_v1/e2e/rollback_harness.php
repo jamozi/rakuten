@@ -495,6 +495,96 @@ if (is_wp_error($restored)) {
 }
 wp_delete_post($post_id, true);
 
+// An equivalent published release is still an exact CAS assertion in the
+// approved batch, but applying it must not create a revision or rewrite terms.
+// The post and taxonomy rows stay locked while content and theme are read back.
+$post_id = raos_e2e_create_post('equivalent-release');
+$draft = RAOS_Codex_MCP_Content::document($post_id);
+$published = raos_e2e_after_document($draft);
+$published_write = $write_content->invoke(null, $published);
+if (is_wp_error($published_write)) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_SETUP_FAILED');
+}
+$before = RAOS_Codex_MCP_Content::document($post_id);
+$after = $before;
+$payload = array(
+    'schema' => 'ContentReleaseProposalV1',
+    'target_status' => 'publish',
+    'before' => $before,
+    'after' => $after,
+    'before_sha256' => $before['content_sha256'],
+    'after_sha256' => $after['content_sha256'],
+    'publication_manifest_sha256' => raos_e2e_publication_manifest_hash($before, $after),
+);
+$row = RAOS_Codex_MCP_Store::create(
+    'CONTENT_RELEASE',
+    $payload,
+    $before['content_sha256'],
+    $after['content_sha256']
+);
+if (is_wp_error($row)) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_SETUP_FAILED');
+}
+global $wpdb;
+$prepared = $wpdb->update(
+    RAOS_Codex_MCP_Store::table_name(),
+    array(
+        'state' => 'APPLYING',
+        'result_code' => 'OPERATION_APPLYING',
+        'applying_at_gmt' => RAOS_Codex_MCP_Store::now_mysql(),
+    ),
+    array('proposal_id' => $row['proposal_id'])
+);
+$row = 1 === $prepared ? RAOS_Codex_MCP_Store::get($row['proposal_id']) : null;
+if (! is_array($row)) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_SETUP_FAILED');
+}
+$revision_count = count(wp_get_post_revisions($post_id));
+$post_writes = 0;
+$taxonomy_writes = 0;
+$record_post_write = static function ($updated_post_id) use ($post_id, &$post_writes) {
+    if ((int) $updated_post_id === $post_id) {
+        ++$post_writes;
+    }
+};
+$record_taxonomy_write = static function ($object_id) use ($post_id, &$taxonomy_writes) {
+    if ((int) $object_id === $post_id) {
+        ++$taxonomy_writes;
+    }
+};
+add_action('post_updated', $record_post_write, 10, 1);
+add_action('set_object_terms', $record_taxonomy_write, 10, 1);
+$result = $apply_content->invoke(
+    $deployment,
+    $row,
+    RAOS_Codex_MCP_Deployment::active_theme_tree_sha256()
+);
+remove_action('post_updated', $record_post_write, 10);
+remove_action('set_object_terms', $record_taxonomy_write, 10);
+$current = RAOS_Codex_MCP_Content::document($post_id);
+$stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+if (! is_array($result)
+    || 'APPLIED' !== $result['state']
+    || 'CONTENT_RELEASE_APPLIED' !== $result['result_code']
+    || ! hash_equals($before['content_sha256'], $result['before_sha256'])
+    || ! hash_equals($after['content_sha256'], $result['after_sha256'])
+    || ! is_array($stored)
+    || 'APPLIED' !== $stored['state']
+    || ! is_array($current)
+    || ! hash_equals($before['content_sha256'], $current['content_sha256'])
+    || (int) $before['revision_id'] !== (int) $current['revision_id']
+    || ! hash_equals($before['modified_gmt'], $current['modified_gmt'])
+    || $revision_count !== count(wp_get_post_revisions($post_id))
+    || 0 !== $post_writes
+    || 0 !== $taxonomy_writes) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_NO_WRITE_FAILED');
+}
+$wpdb->delete(
+    RAOS_Codex_MCP_Store::table_name(),
+    array('proposal_id' => $row['proposal_id'])
+);
+wp_delete_post($post_id, true);
+
 // Inject a readback mismatch inside the content transaction.  Database rollback
 // must restore and verify exact before before the error is terminal-safe.
 $post_id = raos_e2e_create_post('readback');
@@ -1008,6 +1098,262 @@ $wpdb->delete(
 @unlink($private . '/operation-lock-' . $row['proposal_id'] . '.lock');
 wp_delete_post($post_id, true);
 require_once ABSPATH . 'wp-admin/includes/user.php';
+wp_delete_user((int) $approver_id);
+
+// Recovery for an equivalent release must resolve the one exact claimed batch,
+// re-check its theme binding, and replay the locked no-write assertion. Missing,
+// duplicate, or manifest-drifted batch bindings remain indeterminate.
+$post_id = raos_e2e_create_post('equivalent-recovery');
+$draft = RAOS_Codex_MCP_Content::document($post_id);
+$published = raos_e2e_after_document($draft);
+$published_write = $write_content->invoke(null, $published);
+if (is_wp_error($published_write)) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_SETUP_FAILED');
+}
+$before = RAOS_Codex_MCP_Content::document($post_id);
+$after = $before;
+$payload = array(
+    'schema' => 'ContentReleaseProposalV1',
+    'target_status' => 'publish',
+    'before' => $before,
+    'after' => $after,
+    'before_sha256' => $before['content_sha256'],
+    'after_sha256' => $after['content_sha256'],
+    'publication_manifest_sha256' => raos_e2e_publication_manifest_hash($before, $after),
+);
+$row = RAOS_Codex_MCP_Store::create(
+    'CONTENT_RELEASE',
+    $payload,
+    $before['content_sha256'],
+    $after['content_sha256']
+);
+$expected_theme_hash = RAOS_Codex_MCP_Deployment::active_theme_tree_sha256();
+$batch = is_wp_error($row)
+    ? $row
+    : RAOS_Codex_MCP_Store::register_publication_batch(
+        array($row['proposal_id']),
+        $expected_theme_hash
+    );
+$approver_login = 'raos-equivalent-recovery-' . bin2hex(random_bytes(6));
+$approver_id = wp_insert_user(
+    array(
+        'user_login' => $approver_login,
+        'user_email' => $approver_login . '@example.invalid',
+        'user_pass' => wp_generate_password(32, true, true),
+        'role' => 'administrator',
+    )
+);
+if (is_wp_error($row)
+    || is_wp_error($expected_theme_hash)
+    || is_wp_error($batch)
+    || is_wp_error($approver_id)) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_SETUP_FAILED');
+}
+$approved = RAOS_Codex_MCP_Store::approve_publication_batch(
+    $batch['batch_token'],
+    $batch['batch_manifest_sha256'],
+    (int) $approver_id,
+    'Independent equivalent recovery approval.'
+);
+$claimed_batch = is_wp_error($approved)
+    ? $approved
+    : RAOS_Codex_MCP_Store::claim_publication_batch_apply(
+        $batch['batch_token'],
+        $batch['batch_manifest_sha256'],
+        $batch['proposal_ids']
+    );
+$claimed_member = is_wp_error($claimed_batch)
+    ? $claimed_batch
+    : RAOS_Codex_MCP_Store::claim_apply($row['proposal_id']);
+if (is_wp_error($approved)
+    || is_wp_error($claimed_batch)
+    || is_wp_error($claimed_member)
+    || 'OPERATION_APPLYING' !== $claimed_member['result_code']) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_SETUP_FAILED');
+}
+$wpdb->update(
+    RAOS_Codex_MCP_Store::table_name(),
+    array('applying_at_gmt' => gmdate('Y-m-d H:i:s', time() - 300)),
+    array('proposal_id' => $row['proposal_id'])
+);
+$claimed_member = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+$exact_batch = RAOS_Codex_MCP_Store::get_claimed_publication_batch_for_proposal(
+    $row['proposal_id']
+);
+if (is_wp_error($claimed_member)
+    || is_wp_error($exact_batch)
+    || ! hash_equals($batch['batch_token'], $exact_batch['batch_token'])) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_BINDING_FAILED');
+}
+
+// An absent approved/claimed candidate is never guessed from the operation.
+$wpdb->update(
+    RAOS_Codex_MCP_Store::batch_table_name(),
+    array('state' => 'REGISTERED'),
+    array('batch_token' => $batch['batch_token'])
+);
+$missing = RAOS_Codex_MCP_Store::get_claimed_publication_batch_for_proposal(
+    $row['proposal_id']
+);
+$wpdb->update(
+    RAOS_Codex_MCP_Store::batch_table_name(),
+    array('state' => 'APPROVED'),
+    array('batch_token' => $batch['batch_token'])
+);
+if (! is_wp_error($missing)
+    || 'raos_codex_publication_batch_binding_indeterminate' !== $missing->get_error_code()) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_BINDING_FAILED');
+}
+
+// A self-consistent stored manifest that no longer binds the operation hashes
+// is rejected even if its batch token and proposal ID are unchanged.
+$corrupt_manifest = $batch['manifest'];
+foreach ($corrupt_manifest['proposals'] as &$corrupt_entry) {
+    if (hash_equals($row['proposal_id'], $corrupt_entry['proposal_id'])) {
+        $corrupt_entry['after_sha256'] = str_repeat('0', 64);
+    }
+}
+unset($corrupt_entry);
+$corrupt_manifest_hash = RAOS_Codex_MCP_Store::hash($corrupt_manifest);
+$wpdb->update(
+    RAOS_Codex_MCP_Store::batch_table_name(),
+    array(
+        'batch_manifest_sha256' => $corrupt_manifest_hash,
+        'manifest_json' => RAOS_Codex_MCP_Store::canonical_json($corrupt_manifest),
+    ),
+    array('batch_token' => $batch['batch_token'])
+);
+$corrupt = RAOS_Codex_MCP_Store::get_claimed_publication_batch_for_proposal(
+    $row['proposal_id']
+);
+$wpdb->update(
+    RAOS_Codex_MCP_Store::batch_table_name(),
+    array(
+        'batch_manifest_sha256' => $batch['batch_manifest_sha256'],
+        'manifest_json' => RAOS_Codex_MCP_Store::canonical_json($batch['manifest']),
+    ),
+    array('batch_token' => $batch['batch_token'])
+);
+if (! is_wp_error($corrupt)
+    || 'raos_codex_publication_batch_binding_indeterminate' !== $corrupt->get_error_code()) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_BINDING_FAILED');
+}
+
+// Two otherwise eligible claimed batches are ambiguous. The second candidate
+// deliberately carries another manifest member so its immutable hash is unique.
+$other_proposal_id = hash('sha256', 'equivalent-recovery-other-' . random_bytes(8));
+$ambiguous_ids = array($row['proposal_id'], $other_proposal_id);
+sort($ambiguous_ids, SORT_STRING);
+$ambiguous_entries = $batch['manifest']['proposals'];
+$ambiguous_entries[] = array(
+    'proposal_id' => $other_proposal_id,
+    'kind' => 'CONTENT_RELEASE',
+    'created_by' => (int) $row['created_by'],
+    'created_at_gmt' => $row['payload']['created_at_gmt'],
+    'expires_at_gmt' => $row['payload']['expires_at_gmt'],
+    'before_sha256' => str_repeat('1', 64),
+    'after_sha256' => str_repeat('2', 64),
+);
+usort(
+    $ambiguous_entries,
+    static function ($left, $right) {
+        return strcmp($left['proposal_id'], $right['proposal_id']);
+    }
+);
+$ambiguous_manifest = array(
+    'schema' => 'RAOSWordPressPublicationBatchManifestV1',
+    'expected_theme_tree_sha256' => $expected_theme_hash,
+    'proposal_count' => count($ambiguous_entries),
+    'proposals' => $ambiguous_entries,
+);
+$ambiguous_token = hash('sha256', 'equivalent-recovery-batch-' . random_bytes(8));
+$ambiguous_manifest_hash = RAOS_Codex_MCP_Store::hash($ambiguous_manifest);
+$inserted = $wpdb->insert(
+    RAOS_Codex_MCP_Store::batch_table_name(),
+    array(
+        'batch_token' => $ambiguous_token,
+        'state' => 'APPROVED',
+        'created_by' => (int) $row['created_by'],
+        'approved_by' => (int) $approver_id,
+        'created_at_gmt' => RAOS_Codex_MCP_Store::now_mysql(),
+        'expires_at_gmt' => $claimed_member['expires_at_gmt'],
+        'approved_at_gmt' => $claimed_member['approved_at_gmt'],
+        'applying_at_gmt' => RAOS_Codex_MCP_Store::now_mysql(),
+        'batch_manifest_sha256' => $ambiguous_manifest_hash,
+        'proposal_ids_json' => RAOS_Codex_MCP_Store::canonical_json($ambiguous_ids),
+        'manifest_json' => RAOS_Codex_MCP_Store::canonical_json($ambiguous_manifest),
+        'approval_reason' => 'Ambiguous recovery fixture.',
+    )
+);
+$ambiguous = 1 === $inserted
+    ? RAOS_Codex_MCP_Store::get_claimed_publication_batch_for_proposal(
+        $row['proposal_id']
+    )
+    : null;
+$wpdb->delete(
+    RAOS_Codex_MCP_Store::batch_table_name(),
+    array('batch_token' => $ambiguous_token)
+);
+if (! is_wp_error($ambiguous)
+    || 'raos_codex_publication_batch_binding_indeterminate' !== $ambiguous->get_error_code()) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_BINDING_FAILED');
+}
+
+$revision_count = count(wp_get_post_revisions($post_id));
+$post_writes = 0;
+$taxonomy_writes = 0;
+$record_post_write = static function ($updated_post_id) use ($post_id, &$post_writes) {
+    if ((int) $updated_post_id === $post_id) {
+        ++$post_writes;
+    }
+};
+$record_taxonomy_write = static function ($object_id) use ($post_id, &$taxonomy_writes) {
+    if ((int) $object_id === $post_id) {
+        ++$taxonomy_writes;
+    }
+};
+add_action('post_updated', $record_post_write, 10, 1);
+add_action('set_object_terms', $record_taxonomy_write, 10, 1);
+$theme_root = get_theme_root(RAOS_Codex_MCP_Deployment::THEME_SLUG)
+    . '/' . RAOS_Codex_MCP_Deployment::THEME_SLUG;
+$drift_path = $theme_root . '/raos-e2e-equivalent-recovery-drift-'
+    . bin2hex(random_bytes(6)) . '.tmp';
+file_put_contents($drift_path, 'recovery theme drift');
+$request = new WP_REST_Request('POST', '/');
+$request->set_url_params(array('operation_id' => $row['proposal_id']));
+$drifted = $deployment->recover_operation($request);
+@unlink($drift_path);
+$receipt = $deployment->recover_operation($request);
+remove_action('post_updated', $record_post_write, 10);
+remove_action('set_object_terms', $record_taxonomy_write, 10);
+$stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+$current = RAOS_Codex_MCP_Content::document($post_id);
+if (! is_wp_error($drifted)
+    || 'raos_codex_recovery_content_theme_not_ready' !== $drifted->get_error_code()
+    || ! raos_e2e_recovery_required($drifted)
+    || ! is_array($receipt)
+    || 'CONTENT_RELEASE_APPLIED' !== $receipt['result_code']
+    || is_wp_error($stored)
+    || 'APPLIED' !== $stored['state']
+    || ! is_array($current)
+    || ! hash_equals($before['content_sha256'], $current['content_sha256'])
+    || (int) $before['revision_id'] !== (int) $current['revision_id']
+    || ! hash_equals($before['modified_gmt'], $current['modified_gmt'])
+    || $revision_count !== count(wp_get_post_revisions($post_id))
+    || 0 !== $post_writes
+    || 0 !== $taxonomy_writes) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_FAILED');
+}
+$wpdb->delete(
+    RAOS_Codex_MCP_Store::batch_table_name(),
+    array('batch_token' => $batch['batch_token'])
+);
+$wpdb->delete(
+    RAOS_Codex_MCP_Store::table_name(),
+    array('proposal_id' => $row['proposal_id'])
+);
+@unlink($private . '/operation-lock-' . $row['proposal_id'] . '.lock');
+wp_delete_post($post_id, true);
 wp_delete_user((int) $approver_id);
 
 // Recover on an APPLYING content operation with a third hash must not write the
