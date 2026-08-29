@@ -74,6 +74,9 @@ SG_BIN: Final = Path("/usr/bin/sg")
 DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
 EXPECTED_PLUGIN_VERSION: Final = "1.2.1"
+EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
+    "7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755"
+)
 EXPECTED_THEME_VERSION: Final = "1.3.10"
 EXPECTED_THEME_RUNTIME_REVISION: Final = (
     "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
@@ -1335,6 +1338,8 @@ def validate_site_status(status: Mapping[str, object]) -> None:
         or status.get("mcp_adapter_version") != "0.6.1"
         or status.get("mcp_adapter_version_compatible") is not True
         or status.get("plugin_version") != EXPECTED_PLUGIN_VERSION
+        or status.get("plugin_runtime_revision")
+        != EXPECTED_PLUGIN_RUNTIME_REVISION
         or type(writes) is not dict
         or any(
             writes.get(name) is not True
@@ -2429,6 +2434,8 @@ def deployment_status(
     if (
         response.get("schema") != "RAOSWordPressDeploymentStatusV1"
         or response.get("origin") != ORIGIN
+        or response.get("plugin_runtime_revision")
+        != EXPECTED_PLUGIN_RUNTIME_REVISION
         or response.get("private_directory_ready") is not True
         or type(theme) is not dict
         or theme.get("slug") != "kurashinoshirube-child"

@@ -1212,6 +1212,7 @@ class WorkflowClient:
             "mcp_adapter_version": "0.6.1",
             "mcp_adapter_version_compatible": True,
             "plugin_version": publication.EXPECTED_PLUGIN_VERSION,
+            "plugin_runtime_revision": publication.EXPECTED_PLUGIN_RUNTIME_REVISION,
             "writes_enabled": {
                 "global": True,
                 "draft": True,
@@ -1327,6 +1328,7 @@ class DeploymentRunner:
         return {
             "schema": "RAOSWordPressDeploymentStatusV1",
             "origin": publication.ORIGIN,
+            "plugin_runtime_revision": publication.EXPECTED_PLUGIN_RUNTIME_REVISION,
             "php_version": "8.3.0",
             "wordpress_version": "7.1.0",
             "theme": {
@@ -2159,6 +2161,21 @@ def test_site_status_requires_plugin_1_2_1_runtime_and_scoped_approval_lease() -
         match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
     ):
         publication.validate_site_status(status)
+    for invalid_runtime in (None, "0" * 64, "not-a-sha256"):
+        status = client.status()
+        status["plugin_runtime_revision"] = invalid_runtime
+        with pytest.raises(
+            publication.PublicationFailure,
+            match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+        ):
+            publication.validate_site_status(status)
+    status = client.status()
+    del status["plugin_runtime_revision"]
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
     status = client.status()
     status["theme"]["runtime_version"] = None
     with pytest.raises(
@@ -2220,6 +2237,53 @@ def test_deployment_status_requires_runtime_revision_key_but_accepts_null(
     status = deployment.status()
     status["theme"]["runtime_revision"] = None
     assert publication.deployment_status()["theme"]["runtime_revision"] is None
+
+
+@pytest.mark.parametrize(
+    "invalid_runtime",
+    [None, "0" * 64, "not-a-sha256"],
+)
+def test_deployment_status_requires_exact_plugin_runtime_revision(
+    monkeypatch: pytest.MonkeyPatch,
+    invalid_runtime: object,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    deployment = DeploymentRunner(client, events)
+    status = deployment.status()
+    status["plugin_runtime_revision"] = invalid_runtime
+    monkeypatch.setattr(
+        publication,
+        "_deployment_mcp_call",
+        lambda *_args, **_kwargs: status,
+    )
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_DEPLOYMENT_STATUS_INVALID",
+    ):
+        publication.deployment_status()
+
+
+def test_deployment_status_rejects_missing_plugin_runtime_revision(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    deployment = DeploymentRunner(client, events)
+    status = deployment.status()
+    del status["plugin_runtime_revision"]
+    monkeypatch.setattr(
+        publication,
+        "_deployment_mcp_call",
+        lambda *_args, **_kwargs: status,
+    )
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_DEPLOYMENT_STATUS_INVALID",
+    ):
+        publication.deployment_status()
 
 
 def test_portfolio_refresh_runs_capture_then_both_materializations_in_foreground() -> (

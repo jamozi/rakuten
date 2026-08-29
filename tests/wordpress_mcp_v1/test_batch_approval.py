@@ -19,7 +19,13 @@ def test_store_schema_upgrade_and_idempotency_are_activation_independent() -> No
     assert "raos_codex_publication_batches_v1" in store
     assert "UNIQUE KEY creator_kind_idempotency" in store
     assert "function maybe_upgrade()" in store
-    assert "array('RAOS_Codex_MCP_Store', 'maybe_upgrade')" in main
+    assert "add_action('init', array($this, 'maybe_upgrade'), 0);" in main
+    upgrade = main.split("public function maybe_upgrade()", 1)[1].split(
+        "private static function install_role", 1
+    )[0]
+    assert upgrade.index("self::runtime_identity_is_exact()") < upgrade.index(
+        "RAOS_Codex_MCP_Store::maybe_upgrade()"
+    )
     assert "get_option(self::SCHEMA_OPTION" in store
     assert "dbDelta($sql)" in store
     assert "^[0-9a-f]{64}$" in content

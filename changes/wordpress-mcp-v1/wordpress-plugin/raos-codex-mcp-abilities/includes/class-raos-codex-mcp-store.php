@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Store
 {
+    const RUNTIME_REVISION = '7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755';
     const SCHEMA_VERSION = '4';
     const SCHEMA_OPTION = 'raos_codex_mcp_store_schema_v1';
     const TTL_SECONDS = 900;
@@ -28,6 +29,10 @@ final class RAOS_Codex_MCP_Store
 
     public static function install()
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         $table = self::table_name();
@@ -143,6 +148,10 @@ final class RAOS_Codex_MCP_Store
      */
     public static function maybe_upgrade()
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         $installed = get_option(self::SCHEMA_OPTION, '0');
         if (! is_string($installed) || ! hash_equals(self::SCHEMA_VERSION, $installed)) {
             self::install();
@@ -293,6 +302,10 @@ final class RAOS_Codex_MCP_Store
         $package_path = null,
         $idempotency_key = null
     ) {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! in_array($kind, array('CONTENT_RELEASE', 'THEME_RELEASE', 'PLUGIN_CHANGE'), true)
             || ! is_array($payload)
@@ -452,6 +465,10 @@ final class RAOS_Codex_MCP_Store
 
     public static function get($proposal_id)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! self::is_sha256($proposal_id)) {
             return new WP_Error('raos_codex_proposal_id_invalid', 'Proposal ID is invalid.', array('status' => 400));
@@ -854,6 +871,10 @@ final class RAOS_Codex_MCP_Store
         $expected_theme_tree_sha256
     )
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! is_array($proposal_ids)
             || empty($proposal_ids)
@@ -1000,6 +1021,10 @@ final class RAOS_Codex_MCP_Store
 
     public static function get_publication_batch($batch_token)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! self::is_sha256($batch_token)) {
             return new WP_Error('raos_codex_publication_batch_token_invalid', 'Publication batch token is invalid.', array('status' => 400));
@@ -1364,6 +1389,10 @@ final class RAOS_Codex_MCP_Store
 
     public static function approve($proposal_id, $approver_id, $reason)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! self::is_sha256($proposal_id)
             || (int) $approver_id < 1
@@ -1676,6 +1705,10 @@ final class RAOS_Codex_MCP_Store
         $reason
     )
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! self::is_sha256($batch_token)
             || ! self::is_sha256($expected_batch_sha256)
@@ -1961,6 +1994,10 @@ final class RAOS_Codex_MCP_Store
         $expected_batch_sha256,
         $proposal_ids
     ) {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         $approval_expires = is_array($batch) && isset($batch['approved_at_gmt'])
             ? self::approval_expiry_mysql($batch['approved_at_gmt'])
@@ -2177,6 +2214,10 @@ final class RAOS_Codex_MCP_Store
         $expected_batch_sha256,
         $proposal_ids
     ) {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! self::is_sha256($batch_token)
             || ! self::is_sha256($expected_batch_sha256)
@@ -2317,6 +2358,10 @@ final class RAOS_Codex_MCP_Store
 
     public static function claim_apply($proposal_id)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         $updated = $wpdb->query(
             $wpdb->prepare(
@@ -2383,6 +2428,10 @@ final class RAOS_Codex_MCP_Store
         $defer_approval_lease_cleanup = false
     )
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! preg_match('/\A[A-Z0-9_]{3,96}\z/D', $result_code)
             || (! is_null($before_sha256) && ! self::is_sha256($before_sha256))
@@ -2433,6 +2482,10 @@ final class RAOS_Codex_MCP_Store
 
     public static function mark_failed($proposal_id, $result_code)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! preg_match('/\A[A-Z0-9_]{3,96}\z/D', $result_code)) {
             $result_code = 'OPERATION_FAILED';
@@ -2495,5 +2548,28 @@ final class RAOS_Codex_MCP_Store
             'after_sha256' => $row['after_sha256'],
             'audit_id' => $row['audit_id'],
         );
+    }
+
+    private static function runtime_identity_gate()
+    {
+        if (! defined('RAOS_CODEX_MCP_RUNTIME_REVISION')
+            || ! is_string(RAOS_CODEX_MCP_RUNTIME_REVISION)
+            || ! hash_equals(self::RUNTIME_REVISION, RAOS_CODEX_MCP_RUNTIME_REVISION)
+            || ! class_exists('RAOS_Codex_MCP_Abilities', false)
+            || ! method_exists('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision')) {
+            return new WP_Error(
+                'raos_codex_plugin_runtime_mixed',
+                'The loaded RAOS Codex plugin runtime is not one exact release.',
+                array('status' => 503)
+            );
+        }
+        $revision = call_user_func(array('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision'));
+        return is_string($revision) && hash_equals(self::RUNTIME_REVISION, $revision)
+            ? true
+            : new WP_Error(
+                'raos_codex_plugin_runtime_mixed',
+                'The loaded RAOS Codex plugin runtime is not one exact release.',
+                array('status' => 503)
+            );
     }
 }
