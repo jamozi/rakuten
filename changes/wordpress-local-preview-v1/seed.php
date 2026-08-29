@@ -156,6 +156,9 @@ foreach ($fixture['posts'] as $index => $post) {
             WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POST_FIXTURE_INVALID');
         }
     }
+    $title_length = function_exists('mb_strlen')
+        ? mb_strlen($post['title'], 'UTF-8')
+        : strlen($post['title']);
     if (
         preg_match('/\Alocal-preview-[a-z0-9-]+\z/D', $post['article_id']) !== 1
         || preg_match('/\Alocal-preview-[a-z0-9-]+\z/D', $post['slug']) !== 1
@@ -168,6 +171,11 @@ foreach ($fixture['posts'] as $index => $post) {
         || $post['article_id'] !== $post['slug']
         || $post['content_file'] !== 'articles/'
             . substr($post['slug'], strlen('local-preview-')) . '.html'
+        || $title_length > 500
+        || strlen($post['title']) > 2000
+        || wp_strip_all_tags($post['title']) !== $post['title']
+        || strlen($post['excerpt']) > 10000
+        || wp_kses_post($post['excerpt']) !== $post['excerpt']
     ) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POST_FIXTURE_INVALID');
     }
@@ -198,6 +206,7 @@ foreach ($fixture['posts'] as $index => $post) {
         ! is_string($content)
         || $content === ''
         || strlen($content) > 1048576
+        || wp_kses_post($content) !== $content
         || ! raos_local_preview_has_only_reviewed_https_links($content)
         || stripos($content, '<script') !== false
         || stripos($content, '<style') !== false

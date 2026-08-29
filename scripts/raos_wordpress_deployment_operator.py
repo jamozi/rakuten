@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bounded deployment operator used only by the local WordPress MCP bridge.
 
-The caller selects one of six closed operations and supplies JSON on stdin.  It
+The caller selects one of eight closed operations and supplies JSON on stdin.  It
 cannot provide a URL, command, PHP, SQL, credential path, or local package path.
 Publication and code mutation remain impossible until a distinct administrator
 has approved the hash-bound proposal in wp-admin, its single-use authorization
@@ -22,6 +22,7 @@ import re
 import stat
 import subprocess
 import sys
+import time
 from typing import Final, NoReturn
 import urllib.error
 import urllib.parse
@@ -48,6 +49,9 @@ MAX_RESPONSE_BYTES: Final = 4 * 1024 * 1024
 MAX_PACKAGE_BYTES: Final = 32 * 1024 * 1024
 MAX_FILE_BYTES: Final = 8 * 1024 * 1024
 MAX_FILE_COUNT: Final = 2048
+RELEASE_WAIT_TIMEOUT_SECONDS: Final = 900
+RELEASE_POLL_INTERVAL_SECONDS: Final = 2
+RELEASE_RECOVERY_GRACE_SECONDS: Final = 120
 ZIP_TIMESTAMP: Final = (2026, 8, 28, 0, 0, 0)
 SHA256_RE: Final = re.compile(r"^[0-9a-f]{64}$")
 SLUG_RE: Final = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -66,6 +70,13 @@ MIGRATION_SIGNALS: Final = (
 
 class OperatorFailure(RuntimeError):
     """Closed failure whose message is a non-sensitive result code."""
+
+
+class _RefuseRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Turn every HTTP redirect into an HTTPError before a second request."""
+
+    def redirect_request(self, *_: object, **__: object) -> None:
+        return None
 
 
 def fail(code: str = "WORDPRESS_MCP_OPERATOR_REFUSED") -> NoReturn:
@@ -219,7 +230,10 @@ def request_json(
         headers=headers,
         method=method,
     )
-    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    opener = urllib.request.build_opener(
+        urllib.request.ProxyHandler({}),
+        _RefuseRedirectHandler(),
+    )
     try:
         with opener.open(request, timeout=30) as response:
             if response.geturl() != DEPLOY_API + path:
@@ -228,6 +242,8 @@ def request_json(
             if len(payload) > MAX_RESPONSE_BYTES:
                 fail("WORDPRESS_MCP_RESPONSE_TOO_LARGE")
     except urllib.error.HTTPError as error:
+        if 300 <= error.code < 400:
+            fail("WORDPRESS_MCP_REDIRECT_REFUSED")
         code = f"WORDPRESS_MCP_HTTP_{error.code}"
         try:
             error_payload = error.read(16 * 1024)
@@ -246,6 +262,190 @@ def request_json(
     except UnicodeError, json.JSONDecodeError:
         fail("WORDPRESS_MCP_RESPONSE_INVALID")
     return exact_object(value, set(), set(value) if type(value) is dict else set())
+
+
+def _release_operation(proposal_id: str) -> tuple[str, dict[str, object]]:
+    response = exact_object(
+        request_json("GET", f"/operations/{proposal_id}"),
+        {"kind", "operation"},
+    )
+    kind = response["kind"]
+    operation = exact_object(
+        response["operation"],
+        {
+            "schema",
+            "proposal_id",
+            "operation_id",
+            "state",
+            "result_code",
+            "before_sha256",
+            "after_sha256",
+            "audit_id",
+        },
+    )
+    state = operation["state"]
+    result_code = operation["result_code"]
+    before_sha256 = operation["before_sha256"]
+    after_sha256 = operation["after_sha256"]
+    if (
+        type(kind) is not str
+        or kind not in {"CONTENT_RELEASE", "THEME_RELEASE", "PLUGIN_CHANGE"}
+        or operation["schema"] != "OperationReceiptV1"
+        or operation["proposal_id"] != proposal_id
+        or operation["operation_id"] != proposal_id
+        or type(state) is not str
+        or state
+        not in {
+            "PENDING",
+            "MANUAL_REQUIRED",
+            "APPROVED",
+            "APPLYING",
+            "APPLIED",
+            "EXPIRED",
+            "FAILED",
+        }
+        or type(result_code) is not str
+        or re.fullmatch(r"[A-Z0-9_]{3,96}", result_code) is None
+        or (
+            before_sha256 is not None
+            and (
+                type(before_sha256) is not str
+                or SHA256_RE.fullmatch(before_sha256) is None
+            )
+        )
+        or (
+            after_sha256 is not None
+            and (
+                type(after_sha256) is not str
+                or SHA256_RE.fullmatch(after_sha256) is None
+            )
+        )
+        or type(operation["audit_id"]) is not str
+        or SHA256_RE.fullmatch(operation["audit_id"]) is None
+    ):
+        fail("WORDPRESS_MCP_OPERATION_STATUS_INVALID")
+    return kind, operation
+
+
+def _release_terminal_state(state: object) -> None:
+    result_codes = {
+        "EXPIRED": "WORDPRESS_MCP_RELEASE_EXPIRED",
+        "FAILED": "WORDPRESS_MCP_RELEASE_FAILED",
+        "MANUAL_REQUIRED": "WORDPRESS_MCP_RELEASE_MANUAL_REQUIRED",
+    }
+    if state in result_codes:
+        fail(result_codes[state])
+
+
+def _release_poll_sleep(deadline: float) -> None:
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        fail("WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT")
+    time.sleep(min(RELEASE_POLL_INTERVAL_SECONDS, remaining))
+
+
+def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
+    record = exact_object(inputs, {"proposal_ids"})
+    candidate_ids = record["proposal_ids"]
+    if type(candidate_ids) is not list or not 1 <= len(candidate_ids) <= 20:
+        fail("WORDPRESS_MCP_RELEASE_PROPOSALS_INVALID")
+    proposal_ids = [require_sha256(candidate) for candidate in candidate_ids]
+    if len(set(proposal_ids)) != len(proposal_ids):
+        fail("WORDPRESS_MCP_RELEASE_PROPOSALS_INVALID")
+
+    deadline = time.monotonic() + RELEASE_WAIT_TIMEOUT_SECONDS
+    initial: list[tuple[str, str]] = []
+    operations: dict[str, dict[str, object]] = {}
+    applying_observed: dict[str, float] = {}
+    for proposal_id in proposal_ids:
+        kind, operation = _release_operation(proposal_id)
+        if kind == "PLUGIN_CHANGE":
+            fail("WORDPRESS_MCP_RELEASE_PLUGIN_REFUSED")
+        _release_terminal_state(operation["state"])
+        if operation["state"] == "APPLYING":
+            applying_observed[proposal_id] = time.monotonic()
+        initial.append((proposal_id, kind))
+        operations[proposal_id] = operation
+    if sum(kind == "THEME_RELEASE" for _, kind in initial) > 1:
+        fail("WORDPRESS_MCP_RELEASE_THEME_LIMIT_EXCEEDED")
+
+    expected_kinds = dict(initial)
+    while True:
+        for operation in operations.values():
+            _release_terminal_state(operation["state"])
+        if all(
+            operation["state"] in {"APPROVED", "APPLYING", "APPLIED"}
+            for operation in operations.values()
+        ):
+            break
+        _release_poll_sleep(deadline)
+        for proposal_id in proposal_ids:
+            kind, operation = _release_operation(proposal_id)
+            if kind != expected_kinds[proposal_id]:
+                fail("WORDPRESS_MCP_OPERATION_STATUS_INVALID")
+            if operation["state"] == "APPLYING":
+                applying_observed.setdefault(proposal_id, time.monotonic())
+            operations[proposal_id] = operation
+
+    ordered = sorted(initial, key=lambda item: item[1] != "THEME_RELEASE")
+    receipts: list[dict[str, object]] = []
+    retryable_apply = {
+        "RAOS_CODEX_APPLY_PRECONDITION_FAILED",
+        "RAOS_CODEX_OPERATION_IN_FLIGHT",
+    }
+    retryable_recovery = {
+        "RAOS_CODEX_OPERATION_IN_FLIGHT",
+        "RAOS_CODEX_RECOVERY_GRACE_ACTIVE",
+    }
+    for proposal_id, expected_kind in ordered:
+        operation = operations[proposal_id]
+        while True:
+            state = operation["state"]
+            _release_terminal_state(state)
+            if state == "APPLIED":
+                receipts.append(operation)
+                break
+            if time.monotonic() >= deadline:
+                fail("WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT")
+            wait_before_refresh = False
+            if state == "APPROVED":
+                try:
+                    request_json(
+                        "POST",
+                        f"/proposals/{proposal_id}/apply",
+                        {},
+                        proposal_id,
+                    )
+                except OperatorFailure as error:
+                    if str(error) not in retryable_apply:
+                        raise
+                    wait_before_refresh = True
+            elif state == "APPLYING":
+                observed = applying_observed.setdefault(proposal_id, time.monotonic())
+                if time.monotonic() - observed < RELEASE_RECOVERY_GRACE_SECONDS:
+                    wait_before_refresh = True
+                else:
+                    try:
+                        request_json("POST", f"/operations/{proposal_id}/recover", {})
+                    except OperatorFailure as error:
+                        if str(error) not in retryable_recovery:
+                            raise
+                        wait_before_refresh = True
+            else:
+                fail("WORDPRESS_MCP_RELEASE_STATE_INVALID")
+            if wait_before_refresh:
+                _release_poll_sleep(deadline)
+            kind, operation = _release_operation(proposal_id)
+            if kind != expected_kind:
+                fail("WORDPRESS_MCP_OPERATION_STATUS_INVALID")
+            if operation["state"] == "APPLYING":
+                applying_observed.setdefault(proposal_id, time.monotonic())
+
+    return {
+        "schema": "ReleaseWaitApplyReceiptV1",
+        "state": "APPLIED",
+        "receipts": receipts,
+    }
 
 
 def git(*arguments: str) -> bytes:
@@ -604,12 +804,17 @@ def plugin_package(inputs: dict[str, object]) -> tuple[bytes, dict[str, object]]
 
 
 def run(command: str, inputs: dict[str, object]) -> dict[str, object]:
+    if command == "deployment-status":
+        exact_object(inputs, set())
+        return request_json("GET", "/status")
+    if command == "release-wait-and-apply":
+        return release_wait_and_apply(inputs)
     if command == "content-apply-release":
         record = exact_object(inputs, {"proposal_id"})
         proposal_id = require_sha256(record["proposal_id"])
         return request_json("POST", f"/proposals/{proposal_id}/apply", {}, proposal_id)
     if command == "theme-propose-release":
-        exact_object(inputs, set())
+        record = exact_object(inputs, set(), {"idempotency_key"})
         payload, descriptor = theme_package()
         status = request_json("GET", "/status")
         current_theme = status.get("theme")
@@ -618,15 +823,14 @@ def run(command: str, inputs: dict[str, object]) -> dict[str, object]:
             if old_version is not None and type(old_version) is not str:
                 fail("WORDPRESS_MCP_STATUS_INVALID")
             descriptor["old_version"] = old_version
-        return request_json(
-            "POST",
-            "/proposals",
-            {
-                "kind": "theme_release",
-                "code_package": descriptor,
-                "package_base64": base64.b64encode(payload).decode("ascii"),
-            },
-        )
+        proposal = {
+            "kind": "theme_release",
+            "code_package": descriptor,
+            "package_base64": base64.b64encode(payload).decode("ascii"),
+        }
+        if "idempotency_key" in record:
+            proposal["idempotency_key"] = require_sha256(record["idempotency_key"])
+        return request_json("POST", "/proposals", proposal)
     if command == "theme-apply-release":
         record = exact_object(inputs, {"proposal_id"})
         proposal_id = require_sha256(record["proposal_id"])
@@ -658,6 +862,8 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument(
         "command",
         choices=(
+            "deployment-status",
+            "release-wait-and-apply",
             "content-apply-release",
             "theme-propose-release",
             "theme-apply-release",

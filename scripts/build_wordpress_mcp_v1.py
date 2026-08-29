@@ -18,7 +18,7 @@ import zipfile
 ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
-PLUGIN_VERSION: Final = "1.1.0"
+PLUGIN_VERSION: Final = "1.2.0"
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
 MANIFEST: Final = SLICE / "runtime-manifest.v1.json"
 OUTPUT: Final = (
@@ -35,6 +35,18 @@ PLUGIN_FILES: Final = (
 )
 RUNTIME_PATHS: Final = (
     ".codex/config.toml",
+    "Makefile",
+    "changes/wordpress-local-preview-v1/README.md",
+    "changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
+    "changes/wordpress-local-preview-v1/compose.yaml",
+    "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
+    "changes/wordpress-local-preview-v1/fixtures/posts.json",
+    "changes/wordpress-local-preview-v1/production-mapping.v1.json",
+    "changes/wordpress-local-preview-v1/seed.php",
     "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json",
     "changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.json",
     "changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.schema.json",
@@ -46,16 +58,23 @@ RUNTIME_PATHS: Final = (
     "scripts/build_wordpress_mcp_v1.py",
     "scripts/check_wordpress_public_ui_playwright.sh",
     "scripts/raos_wordpress_deployment_operator.py",
+    "scripts/raos_wordpress_publication_request.py",
     "scripts/raos_wordpress_editor_mcp_launcher.mjs",
     "scripts/store_wordpress_mcp_credential.py",
     "scripts/wordpress_public_ui_audit.function.js",
     "tests/wordpress_mcp_v1/e2e/approve_harness.php",
+    "tests/wordpress_mcp_v1/e2e/batch_approve_harness.php",
     "tests/wordpress_mcp_v1/e2e/client.py",
     "tests/wordpress_mcp_v1/e2e/compose.yaml",
     "tests/wordpress_mcp_v1/e2e/gateway/nginx.conf",
     "tests/wordpress_mcp_v1/e2e/mutate_harness.php",
+    "tests/wordpress_mcp_v1/e2e/idempotency_harness.php",
     "tests/wordpress_mcp_v1/e2e/prepare_packages.py",
     "tests/wordpress_mcp_v1/e2e/run.sh",
+    "tests/wordpress_mcp_v1/e2e/store_upgrade_harness.php",
+    "tests/wordpress_mcp_v1/test_batch_approval.py",
+    "tests/wordpress_mcp_v1/test_release_watcher.py",
+    "tests/wordpress_local_preview/test_publication_request.py",
     *(
         f"changes/wordpress-mcp-v1/wordpress-plugin/{PLUGIN_SLUG}/{name}"
         for name in PLUGIN_FILES
