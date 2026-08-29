@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import shutil
 import subprocess
 from typing import Callable
 
@@ -348,6 +349,8 @@ def test_apply_and_recovery_share_the_authoritative_nonblocking_lock() -> None:
 
 
 def test_bridge_advertises_bounds_and_rejects_duplicate_ids() -> None:
+    node = shutil.which("node")
+    assert node is not None
     messages = "\n".join(
         (
             json.dumps(
@@ -382,7 +385,7 @@ def test_bridge_advertises_bounds_and_rejects_duplicate_ids() -> None:
     )
     completed = subprocess.run(
         [
-            "/home/minami/.nvm/versions/node/v24.18.1/bin/node",
+            node,
             "--experimental-strip-types",
             "packages/wordpress-mcp-bridge/src/index.ts",
         ],
