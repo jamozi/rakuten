@@ -120,7 +120,7 @@ def test_editor_mcp_refuses_cross_origin_redirect_before_authorized_second_reque
             client = object.__new__(publication.EditorMcpClient)
             client.endpoint = endpoint
             client.username = "redirect-test-editor"
-            client.password = "not-a-production-password-1234"
+            client.application_credential = "synthetic-test-value-1234"
             client.session_id = None
             client.next_id = 1
 
@@ -130,9 +130,9 @@ def test_editor_mcp_refuses_cross_origin_redirect_before_authorized_second_reque
             ):
                 client._request({"jsonrpc": "2.0", "id": 1, "method": "ping"})
 
-    expected = "Basic " + base64.b64encode(
-        b"redirect-test-editor:not-a-production-password-1234"
-    ).decode("ascii")
+        expected = "Basic " + base64.b64encode(
+            b"redirect-test-editor:synthetic-test-value-1234"
+        ).decode("ascii")
     assert origin_requests == [
         {"method": "POST", "path": "/editor", "authorization": expected}
     ]

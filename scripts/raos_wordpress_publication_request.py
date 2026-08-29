@@ -555,7 +555,7 @@ class EditorMcpClient:
 
     def __init__(self) -> None:
         self.endpoint = EDITOR_ENDPOINT
-        self.username, self.password = _secure_credential()
+        self.username, self.application_credential = _secure_credential()
         self.session_id: str | None = None
         self.next_id = 1
 
@@ -564,7 +564,7 @@ class EditorMcpClient:
     ) -> tuple[int, bytes, Mapping[str, str]]:
         data = canonical_json_bytes(value)
         authorization = base64.b64encode(
-            f"{self.username}:{self.password}".encode("utf-8")
+            f"{self.username}:{self.application_credential}".encode("utf-8")
         ).decode("ascii")
         headers = {
             "Accept": "application/json, text/event-stream",
@@ -1177,6 +1177,14 @@ def _validate_deployment_tools(tools: object) -> None:
     wait_ids = (
         wait_properties.get("proposal_ids") if type(wait_properties) is dict else None
     )
+    wait_batch_token = (
+        wait_properties.get("batch_token") if type(wait_properties) is dict else None
+    )
+    wait_batch_manifest = (
+        wait_properties.get("batch_manifest_sha256")
+        if type(wait_properties) is dict
+        else None
+    )
     wait_items = wait_ids.get("items") if type(wait_ids) is dict else None
     if (
         type(status_schema) is not dict
@@ -1189,7 +1197,14 @@ def _validate_deployment_tools(tools: object) -> None:
         or theme_key.get("pattern") != "^[0-9a-f]{64}$"
         or type(wait_ids) is not dict
         or wait_schema.get("type") != "object"
-        or wait_schema.get("required") != ["proposal_ids"]
+        or set(wait_schema.get("required", []))
+        != {"batch_token", "batch_manifest_sha256", "proposal_ids"}
+        or type(wait_batch_token) is not dict
+        or wait_batch_token.get("type") != "string"
+        or wait_batch_token.get("pattern") != "^[0-9a-f]{64}$"
+        or type(wait_batch_manifest) is not dict
+        or wait_batch_manifest.get("type") != "string"
+        or wait_batch_manifest.get("pattern") != "^[0-9a-f]{64}$"
         or wait_ids.get("type") != "array"
         or wait_ids.get("minItems") != 1
         or wait_ids.get("maxItems") != 20
@@ -1733,7 +1748,11 @@ def wait_and_apply(
     _touch_receipt(path, receipt, "WAITING_FOR_APPROVAL")
     aggregate = _deployment_mcp_call(
         "release-wait-and-apply",
-        {"proposal_ids": proposal_ids},
+        {
+            "batch_token": batch_token,
+            "batch_manifest_sha256": manifest_hash,
+            "proposal_ids": proposal_ids,
+        },
         timeout=1080,
         runner=runner,
     )

@@ -240,6 +240,11 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
         "proposal_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
     }
     assert tools["release-wait-and-apply"]["inputSchema"]["properties"] == {
+        "batch_token": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "batch_manifest_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+        },
         "proposal_ids": {
             "type": "array",
             "minItems": 1,

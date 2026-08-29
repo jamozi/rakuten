@@ -259,8 +259,20 @@ def _deployment_tools() -> list[dict[str, object]]:
                 }
             }
         if name == "release-wait-and-apply":
-            schema["required"] = ["proposal_ids"]
+            schema["required"] = [
+                "batch_token",
+                "batch_manifest_sha256",
+                "proposal_ids",
+            ]
             schema["properties"] = {
+                "batch_token": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$",
+                },
+                "batch_manifest_sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$",
+                },
                 "proposal_ids": {
                     "type": "array",
                     "minItems": 1,
@@ -465,7 +477,11 @@ class DeploymentRunner:
             expected_ids = ["a" * 64]
             if self.theme_proposed:
                 expected_ids.append("b" * 64)
-            assert tool_arguments == {"proposal_ids": sorted(expected_ids)}
+            assert tool_arguments == {
+                "batch_token": "c" * 64,
+                "batch_manifest_sha256": "d" * 64,
+                "proposal_ids": sorted(expected_ids),
+            }
             if self.fail_first_wait and self.watcher_calls == 1:
                 value = {"code": "WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT"}
                 return self._response(arguments, value, is_error=True)

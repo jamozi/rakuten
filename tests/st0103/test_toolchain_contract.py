@@ -122,7 +122,7 @@ def test_only_the_owned_web_boundaries_are_scoped_as_private_workspaces(
     assert web_manifest["version"] == "0.0.0"
     assert web_manifest["private"] is True
     assert wordpress_mcp_bridge_manifest["name"] == "@raos/wordpress-mcp-bridge"
-    assert wordpress_mcp_bridge_manifest["version"] == "1.0.0"
+    assert wordpress_mcp_bridge_manifest["version"] == "1.1.0"
     assert wordpress_mcp_bridge_manifest["private"] is True
     assert web_ui_manifest["name"] == "@raos/web-ui"
     assert web_ui_manifest["version"] == "0.0.0"
