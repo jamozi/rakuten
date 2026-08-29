@@ -256,8 +256,8 @@
     },
     {
       "path": "tests/wordpress_mcp_v1/test_release_watcher.py",
-      "sha256": "6310648536bd407c65b18854d947d0d20a3ccc395a006d55497623526944ec36",
-      "size": 25094
+      "sha256": "6b94d3dc8b70b74f42389414a9789351c6f22eebbc30d159de3d224dbdee9333",
+      "size": 25121
     },
     {
       "path": "tests/wordpress_local_preview/test_publication_request.py",
