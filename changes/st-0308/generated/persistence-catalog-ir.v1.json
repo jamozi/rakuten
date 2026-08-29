@@ -64,7 +64,7 @@
     },
     "source_sha256": {
       "changes/st-0105/README.md": "15adf4e461592453f78a363ccba411c861f476aeaf58444039c6eaff12ade8de",
-      "changes/st-0105/manifest.json": "9d264a1a39a6781bc6a24973e0a14b1a52fd7a8485b8f2d563b357c56834eb0d",
+      "changes/st-0105/manifest.json": "7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7",
       "changes/st-0303/generated/iam-ops-catalog.v1.json": "8ebf0d20ae07e4f82564f16c675b60f4a782464f5b25aa0a2b0df668f8475128",
       "changes/st-0304/contracts/domain-schema.v1.yaml": "8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122",
       "changes/st-0304/contracts/physical/01-domain-physical.sql": "b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8",
