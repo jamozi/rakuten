@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import tomllib
@@ -14,7 +15,6 @@ from scripts import build_wordpress_mcp_v1
 ROOT = Path(__file__).resolve().parents[2]
 SLICE = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN = SLICE / "wordpress-plugin/raos-codex-mcp-abilities"
-NODE = Path("/home/minami/.nvm/versions/node/v24.18.1/bin/node")
 
 
 def test_owner_generator_defaults_to_manifest_mode(monkeypatch) -> None:
@@ -100,6 +100,8 @@ def test_lockfile_has_exact_mcp_versions() -> None:
 
 
 def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
+    node = shutil.which("node")
+    assert node is not None
     messages = "\n".join(
         (
             json.dumps(
@@ -123,7 +125,7 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
     )
     result = subprocess.run(
         [
-            NODE,
+            node,
             "--experimental-strip-types",
             "packages/wordpress-mcp-bridge/src/index.ts",
         ],
