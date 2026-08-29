@@ -188,16 +188,18 @@ def test_code_cleanup_requires_a_persisted_terminal_state() -> None:
 
 def test_code_apply_force_invalidates_exact_php_manifest_before_runtime_use() -> None:
     code = method("apply_code", "install_code_tree")
-    assert code.index("$installed = self::install_code_tree") < code.index(
-        "self::invalidate_php_manifest"
-    )
-    assert code.index("self::invalidate_php_manifest") < code.index(
-        "$activation = true"
-    )
-    assert code.index("self::invalidate_php_manifest") < code.index(
-        "$readback = self::tree_hash($target)"
-    )
-    assert "return true === $rollback ? $invalidation : $rollback" in code
+    before_invalidation = code.index("$before_invalidation = self::invalidate_php_manifest")
+    install = code.index("$installed = self::install_code_tree")
+    after_invalidation = code.index("$after_invalidation = self::invalidate_php_manifest")
+    assert before_invalidation < install < after_invalidation
+    assert after_invalidation < code.index("$activation = true")
+    assert after_invalidation < code.index("$readback = self::tree_hash($target)")
+    assert "$before_manifest = is_dir($target) ? self::tree_manifest($target) : null" in code
+    after_call = code.split("$after_invalidation = self::invalidate_php_manifest", 1)[1].split(
+        ");", 1
+    )[0]
+    assert "is_array($before_manifest) ? $before_manifest : array()" in after_call
+    assert "return true === $rollback ? $after_invalidation : $rollback" in code
 
     invalidation = method("invalidate_php_manifest", "tree_manifest")
     assert "extension_loaded('Zend OPcache')" in invalidation
@@ -220,14 +222,34 @@ def test_code_apply_force_invalidates_exact_php_manifest_before_runtime_use() ->
     assert "raos_codex_opcache_invalidation_unavailable" in invalidation
     assert "raos_codex_opcache_path_invalid" in invalidation
     assert "raos_codex_opcache_invalidation_failed" in invalidation
+    assert "$stale_manifest" in invalidation
+    assert "$exact_paths[$entry['path']] = true" in invalidation
+    assert "isset($exact_paths[$entry['path']])" in invalidation
+    assert "isset($seen[$folded])" not in invalidation
+    assert "file_exists($expected) || is_link($expected)" in invalidation
+    assert "$invalidate($expected, true)" in invalidation
 
 
 def test_code_rollback_and_recovery_never_terminalize_stale_php_runtime() -> None:
     restore = method("restore_code_before", "validate_code_package")
+    assert "$preflight_backup_hash" in restore
+    assert restore.index("$preflight_backup_hash") < restore.index(
+        "$move($target, $quarantine_root)"
+    )
+    assert "hash_equals($before_sha256, $preflight_backup_hash)" in restore
+    assert "raos_codex_code_rollback_backup_indeterminate" in restore
+    assert "self::remove_tree($target)" not in restore
+    assert "$move($target, $quarantine_root)" in restore
+    assert restore.index("$move($target, $quarantine_root)") < restore.index(
+        "$quarantined_hash = self::tree_hash($quarantine_root)"
+    )
+    assert "$move($quarantine_root, $target)" in restore
+    assert "raos_codex_code_rollback_after_drift" in restore
     assert "self::tree_manifest($target)" in restore
     assert "self::invalidate_php_manifest(" in restore
     assert "$invalidator" in restore
     assert "$opcache_active" in restore
+    assert "$stale_manifest" in restore
     assert "raos_codex_code_rollback_opcache_indeterminate" in restore
 
     recover = method("recover_operation", "apply_content")
@@ -235,11 +257,58 @@ def test_code_rollback_and_recovery_never_terminalize_stale_php_runtime() -> Non
     after_receipt = recover.index("RAOS_Codex_MCP_Store::complete")
     assert after_runtime < after_receipt
     assert recover.count("self::invalidate_php_manifest") == 2
+    after_branch = recover.split("if (is_string($current_hash)", 1)[1].split(
+        "if (! $current_read_error", 1
+    )[0]
+    assert after_branch.index("self::apply_gate($row['kind'])") < after_branch.index(
+        "self::validate_approval_lease($row)"
+    ) < after_branch.index("self::invalidate_php_manifest")
+    assert after_branch.index("self::validate_approval_lease($row)") < after_branch.index(
+        "RAOS_Codex_MCP_Store::complete("
+    )
     assert "self::recoverable_from_error($invalidation)" in recover
     invalidation_failure = recover.split("if (is_wp_error($invalidation))", 1)[1]
     assert "self::validate_approval_lease($row)" in invalidation_failure
     assert "self::restore_code_before(" in invalidation_failure
     assert "RAOS_Codex_MCP_Store::mark_failed" in invalidation_failure
+
+
+def test_equal_code_hash_recovery_requires_exact_install_backup_evidence() -> None:
+    recover = method("recover_operation", "apply_content")
+    equal = recover.split("$equal_code_hashes", 1)[1].split(
+        "if (is_string($current_hash)", 1
+    )[0]
+    assert "hash_equals($row['before_sha256'], $row['after_sha256'])" in equal
+    assert "'/operation-' . $row['proposal_id'] . '/before'" in equal
+    assert "self::tree_manifest($backup)" in equal
+    assert "RAOS_Codex_MCP_Store::hash($recovery_before_manifest)" in equal
+    assert "hash_equals($row['before_sha256'], $backup_hash)" in equal
+    assert "raos_codex_equal_hash_state_indeterminate" in equal
+    assert "remove_tree" not in equal
+    assert "restore_code_before" not in equal
+    assert recover.index("$equal_code_hashes") < recover.index(
+        "RAOS_Codex_MCP_Store::complete("
+    )
+
+
+def test_equivalent_content_recovery_rechecks_gate_and_approval_lease() -> None:
+    recover = method("recover_operation", "apply_content")
+    equivalent = recover.split("if ($equivalent_content_release", 1)[1].split(
+        "$code_at_after", 1
+    )[0]
+    gate = equivalent.index("self::apply_gate($row['kind'])")
+    lease = equivalent.index("self::validate_approval_lease($row)")
+    binding = equivalent.index(
+        "RAOS_Codex_MCP_Store::get_claimed_publication_batch_for_proposal"
+    )
+    apply = equivalent.index("$this->apply_content(")
+    assert gate < lease < binding < apply
+    assert equivalent.count("self::recoverable_from_error(") >= 3
+    assert "raos_codex_recovery_content_theme_not_ready" in equivalent
+
+    apply_gate = method("apply_gate", "gate")
+    assert "self::gate('RAOS_OPERATOR_WRITES_ENABLED')" in apply_gate
+    assert "raos_codex_global_kill_switch_disabled" in apply_gate
 
 
 def test_deployment_status_exposes_loaded_theme_runtime_version() -> None:

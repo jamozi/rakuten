@@ -39,6 +39,34 @@ function raos_e2e_rollback_remove_tree($path)
     @rmdir($path);
 }
 
+function raos_e2e_rollback_copy_tree($source, $destination)
+{
+    if (! is_dir($source) || file_exists($destination)
+        || ! mkdir($destination, 0700, true)) {
+        return false;
+    }
+    $root = realpath($source);
+    if (! is_string($root)) {
+        return false;
+    }
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+    foreach ($iterator as $entry) {
+        if ($entry->isLink()) {
+            return false;
+        }
+        $relative = substr($entry->getPathname(), strlen($root) + 1);
+        $target = $destination . '/' . $relative;
+        if (($entry->isDir() && ! mkdir($target, 0700, false))
+            || ($entry->isFile() && ! copy($entry->getPathname(), $target))) {
+            return false;
+        }
+    }
+    return true;
+}
+
 function raos_e2e_rollback_method($name)
 {
     $method = new ReflectionMethod(RAOS_Codex_MCP_Deployment::class, $name);
@@ -124,6 +152,7 @@ if (! mkdir($fixture_root, 0700, false)) {
 $install = raos_e2e_rollback_method('install_code_tree');
 $restore = raos_e2e_rollback_method('restore_code_before');
 $invalidate_php = raos_e2e_rollback_method('invalidate_php_manifest');
+$tree_manifest = raos_e2e_rollback_method('tree_manifest');
 $apply_content = raos_e2e_rollback_method('apply_content');
 $write_content = raos_e2e_rollback_method('write_content_document');
 $begin_content = raos_e2e_rollback_method('begin_content_transaction');
@@ -164,6 +193,104 @@ $result = $invalidate_php->invoke(null, $case, $manifest, $recording_invalidator
 if (true !== $result
     || array(array(realpath($case . '/runtime.php'), true)) !== $invalidated_paths) {
     raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_EXACT_MANIFEST_FAILED');
+}
+
+// An update must invalidate the before tree while removed PHP paths still
+// resolve, then invalidate the installed after manifest. Otherwise an opcode
+// for a deleted PHP file can survive when timestamp validation is disabled.
+$case = $fixture_root . '/opcache-removed-php';
+mkdir($case, 0700, true);
+file_put_contents($case . '/removed.php', "<?php return 'removed';\n");
+file_put_contents($case . '/shared.php', "<?php return 'before';\n");
+$removed_path = realpath($case . '/removed.php');
+$removed = file_get_contents($case . '/removed.php');
+$shared_before = file_get_contents($case . '/shared.php');
+$before_manifest = array(
+    array(
+        'path' => 'removed.php',
+        'size' => strlen($removed),
+        'sha256' => hash('sha256', $removed),
+    ),
+    array(
+        'path' => 'shared.php',
+        'size' => strlen($shared_before),
+        'sha256' => hash('sha256', $shared_before),
+    ),
+);
+$invalidated_paths = array();
+$result = $invalidate_php->invoke(
+    null,
+    $case,
+    $before_manifest,
+    $recording_invalidator,
+    true
+);
+unlink($case . '/removed.php');
+file_put_contents($case . '/shared.php', "<?php return 'after';\n");
+$shared_after = file_get_contents($case . '/shared.php');
+$after_manifest = array(
+    array(
+        'path' => 'shared.php',
+        'size' => strlen($shared_after),
+        'sha256' => hash('sha256', $shared_after),
+    ),
+);
+$after_result = $invalidate_php->invoke(
+    null,
+    $case,
+    $after_manifest,
+    $recording_invalidator,
+    true,
+    $before_manifest
+);
+$shared_path = realpath($case . '/shared.php');
+if (true !== $result
+    || true !== $after_result
+    || ! is_string($removed_path)
+    || array(
+        array($removed_path, true),
+        array($shared_path, true),
+        array($shared_path, true),
+        array($removed_path, true),
+    ) !== $invalidated_paths) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_REMOVED_PHP_FAILED');
+}
+
+// Linux OPcache keys are case-sensitive absolute paths. A case-only rename
+// must invalidate both the new file and the absent old spelling.
+$case = $fixture_root . '/opcache-case-only-rename';
+mkdir($case, 0700, true);
+file_put_contents($case . '/foo.php', "<?php return 'after';\n");
+$case_after = file_get_contents($case . '/foo.php');
+$case_after_manifest = array(
+    array(
+        'path' => 'foo.php',
+        'size' => strlen($case_after),
+        'sha256' => hash('sha256', $case_after),
+    ),
+);
+$case_before_manifest = array(
+    array(
+        'path' => 'Foo.php',
+        'size' => strlen("<?php return 'before';\n"),
+        'sha256' => hash('sha256', "<?php return 'before';\n"),
+    ),
+);
+$invalidated_paths = array();
+$result = $invalidate_php->invoke(
+    null,
+    $case,
+    $case_after_manifest,
+    $recording_invalidator,
+    true,
+    $case_before_manifest
+);
+if (true !== $result
+    || array(
+        array(realpath($case . '/foo.php'), true),
+        array(realpath($case) . '/Foo.php', true),
+    ) !== $invalidated_paths) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_CASE_ONLY_RENAME_FAILED');
 }
 
 // An unavailable or SAPI-disabled OPcache engine has no stale entries, so it
@@ -307,6 +434,100 @@ if (! is_wp_error($result)
     || is_dir($backup)
     || ! hash_equals($before_hash, RAOS_Codex_MCP_Deployment::tree_hash($target))) {
     raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_ROLLBACK_RECOVERY_FAILED');
+}
+
+// After rollback, invalidate the restored before manifest plus any new-only
+// PHP path that disappeared with the rejected after tree.
+$case = $fixture_root . '/opcache-rollback-new-only';
+$target = $case . '/target';
+$backup = $case . '/operation/before';
+mkdir($target, 0700, true);
+mkdir($backup, 0700, true);
+file_put_contents($target . '/shared.php', "<?php return 'after';\n");
+file_put_contents($target . '/new-only.php', "<?php return 'new';\n");
+file_put_contents($backup . '/shared.php', "<?php return 'before';\n");
+$before_hash = RAOS_Codex_MCP_Deployment::tree_hash($backup);
+$after_hash = RAOS_Codex_MCP_Deployment::tree_hash($target);
+$after_manifest = $tree_manifest->invoke(null, $target);
+$new_only_path = realpath($target . '/new-only.php');
+$invalidated_paths = array();
+$result = $restore->invoke(
+    null,
+    $target,
+    $backup,
+    $before_hash,
+    $after_hash,
+    null,
+    $recording_invalidator,
+    true,
+    $after_manifest
+);
+$restored_shared = realpath($target . '/shared.php');
+if (true !== $result
+    || ! is_string($new_only_path)
+    || array(
+        array($restored_shared, true),
+        array($new_only_path, true),
+    ) !== $invalidated_paths
+    || ! hash_equals($before_hash, RAOS_Codex_MCP_Deployment::tree_hash($target))) {
+    raos_e2e_rollback_fail('RAOS_E2E_OPCACHE_ROLLBACK_NEW_ONLY_FAILED');
+}
+
+// Equal before/after hashes are not permission to delete a live tree. A
+// missing exact backup fails before remove_tree(), leaving the target intact.
+$case = $fixture_root . '/equal-hash-missing-backup';
+$target = $case . '/target';
+$backup = $case . '/operation/before';
+mkdir($target, 0700, true);
+file_put_contents($target . '/runtime.php', "<?php return 'same';\n");
+$equal_hash = RAOS_Codex_MCP_Deployment::tree_hash($target);
+$result = $restore->invoke(
+    null,
+    $target,
+    $backup,
+    $equal_hash,
+    $equal_hash,
+    null,
+    $recording_invalidator,
+    true
+);
+if (! is_wp_error($result)
+    || 'raos_codex_code_rollback_backup_indeterminate' !== $result->get_error_code()
+    || ! raos_e2e_recovery_required($result)
+    || ! is_dir($target)
+    || ! hash_equals($equal_hash, RAOS_Codex_MCP_Deployment::tree_hash($target))) {
+    raos_e2e_rollback_fail('RAOS_E2E_EQUAL_HASH_MISSING_BACKUP_FAILED');
+}
+
+// With exact equal-hash backup evidence, rollback may replace the target. A
+// failed runtime invalidation still leaves exact before bytes recoverable.
+$case = $fixture_root . '/equal-hash-exact-backup';
+$target = $case . '/target';
+$backup = $case . '/operation/before';
+mkdir($target, 0700, true);
+mkdir($backup, 0700, true);
+file_put_contents($target . '/runtime.php', "<?php return 'same';\n");
+file_put_contents($backup . '/runtime.php', "<?php return 'same';\n");
+$equal_hash = RAOS_Codex_MCP_Deployment::tree_hash($target);
+$result = $restore->invoke(
+    null,
+    $target,
+    $backup,
+    $equal_hash,
+    $equal_hash,
+    null,
+    static function () {
+        return false;
+    },
+    true
+);
+if (! is_wp_error($result)
+    || 'raos_codex_code_rollback_opcache_indeterminate' !== $result->get_error_code()
+    || ! raos_e2e_recovery_required($result)
+    || is_dir($backup)
+    || ! is_dir($target)
+    || ! hash_equals($equal_hash, RAOS_Codex_MCP_Deployment::tree_hash($target))) {
+    raos_e2e_rollback_fail('RAOS_E2E_EQUAL_HASH_EXACT_BACKUP_FAILED');
 }
 
 $held_publication_lock = $acquire_publication_lock->invoke(null);
@@ -470,6 +691,86 @@ if (! is_wp_error($result)
     || ! hash_equals($third_hash, RAOS_Codex_MCP_Deployment::tree_hash($target))
     || ! hash_equals($before_hash, RAOS_Codex_MCP_Deployment::tree_hash($backup))) {
     raos_e2e_rollback_fail('RAOS_E2E_ROLLBACK_CODE_DRIFT_FAILED');
+}
+
+// Inject an updater mutation exactly after target -> private quarantine. The
+// quarantined third state is atomically restored to the live path and is never
+// recursively deleted based on the earlier target hash.
+$case = $fixture_root . '/rollback-quarantine-race';
+$target = $case . '/target';
+$backup = $case . '/operation/before';
+$after_template = $case . '/after';
+mkdir($target, 0700, true);
+mkdir($backup, 0700, true);
+mkdir($after_template, 0700, true);
+file_put_contents($target . '/tree.txt', 'after');
+file_put_contents($backup . '/tree.txt', 'before');
+file_put_contents($after_template . '/tree.txt', 'after');
+$before_hash = RAOS_Codex_MCP_Deployment::tree_hash($backup);
+$after_hash = RAOS_Codex_MCP_Deployment::tree_hash($after_template);
+$quarantine = dirname($backup) . '/after-quarantine';
+$mover = static function ($source, $destination) use ($target, $quarantine) {
+    $moved = rename($source, $destination);
+    if ($moved && $source === $target && $destination === $quarantine) {
+        file_put_contents($quarantine . '/tree.txt', 'racing-third-state');
+    }
+    return $moved;
+};
+$result = $restore->invoke(
+    null,
+    $target,
+    $backup,
+    $before_hash,
+    $after_hash,
+    $mover
+);
+if (! is_wp_error($result)
+    || 'raos_codex_code_rollback_after_drift' !== $result->get_error_code()
+    || ! raos_e2e_recovery_required($result)
+    || ! is_dir($target)
+    || is_dir($quarantine)
+    || 'racing-third-state' !== file_get_contents($target . '/tree.txt')
+    || ! hash_equals($before_hash, RAOS_Codex_MCP_Deployment::tree_hash($backup))) {
+    raos_e2e_rollback_fail('RAOS_E2E_ROLLBACK_QUARANTINE_RACE_FAILED');
+}
+
+// If an updater recreates the live path after quarantine, preserve both that
+// new live tree and the exact quarantined after tree for manual recovery.
+$case = $fixture_root . '/rollback-quarantine-recreated-target';
+$target = $case . '/target';
+$backup = $case . '/operation/before';
+$after_template = $case . '/after';
+mkdir($target, 0700, true);
+mkdir($backup, 0700, true);
+mkdir($after_template, 0700, true);
+file_put_contents($target . '/tree.txt', 'after');
+file_put_contents($backup . '/tree.txt', 'before');
+file_put_contents($after_template . '/tree.txt', 'after');
+$before_hash = RAOS_Codex_MCP_Deployment::tree_hash($backup);
+$after_hash = RAOS_Codex_MCP_Deployment::tree_hash($after_template);
+$quarantine = dirname($backup) . '/after-quarantine';
+$mover = static function ($source, $destination) use ($target, $quarantine) {
+    $moved = rename($source, $destination);
+    if ($moved && $source === $target && $destination === $quarantine) {
+        mkdir($target, 0700, true);
+        file_put_contents($target . '/tree.txt', 'new-live-third-state');
+    }
+    return $moved;
+};
+$result = $restore->invoke(
+    null,
+    $target,
+    $backup,
+    $before_hash,
+    $after_hash,
+    $mover
+);
+if (! is_wp_error($result)
+    || ! raos_e2e_recovery_required($result)
+    || 'new-live-third-state' !== file_get_contents($target . '/tree.txt')
+    || 'after' !== file_get_contents($quarantine . '/tree.txt')
+    || ! hash_equals($before_hash, RAOS_Codex_MCP_Deployment::tree_hash($backup))) {
+    raos_e2e_rollback_fail('RAOS_E2E_ROLLBACK_RECREATED_TARGET_FAILED');
 }
 
 // Store::complete() failure after an exact committed after readback must remain
@@ -1185,6 +1486,43 @@ if (is_wp_error($claimed_member)
     || ! hash_equals($batch['batch_token'], $exact_batch['batch_token'])) {
     raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_BINDING_FAILED');
 }
+$request = new WP_REST_Request('POST', '/');
+$request->set_url_params(array('operation_id' => $row['proposal_id']));
+
+// The document hash cannot prove that the runtime authorization checks ran.
+// A missing or corrupt approval lease therefore leaves the original operation
+// APPLYING and explicitly recoverable; recovery never performs the no-op apply.
+$lease_path = $private . '/approval-lease-' . $row['proposal_id'] . '.json';
+$held_lease_path = $lease_path . '.held';
+$lease_payload = is_file($lease_path) ? file_get_contents($lease_path) : false;
+if (! is_string($lease_payload)
+    || file_exists($held_lease_path)
+    || ! rename($lease_path, $held_lease_path)) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_LEASE_SETUP_FAILED');
+}
+$missing_lease = $deployment->recover_operation($request);
+$missing_lease_stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+if (! rename($held_lease_path, $lease_path)
+    || ! is_wp_error($missing_lease)
+    || 'raos_codex_approval_lease_invalid' !== $missing_lease->get_error_code()
+    || ! raos_e2e_recovery_required($missing_lease)
+    || is_wp_error($missing_lease_stored)
+    || 'APPLYING' !== $missing_lease_stored['state']) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_LEASE_FAILED');
+}
+if (false === file_put_contents($lease_path, '{}')) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_LEASE_SETUP_FAILED');
+}
+$corrupt_lease = $deployment->recover_operation($request);
+$corrupt_lease_stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+if (false === file_put_contents($lease_path, $lease_payload)
+    || ! is_wp_error($corrupt_lease)
+    || 'raos_codex_approval_lease_invalid' !== $corrupt_lease->get_error_code()
+    || ! raos_e2e_recovery_required($corrupt_lease)
+    || is_wp_error($corrupt_lease_stored)
+    || 'APPLYING' !== $corrupt_lease_stored['state']) {
+    raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_LEASE_FAILED');
+}
 
 // An absent approved/claimed candidate is never guessed from the operation.
 $wpdb->update(
@@ -1192,16 +1530,18 @@ $wpdb->update(
     array('state' => 'REGISTERED'),
     array('batch_token' => $batch['batch_token'])
 );
-$missing = RAOS_Codex_MCP_Store::get_claimed_publication_batch_for_proposal(
-    $row['proposal_id']
-);
+$missing = $deployment->recover_operation($request);
+$missing_stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
 $wpdb->update(
     RAOS_Codex_MCP_Store::batch_table_name(),
     array('state' => 'APPROVED'),
     array('batch_token' => $batch['batch_token'])
 );
 if (! is_wp_error($missing)
-    || 'raos_codex_publication_batch_binding_indeterminate' !== $missing->get_error_code()) {
+    || 'raos_codex_publication_batch_binding_indeterminate' !== $missing->get_error_code()
+    || ! raos_e2e_recovery_required($missing)
+    || is_wp_error($missing_stored)
+    || 'APPLYING' !== $missing_stored['state']) {
     raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_BINDING_FAILED');
 }
 
@@ -1223,9 +1563,8 @@ $wpdb->update(
     ),
     array('batch_token' => $batch['batch_token'])
 );
-$corrupt = RAOS_Codex_MCP_Store::get_claimed_publication_batch_for_proposal(
-    $row['proposal_id']
-);
+$corrupt = $deployment->recover_operation($request);
+$corrupt_stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
 $wpdb->update(
     RAOS_Codex_MCP_Store::batch_table_name(),
     array(
@@ -1235,7 +1574,10 @@ $wpdb->update(
     array('batch_token' => $batch['batch_token'])
 );
 if (! is_wp_error($corrupt)
-    || 'raos_codex_publication_batch_binding_indeterminate' !== $corrupt->get_error_code()) {
+    || 'raos_codex_publication_batch_binding_indeterminate' !== $corrupt->get_error_code()
+    || ! raos_e2e_recovery_required($corrupt)
+    || is_wp_error($corrupt_stored)
+    || 'APPLYING' !== $corrupt_stored['state']) {
     raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_BINDING_FAILED');
 }
 
@@ -1286,16 +1628,18 @@ $inserted = $wpdb->insert(
     )
 );
 $ambiguous = 1 === $inserted
-    ? RAOS_Codex_MCP_Store::get_claimed_publication_batch_for_proposal(
-        $row['proposal_id']
-    )
+    ? $deployment->recover_operation($request)
     : null;
+$ambiguous_stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
 $wpdb->delete(
     RAOS_Codex_MCP_Store::batch_table_name(),
     array('batch_token' => $ambiguous_token)
 );
 if (! is_wp_error($ambiguous)
-    || 'raos_codex_publication_batch_binding_indeterminate' !== $ambiguous->get_error_code()) {
+    || 'raos_codex_publication_batch_binding_indeterminate' !== $ambiguous->get_error_code()
+    || ! raos_e2e_recovery_required($ambiguous)
+    || is_wp_error($ambiguous_stored)
+    || 'APPLYING' !== $ambiguous_stored['state']) {
     raos_e2e_rollback_fail('RAOS_E2E_CONTENT_EQUIVALENT_RECOVERY_BINDING_FAILED');
 }
 
@@ -1319,8 +1663,6 @@ $theme_root = get_theme_root(RAOS_Codex_MCP_Deployment::THEME_SLUG)
 $drift_path = $theme_root . '/raos-e2e-equivalent-recovery-drift-'
     . bin2hex(random_bytes(6)) . '.tmp';
 file_put_contents($drift_path, 'recovery theme drift');
-$request = new WP_REST_Request('POST', '/');
-$request->set_url_params(array('operation_id' => $row['proposal_id']));
 $drifted = $deployment->recover_operation($request);
 @unlink($drift_path);
 $receipt = $deployment->recover_operation($request);
@@ -1405,6 +1747,172 @@ if (! is_wp_error($result)
 $wpdb->delete(RAOS_Codex_MCP_Store::table_name(), array('proposal_id' => $row['proposal_id']));
 @unlink($private . '/operation-lock-' . $row['proposal_id'] . '.lock');
 wp_delete_post($post_id, true);
+
+// A same-tree theme operation interrupted before target->backup rename has no
+// install evidence. Recovery must preserve the active theme and remain
+// recoverable instead of treating the unchanged hash as an installed after.
+$theme_target = get_theme_root(RAOS_Codex_MCP_Deployment::THEME_SLUG)
+    . '/' . RAOS_Codex_MCP_Deployment::THEME_SLUG;
+$equal_theme_hash = RAOS_Codex_MCP_Deployment::tree_hash($theme_target);
+$equal_theme_manifest = $tree_manifest->invoke(null, $theme_target);
+$equal_theme_payload = array(
+    'schema' => 'CodeReleaseProposalV1',
+    'kind' => 'THEME_RELEASE',
+    'code_package' => array(
+        'kind' => 'theme',
+        'slug' => RAOS_Codex_MCP_Deployment::THEME_SLUG,
+        'file_manifest' => $equal_theme_manifest,
+    ),
+);
+$row = RAOS_Codex_MCP_Store::create(
+    'THEME_RELEASE',
+    $equal_theme_payload,
+    $equal_theme_hash,
+    $equal_theme_hash
+);
+if (is_wp_error($row)) {
+    raos_e2e_rollback_fail('RAOS_E2E_EQUAL_HASH_RECOVERY_SETUP_FAILED');
+}
+$operation_root = $private . '/operation-' . $row['proposal_id'];
+mkdir($operation_root, 0700, true);
+$wpdb->update(
+    RAOS_Codex_MCP_Store::table_name(),
+    array(
+        'state' => 'APPLYING',
+        'result_code' => 'OPERATION_APPLYING',
+        'applying_at_gmt' => gmdate('Y-m-d H:i:s', time() - 300),
+    ),
+    array('proposal_id' => $row['proposal_id'])
+);
+$request = new WP_REST_Request('POST', '/');
+$request->set_url_params(array('operation_id' => $row['proposal_id']));
+$result = $deployment->recover_operation($request);
+$stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+if (! is_wp_error($result)
+    || 'raos_codex_equal_hash_state_indeterminate' !== $result->get_error_code()
+    || ! raos_e2e_recovery_required($result)
+    || is_wp_error($stored)
+    || 'APPLYING' !== $stored['state']
+    || ! is_dir($theme_target)
+    || get_stylesheet() !== RAOS_Codex_MCP_Deployment::THEME_SLUG
+    || ! hash_equals(
+        $equal_theme_hash,
+        RAOS_Codex_MCP_Deployment::tree_hash($theme_target)
+    )) {
+    raos_e2e_rollback_fail('RAOS_E2E_EQUAL_HASH_PRERENAME_RECOVERY_FAILED');
+}
+$wpdb->delete(RAOS_Codex_MCP_Store::table_name(), array('proposal_id' => $row['proposal_id']));
+@unlink($private . '/operation-lock-' . $row['proposal_id'] . '.lock');
+raos_e2e_rollback_remove_tree($operation_root);
+
+// An exact same-tree backup proves rename completed. Recovery rechecks runtime
+// invalidation and may then complete the original operation id as APPLIED.
+$row = RAOS_Codex_MCP_Store::create(
+    'THEME_RELEASE',
+    $equal_theme_payload,
+    $equal_theme_hash,
+    $equal_theme_hash
+);
+if (is_wp_error($row)) {
+    raos_e2e_rollback_fail('RAOS_E2E_EQUAL_HASH_RECOVERY_SETUP_FAILED');
+}
+$operation_root = $private . '/operation-' . $row['proposal_id'];
+$backup = $operation_root . '/before';
+mkdir($operation_root, 0700, true);
+if (! raos_e2e_rollback_copy_tree($theme_target, $backup)
+    || ! hash_equals($equal_theme_hash, RAOS_Codex_MCP_Deployment::tree_hash($backup))) {
+    raos_e2e_rollback_fail('RAOS_E2E_EQUAL_HASH_RECOVERY_SETUP_FAILED');
+}
+$equal_theme_batch = RAOS_Codex_MCP_Store::register_publication_batch(
+    array($row['proposal_id']),
+    $equal_theme_hash
+);
+$equal_theme_approver_login = 'raos-equal-theme-recovery-' . bin2hex(random_bytes(6));
+$equal_theme_approver_id = wp_insert_user(
+    array(
+        'user_login' => $equal_theme_approver_login,
+        'user_email' => $equal_theme_approver_login . '@example.invalid',
+        'user_pass' => wp_generate_password(32, true, true),
+        'role' => 'administrator',
+    )
+);
+$equal_theme_approved = is_wp_error($equal_theme_batch)
+    || is_wp_error($equal_theme_approver_id)
+        ? new WP_Error('raos_e2e_equal_theme_approval_setup_failed')
+        : RAOS_Codex_MCP_Store::approve_publication_batch(
+            $equal_theme_batch['batch_token'],
+            $equal_theme_batch['batch_manifest_sha256'],
+            (int) $equal_theme_approver_id,
+            'Independent equal theme recovery approval.'
+        );
+$equal_theme_claimed_batch = is_wp_error($equal_theme_approved)
+    ? $equal_theme_approved
+    : RAOS_Codex_MCP_Store::claim_publication_batch_apply(
+        $equal_theme_batch['batch_token'],
+        $equal_theme_batch['batch_manifest_sha256'],
+        $equal_theme_batch['proposal_ids']
+    );
+$equal_theme_claimed = is_wp_error($equal_theme_claimed_batch)
+    ? $equal_theme_claimed_batch
+    : RAOS_Codex_MCP_Store::claim_apply($row['proposal_id']);
+if (is_wp_error($equal_theme_batch)
+    || is_wp_error($equal_theme_approver_id)
+    || is_wp_error($equal_theme_approved)
+    || is_wp_error($equal_theme_claimed_batch)
+    || is_wp_error($equal_theme_claimed)
+    || 'OPERATION_APPLYING' !== $equal_theme_claimed['result_code']) {
+    raos_e2e_rollback_fail('RAOS_E2E_EQUAL_HASH_RECOVERY_SETUP_FAILED');
+}
+$wpdb->update(
+    RAOS_Codex_MCP_Store::table_name(),
+    array(
+        'applying_at_gmt' => gmdate('Y-m-d H:i:s', time() - 300),
+    ),
+    array('proposal_id' => $row['proposal_id'])
+);
+$request = new WP_REST_Request('POST', '/');
+$request->set_url_params(array('operation_id' => $row['proposal_id']));
+$equal_theme_lease = $private . '/approval-lease-' . $row['proposal_id'] . '.json';
+$equal_theme_held_lease = $equal_theme_lease . '.held';
+if (! is_file($equal_theme_lease)
+    || file_exists($equal_theme_held_lease)
+    || ! rename($equal_theme_lease, $equal_theme_held_lease)) {
+    raos_e2e_rollback_fail('RAOS_E2E_EQUAL_HASH_RECOVERY_SETUP_FAILED');
+}
+$unauthorized = $deployment->recover_operation($request);
+$unauthorized_stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+if (! rename($equal_theme_held_lease, $equal_theme_lease)
+    || ! is_wp_error($unauthorized)
+    || 'raos_codex_approval_lease_invalid' !== $unauthorized->get_error_code()
+    || ! raos_e2e_recovery_required($unauthorized)
+    || is_wp_error($unauthorized_stored)
+    || 'APPLYING' !== $unauthorized_stored['state']
+    || ! is_dir($backup)
+    || ! is_dir($theme_target)) {
+    raos_e2e_rollback_fail('RAOS_E2E_EQUAL_HASH_RECOVERY_AUTHORIZATION_FAILED');
+}
+$result = $deployment->recover_operation($request);
+$stored = RAOS_Codex_MCP_Store::get($row['proposal_id']);
+if (! is_array($result)
+    || 'APPLIED' !== ($result['state'] ?? null)
+    || 'OPERATION_RECOVERED_AFTER_READBACK' !== ($result['result_code'] ?? null)
+    || is_wp_error($stored)
+    || 'APPLIED' !== $stored['state']
+    || file_exists($operation_root)
+    || ! is_dir($theme_target)
+    || ! hash_equals(
+        $equal_theme_hash,
+        RAOS_Codex_MCP_Deployment::tree_hash($theme_target)
+    )) {
+    raos_e2e_rollback_fail('RAOS_E2E_EQUAL_HASH_INSTALLED_RECOVERY_FAILED');
+}
+$wpdb->delete(RAOS_Codex_MCP_Store::table_name(), array('proposal_id' => $row['proposal_id']));
+$wpdb->delete(
+    RAOS_Codex_MCP_Store::batch_table_name(),
+    array('batch_token' => $equal_theme_batch['batch_token'])
+);
+@unlink($private . '/operation-lock-' . $row['proposal_id'] . '.lock');
+wp_delete_user((int) $equal_theme_approver_id);
 
 // Equivalent public recover drift test for a code tree with a preserved backup.
 $slug = 'raos-e2e-recovery-drift';
