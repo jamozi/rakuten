@@ -368,8 +368,12 @@ def test_published_slug_conflict_fails_closed(
         )
 
 
-def test_replaced_applied_attempt_reconciles_multiple_known_published_targets(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+@pytest.mark.parametrize(
+    "replacement_state",
+    ["APPLIED_ATTEMPT_REPLACED", "EXPIRED_ATTEMPT_REPLACED"],
+)
+def test_replaced_attempt_reconciles_multiple_known_published_targets(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, replacement_state: str
 ) -> None:
     articles = publication.load_articles(
         "roomba-mini-vs-switchbot-k11-pro,solota-vs-rakua-mini-plus"
@@ -380,7 +384,7 @@ def test_replaced_applied_attempt_reconciles_multiple_known_published_targets(
     ]
     path = _private_path(monkeypatch, tmp_path)
     receipt = publication._fresh_receipt(articles, path)
-    receipt["state"] = "APPLIED_ATTEMPT_REPLACED"
+    receipt["state"] = replacement_state
     receipt["drafts"] = {
         article.production_slug: {
             "id": document["id"],
