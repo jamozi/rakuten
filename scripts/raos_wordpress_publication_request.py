@@ -1894,6 +1894,10 @@ def reconcile_drafts(
     receipt_drafts = receipt["drafts"]
     if type(receipt_drafts) is not dict:
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    replacing_published_targets = receipt.get("state") in {
+        "APPLIED_ATTEMPT_REPLACED",
+        "EXPIRED_ATTEMPT_REPLACED",
+    }
     for article in articles:
         candidates = by_slug.get(article.production_slug, [])
         if len(candidates) > 1:
@@ -1907,8 +1911,11 @@ def reconcile_drafts(
             if current.get("status") == "publish":
                 if not (
                     _known_baseline(receipt, article.production_slug, current)
-                    or _known_draft(receipt, article.production_slug, current)
                     or _known_applied_target(receipt, article.production_slug, current)
+                    or (
+                        replacing_published_targets
+                        and _known_draft(receipt, article.production_slug, current)
+                    )
                 ):
                     fail("RAOS_WORDPRESS_REQUEST_PUBLISHED_CONFLICT")
                 # Build the next immutable release proposal directly from the

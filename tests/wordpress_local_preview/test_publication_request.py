@@ -511,6 +511,33 @@ def test_existing_published_target_is_bound_to_private_baseline_before_reuse(
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
 
 
+def test_known_draft_does_not_authorize_a_published_target_in_normal_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    published = _document(article, status="publish")
+    path = _private_path(monkeypatch, tmp_path)
+    receipt = publication._fresh_receipt([article], path)
+    receipt["drafts"] = {
+        article.production_slug: {
+            "id": published["id"],
+            "content_sha256": published["content_sha256"],
+        }
+    }
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLISHED_CONFLICT",
+    ):
+        publication.reconcile_drafts(
+            ReconcileClient(published),
+            [article],
+            [published],
+            receipt,
+            path,
+        )
+
+
 def test_unknown_post_drift_after_baseline_is_refused_before_mutation(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -590,8 +617,12 @@ def test_published_target_revision_only_race_is_refused_on_second_read(
         )
 
 
-def test_replaced_applied_attempt_reconciles_multiple_known_published_targets(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+@pytest.mark.parametrize(
+    "replacement_state",
+    ["APPLIED_ATTEMPT_REPLACED", "EXPIRED_ATTEMPT_REPLACED"],
+)
+def test_replaced_attempt_reconciles_multiple_known_published_targets(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, replacement_state: str
 ) -> None:
     articles = publication.load_articles(
         "roomba-mini-vs-switchbot-k11-pro,solota-vs-rakua-mini-plus"
@@ -602,7 +633,7 @@ def test_replaced_applied_attempt_reconciles_multiple_known_published_targets(
     ]
     path = _private_path(monkeypatch, tmp_path)
     receipt = publication._fresh_receipt(articles, path)
-    receipt["state"] = "APPLIED_ATTEMPT_REPLACED"
+    receipt["state"] = replacement_state
     receipt["drafts"] = {
         article.production_slug: {
             "id": document["id"],
