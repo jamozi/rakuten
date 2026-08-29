@@ -244,6 +244,64 @@ def test_asset_manifest_is_complete_and_hash_bound() -> None:
     assert all((THEME_ROOT / str(path)).is_file() for path in source_files)
 
 
+def test_editorial_v2_styles_are_exactly_scoped_and_conditionally_loaded() -> None:
+    functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    css = (THEME_ROOT / "assets/editorial-v2.css").read_text(encoding="utf-8")
+    contract = _load_json(CONTRACT_PATH)["editorial_v2"]
+    assert contract == {
+        "asset": "assets/editorial-v2.css",
+        "base_style_dependency": "kurashinoshirube-editorial",
+        "body_class": "raos-editorial-v2-page",
+        "category_fallback_allowlist": ["移動", "家事"],
+        "content_root": '<div class="raos-editorial-v2">',
+        "detection": "EXACT_RAW_CONTENT_PREFIX_ON_SINGULAR_POST",
+        "publication_snapshot_required": False,
+        "scope": "ORDINARY_WORDPRESS_POST_ONLY",
+        "section_slug_allowlist": {
+            "carry-on-suitcase-under-100-seats": "移動",
+            "front-open-carry-on-suitcase-with-stopper": "移動",
+            "lightweight-carry-on-suitcase-under-3kg": "移動",
+            "roomba-mini-vs-switchbot-k11-pro": "家事",
+            "solota-vs-rakua-mini-plus": "家事",
+        },
+    }
+    assert "function kurashinoshirube_is_editorial_v2_post(): bool" in functions
+    assert "str_starts_with($content, '<div class=\"raos-editorial-v2\">')" in functions
+    assert "'raos-editorial-v2-page'" in functions
+    assert "'kurashinoshirube-editorial-v2'" in functions
+    assert "'/assets/editorial-v2.css'" in functions
+    assert "array('kurashinoshirube-editorial')" in functions
+    assert "function kurashinoshirube_editorial_v2_body_class" in functions
+    assert "function kurashinoshirube_enqueue_editorial_v2_stylesheet" in functions
+    assert ".raos-editorial-v2-page" in css
+    assert ".raos-editorial-v2 .comparison-table" in css
+    assert ".raos-local-editorial-v2-page" not in css
+
+
+def test_editorial_v2_category_fallback_is_allowlisted() -> None:
+    functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    category = functions.split(
+        "function kurashinoshirube_render_article_category", 1
+    )[1].split("add_shortcode(", 1)[0]
+    assert "kurashinoshirube_current_snapshot()" in category
+    assert "kurashinoshirube_is_editorial_v2_post()" in category
+    assert "kurashinoshirube_editorial_v2_section_map()[$slug] ?? null" in category
+    assert "wp_get_post_terms(" in category
+    assert "array('移動', '家事')" in category
+    assert "in_array($allowed_section, $terms, true)" in category
+    section_map = functions.split(
+        "function kurashinoshirube_editorial_v2_section_map", 1
+    )[1].split("function kurashinoshirube_editorial_v2_body_class", 1)[0]
+    for slug, section in {
+        "carry-on-suitcase-under-100-seats": "移動",
+        "front-open-carry-on-suitcase-with-stopper": "移動",
+        "lightweight-carry-on-suitcase-under-3kg": "移動",
+        "roomba-mini-vs-switchbot-k11-pro": "家事",
+        "solota-vs-rakua-mini-plus": "家事",
+    }.items():
+        assert f"'{slug}' => '{section}'" in section_map
+
+
 def test_consent_defaults_are_opt_in_and_global() -> None:
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
     assert functions.count(

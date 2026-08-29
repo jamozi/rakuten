@@ -30,6 +30,7 @@ MAX_PACKAGE_BYTES: Final = 16 * 1024 * 1024
 ZIP_TIMESTAMP: Final = (2026, 8, 23, 0, 0, 0)
 
 SOURCE_FILES: Final = (
+    "assets/editorial-v2.css",
     "assets/images/article-portable-power-guide.png",
     "assets/images/article-suitcase-guide.webp",
     "assets/images/brand-mark.svg",
@@ -106,6 +107,24 @@ DOCUMENT_TITLE_DEDUPLICATION: Final = {
         "_block_template_render_title_tag",
         "gutenberg_render_title_tag",
     ],
+}
+
+EDITORIAL_V2_PRESENTATION: Final = {
+    "asset": "assets/editorial-v2.css",
+    "base_style_dependency": "kurashinoshirube-editorial",
+    "body_class": "raos-editorial-v2-page",
+    "category_fallback_allowlist": ["移動", "家事"],
+    "content_root": '<div class="raos-editorial-v2">',
+    "detection": "EXACT_RAW_CONTENT_PREFIX_ON_SINGULAR_POST",
+    "publication_snapshot_required": False,
+    "scope": "ORDINARY_WORDPRESS_POST_ONLY",
+    "section_slug_allowlist": {
+        "carry-on-suitcase-under-100-seats": "移動",
+        "front-open-carry-on-suitcase-with-stopper": "移動",
+        "lightweight-carry-on-suitcase-under-3kg": "移動",
+        "roomba-mini-vs-switchbot-k11-pro": "家事",
+        "solota-vs-rakua-mini-plus": "家事",
+    },
 }
 
 
@@ -322,6 +341,7 @@ def validate_sources() -> dict[str, str]:
         contract.get("schema") != "SELF_HOSTED_EDITORIAL_THEME_CONTRACT_V1"
         or contract.get("theme_version") != THEME_VERSION
         or contract.get("publication_authority") != "NONE"
+        or contract.get("editorial_v2") != EDITORIAL_V2_PRESENTATION
         or contract.get("head", {}).get("document_title_deduplication")
         != DOCUMENT_TITLE_DEDUPLICATION
         or contract.get("head", {}).get("document_title_owner")

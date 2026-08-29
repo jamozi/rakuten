@@ -42,6 +42,57 @@ if (
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_FIXTURE_INVALID');
 }
 
+/** Permit source links only to the reviewed manufacturer and carrier hosts. */
+function raos_local_preview_has_only_reviewed_https_links(string $content): bool
+{
+    if (stripos($content, 'http://') !== false) {
+        return false;
+    }
+    $matched = preg_match_all(
+        '#https://[^\s"\'<>]+#u',
+        $content,
+        $matches
+    );
+    if ($matched === false) {
+        return false;
+    }
+    $allowed_hosts = array(
+        'panasonic.jp',
+        'store.ace.jp',
+        'store.irobot-jp.com',
+        'store.shopping.yahoo.co.jp',
+        'shop.innovator.co.jp',
+        'www.americantourister.jp',
+        'www.ana.co.jp',
+        'www.bermas.co.jp',
+        'www.jal.co.jp',
+        'www.proteca.jp',
+        'www.samsonite.co.jp',
+        'www.siroca.co.jp',
+        'www.switchbot.jp',
+        'www.thanko.jp',
+    );
+    foreach ($matches[0] as $encoded_url) {
+        $url = html_entity_decode($encoded_url, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $parts = wp_parse_url($url);
+        if (
+            ! is_array($parts)
+            || ($parts['scheme'] ?? null) !== 'https'
+            || ! is_string($parts['host'] ?? null)
+            || ! in_array(strtolower($parts['host']), $allowed_hosts, true)
+            || isset($parts['user'])
+            || isset($parts['pass'])
+            || (
+                strpos($content, 'href="' . $encoded_url . '"') === false
+                && strpos($content, "href='" . $encoded_url . "'") === false
+            )
+        ) {
+            return false;
+        }
+    }
+    return true;
+}
+
 $seed_option = 'raos_local_preview_seed_version';
 $previous_seed = get_option($seed_option, null);
 if ($mode === 'initialize' && is_string($previous_seed) && $previous_seed !== '') {
@@ -147,8 +198,7 @@ foreach ($fixture['posts'] as $index => $post) {
         ! is_string($content)
         || $content === ''
         || strlen($content) > 1048576
-        || stripos($content, 'http://') !== false
-        || stripos($content, 'https://') !== false
+        || ! raos_local_preview_has_only_reviewed_https_links($content)
         || stripos($content, '<script') !== false
         || stripos($content, '<style') !== false
         || stripos($content, '<h1') !== false

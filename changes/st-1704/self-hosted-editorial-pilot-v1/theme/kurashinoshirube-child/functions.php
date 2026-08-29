@@ -1594,6 +1594,63 @@ add_action('wp_enqueue_scripts', static function (): void {
     );
 });
 
+/** Identify ordinary posts that opt into the bounded Editorial V2 presentation. */
+function kurashinoshirube_is_editorial_v2_post(): bool
+{
+    if (! is_singular('post')) {
+        return false;
+    }
+    $post_id = get_queried_object_id();
+    if ($post_id <= 0 || get_post_type($post_id) !== 'post') {
+        return false;
+    }
+    $content = get_post_field('post_content', $post_id, 'raw');
+    return is_string($content)
+        && str_starts_with($content, '<div class="raos-editorial-v2">');
+}
+
+/** Keep the five production Editorial V2 section labels slug-bound and closed. */
+function kurashinoshirube_editorial_v2_section_map(): array
+{
+    return array(
+        'carry-on-suitcase-under-100-seats' => '移動',
+        'front-open-carry-on-suitcase-with-stopper' => '移動',
+        'lightweight-carry-on-suitcase-under-3kg' => '移動',
+        'roomba-mini-vs-switchbot-k11-pro' => '家事',
+        'solota-vs-rakua-mini-plus' => '家事',
+    );
+}
+
+/** Add the page-level style hook only for exact Editorial V2 post markup. */
+function kurashinoshirube_editorial_v2_body_class(array $classes): array
+{
+    if (kurashinoshirube_is_editorial_v2_post()) {
+        $classes[] = 'raos-editorial-v2-page';
+    }
+    return array_values(array_unique($classes));
+}
+add_filter('body_class', 'kurashinoshirube_editorial_v2_body_class');
+
+/** Keep the reference-matched stylesheet off unrelated public pages. */
+function kurashinoshirube_enqueue_editorial_v2_stylesheet(): void
+{
+    if (! kurashinoshirube_is_editorial_v2_post()) {
+        return;
+    }
+    $theme = wp_get_theme();
+    wp_enqueue_style(
+        'kurashinoshirube-editorial-v2',
+        get_stylesheet_directory_uri() . '/assets/editorial-v2.css',
+        array('kurashinoshirube-editorial'),
+        $theme->get('Version')
+    );
+}
+add_action(
+    'wp_enqueue_scripts',
+    'kurashinoshirube_enqueue_editorial_v2_stylesheet',
+    20
+);
+
 /** Render the predecessor-bound lead illustration without media authority. */
 function kurashinoshirube_render_first_article_lead_image($attributes, $content, $tag): string
 {
@@ -1687,7 +1744,7 @@ function kurashinoshirube_render_breadcrumb($attributes, $content, $tag): string
 }
 add_shortcode('kurashinoshirube_breadcrumb', 'kurashinoshirube_render_breadcrumb');
 
-/** Render a bounded article category label from the hash-bound pilot identity. */
+/** Render a bounded article category label from the pilot or Editorial V2 identity. */
 function kurashinoshirube_render_article_category($attributes, $content, $tag): string
 {
     if (
@@ -1698,15 +1755,39 @@ function kurashinoshirube_render_article_category($attributes, $content, $tag): 
     ) {
         return '';
     }
+    $section = null;
     $snapshot = kurashinoshirube_current_snapshot();
-    if ($snapshot === null) {
+    if ($snapshot !== null) {
+        $binding = kurashinoshirube_article_bindings()[$snapshot['article_id']] ?? null;
+        if (is_array($binding) && is_string($binding['section'] ?? null)) {
+            $section = $binding['section'];
+        }
+    } elseif (kurashinoshirube_is_editorial_v2_post()) {
+        $post_id = get_queried_object_id();
+        $slug = get_post_field('post_name', $post_id, 'raw');
+        if (is_string($slug)) {
+            $section = kurashinoshirube_editorial_v2_section_map()[$slug] ?? null;
+        }
+        if ($section === null) {
+            $terms = wp_get_post_terms(
+                $post_id,
+                'category',
+                array('fields' => 'names')
+            );
+            if (! is_wp_error($terms) && is_array($terms)) {
+                foreach (array('移動', '家事') as $allowed_section) {
+                    if (in_array($allowed_section, $terms, true)) {
+                        $section = $allowed_section;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    if ($section === null) {
         return '';
     }
-    $binding = kurashinoshirube_article_bindings()[$snapshot['article_id']] ?? null;
-    if (! is_array($binding) || ! is_string($binding['section'] ?? null)) {
-        return '';
-    }
-    return '<p class="raos-article-category">' . esc_html($binding['section'])
+    return '<p class="raos-article-category">' . esc_html($section)
         . '／比較ガイド</p>';
 }
 add_shortcode(

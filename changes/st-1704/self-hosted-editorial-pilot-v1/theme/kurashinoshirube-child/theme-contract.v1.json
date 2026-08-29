@@ -70,6 +70,23 @@
     "spacing_tokens_rem": [0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4],
     "wide_width": "76rem"
   },
+  "editorial_v2": {
+    "asset": "assets/editorial-v2.css",
+    "base_style_dependency": "kurashinoshirube-editorial",
+    "body_class": "raos-editorial-v2-page",
+    "category_fallback_allowlist": ["移動", "家事"],
+    "content_root": "<div class=\"raos-editorial-v2\">",
+    "detection": "EXACT_RAW_CONTENT_PREFIX_ON_SINGULAR_POST",
+    "publication_snapshot_required": false,
+    "scope": "ORDINARY_WORDPRESS_POST_ONLY",
+    "section_slug_allowlist": {
+      "carry-on-suitcase-under-100-seats": "移動",
+      "front-open-carry-on-suitcase-with-stopper": "移動",
+      "lightweight-carry-on-suitcase-under-3kg": "移動",
+      "roomba-mini-vs-switchbot-k11-pro": "家事",
+      "solota-vs-rakua-mini-plus": "家事"
+    }
+  },
   "homepage_section_order": [
     "最新のガイド",
     "注目ガイド",

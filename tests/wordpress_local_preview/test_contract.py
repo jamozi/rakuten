@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+from urllib.parse import urlparse
 
 import yaml
 
@@ -16,7 +17,11 @@ FIXTURES = SLICE / "fixtures"
 ARTICLES = FIXTURES / "articles"
 POSTS = FIXTURES / "posts.json"
 MU_PLUGIN = SLICE / "mu-plugins/raos-local-preview.php"
-EDITORIAL_CSS = SLICE / "mu-plugins/raos-editorial-v2.css"
+EDITORIAL_CSS = (
+    ROOT
+    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/assets/editorial-v2.css"
+)
 SEED = SLICE / "seed.php"
 
 MARIADB_IMAGE = (
@@ -35,6 +40,23 @@ NGINX_IMAGE = (
     "nginx:1.29.1-alpine@sha256:"
     "42a516af16b852e33b7682d5ef8acbd5d13fe08fecadc7ed98605ba5e3b26ab8"
 )
+
+REVIEWED_SOURCE_HOSTS = {
+    "panasonic.jp",
+    "store.ace.jp",
+    "store.irobot-jp.com",
+    "store.shopping.yahoo.co.jp",
+    "shop.innovator.co.jp",
+    "www.americantourister.jp",
+    "www.ana.co.jp",
+    "www.bermas.co.jp",
+    "www.jal.co.jp",
+    "www.proteca.jp",
+    "www.samsonite.co.jp",
+    "www.siroca.co.jp",
+    "www.switchbot.jp",
+    "www.thanko.jp",
+}
 
 
 def _compose() -> dict[str, object]:
@@ -158,38 +180,37 @@ def test_synthetic_fixture_has_five_closed_local_articles() -> None:
 
         article = article_path.read_text(encoding="utf-8")
         assert re.search(r"<\s*h1\b", article, re.IGNORECASE) is None
-        assert re.search(r"https?://", article, re.IGNORECASE) is None
+        assert "http://" not in article.lower()
         assert re.search(r"<\s*(?:script|style)\b", article, re.IGNORECASE) is None
         assert len(re.findall(r'class="raos-editorial-v2"', article)) == 1
         assert '<table class="comparison-table">' in article
-        assert 'href="#local-only"' in article
-        assert 'id="local-only"' in article
-        assert "公開前" in article
-        assert "再確認" in article
-        assert "ローカル" in article
+        urls = re.findall(r'href="(https://[^"<>]+)"', article)
+        assert urls
+        assert all(urlparse(url).hostname in REVIEWED_SOURCE_HOSTS for url in urls)
+        external_anchors = re.findall(
+            r'<a\b[^>]*href="https://[^"<>]+"[^>]*>', article, re.IGNORECASE
+        )
+        assert len(external_anchors) == len(urls)
+        assert all('rel="noopener noreferrer"' in tag for tag in external_anchors)
+        assert re.search(r'\b(?:src|poster)="https://', article, re.IGNORECASE) is None
+        assert 'href="#local-only"' not in article
+        assert "LOCAL DRAFT" not in article
+        assert "ローカル" not in article
+        assert "ローカル草稿" not in article
+        assert "公開前一次情報再確認は未実施" not in article
+        assert "確認日：2026年8月29日" in article
 
 
-def test_editorial_mu_plugin_and_stylesheet_contract() -> None:
+def test_editorial_stylesheet_is_owned_by_the_production_theme() -> None:
     plugin = MU_PLUGIN.read_text(encoding="utf-8")
-    for marker in (
-        "function raos_local_preview_is_editorial_article(): bool",
-        "str_starts_with($slug, 'local-preview-')",
-        "'raos-local-editorial-v2-page'",
-        "add_filter('body_class', 'raos_local_preview_body_class')",
-        "wp_enqueue_style(",
-        "'raos-local-editorial-v2'",
-        "content_url('mu-plugins/raos-editorial-v2.css')",
-        "array('kurashinoshirube-editorial')",
-        "add_action('wp_enqueue_scripts', 'raos_local_preview_editorial_stylesheet', 100)",
-    ):
-        assert marker in plugin
+    assert "raos-editorial-v2" not in plugin
 
     stylesheet = EDITORIAL_CSS.read_text(encoding="utf-8")
     for marker in (
-        ".raos-local-editorial-v2-page",
-        ".raos-local-editorial-v2-page .raos-article-ruleline",
-        ".raos-local-editorial-v2-page .raos-article-title-grid",
-        ".raos-local-editorial-v2-page .raos-article-standfirst",
+        ".raos-editorial-v2-page",
+        ".raos-editorial-v2-page .raos-article-ruleline",
+        ".raos-editorial-v2-page .raos-article-title-grid",
+        ".raos-editorial-v2-page .raos-article-standfirst",
         ".raos-editorial-v2 .hero-photo",
         ".raos-editorial-v2 .decision-list",
         ".raos-editorial-v2 .comparison-section",
@@ -201,6 +222,7 @@ def test_editorial_mu_plugin_and_stylesheet_contract() -> None:
         "@media (max-width: 48rem)",
     ):
         assert marker in stylesheet
+    assert ".raos-local-editorial-v2-page" not in stylesheet
 
 
 def test_local_guard_blocks_indexing_mail_http_and_updates() -> None:
