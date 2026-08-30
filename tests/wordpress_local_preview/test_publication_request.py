@@ -286,12 +286,24 @@ def test_public_readback_accepts_inline_markup_inside_headings() -> None:
             "</body>", "<h3>隠し見出し</body>", 1
         ),
         lambda markup, _article: markup.replace("</h1>", "</h2></h1>", 1),
+        lambda markup, _article: markup.replace(
+            "<footer>", "<h2/>追加見出し<footer>", 1
+        ),
+        lambda markup, _article: markup.replace(
+            "</footer>", "</footer><h2/>追加見出し", 1
+        ),
+        lambda markup, _article: markup.replace(
+            "<footer>", "<h2/>関連記事<footer>", 1
+        ),
     ],
     ids=(
         "nested-same-heading",
         "nested-different-heading",
         "unclosed-trailing-heading",
         "mismatched-closing-heading",
+        "self-closing-extra-before-footer",
+        "self-closing-extra-after-footer",
+        "self-closing-related-before-footer",
     ),
 )
 def test_public_readback_rejects_malformed_heading_markup(

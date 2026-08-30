@@ -331,6 +331,14 @@ class _PublicPageEvidenceParser(HTMLParser):
         if lowered not in self._VOID_ELEMENTS:
             self._elements.append((lowered, product_id, in_disclosure))
 
+    def handle_startendtag(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        if tag.lower() in self._HEADING_ELEMENTS:
+            self._heading_markup_malformed = True
+            return
+        super().handle_startendtag(tag, attrs)
+
     def handle_endtag(self, tag: str) -> None:
         lowered = tag.lower()
         if lowered in self._HEADING_ELEMENTS:
