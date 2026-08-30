@@ -221,6 +221,104 @@ def test_anonymous_public_readback_requires_exact_canonical_title_and_headings()
     assert request.get_header("Authorization") is None
 
 
+def test_public_readback_accepts_one_related_articles_heading_before_footer() -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    footer_markup = (
+        "<aside><h2>関連記事</h2></aside>"
+        "<footer><h2>暮らしのしるべ</h2></footer>"
+    )
+
+    evidence = ORIGINAL_VERIFY_PUBLIC_PAGES(
+        [article],
+        attempts=1,
+        sleeper=lambda seconds: None,
+        opener=_PublicOpener(
+            _PublicResponse(
+                url,
+                _public_markup(article, footer_markup=footer_markup),
+            )
+        ),
+    )
+
+    assert evidence[article.production_slug]["canonical_url"] == url
+
+
+@pytest.mark.parametrize(
+    ("block_markup", "footer_markup"),
+    [
+        (
+            None,
+            "<aside><h2>関連記事</h2><h2>関連記事</h2></aside>"
+            "<footer><h2>暮らしのしるべ</h2></footer>",
+        ),
+        (
+            None,
+            "<aside><h3>関連記事</h3></aside>"
+            "<footer><h2>暮らしのしるべ</h2></footer>",
+        ),
+        (
+            None,
+            "<aside><h2>関連する記事</h2></aside>"
+            "<footer><h2>暮らしのしるべ</h2></footer>",
+        ),
+        (
+            None,
+            "<footer><h2>暮らしのしるべ</h2></footer>"
+            "<aside><h2>関連記事</h2></aside>",
+        ),
+        (
+            "<h2>関連記事</h2>{article}",
+            "<footer><h2>暮らしのしるべ</h2></footer>",
+        ),
+        (
+            None,
+            "<aside><h2>関連記事</h2><h3>追加見出し</h3></aside>"
+            "<footer><h2>暮らしのしるべ</h2></footer>",
+        ),
+    ],
+    ids=(
+        "duplicate",
+        "wrong-tag",
+        "wrong-text",
+        "after-footer",
+        "before-article-outline",
+        "additional-extra-heading",
+    ),
+)
+def test_public_readback_rejects_invalid_related_articles_heading_materialization(
+    block_markup: str | None,
+    footer_markup: str,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    materialized_block_markup = (
+        None
+        if block_markup is None
+        else block_markup.format(article=article.block_markup)
+    )
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(
+                    url,
+                    _public_markup(
+                        article,
+                        block_markup=materialized_block_markup,
+                        footer_markup=footer_markup,
+                    ),
+                )
+            ),
+        )
+
+
 @pytest.mark.parametrize(
     "stylesheets",
     [

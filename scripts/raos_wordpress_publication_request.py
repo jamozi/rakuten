@@ -3510,6 +3510,16 @@ def _public_page_evidence(
     actual_images = _validated_product_images(parser, product_ids=product_ids)
     expected_disclosure = _normalized_public_text(desired.disclosure_text)
     actual_disclosure = _normalized_public_text(parser.disclosure_text)
+    expected_heading_outline = [
+        ("h1", article.title),
+        *desired.heading_outline,
+        ("h2", "暮らしのしるべ"),
+    ]
+    expected_heading_outline_with_related_articles = [
+        *expected_heading_outline[:-1],
+        ("h2", "関連記事"),
+        expected_heading_outline[-1],
+    ]
     if (
         response_noindex
         or parser.noindex
@@ -3519,11 +3529,10 @@ def _public_page_evidence(
         or parser.h1_titles != [article.title]
         or not required_headings
         or parser.heading_outline
-        != [
-            ("h1", article.title),
-            *desired.heading_outline,
-            ("h2", "暮らしのしるべ"),
-        ]
+        not in (
+            expected_heading_outline,
+            expected_heading_outline_with_related_articles,
+        )
         or any(heading not in visible for heading in required_headings)
         or expected_ctas != actual_ctas
         or expected_images != actual_images
