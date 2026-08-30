@@ -1395,7 +1395,8 @@ class DeploymentRunner:
                 "proposal_ids": sorted(expected_ids),
                 "state": self.batch_status_state,
                 "expires_at_gmt": "2099-08-29T00:15:00Z",
-                "preconditions_ready": self.batch_status_state == "APPROVED",
+                "preconditions_ready": self.batch_status_state
+                in {"APPROVED", "APPLIED"},
             }
         elif name == "theme-propose-release":
             self.theme_proposed = True
@@ -2681,9 +2682,314 @@ def _write_remote_applied_legacy_all_attempt(
     return articles, path, old_tree, operations, documents, drafts
 
 
-def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
+def test_all_mode_remote_applied_reconciliation_ignores_stale_materialization(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
+) -> None:
+    articles, path, _old_tree, operations, documents, _drafts = (
+        _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
+    live_documents = {
+        article.production_slug: article.document()
+        | {"schema": "ContentDocumentV1"}
+        | documents[article.production_slug]
+        for article in articles
+    }
+    lifecycle: list[str] = []
+
+    class Client:
+        def initialize(self) -> None:
+            lifecycle.append("initialize")
+
+        def tools(self) -> dict[str, object]:
+            return {}
+
+        def call(
+            self,
+            name: str,
+            arguments: dict[str, object],
+        ) -> dict[str, object]:
+            if name == "raos-codex-site-status":
+                lifecycle.append("site-status")
+                return {}
+            assert name == "raos-codex-content-get"
+            post_id = arguments.get("id")
+            return next(
+                document
+                for document in live_documents.values()
+                if document["id"] == post_id
+            )
+
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: {
+            "state": "APPLIED",
+            "preconditions_ready": True,
+        },
+    )
+    monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
+    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+
+    def operation_readback(*_args: object) -> dict[str, dict[str, object]]:
+        lifecycle.append("operations")
+        return operations
+
+    monkeypatch.setattr(publication, "read_content_operations", operation_readback)
+
+    def finalize(*_args: object, **kwargs: object) -> None:
+        assert kwargs == {"finalize_applied": True}
+        lifecycle.append("finalize")
+
+    monkeypatch.setattr(publication, "wait_and_apply", finalize)
+    monkeypatch.setattr(
+        publication,
+        "load_articles",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("applied reconciliation must not load stale materialization")
+        ),
+    )
+    monkeypatch.setattr(
+        publication,
+        "production_materialization_binding",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("applied reconciliation must not bind stale materialization")
+        ),
+    )
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+
+    assert publication._resume_existing_all_attempt(
+        articles,
+        receipt,
+        path,
+        client_factory=Client,
+        deployment_runner=lambda *_args, **_kwargs: subprocess.CompletedProcess(
+            [], 0, b"", b""
+        ),
+    ) is False
+
+    assert lifecycle == [
+        "initialize",
+        "site-status",
+        "operations",
+        "finalize",
+        "operations",
+    ]
+    stored = json.loads(path.read_text(encoding="utf-8"))
+    assert stored["state"] == "APPLIED"
+    assert stored["prior_applied_reconciliation"] == {
+        "schema": "RAOS_WORDPRESS_PRIOR_APPLIED_RECONCILIATION_V1",
+        "captured_at_gmt": stored["prior_applied_reconciliation"][
+            "captured_at_gmt"
+        ],
+        "documents": documents,
+        "operations": operations,
+    }
+
+
+def test_all_mode_remote_applied_reconciliation_requires_ready_preconditions(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles, path, _old_tree, _operations, _documents, _drafts = (
+        _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
+
+    class Client:
+        def __init__(self) -> None:
+            raise AssertionError("MCP client must not initialize after precondition drift")
+
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: {
+            "state": "APPLIED",
+            "preconditions_ready": False,
+        },
+    )
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID",
+    ):
+        publication._resume_existing_all_attempt(
+            articles,
+            receipt,
+            path,
+            client_factory=Client,
+            deployment_runner=lambda *_args, **_kwargs: subprocess.CompletedProcess(
+                [], 0, b"", b""
+            ),
+        )
+
+    stored = json.loads(path.read_text(encoding="utf-8"))
+    assert stored["state"] == "APPLY_RETURNED"
+    assert stored["prior_applied_reconciliation"] is None
+
+
+def test_all_mode_remote_applied_reconciliation_rechecks_preconditions(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles, path, _old_tree, operations, documents, _drafts = (
+        _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
+    statuses = iter(
+        (
+            {"state": "APPLIED", "preconditions_ready": True},
+            {"state": "APPLIED", "preconditions_ready": False},
+        )
+    )
+
+    class Client:
+        def initialize(self) -> None:
+            return None
+
+        def tools(self) -> dict[str, object]:
+            return {}
+
+        def call(self, name: str, _arguments: dict[str, object]) -> dict[str, object]:
+            assert name == "raos-codex-site-status"
+            return {}
+
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: next(statuses),
+    )
+    monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
+    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "read_content_operations",
+        lambda *_args: operations,
+    )
+    monkeypatch.setattr(publication, "wait_and_apply", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(
+        publication,
+        "_published_receipt_document_evidence",
+        lambda *_args: documents,
+    )
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID",
+    ):
+        publication._resume_existing_all_attempt(
+            articles,
+            receipt,
+            path,
+            client_factory=Client,
+            deployment_runner=lambda *_args, **_kwargs: subprocess.CompletedProcess(
+                [], 0, b"", b""
+            ),
+        )
+
+    stored = json.loads(path.read_text(encoding="utf-8"))
+    assert stored["state"] == "APPLY_RETURNED"
+    assert stored["prior_applied_reconciliation"] is None
+
+
+def test_all_mode_remote_applied_reconciliation_refuses_live_hash_mismatch(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles, path, _old_tree, operations, documents, _drafts = (
+        _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
+    live_documents = {
+        article.production_slug: article.document()
+        | {"schema": "ContentDocumentV1"}
+        | documents[article.production_slug]
+        for article in articles
+    }
+    changed_slug = articles[0].production_slug
+    live_documents[changed_slug]["block_markup"] += "<!-- production drift -->"
+    finalized = False
+
+    class Client:
+        def initialize(self) -> None:
+            return None
+
+        def tools(self) -> dict[str, object]:
+            return {}
+
+        def call(
+            self,
+            name: str,
+            arguments: dict[str, object],
+        ) -> dict[str, object]:
+            if name == "raos-codex-site-status":
+                return {}
+            assert name == "raos-codex-content-get"
+            post_id = arguments.get("id")
+            return next(
+                document
+                for document in live_documents.values()
+                if document["id"] == post_id
+            )
+
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: {
+            "state": "APPLIED",
+            "preconditions_ready": True,
+        },
+    )
+    monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
+    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "read_content_operations",
+        lambda *_args: operations,
+    )
+
+    def finalize(*_args: object, **kwargs: object) -> None:
+        nonlocal finalized
+        assert kwargs == {"finalize_applied": True}
+        finalized = True
+
+    monkeypatch.setattr(publication, "wait_and_apply", finalize)
+    monkeypatch.setattr(
+        publication,
+        "load_articles",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError()),
+    )
+    monkeypatch.setattr(
+        publication,
+        "production_materialization_binding",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError()),
+    )
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLISH_READBACK_FAILED",
+    ):
+        publication._resume_existing_all_attempt(
+            articles,
+            receipt,
+            path,
+            client_factory=Client,
+            deployment_runner=lambda *_args, **_kwargs: subprocess.CompletedProcess(
+                [], 0, b"", b""
+            ),
+        )
+
+    assert finalized is True
+    stored = json.loads(path.read_text(encoding="utf-8"))
+    assert stored["state"] == "APPLY_RETURNED"
+    assert stored["prior_applied_reconciliation"] is None
+
+
+@pytest.mark.parametrize("replacement_preconditions_ready", [True, False])
+def test_all_mode_remote_applied_legacy_attempt_checks_replacement_preconditions(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    replacement_preconditions_ready: bool,
 ) -> None:
     articles, path, old_tree, operations, documents, drafts = (
         _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
@@ -2701,6 +3007,7 @@ def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
             return {"theme": {}}
 
     calls: list[str] = []
+    status_calls = 0
     replacement_count = 0
     replacement_includes_theme = False
 
@@ -2721,11 +3028,17 @@ def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
     )
     monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
     monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
-    monkeypatch.setattr(
-        publication,
-        "publication_batch_status",
-        lambda *_args, **_kwargs: {"state": "APPLIED"},
-    )
+    def batch_status(*_args: object, **_kwargs: object) -> dict[str, object]:
+        nonlocal status_calls
+        status_calls += 1
+        return {
+            "state": "APPLIED",
+            "preconditions_ready": (
+                replacement_preconditions_ready if status_calls == 3 else True
+            ),
+        }
+
+    monkeypatch.setattr(publication, "publication_batch_status", batch_status)
     monkeypatch.setattr(
         publication,
         "read_content_operations",
@@ -2733,7 +3046,7 @@ def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
     )
     monkeypatch.setattr(
         publication,
-        "_published_document_evidence",
+        "_published_receipt_document_evidence",
         lambda *_args: documents,
     )
     monkeypatch.setattr(publication, "list_all_documents", lambda _client: [])
@@ -2791,7 +3104,11 @@ def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
 
     with pytest.raises(
         publication.PublicationFailure,
-        match="WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT",
+        match=(
+            "WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT"
+            if replacement_preconditions_ready
+            else "RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID"
+        ),
     ):
         publication.execute(
             "all",
@@ -2800,9 +3117,15 @@ def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
             client_factory=Client,
         )
 
-    assert calls == ["finalized-old", "refresh", "preview", "registered"]
-    assert replacement_includes_theme is True
-    assert replacement_count == 11
+    assert status_calls == 3
+    if replacement_preconditions_ready:
+        assert calls == ["finalized-old", "refresh", "preview", "registered"]
+        assert replacement_includes_theme is True
+        assert replacement_count == 11
+    else:
+        assert calls == ["finalized-old", "refresh", "preview"]
+        assert replacement_includes_theme is False
+        assert replacement_count == 0
 
 
 def test_all_mode_applied_recovery_failure_stops_before_fresh_cycle(
@@ -2837,7 +3160,10 @@ def test_all_mode_applied_recovery_failure_stops_before_fresh_cycle(
     monkeypatch.setattr(
         publication,
         "publication_batch_status",
-        lambda *_args, **_kwargs: {"state": "APPLIED"},
+        lambda *_args, **_kwargs: {
+            "state": "APPLIED",
+            "preconditions_ready": True,
+        },
     )
     monkeypatch.setattr(
         publication,
@@ -2845,8 +3171,14 @@ def test_all_mode_applied_recovery_failure_stops_before_fresh_cycle(
         lambda *_args: operations,
     )
 
-    def recovery_failure(*_args: object, **kwargs: object) -> None:
+    def recovery_failure(
+        stored: dict[str, object],
+        receipt_path: Path,
+        *_args: object,
+        **kwargs: object,
+    ) -> None:
         assert kwargs == {"finalize_applied": True}
+        publication._touch_receipt(receipt_path, stored, "FINALIZING_APPLIED")
         lifecycle.append("recover")
         raise publication.PublicationFailure(
             "RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE"
@@ -2855,7 +3187,7 @@ def test_all_mode_applied_recovery_failure_stops_before_fresh_cycle(
     monkeypatch.setattr(publication, "wait_and_apply", recovery_failure)
     monkeypatch.setattr(
         publication,
-        "_published_document_evidence",
+        "_published_receipt_document_evidence",
         lambda *_args: (_ for _ in ()).throw(
             AssertionError("readback must follow successful recovery")
         ),
@@ -2873,6 +3205,9 @@ def test_all_mode_applied_recovery_failure_stops_before_fresh_cycle(
         )
 
     assert lifecycle == ["recover"]
+    stored = json.loads(path.read_text(encoding="utf-8"))
+    assert stored["state"] == "FINALIZING_APPLIED"
+    assert publication._resume_ready(stored, len(articles)) is True
 
 
 def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
@@ -2942,7 +3277,10 @@ def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
     monkeypatch.setattr(
         publication,
         "publication_batch_status",
-        lambda *_args, **_kwargs: {"state": "APPLIED"},
+        lambda *_args, **_kwargs: {
+            "state": "APPLIED",
+            "preconditions_ready": True,
+        },
     )
     monkeypatch.setattr(
         publication,
@@ -2963,7 +3301,7 @@ def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
 
     monkeypatch.setattr(
         publication,
-        "_published_document_evidence",
+        "_published_receipt_document_evidence",
         reconciled_documents,
     )
     monkeypatch.setattr(

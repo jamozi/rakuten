@@ -3616,6 +3616,87 @@ def _published_document_evidence(
     return evidence
 
 
+def _published_receipt_document_evidence(
+    client: Any,
+    receipt: Mapping[str, object],
+) -> dict[str, object]:
+    """Read back an applied legacy attempt without its stale local fixture.
+
+    The immutable proposal records identify the exact published target.  The
+    live content hash is necessary but not sufficient evidence, so recompute it
+    from the returned document projection before preserving a CAS baseline.
+    """
+
+    _proposal_ids(receipt)
+    selected_slugs = receipt.get("selected_slugs")
+    drafts = receipt.get("drafts")
+    proposals = receipt.get("proposals")
+    if (
+        type(selected_slugs) is not list
+        or type(drafts) is not dict
+        or type(proposals) is not list
+        or set(drafts) != set(selected_slugs)
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    targets = {
+        proposal["slug"]: proposal
+        for proposal in proposals
+        if type(proposal) is dict and proposal.get("kind") == "CONTENT_RELEASE"
+    }
+    if set(targets) != set(selected_slugs):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+
+    evidence: dict[str, object] = {}
+    for slug in selected_slugs:
+        draft = drafts.get(slug)
+        proposal = targets.get(slug)
+        if (
+            type(slug) is not str
+            or type(draft) is not dict
+            or set(draft) != {"id", "content_sha256"}
+            or type(draft.get("id")) is not int
+            or draft["id"] < 1
+            or type(draft.get("content_sha256")) is not str
+            or SHA256_RE.fullmatch(draft["content_sha256"]) is None
+            or type(proposal) is not dict
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+        post_id = draft["id"]
+        after_sha256 = proposal.get("after_sha256")
+        document = client.call("raos-codex-content-get", {"id": post_id})
+        if (
+            document.get("id") != post_id
+            or document.get("slug") != slug
+            or document.get("status") != "publish"
+            or document.get("content_sha256") != after_sha256
+            or _content_after_sha256(document_projection(document), post_id)
+            != after_sha256
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_PUBLISH_READBACK_FAILED")
+        evidence[slug] = _baseline_record(document)
+    return evidence
+
+
+def _require_applied_receipt_content_operations(
+    receipt: Mapping[str, object],
+    operations: Mapping[str, Mapping[str, object]],
+) -> None:
+    proposals = receipt.get("proposals")
+    _proposal_ids(receipt)
+    if type(proposals) is not list:
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    expected = {
+        proposal["proposal_id"]
+        for proposal in proposals
+        if type(proposal) is dict and proposal.get("kind") == "CONTENT_RELEASE"
+    }
+    if set(operations) != expected or any(
+        type(operation) is not dict or operation.get("state") != "APPLIED"
+        for operation in operations.values()
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_OPERATION_READBACK_INVALID")
+
+
 def verify_published(
     client: Any,
     articles: Sequence[Article],
@@ -3730,11 +3811,22 @@ def _resume_ready(receipt: Mapping[str, object], expected_count: int) -> bool:
     proposals = receipt.get("proposals")
     return (
         receipt.get("state")
-        in {"BATCH_REGISTERED", "WAITING_FOR_APPROVAL", "APPLY_RETURNED", "APPLIED"}
+        in {
+            "BATCH_REGISTERED",
+            "WAITING_FOR_APPROVAL",
+            "FINALIZING_APPLIED",
+            "APPLY_RETURNED",
+            "APPLIED",
+        }
         and type(proposals) is list
         and len(proposals) in {expected_count, expected_count + 1}
         and type(receipt.get("batch_registration")) is dict
     )
+
+
+def _require_applied_batch_ready(batch: Mapping[str, object]) -> None:
+    if batch.get("state") != "APPLIED" or batch.get("preconditions_ready") is not True:
+        fail("RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID")
 
 
 def _unregistered_proposal_set_ready(
@@ -3783,29 +3875,35 @@ def _resume_existing_all_attempt(
         return False
     if batch["state"] == "FAILED":
         fail("RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID")
-    articles = load_articles(
-        "all",
-        fixture_root=PRODUCTION_MATERIALIZED_FIXTURE_ROOT,
-    )
-    binding = production_materialization_binding(articles, require_recent=False)
-    desired_tree = receipt.get("desired_theme_tree_sha256")
-    if (
-        type(desired_tree) is not str
-        or SHA256_RE.fullmatch(desired_tree) is None
-        or not _receipt_matches_captured_inputs(
-            receipt,
-            articles,
-            desired_tree,
-            binding,
+    if batch["state"] == "APPLIED":
+        _require_applied_batch_ready(batch)
+    articles: Sequence[Article] | None = None
+    if batch["state"] != "APPLIED":
+        articles = load_articles(
+            "all",
+            fixture_root=PRODUCTION_MATERIALIZED_FIXTURE_ROOT,
         )
-    ):
-        fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+        binding = production_materialization_binding(articles, require_recent=False)
+        desired_tree = receipt.get("desired_theme_tree_sha256")
+        if (
+            type(desired_tree) is not str
+            or SHA256_RE.fullmatch(desired_tree) is None
+            or not _receipt_matches_captured_inputs(
+                receipt,
+                articles,
+                desired_tree,
+                binding,
+            )
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
 
     client = client_factory()
     client.initialize()
     validate_tool_contract(client.tools())
     validate_site_status(client.call("raos-codex-site-status", {}))
-    read_content_operations(client, receipt)
+    operations = read_content_operations(client, receipt)
+    if batch["state"] == "APPLIED":
+        _require_applied_receipt_content_operations(receipt, operations)
     wait_and_apply(
         receipt,
         path,
@@ -3813,11 +3911,19 @@ def _resume_existing_all_attempt(
         finalize_applied=batch["state"] == "APPLIED",
     )
     operations = read_content_operations(client, receipt)
-    if any(
-        operation.get("state") != "APPLIED" for operation in operations.values()
-    ):
+    if batch["state"] == "APPLIED":
+        _require_applied_receipt_content_operations(receipt, operations)
+    elif any(operation.get("state") != "APPLIED" for operation in operations.values()):
         fail("RAOS_WORDPRESS_REQUEST_OPERATION_READBACK_INVALID")
-    documents = _published_document_evidence(client, articles, receipt)
+    documents = (
+        _published_receipt_document_evidence(client, receipt)
+        if batch["state"] == "APPLIED"
+        else _published_document_evidence(client, articles or (), receipt)
+    )
+    if batch["state"] == "APPLIED":
+        _require_applied_batch_ready(
+            publication_batch_status(receipt, deployment_runner)
+        )
     receipt["prior_applied_reconciliation"] = {
         "schema": "RAOS_WORDPRESS_PRIOR_APPLIED_RECONCILIATION_V1",
         "captured_at_gmt": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -3981,6 +4087,8 @@ def execute(
             terminal_state = old_batch["state"]
             if terminal_state not in {"EXPIRED", "APPLIED"}:
                 fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+            if terminal_state == "APPLIED":
+                _require_applied_batch_ready(old_batch)
             preserved_drafts = receipt.get("drafts", {})
             preserved_baselines = receipt.get("baselines", {})
             prior_reconciliation = receipt.get("prior_applied_reconciliation")
