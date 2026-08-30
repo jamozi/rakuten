@@ -513,7 +513,35 @@ def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
         assert marker in audit
     assert "output/playwright/local-preview" in audit
     assert "output/playwright/local-preview" in check
+    assert "/home/minami/rakuten/output/playwright/local-preview" not in audit
+    assert "readonly repository_root=/home/minami/rakuten" not in check
+    for marker in (
+        'readonly script_directory="$(cd ',
+        'readonly repository_root="$(cd "$script_directory/../../.."',
+        '"$(/usr/bin/busybox pwd -P)" = "$repository_root"',
+        'git -C "$repository_root" rev-parse --show-toplevel',
+        'ensure_directory "$output_directory"',
+        'ensure_directory "$playwright_directory"',
+        'ensure_directory "$artifact_directory"',
+        '[ -d "$directory" ] && [ ! -L "$directory" ]',
+        '"$(cd "$directory" && /usr/bin/busybox pwd -P)" = "$directory"',
+        "NO_UPDATE_NOTIFIER=1",
+    ):
+        assert marker in check
     assert '[ "$#" -eq 44 ]' in check
+
+
+def test_browser_audit_refuses_a_non_repository_working_directory() -> None:
+    result = subprocess.run(
+        [str(SLICE / "browser/check.sh")],
+        cwd=SLICE,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 69
+    assert result.stdout == ""
+    assert result.stderr == "RAOS_WORDPRESS_LOCAL_PREVIEW_PLAYWRIGHT_REFUSED\n"
 
 
 def test_shell_entrypoints_parse() -> None:

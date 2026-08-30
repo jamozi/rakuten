@@ -1,6 +1,6 @@
 async (page) => {
   const origin = 'http://127.0.0.1:8888';
-  const artifactDirectory = '/home/minami/rakuten/output/playwright/local-preview';
+  const artifactDirectory = 'output/playwright/local-preview';
   const surfaces = [
     { name: 'home', path: '/' },
     {

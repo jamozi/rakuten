@@ -97,13 +97,13 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/check.sh",
-      "sha256": "09696809a0b5ffd986c36b9e7ee1f35ae8264708190412880f5cd494c7322877",
-      "size": 1808
+      "sha256": "ecccc36fa7c2f973c7f373af999f956c32163c32e1047c8397a9930e63d75231",
+      "size": 2781
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
-      "sha256": "08cbe0dcc011f535c4ef03f50b91cb279d3b820f80691451163f76167923d537",
-      "size": 18120
+      "sha256": "ee752f89235b3885cef20072366368643728407f625e55666194aa9c6d225ff3",
+      "size": 18099
     },
     {
       "path": "changes/wordpress-local-preview-v1/compose.yaml",
