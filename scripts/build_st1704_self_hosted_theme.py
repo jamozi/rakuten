@@ -21,7 +21,7 @@ ROOT: Final = Path(__file__).resolve().parents[1]
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.3.10"
 THEME_RUNTIME_REVISION: Final = (
-    "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
+    "30a84ec5dffb12c048181198ecc8745fa22be70f1854507237c19306589b341f"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",

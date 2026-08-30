@@ -192,7 +192,7 @@ def test_theme_is_an_isolated_1_3_10_successor() -> None:
     assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.10"
     assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.10'") == 1
     runtime_revision = (
-        "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
+        "30a84ec5dffb12c048181198ecc8745fa22be70f1854507237c19306589b341f"
     )
     assert functions.count(
         "KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = "
@@ -1457,6 +1457,29 @@ def test_footer_removes_the_broken_subscription_link() -> None:
     assert "新着案内を受け取る" not in footer
     assert footer.count('"url":"/#about"') == 1
     assert "/about-ad-policy/" in footer
+
+
+def test_editorial_footer_keeps_shared_layout_and_safe_token_fallbacks() -> None:
+    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    home_suffixes = sorted(
+        suffix.strip()
+        for suffix in re.findall(r"\.raos-home-v2-page \.raos-footer([^,{]*)", css)
+    )
+    editorial_suffixes = sorted(
+        suffix.strip()
+        for suffix in re.findall(
+            r"\.raos-editorial-v2-page \.raos-footer([^,{]*)", css
+        )
+    )
+    assert len(home_suffixes) >= 31
+    assert editorial_suffixes == home_suffixes
+    for fallback in (
+        "var(--raos-home-ink, var(--raos-ink))",
+        "var(--raos-home-inverse, #f7f2e9)",
+        "var(--raos-home-content, 76rem)",
+        "var(--raos-home-clay, var(--raos-warm))",
+    ):
+        assert fallback in css
 
 
 def test_content_is_visible_without_javascript() -> None:

@@ -2318,6 +2318,19 @@ def test_portfolio_refresh_runs_capture_then_both_materializations_in_foreground
     assert all(
         kwargs["stdout"] is None and kwargs["stderr"] is None for _, kwargs in calls
     )
+    assert all(
+        kwargs["env"] == publication.PORTFOLIO_SUBPROCESS_ENVIRONMENT
+        for _, kwargs in calls
+    )
+    assert publication.PORTFOLIO_SUBPROCESS_ENVIRONMENT == {
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "TZ": "UTC",
+        "TMPDIR": "/tmp",
+        "TEMP": "/tmp",
+        "TMP": "/tmp",
+        "PYTHONDONTWRITEBYTECODE": "1",
+    }
 
 
 def _write_materialization_pair(

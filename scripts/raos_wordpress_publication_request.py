@@ -42,6 +42,15 @@ MAPPING_PATH: Final = PREVIEW_ROOT / "production-mapping.v1.json"
 PORTFOLIO_SCRIPT: Final = ROOT / "scripts/raos_editorial_portfolio_v2.py"
 PORTFOLIO_PRIVATE_ROOT: Final = ROOT / ".secrets/editorial-portfolio-v2"
 PREVIEW_PRIVATE_ROOT: Final = ROOT / ".secrets/wordpress-local-preview"
+PORTFOLIO_SUBPROCESS_ENVIRONMENT: Final = {
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "TZ": "UTC",
+    "TMPDIR": "/tmp",
+    "TEMP": "/tmp",
+    "TMP": "/tmp",
+    "PYTHONDONTWRITEBYTECODE": "1",
+}
 LOCAL_MATERIALIZED_FIXTURE_ROOT: Final = (
     PREVIEW_PRIVATE_ROOT / "materialized-fixtures-v2"
 )
@@ -79,7 +88,7 @@ EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
 )
 EXPECTED_THEME_VERSION: Final = "1.3.10"
 EXPECTED_THEME_RUNTIME_REVISION: Final = (
-    "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
+    "30a84ec5dffb12c048181198ecc8745fa22be70f1854507237c19306589b341f"
 )
 THEME_RUNTIME_SENTINEL_PROPERTIES: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -666,6 +675,7 @@ def run_editorial_portfolio_refresh(
                 stdin=None,
                 stdout=None,
                 stderr=None,
+                env=dict(PORTFOLIO_SUBPROCESS_ENVIRONMENT),
                 check=False,
             )
         except OSError, subprocess.SubprocessError:
