@@ -244,6 +244,75 @@ def test_public_readback_accepts_one_related_articles_heading_before_footer() ->
     assert evidence[article.production_slug]["canonical_url"] == url
 
 
+def test_public_readback_accepts_inline_markup_inside_headings() -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    markup = _public_markup(
+        article,
+        footer_markup=(
+            "<aside><h2><span>関連記事</span></h2></aside>"
+            "<footer><h2><strong>暮らしのしるべ</strong></h2></footer>"
+        ),
+    ).replace(
+        f"<main><h1>{article.title}</h1>",
+        f"<main><h1><span>{article.title}</span></h1>",
+        1,
+    )
+
+    evidence = ORIGINAL_VERIFY_PUBLIC_PAGES(
+        [article],
+        attempts=1,
+        sleeper=lambda seconds: None,
+        opener=_PublicOpener(_PublicResponse(url, markup)),
+    )
+
+    assert evidence[article.production_slug]["canonical_url"] == url
+
+
+@pytest.mark.parametrize(
+    "materialize",
+    [
+        lambda markup, article: markup.replace(
+            f"<main><h1>{article.title}</h1>",
+            f"<main><h1>隠し見出し<h1>{article.title}</h1>",
+            1,
+        ),
+        lambda markup, article: markup.replace(
+            f"<main><h1>{article.title}</h1>",
+            f"<main><h3>隠し見出し<h1>{article.title}</h1>",
+            1,
+        ),
+        lambda markup, _article: markup.replace(
+            "</body>", "<h3>隠し見出し</body>", 1
+        ),
+        lambda markup, _article: markup.replace("</h1>", "</h2></h1>", 1),
+    ],
+    ids=(
+        "nested-same-heading",
+        "nested-different-heading",
+        "unclosed-trailing-heading",
+        "mismatched-closing-heading",
+    ),
+)
+def test_public_readback_rejects_malformed_heading_markup(
+    materialize: Any,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    markup = materialize(_public_markup(article), article)
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(_PublicResponse(url, markup)),
+        )
+
+
 @pytest.mark.parametrize(
     ("block_markup", "footer_markup"),
     [

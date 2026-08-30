@@ -197,6 +197,7 @@ def _response_header_values(headers: object, name: str) -> list[str]:
 class _PublicPageEvidenceParser(HTMLParser):
     """Collect only bounded public-page evidence needed for post-publish checks."""
 
+    _HEADING_ELEMENTS: Final = {"h1", "h2", "h3", "h4", "h5", "h6"}
     _VOID_ELEMENTS: Final = {
         "area",
         "base",
@@ -231,8 +232,18 @@ class _PublicPageEvidenceParser(HTMLParser):
         self._suppressed_depth = 0
         self._heading_tag: str | None = None
         self._heading_parts: list[str] = []
+        self._heading_markup_malformed = False
         self._title_parts: list[str] | None = None
         self._elements: list[tuple[str, str | None, bool]] = []
+
+    @property
+    def heading_markup_valid(self) -> bool:
+        return not self._heading_markup_malformed and self._heading_tag is None
+
+    def close(self) -> None:
+        super().close()
+        if self._heading_tag is not None:
+            self._heading_markup_malformed = True
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         lowered = tag.lower()
@@ -311,30 +322,29 @@ class _PublicPageEvidenceParser(HTMLParser):
                     "alt": attributes.get("alt") or "",
                 }
             )
-        if self._suppressed_depth == 0 and lowered in {
-            "h1",
-            "h2",
-            "h3",
-            "h4",
-            "h5",
-            "h6",
-        }:
-            self._heading_tag = lowered
-            self._heading_parts = []
+        if self._suppressed_depth == 0 and lowered in self._HEADING_ELEMENTS:
+            if self._heading_tag is None:
+                self._heading_tag = lowered
+                self._heading_parts = []
+            else:
+                self._heading_markup_malformed = True
         if lowered not in self._VOID_ELEMENTS:
             self._elements.append((lowered, product_id, in_disclosure))
 
     def handle_endtag(self, tag: str) -> None:
         lowered = tag.lower()
-        if lowered == self._heading_tag:
-            heading = _normalized_public_text(self._heading_parts)
-            if heading:
-                self.headings.append(heading)
-                self.heading_outline.append((lowered, heading))
-                if lowered == "h1":
-                    self.h1_titles.append(heading)
-            self._heading_tag = None
-            self._heading_parts = []
+        if lowered in self._HEADING_ELEMENTS:
+            if self._heading_tag != lowered:
+                self._heading_markup_malformed = True
+            else:
+                heading = _normalized_public_text(self._heading_parts)
+                if heading:
+                    self.headings.append(heading)
+                    self.heading_outline.append((lowered, heading))
+                    if lowered == "h1":
+                        self.h1_titles.append(heading)
+                self._heading_tag = None
+                self._heading_parts = []
         if lowered == "title" and self._title_parts is not None:
             title = _normalized_public_text(self._title_parts)
             if title:
@@ -3523,6 +3533,8 @@ def _public_page_evidence(
     if (
         response_noindex
         or parser.noindex
+        or not parser.heading_markup_valid
+        or not desired.heading_markup_valid
         or parser.canonical_urls != [url]
         or len(parser.page_titles) != 1
         or article.title not in parser.page_titles[0]
