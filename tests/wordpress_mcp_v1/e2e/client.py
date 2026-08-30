@@ -22,6 +22,12 @@ import urllib.request
 ORIGIN = "https://kurashinoshirube.com"
 HOST = "kurashinoshirube.com"
 PROTOCOL_VERSION = "2025-11-25"
+EXPECTED_PLUGIN_RUNTIME_REVISION = (
+    "1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a"
+)
+EXPECTED_THEME_RUNTIME_REVISION = (
+    "defa448bce50c5d88e3830e42dae1c3d8060a86bd9b4edab9c15be8a843b3a94"
+)
 EXPECTED_TOOLS = {
     "raos-codex-site-status",
     "raos-codex-content-list",
@@ -372,6 +378,7 @@ def phase_propose(
         "aggregate_ability_registered": True,
         "raw_event_tool_exposed": False,
     }
+    assert status["plugin_runtime_revision"] == EXPECTED_PLUGIN_RUNTIME_REVISION
     assert status["writes_enabled"] == {
         "global": True,
         "draft": True,
@@ -379,11 +386,17 @@ def phase_propose(
         "theme_apply": True,
         "plugin_apply": True,
     }
+    assert status["theme"]["runtime_version"] == status["theme"]["version"]
+    assert status["theme"]["runtime_revision"] == EXPECTED_THEME_RUNTIME_REVISION
 
     deploy_base = site_url + "/wp-json/raos-codex-deploy/v1"
     _, deploy_status_body, _ = request(deploy_base + "/status", *operator)
     deploy_status = json.loads(deploy_status_body)
     assert deploy_status["origin"] == ORIGIN
+    assert (
+        deploy_status["plugin_runtime_revision"]
+        == EXPECTED_PLUGIN_RUNTIME_REVISION
+    )
     assert deploy_status["private_directory_ready"] is True
     assert_route_confinement(site_url, editor, operator)
 
@@ -690,8 +703,11 @@ def phase_apply(
     )
     _, status_body, _ = request(deploy_base + "/status", *operator)
     status = json.loads(status_body)
+    assert status["plugin_runtime_revision"] == EXPECTED_PLUGIN_RUNTIME_REVISION
     assert status["theme"]["tree_sha256"] == theme_item["after_sha256"]
     assert status["theme"]["active"] is True
+    assert status["theme"]["runtime_version"] == status["theme"]["version"]
+    assert status["theme"]["runtime_revision"] == EXPECTED_THEME_RUNTIME_REVISION
 
     first_receipt: dict[str, object] | None = None
     for item in state["proposals"]:

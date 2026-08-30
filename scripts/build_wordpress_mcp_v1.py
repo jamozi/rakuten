@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from scripts import (  # noqa: F401
         build_editorial_measurement_v1 as editorial_measurement_owner,
         build_editorial_v3_theme_navigation as editorial_navigation_owner,
+        build_st1704_self_hosted_editorial_manifest as editorial_runtime_owner,
     )
 
 
@@ -27,6 +28,9 @@ ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
 PLUGIN_VERSION: Final = "1.3.0"
+PLUGIN_RUNTIME_REVISION: Final = (
+    "1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a"
+)
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
 MANIFEST_PATH: Final = Path("changes/wordpress-mcp-v1/runtime-manifest.v1.json")
 REGISTRY_PATH: Final = Path(
@@ -59,11 +63,41 @@ PLUGIN_FILES: Final = (
     "includes/class-raos-codex-mcp-store.php",
     "raos-codex-mcp-abilities.php",
 )
+PLUGIN_SOURCE_PATHS: Final = (
+    Path(
+        "changes/wordpress-mcp-v1/wordpress-plugin/"
+        "raos-codex-mcp-abilities/README.md"
+    ),
+    Path(
+        "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/"
+        "includes/class-raos-codex-mcp-content.php"
+    ),
+    Path(
+        "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/"
+        "includes/class-raos-codex-mcp-deployment.php"
+    ),
+    Path(
+        "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/"
+        "includes/class-raos-codex-mcp-store.php"
+    ),
+    Path(
+        "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/"
+        "raos-codex-mcp-abilities.php"
+    ),
+)
 RUNTIME_INPUT_PATHS: Final = (
     Path(".codex/config.toml"),
     Path("Makefile"),
     AUDIT_INVENTORY_PATH,
     MEASUREMENT_MANIFEST_PATH,
+    Path("changes/editorial-portfolio-v2/editorial-portfolio.v2.json"),
+    Path(
+        "changes/st-1704/self-hosted-editorial-pilot-v1/"
+        "rakuten-capture-runtime-manifest.v1.json"
+    ),
+    Path(
+        "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
+    ),
     Path("changes/wordpress-local-preview-v1/README.md"),
     Path("changes/wordpress-local-preview-v1/bin/wordpress_preview.sh"),
     Path("changes/wordpress-local-preview-v1/browser/check.sh"),
@@ -131,8 +165,15 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("packages/wordpress-mcp-bridge/package.json"),
     Path("packages/wordpress-mcp-bridge/src/index.ts"),
     Path("packages/wordpress-mcp-bridge/tsconfig.json"),
+    Path("python/raos/adapters/self_hosted_editorial_pilot_json.py"),
+    Path("python/raos/adapters/self_hosted_editorial_rakuten_capture.py"),
+    Path("python/raos/application/editorial/editorial_portfolio_v2.py"),
+    Path("python/raos/application/editorial/self_hosted_editorial_pilot.py"),
+    Path("python/raos/domain/editorial/content_ast.py"),
+    Path("python/raos/domain/editorial/self_hosted_editorial_pilot.py"),
     Path("scripts/build_wordpress_mcp_v1.py"),
     Path("scripts/check_wordpress_public_ui_playwright.sh"),
+    Path("scripts/raos_editorial_portfolio_v2.py"),
     Path("scripts/raos_wordpress_deployment_operator.py"),
     Path("scripts/raos_wordpress_publication_request.py"),
     Path("scripts/raos_wordpress_seo_audit.py"),
@@ -147,13 +188,16 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("tests/wordpress_mcp_v1/e2e/mutate_harness.php"),
     Path("tests/wordpress_mcp_v1/e2e/idempotency_harness.php"),
     Path("tests/wordpress_mcp_v1/e2e/prepare_packages.py"),
+    Path("tests/wordpress_mcp_v1/e2e/rollback_harness.php"),
     Path("tests/wordpress_mcp_v1/e2e/run.sh"),
     Path("tests/wordpress_mcp_v1/e2e/store_upgrade_harness.php"),
     Path("tests/wordpress_mcp_v1/test_batch_approval.py"),
     Path("tests/wordpress_mcp_v1/test_release_watcher.py"),
     Path("tests/wordpress_local_preview/test_publication_request.py"),
+    *PLUGIN_SOURCE_PATHS,
 )
-RUNTIME_FILES: Final = tuple(path.as_posix() for path in RUNTIME_INPUT_PATHS)
+RUNTIME_PATHS: Final = tuple(path.as_posix() for path in RUNTIME_INPUT_PATHS)
+RUNTIME_FILES: Final = RUNTIME_PATHS
 TEST_PATHS: Final = (
     Path("tests/test_build_foundation_v2.py"),
     Path("tests/wordpress_local_preview"),
@@ -254,7 +298,29 @@ def plugin_payloads() -> dict[str, bytes]:
             fail("WORDPRESS_MCP_V1_CASE_COLLISION")
         seen.add(safe.casefold())
         result[safe] = read_regular(PLUGIN_ROOT, safe)
+    _validate_plugin_runtime_revision(result)
     return result
+
+
+def _validate_plugin_runtime_revision(payloads: dict[str, bytes]) -> None:
+    revision = PLUGIN_RUNTIME_REVISION.encode("ascii")
+    class_declaration = b"const RUNTIME_REVISION = '" + revision + b"';"
+    expected_classes = {
+        "raos-codex-mcp-abilities.php": 1,
+        "includes/class-raos-codex-mcp-store.php": 1,
+        "includes/class-raos-codex-mcp-content.php": 1,
+        "includes/class-raos-codex-mcp-deployment.php": 1,
+    }
+    if set(payloads) != set(PLUGIN_FILES):
+        fail("WORDPRESS_MCP_V1_PLUGIN_RUNTIME_REVISION_INVALID")
+    for relative, count in expected_classes.items():
+        if payloads[relative].count(class_declaration) != count:
+            fail("WORDPRESS_MCP_V1_PLUGIN_RUNTIME_REVISION_INVALID")
+    global_declaration = (
+        b"'RAOS_CODEX_MCP_RUNTIME_REVISION',\n    '" + revision + b"'"
+    )
+    if payloads["raos-codex-mcp-abilities.php"].count(global_declaration) != 1:
+        fail("WORDPRESS_MCP_V1_PLUGIN_RUNTIME_REVISION_INVALID")
 
 
 def package_bytes(payloads: dict[str, bytes]) -> bytes:
@@ -301,6 +367,7 @@ def runtime_manifest() -> dict[str, object]:
         "plugin": {
             "slug": PLUGIN_SLUG,
             "version": PLUGIN_VERSION,
+            "runtime_revision": PLUGIN_RUNTIME_REVISION,
             "package_sha256": sha256(package),
             "file_manifest_sha256": sha256(
                 json.dumps(

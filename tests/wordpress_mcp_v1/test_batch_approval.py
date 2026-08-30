@@ -19,7 +19,13 @@ def test_store_schema_upgrade_and_idempotency_are_activation_independent() -> No
     assert "raos_codex_publication_batches_v1" in store
     assert "UNIQUE KEY creator_kind_idempotency" in store
     assert "function maybe_upgrade()" in store
-    assert "array('RAOS_Codex_MCP_Store', 'maybe_upgrade')" in main
+    assert "add_action('init', array($this, 'maybe_upgrade'), 0);" in main
+    upgrade = main.split("public function maybe_upgrade()", 1)[1].split(
+        "private static function install_role", 1
+    )[0]
+    assert upgrade.index("self::runtime_identity_is_exact()") < upgrade.index(
+        "RAOS_Codex_MCP_Store::maybe_upgrade()"
+    )
     assert "get_option(self::SCHEMA_OPTION" in store
     assert "dbDelta($sql)" in store
     assert "^[0-9a-f]{64}$" in content
@@ -278,6 +284,46 @@ def test_publication_batch_manifest_binds_the_exact_active_theme_tree() -> None:
     )[0]
     assert "'expected_theme_tree_sha256'" in public_batch
     assert "'state' => $row['state']" in public_batch
+
+
+def test_operation_recovery_resolves_one_exact_claimed_batch_binding() -> None:
+    store = (PLUGIN / "includes/class-raos-codex-mcp-store.php").read_text()
+
+    lookup = store.split(
+        "public static function get_claimed_publication_batch_for_proposal", 1
+    )[1]
+    lookup = lookup.split("private static function hydrate_publication_batch", 1)[0]
+    assert "self::get($proposal_id)" in lookup
+    assert "'CONTENT_RELEASE' !== $operation['kind']" in lookup
+    assert "'APPLYING' !== $operation['state']" in lookup
+    assert "'OPERATION_APPLYING' !== $operation['result_code']" in lookup
+    assert "validate_proposal_integrity($operation)" in lookup
+    assert "state = 'APPROVED'" in lookup
+    assert "applying_at_gmt IS NOT NULL" in lookup
+    assert "proposal_ids_json LIKE %s" in lookup
+    assert "LIMIT 2" in lookup
+    assert "1 !== count($tokens)" in lookup
+    assert "in_array($proposal_id, $batch['proposal_ids'], true)" in lookup
+    assert "$batch['created_by']" in lookup
+    for approval_binding in (
+        "$batch['approved_by']",
+        "$batch['approved_at_gmt']",
+        "$batch['approval_reason']",
+        "$batch['expires_at_gmt']",
+    ):
+        assert approval_binding in lookup
+    assert "1 === count($matches)" in lookup
+    for binding in (
+        "$operation['kind']",
+        "$operation['created_by']",
+        "$operation['created_at_gmt']",
+        "$operation['before_sha256']",
+        "$operation['after_sha256']",
+    ):
+        assert binding in lookup
+    assert "nullable_hash_matches" in lookup
+    assert "raos_codex_publication_batch_binding_indeterminate" in lookup
+    assert "state = 'REGISTERED'" not in lookup
 
 
 def test_expiry_transitions_use_exact_compare_and_swap_then_reread_winner() -> None:

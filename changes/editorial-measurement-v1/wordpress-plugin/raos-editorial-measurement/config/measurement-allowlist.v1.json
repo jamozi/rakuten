@@ -106,7 +106,7 @@
         "st1704-anker-solix-c300-c800-c1000-differences",
         "st1703-first-suitcase-comparison"
       ],
-      "snapshot_id": "snp-a02-90073cea0a43"
+      "snapshot_id": "snp-a02-d37e9579edb4"
     },
     {
       "article_code": "a03",
@@ -166,7 +166,7 @@
         "st1704-portable-power-station-guide",
         "st1703-first-suitcase-comparison"
       ],
-      "snapshot_id": "snp-a03-4c4264e7e70c"
+      "snapshot_id": "snp-a03-f24fa4f702d0"
     },
     {
       "article_code": "a04",
@@ -226,7 +226,7 @@
         "solota-vs-rakua-mini-plus",
         "st1704-compact-robot-vacuum-shortlist"
       ],
-      "snapshot_id": "snp-a04-9fc4b1f2ec84"
+      "snapshot_id": "snp-a04-6f5edb5a0a0d"
     },
     {
       "article_code": "a05",
@@ -286,7 +286,7 @@
         "roomba-mini-vs-switchbot-k11-pro",
         "st1704-countertop-dishwasher-for-small-households"
       ],
-      "snapshot_id": "snp-a05-4083a0258ea3"
+      "snapshot_id": "snp-a05-2a75738808da"
     },
     {
       "article_code": "a06",
@@ -346,7 +346,7 @@
         "st1703-first-suitcase-comparison",
         "front-open-carry-on-suitcase-with-stopper"
       ],
-      "snapshot_id": "snp-a06-f15d30ec2f49"
+      "snapshot_id": "snp-a06-e21d9a5ed918"
     },
     {
       "article_code": "a07",
@@ -406,7 +406,7 @@
         "st1703-first-suitcase-comparison",
         "front-open-carry-on-suitcase-with-stopper"
       ],
-      "snapshot_id": "snp-a07-d7901b98a9ae"
+      "snapshot_id": "snp-a07-abc1202a749e"
     },
     {
       "article_code": "a08",
@@ -466,7 +466,7 @@
         "st1703-first-suitcase-comparison",
         "carry-on-suitcase-under-100-seats"
       ],
-      "snapshot_id": "snp-a08-3e58bc997690"
+      "snapshot_id": "snp-a08-29e1fc0be118"
     },
     {
       "article_code": "a09",
@@ -514,7 +514,7 @@
         "st1704-compact-robot-vacuum-shortlist",
         "solota-vs-rakua-mini-plus"
       ],
-      "snapshot_id": "snp-a09-42fe256a76de"
+      "snapshot_id": "snp-a09-186ea496f9e2"
     },
     {
       "article_code": "a10",
@@ -562,7 +562,7 @@
         "st1704-countertop-dishwasher-for-small-households",
         "st1704-compact-robot-vacuum-shortlist"
       ],
-      "snapshot_id": "snp-a10-79f1a818a501"
+      "snapshot_id": "snp-a10-01c4279c69ac"
     }
   ],
   "events": [
@@ -580,7 +580,7 @@
   "source": {
     "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
     "schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
-    "sha256": "17507d314ace2e34379242fa29531439ffbe2fcb729d6a503d25206862794bc1",
+    "sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d",
     "version": "3.0.0"
   },
   "target_origin": "https://kurashinoshirube.com",

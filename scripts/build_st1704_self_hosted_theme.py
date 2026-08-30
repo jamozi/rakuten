@@ -30,6 +30,13 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.4.0"
+THEME_RUNTIME_REVISION: Final = (
+    "defa448bce50c5d88e3830e42dae1c3d8060a86bd9b4edab9c15be8a843b3a94"
+)
+RUNTIME_STYLESHEET_SENTINELS: Final = {
+    "assets/theme.css": "--raos-theme-runtime-revision-base",
+    "assets/editorial-v2.css": "--raos-theme-runtime-revision-editorial-v2",
+}
 THEME_REPOSITORY_ROOT: Final = Path(
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
 )
@@ -372,6 +379,18 @@ def validate_sources() -> dict[str, str]:
         or "$theme->get('Version') !== KURASHINOSHIRUBE_THEME_VERSION" not in php
     ):
         _fail()
+    php_runtime_revision = re.findall(
+        r"^const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '([0-9a-f]{64})';$",
+        php,
+        flags=re.MULTILINE,
+    )
+    if php_runtime_revision != [THEME_RUNTIME_REVISION]:
+        _fail()
+    for relative, property_name in RUNTIME_STYLESHEET_SENTINELS.items():
+        source = _text(relative)
+        declaration = f"{property_name}: {THEME_RUNTIME_REVISION};"
+        if source.count(property_name) != 1 or source.count(declaration) != 1:
+            _fail()
 
     theme_json = _json("theme.json")
     if theme_json.get("version") != 3:
@@ -380,6 +399,11 @@ def validate_sources() -> dict[str, str]:
     if (
         contract.get("schema") != "SELF_HOSTED_EDITORIAL_THEME_CONTRACT_V1"
         or contract.get("theme_version") != THEME_VERSION
+        or contract.get("runtime_evidence")
+        != {
+            "revision": THEME_RUNTIME_REVISION,
+            "stylesheets": RUNTIME_STYLESHEET_SENTINELS,
+        }
         or contract.get("publication_authority") != "NONE"
         or contract.get("editorial_v2") != EDITORIAL_V2_PRESENTATION
         or contract.get("head", {}).get("document_title_deduplication")
@@ -481,6 +505,7 @@ def validate_sources() -> dict[str, str]:
     if (
         assets.get("schema") != "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
         or assets.get("theme_version") != THEME_VERSION
+        or assets.get("theme_runtime_revision") != THEME_RUNTIME_REVISION
     ):
         _fail()
 

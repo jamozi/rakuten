@@ -294,6 +294,12 @@
         const banner = document.querySelector('.raos-local-preview-banner');
         const cookieSettingsBounds = boundingBoxes('.raos-cookie-settings');
         const ctaBounds = boundingBoxes('.raos-cta[data-raos-placement]');
+        const footer = document.querySelector('.raos-footer');
+        const footerBottomBounds = boundingBoxes('.raos-footer__bottom');
+        const footerGridBounds = boundingBoxes('.raos-footer__grid');
+        const footerLinkBounds = boundingBoxes('.raos-footer a');
+        const footerGrid = document.querySelector('.raos-footer__grid');
+        const footerGridStyle = footerGrid ? getComputedStyle(footerGrid) : null;
         const h1Bounds = boundingBoxes('h1');
         const h1LineMetrics = textLineMetrics(document.querySelector('h1'));
         const cookieConsentBounds = boundingBoxes(
@@ -344,6 +350,17 @@
           decisionListCount: document.querySelectorAll('.decision-list').length,
           duplicateIds,
           editorialRootCount: document.querySelectorAll('.raos-editorial-v2').length,
+          footerBackgroundColor: footer ? getComputedStyle(footer).backgroundColor : '',
+          footerBottomBounds,
+          footerGridColumnCount:
+            footerGridStyle && footerGridStyle.gridTemplateColumns !== 'none'
+              ? footerGridStyle.gridTemplateColumns.split(/\s+/).filter(Boolean).length
+              : 0,
+          footerGridDisplay: footerGridStyle
+            ? footerGridStyle.display
+            : '',
+          footerGridBounds,
+          footerLinkBounds,
           h1Bounds,
           h1Count: document.querySelectorAll('h1').length,
           h1LastLineCharacters: h1LineMetrics.lastLineCharacters,
@@ -373,6 +390,9 @@
           invalidCookieConsentBounds: invalidBoundingBoxCount(cookieConsentBounds),
           invalidCookieSettingsBounds: invalidBoundingBoxCount(cookieSettingsBounds),
           invalidCtaBounds: invalidBoundingBoxCount(ctaBounds),
+          invalidFooterBottomBounds: invalidBoundingBoxCount(footerBottomBounds),
+          invalidFooterGridBounds: invalidBoundingBoxCount(footerGridBounds),
+          invalidFooterLinkBounds: invalidBoundingBoxCount(footerLinkBounds),
           invalidH1Bounds: invalidBoundingBoxCount(h1Bounds),
           lang: document.documentElement.lang,
           mainCount: document.querySelectorAll('main').length,
@@ -631,6 +651,20 @@
         audit.measurementSessionKeyCount !== 0 ||
         audit.cookieSettingsBounds.length !== 1 ||
         audit.invalidCookieSettingsBounds !== 0 ||
+        audit.footerBackgroundColor !== 'rgb(23, 36, 63)' ||
+        audit.footerBottomBounds.length !== 1 ||
+        audit.footerGridBounds.length !== 1 ||
+        audit.footerGridDisplay !== 'grid' ||
+        audit.invalidFooterBottomBounds !== 0 ||
+        audit.invalidFooterGridBounds !== 0 ||
+        audit.footerLinkBounds.length === 0 ||
+        audit.invalidFooterLinkBounds !== 0 ||
+        audit.footerLinkBounds.some((bounds) => bounds.height < 44) ||
+        audit.footerGridColumnCount !==
+          (width === 1440 ? 3 : width === 768 ? 2 : 1) ||
+        [...audit.footerBottomBounds, ...audit.footerGridBounds].some(
+          (bounds) => bounds.left < 16 || bounds.right > audit.clientWidth - 16,
+        ) ||
         audit.missingAlt !== 0 ||
         audit.unloadedImages !== 0 ||
         audit.unlabeledControls !== 0 ||

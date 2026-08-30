@@ -28,26 +28,26 @@
       },
       {
         "article_id": "st1704-portable-power-station-guide",
-        "packet_sha256": "5f3c4e5f77ef76472c426350fd0860e07a79f38c1d1e4b68a06455326ddd19f4",
+        "packet_sha256": "588dafd3e9b43a87543c1b7858d9fc4710f5f8a670df67f43caa46c5c878a6a7",
         "slot": 2
       },
       {
         "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
-        "packet_sha256": "d04e67a061a8f79a647d935924c3f7b81ac12136e87b2c9e7f0fd464823f29e8",
+        "packet_sha256": "8eb85bb4253319362cdb650b61111d5608726b71c146bb2d252d1c43547229a8",
         "slot": 3
       },
       {
         "article_id": "st1704-countertop-dishwasher-for-small-households",
-        "packet_sha256": "ac0d4f69b9ad135688e371d333949b0536c93811a6feb053aea19902694e5a8d",
+        "packet_sha256": "bd99f9d6b762ac3da85f0e628a6fe71f6d484203b1e104303fe356803ec1596f",
         "slot": 4
       },
       {
         "article_id": "st1704-compact-robot-vacuum-shortlist",
-        "packet_sha256": "dc5e1e11c2b1de1d7a238635c048d72b0daa4642bed5029b70c673294e7c5677",
+        "packet_sha256": "9cdce96cc3802a2ddf19424ce47952b6c2ab5b2a1006c5625e5e97f481da3798",
         "slot": 5
       }
     ],
-    "contract_sha256": "26f01a8bfd67cc735190d899cf0f1babfed2b9f33dba3490a5b786285d0afe03",
+    "contract_sha256": "a4c1dcc0f111ddb7ab186d17016c7d90e1efffb557335f5dfb734dbd7a5eeb76",
     "period": {
       "duration_days": 14,
       "end_exclusive_date": "2026-09-08",
@@ -72,19 +72,19 @@
     }
   },
   "provenance": {
-    "attribution_fixture_sha256": "8423c2edc53f47779006162d85914413bfc04e31e56e1e1d64bc086352b2c748",
-    "fixture_sha256": "0d3c525e57d093619f6ae4f9f7a4032ee9cbc8a761661262d8fa0d7909f8b084",
+    "attribution_fixture_sha256": "196d9a7b9bbbe05d3b5e0a1862099afb6c067f1d869aae89303afa35b12cc0ec",
+    "fixture_sha256": "11d03fe466c3afe9786d645fbadcd44286220731e182ab6de52956b2c1553eeb",
     "generated_by": "repo://scripts/build_st1304_cost_unit_economics.py",
     "generation_command": ".venv/bin/python scripts/build_st1304_cost_unit_economics.py",
     "source_artifacts": [
       {
         "bytes": 8101,
-        "sha256": "fe47e6a3019f9ba56fe84d52cd9c02950fdbc1bde4ad2dd56ed2a150166e3e41",
+        "sha256": "b247e5a20de2d10015b7c42a284f04037d82317d7985dd96991797400ec4e341",
         "uri": "repo://changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml"
       },
       {
         "bytes": 15482,
-        "sha256": "0d3c525e57d093619f6ae4f9f7a4032ee9cbc8a761661262d8fa0d7909f8b084",
+        "sha256": "11d03fe466c3afe9786d645fbadcd44286220731e182ab6de52956b2c1553eeb",
         "uri": "repo://changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json"
       },
       {
@@ -142,7 +142,7 @@
       },
       "five_slot_measurement": {
         "path": "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json",
-        "sha256": "5df78f2afc00531dcd52dddebdbf88a696f58d6969dbe9cf6c315a49f1ea0e54"
+        "sha256": "e902d9a6f69d19ffab24b348f962e78bf8b1f57a159ad1e8798f1e7b81ec2e9e"
       },
       "integration_precedence": {
         "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
@@ -178,15 +178,15 @@
       },
       "st1303_fixture": {
         "path": "changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json",
-        "sha256": "8423c2edc53f47779006162d85914413bfc04e31e56e1e1d64bc086352b2c748"
+        "sha256": "196d9a7b9bbbe05d3b5e0a1862099afb6c067f1d869aae89303afa35b12cc0ec"
       },
       "st1303_projection": {
         "path": "changes/st-1303/generated/attribution-engine-recorded.v2.json",
-        "sha256": "c98b058eeca9a8afc25cffa7e021ad5989904b8454acd8824241fffcd5a4df79"
+        "sha256": "3f296cbcdb88ebfd6567bc4ed24639cd41c66a316e83b0d0abeda212ed7df27d"
       },
       "st1303_runtime": {
         "path": "changes/st-1303/contracts/attribution-engine-runtime.v2.yaml",
-        "sha256": "0eed320ba8a715b062870f9619b01c2e29210ce518e883ec8cd80739b6475d58"
+        "sha256": "6a7db734494532593611870be7e0b9743193a4a953f41ac35d83ee1083d40c4e"
       },
       "test_catalog": {
         "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
@@ -323,7 +323,7 @@
         "article": {
           "article_id": "st1704-portable-power-station-guide",
           "intent_classification": "SELECTION_GUIDE",
-          "packet_sha256": "5f3c4e5f77ef76472c426350fd0860e07a79f38c1d1e4b68a06455326ddd19f4",
+          "packet_sha256": "588dafd3e9b43a87543c1b7858d9fc4710f5f8a670df67f43caa46c5c878a6a7",
           "slot": 2,
           "slug": "portable-power-station-guide"
         },
@@ -423,7 +423,7 @@
         "article": {
           "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
           "intent_classification": "MODEL_DIFFERENCES",
-          "packet_sha256": "d04e67a061a8f79a647d935924c3f7b81ac12136e87b2c9e7f0fd464823f29e8",
+          "packet_sha256": "8eb85bb4253319362cdb650b61111d5608726b71c146bb2d252d1c43547229a8",
           "slot": 3,
           "slug": "anker-solix-c300-c800-c1000-differences"
         },
@@ -523,7 +523,7 @@
         "article": {
           "article_id": "st1704-countertop-dishwasher-for-small-households",
           "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
-          "packet_sha256": "ac0d4f69b9ad135688e371d333949b0536c93811a6feb053aea19902694e5a8d",
+          "packet_sha256": "bd99f9d6b762ac3da85f0e628a6fe71f6d484203b1e104303fe356803ec1596f",
           "slot": 4,
           "slug": "countertop-dishwasher-for-small-households"
         },
@@ -623,7 +623,7 @@
         "article": {
           "article_id": "st1704-compact-robot-vacuum-shortlist",
           "intent_classification": "CONDITION_SHORTLIST",
-          "packet_sha256": "dc5e1e11c2b1de1d7a238635c048d72b0daa4642bed5029b70c673294e7c5677",
+          "packet_sha256": "9cdce96cc3802a2ddf19424ce47952b6c2ab5b2a1006c5625e5e97f481da3798",
           "slot": 5,
           "slug": "compact-robot-vacuum-shortlist"
         },
@@ -720,7 +720,7 @@
         }
       }
     ],
-    "input_sha256": "9c9b9885f602d8b5e1275ec1581d4d0109ca4953c41e92b438e663eee8cfcef4",
+    "input_sha256": "d536726138adac29e8b38297401a5ecd9892c5f8feffc5507235a39132e65a96",
     "method_version": "RAOS_ST1304_DIRECT_UNIT_ECONOMICS_V2",
     "metrics": [
       {
@@ -737,7 +737,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "9ef7547ea5a4b3abcbb482207c52793b92da66c8d605c63743b3ca00645c40bf"
+          "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b"
         ],
         "unavailable_reason": null,
         "unit": "JPY",
@@ -757,7 +757,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "9ef7547ea5a4b3abcbb482207c52793b92da66c8d605c63743b3ca00645c40bf"
+          "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b"
         ],
         "unavailable_reason": null,
         "unit": "JPY",
@@ -777,7 +777,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "9ef7547ea5a4b3abcbb482207c52793b92da66c8d605c63743b3ca00645c40bf",
+          "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b",
           "1111111111111111111111111111111111111111111111111111111111111111",
           "6666666666666666666666666666666666666666666666666666666666666666",
           "7777777777777777777777777777777777777777777777777777777777777777",
@@ -803,7 +803,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "9ef7547ea5a4b3abcbb482207c52793b92da66c8d605c63743b3ca00645c40bf",
+          "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b",
           "1111111111111111111111111111111111111111111111111111111111111111"
         ],
         "unavailable_reason": null,
@@ -824,7 +824,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "9ef7547ea5a4b3abcbb482207c52793b92da66c8d605c63743b3ca00645c40bf",
+          "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b",
           "6666666666666666666666666666666666666666666666666666666666666666",
           "7777777777777777777777777777777777777777777777777777777777777777",
           "8888888888888888888888888888888888888888888888888888888888888888",
@@ -854,7 +854,7 @@
           "8888888888888888888888888888888888888888888888888888888888888888",
           "9999999999999999999999999999999999999999999999999999999999999999",
           "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "9ef7547ea5a4b3abcbb482207c52793b92da66c8d605c63743b3ca00645c40bf"
+          "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b"
         ],
         "unavailable_reason": null,
         "unit": "RATIO",
@@ -922,7 +922,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "9ef7547ea5a4b3abcbb482207c52793b92da66c8d605c63743b3ca00645c40bf",
+          "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b",
           "1111111111111111111111111111111111111111111111111111111111111111"
         ],
         "unavailable_reason": null,
@@ -951,7 +951,7 @@
       "finance_may_change_publication_snapshot": false,
       "finance_may_change_recommendation_order": false
     },
-    "result_sha256": "6088215182b8bb70fefda832011bdcbac44fd83ed2b2e03628f96cc25353ab61",
+    "result_sha256": "9b3550586f524e2abfcfcbd037a2d39bf8f2d01f9c14ca7c922b9d74d82b7bce",
     "reward_basis_policy": {
       "article_economics": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
       "estimated_reward_in_article_metrics": false,

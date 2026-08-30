@@ -597,20 +597,34 @@ def test_reader_copy_and_dimension_notation_are_normalized() -> None:
     dishwasher = articles["st1704-countertop-dishwasher-for-small-households"]
     dishwasher_text = " ".join(_strings(dishwasher))
     for formal_name in (
-        "Panasonic SOLOTA NP-TMLK1-H（以下、SOLOTA）",
-        "THANKO ラクアmini color TDWS25SBL（以下、ラクアmini color）",
-        "siroca 食器洗い乾燥機 SS-MA251（以下、SS-MA251）",
-        "Panasonic NP-TSP1-W（以下、NP-TSP1）",
+        "Panasonic SOLOTA NP-TMLK1-H",
+        "THANKO ラクアmini color（型番：TDWS25SBL）",
+        "siroca 食器洗い乾燥機 SS-MA251",
+        "Panasonic NP-TSP1-W",
     ):
         assert formal_name in dishwasher_text
+    assert (
+        "以降は順に「SOLOTA」「ラクアmini color」「SS-MA251」"
+        "「NP-TSP1」と表記します。"
+    ) in dishwasher_text
     assert [
         card["product_name"]
         for card in dishwasher["render_model"]["product_cards"]
     ] == ["SOLOTA", "ラクアmini color", "SS-MA251", "NP-TSP1"]
     robot = articles["st1704-compact-robot-vacuum-shortlist"]
     robot_text = " ".join(_strings(robot))
-    assert "F155260（以下、Roomba Mini）" in robot_text
-    assert "N285060（以下、Roomba Plus 515 Combo）" in robot_text
+    assert (
+        "iRobot「Roomba Mini 掃除機＆床拭きロボット + "
+        "AutoEmpty 充電ステーション」（型番：F155260）"
+    ) in robot_text
+    assert (
+        "iRobot「Roomba Plus 515 Combo ロボット + "
+        "AutoWash 充電ステーション」（型番：N285060）"
+    ) in robot_text
+    assert (
+        "以降は順に「Roomba Mini」「K11+ Pro」「K10+ Pro Combo」"
+        "「Roomba Plus 515 Combo」と表記します。"
+    ) in robot_text
     assert "幅条件" not in robot_text
     power_text = " ".join(
         _strings(articles["st1704-portable-power-station-guide"])

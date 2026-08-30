@@ -63,8 +63,10 @@ comma-separated set of production slugs registered in
 `check` before it reads the editor credential or makes any live call. It then
 uses only the exact project MCP editor endpoint to reuse an identical draft,
 CAS-update a draft previously written by this workflow, or create a missing
-draft. An unknown draft difference, duplicate slug, or already-published slug
-stops the request.
+draft. Existing published targets are reused only after their exact post ID,
+slug, status, revision, modified time, and content hash are captured in the
+owner-private baseline receipt. An unknown difference or duplicate slug stops
+the request.
 
 After draft readback, the command creates idempotent content proposals and,
 when the exact tracked and deployed child-theme tree hashes differ, an

@@ -126,7 +126,7 @@
       "category_label": "備え",
       "cluster_id": "preparedness",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
-      "content_snapshot_sha256": "90073cea0a43cfd95708cf5be9611fae10b5ba8bb94b08b0627ea20dcb4afb90",
+      "content_snapshot_sha256": "d37e9579edb45aeb56bdb7fbdd22f3e52c533d1776caf3019fa3374615479b02",
       "cta_bindings": [
         {
           "article_code": "a02",
@@ -139,7 +139,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a02-p04-card",
-          "snapshot_id": "snp-a02-90073cea0a43"
+          "snapshot_id": "snp-a02-d37e9579edb4"
         },
         {
           "article_code": "a02",
@@ -152,7 +152,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a02-p04-final",
-          "snapshot_id": "snp-a02-90073cea0a43"
+          "snapshot_id": "snp-a02-d37e9579edb4"
         },
         {
           "article_code": "a02",
@@ -165,7 +165,7 @@
           "product_id": "PRD-JACKERY-500-NEW",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a02-p05-card",
-          "snapshot_id": "snp-a02-90073cea0a43"
+          "snapshot_id": "snp-a02-d37e9579edb4"
         },
         {
           "article_code": "a02",
@@ -178,7 +178,7 @@
           "product_id": "PRD-JACKERY-500-NEW",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a02-p05-final",
-          "snapshot_id": "snp-a02-90073cea0a43"
+          "snapshot_id": "snp-a02-d37e9579edb4"
         },
         {
           "article_code": "a02",
@@ -191,7 +191,7 @@
           "product_id": "PRD-BLUETTI-AC70",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a02-p06-card",
-          "snapshot_id": "snp-a02-90073cea0a43"
+          "snapshot_id": "snp-a02-d37e9579edb4"
         },
         {
           "article_code": "a02",
@@ -204,7 +204,7 @@
           "product_id": "PRD-BLUETTI-AC70",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a02-p06-final",
-          "snapshot_id": "snp-a02-90073cea0a43"
+          "snapshot_id": "snp-a02-d37e9579edb4"
         },
         {
           "article_code": "a02",
@@ -217,7 +217,7 @@
           "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a02-p07-card",
-          "snapshot_id": "snp-a02-90073cea0a43"
+          "snapshot_id": "snp-a02-d37e9579edb4"
         },
         {
           "article_code": "a02",
@@ -230,7 +230,7 @@
           "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a02-p07-final",
-          "snapshot_id": "snp-a02-90073cea0a43"
+          "snapshot_id": "snp-a02-d37e9579edb4"
         }
       ],
       "excerpt": "停電対策のポータブル電源4モデルを、容量・定格出力・重量・大きさで比較。使いたい機器と持ち運び条件から候補を絞ります。",
@@ -259,7 +259,7 @@
           "relationship": "adjacent_context"
         }
       ],
-      "snapshot_id": "snp-a02-90073cea0a43",
+      "snapshot_id": "snp-a02-d37e9579edb4",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-portable-power-station-guide",
       "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める",
@@ -272,7 +272,7 @@
       "category_label": "備え",
       "cluster_id": "preparedness",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
-      "content_snapshot_sha256": "4c4264e7e70c0f1373f58f5321473c1ce39550f2117c0ad495ca263622e333ae",
+      "content_snapshot_sha256": "f24fa4f702d0d7243f6d93918a7e8066f021dc9532ad158c1e36473fafed778a",
       "cta_bindings": [
         {
           "article_code": "a03",
@@ -285,7 +285,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a03-p04-card",
-          "snapshot_id": "snp-a03-4c4264e7e70c"
+          "snapshot_id": "snp-a03-f24fa4f702d0"
         },
         {
           "article_code": "a03",
@@ -298,7 +298,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a03-p04-final",
-          "snapshot_id": "snp-a03-4c4264e7e70c"
+          "snapshot_id": "snp-a03-f24fa4f702d0"
         },
         {
           "article_code": "a03",
@@ -311,7 +311,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a03-p08-card",
-          "snapshot_id": "snp-a03-4c4264e7e70c"
+          "snapshot_id": "snp-a03-f24fa4f702d0"
         },
         {
           "article_code": "a03",
@@ -324,7 +324,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a03-p08-final",
-          "snapshot_id": "snp-a03-4c4264e7e70c"
+          "snapshot_id": "snp-a03-f24fa4f702d0"
         },
         {
           "article_code": "a03",
@@ -337,7 +337,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a03-p09-card",
-          "snapshot_id": "snp-a03-4c4264e7e70c"
+          "snapshot_id": "snp-a03-f24fa4f702d0"
         },
         {
           "article_code": "a03",
@@ -350,7 +350,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a03-p09-final",
-          "snapshot_id": "snp-a03-4c4264e7e70c"
+          "snapshot_id": "snp-a03-f24fa4f702d0"
         },
         {
           "article_code": "a03",
@@ -363,7 +363,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a03-p10-card",
-          "snapshot_id": "snp-a03-4c4264e7e70c"
+          "snapshot_id": "snp-a03-f24fa4f702d0"
         },
         {
           "article_code": "a03",
@@ -376,7 +376,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a03-p10-final",
-          "snapshot_id": "snp-a03-4c4264e7e70c"
+          "snapshot_id": "snp-a03-f24fa4f702d0"
         }
       ],
       "excerpt": "Anker Solix 4モデルの容量・定格出力・重量・寸法を同じ表で比較。持ち運び、出力、C1000の世代差から条件別に選びます。",
@@ -405,7 +405,7 @@
           "relationship": "adjacent_context"
         }
       ],
-      "snapshot_id": "snp-a03-4c4264e7e70c",
+      "snapshot_id": "snp-a03-f24fa4f702d0",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-anker-solix-c300-c800-c1000-differences",
       "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い",
@@ -418,7 +418,7 @@
       "category_label": "家事",
       "cluster_id": "household",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
-      "content_snapshot_sha256": "9fc4b1f2ec84c32f478390ecc6cc3549525a1bc61416bca3794fc1549b4adc51",
+      "content_snapshot_sha256": "6f5edb5a0a0df923f78477efcaecc697e882f184554380d4e61be6550c7d2f1b",
       "cta_bindings": [
         {
           "article_code": "a04",
@@ -431,7 +431,7 @@
           "product_id": "PRD-PANASONIC-NP-TMLK1",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a04-p11-card",
-          "snapshot_id": "snp-a04-9fc4b1f2ec84"
+          "snapshot_id": "snp-a04-6f5edb5a0a0d"
         },
         {
           "article_code": "a04",
@@ -444,7 +444,7 @@
           "product_id": "PRD-PANASONIC-NP-TMLK1",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a04-p11-final",
-          "snapshot_id": "snp-a04-9fc4b1f2ec84"
+          "snapshot_id": "snp-a04-6f5edb5a0a0d"
         },
         {
           "article_code": "a04",
@@ -457,7 +457,7 @@
           "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a04-p12-card",
-          "snapshot_id": "snp-a04-9fc4b1f2ec84"
+          "snapshot_id": "snp-a04-6f5edb5a0a0d"
         },
         {
           "article_code": "a04",
@@ -470,7 +470,7 @@
           "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a04-p12-final",
-          "snapshot_id": "snp-a04-9fc4b1f2ec84"
+          "snapshot_id": "snp-a04-6f5edb5a0a0d"
         },
         {
           "article_code": "a04",
@@ -483,7 +483,7 @@
           "product_id": "PRD-SIROCA-SS-MA251",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a04-p13-card",
-          "snapshot_id": "snp-a04-9fc4b1f2ec84"
+          "snapshot_id": "snp-a04-6f5edb5a0a0d"
         },
         {
           "article_code": "a04",
@@ -496,7 +496,7 @@
           "product_id": "PRD-SIROCA-SS-MA251",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a04-p13-final",
-          "snapshot_id": "snp-a04-9fc4b1f2ec84"
+          "snapshot_id": "snp-a04-6f5edb5a0a0d"
         },
         {
           "article_code": "a04",
@@ -509,7 +509,7 @@
           "product_id": "PRD-PANASONIC-NP-TSP1",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a04-p14-card",
-          "snapshot_id": "snp-a04-9fc4b1f2ec84"
+          "snapshot_id": "snp-a04-6f5edb5a0a0d"
         },
         {
           "article_code": "a04",
@@ -522,7 +522,7 @@
           "product_id": "PRD-PANASONIC-NP-TSP1",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a04-p14-final",
-          "snapshot_id": "snp-a04-9fc4b1f2ec84"
+          "snapshot_id": "snp-a04-6f5edb5a0a0d"
         }
       ],
       "excerpt": "工事不要で使えるタンク式食洗機4モデルを、設置寸法・食器点数・使用水量・乾燥方法で比較。狭いキッチンで向く条件を整理します。",
@@ -551,7 +551,7 @@
           "relationship": "same_cluster"
         }
       ],
-      "snapshot_id": "snp-a04-9fc4b1f2ec84",
+      "snapshot_id": "snp-a04-6f5edb5a0a0d",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-countertop-dishwasher-for-small-households",
       "title": "工事不要の食洗機を1〜2人暮らし向けに比較",
@@ -564,7 +564,7 @@
       "category_label": "家事",
       "cluster_id": "household",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
-      "content_snapshot_sha256": "4083a0258ea374a6dcf898ceb96b450ff69a0766f9f006749cf551b472292bf1",
+      "content_snapshot_sha256": "2a75738808da41b22ee78d04305ba9e960150ece341b95d6da00168b41370fa7",
       "cta_bindings": [
         {
           "article_code": "a05",
@@ -577,7 +577,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a05-p15-card",
-          "snapshot_id": "snp-a05-4083a0258ea3"
+          "snapshot_id": "snp-a05-2a75738808da"
         },
         {
           "article_code": "a05",
@@ -590,7 +590,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a05-p15-final",
-          "snapshot_id": "snp-a05-4083a0258ea3"
+          "snapshot_id": "snp-a05-2a75738808da"
         },
         {
           "article_code": "a05",
@@ -603,7 +603,7 @@
           "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a05-p16-card",
-          "snapshot_id": "snp-a05-4083a0258ea3"
+          "snapshot_id": "snp-a05-2a75738808da"
         },
         {
           "article_code": "a05",
@@ -616,7 +616,7 @@
           "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a05-p16-final",
-          "snapshot_id": "snp-a05-4083a0258ea3"
+          "snapshot_id": "snp-a05-2a75738808da"
         },
         {
           "article_code": "a05",
@@ -629,7 +629,7 @@
           "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a05-p17-card",
-          "snapshot_id": "snp-a05-4083a0258ea3"
+          "snapshot_id": "snp-a05-2a75738808da"
         },
         {
           "article_code": "a05",
@@ -642,7 +642,7 @@
           "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a05-p17-final",
-          "snapshot_id": "snp-a05-4083a0258ea3"
+          "snapshot_id": "snp-a05-2a75738808da"
         },
         {
           "article_code": "a05",
@@ -655,7 +655,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a05-p18-card",
-          "snapshot_id": "snp-a05-4083a0258ea3"
+          "snapshot_id": "snp-a05-2a75738808da"
         },
         {
           "article_code": "a05",
@@ -668,7 +668,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a05-p18-final",
-          "snapshot_id": "snp-a05-4083a0258ea3"
+          "snapshot_id": "snp-a05-2a75738808da"
         }
       ],
       "excerpt": "省スペース候補のロボット掃除機4モデルを、本体の底面寸法・高さ・ステーション寸法・水拭き方式で比較。置ける条件から候補を絞ります。",
@@ -697,7 +697,7 @@
           "relationship": "same_cluster"
         }
       ],
-      "snapshot_id": "snp-a05-4083a0258ea3",
+      "snapshot_id": "snp-a05-2a75738808da",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-compact-robot-vacuum-shortlist",
       "title": "省スペースのロボット掃除機を条件で絞る",
@@ -710,7 +710,7 @@
       "category_label": "移動",
       "cluster_id": "mobility",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
-      "content_snapshot_sha256": "f15d30ec2f4940a462d48c30319490ea43adcc158cf4fbc63ce25eff816e5055",
+      "content_snapshot_sha256": "e21d9a5ed91824c7953a3260ff67d306bd1af1a8a7e01c51eb7ffd477ce4db38",
       "cta_bindings": [
         {
           "article_code": "a06",
@@ -723,7 +723,7 @@
           "product_id": "PRD-PROTECA-STARIA-CXR-02350",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a06-p19-card",
-          "snapshot_id": "snp-a06-f15d30ec2f49"
+          "snapshot_id": "snp-a06-e21d9a5ed918"
         },
         {
           "article_code": "a06",
@@ -736,7 +736,7 @@
           "product_id": "PRD-PROTECA-STARIA-CXR-02350",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a06-p19-final",
-          "snapshot_id": "snp-a06-f15d30ec2f49"
+          "snapshot_id": "snp-a06-e21d9a5ed918"
         },
         {
           "article_code": "a06",
@@ -749,7 +749,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01550",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a06-p20-card",
-          "snapshot_id": "snp-a06-f15d30ec2f49"
+          "snapshot_id": "snp-a06-e21d9a5ed918"
         },
         {
           "article_code": "a06",
@@ -762,7 +762,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01550",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a06-p20-final",
-          "snapshot_id": "snp-a06-f15d30ec2f49"
+          "snapshot_id": "snp-a06-e21d9a5ed918"
         },
         {
           "article_code": "a06",
@@ -775,7 +775,7 @@
           "product_id": "PRD-ACE-PALISADES3-Z-06910",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a06-p21-card",
-          "snapshot_id": "snp-a06-f15d30ec2f49"
+          "snapshot_id": "snp-a06-e21d9a5ed918"
         },
         {
           "article_code": "a06",
@@ -788,7 +788,7 @@
           "product_id": "PRD-ACE-PALISADES3-Z-06910",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a06-p21-final",
-          "snapshot_id": "snp-a06-f15d30ec2f49"
+          "snapshot_id": "snp-a06-e21d9a5ed918"
         },
         {
           "article_code": "a06",
@@ -801,7 +801,7 @@
           "product_id": "PRD-BERMAS-INTER-CITY-60524",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a06-p22-card",
-          "snapshot_id": "snp-a06-f15d30ec2f49"
+          "snapshot_id": "snp-a06-e21d9a5ed918"
         },
         {
           "article_code": "a06",
@@ -814,7 +814,7 @@
           "product_id": "PRD-BERMAS-INTER-CITY-60524",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a06-p22-final",
-          "snapshot_id": "snp-a06-f15d30ec2f49"
+          "snapshot_id": "snp-a06-e21d9a5ed918"
         }
       ],
       "excerpt": "100席未満の国内線で確認したい幅35×奥行20×高さ45cm・3辺100cm以内を基準に、4モデルの外寸、重量、容量、開き方を公式情報から比較します。",
@@ -843,7 +843,7 @@
           "relationship": "same_cluster"
         }
       ],
-      "snapshot_id": "snp-a06-f15d30ec2f49",
+      "snapshot_id": "snp-a06-e21d9a5ed918",
       "source_kind": "html_fixture",
       "source_ref": "articles/carry-on-suitcase-under-100-seats.html",
       "title": "100席未満の国内線向けスーツケース4モデルを機内持ち込み規定で比較",
@@ -856,7 +856,7 @@
       "category_label": "移動",
       "cluster_id": "mobility",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
-      "content_snapshot_sha256": "d7901b98a9aecd0055c0e6709049680f5ed25c930c1ba15a739c6d36606ce86e",
+      "content_snapshot_sha256": "abc1202a749e824f9f7c621cfbb03184cfd4dfd082ee5863fb8919e8d5593d6c",
       "cta_bindings": [
         {
           "article_code": "a07",
@@ -869,7 +869,7 @@
           "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a07-p23-card",
-          "snapshot_id": "snp-a07-d7901b98a9ae"
+          "snapshot_id": "snp-a07-abc1202a749e"
         },
         {
           "article_code": "a07",
@@ -882,7 +882,7 @@
           "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a07-p23-final",
-          "snapshot_id": "snp-a07-d7901b98a9ae"
+          "snapshot_id": "snp-a07-abc1202a749e"
         },
         {
           "article_code": "a07",
@@ -895,7 +895,7 @@
           "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a07-p24-card",
-          "snapshot_id": "snp-a07-d7901b98a9ae"
+          "snapshot_id": "snp-a07-abc1202a749e"
         },
         {
           "article_code": "a07",
@@ -908,7 +908,7 @@
           "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a07-p24-final",
-          "snapshot_id": "snp-a07-d7901b98a9ae"
+          "snapshot_id": "snp-a07-abc1202a749e"
         },
         {
           "article_code": "a07",
@@ -921,7 +921,7 @@
           "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a07-p25-card",
-          "snapshot_id": "snp-a07-d7901b98a9ae"
+          "snapshot_id": "snp-a07-abc1202a749e"
         },
         {
           "article_code": "a07",
@@ -934,7 +934,7 @@
           "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a07-p25-final",
-          "snapshot_id": "snp-a07-d7901b98a9ae"
+          "snapshot_id": "snp-a07-abc1202a749e"
         },
         {
           "article_code": "a07",
@@ -947,7 +947,7 @@
           "product_id": "PRD-FREQUENTER-LIEVE-1-250",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a07-p26-card",
-          "snapshot_id": "snp-a07-d7901b98a9ae"
+          "snapshot_id": "snp-a07-abc1202a749e"
         },
         {
           "article_code": "a07",
@@ -960,7 +960,7 @@
           "product_id": "PRD-FREQUENTER-LIEVE-1-250",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a07-p26-final",
-          "snapshot_id": "snp-a07-d7901b98a9ae"
+          "snapshot_id": "snp-a07-abc1202a749e"
         }
       ],
       "excerpt": "30L以上・本体3kg以下の機内持ち込み候補4モデルを、容量、素材、ストッパー、拡張時寸法、交換可能車輪から公式情報で比較します。",
@@ -989,7 +989,7 @@
           "relationship": "same_cluster"
         }
       ],
-      "snapshot_id": "snp-a07-d7901b98a9ae",
+      "snapshot_id": "snp-a07-abc1202a749e",
       "source_kind": "html_fixture",
       "source_ref": "articles/lightweight-carry-on-suitcase-under-3kg.html",
       "title": "30L以上・3kg以下の機内持ち込みスーツケース4モデルを比較",
@@ -1002,7 +1002,7 @@
       "category_label": "移動",
       "cluster_id": "mobility",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
-      "content_snapshot_sha256": "3e58bc997690daf8318b1786dad3f143e764fce068d8659053f895cd02725f2a",
+      "content_snapshot_sha256": "29e1fc0be1183cdce0c0644037935e83919eb388fb5a36db11352daf3ab2380f",
       "cta_bindings": [
         {
           "article_code": "a08",
@@ -1015,7 +1015,7 @@
           "product_id": "PRD-INNOVATOR-INV50",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a08-p27-card",
-          "snapshot_id": "snp-a08-3e58bc997690"
+          "snapshot_id": "snp-a08-29e1fc0be118"
         },
         {
           "article_code": "a08",
@@ -1028,7 +1028,7 @@
           "product_id": "PRD-INNOVATOR-INV50",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a08-p27-final",
-          "snapshot_id": "snp-a08-3e58bc997690"
+          "snapshot_id": "snp-a08-29e1fc0be118"
         },
         {
           "article_code": "a08",
@@ -1041,7 +1041,7 @@
           "product_id": "PRD-ACE-DIFFERENCE-05721",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a08-p02-card",
-          "snapshot_id": "snp-a08-3e58bc997690"
+          "snapshot_id": "snp-a08-29e1fc0be118"
         },
         {
           "article_code": "a08",
@@ -1054,7 +1054,7 @@
           "product_id": "PRD-ACE-DIFFERENCE-05721",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a08-p02-final",
-          "snapshot_id": "snp-a08-3e58bc997690"
+          "snapshot_id": "snp-a08-29e1fc0be118"
         },
         {
           "article_code": "a08",
@@ -1067,7 +1067,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01551",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a08-p28-card",
-          "snapshot_id": "snp-a08-3e58bc997690"
+          "snapshot_id": "snp-a08-29e1fc0be118"
         },
         {
           "article_code": "a08",
@@ -1080,7 +1080,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01551",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a08-p28-final",
-          "snapshot_id": "snp-a08-3e58bc997690"
+          "snapshot_id": "snp-a08-29e1fc0be118"
         },
         {
           "article_code": "a08",
@@ -1093,7 +1093,7 @@
           "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a08-p29-card",
-          "snapshot_id": "snp-a08-3e58bc997690"
+          "snapshot_id": "snp-a08-29e1fc0be118"
         },
         {
           "article_code": "a08",
@@ -1106,7 +1106,7 @@
           "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a08-p29-final",
-          "snapshot_id": "snp-a08-3e58bc997690"
+          "snapshot_id": "snp-a08-29e1fc0be118"
         }
       ],
       "excerpt": "前開きとキャスターストッパーを備えた4モデルを、前面構造、容量、重量、PC収納、拡張時寸法から公式情報で比較します。",
@@ -1135,7 +1135,7 @@
           "relationship": "same_cluster"
         }
       ],
-      "snapshot_id": "snp-a08-3e58bc997690",
+      "snapshot_id": "snp-a08-29e1fc0be118",
       "source_kind": "html_fixture",
       "source_ref": "articles/front-open-carry-on-suitcase-with-stopper.html",
       "title": "フロントオープンとキャスターストッパーを備えた機内持ち込みスーツケース4モデル比較",
@@ -1148,7 +1148,7 @@
       "category_label": "家事",
       "cluster_id": "household",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
-      "content_snapshot_sha256": "42fe256a76de981db370d490e6ce30137d1d751e192faadd06b90eccf36175a9",
+      "content_snapshot_sha256": "186ea496f9e2ae2cac5d92a551f0dcd59e9206022d7de5d7c7cd92bbec258310",
       "cta_bindings": [
         {
           "article_code": "a09",
@@ -1161,7 +1161,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a09-p15-card",
-          "snapshot_id": "snp-a09-42fe256a76de"
+          "snapshot_id": "snp-a09-186ea496f9e2"
         },
         {
           "article_code": "a09",
@@ -1174,7 +1174,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a09-p15-final",
-          "snapshot_id": "snp-a09-42fe256a76de"
+          "snapshot_id": "snp-a09-186ea496f9e2"
         },
         {
           "article_code": "a09",
@@ -1187,7 +1187,7 @@
           "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a09-p16-card",
-          "snapshot_id": "snp-a09-42fe256a76de"
+          "snapshot_id": "snp-a09-186ea496f9e2"
         },
         {
           "article_code": "a09",
@@ -1200,7 +1200,7 @@
           "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a09-p16-final",
-          "snapshot_id": "snp-a09-42fe256a76de"
+          "snapshot_id": "snp-a09-186ea496f9e2"
         },
         {
           "article_code": "a09",
@@ -1213,7 +1213,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a09-p30-card",
-          "snapshot_id": "snp-a09-42fe256a76de"
+          "snapshot_id": "snp-a09-186ea496f9e2"
         },
         {
           "article_code": "a09",
@@ -1226,7 +1226,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a09-p30-final",
-          "snapshot_id": "snp-a09-42fe256a76de"
+          "snapshot_id": "snp-a09-186ea496f9e2"
         }
       ],
       "excerpt": "Roomba MiniとSwitchBot K11+ Proを、本体・ステーション寸法、自動ゴミ収集、水拭き、Wi-Fi、消耗品から公式仕様で比べます。",
@@ -1254,7 +1254,7 @@
           "relationship": "same_cluster"
         }
       ],
-      "snapshot_id": "snp-a09-42fe256a76de",
+      "snapshot_id": "snp-a09-186ea496f9e2",
       "source_kind": "html_fixture",
       "source_ref": "articles/roomba-mini-vs-switchbot-k11-pro.html",
       "title": "Roomba MiniとSwitchBot K11+ Proを公式仕様で比較",
@@ -1267,7 +1267,7 @@
       "category_label": "家事",
       "cluster_id": "household",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
-      "content_snapshot_sha256": "79f1a818a501493f792018f6063cdf5cc699c7cd5001de55905e5ecce448bea0",
+      "content_snapshot_sha256": "01c4279c69ac689e36804a27d9840cf4d5d7406891ae96e7456eb9f391e1fd06",
       "cta_bindings": [
         {
           "article_code": "a10",
@@ -1280,7 +1280,7 @@
           "product_id": "PRD-PANASONIC-SOLOTA-NP-TML1-W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a10-p31-card",
-          "snapshot_id": "snp-a10-79f1a818a501"
+          "snapshot_id": "snp-a10-01c4279c69ac"
         },
         {
           "article_code": "a10",
@@ -1293,7 +1293,7 @@
           "product_id": "PRD-PANASONIC-SOLOTA-NP-TML1-W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a10-p31-final",
-          "snapshot_id": "snp-a10-79f1a818a501"
+          "snapshot_id": "snp-a10-01c4279c69ac"
         },
         {
           "article_code": "a10",
@@ -1306,7 +1306,7 @@
           "product_id": "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a10-p32-card",
-          "snapshot_id": "snp-a10-79f1a818a501"
+          "snapshot_id": "snp-a10-01c4279c69ac"
         },
         {
           "article_code": "a10",
@@ -1319,7 +1319,7 @@
           "product_id": "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a10-p32-final",
-          "snapshot_id": "snp-a10-79f1a818a501"
+          "snapshot_id": "snp-a10-01c4279c69ac"
         },
         {
           "article_code": "a10",
@@ -1332,7 +1332,7 @@
           "product_id": "PRD-SIROCA-SS-MA251",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a10-p13-card",
-          "snapshot_id": "snp-a10-79f1a818a501"
+          "snapshot_id": "snp-a10-01c4279c69ac"
         },
         {
           "article_code": "a10",
@@ -1345,7 +1345,7 @@
           "product_id": "PRD-SIROCA-SS-MA251",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "rakuten_measurement_id": "a10-p13-final",
-          "snapshot_id": "snp-a10-79f1a818a501"
+          "snapshot_id": "snp-a10-01c4279c69ac"
         }
       ],
       "excerpt": "SOLOTAとラクアmini Plusを、本体・開扉時奥行き、食器点数、使用水量、乾燥方式から公式仕様で比べます。",
@@ -1373,7 +1373,7 @@
           "relationship": "same_cluster"
         }
       ],
-      "snapshot_id": "snp-a10-79f1a818a501",
+      "snapshot_id": "snp-a10-01c4279c69ac",
       "source_kind": "html_fixture",
       "source_ref": "articles/solota-vs-rakua-mini-plus.html",
       "title": "SOLOTAとラクアmini Plusを設置条件から比較",
@@ -1436,7 +1436,7 @@
     "allow_variant_substitution": false,
     "freshness_hours": 24,
     "identity_validation": {
-      "jan": "match_when_provider_value_is_available",
+      "jan": "required_exact_when_official_jan_registered",
       "pc_mobile_item_code": "required_exact",
       "representative_model": "required_exact",
       "title_tokens": "required"

@@ -15,6 +15,10 @@
 defined('ABSPATH') || exit;
 
 define('RAOS_CODEX_MCP_VERSION', '1.3.0');
+define(
+    'RAOS_CODEX_MCP_RUNTIME_REVISION',
+    '1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a'
+);
 define('RAOS_CODEX_MCP_FILE', __FILE__);
 
 require_once __DIR__ . '/includes/class-raos-codex-mcp-store.php';
@@ -23,6 +27,7 @@ require_once __DIR__ . '/includes/class-raos-codex-mcp-deployment.php';
 
 final class RAOS_Codex_MCP_Abilities
 {
+    const RUNTIME_REVISION = '1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a';
     const ORIGIN = 'https://kurashinoshirube.com';
     const EDITOR_ROLE = 'raos_codex_mcp_editor';
     const OPERATOR_ROLE = 'raos_codex_deployment_operator';
@@ -56,7 +61,7 @@ final class RAOS_Codex_MCP_Abilities
         add_action('wp_abilities_api_init', array($this, 'register_abilities'));
         add_action('mcp_adapter_init', array($this, 'register_mcp_server'));
         add_action('rest_api_init', array($this->deployment, 'register_routes'));
-        add_action('init', array('RAOS_Codex_MCP_Store', 'maybe_upgrade'), 0);
+        add_action('init', array($this, 'maybe_upgrade'), 0);
         add_action(
             'wp_authenticate_application_password_errors',
             array($this, 'constrain_application_password'),
@@ -78,7 +83,8 @@ final class RAOS_Codex_MCP_Abilities
     public static function activate()
     {
         global $wp_version;
-        if (version_compare(PHP_VERSION, '8.1', '<')
+        if (! self::runtime_identity_is_exact()
+            || version_compare(PHP_VERSION, '8.1', '<')
             || ! is_string($wp_version)
             || preg_match('/\A7\.1(?:\.|\z)/', $wp_version) !== 1
             || (defined('WP_MCP_VERSION') && '0.6.1' !== WP_MCP_VERSION)) {
@@ -92,6 +98,72 @@ final class RAOS_Codex_MCP_Abilities
         self::install_role(self::EDITOR_ROLE, self::editor_capabilities());
         self::install_role(self::OPERATOR_ROLE, self::operator_capabilities());
         RAOS_Codex_MCP_Store::install();
+    }
+
+    /**
+     * Return the fixed plugin runtime identity only when every critical class
+     * loaded in this PHP process belongs to this exact release.
+     *
+     * A tracked ZIP can replace files while OPcache still serves one older
+     * class. Checking the disk package or entrypoint version alone therefore
+     * cannot authorize a mutation.
+     */
+    public static function plugin_runtime_revision()
+    {
+        $expected = self::RUNTIME_REVISION;
+        if (! defined('RAOS_CODEX_MCP_RUNTIME_REVISION')
+            || ! is_string(RAOS_CODEX_MCP_RUNTIME_REVISION)
+            || preg_match('/\A[0-9a-f]{64}\z/D', RAOS_CODEX_MCP_RUNTIME_REVISION) !== 1
+            || ! hash_equals($expected, RAOS_CODEX_MCP_RUNTIME_REVISION)) {
+            return null;
+        }
+        $critical_classes = array(
+            __CLASS__,
+            'RAOS_Codex_MCP_Store',
+            'RAOS_Codex_MCP_Content',
+            'RAOS_Codex_MCP_Deployment',
+        );
+        foreach ($critical_classes as $class_name) {
+            $constant_name = $class_name . '::RUNTIME_REVISION';
+            if (! class_exists($class_name, false)
+                || ! defined($constant_name)) {
+                return null;
+            }
+            $actual = constant($constant_name);
+            if (! is_string($actual)
+                || preg_match('/\A[0-9a-f]{64}\z/D', $actual) !== 1
+                || ! hash_equals($expected, $actual)) {
+                return null;
+            }
+        }
+        return $expected;
+    }
+
+    public static function runtime_identity_is_exact()
+    {
+        return self::RUNTIME_REVISION === self::plugin_runtime_revision();
+    }
+
+    public static function runtime_identity_gate()
+    {
+        return self::runtime_identity_is_exact()
+            ? true
+            : new WP_Error(
+                'raos_codex_plugin_runtime_mixed',
+                'The loaded RAOS Codex plugin runtime is not one exact release.',
+                array('status' => 503)
+            );
+    }
+
+    /**
+     * Guard the active-plugin overwrite upgrade path before Store code can run.
+     */
+    public function maybe_upgrade()
+    {
+        if (! self::runtime_identity_is_exact()) {
+            return;
+        }
+        RAOS_Codex_MCP_Store::maybe_upgrade();
     }
 
     private static function install_role($name, $capabilities)
@@ -213,7 +285,8 @@ final class RAOS_Codex_MCP_Abilities
         } else {
             return;
         }
-        if (is_multisite()
+        if (! self::runtime_identity_is_exact()
+            || is_multisite()
             || ! self::runtime_origin_is_exact()
             || ! $this->has_exact_role_assignment($user, $role)
             || ! $this->role_is_exact($role)
@@ -318,6 +391,7 @@ final class RAOS_Codex_MCP_Abilities
     {
         return $request instanceof WP_REST_Request
             && '/raos-codex-mcp/v1/editor' === $request->get_route()
+            && self::runtime_identity_is_exact()
             && $this->authenticated_for_role(self::EDITOR_ROLE)
             && current_user_can('raos_codex_mcp_access');
     }
@@ -325,13 +399,15 @@ final class RAOS_Codex_MCP_Abilities
     public function ability_permission($input = null)
     {
         unset($input);
-        return $this->authenticated_for_role(self::EDITOR_ROLE)
+        return self::runtime_identity_is_exact()
+            && $this->authenticated_for_role(self::EDITOR_ROLE)
             && current_user_can('raos_codex_content_read');
     }
 
     public function operator_rest_permission()
     {
-        return $this->authenticated_for_role(self::OPERATOR_ROLE)
+        return self::runtime_identity_is_exact()
+            && $this->authenticated_for_role(self::OPERATOR_ROLE)
             && current_user_can('raos_codex_deploy_access');
     }
 
@@ -339,6 +415,7 @@ final class RAOS_Codex_MCP_Abilities
     {
         $user = wp_get_current_user();
         return self::$application_password_user_id > 0
+            && self::runtime_identity_is_exact()
             && self::$application_password_role === $role
             && $user instanceof WP_User
             && (int) $user->ID === self::$application_password_user_id
@@ -821,6 +898,13 @@ final class RAOS_Codex_MCP_Abilities
         if (! current_user_can('manage_options')) {
             wp_die(esc_html__('Permission denied.', 'raos-codex-mcp'));
         }
+        if (! self::runtime_identity_is_exact()) {
+            wp_die(
+                esc_html__('Approval unavailable while the plugin runtime is mixed.', 'raos-codex-mcp'),
+                '',
+                array('response' => 503)
+            );
+        }
         $rows = RAOS_Codex_MCP_Store::pending_for_admin(50);
         $batches = RAOS_Codex_MCP_Store::pending_publication_batches_for_admin(20);
         echo '<div class="wrap"><h1>' . esc_html__('RAOS Codex proposals', 'raos-codex-mcp') . '</h1>';
@@ -965,6 +1049,13 @@ final class RAOS_Codex_MCP_Abilities
                 array('response' => 403)
             );
         }
+        if (! self::runtime_identity_is_exact()) {
+            wp_die(
+                esc_html__('Approval refused while the plugin runtime is mixed.', 'raos-codex-mcp'),
+                '',
+                array('response' => 503)
+            );
+        }
         $proposal_id = isset($_POST['proposal_id']) ? sanitize_text_field(wp_unslash($_POST['proposal_id'])) : '';
         if (! RAOS_Codex_MCP_Store::is_sha256($proposal_id)) {
             wp_die(
@@ -1011,6 +1102,13 @@ final class RAOS_Codex_MCP_Abilities
                 esc_html__('Batch approval refused.', 'raos-codex-mcp'),
                 '',
                 array('response' => 403)
+            );
+        }
+        if (! self::runtime_identity_is_exact()) {
+            wp_die(
+                esc_html__('Batch approval refused while the plugin runtime is mixed.', 'raos-codex-mcp'),
+                '',
+                array('response' => 503)
             );
         }
         $batch_hash = isset($_POST['batch_manifest_sha256'])
@@ -1081,6 +1179,7 @@ final class RAOS_Codex_MCP_Abilities
         global $wp_version;
         return is_string($wp_version)
             && preg_match('/\A7\.1(?:\.|\z)/', $wp_version) === 1
+            && self::runtime_identity_is_exact()
             && defined('WP_MCP_VERSION')
             && '0.6.1' === WP_MCP_VERSION
             && function_exists('wp_register_ability')

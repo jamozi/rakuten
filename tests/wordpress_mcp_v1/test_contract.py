@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
 from pathlib import Path
@@ -9,8 +10,9 @@ import subprocess
 import sys
 import tomllib
 
+import pytest
 from jsonschema.validators import Draft202012Validator
-from scripts import build_wordpress_mcp_v1
+from scripts import build_wordpress_mcp_v1, raos_wordpress_publication_request
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -50,6 +52,122 @@ def test_repo_plugin_registry_has_one_deterministic_owner_for_both_packages() ->
     )
 
 
+def test_owner_plugin_version_is_bound_across_package_and_runtime() -> None:
+    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.3.0"
+    entrypoint = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(
+        encoding="utf-8"
+    )
+    assert " * Version: 1.3.0" in entrypoint
+    assert "define('RAOS_CODEX_MCP_VERSION', '1.3.0');" in entrypoint
+    assert (PLUGIN / "README.md").read_text(encoding="utf-8").startswith(
+        "# RAOS Codex MCP Abilities 1.3.0\n"
+    )
+
+
+def test_owner_plugin_runtime_revision_is_bound_across_every_critical_class() -> None:
+    revision = build_wordpress_mcp_v1.PLUGIN_RUNTIME_REVISION
+    assert (
+        raos_wordpress_publication_request.EXPECTED_PLUGIN_RUNTIME_REVISION
+        == revision
+    )
+    assert re.fullmatch(r"[0-9a-f]{64}", revision)
+    entrypoint = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(
+        encoding="utf-8"
+    )
+    assert (
+        "'RAOS_CODEX_MCP_RUNTIME_REVISION',\n"
+        f"    '{revision}'" in entrypoint
+    )
+    for relative in (
+        "raos-codex-mcp-abilities.php",
+        "includes/class-raos-codex-mcp-store.php",
+        "includes/class-raos-codex-mcp-content.php",
+        "includes/class-raos-codex-mcp-deployment.php",
+    ):
+        source = (PLUGIN / relative).read_text(encoding="utf-8")
+        assert source.count(f"const RUNTIME_REVISION = '{revision}';") == 1
+    assert build_wordpress_mcp_v1.runtime_manifest()["plugin"][
+        "runtime_revision"
+    ] == revision
+
+
+def test_publication_runtime_binds_portfolio_materializer_and_browser_audit() -> None:
+    required = {
+        "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
+        "changes/wordpress-local-preview-v1/browser/check.sh",
+        "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
+        "scripts/raos_editorial_portfolio_v2.py",
+    }
+    entrypoint = ROOT / "scripts/raos_editorial_portfolio_v2.py"
+    for node in ast.walk(ast.parse(entrypoint.read_text(encoding="utf-8"))):
+        if not isinstance(node, ast.ImportFrom) or not node.module:
+            continue
+        if not node.module.startswith("raos."):
+            continue
+        module_path = Path("python", *node.module.split(".")).with_suffix(".py")
+        if (ROOT / module_path).is_file():
+            required.add(module_path.as_posix())
+            continue
+        package_path = ROOT / "python" / Path(*node.module.split("."))
+        for alias in node.names:
+            imported = package_path / f"{alias.name}.py"
+            if imported.is_file():
+                required.add(imported.relative_to(ROOT).as_posix())
+    assert required <= set(build_wordpress_mcp_v1.RUNTIME_PATHS)
+    runtime_paths = {
+        row["path"] for row in build_wordpress_mcp_v1.runtime_manifest()["runtime_files"]
+    }
+    assert required <= runtime_paths
+
+
+@pytest.mark.parametrize(
+    "relative",
+    [
+        "includes/class-raos-codex-mcp-store.php",
+        "includes/class-raos-codex-mcp-content.php",
+        "includes/class-raos-codex-mcp-deployment.php",
+    ],
+)
+@pytest.mark.parametrize("replacement", [b"", b"0" * 64])
+def test_owner_build_rejects_stale_critical_class_runtime_revision(
+    relative: str,
+    replacement: bytes,
+) -> None:
+    payloads = {
+        name: (PLUGIN / name).read_bytes()
+        for name in build_wordpress_mcp_v1.PLUGIN_FILES
+    }
+    expected = build_wordpress_mcp_v1.PLUGIN_RUNTIME_REVISION.encode("ascii")
+    payloads[relative] = payloads[relative].replace(expected, replacement, 1)
+    with pytest.raises(
+        build_wordpress_mcp_v1.BuildFailure,
+        match="WORDPRESS_MCP_V1_PLUGIN_RUNTIME_REVISION_INVALID",
+    ):
+        build_wordpress_mcp_v1._validate_plugin_runtime_revision(payloads)
+
+
+@pytest.mark.parametrize("remove_global", [False, True])
+def test_owner_build_rejects_stale_main_runtime_identity(remove_global: bool) -> None:
+    payloads = {
+        name: (PLUGIN / name).read_bytes()
+        for name in build_wordpress_mcp_v1.PLUGIN_FILES
+    }
+    main = payloads["raos-codex-mcp-abilities.php"]
+    revision = build_wordpress_mcp_v1.PLUGIN_RUNTIME_REVISION.encode("ascii")
+    if remove_global:
+        marker = b"'RAOS_CODEX_MCP_RUNTIME_REVISION',\n    '" + revision + b"'"
+    else:
+        marker = b"const RUNTIME_REVISION = '" + revision + b"';"
+    payloads["raos-codex-mcp-abilities.php"] = main.replace(marker, b"", 1)
+    with pytest.raises(
+        build_wordpress_mcp_v1.BuildFailure,
+        match="WORDPRESS_MCP_V1_PLUGIN_RUNTIME_REVISION_INVALID",
+    ):
+        build_wordpress_mcp_v1._validate_plugin_runtime_revision(payloads)
+
+
 def test_public_contract_and_schema_are_valid() -> None:
     contract = json.loads((SLICE / "contracts/wordpress-mcp.v1.json").read_text())
     schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
@@ -84,6 +202,8 @@ def test_public_contract_and_schema_are_valid() -> None:
         "atomic_batch_claim_before_mutation": True,
         "theme_before_content": True,
         "theme_tree_sha256_bound": True,
+        "php_opcache_manifest_invalidation": True,
+        "loaded_theme_runtime_readback": True,
         "plugin_in_release_batch": False,
         "production_readback": True,
         "anonymous_public_readback": True,
@@ -200,6 +320,119 @@ def test_root_final_static_checks_wordpress_owner_manifest() -> None:
     makefile = (ROOT / "Makefile").read_text()
     final_static = makefile.split("final-static:", 1)[1].split("\n\n", 1)[0]
     assert "$(MAKE) -C changes/wordpress-mcp-v1 manifest-check" in final_static
+
+
+def test_editor_status_exposes_loaded_theme_runtime_version_and_revision() -> None:
+    content = (
+        PLUGIN / "includes/class-raos-codex-mcp-content.php"
+    ).read_text(encoding="utf-8")
+    status = content.split("public function site_status", 1)[1].split(
+        "public function content_list", 1
+    )[0]
+    assert "get_stylesheet() === 'kurashinoshirube-child'" in status
+    assert "defined('KURASHINOSHIRUBE_THEME_VERSION')" in status
+    assert "constant('KURASHINOSHIRUBE_THEME_VERSION')" in status
+    assert "'runtime_version' => $theme_runtime_version" in status
+    assert "defined('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
+    assert "constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
+    assert "'runtime_revision' => $theme_runtime_revision" in status
+    assert "'plugin_runtime_revision' => $plugin_runtime_revision" in status
+
+
+def test_deployment_status_exposes_loaded_theme_runtime_version_and_revision() -> None:
+    deployment = (
+        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
+    ).read_text(encoding="utf-8")
+    status = deployment.split("public function status", 1)[1].split(
+        "public function create_proposal", 1
+    )[0]
+    assert "defined('KURASHINOSHIRUBE_THEME_VERSION')" in status
+    assert "constant('KURASHINOSHIRUBE_THEME_VERSION')" in status
+    assert "'runtime_version' => $theme_runtime_version" in status
+    assert "defined('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
+    assert "constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
+    assert "'runtime_revision' => $theme_runtime_revision" in status
+    assert "'plugin_runtime_revision' => $plugin_runtime_revision" in status
+
+
+def test_plugin_runtime_aggregate_and_mutation_gates_fail_closed() -> None:
+    main = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(encoding="utf-8")
+    store = (
+        PLUGIN / "includes/class-raos-codex-mcp-store.php"
+    ).read_text(encoding="utf-8")
+    content = (
+        PLUGIN / "includes/class-raos-codex-mcp-content.php"
+    ).read_text(encoding="utf-8")
+    deployment = (
+        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
+    ).read_text(encoding="utf-8")
+
+    aggregate = main.split("public static function plugin_runtime_revision", 1)[1]
+    aggregate = aggregate.split("public static function runtime_identity_is_exact", 1)[
+        0
+    ]
+    for class_name in (
+        "__CLASS__",
+        "'RAOS_Codex_MCP_Store'",
+        "'RAOS_Codex_MCP_Content'",
+        "'RAOS_Codex_MCP_Deployment'",
+    ):
+        assert class_name in aggregate
+    for marker in (
+        "defined('RAOS_CODEX_MCP_RUNTIME_REVISION')",
+        "class_exists($class_name, false)",
+        "defined($constant_name)",
+        "constant($constant_name)",
+        "hash_equals($expected, $actual)",
+        "return null;",
+    ):
+        assert marker in aggregate
+
+    assert "add_action('init', array($this, 'maybe_upgrade'), 0);" in main
+    assert "array('RAOS_Codex_MCP_Store', 'maybe_upgrade')" not in main
+    for method in (
+        "activate",
+        "maybe_upgrade",
+        "transport_permission",
+        "ability_permission",
+        "operator_rest_permission",
+        "render_admin_page",
+        "handle_approval",
+        "handle_batch_approval",
+    ):
+        section = main.split(f"function {method}", 1)[1]
+        section = section.split("\n    }", 1)[0]
+        assert "runtime_identity" in section
+
+    store_gate = store.split("private static function runtime_identity_gate", 1)[1]
+    assert "defined('RAOS_CODEX_MCP_RUNTIME_REVISION')" in store_gate
+    assert "method_exists('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision')" in store_gate
+    assert "hash_equals(self::RUNTIME_REVISION, $revision)" in store_gate
+    for method in (
+        "install",
+        "maybe_upgrade",
+        "create",
+        "get",
+        "register_publication_batch",
+        "get_publication_batch",
+        "approve",
+        "approve_publication_batch",
+        "claim_publication_batch_apply",
+        "claim_apply",
+        "complete",
+        "mark_failed",
+    ):
+        section = store.split(f"public static function {method}", 1)[1]
+        before_database = section.split("global $wpdb;", 1)[0]
+        assert "self::runtime_identity_gate()" in before_database
+
+    for source in (content, deployment):
+        helper = source.split("private static function loaded_plugin_runtime_revision", 1)[
+            1
+        ]
+        assert "method_exists('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision')" in helper
+        assert "hash_equals(self::RUNTIME_REVISION, $revision)" in helper
+        assert "raos_codex_plugin_runtime_mixed" in helper
 
 
 def test_lockfile_has_exact_mcp_versions() -> None:

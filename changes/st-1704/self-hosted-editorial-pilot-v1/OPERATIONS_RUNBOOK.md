@@ -66,6 +66,12 @@ allowlisted final slug without an exact bound public snapshot from both the Yoas
 post sitemap and the front-page latest-guides Query block. This is defense in depth,
 not authority to perform the human containment action.
 
+For a 1.4.0 publication readback, both MCP status surfaces must report runtime
+revision `defa448bce50c5d88e3830e42dae1c3d8060a86bd9b4edab9c15be8a843b3a94`.
+The anonymous and authenticated page checks also fetch the two same-origin theme
+stylesheets without redirects and require distinct base/Editorial V2 sentinels,
+HTTP 200, `text/css`, bounded strict UTF-8, and an observed content hash and size.
+
 ## Human-gated five-article recovery schedule
 
 The offsets below begin with the first successful human-confirmed public action.

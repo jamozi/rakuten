@@ -2,6 +2,10 @@
 
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
+The release is bound to runtime revision
+`1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a`;
+every loaded critical class must report that exact value before any ability or
+mutation is authorized.
 
 It exposes one custom MCP server at
 `/wp-json/raos-codex-mcp/v1/editor`. The server lists only site status,

@@ -11,12 +11,12 @@
       "outputs": [
         {
           "bytes": 2877,
-          "sha256": "3b85108196b8d101cdf635bd53a4e083de947c41927c12eb812f4a3bbe6a52b9",
+          "sha256": "f1116c2c16c1d6eb9e4cb4ab89df06735f417ccfc2d9c5c9169e3119007f28a8",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 18254,
-          "sha256": "dc2aa06cbc4a91ef86f868fffe62969ef7845a17967ea078146d5b533227e838",
+          "sha256": "d215f399cecfe3f940d5eb49d56916a3558099642216ac96db4598fbc2f72e5c",
           "uri": "repo://changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement/config/measurement-allowlist.v1.json"
         }
       ],
@@ -93,8 +93,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 79383,
-          "sha256": "17507d314ace2e34379242fa29531439ffbe2fcb729d6a503d25206862794bc1",
+          "bytes": 79388,
+          "sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d",
           "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
         },
         {
@@ -253,12 +253,12 @@
       "outputs": [
         {
           "bytes": 6968,
-          "sha256": "29864039f9eda7673fc53405f6798dd6cf354c18654600fe6e9091cdd0697ff3",
+          "sha256": "9dc0a437cd98069c76a378af5774bd6348d0dff3102f8e7bdf04d1f6ba46b806",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
           "bytes": 9339,
-          "sha256": "67390ac4eb2429c39a2c7458c3c8e69f664481fa04c59140fd440ef3f0806e71",
+          "sha256": "100cdd6f95cc0bb224c43c77a9328237fbeb338d54220aba554bfa0423912bc6",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
         }
       ],
@@ -21252,12 +21252,12 @@
       "outputs": [
         {
           "bytes": 30334,
-          "sha256": "642d358bf793fedee64b0b5b792cc9355b39aeee114ec9fa9bbf7e57ef4f282d",
+          "sha256": "64bcca528088c92ba670a0d11558b9a1709d4963b7c1af887a2097ebdcffe0d0",
           "uri": "repo://changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json"
         },
         {
           "bytes": 11818,
-          "sha256": "5912daa5b5a15f137c7e71a9500b99650d8be18c4589a23f670d2857e05e1b27",
+          "sha256": "275155cd6d89054635acbedb65ee4aef8640b5226446e2b8fdc63b11f4339b13",
           "uri": "repo://changes/st-1104/runtime-manifest.v2.yaml"
         }
       ],
@@ -21419,12 +21419,12 @@
       "outputs": [
         {
           "bytes": 94253,
-          "sha256": "1a95de2c1d15d01c75fce2836dca7747ef90b50c416dba4d55b06eaa2087da18",
+          "sha256": "56f648a654cf18067ae9f905b32aaebe9b6b75729961ae8edcc31f2f5a138486",
           "uri": "repo://changes/st-1105/generated/admin-visual-accessibility-recorded.v2.json"
         },
         {
           "bytes": 16756,
-          "sha256": "b8cdc36c47db976a6a459e480d2023e5ae5284ad217463f8c0427db24ab87029",
+          "sha256": "2b84f6b81fc8e0efa0cef7884516922a00d9a05ad323108ce6afb4f9e79c9585",
           "uri": "repo://changes/st-1105/runtime-manifest.v2.json"
         }
       ],
@@ -22789,7 +22789,7 @@
       "outputs": [
         {
           "bytes": 18895,
-          "sha256": "c98b058eeca9a8afc25cffa7e021ad5989904b8454acd8824241fffcd5a4df79",
+          "sha256": "3f296cbcdb88ebfd6567bc4ed24639cd41c66a316e83b0d0abeda212ed7df27d",
           "uri": "repo://changes/st-1303/generated/attribution-engine-recorded.v2.json"
         }
       ],
@@ -23051,7 +23051,7 @@
       "outputs": [
         {
           "bytes": 39444,
-          "sha256": "242babe554f9b925f4a849c1c00224945a58e3bbe3c8a34c3e71a13cb1eca8b3",
+          "sha256": "ce5dbb7fe4dd3fa5fc358539ab5b7416b403b14514c5a296a044bc2ffa1c32e1",
           "uri": "repo://changes/st-1304/generated/cost-unit-economics-recorded.v2.json"
         }
       ],
@@ -23292,7 +23292,7 @@
       "outputs": [
         {
           "bytes": 31267,
-          "sha256": "8c2122359cfa0dafc5b883c5780b1a1f7cedffd701268223a0969bef8dddfb91",
+          "sha256": "59aded0cec550ed10cb2078e85fa28627cb9bcb375ed99e863a21a22136a5b8a",
           "uri": "repo://changes/st-1305/generated/finance-reconciliation-recorded.v2.json"
         }
       ],
@@ -26025,7 +26025,7 @@
       "outputs": [
         {
           "bytes": 2428,
-          "sha256": "7a6d56fc6848828a656d3444a3b3c22fbdd0ed423a99a3efb80b4612974136e3",
+          "sha256": "5cb542bb2f8fc17f11e5f7759eb9ed74ccbeb77892c16d5f25bc7af52b599e15",
           "uri": "repo://changes/st-1704/affiliate-learning-v2/runtime-manifest.v2.json"
         }
       ],
@@ -26145,7 +26145,7 @@
       "outputs": [
         {
           "bytes": 3170,
-          "sha256": "ca99d501ffbc587c83ab829f4fa5a2e6a632407f5dc81b8e869affbe5b6c6c6a",
+          "sha256": "46eb056c6b7c63c91835f2da86bbc3d351bee595eb4d33b15bb1fe40e9ce3d23",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26290,7 +26290,7 @@
       "outputs": [
         {
           "bytes": 72521,
-          "sha256": "d63a2e240ff12f485aefc36aa4d6cefe24a7f5f0a1232c59916107497ae888f5",
+          "sha256": "5f9aa7f1211c486e59051b5766b6b376ea6f15dfbcd9996aecd9c07f3b560c36",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27275,7 +27275,7 @@
       "outputs": [
         {
           "bytes": 29183,
-          "sha256": "a16cf659d5ebcf5576ae6c222984c4b0535f863309c27d6fb73aa49c015e2a0c",
+          "sha256": "dc03b547b81d2d2671e66d76c0806a24027b849a8eb67837c7eff17fb69a8829",
           "uri": "repo://changes/st-1804/generated/gate3-economics.local-blocked.v1.json"
         }
       ],
@@ -28171,12 +28171,12 @@
       "outputs": [
         {
           "bytes": 3342,
-          "sha256": "fe0974851e466f78d9e8a04501a76b39055b81eaa792287ba68eb470957adf23",
+          "sha256": "24bd5da85820342740a4d3617d5cf2961d7a645bbbd41d378c77e97cb7fa607b",
           "uri": "repo://changes/st-1907/generated/content-portfolio-optimizer-report.v1.json"
         },
         {
           "bytes": 8474,
-          "sha256": "a5776dc4013b8305659fcd337466ac128b770c5527ffdcbcc88b06d454196164",
+          "sha256": "f07ea602814bff5c0a269641762c827505bfc65ea78e5113e8b4a511b58e44aa",
           "uri": "repo://changes/st-1907/manifest.yaml"
         }
       ],
@@ -28477,18 +28477,19 @@
       "outputs": [
         {
           "bytes": 531,
-          "sha256": "d8a684de37ae294147b7bde08962af7151ae51feb707982cf444f56621c0f412",
+          "sha256": "14e7657d8337bfec697be8bd89624ccecdbd73c9918759329696296ef0315f59",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
-          "bytes": 13723,
-          "sha256": "0fb603f4bd969cea8f33a09745443ff510d7e8a24e4c4230d2e8802a5f33c722",
+          "bytes": 17117,
+          "sha256": "872d32ae323905fc1356d3bf474a8a1d8da2ecc84a47a12bb5ca964242050bab",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
       "owner_dependencies": [
         "build_editorial_measurement_v1",
-        "build_editorial_v3_theme_navigation"
+        "build_editorial_v3_theme_navigation",
+        "build_st1704_self_hosted_editorial_manifest"
       ],
       "owner_id": "build_wordpress_mcp_v1",
       "owner_version": 2,
@@ -28507,8 +28508,26 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "uri": "repo://changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
           "version": 2
         },
         {
@@ -28675,6 +28694,36 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/README.md",
+          "uri": "repo://changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-content.php",
+          "uri": "repo://changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-content.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-deployment.php",
+          "uri": "repo://changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-deployment.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-store.php",
+          "uri": "repo://changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-store.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/raos-codex-mcp-abilities.php",
+          "uri": "repo://changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/raos-codex-mcp-abilities.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/wordpress-publication-bundle-v3/abilities_plugin_proposal.py",
           "uri": "repo://changes/wordpress-publication-bundle-v3/abilities_plugin_proposal.py",
           "version": 2
@@ -28723,6 +28772,42 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_editorial_pilot_json.py",
+          "uri": "repo://python/raos/adapters/self_hosted_editorial_pilot_json.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
+          "uri": "repo://python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/editorial_portfolio_v2.py",
+          "uri": "repo://python/raos/application/editorial/editorial_portfolio_v2.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/self_hosted_editorial_pilot.py",
+          "uri": "repo://python/raos/application/editorial/self_hosted_editorial_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/content_ast.py",
+          "uri": "repo://python/raos/domain/editorial/content_ast.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
+          "uri": "repo://python/raos/domain/editorial/self_hosted_editorial_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/build_wordpress_mcp_v1.py",
           "uri": "repo://scripts/build_wordpress_mcp_v1.py",
           "version": 2
@@ -28731,6 +28816,12 @@
           "kind": "tracked",
           "semantic_id": "scripts/check_wordpress_public_ui_playwright.sh",
           "uri": "repo://scripts/check_wordpress_public_ui_playwright.sh",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_editorial_portfolio_v2.py",
+          "uri": "repo://scripts/raos_editorial_portfolio_v2.py",
           "version": 2
         },
         {
@@ -28839,6 +28930,12 @@
           "kind": "tracked",
           "semantic_id": "tests/wordpress_mcp_v1/e2e/prepare_packages.py",
           "uri": "repo://tests/wordpress_mcp_v1/e2e/prepare_packages.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/e2e/rollback_harness.php",
+          "uri": "repo://tests/wordpress_mcp_v1/e2e/rollback_harness.php",
           "version": 2
         },
         {

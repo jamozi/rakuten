@@ -261,10 +261,10 @@ def _load_contract(root: Path = REPO_ROOT) -> dict[str, object]:
         "environment": "ENV-CI",
         "st1205_input_sha256": COMPLETE_RECORDED_INPUT_SHA256,
         "st1304_input_sha256": (
-            "9c9b9885f602d8b5e1275ec1581d4d0109ca4953c41e92b438e663eee8cfcef4"
+            "d536726138adac29e8b38297401a5ecd9892c5f8feffc5507235a39132e65a96"
         ),
         "st1304_result_sha256": (
-            "6088215182b8bb70fefda832011bdcbac44fd83ed2b2e03628f96cc25353ab61"
+            "9b3550586f524e2abfcfcbd037a2d39bf8f2d01f9c14ca7c922b9d74d82b7bce"
         ),
         "provider_execution": "NOT_EXECUTED",
     }:

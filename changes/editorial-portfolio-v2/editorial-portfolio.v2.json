@@ -2,7 +2,8 @@
   "schema": "RAOS_EDITORIAL_PORTFOLIO_V2",
   "version": "2.0.0",
   "target_origin": "https://kurashinoshirube.com",
-  "theme_version": "1.3.9",
+  "theme_version": "1.4.0",
+  "theme_runtime_revision": "defa448bce50c5d88e3830e42dae1c3d8060a86bd9b4edab9c15be8a843b3a94",
   "evidence_policy": {
     "freshness_hours": 24,
     "states": [
@@ -22,7 +23,7 @@
     "allow_variant_substitution": false,
     "identity_validation": {
       "representative_model": "required_exact",
-      "jan": "match_when_provider_value_is_available",
+      "jan": "required_exact_when_official_jan_registered",
       "title_tokens": "required",
       "pc_mobile_item_code": "required_exact"
     },

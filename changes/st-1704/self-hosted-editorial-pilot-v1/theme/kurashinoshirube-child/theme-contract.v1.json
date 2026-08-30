@@ -140,6 +140,11 @@
       "fixed_page": "EXACT_THREE_POLICY_SLUG_TITLE_EXCERPT_RECORDS",
       "home": "FIXED_SITE_TITLE_AND_DESCRIPTION"
     },
+    "canonical": {
+      "editorial_v2_fallback": "FIXED_SITE_ORIGIN_PLUS_SLUG_FOR_SINGULAR_PUBLISHED_CLOSED_PUBLIC_ARTICLE_IDENTITY",
+      "invalid_or_unpublished_policy": "PRESERVE_UPSTREAM_VALUE",
+      "snapshot_precedence": "VALID_BOUND_RAOS_SNAPSHOT"
+    },
     "document_title_deduplication": {
       "active_when": "WPSEO_VERSION_DEFINED",
       "hook": "wp_head",
@@ -271,9 +276,9 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "67390ac4eb2429c39a2c7458c3c8e69f664481fa04c59140fd440ef3f0806e71",
+    "sha256": "100cdd6f95cc0bb224c43c77a9328237fbeb338d54220aba554bfa0423912bc6",
     "source_navigation_sha256": "5fb0dc9ac677569151a41e25fe428c04a7a1ea259a67e1efff4915f0a235b566",
-    "source_portfolio_sha256": "17507d314ace2e34379242fa29531439ffbe2fcb729d6a503d25206862794bc1"
+    "source_portfolio_sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d"
   },
   "homepage_clusters": {
     "article_count": 10,
@@ -409,6 +414,13 @@
     "schema_value": "RAOS_PUBLICATION_SNAPSHOT_V1",
     "timestamp_profile": "NULL_OR_RFC3339_UTC_SECONDS",
     "wrapper_keys": ["payload", "payload_sha256", "schema"]
+  },
+  "runtime_evidence": {
+    "revision": "defa448bce50c5d88e3830e42dae1c3d8060a86bd9b4edab9c15be8a843b3a94",
+    "stylesheets": {
+      "assets/editorial-v2.css": "--raos-theme-runtime-revision-editorial-v2",
+      "assets/theme.css": "--raos-theme-runtime-revision-base"
+    }
   },
   "theme_slug": "kurashinoshirube-child",
   "theme_version": "1.4.0"

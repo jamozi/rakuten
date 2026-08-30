@@ -31,7 +31,7 @@
         "start_date": "2026-08-25"
       },
       "reconciliation_availability": "PARTIAL",
-      "result_sha256": "4256168e98d8bebe89f29d6e2e4dd948214fd0962099a96dd3793a967599a175",
+      "result_sha256": "576bb315473d1bd5cb56940cc924892e09511691b39e8f7aca5e8595c4f8a6be",
       "synthetic": true
     },
     "ST-1803": {
@@ -74,7 +74,7 @@
   "gate_pass_claim": false,
   "generated_by": {
     "command": "/home/minami/rakuten/.venv/bin/python -I -B scripts/build_st1804_gate3_economics.py",
-    "generator_sha256": "094abe0656a61e80bdcaaef3dd274d8b38960b8a886b76aac0a5ac211a2357ef",
+    "generator_sha256": "2199e3c5e21931f0b2ec43bedf38d10d25ea1ca283a35ab42529a0e18a649bc1",
     "uri": "repo://scripts/build_st1804_gate3_economics.py"
   },
   "learning_boundary": {
@@ -95,7 +95,7 @@
     ],
     "finance_used_for_product_or_recommendation_ranking": false,
     "modifications_applied": [],
-    "source_result_sha256": "4256168e98d8bebe89f29d6e2e4dd948214fd0962099a96dd3793a967599a175"
+    "source_result_sha256": "576bb315473d1bd5cb56940cc924892e09511691b39e8f7aca5e8595c4f8a6be"
   },
   "mandatory_criteria": [
     {
@@ -262,11 +262,11 @@
   "overall": "BLOCKED",
   "provenance": {
     "dependency_bindings": {
-      "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml": "10871f65afe59fb6e44c6ac5401ce5e4b1b5cb0024497ae19fc43d6f6b997256",
-      "changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json": "59b666012081afc238b331dc481a48bf9ba91c54ee00756f0a0a7687b98deb09",
-      "changes/st-1305/generated/finance-reconciliation-recorded.v2.json": "c0312e29b5c7d6b908b7821c4d0184ad117a144c7dc248addff58aa2a0caca38",
+      "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml": "0f74d348ac22cd0a5fd8a685fe1ccc96ad4b1ce5faf946b11f62fd0f41d9685c",
+      "changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json": "c876f76b5214d8b74c600d84cb0a3d34d1391830400a6646533ba6628a2a0618",
+      "changes/st-1305/generated/finance-reconciliation-recorded.v2.json": "59aded0cec550ed10cb2078e85fa28627cb9bcb375ed99e863a21a22136a5b8a",
       "changes/st-1305/manifest.yaml": "940dd108970b3e2a7e510d8d6603832ea328baf18cbb9b8a9145dc05b1e6bc06",
-      "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json": "9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8",
+      "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json": "e902d9a6f69d19ffab24b348f962e78bf8b1f57a159ad1e8798f1e7b81ec2e9e",
       "changes/st-1803/contracts/gate2-observation.v1.yaml": "327e8bb5b97044953a18d8e76101750fc420109b4dc0661e8d8ca4ac0a657800",
       "changes/st-1803/fixtures/recorded-synthetic-gate2-observation.v1.json": "0c43a21e2c8839a8e3af6e779a8eb698684a67572aa90dd88c1017697ef6fafe",
       "changes/st-1803/generated/gate2-observation.local-blocked.v1.json": "c16c2e91a82c7f2134f4c58ed6719fd61bf03051c359be379f4001f9b9047440",
@@ -284,16 +284,16 @@
       "scripts/build_st1305_finance_reconciliation.py": "215f8aac3529ce713a08af2195de8295fa62b884d3003245a89b818189df5502",
       "scripts/build_st1803_gate2_observation.py": "fe7c178087d113e287e95a02d6bcd68e93bd2f2e82817442800cede768b79cd4"
     },
-    "fixture_sha256": "c31f339748cef32084285101d1c434216d3763398b633992ab84b086a02505e5",
+    "fixture_sha256": "45d917fbc5358b35d2bca459814219f76230fcaf41631473c0d9b5ba1da006af",
     "source_artifacts": [
       {
         "bytes": 6953,
-        "sha256": "c1a5408eba861aaf4b6bc1dd407e84e1bfc6eb045a6b45dac28954aa086acf11",
+        "sha256": "62fccc49d17c99ef515b4f6a13d674faceee91839ff2a98ad741022488bf1180",
         "uri": "repo://changes/st-1804/contracts/gate3-economics.v1.yaml"
       },
       {
         "bytes": 6397,
-        "sha256": "c31f339748cef32084285101d1c434216d3763398b633992ab84b086a02505e5",
+        "sha256": "45d917fbc5358b35d2bca459814219f76230fcaf41631473c0d9b5ba1da006af",
         "uri": "repo://changes/st-1804/fixtures/recorded-synthetic-gate3-economics.v1.json"
       },
       {
@@ -328,7 +328,7 @@
       },
       {
         "bytes": 26164,
-        "sha256": "094abe0656a61e80bdcaaef3dd274d8b38960b8a886b76aac0a5ac211a2357ef",
+        "sha256": "2199e3c5e21931f0b2ec43bedf38d10d25ea1ca283a35ab42529a0e18a649bc1",
         "uri": "repo://scripts/build_st1804_gate3_economics.py"
       }
     ]
@@ -508,7 +508,7 @@
       ],
       "recorded_at": "2026-04-01T00:00:00Z"
     },
-    "evaluation_sha256": "3deb0118cc696bd8ed3fbab90eb3b992883c55bd5e62c3d0b531a71fd11a5311",
+    "evaluation_sha256": "14259b544a22c5530b47d13b7d055bcdc26f579599f8966e774a076d87eda3de",
     "evidence_classification": "RECORDED_SYNTHETIC_TEST_VECTOR_NON_ATTESTING",
     "finance_editorial_separation": {
       "article_html_mutation": false,
@@ -530,7 +530,7 @@
       "recommendation_order_mutation": false
     },
     "gate_pass_claim": false,
-    "input_contract_sha256": "c1a5408eba861aaf4b6bc1dd407e84e1bfc6eb045a6b45dac28954aa086acf11",
+    "input_contract_sha256": "62fccc49d17c99ef515b4f6a13d674faceee91839ff2a98ad741022488bf1180",
     "input_sha256": "a532e84c3be3d656978a8168047a8e4df94c872fd78d703137f399c77e0199b2",
     "method_version": "RAOS_ST1804_GATE3_ECONOMICS_V1",
     "metrics": [
@@ -740,7 +740,7 @@
     "modifications_applied": [],
     "overall": "BLOCKED",
     "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-    "recorded_fixture_sha256": "c31f339748cef32084285101d1c434216d3763398b633992ab84b086a02505e5",
+    "recorded_fixture_sha256": "45d917fbc5358b35d2bca459814219f76230fcaf41631473c0d9b5ba1da006af",
     "reward_basis": {
       "direct_estimated_unattributed_separate": true,
       "provider_total_is_article_attribution": false,

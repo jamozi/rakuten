@@ -13,6 +13,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.4.0';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'defa448bce50c5d88e3830e42dae1c3d8060a86bd9b4edab9c15be8a843b3a94';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
@@ -31,7 +32,7 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1'
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = 'assets/editorial-navigation.v3.json';
-const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '67390ac4eb2429c39a2c7458c3c8e69f664481fa04c59140fd440ef3f0806e71';
+const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '100cdd6f95cc0bb224c43c77a9328237fbeb338d54220aba554bfa0423912bc6';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_MAX_BYTES = 262144;
 const KURASHINOSHIRUBE_HOME_DESCRIPTION = '暮らしのしるべは、移動・家事・備えの生活用品を、公式情報と確認条件に基づいて比較し、選び方を分かりやすく案内します。';
 
@@ -2693,9 +2694,9 @@ function kurashinoshirube_filter_description($value)
 }
 function kurashinoshirube_filter_canonical($value)
 {
-    $snapshot_value = kurashinoshirube_filter_snapshot_value($value, 'canonical_url');
-    if ($snapshot_value !== $value) {
-        return $snapshot_value;
+    $snapshot = kurashinoshirube_current_snapshot();
+    if ($snapshot !== null) {
+        return $snapshot['canonical_url'];
     }
     $context = kurashinoshirube_public_head_context();
     return $context === null ? $value : $context['canonical_url'];

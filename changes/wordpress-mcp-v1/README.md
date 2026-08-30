@@ -15,7 +15,10 @@ There are exactly two project MCP servers:
    `@modelcontextprotocol/sdk@1.30.0`, over stdio.
 
 The WordPress plugin requires WordPress 7.1.x and exactly MCP Adapter 0.6.1.
-It disables MCP Adapter's generic default server and exposes only the eight
+Abilities 1.3.0 is bound to runtime revision
+`1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a`;
+the entrypoint and every critical class must report that exact identity.
+It disables MCP Adapter's generic default server and exposes only the nine
 tools listed in `contracts/wordpress-mcp.v1.json`. The local bridge exposes only
 seven typed operations. Neither path includes a generic request, command, PHP,
 SQL, filesystem-path, URL, media-write, delete, unpublish, uninstall, or
@@ -69,7 +72,7 @@ the build or tests:
 
 ## Operation flow
 
-For the five tracked editorial articles, run the foreground workflow from the
+For the ten tracked editorial articles, run the foreground workflow from the
 repository root:
 
 ```text
@@ -132,13 +135,21 @@ owner-private receipts are stored under
 - Content apply, theme apply, and recovery share one server-side publication
   lock. Each content mutation rechecks the reviewed active-theme tree after its
   write and rolls the content back if that binding changed. Administrators must
-  still avoid manual theme activation or file changes during the approval/apply
-  window because those external wp-admin writes do not participate in this
-  plugin lock.
+  still exclude every external updater or file writer during the complete
+  approval/apply/recovery window. Native WordPress core, plugin, and theme
+  updaters, the Theme/Plugin File Editor, hosting deployment panels, FTP, SFTP,
+  SSH, and direct filesystem writes do not acquire this plugin lock and are
+  outside its strict linearization boundary. Before/after compare-and-swap and
+  readback remain fail-closed race detectors; they do not make those external
+  writers participants in the lock.
 - Apply requires the approval plus `If-Match`, the same idempotency key, global
   kill switch, the scoped authorization lease, unchanged before hash, backup,
   replacement, and after-hash readback. The lease is removed after success or
-  failure. Communication-loss recovery accepts only the existing operation ID.
+  failure. After every atomic code-tree replacement or rollback, the exact PHP
+  files in the validated manifest are invalidated from an active OPcache before
+  runtime use. Both status surfaces report the child theme version loaded by
+  PHP, and final readback requires it to match the reviewed theme version.
+  Communication-loss recovery accepts only the existing operation ID.
 - Completion also performs an unauthenticated HTTPS readback of every canonical
   production URL. It requires an exact 200 response without redirects, one
   matching canonical URL, the reviewed title/headings, and no `noindex` marker.

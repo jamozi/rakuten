@@ -80,6 +80,8 @@
     "atomic_batch_claim_before_mutation": true,
     "theme_before_content": true,
     "theme_tree_sha256_bound": true,
+    "php_opcache_manifest_invalidation": true,
+    "loaded_theme_runtime_readback": true,
     "plugin_in_release_batch": false,
     "production_readback": true,
     "anonymous_public_readback": true,

@@ -12,6 +12,12 @@ The slice owns five things:
 4. child theme 1.4.0 with the Editorial Compass homepage, white-paper article UI, and RAOS/Yoast bridge;
 5. local/CI evidence and a handoff for the remaining human-controlled actions.
 
+Theme 1.4.0 declares one 64-hex runtime revision in `functions.php`. The base and
+Editorial V2 stylesheets carry two distinct custom-property sentinels bound to the
+same revision. Production readback accepts only two exact same-origin stylesheet
+responses whose UTF-8 bodies prove those sentinels one-to-one; each observed body
+size and SHA-256 is retained in the owner-private publication receipt.
+
 It does **not** publish, activate plugins or themes, enter credentials, accept terms,
 enable analytics, call a live provider without the owner gate, or claim staging,
 release, or Production evidence.

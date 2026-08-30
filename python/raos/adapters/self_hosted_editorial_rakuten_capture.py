@@ -27,6 +27,7 @@ import time
 from typing import Final, NoReturn, Protocol, cast, final, runtime_checkable
 import unicodedata
 from urllib.parse import unquote, urlencode, urlsplit
+from urllib.parse import parse_qs
 import zlib
 
 from raos.domain.editorial.self_hosted_editorial_pilot import (
@@ -38,6 +39,7 @@ from raos.domain.editorial.self_hosted_editorial_pilot import (
     canonical_json_bytes,
     canonical_sha256,
     decoded_baseline_jpeg_dimensions,
+    require_rakuten_affiliate_url,
 )
 
 
@@ -211,6 +213,7 @@ class RakutenProductCaptureFailureCode(StrEnum):
     MIME_INVALID = "MIME_INVALID"
     PRODUCT_NOT_FOUND = "PRODUCT_NOT_FOUND"
     PRODUCT_IDENTITY_AMBIGUOUS = "PRODUCT_IDENTITY_AMBIGUOUS"
+    PRODUCT_LISTING_MISMATCH = "PRODUCT_LISTING_MISMATCH"
     PRODUCT_IDENTITY_INVALID = "PRODUCT_IDENTITY_INVALID"
     IMAGE_INVALID = "IMAGE_INVALID"
     STORE_UNSAFE = "STORE_UNSAFE"
@@ -391,6 +394,7 @@ class ProductCaptureTarget:
                 self.fixed_item_code is not None
                 and _ITEM_CODE.fullmatch(self.fixed_item_code) is None
             )
+            or (self.jan is not None and _JAN.fullmatch(self.jan) is None)
         ):
             _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
 
@@ -1194,23 +1198,67 @@ def _fetch(
                 pass
 
 
+_IDENTITY_TOKEN_SEPARATOR = re.compile(r"[\s+*・_.\-/＆&]+")
+_IDENTITY_TOKEN_SEPARATOR_PATTERN: Final = r"[\s+*・_.\-/＆&]*"
+
+
 def _provider_title_has_token(title: str, token: str) -> bool:
-    normalized_title = title.casefold()
-    normalized_token = token.casefold()
+    """Match one provider-returned identity token without substring models.
+
+    Rakuten shops vary harmless separators in model numbers (for example
+    ``K10+ Pro Combo`` and ``K10+ProCombo``). NFKC plus a bounded separator
+    pattern accepts those display differences while the ASCII boundaries keep
+    ``F155260X`` from satisfying ``F155260``.
+    """
+
+    if type(title) is not str or type(token) is not str or not title or not token:
+        return False
+    normalized_title = unicodedata.normalize("NFKC", title).casefold()
+    normalized_token = unicodedata.normalize("NFKC", token).casefold()
+    components = tuple(
+        component
+        for component in _IDENTITY_TOKEN_SEPARATOR.split(normalized_token)
+        if component
+    )
+    if not components:
+        return False
+    token_pattern = _IDENTITY_TOKEN_SEPARATOR_PATTERN.join(
+        re.escape(component) for component in components
+    )
     prefix = (
         r"(?<![a-z0-9])"
-        if re.fullmatch(r"[a-z0-9]", normalized_token[0], re.ASCII)
+        if re.fullmatch(r"[a-z0-9]", components[0][0], re.ASCII)
         else ""
     )
     suffix = (
         r"(?![a-z0-9])"
-        if re.fullmatch(r"[a-z0-9]", normalized_token[-1], re.ASCII)
+        if re.fullmatch(r"[a-z0-9]", components[-1][-1], re.ASCII)
         else ""
     )
     return (
-        re.search(prefix + re.escape(normalized_token) + suffix, normalized_title)
+        re.search(prefix + token_pattern + suffix, normalized_title)
         is not None
     )
+
+
+def _provider_variant(title: str, variants: tuple[str, ...]) -> str | None:
+    """Return the one configured model proven present in provider title data."""
+
+    matches = tuple(
+        variant for variant in variants if _provider_title_has_token(title, variant)
+    )
+    return matches[0] if len(matches) == 1 else None
+
+
+def _provider_jan(row: Mapping[str, object]) -> str | None:
+    """Read only a provider-returned JAN; never fill it from the registry."""
+
+    value = row.get("jan")
+    if value is None or value == "":
+        return None
+    if type(value) is not str or _JAN.fullmatch(value) is None:
+        return None
+    return value
 
 
 def _decode_provider_response(raw: bytes) -> Mapping[str, object]:
@@ -1335,20 +1383,19 @@ def _reject_credential_reflection(
 def _valid_identity(target: ProductCaptureTarget, row: Mapping[str, object]) -> bool:
     item_code = row.get("itemCode")
     item_name = row.get("itemName")
-    provider_jan = row.get("jan")
+    raw_provider_jan = row.get("jan")
+    provider_jan = _provider_jan(row)
     return bool(
         type(item_code) is str
         and _ITEM_CODE.fullmatch(item_code) is not None
         and type(item_name) is str
         and (
-            provider_jan in {None, ""}
-            or (type(provider_jan) is str and _JAN.fullmatch(provider_jan) is not None)
+            raw_provider_jan is None
+            or raw_provider_jan == ""
+            or provider_jan is not None
         )
-        and (
-            target.jan is None
-            or provider_jan in {None, ""}
-            or provider_jan == target.jan
-        )
+        and _provider_variant(item_name, target.variants) is not None
+        and (target.jan is None or provider_jan == target.jan)
         and all(
             _provider_title_has_token(item_name, token)
             for token in target.required_title_tokens
@@ -1493,6 +1540,61 @@ def _discover_item_code(
     _fail(RakutenProductCaptureFailureCode.PRODUCT_NOT_FOUND)
 
 
+def _validate_provider_row_structure(
+    row: Mapping[str, object], *, affiliate: bool
+) -> None:
+    """Validate provider-controlled structure before semantic fallback.
+
+    A valid but different listing may safely become a per-product fallback.
+    Malformed URLs, fields, image identities, and PC/mobile disagreement must
+    remain hard capture failures and therefore run before title/model/JAN
+    matching.
+    """
+
+    item_code = row.get("itemCode")
+    if type(item_code) is not str or _ITEM_CODE.fullmatch(item_code) is None:
+        _fail(RakutenProductCaptureFailureCode.RESPONSE_INVALID)
+    try:
+        _text(row.get("itemName"), maximum=1000)
+        item_url = _text(row.get("itemUrl"), maximum=4096)
+    except RakutenProductCaptureFailure as exc:
+        if exc.code is RakutenProductCaptureFailureCode.CONTRACT_INVALID:
+            _fail(RakutenProductCaptureFailureCode.RESPONSE_INVALID)
+        raise
+    _image_urls(row)
+    if not affiliate:
+        try:
+            source_url = canonical_rakuten_provider_item_url(item_url)
+        except EditorialPilotFailure:
+            _fail(RakutenProductCaptureFailureCode.RESPONSE_INVALID)
+        source_parts = urlsplit(source_url).path.strip("/").split("/")
+        item_parts = item_code.split(":", 1)
+        if len(source_parts) != 2 or source_parts[0] != item_parts[0]:
+            _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
+        return
+    affiliate_url = row.get("affiliateUrl")
+    if type(affiliate_url) is not str or affiliate_url != item_url:
+        _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
+    try:
+        query = parse_qs(
+            urlsplit(affiliate_url).query,
+            keep_blank_values=True,
+            strict_parsing=True,
+            max_num_fields=3,
+        )
+        if set(query) != {"m", "pc", "rafcid"} or any(
+            len(values) != 1 for values in query.values()
+        ):
+            raise ValueError
+        require_rakuten_affiliate_url(
+            affiliate_url,
+            item_url=query["pc"][0],
+            item_code=item_code,
+        )
+    except (EditorialPilotFailure, ValueError):
+        _fail(RakutenProductCaptureFailureCode.RESPONSE_INVALID)
+
+
 def _one_exact_row(
     raw: bytes,
     target: ProductCaptureTarget,
@@ -1506,16 +1608,19 @@ def _one_exact_row(
     )
     rows = _item_rows(raw, expected_fields=expected_fields, expected_hits=1)
     _reject_credential_reflection(rows, credentials)
+    for candidate in rows:
+        _validate_provider_row_structure(candidate, affiliate=affiliate)
     matches = [row for row in rows if row.get("itemCode") == item_code]
     if len(matches) != 1:
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_AMBIGUOUS)
     row = matches[0]
     if (
         not item_code.startswith(f"{target.shop_code}:")
-        or not _valid_identity(target, row)
         or (affiliate and "affiliateUrl" not in row)
     ):
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
+    if not _valid_identity(target, row):
+        _fail(RakutenProductCaptureFailureCode.PRODUCT_LISTING_MISMATCH)
     return row
 
 
@@ -2094,7 +2199,7 @@ def _capture_product(
     connection_factory: RakutenHttpsConnectionFactory,
     clock: Callable[[], datetime],
 ) -> ProductCaptureResult:
-    item_code, variant, discovery_count = _discover_item_code(
+    item_code, _discovery_variant, discovery_count = _discover_item_code(
         target, credentials, connection_factory
     )
     response_raw = _api_request(
@@ -2124,10 +2229,15 @@ def _capture_product(
     item_name = _text(row["itemName"], maximum=1000)
     if affiliate_row.get("itemName") != item_name:
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
+    variant = _provider_variant(item_name, target.variants)
+    if variant is None:
+        _fail(RakutenProductCaptureFailureCode.PRODUCT_LISTING_MISMATCH)
     # Rakuten Ichiba Item Search does not expose JAN as an output element.
     # Keep the nullable evidence field for compatibility with other authoritative
     # provider surfaces, but never synthesize a provider JAN from our registry.
-    provider_jan: str | None = None
+    provider_jan = _provider_jan(row)
+    if target.jan is not None and provider_jan != target.jan:
+        _fail(RakutenProductCaptureFailureCode.PRODUCT_LISTING_MISMATCH)
     image_urls = _image_urls(row)
     if _image_urls(affiliate_row) != image_urls:
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
@@ -2137,10 +2247,20 @@ def _capture_product(
         )
     except EditorialPilotFailure:
         _fail(RakutenProductCaptureFailureCode.RESPONSE_INVALID)
-    if urlsplit(source_url).path.split("/")[1] != target.shop_code:
+    source_parts = urlsplit(source_url).path.strip("/").split("/")
+    item_parts = item_code.split(":", 1)
+    if len(source_parts) != 2 or source_parts[0] != item_parts[0]:
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
     destination_url = _text(affiliate_row["affiliateUrl"], maximum=4096)
     if affiliate_row.get("itemUrl") != destination_url:
+        _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
+    try:
+        require_rakuten_affiliate_url(
+            destination_url,
+            item_url=source_url,
+            item_code=item_code,
+        )
+    except EditorialPilotFailure:
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
     if (
         target.fixed_destination_url is not None
