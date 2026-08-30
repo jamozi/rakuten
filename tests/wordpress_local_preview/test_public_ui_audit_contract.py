@@ -2,10 +2,15 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
 AUDIT = ROOT / "scripts/wordpress_public_ui_audit.function.js"
+LOCAL_AUDIT = (
+    ROOT
+    / "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js"
+)
 SHELL = ROOT / "scripts/check_wordpress_public_ui_playwright.sh"
 INVENTORY = (
     ROOT / "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
@@ -14,6 +19,12 @@ NAVIGATION = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
     "kurashinoshirube-child/assets/editorial-navigation.v3.json"
 )
+
+
+def _node_executable() -> str:
+    node = shutil.which("node")
+    assert node is not None
+    return node
 
 
 def test_generated_audit_inventory_is_public_safe_exact_v3_projection() -> None:
@@ -123,6 +134,222 @@ def test_public_audit_shell_requires_all_56_artifacts_and_is_portable() -> None:
     assert "/home/minami/rakuten" not in source
     subprocess.run(
         ["/usr/bin/bash", "-n", str(SHELL)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def test_local_preview_audit_fail_closes_every_surface_seo_head() -> None:
+    source = LOCAL_AUDIT.read_text(encoding="utf-8")
+    inventory = json.loads(INVENTORY.read_text(encoding="utf-8"))
+
+    assert len(inventory["surfaces"]) == 14
+    assert len({row["local_path"] for row in inventory["surfaces"]}) == 14
+    assert len({row["production_path"] for row in inventory["surfaces"]}) == 14
+    assert len(inventory["surfaces"]) * len(inventory["viewports"]) == 56
+    for marker in (
+        "new Set(rawSurfaces.map((surface) => surface.local_path)).size !== 14",
+        "new Set(rawSurfaces.map((surface) => surface.production_path)).size !== 14",
+        "const requiredWidths = [360, 390, 768, 1440]",
+        "width !== requiredWidths[index]",
+        "response.status() !== 200",
+        "response.url() !== expectedUrl",
+        "home: ['Organization', 'WebSite']",
+        "article: ['Article', 'BreadcrumbList', 'Organization', 'WebSite']",
+        "policy: ['BreadcrumbList', 'Organization', 'WebSite']",
+        "['Product', 'Offer', 'Review', 'FAQPage']",
+        "const normalized = value.trim();",
+        "audit.canonicalLinks.length !== 1",
+        "audit.canonicalLinks[0]?.rawHref !== audit.currentUrl",
+        "audit.canonicalLinks[0]?.resolvedHref !== audit.currentUrl",
+        "audit.titleCount !== 1",
+        "audit.metaDescriptions.length !== 1",
+        "audit.metaDescriptions[0] === ''",
+        "values.length === 1 && values[0] !== ''",
+        "audit.openGraph.title[0] !== audit.title",
+        "audit.openGraph.description[0] !== audit.metaDescriptions[0]",
+        "audit.openGraph.url[0] !== audit.currentUrl",
+        "audit.openGraph.image[0] === expectedOpenGraphImageUrl",
+        "openGraphImageResponse.status()",
+        "openGraphImageResponse.url()",
+        "openGraphImageResponseContentType === 'image/webp'",
+        "openGraphImageResponseBodyBytes <= 2 * 1024 * 1024",
+        "await openGraphImageResponse.dispose()",
+        "openGraphImageValid",
+        "audit.jsonLdScriptCount !== 1",
+        "audit.jsonLdParseFailed",
+        "invalidJsonLdTypes.length !== 0",
+        "missingJsonLdTypes.length !== 0",
+        "presentForbiddenJsonLdTypes.length !== 0",
+        "localNoindexHeaderValid",
+        "audit.metaRobots.length === 1",
+        "metaRobotsDirectives.includes('noindex')",
+        "metaRobotsDirectives.includes('nofollow')",
+        "localNoindexMetaValid",
+        "seoHeadAuditFailed",
+        "results.length !== surfaces.length * widths.length",
+        "await page.screenshot({ path: screenshot, fullPage: true })",
+    ):
+        assert marker in source
+    assert ".split(/[/#:]/)" not in source
+    assert "robots_index_follow" not in source
+    subprocess.run(
+        [_node_executable(), "--check", str(LOCAL_AUDIT)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def test_local_preview_seo_head_predicate_rejects_malformed_inputs() -> None:
+    script = r"""
+const fs = require('fs');
+const factory = eval(fs.readFileSync(process.argv[1], 'utf8'));
+if (typeof factory.validateSeoHead !== 'function') {
+  throw new Error('SEO_VALIDATOR_NOT_EXPOSED');
+}
+
+const expectedUrl = 'http://127.0.0.1:24261/';
+const expectedOpenGraphImageUrl =
+  'http://127.0.0.1:24261/wp-content/themes/'
+  + 'kurashinoshirube-child/assets/images/home-hero.webp';
+const baseline = {
+  audit: {
+    canonicalLinks: [{ rawHref: expectedUrl, resolvedHref: expectedUrl }],
+    currentUrl: expectedUrl,
+    jsonLdParseFailed: false,
+    jsonLdScriptCount: 1,
+    jsonLdTypes: ['Organization', 'WebSite'],
+    metaDescriptions: ['検証済みの説明です。'],
+    metaRobots: ['noindex, nofollow'],
+    openGraph: {
+      description: ['検証済みの説明です。'],
+      image: [expectedOpenGraphImageUrl],
+      title: ['検証済みタイトル'],
+      url: [expectedUrl],
+    },
+    title: '検証済みタイトル',
+    titleCount: 1,
+  },
+  expectedOpenGraphImageUrl,
+  expectedUrl,
+  forbiddenJsonLdTypes: ['Product', 'Offer', 'Review', 'FAQPage'],
+  localNoindexHeaderValid: true,
+  openGraphImageResponseValid: true,
+  requiredJsonLdTypes: ['Organization', 'WebSite'],
+};
+
+const accepted = factory.validateSeoHead(structuredClone(baseline));
+if (accepted.failed) throw new Error('VALID_SEO_HEAD_REJECTED');
+
+function requireRejection(name, mutate) {
+  const candidate = structuredClone(baseline);
+  mutate(candidate);
+  if (!factory.validateSeoHead(candidate).failed) {
+    throw new Error(`${name}_ACCEPTED`);
+  }
+}
+
+const cases = [
+  ['wrong_current_url', (value) => { value.audit.currentUrl += 'wrong/'; }],
+  ['missing_canonical', (value) => { value.audit.canonicalLinks = []; }],
+  ['duplicate_canonical', (value) => {
+    value.audit.canonicalLinks.push(structuredClone(value.audit.canonicalLinks[0]));
+  }],
+  ['relative_canonical', (value) => { value.audit.canonicalLinks[0].rawHref = '/'; }],
+  ['wrong_resolved_canonical', (value) => {
+    value.audit.canonicalLinks[0].resolvedHref += 'wrong/';
+  }],
+  ['duplicate_title', (value) => { value.audit.titleCount = 2; }],
+  ['empty_title', (value) => { value.audit.title = ''; }],
+  ['missing_description', (value) => { value.audit.metaDescriptions = []; }],
+  ['empty_description', (value) => { value.audit.metaDescriptions = ['']; }],
+  ['wrong_og_title', (value) => { value.audit.openGraph.title = ['wrong']; }],
+  ['wrong_og_description', (value) => {
+    value.audit.openGraph.description = ['wrong'];
+  }],
+  ['wrong_og_url', (value) => { value.audit.openGraph.url = [expectedUrl + 'wrong/']; }],
+  ['offpath_og_image', (value) => {
+    value.audit.openGraph.image = [expectedUrl + 'not-an-image'];
+  }],
+  ['unreachable_og_image', (value) => {
+    value.openGraphImageResponseValid = false;
+  }],
+  ['duplicate_json_ld', (value) => { value.audit.jsonLdScriptCount = 2; }],
+  ['malformed_json_ld', (value) => { value.audit.jsonLdParseFailed = true; }],
+  ['evil_json_ld_type', (value) => {
+    value.audit.jsonLdTypes.push('https://evil.invalid/Article');
+  }],
+  ['missing_json_ld_type', (value) => { value.audit.jsonLdTypes = ['Organization']; }],
+  ['forbidden_json_ld_type', (value) => { value.audit.jsonLdTypes.push('Product'); }],
+  ['missing_noindex_header', (value) => { value.localNoindexHeaderValid = false; }],
+  ['missing_noindex_meta', (value) => { value.audit.metaRobots = []; }],
+  ['conflicting_index_meta', (value) => {
+    value.audit.metaRobots = ['noindex, nofollow, index'];
+  }],
+  ['conflicting_follow_meta', (value) => {
+    value.audit.metaRobots = ['noindex, nofollow, follow'];
+  }],
+];
+for (const [name, mutate] of cases) requireRejection(name, mutate);
+"""
+    subprocess.run(
+        [_node_executable(), "-e", script, str(LOCAL_AUDIT)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def test_local_preview_audit_rejects_duplicate_inventory_paths() -> None:
+    script = r"""
+const fs = require('fs');
+const [auditPath, inventoryPath] = process.argv.slice(1);
+const factory = eval(fs.readFileSync(auditPath, 'utf8'));
+const baseline = JSON.parse(fs.readFileSync(inventoryPath, 'utf8'));
+
+async function requireRejection(name, mutate) {
+  const inventory = structuredClone(baseline);
+  mutate(inventory);
+  try {
+    await factory({
+      artifactDirectory: '/tmp/raos-local-preview-audit-test',
+      inventory,
+      origin: 'http://127.0.0.1:24261',
+    })({});
+  } catch (error) {
+    if (error instanceof Error && error.message === 'RAOS_WORDPRESS_AUDIT_INVENTORY_INVALID') {
+      return;
+    }
+    throw error;
+  }
+  throw new Error(`${name}_ACCEPTED`);
+}
+
+(async () => {
+  await requireRejection('DUPLICATE_LOCAL_PATH', (inventory) => {
+    inventory.surfaces[1].local_path = inventory.surfaces[0].local_path;
+  });
+  await requireRejection('DUPLICATE_PRODUCTION_PATH', (inventory) => {
+    inventory.surfaces[1].production_path = inventory.surfaces[0].production_path;
+  });
+  await requireRejection('WRONG_VIEWPORT_ORDER', (inventory) => {
+    inventory.viewports = [390, 360, 768, 1440];
+  });
+  await requireRejection('WRONG_VIEWPORT_VALUE', (inventory) => {
+    inventory.viewports = [360, 390, 768, 1280];
+  });
+})().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+"""
+    subprocess.run(
+        [_node_executable(), "-e", script, str(LOCAL_AUDIT), str(INVENTORY)],
         cwd=ROOT,
         check=True,
         capture_output=True,
