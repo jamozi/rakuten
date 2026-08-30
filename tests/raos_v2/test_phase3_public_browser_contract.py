@@ -41,6 +41,12 @@ def test_phase3_public_harness_is_fixed_to_one_public_read_only_target() -> None
     assert "linuxProcessGroupMembers" in source
     assert "stableEmptyObservations >= 2" in source
     assert "emergencyKillOwnedBrowserGroup" in source
+    supervisor = source.split("async function superviseBrowser", 1)[1].split(
+        "function emergencyKillOwnedBrowserGroup", 1
+    )[0]
+    assert supervisor.index("process.on('SIGUSR1'") < supervisor.index(
+        "const child = spawn("
+    )
     assert "PHASE3_PUBLIC_BROWSER_PROCESS_GROUP_UNSUPPORTED" in source
     assert "--no-sandbox" not in source
     assert "Target.setAutoAttach" in source
