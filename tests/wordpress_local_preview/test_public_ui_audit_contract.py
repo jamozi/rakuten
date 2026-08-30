@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -18,6 +19,12 @@ NAVIGATION = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
     "kurashinoshirube-child/assets/editorial-navigation.v3.json"
 )
+
+
+def _node_executable() -> str:
+    node = shutil.which("node")
+    assert node is not None
+    return node
 
 
 def test_generated_audit_inventory_is_public_safe_exact_v3_projection() -> None:
@@ -189,7 +196,7 @@ def test_local_preview_audit_fail_closes_every_surface_seo_head() -> None:
     assert ".split(/[/#:]/)" not in source
     assert "robots_index_follow" not in source
     subprocess.run(
-        ["/usr/bin/node", "--check", str(LOCAL_AUDIT)],
+        [_node_executable(), "--check", str(LOCAL_AUDIT)],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -290,7 +297,7 @@ const cases = [
 for (const [name, mutate] of cases) requireRejection(name, mutate);
 """
     subprocess.run(
-        ["/usr/bin/node", "-e", script, str(LOCAL_AUDIT)],
+        [_node_executable(), "-e", script, str(LOCAL_AUDIT)],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -342,7 +349,7 @@ async function requireRejection(name, mutate) {
 });
 """
     subprocess.run(
-        ["/usr/bin/node", "-e", script, str(LOCAL_AUDIT), str(INVENTORY)],
+        [_node_executable(), "-e", script, str(LOCAL_AUDIT), str(INVENTORY)],
         cwd=ROOT,
         check=True,
         capture_output=True,
