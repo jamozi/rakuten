@@ -1231,6 +1231,34 @@ def test_rakuten_evidence_binds_item_url_shop_to_item_code() -> None:
     assert failure.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
 
 
+def test_rakuten_evidence_binds_pc_and_mobile_item_to_item_code() -> None:
+    evidence = _synthetic_evidence("PRD-ANKER-SOLIX-C300")
+    source = urlsplit(evidence.source_url)
+    wrong_source = source._replace(
+        path=source.path.replace(source.path.strip("/").split("/")[1], "different-item")
+    ).geturl()
+    destination = urlsplit(evidence.destination_url)
+    query = parse_qs(destination.query)
+    wrong_destination = destination._replace(
+        query=urlencode(
+            {
+                "m": query["m"][0],
+                "pc": wrong_source,
+                "rafcid": query["rafcid"][0],
+            }
+        )
+    ).geturl()
+
+    with pytest.raises(EditorialPilotFailure) as failure:
+        replace(
+            evidence,
+            source_url=wrong_source,
+            destination_url=wrong_destination,
+        )
+
+    assert failure.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+
+
 def test_owner_private_rakuten_overlay_is_fixed_schema_and_mode_bound(
     private_root: Path,
 ) -> None:

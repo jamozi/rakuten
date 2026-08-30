@@ -23,7 +23,7 @@
     "allow_variant_substitution": false,
     "identity_validation": {
       "representative_model": "required_exact",
-      "jan": "match_when_provider_value_is_available",
+      "jan": "required_exact_when_official_jan_registered",
       "title_tokens": "required",
       "pc_mobile_item_code": "required_exact"
     },

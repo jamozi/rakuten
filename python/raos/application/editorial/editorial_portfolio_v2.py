@@ -17,6 +17,7 @@ from pathlib import Path
 import re
 import stat
 from typing import Final, Literal, Mapping, NoReturn, cast
+import unicodedata
 from urllib.parse import parse_qs, urlsplit
 
 from raos.adapters.self_hosted_editorial_pilot_json import (
@@ -272,7 +273,7 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
         or policy["identity_validation"]
         != {
             "representative_model": "required_exact",
-            "jan": "match_when_provider_value_is_available",
+            "jan": "required_exact_when_official_jan_registered",
             "title_tokens": "required",
             "pc_mobile_item_code": "required_exact",
         }
@@ -518,39 +519,65 @@ def _parse_timestamp(value: object) -> datetime:
     return parsed.astimezone(UTC)
 
 
-def _title_has_token(title: str, token: str) -> bool:
-    def normalized(value: str) -> str:
-        return re.sub(r"[\s+*・_.\-/＆&]", "", value).casefold()
+_IDENTITY_TOKEN_SEPARATOR = re.compile(r"[\s+*・_.\-/＆&]+")
+_IDENTITY_TOKEN_SEPARATOR_PATTERN: Final = r"[\s+*・_.\-/＆&]*"
 
-    return normalized(token) in normalized(title)
+
+def _title_has_token(title: str, token: str) -> bool:
+    if type(title) is not str or type(token) is not str or not title or not token:
+        return False
+    normalized_title = unicodedata.normalize("NFKC", title).casefold()
+    normalized_token = unicodedata.normalize("NFKC", token).casefold()
+    components = tuple(
+        component
+        for component in _IDENTITY_TOKEN_SEPARATOR.split(normalized_token)
+        if component
+    )
+    if not components:
+        return False
+    pattern = _IDENTITY_TOKEN_SEPARATOR_PATTERN.join(
+        re.escape(component) for component in components
+    )
+    if re.fullmatch(r"[a-z0-9]", components[0][0], re.ASCII):
+        pattern = r"(?<![a-z0-9])" + pattern
+    if re.fullmatch(r"[a-z0-9]", components[-1][-1], re.ASCII):
+        pattern += r"(?![a-z0-9])"
+    return re.search(pattern, normalized_title) is not None
 
 
 def _validate_rakuten_identity(
     binding: ProductBindingV2, evidence: RakutenProductEvidence
 ) -> None:
     title = evidence.item_name
+    source = urlsplit(evidence.source_url)
     destination = urlsplit(evidence.destination_url)
-    query = parse_qs(destination.query, keep_blank_values=True, strict_parsing=True)
     try:
+        query = parse_qs(
+            destination.query,
+            keep_blank_values=True,
+            strict_parsing=True,
+            max_num_fields=3,
+        )
         pc = urlsplit(query["pc"][0])
         mobile = urlsplit(query["m"][0])
     except (KeyError, IndexError, ValueError):
         _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_INVALID")
     pc_parts = pc.path.strip("/").split("/")
     mobile_parts = mobile.path.strip("/").split("/")
+    item_code_parts = evidence.item_code.split(":", 1)
     if (
         evidence.product_id != binding.product_id
         or evidence.affiliate_ref != binding.affiliate_ref
         or evidence.media_asset_ref != binding.media_asset_ref
         or evidence.item_code != binding.rakuten_item_code
         or evidence.variant != binding.representative_model
+        or not _title_has_token(title, binding.representative_model)
         or (
             evidence.jan is not None
             and re.fullmatch(r"[0-9]{8,14}", evidence.jan) is None
         )
         or (
             binding.official_jan is not None
-            and evidence.jan is not None
             and evidence.jan != binding.official_jan
         )
         or not all(_title_has_token(title, token) for token in binding.required_title_tokens)
@@ -559,14 +586,27 @@ def _validate_rakuten_identity(
         or destination.scheme != "https"
         or destination.netloc != "hb.afl.rakuten.co.jp"
         or set(query) != {"m", "pc", "rafcid"}
+        or source.scheme != "https"
+        or source.netloc != "item.rakuten.co.jp"
+        or source.query
+        or source.fragment
+        or source.path != pc.path
         or pc.scheme != "https"
         or pc.netloc != "item.rakuten.co.jp"
+        or pc.query
+        or pc.fragment
         or len(pc_parts) != 2
         or mobile.scheme not in {"http", "https"}
         or mobile.netloc != "m.rakuten.co.jp"
+        or mobile.query
+        or mobile.fragment
         or len(mobile_parts) != 3
         or mobile_parts[1] != "i"
+        or len(item_code_parts) != 2
         or pc_parts[0] != mobile_parts[0]
+        or pc_parts != item_code_parts
+        or mobile_parts[0] != item_code_parts[0]
+        or mobile_parts[2] != item_code_parts[1]
         or evidence.item_code != f"{mobile_parts[0]}:{mobile_parts[2]}"
         or evidence.width != 128
         or evidence.height != 128
