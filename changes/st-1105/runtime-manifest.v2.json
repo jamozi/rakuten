@@ -404,13 +404,13 @@
       "uri": "repo://changes/st-1105/generated/admin-visual-accessibility-recorded.v2.json",
       "role": "GENERATED_OWNER_OUTPUT",
       "bytes": 94253,
-      "sha256": "56f648a654cf18067ae9f905b32aaebe9b6b75729961ae8edcc31f2f5a138486"
+      "sha256": "364a72fdaa5ca51ad6d6dc3bc2da1aa083167b31ad965574b28e146c13a9429f"
     },
     {
       "uri": "repo://packages/web-ui/src/admin-visual-accessibility-recorded.v2.ts",
       "role": "GENERATED_OWNER_OUTPUT",
       "bytes": 97785,
-      "sha256": "9c69435bc4bdf474be153d6bc2f0917a4a2c25f4b2701d461c6b3e97da58e0e8"
+      "sha256": "322cd2e1d581839cf89b239e5b0e6ded06b8764e7b79b9a513567a216f2a8954"
     },
     {
       "uri": "repo://changes/st-1105/baselines/admin-visual.synthetic.v2.json",

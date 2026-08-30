@@ -179,7 +179,7 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["NP-TMLK1-H"], "required_title_tokens": ["TMLK1"], "product_kind_tokens": ["食器洗い乾燥機", "食洗機", "Dishwasher"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
+      "identity": {"item_code": null, "jan": null, "allowed_variants": ["NP-TMLK1-K"], "required_title_tokens": ["TMLK1"], "product_kind_tokens": ["食器洗い乾燥機", "食洗機", "Dishwasher"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
       "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },

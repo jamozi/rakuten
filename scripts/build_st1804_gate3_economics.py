@@ -83,10 +83,10 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st1804_gate3_economics.py"
 )
 CONTRACT_SHA256: Final = (
-    "62fccc49d17c99ef515b4f6a13d674faceee91839ff2a98ad741022488bf1180"
+    "7a5a43f3ef8c42ea2fcff3ebe53f8d38a2c30491b19fd163fa2b468197d2484a"
 )
 FIXTURE_SHA256: Final = (
-    "45d917fbc5358b35d2bca459814219f76230fcaf41631473c0d9b5ba1da006af"
+    "969a4392a1938265ec9eccf5747de5fbd5c2519b5410fcba9d7f43786f10bad2"
 )
 INPUT_SHA256: Final = "a532e84c3be3d656978a8168047a8e4df94c872fd78d703137f399c77e0199b2"
 SOURCE_HEAD_SHA256: Final = (
@@ -140,22 +140,22 @@ EXPECTED_BINDINGS: Final = {
         "fe7c178087d113e287e95a02d6bcd68e93bd2f2e82817442800cede768b79cd4"
     ),
     "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml": (
-        "0f74d348ac22cd0a5fd8a685fe1ccc96ad4b1ce5faf946b11f62fd0f41d9685c"
+        "60152d185ac2f5da249c5d8fc0f75c19e73a62fa612107d524a7f01692d7c264"
     ),
     "changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json": (
-        "c876f76b5214d8b74c600d84cb0a3d34d1391830400a6646533ba6628a2a0618"
+        "fd31087a3283ef8996cac4c4596c4ffe1b34ec7ff3130e7dde73ec10e9d6d9db"
     ),
     "changes/st-1305/generated/finance-reconciliation-recorded.v2.json": (
-        "59aded0cec550ed10cb2078e85fa28627cb9bcb375ed99e863a21a22136a5b8a"
+        "3ff4e1f327734da83f6a24bc3efcea14debf6980b53d3bb357fafdaf232dd422"
     ),
     "changes/st-1305/manifest.yaml": (
-        "940dd108970b3e2a7e510d8d6603832ea328baf18cbb9b8a9145dc05b1e6bc06"
+        "1d1f3bf61eb467e70aaadf09ca01ea238225d77253f30eccac3662bc1311f12b"
     ),
     "scripts/build_st1305_finance_reconciliation.py": (
-        "215f8aac3529ce713a08af2195de8295fa62b884d3003245a89b818189df5502"
+        "b343bd2c74b8ab2071ba80b9a8ba974104c4181d7d3af897d6c732f790e097f2"
     ),
     "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json": (
-        "e902d9a6f69d19ffab24b348f962e78bf8b1f57a159ad1e8798f1e7b81ec2e9e"
+        "7f1eb69d554b26f8e954f36e9a330ba19425062c98a157683c8126c39f336471"
     ),
 }
 

@@ -13,7 +13,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.4.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
@@ -21,6 +21,10 @@ const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guid
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_SHA256 = '23c585a03598a8521fd797c036d2caad4350139ad709ca9b0cfc3ab18ad993ad';
 const KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_PATH = 'assets/images/article-portable-power-guide.webp';
 const KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_SHA256 = '54b84689cff952f6a384982b89d2f56adfbdeff9ff03fe628fcaf5a949ab0f5a';
+const KURASHINOSHIRUBE_DISHWASHER_ARTICLE_IMAGE_PATH = 'assets/images/article-countertop-dishwasher-guide.webp';
+const KURASHINOSHIRUBE_DISHWASHER_ARTICLE_IMAGE_SHA256 = 'c36e87682ce9be33f70bc5b1a55e20a63b19ab6155172d670d5c019a984bcf9f';
+const KURASHINOSHIRUBE_ROBOT_ARTICLE_IMAGE_PATH = 'assets/images/article-robot-vacuum-guide.webp';
+const KURASHINOSHIRUBE_ROBOT_ARTICLE_IMAGE_SHA256 = 'f589471aeed1064f2499ec5d32a8e9c4b6b14db8613d3b1743b37d245ecc2384';
 const KURASHINOSHIRUBE_BRAND_MARK_PATH = 'assets/images/brand-mark.svg';
 const KURASHINOSHIRUBE_BRAND_MARK_SHA256 = 'bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3';
 const KURASHINOSHIRUBE_MEASUREMENT_ASSET_PATH = 'assets/measurement.js';
@@ -32,7 +36,7 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1'
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = 'assets/editorial-navigation.v3.json';
-const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '100cdd6f95cc0bb224c43c77a9328237fbeb338d54220aba554bfa0423912bc6';
+const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '102a3f20f05ebf6992db7a5a9304d2d7e504072376c2d75f752ebdd9b1c3c478';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_MAX_BYTES = 262144;
 const KURASHINOSHIRUBE_HOME_DESCRIPTION = '暮らしのしるべは、移動・家事・備えの生活用品を、公式情報と確認条件に基づいて比較し、選び方を分かりやすく案内します。';
 
@@ -694,7 +698,11 @@ function kurashinoshirube_remove_yoast_head_route($endpoints)
 add_filter('rest_endpoints', 'kurashinoshirube_remove_yoast_head_route', PHP_INT_MAX);
 
 /** Resolve a self-owned theme asset and verify its exact immutable bytes. */
-function kurashinoshirube_verified_asset_uri(string $relative, string $sha256): ?string
+function kurashinoshirube_verified_asset_uri(
+    string $relative,
+    string $sha256,
+    bool $allow_local_preview = false
+): ?string
 {
     if (
         preg_match(
@@ -716,10 +724,15 @@ function kurashinoshirube_verified_asset_uri(string $relative, string $sha256): 
     }
     $base = untrailingslashit(get_stylesheet_directory_uri());
     $parts = wp_parse_url($base);
+    $local_origin = $allow_local_preview
+        ? kurashinoshirube_local_preview_origin()
+        : null;
+    $local_base = is_string($local_origin)
+        ? $local_origin . '/wp-content/themes/kurashinoshirube-child'
+        : null;
+    $local_base_is_valid = is_string($local_base) && $base === $local_base;
     if (
         ! is_array($parts)
-        || ($parts['scheme'] ?? null) !== 'https'
-        || ($parts['host'] ?? null) !== 'kurashinoshirube.com'
         || ! isset($parts['path'])
         || ! is_string($parts['path'])
         || preg_match(
@@ -728,12 +741,124 @@ function kurashinoshirube_verified_asset_uri(string $relative, string $sha256): 
         ) !== 1
         || array_intersect_key(
             $parts,
-            array_flip(array('port', 'user', 'pass', 'query', 'fragment'))
+            array_flip(array('user', 'pass', 'query', 'fragment'))
         ) !== array()
+        || (
+            ! $local_base_is_valid
+            && (
+                ($parts['scheme'] ?? null) !== 'https'
+                || ($parts['host'] ?? null) !== 'kurashinoshirube.com'
+                || isset($parts['port'])
+            )
+        )
     ) {
         return null;
     }
     return $base . '/' . $relative;
+}
+
+/** Resolve one reviewed category illustration for an exact portfolio article. */
+function kurashinoshirube_article_visual_asset(int $post_id): ?array
+{
+    if ($post_id <= 0 || get_post_type($post_id) !== 'post') {
+        return null;
+    }
+    $article_id = null;
+    if (is_singular('post') && (int) get_queried_object_id() === $post_id) {
+        $snapshot = kurashinoshirube_current_snapshot();
+        if (is_array($snapshot) && is_string($snapshot['article_id'] ?? null)) {
+            $article_id = $snapshot['article_id'];
+        }
+    }
+    if (! is_string($article_id)) {
+        $identity = kurashinoshirube_public_article_identity($post_id);
+        $article_id = is_array($identity)
+            && is_string($identity['article_id'] ?? null)
+            ? $identity['article_id']
+            : null;
+    }
+    $asset_key_by_article = array(
+        'st1703-first-suitcase-comparison' => 'suitcase',
+        'st1704-portable-power-station-guide' => 'power',
+        'st1704-anker-solix-c300-c800-c1000-differences' => 'power',
+        'st1704-countertop-dishwasher-for-small-households' => 'dishwasher',
+        'st1704-compact-robot-vacuum-shortlist' => 'robot',
+        'carry-on-suitcase-under-100-seats' => 'suitcase',
+        'lightweight-carry-on-suitcase-under-3kg' => 'suitcase',
+        'front-open-carry-on-suitcase-with-stopper' => 'suitcase',
+        'roomba-mini-vs-switchbot-k11-pro' => 'robot',
+        'solota-vs-rakua-mini-plus' => 'dishwasher',
+    );
+    $assets = array(
+        'dishwasher' => array(
+            'caption' => '設置寸法と扉の動きを、購入前に確かめるためのイメージ',
+            'height' => 1024,
+            'path' => KURASHINOSHIRUBE_DISHWASHER_ARTICLE_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_DISHWASHER_ARTICLE_IMAGE_SHA256,
+            'width' => 1536,
+        ),
+        'power' => array(
+            'caption' => '停電への備えを、置き場所と持ち運び方から考えるためのイメージ',
+            'height' => 1024,
+            'path' => KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_SHA256,
+            'width' => 1536,
+        ),
+        'robot' => array(
+            'caption' => '本体とステーションの設置条件を整理するためのイメージ',
+            'height' => 1024,
+            'path' => KURASHINOSHIRUBE_ROBOT_ARTICLE_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_ROBOT_ARTICLE_IMAGE_SHA256,
+            'width' => 1536,
+        ),
+        'suitcase' => array(
+            'caption' => '機内持ち込み手荷物の寸法を考えるための旅支度のイメージ',
+            'height' => 900,
+            'path' => KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_ARTICLE_IMAGE_SHA256,
+            'width' => 1600,
+        ),
+    );
+    $asset_key = is_string($article_id)
+        ? ($asset_key_by_article[$article_id] ?? null)
+        : null;
+    return is_string($asset_key) && is_array($assets[$asset_key] ?? null)
+        ? $assets[$asset_key]
+        : null;
+}
+
+/** Resolve the current head image without widening any article identity. */
+function kurashinoshirube_current_social_visual_asset(): ?array
+{
+    $context = kurashinoshirube_public_head_context();
+    if ($context === null) {
+        return null;
+    }
+    $visual = null;
+    if ($context['kind'] === 'article') {
+        $visual = kurashinoshirube_article_visual_asset(
+            (int) get_queried_object_id()
+        );
+    }
+    if ($visual === null) {
+        $visual = array(
+            'caption' => '',
+            'height' => 900,
+            'path' => KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256,
+            'width' => 1600,
+        );
+    }
+    $uri = kurashinoshirube_verified_asset_uri(
+        $visual['path'],
+        $visual['sha256'],
+        true
+    );
+    if ($uri === null) {
+        return null;
+    }
+    $visual['uri'] = $uri;
+    return $visual;
 }
 
 /** Bind one parsed snapshot to exact stored post bytes and identity. */
@@ -2014,36 +2139,49 @@ add_shortcode(
     'kurashinoshirube_render_first_article_lead_image'
 );
 
-/** Render a theme-owned, non-product hero for the two portable-power guides. */
+/** Render a theme-owned, non-product hero for the five generated guides. */
 function kurashinoshirube_render_article_hero($attributes, $content, $tag): string
 {
+    $post_id = (int) get_the_ID();
+    $identity = kurashinoshirube_public_article_identity($post_id);
+    $article_id = is_array($identity)
+        ? ($identity['article_id'] ?? null)
+        : null;
+    $generated_article_ids = array(
+        'st1703-first-suitcase-comparison',
+        'st1704-portable-power-station-guide',
+        'st1704-anker-solix-c300-c800-c1000-differences',
+        'st1704-countertop-dishwasher-for-small-households',
+        'st1704-compact-robot-vacuum-shortlist',
+    );
     if (
         $attributes !== array()
         || ! in_array($content, array(null, ''), true)
         || $tag !== 'kurashinoshirube_article_hero'
         || ! is_singular('post')
-        || ! in_array(
-            get_post_field('post_name', get_the_ID(), 'raw'),
-            array(
-                'portable-power-station-guide',
-                'anker-solix-c300-c800-c1000-differences',
-            ),
-            true
-        )
+        || ! is_string($article_id)
+        || ! in_array($article_id, $generated_article_ids, true)
         || get_stylesheet() !== 'kurashinoshirube-child'
     ) {
         return '';
     }
+    $visual = kurashinoshirube_article_visual_asset($post_id);
+    if ($visual === null) {
+        return '';
+    }
     $image_uri = kurashinoshirube_verified_asset_uri(
-        KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_PATH,
-        KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_SHA256
+        $visual['path'],
+        $visual['sha256'],
+        true
     );
     if ($image_uri === null) {
         return '';
     }
     return '<figure class="wp-block-image size-full raos-article-hero-image">'
-        . '<img src="' . esc_url($image_uri) . '" alt="" width="1536" height="1024">'
-        . '<figcaption>停電への備えを、置き場所と持ち運び方から考えるためのイメージ</figcaption>'
+        . '<img src="' . esc_url($image_uri) . '" alt="" width="'
+        . esc_attr((string) $visual['width']) . '" height="'
+        . esc_attr((string) $visual['height']) . '">'
+        . '<figcaption>' . esc_html($visual['caption']) . '</figcaption>'
         . '</figure>';
 }
 add_shortcode(
@@ -2156,6 +2294,87 @@ function kurashinoshirube_resolve_related_target(string $target_id): ?array
     return array('title' => $binding['title'], 'url' => $expected_url);
 }
 
+/** Add a compact table of contents without changing the authored evidence copy. */
+function kurashinoshirube_inject_article_toc($content)
+{
+    if (
+        ! is_string($content)
+        || $content === ''
+        || ! is_singular('post')
+        || ! in_the_loop()
+        || ! is_main_query()
+        || str_contains($content, 'class="raos-article-toc"')
+        || kurashinoshirube_public_article_identity((int) get_the_ID()) === null
+    ) {
+        return $content;
+    }
+    $items = array();
+    $seen = array();
+    $generated_index = 0;
+    $transformed = preg_replace_callback(
+        '#<h2(?P<attributes>[^>]*)>(?P<label>.*?)</h2>#isu',
+        static function (array $matches) use (&$items, &$seen, &$generated_index): string {
+            $opening = '<h2' . $matches['attributes'] . '>';
+            $label = html_entity_decode(
+                wp_strip_all_tags($matches['label']),
+                ENT_QUOTES | ENT_HTML5,
+                'UTF-8'
+            );
+            $label = trim((string) preg_replace('/\s+/u', ' ', $label));
+            if (! kurashinoshirube_is_clean_text($label, 2, 120)) {
+                return $matches[0];
+            }
+            $matched_id = preg_match(
+                '/\bid="([a-z][a-z0-9-]{1,80})"/D',
+                $matches['attributes'],
+                $id_match
+            );
+            if ($matched_id === 1) {
+                $section_id = $id_match[1];
+            } else {
+                do {
+                    ++$generated_index;
+                    $section_id = 'raos-section-' . $generated_index;
+                } while (isset($seen[$section_id]));
+                $opening = '<h2 id="' . esc_attr($section_id) . '"'
+                    . $matches['attributes'] . '>';
+            }
+            if (isset($seen[$section_id])) {
+                return $matches[0];
+            }
+            $seen[$section_id] = true;
+            $items[] = array('id' => $section_id, 'label' => $label);
+            return $opening . $matches['label'] . '</h2>';
+        },
+        $content
+    );
+    if (! is_string($transformed) || count($items) < 3 || count($items) > 24) {
+        return $content;
+    }
+    $links = '';
+    foreach ($items as $item) {
+        $links .= '<li><a href="#' . esc_attr($item['id']) . '">'
+            . esc_html($item['label']) . '</a></li>';
+    }
+    $toc = '<nav class="raos-article-toc" aria-label="記事内の目次">'
+        . '<details><summary>この記事の目次</summary><ol>' . $links
+        . '</ol></details></nav>';
+    $disclosure_end = strpos($transformed, '</aside>');
+    if ($disclosure_end !== false) {
+        $position = $disclosure_end + strlen('</aside>');
+        return substr($transformed, 0, $position) . $toc
+            . substr($transformed, $position);
+    }
+    $root_end = strpos($transformed, '>');
+    if ($root_end === false) {
+        return $content;
+    }
+    $position = $root_end + 1;
+    return substr($transformed, 0, $position) . $toc
+        . substr($transformed, $position);
+}
+add_filter('the_content', 'kurashinoshirube_inject_article_toc', 12);
+
 /** Insert one decision-context link inside the authored article flow. */
 function kurashinoshirube_inject_contextual_guide($content)
 {
@@ -2241,6 +2460,12 @@ function kurashinoshirube_render_related_guides($attributes, $content, $tag): st
     }
     $items = array();
     foreach ($relation['targets'] as $target_id => $label) {
+        if (
+            ($relation['target_relationships'][$target_id] ?? null)
+            !== 'same_cluster'
+        ) {
+            continue;
+        }
         $target = kurashinoshirube_resolve_related_target($target_id);
         if (! is_array($target)) {
             continue;
@@ -2251,7 +2476,7 @@ function kurashinoshirube_render_related_guides($attributes, $content, $tag): st
             . ' data-raos-link-placement="related_navigation">'
             . esc_html($label) . '</a></li>';
     }
-    if (count($items) < 2) {
+    if (count($items) < 1) {
         return '';
     }
     $local_origin = kurashinoshirube_local_preview_origin();
@@ -2302,7 +2527,7 @@ function kurashinoshirube_is_local_preview(): bool
 
 /**
  * Resolve the fixed featured article without widening production eligibility.
- * The isolated local preview may substitute one synthetic post for layout checks.
+ * The isolated local preview uses the same article through its exact local slug.
  */
 function kurashinoshirube_homepage_featured_post(): ?WP_Post
 {
@@ -2315,12 +2540,20 @@ function kurashinoshirube_homepage_featured_post(): ?WP_Post
     $article_id = KURASHINOSHIRUBE_HOMEPAGE_FEATURED_ARTICLE_ID;
     $binding = kurashinoshirube_article_bindings()[$article_id] ?? null;
     if (is_array($binding)) {
-        $slug = $binding['slug'];
+        $local_origin = kurashinoshirube_local_preview_origin();
+        $slug = is_string($local_origin)
+            ? ($binding['local_slug'] ?? null)
+            : ($binding['slug'] ?? null);
+        if (! is_string($slug)) {
+            return null;
+        }
         $post = get_page_by_path($slug, OBJECT, 'post');
         $identity = $post instanceof WP_Post
             ? kurashinoshirube_public_article_identity((int) $post->ID)
             : null;
-        $expected_permalink = KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $slug . '/';
+        $expected_permalink = (is_string($local_origin)
+            ? $local_origin
+            : KURASHINOSHIRUBE_SITE_ORIGIN) . '/' . $slug . '/';
         if (
             $post instanceof WP_Post
             && get_post_status($post) === 'publish'
@@ -2332,36 +2565,7 @@ function kurashinoshirube_homepage_featured_post(): ?WP_Post
             return $post;
         }
     }
-    if (! kurashinoshirube_is_local_preview()) {
-        return null;
-    }
-    $ids = get_posts(
-        array(
-            'fields' => 'ids',
-            'numberposts' => 1,
-            'order' => 'DESC',
-            'orderby' => 'modified',
-            'post_status' => 'publish',
-            'post_type' => 'post',
-            'suppress_filters' => false,
-        )
-    );
-    if (! is_array($ids) || count($ids) !== 1 || (int) $ids[0] <= 0) {
-        return null;
-    }
-    $post = get_post((int) $ids[0]);
-    $slug = $post instanceof WP_Post
-        ? get_post_field('post_name', $post->ID, 'raw')
-        : null;
-    if (
-        ! ($post instanceof WP_Post)
-        || ! is_string($slug)
-        || preg_match('/\Alocal-preview-[a-z0-9-]+\z/D', $slug) !== 1
-    ) {
-        return null;
-    }
-    $cached = $post;
-    return $post;
+    return null;
 }
 
 /** Resolve a bounded reader-facing section label for a homepage post. */
@@ -2424,9 +2628,7 @@ function kurashinoshirube_render_featured_guide($attributes, $content, $tag): st
     ) {
         return '';
     }
-    $criteria = $post->post_name === 'portable-power-station-guide'
-        ? '容量・出力・重量'
-        : '表示確認用fixture';
+    $criteria = '容量・定格出力・重量・持ち運び';
     $read_label = $title . 'を読む';
     return '<section id="featured" class="raos-featured raos-home-section alignwide" '
         . 'aria-labelledby="raos-featured-title"><div class="raos-home-heading '
@@ -2599,15 +2801,15 @@ function kurashinoshirube_policy_page_head_map(): array
 {
     return array(
         'about-ad-policy' => array(
-            'description' => '暮らしのしるべの情報源選定、型番照合、広告との分離、更新・訂正の責任を説明します。',
+            'description' => '暮らしのしるべの情報源、型番照合、広告との分離、更新・訂正と現在の問い合わせ窓口の扱いを説明します。',
             'title' => '運営・広告方針',
         ),
         'comparison-policy' => array(
-            'description' => '暮らしのしるべのEvidence階層、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。',
+            'description' => '暮らしのしるべの比較対象・除外、Evidence階層、掲載順、販売条件、利益相反、更新・訂正の方針を説明します。',
             'title' => '比較・編集方針',
         ),
         'privacy-policy' => array(
-            'description' => '暮らしのしるべの同一オリジン計測とGA4、保持期間、同意の拒否・撤回、アフィリエイトリンクの取扱いを説明します。',
+            'description' => 'ローカルプレビューにおける計測送信、Cookie、第三者送信、権利請求、安全管理、変更履歴の扱いを説明します。',
             'title' => 'プライバシーポリシー',
         ),
     );
@@ -2747,36 +2949,22 @@ function kurashinoshirube_filter_og_description($value)
 }
 function kurashinoshirube_filter_social_image($value)
 {
-    if (
-        kurashinoshirube_current_snapshot() === null
-        && kurashinoshirube_public_head_context() === null
-    ) {
-        return $value;
-    }
-    $uri = kurashinoshirube_verified_asset_uri(
-        KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH,
-        KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256
-    );
-    return $uri === null ? $value : $uri;
+    $visual = kurashinoshirube_current_social_visual_asset();
+    return $visual === null ? $value : $visual['uri'];
 }
 function kurashinoshirube_filter_social_image_width($value)
 {
-    return kurashinoshirube_current_snapshot() === null
-        && kurashinoshirube_public_head_context() === null
-        ? $value
-        : 1600;
+    $visual = kurashinoshirube_current_social_visual_asset();
+    return $visual === null ? $value : $visual['width'];
 }
 function kurashinoshirube_filter_social_image_height($value)
 {
-    return kurashinoshirube_current_snapshot() === null
-        && kurashinoshirube_public_head_context() === null
-        ? $value
-        : 900;
+    $visual = kurashinoshirube_current_social_visual_asset();
+    return $visual === null ? $value : $visual['height'];
 }
 function kurashinoshirube_filter_social_image_type($value)
 {
-    return kurashinoshirube_current_snapshot() === null
-        && kurashinoshirube_public_head_context() === null
+    return kurashinoshirube_current_social_visual_asset() === null
         ? $value
         : 'image/webp';
 }
@@ -2887,7 +3075,13 @@ function kurashinoshirube_public_listing_post_is_eligible(
         kurashinoshirube_editorial_v2_publication_bindings()
         as $article_id => $binding
     ) {
-        if (! is_array($binding) || $slug !== ($binding['slug'] ?? null)) {
+        if (! is_array($binding)) {
+            continue;
+        }
+        $is_production_slug = $slug === ($binding['slug'] ?? null);
+        $is_local_slug = kurashinoshirube_is_local_preview()
+            && $slug === ($binding['local_slug'] ?? null);
+        if (! $is_production_slug && ! $is_local_slug) {
             continue;
         }
         $identity = kurashinoshirube_public_article_identity($post_id);
@@ -3185,10 +3379,14 @@ function kurashinoshirube_emit_json_ld(): void
         $post_id = (int) get_queried_object_id();
         $published = get_post_time('Y-m-d\TH:i:s\Z', true, $post_id);
         $modified = get_post_modified_time('Y-m-d\TH:i:s\Z', true, $post_id);
-        $image = kurashinoshirube_verified_asset_uri(
-            KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH,
-            KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256
-        );
+        $visual = kurashinoshirube_article_visual_asset($post_id);
+        $image = is_array($visual)
+            ? kurashinoshirube_verified_asset_uri(
+                $visual['path'],
+                $visual['sha256'],
+                true
+            )
+            : null;
         if (
             ! is_string($published)
             || ! is_string($modified)
@@ -3212,6 +3410,25 @@ function kurashinoshirube_emit_json_ld(): void
             'inLanguage' => 'ja-JP',
             'mainEntityOfPage' => $canonical,
             'publisher' => array('@id' => $organization_id),
+        );
+    }
+    if ($context['kind'] === 'fixed_page') {
+        $page_id = (int) get_queried_object_id();
+        $page_slug = get_post_field('post_name', $page_id, 'raw');
+        if (! is_string($page_slug)) {
+            return;
+        }
+        $nodes[] = array(
+            '@id' => $canonical . '#webpage',
+            '@type' => $page_slug === 'about-ad-policy'
+                ? 'AboutPage'
+                : 'WebPage',
+            'breadcrumb' => array('@id' => $canonical . '#breadcrumb'),
+            'description' => $context['description'],
+            'inLanguage' => 'ja-JP',
+            'isPartOf' => array('@id' => $website_id),
+            'name' => $context['title'],
+            'url' => $canonical,
         );
     }
     if (in_array($context['kind'], array('article', 'fixed_page'), true)) {

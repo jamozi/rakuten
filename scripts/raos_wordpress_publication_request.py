@@ -89,6 +89,22 @@ EXPECTED_SOCIAL_IMAGE_URL: Final = (
     f"{ORIGIN}/wp-content/themes/kurashinoshirube-child/"
     "assets/images/home-hero.webp"
 )
+EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG: Final = {
+    "carry-on-suitcase-comparison": "article-suitcase-guide.webp",
+    "portable-power-station-guide": "article-portable-power-guide.webp",
+    "anker-solix-c300-c800-c1000-differences": (
+        "article-portable-power-guide.webp"
+    ),
+    "countertop-dishwasher-for-small-households": (
+        "article-countertop-dishwasher-guide.webp"
+    ),
+    "compact-robot-vacuum-shortlist": "article-robot-vacuum-guide.webp",
+    "carry-on-suitcase-under-100-seats": "article-suitcase-guide.webp",
+    "lightweight-carry-on-suitcase-under-3kg": "article-suitcase-guide.webp",
+    "front-open-carry-on-suitcase-with-stopper": "article-suitcase-guide.webp",
+    "roomba-mini-vs-switchbot-k11-pro": "article-robot-vacuum-guide.webp",
+    "solota-vs-rakua-mini-plus": "article-countertop-dishwasher-guide.webp",
+}
 EDITOR_ENDPOINT: Final = f"{ORIGIN}/wp-json/raos-codex-mcp/v1/editor"
 REVIEW_URL: Final = f"{ORIGIN}/wp-admin/tools.php?page=raos-codex-proposals"
 EDITOR_CREDENTIAL_PATH: Final = (
@@ -111,7 +127,7 @@ ATTEMPT_PREPARED_EXPIRY_SECONDS: Final = EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS + 
 RELEASE_FOREGROUND_TIMEOUT_SECONDS: Final = 4680
 EXPECTED_THEME_VERSION: Final = "1.4.0"
 EXPECTED_THEME_RUNTIME_REVISION: Final = (
-    "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
+    "3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a"
 )
 THEME_RUNTIME_SENTINEL_PROPERTIES: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -499,6 +515,20 @@ class Article:
 
     def desired_sha256(self) -> str:
         return sha256_json(self.document())
+
+
+def expected_social_image_url(article: Article) -> str:
+    """Return the closed theme image expected for one publication document."""
+
+    if article.post_type == "page":
+        return EXPECTED_SOCIAL_IMAGE_URL
+    image_name = EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG.get(article.production_slug)
+    if image_name is None:
+        fail("RAOS_WORDPRESS_REQUEST_ARTICLE_SELECTION_INVALID")
+    return (
+        f"{ORIGIN}/wp-content/themes/kurashinoshirube-child/assets/images/"
+        f"{image_name}"
+    )
 
 
 def _valid_taxonomies(value: object) -> dict[str, list[int]]:
@@ -4034,13 +4064,14 @@ def _validated_public_head(
     article: Article,
     url: str,
 ) -> dict[str, object]:
+    expected_social_image = expected_social_image_url(article)
     expected_og = {
         "og:title": [article.title],
         "og:description": [article.excerpt],
         "og:url": [url],
-        "og:image": [EXPECTED_SOCIAL_IMAGE_URL],
+        "og:image": [expected_social_image],
     }
-    image = urlsplit(EXPECTED_SOCIAL_IMAGE_URL)
+    image = urlsplit(expected_social_image)
     if (
         not article.excerpt.strip()
         or parser.meta_descriptions != [article.excerpt]

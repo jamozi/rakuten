@@ -44,7 +44,7 @@
         !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(surface.article_id) ||
         !articleIds.has(surface.contextual_article_id) ||
         !Array.isArray(surface.related_article_ids) ||
-        surface.related_article_ids.length < 2 ||
+        surface.related_article_ids.length < 1 ||
         new Set(surface.related_article_ids).size !== surface.related_article_ids.length ||
         !surface.related_article_ids.includes(surface.contextual_article_id) ||
         surface.related_article_ids.some(

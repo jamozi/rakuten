@@ -139,6 +139,7 @@ def _public_markup(
     footer_markup: str = "<footer><h2>暮らしのしるべ</h2></footer>",
 ) -> str:
     url = f"{publication.ORIGIN}/{article.production_slug}/"
+    social_image = publication.expected_social_image_url(article)
     required_schema_types = schema_types or (
         ["Article", "BreadcrumbList", "Organization", "WebSite"]
         if article.post_type == "post"
@@ -159,7 +160,7 @@ def _public_markup(
         f'<meta property="og:title" content="{title}">'
         f'<meta property="og:description" content="{excerpt}">'
         f'<meta property="og:url" content="{url}">'
-        f'<meta property="og:image" content="{publication.EXPECTED_SOCIAL_IMAGE_URL}">'
+        f'<meta property="og:image" content="{social_image}">'
         '<script id="raos-structured-data" type="application/ld+json">'
         + structured_data
         + "</script>"
@@ -223,7 +224,7 @@ def test_anonymous_public_readback_requires_exact_canonical_title_and_headings()
     assert evidence[article.production_slug]["meta_description"] == article.excerpt
     assert evidence[article.production_slug]["open_graph"] == {
         "og:description": article.excerpt,
-        "og:image": publication.EXPECTED_SOCIAL_IMAGE_URL,
+        "og:image": publication.expected_social_image_url(article),
         "og:title": article.title,
         "og:url": url,
     }
@@ -236,6 +237,29 @@ def test_anonymous_public_readback_requires_exact_canonical_title_and_headings()
     request = opener.requests[0]
     assert request.full_url == url
     assert request.get_header("Authorization") is None
+
+
+def test_public_head_uses_one_closed_category_image_for_every_article() -> None:
+    articles = publication.load_articles("all")
+    assert len(publication.EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG) == 10
+    assert {article.production_slug for article in articles} == set(
+        publication.EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG
+    )
+    urls = {publication.expected_social_image_url(article) for article in articles}
+    assert urls == {
+        f"{publication.ORIGIN}/wp-content/themes/kurashinoshirube-child/"
+        f"assets/images/{name}"
+        for name in {
+            "article-countertop-dishwasher-guide.webp",
+            "article-portable-power-guide.webp",
+            "article-robot-vacuum-guide.webp",
+            "article-suitcase-guide.webp",
+        }
+    }
+    for page in publication.load_policy_pages():
+        assert publication.expected_social_image_url(page) == (
+            publication.EXPECTED_SOCIAL_IMAGE_URL
+        )
 
 
 @pytest.mark.parametrize(
@@ -620,16 +644,16 @@ def test_anonymous_public_readback_rejects_noindex() -> None:
             '<meta property="og:url" content="https://example.invalid/wrong/">',
         ),
         lambda markup, article, url: markup.replace(
-            publication.EXPECTED_SOCIAL_IMAGE_URL,
+            publication.expected_social_image_url(article),
             "http://kurashinoshirube.com/wp-content/themes/"
             "kurashinoshirube-child/assets/images/home-hero.webp",
         ),
         lambda markup, article, url: markup.replace(
-            publication.EXPECTED_SOCIAL_IMAGE_URL,
+            publication.expected_social_image_url(article),
             "https://example.invalid/home-hero.webp",
         ),
         lambda markup, article, url: markup.replace(
-            publication.EXPECTED_SOCIAL_IMAGE_URL,
+            publication.expected_social_image_url(article),
             f"{publication.ORIGIN}/wp-content/themes/"
             "kurashinoshirube-child/assets/images/other.webp",
         ),
@@ -918,7 +942,7 @@ def test_policy_page_public_readback_checks_policy_content_and_private_absence()
             "広告を含みます", "広告リンクがあります", 1
         ),
         lambda article: article.block_markup.replace(
-            "/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp",
+            "/wp-content/themes/kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp",
             "https://example.invalid/product-image-drift.webp",
         ),
     ],
@@ -978,9 +1002,9 @@ def test_mapping_is_closed_numeric_and_exact_slug_conversion() -> None:
         for page in pages
     )
     assert [page.excerpt for page in pages] == [
-        "暮らしのしるべの情報源選定、型番照合、広告との分離、更新・訂正の責任を説明します。",
-        "暮らしのしるべのEvidence階層、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。",
-        "暮らしのしるべの同一オリジン計測とGA4、保持期間、同意の拒否・撤回、アフィリエイトリンクの取扱いを説明します。",
+        "暮らしのしるべの情報源、型番照合、広告との分離、更新・訂正と現在の問い合わせ窓口の扱いを説明します。",
+        "暮らしのしるべの比較対象・除外、Evidence階層、掲載順、販売条件、利益相反、更新・訂正の方針を説明します。",
+        "ローカルプレビューにおける計測送信、Cookie、第三者送信、権利請求、安全管理、変更履歴の扱いを説明します。",
     ]
     for row in mapping["articles"]:
         assert row["production_slug"] == row["local_slug"].removeprefix(

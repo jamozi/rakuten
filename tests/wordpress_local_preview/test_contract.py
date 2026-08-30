@@ -54,6 +54,7 @@ REVIEWED_SOURCE_HOSTS = {
     "store.ace.jp",
     "store.irobot-jp.com",
     "store.shopping.yahoo.co.jp",
+    "support.switch-bot.com",
     "shop.innovator.co.jp",
     "www.americantourister.jp",
     "www.ana.co.jp",
@@ -254,6 +255,12 @@ def test_synthetic_fixture_has_ten_closed_local_articles() -> None:
         assert re.search(r"<\s*(?:script|style)\b", article, re.IGNORECASE) is None
         assert len(re.findall(r'class="raos-editorial-v2"', article)) == 1
         assert '<table class="comparison-table">' in article
+        for image_tag in re.findall(r"<img\b[^>]*>", article, re.IGNORECASE):
+            image_attributes = _html_attributes(image_tag)
+            assert image_attributes.get("width", "").isdigit()
+            assert image_attributes.get("height", "").isdigit()
+            assert int(image_attributes["width"]) > 0
+            assert int(image_attributes["height"]) > 0
         urls = re.findall(r'href="(https://[^"<>]+)"', article)
         assert urls
         assert all(urlparse(url).hostname in REVIEWED_SOURCE_HOSTS for url in urls)
@@ -315,7 +322,7 @@ def test_synthetic_fixture_has_ten_closed_local_articles() -> None:
         assert "公開前一次情報再確認は未実施" not in article
         assert "広告を含みます" in article
         assert "比較テーマの共通イメージ" not in article
-        assert re.search(r"2026年8月2[0-9]日", article)
+        assert re.search(r"2026年8月(?:2[0-9]|30)日", article)
 
 
 def test_production_mapping_matches_all_ten_local_articles() -> None:
@@ -340,6 +347,50 @@ def test_roomba_f155260_station_dimensions_keep_width_depth_order() -> None:
     assert "21.2×17.8×28.5cm" not in article
     assert article.count("17.8×21.2×28.5cm") == 2
     assert "幅約17.8×奥行約21.2×高さ約28.5cm" in article
+
+
+def test_roomba_article_separates_two_products_three_setups_and_installation_space() -> (
+    None
+):
+    article = (ARTICLES / "roomba-mini-vs-switchbot-k11-pro.html").read_text(
+        encoding="utf-8"
+    )
+
+    assert "2製品3構成" in article
+    assert "Roomba Miniの2構成" in article
+    assert "左右各1m・前方1.5m" in article
+    assert "筐体寸法とは別に確保" in article
+    assert "異なる指標を混ぜず" in article
+    assert "対応Wi-Fiの全条件は購入時に型番別サポートを確認" in article
+    assert "実機と実際の家庭内ネットワークでの確認が必要" in article
+    assert "紙パック、本体のフィルター・ブラシ、水拭き部品" in article
+    assert "2026.08.30" in article
+    assert "2026年8月29日" not in article
+    assert "assets/images/home-hero.webp" not in article
+    assert article.count("assets/images/article-robot-vacuum-guide.webp") == 4
+
+
+def test_dishwasher_article_keeps_two_product_comparison_and_capacity_reference_separate() -> (
+    None
+):
+    article = (ARTICLES / "solota-vs-rakua-mini-plus.html").read_text(encoding="utf-8")
+    comparison = article.split(
+        '<div class="comparison-table-wrap" role="region"', maxsplit=1
+    )[1].split("</table>", maxsplit=1)[0]
+
+    assert "SOLOTAとラクアmini Plusの主比較表" in comparison
+    assert "SS-MA251" not in comparison
+    assert "主比較2製品" in article
+    assert "容量参考枠：siroca SS-MA251" in article
+    assert "NP-TML1-W" in article
+    assert "NP-TMLK1-K" in article
+    assert "WとWhを取り違えない" in article
+    assert "1回消費電力量（Wh）" in article
+    assert "同条件の実機試験をしていない" in article
+    assert "2026.08.30" in article
+    assert "2026年8月29日" not in article
+    assert "assets/images/home-hero.webp" not in article
+    assert article.count("assets/images/article-countertop-dishwasher-guide.webp") == 4
 
 
 def test_editorial_stylesheet_is_owned_by_the_production_theme() -> None:
@@ -475,6 +526,9 @@ def test_browser_audit_covers_home_ten_articles_and_three_pages_at_four_widths()
     for surface in inventory["surfaces"]:
         if surface["local_path"] != "/":
             assert surface["local_path"] not in audit
+        if surface["kind"] == "article":
+            assert surface["related_article_ids"]
+            assert surface["contextual_article_id"] in surface["related_article_ids"]
     assert "const rawSurfaces = inventory?.surfaces;" in audit
     assert "const rawClusters = inventory?.clusters;" in audit
     assert "const widths = inventory?.viewports;" in audit
@@ -530,6 +584,7 @@ def test_browser_audit_covers_home_ten_articles_and_three_pages_at_four_widths()
         "audit.invalidCtaBounds !== 0",
         "audit.contextualLinkCount !== 1",
         "audit.relatedLinkCount !== surface.related_article_ids.length",
+        "surface.related_article_ids.length < 1",
         "audit.missingAlt !== 0",
         "audit.unloadedImages !== 0",
         "audit.duplicateIds.length !== 0",
@@ -601,6 +656,7 @@ def test_fixed_policy_pages_are_tracked_and_match_the_implemented_boundaries() -
     assert "実在しない個人名" in contents["about-ad-policy"]
     assert "型番" in contents["about-ad-policy"]
     assert "メーカー公式ページへ案内" in contents["about-ad-policy"]
+    assert "問い合わせを受け付けるメールアドレス、フォーム、住所を確定して掲載していません" in contents["about-ad-policy"]
     assert "Evidence階層" in contents["comparison-policy"]
     assert "A：公式仕様" in contents["comparison-policy"]
     assert "B：第三者実測" in contents["comparison-policy"]
@@ -608,13 +664,17 @@ def test_fixed_policy_pages_are_tracked_and_match_the_implemented_boundaries() -
     assert "D：編集部の判断" in contents["comparison-policy"]
     assert "実機未使用" in contents["comparison-policy"]
     assert "報酬率" in contents["comparison-policy"]
+    assert "市場にある全製品を網羅した一覧ではありません" in contents["comparison-policy"]
+    assert "提供の有無や独立性を断定しません" in contents["comparison-policy"]
     privacy = contents["privacy-policy"]
     assert privacy.count("最終更新日") == 1
-    assert "生イベントは7日間" in privacy
-    assert "13か月" in privacy
+    assert "分析送信、広告計測、Google Analytics 4への送信を有効にしていません" in privacy
+    assert "個別の生イベントは7日間保持すること" in privacy
+    assert "13か月保持することを含む運用は、現時点では実施していません" in privacy
     assert "拒否または撤回" in privacy
-    assert "楽天市場やメーカー公式ページへの商品リンクは利用できます" in privacy
-    assert "楽天URLのクエリ" in privacy
+    assert "第三者送信" in privacy
+    assert "情報の確認・削除を求める場合" in privacy
+    assert "安全管理と未成年の方へ" in privacy
     seed = SEED.read_text(encoding="utf-8")
     assert "array('content_file', 'excerpt', 'slug', 'title')" in seed
     assert "'post_excerpt' => $page['excerpt']" in seed

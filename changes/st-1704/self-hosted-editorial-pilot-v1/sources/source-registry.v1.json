@@ -111,10 +111,10 @@
       "authority": "MANUFACTURER_OFFICIAL",
       "source_type": "PRODUCT_SPECIFICATION_PAGE",
       "title": "Panasonic NP-TMLK1 仕様・詳細情報",
-      "url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+      "url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
       "retrieved_on": "2026-08-23",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "416d1f93037007812842496a3c866fb24e7855adecfe70573a7db3a40f924510",
+      "immutable_capture_sha256": "bd0a3a0778cadb056f4775a51e9b58ba2f67c3d5458f5542ef2a1648c14993f8",
       "review_body_excluded_from_claim_evidence": true
     },
     {

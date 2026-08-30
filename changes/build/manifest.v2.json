@@ -11,12 +11,12 @@
       "outputs": [
         {
           "bytes": 2877,
-          "sha256": "7158c02b753a5bcf4031629929f56dd7e50c40ddb3f8303e6c9e5e1308b5d8c3",
+          "sha256": "b026d6f24530ce22c7225b329111b51b0164b470c415161a6ea00604416d96bf",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 18254,
-          "sha256": "d215f399cecfe3f940d5eb49d56916a3558099642216ac96db4598fbc2f72e5c",
+          "sha256": "bcdf0b95a3d345cc6d08321bf0359691ea6a5285fa9de3f6af8d349af83e9962",
           "uri": "repo://changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement/config/measurement-allowlist.v1.json"
         }
       ],
@@ -93,13 +93,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 79388,
-          "sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d",
+          "bytes": 79749,
+          "sha256": "c82746904cc27365166abec78021c711262220171e123851caa844a8db379abe",
           "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
         },
         {
-          "bytes": 10646,
-          "sha256": "5fb0dc9ac677569151a41e25fe428c04a7a1ea259a67e1efff4915f0a235b566",
+          "bytes": 10764,
+          "sha256": "a50b9709fc0e561ac2adc8dc9394b783e2fcfad19b3f5fe9a730f2eb0f808c94",
           "uri": "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json"
         }
       ],
@@ -252,13 +252,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 6968,
-          "sha256": "9dc0a437cd98069c76a378af5774bd6348d0dff3102f8e7bdf04d1f6ba46b806",
+          "bytes": 6880,
+          "sha256": "f30c230d36f38d190b3c54f645de93dc9a68e9e96c88fc89a6cc95f3719b0e50",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
-          "bytes": 9339,
-          "sha256": "100cdd6f95cc0bb224c43c77a9328237fbeb338d54220aba554bfa0423912bc6",
+          "bytes": 9457,
+          "sha256": "102a3f20f05ebf6992db7a5a9304d2d7e504072376c2d75f752ebdd9b1c3c478",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
         }
       ],
@@ -20697,7 +20697,7 @@
         },
         {
           "bytes": 6739,
-          "sha256": "28a1617fec16206414585b7cdb7f22609bfa3a9b1c0c7571655bf5873e4690c1",
+          "sha256": "e0cc8b46fe92d0108fb4a749b09e7828e86d3a1a7f23f58d7c75729225348c5f",
           "uri": "repo://changes/st-1102/runtime-manifest.v2.yaml"
         },
         {
@@ -21252,12 +21252,12 @@
       "outputs": [
         {
           "bytes": 30334,
-          "sha256": "64bcca528088c92ba670a0d11558b9a1709d4963b7c1af887a2097ebdcffe0d0",
+          "sha256": "9ce208ba4f19487489421145edfd9d155a70e63aa2f9d4a3875e0241b845cd74",
           "uri": "repo://changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json"
         },
         {
           "bytes": 11818,
-          "sha256": "275155cd6d89054635acbedb65ee4aef8640b5226446e2b8fdc63b11f4339b13",
+          "sha256": "f683235a244ca4ccfe1722fa7c85ea6872b4930af469bde623bc0383b81e63ae",
           "uri": "repo://changes/st-1104/runtime-manifest.v2.yaml"
         }
       ],
@@ -21419,12 +21419,12 @@
       "outputs": [
         {
           "bytes": 94253,
-          "sha256": "56f648a654cf18067ae9f905b32aaebe9b6b75729961ae8edcc31f2f5a138486",
+          "sha256": "364a72fdaa5ca51ad6d6dc3bc2da1aa083167b31ad965574b28e146c13a9429f",
           "uri": "repo://changes/st-1105/generated/admin-visual-accessibility-recorded.v2.json"
         },
         {
           "bytes": 16756,
-          "sha256": "2b84f6b81fc8e0efa0cef7884516922a00d9a05ad323108ce6afb4f9e79c9585",
+          "sha256": "c89df15ca4ac9361b67dbf65cc855423a2d83becd4d8344951e9aed72efd4959",
           "uri": "repo://changes/st-1105/runtime-manifest.v2.json"
         }
       ],
@@ -22789,7 +22789,7 @@
       "outputs": [
         {
           "bytes": 18895,
-          "sha256": "3f296cbcdb88ebfd6567bc4ed24639cd41c66a316e83b0d0abeda212ed7df27d",
+          "sha256": "ef620013020c08b64143f7902d97d21b86cb2aa0d66f1c4d697626c85bebb24b",
           "uri": "repo://changes/st-1303/generated/attribution-engine-recorded.v2.json"
         }
       ],
@@ -23051,7 +23051,7 @@
       "outputs": [
         {
           "bytes": 39444,
-          "sha256": "ce5dbb7fe4dd3fa5fc358539ab5b7416b403b14514c5a296a044bc2ffa1c32e1",
+          "sha256": "2e47ab37399d54bfaaf7769a405efff6c1028c1800cd3ae282d4d39522a39b55",
           "uri": "repo://changes/st-1304/generated/cost-unit-economics-recorded.v2.json"
         }
       ],
@@ -23292,7 +23292,7 @@
       "outputs": [
         {
           "bytes": 31267,
-          "sha256": "59aded0cec550ed10cb2078e85fa28627cb9bcb375ed99e863a21a22136a5b8a",
+          "sha256": "3ff4e1f327734da83f6a24bc3efcea14debf6980b53d3bb357fafdaf232dd422",
           "uri": "repo://changes/st-1305/generated/finance-reconciliation-recorded.v2.json"
         }
       ],
@@ -26025,7 +26025,7 @@
       "outputs": [
         {
           "bytes": 2428,
-          "sha256": "5cb542bb2f8fc17f11e5f7759eb9ed74ccbeb77892c16d5f25bc7af52b599e15",
+          "sha256": "5ec93e7ef5ee38d52b60ca01e3ea9d7e7192b7e281223c1ce450d0ffee5f1915",
           "uri": "repo://changes/st-1704/affiliate-learning-v2/runtime-manifest.v2.json"
         }
       ],
@@ -26145,7 +26145,7 @@
       "outputs": [
         {
           "bytes": 3170,
-          "sha256": "9f8a0d77ab09fe787d1be139b7a017836db88f8eefcaa8cc7c52ce9cab9ba256",
+          "sha256": "5a9d5fb2af831dd5fc824ad0639d0e48fae715905cf0c51f005bee013ef873a7",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26289,8 +26289,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 72521,
-          "sha256": "12b41853a025f14c5a4e738e2136acf54dd7138fcde9bc0a488adef3ab2c3f6d",
+          "bytes": 73523,
+          "sha256": "506f8a63b6c5226d34d63d3ec7574e249ee16d6546b98ca3db60fd546ebdb942",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -26401,8 +26401,20 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-countertop-dishwasher-guide.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-countertop-dishwasher-guide.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-portable-power-guide.png",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-portable-power-guide.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-robot-vacuum-guide.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-robot-vacuum-guide.png",
           "version": 2
         },
         {
@@ -26449,8 +26461,20 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-countertop-dishwasher-guide.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-countertop-dishwasher-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-portable-power-guide.webp",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-portable-power-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp",
           "version": 2
         },
         {
@@ -26713,8 +26737,20 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-countertop-dishwasher-guide.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-countertop-dishwasher-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-portable-power-guide.webp",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-portable-power-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp",
           "version": 2
         },
         {
@@ -26827,8 +26863,32 @@
       "semantic_inputs": [
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-countertop-dishwasher-guide.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-countertop-dishwasher-guide.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-portable-power-guide.png",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-portable-power-guide.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-robot-vacuum-guide.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-robot-vacuum-guide.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-countertop-dishwasher-guide.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-countertop-dishwasher-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp",
           "version": 2
         },
         {
@@ -27275,7 +27335,7 @@
       "outputs": [
         {
           "bytes": 29183,
-          "sha256": "dc03b547b81d2d2671e66d76c0806a24027b849a8eb67837c7eff17fb69a8829",
+          "sha256": "0bd3a70d01a55084cff5cedc8293e5ad0ef3d2dcae71b9ef0f23af0db8caef11",
           "uri": "repo://changes/st-1804/generated/gate3-economics.local-blocked.v1.json"
         }
       ],
@@ -27362,7 +27422,7 @@
       "outputs": [
         {
           "bytes": 10819,
-          "sha256": "cd1aec0ac8a87809389e681b8e1c67328b0120b244aa6fcc7725f11e4d15dff4",
+          "sha256": "71921934b55163135c507835dbc341fe6b664b838a95a96c0a4688dd991baf42",
           "uri": "repo://changes/st-1805/generated/portfolio-decision.local-blocked.v1.json"
         }
       ],
@@ -28171,12 +28231,12 @@
       "outputs": [
         {
           "bytes": 3342,
-          "sha256": "24bd5da85820342740a4d3617d5cf2961d7a645bbbd41d378c77e97cb7fa607b",
+          "sha256": "ad05853a88ddfd8fb2d94a79dd793f3c95c18086b9475d7df502f496b5ec7ed8",
           "uri": "repo://changes/st-1907/generated/content-portfolio-optimizer-report.v1.json"
         },
         {
           "bytes": 8474,
-          "sha256": "f07ea602814bff5c0a269641762c827505bfc65ea78e5113e8b4a511b58e44aa",
+          "sha256": "0ea3df2cd2bc5fa4b6f37c138d88da0513271ebbaf9f47e762e1b01037a1a1cd",
           "uri": "repo://changes/st-1907/manifest.yaml"
         }
       ],
@@ -28477,12 +28537,12 @@
       "outputs": [
         {
           "bytes": 531,
-          "sha256": "0af448db63a20c076b86ecd9eafb81a57616b5c0cb189b1f0277188b55f4b2fa",
+          "sha256": "c19165f3292c6592b96d63c16f3ae2c2527e9dc5beb80ec440e763d16ca98fa9",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
           "bytes": 17117,
-          "sha256": "b34a4be283c4bc48b11c3101808de00a449555863e3919d34423cd11f04069d0",
+          "sha256": "a4a2221c3357a9971bce6b91691a49fefa912082dafeb6cba5f353da2bf526d5",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],

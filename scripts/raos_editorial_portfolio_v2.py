@@ -589,9 +589,23 @@ def _render_st1704_article(
         evidences=evidences,
         alts={cast(str, asset["product_id"]): cast(str, asset["alt"]) for asset in media_records},
     ).render(ast)
+    article_visuals = {
+        "st1703-first-suitcase-comparison": "article-suitcase-guide.webp",
+        "st1704-portable-power-station-guide": "article-portable-power-guide.webp",
+        "st1704-anker-solix-c300-c800-c1000-differences": (
+            "article-portable-power-guide.webp"
+        ),
+        "st1704-countertop-dishwasher-for-small-households": (
+            "article-countertop-dishwasher-guide.webp"
+        ),
+        "st1704-compact-robot-vacuum-shortlist": "article-robot-vacuum-guide.webp",
+    }
+    try:
+        visual_asset = article_visuals[article_id]
+    except KeyError:
+        fail("RAOS_EDITORIAL_PORTFOLIO_ARTICLE_INVALID")
     neutral = (
-        "/wp-content/themes/kurashinoshirube-child/assets/images/"
-        + ("article-portable-power-guide.webp" if "power" in article_id or "anker" in article_id else "home-hero.webp")
+        "/wp-content/themes/kurashinoshirube-child/assets/images/" + visual_asset
     )
     for evidence in evidences.values():
         content = content.replace(evidence.image_url, neutral)

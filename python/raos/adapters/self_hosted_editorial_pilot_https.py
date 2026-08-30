@@ -404,6 +404,7 @@ def _load_theme_navigation_v3(
         "preparedness_two_article_policy": (
             "ONE_SAME_CLUSTER_PLUS_ONE_ADJACENT_CONTEXT_WITHOUT_NEW_ARTICLE"
         ),
+        "rendered_relationships": "SAME_CLUSTER_ONLY_PLUS_CLUSTER_HOME_LINK",
         "source": "assets/editorial-navigation.v3.json#articles[].related_articles",
         "target_requirement": (
             "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
@@ -641,7 +642,10 @@ def _load_theme_related_navigation(
         home_label = f"暮らしの道具「{cluster['label']}」の一覧へ"
         targets: list[_ThemeArticleIdentity] = []
         for raw_relation in cast(list[object], article["related_articles"]):
-            target_id = cast(str, _mapping(raw_relation)["article_id"])
+            relation = _mapping(raw_relation)
+            if relation["relationship"] != "same_cluster":
+                continue
+            target_id = cast(str, relation["article_id"])
             target = articles[target_id]
             targets.append(
                 _ThemeArticleIdentity(
@@ -651,7 +655,7 @@ def _load_theme_related_navigation(
                     title=cast(str, target["title"]),
                 )
             )
-        if len(targets) < 2:
+        if not targets:
             _fail(EditorialPilotFailureCode.PACKET_INVALID)
         normalized[article_id] = {
             "home": (f"{PILOT_ORIGIN}/#{anchor}", home_label),
@@ -843,7 +847,7 @@ def _related_target_identities(
     if type(targets) is not tuple:
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
     identities = cast(tuple[object, ...], targets)
-    if len(identities) < 2 or any(
+    if not identities or any(
         type(identity) is not _ThemeArticleIdentity for identity in identities
     ):
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
@@ -2035,7 +2039,7 @@ def _validate_article_html(
     relation = related_navigation[request.article_id]
     home = cast(tuple[str, str], relation["home"])
     expected_related: list[tuple[str, str]] = []
-    if len(bound_related_targets) >= 2:
+    if bound_related_targets:
         expected_related.extend(
             (f"{PILOT_ORIGIN}/{identity.slug}/", identity.title)
             for identity in bound_related_targets
@@ -2831,7 +2835,7 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
             if kind == "related-target"
             else ()
         )
-        if kind == "related-target" and len(related_identities) < 2:
+        if kind == "related-target" and not related_identities:
             _fail(EditorialPilotFailureCode.OPERATION_NOT_ALLOWED)
         homepage_identities = _homepage_article_identities(self._homepage_clusters)
         exchanges = {

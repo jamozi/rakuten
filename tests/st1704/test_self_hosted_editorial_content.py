@@ -591,13 +591,13 @@ def test_reader_copy_and_dimension_notation_are_normalized() -> None:
 
     assert observed_dimensions == 23
     collection_text = CONTENT_PATH.read_text(encoding="utf-8")
-    assert "購入前に本体の色と販売単位を型番で確認してください" in collection_text
-    assert "購入先の商品名と型番を照合してください" in collection_text
+    assert "購入前に型番とカラー構成を確認" in collection_text
+    assert "購入する型番の公式対応情報と取扱説明書を確認してください" in collection_text
     articles = {article["article_id"]: article for article in collection["articles"]}
     dishwasher = articles["st1704-countertop-dishwasher-for-small-households"]
     dishwasher_text = " ".join(_strings(dishwasher))
     for formal_name in (
-        "Panasonic SOLOTA NP-TMLK1-H",
+        "Panasonic SOLOTA NP-TMLK1-K",
         "THANKO ラクアmini color（型番：TDWS25SBL）",
         "siroca 食器洗い乾燥機 SS-MA251",
         "Panasonic NP-TSP1-W",
@@ -631,6 +631,34 @@ def test_reader_copy_and_dimension_notation_are_normalized() -> None:
     )
     assert "約5.7kg" not in power_text
     assert power_text.count("5.7kg") >= 7
+    assert "容量（Wh）÷機器の消費電力（W）" in power_text
+    assert "AC変換損失" in power_text
+    assert "起動時電力" in power_text
+
+    suitcase_text = " ".join(
+        _strings(articles["st1703-first-suitcase-comparison"])
+    )
+    assert suitcase_text.count("2026年8月30日のメーカー公式通販では在庫切れ") >= 4
+    assert "販売状況は変動" in suitcase_text
+
+    anker_text = " ".join(
+        _strings(articles["st1704-anker-solix-c300-c800-c1000-differences"])
+    )
+    for official_difference in (
+        "別売り拡張バッテリー",
+        "AC出力6口",
+        "SurgePad 2000W",
+        "停電時約10ミリ秒切り替え",
+        "4000回以上の充放電サイクル",
+        "USB-C 3口",
+        "拡張バッテリーには対応しません",
+    ):
+        assert official_difference in anker_text
+
+    assert "標準食器点数は各社の想定した食器構成による参考値" in dishwasher_text
+    assert "24点モデルを1〜2人向けの上位候補と決め打ちせず" in dishwasher_text
+    assert "公式設置案内の帰還余白" in robot_text
+    assert "K11+ Proより本体は0.3cm" in robot_text
 
 
 def test_internal_routes_are_closed_and_topic_pairs_cross_link() -> None:

@@ -46,7 +46,7 @@
         "lightweight-carry-on-suitcase-under-3kg",
         "carry-on-suitcase-under-100-seats"
       ],
-      "snapshot_id": "snp-a01-fe5903f372e1"
+      "snapshot_id": "snp-a01-5991c5125876"
     },
     {
       "article_code": "a02",
@@ -106,7 +106,7 @@
         "st1704-anker-solix-c300-c800-c1000-differences",
         "st1703-first-suitcase-comparison"
       ],
-      "snapshot_id": "snp-a02-d37e9579edb4"
+      "snapshot_id": "snp-a02-c8be0a75b041"
     },
     {
       "article_code": "a03",
@@ -166,7 +166,7 @@
         "st1704-portable-power-station-guide",
         "st1703-first-suitcase-comparison"
       ],
-      "snapshot_id": "snp-a03-f24fa4f702d0"
+      "snapshot_id": "snp-a03-37d844e9b115"
     },
     {
       "article_code": "a04",
@@ -226,7 +226,7 @@
         "solota-vs-rakua-mini-plus",
         "st1704-compact-robot-vacuum-shortlist"
       ],
-      "snapshot_id": "snp-a04-6f5edb5a0a0d"
+      "snapshot_id": "snp-a04-0a8944aabfba"
     },
     {
       "article_code": "a05",
@@ -286,7 +286,7 @@
         "roomba-mini-vs-switchbot-k11-pro",
         "st1704-countertop-dishwasher-for-small-households"
       ],
-      "snapshot_id": "snp-a05-2a75738808da"
+      "snapshot_id": "snp-a05-6fdf1d3b2787"
     },
     {
       "article_code": "a06",
@@ -346,7 +346,7 @@
         "st1703-first-suitcase-comparison",
         "front-open-carry-on-suitcase-with-stopper"
       ],
-      "snapshot_id": "snp-a06-e21d9a5ed918"
+      "snapshot_id": "snp-a06-0f127feabaca"
     },
     {
       "article_code": "a07",
@@ -406,7 +406,7 @@
         "st1703-first-suitcase-comparison",
         "front-open-carry-on-suitcase-with-stopper"
       ],
-      "snapshot_id": "snp-a07-abc1202a749e"
+      "snapshot_id": "snp-a07-827f5cd2d7d5"
     },
     {
       "article_code": "a08",
@@ -466,7 +466,7 @@
         "st1703-first-suitcase-comparison",
         "carry-on-suitcase-under-100-seats"
       ],
-      "snapshot_id": "snp-a08-29e1fc0be118"
+      "snapshot_id": "snp-a08-0af5dcd69033"
     },
     {
       "article_code": "a09",
@@ -514,7 +514,7 @@
         "st1704-compact-robot-vacuum-shortlist",
         "solota-vs-rakua-mini-plus"
       ],
-      "snapshot_id": "snp-a09-186ea496f9e2"
+      "snapshot_id": "snp-a09-d847e6062f42"
     },
     {
       "article_code": "a10",
@@ -562,7 +562,7 @@
         "st1704-countertop-dishwasher-for-small-households",
         "st1704-compact-robot-vacuum-shortlist"
       ],
-      "snapshot_id": "snp-a10-01c4279c69ac"
+      "snapshot_id": "snp-a10-cc93bab11e79"
     }
   ],
   "events": [
@@ -580,7 +580,7 @@
   "source": {
     "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
     "schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
-    "sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d",
+    "sha256": "c82746904cc27365166abec78021c711262220171e123851caa844a8db379abe",
     "version": "3.0.0"
   },
   "target_origin": "https://kurashinoshirube.com",

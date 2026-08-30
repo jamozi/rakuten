@@ -125,8 +125,8 @@
       "docs/upstream/key_documents/RAOS_01_requirements_purpose_success_v0.1.md": "5890c616fdaaf02022a524c91b0ae91a8bf5c6b297338f8c958be0d49b3b62ea",
       "scripts/build_st1804_gate3_economics.py": "tracked"
     },
-    "fixture_sha256": "47adc5544779c1e697a4ca1dc3ada9a251cb40fdfa9dd8e593596b34a082c793",
-    "input_sha256": "f0adb4eb0e3becf8439e8dd76b9bf6d6641f412dc1348ae04cfc1b0beb47914e",
+    "fixture_sha256": "f4fb736da0f7810f2165bf839baaf15afbab1138f61a6c8335a27770668b9205",
+    "input_sha256": "025bee35bccbea399ed2849ddfec80ca07e672fd071338039ba5156b425fb329",
     "source_artifacts": [
       {
         "bytes": 3875,
@@ -135,7 +135,7 @@
       },
       {
         "bytes": 1051,
-        "sha256": "47adc5544779c1e697a4ca1dc3ada9a251cb40fdfa9dd8e593596b34a082c793",
+        "sha256": "f4fb736da0f7810f2165bf839baaf15afbab1138f61a6c8335a27770668b9205",
         "uri": "repo://changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json"
       },
       {
@@ -255,13 +255,13 @@
       "recommendation_order_changed": false,
       "reward_used_for_product_ranking": false
     },
-    "input_sha256": "f0adb4eb0e3becf8439e8dd76b9bf6d6641f412dc1348ae04cfc1b0beb47914e",
+    "input_sha256": "025bee35bccbea399ed2849ddfec80ca07e672fd071338039ba5156b425fb329",
     "method_version": "RAOS_ST1805_PORTFOLIO_DECISION_V1",
     "overall": "BLOCKED",
     "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
     "recording_id": "blocked-synthetic-no-decision",
     "schema": "ST1805_PORTFOLIO_DECISION_REPORT_V1",
-    "source_pack_sha256": "f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4"
+    "source_pack_sha256": "0bd3a70d01a55084cff5cedc8293e5ad0ef3d2dcae71b9ef0f23af0db8caef11"
   },
   "schema": "ST1805_PORTFOLIO_DECISION_PACK_V1",
   "story_id": "ST-1805",

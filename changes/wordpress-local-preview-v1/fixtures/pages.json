@@ -4,19 +4,19 @@
   "pages": [
     {
       "content_file": "pages/about-ad-policy.html",
-      "excerpt": "暮らしのしるべの情報源選定、型番照合、広告との分離、更新・訂正の責任を説明します。",
+      "excerpt": "暮らしのしるべの情報源、型番照合、広告との分離、更新・訂正と現在の問い合わせ窓口の扱いを説明します。",
       "slug": "about-ad-policy",
       "title": "運営・広告方針"
     },
     {
       "content_file": "pages/comparison-policy.html",
-      "excerpt": "暮らしのしるべのEvidence階層、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。",
+      "excerpt": "暮らしのしるべの比較対象・除外、Evidence階層、掲載順、販売条件、利益相反、更新・訂正の方針を説明します。",
       "slug": "comparison-policy",
       "title": "比較・編集方針"
     },
     {
       "content_file": "pages/privacy-policy.html",
-      "excerpt": "暮らしのしるべの同一オリジン計測とGA4、保持期間、同意の拒否・撤回、アフィリエイトリンクの取扱いを説明します。",
+      "excerpt": "ローカルプレビューにおける計測送信、Cookie、第三者送信、権利請求、安全管理、変更履歴の扱いを説明します。",
       "slug": "privacy-policy",
       "title": "プライバシーポリシー"
     }

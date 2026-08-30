@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: 9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019;
+  --raos-theme-runtime-revision-editorial-v2: 3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -271,6 +271,49 @@
 
 .raos-editorial-v2 .disclosure p {
   margin: 0;
+}
+
+.raos-editorial-v2 .raos-article-toc {
+  max-width: 62rem;
+  margin: 2.25rem 0 0;
+  border: 1px solid var(--rev2-line-soft);
+  border-radius: 0.35rem;
+  background: #f8f7f3;
+}
+
+.raos-editorial-v2 .raos-article-toc summary {
+  padding: 1rem 1.2rem;
+  color: var(--rev2-indigo);
+  cursor: pointer;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.raos-editorial-v2 .raos-article-toc summary:focus-visible {
+  outline: 3px solid var(--rev2-clay);
+  outline-offset: 3px;
+}
+
+.raos-editorial-v2 .raos-article-toc ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 2rem;
+  margin: 0;
+  padding: 0 2.5rem 1.25rem 3rem;
+}
+
+.raos-editorial-v2 .raos-article-toc li {
+  padding-left: 0.2rem;
+  color: var(--rev2-muted);
+}
+
+.raos-editorial-v2 .raos-article-toc a {
+  color: var(--rev2-indigo);
+  text-underline-offset: 0.18em;
+}
+
+.raos-editorial-v2 h2[id] {
+  scroll-margin-top: 2rem;
 }
 
 .raos-editorial-v2 .decision-section,
@@ -815,6 +858,15 @@
 
   .raos-editorial-v2 .disclosure p {
     margin-top: 0.5rem;
+  }
+
+  .raos-editorial-v2 .raos-article-toc ol {
+    display: block;
+    padding-inline: 2.5rem 1.2rem;
+  }
+
+  .raos-editorial-v2 .raos-article-toc li + li {
+    margin-top: 0.6rem;
   }
 
   .raos-editorial-v2 .decision-list li {

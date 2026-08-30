@@ -9,8 +9,8 @@ contract_sha256: ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52
 hardened_writer_sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
 source_sha256:
   changes/st-1102/contracts/article-workspace.v2.yaml: ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52f
-  scripts/build_st1102_article_workspace_v2.py: 06a4bb77cbbb4058f92718620c6554fe083265d870ea48a4fea8fe5eeddfd672
-  packages/web-ui/src/article-workspace-v2.ts: 269bca8158dd34086544df18f02c7397ae8f4ad8f117f0e04a3a28a610e895ab
+  scripts/build_st1102_article_workspace_v2.py: 4b807f5dd22f16ccec63ab12736e36503f25c96f1eb849c54db7607a9d8c8159
+  packages/web-ui/src/article-workspace-v2.ts: 289a51d6ab74f3ab9e4bfb1d38b1776df642547720ac2435ab3e60e56994cd2f
   packages/web-ui/src/index.ts: ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c
   changes/st-1102/README.md: 87fd7d5e8b7ccf0d9de46729e56af21ba6939bb5be14415376bc74b2d84a5912
   changes/st-1102/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: 9db6e0565e762f72fdd78a896fd7cd4ca2b58aa1aa4a33b0dd4f11bf302665f8

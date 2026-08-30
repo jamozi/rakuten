@@ -315,7 +315,11 @@ def build_documents() -> tuple[bytes, bytes]:
                 "kind": "article",
                 "local_path": f"/{article['local_slug']}/",
                 "production_path": f"/{article['production_slug']}/",
-                "related_article_ids": [relation["article_id"] for relation in related],
+                "related_article_ids": [
+                    relation["article_id"]
+                    for relation in related
+                    if relation["relationship"] == "same_cluster"
+                ],
                 "surface_id": f"article-{article['article_code']}",
             }
         )

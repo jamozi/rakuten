@@ -37,7 +37,7 @@ from raos.domain.analytics.gate3_economics import (  # noqa: E402
 
 
 CONTRACT_DIGEST = Sha256Digest(
-    "62fccc49d17c99ef515b4f6a13d674faceee91839ff2a98ad741022488bf1180"
+    "7a5a43f3ef8c42ea2fcff3ebe53f8d38a2c30491b19fd163fa2b468197d2484a"
 )
 INPUT_DIGEST = Sha256Digest(
     "a532e84c3be3d656978a8168047a8e4df94c872fd78d703137f399c77e0199b2"

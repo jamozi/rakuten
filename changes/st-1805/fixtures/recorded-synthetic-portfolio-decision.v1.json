@@ -14,10 +14,10 @@
     "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
     "quality_state": "NOT_EXECUTED",
     "risk_state": "NOT_EXECUTED",
-    "source_pack_sha256": "f39934be295442f3109185324d3c96e5c2d5401a320f01fd60f75c4fe5414cb4"
+    "source_pack_sha256": "0bd3a70d01a55084cff5cedc8293e5ad0ef3d2dcae71b9ef0f23af0db8caef11"
   },
   "immutable": true,
-  "input_sha256": "f0adb4eb0e3becf8439e8dd76b9bf6d6641f412dc1348ae04cfc1b0beb47914e",
+  "input_sha256": "025bee35bccbea399ed2849ddfec80ca07e672fd071338039ba5156b425fb329",
   "recorded_at": "2026-04-01T00:00:00Z",
   "recording_id": "blocked-synthetic-no-decision",
   "schema": "ST1805_RECORDED_SYNTHETIC_PORTFOLIO_DECISION_V1",

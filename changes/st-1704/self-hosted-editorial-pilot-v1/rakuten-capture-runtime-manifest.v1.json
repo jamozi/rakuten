@@ -12,7 +12,7 @@
     {
       "bytes": 8302,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "282610f23054a34ba1d52f1e2410f1126abc2066c5c0f3ac164412ddd14cd9fe"
+      "sha256": "8aaef4ab26ad213c5eb0cf6cc92d8288a57fc4b331c339ff97fa12a2828b4e1c"
     },
     {
       "bytes": 4315,
@@ -22,7 +22,7 @@
     {
       "bytes": 29517,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "242f8cf57739f097ef2e7a02a0c5de61c69fa380bc0af23f858a345e150ca655"
+      "sha256": "787701274ba8434af13ef9dab8308f2d2fe713c1652fa13c89a1b18b3d981cde"
     },
     {
       "bytes": 2486,
@@ -40,19 +40,19 @@
       "sha256": "5a118462f76a8cefc1d44a4b444e45ba4e9bc84793a0f5825f98d262b0b67bb8"
     },
     {
-      "bytes": 138382,
+      "bytes": 146195,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-      "sha256": "6bff3318494241cf40c84961bfcbaa81142a6a1e2f1ceb4fce9e15cf5ef881f4"
+      "sha256": "799940a0ed6a0410904a388802063dcdbd546b85e1f12e58e1f9fd361d70356a"
     },
     {
       "bytes": 23745,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json",
-      "sha256": "ccbe2d3fd6cac694b0007993bd8ef60dbeaad64150a9c301941f250baa5692f0"
+      "sha256": "ebe3841ca11f5dc847426ea73c3be8c5c43456537e2a0eee75d6962e07b2a7ef"
     },
     {
-      "bytes": 39908,
+      "bytes": 39903,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
-      "sha256": "ce155edeb91fc98b4bd225a5dc6315994e5bfd1403cd3a7fab47da8b97915a4f"
+      "sha256": "323d3d0b52306c36acc54e529f5da40394727f3a84dc0dcce73c69c4ff2cd006"
     },
     {
       "bytes": 90755,

@@ -444,15 +444,15 @@
     },
     {
       "path": "changes/st-1102/article-workspace-recorded.v2.json",
-      "sha256": "e28bdabb017c070383fcf373ccdef5315a93238715033e14c12d5a467f7e32ea"
+      "sha256": "03827aedf4bb57a00d60e85a62122859f8a907c13c45739fa82071e62a1a92dc"
     },
     {
       "path": "changes/st-1102/runtime-manifest.v2.yaml",
-      "sha256": "327a19c10195792b3fa8f961571fc110d63ca659a1c1693c01c48693589e1f87"
+      "sha256": "e0cc8b46fe92d0108fb4a749b09e7828e86d3a1a7f23f58d7c75729225348c5f"
     },
     {
       "path": "packages/web-ui/src/article-workspace-v2.ts",
-      "sha256": "269bca8158dd34086544df18f02c7397ae8f4ad8f117f0e04a3a28a610e895ab"
+      "sha256": "289a51d6ab74f3ab9e4bfb1d38b1776df642547720ac2435ab3e60e56994cd2f"
     },
     {
       "path": "changes/st-1103/contracts/freshness-operations-workspace.v2.yaml",
@@ -472,19 +472,19 @@
     },
     {
       "path": "changes/st-1104/contracts/analytics-finance-dashboard.v2.yaml",
-      "sha256": "1c88422c36b3082108f6079132df605a601a87e1ca33a20af98b0c41b2b6ddf6"
+      "sha256": "0d6198f11a6ac61906e7cfa6f75b628104b7d2c67568bdd954f3a7031dde8619"
     },
     {
       "path": "changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json",
-      "sha256": "64bcca528088c92ba670a0d11558b9a1709d4963b7c1af887a2097ebdcffe0d0"
+      "sha256": "9ce208ba4f19487489421145edfd9d155a70e63aa2f9d4a3875e0241b845cd74"
     },
     {
       "path": "changes/st-1104/runtime-manifest.v2.yaml",
-      "sha256": "62514b7a1a7b9335f4091a40f01d6c169238bc0852fc58f4fb968625b5d0fc8b"
+      "sha256": "f683235a244ca4ccfe1722fa7c85ea6872b4930af469bde623bc0383b81e63ae"
     },
     {
       "path": "packages/web-ui/src/analytics-finance-recorded.v2.ts",
-      "sha256": "6d7b64a6c76e017a55b22c5ce5629fb4a2f7dcded7f8072e7f6f0b2eddc5787d"
+      "sha256": "bf4417102b56050c314eb6689b971fad1e9544523c5829ca9a581b03e21b1520"
     },
     {
       "path": "package.json",

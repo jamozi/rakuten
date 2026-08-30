@@ -30,8 +30,8 @@
     }
   ],
   "schema": "RAOS_WORDPRESS_AUDIT_INVENTORY_V3",
-  "source_navigation_sha256": "5fb0dc9ac677569151a41e25fe428c04a7a1ea259a67e1efff4915f0a235b566",
-  "source_portfolio_sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d",
+  "source_navigation_sha256": "a50b9709fc0e561ac2adc8dc9394b783e2fcfad19b3f5fe9a730f2eb0f808c94",
+  "source_portfolio_sha256": "c82746904cc27365166abec78021c711262220171e123851caa844a8db379abe",
   "surfaces": [
     {
       "kind": "home",
@@ -60,8 +60,7 @@
       "local_path": "/local-preview-portable-power-station-guide/",
       "production_path": "/portable-power-station-guide/",
       "related_article_ids": [
-        "st1704-anker-solix-c300-c800-c1000-differences",
-        "st1703-first-suitcase-comparison"
+        "st1704-anker-solix-c300-c800-c1000-differences"
       ],
       "surface_id": "article-a02"
     },
@@ -73,8 +72,7 @@
       "local_path": "/local-preview-anker-solix-c300-c800-c1000-differences/",
       "production_path": "/anker-solix-c300-c800-c1000-differences/",
       "related_article_ids": [
-        "st1704-portable-power-station-guide",
-        "st1703-first-suitcase-comparison"
+        "st1704-portable-power-station-guide"
       ],
       "surface_id": "article-a03"
     },

@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.4.0"
 THEME_RUNTIME_REVISION: Final = (
-    "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
+    "3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -53,12 +53,21 @@ EDITORIAL_NAVIGATION_INPUT_PATH: Final = (
 PORTABLE_POWER_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/article-portable-power-guide.webp"
 )
+DISHWASHER_ASSET_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT
+    / "assets/images/article-countertop-dishwasher-guide.webp"
+)
+ROBOT_VACUUM_ASSET_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/article-robot-vacuum-guide.webp"
+)
 MEASUREMENT_CLIENT_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/measurement.js"
 THEME_FUNCTIONS_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "functions.php"
 THEME_SOURCE_INPUT_PATHS: Final = (
     EDITORIAL_NAVIGATION_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/editorial-v2.css",
+    DISHWASHER_ASSET_INPUT_PATH,
     PORTABLE_POWER_ASSET_INPUT_PATH,
+    ROBOT_VACUUM_ASSET_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-guide.webp",
     THEME_REPOSITORY_ROOT / "assets/images/brand-mark.svg",
     THEME_REPOSITORY_ROOT / "assets/images/home-hero.webp",
@@ -182,11 +191,18 @@ def _fail() -> NoReturn:
 
 def _validate_owner_bindings() -> None:
     measurement_inputs = set(measurement_owner.RUNTIME_INPUT_PATHS)
+    generated_theme_assets = {
+        asset.output.relative_to(ROOT) for asset in theme_asset_owner.ASSETS
+    }
     if (
         editorial_navigation_owner.OUTPUT.relative_to(ROOT)
         != EDITORIAL_NAVIGATION_INPUT_PATH
-        or theme_asset_owner.OUTPUT.relative_to(ROOT)
-        != PORTABLE_POWER_ASSET_INPUT_PATH
+        or generated_theme_assets
+        != {
+            DISHWASHER_ASSET_INPUT_PATH,
+            PORTABLE_POWER_ASSET_INPUT_PATH,
+            ROBOT_VACUUM_ASSET_INPUT_PATH,
+        }
         or not {
             MEASUREMENT_CLIENT_INPUT_PATH,
             THEME_FUNCTIONS_INPUT_PATH,
@@ -488,6 +504,7 @@ def validate_sources() -> dict[str, str]:
         "preparedness_two_article_policy": (
             "ONE_SAME_CLUSTER_PLUS_ONE_ADJACENT_CONTEXT_WITHOUT_NEW_ARTICLE"
         ),
+        "rendered_relationships": "SAME_CLUSTER_ONLY_PLUS_CLUSTER_HOME_LINK",
         "source": (
             "assets/editorial-navigation.v3.json#articles[].related_articles"
         ),
@@ -510,7 +527,7 @@ def validate_sources() -> dict[str, str]:
     if contract.get("homepage_featured") != {
         "article_id": "st1704-portable-power-station-guide",
         "exclude_from_latest": True,
-        "local_preview_substitute": "LATEST_SYNTHETIC_POST_LAYOUT_ONLY",
+        "local_preview_substitute": "EXACT_LOCAL_SLUG_FOR_SAME_ARTICLE_ID",
         "selection": "FIXED_ARTICLE_ID_WITH_EXACT_PUBLIC_ARTICLE_IDENTITY",
     }:
         _fail()
@@ -522,7 +539,9 @@ def validate_sources() -> dict[str, str]:
     ):
         _fail()
 
+    _validate_webp("assets/images/article-countertop-dishwasher-guide.webp")
     _validate_webp("assets/images/article-portable-power-guide.webp")
+    _validate_webp("assets/images/article-robot-vacuum-guide.webp")
     _validate_webp("assets/images/article-suitcase-guide.webp")
     _validate_webp("assets/images/home-hero.webp")
     _validate_svg()

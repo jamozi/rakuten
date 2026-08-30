@@ -2046,6 +2046,10 @@ def _url_sitemap(*urls: str) -> bytes:
 def _public_connections(
     candidate: object, *, public_post_id: int = 1704
 ) -> list[_Connection]:
+    related_posts = _v3_related_posts(
+        candidate,
+        public_post_id=public_post_id,
+    )
     return [
         _Connection(
             _Response(
@@ -2069,14 +2073,9 @@ def _public_connections(
         ),
         _Connection(
             _Response(
-                canonical_json_bytes(
-                    _v3_related_posts(
-                        candidate,
-                        public_post_id=public_post_id,
-                    )
-                ),
+                canonical_json_bytes(related_posts),
                 status=200,
-                total="2",
+                total=str(len(related_posts)),
                 pages="1",
             )
         ),
@@ -2263,13 +2262,13 @@ def _install_fake_live_boundary(monkeypatch: pytest.MonkeyPatch) -> None:
     )
 
 
-def test_public_verifier_projects_ten_articles_and_two_relations_from_v3() -> None:
+def test_public_verifier_projects_only_same_cluster_relations_from_v3() -> None:
     related = https_module._load_theme_related_navigation(  # type: ignore[attr-defined]
         REPOSITORY_ROOT
     )
     assert set(related) == {row[0] for row in _theme_article_rows()}
     assert all(
-        len(cast(tuple[object, ...], relation["targets"])) >= 2
+        len(cast(tuple[object, ...], relation["targets"])) >= 1
         for relation in related.values()
     )
     assert related["st1704-portable-power-station-guide"]["home"] == (
@@ -2280,11 +2279,25 @@ def test_public_verifier_projects_ten_articles_and_two_relations_from_v3() -> No
         tuple[object, ...],
         related["st1704-portable-power-station-guide"]["targets"],
     )
+    assert len(power_targets) == 1
     assert _theme_article_values(power_targets[0]) == (
         "st1704-anker-solix-c300-c800-c1000-differences",
         "anker-solix-c300-c800-c1000-differences",
         "備え",
         "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い",
+    )
+    assert all(
+        _theme_article_values(target)[0] != "st1703-first-suitcase-comparison"
+        for target in power_targets
+    )
+    rendered_power_article = _public_article_html(_prepared_request()).decode()
+    assert (
+        'href="https://kurashinoshirube.com/'
+        'carry-on-suitcase-comparison/"'
+        not in rendered_power_article
+    )
+    assert 'href="https://kurashinoshirube.com/#cluster-ready"' in (
+        rendered_power_article
     )
     homepage = https_module._load_theme_homepage_clusters(  # type: ignore[attr-defined]
         REPOSITORY_ROOT
@@ -3030,7 +3043,7 @@ def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
     elif mutation == "review-url-partial-content-leak":
         fragment = (
             "停電への備えは、容量が大きいほど合うとは限りません。"
-            "使いたい機器の消費電力"
+            "目安の使用時間は「容量（Wh）÷機器の消費電力（W）」が出発点"
         )
         assert fragment in candidate.content
         response.body = f"<html><body>{fragment}</body></html>".encode()

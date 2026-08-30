@@ -112,7 +112,9 @@ def test_editorial_measurement_theme_and_manifest_inputs_are_discoverable() -> N
     } <= measurement_inputs
     assert {
         f"{theme_root}assets/editorial-navigation.v3.json",
+        f"{theme_root}assets/images/article-countertop-dishwasher-guide.webp",
         f"{theme_root}assets/images/article-portable-power-guide.webp",
+        f"{theme_root}assets/images/article-robot-vacuum-guide.webp",
         f"{theme_root}assets/measurement.js",
         f"{theme_root}functions.php",
         f"{theme_root}theme-contract.v1.json",
@@ -121,7 +123,9 @@ def test_editorial_measurement_theme_and_manifest_inputs_are_discoverable() -> N
         "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
         "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json",
         f"{theme_root}assets/editorial-navigation.v3.json",
+        f"{theme_root}assets/images/article-countertop-dishwasher-guide.webp",
         f"{theme_root}assets/images/article-portable-power-guide.webp",
+        f"{theme_root}assets/images/article-robot-vacuum-guide.webp",
         f"{theme_root}assets/measurement.js",
         f"{theme_root}functions.php",
         f"{theme_root}theme-contract.v1.json",
@@ -189,15 +193,20 @@ def test_editorial_runtime_changes_propagate_in_owner_order() -> None:
             "build_st1704_self_hosted_editorial_manifest",
         ),
     )
-    assert_order(
-        "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    for asset_name in (
+        "article-countertop-dishwasher-guide.png",
         "article-portable-power-guide.png",
-        (
-            "build_st1704_theme_assets",
-            "build_st1704_self_hosted_theme",
-            "build_st1704_self_hosted_editorial_manifest",
-        ),
-    )
+        "article-robot-vacuum-guide.png",
+    ):
+        assert_order(
+            "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+            + asset_name,
+            (
+                "build_st1704_theme_assets",
+                "build_st1704_self_hosted_theme",
+                "build_st1704_self_hosted_editorial_manifest",
+            ),
+        )
     for relative in ("assets/measurement.js", "functions.php"):
         assert_order(
             "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"

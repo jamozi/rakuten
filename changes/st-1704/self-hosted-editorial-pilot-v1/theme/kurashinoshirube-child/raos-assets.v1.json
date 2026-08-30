@@ -13,11 +13,31 @@
       "alt": "",
       "canvas_height": 1024,
       "canvas_width": 1536,
+      "delivery": "DISHWASHER_ARTICLE_THEME_SHORTCODE_AND_EDITORIAL_FIGURE",
+      "path": "assets/images/article-countertop-dishwasher-guide.webp",
+      "sha256": "c36e87682ce9be33f70bc5b1a55e20a63b19ab6155172d670d5c019a984bcf9f",
+      "status": "FINAL",
+      "usage": "Decorative editorial selection illustration for dishwasher guides"
+    },
+    {
+      "alt": "",
+      "canvas_height": 1024,
+      "canvas_width": 1536,
       "delivery": "PORTABLE_POWER_ARTICLE_THEME_SHORTCODE",
       "path": "assets/images/article-portable-power-guide.webp",
       "sha256": "54b84689cff952f6a384982b89d2f56adfbdeff9ff03fe628fcaf5a949ab0f5a",
       "status": "FINAL",
       "usage": "Decorative editorial hero for the two portable-power guides"
+    },
+    {
+      "alt": "",
+      "canvas_height": 1024,
+      "canvas_width": 1536,
+      "delivery": "ROBOT_VACUUM_ARTICLE_THEME_SHORTCODE_AND_EDITORIAL_FIGURE",
+      "path": "assets/images/article-robot-vacuum-guide.webp",
+      "sha256": "f589471aeed1064f2499ec5d32a8e9c4b6b14db8613d3b1743b37d245ecc2384",
+      "status": "FINAL",
+      "usage": "Decorative editorial selection illustration for robot-vacuum guides"
     },
     {
       "alt": "機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景",
@@ -43,7 +63,9 @@
   "source_files": [
     "assets/editorial-navigation.v3.json",
     "assets/editorial-v2.css",
+    "assets/images/article-countertop-dishwasher-guide.webp",
     "assets/images/article-portable-power-guide.webp",
+    "assets/images/article-robot-vacuum-guide.webp",
     "assets/images/article-suitcase-guide.webp",
     "assets/images/brand-mark.svg",
     "assets/images/home-hero.webp",
@@ -60,6 +82,6 @@
     "theme.json"
   ],
   "theme_slug": "kurashinoshirube-child",
-  "theme_runtime_revision": "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019",
+  "theme_runtime_revision": "3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a",
   "theme_version": "1.4.0"
 }

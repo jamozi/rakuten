@@ -90,6 +90,7 @@ function raos_local_preview_has_only_reviewed_https_links(string $content): bool
         'panasonic.jp',
         'store.ace.jp',
         'store.irobot-jp.com',
+        'support.switch-bot.com',
         'store.shopping.yahoo.co.jp',
         'shop.innovator.co.jp',
         'www.americantourister.jp',

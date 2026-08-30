@@ -34,7 +34,11 @@ def test_generated_audit_inventory_is_public_safe_exact_v3_projection() -> None:
     ]
     for article in navigation["articles"]:
         surface = article_surfaces[article["article_id"]]
-        related_ids = [row["article_id"] for row in article["related_articles"]]
+        related_ids = [
+            row["article_id"]
+            for row in article["related_articles"]
+            if row["relationship"] == "same_cluster"
+        ]
         contextual_id = next(
             row["article_id"]
             for row in article["related_articles"]

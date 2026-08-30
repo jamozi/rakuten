@@ -139,12 +139,14 @@
     ]
   },
   "head": {
-    "allowed_json_ld_types": [
-      "Article",
-      "BreadcrumbList",
-      "ListItem",
-      "Organization",
-      "WebSite"
+  "allowed_json_ld_types": [
+    "AboutPage",
+    "Article",
+    "BreadcrumbList",
+    "ListItem",
+    "Organization",
+    "WebPage",
+    "WebSite"
     ],
     "closed_head_contexts": {
       "article": "EXACT_EDITORIAL_V3_PUBLIC_IDENTITY_PLUS_CLEAN_TITLE_AND_EXCERPT",
@@ -204,10 +206,12 @@
         "Organization",
         "WebSite"
       ],
-      "fixed_page": [
-        "BreadcrumbList",
-        "Organization",
-        "WebSite"
+    "fixed_page": [
+      "AboutPage",
+      "BreadcrumbList",
+      "Organization",
+      "WebPage",
+      "WebSite"
       ],
       "home": [
         "Organization",
@@ -287,9 +291,9 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "100cdd6f95cc0bb224c43c77a9328237fbeb338d54220aba554bfa0423912bc6",
-    "source_navigation_sha256": "5fb0dc9ac677569151a41e25fe428c04a7a1ea259a67e1efff4915f0a235b566",
-    "source_portfolio_sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d"
+    "sha256": "102a3f20f05ebf6992db7a5a9304d2d7e504072376c2d75f752ebdd9b1c3c478",
+    "source_navigation_sha256": "a50b9709fc0e561ac2adc8dc9394b783e2fcfad19b3f5fe9a730f2eb0f808c94",
+    "source_portfolio_sha256": "c82746904cc27365166abec78021c711262220171e123851caa844a8db379abe"
   },
   "homepage_clusters": {
     "article_count": 10,
@@ -301,7 +305,7 @@
   "homepage_featured": {
     "article_id": "st1704-portable-power-station-guide",
     "exclude_from_latest": true,
-    "local_preview_substitute": "LATEST_SYNTHETIC_POST_LAYOUT_ONLY",
+    "local_preview_substitute": "EXACT_LOCAL_SLUG_FOR_SAME_ARTICLE_ID",
     "selection": "FIXED_ARTICLE_ID_WITH_EXACT_PUBLIC_ARTICLE_IDENTITY"
   },
   "publication_authority": "NONE",
@@ -363,6 +367,7 @@
     "minimum_targets_per_article": 2,
     "owner": "EDITORIAL_V3_GENERATED_NAVIGATION",
     "preparedness_two_article_policy": "ONE_SAME_CLUSTER_PLUS_ONE_ADJACENT_CONTEXT_WITHOUT_NEW_ARTICLE",
+    "rendered_relationships": "SAME_CLUSTER_ONLY_PLUS_CLUSTER_HOME_LINK",
     "source": "assets/editorial-navigation.v3.json#articles[].related_articles",
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
@@ -427,7 +432,7 @@
     "wrapper_keys": ["payload", "payload_sha256", "schema"]
   },
   "runtime_evidence": {
-    "revision": "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019",
+    "revision": "3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a",
     "stylesheets": {
       "assets/editorial-v2.css": "--raos-theme-runtime-revision-editorial-v2",
       "assets/theme.css": "--raos-theme-runtime-revision-base"

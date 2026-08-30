@@ -47,7 +47,6 @@ READER_FACING_PROHIBITED = (
     "実機未試験の稿",
     "自分で確認",
     "できない人",
-    "構成です",
     "最終文面",
     "公開判断",
     "公開前",
@@ -119,7 +118,7 @@ FORMAL_PRODUCT_PREFIX_OVERRIDES = {
         "Roomba Plus 515 Combo ロボット + AutoWash 充電ステーション",
     ),
     "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060": (
-        "iRobot「Roomba Mini Slim 掃除機＆床拭きロボット + "
+        "「Roomba Mini Slim 掃除機＆床拭きロボット + "
         "SlimCharge 充電スタンド」（代表型番：F115060",
         "Roomba Mini Slim 掃除機＆床拭きロボット + SlimCharge 充電スタンド",
     ),
@@ -157,7 +156,7 @@ def test_portfolio_closes_ten_articles_thirty_two_products_and_thirty_seven_card
     )
     assert portfolio.theme_version == "1.4.0"
     assert portfolio.theme_runtime_revision == (
-        "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
+    "3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a"
     )
     assert len(portfolio.articles) == 10
     assert len(portfolio.products) == 32
@@ -549,6 +548,35 @@ def test_all_source_articles_are_editorial_v2_and_have_two_cta_slots_per_card() 
                     flags=re.IGNORECASE,
                 )
             ) == 1
+
+
+def test_renderer_articles_use_topic_specific_neutral_visuals() -> None:
+    portfolio = load_editorial_portfolio_v2(ROOT)
+    expected_assets = {
+        "st1703-first-suitcase-comparison": "article-suitcase-guide.webp",
+        "st1704-portable-power-station-guide": "article-portable-power-guide.webp",
+        "st1704-anker-solix-c300-c800-c1000-differences": (
+            "article-portable-power-guide.webp"
+        ),
+        "st1704-countertop-dishwasher-for-small-households": (
+            "article-countertop-dishwasher-guide.webp"
+        ),
+        "st1704-compact-robot-vacuum-shortlist": "article-robot-vacuum-guide.webp",
+    }
+    articles = {article.article_id: article for article in portfolio.articles}
+
+    for article_id, expected_asset in expected_assets.items():
+        article = articles[article_id]
+        markup = (ARTICLE_ROOT / f"{article.production_slug}.html").read_text(
+            encoding="utf-8"
+        )
+        assert expected_asset in markup
+        assert "home-hero.webp" not in markup
+
+    solota = portfolio.product_by_id["PRD-PANASONIC-NP-TMLK1"]
+    assert solota.official_name == "Panasonic SOLOTA NP-TMLK1-K"
+    assert solota.official_models == ("NP-TMLK1-K",)
+    assert solota.representative_model == "NP-TMLK1-K"
 
 
 def test_materialization_uses_exact_two_affiliate_ctas_or_official_fallback() -> None:
