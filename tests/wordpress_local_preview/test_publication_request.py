@@ -169,6 +169,36 @@ def _stylesheet_links(*hrefs: str) -> str:
     )
 
 
+def test_unobserved_proposal_attempt_fallback_covers_the_full_remote_ttl(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    real_datetime = publication.datetime
+    created_at = real_datetime(2026, 8, 30, 0, 0, 0, tzinfo=publication.UTC)
+
+    class FixedDateTime(real_datetime):
+        current = created_at
+
+        @classmethod
+        def now(cls, tz=None):
+            assert tz is publication.UTC
+            return cls.current
+
+    receipt = {
+        "state": "ATTEMPT_PREPARED",
+        "attempt_id": "a" * 64,
+        "attempt_created_at_gmt": "2026-08-30T00:00:00Z",
+        "proposals": [],
+    }
+    monkeypatch.setattr(publication, "datetime", FixedDateTime)
+
+    FixedDateTime.current = created_at + publication.timedelta(seconds=930)
+    assert publication._attempt_expired(receipt) is False
+    FixedDateTime.current = created_at + publication.timedelta(seconds=3629)
+    assert publication._attempt_expired(receipt) is False
+    FixedDateTime.current = created_at + publication.timedelta(seconds=3630)
+    assert publication._attempt_expired(receipt) is True
+
+
 def test_anonymous_public_readback_requires_exact_canonical_title_and_headings() -> (
     None
 ):

@@ -27578,7 +27578,7 @@
       "outputs": [
         {
           "bytes": 14785,
-          "sha256": "49a30eb7d797ba63a0afeaad151aed2cfdbf7b0a8a35da878b0eb59938e3aa42",
+          "sha256": "82380651c54fd3ac195f9c921cd48709d29509aef49bcb3fbaad04ab2a282e1e",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],

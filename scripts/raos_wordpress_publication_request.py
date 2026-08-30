@@ -86,6 +86,7 @@ EXPECTED_PLUGIN_VERSION: Final = "1.2.2"
 EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
     "40c47766264e93bb3c73cfb85e93272ff56450777a8b66799f8baf6f4980e3da"
 )
+UNOBSERVED_PROPOSAL_EXPIRY_FALLBACK_SECONDS: Final = 3630
 EXPECTED_THEME_VERSION: Final = "1.3.10"
 EXPECTED_THEME_RUNTIME_REVISION: Final = (
     "30a84ec5dffb12c048181198ecc8745fa22be70f1854507237c19306589b341f"
@@ -2509,7 +2510,12 @@ def _attempt_expired(receipt: Mapping[str, object]) -> bool:
             )
         except ValueError:
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
-        return datetime.now(UTC) >= created_at + timedelta(seconds=930)
+        # Proposal creation may have succeeded remotely before its response was
+        # received. Preserve the attempt/idempotency keys for the complete
+        # 3,600-second proposal TTL plus a bounded 30-second transport margin.
+        return datetime.now(UTC) >= created_at + timedelta(
+            seconds=UNOBSERVED_PROPOSAL_EXPIRY_FALLBACK_SECONDS
+        )
     expirations: list[datetime] = []
     for proposal in proposals:
         if (
