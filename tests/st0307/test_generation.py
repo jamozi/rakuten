@@ -68,7 +68,7 @@ def test_source_check_verifies_all_18_checkpoint_sources() -> None:
     summary = generator.validate_source_inputs()
     assert summary["checkpoint_sources"] == 18
     assert summary["fixture_sources"] == 4
-    assert summary["production_revisions"] == 6
+    assert summary["production_revisions"] == 7
 
 
 def test_checkpoint_inventory_is_exactly_the_live_read_only_catalog() -> None:
@@ -124,9 +124,16 @@ def test_fixture_precursors_and_ordered_checkpoint_subsets_are_exact() -> None:
     assert predecessor["apply_at"]["production_revision"] == (
         migration_catalog.PUBLICATION_ANALYTICS_FINANCE_REVISION
     )
-    assert tuple(predecessor["ordered_upgrade_revisions"]) == (
-        migration_catalog.HEAD_REVISION,
+    completed, ordered = generator._production_revision_partition()
+    assert tuple(predecessor["apply_at"]["completed_production_revisions"]) == (
+        completed
     )
+    assert tuple(predecessor["ordered_upgrade_revisions"]) == ordered
+    assert ordered == (
+        migration_catalog.DATABASE_ROLES_REVISION,
+        migration_catalog.GOOGLE_ANALYTICS_LIVE_REVISION,
+    )
+    assert tuple(predecessor["ordered_upgrade_story_ids"]) == ("ST-0306", "ST-0305")
 
 
 def test_upstream_bootstrap_is_pinned_and_fixture_authority_is_separate() -> None:

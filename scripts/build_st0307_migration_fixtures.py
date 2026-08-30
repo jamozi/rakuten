@@ -18,9 +18,11 @@ import yaml
 
 try:
     from scripts import build_st0201_postgres_service as shared
+    from scripts import build_st0301_migration_framework as migration_framework
     from scripts import build_st0304_domain_schemas as secure
 except ModuleNotFoundError:
     import build_st0201_postgres_service as shared  # type: ignore[no-redef]
+    import build_st0301_migration_framework as migration_framework  # type: ignore[no-redef]
     import build_st0304_domain_schemas as secure  # type: ignore[no-redef]
 
 
@@ -42,6 +44,9 @@ JOB_FIXTURE_PATH: Final = FIXTURE_ROOT / "v0.1-job-alignment.v1.sql"
 AI_FIXTURE_PATH: Final = FIXTURE_ROOT / "v0.2-ai-alignment.v1.sql"
 CONTENT_FIXTURE_PATH: Final = FIXTURE_ROOT / "v0.3-content-alignment.v1.sql"
 PREDECESSOR_FIXTURE_PATH: Final = FIXTURE_ROOT / "202608030005-predecessor.v1.sql"
+MIGRATION_CATALOG_PATH: Final = Path(
+    "changes/st-0301/generated/migration-catalog.v1.json"
+)
 CATALOG_PATH: Final = Path(
     "changes/st-0307/generated/migration-upgrade-fixture-catalog.v1.json"
 )
@@ -57,7 +62,7 @@ GENERATED_PATHS: Final = (
 
 EXPECTED_SERVER_VERSION_NUM: Final = 180004
 EXPECTED_CONTRACT_SHA256: Final = (
-    "27c11f07d7dece60fb4fcc02169d4625d36196ac3548078f4453bae9506ca853"
+    "9d780a94e569bcffe830eef5b599d49406a3915aa8eeb2a8a4e78e1a6e271dd2"
 )
 EXPECTED_ARCHIVE_SHA256: Final = (
     "82597db880c80c632ac0337d583c91ba5defac827414ecee1b921f49d1f64357"
@@ -124,22 +129,22 @@ EXPECTED_ALIGNMENT_MANIFESTS: Final = {
 }
 EXPECTED_MIGRATION_MANIFESTS: Final = {
     "changes/st-0301/manifest.yaml": (
-        "5abdb26df67dd204dc92a88f3c93132dc30c99a16a2109eea4f84a35c6e574eb"
+        "7abb84a9e9560daaed49bd3127d69ea05f9bf9d5ba49ebf1d39776dee37ee8f6"
     ),
     "changes/st-0302/manifest.yaml": (
-        "b2576fe7b440fbcc5ba847b17e9505074276a91fb76a26ca291903c92bdd193e"
+        "dd8913319833abd2626ce41ae1050fe51f0f60343572d2fd7c74f0f476fb8e57"
     ),
     "changes/st-0303/manifest.yaml": (
-        "816b59f87f80ec3c672f271fb3a1efd3e3cdb63a24981ab8aaea64f79356186c"
+        "4a051c26b5c47855078547205590f83428056f6c47edbc3899f58b5271683b08"
     ),
     "changes/st-0304/manifest.yaml": (
-        "5a3772b87591b90b5f698eaa86131a10b5d9767d93cc8e2be67340df4b310623"
+        "6805d0a56af7f3644fad23ebd418a0db8a047ee9a726cc4c37da0806e88a79cb"
     ),
     "changes/st-0305/manifest.yaml": (
-        "af6034f99374b427aee444a6048531a174f0d78ae58974b2456c2be97f3d33b9"
+        "03d8d44facf7a0821a98b902617d56a2457f87d95f94b1e082be6534625a8051"
     ),
     "changes/st-0306/manifest.yaml": (
-        "4849ef0c78204c81dd466a4d25a59b0c830b93ab42084c8903c5b3e54651c7df"
+        "f5c1ac84376ed5428aa75d85654120dcec9e7772829ed2f0f10af1c1cf96d039"
     ),
 }
 EXPECTED_CHECKPOINT_PREREQUISITE_ROLES: Final = (
@@ -169,6 +174,7 @@ CURRENT_SOURCE_ARTIFACT_PATHS: Final = (
     *(Path(path) for path in PINNED_CANONICAL_INPUTS),
     *(Path(path) for path in EXPECTED_ALIGNMENT_MANIFESTS),
     *(Path(path) for path in EXPECTED_MIGRATION_MANIFESTS),
+    MIGRATION_CATALOG_PATH,
     Path("python/raos/migrations/catalog.py"),
     Path("python/raos/migrations/runner.py"),
     *(spec.relative_path for spec in migration_catalog.CHECKPOINT_SPECS),
@@ -255,7 +261,24 @@ def _live_checkpoint_rows() -> tuple[dict[str, object], ...]:
     )
 
 
+def _production_revision_partition() -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """Return the fixture predecessor prefix and every ordered successor."""
+
+    revisions = tuple(spec.revision for spec in migration_catalog.REVISION_SPECS)
+    try:
+        predecessor_index = revisions.index(
+            migration_catalog.PUBLICATION_ANALYTICS_FINANCE_REVISION
+        )
+    except ValueError as error:
+        raise RuntimeError("production predecessor revision is absent") from error
+    return revisions[: predecessor_index + 1], revisions[predecessor_index + 1 :]
+
+
 def _load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
+    _require(
+        MIGRATION_CATALOG_PATH == migration_framework.CATALOG_PATH,
+        "ST-0301 migration catalog owner path differs",
+    )
     content = _read(root, CONTRACT_PATH, "ST-0307 source contract", 2 * 1024 * 1024)
     contract = _load_yaml(content, "ST-0307 source contract")
     document = _mapping(contract.get("document"), "document")
@@ -437,13 +460,23 @@ def _load_contract(root: Path = REPO_ROOT) -> dict[str, Any]:
         "content fixture checkpoint boundary differs",
     )
     predecessor_apply = _mapping(predecessor.get("apply_at"), "predecessor state")
+    completed_revisions, ordered_upgrade_revisions = _production_revision_partition()
+    ordered_upgrade_story_ids = tuple(
+        spec.story_id
+        for spec in migration_catalog.REVISION_SPECS
+        if spec.revision in ordered_upgrade_revisions
+    )
     _require(
         predecessor_apply.get("production_revision")
         == migration_catalog.PUBLICATION_ANALYTICS_FINANCE_REVISION
         and tuple(predecessor_apply.get("completed_production_revisions", ()))
-        == tuple(spec.revision for spec in migration_catalog.REVISION_SPECS[:-1])
+        == completed_revisions
         and tuple(predecessor.get("ordered_upgrade_revisions", ()))
-        == (migration_catalog.HEAD_REVISION,),
+        == ordered_upgrade_revisions
+        and tuple(predecessor.get("ordered_upgrade_story_ids", ()))
+        == ordered_upgrade_story_ids
+        and ordered_upgrade_revisions
+        and ordered_upgrade_revisions[-1] == migration_catalog.HEAD_REVISION,
         "production predecessor fixture boundary differs",
     )
     boundary = _mapping(contract.get("boundary"), "boundary")
@@ -667,19 +700,21 @@ def _fixture_catalog_rows(
         source = _mapping(raw, "fixture")
         path = Path(str(source.get("path")))
         content = fixture_outputs[path]
-        rows.append(
-            {
-                "id": source.get("id"),
-                "version": source.get("version"),
-                "path": path.as_posix(),
-                "apply_at": source.get("apply_at"),
-                "checkpoint_story": source.get("checkpoint_story"),
-                "expected_rows": source.get("expected_rows"),
-                "expected_behavior": source.get("expected_behavior"),
-                "bytes": len(content),
-                "sha256": _sha256(content),
-            }
-        )
+        row: dict[str, object] = {
+            "id": source.get("id"),
+            "version": source.get("version"),
+            "path": path.as_posix(),
+            "apply_at": source.get("apply_at"),
+            "checkpoint_story": source.get("checkpoint_story"),
+            "expected_rows": source.get("expected_rows"),
+            "expected_behavior": source.get("expected_behavior"),
+            "bytes": len(content),
+            "sha256": _sha256(content),
+        }
+        ordered_upgrade_story_ids = source.get("ordered_upgrade_story_ids")
+        if ordered_upgrade_story_ids is not None:
+            row["ordered_upgrade_story_ids"] = ordered_upgrade_story_ids
+        rows.append(row)
     return rows
 
 

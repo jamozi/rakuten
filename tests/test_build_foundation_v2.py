@@ -141,6 +141,38 @@ def test_editorial_runtime_changes_propagate_in_owner_order() -> None:
         )
 
 
+def test_migration_catalog_changes_propagate_through_upgrade_fixtures() -> None:
+    registry = discover_registry()
+    fixture_owner = registry["build_st0307_migration_fixtures"]
+
+    assert set(fixture_owner.owner_dependencies) >= {
+        "build_st0301_migration_framework",
+        "build_st0306_database_roles",
+    }
+    assert any(
+        item.uri
+        == "repo://changes/st-0301/generated/migration-catalog.v1.json"
+        for item in fixture_owner.inputs
+    )
+    selected = affected_owners(registry, {Path("python/raos/migrations/catalog.py")})
+    ordered = (
+        "build_st0301_migration_framework",
+        "build_st0307_migration_fixtures",
+        "build_st0308_persistence",
+    )
+    assert set(ordered) <= set(selected)
+    positions = [selected.index(owner) for owner in ordered]
+    assert positions == sorted(positions)
+
+    migration_only = affected_owners(
+        registry,
+        {Path("migrations/versions/202608300001_google_analytics_live_persistence.py")},
+    )
+    assert set(ordered) <= set(migration_only)
+    migration_positions = [migration_only.index(owner) for owner in ordered]
+    assert migration_positions == sorted(migration_positions)
+
+
 def test_st0005_git_attributes_source_selects_its_generator() -> None:
     registry = discover_registry()
     owner = registry["build_st0005_status"]

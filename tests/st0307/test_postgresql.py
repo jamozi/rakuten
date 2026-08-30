@@ -723,7 +723,10 @@ def test_production_predecessor_to_head_preserves_data_history_and_atomic_guards
     empty_database: str,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    historical_specs = catalog.REVISION_SPECS[:-1]
+    predecessor_index = tuple(spec.revision for spec in catalog.REVISION_SPECS).index(
+        catalog.PUBLICATION_ANALYTICS_FINANCE_REVISION
+    )
+    historical_specs = catalog.REVISION_SPECS[: predecessor_index + 1]
     assert (
         historical_specs[-1].revision == catalog.PUBLICATION_ANALYTICS_FINANCE_REVISION
     )
@@ -777,9 +780,14 @@ def test_production_predecessor_to_head_preserves_data_history_and_atomic_guards
         );
         """,
     )
-    head_downgrade = current_runner.downgrade()
+    live_downgrade = current_runner.downgrade()
+    assert live_downgrade.current_revision == catalog.DATABASE_ROLES_REVISION
     assert (
-        head_downgrade.current_revision
+        _artifact_signature(postgresql_cluster, empty_database) == predecessor_signature
+    )
+    roles_downgrade = current_runner.downgrade()
+    assert (
+        roles_downgrade.current_revision
         == catalog.PUBLICATION_ANALYTICS_FINANCE_REVISION
     )
     assert (

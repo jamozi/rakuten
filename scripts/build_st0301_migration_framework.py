@@ -42,6 +42,9 @@ CATALOG_PATH: Final = Path("changes/st-0301/generated/migration-catalog.v1.json"
 MANIFEST_PATH: Final = Path("changes/st-0301/manifest.yaml")
 GENERATOR_PATH: Final = Path("scripts/build_st0301_migration_framework.py")
 PREDECESSOR_PATH: Final = Path("changes/st-0204/manifest.yaml")
+GOOGLE_ANALYTICS_LIVE_REVISION_PATH: Final = Path(
+    "migrations/versions/202608300001_google_analytics_live_persistence.py"
+)
 GENERATED_PATHS: Final = (CATALOG_PATH, MANIFEST_PATH)
 SOURCE_CONTRACT_URI: Final = f"repo://{CONTRACT_PATH.as_posix()}"
 GENERATOR_URI: Final = f"repo://{GENERATOR_PATH.as_posix()}"
@@ -120,6 +123,10 @@ def assert_generation_toolchain(root: Path = REPO_ROOT) -> None:
     """Tool versions are verified once by setup/final, not per generator."""
 
     _ = root
+    _require(
+        REVISION_SPECS[-1].relative_path == GOOGLE_ANALYTICS_LIVE_REVISION_PATH,
+        "discoverable successor revision path differs from catalog head",
+    )
 
 
 def _checkpoint_contract(item: Any) -> dict[str, object]:
