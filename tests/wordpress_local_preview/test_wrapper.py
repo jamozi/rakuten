@@ -54,6 +54,9 @@ fi
 if [[ "$*" == *" theme list --name=kurashinoshirube-child --field=status"* ]]; then
   printf '%s\\n' active
 fi
+if [[ "$*" == *" plugin list --name=raos-editorial-measurement --field=status"* ]]; then
+  printf '%s\\n' active
+fi
 exit 0
 """,
     )
@@ -160,6 +163,7 @@ def test_up_generates_private_credentials_and_runs_initial_seed(
     assert "up --detach database wordpress gateway" in docker_log
     assert "core install" in docker_log
     assert "theme activate kurashinoshirube-child" in docker_log
+    assert "plugin activate raos-editorial-measurement" in docker_log
     assert "RAOS_PREVIEW_SEED_MODE=initialize" in docker_log
     assert f"article_fixture_root={fixture_root / 'articles'}" in docker_log
     assert f"post_fixture={fixture_root / 'posts.json'}" in docker_log

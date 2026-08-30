@@ -14,8 +14,8 @@
       "canvas_height": 1024,
       "canvas_width": 1536,
       "delivery": "PORTABLE_POWER_ARTICLE_THEME_SHORTCODE",
-      "path": "assets/images/article-portable-power-guide.png",
-      "sha256": "703444cdf29740bb72de42d09c7c7222a3ee46a09bcaf4f78875df9131cc56d6",
+      "path": "assets/images/article-portable-power-guide.webp",
+      "sha256": "54b84689cff952f6a384982b89d2f56adfbdeff9ff03fe628fcaf5a949ab0f5a",
       "status": "FINAL",
       "usage": "Decorative editorial hero for the two portable-power guides"
     },
@@ -41,11 +41,13 @@
   ],
   "schema": "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1",
   "source_files": [
+    "assets/editorial-navigation.v3.json",
     "assets/editorial-v2.css",
-    "assets/images/article-portable-power-guide.png",
+    "assets/images/article-portable-power-guide.webp",
     "assets/images/article-suitcase-guide.webp",
     "assets/images/brand-mark.svg",
     "assets/images/home-hero.webp",
+    "assets/measurement.js",
     "assets/theme.css",
     "functions.php",
     "parts/footer.html",
@@ -58,5 +60,5 @@
     "theme.json"
   ],
   "theme_slug": "kurashinoshirube-child",
-  "theme_version": "1.3.9"
+  "theme_version": "1.4.0"
 }

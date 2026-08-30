@@ -66,9 +66,9 @@ def test_runtime_manifest_is_exact_and_keeps_st1703_as_predecessor() -> None:
         assert record["sha256"] == hashlib.sha256(payload).hexdigest()
 
 
-def test_theme_package_is_deterministic_closed_and_has_no_javascript() -> None:
-    assert theme_builder.THEME_VERSION == "1.3.9"
-    assert theme_builder.OUTPUT_PATH.name == "kurashinoshirube-child-1.3.9.zip"
+def test_theme_package_is_deterministic_closed_and_has_only_measurement_javascript() -> None:
+    assert theme_builder.THEME_VERSION == "1.4.0"
+    assert theme_builder.OUTPUT_PATH.name == "kurashinoshirube-child-1.4.0.zip"
     assert "assets/theme.js" not in theme_builder.SOURCE_FILES
     first = theme_builder.build_package()
     second = theme_builder.build_package()
@@ -78,8 +78,10 @@ def test_theme_package_is_deterministic_closed_and_has_no_javascript() -> None:
             f"kurashinoshirube-child/{relative}"
             for relative in theme_builder.SOURCE_FILES
         ]
+        javascript = [name for name in archive.namelist() if name.endswith(".js")]
+        assert javascript == ["kurashinoshirube-child/assets/measurement.js"]
         assert not any(
-            name.endswith((".js", ".php~", ".zip")) for name in archive.namelist()
+            name.endswith((".php~", ".zip")) for name in archive.namelist()
         )
 
 
@@ -159,7 +161,7 @@ def test_runbook_preserves_all_external_human_gates_and_reversible_rollback() ->
         "暮らしの道具",
         "The repository CLI has no publish or schedule command",
         "deactivate Yoast",
-        "child-theme 1.3.9",
+        "child-theme 1.4.0",
         "child-theme 1.1.1 package as the minimum containment floor",
         "do not roll back to 1.0.2",
         "temporary Review post Draft with no redirect",

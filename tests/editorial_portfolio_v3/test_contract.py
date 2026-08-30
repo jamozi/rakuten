@@ -27,6 +27,7 @@ def test_generated_successor_covers_all_v2_identities_without_rewriting_v2() -> 
     portfolio = load_editorial_portfolio_v3(ROOT)
 
     assert portfolio.version == "3.0.0"
+    assert v3["theme_version"] == "1.4.0"
     assert len(portfolio.articles) == len(v2["articles"]) == 10
     assert len(portfolio.products) == len(v2["products"]) == 32
     assert {article.article_id for article in portfolio.articles} == {

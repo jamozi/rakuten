@@ -1,10 +1,11 @@
 #!/usr/bin/busybox sh
 
-# Terminal-only Playwright UI acceptance for the public WordPress home page.
+# Terminal-only Playwright UI acceptance for home, ten articles, and three pages.
 set -eu
 set -o pipefail
 
-readonly repository_root=/home/minami/rakuten
+readonly script_directory="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+readonly repository_root="$(CDPATH= cd -- "$script_directory/.." && pwd -P)"
 readonly node_bin=/home/minami/.nvm/versions/node/v24.18.1/bin/node
 readonly cli_js=$repository_root/node_modules/@playwright/cli/playwright-cli.js
 readonly audit_function=$repository_root/scripts/wordpress_public_ui_audit.function.js
@@ -47,14 +48,18 @@ if [ -n "${RAOS_WORDPRESS_UI_BASELINE_DIR-}" ]; then
     *) refuse ;;
   esac
   [ -d "$RAOS_WORDPRESS_UI_BASELINE_DIR" ] || refuse
-  for width in 360 390 768 1440; do
-    /usr/bin/busybox cmp -s \
-      "$RAOS_WORDPRESS_UI_BASELINE_DIR/wordpress-home-$width.png" \
-      "$artifact_directory/wordpress-home-$width.png" || {
-        /usr/bin/busybox printf '%s\n' "WORDPRESS_PUBLIC_UI_SCREENSHOT_DIFF_$width" >&2
-        exit 1
-      }
+  for name in home carryclassic powerguide ankermodels smalldishwasher compactrobot under100 under3kg frontstop roomba dishwasher about comparisonpolicy privacy; do
+    for width in 360 390 768 1440; do
+      /usr/bin/busybox cmp -s \
+        "$RAOS_WORDPRESS_UI_BASELINE_DIR/wordpress-$name-$width.png" \
+        "$artifact_directory/wordpress-$name-$width.png" || {
+          /usr/bin/busybox printf '%s\n' "WORDPRESS_PUBLIC_UI_SCREENSHOT_DIFF_${name}_$width" >&2
+          exit 1
+        }
+    done
   done
 fi
 
-/usr/bin/busybox sha256sum "$artifact_directory"/wordpress-home-*.png
+set -- "$artifact_directory"/wordpress-*.png
+[ "$#" -eq 56 ] || refuse
+/usr/bin/busybox sha256sum "$@"

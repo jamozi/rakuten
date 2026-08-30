@@ -17,6 +17,7 @@ GATEWAY = SLICE / "gateway/nginx.conf"
 FIXTURES = SLICE / "fixtures"
 ARTICLES = FIXTURES / "articles"
 POSTS = FIXTURES / "posts.json"
+PAGES = FIXTURES / "pages.json"
 PRODUCTION_MAPPING = SLICE / "production-mapping.v1.json"
 MU_PLUGIN = SLICE / "mu-plugins/raos-local-preview.php"
 EDITORIAL_CSS = (
@@ -122,7 +123,7 @@ def test_theme_and_local_material_are_read_only_bind_mounts() -> None:
     for service_name in ("wordpress", "cli"):
         service = services[service_name]
         mounts = [item for item in service["volumes"] if isinstance(item, dict)]
-        assert len(mounts) == 5
+        assert len(mounts) == 6
         assert all(
             item["type"] == "bind" and item["read_only"] is True for item in mounts
         )
@@ -130,6 +131,7 @@ def test_theme_and_local_material_are_read_only_bind_mounts() -> None:
         assert targets == {
             "/var/www/html/wp-content/themes/kurashinoshirube-child",
             "/var/www/html/wp-content/mu-plugins",
+            "/var/www/html/wp-content/plugins/raos-editorial-measurement",
             "/var/www/raos-local-preview",
             "/var/www/raos-local-preview/fixtures/articles",
             "/var/www/raos-local-preview/fixtures/posts.json",
@@ -139,6 +141,14 @@ def test_theme_and_local_material_are_read_only_bind_mounts() -> None:
         )
         assert theme_mount["source"].endswith(
             "/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
+        )
+        measurement_mount = next(
+            item
+            for item in mounts
+            if item["target"].endswith("plugins/raos-editorial-measurement")
+        )
+        assert measurement_mount["source"].endswith(
+            "/changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement"
         )
         fixture_mount = next(
             item
@@ -195,6 +205,7 @@ def test_wordpress_runtime_is_explicitly_local_and_non_mutating() -> None:
         WRAPPER,
         SEED,
         POSTS,
+        PAGES,
         MU_PLUGIN,
         EDITORIAL_CSS,
         *sorted(FIXTURES.rglob("*.html")),
@@ -215,7 +226,7 @@ def test_synthetic_fixture_has_ten_closed_local_articles() -> None:
     posts = fixture["posts"]
     assert isinstance(posts, list)
     assert len(posts) == 10
-    assert {row["category"] for row in posts} == {"暮らしの道具", "移動", "家事"}
+    assert {row["category"] for row in posts} == {"移動", "家事", "備え"}
     assert len({row["article_id"] for row in posts}) == 10
     assert len({row["slug"] for row in posts}) == 10
     assert len({row["content_file"] for row in posts}) == 10
@@ -313,7 +324,7 @@ def test_production_mapping_matches_all_ten_local_articles() -> None:
     assert len({row["production_slug"] for row in rows}) == 10
     for row in rows:
         assert row["local_slug"] == f"local-preview-{row['production_slug']}"
-        assert row["local_category"] in {"暮らしの道具", "移動", "家事"}
+        assert row["local_category"] in {"移動", "家事", "備え"}
         assert set(row["taxonomies"]) == {"category", "post_format", "post_tag"}
 
 
@@ -438,7 +449,7 @@ def test_root_makefile_exposes_the_documented_interface() -> None:
     assert 'CONFIRM="$(CONFIRM)"' in makefile
 
 
-def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
+def test_browser_audit_covers_home_ten_articles_and_three_pages_at_four_widths() -> None:
     audit = (SLICE / "browser/wordpress_local_preview_audit.function.js").read_text(
         encoding="utf-8"
     )
@@ -455,6 +466,9 @@ def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
         "/local-preview-front-open-carry-on-suitcase-with-stopper/",
         "/local-preview-roomba-mini-vs-switchbot-k11-pro/",
         "/local-preview-solota-vs-rakua-mini-plus/",
+        "/about-ad-policy/",
+        "/comparison-policy/",
+        "/privacy-policy/",
     ):
         assert f"path: '{route}'" in audit
     assert audit.count("article: true") == 10
@@ -464,6 +478,9 @@ def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
         "audit.h1Bounds.length !== 1",
         "audit.invalidH1Bounds !== 0",
         "audit.mainCount !== 1",
+        "audit.measurementConfigDefined",
+        "audit.measurementScriptCount !== 0",
+        "audit.measurementSessionKeyCount !== 0",
         "audit.cookieSettingsBounds.length !== 1",
         "audit.invalidCookieSettingsBounds !== 0",
         "audit.cookieConsentBounds.length !== 1",
@@ -481,6 +498,9 @@ def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
         "audit.comparisonTablesVisible === 0",
         "audit.ctaBounds.length === 0",
         "audit.invalidCtaBounds !== 0",
+        "audit.contextualLinkCount < 1",
+        "audit.contextualLinkCount > 2",
+        "audit.relatedLinkCount < 2",
         "audit.missingAlt !== 0",
         "audit.unloadedImages !== 0",
         "audit.duplicateIds.length !== 0",
@@ -488,6 +508,7 @@ def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
         "audit.scrollWidth > audit.clientWidth",
         "RAOS_WORDPRESS_LOCAL_PREVIEW_EXTERNAL_REQUEST",
         "RAOS_WORDPRESS_LOCAL_PREVIEW_RUNTIME_ERROR",
+        "RAOS_WORDPRESS_LOCAL_PREVIEW_MEASUREMENT_DEFAULT_OFF_FAILED",
         "RAOS_WORDPRESS_LOCAL_PREVIEW_SCREEN_COUNT_INVALID",
         "document.querySelectorAll('.raos-editorial-v2').length",
         "document.querySelectorAll('.decision-list').length",
@@ -497,11 +518,62 @@ def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
         "surface.article &&",
         "editorialRootCount !== 1",
         "fullPage: true",
+        "expectedArticlePaths.some((path) => !audit.homeArticlePaths.includes(path))",
+        "page.request.get(target.href, { maxRedirects: 0 })",
+        "linkResponse.status() !== 200",
+        "page.keyboard.press('Tab')",
+        "keyboardAudit.focusVisibleFailures !== 0",
+        "!keyboardAudit.escapedConsentDialog",
+        "!keyboardAudit.ctaReached",
+        "!keyboardAudit.contextualReached",
+        "!keyboardAudit.relatedReached",
+        "data-raos-to-article-id",
+        "data-raos-link-placement",
     ):
         assert marker in audit
-    assert "output/playwright/local-preview" in audit
+    assert "`${process.cwd()}/output/playwright/local-preview`" in audit
     assert "output/playwright/local-preview" in check
-    assert '[ "$#" -eq 44 ]' in check
+    assert "results.length !== 56" in audit
+    assert '[ "$#" -eq 56 ]' in check
+
+
+def test_fixed_policy_pages_are_tracked_and_match_the_implemented_boundaries() -> None:
+    fixture = json.loads(PAGES.read_text(encoding="utf-8"))
+    assert fixture["schema"] == "RAOS_WORDPRESS_LOCAL_PREVIEW_PAGES_V1"
+    pages = fixture["pages"]
+    assert [row["slug"] for row in pages] == [
+        "about-ad-policy",
+        "comparison-policy",
+        "privacy-policy",
+    ]
+    assert all(
+        isinstance(row["excerpt"], str) and 30 <= len(row["excerpt"]) <= 180
+        for row in pages
+    )
+    contents = {
+        row["slug"]: (FIXTURES / row["content_file"]).read_text(encoding="utf-8")
+        for row in pages
+    }
+    assert "実在しない個人名" in contents["about-ad-policy"]
+    assert "型番" in contents["about-ad-policy"]
+    assert "メーカー公式ページへ案内" in contents["about-ad-policy"]
+    assert "Evidence階層" in contents["comparison-policy"]
+    assert "A：公式仕様" in contents["comparison-policy"]
+    assert "B：第三者実測" in contents["comparison-policy"]
+    assert "C：利用者の傾向" in contents["comparison-policy"]
+    assert "D：編集部の判断" in contents["comparison-policy"]
+    assert "実機未使用" in contents["comparison-policy"]
+    assert "報酬率" in contents["comparison-policy"]
+    privacy = contents["privacy-policy"]
+    assert privacy.count("最終更新日") == 1
+    assert "生イベントは7日間" in privacy
+    assert "13か月" in privacy
+    assert "拒否または撤回" in privacy
+    assert "楽天市場やメーカー公式ページへの商品リンクは利用できます" in privacy
+    assert "楽天URLのクエリ" in privacy
+    seed = SEED.read_text(encoding="utf-8")
+    assert "array('content_file', 'excerpt', 'slug', 'title')" in seed
+    assert "'post_excerpt' => $page['excerpt']" in seed
 
 
 def test_shell_entrypoints_parse() -> None:

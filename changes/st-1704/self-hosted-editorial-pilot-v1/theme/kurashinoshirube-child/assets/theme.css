@@ -1058,6 +1058,17 @@ figure.raos-first-article-lead-image > img {
   padding-top: 2rem;
 }
 
+.raos-contextual-guide {
+  background: var(--wp--preset--color--warm-paper, #f7f3ea);
+  border-inline-start: 4px solid var(--wp--preset--color--editorial-accent, #9a4f34);
+  margin-block: clamp(1.5rem, 3vw, 2.5rem);
+  padding: 1rem 1.25rem;
+}
+
+.raos-contextual-guide strong {
+  margin-inline-end: 0.35em;
+}
+
 .raos-related-guides ul {
   display: grid;
   gap: 0.75rem;
@@ -2059,7 +2070,7 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 }
 
 .raos-home-v2 .raos-featured-guide__visual--power {
-  background-image: url("images/article-portable-power-guide.png");
+  background-image: url("images/article-portable-power-guide.webp");
 }
 
 .raos-home-v2 .raos-featured-guide__visual > a {

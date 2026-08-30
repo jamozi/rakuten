@@ -206,6 +206,12 @@ activate_theme() {
   wordpress_cli theme activate kurashinoshirube-child >/dev/null
 }
 
+activate_measurement_plugin() {
+  wordpress_cli plugin is-installed raos-editorial-measurement >/dev/null \
+    || fail RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_MISSING
+  wordpress_cli plugin activate raos-editorial-measurement >/dev/null
+}
+
 seed() {
   local mode="$1"
   compose run --rm --no-deps -T \
@@ -222,6 +228,7 @@ do_up() {
   wait_until_ready
   install_wordpress_if_needed
   activate_theme
+  activate_measurement_plugin
   seed initialize
   printf 'WordPress preview: %s/\n' "$preview_origin"
   printf 'Article preview: %s%s\n' "$preview_origin" "$preview_article_path"
@@ -243,6 +250,8 @@ do_status() {
     || fail RAOS_WORDPRESS_PREVIEW_ORIGIN_INVALID
   [[ "$(wordpress_cli theme list --name=kurashinoshirube-child --field=status)" == active ]] \
     || fail RAOS_WORDPRESS_PREVIEW_THEME_INACTIVE
+  [[ "$(wordpress_cli plugin list --name=raos-editorial-measurement --field=status)" == active ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_INACTIVE
   printf '%s\n' RAOS_WORDPRESS_PREVIEW_READY
 }
 
@@ -253,6 +262,7 @@ do_sync() {
   wordpress_cli core is-installed >/dev/null \
     || fail RAOS_WORDPRESS_PREVIEW_WORDPRESS_NOT_INSTALLED
   activate_theme
+  activate_measurement_plugin
   seed sync
 }
 

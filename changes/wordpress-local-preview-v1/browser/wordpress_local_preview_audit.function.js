@@ -1,62 +1,81 @@
 async (page) => {
   const origin = 'http://127.0.0.1:8888';
-  const artifactDirectory = '/home/minami/rakuten/output/playwright/local-preview';
+  const artifactDirectory = `${process.cwd()}/output/playwright/local-preview`;
   const surfaces = [
     { name: 'home', path: '/' },
     {
       article: true,
+      articleId: 'st1703-first-suitcase-comparison',
       name: 'carryclassic',
       path: '/local-preview-carry-on-suitcase-comparison/',
     },
     {
       article: true,
+      articleId: 'st1704-portable-power-station-guide',
       name: 'powerguide',
       path: '/local-preview-portable-power-station-guide/',
     },
     {
       article: true,
+      articleId: 'st1704-anker-solix-c300-c800-c1000-differences',
       name: 'ankermodels',
       path: '/local-preview-anker-solix-c300-c800-c1000-differences/',
     },
     {
       article: true,
+      articleId: 'st1704-countertop-dishwasher-for-small-households',
       name: 'smalldishwasher',
       path: '/local-preview-countertop-dishwasher-for-small-households/',
     },
     {
       article: true,
+      articleId: 'st1704-compact-robot-vacuum-shortlist',
       name: 'compactrobot',
       path: '/local-preview-compact-robot-vacuum-shortlist/',
     },
     {
       article: true,
+      articleId: 'carry-on-suitcase-under-100-seats',
       name: 'under100',
       path: '/local-preview-carry-on-suitcase-under-100-seats/',
     },
     {
       article: true,
+      articleId: 'lightweight-carry-on-suitcase-under-3kg',
       name: 'under3kg',
       path: '/local-preview-lightweight-carry-on-suitcase-under-3kg/',
     },
     {
       article: true,
+      articleId: 'front-open-carry-on-suitcase-with-stopper',
       name: 'frontstop',
       path: '/local-preview-front-open-carry-on-suitcase-with-stopper/',
     },
     {
       article: true,
+      articleId: 'roomba-mini-vs-switchbot-k11-pro',
       name: 'roomba',
       path: '/local-preview-roomba-mini-vs-switchbot-k11-pro/',
     },
     {
       article: true,
+      articleId: 'solota-vs-rakua-mini-plus',
       name: 'dishwasher',
       path: '/local-preview-solota-vs-rakua-mini-plus/',
     },
+    { name: 'about', path: '/about-ad-policy/' },
+    { name: 'comparisonpolicy', path: '/comparison-policy/' },
+    { name: 'privacy', path: '/privacy-policy/' },
   ];
   const widths = [360, 390, 768, 1440];
+  const articleSurfaces = surfaces.filter((surface) => surface.article);
+  const expectedArticlePaths = articleSurfaces.map((surface) => surface.path);
+  const expectedPathByArticleId = Object.fromEntries(
+    articleSurfaces.map((surface) => [surface.articleId, surface.path]),
+  );
   const runtimeErrors = [];
   const externalRequests = [];
+  const measurementRequests = [];
 
   page.on('console', (message) => {
     if (message.type() === 'error') runtimeErrors.push(`console:${message.text()}`);
@@ -64,6 +83,9 @@ async (page) => {
   page.on('pageerror', (error) => runtimeErrors.push(`page:${error.name}`));
   page.on('request', (request) => {
     const url = request.url();
+    if (url === `${origin}/wp-json/raos/v1/events`) {
+      measurementRequests.push(url);
+    }
     if (!url.startsWith(`${origin}/`) && !url.startsWith('data:') && !url.startsWith('blob:')) {
       externalRequests.push(url);
     }
@@ -285,6 +307,17 @@ async (page) => {
           ),
         ].map((button) => button.textContent.trim());
         const cookieConsent = cookieConsentBounds[0];
+        let measurementSessionKeyCount = 0;
+        try {
+          for (let index = 0; index < window.sessionStorage.length; index += 1) {
+            const key = window.sessionStorage.key(index);
+            if (typeof key === 'string' && key.startsWith('raos_measurement_v1:')) {
+              measurementSessionKeyCount += 1;
+            }
+          }
+        } catch (error) {
+          measurementSessionKeyCount = -1;
+        }
         return {
           bannerText: banner?.textContent?.trim() || '',
           brokenAriaReferences,
@@ -314,6 +347,27 @@ async (page) => {
           h1Count: document.querySelectorAll('h1').length,
           h1LastLineCharacters: h1LineMetrics.lastLineCharacters,
           h1LineCount: h1LineMetrics.lineCount,
+          homeArticlePaths: [...new Set(
+            [...document.querySelectorAll('a[href]')]
+              .map((anchor) => {
+                try {
+                  const target = new URL(anchor.href);
+                  return target.origin === window.location.origin &&
+                    target.pathname.startsWith('/local-preview-')
+                    ? target.pathname
+                    : null;
+                } catch (error) {
+                  return null;
+                }
+              })
+              .filter(Boolean),
+          )].sort(),
+          contextualLinkCount: document.querySelectorAll(
+            'a[data-raos-link-placement="article_body"][data-raos-to-article-id]',
+          ).length,
+          relatedLinkCount: document.querySelectorAll(
+            'a[data-raos-link-placement="related_navigation"][data-raos-to-article-id]',
+          ).length,
           invalidCookieButtonBounds: invalidBoundingBoxCount(cookieButtonBounds),
           invalidCookieConsentBounds: invalidBoundingBoxCount(cookieConsentBounds),
           invalidCookieSettingsBounds: invalidBoundingBoxCount(cookieSettingsBounds),
@@ -321,6 +375,12 @@ async (page) => {
           invalidH1Bounds: invalidBoundingBoxCount(h1Bounds),
           lang: document.documentElement.lang,
           mainCount: document.querySelectorAll('main').length,
+          measurementConfigDefined:
+            typeof window.RAOS_MEASUREMENT_CONFIG_V1 !== 'undefined',
+          measurementScriptCount: document.querySelectorAll(
+            'script#kurashinoshirube-measurement-v1-js,script[src*="/assets/measurement.js"]',
+          ).length,
+          measurementSessionKeyCount,
           missingAlt: document.querySelectorAll('img:not([alt])').length,
           unloadedImages: [...document.images].filter(
             (image) => !image.complete || image.naturalWidth === 0,
@@ -332,6 +392,114 @@ async (page) => {
           unlabeledControls,
         };
       });
+      const internalLinks = surface.article && width === 390
+        ? await page.evaluate(() =>
+            [...document.querySelectorAll(
+              'a[data-raos-to-article-id][data-raos-link-placement]',
+            )].map((anchor) => ({
+              href: anchor.href,
+              placement: anchor.getAttribute('data-raos-link-placement'),
+              targetArticleId: anchor.getAttribute('data-raos-to-article-id'),
+            })),
+          )
+        : [];
+      let internalLinkReadbackFailed = false;
+      for (const link of internalLinks) {
+        const expectedPath = expectedPathByArticleId[link.targetArticleId];
+        let target;
+        try {
+          target = new URL(link.href);
+        } catch (error) {
+          internalLinkReadbackFailed = true;
+          continue;
+        }
+        if (
+          !expectedPath ||
+          target.origin !== origin ||
+          target.pathname !== expectedPath ||
+          target.search !== '' ||
+          target.hash !== '' ||
+          !['article_body', 'related_navigation'].includes(link.placement)
+        ) {
+          internalLinkReadbackFailed = true;
+          continue;
+        }
+        const linkResponse = await page.request.get(target.href, { maxRedirects: 0 });
+        if (linkResponse.status() !== 200 || linkResponse.url() !== target.href) {
+          internalLinkReadbackFailed = true;
+        }
+      }
+
+      let keyboardAudit = {
+        ctaReached: !surface.article,
+        escapedConsentDialog: true,
+        focusVisibleFailures: 0,
+        contextualReached: !surface.article,
+        relatedReached: !surface.article,
+        distinctTargets: 0,
+      };
+      if (width === 390) {
+        await page.evaluate(() => {
+          if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+          window.scrollTo(0, 0);
+        });
+        const focusableCount = await page.evaluate(() =>
+          [...document.querySelectorAll(
+            'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
+          )].filter((element) => {
+            const style = getComputedStyle(element);
+            const rect = element.getBoundingClientRect();
+            return style.display !== 'none' && style.visibility !== 'hidden' &&
+              rect.width > 0 && rect.height > 0;
+          }).length,
+        );
+        const visited = new Set();
+        let consentWasReached = false;
+        let escapedConsentDialog = false;
+        let focusVisibleFailures = 0;
+        let ctaReached = false;
+        let contextualReached = false;
+        let relatedReached = false;
+        for (let index = 0; index < Math.min(focusableCount + 2, 500); index += 1) {
+          await page.keyboard.press('Tab');
+          const focus = await page.evaluate(() => {
+            const element = document.activeElement;
+            if (!(element instanceof HTMLElement) || element === document.body) return null;
+            const style = getComputedStyle(element);
+            const rect = element.getBoundingClientRect();
+            return {
+              cta: element.matches('.raos-cta'),
+              contextual: element.matches('[data-raos-link-placement="article_body"]'),
+              inConsent: element.closest('[data-raos-cookieyes-audit]') !== null,
+              related: element.matches('[data-raos-link-placement="related_navigation"]'),
+              signature: [element.tagName, element.id, element.className, element.getAttribute('href')].join('|'),
+              visible: rect.width > 0 && rect.height > 0 &&
+                ((style.outlineStyle !== 'none' && style.outlineWidth !== '0px') ||
+                  style.boxShadow !== 'none'),
+            };
+          });
+          if (!focus) continue;
+          visited.add(focus.signature);
+          ctaReached ||= focus.cta;
+          contextualReached ||= focus.contextual;
+          relatedReached ||= focus.related;
+          if (focus.inConsent) consentWasReached = true;
+          if (consentWasReached && !focus.inConsent) escapedConsentDialog = true;
+          if (!focus.visible) focusVisibleFailures += 1;
+        }
+        keyboardAudit = {
+          ctaReached,
+          escapedConsentDialog: !consentWasReached || escapedConsentDialog,
+          focusVisibleFailures,
+          contextualReached,
+          relatedReached,
+          distinctTargets: visited.size,
+        };
+        await page.evaluate(() => {
+          if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+          window.scrollTo(0, 0);
+        });
+      }
       const articleAuditFailed =
         surface.article &&
         (audit.editorialRootCount !== 1 ||
@@ -341,6 +509,9 @@ async (page) => {
           audit.sourcesSectionCount === 0 ||
           audit.ctaBounds.length === 0 ||
           audit.invalidCtaBounds !== 0 ||
+          audit.contextualLinkCount < 1 ||
+          audit.contextualLinkCount > 2 ||
+          audit.relatedLinkCount < 2 ||
           audit.cookieConsentBounds.length !== 1 ||
           audit.invalidCookieConsentBounds !== 0 ||
           audit.cookieButtonBounds.length !== 3 ||
@@ -367,6 +538,19 @@ async (page) => {
           (width === 1440 &&
             (audit.h1LineCount > 4 ||
               Math.abs(audit.cookieConsentBounds[0].width - 320) > 1)));
+      const homepageCoverageFailed =
+        surface.name === 'home' &&
+        (audit.homeArticlePaths.length !== expectedArticlePaths.length ||
+          expectedArticlePaths.some((path) => !audit.homeArticlePaths.includes(path)));
+      const keyboardAuditFailed =
+        width === 390 &&
+        (keyboardAudit.distinctTargets < 3 ||
+          keyboardAudit.focusVisibleFailures !== 0 ||
+          !keyboardAudit.escapedConsentDialog ||
+          (surface.article &&
+            (!keyboardAudit.ctaReached ||
+              !keyboardAudit.contextualReached ||
+              !keyboardAudit.relatedReached)));
       if (
         audit.title.trim() === '' ||
         !audit.lang.toLowerCase().startsWith('ja') ||
@@ -375,6 +559,9 @@ async (page) => {
         audit.h1Bounds.length !== 1 ||
         audit.invalidH1Bounds !== 0 ||
         audit.mainCount !== 1 ||
+        audit.measurementConfigDefined ||
+        audit.measurementScriptCount !== 0 ||
+        audit.measurementSessionKeyCount !== 0 ||
         audit.cookieSettingsBounds.length !== 1 ||
         audit.invalidCookieSettingsBounds !== 0 ||
         audit.missingAlt !== 0 ||
@@ -383,13 +570,23 @@ async (page) => {
         audit.duplicateIds.length !== 0 ||
         audit.brokenAriaReferences !== 0 ||
         audit.scrollWidth > audit.clientWidth ||
-        articleAuditFailed
+        articleAuditFailed ||
+        homepageCoverageFailed ||
+        internalLinkReadbackFailed ||
+        keyboardAuditFailed
       ) {
         throw new Error(`RAOS_WORDPRESS_LOCAL_PREVIEW_AUDIT_FAILED_${surface.name}_${width}`);
       }
       const screenshot = `${artifactDirectory}/local-preview-${surface.name}-${width}.png`;
       await page.screenshot({ path: screenshot, fullPage: true });
-      results.push({ ...audit, screenshot, surface: surface.name, width });
+      results.push({
+        ...audit,
+        internalLinkReadbackFailed,
+        keyboardAudit,
+        screenshot,
+        surface: surface.name,
+        width,
+      });
     }
   }
   if (runtimeErrors.length !== 0) {
@@ -398,7 +595,10 @@ async (page) => {
   if (externalRequests.length !== 0) {
     throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_EXTERNAL_REQUEST');
   }
-  if (results.length !== 44) {
+  if (measurementRequests.length !== 0) {
+    throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_MEASUREMENT_DEFAULT_OFF_FAILED');
+  }
+  if (results.length !== 56) {
     throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_SCREEN_COUNT_INVALID');
   }
   return results;

@@ -55,6 +55,10 @@ services:
         target: /var/www/html/wp-content/mu-plugins
         read_only: true
       - type: bind
+        source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement
+        target: /var/www/html/wp-content/plugins/raos-editorial-measurement
+        read_only: true
+      - type: bind
         source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/wordpress-local-preview-v1
         target: /var/www/raos-local-preview
         read_only: true
@@ -139,6 +143,10 @@ services:
       - type: bind
         source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/wordpress-local-preview-v1/mu-plugins
         target: /var/www/html/wp-content/mu-plugins
+        read_only: true
+      - type: bind
+        source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement
+        target: /var/www/html/wp-content/plugins/raos-editorial-measurement
         read_only: true
       - type: bind
         source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/wordpress-local-preview-v1

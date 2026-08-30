@@ -315,7 +315,7 @@ final class RAOS_Measurement_Contract
             if (! isset($article['related_article_ids'][$dimensions['to_article_id']])
                 || ! in_array(
                     $dimensions['placement'],
-                    array('article_body', 'related_navigation', 'home_cluster'),
+                    array('article_body', 'related_navigation'),
                     true
                 )) {
                 throw new InvalidArgumentException('RAOS_MEASUREMENT_EVENT_VALUE_INVALID');

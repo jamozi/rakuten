@@ -575,7 +575,7 @@ def _render_st1704_article(
     ).render(ast)
     neutral = (
         "/wp-content/themes/kurashinoshirube-child/assets/images/"
-        + ("article-portable-power-guide.png" if "power" in article_id or "anker" in article_id else "home-hero.webp")
+        + ("article-portable-power-guide.webp" if "power" in article_id or "anker" in article_id else "home-hero.webp")
     )
     for evidence in evidences.values():
         content = content.replace(evidence.image_url, neutral)

@@ -27,20 +27,21 @@ override CLEAN_PYTHON := /usr/bin/env -i PATH=/usr/bin:/bin \
 	LANG=C LC_ALL=C TZ=UTC \
 	$(MANAGED_PYTHON) -B -I -S -X pycache_prefix=/dev/null
 
-.PHONY: help check manifest-generate manifest-check theme-source-check \
+.PHONY: help check manifest-generate manifest-check theme-navigation-generate \
+	theme-navigation-check theme-assets-generate theme-assets-check theme-source-check \
 	theme-check theme-package tests cli-help source-cli-help \
 	rakuten-capture-manifest-generate rakuten-capture-manifest-check \
 	rakuten-capture-cli-help
 
 help:
-	@echo 'Offline: check manifest-check rakuten-capture-manifest-check theme-source-check theme-check tests cli-help source-cli-help rakuten-capture-cli-help'
-	@echo 'Local artifacts: manifest-generate rakuten-capture-manifest-generate theme-package'
+	@echo 'Offline: check manifest-check rakuten-capture-manifest-check theme-navigation-check theme-assets-check theme-source-check theme-check tests cli-help source-cli-help rakuten-capture-cli-help'
+	@echo 'Local artifacts: manifest-generate rakuten-capture-manifest-generate theme-navigation-generate theme-assets-generate theme-package'
 	@echo 'Article operations: use the five closed subcommands shown by cli-help'
 	@echo 'Read-only source capture: use the two closed subcommands shown by source-cli-help'
 	@echo 'Owner-authorized Rakuten capture: use the one closed subcommand shown by rakuten-capture-cli-help'
 	@echo 'Operational process: repository-root CLEAN_PYTHON only (-B -I -S; ambient environment removed)'
 
-check: manifest-check rakuten-capture-manifest-check theme-source-check theme-check tests
+check: manifest-check rakuten-capture-manifest-check theme-navigation-check theme-assets-check theme-source-check theme-check tests
 
 manifest-generate:
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
@@ -57,6 +58,22 @@ rakuten-capture-manifest-generate:
 rakuten-capture-manifest-check:
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
 		scripts/build_st1704_rakuten_capture_manifest.py --check
+
+theme-navigation-generate:
+	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
+		scripts/build_editorial_v3_theme_navigation.py
+
+theme-navigation-check:
+	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
+		scripts/build_editorial_v3_theme_navigation.py --check
+
+theme-assets-generate:
+	cd "$(REPOSITORY_ROOT)" && $(MANAGED_PYTHON) \
+		scripts/build_st1704_theme_assets.py
+
+theme-assets-check:
+	cd "$(REPOSITORY_ROOT)" && $(MANAGED_PYTHON) \
+		scripts/build_st1704_theme_assets.py --check
 
 theme-source-check:
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \

@@ -352,7 +352,7 @@
       var toArticleId = target.getAttribute('data-raos-to-article-id');
       var linkPlacement = target.getAttribute('data-raos-link-placement');
       if (article.relatedArticleIds.indexOf(toArticleId) !== -1 &&
-          ['article_body', 'related_navigation', 'home_cluster'].indexOf(linkPlacement) !== -1) {
+          ['article_body', 'related_navigation'].indexOf(linkPlacement) !== -1) {
         emit('internal_link_click', {
           to_article_id: toArticleId,
           placement: linkPlacement

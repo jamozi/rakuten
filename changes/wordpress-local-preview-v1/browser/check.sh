@@ -3,7 +3,8 @@
 set -eu
 set -o pipefail
 
-readonly repository_root=/home/minami/rakuten
+readonly script_directory="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
+readonly repository_root="$(CDPATH= cd -- "$script_directory/../../.." && pwd -P)"
 readonly node_bin=/home/minami/.nvm/versions/node/v24.18.1/bin/node
 readonly cli_js=$repository_root/node_modules/@playwright/cli/playwright-cli.js
 readonly audit_function=$repository_root/changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js
@@ -43,7 +44,7 @@ trap cleanup EXIT HUP INT TERM
 screenshots=''
 for surface in \
   home carryclassic powerguide ankermodels smalldishwasher compactrobot \
-  under100 under3kg frontstop roomba dishwasher; do
+  under100 under3kg frontstop roomba dishwasher about comparisonpolicy privacy; do
   for width in 360 390 768 1440; do
     screenshot="$artifact_directory/local-preview-$surface-$width.png"
     [ -f "$screenshot" ] && [ ! -L "$screenshot" ] || refuse
@@ -51,5 +52,5 @@ for surface in \
   done
 done
 set -- $screenshots
-[ "$#" -eq 44 ] || refuse
+[ "$#" -eq 56 ] || refuse
 /usr/bin/busybox sha256sum "$@"

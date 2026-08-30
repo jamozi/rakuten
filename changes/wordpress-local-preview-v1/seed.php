@@ -23,6 +23,7 @@ if (! in_array($mode, array('initialize', 'sync'), true)) {
 
 $fixture_root = '/var/www/raos-local-preview/fixtures';
 $fixture_path = $fixture_root . '/posts.json';
+$page_fixture_path = $fixture_root . '/pages.json';
 if (! is_file($fixture_path) || is_link($fixture_path) || ! is_readable($fixture_path)) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_FIXTURE_UNAVAILABLE');
 }
@@ -40,6 +41,29 @@ if (
     || count($fixture['posts']) !== 10
 ) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_FIXTURE_INVALID');
+}
+
+if (
+    ! is_file($page_fixture_path)
+    || is_link($page_fixture_path)
+    || ! is_readable($page_fixture_path)
+) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_UNAVAILABLE');
+}
+$page_fixture_bytes = file_get_contents($page_fixture_path);
+$page_fixture = is_string($page_fixture_bytes)
+    ? json_decode($page_fixture_bytes, true, 12, JSON_BIGINT_AS_STRING)
+    : null;
+if (
+    ! is_array($page_fixture)
+    || array_keys($page_fixture) !== array('schema', 'seed_version', 'pages')
+    || $page_fixture['schema'] !== 'RAOS_WORDPRESS_LOCAL_PREVIEW_PAGES_V1'
+    || ! is_string($page_fixture['seed_version'])
+    || preg_match('/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\.[1-9][0-9]*\z/D', $page_fixture['seed_version']) !== 1
+    || ! is_array($page_fixture['pages'])
+    || count($page_fixture['pages']) !== 3
+) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
 }
 
 /** Permit source links only to the reviewed manufacturer and carrier hosts. */
@@ -114,21 +138,51 @@ update_option('timezone_string', 'Asia/Tokyo');
 update_option('date_format', 'Y年n月j日');
 update_option('permalink_structure', '/%postname%/');
 
-foreach (
-    array(
-        'about-ad-policy' => array(
-            'title' => '運営・広告方針 — ローカル表示確認',
-            'content' => '<h2>このページについて</h2><p>この固定ページはローカルfixtureです。広告配信、計測、外部送信はありません。</p>',
-        ),
-        'comparison-policy' => array(
-            'title' => '比較方針 — ローカル表示確認',
-            'content' => '<h2>このページについて</h2><p>合成データで見出し、本文、リンクの見た目だけを確認します。</p>',
-        ),
-    ) as $slug => $page
-) {
+foreach ($page_fixture['pages'] as $page) {
+    if (
+        ! is_array($page)
+        || array_keys($page) !== array('content_file', 'excerpt', 'slug', 'title')
+        || ! is_string($page['content_file'])
+        || preg_match('#\Apages/[a-z0-9-]+\.html\z#D', $page['content_file']) !== 1
+        || ! is_string($page['slug'])
+        || preg_match('/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/D', $page['slug']) !== 1
+        || ! is_string($page['title'])
+        || $page['title'] === ''
+        || ! is_string($page['excerpt'])
+        || $page['excerpt'] === ''
+        || strlen($page['excerpt']) > 512
+        || wp_strip_all_tags($page['excerpt']) !== $page['excerpt']
+    ) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
+    }
+    $page_path = $fixture_root . '/' . $page['content_file'];
+    $page_realpath = realpath($page_path);
+    $page_root_realpath = realpath($fixture_root . '/pages');
+    if (
+        ! is_string($page_realpath)
+        || ! is_string($page_root_realpath)
+        || dirname($page_realpath) !== $page_root_realpath
+        || is_link($page_path)
+        || ! is_readable($page_path)
+    ) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
+    }
+    $content = file_get_contents($page_path);
+    if (
+        ! is_string($content)
+        || $content === ''
+        || strlen($content) > 131072
+        || wp_kses_post($content) !== $content
+        || ! raos_local_preview_has_only_reviewed_https_links($content)
+        || preg_match('/<\s*(?:h1|script|style)\b/i', $content) === 1
+    ) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
+    }
+    $slug = $page['slug'];
     $existing = get_page_by_path($slug, OBJECT, 'page');
     $page_data = array(
-        'post_content' => $page['content'],
+        'post_content' => $content,
+        'post_excerpt' => $page['excerpt'],
         'post_name' => $slug,
         'post_status' => 'publish',
         'post_title' => $page['title'],
@@ -172,7 +226,7 @@ foreach ($fixture['posts'] as $index => $post) {
         || preg_match('/\A2026-08-(?:2[0-9]) 00:00:00\z/D', $post['date']) !== 1
         || isset($seen_ids[$post['article_id']])
         || isset($seen_slugs[$post['slug']])
-        || ! in_array($post['category'], array('暮らしの道具', '移動', '家事'), true)
+        || ! in_array($post['category'], array('移動', '家事', '備え'), true)
         || ! is_string($post['content_file'])
         || preg_match('/\Aarticles\/[a-z0-9-]+\.html\z/D', $post['content_file']) !== 1
         || $post['article_id'] !== $post['slug']

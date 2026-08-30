@@ -88,6 +88,7 @@ PLACEMENTS: Final = (
     ("product_card", "card"),
     ("final_summary", "final"),
 )
+CURRENT_THEME_VERSION: Final = "1.4.0"
 
 
 class EditorialV3BuildFailure(RuntimeError):
@@ -445,7 +446,7 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
             "historical_contract_preserved": True,
         },
         "target_origin": v2.get("target_origin"),
-        "theme_version": v2.get("theme_version"),
+        "theme_version": CURRENT_THEME_VERSION,
         "evidence_policy": v2.get("evidence_policy"),
         "content_contract": v2.get("content_contract"),
         "strategy": {

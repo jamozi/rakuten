@@ -227,6 +227,8 @@ def test_theme_enqueues_only_verified_asset_and_plugin_context() -> None:
     assert 'data-raos-link-placement="article_body"' in functions
     assert 'data-raos-link-placement="related_navigation"' in functions
     assert "data-raos-to-article-id" in functions
+    assert "home_cluster" not in (THEME / "assets/measurement.js").read_text()
+    assert "home_cluster" not in sources()
 
 
 def test_mcp_server_exposes_only_the_aggregate_measurement_ability() -> None:

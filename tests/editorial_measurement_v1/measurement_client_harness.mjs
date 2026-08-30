@@ -255,6 +255,13 @@ assert.deepEqual(denied.ga4Events, []);
 assert.equal(denied.storage.size, 0);
 assert.equal(denied.observers.length, 0);
 
+const delayedGrant = createRuntime(false);
+delayedGrant.run();
+delayedGrant.setConsent(true);
+assert.equal(delayedGrant.events().filter((event) => event.event_name === 'article_view').length, 1);
+assert.equal(delayedGrant.ga4Events.length, 1);
+assert.ok(delayedGrant.storage.size > 0);
+
 const runtime = createRuntime(true);
 runtime.run();
 assert.equal(runtime.events().filter((event) => event.event_name === 'article_view').length, 1);

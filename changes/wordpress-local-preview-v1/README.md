@@ -37,16 +37,21 @@ publication proposal. The required sequence is:
    proposal, precondition, and kill-switch requirements. A local pass is not
    production approval.
 
-For the tracked article set, the complete sequence is available as one
-foreground command:
+After the separately approved measurement-plugin apply receipt has been
+validated with `measurement_plugin_proposal.py --content-ready`, run the full
+tracked batch with that owner-private receipt. Narrow historical article-only
+requests remain available without the plugin gate:
 
 ```sh
-make wordpress-production-request
+MEASUREMENT_PLUGIN_APPLY_RECEIPT="$PWD/.secrets/wordpress-mcp/publication-requests/plugin-applied.json" \
+  make wordpress-production-request
 make wordpress-production-request ARTICLES=roomba-mini-vs-switchbot-k11-pro
 make wordpress-production-request ARTICLES=carry-on-suitcase-under-100-seats,solota-vs-rakua-mini-plus
 ```
 
-`ARTICLES` defaults to `all` and otherwise accepts only an exact,
+`ARTICLES` defaults to `all`; that mode fails before preview or remote access
+unless the exact separate-admin plugin apply receipt is present under the
+owner-private publication-request directory. Otherwise `ARTICLES` accepts an exact,
 comma-separated set of production slugs registered in
 `production-mapping.v1.json`. The command always runs preview `up`, `sync`, and
 `check` before it reads the editor credential or makes any live call. It then
@@ -73,7 +78,8 @@ persisted idempotency keys and operation IDs. Do not edit these receipts.
 ## Prerequisite
 
 Install Docker Desktop for Windows, accept its terms, and enable WSL integration
-for the distribution containing `/home/minami/rakuten`. Verify from WSL:
+for the distribution that contains the current repository checkout. Verify from
+that checkout in WSL:
 
 ```sh
 docker version
@@ -131,7 +137,7 @@ the same `wp_strip_all_tags` / `wp_kses_post` checks used by the production MCP
 writer. This validation runs during the mandatory sync before production is
 contacted.
 
-To overwrite the ten preview posts and two fixed pages with a newly
+To overwrite the ten preview posts and three fixed pages with a newly
 materialized fixture, run:
 
 ```sh
@@ -144,12 +150,13 @@ fixture or theme source.
 
 ## Browser evidence
 
-`make wordpress-preview-check` audits the home page and all ten editorial
-drafts at widths 360, 390, 768, and 1440 pixels. It fails on HTTP errors,
+`make wordpress-preview-check` audits the home page, all ten editorial
+drafts, and the three fixed policy pages at widths 360, 390, 768, and 1440
+pixels. It fails on HTTP errors,
 console/page errors, external requests, horizontal overflow, missing image
 alternatives, duplicate IDs, broken ARIA references, missing Japanese language
 metadata, incorrect H1/main counts, out-of-bounds H1, Cookie-settings, or CTA
-boxes, or a missing Editorial V2 article module. The 44 screenshots are ignored
+boxes, or a missing Editorial V2 article module. The 56 screenshots are ignored
 build artifacts under `output/playwright/local-preview/`.
 
 ## Reset and boundaries
