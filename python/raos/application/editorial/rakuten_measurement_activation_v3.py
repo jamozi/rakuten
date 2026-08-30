@@ -2,10 +2,10 @@
 
 The tracked Editorial V3 contract deliberately keeps every provider profile in
 ``UNVERIFIED_DISABLED``.  This module does not infer a Rakuten query parameter
-or create a live link.  It accepts only owner-private final Money Link URLs that
-are bound to an exact administrator/CSV verification receipt, validates all 74
-CTA identities, and materializes owner-private HTML for a later publication
-workflow.
+or create a live link.  It accepts only owner-private bindings for the 20
+provider slots and final Money Link URLs for the separate 74 CTA identities.
+Both sets must be bound to an exact administrator/CSV verification receipt
+before owner-private HTML is materialized for a later publication workflow.
 """
 
 from __future__ import annotations
@@ -35,6 +35,7 @@ from raos.application.editorial.editorial_portfolio_v3 import (
     CtaBindingV3,
     EditorialPortfolioV3,
     PORTFOLIO_RELATIVE_PATH,
+    ProviderSlotV3,
 )
 from raos.application.finance.editorial_economics_v3 import (
     EditorialEconomicsV3Failure,
@@ -44,17 +45,15 @@ from raos.application.finance.editorial_economics_v3 import (
 )
 
 
-ADMIN_RECEIPT_SCHEMA: Final = "RAOS_EDITORIAL_V3_RAKUTEN_ADMIN_VERIFICATION_RECEIPT_V1"
-MONEY_LINK_MAPPING_SCHEMA: Final = "RAOS_EDITORIAL_V3_RAKUTEN_MONEY_LINK_MAPPING_V1"
-DRY_RUN_SCHEMA: Final = "RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_DRY_RUN_V2"
+ADMIN_RECEIPT_SCHEMA: Final = "RAOS_EDITORIAL_V3_RAKUTEN_ADMIN_VERIFICATION_RECEIPT_V2"
+MONEY_LINK_MAPPING_SCHEMA: Final = "RAOS_EDITORIAL_V3_RAKUTEN_MONEY_LINK_MAPPING_V2"
+DRY_RUN_SCHEMA: Final = "RAOS_EDITORIAL_V3_RAKUTEN_MEASUREMENT_DRY_RUN_V3"
 OVERLAY_RECEIPT_SCHEMA: Final = (
-    "RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_OVERLAY_RECEIPT_V1"
+    "RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_OVERLAY_RECEIPT_V2"
 )
 LOCAL_OVERLAY_PREFIX: Final = "local-materialized-fixtures-v3-"
 PRODUCTION_OVERLAY_PREFIX: Final = "production-materialized-fixtures-v3-"
-V2_MATERIALIZATION_SCHEMA: Final = (
-    "RAOS_EDITORIAL_PORTFOLIO_MATERIALIZATION_RECEIPT_V2"
-)
+V2_MATERIALIZATION_SCHEMA: Final = "RAOS_EDITORIAL_PORTFOLIO_MATERIALIZATION_RECEIPT_V2"
 AFFILIATE_HOST: Final = "hb.afl.rakuten.co.jp"
 AFFILIATE_PATH_PREFIXES: Final = ("/hgc/", "/ichiba/")
 NESTED_DESTINATION_HOSTS: Final = frozenset({"item.rakuten.co.jp", "m.rakuten.co.jp"})
@@ -62,6 +61,8 @@ FORMULA_PREFIXES: Final = ("=", "+", "-", "@")
 MAX_TRACKED_HTML_BYTES: Final = 4 * 1024 * 1024
 MAX_PRIVATE_DOCUMENT_BYTES: Final = 8 * 1024 * 1024
 MAX_URL_LENGTH: Final = 8192
+EXPECTED_PROVIDER_SLOT_COUNT: Final = 20
+EXPECTED_CTA_COUNT: Final = 74
 SHA256_RE: Final = re.compile(r"[0-9a-f]{64}\Z")
 TIMESTAMP_RE: Final = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z\Z")
 SLUG_RE: Final = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
@@ -129,6 +130,8 @@ class RakutenMeasurementActivationOverlayV3:
     v2_production_receipt_sha256: str
     admin_receipt_sha256: str
     money_link_mapping_sha256: str
+    provider_slot_set_sha256: str
+    provider_measurement_binding_sha256: str
     materialized_set_sha256: str
     local_fixture_root: Path
     production_fixture_root: Path
@@ -139,7 +142,22 @@ class RakutenMeasurementActivationOverlayV3:
     local_article_sha256: Mapping[str, str]
     production_article_sha256: Mapping[str, str]
     article_count: int
+    provider_slot_count: int
+    provider_measurement_id_count: int
+    internal_cta_identity_count: int
+    live_link_count: int
     cta_count: int
+
+
+@dataclass(frozen=True)
+class _MoneyLinkMappingV2:
+    """Validated private values plus safe hashes used by activation receipts."""
+
+    urls: Mapping[tuple[str, str, str], str]
+    provider_measurement_ids: Mapping[str, str]
+    provider_slot_ids_by_article_placement: Mapping[tuple[str, str], str]
+    provider_slot_set_sha256: str
+    provider_measurement_binding_sha256: str
 
 
 def _fail(code: str) -> NoReturn:
@@ -383,18 +401,74 @@ def _expected_bindings(
             if identity in result:
                 _fail("RAOS_RAKUTEN_ACTIVATION_PORTFOLIO_INVALID")
             result[identity] = binding
-    if len(result) != 74:
+    if len(result) != EXPECTED_CTA_COUNT:
         _fail("RAOS_RAKUTEN_ACTIVATION_PORTFOLIO_INVALID")
     return result
 
 
-def _mapping_urls(
+def _expected_provider_slots(
+    portfolio: EditorialPortfolioV3,
+) -> dict[str, ProviderSlotV3]:
+    result = {slot.provider_slot_id: slot for slot in portfolio.provider_slots}
+    if (
+        len(result) != EXPECTED_PROVIDER_SLOT_COUNT
+        or len(portfolio.provider_slots) != EXPECTED_PROVIDER_SLOT_COUNT
+        or set(result)
+        != {
+            binding.provider_slot_id
+            for article in portfolio.articles
+            for binding in article.cta_bindings
+        }
+    ):
+        _fail("RAOS_RAKUTEN_ACTIVATION_PORTFOLIO_INVALID")
+    return result
+
+
+def _provider_slot_set_sha256(
+    expected_slots: Mapping[str, ProviderSlotV3],
+) -> str:
+    return _sha256_bytes(
+        canonical_json_bytes(
+            [
+                {
+                    "provider_slot_id": slot.provider_slot_id,
+                    "article_id": slot.article_id,
+                    "placement": slot.placement,
+                }
+                for slot in sorted(
+                    expected_slots.values(), key=lambda value: value.provider_slot_id
+                )
+            ]
+        )
+    )
+
+
+def _provider_measurement_binding_sha256(
+    provider_measurement_ids: Mapping[str, str],
+) -> str:
+    return _sha256_bytes(
+        canonical_json_bytes(
+            [
+                {
+                    "provider_slot_id": provider_slot_id,
+                    "rakuten_measurement_id": provider_measurement_ids[
+                        provider_slot_id
+                    ],
+                }
+                for provider_slot_id in sorted(provider_measurement_ids)
+            ]
+        )
+    )
+
+
+def _validate_money_link_mapping(
     document: Mapping[str, object],
     *,
     portfolio_sha256: str,
     expected: Mapping[tuple[str, str, str], CtaBindingV3],
+    expected_slots: Mapping[str, ProviderSlotV3],
     representative_models: Mapping[str, str],
-) -> dict[tuple[str, str, str], str]:
+) -> _MoneyLinkMappingV2:
     _exact_keys(
         document,
         {
@@ -402,22 +476,48 @@ def _mapping_urls(
             "version",
             "generated_at",
             "portfolio_sha256",
+            "provider_slot_count",
+            "money_link_count",
             "urls_copied_from_rakuten_admin",
             "provider_parameter_inference_used",
+            "provider_slots",
             "rows",
         },
     )
     if (
         document.get("schema") != MONEY_LINK_MAPPING_SCHEMA
-        or document.get("version") != "1.0.0"
+        or document.get("version") != "2.0.0"
         or _timestamp(document.get("generated_at")) != document.get("generated_at")
         or _sha256(document.get("portfolio_sha256")) != portfolio_sha256
+        or type(document.get("provider_slot_count")) is not int
+        or document.get("provider_slot_count") != EXPECTED_PROVIDER_SLOT_COUNT
+        or type(document.get("money_link_count")) is not int
+        or document.get("money_link_count") != EXPECTED_CTA_COUNT
         or document.get("urls_copied_from_rakuten_admin") is not True
         or document.get("provider_parameter_inference_used") is not False
     ):
         _fail("RAOS_RAKUTEN_ACTIVATION_MAPPING_INVALID")
+
+    provider_measurement_ids: dict[str, str] = {}
+    seen_measurement_ids: set[str] = set()
+    for row in _rows(document.get("provider_slots")):
+        _exact_keys(row, {"provider_slot_id", "rakuten_measurement_id"})
+        provider_slot_id = _text(row.get("provider_slot_id"), maximum=128)
+        measurement_id = _text(row.get("rakuten_measurement_id"), maximum=64)
+        if (
+            provider_slot_id not in expected_slots
+            or provider_slot_id in provider_measurement_ids
+            or measurement_id in seen_measurement_ids
+        ):
+            _fail("RAOS_RAKUTEN_ACTIVATION_MAPPING_INVALID")
+        provider_measurement_ids[provider_slot_id] = measurement_id
+        seen_measurement_ids.add(measurement_id)
+    if set(provider_measurement_ids) != set(expected_slots):
+        _fail("RAOS_RAKUTEN_ACTIVATION_COVERAGE_INVALID")
+
     urls: dict[tuple[str, str, str], str] = {}
     seen_urls: set[str] = set()
+    provider_slot_ids_by_article_placement: dict[tuple[str, str], str] = {}
     for row in _rows(document.get("rows")):
         _exact_keys(
             row,
@@ -425,7 +525,7 @@ def _mapping_urls(
                 "article_id",
                 "product_id",
                 "placement",
-                "rakuten_measurement_id",
+                "provider_slot_id",
                 "representative_model",
                 "destination_url",
             },
@@ -436,13 +536,17 @@ def _mapping_urls(
             _text(row.get("placement")),
         )
         binding = expected.get(identity)
+        provider_slot_id = _text(row.get("provider_slot_id"), maximum=128)
+        article_placement = (identity[0], identity[2])
+        observed_slot_id = provider_slot_ids_by_article_placement.get(article_placement)
         representative_model = representative_models.get(identity[1])
         destination_url = _validate_money_link_url(row.get("destination_url"))
         if (
             binding is None
             or identity in urls
-            or _text(row.get("rakuten_measurement_id"))
-            != binding.rakuten_measurement_id
+            or provider_slot_id != binding.provider_slot_id
+            or provider_slot_id not in provider_measurement_ids
+            or observed_slot_id not in {None, provider_slot_id}
             or representative_model is None
             or _text(row.get("representative_model"), maximum=300)
             != representative_model
@@ -450,10 +554,29 @@ def _mapping_urls(
         ):
             _fail("RAOS_RAKUTEN_ACTIVATION_MAPPING_INVALID")
         urls[identity] = destination_url
+        provider_slot_ids_by_article_placement[article_placement] = provider_slot_id
         seen_urls.add(destination_url)
-    if set(urls) != set(expected):
+    expected_slot_ids_by_article_placement = {
+        (slot.article_id, slot.placement): slot.provider_slot_id
+        for slot in expected_slots.values()
+    }
+    if (
+        set(urls) != set(expected)
+        or provider_slot_ids_by_article_placement
+        != expected_slot_ids_by_article_placement
+    ):
         _fail("RAOS_RAKUTEN_ACTIVATION_COVERAGE_INVALID")
-    return urls
+    return _MoneyLinkMappingV2(
+        urls=dict(urls),
+        provider_measurement_ids=dict(provider_measurement_ids),
+        provider_slot_ids_by_article_placement=dict(
+            provider_slot_ids_by_article_placement
+        ),
+        provider_slot_set_sha256=_provider_slot_set_sha256(expected_slots),
+        provider_measurement_binding_sha256=_provider_measurement_binding_sha256(
+            provider_measurement_ids
+        ),
+    )
 
 
 def _validate_admin_receipt(
@@ -461,7 +584,9 @@ def _validate_admin_receipt(
     *,
     portfolio_sha256: str,
     mapping_sha256: str,
+    mapping: _MoneyLinkMappingV2,
     expected: Mapping[tuple[str, str, str], CtaBindingV3],
+    expected_slots: Mapping[str, ProviderSlotV3],
     representative_models: Mapping[str, str],
 ) -> None:
     _exact_keys(
@@ -474,49 +599,85 @@ def _validate_admin_receipt(
             "owner_attested",
             "portfolio_sha256",
             "money_link_mapping_sha256",
+            "provider_slot_count",
+            "money_link_count",
             "verification",
-            "bindings",
+            "provider_slots",
+            "money_links",
         },
     )
     verification = _mapping(document.get("verification"))
     _exact_keys(
         verification,
         {
-            "all_expected_ids_accepted_by_admin",
+            "all_expected_provider_slots_accepted_by_admin",
+            "provider_slot_limit_verified",
             "character_set_and_length_verified",
             "csv_export_verified",
+            "all_money_links_product_identity_verified",
             "provider_parameter_inference_used",
             "production_publication_authorized",
         },
     )
     if (
         document.get("schema") != ADMIN_RECEIPT_SCHEMA
-        or document.get("version") != "1.0.0"
+        or document.get("version") != "2.0.0"
         or document.get("state") != "OWNER_VERIFIED_RAKUTEN_ADMIN_AND_CSV"
         or _timestamp(document.get("verified_at")) != document.get("verified_at")
         or document.get("owner_attested") is not True
         or _sha256(document.get("portfolio_sha256")) != portfolio_sha256
         or _sha256(document.get("money_link_mapping_sha256")) != mapping_sha256
-        or verification.get("all_expected_ids_accepted_by_admin") is not True
+        or type(document.get("provider_slot_count")) is not int
+        or document.get("provider_slot_count") != EXPECTED_PROVIDER_SLOT_COUNT
+        or type(document.get("money_link_count")) is not int
+        or document.get("money_link_count") != EXPECTED_CTA_COUNT
+        or verification.get("all_expected_provider_slots_accepted_by_admin") is not True
+        or verification.get("provider_slot_limit_verified") is not True
         or verification.get("character_set_and_length_verified") is not True
         or verification.get("csv_export_verified") is not True
+        or verification.get("all_money_links_product_identity_verified") is not True
         or verification.get("provider_parameter_inference_used") is not False
         or verification.get("production_publication_authorized") is not False
     ):
         _fail("RAOS_RAKUTEN_ACTIVATION_RECEIPT_INVALID")
-    observed: set[tuple[str, str, str]] = set()
-    for row in _rows(document.get("bindings")):
+
+    observed_slots: set[str] = set()
+    for row in _rows(document.get("provider_slots")):
+        _exact_keys(
+            row,
+            {
+                "provider_slot_id",
+                "rakuten_measurement_id",
+                "csv_echoed_measurement_id",
+                "admin_console_measurement_id_verified",
+            },
+        )
+        provider_slot_id = _text(row.get("provider_slot_id"), maximum=128)
+        measurement_id = _text(row.get("rakuten_measurement_id"), maximum=64)
+        if (
+            provider_slot_id not in expected_slots
+            or provider_slot_id in observed_slots
+            or mapping.provider_measurement_ids.get(provider_slot_id) != measurement_id
+            or _text(row.get("csv_echoed_measurement_id"), maximum=64) != measurement_id
+            or row.get("admin_console_measurement_id_verified") is not True
+        ):
+            _fail("RAOS_RAKUTEN_ACTIVATION_RECEIPT_INVALID")
+        observed_slots.add(provider_slot_id)
+    if observed_slots != set(expected_slots):
+        _fail("RAOS_RAKUTEN_ACTIVATION_COVERAGE_INVALID")
+
+    observed_money_links: set[tuple[str, str, str]] = set()
+    for row in _rows(document.get("money_links")):
         _exact_keys(
             row,
             {
                 "article_id",
                 "product_id",
                 "placement",
-                "rakuten_measurement_id",
-                "csv_echoed_measurement_id",
+                "provider_slot_id",
                 "representative_model",
                 "csv_echoed_representative_model",
-                "admin_console_measurement_id_verified",
+                "money_link_provider_slot_selection_verified",
                 "money_link_product_identity_verified",
             },
         )
@@ -526,23 +687,26 @@ def _validate_admin_receipt(
             _text(row.get("placement")),
         )
         binding = expected.get(identity)
+        expected_provider_slot_id = mapping.provider_slot_ids_by_article_placement.get(
+            (identity[0], identity[2])
+        )
         expected_model = representative_models.get(identity[1])
-        measurement_id = _text(row.get("rakuten_measurement_id"))
         if (
             binding is None
-            or identity in observed
-            or measurement_id != binding.rakuten_measurement_id
-            or _text(row.get("csv_echoed_measurement_id")) != measurement_id
+            or identity in observed_money_links
+            or expected_provider_slot_id != binding.provider_slot_id
+            or _text(row.get("provider_slot_id"), maximum=128)
+            != expected_provider_slot_id
             or expected_model is None
             or _text(row.get("representative_model"), maximum=300) != expected_model
             or _text(row.get("csv_echoed_representative_model"), maximum=300)
             != expected_model
-            or row.get("admin_console_measurement_id_verified") is not True
+            or row.get("money_link_provider_slot_selection_verified") is not True
             or row.get("money_link_product_identity_verified") is not True
         ):
             _fail("RAOS_RAKUTEN_ACTIVATION_RECEIPT_INVALID")
-        observed.add(identity)
-    if observed != set(expected):
+        observed_money_links.add(identity)
+    if observed_money_links != set(expected):
         _fail("RAOS_RAKUTEN_ACTIVATION_COVERAGE_INVALID")
 
 
@@ -595,8 +759,8 @@ def _materialized_anchor(
         f' data-raos-offer-id="{escape(binding.offer_id, quote=True)}"'
         f' data-raos-product-id="{escape(binding.product_id, quote=True)}"'
         f' data-raos-placement="{binding.placement}"'
-        ' data-raos-rakuten-measurement-id="'
-        f'{escape(binding.rakuten_measurement_id, quote=True)}"'
+        ' data-raos-rakuten-provider-slot-id="'
+        f'{escape(binding.provider_slot_id, quote=True)}"'
         f'{described}>{label} <span aria-hidden="true">→</span></a>'
     )
 
@@ -679,7 +843,10 @@ def materialize_article_html(
         )
         if replacements != 1:
             _fail("RAOS_RAKUTEN_ACTIVATION_HTML_INVALID")
-    if "一致する楽天商品を確認できなかったため、楽天購入リンクは掲載していません。" in materialized:
+    if (
+        "一致する楽天商品を確認できなかったため、楽天購入リンクは掲載していません。"
+        in materialized
+    ):
         _fail("RAOS_RAKUTEN_ACTIVATION_HTML_INVALID")
     result = materialized.encode("utf-8")
     if result.count(b"https://hb.afl.rakuten.co.jp/") != len(expected):
@@ -803,8 +970,7 @@ def _v2_materialization(
     if (
         receipt.get("schema") != V2_MATERIALIZATION_SCHEMA
         or receipt.get("mode") != mode
-        or _sha256(receipt.get("portfolio_sha256"))
-        != expected_v2_portfolio_sha256
+        or _sha256(receipt.get("portfolio_sha256")) != expected_v2_portfolio_sha256
         or evidence_status_sha256 == "0" * 64
     ):
         _fail("RAOS_RAKUTEN_ACTIVATION_V2_MATERIALIZATION_INVALID")
@@ -936,9 +1102,11 @@ def _write_overlay(
         article_names = {path.name for path in article_root.iterdir()}
     except OSError:
         _fail("RAOS_RAKUTEN_ACTIVATION_PRIVATE_OUTPUT_INVALID")
-    if root_names != {"articles", "posts.json", "materialization-receipt.v3.json"} or article_names != {
-        f"{slug}.html" for slug in articles
-    }:
+    if root_names != {
+        "articles",
+        "posts.json",
+        "materialization-receipt.v3.json",
+    } or article_names != {f"{slug}.html" for slug in articles}:
         _fail("RAOS_RAKUTEN_ACTIVATION_PRIVATE_OUTPUT_INVALID")
     return overlay_root
 
@@ -981,6 +1149,7 @@ def materialize_rakuten_measurement_activation_v3(
     _reject_formula_like_strings(admin_document)
     _reject_formula_like_strings(mapping_document)
     expected = _expected_bindings(portfolio)
+    expected_slots = _expected_provider_slots(portfolio)
     try:
         v2 = load_editorial_portfolio_v2(repository_root)
     except EditorialPortfolioV2Failure:
@@ -992,17 +1161,20 @@ def materialize_rakuten_measurement_activation_v3(
         product.product_id for product in portfolio.products
     }:
         _fail("RAOS_RAKUTEN_ACTIVATION_PORTFOLIO_INVALID")
-    urls = _mapping_urls(
+    mapping = _validate_money_link_mapping(
         mapping_document,
         portfolio_sha256=portfolio_sha256,
         expected=expected,
+        expected_slots=expected_slots,
         representative_models=representative_models,
     )
     _validate_admin_receipt(
         admin_document,
         portfolio_sha256=portfolio_sha256,
         mapping_sha256=mapping_sha256,
+        mapping=mapping,
         expected=expected,
+        expected_slots=expected_slots,
         representative_models=representative_models,
     )
     default_local, default_production = _default_v2_fixture_roots(repository_root)
@@ -1037,7 +1209,7 @@ def materialize_rakuten_measurement_activation_v3(
         rows: list[dict[str, object]] = []
         for article in portfolio.articles:
             original = sources[article.article_id]
-            output = materialize_article_html(article, original, urls)
+            output = materialize_article_html(article, original, mapping.urls)
             materialized[article.production_slug] = output
             rows.append(
                 {
@@ -1051,7 +1223,7 @@ def materialize_rakuten_measurement_activation_v3(
         article_set_sha256 = _article_set_sha256(rows)
         overlay_receipt: Mapping[str, object] = {
             "schema": OVERLAY_RECEIPT_SCHEMA,
-            "version": "1.0.0",
+            "version": "2.0.0",
             "mode": mode,
             "portfolio_sha256": portfolio_sha256,
             "v2_portfolio_sha256": source["portfolio_sha256"],
@@ -1062,7 +1234,17 @@ def materialize_rakuten_measurement_activation_v3(
             "posts_sha256": _sha256_bytes(cast(bytes, source["posts_raw"])),
             "article_set_sha256": article_set_sha256,
             "article_count": len(rows),
+            "provider_slot_count": len(expected_slots),
+            "provider_measurement_id_count": len(mapping.provider_measurement_ids),
+            "internal_cta_identity_count": sum(
+                cast(int, row["cta_count"]) for row in rows
+            ),
+            "live_link_count": sum(cast(int, row["cta_count"]) for row in rows),
             "cta_count": sum(cast(int, row["cta_count"]) for row in rows),
+            "provider_slot_set_sha256": mapping.provider_slot_set_sha256,
+            "provider_measurement_binding_sha256": (
+                mapping.provider_measurement_binding_sha256
+            ),
             "articles": rows,
         }
         overlay_receipt_raw = canonical_json_bytes(overlay_receipt)
@@ -1084,9 +1266,7 @@ def materialize_rakuten_measurement_activation_v3(
                 mode: {
                     "posts_sha256": overlays[mode]["posts_sha256"],
                     "article_set_sha256": overlays[mode]["article_set_sha256"],
-                    "overlay_receipt_sha256": overlays[mode][
-                        "overlay_receipt_sha256"
-                    ],
+                    "overlay_receipt_sha256": overlays[mode]["overlay_receipt_sha256"],
                 }
                 for mode in ("local", "production")
             }
@@ -1094,11 +1274,15 @@ def materialize_rakuten_measurement_activation_v3(
     )
     report: Mapping[str, object] = {
         "schema": DRY_RUN_SCHEMA,
-        "version": "2.0.0",
+        "version": "3.0.0",
         "state": "OWNER_PRIVATE_MATERIALIZED_NOT_PUBLISHED",
         "portfolio_sha256": portfolio_sha256,
         "admin_receipt_sha256": _sha256_bytes(admin_raw),
         "money_link_mapping_sha256": mapping_sha256,
+        "provider_slot_set_sha256": mapping.provider_slot_set_sha256,
+        "provider_measurement_binding_sha256": (
+            mapping.provider_measurement_binding_sha256
+        ),
         "v2_materialization": {
             "portfolio_sha256": local_source["portfolio_sha256"],
             "evidence_status_sha256": local_source["evidence_status_sha256"],
@@ -1114,9 +1298,15 @@ def materialize_rakuten_measurement_activation_v3(
         "overlays": overlays,
         "materialized_set_sha256": materialized_set_sha256,
         "article_count": len(portfolio.articles),
-        "cta_count": sum(
+        "provider_slot_count": len(expected_slots),
+        "provider_measurement_id_count": len(mapping.provider_measurement_ids),
+        "internal_cta_identity_count": sum(
             len(article.cta_bindings) for article in portfolio.articles
         ),
+        "live_link_count": sum(
+            len(article.cta_bindings) for article in portfolio.articles
+        ),
+        "cta_count": sum(len(article.cta_bindings) for article in portfolio.articles),
         "provider_parameter_inference_used": False,
         "tracked_source_modified": False,
         "live_write_performed": False,
@@ -1166,6 +1356,8 @@ def _validate_overlay_output(
     mode: str,
     portfolio: EditorialPortfolioV3,
     portfolio_sha256: str,
+    provider_slot_set_sha256: str,
+    provider_measurement_binding_sha256: str,
     v2_materialization: Mapping[str, object],
 ) -> tuple[Path, str, str, Mapping[str, str]]:
     _exact_keys(
@@ -1182,7 +1374,10 @@ def _validate_overlay_output(
     expected_prefix = (
         LOCAL_OVERLAY_PREFIX if mode == "local" else PRODUCTION_OVERLAY_PREFIX
     )
-    if re.fullmatch(re.escape(expected_prefix) + r"[0-9a-f]{16}", directory_name) is None:
+    if (
+        re.fullmatch(re.escape(expected_prefix) + r"[0-9a-f]{16}", directory_name)
+        is None
+    ):
         _fail("RAOS_RAKUTEN_ACTIVATION_DRY_RUN_INVALID")
     posts_sha256 = _sha256(raw.get("posts_sha256"))
     article_set_sha256 = _sha256(raw.get("article_set_sha256"))
@@ -1228,14 +1423,20 @@ def _validate_overlay_output(
             "posts_sha256",
             "article_set_sha256",
             "article_count",
+            "provider_slot_count",
+            "provider_measurement_id_count",
+            "internal_cta_identity_count",
+            "live_link_count",
             "cta_count",
+            "provider_slot_set_sha256",
+            "provider_measurement_binding_sha256",
             "articles",
         },
     )
     expected_v2_receipt_key = f"{mode}_receipt_sha256"
     if (
         receipt.get("schema") != OVERLAY_RECEIPT_SCHEMA
-        or receipt.get("version") != "1.0.0"
+        or receipt.get("version") != "2.0.0"
         or receipt.get("mode") != mode
         or receipt.get("portfolio_sha256") != portfolio_sha256
         or receipt.get("v2_portfolio_sha256")
@@ -1247,7 +1448,14 @@ def _validate_overlay_output(
         or receipt.get("posts_sha256") != posts_sha256
         or receipt.get("article_set_sha256") != article_set_sha256
         or receipt.get("article_count") != 10
-        or receipt.get("cta_count") != 74
+        or receipt.get("provider_slot_count") != EXPECTED_PROVIDER_SLOT_COUNT
+        or receipt.get("provider_measurement_id_count") != EXPECTED_PROVIDER_SLOT_COUNT
+        or receipt.get("internal_cta_identity_count") != EXPECTED_CTA_COUNT
+        or receipt.get("live_link_count") != EXPECTED_CTA_COUNT
+        or receipt.get("cta_count") != EXPECTED_CTA_COUNT
+        or receipt.get("provider_slot_set_sha256") != provider_slot_set_sha256
+        or receipt.get("provider_measurement_binding_sha256")
+        != provider_measurement_binding_sha256
         or receipt.get("articles") != raw.get("articles")
     ):
         _fail("RAOS_RAKUTEN_ACTIVATION_OVERLAY_INVALID")
@@ -1255,6 +1463,7 @@ def _validate_overlay_output(
     article_rows: list[dict[str, object]] = []
     article_hashes: dict[str, str] = {}
     total_ctas = 0
+    observed_provider_slots: set[str] = set()
     expected_names: set[str] = set()
     for row in _rows(raw.get("articles")):
         _exact_keys(
@@ -1289,8 +1498,7 @@ def _validate_overlay_output(
         if (
             _sha256_bytes(content) != materialized_sha256
             or content.count(b"https://hb.afl.rakuten.co.jp/") != cta_count
-            or "一致する楽天商品を確認できなかったため".encode()
-            in content
+            or "一致する楽天商品を確認できなかったため".encode() in content
         ):
             _fail("RAOS_RAKUTEN_ACTIVATION_OVERLAY_INVALID")
         try:
@@ -1315,7 +1523,7 @@ def _validate_overlay_output(
                 "data-raos-offer-id",
                 "data-raos-product-id",
                 "data-raos-placement",
-                "data-raos-rakuten-measurement-id",
+                "data-raos-rakuten-provider-slot-id",
             }
             identity = (
                 attributes.get("data-raos-product-id", ""),
@@ -1333,11 +1541,12 @@ def _validate_overlay_output(
                 or attributes.get("data-raos-cta-id") != binding.cta_id
                 or attributes.get("data-raos-snapshot-id") != binding.snapshot_id
                 or attributes.get("data-raos-offer-id") != binding.offer_id
-                or attributes.get("data-raos-rakuten-measurement-id")
-                != binding.rakuten_measurement_id
+                or attributes.get("data-raos-rakuten-provider-slot-id")
+                != binding.provider_slot_id
             ):
                 _fail("RAOS_RAKUTEN_ACTIVATION_OVERLAY_INVALID")
             _validate_money_link_url(href)
+            observed_provider_slots.add(binding.provider_slot_id)
             observed.add(identity)
         if observed != set(expected_bindings):
             _fail("RAOS_RAKUTEN_ACTIVATION_OVERLAY_INVALID")
@@ -1358,9 +1567,11 @@ def _validate_overlay_output(
     except OSError:
         _fail("RAOS_RAKUTEN_ACTIVATION_OVERLAY_INVALID")
     if (
-        set(article_hashes) != {article.production_slug for article in portfolio.articles}
+        set(article_hashes)
+        != {article.production_slug for article in portfolio.articles}
         or actual_names != expected_names
-        or total_ctas != 74
+        or total_ctas != EXPECTED_CTA_COUNT
+        or observed_provider_slots != set(portfolio.provider_slot_by_id)
         or _article_set_sha256(article_rows) != article_set_sha256
     ):
         _fail("RAOS_RAKUTEN_ACTIVATION_OVERLAY_INVALID")
@@ -1409,10 +1620,16 @@ def validate_rakuten_measurement_activation_v3(
             "portfolio_sha256",
             "admin_receipt_sha256",
             "money_link_mapping_sha256",
+            "provider_slot_set_sha256",
+            "provider_measurement_binding_sha256",
             "v2_materialization",
             "overlays",
             "materialized_set_sha256",
             "article_count",
+            "provider_slot_count",
+            "provider_measurement_id_count",
+            "internal_cta_identity_count",
+            "live_link_count",
             "cta_count",
             "provider_parameter_inference_used",
             "tracked_source_modified",
@@ -1425,16 +1642,31 @@ def validate_rakuten_measurement_activation_v3(
         maximum=MAX_PRIVATE_DOCUMENT_BYTES,
     )
     portfolio_sha256 = _sha256_bytes(portfolio_raw)
+    expected_slots = _expected_provider_slots(portfolio)
+    expected_provider_slot_set_sha256 = _provider_slot_set_sha256(expected_slots)
     admin_receipt_sha256 = _sha256(document.get("admin_receipt_sha256"))
     money_link_mapping_sha256 = _sha256(document.get("money_link_mapping_sha256"))
+    provider_slot_set_sha256 = _sha256(document.get("provider_slot_set_sha256"))
+    provider_measurement_binding_sha256 = _sha256(
+        document.get("provider_measurement_binding_sha256")
+    )
     materialized_set_sha256 = _sha256(document.get("materialized_set_sha256"))
     if (
         document.get("schema") != DRY_RUN_SCHEMA
-        or document.get("version") != "2.0.0"
+        or document.get("version") != "3.0.0"
         or document.get("state") != "OWNER_PRIVATE_MATERIALIZED_NOT_PUBLISHED"
         or _sha256(document.get("portfolio_sha256")) != portfolio_sha256
         or document.get("article_count") != 10
-        or document.get("cta_count") != 74
+        or type(document.get("provider_slot_count")) is not int
+        or document.get("provider_slot_count") != EXPECTED_PROVIDER_SLOT_COUNT
+        or type(document.get("provider_measurement_id_count")) is not int
+        or document.get("provider_measurement_id_count") != EXPECTED_PROVIDER_SLOT_COUNT
+        or type(document.get("internal_cta_identity_count")) is not int
+        or document.get("internal_cta_identity_count") != EXPECTED_CTA_COUNT
+        or type(document.get("live_link_count")) is not int
+        or document.get("live_link_count") != EXPECTED_CTA_COUNT
+        or document.get("cta_count") != EXPECTED_CTA_COUNT
+        or provider_slot_set_sha256 != expected_provider_slot_set_sha256
         or document.get("provider_parameter_inference_used") is not False
         or document.get("tracked_source_modified") is not False
         or document.get("live_write_performed") is not False
@@ -1479,9 +1711,7 @@ def validate_rakuten_measurement_activation_v3(
             production_receipt_sha256,
         ),
     ):
-        receipt_path = (
-            _owner_directory(source_root) / "materialization-receipt.v2.json"
-        )
+        receipt_path = _owner_directory(source_root) / "materialization-receipt.v2.json"
         current = _read_owner_regular_file(
             receipt_path,
             maximum=MAX_PRIVATE_DOCUMENT_BYTES,
@@ -1497,6 +1727,8 @@ def validate_rakuten_measurement_activation_v3(
         mode="local",
         portfolio=portfolio,
         portfolio_sha256=portfolio_sha256,
+        provider_slot_set_sha256=provider_slot_set_sha256,
+        provider_measurement_binding_sha256=provider_measurement_binding_sha256,
         v2_materialization=v2,
     )
     production = _validate_overlay_output(
@@ -1505,6 +1737,8 @@ def validate_rakuten_measurement_activation_v3(
         mode="production",
         portfolio=portfolio,
         portfolio_sha256=portfolio_sha256,
+        provider_slot_set_sha256=provider_slot_set_sha256,
+        provider_measurement_binding_sha256=provider_measurement_binding_sha256,
         v2_materialization=v2,
     )
     computed_set_sha256 = _sha256_bytes(
@@ -1516,9 +1750,7 @@ def validate_rakuten_measurement_activation_v3(
                     "overlay_receipt_sha256": local[2],
                 },
                 "production": {
-                    "posts_sha256": _mapping(overlays["production"])[
-                        "posts_sha256"
-                    ],
+                    "posts_sha256": _mapping(overlays["production"])["posts_sha256"],
                     "article_set_sha256": production[1],
                     "overlay_receipt_sha256": production[2],
                 },
@@ -1536,6 +1768,8 @@ def validate_rakuten_measurement_activation_v3(
         v2_production_receipt_sha256=production_receipt_sha256,
         admin_receipt_sha256=admin_receipt_sha256,
         money_link_mapping_sha256=money_link_mapping_sha256,
+        provider_slot_set_sha256=provider_slot_set_sha256,
+        provider_measurement_binding_sha256=provider_measurement_binding_sha256,
         materialized_set_sha256=materialized_set_sha256,
         local_fixture_root=local[0],
         production_fixture_root=production[0],
@@ -1546,7 +1780,11 @@ def validate_rakuten_measurement_activation_v3(
         local_article_sha256=local[3],
         production_article_sha256=production[3],
         article_count=10,
-        cta_count=74,
+        provider_slot_count=EXPECTED_PROVIDER_SLOT_COUNT,
+        provider_measurement_id_count=EXPECTED_PROVIDER_SLOT_COUNT,
+        internal_cta_identity_count=EXPECTED_CTA_COUNT,
+        live_link_count=EXPECTED_CTA_COUNT,
+        cta_count=EXPECTED_CTA_COUNT,
     )
 
 

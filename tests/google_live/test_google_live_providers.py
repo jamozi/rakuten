@@ -1,18 +1,23 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+import dataclasses
+from dataclasses import replace
 from datetime import date, datetime, timezone
 import hashlib
 import json
 import os
 from pathlib import Path
+import pickle
 import tempfile
 from uuid import UUID, uuid4
 
 import pytest
 
+import raos.adapters.google_live as google_live_adapter
 from raos.adapters.google_live import (
     FixedOwnerPrivateAnalyticsSiteBindings,
+    GoogleServiceAccountAuthorizedTransport,
     LiveGa4AdminProvider,
     LiveGa4DataProvider,
     LiveSearchConsoleProvider,
@@ -34,12 +39,23 @@ from raos.domain.analytics.google_live import (
     GoogleProviderFailureCode,
     SearchConsoleLiveQuery,
     SearchConsoleUrlInspectionQuery,
+    canonical_json_bytes,
 )
 from raos.ports.google_live import GoogleJsonResponse
+from scripts.raos_google_owner_private_v1 import (
+    GA4_ADMIN_READBACK_SCHEMA,
+    GSC_ADMIN_READBACK_SCHEMA,
+    GSC_RESOURCE,
+    LOCAL_SCOPE_SCHEMA,
+    SITE_ORIGIN,
+    materialize_bindings,
+)
 
 
 NOW = datetime(2026, 8, 30, 1, 2, 3, tzinfo=timezone.utc)
 SITE_ID = UUID("11111111-1111-4111-8111-111111111111")
+_PRIVATE_KEY_BEGIN = "-----BEGIN PRIVATE " + "KEY-----\n"
+_PRIVATE_KEY_END = "-----END PRIVATE " + "KEY-----\n"
 
 
 def custom_dimensions_response() -> dict[str, object]:
@@ -482,17 +498,13 @@ def test_ga4_admin_refuses_missing_event_custom_dimension() -> None:
     assert observed.value.code is GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID
 
 
-def _binding_document(
-    *, provider: str, resource: str, scope: str, email: str
-) -> dict[str, object]:
+def _owner_private_credential(*, email: str) -> dict[str, object]:
     return {
-        "schema_version": 1,
-        "provider": provider,
-        "site_id": str(SITE_ID),
-        "resource": resource,
-        "credential_file": "service-account.json",
-        "service_account_email_sha256": hashlib.sha256(email.encode()).hexdigest(),
-        "scopes": [scope],
+        "client_email": email,
+        "private_key": f"{_PRIVATE_KEY_BEGIN}fixture\n{_PRIVATE_KEY_END}",
+        "project_id": "owner-loader-123",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "type": "service_account",
     }
 
 
@@ -502,34 +514,71 @@ def _write_owner_private_tree(root: Path, *, same_account: bool = False) -> None
     for directory in (root, root / "google", gsc, ga4):
         directory.mkdir(exist_ok=True)
         os.chmod(directory, 0o700)
-    ga4_email = "gsc@example.invalid" if same_account else "ga4@example.invalid"
-    fixtures = (
-        (
-            gsc,
-            _binding_document(
-                provider="GSC",
-                resource="sc-domain:example.com",
-                scope=GSC_READONLY_SCOPE,
-                email="gsc@example.invalid",
-            ),
-        ),
-        (
-            ga4,
-            _binding_document(
-                provider="GA4",
-                resource="properties/12345",
-                scope=GA4_READONLY_SCOPE,
-                email=ga4_email,
-            ),
-        ),
+    gsc_email = "gsc@owner-loader-123.iam.gserviceaccount.com"
+    ga4_email = "ga4@owner-loader-123.iam.gserviceaccount.com"
+
+    def write(directory: Path, name: str, value: object) -> None:
+        path = directory / name
+        path.write_text(json.dumps(value), encoding="utf-8")
+        os.chmod(path, 0o600)
+
+    if same_account:
+        write(ga4, "service-account.json", _owner_private_credential(email=gsc_email))
+        return
+    write(gsc, "service-account.json", _owner_private_credential(email=gsc_email))
+    write(ga4, "service-account.json", _owner_private_credential(email=ga4_email))
+    write(
+        root / "google",
+        "local-scope.v1.json",
+        {
+            "database_revision": "202608300001",
+            "ga4_ops_job_id": "33333333-3333-4333-8333-333333333333",
+            "gsc_ops_job_id": "22222222-2222-4222-8222-222222222222",
+            "schema_version": LOCAL_SCOPE_SCHEMA,
+            "scope_initialized": True,
+            "site_id": str(SITE_ID),
+        },
     )
-    for directory, binding in fixtures:
-        credential = directory / "service-account.json"
-        credential.write_text("{}", encoding="utf-8")
-        binding_path = directory / "binding.v1.json"
-        binding_path.write_text(json.dumps(binding), encoding="utf-8")
-        os.chmod(credential, 0o600)
-        os.chmod(binding_path, 0o600)
+    write(
+        gsc,
+        "admin-readback.v1.json",
+        {
+            "captured_at": "2026-08-30T12:34:56Z",
+            "is_owner": False,
+            "permission": "RESTRICTED",
+            "resource": GSC_RESOURCE,
+            "row_count": 1,
+            "schema": GSC_ADMIN_READBACK_SCHEMA,
+            "service_account_readback": True,
+        },
+    )
+    write(
+        ga4,
+        "admin-readback.v1.json",
+        {
+            "account_id": "54321",
+            "captured_at": "2026-08-30T12:35:56Z",
+            "currency_code": "JPY",
+            "custom_dimensions": [
+                {
+                    "display_name": parameter,
+                    "event_scope_readback": True,
+                    "parameter_name": parameter,
+                    "row_count": 1,
+                    "scope": "EVENT",
+                }
+                for parameter in GA4_EVENT_PARAMETER_NAMES
+            ],
+            "property_display_name": "Fixture property",
+            "property_id": "12345",
+            "property_resource": "properties/12345",
+            "schema": GA4_ADMIN_READBACK_SCHEMA,
+            "stream_origin": SITE_ORIGIN,
+            "viewer_is_administrator": False,
+            "viewer_service_account_readback": True,
+        },
+    )
+    materialize_bindings(private_root=root)
 
 
 def test_owner_private_binding_requires_fixed_modes_scopes_and_distinct_accounts() -> (
@@ -560,6 +609,430 @@ def test_owner_private_binding_requires_fixed_modes_scopes_and_distinct_accounts
             FixedOwnerPrivateAnalyticsSiteBindings(root)
         assert (
             reused.value.code is GoogleProviderFailureCode.OWNER_PRIVATE_LAYOUT_INVALID
+        )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "incomplete_receipt",
+        "binding_generation",
+        "readback_generation",
+        "receipt_hash",
+        "readback_semantics",
+    ],
+)
+def test_owner_private_loader_rejects_incomplete_mixed_or_tampered_generation(
+    mutation: str,
+) -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        root = Path(temporary) / "owner-private"
+        _write_owner_private_tree(root)
+        if mutation in {"incomplete_receipt", "receipt_hash"}:
+            target = root / "google/binding-receipt.v1.json"
+        elif mutation == "binding_generation":
+            target = root / "google/gsc/binding.v1.json"
+        else:
+            target = root / "google/gsc/admin-readback.v1.json"
+        document = json.loads(target.read_text())
+        if mutation == "incomplete_receipt":
+            document["state"] = "OWNER_PRIVATE_BINDINGS_MATERIALIZING"
+        elif mutation == "binding_generation":
+            document["site_id"] = "44444444-4444-4444-8444-444444444444"
+        elif mutation == "readback_generation":
+            document["captured_at"] = "2026-08-30T12:34:57Z"
+        elif mutation == "receipt_hash":
+            document["binding_canonical_sha256s"]["GSC"] = "0" * 64
+        else:
+            document["permission"] = "FULL"
+        target.write_text(json.dumps(document), encoding="utf-8")
+        os.chmod(target, 0o600)
+
+        with pytest.raises(GoogleProviderFailure) as rejected:
+            FixedOwnerPrivateAnalyticsSiteBindings(root)
+        assert (
+            rejected.value.code
+            is GoogleProviderFailureCode.OWNER_PRIVATE_LAYOUT_INVALID
+        )
+
+
+def test_owner_private_loader_rejects_hard_link_and_path_replacement(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        case_root = Path(temporary)
+        hard_link_root = case_root / "hard-link-owner-private"
+        _write_owner_private_tree(hard_link_root)
+        receipt = hard_link_root / "google/binding-receipt.v1.json"
+        os.link(receipt, case_root / "receipt-hard-link.json")
+        with pytest.raises(GoogleProviderFailure):
+            FixedOwnerPrivateAnalyticsSiteBindings(hard_link_root)
+
+        replacement_root = case_root / "replacement-owner-private"
+        _write_owner_private_tree(replacement_root)
+        credential = replacement_root / "google/gsc/service-account.json"
+        credential_value = credential.read_bytes()
+        original_read = google_live_adapter.os.read
+        replaced = False
+
+        def replacing_read(descriptor: int, amount: int) -> bytes:
+            nonlocal replaced
+            payload = original_read(descriptor, amount)
+            if not replaced:
+                replaced = True
+                credential.rename(case_root / "credential-opened.json")
+                credential.write_bytes(credential_value)
+                os.chmod(credential, 0o600)
+            return payload
+
+        monkeypatch.setattr(google_live_adapter.os, "read", replacing_read)
+        with pytest.raises(GoogleProviderFailure):
+            FixedOwnerPrivateAnalyticsSiteBindings(replacement_root)
+        assert replaced is True
+
+
+def test_pinned_tree_atomic_replace_and_materializing_validation() -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        root = Path(temporary) / "owner-private"
+        _write_owner_private_tree(root)
+        receipt_path = root / "google/binding-receipt.v1.json"
+        receipt = json.loads(receipt_path.read_text())
+        receipt["state"] = "OWNER_PRIVATE_BINDINGS_MATERIALIZING"
+        content = canonical_json_bytes(receipt)
+        with google_live_adapter._PinnedOwnerPrivateGoogleTree(root) as tree:
+            before = tree.entry_identity("google", "binding-receipt.v1.json")
+            after = tree.atomic_replace(
+                "google",
+                "binding-receipt.v1.json",
+                content,
+                expected=before,
+            )
+            assert after != before
+        with pytest.raises(GoogleProviderFailure):
+            FixedOwnerPrivateAnalyticsSiteBindings(root)
+        materializing = FixedOwnerPrivateAnalyticsSiteBindings._for_generation_state(
+            root,
+            expected_state="OWNER_PRIVATE_BINDINGS_MATERIALIZING",
+        )
+        assert type(materializing.gsc()) is AnalyticsSiteBinding
+        assert type(materializing.ga4()) is AnalyticsSiteBinding
+        assert materializing.gsc().site_id == SITE_ID
+
+
+def test_transport_rejects_materializing_binding_before_credential_import(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        root = Path(temporary) / "owner-private"
+        _write_owner_private_tree(root)
+        receipt_path = root / "google/binding-receipt.v1.json"
+        receipt = json.loads(receipt_path.read_text())
+        receipt["state"] = "OWNER_PRIVATE_BINDINGS_MATERIALIZING"
+        receipt_path.write_bytes(canonical_json_bytes(receipt))
+        os.chmod(receipt_path, 0o600)
+        materializing = FixedOwnerPrivateAnalyticsSiteBindings._for_generation_state(
+            root,
+            expected_state="OWNER_PRIVATE_BINDINGS_MATERIALIZING",
+        )
+
+        def reject_import(_: str) -> object:
+            raise AssertionError("credential modules must not be imported")
+
+        monkeypatch.setattr(
+            google_live_adapter.importlib,
+            "import_module",
+            reject_import,
+        )
+        with pytest.raises(GoogleProviderFailure) as rejected:
+            GoogleServiceAccountAuthorizedTransport(binding=materializing.gsc())
+        assert (
+            rejected.value.code
+            is GoogleProviderFailureCode.INVALID_ARGUMENT
+        )
+
+
+def test_materializing_binding_has_no_credential_capability_under_introspection(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        root = Path(temporary) / "owner-private"
+        _write_owner_private_tree(root)
+        receipt_path = root / "google/binding-receipt.v1.json"
+        receipt = json.loads(receipt_path.read_text())
+        receipt["state"] = "OWNER_PRIVATE_BINDINGS_MATERIALIZING"
+        receipt_path.write_bytes(canonical_json_bytes(receipt))
+        os.chmod(receipt_path, 0o600)
+        materializing_binding = (
+            FixedOwnerPrivateAnalyticsSiteBindings._for_generation_state(
+                root,
+                expected_state="OWNER_PRIVATE_BINDINGS_MATERIALIZING",
+            ).gsc()
+        )
+        assert type(materializing_binding) is AnalyticsSiteBinding
+        assert not hasattr(materializing_binding, "authorize_transport")
+        for hidden_name in (
+            "_GuardedAnalyticsSiteBinding__credential_snapshot",
+            "_GuardedAnalyticsSiteBinding__generation_seal",
+            "_GuardedAnalyticsSiteBinding__instance_nonce",
+        ):
+            with pytest.raises(AttributeError):
+                object.__getattribute__(materializing_binding, hidden_name)
+            with pytest.raises(AttributeError):
+                object.__setattr__(materializing_binding, hidden_name, object())
+
+        def reject_import(_: str) -> object:
+            raise AssertionError("credential modules must not be imported")
+
+        monkeypatch.setattr(
+            google_live_adapter.importlib,
+            "import_module",
+            reject_import,
+        )
+        with pytest.raises(GoogleProviderFailure) as rejected:
+            GoogleServiceAccountAuthorizedTransport(binding=materializing_binding)
+        assert (
+            rejected.value.code
+            is GoogleProviderFailureCode.INVALID_ARGUMENT
+        )
+
+
+@pytest.mark.parametrize("ancestor", ["root", "google", "provider"])
+def test_owner_private_loader_rejects_ancestor_directory_replacement(
+    monkeypatch: pytest.MonkeyPatch, ancestor: str
+) -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        case_root = Path(temporary)
+        root = case_root / "owner-private"
+        _write_owner_private_tree(root)
+        if ancestor == "root":
+            original = root
+            moved = case_root / "owner-private-opened"
+        elif ancestor == "google":
+            original = root / "google"
+            moved = root / "google-opened"
+        else:
+            original = root / "google/gsc"
+            moved = root / "google/gsc-opened"
+        original_read = google_live_adapter.os.read
+        replaced = False
+
+        def replacing_read(descriptor: int, amount: int) -> bytes:
+            nonlocal replaced
+            payload = original_read(descriptor, amount)
+            if not replaced:
+                replaced = True
+                original.rename(moved)
+                original.symlink_to(moved, target_is_directory=True)
+            return payload
+
+        monkeypatch.setattr(google_live_adapter.os, "read", replacing_read)
+        with pytest.raises(GoogleProviderFailure) as rejected:
+            FixedOwnerPrivateAnalyticsSiteBindings(root)
+        assert (
+            rejected.value.code
+            is GoogleProviderFailureCode.OWNER_PRIVATE_LAYOUT_INVALID
+        )
+        assert replaced is True
+
+
+def test_transport_uses_loader_credential_snapshot_without_path_reread(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        root = Path(temporary) / "owner-private"
+        _write_owner_private_tree(root)
+        bindings = FixedOwnerPrivateAnalyticsSiteBindings(root)
+        binding = bindings.gsc()
+        credential_path = root / "google/gsc/service-account.json"
+        original_info = json.loads(credential_path.read_text())
+        expected_hash = hashlib.sha256(canonical_json_bytes(original_info)).hexdigest()
+        replacement_info = dict(original_info)
+        replacement_info["private_key"] = (
+            f"{_PRIVATE_KEY_BEGIN}replacement\n{_PRIVATE_KEY_END}"
+        )
+        credential_path.write_text(json.dumps(replacement_info), encoding="utf-8")
+        os.chmod(credential_path, 0o600)
+        received_hashes: list[str] = []
+
+        class FakeCredentialsValue:
+            valid = True
+            token = "fixture-token"
+            service_account_email = original_info["client_email"]
+
+        class FakeCredentialsFactory:
+            @staticmethod
+            def from_service_account_info(
+                info: dict[str, object], *, scopes: list[str]
+            ) -> FakeCredentialsValue:
+                assert scopes == list(binding.scopes)
+                received_hashes.append(
+                    hashlib.sha256(canonical_json_bytes(info)).hexdigest()
+                )
+                return FakeCredentialsValue()
+
+            @staticmethod
+            def from_service_account_file(*_: object, **__: object) -> object:
+                raise AssertionError("credential path must not be reopened")
+
+        class FakeServiceAccountModule:
+            Credentials = FakeCredentialsFactory
+
+        class FakeGoogleRequestsModule:
+            class Request:
+                pass
+
+        class FakeRequestsModule:
+            class Session:
+                pass
+
+        modules = {
+            "google.oauth2.service_account": FakeServiceAccountModule,
+            "google.auth.transport.requests": FakeGoogleRequestsModule,
+            "requests": FakeRequestsModule,
+        }
+        monkeypatch.setattr(
+            google_live_adapter.importlib,
+            "import_module",
+            lambda name: modules[name],
+        )
+
+        GoogleServiceAccountAuthorizedTransport(binding=binding)
+        assert received_hashes == [expected_hash]
+        assert "fixture" not in repr(binding)
+        assert "private_key" not in repr(binding)
+
+
+def test_guarded_binding_hides_credential_capability_from_standard_walkers() -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        root = Path(temporary) / "owner-private"
+        _write_owner_private_tree(root)
+        binding = FixedOwnerPrivateAnalyticsSiteBindings(root).gsc()
+        expected_fields = {
+            "credential_path",
+            "provider",
+            "resource",
+            "scopes",
+            "service_account_email_sha256",
+            "site_id",
+        }
+        assert {item.name for item in dataclasses.fields(binding)} == expected_fields
+        assert set(dataclasses.asdict(binding)) == expected_fields
+        assert not hasattr(binding, "credential_snapshot")
+        assert not hasattr(binding, "generation_seal")
+        assert repr(binding) == "_GuardedAnalyticsSiteBinding(<redacted>)"
+        with pytest.raises(TypeError):
+            pickle.dumps(binding)
+
+        snapshot = object.__getattribute__(
+            binding,
+            "_GuardedAnalyticsSiteBinding__credential_snapshot",
+        )
+        assert dataclasses.is_dataclass(snapshot) is False
+        assert not hasattr(snapshot, "canonical_json")
+        assert not hasattr(snapshot, "canonical_sha256")
+        assert repr(snapshot) == "_CredentialSnapshot(<redacted>)"
+        with pytest.raises(TypeError):
+            vars(snapshot)
+        for walker_name in ("asdict", "fields"):
+            walker = vars(dataclasses)[walker_name]
+            with pytest.raises(TypeError):
+                walker(snapshot)
+        with pytest.raises(TypeError):
+            pickle.dumps(snapshot)
+        with pytest.raises(AttributeError):
+            setattr(snapshot, "canonical_json", b"")
+
+        consume = getattr(snapshot, "consume")
+        with pytest.raises(GoogleProviderFailure) as unauthorized:
+            consume(issuer=object())
+        assert (
+            unauthorized.value.code
+            is GoogleProviderFailureCode.OWNER_PRIVATE_LAYOUT_INVALID
+        )
+
+
+def test_transport_rejects_unsealed_binding_before_credential_import(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        google_live_adapter.importlib,
+        "import_module",
+        lambda _: (_ for _ in ()).throw(AssertionError("must not import")),
+    )
+    binding = AnalyticsSiteBinding(
+        provider="GSC",
+        site_id=SITE_ID,
+        resource=GSC_RESOURCE,
+        credential_path="/owner/gsc/service-account.json",
+        service_account_email_sha256="1" * 64,
+        scopes=(GSC_READONLY_SCOPE,),
+    )
+    with pytest.raises(GoogleProviderFailure) as rejected:
+        GoogleServiceAccountAuthorizedTransport(binding=binding)
+    assert rejected.value.code is GoogleProviderFailureCode.INVALID_ARGUMENT
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "resource",
+        "site_id",
+        "credential_path",
+        "service_account_email_sha256",
+    ],
+)
+def test_guarded_binding_rejects_dataclass_replace_of_base_fields(
+    mutation: str,
+) -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        root = Path(temporary) / "owner-private"
+        _write_owner_private_tree(root)
+        binding = FixedOwnerPrivateAnalyticsSiteBindings(root).gsc()
+        with pytest.raises(TypeError):
+            if mutation == "resource":
+                replace(
+                    binding,
+                    resource="sc-domain:mutated.example",
+                )
+            elif mutation == "site_id":
+                replace(
+                    binding,
+                    site_id=UUID("55555555-5555-4555-8555-555555555555"),
+                )
+            elif mutation == "credential_path":
+                replace(
+                    binding,
+                    credential_path="/owner/alternate/service-account.json",
+                )
+            else:
+                replace(
+                    binding,
+                    service_account_email_sha256="3" * 64,
+                )
+
+
+def test_transport_revalidates_seal_after_low_level_binding_field_mutation(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        root = Path(temporary) / "owner-private"
+        _write_owner_private_tree(root)
+        binding = FixedOwnerPrivateAnalyticsSiteBindings(root).gsc()
+        object.__setattr__(binding, "resource", "sc-domain:mutated.example")
+
+        def reject_import(_: str) -> object:
+            raise AssertionError("credential modules must not be imported")
+
+        monkeypatch.setattr(
+            google_live_adapter.importlib,
+            "import_module",
+            reject_import,
+        )
+        with pytest.raises(GoogleProviderFailure) as rejected:
+            GoogleServiceAccountAuthorizedTransport(binding=binding)
+        assert (
+            rejected.value.code
+            is GoogleProviderFailureCode.OWNER_PRIVATE_LAYOUT_INVALID
         )
 
 

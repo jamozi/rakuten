@@ -155,7 +155,7 @@ function createRuntime(initialConsent, delivery = {}) {
         articleId: 'article-001',
         categoryId: 'mobility',
         ctaBindings: [{
-          cta_id: 'cta-a01-p01-card',
+          cta_id: 'icta_a01_p01_card',
           offer_id: 'off-a01-p01',
           placement: 'product_card',
           product_id: 'PRD-TEST-001'

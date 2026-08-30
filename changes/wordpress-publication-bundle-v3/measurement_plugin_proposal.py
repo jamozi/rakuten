@@ -39,6 +39,14 @@ ABILITIES_PROPOSAL_RECEIPT_PATH = (
     / "abilities-plugin-proposal-v3.json"
 )
 SHA256_RE = __import__("re").compile(r"^[0-9a-f]{64}$")
+RAKUTEN_ATTRIBUTION_CONTRACT = {
+    "provider_slot_count": 20,
+    "provider_measurement_id_count": 20,
+    "internal_cta_identity_count": 74,
+    "live_link_count": 74,
+    "direct_attribution_granularity": "ARTICLE_PLACEMENT",
+    "product_or_cta_provider_attribution_allowed": False,
+}
 
 spec = importlib.util.spec_from_file_location("raos_publication_for_plugin", PUBLICATION_SCRIPT)
 if spec is None or spec.loader is None:
@@ -216,6 +224,7 @@ def prepare(
         "separate_admin_approval_required": True,
         "apply_command_exposed": False,
         "measurement_gate_default_off": True,
+        "rakuten_attribution_contract": dict(RAKUTEN_ATTRIBUTION_CONTRACT),
         "proposal": None,
     }
 
@@ -284,6 +293,8 @@ def content_command(
     proposal = proposal_receipt.get("proposal")
     if (
         proposal_receipt.get("state") != "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
+        or proposal_receipt.get("rakuten_attribution_contract")
+        != RAKUTEN_ATTRIBUTION_CONTRACT
         or type(proposal) is not dict
         or apply_receipt.get("schema") != "OperationReceiptV1"
         or apply_receipt.get("proposal_id") != proposal.get("proposal_id")
@@ -293,6 +304,9 @@ def content_command(
         or apply_receipt.get("after_sha256") != proposal.get("after_sha256")
     ):
         fail("RAOS_MEASUREMENT_PLUGIN_APPLY_RECEIPT_INVALID")
+    if rakuten_activation_dry_run is None:
+        fail("RAOS_MEASUREMENT_PLUGIN_RAKUTEN_ACTIVATION_INVALID")
+    assert rakuten_activation_dry_run is not None
     try:
         activation = publication.validate_rakuten_activation_dry_run(
             rakuten_activation_dry_run,
@@ -300,8 +314,13 @@ def content_command(
         )
     except publication.PublicationFailure:
         fail("RAOS_MEASUREMENT_PLUGIN_RAKUTEN_ACTIVATION_INVALID")
-    assert rakuten_activation_dry_run is not None
-    if activation.article_count != 10 or activation.cta_count != 74:
+    if (
+        activation.article_count != 10
+        or activation.provider_slot_count != 20
+        or activation.provider_measurement_id_count != 20
+        or activation.cta_count != 74
+        or activation.live_link_count != 74
+    ):
         fail("RAOS_MEASUREMENT_PLUGIN_RAKUTEN_ACTIVATION_INVALID")
     return (
         ".venv/bin/python scripts/raos_wordpress_publication_request.py "

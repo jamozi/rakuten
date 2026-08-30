@@ -5,12 +5,13 @@ import hashlib
 from uuid import UUID
 
 import pytest
-from sqlalchemy import create_engine
+from sqlalchemy import Uuid, create_engine, literal, select
 from sqlalchemy.pool import NullPool
 
 from raos.adapters.persistence.sqlalchemy.google_live import (
     SqlAlchemyAnalyticsImportRepository,
     _INSERT_GSC_SQL,
+    _lock_scope,
     _prepare_ga4,
     _prepare_gsc,
 )
@@ -20,11 +21,15 @@ from raos.domain.analytics.google_live import (
     GA4_BASELINE_DIMENSIONS,
     GA4_BASELINE_METRICS,
     GA4_EVENT_PARAMETER_NAMES,
+    GA4_IMPORT_JOB_TYPE,
+    GOOGLE_ANALYTICS_JOB_QUEUE,
+    GSC_IMPORT_JOB_TYPE,
     Ga4ImportBatch,
     Ga4Observation,
     Ga4PropertyConfigSnapshot,
     GoogleProviderFailure,
     GoogleProviderFailureCode,
+    GoogleImportExecutionContext,
     SearchConsoleImportBatch,
     SearchConsoleObservation,
     canonical_json_bytes,
@@ -122,9 +127,7 @@ def _ga4_batch() -> Ga4ImportBatch:
                     "currency_code": "JPY",
                     "display_name": "Test property",
                     "property_resource": "properties/123456",
-                    "required_event_custom_dimensions": list(
-                        GA4_EVENT_PARAMETER_NAMES
-                    ),
+                    "required_event_custom_dimensions": list(GA4_EVENT_PARAMETER_NAMES),
                     "reporting_identity": "BLENDED",
                     "time_zone": "Asia/Tokyo",
                 }
@@ -236,3 +239,98 @@ def test_ga4_batch_fingerprint_binds_exact_property_configuration_hashes() -> No
         prepared.provider_resource_sha256
         == hashlib.sha256(b"properties/123456").hexdigest()
     )
+
+
+class _ScalarResult:
+    def __init__(self, value: object) -> None:
+        self._value = value
+
+    def scalar_one_or_none(self) -> object:
+        return self._value
+
+
+class _MappingResult:
+    def __init__(self, value: object) -> None:
+        self._value = value
+
+    def mappings(self) -> _MappingResult:
+        return self
+
+    def one_or_none(self) -> object:
+        return self._value
+
+
+class _ScopeSession:
+    def __init__(self, job: object) -> None:
+        self._results = [_ScalarResult(SITE_ID), _MappingResult(job)]
+
+    def execute(self, *_args: object, **_kwargs: object) -> object:
+        return self._results.pop(0)
+
+
+def _scope_row(*, job_type: str, queue_name: str = "analytics") -> object:
+    engine = create_engine("sqlite://")
+    try:
+        with engine.connect() as connection:
+            return (
+                connection.execute(
+                    select(
+                        literal(SITE_ID, type_=Uuid(as_uuid=True)).label("site_id"),
+                        literal(job_type).label("job_type"),
+                        literal(queue_name).label("queue_name"),
+                    )
+                )
+                .mappings()
+                .one()
+            )
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.parametrize(
+    ("expected", "actual"),
+    [
+        (GSC_IMPORT_JOB_TYPE, GSC_IMPORT_JOB_TYPE),
+        (GA4_IMPORT_JOB_TYPE, GA4_IMPORT_JOB_TYPE),
+    ],
+)
+def test_scope_lock_accepts_only_the_matching_source_job_type(
+    expected: str, actual: str
+) -> None:
+    _lock_scope(
+        _ScopeSession(_scope_row(job_type=actual)),  # type: ignore[arg-type]
+        GoogleImportExecutionContext(
+            display_id="AIR-SCOPE-TEST",
+            site_id=SITE_ID,
+            ops_job_id=UUID("0198f8c4-0000-7000-8000-000000000099"),
+            started_at=NOW,
+        ),
+        expected_job_type=expected,
+    )
+
+
+@pytest.mark.parametrize(
+    ("expected", "actual", "queue"),
+    [
+        (GSC_IMPORT_JOB_TYPE, GA4_IMPORT_JOB_TYPE, GOOGLE_ANALYTICS_JOB_QUEUE),
+        (GA4_IMPORT_JOB_TYPE, GSC_IMPORT_JOB_TYPE, GOOGLE_ANALYTICS_JOB_QUEUE),
+        (GSC_IMPORT_JOB_TYPE, GSC_IMPORT_JOB_TYPE, "wrong"),
+    ],
+)
+def test_scope_lock_rejects_cross_source_or_non_analytics_job(
+    expected: str, actual: str, queue: str
+) -> None:
+    with pytest.raises(GoogleProviderFailure) as raised:
+        _lock_scope(
+            _ScopeSession(  # type: ignore[arg-type]
+                _scope_row(job_type=actual, queue_name=queue)
+            ),
+            GoogleImportExecutionContext(
+                display_id="AIR-SCOPE-TEST",
+                site_id=SITE_ID,
+                ops_job_id=UUID("0198f8c4-0000-7000-8000-000000000099"),
+                started_at=NOW,
+            ),
+            expected_job_type=expected,
+        )
+    assert raised.value.code is GoogleProviderFailureCode.PERSISTENCE_FAILED

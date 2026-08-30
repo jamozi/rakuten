@@ -35,6 +35,7 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("python/raos/ports/google_live.py"),
     Path("python/raos/migrations/catalog.py"),
     Path("scripts/raos_editorial_economics_v3.py"),
+    Path("scripts/raos_google_owner_private_v1.py"),
     Path("scripts/raos_wordpress_seo_audit.py"),
     GENERATOR_PATH,
 )

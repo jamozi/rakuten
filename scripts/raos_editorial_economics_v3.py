@@ -5,9 +5,13 @@ from __future__ import annotations
 
 import argparse
 from datetime import UTC, date, datetime
+import json
+import os
 from pathlib import Path
+import re
+import stat
 import sys
-from typing import Final, Mapping
+from typing import Final, Mapping, cast
 from uuid import UUID
 
 
@@ -19,16 +23,13 @@ if str(PYTHON_ROOT) not in sys.path:
 from raos.application.editorial.editorial_portfolio_v3 import (  # noqa: E402
     EditorialPortfolioV3,
     EditorialPortfolioV3Failure,
-    PORTFOLIO_RELATIVE_PATH,
     load_editorial_portfolio_v3,
 )
-from raos.application.editorial.rakuten_measurement_activation_v3 import (  # noqa: E402
-    RakutenMeasurementActivationV3Failure,
-    validate_rakuten_measurement_activation_v3,
-)
 from raos.adapters.google_live_database import (  # noqa: E402
-    LocalGoogleAnalyticsDatabaseTarget,
-    create_local_google_analytics_engine,
+    OwnerPrivateDatabaseCredentialSnapshot,
+    SealedLocalGoogleAnalyticsDatabaseTarget,
+    create_sealed_local_google_analytics_engine,
+    seal_owner_private_database_credential,
 )
 from raos.adapters.persistence.sqlalchemy.identity import (  # noqa: E402
     WorkloadProfile,
@@ -47,8 +48,10 @@ from raos.domain.analytics.google_live import (  # noqa: E402
     GoogleImportExecutionContext,
     GoogleProviderFailure,
 )
+from raos.migrations.catalog import GOOGLE_ANALYTICS_LIVE_REVISION  # noqa: E402
 from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
     EditorialEconomicsV3Failure,
+    TRUSTED_T0_EVIDENCE_REQUIRED,
     bind_rakuten_profile,
     build_baseline_report,
     candidate_query_demand_template,
@@ -56,11 +59,9 @@ from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
     commit_rakuten_report,
     cost_input_template,
     detect_rakuten_sample,
-    establish_t0_receipt,
     evaluate_followups,
     parse_rakuten_report,
     production_readback_template,
-    private_path,
     rakuten_binding_template,
     read_private_bytes,
     read_private_json,
@@ -72,6 +73,25 @@ from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
 
 
 DEFAULT_PRIVATE_ROOT: Final = REPOSITORY_ROOT / ".secrets/editorial-portfolio-v3"
+DEFAULT_GOOGLE_SCOPE_RECEIPT: Final = "google/local-scope.v1.json"
+GOOGLE_SCOPE_RECEIPT_SCHEMA: Final = "raos.owner-private.google-local-scope.v1"
+GOOGLE_SCOPE_RECEIPT_KEYS: Final = frozenset(
+    {
+        "database_revision",
+        "ga4_ops_job_id",
+        "gsc_ops_job_id",
+        "schema_version",
+        "scope_initialized",
+        "site_id",
+    }
+)
+PRIVATE_PATH_COMPONENT_RE: Final = re.compile(
+    r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}\Z", re.ASCII
+)
+MAX_PRIVATE_PATH_LENGTH: Final = 512
+MAX_PRIVATE_PATH_DEPTH: Final = 8
+MAX_GOOGLE_SCOPE_RECEIPT_BYTES: Final = 64 * 1024
+MAX_DATABASE_PASSWORD_BYTES: Final = 1024
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -145,6 +165,24 @@ def _parser() -> argparse.ArgumentParser:
         required=True,
         help="exact owner-private Rakuten activation dry-run bound to live links",
     )
+    establish_t0.add_argument(
+        "--separate-admin-apply-receipt",
+        required=True,
+        help=("owner-private-root-relative mode-0600 separate-admin apply receipt"),
+    )
+    establish_t0.add_argument(
+        "--publication-receipt",
+        required=True,
+        help="owner-private-root-relative mode-0600 applied publication receipt",
+    )
+    establish_t0.add_argument(
+        "--public-readback-receipt",
+        required=True,
+        help=(
+            "owner-private-root-relative mode-0600 receipt created by a "
+            "separate administrator; owner/Codex must not synthesize it"
+        ),
+    )
     establish_t0.add_argument("--output", required=True)
 
     baseline = commands.add_parser(
@@ -182,9 +220,14 @@ def _parser() -> argparse.ArgumentParser:
     )
     refresh.add_argument("--date-from", required=True)
     refresh.add_argument("--date-to", required=True)
-    refresh.add_argument("--site-id", required=True)
-    refresh.add_argument("--gsc-ops-job-id", required=True)
-    refresh.add_argument("--ga4-ops-job-id", required=True)
+    refresh.add_argument(
+        "--google-scope-receipt",
+        default=DEFAULT_GOOGLE_SCOPE_RECEIPT,
+        help=(
+            "relative 0600 local scope receipt below --private-root; "
+            "defaults to google/local-scope.v1.json"
+        ),
+    )
     refresh.add_argument("--database-host", default="127.0.0.1")
     refresh.add_argument("--database-port", type=int, default=5432)
     refresh.add_argument("--database-name", required=True)
@@ -192,7 +235,7 @@ def _parser() -> argparse.ArgumentParser:
     refresh.add_argument(
         "--database-password",
         required=True,
-        help="relative 0600 password file below --private-root",
+        help="safe relative 0600 password file below --private-root",
     )
     refresh.add_argument("--gsc-output", required=True)
     refresh.add_argument("--ga4-output", required=True)
@@ -211,19 +254,403 @@ def _optional_json(private_root: Path, name: str | None) -> Mapping[str, object]
 def _date(value: str) -> date:
     try:
         return date.fromisoformat(value)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         raise EditorialEconomicsV3Failure(
             "RAOS_EDITORIAL_V3_GOOGLE_DATE_INVALID"
         ) from None
 
 
-def _uuid(value: str) -> UUID:
-    try:
-        return UUID(value)
-    except (AttributeError, TypeError, ValueError):
+def _uuid(value: object) -> UUID:
+    if type(value) is not str:
         raise EditorialEconomicsV3Failure(
             "RAOS_EDITORIAL_V3_GOOGLE_IDENTITY_INVALID"
         ) from None
+    try:
+        return UUID(value)
+    except AttributeError, TypeError, ValueError:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_GOOGLE_IDENTITY_INVALID"
+        ) from None
+
+
+def _private_relative_parts(name: object) -> tuple[str, ...]:
+    if (
+        type(name) is not str
+        or not 1 <= len(name) <= MAX_PRIVATE_PATH_LENGTH
+        or "\\" in name
+    ):
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_PRIVATE_NAME_INVALID"
+        ) from None
+    candidate = Path(name)
+    parts = candidate.parts
+    if (
+        candidate.is_absolute()
+        or not 1 <= len(parts) <= MAX_PRIVATE_PATH_DEPTH
+        or candidate.as_posix() != name
+        or any(PRIVATE_PATH_COMPONENT_RE.fullmatch(part) is None for part in parts)
+    ):
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_PRIVATE_NAME_INVALID"
+        ) from None
+    return parts
+
+
+def _file_identity(metadata: os.stat_result) -> tuple[int, ...]:
+    return (
+        metadata.st_dev,
+        metadata.st_ino,
+        metadata.st_mode,
+        metadata.st_uid,
+        metadata.st_nlink,
+        metadata.st_size,
+        metadata.st_mtime_ns,
+        metadata.st_ctime_ns,
+    )
+
+
+def _directory_identity(metadata: os.stat_result) -> tuple[int, int]:
+    return metadata.st_dev, metadata.st_ino
+
+
+def _is_private_directory(metadata: os.stat_result) -> bool:
+    return (
+        stat.S_ISDIR(metadata.st_mode)
+        and not stat.S_ISLNK(metadata.st_mode)
+        and metadata.st_uid == os.geteuid()
+        and stat.S_IMODE(metadata.st_mode) == 0o700
+    )
+
+
+def _validate_private_directory(metadata: os.stat_result) -> None:
+    if not _is_private_directory(metadata):
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_PRIVATE_FILE_INVALID"
+        ) from None
+
+
+def _open_pinned_private_root(
+    private_root: Path, flags: int
+) -> tuple[list[int], list[tuple[int, int]]]:
+    descriptors: list[int] = []
+    identities: list[tuple[int, int]] = []
+    try:
+        root_descriptor = os.open(
+            os.sep,
+            flags | getattr(os, "O_DIRECTORY", 0),
+        )
+        descriptors.append(root_descriptor)
+        root_metadata = os.fstat(root_descriptor)
+        if not stat.S_ISDIR(root_metadata.st_mode):
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_PRIVATE_ROOT_INVALID"
+            ) from None
+        identities.append(_directory_identity(root_metadata))
+
+        directory_descriptor = root_descriptor
+        for component in private_root.parts[1:]:
+            named_directory = os.stat(
+                component,
+                dir_fd=directory_descriptor,
+                follow_symlinks=False,
+            )
+            if not stat.S_ISDIR(named_directory.st_mode) or stat.S_ISLNK(
+                named_directory.st_mode
+            ):
+                raise EditorialEconomicsV3Failure(
+                    "RAOS_EDITORIAL_V3_PRIVATE_ROOT_INVALID"
+                ) from None
+            child_descriptor = os.open(
+                component,
+                flags | getattr(os, "O_DIRECTORY", 0),
+                dir_fd=directory_descriptor,
+            )
+            descriptors.append(child_descriptor)
+            opened_directory = os.fstat(child_descriptor)
+            if not stat.S_ISDIR(opened_directory.st_mode) or _directory_identity(
+                named_directory
+            ) != _directory_identity(opened_directory):
+                raise EditorialEconomicsV3Failure(
+                    "RAOS_EDITORIAL_V3_PRIVATE_FILE_CHANGED"
+                ) from None
+            identities.append(_directory_identity(opened_directory))
+            directory_descriptor = child_descriptor
+        if not _is_private_directory(os.fstat(directory_descriptor)):
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_PRIVATE_ROOT_INVALID"
+            ) from None
+        return descriptors, identities
+    except EditorialEconomicsV3Failure:
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
+        raise
+    except OSError:
+        for descriptor in reversed(descriptors):
+            os.close(descriptor)
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_PRIVATE_ROOT_INVALID"
+        ) from None
+
+
+def _verify_pinned_private_root(
+    private_root: Path,
+    descriptors: list[int],
+    identities: list[tuple[int, int]],
+) -> None:
+    try:
+        named_root = os.stat(os.sep, follow_symlinks=False)
+        if (
+            _directory_identity(named_root) != identities[0]
+            or _directory_identity(os.fstat(descriptors[0])) != identities[0]
+        ):
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_PRIVATE_FILE_CHANGED"
+            ) from None
+        for index, component in enumerate(private_root.parts[1:], start=1):
+            named_directory = os.stat(
+                component,
+                dir_fd=descriptors[index - 1],
+                follow_symlinks=False,
+            )
+            if (
+                not stat.S_ISDIR(named_directory.st_mode)
+                or stat.S_ISLNK(named_directory.st_mode)
+                or _directory_identity(named_directory) != identities[index]
+                or _directory_identity(os.fstat(descriptors[index]))
+                != identities[index]
+            ):
+                raise EditorialEconomicsV3Failure(
+                    "RAOS_EDITORIAL_V3_PRIVATE_FILE_CHANGED"
+                ) from None
+        if not _is_private_directory(os.fstat(descriptors[-1])):
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_PRIVATE_FILE_CHANGED"
+            ) from None
+    except EditorialEconomicsV3Failure:
+        raise
+    except OSError:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_PRIVATE_FILE_CHANGED"
+        ) from None
+
+
+def _read_private_relative_snapshot(
+    private_root: Path,
+    name: object,
+    *,
+    maximum_bytes: int,
+) -> bytes:
+    if not private_root.is_absolute():
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_PRIVATE_ROOT_INVALID"
+        ) from None
+    try:
+        lexical_root = Path(os.path.abspath(private_root))
+    except OSError:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_PRIVATE_ROOT_INVALID"
+        ) from None
+    if private_root != lexical_root:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_PRIVATE_ROOT_INVALID"
+        ) from None
+    parts = _private_relative_parts(name)
+    flags = os.O_RDONLY | os.O_CLOEXEC | getattr(os, "O_NOFOLLOW", 0)
+    directory_descriptors, directory_identities = _open_pinned_private_root(
+        private_root, flags
+    )
+    private_root_index = len(directory_descriptors) - 1
+    directory_descriptor = directory_descriptors[private_root_index]
+    file_descriptor = -1
+    try:
+        for component in parts[:-1]:
+            named_directory = os.stat(
+                component,
+                dir_fd=directory_descriptor,
+                follow_symlinks=False,
+            )
+            child_descriptor = os.open(
+                component,
+                flags | getattr(os, "O_DIRECTORY", 0),
+                dir_fd=directory_descriptor,
+            )
+            directory_descriptors.append(child_descriptor)
+            opened_directory = os.fstat(child_descriptor)
+            _validate_private_directory(opened_directory)
+            if _directory_identity(named_directory) != _directory_identity(
+                opened_directory
+            ):
+                raise EditorialEconomicsV3Failure(
+                    "RAOS_EDITORIAL_V3_PRIVATE_FILE_CHANGED"
+                ) from None
+            directory_identities.append(_directory_identity(opened_directory))
+            directory_descriptor = child_descriptor
+
+        leaf = parts[-1]
+        file_descriptor = os.open(leaf, flags, dir_fd=directory_descriptor)
+        before = os.fstat(file_descriptor)
+        named_before = os.stat(
+            leaf,
+            dir_fd=directory_descriptor,
+            follow_symlinks=False,
+        )
+        if (
+            _file_identity(before) != _file_identity(named_before)
+            or not stat.S_ISREG(before.st_mode)
+            or stat.S_ISLNK(before.st_mode)
+            or before.st_uid != os.geteuid()
+            or stat.S_IMODE(before.st_mode) != 0o600
+            or before.st_nlink != 1
+            or not 1 <= before.st_size <= maximum_bytes
+        ):
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_PRIVATE_FILE_INVALID"
+            ) from None
+
+        chunks: list[bytes] = []
+        remaining = before.st_size
+        while remaining:
+            chunk = os.read(file_descriptor, min(remaining, 64 * 1024))
+            if not chunk:
+                raise EditorialEconomicsV3Failure(
+                    "RAOS_EDITORIAL_V3_PRIVATE_FILE_CHANGED"
+                ) from None
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        content = b"".join(chunks)
+
+        after = os.fstat(file_descriptor)
+        named_after = os.stat(
+            leaf,
+            dir_fd=directory_descriptor,
+            follow_symlinks=False,
+        )
+        if _file_identity(after) != _file_identity(before) or _file_identity(
+            named_after
+        ) != _file_identity(before):
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_PRIVATE_FILE_CHANGED"
+            ) from None
+
+        _verify_pinned_private_root(
+            private_root,
+            directory_descriptors[: private_root_index + 1],
+            directory_identities[: private_root_index + 1],
+        )
+        for index, component in enumerate(parts[:-1], start=1):
+            descriptor_index = private_root_index + index
+            expected_identity = directory_identities[descriptor_index]
+            named_directory_after = os.stat(
+                component,
+                dir_fd=directory_descriptors[descriptor_index - 1],
+                follow_symlinks=False,
+            )
+            if (
+                _directory_identity(named_directory_after) != expected_identity
+                or _directory_identity(
+                    os.fstat(directory_descriptors[descriptor_index])
+                )
+                != expected_identity
+                or not _is_private_directory(
+                    os.fstat(directory_descriptors[descriptor_index])
+                )
+            ):
+                raise EditorialEconomicsV3Failure(
+                    "RAOS_EDITORIAL_V3_PRIVATE_FILE_CHANGED"
+                ) from None
+        return content
+    except EditorialEconomicsV3Failure:
+        raise
+    except OSError:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_PRIVATE_FILE_INVALID"
+        ) from None
+    finally:
+        if file_descriptor >= 0:
+            os.close(file_descriptor)
+        for descriptor in reversed(directory_descriptors):
+            os.close(descriptor)
+
+
+def _database_credential_snapshot(
+    private_root: Path, name: object
+) -> OwnerPrivateDatabaseCredentialSnapshot:
+    content = _read_private_relative_snapshot(
+        private_root,
+        name,
+        maximum_bytes=MAX_DATABASE_PASSWORD_BYTES,
+    )
+    return seal_owner_private_database_credential(content)
+
+
+def _unique_scope_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_GOOGLE_SCOPE_INVALID"
+            ) from None
+        result[key] = value
+    return result
+
+
+def _reject_json_constant(_value: str) -> None:
+    raise EditorialEconomicsV3Failure(
+        "RAOS_EDITORIAL_V3_GOOGLE_SCOPE_INVALID"
+    ) from None
+
+
+def _google_local_scope(private_root: Path, name: object) -> tuple[UUID, UUID, UUID]:
+    content = _read_private_relative_snapshot(
+        private_root,
+        name,
+        maximum_bytes=MAX_GOOGLE_SCOPE_RECEIPT_BYTES,
+    )
+    try:
+        value = json.loads(
+            content.decode("utf-8", errors="strict"),
+            object_pairs_hook=_unique_scope_object,
+            parse_constant=_reject_json_constant,
+        )
+    except EditorialEconomicsV3Failure:
+        raise
+    except UnicodeError, json.JSONDecodeError, RecursionError, ValueError:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_GOOGLE_SCOPE_INVALID"
+        ) from None
+    if type(value) is not dict:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_GOOGLE_SCOPE_INVALID"
+        ) from None
+    document = cast(dict[str, object], value)
+    if (
+        frozenset(document) != GOOGLE_SCOPE_RECEIPT_KEYS
+        or document.get("schema_version") != GOOGLE_SCOPE_RECEIPT_SCHEMA
+        or document.get("scope_initialized") is not True
+        or document.get("database_revision") != GOOGLE_ANALYTICS_LIVE_REVISION
+    ):
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_GOOGLE_SCOPE_INVALID"
+        ) from None
+    try:
+        site_id = _uuid(document.get("site_id"))
+        gsc_job_id = _uuid(document.get("gsc_ops_job_id"))
+        ga4_job_id = _uuid(document.get("ga4_ops_job_id"))
+    except EditorialEconomicsV3Failure:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_GOOGLE_SCOPE_INVALID"
+        ) from None
+    if (
+        any(identifier.int == 0 for identifier in (site_id, gsc_job_id, ga4_job_id))
+        or len({site_id, gsc_job_id, ga4_job_id}) != 3
+        or str(site_id) != document["site_id"]
+        or str(gsc_job_id) != document["gsc_ops_job_id"]
+        or str(ga4_job_id) != document["ga4_ops_job_id"]
+    ):
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_GOOGLE_SCOPE_INVALID"
+        ) from None
+    return site_id, gsc_job_id, ga4_job_id
 
 
 def _refresh_baseline(
@@ -244,18 +671,21 @@ def _refresh_baseline(
         raise EditorialEconomicsV3Failure(
             "RAOS_EDITORIAL_V3_GOOGLE_DATE_INVALID"
         ) from None
-    site_id = _uuid(arguments.site_id)
-    gsc_job_id = _uuid(arguments.gsc_ops_job_id)
-    ga4_job_id = _uuid(arguments.ga4_ops_job_id)
+    site_id, gsc_job_id, ga4_job_id = _google_local_scope(
+        private_root, arguments.google_scope_receipt
+    )
     started_at = datetime.now(UTC)
-    target = LocalGoogleAnalyticsDatabaseTarget(
+    credential = _database_credential_snapshot(
+        private_root, arguments.database_password
+    )
+    target = SealedLocalGoogleAnalyticsDatabaseTarget(
         host=arguments.database_host,
         port=arguments.database_port,
         database=arguments.database_name,
         user=arguments.database_user,
-        password_file=private_path(private_root, arguments.database_password),
+        credential=credential,
     )
-    engine = create_local_google_analytics_engine(target)
+    engine = create_sealed_local_google_analytics_engine(target)
     try:
         provider = SqlAlchemyEngineProvider(engine, WorkloadProfile.WORKER_COMMAND)
         repository = SqlAlchemyAnalyticsImportRepository(provider)
@@ -309,7 +739,7 @@ def _refresh_baseline(
 
 def main(argv: list[str] | None = None) -> int:
     arguments = _parser().parse_args(argv)
-    private_root = arguments.private_root.resolve()
+    private_root = arguments.private_root
     try:
         portfolio = load_editorial_portfolio_v3(REPOSITORY_ROOT)
         if arguments.command == "rakuten-detect":
@@ -324,7 +754,9 @@ def main(argv: list[str] | None = None) -> int:
             detection_content = read_private_bytes(private_root, arguments.detection)
             detection = read_private_json(private_root, arguments.detection)
             document = rakuten_binding_template(
-                detection, detection_sha256=sha256_bytes(detection_content)
+                detection,
+                detection_sha256=sha256_bytes(detection_content),
+                portfolio=portfolio,
             )
             write_private_json(private_root, arguments.output, document)
         elif arguments.command == "rakuten-bind-profile":
@@ -352,9 +784,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             write_private_json(private_root, arguments.output, document)
         elif arguments.command == "rakuten-commit":
-            rakuten_report_content = read_private_bytes(
-                private_root, arguments.report
-            )
+            rakuten_report_content = read_private_bytes(private_root, arguments.report)
             profile_content = read_private_bytes(private_root, arguments.profile)
             profile = read_private_json(private_root, arguments.profile)
             dry_run = read_private_json(private_root, arguments.dry_run)
@@ -374,6 +804,7 @@ def main(argv: list[str] | None = None) -> int:
                     "CONFIRMED": arguments.provider_confirmed_jpy,
                     "CANCELLED": arguments.provider_cancelled_jpy,
                 },
+                portfolio=portfolio,
             )
             write_private_json(private_root, arguments.output, document)
         elif arguments.command == "cost-template":
@@ -393,47 +824,10 @@ def main(argv: list[str] | None = None) -> int:
                 production_readback_template(portfolio),
             )
         elif arguments.command == "establish-t0":
-            observation_content = read_private_bytes(
-                private_root, arguments.observation
-            )
-            observation = read_private_json(private_root, arguments.observation)
-            activation_content = read_private_bytes(
-                private_root, arguments.rakuten_activation_dry_run
-            )
-            activation = read_private_json(
-                private_root, arguments.rakuten_activation_dry_run
-            )
-            activation_path = private_path(
-                private_root, arguments.rakuten_activation_dry_run
-            )
-            validated_activation = validate_rakuten_measurement_activation_v3(
-                repository_root=REPOSITORY_ROOT,
-                dry_run_path=activation_path,
-                portfolio=portfolio,
-                require_recent=False,
-            )
-            if validated_activation.dry_run_sha256 != sha256_bytes(
-                activation_content
-            ):
-                raise EditorialEconomicsV3Failure(
-                    "RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID"
-                )
-            try:
-                portfolio_content = (REPOSITORY_ROOT / PORTFOLIO_RELATIVE_PATH).read_bytes()
-            except OSError:
-                raise EditorialEconomicsV3Failure(
-                    "RAOS_EDITORIAL_V3_PORTFOLIO_UNAVAILABLE"
-                ) from None
-            receipt = establish_t0_receipt(
-                document=observation,
-                observation_sha256=sha256_bytes(observation_content),
-                rakuten_activation=activation,
-                rakuten_activation_sha256=sha256_bytes(activation_content),
-                expected_portfolio_sha256=sha256_bytes(portfolio_content),
-                portfolio=portfolio,
-                evaluated_at=datetime.now(UTC),
-            )
-            write_private_json(private_root, arguments.output, receipt)
+            # No current input carries independently verifiable trusted
+            # evidence.  Fail before reading any owner-private candidate files
+            # and never create a T0 receipt from self-asserted JSON.
+            raise EditorialEconomicsV3Failure(TRUSTED_T0_EVIDENCE_REQUIRED)
         elif arguments.command == "baseline":
             baseline_report = build_baseline_report(
                 portfolio=portfolio,
@@ -483,7 +877,6 @@ def main(argv: list[str] | None = None) -> int:
         EditorialEconomicsV3Failure,
         EditorialPortfolioV3Failure,
         GoogleProviderFailure,
-        RakutenMeasurementActivationV3Failure,
     ) as exc:
         print(str(exc), file=sys.stderr)
         return 1
