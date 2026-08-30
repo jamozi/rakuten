@@ -2604,6 +2604,35 @@ def test_site_status_requires_plugin_1_3_1_and_distinct_review_and_lease_ttls() 
         publication.validate_site_status(status)
 
 
+def test_attempt_prepared_without_proposals_uses_review_window_plus_grace(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    real_datetime = publication.datetime
+    created_at = real_datetime(2026, 8, 30, 0, 0, 0, tzinfo=publication.UTC)
+
+    class FixedDateTime(real_datetime):
+        current = created_at
+
+        @classmethod
+        def now(cls, tz=None):
+            return cls.current if tz is not None else cls.current.replace(tzinfo=None)
+
+    monkeypatch.setattr(publication, "datetime", FixedDateTime)
+    receipt = {
+        "state": "ATTEMPT_PREPARED",
+        "attempt_created_at_gmt": "2026-08-30T00:00:00Z",
+        "proposals": [],
+    }
+
+    assert publication.ATTEMPT_PREPARED_EXPIRY_SECONDS == 3630
+    FixedDateTime.current = created_at + publication.timedelta(seconds=930)
+    assert publication._attempt_expired(receipt) is False
+    FixedDateTime.current = created_at + publication.timedelta(seconds=3629)
+    assert publication._attempt_expired(receipt) is False
+    FixedDateTime.current = created_at + publication.timedelta(seconds=3630)
+    assert publication._attempt_expired(receipt) is True
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [

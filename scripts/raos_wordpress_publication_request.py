@@ -107,6 +107,7 @@ EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
 )
 EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS: Final = 3600
 EXPECTED_APPLY_LEASE_TTL_SECONDS: Final = 900
+ATTEMPT_PREPARED_EXPIRY_SECONDS: Final = EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS + 30
 RELEASE_FOREGROUND_TIMEOUT_SECONDS: Final = 4680
 EXPECTED_THEME_VERSION: Final = "1.4.0"
 EXPECTED_THEME_RUNTIME_REVISION: Final = (
@@ -2972,7 +2973,9 @@ def _attempt_expired(receipt: Mapping[str, object]) -> bool:
             )
         except ValueError:
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
-        return datetime.now(UTC) >= created_at + timedelta(seconds=930)
+        return datetime.now(UTC) >= created_at + timedelta(
+            seconds=ATTEMPT_PREPARED_EXPIRY_SECONDS
+        )
     expirations: list[datetime] = []
     for proposal in proposals:
         if (
