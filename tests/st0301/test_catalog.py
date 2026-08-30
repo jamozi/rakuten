@@ -37,7 +37,7 @@ def test_live_catalog_verifies_every_source_and_is_deterministic() -> None:
 
     assert first == second
     assert len(first.runtime_sources) == 1
-    assert len(first.revision_sources) == len(catalog.REVISION_SPECS) == 6
+    assert len(first.revision_sources) == len(catalog.REVISION_SPECS) == 7
     assert len(first.checkpoint_sources) == 18
     assert len(first.catalog_sha256) == 64
     assert sum(item.size for item in first.checkpoint_sources) > 100_000

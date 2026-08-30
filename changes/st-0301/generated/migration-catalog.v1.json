@@ -10,7 +10,7 @@
     "production_execution": "FORBIDDEN",
     "staging_or_recovery_execution": "NOT_IMPLEMENTED"
   },
-  "catalog_sha256": "2b8632385969b95b92b03ef141cece50c109ef072023d934205532bcf3044e0c",
+  "catalog_sha256": "9f6adbf8f7fd3c771b438f68ca37d313bda333a4ede3b9efb43c84290243cf15",
   "deferred_checkpoints": {
     "entries": [
       {
@@ -229,7 +229,7 @@
   "revision_graph": {
     "anchor": "202608030001",
     "base": null,
-    "head": "202608030006",
+    "head": "202608300001",
     "linear_single_head": true,
     "revisions": [
       {
@@ -285,6 +285,15 @@
         "server_version_num": 180004,
         "sha256": "472690c8ca8080e3e3c0e294e40ea31b30c7d9314daa4cd5ee83a4841d439825",
         "story_id": "ST-0306"
+      },
+      {
+        "down_revision": "202608030006",
+        "path": "migrations/versions/202608300001_google_analytics_live_persistence.py",
+        "revision": "202608300001",
+        "runner_version": "1.6.0",
+        "server_version_num": 180004,
+        "sha256": "78fb502b760dbc5a6ef028ac50e8b596d3d9fe8134a5274d0c708c9a214d13eb",
+        "story_id": "ST-0305"
       }
     ]
   },

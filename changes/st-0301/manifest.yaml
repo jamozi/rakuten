@@ -56,7 +56,7 @@ provenance:
     uri: repo://changes/st-0204/manifest.yaml
     owner_id: build_st0204_config_loader
     owner_version: 2
-source_artifact_count: 41
+source_artifact_count: 42
 source_artifacts:
 - uri: repo://.python-version
   kind: tracked
@@ -68,7 +68,7 @@ source_artifacts:
   version: 2
 - uri: repo://uv.lock
   kind: dependency_lock
-  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
+  sha256: b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1
 - uri: repo://uv.toml
   kind: tracked
   semantic_id: uv.toml
@@ -124,6 +124,10 @@ source_artifacts:
 - uri: repo://migrations/versions/202608030006_database_roles.py
   kind: tracked
   semantic_id: migrations/versions/202608030006_database_roles.py
+  version: 2
+- uri: repo://migrations/versions/202608300001_google_analytics_live_persistence.py
+  kind: tracked
+  semantic_id: migrations/versions/202608300001_google_analytics_live_persistence.py
   version: 2
 - uri: repo://python/raos/__init__.py
   kind: tracked
@@ -224,8 +228,8 @@ source_artifacts:
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0301/generated/migration-catalog.v1.json
-  bytes: 10404
-  sha256: 13c23b665b12e397730a7f720899fc72dc8208ddc165fcdb92694e4eb39e33a1
+  bytes: 10776
+  sha256: d15068d6c7e637896919f266ee06b96563b5869810a82a1f7c9b97868baab92f
 manifest_self_integrity:
   included_in_source_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check

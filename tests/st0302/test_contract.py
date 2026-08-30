@@ -121,7 +121,12 @@ def test_catalog_preserves_foundation_in_the_cumulative_linear_graph() -> None:
     assert catalog.IAM_OPS_REVISION == "202608030003"
     assert catalog.DOMAIN_REVISION == "202608030004"
     assert catalog.PUBLICATION_ANALYTICS_FINANCE_REVISION == "202608030005"
-    assert catalog.DATABASE_ROLES_REVISION == catalog.HEAD_REVISION == "202608030006"
+    assert catalog.DATABASE_ROLES_REVISION == "202608030006"
+    assert (
+        catalog.GOOGLE_ANALYTICS_LIVE_REVISION
+        == catalog.HEAD_REVISION
+        == "202608300001"
+    )
     assert [item.revision for item in catalog.REVISION_SPECS] == [
         "202608030001",
         "202608030002",
@@ -129,6 +134,7 @@ def test_catalog_preserves_foundation_in_the_cumulative_linear_graph() -> None:
         "202608030004",
         "202608030005",
         "202608030006",
+        "202608300001",
     ]
     foundation = catalog.REVISION_SPECS[1]
     assert foundation.down_revision == catalog.ANCHOR_REVISION
@@ -157,6 +163,11 @@ def test_catalog_preserves_foundation_in_the_cumulative_linear_graph() -> None:
     assert database_roles.story_id == "ST-0306"
     assert database_roles.runner_version == "1.5.0"
     assert database_roles.server_version_num == 180004
+    google_live = catalog.REVISION_SPECS[6]
+    assert google_live.down_revision == catalog.DATABASE_ROLES_REVISION
+    assert google_live.story_id == "ST-0305"
+    assert google_live.runner_version == "1.6.0"
+    assert google_live.server_version_num == 180004
 
 
 def test_execplan_records_all_required_sections_and_unchanged_canonical_status() -> (

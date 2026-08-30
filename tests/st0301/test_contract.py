@@ -17,6 +17,7 @@ from raos.migrations.catalog import (
     DATABASE_ROLES_REVISION,
     DOMAIN_REVISION,
     FOUNDATION_REVISION,
+    GOOGLE_ANALYTICS_LIVE_REVISION,
     FORWARD_PLAN,
     GUARDED_REVERSE_PLAN,
     HEAD_REVISION,
@@ -146,10 +147,11 @@ def test_production_alembic_graph_retains_one_reviewed_history_anchor(
     assert IAM_OPS_REVISION == "202608030003"
     assert DOMAIN_REVISION == "202608030004"
     assert PUBLICATION_ANALYTICS_FINANCE_REVISION == "202608030005"
-    assert DATABASE_ROLES_REVISION == HEAD_REVISION == "202608030006"
+    assert DATABASE_ROLES_REVISION == "202608030006"
+    assert GOOGLE_ANALYTICS_LIVE_REVISION == HEAD_REVISION == "202608300001"
     assert script.get_heads() == [HEAD_REVISION]
     assert script.get_bases() == [ANCHOR_REVISION]
-    assert len(revisions) == len(REVISION_SPECS) == 6
+    assert len(revisions) == len(REVISION_SPECS) == 7
     assert revisions[-1].revision == ANCHOR_REVISION
     assert revisions[-1].down_revision is None
     assert revisions[-1].branch_labels == {"raos_framework"}
