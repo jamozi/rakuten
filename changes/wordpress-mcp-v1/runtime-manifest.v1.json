@@ -267,8 +267,8 @@
     },
     {
       "path": "scripts/raos_wordpress_publication_request.py",
-      "sha256": "8c7a0a9fd156cdefa05909af81fa9cf4e49aa52490541709c2d27b922894d93b",
-      "size": 165071
+      "sha256": "40d2e7e777b34d3fd8fc3db21bbd3f97b53630c39b75d6cddcb334056a9dff2a",
+      "size": 165155
     },
     {
       "path": "scripts/raos_wordpress_editor_mcp_launcher.mjs",
@@ -347,8 +347,8 @@
     },
     {
       "path": "tests/wordpress_local_preview/test_publication_request.py",
-      "sha256": "0c4145647c4a206330abd999960821a6505590c4be1c7f34912e56e62b23ac0d",
-      "size": 128043
+      "sha256": "67868fa5ae157a41075013e8a0939920628f41cb9a91e88996188acc5830aa43",
+      "size": 128261
     },
     {
       "path": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/README.md",

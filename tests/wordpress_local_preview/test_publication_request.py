@@ -357,6 +357,11 @@ def test_public_readback_rejects_malformed_heading_markup(
             "<aside><h2>関連記事</h2><h3>追加見出し</h3></aside>"
             "<footer><h2>暮らしのしるべ</h2></footer>",
         ),
+        (
+            None,
+            '<aside><h2>関連記事</h2><h3 aria-label="追加"></h3></aside>'
+            "<footer><h2>暮らしのしるべ</h2></footer>",
+        ),
     ],
     ids=(
         "duplicate",
@@ -365,6 +370,7 @@ def test_public_readback_rejects_malformed_heading_markup(
         "after-footer",
         "before-article-outline",
         "additional-extra-heading",
+        "empty-aria-label-heading",
     ),
 )
 def test_public_readback_rejects_invalid_related_articles_heading_materialization(

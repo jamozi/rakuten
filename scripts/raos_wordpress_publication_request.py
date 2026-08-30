@@ -346,7 +346,9 @@ class _PublicPageEvidenceParser(HTMLParser):
                 self._heading_markup_malformed = True
             else:
                 heading = _normalized_public_text(self._heading_parts)
-                if heading:
+                if not heading:
+                    self._heading_markup_malformed = True
+                else:
                     self.headings.append(heading)
                     self.heading_outline.append((lowered, heading))
                     if lowered == "h1":
