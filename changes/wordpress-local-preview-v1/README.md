@@ -130,6 +130,9 @@ to Compose, WordPress, seed validation, and the browser audit. With
 - article 8: `${PREVIEW_ORIGIN}/local-preview-front-open-carry-on-suitcase-with-stopper/`
 - article 9: `${PREVIEW_ORIGIN}/local-preview-roomba-mini-vs-switchbot-k11-pro/`
 - article 10: `${PREVIEW_ORIGIN}/local-preview-solota-vs-rakua-mini-plus/`
+- policy 1: `${PREVIEW_ORIGIN}/about-ad-policy/`
+- policy 2: `${PREVIEW_ORIGIN}/comparison-policy/`
+- policy 3: `${PREVIEW_ORIGIN}/privacy-policy/`
 
 Edit the tracked child theme on the host and refresh the browser. The container
 cannot edit that mount. WordPress database changes made while experimenting are
@@ -169,8 +172,18 @@ pixels. It fails on HTTP errors,
 console/page errors, external requests, horizontal overflow, missing image
 alternatives, duplicate IDs, broken ARIA references, missing Japanese language
 metadata, incorrect H1/main counts, out-of-bounds H1, Cookie-settings, or CTA
-boxes, or a missing Editorial V2 article module. The 56 screenshots are ignored
-build artifacts under `output/playwright/local-preview/`.
+boxes, or a missing Editorial V2 article module. It also requires one self
+canonical, one non-empty meta description, one complete self-bound Open Graph
+record, the role-specific RAOS JSON-LD types with the prohibited commercial
+types absent, and the preview's fail-closed `noindex, nofollow` response and
+meta directives on every surface. The 56 screenshots are ignored build
+artifacts under `output/playwright/local-preview/`.
+
+The preview deliberately keeps `blog_public=0` and does not install Yoast, so
+its XML sitemap endpoints remain disabled. Production `robots.txt` and the
+exact sitemap URL union are checked only by the bounded, anonymous
+`scripts/raos_wordpress_seo_audit.py`; the local browser gate instead proves
+that all fourteen closed target URLs exist and have the required head output.
 
 ## Reset and boundaries
 

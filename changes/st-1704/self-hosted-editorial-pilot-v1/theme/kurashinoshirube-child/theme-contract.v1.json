@@ -174,8 +174,22 @@
       "Product",
       "Review"
     ],
-    "metadata_owner": "YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK",
-    "raos_metadata_delivery": "YOAST_METADATA_FILTERS_ONLY",
+    "local_preview_metadata_fallback": {
+      "active_when": "EXACT_RAOS_LOCAL_PREVIEW_AND_WPSEO_VERSION_UNDEFINED_AND_CLOSED_HEAD_CONTEXT_AND_VERIFIED_SOCIAL_IMAGE",
+      "canonical_owner": "RAOS_THEME_AFTER_REMOVING_CORE_REL_CANONICAL",
+      "document_title_owner": "WORDPRESS_PRE_GET_DOCUMENT_TITLE_FILTER",
+      "fields": [
+        "canonical",
+        "meta_description",
+        "og_description",
+        "og_image",
+        "og_title",
+        "og_url"
+      ],
+      "production_effect": "NONE"
+    },
+    "metadata_owner": "PRODUCTION_YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK",
+    "raos_metadata_delivery": "PRODUCTION_YOAST_METADATA_FILTERS_WITH_LOCAL_PREVIEW_NO_YOAST_FALLBACK",
     "rest_output": {
       "preserved_route": "/wp/v2/posts",
       "removed_fields": ["yoast_head", "yoast_head_json"],

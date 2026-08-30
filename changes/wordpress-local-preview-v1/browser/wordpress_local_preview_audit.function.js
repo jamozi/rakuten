@@ -1,115 +1,257 @@
-({ artifactDirectory, inventory, origin }) => async (page) => {
-  const cleanPath = (value) =>
-    typeof value === 'string' && /^\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)?$/.test(value);
-  const rawSurfaces = inventory?.surfaces;
-  const rawClusters = inventory?.clusters;
-  const widths = inventory?.viewports;
-  const articleRows = Array.isArray(rawSurfaces)
-    ? rawSurfaces.filter((surface) => surface.kind === 'article')
-    : [];
-  const policyRows = Array.isArray(rawSurfaces)
-    ? rawSurfaces.filter((surface) => surface.kind === 'policy')
-    : [];
-  const homeRows = Array.isArray(rawSurfaces)
-    ? rawSurfaces.filter((surface) => surface.kind === 'home')
-    : [];
-  const articleIds = new Set(articleRows.map((surface) => surface.article_id));
-  const memberships = Array.isArray(rawClusters)
-    ? rawClusters.flatMap((cluster) => cluster.article_ids || [])
-    : [];
-  if (
-    typeof artifactDirectory !== 'string' || !artifactDirectory.startsWith('/') ||
-    typeof origin !== 'string' || !/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(origin) ||
-    inventory?.schema !== 'RAOS_WORDPRESS_AUDIT_INVENTORY_V3' ||
-    inventory?.version !== '3.0.0' ||
-    inventory?.target_origin !== 'https://kurashinoshirube.com' ||
-    !Array.isArray(rawSurfaces) || rawSurfaces.length !== 14 ||
-    homeRows.length !== 1 || articleRows.length !== 10 || policyRows.length !== 3 ||
-    !Array.isArray(rawClusters) || rawClusters.length !== 3 ||
-    !Array.isArray(widths) || widths.length !== 4 ||
-    new Set(widths).size !== widths.length ||
-    widths.some((width) => !Number.isInteger(width) || width < 320 || width > 1920) ||
-    new Set(rawSurfaces.map((surface) => surface.surface_id)).size !== 14 ||
-    rawSurfaces.some(
-      (surface) =>
-        !['home', 'article', 'policy'].includes(surface.kind) ||
-        typeof surface.surface_id !== 'string' ||
-        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(surface.surface_id) ||
-        !cleanPath(surface.local_path) || !cleanPath(surface.production_path),
-    ) ||
-    articleIds.size !== 10 ||
-    articleRows.some(
-      (surface) =>
-        typeof surface.article_id !== 'string' ||
-        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(surface.article_id) ||
-        !articleIds.has(surface.contextual_article_id) ||
-        !Array.isArray(surface.related_article_ids) ||
-        surface.related_article_ids.length < 2 ||
-        new Set(surface.related_article_ids).size !== surface.related_article_ids.length ||
-        !surface.related_article_ids.includes(surface.contextual_article_id) ||
-        surface.related_article_ids.some(
-          (articleId) => articleId === surface.article_id || !articleIds.has(articleId),
-        ),
-    ) ||
-    rawClusters.some(
-      (cluster) =>
-        typeof cluster.anchor !== 'string' || !/^cluster-[a-z0-9-]+$/.test(cluster.anchor) ||
-        !Array.isArray(cluster.article_ids) || cluster.article_ids.length < 2 ||
-        new Set(cluster.article_ids).size !== cluster.article_ids.length ||
-        cluster.article_ids.some((articleId) => !articleIds.has(articleId)),
-    ) ||
-    memberships.length !== 10 || new Set(memberships).size !== 10 ||
-    memberships.some((articleId) => !articleIds.has(articleId))
-  ) {
-    throw new Error('RAOS_WORDPRESS_AUDIT_INVENTORY_INVALID');
-  }
-  const surfaces = rawSurfaces.map((surface) => ({
-    ...surface,
-    article: surface.kind === 'article',
-    articleId: surface.article_id,
-    name: surface.surface_id,
-    path: surface.local_path,
-  }));
-  const articleSurfaces = surfaces.filter((surface) => surface.article);
-  const expectedPathByArticleId = Object.fromEntries(
-    articleSurfaces.map((surface) => [surface.articleId, surface.path]),
-  );
-  const runtimeErrors = [];
-  const externalRequests = [];
-  const measurementRequests = [];
+(() => {
+  const validateSeoHead = ({
+    audit,
+    expectedOpenGraphImageUrl,
+    expectedUrl,
+    forbiddenJsonLdTypes,
+    localNoindexHeaderValid,
+    openGraphImageResponseValid,
+    requiredJsonLdTypes,
+  }) => {
+    const missingJsonLdTypes = requiredJsonLdTypes.filter(
+      (type) => !audit.jsonLdTypes.includes(type),
+    );
+    const presentForbiddenJsonLdTypes = forbiddenJsonLdTypes.filter((type) =>
+      audit.jsonLdTypes.includes(type),
+    );
+    const invalidJsonLdTypes = audit.jsonLdTypes.filter(
+      (type) => typeof type !== 'string' || !/^[A-Za-z][A-Za-z0-9]*$/.test(type),
+    );
+    const openGraphFieldsValid = Object.values(audit.openGraph).every(
+      (values) => values.length === 1 && values[0] !== '',
+    );
+    const openGraphImageValid =
+      audit.openGraph.image.length === 1 &&
+      audit.openGraph.image[0] === expectedOpenGraphImageUrl &&
+      openGraphImageResponseValid;
+    const metaRobotsDirectives = audit.metaRobots.flatMap((value) =>
+      value
+        .split(',')
+        .map((directive) => directive.trim().toLowerCase())
+        .filter(Boolean),
+    );
+    const localNoindexMetaValid =
+      audit.metaRobots.length === 1 &&
+      metaRobotsDirectives.includes('noindex') &&
+      metaRobotsDirectives.includes('nofollow') &&
+      !metaRobotsDirectives.includes('index') &&
+      !metaRobotsDirectives.includes('follow');
+    const failed =
+      audit.currentUrl !== expectedUrl ||
+      audit.canonicalLinks.length !== 1 ||
+      audit.canonicalLinks[0]?.rawHref !== audit.currentUrl ||
+      audit.canonicalLinks[0]?.resolvedHref !== audit.currentUrl ||
+      audit.titleCount !== 1 ||
+      audit.title.trim() === '' ||
+      audit.metaDescriptions.length !== 1 ||
+      audit.metaDescriptions[0] === '' ||
+      !openGraphFieldsValid ||
+      audit.openGraph.title[0] !== audit.title ||
+      audit.openGraph.description[0] !== audit.metaDescriptions[0] ||
+      audit.openGraph.url[0] !== audit.currentUrl ||
+      !openGraphImageValid ||
+      audit.jsonLdScriptCount !== 1 ||
+      audit.jsonLdParseFailed ||
+      invalidJsonLdTypes.length !== 0 ||
+      missingJsonLdTypes.length !== 0 ||
+      presentForbiddenJsonLdTypes.length !== 0 ||
+      !localNoindexHeaderValid ||
+      !localNoindexMetaValid;
+    return {
+      failed,
+      invalidJsonLdTypes,
+      localNoindexMetaValid,
+      metaRobotsDirectives,
+      missingJsonLdTypes,
+      openGraphFieldsValid,
+      openGraphImageValid,
+      presentForbiddenJsonLdTypes,
+    };
+  };
 
-  page.on('console', (message) => {
-    if (message.type() === 'error') runtimeErrors.push(`console:${message.text()}`);
-  });
-  page.on('pageerror', (error) => runtimeErrors.push(`page:${error.name}`));
-  page.on('request', (request) => {
-    const url = request.url();
-    if (url === `${origin}/wp-json/raos/v1/events`) {
-      measurementRequests.push(url);
-    }
-    if (!url.startsWith(`${origin}/`) && !url.startsWith('data:') && !url.startsWith('blob:')) {
-      externalRequests.push(url);
-    }
-  });
-
-  const results = [];
-  for (const surface of surfaces) {
-    for (const width of widths) {
-      await page.setViewportSize({ width, height: 900 });
-      const response = await page.goto(`${origin}${surface.path}`, {
-        waitUntil: 'networkidle',
-      });
-      if (!response || !response.ok()) {
-        throw new Error(`RAOS_WORDPRESS_LOCAL_PREVIEW_HTTP_FAILED_${surface.name}`);
+  const factory =
+    ({ artifactDirectory, inventory, origin }) =>
+    async (page) => {
+      const cleanPath = (value) =>
+        typeof value === 'string' && /^\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)?$/.test(value);
+      const rawSurfaces = inventory?.surfaces;
+      const rawClusters = inventory?.clusters;
+      const widths = inventory?.viewports;
+      const requiredWidths = [360, 390, 768, 1440];
+      const articleRows = Array.isArray(rawSurfaces)
+        ? rawSurfaces.filter((surface) => surface.kind === 'article')
+        : [];
+      const policyRows = Array.isArray(rawSurfaces)
+        ? rawSurfaces.filter((surface) => surface.kind === 'policy')
+        : [];
+      const homeRows = Array.isArray(rawSurfaces)
+        ? rawSurfaces.filter((surface) => surface.kind === 'home')
+        : [];
+      const articleIds = new Set(articleRows.map((surface) => surface.article_id));
+      const memberships = Array.isArray(rawClusters)
+        ? rawClusters.flatMap((cluster) => cluster.article_ids || [])
+        : [];
+      if (
+        typeof artifactDirectory !== 'string' ||
+        !artifactDirectory.startsWith('/') ||
+        typeof origin !== 'string' ||
+        !/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(origin) ||
+        inventory?.schema !== 'RAOS_WORDPRESS_AUDIT_INVENTORY_V3' ||
+        inventory?.version !== '3.0.0' ||
+        inventory?.target_origin !== 'https://kurashinoshirube.com' ||
+        !Array.isArray(rawSurfaces) ||
+        rawSurfaces.length !== 14 ||
+        homeRows.length !== 1 ||
+        articleRows.length !== 10 ||
+        policyRows.length !== 3 ||
+        !Array.isArray(rawClusters) ||
+        rawClusters.length !== 3 ||
+        !Array.isArray(widths) ||
+        widths.length !== requiredWidths.length ||
+        widths.some((width, index) => width !== requiredWidths[index]) ||
+        new Set(rawSurfaces.map((surface) => surface.surface_id)).size !== 14 ||
+        new Set(rawSurfaces.map((surface) => surface.local_path)).size !== 14 ||
+        new Set(rawSurfaces.map((surface) => surface.production_path)).size !== 14 ||
+        rawSurfaces.some(
+          (surface) =>
+            !['home', 'article', 'policy'].includes(surface.kind) ||
+            typeof surface.surface_id !== 'string' ||
+            !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(surface.surface_id) ||
+            !cleanPath(surface.local_path) ||
+            !cleanPath(surface.production_path),
+        ) ||
+        articleIds.size !== 10 ||
+        articleRows.some(
+          (surface) =>
+            typeof surface.article_id !== 'string' ||
+            !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(surface.article_id) ||
+            !articleIds.has(surface.contextual_article_id) ||
+            !Array.isArray(surface.related_article_ids) ||
+            surface.related_article_ids.length < 2 ||
+            new Set(surface.related_article_ids).size !== surface.related_article_ids.length ||
+            !surface.related_article_ids.includes(surface.contextual_article_id) ||
+            surface.related_article_ids.some(
+              (articleId) => articleId === surface.article_id || !articleIds.has(articleId),
+            ),
+        ) ||
+        rawClusters.some(
+          (cluster) =>
+            typeof cluster.anchor !== 'string' ||
+            !/^cluster-[a-z0-9-]+$/.test(cluster.anchor) ||
+            !Array.isArray(cluster.article_ids) ||
+            cluster.article_ids.length < 2 ||
+            new Set(cluster.article_ids).size !== cluster.article_ids.length ||
+            cluster.article_ids.some((articleId) => !articleIds.has(articleId)),
+        ) ||
+        memberships.length !== 10 ||
+        new Set(memberships).size !== 10 ||
+        memberships.some((articleId) => !articleIds.has(articleId))
+      ) {
+        throw new Error('RAOS_WORDPRESS_AUDIT_INVENTORY_INVALID');
       }
-      if (surface.article) {
-        await page.evaluate(() => {
-          if (!document.body.classList.contains('single-post')) {
-            throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_SINGLE_POST_CLASS_MISSING');
+      const surfaces = rawSurfaces.map((surface) => ({
+        ...surface,
+        article: surface.kind === 'article',
+        articleId: surface.article_id,
+        name: surface.surface_id,
+        path: surface.local_path,
+      }));
+      const articleSurfaces = surfaces.filter((surface) => surface.article);
+      const expectedPathByArticleId = Object.fromEntries(
+        articleSurfaces.map((surface) => [surface.articleId, surface.path]),
+      );
+      const requiredJsonLdTypesByKind = {
+        home: ['Organization', 'WebSite'],
+        article: ['Article', 'BreadcrumbList', 'Organization', 'WebSite'],
+        policy: ['BreadcrumbList', 'Organization', 'WebSite'],
+      };
+      const forbiddenJsonLdTypes = ['Product', 'Offer', 'Review', 'FAQPage'];
+      const runtimeErrors = [];
+      const externalRequests = [];
+      const measurementRequests = [];
+
+      page.on('console', (message) => {
+        if (message.type() === 'error') runtimeErrors.push(`console:${message.text()}`);
+      });
+      page.on('pageerror', (error) => runtimeErrors.push(`page:${error.name}`));
+      page.on('request', (request) => {
+        const url = request.url();
+        if (url === `${origin}/wp-json/raos/v1/events`) {
+          measurementRequests.push(url);
+        }
+        if (!url.startsWith(`${origin}/`) && !url.startsWith('data:') && !url.startsWith('blob:')) {
+          externalRequests.push(url);
+        }
+      });
+
+      const expectedOpenGraphImageUrl =
+        `${origin}/wp-content/themes/kurashinoshirube-child/` + 'assets/images/home-hero.webp';
+      let openGraphImageResponse = null;
+      let openGraphImageResponseBodyBytes = 0;
+      let openGraphImageResponseContentType = '';
+      let openGraphImageResponseStatus = 0;
+      let openGraphImageResponseUrl = '';
+      try {
+        openGraphImageResponse = await page.request.get(expectedOpenGraphImageUrl, {
+          maxRedirects: 0,
+          timeout: 5000,
+        });
+        openGraphImageResponseStatus = openGraphImageResponse.status();
+        openGraphImageResponseUrl = openGraphImageResponse.url();
+        openGraphImageResponseContentType = (
+          openGraphImageResponse.headers()['content-type'] || ''
+        )
+          .split(';', 1)[0]
+          .trim()
+          .toLowerCase();
+        if (openGraphImageResponseStatus === 200) {
+          const body = await openGraphImageResponse.body();
+          openGraphImageResponseBodyBytes = body.length;
+        }
+      } catch (error) {
+        openGraphImageResponseBodyBytes = 0;
+      } finally {
+        if (openGraphImageResponse !== null) {
+          await openGraphImageResponse.dispose();
+        }
+      }
+      const openGraphImageResponseValid =
+        openGraphImageResponse !== null &&
+        openGraphImageResponseStatus === 200 &&
+        openGraphImageResponseUrl === expectedOpenGraphImageUrl &&
+        openGraphImageResponseContentType === 'image/webp' &&
+        openGraphImageResponseBodyBytes > 0 &&
+        openGraphImageResponseBodyBytes <= 2 * 1024 * 1024;
+
+      const results = [];
+      for (const surface of surfaces) {
+        for (const width of widths) {
+          await page.setViewportSize({ width, height: 900 });
+          const expectedUrl = `${origin}${surface.path}`;
+          const response = await page.goto(expectedUrl, {
+            waitUntil: 'networkidle',
+          });
+          if (!response || response.status() !== 200 || response.url() !== expectedUrl) {
+            throw new Error(`RAOS_WORDPRESS_LOCAL_PREVIEW_HTTP_FAILED_${surface.name}`);
           }
-          const base = document.createElement('style');
-          base.dataset.raosCookieyesAuditBase = '1';
-          base.textContent = `
+          const xRobotsTag = response.headers()['x-robots-tag'] || '';
+          const xRobotsDirectives = xRobotsTag
+            .split(',')
+            .map((value) => value.trim().toLowerCase())
+            .filter(Boolean);
+          const localNoindexHeaderValid =
+            xRobotsDirectives.includes('noindex') &&
+            xRobotsDirectives.includes('nofollow') &&
+            !xRobotsDirectives.includes('index') &&
+            !xRobotsDirectives.includes('follow');
+          if (surface.article) {
+            await page.evaluate(() => {
+              if (!document.body.classList.contains('single-post')) {
+                throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_SINGLE_POST_CLASS_MISSING');
+              }
+              const base = document.createElement('style');
+              base.dataset.raosCookieyesAuditBase = '1';
+              base.textContent = `
             [data-raos-cookieyes-audit] {
               bottom: 20px;
               box-sizing: border-box;
@@ -154,13 +296,13 @@
               width: 100%;
             }
           `;
-          document.head.append(base);
-          const container = document.createElement('div');
-          container.className = 'cky-consent-container cky-box-bottom-left';
-          container.dataset.raosCookieyesAudit = '1';
-          container.setAttribute('role', 'dialog');
-          container.setAttribute('aria-label', 'Cookieの同意');
-          container.innerHTML = `
+              document.head.append(base);
+              const container = document.createElement('div');
+              container.className = 'cky-consent-container cky-box-bottom-left';
+              container.dataset.raosCookieyesAudit = '1';
+              container.setAttribute('role', 'dialog');
+              container.setAttribute('aria-label', 'Cookieの同意');
+              container.innerHTML = `
             <div class="cky-consent-bar">
               <div class="cky-notice">
                 <p class="cky-title">Cookieを使用しています</p>
@@ -173,579 +315,724 @@
               </div>
             </div>
           `;
-          document.body.append(container);
-        });
-      }
-      await page.evaluate(async () => {
-        await Promise.all(
-          [...document.images].map(
-            (image) =>
-              new Promise((resolve) => {
-                image.loading = 'eager';
-                if (image.complete) {
-                  resolve();
-                  return;
+              document.body.append(container);
+            });
+          }
+          await page.evaluate(async () => {
+            await Promise.all(
+              [...document.images].map(
+                (image) =>
+                  new Promise((resolve) => {
+                    image.loading = 'eager';
+                    if (image.complete) {
+                      resolve();
+                      return;
+                    }
+                    image.addEventListener('load', resolve, { once: true });
+                    image.addEventListener('error', resolve, { once: true });
+                  }),
+              ),
+            );
+          });
+          const audit = await page.evaluate(() => {
+            const headElements = (selector) => [...document.head.querySelectorAll(selector)];
+            const metaValues = (attribute, expectedValue) =>
+              headElements(`meta[${attribute}]`)
+                .filter(
+                  (element) =>
+                    (element.getAttribute(attribute) || '').trim().toLowerCase() === expectedValue,
+                )
+                .map((element) => (element.getAttribute('content') || '').trim());
+            const canonicalLinks = headElements('link[rel]')
+              .filter((element) =>
+                (element.getAttribute('rel') || '')
+                  .split(/\s+/)
+                  .some((token) => token.toLowerCase() === 'canonical'),
+              )
+              .map((element) => {
+                const rawHref = (element.getAttribute('href') || '').trim();
+                let resolvedHref = '';
+                try {
+                  resolvedHref = new URL(rawHref, document.baseURI).href;
+                } catch (error) {
+                  resolvedHref = '';
                 }
-                image.addEventListener('load', resolve, { once: true });
-                image.addEventListener('error', resolve, { once: true });
-              }),
-          ),
-        );
-      });
-      const audit = await page.evaluate(() => {
-        const boundingBoxes = (selector) =>
-          [...document.querySelectorAll(selector)].map((element) => {
-            const rect = element.getBoundingClientRect();
+                return { rawHref, resolvedHref };
+              });
+            const jsonLdScripts = [...document.querySelectorAll('script[type]')].filter(
+              (element) =>
+                (element.getAttribute('type') || '').trim().toLowerCase() === 'application/ld+json',
+            );
+            const jsonLdTypes = new Set();
+            let jsonLdParseFailed = false;
+            const normalizeJsonLdType = (value) => {
+              if (typeof value !== 'string' || value.trim() === '') return null;
+              const normalized = value.trim();
+              return /^[A-Za-z][A-Za-z0-9]*$/.test(normalized) ? normalized : null;
+            };
+            const visitJsonLd = (value, depth = 0) => {
+              if (depth > 32) return false;
+              if (Array.isArray(value)) {
+                return value.every((item) => visitJsonLd(item, depth + 1));
+              }
+              if (value === null || typeof value !== 'object') return true;
+              if (Object.prototype.hasOwnProperty.call(value, '@type')) {
+                const rawTypes = Array.isArray(value['@type']) ? value['@type'] : [value['@type']];
+                if (rawTypes.length === 0) return false;
+                for (const rawType of rawTypes) {
+                  const normalized = normalizeJsonLdType(rawType);
+                  if (!normalized) return false;
+                  jsonLdTypes.add(normalized);
+                }
+              }
+              return Object.values(value).every((item) => visitJsonLd(item, depth + 1));
+            };
+            for (const script of jsonLdScripts) {
+              try {
+                const payload = JSON.parse(script.textContent || '');
+                if (!visitJsonLd(payload)) jsonLdParseFailed = true;
+              } catch (error) {
+                jsonLdParseFailed = true;
+              }
+            }
+            const boundingBoxes = (selector) =>
+              [...document.querySelectorAll(selector)].map((element) => {
+                const rect = element.getBoundingClientRect();
+                return {
+                  bottom: rect.bottom,
+                  height: rect.height,
+                  left: rect.left,
+                  right: rect.right,
+                  top: rect.top,
+                  width: rect.width,
+                };
+              });
+            const clientWidth = document.documentElement.clientWidth;
+            const invalidBoundingBoxCount = (boxes) =>
+              boxes.filter(
+                (box) =>
+                  !Object.values(box).every(Number.isFinite) ||
+                  box.width <= 0 ||
+                  box.height <= 0 ||
+                  box.left < -0.5 ||
+                  box.right > clientWidth + 0.5,
+              ).length;
+            const visibleCount = (selector) =>
+              [...document.querySelectorAll(selector)].filter((element) => {
+                const style = getComputedStyle(element);
+                const rect = element.getBoundingClientRect();
+                return (
+                  style.display !== 'none' &&
+                  style.visibility !== 'hidden' &&
+                  rect.width > 0 &&
+                  rect.height > 0
+                );
+              }).length;
+            const overlaps = (first, second) =>
+              first.left < second.right &&
+              first.right > second.left &&
+              first.top < second.bottom &&
+              first.bottom > second.top;
+            const textLineMetrics = (element) => {
+              if (!element) return { lastLineCharacters: 0, lineCount: 0 };
+              const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+              const lines = [];
+              while (walker.nextNode()) {
+                const node = walker.currentNode;
+                for (let index = 0; index < node.data.length; index += 1) {
+                  const character = node.data[index];
+                  if (/\s/u.test(character)) continue;
+                  const range = document.createRange();
+                  range.setStart(node, index);
+                  range.setEnd(node, index + 1);
+                  const rect = range.getBoundingClientRect();
+                  if (rect.width <= 0 || rect.height <= 0) continue;
+                  let line = lines.find((candidate) => Math.abs(candidate.top - rect.top) < 1);
+                  if (!line) {
+                    line = { characters: 0, top: rect.top };
+                    lines.push(line);
+                  }
+                  line.characters += 1;
+                }
+              }
+              lines.sort((left, right) => left.top - right.top);
+              return {
+                lastLineCharacters: lines.at(-1)?.characters || 0,
+                lineCount: lines.length,
+              };
+            };
+            const ids = [...document.querySelectorAll('[id]')]
+              .map((element) => element.id)
+              .filter(Boolean);
+            const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
+            const controls = [
+              ...document.querySelectorAll('input:not([type=hidden]),select,textarea,button'),
+            ];
+            const unlabeledControls = controls.filter(
+              (element) =>
+                element.tagName !== 'BUTTON' &&
+                !element.labels?.length &&
+                !element.getAttribute('aria-label') &&
+                !element.getAttribute('aria-labelledby'),
+            ).length;
+            const ariaReferenceAttributes = [
+              'aria-activedescendant',
+              'aria-controls',
+              'aria-describedby',
+              'aria-details',
+              'aria-labelledby',
+              'aria-owns',
+            ];
+            const brokenAriaReferences = [
+              ...document.querySelectorAll(
+                ariaReferenceAttributes.map((name) => `[${name}]`).join(','),
+              ),
+            ].filter((element) => {
+              const references = ariaReferenceAttributes.flatMap((name) =>
+                (element.getAttribute(name) || '').split(/\s+/).filter(Boolean),
+              );
+              return references.some((id) => !document.getElementById(id));
+            }).length;
+            const banner = document.querySelector('.raos-local-preview-banner');
+            const cookieSettingsBounds = boundingBoxes('.raos-cookie-settings');
+            const ctaBounds = boundingBoxes('.raos-cta[data-raos-placement]');
+            const footer = document.querySelector('.raos-footer');
+            const footerBottomBounds = boundingBoxes('.raos-footer__bottom');
+            const footerGridBounds = boundingBoxes('.raos-footer__grid');
+            const footerLinkBounds = boundingBoxes('.raos-footer a');
+            const footerGrid = document.querySelector('.raos-footer__grid');
+            const footerGridStyle = footerGrid ? getComputedStyle(footerGrid) : null;
+            const h1Bounds = boundingBoxes('h1');
+            const h1LineMetrics = textLineMetrics(document.querySelector('h1'));
+            const cookieConsentBounds = boundingBoxes(
+              '.cky-consent-container.cky-box-bottom-left[data-raos-cookieyes-audit]',
+            );
+            const cookieButtonBounds = boundingBoxes(
+              '[data-raos-cookieyes-audit] .cky-notice-btn-wrapper .cky-btn',
+            );
+            const cookieButtonOrder = [
+              ...document.querySelectorAll(
+                '[data-raos-cookieyes-audit] .cky-notice-btn-wrapper .cky-btn',
+              ),
+            ].map((button) => button.textContent.trim());
+            const cookieConsent = cookieConsentBounds[0];
+            let measurementSessionKeyCount = 0;
+            try {
+              for (let index = 0; index < window.sessionStorage.length; index += 1) {
+                const key = window.sessionStorage.key(index);
+                if (typeof key === 'string' && key.startsWith('raos_measurement_v1:')) {
+                  measurementSessionKeyCount += 1;
+                }
+              }
+            } catch (error) {
+              measurementSessionKeyCount = -1;
+            }
             return {
-              bottom: rect.bottom,
-              height: rect.height,
-              left: rect.left,
-              right: rect.right,
-              top: rect.top,
-              width: rect.width,
+              bannerText: banner?.textContent?.trim() || '',
+              brokenAriaReferences,
+              canonicalLinks,
+              clientWidth,
+              comparisonSectionCount: document.querySelectorAll('.comparison-section').length,
+              comparisonCardsVisible: visibleCount('.comparison-cards, .raos-comparison__cards'),
+              comparisonTablesVisible: visibleCount('.comparison-table-wrap table'),
+              cookieButtonBounds,
+              cookieButtonOrder,
+              cookieConsentBounds,
+              cookieOverlapsCta: cookieConsent
+                ? ctaBounds.filter((bounds) => overlaps(cookieConsent, bounds)).length
+                : 0,
+              cookieOverlapsH1:
+                cookieConsent && h1Bounds[0] ? overlaps(cookieConsent, h1Bounds[0]) : false,
+              cookieSettingsBounds,
+              ctaBounds,
+              decisionListCount: document.querySelectorAll('.decision-list').length,
+              duplicateIds,
+              editorialBodyClass: document.body.classList.contains('raos-editorial-v2-page'),
+              editorialRootCount: document.querySelectorAll('.raos-editorial-v2').length,
+              footerBackgroundColor: footer ? getComputedStyle(footer).backgroundColor : '',
+              footerBottomBounds,
+              footerGridColumnCount:
+                footerGridStyle && footerGridStyle.gridTemplateColumns !== 'none'
+                  ? footerGridStyle.gridTemplateColumns.split(/\s+/).filter(Boolean).length
+                  : 0,
+              footerGridDisplay: footerGridStyle ? footerGridStyle.display : '',
+              footerGridBounds,
+              footerLinkBounds,
+              footerMinimumLinkHeight:
+                footerLinkBounds.length === 0
+                  ? 0
+                  : Math.min(...footerLinkBounds.map((bounds) => bounds.height)),
+              h1Bounds,
+              h1Count: document.querySelectorAll('h1').length,
+              h1LastLineCharacters: h1LineMetrics.lastLineCharacters,
+              h1LineCount: h1LineMetrics.lineCount,
+              homeClusters: [...document.querySelectorAll('.raos-cluster-nav .raos-cluster')].map(
+                (cluster) => ({
+                  anchor: cluster.id,
+                  links: [...cluster.querySelectorAll('ul a[href]')].map((anchor) => {
+                    const target = new URL(anchor.href);
+                    return {
+                      hash: target.hash,
+                      href: target.href,
+                      origin: target.origin,
+                      pathname: target.pathname,
+                      search: target.search,
+                    };
+                  }),
+                }),
+              ),
+              contextualLinkCount: document.querySelectorAll(
+                'a[data-raos-link-placement="article_body"][data-raos-to-article-id]',
+              ).length,
+              relatedLinkCount: document.querySelectorAll(
+                'a[data-raos-link-placement="related_navigation"][data-raos-to-article-id]',
+              ).length,
+              invalidCookieButtonBounds: invalidBoundingBoxCount(cookieButtonBounds),
+              invalidCookieConsentBounds: invalidBoundingBoxCount(cookieConsentBounds),
+              invalidCookieSettingsBounds: invalidBoundingBoxCount(cookieSettingsBounds),
+              invalidCtaBounds: invalidBoundingBoxCount(ctaBounds),
+              invalidFooterBottomBounds: invalidBoundingBoxCount(footerBottomBounds),
+              invalidFooterGridBounds: invalidBoundingBoxCount(footerGridBounds),
+              invalidFooterLinkBounds: invalidBoundingBoxCount(footerLinkBounds),
+              invalidH1Bounds: invalidBoundingBoxCount(h1Bounds),
+              jsonLdParseFailed,
+              jsonLdScriptCount: jsonLdScripts.length,
+              jsonLdTypes: [...jsonLdTypes].sort(),
+              lang: document.documentElement.lang,
+              mainCount: document.querySelectorAll('main').length,
+              metaDescriptions: metaValues('name', 'description'),
+              metaRobots: metaValues('name', 'robots'),
+              measurementConfigDefined: typeof window.RAOS_MEASUREMENT_CONFIG_V1 !== 'undefined',
+              measurementScriptCount: document.querySelectorAll(
+                'script#kurashinoshirube-measurement-v1-js,script[src*="/assets/measurement.js"]',
+              ).length,
+              measurementSessionKeyCount,
+              missingAlt: document.querySelectorAll('img:not([alt])').length,
+              unloadedImages: [...document.images].filter(
+                (image) => !image.complete || image.naturalWidth === 0,
+              ).length,
+              purchaseCautionCount: document.querySelectorAll('.purchase-caution').length,
+              policyBodyClass: document.body.classList.contains('raos-policy-v3-page'),
+              scrollWidth: document.documentElement.scrollWidth,
+              sourcesSectionCount: document.querySelectorAll('.sources-section').length,
+              title: document.title,
+              titleCount: document.head.querySelectorAll('title').length,
+              unlabeledControls,
+              currentUrl: window.location.href,
+              openGraph: {
+                description: metaValues('property', 'og:description'),
+                image: metaValues('property', 'og:image'),
+                title: metaValues('property', 'og:title'),
+                url: metaValues('property', 'og:url'),
+              },
             };
           });
-        const clientWidth = document.documentElement.clientWidth;
-        const invalidBoundingBoxCount = (boxes) =>
-          boxes.filter(
-            (box) =>
-              !Object.values(box).every(Number.isFinite) ||
-              box.width <= 0 ||
-              box.height <= 0 ||
-              box.left < -0.5 ||
-              box.right > clientWidth + 0.5,
-          ).length;
-        const visibleCount = (selector) =>
-          [...document.querySelectorAll(selector)].filter((element) => {
-            const style = getComputedStyle(element);
-            const rect = element.getBoundingClientRect();
-            return (
-              style.display !== 'none' &&
-              style.visibility !== 'hidden' &&
-              rect.width > 0 &&
-              rect.height > 0
-            );
-          }).length;
-        const overlaps = (first, second) =>
-          first.left < second.right &&
-          first.right > second.left &&
-          first.top < second.bottom &&
-          first.bottom > second.top;
-        const textLineMetrics = (element) => {
-          if (!element) return { lastLineCharacters: 0, lineCount: 0 };
-          const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-          const lines = [];
-          while (walker.nextNode()) {
-            const node = walker.currentNode;
-            for (let index = 0; index < node.data.length; index += 1) {
-              const character = node.data[index];
-              if (/\s/u.test(character)) continue;
-              const range = document.createRange();
-              range.setStart(node, index);
-              range.setEnd(node, index + 1);
-              const rect = range.getBoundingClientRect();
-              if (rect.width <= 0 || rect.height <= 0) continue;
-              let line = lines.find((candidate) => Math.abs(candidate.top - rect.top) < 1);
-              if (!line) {
-                line = { characters: 0, top: rect.top };
-                lines.push(line);
-              }
-              line.characters += 1;
-            }
-          }
-          lines.sort((left, right) => left.top - right.top);
-          return {
-            lastLineCharacters: lines.at(-1)?.characters || 0,
-            lineCount: lines.length,
-          };
-        };
-        const ids = [...document.querySelectorAll('[id]')]
-          .map((element) => element.id)
-          .filter(Boolean);
-        const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
-        const controls = [
-          ...document.querySelectorAll('input:not([type=hidden]),select,textarea,button'),
-        ];
-        const unlabeledControls = controls.filter(
-          (element) =>
-            element.tagName !== 'BUTTON' &&
-            !element.labels?.length &&
-            !element.getAttribute('aria-label') &&
-            !element.getAttribute('aria-labelledby'),
-        ).length;
-        const ariaReferenceAttributes = [
-          'aria-activedescendant',
-          'aria-controls',
-          'aria-describedby',
-          'aria-details',
-          'aria-labelledby',
-          'aria-owns',
-        ];
-        const brokenAriaReferences = [
-          ...document.querySelectorAll(
-            ariaReferenceAttributes.map((name) => `[${name}]`).join(','),
-          ),
-        ].filter((element) => {
-          const references = ariaReferenceAttributes.flatMap((name) =>
-            (element.getAttribute(name) || '').split(/\s+/).filter(Boolean),
-          );
-          return references.some((id) => !document.getElementById(id));
-        }).length;
-        const banner = document.querySelector('.raos-local-preview-banner');
-        const cookieSettingsBounds = boundingBoxes('.raos-cookie-settings');
-        const ctaBounds = boundingBoxes('.raos-cta[data-raos-placement]');
-        const footer = document.querySelector('.raos-footer');
-        const footerBottomBounds = boundingBoxes('.raos-footer__bottom');
-        const footerGridBounds = boundingBoxes('.raos-footer__grid');
-        const footerLinkBounds = boundingBoxes('.raos-footer a');
-        const footerGrid = document.querySelector('.raos-footer__grid');
-        const footerGridStyle = footerGrid ? getComputedStyle(footerGrid) : null;
-        const h1Bounds = boundingBoxes('h1');
-        const h1LineMetrics = textLineMetrics(document.querySelector('h1'));
-        const cookieConsentBounds = boundingBoxes(
-          '.cky-consent-container.cky-box-bottom-left[data-raos-cookieyes-audit]',
-        );
-        const cookieButtonBounds = boundingBoxes(
-          '[data-raos-cookieyes-audit] .cky-notice-btn-wrapper .cky-btn',
-        );
-        const cookieButtonOrder = [
-          ...document.querySelectorAll(
-            '[data-raos-cookieyes-audit] .cky-notice-btn-wrapper .cky-btn',
-          ),
-        ].map((button) => button.textContent.trim());
-        const cookieConsent = cookieConsentBounds[0];
-        let measurementSessionKeyCount = 0;
-        try {
-          for (let index = 0; index < window.sessionStorage.length; index += 1) {
-            const key = window.sessionStorage.key(index);
-            if (typeof key === 'string' && key.startsWith('raos_measurement_v1:')) {
-              measurementSessionKeyCount += 1;
-            }
-          }
-        } catch (error) {
-          measurementSessionKeyCount = -1;
-        }
-        return {
-          bannerText: banner?.textContent?.trim() || '',
-          brokenAriaReferences,
-          clientWidth,
-          comparisonSectionCount: document.querySelectorAll('.comparison-section').length,
-          comparisonCardsVisible: visibleCount(
-            '.comparison-cards, .raos-comparison__cards',
-          ),
-          comparisonTablesVisible: visibleCount(
-            '.comparison-table-wrap table',
-          ),
-          cookieButtonBounds,
-          cookieButtonOrder,
-          cookieConsentBounds,
-          cookieOverlapsCta:
-            cookieConsent
-              ? ctaBounds.filter((bounds) => overlaps(cookieConsent, bounds)).length
-              : 0,
-          cookieOverlapsH1:
-            cookieConsent && h1Bounds[0] ? overlaps(cookieConsent, h1Bounds[0]) : false,
-          cookieSettingsBounds,
-          ctaBounds,
-          decisionListCount: document.querySelectorAll('.decision-list').length,
-          duplicateIds,
-          editorialBodyClass: document.body.classList.contains('raos-editorial-v2-page'),
-          editorialRootCount: document.querySelectorAll('.raos-editorial-v2').length,
-          footerBackgroundColor: footer ? getComputedStyle(footer).backgroundColor : '',
-          footerBottomBounds,
-          footerGridColumnCount:
-            footerGridStyle && footerGridStyle.gridTemplateColumns !== 'none'
-              ? footerGridStyle.gridTemplateColumns.split(/\s+/).filter(Boolean).length
-              : 0,
-          footerGridDisplay: footerGridStyle
-            ? footerGridStyle.display
-            : '',
-          footerGridBounds,
-          footerLinkBounds,
-          footerMinimumLinkHeight:
-            footerLinkBounds.length === 0
-              ? 0
-              : Math.min(...footerLinkBounds.map((bounds) => bounds.height)),
-          h1Bounds,
-          h1Count: document.querySelectorAll('h1').length,
-          h1LastLineCharacters: h1LineMetrics.lastLineCharacters,
-          h1LineCount: h1LineMetrics.lineCount,
-          homeClusters: [
-            ...document.querySelectorAll('.raos-cluster-nav .raos-cluster'),
-          ].map((cluster) => ({
-            anchor: cluster.id,
-            links: [...cluster.querySelectorAll('ul a[href]')].map((anchor) => {
-              const target = new URL(anchor.href);
-              return {
-                hash: target.hash,
-                href: target.href,
-                origin: target.origin,
-                pathname: target.pathname,
-                search: target.search,
-              };
-            }),
-          })),
-          contextualLinkCount: document.querySelectorAll(
-            'a[data-raos-link-placement="article_body"][data-raos-to-article-id]',
-          ).length,
-          relatedLinkCount: document.querySelectorAll(
-            'a[data-raos-link-placement="related_navigation"][data-raos-to-article-id]',
-          ).length,
-          invalidCookieButtonBounds: invalidBoundingBoxCount(cookieButtonBounds),
-          invalidCookieConsentBounds: invalidBoundingBoxCount(cookieConsentBounds),
-          invalidCookieSettingsBounds: invalidBoundingBoxCount(cookieSettingsBounds),
-          invalidCtaBounds: invalidBoundingBoxCount(ctaBounds),
-          invalidFooterBottomBounds: invalidBoundingBoxCount(footerBottomBounds),
-          invalidFooterGridBounds: invalidBoundingBoxCount(footerGridBounds),
-          invalidFooterLinkBounds: invalidBoundingBoxCount(footerLinkBounds),
-          invalidH1Bounds: invalidBoundingBoxCount(h1Bounds),
-          lang: document.documentElement.lang,
-          mainCount: document.querySelectorAll('main').length,
-          measurementConfigDefined:
-            typeof window.RAOS_MEASUREMENT_CONFIG_V1 !== 'undefined',
-          measurementScriptCount: document.querySelectorAll(
-            'script#kurashinoshirube-measurement-v1-js,script[src*="/assets/measurement.js"]',
-          ).length,
-          measurementSessionKeyCount,
-          missingAlt: document.querySelectorAll('img:not([alt])').length,
-          unloadedImages: [...document.images].filter(
-            (image) => !image.complete || image.naturalWidth === 0,
-          ).length,
-          purchaseCautionCount: document.querySelectorAll('.purchase-caution').length,
-          policyBodyClass: document.body.classList.contains('raos-policy-v3-page'),
-          scrollWidth: document.documentElement.scrollWidth,
-          sourcesSectionCount: document.querySelectorAll('.sources-section').length,
-          title: document.title,
-          unlabeledControls,
-        };
-      });
-      const internalLinks = surface.article
-        ? await page.evaluate(() =>
-            [...document.querySelectorAll(
-              'a[data-raos-link-placement="article_body"],'
-                + 'a[data-raos-link-placement="related_navigation"]',
-            )].map((anchor) => {
-              const target = new URL(anchor.href);
-              return {
-                hash: target.hash,
-                href: target.href,
-                origin: target.origin,
-                pathname: target.pathname,
-                placement: anchor.getAttribute('data-raos-link-placement'),
-                search: target.search,
-                targetArticleId: anchor.getAttribute('data-raos-to-article-id'),
-              };
-            }),
-          )
-        : [];
-      let internalLinkReadbackFailed = false;
-      const expectedInternalLinks = surface.article
-        ? [
-            {
-              placement: 'article_body',
-              targetArticleId: surface.contextual_article_id,
-            },
-            ...surface.related_article_ids.map((targetArticleId) => ({
-              placement: 'related_navigation',
-              targetArticleId,
-            })),
-          ]
-        : [];
-      const signature = (link) => `${link.placement}|${link.targetArticleId}`;
-      if (
-        internalLinks.length !== expectedInternalLinks.length ||
-        internalLinks.map(signature).sort().join('\n') !==
-          expectedInternalLinks.map(signature).sort().join('\n')
-      ) {
-        internalLinkReadbackFailed = true;
-      }
-      for (const link of internalLinks) {
-        const expectedPath = expectedPathByArticleId[link.targetArticleId];
-        if (
-          !expectedPath ||
-          link.origin !== origin ||
-          link.pathname !== expectedPath ||
-          link.search !== '' ||
-          link.hash !== '' ||
-          !['article_body', 'related_navigation'].includes(link.placement)
-        ) {
-          internalLinkReadbackFailed = true;
-          continue;
-        }
-        if (width === 390) {
-          const linkResponse = await page.request.get(link.href, { maxRedirects: 0 });
-          if (linkResponse.status() !== 200 || linkResponse.url() !== link.href) {
+          const internalLinks = surface.article
+            ? await page.evaluate(() =>
+                [
+                  ...document.querySelectorAll(
+                    'a[data-raos-link-placement="article_body"],' +
+                      'a[data-raos-link-placement="related_navigation"]',
+                  ),
+                ].map((anchor) => {
+                  const target = new URL(anchor.href);
+                  return {
+                    hash: target.hash,
+                    href: target.href,
+                    origin: target.origin,
+                    pathname: target.pathname,
+                    placement: anchor.getAttribute('data-raos-link-placement'),
+                    search: target.search,
+                    targetArticleId: anchor.getAttribute('data-raos-to-article-id'),
+                  };
+                }),
+              )
+            : [];
+          let internalLinkReadbackFailed = false;
+          const expectedInternalLinks = surface.article
+            ? [
+                {
+                  placement: 'article_body',
+                  targetArticleId: surface.contextual_article_id,
+                },
+                ...surface.related_article_ids.map((targetArticleId) => ({
+                  placement: 'related_navigation',
+                  targetArticleId,
+                })),
+              ]
+            : [];
+          const signature = (link) => `${link.placement}|${link.targetArticleId}`;
+          if (
+            internalLinks.length !== expectedInternalLinks.length ||
+            internalLinks.map(signature).sort().join('\n') !==
+              expectedInternalLinks.map(signature).sort().join('\n')
+          ) {
             internalLinkReadbackFailed = true;
           }
-        }
-      }
-
-      let homepageReadbackFailed = false;
-      if (surface.kind === 'home') {
-        const expectedClusters = rawClusters.map((cluster) => ({
-          anchor: cluster.anchor,
-          paths: cluster.article_ids.map(
-            (articleId) => expectedPathByArticleId[articleId],
-          ),
-        }));
-        if (
-          audit.homeClusters.length !== expectedClusters.length ||
-          audit.homeClusters.some((cluster, index) => {
-            const expected = expectedClusters[index];
-            return !expected || cluster.anchor !== expected.anchor ||
-              cluster.links.length !== expected.paths.length ||
-              cluster.links.some(
-                (link, linkIndex) =>
-                  link.origin !== origin ||
-                  link.pathname !== expected.paths[linkIndex] ||
-                  link.search !== '' ||
-                  link.hash !== '',
-              );
-          })
-        ) {
-          homepageReadbackFailed = true;
-        }
-        if (width === 390) {
-          for (const cluster of audit.homeClusters) {
-            for (const link of cluster.links) {
+          for (const link of internalLinks) {
+            const expectedPath = expectedPathByArticleId[link.targetArticleId];
+            if (
+              !expectedPath ||
+              link.origin !== origin ||
+              link.pathname !== expectedPath ||
+              link.search !== '' ||
+              link.hash !== '' ||
+              !['article_body', 'related_navigation'].includes(link.placement)
+            ) {
+              internalLinkReadbackFailed = true;
+              continue;
+            }
+            if (width === 390) {
               const linkResponse = await page.request.get(link.href, { maxRedirects: 0 });
               if (linkResponse.status() !== 200 || linkResponse.url() !== link.href) {
-                homepageReadbackFailed = true;
+                internalLinkReadbackFailed = true;
               }
             }
           }
-        }
-      }
 
-      let keyboardAudit = {
-        consentWasReached: false,
-        ctaReached: !surface.article,
-        escapedConsentDialog: true,
-        focusVisibleFailureSignatures: [],
-        focusVisibleFailures: 0,
-        contextualReached: !surface.article,
-        relatedReached: !surface.article,
-        distinctTargets: 0,
-      };
-      if (width === 390) {
-        await page.evaluate(() => {
-          if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
-          window.scrollTo(0, 0);
-        });
-        const focusableCount = await page.evaluate(() =>
-          [...document.querySelectorAll(
-            'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
-          )].filter((element) => {
-            const style = getComputedStyle(element);
-            const rect = element.getBoundingClientRect();
-            return style.display !== 'none' && style.visibility !== 'hidden' &&
-              rect.width > 0 && rect.height > 0;
-          }).length,
-        );
-        const visited = new Set();
-        let consentWasReached = false;
-        let escapedConsentDialog = false;
-        let focusVisibleFailures = 0;
-        const focusVisibleFailureSignatures = [];
-        let ctaReached = false;
-        let contextualReached = false;
-        let relatedReached = false;
-        for (let index = 0; index < Math.min(focusableCount + 10, 500); index += 1) {
-          await page.keyboard.press('Tab');
-          const focus = await page.evaluate(() => {
-            const element = document.activeElement;
-            if (!(element instanceof HTMLElement) || element === document.body) return null;
-            const style = getComputedStyle(element);
-            const rect = element.getBoundingClientRect();
-            return {
-              cta: element.matches('.raos-cta'),
-              contextual: element.matches('[data-raos-link-placement="article_body"]'),
-              inConsent: element.closest('[data-raos-cookieyes-audit]') !== null,
-              related: element.matches('[data-raos-link-placement="related_navigation"]'),
-              signature: [element.tagName, element.id, element.className, element.getAttribute('href')].join('|'),
-              visible: rect.width > 0 && rect.height > 0 &&
-                ((style.outlineStyle !== 'none' && style.outlineWidth !== '0px') ||
-                  style.boxShadow !== 'none'),
+          let homepageReadbackFailed = false;
+          if (surface.kind === 'home') {
+            const expectedClusters = rawClusters.map((cluster) => ({
+              anchor: cluster.anchor,
+              paths: cluster.article_ids.map((articleId) => expectedPathByArticleId[articleId]),
+            }));
+            if (
+              audit.homeClusters.length !== expectedClusters.length ||
+              audit.homeClusters.some((cluster, index) => {
+                const expected = expectedClusters[index];
+                return (
+                  !expected ||
+                  cluster.anchor !== expected.anchor ||
+                  cluster.links.length !== expected.paths.length ||
+                  cluster.links.some(
+                    (link, linkIndex) =>
+                      link.origin !== origin ||
+                      link.pathname !== expected.paths[linkIndex] ||
+                      link.search !== '' ||
+                      link.hash !== '',
+                  )
+                );
+              })
+            ) {
+              homepageReadbackFailed = true;
+            }
+            if (width === 390) {
+              for (const cluster of audit.homeClusters) {
+                for (const link of cluster.links) {
+                  const linkResponse = await page.request.get(link.href, { maxRedirects: 0 });
+                  if (linkResponse.status() !== 200 || linkResponse.url() !== link.href) {
+                    homepageReadbackFailed = true;
+                  }
+                }
+              }
+            }
+          }
+
+          let keyboardAudit = {
+            consentWasReached: false,
+            ctaReached: !surface.article,
+            escapedConsentDialog: true,
+            focusVisibleFailureSignatures: [],
+            focusVisibleFailures: 0,
+            contextualReached: !surface.article,
+            relatedReached: !surface.article,
+            distinctTargets: 0,
+          };
+          if (width === 390) {
+            await page.evaluate(() => {
+              if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+              window.scrollTo(0, 0);
+            });
+            const focusableCount = await page.evaluate(
+              () =>
+                [
+                  ...document.querySelectorAll(
+                    'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
+                  ),
+                ].filter((element) => {
+                  const style = getComputedStyle(element);
+                  const rect = element.getBoundingClientRect();
+                  return (
+                    style.display !== 'none' &&
+                    style.visibility !== 'hidden' &&
+                    rect.width > 0 &&
+                    rect.height > 0
+                  );
+                }).length,
+            );
+            const visited = new Set();
+            let consentWasReached = false;
+            let escapedConsentDialog = false;
+            let focusVisibleFailures = 0;
+            const focusVisibleFailureSignatures = [];
+            let ctaReached = false;
+            let contextualReached = false;
+            let relatedReached = false;
+            for (let index = 0; index < Math.min(focusableCount + 10, 500); index += 1) {
+              await page.keyboard.press('Tab');
+              const focus = await page.evaluate(() => {
+                const element = document.activeElement;
+                if (!(element instanceof HTMLElement) || element === document.body) return null;
+                const style = getComputedStyle(element);
+                const rect = element.getBoundingClientRect();
+                return {
+                  cta: element.matches('.raos-cta'),
+                  contextual: element.matches('[data-raos-link-placement="article_body"]'),
+                  inConsent: element.closest('[data-raos-cookieyes-audit]') !== null,
+                  related: element.matches('[data-raos-link-placement="related_navigation"]'),
+                  signature: [
+                    element.tagName,
+                    element.id,
+                    element.className,
+                    element.getAttribute('href'),
+                  ].join('|'),
+                  visible:
+                    rect.width > 0 &&
+                    rect.height > 0 &&
+                    ((style.outlineStyle !== 'none' && style.outlineWidth !== '0px') ||
+                      style.boxShadow !== 'none'),
+                };
+              });
+              if (!focus) {
+                if (consentWasReached) escapedConsentDialog = true;
+                continue;
+              }
+              visited.add(focus.signature);
+              ctaReached ||= focus.cta;
+              contextualReached ||= focus.contextual;
+              relatedReached ||= focus.related;
+              if (focus.inConsent) consentWasReached = true;
+              if (consentWasReached && !focus.inConsent) escapedConsentDialog = true;
+              if (!focus.visible) {
+                focusVisibleFailures += 1;
+                focusVisibleFailureSignatures.push(focus.signature);
+              }
+            }
+            keyboardAudit = {
+              consentWasReached,
+              ctaReached,
+              escapedConsentDialog: !consentWasReached || escapedConsentDialog,
+              focusVisibleFailures,
+              focusVisibleFailureSignatures,
+              contextualReached,
+              relatedReached,
+              distinctTargets: visited.size,
             };
+            await page.evaluate(() => {
+              if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+              window.scrollTo(0, 0);
+            });
+          }
+          const articleAuditFailed =
+            surface.article &&
+            (audit.editorialRootCount !== 1 ||
+              audit.decisionListCount === 0 ||
+              audit.comparisonSectionCount === 0 ||
+              audit.purchaseCautionCount === 0 ||
+              audit.sourcesSectionCount === 0 ||
+              audit.ctaBounds.length === 0 ||
+              audit.invalidCtaBounds !== 0 ||
+              audit.contextualLinkCount !== 1 ||
+              audit.relatedLinkCount !== surface.related_article_ids.length ||
+              audit.cookieConsentBounds.length !== 1 ||
+              audit.invalidCookieConsentBounds !== 0 ||
+              audit.cookieButtonBounds.length !== 3 ||
+              audit.invalidCookieButtonBounds !== 0 ||
+              audit.cookieButtonOrder.join('|') !== '設定|拒否|同意' ||
+              audit.cookieButtonBounds.some((bounds) => bounds.height < 44) ||
+              audit.cookieOverlapsH1 ||
+              audit.cookieOverlapsCta !== 0 ||
+              audit.h1LastLineCharacters === 1 ||
+              (width <= 768 &&
+                (audit.comparisonCardsVisible === 0 || audit.comparisonTablesVisible !== 0)) ||
+              (width === 1440 &&
+                (audit.comparisonCardsVisible !== 0 || audit.comparisonTablesVisible === 0)) ||
+              ((width === 360 || width === 390) &&
+                (audit.h1LineCount > 6 ||
+                  audit.cookieConsentBounds[0].height < 160 ||
+                  audit.cookieConsentBounds[0].height > 230 ||
+                  audit.cookieButtonBounds.some(
+                    (bounds) => Math.abs(bounds.top - audit.cookieButtonBounds[0].top) > 1,
+                  ))) ||
+              (width === 1440 &&
+                (audit.h1LineCount > 4 || Math.abs(audit.cookieConsentBounds[0].width - 320) > 1)));
+          const keyboardAuditFailed =
+            width === 390 &&
+            (keyboardAudit.distinctTargets < 3 ||
+              keyboardAudit.focusVisibleFailures !== 0 ||
+              !keyboardAudit.escapedConsentDialog ||
+              (surface.article &&
+                (!keyboardAudit.ctaReached ||
+                  !keyboardAudit.contextualReached ||
+                  !keyboardAudit.relatedReached)));
+          const requiredJsonLdTypes = requiredJsonLdTypesByKind[surface.kind];
+          const seoHeadValidation = validateSeoHead({
+            audit,
+            expectedOpenGraphImageUrl,
+            expectedUrl,
+            forbiddenJsonLdTypes,
+            localNoindexHeaderValid,
+            openGraphImageResponseValid,
+            requiredJsonLdTypes,
           });
-          if (!focus) {
-            if (consentWasReached) escapedConsentDialog = true;
-            continue;
+          const {
+            failed: seoHeadAuditFailed,
+            invalidJsonLdTypes,
+            localNoindexMetaValid,
+            missingJsonLdTypes,
+            openGraphFieldsValid,
+            openGraphImageValid,
+            presentForbiddenJsonLdTypes,
+          } = seoHeadValidation;
+          if (
+            surface.article !== audit.editorialBodyClass ||
+            (surface.kind === 'policy') !== audit.policyBodyClass ||
+            audit.title.trim() === '' ||
+            !audit.lang.toLowerCase().startsWith('ja') ||
+            audit.bannerText !== 'LOCAL WORDPRESS PREVIEW — 本番表示ではありません' ||
+            audit.h1Count !== 1 ||
+            audit.h1Bounds.length !== 1 ||
+            audit.invalidH1Bounds !== 0 ||
+            audit.mainCount !== 1 ||
+            audit.measurementConfigDefined ||
+            audit.measurementScriptCount !== 0 ||
+            audit.measurementSessionKeyCount !== 0 ||
+            audit.cookieSettingsBounds.length !== 1 ||
+            audit.invalidCookieSettingsBounds !== 0 ||
+            audit.footerBackgroundColor !== 'rgb(23, 36, 63)' ||
+            audit.footerBottomBounds.length !== 1 ||
+            audit.footerGridBounds.length !== 1 ||
+            audit.footerGridDisplay !== 'grid' ||
+            audit.invalidFooterBottomBounds !== 0 ||
+            audit.invalidFooterGridBounds !== 0 ||
+            audit.footerLinkBounds.length === 0 ||
+            audit.invalidFooterLinkBounds !== 0 ||
+            audit.footerLinkBounds.some((bounds) => bounds.height < 44) ||
+            audit.footerGridColumnCount !== (width === 1440 ? 3 : width === 768 ? 2 : 1) ||
+            [...audit.footerBottomBounds, ...audit.footerGridBounds].some(
+              (bounds) => bounds.left < 16 || bounds.right > audit.clientWidth - 16,
+            ) ||
+            audit.missingAlt !== 0 ||
+            audit.unloadedImages !== 0 ||
+            audit.unlabeledControls !== 0 ||
+            audit.duplicateIds.length !== 0 ||
+            audit.brokenAriaReferences !== 0 ||
+            audit.scrollWidth > audit.clientWidth ||
+            articleAuditFailed ||
+            homepageReadbackFailed ||
+            internalLinkReadbackFailed ||
+            keyboardAuditFailed ||
+            seoHeadAuditFailed
+          ) {
+            const diagnostics = {
+              articleAuditFailed,
+              audit: {
+                brokenAriaReferences: audit.brokenAriaReferences,
+                cookieSettingsBounds: audit.cookieSettingsBounds.length,
+                duplicateIds: audit.duplicateIds.length,
+                editorialBodyClass: audit.editorialBodyClass,
+                footerBottomBounds: audit.footerBottomBounds,
+                footerGridBounds: audit.footerGridBounds,
+                footerGridColumnCount: audit.footerGridColumnCount,
+                footerGridDisplay: audit.footerGridDisplay,
+                footerLinkBounds: audit.footerLinkBounds,
+                footerMinimumLinkHeight: audit.footerMinimumLinkHeight,
+                h1Count: audit.h1Count,
+                invalidH1Bounds: audit.invalidH1Bounds,
+                invalidFooterBottomBounds: audit.invalidFooterBottomBounds,
+                invalidFooterGridBounds: audit.invalidFooterGridBounds,
+                invalidFooterLinkBounds: audit.invalidFooterLinkBounds,
+                mainCount: audit.mainCount,
+                measurementConfigDefined: audit.measurementConfigDefined,
+                measurementScriptCount: audit.measurementScriptCount,
+                measurementSessionKeyCount: audit.measurementSessionKeyCount,
+                missingAlt: audit.missingAlt,
+                policyBodyClass: audit.policyBodyClass,
+                scrollOverflow: audit.scrollWidth - audit.clientWidth,
+                unloadedImages: audit.unloadedImages,
+                unlabeledControls: audit.unlabeledControls,
+              },
+              homepageReadbackFailed,
+              internalLinkReadbackFailed,
+              keyboardAudit,
+              keyboardAuditFailed,
+              seoHeadAudit: {
+                canonicalCount: audit.canonicalLinks.length,
+                canonicalRawNonempty:
+                  audit.canonicalLinks.length === 1 && audit.canonicalLinks[0].rawHref !== '',
+                canonicalSelf:
+                  audit.canonicalLinks.length === 1 &&
+                  audit.canonicalLinks[0].rawHref === audit.currentUrl &&
+                  audit.canonicalLinks[0].resolvedHref === audit.currentUrl,
+                currentUrlMatchesInventory: audit.currentUrl === expectedUrl,
+                jsonLdParseFailed: audit.jsonLdParseFailed,
+                jsonLdScriptCount: audit.jsonLdScriptCount,
+                jsonLdTypes: audit.jsonLdTypes,
+                invalidJsonLdTypes,
+                localNoindexHeaderValid,
+                localNoindexMetaValid,
+                metaDescriptionCount: audit.metaDescriptions.length,
+                metaDescriptionNonempty:
+                  audit.metaDescriptions.length === 1 && audit.metaDescriptions[0] !== '',
+                missingJsonLdTypes,
+                openGraphCounts: Object.fromEntries(
+                  Object.entries(audit.openGraph).map(([name, values]) => [name, values.length]),
+                ),
+                openGraphFieldsValid,
+                openGraphImageExpectedUrl: expectedOpenGraphImageUrl,
+                openGraphImageResponseBodyBytes,
+                openGraphImageResponseContentType,
+                openGraphImageResponseStatus,
+                openGraphImageResponseUrl,
+                openGraphImageResponseValid,
+                openGraphImageValid,
+                openGraphTitleDescriptionMatch:
+                  audit.openGraph.title.length === 1 &&
+                  audit.openGraph.description.length === 1 &&
+                  audit.metaDescriptions.length === 1 &&
+                  audit.openGraph.title[0] === audit.title &&
+                  audit.openGraph.description[0] === audit.metaDescriptions[0],
+                openGraphUrlSelf:
+                  audit.openGraph.url.length === 1 && audit.openGraph.url[0] === audit.currentUrl,
+                presentForbiddenJsonLdTypes,
+                titleCount: audit.titleCount,
+              },
+              seoHeadAuditFailed,
+            };
+            throw new Error(
+              `RAOS_WORDPRESS_LOCAL_PREVIEW_AUDIT_FAILED_${surface.name}_${width}:` +
+                JSON.stringify(diagnostics),
+            );
           }
-          visited.add(focus.signature);
-          ctaReached ||= focus.cta;
-          contextualReached ||= focus.contextual;
-          relatedReached ||= focus.related;
-          if (focus.inConsent) consentWasReached = true;
-          if (consentWasReached && !focus.inConsent) escapedConsentDialog = true;
-          if (!focus.visible) {
-            focusVisibleFailures += 1;
-            focusVisibleFailureSignatures.push(focus.signature);
-          }
+          const screenshot = `${artifactDirectory}/local-preview-${surface.name}-${width}.png`;
+          await page.screenshot({ path: screenshot, fullPage: true });
+          results.push({
+            ...audit,
+            homepageReadbackFailed,
+            internalLinkReadbackFailed,
+            keyboardAudit,
+            seoHeadAuditFailed,
+            screenshot,
+            surface: surface.name,
+            width,
+          });
         }
-        keyboardAudit = {
-          consentWasReached,
-          ctaReached,
-          escapedConsentDialog: !consentWasReached || escapedConsentDialog,
-          focusVisibleFailures,
-          focusVisibleFailureSignatures,
-          contextualReached,
-          relatedReached,
-          distinctTargets: visited.size,
-        };
-        await page.evaluate(() => {
-          if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
-          window.scrollTo(0, 0);
-        });
       }
-      const articleAuditFailed =
-        surface.article &&
-        (audit.editorialRootCount !== 1 ||
-          audit.decisionListCount === 0 ||
-          audit.comparisonSectionCount === 0 ||
-          audit.purchaseCautionCount === 0 ||
-          audit.sourcesSectionCount === 0 ||
-          audit.ctaBounds.length === 0 ||
-          audit.invalidCtaBounds !== 0 ||
-          audit.contextualLinkCount !== 1 ||
-          audit.relatedLinkCount !== surface.related_article_ids.length ||
-          audit.cookieConsentBounds.length !== 1 ||
-          audit.invalidCookieConsentBounds !== 0 ||
-          audit.cookieButtonBounds.length !== 3 ||
-          audit.invalidCookieButtonBounds !== 0 ||
-          audit.cookieButtonOrder.join('|') !== '設定|拒否|同意' ||
-          audit.cookieButtonBounds.some((bounds) => bounds.height < 44) ||
-          audit.cookieOverlapsH1 ||
-          audit.cookieOverlapsCta !== 0 ||
-          audit.h1LastLineCharacters === 1 ||
-          (width <= 768 &&
-            (audit.comparisonCardsVisible === 0 ||
-              audit.comparisonTablesVisible !== 0)) ||
-          (width === 1440 &&
-            (audit.comparisonCardsVisible !== 0 ||
-              audit.comparisonTablesVisible === 0)) ||
-          ((width === 360 || width === 390) &&
-            (audit.h1LineCount > 6 ||
-              audit.cookieConsentBounds[0].height < 160 ||
-              audit.cookieConsentBounds[0].height > 230 ||
-              audit.cookieButtonBounds.some(
-                (bounds) =>
-                  Math.abs(bounds.top - audit.cookieButtonBounds[0].top) > 1,
-              ))) ||
-          (width === 1440 &&
-            (audit.h1LineCount > 4 ||
-              Math.abs(audit.cookieConsentBounds[0].width - 320) > 1)));
-      const keyboardAuditFailed =
-        width === 390 &&
-        (keyboardAudit.distinctTargets < 3 ||
-          keyboardAudit.focusVisibleFailures !== 0 ||
-          !keyboardAudit.escapedConsentDialog ||
-          (surface.article &&
-            (!keyboardAudit.ctaReached ||
-              !keyboardAudit.contextualReached ||
-              !keyboardAudit.relatedReached)));
-      if (
-        surface.article !== audit.editorialBodyClass ||
-        (surface.kind === 'policy') !== audit.policyBodyClass ||
-        audit.title.trim() === '' ||
-        !audit.lang.toLowerCase().startsWith('ja') ||
-        audit.bannerText !== 'LOCAL WORDPRESS PREVIEW — 本番表示ではありません' ||
-        audit.h1Count !== 1 ||
-        audit.h1Bounds.length !== 1 ||
-        audit.invalidH1Bounds !== 0 ||
-        audit.mainCount !== 1 ||
-        audit.measurementConfigDefined ||
-        audit.measurementScriptCount !== 0 ||
-        audit.measurementSessionKeyCount !== 0 ||
-        audit.cookieSettingsBounds.length !== 1 ||
-        audit.invalidCookieSettingsBounds !== 0 ||
-        audit.footerBackgroundColor !== 'rgb(23, 36, 63)' ||
-        audit.footerBottomBounds.length !== 1 ||
-        audit.footerGridBounds.length !== 1 ||
-        audit.footerGridDisplay !== 'grid' ||
-        audit.invalidFooterBottomBounds !== 0 ||
-        audit.invalidFooterGridBounds !== 0 ||
-        audit.footerLinkBounds.length === 0 ||
-        audit.invalidFooterLinkBounds !== 0 ||
-        audit.footerLinkBounds.some((bounds) => bounds.height < 44) ||
-        audit.footerGridColumnCount !==
-          (width === 1440 ? 3 : width === 768 ? 2 : 1) ||
-        [...audit.footerBottomBounds, ...audit.footerGridBounds].some(
-          (bounds) => bounds.left < 16 || bounds.right > audit.clientWidth - 16,
-        ) ||
-        audit.missingAlt !== 0 ||
-        audit.unloadedImages !== 0 ||
-        audit.unlabeledControls !== 0 ||
-        audit.duplicateIds.length !== 0 ||
-        audit.brokenAriaReferences !== 0 ||
-        audit.scrollWidth > audit.clientWidth ||
-        articleAuditFailed ||
-        homepageReadbackFailed ||
-        internalLinkReadbackFailed ||
-        keyboardAuditFailed
-      ) {
-        const diagnostics = {
-          articleAuditFailed,
-          audit: {
-            brokenAriaReferences: audit.brokenAriaReferences,
-            cookieSettingsBounds: audit.cookieSettingsBounds.length,
-            duplicateIds: audit.duplicateIds.length,
-            editorialBodyClass: audit.editorialBodyClass,
-            footerBottomBounds: audit.footerBottomBounds,
-            footerGridBounds: audit.footerGridBounds,
-            footerGridColumnCount: audit.footerGridColumnCount,
-            footerGridDisplay: audit.footerGridDisplay,
-            footerLinkBounds: audit.footerLinkBounds,
-            footerMinimumLinkHeight: audit.footerMinimumLinkHeight,
-            h1Count: audit.h1Count,
-            invalidH1Bounds: audit.invalidH1Bounds,
-            invalidFooterBottomBounds: audit.invalidFooterBottomBounds,
-            invalidFooterGridBounds: audit.invalidFooterGridBounds,
-            invalidFooterLinkBounds: audit.invalidFooterLinkBounds,
-            mainCount: audit.mainCount,
-            measurementConfigDefined: audit.measurementConfigDefined,
-            measurementScriptCount: audit.measurementScriptCount,
-            measurementSessionKeyCount: audit.measurementSessionKeyCount,
-            missingAlt: audit.missingAlt,
-            policyBodyClass: audit.policyBodyClass,
-            scrollOverflow: audit.scrollWidth - audit.clientWidth,
-            unloadedImages: audit.unloadedImages,
-            unlabeledControls: audit.unlabeledControls,
-          },
-          homepageReadbackFailed,
-          internalLinkReadbackFailed,
-          keyboardAudit,
-          keyboardAuditFailed,
-        };
-        throw new Error(
-          `RAOS_WORDPRESS_LOCAL_PREVIEW_AUDIT_FAILED_${surface.name}_${width}:`
-            + JSON.stringify(diagnostics),
-        );
+      if (runtimeErrors.length !== 0) {
+        throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_RUNTIME_ERROR');
       }
-      const screenshot = `${artifactDirectory}/local-preview-${surface.name}-${width}.png`;
-      await page.screenshot({ path: screenshot, fullPage: true });
-      results.push({
-        ...audit,
-        homepageReadbackFailed,
-        internalLinkReadbackFailed,
-        keyboardAudit,
-        screenshot,
-        surface: surface.name,
-        width,
-      });
-    }
-  }
-  if (runtimeErrors.length !== 0) {
-    throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_RUNTIME_ERROR');
-  }
-  if (externalRequests.length !== 0) {
-    throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_EXTERNAL_REQUEST');
-  }
-  if (measurementRequests.length !== 0) {
-    throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_MEASUREMENT_DEFAULT_OFF_FAILED');
-  }
-  if (results.length !== surfaces.length * widths.length) {
-    throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_SCREEN_COUNT_INVALID');
-  }
-  return results;
-}
+      if (externalRequests.length !== 0) {
+        throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_EXTERNAL_REQUEST');
+      }
+      if (measurementRequests.length !== 0) {
+        throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_MEASUREMENT_DEFAULT_OFF_FAILED');
+      }
+      if (results.length !== surfaces.length * widths.length) {
+        throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_SCREEN_COUNT_INVALID');
+      }
+      return results;
+    };
+
+  factory.validateSeoHead = validateSeoHead;
+  return factory;
+})()

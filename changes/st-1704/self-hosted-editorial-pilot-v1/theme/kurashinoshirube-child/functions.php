@@ -715,6 +715,14 @@ function kurashinoshirube_verified_asset_uri(string $relative, string $sha256): 
         return null;
     }
     $base = untrailingslashit(get_stylesheet_directory_uri());
+    $local_origin = kurashinoshirube_local_preview_origin();
+    if (
+        is_string($local_origin)
+        && $base === $local_origin
+            . '/wp-content/themes/kurashinoshirube-child'
+    ) {
+        return $base . '/' . $relative;
+    }
     $parts = wp_parse_url($base);
     if (
         ! is_array($parts)
@@ -2788,6 +2796,16 @@ function kurashinoshirube_filter_twitter_card($value)
         : 'summary_large_image';
 }
 
+/** Keep the WordPress title owner exact on the isolated no-Yoast preview. */
+function kurashinoshirube_filter_local_document_title($title)
+{
+    if (defined('WPSEO_VERSION') || ! kurashinoshirube_is_local_preview()) {
+        return $title;
+    }
+    $context = kurashinoshirube_public_head_context();
+    return $context === null ? $title : $context['title'];
+}
+
 add_filter('wpseo_title', 'kurashinoshirube_filter_title');
 add_filter('wpseo_metadesc', 'kurashinoshirube_filter_description');
 add_filter('wpseo_canonical', 'kurashinoshirube_filter_canonical');
@@ -2808,6 +2826,48 @@ add_filter('wpseo_twitter_title', 'kurashinoshirube_filter_og_title');
 add_filter('wpseo_twitter_description', 'kurashinoshirube_filter_og_description');
 add_filter('wpseo_twitter_image', 'kurashinoshirube_filter_social_image');
 add_filter('wpseo_twitter_card_type', 'kurashinoshirube_filter_twitter_card');
+add_filter(
+    'pre_get_document_title',
+    'kurashinoshirube_filter_local_document_title',
+    PHP_INT_MAX
+);
+
+/**
+ * Supply the bounded SEO head only when the isolated preview has no Yoast.
+ *
+ * WordPress remains the document-title owner. The verified image is resolved
+ * before core's singular canonical is removed, so an invalid asset fails closed
+ * without suppressing upstream metadata. Production and unrelated routes never
+ * enter this fallback.
+ */
+function kurashinoshirube_emit_local_fallback_head(): void
+{
+    if (defined('WPSEO_VERSION') || ! kurashinoshirube_is_local_preview()) {
+        return;
+    }
+    $context = kurashinoshirube_public_head_context();
+    $image = kurashinoshirube_verified_asset_uri(
+        KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH,
+        KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256
+    );
+    if ($context === null || $image === null) {
+        return;
+    }
+    remove_action('wp_head', 'rel_canonical');
+    echo '<meta name="description" content="'
+        . esc_attr($context['description']) . '">' . "\n";
+    echo '<link rel="canonical" href="'
+        . esc_url($context['canonical_url']) . '">' . "\n";
+    echo '<meta property="og:title" content="'
+        . esc_attr($context['title']) . '">' . "\n";
+    echo '<meta property="og:description" content="'
+        . esc_attr($context['description']) . '">' . "\n";
+    echo '<meta property="og:url" content="'
+        . esc_url($context['canonical_url']) . '">' . "\n";
+    echo '<meta property="og:image" content="'
+        . esc_url($image) . '">' . "\n";
+}
+add_action('wp_head', 'kurashinoshirube_emit_local_fallback_head', 5);
 
 /** Index only a review-safe route or one exact public article identity. */
 function kurashinoshirube_filter_robots($robots, $presentation)
