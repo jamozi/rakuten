@@ -10,6 +10,7 @@ import pytest
 from raos.application.analytics.google_live_projection import (
     ga4_baseline_document,
     gsc_baseline_document,
+    gsc_url_inspection_document,
 )
 from raos.application.editorial.editorial_portfolio_v3 import (
     load_editorial_portfolio_v3,
@@ -22,13 +23,18 @@ from raos.domain.analytics.google_live import (
     GA4_ARTICLE_ID_DIMENSION,
     GA4_BASELINE_DIMENSIONS,
     GA4_BASELINE_METRICS,
+    GA4_EVENT_PARAMETER_NAMES,
     Ga4ImportBatch,
     Ga4Observation,
     Ga4PropertyConfigSnapshot,
     GoogleProviderFailure,
     SearchConsoleImportBatch,
     SearchConsoleObservation,
+    SearchConsoleUrlInspectionBatch,
+    SearchConsoleUrlInspectionObservation,
+    SearchConsoleUrlInspectionQuery,
     canonical_json_bytes,
+    gsc_url_inspection_request_sha256,
     sha256_hex,
 )
 
@@ -93,6 +99,64 @@ def test_gsc_projection_is_private_baseline_input_and_strips_url_query() -> None
     assert "owner private query" not in repr(summary)
 
 
+def test_gsc_url_inspection_projection_is_reproducible_and_response_free() -> None:
+    urls = (
+        "https://kurashinoshirube.com/",
+        *(
+            f"https://kurashinoshirube.com/surface-{position}/"
+            for position in range(1, 14)
+        ),
+    )
+    query = SearchConsoleUrlInspectionQuery(
+        site_id=SITE_ID,
+        site_url="sc-domain:kurashinoshirube.com",
+        inspection_urls=urls,
+    )
+    batch = SearchConsoleUrlInspectionBatch(
+        site_id=SITE_ID,
+        site_url=query.site_url,
+        request_sha256=query.request_sha256,
+        results=tuple(
+            SearchConsoleUrlInspectionObservation(
+                inspected_url=url,
+                state="INDEXED",
+                verdict="PASS",
+                indexing_state="INDEXING_ALLOWED",
+                last_crawl_at="2026-08-30T01:02:03.123456789Z",
+                source_request_sha256=gsc_url_inspection_request_sha256(
+                    site_url=query.site_url,
+                    inspection_url=url,
+                ),
+                provider_response_sha256=f"{position:x}" * 64,
+            )
+            for position, url in enumerate(urls, start=1)
+        ),
+        retrieved_at=NOW,
+    )
+
+    document = gsc_url_inspection_document(batch)
+
+    assert document["schema"] == "RAOS_OWNER_PRIVATE_URL_INSPECTION_V1"
+    assert document["source"] == "GSC_URL_INSPECTION_API_V1"
+    assert document["request_sha256"] == query.request_sha256
+    assert document["result_count"] == 14
+    assert document["results"][0] == {  # type: ignore[index]
+        "url": urls[0],
+        "state": "INDEXED",
+        "verdict": "PASS",
+        "indexing_state": "INDEXING_ALLOWED",
+        "last_crawl_at": "2026-08-30T01:02:03.123456789Z",
+        "request_sha256": gsc_url_inspection_request_sha256(
+            site_url=query.site_url,
+            inspection_url=urls[0],
+        ),
+        "response_sha256": "1" * 64,
+    }
+    serialized = repr(document).lower()
+    assert "credential" not in serialized
+    assert "inspectionresultlink" not in serialized
+
+
 def _ga4_batch() -> Ga4ImportBatch:
     portfolio = load_editorial_portfolio_v3(ROOT)
     article = portfolio.articles[0]
@@ -100,6 +164,7 @@ def _ga4_batch() -> Ga4ImportBatch:
         "currency_code": "JPY",
         "display_name": "Kurashi",
         "property_resource": "properties/12345",
+        "required_event_custom_dimensions": list(GA4_EVENT_PARAMETER_NAMES),
         "reporting_identity": "DEVICE_BASED",
         "time_zone": "Asia/Tokyo",
     }
@@ -119,13 +184,15 @@ def _ga4_batch() -> Ga4ImportBatch:
         ("date", "20260829"),
         ("pagePath", f"/{article.production_slug}/"),
         ("eventName", "affiliate_click"),
-        ("deviceCategory", "mobile"),
         (GA4_ARTICLE_ID_DIMENSION, article.article_id),
+        ("customEvent:snapshot_id", article.snapshot_id),
+        ("customEvent:cta_id", article.cta_bindings[0].cta_id),
+        ("customEvent:offer_id", article.cta_bindings[0].offer_id),
+        ("customEvent:product_id", article.cta_bindings[0].product_id),
+        ("customEvent:placement", article.cta_bindings[0].placement),
     )
     grain_sha = sha256_hex(
-        canonical_json_bytes(
-            {"date": "2026-08-29", "dimensions": dict(dimensions)}
-        )
+        canonical_json_bytes({"date": "2026-08-29", "dimensions": dict(dimensions)})
     )
     return Ga4ImportBatch(
         site_id=SITE_ID,
@@ -158,17 +225,20 @@ def _ga4_batch() -> Ga4ImportBatch:
     )
 
 
-def test_ga4_projection_normalizes_approved_article_dimension_and_round_trips() -> (
-    None
-):
+def test_ga4_projection_normalizes_approved_article_dimension_and_round_trips() -> None:
     portfolio = load_editorial_portfolio_v3(ROOT)
     article = portfolio.articles[0]
     batch = _ga4_batch()
 
     document = ga4_baseline_document(batch)
     dimensions = document["rows"][0]["dimensions"]  # type: ignore[index]
-    assert {row["name"] for row in dimensions} >= {"article_id", "eventName"}
-    assert GA4_ARTICLE_ID_DIMENSION not in {row["name"] for row in dimensions}
+    assert {row["name"] for row in dimensions} >= {
+        *GA4_EVENT_PARAMETER_NAMES,
+        "eventName",
+    }
+    assert not {
+        name for name in GA4_BASELINE_DIMENSIONS if name.startswith("customEvent:")
+    } & {row["name"] for row in dimensions}
     summary = summarize_ga4(document, portfolio)
     assert summary["by_article"][article.article_id]["events"] == {  # type: ignore[index]
         "affiliate_click": 3

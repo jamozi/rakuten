@@ -20,11 +20,19 @@ identity, or provider credential. A session UUID is stored only as a SHA-256
 digest. Raw rows expire after seven days; daily aggregates expire after 13
 calendar months.
 
+Admission retains the per-session limit and also reserves capacity from two
+database-backed, transaction-locked site budgets. The short token bucket allows
+a 1,200-event burst and refills at 20 events/second; a separate UTC-day bucket
+caps accepted events at 100,000/day. Both budgets are shared across anonymous
+session UUIDs, so rotating a client-generated UUID does not mint capacity.
+Limiter storage failure refuses the event. The limiter reads and stores no IP
+address, user-agent, or other network/browser fingerprint.
+
 `raos-measurement/aggregate-report` returns aggregates only. It is intended for
 the existing bounded `wordpressEditor` MCP transport and its exact read-only
 editor role. No raw-event read surface exists.
 
-Activation creates two plugin-owned tables and therefore requires the existing
+Activation creates three plugin-owned tables and therefore requires the existing
 manual plugin-review path. Activation never enables collection. Deactivation
 stops cleanup scheduling without deleting measurements. Uninstall/delete code
 is intentionally absent.

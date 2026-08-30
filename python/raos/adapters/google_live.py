@@ -17,8 +17,10 @@ from urllib.parse import quote, urlsplit
 
 from raos.domain.analytics.google_live import (
     AnalyticsSiteBinding,
+    GA4_EVENT_PARAMETER_NAMES,
     GA4_READONLY_SCOPE,
     GSC_READONLY_SCOPE,
+    GSC_URL_INSPECTION_LANGUAGE_CODE,
     Ga4ImportBatch,
     Ga4LiveQuery,
     Ga4Observation,
@@ -28,8 +30,14 @@ from raos.domain.analytics.google_live import (
     SearchConsoleImportBatch,
     SearchConsoleLiveQuery,
     SearchConsoleObservation,
+    SearchConsoleUrlInspectionBatch,
+    SearchConsoleUrlInspectionObservation,
+    SearchConsoleUrlInspectionQuery,
     canonical_json_bytes,
     fail_google,
+    gsc_url_inspection_request_sha256,
+    is_google_utc_timestamp,
+    normalize_url_inspection_state,
     sha256_hex,
 )
 from raos.ports.google_live import (
@@ -43,6 +51,7 @@ from raos.ports.google_live import (
 _GOOGLE_ORIGINS = frozenset(
     {
         "https://www.googleapis.com",
+        "https://searchconsole.googleapis.com",
         "https://analyticsdata.googleapis.com",
         "https://analyticsadmin.googleapis.com",
     }
@@ -273,12 +282,12 @@ class GoogleServiceAccountAuthorizedTransport:
             with self._lock:
                 if not bool(self._credentials.valid):
                     self._credentials.refresh(self._request_adapter)
-                token = self._credentials.token
+                access_value = self._credentials.token
         except Exception:
             fail_google(GoogleProviderFailureCode.AUTHENTICATION_FAILED, retryable=True)
-        if type(token) is not str or not token:
+        if type(access_value) is not str or not access_value:
             fail_google(GoogleProviderFailureCode.AUTHENTICATION_FAILED)
-        return token
+        return access_value
 
     def request(
         self,
@@ -410,6 +419,14 @@ def _number(value: object) -> float:
     return observed
 
 
+def _optional_utc_timestamp(value: object) -> str | None:
+    if value is None:
+        return None
+    if not is_google_utc_timestamp(value):
+        fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+    return cast(str, value)
+
+
 @final
 class LiveSearchConsoleProvider:
     __slots__ = ("_clock", "_sleeper", "_transport")
@@ -532,6 +549,90 @@ class LiveSearchConsoleProvider:
 
 
 @final
+class LiveSearchConsoleUrlInspectionProvider:
+    """Inspect the closed URL set sequentially through the read-only GSC seam."""
+
+    __slots__ = ("_clock", "_sleeper", "_transport")
+
+    def __init__(
+        self,
+        *,
+        transport: GoogleAuthorizedJsonTransport,
+        clock: GoogleImportClock,
+        sleeper: GoogleRetrySleeper,
+    ) -> None:
+        if (
+            not _is_runtime_instance(transport, GoogleAuthorizedJsonTransport)
+            or not _is_runtime_instance(clock, GoogleImportClock)
+            or not _is_runtime_instance(sleeper, GoogleRetrySleeper)
+        ):
+            fail_google()
+        self._transport = transport
+        self._clock = clock
+        self._sleeper = sleeper
+
+    def inspect(
+        self, query: SearchConsoleUrlInspectionQuery
+    ) -> SearchConsoleUrlInspectionBatch:
+        if type(query) is not SearchConsoleUrlInspectionQuery:
+            fail_google()
+        endpoint = "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect"
+        results: list[SearchConsoleUrlInspectionObservation] = []
+        for inspection_url in query.inspection_urls:
+            body: dict[str, object] = {
+                "inspectionUrl": inspection_url,
+                "languageCode": GSC_URL_INSPECTION_LANGUAGE_CODE,
+                "siteUrl": query.site_url,
+            }
+            request_sha256 = gsc_url_inspection_request_sha256(
+                site_url=query.site_url,
+                inspection_url=inspection_url,
+            )
+            response = _request_with_retry(
+                transport=self._transport,
+                sleeper=self._sleeper,
+                method="POST",
+                url=endpoint,
+                body=body,
+            )
+            document = _dict(response.document)
+            inspection_result = _dict(document.get("inspectionResult"))
+            index_status = _dict(inspection_result.get("indexStatusResult"))
+            verdict = index_status.get("verdict")
+            indexing_state = index_status.get("indexingState")
+            if type(verdict) is not str or type(indexing_state) is not str:
+                fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+            last_crawl_at = _optional_utc_timestamp(index_status.get("lastCrawlTime"))
+            normalized_response = {
+                "indexingState": indexing_state,
+                "lastCrawlTime": last_crawl_at,
+                "verdict": verdict,
+            }
+            results.append(
+                SearchConsoleUrlInspectionObservation(
+                    inspected_url=inspection_url,
+                    state=normalize_url_inspection_state(
+                        verdict=verdict, indexing_state=indexing_state
+                    ),
+                    verdict=verdict,
+                    indexing_state=indexing_state,
+                    last_crawl_at=last_crawl_at,
+                    source_request_sha256=request_sha256,
+                    provider_response_sha256=sha256_hex(
+                        canonical_json_bytes(normalized_response)
+                    ),
+                )
+            )
+        return SearchConsoleUrlInspectionBatch(
+            site_id=query.site_id,
+            site_url=query.site_url,
+            request_sha256=query.request_sha256,
+            results=tuple(results),
+            retrieved_at=self._clock.now(),
+        )
+
+
+@final
 class LiveGa4AdminProvider:
     __slots__ = ("_sleeper", "_transport")
 
@@ -543,9 +644,7 @@ class LiveGa4AdminProvider:
     ) -> None:
         if not _is_runtime_instance(
             transport, GoogleAuthorizedJsonTransport
-        ) or not _is_runtime_instance(
-            sleeper, GoogleRetrySleeper
-        ):
+        ) or not _is_runtime_instance(sleeper, GoogleRetrySleeper):
             fail_google()
         self._transport = transport
         self._sleeper = sleeper
@@ -585,12 +684,73 @@ class LiveGa4AdminProvider:
             or type(identity_document.get("reportingIdentity")) is not str
         ):
             fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+        custom_dimension_hashes: list[str] = []
+        custom_dimension_scopes: dict[str, str] = {}
+        page_token: str | None = None
+        for _ in range(_MAX_PAGES):
+            custom_dimensions_url = (
+                "https://analyticsadmin.googleapis.com/v1alpha/"
+                f"{resource}/customDimensions?pageSize=200"
+            )
+            if page_token is not None:
+                custom_dimensions_url += f"&pageToken={quote(page_token, safe='')}"
+            custom_dimensions_response = _request_with_retry(
+                transport=self._transport,
+                sleeper=self._sleeper,
+                method="GET",
+                url=custom_dimensions_url,
+                body=None,
+            )
+            custom_dimensions_document = _dict(custom_dimensions_response.document)
+            custom_dimension_hashes.append(
+                sha256_hex(canonical_json_bytes(custom_dimensions_document))
+            )
+            for raw_dimension in _list(
+                custom_dimensions_document.get("customDimensions", [])
+            ):
+                dimension = _dict(raw_dimension)
+                dimension_resource = dimension.get("name")
+                parameter_name = dimension.get("parameterName")
+                scope = dimension.get("scope")
+                if (
+                    type(dimension_resource) is not str
+                    or not dimension_resource.startswith(
+                        f"{resource}/customDimensions/"
+                    )
+                    or type(parameter_name) is not str
+                    or not parameter_name
+                    or type(scope) is not str
+                    or parameter_name in custom_dimension_scopes
+                ):
+                    fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+                custom_dimension_scopes[parameter_name] = scope
+            next_page_token = custom_dimensions_document.get("nextPageToken")
+            if next_page_token is None:
+                break
+            if type(next_page_token) is not str or not next_page_token:
+                fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+            page_token = next_page_token
+        else:
+            fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+        if any(
+            custom_dimension_scopes.get(parameter_name) != "EVENT"
+            for parameter_name in GA4_EVENT_PARAMETER_NAMES
+        ):
+            fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
         property_hash = sha256_hex(canonical_json_bytes(property_document))
-        identity_hash = sha256_hex(canonical_json_bytes(identity_document))
+        identity_hash = sha256_hex(
+            canonical_json_bytes(
+                {
+                    "custom_dimension_page_sha256s": custom_dimension_hashes,
+                    "reporting_identity": identity_document,
+                }
+            )
+        )
         snapshot_document = {
             "currency_code": property_document["currencyCode"],
             "display_name": property_document["displayName"],
             "property_resource": resource,
+            "required_event_custom_dimensions": list(GA4_EVENT_PARAMETER_NAMES),
             "reporting_identity": identity_document["reportingIdentity"],
             "time_zone": property_document["timeZone"],
         }
@@ -787,6 +947,7 @@ __all__ = [
     "LiveGa4AdminProvider",
     "LiveGa4DataProvider",
     "LiveSearchConsoleProvider",
+    "LiveSearchConsoleUrlInspectionProvider",
     "SystemGoogleImportClock",
     "SystemGoogleRetrySleeper",
 ]

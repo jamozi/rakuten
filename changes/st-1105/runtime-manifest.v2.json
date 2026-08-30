@@ -133,8 +133,8 @@
     {
       "uri": "repo://uv.lock",
       "role": "DEPENDENCY_LOCK",
-      "bytes": 129836,
-      "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf"
+      "bytes": 165160,
+      "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1"
     },
     {
       "uri": "repo://package.json",

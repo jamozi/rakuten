@@ -2,10 +2,401 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 140,
+    "owner_count": 145,
     "version": "2.0.0"
   },
   "owners": [
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 2877,
+          "sha256": "3b85108196b8d101cdf635bd53a4e083de947c41927c12eb812f4a3bbe6a52b9",
+          "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
+        },
+        {
+          "bytes": 18254,
+          "sha256": "dc2aa06cbc4a91ef86f868fffe62969ef7845a17967ea078146d5b533227e838",
+          "uri": "repo://changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement/config/measurement-allowlist.v1.json"
+        }
+      ],
+      "owner_dependencies": [
+        "build_editorial_portfolio_v3"
+      ],
+      "owner_id": "build_editorial_measurement_v1",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-measurement-v1",
+          "uri": "repo://changes/editorial-measurement-v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-measurement-v1/measurement-runtime.v1.json",
+          "uri": "repo://changes/editorial-measurement-v1/measurement-runtime.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+          "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_editorial_measurement_v1.py",
+          "uri": "repo://scripts/build_editorial_measurement_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_measurement_v1",
+          "uri": "repo://tests/editorial_measurement_v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_measurement_v1/measurement_client_harness.mjs",
+          "uri": "repo://tests/editorial_measurement_v1/measurement_client_harness.mjs",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_measurement_v1/measurement_store_rate_harness.php",
+          "uri": "repo://tests/editorial_measurement_v1/measurement_store_rate_harness.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_measurement_v1/test_contract.py",
+          "uri": "repo://tests/editorial_measurement_v1/test_contract.py",
+          "version": 2
+        }
+      ],
+      "story_ids": []
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 79383,
+          "sha256": "17507d314ace2e34379242fa29531439ffbe2fcb729d6a503d25206862794bc1",
+          "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
+        },
+        {
+          "bytes": 10646,
+          "sha256": "5fb0dc9ac677569151a41e25fe428c04a7a1ea259a67e1efff4915f0a235b566",
+          "uri": "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json"
+        }
+      ],
+      "owner_dependencies": [],
+      "owner_id": "build_editorial_portfolio_v3",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "uri": "repo://changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/README.md",
+          "uri": "repo://changes/editorial-portfolio-v3/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/editorial-identities.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/editorial-identities.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/rakuten-parser-boundary.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/rakuten-parser-boundary.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/editorial_portfolio_v2.py",
+          "uri": "repo://python/raos/application/editorial/editorial_portfolio_v2.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/editorial_portfolio_v3.py",
+          "uri": "repo://python/raos/application/editorial/editorial_portfolio_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/rakuten_measurement_activation_v3.py",
+          "uri": "repo://python/raos/application/editorial/rakuten_measurement_activation_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/finance/editorial_economics_v3.py",
+          "uri": "repo://python/raos/application/finance/editorial_economics_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_editorial_portfolio_v3.py",
+          "uri": "repo://scripts/build_editorial_portfolio_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_editorial_economics_v3.py",
+          "uri": "repo://scripts/raos_editorial_economics_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_rakuten_measurement_activation_v3.py",
+          "uri": "repo://scripts/raos_rakuten_measurement_activation_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_portfolio_v2",
+          "uri": "repo://tests/editorial_portfolio_v2",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_portfolio_v3",
+          "uri": "repo://tests/editorial_portfolio_v3",
+          "version": 2
+        }
+      ],
+      "story_ids": []
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 6968,
+          "sha256": "29864039f9eda7673fc53405f6798dd6cf354c18654600fe6e9091cdd0697ff3",
+          "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
+        },
+        {
+          "bytes": 9339,
+          "sha256": "67390ac4eb2429c39a2c7458c3c8e69f664481fa04c59140fd440ef3f0806e71",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
+        }
+      ],
+      "owner_dependencies": [
+        "build_editorial_portfolio_v3"
+      ],
+      "owner_id": "build_editorial_v3_theme_navigation",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+          "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/generated/navigation.v3.json",
+          "uri": "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_editorial_v3_theme_navigation.py",
+          "uri": "repo://scripts/build_editorial_v3_theme_navigation.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/st1704",
+          "uri": "repo://tests/st1704",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_local_preview",
+          "uri": "repo://tests/wordpress_local_preview",
+          "version": 2
+        }
+      ],
+      "story_ids": []
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 2449,
+          "sha256": "25267c2ea1ccd9238bced96b1af0a0d9ff6b7354df8c835a4e282d626390a3db",
+          "uri": "repo://changes/analytics-google-live-v1/runtime-manifest.v1.json"
+        }
+      ],
+      "owner_dependencies": [
+        "build_st0301_migration_framework"
+      ],
+      "owner_id": "build_google_live_runtime_v1",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "migrations/versions/202608300001_google_analytics_live_persistence.py",
+          "uri": "repo://migrations/versions/202608300001_google_analytics_live_persistence.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/google_live.py",
+          "uri": "repo://python/raos/adapters/google_live.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/google_live_database.py",
+          "uri": "repo://python/raos/adapters/google_live_database.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/persistence/sqlalchemy/google_live.py",
+          "uri": "repo://python/raos/adapters/persistence/sqlalchemy/google_live.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/analytics/google_live_import.py",
+          "uri": "repo://python/raos/application/analytics/google_live_import.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/analytics/google_live_projection.py",
+          "uri": "repo://python/raos/application/analytics/google_live_projection.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/analytics/google_live.py",
+          "uri": "repo://python/raos/domain/analytics/google_live.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/migrations/catalog.py",
+          "uri": "repo://python/raos/migrations/catalog.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/ports/google_live.py",
+          "uri": "repo://python/raos/ports/google_live.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_google_live_runtime_v1.py",
+          "uri": "repo://scripts/build_google_live_runtime_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_editorial_economics_v3.py",
+          "uri": "repo://scripts/raos_editorial_economics_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_seo_audit.py",
+          "uri": "repo://scripts/raos_wordpress_seo_audit.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/google_live",
+          "uri": "repo://tests/google_live",
+          "version": 2
+        }
+      ],
+      "story_ids": []
+    },
     {
       "output_scope": "tracked",
       "outputs": [
@@ -222,8 +613,8 @@
           "uri": "repo://changes/raos-v2/design/design-tokens.v2.json"
         },
         {
-          "bytes": 76068,
-          "sha256": "dfc7367d1b607216d86350aed6dffb4884d68a993ac1b77be7c8888a3518c989",
+          "bytes": 76310,
+          "sha256": "9335b2c50ba689e401cec4e53cf32452ff63452ba5c3b5c881cba97937e38a9b",
           "uri": "repo://changes/raos-v2/generated/decision-traceability.effective.v1.yaml"
         },
         {
@@ -277,8 +668,8 @@
           "uri": "repo://changes/raos-v2/phase-0/source-audit-report.json"
         },
         {
-          "bytes": 1193,
-          "sha256": "03c4daa10d45f8bae974508b6c3fe4792fd70ea4644bba6c4ea56b9365e9987e",
+          "bytes": 1210,
+          "sha256": "b7f14a76cc78e379bc3224de720188676e4530e79caaebe95ed2ffed1225ae05",
           "uri": "repo://changes/raos-v2/phase-1-report.md"
         },
         {
@@ -287,8 +678,8 @@
           "uri": "repo://changes/raos-v2/phase-2/claims/claim-ledger.v2.yaml"
         },
         {
-          "bytes": 20342,
-          "sha256": "b0ed7e2fd5c5935eb20671c7e5b3c8cb897821e768de530ff90188446012d0ce",
+          "bytes": 20381,
+          "sha256": "db407712bded9ad541230586883d64e8c65986e219332af947ccf862f5e6cc1c",
           "uri": "repo://changes/raos-v2/phase-2/generated/local-evidence-bundle.v2.json"
         },
         {
@@ -297,8 +688,8 @@
           "uri": "repo://changes/raos-v2/phase-2/generated/migration-manifest.v2.yaml"
         },
         {
-          "bytes": 7343,
-          "sha256": "06fb85aa952910302db5f3c21efd61128ddb0e1fa89ee22a1738a8d0b7ac34df",
+          "bytes": 7157,
+          "sha256": "afd421928756864465ecbff0999d7b1018dab90c6025280b03cf7f0528cd9392",
           "uri": "repo://changes/raos-v2/phase-2/generated/phase-2-validation.v2.json"
         },
         {
@@ -317,13 +708,13 @@
           "uri": "repo://changes/raos-v2/phase-2/generated/synthetic-seal-receipt.v2.json"
         },
         {
-          "bytes": 2591,
-          "sha256": "f6df88a4e8224d1180ad6128cdcc4ef7f0c3bd1010216058ccb05455f01217cc",
+          "bytes": 2606,
+          "sha256": "80e36e2cb510484ee529afe6b2f0ea896878aeaadebaa0fb8d7a2f8dbd414647",
           "uri": "repo://changes/raos-v2/phase-2/integration-pr-body.md"
         },
         {
-          "bytes": 2520,
-          "sha256": "81e54e7bcf3b2e0434ad3509ab3e6a7e9c821af7d638501cc7e20c73722fdb3c",
+          "bytes": 2563,
+          "sha256": "9496a5b62964797dd35d540bcda9034bccbdbeb732030c80edd9980934da2e65",
           "uri": "repo://changes/raos-v2/phase-2/phase-2-report.md"
         },
         {
@@ -427,8 +818,8 @@
           "uri": "repo://changes/raos-v2/phase-3/integration-pr-body.md"
         },
         {
-          "bytes": 5213,
-          "sha256": "ee5fd45191d31259b9b17157cd496339414ef6e3628f0b2715de3b9a6bcd4cc6",
+          "bytes": 5228,
+          "sha256": "14c22d37a94dfb9d76dd8362e43f719ab277a1985a8ed92c2bfd7cc414fd9369",
           "uri": "repo://changes/raos-v2/phase-3/phase-3-preparation-report.md"
         },
         {
@@ -8733,7 +9124,7 @@
       "outputs": [
         {
           "bytes": 5972,
-          "sha256": "de7b3114fa3c0252ea7a19fea7758a004fed62bdbd40a37dec215d24da314e7b",
+          "sha256": "f7d0ddf207eebfed415f187cf5b50dc38782c3102bfcf832d8d97f43c7605ec3",
           "uri": "repo://changes/st-0204/manifest.yaml"
         }
       ],
@@ -8868,7 +9259,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         },
         {
@@ -9027,13 +9418,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 10404,
-          "sha256": "13c23b665b12e397730a7f720899fc72dc8208ddc165fcdb92694e4eb39e33a1",
+          "bytes": 10776,
+          "sha256": "d15068d6c7e637896919f266ee06b96563b5869810a82a1f7c9b97868baab92f",
           "uri": "repo://changes/st-0301/generated/migration-catalog.v1.json"
         },
         {
-          "bytes": 10097,
-          "sha256": "46f38c965c0e966929f68fdeeeb411230b30a23a4702d4ca06214850f333f542",
+          "bytes": 10295,
+          "sha256": "7abb84a9e9560daaed49bd3127d69ea05f9bf9d5ba49ebf1d39776dee37ee8f6",
           "uri": "repo://changes/st-0301/manifest.yaml"
         }
       ],
@@ -9131,6 +9522,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "migrations/versions/202608300001_google_analytics_live_persistence.py",
+          "uri": "repo://migrations/versions/202608300001_google_analytics_live_persistence.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "pyproject.toml",
           "uri": "repo://pyproject.toml",
           "version": 2
@@ -9191,7 +9588,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         },
         {
@@ -9225,7 +9622,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "e2a6fb387a43b16498169817dc0d00d4310eaf5cd48107c6ee6380641783801b",
+          "sha256": "531b2b9f1cd0b825fcc70a0ce00c26a996e4a879a6863be8eb67b29bcac1fa27",
           "uri": "repo://changes/st-0302/manifest.yaml"
         },
         {
@@ -9485,7 +9882,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         },
         {
@@ -9516,7 +9913,7 @@
         },
         {
           "bytes": 11451,
-          "sha256": "dea1c553736012d550ad82418032a1798c457d1c203853729679ed63c5f1ae14",
+          "sha256": "d6cc0ab37029105b8e425e855402792c97c1615be83da3cf7a1590fcbff77b39",
           "uri": "repo://changes/st-0303/manifest.yaml"
         },
         {
@@ -9840,7 +10237,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         },
         {
@@ -9873,7 +10270,7 @@
         },
         {
           "bytes": 11664,
-          "sha256": "6e4612e295c825048cac3b0efdbf554a4dcd5402c8598aaead55e4a10d4191f8",
+          "sha256": "6528b7808a231bcc84997f01ad599eb46cfb55a250e53a4ce1713d9e8cdad06a",
           "uri": "repo://changes/st-0304/manifest.yaml"
         },
         {
@@ -10093,7 +10490,7 @@
         },
         {
           "bytes": 14860,
-          "sha256": "e05be647b9dbb8d81ecdf7a9ab1a19fc5abf65578379b989f5105ff8e27f8384",
+          "sha256": "81a561cf6c7cc3f24e72b0e38169eb075f4c95ac20f2c1c0f80bd57ac4c04c10",
           "uri": "repo://changes/st-0305/manifest.yaml"
         },
         {
@@ -10324,7 +10721,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "c910e00f6dc61657f5ddf7e560b83bef4e24a4c4e064a7765cb872fa769fa960",
+          "sha256": "a3a1361136af2180b7388d2baf66dd4d04682e1fba5bbd7d3d4e0389e99ea238",
           "uri": "repo://changes/st-0306/manifest.yaml"
         },
         {
@@ -10570,13 +10967,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 11444,
-          "sha256": "9d566122db5173d5f0495ed5a812e4062a47970517d485278c876d0daf986d6f",
+          "bytes": 11527,
+          "sha256": "974619d488050406e883f858a40190fa2ef5962bff31eb50946d12243b6075bf",
           "uri": "repo://changes/st-0307/generated/migration-upgrade-fixture-catalog.v1.json"
         },
         {
-          "bytes": 15335,
-          "sha256": "8b6a8300147b17d1539a6d9d9bddc096ff1cdfe6d2a9392b64dea3fb78636305",
+          "bytes": 15544,
+          "sha256": "6fcf73ed369442e6deb7cf59693f13dd2f22b2b8c7300cace385298481365b4a",
           "uri": "repo://changes/st-0307/manifest.yaml"
         },
         {
@@ -10602,6 +10999,7 @@
       ],
       "owner_dependencies": [
         "build_st0201_postgres_service",
+        "build_st0301_migration_framework",
         "build_st0304_domain_schemas",
         "build_st0306_database_roles"
       ],
@@ -10618,6 +11016,14 @@
           "kind": "tracked",
           "semantic_id": "README.md",
           "uri": "repo://README.md",
+          "version": 2
+        },
+        {
+          "kind": "predecessor",
+          "owner_id": "build_st0301_migration_framework",
+          "owner_version": 2,
+          "semantic_id": "changes/st-0301/generated/migration-catalog.v1.json",
+          "uri": "repo://changes/st-0301/generated/migration-catalog.v1.json",
           "version": 2
         },
         {
@@ -12829,7 +13235,7 @@
         },
         {
           "bytes": 4711,
-          "sha256": "75b6c2755b8fbdcb2d466d721a5bc5fe2ca23247cd17efe3d447c03a649173ee",
+          "sha256": "c8ff236b7a234044700271a8c5c7d1bae1506f885cf2e3c65ff16e2b4f2125b7",
           "uri": "repo://changes/st-0603/manifest.v2.json"
         }
       ],
@@ -13270,7 +13676,7 @@
         },
         {
           "bytes": 6636,
-          "sha256": "67fca061483b6e91289ed48e1cb22eb54a3435bb21bbb1a14febda89ea8c58ec",
+          "sha256": "4969503f21e22072c1b0b20b380014d4d97229aa5b6f285e397982476c2afa7f",
           "uri": "repo://changes/st-0604/manifest.v2.json"
         }
       ],
@@ -13716,7 +14122,7 @@
         },
         {
           "bytes": 8936,
-          "sha256": "78969332bb2dfad926094f2af1f9a7abaac2d99f3b7f6d59a0555d9ddc464835",
+          "sha256": "5910b579348db805c529e919515e35176a5bf0e6e56e95a3fe0c054ea3214541",
           "uri": "repo://changes/st-0605/runtime-manifest.v1.yaml"
         }
       ],
@@ -14041,7 +14447,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         }
       ],
@@ -14177,7 +14583,7 @@
         },
         {
           "bytes": 15112,
-          "sha256": "4b0b4f77628d7afdec378d6758072890fcd50d003794e7bd542bf3357f4e5024",
+          "sha256": "efe190575d0e6d0fc8cb366b770a4147cad300818878ea2500814e189a6b80c0",
           "uri": "repo://changes/st-0701/manifest.yaml"
         }
       ],
@@ -14329,7 +14735,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         },
         {
@@ -14440,7 +14846,7 @@
       "outputs": [
         {
           "bytes": 5471,
-          "sha256": "f948ec870072793b4192b3aa752a7408ab6989a98e8d419e08c06af36cc3035a",
+          "sha256": "d553d270b8b885e370bf569f26467c04371ca66622a1061d77e0bfef528bff5b",
           "uri": "repo://changes/st-0703/manifest.yaml"
         }
       ],
@@ -14535,7 +14941,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         },
         {
@@ -15144,22 +15550,22 @@
         },
         {
           "bytes": 5662,
-          "sha256": "5bcecba944cb5c11171aa0363ba800790ddc26ee7638d3b6a47befa350554c02",
+          "sha256": "5317a951810de9a5ebebe9b4978583e898414ec19c7479b421dc505c82cc3c36",
           "uri": "repo://changes/st-0708/generated/recorded-live-evaluation-report.v2.json"
         },
         {
           "bytes": 4230,
-          "sha256": "2a128cd410e34e5fe225e1b1480f68eebc68a65b8bf868037121c9ecc973aabd",
+          "sha256": "07612b32175dae3a4d7bb72c7c8363ea9fdb06c7562e8bc19b9d7bdcb1478e26",
           "uri": "repo://changes/st-0708/generated/recorded-live-evaluation-request.v2.json"
         },
         {
           "bytes": 5707,
-          "sha256": "cd37dda8ecf36f6395f05df395fdae094cfc6d5d27308d7e4c94c0057fac935d",
+          "sha256": "881cf255d980d384c9c392c6efcae01277f9adb51b0c8741c5211bba67398ca0",
           "uri": "repo://changes/st-0708/manifest.yaml"
         },
         {
           "bytes": 4944,
-          "sha256": "47801b181939e066c3699cd4311ccc0079822490a253b129a90c6548ac9a6b8c",
+          "sha256": "3836533b05e51f801d172f7533aaf0aba34e611465d43e4856b19728584ec90d",
           "uri": "repo://changes/st-0708/runtime-manifest.v2.json"
         }
       ],
@@ -15211,7 +15617,7 @@
       "outputs": [
         {
           "bytes": 7913,
-          "sha256": "52857a2a48fd85cb7164071fbbdf416c9817e10fe028b78a814eec366ca80ee5",
+          "sha256": "54e235de24e8eaab19629abb0a991e169b499bb5be0cc539fa0cfeaa8b742a99",
           "uri": "repo://changes/st-0709/runtime-manifest.v2.json"
         }
       ],
@@ -15436,7 +15842,7 @@
       "outputs": [
         {
           "bytes": 32582,
-          "sha256": "1200b8d0f00248d38dc1fddb3c3b7a6837cdb8b2e298c3508c3d5e2c4fe4b07c",
+          "sha256": "47bbc2e7f35ffea98c64a621ad29d8eda8b02ac5d383fa52b584aad477b99205",
           "uri": "repo://changes/st-0801/manifest.yaml"
         }
       ],
@@ -15724,7 +16130,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         },
         {
@@ -15751,7 +16157,7 @@
         },
         {
           "bytes": 13078,
-          "sha256": "08d54bc44ab5b23fd14669dae232084161f8ab1aaf9fb6d9572873adf5be9550",
+          "sha256": "13d5e2ba4411c31a9cd11712c4d9a7436eb25f0e848113125fe949025746242e",
           "uri": "repo://changes/st-0803/runtime-manifest.v2.yaml"
         }
       ],
@@ -16068,7 +16474,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         }
       ],
@@ -16086,7 +16492,7 @@
         },
         {
           "bytes": 11532,
-          "sha256": "9b96213e917828972e4c7262b768a71c9923b64be6d3fb0cf37b11a730d5c832",
+          "sha256": "0ba1be3eca347b9aafe2661b1a404b2b63d60a777fbeb5f9f7bc2c7e1b440217",
           "uri": "repo://changes/st-0804/runtime-manifest.v2.yaml"
         }
       ],
@@ -16363,7 +16769,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         }
       ],
@@ -16381,7 +16787,7 @@
         },
         {
           "bytes": 11571,
-          "sha256": "f7aa3bb94e733a4e321ec0627db05b0f712ce029c29a35be0b77c818192ec4fc",
+          "sha256": "91cf08616ef44ee4514f9bf6c1d4184b790abd5d4ff9dbdab0982afaf0d6167f",
           "uri": "repo://changes/st-0805/runtime-manifest.v2.yaml"
         }
       ],
@@ -16655,7 +17061,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         }
       ],
@@ -16830,7 +17236,7 @@
         },
         {
           "bytes": 5980,
-          "sha256": "4d24efbec1bdeacafaa00217d29aa42dd2d64bbd52585ca7aa5bfca2a8063308",
+          "sha256": "dcf8b76b8c7c106b9b208cd5d105d52878dffc68aeba30ef64c920d26be96603",
           "uri": "repo://changes/st-0807/runtime-manifest.v2.yaml"
         }
       ],
@@ -17059,7 +17465,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         },
         {
@@ -17080,7 +17486,7 @@
       "outputs": [
         {
           "bytes": 9290,
-          "sha256": "c4ccdd0d7fa41239abca42c20200dcce3b68e5ec8eb57a9ad4cfc9b6cf89e154",
+          "sha256": "60dfc2f1d66d47bed3136dbbb7eb612bf6936106366c903e12ca4a8f7f8d0042",
           "uri": "repo://changes/st-0901/runtime-manifest.v2.yaml"
         }
       ],
@@ -17472,7 +17878,7 @@
       "outputs": [
         {
           "bytes": 11786,
-          "sha256": "55dfcdc574f6fc68265857af159581fdc2039c617bfaae530409c31f29dc67d6",
+          "sha256": "21acb8f253c8b29377cc0c5d55de02f24e6e5a3a49ab33892ab9b843d0ed1b9e",
           "uri": "repo://changes/st-0902/runtime-manifest.v2.yaml"
         }
       ],
@@ -17926,7 +18332,7 @@
       "outputs": [
         {
           "bytes": 13324,
-          "sha256": "6f68f4844378ed5ed34aba30f0e8e73c4f51156fde6d003b77b25aa82bc3836f",
+          "sha256": "305c5b1449a8eb6c06a4912c9c8c598e1e2ef30e303d9ab5be2330b042d76a4a",
           "uri": "repo://changes/st-0903/runtime-manifest.v2.yaml"
         }
       ],
@@ -18433,7 +18839,7 @@
       "outputs": [
         {
           "bytes": 12197,
-          "sha256": "6195903be9841a842a75998c5c1a722e0bc6a9693935cf8564ab22d06011316b",
+          "sha256": "1e0197cdddc6a1a1470e4b89d6a7d21c7138a825253c536dae5fa6ebc95fe321",
           "uri": "repo://changes/st-0904/runtime-manifest.v2.yaml"
         }
       ],
@@ -18933,7 +19339,7 @@
         },
         {
           "bytes": 12185,
-          "sha256": "993dff38520c3707a7a74b3cf8fc63f8e8285b19446e8c4dfe66de80e9265650",
+          "sha256": "437a2d52e4825a7458b46a8a39ee5cbe177e87ae5df1c0cfdde35ff344c9d563",
           "uri": "repo://changes/st-0905/runtime-manifest.v2.yaml"
         }
       ],
@@ -19241,7 +19647,7 @@
         },
         {
           "bytes": 12124,
-          "sha256": "a597831b7edd38011af1c7f62df778e2fafe1923334e4af8381ccda5721e45e2",
+          "sha256": "9c0b7d495bba720aea7b829dd7315de7ce2aeb7f96d32b372efab9ab5a1538bb",
           "uri": "repo://changes/st-0906/runtime-manifest.v2.yaml"
         },
         {
@@ -19516,7 +19922,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         }
       ],
@@ -19781,7 +20187,7 @@
         },
         {
           "bytes": 8759,
-          "sha256": "79430ed74e7d942a92e700d5db6e7c117bc42df5565b1adcf79aa5fbf73a9446",
+          "sha256": "2b65f30171c4fe430b5f347781855e2a762dc70c9ecf72353a13a7f84e056ad9",
           "uri": "repo://changes/st-1002/runtime-manifest.v2.yaml"
         },
         {
@@ -20038,7 +20444,7 @@
         },
         {
           "bytes": 7245,
-          "sha256": "ba94e8a8f0342e19e9c84b02286e6fc1b08efaba6c9ffe1f332c10edfb6c078a",
+          "sha256": "08f33bb3dc34ab8255243bfbc5a95f1fa7f9eddad52f661de3e30449b6dd2ba1",
           "uri": "repo://changes/st-1004/runtime-manifest.v2.yaml"
         }
       ],
@@ -20137,7 +20543,7 @@
         },
         {
           "bytes": 4108,
-          "sha256": "2ad26b3af01c8558dd348cc860a446e223c605e741e02b3d22a4c7deebdd4a83",
+          "sha256": "f66b5ca5b0f6b4230b7c0d126cf17ee5a2d406835ebd83d4a9c33c3e7ee1e4ca",
           "uri": "repo://changes/st-1006/runtime-manifest.v2.yaml"
         }
       ],
@@ -20291,7 +20697,7 @@
         },
         {
           "bytes": 6739,
-          "sha256": "74ffbfeed29255c683ee47cf885c88c9e7a56b719a2e430b5124d4e2b13dc9ea",
+          "sha256": "28a1617fec16206414585b7cdb7f22609bfa3a9b1c0c7571655bf5873e4690c1",
           "uri": "repo://changes/st-1102/runtime-manifest.v2.yaml"
         },
         {
@@ -20568,7 +20974,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         }
       ],
@@ -20588,7 +20994,7 @@
         },
         {
           "bytes": 9372,
-          "sha256": "3d85da6e5e4ada9ac786fb679c11646272f45b8075f5a0ce7eb5dbec93689d6e",
+          "sha256": "709610d52ebc6752405aa60be84dbd5f0035e1f79fc619458994495805f6c917",
           "uri": "repo://changes/st-1103/runtime-manifest.v2.yaml"
         },
         {
@@ -20826,7 +21232,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         }
       ],
@@ -20851,7 +21257,7 @@
         },
         {
           "bytes": 11818,
-          "sha256": "0961d8112be124300b4a88547f0f110400f3e54e288409c43cdfb021f2522c86",
+          "sha256": "5912daa5b5a15f137c7e71a9500b99650d8be18c4589a23f670d2857e05e1b27",
           "uri": "repo://changes/st-1104/runtime-manifest.v2.yaml"
         }
       ],
@@ -21000,7 +21406,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         }
       ],
@@ -21018,7 +21424,7 @@
         },
         {
           "bytes": 16756,
-          "sha256": "5ca8d5d82888818641480175878dc29502436a7379b5827f38cf88aa2540dc9e",
+          "sha256": "b8cdc36c47db976a6a459e480d2023e5ae5284ad217463f8c0427db24ab87029",
           "uri": "repo://changes/st-1105/runtime-manifest.v2.json"
         }
       ],
@@ -21185,7 +21591,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         }
       ],
@@ -21366,7 +21772,7 @@
         },
         {
           "bytes": 9166,
-          "sha256": "a19ef03075908efc69d523c2233b599cb8d7bb98b43fa7b78a24639ebe4e5ea0",
+          "sha256": "311e3c8c54ba9b4d1700543c68ebc4ecf99a14585109c1915f355c3c4ebf6cc5",
           "uri": "repo://changes/st-1202/runtime-manifest.v2.yaml"
         }
       ],
@@ -23428,7 +23834,7 @@
       "outputs": [
         {
           "bytes": 7516,
-          "sha256": "f1fc895b7a2edb8ed5dfa82913df20df173f0a571526dc35576a884ae7648cbe",
+          "sha256": "9c8857c57d1fccd36350e5a99a9afb52b00bdff249c1626bcec1d2934b54c785",
           "uri": "repo://changes/st-1407/runtime-manifest.v2.yaml"
         }
       ],
@@ -23634,7 +24040,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf",
+          "sha256": "b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1",
           "uri": "repo://uv.lock"
         }
       ],
@@ -25739,7 +26145,7 @@
       "outputs": [
         {
           "bytes": 3170,
-          "sha256": "a9e78cfb40727e49d38f250adc250f5b611607d2a4ebd6ed0748a61075df2361",
+          "sha256": "ca99d501ffbc587c83ab829f4fa5a2e6a632407f5dc81b8e869affbe5b6c6c6a",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -25883,17 +26289,36 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 71063,
-          "sha256": "750a97c2a36bf5c2ec3a0ce2cef09489ad971b077d7456e0a951826636f19d94",
+          "bytes": 72521,
+          "sha256": "d63a2e240ff12f485aefc36aa4d6cefe24a7f5f0a1232c59916107497ae888f5",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
       "owner_dependencies": [
-        "build_st1703_self_hosted_runtime_manifest"
+        "build_editorial_measurement_v1",
+        "build_editorial_portfolio_v3",
+        "build_editorial_v3_theme_navigation",
+        "build_st0104_contract_repository",
+        "build_st0105_generated_contracts",
+        "build_st1703_self_hosted_runtime_manifest",
+        "build_st1704_self_hosted_theme",
+        "build_st1704_theme_assets"
       ],
       "owner_id": "build_st1704_self_hosted_editorial_manifest",
       "owner_version": 2,
       "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+          "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/generated/navigation.v3.json",
+          "uri": "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json",
+          "version": 2
+        },
         {
           "kind": "predecessor",
           "owner_id": "build_st1703_self_hosted_runtime_manifest",
@@ -25904,14 +26329,346 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/carry-on-single-url-evidence-loop-v1",
+          "uri": "repo://changes/st-1704/carry-on-single-url-evidence-loop-v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/carry-on-single-url-evidence-loop-v1/README.md",
+          "uri": "repo://changes/st-1704/carry-on-single-url-evidence-loop-v1/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/carry-on-single-url-evidence-loop-v1/contracts/carry-on-single-url-evidence-loop.v1.json",
+          "uri": "repo://changes/st-1704/carry-on-single-url-evidence-loop-v1/contracts/carry-on-single-url-evidence-loop.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/EDITORIAL_RESEARCH_NOTES.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/EDITORIAL_RESEARCH_NOTES.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_EXPERIMENT_RUNBOOK.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_EXPERIMENT_RUNBOOK.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_UNBLOCK_WORKLOG.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_UNBLOCK_WORKLOG.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-portable-power-guide.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-portable-power-guide.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/publication-plan.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/operations/publication-plan.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-portable-power-guide.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-portable-power-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/footer.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/footer.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/header.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/header.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/style.css",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/style.css",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/single.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/single.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme-contract.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme-contract.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/yoast-seo-28.3.lock.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/yoast-seo-28.3.lock.json",
+          "version": 2
+        },
+        {
+          "kind": "predecessor",
+          "owner_id": "build_st0104_contract_repository",
+          "owner_version": 2,
+          "semantic_id": "contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json",
+          "uri": "repo://contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_editorial_pilot_https.py",
+          "uri": "repo://python/raos/adapters/self_hosted_editorial_pilot_https.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_editorial_pilot_json.py",
+          "uri": "repo://python/raos/adapters/self_hosted_editorial_pilot_json.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_editorial_source_capture.py",
+          "uri": "repo://python/raos/adapters/self_hosted_editorial_source_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_wordpress_credentials.py",
+          "uri": "repo://python/raos/adapters/self_hosted_wordpress_credentials.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_wordpress_https.py",
+          "uri": "repo://python/raos/adapters/self_hosted_wordpress_https.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_wordpress_rest.py",
+          "uri": "repo://python/raos/adapters/self_hosted_wordpress_rest.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/wordpress_rest.py",
+          "uri": "repo://python/raos/adapters/wordpress_rest.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/self_hosted_editorial_pilot.py",
+          "uri": "repo://python/raos/application/editorial/self_hosted_editorial_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/content_ast.py",
+          "uri": "repo://python/raos/domain/editorial/content_ast.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/market_learning_pilot.py",
+          "uri": "repo://python/raos/domain/editorial/market_learning_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
+          "uri": "repo://python/raos/domain/editorial/self_hosted_editorial_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/self_hosted_wordpress.py",
+          "uri": "repo://python/raos/domain/editorial/self_hosted_wordpress.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "python/raos/generated/contracts",
           "uri": "repo://python/raos/generated/contracts",
           "version": 2
         },
         {
           "kind": "tracked",
+          "semantic_id": "python/raos/ports/self_hosted_editorial_pilot.py",
+          "uri": "repo://python/raos/ports/self_hosted_editorial_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_editorial_v3_theme_navigation.py",
+          "uri": "repo://scripts/build_editorial_v3_theme_navigation.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/build_st1704_self_hosted_editorial_manifest.py",
           "uri": "repo://scripts/build_st1704_self_hosted_editorial_manifest.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_self_hosted_theme.py",
+          "uri": "repo://scripts/build_st1704_self_hosted_theme.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_theme_assets.py",
+          "uri": "repo://scripts/build_st1704_theme_assets.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/st1704_official_source_capture.py",
+          "uri": "repo://scripts/st1704_official_source_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/st1704_self_hosted_editorial_pilot.py",
+          "uri": "repo://scripts/st1704_self_hosted_editorial_pilot.py",
           "version": 2
         }
       ],
@@ -25922,7 +26679,11 @@
     {
       "output_scope": "owner_private",
       "outputs": [],
-      "owner_dependencies": [],
+      "owner_dependencies": [
+        "build_editorial_measurement_v1",
+        "build_editorial_v3_theme_navigation",
+        "build_st1704_theme_assets"
+      ],
       "owner_id": "build_st1704_self_hosted_theme",
       "owner_version": 2,
       "semantic_inputs": [
@@ -25934,8 +26695,146 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-portable-power-guide.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-portable-power-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/footer.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/footer.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/header.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/header.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/style.css",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/style.css",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/single.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/single.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme-contract.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme-contract.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/build_st1704_self_hosted_theme.py",
           "uri": "repo://scripts/build_st1704_self_hosted_theme.py",
+          "version": 2
+        }
+      ],
+      "story_ids": [
+        "ST-1704"
+      ]
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 121032,
+          "sha256": "54b84689cff952f6a384982b89d2f56adfbdeff9ff03fe628fcaf5a949ab0f5a",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-portable-power-guide.webp"
+        }
+      ],
+      "owner_dependencies": [],
+      "owner_id": "build_st1704_theme_assets",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-portable-power-guide.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-portable-power-guide.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_theme_assets.py",
+          "uri": "repo://scripts/build_st1704_theme_assets.py",
           "version": 2
         }
       ],
@@ -26595,7 +27494,7 @@
         },
         {
           "bytes": 7000,
-          "sha256": "727ceb0af36fee3ae7700b0df0ce9056c7316507b822b99144e7c648cbb6bdd6",
+          "sha256": "ea35169749c6e02342b911791b0ed73a1e4185e3337845ed475baa463e5bd8dd",
           "uri": "repo://changes/st-1902/manifest.yaml"
         }
       ],
@@ -27577,15 +28476,173 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 11210,
-          "sha256": "4ae9be96d45fc9ebb0c0fd7cb11ee266da97d0c9f7c268acaa7f57888361cb0a",
+          "bytes": 531,
+          "sha256": "d8a684de37ae294147b7bde08962af7151ae51feb707982cf444f56621c0f412",
+          "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
+        },
+        {
+          "bytes": 13723,
+          "sha256": "0fb603f4bd969cea8f33a09745443ff510d7e8a24e4c4230d2e8802a5f33c722",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
-      "owner_dependencies": [],
+      "owner_dependencies": [
+        "build_editorial_measurement_v1",
+        "build_editorial_v3_theme_navigation"
+      ],
       "owner_id": "build_wordpress_mcp_v1",
       "owner_version": 2,
       "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "Makefile",
+          "uri": "repo://Makefile",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-measurement-v1/runtime-manifest.v1.json",
+          "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
+          "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/README.md",
+          "uri": "repo://changes/wordpress-local-preview-v1/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
+          "uri": "repo://changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/browser/check.sh",
+          "uri": "repo://changes/wordpress-local-preview-v1/browser/check.sh",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
+          "uri": "repo://changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/compose.yaml",
+          "uri": "repo://changes/wordpress-local-preview-v1/compose.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/pages.json",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/pages.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/pages/about-ad-policy.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/pages/about-ad-policy.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/pages/comparison-policy.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/pages/comparison-policy.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/pages/privacy-policy.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/pages/privacy-policy.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/posts.json",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/posts.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/production-mapping.v1.json",
+          "uri": "repo://changes/wordpress-local-preview-v1/production-mapping.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/seed.php",
+          "uri": "repo://changes/wordpress-local-preview-v1/seed.php",
+          "version": 2
+        },
         {
           "kind": "tracked",
           "semantic_id": "changes/wordpress-mcp-v1",
@@ -27594,8 +28651,224 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/wordpress-mcp-v1/Makefile",
+          "uri": "repo://changes/wordpress-mcp-v1/Makefile",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-mcp-v1/README.md",
+          "uri": "repo://changes/wordpress-mcp-v1/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.json",
+          "uri": "repo://changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.schema.json",
+          "uri": "repo://changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.schema.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-publication-bundle-v3/abilities_plugin_proposal.py",
+          "uri": "repo://changes/wordpress-publication-bundle-v3/abilities_plugin_proposal.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-publication-bundle-v3/measurement_plugin_proposal.py",
+          "uri": "repo://changes/wordpress-publication-bundle-v3/measurement_plugin_proposal.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-publication-bundle-v3/production-sequence.v3.json",
+          "uri": "repo://changes/wordpress-publication-bundle-v3/production-sequence.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-seo-audit-v1/README.md",
+          "uri": "repo://changes/wordpress-seo-audit-v1/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-seo-audit-v1/seo-audit-contract.v1.json",
+          "uri": "repo://changes/wordpress-seo-audit-v1/seo-audit-contract.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/wordpress-mcp-bridge/package.json",
+          "uri": "repo://packages/wordpress-mcp-bridge/package.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/wordpress-mcp-bridge/src/index.ts",
+          "uri": "repo://packages/wordpress-mcp-bridge/src/index.ts",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/wordpress-mcp-bridge/tsconfig.json",
+          "uri": "repo://packages/wordpress-mcp-bridge/tsconfig.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/build_wordpress_mcp_v1.py",
           "uri": "repo://scripts/build_wordpress_mcp_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/check_wordpress_public_ui_playwright.sh",
+          "uri": "repo://scripts/check_wordpress_public_ui_playwright.sh",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_deployment_operator.py",
+          "uri": "repo://scripts/raos_wordpress_deployment_operator.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_editor_mcp_launcher.mjs",
+          "uri": "repo://scripts/raos_wordpress_editor_mcp_launcher.mjs",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_publication_request.py",
+          "uri": "repo://scripts/raos_wordpress_publication_request.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_seo_audit.py",
+          "uri": "repo://scripts/raos_wordpress_seo_audit.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/store_wordpress_mcp_credential.py",
+          "uri": "repo://scripts/store_wordpress_mcp_credential.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/wordpress_public_ui_audit.function.js",
+          "uri": "repo://scripts/wordpress_public_ui_audit.function.js",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/test_build_foundation_v2.py",
+          "uri": "repo://tests/test_build_foundation_v2.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_local_preview",
+          "uri": "repo://tests/wordpress_local_preview",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_local_preview/test_publication_request.py",
+          "uri": "repo://tests/wordpress_local_preview/test_publication_request.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1",
+          "uri": "repo://tests/wordpress_mcp_v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/e2e/approve_harness.php",
+          "uri": "repo://tests/wordpress_mcp_v1/e2e/approve_harness.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/e2e/batch_approve_harness.php",
+          "uri": "repo://tests/wordpress_mcp_v1/e2e/batch_approve_harness.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/e2e/client.py",
+          "uri": "repo://tests/wordpress_mcp_v1/e2e/client.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/e2e/compose.yaml",
+          "uri": "repo://tests/wordpress_mcp_v1/e2e/compose.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/e2e/gateway/nginx.conf",
+          "uri": "repo://tests/wordpress_mcp_v1/e2e/gateway/nginx.conf",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/e2e/idempotency_harness.php",
+          "uri": "repo://tests/wordpress_mcp_v1/e2e/idempotency_harness.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/e2e/mutate_harness.php",
+          "uri": "repo://tests/wordpress_mcp_v1/e2e/mutate_harness.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/e2e/prepare_packages.py",
+          "uri": "repo://tests/wordpress_mcp_v1/e2e/prepare_packages.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/e2e/run.sh",
+          "uri": "repo://tests/wordpress_mcp_v1/e2e/run.sh",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/e2e/store_upgrade_harness.php",
+          "uri": "repo://tests/wordpress_mcp_v1/e2e/store_upgrade_harness.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/test_batch_approval.py",
+          "uri": "repo://tests/wordpress_mcp_v1/test_batch_approval.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/test_release_watcher.py",
+          "uri": "repo://tests/wordpress_mcp_v1/test_release_watcher.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_seo_audit_v1",
+          "uri": "repo://tests/wordpress_seo_audit_v1",
           "version": 2
         }
       ],

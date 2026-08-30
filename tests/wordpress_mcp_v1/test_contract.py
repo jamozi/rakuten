@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -28,6 +29,25 @@ def test_owner_generator_defaults_to_manifest_mode(monkeypatch) -> None:
 
     assert build_wordpress_mcp_v1.main() == 0
     assert calls == ["manifest"]
+
+
+def test_repo_plugin_registry_has_one_deterministic_owner_for_both_packages() -> None:
+    registry = json.loads(build_wordpress_mcp_v1.REGISTRY.read_text())
+    expected = build_wordpress_mcp_v1.repo_artifact_registry()
+    assert registry == expected
+    rows = {row["artifact_id"]: row for row in registry["artifacts"]}
+    abilities = build_wordpress_mcp_v1.package_bytes(
+        build_wordpress_mcp_v1.plugin_payloads()
+    )
+    assert rows["raos-codex-mcp-abilities-v1"]["package_sha256"] == (
+        hashlib.sha256(abilities).hexdigest()
+    )
+    measurement = json.loads(
+        (ROOT / build_wordpress_mcp_v1.MEASUREMENT_MANIFEST_PATH).read_text()
+    )
+    assert rows["raos-editorial-measurement-v1"]["package_sha256"] == (
+        measurement["package_sha256"]
+    )
 
 
 def test_public_contract_and_schema_are_valid() -> None:

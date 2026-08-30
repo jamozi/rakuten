@@ -4,7 +4,11 @@ import json
 from pathlib import Path
 import re
 
+import pytest
+
 from raos.application.editorial.editorial_portfolio_v3 import (
+    EditorialPortfolioV3Failure,
+    PORTFOLIO_RELATIVE_PATH,
     load_editorial_portfolio_v3,
 )
 from scripts import build_editorial_portfolio_v3 as builder
@@ -127,3 +131,21 @@ def test_tracked_rakuten_boundary_contains_no_live_column_names() -> None:
     assert boundary["tracked_status_values"] == []
     assert boundary["rules"]["automatic_column_guessing"] is False
     assert boundary["rules"]["provider_totals_must_reconcile_before_commit"] is True
+
+
+@pytest.mark.parametrize("field", ["related_article_ids", "product_ids"])
+def test_loader_normalizes_malformed_article_lists_to_stable_failure(
+    tmp_path: Path,
+    field: str,
+) -> None:
+    document = json.loads((ROOT / PORTFOLIO_RELATIVE_PATH).read_text(encoding="utf-8"))
+    document["articles"][0][field] = None
+    target = tmp_path / PORTFOLIO_RELATIVE_PATH
+    target.parent.mkdir(parents=True)
+    target.write_text(json.dumps(document), encoding="utf-8")
+
+    with pytest.raises(
+        EditorialPortfolioV3Failure,
+        match="RAOS_EDITORIAL_V3_CONTRACT_INVALID",
+    ):
+        load_editorial_portfolio_v3(tmp_path)

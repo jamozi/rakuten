@@ -31,7 +31,7 @@
     "docs/canonical/05_test/RAOS_11_test_acceptance_design_v1.0.md": "28d60d379c28b72ab0e700f0be1b40fc06b8e4bda531eef1749ce1e4f9ce93ac",
     "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml": "7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b",
     "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml": "4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d",
-    "python/raos/adapters/sqlite_fact_conflict_runtime_v2.py": "e35635c025ccf4ef68f2753e0215b022ac6ae54a4b3a0e1fa39f9106405d2064",
+    "python/raos/adapters/sqlite_fact_conflict_runtime_v2.py": "a28a2c4f46ba9a520202ed695100bbba6da04174d9b8776a6ac4e27cd78dd985",
     "python/raos/adapters/sqlite_fact_extraction_runtime_v2.py": "baeff9c5c7eb819a96d5d2f73ea57d618b18d2bba2a6dac39dde5edf97a23f3e",
     "python/raos/application/evidence/fact_conflict_runtime_v2.py": "ed865e43955802f146b116a1c5050dbe15501ab26d26ebd9f126198a62be717b",
     "python/raos/application/evidence/fact_extraction_runtime_v2.py": "2b3a668c4ac334537e5793a2e1051db767a82892f3de2a113314f0b08b7915ce",
@@ -44,7 +44,7 @@
     "tests/st0603/test_st0603_fact_conflict_domain_v2.py": "448b6881c68ebec41e16f9eb5e6976e400d19bd27e13be0add6ec724b5819e2b",
     "tests/st0603/test_st0603_fact_conflict_generator_v2.py": "444397d70075f9ae18fbf042ad4063d0b78187e52bef56fe2e292e773bc12a5e",
     "tests/st0603/test_st0603_fact_conflict_hostile_v2.py": "2c4e67e54a5f771cffd3a3d0dbcad7fa97c9ddfd612625043e7fc12fa99d36b1",
-    "tests/st0603/test_st0603_fact_conflict_sqlite_v2.py": "ec8ee2210cb4df653dc6f351fc02a0c2a69ab35f6cc0ab73d664a9be9a80f2a7"
+    "tests/st0603/test_st0603_fact_conflict_sqlite_v2.py": "42801b72be5bcb07467396ceca914efdde0a523010bb171b14e5c9b34bb437c5"
   },
   "staging": "NOT_EXECUTED",
   "story_id": "ST-0603"

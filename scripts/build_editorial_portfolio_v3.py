@@ -71,16 +71,25 @@ ARTICLE_CONTENT_PATHS: Final = (
     ),
 )
 RUNTIME_PATHS: Final = (
+    Path("python/raos/application/editorial/editorial_portfolio_v2.py"),
     Path("python/raos/application/editorial/editorial_portfolio_v3.py"),
+    Path(
+        "python/raos/application/editorial/"
+        "rakuten_measurement_activation_v3.py"
+    ),
     Path("python/raos/application/finance/editorial_economics_v3.py"),
     Path("scripts/raos_editorial_economics_v3.py"),
+    Path("scripts/raos_rakuten_measurement_activation_v3.py"),
     Path("changes/editorial-portfolio-v3/README.md"),
 )
 OUTPUT_PATHS: Final = (
     Path("changes/editorial-portfolio-v3/editorial-portfolio.v3.json"),
     Path("changes/editorial-portfolio-v3/generated/navigation.v3.json"),
 )
-TEST_PATHS: Final = (Path("tests/editorial_portfolio_v3"),)
+TEST_PATHS: Final = (
+    Path("tests/editorial_portfolio_v2"),
+    Path("tests/editorial_portfolio_v3"),
+)
 
 ARTICLE_CODE_PATTERN: Final = "a{position:02d}"
 PRODUCT_CODE_PATTERN: Final = "p{position:02d}"

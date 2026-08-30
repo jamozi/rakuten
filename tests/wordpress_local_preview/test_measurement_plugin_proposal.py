@@ -6,6 +6,7 @@ from pathlib import Path
 import stat
 import subprocess
 import sys
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -72,6 +73,46 @@ def _artifact_set(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> bytes:
     return package
 
 
+def _abilities_apply_set(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> Path:
+    proposal_path = tmp_path / "abilities-proposal.json"
+    apply_path = tmp_path / "abilities-applied.json"
+    proposal_path.write_text(
+        json.dumps(
+            {
+                "state": "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL",
+                "artifact_id": "raos-codex-mcp-abilities-v1",
+                "plugin_slug": "raos-codex-mcp-abilities",
+                "plugin_version": "1.3.0",
+                "proposal": {
+                    "proposal_id": "d" * 64,
+                    "operation_id": "e" * 64,
+                    "after_sha256": "f" * 64,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    apply_path.write_text(
+        json.dumps(
+            {
+                "schema": "OperationReceiptV1",
+                "proposal_id": "d" * 64,
+                "operation_id": "e" * 64,
+                "state": "APPLIED",
+                "result_code": "PLUGIN_CHANGE_APPLIED",
+                "after_sha256": "f" * 64,
+            }
+        ),
+        encoding="utf-8",
+    )
+    proposal_path.chmod(0o600)
+    apply_path.chmod(0o600)
+    monkeypatch.setattr(bundle, "ABILITIES_PROPOSAL_RECEIPT_PATH", proposal_path)
+    return apply_path
+
+
 def test_prepare_requires_preview_then_check_and_package(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -98,6 +139,7 @@ def test_proposal_stops_for_separate_admin_and_never_applies_or_enables_gate(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     package = _artifact_set(monkeypatch, tmp_path)
+    abilities_apply = _abilities_apply_set(monkeypatch, tmp_path)
     digest = __import__("hashlib").sha256(package).hexdigest()
     file_manifest_sha256 = __import__("hashlib").sha256(
         json.dumps(
@@ -154,6 +196,7 @@ def test_proposal_stops_for_separate_admin_and_never_applies_or_enables_gate(
 
     monkeypatch.setattr(bundle, "_write_receipt", write_receipt)
     assert bundle.propose(
+        abilities_apply_receipt=abilities_apply,
         preview=lambda: events.append("preview"),
         build_runner=runner,
         deployment_call=deployment_call,
@@ -162,9 +205,38 @@ def test_proposal_stops_for_separate_admin_and_never_applies_or_enables_gate(
     assert stored["state"] == "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
     assert stored["apply_command_exposed"] is False
     assert stored["measurement_gate_default_off"] is True
+    assert stored["abilities_plugin_apply"] == {
+        "proposal_id": "d" * 64,
+        "operation_id": "e" * 64,
+        "after_sha256": "f" * 64,
+        "plugin_version": "1.3.0",
+    }
     source = SCRIPT.read_text(encoding="utf-8")
     assert '"plugin-apply-change"' not in source
     assert "RAOS_MEASUREMENT_ENABLED=" not in source
+
+
+def test_proposal_requires_exact_applied_abilities_1_3_receipt(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _artifact_set(monkeypatch, tmp_path)
+    apply_path = _abilities_apply_set(monkeypatch, tmp_path)
+
+    with pytest.raises(
+        bundle.SequenceFailure,
+        match="RAOS_MEASUREMENT_PLUGIN_ABILITIES_RECEIPT_REQUIRED",
+    ):
+        bundle.propose(abilities_apply_receipt=None)
+
+    value = json.loads(apply_path.read_text(encoding="utf-8"))
+    value["state"] = "APPROVED"
+    apply_path.write_text(json.dumps(value), encoding="utf-8")
+    apply_path.chmod(0o600)
+    with pytest.raises(
+        bundle.SequenceFailure,
+        match="RAOS_MEASUREMENT_PLUGIN_ABILITIES_RECEIPT_INVALID",
+    ):
+        bundle.propose(abilities_apply_receipt=apply_path)
 
 
 def test_content_command_requires_exact_separate_plugin_apply_receipt(
@@ -172,6 +244,7 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
 ) -> None:
     proposal_path = tmp_path / "proposal.json"
     apply_path = tmp_path / "apply.json"
+    activation_path = tmp_path / "activation-dry-run.json"
     proposal_path.write_text(
         json.dumps(
             {
@@ -196,11 +269,34 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
     apply_path.write_text(json.dumps(apply_receipt), encoding="utf-8")
     proposal_path.chmod(0o600)
     apply_path.chmod(0o600)
+    activation_path.write_text("{}", encoding="utf-8")
+    activation_path.chmod(0o600)
     monkeypatch.setattr(bundle, "RECEIPT_PATH", proposal_path)
+    observed_activation: list[Path | None] = []
 
-    command = bundle.content_command(apply_path)
+    def validate_activation(path: Path | None, **_kwargs: object) -> object:
+        observed_activation.append(path)
+        if path is None:
+            raise bundle.publication.PublicationFailure("required")
+        return SimpleNamespace(article_count=10, cta_count=74)
+
+    monkeypatch.setattr(
+        bundle.publication,
+        "validate_rakuten_activation_dry_run",
+        validate_activation,
+    )
+
+    command = bundle.content_command(apply_path, activation_path)
     assert "--articles all --measurement-plugin-apply-receipt" in command
-    assert command.endswith(apply_path.resolve().as_posix())
+    assert "--rakuten-activation-dry-run" in command
+    assert command.endswith(activation_path.resolve().as_posix())
+    assert observed_activation == [activation_path]
+
+    with pytest.raises(
+        bundle.SequenceFailure,
+        match="RAOS_MEASUREMENT_PLUGIN_RAKUTEN_ACTIVATION_INVALID",
+    ):
+        bundle.content_command(apply_path, None)
 
     apply_receipt["state"] = "APPROVED"
     apply_path.write_text(json.dumps(apply_receipt), encoding="utf-8")
@@ -209,12 +305,15 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
         bundle.SequenceFailure,
         match="RAOS_MEASUREMENT_PLUGIN_APPLY_RECEIPT_INVALID",
     ):
-        bundle.content_command(apply_path)
+        bundle.content_command(apply_path, activation_path)
 
 
 def test_sequence_contract_orders_plugin_before_content_and_caps_batch() -> None:
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
     assert contract["schema"] == "RAOS_WORDPRESS_PRODUCTION_SEQUENCE_V3"
+    assert contract["order"].index("abilities_plugin_proposal") < contract[
+        "order"
+    ].index("measurement_plugin_proposal")
     assert contract["order"].index("measurement_plugin_proposal") < contract[
         "order"
     ].index("content_theme_batch_proposal")
@@ -224,5 +323,24 @@ def test_sequence_contract_orders_plugin_before_content_and_caps_batch() -> None
         "theme_maximum": 1,
     }
     assert contract["content_batch"]["maximum_proposals"] == 14
+    assert "--rakuten-activation-dry-run" in contract["content_batch"]["command"]
+    assert "rakuten_v3_activation_dry_run_and_overlay" in contract["order"]
     assert contract["measurement_plugin"]["apply_command_exposed"] is False
     assert contract["measurement_gate"]["enable_command_exposed"] is False
+    rollback = contract["incident_rollback"]
+    assert rollback["automatic_execution"] is False
+    assert rollback["rollback_command_exposed"] is False
+    assert rollback["separate_admin_approval_required"] is True
+    assert rollback["measurement_gate_off_first"] is True
+    assert rollback["rakuten_links_must_remain_available"] is True
+    assert rollback["post_rollback_readback_required"] is True
+    assert rollback["order"] == [
+        "measurement_gate_off",
+        "preserve_rakuten_links",
+        "restore_last_separately_admin_approved_snapshot",
+        "authenticated_and_anonymous_readback",
+    ]
+    assert rollback["restore_scope"] == ["theme", "policy_pages", "posts"]
+    assert rollback["snapshot_precondition"] == (
+        "last_separately_admin_approved_publication_snapshot_with_exact_hashes"
+    )

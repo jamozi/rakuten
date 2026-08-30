@@ -6,8 +6,11 @@ appearance without reading from or writing to `kurashinoshirube.com`.
 
 The preview uses digest-pinned WordPress 7.1.0, WP-CLI 2.12.0, MariaDB 11.8.3,
 and Nginx 1.29.1 images. A read-only, unprivileged Nginx gateway is the only
-service attached to the loopback bridge and binds only to
-`http://127.0.0.1:8888`; WordPress and MariaDB remain on their internal network.
+service attached to the loopback bridge and binds only to a deterministic
+worktree-specific `http://127.0.0.1:<port>` origin; WordPress and MariaDB remain
+on their internal network. The Compose project name, named volumes, bootstrap
+credentials, and port are isolated by repository-root identity, so another
+checkout's preview is never reused or stopped.
 WordPress and database state live in named Docker volumes, the tracked
 child-theme source is mounted read-only, and ten local-only editorial drafts
 are seeded. Before startup or synchronization, the tracked ten-article source
@@ -37,10 +40,13 @@ publication proposal. The required sequence is:
    proposal, precondition, and kill-switch requirements. A local pass is not
    production approval.
 
-After the separately approved measurement-plugin apply receipt has been
-validated with `measurement_plugin_proposal.py --content-ready`, run the full
-tracked batch with that owner-private receipt. Narrow historical article-only
-requests remain available without the plugin gate:
+First propose the fixed MCP abilities plugin 1.3 package and stop for its
+separate-admin approval/apply receipt. That exact receipt is required before the
+measurement plugin can be proposed. After the separately approved measurement
+plugin apply receipt has been validated with
+`measurement_plugin_proposal.py --content-ready`, run the full tracked batch
+with that owner-private receipt. Narrow historical article-only requests remain
+available without the plugin gate:
 
 ```sh
 MEASUREMENT_PLUGIN_APPLY_RECEIPT="$PWD/.secrets/wordpress-mcp/publication-requests/plugin-applied.json" \
@@ -100,23 +106,28 @@ make wordpress-preview-check
 make wordpress-preview-down
 ```
 
-`wordpress-preview-up` creates owner-private random bootstrap credentials under
+`wordpress-preview-up` derives an isolated Compose project and unprivileged
+loopback port from the exact repository-root path, refuses a foreign container
+already bound to that port, creates owner-private random bootstrap credentials under
 `.secrets/wordpress-local-preview/`, starts WordPress and MariaDB, activates the
 tracked child theme, refreshes the owner-private materialized fixture, and seeds
-it only on first initialization. It does not print any password. The local
-preview URLs are:
+it only on first initialization. It does not print any password. The command
+prints the exact origin for this checkout. An operator may select a different
+free loopback port with `RAOS_WORDPRESS_PREVIEW_PORT`; the value is propagated
+to Compose, WordPress, seed validation, and the browser audit. With
+`PREVIEW_ORIGIN` standing for that printed origin, the local preview URLs are:
 
-- home: `http://127.0.0.1:8888/`
-- article 1: `http://127.0.0.1:8888/local-preview-carry-on-suitcase-comparison/`
-- article 2: `http://127.0.0.1:8888/local-preview-portable-power-station-guide/`
-- article 3: `http://127.0.0.1:8888/local-preview-anker-solix-c300-c800-c1000-differences/`
-- article 4: `http://127.0.0.1:8888/local-preview-countertop-dishwasher-for-small-households/`
-- article 5: `http://127.0.0.1:8888/local-preview-compact-robot-vacuum-shortlist/`
-- article 6: `http://127.0.0.1:8888/local-preview-carry-on-suitcase-under-100-seats/`
-- article 7: `http://127.0.0.1:8888/local-preview-lightweight-carry-on-suitcase-under-3kg/`
-- article 8: `http://127.0.0.1:8888/local-preview-front-open-carry-on-suitcase-with-stopper/`
-- article 9: `http://127.0.0.1:8888/local-preview-roomba-mini-vs-switchbot-k11-pro/`
-- article 10: `http://127.0.0.1:8888/local-preview-solota-vs-rakua-mini-plus/`
+- home: `${PREVIEW_ORIGIN}/`
+- article 1: `${PREVIEW_ORIGIN}/local-preview-carry-on-suitcase-comparison/`
+- article 2: `${PREVIEW_ORIGIN}/local-preview-portable-power-station-guide/`
+- article 3: `${PREVIEW_ORIGIN}/local-preview-anker-solix-c300-c800-c1000-differences/`
+- article 4: `${PREVIEW_ORIGIN}/local-preview-countertop-dishwasher-for-small-households/`
+- article 5: `${PREVIEW_ORIGIN}/local-preview-compact-robot-vacuum-shortlist/`
+- article 6: `${PREVIEW_ORIGIN}/local-preview-carry-on-suitcase-under-100-seats/`
+- article 7: `${PREVIEW_ORIGIN}/local-preview-lightweight-carry-on-suitcase-under-3kg/`
+- article 8: `${PREVIEW_ORIGIN}/local-preview-front-open-carry-on-suitcase-with-stopper/`
+- article 9: `${PREVIEW_ORIGIN}/local-preview-roomba-mini-vs-switchbot-k11-pro/`
+- article 10: `${PREVIEW_ORIGIN}/local-preview-solota-vs-rakua-mini-plus/`
 
 Edit the tracked child theme on the host and refresh the browser. The container
 cannot edit that mount. WordPress database changes made while experimenting are

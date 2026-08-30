@@ -673,16 +673,18 @@ def test_fixed_featured_guide_requires_one_exact_public_article_identity() -> No
 def test_local_preview_substitution_is_locked_to_the_isolated_fixture_origin() -> None:
     source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
     guard = source.split(
-        "function kurashinoshirube_is_local_preview(): bool", 1
+        "function kurashinoshirube_local_preview_origin(): ?string", 1
     )[1].split("/**\n * Resolve the fixed featured article", 1)[0]
     assert source.count("RAOS_LOCAL_PREVIEW") == 2
     for boundary in (
         "defined('RAOS_LOCAL_PREVIEW')",
-        "RAOS_LOCAL_PREVIEW === true",
+        "RAOS_LOCAL_PREVIEW !== true",
         "function_exists('wp_get_environment_type')",
-        "wp_get_environment_type() === 'local'",
-        "home_url('/') === 'http://127.0.0.1:8888/'",
-        "site_url('/') === 'http://127.0.0.1:8888/'",
+        "wp_get_environment_type() !== 'local'",
+        "defined('RAOS_WORDPRESS_PREVIEW_ORIGIN')",
+        "#\\Ahttp://127\\.0\\.0\\.1:([0-9]{4,5})\\z#D",
+        "home_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'",
+        "site_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'",
     ):
         assert boundary in guard
 
@@ -1297,12 +1299,11 @@ def test_article_type_density_ctas_and_cmp_are_responsive_without_home_scope() -
     assert ".raos-comparison__cards {\n    display: grid;" in comparison_mobile
     editorial_mobile = editorial_css.split("@media (max-width: 48rem)", 1)[1]
     assert (
-        ".raos-editorial-v2 .comparison-table-wrap > table,\n"
+        ".raos-editorial-v2 .comparison-table-wrap:not(.raos-comparison),\n"
+        "  .raos-editorial-v2 .comparison-table-wrap > table,\n"
         "  .raos-editorial-v2 .comparison-table-wrap > "
         ".raos-comparison__table-view {\n    display: none;"
-    ) in editorial_mobile
-    assert ".raos-editorial-v2 .comparison-table-wrap {\n    display: none;" not in (
-        editorial_mobile
+        in editorial_mobile
     )
     assert ".raos-editorial-v2 .comparison-cards {\n    display: block;" in (
         editorial_mobile
@@ -1758,7 +1759,6 @@ def test_editorial_v2_structured_data_dynamic_values_are_bounded() -> None:
     fixture = _load_json(
         REPOSITORY_ROOT / "changes/wordpress-local-preview-v1/fixtures/posts.json"
     )
-    contract = _load_json(CONTRACT_PATH)
     navigation = _load_json(EDITORIAL_NAVIGATION_PATH)
     sections = {
         article["production_slug"]: article["category_label"]

@@ -27,11 +27,14 @@ PLUGIN_SLUG: Final = "raos-editorial-measurement"
 PLUGIN_VERSION: Final = "1.0.0"
 ARTIFACT_ID: Final = "raos-editorial-measurement-v1"
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
-ALLOWLIST: Final = PLUGIN_ROOT / "config/measurement-allowlist.v1.json"
-MANIFEST: Final = SLICE / "runtime-manifest.v1.json"
-REGISTRY: Final = (
-    ROOT / "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
+ALLOWLIST_PATH: Final = Path(
+    "changes/editorial-measurement-v1/wordpress-plugin/"
+    "raos-editorial-measurement/config/measurement-allowlist.v1.json"
 )
+MANIFEST_PATH: Final = Path("changes/editorial-measurement-v1/runtime-manifest.v1.json")
+ALLOWLIST: Final = ROOT / ALLOWLIST_PATH
+MANIFEST: Final = ROOT / MANIFEST_PATH
+OUTPUT_PATHS: Final = (ALLOWLIST_PATH, MANIFEST_PATH)
 PACKAGE: Final = (
     ROOT
     / ".secrets/wordpress-mcp/repo-plugin-artifacts"
@@ -69,6 +72,7 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("scripts/build_editorial_measurement_v1.py"),
     Path("tests/editorial_measurement_v1/test_contract.py"),
     Path("tests/editorial_measurement_v1/measurement_client_harness.mjs"),
+    Path("tests/editorial_measurement_v1/measurement_store_rate_harness.php"),
 )
 RUNTIME_FILES: Final = tuple(path.as_posix() for path in RUNTIME_INPUT_PATHS)
 TEST_PATHS: Final = (Path("tests/editorial_measurement_v1"),)
@@ -382,39 +386,11 @@ def generated_manifest() -> tuple[dict[str, object], bytes, bytes]:
     )
 
 
-def registry_payload(package_sha256: str) -> bytes:
-    try:
-        current = json.loads(read_regular(REGISTRY).decode("utf-8", errors="strict"))
-    except (UnicodeError, json.JSONDecodeError):
-        fail("EDITORIAL_MEASUREMENT_REGISTRY_INVALID")
-    if (
-        type(current) is not dict
-        or current.get("schema") != "RAOS_WORDPRESS_REPO_PLUGIN_ARTIFACTS_V1"
-        or type(current.get("artifacts")) is not list
-    ):
-        fail("EDITORIAL_MEASUREMENT_REGISTRY_INVALID")
-    artifact = {
-        "artifact_id": ARTIFACT_ID,
-        "slug": PLUGIN_SLUG,
-        "version": PLUGIN_VERSION,
-        "package_sha256": package_sha256,
-    }
-    artifacts = [
-        row
-        for row in current["artifacts"]
-        if type(row) is not dict or row.get("artifact_id") != ARTIFACT_ID
-    ]
-    artifacts.append(artifact)
-    artifacts.sort(key=lambda row: str(row.get("artifact_id", "")))
-    return canonical_json({"schema": current["schema"], "artifacts": artifacts})
-
-
 def write_outputs(*, package: bool) -> None:
     manifest, allowlist, package_payload = generated_manifest()
     ALLOWLIST.parent.mkdir(parents=True, exist_ok=True)
     ALLOWLIST.write_bytes(allowlist)
     MANIFEST.write_bytes(canonical_json(manifest))
-    REGISTRY.write_bytes(registry_payload(manifest["package_sha256"]))
     if package:
         PACKAGE.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
         PACKAGE.write_bytes(package_payload)
@@ -427,8 +403,6 @@ def check_outputs() -> None:
         fail("EDITORIAL_MEASUREMENT_ALLOWLIST_DRIFT")
     if read_regular(MANIFEST) != canonical_json(manifest):
         fail("EDITORIAL_MEASUREMENT_MANIFEST_DRIFT")
-    if read_regular(REGISTRY) != registry_payload(manifest["package_sha256"]):
-        fail("EDITORIAL_MEASUREMENT_REGISTRY_DRIFT")
 
 
 def main() -> int:

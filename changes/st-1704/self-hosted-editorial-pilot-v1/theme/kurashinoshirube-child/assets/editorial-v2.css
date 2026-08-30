@@ -862,6 +862,7 @@
     margin-top: 1rem;
   }
 
+  .raos-editorial-v2 .comparison-table-wrap:not(.raos-comparison),
   .raos-editorial-v2 .comparison-table-wrap > table,
   .raos-editorial-v2 .comparison-table-wrap > .raos-comparison__table-view {
     display: none;

@@ -138,14 +138,14 @@ def create_local_google_analytics_engine(
 
     def connect() -> Any:
         _reject_ambient_postgres_configuration()
-        password = _read_owner_password(target.password_file)
+        db_value = _read_owner_password(target.password_file)
         try:
             return psycopg.connect(
                 host=target.host,
                 port=target.port,
                 dbname=target.database,
                 user=target.user,
-                password=password,
+                password=db_value,
                 sslmode="disable",
                 connect_timeout=5,
                 application_name="raos-google-live-import",

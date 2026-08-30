@@ -33,6 +33,20 @@ import urllib.error
 import urllib.request
 from urllib.parse import urlsplit
 
+PYTHON_ROOT = Path(__file__).resolve().parents[1] / "python"
+if str(PYTHON_ROOT) not in sys.path:
+    sys.path.insert(0, str(PYTHON_ROOT))
+
+from raos.application.editorial.editorial_portfolio_v3 import (  # noqa: E402
+    EditorialPortfolioV3Failure,
+    load_editorial_portfolio_v3,
+)
+from raos.application.editorial.rakuten_measurement_activation_v3 import (  # noqa: E402
+    RakutenMeasurementActivationOverlayV3,
+    RakutenMeasurementActivationV3Failure,
+    validate_rakuten_measurement_activation_v3,
+)
+
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 PREVIEW_ROOT: Final = ROOT / "changes/wordpress-local-preview-v1"
@@ -290,8 +304,14 @@ class _PublicPageEvidenceParser(HTMLParser):
                         }
                     ),
                     "article_id": attributes.get("data-raos-article-id"),
+                    "cta_id": attributes.get("data-raos-cta-id"),
+                    "snapshot_id": attributes.get("data-raos-snapshot-id"),
+                    "offer_id": attributes.get("data-raos-offer-id"),
                     "product_id": attributes.get("data-raos-product-id"),
                     "placement": attributes.get("data-raos-placement"),
+                    "rakuten_measurement_id": attributes.get(
+                        "data-raos-rakuten-measurement-id"
+                    ),
                 }
             )
         if lowered == "a" and isinstance(attributes.get("href"), str):
@@ -1090,6 +1110,89 @@ def _validate_local_materialization_pair(
         fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
 
 
+def validate_rakuten_activation_dry_run(
+    path: Path | None,
+    *,
+    require_recent: bool = False,
+) -> RakutenMeasurementActivationOverlayV3:
+    """Load an exact URL-free owner-private activation receipt and overlays."""
+
+    if path is None or not path.is_absolute():
+        fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_REQUIRED")
+    try:
+        portfolio = load_editorial_portfolio_v3(ROOT)
+        return validate_rakuten_measurement_activation_v3(
+            repository_root=ROOT,
+            dry_run_path=path,
+            portfolio=portfolio,
+            local_v2_fixture_root=LOCAL_MATERIALIZED_FIXTURE_ROOT,
+            production_v2_fixture_root=PRODUCTION_MATERIALIZED_FIXTURE_ROOT,
+            require_recent=require_recent,
+        )
+    except (EditorialPortfolioV3Failure, RakutenMeasurementActivationV3Failure):
+        fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
+
+
+def activation_materialization_binding(
+    activation: RakutenMeasurementActivationOverlayV3,
+    articles: Sequence[Article],
+    *,
+    require_recent: bool,
+) -> dict[str, object]:
+    """Bind activated output to the exact validated V2 local/production pair."""
+
+    v2_articles = load_articles(
+        "all",
+        fixture_root=PRODUCTION_MATERIALIZED_FIXTURE_ROOT,
+    )
+    v2_binding = production_materialization_binding(
+        v2_articles,
+        require_recent=require_recent,
+    )
+    activated_hashes = {
+        article.production_slug: hashlib.sha256(
+            article.block_markup.encode("utf-8")
+        ).hexdigest()
+        for article in articles
+        if article.post_type == "post"
+    }
+    if (
+        v2_binding.get("portfolio_sha256") != activation.v2_portfolio_sha256
+        or activated_hashes != dict(activation.production_article_sha256)
+        or len(activated_hashes) != EXPECTED_ALL_ARTICLE_COUNT
+        or activation.article_count != EXPECTED_ALL_ARTICLE_COUNT
+        or activation.cta_count != 74
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
+    products = v2_binding.get("products")
+    if type(products) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
+    return {
+        "schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+        "portfolio_sha256": activation.portfolio_sha256,
+        "articles": dict(sorted(activated_hashes.items())),
+        "products": products,
+        "activation": {
+            "dry_run_sha256": activation.dry_run_sha256,
+            "admin_receipt_sha256": activation.admin_receipt_sha256,
+            "money_link_mapping_sha256": activation.money_link_mapping_sha256,
+            "materialized_set_sha256": activation.materialized_set_sha256,
+            "local_article_set_sha256": activation.local_article_set_sha256,
+            "production_article_set_sha256": (
+                activation.production_article_set_sha256
+            ),
+            "local_overlay_receipt_sha256": (
+                activation.local_overlay_receipt_sha256
+            ),
+            "production_overlay_receipt_sha256": (
+                activation.production_overlay_receipt_sha256
+            ),
+            "article_count": activation.article_count,
+            "cta_count": activation.cta_count,
+        },
+    }
+
+
 def theme_version() -> str:
     try:
         payload = THEME_STYLE_PATH.read_bytes()
@@ -1201,7 +1304,11 @@ def tracked_theme_tree_sha256() -> str:
 
 def run_preview_checks(
     runner: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
+    *,
+    fixture_root: Path = LOCAL_MATERIALIZED_FIXTURE_ROOT,
 ) -> None:
+    if not fixture_root.is_absolute():
+        fail("RAOS_WORDPRESS_REQUEST_PREVIEW_FIXTURE_INVALID")
     use_stale_group_bridge = _docker_group_membership_is_stale()
     for target, code in (
         ("wordpress-preview-up", "RAOS_WORDPRESS_REQUEST_PREVIEW_UP_FAILED"),
@@ -1223,9 +1330,7 @@ def run_preview_checks(
                 check=False,
                 env={
                     **os.environ,
-                    "RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT": (
-                        LOCAL_MATERIALIZED_FIXTURE_ROOT.as_posix()
-                    ),
+                    "RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT": fixture_root.as_posix(),
                 },
             )
         except OSError, subprocess.SubprocessError:
@@ -1484,9 +1589,12 @@ def validate_tool_contract(tools: Mapping[str, Mapping[str, object]]) -> None:
         fail("RAOS_WORDPRESS_REQUEST_BATCH_BOOTSTRAP_REQUIRED")
 
 
-def validate_site_status(status: Mapping[str, object]) -> None:
+def validate_site_status(
+    status: Mapping[str, object], *, require_measurement_ready: bool = False
+) -> None:
     writes = status.get("writes_enabled")
     theme = status.get("theme")
+    measurement = status.get("measurement")
     server = status.get("server")
     authorization = status.get("apply_authorization")
     if (
@@ -1499,7 +1607,13 @@ def validate_site_status(status: Mapping[str, object]) -> None:
         or type(writes) is not dict
         or any(
             writes.get(name) is not True
-            for name in ("global", "draft", "content_apply", "theme_apply")
+            for name in (
+                "global",
+                "draft",
+                "content_apply",
+                "theme_apply",
+                "plugin_apply",
+            )
         )
         or type(theme) is not dict
         or theme.get("slug") != "kurashinoshirube-child"
@@ -1519,6 +1633,17 @@ def validate_site_status(status: Mapping[str, object]) -> None:
         or server.get("delete_tool_exposed") is not False
         or server.get("media_write_tool_exposed") is not False
         or server.get("proposal_ttl_seconds") != 900
+        or (
+            require_measurement_ready
+            and (
+                type(measurement) is not dict
+                or measurement.get("plugin_active") is not True
+                or measurement.get("plugin_version") != "1.0.0"
+                or measurement.get("collection_enabled") is not False
+                or measurement.get("aggregate_ability_registered") is not True
+                or measurement.get("raw_event_tool_exposed") is not False
+            )
+        )
     ):
         fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
 
@@ -1834,17 +1959,27 @@ def _fresh_receipt(
 def _validate_materialization_binding(value: object) -> None:
     if value is None:
         return
-    if type(value) is not dict or set(value) != {
+    if type(value) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    schema = value.get("schema")
+    expected_keys = {
         "schema",
         "portfolio_sha256",
         "articles",
         "products",
-    }:
+    }
+    if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2":
+        expected_keys.add("activation")
+    if set(value) != expected_keys:
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     articles = value.get("articles")
     products = value.get("products")
     if (
-        value.get("schema") != "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1"
+        schema
+        not in {
+            "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1",
+            "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+        }
         or type(value.get("portfolio_sha256")) is not str
         or SHA256_RE.fullmatch(value["portfolio_sha256"]) is None
         or type(articles) is not dict
@@ -1870,6 +2005,33 @@ def _validate_materialization_binding(value: object) -> None:
             or raw.get("state") not in {"verified", "not_found", "ambiguous", "expired"}
             or type(raw.get("provider_binding_sha256")) is not str
             or SHA256_RE.fullmatch(raw["provider_binding_sha256"]) is None
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2":
+        activation = value.get("activation")
+        expected_activation_keys = {
+            "dry_run_sha256",
+            "admin_receipt_sha256",
+            "money_link_mapping_sha256",
+            "materialized_set_sha256",
+            "local_article_set_sha256",
+            "production_article_set_sha256",
+            "local_overlay_receipt_sha256",
+            "production_overlay_receipt_sha256",
+            "article_count",
+            "cta_count",
+        }
+        if (
+            type(activation) is not dict
+            or set(activation) != expected_activation_keys
+            or any(
+                type(activation.get(name)) is not str
+                or SHA256_RE.fullmatch(activation[name]) is None
+                for name in expected_activation_keys
+                if name.endswith("_sha256")
+            )
+            or activation.get("article_count") != EXPECTED_ALL_ARTICLE_COUNT
+            or activation.get("cta_count") != 74
         ):
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
 
@@ -3136,8 +3298,12 @@ def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]
         href = raw.get("href")
         rel = raw.get("rel")
         article_id = raw.get("article_id")
+        cta_id = raw.get("cta_id")
+        snapshot_id = raw.get("snapshot_id")
+        offer_id = raw.get("offer_id")
         product_id = raw.get("product_id")
         placement = raw.get("placement")
+        rakuten_measurement_id = raw.get("rakuten_measurement_id")
         if (
             type(href) is not str
             or len(href) > 8192
@@ -3160,8 +3326,27 @@ def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]
         ):
             fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
         if parsed.hostname == "hb.afl.rakuten.co.jp":
-            if set(rel) != {"sponsored", "nofollow"}:
+            if (
+                set(rel) != {"sponsored", "nofollow"}
+                or type(cta_id) is not str
+                or not cta_id
+                or type(snapshot_id) is not str
+                or not snapshot_id
+                or type(offer_id) is not str
+                or not offer_id
+                or type(rakuten_measurement_id) is not str
+                or re.fullmatch(
+                    r"[a-z0-9]+-[a-z0-9]+-(?:card|final)",
+                    rakuten_measurement_id,
+                )
+                is None
+            ):
                 fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
+        elif any(
+            value is not None
+            for value in (cta_id, snapshot_id, offer_id, rakuten_measurement_id)
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
         identity = (product_id, placement)
         if identity in identities:
             fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
@@ -3172,8 +3357,12 @@ def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]
                 "href": href,
                 "rel": rel,
                 "article_id": article_id,
+                "cta_id": cta_id,
+                "snapshot_id": snapshot_id,
+                "offer_id": offer_id,
                 "product_id": product_id,
                 "placement": placement,
+                "rakuten_measurement_id": rakuten_measurement_id,
             }
         )
     if not result:
@@ -3487,6 +3676,15 @@ def _public_page_evidence(
         or expected_disclosure != actual_disclosure
     ):
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED")
+    cta_evidence = [
+        {
+            **{key: value for key, value in cta.items() if key != "href"},
+            "destination_sha256": hashlib.sha256(
+                str(cta["href"]).encode("utf-8")
+            ).hexdigest(),
+        }
+        for cta in actual_ctas
+    ]
     return {
         "url": url,
         "status": 200,
@@ -3494,7 +3692,7 @@ def _public_page_evidence(
         "indexable": True,
         "title": parser.page_titles[0],
         "heading_count": len(required_headings),
-        "ctas": actual_ctas,
+        "ctas": cta_evidence,
         "product_images": actual_images,
         "advertising_disclosure": actual_disclosure,
         "theme_version": EXPECTED_THEME_VERSION,
@@ -3546,6 +3744,7 @@ def verify_published(
     expected_theme_version: str,
     expected_theme_tree_sha256: str,
     theme_was_proposed: bool,
+    require_measurement_ready: bool,
     deployment_runner: Callable[..., subprocess.CompletedProcess[bytes]],
 ) -> None:
     drafts = receipt.get("drafts")
@@ -3573,7 +3772,9 @@ def verify_published(
             **condition,
         }
     status = client.call("raos-codex-site-status", {})
-    validate_site_status(status)
+    validate_site_status(
+        status, require_measurement_ready=require_measurement_ready
+    )
     theme = status.get("theme")
     if (
         type(theme) is not dict
@@ -3675,6 +3876,7 @@ def _resume_existing_all_attempt(
     loaded_receipt: dict[str, object] | None,
     path: Path,
     *,
+    activation: RakutenMeasurementActivationOverlayV3 | None = None,
     client_factory: Callable[[], Any],
     deployment_runner: Callable[..., subprocess.CompletedProcess[bytes]],
 ) -> bool:
@@ -3696,18 +3898,26 @@ def _resume_existing_all_attempt(
         return False
     if not _resume_ready(receipt, len(source_articles)):
         return False
-    batch = publication_batch_status(receipt, deployment_runner)
-    if batch["state"] == "EXPIRED":
-        return False
-    if batch["state"] == "FAILED":
-        fail("RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID")
+    fixture_root = (
+        activation.production_fixture_root
+        if activation is not None
+        else PRODUCTION_MATERIALIZED_FIXTURE_ROOT
+    )
     articles = load_publication_items(
         "all",
-        article_fixture_root=PRODUCTION_MATERIALIZED_FIXTURE_ROOT,
+        article_fixture_root=fixture_root,
     )
-    binding = production_materialization_binding(
-        [article for article in articles if article.post_type == "post"],
-        require_recent=False,
+    binding = (
+        activation_materialization_binding(
+            activation,
+            [article for article in articles if article.post_type == "post"],
+            require_recent=False,
+        )
+        if activation is not None
+        else production_materialization_binding(
+            [article for article in articles if article.post_type == "post"],
+            require_recent=False,
+        )
     )
     desired_tree = receipt.get("desired_theme_tree_sha256")
     if (
@@ -3716,11 +3926,18 @@ def _resume_existing_all_attempt(
         or not _same_desired(receipt, articles, desired_tree, binding)
     ):
         fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
-
+    batch = publication_batch_status(receipt, deployment_runner)
+    if batch["state"] == "EXPIRED":
+        return False
+    if batch["state"] == "FAILED":
+        fail("RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID")
     client = client_factory()
     client.initialize()
     validate_tool_contract(client.tools())
-    validate_site_status(client.call("raos-codex-site-status", {}))
+    validate_site_status(
+        client.call("raos-codex-site-status", {}),
+        require_measurement_ready=True,
+    )
     read_content_operations(client, receipt)
     if batch["state"] != "APPLIED":
         wait_and_apply(receipt, path, deployment_runner)
@@ -3732,6 +3949,7 @@ def _resume_existing_all_attempt(
         expected_theme_version=EXPECTED_THEME_VERSION,
         expected_theme_tree_sha256=desired_tree,
         theme_was_proposed=_theme_was_proposed(receipt, len(articles)),
+        require_measurement_ready=True,
         deployment_runner=deployment_runner,
     )
     return True
@@ -3741,21 +3959,36 @@ def execute(
     selection: str,
     *,
     measurement_plugin_apply_receipt: Path | None = None,
+    rakuten_activation_dry_run: Path | None = None,
     portfolio_refresh: Callable[[], None] = run_editorial_portfolio_refresh,
     preview: Callable[[], None] = run_preview_checks,
+    preview_fixture: Callable[[Path], None] | None = None,
     client_factory: Callable[[], Any] = EditorMcpClient,
     deployment_runner: Callable[
         ..., subprocess.CompletedProcess[bytes]
     ] = subprocess.run,
 ) -> Path:
+    activation: RakutenMeasurementActivationOverlayV3 | None = None
     if selection == "all":
+        # This owner-private, read-only validation is deliberately first. A
+        # missing, insecure, partial, or drifted activation cannot create a
+        # lock, refresh provider state, read credentials, or call WordPress.
+        activation = validate_rakuten_activation_dry_run(
+            rakuten_activation_dry_run,
+            require_recent=False,
+        )
         validate_measurement_plugin_apply_receipt(
             measurement_plugin_apply_receipt
         )
     with request_lock():
+        initial_fixture_root = (
+            activation.production_fixture_root
+            if activation is not None
+            else SOURCE_FIXTURE_ROOT
+        )
         source_articles = load_publication_items(
             selection,
-            article_fixture_root=SOURCE_FIXTURE_ROOT,
+            article_fixture_root=initial_fixture_root,
         )
         initial_path = _receipt_path(source_articles)
         initial_receipt = _read_receipt(initial_path)
@@ -3763,6 +3996,7 @@ def execute(
             source_articles,
             initial_receipt,
             initial_path,
+            activation=activation,
             client_factory=client_factory,
             deployment_runner=deployment_runner,
         ):
@@ -3773,38 +4007,58 @@ def execute(
         fixture_root = SOURCE_FIXTURE_ROOT
         materialization_before_preview: dict[str, object] | None = None
         if selection == "all":
-            # Capture and both materializations run in the foreground. The local
-            # variant is what preview sync/check consumes; proposals use the
-            # separate production variant with provider image URLs.
-            portfolio_refresh()
-            fixture_root = PRODUCTION_MATERIALIZED_FIXTURE_ROOT
+            assert activation is not None
+            # V2 capture/materialization happened before the separately
+            # attested activation dry-run. Re-running it here would mutate the
+            # reviewed input and make the Money Link receipt stale.
+            fixture_root = activation.production_fixture_root
         articles_before_preview = load_publication_items(
             selection,
             article_fixture_root=fixture_root,
         )
         if selection == "all":
-            materialization_before_preview = production_materialization_binding(
+            assert activation is not None
+            materialization_before_preview = activation_materialization_binding(
+                activation,
                 [
                     article
                     for article in articles_before_preview
                     if article.post_type == "post"
-                ]
+                ],
+                require_recent=True,
             )
         reviewed_article_hashes = {
             article.production_slug: article.desired_sha256()
             for article in articles_before_preview
         }
         theme_tree_before_preview = tracked_theme_tree_sha256()
-        preview()
+        if activation is None:
+            preview()
+        elif preview_fixture is not None:
+            preview_fixture(activation.local_fixture_root)
+        elif preview is run_preview_checks:
+            run_preview_checks(fixture_root=activation.local_fixture_root)
+        else:
+            # Compatibility for injected no-argument test/audit callbacks.
+            preview()
+        if activation is not None:
+            activation_after_preview = validate_rakuten_activation_dry_run(
+                rakuten_activation_dry_run,
+                require_recent=False,
+            )
+            if activation_after_preview != activation:
+                fail("RAOS_WORDPRESS_REQUEST_ARTICLE_CHANGED_DURING_PREVIEW")
         articles = load_publication_items(
             selection,
             article_fixture_root=fixture_root,
         )
         materialization_binding = (
-            production_materialization_binding(
-                [article for article in articles if article.post_type == "post"]
+            activation_materialization_binding(
+                activation,
+                [article for article in articles if article.post_type == "post"],
+                require_recent=True,
             )
-            if selection == "all"
+            if activation is not None
             else None
         )
         if {
@@ -3838,7 +4092,9 @@ def execute(
         tools = client.tools()
         validate_tool_contract(tools)
         status = client.call("raos-codex-site-status", {})
-        validate_site_status(status)
+        validate_site_status(
+            status, require_measurement_ready=selection == "all"
+        )
         live_theme = status["theme"]
         if type(live_theme) is not dict:
             fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
@@ -4006,6 +4262,7 @@ def execute(
                     expected_theme_version=local_theme_version,
                     expected_theme_tree_sha256=local_theme_tree_sha256,
                     theme_was_proposed=_theme_was_proposed(receipt, len(articles)),
+                    require_measurement_ready=selection == "all",
                     deployment_runner=deployment_runner,
                 )
                 return path
@@ -4044,6 +4301,7 @@ def execute(
             expected_theme_version=local_theme_version,
             expected_theme_tree_sha256=local_theme_tree_sha256,
             theme_was_proposed=include_theme,
+            require_measurement_ready=selection == "all",
             deployment_runner=deployment_runner,
         )
         return path
@@ -4069,6 +4327,19 @@ def parser() -> argparse.ArgumentParser:
             "approved measurement plugin apply; required for --articles all"
         ),
     )
+    result.add_argument(
+        "--rakuten-activation-dry-run",
+        type=Path,
+        default=(
+            Path(os.environ["RAKUTEN_ACTIVATION_DRY_RUN"])
+            if os.environ.get("RAKUTEN_ACTIVATION_DRY_RUN")
+            else None
+        ),
+        help=(
+            "absolute owner-private URL-free Editorial V3 activation dry-run; "
+            "required for --articles all"
+        ),
+    )
     return result
 
 
@@ -4080,6 +4351,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             measurement_plugin_apply_receipt=(
                 arguments.measurement_plugin_apply_receipt
             ),
+            rakuten_activation_dry_run=arguments.rakuten_activation_dry_run,
         )
         print("公開と本番read-backが完了しました。")
         print(f"受領書: {path}")

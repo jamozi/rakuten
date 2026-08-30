@@ -33,6 +33,11 @@ RECEIPT_PATH = (
     / ".secrets/wordpress-mcp/publication-requests"
     / "measurement-plugin-proposal-v3.json"
 )
+ABILITIES_PROPOSAL_RECEIPT_PATH = (
+    ROOT
+    / ".secrets/wordpress-mcp/publication-requests"
+    / "abilities-plugin-proposal-v3.json"
+)
 SHA256_RE = __import__("re").compile(r"^[0-9a-f]{64}$")
 
 spec = importlib.util.spec_from_file_location("raos_publication_for_plugin", PUBLICATION_SCRIPT)
@@ -92,6 +97,42 @@ def _write_receipt(value: Mapping[str, object]) -> Path:
     publication._ensure_private_directory()
     publication._atomic_receipt(RECEIPT_PATH, value)
     return RECEIPT_PATH
+
+
+def validate_abilities_apply_receipt(path: Path | None) -> dict[str, object]:
+    """Bind the measurement proposal to a separately applied MCP 1.3 release."""
+
+    if path is None:
+        fail("RAOS_MEASUREMENT_PLUGIN_ABILITIES_RECEIPT_REQUIRED")
+    assert path is not None
+    try:
+        resolved = path.resolve(strict=True)
+    except OSError:
+        fail("RAOS_MEASUREMENT_PLUGIN_ABILITIES_RECEIPT_INVALID")
+    proposal_receipt = load_private_json(ABILITIES_PROPOSAL_RECEIPT_PATH)
+    apply_receipt = load_private_json(resolved)
+    proposal = proposal_receipt.get("proposal")
+    if (
+        proposal_receipt.get("state")
+        != "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
+        or proposal_receipt.get("artifact_id") != "raos-codex-mcp-abilities-v1"
+        or proposal_receipt.get("plugin_slug") != "raos-codex-mcp-abilities"
+        or proposal_receipt.get("plugin_version") != "1.3.0"
+        or type(proposal) is not dict
+        or apply_receipt.get("schema") != "OperationReceiptV1"
+        or apply_receipt.get("proposal_id") != proposal.get("proposal_id")
+        or apply_receipt.get("operation_id") != proposal.get("operation_id")
+        or apply_receipt.get("state") != "APPLIED"
+        or apply_receipt.get("result_code") != "PLUGIN_CHANGE_APPLIED"
+        or apply_receipt.get("after_sha256") != proposal.get("after_sha256")
+    ):
+        fail("RAOS_MEASUREMENT_PLUGIN_ABILITIES_RECEIPT_INVALID")
+    return {
+        "proposal_id": apply_receipt["proposal_id"],
+        "operation_id": apply_receipt["operation_id"],
+        "after_sha256": apply_receipt["after_sha256"],
+        "plugin_version": "1.3.0",
+    }
 
 
 def prepare(
@@ -181,10 +222,12 @@ def prepare(
 
 def propose(
     *,
+    abilities_apply_receipt: Path | None,
     preview: Callable[[], None] = publication.run_preview_checks,
     build_runner: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
     deployment_call: Callable[..., dict[str, object]] = publication._deployment_mcp_call,
 ) -> Path:
+    abilities = validate_abilities_apply_receipt(abilities_apply_receipt)
     receipt = prepare(preview=preview, runner=build_runner)
     response = deployment_call(
         "plugin-propose-change",
@@ -223,6 +266,7 @@ def propose(
     assert type(proposal) is dict
     assert type(operation) is dict
     receipt["state"] = "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
+    receipt["abilities_plugin_apply"] = abilities
     receipt["proposal"] = {
         "proposal_id": proposal["proposal_id"],
         "operation_id": operation.get("operation_id"),
@@ -231,7 +275,10 @@ def propose(
     return _write_receipt(receipt)
 
 
-def content_command(apply_receipt_path: Path) -> str:
+def content_command(
+    apply_receipt_path: Path,
+    rakuten_activation_dry_run: Path | None,
+) -> str:
     proposal_receipt = load_private_json(RECEIPT_PATH)
     apply_receipt = load_private_json(apply_receipt_path)
     proposal = proposal_receipt.get("proposal")
@@ -246,10 +293,22 @@ def content_command(apply_receipt_path: Path) -> str:
         or apply_receipt.get("after_sha256") != proposal.get("after_sha256")
     ):
         fail("RAOS_MEASUREMENT_PLUGIN_APPLY_RECEIPT_INVALID")
+    try:
+        activation = publication.validate_rakuten_activation_dry_run(
+            rakuten_activation_dry_run,
+            require_recent=True,
+        )
+    except publication.PublicationFailure:
+        fail("RAOS_MEASUREMENT_PLUGIN_RAKUTEN_ACTIVATION_INVALID")
+    assert rakuten_activation_dry_run is not None
+    if activation.article_count != 10 or activation.cta_count != 74:
+        fail("RAOS_MEASUREMENT_PLUGIN_RAKUTEN_ACTIVATION_INVALID")
     return (
         ".venv/bin/python scripts/raos_wordpress_publication_request.py "
         "--articles all --measurement-plugin-apply-receipt "
         + shlex.quote(apply_receipt_path.resolve(strict=True).as_posix())
+        + " --rakuten-activation-dry-run "
+        + shlex.quote(rakuten_activation_dry_run.resolve(strict=True).as_posix())
     )
 
 
@@ -259,6 +318,8 @@ def parser() -> argparse.ArgumentParser:
     group.add_argument("--prepare", action="store_true")
     group.add_argument("--propose", action="store_true")
     group.add_argument("--content-ready", type=Path)
+    result.add_argument("--abilities-plugin-apply-receipt", type=Path)
+    result.add_argument("--rakuten-activation-dry-run", type=Path)
     return result
 
 
@@ -269,10 +330,19 @@ def main(argv: Sequence[str] | None = None) -> int:
             path = _write_receipt(prepare())
             print(path)
         elif arguments.propose:
-            print(propose())
+            print(
+                propose(
+                    abilities_apply_receipt=arguments.abilities_plugin_apply_receipt
+                )
+            )
             print("Separate administrator approval/apply is required; measurement gate remains off.")
         else:
-            print(content_command(arguments.content_ready))
+            print(
+                content_command(
+                    arguments.content_ready,
+                    arguments.rakuten_activation_dry_run,
+                )
+            )
         return 0
     except SequenceFailure as error:
         print(str(error), file=sys.stderr)

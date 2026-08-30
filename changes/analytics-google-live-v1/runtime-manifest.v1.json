@@ -1,0 +1,71 @@
+{
+  "credential_material_tracked": false,
+  "files": [
+    {
+      "path": "migrations/versions/202608300001_google_analytics_live_persistence.py",
+      "sha256": "78fb502b760dbc5a6ef028ac50e8b596d3d9fe8134a5274d0c708c9a214d13eb",
+      "size": 21533
+    },
+    {
+      "path": "python/raos/adapters/google_live.py",
+      "sha256": "bea9150c5efd2b6617a9725857fdd1a53a7fac0cab75404c8df67fc5c8c8ab1e",
+      "size": 36844
+    },
+    {
+      "path": "python/raos/adapters/google_live_database.py",
+      "sha256": "0a514e893daf652826212f599f3396cf01ed8cd7af17b6ea649dcff1ec91ed20",
+      "size": 6104
+    },
+    {
+      "path": "python/raos/adapters/persistence/sqlalchemy/google_live.py",
+      "sha256": "eb7ff03a217c62a5ea45872866e7178128dfdb61445c53bc8a936abaaabfd444",
+      "size": 39611
+    },
+    {
+      "path": "python/raos/application/analytics/google_live_import.py",
+      "sha256": "3deb1979b8b5c36789ef37aadedf75c3763db5bd841a1786297dfad1c5d4395b",
+      "size": 6904
+    },
+    {
+      "path": "python/raos/application/analytics/google_live_projection.py",
+      "sha256": "c452e34ca90f37f9a57c6728927664b5201e89099446e67ab4b36345d502943b",
+      "size": 5976
+    },
+    {
+      "path": "python/raos/domain/analytics/google_live.py",
+      "sha256": "34f036a30697f76f1cdda7323c1023af7a6918c5e7fcc3c06930788e9358e4d9",
+      "size": 27622
+    },
+    {
+      "path": "python/raos/ports/google_live.py",
+      "sha256": "720bb9657c712c2a4f495ea2e8ba4a72936632148894633c56e5fc75b2695d90",
+      "size": 2976
+    },
+    {
+      "path": "python/raos/migrations/catalog.py",
+      "sha256": "a4181b2d1de4a01a898b60b3e57a1640d7aa539be61f35b9e84c984df80b4839",
+      "size": 20865
+    },
+    {
+      "path": "scripts/raos_editorial_economics_v3.py",
+      "sha256": "c6c870eb7f6d35c6618fb10ddcb7380a22c383fd93921f3091b64df4c2c5e532",
+      "size": 19857
+    },
+    {
+      "path": "scripts/raos_wordpress_seo_audit.py",
+      "sha256": "a09a89d9c841b027debec416b34428b4912b30fe3a5953f922a7de5d632aec15",
+      "size": 35725
+    },
+    {
+      "path": "scripts/build_google_live_runtime_v1.py",
+      "sha256": "a03343f6eb0f30d7333889248f9b0b56fb7789b0dfe0a061e5e453c833bb8cf5",
+      "size": 3620
+    }
+  ],
+  "provider_mode": "OWNER_PRIVATE_READ_ONLY",
+  "raw_gsc_queries_tracked": false,
+  "recorded_adapters_retained_for_tests": true,
+  "revision": "202608300001",
+  "schema": "RAOS_GOOGLE_LIVE_RUNTIME_MANIFEST_V1",
+  "version": "1.0.0"
+}

@@ -16,6 +16,8 @@ from raos.domain.analytics.google_live import (
     GoogleImportExecutionContext,
     SearchConsoleImportBatch,
     SearchConsoleLiveQuery,
+    SearchConsoleUrlInspectionBatch,
+    SearchConsoleUrlInspectionQuery,
 )
 
 
@@ -42,6 +44,13 @@ class GoogleAuthorizedJsonTransport(Protocol):
 @runtime_checkable
 class SearchConsoleProviderPort(Protocol):
     def query(self, query: SearchConsoleLiveQuery) -> SearchConsoleImportBatch: ...
+
+
+@runtime_checkable
+class SearchConsoleUrlInspectionProviderPort(Protocol):
+    def inspect(
+        self, query: SearchConsoleUrlInspectionQuery
+    ) -> SearchConsoleUrlInspectionBatch: ...
 
 
 @runtime_checkable
@@ -110,4 +119,5 @@ __all__ = [
     "GoogleJsonResponse",
     "GoogleRetrySleeper",
     "SearchConsoleProviderPort",
+    "SearchConsoleUrlInspectionProviderPort",
 ]

@@ -23,13 +23,25 @@ from uuid import UUID
 GSC_READONLY_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
 GA4_READONLY_SCOPE = "https://www.googleapis.com/auth/analytics.readonly"
 GSC_DIMENSIONS = ("date", "query", "page", "country", "device")
-GA4_ARTICLE_ID_DIMENSION = "customEvent:article_id"
+GSC_URL_INSPECTION_INVENTORY_SIZE = 14
+GSC_URL_INSPECTION_LANGUAGE_CODE = "ja-JP"
+GA4_EVENT_PARAMETER_NAMES = (
+    "article_id",
+    "snapshot_id",
+    "cta_id",
+    "offer_id",
+    "product_id",
+    "placement",
+)
+GA4_EVENT_CUSTOM_DIMENSIONS = tuple(
+    f"customEvent:{parameter}" for parameter in GA4_EVENT_PARAMETER_NAMES
+)
+GA4_ARTICLE_ID_DIMENSION = GA4_EVENT_CUSTOM_DIMENSIONS[0]
 GA4_BASELINE_DIMENSIONS = (
     "date",
     "pagePath",
     "eventName",
-    "deviceCategory",
-    GA4_ARTICLE_ID_DIMENSION,
+    *GA4_EVENT_CUSTOM_DIMENSIONS,
 )
 GA4_BASELINE_METRICS = ("eventCount", "sessions", "totalUsers")
 
@@ -44,7 +56,22 @@ _COUNTRY = re.compile(r"[a-z]{3}\Z", re.ASCII)
 _DEVICE = re.compile(r"(?:MOBILE|DESKTOP|TABLET)", re.ASCII)
 _DIMENSION_NAME = re.compile(r"[A-Za-z][A-Za-z0-9_:]{0,127}\Z", re.ASCII)
 _METRIC_NAME = re.compile(r"[A-Za-z][A-Za-z0-9_]{0,127}\Z", re.ASCII)
+_GOOGLE_UTC_TIMESTAMP = re.compile(
+    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?Z\Z", re.ASCII
+)
 _MAX_ROWS = 2_000_000
+_URL_INSPECTION_VERDICTS = frozenset(
+    {"PASS", "PARTIAL", "FAIL", "NEUTRAL", "VERDICT_UNSPECIFIED"}
+)
+_URL_INSPECTION_INDEXING_STATES = frozenset(
+    {
+        "INDEXING_ALLOWED",
+        "BLOCKED_BY_META_TAG",
+        "BLOCKED_BY_HTTP_HEADER",
+        "BLOCKED_BY_ROBOTS_TXT",
+        "INDEXING_STATE_UNSPECIFIED",
+    }
+)
 
 
 class GoogleProviderFailureCode(StrEnum):
@@ -112,6 +139,18 @@ def _valid_sha256(value: object) -> bool:
 
 def _valid_utc(value: object) -> bool:
     return type(value) is datetime and value.tzinfo is timezone.utc and value.fold == 0
+
+
+def is_google_utc_timestamp(value: object) -> bool:
+    """Validate and preserve Google's nanosecond-resolution UTC timestamp text."""
+
+    if type(value) is not str or _GOOGLE_UTC_TIMESTAMP.fullmatch(value) is None:
+        return False
+    try:
+        parsed = datetime.fromisoformat(f"{value[:-1]}+00:00")
+    except ValueError:
+        return False
+    return parsed.tzinfo is timezone.utc
 
 
 def _valid_https_url(value: object) -> bool:
@@ -300,6 +339,191 @@ class SearchConsoleImportBatch:
             fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
 
 
+def _strict_https_origin(value: str) -> tuple[str, str, int]:
+    parsed = urlsplit(value)
+    try:
+        port = parsed.port or 443
+    except ValueError:
+        fail_google()
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname is None
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+    ):
+        fail_google()
+    return parsed.scheme, parsed.hostname.lower(), port
+
+
+def _url_inspection_site_origin(site_url: str) -> tuple[str, str, int]:
+    if _SC_DOMAIN.fullmatch(site_url) is not None:
+        return "https", site_url.removeprefix("sc-domain:"), 443
+    return _strict_https_origin(site_url)
+
+
+def _url_inspection_url_is_bound(*, site_url: str, inspection_url: str) -> bool:
+    if _strict_https_origin(inspection_url) != _url_inspection_site_origin(site_url):
+        return False
+    if _SC_DOMAIN.fullmatch(site_url) is not None:
+        return True
+    site_path = urlsplit(site_url).path or "/"
+    inspection_path = urlsplit(inspection_url).path or "/"
+    if not site_path.endswith("/"):
+        fail_google()
+    return inspection_path.startswith(site_path)
+
+
+def gsc_url_inspection_request_sha256(*, site_url: str, inspection_url: str) -> str:
+    """Hash one provider request without including authorization material."""
+
+    if type(site_url) is not str or type(inspection_url) is not str:
+        fail_google()
+    if not _url_inspection_url_is_bound(
+        site_url=site_url, inspection_url=inspection_url
+    ):
+        fail_google()
+    return sha256_hex(
+        canonical_json_bytes(
+            {
+                "inspectionUrl": inspection_url,
+                "languageCode": GSC_URL_INSPECTION_LANGUAGE_CODE,
+                "siteUrl": site_url,
+            }
+        )
+    )
+
+
+def normalize_url_inspection_state(*, verdict: str, indexing_state: str) -> str:
+    """Map provider detail to the deliberately small SEO audit state set."""
+
+    if (
+        verdict not in _URL_INSPECTION_VERDICTS
+        or indexing_state not in _URL_INSPECTION_INDEXING_STATES
+    ):
+        fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+    if indexing_state.startswith("BLOCKED_BY_"):
+        return "BLOCKED"
+    if verdict == "PASS" and indexing_state == "INDEXING_ALLOWED":
+        return "INDEXED"
+    if verdict in {"FAIL", "PARTIAL", "NEUTRAL"}:
+        return "NOT_INDEXED"
+    return "UNKNOWN"
+
+
+@dataclass(frozen=True, slots=True)
+class SearchConsoleUrlInspectionQuery:
+    site_id: UUID
+    site_url: str
+    inspection_urls: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        if (
+            type(self.site_id) is not UUID
+            or type(self.site_url) is not str
+            or type(self.inspection_urls) is not tuple
+            or len(self.inspection_urls) != GSC_URL_INSPECTION_INVENTORY_SIZE
+            or len(set(self.inspection_urls)) != len(self.inspection_urls)
+        ):
+            fail_google()
+        for url in self.inspection_urls:
+            if type(url) is not str or not _url_inspection_url_is_bound(
+                site_url=self.site_url, inspection_url=url
+            ):
+                fail_google()
+
+    def logical_request(self) -> dict[str, object]:
+        return {
+            "inspectionUrls": list(self.inspection_urls),
+            "languageCode": GSC_URL_INSPECTION_LANGUAGE_CODE,
+            "siteUrl": self.site_url,
+        }
+
+    @property
+    def request_sha256(self) -> str:
+        return sha256_hex(canonical_json_bytes(self.logical_request()))
+
+
+@dataclass(frozen=True, slots=True, repr=False)
+class SearchConsoleUrlInspectionObservation:
+    inspected_url: str
+    state: str
+    verdict: str
+    indexing_state: str
+    last_crawl_at: str | None
+    source_request_sha256: str
+    provider_response_sha256: str
+
+    def __post_init__(self) -> None:
+        if (
+            type(self.inspected_url) is not str
+            or not _valid_https_url(self.inspected_url)
+            or urlsplit(self.inspected_url).query
+            or type(self.state) is not str
+            or type(self.verdict) is not str
+            or type(self.indexing_state) is not str
+            or self.state
+            != normalize_url_inspection_state(
+                verdict=self.verdict, indexing_state=self.indexing_state
+            )
+            or (
+                self.last_crawl_at is not None
+                and not is_google_utc_timestamp(self.last_crawl_at)
+            )
+            or not _valid_sha256(self.source_request_sha256)
+            or not _valid_sha256(self.provider_response_sha256)
+        ):
+            fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+
+
+@dataclass(frozen=True, slots=True, repr=False)
+class SearchConsoleUrlInspectionBatch:
+    site_id: UUID
+    site_url: str
+    request_sha256: str
+    results: tuple[SearchConsoleUrlInspectionObservation, ...]
+    retrieved_at: datetime
+
+    def __post_init__(self) -> None:
+        results_valid = (
+            type(self.results) is tuple
+            and len(self.results) == GSC_URL_INSPECTION_INVENTORY_SIZE
+            and all(
+                type(result) is SearchConsoleUrlInspectionObservation
+                for result in self.results
+            )
+        )
+        result_urls = (
+            tuple(result.inspected_url for result in self.results)
+            if results_valid
+            else ()
+        )
+        expected_request = (
+            SearchConsoleUrlInspectionQuery(
+                site_id=self.site_id,
+                site_url=self.site_url,
+                inspection_urls=result_urls,
+            ).request_sha256
+            if results_valid
+            else ""
+        )
+        if (
+            not results_valid
+            or self.request_sha256 != expected_request
+            or not _valid_utc(self.retrieved_at)
+            or any(
+                result.source_request_sha256
+                != gsc_url_inspection_request_sha256(
+                    site_url=self.site_url,
+                    inspection_url=result.inspected_url,
+                )
+                for result in self.results
+            )
+        ):
+            fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+
+
 @dataclass(frozen=True, slots=True)
 class Ga4LiveQuery:
     site_id: UUID
@@ -437,6 +661,7 @@ class Ga4PropertyConfigSnapshot:
                     "currency_code": self.currency_code,
                     "display_name": self.display_name,
                     "property_resource": self.property_resource,
+                    "required_event_custom_dimensions": list(GA4_EVENT_PARAMETER_NAMES),
                     "reporting_identity": self.reporting_identity,
                     "time_zone": self.time_zone,
                 }
@@ -554,9 +779,13 @@ __all__ = [
     "GA4_ARTICLE_ID_DIMENSION",
     "GA4_BASELINE_DIMENSIONS",
     "GA4_BASELINE_METRICS",
+    "GA4_EVENT_CUSTOM_DIMENSIONS",
+    "GA4_EVENT_PARAMETER_NAMES",
     "GA4_READONLY_SCOPE",
     "GSC_DIMENSIONS",
     "GSC_READONLY_SCOPE",
+    "GSC_URL_INSPECTION_INVENTORY_SIZE",
+    "GSC_URL_INSPECTION_LANGUAGE_CODE",
     "Ga4ImportBatch",
     "Ga4LiveQuery",
     "Ga4Observation",
@@ -568,7 +797,13 @@ __all__ = [
     "SearchConsoleImportBatch",
     "SearchConsoleLiveQuery",
     "SearchConsoleObservation",
+    "SearchConsoleUrlInspectionBatch",
+    "SearchConsoleUrlInspectionObservation",
+    "SearchConsoleUrlInspectionQuery",
     "canonical_json_bytes",
     "fail_google",
+    "gsc_url_inspection_request_sha256",
+    "is_google_utc_timestamp",
+    "normalize_url_inspection_state",
     "sha256_hex",
 ]

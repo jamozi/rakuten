@@ -7,7 +7,7 @@
     "status": "UNAVAILABLE"
   },
   "backlog_id": "B-V2-033",
-  "classification": "PASSED_LOCAL_RECORDED_WITH_BROWSER_AND_MANUAL_VISUAL_EVIDENCE",
+  "classification": "GENERATED_LOCAL_PENDING_COMBINED_EVIDENCE_GATE",
   "external_actions": {
     "executed": [],
     "not_executed": [
@@ -21,7 +21,7 @@
       "irreversible deletion"
     ]
   },
-  "gate_status": "PASSED_LOCAL_RECORDED",
+  "gate_status": "READY_FOR_LOCAL_TEST_GATE",
   "generated_artifacts": [
     {
       "bytes": 18606,
@@ -34,9 +34,9 @@
       "sha256": "3692c6e35154424ab2c1eb1d4e478b646b531596cc8258213d3513e7a035fa5f"
     },
     {
-      "bytes": 7343,
+      "bytes": 7157,
       "path": "changes/raos-v2/phase-2/generated/phase-2-validation.v2.json",
-      "sha256": "06fb85aa952910302db5f3c21efd61128ddb0e1fa89ee22a1738a8d0b7ac34df"
+      "sha256": "afd421928756864465ecbff0999d7b1018dab90c6025280b03cf7f0528cd9392"
     },
     {
       "bytes": 4814,
@@ -489,7 +489,7 @@
     ],
     "owner": "tests/raos_v2",
     "receipt": {
-      "binding_verification": "CURRENT_TREE_BOUND",
+      "binding_verification": "STALE_IMPLEMENTATION_OR_TEST_INVENTORY",
       "claimed_status": "PASSED_LOCAL",
       "classification": "LOCAL_ONLY",
       "command": "TMPDIR=/tmp uv run --offline pytest -s -q tests/raos_v2",
@@ -524,7 +524,7 @@
       "recorded_date_jst": "2026-08-30",
       "schema": "RAOS_V2_RECORDED_LOCAL_TEST_EVIDENCE_V1",
       "skipped": 0,
-      "status": "PASSED_LOCAL",
+      "status": "AWAITING_GATE_STALE_BINDING",
       "test_inventory": {
         "content_inventory_sha256": "f335f05891aff1bb4d333f246da8b6f4f8229b03c1001dbab737d9cac0523cb0",
         "file_count": 31,
@@ -535,7 +535,7 @@
       "version": "2.0.0"
     },
     "required_command": "uv run --offline pytest -s -q tests/raos_v2",
-    "status": "PASSED_LOCAL"
+    "status": "AWAITING_GATE_STALE_BINDING"
   },
   "visual_a11y_evidence": [
     {

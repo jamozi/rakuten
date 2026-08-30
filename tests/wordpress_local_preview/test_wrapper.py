@@ -42,6 +42,12 @@ printf 'product_media_root=%s\\n' "${RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT:-
 if [[ "$*" == "compose version" ]]; then
   exit 0
 fi
+if [[ "$*" == "ps --filter publish="* ]]; then
+  if [[ -n "${RAOS_FAKE_PORT_PROJECT:-}" ]]; then
+    printf 'deadbeef %s\\n' "$RAOS_FAKE_PORT_PROJECT"
+  fi
+  exit 0
+fi
 if [[ "${RAOS_FAKE_DOCKER_UP_FAIL:-0}" == 1 && "$*" == *" up --detach database wordpress gateway"* ]]; then
   exit 42
 fi
@@ -49,7 +55,7 @@ if [[ "$*" == *" core is-installed"* && "${RAOS_FAKE_CORE_INSTALLED:-1}" == 0 ]]
   exit 1
 fi
 if [[ "$*" == *" option get home"* ]]; then
-  printf '%s\\n' 'http://127.0.0.1:8888'
+  printf '%s\\n' "$RAOS_WORDPRESS_PREVIEW_ORIGIN"
 fi
 if [[ "$*" == *" theme list --name=kurashinoshirube-child --field=status"* ]]; then
   printf '%s\\n' active
@@ -81,6 +87,7 @@ done
         "RAOS_WORDPRESS_PREVIEW_CURL_BIN": str(fake_curl),
         "RAOS_WORDPRESS_PREVIEW_DOCKER_BIN": str(fake_docker),
         "RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT": str(private_root),
+        "RAOS_WORDPRESS_PREVIEW_PORT": "18888",
         "RAOS_WORDPRESS_PREVIEW_TEST_MATERIALIZER_BIN": str(fake_materializer),
     }
     shutil.rmtree(private_root, ignore_errors=True)
@@ -139,7 +146,7 @@ def test_up_generates_private_credentials_and_runs_initial_seed(
         "RAOS_FAKE_CORE_INSTALLED": "0",
     }
     result = _run("up", environment, check=True)
-    assert "WordPress preview: http://127.0.0.1:8888/" in result.stdout
+    assert "WordPress preview: http://127.0.0.1:18888/" in result.stdout
     assert "raos-local-admin" in result.stdout
     credentials = (
         Path(environment["RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT"]) / "credentials.env"
@@ -161,6 +168,7 @@ def test_up_generates_private_credentials_and_runs_initial_seed(
     assert all(len(value) == 64 for value in values)
     docker_log = Path(environment["RAOS_FAKE_DOCKER_LOG"]).read_text()
     assert "up --detach database wordpress gateway" in docker_log
+    assert "--project-name raos-wordpress-preview-" in docker_log
     assert "core install" in docker_log
     assert "theme activate kurashinoshirube-child" in docker_log
     assert "plugin activate raos-editorial-measurement" in docker_log
@@ -170,6 +178,77 @@ def test_up_generates_private_credentials_and_runs_initial_seed(
     assert f"product_media_root={media_root}" in docker_log
     assert all(value not in docker_log for value in values)
     assert all(value not in result.stdout for value in values)
+
+
+def _activated_fixture(root: Path, *, mode: int = 0o700) -> Path:
+    articles = root / "articles"
+    articles.mkdir(parents=True, mode=0o700)
+    root.chmod(mode)
+    articles.chmod(0o700)
+    posts = root / "posts.json"
+    posts.write_text("{}\n", encoding="utf-8")
+    posts.chmod(0o600)
+    for index in range(1, 11):
+        article = articles / f"activated-article-{index}.html"
+        article.write_text("<div></div>\n", encoding="utf-8")
+        article.chmod(0o600)
+    return root
+
+
+def test_owner_private_fixture_override_skips_v2_materialization(
+    fake_runtime: dict[str, str], tmp_path: Path
+) -> None:
+    private_root = Path(fake_runtime["RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT"])
+    private_root.mkdir(mode=0o700)
+    (private_root / "product-media").mkdir(mode=0o700)
+    activated = _activated_fixture(tmp_path / "activated-fixture")
+    environment = {
+        **fake_runtime,
+        "RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT": activated.as_posix(),
+    }
+
+    _run("up", environment, check=True)
+
+    assert not (private_root / "materialized-fixtures-v2").exists()
+    docker_log = Path(environment["RAOS_FAKE_DOCKER_LOG"]).read_text()
+    assert f"article_fixture_root={activated / 'articles'}" in docker_log
+    assert f"post_fixture={activated / 'posts.json'}" in docker_log
+
+
+def test_fixture_override_rejects_insecure_directory_mode_before_compose_up(
+    fake_runtime: dict[str, str], tmp_path: Path
+) -> None:
+    private_root = Path(fake_runtime["RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT"])
+    private_root.mkdir(mode=0o700)
+    (private_root / "product-media").mkdir(mode=0o700)
+    activated = _activated_fixture(tmp_path / "insecure-fixture", mode=0o755)
+
+    result = _run(
+        "up",
+        {
+            **fake_runtime,
+            "RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT": activated.as_posix(),
+        },
+    )
+
+    assert result.returncode == 69
+    assert result.stderr.strip() == "RAOS_WORDPRESS_PREVIEW_FIXTURE_OVERRIDE_INVALID"
+    docker_log = Path(fake_runtime["RAOS_FAKE_DOCKER_LOG"]).read_text()
+    assert " up --detach" not in docker_log
+
+
+def test_up_refuses_a_foreign_compose_project_bound_to_preview_port(
+    fake_runtime: dict[str, str],
+) -> None:
+    result = _run(
+        "up",
+        {**fake_runtime, "RAOS_FAKE_PORT_PROJECT": "another-checkout"},
+    )
+    assert result.returncode == 69
+    assert result.stderr.strip() == "RAOS_WORDPRESS_PREVIEW_FOREIGN_PORT_OWNER"
+    docker_log = Path(fake_runtime["RAOS_FAKE_DOCKER_LOG"]).read_text()
+    assert "ps --filter publish=18888" in docker_log
+    assert " up --detach" not in docker_log
 
 
 def test_up_propagates_compose_start_failure(fake_runtime: dict[str, str]) -> None:

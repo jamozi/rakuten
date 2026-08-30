@@ -50,9 +50,10 @@ def test_revision_metadata_and_alembic_graph_are_exact() -> None:
     assert module.down_revision == catalog.ANCHOR_REVISION
     assert module.branch_labels is None
     assert module.depends_on is None
-    assert script.get_heads() == [catalog.DATABASE_ROLES_REVISION]
+    assert script.get_heads() == [catalog.HEAD_REVISION]
     assert script.get_bases() == [catalog.ANCHOR_REVISION]
     assert [item.revision for item in script.walk_revisions()] == [
+        catalog.GOOGLE_ANALYTICS_LIVE_REVISION,
         catalog.DATABASE_ROLES_REVISION,
         catalog.PUBLICATION_ANALYTICS_FINANCE_REVISION,
         catalog.DOMAIN_REVISION,

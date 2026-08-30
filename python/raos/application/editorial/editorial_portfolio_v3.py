@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -41,6 +42,12 @@ def _text(value: object) -> str:
     if type(value) is not str or value != value.strip() or not value:
         _fail("RAOS_EDITORIAL_V3_CONTRACT_INVALID")
     return value
+
+
+def _texts(value: object) -> tuple[str, ...]:
+    if type(value) is not list:
+        _fail("RAOS_EDITORIAL_V3_CONTRACT_INVALID")
+    return tuple(_text(item) for item in cast(list[object], value))
 
 
 @dataclass(frozen=True, slots=True)
@@ -82,6 +89,7 @@ class ProductBindingV3:
 class EditorialPortfolioV3:
     version: str
     target_origin: str
+    source_sha256: str
     articles: tuple[ArticleBindingV3, ...]
     products: tuple[ProductBindingV3, ...]
 
@@ -156,12 +164,8 @@ def load_editorial_portfolio_v3(repository_root: Path) -> EditorialPortfolioV3:
         category_label = _text(row.get("category_label"))
         home_order = row.get("home_order")
         snapshot_id = _text(row.get("snapshot_id"))
-        related = tuple(
-            _text(item) for item in cast(list[object], row.get("related_article_ids"))
-        )
-        product_refs = tuple(
-            _text(item) for item in cast(list[object], row.get("product_ids"))
-        )
+        related = _texts(row.get("related_article_ids"))
+        product_refs = _texts(row.get("product_ids"))
         if (
             article_id in article_ids
             or article_code in article_codes
@@ -249,6 +253,7 @@ def load_editorial_portfolio_v3(repository_root: Path) -> EditorialPortfolioV3:
     return EditorialPortfolioV3(
         version=_text(document.get("version")),
         target_origin=_text(document.get("target_origin")),
+        source_sha256=hashlib.sha256(raw).hexdigest(),
         articles=tuple(articles),
         products=tuple(products),
     )

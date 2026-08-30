@@ -18,6 +18,7 @@ from raos.adapters.persistence.sqlalchemy.provider import SqlAlchemyEngineProvid
 from raos.domain.analytics.google_live import (
     GA4_BASELINE_DIMENSIONS,
     GA4_BASELINE_METRICS,
+    GA4_EVENT_PARAMETER_NAMES,
     Ga4ImportBatch,
     Ga4Observation,
     Ga4PropertyConfigSnapshot,
@@ -122,7 +123,7 @@ def _context(job_index: int, display_id: str) -> GoogleImportExecutionContext:
 def _gsc_batch(*, clicks: int) -> SearchConsoleImportBatch:
     metric_date = date(2026, 8, 29)
     query_text = "比較対象の秘密クエリ"
-    page_url = "https://google-live.example.test/guide/?token=never-store"
+    page_url = "https://google-live.example.test/guide/?private=never-store"
     page_request = "1" * 64
     grain = sha256_hex(
         canonical_json_bytes(
@@ -171,8 +172,12 @@ def _ga4_batch() -> Ga4ImportBatch:
                 "20260829",
                 "/guide/",
                 "affiliate_click",
-                "mobile",
                 "article-001",
+                "snapshot-001",
+                "cta-001",
+                "offer-001",
+                "product-001",
+                "product_card",
             ),
             strict=True,
         )
@@ -189,6 +194,9 @@ def _ga4_batch() -> Ga4ImportBatch:
                 "currency_code": "JPY",
                 "display_name": "Production-like test",
                 "property_resource": "properties/123456",
+                "required_event_custom_dimensions": list(
+                    GA4_EVENT_PARAMETER_NAMES
+                ),
                 "reporting_identity": "BLENDED",
                 "time_zone": "Asia/Tokyo",
             }

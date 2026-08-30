@@ -6,10 +6,12 @@ from datetime import datetime
 from urllib.parse import urlsplit, urlunsplit
 
 from raos.domain.analytics.google_live import (
-    GA4_ARTICLE_ID_DIMENSION,
+    GA4_EVENT_CUSTOM_DIMENSIONS,
+    GA4_EVENT_PARAMETER_NAMES,
     Ga4ImportBatch,
     GoogleProviderFailureCode,
     SearchConsoleImportBatch,
+    SearchConsoleUrlInspectionBatch,
     canonical_json_bytes,
     fail_google,
     sha256_hex,
@@ -57,13 +59,44 @@ def gsc_baseline_document(batch: SearchConsoleImportBatch) -> dict[str, object]:
     }
 
 
+def gsc_url_inspection_document(
+    batch: SearchConsoleUrlInspectionBatch,
+) -> dict[str, object]:
+    """Project the exact URL Inspection batch into the SEO private input schema."""
+
+    if type(batch) is not SearchConsoleUrlInspectionBatch:
+        fail_google()
+    return {
+        "schema": "RAOS_OWNER_PRIVATE_URL_INSPECTION_V1",
+        "version": 1,
+        "source": "GSC_URL_INSPECTION_API_V1",
+        "site_id": str(batch.site_id),
+        "site_url": batch.site_url,
+        "observed_at": _utc_text(batch.retrieved_at),
+        "request_sha256": batch.request_sha256,
+        "result_count": len(batch.results),
+        "results": [
+            {
+                "url": result.inspected_url,
+                "state": result.state,
+                "verdict": result.verdict,
+                "indexing_state": result.indexing_state,
+                "last_crawl_at": result.last_crawl_at,
+                "request_sha256": result.source_request_sha256,
+                "response_sha256": result.provider_response_sha256,
+            }
+            for result in batch.results
+        ],
+    }
+
+
 def ga4_baseline_document(batch: Ga4ImportBatch) -> dict[str, object]:
     """Normalize the approved GA4 article custom dimension for economics input."""
 
     if (
         type(batch) is not Ga4ImportBatch
-        or GA4_ARTICLE_ID_DIMENSION not in batch.dimensions
-        or "article_id" in batch.dimensions
+        or not set(GA4_EVENT_CUSTOM_DIMENSIONS).issubset(batch.dimensions)
+        or set(GA4_EVENT_PARAMETER_NAMES) & set(batch.dimensions)
     ):
         fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
     configuration = batch.configuration
@@ -81,14 +114,17 @@ def ga4_baseline_document(batch: Ga4ImportBatch) -> dict[str, object]:
     for row in batch.rows:
         normalized_dimensions = [
             {
-                "name": "article_id" if name == GA4_ARTICLE_ID_DIMENSION else name,
+                "name": (
+                    name.removeprefix("customEvent:")
+                    if name in GA4_EVENT_CUSTOM_DIMENSIONS
+                    else name
+                ),
                 "value": value,
             }
             for name, value in row.dimensions
         ]
-        if sum(
-            item["name"] == "article_id" for item in normalized_dimensions
-        ) != 1:
+        normalized_names = {item["name"] for item in normalized_dimensions}
+        if not set(GA4_EVENT_PARAMETER_NAMES).issubset(normalized_names):
             fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
         rows.append(
             {
@@ -118,6 +154,7 @@ def ga4_baseline_document(batch: Ga4ImportBatch) -> dict[str, object]:
             "time_zone": configuration.time_zone,
             "currency_code": configuration.currency_code,
             "reporting_identity": configuration.reporting_identity,
+            "required_event_custom_dimensions": list(GA4_EVENT_PARAMETER_NAMES),
             "retrieved_at": _utc_text(configuration.retrieved_at),
             "response_sha256": response_sha256,
         },
@@ -125,4 +162,8 @@ def ga4_baseline_document(batch: Ga4ImportBatch) -> dict[str, object]:
     }
 
 
-__all__ = ["ga4_baseline_document", "gsc_baseline_document"]
+__all__ = [
+    "ga4_baseline_document",
+    "gsc_baseline_document",
+    "gsc_url_inspection_document",
+]

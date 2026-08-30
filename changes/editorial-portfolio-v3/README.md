@@ -73,10 +73,12 @@ limited to loopback or a local Unix socket and the password must be a relative
 mode-`0600` file directly below the mode-`0700` private root. The supplied site
 and worker job UUIDs must already exist in RAOS.
 
-GA4 must first have the separately approved event-scoped `article_id` custom
-dimension. The Data API field `customEvent:article_id` is normalized to the
-private `article_id` field; an absent or unapproved custom dimension fails
-closed instead of silently attributing events.
+GA4 must first have the separately approved event-scoped custom dimensions
+`article_id`, `snapshot_id`, `cta_id`, `offer_id`, `product_id`, and
+`placement`. The Admin API snapshot verifies all six with `EVENT` scope before
+the Data API report runs. Their `customEvent:*` fields are normalized to the
+private names; any missing or unapproved dimension fails closed instead of
+silently weakening article, CTA, product, or placement attribution.
 
 ```sh
 .venv/bin/python scripts/raos_editorial_economics_v3.py \
@@ -102,8 +104,11 @@ uses Direct reward only and never allocates the Unattributed total.
 T0 is never accepted as a free-form CLI timestamp. Generate `t0-template`, then
 fill it only from successful production readbacks for all 74 Rakuten measurement
 IDs, the same-origin event collector (202 plus aggregate increment readback), and
-the GA4 `article_view` event. Every observation binds its timestamp, request
-hash, and response hash. After owner attestation, `establish-t0` selects the
+the GA4 `article_view` event. The Rakuten readback must also bind the exact
+owner-private activation dry-run and its ten-article materialized-set hash; an
+older or reformatted activation receipt, a partial 74-ID set, or a different
+published set is rejected. Every observation binds its timestamp, request hash,
+and response hash. After owner attestation, `establish-t0` selects the
 earliest successful observation for each component and records the maximum of
 those three timestamps—the earliest moment when every component had succeeded.
 
@@ -112,7 +117,9 @@ those three timestamps—the earliest moment when every component had succeeded.
   --output production-readbacks.json
 # Fill and attest production-readbacks.json, retaining mode 0600.
 .venv/bin/python scripts/raos_editorial_economics_v3.py establish-t0 \
-  --observation production-readbacks.json --output t0-receipt.json
+  --observation production-readbacks.json \
+  --rakuten-activation-dry-run rakuten-activation-dry-run.json \
+  --output t0-receipt.json
 .venv/bin/python scripts/raos_editorial_economics_v3.py baseline \
   --rakuten-commit rakuten-commit.json --cost-input costs.json \
   --gsc-input gsc.json --ga4-input ga4.json --t0-receipt t0-receipt.json \
@@ -122,7 +129,21 @@ those three timestamps—the earliest moment when every component had succeeded.
 `evaluate-followups` marks Day 30 and Day 90 as `NOT_DUE` or
 `HUMAN_REVIEW_REQUIRED`; it never emits an automatic pass or publication. The
 Rakua mini color/mini Plus candidate remains `NOT_ELIGIBLE` unless actual data
-covers at least 28 days after T0, the source article has at least 200 GSC
-impressions and one click, and a positive reconciled Direct confirmed result.
+covers at least 28 days after T0, an independently defined owner-private GSC
+query cluster has at least 200 impressions and one click, and the source article
+has a positive reconciled Direct confirmed result. Article/page totals cannot be
+reused as candidate demand. Generate and attest the query-cluster input before
+evaluation:
+
+```sh
+.venv/bin/python scripts/raos_editorial_economics_v3.py candidate-query-template \
+  --output candidate-query-demand.json
+# Fill only from the exact private GSC query-cluster report; retain mode 0600.
+.venv/bin/python scripts/raos_editorial_economics_v3.py evaluate-followups \
+  --baseline baseline.json --as-of 2026-11-27 \
+  --candidate-query-demand candidate-query-demand.json \
+  --output followups.json
+```
+
 Even when all conditions hold, the result is only
 `ELIGIBLE_FOR_HUMAN_PROPOSAL`; article creation and publication stay disabled.

@@ -158,16 +158,16 @@ source_artifacts:
   sha256: afaf1fcd180593faac3404a4f978aa9f44452657a74b5f301924e78f1a9a1e39
 - uri: repo://changes/st-0303/manifest.yaml
   bytes: 11451
-  sha256: dea1c553736012d550ad82418032a1798c457d1c203853729679ed63c5f1ae14
+  sha256: d6cc0ab37029105b8e425e855402792c97c1615be83da3cf7a1590fcbff77b39
 - uri: repo://migrations/versions/202608030003_iam_ops_tables.py
   bytes: 62827
   sha256: a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
 - uri: repo://python/raos/migrations/catalog.py
-  bytes: 20363
-  sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+  bytes: 20865
+  sha256: a4181b2d1de4a01a898b60b3e57a1640d7aa539be61f35b9e84c984df80b4839
 - uri: repo://python/raos/migrations/runner.py
-  bytes: 214267
-  sha256: 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+  bytes: 222535
+  sha256: 2e83bac7ca61ea44c08b95d8f13778e0b60de95ee7c43b6f04fe0886cc96145d
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36955
   sha256: 847c9eab92236b8f40d63423b6640e0aa299cf5562040aa64f60358248ea4375
@@ -187,8 +187,8 @@ source_artifacts:
   bytes: 20144
   sha256: 9c8563fda758b4e4beb20ea1fa47b23130e9bc5835605d6f2a18fdedf39f3ecf
 - uri: repo://tests/st0304/test_postgresql.py
-  bytes: 32924
-  sha256: eda7e5f657b2830946524a990ad0ed6d8e4f3305424ebdf5124ebd9a5854f7f6
+  bytes: 32930
+  sha256: f1d508a472919434930d42fcd11c2dd99c651456ff8f1cd4d0bb7a140c272645
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://migrations/versions/202608030004_domain_schemas.py

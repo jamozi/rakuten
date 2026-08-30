@@ -15,20 +15,44 @@ from pathlib import Path
 import re
 import ssl
 import stat
+import sys
 from typing import Any, Final, NoReturn, Protocol
 from urllib.parse import urlsplit
+from uuid import UUID
 import xml.etree.ElementTree as ET
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+PYTHON_ROOT: Final = REPO_ROOT / "python"
+if str(PYTHON_ROOT) not in sys.path:
+    sys.path.insert(0, str(PYTHON_ROOT))
+
+from raos.adapters.google_live import (  # noqa: E402
+    FixedOwnerPrivateAnalyticsSiteBindings,
+    GoogleServiceAccountAuthorizedTransport,
+    LiveSearchConsoleUrlInspectionProvider,
+    SystemGoogleImportClock,
+    SystemGoogleRetrySleeper,
+)
+from raos.application.analytics.google_live_projection import (  # noqa: E402
+    gsc_url_inspection_document,
+)
+from raos.domain.analytics.google_live import (  # noqa: E402
+    GoogleProviderFailure,
+    SearchConsoleUrlInspectionQuery,
+    gsc_url_inspection_request_sha256,
+    normalize_url_inspection_state,
+)
+
 CONTRACT_PATH: Final = REPO_ROOT / (
     "changes/wordpress-seo-audit-v1/seo-audit-contract.v1.json"
 )
 PRIVATE_ROOT: Final = REPO_ROOT / ".secrets/wordpress-seo-audit-v1"
 DEFAULT_OUTPUT: Final = PRIVATE_ROOT / "report.json"
+DEFAULT_GOOGLE_PRIVATE_ROOT: Final = REPO_ROOT / ".secrets/editorial-portfolio-v3"
 _SHA256_RE: Final = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 _UTC_RE: Final = re.compile(
-    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z\Z", re.ASCII
+    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?Z\Z", re.ASCII
 )
 _ALLOWED_INDEX_STATES: Final = frozenset(
     {"INDEXED", "NOT_INDEXED", "BLOCKED", "UNKNOWN"}
@@ -49,6 +73,16 @@ def _fail(code: str) -> NoReturn:
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _valid_utc_text(value: object) -> bool:
+    if not isinstance(value, str) or _UTC_RE.fullmatch(value) is None:
+        return False
+    try:
+        parsed = datetime.fromisoformat(f"{value[:-1]}+00:00")
+    except ValueError:
+        return False
+    return parsed.tzinfo is timezone.utc
 
 
 def _canonical_json(value: Any) -> bytes:
@@ -554,9 +588,14 @@ def _load_index_states(
         return {
             item.url: {
                 "state": "UNAVAILABLE",
+                "verdict": None,
+                "indexing_state": None,
                 "observed_at": None,
                 "last_crawl_at": None,
+                "request_sha256": None,
+                "response_sha256": None,
                 "evidence_sha256": None,
+                "basis": "UNAVAILABLE",
             }
             for item in contract.items
         }
@@ -589,18 +628,66 @@ def _load_index_states(
         _fail("INDEX_INPUT_SCHEMA_INVALID")
     observed_at = raw.get("observed_at")
     results = raw.get("results")
-    if not isinstance(observed_at, str) or not _UTC_RE.fullmatch(observed_at):
+    if not _valid_utc_text(observed_at):
         _fail("INDEX_INPUT_TIMESTAMP_INVALID")
     if not isinstance(results, list) or len(results) != len(contract.items):
         _fail("INDEX_INPUT_INVENTORY_INVALID")
     expected = {item.url for item in contract.items}
-    parsed: dict[str, dict[str, str | None]] = {}
-    for result in results:
-        if not isinstance(result, dict) or set(result) - {
-            "url",
-            "state",
-            "last_crawl_at",
+    expected_order = tuple(item.url for item in contract.items)
+    live_source = raw.get("source") == "GSC_URL_INSPECTION_API_V1"
+    if live_source:
+        if set(raw) != {
+            "schema",
+            "version",
+            "source",
+            "site_id",
+            "site_url",
+            "observed_at",
+            "request_sha256",
+            "result_count",
+            "results",
         }:
+            _fail("INDEX_INPUT_SCHEMA_INVALID")
+        site_id = raw.get("site_id")
+        site_url = raw.get("site_url")
+        request_sha256 = raw.get("request_sha256")
+        if (
+            raw.get("version") != 1
+            or raw.get("result_count") != len(contract.items)
+            or not isinstance(site_id, str)
+            or not isinstance(site_url, str)
+            or not isinstance(request_sha256, str)
+            or _SHA256_RE.fullmatch(request_sha256) is None
+        ):
+            _fail("INDEX_INPUT_SCHEMA_INVALID")
+        try:
+            live_query = SearchConsoleUrlInspectionQuery(
+                site_id=UUID(site_id),
+                site_url=site_url,
+                inspection_urls=expected_order,
+            )
+        except ValueError, GoogleProviderFailure:
+            _fail("INDEX_INPUT_SITE_BINDING_INVALID")
+        if live_query.request_sha256 != request_sha256:
+            _fail("INDEX_INPUT_REQUEST_HASH_INVALID")
+    elif set(raw) != {"schema", "observed_at", "results"}:
+        _fail("INDEX_INPUT_SCHEMA_INVALID")
+    parsed: dict[str, dict[str, str | None]] = {}
+    for position, result in enumerate(results):
+        expected_result_keys = (
+            {
+                "url",
+                "state",
+                "verdict",
+                "indexing_state",
+                "last_crawl_at",
+                "request_sha256",
+                "response_sha256",
+            }
+            if live_source
+            else {"url", "state", "last_crawl_at"}
+        )
+        if not isinstance(result, dict) or set(result) != expected_result_keys:
             _fail("INDEX_INPUT_RESULT_INVALID")
         url = result.get("url")
         state = result.get("state")
@@ -608,19 +695,62 @@ def _load_index_states(
         if (
             not isinstance(url, str)
             or urlsplit(url).query
+            or not isinstance(state, str)
             or state not in _ALLOWED_INDEX_STATES
-            or (
-                crawl is not None
-                and (not isinstance(crawl, str) or not _UTC_RE.fullmatch(crawl))
-            )
+            or (crawl is not None and not _valid_utc_text(crawl))
             or url in parsed
         ):
             _fail("INDEX_INPUT_RESULT_INVALID")
+        if live_source:
+            verdict = result.get("verdict")
+            indexing_state = result.get("indexing_state")
+            result_request_sha256 = result.get("request_sha256")
+            result_response_sha256 = result.get("response_sha256")
+            if (
+                url != expected_order[position]
+                or not isinstance(verdict, str)
+                or not isinstance(indexing_state, str)
+                or not isinstance(result_request_sha256, str)
+                or _SHA256_RE.fullmatch(result_request_sha256) is None
+                or not isinstance(result_response_sha256, str)
+                or _SHA256_RE.fullmatch(result_response_sha256) is None
+            ):
+                _fail("INDEX_INPUT_RESULT_INVALID")
+            try:
+                expected_state = normalize_url_inspection_state(
+                    verdict=verdict,
+                    indexing_state=indexing_state,
+                )
+                expected_request_sha256 = gsc_url_inspection_request_sha256(
+                    site_url=live_query.site_url,
+                    inspection_url=url,
+                )
+            except GoogleProviderFailure:
+                _fail("INDEX_INPUT_RESULT_INVALID")
+            if (
+                state != expected_state
+                or result_request_sha256 != expected_request_sha256
+            ):
+                _fail("INDEX_INPUT_RESULT_INVALID")
+        else:
+            verdict = None
+            indexing_state = None
+            result_request_sha256 = None
+            result_response_sha256 = None
         parsed[url] = {
             "state": state,
+            "verdict": verdict,
+            "indexing_state": indexing_state,
             "observed_at": observed_at,
             "last_crawl_at": crawl,
-            "evidence_sha256": _sha256(raw_bytes),
+            "request_sha256": result_request_sha256,
+            "response_sha256": result_response_sha256,
+            "evidence_sha256": result_response_sha256 or _sha256(raw_bytes),
+            "basis": (
+                "OWNER_PRIVATE_LIVE_GSC_URL_INSPECTION_V1"
+                if live_source
+                else "OWNER_PRIVATE_RECORDED_URL_INSPECTION_V1"
+            ),
         }
     if set(parsed) != expected:
         _fail("INDEX_INPUT_INVENTORY_INVALID")
@@ -635,6 +765,14 @@ def run_audit(
 ) -> dict[str, Any]:
     if index_states is None:
         index_states = _load_index_states(None, contract)
+    if set(index_states) != {item.url for item in contract.items}:
+        _fail("INDEX_STATE_INVENTORY_INVALID")
+    index_bases = {value.get("basis") for value in index_states.values()}
+    if len(index_bases) != 1 or not all(
+        isinstance(value, str) for value in index_bases
+    ):
+        _fail("INDEX_STATE_BASIS_INVALID")
+    index_basis = next(iter(index_bases))
     pages: list[dict[str, Any]] = []
     for item in contract.items:
         response = transport.get(item.url)
@@ -642,6 +780,22 @@ def run_audit(
             _fail("TRANSPORT_URL_MISMATCH")
         checks, schema_types = _page_checks(item, response, contract)
         index_state = index_states[item.url]
+        if index_state["state"] != "UNAVAILABLE":
+            evidence_sha256 = index_state["evidence_sha256"]
+            observed_at = index_state["observed_at"]
+            state = index_state["state"]
+            if (
+                not isinstance(evidence_sha256, str)
+                or not isinstance(observed_at, str)
+                or not isinstance(state, str)
+            ):
+                _fail("INDEX_STATE_EVIDENCE_INVALID")
+            checks["gsc_indexed"] = _check(
+                state == "INDEXED",
+                evidence_sha256,
+                observed_at,
+                state,
+            )
         page_pass = all(check["status"] == "PASS" for check in checks.values())
         pages.append(
             {
@@ -746,11 +900,7 @@ def run_audit(
             "sitemap_home": sitemap_home_check,
             "llms_txt_absent": llms_check,
         },
-        "index_state_basis": (
-            "OWNER_PRIVATE_RECORDED_URL_INSPECTION_V1"
-            if any(value["state"] != "UNAVAILABLE" for value in index_states.values())
-            else "UNAVAILABLE"
-        ),
+        "index_state_basis": index_basis,
     }
 
 
@@ -788,13 +938,61 @@ def _write_private_report(path: Path, report: dict[str, Any]) -> None:
             temporary.unlink()
 
 
+def _refresh_live_index_input(
+    *,
+    path: Path,
+    contract: AuditContract,
+    google_owner_private_root: Path,
+) -> None:
+    """Fetch exactly the closed inventory without exposing provider payloads."""
+
+    bindings = FixedOwnerPrivateAnalyticsSiteBindings(
+        google_owner_private_root.resolve()
+    )
+    binding = bindings.gsc()
+    clock = SystemGoogleImportClock()
+    sleeper = SystemGoogleRetrySleeper()
+    provider = LiveSearchConsoleUrlInspectionProvider(
+        transport=GoogleServiceAccountAuthorizedTransport(binding=binding),
+        clock=clock,
+        sleeper=sleeper,
+    )
+    batch = provider.inspect(
+        SearchConsoleUrlInspectionQuery(
+            site_id=binding.site_id,
+            site_url=binding.resource,
+            inspection_urls=tuple(item.url for item in contract.items),
+        )
+    )
+    _write_private_report(path, gsc_url_inspection_document(batch))
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--index-input", type=Path)
+    parser.add_argument(
+        "--refresh-index-from-gsc",
+        action="store_true",
+        help="replace --index-input from the exact live GSC URL Inspection batch",
+    )
+    parser.add_argument(
+        "--google-owner-private-root",
+        type=Path,
+        default=DEFAULT_GOOGLE_PRIVATE_ROOT,
+        help="0700 root containing separate google/gsc and google/ga4 bindings",
+    )
     arguments = parser.parse_args(argv)
     try:
         contract = load_contract()
+        if arguments.refresh_index_from_gsc:
+            if arguments.index_input is None:
+                _fail("INDEX_OUTPUT_REQUIRED_FOR_REFRESH")
+            _refresh_live_index_input(
+                path=arguments.index_input,
+                contract=contract,
+                google_owner_private_root=arguments.google_owner_private_root,
+            )
         index_states = _load_index_states(arguments.index_input, contract)
         report = run_audit(
             BoundedHttpsTransport(contract), contract, index_states=index_states
@@ -802,6 +1000,8 @@ def main(argv: list[str] | None = None) -> int:
         _write_private_report(arguments.output, report)
     except AuditError as error:
         parser.error(error.code)
+    except GoogleProviderFailure as error:
+        parser.error(error.code.value)
     print(json.dumps({"status": report["status"], "output": str(arguments.output)}))
     return 0 if report["status"] == "PASS" else 1
 

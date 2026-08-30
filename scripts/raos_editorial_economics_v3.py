@@ -17,8 +17,14 @@ if str(PYTHON_ROOT) not in sys.path:
     sys.path.insert(0, str(PYTHON_ROOT))
 
 from raos.application.editorial.editorial_portfolio_v3 import (  # noqa: E402
+    EditorialPortfolioV3,
     EditorialPortfolioV3Failure,
+    PORTFOLIO_RELATIVE_PATH,
     load_editorial_portfolio_v3,
+)
+from raos.application.editorial.rakuten_measurement_activation_v3 import (  # noqa: E402
+    RakutenMeasurementActivationV3Failure,
+    validate_rakuten_measurement_activation_v3,
 )
 from raos.adapters.google_live_database import (  # noqa: E402
     LocalGoogleAnalyticsDatabaseTarget,
@@ -45,6 +51,7 @@ from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
     EditorialEconomicsV3Failure,
     bind_rakuten_profile,
     build_baseline_report,
+    candidate_query_demand_template,
     canonical_json_bytes,
     commit_rakuten_report,
     cost_input_template,
@@ -133,6 +140,11 @@ def _parser() -> argparse.ArgumentParser:
         "establish-t0", help="derive T0 from all exact successful readbacks"
     )
     establish_t0.add_argument("--observation", required=True)
+    establish_t0.add_argument(
+        "--rakuten-activation-dry-run",
+        required=True,
+        help="exact owner-private Rakuten activation dry-run bound to live links",
+    )
     establish_t0.add_argument("--output", required=True)
 
     baseline = commands.add_parser(
@@ -151,8 +163,15 @@ def _parser() -> argparse.ArgumentParser:
         help="emit Day 30/90 reviews and the non-automatic article gate",
     )
     followups.add_argument("--baseline", required=True)
+    followups.add_argument("--candidate-query-demand")
     followups.add_argument("--as-of", required=True)
     followups.add_argument("--output", required=True)
+
+    candidate_template = commands.add_parser(
+        "candidate-query-template",
+        help="create the owner-private independent GSC query-cluster template",
+    )
+    candidate_template.add_argument("--output", required=True)
 
     refresh = commands.add_parser(
         "refresh-baseline",
@@ -211,7 +230,7 @@ def _refresh_baseline(
     *,
     arguments: argparse.Namespace,
     private_root: Path,
-    portfolio: object,
+    portfolio: EditorialPortfolioV3,
 ) -> None:
     # Imported here so all non-live owner workflows remain usable without
     # opening a database seam.
@@ -333,12 +352,14 @@ def main(argv: list[str] | None = None) -> int:
             )
             write_private_json(private_root, arguments.output, document)
         elif arguments.command == "rakuten-commit":
-            report = read_private_bytes(private_root, arguments.report)
+            rakuten_report_content = read_private_bytes(
+                private_root, arguments.report
+            )
             profile_content = read_private_bytes(private_root, arguments.profile)
             profile = read_private_json(private_root, arguments.profile)
             dry_run = read_private_json(private_root, arguments.dry_run)
             reparsed = parse_rakuten_report(
-                content=report,
+                content=rakuten_report_content,
                 profile=profile,
                 profile_sha256=sha256_bytes(profile_content),
                 portfolio=portfolio,
@@ -359,6 +380,12 @@ def main(argv: list[str] | None = None) -> int:
             write_private_json(
                 private_root, arguments.output, cost_input_template(portfolio)
             )
+        elif arguments.command == "candidate-query-template":
+            write_private_json(
+                private_root,
+                arguments.output,
+                candidate_query_demand_template(),
+            )
         elif arguments.command == "t0-template":
             write_private_json(
                 private_root,
@@ -370,15 +397,45 @@ def main(argv: list[str] | None = None) -> int:
                 private_root, arguments.observation
             )
             observation = read_private_json(private_root, arguments.observation)
+            activation_content = read_private_bytes(
+                private_root, arguments.rakuten_activation_dry_run
+            )
+            activation = read_private_json(
+                private_root, arguments.rakuten_activation_dry_run
+            )
+            activation_path = private_path(
+                private_root, arguments.rakuten_activation_dry_run
+            )
+            validated_activation = validate_rakuten_measurement_activation_v3(
+                repository_root=REPOSITORY_ROOT,
+                dry_run_path=activation_path,
+                portfolio=portfolio,
+                require_recent=False,
+            )
+            if validated_activation.dry_run_sha256 != sha256_bytes(
+                activation_content
+            ):
+                raise EditorialEconomicsV3Failure(
+                    "RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID"
+                )
+            try:
+                portfolio_content = (REPOSITORY_ROOT / PORTFOLIO_RELATIVE_PATH).read_bytes()
+            except OSError:
+                raise EditorialEconomicsV3Failure(
+                    "RAOS_EDITORIAL_V3_PORTFOLIO_UNAVAILABLE"
+                ) from None
             receipt = establish_t0_receipt(
                 document=observation,
                 observation_sha256=sha256_bytes(observation_content),
+                rakuten_activation=activation,
+                rakuten_activation_sha256=sha256_bytes(activation_content),
+                expected_portfolio_sha256=sha256_bytes(portfolio_content),
                 portfolio=portfolio,
                 evaluated_at=datetime.now(UTC),
             )
             write_private_json(private_root, arguments.output, receipt)
         elif arguments.command == "baseline":
-            report = build_baseline_report(
+            baseline_report = build_baseline_report(
                 portfolio=portfolio,
                 rakuten_commit=_optional_json(private_root, arguments.rakuten_commit),
                 cost_input=_optional_json(private_root, arguments.cost_input),
@@ -388,10 +445,14 @@ def main(argv: list[str] | None = None) -> int:
                 generated_at=datetime.now(UTC),
             )
             write_private_bytes(
-                private_root, arguments.json_output, canonical_json_bytes(report)
+                private_root,
+                arguments.json_output,
+                canonical_json_bytes(baseline_report),
             )
             write_private_bytes(
-                private_root, arguments.html_output, render_baseline_html(report)
+                private_root,
+                arguments.html_output,
+                render_baseline_html(baseline_report),
             )
         elif arguments.command == "evaluate-followups":
             baseline_content = read_private_bytes(private_root, arguments.baseline)
@@ -400,6 +461,9 @@ def main(argv: list[str] | None = None) -> int:
                 baseline_sha256=sha256_bytes(baseline_content),
                 portfolio=portfolio,
                 as_of=arguments.as_of,
+                candidate_query_demand=_optional_json(
+                    private_root, arguments.candidate_query_demand
+                ),
                 generated_at=datetime.now(UTC),
             )
             write_private_json(private_root, arguments.output, evaluation)
@@ -419,6 +483,7 @@ def main(argv: list[str] | None = None) -> int:
         EditorialEconomicsV3Failure,
         EditorialPortfolioV3Failure,
         GoogleProviderFailure,
+        RakutenMeasurementActivationV3Failure,
     ) as exc:
         print(str(exc), file=sys.stderr)
         return 1

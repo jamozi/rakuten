@@ -11,7 +11,7 @@ provenance:
   contract_semantic_id: openai-responses-adapter-contract
   contract_version: 2
   fixture_registry_uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
-  fixture_registry_sha256: 6b3a04e446bd98463405373eae033bb9e5e04fd35d9f14cb8f88a6c33ddc11ca
+  fixture_registry_sha256: 5a53f78b53e8a8c35cc9fc96a44dc17d04f478c1efcadb411c1c64e1c6241974
   predecessor_story_ids:
   - ST-0204
   - ST-0701
@@ -62,8 +62,8 @@ source_artifacts:
   bytes: 71458
   sha256: 4adcff3f293b82160a390e5d3e5102fd0bd0f46875d09677e0ba9b230eba680d
 - uri: repo://uv.lock
-  bytes: 129836
-  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
+  bytes: 165160
+  sha256: b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1
 semantic_source_count: 12
 semantic_sources:
 - uri: repo://changes/st-0204/manifest.yaml
@@ -106,7 +106,7 @@ generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0703/generated/recorded-fixture-registry.v1.json
   bytes: 3726
-  sha256: 6b3a04e446bd98463405373eae033bb9e5e04fd35d9f14cb8f88a6c33ddc11ca
+  sha256: 5a53f78b53e8a8c35cc9fc96a44dc17d04f478c1efcadb411c1c64e1c6241974
 manifest_self_integrity:
   included_in_source_artifacts: false
   verification: deterministic byte-for-byte regeneration via --check-installed

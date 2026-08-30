@@ -24,14 +24,14 @@ def _password(tmp_path: Path) -> Path:
 def test_local_database_target_rejects_remote_or_ambient_configuration(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    password = _password(tmp_path)
+    path = _password(tmp_path)
     with pytest.raises(GoogleProviderFailure):
         LocalGoogleAnalyticsDatabaseTarget(
             host="db.example.invalid",
             port=5432,
             database="raos",
             user="raos_worker",
-            password_file=password,
+            password_file=path,
         )
 
     target = LocalGoogleAnalyticsDatabaseTarget(
@@ -39,7 +39,7 @@ def test_local_database_target_rejects_remote_or_ambient_configuration(
         port=5432,
         database="raos",
         user="raos_worker",
-        password_file=password,
+        password_file=path,
     )
     monkeypatch.setenv("PGHOST", "unexpected")
     with pytest.raises(GoogleProviderFailure):
@@ -49,18 +49,18 @@ def test_local_database_target_rejects_remote_or_ambient_configuration(
 def test_password_reader_requires_owner_0600_file_in_0700_directory(
     tmp_path: Path,
 ) -> None:
-    password = _password(tmp_path)
-    assert _read_owner_password(password) == "fixture-value"
+    path = _password(tmp_path)
+    assert _read_owner_password(path) == "fixture-value"
     assert "fixture-value" not in repr(
         LocalGoogleAnalyticsDatabaseTarget(
             host="127.0.0.1",
             port=5432,
             database="raos",
             user="raos_worker",
-            password_file=password,
+            password_file=path,
         )
     )
 
-    os.chmod(password, 0o644)
+    os.chmod(path, 0o644)
     with pytest.raises(GoogleProviderFailure):
-        _read_owner_password(password)
+        _read_owner_password(path)

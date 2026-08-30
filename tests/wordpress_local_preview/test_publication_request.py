@@ -10,6 +10,7 @@ import re
 import stat
 import subprocess
 import sys
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -1181,6 +1182,14 @@ class WorkflowClient:
                 "draft": True,
                 "content_apply": True,
                 "theme_apply": True,
+                "plugin_apply": True,
+            },
+            "measurement": {
+                "plugin_active": True,
+                "plugin_version": "1.0.0",
+                "collection_enabled": False,
+                "aggregate_ability_registered": True,
+                "raw_event_tool_exposed": False,
             },
             "theme": {
                 "slug": "kurashinoshirube-child",
@@ -2018,7 +2027,7 @@ def test_missing_idempotency_schema_stops_before_mutation() -> None:
         publication.validate_tool_contract(tools)
 
 
-def test_site_status_requires_plugin_1_2_and_scoped_approval_lease() -> None:
+def test_site_status_requires_plugin_1_3_and_scoped_approval_lease() -> None:
     article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
     client = WorkflowClient(article, [])
     status = client.status()
@@ -2040,6 +2049,36 @@ def test_site_status_requires_plugin_1_2_and_scoped_approval_lease() -> None:
         match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
     ):
         publication.validate_site_status(status)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("plugin_active", False),
+        ("plugin_version", "0.9.0"),
+        ("collection_enabled", True),
+        ("aggregate_ability_registered", False),
+        ("raw_event_tool_exposed", True),
+    ],
+)
+def test_all_mode_site_status_requires_measurement_active_and_default_off(
+    field: str, value: object
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    status = WorkflowClient(article, []).status()
+    measurement = status["measurement"]
+    assert type(measurement) is dict
+    measurement[field] = value
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status, require_measurement_ready=True)
+
+    # A legacy/single-article diagnostic read does not authorize collection,
+    # but remains usable before the measurement plugin release is proposed.
+    publication.validate_site_status(status, require_measurement_ready=False)
 
 
 def test_portfolio_refresh_runs_capture_then_both_materializations_in_foreground() -> (
@@ -2186,6 +2225,61 @@ def test_materialization_pair_refuses_evidence_set_drift(
         publication.production_materialization_binding(articles)
 
 
+def test_activation_binding_persists_only_exact_hashes_and_counts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    articles = publication.load_articles("all")
+    article_hashes = {
+        article.production_slug: hashlib.sha256(
+            article.block_markup.encode("utf-8")
+        ).hexdigest()
+        for article in articles
+    }
+    activation = SimpleNamespace(
+        v2_portfolio_sha256="a" * 64,
+        portfolio_sha256="b" * 64,
+        production_article_sha256=article_hashes,
+        article_count=10,
+        cta_count=74,
+        dry_run_sha256="c" * 64,
+        admin_receipt_sha256="d" * 64,
+        money_link_mapping_sha256="e" * 64,
+        materialized_set_sha256="f" * 64,
+        local_article_set_sha256="1" * 64,
+        production_article_set_sha256="2" * 64,
+        local_overlay_receipt_sha256="3" * 64,
+        production_overlay_receipt_sha256="4" * 64,
+    )
+    monkeypatch.setattr(
+        publication,
+        "production_materialization_binding",
+        lambda *_args, **_kwargs: {
+            "schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1",
+            "portfolio_sha256": "a" * 64,
+            "articles": article_hashes,
+            "products": {
+                "PRD-TEST": {
+                    "state": "verified",
+                    "provider_binding_sha256": "5" * 64,
+                }
+            },
+        },
+    )
+    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
+
+    binding = publication.activation_materialization_binding(
+        activation,
+        articles,
+        require_recent=True,
+    )
+
+    publication._validate_materialization_binding(binding)
+    assert binding["schema"] == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2"
+    assert "://" not in json.dumps(binding, sort_keys=True)
+    assert binding["activation"]["article_count"] == 10
+    assert binding["activation"]["cta_count"] == 74
+
+
 def test_all_mode_recovers_registered_batch_before_provider_refresh(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -2222,6 +2316,17 @@ def test_all_mode_recovers_registered_batch_before_provider_refresh(
         return True
 
     monkeypatch.setattr(publication, "_resume_existing_all_attempt", resume)
+    def activation_receipt(_path: Path | None, **_kwargs: object) -> object:
+        calls.append("activation-receipt")
+        return SimpleNamespace(
+            production_fixture_root=publication.SOURCE_FIXTURE_ROOT
+        )
+
+    monkeypatch.setattr(
+        publication,
+        "validate_rakuten_activation_dry_run",
+        activation_receipt,
+    )
     monkeypatch.setattr(
         publication,
         "validate_measurement_plugin_apply_receipt",
@@ -2234,7 +2339,64 @@ def test_all_mode_recovers_registered_batch_before_provider_refresh(
     )
 
     assert result == path
-    assert calls == ["plugin-receipt", "resume"]
+    assert calls == ["activation-receipt", "plugin-receipt", "resume"]
+
+
+def test_all_mode_requires_activation_before_any_lock_plugin_or_provider_action(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    events: list[str] = []
+    monkeypatch.setattr(
+        publication,
+        "validate_measurement_plugin_apply_receipt",
+        lambda _path: events.append("plugin"),
+    )
+    monkeypatch.setattr(
+        publication,
+        "request_lock",
+        lambda: (_ for _ in ()).throw(AssertionError("lock must not be created")),
+    )
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_REQUIRED",
+    ):
+        publication.execute(
+            "all",
+            portfolio_refresh=lambda: events.append("provider"),
+            preview=lambda: events.append("preview"),
+        )
+
+    assert events == []
+
+
+def test_partial_selection_keeps_official_fallback_and_never_requires_activation(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    parser = publication._PublicPageEvidenceParser()
+    parser.feed(article.block_markup)
+    parser.close()
+    ctas = publication._validated_ctas(parser)
+    assert ctas
+    assert all(
+        publication.urlsplit(str(cta["href"])).hostname != "hb.afl.rakuten.co.jp"
+        and cta["cta_id"] is None
+        and cta["snapshot_id"] is None
+        and cta["offer_id"] is None
+        and cta["rakuten_measurement_id"] is None
+        for cta in ctas
+    )
+    monkeypatch.setattr(
+        publication,
+        "validate_rakuten_activation_dry_run",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("partial selection must not read activation")
+        ),
+    )
+    # Loading the partial publication input remains independent of every V3
+    # owner-private activation artifact.
+    assert publication.load_publication_items(article.production_slug) == [article]
 
 
 def test_all_mode_requires_exact_separate_admin_measurement_plugin_receipt(
@@ -2365,7 +2527,9 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
         lambda *_args, **_kwargs: None,
     )
     monkeypatch.setattr(publication, "validate_tool_contract", lambda _value: None)
-    monkeypatch.setattr(publication, "validate_site_status", lambda _value: None)
+    monkeypatch.setattr(
+        publication, "validate_site_status", lambda _value, **_kwargs: None
+    )
     monkeypatch.setattr(
         publication,
         "read_content_operations",
@@ -2426,6 +2590,27 @@ def test_stale_docker_group_uses_only_fixed_sg_commands(
     ]
     assert all("ARTICLES" not in part for command in commands for part in command)
     assert fixture_roots == [publication.LOCAL_MATERIALIZED_FIXTURE_ROOT.as_posix()] * 3
+
+
+def test_preview_commands_receive_exact_activation_overlay_root(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(publication, "_docker_group_membership_is_stale", lambda: False)
+    activation_overlay_root = (tmp_path / "local-materialized-fixtures-v3-deadbeef").resolve()
+    fixture_roots: list[str] = []
+
+    def runner(
+        command: tuple[str, ...], **kwargs: object
+    ) -> subprocess.CompletedProcess[bytes]:
+        environment = kwargs["env"]
+        assert isinstance(environment, dict)
+        fixture_roots.append(environment["RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT"])
+        return subprocess.CompletedProcess(command, 0, b"", b"")
+
+    publication.run_preview_checks(runner, fixture_root=activation_overlay_root)
+
+    assert fixture_roots == [activation_overlay_root.as_posix()] * 3
 
 
 def test_make_target_passes_articles_via_environment_without_shell_expansion() -> None:

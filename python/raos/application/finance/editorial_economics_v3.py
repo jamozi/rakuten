@@ -12,7 +12,7 @@ from calendar import monthrange
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
 import csv
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from html import escape
 import hashlib
 import io
@@ -49,6 +49,19 @@ DATE_FORMATS: Final = {
 }
 CANONICAL_STATUSES: Final = ("PENDING", "CONFIRMED", "CANCELLED")
 ATTRIBUTION_BASES: Final = ("DIRECT", "ESTIMATED", "UNATTRIBUTED")
+REQUIRED_GA4_EVENT_DIMENSIONS: Final = (
+    "article_id",
+    "snapshot_id",
+    "cta_id",
+    "offer_id",
+    "product_id",
+    "placement",
+)
+CTA_SCOPED_GA4_EVENTS: Final = (
+    "affiliate_cta_impression",
+    "affiliate_click",
+    "product_card_view",
+)
 READBACK_COMPONENTS: Final = (
     "RAKUTEN_MEASUREMENT_IDS",
     "FIRST_PARTY_COLLECTOR",
@@ -56,6 +69,13 @@ READBACK_COMPONENTS: Final = (
 )
 NEW_ARTICLE_CANDIDATE_ID: Final = "rakua-mini-color-vs-mini-plus"
 NEW_ARTICLE_SOURCE_ID: Final = "solota-vs-rakua-mini-plus"
+CANDIDATE_QUERY_DEMAND_SCHEMA: Final = "RAOS_EDITORIAL_V3_CANDIDATE_QUERY_DEMAND_V1"
+CANDIDATE_QUERY_DEMAND_BASIS: Final = (
+    "GSC_QUERY_DIMENSION_CANDIDATE_CLUSTER_NOT_ARTICLE_TOTAL"
+)
+RAKUTEN_ACTIVATION_DRY_RUN_SCHEMA: Final = (
+    "RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_DRY_RUN_V2"
+)
 
 
 class EditorialEconomicsV3Failure(RuntimeError):
@@ -647,7 +667,7 @@ def _validate_profile(profile: Mapping[str, object]) -> None:
         }
     ):
         _fail("RAOS_EDITORIAL_V3_PROFILE_INVALID")
-    mapped = []
+    mapped: list[str] = []
     for name, value in columns.items():
         if value is None and name in {"provider_row_id", "currency"}:
             continue
@@ -893,16 +913,224 @@ def validate_cost_input(
     }
 
 
+def _validate_rakuten_activation_dry_run(
+    *,
+    document: Mapping[str, object],
+    document_sha256: str,
+    expected_portfolio_sha256: str,
+    portfolio: EditorialPortfolioV3,
+) -> dict[str, str]:
+    """Validate the exact owner-private activation set bound to live readback."""
+
+    if set(document) != {
+        "schema",
+        "version",
+        "state",
+        "portfolio_sha256",
+        "admin_receipt_sha256",
+        "money_link_mapping_sha256",
+        "v2_materialization",
+        "overlays",
+        "materialized_set_sha256",
+        "article_count",
+        "cta_count",
+        "provider_parameter_inference_used",
+        "tracked_source_modified",
+        "live_write_performed",
+        "publication_authorized",
+    }:
+        _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+    dry_run_sha256 = _sha256(document_sha256)
+    portfolio_sha256 = _sha256(document["portfolio_sha256"])
+    expected_portfolio = _sha256(expected_portfolio_sha256)
+    admin_receipt_sha256 = _sha256(document["admin_receipt_sha256"])
+    money_link_mapping_sha256 = _sha256(document["money_link_mapping_sha256"])
+    materialized_set_sha256 = _sha256(document["materialized_set_sha256"])
+    expected_cta_count = sum(
+        len(article.cta_bindings) for article in portfolio.articles
+    )
+    if (
+        document["schema"] != RAKUTEN_ACTIVATION_DRY_RUN_SCHEMA
+        or document["version"] != "2.0.0"
+        or document["state"] != "OWNER_PRIVATE_MATERIALIZED_NOT_PUBLISHED"
+        or portfolio_sha256 != expected_portfolio
+        or expected_portfolio != portfolio.source_sha256
+        or document["article_count"] != len(portfolio.articles)
+        or document["cta_count"] != expected_cta_count
+        or expected_cta_count != len(portfolio.cta_by_measurement_id)
+        or document["provider_parameter_inference_used"] is not False
+        or document["tracked_source_modified"] is not False
+        or document["live_write_performed"] is not False
+        or document["publication_authorized"] is not False
+        or sha256_bytes(canonical_json_bytes(document)) != dry_run_sha256
+    ):
+        _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+
+    v2 = _mapping(document["v2_materialization"])
+    if set(v2) != {
+        "portfolio_sha256",
+        "evidence_status_sha256",
+        "local_generated_at",
+        "production_generated_at",
+        "local_receipt_sha256",
+        "production_receipt_sha256",
+    }:
+        _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+    v2_portfolio_sha256 = _sha256(v2["portfolio_sha256"])
+    v2_evidence_status_sha256 = _sha256(v2["evidence_status_sha256"])
+    v2_local_receipt_sha256 = _sha256(v2["local_receipt_sha256"])
+    v2_production_receipt_sha256 = _sha256(v2["production_receipt_sha256"])
+    _iso_datetime(v2["local_generated_at"])
+    _iso_datetime(v2["production_generated_at"])
+
+    overlays = _mapping(document["overlays"])
+    if set(overlays) != {"local", "production"}:
+        _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+    expected_articles = portfolio.article_by_id
+    overlay_bindings: dict[str, dict[str, str]] = {}
+    for mode in ("local", "production"):
+        overlay = _mapping(overlays[mode])
+        if set(overlay) != {
+            "directory_name",
+            "posts_sha256",
+            "article_set_sha256",
+            "overlay_receipt_sha256",
+            "articles",
+        }:
+            _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+        posts_sha256 = _sha256(overlay["posts_sha256"])
+        article_set_sha256 = _sha256(overlay["article_set_sha256"])
+        overlay_receipt_sha256 = _sha256(overlay["overlay_receipt_sha256"])
+        prefix = (
+            "local-materialized-fixtures-v3-"
+            if mode == "local"
+            else "production-materialized-fixtures-v3-"
+        )
+        if overlay["directory_name"] != prefix + overlay_receipt_sha256[:16]:
+            _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+        article_rows = _list(overlay["articles"])
+        if len(article_rows) != len(expected_articles):
+            _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+        normalized_rows: list[dict[str, object]] = []
+        seen: set[str] = set()
+        total_ctas = 0
+        for raw in article_rows:
+            row = _mapping(raw)
+            if set(row) != {
+                "article_id",
+                "production_slug",
+                "source_sha256",
+                "materialized_sha256",
+                "cta_count",
+            }:
+                _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+            article_id = _text(row["article_id"])
+            article = expected_articles.get(article_id)
+            source_sha256 = _sha256(row["source_sha256"])
+            activated_sha256 = _sha256(row["materialized_sha256"])
+            if (
+                article is None
+                or article_id in seen
+                or row["production_slug"] != article.production_slug
+                or row["cta_count"] != len(article.cta_bindings)
+            ):
+                _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+            seen.add(article_id)
+            total_ctas += len(article.cta_bindings)
+            normalized_rows.append(
+                {
+                    "article_id": article_id,
+                    "production_slug": article.production_slug,
+                    "source_sha256": source_sha256,
+                    "materialized_sha256": activated_sha256,
+                    "cta_count": len(article.cta_bindings),
+                }
+            )
+        computed_article_set_sha256 = sha256_bytes(
+            canonical_json_bytes(
+                [
+                    {
+                        "article_id": row["article_id"],
+                        "production_slug": row["production_slug"],
+                        "sha256": row["materialized_sha256"],
+                    }
+                    for row in normalized_rows
+                ]
+            )
+        )
+        v2_receipt_sha256 = (
+            v2_local_receipt_sha256
+            if mode == "local"
+            else v2_production_receipt_sha256
+        )
+        overlay_receipt = {
+            "schema": "RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_OVERLAY_RECEIPT_V1",
+            "version": "1.0.0",
+            "mode": mode,
+            "portfolio_sha256": portfolio_sha256,
+            "v2_portfolio_sha256": v2_portfolio_sha256,
+            "v2_evidence_status_sha256": v2_evidence_status_sha256,
+            "v2_materialization_receipt_sha256": v2_receipt_sha256,
+            "posts_sha256": posts_sha256,
+            "article_set_sha256": article_set_sha256,
+            "article_count": len(normalized_rows),
+            "cta_count": total_ctas,
+            "articles": normalized_rows,
+        }
+        if (
+            seen != set(expected_articles)
+            or total_ctas != expected_cta_count
+            or computed_article_set_sha256 != article_set_sha256
+            or sha256_bytes(canonical_json_bytes(overlay_receipt))
+            != overlay_receipt_sha256
+        ):
+            _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+        overlay_bindings[mode] = {
+            "posts_sha256": posts_sha256,
+            "article_set_sha256": article_set_sha256,
+            "overlay_receipt_sha256": overlay_receipt_sha256,
+        }
+    computed_materialized_set_sha256 = sha256_bytes(
+        canonical_json_bytes(overlay_bindings)
+    )
+    if computed_materialized_set_sha256 != materialized_set_sha256:
+        _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+    return {
+        "dry_run_sha256": dry_run_sha256,
+        "portfolio_sha256": portfolio_sha256,
+        "admin_receipt_sha256": admin_receipt_sha256,
+        "money_link_mapping_sha256": money_link_mapping_sha256,
+        "v2_portfolio_sha256": v2_portfolio_sha256,
+        "v2_evidence_status_sha256": v2_evidence_status_sha256,
+        "v2_local_receipt_sha256": v2_local_receipt_sha256,
+        "v2_production_receipt_sha256": v2_production_receipt_sha256,
+        "production_posts_sha256": overlay_bindings["production"]["posts_sha256"],
+        "production_article_set_sha256": overlay_bindings["production"][
+            "article_set_sha256"
+        ],
+        "production_overlay_receipt_sha256": overlay_bindings["production"][
+            "overlay_receipt_sha256"
+        ],
+        "materialized_set_sha256": materialized_set_sha256,
+    }
+
+
 def production_readback_template(
     portfolio: EditorialPortfolioV3,
 ) -> dict[str, object]:
     """Return a disabled template; it is not evidence until fully attested."""
 
     return {
-        "schema": "RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INPUT_V1",
-        "version": "1.0.0",
+        "schema": "RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INPUT_V2",
+        "version": "2.0.0",
         "owner_attested": False,
         "target_origin": portfolio.target_origin,
+        "analytics_site_binding": {
+            "state": "NOT_RECORDED",
+            "binding_sha256": None,
+            "ga4_property_id_sha256": None,
+            "ga4_configuration_response_sha256": None,
+        },
         "observations": [
             {
                 "component": "RAKUTEN_MEASUREMENT_IDS",
@@ -914,6 +1142,11 @@ def production_readback_template(
                     "measurement_ids": sorted(portfolio.cta_by_measurement_id),
                     "live_link_count": None,
                     "all_ids_echo_verified": False,
+                    "activation_dry_run_sha256": None,
+                    "materialized_set_sha256": None,
+                    "production_posts_sha256": None,
+                    "production_article_set_sha256": None,
+                    "production_overlay_receipt_sha256": None,
                 },
             },
             {
@@ -937,6 +1170,8 @@ def production_readback_template(
                 "response_sha256": None,
                 "details": {
                     "property_id_sha256": None,
+                    "configuration_response_sha256": None,
+                    "analytics_site_binding_sha256": None,
                     "event_name": "article_view",
                     "article_id": None,
                     "event_observed": False,
@@ -950,20 +1185,47 @@ def establish_t0_receipt(
     *,
     document: Mapping[str, object],
     observation_sha256: str,
+    rakuten_activation: Mapping[str, object],
+    rakuten_activation_sha256: str,
+    expected_portfolio_sha256: str,
     portfolio: EditorialPortfolioV3,
     evaluated_at: datetime | None = None,
 ) -> dict[str, object]:
+    activation_binding = _validate_rakuten_activation_dry_run(
+        document=rakuten_activation,
+        document_sha256=rakuten_activation_sha256,
+        expected_portfolio_sha256=expected_portfolio_sha256,
+        portfolio=portfolio,
+    )
     if set(document) != {
         "schema",
         "version",
         "owner_attested",
         "target_origin",
+        "analytics_site_binding",
         "observations",
     }:
         _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+    binding = _mapping(document["analytics_site_binding"])
     if (
-        document["schema"] != "RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INPUT_V1"
-        or document["version"] != "1.0.0"
+        set(binding)
+        != {
+            "state",
+            "binding_sha256",
+            "ga4_property_id_sha256",
+            "ga4_configuration_response_sha256",
+        }
+        or binding["state"] != "OWNER_PRIVATE_READ_ONLY_BINDING_VERIFIED"
+    ):
+        _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+    binding_sha256 = _sha256(binding["binding_sha256"])
+    expected_ga4_property_id_sha256 = _sha256(binding["ga4_property_id_sha256"])
+    expected_ga4_configuration_sha256 = _sha256(
+        binding["ga4_configuration_response_sha256"]
+    )
+    if (
+        document["schema"] != "RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INPUT_V2"
+        or document["version"] != "2.0.0"
         or document["owner_attested"] is not True
         or document["target_origin"] != portfolio.target_origin
     ):
@@ -999,6 +1261,11 @@ def establish_t0_receipt(
                 "measurement_ids",
                 "live_link_count",
                 "all_ids_echo_verified",
+                "activation_dry_run_sha256",
+                "materialized_set_sha256",
+                "production_posts_sha256",
+                "production_article_set_sha256",
+                "production_overlay_receipt_sha256",
             }:
                 _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
             measurement_ids = {
@@ -1009,6 +1276,16 @@ def establish_t0_receipt(
                 or _positive_integer(details["live_link_count"])
                 != len(expected_measurements)
                 or details["all_ids_echo_verified"] is not True
+                or _sha256(details["activation_dry_run_sha256"])
+                != activation_binding["dry_run_sha256"]
+                or _sha256(details["materialized_set_sha256"])
+                != activation_binding["materialized_set_sha256"]
+                or _sha256(details["production_posts_sha256"])
+                != activation_binding["production_posts_sha256"]
+                or _sha256(details["production_article_set_sha256"])
+                != activation_binding["production_article_set_sha256"]
+                or _sha256(details["production_overlay_receipt_sha256"])
+                != activation_binding["production_overlay_receipt_sha256"]
             ):
                 _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
         elif component == "FIRST_PARTY_COLLECTOR":
@@ -1027,11 +1304,21 @@ def establish_t0_receipt(
         else:
             if set(details) != {
                 "property_id_sha256",
+                "configuration_response_sha256",
+                "analytics_site_binding_sha256",
                 "event_name",
                 "article_id",
                 "event_observed",
             } or (
                 _sha256(details["property_id_sha256"]) != details["property_id_sha256"]
+                or details["property_id_sha256"] != expected_ga4_property_id_sha256
+                or _sha256(details["configuration_response_sha256"])
+                != details["configuration_response_sha256"]
+                or details["configuration_response_sha256"]
+                != expected_ga4_configuration_sha256
+                or _sha256(details["analytics_site_binding_sha256"])
+                != details["analytics_site_binding_sha256"]
+                or details["analytics_site_binding_sha256"] != binding_sha256
                 or details["event_name"] != "article_view"
                 or details["article_id"] not in article_ids
                 or details["event_observed"] is not True
@@ -1043,6 +1330,22 @@ def establish_t0_receipt(
             "request_sha256": request_sha256,
             "response_sha256": response_sha256,
         }
+        if component == "RAKUTEN_MEASUREMENT_IDS":
+            candidate["activation_dry_run_sha256"] = activation_binding[
+                "dry_run_sha256"
+            ]
+            candidate["materialized_set_sha256"] = activation_binding[
+                "materialized_set_sha256"
+            ]
+            candidate["production_posts_sha256"] = activation_binding[
+                "production_posts_sha256"
+            ]
+            candidate["production_article_set_sha256"] = activation_binding[
+                "production_article_set_sha256"
+            ]
+            candidate["production_overlay_receipt_sha256"] = activation_binding[
+                "production_overlay_receipt_sha256"
+            ]
         previous = earliest_success.get(component)
         if previous is None or observed_at < previous["observed_at"]:
             earliest_success[component] = candidate
@@ -1051,10 +1354,16 @@ def establish_t0_receipt(
     ordered = [earliest_success[component] for component in READBACK_COMPONENTS]
     t0 = max(row["observed_at"] for row in ordered)
     return {
-        "schema": "RAOS_EDITORIAL_V3_T0_RECEIPT_V1",
-        "version": "1.0.0",
+        "schema": "RAOS_EDITORIAL_V3_T0_RECEIPT_V2",
+        "version": "2.0.0",
         "state": "ESTABLISHED_FROM_EXACT_PRODUCTION_READBACKS",
         "target_origin": portfolio.target_origin,
+        "analytics_site_binding": {
+            "binding_sha256": binding_sha256,
+            "ga4_property_id_sha256": expected_ga4_property_id_sha256,
+            "ga4_configuration_response_sha256": (expected_ga4_configuration_sha256),
+        },
+        "rakuten_activation_binding": activation_binding,
         "observation_sha256": source_sha256,
         "t0": t0,
         "derivation": "MAX_OF_EARLIEST_SUCCESS_PER_REQUIRED_COMPONENT",
@@ -1072,6 +1381,8 @@ def validate_t0_receipt(
         "version",
         "state",
         "target_origin",
+        "analytics_site_binding",
+        "rakuten_activation_binding",
         "observation_sha256",
         "t0",
         "derivation",
@@ -1081,8 +1392,8 @@ def validate_t0_receipt(
     }:
         _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
     if (
-        document["schema"] != "RAOS_EDITORIAL_V3_T0_RECEIPT_V1"
-        or document["version"] != "1.0.0"
+        document["schema"] != "RAOS_EDITORIAL_V3_T0_RECEIPT_V2"
+        or document["version"] != "2.0.0"
         or document["state"] != "ESTABLISHED_FROM_EXACT_PRODUCTION_READBACKS"
         or document["target_origin"] != portfolio.target_origin
         or _sha256(document["observation_sha256"]) != document["observation_sha256"]
@@ -1091,19 +1402,72 @@ def validate_t0_receipt(
         or document["external_mutation_performed"] is not False
     ):
         _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
+    binding = _mapping(document["analytics_site_binding"])
+    if set(binding) != {
+        "binding_sha256",
+        "ga4_property_id_sha256",
+        "ga4_configuration_response_sha256",
+    }:
+        _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
+    _sha256(binding["binding_sha256"])
+    _sha256(binding["ga4_property_id_sha256"])
+    _sha256(binding["ga4_configuration_response_sha256"])
+    activation = _mapping(document["rakuten_activation_binding"])
+    if set(activation) != {
+        "dry_run_sha256",
+        "portfolio_sha256",
+        "admin_receipt_sha256",
+        "money_link_mapping_sha256",
+        "v2_portfolio_sha256",
+        "v2_evidence_status_sha256",
+        "v2_local_receipt_sha256",
+        "v2_production_receipt_sha256",
+        "production_posts_sha256",
+        "production_article_set_sha256",
+        "production_overlay_receipt_sha256",
+        "materialized_set_sha256",
+    }:
+        _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
+    for digest in activation.values():
+        _sha256(digest)
+    if activation["portfolio_sha256"] != portfolio.source_sha256:
+        _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
     components: list[Mapping[str, object]] = []
     for raw in _list(document["components"]):
         row = _mapping(raw)
-        if set(row) != {
+        component = row.get("component")
+        expected_fields = {
             "component",
             "observed_at",
             "request_sha256",
             "response_sha256",
-        }:
+        }
+        if component == "RAKUTEN_MEASUREMENT_IDS":
+            expected_fields |= {
+                "activation_dry_run_sha256",
+                "materialized_set_sha256",
+                "production_posts_sha256",
+                "production_article_set_sha256",
+                "production_overlay_receipt_sha256",
+            }
+        if set(row) != expected_fields:
             _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
         _iso_datetime(row["observed_at"])
         _sha256(row["request_sha256"])
         _sha256(row["response_sha256"])
+        if component == "RAKUTEN_MEASUREMENT_IDS" and (
+            _sha256(row["activation_dry_run_sha256"])
+            != activation["dry_run_sha256"]
+            or _sha256(row["materialized_set_sha256"])
+            != activation["materialized_set_sha256"]
+            or _sha256(row["production_posts_sha256"])
+            != activation["production_posts_sha256"]
+            or _sha256(row["production_article_set_sha256"])
+            != activation["production_article_set_sha256"]
+            or _sha256(row["production_overlay_receipt_sha256"])
+            != activation["production_overlay_receipt_sha256"]
+        ):
+            _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
         components.append(row)
     if [row["component"] for row in components] != list(READBACK_COMPONENTS):
         _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
@@ -1231,11 +1595,11 @@ def summarize_gsc(
             "state": "OBSERVED",
             "clicks": clicks,
             "impressions": impressions,
-            "ctr": clicks / impressions if impressions else None,
+            "ctr": clicks / impressions if impressions else "UNAVAILABLE",
             "average_position": (
                 cast(float, values["position_weighted_sum"]) / impressions
                 if impressions
-                else None
+                else "UNAVAILABLE"
             ),
         }
     return {
@@ -1273,6 +1637,7 @@ def summarize_ga4(
         "time_zone",
         "currency_code",
         "reporting_identity",
+        "required_event_custom_dimensions",
         "retrieved_at",
         "response_sha256",
     }:
@@ -1287,11 +1652,22 @@ def summarize_ga4(
         _text(configuration[name], maximum=1000)
     if (
         configuration["currency_code"] != "JPY"
+        or [
+            _text(item, maximum=300)
+            for item in _list(configuration["required_event_custom_dimensions"])
+        ]
+        != list(REQUIRED_GA4_EVENT_DIMENSIONS)
         or _iso_datetime(configuration["retrieved_at"]) != configuration["retrieved_at"]
         or _sha256(configuration["response_sha256"]) != configuration["response_sha256"]
     ):
         _fail("RAOS_EDITORIAL_V3_GA4_CONFIGURATION_INVALID")
     article_ids = {article.article_id for article in portfolio.articles}
+    article_by_id = portfolio.article_by_id
+    cta_by_id = {
+        binding.cta_id: binding
+        for article in portfolio.articles
+        for binding in article.cta_bindings
+    }
     event_counts: dict[str, dict[str, int]] = {
         article_id: defaultdict(int) for article_id in article_ids
     }
@@ -1332,7 +1708,35 @@ def summarize_ga4(
         if article_id not in article_ids:
             unattributed_event_count += event_count
             continue
-        event_counts[article_id][event_name] += event_count
+        normalized_article_id = article_id
+        if not set(REQUIRED_GA4_EVENT_DIMENSIONS).issubset(dimensions):
+            _fail("RAOS_EDITORIAL_V3_GA4_ROW_INVALID")
+        article = article_by_id[normalized_article_id]
+        if dimensions["snapshot_id"] != article.snapshot_id:
+            _fail("RAOS_EDITORIAL_V3_GA4_ROW_INVALID")
+        cta_values = tuple(
+            dimensions[name]
+            for name in ("cta_id", "offer_id", "product_id", "placement")
+        )
+        cta_unavailable = len(set(cta_values)) == 1 and cta_values[0] in {
+            "(not set)",
+            "UNAVAILABLE",
+        }
+        if cta_unavailable:
+            if event_name in CTA_SCOPED_GA4_EVENTS:
+                _fail("RAOS_EDITORIAL_V3_GA4_ROW_INVALID")
+        else:
+            binding = cta_by_id.get(dimensions["cta_id"])
+            if (
+                binding is None
+                or binding.article_id != normalized_article_id
+                or binding.snapshot_id != dimensions["snapshot_id"]
+                or binding.offer_id != dimensions["offer_id"]
+                or binding.product_id != dimensions["product_id"]
+                or binding.placement != dimensions["placement"]
+            ):
+                _fail("RAOS_EDITORIAL_V3_GA4_ROW_INVALID")
+        event_counts[normalized_article_id][event_name] += event_count
     return {
         "period": {"date_from": date_from, "date_to": date_to},
         "retrieved_at": retrieved_at,
@@ -1386,21 +1790,95 @@ def _validate_rakuten_commit(
     attribution = _mapping(document.get("attribution"))
     if set(attribution) != set(ATTRIBUTION_BASES):
         _fail("RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_INVALID")
-    unattributed = _mapping(_mapping(attribution["UNATTRIBUTED"])["totals_jpy"])
+    expected_attribution_states = {
+        "DIRECT": "VERIFIED_MEASUREMENT_ID_MATCH",
+        "ESTIMATED": "NOT_PRODUCED_BY_PROVIDER_REPORT_IMPORT",
+        "UNATTRIBUTED": "NO_VERIFIED_MEASUREMENT_ID_MATCH",
+    }
+    normalized_attribution: dict[str, dict[str, object]] = {}
+    for basis in ATTRIBUTION_BASES:
+        basis_row = _mapping(attribution[basis])
+        if (
+            set(basis_row) != {"state", "totals_jpy"}
+            or basis_row["state"] != expected_attribution_states[basis]
+        ):
+            _fail("RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_INVALID")
+        basis_totals = _mapping(basis_row["totals_jpy"])
+        if set(basis_totals) != set(CANONICAL_STATUSES):
+            _fail("RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_INVALID")
+        normalized_attribution[basis] = {
+            "state": basis_row["state"],
+            **{
+                status: _nonnegative_integer(basis_totals[status])
+                for status in CANONICAL_STATUSES
+            },
+        }
+    for status in CANONICAL_STATUSES:
+        if sum(
+            cast(int, normalized_attribution[basis][status])
+            for basis in ATTRIBUTION_BASES
+        ) != normalized_totals[status] or sum(
+            normalized_direct[article_id][status] for article_id in expected_ids
+        ) != cast(int, normalized_attribution["DIRECT"][status]):
+            _fail("RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_INVALID")
+    unattributed = normalized_attribution["UNATTRIBUTED"]
     return {
         "period": {"date_from": date_from, "date_to": date_to},
         "source_sha256": _sha256(document["source_sha256"]),
         "totals_jpy": normalized_totals,
         "direct_by_article_jpy": normalized_direct,
+        "attribution_jpy": normalized_attribution,
         "unattributed_jpy": {
-            status: _nonnegative_integer(unattributed[status])
-            for status in CANONICAL_STATUSES
+            status: cast(int, unattributed[status]) for status in CANONICAL_STATUSES
         },
     }
 
 
 def _source_state(value: object | None) -> str:
     return "OBSERVED" if value is not None else "UNAVAILABLE"
+
+
+def _observation_cohort(period: Mapping[str, str], normalized_t0: str | None) -> str:
+    if normalized_t0 is None:
+        return "PRE_T0_BASELINE"
+    if period.get("date_from") == "UNAVAILABLE":
+        return "UNAVAILABLE"
+    first_day = date.fromisoformat(_iso_date(period.get("date_from")))
+    last_day = date.fromisoformat(_iso_date(period.get("date_to")))
+    t0_day = datetime.fromisoformat(normalized_t0.replace("Z", "+00:00")).date()
+    if last_day < t0_day:
+        return "PRE_T0_BASELINE"
+    # Provider aggregates are date-grained.  A row for T0's calendar day can
+    # contain observations from before the exact readback timestamp, so only
+    # the following day and later form an unambiguously post-T0 cohort.
+    if first_day > t0_day:
+        return "POST_T0_COHORT"
+    return "MIXED_T0_BOUNDARY"
+
+
+def _freshness_projection(
+    source: Mapping[str, object] | None,
+    *,
+    retrieved_at: object | None = None,
+) -> dict[str, object]:
+    if source is None:
+        return {
+            "state": "UNAVAILABLE",
+            "period": {"date_from": "UNAVAILABLE", "date_to": "UNAVAILABLE"},
+            "retrieved_at": "UNAVAILABLE",
+            "observed_through": "UNAVAILABLE",
+        }
+    period = _mapping(source["period"])
+    date_from = _iso_date(period["date_from"])
+    date_to = _iso_date(period["date_to"])
+    return {
+        "state": "OBSERVED",
+        "period": {"date_from": date_from, "date_to": date_to},
+        "retrieved_at": (
+            _iso_datetime(retrieved_at) if retrieved_at is not None else "UNAVAILABLE"
+        ),
+        "observed_through": date_to,
+    }
 
 
 def build_baseline_report(
@@ -1455,6 +1933,22 @@ def build_baseline_report(
             and first_day.month == last_day.month
             and last_day.day == monthrange(last_day.year, last_day.month)[1]
         )
+    cohort = _observation_cohort(report_period, normalized_t0)
+    source_freshness = {
+        "rakuten": _freshness_projection(rakuten),
+        "cost": _freshness_projection(costs),
+        "gsc": _freshness_projection(
+            gsc, retrieved_at=gsc["retrieved_at"] if gsc is not None else None
+        ),
+        "ga4": _freshness_projection(
+            ga4, retrieved_at=ga4["retrieved_at"] if ga4 is not None else None
+        ),
+    }
+    program_attribution = (
+        cast(dict[str, dict[str, object]], rakuten["attribution_jpy"])
+        if rakuten is not None
+        else None
+    )
 
     article_rows: list[dict[str, object]] = []
     total_external_cost = 0
@@ -1512,6 +2006,35 @@ def build_baseline_report(
                     else "RECONCILED_REWARD_OR_OWNER_COST_MISSING"
                 ),
             }
+        direct_projection: dict[str, object] = (
+            {"state": "RECONCILED", **direct}
+            if direct is not None
+            else {"state": "UNAVAILABLE"}
+        )
+        article_attribution: dict[str, dict[str, object]] = (
+            {
+                "DIRECT": direct_projection,
+                "ESTIMATED": {
+                    "state": "NOT_PRODUCED_BY_PROVIDER_REPORT_IMPORT",
+                    **{status: "UNAVAILABLE" for status in CANONICAL_STATUSES},
+                },
+                "UNATTRIBUTED": {
+                    "state": "NOT_ALLOCATED_TO_ARTICLE",
+                    **{status: "UNAVAILABLE" for status in CANONICAL_STATUSES},
+                },
+            }
+            if rakuten is not None
+            else {basis: {"state": "UNAVAILABLE"} for basis in ATTRIBUTION_BASES}
+        )
+        article_data_quality = {
+            "missing_is_zero": False,
+            "gsc": _source_state(gsc),
+            "ga4": _source_state(ga4),
+            "rakuten": _source_state(rakuten),
+            "cost": _source_state(costs),
+            "unattributed_reward_allocated_to_article": False,
+            "estimated_promoted_to_direct": False,
+        }
         article_rows.append(
             {
                 "article_id": article.article_id,
@@ -1528,13 +2051,24 @@ def build_baseline_report(
                     if ga4 is not None
                     else {"state": "UNAVAILABLE"}
                 ),
-                "rakuten_direct_jpy": (
-                    {"state": "RECONCILED", **direct}
-                    if direct is not None
-                    else {"state": "UNAVAILABLE"}
-                ),
+                "rakuten_direct_jpy": direct_projection,
+                "rakuten_attribution_jpy": article_attribution,
                 "cost": cost_projection,
                 "confirmed_contribution_profit_jpy": contribution,
+                "freshness": source_freshness,
+                "attribution_basis": {
+                    "rakuten": (
+                        "DIRECT_VERIFIED_MEASUREMENT_ID_MATCH"
+                        if rakuten is not None
+                        else "UNAVAILABLE"
+                    ),
+                    "confirmed_contribution_profit": (
+                        "DIRECT_CONFIRMED_REWARD_LESS_OWNER_ATTESTED_COST"
+                        if contribution.get("state") == "AVAILABLE_DIRECT_BASIS"
+                        else "UNAVAILABLE"
+                    ),
+                },
+                "data_quality": article_data_quality,
             }
         )
 
@@ -1574,11 +2108,7 @@ def build_baseline_report(
             if t0_receipt is not None
             else "UNAVAILABLE"
         ),
-        "cohort": (
-            "POST_T0_OR_MIXED_REVIEW_REQUIRED"
-            if normalized_t0 is not None
-            else "PRE_T0_BASELINE"
-        ),
+        "cohort": cohort,
         "period": report_period,
         "period_alignment": period_alignment,
         "period_kind": (
@@ -1595,7 +2125,25 @@ def build_baseline_report(
             "ga4": _source_state(ga4),
             "t0_receipt": _source_state(t0_receipt),
         },
+        "freshness": {
+            "generated_at": now.isoformat().replace("+00:00", "Z"),
+            "sources": source_freshness,
+        },
+        "attribution_basis": {
+            "program_north_star": (
+                "RECONCILED_PROGRAM_TOTAL_INCLUDES_UNATTRIBUTED"
+                if rakuten is not None
+                else "UNAVAILABLE"
+            ),
+            "article_profit": "DIRECT_VERIFIED_MEASUREMENT_ID_ONLY",
+            "estimated_promoted_to_direct": False,
+        },
         "north_star": north_star,
+        "rakuten_attribution_jpy": (
+            program_attribution
+            if program_attribution is not None
+            else {basis: {"state": "UNAVAILABLE"} for basis in ATTRIBUTION_BASES}
+        ),
         "unattributed_reward_jpy": (
             {
                 "state": "RECONCILED_NOT_ALLOCATED",
@@ -1621,12 +2169,97 @@ def build_baseline_report(
     }
 
 
+def candidate_query_demand_template() -> dict[str, object]:
+    """Return an owner-private input skeleton for candidate-specific demand.
+
+    Article/page totals are deliberately not accepted as candidate demand.  The
+    query-cluster digest identifies an owner-private query definition without
+    copying raw search queries into the baseline or follow-up report.
+    """
+
+    return {
+        "schema": CANDIDATE_QUERY_DEMAND_SCHEMA,
+        "version": "1.0.0",
+        "candidate_id": NEW_ARTICLE_CANDIDATE_ID,
+        "source": "GSC",
+        "aggregation_basis": CANDIDATE_QUERY_DEMAND_BASIS,
+        "period": {"date_from": None, "date_to": None},
+        "retrieved_at": None,
+        "request_sha256": None,
+        "query_cluster_sha256": None,
+        "impressions": None,
+        "clicks": None,
+        "raw_queries_included": False,
+        "article_totals_reused": False,
+    }
+
+
+def _validate_candidate_query_demand(
+    document: Mapping[str, object],
+) -> dict[str, object]:
+    if set(document) != {
+        "schema",
+        "version",
+        "candidate_id",
+        "source",
+        "aggregation_basis",
+        "period",
+        "retrieved_at",
+        "request_sha256",
+        "query_cluster_sha256",
+        "impressions",
+        "clicks",
+        "raw_queries_included",
+        "article_totals_reused",
+    }:
+        _fail("RAOS_EDITORIAL_V3_CANDIDATE_QUERY_DEMAND_INVALID")
+    if (
+        document["schema"] != CANDIDATE_QUERY_DEMAND_SCHEMA
+        or document["version"] != "1.0.0"
+        or document["candidate_id"] != NEW_ARTICLE_CANDIDATE_ID
+        or document["source"] != "GSC"
+        or document["aggregation_basis"] != CANDIDATE_QUERY_DEMAND_BASIS
+        or document["raw_queries_included"] is not False
+        or document["article_totals_reused"] is not False
+    ):
+        _fail("RAOS_EDITORIAL_V3_CANDIDATE_QUERY_DEMAND_INVALID")
+    period = _mapping(document["period"])
+    if set(period) != {"date_from", "date_to"}:
+        _fail("RAOS_EDITORIAL_V3_CANDIDATE_QUERY_DEMAND_INVALID")
+    date_from = _iso_date(period["date_from"])
+    date_to = _iso_date(period["date_to"])
+    impressions = _nonnegative_integer(document["impressions"])
+    clicks = _nonnegative_integer(document["clicks"])
+    if date_from > date_to or clicks > impressions:
+        _fail("RAOS_EDITORIAL_V3_CANDIDATE_QUERY_DEMAND_INVALID")
+    return {
+        "state": "OBSERVED_INDEPENDENT_QUERY_CLUSTER",
+        "period": {"date_from": date_from, "date_to": date_to},
+        "retrieved_at": _iso_datetime(document["retrieved_at"]),
+        "request_sha256": _sha256(document["request_sha256"]),
+        "query_cluster_sha256": _sha256(document["query_cluster_sha256"]),
+        "impressions": impressions,
+        "clicks": clicks,
+        "raw_queries_included": False,
+        "article_totals_reused": False,
+    }
+
+
+def _coverage_days(
+    *, date_from: date, date_to: date, t0_day: date, as_of_date: date
+) -> int:
+    coverage_start = max(date_from, t0_day + timedelta(days=1))
+    coverage_end = min(date_to, as_of_date)
+    return max(0, (coverage_end - coverage_start).days + 1)
+
+
 def evaluate_followups(
     *,
     baseline: Mapping[str, object],
     baseline_sha256: str,
     portfolio: EditorialPortfolioV3,
     as_of: str,
+    candidate_query_demand: Mapping[str, object] | None = None,
     generated_at: datetime | None = None,
 ) -> dict[str, object]:
     if baseline.get("schema") != "RAOS_EDITORIAL_V3_ACTUAL_BASELINE_REPORT_V1":
@@ -1645,11 +2278,31 @@ def evaluate_followups(
         _fail("RAOS_EDITORIAL_V3_FOLLOWUP_DATE_INVALID")
     elapsed_days = (as_of_date - t0_time.date()).days
     period = _mapping(baseline.get("period"))
+    if set(period) != {"date_from", "date_to"}:
+        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
+    period_date_from = period.get("date_from")
     period_date_to = period.get("date_to")
     coverage_days = 0
-    if period_date_to != "UNAVAILABLE":
-        coverage_end = min(date.fromisoformat(_iso_date(period_date_to)), as_of_date)
-        coverage_days = max(0, (coverage_end - t0_time.date()).days + 1)
+    if period_date_from != "UNAVAILABLE" and period_date_to != "UNAVAILABLE":
+        coverage_days = _coverage_days(
+            date_from=date.fromisoformat(_iso_date(period_date_from)),
+            date_to=date.fromisoformat(_iso_date(period_date_to)),
+            t0_day=t0_time.date(),
+            as_of_date=as_of_date,
+        )
+    elif period_date_from != "UNAVAILABLE" or period_date_to != "UNAVAILABLE":
+        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
+    cohort = baseline.get("cohort")
+    if cohort not in {
+        "POST_T0_COHORT",
+        "MIXED_T0_BOUNDARY",
+        "PRE_T0_BASELINE",
+        "UNAVAILABLE",
+        # Accepted only as a legacy mixed/unknown value; it is never eligible.
+        "POST_T0_OR_MIXED_REVIEW_REQUIRED",
+    }:
+        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
+    post_t0_cohort = cohort == "POST_T0_COHORT"
 
     candidate_article = portfolio.article_by_id.get(NEW_ARTICLE_SOURCE_ID)
     if candidate_article is None:
@@ -1661,27 +2314,52 @@ def evaluate_followups(
     if set(article_rows) != set(portfolio.article_by_id):
         _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
     source = article_rows[NEW_ARTICLE_SOURCE_ID]
-    gsc = _mapping(source.get("gsc"))
     direct = _mapping(source.get("rakuten_direct_jpy"))
-    impressions = (
-        _nonnegative_integer(gsc["impressions"])
-        if gsc.get("state") == "OBSERVED" and "impressions" in gsc
+    demand = (
+        _validate_candidate_query_demand(candidate_query_demand)
+        if candidate_query_demand is not None
         else None
     )
-    clicks = (
-        _nonnegative_integer(gsc["clicks"])
-        if gsc.get("state") == "OBSERVED" and "clicks" in gsc
-        else None
-    )
+    demand_coverage_days = 0
+    independent_query_demand_confirmed = False
+    if demand is not None:
+        demand_period = _mapping(demand["period"])
+        demand_date_from = date.fromisoformat(_iso_date(demand_period["date_from"]))
+        demand_date_to = date.fromisoformat(_iso_date(demand_period["date_to"]))
+        demand_coverage_days = _coverage_days(
+            date_from=demand_date_from,
+            date_to=demand_date_to,
+            t0_day=t0_time.date(),
+            as_of_date=as_of_date,
+        )
+        independent_query_demand_confirmed = (
+            demand_date_from > t0_time.date() and demand_date_to <= as_of_date
+        )
+    impressions = cast(int, demand["impressions"]) if demand is not None else None
+    clicks = cast(int, demand["clicks"]) if demand is not None else None
     confirmed_reward = (
         _nonnegative_integer(direct["CONFIRMED"])
-        if direct.get("state") == "RECONCILED" and "CONFIRMED" in direct
+        if post_t0_cohort
+        and direct.get("state") == "RECONCILED"
+        and "CONFIRMED" in direct
         else None
     )
     conditions = {
-        "observation_days_ge_28": elapsed_days >= 28 and coverage_days >= 28,
-        "impressions_ge_200": impressions is not None and impressions >= 200,
-        "measurable_clicks": clicks is not None and clicks > 0,
+        "post_t0_cohort": post_t0_cohort,
+        "independent_query_demand_confirmed": independent_query_demand_confirmed,
+        "observation_days_ge_28": (
+            elapsed_days >= 28
+            and demand_coverage_days >= 28
+            and independent_query_demand_confirmed
+        ),
+        "impressions_ge_200": (
+            independent_query_demand_confirmed
+            and impressions is not None
+            and impressions >= 200
+        ),
+        "measurable_clicks": (
+            independent_query_demand_confirmed and clicks is not None and clicks > 0
+        ),
         "mature_confirmed_result": (
             confirmed_reward is not None and confirmed_reward > 0
         ),
@@ -1690,10 +2368,19 @@ def evaluate_followups(
 
     def review(day: int, areas: Sequence[str]) -> dict[str, object]:
         due = elapsed_days >= day
+        status = (
+            "NOT_DUE"
+            if not due
+            else "HUMAN_REVIEW_REQUIRED"
+            if post_t0_cohort
+            else "BLOCKED_NON_POST_T0_COHORT"
+        )
         return {
             "day": day,
             "due": due,
-            "status": "HUMAN_REVIEW_REQUIRED" if due else "NOT_DUE",
+            "status": status,
+            "data_cohort": cohort,
+            "data_eligible": post_t0_cohort,
             "review_areas": list(areas),
             "automatic_pass": False,
             "automatic_publication": False,
@@ -1708,6 +2395,7 @@ def evaluate_followups(
         "as_of": as_of_date.isoformat(),
         "elapsed_days": elapsed_days,
         "actual_data_coverage_days_after_t0": coverage_days,
+        "data_cohort": cohort,
         "reviews": {
             "day_30": review(
                 30,
@@ -1723,6 +2411,10 @@ def evaluate_followups(
             "source_article_id": candidate_article.article_id,
             "source_article_code": candidate_article.article_code,
             "observations": {
+                "independent_query_demand": (
+                    demand if demand is not None else {"state": "UNAVAILABLE"}
+                ),
+                "query_demand_coverage_days_after_t0": demand_coverage_days,
                 "impressions": impressions
                 if impressions is not None
                 else "UNAVAILABLE",
@@ -1755,14 +2447,60 @@ def render_baseline_html(report: Mapping[str, object]) -> bytes:
         gsc = _mapping(row.get("gsc"))
         ga4 = _mapping(row.get("ga4"))
         direct = _mapping(row.get("rakuten_direct_jpy"))
+        article_attribution_value = row.get("rakuten_attribution_jpy")
+        article_attribution = _mapping(
+            article_attribution_value if article_attribution_value is not None else {}
+        )
+        estimated_value = article_attribution.get("ESTIMATED")
+        estimated = _mapping(estimated_value if estimated_value is not None else {})
+        unattributed_value = article_attribution.get("UNATTRIBUTED")
+        unattributed = _mapping(
+            unattributed_value if unattributed_value is not None else {}
+        )
+        cost = _mapping(row.get("cost"))
+        freshness_value = row.get("freshness")
+        freshness = _mapping(freshness_value if freshness_value is not None else {})
+        freshness_sources = "; ".join(
+            f"{name}={_mapping(source).get('observed_through', 'UNAVAILABLE')}"
+            for name, source in sorted(freshness.items())
+        )
+        attribution_basis_value = row.get("attribution_basis")
+        attribution_basis = _mapping(
+            attribution_basis_value if attribution_basis_value is not None else {}
+        )
+        data_quality_value = row.get("data_quality")
+        data_quality = _mapping(
+            data_quality_value if data_quality_value is not None else {}
+        )
+        events = (
+            ", ".join(
+                f"{_text(name, maximum=300)}={_nonnegative_integer(count)}"
+                for name, count in sorted(_mapping(ga4.get("events")).items())
+            )
+            or "OBSERVED_NONE"
+            if ga4.get("state") == "OBSERVED"
+            else "UNAVAILABLE"
+        )
         rows.append(
             "<tr>"
             f"<td>{escape(_text(row.get('article_code')))}</td>"
             f"<td>{escape(_text(row.get('production_slug')))}</td>"
             f"<td>{escape(str(gsc.get('impressions', 'UNAVAILABLE')))}</td>"
             f"<td>{escape(str(gsc.get('clicks', 'UNAVAILABLE')))}</td>"
-            f"<td>{escape(str(sum(cast(dict[str, int], ga4.get('events', {})).values()) if ga4.get('state') == 'OBSERVED' else 'UNAVAILABLE'))}</td>"
+            f"<td>{escape(str(gsc.get('ctr', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(str(gsc.get('average_position', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(events)}</td>"
+            f"<td>{escape(str(direct.get('PENDING', 'UNAVAILABLE')))}</td>"
             f"<td>{escape(str(direct.get('CONFIRMED', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(str(direct.get('CANCELLED', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(str(estimated.get('state', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(str(unattributed.get('state', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(str(cost.get('editorial_minutes', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(str(cost.get('variable_external_cost_jpy', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(str(cost.get('human_cost_jpy', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(freshness_sources)}</td>"
+            f"<td>{escape(str(attribution_basis.get('rakuten', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(json.dumps(data_quality, ensure_ascii=False, sort_keys=True))}</td>"
             f"<td>{escape(value)}</td>"
             "</tr>"
         )
@@ -1772,21 +2510,69 @@ def render_baseline_html(report: Mapping[str, object]) -> bytes:
         if north_star.get("state") == "AVAILABLE_PROGRAM_BASIS"
         else "UNAVAILABLE"
     )
+    program_attribution_value = report.get("rakuten_attribution_jpy")
+    program_attribution = _mapping(
+        program_attribution_value if program_attribution_value is not None else {}
+    )
+    attribution_rows: list[str] = []
+    for basis in ATTRIBUTION_BASES:
+        basis_value = program_attribution.get(basis)
+        basis_row = _mapping(basis_value if basis_value is not None else {})
+        attribution_rows.append(
+            "<tr>"
+            f"<td>{escape(basis)}</td>"
+            f"<td>{escape(str(basis_row.get('state', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(str(basis_row.get('PENDING', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(str(basis_row.get('CONFIRMED', 'UNAVAILABLE')))}</td>"
+            f"<td>{escape(str(basis_row.get('CANCELLED', 'UNAVAILABLE')))}</td>"
+            "</tr>"
+        )
+    report_freshness_value = report.get("freshness")
+    report_freshness = _mapping(
+        report_freshness_value if report_freshness_value is not None else {}
+    )
+    report_data_quality_value = report.get("data_quality")
+    report_data_quality = _mapping(
+        report_data_quality_value if report_data_quality_value is not None else {}
+    )
+    report_attribution_basis_value = report.get("attribution_basis")
+    report_attribution_basis = _mapping(
+        report_attribution_basis_value
+        if report_attribution_basis_value is not None
+        else {}
+    )
     html = "".join(
         (
             '<!doctype html><html lang="ja"><meta charset="utf-8">',
             '<meta name="robots" content="noindex,nofollow">',
             "<title>Editorial V3 owner-private baseline</title>",
             "<style>body{font-family:sans-serif;max-width:1200px;margin:2rem auto;",
-            "padding:0 1rem}table{border-collapse:collapse;width:100%}",
+            "padding:0 1rem;overflow-wrap:anywhere}table{border-collapse:collapse;",
+            "width:100%;display:block;overflow-x:auto}",
             "th,td{border:1px solid #bbb;padding:.5rem;text-align:left}</style>",
             "<h1>Editorial V3 実データ基準値</h1>",
             f"<p>期間: {escape(str(_mapping(report.get('period')).get('date_from')))}",
             f"〜{escape(str(_mapping(report.get('period')).get('date_to')))}</p>",
             f"<p>T0: {escape(str(report.get('t0')))}</p>",
+            f"<p>cohort: {escape(str(report.get('cohort')))}</p>",
+            f"<p>freshness: {escape(json.dumps(report_freshness, ensure_ascii=False, sort_keys=True))}</p>",
+            f"<p>attribution basis: {escape(json.dumps(report_attribution_basis, ensure_ascii=False, sort_keys=True))}</p>",
+            f"<p>data quality: {escape(json.dumps(report_data_quality, ensure_ascii=False, sort_keys=True))}</p>",
             f"<p>確定貢献利益（全体）: {escape(north_star_value)} 円</p>",
+            "<h2>楽天成果（プログラム全体・帰属別）</h2>",
+            "<table><thead><tr><th>帰属</th><th>basis state</th>",
+            "<th>pending</th><th>confirmed</th><th>cancelled</th>",
+            "</tr></thead><tbody>",
+            "".join(attribution_rows),
+            "</tbody></table>",
+            "<h2>記事別</h2>",
             "<table><thead><tr><th>記事</th><th>slug</th><th>GSC表示</th>",
-            "<th>GSCクリック</th><th>GA4イベント</th><th>楽天確定（Direct）</th>",
+            "<th>GSCクリック</th><th>GSC CTR</th><th>GSC平均順位</th>",
+            "<th>GA4各イベント</th><th>楽天Direct pending</th>",
+            "<th>楽天Direct confirmed</th><th>楽天Direct cancelled</th>",
+            "<th>楽天Estimated</th><th>楽天Unattributed</th>",
+            "<th>作業分</th><th>外部費</th><th>人件費</th><th>freshness</th>",
+            "<th>attribution basis</th><th>data quality</th>",
             "<th>確定貢献利益（Direct）</th></tr></thead><tbody>",
             "".join(rows),
             "</tbody></table>",
@@ -1801,6 +2587,7 @@ __all__ = [
     "EditorialEconomicsV3Failure",
     "bind_rakuten_profile",
     "build_baseline_report",
+    "candidate_query_demand_template",
     "canonical_json_bytes",
     "commit_rakuten_report",
     "cost_input_template",

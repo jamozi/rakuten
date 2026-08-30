@@ -19,6 +19,7 @@ from raos.adapters.persistence.sqlalchemy.provider import SqlAlchemyEngineProvid
 from raos.domain.analytics.google_live import (
     GA4_BASELINE_DIMENSIONS,
     GA4_BASELINE_METRICS,
+    GA4_EVENT_PARAMETER_NAMES,
     Ga4ImportBatch,
     Ga4Observation,
     Ga4PropertyConfigSnapshot,
@@ -40,7 +41,7 @@ def _gsc_batch(
     *, query_text: str = "機内持ち込み バッテリー", clicks: int = 3
 ) -> SearchConsoleImportBatch:
     metric_date = date(2026, 8, 29)
-    page_url = "https://example.test/guide/?secret=not-persisted"
+    page_url = "https://example.test/guide/?private=not-persisted"
     dimension_key = sha256_hex(
         canonical_json_bytes(
             {
@@ -88,8 +89,12 @@ def _ga4_batch() -> Ga4ImportBatch:
                 "20260829",
                 "/guide/",
                 "affiliate_click",
-                "mobile",
                 "article-001",
+                "snapshot-001",
+                "cta-001",
+                "offer-001",
+                "product-001",
+                "product_card",
             ),
             strict=True,
         )
@@ -117,6 +122,9 @@ def _ga4_batch() -> Ga4ImportBatch:
                     "currency_code": "JPY",
                     "display_name": "Test property",
                     "property_resource": "properties/123456",
+                    "required_event_custom_dimensions": list(
+                        GA4_EVENT_PARAMETER_NAMES
+                    ),
                     "reporting_identity": "BLENDED",
                     "time_zone": "Asia/Tokyo",
                 }

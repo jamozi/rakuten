@@ -41,3 +41,33 @@ inventory URLs. Each result supplies `state` and an optional `last_crawl_at`.
 No credential, raw search query, URL query string, or response body belongs in
 tracked files or in the generated report. Without this input, every page reports
 index state as `UNAVAILABLE`; public HTTP observations never imply GSC state.
+When a valid recorded or live inspection input is present, each non-`INDEXED`
+inventory result fails that page's `gsc_indexed` check instead of being treated
+as a successful public-HTTP observation.
+
+## Live URL Inspection refresh
+
+The same audit CLI can replace the recorded input from the read-only Google URL
+Inspection API before it runs the public audit. It reuses the dedicated GSC
+service-account binding below the Google owner-private root; it never uses Site
+Kit OAuth state. The GSC property must bind the exact production origin. The
+request is sequential and bounded to the contract's exact fourteen URLs, and any
+authorization, missing-resource, exhausted retry, or response-schema failure
+aborts the complete refresh without publishing a partial input.
+
+API contract: [Google Search Console `index.inspect`](https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect)
+
+```sh
+.venv/bin/python scripts/raos_wordpress_seo_audit.py \
+  --refresh-index-from-gsc \
+  --google-owner-private-root .secrets/editorial-portfolio-v3 \
+  --index-input .secrets/wordpress-seo-audit-v1/url-inspection.json \
+  --output .secrets/wordpress-seo-audit-v1/report.json
+```
+
+The live form of `RAOS_OWNER_PRIVATE_URL_INSPECTION_V1` records only public URL
+identities, normalized `state`, provider `verdict` and `indexing_state`, crawl
+freshness, and deterministic request/normalized-response hashes. The Google
+credential, authorization header, raw provider body, inspection-result link, and
+Search Analytics query text are never written to this document or the audit
+report. The `0700`/`0600` owner-private checks remain mandatory.

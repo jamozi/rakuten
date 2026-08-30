@@ -14,7 +14,7 @@ source_artifact_count: 31
 source_sha256:
   changes/st-0703/contracts/openai-responses-adapter.v1.yaml: b25fd9af5331a92e880dccd533f0e0392fd79af92e0b19663155b31f7db0621c
   changes/st-0703/fixtures/recorded/success-structured.json: a6a7506c8201a979cdba2cf1e41c9c9d7288d801cf6f2f72aa5e6684e6da168c
-  changes/st-0703/generated/recorded-fixture-registry.v1.json: 6b3a04e446bd98463405373eae033bb9e5e04fd35d9f14cb8f88a6c33ddc11ca
+  changes/st-0703/generated/recorded-fixture-registry.v1.json: 5a53f78b53e8a8c35cc9fc96a44dc17d04f478c1efcadb411c1c64e1c6241974
   changes/st-0705/contracts/ai-output-validation-runtime.v1.yaml: 25e8696211025ee2581b0318ca2758dbcd4dccccd37447be1e8ad84667dbb02d
   changes/st-0705/generated/ai-output-validation-pass.v1.json: c3c04d5e2e4a230b8752205e865fe8cc97131f1c311fcaf5f1f3165a28c4a4be
   changes/st-0705/generated/ai-output-validation-profiles.v1.json: 781a950896c19b9b3dc015c050d8c04d7f419a9f4d2a46a5a61aaa9b2935f149
@@ -50,13 +50,13 @@ generated_artifacts:
   sha256: 101ee51c27ef928a2b71c38e50a8fe3bba9a8c766932dd8576770ce691111dcd
 - uri: repo://changes/st-0708/generated/recorded-live-evaluation-request.v2.json
   bytes: 4230
-  sha256: 2a128cd410e34e5fe225e1b1480f68eebc68a65b8bf868037121c9ecc973aabd
+  sha256: 07612b32175dae3a4d7bb72c7c8363ea9fdb06c7562e8bc19b9d7bdcb1478e26
 - uri: repo://changes/st-0708/generated/recorded-live-evaluation-report.v2.json
   bytes: 5662
-  sha256: 5bcecba944cb5c11171aa0363ba800790ddc26ee7638d3b6a47befa350554c02
+  sha256: 5317a951810de9a5ebebe9b4978583e898414ec19c7479b421dc505c82cc3c36
 - uri: repo://changes/st-0708/runtime-manifest.v2.json
   bytes: 4944
-  sha256: 47801b181939e066c3699cd4311ccc0079822490a253b129a90c6548ac9a6b8c
+  sha256: 3836533b05e51f801d172f7533aaf0aba34e611465d43e4856b19728584ec90d
 boundary:
   classification: RECORDED_SYNTHETIC_ONLY_RELEASE_DECISION_PROPOSAL
   default_enabled: false

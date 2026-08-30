@@ -1775,6 +1775,84 @@ def _wp_post(
     return post
 
 
+def _theme_article_values(identity: object) -> tuple[str, str, str, str]:
+    row = cast(SimpleNamespace, identity)
+    values = (row.article_id, row.slug, row.section, row.title)
+    assert all(type(value) is str for value in values)
+    return cast(tuple[str, str, str, str], values)
+
+
+def _theme_article_rows() -> tuple[tuple[str, str, str, str], ...]:
+    homepage = https_module._load_theme_homepage_clusters(  # type: ignore[attr-defined]
+        REPOSITORY_ROOT
+    )
+    clusters = cast(dict[str, dict[str, object]], homepage["clusters"])
+    return tuple(
+        _theme_article_values(identity)
+        for cluster_id in cast(tuple[str, ...], homepage["display_order"])
+        for identity in cast(tuple[object, ...], clusters[cluster_id]["posts"])
+    )
+
+
+def _v3_fallback_post(
+    identity: tuple[str, str, str, str],
+    *,
+    post_id: int,
+) -> dict[str, object]:
+    article_id, slug, _section, title = identity
+    return {
+        "categories": [42],
+        "content": {
+            "raw": (
+                '<div class="raos-editorial-v2">\n'
+                f'<span data-raos-article-id="{article_id}"></span>\n'
+                "</div>\n"
+            )
+        },
+        "date_gmt": "2026-08-23T01:00:00",
+        "excerpt": {"raw": title},
+        "id": post_id,
+        "meta": {PILOT_SNAPSHOT_META_KEY: ""},
+        "modified_gmt": "2026-08-23T02:00:00",
+        "slug": slug,
+        "status": "publish",
+        "title": {"raw": title},
+        "type": "post",
+    }
+
+
+def _v3_public_posts(
+    candidate: object,
+    *,
+    public_post_id: int,
+) -> list[dict[str, object]]:
+    posts: list[dict[str, object]] = []
+    for position, identity in enumerate(_theme_article_rows(), start=1):
+        if identity[0] == candidate.article_id:
+            posts.append(_wp_post("publish", candidate, post_id=public_post_id))
+        else:
+            posts.append(_v3_fallback_post(identity, post_id=20_000 + position))
+    assert len(posts) == 10
+    return posts
+
+
+def _v3_related_posts(
+    candidate: object,
+    *,
+    public_post_id: int,
+) -> list[dict[str, object]]:
+    navigation = https_module._load_theme_related_navigation(  # type: ignore[attr-defined]
+        REPOSITORY_ROOT
+    )
+    targets = cast(tuple[object, ...], navigation[candidate.article_id]["targets"])
+    target_slugs = {_theme_article_values(target)[1] for target in targets}
+    return [
+        post
+        for post in _v3_public_posts(candidate, public_post_id=public_post_id)
+        if cast(str, post["slug"]) in target_slugs
+    ]
+
+
 def _prepared_request(
     article_id: str = "st1704-portable-power-station-guide",
 ) -> object:
@@ -1829,10 +1907,19 @@ def _public_article_html(candidate: object) -> bytes:
     home_url, home_label = cast(
         tuple[str, str], navigation[candidate.article_id]["home"]
     )
+    targets = cast(
+        tuple[object, ...], navigation[candidate.article_id]["targets"]
+    )
+    target_links = "".join(
+        f'<li><a href="https://kurashinoshirube.com/{slug}/">{title}</a></li>'
+        for _article_id, slug, _section, title in (
+            _theme_article_values(target) for target in targets
+        )
+    )
     related = (
         '<aside class="raos-related-guides" aria-labelledby="raos-related-title">'
-        '<h2 id="raos-related-title">関連記事</h2><ul><li>'
-        f'<a href="{home_url}">{home_label}</a></li></ul></aside>'
+        '<h2 id="raos-related-title">関連記事</h2><ul>'
+        f'{target_links}<li><a href="{home_url}">{home_label}</a></li></ul></aside>'
     )
     return (
         "<!doctype html><html><head>"
@@ -1853,19 +1940,17 @@ def _public_homepage_html(candidate: object) -> bytes:
     clusters = cast(dict[str, dict[str, object]], homepage["clusters"])
     sections: list[str] = []
     for cluster_id in cast(tuple[str, ...], homepage["display_order"]):
-        posts = cast(tuple[tuple[str, str], ...], clusters[cluster_id]["posts"])
+        posts = cast(tuple[object, ...], clusters[cluster_id]["posts"])
         links = "".join(
-            (
-                f'<li><a href="{candidate.snapshot.payload.canonical_url}">{label}</a></li>'
-                if article_id == candidate.article_id
-                else ""
+            f'<li><a href="https://kurashinoshirube.com/{slug}/">{title}</a></li>'
+            for _article_id, slug, _section, title in (
+                _theme_article_values(post) for post in posts
             )
-            for article_id, label in posts
         )
         sections.append(
             f'<section id="{cluster_id}" class="raos-cluster">'
             f"<h3>{clusters[cluster_id]['heading']}</h3><ul>"
-            f"{links or '<li>ガイドを準備中です。</li>'}</ul></section>"
+            f"{links}</ul></section>"
         )
     return (
         "<!doctype html><html><head><title>暮らしのしるべ</title></head><body>"
@@ -1918,18 +2003,29 @@ def _public_connections(
                 pages="1",
             )
         ),
-        *(
-            [_Connection(_Response(b"[]", status=200, total="0", pages="0"))]
-            if candidate.article_id != "st1703-first-suitcase-comparison"
-            else []
+        _Connection(
+            _Response(
+                canonical_json_bytes(
+                    _v3_related_posts(
+                        candidate,
+                        public_post_id=public_post_id,
+                    )
+                ),
+                status=200,
+                total="2",
+                pages="1",
+            )
         ),
         _Connection(
             _Response(
                 canonical_json_bytes(
-                    [_wp_post("publish", candidate, post_id=public_post_id)]
+                    _v3_public_posts(
+                        candidate,
+                        public_post_id=public_post_id,
+                    )
                 ),
                 status=200,
-                total="1",
+                total="10",
                 pages="1",
             )
         ),
@@ -2103,17 +2199,28 @@ def _install_fake_live_boundary(monkeypatch: pytest.MonkeyPatch) -> None:
     )
 
 
-def test_public_verifier_loads_all_five_relations_from_theme_contract() -> None:
+def test_public_verifier_projects_ten_articles_and_two_relations_from_v3() -> None:
     related = https_module._load_theme_related_navigation(  # type: ignore[attr-defined]
         REPOSITORY_ROOT
     )
-    assert set(related) == {
-        identity.article_id for identity in PILOT_ARTICLE_IDENTITIES
-    }
-    assert related["st1703-first-suitcase-comparison"]["target"] is None
+    assert set(related) == {row[0] for row in _theme_article_rows()}
+    assert all(
+        len(cast(tuple[object, ...], relation["targets"])) >= 2
+        for relation in related.values()
+    )
     assert related["st1704-portable-power-station-guide"]["home"] == (
         "https://kurashinoshirube.com/#cluster-ready",
         "暮らしの道具「備え」の一覧へ",
+    )
+    power_targets = cast(
+        tuple[object, ...],
+        related["st1704-portable-power-station-guide"]["targets"],
+    )
+    assert _theme_article_values(power_targets[0]) == (
+        "st1704-anker-solix-c300-c800-c1000-differences",
+        "anker-solix-c300-c800-c1000-differences",
+        "備え",
+        "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い",
     )
     homepage = https_module._load_theme_homepage_clusters(  # type: ignore[attr-defined]
         REPOSITORY_ROOT
@@ -2130,8 +2237,13 @@ def test_public_verifier_loads_all_five_relations_from_theme_contract() -> None:
                 dict[str, dict[str, object]], homepage["clusters"]
             ).values()
         )
-        == 5
+        == 10
     )
+    clusters = cast(dict[str, dict[str, object]], homepage["clusters"])
+    assert tuple(
+        len(cast(tuple[object, ...], clusters[key]["posts"]))
+        for key in homepage["display_order"]
+    ) == (4, 4, 2)
 
 
 def test_owner_https_create_posts_only_the_exact_draft_payload(
@@ -2310,7 +2422,7 @@ def test_owner_https_recovery_rejects_zero_or_multiple_without_post(
     "mutation",
     ["malformed-description", "wrong-excerpt", "wrong-title"],
 )
-def test_related_target_requires_complete_bound_snapshot_and_theme_title(
+def test_related_targets_require_complete_bound_snapshot_and_theme_title(
     mutation: str,
 ) -> None:
     request_candidate = _prepared_request()
@@ -2337,7 +2449,7 @@ def test_related_target_requires_complete_bound_snapshot_and_theme_title(
         REPOSITORY_ROOT
     )
     with pytest.raises(EditorialPilotFailure) as failure:
-        https_module._related_target_is_bound(  # type: ignore[attr-defined]
+        https_module._related_targets_bound(  # type: ignore[attr-defined]
             canonical_json_bytes([post]), request_candidate, related
         )
     assert failure.value.code is EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH

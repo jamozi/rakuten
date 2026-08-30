@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import subprocess
 import sys
 
 import yaml
@@ -16,10 +17,21 @@ from scripts.raos_build_core import (
     InputKind,
     active_manifest_document,
     affected_owners,
+    changed_paths,
     discover_registry,
     generation_relevant_paths,
     run_commands,
 )
+
+
+def _git(repository: Path, *arguments: str) -> None:
+    subprocess.run(
+        ("git", *arguments),
+        cwd=repository,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
 
 
 def test_all_generators_have_one_owner_and_an_acyclic_graph() -> None:
@@ -39,6 +51,23 @@ def test_build_infrastructure_change_selects_the_complete_graph() -> None:
     assert set(selected) == set(registry)
 
 
+def test_changed_paths_falls_back_to_origin_main_without_origin_head(
+    tmp_path: Path,
+) -> None:
+    _git(tmp_path, "init", "-q")
+    _git(tmp_path, "config", "user.name", "RAOS Test")
+    _git(tmp_path, "config", "user.email", "raos-test@example.invalid")
+    tracked = tmp_path / "tracked.txt"
+    tracked.write_text("baseline\n", encoding="utf-8")
+    _git(tmp_path, "add", "tracked.txt")
+    _git(tmp_path, "commit", "-qm", "baseline")
+    _git(tmp_path, "update-ref", "refs/remotes/origin/main", "HEAD")
+    tracked.write_text("branch\n", encoding="utf-8")
+    _git(tmp_path, "commit", "-qam", "branch")
+
+    assert changed_paths(root=tmp_path) == (Path("tracked.txt"),)
+
+
 def test_editorial_measurement_theme_and_manifest_inputs_are_discoverable() -> None:
     registry = discover_registry()
     measurement = registry["build_editorial_measurement_v1"]
@@ -47,6 +76,13 @@ def test_editorial_measurement_theme_and_manifest_inputs_are_discoverable() -> N
 
     assert set(measurement.owner_dependencies) >= {
         "build_editorial_portfolio_v3",
+    }
+    assert set(measurement.outputs) == {
+        Path(
+            "changes/editorial-measurement-v1/wordpress-plugin/"
+            "raos-editorial-measurement/config/measurement-allowlist.v1.json"
+        ),
+        Path("changes/editorial-measurement-v1/runtime-manifest.v1.json"),
     }
     assert set(theme.owner_dependencies) >= {
         "build_editorial_measurement_v1",
@@ -91,6 +127,39 @@ def test_editorial_measurement_theme_and_manifest_inputs_are_discoverable() -> N
         f"{theme_root}theme-contract.v1.json",
     } <= manifest_inputs
     assert measurement.test_paths == (Path("tests/editorial_measurement_v1"),)
+
+
+def test_wordpress_mcp_consumes_the_generated_audit_inventory() -> None:
+    registry = discover_registry()
+    wordpress_mcp = registry["build_wordpress_mcp_v1"]
+
+    assert "build_editorial_v3_theme_navigation" in wordpress_mcp.owner_dependencies
+    assert "build_editorial_measurement_v1" in wordpress_mcp.owner_dependencies
+    assert Path(
+        "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
+    ) in wordpress_mcp.outputs
+    assert (
+        "repo://changes/editorial-portfolio-v3/generated/"
+        "wordpress-audit-inventory.v3.json"
+    ) in {item.uri for item in wordpress_mcp.inputs}
+    selected = affected_owners(
+        registry,
+        {
+            Path(
+                "changes/editorial-portfolio-v3/generated/"
+                "wordpress-audit-inventory.v3.json"
+            )
+        },
+    )
+    assert selected.index("build_editorial_v3_theme_navigation") < selected.index(
+        "build_wordpress_mcp_v1"
+    )
+    assert set(wordpress_mcp.test_paths) >= {
+        Path("tests/test_build_foundation_v2.py"),
+        Path("tests/wordpress_local_preview"),
+        Path("tests/wordpress_mcp_v1"),
+        Path("tests/wordpress_seo_audit_v1"),
+    }
 
 
 def test_editorial_runtime_changes_propagate_in_owner_order() -> None:

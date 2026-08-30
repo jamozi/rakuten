@@ -424,3 +424,128 @@ def test_exact_owner_private_index_input_is_bound_without_http_inference(
             len(page["index_state"]["evidence_sha256"]) == 64
             for page in report["pages"]
         )
+
+        first_url = contract.items[0].url
+        states[first_url]["state"] = "NOT_INDEXED"
+        failed_report = audit.run_audit(
+            FakeTransport(valid_responses), contract, index_states=states
+        )
+        assert failed_report["status"] == "FAIL"
+        assert failed_report["pages"][0]["checks"]["gsc_indexed"]["detail"] == (
+            "NOT_INDEXED"
+        )
+
+
+def test_live_url_inspection_input_binds_exact_requests_and_provider_states(
+    contract: audit.AuditContract,
+    valid_responses: dict[str, audit.HttpResponse],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        private_root = Path(temporary) / ".secrets" / "wordpress-seo-audit-v1"
+        private_root.mkdir(parents=True, mode=0o700)
+        os.chmod(private_root, 0o700)
+        input_path = private_root / "url-inspection.json"
+        urls = tuple(item.url for item in contract.items)
+        site_url = "sc-domain:kurashinoshirube.com"
+        query = audit.SearchConsoleUrlInspectionQuery(
+            site_id=audit.UUID("11111111-1111-4111-8111-111111111111"),
+            site_url=site_url,
+            inspection_urls=urls,
+        )
+        payload = {
+            "schema": "RAOS_OWNER_PRIVATE_URL_INSPECTION_V1",
+            "version": 1,
+            "source": "GSC_URL_INSPECTION_API_V1",
+            "site_id": str(query.site_id),
+            "site_url": site_url,
+            "observed_at": OBSERVED,
+            "request_sha256": query.request_sha256,
+            "result_count": 14,
+            "results": [
+                {
+                    "url": url,
+                    "state": "INDEXED",
+                    "verdict": "PASS",
+                    "indexing_state": "INDEXING_ALLOWED",
+                    "last_crawl_at": OBSERVED,
+                    "request_sha256": (
+                        audit.gsc_url_inspection_request_sha256(
+                            site_url=site_url,
+                            inspection_url=url,
+                        )
+                    ),
+                    "response_sha256": f"{position:x}" * 64,
+                }
+                for position, url in enumerate(urls)
+            ],
+        }
+        input_path.write_text(json.dumps(payload), encoding="utf-8")
+        os.chmod(input_path, 0o600)
+        monkeypatch.setattr(audit, "PRIVATE_ROOT", private_root)
+
+        states = audit._load_index_states(input_path, contract)
+        report = audit.run_audit(
+            FakeTransport(valid_responses), contract, index_states=states
+        )
+
+        assert report["index_state_basis"] == (
+            "OWNER_PRIVATE_LIVE_GSC_URL_INSPECTION_V1"
+        )
+        first = report["pages"][0]["index_state"]
+        assert first["verdict"] == "PASS"
+        assert first["indexing_state"] == "INDEXING_ALLOWED"
+        assert len(first["request_sha256"]) == 64
+        assert first["evidence_sha256"] == first["response_sha256"]
+
+
+def test_live_url_inspection_input_rejects_request_hash_drift(
+    contract: audit.AuditContract,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with tempfile.TemporaryDirectory(dir="/tmp") as temporary:
+        private_root = Path(temporary) / ".secrets" / "wordpress-seo-audit-v1"
+        private_root.mkdir(parents=True, mode=0o700)
+        os.chmod(private_root, 0o700)
+        input_path = private_root / "url-inspection.json"
+        urls = tuple(item.url for item in contract.items)
+        site_url = "sc-domain:kurashinoshirube.com"
+        input_path.write_text(
+            json.dumps(
+                {
+                    "schema": "RAOS_OWNER_PRIVATE_URL_INSPECTION_V1",
+                    "version": 1,
+                    "source": "GSC_URL_INSPECTION_API_V1",
+                    "site_id": "11111111-1111-4111-8111-111111111111",
+                    "site_url": site_url,
+                    "observed_at": OBSERVED,
+                    "request_sha256": "0" * 64,
+                    "result_count": 14,
+                    "results": [
+                        {
+                            "url": url,
+                            "state": "INDEXED",
+                            "verdict": "PASS",
+                            "indexing_state": "INDEXING_ALLOWED",
+                            "last_crawl_at": OBSERVED,
+                            "request_sha256": (
+                                audit.gsc_url_inspection_request_sha256(
+                                    site_url=site_url,
+                                    inspection_url=url,
+                                )
+                            ),
+                            "response_sha256": f"{position:x}" * 64,
+                        }
+                        for position, url in enumerate(urls)
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        os.chmod(input_path, 0o600)
+        monkeypatch.setattr(audit, "PRIVATE_ROOT", private_root)
+
+        with pytest.raises(audit.AuditError) as failure:
+            audit._load_index_states(input_path, contract)
+
+        assert failure.value.code == "INDEX_INPUT_REQUEST_HASH_INVALID"

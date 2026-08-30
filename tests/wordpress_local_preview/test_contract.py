@@ -105,7 +105,9 @@ def test_compose_is_digest_pinned_loopback_only_and_isolated() -> None:
     assert gateway["image"] == NGINX_IMAGE
     assert cli["image"] == WP_CLI_IMAGE
     assert wordpress.get("ports") is None
-    assert gateway["ports"] == ["127.0.0.1:8888:8080"]
+    assert gateway["ports"] == [
+        "127.0.0.1:${RAOS_WORDPRESS_PREVIEW_PORT:?preview port is required}:8080"
+    ]
     assert database.get("ports") is None
     assert cli.get("ports") is None
     assert cli["profiles"] == ["cli"]
@@ -194,7 +196,8 @@ def test_wordpress_runtime_is_explicitly_local_and_non_mutating() -> None:
     extra = services["wordpress"]["environment"]["WORDPRESS_CONFIG_EXTRA"]
     assert services["cli"]["environment"]["WORDPRESS_CONFIG_EXTRA"] == extra
     for marker in (
-        "define('WP_HOME', 'http://127.0.0.1:8888');",
+        "define('WP_HOME', '${RAOS_WORDPRESS_PREVIEW_ORIGIN:?preview origin is required}');",
+        "define('RAOS_WORDPRESS_PREVIEW_ORIGIN', '${RAOS_WORDPRESS_PREVIEW_ORIGIN:?preview origin is required}');",
         "define('WP_ENVIRONMENT_TYPE', 'local');",
         "define('RAOS_LOCAL_PREVIEW', true);",
         "define('WP_HTTP_BLOCK_EXTERNAL', true);",
@@ -380,7 +383,8 @@ def test_local_guard_blocks_indexing_mail_http_and_updates() -> None:
 
 def test_seed_is_local_only_versioned_and_initialize_is_non_overwriting() -> None:
     seed = SEED.read_text(encoding="utf-8")
-    assert "home_url('/') !== 'http://127.0.0.1:8888/'" in seed
+    assert "home_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'" in seed
+    assert "site_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'" in seed
     assert "array('initialize', 'sync')" in seed
     assert "raos_local_preview_seed_version" in seed
     assert "RAOS_WORDPRESS_PREVIEW_ALREADY_INITIALIZED" in seed

@@ -145,6 +145,50 @@ def test_storage_dedupes_and_retains_only_bounded_data() -> None:
     assert "TRUNCATE TABLE" not in store.upper()
 
 
+def test_storage_has_atomic_site_wide_short_and_daily_rate_budgets() -> None:
+    store = (PLUGIN / "includes/class-raos-measurement-store.php").read_text()
+    assert "const SESSION_RATE_PER_MINUTE = 120;" in store
+    assert "const SITE_SHORT_BUCKET_CAPACITY = 1200;" in store
+    assert "const SITE_SHORT_REFILL_PER_SECOND = 20;" in store
+    assert "const SITE_DAILY_CAP = 100000;" in store
+    assert "raos_measurement_rate_v1" in store
+    assert "PRIMARY KEY  (bucket_key)" in store
+    assert store.count("ON DUPLICATE KEY UPDATE bucket_key = VALUES(bucket_key)") == 2
+    assert "ORDER BY bucket_key ASC FOR UPDATE" in store
+    assert "accepted_count = accepted_count + 1" in store
+    assert "accepted_count < %d" in store
+    transaction = store.split("public static function record", 1)[1]
+    assert transaction.index("START TRANSACTION") < transaction.index(
+        "reserve_site_capacity($event['received_at'])"
+    )
+    assert transaction.index("reserve_site_capacity($event['received_at'])") < (
+        transaction.index("SELECT COUNT(*)")
+    )
+    assert "session_sha256 = %s AND received_at_gmt >= %s FOR UPDATE" in transaction
+    limiter = store.split("private static function reserve_site_capacity", 1)[1]
+    assert "anonymous_session_id" not in limiter
+    assert "session_sha256" not in limiter
+    assert "REMOTE_ADDR" not in limiter
+    assert "user-agent" not in limiter.lower()
+    assert "return self::storage_error();" in limiter
+
+
+@pytest.mark.skipif(shutil.which("php") is None, reason="PHP CLI unavailable")
+def test_site_wide_rate_budget_resists_session_rotation_and_fails_closed() -> None:
+    php = shutil.which("php")
+    assert php is not None
+    result = subprocess.run(
+        [php, "tests/editorial_measurement_v1/measurement_store_rate_harness.php"],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "RAOS_MEASUREMENT_STORE_RATE_OK"
+
+
 def test_aggregate_ability_is_read_only_and_never_exposes_raw_rows() -> None:
     main = (PLUGIN / "raos-editorial-measurement.php").read_text()
     assert "'raos-measurement/aggregate-report'" in main

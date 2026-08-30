@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import UTC, datetime
 from pathlib import Path
 import re
@@ -17,6 +18,9 @@ from raos.application.editorial.editorial_portfolio_v2 import (
     load_editorial_portfolio_v2,
     materialize_article_v2,
     product_evidence_views_v2,
+)
+from raos.application.editorial.editorial_portfolio_v3 import (
+    load_editorial_portfolio_v3,
 )
 from raos.domain.editorial.self_hosted_editorial_pilot import RakutenProductEvidence
 
@@ -107,6 +111,76 @@ def test_portfolio_closes_ten_articles_thirty_two_products_and_thirty_seven_card
         "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060": "F115060",
         "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B": "TK-MDW22B",
     }
+    assert {
+        article.category
+        for article in portfolio.articles
+        if article.article_id.startswith(("st1703-", "st1704-"))
+    } == {"暮らしの道具"}
+
+
+def test_v2_history_fails_closed_when_v3_successor_slug_drifts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    successor = load_editorial_portfolio_v3(ROOT)
+    changed = replace(
+        successor.articles[0],
+        production_slug="successor-slug-drift",
+    )
+    monkeypatch.setattr(
+        portfolio_module,
+        "load_editorial_portfolio_v3",
+        lambda _: replace(
+            successor,
+            articles=(changed, *successor.articles[1:]),
+        ),
+    )
+
+    with pytest.raises(
+        EditorialPortfolioV2Failure,
+        match="RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID",
+    ):
+        load_editorial_portfolio_v2(ROOT)
+
+
+def test_v2_history_fails_closed_when_v3_product_assignment_drifts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    successor = load_editorial_portfolio_v3(ROOT)
+    changed = replace(
+        successor.articles[0],
+        product_ids=successor.articles[1].product_ids,
+    )
+    monkeypatch.setattr(
+        portfolio_module,
+        "load_editorial_portfolio_v3",
+        lambda _: replace(
+            successor,
+            articles=(changed, *successor.articles[1:]),
+        ),
+    )
+
+    with pytest.raises(
+        EditorialPortfolioV2Failure,
+        match="RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID",
+    ):
+        load_editorial_portfolio_v2(ROOT)
+
+
+def test_v2_history_fails_closed_when_v3_origin_drifts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    successor = load_editorial_portfolio_v3(ROOT)
+    monkeypatch.setattr(
+        portfolio_module,
+        "load_editorial_portfolio_v3",
+        lambda _: replace(successor, target_origin="https://example.invalid"),
+    )
+
+    with pytest.raises(
+        EditorialPortfolioV2Failure,
+        match="RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID",
+    ):
+        load_editorial_portfolio_v2(ROOT)
 
 
 def test_all_source_articles_are_editorial_v2_and_have_two_cta_slots_per_card() -> None:

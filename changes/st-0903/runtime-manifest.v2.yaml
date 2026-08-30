@@ -178,7 +178,7 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 11786
-  sha256: 55dfcdc574f6fc68265857af159581fdc2039c617bfaae530409c31f29dc67d6
+  sha256: 21acb8f253c8b29377cc0c5d55de02f24e6e5a3a49ab33892ab9b843d0ed1b9e
 - uri: repo://python/raos/domain/publishing/final_approval.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -208,7 +208,7 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 5980
-  sha256: 4d24efbec1bdeacafaa00217d29aa42dd2d64bbd52585ca7aa5bfca2a8063308
+  sha256: dcf8b76b8c7c106b9b208cd5d105d52878dffc68aeba30ef64c920d26be96603
 - uri: repo://python/raos/domain/editorial/seo_renderer.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python

@@ -16,6 +16,7 @@ from raos.adapters.google_live import (
     LiveGa4AdminProvider,
     LiveGa4DataProvider,
     LiveSearchConsoleProvider,
+    LiveSearchConsoleUrlInspectionProvider,
 )
 from raos.application.analytics.google_live_import import LiveGoogleAnalyticsImport
 from raos.domain.analytics.google_live import (
@@ -23,6 +24,7 @@ from raos.domain.analytics.google_live import (
     GA4_ARTICLE_ID_DIMENSION,
     GA4_BASELINE_DIMENSIONS,
     GA4_BASELINE_METRICS,
+    GA4_EVENT_PARAMETER_NAMES,
     GA4_READONLY_SCOPE,
     GSC_READONLY_SCOPE,
     Ga4LiveQuery,
@@ -31,12 +33,26 @@ from raos.domain.analytics.google_live import (
     GoogleProviderFailure,
     GoogleProviderFailureCode,
     SearchConsoleLiveQuery,
+    SearchConsoleUrlInspectionQuery,
 )
 from raos.ports.google_live import GoogleJsonResponse
 
 
 NOW = datetime(2026, 8, 30, 1, 2, 3, tzinfo=timezone.utc)
 SITE_ID = UUID("11111111-1111-4111-8111-111111111111")
+
+
+def custom_dimensions_response() -> dict[str, object]:
+    return {
+        "customDimensions": [
+            {
+                "name": f"properties/12345/customDimensions/{position}",
+                "parameterName": parameter,
+                "scope": "EVENT",
+            }
+            for position, parameter in enumerate(GA4_EVENT_PARAMETER_NAMES, start=1)
+        ]
+    }
 
 
 class FakeClock:
@@ -78,6 +94,25 @@ def response(
     headers: tuple[tuple[str, str], ...] = (),
 ) -> GoogleJsonResponse:
     return GoogleJsonResponse(status=status, headers=headers, document=document)
+
+
+def inspection_urls(origin: str = "https://example.com") -> tuple[str, ...]:
+    return (f"{origin}/", *(f"{origin}/surface-{index}/" for index in range(1, 14)))
+
+
+def inspection_response(
+    *,
+    verdict: str = "PASS",
+    indexing_state: str = "INDEXING_ALLOWED",
+    last_crawl_time: str | None = "2026-08-29T00:00:00Z",
+) -> GoogleJsonResponse:
+    index_status: dict[str, object] = {
+        "verdict": verdict,
+        "indexingState": indexing_state,
+    }
+    if last_crawl_time is not None:
+        index_status["lastCrawlTime"] = last_crawl_time
+    return response({"inspectionResult": {"indexStatusResult": index_status}})
 
 
 def test_search_console_paginates_hashes_requests_and_preserves_three_letter_country() -> (
@@ -202,6 +237,129 @@ def test_provider_normalizes_non_retryable_http_failures(
     assert str(observed.value) == expected.value
 
 
+def test_url_inspection_fetches_exact_inventory_sequentially_and_normalizes() -> None:
+    urls = inspection_urls()
+    transport = QueueTransport(
+        [
+            inspection_response(last_crawl_time="2026-08-29T00:00:00.123456789Z"),
+            inspection_response(verdict="FAIL", indexing_state="BLOCKED_BY_META_TAG"),
+            inspection_response(
+                verdict="NEUTRAL",
+                indexing_state="INDEXING_ALLOWED",
+                last_crawl_time=None,
+            ),
+            *[inspection_response(last_crawl_time=None) for _ in range(11)],
+        ]
+    )
+    batch = LiveSearchConsoleUrlInspectionProvider(
+        transport=transport,
+        clock=FakeClock(),
+        sleeper=FakeSleeper(),
+    ).inspect(
+        SearchConsoleUrlInspectionQuery(
+            site_id=SITE_ID,
+            site_url="sc-domain:example.com",
+            inspection_urls=urls,
+        )
+    )
+
+    assert len(batch.results) == len(transport.requests) == 14
+    assert [result.state for result in batch.results[:3]] == [
+        "INDEXED",
+        "BLOCKED",
+        "NOT_INDEXED",
+    ]
+    assert batch.results[0].last_crawl_at == "2026-08-29T00:00:00.123456789Z"
+    assert batch.results[2].last_crawl_at is None
+    assert len({result.source_request_sha256 for result in batch.results}) == 14
+    assert all(
+        method == "POST"
+        and url == "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect"
+        and body
+        == {
+            "inspectionUrl": urls[position],
+            "languageCode": "ja-JP",
+            "siteUrl": "sc-domain:example.com",
+        }
+        for position, (method, url, body) in enumerate(transport.requests)
+    )
+    assert "credential" not in repr(batch).lower()
+
+
+@pytest.mark.parametrize(
+    ("status", "expected", "response_count"),
+    [
+        (403, GoogleProviderFailureCode.AUTHORIZATION_FAILED, 1),
+        (404, GoogleProviderFailureCode.RESOURCE_NOT_FOUND, 1),
+        (429, GoogleProviderFailureCode.RATE_LIMITED, 4),
+        (500, GoogleProviderFailureCode.PROVIDER_UNAVAILABLE, 4),
+    ],
+)
+def test_url_inspection_http_failures_are_fail_closed(
+    status: int,
+    expected: GoogleProviderFailureCode,
+    response_count: int,
+) -> None:
+    sleeper = FakeSleeper()
+    transport = QueueTransport([response({}, status=status)] * response_count)
+    provider = LiveSearchConsoleUrlInspectionProvider(
+        transport=transport,
+        clock=FakeClock(),
+        sleeper=sleeper,
+    )
+
+    with pytest.raises(GoogleProviderFailure) as observed:
+        provider.inspect(
+            SearchConsoleUrlInspectionQuery(
+                site_id=SITE_ID,
+                site_url="sc-domain:example.com",
+                inspection_urls=inspection_urls(),
+            )
+        )
+
+    assert observed.value.code is expected
+    assert len(transport.requests) == response_count
+    assert sleeper.delays == ([] if response_count == 1 else [1.0, 2.0, 4.0])
+
+
+def test_url_inspection_rejects_cross_origin_or_non_exact_inventory() -> None:
+    with pytest.raises(GoogleProviderFailure):
+        SearchConsoleUrlInspectionQuery(
+            site_id=SITE_ID,
+            site_url="sc-domain:example.com",
+            inspection_urls=inspection_urls()[:-1],
+        )
+    with pytest.raises(GoogleProviderFailure):
+        SearchConsoleUrlInspectionQuery(
+            site_id=SITE_ID,
+            site_url="sc-domain:example.com",
+            inspection_urls=(*inspection_urls()[:-1], "https://other.example/final/"),
+        )
+    with pytest.raises(GoogleProviderFailure):
+        SearchConsoleUrlInspectionQuery(
+            site_id=SITE_ID,
+            site_url="https://example.com/owned/",
+            inspection_urls=inspection_urls(),
+        )
+
+
+def test_url_inspection_rejects_incomplete_success_response() -> None:
+    provider = LiveSearchConsoleUrlInspectionProvider(
+        transport=QueueTransport([response({"inspectionResult": {}})]),
+        clock=FakeClock(),
+        sleeper=FakeSleeper(),
+    )
+    with pytest.raises(GoogleProviderFailure) as observed:
+        provider.inspect(
+            SearchConsoleUrlInspectionQuery(
+                site_id=SITE_ID,
+                site_url="sc-domain:example.com",
+                inspection_urls=inspection_urls(),
+            )
+        )
+    assert observed.value.code is GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID
+
+
 def test_ga4_captures_property_config_then_paginates_report() -> None:
     admin_transport = QueueTransport(
         [
@@ -219,6 +377,7 @@ def test_ga4_captures_property_config_then_paginates_report() -> None:
                     "reportingIdentity": "DEVICE_BASED",
                 }
             ),
+            response(custom_dimensions_response()),
         ]
     )
     config = LiveGa4AdminProvider(
@@ -286,6 +445,41 @@ def test_ga4_captures_property_config_then_paginates_report() -> None:
     assert data_transport.requests[0][2]["offset"] == "0"
     assert data_transport.requests[1][2]["offset"] == "1"
     assert len(batch.page_request_sha256s) == 2
+
+
+def test_ga4_admin_refuses_missing_event_custom_dimension() -> None:
+    dimensions = custom_dimensions_response()
+    cast_rows = list(dimensions["customDimensions"])  # type: ignore[arg-type]
+    dimensions["customDimensions"] = cast_rows[:-1]
+    provider = LiveGa4AdminProvider(
+        transport=QueueTransport(
+            [
+                response(
+                    {
+                        "name": "properties/12345",
+                        "displayName": "Example",
+                        "timeZone": "Asia/Tokyo",
+                        "currencyCode": "JPY",
+                    }
+                ),
+                response(
+                    {
+                        "name": "properties/12345/reportingIdentitySettings",
+                        "reportingIdentity": "DEVICE_BASED",
+                    }
+                ),
+                response(dimensions),
+            ]
+        ),
+        sleeper=FakeSleeper(),
+    )
+
+    with pytest.raises(GoogleProviderFailure) as observed:
+        provider.get_property_configuration(
+            property_id="12345",
+            retrieved_at=NOW,
+        )
+    assert observed.value.code is GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID
 
 
 def _binding_document(
@@ -483,6 +677,7 @@ def test_application_returns_committed_ga4_batch_with_article_dimension() -> Non
                         "reportingIdentity": "DEVICE_BASED",
                     }
                 ),
+                response(custom_dimensions_response()),
             ]
         ),
         sleeper=FakeSleeper(),

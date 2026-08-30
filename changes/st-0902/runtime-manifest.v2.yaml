@@ -153,7 +153,7 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 8936
-  sha256: 78969332bb2dfad926094f2af1f9a7abaac2d99f3b7f6d59a0555d9ddc464835
+  sha256: 5910b579348db805c529e919515e35176a5bf0e6e56e95a3fe0c054ea3214541
 - uri: repo://python/raos/domain/editorial/policy_engine_v2.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -178,7 +178,7 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 11571
-  sha256: f7aa3bb94e733a4e321ec0627db05b0f712ce029c29a35be0b77c818192ec4fc
+  sha256: 91cf08616ef44ee4514f9bf6c1d4184b790abd5d4ff9dbdab0982afaf0d6167f
 - uri: repo://python/raos/domain/publishing/review_completion_v2.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python
@@ -203,7 +203,7 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 9290
-  sha256: c4ccdd0d7fa41239abca42c20200dcce3b68e5ec8eb57a9ad4cfc9b6cf89e154
+  sha256: 60dfc2f1d66d47bed3136dbbb7eb612bf6936106366c903e12ca4a8f7f8d0042
 - uri: repo://changes/st-0902/README.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown

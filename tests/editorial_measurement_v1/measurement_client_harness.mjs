@@ -48,7 +48,7 @@ class FakeBlob {
   }
 }
 
-function createRuntime(initialConsent) {
+function createRuntime(initialConsent, delivery = {}) {
   let granted = initialConsent;
   let randomCounter = 1;
   const fetchEvents = [];
@@ -177,6 +177,9 @@ function createRuntime(initialConsent) {
       }
     },
     fetch(_endpoint, options) {
+      if (delivery.fetchThrows === true) {
+        throw new Error('simulated collection failure');
+      }
       fetchEvents.push(JSON.parse(options.body));
       return Promise.resolve({ ok: true });
     },
@@ -192,6 +195,9 @@ function createRuntime(initialConsent) {
     location: { origin: 'https://kurashinoshirube.com' },
     navigator: {
       sendBeacon(_endpoint, blob) {
+        if (delivery.beaconThrows === true) {
+          throw new Error('simulated beacon failure');
+        }
         assert.equal(blob.type, 'application/json');
         beaconEvents.push(JSON.parse(blob.parts.join('')));
         return true;
@@ -292,6 +298,20 @@ runtime.document.dispatch('click', {
 assert.equal(defaultPrevented, false);
 assert.equal(runtime.events().filter((event) => event.event_name === 'affiliate_click').length, 1);
 assert.equal(runtime.beaconEvents.length, 1);
+
+const failedDelivery = createRuntime(true, {
+  beaconThrows: true,
+  fetchThrows: true
+});
+failedDelivery.run();
+let failurePreventedNavigation = false;
+failedDelivery.document.dispatch('click', {
+  target: failedDelivery.cta,
+  preventDefault() {
+    failurePreventedNavigation = true;
+  }
+});
+assert.equal(failurePreventedNavigation, false);
 
 for (const event of runtime.events()) {
   assert.deepEqual(Object.keys(event).sort(), [

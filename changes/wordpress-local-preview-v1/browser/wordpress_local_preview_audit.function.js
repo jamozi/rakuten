@@ -1,5 +1,4 @@
-({ artifactDirectory, inventory }) => async (page) => {
-  const origin = 'http://127.0.0.1:8888';
+({ artifactDirectory, inventory, origin }) => async (page) => {
   const cleanPath = (value) =>
     typeof value === 'string' && /^\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)?$/.test(value);
   const rawSurfaces = inventory?.surfaces;
@@ -20,6 +19,7 @@
     : [];
   if (
     typeof artifactDirectory !== 'string' || !artifactDirectory.startsWith('/') ||
+    typeof origin !== 'string' || !/^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(origin) ||
     inventory?.schema !== 'RAOS_WORDPRESS_AUDIT_INVENTORY_V3' ||
     inventory?.version !== '3.0.0' ||
     inventory?.target_origin !== 'https://kurashinoshirube.com' ||
@@ -492,8 +492,10 @@
       }
 
       let keyboardAudit = {
+        consentWasReached: false,
         ctaReached: !surface.article,
         escapedConsentDialog: true,
+        focusVisibleFailureSignatures: [],
         focusVisibleFailures: 0,
         contextualReached: !surface.article,
         relatedReached: !surface.article,
@@ -518,10 +520,11 @@
         let consentWasReached = false;
         let escapedConsentDialog = false;
         let focusVisibleFailures = 0;
+        const focusVisibleFailureSignatures = [];
         let ctaReached = false;
         let contextualReached = false;
         let relatedReached = false;
-        for (let index = 0; index < Math.min(focusableCount + 2, 500); index += 1) {
+        for (let index = 0; index < Math.min(focusableCount + 10, 500); index += 1) {
           await page.keyboard.press('Tab');
           const focus = await page.evaluate(() => {
             const element = document.activeElement;
@@ -539,19 +542,27 @@
                   style.boxShadow !== 'none'),
             };
           });
-          if (!focus) continue;
+          if (!focus) {
+            if (consentWasReached) escapedConsentDialog = true;
+            continue;
+          }
           visited.add(focus.signature);
           ctaReached ||= focus.cta;
           contextualReached ||= focus.contextual;
           relatedReached ||= focus.related;
           if (focus.inConsent) consentWasReached = true;
           if (consentWasReached && !focus.inConsent) escapedConsentDialog = true;
-          if (!focus.visible) focusVisibleFailures += 1;
+          if (!focus.visible) {
+            focusVisibleFailures += 1;
+            focusVisibleFailureSignatures.push(focus.signature);
+          }
         }
         keyboardAudit = {
+          consentWasReached,
           ctaReached,
           escapedConsentDialog: !consentWasReached || escapedConsentDialog,
           focusVisibleFailures,
+          focusVisibleFailureSignatures,
           contextualReached,
           relatedReached,
           distinctTargets: visited.size,
@@ -631,7 +642,32 @@
         internalLinkReadbackFailed ||
         keyboardAuditFailed
       ) {
-        throw new Error(`RAOS_WORDPRESS_LOCAL_PREVIEW_AUDIT_FAILED_${surface.name}_${width}`);
+        const diagnostics = {
+          articleAuditFailed,
+          audit: {
+            brokenAriaReferences: audit.brokenAriaReferences,
+            cookieSettingsBounds: audit.cookieSettingsBounds.length,
+            duplicateIds: audit.duplicateIds.length,
+            h1Count: audit.h1Count,
+            invalidH1Bounds: audit.invalidH1Bounds,
+            mainCount: audit.mainCount,
+            measurementConfigDefined: audit.measurementConfigDefined,
+            measurementScriptCount: audit.measurementScriptCount,
+            measurementSessionKeyCount: audit.measurementSessionKeyCount,
+            missingAlt: audit.missingAlt,
+            scrollOverflow: audit.scrollWidth - audit.clientWidth,
+            unloadedImages: audit.unloadedImages,
+            unlabeledControls: audit.unlabeledControls,
+          },
+          homepageReadbackFailed,
+          internalLinkReadbackFailed,
+          keyboardAudit,
+          keyboardAuditFailed,
+        };
+        throw new Error(
+          `RAOS_WORDPRESS_LOCAL_PREVIEW_AUDIT_FAILED_${surface.name}_${width}:`
+            + JSON.stringify(diagnostics),
+        );
       }
       const screenshot = `${artifactDirectory}/local-preview-${surface.name}-${width}.png`;
       await page.screenshot({ path: screenshot, fullPage: true });

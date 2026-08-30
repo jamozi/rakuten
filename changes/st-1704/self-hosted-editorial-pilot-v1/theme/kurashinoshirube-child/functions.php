@@ -2104,11 +2104,12 @@ function kurashinoshirube_resolve_related_target(string $target_id): ?array
     if (! is_array($binding)) {
         return null;
     }
-    $local = kurashinoshirube_is_local_preview();
+    $local_origin = kurashinoshirube_local_preview_origin();
+    $local = is_string($local_origin);
     $target_slug = $local ? $binding['local_slug'] : $binding['slug'];
     $target = get_page_by_path($target_slug, OBJECT, 'post');
     $expected_url = $local
-        ? 'http://127.0.0.1:8888/' . $target_slug . '/'
+        ? $local_origin . '/' . $target_slug . '/'
         : KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $target_slug . '/';
     if (
         ! ($target instanceof WP_Post)
@@ -2226,8 +2227,9 @@ function kurashinoshirube_render_related_guides($attributes, $content, $tag): st
     if (count($items) < 2) {
         return '';
     }
-    $home_url = (kurashinoshirube_is_local_preview()
-        ? 'http://127.0.0.1:8888'
+    $local_origin = kurashinoshirube_local_preview_origin();
+    $home_url = (is_string($local_origin)
+        ? $local_origin
         : KURASHINOSHIRUBE_SITE_ORIGIN) . '/#' . $relation['home_anchor'];
     $items[] = '<li><a href="' . esc_url($home_url) . '">'
         . esc_html($relation['home_label']) . '</a></li>';
@@ -2240,15 +2242,35 @@ add_shortcode(
     'kurashinoshirube_render_related_guides'
 );
 
+/** Return the validated loopback origin only in the isolated preview. */
+function kurashinoshirube_local_preview_origin(): ?string
+{
+    if (
+        ! defined('RAOS_LOCAL_PREVIEW')
+        || RAOS_LOCAL_PREVIEW !== true
+        || ! defined('RAOS_WORDPRESS_PREVIEW_ORIGIN')
+        || ! is_string(RAOS_WORDPRESS_PREVIEW_ORIGIN)
+        || preg_match(
+            '#\Ahttp://127\.0\.0\.1:([0-9]{4,5})\z#D',
+            RAOS_WORDPRESS_PREVIEW_ORIGIN,
+            $matches
+        ) !== 1
+        || (int) $matches[1] < 1024
+        || (int) $matches[1] > 65535
+        || ! function_exists('wp_get_environment_type')
+        || wp_get_environment_type() !== 'local'
+        || home_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'
+        || site_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'
+    ) {
+        return null;
+    }
+    return RAOS_WORDPRESS_PREVIEW_ORIGIN;
+}
+
 /** Return true only inside the repository-owned, network-isolated preview. */
 function kurashinoshirube_is_local_preview(): bool
 {
-    return defined('RAOS_LOCAL_PREVIEW')
-        && RAOS_LOCAL_PREVIEW === true
-        && function_exists('wp_get_environment_type')
-        && wp_get_environment_type() === 'local'
-        && home_url('/') === 'http://127.0.0.1:8888/'
-        && site_url('/') === 'http://127.0.0.1:8888/';
+    return kurashinoshirube_local_preview_origin() !== null;
 }
 
 /**
@@ -2434,7 +2456,7 @@ function kurashinoshirube_local_preview_cluster_items(
             || $identity === null
             || $identity['article_id'] !== $article_id
             || ! is_string($permalink)
-            || $permalink !== 'http://127.0.0.1:8888/'
+            || $permalink !== kurashinoshirube_local_preview_origin() . '/'
                 . $binding['local_slug'] . '/'
         ) {
             return '';
@@ -2575,7 +2597,7 @@ function kurashinoshirube_public_head_context(): ?array
 {
     $local = kurashinoshirube_is_local_preview();
     $origin = $local
-        ? 'http://127.0.0.1:8888'
+        ? kurashinoshirube_local_preview_origin()
         : KURASHINOSHIRUBE_SITE_ORIGIN;
     if (is_front_page()) {
         return array(
@@ -3127,7 +3149,7 @@ function kurashinoshirube_emit_json_ld(): void
     }
     $canonical = $context['canonical_url'];
     $schema_origin = kurashinoshirube_is_local_preview()
-        ? 'http://127.0.0.1:8888'
+        ? kurashinoshirube_local_preview_origin()
         : KURASHINOSHIRUBE_SITE_ORIGIN;
     $organization_id = $schema_origin . '/#organization';
     $website_id = $schema_origin . '/#website';

@@ -122,9 +122,9 @@
       "sha256": "67390ac4eb2429c39a2c7458c3c8e69f664481fa04c59140fd440ef3f0806e71"
     },
     {
-      "bytes": 21297,
+      "bytes": 21364,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
-      "sha256": "9db03e6bb9cd5aca95fa664ca04415e264849674a616190aef37053c3cc38b37"
+      "sha256": "99ee553391f92f1441ba93e5e149c7c89672fd99614f75f5b4c13dfd6446ff89"
     },
     {
       "bytes": 121032,
@@ -157,9 +157,9 @@
       "sha256": "f67624cd77f5cc25c52673b741710ff3513fc255b3d921b1d4abcc53f00badcb"
     },
     {
-      "bytes": 126029,
+      "bytes": 126812,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
-      "sha256": "c00fed95d20ce574a6d271f917322e1beb5cfef33d60baf0d17d9177b9255f96"
+      "sha256": "b95c858076dee088bd2a3f1c9efd2c8e3a0115500f5030e9d192b5631655879b"
     },
     {
       "bytes": 2260,
@@ -177,9 +177,9 @@
       "sha256": "c16c07eb4c48b0cbc0e36544ef0c05c2fbf22cde6ae25a7c54c693b7e0ee57d5"
     },
     {
-      "bytes": 266,
+      "bytes": 274,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/style.css",
-      "sha256": "d7502b14422906889f5044795225829a39dbbaff90f30296ad2a7a552b103e5c"
+      "sha256": "4112f119387edcfa680dfbac897570834666db0f903525b0086644e55c280f9e"
     },
     {
       "bytes": 11046,
@@ -212,9 +212,9 @@
       "sha256": "a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac"
     },
     {
-      "bytes": 128406,
+      "bytes": 140457,
       "path": "python/raos/adapters/self_hosted_editorial_pilot_https.py",
-      "sha256": "0ef0e198c5ad06cc22e117d7815a82832efc677d5cdb5b102dfe43be3f714cce"
+      "sha256": "19ca6eeaabde6aa9cab4df66d8be780c89aa30a73a9fa7b5ee1115a77c7f812e"
     },
     {
       "bytes": 133439,
@@ -1772,9 +1772,9 @@
       "sha256": "ee641f7b295de066bcc464630dc18823f1b1449579a1676fdf8e9ce6440e5e66"
     },
     {
-      "bytes": 11094,
+      "bytes": 14491,
       "path": "scripts/build_editorial_v3_theme_navigation.py",
-      "sha256": "4e21c67a2da5f694abbf770baff0b19e910d4bb57a1c242e0d557fb37159acb0"
+      "sha256": "1f3f7db593dd72b3aefc076414d6f89f869a69e2842d379af90c3f307ee4a6e8"
     },
     {
       "bytes": 11818,

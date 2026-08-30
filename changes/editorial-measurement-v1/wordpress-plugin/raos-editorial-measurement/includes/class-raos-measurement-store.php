@@ -9,12 +9,19 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Measurement_Store
 {
-    const DB_VERSION = '1.0.0';
+    const DB_VERSION = '1.1.0';
     const DB_VERSION_OPTION = 'raos_measurement_db_version_v1';
     const CLEANUP_HOOK = 'raos_measurement_cleanup_v1';
     const RAW_RETENTION_DAYS = 7;
     const AGGREGATE_RETENTION_MONTHS = 13;
     const SESSION_RATE_PER_MINUTE = 120;
+    const SITE_SHORT_BUCKET_CAPACITY = 1200;
+    const SITE_SHORT_REFILL_PER_SECOND = 20;
+    const SITE_DAILY_CAP = 100000;
+    const RATE_STATE_RETENTION_DAYS = 2;
+
+    /** One token is stored as 1,000 integer units to retain sub-second refill. */
+    const TOKEN_SCALE = 1000;
 
     public static function install()
     {
@@ -23,6 +30,7 @@ final class RAOS_Measurement_Store
         $charset = $wpdb->get_charset_collate();
         $raw = self::raw_table();
         $daily = self::daily_table();
+        $rate = self::rate_table();
         dbDelta(
             "CREATE TABLE {$raw} (
                 event_id char(36) NOT NULL,
@@ -56,6 +64,17 @@ final class RAOS_Measurement_Store
                 PRIMARY KEY  (metric_date, event_name, article_id, snapshot_id, dimensions_sha256),
                 KEY article_period (article_id, metric_date),
                 KEY event_period (event_name, metric_date)
+            ) {$charset};"
+        );
+        dbDelta(
+            "CREATE TABLE {$rate} (
+                bucket_key varchar(48) NOT NULL,
+                tokens_milli bigint unsigned NOT NULL DEFAULT 0,
+                refilled_at_gmt datetime(3) NOT NULL,
+                accepted_count bigint unsigned NOT NULL DEFAULT 0,
+                expires_at_gmt datetime(3) NOT NULL,
+                PRIMARY KEY  (bucket_key),
+                KEY expires_at_gmt (expires_at_gmt)
             ) {$charset};"
         );
         update_option(self::DB_VERSION_OPTION, self::DB_VERSION, false);
@@ -102,6 +121,12 @@ final class RAOS_Measurement_Store
                 $aggregate_cutoff
             )
         );
+        $wpdb->query(
+            $wpdb->prepare(
+                'DELETE FROM ' . self::rate_table() . ' WHERE expires_at_gmt < %s',
+                $now->format('Y-m-d H:i:s.v')
+            )
+        );
     }
 
     /**
@@ -137,37 +162,39 @@ final class RAOS_Measurement_Store
                 array('status' => 400)
             );
         }
+        if (false === $wpdb->query('START TRANSACTION')) {
+            return self::storage_error();
+        }
+        $site_capacity = self::reserve_site_capacity($event['received_at']);
+        if (is_wp_error($site_capacity)) {
+            if ('raos_measurement_rate_limited' === $site_capacity->get_error_code()) {
+                if (false === $wpdb->query('COMMIT')) {
+                    $wpdb->query('ROLLBACK');
+                    return self::storage_error();
+                }
+            } else {
+                $wpdb->query('ROLLBACK');
+            }
+            return $site_capacity;
+        }
         $rate_cutoff = (new DateTimeImmutable($event['received_at']))
             ->modify('-1 minute')
             ->format('Y-m-d H:i:s.v');
-        $rate = $wpdb->get_var(
+        $session_rate = $wpdb->get_var(
             $wpdb->prepare(
                 'SELECT COUNT(*) FROM ' . self::raw_table()
-                    . ' WHERE session_sha256 = %s AND received_at_gmt >= %s',
+                    . ' WHERE session_sha256 = %s AND received_at_gmt >= %s FOR UPDATE',
                 $session_sha256,
                 $rate_cutoff
             )
         );
-        if (! is_numeric($rate)) {
-            return new WP_Error(
-                'raos_measurement_storage_unavailable',
-                'The measurement store is unavailable.',
-                array('status' => 503)
-            );
+        if (! is_numeric($session_rate)) {
+            $wpdb->query('ROLLBACK');
+            return self::storage_error();
         }
-        if ((int) $rate >= self::SESSION_RATE_PER_MINUTE) {
-            return new WP_Error(
-                'raos_measurement_rate_limited',
-                'The event rate limit was reached.',
-                array('status' => 429)
-            );
-        }
-        if (false === $wpdb->query('START TRANSACTION')) {
-            return new WP_Error(
-                'raos_measurement_storage_unavailable',
-                'The measurement store is unavailable.',
-                array('status' => 503)
-            );
+        if ((int) $session_rate >= self::SESSION_RATE_PER_MINUTE) {
+            $wpdb->query('ROLLBACK');
+            return self::rate_error();
         }
         $inserted = $wpdb->insert(
             self::raw_table(),
@@ -199,11 +226,7 @@ final class RAOS_Measurement_Store
                 return array('disposition' => 'DUPLICATE');
             }
             if (! is_string($existing)) {
-                return new WP_Error(
-                    'raos_measurement_storage_unavailable',
-                    'The measurement store is unavailable.',
-                    array('status' => 503)
-                );
+                return self::storage_error();
             }
             return new WP_Error(
                 'raos_measurement_event_id_conflict',
@@ -242,13 +265,171 @@ final class RAOS_Measurement_Store
         }
         if (false === $wpdb->query('COMMIT')) {
             $wpdb->query('ROLLBACK');
-            return new WP_Error(
-                'raos_measurement_storage_unavailable',
-                'The measurement store is unavailable.',
-                array('status' => 503)
-            );
+            return self::storage_error();
         }
         return array('disposition' => 'ACCEPTED');
+    }
+
+    /**
+     * Atomically reserve one event from the site-wide short and daily budgets.
+     *
+     * The caller must hold a database transaction. The two rows are locked in
+     * lexical order, so rotating anonymous session UUIDs cannot create fresh
+     * site capacity. No network or browser identity is read or persisted.
+     */
+    private static function reserve_site_capacity($received_at)
+    {
+        global $wpdb;
+        try {
+            $instant = (new DateTimeImmutable($received_at))
+                ->setTimezone(new DateTimeZone('UTC'));
+        } catch (Exception $error) {
+            return self::storage_error();
+        }
+        $now = $instant->format('Y-m-d H:i:s.v');
+        $short_key = 'site-short-v1';
+        $daily_key = 'site-day-v1:' . $instant->format('Ymd');
+        $short_expiry = $instant
+            ->modify('+' . self::RATE_STATE_RETENTION_DAYS . ' days')
+            ->format('Y-m-d H:i:s.v');
+        $daily_expiry = $instant
+            ->setTime(0, 0)
+            ->modify('+' . (self::RATE_STATE_RETENTION_DAYS + 1) . ' days')
+            ->format('Y-m-d H:i:s.v');
+        $short_capacity_milli = self::SITE_SHORT_BUCKET_CAPACITY * self::TOKEN_SCALE;
+        $insert_daily = $wpdb->query(
+            $wpdb->prepare(
+                'INSERT INTO ' . self::rate_table()
+                    . ' (bucket_key, tokens_milli, refilled_at_gmt, accepted_count, expires_at_gmt)'
+                    . ' VALUES (%s, 0, %s, 0, %s)'
+                    . ' ON DUPLICATE KEY UPDATE bucket_key = VALUES(bucket_key)',
+                $daily_key,
+                $now,
+                $daily_expiry
+            )
+        );
+        $insert_short = $wpdb->query(
+            $wpdb->prepare(
+                'INSERT INTO ' . self::rate_table()
+                    . ' (bucket_key, tokens_milli, refilled_at_gmt, accepted_count, expires_at_gmt)'
+                    . ' VALUES (%s, %d, %s, 0, %s)'
+                    . ' ON DUPLICATE KEY UPDATE bucket_key = VALUES(bucket_key)',
+                $short_key,
+                $short_capacity_milli,
+                $now,
+                $short_expiry
+            )
+        );
+        if (false === $insert_short || false === $insert_daily) {
+            return self::storage_error();
+        }
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT bucket_key, tokens_milli, refilled_at_gmt, accepted_count'
+                    . ' FROM ' . self::rate_table()
+                    . ' WHERE bucket_key IN (%s, %s)'
+                    . ' ORDER BY bucket_key ASC FOR UPDATE',
+                $daily_key,
+                $short_key
+            ),
+            ARRAY_A
+        );
+        if (! is_array($rows) || 2 !== count($rows)) {
+            return self::storage_error();
+        }
+        $by_key = array();
+        foreach ($rows as $row) {
+            if (! is_array($row)
+                || ! isset(
+                    $row['bucket_key'],
+                    $row['tokens_milli'],
+                    $row['refilled_at_gmt'],
+                    $row['accepted_count']
+                )
+                || ! is_string($row['bucket_key'])
+                || ! is_string($row['refilled_at_gmt'])
+                || isset($by_key[$row['bucket_key']])) {
+                return self::storage_error();
+            }
+            $by_key[$row['bucket_key']] = $row;
+        }
+        if (! isset($by_key[$short_key], $by_key[$daily_key])) {
+            return self::storage_error();
+        }
+        $short = $by_key[$short_key];
+        $daily = $by_key[$daily_key];
+        $tokens_milli = self::bounded_database_integer(
+            $short['tokens_milli'],
+            $short_capacity_milli
+        );
+        $daily_count = self::bounded_database_integer(
+            $daily['accepted_count'],
+            self::SITE_DAILY_CAP
+        );
+        if (! is_int($tokens_milli) || ! is_int($daily_count)) {
+            return self::storage_error();
+        }
+        $elapsed_milliseconds = self::elapsed_milliseconds(
+            $short['refilled_at_gmt'],
+            $instant
+        );
+        if (! is_int($elapsed_milliseconds)) {
+            return self::storage_error();
+        }
+        $full_refill_milliseconds = (int) ceil(
+            (self::SITE_SHORT_BUCKET_CAPACITY / self::SITE_SHORT_REFILL_PER_SECOND)
+                * 1000
+        );
+        $bounded_elapsed = min($elapsed_milliseconds, $full_refill_milliseconds);
+        $tokens_milli = min(
+            $short_capacity_milli,
+            $tokens_milli + ($bounded_elapsed * self::SITE_SHORT_REFILL_PER_SECOND)
+        );
+        if ($daily_count >= self::SITE_DAILY_CAP
+            || $tokens_milli < self::TOKEN_SCALE) {
+            $normalized = $wpdb->query(
+                $wpdb->prepare(
+                    'UPDATE ' . self::rate_table()
+                        . ' SET tokens_milli = %d, refilled_at_gmt = %s, expires_at_gmt = %s'
+                        . ' WHERE bucket_key = %s',
+                    $tokens_milli,
+                    $now,
+                    $short_expiry,
+                    $short_key
+                )
+            );
+            if (false === $normalized) {
+                return self::storage_error();
+            }
+            return self::rate_error();
+        }
+        $short_updated = $wpdb->query(
+            $wpdb->prepare(
+                'UPDATE ' . self::rate_table()
+                    . ' SET tokens_milli = %d, refilled_at_gmt = %s, expires_at_gmt = %s'
+                    . ' WHERE bucket_key = %s',
+                $tokens_milli - self::TOKEN_SCALE,
+                $now,
+                $short_expiry,
+                $short_key
+            )
+        );
+        $daily_updated = $wpdb->query(
+            $wpdb->prepare(
+                'UPDATE ' . self::rate_table()
+                    . ' SET accepted_count = accepted_count + 1,'
+                    . ' refilled_at_gmt = %s, expires_at_gmt = %s'
+                    . ' WHERE bucket_key = %s AND accepted_count < %d',
+                $now,
+                $daily_expiry,
+                $daily_key,
+                self::SITE_DAILY_CAP
+            )
+        );
+        if (1 !== $short_updated || 1 !== $daily_updated) {
+            return self::storage_error();
+        }
+        return true;
     }
 
     /** Return aggregates only; raw events and session hashes are never exposed. */
@@ -319,6 +500,59 @@ final class RAOS_Measurement_Store
     {
         global $wpdb;
         return $wpdb->prefix . 'raos_measurement_daily_v1';
+    }
+
+    private static function rate_table()
+    {
+        global $wpdb;
+        return $wpdb->prefix . 'raos_measurement_rate_v1';
+    }
+
+    private static function elapsed_milliseconds($stored, DateTimeImmutable $instant)
+    {
+        try {
+            $before = (new DateTimeImmutable($stored, new DateTimeZone('UTC')))
+                ->setTimezone(new DateTimeZone('UTC'));
+        } catch (Exception $error) {
+            return null;
+        }
+        $before_milliseconds = ((int) $before->format('U') * 1000)
+            + (int) $before->format('v');
+        $instant_milliseconds = ((int) $instant->format('U') * 1000)
+            + (int) $instant->format('v');
+        return max(0, $instant_milliseconds - $before_milliseconds);
+    }
+
+    private static function bounded_database_integer($value, $maximum)
+    {
+        if (is_int($value)) {
+            return $value >= 0 && $value <= $maximum ? $value : null;
+        }
+        if (! is_string($value)
+            || strlen($value) > 10
+            || preg_match('/\A(?:0|[1-9]\d*)\z/D', $value) !== 1) {
+            return null;
+        }
+        $normalized = (int) $value;
+        return $normalized <= $maximum ? $normalized : null;
+    }
+
+    private static function rate_error()
+    {
+        return new WP_Error(
+            'raos_measurement_rate_limited',
+            'The event rate limit was reached.',
+            array('status' => 429)
+        );
+    }
+
+    private static function storage_error()
+    {
+        return new WP_Error(
+            'raos_measurement_storage_unavailable',
+            'The measurement store is unavailable.',
+            array('status' => 503)
+        );
     }
 
     private static function sql_timestamp($value)

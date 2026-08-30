@@ -9,9 +9,12 @@ if (! defined('WP_CLI') || WP_CLI !== true) {
 if (
     ! defined('RAOS_LOCAL_PREVIEW')
     || RAOS_LOCAL_PREVIEW !== true
+    || ! defined('RAOS_WORDPRESS_PREVIEW_ORIGIN')
+    || ! is_string(RAOS_WORDPRESS_PREVIEW_ORIGIN)
+    || preg_match('#\Ahttp://127\.0\.0\.1:[0-9]{4,5}\z#D', RAOS_WORDPRESS_PREVIEW_ORIGIN) !== 1
     || wp_get_environment_type() !== 'local'
-    || home_url('/') !== 'http://127.0.0.1:8888/'
-    || site_url('/') !== 'http://127.0.0.1:8888/'
+    || home_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'
+    || site_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'
 ) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_BOUNDARY_INVALID');
 }
