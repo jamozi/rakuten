@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import hashlib
+import html
 import json
 import os
 from pathlib import Path
@@ -96,8 +97,34 @@ def _public_markup(
     *,
     head_extra: str = "",
     block_markup: str | None = None,
+    schema_types: list[str] | None = None,
 ) -> str:
     url = f"{publication.ORIGIN}/{article.production_slug}/"
+    required_schema_types = schema_types or (
+        ["Article", "BreadcrumbList", "Organization", "WebSite"]
+        if article.post_type == "post"
+        else ["BreadcrumbList", "Organization", "WebSite"]
+    )
+    structured_data = json.dumps(
+        {
+            "@context": "https://schema.org",
+            "@graph": [{"@type": value} for value in required_schema_types],
+        },
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+    excerpt = html.escape(article.excerpt, quote=True)
+    title = html.escape(article.title, quote=True)
+    seo_head = (
+        f'<meta name="description" content="{excerpt}">'
+        f'<meta property="og:title" content="{title}">'
+        f'<meta property="og:description" content="{excerpt}">'
+        f'<meta property="og:url" content="{url}">'
+        f'<meta property="og:image" content="{publication.EXPECTED_SOCIAL_IMAGE_URL}">'
+        '<script id="raos-structured-data" type="application/ld+json">'
+        + structured_data
+        + "</script>"
+    )
     return (
         "<!doctype html><html><head><title>"
         + article.title
@@ -109,6 +136,7 @@ def _public_markup(
         + '<link rel="canonical" href="'
         + url
         + '">'
+        + seo_head
         + head_extra
         + "</head><body><main><h1>"
         + article.title
@@ -135,6 +163,19 @@ def test_anonymous_public_readback_requires_exact_canonical_title_and_headings()
 
     assert evidence[article.production_slug]["canonical_url"] == url
     assert evidence[article.production_slug]["heading_count"] >= 1
+    assert evidence[article.production_slug]["meta_description"] == article.excerpt
+    assert evidence[article.production_slug]["open_graph"] == {
+        "og:description": article.excerpt,
+        "og:image": publication.EXPECTED_SOCIAL_IMAGE_URL,
+        "og:title": article.title,
+        "og:url": url,
+    }
+    assert set(evidence[article.production_slug]["json_ld_types"]) >= {
+        "Article",
+        "BreadcrumbList",
+        "Organization",
+        "WebSite",
+    }
     request = opener.requests[0]
     assert request.full_url == url
     assert request.get_header("Authorization") is None
@@ -157,6 +198,173 @@ def test_anonymous_public_readback_rejects_noindex() -> None:
             sleeper=lambda seconds: None,
             opener=_PublicOpener(_PublicResponse(url, markup)),
         )
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    [
+        lambda markup, article, url: markup.replace(
+            f'<meta name="description" content="{html.escape(article.excerpt, quote=True)}">',
+            "",
+        ),
+        lambda markup, article, url: markup.replace(
+            html.escape(article.excerpt, quote=True),
+            "wrong-description",
+            1,
+        ),
+        lambda markup, article, url: markup.replace(
+            f'<meta property="og:title" content="{html.escape(article.title, quote=True)}">',
+            '<meta property="og:title" content="wrong-title">',
+        ),
+        lambda markup, article, url: markup.replace(
+            f'<meta property="og:description" content="{html.escape(article.excerpt, quote=True)}">',
+            '<meta property="og:description" content="wrong-description">',
+        ),
+        lambda markup, article, url: markup.replace(
+            f'<meta property="og:url" content="{url}">',
+            '<meta property="og:url" content="https://example.invalid/wrong/">',
+        ),
+        lambda markup, article, url: markup.replace(
+            publication.EXPECTED_SOCIAL_IMAGE_URL,
+            "http://kurashinoshirube.com/wp-content/themes/"
+            "kurashinoshirube-child/assets/images/home-hero.webp",
+        ),
+        lambda markup, article, url: markup.replace(
+            publication.EXPECTED_SOCIAL_IMAGE_URL,
+            "https://example.invalid/home-hero.webp",
+        ),
+        lambda markup, article, url: markup.replace(
+            publication.EXPECTED_SOCIAL_IMAGE_URL,
+            f"{publication.ORIGIN}/wp-content/themes/"
+            "kurashinoshirube-child/assets/images/other.webp",
+        ),
+        lambda markup, article, url: markup.replace(
+            "</head>",
+            f'<meta name="description" content="{html.escape(article.excerpt, quote=True)}">'
+            "</head>",
+        ),
+    ],
+    ids=(
+        "missing-meta-description",
+        "description-not-tracked-excerpt",
+        "og-title-drift",
+        "og-description-drift",
+        "og-url-drift",
+        "og-image-not-https",
+        "og-image-cross-origin",
+        "og-image-not-default-theme-image",
+        "duplicate-meta-description",
+    ),
+)
+def test_public_readback_rejects_meta_and_open_graph_drift(tamper: Any) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    markup = tamper(_public_markup(article), article, url)
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_HEAD_INVALID",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(_PublicResponse(url, markup)),
+        )
+
+
+@pytest.mark.parametrize(
+    "missing_type",
+    ["Article", "BreadcrumbList", "Organization", "WebSite"],
+)
+def test_article_public_readback_requires_each_json_ld_type(
+    missing_type: str,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    types = [
+        value
+        for value in ["Article", "BreadcrumbList", "Organization", "WebSite"]
+        if value != missing_type
+    ]
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(url, _public_markup(article, schema_types=types))
+            ),
+        )
+
+
+@pytest.mark.parametrize("forbidden_type", ["Product", "Offer", "Review", "FAQPage"])
+def test_public_readback_rejects_forbidden_commercial_json_ld(
+    forbidden_type: str,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(
+                    url,
+                    _public_markup(
+                        article,
+                        schema_types=[
+                            "Article",
+                            "BreadcrumbList",
+                            "Organization",
+                            "WebSite",
+                            f"https://schema.org/{forbidden_type}",
+                        ],
+                    ),
+                )
+            ),
+        )
+
+
+def test_policy_page_json_ld_requires_page_graph_and_refuses_article_type() -> None:
+    page = publication.load_policy_pages()[0]
+    url = f"{publication.ORIGIN}/{page.production_slug}/"
+    evidence = ORIGINAL_VERIFY_PUBLIC_PAGES(
+        [page],
+        attempts=1,
+        sleeper=lambda seconds: None,
+        opener=_PublicOpener(_PublicResponse(url, _public_markup(page))),
+    )
+    assert set(evidence[page.production_slug]["json_ld_types"]) == {
+        "BreadcrumbList",
+        "Organization",
+        "WebSite",
+    }
+    for invalid_types in (
+        ["BreadcrumbList", "Organization"],
+        ["Article", "BreadcrumbList", "Organization", "WebSite"],
+    ):
+        with pytest.raises(
+            publication.PublicationFailure,
+            match="RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID",
+        ):
+            ORIGINAL_VERIFY_PUBLIC_PAGES(
+                [page],
+                attempts=1,
+                sleeper=lambda seconds: None,
+                opener=_PublicOpener(
+                    _PublicResponse(
+                        url,
+                        _public_markup(page, schema_types=invalid_types),
+                    )
+                ),
+            )
 
 
 @pytest.mark.parametrize(

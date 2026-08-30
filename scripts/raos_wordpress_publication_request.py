@@ -61,6 +61,10 @@ THEME_STYLE_PATH: Final = (
 )
 THEME_ROOT: Final = THEME_STYLE_PATH.parent
 ORIGIN: Final = "https://kurashinoshirube.com"
+EXPECTED_SOCIAL_IMAGE_URL: Final = (
+    f"{ORIGIN}/wp-content/themes/kurashinoshirube-child/"
+    "assets/images/home-hero.webp"
+)
 EDITOR_ENDPOINT: Final = f"{ORIGIN}/wp-json/raos-codex-mcp/v1/editor"
 REVIEW_URL: Final = f"{ORIGIN}/wp-admin/tools.php?page=raos-codex-proposals"
 EDITOR_CREDENTIAL_PATH: Final = (
@@ -188,6 +192,14 @@ class _PublicPageEvidenceParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.canonical_urls: list[str] = []
+        self.meta_descriptions: list[str] = []
+        self.open_graph: dict[str, list[str]] = {
+            "og:title": [],
+            "og:description": [],
+            "og:url": [],
+            "og:image": [],
+        }
+        self.json_ld_payloads: list[str] = []
         self.page_titles: list[str] = []
         self.headings: list[str] = []
         self.heading_outline: list[tuple[str, str]] = []
@@ -203,6 +215,7 @@ class _PublicPageEvidenceParser(HTMLParser):
         self._heading_tag: str | None = None
         self._heading_parts: list[str] = []
         self._title_parts: list[str] | None = None
+        self._json_ld_parts: list[str] | None = None
         self._elements: list[tuple[str, str | None, bool]] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -222,6 +235,12 @@ class _PublicPageEvidenceParser(HTMLParser):
             classes & {"disclosure", "raos-disclosure"}
         )
         if lowered in {"script", "style", "noscript", "template"}:
+            if (
+                lowered == "script"
+                and (attributes.get("type") or "").strip().casefold()
+                == "application/ld+json"
+            ):
+                self._json_ld_parts = []
             self._suppressed_depth += 1
         if lowered == "link":
             rel = (attributes.get("rel") or "").lower().split()
@@ -245,6 +264,14 @@ class _PublicPageEvidenceParser(HTMLParser):
         }:
             if _robots_blocks_indexing(attributes.get("content")):
                 self.noindex = True
+        if lowered == "meta":
+            name = (attributes.get("name") or "").strip().casefold()
+            prop = (attributes.get("property") or "").strip().casefold()
+            content = attributes.get("content")
+            if name == "description" and isinstance(content, str):
+                self.meta_descriptions.append(content)
+            if prop in self.open_graph and isinstance(content, str):
+                self.open_graph[prop].append(content)
         if lowered == "title" and self._suppressed_depth == 0:
             self._title_parts = []
         if lowered == "a" and attributes.get("data-raos-placement") in {
@@ -319,6 +346,9 @@ class _PublicPageEvidenceParser(HTMLParser):
             if title:
                 self.page_titles.append(title)
             self._title_parts = None
+        if lowered == "script" and self._json_ld_parts is not None:
+            self.json_ld_payloads.append("".join(self._json_ld_parts))
+            self._json_ld_parts = None
         if lowered in {"script", "style", "noscript", "template"}:
             self._suppressed_depth = max(0, self._suppressed_depth - 1)
         for index in range(len(self._elements) - 1, -1, -1):
@@ -327,6 +357,8 @@ class _PublicPageEvidenceParser(HTMLParser):
                 break
 
     def handle_data(self, data: str) -> None:
+        if self._json_ld_parts is not None:
+            self._json_ld_parts.append(data)
         if self._suppressed_depth:
             return
         self.visible_text.append(data)
@@ -854,6 +886,8 @@ def production_materialization_binding(
         },
     )
     generated_at = document["generated_at"]
+    if type(generated_at) is not str:
+        fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
     try:
         generated = datetime.strptime(generated_at, "%Y-%m-%dT%H:%M:%SZ").replace(
             tzinfo=UTC
@@ -988,9 +1022,12 @@ def _validate_local_materialization_pair(
             "products",
         },
     )
+    generated_at = local["generated_at"]
+    if type(generated_at) is not str:
+        fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
     try:
         generated = datetime.strptime(
-            local["generated_at"], "%Y-%m-%dT%H:%M:%SZ"
+            generated_at, "%Y-%m-%dT%H:%M:%SZ"
         ).replace(tzinfo=UTC)
     except TypeError, ValueError:
         fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
@@ -1317,9 +1354,6 @@ class EditorMcpClient:
             fail(code)
         except urllib.error.URLError, TimeoutError, OSError:
             fail("RAOS_WORDPRESS_REQUEST_TRANSPORT_FAILED")
-        if notification:
-            fail("RAOS_WORDPRESS_REQUEST_NOTIFICATION_FAILED")
-
     def message(self, method: str, params: dict[str, object]) -> dict[str, object]:
         request_id = self.next_id
         self.next_id += 1
@@ -1348,7 +1382,10 @@ class EditorMcpClient:
             if type(session) is not str or not session:
                 fail("RAOS_WORDPRESS_REQUEST_MCP_SESSION_INVALID")
             self.session_id = session
-        return payload["result"]
+        result = payload["result"]
+        if type(result) is not dict:
+            fail("RAOS_WORDPRESS_REQUEST_MCP_RESPONSE_INVALID")
+        return dict(result)
 
     def initialize(self) -> dict[str, object]:
         result = self.message(
@@ -2244,6 +2281,7 @@ def _validate_deployment_tools(tools: object) -> None:
         or type(theme_key) is not dict
         or theme_key.get("type") != "string"
         or theme_key.get("pattern") != "^[0-9a-f]{64}$"
+        or type(wait_schema) is not dict
         or type(wait_ids) is not dict
         or wait_schema.get("type") != "object"
         or wait_schema.get("required")
@@ -2418,7 +2456,7 @@ def _proposal_record(
         or re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", expires) is None
     ):
         fail("RAOS_WORDPRESS_REQUEST_PROPOSAL_INVALID")
-    result = {
+    result: dict[str, object] = {
         "kind": kind,
         "slug": slug,
         "proposal_id": proposal_id,
@@ -2631,11 +2669,14 @@ def create_proposals(
         if type(key) is not str or SHA256_RE.fullmatch(key) is None:
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
         draft = drafts[article.production_slug]
-        expected_after = _content_after_sha256(article.document(), draft["id"])
+        draft_id = draft.get("id")
+        if type(draft_id) is not int or draft_id < 1:
+            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+        expected_after = _content_after_sha256(article.document(), draft_id)
         response = client.call(
             "raos-codex-content-propose-release",
             {
-                "id": draft["id"],
+                "id": draft_id,
                 "precondition": precondition(draft),
                 "document": article.document(),
                 "idempotency_key": key,
@@ -2828,6 +2869,8 @@ def register_publication_batch(
             "expected_theme_tree_sha256": expected_theme_tree_sha256,
         },
     )
+    if type(response) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_BATCH_REGISTRATION_INVALID")
     batch_token = response.get("batch_token")
     manifest_hash = response.get("batch_manifest_sha256")
     expires = response.get("expires_at_gmt")
@@ -2848,7 +2891,7 @@ def register_publication_batch(
         fail("RAOS_WORDPRESS_REQUEST_BATCH_REGISTRATION_INVALID")
     receipt["batch_registration"] = response
     _touch_receipt(path, receipt, "BATCH_REGISTERED")
-    return response
+    return dict(response)
 
 
 def _registered_proposal_ids(receipt: Mapping[str, object]) -> list[str]:
@@ -2909,6 +2952,7 @@ def publication_batch_status(
         timeout=120,
         runner=runner,
     )
+    expires_at_gmt = response.get("expires_at_gmt")
     if (
         set(response)
         != {
@@ -2928,10 +2972,10 @@ def publication_batch_status(
         or response.get("proposal_ids") != proposal_ids
         or response.get("state")
         not in {"REGISTERED", "APPROVED", "APPLIED", "EXPIRED", "FAILED"}
-        or type(response.get("expires_at_gmt")) is not str
+        or type(expires_at_gmt) is not str
         or re.fullmatch(
             r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
-            response["expires_at_gmt"],
+            expires_at_gmt,
         )
         is None
         or type(response.get("preconditions_ready")) is not bool
@@ -2973,6 +3017,7 @@ def wait_and_apply(
         timeout=1080,
         runner=runner,
     )
+    aggregate_receipts = aggregate.get("receipts")
     if (
         aggregate.get("schema") != "ReleaseWaitApplyReceiptV1"
         or aggregate.get("batch_token") != batch_token
@@ -2980,8 +3025,8 @@ def wait_and_apply(
         or aggregate.get("proposal_count") != len(proposal_ids)
         or aggregate.get("proposal_ids") != proposal_ids
         or aggregate.get("state") != "APPLIED"
-        or type(aggregate.get("receipts")) is not list
-        or len(aggregate["receipts"]) != len(proposal_ids)
+        or type(aggregate_receipts) is not list
+        or len(aggregate_receipts) != len(proposal_ids)
     ):
         fail("RAOS_WORDPRESS_REQUEST_APPLY_RECEIPT_INVALID")
     proposal_by_id = {
@@ -2997,7 +3042,7 @@ def wait_and_apply(
         ),
     )
     for proposal_id, operation in zip(
-        expected_order, aggregate["receipts"], strict=True
+        expected_order, aggregate_receipts, strict=True
     ):
         proposal = proposal_by_id.get(proposal_id)
         expected_after = (
@@ -3019,7 +3064,7 @@ def wait_and_apply(
     receipt["apply_receipt"] = aggregate
     receipt["operation_ids"] = {
         operation["proposal_id"]: operation["operation_id"]
-        for operation in aggregate["receipts"]
+        for operation in aggregate_receipts
     }
     _touch_receipt(path, receipt, "APPLY_RETURNED")
     return aggregate
@@ -3134,6 +3179,123 @@ def _validated_product_images(
     return result
 
 
+def _json_object_without_duplicates(
+    pairs: list[tuple[str, object]],
+) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+        result[key] = value
+    return result
+
+
+def _structured_data_types(
+    parser: _PublicPageEvidenceParser,
+    *,
+    post_type: str,
+) -> list[str]:
+    if (
+        len(parser.json_ld_payloads) != 1
+        or not parser.json_ld_payloads[0].strip()
+        or len(parser.json_ld_payloads[0].encode("utf-8")) > 256 * 1024
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+    try:
+        payload = json.loads(
+            parser.json_ld_payloads[0],
+            object_pairs_hook=_json_object_without_duplicates,
+        )
+    except (UnicodeError, json.JSONDecodeError, ValueError, RecursionError):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+    if (
+        type(payload) is not dict
+        or set(payload) != {"@context", "@graph"}
+        or payload.get("@context") != "https://schema.org"
+        or type(payload.get("@graph")) is not list
+        or not payload["@graph"]
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+    discovered: set[str] = set()
+
+    def add_type(value: str) -> None:
+        normalized = re.split(r"[/#:]", value)[-1]
+        if not normalized or re.fullmatch(r"[A-Za-z][A-Za-z0-9]*", normalized) is None:
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+        discovered.add(normalized)
+
+    def visit(value: object, depth: int = 0) -> None:
+        if depth > 16:
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+        if type(value) is dict:
+            node_type = value.get("@type")
+            if type(node_type) is str:
+                add_type(node_type)
+            elif type(node_type) is list:
+                if not node_type or any(type(item) is not str for item in node_type):
+                    fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+                for item in node_type:
+                    add_type(item)
+            elif node_type is not None:
+                fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+            for child in value.values():
+                visit(child, depth + 1)
+        elif type(value) is list:
+            for child in value:
+                visit(child, depth + 1)
+
+    visit(payload)
+    forbidden = {"Product", "Offer", "Review", "FAQPage"}
+    required = {"BreadcrumbList", "Organization", "WebSite"}
+    if post_type == "post":
+        required.add("Article")
+    elif post_type != "page":
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+    if (
+        forbidden & discovered
+        or not required.issubset(discovered)
+        or (post_type == "page" and "Article" in discovered)
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+    return sorted(discovered)
+
+
+def _validated_public_head(
+    parser: _PublicPageEvidenceParser,
+    article: Article,
+    url: str,
+) -> dict[str, object]:
+    expected_og = {
+        "og:title": [article.title],
+        "og:description": [article.excerpt],
+        "og:url": [url],
+        "og:image": [EXPECTED_SOCIAL_IMAGE_URL],
+    }
+    image = urlsplit(EXPECTED_SOCIAL_IMAGE_URL)
+    if (
+        not article.excerpt.strip()
+        or parser.meta_descriptions != [article.excerpt]
+        or parser.open_graph != expected_og
+        or image.scheme != "https"
+        or image.hostname != urlsplit(ORIGIN).hostname
+        or image.username is not None
+        or image.password is not None
+        or image.query
+        or image.fragment
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_HEAD_INVALID")
+    return {
+        "meta_description": article.excerpt,
+        "open_graph": {
+            key: values[0] for key, values in sorted(parser.open_graph.items())
+        },
+        "json_ld_types": _structured_data_types(
+            parser,
+            post_type=article.post_type,
+        ),
+    }
+
+
 def _public_page_evidence(
     article: Article,
     opener: urllib.request.OpenerDirector,
@@ -3204,6 +3366,7 @@ def _public_page_evidence(
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_HTML_INVALID")
     visible = _normalized_public_text(parser.visible_text)
     required_headings = desired.headings
+    head_evidence = _validated_public_head(parser, article, url)
     common_invalid = (
         response_noindex
         or parser.noindex
@@ -3250,6 +3413,7 @@ def _public_page_evidence(
             "required_key_content": list(article.required_key_content),
             "private_financial_data_absent": True,
             "theme_version": EXPECTED_THEME_VERSION,
+            **head_evidence,
         }
     expected_ctas = _validated_ctas(desired)
     actual_ctas = _validated_ctas(parser)
@@ -3281,6 +3445,7 @@ def _public_page_evidence(
         "product_images": actual_images,
         "advertising_disclosure": actual_disclosure,
         "theme_version": EXPECTED_THEME_VERSION,
+        **head_evidence,
     }
 
 
@@ -3430,6 +3595,13 @@ def _resume_ready(receipt: Mapping[str, object], expected_count: int) -> bool:
     )
 
 
+def _theme_was_proposed(
+    receipt: Mapping[str, object], content_count: int
+) -> bool:
+    proposals = receipt.get("proposals")
+    return type(proposals) is list and len(proposals) == content_count + 1
+
+
 def _unregistered_proposal_set_ready(
     receipt: Mapping[str, object],
     content_count: int,
@@ -3506,7 +3678,7 @@ def _resume_existing_all_attempt(
         path,
         expected_theme_version=EXPECTED_THEME_VERSION,
         expected_theme_tree_sha256=desired_tree,
-        theme_was_proposed=len(receipt["proposals"]) == len(articles) + 1,
+        theme_was_proposed=_theme_was_proposed(receipt, len(articles)),
         deployment_runner=deployment_runner,
     )
     return True
@@ -3775,7 +3947,7 @@ def execute(
                     path,
                     expected_theme_version=local_theme_version,
                     expected_theme_tree_sha256=local_theme_tree_sha256,
-                    theme_was_proposed=len(receipt["proposals"]) == len(articles) + 1,
+                    theme_was_proposed=_theme_was_proposed(receipt, len(articles)),
                     deployment_runner=deployment_runner,
                 )
                 return path
