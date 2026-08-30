@@ -72,9 +72,9 @@
       "sha256": "ccfff1f1c0eb2f7f328034514319cedcfbde777cbc4ecec1ee2076c79744436d"
     },
     {
-      "bytes": 138191,
+      "bytes": 138382,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-      "sha256": "d71db81d91c2b11bdc3cdbb30075b9340aa7d1a6010da2bea50aacb2ea57d6ab"
+      "sha256": "6bff3318494241cf40c84961bfcbaa81142a6a1e2f1ceb4fce9e15cf5ef881f4"
     },
     {
       "bytes": 23745,
@@ -237,9 +237,9 @@
       "sha256": "69f4c373dca5ddcbebf7dcefc23a8a9376792ca85b70fb3d48d6137212fb6f27"
     },
     {
-      "bytes": 68616,
+      "bytes": 69252,
       "path": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
-      "sha256": "eec8ad72e616b78cc8418978dfc26e32528429aea48381be98de379fd27f3feb"
+      "sha256": "ea8d49581921737a40457226babdcb946bc0b31c1972753e133a63d180de5d38"
     },
     {
       "bytes": 11383,
