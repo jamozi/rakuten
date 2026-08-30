@@ -143,11 +143,11 @@ function raos_e2e_mark_applying_with_lease($row, $approver_id, $expired = false)
 {
     global $wpdb;
     $approved_unix = $expired
-        ? time() - RAOS_Codex_MCP_Store::TTL_SECONDS - 60
+        ? time() - RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS - 60
         : time();
     $approved_at = RAOS_Codex_MCP_Store::timestamp_mysql($approved_unix);
     $expires_at = RAOS_Codex_MCP_Store::timestamp_mysql(
-        $approved_unix + RAOS_Codex_MCP_Store::TTL_SECONDS
+        $approved_unix + RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS
     );
     $lease_row = $row;
     $lease_row['approved_by'] = (int) $approver_id;

@@ -1,9 +1,9 @@
-# RAOS Codex MCP Abilities 1.3.0
+# RAOS Codex MCP Abilities 1.3.1
 
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
 The release is bound to runtime revision
-`1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a`;
+`24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55`;
 every loaded critical class must report that exact value before any ability or
 mutation is authorized.
 
@@ -56,8 +56,10 @@ batch containing content plus at most one theme; unrelated pending proposals
 and plugin changes cannot enter that batch. One batch approval requires current
 password reauthentication, a reason, and the visible final eight characters of
 the batch manifest hash. The transaction either approves the complete unchanged
-registered batch and creates every scoped lease, or approves none.
-Approval does not apply anything; the bounded operator still performs the
+registered batch and creates every scoped lease, or approves none. A proposal
+and its registered batch stay reviewable for 60 minutes; successful approval
+starts a fresh, separate 15-minute single-use apply lease. Approval does not
+apply anything; the bounded operator still performs the
 apply, backup, readback, and rollback workflow. Content and theme proposals can
 only be approved through their exact registered batch; individual approval is
 available only for deliberate plugin-change handling.

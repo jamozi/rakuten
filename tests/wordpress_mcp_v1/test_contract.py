@@ -53,14 +53,14 @@ def test_repo_plugin_registry_has_one_deterministic_owner_for_both_packages() ->
 
 
 def test_owner_plugin_version_is_bound_across_package_and_runtime() -> None:
-    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.3.0"
+    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.3.1"
     entrypoint = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(
         encoding="utf-8"
     )
-    assert " * Version: 1.3.0" in entrypoint
-    assert "define('RAOS_CODEX_MCP_VERSION', '1.3.0');" in entrypoint
+    assert " * Version: 1.3.1" in entrypoint
+    assert "define('RAOS_CODEX_MCP_VERSION', '1.3.1');" in entrypoint
     assert (PLUGIN / "README.md").read_text(encoding="utf-8").startswith(
-        "# RAOS Codex MCP Abilities 1.3.0\n"
+        "# RAOS Codex MCP Abilities 1.3.1\n"
     )
 
 
@@ -89,6 +89,39 @@ def test_owner_plugin_runtime_revision_is_bound_across_every_critical_class() ->
     assert build_wordpress_mcp_v1.runtime_manifest()["plugin"][
         "runtime_revision"
     ] == revision
+
+
+def test_review_and_apply_ttls_are_distinct_and_exposed_without_ambiguity() -> None:
+    store = (
+        PLUGIN / "includes/class-raos-codex-mcp-store.php"
+    ).read_text(encoding="utf-8")
+    content = (
+        PLUGIN / "includes/class-raos-codex-mcp-content.php"
+    ).read_text(encoding="utf-8")
+    deployment = (
+        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
+    ).read_text(encoding="utf-8")
+
+    assert "const PROPOSAL_REVIEW_TTL_SECONDS = 3600;" in store
+    assert "const APPLY_LEASE_TTL_SECONDS = 900;" in store
+    assert "const TTL_SECONDS" not in store
+    assert "$created_unix + self::PROPOSAL_REVIEW_TTL_SECONDS" in store
+    assert store.count("$approved_unix + self::APPLY_LEASE_TTL_SECONDS") == 3
+    assert (
+        "'proposal_review_ttl_seconds' => "
+        "RAOS_Codex_MCP_Store::PROPOSAL_REVIEW_TTL_SECONDS"
+    ) in content
+    assert (
+        "'lease_ttl_seconds' => "
+        "RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS"
+    ) in content
+    assert (
+        "'lease_ttl_seconds' => "
+        "RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS"
+    ) in deployment
+    assert "'proposal_ttl_seconds'" not in content
+    assert "'ttl_seconds'" not in content
+    assert "'ttl_seconds'" not in deployment
 
 
 def test_publication_runtime_binds_portfolio_materializer_and_browser_audit() -> None:
@@ -172,7 +205,7 @@ def test_public_contract_and_schema_are_valid() -> None:
     contract = json.loads((SLICE / "contracts/wordpress-mcp.v1.json").read_text())
     schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
     Draft202012Validator.check_schema(schema)
-    assert contract["version"] == "1.2.0"
+    assert contract["version"] == "1.3.1"
     assert contract["wordpress_version"] == "7.1.x"
     assert contract["mcp_adapter"]["version"] == "0.6.1"
     assert contract["remote_proxy"]["version"] == "0.4.0"
@@ -188,7 +221,7 @@ def test_public_contract_and_schema_are_valid() -> None:
         "minimum_reason_length": 10,
         "reauthentication": True,
         "self_approval": False,
-        "ttl_seconds": 900,
+        "review_ttl_seconds": 3600,
     }
     assert contract["publication_request"] == {
         "command": "make wordpress-production-request ARTICLES=all",
@@ -196,7 +229,11 @@ def test_public_contract_and_schema_are_valid() -> None:
         "local_preview_required": True,
         "proposal_idempotency": True,
         "deployment_transport": "wordpressDeployment stdio MCP",
-        "approval_wait_seconds": 900,
+        "approval_wait_seconds": 3600,
+        "apply_recovery_seconds": 900,
+        "operator_budget_seconds": 4500,
+        "bridge_timeout_seconds": 4620,
+        "foreground_timeout_seconds": 4680,
         "release_batch_identity_bound": True,
         "release_preflight_all_members": True,
         "atomic_batch_claim_before_mutation": True,
@@ -221,7 +258,7 @@ def test_public_contract_and_schema_are_valid() -> None:
         "proposal_bound": True,
         "hash_bound": True,
         "single_use": True,
-        "ttl_seconds": 900,
+        "lease_ttl_seconds": 900,
         "removed_after_terminal_state": True,
     }
 

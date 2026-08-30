@@ -15,8 +15,8 @@ There are exactly two project MCP servers:
    `@modelcontextprotocol/sdk@1.30.0`, over stdio.
 
 The WordPress plugin requires WordPress 7.1.x and exactly MCP Adapter 0.6.1.
-Abilities 1.3.0 is bound to runtime revision
-`1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a`;
+Abilities 1.3.1 is bound to runtime revision
+`24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55`;
 the entrypoint and every critical class must report that exact identity.
 It disables MCP Adapter's generic default server and exposes only the nine
 tools listed in `contracts/wordpress-mcp.v1.json`. The local bridge exposes only
@@ -37,7 +37,7 @@ the build or tests:
    `23cb53e0b82f39238eec1c38cb055e28aa30fa7c`).
 2. Run `make -C changes/wordpress-mcp-v1 plugin-package`, verify the hash in
    `runtime-manifest.v1.json`, and install/activate the resulting owner-private
-   `raos-codex-mcp-abilities-1.3.0.zip` in wp-admin.
+   `raos-codex-mcp-abilities-1.3.1.zip` in wp-admin.
 3. Create one non-administrator user for each activation-created role, with no
    second role or direct capabilities:
    `raos_codex_mcp_editor` and `raos_codex_deployment_operator`.
@@ -113,14 +113,16 @@ owner-private receipts are stored under
   shows the complete content/theme payload; if any member or hash is missing or
   inconsistent, it withholds the approval form. The administrator
   reauthenticates once, gives a reason, and types the visible final eight
-  characters of the canonical manifest hash. Approval is all-or-nothing:
-  it creates one proposal-bound, single-use authorization lease per proposal
-  outside the web root. The leases expire after 15 minutes and approval itself
+  characters of the canonical manifest hash. Each proposal and its batch stay
+  reviewable for 60 minutes. Approval is all-or-nothing: it creates one
+  proposal-bound, single-use authorization lease per proposal outside the web
+  root. The leases expire after 15 minutes and approval itself
   does not apply anything. An atomic claim made before that deadline consumes
   the authorization and keeps the exact batch recoverable until every claimed
   operation reaches a terminal state; the 15-minute clock does not interrupt a
   batch already being applied.
-- The bounded `release-wait-and-apply` operator waits for that approval, refuses
+- The bounded `release-wait-and-apply` operator waits up to 60 minutes for that
+  approval, then starts a separate 15-minute apply/recovery budget. It refuses
   plugin proposals and malformed or terminal batches, and binds the server's
   exact batch token, canonical manifest hash, and sorted proposal IDs through
   the final aggregate receipt. Before its first mutation, WordPress verifies

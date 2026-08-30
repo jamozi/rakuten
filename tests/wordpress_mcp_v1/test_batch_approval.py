@@ -71,7 +71,7 @@ def test_batch_manifest_and_approval_fail_closed_as_one_transaction() -> None:
     assert "wp_check_password" in main
     assert "batch_token . '_' . $batch_hash" in main
     assert (
-        "$approval_expires = self::timestamp_mysql($approved_unix + self::TTL_SECONDS)"
+        "$approved_unix + self::APPLY_LEASE_TTL_SECONDS"
         in store
     )
     assert "proposal_expiry_integrity" in store

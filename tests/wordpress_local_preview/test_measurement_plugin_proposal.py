@@ -84,7 +84,7 @@ def _abilities_apply_set(
                 "state": "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL",
                 "artifact_id": "raos-codex-mcp-abilities-v1",
                 "plugin_slug": "raos-codex-mcp-abilities",
-                "plugin_version": "1.3.0",
+                "plugin_version": "1.3.1",
                 "proposal": {
                     "proposal_id": "d" * 64,
                     "operation_id": "e" * 64,
@@ -209,7 +209,7 @@ def test_proposal_stops_for_separate_admin_and_never_applies_or_enables_gate(
         "proposal_id": "d" * 64,
         "operation_id": "e" * 64,
         "after_sha256": "f" * 64,
-        "plugin_version": "1.3.0",
+        "plugin_version": "1.3.1",
     }
     source = SCRIPT.read_text(encoding="utf-8")
     assert '"plugin-apply-change"' not in source

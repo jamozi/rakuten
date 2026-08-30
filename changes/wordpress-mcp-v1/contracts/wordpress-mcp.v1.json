@@ -1,6 +1,6 @@
 {
   "schema": "RAOS_WORDPRESS_MCP_CONTRACT_V1",
-  "version": "1.2.0",
+  "version": "1.3.1",
   "site_origin": "https://kurashinoshirube.com",
   "wordpress_version": "7.1.x",
   "mcp_adapter": {
@@ -62,7 +62,7 @@
     "batch_manifest_bound": true,
     "batch_registered_exact_ids": true,
     "batch_plugin_excluded": true,
-    "ttl_seconds": 900,
+    "review_ttl_seconds": 3600,
     "self_approval": false,
     "reauthentication": true,
     "minimum_reason_length": 10,
@@ -74,7 +74,11 @@
     "local_preview_required": true,
     "proposal_idempotency": true,
     "deployment_transport": "wordpressDeployment stdio MCP",
-    "approval_wait_seconds": 900,
+    "approval_wait_seconds": 3600,
+    "apply_recovery_seconds": 900,
+    "operator_budget_seconds": 4500,
+    "bridge_timeout_seconds": 4620,
+    "foreground_timeout_seconds": 4680,
     "release_batch_identity_bound": true,
     "release_preflight_all_members": true,
     "atomic_batch_claim_before_mutation": true,
@@ -99,7 +103,7 @@
     "proposal_bound": true,
     "hash_bound": true,
     "single_use": true,
-    "ttl_seconds": 900,
+    "lease_ttl_seconds": 900,
     "removed_after_terminal_state": true
   },
   "theme": {

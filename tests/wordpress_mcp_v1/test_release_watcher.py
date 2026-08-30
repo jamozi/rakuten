@@ -232,6 +232,47 @@ def test_release_waits_for_exact_batch_approval_before_reading_operations(
     ]
 
 
+def test_late_approval_starts_a_fresh_full_apply_recovery_budget(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    batch_states = iter(("REGISTERED", "APPROVED"))
+    operation_states = iter(("APPLYING", "APPLIED"))
+    clock = [0.0]
+    sleeps = iter((3599.0, 899.0))
+    apply_attempts = 0
+
+    def batch_status(*_args):
+        state = next(batch_states)
+        return state, state == "APPROVED"
+
+    def request_json(method, path, *_args, **_kwargs):
+        nonlocal apply_attempts
+        if method == "POST":
+            apply_attempts += 1
+            raise operator.OperatorFailure("WORDPRESS_MCP_TRANSPORT_FAILED")
+        state = next(operation_states)
+        return public_operation(proposal_id, "CONTENT_RELEASE", state)
+
+    monkeypatch.setattr(operator, "_release_batch_status", batch_status)
+    monkeypatch.setattr(operator, "request_json", request_json)
+    monkeypatch.setattr(operator.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(
+        operator.time,
+        "sleep",
+        lambda _seconds: clock.__setitem__(0, clock[0] + next(sleeps)),
+    )
+
+    result = operator.release_wait_and_apply(release_input([proposal_id]))
+
+    assert operator.RELEASE_APPROVAL_WAIT_TIMEOUT_SECONDS == 3600
+    assert operator.RELEASE_APPLY_RECOVERY_TIMEOUT_SECONDS == 900
+    assert operator.RELEASE_OPERATOR_BUDGET_SECONDS == 4500
+    assert apply_attempts == 1
+    assert clock[0] == 4498.0
+    assert result["state"] == "APPLIED"
+
+
 def test_terminal_applied_batch_finalizes_and_reconstructs_without_reclaim(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -896,6 +937,13 @@ def test_docs_bound_strict_linearization_to_cooperating_raos_writers() -> None:
 
 
 def test_bridge_advertises_bounds_and_rejects_duplicate_ids() -> None:
+    bridge_source = (
+        ROOT / "packages/wordpress-mcp-bridge/src/index.ts"
+    ).read_text(encoding="utf-8")
+    assert "? 4_620_000 : 90_000" in bridge_source
+    assert "Wait up to 60 minutes" in bridge_source
+    assert "separate 15-minute apply/recovery budget" in bridge_source
+
     node = shutil.which("node")
     assert node is not None
     messages = "\n".join(

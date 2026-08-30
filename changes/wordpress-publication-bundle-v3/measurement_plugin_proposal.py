@@ -117,7 +117,7 @@ def validate_abilities_apply_receipt(path: Path | None) -> dict[str, object]:
         != "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
         or proposal_receipt.get("artifact_id") != "raos-codex-mcp-abilities-v1"
         or proposal_receipt.get("plugin_slug") != "raos-codex-mcp-abilities"
-        or proposal_receipt.get("plugin_version") != "1.3.0"
+        or proposal_receipt.get("plugin_version") != "1.3.1"
         or type(proposal) is not dict
         or apply_receipt.get("schema") != "OperationReceiptV1"
         or apply_receipt.get("proposal_id") != proposal.get("proposal_id")
@@ -131,7 +131,7 @@ def validate_abilities_apply_receipt(path: Path | None) -> dict[str, object]:
         "proposal_id": apply_receipt["proposal_id"],
         "operation_id": apply_receipt["operation_id"],
         "after_sha256": apply_receipt["after_sha256"],
-        "plugin_version": "1.3.0",
+        "plugin_version": "1.3.1",
     }
 
 

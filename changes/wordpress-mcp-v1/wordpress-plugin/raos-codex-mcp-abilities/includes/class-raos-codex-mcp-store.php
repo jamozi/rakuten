@@ -9,10 +9,11 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Store
 {
-    const RUNTIME_REVISION = '1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a';
+    const RUNTIME_REVISION = '24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55';
     const SCHEMA_VERSION = '4';
     const SCHEMA_OPTION = 'raos_codex_mcp_store_schema_v1';
-    const TTL_SECONDS = 900;
+    const PROPOSAL_REVIEW_TTL_SECONDS = 3600;
+    const APPLY_LEASE_TTL_SECONDS = 900;
     const RECOVERY_GRACE_SECONDS = 120;
 
     public static function table_name()
@@ -343,7 +344,9 @@ final class RAOS_Codex_MCP_Store
         }
         $created_unix = time();
         $created = self::timestamp_mysql($created_unix);
-        $expires = self::timestamp_mysql($created_unix + self::TTL_SECONDS);
+        $expires = self::timestamp_mysql(
+            $created_unix + self::PROPOSAL_REVIEW_TTL_SECONDS
+        );
         try {
             $nonce = bin2hex(random_bytes(32));
         } catch (Throwable $error) {
@@ -555,7 +558,9 @@ final class RAOS_Codex_MCP_Store
         $approved_unix = strtotime($approved_at_gmt . ' UTC');
         return false === $approved_unix
             ? null
-            : self::timestamp_mysql($approved_unix + self::TTL_SECONDS);
+            : self::timestamp_mysql(
+                $approved_unix + self::APPLY_LEASE_TTL_SECONDS
+            );
     }
 
     private static function proposal_expiry_integrity($row, $payload_expires_at_gmt)
@@ -1456,7 +1461,9 @@ final class RAOS_Codex_MCP_Store
             }
             $approved_unix = time();
             $approved_at = self::timestamp_mysql($approved_unix);
-            $approval_expires = self::timestamp_mysql($approved_unix + self::TTL_SECONDS);
+            $approval_expires = self::timestamp_mysql(
+                $approved_unix + self::APPLY_LEASE_TTL_SECONDS
+            );
             $row['expires_at_gmt'] = $approval_expires;
             $lease = RAOS_Codex_MCP_Deployment::create_approval_lease(
                 $row,
@@ -1806,7 +1813,9 @@ final class RAOS_Codex_MCP_Store
             }
             $approved_unix = time();
             $approved_at = self::timestamp_mysql($approved_unix);
-            $approval_expires = self::timestamp_mysql($approved_unix + self::TTL_SECONDS);
+            $approval_expires = self::timestamp_mysql(
+                $approved_unix + self::APPLY_LEASE_TTL_SECONDS
+            );
             $approval_rows = array();
             foreach ($rows as $row) {
                 $row['expires_at_gmt'] = $approval_expires;

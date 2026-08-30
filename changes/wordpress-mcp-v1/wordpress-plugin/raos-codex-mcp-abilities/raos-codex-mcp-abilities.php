@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RAOS Codex MCP Abilities
  * Description: Browser-independent, approval-bound content and deployment abilities for kurashinoshirube.com.
- * Version: 1.3.0
+ * Version: 1.3.1
  * Requires at least: 7.1
  * Requires PHP: 8.1
  * Author: RAOS
@@ -14,10 +14,10 @@
 
 defined('ABSPATH') || exit;
 
-define('RAOS_CODEX_MCP_VERSION', '1.3.0');
+define('RAOS_CODEX_MCP_VERSION', '1.3.1');
 define(
     'RAOS_CODEX_MCP_RUNTIME_REVISION',
-    '1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a'
+    '24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55'
 );
 define('RAOS_CODEX_MCP_FILE', __FILE__);
 
@@ -27,7 +27,7 @@ require_once __DIR__ . '/includes/class-raos-codex-mcp-deployment.php';
 
 final class RAOS_Codex_MCP_Abilities
 {
-    const RUNTIME_REVISION = '1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a';
+    const RUNTIME_REVISION = '24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55';
     const ORIGIN = 'https://kurashinoshirube.com';
     const EDITOR_ROLE = 'raos_codex_mcp_editor';
     const OPERATOR_ROLE = 'raos_codex_deployment_operator';

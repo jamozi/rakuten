@@ -1598,14 +1598,14 @@ class WorkflowClient:
                 "mode": "approval_scoped_lease",
                 "default": False,
                 "single_use": True,
-                "ttl_seconds": 900,
+                "lease_ttl_seconds": publication.EXPECTED_APPLY_LEASE_TTL_SECONDS,
             },
             "server": {
                 "endpoint": publication.EDITOR_ENDPOINT,
                 "publish_tool_exposed": False,
                 "delete_tool_exposed": False,
                 "media_write_tool_exposed": False,
-                "proposal_ttl_seconds": 900,
+                "proposal_review_ttl_seconds": publication.EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS,
             },
         }
 
@@ -1716,7 +1716,7 @@ class DeploymentRunner:
                 "mode": "approval_scoped_lease",
                 "default": False,
                 "single_use": True,
-                "ttl_seconds": 900,
+                "lease_ttl_seconds": publication.EXPECTED_APPLY_LEASE_TTL_SECONDS,
             },
             "private_directory_ready": True,
         }
@@ -2524,7 +2524,7 @@ def test_missing_idempotency_schema_stops_before_mutation() -> None:
         publication.validate_tool_contract(tools)
 
 
-def test_site_status_requires_plugin_1_3_runtime_and_scoped_approval_lease() -> None:
+def test_site_status_requires_plugin_1_3_1_and_distinct_review_and_lease_ttls() -> None:
     article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
     client = WorkflowClient(article, [])
     status = client.status()
@@ -2534,6 +2534,23 @@ def test_site_status_requires_plugin_1_3_runtime_and_scoped_approval_lease() -> 
         match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
     ):
         publication.validate_site_status(status)
+    status = client.status()
+    status["apply_authorization"]["lease_ttl_seconds"] = 3600
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
+    status = client.status()
+    status["server"]["proposal_review_ttl_seconds"] = 900
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
+    assert publication.EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS == 3600
+    assert publication.EXPECTED_APPLY_LEASE_TTL_SECONDS == 900
+    assert publication.RELEASE_FOREGROUND_TIMEOUT_SECONDS == 4680
     for invalid_runtime in (None, "0" * 64, "not-a-sha256"):
         status = client.status()
         status["plugin_runtime_revision"] = invalid_runtime
@@ -2578,7 +2595,7 @@ def test_site_status_requires_plugin_1_3_runtime_and_scoped_approval_lease() -> 
         "mode": "approval_scoped_lease",
         "default": True,
         "single_use": True,
-        "ttl_seconds": 900,
+        "lease_ttl_seconds": publication.EXPECTED_APPLY_LEASE_TTL_SECONDS,
     }
     with pytest.raises(
         publication.PublicationFailure,
