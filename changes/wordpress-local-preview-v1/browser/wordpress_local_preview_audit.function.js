@@ -1,75 +1,76 @@
-async (page) => {
+({ artifactDirectory, inventory }) => async (page) => {
   const origin = 'http://127.0.0.1:8888';
-  const artifactDirectory = `${process.cwd()}/output/playwright/local-preview`;
-  const surfaces = [
-    { name: 'home', path: '/' },
-    {
-      article: true,
-      articleId: 'st1703-first-suitcase-comparison',
-      name: 'carryclassic',
-      path: '/local-preview-carry-on-suitcase-comparison/',
-    },
-    {
-      article: true,
-      articleId: 'st1704-portable-power-station-guide',
-      name: 'powerguide',
-      path: '/local-preview-portable-power-station-guide/',
-    },
-    {
-      article: true,
-      articleId: 'st1704-anker-solix-c300-c800-c1000-differences',
-      name: 'ankermodels',
-      path: '/local-preview-anker-solix-c300-c800-c1000-differences/',
-    },
-    {
-      article: true,
-      articleId: 'st1704-countertop-dishwasher-for-small-households',
-      name: 'smalldishwasher',
-      path: '/local-preview-countertop-dishwasher-for-small-households/',
-    },
-    {
-      article: true,
-      articleId: 'st1704-compact-robot-vacuum-shortlist',
-      name: 'compactrobot',
-      path: '/local-preview-compact-robot-vacuum-shortlist/',
-    },
-    {
-      article: true,
-      articleId: 'carry-on-suitcase-under-100-seats',
-      name: 'under100',
-      path: '/local-preview-carry-on-suitcase-under-100-seats/',
-    },
-    {
-      article: true,
-      articleId: 'lightweight-carry-on-suitcase-under-3kg',
-      name: 'under3kg',
-      path: '/local-preview-lightweight-carry-on-suitcase-under-3kg/',
-    },
-    {
-      article: true,
-      articleId: 'front-open-carry-on-suitcase-with-stopper',
-      name: 'frontstop',
-      path: '/local-preview-front-open-carry-on-suitcase-with-stopper/',
-    },
-    {
-      article: true,
-      articleId: 'roomba-mini-vs-switchbot-k11-pro',
-      name: 'roomba',
-      path: '/local-preview-roomba-mini-vs-switchbot-k11-pro/',
-    },
-    {
-      article: true,
-      articleId: 'solota-vs-rakua-mini-plus',
-      name: 'dishwasher',
-      path: '/local-preview-solota-vs-rakua-mini-plus/',
-    },
-    { name: 'about', path: '/about-ad-policy/' },
-    { name: 'comparisonpolicy', path: '/comparison-policy/' },
-    { name: 'privacy', path: '/privacy-policy/' },
-  ];
-  const widths = [360, 390, 768, 1440];
+  const cleanPath = (value) =>
+    typeof value === 'string' && /^\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)?$/.test(value);
+  const rawSurfaces = inventory?.surfaces;
+  const rawClusters = inventory?.clusters;
+  const widths = inventory?.viewports;
+  const articleRows = Array.isArray(rawSurfaces)
+    ? rawSurfaces.filter((surface) => surface.kind === 'article')
+    : [];
+  const policyRows = Array.isArray(rawSurfaces)
+    ? rawSurfaces.filter((surface) => surface.kind === 'policy')
+    : [];
+  const homeRows = Array.isArray(rawSurfaces)
+    ? rawSurfaces.filter((surface) => surface.kind === 'home')
+    : [];
+  const articleIds = new Set(articleRows.map((surface) => surface.article_id));
+  const memberships = Array.isArray(rawClusters)
+    ? rawClusters.flatMap((cluster) => cluster.article_ids || [])
+    : [];
+  if (
+    typeof artifactDirectory !== 'string' || !artifactDirectory.startsWith('/') ||
+    inventory?.schema !== 'RAOS_WORDPRESS_AUDIT_INVENTORY_V3' ||
+    inventory?.version !== '3.0.0' ||
+    inventory?.target_origin !== 'https://kurashinoshirube.com' ||
+    !Array.isArray(rawSurfaces) || rawSurfaces.length !== 14 ||
+    homeRows.length !== 1 || articleRows.length !== 10 || policyRows.length !== 3 ||
+    !Array.isArray(rawClusters) || rawClusters.length !== 3 ||
+    !Array.isArray(widths) || widths.length !== 4 ||
+    new Set(widths).size !== widths.length ||
+    widths.some((width) => !Number.isInteger(width) || width < 320 || width > 1920) ||
+    new Set(rawSurfaces.map((surface) => surface.surface_id)).size !== 14 ||
+    rawSurfaces.some(
+      (surface) =>
+        !['home', 'article', 'policy'].includes(surface.kind) ||
+        typeof surface.surface_id !== 'string' ||
+        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(surface.surface_id) ||
+        !cleanPath(surface.local_path) || !cleanPath(surface.production_path),
+    ) ||
+    articleIds.size !== 10 ||
+    articleRows.some(
+      (surface) =>
+        typeof surface.article_id !== 'string' ||
+        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(surface.article_id) ||
+        !articleIds.has(surface.contextual_article_id) ||
+        !Array.isArray(surface.related_article_ids) ||
+        surface.related_article_ids.length < 2 ||
+        new Set(surface.related_article_ids).size !== surface.related_article_ids.length ||
+        !surface.related_article_ids.includes(surface.contextual_article_id) ||
+        surface.related_article_ids.some(
+          (articleId) => articleId === surface.article_id || !articleIds.has(articleId),
+        ),
+    ) ||
+    rawClusters.some(
+      (cluster) =>
+        typeof cluster.anchor !== 'string' || !/^cluster-[a-z0-9-]+$/.test(cluster.anchor) ||
+        !Array.isArray(cluster.article_ids) || cluster.article_ids.length < 2 ||
+        new Set(cluster.article_ids).size !== cluster.article_ids.length ||
+        cluster.article_ids.some((articleId) => !articleIds.has(articleId)),
+    ) ||
+    memberships.length !== 10 || new Set(memberships).size !== 10 ||
+    memberships.some((articleId) => !articleIds.has(articleId))
+  ) {
+    throw new Error('RAOS_WORDPRESS_AUDIT_INVENTORY_INVALID');
+  }
+  const surfaces = rawSurfaces.map((surface) => ({
+    ...surface,
+    article: surface.kind === 'article',
+    articleId: surface.article_id,
+    name: surface.surface_id,
+    path: surface.local_path,
+  }));
   const articleSurfaces = surfaces.filter((surface) => surface.article);
-  const expectedArticlePaths = articleSurfaces.map((surface) => surface.path);
   const expectedPathByArticleId = Object.fromEntries(
     articleSurfaces.map((surface) => [surface.articleId, surface.path]),
   );
@@ -347,21 +348,21 @@ async (page) => {
           h1Count: document.querySelectorAll('h1').length,
           h1LastLineCharacters: h1LineMetrics.lastLineCharacters,
           h1LineCount: h1LineMetrics.lineCount,
-          homeArticlePaths: [...new Set(
-            [...document.querySelectorAll('a[href]')]
-              .map((anchor) => {
-                try {
-                  const target = new URL(anchor.href);
-                  return target.origin === window.location.origin &&
-                    target.pathname.startsWith('/local-preview-')
-                    ? target.pathname
-                    : null;
-                } catch (error) {
-                  return null;
-                }
-              })
-              .filter(Boolean),
-          )].sort(),
+          homeClusters: [
+            ...document.querySelectorAll('.raos-cluster-nav .raos-cluster'),
+          ].map((cluster) => ({
+            anchor: cluster.id,
+            links: [...cluster.querySelectorAll('ul a[href]')].map((anchor) => {
+              const target = new URL(anchor.href);
+              return {
+                hash: target.hash,
+                href: target.href,
+                origin: target.origin,
+                pathname: target.pathname,
+                search: target.search,
+              };
+            }),
+          })),
           contextualLinkCount: document.querySelectorAll(
             'a[data-raos-link-placement="article_body"][data-raos-to-article-id]',
           ).length,
@@ -392,41 +393,101 @@ async (page) => {
           unlabeledControls,
         };
       });
-      const internalLinks = surface.article && width === 390
+      const internalLinks = surface.article
         ? await page.evaluate(() =>
             [...document.querySelectorAll(
-              'a[data-raos-to-article-id][data-raos-link-placement]',
-            )].map((anchor) => ({
-              href: anchor.href,
-              placement: anchor.getAttribute('data-raos-link-placement'),
-              targetArticleId: anchor.getAttribute('data-raos-to-article-id'),
-            })),
+              'a[data-raos-link-placement="article_body"],'
+                + 'a[data-raos-link-placement="related_navigation"]',
+            )].map((anchor) => {
+              const target = new URL(anchor.href);
+              return {
+                hash: target.hash,
+                href: target.href,
+                origin: target.origin,
+                pathname: target.pathname,
+                placement: anchor.getAttribute('data-raos-link-placement'),
+                search: target.search,
+                targetArticleId: anchor.getAttribute('data-raos-to-article-id'),
+              };
+            }),
           )
         : [];
       let internalLinkReadbackFailed = false;
+      const expectedInternalLinks = surface.article
+        ? [
+            {
+              placement: 'article_body',
+              targetArticleId: surface.contextual_article_id,
+            },
+            ...surface.related_article_ids.map((targetArticleId) => ({
+              placement: 'related_navigation',
+              targetArticleId,
+            })),
+          ]
+        : [];
+      const signature = (link) => `${link.placement}|${link.targetArticleId}`;
+      if (
+        internalLinks.length !== expectedInternalLinks.length ||
+        internalLinks.map(signature).sort().join('\n') !==
+          expectedInternalLinks.map(signature).sort().join('\n')
+      ) {
+        internalLinkReadbackFailed = true;
+      }
       for (const link of internalLinks) {
         const expectedPath = expectedPathByArticleId[link.targetArticleId];
-        let target;
-        try {
-          target = new URL(link.href);
-        } catch (error) {
-          internalLinkReadbackFailed = true;
-          continue;
-        }
         if (
           !expectedPath ||
-          target.origin !== origin ||
-          target.pathname !== expectedPath ||
-          target.search !== '' ||
-          target.hash !== '' ||
+          link.origin !== origin ||
+          link.pathname !== expectedPath ||
+          link.search !== '' ||
+          link.hash !== '' ||
           !['article_body', 'related_navigation'].includes(link.placement)
         ) {
           internalLinkReadbackFailed = true;
           continue;
         }
-        const linkResponse = await page.request.get(target.href, { maxRedirects: 0 });
-        if (linkResponse.status() !== 200 || linkResponse.url() !== target.href) {
-          internalLinkReadbackFailed = true;
+        if (width === 390) {
+          const linkResponse = await page.request.get(link.href, { maxRedirects: 0 });
+          if (linkResponse.status() !== 200 || linkResponse.url() !== link.href) {
+            internalLinkReadbackFailed = true;
+          }
+        }
+      }
+
+      let homepageReadbackFailed = false;
+      if (surface.kind === 'home') {
+        const expectedClusters = rawClusters.map((cluster) => ({
+          anchor: cluster.anchor,
+          paths: cluster.article_ids.map(
+            (articleId) => expectedPathByArticleId[articleId],
+          ),
+        }));
+        if (
+          audit.homeClusters.length !== expectedClusters.length ||
+          audit.homeClusters.some((cluster, index) => {
+            const expected = expectedClusters[index];
+            return !expected || cluster.anchor !== expected.anchor ||
+              cluster.links.length !== expected.paths.length ||
+              cluster.links.some(
+                (link, linkIndex) =>
+                  link.origin !== origin ||
+                  link.pathname !== expected.paths[linkIndex] ||
+                  link.search !== '' ||
+                  link.hash !== '',
+              );
+          })
+        ) {
+          homepageReadbackFailed = true;
+        }
+        if (width === 390) {
+          for (const cluster of audit.homeClusters) {
+            for (const link of cluster.links) {
+              const linkResponse = await page.request.get(link.href, { maxRedirects: 0 });
+              if (linkResponse.status() !== 200 || linkResponse.url() !== link.href) {
+                homepageReadbackFailed = true;
+              }
+            }
+          }
         }
       }
 
@@ -509,9 +570,8 @@ async (page) => {
           audit.sourcesSectionCount === 0 ||
           audit.ctaBounds.length === 0 ||
           audit.invalidCtaBounds !== 0 ||
-          audit.contextualLinkCount < 1 ||
-          audit.contextualLinkCount > 2 ||
-          audit.relatedLinkCount < 2 ||
+          audit.contextualLinkCount !== 1 ||
+          audit.relatedLinkCount !== surface.related_article_ids.length ||
           audit.cookieConsentBounds.length !== 1 ||
           audit.invalidCookieConsentBounds !== 0 ||
           audit.cookieButtonBounds.length !== 3 ||
@@ -538,10 +598,6 @@ async (page) => {
           (width === 1440 &&
             (audit.h1LineCount > 4 ||
               Math.abs(audit.cookieConsentBounds[0].width - 320) > 1)));
-      const homepageCoverageFailed =
-        surface.name === 'home' &&
-        (audit.homeArticlePaths.length !== expectedArticlePaths.length ||
-          expectedArticlePaths.some((path) => !audit.homeArticlePaths.includes(path)));
       const keyboardAuditFailed =
         width === 390 &&
         (keyboardAudit.distinctTargets < 3 ||
@@ -571,7 +627,7 @@ async (page) => {
         audit.brokenAriaReferences !== 0 ||
         audit.scrollWidth > audit.clientWidth ||
         articleAuditFailed ||
-        homepageCoverageFailed ||
+        homepageReadbackFailed ||
         internalLinkReadbackFailed ||
         keyboardAuditFailed
       ) {
@@ -581,6 +637,7 @@ async (page) => {
       await page.screenshot({ path: screenshot, fullPage: true });
       results.push({
         ...audit,
+        homepageReadbackFailed,
         internalLinkReadbackFailed,
         keyboardAudit,
         screenshot,
@@ -598,7 +655,7 @@ async (page) => {
   if (measurementRequests.length !== 0) {
     throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_MEASUREMENT_DEFAULT_OFF_FAILED');
   }
-  if (results.length !== 56) {
+  if (results.length !== surfaces.length * widths.length) {
     throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_SCREEN_COUNT_INVALID');
   }
   return results;

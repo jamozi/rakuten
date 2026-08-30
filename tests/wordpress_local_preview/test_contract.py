@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 
 import yaml
 
+from scripts import build_editorial_v3_theme_navigation as audit_inventory_builder
 
 ROOT = Path(__file__).resolve().parents[2]
 SLICE = ROOT / "changes/wordpress-local-preview-v1"
@@ -21,11 +22,13 @@ PAGES = FIXTURES / "pages.json"
 PRODUCTION_MAPPING = SLICE / "production-mapping.v1.json"
 MU_PLUGIN = SLICE / "mu-plugins/raos-local-preview.php"
 EDITORIAL_CSS = (
-    ROOT
-    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
     "kurashinoshirube-child/assets/editorial-v2.css"
 )
 SEED = SLICE / "seed.php"
+AUDIT_INVENTORY = (
+    ROOT / "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
+)
 
 MARIADB_IMAGE = (
     "mariadb:11.8.3@sha256:"
@@ -318,9 +321,7 @@ def test_production_mapping_matches_all_ten_local_articles() -> None:
     assert mapping["schema"] == "RAOS_WORDPRESS_PRODUCTION_MAPPING_V1"
     rows = mapping["articles"]
     assert len(rows) == 10
-    assert {row["local_slug"] for row in rows} == {
-        row["slug"] for row in fixture_rows
-    }
+    assert {row["local_slug"] for row in rows} == {row["slug"] for row in fixture_rows}
     assert len({row["production_slug"] for row in rows}) == 10
     for row in rows:
         assert row["local_slug"] == f"local-preview-{row['production_slug']}"
@@ -329,9 +330,9 @@ def test_production_mapping_matches_all_ten_local_articles() -> None:
 
 
 def test_roomba_f155260_station_dimensions_keep_width_depth_order() -> None:
-    article = (
-        ARTICLES / "roomba-mini-vs-switchbot-k11-pro.html"
-    ).read_text(encoding="utf-8")
+    article = (ARTICLES / "roomba-mini-vs-switchbot-k11-pro.html").read_text(
+        encoding="utf-8"
+    )
 
     assert "21.2×17.8×28.5cm" not in article
     assert article.count("17.8×21.2×28.5cm") == 2
@@ -407,7 +408,7 @@ def test_runtime_materialization_is_private_and_bound_read_only() -> None:
         'materialized_fixture_root="$private_root/materialized-fixtures-v2"',
         'product_media_root="$private_root/product-media"',
         "scripts/raos_editorial_portfolio_v2.py",
-        "materialize-local --output-root \"$private_root\"",
+        'materialize-local --output-root "$private_root"',
         (
             "RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_ROOT="
             '"$materialized_fixture_root/articles"'
@@ -416,7 +417,7 @@ def test_runtime_materialization_is_private_and_bound_read_only() -> None:
             "RAOS_WORDPRESS_PREVIEW_POST_FIXTURE="
             '"$materialized_fixture_root/posts.json"'
         ),
-        "RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT=\"$product_media_root\"",
+        'RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT="$product_media_root"',
         "validate_materialized_runtime",
     ):
         assert marker in wrapper
@@ -449,30 +450,31 @@ def test_root_makefile_exposes_the_documented_interface() -> None:
     assert 'CONFIRM="$(CONFIRM)"' in makefile
 
 
-def test_browser_audit_covers_home_ten_articles_and_three_pages_at_four_widths() -> None:
+def test_browser_audit_covers_home_ten_articles_and_three_pages_at_four_widths() -> (
+    None
+):
     audit = (SLICE / "browser/wordpress_local_preview_audit.function.js").read_text(
         encoding="utf-8"
     )
     check = (SLICE / "browser/check.sh").read_text(encoding="utf-8")
-    assert "{ name: 'home', path: '/' }" in audit
-    for route in (
-        "/local-preview-carry-on-suitcase-comparison/",
-        "/local-preview-portable-power-station-guide/",
-        "/local-preview-anker-solix-c300-c800-c1000-differences/",
-        "/local-preview-countertop-dishwasher-for-small-households/",
-        "/local-preview-compact-robot-vacuum-shortlist/",
-        "/local-preview-carry-on-suitcase-under-100-seats/",
-        "/local-preview-lightweight-carry-on-suitcase-under-3kg/",
-        "/local-preview-front-open-carry-on-suitcase-with-stopper/",
-        "/local-preview-roomba-mini-vs-switchbot-k11-pro/",
-        "/local-preview-solota-vs-rakua-mini-plus/",
-        "/about-ad-policy/",
-        "/comparison-policy/",
-        "/privacy-policy/",
-    ):
-        assert f"path: '{route}'" in audit
-    assert audit.count("article: true") == 10
-    assert "const widths = [360, 390, 768, 1440];" in audit
+    inventory = json.loads(AUDIT_INVENTORY.read_text(encoding="utf-8"))
+    generated = audit_inventory_builder.build_documents()[1]
+    assert AUDIT_INVENTORY.read_bytes() == generated
+    assert audit_inventory_builder.OUTPUT_AUDIT_INVENTORY_PATH == AUDIT_INVENTORY
+    assert inventory["schema"] == "RAOS_WORDPRESS_AUDIT_INVENTORY_V3"
+    assert inventory["viewports"] == [360, 390, 768, 1440]
+    assert len(inventory["surfaces"]) == 14
+    assert [row["kind"] for row in inventory["surfaces"]].count("article") == 10
+    assert [row["kind"] for row in inventory["surfaces"]].count("policy") == 3
+    assert len(inventory["clusters"]) == 3
+    assert len(inventory["surfaces"]) * len(inventory["viewports"]) == 56
+    for surface in inventory["surfaces"]:
+        if surface["local_path"] != "/":
+            assert surface["local_path"] not in audit
+    assert "const rawSurfaces = inventory?.surfaces;" in audit
+    assert "const rawClusters = inventory?.clusters;" in audit
+    assert "const widths = inventory?.viewports;" in audit
+    assert "path: surface.local_path" in audit
     for marker in (
         "audit.h1Count !== 1",
         "audit.h1Bounds.length !== 1",
@@ -498,9 +500,8 @@ def test_browser_audit_covers_home_ten_articles_and_three_pages_at_four_widths()
         "audit.comparisonTablesVisible === 0",
         "audit.ctaBounds.length === 0",
         "audit.invalidCtaBounds !== 0",
-        "audit.contextualLinkCount < 1",
-        "audit.contextualLinkCount > 2",
-        "audit.relatedLinkCount < 2",
+        "audit.contextualLinkCount !== 1",
+        "audit.relatedLinkCount !== surface.related_article_ids.length",
         "audit.missingAlt !== 0",
         "audit.unloadedImages !== 0",
         "audit.duplicateIds.length !== 0",
@@ -518,9 +519,19 @@ def test_browser_audit_covers_home_ten_articles_and_three_pages_at_four_widths()
         "surface.article &&",
         "editorialRootCount !== 1",
         "fullPage: true",
-        "expectedArticlePaths.some((path) => !audit.homeArticlePaths.includes(path))",
-        "page.request.get(target.href, { maxRedirects: 0 })",
+        "audit.homeClusters.length !== expectedClusters.length",
+        "cluster.anchor !== expected.anchor",
+        "cluster.links.length !== expected.paths.length",
+        "link.pathname !== expected.paths[linkIndex]",
+        "internalLinks.length !== expectedInternalLinks.length",
+        "surface.contextual_article_id",
+        "surface.related_article_ids.map",
+        "link.origin !== origin",
+        "link.search !== ''",
+        "link.hash !== ''",
+        "page.request.get(link.href, { maxRedirects: 0 })",
         "linkResponse.status() !== 200",
+        "linkResponse.url() !== link.href",
         "page.keyboard.press('Tab')",
         "keyboardAudit.focusVisibleFailures !== 0",
         "!keyboardAudit.escapedConsentDialog",
@@ -531,10 +542,15 @@ def test_browser_audit_covers_home_ten_articles_and_three_pages_at_four_widths()
         "data-raos-link-placement",
     ):
         assert marker in audit
-    assert "`${process.cwd()}/output/playwright/local-preview`" in audit
+    assert "process.cwd()" not in audit
+    assert "wordpress-audit-inventory.v3.json" in check
+    assert "inventory.surfaces" in check
+    assert "inventory.viewports" in check
+    assert "artifact_name in $artifact_names" in check
+    assert "for surface in" not in check
     assert "output/playwright/local-preview" in check
-    assert "results.length !== 56" in audit
-    assert '[ "$#" -eq 56 ]' in check
+    assert "results.length !== surfaces.length * widths.length" in audit
+    assert '[ "$#" -eq "$expected_count" ]' in check
 
 
 def test_fixed_policy_pages_are_tracked_and_match_the_implemented_boundaries() -> None:

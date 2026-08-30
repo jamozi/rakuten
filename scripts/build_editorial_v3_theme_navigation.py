@@ -12,7 +12,6 @@ import re
 import stat
 from typing import TYPE_CHECKING, Final, NoReturn
 
-
 ROOT: Final = Path(__file__).resolve().parents[1]
 if TYPE_CHECKING:
     # Static owner edge for the affected-generator dependency graph. Importing
@@ -23,14 +22,28 @@ if TYPE_CHECKING:
 PORTFOLIO: Final = ROOT / "changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
 NAVIGATION: Final = ROOT / "changes/editorial-portfolio-v3/generated/navigation.v3.json"
 OUTPUT: Final = (
-    ROOT
-    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
     "kurashinoshirube-child/assets/editorial-navigation.v3.json"
+)
+OUTPUT_AUDIT_INVENTORY_PATH: Final = (
+    ROOT / "changes/editorial-portfolio-v3/generated/"
+    "wordpress-audit-inventory.v3.json"
+)
+OUTPUT_PATHS: Final = (OUTPUT, OUTPUT_AUDIT_INVENTORY_PATH)
+TEST_PATHS: Final = (
+    Path("tests/st1704"),
+    Path("tests/wordpress_local_preview"),
 )
 MAX_INPUT_BYTES: Final = 2 * 1024 * 1024
 MAX_OUTPUT_BYTES: Final = 256 * 1024
 SLUG_RE: Final = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 CODE_RE: Final = re.compile(r"^a[0-9]{2}$")
+AUDIT_VIEWPORTS: Final = (360, 390, 768, 1440)
+AUDIT_POLICY_SLUGS: Final = (
+    "about-ad-policy",
+    "comparison-policy",
+    "privacy-policy",
+)
 PRESENTATION: Final = {
     "household": {
         "anchor": "cluster-home",
@@ -77,7 +90,7 @@ def _read_json(path: Path) -> tuple[dict[str, object], bytes]:
         _fail()
     try:
         decoded = json.loads(payload)
-    except (UnicodeDecodeError, json.JSONDecodeError):
+    except UnicodeDecodeError, json.JSONDecodeError:
         _fail()
     if type(decoded) is not dict:
         _fail()
@@ -96,11 +109,11 @@ def _canonical(value: object) -> bytes:
             )
             + "\n"
         ).encode("utf-8")
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         _fail()
 
 
-def build() -> bytes:
+def build_documents() -> tuple[bytes, bytes]:
     portfolio, portfolio_bytes = _read_json(PORTFOLIO)
     navigation, navigation_bytes = _read_json(NAVIGATION)
     if (
@@ -205,9 +218,8 @@ def build() -> bytes:
         same_cluster_count = sum(
             item["relationship"] == "same_cluster" for item in projected_related
         )
-        if (
-            (cluster_size >= 3 and same_cluster_count < 2)
-            or (cluster_size == 2 and same_cluster_count != 1)
+        if (cluster_size >= 3 and same_cluster_count < 2) or (
+            cluster_size == 2 and same_cluster_count != 1
         ):
             _fail()
         projected_articles.append(
@@ -260,7 +272,7 @@ def build() -> bytes:
         _fail()
     projected_articles.sort(key=lambda row: str(row["article_code"]))
     clusters.sort(key=lambda row: int(row["home_order"]))
-    output = {
+    output: dict[str, object] = {
         "articles": projected_articles,
         "clusters": clusters,
         "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
@@ -269,10 +281,88 @@ def build() -> bytes:
         "target_origin": "https://kurashinoshirube.com",
         "version": "3.0.0",
     }
+    article_by_id = {
+        str(article["article_id"]): article for article in projected_articles
+    }
+    audit_surfaces: list[dict[str, object]] = [
+        {
+            "kind": "home",
+            "local_path": "/",
+            "production_path": "/",
+            "surface_id": "home",
+        }
+    ]
+    for article in projected_articles:
+        related = article["related_articles"]
+        if type(related) is not list:
+            _fail()
+        contextual = next(
+            (
+                relation["article_id"]
+                for relation in related
+                if type(relation) is dict
+                and relation.get("relationship") == "same_cluster"
+            ),
+            None,
+        )
+        if type(contextual) is not str:
+            _fail()
+        audit_surfaces.append(
+            {
+                "article_id": article["article_id"],
+                "cluster_id": article["cluster_id"],
+                "contextual_article_id": contextual,
+                "kind": "article",
+                "local_path": f"/{article['local_slug']}/",
+                "production_path": f"/{article['production_slug']}/",
+                "related_article_ids": [relation["article_id"] for relation in related],
+                "surface_id": f"article-{article['article_code']}",
+            }
+        )
+    audit_surfaces.extend(
+        {
+            "kind": "policy",
+            "local_path": f"/{slug}/",
+            "production_path": f"/{slug}/",
+            "surface_id": f"policy-{slug}",
+        }
+        for slug in AUDIT_POLICY_SLUGS
+    )
+    audit_clusters = []
+    for cluster in clusters:
+        article_ids = cluster["article_ids"]
+        if type(article_ids) is not list or any(
+            article_id not in article_by_id for article_id in article_ids
+        ):
+            _fail()
+        audit_clusters.append(
+            {
+                "anchor": cluster["anchor"],
+                "article_ids": article_ids,
+                "cluster_id": cluster["cluster_id"],
+            }
+        )
+    audit_inventory = {
+        "clusters": audit_clusters,
+        "schema": "RAOS_WORDPRESS_AUDIT_INVENTORY_V3",
+        "source_navigation_sha256": hashlib.sha256(navigation_bytes).hexdigest(),
+        "source_portfolio_sha256": hashlib.sha256(portfolio_bytes).hexdigest(),
+        "surfaces": audit_surfaces,
+        "target_origin": "https://kurashinoshirube.com",
+        "version": "3.0.0",
+        "viewports": list(AUDIT_VIEWPORTS),
+    }
     payload = _canonical(output)
-    if len(payload) > MAX_OUTPUT_BYTES:
+    audit_payload = _canonical(audit_inventory)
+    if len(payload) > MAX_OUTPUT_BYTES or len(audit_payload) > MAX_OUTPUT_BYTES:
         _fail()
-    return payload
+    return payload, audit_payload
+
+
+def build() -> bytes:
+    """Retain the historical single-navigation builder API for consumers."""
+
+    return build_documents()[0]
 
 
 def main() -> int:
@@ -280,29 +370,31 @@ def main() -> int:
     parser.add_argument("--check", action="store_true")
     arguments = parser.parse_args()
     try:
-        payload = build()
+        payloads = build_documents()
         if arguments.check:
-            if OUTPUT.read_bytes() != payload or OUTPUT.is_symlink():
-                _fail()
+            for path, payload in zip(OUTPUT_PATHS, payloads, strict=True):
+                if path.read_bytes() != payload or path.is_symlink():
+                    _fail()
         else:
-            OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-            temporary = OUTPUT.with_name(f".{OUTPUT.name}.{os.getpid()}.tmp")
-            descriptor = os.open(
-                temporary,
-                os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW,
-                0o644,
-            )
-            with os.fdopen(descriptor, "wb") as handle:
-                handle.write(payload)
-                handle.flush()
-                os.fsync(handle.fileno())
-            os.replace(temporary, OUTPUT)
-    except (NavigationBuildFailure, OSError):
+            for path, payload in zip(OUTPUT_PATHS, payloads, strict=True):
+                path.parent.mkdir(parents=True, exist_ok=True)
+                temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+                descriptor = os.open(
+                    temporary,
+                    os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW,
+                    0o644,
+                )
+                with os.fdopen(descriptor, "wb") as handle:
+                    handle.write(payload)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                os.replace(temporary, path)
+    except NavigationBuildFailure, OSError:
         print("EDITORIAL_V3_THEME_NAVIGATION_INVALID", file=os.sys.stderr)
         return 1
     print(
         "EDITORIAL_V3_THEME_NAVIGATION_OK sha256="
-        + hashlib.sha256(payload).hexdigest()
+        + hashlib.sha256(payloads[0]).hexdigest()
     )
     return 0
 
