@@ -36,19 +36,22 @@ def exact_approved_batch(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
-        lambda batch_token, batch_manifest_sha256, proposal_ids: ("APPROVED", True),
+        lambda batch_token, batch_manifest_sha256, proposal_ids, **_kwargs: (
+            "APPROVED",
+            True,
+        ),
     )
     monkeypatch.setattr(
         operator,
         "_release_batch_claim",
-        lambda batch_token, batch_manifest_sha256, proposal_ids: {},
+        lambda batch_token, batch_manifest_sha256, proposal_ids, **_kwargs: {},
     )
     # Most watcher tests isolate approval, ordering, or polling. Dedicated
     # finalization tests below exercise the real mandatory recovery boundary.
     monkeypatch.setattr(
         operator,
         "_finalize_applied_operation",
-        lambda _proposal_id, _kind, operation: operation,
+        lambda _proposal_id, _kind, operation, **_kwargs: operation,
     )
 
 
@@ -112,7 +115,14 @@ def test_release_batch_status_requires_the_exact_server_registered_identity(
     }
     calls: list[tuple[str, str]] = []
 
-    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
+    def request_json(
+        method,
+        path,
+        body=None,
+        proposal_id=None,
+        *batch_identity,
+        **_kwargs,
+    ):
         calls.append((method, path))
         return dict(response)
 
@@ -203,12 +213,18 @@ def test_release_waits_for_exact_batch_approval_before_reading_operations(
     states = iter(("REGISTERED", "APPROVED"))
     events: list[str] = []
 
-    def batch_status(batch_token, manifest_hash, proposal_ids):
+    def batch_status(batch_token, manifest_hash, proposal_ids, **_kwargs):
         events.append("batch")
         state = next(states)
         return state, state == "APPROVED"
 
-    def request_json(method, path, body=None, request_proposal_id=None):
+    def request_json(
+        method,
+        path,
+        body=None,
+        request_proposal_id=None,
+        **_kwargs,
+    ):
         events.append(f"{method}:{path}")
         return public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
 
@@ -216,7 +232,7 @@ def test_release_waits_for_exact_batch_approval_before_reading_operations(
     monkeypatch.setattr(
         operator,
         "_release_batch_claim",
-        lambda *args: events.append("claim"),
+        lambda *args, **kwargs: events.append("claim"),
     )
     monkeypatch.setattr(operator, "request_json", request_json)
     monkeypatch.setattr(operator.time, "sleep", lambda seconds: events.append("sleep"))
@@ -240,23 +256,38 @@ def test_late_approval_retains_the_full_apply_and_recovery_budget(
     statuses = iter(("REGISTERED", "APPROVED"))
     operation_states = iter(("APPLYING", "APPLIED"))
     apply_attempts: list[float] = []
+    approval_deadlines: list[float] = []
+    apply_deadlines: list[float] = []
 
-    def batch_status(batch_token, manifest_hash, proposal_ids):
+    def batch_status(batch_token, manifest_hash, proposal_ids, **kwargs):
+        approval_deadlines.append(kwargs["deadline"])
         state = next(statuses)
         if state == "REGISTERED":
-            clock[0] = 3599.0
+            clock[0] = 3596.0
         return state, state == "APPROVED"
 
-    def request_json(method, path, body=None, request_proposal_id=None, *identity):
+    def batch_claim(*args, **kwargs):
+        apply_deadlines.append(kwargs["deadline"])
+        return {}
+
+    def request_json(
+        method,
+        path,
+        body=None,
+        request_proposal_id=None,
+        *identity,
+        **kwargs,
+    ):
+        apply_deadlines.append(kwargs["deadline"])
         if method == "POST":
             apply_attempts.append(clock[0])
-            clock[0] = 4498.0
+            clock[0] = 4495.5
             raise operator.OperatorFailure("WORDPRESS_MCP_TRANSPORT_FAILED")
         state = next(operation_states)
         return public_operation(proposal_id, "CONTENT_RELEASE", state)
 
     monkeypatch.setattr(operator, "_release_batch_status", batch_status)
-    monkeypatch.setattr(operator, "_release_batch_claim", lambda *args: {})
+    monkeypatch.setattr(operator, "_release_batch_claim", batch_claim)
     monkeypatch.setattr(operator, "request_json", request_json)
     monkeypatch.setattr(operator.time, "monotonic", lambda: clock[0])
     monkeypatch.setattr(
@@ -268,14 +299,214 @@ def test_late_approval_retains_the_full_apply_and_recovery_budget(
     result = operator.release_wait_and_apply(release_input([proposal_id]))
 
     assert result["state"] == "APPLIED"
-    assert apply_attempts == [3600.0]
-    assert clock[0] == 4500.0
+    assert approval_deadlines == [3600.0, 3600.0]
+    assert apply_attempts == [3598.0]
+    assert apply_deadlines == [4498.0, 4498.0, 4498.0, 4498.0]
+    assert clock[0] == 4497.5
 
 
 def test_release_timeout_layers_cover_review_then_apply_without_extending_lease() -> None:
     assert operator.RELEASE_APPROVAL_WAIT_TIMEOUT_SECONDS == 3600
     assert operator.RELEASE_APPLY_TIMEOUT_SECONDS == 900
     assert operator.RELEASE_OVERALL_TIMEOUT_SECONDS == 4500
+
+
+def test_request_json_caps_timeout_and_never_opens_at_an_expired_deadline(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    clock = [100.0]
+    timeouts: list[float] = []
+
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def geturl(self):
+            return f"{operator.DEPLOY_API}/status"
+
+        def read(self, maximum):
+            return b"{}"
+
+    class Opener:
+        def open(self, request, timeout):
+            timeouts.append(timeout)
+            return Response()
+
+    monkeypatch.setattr(operator, "credentials", lambda: ("user", "x" * 20))
+    monkeypatch.setattr(operator.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(operator.urllib.request, "build_opener", lambda *args: Opener())
+
+    assert operator.request_json("GET", "/status", deadline=200.0) == {}
+    assert operator.request_json("GET", "/status", deadline=105.0) == {}
+    assert timeouts == [30.0, 5.0]
+
+    clock[0] = 105.0
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT",
+        lambda: operator.request_json("GET", "/status", deadline=105.0),
+    )
+    assert timeouts == [30.0, 5.0]
+
+
+def test_request_json_rejects_a_response_observed_at_the_exact_deadline(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    clock = [100.0]
+    timeouts: list[float] = []
+
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def geturl(self):
+            return f"{operator.DEPLOY_API}/status"
+
+        def read(self, maximum):
+            clock[0] = 105.0
+            return b"{}"
+
+    class Opener:
+        def open(self, request, timeout):
+            timeouts.append(timeout)
+            return Response()
+
+    monkeypatch.setattr(operator, "credentials", lambda: ("user", "x" * 20))
+    monkeypatch.setattr(operator.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(operator.urllib.request, "build_opener", lambda *args: Opener())
+
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT",
+        lambda: operator.request_json("GET", "/status", deadline=105.0),
+    )
+    assert timeouts == [5.0]
+
+
+def test_request_json_rechecks_deadline_after_reading_an_http_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    clock = [100.0]
+
+    class ErrorBody:
+        def read(self, maximum):
+            clock[0] = 105.0
+            return b'{"code":"REMOTE_ERROR"}'
+
+        def close(self):
+            return None
+
+    class Opener:
+        def open(self, request, timeout):
+            raise operator.urllib.error.HTTPError(
+                request.full_url,
+                500,
+                "remote error",
+                {},
+                ErrorBody(),
+            )
+
+    monkeypatch.setattr(operator, "credentials", lambda: ("user", "x" * 20))
+    monkeypatch.setattr(operator.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(operator.urllib.request, "build_opener", lambda *args: Opener())
+
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT",
+        lambda: operator.request_json("GET", "/status", deadline=105.0),
+    )
+    assert clock[0] == 105.0
+
+
+def test_request_json_rechecks_deadline_after_a_transport_exception(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    clock = [100.0]
+
+    class Opener:
+        def open(self, request, timeout):
+            clock[0] = 105.0
+            raise TimeoutError
+
+    monkeypatch.setattr(operator, "credentials", lambda: ("user", "x" * 20))
+    monkeypatch.setattr(operator.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(operator.urllib.request, "build_opener", lambda *args: Opener())
+
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT",
+        lambda: operator.request_json("GET", "/status", deadline=105.0),
+    )
+    assert clock[0] == 105.0
+
+
+def test_multi_member_initial_read_cannot_cross_the_apply_deadline(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_ids = ["a" * 64, "b" * 64]
+    clock = [0.0]
+    reads: list[tuple[str, float]] = []
+
+    def request_json(method, path, *args, **kwargs):
+        assert method == "GET"
+        proposal_id = path.split("/")[2]
+        reads.append((proposal_id, kwargs["deadline"]))
+        clock[0] += 450.0
+        return public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    monkeypatch.setattr(operator.time, "monotonic", lambda: clock[0])
+
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT",
+        lambda: operator.release_wait_and_apply(release_input(proposal_ids)),
+    )
+    assert reads == [(proposal_ids[0], 900.0), (proposal_ids[1], 900.0)]
+    assert clock[0] == 900.0
+
+
+def test_multi_member_finalization_readback_cannot_cross_the_apply_deadline(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_ids = ["a" * 64, "b" * 64]
+    clock = [0.0]
+    events: list[tuple[str, str, float]] = []
+    initial_reads = 0
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        ORIGINAL_FINALIZE_APPLIED_OPERATION,
+    )
+
+    def request_json(method, path, *args, **kwargs):
+        nonlocal initial_reads
+        proposal_id = path.split("/")[2]
+        events.append((method, proposal_id, kwargs["deadline"]))
+        response = public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+        if method == "POST":
+            clock[0] = 899.0
+            return response["operation"]
+        initial_reads += 1
+        if initial_reads == 3:
+            clock[0] = 900.0
+        return response
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    monkeypatch.setattr(operator.time, "monotonic", lambda: clock[0])
+
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT",
+        lambda: operator.release_wait_and_apply(release_input(proposal_ids)),
+    )
+    assert events == [
+        ("GET", proposal_ids[0], 900.0),
+        ("GET", proposal_ids[1], 900.0),
+        ("POST", proposal_ids[0], 900.0),
+        ("GET", proposal_ids[0], 900.0),
+    ]
+    assert clock[0] == 900.0
 
 
 def test_terminal_applied_batch_finalizes_and_reconstructs_without_reclaim(
@@ -292,12 +523,12 @@ def test_terminal_applied_batch_finalizes_and_reconstructs_without_reclaim(
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
-        lambda *args: ("APPLIED", False),
+        lambda *args, **kwargs: ("APPLIED", False),
     )
     monkeypatch.setattr(
         operator,
         "_release_batch_claim",
-        lambda *args: events.append("unexpected-claim"),
+        lambda *args, **kwargs: events.append("unexpected-claim"),
     )
 
     def request_json(method, path, *args, **kwargs):
@@ -334,7 +565,7 @@ def test_applied_members_finalize_theme_then_content_before_aggregate_acceptance
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
-        lambda *_args: ("APPLIED", False),
+        lambda *_args, **_kwargs: ("APPLIED", False),
     )
 
     def request_json(method, path, *args, **kwargs):
@@ -374,7 +605,7 @@ def test_applied_member_recovery_failure_aborts_before_aggregate(
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
-        lambda *_args: ("APPLIED", False),
+        lambda *_args, **_kwargs: ("APPLIED", False),
     )
 
     def request_json(method, path, *args, **kwargs):
@@ -410,7 +641,7 @@ def test_recovered_applied_receipt_must_match_exact_operation_readback(
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
-        lambda *_args: ("APPLIED", False),
+        lambda *_args, **_kwargs: ("APPLIED", False),
     )
 
     def request_json(method, path, *args, **kwargs):
@@ -443,7 +674,7 @@ def test_recovery_response_must_be_an_exact_applied_receipt(
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
-        lambda *_args: ("APPLIED", False),
+        lambda *_args, **_kwargs: ("APPLIED", False),
     )
     monkeypatch.setattr(
         operator,
@@ -464,7 +695,7 @@ def test_atomic_batch_claim_retries_an_ambiguous_response_before_member_read(
     events: list[str] = []
     attempts = 0
 
-    def claim(*args):
+    def claim(*args, **kwargs):
         nonlocal attempts
         attempts += 1
         events.append("claim")
@@ -497,7 +728,7 @@ def test_approved_batch_with_any_failed_precondition_never_mutates(
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
-        lambda *args: ("APPROVED", False),
+        lambda *args, **kwargs: ("APPROVED", False),
     )
     monkeypatch.setattr(
         operator,
@@ -518,7 +749,7 @@ def test_expired_batch_state_never_reads_or_mutates_a_member(
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
-        lambda *args: ("EXPIRED", False),
+        lambda *args, **kwargs: ("EXPIRED", False),
     )
     monkeypatch.setattr(
         operator,
@@ -541,7 +772,7 @@ def test_failed_batch_finalizes_observed_failed_member_before_reporting_failure(
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
-        lambda *args: ("FAILED", False),
+        lambda *args, **kwargs: ("FAILED", False),
     )
 
     def request_json(method, path, *args, **kwargs):
@@ -569,7 +800,7 @@ def test_failed_batch_cleanup_error_is_not_discarded(
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
-        lambda *args: ("FAILED", False),
+        lambda *args, **kwargs: ("FAILED", False),
     )
 
     def request_json(method, path, *args, **kwargs):
@@ -604,7 +835,14 @@ def test_release_waiter_orders_theme_first_and_waits_for_human_approval(
     calls: list[tuple[str, str, str | None]] = []
     sleeps: list[float] = []
 
-    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
+    def request_json(
+        method,
+        path,
+        body=None,
+        proposal_id=None,
+        *batch_identity,
+        **_kwargs,
+    ):
         calls.append((method, path, proposal_id))
         selected = path.split("/")[2]
         if method == "POST" and "/apply" in path:
@@ -650,7 +888,14 @@ def test_release_waiter_recovers_applying_operation(monkeypatch) -> None:
     states = ["APPLYING", "APPLIED"]
     posts: list[str] = []
 
-    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
+    def request_json(
+        method,
+        path,
+        body=None,
+        proposal_id=None,
+        *batch_identity,
+        **_kwargs,
+    ):
         if method == "GET":
             return public_operation(
                 path.split("/")[2],
@@ -680,7 +925,14 @@ def test_live_apply_is_polled_through_grace_and_retryable_recovery(
     clock = [0.0]
     recovery_times: list[float] = []
 
-    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
+    def request_json(
+        method,
+        path,
+        body=None,
+        proposal_id=None,
+        *batch_identity,
+        **_kwargs,
+    ):
         if method == "GET":
             return public_operation(
                 path.split("/")[2],
@@ -707,7 +959,14 @@ def test_unclaimed_member_state_is_refused_without_member_mutation(monkeypatch) 
     proposal_id = "d" * 64
     calls: list[tuple[str, str]] = []
 
-    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
+    def request_json(
+        method,
+        path,
+        body=None,
+        proposal_id=None,
+        *batch_identity,
+        **_kwargs,
+    ):
         calls.append((method, path))
         return public_operation(path.split("/")[2], "CONTENT_RELEASE", "PENDING")
 
@@ -728,7 +987,7 @@ def test_readiness_barrier_fails_before_mutation_when_a_sibling_fails(
     monkeypatch.setattr(
         operator,
         "_release_batch_claim",
-        lambda *args: (_ for _ in ()).throw(
+        lambda *args, **kwargs: (_ for _ in ()).throw(
             operator.OperatorFailure("WORDPRESS_MCP_RELEASE_FAILED")
         ),
     )
@@ -755,7 +1014,14 @@ def test_terminal_states_fail_closed_before_apply(monkeypatch, state, code) -> N
     proposal_id = "e" * 64
     calls: list[str] = []
 
-    def request_json(method, path, body=None, proposal_id=None, *batch_identity):
+    def request_json(
+        method,
+        path,
+        body=None,
+        proposal_id=None,
+        *batch_identity,
+        **_kwargs,
+    ):
         calls.append(method)
         return public_operation(path.split("/")[2], "CONTENT_RELEASE", state)
 
@@ -792,7 +1058,7 @@ def test_plugin_and_multiple_theme_sets_are_refused_before_apply(monkeypatch) ->
     plugin_id = "f" * 64
     calls: list[str] = []
 
-    def plugin_request(method, path, body=None, proposal_id=None):
+    def plugin_request(method, path, body=None, proposal_id=None, **_kwargs):
         calls.append(method)
         return public_operation(path.split("/")[2], "PLUGIN_CHANGE", "APPLYING")
 
@@ -807,7 +1073,7 @@ def test_plugin_and_multiple_theme_sets_are_refused_before_apply(monkeypatch) ->
     second = "8" * 64
     calls.clear()
 
-    def theme_request(method, path, body=None, proposal_id=None):
+    def theme_request(method, path, body=None, proposal_id=None, **_kwargs):
         calls.append(method)
         return public_operation(path.split("/")[2], "THEME_RELEASE", "APPLYING")
 
