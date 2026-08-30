@@ -185,16 +185,21 @@ def _provider_identity_evidence(
     *,
     item_name: str | None = None,
     jan: str | None | object = ...,
-    pc_item: str | None = None,
+    source_item: str | None = None,
+    affiliate_pc_item: str | None = None,
 ) -> RakutenProductEvidence:
     assert binding.rakuten_item_code is not None
     shop, item = binding.rakuten_item_code.split(":", 1)
-    pc_tail = item if pc_item is None else pc_item
-    source = f"https://item.rakuten.co.jp/{shop}/{pc_tail}/"
+    source_tail = item if source_item is None else source_item
+    affiliate_pc_tail = (
+        source_tail if affiliate_pc_item is None else affiliate_pc_item
+    )
+    source = f"https://item.rakuten.co.jp/{shop}/{source_tail}/"
+    affiliate_pc = f"https://item.rakuten.co.jp/{shop}/{affiliate_pc_tail}/"
     destination = "https://hb.afl.rakuten.co.jp/hgc/test.abc/?" + urlencode(
         {
             "m": f"https://m.rakuten.co.jp/{shop}/i/{item}/",
-            "pc": source,
+            "pc": affiliate_pc,
             "rafcid": "provider-identity-test",
         }
     )
@@ -226,6 +231,10 @@ def test_provider_identity_requires_title_model_official_jan_and_exact_direct_it
     binding = portfolio.product_by_id["PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"]
 
     _validate_rakuten_identity(binding, _provider_identity_evidence(binding))
+    _validate_rakuten_identity(
+        binding,
+        _provider_identity_evidence(binding, source_item="provider-custom-slug"),
+    )
 
     title_without_model = (
         "Roomba Mini AutoEmpty ロボット掃除機"
@@ -234,7 +243,7 @@ def test_provider_identity_requires_title_model_official_jan_and_exact_direct_it
         _provider_identity_evidence(binding, item_name=title_without_model),
         _provider_identity_evidence(binding, jan=None),
         _provider_identity_evidence(binding, jan="0885155054982"),
-        _provider_identity_evidence(binding, pc_item="different-item"),
+        _provider_identity_evidence(binding, affiliate_pc_item="different-item"),
     ):
         with pytest.raises(
             EditorialPortfolioV2Failure,

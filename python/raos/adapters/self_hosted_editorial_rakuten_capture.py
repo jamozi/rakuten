@@ -1567,7 +1567,9 @@ def _validate_provider_row_structure(
             source_url = canonical_rakuten_provider_item_url(item_url)
         except EditorialPilotFailure:
             _fail(RakutenProductCaptureFailureCode.RESPONSE_INVALID)
-        if urlsplit(source_url).path.strip("/").split("/") != item_code.split(":", 1):
+        source_parts = urlsplit(source_url).path.strip("/").split("/")
+        item_parts = item_code.split(":", 1)
+        if len(source_parts) != 2 or source_parts[0] != item_parts[0]:
             _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
         return
     affiliate_url = row.get("affiliateUrl")
@@ -2247,10 +2249,18 @@ def _capture_product(
         _fail(RakutenProductCaptureFailureCode.RESPONSE_INVALID)
     source_parts = urlsplit(source_url).path.strip("/").split("/")
     item_parts = item_code.split(":", 1)
-    if source_parts != item_parts:
+    if len(source_parts) != 2 or source_parts[0] != item_parts[0]:
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
     destination_url = _text(affiliate_row["affiliateUrl"], maximum=4096)
     if affiliate_row.get("itemUrl") != destination_url:
+        _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
+    try:
+        require_rakuten_affiliate_url(
+            destination_url,
+            item_url=source_url,
+            item_code=item_code,
+        )
+    except EditorialPilotFailure:
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
     if (
         target.fixed_destination_url is not None

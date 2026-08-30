@@ -590,7 +590,7 @@ def _validate_rakuten_identity(
         or source.netloc != "item.rakuten.co.jp"
         or source.query
         or source.fragment
-        or source.path != pc.path
+        or query["pc"][0] != evidence.source_url
         or pc.scheme != "https"
         or pc.netloc != "item.rakuten.co.jp"
         or pc.query
@@ -604,7 +604,7 @@ def _validate_rakuten_identity(
         or mobile_parts[1] != "i"
         or len(item_code_parts) != 2
         or pc_parts[0] != mobile_parts[0]
-        or pc_parts != item_code_parts
+        or pc_parts[0] != item_code_parts[0]
         or mobile_parts[0] != item_code_parts[0]
         or mobile_parts[2] != item_code_parts[1]
         or evidence.item_code != f"{mobile_parts[0]}:{mobile_parts[2]}"

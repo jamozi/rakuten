@@ -940,7 +940,7 @@ class RakutenProductEvidence:
         item_url = require_rakuten_item_url(self.source_url)
         item_url_parts = urlsplit(item_url).path.strip("/").split("/")
         item_code_parts = self.item_code.split(":", 1)
-        if item_url_parts != item_code_parts:
+        if len(item_url_parts) != 2 or item_url_parts[0] != item_code_parts[0]:
             fail_editorial_pilot(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         require_rakuten_affiliate_url(
             self.destination_url,
