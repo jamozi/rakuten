@@ -238,6 +238,123 @@ def test_anonymous_public_readback_requires_exact_canonical_title_and_headings()
     assert request.get_header("Authorization") is None
 
 
+def test_article_public_readback_accepts_one_exact_trailing_related_heading() -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    footer_markup = (
+        '<aside class="related-posts"><h2>関連記事</h2></aside>'
+        "<footer><h2>暮らしのしるべ</h2></footer>"
+    )
+
+    evidence = ORIGINAL_VERIFY_PUBLIC_PAGES(
+        [article],
+        attempts=1,
+        sleeper=lambda seconds: None,
+        opener=_PublicOpener(
+            _PublicResponse(
+                url,
+                _public_markup(article, footer_markup=footer_markup),
+            )
+        ),
+    )
+
+    assert evidence[article.production_slug]["url"] == url
+
+
+def test_policy_public_readback_rejects_related_heading_injection() -> None:
+    page = publication.load_policy_pages()[0]
+    url = f"{publication.ORIGIN}/{page.production_slug}/"
+    footer_markup = (
+        '<aside class="related-posts"><h2>関連記事</h2></aside>'
+        "<footer><h2>暮らしのしるべ</h2></footer>"
+    )
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [page],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(
+                    url,
+                    _public_markup(page, footer_markup=footer_markup),
+                )
+            ),
+        )
+
+
+@pytest.mark.parametrize(
+    ("article", "footer_markup"),
+    [
+        (
+            publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0],
+            "<aside><h2>関連記事<h2>関連記事</h2></h2></aside>"
+            "<footer><h2>暮らしのしるべ</h2></footer>",
+        ),
+        (
+            publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0],
+            "<aside><h2>関連記事<h3>追加見出し</h3></h2></aside>"
+            "<footer><h2>暮らしのしるべ</h2></footer>",
+        ),
+        (
+            publication.load_policy_pages()[0],
+            "<aside><h2>関連記事<h2>暮らしのしるべ</h2></h2></aside>",
+        ),
+        (
+            publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0],
+            "<footer><h2>暮らしのしるべ</h2></footer><aside><h2>関連記事",
+        ),
+        (
+            publication.load_policy_pages()[0],
+            "<footer><h2>暮らしのしるべ</h2></footer><aside><h2>関連記事",
+        ),
+        (
+            publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0],
+            "<aside><h2>関連記事</h2><h3 aria-label=\"追加見出し\"></h3></aside>"
+            "<footer><h2>暮らしのしるべ</h2></footer>",
+        ),
+        (
+            publication.load_policy_pages()[0],
+            "<aside><h2 aria-label=\"関連記事\"></h2></aside>"
+            "<footer><h2>暮らしのしるべ</h2></footer>",
+        ),
+    ],
+    ids=(
+        "article-nested-duplicate-related",
+        "article-nested-arbitrary-heading",
+        "policy-nested-related-around-footer",
+        "article-unclosed-related-after-footer",
+        "policy-unclosed-related-after-footer",
+        "article-accessible-empty-heading-between-related-and-footer",
+        "policy-accessible-empty-related-heading",
+    ),
+)
+def test_public_readback_rejects_nested_heading_bypasses(
+    article: Any,
+    footer_markup: str,
+) -> None:
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_HTML_INVALID",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(
+                    url,
+                    _public_markup(article, footer_markup=footer_markup),
+                )
+            ),
+        )
+
+
 @pytest.mark.parametrize(
     "stylesheets",
     [
@@ -440,6 +557,13 @@ def test_public_stylesheet_fetch_is_cached_once_per_url_per_readback() -> None:
         "<footer><h2>暮らしのしるべ</h2><h2>暮らしのしるべ</h2></footer>",
         "<footer><h2>暮らしのしるべ</h2><h3>追加見出し</h3></footer>",
         "<footer><h3>追加見出し</h3><h2>暮らしのしるべ</h2></footer>",
+        "<aside><h3>関連記事</h3></aside><footer><h2>暮らしのしるべ</h2></footer>",
+        "<aside><h2>関連する記事</h2></aside><footer><h2>暮らしのしるべ</h2></footer>",
+        "<aside><h2>関連記事</h2><h2>関連記事</h2></aside>"
+        "<footer><h2>暮らしのしるべ</h2></footer>",
+        "<footer><h2>暮らしのしるべ</h2></footer><aside><h2>関連記事</h2></aside>",
+        "<aside><h2>追加見出し</h2><h2>関連記事</h2></aside>"
+        "<footer><h2>暮らしのしるべ</h2></footer>",
     ],
     ids=(
         "missing",
@@ -448,6 +572,11 @@ def test_public_stylesheet_fetch_is_cached_once_per_url_per_readback() -> None:
         "duplicate",
         "not-trailing",
         "extra-before-footer",
+        "related-wrong-level",
+        "related-wrong-copy",
+        "related-duplicate",
+        "related-after-footer",
+        "arbitrary-before-related",
     ),
 )
 def test_public_readback_requires_one_exact_trailing_site_footer_heading(
