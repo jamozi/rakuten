@@ -127,6 +127,17 @@
     "revocation_behavior": "STOP_SEND_AND_CLEAR_MEASUREMENT_SESSION",
     "target_origin": "https://kurashinoshirube.com"
   },
+  "policy_v3": {
+    "body_class": "raos-policy-v3-page",
+    "detection": "EXACT_PUBLISHED_PAGE_SLUG_TITLE_AND_EXCERPT_MATCH_CLOSED_HEAD_MAP",
+    "footer_presentation": "SAME_RICH_RESPONSIVE_FOOTER_AS_HOME_AND_EDITORIAL_V2",
+    "scope": "EXACT_THREE_REVIEWED_WORDPRESS_POLICY_PAGES_ONLY",
+    "slugs": [
+      "about-ad-policy",
+      "comparison-policy",
+      "privacy-policy"
+    ]
+  },
   "head": {
     "allowed_json_ld_types": [
       "Article",
@@ -416,7 +427,7 @@
     "wrapper_keys": ["payload", "payload_sha256", "schema"]
   },
   "runtime_evidence": {
-    "revision": "defa448bce50c5d88e3830e42dae1c3d8060a86bd9b4edab9c15be8a843b3a94",
+    "revision": "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019",
     "stylesheets": {
       "assets/editorial-v2.css": "--raos-theme-runtime-revision-editorial-v2",
       "assets/theme.css": "--raos-theme-runtime-revision-base"

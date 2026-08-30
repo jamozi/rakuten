@@ -13,7 +13,7 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.4.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'defa448bce50c5d88e3830e42dae1c3d8060a86bd9b4edab9c15be8a843b3a94';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
@@ -1904,6 +1904,29 @@ function kurashinoshirube_is_editorial_v2_post(): bool
     return kurashinoshirube_post_has_editorial_v2_root($post_id);
 }
 
+/** Identify only a reviewed, published policy page from the closed fixture set. */
+function kurashinoshirube_is_policy_v3_page(): bool
+{
+    if (! is_singular('page')) {
+        return false;
+    }
+    $post_id = (int) get_queried_object_id();
+    if (
+        $post_id <= 0
+        || get_post_type($post_id) !== 'page'
+        || get_post_status($post_id) !== 'publish'
+    ) {
+        return false;
+    }
+    $slug = get_post_field('post_name', $post_id, 'raw');
+    $head = is_string($slug)
+        ? (kurashinoshirube_policy_page_head_map()[$slug] ?? null)
+        : null;
+    return is_array($head)
+        && get_post_field('post_title', $post_id, 'raw') === $head['title']
+        && get_post_field('post_excerpt', $post_id, 'raw') === $head['description'];
+}
+
 /** Keep all ten production Editorial V2 section labels slug-bound and closed. */
 function kurashinoshirube_editorial_v2_section_map(): array
 {
@@ -1929,6 +1952,9 @@ function kurashinoshirube_editorial_v2_body_class(array $classes): array
     }
     if (kurashinoshirube_is_editorial_v2_post()) {
         $classes[] = 'raos-editorial-v2-page';
+    }
+    if (kurashinoshirube_is_policy_v3_page()) {
+        $classes[] = 'raos-policy-v3-page';
     }
     return array_values(array_unique($classes));
 }

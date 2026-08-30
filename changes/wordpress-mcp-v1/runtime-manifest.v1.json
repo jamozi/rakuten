@@ -77,22 +77,22 @@
     },
     {
       "path": "changes/editorial-measurement-v1/runtime-manifest.v1.json",
-      "sha256": "f1116c2c16c1d6eb9e4cb4ab89df06735f417ccfc2d9c5c9169e3119007f28a8",
+      "sha256": "303531012d1dbcfa0b060a645390ee804c9769c1f724db17dd44b78bd0cf6c94",
       "size": 2877
     },
     {
       "path": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
-      "sha256": "c8e0aa2c9cb00f2dfe614d5f15f97feb4d8a073ff8a14e910446e0d7bb7f893e",
+      "sha256": "1daf4ce0d02e19fc0fb3f1f4f3148db1260dec951e5d772ec174cf953425fa97",
       "size": 27685
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
-      "sha256": "46eb056c6b7c63c91835f2da86bbc3d351bee595eb4d33b15bb1fe40e9ce3d23",
+      "sha256": "9f8a0d77ab09fe787d1be139b7a017836db88f8eefcaa8cc7c52ce9cab9ba256",
       "size": 3170
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "5f9aa7f1211c486e59051b5766b6b376ea6f15dfbcd9996aecd9c07f3b560c36",
+      "sha256": "f24066d63111b34f7dfecc6ae72bedf42fc1ac47edbade9d86bb1c7904936883",
       "size": 72521
     },
     {
@@ -112,8 +112,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
-      "sha256": "b206d07afc5aab33cba01e6ce64c64928d92f7633a3289077562d0ab5697ede9",
-      "size": 31439
+      "sha256": "a68535ea9a6efabed95e0a5902ca1002977d8e04b7978d58b7e13e0688e28e58",
+      "size": 32579
     },
     {
       "path": "changes/wordpress-local-preview-v1/compose.yaml",
@@ -317,7 +317,7 @@
     },
     {
       "path": "scripts/raos_wordpress_publication_request.py",
-      "sha256": "e0f8b7d2a94670bbadf15511033a5c980aef2805de5c147c6a8b773d8222d6e4",
+      "sha256": "d32109251a3ca69c2b01ab89c47c74b0576a23c981b33ccbc84a6ebb1a8e3592",
       "size": 195138
     },
     {
@@ -352,7 +352,7 @@
     },
     {
       "path": "tests/wordpress_mcp_v1/e2e/client.py",
-      "sha256": "54ae87c717cfed605513b7d523b0af3ff0e170b50f657726206edcbc1a6558c2",
+      "sha256": "42176a8a852d59f9608e1f2e14a2e1584ca12ab1fda32606ee5886195c00e957",
       "size": 29991
     },
     {

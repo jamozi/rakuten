@@ -193,7 +193,7 @@ def test_theme_is_an_isolated_1_4_0_successor() -> None:
     assert _load_json(CONTRACT_PATH)["theme_version"] == "1.4.0"
     assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.4.0'") == 1
     runtime_revision = (
-        "defa448bce50c5d88e3830e42dae1c3d8060a86bd9b4edab9c15be8a843b3a94"
+        "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
     )
     assert functions.count(
         "KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = "
@@ -333,6 +333,41 @@ def test_editorial_v2_styles_are_exactly_scoped_and_conditionally_loaded() -> No
     assert ".raos-editorial-v2-page" in css
     assert ".raos-editorial-v2 .comparison-table" in css
     assert ".raos-local-editorial-v2-page" not in css
+
+
+def test_policy_v3_body_class_is_closed_to_exact_reviewed_pages() -> None:
+    functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    contract = _load_json(CONTRACT_PATH)["policy_v3"]
+    assert contract == {
+        "body_class": "raos-policy-v3-page",
+        "detection": (
+            "EXACT_PUBLISHED_PAGE_SLUG_TITLE_AND_EXCERPT_MATCH_CLOSED_HEAD_MAP"
+        ),
+        "footer_presentation": (
+            "SAME_RICH_RESPONSIVE_FOOTER_AS_HOME_AND_EDITORIAL_V2"
+        ),
+        "scope": "EXACT_THREE_REVIEWED_WORDPRESS_POLICY_PAGES_ONLY",
+        "slugs": ["about-ad-policy", "comparison-policy", "privacy-policy"],
+    }
+    detector = functions.split(
+        "function kurashinoshirube_is_policy_v3_page(): bool", 1
+    )[1].split("/** Keep all ten production", 1)[0]
+    for marker in (
+        "is_singular('page')",
+        "get_queried_object_id()",
+        "get_post_type($post_id) !== 'page'",
+        "get_post_status($post_id) !== 'publish'",
+        "kurashinoshirube_policy_page_head_map()[$slug] ?? null",
+        "get_post_field('post_title', $post_id, 'raw') === $head['title']",
+        "get_post_field('post_excerpt', $post_id, 'raw') === $head['description']",
+    ):
+        assert marker in detector
+    body_class = functions.split(
+        "function kurashinoshirube_editorial_v2_body_class", 1
+    )[1].split("add_filter('body_class'", 1)[0]
+    assert "kurashinoshirube_is_policy_v3_page()" in body_class
+    assert "$classes[] = 'raos-policy-v3-page';" in body_class
+    assert "$classes[] = 'raos-editorial-v2-page';" in body_class
 
 
 def test_editorial_v2_category_fallback_is_allowlisted() -> None:
@@ -1411,8 +1446,16 @@ def test_editorial_footer_keeps_shared_layout_and_safe_token_fallbacks() -> None
             r"\.raos-editorial-v2-page \.raos-footer([^,{]*)", css
         )
     )
+    policy_suffixes = sorted(
+        suffix.strip()
+        for suffix in re.findall(
+            r"\.raos-policy-v3-page \.raos-footer([^,{]*)", css
+        )
+    )
     assert len(home_suffixes) >= 31
     assert editorial_suffixes == home_suffixes
+    assert policy_suffixes == home_suffixes
+    assert ".raos-policy-v3-page .wp-site-blocks > footer" in css
     for fallback in (
         "var(--raos-home-ink, var(--raos-ink))",
         "var(--raos-home-inverse, #f7f2e9)",

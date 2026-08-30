@@ -107,7 +107,7 @@ EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
 )
 EXPECTED_THEME_VERSION: Final = "1.4.0"
 EXPECTED_THEME_RUNTIME_REVISION: Final = (
-    "defa448bce50c5d88e3830e42dae1c3d8060a86bd9b4edab9c15be8a843b3a94"
+    "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
 )
 THEME_RUNTIME_SENTINEL_PROPERTIES: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",

@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.4.0"
 THEME_RUNTIME_REVISION: Final = (
-    "defa448bce50c5d88e3830e42dae1c3d8060a86bd9b4edab9c15be8a843b3a94"
+    "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -159,6 +159,16 @@ EDITORIAL_V2_PRESENTATION: Final = {
     "scope": "ORDINARY_WORDPRESS_POST_ONLY",
     "section_binding_count": 10,
     "section_binding_source": "assets/editorial-navigation.v3.json#articles",
+}
+
+POLICY_V3_PRESENTATION: Final = {
+    "body_class": "raos-policy-v3-page",
+    "detection": (
+        "EXACT_PUBLISHED_PAGE_SLUG_TITLE_AND_EXCERPT_MATCH_CLOSED_HEAD_MAP"
+    ),
+    "footer_presentation": "SAME_RICH_RESPONSIVE_FOOTER_AS_HOME_AND_EDITORIAL_V2",
+    "scope": "EXACT_THREE_REVIEWED_WORDPRESS_POLICY_PAGES_ONLY",
+    "slugs": ["about-ad-policy", "comparison-policy", "privacy-policy"],
 }
 
 
@@ -354,6 +364,8 @@ def validate_sources() -> dict[str, str]:
         "kurashinoshirube_public_listing_excluded_post_ids",
         "KURASHINOSHIRUBE_EXISTING_UPDATE_ACTION",
         "kurashinoshirube_handle_existing_update",
+        "kurashinoshirube_is_policy_v3_page",
+        "'raos-policy-v3-page'",
     )
     if not all(token in php for token in required_php):
         _fail()
@@ -406,6 +418,7 @@ def validate_sources() -> dict[str, str]:
         }
         or contract.get("publication_authority") != "NONE"
         or contract.get("editorial_v2") != EDITORIAL_V2_PRESENTATION
+        or contract.get("policy_v3") != POLICY_V3_PRESENTATION
         or contract.get("head", {}).get("document_title_deduplication")
         != DOCUMENT_TITLE_DEDUPLICATION
         or contract.get("head", {}).get("document_title_owner")

@@ -349,6 +349,7 @@
           ctaBounds,
           decisionListCount: document.querySelectorAll('.decision-list').length,
           duplicateIds,
+          editorialBodyClass: document.body.classList.contains('raos-editorial-v2-page'),
           editorialRootCount: document.querySelectorAll('.raos-editorial-v2').length,
           footerBackgroundColor: footer ? getComputedStyle(footer).backgroundColor : '',
           footerBottomBounds,
@@ -361,6 +362,10 @@
             : '',
           footerGridBounds,
           footerLinkBounds,
+          footerMinimumLinkHeight:
+            footerLinkBounds.length === 0
+              ? 0
+              : Math.min(...footerLinkBounds.map((bounds) => bounds.height)),
           h1Bounds,
           h1Count: document.querySelectorAll('h1').length,
           h1LastLineCharacters: h1LineMetrics.lastLineCharacters,
@@ -407,6 +412,7 @@
             (image) => !image.complete || image.naturalWidth === 0,
           ).length,
           purchaseCautionCount: document.querySelectorAll('.purchase-caution').length,
+          policyBodyClass: document.body.classList.contains('raos-policy-v3-page'),
           scrollWidth: document.documentElement.scrollWidth,
           sourcesSectionCount: document.querySelectorAll('.sources-section').length,
           title: document.title,
@@ -639,6 +645,8 @@
               !keyboardAudit.contextualReached ||
               !keyboardAudit.relatedReached)));
       if (
+        surface.article !== audit.editorialBodyClass ||
+        (surface.kind === 'policy') !== audit.policyBodyClass ||
         audit.title.trim() === '' ||
         !audit.lang.toLowerCase().startsWith('ja') ||
         audit.bannerText !== 'LOCAL WORDPRESS PREVIEW — 本番表示ではありません' ||
@@ -682,13 +690,24 @@
             brokenAriaReferences: audit.brokenAriaReferences,
             cookieSettingsBounds: audit.cookieSettingsBounds.length,
             duplicateIds: audit.duplicateIds.length,
+            editorialBodyClass: audit.editorialBodyClass,
+            footerBottomBounds: audit.footerBottomBounds,
+            footerGridBounds: audit.footerGridBounds,
+            footerGridColumnCount: audit.footerGridColumnCount,
+            footerGridDisplay: audit.footerGridDisplay,
+            footerLinkBounds: audit.footerLinkBounds,
+            footerMinimumLinkHeight: audit.footerMinimumLinkHeight,
             h1Count: audit.h1Count,
             invalidH1Bounds: audit.invalidH1Bounds,
+            invalidFooterBottomBounds: audit.invalidFooterBottomBounds,
+            invalidFooterGridBounds: audit.invalidFooterGridBounds,
+            invalidFooterLinkBounds: audit.invalidFooterLinkBounds,
             mainCount: audit.mainCount,
             measurementConfigDefined: audit.measurementConfigDefined,
             measurementScriptCount: audit.measurementScriptCount,
             measurementSessionKeyCount: audit.measurementSessionKeyCount,
             missingAlt: audit.missingAlt,
+            policyBodyClass: audit.policyBodyClass,
             scrollOverflow: audit.scrollWidth - audit.clientWidth,
             unloadedImages: audit.unloadedImages,
             unlabeledControls: audit.unlabeledControls,
