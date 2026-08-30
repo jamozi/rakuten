@@ -373,6 +373,8 @@ class _PublicPageEvidenceParser(HTMLParser):
             "h5",
             "h6",
         }:
+            if self._heading_tag is not None:
+                raise ValueError("nested public heading")
             self._heading_tag = lowered
             self._heading_parts = []
         if lowered not in self._VOID_ELEMENTS:
@@ -382,11 +384,12 @@ class _PublicPageEvidenceParser(HTMLParser):
         lowered = tag.lower()
         if lowered == self._heading_tag:
             heading = _normalized_public_text(self._heading_parts)
-            if heading:
-                self.headings.append(heading)
-                self.heading_outline.append((lowered, heading))
-                if lowered == "h1":
-                    self.h1_titles.append(heading)
+            if not heading:
+                raise ValueError("empty public heading")
+            self.headings.append(heading)
+            self.heading_outline.append((lowered, heading))
+            if lowered == "h1":
+                self.h1_titles.append(heading)
             self._heading_tag = None
             self._heading_parts = []
         if lowered == "title" and self._title_parts is not None:
@@ -416,6 +419,11 @@ class _PublicPageEvidenceParser(HTMLParser):
             self._heading_parts.append(data)
         if self._elements and self._elements[-1][2]:
             self.disclosure_text.append(data)
+
+    def close(self) -> None:
+        super().close()
+        if self._heading_tag is not None:
+            raise ValueError("unclosed public heading")
 
 
 def fail(code: str) -> NoReturn:
@@ -4137,6 +4145,24 @@ def _public_page_evidence(
     visible = _normalized_public_text(parser.visible_text)
     required_headings = desired.headings
     head_evidence = _validated_public_head(parser, article, url)
+    expected_heading_prefix = [
+        ("h1", article.title),
+        *desired.heading_outline,
+    ]
+    allowed_heading_outlines = [
+        [
+            *expected_heading_prefix,
+            ("h2", "暮らしのしるべ"),
+        ]
+    ]
+    if article.post_type == "post":
+        allowed_heading_outlines.append(
+            [
+                *expected_heading_prefix,
+                ("h2", "関連記事"),
+                ("h2", "暮らしのしるべ"),
+            ]
+        )
     expected_stylesheet_assets = {"assets/theme.css"}
     if article.post_type == "post":
         expected_stylesheet_assets.add("assets/editorial-v2.css")
@@ -4149,12 +4175,7 @@ def _public_page_evidence(
         or article.title not in parser.page_titles[0]
         or parser.h1_titles != [article.title]
         or not required_headings
-        or parser.heading_outline
-        != [
-            ("h1", article.title),
-            *desired.heading_outline,
-            ("h2", "暮らしのしるべ"),
-        ]
+        or parser.heading_outline not in allowed_heading_outlines
         or any(heading not in visible for heading in required_headings)
         or not _public_theme_stylesheets_are_valid(
             parser.stylesheet_urls,
