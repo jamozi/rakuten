@@ -22,6 +22,30 @@ ARTICLES_PATH = (
     REPOSITORY_ROOT
     / "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json"
 )
+EDITORIAL_V2_PUBLICATION_BINDINGS = (
+    ("carry-on-suitcase-comparison", "st1703-first-suitcase-comparison"),
+    ("portable-power-station-guide", "st1704-portable-power-station-guide"),
+    (
+        "countertop-dishwasher-for-small-households",
+        "st1704-countertop-dishwasher-for-small-households",
+    ),
+    (
+        "anker-solix-c300-c800-c1000-differences",
+        "st1704-anker-solix-c300-c800-c1000-differences",
+    ),
+    ("compact-robot-vacuum-shortlist", "st1704-compact-robot-vacuum-shortlist"),
+    ("carry-on-suitcase-under-100-seats", "carry-on-suitcase-under-100-seats"),
+    (
+        "front-open-carry-on-suitcase-with-stopper",
+        "front-open-carry-on-suitcase-with-stopper",
+    ),
+    (
+        "lightweight-carry-on-suitcase-under-3kg",
+        "lightweight-carry-on-suitcase-under-3kg",
+    ),
+    ("roomba-mini-vs-switchbot-k11-pro", "roomba-mini-vs-switchbot-k11-pro"),
+    ("solota-vs-rakua-mini-plus", "solota-vs-rakua-mini-plus"),
+)
 
 
 def _reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -159,14 +183,44 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_3_9_successor() -> None:
+def test_theme_is_an_isolated_1_3_10_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.3.9\n") == 1
+    assert stylesheet.count("\nVersion: 1.3.10\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.9"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.9'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.10"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.10'") == 1
+    runtime_revision = (
+        "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
+    )
+    assert functions.count(
+        "KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = "
+        f"'{runtime_revision}'"
+    ) == 1
+    contract = _load_json(CONTRACT_PATH)
+    assert contract["runtime_evidence"] == {
+        "revision": runtime_revision,
+        "stylesheets": {
+            "assets/editorial-v2.css": (
+                "--raos-theme-runtime-revision-editorial-v2"
+            ),
+            "assets/theme.css": "--raos-theme-runtime-revision-base",
+        },
+    }
+    assert _load_json(ASSET_MANIFEST_PATH)["theme_runtime_revision"] == (
+        runtime_revision
+    )
+    assert (
+        "--raos-theme-runtime-revision-base: " + runtime_revision + ";"
+        in (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    )
+    assert (
+        "--raos-theme-runtime-revision-editorial-v2: "
+        + runtime_revision
+        + ";"
+        in (THEME_ROOT / "assets/editorial-v2.css").read_text(encoding="utf-8")
+    )
     at003_gate = functions.split(
         "function kurashinoshirube_existing_update_context", 1
     )[1]
@@ -229,7 +283,7 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.3.9"
+    assert manifest["theme_version"] == "1.3.10"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 4
     for record in records:
@@ -380,6 +434,231 @@ def test_editorial_v2_publication_fallback_is_closed_and_fail_closed() -> None:
     )[1].split("function kurashinoshirube_current_snapshot", 1)[0]
     assert "kurashinoshirube_bound_post_snapshot($post_id, false)" in shared
     assert "kurashinoshirube_published_editorial_v2_identity($post_id)" in shared
+
+
+def _editorial_v2_public_identity(
+    *, status: str, slug: str, content: str
+) -> tuple[str, str] | None:
+    """Executable mirror of the closed published Editorial V2 identity."""
+
+    if status != "publish":
+        return None
+    article_id = dict(EDITORIAL_V2_PUBLICATION_BINDINGS).get(slug)
+    root = '<div class="raos-editorial-v2">'
+    if (
+        article_id is None
+        or not content.startswith(root)
+        or content.count(root) != 1
+        or not content.endswith("</div>\n")
+    ):
+        return None
+    article_ids = list(
+        dict.fromkeys(
+            re.findall(
+                r'\bdata-raos-article-id="([a-z0-9]+(?:-[a-z0-9]+)*)"',
+                content,
+            )
+        )
+    )
+    return (article_id, slug) if article_ids == [article_id] else None
+
+
+def _editorial_v2_canonical(
+    *,
+    upstream: str,
+    snapshot_canonical: str | None,
+    singular: bool,
+    status: str,
+    slug: str,
+    content: str,
+) -> str:
+    if snapshot_canonical is not None:
+        return snapshot_canonical
+    identity = (
+        _editorial_v2_public_identity(status=status, slug=slug, content=content)
+        if singular
+        else None
+    )
+    return (
+        f"https://kurashinoshirube.com/{identity[1]}/"
+        if identity is not None
+        else upstream
+    )
+
+
+def _editorial_v2_robots(*, status: str, slug: str, content: str) -> str:
+    identity = _editorial_v2_public_identity(
+        status=status, slug=slug, content=content
+    )
+    if identity is not None and identity[1] == slug:
+        return (
+            "index, follow, max-image-preview:large, max-snippet:-1, "
+            "max-video-preview:-1"
+        )
+    known_slugs = {item[0] for item in EDITORIAL_V2_PUBLICATION_BINDINGS}
+    if (
+        slug.startswith("raos-review-")
+        or content.startswith('<div class="raos-editorial-v2">')
+        or slug in known_slugs
+    ):
+        return "noindex, nofollow"
+    return "upstream"
+
+
+@pytest.mark.parametrize(("slug", "article_id"), EDITORIAL_V2_PUBLICATION_BINDINGS)
+def test_canonical_fallback_accepts_each_closed_published_editorial_v2_identity(
+    slug: str,
+    article_id: str,
+) -> None:
+    content = (
+        '<div class="raos-editorial-v2">'
+        f'<a data-raos-article-id="{article_id}">x</a></div>\n'
+    )
+    identity = _editorial_v2_public_identity(
+        status="publish", slug=slug, content=content
+    )
+    assert identity == (article_id, slug)
+    assert _editorial_v2_canonical(
+        upstream="https://upstream.invalid/",
+        snapshot_canonical=None,
+        singular=True,
+        status="publish",
+        slug=slug,
+        content=content,
+    ) == f"https://kurashinoshirube.com/{slug}/"
+    assert _editorial_v2_robots(
+        status="publish", slug=slug, content=content
+    ) == (
+        "index, follow, max-image-preview:large, max-snippet:-1, "
+        "max-video-preview:-1"
+    )
+
+
+@pytest.mark.parametrize(
+    ("case", "status", "slug", "content"),
+    (
+        (
+            "draft",
+            "draft",
+            "carry-on-suitcase-comparison",
+            '<div class="raos-editorial-v2">'
+            '<i data-raos-article-id="st1703-first-suitcase-comparison"></i>'
+            "</div>\n",
+        ),
+        (
+            "unknown",
+            "publish",
+            "unknown-editorial-guide",
+            '<div class="raos-editorial-v2">'
+            '<i data-raos-article-id="unknown-editorial-guide"></i></div>\n',
+        ),
+        (
+            "wrong-id",
+            "publish",
+            "carry-on-suitcase-comparison",
+            '<div class="raos-editorial-v2">'
+            '<i data-raos-article-id="wrong-article-id"></i></div>\n',
+        ),
+        (
+            "duplicate-root",
+            "publish",
+            "carry-on-suitcase-comparison",
+            '<div class="raos-editorial-v2">'
+            '<div class="raos-editorial-v2">'
+            '<i data-raos-article-id="st1703-first-suitcase-comparison"></i>'
+            "</div></div>\n",
+        ),
+        (
+            "trailing-content",
+            "publish",
+            "carry-on-suitcase-comparison",
+            '<div class="raos-editorial-v2">'
+            '<i data-raos-article-id="st1703-first-suitcase-comparison"></i>'
+            "</div>\n<p>trailing</p>",
+        ),
+    ),
+)
+def test_canonical_fallback_preserves_upstream_for_invalid_identity(
+    case: str,
+    status: str,
+    slug: str,
+    content: str,
+) -> None:
+    del case
+    assert _editorial_v2_public_identity(
+        status=status, slug=slug, content=content
+    ) is None
+    assert _editorial_v2_canonical(
+        upstream="https://upstream.invalid/",
+        snapshot_canonical=None,
+        singular=True,
+        status=status,
+        slug=slug,
+        content=content,
+    ) == "https://upstream.invalid/"
+    assert _editorial_v2_robots(
+        status=status, slug=slug, content=content
+    ) == "noindex, nofollow"
+
+
+def test_canonical_fallback_contract_prefers_snapshot_and_shares_robots_identity() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    canonical = source.split("function kurashinoshirube_filter_canonical", 1)[1].split(
+        "function kurashinoshirube_filter_og_title", 1
+    )[0]
+    assert canonical.index("kurashinoshirube_current_snapshot()") < canonical.index(
+        "kurashinoshirube_public_article_identity($post_id)"
+    )
+    for required in (
+        "$snapshot['canonical_url']",
+        "is_singular('post')",
+        "get_post_status($post_id) !== 'publish'",
+        "KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $identity['slug'] . '/'",
+    ):
+        assert required in canonical
+
+    robot_filter = source.split("function kurashinoshirube_filter_robots", 1)[1].split(
+        "add_filter('wpseo_robots'", 1
+    )[0]
+    assert "kurashinoshirube_public_article_identity($post_id)" in robot_filter
+    assert "$status === 'publish'" in robot_filter
+    assert "$identity['slug'] === $slug" in robot_filter
+
+    contract = _load_json(CONTRACT_PATH)
+    assert contract["head"]["metadata_owner"] == (
+        "YOAST_SEO_FILTERS_WITH_SNAPSHOT_METADATA_AND_CLOSED_EDITORIAL_V2_"
+        "CANONICAL_FALLBACK"
+    )
+    assert contract["head"]["canonical"] == {
+        "editorial_v2_fallback": (
+            "FIXED_SITE_ORIGIN_PLUS_SLUG_FOR_SINGULAR_PUBLISHED_"
+            "CLOSED_PUBLIC_ARTICLE_IDENTITY"
+        ),
+        "invalid_or_unpublished_policy": "PRESERVE_UPSTREAM_VALUE",
+        "snapshot_precedence": "VALID_BOUND_RAOS_SNAPSHOT",
+    }
+
+    content = (
+        '<div class="raos-editorial-v2">'
+        '<i data-raos-article-id="st1703-first-suitcase-comparison"></i>'
+        "</div>\n"
+    )
+    assert _editorial_v2_canonical(
+        upstream="https://upstream.invalid/",
+        snapshot_canonical="https://snapshot.example/exact/",
+        singular=True,
+        status="publish",
+        slug="carry-on-suitcase-comparison",
+        content=content,
+    ) == "https://snapshot.example/exact/"
+    assert _editorial_v2_canonical(
+        upstream="https://upstream.invalid/",
+        snapshot_canonical=None,
+        singular=False,
+        status="publish",
+        slug="carry-on-suitcase-comparison",
+        content=content,
+    ) == "https://upstream.invalid/"
 
 
 def test_editorial_v2_unknown_identity_is_noindex_and_listing_ineligible() -> None:

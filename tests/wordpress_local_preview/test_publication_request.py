@@ -40,7 +40,7 @@ def no_live_public_readback(monkeypatch: pytest.MonkeyPatch) -> None:
         },
     )
     # The shared integration worktree intentionally contains the candidate
-    # 1.3.9 theme. Workflow unit tests use a stable reviewed tree while the
+    # 1.3.10 theme. Workflow unit tests use a stable reviewed tree while the
     # production function continues to refuse dirty theme sources.
     monkeypatch.setattr(
         publication,
@@ -53,12 +53,16 @@ class _PublicResponse:
     def __init__(
         self,
         url: str,
-        markup: str,
+        payload: str | bytes,
         *,
         headers: dict[str, str] | None = None,
+        status: int = 200,
+        final_url: str | None = None,
     ) -> None:
         self._url = url
-        self._payload = markup.encode("utf-8")
+        self._final_url = final_url or url
+        self._payload = payload.encode("utf-8") if isinstance(payload, str) else payload
+        self._status = status
         self.headers = {
             "Content-Type": "text/html; charset=UTF-8",
             **(headers or {}),
@@ -71,24 +75,56 @@ class _PublicResponse:
         return None
 
     def getcode(self) -> int:
-        return 200
+        return self._status
 
     def geturl(self) -> str:
-        return self._url
+        return self._final_url
 
     def read(self, maximum: int) -> bytes:
         return self._payload[:maximum]
 
 
 class _PublicOpener:
-    def __init__(self, response: _PublicResponse) -> None:
+    def __init__(
+        self,
+        response: _PublicResponse,
+        *,
+        stylesheet_responses: dict[str, _PublicResponse] | None = None,
+    ) -> None:
         self.response = response
+        self.stylesheet_responses = stylesheet_responses or {}
         self.requests: list[object] = []
 
     def open(self, request: object, timeout: int) -> _PublicResponse:
         assert timeout == 30
         self.requests.append(request)
-        return self.response
+        url = request.full_url
+        if url == self.response._url:
+            return self.response
+        explicit = self.stylesheet_responses.get(url)
+        if explicit is not None:
+            return explicit
+        parsed = publication.urlsplit(url)
+        if parsed.path.endswith("/assets/theme.css"):
+            asset = "assets/theme.css"
+        elif parsed.path.endswith("/assets/editorial-v2.css"):
+            asset = "assets/editorial-v2.css"
+        elif parsed.path.startswith(publication.AUTOPTIMIZE_SINGLE_STYLESHEET_PREFIX):
+            asset = (
+                "assets/theme.css"
+                if f"_{'a' * 32}.php" in parsed.path
+                else "assets/editorial-v2.css"
+            )
+        else:
+            raise AssertionError(f"unexpected public request: {url}")
+        property_name = publication.THEME_RUNTIME_SENTINEL_PROPERTIES[asset]
+        return _PublicResponse(
+            url,
+            ":root{" + property_name + ":"
+            + publication.EXPECTED_THEME_RUNTIME_REVISION
+            + ";}",
+            headers={"Content-Type": "text/css; charset=UTF-8"},
+        )
 
 
 def _public_markup(
@@ -96,16 +132,23 @@ def _public_markup(
     *,
     head_extra: str = "",
     block_markup: str | None = None,
+    stylesheets: str | None = None,
+    footer_markup: str = "<footer><h2>暮らしのしるべ</h2></footer>",
 ) -> str:
     url = f"{publication.ORIGIN}/{article.production_slug}/"
+    stylesheet_markup = stylesheets
+    if stylesheet_markup is None:
+        stylesheet_markup = (
+            '<link rel="stylesheet" href="/wp-content/themes/'
+            'kurashinoshirube-child/assets/theme.css?ver=1.3.10">'
+            '<link rel="stylesheet" href="/wp-content/themes/'
+            'kurashinoshirube-child/assets/editorial-v2.css?ver=1.3.10">'
+        )
     return (
         "<!doctype html><html><head><title>"
         + article.title
         + " | 暮らしのしるべ</title>"
-        + '<link rel="stylesheet" href="/wp-content/themes/'
-        'kurashinoshirube-child/assets/theme.css?ver=1.3.9">'
-        + '<link rel="stylesheet" href="/wp-content/themes/'
-        'kurashinoshirube-child/assets/editorial-v2.css?ver=1.3.9">'
+        + stylesheet_markup
         + '<link rel="canonical" href="'
         + url
         + '">'
@@ -114,7 +157,15 @@ def _public_markup(
         + article.title
         + "</h1>"
         + (article.block_markup if block_markup is None else block_markup)
-        + "</main></body></html>"
+        + "</main>"
+        + footer_markup
+        + "</body></html>"
+    )
+
+
+def _stylesheet_links(*hrefs: str) -> str:
+    return "".join(
+        f'<link rel="stylesheet" href="{href.replace("&", "&amp;")}">' for href in hrefs
     )
 
 
@@ -138,6 +189,344 @@ def test_anonymous_public_readback_requires_exact_canonical_title_and_headings()
     request = opener.requests[0]
     assert request.full_url == url
     assert request.get_header("Authorization") is None
+
+
+@pytest.mark.parametrize(
+    "stylesheets",
+    [
+        _stylesheet_links(
+            "https://example.invalid/unrelated.css?build=42",
+            f"{publication.ORIGIN}/wp-content/themes/kurashinoshirube-child/"
+            "assets/theme.css?ver=1.3.10",
+            f"{publication.ORIGIN}/wp-content/themes/kurashinoshirube-child/"
+            "assets/editorial-v2.css?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            "https://example.invalid/unrelated.css?build=42",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            "https://example.invalid/unrelated.css?build=42",
+            "/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            "/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+        ),
+    ],
+    ids=(
+        "absolute-direct-theme-assets",
+        "autoptimize-single-assets",
+        "root-relative-autoptimize-single-assets",
+    ),
+)
+def test_public_readback_accepts_exact_theme_stylesheet_materializations(
+    stylesheets: str,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+
+    evidence = ORIGINAL_VERIFY_PUBLIC_PAGES(
+        [article],
+        attempts=1,
+        sleeper=lambda seconds: None,
+        opener=_PublicOpener(
+            _PublicResponse(url, _public_markup(article, stylesheets=stylesheets))
+        ),
+    )
+
+    page = evidence[article.production_slug]
+    assert page["theme_version"] == "1.3.10"
+    assert page["theme_runtime_revision"] == (
+        publication.EXPECTED_THEME_RUNTIME_REVISION
+    )
+    stylesheet_evidence = page["theme_stylesheets"]
+    assert [row["asset"] for row in stylesheet_evidence] == [
+        "assets/editorial-v2.css",
+        "assets/theme.css",
+    ]
+    assert all(
+        publication.SHA256_RE.fullmatch(row["content_sha256"])
+        and row["bytes"] > 0
+        and row["runtime_revision"]
+        == publication.EXPECTED_THEME_RUNTIME_REVISION
+        for row in stylesheet_evidence
+    )
+
+
+def _runtime_css(asset: str, *, revision: str | None = None) -> str:
+    return (
+        ":root{"
+        + publication.THEME_RUNTIME_SENTINEL_PROPERTIES[asset]
+        + ":"
+        + (revision or publication.EXPECTED_THEME_RUNTIME_REVISION)
+        + ";}"
+    )
+
+
+@pytest.mark.parametrize(
+    ("payload", "headers", "status", "final_url"),
+    [
+        (_runtime_css("assets/theme.css"), {"Content-Type": "text/css"}, 503, None),
+        (
+            _runtime_css("assets/theme.css"),
+            {"Content-Type": "application/javascript"},
+            200,
+            None,
+        ),
+        (_runtime_css("assets/theme.css"), {"Content-Type": "text/css"}, 200, "redirect"),
+        (b"", {"Content-Type": "text/css"}, 200, None),
+        (b"\xff", {"Content-Type": "text/css"}, 200, None),
+        (
+            b"a" * (publication.MAX_PUBLIC_STYLESHEET_BYTES + 1),
+            {"Content-Type": "text/css"},
+            200,
+            None,
+        ),
+        (
+            _runtime_css("assets/theme.css", revision="0" * 64),
+            {"Content-Type": "text/css"},
+            200,
+            None,
+        ),
+        (
+            _runtime_css("assets/theme.css") * 2,
+            {"Content-Type": "text/css"},
+            200,
+            None,
+        ),
+        (
+            _runtime_css("assets/theme.css")
+            + _runtime_css("assets/editorial-v2.css"),
+            {"Content-Type": "text/css"},
+            200,
+            None,
+        ),
+        (
+            _runtime_css("assets/editorial-v2.css"),
+            {"Content-Type": "text/css"},
+            200,
+            None,
+        ),
+    ],
+    ids=(
+        "wrong-status",
+        "wrong-content-type",
+        "redirected",
+        "empty",
+        "invalid-utf8",
+        "oversize",
+        "stale-revision",
+        "duplicate-sentinel",
+        "combined-sentinels",
+        "wrong-direct-asset",
+    ),
+)
+def test_public_readback_rejects_invalid_fetched_stylesheet_evidence(
+    payload: str | bytes,
+    headers: dict[str, str],
+    status: int,
+    final_url: str | None,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    page_url = f"{publication.ORIGIN}/{article.production_slug}/"
+    stylesheet_url = (
+        f"{publication.ORIGIN}/wp-content/themes/kurashinoshirube-child/"
+        "assets/theme.css?ver=1.3.10"
+    )
+    response_final_url = (
+        f"{publication.ORIGIN}/redirected.css"
+        if final_url == "redirect"
+        else stylesheet_url
+    )
+    opener = _PublicOpener(
+        _PublicResponse(page_url, _public_markup(article)),
+        stylesheet_responses={
+            stylesheet_url: _PublicResponse(
+                stylesheet_url,
+                payload,
+                headers=headers,
+                status=status,
+                final_url=response_final_url,
+            )
+        },
+    )
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=opener,
+        )
+
+
+def test_public_stylesheet_fetch_is_cached_once_per_url_per_readback() -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    page_url = f"{publication.ORIGIN}/{article.production_slug}/"
+    opener = _PublicOpener(_PublicResponse(page_url, _public_markup(article)))
+
+    ORIGINAL_VERIFY_PUBLIC_PAGES(
+        [article, article],
+        attempts=1,
+        sleeper=lambda seconds: None,
+        opener=opener,
+    )
+
+    requested_urls = [request.full_url for request in opener.requests]
+    assert requested_urls.count(page_url) == 2
+    assert len(requested_urls) == 4
+    assert len(set(requested_urls) - {page_url}) == 2
+
+
+@pytest.mark.parametrize(
+    "footer_markup",
+    [
+        "",
+        "<footer><h3>暮らしのしるべ</h3></footer>",
+        "<footer><h2>別のサイト名</h2></footer>",
+        "<footer><h2>暮らしのしるべ</h2><h2>暮らしのしるべ</h2></footer>",
+        "<footer><h2>暮らしのしるべ</h2><h3>追加見出し</h3></footer>",
+        "<footer><h3>追加見出し</h3><h2>暮らしのしるべ</h2></footer>",
+    ],
+    ids=(
+        "missing",
+        "wrong-level",
+        "wrong-copy",
+        "duplicate",
+        "not-trailing",
+        "extra-before-footer",
+    ),
+)
+def test_public_readback_requires_one_exact_trailing_site_footer_heading(
+    footer_markup: str,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(
+                    url,
+                    _public_markup(article, footer_markup=footer_markup),
+                )
+            ),
+        )
+
+
+@pytest.mark.parametrize(
+    "stylesheets",
+    [
+        _stylesheet_links(
+            "/wp-content/themes/kurashinoshirube-child/assets/theme.css?ver=1.3.10",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'A' * 32}.php?ver=1.3.10",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            "http://kurashinoshirube.com/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            "https://user@kurashinoshirube.com/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            "https://kurashinoshirube.com:443/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            "https://example.invalid/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10#fragment",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10&extra=1",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+            f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
+            f"autoptimize_single_{'c' * 32}.php?ver=1.3.10",
+        ),
+        _stylesheet_links(
+            "/wp-content/themes/kurashinoshirube-child/assets/theme.css?ver=1.3.10&extra=1",
+            "/wp-content/themes/kurashinoshirube-child/assets/editorial-v2.css?ver=1.3.10",
+        ),
+    ],
+    ids=(
+        "mixed-direct-and-autoptimize",
+        "duplicate-autoptimize-hash",
+        "uppercase-autoptimize-hash",
+        "http-autoptimize-url",
+        "userinfo-autoptimize-url",
+        "port-autoptimize-url",
+        "cross-origin-autoptimize-url",
+        "fragment-autoptimize-url",
+        "extra-query-autoptimize-url",
+        "third-autoptimize-url",
+        "extra-query-direct-url",
+    ),
+)
+def test_public_readback_rejects_invalid_theme_stylesheet_materialization(
+    stylesheets: str,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(url, _public_markup(article, stylesheets=stylesheets))
+            ),
+        )
 
 
 def test_anonymous_public_readback_rejects_noindex() -> None:
@@ -232,7 +621,7 @@ def test_anonymous_public_readback_rejects_cta_identity_or_theme_drift() -> None
             ),
         )
 
-    wrong_theme = _public_markup(article).replace("?ver=1.3.9", "?ver=1.3.8")
+    wrong_theme = _public_markup(article).replace("?ver=1.3.10", "?ver=1.3.8")
     with pytest.raises(
         publication.PublicationFailure,
         match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
@@ -795,6 +1184,8 @@ class WorkflowClient:
         self.document = _document(article)
         self.published = False
         self.batch_registration_state = "REGISTERED"
+        self.runtime_version = publication.theme_version()
+        self.runtime_revision = publication.EXPECTED_THEME_RUNTIME_REVISION
 
     def initialize(self) -> None:
         self.events.append("remote-initialize")
@@ -821,6 +1212,7 @@ class WorkflowClient:
             "mcp_adapter_version": "0.6.1",
             "mcp_adapter_version_compatible": True,
             "plugin_version": publication.EXPECTED_PLUGIN_VERSION,
+            "plugin_runtime_revision": publication.EXPECTED_PLUGIN_RUNTIME_REVISION,
             "writes_enabled": {
                 "global": True,
                 "draft": True,
@@ -832,6 +1224,8 @@ class WorkflowClient:
                 "exists": True,
                 "active": True,
                 "version": publication.theme_version(),
+                "runtime_version": self.runtime_version,
+                "runtime_revision": self.runtime_revision,
             },
             "apply_authorization": {
                 "mode": "approval_scoped_lease",
@@ -927,16 +1321,21 @@ class DeploymentRunner:
         self.theme_proposed = False
         self.local_tree = publication.tracked_theme_tree_sha256()
         self.live_tree = "9" * 64
+        self.runtime_version = publication.theme_version()
+        self.runtime_revision = publication.EXPECTED_THEME_RUNTIME_REVISION
 
     def status(self) -> dict[str, object]:
         return {
             "schema": "RAOSWordPressDeploymentStatusV1",
             "origin": publication.ORIGIN,
+            "plugin_runtime_revision": publication.EXPECTED_PLUGIN_RUNTIME_REVISION,
             "php_version": "8.3.0",
             "wordpress_version": "7.1.0",
             "theme": {
                 "slug": "kurashinoshirube-child",
                 "version": publication.theme_version(),
+                "runtime_version": self.runtime_version,
+                "runtime_revision": self.runtime_revision,
                 "active": True,
                 "tree_sha256": self.live_tree,
             },
@@ -1024,6 +1423,12 @@ class DeploymentRunner:
             self.client.published = True
             if self.theme_proposed:
                 self.live_tree = self.local_tree
+                self.runtime_version = publication.theme_version()
+                self.client.runtime_version = publication.theme_version()
+                self.runtime_revision = publication.EXPECTED_THEME_RUNTIME_REVISION
+                self.client.runtime_revision = (
+                    publication.EXPECTED_THEME_RUNTIME_REVISION
+                )
             receipts: list[dict[str, object]] = []
             if self.theme_proposed:
                 receipts.append(
@@ -1134,6 +1539,94 @@ def test_full_workflow_checks_local_before_remote_and_runs_foreground_watcher(
     assert "承認対象バッチtoken末尾12文字: cccccccccccc" in output
     assert "入力するbatch manifest hash末尾8文字: dddddddd" in output
     assert publication.REVIEW_URL in output
+
+
+def test_stale_theme_runtime_forces_a_theme_proposal_even_when_tree_matches(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    _private_path(monkeypatch, tmp_path)
+    deployment = DeploymentRunner(client, events)
+    deployment.live_tree = deployment.local_tree
+    deployment.runtime_version = "1.3.8"
+
+    path = publication.execute(
+        article.production_slug,
+        preview=lambda: events.append("local-preview"),
+        client_factory=lambda: client,
+        deployment_runner=deployment,
+    )
+
+    assert "deployment:theme-propose-release" in events
+    assert deployment.runtime_version == publication.EXPECTED_THEME_VERSION
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    assert receipt["authenticated_readback"]["theme"]["runtime_version"] == "1.3.10"
+    assert receipt["authenticated_readback"]["theme"]["runtime_revision"] == (
+        publication.EXPECTED_THEME_RUNTIME_REVISION
+    )
+
+
+def test_missing_editor_theme_runtime_revision_forces_theme_proposal(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    _private_path(monkeypatch, tmp_path)
+    deployment = DeploymentRunner(client, events)
+    deployment.live_tree = deployment.local_tree
+    client.runtime_revision = None
+
+    path = publication.execute(
+        article.production_slug,
+        preview=lambda: events.append("local-preview"),
+        client_factory=lambda: client,
+        deployment_runner=deployment,
+    )
+
+    assert "deployment:theme-propose-release" in events
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    assert receipt["desired_theme_runtime_revision"] == (
+        publication.EXPECTED_THEME_RUNTIME_REVISION
+    )
+    assert receipt["authenticated_readback"]["theme"]["runtime_revision"] == (
+        publication.EXPECTED_THEME_RUNTIME_REVISION
+    )
+
+
+def test_legacy_local_receipt_without_proposals_adopts_reviewed_runtime_revision(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    path = _private_path(monkeypatch, tmp_path)
+    monkeypatch.setattr(publication, "_receipt_path", lambda _articles: path)
+    legacy = publication._fresh_receipt(
+        [article],
+        path,
+        TEST_THEME_TREE_SHA256,
+    )
+    legacy["desired_theme_runtime_revision"] = None
+    publication._atomic_receipt(path, legacy)
+    deployment = DeploymentRunner(client, events)
+    deployment.live_tree = deployment.local_tree
+
+    result = publication.execute(
+        article.production_slug,
+        preview=lambda: events.append("local-preview"),
+        client_factory=lambda: client,
+        deployment_runner=deployment,
+    )
+
+    assert result == path
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    assert receipt["state"] == "APPLIED"
+    assert receipt["desired_theme_runtime_revision"] == (
+        publication.EXPECTED_THEME_RUNTIME_REVISION
+    )
 
 
 def test_article_change_during_preview_stops_before_remote_access(
@@ -1658,7 +2151,7 @@ def test_missing_idempotency_schema_stops_before_mutation() -> None:
         publication.validate_tool_contract(tools)
 
 
-def test_site_status_requires_plugin_1_2_and_scoped_approval_lease() -> None:
+def test_site_status_requires_plugin_1_2_1_runtime_and_scoped_approval_lease() -> None:
     article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
     client = WorkflowClient(article, [])
     status = client.status()
@@ -1668,6 +2161,45 @@ def test_site_status_requires_plugin_1_2_and_scoped_approval_lease() -> None:
         match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
     ):
         publication.validate_site_status(status)
+    for invalid_runtime in (None, "0" * 64, "not-a-sha256"):
+        status = client.status()
+        status["plugin_runtime_revision"] = invalid_runtime
+        with pytest.raises(
+            publication.PublicationFailure,
+            match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+        ):
+            publication.validate_site_status(status)
+    status = client.status()
+    del status["plugin_runtime_revision"]
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
+    status = client.status()
+    status["theme"]["runtime_version"] = None
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
+    status = client.status()
+    status["theme"]["runtime_revision"] = "not-a-sha256"
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
+    status = client.status()
+    del status["theme"]["runtime_revision"]
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
+    status = client.status()
+    status["theme"]["runtime_revision"] = None
+    publication.validate_site_status(status)
     status = client.status()
     status["apply_authorization"] = {
         "mode": "approval_scoped_lease",
@@ -1680,6 +2212,78 @@ def test_site_status_requires_plugin_1_2_and_scoped_approval_lease() -> None:
         match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
     ):
         publication.validate_site_status(status)
+
+
+def test_deployment_status_requires_runtime_revision_key_but_accepts_null(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    deployment = DeploymentRunner(client, events)
+    status = deployment.status()
+    del status["theme"]["runtime_revision"]
+    monkeypatch.setattr(
+        publication,
+        "_deployment_mcp_call",
+        lambda *_args, **_kwargs: status,
+    )
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_DEPLOYMENT_STATUS_INVALID",
+    ):
+        publication.deployment_status()
+
+    status = deployment.status()
+    status["theme"]["runtime_revision"] = None
+    assert publication.deployment_status()["theme"]["runtime_revision"] is None
+
+
+@pytest.mark.parametrize(
+    "invalid_runtime",
+    [None, "0" * 64, "not-a-sha256"],
+)
+def test_deployment_status_requires_exact_plugin_runtime_revision(
+    monkeypatch: pytest.MonkeyPatch,
+    invalid_runtime: object,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    deployment = DeploymentRunner(client, events)
+    status = deployment.status()
+    status["plugin_runtime_revision"] = invalid_runtime
+    monkeypatch.setattr(
+        publication,
+        "_deployment_mcp_call",
+        lambda *_args, **_kwargs: status,
+    )
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_DEPLOYMENT_STATUS_INVALID",
+    ):
+        publication.deployment_status()
+
+
+def test_deployment_status_rejects_missing_plugin_runtime_revision(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    events: list[str] = []
+    client = WorkflowClient(article, events)
+    deployment = DeploymentRunner(client, events)
+    status = deployment.status()
+    del status["plugin_runtime_revision"]
+    monkeypatch.setattr(
+        publication,
+        "_deployment_mcp_call",
+        lambda *_args, **_kwargs: status,
+    )
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_DEPLOYMENT_STATUS_INVALID",
+    ):
+        publication.deployment_status()
 
 
 def test_portfolio_refresh_runs_capture_then_both_materializations_in_foreground() -> (
@@ -1954,18 +2558,17 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
     monkeypatch.setattr(
         publication,
         "read_content_operations",
-        lambda *_args: calls.append("operations"),
+        lambda *_args: calls.append("operations") or {"a" * 64: {"state": "APPLIED"}},
     )
     monkeypatch.setattr(
         publication,
         "wait_and_apply",
-        lambda *_args: calls.append("apply"),
+        lambda *_args, **kwargs: calls.append(
+            f"apply:{kwargs.get('finalize_applied')}"
+        ),
     )
-    monkeypatch.setattr(
-        publication,
-        "verify_published",
-        lambda *_args, **_kwargs: calls.append("verify"),
-    )
+    monkeypatch.setattr(publication, "_published_document_evidence", lambda *_args: {})
+    monkeypatch.setattr(publication, "_touch_receipt", lambda *_args: calls.append("touch"))
 
     assert publication._resume_existing_all_attempt(
         articles,
@@ -1975,8 +2578,435 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
         deployment_runner=lambda *_args, **_kwargs: subprocess.CompletedProcess(
             [], 0, b"", b""
         ),
-    ) is True
-    assert calls == ["initialize", "site-status", "operations", "apply", "verify"]
+    ) is False
+    assert calls == [
+        "initialize",
+        "site-status",
+        "operations",
+        "apply:False",
+        "operations",
+        "touch",
+    ]
+
+
+def _write_remote_applied_legacy_all_attempt(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> tuple[
+    list[Any],
+    Path,
+    str,
+    dict[str, dict[str, object]],
+    dict[str, dict[str, object]],
+    dict[str, dict[str, object]],
+]:
+    articles = publication.load_articles("all")
+    path = _private_path(monkeypatch, tmp_path)
+    old_tree = "0" * 64
+    receipt = publication._fresh_receipt(articles, path, old_tree)
+    receipt["desired_theme_runtime_revision"] = None
+    receipt["state"] = "APPLY_RETURNED"
+    content_proposals: list[dict[str, object]] = []
+    operations: dict[str, dict[str, object]] = {}
+    documents: dict[str, dict[str, object]] = {}
+    drafts: dict[str, dict[str, object]] = {}
+    for index, article in enumerate(articles, start=1):
+        proposal_id = f"{index:064x}"
+        post_id = 1000 + index
+        after_sha256 = publication._content_after_sha256(article.document(), post_id)
+        content_proposals.append(
+            {
+                "kind": "CONTENT_RELEASE",
+                "slug": article.production_slug,
+                "proposal_id": proposal_id,
+                "after_sha256": after_sha256,
+                "expires_at_gmt": "2099-08-29T00:15:00Z",
+                "idempotency_key": f"{index + 20:064x}",
+            }
+        )
+        drafts[article.production_slug] = {
+            "id": post_id,
+            "content_sha256": after_sha256,
+        }
+        documents[article.production_slug] = {
+            "id": post_id,
+            "slug": article.production_slug,
+            "status": "publish",
+            "content_sha256": after_sha256,
+            "revision_id": post_id,
+            "modified_gmt": "2026-08-29T00:00:00Z",
+        }
+        operations[proposal_id] = {
+            "schema": "OperationReceiptV1",
+            "proposal_id": proposal_id,
+            "operation_id": proposal_id,
+            "state": "APPLIED",
+            "result_code": "CONTENT_RELEASE_APPLIED",
+            "before_sha256": after_sha256,
+            "after_sha256": after_sha256,
+            "audit_id": f"{index + 40:064x}",
+        }
+    theme_proposal_id = "f" * 64
+    receipt["proposals"] = [
+        *content_proposals,
+        {
+            "kind": "THEME_RELEASE",
+            "slug": None,
+            "proposal_id": theme_proposal_id,
+            "after_sha256": old_tree,
+            "expires_at_gmt": "2099-08-29T00:15:00Z",
+            "idempotency_key": "e" * 64,
+        },
+    ]
+    receipt["operation_ids"] = {
+        str(proposal["proposal_id"]): str(proposal["proposal_id"])
+        for proposal in receipt["proposals"]
+    }
+    receipt["batch_registration"] = {}
+    receipt["drafts"] = drafts
+    publication._atomic_receipt(path, receipt)
+    return articles, path, old_tree, operations, documents, drafts
+
+
+def test_all_mode_remote_applied_legacy_attempt_creates_replacement_in_one_run(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles, path, old_tree, operations, documents, drafts = (
+        _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
+
+    class Client:
+        def initialize(self) -> None:
+            return None
+
+        def tools(self) -> dict[str, object]:
+            return {}
+
+        def call(self, name: str, _arguments: dict[str, object]) -> dict[str, object]:
+            assert name == "raos-codex-site-status"
+            return {"theme": {}}
+
+    calls: list[str] = []
+    replacement_count = 0
+    replacement_includes_theme = False
+
+    class NoopLock:
+        def __enter__(self) -> None:
+            return None
+
+        def __exit__(self, *_args: object) -> None:
+            return None
+
+    monkeypatch.setattr(publication, "request_lock", lambda: NoopLock())
+    monkeypatch.setattr(publication, "_receipt_path", lambda _articles: path)
+    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
+    monkeypatch.setattr(
+        publication,
+        "production_materialization_binding",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
+    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: {"state": "APPLIED"},
+    )
+    monkeypatch.setattr(
+        publication,
+        "read_content_operations",
+        lambda *_args: operations,
+    )
+    monkeypatch.setattr(
+        publication,
+        "_published_document_evidence",
+        lambda *_args: documents,
+    )
+    monkeypatch.setattr(publication, "list_all_documents", lambda _client: [])
+    monkeypatch.setattr(
+        publication,
+        "capture_existing_baselines",
+        lambda _client, _articles, listed, *_args, **_kwargs: listed,
+    )
+    monkeypatch.setattr(
+        publication,
+        "deployment_status",
+        lambda *_args, **_kwargs: {
+            "theme": {
+                "tree_sha256": old_tree,
+                "version": "1.3.9",
+                "runtime_version": "1.3.9",
+                "runtime_revision": None,
+            }
+        },
+    )
+    monkeypatch.setattr(
+        publication,
+        "reconcile_drafts",
+        lambda *_args, **_kwargs: drafts,
+    )
+
+    def create_proposals(
+        _client: object,
+        selected: list[Any],
+        _drafts: dict[str, object],
+        include_theme: bool,
+        stored: dict[str, object],
+        *_args: object,
+    ) -> list[dict[str, object]]:
+        nonlocal replacement_count, replacement_includes_theme
+        replacement_count = len(selected) + (1 if include_theme else 0)
+        replacement_includes_theme = include_theme
+        assert stored["state"] == "APPLIED_ATTEMPT_REPLACED"
+        assert stored["prior_applied_reconciliation"] is not None
+        return [{} for _ in range(replacement_count)]
+
+    monkeypatch.setattr(publication, "create_proposals", create_proposals)
+    monkeypatch.setattr(
+        publication,
+        "register_publication_batch",
+        lambda *_args: calls.append("registered"),
+    )
+    def wait_for_batch(*_args: object, **kwargs: object) -> None:
+        if kwargs.get("finalize_applied") is True:
+            calls.append("finalized-old")
+            return
+        raise publication.PublicationFailure("WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT")
+
+    monkeypatch.setattr(publication, "wait_and_apply", wait_for_batch)
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT",
+    ):
+        publication.execute(
+            "all",
+            portfolio_refresh=lambda: calls.append("refresh"),
+            preview=lambda: calls.append("preview"),
+            client_factory=Client,
+        )
+
+    assert calls == ["finalized-old", "refresh", "preview", "registered"]
+    assert replacement_includes_theme is True
+    assert replacement_count == 11
+
+
+def test_all_mode_applied_recovery_failure_stops_before_fresh_cycle(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles, path, _old_tree, operations, _documents, _drafts = (
+        _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
+    lifecycle: list[str] = []
+
+    class Client:
+        def initialize(self) -> None:
+            return None
+
+        def tools(self) -> dict[str, object]:
+            return {}
+
+        def call(self, name: str, _arguments: dict[str, object]) -> dict[str, object]:
+            assert name == "raos-codex-site-status"
+            return {"theme": {}}
+
+    monkeypatch.setattr(publication, "_receipt_path", lambda _articles: path)
+    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
+    monkeypatch.setattr(
+        publication,
+        "production_materialization_binding",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
+    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: {"state": "APPLIED"},
+    )
+    monkeypatch.setattr(
+        publication,
+        "read_content_operations",
+        lambda *_args: operations,
+    )
+
+    def recovery_failure(*_args: object, **kwargs: object) -> None:
+        assert kwargs == {"finalize_applied": True}
+        lifecycle.append("recover")
+        raise publication.PublicationFailure(
+            "RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE"
+        )
+
+    monkeypatch.setattr(publication, "wait_and_apply", recovery_failure)
+    monkeypatch.setattr(
+        publication,
+        "_published_document_evidence",
+        lambda *_args: (_ for _ in ()).throw(
+            AssertionError("readback must follow successful recovery")
+        ),
+    )
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE",
+    ):
+        publication.execute(
+            "all",
+            portfolio_refresh=lambda: lifecycle.append("refresh"),
+            preview=lambda: lifecycle.append("preview"),
+            client_factory=Client,
+        )
+
+    assert lifecycle == ["recover"]
+
+
+def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles, path, _old_tree, operations, documents, _drafts = (
+        _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
+    current_documents = {
+        article.production_slug: article.document()
+        | {"schema": "ContentDocumentV1"}
+        | documents[article.production_slug]
+        for article in articles
+    }
+    lifecycle: list[str] = []
+    remote_calls: list[str] = []
+
+    class Client:
+        def initialize(self) -> None:
+            remote_calls.append("initialize")
+
+        def tools(self) -> dict[str, object]:
+            return {}
+
+        def call(
+            self,
+            name: str,
+            arguments: dict[str, object],
+        ) -> dict[str, object]:
+            remote_calls.append(name)
+            if name == "raos-codex-site-status":
+                return {"theme": {}}
+            if name == "raos-codex-content-list":
+                assert arguments == {
+                    "post_type": "post",
+                    "status": "any",
+                    "page": 1,
+                    "per_page": publication.LIST_PER_PAGE,
+                }
+                return {
+                    "schema": "ContentDocumentListV1",
+                    "page": 1,
+                    "per_page": publication.LIST_PER_PAGE,
+                    "total": len(current_documents),
+                    "documents": list(current_documents.values()),
+                }
+            if name == "raos-codex-content-get":
+                post_id = arguments.get("id")
+                return next(
+                    document
+                    for document in current_documents.values()
+                    if document["id"] == post_id
+                )
+            raise AssertionError(f"unexpected mutation/proposal call: {name}")
+
+    client = Client()
+    monkeypatch.setattr(publication, "_receipt_path", lambda _articles: path)
+    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
+    monkeypatch.setattr(
+        publication,
+        "production_materialization_binding",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
+    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: {"state": "APPLIED"},
+    )
+    monkeypatch.setattr(
+        publication,
+        "read_content_operations",
+        lambda *_args: operations,
+    )
+    monkeypatch.setattr(
+        publication,
+        "wait_and_apply",
+        lambda *_args, **kwargs: lifecycle.append(
+            f"finalize:{kwargs.get('finalize_applied')}"
+        ),
+    )
+
+    def reconciled_documents(*_args: object) -> dict[str, dict[str, object]]:
+        lifecycle.append("resume-readback")
+        return documents
+
+    monkeypatch.setattr(
+        publication,
+        "_published_document_evidence",
+        reconciled_documents,
+    )
+    monkeypatch.setattr(
+        publication,
+        "deployment_status",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("deployment status must follow exact baseline verification")
+        ),
+    )
+    monkeypatch.setattr(
+        publication,
+        "reconcile_drafts",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("draft reconciliation must not run after unknown drift")
+        ),
+    )
+    monkeypatch.setattr(
+        publication,
+        "create_proposals",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("proposal creation must not run after unknown drift")
+        ),
+    )
+
+    def preview() -> None:
+        assert lifecycle == ["finalize:True", "resume-readback", "refresh"]
+        lifecycle.append("preview")
+        slug = articles[0].production_slug
+        revised = dict(current_documents[slug])
+        revised["revision_id"] = int(revised["revision_id"]) + 1
+        revised["modified_gmt"] = "2026-08-29T00:01:00Z"
+        assert revised["content_sha256"] == documents[slug]["content_sha256"]
+        current_documents[slug] = revised
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT",
+    ):
+        publication.execute(
+            "all",
+            portfolio_refresh=lambda: lifecycle.append("refresh"),
+            preview=preview,
+            client_factory=lambda: client,
+        )
+
+    assert lifecycle == [
+        "finalize:True",
+        "resume-readback",
+        "refresh",
+        "preview",
+    ]
+    assert "raos-codex-content-update-draft" not in remote_calls
+    assert "raos-codex-content-propose-release" not in remote_calls
+    stored = json.loads(path.read_text(encoding="utf-8"))
+    assert stored["state"] == "APPLIED"
+    assert stored["prior_applied_reconciliation"]["documents"] == documents
 
 
 def test_stale_docker_group_uses_only_fixed_sg_commands(

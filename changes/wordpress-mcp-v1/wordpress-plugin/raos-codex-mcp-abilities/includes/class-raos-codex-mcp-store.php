@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Store
 {
+    const RUNTIME_REVISION = '7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755';
     const SCHEMA_VERSION = '4';
     const SCHEMA_OPTION = 'raos_codex_mcp_store_schema_v1';
     const TTL_SECONDS = 900;
@@ -28,6 +29,10 @@ final class RAOS_Codex_MCP_Store
 
     public static function install()
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         $table = self::table_name();
@@ -143,6 +148,10 @@ final class RAOS_Codex_MCP_Store
      */
     public static function maybe_upgrade()
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         $installed = get_option(self::SCHEMA_OPTION, '0');
         if (! is_string($installed) || ! hash_equals(self::SCHEMA_VERSION, $installed)) {
             self::install();
@@ -293,6 +302,10 @@ final class RAOS_Codex_MCP_Store
         $package_path = null,
         $idempotency_key = null
     ) {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! in_array($kind, array('CONTENT_RELEASE', 'THEME_RELEASE', 'PLUGIN_CHANGE'), true)
             || ! is_array($payload)
@@ -452,6 +465,10 @@ final class RAOS_Codex_MCP_Store
 
     public static function get($proposal_id)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! self::is_sha256($proposal_id)) {
             return new WP_Error('raos_codex_proposal_id_invalid', 'Proposal ID is invalid.', array('status' => 400));
@@ -854,6 +871,10 @@ final class RAOS_Codex_MCP_Store
         $expected_theme_tree_sha256
     )
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! is_array($proposal_ids)
             || empty($proposal_ids)
@@ -1000,6 +1021,10 @@ final class RAOS_Codex_MCP_Store
 
     public static function get_publication_batch($batch_token)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! self::is_sha256($batch_token)) {
             return new WP_Error('raos_codex_publication_batch_token_invalid', 'Publication batch token is invalid.', array('status' => 400));
@@ -1045,6 +1070,124 @@ final class RAOS_Codex_MCP_Store
             }
         }
         return self::hydrate_publication_batch($row);
+    }
+
+    /**
+     * Resolve the one claimed publication batch that immutably binds a proposal.
+     *
+     * Recovery is addressed by operation ID alone.  A proposal may have appeared
+     * in more than one unapproved batch, so only one approved, already-claimed
+     * batch with an exact manifest entry is authoritative.  Any missing,
+     * duplicate, or inconsistent binding remains indeterminate.
+     */
+    public static function get_claimed_publication_batch_for_proposal($proposal_id)
+    {
+        global $wpdb;
+        if (! self::is_sha256($proposal_id)) {
+            return new WP_Error(
+                'raos_codex_publication_batch_binding_invalid',
+                'Publication batch binding is invalid.',
+                array('status' => 400)
+            );
+        }
+        $operation = self::get($proposal_id);
+        if (is_wp_error($operation)) {
+            return $operation;
+        }
+        if ('CONTENT_RELEASE' !== $operation['kind']
+            || 'APPLYING' !== $operation['state']
+            || 'OPERATION_APPLYING' !== $operation['result_code']
+            || is_wp_error(self::validate_proposal_integrity($operation))) {
+            return new WP_Error(
+                'raos_codex_publication_batch_binding_indeterminate',
+                'Publication batch binding could not be determined.',
+                array('status' => 409)
+            );
+        }
+        $quoted_id = '%"' . $wpdb->esc_like($proposal_id) . '"%';
+        $tokens = $wpdb->get_col(
+            $wpdb->prepare(
+                'SELECT batch_token FROM ' . self::batch_table_name()
+                . " WHERE state = 'APPROVED' AND applying_at_gmt IS NOT NULL"
+                . ' AND proposal_ids_json LIKE %s'
+                . ' ORDER BY created_at_gmt DESC LIMIT 2',
+                $quoted_id
+            )
+        );
+        if (! is_array($tokens) || 1 !== count($tokens) || ! self::is_sha256($tokens[0])) {
+            return new WP_Error(
+                'raos_codex_publication_batch_binding_indeterminate',
+                'Publication batch binding could not be determined.',
+                array('status' => 409)
+            );
+        }
+        $batch = self::get_publication_batch($tokens[0]);
+        if (is_wp_error($batch)
+            || ! isset(
+                $batch['approved_by'],
+                $batch['approved_at_gmt'],
+                $batch['approval_reason'],
+                $operation['approved_by'],
+                $operation['approved_at_gmt'],
+                $operation['approval_reason']
+            )
+            || 'APPROVED' !== $batch['state']
+            || ! is_string($batch['applying_at_gmt'])
+            || (int) $batch['created_by'] !== (int) $operation['created_by']
+            || (int) $batch['approved_by'] !== (int) $operation['approved_by']
+            || ! is_string($batch['approved_at_gmt'])
+            || ! is_string($operation['approved_at_gmt'])
+            || ! hash_equals($batch['approved_at_gmt'], $operation['approved_at_gmt'])
+            || ! is_string($batch['approval_reason'])
+            || ! is_string($operation['approval_reason'])
+            || ! hash_equals($batch['approval_reason'], $operation['approval_reason'])
+            || ! hash_equals($batch['expires_at_gmt'], $operation['expires_at_gmt'])
+            || ! in_array($proposal_id, $batch['proposal_ids'], true)) {
+            return new WP_Error(
+                'raos_codex_publication_batch_binding_indeterminate',
+                'Publication batch binding could not be determined.',
+                array('status' => 409)
+            );
+        }
+        $matches = array();
+        foreach ($batch['manifest']['proposals'] as $entry) {
+            if (is_array($entry)
+                && isset($entry['proposal_id'])
+                && is_string($entry['proposal_id'])
+                && hash_equals($proposal_id, $entry['proposal_id'])) {
+                $matches[] = $entry;
+            }
+        }
+        $entry = 1 === count($matches) ? $matches[0] : null;
+        $created_iso = self::timestamp_iso($operation['created_at_gmt']);
+        if (! is_array($entry)
+            || ! isset(
+                $entry['kind'],
+                $entry['created_by'],
+                $entry['created_at_gmt']
+            )
+            || ! array_key_exists('before_sha256', $entry)
+            || ! array_key_exists('after_sha256', $entry)
+            || ! is_string($created_iso)
+            || ! hash_equals($operation['kind'], (string) $entry['kind'])
+            || (int) $operation['created_by'] !== (int) $entry['created_by']
+            || ! is_string($entry['created_at_gmt'])
+            || ! hash_equals($created_iso, $entry['created_at_gmt'])
+            || ! self::nullable_hash_matches(
+                $operation['before_sha256'],
+                $entry['before_sha256']
+            )
+            || ! self::nullable_hash_matches(
+                $operation['after_sha256'],
+                $entry['after_sha256']
+            )) {
+            return new WP_Error(
+                'raos_codex_publication_batch_binding_indeterminate',
+                'Publication batch binding could not be determined.',
+                array('status' => 409)
+            );
+        }
+        return $batch;
     }
 
     private static function hydrate_publication_batch($row)
@@ -1246,6 +1389,10 @@ final class RAOS_Codex_MCP_Store
 
     public static function approve($proposal_id, $approver_id, $reason)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! self::is_sha256($proposal_id)
             || (int) $approver_id < 1
@@ -1558,6 +1705,10 @@ final class RAOS_Codex_MCP_Store
         $reason
     )
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! self::is_sha256($batch_token)
             || ! self::is_sha256($expected_batch_sha256)
@@ -1843,6 +1994,10 @@ final class RAOS_Codex_MCP_Store
         $expected_batch_sha256,
         $proposal_ids
     ) {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         $approval_expires = is_array($batch) && isset($batch['approved_at_gmt'])
             ? self::approval_expiry_mysql($batch['approved_at_gmt'])
@@ -2059,6 +2214,10 @@ final class RAOS_Codex_MCP_Store
         $expected_batch_sha256,
         $proposal_ids
     ) {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! self::is_sha256($batch_token)
             || ! self::is_sha256($expected_batch_sha256)
@@ -2199,6 +2358,10 @@ final class RAOS_Codex_MCP_Store
 
     public static function claim_apply($proposal_id)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         $updated = $wpdb->query(
             $wpdb->prepare(
@@ -2257,12 +2420,23 @@ final class RAOS_Codex_MCP_Store
         return true;
     }
 
-    public static function complete($proposal_id, $result_code, $before_sha256, $after_sha256)
+    public static function complete(
+        $proposal_id,
+        $result_code,
+        $before_sha256,
+        $after_sha256,
+        $defer_approval_lease_cleanup = false
+    )
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! preg_match('/\A[A-Z0-9_]{3,96}\z/D', $result_code)
             || (! is_null($before_sha256) && ! self::is_sha256($before_sha256))
-            || (! is_null($after_sha256) && ! self::is_sha256($after_sha256))) {
+            || (! is_null($after_sha256) && ! self::is_sha256($after_sha256))
+            || ! is_bool($defer_approval_lease_cleanup)) {
             return new WP_Error('raos_codex_receipt_invalid', 'Receipt is invalid.', array('status' => 500));
         }
         $row = self::get($proposal_id);
@@ -2300,12 +2474,18 @@ final class RAOS_Codex_MCP_Store
         if (1 !== $updated) {
             return new WP_Error('raos_codex_receipt_conflict', 'Receipt storage conflicted.', array('status' => 409));
         }
-        RAOS_Codex_MCP_Deployment::remove_approval_lease($proposal_id);
+        if (! $defer_approval_lease_cleanup) {
+            RAOS_Codex_MCP_Deployment::remove_approval_lease($proposal_id);
+        }
         return $receipt;
     }
 
     public static function mark_failed($proposal_id, $result_code)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         global $wpdb;
         if (! preg_match('/\A[A-Z0-9_]{3,96}\z/D', $result_code)) {
             $result_code = 'OPERATION_FAILED';
@@ -2368,5 +2548,28 @@ final class RAOS_Codex_MCP_Store
             'after_sha256' => $row['after_sha256'],
             'audit_id' => $row['audit_id'],
         );
+    }
+
+    private static function runtime_identity_gate()
+    {
+        if (! defined('RAOS_CODEX_MCP_RUNTIME_REVISION')
+            || ! is_string(RAOS_CODEX_MCP_RUNTIME_REVISION)
+            || ! hash_equals(self::RUNTIME_REVISION, RAOS_CODEX_MCP_RUNTIME_REVISION)
+            || ! class_exists('RAOS_Codex_MCP_Abilities', false)
+            || ! method_exists('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision')) {
+            return new WP_Error(
+                'raos_codex_plugin_runtime_mixed',
+                'The loaded RAOS Codex plugin runtime is not one exact release.',
+                array('status' => 503)
+            );
+        }
+        $revision = call_user_func(array('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision'));
+        return is_string($revision) && hash_equals(self::RUNTIME_REVISION, $revision)
+            ? true
+            : new WP_Error(
+                'raos_codex_plugin_runtime_mixed',
+                'The loaded RAOS Codex plugin runtime is not one exact release.',
+                array('status' => 503)
+            );
     }
 }

@@ -243,6 +243,8 @@ class _Factory:
         malformed_item_url: bool = False,
         malformed_provider_json: bool = False,
         mismatched_item_url_shop: bool = False,
+        mismatched_item_url_item: bool = False,
+        mismatched_affiliate_pc_item: bool = False,
         item_name_overrides: dict[str, str] | None = None,
         reflected_value: str | None = None,
         truncated_image: bool = False,
@@ -283,6 +285,8 @@ class _Factory:
         self.malformed_provider_json = malformed_provider_json
         self.malformed_item_url = malformed_item_url
         self.mismatched_item_url_shop = mismatched_item_url_shop
+        self.mismatched_item_url_item = mismatched_item_url_item
+        self.mismatched_affiliate_pc_item = mismatched_affiliate_pc_item
         self.item_name_overrides = dict(item_name_overrides or {})
         self.use_truncated_image = truncated_image
         self.requests: list[tuple[str, str]] = []
@@ -306,7 +310,13 @@ class _Factory:
     def _item_name(self, target: ProductCaptureTarget) -> str:
         return self.item_name_overrides.get(
             target.product_id,
-            " ".join([*target.required_title_tokens, target.product_kind_tokens[0]]),
+            " ".join(
+                [
+                    *target.required_title_tokens,
+                    target.variants[0],
+                    target.product_kind_tokens[0],
+                ]
+            ),
         )
 
     def _source_and_destination(
@@ -321,11 +331,20 @@ class _Factory:
         shop_code = (
             "different-shop" if self.mismatched_item_url_shop else target.shop_code
         )
-        source = f"https://item.rakuten.co.jp/{shop_code}/{tail}/"
+        source_tail = "different-item" if self.mismatched_item_url_item else tail
+        source = f"https://item.rakuten.co.jp/{shop_code}/{source_tail}/"
+        affiliate_pc_tail = (
+            "different-affiliate-item"
+            if self.mismatched_affiliate_pc_item
+            else source_tail
+        )
+        affiliate_pc = (
+            f"https://item.rakuten.co.jp/{shop_code}/{affiliate_pc_tail}/"
+        )
         destination = "https://hb.afl.rakuten.co.jp/hgc/test.abc/?" + urlencode(
             {
                 "m": f"https://m.rakuten.co.jp/{shop_code}/i/{tail}/",
-                "pc": source,
+                "pc": affiliate_pc,
                 "rafcid": "bounded-capture-test",
             }
         )
@@ -572,25 +591,28 @@ def test_capture_accepts_current_ac70_title_with_product_warranty(
     private_root_path: Path, clean_network_environment: None
 ) -> None:
     repository = _private_root(private_root_path)
-    targets = load_product_capture_plan(repository).for_article(
-        PORTABLE_POWER_ARTICLE_ID
+    target = next(
+        target
+        for target in load_product_capture_plan(repository).for_article(
+            PORTABLE_POWER_ARTICLE_ID
+        )
+        if target.product_id == "PRD-BLUETTI-AC70"
     )
-    results = capture_article_products(
+    result = capture_module._capture_product(
         repository,
-        article_id=PORTABLE_POWER_ARTICLE_ID,
+        target,
+        capture_module.read_owner_credentials(repository),
         connection_factory=cast(
             RakutenHttpsConnectionFactory,
             _Factory(
-                targets,
+                (target,),
                 item_name_overrides={"PRD-BLUETTI-AC70": CURRENT_BLUETTI_AC70_TITLE},
             ),
         ),
         clock=lambda: datetime(2026, 8, 27, 12, 0, tzinfo=timezone.utc),
     )
 
-    assert {result.product_id for result in results} == {
-        target.product_id for target in targets
-    }
+    assert result.product_id == target.product_id
     evidence = read_rakuten_product_evidence(repository, product_id="PRD-BLUETTI-AC70")
     assert evidence.item_code == "bluettijapan:10000107"
     assert evidence.item_name == CURRENT_BLUETTI_AC70_TITLE
@@ -606,27 +628,94 @@ def test_capture_rejects_warranty_service_only_listing(
     clean_network_environment: None,
 ) -> None:
     repository = _private_root(private_root_path)
-    targets = load_product_capture_plan(repository).for_article(
-        PORTABLE_POWER_ARTICLE_ID
+    target = next(
+        target
+        for target in load_product_capture_plan(repository).for_article(
+            PORTABLE_POWER_ARTICLE_ID
+        )
+        if target.product_id == "PRD-BLUETTI-AC70"
     )
     factory = _Factory(
-        targets,
+        (target,),
         item_name_overrides={
             "PRD-BLUETTI-AC70": (f"BLUETTI AC70 ポータブル電源 {service_label} 単品")
         },
     )
 
     with pytest.raises(RakutenProductCaptureFailure) as captured:
-        capture_article_products(
+        capture_module._capture_product(
             repository,
-            article_id=PORTABLE_POWER_ARTICLE_ID,
+            target,
+            capture_module.read_owner_credentials(repository),
             connection_factory=cast(RakutenHttpsConnectionFactory, factory),
+            clock=lambda: datetime(2026, 8, 27, 12, 0, tzinfo=timezone.utc),
         )
 
     assert (
-        captured.value.code is RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID
+        captured.value.code is RakutenProductCaptureFailureCode.PRODUCT_LISTING_MISMATCH
     )
-    assert captured.value.credentials_used is True
+    assert factory.credentials_used is True
+
+
+def test_provider_identity_cannot_self_validate_model_or_registry_jan() -> None:
+    target = ProductCaptureTarget(
+        product_id="PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        shop_code="edion",
+        affiliate_ref="AFF-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        media_asset_ref="MEDIA-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        variants=("F155260",),
+        required_title_tokens=("Roomba", "Mini", "AutoEmpty"),
+        product_kind_tokens=("ロボット掃除機",),
+        forbidden_title_tokens=("交換用", "アクセサリー"),
+        jan="0885155053053",
+        fixed_item_code="edion:10895202",
+        fixed_destination_url=None,
+    )
+    provider_row: dict[str, object] = {
+        "itemCode": "edion:10895202",
+        "itemName": "Roomba Mini AutoEmpty ロボット掃除機",
+    }
+
+    assert capture_module._valid_identity(target, provider_row) is False
+    provider_row["itemName"] = "Roomba Mini AutoEmpty F155260 ロボット掃除機"
+    assert capture_module._valid_identity(target, provider_row) is False
+    provider_row["jan"] = "0885155054982"
+    assert capture_module._valid_identity(target, provider_row) is False
+    provider_row["jan"] = "0885155053053"
+    assert capture_module._valid_identity(target, provider_row) is True
+    provider_row["itemName"] = "Roomba Mini AutoEmpty F155260X ロボット掃除機"
+    assert capture_module._valid_identity(target, provider_row) is False
+
+
+def test_item_search_without_official_jan_is_a_listing_mismatch(
+    private_root_path: Path, clean_network_environment: None
+) -> None:
+    repository = _private_root(private_root_path)
+    target = next(
+        target
+        for target in load_product_capture_plan(repository).for_article(
+            DISCOVERY_ARTICLE_ID
+        )
+        if target.product_id == "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"
+    )
+    factory = _Factory((target,))
+
+    with pytest.raises(RakutenProductCaptureFailure) as captured:
+        capture_module._capture_product(
+            repository,
+            target,
+            capture_module.read_owner_credentials(repository),
+            connection_factory=cast(RakutenHttpsConnectionFactory, factory),
+            clock=lambda: datetime(2026, 8, 27, 12, 0, tzinfo=timezone.utc),
+        )
+
+    assert (
+        captured.value.code is RakutenProductCaptureFailureCode.PRODUCT_LISTING_MISMATCH
+    )
+    assert factory.credentials_used is True
+    assert not any(
+        host == "thumbnail.image.rakuten.co.jp" for host, _path in factory.requests
+    )
 
 
 def test_bounded_capture_writes_exact_four_artifacts_per_product(
@@ -1011,6 +1100,53 @@ def test_capture_rejects_item_url_from_different_shop_than_item_code(
     assert captured.value.credentials_used is True
 
 
+def test_capture_accepts_provider_pc_slug_distinct_from_numeric_item_code(
+    private_root_path: Path, clean_network_environment: None
+) -> None:
+    repository = _private_root(private_root_path)
+    targets = load_product_capture_plan(repository).for_article(ARTICLE_ID)
+    results = capture_article_products(
+        repository,
+        article_id=ARTICLE_ID,
+        connection_factory=cast(
+            RakutenHttpsConnectionFactory,
+            _Factory(targets, mismatched_item_url_item=True),
+        ),
+    )
+    assert len(results) == len(targets)
+    for target in targets:
+        evidence = read_rakuten_product_evidence(
+            repository, product_id=target.product_id
+        )
+        shop, item = evidence.item_code.split(":", 1)
+        assert evidence.source_url == (
+            f"https://item.rakuten.co.jp/{shop}/different-item/"
+        )
+        query = parse_qs(urlsplit(evidence.destination_url).query)
+        assert query["pc"] == [evidence.source_url]
+        assert query["m"] == [f"https://m.rakuten.co.jp/{shop}/i/{item}/"]
+
+
+def test_capture_rejects_affiliate_pc_different_from_provider_item_url(
+    private_root_path: Path, clean_network_environment: None
+) -> None:
+    repository = _private_root(private_root_path)
+    targets = load_product_capture_plan(repository).for_article(ARTICLE_ID)
+    with pytest.raises(RakutenProductCaptureFailure) as captured:
+        capture_article_products(
+            repository,
+            article_id=ARTICLE_ID,
+            connection_factory=cast(
+                RakutenHttpsConnectionFactory,
+                _Factory(targets, mismatched_affiliate_pc_item=True),
+            ),
+        )
+    assert (
+        captured.value.code is RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID
+    )
+    assert captured.value.credentials_used is True
+
+
 def test_malformed_credentialed_provider_json_is_a_response_failure(
     private_root_path: Path, clean_network_environment: None
 ) -> None:
@@ -1109,26 +1245,24 @@ def test_ambiguous_discovery_stops_before_discovered_product_evidence(
 ) -> None:
     repository = _private_root(private_root_path)
     fixed_codes = dict(capture_module._FIXED_PRODUCT_ITEM_CODES)
-    del fixed_codes["PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"]
+    del fixed_codes["PRD-SWITCHBOT-K11-PRO"]
     monkeypatch.setattr(capture_module, "_FIXED_PRODUCT_ITEM_CODES", fixed_codes)
     targets = load_product_capture_plan(repository).for_article(DISCOVERY_ARTICLE_ID)
+    discovered_target = next(
+        target for target in targets if target.fixed_item_code is None
+    )
+    factory = _Factory((discovered_target,), ambiguous=True)
     with pytest.raises(RakutenProductCaptureFailure) as captured:
-        capture_article_products(
-            repository,
-            article_id=DISCOVERY_ARTICLE_ID,
-            connection_factory=cast(
-                RakutenHttpsConnectionFactory, _Factory(targets, ambiguous=True)
-            ),
-            clock=lambda: datetime(2026, 8, 24, 12, 0, tzinfo=timezone.utc),
+        capture_module._discover_item_code(
+            discovered_target,
+            capture_module.read_owner_credentials(repository),
+            cast(RakutenHttpsConnectionFactory, factory),
         )
     assert (
         captured.value.code
         is RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_AMBIGUOUS
     )
     directory = repository / ".secrets/st1704-self-hosted-editorial-pilot/rakuten"
-    discovered_target = next(
-        target for target in targets if target.fixed_item_code is None
-    )
     assert not (directory / f"{discovered_target.product_id}.v1.json").exists()
 
 
@@ -1142,12 +1276,15 @@ def test_discovery_aggregates_identity_across_every_allowed_variant(
     del fixed_codes["PRD-THANKO-RAKUA-MINI-COLOR"]
     monkeypatch.setattr(capture_module, "_FIXED_PRODUCT_ITEM_CODES", fixed_codes)
     targets = load_product_capture_plan(repository).for_article(DISHWASHER_ARTICLE_ID)
-    factory = _Factory(targets)
+    discovered_target = next(
+        target for target in targets if target.fixed_item_code is None
+    )
+    factory = _Factory((discovered_target,))
     with pytest.raises(RakutenProductCaptureFailure) as captured:
-        capture_article_products(
-            repository,
-            article_id=DISHWASHER_ARTICLE_ID,
-            connection_factory=cast(RakutenHttpsConnectionFactory, factory),
+        capture_module._discover_item_code(
+            discovered_target,
+            capture_module.read_owner_credentials(repository),
+            cast(RakutenHttpsConnectionFactory, factory),
         )
     assert (
         captured.value.code

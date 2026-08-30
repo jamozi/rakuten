@@ -14,7 +14,7 @@ are separate from volatile offers. Recommendation inputs cannot include finance.
 Real content cannot become human-reviewed or sealed in Phase 0-2; a disabled
 WordPress dry-run receipt is not publication evidence.
 
-Validation: T-V2-007..019 and T-V2-051 are `PASSED_LOCAL_RECORDED` (recorded test status:
-`PASSED_LOCAL`); the generator does not execute tests. Publication,
+Validation: T-V2-007..019 and T-V2-051 are `PENDING_LOCAL_TEST_GATE` (recorded test status:
+`AWAITING_GATE_STALE_BINDING`); the generator does not execute tests. Publication,
 deployment, credentials, spend, live provider writes and production changes are
 `NOT_EXECUTED`. Effective planning ceiling: 40 hours; spend ceiling: JPY 0.

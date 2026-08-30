@@ -339,7 +339,7 @@
         "source_packet_version_ref": "SPV-ST1704-PORTABLE-POWER-V1",
         "blocks": [
           {"block_id": "BLK-POWER-001", "type": "disclosure_slot", "disclosure_policy_version_ref": "DISC-ST1704-AFFILIATE-V1", "placement": "article_top", "editor_removable": false},
-          {"block_id": "BLK-POWER-002", "type": "lead", "claim_ids": [], "content": [{"type": "text", "text": "この記事では、Anker Solix C300 Portable Power Station、Jackery ポータブル電源 500 New、BLUETTI AC70、EcoFlow DELTA 3 Classicを比較します。停電への備えは、容量が大きいほど合うとは限りません。使いたい機器の消費電力と使用時間、収納場所、持ち運ぶ距離を先に決めると、必要以上に大きなモデルを避けやすくなります。"}]},
+          {"block_id": "BLK-POWER-002", "type": "lead", "claim_ids": [], "content": [{"type": "text", "text": "この記事では、Anker Solix C300 Portable Power Station（型番：A17225Z1）、Jackery ポータブル電源 500 New、BLUETTI AC70、EcoFlow DELTA 3 Classicを比較します。停電への備えは、容量が大きいほど合うとは限りません。使いたい機器の消費電力と使用時間、収納場所、持ち運ぶ距離を先に決めると、必要以上に大きなモデルを避けやすくなります。"}]},
           {"block_id": "BLK-POWER-003", "type": "decision_summary", "items": [
             {"condition": "スマートフォンや照明を中心に、持ち出しやすさを優先", "recommendation_ref": "REC-POWER-C300", "summary": [{"type": "text", "text": "288Wh・定格300W・約4.1kgで、小型機器を中心に軽く備えたい場合に向きます。"}], "claim_ids": ["CLM-ST1704-POWER-C300-SPECS"]},
             {"condition": "容量と持ち運びやすさのバランスを選びたい", "recommendation_ref": "REC-POWER-JACKERY", "summary": [{"type": "text", "text": "512Wh・定格500W・5.7kgで、容量と持ち運びやすさのバランスを取りたい場合に向きます。"}], "claim_ids": ["CLM-ST1704-POWER-JACKERY-SPECS", "CLM-ST1704-POWER-CONDITIONAL-CHOICES"]},
@@ -435,7 +435,7 @@
         "source_packet_version_ref": "SPV-ST1704-ANKER-DIFFERENCES-V1",
         "blocks": [
           {"block_id": "BLK-ANKER-001", "type": "disclosure_slot", "disclosure_policy_version_ref": "DISC-ST1704-AFFILIATE-V1", "placement": "article_top", "editor_removable": false},
-          {"block_id": "BLK-ANKER-002", "type": "lead", "claim_ids": [], "content": [{"type": "text", "text": "この記事では、Anker Solix C300 Portable Power Station（以下、C300）、Anker Solix C800 Plus Portable Power Station（以下、C800 Plus）、Anker Solix C1000 Portable Power Station（以下、C1000）、Anker Solix C1000 Gen 2 Portable Power Station（以下、C1000 Gen 2）を比較します。同じAnker Solixでも、容量、定格出力、重量は大きく異なるため、必要な出力と持ち運べる重さから候補を絞ります。"}]},
+          {"block_id": "BLK-ANKER-002", "type": "lead", "claim_ids": [], "content": [{"type": "text", "text": "比較するのは、Anker Solix C300 Portable Power Station（型番：A17225Z1）、Anker Solix C800 Plus Portable Power Station（型番：A1754）、Anker Solix C1000 Portable Power Station（型番：A17615Z1）、Anker Solix C1000 Gen 2 Portable Power Station（型番：A17635Z1）の4モデルです。以降は順に「C300」「C800 Plus」「C1000」「C1000 Gen 2」と表記します。同じAnker Solixでも、容量、定格出力、重量は大きく異なるため、必要な出力と持ち運べる重さから候補を絞ります。"}]},
           {"block_id": "BLK-ANKER-003", "type": "decision_summary", "items": [
             {"condition": "小型機器中心で持ち運びを優先", "recommendation_ref": "REC-ANKER-C300", "summary": [{"type": "text", "text": "288Wh・定格300W・約4.1kgで、小型機器を中心に軽く備えたい場合に向きます。"}], "claim_ids": ["CLM-ST1704-ANKER-C300-SPECS"]},
             {"condition": "中容量と1200Wの定格出力を両立", "recommendation_ref": "REC-ANKER-C800", "summary": [{"type": "text", "text": "768Wh・定格1200Wで、C300より容量と定格出力を増やしたい場合に向きます。"}], "claim_ids": ["CLM-ST1704-ANKER-C800-SPECS"]},
@@ -531,7 +531,7 @@
         "source_packet_version_ref": "SPV-ST1704-DISHWASHER-V1",
         "blocks": [
           {"block_id": "BLK-DISH-001", "type": "disclosure_slot", "disclosure_policy_version_ref": "DISC-ST1704-AFFILIATE-V1", "placement": "article_top", "editor_removable": false},
-          {"block_id": "BLK-DISH-002", "type": "lead", "claim_ids": [], "content": [{"type": "text", "text": "この記事では、Panasonic SOLOTA NP-TMLK1-H（以下、SOLOTA）、THANKO ラクアmini color TDWS25SBL（以下、ラクアmini color）、siroca 食器洗い乾燥機 SS-MA251（以下、SS-MA251）、Panasonic NP-TSP1-W（以下、NP-TSP1）を比較します。工事不要の食洗機でも、置き場所、扉を開く空間、食器点数、給排水の手間は同じではありません。まず、一度に洗いたい食器量と使える設置寸法から候補を絞ります。"}]},
+          {"block_id": "BLK-DISH-002", "type": "lead", "claim_ids": [], "content": [{"type": "text", "text": "比較するのは、Panasonic SOLOTA NP-TMLK1-H、THANKO ラクアmini color（型番：TDWS25SBL）、siroca 食器洗い乾燥機 SS-MA251、Panasonic NP-TSP1-Wの4モデルです。以降は順に「SOLOTA」「ラクアmini color」「SS-MA251」「NP-TSP1」と表記します。工事不要の食洗機でも、置き場所、扉を開く空間、食器点数、給排水の手間は同じではありません。まず、一度に洗いたい食器量と使える設置寸法から候補を絞ります。"}]},
           {"block_id": "BLK-DISH-003", "type": "decision_summary", "items": [
             {"condition": "奥行を抑え、1人分の食器6点を想定", "recommendation_ref": "REC-DISH-NP-TMLK1", "summary": [{"type": "text", "text": "本体寸法は幅約31×奥行約22.5×高さ約43.5cmで、4モデルでは奥行が最も短い候補です。"}], "claim_ids": ["CLM-ST1704-DISH-NP-TMLK1-SPECS", "CLM-ST1704-DISH-CONDITIONAL-CHOICES"]},
             {"condition": "幅約31cmで食器11〜12点を想定", "recommendation_ref": "REC-DISH-RAKUA", "summary": [{"type": "text", "text": "本体寸法は幅30.8×奥行31.5×高さ41.5cmで、標準収納容量は11〜12点です。"}], "claim_ids": ["CLM-ST1704-DISH-RAKUA-SPECS"]},
@@ -627,7 +627,7 @@
         "source_packet_version_ref": "SPV-ST1704-ROBOT-VACUUM-V1",
         "blocks": [
           {"block_id": "BLK-ROBOT-001", "type": "disclosure_slot", "disclosure_policy_version_ref": "DISC-ST1704-AFFILIATE-V1", "placement": "article_top", "editor_removable": false},
-          {"block_id": "BLK-ROBOT-002", "type": "lead", "claim_ids": [], "content": [{"type": "text", "text": "この記事では、Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション F155260（以下、Roomba Mini）、SwitchBot ロボット掃除機 K11+ Pro（以下、K11+ Pro）、SwitchBot ロボット掃除機 K10+ Pro Combo（以下、K10+ Pro Combo）、Roomba Plus 515 Combo ロボット + AutoWash 充電ステーション N285060（以下、Roomba Plus 515 Combo）を比較します。省スペースで選ぶときは、本体だけでなく、ステーションの設置寸法、家具下へ入る本体高さ、水拭き後の手入れ方法まで見ておくと候補を絞りやすくなります。"}]},
+          {"block_id": "BLK-ROBOT-002", "type": "lead", "claim_ids": [], "content": [{"type": "text", "text": "比較するのは、iRobot「Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション」（型番：F155260）、SwitchBot「ロボット掃除機 K11+ Pro」、SwitchBot「ロボット掃除機 K10+ Pro Combo」、iRobot「Roomba Plus 515 Combo ロボット + AutoWash 充電ステーション」（型番：N285060）の4モデルです。以降は順に「Roomba Mini」「K11+ Pro」「K10+ Pro Combo」「Roomba Plus 515 Combo」と表記します。省スペースで選ぶときは、本体だけでなく、ステーションの設置寸法、家具下へ入る本体高さ、水拭き後の手入れ方法まで見ておくと候補を絞りやすくなります。"}]},
           {"block_id": "BLK-ROBOT-003", "type": "decision_summary", "items": [
             {"condition": "本体とステーションの最大底面辺をともに25cm以下にする", "recommendation_ref": "REC-ROBOT-ROOMBA-MINI", "summary": [{"type": "text", "text": "本体直径24.5cm、ステーションの最大底面辺21.2cm。SwitchBot K11+ Proも同じ条件を満たします。"}], "claim_ids": ["CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS", "CLM-ST1704-ROBOT-K11-PRO-SPECS", "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES"]},
             {"condition": "ロボットとコードレス掃除機を1つのステーションへまとめる", "recommendation_ref": "REC-ROBOT-K10-COMBO", "summary": [{"type": "text", "text": "ロボット掃除機とコードレス掃除機を1つのステーションにまとめられますが、ステーションの最大底面辺は29.7cmです。"}], "claim_ids": ["CLM-ST1704-ROBOT-K10-COMBO-SPECS", "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES"]},

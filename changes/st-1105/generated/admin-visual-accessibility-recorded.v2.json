@@ -2800,7 +2800,7 @@
         }
       ]
     },
-    "acceptance_contract_sha256": "02103927365d76a6c46d0d4f6a66fee1824ca447a55dbf91111e7a9e0a1742e6",
+    "acceptance_contract_sha256": "efe5899de84f6c9cf39092295353b924f2efdfe6516c3e684702e152ee56128d",
     "browser_contract_sha256": "4862fc2f5d8c93ab6a487fc751b8cb9eb108362a7a749314ca75f6480a232f10",
     "fixture_sha256": "055be8d7901e0b7a609d58f2be0289ca796770ad445cf94ddfdc0ab2d555a7ad",
     "source_bindings": [
@@ -2950,19 +2950,19 @@
       },
       {
         "path": "changes/st-1104/contracts/analytics-finance-dashboard.v2.yaml",
-        "sha256": "1ccf6e2caa98149dbb21315a5c1e788dc23cd6b2b4154331a0f7c6620e81bfb1"
+        "sha256": "1c88422c36b3082108f6079132df605a601a87e1ca33a20af98b0c41b2b6ddf6"
       },
       {
         "path": "changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json",
-        "sha256": "f31ace8268a5540fd4c5488f4e927eb891c215d90bcf13ddd152cc4d59f771bf"
+        "sha256": "64bcca528088c92ba670a0d11558b9a1709d4963b7c1af887a2097ebdcffe0d0"
       },
       {
         "path": "changes/st-1104/runtime-manifest.v2.yaml",
-        "sha256": "470bdedbe9aa2d6b96a913053c6167f75b603fa3dde06193352673ab134c8e14"
+        "sha256": "62514b7a1a7b9335f4091a40f01d6c169238bc0852fc58f4fb968625b5d0fc8b"
       },
       {
         "path": "packages/web-ui/src/analytics-finance-recorded.v2.ts",
-        "sha256": "be3f48ce8b1b2727c204156248c9e6e1e7ea58cf5bc2d8a6061b701f3762b81d"
+        "sha256": "6d7b64a6c76e017a55b22c5ce5629fb4a2f7dcded7f8072e7f6f0b2eddc5787d"
       },
       {
         "path": "package.json",
@@ -2976,5 +2976,5 @@
   },
   "formal_acceptance_achieved": false,
   "production_eligible": false,
-  "payload_sha256": "2ccc58323bca7d6fe1cef3abb2dec289bf23214a72365cb162d9f4bea4ed8a20"
+  "payload_sha256": "751bd0410d38ba58b09e854f948ea2aca91efe1b943e092a28511fb717a50364"
 }

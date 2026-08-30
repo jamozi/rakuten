@@ -19,7 +19,14 @@ from xml.etree import ElementTree
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 THEME_SLUG: Final = "kurashinoshirube-child"
-THEME_VERSION: Final = "1.3.9"
+THEME_VERSION: Final = "1.3.10"
+THEME_RUNTIME_REVISION: Final = (
+    "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
+)
+RUNTIME_STYLESHEET_SENTINELS: Final = {
+    "assets/theme.css": "--raos-theme-runtime-revision-base",
+    "assets/editorial-v2.css": "--raos-theme-runtime-revision-editorial-v2",
+}
 THEME_ROOT: Final = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme" / THEME_SLUG
 )
@@ -341,6 +348,18 @@ def validate_sources() -> dict[str, str]:
         or "$theme->get('Version') !== KURASHINOSHIRUBE_THEME_VERSION" not in php
     ):
         _fail()
+    php_runtime_revision = re.findall(
+        r"^const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '([0-9a-f]{64})';$",
+        php,
+        flags=re.MULTILINE,
+    )
+    if php_runtime_revision != [THEME_RUNTIME_REVISION]:
+        _fail()
+    for relative, property_name in RUNTIME_STYLESHEET_SENTINELS.items():
+        source = _text(relative)
+        declaration = f"{property_name}: {THEME_RUNTIME_REVISION};"
+        if source.count(property_name) != 1 or source.count(declaration) != 1:
+            _fail()
 
     theme_json = _json("theme.json")
     if theme_json.get("version") != 3:
@@ -349,6 +368,11 @@ def validate_sources() -> dict[str, str]:
     if (
         contract.get("schema") != "SELF_HOSTED_EDITORIAL_THEME_CONTRACT_V1"
         or contract.get("theme_version") != THEME_VERSION
+        or contract.get("runtime_evidence")
+        != {
+            "revision": THEME_RUNTIME_REVISION,
+            "stylesheets": RUNTIME_STYLESHEET_SENTINELS,
+        }
         or contract.get("publication_authority") != "NONE"
         or contract.get("editorial_v2") != EDITORIAL_V2_PRESENTATION
         or contract.get("head", {}).get("document_title_deduplication")
@@ -432,6 +456,7 @@ def validate_sources() -> dict[str, str]:
     if (
         assets.get("schema") != "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
         or assets.get("theme_version") != THEME_VERSION
+        or assets.get("theme_runtime_revision") != THEME_RUNTIME_REVISION
     ):
         _fail()
 

@@ -12,7 +12,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.3.9';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.3.10';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
@@ -2330,7 +2331,24 @@ function kurashinoshirube_filter_description($value)
 }
 function kurashinoshirube_filter_canonical($value)
 {
-    return kurashinoshirube_filter_snapshot_value($value, 'canonical_url');
+    $snapshot = kurashinoshirube_current_snapshot();
+    if ($snapshot !== null) {
+        return $snapshot['canonical_url'];
+    }
+    if (! is_singular('post')) {
+        return $value;
+    }
+    $post_id = (int) get_queried_object_id();
+    $identity = $post_id > 0
+        ? kurashinoshirube_public_article_identity($post_id)
+        : null;
+    if (
+        $identity === null
+        || get_post_status($post_id) !== 'publish'
+    ) {
+        return $value;
+    }
+    return KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $identity['slug'] . '/';
 }
 function kurashinoshirube_filter_og_title($value)
 {

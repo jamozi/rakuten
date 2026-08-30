@@ -18,6 +18,7 @@ operator = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(operator)
 ORIGINAL_RELEASE_BATCH_STATUS = operator._release_batch_status
 ORIGINAL_RELEASE_BATCH_CLAIM = operator._release_batch_claim
+ORIGINAL_FINALIZE_APPLIED_OPERATION = operator._finalize_applied_operation
 BATCH_TOKEN = "4" * 64
 BATCH_MANIFEST_SHA256 = "5" * 64
 
@@ -41,6 +42,13 @@ def exact_approved_batch(monkeypatch: pytest.MonkeyPatch) -> None:
         operator,
         "_release_batch_claim",
         lambda batch_token, batch_manifest_sha256, proposal_ids: {},
+    )
+    # Most watcher tests isolate approval, ordering, or polling. Dedicated
+    # finalization tests below exercise the real mandatory recovery boundary.
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        lambda _proposal_id, _kind, operation: operation,
     )
 
 
@@ -224,11 +232,17 @@ def test_release_waits_for_exact_batch_approval_before_reading_operations(
     ]
 
 
-def test_terminal_applied_batch_reconstructs_receipts_without_reclaim(
+def test_terminal_applied_batch_finalizes_and_reconstructs_without_reclaim(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     proposal_id = "a" * 64
     events: list[str] = []
+    response = public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        ORIGINAL_FINALIZE_APPLIED_OPERATION,
+    )
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
@@ -242,13 +256,159 @@ def test_terminal_applied_batch_reconstructs_receipts_without_reclaim(
 
     def request_json(method, path, *args, **kwargs):
         events.append(f"{method}:{path}")
-        return public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+        return response if method == "GET" else response["operation"]
 
     monkeypatch.setattr(operator, "request_json", request_json)
     result = operator.release_wait_and_apply(release_input([proposal_id]))
 
     assert result["state"] == "APPLIED"
-    assert events == [f"GET:/operations/{proposal_id}"]
+    assert events == [
+        f"GET:/operations/{proposal_id}",
+        f"POST:/operations/{proposal_id}/recover",
+        f"GET:/operations/{proposal_id}",
+    ]
+
+
+def test_applied_members_finalize_theme_then_content_before_aggregate_acceptance(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    content_id = "a" * 64
+    theme_id = "b" * 64
+    kinds = {content_id: "CONTENT_RELEASE", theme_id: "THEME_RELEASE"}
+    responses = {
+        proposal_id: public_operation(proposal_id, kind, "APPLIED")
+        for proposal_id, kind in kinds.items()
+    }
+    events: list[str] = []
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        ORIGINAL_FINALIZE_APPLIED_OPERATION,
+    )
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *_args: ("APPLIED", False),
+    )
+
+    def request_json(method, path, *args, **kwargs):
+        events.append(f"{method}:{path}")
+        proposal_id = path.split("/")[2]
+        response = responses[proposal_id]
+        return response if method == "GET" else response["operation"]
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    result = operator.release_wait_and_apply(release_input([content_id, theme_id]))
+
+    assert [receipt["proposal_id"] for receipt in result["receipts"]] == [
+        theme_id,
+        content_id,
+    ]
+    assert events == [
+        f"GET:/operations/{content_id}",
+        f"GET:/operations/{theme_id}",
+        f"POST:/operations/{theme_id}/recover",
+        f"GET:/operations/{theme_id}",
+        f"POST:/operations/{content_id}/recover",
+        f"GET:/operations/{content_id}",
+    ]
+
+
+def test_applied_member_recovery_failure_aborts_before_aggregate(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    response = public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+    events: list[str] = []
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        ORIGINAL_FINALIZE_APPLIED_OPERATION,
+    )
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *_args: ("APPLIED", False),
+    )
+
+    def request_json(method, path, *args, **kwargs):
+        events.append(f"{method}:{path}")
+        if method == "POST":
+            raise operator.OperatorFailure(
+                "RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE"
+            )
+        return response
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    assert_failure(
+        "RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE",
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
+    )
+    assert events == [
+        f"GET:/operations/{proposal_id}",
+        f"POST:/operations/{proposal_id}/recover",
+    ]
+
+
+def test_recovered_applied_receipt_must_match_exact_operation_readback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    response = public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+    read_count = 0
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        ORIGINAL_FINALIZE_APPLIED_OPERATION,
+    )
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *_args: ("APPLIED", False),
+    )
+
+    def request_json(method, path, *args, **kwargs):
+        nonlocal read_count
+        if method == "POST":
+            return response["operation"]
+        read_count += 1
+        current = json.loads(json.dumps(response))
+        if read_count == 2:
+            current["operation"]["audit_id"] = "9" * 64
+        return current
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    assert_failure(
+        "WORDPRESS_MCP_OPERATION_RECOVERY_INVALID",
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
+    )
+
+
+def test_recovery_response_must_be_an_exact_applied_receipt(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    response = public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
+    monkeypatch.setattr(
+        operator,
+        "_finalize_applied_operation",
+        ORIGINAL_FINALIZE_APPLIED_OPERATION,
+    )
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *_args: ("APPLIED", False),
+    )
+    monkeypatch.setattr(
+        operator,
+        "request_json",
+        lambda method, *_args, **_kwargs: response,
+    )
+
+    assert_failure(
+        "WORDPRESS_MCP_OPERATION_RECOVERY_INVALID",
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
+    )
 
 
 def test_atomic_batch_claim_retries_an_ambiguous_response_before_member_read(
@@ -305,23 +465,14 @@ def test_approved_batch_with_any_failed_precondition_never_mutates(
     assert calls == []
 
 
-@pytest.mark.parametrize(
-    ("batch_state", "code"),
-    [
-        ("EXPIRED", "WORDPRESS_MCP_RELEASE_EXPIRED"),
-        ("FAILED", "WORDPRESS_MCP_RELEASE_FAILED"),
-    ],
-)
-def test_terminal_batch_state_never_reads_or_mutates_a_member(
+def test_expired_batch_state_never_reads_or_mutates_a_member(
     monkeypatch: pytest.MonkeyPatch,
-    batch_state: str,
-    code: str,
 ) -> None:
     calls: list[str] = []
     monkeypatch.setattr(
         operator,
         "_release_batch_status",
-        lambda *args: (batch_state, False),
+        lambda *args: ("EXPIRED", False),
     )
     monkeypatch.setattr(
         operator,
@@ -329,10 +480,69 @@ def test_terminal_batch_state_never_reads_or_mutates_a_member(
         lambda method, path, *args, **kwargs: calls.append(f"{method}:{path}"),
     )
     assert_failure(
-        code,
+        "WORDPRESS_MCP_RELEASE_EXPIRED",
         lambda: operator.release_wait_and_apply(release_input(["a" * 64])),
     )
     assert calls == []
+
+
+def test_failed_batch_finalizes_observed_failed_member_before_reporting_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    response = public_operation(proposal_id, "CONTENT_RELEASE", "FAILED")
+    events: list[str] = []
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *args: ("FAILED", False),
+    )
+
+    def request_json(method, path, *args, **kwargs):
+        events.append(f"{method}:{path}")
+        return response if method == "GET" else response["operation"]
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_FAILED",
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
+    )
+    assert events == [
+        f"GET:/operations/{proposal_id}",
+        f"POST:/operations/{proposal_id}/recover",
+        f"GET:/operations/{proposal_id}",
+    ]
+
+
+def test_failed_batch_cleanup_error_is_not_discarded(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    response = public_operation(proposal_id, "CONTENT_RELEASE", "FAILED")
+    events: list[str] = []
+    monkeypatch.setattr(
+        operator,
+        "_release_batch_status",
+        lambda *args: ("FAILED", False),
+    )
+
+    def request_json(method, path, *args, **kwargs):
+        events.append(f"{method}:{path}")
+        if method == "POST":
+            raise operator.OperatorFailure(
+                "RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE"
+            )
+        return response
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    assert_failure(
+        "RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE",
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
+    )
+    assert events == [
+        f"GET:/operations/{proposal_id}",
+        f"POST:/operations/{proposal_id}/recover",
+    ]
 
 
 def test_release_waiter_orders_theme_first_and_waits_for_human_approval(
@@ -492,7 +702,6 @@ def test_readiness_barrier_fails_before_mutation_when_a_sibling_fails(
     ("state", "code"),
     [
         ("EXPIRED", "WORDPRESS_MCP_RELEASE_EXPIRED"),
-        ("FAILED", "WORDPRESS_MCP_RELEASE_FAILED"),
         ("MANUAL_REQUIRED", "WORDPRESS_MCP_RELEASE_MANUAL_REQUIRED"),
     ],
 )
@@ -510,6 +719,27 @@ def test_terminal_states_fail_closed_before_apply(monkeypatch, state, code) -> N
         lambda: operator.release_wait_and_apply(release_input([proposal_id])),
     )
     assert calls == ["GET"]
+
+
+def test_failed_member_state_finalizes_cleanup_before_release_failure(monkeypatch) -> None:
+    proposal_id = "e" * 64
+    response = public_operation(proposal_id, "CONTENT_RELEASE", "FAILED")
+    events: list[str] = []
+
+    def request_json(method, path, *args, **kwargs):
+        events.append(f"{method}:{path}")
+        return response if method == "GET" else response["operation"]
+
+    monkeypatch.setattr(operator, "request_json", request_json)
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_FAILED",
+        lambda: operator.release_wait_and_apply(release_input([proposal_id])),
+    )
+    assert events == [
+        f"GET:/operations/{proposal_id}",
+        f"POST:/operations/{proposal_id}/recover",
+        f"GET:/operations/{proposal_id}",
+    ]
 
 
 def test_plugin_and_multiple_theme_sets_are_refused_before_apply(monkeypatch) -> None:
@@ -646,6 +876,23 @@ def test_apply_and_recovery_share_the_authoritative_nonblocking_lock() -> None:
     assert "release_operation_lock" in recover
     assert "LOCK_EX | LOCK_NB" in deployment
     assert "raos_codex_operation_in_flight" in deployment
+
+
+def test_docs_bound_strict_linearization_to_cooperating_raos_writers() -> None:
+    readme = (
+        ROOT / "changes/wordpress-mcp-v1/README.md"
+    ).read_text(encoding="utf-8")
+    for external_writer in (
+        "Native WordPress core, plugin, and theme",
+        "Theme/Plugin File Editor",
+        "hosting deployment panels",
+        "FTP, SFTP",
+        "SSH",
+        "direct filesystem writes",
+    ):
+        assert external_writer in readme
+    assert "do not acquire this plugin lock" in readme
+    assert "outside its strict linearization boundary" in readme
 
 
 def test_bridge_advertises_bounds_and_rejects_duplicate_ids() -> None:

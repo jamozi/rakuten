@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Content
 {
+    const RUNTIME_REVISION = '7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755';
     const MAX_CONTENT_BYTES = 1048576;
 
     private $plugin;
@@ -243,10 +244,32 @@ final class RAOS_Codex_MCP_Content
         unset($input);
         global $wp_version;
         $theme = wp_get_theme('kurashinoshirube-child');
-        $global_writes = defined('RAOS_OPERATOR_WRITES_ENABLED')
+        $theme_active = get_stylesheet() === 'kurashinoshirube-child';
+        $theme_runtime_version = $theme_active
+            && defined('KURASHINOSHIRUBE_THEME_VERSION')
+            && is_string(constant('KURASHINOSHIRUBE_THEME_VERSION'))
+                ? constant('KURASHINOSHIRUBE_THEME_VERSION')
+                : null;
+        $theme_runtime_revision = $theme_active
+            && defined('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')
+            && is_string(constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION'))
+            && preg_match(
+                '/\A[0-9a-f]{64}\z/D',
+                constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')
+            ) === 1
+                ? constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')
+                : null;
+        $plugin_runtime_revision = self::loaded_plugin_runtime_revision();
+        $runtime_identity_exact = is_string($plugin_runtime_revision);
+        $global_writes = $runtime_identity_exact
+            && defined('RAOS_OPERATOR_WRITES_ENABLED')
             && true === RAOS_OPERATOR_WRITES_ENABLED;
-        $private_ready = ! is_wp_error(RAOS_Codex_MCP_Deployment::private_directory());
+        $private_ready = $runtime_identity_exact
+            && ! is_wp_error(RAOS_Codex_MCP_Deployment::private_directory());
         $apply_ready = $global_writes && $private_ready;
+        $draft_ready = $global_writes
+            && defined('RAOS_CODEX_DRAFT_WRITES_ENABLED')
+            && true === RAOS_CODEX_DRAFT_WRITES_ENABLED;
         return array(
             'schema' => 'RAOSWordPressSiteStatusV1',
             'origin' => home_url(),
@@ -255,9 +278,10 @@ final class RAOS_Codex_MCP_Content
             'mcp_adapter_version' => defined('WP_MCP_VERSION') ? WP_MCP_VERSION : null,
             'mcp_adapter_version_compatible' => defined('WP_MCP_VERSION') && '0.6.1' === WP_MCP_VERSION,
             'plugin_version' => RAOS_CODEX_MCP_VERSION,
+            'plugin_runtime_revision' => $plugin_runtime_revision,
             'writes_enabled' => array(
                 'global' => $global_writes,
-                'draft' => defined('RAOS_CODEX_DRAFT_WRITES_ENABLED') && true === RAOS_CODEX_DRAFT_WRITES_ENABLED,
+                'draft' => $draft_ready,
                 'content_apply' => $apply_ready,
                 'theme_apply' => $apply_ready,
                 'plugin_apply' => $apply_ready,
@@ -272,7 +296,9 @@ final class RAOS_Codex_MCP_Content
                 'slug' => 'kurashinoshirube-child',
                 'exists' => $theme->exists(),
                 'version' => $theme->exists() ? (string) $theme->get('Version') : null,
-                'active' => get_stylesheet() === 'kurashinoshirube-child',
+                'runtime_version' => $theme_runtime_version,
+                'runtime_revision' => $theme_runtime_revision,
+                'active' => $theme_active,
             ),
             'server' => array(
                 'endpoint' => home_url('/wp-json/raos-codex-mcp/v1/editor'),
@@ -448,6 +474,10 @@ final class RAOS_Codex_MCP_Content
 
     public function content_propose_release($input)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         if (! is_array($input)
             || ! isset($input['id'], $input['precondition'], $input['document'])
             || (array_key_exists('idempotency_key', $input)
@@ -521,6 +551,10 @@ final class RAOS_Codex_MCP_Content
 
     public function operation_get($input)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         if (! is_array($input) || ! isset($input['operation_id'])) {
             return self::error('raos_codex_operation_id_invalid', 400);
         }
@@ -537,6 +571,10 @@ final class RAOS_Codex_MCP_Content
 
     public function publication_batch_register($input)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         if (! is_array($input)
             || 2 !== count($input)
             || ! isset($input['proposal_ids'], $input['expected_theme_tree_sha256'])
@@ -555,6 +593,10 @@ final class RAOS_Codex_MCP_Content
 
     private function draft_write_gate()
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         if (! defined('RAOS_OPERATOR_WRITES_ENABLED') || true !== RAOS_OPERATOR_WRITES_ENABLED
             || ! defined('RAOS_CODEX_DRAFT_WRITES_ENABLED') || true !== RAOS_CODEX_DRAFT_WRITES_ENABLED) {
             return self::error('raos_codex_draft_writes_disabled', 503);
@@ -801,6 +843,10 @@ final class RAOS_Codex_MCP_Content
 
     public static function apply_taxonomies($post_id, $post_type, $taxonomies)
     {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
         $validated = self::validate_taxonomies($post_type, $taxonomies);
         if (is_wp_error($validated)) {
             return $validated;
@@ -875,5 +921,24 @@ final class RAOS_Codex_MCP_Content
     public static function error($code, $status)
     {
         return new WP_Error($code, 'The bounded WordPress operation was refused.', array('status' => $status));
+    }
+
+    private static function loaded_plugin_runtime_revision()
+    {
+        if (! class_exists('RAOS_Codex_MCP_Abilities', false)
+            || ! method_exists('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision')) {
+            return null;
+        }
+        $revision = call_user_func(array('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision'));
+        return is_string($revision) && hash_equals(self::RUNTIME_REVISION, $revision)
+            ? $revision
+            : null;
+    }
+
+    private static function runtime_identity_gate()
+    {
+        return is_string(self::loaded_plugin_runtime_revision())
+            ? true
+            : self::error('raos_codex_plugin_runtime_mixed', 503);
     }
 }

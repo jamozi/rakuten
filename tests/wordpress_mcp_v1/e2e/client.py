@@ -22,6 +22,12 @@ import urllib.request
 ORIGIN = "https://kurashinoshirube.com"
 HOST = "kurashinoshirube.com"
 PROTOCOL_VERSION = "2025-11-25"
+EXPECTED_PLUGIN_RUNTIME_REVISION = (
+    "7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755"
+)
+EXPECTED_THEME_RUNTIME_REVISION = (
+    "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
+)
 EXPECTED_TOOLS = {
     "raos-codex-site-status",
     "raos-codex-content-list",
@@ -334,7 +340,7 @@ def phase_propose(
 ) -> None:
     mcp = McpClient(site_url + "/wp-json/raos-codex-mcp/v1/editor", *editor)
     initialized = mcp.initialize()
-    assert initialized["serverInfo"]["version"] == "1.2.0"
+    assert initialized["serverInfo"]["version"] == "1.2.1"
     tools = mcp.tools()
     assert set(tools) == EXPECTED_TOOLS
     for tool in tools.values():
@@ -347,6 +353,7 @@ def phase_propose(
     assert status["origin"] == ORIGIN
     assert status["wordpress_version"].startswith("7.1")
     assert status["mcp_adapter_version"] == "0.6.1"
+    assert status["plugin_runtime_revision"] == EXPECTED_PLUGIN_RUNTIME_REVISION
     assert status["writes_enabled"] == {
         "global": True,
         "draft": True,
@@ -354,11 +361,17 @@ def phase_propose(
         "theme_apply": True,
         "plugin_apply": True,
     }
+    assert status["theme"]["runtime_version"] == status["theme"]["version"]
+    assert status["theme"]["runtime_revision"] == EXPECTED_THEME_RUNTIME_REVISION
 
     deploy_base = site_url + "/wp-json/raos-codex-deploy/v1"
     _, deploy_status_body, _ = request(deploy_base + "/status", *operator)
     deploy_status = json.loads(deploy_status_body)
     assert deploy_status["origin"] == ORIGIN
+    assert (
+        deploy_status["plugin_runtime_revision"]
+        == EXPECTED_PLUGIN_RUNTIME_REVISION
+    )
     assert deploy_status["private_directory_ready"] is True
     assert_route_confinement(site_url, editor, operator)
 
@@ -665,8 +678,11 @@ def phase_apply(
     )
     _, status_body, _ = request(deploy_base + "/status", *operator)
     status = json.loads(status_body)
+    assert status["plugin_runtime_revision"] == EXPECTED_PLUGIN_RUNTIME_REVISION
     assert status["theme"]["tree_sha256"] == theme_item["after_sha256"]
     assert status["theme"]["active"] is True
+    assert status["theme"]["runtime_version"] == status["theme"]["version"]
+    assert status["theme"]["runtime_revision"] == EXPECTED_THEME_RUNTIME_REVISION
 
     first_receipt: dict[str, object] | None = None
     for item in state["proposals"]:

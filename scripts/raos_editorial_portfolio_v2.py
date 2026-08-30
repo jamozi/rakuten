@@ -171,6 +171,9 @@ def _missing_listing_status(
         expected_fields=frozenset(rakuten_capture._DISCOVERY_ELEMENTS),
         expected_hits=30,
     )
+    rakuten_capture._reject_credential_reflection(rows, credentials)
+    for row in rows:
+        rakuten_capture._validate_provider_row_structure(row, affiliate=False)
     target = rakuten_capture.ProductCaptureTarget(
         product_id=binding.product_id,
         shop_code="missing-evidence",
@@ -218,12 +221,29 @@ def _fixed_listing_failure_status(
         expected_fields=frozenset(rakuten_capture._REQUEST_ELEMENTS),
         expected_hits=1,
     )
+    rakuten_capture._reject_credential_reflection(rows, credentials)
+    for row in rows:
+        rakuten_capture._validate_provider_row_structure(row, affiliate=False)
     _atomic_write(
         output_directory / f"{binding.product_id}.fixed-item-response.v2.json",
         raw,
         mode=0o600,
     )
     return ("not_found" if not rows else "ambiguous"), hashlib.sha256(raw).hexdigest()
+
+
+def _is_product_listing_fallback(error: object) -> bool:
+    """Limit per-product fallback to provider listing identity outcomes."""
+
+    return bool(
+        type(error) is rakuten_capture.RakutenProductCaptureFailure
+        and error.code
+        in {
+            rakuten_capture.RakutenProductCaptureFailureCode.PRODUCT_NOT_FOUND,
+            rakuten_capture.RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_AMBIGUOUS,
+            rakuten_capture.RakutenProductCaptureFailureCode.PRODUCT_LISTING_MISMATCH,
+        }
+    )
 
 
 def capture() -> dict[str, int]:
@@ -285,11 +305,7 @@ def capture() -> dict[str, int]:
                     clock=now,
                 )
             except rakuten_capture.RakutenProductCaptureFailure as error:
-                if error.code is rakuten_capture.RakutenProductCaptureFailureCode.PRODUCT_NOT_FOUND:
-                    state = "not_found"
-                elif error.code is rakuten_capture.RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_AMBIGUOUS:
-                    state = "ambiguous"
-                else:
+                if not _is_product_listing_fallback(error):
                     raise
                 state, response_sha256 = _fixed_listing_failure_status(
                     binding,

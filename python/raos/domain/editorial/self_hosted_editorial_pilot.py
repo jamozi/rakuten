@@ -807,7 +807,11 @@ def canonical_rakuten_provider_item_url(value: object) -> str:
     return require_rakuten_item_url(parsed._replace(query="").geturl())
 
 
-def require_rakuten_affiliate_url(value: object, *, item_url: str) -> str:
+def require_rakuten_affiliate_url(
+    value: object, *, item_url: str, item_code: str
+) -> str:
+    if type(item_code) is not str or _ITEM_CODE.fullmatch(item_code) is None:
+        fail_editorial_pilot(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     raw, parsed = _url_parts(value)
     if (
         parsed.hostname != "hb.afl.rakuten.co.jp"
@@ -839,6 +843,8 @@ def require_rakuten_affiliate_url(value: object, *, item_url: str) -> str:
         mobile_port = mobile.port
     except ValueError:
         fail_editorial_pilot(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    item_code_parts = item_code.split(":", 1)
+    mobile_parts = mobile.path.strip("/").split("/")
     if (
         mobile.scheme not in {"http", "https"}
         or mobile.hostname != "m.rakuten.co.jp"
@@ -846,7 +852,11 @@ def require_rakuten_affiliate_url(value: object, *, item_url: str) -> str:
         or mobile.username is not None
         or mobile.password is not None
         or mobile_port is not None
-        or not mobile.path.startswith("/")
+        or len(item_code_parts) != 2
+        or len(mobile_parts) != 3
+        or mobile_parts[1] != "i"
+        or mobile_parts[0] != item_code_parts[0]
+        or mobile_parts[2] != item_code_parts[1]
         or mobile.query
         or mobile.fragment
     ):
@@ -928,9 +938,15 @@ class RakutenProductEvidence:
         ):
             fail_editorial_pilot(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         item_url = require_rakuten_item_url(self.source_url)
-        if urlsplit(item_url).path.split("/")[1] != self.item_code.split(":", 1)[0]:
+        item_url_parts = urlsplit(item_url).path.strip("/").split("/")
+        item_code_parts = self.item_code.split(":", 1)
+        if len(item_url_parts) != 2 or item_url_parts[0] != item_code_parts[0]:
             fail_editorial_pilot(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-        require_rakuten_affiliate_url(self.destination_url, item_url=item_url)
+        require_rakuten_affiliate_url(
+            self.destination_url,
+            item_url=item_url,
+            item_code=self.item_code,
+        )
         require_rakuten_image_url(self.image_url)
         _require_text(self.item_name, maximum=1000)
         _require_evidence_timestamp(self.retrieved_at)

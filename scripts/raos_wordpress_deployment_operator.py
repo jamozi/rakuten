@@ -348,6 +348,50 @@ def _release_operation(proposal_id: str) -> tuple[str, dict[str, object]]:
     return kind, operation
 
 
+def _finalize_applied_operation(
+    proposal_id: str,
+    expected_kind: str,
+    operation: dict[str, object],
+) -> dict[str, object]:
+    """Finalize deferred artifacts and bind the exact terminal readback."""
+
+    if operation.get("state") != "APPLIED":
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    response = request_json("POST", f"/operations/{proposal_id}/recover", {})
+    try:
+        recovered = _validated_release_operation(response, proposal_id)
+    except OperatorFailure:
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    if recovered.get("state") != "APPLIED" or recovered != operation:
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    kind, readback = _release_operation(proposal_id)
+    if kind != expected_kind or readback != recovered:
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    return readback
+
+
+def _finalize_failed_operation(
+    proposal_id: str,
+    expected_kind: str,
+    operation: dict[str, object],
+) -> dict[str, object]:
+    """Retry owner-private cleanup without reopening a failed live mutation."""
+
+    if operation.get("state") != "FAILED":
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    response = request_json("POST", f"/operations/{proposal_id}/recover", {})
+    try:
+        recovered = _validated_release_operation(response, proposal_id)
+    except OperatorFailure:
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    if recovered.get("state") != "FAILED" or recovered != operation:
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    kind, readback = _release_operation(proposal_id)
+    if kind != expected_kind or readback != recovered:
+        fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    return readback
+
+
 def _release_terminal_state(state: object) -> None:
     result_codes = {
         "EXPIRED": "WORDPRESS_MCP_RELEASE_EXPIRED",
@@ -356,6 +400,27 @@ def _release_terminal_state(state: object) -> None:
     }
     if state in result_codes:
         fail(result_codes[state])
+
+
+def _release_terminal_operation(
+    proposal_id: str,
+    expected_kind: str,
+    operation: dict[str, object],
+) -> None:
+    if operation.get("state") == "FAILED":
+        _finalize_failed_operation(proposal_id, expected_kind, operation)
+    _release_terminal_state(operation.get("state"))
+
+
+def _finalize_observed_failed_members(proposal_ids: list[str]) -> None:
+    """Finish cleanup for exact failed members before reporting batch failure."""
+
+    for proposal_id in proposal_ids:
+        kind, operation = _release_operation(proposal_id)
+        if kind == "PLUGIN_CHANGE":
+            fail("WORDPRESS_MCP_RELEASE_PLUGIN_REFUSED")
+        if operation.get("state") == "FAILED":
+            _finalize_failed_operation(proposal_id, kind, operation)
 
 
 def _release_poll_sleep(deadline: float) -> None:
@@ -521,6 +586,7 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
         if batch_state == "EXPIRED":
             fail("WORDPRESS_MCP_RELEASE_EXPIRED")
         if batch_state == "FAILED":
+            _finalize_observed_failed_members(proposal_ids)
             fail("WORDPRESS_MCP_RELEASE_FAILED")
         if batch_state == "APPLIED":
             batch_already_applied = True
@@ -552,7 +618,7 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
         kind, operation = _release_operation(proposal_id)
         if kind == "PLUGIN_CHANGE":
             fail("WORDPRESS_MCP_RELEASE_PLUGIN_REFUSED")
-        _release_terminal_state(operation["state"])
+        _release_terminal_operation(proposal_id, kind, operation)
         if batch_already_applied and operation["state"] != "APPLIED":
             fail("WORDPRESS_MCP_RELEASE_BATCH_CLAIM_INVALID")
         if operation["state"] not in {"APPLYING", "APPLIED"}:
@@ -586,8 +652,13 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
         operation = operations[proposal_id]
         while True:
             state = operation["state"]
-            _release_terminal_state(state)
+            _release_terminal_operation(proposal_id, expected_kind, operation)
             if state == "APPLIED":
+                operation = _finalize_applied_operation(
+                    proposal_id,
+                    expected_kind,
+                    operation,
+                )
                 receipts.append(operation)
                 break
             if time.monotonic() >= deadline:

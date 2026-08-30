@@ -18,7 +18,10 @@ import zipfile
 ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
-PLUGIN_VERSION: Final = "1.2.0"
+PLUGIN_VERSION: Final = "1.2.1"
+PLUGIN_RUNTIME_REVISION: Final = (
+    "7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755"
+)
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
 MANIFEST: Final = SLICE / "runtime-manifest.v1.json"
 OUTPUT: Final = (
@@ -39,9 +42,14 @@ RUNTIME_PATHS: Final = (
     "changes/wordpress-local-preview-v1/README.md",
     "changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
     "changes/wordpress-local-preview-v1/compose.yaml",
+    "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
     "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
     "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
     "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
+    "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
     "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
     "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
     "changes/wordpress-local-preview-v1/fixtures/posts.json",
@@ -174,7 +182,29 @@ def plugin_payloads() -> dict[str, bytes]:
             fail("WORDPRESS_MCP_V1_CASE_COLLISION")
         seen.add(safe.casefold())
         result[safe] = read_regular(PLUGIN_ROOT, safe)
+    _validate_plugin_runtime_revision(result)
     return result
+
+
+def _validate_plugin_runtime_revision(payloads: dict[str, bytes]) -> None:
+    revision = PLUGIN_RUNTIME_REVISION.encode("ascii")
+    class_declaration = b"const RUNTIME_REVISION = '" + revision + b"';"
+    expected_classes = {
+        "raos-codex-mcp-abilities.php": 1,
+        "includes/class-raos-codex-mcp-store.php": 1,
+        "includes/class-raos-codex-mcp-content.php": 1,
+        "includes/class-raos-codex-mcp-deployment.php": 1,
+    }
+    if set(payloads) != set(PLUGIN_FILES):
+        fail("WORDPRESS_MCP_V1_PLUGIN_RUNTIME_REVISION_INVALID")
+    for relative, count in expected_classes.items():
+        if payloads[relative].count(class_declaration) != count:
+            fail("WORDPRESS_MCP_V1_PLUGIN_RUNTIME_REVISION_INVALID")
+    global_declaration = (
+        b"'RAOS_CODEX_MCP_RUNTIME_REVISION',\n    '" + revision + b"'"
+    )
+    if payloads["raos-codex-mcp-abilities.php"].count(global_declaration) != 1:
+        fail("WORDPRESS_MCP_V1_PLUGIN_RUNTIME_REVISION_INVALID")
 
 
 def package_bytes(payloads: dict[str, bytes]) -> bytes:
@@ -221,6 +251,7 @@ def runtime_manifest() -> dict[str, object]:
         "plugin": {
             "slug": PLUGIN_SLUG,
             "version": PLUGIN_VERSION,
+            "runtime_revision": PLUGIN_RUNTIME_REVISION,
             "package_sha256": sha256(package),
             "file_manifest_sha256": sha256(
                 json.dumps(

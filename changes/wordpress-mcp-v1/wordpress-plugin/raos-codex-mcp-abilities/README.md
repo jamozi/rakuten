@@ -1,4 +1,4 @@
-# RAOS Codex MCP Abilities 1.2.0
+# RAOS Codex MCP Abilities 1.2.1
 
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.

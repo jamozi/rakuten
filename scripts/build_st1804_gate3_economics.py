@@ -83,10 +83,10 @@ GENERATION_COMMAND: Final = (
     "scripts/build_st1804_gate3_economics.py"
 )
 CONTRACT_SHA256: Final = (
-    "c1a5408eba861aaf4b6bc1dd407e84e1bfc6eb045a6b45dac28954aa086acf11"
+    "62fccc49d17c99ef515b4f6a13d674faceee91839ff2a98ad741022488bf1180"
 )
 FIXTURE_SHA256: Final = (
-    "c31f339748cef32084285101d1c434216d3763398b633992ab84b086a02505e5"
+    "45d917fbc5358b35d2bca459814219f76230fcaf41631473c0d9b5ba1da006af"
 )
 INPUT_SHA256: Final = "a532e84c3be3d656978a8168047a8e4df94c872fd78d703137f399c77e0199b2"
 SOURCE_HEAD_SHA256: Final = (
@@ -140,13 +140,13 @@ EXPECTED_BINDINGS: Final = {
         "fe7c178087d113e287e95a02d6bcd68e93bd2f2e82817442800cede768b79cd4"
     ),
     "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml": (
-        "10871f65afe59fb6e44c6ac5401ce5e4b1b5cb0024497ae19fc43d6f6b997256"
+        "0f74d348ac22cd0a5fd8a685fe1ccc96ad4b1ce5faf946b11f62fd0f41d9685c"
     ),
     "changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json": (
-        "59b666012081afc238b331dc481a48bf9ba91c54ee00756f0a0a7687b98deb09"
+        "c876f76b5214d8b74c600d84cb0a3d34d1391830400a6646533ba6628a2a0618"
     ),
     "changes/st-1305/generated/finance-reconciliation-recorded.v2.json": (
-        "c0312e29b5c7d6b908b7821c4d0184ad117a144c7dc248addff58aa2a0caca38"
+        "59aded0cec550ed10cb2078e85fa28627cb9bcb375ed99e863a21a22136a5b8a"
     ),
     "changes/st-1305/manifest.yaml": (
         "940dd108970b3e2a7e510d8d6603832ea328baf18cbb9b8a9145dc05b1e6bc06"
@@ -155,7 +155,7 @@ EXPECTED_BINDINGS: Final = {
         "215f8aac3529ce713a08af2195de8295fa62b884d3003245a89b818189df5502"
     ),
     "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json": (
-        "9559d3d79175145a940a38a471aa7ce3d33238827a144eb809b617b1c34ae0d8"
+        "e902d9a6f69d19ffab24b348f962e78bf8b1f57a159ad1e8798f1e7b81ec2e9e"
     ),
 }
 
