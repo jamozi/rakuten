@@ -38,6 +38,12 @@ from raos.ports.google_live import (
 )
 
 
+def _is_runtime_instance(value: object, expected: type[object]) -> bool:
+    """Retain fail-closed structural checks for untyped composition roots."""
+
+    return isinstance(value, expected)
+
+
 @final
 class LiveGoogleAnalyticsImport:
     """Fetch a complete provider batch, then commit it through one atomic port."""
@@ -62,12 +68,12 @@ class LiveGoogleAnalyticsImport:
         clock: GoogleImportClock,
     ) -> None:
         if (
-            not isinstance(bindings, AnalyticsSiteBindingPort)
-            or not isinstance(search_console, SearchConsoleProviderPort)
-            or not isinstance(ga4_data, Ga4DataProviderPort)
-            or not isinstance(ga4_admin, Ga4AdminProviderPort)
-            or not isinstance(repository, AnalyticsImportRepository)
-            or not isinstance(clock, GoogleImportClock)
+            not _is_runtime_instance(bindings, AnalyticsSiteBindingPort)
+            or not _is_runtime_instance(search_console, SearchConsoleProviderPort)
+            or not _is_runtime_instance(ga4_data, Ga4DataProviderPort)
+            or not _is_runtime_instance(ga4_admin, Ga4AdminProviderPort)
+            or not _is_runtime_instance(repository, AnalyticsImportRepository)
+            or not _is_runtime_instance(clock, GoogleImportClock)
         ):
             fail_google()
         self._bindings = bindings

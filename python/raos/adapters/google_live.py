@@ -52,6 +52,12 @@ _MAX_PAGES = 200
 _RETRY_ATTEMPTS = 4
 
 
+def _is_runtime_instance(value: object, expected: type[object]) -> bool:
+    """Retain fail-closed checks for values arriving from untyped composition."""
+
+    return isinstance(value, expected)
+
+
 @final
 class SystemGoogleImportClock:
     __slots__ = ()
@@ -142,7 +148,7 @@ class FixedOwnerPrivateAnalyticsSiteBindings:
 
     def __init__(self, owner_private_root: Path) -> None:
         if (
-            not isinstance(owner_private_root, Path)
+            not _is_runtime_instance(owner_private_root, Path)
             or not owner_private_root.is_absolute()
         ):
             fail_google(GoogleProviderFailureCode.OWNER_PRIVATE_LAYOUT_INVALID)
@@ -293,6 +299,9 @@ class GoogleServiceAccountAuthorizedTransport:
             or (method == "POST" and type(body) is not dict)
         ):
             fail_google()
+        json_body: dict[str, object] | None = (
+            None if body is None else cast(dict[str, object], body).copy()
+        )
         try:
             response: Any = self._session.request(
                 method,
@@ -303,7 +312,7 @@ class GoogleServiceAccountAuthorizedTransport:
                     "Content-Type": "application/json",
                     "User-Agent": "raos-google-live/1",
                 },
-                json=dict(body) if body is not None else None,
+                json=json_body,
                 timeout=self._timeout,
                 allow_redirects=False,
             )
@@ -413,9 +422,9 @@ class LiveSearchConsoleProvider:
         sleeper: GoogleRetrySleeper,
     ) -> None:
         if (
-            not isinstance(transport, GoogleAuthorizedJsonTransport)
-            or not isinstance(clock, GoogleImportClock)
-            or not isinstance(sleeper, GoogleRetrySleeper)
+            not _is_runtime_instance(transport, GoogleAuthorizedJsonTransport)
+            or not _is_runtime_instance(clock, GoogleImportClock)
+            or not _is_runtime_instance(sleeper, GoogleRetrySleeper)
         ):
             fail_google()
         self._transport = transport
@@ -532,7 +541,9 @@ class LiveGa4AdminProvider:
         transport: GoogleAuthorizedJsonTransport,
         sleeper: GoogleRetrySleeper,
     ) -> None:
-        if not isinstance(transport, GoogleAuthorizedJsonTransport) or not isinstance(
+        if not _is_runtime_instance(
+            transport, GoogleAuthorizedJsonTransport
+        ) or not _is_runtime_instance(
             sleeper, GoogleRetrySleeper
         ):
             fail_google()
@@ -609,9 +620,9 @@ class LiveGa4DataProvider:
         sleeper: GoogleRetrySleeper,
     ) -> None:
         if (
-            not isinstance(transport, GoogleAuthorizedJsonTransport)
-            or not isinstance(clock, GoogleImportClock)
-            or not isinstance(sleeper, GoogleRetrySleeper)
+            not _is_runtime_instance(transport, GoogleAuthorizedJsonTransport)
+            or not _is_runtime_instance(clock, GoogleImportClock)
+            or not _is_runtime_instance(sleeper, GoogleRetrySleeper)
         ):
             fail_google()
         self._transport = transport
@@ -742,13 +753,13 @@ class LiveGa4DataProvider:
                     )
                 )
             offset += len(page_rows)
-            if expected_row_count is not None and offset >= expected_row_count:
+            if offset >= expected_row_count:
                 break
             if not page_rows:
                 fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
         else:
             fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
-        if expected_row_count is None or len(rows) != expected_row_count:
+        if len(rows) != expected_row_count:
             fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
         if thresholding:
             rows = [replace(row, is_thresholded=True) for row in rows]

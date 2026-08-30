@@ -25,6 +25,12 @@ _IDENTIFIER: Final = re.compile(r"[a-z_][a-z0-9_]{0,62}\Z", re.ASCII)
 _AMBIENT_PG: Final = re.compile(r"PG[A-Z0-9_]*\Z", re.ASCII)
 
 
+def _is_runtime_path(value: object) -> bool:
+    """Keep the local credential boundary defensive for untyped callers."""
+
+    return isinstance(value, Path)
+
+
 @dataclass(frozen=True, slots=True, repr=False)
 class LocalGoogleAnalyticsDatabaseTarget:
     host: str
@@ -43,7 +49,7 @@ class LocalGoogleAnalyticsDatabaseTarget:
             or _IDENTIFIER.fullmatch(self.database) is None
             or type(self.user) is not str
             or _IDENTIFIER.fullmatch(self.user) is None
-            or not isinstance(self.password_file, Path)
+            or not _is_runtime_path(self.password_file)
             or not self.password_file.is_absolute()
         ):
             fail_google(GoogleProviderFailureCode.OWNER_PRIVATE_LAYOUT_INVALID)

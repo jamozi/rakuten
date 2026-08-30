@@ -414,16 +414,20 @@ def _replay_result(
     stored_page_hashes = row["page_request_sha256s"]
     stored_dimensions = row["dimensions"]
     observed_config = (
-        cast(str, row["config_property_id"]),
-        cast(str, row["config_property_response_sha256"]),
-        cast(str, row["config_reporting_identity_response_sha256"]),
-        cast(str, row["config_snapshot_sha256"]),
+        row["config_property_id"],
+        row["config_property_response_sha256"],
+        row["config_reporting_identity_response_sha256"],
+        row["config_snapshot_sha256"],
     )
-    expected_config = (
-        None
-        if config_hashes is None or property_id is None
-        else (property_id, config_hashes[0], config_hashes[1], config_hashes[2])
-    )
+    if config_hashes is None:
+        config_matches = observed_config == (None, None, None, None)
+    else:
+        config_matches = property_id is not None and observed_config == (
+            property_id,
+            config_hashes[0],
+            config_hashes[1],
+            config_hashes[2],
+        )
     if (
         row["display_id"] != context.display_id
         or row["site_id"] != context.site_id
@@ -440,8 +444,7 @@ def _replay_result(
         or row["batch_sha256"] != prepared.batch_sha256
         or row["provider_row_count"] != provider_row_count
         or row["live_contract_version"] != 1
-        or (observed_config if config_hashes is not None else None) != expected_config
-        or (config_hashes is None and any(item is not None for item in observed_config))
+        or not config_matches
     ):
         _persistence_failure()
     return GoogleImportCommitResult(
