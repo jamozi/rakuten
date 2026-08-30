@@ -1,6 +1,6 @@
 {
   "content_batch": {
-    "command": ".venv/bin/python scripts/raos_wordpress_publication_request.py --articles all",
+    "command": ".venv/bin/python scripts/raos_wordpress_publication_request.py --articles all --measurement-plugin-apply-receipt <owner-private-operation-receipt>",
     "maximum_proposals": 14,
     "members": {
       "policy_pages": 3,

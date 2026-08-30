@@ -125,14 +125,19 @@ def _public_markup(
         + structured_data
         + "</script>"
     )
+    editorial_stylesheet = (
+        '<link rel="stylesheet" href="/wp-content/themes/'
+        'kurashinoshirube-child/assets/editorial-v2.css?ver=1.4.0">'
+        if article.post_type == "post"
+        else ""
+    )
     return (
         "<!doctype html><html><head><title>"
         + article.title
         + " | 暮らしのしるべ</title>"
         + '<link rel="stylesheet" href="/wp-content/themes/'
         'kurashinoshirube-child/assets/theme.css?ver=1.4.0">'
-        + '<link rel="stylesheet" href="/wp-content/themes/'
-        'kurashinoshirube-child/assets/editorial-v2.css?ver=1.4.0">'
+        + editorial_stylesheet
         + '<link rel="canonical" href="'
         + url
         + '">'
@@ -335,11 +340,13 @@ def test_public_readback_rejects_forbidden_commercial_json_ld(
 def test_policy_page_json_ld_requires_page_graph_and_refuses_article_type() -> None:
     page = publication.load_policy_pages()[0]
     url = f"{publication.ORIGIN}/{page.production_slug}/"
+    markup = _public_markup(page)
+    assert "editorial-v2.css" not in markup
     evidence = ORIGINAL_VERIFY_PUBLIC_PAGES(
         [page],
         attempts=1,
         sleeper=lambda seconds: None,
-        opener=_PublicOpener(_PublicResponse(url, _public_markup(page))),
+        opener=_PublicOpener(_PublicResponse(url, markup)),
     )
     assert set(evidence[page.production_slug]["json_ld_types"]) == {
         "BreadcrumbList",
@@ -884,6 +891,57 @@ def test_all_mode_refuses_a_missing_or_unpublished_existing_target(
             path,
             require_existing_published=True,
         )
+
+
+def test_all_mode_allows_only_the_explicit_missing_comparison_policy_page(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    page = next(
+        item
+        for item in publication.load_policy_pages()
+        if item.production_slug == "comparison-policy"
+    )
+    path = _private_path(monkeypatch, tmp_path)
+    receipt = publication._fresh_receipt([page], path)
+
+    assert publication.capture_existing_baselines(
+        ReconcileClient(_document(page)),
+        [page],
+        [],
+        receipt,
+        path,
+        require_existing_published=True,
+    ) == []
+
+    unknown_draft = _document(page, status="draft")
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT",
+    ):
+        publication.capture_existing_baselines(
+            ReconcileClient(unknown_draft),
+            [page],
+            [unknown_draft],
+            receipt,
+            path,
+            require_existing_published=True,
+        )
+
+    receipt["drafts"] = {
+        page.production_slug: {
+            "id": unknown_draft["id"],
+            "content_sha256": unknown_draft["content_sha256"],
+        }
+    }
+    authoritative = publication.capture_existing_baselines(
+        ReconcileClient(unknown_draft),
+        [page],
+        [unknown_draft],
+        receipt,
+        path,
+        require_existing_published=True,
+    )
+    assert authoritative == [unknown_draft]
 
 
 def test_published_target_revision_only_race_is_refused_on_second_read(
@@ -2164,6 +2222,11 @@ def test_all_mode_recovers_registered_batch_before_provider_refresh(
         return True
 
     monkeypatch.setattr(publication, "_resume_existing_all_attempt", resume)
+    monkeypatch.setattr(
+        publication,
+        "validate_measurement_plugin_apply_receipt",
+        lambda _path: calls.append("plugin-receipt"),
+    )
 
     result = publication.execute(
         "all",
@@ -2171,7 +2234,55 @@ def test_all_mode_recovers_registered_batch_before_provider_refresh(
     )
 
     assert result == path
-    assert calls == ["resume"]
+    assert calls == ["plugin-receipt", "resume"]
+
+
+def test_all_mode_requires_exact_separate_admin_measurement_plugin_receipt(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _private_path(monkeypatch, tmp_path)
+    proposal_path = (
+        publication.PRIVATE_REQUEST_DIRECTORY
+        / "measurement-plugin-proposal-v3.json"
+    )
+    apply_path = publication.PRIVATE_REQUEST_DIRECTORY / "plugin-applied.json"
+    proposal = {
+        "state": "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL",
+        "artifact_id": "raos-editorial-measurement-v1",
+        "plugin_slug": "raos-editorial-measurement",
+        "plugin_version": "1.0.0",
+        "measurement_gate_default_off": True,
+        "proposal": {
+            "proposal_id": "a" * 64,
+            "operation_id": "b" * 64,
+            "after_sha256": "c" * 64,
+        },
+    }
+    applied = {
+        "schema": "OperationReceiptV1",
+        "proposal_id": "a" * 64,
+        "operation_id": "b" * 64,
+        "state": "APPLIED",
+        "result_code": "PLUGIN_CHANGE_APPLIED",
+        "after_sha256": "c" * 64,
+    }
+    publication._atomic_receipt(proposal_path, proposal)
+    publication._atomic_receipt(apply_path, applied)
+
+    publication.validate_measurement_plugin_apply_receipt(apply_path.resolve())
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_REQUIRED",
+    ):
+        publication.validate_measurement_plugin_apply_receipt(None)
+    applied["state"] = "APPROVED"
+    publication._atomic_receipt(apply_path, applied)
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID",
+    ):
+        publication.validate_measurement_plugin_apply_receipt(apply_path.resolve())
 
 
 def test_all_mode_applied_receipt_cannot_short_circuit_fresh_capture(

@@ -9,6 +9,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shlex
 import stat
 import subprocess
 import sys
@@ -245,7 +246,11 @@ def content_command(apply_receipt_path: Path) -> str:
         or apply_receipt.get("after_sha256") != proposal.get("after_sha256")
     ):
         fail("RAOS_MEASUREMENT_PLUGIN_APPLY_RECEIPT_INVALID")
-    return ".venv/bin/python scripts/raos_wordpress_publication_request.py --articles all"
+    return (
+        ".venv/bin/python scripts/raos_wordpress_publication_request.py "
+        "--articles all --measurement-plugin-apply-receipt "
+        + shlex.quote(apply_receipt_path.resolve(strict=True).as_posix())
+    )
 
 
 def parser() -> argparse.ArgumentParser:

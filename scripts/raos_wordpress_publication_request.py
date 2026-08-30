@@ -81,6 +81,7 @@ EXPECTED_PLUGIN_VERSION: Final = "1.3.0"
 EXPECTED_THEME_VERSION: Final = "1.4.0"
 EXPECTED_ALL_ARTICLE_COUNT: Final = 10
 EXPECTED_POLICY_PAGE_COUNT: Final = 3
+CREATE_IF_MISSING_POLICY_PAGE_SLUGS: Final = frozenset({"comparison-policy"})
 MAX_PUBLICATION_PROPOSALS: Final = 14
 MAX_CONTENT_BYTES: Final = 1024 * 1024
 MAX_RESPONSE_BYTES: Final = 16 * 1024 * 1024
@@ -1705,6 +1706,46 @@ def _read_receipt(path: Path) -> dict[str, object] | None:
     return load_json(path, MAX_RECEIPT_BYTES, "RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
 
 
+def validate_measurement_plugin_apply_receipt(path: Path | None) -> None:
+    """Require the exact separate-admin plugin apply before an all-mode batch."""
+
+    _ensure_private_directory()
+    if path is None or not path.is_absolute():
+        fail("RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_REQUIRED")
+    try:
+        private_root = PRIVATE_REQUEST_DIRECTORY.resolve(strict=True)
+        lexical = Path(os.path.abspath(path))
+        resolved = path.resolve(strict=True)
+    except OSError:
+        fail("RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID")
+    if lexical != resolved or resolved.parent != private_root:
+        fail("RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID")
+    proposal_receipt = _read_receipt(
+        PRIVATE_REQUEST_DIRECTORY / "measurement-plugin-proposal-v3.json"
+    )
+    apply_receipt = _read_receipt(resolved)
+    if type(proposal_receipt) is not dict or type(apply_receipt) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID")
+    proposal = proposal_receipt.get("proposal")
+    if (
+        proposal_receipt.get("state")
+        != "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
+        or proposal_receipt.get("artifact_id")
+        != "raos-editorial-measurement-v1"
+        or proposal_receipt.get("plugin_slug") != "raos-editorial-measurement"
+        or proposal_receipt.get("plugin_version") != "1.0.0"
+        or proposal_receipt.get("measurement_gate_default_off") is not True
+        or type(proposal) is not dict
+        or apply_receipt.get("schema") != "OperationReceiptV1"
+        or apply_receipt.get("proposal_id") != proposal.get("proposal_id")
+        or apply_receipt.get("operation_id") != proposal.get("operation_id")
+        or apply_receipt.get("state") != "APPLIED"
+        or apply_receipt.get("result_code") != "PLUGIN_CHANGE_APPLIED"
+        or apply_receipt.get("after_sha256") != proposal.get("after_sha256")
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID")
+
+
 def _atomic_receipt(path: Path, value: Mapping[str, object]) -> None:
     payload = canonical_json_bytes(dict(value)) + b"\n"
     if len(payload) > MAX_RECEIPT_BYTES:
@@ -2063,15 +2104,28 @@ def capture_existing_baselines(
     for article in articles:
         slug = article.production_slug
         candidates = listed.get(slug, [])
+        create_if_missing = (
+            article.post_type == "page"
+            and slug in CREATE_IF_MISSING_POLICY_PAGE_SLUGS
+        )
         if len(candidates) > 1:
             fail("RAOS_WORDPRESS_REQUEST_SLUG_CONFLICT")
         prior = baselines.get(slug)
         if not candidates:
-            if prior is not None or require_existing_published:
+            if prior is not None or (
+                require_existing_published and not create_if_missing
+            ):
                 fail("RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT")
             continue
         listed_document = candidates[0]
-        if require_existing_published and listed_document.get("status") != "publish":
+        known_created_draft = create_if_missing and _known_draft(
+            receipt, slug, listed_document
+        )
+        if (
+            require_existing_published
+            and listed_document.get("status") != "publish"
+            and not known_created_draft
+        ):
             fail("RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT")
         if listed_document.get("post_type") != article.post_type:
             fail("RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT")
@@ -3367,6 +3421,9 @@ def _public_page_evidence(
     visible = _normalized_public_text(parser.visible_text)
     required_headings = desired.headings
     head_evidence = _validated_public_head(parser, article, url)
+    expected_stylesheets = {("theme.css", EXPECTED_THEME_VERSION)}
+    if article.post_type == "post":
+        expected_stylesheets.add(("editorial-v2.css", EXPECTED_THEME_VERSION))
     common_invalid = (
         response_noindex
         or parser.noindex
@@ -3378,11 +3435,7 @@ def _public_page_evidence(
         or parser.heading_outline
         != [("h1", article.title), *desired.heading_outline]
         or any(heading not in visible for heading in required_headings)
-        or parser.theme_stylesheets
-        != {
-            ("theme.css", EXPECTED_THEME_VERSION),
-            ("editorial-v2.css", EXPECTED_THEME_VERSION),
-        }
+        or parser.theme_stylesheets != expected_stylesheets
     )
     if article.post_type == "page":
         private_markers = {
@@ -3687,6 +3740,7 @@ def _resume_existing_all_attempt(
 def execute(
     selection: str,
     *,
+    measurement_plugin_apply_receipt: Path | None = None,
     portfolio_refresh: Callable[[], None] = run_editorial_portfolio_refresh,
     preview: Callable[[], None] = run_preview_checks,
     client_factory: Callable[[], Any] = EditorMcpClient,
@@ -3694,6 +3748,10 @@ def execute(
         ..., subprocess.CompletedProcess[bytes]
     ] = subprocess.run,
 ) -> Path:
+    if selection == "all":
+        validate_measurement_plugin_apply_receipt(
+            measurement_plugin_apply_receipt
+        )
     with request_lock():
         source_articles = load_publication_items(
             selection,
@@ -3998,13 +4056,31 @@ def parser() -> argparse.ArgumentParser:
         default=os.environ.get("ARTICLES", "all"),
         help="all (default) or a comma-separated list of exact production slugs",
     )
+    result.add_argument(
+        "--measurement-plugin-apply-receipt",
+        type=Path,
+        default=(
+            Path(os.environ["MEASUREMENT_PLUGIN_APPLY_RECEIPT"])
+            if os.environ.get("MEASUREMENT_PLUGIN_APPLY_RECEIPT")
+            else None
+        ),
+        help=(
+            "absolute owner-private OperationReceiptV1 from the separately "
+            "approved measurement plugin apply; required for --articles all"
+        ),
+    )
     return result
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     try:
         arguments = parser().parse_args(argv)
-        path = execute(arguments.articles)
+        path = execute(
+            arguments.articles,
+            measurement_plugin_apply_receipt=(
+                arguments.measurement_plugin_apply_receipt
+            ),
+        )
         print("公開と本番read-backが完了しました。")
         print(f"受領書: {path}")
         return 0

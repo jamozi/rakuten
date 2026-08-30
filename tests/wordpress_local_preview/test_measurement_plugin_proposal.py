@@ -199,7 +199,8 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
     monkeypatch.setattr(bundle, "RECEIPT_PATH", proposal_path)
 
     command = bundle.content_command(apply_path)
-    assert command.endswith("--articles all")
+    assert "--articles all --measurement-plugin-apply-receipt" in command
+    assert command.endswith(apply_path.resolve().as_posix())
 
     apply_receipt["state"] = "APPROVED"
     apply_path.write_text(json.dumps(apply_receipt), encoding="utf-8")
