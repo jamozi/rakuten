@@ -23,7 +23,14 @@ from uuid import UUID
 GSC_READONLY_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
 GA4_READONLY_SCOPE = "https://www.googleapis.com/auth/analytics.readonly"
 GSC_DIMENSIONS = ("date", "query", "page", "country", "device")
-GA4_BASELINE_DIMENSIONS = ("date", "pagePath", "eventName", "deviceCategory")
+GA4_ARTICLE_ID_DIMENSION = "customEvent:article_id"
+GA4_BASELINE_DIMENSIONS = (
+    "date",
+    "pagePath",
+    "eventName",
+    "deviceCategory",
+    GA4_ARTICLE_ID_DIMENSION,
+)
 GA4_BASELINE_METRICS = ("eventCount", "sessions", "totalUsers")
 
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
@@ -544,6 +551,7 @@ class GoogleImportCommitResult:
 
 __all__ = [
     "AnalyticsSiteBinding",
+    "GA4_ARTICLE_ID_DIMENSION",
     "GA4_BASELINE_DIMENSIONS",
     "GA4_BASELINE_METRICS",
     "GA4_READONLY_SCOPE",

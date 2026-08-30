@@ -4,10 +4,11 @@
 from __future__ import annotations
 
 import argparse
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 import sys
 from typing import Final, Mapping
+from uuid import UUID
 
 
 REPOSITORY_ROOT: Final = Path(__file__).resolve().parents[1]
@@ -18,6 +19,27 @@ if str(PYTHON_ROOT) not in sys.path:
 from raos.application.editorial.editorial_portfolio_v3 import (  # noqa: E402
     EditorialPortfolioV3Failure,
     load_editorial_portfolio_v3,
+)
+from raos.adapters.google_live_database import (  # noqa: E402
+    LocalGoogleAnalyticsDatabaseTarget,
+    create_local_google_analytics_engine,
+)
+from raos.adapters.persistence.sqlalchemy.identity import (  # noqa: E402
+    WorkloadProfile,
+)
+from raos.adapters.persistence.sqlalchemy.provider import (  # noqa: E402
+    SqlAlchemyEngineProvider,
+)
+from raos.application.analytics.google_live_import import (  # noqa: E402
+    compose_live_google_analytics_import,
+)
+from raos.application.analytics.google_live_projection import (  # noqa: E402
+    ga4_baseline_document,
+    gsc_baseline_document,
+)
+from raos.domain.analytics.google_live import (  # noqa: E402
+    GoogleImportExecutionContext,
+    GoogleProviderFailure,
 )
 from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
     EditorialEconomicsV3Failure,
@@ -31,6 +53,7 @@ from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
     evaluate_followups,
     parse_rakuten_report,
     production_readback_template,
+    private_path,
     rakuten_binding_template,
     read_private_bytes,
     read_private_json,
@@ -130,11 +153,139 @@ def _parser() -> argparse.ArgumentParser:
     followups.add_argument("--baseline", required=True)
     followups.add_argument("--as-of", required=True)
     followups.add_argument("--output", required=True)
+
+    refresh = commands.add_parser(
+        "refresh-baseline",
+        help=(
+            "import live GSC/GA4 into PostgreSQL, project owner-private inputs, "
+            "and rebuild the baseline"
+        ),
+    )
+    refresh.add_argument("--date-from", required=True)
+    refresh.add_argument("--date-to", required=True)
+    refresh.add_argument("--site-id", required=True)
+    refresh.add_argument("--gsc-ops-job-id", required=True)
+    refresh.add_argument("--ga4-ops-job-id", required=True)
+    refresh.add_argument("--database-host", default="127.0.0.1")
+    refresh.add_argument("--database-port", type=int, default=5432)
+    refresh.add_argument("--database-name", required=True)
+    refresh.add_argument("--database-user", required=True)
+    refresh.add_argument(
+        "--database-password",
+        required=True,
+        help="relative 0600 password file below --private-root",
+    )
+    refresh.add_argument("--gsc-output", required=True)
+    refresh.add_argument("--ga4-output", required=True)
+    refresh.add_argument("--rakuten-commit")
+    refresh.add_argument("--cost-input")
+    refresh.add_argument("--t0-receipt")
+    refresh.add_argument("--json-output", required=True)
+    refresh.add_argument("--html-output", required=True)
     return parser
 
 
 def _optional_json(private_root: Path, name: str | None) -> Mapping[str, object] | None:
     return read_private_json(private_root, name) if name is not None else None
+
+
+def _date(value: str) -> date:
+    try:
+        return date.fromisoformat(value)
+    except (TypeError, ValueError):
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_GOOGLE_DATE_INVALID"
+        ) from None
+
+
+def _uuid(value: str) -> UUID:
+    try:
+        return UUID(value)
+    except (AttributeError, TypeError, ValueError):
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_GOOGLE_IDENTITY_INVALID"
+        ) from None
+
+
+def _refresh_baseline(
+    *,
+    arguments: argparse.Namespace,
+    private_root: Path,
+    portfolio: object,
+) -> None:
+    # Imported here so all non-live owner workflows remain usable without
+    # opening a database seam.
+    from raos.adapters.persistence.sqlalchemy.google_live import (
+        SqlAlchemyAnalyticsImportRepository,
+    )
+
+    date_from = _date(arguments.date_from)
+    date_to = _date(arguments.date_to)
+    if date_to < date_from:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_GOOGLE_DATE_INVALID"
+        ) from None
+    site_id = _uuid(arguments.site_id)
+    gsc_job_id = _uuid(arguments.gsc_ops_job_id)
+    ga4_job_id = _uuid(arguments.ga4_ops_job_id)
+    started_at = datetime.now(UTC)
+    target = LocalGoogleAnalyticsDatabaseTarget(
+        host=arguments.database_host,
+        port=arguments.database_port,
+        database=arguments.database_name,
+        user=arguments.database_user,
+        password_file=private_path(private_root, arguments.database_password),
+    )
+    engine = create_local_google_analytics_engine(target)
+    try:
+        provider = SqlAlchemyEngineProvider(engine, WorkloadProfile.WORKER_COMMAND)
+        repository = SqlAlchemyAnalyticsImportRepository(provider)
+        service = compose_live_google_analytics_import(
+            owner_private_root=private_root,
+            repository=repository,
+        )
+        suffix = f"{date_from:%Y%m%d}-{date_to:%Y%m%d}"
+        gsc_batch, _ = service.import_search_console_with_batch(
+            context=GoogleImportExecutionContext(
+                display_id=f"AIR-GSC-{suffix}",
+                site_id=site_id,
+                ops_job_id=gsc_job_id,
+                started_at=started_at,
+            ),
+            date_from=date_from,
+            date_to=date_to,
+        )
+        ga4_batch, _ = service.import_ga4_with_batch(
+            context=GoogleImportExecutionContext(
+                display_id=f"AIR-GA4-{suffix}",
+                site_id=site_id,
+                ops_job_id=ga4_job_id,
+                started_at=started_at,
+            ),
+            date_from=date_from,
+            date_to=date_to,
+        )
+        gsc_document = gsc_baseline_document(gsc_batch)
+        ga4_document = ga4_baseline_document(ga4_batch)
+        write_private_json(private_root, arguments.gsc_output, gsc_document)
+        write_private_json(private_root, arguments.ga4_output, ga4_document)
+        report = build_baseline_report(
+            portfolio=portfolio,
+            rakuten_commit=_optional_json(private_root, arguments.rakuten_commit),
+            cost_input=_optional_json(private_root, arguments.cost_input),
+            gsc_input=gsc_document,
+            ga4_input=ga4_document,
+            t0_receipt=_optional_json(private_root, arguments.t0_receipt),
+            generated_at=datetime.now(UTC),
+        )
+        write_private_bytes(
+            private_root, arguments.json_output, canonical_json_bytes(report)
+        )
+        write_private_bytes(
+            private_root, arguments.html_output, render_baseline_html(report)
+        )
+    finally:
+        engine.dispose()
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -252,13 +403,23 @@ def main(argv: list[str] | None = None) -> int:
                 generated_at=datetime.now(UTC),
             )
             write_private_json(private_root, arguments.output, evaluation)
+        elif arguments.command == "refresh-baseline":
+            _refresh_baseline(
+                arguments=arguments,
+                private_root=private_root,
+                portfolio=portfolio,
+            )
         else:
             raise AssertionError("unreachable")
         print(
             f"RAOS_EDITORIAL_V3_OWNER_PRIVATE command={arguments.command} status=PASS"
         )
         return 0
-    except (EditorialEconomicsV3Failure, EditorialPortfolioV3Failure) as exc:
+    except (
+        EditorialEconomicsV3Failure,
+        EditorialPortfolioV3Failure,
+        GoogleProviderFailure,
+    ) as exc:
         print(str(exc), file=sys.stderr)
         return 1
 

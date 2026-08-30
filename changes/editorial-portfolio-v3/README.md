@@ -64,6 +64,35 @@ The optional GSC/GA4 files use the live Google adapter source-record boundary:
 `{"name": ..., "value": ...}`. Raw GSC queries remain private and are never
 copied into the JSON/HTML baseline report.
 
+`refresh-baseline` is the single live, repeatable owner workflow. It uses two
+different read-only service accounts from `google/gsc/` and `google/ga4/`,
+commits normalized batches and revision/supersession state atomically to
+PostgreSQL, writes the GSC/GA4 projections as mode `0600`, and rebuilds the
+baseline. It accepts no DSN or password environment variable: the database is
+limited to loopback or a local Unix socket and the password must be a relative
+mode-`0600` file directly below the mode-`0700` private root. The supplied site
+and worker job UUIDs must already exist in RAOS.
+
+GA4 must first have the separately approved event-scoped `article_id` custom
+dimension. The Data API field `customEvent:article_id` is normalized to the
+private `article_id` field; an absent or unapproved custom dimension fails
+closed instead of silently attributing events.
+
+```sh
+.venv/bin/python scripts/raos_editorial_economics_v3.py \
+  --private-root "$PWD/.secrets/editorial-portfolio-v3" refresh-baseline \
+  --date-from 2026-08-01 --date-to 2026-08-31 \
+  --site-id <existing-site-uuid> \
+  --gsc-ops-job-id <existing-gsc-worker-job-uuid> \
+  --ga4-ops-job-id <existing-ga4-worker-job-uuid> \
+  --database-name raos --database-user raos_worker \
+  --database-password postgres-password.txt \
+  --gsc-output gsc.json --ga4-output ga4.json \
+  --rakuten-commit rakuten-commit.json --cost-input costs.json \
+  --t0-receipt t0-receipt.json \
+  --json-output baseline.json --html-output baseline.html
+```
+
 The `baseline` command writes private JSON plus `noindex,nofollow` HTML. Program
 profit includes reconciled Unattributed reward at program level; article profit
 uses Direct reward only and never allocates the Unattributed total.

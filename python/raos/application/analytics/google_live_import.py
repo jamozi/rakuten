@@ -18,11 +18,13 @@ from raos.adapters.google_live import (
 from raos.domain.analytics.google_live import (
     GA4_BASELINE_DIMENSIONS,
     GA4_BASELINE_METRICS,
+    Ga4ImportBatch,
     Ga4LiveQuery,
     GoogleImportCommitResult,
     GoogleImportExecutionContext,
     GoogleProviderFailure,
     GoogleProviderFailureCode,
+    SearchConsoleImportBatch,
     SearchConsoleLiveQuery,
     fail_google,
 )
@@ -82,6 +84,22 @@ class LiveGoogleAnalyticsImport:
         date_from: date,
         date_to: date,
     ) -> GoogleImportCommitResult:
+        _, result = self.import_search_console_with_batch(
+            context=context,
+            date_from=date_from,
+            date_to=date_to,
+        )
+        return result
+
+    def import_search_console_with_batch(
+        self,
+        *,
+        context: GoogleImportExecutionContext,
+        date_from: date,
+        date_to: date,
+    ) -> tuple[SearchConsoleImportBatch, GoogleImportCommitResult]:
+        """Commit one complete fetch and return its owner-private projection source."""
+
         binding = self._bindings.gsc()
         if context.site_id != binding.site_id:
             fail_google(GoogleProviderFailureCode.OWNER_PRIVATE_LAYOUT_INVALID)
@@ -94,11 +112,12 @@ class LiveGoogleAnalyticsImport:
             )
         )
         try:
-            return self._repository.commit_gsc(context=context, batch=batch)
+            result = self._repository.commit_gsc(context=context, batch=batch)
         except GoogleProviderFailure:
             raise
         except Exception:
             fail_google(GoogleProviderFailureCode.PERSISTENCE_FAILED)
+        return batch, result
 
     def import_ga4(
         self,
@@ -109,6 +128,26 @@ class LiveGoogleAnalyticsImport:
         dimensions: tuple[str, ...] = GA4_BASELINE_DIMENSIONS,
         metrics: tuple[str, ...] = GA4_BASELINE_METRICS,
     ) -> GoogleImportCommitResult:
+        _, result = self.import_ga4_with_batch(
+            context=context,
+            date_from=date_from,
+            date_to=date_to,
+            dimensions=dimensions,
+            metrics=metrics,
+        )
+        return result
+
+    def import_ga4_with_batch(
+        self,
+        *,
+        context: GoogleImportExecutionContext,
+        date_from: date,
+        date_to: date,
+        dimensions: tuple[str, ...] = GA4_BASELINE_DIMENSIONS,
+        metrics: tuple[str, ...] = GA4_BASELINE_METRICS,
+    ) -> tuple[Ga4ImportBatch, GoogleImportCommitResult]:
+        """Commit one GA4 fetch and return the exact normalized provider batch."""
+
         binding = self._bindings.ga4()
         if context.site_id != binding.site_id:
             fail_google(GoogleProviderFailureCode.OWNER_PRIVATE_LAYOUT_INVALID)
@@ -128,11 +167,12 @@ class LiveGoogleAnalyticsImport:
             configuration=configuration,
         )
         try:
-            return self._repository.commit_ga4(context=context, batch=batch)
+            result = self._repository.commit_ga4(context=context, batch=batch)
         except GoogleProviderFailure:
             raise
         except Exception:
             fail_google(GoogleProviderFailureCode.PERSISTENCE_FAILED)
+        return batch, result
 
 
 def compose_live_google_analytics_import(

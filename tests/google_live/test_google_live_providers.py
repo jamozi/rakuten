@@ -20,6 +20,9 @@ from raos.adapters.google_live import (
 from raos.application.analytics.google_live_import import LiveGoogleAnalyticsImport
 from raos.domain.analytics.google_live import (
     AnalyticsSiteBinding,
+    GA4_ARTICLE_ID_DIMENSION,
+    GA4_BASELINE_DIMENSIONS,
+    GA4_BASELINE_METRICS,
     GA4_READONLY_SCOPE,
     GSC_READONLY_SCOPE,
     Ga4LiveQuery,
@@ -395,12 +398,14 @@ class FakeBindings:
 class FakeRepository:
     def __init__(self) -> None:
         self.gsc_batch: object | None = None
+        self.ga4_batch: object | None = None
 
     def commit_gsc(self, *, context: object, batch: object) -> GoogleImportCommitResult:
         self.gsc_batch = batch
         return GoogleImportCommitResult(uuid4(), 0, 0, 0, NOW)
 
     def commit_ga4(self, *, context: object, batch: object) -> GoogleImportCommitResult:
+        self.ga4_batch = batch
         return GoogleImportCommitResult(uuid4(), 0, 0, 0, NOW)
 
 
@@ -457,3 +462,75 @@ def test_application_commits_complete_batch_and_rejects_site_binding_mismatch() 
             date_to=date(2026, 8, 29),
         )
     assert mismatch.value.code is GoogleProviderFailureCode.OWNER_PRIVATE_LAYOUT_INVALID
+
+
+def test_application_returns_committed_ga4_batch_with_article_dimension() -> None:
+    repository = FakeRepository()
+    admin = LiveGa4AdminProvider(
+        transport=QueueTransport(
+            [
+                response(
+                    {
+                        "name": "properties/12345",
+                        "displayName": "Example",
+                        "timeZone": "Asia/Tokyo",
+                        "currencyCode": "JPY",
+                    }
+                ),
+                response(
+                    {
+                        "name": "properties/12345/reportingIdentitySettings",
+                        "reportingIdentity": "DEVICE_BASED",
+                    }
+                ),
+            ]
+        ),
+        sleeper=FakeSleeper(),
+    )
+    data = LiveGa4DataProvider(
+        transport=QueueTransport(
+            [
+                response(
+                    {
+                        "dimensionHeaders": [
+                            {"name": name} for name in GA4_BASELINE_DIMENSIONS
+                        ],
+                        "metricHeaders": [
+                            {"name": name} for name in GA4_BASELINE_METRICS
+                        ],
+                        "rowCount": 0,
+                        "metadata": {"subjectToThresholding": False},
+                        "rows": [],
+                    }
+                )
+            ]
+        ),
+        clock=FakeClock(),
+        sleeper=FakeSleeper(),
+    )
+    service = LiveGoogleAnalyticsImport(
+        bindings=FakeBindings(),
+        search_console=LiveSearchConsoleProvider(
+            transport=QueueTransport([]),
+            clock=FakeClock(),
+            sleeper=FakeSleeper(),
+        ),
+        ga4_data=data,
+        ga4_admin=admin,
+        repository=repository,
+        clock=FakeClock(),
+    )
+    batch, result = service.import_ga4_with_batch(
+        context=GoogleImportExecutionContext(
+            display_id="AIR-GA4-20260830",
+            site_id=SITE_ID,
+            ops_job_id=uuid4(),
+            started_at=NOW,
+        ),
+        date_from=date(2026, 8, 28),
+        date_to=date(2026, 8, 29),
+    )
+
+    assert result.inserted_count == 0
+    assert repository.ga4_batch is batch
+    assert GA4_ARTICLE_ID_DIMENSION in batch.dimensions
