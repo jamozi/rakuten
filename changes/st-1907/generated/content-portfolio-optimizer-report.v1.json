@@ -37,8 +37,8 @@
       "RECORDED_SYNTHETIC_ONLY",
       "SEPARATE_RELEASE_DECISION_REQUIRED"
     ],
-    "command_sha256": "15b0cdb3727f607dfc282334a38af9f330dd0e938b6f941a1b5b09f9ccb5f381",
-    "contract_sha256": "46d6be89fedd1c15ce9e5f1747c808064fc29d80022b46126144f110edee790c",
+    "command_sha256": "71a513684c5bd63de9b038348c79e845321b2830e96c14ac33e82b5f5107dad1",
+    "contract_sha256": "523396365af71d1f4204dc9a9aff1cd53ef81061de608a9d7f9a1f0002b7916a",
     "dependency": {
       "acceptance_criteria_satisfied": false,
       "actual_observation_count": 0,
@@ -51,7 +51,7 @@
       "source_overall": "BLOCKED",
       "story_id": "ST-1805"
     },
-    "measurement_contract_sha256": "5df78f2afc00531dcd52dddebdbf88a696f58d6969dbe9cf6c315a49f1ea0e54",
+    "measurement_contract_sha256": "e902d9a6f69d19ffab24b348f962e78bf8b1f57a159ad1e8798f1e7b81ec2e9e",
     "method_version": "RAOS_ST1907_HUMAN_PROPOSAL_PORTFOLIO_OPTIMIZER_V1",
     "policy": {
       "action_vocabulary": [
@@ -80,16 +80,16 @@
     "proposal_count": 0,
     "proposal_state": "NO_PROPOSALS",
     "proposals": [],
-    "report_sha256": "d6160b7f4bf6e9a3d5198a759db478408af4b2a345efacd8eab3e69e5abccf10",
-    "signal_policy_sha256": "a86332fb57faeeea2379abc1ddc804da5aef520afa2485702388b4134be21f72",
-    "source_sha256": "f5a835c96b0aa5fc9661e35d422111c0245e3955f443273eb15db8bd8dd38aa7",
+    "report_sha256": "a1edf4a91933f862c817579c6de0595f3033770ad89b76ff486646e0aed0fbeb",
+    "signal_policy_sha256": "0f74d348ac22cd0a5fd8a685fe1ccc96ad4b1ce5faf946b11f62fd0f41d9685c",
+    "source_sha256": "c06f3baf95f7bb5755d0df4b65ce6f87fbd59f1d49678358f4de563ca9ddc06e",
     "unavailable_reason": "DEPENDENCY_BLOCKED_NO_DECISION"
   },
   "source": {
     "bytes": 986,
     "fixture_profile": "RAOS_ST1907_RECORDED_SYNTHETIC_V1",
     "path": "changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json",
-    "sha256": "f5a835c96b0aa5fc9661e35d422111c0245e3955f443273eb15db8bd8dd38aa7",
+    "sha256": "c06f3baf95f7bb5755d0df4b65ce6f87fbd59f1d49678358f4de563ca9ddc06e",
     "synthetic": true
   }
 }
