@@ -153,7 +153,7 @@ def test_portfolio_closes_ten_articles_thirty_two_products_and_thirty_seven_card
     )
     assert portfolio.theme_version == "1.3.10"
     assert portfolio.theme_runtime_revision == (
-        "c719a3b0994fe9b80fd2edc9a758e6ac4b23e4604824495aa54ffb62f6010ac9"
+        "30a84ec5dffb12c048181198ecc8745fa22be70f1854507237c19306589b341f"
     )
     assert len(portfolio.articles) == 10
     assert len(portfolio.products) == 32

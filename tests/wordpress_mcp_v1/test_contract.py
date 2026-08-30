@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import json
 from pathlib import Path
 import re
@@ -68,6 +69,37 @@ def test_owner_plugin_runtime_revision_is_bound_across_every_critical_class() ->
     assert build_wordpress_mcp_v1.runtime_manifest()["plugin"][
         "runtime_revision"
     ] == revision
+
+
+def test_publication_runtime_binds_portfolio_materializer_and_browser_audit() -> None:
+    required = {
+        "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
+        "changes/wordpress-local-preview-v1/browser/check.sh",
+        "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
+        "scripts/raos_editorial_portfolio_v2.py",
+    }
+    entrypoint = ROOT / "scripts/raos_editorial_portfolio_v2.py"
+    for node in ast.walk(ast.parse(entrypoint.read_text(encoding="utf-8"))):
+        if not isinstance(node, ast.ImportFrom) or not node.module:
+            continue
+        if not node.module.startswith("raos."):
+            continue
+        module_path = Path("python", *node.module.split(".")).with_suffix(".py")
+        if (ROOT / module_path).is_file():
+            required.add(module_path.as_posix())
+            continue
+        package_path = ROOT / "python" / Path(*node.module.split("."))
+        for alias in node.names:
+            imported = package_path / f"{alias.name}.py"
+            if imported.is_file():
+                required.add(imported.relative_to(ROOT).as_posix())
+    assert required <= set(build_wordpress_mcp_v1.RUNTIME_PATHS)
+    runtime_paths = {
+        row["path"] for row in build_wordpress_mcp_v1.runtime_manifest()["runtime_files"]
+    }
+    assert required <= runtime_paths
 
 
 @pytest.mark.parametrize(
