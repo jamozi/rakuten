@@ -70,10 +70,11 @@ def test_batch_manifest_and_approval_fail_closed_as_one_transaction() -> None:
     assert "check_admin_referer('raos_codex_mcp_approve_batch_'" in main
     assert "wp_check_password" in main
     assert "batch_token . '_' . $batch_hash" in main
-    assert (
-        "$approval_expires = self::timestamp_mysql($approved_unix + self::TTL_SECONDS)"
-        in store
-    )
+    assert "const PROPOSAL_TTL_SECONDS = 3600;" in store
+    assert "const APPLY_LEASE_TTL_SECONDS = 900;" in store
+    assert "$created_unix + self::PROPOSAL_TTL_SECONDS" in store
+    assert "$approved_unix + self::APPLY_LEASE_TTL_SECONDS" in store
+    assert "const TTL_SECONDS" not in store
     assert "proposal_expiry_integrity" in store
 
 

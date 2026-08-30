@@ -34,7 +34,7 @@ the build or tests:
    `23cb53e0b82f39238eec1c38cb055e28aa30fa7c`).
 2. Run `make -C changes/wordpress-mcp-v1 plugin-package`, verify the hash in
    `runtime-manifest.v1.json`, and install/activate the resulting owner-private
-   `raos-codex-mcp-abilities-1.2.1.zip` in wp-admin.
+   `raos-codex-mcp-abilities-1.2.2.zip` in wp-admin.
 3. Create one non-administrator user for each activation-created role, with no
    second role or direct capabilities:
    `raos_codex_mcp_editor` and `raos_codex_deployment_operator`.
@@ -86,6 +86,16 @@ command neither approves proposals nor changes host gates. Its resumable
 owner-private receipts are stored under
 `.secrets/wordpress-mcp/publication-requests/`.
 
+Pending proposals and their exact registered batch remain reviewable for 60
+minutes. Approval does not reuse the remaining review time: it atomically
+rebinds the approved batch and every single-use apply lease to a fresh,
+15-minute apply/recovery window. The foreground operator is bounded to 4,500
+seconds (60 minutes to observe approval plus 15 minutes to apply or recover),
+the bridge child to 4,620 seconds, and the foreground client to 4,680 seconds.
+The direct MCP fallback has a 4,800-second tool ceiling so it cannot terminate
+the narrower layers first; none of these process ceilings extends either
+server-side TTL.
+
 - Draft post/page creation and update mutate only `draft` targets and require
   `RAOS_OPERATOR_WRITES_ENABLED` plus `RAOS_CODEX_DRAFT_WRITES_ENABLED`.
 - All updates require `revision_id`, `modified_gmt`, and `content_sha256`.
@@ -112,12 +122,14 @@ owner-private receipts are stored under
   reauthenticates once, gives a reason, and types the visible final eight
   characters of the canonical manifest hash. Approval is all-or-nothing:
   it creates one proposal-bound, single-use authorization lease per proposal
-  outside the web root. The leases expire after 15 minutes and approval itself
-  does not apply anything. An atomic claim made before that deadline consumes
+  outside the web root. The 60-minute pre-approval proposal/batch TTL is
+  replaced at approval by a fresh 15-minute apply lease; approval itself does
+  not apply anything. An atomic claim made before that deadline consumes
   the authorization and keeps the exact batch recoverable until every claimed
   operation reaches a terminal state; the 15-minute clock does not interrupt a
   batch already being applied.
-- The bounded `release-wait-and-apply` operator waits for that approval, refuses
+- The bounded `release-wait-and-apply` operator waits up to 60 minutes for that
+  approval and then retains a separate 15-minute apply/recovery budget, refuses
   plugin proposals and malformed or terminal batches, and binds the server's
   exact batch token, canonical manifest hash, and sorted proposal IDs through
   the final aggregate receipt. Before its first mutation, WordPress verifies

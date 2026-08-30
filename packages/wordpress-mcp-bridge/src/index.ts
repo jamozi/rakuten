@@ -81,7 +81,7 @@ function runOperator(
     let stderrBytes = 0;
     let settled = false;
 
-    const timeoutMs = command === 'release-wait-and-apply' ? 17 * 60_000 : 90_000;
+    const timeoutMs = command === 'release-wait-and-apply' ? 4_620_000 : 90_000;
     const timer = setTimeout(() => {
       if (!settled) {
         settled = true;
@@ -220,7 +220,7 @@ server.registerTool(
   {
     title: 'Wait for approval and apply one release set',
     description:
-      'Wait up to the fixed approval window for one server-registered exact content/theme batch, then apply only that approved batch. At most one theme is accepted and it is always converged before content. Plugin proposals and terminal failure states are refused.',
+      'Wait up to 60 minutes for approval of one server-registered exact content/theme batch, then retain a separate 15-minute apply and recovery budget for that approved batch. At most one theme is accepted and it is always converged before content. Plugin proposals and terminal failure states are refused.',
     inputSchema: z.strictObject({
       batch_token: sha256,
       batch_manifest_sha256: sha256,
@@ -253,7 +253,7 @@ server.registerTool(
   {
     title: 'Propose tracked child-theme release',
     description:
-      'Build and propose the committed kurashinoshirube-child tree. Caller paths and ZIP files are not accepted.',
+      'Build a 60-minute proposal for the committed kurashinoshirube-child tree. Caller paths and ZIP files are not accepted.',
     inputSchema: z.strictObject({ idempotency_key: sha256.optional() }),
     annotations: {
       readOnlyHint: false,
@@ -276,7 +276,7 @@ server.registerTool(
   {
     title: 'Propose bounded plugin change',
     description:
-      'Propose a fixed WordPress.org version or a registered repository artifact. URLs, paths, arbitrary ZIPs, uninstall, and deletion are not accepted.',
+      'Create a 60-minute proposal for a fixed WordPress.org version or a registered repository artifact. URLs, paths, arbitrary ZIPs, uninstall, and deletion are not accepted.',
     inputSchema: z.strictObject({
       source: z.enum(['wordpress_org', 'repo_artifact']),
       slug: z

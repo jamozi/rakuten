@@ -33,14 +33,14 @@ def test_owner_generator_defaults_to_manifest_mode(monkeypatch) -> None:
 
 
 def test_owner_plugin_version_is_bound_across_package_and_runtime() -> None:
-    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.2.1"
+    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.2.2"
     entrypoint = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(
         encoding="utf-8"
     )
-    assert " * Version: 1.2.1" in entrypoint
-    assert "define('RAOS_CODEX_MCP_VERSION', '1.2.1');" in entrypoint
+    assert " * Version: 1.2.2" in entrypoint
+    assert "define('RAOS_CODEX_MCP_VERSION', '1.2.2');" in entrypoint
     assert (PLUGIN / "README.md").read_text(encoding="utf-8").startswith(
-        "# RAOS Codex MCP Abilities 1.2.1\n"
+        "# RAOS Codex MCP Abilities 1.2.2\n"
     )
 
 
@@ -152,7 +152,7 @@ def test_public_contract_and_schema_are_valid() -> None:
     contract = json.loads((SLICE / "contracts/wordpress-mcp.v1.json").read_text())
     schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
     Draft202012Validator.check_schema(schema)
-    assert contract["version"] == "1.1.0"
+    assert contract["version"] == "1.1.1"
     assert contract["wordpress_version"] == "7.1.x"
     assert contract["mcp_adapter"]["version"] == "0.6.1"
     assert contract["remote_proxy"]["version"] == "0.4.0"
@@ -168,7 +168,7 @@ def test_public_contract_and_schema_are_valid() -> None:
         "minimum_reason_length": 10,
         "reauthentication": True,
         "self_approval": False,
-        "ttl_seconds": 900,
+        "ttl_seconds": 3600,
     }
     assert contract["publication_request"] == {
         "command": "make wordpress-production-request ARTICLES=all",
@@ -176,7 +176,12 @@ def test_public_contract_and_schema_are_valid() -> None:
         "local_preview_required": True,
         "proposal_idempotency": True,
         "deployment_transport": "wordpressDeployment stdio MCP",
-        "approval_wait_seconds": 900,
+        "approval_wait_seconds": 3600,
+        "post_approval_apply_seconds": 900,
+        "operator_timeout_seconds": 4500,
+        "bridge_timeout_seconds": 4620,
+        "client_timeout_seconds": 4680,
+        "direct_mcp_tool_timeout_seconds": 4800,
         "release_batch_identity_bound": True,
         "release_preflight_all_members": True,
         "atomic_batch_claim_before_mutation": True,
@@ -289,10 +294,24 @@ def test_codex_project_enables_only_two_mcp_servers_without_secrets() -> None:
         "plugin-apply-change",
         "operation-recover",
     ]
+    assert deployment["tool_timeout_sec"] == 4800
     lowered = config_bytes.lower()
     assert b"application_password" not in lowered
     assert b"bearer_token =" not in lowered
     assert b"wp_api_password" not in lowered
+
+
+def test_publication_timeout_layers_are_strictly_nested() -> None:
+    bridge = (ROOT / "packages/wordpress-mcp-bridge/src/index.ts").read_text()
+    publication = (ROOT / "scripts/raos_wordpress_publication_request.py").read_text()
+    operator = (ROOT / "scripts/raos_wordpress_deployment_operator.py").read_text()
+
+    assert "RELEASE_APPROVAL_WAIT_TIMEOUT_SECONDS: Final = 3600" in operator
+    assert "RELEASE_APPLY_TIMEOUT_SECONDS: Final = 900" in operator
+    assert "RELEASE_OVERALL_TIMEOUT_SECONDS: Final = 4500" in operator
+    assert "? 4_620_000 : 90_000" in bridge
+    assert "timeout=4680" in publication
+    assert 4800 > 4680 > 4620 > 4500 > 3600
 
 
 def test_root_final_static_checks_wordpress_owner_manifest() -> None:
@@ -316,6 +335,14 @@ def test_editor_status_exposes_loaded_theme_runtime_version_and_revision() -> No
     assert "constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
     assert "'runtime_revision' => $theme_runtime_revision" in status
     assert "'plugin_runtime_revision' => $plugin_runtime_revision" in status
+    assert (
+        "'ttl_seconds' => RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS"
+        in status
+    )
+    assert (
+        "'proposal_ttl_seconds' => RAOS_Codex_MCP_Store::PROPOSAL_TTL_SECONDS"
+        in status
+    )
 
 
 def test_deployment_status_exposes_loaded_theme_runtime_version_and_revision() -> None:
@@ -332,6 +359,10 @@ def test_deployment_status_exposes_loaded_theme_runtime_version_and_revision() -
     assert "constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
     assert "'runtime_revision' => $theme_runtime_revision" in status
     assert "'plugin_runtime_revision' => $plugin_runtime_revision" in status
+    assert (
+        "'ttl_seconds' => RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS"
+        in status
+    )
 
 
 def test_plugin_runtime_aggregate_and_mutation_gates_fail_closed() -> None:

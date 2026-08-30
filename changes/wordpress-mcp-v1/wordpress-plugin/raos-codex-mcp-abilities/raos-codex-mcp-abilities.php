@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RAOS Codex MCP Abilities
  * Description: Browser-independent, approval-bound content and deployment abilities for kurashinoshirube.com.
- * Version: 1.2.1
+ * Version: 1.2.2
  * Requires at least: 7.1
  * Requires PHP: 8.1
  * Author: RAOS
@@ -14,10 +14,10 @@
 
 defined('ABSPATH') || exit;
 
-define('RAOS_CODEX_MCP_VERSION', '1.2.1');
+define('RAOS_CODEX_MCP_VERSION', '1.2.2');
 define(
     'RAOS_CODEX_MCP_RUNTIME_REVISION',
-    '7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755'
+    '40c47766264e93bb3c73cfb85e93272ff56450777a8b66799f8baf6f4980e3da'
 );
 define('RAOS_CODEX_MCP_FILE', __FILE__);
 
@@ -27,7 +27,7 @@ require_once __DIR__ . '/includes/class-raos-codex-mcp-deployment.php';
 
 final class RAOS_Codex_MCP_Abilities
 {
-    const RUNTIME_REVISION = '7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755';
+    const RUNTIME_REVISION = '40c47766264e93bb3c73cfb85e93272ff56450777a8b66799f8baf6f4980e3da';
     const ORIGIN = 'https://kurashinoshirube.com';
     const EDITOR_ROLE = 'raos_codex_mcp_editor';
     const OPERATOR_ROLE = 'raos_codex_deployment_operator';
@@ -907,7 +907,7 @@ final class RAOS_Codex_MCP_Abilities
         $rows = RAOS_Codex_MCP_Store::pending_for_admin(50);
         $batches = RAOS_Codex_MCP_Store::pending_publication_batches_for_admin(20);
         echo '<div class="wrap"><h1>' . esc_html__('RAOS Codex proposals', 'raos-codex-mcp') . '</h1>';
-        echo '<p>' . esc_html__('Review the complete before/after hashes and payload. Approval issues one proposal-bound, single-use authorization; it never applies the change. The bounded operator must still pass If-Match, idempotency, TTL, the global kill switch, drift, backup, and readback checks.', 'raos-codex-mcp') . '</p>';
+        echo '<p>' . esc_html__('Review the complete before/after hashes and payload within 60 minutes. Approval issues one proposal-bound, single-use 15-minute authorization; it never applies the change. The bounded operator must still pass If-Match, idempotency, TTL, the global kill switch, drift, backup, and readback checks.', 'raos-codex-mcp') . '</p>';
         if (isset($_GET['approved']) && '1' === sanitize_text_field(wp_unslash($_GET['approved']))) {
             echo '<div class="notice notice-success inline"><p><strong>'
                 . esc_html__('Approval completed.', 'raos-codex-mcp')

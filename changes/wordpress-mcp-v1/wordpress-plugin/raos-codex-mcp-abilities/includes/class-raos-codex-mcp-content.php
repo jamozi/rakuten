@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Content
 {
-    const RUNTIME_REVISION = '7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755';
+    const RUNTIME_REVISION = '40c47766264e93bb3c73cfb85e93272ff56450777a8b66799f8baf6f4980e3da';
     const MAX_CONTENT_BYTES = 1048576;
 
     private $plugin;
@@ -93,7 +93,7 @@ final class RAOS_Codex_MCP_Content
         $this->register(
             'raos-codex/content-propose-release',
             'Propose a content release',
-            'Create an immutable 15-minute proposal. This never publishes or changes the target post/page.',
+            'Create an immutable 60-minute proposal. This never publishes or changes the target post/page.',
             array(
                 'type' => 'object',
                 'additionalProperties' => false,
@@ -112,7 +112,7 @@ final class RAOS_Codex_MCP_Content
         $this->register(
             'raos-codex/publication-batch-register',
             'Register an exact publication approval batch',
-            'Bind one immutable server-side review token to an exact set of pending content and optional theme proposals.',
+            'Bind one immutable server-side review token to an exact set of pending content and optional theme proposals for their 60-minute review window.',
             array(
                 'type' => 'object',
                 'additionalProperties' => false,
@@ -290,7 +290,7 @@ final class RAOS_Codex_MCP_Content
                 'mode' => 'approval_scoped_lease',
                 'default' => false,
                 'single_use' => true,
-                'ttl_seconds' => RAOS_Codex_MCP_Store::TTL_SECONDS,
+                'ttl_seconds' => RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS,
             ),
             'theme' => array(
                 'slug' => 'kurashinoshirube-child',
@@ -302,7 +302,7 @@ final class RAOS_Codex_MCP_Content
             ),
             'server' => array(
                 'endpoint' => home_url('/wp-json/raos-codex-mcp/v1/editor'),
-                'proposal_ttl_seconds' => RAOS_Codex_MCP_Store::TTL_SECONDS,
+                'proposal_ttl_seconds' => RAOS_Codex_MCP_Store::PROPOSAL_TTL_SECONDS,
                 'publish_tool_exposed' => false,
                 'delete_tool_exposed' => false,
                 'media_write_tool_exposed' => false,

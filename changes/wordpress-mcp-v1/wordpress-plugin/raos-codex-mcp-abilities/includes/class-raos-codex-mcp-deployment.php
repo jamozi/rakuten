@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Deployment
 {
-    const RUNTIME_REVISION = '7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755';
+    const RUNTIME_REVISION = '40c47766264e93bb3c73cfb85e93272ff56450777a8b66799f8baf6f4980e3da';
     const MAX_PACKAGE_BYTES = 33554432;
     const MAX_FILE_BYTES = 8388608;
     const MAX_FILE_COUNT = 2048;
@@ -144,7 +144,7 @@ final class RAOS_Codex_MCP_Deployment
                 'mode' => 'approval_scoped_lease',
                 'default' => false,
                 'single_use' => true,
-                'ttl_seconds' => RAOS_Codex_MCP_Store::TTL_SECONDS,
+                'ttl_seconds' => RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS,
             ),
             'private_directory_ready' => $private_ready,
         );

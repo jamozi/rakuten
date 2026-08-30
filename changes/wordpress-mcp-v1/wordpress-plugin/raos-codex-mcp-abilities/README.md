@@ -1,4 +1,4 @@
-# RAOS Codex MCP Abilities 1.2.1
+# RAOS Codex MCP Abilities 1.2.2
 
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
@@ -35,9 +35,9 @@ with the theme/plugin target so directory replacement and rollback can be
 atomic. A successful separate wp-admin approval creates one mode-`0600`,
 proposal-bound authorization lease in that directory. The lease binds the
 operation kind, creator, approver, timestamps, and complete before/after hashes;
-it is single-use, expires with the proposal, and is removed after success or
-failure. Content, theme, and plugin applies therefore require no per-deployment
-`wp-config.php` edit.
+it is single-use, lasts 15 minutes from approval, and is removed after success
+or failure. Content, theme, and plugin applies therefore require no
+per-deployment `wp-config.php` edit.
 
 Publication, theme replacement, and plugin changes need an unexpired proposal
 approved by a different cookie-authenticated administrator in **Tools → RAOS
@@ -47,10 +47,13 @@ and plugin changes cannot enter that batch. One batch approval requires current
 password reauthentication, a reason, and the visible final eight characters of
 the batch manifest hash. The transaction either approves the complete unchanged
 registered batch and creates every scoped lease, or approves none.
-Approval does not apply anything; the bounded operator still performs the
-apply, backup, readback, and rollback workflow. Content and theme proposals can
-only be approved through their exact registered batch; individual approval is
-available only for deliberate plugin-change handling.
+Pending proposals and registered batches expire after 60 minutes. Approval
+replaces that pre-approval deadline with a fresh 15-minute apply lease, so an
+approval near the end of the review window still receives the complete apply
+and recovery budget. Approval does not apply anything; the bounded operator
+still performs the apply, backup, readback, and rollback workflow. Content and
+theme proposals can only be approved through their exact registered batch;
+individual approval is available only for deliberate plugin-change handling.
 
 The plugin has no uninstall handler: users, bindings, proposals, receipts,
 packages, and backups are deliberately preserved for owner recovery/audit.

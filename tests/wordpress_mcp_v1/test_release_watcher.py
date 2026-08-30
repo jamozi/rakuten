@@ -232,6 +232,52 @@ def test_release_waits_for_exact_batch_approval_before_reading_operations(
     ]
 
 
+def test_late_approval_retains_the_full_apply_and_recovery_budget(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    clock = [0.0]
+    statuses = iter(("REGISTERED", "APPROVED"))
+    operation_states = iter(("APPLYING", "APPLIED"))
+    apply_attempts: list[float] = []
+
+    def batch_status(batch_token, manifest_hash, proposal_ids):
+        state = next(statuses)
+        if state == "REGISTERED":
+            clock[0] = 3599.0
+        return state, state == "APPROVED"
+
+    def request_json(method, path, body=None, request_proposal_id=None, *identity):
+        if method == "POST":
+            apply_attempts.append(clock[0])
+            clock[0] = 4498.0
+            raise operator.OperatorFailure("WORDPRESS_MCP_TRANSPORT_FAILED")
+        state = next(operation_states)
+        return public_operation(proposal_id, "CONTENT_RELEASE", state)
+
+    monkeypatch.setattr(operator, "_release_batch_status", batch_status)
+    monkeypatch.setattr(operator, "_release_batch_claim", lambda *args: {})
+    monkeypatch.setattr(operator, "request_json", request_json)
+    monkeypatch.setattr(operator.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(
+        operator.time,
+        "sleep",
+        lambda seconds: clock.__setitem__(0, clock[0] + seconds),
+    )
+
+    result = operator.release_wait_and_apply(release_input([proposal_id]))
+
+    assert result["state"] == "APPLIED"
+    assert apply_attempts == [3600.0]
+    assert clock[0] == 4500.0
+
+
+def test_release_timeout_layers_cover_review_then_apply_without_extending_lease() -> None:
+    assert operator.RELEASE_APPROVAL_WAIT_TIMEOUT_SECONDS == 3600
+    assert operator.RELEASE_APPLY_TIMEOUT_SECONDS == 900
+    assert operator.RELEASE_OVERALL_TIMEOUT_SECONDS == 4500
+
+
 def test_terminal_applied_batch_finalizes_and_reconstructs_without_reclaim(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

@@ -23,7 +23,7 @@ ORIGIN = "https://kurashinoshirube.com"
 HOST = "kurashinoshirube.com"
 PROTOCOL_VERSION = "2025-11-25"
 EXPECTED_PLUGIN_RUNTIME_REVISION = (
-    "7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755"
+    "40c47766264e93bb3c73cfb85e93272ff56450777a8b66799f8baf6f4980e3da"
 )
 EXPECTED_THEME_RUNTIME_REVISION = (
     "30a84ec5dffb12c048181198ecc8745fa22be70f1854507237c19306589b341f"
@@ -340,7 +340,7 @@ def phase_propose(
 ) -> None:
     mcp = McpClient(site_url + "/wp-json/raos-codex-mcp/v1/editor", *editor)
     initialized = mcp.initialize()
-    assert initialized["serverInfo"]["version"] == "1.2.1"
+    assert initialized["serverInfo"]["version"] == "1.2.2"
     tools = mcp.tools()
     assert set(tools) == EXPECTED_TOOLS
     for tool in tools.values():

@@ -177,7 +177,7 @@ if ('plugin-ambiguous-reset' === $mode) {
         ? gmdate(
             'Y-m-d H:i:s',
             strtotime($approved_plugin['approved_at_gmt'] . ' UTC')
-                + RAOS_Codex_MCP_Store::TTL_SECONDS
+                + RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS
         )
         : null;
     if (is_wp_error($ambiguous_result)
@@ -417,7 +417,7 @@ if ('expect-rollback' === $mode) {
         ? gmdate(
             'Y-m-d H:i:s',
             strtotime($approved_batch['approved_at_gmt'] . ' UTC')
-                + RAOS_Codex_MCP_Store::TTL_SECONDS
+                + RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS
         )
         : null;
     if (! is_string($expected_approval_expiry)

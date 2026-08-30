@@ -1238,7 +1238,7 @@ class WorkflowClient:
                 "publish_tool_exposed": False,
                 "delete_tool_exposed": False,
                 "media_write_tool_exposed": False,
-                "proposal_ttl_seconds": 900,
+                "proposal_ttl_seconds": 3600,
             },
         }
 

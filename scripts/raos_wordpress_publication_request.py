@@ -82,9 +82,9 @@ MAKE_BIN: Final = Path("/usr/bin/make")
 SG_BIN: Final = Path("/usr/bin/sg")
 DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
-EXPECTED_PLUGIN_VERSION: Final = "1.2.1"
+EXPECTED_PLUGIN_VERSION: Final = "1.2.2"
 EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
-    "7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755"
+    "40c47766264e93bb3c73cfb85e93272ff56450777a8b66799f8baf6f4980e3da"
 )
 EXPECTED_THEME_VERSION: Final = "1.3.10"
 EXPECTED_THEME_RUNTIME_REVISION: Final = (
@@ -1383,7 +1383,7 @@ def validate_site_status(status: Mapping[str, object]) -> None:
         or server.get("publish_tool_exposed") is not False
         or server.get("delete_tool_exposed") is not False
         or server.get("media_write_tool_exposed") is not False
-        or server.get("proposal_ttl_seconds") != 900
+        or server.get("proposal_ttl_seconds") != 3600
     ):
         fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
 
@@ -2986,7 +2986,7 @@ def wait_and_apply(
             "batch_manifest_sha256": manifest_hash,
             "proposal_ids": proposal_ids,
         },
-        timeout=1080,
+        timeout=4680,
         runner=runner,
     )
     if (

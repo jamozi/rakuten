@@ -41,6 +41,9 @@ args = [
 ]
 cwd = "/home/minami/rakuten"
 enabled = true
+# The direct MCP fallback outlives the 4,620-second bridge child bound and the
+# 4,680-second foreground client bound; it does not extend either server TTL.
+tool_timeout_sec = 4800
 default_tools_approval_mode = "prompt"
 enabled_tools = [
   "deployment-status",

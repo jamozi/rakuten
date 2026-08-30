@@ -49,7 +49,9 @@ MAX_RESPONSE_BYTES: Final = 4 * 1024 * 1024
 MAX_PACKAGE_BYTES: Final = 32 * 1024 * 1024
 MAX_FILE_BYTES: Final = 8 * 1024 * 1024
 MAX_FILE_COUNT: Final = 2048
-RELEASE_WAIT_TIMEOUT_SECONDS: Final = 900
+RELEASE_APPROVAL_WAIT_TIMEOUT_SECONDS: Final = 3600
+RELEASE_APPLY_TIMEOUT_SECONDS: Final = 900
+RELEASE_OVERALL_TIMEOUT_SECONDS: Final = 4500
 RELEASE_POLL_INTERVAL_SECONDS: Final = 2
 RELEASE_RECOVERY_GRACE_SECONDS: Final = 120
 ZIP_TIMESTAMP: Final = (2026, 8, 28, 0, 0, 0)
@@ -575,7 +577,9 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
     ):
         fail("WORDPRESS_MCP_RELEASE_PROPOSALS_INVALID")
 
-    deadline = time.monotonic() + RELEASE_WAIT_TIMEOUT_SECONDS
+    started_at = time.monotonic()
+    approval_deadline = started_at + RELEASE_APPROVAL_WAIT_TIMEOUT_SECONDS
+    overall_deadline = started_at + RELEASE_OVERALL_TIMEOUT_SECONDS
     batch_already_applied = False
     while True:
         batch_state, preconditions_ready = _release_batch_status(
@@ -595,7 +599,12 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
             if not preconditions_ready:
                 fail("WORDPRESS_MCP_RELEASE_BATCH_PRECONDITION_FAILED")
             break
-        _release_poll_sleep(deadline)
+        _release_poll_sleep(approval_deadline)
+
+    apply_deadline = min(
+        overall_deadline,
+        time.monotonic() + RELEASE_APPLY_TIMEOUT_SECONDS,
+    )
 
     if not batch_already_applied:
         while True:
@@ -609,7 +618,7 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
             except OperatorFailure as error:
                 if not _release_outcome_ambiguous(str(error)):
                     raise
-                _release_poll_sleep(deadline)
+                _release_poll_sleep(apply_deadline)
 
     initial: list[tuple[str, str]] = []
     operations: dict[str, dict[str, object]] = {}
@@ -661,7 +670,7 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
                 )
                 receipts.append(operation)
                 break
-            if time.monotonic() >= deadline:
+            if time.monotonic() >= apply_deadline:
                 fail("WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT")
             wait_before_refresh = False
             if state == "APPLYING" and operation["result_code"] == "BATCH_CLAIMED":
@@ -698,7 +707,7 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
             else:
                 fail("WORDPRESS_MCP_RELEASE_STATE_INVALID")
             if wait_before_refresh:
-                _release_poll_sleep(deadline)
+                _release_poll_sleep(apply_deadline)
             kind, operation = _release_operation(proposal_id)
             if kind != expected_kind:
                 fail("WORDPRESS_MCP_OPERATION_STATUS_INVALID")
