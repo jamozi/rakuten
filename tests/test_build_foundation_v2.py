@@ -39,6 +39,108 @@ def test_build_infrastructure_change_selects_the_complete_graph() -> None:
     assert set(selected) == set(registry)
 
 
+def test_editorial_measurement_theme_and_manifest_inputs_are_discoverable() -> None:
+    registry = discover_registry()
+    measurement = registry["build_editorial_measurement_v1"]
+    theme = registry["build_st1704_self_hosted_theme"]
+    manifest = registry["build_st1704_self_hosted_editorial_manifest"]
+
+    assert set(measurement.owner_dependencies) >= {
+        "build_editorial_portfolio_v3",
+    }
+    assert set(theme.owner_dependencies) >= {
+        "build_editorial_measurement_v1",
+        "build_editorial_v3_theme_navigation",
+        "build_st1704_theme_assets",
+    }
+    assert set(manifest.owner_dependencies) >= {
+        "build_editorial_measurement_v1",
+        "build_editorial_portfolio_v3",
+        "build_editorial_v3_theme_navigation",
+        "build_st0105_generated_contracts",
+        "build_st1704_self_hosted_theme",
+        "build_st1704_theme_assets",
+    }
+
+    measurement_inputs = {item.uri for item in measurement.inputs}
+    theme_inputs = {item.uri for item in theme.inputs}
+    manifest_inputs = {item.uri for item in manifest.inputs}
+    theme_root = (
+        "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+        "kurashinoshirube-child/"
+    )
+    assert {
+        "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+        f"{theme_root}assets/measurement.js",
+        f"{theme_root}functions.php",
+    } <= measurement_inputs
+    assert {
+        f"{theme_root}assets/editorial-navigation.v3.json",
+        f"{theme_root}assets/images/article-portable-power-guide.webp",
+        f"{theme_root}assets/measurement.js",
+        f"{theme_root}functions.php",
+        f"{theme_root}theme-contract.v1.json",
+    } <= theme_inputs
+    assert {
+        "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+        "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json",
+        f"{theme_root}assets/editorial-navigation.v3.json",
+        f"{theme_root}assets/images/article-portable-power-guide.webp",
+        f"{theme_root}assets/measurement.js",
+        f"{theme_root}functions.php",
+        f"{theme_root}theme-contract.v1.json",
+    } <= manifest_inputs
+    assert measurement.test_paths == (Path("tests/editorial_measurement_v1"),)
+
+
+def test_editorial_runtime_changes_propagate_in_owner_order() -> None:
+    registry = discover_registry()
+
+    def assert_order(path: str, owners: tuple[str, ...]) -> None:
+        selected = affected_owners(registry, {Path(path)})
+        assert set(owners) <= set(selected)
+        positions = [selected.index(owner) for owner in owners]
+        assert positions == sorted(positions)
+
+    assert_order(
+        "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+        (
+            "build_editorial_portfolio_v3",
+            "build_editorial_measurement_v1",
+            "build_st1704_self_hosted_theme",
+            "build_st1704_self_hosted_editorial_manifest",
+        ),
+    )
+    assert_order(
+        "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+        (
+            "build_editorial_portfolio_v3",
+            "build_editorial_v3_theme_navigation",
+            "build_st1704_self_hosted_theme",
+            "build_st1704_self_hosted_editorial_manifest",
+        ),
+    )
+    assert_order(
+        "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+        "article-portable-power-guide.png",
+        (
+            "build_st1704_theme_assets",
+            "build_st1704_self_hosted_theme",
+            "build_st1704_self_hosted_editorial_manifest",
+        ),
+    )
+    for relative in ("assets/measurement.js", "functions.php"):
+        assert_order(
+            "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+            f"kurashinoshirube-child/{relative}",
+            (
+                "build_editorial_measurement_v1",
+                "build_st1704_self_hosted_theme",
+                "build_st1704_self_hosted_editorial_manifest",
+            ),
+        )
+
+
 def test_st0005_git_attributes_source_selects_its_generator() -> None:
     registry = discover_registry()
     owner = registry["build_st0005_status"]

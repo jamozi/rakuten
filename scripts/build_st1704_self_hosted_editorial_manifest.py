@@ -10,19 +10,40 @@ import os
 from pathlib import Path, PurePosixPath
 import stat
 import sys
-from typing import Final, NoReturn, cast
+from typing import TYPE_CHECKING, Final, NoReturn, cast
 
 
 ROOT: Final = Path(__file__).resolve().parents[1]
-SLICE: Final = "changes/st-1704/self-hosted-editorial-pilot-v1"
-SINGLE_URL_SLICE: Final = "changes/st-1704/carry-on-single-url-evidence-loop-v1"
-OUTPUT_PATH: Final = ROOT / SLICE / "runtime-manifest.v1.json"
-PREDECESSOR_PATH: Final = (
-    ROOT / "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+if TYPE_CHECKING:
+    # Static imports are owner edges for the affected-generator build graph.
+    from scripts import build_editorial_measurement_v1 as measurement_owner  # noqa: F401
+    from scripts import build_editorial_portfolio_v3 as portfolio_owner  # noqa: F401
+    from scripts import (  # noqa: F401
+        build_editorial_v3_theme_navigation as navigation_owner,
+    )
+    from scripts import build_st0105_generated_contracts as contract_owner  # noqa: F401
+    from scripts import build_st1704_self_hosted_theme as theme_owner  # noqa: F401
+    from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: F401
+
+
+SLICE_PATH: Final = Path("changes/st-1704/self-hosted-editorial-pilot-v1")
+SINGLE_URL_SLICE_PATH: Final = Path(
+    "changes/st-1704/carry-on-single-url-evidence-loop-v1"
 )
+THEME_INPUT_ROOT: Final = SLICE_PATH / "theme/kurashinoshirube-child"
+SLICE: Final = SLICE_PATH.as_posix()
+SINGLE_URL_SLICE: Final = SINGLE_URL_SLICE_PATH.as_posix()
+OUTPUT_PATH: Final = ROOT / SLICE_PATH / "runtime-manifest.v1.json"
+PREDECESSOR_INPUT_PATH: Final = Path(
+    "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json"
+)
+PREDECESSOR_PATH: Final = ROOT / PREDECESSOR_INPUT_PATH
 MAX_FILE_BYTES: Final = 4 * 1024 * 1024
 MAX_MANIFEST_BYTES: Final = 256 * 1024
-GENERATED_CONTRACT_ROOT: Final = ROOT / "python/raos/generated/contracts"
+GENERATED_CONTRACT_INPUT_ROOT: Final = Path("python/raos/generated/contracts")
+GENERATED_CONTRACT_ROOT: Final = ROOT / GENERATED_CONTRACT_INPUT_ROOT
 
 ARTICLE_IDS: Final = (
     "st1703-first-suitcase-comparison",
@@ -32,59 +53,69 @@ ARTICLE_IDS: Final = (
     "st1704-compact-robot-vacuum-shortlist",
 )
 
-_BASE_RUNTIME_PATHS: Final[tuple[str, ...]] = (
-    f"{SINGLE_URL_SLICE}/DESIGN_HANDOFF_V1.yaml",
-    f"{SINGLE_URL_SLICE}/PREFLIGHT.md",
-    f"{SINGLE_URL_SLICE}/README.md",
-    f"{SINGLE_URL_SLICE}/contracts/carry-on-single-url-evidence-loop.v1.json",
-    f"{SLICE}/DESIGN_HANDOFF_V1.yaml",
-    f"{SLICE}/EDITORIAL_RESEARCH_NOTES.md",
-    f"{SLICE}/Makefile",
-    f"{SLICE}/OPERATIONS_RUNBOOK.md",
-    f"{SLICE}/PREFLIGHT.md",
-    f"{SLICE}/README.md",
-    f"{SLICE}/REVENUE_EXPERIMENT_RUNBOOK.md",
-    f"{SLICE}/REVENUE_UNBLOCK_WORKLOG.md",
-    f"{SLICE}/content/articles.v1.json",
-    f"{SLICE}/media/product-media-registry.v1.json",
-    f"{SLICE}/operations/measurement-ledger.v1.json",
-    f"{SLICE}/operations/publication-plan.v1.json",
-    f"{SLICE}/sources/source-locator-contract.v1.json",
-    f"{SLICE}/sources/source-registry.v1.json",
-    f"{SLICE}/theme/kurashinoshirube-child/assets/editorial-v2.css",
-    f"{SLICE}/theme/kurashinoshirube-child/assets/images/article-portable-power-guide.png",
-    f"{SLICE}/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
-    f"{SLICE}/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
-    f"{SLICE}/theme/kurashinoshirube-child/assets/images/home-hero.webp",
-    f"{SLICE}/theme/kurashinoshirube-child/assets/theme.css",
-    f"{SLICE}/theme/kurashinoshirube-child/functions.php",
-    f"{SLICE}/theme/kurashinoshirube-child/parts/footer.html",
-    f"{SLICE}/theme/kurashinoshirube-child/parts/header.html",
-    f"{SLICE}/theme/kurashinoshirube-child/raos-assets.v1.json",
-    f"{SLICE}/theme/kurashinoshirube-child/style.css",
-    f"{SLICE}/theme/kurashinoshirube-child/templates/front-page.html",
-    f"{SLICE}/theme/kurashinoshirube-child/templates/single.html",
-    f"{SLICE}/theme/kurashinoshirube-child/theme-contract.v1.json",
-    f"{SLICE}/theme/kurashinoshirube-child/theme.json",
-    f"{SLICE}/theme/yoast-seo-28.3.lock.json",
-    "contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json",
-    "python/raos/adapters/self_hosted_editorial_pilot_https.py",
-    "python/raos/adapters/self_hosted_editorial_pilot_json.py",
-    "python/raos/adapters/self_hosted_editorial_source_capture.py",
-    "python/raos/adapters/self_hosted_wordpress_credentials.py",
-    "python/raos/adapters/self_hosted_wordpress_https.py",
-    "python/raos/adapters/self_hosted_wordpress_rest.py",
-    "python/raos/adapters/wordpress_rest.py",
-    "python/raos/application/editorial/self_hosted_editorial_pilot.py",
-    "python/raos/domain/editorial/content_ast.py",
-    "python/raos/domain/editorial/market_learning_pilot.py",
-    "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
-    "python/raos/domain/editorial/self_hosted_wordpress.py",
-    "python/raos/ports/self_hosted_editorial_pilot.py",
-    "scripts/build_st1704_self_hosted_editorial_manifest.py",
-    "scripts/build_st1704_self_hosted_theme.py",
-    "scripts/st1704_official_source_capture.py",
-    "scripts/st1704_self_hosted_editorial_pilot.py",
+_BASE_RUNTIME_INPUT_PATHS: Final[tuple[Path, ...]] = (
+    SINGLE_URL_SLICE_PATH / "DESIGN_HANDOFF_V1.yaml",
+    SINGLE_URL_SLICE_PATH / "PREFLIGHT.md",
+    SINGLE_URL_SLICE_PATH / "README.md",
+    SINGLE_URL_SLICE_PATH / "contracts/carry-on-single-url-evidence-loop.v1.json",
+    SLICE_PATH / "DESIGN_HANDOFF_V1.yaml",
+    SLICE_PATH / "EDITORIAL_RESEARCH_NOTES.md",
+    SLICE_PATH / "Makefile",
+    SLICE_PATH / "OPERATIONS_RUNBOOK.md",
+    SLICE_PATH / "PREFLIGHT.md",
+    SLICE_PATH / "README.md",
+    SLICE_PATH / "REVENUE_EXPERIMENT_RUNBOOK.md",
+    SLICE_PATH / "REVENUE_UNBLOCK_WORKLOG.md",
+    SLICE_PATH / "content/articles.v1.json",
+    Path("changes/editorial-portfolio-v3/editorial-portfolio.v3.json"),
+    Path("changes/editorial-portfolio-v3/generated/navigation.v3.json"),
+    SLICE_PATH / "media/product-media-registry.v1.json",
+    SLICE_PATH / "media/source-images/article-portable-power-guide.png",
+    SLICE_PATH / "operations/measurement-ledger.v1.json",
+    SLICE_PATH / "operations/publication-plan.v1.json",
+    SLICE_PATH / "sources/source-locator-contract.v1.json",
+    SLICE_PATH / "sources/source-registry.v1.json",
+    THEME_INPUT_ROOT / "assets/editorial-v2.css",
+    THEME_INPUT_ROOT / "assets/editorial-navigation.v3.json",
+    THEME_INPUT_ROOT / "assets/images/article-portable-power-guide.webp",
+    THEME_INPUT_ROOT / "assets/images/article-suitcase-guide.webp",
+    THEME_INPUT_ROOT / "assets/images/brand-mark.svg",
+    THEME_INPUT_ROOT / "assets/images/home-hero.webp",
+    THEME_INPUT_ROOT / "assets/measurement.js",
+    THEME_INPUT_ROOT / "assets/theme.css",
+    THEME_INPUT_ROOT / "functions.php",
+    THEME_INPUT_ROOT / "parts/footer.html",
+    THEME_INPUT_ROOT / "parts/header.html",
+    THEME_INPUT_ROOT / "raos-assets.v1.json",
+    THEME_INPUT_ROOT / "style.css",
+    THEME_INPUT_ROOT / "templates/front-page.html",
+    THEME_INPUT_ROOT / "templates/single.html",
+    THEME_INPUT_ROOT / "theme-contract.v1.json",
+    THEME_INPUT_ROOT / "theme.json",
+    SLICE_PATH / "theme/yoast-seo-28.3.lock.json",
+    Path("contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json"),
+    Path("python/raos/adapters/self_hosted_editorial_pilot_https.py"),
+    Path("python/raos/adapters/self_hosted_editorial_pilot_json.py"),
+    Path("python/raos/adapters/self_hosted_editorial_source_capture.py"),
+    Path("python/raos/adapters/self_hosted_wordpress_credentials.py"),
+    Path("python/raos/adapters/self_hosted_wordpress_https.py"),
+    Path("python/raos/adapters/self_hosted_wordpress_rest.py"),
+    Path("python/raos/adapters/wordpress_rest.py"),
+    Path("python/raos/application/editorial/self_hosted_editorial_pilot.py"),
+    Path("python/raos/domain/editorial/content_ast.py"),
+    Path("python/raos/domain/editorial/market_learning_pilot.py"),
+    Path("python/raos/domain/editorial/self_hosted_editorial_pilot.py"),
+    Path("python/raos/domain/editorial/self_hosted_wordpress.py"),
+    Path("python/raos/ports/self_hosted_editorial_pilot.py"),
+    Path("scripts/build_st1704_self_hosted_editorial_manifest.py"),
+    Path("scripts/build_editorial_v3_theme_navigation.py"),
+    Path("scripts/build_st1704_theme_assets.py"),
+    Path("scripts/build_st1704_self_hosted_theme.py"),
+    Path("scripts/st1704_official_source_capture.py"),
+    Path("scripts/st1704_self_hosted_editorial_pilot.py"),
+)
+_BASE_RUNTIME_PATHS: Final[tuple[str, ...]] = tuple(
+    path.as_posix() for path in _BASE_RUNTIME_INPUT_PATHS
 )
 
 

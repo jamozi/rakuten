@@ -18,33 +18,58 @@ from xml.etree import ElementTree
 
 
 ROOT: Final = Path(__file__).resolve().parents[1]
-THEME_SLUG: Final = "kurashinoshirube-child"
-THEME_VERSION: Final = "1.3.9"
-THEME_ROOT: Final = (
-    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme" / THEME_SLUG
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts import build_editorial_measurement_v1 as measurement_owner  # noqa: E402
+from scripts import (  # noqa: E402
+    build_editorial_v3_theme_navigation as editorial_navigation_owner,
 )
+from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
+
+
+THEME_SLUG: Final = "kurashinoshirube-child"
+THEME_VERSION: Final = "1.4.0"
+THEME_REPOSITORY_ROOT: Final = Path(
+    "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
+)
+THEME_ROOT: Final = ROOT / THEME_REPOSITORY_ROOT
 OUTPUT_DIRECTORY: Final = ROOT / ".secrets/st1704-self-hosted-editorial-pilot/theme"
 OUTPUT_PATH: Final = OUTPUT_DIRECTORY / f"{THEME_SLUG}-{THEME_VERSION}.zip"
 MAX_SOURCE_BYTES: Final = 4 * 1024 * 1024
 MAX_PACKAGE_BYTES: Final = 16 * 1024 * 1024
 ZIP_TIMESTAMP: Final = (2026, 8, 23, 0, 0, 0)
 
-SOURCE_FILES: Final = (
-    "assets/editorial-v2.css",
-    "assets/images/article-portable-power-guide.png",
-    "assets/images/article-suitcase-guide.webp",
-    "assets/images/brand-mark.svg",
-    "assets/images/home-hero.webp",
-    "assets/theme.css",
-    "functions.php",
-    "parts/footer.html",
-    "parts/header.html",
-    "raos-assets.v1.json",
-    "style.css",
-    "templates/front-page.html",
-    "templates/single.html",
-    "theme-contract.v1.json",
-    "theme.json",
+EDITORIAL_NAVIGATION_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/editorial-navigation.v3.json"
+)
+PORTABLE_POWER_ASSET_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/article-portable-power-guide.webp"
+)
+MEASUREMENT_CLIENT_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/measurement.js"
+THEME_FUNCTIONS_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "functions.php"
+THEME_SOURCE_INPUT_PATHS: Final = (
+    EDITORIAL_NAVIGATION_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/editorial-v2.css",
+    PORTABLE_POWER_ASSET_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-guide.webp",
+    THEME_REPOSITORY_ROOT / "assets/images/brand-mark.svg",
+    THEME_REPOSITORY_ROOT / "assets/images/home-hero.webp",
+    MEASUREMENT_CLIENT_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/theme.css",
+    THEME_FUNCTIONS_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "parts/footer.html",
+    THEME_REPOSITORY_ROOT / "parts/header.html",
+    THEME_REPOSITORY_ROOT / "raos-assets.v1.json",
+    THEME_REPOSITORY_ROOT / "style.css",
+    THEME_REPOSITORY_ROOT / "templates/front-page.html",
+    THEME_REPOSITORY_ROOT / "templates/single.html",
+    THEME_REPOSITORY_ROOT / "theme-contract.v1.json",
+    THEME_REPOSITORY_ROOT / "theme.json",
+)
+SOURCE_FILES: Final = tuple(
+    path.relative_to(THEME_REPOSITORY_ROOT).as_posix()
+    for path in THEME_SOURCE_INPUT_PATHS
 )
 
 PUBLIC_LISTING_ELIGIBILITY: Final = {
@@ -117,7 +142,7 @@ EDITORIAL_V2_PRESENTATION: Final = {
     "asset": "assets/editorial-v2.css",
     "base_style_dependency": "kurashinoshirube-editorial",
     "body_class": "raos-editorial-v2-page",
-    "category_fallback_allowlist": ["移動", "家事"],
+    "category_fallback_allowlist": ["移動", "家事", "備え"],
     "content_root": '<div class="raos-editorial-v2">',
     "detection": "EXACT_RAW_CONTENT_PREFIX_ON_SINGULAR_POST",
     "publication_identity_predicate": (
@@ -125,18 +150,8 @@ EDITORIAL_V2_PRESENTATION: Final = {
     ),
     "publication_snapshot_required": False,
     "scope": "ORDINARY_WORDPRESS_POST_ONLY",
-    "section_slug_allowlist": {
-        "anker-solix-c300-c800-c1000-differences": "備え",
-        "carry-on-suitcase-comparison": "移動",
-        "carry-on-suitcase-under-100-seats": "移動",
-        "compact-robot-vacuum-shortlist": "家事",
-        "countertop-dishwasher-for-small-households": "家事",
-        "front-open-carry-on-suitcase-with-stopper": "移動",
-        "lightweight-carry-on-suitcase-under-3kg": "移動",
-        "portable-power-station-guide": "備え",
-        "roomba-mini-vs-switchbot-k11-pro": "家事",
-        "solota-vs-rakua-mini-plus": "家事",
-    },
+    "section_binding_count": 10,
+    "section_binding_source": "assets/editorial-navigation.v3.json#articles",
 }
 
 
@@ -146,6 +161,21 @@ class ThemeBuildFailure(RuntimeError):
 
 def _fail() -> NoReturn:
     raise ThemeBuildFailure("SELF_HOSTED_EDITORIAL_THEME_INVALID") from None
+
+
+def _validate_owner_bindings() -> None:
+    measurement_inputs = set(measurement_owner.RUNTIME_INPUT_PATHS)
+    if (
+        editorial_navigation_owner.OUTPUT.relative_to(ROOT)
+        != EDITORIAL_NAVIGATION_INPUT_PATH
+        or theme_asset_owner.OUTPUT.relative_to(ROOT)
+        != PORTABLE_POWER_ASSET_INPUT_PATH
+        or not {
+            MEASUREMENT_CLIENT_INPUT_PATH,
+            THEME_FUNCTIONS_INPUT_PATH,
+        }.issubset(measurement_inputs)
+    ):
+        _fail()
 
 
 def _safe_relative(value: str) -> PurePosixPath:
@@ -268,6 +298,7 @@ def _validate_svg() -> None:
 
 
 def validate_sources() -> dict[str, str]:
+    _validate_owner_bindings()
     _validate_exact_tree()
     sources = {relative: _read_source(relative) for relative in SOURCE_FILES}
     style = _text("style.css")
@@ -362,64 +393,82 @@ def validate_sources() -> dict[str, str]:
         or not isinstance(contract.get("human_existing_update"), dict)
     ):
         _fail()
-    related = contract.get("related_navigation")
-    if type(related) is not dict or type(related.get("map")) is not dict:
+    navigation_contract = contract.get("editorial_navigation")
+    navigation = _json("assets/editorial-navigation.v3.json")
+    navigation_payload = _read_source("assets/editorial-navigation.v3.json")
+    navigation_digest = hashlib.sha256(navigation_payload).hexdigest()
+    if (
+        navigation_contract
+        != {
+            "article_count": 10,
+            "cluster_count": 3,
+            "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
+            "path": "assets/editorial-navigation.v3.json",
+            "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
+            "sha256": navigation_digest,
+            "source_navigation_sha256": navigation.get("source_navigation_sha256"),
+            "source_portfolio_sha256": navigation.get("source_portfolio_sha256"),
+        }
+        or navigation.get("schema") != "RAOS_EDITORIAL_THEME_NAVIGATION_V3"
+        or navigation.get("target_origin") != "https://kurashinoshirube.com"
+        or navigation.get("version") != "3.0.0"
+        or type(navigation.get("articles")) is not list
+        or len(navigation["articles"]) != 10
+        or type(navigation.get("clusters")) is not list
+        or len(navigation["clusters"]) != 3
+        or len({row.get("article_id") for row in navigation["articles"]}) != 10
+        or any(
+            type(row) is not dict
+            or type(row.get("related_articles")) is not list
+            or len(row["related_articles"]) < 2
+            for row in navigation["articles"]
+        )
+    ):
         _fail()
-    relation_bytes = json.dumps(
-        related["map"],
-        ensure_ascii=False,
-        separators=(",", ":"),
-        sort_keys=True,
-    ).encode("utf-8")
-    if related.get("map_sha256") != hashlib.sha256(relation_bytes).hexdigest():
-        _fail()
-    php_map_match = re.search(
-        r"const KURASHINOSHIRUBE_RELATED_ARTICLE_MAP_JSON = '([^']+)';",
+    php_path_match = re.search(
+        r"const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = '([^']+)';",
         php,
     )
     php_hash_match = re.search(
-        r"const KURASHINOSHIRUBE_RELATED_ARTICLE_MAP_SHA256 = '([0-9a-f]{64})';",
+        r"const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '([0-9a-f]{64})';",
         php,
     )
     if (
-        php_map_match is None
+        php_path_match is None
+        or php_path_match.group(1) != "assets/editorial-navigation.v3.json"
         or php_hash_match is None
-        or php_map_match.group(1).encode("utf-8") != relation_bytes
-        or php_hash_match.group(1) != related["map_sha256"]
+        or php_hash_match.group(1) != navigation_digest
+        or "KURASHINOSHIRUBE_RELATED_ARTICLE_MAP_JSON" in php
+        or "KURASHINOSHIRUBE_HOMEPAGE_CLUSTERS_JSON" in php
     ):
+        _fail()
+    related = contract.get("related_navigation")
+    if related != {
+        "availability_transition": "TARGET_HUMAN_PUBLICATION_ONLY",
+        "content_hash_scope": "THEME_CHROME_OUTSIDE_WORDPRESS_POST_CONTENT",
+        "minimum_targets_per_article": 2,
+        "owner": "EDITORIAL_V3_GENERATED_NAVIGATION",
+        "preparedness_two_article_policy": (
+            "ONE_SAME_CLUSTER_PLUS_ONE_ADJACENT_CONTEXT_WITHOUT_NEW_ARTICLE"
+        ),
+        "source": (
+            "assets/editorial-navigation.v3.json#articles[].related_articles"
+        ),
+        "target_requirement": (
+            "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
+        ),
+    }:
         _fail()
     homepage = contract.get("homepage_clusters")
-    if type(homepage) is not dict or type(homepage.get("config")) is not dict:
-        _fail()
-    homepage_bytes = json.dumps(
-        homepage["config"],
-        ensure_ascii=False,
-        separators=(",", ":"),
-        sort_keys=True,
-    ).encode("utf-8")
-    homepage_map = homepage["config"].get("clusters")
-    homepage_order = homepage["config"].get("display_order")
-    homepage_json_match = re.search(
-        r"const KURASHINOSHIRUBE_HOMEPAGE_CLUSTERS_JSON = '([^']+)';",
-        php,
-    )
-    homepage_hash_match = re.search(
-        r"const KURASHINOSHIRUBE_HOMEPAGE_CLUSTERS_SHA256 = '([0-9a-f]{64})';",
-        php,
-    )
-    if (
-        type(homepage_map) is not dict
-        or type(homepage_order) is not list
-        or len(homepage_order) != 3
-        or any(type(cluster_id) is not str for cluster_id in homepage_order)
-        or len(set(homepage_order)) != 3
-        or set(homepage_order) != set(homepage_map)
-        or homepage.get("config_sha256") != hashlib.sha256(homepage_bytes).hexdigest()
-        or homepage_json_match is None
-        or homepage_hash_match is None
-        or homepage_json_match.group(1).encode("utf-8") != homepage_bytes
-        or homepage_hash_match.group(1) != homepage["config_sha256"]
-    ):
+    if homepage != {
+        "article_count": 10,
+        "cluster_count": 3,
+        "link_requirement": (
+            "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
+        ),
+        "owner": "EDITORIAL_V3_GENERATED_NAVIGATION",
+        "source": "assets/editorial-navigation.v3.json#clusters",
+    }:
         _fail()
     if contract.get("homepage_featured") != {
         "article_id": "st1704-portable-power-station-guide",
@@ -435,6 +484,7 @@ def validate_sources() -> dict[str, str]:
     ):
         _fail()
 
+    _validate_webp("assets/images/article-portable-power-guide.webp")
     _validate_webp("assets/images/article-suitcase-guide.webp")
     _validate_webp("assets/images/home-hero.webp")
     _validate_svg()

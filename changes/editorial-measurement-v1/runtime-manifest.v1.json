@@ -2,8 +2,8 @@
   "artifact_id": "raos-editorial-measurement-v1",
   "default_enabled": false,
   "host_gate": "RAOS_MEASUREMENT_ENABLED",
-  "package_sha256": "443fd86e19e4ef66a0292b243dfcf8c1400e9b84b41d494794c2ab546f36e7ae",
-  "package_size": 14452,
+  "package_sha256": "fa335a94e9fe26af5ae55b3101c7962b2ffffa6185ddd88ce3f2deb18c3f6ce9",
+  "package_size": 14444,
   "plugin_files": [
     {
       "path": "README.md",
@@ -17,8 +17,8 @@
     },
     {
       "path": "includes/class-raos-measurement-contract.php",
-      "sha256": "1258210e46fc8ded3c8d40a93b6850775b00f6c413e7fd925f8d270486a5fedf",
-      "size": 17521
+      "sha256": "62a936ef1decaf0539f0ac45b9e7e6f199243e0e4cce77963e3259ff1c4f4dd3",
+      "size": 17505
     },
     {
       "path": "includes/class-raos-measurement-store.php",
@@ -46,28 +46,28 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
-      "sha256": "5971f4465ddcb6c4b43fee885bb9e2c4b0bd721c6c937a08734df0ec1b3a7355",
-      "size": 12653
+      "sha256": "b2e6fa68a15729569ea45a97e9a5d8e79868ed97dee42238299bf95caa32f5e5",
+      "size": 12637
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
-      "sha256": "08d2c81351dacded5fda3696d7244228481a0232ac52afd747af9e3aff2d928f",
-      "size": 120858
+      "sha256": "c00fed95d20ce574a6d271f917322e1beb5cfef33d60baf0d17d9177b9255f96",
+      "size": 126029
     },
     {
       "path": "scripts/build_editorial_measurement_v1.py",
-      "sha256": "c6e56ec71d0d3234a5b135cde3d44c7d81f3bd5e2e7c97649cf8f404deca3d5b",
-      "size": 16280
+      "sha256": "bbb9bf8c61d72e02bc2c5f3e3591f5910d15a0a3df84d4c187604547dec1fc2d",
+      "size": 16647
     },
     {
       "path": "tests/editorial_measurement_v1/test_contract.py",
-      "sha256": "9c8526fcefa191e900d005ea4eafd6b6e09743db59397df04fb1c28e066af5b2",
-      "size": 11572
+      "sha256": "ee2a0e403f195e4032c67d3e9abd78b6a4e0ad6454ff7dbf8ec862195de7d4a3",
+      "size": 11694
     },
     {
       "path": "tests/editorial_measurement_v1/measurement_client_harness.mjs",
-      "sha256": "6c6599569acf019c6663a411cfdcba7169dc7753d13d16fa8ade584293b28a29",
-      "size": 8546
+      "sha256": "1d2296669945ccb54f1941ac886e2078b36aa6428709e6430fa0d27ea15ed6f1",
+      "size": 8833
     }
   ],
   "schema": "RAOS_EDITORIAL_MEASUREMENT_RUNTIME_MANIFEST_V1",

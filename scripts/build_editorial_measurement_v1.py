@@ -55,15 +55,23 @@ PLUGIN_FILES: Final = (
     "includes/class-raos-measurement-store.php",
     "raos-editorial-measurement.php",
 )
-RUNTIME_FILES: Final = (
-    "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
-    "changes/editorial-measurement-v1/measurement-runtime.v1.json",
-    "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
-    "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
-    "scripts/build_editorial_measurement_v1.py",
-    "tests/editorial_measurement_v1/test_contract.py",
-    "tests/editorial_measurement_v1/measurement_client_harness.mjs",
+RUNTIME_INPUT_PATHS: Final = (
+    Path("changes/editorial-portfolio-v3/editorial-portfolio.v3.json"),
+    Path("changes/editorial-measurement-v1/measurement-runtime.v1.json"),
+    Path(
+        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+        "kurashinoshirube-child/assets/measurement.js"
+    ),
+    Path(
+        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+        "kurashinoshirube-child/functions.php"
+    ),
+    Path("scripts/build_editorial_measurement_v1.py"),
+    Path("tests/editorial_measurement_v1/test_contract.py"),
+    Path("tests/editorial_measurement_v1/measurement_client_harness.mjs"),
 )
+RUNTIME_FILES: Final = tuple(path.as_posix() for path in RUNTIME_INPUT_PATHS)
+TEST_PATHS: Final = (Path("tests/editorial_measurement_v1"),)
 
 
 class BuildFailure(RuntimeError):
@@ -113,6 +121,8 @@ def read_regular(path: Path, *, maximum: int = 8 * 1024 * 1024) -> bytes:
 
 
 def load_source() -> tuple[dict[str, object], bytes]:
+    if RUNTIME_INPUT_PATHS[0] != editorial_v3_owner.OUTPUT_PATHS[0]:
+        fail("EDITORIAL_MEASUREMENT_OWNER_BINDING_INVALID")
     raw = read_regular(SOURCE)
     try:
         value = json.loads(raw.decode("utf-8", errors="strict"))
