@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Content
 {
-    const RUNTIME_REVISION = '1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a';
+    const RUNTIME_REVISION = '24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55';
     const MAX_CONTENT_BYTES = 1048576;
 
     private $plugin;
@@ -93,7 +93,7 @@ final class RAOS_Codex_MCP_Content
         $this->register(
             'raos-codex/content-propose-release',
             'Propose a content release',
-            'Create an immutable 15-minute proposal. This never publishes or changes the target post/page.',
+            'Create an immutable 60-minute review proposal. Approval starts a separate 15-minute apply lease; this ability never publishes or changes the target post/page.',
             array(
                 'type' => 'object',
                 'additionalProperties' => false,
@@ -290,7 +290,7 @@ final class RAOS_Codex_MCP_Content
                 'mode' => 'approval_scoped_lease',
                 'default' => false,
                 'single_use' => true,
-                'ttl_seconds' => RAOS_Codex_MCP_Store::TTL_SECONDS,
+                'lease_ttl_seconds' => RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS,
             ),
             'theme' => array(
                 'slug' => 'kurashinoshirube-child',
@@ -313,7 +313,7 @@ final class RAOS_Codex_MCP_Content
             ),
             'server' => array(
                 'endpoint' => home_url('/wp-json/raos-codex-mcp/v1/editor'),
-                'proposal_ttl_seconds' => RAOS_Codex_MCP_Store::TTL_SECONDS,
+                'proposal_review_ttl_seconds' => RAOS_Codex_MCP_Store::PROPOSAL_REVIEW_TTL_SECONDS,
                 'publish_tool_exposed' => false,
                 'delete_tool_exposed' => false,
                 'media_write_tool_exposed' => false,

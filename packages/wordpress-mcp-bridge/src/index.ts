@@ -81,7 +81,7 @@ function runOperator(
     let stderrBytes = 0;
     let settled = false;
 
-    const timeoutMs = command === 'release-wait-and-apply' ? 17 * 60_000 : 90_000;
+    const timeoutMs = command === 'release-wait-and-apply' ? 4_620_000 : 90_000;
     const timer = setTimeout(() => {
       if (!settled) {
         settled = true;
@@ -220,7 +220,7 @@ server.registerTool(
   {
     title: 'Wait for approval and apply one release set',
     description:
-      'Wait up to the fixed approval window for one server-registered exact content/theme batch, then apply only that approved batch. At most one theme is accepted and it is always converged before content. Plugin proposals and terminal failure states are refused.',
+      'Wait up to 60 minutes for one server-registered exact content/theme batch approval, then reserve a separate 15-minute apply/recovery budget for only that approved batch. At most one theme is accepted and it is always converged before content. Plugin proposals and terminal failure states are refused.',
     inputSchema: z.strictObject({
       batch_token: sha256,
       batch_manifest_sha256: sha256,

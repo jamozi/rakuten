@@ -148,7 +148,7 @@ def prepare(
         manifest.get("schema") != "RAOS_WORDPRESS_MCP_RUNTIME_MANIFEST_V1"
         or type(plugin) is not dict
         or plugin.get("slug") != "raos-codex-mcp-abilities"
-        or plugin.get("version") != "1.3.0"
+        or plugin.get("version") != "1.3.1"
         or plugin.get("package_sha256") != package_sha256
         or len(matching) != 1
         or matching[0].get("slug") != plugin.get("slug")

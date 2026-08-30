@@ -283,8 +283,8 @@ def test_mcp_server_exposes_only_the_aggregate_measurement_ability() -> None:
     ).read_text()
     contract = json.loads((mcp_root / "contracts/wordpress-mcp.v1.json").read_text())
     config = (ROOT / ".codex/config.toml").read_text()
-    assert "Version: 1.3.0" in plugin
-    assert "define('RAOS_CODEX_MCP_VERSION', '1.3.0')" in plugin
+    assert "Version: 1.3.1" in plugin
+    assert "define('RAOS_CODEX_MCP_VERSION', '1.3.1')" in plugin
     assert plugin.count("'raos-measurement/aggregate-report'") == 1
     content = (
         mcp_root

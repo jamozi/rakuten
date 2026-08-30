@@ -101,10 +101,14 @@ MAKE_BIN: Final = Path("/usr/bin/make")
 SG_BIN: Final = Path("/usr/bin/sg")
 DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
-EXPECTED_PLUGIN_VERSION: Final = "1.3.0"
+EXPECTED_PLUGIN_VERSION: Final = "1.3.1"
 EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
-    "1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a"
+    "24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55"
 )
+EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS: Final = 3600
+EXPECTED_APPLY_LEASE_TTL_SECONDS: Final = 900
+ATTEMPT_PREPARED_EXPIRY_SECONDS: Final = EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS + 30
+RELEASE_FOREGROUND_TIMEOUT_SECONDS: Final = 4680
 EXPECTED_THEME_VERSION: Final = "1.4.0"
 EXPECTED_THEME_RUNTIME_REVISION: Final = (
     "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
@@ -1686,14 +1690,15 @@ def validate_site_status(
             "mode": "approval_scoped_lease",
             "default": False,
             "single_use": True,
-            "ttl_seconds": 900,
+            "lease_ttl_seconds": EXPECTED_APPLY_LEASE_TTL_SECONDS,
         }
         or type(server) is not dict
         or server.get("endpoint") != EDITOR_ENDPOINT
         or server.get("publish_tool_exposed") is not False
         or server.get("delete_tool_exposed") is not False
         or server.get("media_write_tool_exposed") is not False
-        or server.get("proposal_ttl_seconds") != 900
+        or server.get("proposal_review_ttl_seconds")
+        != EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS
         or (
             require_measurement_ready
             and (
@@ -2933,7 +2938,7 @@ def deployment_status(
             "mode": "approval_scoped_lease",
             "default": False,
             "single_use": True,
-            "ttl_seconds": 900,
+            "lease_ttl_seconds": EXPECTED_APPLY_LEASE_TTL_SECONDS,
         }
     ):
         fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_STATUS_INVALID")
@@ -2968,7 +2973,9 @@ def _attempt_expired(receipt: Mapping[str, object]) -> bool:
             )
         except ValueError:
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
-        return datetime.now(UTC) >= created_at + timedelta(seconds=930)
+        return datetime.now(UTC) >= created_at + timedelta(
+            seconds=ATTEMPT_PREPARED_EXPIRY_SECONDS
+        )
     expirations: list[datetime] = []
     for proposal in proposals:
         if (
@@ -3450,6 +3457,7 @@ def wait_and_apply(
         print(f"承認対象バッチtoken末尾12文字: {batch_token[-12:]}")
         print(f"入力するbatch manifest hash末尾8文字: {manifest_hash[-8:]}")
         print(REVIEW_URL)
+        print("承認期限は提案作成から60分です。承認後は15分の適用・復旧枠へ切り替わります。")
         print("承認待機中です。このコマンドは閉じないでください。", flush=True)
         _touch_receipt(path, receipt, "WAITING_FOR_APPROVAL")
     aggregate = _deployment_mcp_call(
@@ -3459,7 +3467,7 @@ def wait_and_apply(
             "batch_manifest_sha256": manifest_hash,
             "proposal_ids": proposal_ids,
         },
-        timeout=1080,
+        timeout=RELEASE_FOREGROUND_TIMEOUT_SECONDS,
         runner=runner,
     )
     aggregate_receipts = aggregate.get("receipts")

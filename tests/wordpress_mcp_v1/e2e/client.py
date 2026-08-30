@@ -23,7 +23,7 @@ ORIGIN = "https://kurashinoshirube.com"
 HOST = "kurashinoshirube.com"
 PROTOCOL_VERSION = "2025-11-25"
 EXPECTED_PLUGIN_RUNTIME_REVISION = (
-    "1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a"
+    "24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55"
 )
 EXPECTED_THEME_RUNTIME_REVISION = (
     "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
@@ -341,7 +341,7 @@ def phase_propose(
 ) -> None:
     mcp = McpClient(site_url + "/wp-json/raos-codex-mcp/v1/editor", *editor)
     initialized = mcp.initialize()
-    assert initialized["serverInfo"]["version"] == "1.3.0"
+    assert initialized["serverInfo"]["version"] == "1.3.1"
     tools = mcp.tools()
     assert set(tools) == EXPECTED_TOOLS
     for tool in tools.values():
@@ -370,7 +370,7 @@ def phase_propose(
     assert status["origin"] == ORIGIN
     assert status["wordpress_version"].startswith("7.1")
     assert status["mcp_adapter_version"] == "0.6.1"
-    assert status["plugin_version"] == "1.3.0"
+    assert status["plugin_version"] == "1.3.1"
     assert status["measurement"] == {
         "plugin_active": True,
         "plugin_version": "1.0.0",
@@ -386,6 +386,14 @@ def phase_propose(
         "theme_apply": True,
         "plugin_apply": True,
     }
+    assert status["apply_authorization"] == {
+        "mode": "approval_scoped_lease",
+        "default": False,
+        "single_use": True,
+        "lease_ttl_seconds": 900,
+    }
+    assert status["server"]["proposal_review_ttl_seconds"] == 3600
+    assert "proposal_ttl_seconds" not in status["server"]
     assert status["theme"]["runtime_version"] == status["theme"]["version"]
     assert status["theme"]["runtime_revision"] == EXPECTED_THEME_RUNTIME_REVISION
 
@@ -398,6 +406,12 @@ def phase_propose(
         == EXPECTED_PLUGIN_RUNTIME_REVISION
     )
     assert deploy_status["private_directory_ready"] is True
+    assert deploy_status["apply_authorization"] == {
+        "mode": "approval_scoped_lease",
+        "default": False,
+        "single_use": True,
+        "lease_ttl_seconds": 900,
+    }
     assert_route_confinement(site_url, editor, operator)
 
     proposals: list[dict[str, object]] = []

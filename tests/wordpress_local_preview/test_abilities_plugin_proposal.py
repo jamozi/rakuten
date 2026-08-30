@@ -35,7 +35,7 @@ def _artifact_set(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> bytes:
                 "schema": "RAOS_WORDPRESS_MCP_RUNTIME_MANIFEST_V1",
                 "plugin": {
                     "slug": "raos-codex-mcp-abilities",
-                    "version": "1.3.0",
+                    "version": "1.3.1",
                     "package_sha256": package_sha256,
                     "file_manifest_sha256": file_manifest_sha256,
                 },
@@ -52,7 +52,7 @@ def _artifact_set(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> bytes:
                     {
                         "artifact_id": "raos-codex-mcp-abilities-v1",
                         "slug": "raos-codex-mcp-abilities",
-                        "version": "1.3.0",
+                        "version": "1.3.1",
                         "package_sha256": package_sha256,
                     }
                 ],
@@ -83,7 +83,7 @@ def test_prepare_requires_preview_then_builds_private_repo_artifact(
 
     assert events == ["preview", "--check", "--package"]
     assert receipt["artifact_id"] == "raos-codex-mcp-abilities-v1"
-    assert receipt["plugin_version"] == "1.3.0"
+    assert receipt["plugin_version"] == "1.3.1"
     assert receipt["apply_command_exposed"] is False
     assert stat.S_IMODE(bundle.PACKAGE_PATH.stat().st_mode) == 0o600
 
@@ -108,7 +108,7 @@ def test_propose_stops_for_separate_admin_and_never_applies(
             "source": "repo_artifact",
             "artifact_id": "raos-codex-mcp-abilities-v1",
             "slug": "raos-codex-mcp-abilities",
-            "version": "1.3.0",
+            "version": "1.3.1",
             "activation_intent": "activate",
         }
         return {
@@ -120,7 +120,7 @@ def test_propose_stops_for_separate_admin_and_never_applies(
                 "code_package": {
                     "artifact_id": "raos-codex-mcp-abilities-v1",
                     "slug": "raos-codex-mcp-abilities",
-                    "new_version": "1.3.0",
+                    "new_version": "1.3.1",
                     "package_sha256": digest,
                     "file_manifest_sha256": "1" * 64,
                     "activation_intent": "activate",

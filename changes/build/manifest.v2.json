@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2877,
-          "sha256": "303531012d1dbcfa0b060a645390ee804c9769c1f724db17dd44b78bd0cf6c94",
+          "sha256": "7158c02b753a5bcf4031629929f56dd7e50c40ddb3f8303e6c9e5e1308b5d8c3",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -28477,12 +28477,12 @@
       "outputs": [
         {
           "bytes": 531,
-          "sha256": "14e7657d8337bfec697be8bd89624ccecdbd73c9918759329696296ef0315f59",
+          "sha256": "0af448db63a20c076b86ecd9eafb81a57616b5c0cb189b1f0277188b55f4b2fa",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
           "bytes": 17117,
-          "sha256": "609bea4a574f063e24acb7ea5a95e889b8a7295f52ec191b2e7350df1bbfe499",
+          "sha256": "b34a4be283c4bc48b11c3101808de00a449555863e3919d34423cd11f04069d0",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],

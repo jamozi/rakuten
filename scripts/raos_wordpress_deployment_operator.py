@@ -49,7 +49,11 @@ MAX_RESPONSE_BYTES: Final = 4 * 1024 * 1024
 MAX_PACKAGE_BYTES: Final = 32 * 1024 * 1024
 MAX_FILE_BYTES: Final = 8 * 1024 * 1024
 MAX_FILE_COUNT: Final = 2048
-RELEASE_WAIT_TIMEOUT_SECONDS: Final = 900
+RELEASE_APPROVAL_WAIT_TIMEOUT_SECONDS: Final = 3600
+RELEASE_APPLY_RECOVERY_TIMEOUT_SECONDS: Final = 900
+RELEASE_OPERATOR_BUDGET_SECONDS: Final = (
+    RELEASE_APPROVAL_WAIT_TIMEOUT_SECONDS + RELEASE_APPLY_RECOVERY_TIMEOUT_SECONDS
+)
 RELEASE_POLL_INTERVAL_SECONDS: Final = 2
 RELEASE_RECOVERY_GRACE_SECONDS: Final = 120
 ZIP_TIMESTAMP: Final = (2026, 8, 28, 0, 0, 0)
@@ -199,6 +203,20 @@ def credentials() -> tuple[str, str]:
     return record["username"], record["application_password"]
 
 
+def _ensure_request_deadline(deadline: float | None) -> None:
+    if deadline is not None and time.monotonic() >= deadline:
+        fail("WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT")
+
+
+def _request_timeout_seconds(deadline: float | None) -> float:
+    if deadline is None:
+        return 30.0
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        fail("WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT")
+    return min(30.0, remaining)
+
+
 def request_json(
     method: str,
     path: str,
@@ -206,7 +224,10 @@ def request_json(
     proposal_id: str | None = None,
     batch_token: str | None = None,
     batch_manifest_sha256: str | None = None,
+    *,
+    deadline: float | None = None,
 ) -> dict[str, object]:
+    _ensure_request_deadline(deadline)
     if method not in {"GET", "POST"} or not path.startswith("/") or ".." in path:
         fail("WORDPRESS_MCP_TRANSPORT_INVALID")
     username, application_password = credentials()
@@ -244,13 +265,19 @@ def request_json(
         _RefuseRedirectHandler(),
     )
     try:
-        with opener.open(request, timeout=30) as response:
+        with opener.open(
+            request,
+            timeout=_request_timeout_seconds(deadline),
+        ) as response:
+            _ensure_request_deadline(deadline)
             if response.geturl() != DEPLOY_API + path:
                 fail("WORDPRESS_MCP_REDIRECT_REFUSED")
             payload = response.read(MAX_RESPONSE_BYTES + 1)
+            _ensure_request_deadline(deadline)
             if len(payload) > MAX_RESPONSE_BYTES:
                 fail("WORDPRESS_MCP_RESPONSE_TOO_LARGE")
     except urllib.error.HTTPError as error:
+        _ensure_request_deadline(deadline)
         if 300 <= error.code < 400:
             fail("WORDPRESS_MCP_REDIRECT_REFUSED")
         code = f"WORDPRESS_MCP_HTTP_{error.code}"
@@ -263,14 +290,20 @@ def request_json(
                     code = candidate
         except OSError, UnicodeError, json.JSONDecodeError:
             pass
+        _ensure_request_deadline(deadline)
         fail(code)
     except urllib.error.URLError, TimeoutError, OSError:
+        _ensure_request_deadline(deadline)
         fail("WORDPRESS_MCP_TRANSPORT_FAILED")
     try:
         value = json.loads(payload.decode("utf-8", errors="strict"))
     except UnicodeError, json.JSONDecodeError:
+        _ensure_request_deadline(deadline)
         fail("WORDPRESS_MCP_RESPONSE_INVALID")
-    return exact_object(value, set(), set(value) if type(value) is dict else set())
+    _ensure_request_deadline(deadline)
+    result = exact_object(value, set(), set(value) if type(value) is dict else set())
+    _ensure_request_deadline(deadline)
+    return result
 
 
 def _validated_release_operation(
@@ -332,9 +365,13 @@ def _validated_release_operation(
     return operation
 
 
-def _release_operation(proposal_id: str) -> tuple[str, dict[str, object]]:
+def _release_operation(
+    proposal_id: str,
+    *,
+    deadline: float | None = None,
+) -> tuple[str, dict[str, object]]:
     response = exact_object(
-        request_json("GET", f"/operations/{proposal_id}"),
+        request_json("GET", f"/operations/{proposal_id}", deadline=deadline),
         {"kind", "operation"},
     )
     kind = response["kind"]
@@ -345,6 +382,7 @@ def _release_operation(proposal_id: str) -> tuple[str, dict[str, object]]:
     }:
         fail("WORDPRESS_MCP_OPERATION_STATUS_INVALID")
     operation = _validated_release_operation(response["operation"], proposal_id)
+    _ensure_request_deadline(deadline)
     return kind, operation
 
 
@@ -352,21 +390,29 @@ def _finalize_applied_operation(
     proposal_id: str,
     expected_kind: str,
     operation: dict[str, object],
+    *,
+    deadline: float | None = None,
 ) -> dict[str, object]:
     """Finalize deferred artifacts and bind the exact terminal readback."""
 
     if operation.get("state") != "APPLIED":
         fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
-    response = request_json("POST", f"/operations/{proposal_id}/recover", {})
+    response = request_json(
+        "POST",
+        f"/operations/{proposal_id}/recover",
+        {},
+        deadline=deadline,
+    )
     try:
         recovered = _validated_release_operation(response, proposal_id)
     except OperatorFailure:
         fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
     if recovered.get("state") != "APPLIED" or recovered != operation:
         fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
-    kind, readback = _release_operation(proposal_id)
+    kind, readback = _release_operation(proposal_id, deadline=deadline)
     if kind != expected_kind or readback != recovered:
         fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    _ensure_request_deadline(deadline)
     return readback
 
 
@@ -374,21 +420,29 @@ def _finalize_failed_operation(
     proposal_id: str,
     expected_kind: str,
     operation: dict[str, object],
+    *,
+    deadline: float | None = None,
 ) -> dict[str, object]:
     """Retry owner-private cleanup without reopening a failed live mutation."""
 
     if operation.get("state") != "FAILED":
         fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
-    response = request_json("POST", f"/operations/{proposal_id}/recover", {})
+    response = request_json(
+        "POST",
+        f"/operations/{proposal_id}/recover",
+        {},
+        deadline=deadline,
+    )
     try:
         recovered = _validated_release_operation(response, proposal_id)
     except OperatorFailure:
         fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
     if recovered.get("state") != "FAILED" or recovered != operation:
         fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
-    kind, readback = _release_operation(proposal_id)
+    kind, readback = _release_operation(proposal_id, deadline=deadline)
     if kind != expected_kind or readback != recovered:
         fail("WORDPRESS_MCP_OPERATION_RECOVERY_INVALID")
+    _ensure_request_deadline(deadline)
     return readback
 
 
@@ -406,21 +460,38 @@ def _release_terminal_operation(
     proposal_id: str,
     expected_kind: str,
     operation: dict[str, object],
+    *,
+    deadline: float | None = None,
 ) -> None:
     if operation.get("state") == "FAILED":
-        _finalize_failed_operation(proposal_id, expected_kind, operation)
+        _finalize_failed_operation(
+            proposal_id,
+            expected_kind,
+            operation,
+            deadline=deadline,
+        )
     _release_terminal_state(operation.get("state"))
 
 
-def _finalize_observed_failed_members(proposal_ids: list[str]) -> None:
+def _finalize_observed_failed_members(
+    proposal_ids: list[str],
+    *,
+    deadline: float | None = None,
+) -> None:
     """Finish cleanup for exact failed members before reporting batch failure."""
 
     for proposal_id in proposal_ids:
-        kind, operation = _release_operation(proposal_id)
+        kind, operation = _release_operation(proposal_id, deadline=deadline)
         if kind == "PLUGIN_CHANGE":
             fail("WORDPRESS_MCP_RELEASE_PLUGIN_REFUSED")
         if operation.get("state") == "FAILED":
-            _finalize_failed_operation(proposal_id, kind, operation)
+            _finalize_failed_operation(
+                proposal_id,
+                kind,
+                operation,
+                deadline=deadline,
+            )
+    _ensure_request_deadline(deadline)
 
 
 def _release_poll_sleep(deadline: float) -> None:
@@ -434,11 +505,14 @@ def _release_batch_status(
     batch_token: str,
     batch_manifest_sha256: str,
     proposal_ids: list[str],
+    *,
+    deadline: float | None = None,
 ) -> tuple[str, bool]:
     response = _release_batch_status_response(
         batch_token,
         batch_manifest_sha256,
         proposal_ids,
+        deadline=deadline,
     )
     return response["state"], response["preconditions_ready"]
 
@@ -447,8 +521,14 @@ def _release_batch_status_response(
     batch_token: str,
     batch_manifest_sha256: str,
     proposal_ids: list[str],
+    *,
+    deadline: float | None = None,
 ) -> dict[str, object]:
-    response = request_json("GET", f"/publication-batches/{batch_token}")
+    response = request_json(
+        "GET",
+        f"/publication-batches/{batch_token}",
+        deadline=deadline,
+    )
     if (
         set(response)
         != {
@@ -477,6 +557,7 @@ def _release_batch_status_response(
         is None
     ):
         fail("WORDPRESS_MCP_RELEASE_BATCH_IDENTITY_INVALID")
+    _ensure_request_deadline(deadline)
     return response
 
 
@@ -484,6 +565,8 @@ def _release_batch_claim(
     batch_token: str,
     batch_manifest_sha256: str,
     proposal_ids: list[str],
+    *,
+    deadline: float | None = None,
 ) -> dict[str, dict[str, object]]:
     response = exact_object(
         request_json(
@@ -493,6 +576,7 @@ def _release_batch_claim(
                 "batch_manifest_sha256": batch_manifest_sha256,
                 "proposal_ids": proposal_ids,
             },
+            deadline=deadline,
         ),
         {
             "schema",
@@ -542,6 +626,7 @@ def _release_batch_claim(
         ):
             fail("WORDPRESS_MCP_RELEASE_BATCH_CLAIM_INVALID")
         claimed[proposal_id] = operation
+    _ensure_request_deadline(deadline)
     return claimed
 
 
@@ -575,18 +660,22 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
     ):
         fail("WORDPRESS_MCP_RELEASE_PROPOSALS_INVALID")
 
-    deadline = time.monotonic() + RELEASE_WAIT_TIMEOUT_SECONDS
+    approval_deadline = time.monotonic() + RELEASE_APPROVAL_WAIT_TIMEOUT_SECONDS
     batch_already_applied = False
     while True:
         batch_state, preconditions_ready = _release_batch_status(
             batch_token,
             batch_manifest_sha256,
             proposal_ids,
+            deadline=approval_deadline,
         )
         if batch_state == "EXPIRED":
             fail("WORDPRESS_MCP_RELEASE_EXPIRED")
         if batch_state == "FAILED":
-            _finalize_observed_failed_members(proposal_ids)
+            _finalize_observed_failed_members(
+                proposal_ids,
+                deadline=approval_deadline,
+            )
             fail("WORDPRESS_MCP_RELEASE_FAILED")
         if batch_state == "APPLIED":
             batch_already_applied = True
@@ -595,7 +684,12 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
             if not preconditions_ready:
                 fail("WORDPRESS_MCP_RELEASE_BATCH_PRECONDITION_FAILED")
             break
-        _release_poll_sleep(deadline)
+        _release_poll_sleep(approval_deadline)
+
+    # Approval creates a fresh, single-use 15-minute server lease. Start the
+    # apply/recovery deadline only after observing that approved authority so a
+    # late approval retains the complete lease budget.
+    apply_deadline = time.monotonic() + RELEASE_APPLY_RECOVERY_TIMEOUT_SECONDS
 
     if not batch_already_applied:
         while True:
@@ -604,21 +698,27 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
                     batch_token,
                     batch_manifest_sha256,
                     proposal_ids,
+                    deadline=apply_deadline,
                 )
                 break
             except OperatorFailure as error:
                 if not _release_outcome_ambiguous(str(error)):
                     raise
-                _release_poll_sleep(deadline)
+                _release_poll_sleep(apply_deadline)
 
     initial: list[tuple[str, str]] = []
     operations: dict[str, dict[str, object]] = {}
     applying_observed: dict[str, float] = {}
     for proposal_id in proposal_ids:
-        kind, operation = _release_operation(proposal_id)
+        kind, operation = _release_operation(proposal_id, deadline=apply_deadline)
         if kind == "PLUGIN_CHANGE":
             fail("WORDPRESS_MCP_RELEASE_PLUGIN_REFUSED")
-        _release_terminal_operation(proposal_id, kind, operation)
+        _release_terminal_operation(
+            proposal_id,
+            kind,
+            operation,
+            deadline=apply_deadline,
+        )
         if batch_already_applied and operation["state"] != "APPLIED":
             fail("WORDPRESS_MCP_RELEASE_BATCH_CLAIM_INVALID")
         if operation["state"] not in {"APPLYING", "APPLIED"}:
@@ -652,16 +752,22 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
         operation = operations[proposal_id]
         while True:
             state = operation["state"]
-            _release_terminal_operation(proposal_id, expected_kind, operation)
+            _release_terminal_operation(
+                proposal_id,
+                expected_kind,
+                operation,
+                deadline=apply_deadline,
+            )
             if state == "APPLIED":
                 operation = _finalize_applied_operation(
                     proposal_id,
                     expected_kind,
                     operation,
+                    deadline=apply_deadline,
                 )
                 receipts.append(operation)
                 break
-            if time.monotonic() >= deadline:
+            if time.monotonic() >= apply_deadline:
                 fail("WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT")
             wait_before_refresh = False
             if state == "APPLYING" and operation["result_code"] == "BATCH_CLAIMED":
@@ -673,6 +779,7 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
                         proposal_id,
                         batch_token,
                         batch_manifest_sha256,
+                        deadline=apply_deadline,
                     )
                 except OperatorFailure as error:
                     if str(
@@ -690,7 +797,12 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
                     wait_before_refresh = True
                 else:
                     try:
-                        request_json("POST", f"/operations/{proposal_id}/recover", {})
+                        request_json(
+                            "POST",
+                            f"/operations/{proposal_id}/recover",
+                            {},
+                            deadline=apply_deadline,
+                        )
                     except OperatorFailure as error:
                         if str(error) not in retryable_recovery:
                             raise
@@ -698,8 +810,11 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
             else:
                 fail("WORDPRESS_MCP_RELEASE_STATE_INVALID")
             if wait_before_refresh:
-                _release_poll_sleep(deadline)
-            kind, operation = _release_operation(proposal_id)
+                _release_poll_sleep(apply_deadline)
+            kind, operation = _release_operation(
+                proposal_id,
+                deadline=apply_deadline,
+            )
             if kind != expected_kind:
                 fail("WORDPRESS_MCP_OPERATION_STATUS_INVALID")
             if (
@@ -708,7 +823,7 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
             ):
                 applying_observed.setdefault(proposal_id, time.monotonic())
 
-    return {
+    receipt: dict[str, object] = {
         "schema": "ReleaseWaitApplyReceiptV1",
         "batch_token": batch_token,
         "batch_manifest_sha256": batch_manifest_sha256,
@@ -717,6 +832,8 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
         "state": "APPLIED",
         "receipts": receipts,
     }
+    _ensure_request_deadline(apply_deadline)
+    return receipt
 
 
 def git(*arguments: str) -> bytes:
