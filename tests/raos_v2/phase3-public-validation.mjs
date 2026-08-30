@@ -334,6 +334,18 @@ async function superviseBrowser(argv) {
   }
   if (!isAbsolute(profilePath)) fail('PHASE3_PUBLIC_BROWSER_SUPERVISOR_PROFILE_INVALID');
   const executable = realpathSync(browserExecutable);
+
+  // Install the stop handlers before Chromium can emit any readiness evidence.
+  // Node reserves SIGUSR1 when no listener exists, so registering this after
+  // spawn could consume an early parent stop request without shutting down.
+  process.on('SIGTERM', () => {});
+  let stopping = false;
+  process.on('SIGUSR1', () => {
+    if (stopping) return;
+    stopping = true;
+    void shutdownSupervisedBrowserGroup().catch(() => emergencyKillOwnedBrowserGroup());
+  });
+
   const child = spawn(
     executable,
     chromiumArguments(Number(remotePortText), profilePath),
@@ -354,13 +366,6 @@ async function superviseBrowser(argv) {
   // The supervisor deliberately stays alive even if Chromium's root exits.
   // This keeps ownership of the detached process group continuous until the
   // parent harness freezes and terminates the whole group.
-  process.on('SIGTERM', () => {});
-  let stopping = false;
-  process.on('SIGUSR1', () => {
-    if (stopping) return;
-    stopping = true;
-    void shutdownSupervisedBrowserGroup().catch(() => emergencyKillOwnedBrowserGroup());
-  });
   const parentPid = process.ppid;
   setInterval(() => {
     if (process.ppid === parentPid) return;

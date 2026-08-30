@@ -28,6 +28,7 @@ enabled_tools = [
   "raos-codex-content-propose-release",
   "raos-codex-publication-batch-register",
   "raos-codex-operation-get",
+  "raos-measurement-aggregate-report",
 ]
 
 # Local bounded deployment bridge. It exposes typed operations backed by a

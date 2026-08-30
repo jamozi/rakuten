@@ -111,7 +111,7 @@ source_artifacts:
 - uri: repo://changes/st-0805/runtime-manifest.v2.yaml
   role: PINNED_AUTHORITY_OR_DEPENDENCY
   bytes: 11571
-  sha256: f7aa3bb94e733a4e321ec0627db05b0f712ce029c29a35be0b77c818192ec4fc
+  sha256: 91cf08616ef44ee4514f9bf6c1d4184b790abd5d4ff9dbdab0982afaf0d6167f
 - uri: repo://python/raos/domain/shared/persistence.py
   role: PINNED_RUNTIME_DEPENDENCY
   bytes: 8701
@@ -134,12 +134,12 @@ source_artifacts:
   sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
 - uri: repo://pyproject.toml
   role: LOCKED_TOOLCHAIN
-  bytes: 1753
-  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
+  bytes: 1800
+  sha256: 9c9dd49b7f08beebbc45febad001013e1151f1d4fb5d350e170d58a921436c87
 - uri: repo://uv.lock
   role: LOCKED_TOOLCHAIN
-  bytes: 129836
-  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
+  bytes: 165160
+  sha256: b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1
 generated_artifacts:
 - uri: repo://changes/st-1407/generated/external-policy-registry-recorded.v2.json
   role: RECORDED_SYNTHETIC_REGISTRY_FIXTURE

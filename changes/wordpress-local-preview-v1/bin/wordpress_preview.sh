@@ -6,15 +6,28 @@ readonly script_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 readonly slice_directory="$(cd "$script_directory/.." && pwd -P)"
 readonly repository_root="$(cd "$slice_directory/../.." && pwd -P)"
 readonly compose_file="$slice_directory/compose.yaml"
-readonly project_name=raos-wordpress-preview
-readonly preview_origin=http://127.0.0.1:8888
+readonly repository_identity="$(printf '%s' "$repository_root" | sha256sum | cut -c1-12)"
+readonly project_name="raos-wordpress-preview-$repository_identity"
+readonly derived_preview_port="$((20000 + 16#${repository_identity:0:4} % 20000))"
+readonly preview_port="${RAOS_WORDPRESS_PREVIEW_PORT:-$derived_preview_port}"
+[[ "$preview_port" =~ ^[0-9]{4,5}$ \
+  && "$preview_port" -ge 1024 && "$preview_port" -le 65535 ]] \
+  || { printf '%s\n' RAOS_WORDPRESS_PREVIEW_PORT_INVALID >&2; exit 69; }
+readonly preview_origin="http://127.0.0.1:$preview_port"
 readonly preview_article_path=/local-preview-carry-on-suitcase-under-100-seats/
 readonly docker_bin="${RAOS_WORDPRESS_PREVIEW_DOCKER_BIN:-docker}"
 readonly curl_bin="${RAOS_WORDPRESS_PREVIEW_CURL_BIN:-curl}"
 readonly default_private_root="$repository_root/.secrets/wordpress-local-preview"
 readonly private_root="${RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT:-$default_private_root}"
 readonly credentials_file="$private_root/credentials.env"
-readonly materialized_fixture_root="$private_root/materialized-fixtures-v2"
+readonly requested_fixture_root="${RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT:-}"
+if [[ -n "$requested_fixture_root" ]]; then
+  readonly materialized_fixture_root="$requested_fixture_root"
+  readonly fixture_override_enabled=true
+else
+  readonly materialized_fixture_root="$private_root/materialized-fixtures-v2"
+  readonly fixture_override_enabled=false
+fi
 readonly product_media_root="$private_root/product-media"
 readonly python_bin="${RAOS_WORDPRESS_PREVIEW_PYTHON_BIN:-$repository_root/.venv/bin/python}"
 readonly materializer_script="$repository_root/scripts/raos_editorial_portfolio_v2.py"
@@ -114,6 +127,8 @@ require_docker() {
 
 compose() {
   RAOS_REPOSITORY_ROOT="$repository_root" \
+  RAOS_WORDPRESS_PREVIEW_ORIGIN="$preview_origin" \
+  RAOS_WORDPRESS_PREVIEW_PORT="$preview_port" \
   RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_ROOT="$materialized_fixture_root/articles" \
   RAOS_WORDPRESS_PREVIEW_POST_FIXTURE="$materialized_fixture_root/posts.json" \
   RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT="$product_media_root" \
@@ -123,6 +138,20 @@ compose() {
     --env-file "$credentials_file" \
     --file "$compose_file" \
     "$@"
+}
+
+refuse_foreign_port_owner() {
+  local owners container_id project extra
+  owners="$(
+    "$docker_bin" ps \
+      --filter "publish=$preview_port" \
+      --format '{{.ID}} {{.Label "com.docker.compose.project"}}'
+  )" || fail RAOS_WORDPRESS_PREVIEW_PORT_INSPECTION_FAILED
+  while read -r container_id project extra; do
+    [[ -z "$container_id" ]] && continue
+    [[ -z "$extra" && "$project" == "$project_name" ]] \
+      || fail RAOS_WORDPRESS_PREVIEW_FOREIGN_PORT_OWNER
+  done <<<"$owners"
 }
 
 validate_materialized_runtime() {
@@ -142,7 +171,57 @@ validate_materialized_runtime() {
     || fail RAOS_WORDPRESS_PREVIEW_MATERIALIZED_FIXTURE_INVALID
 }
 
+validate_owner_private_fixture_override() {
+  [[ "$fixture_override_enabled" == true \
+    && "$materialized_fixture_root" == /* \
+    && "$materialized_fixture_root" != *$'\n'* \
+    && "$materialized_fixture_root" != *$'\r'* ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_FIXTURE_OVERRIDE_INVALID
+
+  local resolved current_uid path entry_count html_count
+  resolved="$(realpath -e -- "$materialized_fixture_root" 2>/dev/null)" \
+    || fail RAOS_WORDPRESS_PREVIEW_FIXTURE_OVERRIDE_INVALID
+  [[ "$resolved" == "$materialized_fixture_root" ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_FIXTURE_OVERRIDE_INVALID
+  current_uid="$(id -u)"
+  for path in "$materialized_fixture_root" "$materialized_fixture_root/articles"; do
+    [[ -d "$path" && ! -L "$path" \
+      && "$(stat -c '%u' "$path")" == "$current_uid" \
+      && "$(stat -c '%a' "$path")" == 700 ]] \
+      || fail RAOS_WORDPRESS_PREVIEW_FIXTURE_OVERRIDE_INVALID
+  done
+  path="$materialized_fixture_root/posts.json"
+  [[ -f "$path" && ! -L "$path" \
+    && "$(stat -c '%u' "$path")" == "$current_uid" \
+    && "$(stat -c '%a' "$path")" == 600 \
+    && "$(stat -c '%h' "$path")" == 1 ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_FIXTURE_OVERRIDE_INVALID
+
+  entry_count="$(find "$materialized_fixture_root/articles" \
+    -mindepth 1 -maxdepth 1 -printf '.' | wc -c | tr -d '[:space:]')"
+  html_count=0
+  while IFS= read -r -d '' path; do
+    [[ "${path##*/}" =~ ^[a-z0-9]+(-[a-z0-9]+)*\.html$ \
+      && -f "$path" && ! -L "$path" \
+      && "$(stat -c '%u' "$path")" == "$current_uid" \
+      && "$(stat -c '%a' "$path")" == 600 \
+      && "$(stat -c '%h' "$path")" == 1 ]] \
+      || fail RAOS_WORDPRESS_PREVIEW_FIXTURE_OVERRIDE_INVALID
+    html_count=$((html_count + 1))
+  done < <(
+    find "$materialized_fixture_root/articles" \
+      -mindepth 1 -maxdepth 1 -print0
+  )
+  [[ "$entry_count" == 10 && "$html_count" == 10 ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_FIXTURE_OVERRIDE_INVALID
+}
+
 materialize_runtime() {
+  if [[ "$fixture_override_enabled" == true ]]; then
+    validate_owner_private_fixture_override
+    validate_materialized_runtime
+    return 0
+  fi
   if [[ -n "$test_materializer_bin" ]]; then
     [[ "$private_root" != "$default_private_root" \
       && -x "$test_materializer_bin" && -f "$test_materializer_bin" \
@@ -206,6 +285,12 @@ activate_theme() {
   wordpress_cli theme activate kurashinoshirube-child >/dev/null
 }
 
+activate_measurement_plugin() {
+  wordpress_cli plugin is-installed raos-editorial-measurement >/dev/null \
+    || fail RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_MISSING
+  wordpress_cli plugin activate raos-editorial-measurement >/dev/null
+}
+
 seed() {
   local mode="$1"
   compose run --rm --no-deps -T \
@@ -216,12 +301,14 @@ seed() {
 
 do_up() {
   require_docker
+  refuse_foreign_port_owner
   load_credentials
   materialize_runtime
   compose up --detach database wordpress gateway
   wait_until_ready
   install_wordpress_if_needed
   activate_theme
+  activate_measurement_plugin
   seed initialize
   printf 'WordPress preview: %s/\n' "$preview_origin"
   printf 'Article preview: %s%s\n' "$preview_origin" "$preview_article_path"
@@ -243,6 +330,8 @@ do_status() {
     || fail RAOS_WORDPRESS_PREVIEW_ORIGIN_INVALID
   [[ "$(wordpress_cli theme list --name=kurashinoshirube-child --field=status)" == active ]] \
     || fail RAOS_WORDPRESS_PREVIEW_THEME_INACTIVE
+  [[ "$(wordpress_cli plugin list --name=raos-editorial-measurement --field=status)" == active ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_INACTIVE
   printf '%s\n' RAOS_WORDPRESS_PREVIEW_READY
 }
 
@@ -253,6 +342,7 @@ do_sync() {
   wordpress_cli core is-installed >/dev/null \
     || fail RAOS_WORDPRESS_PREVIEW_WORDPRESS_NOT_INSTALLED
   activate_theme
+  activate_measurement_plugin
   seed sync
 }
 
@@ -269,7 +359,8 @@ do_password() {
 do_check() {
   [[ -f "$credentials_file" ]] || fail RAOS_WORDPRESS_PREVIEW_NOT_INITIALIZED
   do_status >/dev/null
-  "$slice_directory/browser/check.sh"
+  RAOS_WORDPRESS_PREVIEW_ORIGIN="$preview_origin" \
+    "$slice_directory/browser/check.sh"
 }
 
 do_down() {

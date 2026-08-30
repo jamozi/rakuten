@@ -158,7 +158,7 @@ source_artifacts:
   artifact_role: DEPENDENCY_CONTRACT
   media_type: application/yaml
   bytes: 13078
-  sha256: 08d54bc44ab5b23fd14669dae232084161f8ab1aaf9fb6d9572873adf5be9550
+  sha256: 13d5e2ba4411c31a9cd11712c4d9a7436eb25f0e848113125fe949025746242e
 - uri: repo://scripts/secure_generated_publication.py
   artifact_role: DEPENDENCY_CONTRACT
   media_type: text/x-python
@@ -232,13 +232,13 @@ source_artifacts:
 - uri: repo://pyproject.toml
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/toml
-  bytes: 1753
-  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
+  bytes: 1800
+  sha256: 9c9dd49b7f08beebbc45febad001013e1151f1d4fb5d350e170d58a921436c87
 - uri: repo://uv.lock
   artifact_role: LOCKED_TOOLCHAIN
   media_type: application/octet-stream
-  bytes: 129836
-  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
+  bytes: 165160
+  sha256: b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1
 generated_artifacts:
 - uri: repo://changes/st-0804/generated/recommendation-pass.v2.json
   artifact_role: RECORDED_SYNTHETIC_FIXTURE

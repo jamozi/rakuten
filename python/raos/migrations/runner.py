@@ -32,6 +32,7 @@ from .catalog import (
     DATABASE_ROLES_REVISION,
     DOMAIN_REVISION,
     FOUNDATION_REVISION,
+    GOOGLE_ANALYTICS_LIVE_REVISION,
     HEAD_REVISION,
     IAM_OPS_REVISION,
     PUBLICATION_ANALYTICS_FINANCE_REVISION,
@@ -78,6 +79,21 @@ ST0304_SCHEMA_COMMENTS: Final = {
     "ai": "AI Task、Prompt、Schema、Model Route、Job、Attempt、Token・費用、評価",
     "policy": "Policy Bundle、Rule、品質検査、Finding、Score、Waiver、Gate",
 }
+
+
+def _revision_at_or_after(current_revision: str, floor_revision: str) -> bool:
+    """Return whether both revisions are in the active linear catalog in order."""
+
+    revision_ids = [item.revision for item in REVISION_SPECS]
+    if current_revision not in revision_ids or floor_revision not in revision_ids:
+        return False
+    return revision_ids.index(current_revision) >= revision_ids.index(floor_revision)
+
+
+def _database_roles_installed(current_revision: str) -> bool:
+    return _revision_at_or_after(current_revision, DATABASE_ROLES_REVISION)
+
+
 ST0304_RLS_TABLES: Final = (
     "editorial.article_disclosure_context",
     "editorial.article_methodology_binding",
@@ -1754,7 +1770,7 @@ def _validate_foundation_shape(
         ("iam", owner, FOUNDATION_SCHEMA_COMMENTS["iam"], ["CREATE", "USAGE"], 0),
         ("ops", owner, FOUNDATION_SCHEMA_COMMENTS["ops"], ["CREATE", "USAGE"], 0),
     ]
-    if current_revision == DATABASE_ROLES_REVISION:
+    if _database_roles_installed(current_revision):
         schema_shape_valid = [row[:4] for row in schemas] == [
             row[:4] for row in expected_schemas
         ]
@@ -1795,7 +1811,7 @@ def _validate_foundation_shape(
         ),
         {"schemas": default_acl_schemas},
     ).scalar_one()
-    if current_revision != DATABASE_ROLES_REVISION and default_acl_count != 0:
+    if not _database_roles_installed(current_revision) and default_acl_count != 0:
         expected_monotonic_count = _validate_monotonic_function_default_denies(
             connection
         )
@@ -2950,7 +2966,7 @@ def _validate_iam_ops_shape(connection: Connection, current_revision: str) -> No
         ).all()
     ]
     observed_tables = {(row[0], row[1], row[2]) for row in table_rows}
-    if current_revision == DATABASE_ROLES_REVISION:
+    if _database_roles_installed(current_revision):
         invalid_table_metadata = any(
             row[3:-1] != (owner, "p", "d", False, False, False) for row in table_rows
         )
@@ -3457,7 +3473,7 @@ def _validate_iam_ops_shape(connection: Connection, current_revision: str) -> No
     observed_digests = _iam_ops_catalog_digests(
         connection,
         exclude_st0304_site_foreign_key=includes_st0304_site_foreign_key,
-        ignore_relation_acl=current_revision == DATABASE_ROLES_REVISION,
+        ignore_relation_acl=_database_roles_installed(current_revision),
     )
     if observed_digests != expected_digests:
         raise MigrationError(MigrationErrorCode.HISTORY_INVALID)
@@ -3525,7 +3541,7 @@ def _validate_st0304_shape(connection: Connection, current_revision: str) -> Non
         (name, owner, ST0304_SCHEMA_COMMENTS[name], ["CREATE", "USAGE"], 0)
         for name in sorted(ST0304_SCHEMAS)
     ]
-    if current_revision == DATABASE_ROLES_REVISION:
+    if _database_roles_installed(current_revision):
         schema_shape_valid = [row[:4] for row in schema_rows] == [
             row[:4] for row in expected_schema_rows
         ]
@@ -3632,7 +3648,7 @@ def _validate_st0304_shape(connection: Connection, current_revision: str) -> Non
             {"schemas": list(ST0304_SCHEMAS)},
         ).one()
     )
-    if current_revision == DATABASE_ROLES_REVISION:
+    if _database_roles_installed(current_revision):
         object_acl_valid = (
             object_acl_shape[0],
             object_acl_shape[1],
@@ -3727,7 +3743,7 @@ def _validate_st0304_shape(connection: Connection, current_revision: str) -> Non
             {"schemas": list(ST0304_SCHEMAS)},
         ).one()
     )
-    expected_policy_count = 22 if current_revision == DATABASE_ROLES_REVISION else 0
+    expected_policy_count = 22 if _database_roles_installed(current_revision) else 0
     if boundary_shape != (expected_policy_count, 1, 0):
         raise MigrationError(MigrationErrorCode.HISTORY_INVALID)
 
@@ -4443,6 +4459,227 @@ def _validate_st0306_shape(connection: Connection, current_revision: str) -> Non
         raise MigrationError(MigrationErrorCode.HISTORY_INVALID)
 
 
+def _relation_columns(connection: Connection, relation: str) -> list[str]:
+    return list(
+        connection.execute(
+            sa.text(
+                """
+                SELECT attribute.attname
+                  FROM pg_catalog.pg_attribute AS attribute
+                 WHERE attribute.attrelid = pg_catalog.to_regclass(:relation)
+                   AND attribute.attnum > 0
+                   AND attribute.attisdropped IS FALSE
+                 ORDER BY attribute.attname
+                """
+            ),
+            {"relation": relation},
+        )
+        .scalars()
+        .all()
+    )
+
+
+def _validate_google_analytics_live_shape(
+    connection: Connection, current_revision: str
+) -> None:
+    if current_revision != GOOGLE_ANALYTICS_LIVE_REVISION:
+        return
+    expected_columns = {
+        "analytics.import_run": sorted(
+            [
+                "batch_sha256",
+                "completed_at",
+                "created_at",
+                "date_from",
+                "date_to",
+                "dimensions",
+                "display_id",
+                "error_summary",
+                "ga4_configuration_snapshot_id",
+                "id",
+                "inserted_count",
+                "live_contract_version",
+                "ops_job_id",
+                "page_request_sha256s",
+                "provider_property_id",
+                "provider_resource_sha256",
+                "provider_retrieved_at",
+                "provider_row_count",
+                "rejected_count",
+                "request_sha256",
+                "row_count",
+                "site_id",
+                "source_artifact_id",
+                "source_type",
+                "started_at",
+                "status",
+                "superseded_count",
+                "unchanged_count",
+                "watermark",
+            ]
+        ),
+        "analytics.gsc_observation": sorted(
+            [
+                "average_position",
+                "clicks",
+                "content_sha256",
+                "country_code",
+                "created_at",
+                "ctr",
+                "device",
+                "dimension_key_sha256",
+                "id",
+                "import_run_id",
+                "impressions",
+                "is_current",
+                "is_privacy_suppressed",
+                "live_contract_version",
+                "metric_date",
+                "observation_revision",
+                "page_path",
+                "page_url_sha256",
+                "query_material_forbidden",
+                "query_sha256",
+                "search_appearance",
+                "site_id",
+                "source_request_sha256",
+                "superseded_at",
+                "superseded_by_import_run_id",
+                "supersedes_observation_id",
+            ]
+        ),
+        "analytics.ga4_observation": sorted(
+            [
+                "content_sha256",
+                "created_at",
+                "dimension_schema_version",
+                "dimensions",
+                "grain_key_sha256",
+                "id",
+                "import_run_id",
+                "is_current",
+                "is_thresholded",
+                "live_contract_version",
+                "metric_date",
+                "metrics",
+                "observation_revision",
+                "property_id",
+                "site_id",
+                "source_request_sha256",
+                "superseded_at",
+                "superseded_by_import_run_id",
+                "supersedes_observation_id",
+            ]
+        ),
+        "analytics.ga4_property_config_snapshot": sorted(
+            [
+                "created_at",
+                "currency_code",
+                "display_name",
+                "id",
+                "property_id",
+                "property_resource",
+                "property_response_sha256",
+                "reporting_identity",
+                "reporting_identity_response_sha256",
+                "retrieved_at",
+                "site_id",
+                "snapshot_sha256",
+                "time_zone",
+            ]
+        ),
+    }
+    if any(
+        _relation_columns(connection, relation) != columns
+        for relation, columns in expected_columns.items()
+    ):
+        raise MigrationError(MigrationErrorCode.HISTORY_INVALID)
+
+    index_shape = tuple(
+        connection.execute(
+            sa.text(
+                """
+                SELECT
+                    pg_catalog.to_regclass(
+                        'analytics.ux_analytics_gsc_grain'
+                    ) IS NULL,
+                    pg_catalog.to_regclass(
+                        'analytics.ux_analytics_ga4_grain'
+                    ) IS NULL,
+                    pg_catalog.to_regclass(
+                        'analytics.ux_analytics_gsc_current_grain_live'
+                    ) IS NOT NULL,
+                    pg_catalog.to_regclass(
+                        'analytics.ux_analytics_gsc_grain_revision_live'
+                    ) IS NOT NULL,
+                    pg_catalog.to_regclass(
+                        'analytics.ux_analytics_ga4_current_grain_live'
+                    ) IS NOT NULL,
+                    pg_catalog.to_regclass(
+                        'analytics.ux_analytics_ga4_grain_revision_live'
+                    ) IS NOT NULL
+                """
+            )
+        ).one()
+    )
+    if index_shape != (True, True, True, True, True, True):
+        raise MigrationError(MigrationErrorCode.HISTORY_INVALID)
+
+    trigger_count = connection.execute(
+        sa.text(
+            """
+            SELECT pg_catalog.count(*)
+              FROM pg_catalog.pg_trigger AS trigger_record
+              JOIN pg_catalog.pg_class AS relation
+                ON relation.oid = trigger_record.tgrelid
+              JOIN pg_catalog.pg_namespace AS namespace
+                ON namespace.oid = relation.relnamespace
+             WHERE namespace.nspname = 'analytics'
+               AND relation.relname = 'ga4_property_config_snapshot'
+               AND trigger_record.tgname =
+                   'trg_analytics_ga4_config_snapshot_immutable'
+               AND trigger_record.tgisinternal IS FALSE
+            """
+        )
+    ).scalar_one()
+    if trigger_count != 1:
+        raise MigrationError(MigrationErrorCode.HISTORY_INVALID)
+
+    privilege_rows = {
+        tuple(row)
+        for row in connection.execute(
+            sa.text(
+                """
+                SELECT role_record.rolname, acl.privilege_type
+                  FROM pg_catalog.pg_class AS relation
+                  JOIN pg_catalog.pg_namespace AS namespace
+                    ON namespace.oid = relation.relnamespace
+                  CROSS JOIN LATERAL pg_catalog.aclexplode(
+                      COALESCE(
+                          relation.relacl,
+                          pg_catalog.acldefault('r', relation.relowner)
+                      )
+                  ) AS acl
+                  JOIN pg_catalog.pg_roles AS role_record
+                    ON role_record.oid = acl.grantee
+                 WHERE namespace.nspname = 'analytics'
+                   AND relation.relname = 'ga4_property_config_snapshot'
+                   AND role_record.rolname <> current_user
+                """
+            )
+        ).all()
+    }
+    if privilege_rows != {
+        ("raos_api_rw", "SELECT"),
+        ("raos_worker_rw", "INSERT"),
+        ("raos_worker_rw", "SELECT"),
+        ("raos_projection_rw", "SELECT"),
+        ("raos_reporting_ro", "SELECT"),
+        ("raos_auditor_ro", "SELECT"),
+    }:
+        raise MigrationError(MigrationErrorCode.HISTORY_INVALID)
+
+
 def _validate_installed_unchecked(
     connection: Connection,
     current_revision: str,
@@ -4487,8 +4724,7 @@ def _validate_installed_unchecked(
     if current_revision == DOMAIN_REVISION and domain_schema_count != 8:
         raise MigrationError(MigrationErrorCode.HISTORY_INVALID)
     if (
-        current_revision
-        in {PUBLICATION_ANALYTICS_FINANCE_REVISION, DATABASE_ROLES_REVISION}
+        _revision_at_or_after(current_revision, PUBLICATION_ANALYTICS_FINANCE_REVISION)
         and domain_schema_count != 13
     ):
         raise MigrationError(MigrationErrorCode.HISTORY_INVALID)
@@ -4501,6 +4737,7 @@ def _validate_installed_unchecked(
     _validate_st0304_shape(connection, current_revision)
     _validate_st0305_shape(connection, current_revision)
     _validate_st0306_shape(connection, current_revision)
+    _validate_google_analytics_live_shape(connection, current_revision)
     return open_attempt
 
 

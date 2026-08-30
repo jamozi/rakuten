@@ -23,8 +23,8 @@ database:
 production_graph:
   anchor_revision: '202608030001'
   predecessor_revision: '202608030005'
-  head_revision: '202608030006'
-  revision_count: 6
+  head_revision: '202608300001'
+  revision_count: 7
   mutation: FORBIDDEN
   new_revision: FORBIDDEN
   checkpoint_activation: FORBIDDEN
@@ -48,16 +48,16 @@ source_precedence:
   - {story_id: ST-0003, path: changes/st-0003/manifest.yaml, sha256: 142d27a392ab5ecd2362327d231c9f8ea2a8d716e3f6fcd7bb15440697a50482}
   - {story_id: ST-0004, path: changes/st-0004/manifest.yaml, sha256: 5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458}
   migration_manifests:
-  - {story_id: ST-0301, path: changes/st-0301/manifest.yaml, sha256: 5abdb26df67dd204dc92a88f3c93132dc30c99a16a2109eea4f84a35c6e574eb}
-  - {story_id: ST-0302, path: changes/st-0302/manifest.yaml, sha256: b2576fe7b440fbcc5ba847b17e9505074276a91fb76a26ca291903c92bdd193e}
-  - {story_id: ST-0303, path: changes/st-0303/manifest.yaml, sha256: 816b59f87f80ec3c672f271fb3a1efd3e3cdb63a24981ab8aaea64f79356186c}
-  - {story_id: ST-0304, path: changes/st-0304/manifest.yaml, sha256: 5a3772b87591b90b5f698eaa86131a10b5d9767d93cc8e2be67340df4b310623}
-  - {story_id: ST-0305, path: changes/st-0305/manifest.yaml, sha256: af6034f99374b427aee444a6048531a174f0d78ae58974b2456c2be97f3d33b9}
-  - {story_id: ST-0306, path: changes/st-0306/manifest.yaml, sha256: 4849ef0c78204c81dd466a4d25a59b0c830b93ab42084c8903c5b3e54651c7df}
+  - {story_id: ST-0301, path: changes/st-0301/manifest.yaml, sha256: 7abb84a9e9560daaed49bd3127d69ea05f9bf9d5ba49ebf1d39776dee37ee8f6}
+  - {story_id: ST-0302, path: changes/st-0302/manifest.yaml, sha256: dd8913319833abd2626ce41ae1050fe51f0f60343572d2fd7c74f0f476fb8e57}
+  - {story_id: ST-0303, path: changes/st-0303/manifest.yaml, sha256: 4a051c26b5c47855078547205590f83428056f6c47edbc3899f58b5271683b08}
+  - {story_id: ST-0304, path: changes/st-0304/manifest.yaml, sha256: 6805d0a56af7f3644fad23ebd418a0db8a047ee9a726cc4c37da0806e88a79cb}
+  - {story_id: ST-0305, path: changes/st-0305/manifest.yaml, sha256: 03d8d44facf7a0821a98b902617d56a2457f87d95f94b1e082be6534625a8051}
+  - {story_id: ST-0306, path: changes/st-0306/manifest.yaml, sha256: f5c1ac84376ed5428aa75d85654120dcec9e7772829ed2f0f10af1c1cf96d039}
 checkpoint_catalog:
   authority: python/raos/migrations/catalog.py
-  authority_file_sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
-  authority_catalog_sha256: 2b8632385969b95b92b03ef141cece50c109ef072023d934205532bcf3044e0c
+  authority_file_sha256: a4181b2d1de4a01a898b60b3e57a1640d7aa539be61f35b9e84c984df80b4839
+  authority_catalog_sha256: 9f6adbf8f7fd3c771b438f68ca37d313bda333a4ede3b9efb43c84290243cf15
   count: 18
   execution: SEPARATE_ORDERED_DISPOSABLE_TEST_DATABASES_ONLY
   copy_or_concatenate: FORBIDDEN
@@ -131,10 +131,11 @@ fixtures:
       production_revision: '202608030005'
       completed_production_revisions: ['202608030001', '202608030002', '202608030003', '202608030004', '202608030005']
       completed_forward_checkpoints: []
-    ordered_upgrade_revisions: ['202608030006']
+    ordered_upgrade_revisions: ['202608030006', '202608300001']
+    ordered_upgrade_story_ids: [ST-0306, ST-0305]
     checkpoint_story: ST-0306
     expected_rows: 1
-    expected_behavior: DATA_AND_HISTORY_SURVIVE_UPGRADE_TO_202608030006
+    expected_behavior: DATA_AND_HISTORY_SURVIVE_UPGRADE_TO_202608300001
 security:
   control_ids: [SEC-DATA-003, SEC-DATA-004, SEC-DATA-007, SEC-SDLC-009, SEC-SDLC-010]
   credentials_or_secrets: FORBIDDEN

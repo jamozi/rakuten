@@ -9,26 +9,53 @@ import io
 import json
 import os
 from pathlib import Path, PurePosixPath
+import re
 import stat
 import sys
-from typing import Final, NoReturn
+from typing import TYPE_CHECKING, Final, NoReturn
 import zipfile
+
+
+if TYPE_CHECKING:
+    from scripts import (  # noqa: F401
+        build_editorial_measurement_v1 as editorial_measurement_owner,
+        build_editorial_v3_theme_navigation as editorial_navigation_owner,
+        build_st1704_self_hosted_editorial_manifest as editorial_runtime_owner,
+    )
 
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
-PLUGIN_VERSION: Final = "1.2.1"
+PLUGIN_VERSION: Final = "1.3.0"
 PLUGIN_RUNTIME_REVISION: Final = (
-    "7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755"
+    "1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a"
 )
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
-MANIFEST: Final = SLICE / "runtime-manifest.v1.json"
+MANIFEST_PATH: Final = Path("changes/wordpress-mcp-v1/runtime-manifest.v1.json")
+REGISTRY_PATH: Final = Path(
+    "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
+)
+MEASUREMENT_MANIFEST_PATH: Final = Path(
+    "changes/editorial-measurement-v1/runtime-manifest.v1.json"
+)
+MANIFEST: Final = ROOT / MANIFEST_PATH
+REGISTRY: Final = ROOT / REGISTRY_PATH
+OUTPUT_PATHS: Final = (MANIFEST_PATH, REGISTRY_PATH)
 OUTPUT: Final = (
     ROOT / ".secrets/wordpress-mcp/plugin" / f"{PLUGIN_SLUG}-{PLUGIN_VERSION}.zip"
 )
+REPO_ARTIFACT_ID: Final = "raos-codex-mcp-abilities-v1"
+REPO_OUTPUT: Final = (
+    ROOT
+    / ".secrets/wordpress-mcp/repo-plugin-artifacts"
+    / f"{REPO_ARTIFACT_ID}.zip"
+)
 ZIP_TIMESTAMP: Final = (2026, 8, 29, 0, 0, 0)
 MAX_FILE_BYTES: Final = 8 * 1024 * 1024
+AUDIT_INVENTORY_PATH: Final = Path(
+    "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
+)
 PLUGIN_FILES: Final = (
     "README.md",
     "includes/class-raos-codex-mcp-content.php",
@@ -36,69 +63,146 @@ PLUGIN_FILES: Final = (
     "includes/class-raos-codex-mcp-store.php",
     "raos-codex-mcp-abilities.php",
 )
-RUNTIME_PATHS: Final = (
-    ".codex/config.toml",
-    "Makefile",
-    "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
-    "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
-    "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-    "changes/wordpress-local-preview-v1/README.md",
-    "changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
-    "changes/wordpress-local-preview-v1/browser/check.sh",
-    "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
-    "changes/wordpress-local-preview-v1/compose.yaml",
-    "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
-    "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
-    "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
-    "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
-    "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
-    "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
-    "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
-    "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
-    "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
-    "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
-    "changes/wordpress-local-preview-v1/fixtures/posts.json",
-    "changes/wordpress-local-preview-v1/production-mapping.v1.json",
-    "changes/wordpress-local-preview-v1/seed.php",
-    "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json",
-    "changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.json",
-    "changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.schema.json",
-    "changes/wordpress-mcp-v1/Makefile",
-    "changes/wordpress-mcp-v1/README.md",
-    "packages/wordpress-mcp-bridge/package.json",
-    "packages/wordpress-mcp-bridge/src/index.ts",
-    "packages/wordpress-mcp-bridge/tsconfig.json",
-    "python/raos/adapters/self_hosted_editorial_pilot_json.py",
-    "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
-    "python/raos/application/editorial/editorial_portfolio_v2.py",
-    "python/raos/application/editorial/self_hosted_editorial_pilot.py",
-    "python/raos/domain/editorial/content_ast.py",
-    "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
-    "scripts/build_wordpress_mcp_v1.py",
-    "scripts/check_wordpress_public_ui_playwright.sh",
-    "scripts/raos_editorial_portfolio_v2.py",
-    "scripts/raos_wordpress_deployment_operator.py",
-    "scripts/raos_wordpress_publication_request.py",
-    "scripts/raos_wordpress_editor_mcp_launcher.mjs",
-    "scripts/store_wordpress_mcp_credential.py",
-    "scripts/wordpress_public_ui_audit.function.js",
-    "tests/wordpress_mcp_v1/e2e/approve_harness.php",
-    "tests/wordpress_mcp_v1/e2e/batch_approve_harness.php",
-    "tests/wordpress_mcp_v1/e2e/client.py",
-    "tests/wordpress_mcp_v1/e2e/compose.yaml",
-    "tests/wordpress_mcp_v1/e2e/gateway/nginx.conf",
-    "tests/wordpress_mcp_v1/e2e/mutate_harness.php",
-    "tests/wordpress_mcp_v1/e2e/idempotency_harness.php",
-    "tests/wordpress_mcp_v1/e2e/prepare_packages.py",
-    "tests/wordpress_mcp_v1/e2e/run.sh",
-    "tests/wordpress_mcp_v1/e2e/store_upgrade_harness.php",
-    "tests/wordpress_mcp_v1/test_batch_approval.py",
-    "tests/wordpress_mcp_v1/test_release_watcher.py",
-    "tests/wordpress_local_preview/test_publication_request.py",
-    *(
-        f"changes/wordpress-mcp-v1/wordpress-plugin/{PLUGIN_SLUG}/{name}"
-        for name in PLUGIN_FILES
+PLUGIN_SOURCE_PATHS: Final = (
+    Path(
+        "changes/wordpress-mcp-v1/wordpress-plugin/"
+        "raos-codex-mcp-abilities/README.md"
     ),
+    Path(
+        "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/"
+        "includes/class-raos-codex-mcp-content.php"
+    ),
+    Path(
+        "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/"
+        "includes/class-raos-codex-mcp-deployment.php"
+    ),
+    Path(
+        "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/"
+        "includes/class-raos-codex-mcp-store.php"
+    ),
+    Path(
+        "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/"
+        "raos-codex-mcp-abilities.php"
+    ),
+)
+RUNTIME_INPUT_PATHS: Final = (
+    Path(".codex/config.toml"),
+    Path("Makefile"),
+    AUDIT_INVENTORY_PATH,
+    MEASUREMENT_MANIFEST_PATH,
+    Path("changes/editorial-portfolio-v2/editorial-portfolio.v2.json"),
+    Path(
+        "changes/st-1704/self-hosted-editorial-pilot-v1/"
+        "rakuten-capture-runtime-manifest.v1.json"
+    ),
+    Path(
+        "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
+    ),
+    Path("changes/wordpress-local-preview-v1/README.md"),
+    Path("changes/wordpress-local-preview-v1/bin/wordpress_preview.sh"),
+    Path("changes/wordpress-local-preview-v1/browser/check.sh"),
+    Path(
+        "changes/wordpress-local-preview-v1/browser/"
+        "wordpress_local_preview_audit.function.js"
+    ),
+    Path("changes/wordpress-local-preview-v1/compose.yaml"),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "anker-solix-c300-c800-c1000-differences.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "carry-on-suitcase-comparison.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "carry-on-suitcase-under-100-seats.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "compact-robot-vacuum-shortlist.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "countertop-dishwasher-for-small-households.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "front-open-carry-on-suitcase-with-stopper.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "lightweight-carry-on-suitcase-under-3kg.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "portable-power-station-guide.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "roomba-mini-vs-switchbot-k11-pro.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/"
+        "solota-vs-rakua-mini-plus.html"
+    ),
+    Path("changes/wordpress-local-preview-v1/fixtures/pages/about-ad-policy.html"),
+    Path("changes/wordpress-local-preview-v1/fixtures/pages/comparison-policy.html"),
+    Path("changes/wordpress-local-preview-v1/fixtures/pages/privacy-policy.html"),
+    Path("changes/wordpress-local-preview-v1/fixtures/pages.json"),
+    Path("changes/wordpress-local-preview-v1/fixtures/posts.json"),
+    Path("changes/wordpress-local-preview-v1/production-mapping.v1.json"),
+    Path("changes/wordpress-local-preview-v1/seed.php"),
+    Path("changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.json"),
+    Path("changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.schema.json"),
+    Path("changes/wordpress-mcp-v1/Makefile"),
+    Path("changes/wordpress-mcp-v1/README.md"),
+    Path("changes/wordpress-publication-bundle-v3/abilities_plugin_proposal.py"),
+    Path("changes/wordpress-publication-bundle-v3/measurement_plugin_proposal.py"),
+    Path("changes/wordpress-publication-bundle-v3/production-sequence.v3.json"),
+    Path("changes/wordpress-seo-audit-v1/README.md"),
+    Path("changes/wordpress-seo-audit-v1/seo-audit-contract.v1.json"),
+    Path("packages/wordpress-mcp-bridge/package.json"),
+    Path("packages/wordpress-mcp-bridge/src/index.ts"),
+    Path("packages/wordpress-mcp-bridge/tsconfig.json"),
+    Path("python/raos/adapters/self_hosted_editorial_pilot_json.py"),
+    Path("python/raos/adapters/self_hosted_editorial_rakuten_capture.py"),
+    Path("python/raos/application/editorial/editorial_portfolio_v2.py"),
+    Path("python/raos/application/editorial/self_hosted_editorial_pilot.py"),
+    Path("python/raos/domain/editorial/content_ast.py"),
+    Path("python/raos/domain/editorial/self_hosted_editorial_pilot.py"),
+    Path("scripts/build_wordpress_mcp_v1.py"),
+    Path("scripts/check_wordpress_public_ui_playwright.sh"),
+    Path("scripts/raos_editorial_portfolio_v2.py"),
+    Path("scripts/raos_wordpress_deployment_operator.py"),
+    Path("scripts/raos_wordpress_publication_request.py"),
+    Path("scripts/raos_wordpress_seo_audit.py"),
+    Path("scripts/raos_wordpress_editor_mcp_launcher.mjs"),
+    Path("scripts/store_wordpress_mcp_credential.py"),
+    Path("scripts/wordpress_public_ui_audit.function.js"),
+    Path("tests/wordpress_mcp_v1/e2e/approve_harness.php"),
+    Path("tests/wordpress_mcp_v1/e2e/batch_approve_harness.php"),
+    Path("tests/wordpress_mcp_v1/e2e/client.py"),
+    Path("tests/wordpress_mcp_v1/e2e/compose.yaml"),
+    Path("tests/wordpress_mcp_v1/e2e/gateway/nginx.conf"),
+    Path("tests/wordpress_mcp_v1/e2e/mutate_harness.php"),
+    Path("tests/wordpress_mcp_v1/e2e/idempotency_harness.php"),
+    Path("tests/wordpress_mcp_v1/e2e/prepare_packages.py"),
+    Path("tests/wordpress_mcp_v1/e2e/rollback_harness.php"),
+    Path("tests/wordpress_mcp_v1/e2e/run.sh"),
+    Path("tests/wordpress_mcp_v1/e2e/store_upgrade_harness.php"),
+    Path("tests/wordpress_mcp_v1/test_batch_approval.py"),
+    Path("tests/wordpress_mcp_v1/test_release_watcher.py"),
+    Path("tests/wordpress_local_preview/test_publication_request.py"),
+    *PLUGIN_SOURCE_PATHS,
+)
+RUNTIME_PATHS: Final = tuple(path.as_posix() for path in RUNTIME_INPUT_PATHS)
+RUNTIME_FILES: Final = RUNTIME_PATHS
+TEST_PATHS: Final = (
+    Path("tests/test_build_foundation_v2.py"),
+    Path("tests/wordpress_local_preview"),
+    Path("tests/wordpress_mcp_v1"),
+    Path("tests/wordpress_seo_audit_v1"),
 )
 EXTERNAL_PINS: Final = {
     "mcp_adapter": {
@@ -249,7 +353,7 @@ def runtime_manifest() -> dict[str, object]:
     payloads = plugin_payloads()
     package = package_bytes(payloads)
     runtime = []
-    for relative in RUNTIME_PATHS:
+    for relative in RUNTIME_FILES:
         payload = read_regular(ROOT, relative)
         runtime.append(
             {"path": relative, "size": len(payload), "sha256": sha256(payload)}
@@ -281,9 +385,50 @@ def runtime_manifest() -> dict[str, object]:
     }
 
 
+def repo_artifact_registry() -> dict[str, object]:
+    try:
+        measurement = json.loads(
+            read_regular(ROOT, MEASUREMENT_MANIFEST_PATH.as_posix()).decode(
+                "utf-8", errors="strict"
+            )
+        )
+    except UnicodeError, json.JSONDecodeError:
+        fail("WORDPRESS_MCP_V1_MEASUREMENT_MANIFEST_INVALID")
+    if (
+        type(measurement) is not dict
+        or measurement.get("schema")
+        != "RAOS_EDITORIAL_MEASUREMENT_RUNTIME_MANIFEST_V1"
+        or measurement.get("artifact_id") != "raos-editorial-measurement-v1"
+        or measurement.get("plugin_slug") != "raos-editorial-measurement"
+        or measurement.get("plugin_version") != "1.0.0"
+        or type(measurement.get("package_sha256")) is not str
+        or re.fullmatch(r"[0-9a-f]{64}", measurement["package_sha256"]) is None
+    ):
+        fail("WORDPRESS_MCP_V1_MEASUREMENT_MANIFEST_INVALID")
+    abilities_sha256 = sha256(package_bytes(plugin_payloads()))
+    return {
+        "schema": "RAOS_WORDPRESS_REPO_PLUGIN_ARTIFACTS_V1",
+        "artifacts": [
+            {
+                "artifact_id": REPO_ARTIFACT_ID,
+                "package_sha256": abilities_sha256,
+                "slug": PLUGIN_SLUG,
+                "version": PLUGIN_VERSION,
+            },
+            {
+                "artifact_id": measurement["artifact_id"],
+                "package_sha256": measurement["package_sha256"],
+                "slug": measurement["plugin_slug"],
+                "version": measurement["plugin_version"],
+            },
+        ],
+    }
+
+
 def write_manifest() -> None:
     payload = canonical_json(runtime_manifest())
     MANIFEST.write_bytes(payload)
+    REGISTRY.write_bytes(canonical_json(repo_artifact_registry()))
 
 
 def check_manifest() -> None:
@@ -294,26 +439,34 @@ def check_manifest() -> None:
         fail("WORDPRESS_MCP_V1_MANIFEST_MISSING")
     if actual != expected:
         fail("WORDPRESS_MCP_V1_MANIFEST_DRIFT")
+    try:
+        actual_registry = REGISTRY.read_bytes()
+    except OSError:
+        fail("WORDPRESS_MCP_V1_REGISTRY_MISSING")
+    if actual_registry != canonical_json(repo_artifact_registry()):
+        fail("WORDPRESS_MCP_V1_REGISTRY_DRIFT")
 
 
 def write_package() -> None:
     payload = package_bytes(plugin_payloads())
-    OUTPUT.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    os.chmod(OUTPUT.parent, 0o700)
-    temporary = OUTPUT.with_suffix(".zip.tmp")
-    temporary.write_bytes(payload)
-    os.chmod(temporary, 0o600)
-    temporary.replace(OUTPUT)
+    for target in (OUTPUT, REPO_OUTPUT):
+        target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        os.chmod(target.parent, 0o700)
+        temporary = target.with_suffix(".zip.tmp")
+        temporary.write_bytes(payload)
+        os.chmod(temporary, 0o600)
+        temporary.replace(target)
 
 
 def check_package() -> None:
     expected = package_bytes(plugin_payloads())
-    try:
-        actual = OUTPUT.read_bytes()
-    except OSError:
-        fail("WORDPRESS_MCP_V1_PRIVATE_PACKAGE_MISSING")
-    if actual != expected:
-        fail("WORDPRESS_MCP_V1_PRIVATE_PACKAGE_DRIFT")
+    for target in (OUTPUT, REPO_OUTPUT):
+        try:
+            actual = target.read_bytes()
+        except OSError:
+            fail("WORDPRESS_MCP_V1_PRIVATE_PACKAGE_MISSING")
+        if actual != expected:
+            fail("WORDPRESS_MCP_V1_PRIVATE_PACKAGE_DRIFT")
 
 
 def parser() -> argparse.ArgumentParser:

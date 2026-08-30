@@ -22,6 +22,7 @@ ARTICLES_PATH = (
     REPOSITORY_ROOT
     / "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json"
 )
+EDITORIAL_NAVIGATION_PATH = THEME_ROOT / "assets/editorial-navigation.v3.json"
 EDITORIAL_V2_PUBLICATION_BINDINGS = (
     ("carry-on-suitcase-comparison", "st1703-first-suitcase-comparison"),
     ("portable-power-station-guide", "st1704-portable-power-station-guide"),
@@ -183,16 +184,16 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
     assert stack == []
 
 
-def test_theme_is_an_isolated_1_3_10_successor() -> None:
+def test_theme_is_an_isolated_1_4_0_successor() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.3.10\n") == 1
+    assert stylesheet.count("\nVersion: 1.4.0\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.3.10"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.3.10'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.4.0"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.4.0'") == 1
     runtime_revision = (
-        "30a84ec5dffb12c048181198ecc8745fa22be70f1854507237c19306589b341f"
+        "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
     )
     assert functions.count(
         "KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = "
@@ -283,7 +284,7 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1"
-    assert manifest["theme_version"] == "1.3.10"
+    assert manifest["theme_version"] == "1.4.0"
     records = manifest["required_images"]
     assert isinstance(records, list) and len(records) == 4
     for record in records:
@@ -306,7 +307,7 @@ def test_editorial_v2_styles_are_exactly_scoped_and_conditionally_loaded() -> No
         "asset": "assets/editorial-v2.css",
         "base_style_dependency": "kurashinoshirube-editorial",
         "body_class": "raos-editorial-v2-page",
-        "category_fallback_allowlist": ["移動", "家事"],
+        "category_fallback_allowlist": ["移動", "家事", "備え"],
         "content_root": '<div class="raos-editorial-v2">',
         "detection": "EXACT_RAW_CONTENT_PREFIX_ON_SINGULAR_POST",
         "publication_identity_predicate": (
@@ -314,18 +315,8 @@ def test_editorial_v2_styles_are_exactly_scoped_and_conditionally_loaded() -> No
         ),
         "publication_snapshot_required": False,
         "scope": "ORDINARY_WORDPRESS_POST_ONLY",
-        "section_slug_allowlist": {
-            "anker-solix-c300-c800-c1000-differences": "備え",
-            "carry-on-suitcase-comparison": "移動",
-            "carry-on-suitcase-under-100-seats": "移動",
-            "compact-robot-vacuum-shortlist": "家事",
-            "countertop-dishwasher-for-small-households": "家事",
-            "front-open-carry-on-suitcase-with-stopper": "移動",
-            "lightweight-carry-on-suitcase-under-3kg": "移動",
-            "portable-power-station-guide": "備え",
-            "roomba-mini-vs-switchbot-k11-pro": "家事",
-            "solota-vs-rakua-mini-plus": "家事",
-        },
+        "section_binding_count": 10,
+        "section_binding_source": "assets/editorial-navigation.v3.json#articles",
     }
     assert "function kurashinoshirube_is_editorial_v2_post(): bool" in functions
     assert (
@@ -344,6 +335,41 @@ def test_editorial_v2_styles_are_exactly_scoped_and_conditionally_loaded() -> No
     assert ".raos-local-editorial-v2-page" not in css
 
 
+def test_policy_v3_body_class_is_closed_to_exact_reviewed_pages() -> None:
+    functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    contract = _load_json(CONTRACT_PATH)["policy_v3"]
+    assert contract == {
+        "body_class": "raos-policy-v3-page",
+        "detection": (
+            "EXACT_PUBLISHED_PAGE_SLUG_TITLE_AND_EXCERPT_MATCH_CLOSED_HEAD_MAP"
+        ),
+        "footer_presentation": (
+            "SAME_RICH_RESPONSIVE_FOOTER_AS_HOME_AND_EDITORIAL_V2"
+        ),
+        "scope": "EXACT_THREE_REVIEWED_WORDPRESS_POLICY_PAGES_ONLY",
+        "slugs": ["about-ad-policy", "comparison-policy", "privacy-policy"],
+    }
+    detector = functions.split(
+        "function kurashinoshirube_is_policy_v3_page(): bool", 1
+    )[1].split("/** Keep all ten production", 1)[0]
+    for marker in (
+        "is_singular('page')",
+        "get_queried_object_id()",
+        "get_post_type($post_id) !== 'page'",
+        "get_post_status($post_id) !== 'publish'",
+        "kurashinoshirube_policy_page_head_map()[$slug] ?? null",
+        "get_post_field('post_title', $post_id, 'raw') === $head['title']",
+        "get_post_field('post_excerpt', $post_id, 'raw') === $head['description']",
+    ):
+        assert marker in detector
+    body_class = functions.split(
+        "function kurashinoshirube_editorial_v2_body_class", 1
+    )[1].split("add_filter('body_class'", 1)[0]
+    assert "kurashinoshirube_is_policy_v3_page()" in body_class
+    assert "$classes[] = 'raos-policy-v3-page';" in body_class
+    assert "$classes[] = 'raos-editorial-v2-page';" in body_class
+
+
 def test_editorial_v2_category_fallback_is_allowlisted() -> None:
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
     category = functions.split(
@@ -353,65 +379,47 @@ def test_editorial_v2_category_fallback_is_allowlisted() -> None:
     assert "kurashinoshirube_is_editorial_v2_post()" in category
     assert "kurashinoshirube_editorial_v2_section_map()[$slug] ?? null" in category
     assert "wp_get_post_terms(" in category
-    assert "array('移動', '家事')" in category
+    assert "array('移動', '家事', '備え')" in category
     assert "in_array($allowed_section, $terms, true)" in category
     publication_bindings = functions.split(
         "function kurashinoshirube_editorial_v2_publication_bindings", 1
     )[1].split("function kurashinoshirube_related_article_map", 1)[0]
-    expected = {
-        "anker-solix-c300-c800-c1000-differences": "備え",
-        "carry-on-suitcase-comparison": "移動",
-        "carry-on-suitcase-under-100-seats": "移動",
-        "compact-robot-vacuum-shortlist": "家事",
-        "countertop-dishwasher-for-small-households": "家事",
-        "front-open-carry-on-suitcase-with-stopper": "移動",
-        "lightweight-carry-on-suitcase-under-3kg": "移動",
-        "portable-power-station-guide": "備え",
-        "roomba-mini-vs-switchbot-k11-pro": "家事",
-        "solota-vs-rakua-mini-plus": "家事",
+    assert "return kurashinoshirube_article_bindings();" in publication_bindings
+    navigation = _load_json(EDITORIAL_NAVIGATION_PATH)
+    assert len(navigation["articles"]) == 10
+    assert {article["category_label"] for article in navigation["articles"]} == {
+        "移動",
+        "家事",
+        "備え",
     }
-    for slug, section in expected.items():
-        assert f"'slug' => '{slug}'" in publication_bindings
-        assert f"'section' => '{section}'" in publication_bindings
-    assert publication_bindings.count("'slug' =>") == 10
     section_map = functions.split(
         "function kurashinoshirube_editorial_v2_section_map", 1
     )[1].split("function kurashinoshirube_editorial_v2_body_class", 1)[0]
     assert "kurashinoshirube_editorial_v2_publication_bindings()" in section_map
-    assert "return count($sections) === 10 ? $sections : array();" in section_map
+    assert "return count($sections) === 20 ? $sections : array();" in section_map
 
 
 def test_editorial_v2_publication_fallback_is_closed_and_fail_closed() -> None:
     source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    bindings = source.split(
-        "function kurashinoshirube_editorial_v2_publication_bindings", 1
-    )[1].split("function kurashinoshirube_related_article_map", 1)[0]
+    navigation = _load_json(EDITORIAL_NAVIGATION_PATH)
     expected = {
-        "st1703-first-suitcase-comparison": "carry-on-suitcase-comparison",
-        "st1704-portable-power-station-guide": "portable-power-station-guide",
-        "st1704-countertop-dishwasher-for-small-households": (
-            "countertop-dishwasher-for-small-households"
-        ),
-        "st1704-anker-solix-c300-c800-c1000-differences": (
-            "anker-solix-c300-c800-c1000-differences"
-        ),
-        "st1704-compact-robot-vacuum-shortlist": (
-            "compact-robot-vacuum-shortlist"
-        ),
-        "carry-on-suitcase-under-100-seats": "carry-on-suitcase-under-100-seats",
-        "front-open-carry-on-suitcase-with-stopper": (
-            "front-open-carry-on-suitcase-with-stopper"
-        ),
-        "lightweight-carry-on-suitcase-under-3kg": (
-            "lightweight-carry-on-suitcase-under-3kg"
-        ),
-        "roomba-mini-vs-switchbot-k11-pro": "roomba-mini-vs-switchbot-k11-pro",
-        "solota-vs-rakua-mini-plus": "solota-vs-rakua-mini-plus",
+        article["article_id"]: article["production_slug"]
+        for article in navigation["articles"]
     }
-    for article_id, slug in expected.items():
-        record = bindings.split(f"'{article_id}' => array(", 1)[1].split("),", 1)[0]
-        assert f"'slug' => '{slug}'" in record
-    assert bindings.count("=> array(") == 10
+    assert len(expected) == 10 and len(set(expected.values())) == 10
+    loader = source.split("function kurashinoshirube_article_bindings", 1)[1].split(
+        "function kurashinoshirube_editorial_v2_publication_bindings", 1
+    )[0]
+    for required in (
+        "kurashinoshirube_editorial_navigation()",
+        "count($bindings) !== 10",
+        "'article_id'",
+        "'production_slug'",
+        "'local_slug'",
+        "'snapshot_id'",
+        "'article_code'",
+    ):
+        assert required in loader
 
     fallback = source.split(
         "function kurashinoshirube_published_editorial_v2_identity", 1
@@ -607,13 +615,12 @@ def test_canonical_fallback_contract_prefers_snapshot_and_shares_robots_identity
         "function kurashinoshirube_filter_og_title", 1
     )[0]
     assert canonical.index("kurashinoshirube_current_snapshot()") < canonical.index(
-        "kurashinoshirube_public_article_identity($post_id)"
+        "kurashinoshirube_public_head_context()"
     )
     for required in (
         "$snapshot['canonical_url']",
-        "is_singular('post')",
-        "get_post_status($post_id) !== 'publish'",
-        "KURASHINOSHIRUBE_SITE_ORIGIN . '/' . $identity['slug'] . '/'",
+        "kurashinoshirube_public_head_context()",
+        "$context === null ? $value : $context['canonical_url']",
     ):
         assert required in canonical
 
@@ -626,8 +633,8 @@ def test_canonical_fallback_contract_prefers_snapshot_and_shares_robots_identity
 
     contract = _load_json(CONTRACT_PATH)
     assert contract["head"]["metadata_owner"] == (
-        "YOAST_SEO_FILTERS_WITH_SNAPSHOT_METADATA_AND_CLOSED_EDITORIAL_V2_"
-        "CANONICAL_FALLBACK"
+        "YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_PUBLIC_HEAD_"
+        "CONTEXT_AND_CONFIG_READBACK"
     )
     assert contract["head"]["canonical"] == {
         "editorial_v2_fallback": (
@@ -789,7 +796,8 @@ def test_consent_defaults_are_opt_in_and_global() -> None:
     assert 'data-raos-consent-gate="statistics"' in analytics_filter
     assert 'data-raos-consent-config="statistics"' in analytics_filter
     assert 'type="text/plain"' in analytics_filter
-    assert "eligibleAtParse" in analytics_filter
+    assert "eligibleAtParse" not in analytics_filter
+    assert "initialCookieYes" not in analytics_filter
     assert 'window.getCkyConsent' in analytics_filter
     assert 'window.wp_has_consent("statistics")' in analytics_filter
     assert 'window._googlesitekitConsents.analytics_storage==="granted"' in analytics_filter
@@ -978,16 +986,18 @@ def test_fixed_featured_guide_requires_one_exact_public_article_identity() -> No
 def test_local_preview_substitution_is_locked_to_the_isolated_fixture_origin() -> None:
     source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
     guard = source.split(
-        "function kurashinoshirube_is_local_preview(): bool", 1
+        "function kurashinoshirube_local_preview_origin(): ?string", 1
     )[1].split("/**\n * Resolve the fixed featured article", 1)[0]
     assert source.count("RAOS_LOCAL_PREVIEW") == 2
     for boundary in (
         "defined('RAOS_LOCAL_PREVIEW')",
-        "RAOS_LOCAL_PREVIEW === true",
+        "RAOS_LOCAL_PREVIEW !== true",
         "function_exists('wp_get_environment_type')",
-        "wp_get_environment_type() === 'local'",
-        "home_url('/') === 'http://127.0.0.1:8888/'",
-        "site_url('/') === 'http://127.0.0.1:8888/'",
+        "wp_get_environment_type() !== 'local'",
+        "defined('RAOS_WORDPRESS_PREVIEW_ORIGIN')",
+        "#\\Ahttp://127\\.0\\.0\\.1:([0-9]{4,5})\\z#D",
+        "home_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'",
+        "site_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'",
     ):
         assert boundary in guard
 
@@ -1042,16 +1052,26 @@ def test_single_template_has_one_dynamic_h1_and_one_theme_owned_related_ui() -> 
     assert "$identity = kurashinoshirube_public_article_identity($post_id);" in related
     assert "$identity['article_id']" in related
     assert "kurashinoshirube_related_article_map()" in related
-    assert (
-        "$target_identity = kurashinoshirube_public_article_identity(" in related
-    )
-    assert "$target_identity['article_id'] !== $target_id" in related
+    assert "kurashinoshirube_resolve_related_target($target_id)" in related
+    assert "data-raos-to-article-id" in related
+    assert 'data-raos-link-placement="related_navigation"' in related
+    resolver = functions.split(
+        "function kurashinoshirube_resolve_related_target", 1
+    )[1].split("function kurashinoshirube_inject_contextual_guide", 1)[0]
+    assert "$target_identity = kurashinoshirube_public_article_identity(" in resolver
+    assert "$target_identity['article_id'] !== $target_id" in resolver
     assert "kurashinoshirube_current_snapshot()" not in related
     assert "kurashinoshirube_bound_post_snapshot(" not in related
     contract = _load_json(CONTRACT_PATH)
     assert contract["related_navigation"]["target_requirement"] == (
         "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
     )
+
+    contextual = functions.split(
+        "function kurashinoshirube_inject_contextual_guide", 1
+    )[1].split("add_filter('the_content'", 1)[0]
+    assert "data-raos-to-article-id" in contextual
+    assert 'data-raos-link-placement="article_body"' in contextual
 
 
 def test_single_article_titles_are_wide_balanced_and_responsive() -> None:
@@ -1095,123 +1115,78 @@ def test_single_article_titles_are_wide_balanced_and_responsive() -> None:
         assert "word-break: auto-phrase;" in rule
 
 
-def test_related_navigation_is_fixed_reciprocal_and_contract_hashed() -> None:
+def test_related_navigation_is_generated_closed_and_contract_hashed() -> None:
     contract = _load_json(CONTRACT_PATH)
     related = contract["related_navigation"]
     assert isinstance(related, dict)
-    relation_map = related["map"]
-    assert isinstance(relation_map, dict)
-    assert (
-        related["map_sha256"]
-        == hashlib.sha256(_canonical_json(relation_map).encode()).hexdigest()
-    )
+    navigation = _load_json(EDITORIAL_NAVIGATION_PATH)
+    navigation_contract = contract["editorial_navigation"]
+    assert navigation_contract["sha256"] == _sha256(EDITORIAL_NAVIGATION_PATH)
+    assert navigation_contract["source_navigation_sha256"] == navigation[
+        "source_navigation_sha256"
+    ]
+    assert navigation_contract["source_portfolio_sha256"] == navigation[
+        "source_portfolio_sha256"
+    ]
     source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    map_match = re.search(
-        r"const KURASHINOSHIRUBE_RELATED_ARTICLE_MAP_JSON = '([^']+)';",
-        source,
-    )
     hash_match = re.search(
-        r"const KURASHINOSHIRUBE_RELATED_ARTICLE_MAP_SHA256 = '([0-9a-f]{64})';",
+        r"const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '([0-9a-f]{64})';",
         source,
     )
-    assert map_match is not None
     assert hash_match is not None
-    php_map_json = map_match.group(1)
-    assert json.loads(php_map_json) == relation_map
-    assert php_map_json == _canonical_json(relation_map)
-    assert hash_match.group(1) == related["map_sha256"]
-    assert related["owner"] == "THEME_FIXED_ALLOWLIST"
+    assert hash_match.group(1) == navigation_contract["sha256"]
+    assert related["owner"] == "EDITORIAL_V3_GENERATED_NAVIGATION"
     assert related["content_hash_scope"] == (
         "THEME_CHROME_OUTSIDE_WORDPRESS_POST_CONTENT"
     )
-    assert relation_map["st1704-portable-power-station-guide"]["targets"] == {
-        "st1704-anker-solix-c300-c800-c1000-differences": (
-            "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い"
-        )
-    }
-    assert relation_map["st1704-anker-solix-c300-c800-c1000-differences"][
-        "targets"
-    ] == {
-        "st1704-portable-power-station-guide": (
-            "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める"
-        )
-    }
-    assert all(len(value["targets"]) <= 1 for value in relation_map.values())
-
-    articles = _load_json(ARTICLES_PATH)
-    routes = {route["route_ref"]: route for route in articles["routes"]}
-    article_records = {
-        article["article_id"]: article for article in articles["articles"]
-    }
-    assert set(article_records) == set(relation_map)
-    for article_id, relation in relation_map.items():
-        blocks = article_records[article_id]["content_ast"]["blocks"]
-        internal = [block for block in blocks if block["type"] == "internal_links"]
-        assert len(internal) == 1
-        observed: dict[str | None, str] = {}
-        for link in internal[0]["links"]:
-            route = routes[link["route_ref"]]
-            observed[route["article_id"]] = link["anchor_text"]
-        assert observed.pop(None) == relation["home_label"]
-        assert observed == relation["targets"]
+    articles = navigation["articles"]
+    assert len(articles) == 10
+    article_ids = {article["article_id"] for article in articles}
+    for article in articles:
+        targets = article["related_articles"]
+        assert len(targets) >= related["minimum_targets_per_article"]
+        assert len({target["article_id"] for target in targets}) == len(targets)
+        assert {target["article_id"] for target in targets} <= article_ids - {
+            article["article_id"]
+        }
+        relationships = [target["relationship"] for target in targets]
+        if article["cluster_id"] == "preparedness":
+            assert relationships.count("same_cluster") == 1
+            assert "adjacent_context" in relationships
+        else:
+            assert relationships.count("same_cluster") >= 2
+            assert set(relationships) == {"same_cluster"}
 
 
 def test_homepage_cluster_contract_is_hash_bound_and_covers_all_articles() -> None:
     contract = _load_json(CONTRACT_PATH)
     homepage = contract["homepage_clusters"]
-    configuration = homepage["config"]
-    canonical = _canonical_json(configuration)
-    assert (
-        homepage["config_sha256"]
-        == hashlib.sha256(canonical.encode("utf-8")).hexdigest()
-    )
-    assert configuration["display_order"] == [
-        "cluster-mobility",
-        "cluster-home",
-        "cluster-ready",
+    navigation = _load_json(EDITORIAL_NAVIGATION_PATH)
+    clusters = navigation["clusters"]
+    assert homepage["source"] == "assets/editorial-navigation.v3.json#clusters"
+    assert homepage["article_count"] == 10
+    assert homepage["cluster_count"] == 3
+    assert [cluster["cluster_id"] for cluster in clusters] == [
+        "mobility",
+        "household",
+        "preparedness",
     ]
-    clusters = configuration["clusters"]
-    assert set(clusters) == set(configuration["display_order"])
-    assert clusters["cluster-mobility"]["post_order"] == [
-        "st1703-first-suitcase-comparison"
+    observed_articles = [
+        article_id for cluster in clusters for article_id in cluster["article_ids"]
     ]
-    assert clusters["cluster-home"]["post_order"] == [
-        "st1704-countertop-dishwasher-for-small-households",
-        "st1704-compact-robot-vacuum-shortlist",
-    ]
-    assert clusters["cluster-ready"]["post_order"] == [
-        "st1704-portable-power-station-guide",
-        "st1704-anker-solix-c300-c800-c1000-differences",
-    ]
-    assert all(
-        set(cluster["post_order"]) == set(cluster["posts"])
-        and len(cluster["post_order"]) == len(cluster["posts"])
-        for cluster in clusters.values()
-    )
-    observed_articles = {
-        article_id for cluster in clusters.values() for article_id in cluster["posts"]
+    assert len(observed_articles) == 10
+    assert len(set(observed_articles)) == 10
+    assert set(observed_articles) == {
+        article["article_id"] for article in navigation["articles"]
     }
-    assert observed_articles == set(contract["related_navigation"]["map"])
     assert homepage["link_requirement"] == (
         contract["related_navigation"]["target_requirement"]
     )
-    for article_id, relation in contract["related_navigation"]["map"].items():
-        assert article_id in clusters[relation["home_anchor"]]["posts"]
 
     source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    config_match = re.search(
-        r"const KURASHINOSHIRUBE_HOMEPAGE_CLUSTERS_JSON = '([^']+)';",
-        source,
-    )
-    hash_match = re.search(
-        r"const KURASHINOSHIRUBE_HOMEPAGE_CLUSTERS_SHA256 = '([0-9a-f]{64})';",
-        source,
-    )
-    assert config_match is not None
-    assert hash_match is not None
-    assert config_match.group(1) == canonical
-    assert json.loads(config_match.group(1)) == configuration
-    assert hash_match.group(1) == homepage["config_sha256"]
+    assert "function kurashinoshirube_homepage_clusters(): array" in source
+    assert "kurashinoshirube_editorial_navigation()" in source
+    assert "return count($seen) === 10 ? $configuration : array();" in source
 
     renderer = source.split(
         "function kurashinoshirube_render_published_clusters", 1
@@ -1471,8 +1446,16 @@ def test_editorial_footer_keeps_shared_layout_and_safe_token_fallbacks() -> None
             r"\.raos-editorial-v2-page \.raos-footer([^,{]*)", css
         )
     )
+    policy_suffixes = sorted(
+        suffix.strip()
+        for suffix in re.findall(
+            r"\.raos-policy-v3-page \.raos-footer([^,{]*)", css
+        )
+    )
     assert len(home_suffixes) >= 31
     assert editorial_suffixes == home_suffixes
+    assert policy_suffixes == home_suffixes
+    assert ".raos-policy-v3-page .wp-site-blocks > footer" in css
     for fallback in (
         "var(--raos-home-ink, var(--raos-ink))",
         "var(--raos-home-inverse, #f7f2e9)",
@@ -1486,7 +1469,16 @@ def test_content_is_visible_without_javascript() -> None:
     css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
     assert not (THEME_ROOT / "assets/theme.js").exists()
-    assert "wp_enqueue_script(" not in functions
+    assert functions.count("wp_enqueue_script(") == 1
+    assert "kurashinoshirube-measurement-v1" in functions
+    assert "raos_editorial_measurement_enabled()" in functions
+    verifier = functions.split(
+        "function kurashinoshirube_verified_asset_uri", 1
+    )[1].split("function kurashinoshirube_bound_post_snapshot", 1)[0]
+    assert "assets/measurement\\.js" in verifier
+    measurement = (THEME_ROOT / "assets/measurement.js").read_text(encoding="utf-8")
+    assert "preventDefault" not in measurement
+    assert "document.documentElement" not in measurement
     assert "raos-reveal" not in css
     assert "opacity: 0" not in css
     assert "visibility: hidden" not in css
@@ -1554,7 +1546,17 @@ def test_comparison_and_cta_contracts_are_accessible_and_closed() -> None:
         "data-raos-article-id",
         "data-raos-placement=comparison_table",
     ]
-    assert contract["measurement"]["analytics_transmission_added"] is False
+    measurement = contract["measurement"]
+    assert measurement["analytics_transmission_added"] is True
+    assert measurement["default_enabled"] is False
+    assert measurement["consent_gate"] == [
+        "COOKIEYES_EXPLICIT_ANALYTICS_GRANTED",
+        "WP_CONSENT_API_STATISTICS_GRANTED",
+        "SITE_KIT_ANALYTICS_STORAGE_GRANTED",
+    ]
+    assert measurement["navigation_behavior"] == (
+        "NO_PREVENT_DEFAULT_NO_AWAIT_SEND_BEACON_OR_KEEPALIVE"
+    )
     assert contract["homepage_section_order"] == [
         "ヒーロー",
         "編集方針の約束",
@@ -1641,12 +1643,11 @@ def test_article_type_density_ctas_and_cmp_are_responsive_without_home_scope() -
     assert ".raos-comparison__cards {\n    display: grid;" in comparison_mobile
     editorial_mobile = editorial_css.split("@media (max-width: 48rem)", 1)[1]
     assert (
-        ".raos-editorial-v2 .comparison-table-wrap > table,\n"
+        ".raos-editorial-v2 .comparison-table-wrap:not(.raos-comparison),\n"
+        "  .raos-editorial-v2 .comparison-table-wrap > table,\n"
         "  .raos-editorial-v2 .comparison-table-wrap > "
         ".raos-comparison__table-view {\n    display: none;"
-    ) in editorial_mobile
-    assert ".raos-editorial-v2 .comparison-table-wrap {\n    display: none;" not in (
-        editorial_mobile
+        in editorial_mobile
     )
     assert ".raos-editorial-v2 .comparison-cards {\n    display: block;" in (
         editorial_mobile
@@ -1895,6 +1896,40 @@ def test_yoast_is_the_only_generic_head_metadata_owner() -> None:
         assert duplicate not in combined
 
 
+def test_closed_head_contexts_cover_home_articles_and_exact_policy_excerpts() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    contract = _load_json(CONTRACT_PATH)
+    pages = _load_json(
+        REPOSITORY_ROOT
+        / "changes/wordpress-local-preview-v1/fixtures/pages.json"
+    )["pages"]
+    assert contract["head"]["closed_head_contexts"] == {
+        "article": "EXACT_EDITORIAL_V3_PUBLIC_IDENTITY_PLUS_CLEAN_TITLE_AND_EXCERPT",
+        "fixed_page": "EXACT_THREE_POLICY_SLUG_TITLE_EXCERPT_RECORDS",
+        "home": "FIXED_SITE_TITLE_AND_DESCRIPTION",
+    }
+    assert len(pages) == 3
+    for page in pages:
+        assert page["slug"] in source
+        assert page["title"] in source
+        assert page["excerpt"] in source
+    resolver = source.split(
+        "function kurashinoshirube_public_head_context(): ?array", 1
+    )[1].split("function kurashinoshirube_filter_snapshot_value", 1)[0]
+    for required in (
+        "is_front_page()",
+        "is_singular('post')",
+        "is_singular('page')",
+        "kurashinoshirube_public_article_identity($post_id)",
+        "get_post_field('post_excerpt', $post_id, 'raw')",
+        "get_post_status($post_id) !== 'publish'",
+    ):
+        assert required in resolver
+    assert "kurashinoshirube_public_head_context()" in source.split(
+        "function kurashinoshirube_filter_description", 1
+    )[1].split("add_filter('wpseo_title'", 1)[0]
+
+
 def test_document_title_has_one_conditional_owner_and_core_fallback() -> None:
     source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
     contract = _load_json(CONTRACT_PATH)
@@ -2024,7 +2059,9 @@ def test_structured_data_is_one_closed_raos_graph() -> None:
     emitter = source.split("function kurashinoshirube_emit_json_ld", 1)[1].split(
         "add_action('wp_head', 'kurashinoshirube_emit_json_ld'", 1
     )[0]
-    assert "kurashinoshirube_structured_data_article_values($post_id)" in emitter
+    assert "kurashinoshirube_public_head_context()" in emitter
+    assert "$context['kind'] === 'article'" in emitter
+    assert "array('article', 'fixed_page')" in emitter
     assert "kurashinoshirube_is_nullable_timestamp($published)" in emitter
     assert "kurashinoshirube_is_nullable_timestamp($modified)" in emitter
     assert "strcmp($modified, $published) < 0" in emitter
@@ -2054,15 +2091,24 @@ def test_structured_data_is_one_closed_raos_graph() -> None:
         "legacy": "VALID_BOUND_RAOS_SNAPSHOT",
         "unknown_or_invalid": "NO_OUTPUT",
     }
+    assert head["structured_data_contexts"] == {
+        "article": ["Article", "BreadcrumbList", "Organization", "WebSite"],
+        "fixed_page": ["BreadcrumbList", "Organization", "WebSite"],
+        "home": ["Organization", "WebSite"],
+        "unknown_or_invalid": [],
+    }
 
 
 def test_editorial_v2_structured_data_dynamic_values_are_bounded() -> None:
     fixture = _load_json(
         REPOSITORY_ROOT / "changes/wordpress-local-preview-v1/fixtures/posts.json"
     )
-    contract = _load_json(CONTRACT_PATH)
-    sections = contract["editorial_v2"]["section_slug_allowlist"]
-    assert isinstance(sections, dict) and len(sections) == 10
+    navigation = _load_json(EDITORIAL_NAVIGATION_PATH)
+    sections = {
+        article["production_slug"]: article["category_label"]
+        for article in navigation["articles"]
+    }
+    assert len(sections) == 10
 
     def clean(value: str, minimum: int, maximum: int) -> bool:
         return bool(

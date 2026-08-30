@@ -6,8 +6,11 @@ appearance without reading from or writing to `kurashinoshirube.com`.
 
 The preview uses digest-pinned WordPress 7.1.0, WP-CLI 2.12.0, MariaDB 11.8.3,
 and Nginx 1.29.1 images. A read-only, unprivileged Nginx gateway is the only
-service attached to the loopback bridge and binds only to
-`http://127.0.0.1:8888`; WordPress and MariaDB remain on their internal network.
+service attached to the loopback bridge and binds only to a deterministic
+worktree-specific `http://127.0.0.1:<port>` origin; WordPress and MariaDB remain
+on their internal network. The Compose project name, named volumes, bootstrap
+credentials, and port are isolated by repository-root identity, so another
+checkout's preview is never reused or stopped.
 WordPress and database state live in named Docker volumes, the tracked
 child-theme source is mounted read-only, and ten local-only editorial drafts
 are seeded. Before startup or synchronization, the tracked ten-article source
@@ -37,16 +40,24 @@ publication proposal. The required sequence is:
    proposal, precondition, and kill-switch requirements. A local pass is not
    production approval.
 
-For the tracked article set, the complete sequence is available as one
-foreground command:
+First propose the fixed MCP abilities plugin 1.3 package and stop for its
+separate-admin approval/apply receipt. That exact receipt is required before the
+measurement plugin can be proposed. After the separately approved measurement
+plugin apply receipt has been validated with
+`measurement_plugin_proposal.py --content-ready`, run the full tracked batch
+with that owner-private receipt. Narrow historical article-only requests remain
+available without the plugin gate:
 
 ```sh
-make wordpress-production-request
+MEASUREMENT_PLUGIN_APPLY_RECEIPT="$PWD/.secrets/wordpress-mcp/publication-requests/plugin-applied.json" \
+  make wordpress-production-request
 make wordpress-production-request ARTICLES=roomba-mini-vs-switchbot-k11-pro
 make wordpress-production-request ARTICLES=carry-on-suitcase-under-100-seats,solota-vs-rakua-mini-plus
 ```
 
-`ARTICLES` defaults to `all` and otherwise accepts only an exact,
+`ARTICLES` defaults to `all`; that mode fails before preview or remote access
+unless the exact separate-admin plugin apply receipt is present under the
+owner-private publication-request directory. Otherwise `ARTICLES` accepts an exact,
 comma-separated set of production slugs registered in
 `production-mapping.v1.json`. The command always runs preview `up`, `sync`, and
 `check` before it reads the editor credential or makes any live call. It then
@@ -75,7 +86,8 @@ persisted idempotency keys and operation IDs. Do not edit these receipts.
 ## Prerequisite
 
 Install Docker Desktop for Windows, accept its terms, and enable WSL integration
-for the distribution containing `/home/minami/rakuten`. Verify from WSL:
+for the distribution that contains the current repository checkout. Verify from
+that checkout in WSL:
 
 ```sh
 docker version
@@ -96,23 +108,28 @@ make wordpress-preview-check
 make wordpress-preview-down
 ```
 
-`wordpress-preview-up` creates owner-private random bootstrap credentials under
+`wordpress-preview-up` derives an isolated Compose project and unprivileged
+loopback port from the exact repository-root path, refuses a foreign container
+already bound to that port, creates owner-private random bootstrap credentials under
 `.secrets/wordpress-local-preview/`, starts WordPress and MariaDB, activates the
 tracked child theme, refreshes the owner-private materialized fixture, and seeds
-it only on first initialization. It does not print any password. The local
-preview URLs are:
+it only on first initialization. It does not print any password. The command
+prints the exact origin for this checkout. An operator may select a different
+free loopback port with `RAOS_WORDPRESS_PREVIEW_PORT`; the value is propagated
+to Compose, WordPress, seed validation, and the browser audit. With
+`PREVIEW_ORIGIN` standing for that printed origin, the local preview URLs are:
 
-- home: `http://127.0.0.1:8888/`
-- article 1: `http://127.0.0.1:8888/local-preview-carry-on-suitcase-comparison/`
-- article 2: `http://127.0.0.1:8888/local-preview-portable-power-station-guide/`
-- article 3: `http://127.0.0.1:8888/local-preview-anker-solix-c300-c800-c1000-differences/`
-- article 4: `http://127.0.0.1:8888/local-preview-countertop-dishwasher-for-small-households/`
-- article 5: `http://127.0.0.1:8888/local-preview-compact-robot-vacuum-shortlist/`
-- article 6: `http://127.0.0.1:8888/local-preview-carry-on-suitcase-under-100-seats/`
-- article 7: `http://127.0.0.1:8888/local-preview-lightweight-carry-on-suitcase-under-3kg/`
-- article 8: `http://127.0.0.1:8888/local-preview-front-open-carry-on-suitcase-with-stopper/`
-- article 9: `http://127.0.0.1:8888/local-preview-roomba-mini-vs-switchbot-k11-pro/`
-- article 10: `http://127.0.0.1:8888/local-preview-solota-vs-rakua-mini-plus/`
+- home: `${PREVIEW_ORIGIN}/`
+- article 1: `${PREVIEW_ORIGIN}/local-preview-carry-on-suitcase-comparison/`
+- article 2: `${PREVIEW_ORIGIN}/local-preview-portable-power-station-guide/`
+- article 3: `${PREVIEW_ORIGIN}/local-preview-anker-solix-c300-c800-c1000-differences/`
+- article 4: `${PREVIEW_ORIGIN}/local-preview-countertop-dishwasher-for-small-households/`
+- article 5: `${PREVIEW_ORIGIN}/local-preview-compact-robot-vacuum-shortlist/`
+- article 6: `${PREVIEW_ORIGIN}/local-preview-carry-on-suitcase-under-100-seats/`
+- article 7: `${PREVIEW_ORIGIN}/local-preview-lightweight-carry-on-suitcase-under-3kg/`
+- article 8: `${PREVIEW_ORIGIN}/local-preview-front-open-carry-on-suitcase-with-stopper/`
+- article 9: `${PREVIEW_ORIGIN}/local-preview-roomba-mini-vs-switchbot-k11-pro/`
+- article 10: `${PREVIEW_ORIGIN}/local-preview-solota-vs-rakua-mini-plus/`
 
 Edit the tracked child theme on the host and refresh the browser. The container
 cannot edit that mount. WordPress database changes made while experimenting are
@@ -133,7 +150,7 @@ the same `wp_strip_all_tags` / `wp_kses_post` checks used by the production MCP
 writer. This validation runs during the mandatory sync before production is
 contacted.
 
-To overwrite the ten preview posts and two fixed pages with a newly
+To overwrite the ten preview posts and three fixed pages with a newly
 materialized fixture, run:
 
 ```sh
@@ -146,12 +163,13 @@ fixture or theme source.
 
 ## Browser evidence
 
-`make wordpress-preview-check` audits the home page and all ten editorial
-drafts at widths 360, 390, 768, and 1440 pixels. It fails on HTTP errors,
+`make wordpress-preview-check` audits the home page, all ten editorial
+drafts, and the three fixed policy pages at widths 360, 390, 768, and 1440
+pixels. It fails on HTTP errors,
 console/page errors, external requests, horizontal overflow, missing image
 alternatives, duplicate IDs, broken ARIA references, missing Japanese language
 metadata, incorrect H1/main counts, out-of-bounds H1, Cookie-settings, or CTA
-boxes, or a missing Editorial V2 article module. The 44 screenshots are ignored
+boxes, or a missing Editorial V2 article module. The 56 screenshots are ignored
 build artifacts under `output/playwright/local-preview/`.
 
 ## Reset and boundaries

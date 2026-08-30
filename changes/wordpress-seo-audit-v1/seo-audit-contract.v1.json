@@ -1,0 +1,56 @@
+{
+  "schema": "RAOS_WORDPRESS_SEO_AUDIT_CONTRACT_V1",
+  "version": 1,
+  "origin": "https://kurashinoshirube.com",
+  "inventory": {
+    "article_source": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+    "article_count": 10,
+    "fixed_pages": [
+      "about-ad-policy",
+      "comparison-policy",
+      "privacy-policy"
+    ],
+    "home_path": "/"
+  },
+  "http_boundary": {
+    "connect_timeout_seconds": 5,
+    "read_timeout_seconds": 10,
+    "maximum_response_bytes": 2097152,
+    "maximum_sitemap_documents": 8,
+    "redirects": 0,
+    "user_agent": "RAOS-WordPress-SEO-Audit/1.0"
+  },
+  "surfaces": {
+    "robots_path": "/robots.txt",
+    "sitemap_seed_path": "/sitemap_index.xml",
+    "forbidden_llms_path": "/llms.txt"
+  },
+  "required_schema_types": {
+    "home": [
+      "Organization",
+      "WebSite"
+    ],
+    "article": [
+      "Article",
+      "BreadcrumbList",
+      "Organization",
+      "WebSite"
+    ],
+    "fixed_page": [
+      "BreadcrumbList",
+      "Organization",
+      "WebSite"
+    ]
+  },
+  "forbidden_schema_types": [
+    "Product",
+    "Offer",
+    "Review",
+    "FAQPage"
+  ],
+  "index_state_boundary": {
+    "source": "OWNER_PRIVATE_RECORDED_URL_INSPECTION_V1",
+    "missing_state": "UNAVAILABLE",
+    "never_infer_from_public_http": true
+  }
+}

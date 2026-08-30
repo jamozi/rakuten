@@ -23,10 +23,10 @@ ORIGIN = "https://kurashinoshirube.com"
 HOST = "kurashinoshirube.com"
 PROTOCOL_VERSION = "2025-11-25"
 EXPECTED_PLUGIN_RUNTIME_REVISION = (
-    "7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755"
+    "1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a"
 )
 EXPECTED_THEME_RUNTIME_REVISION = (
-    "30a84ec5dffb12c048181198ecc8745fa22be70f1854507237c19306589b341f"
+    "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
 )
 EXPECTED_TOOLS = {
     "raos-codex-site-status",
@@ -37,6 +37,7 @@ EXPECTED_TOOLS = {
     "raos-codex-content-propose-release",
     "raos-codex-publication-batch-register",
     "raos-codex-operation-get",
+    "raos-measurement-aggregate-report",
 }
 
 
@@ -340,7 +341,7 @@ def phase_propose(
 ) -> None:
     mcp = McpClient(site_url + "/wp-json/raos-codex-mcp/v1/editor", *editor)
     initialized = mcp.initialize()
-    assert initialized["serverInfo"]["version"] == "1.2.1"
+    assert initialized["serverInfo"]["version"] == "1.3.0"
     tools = mcp.tools()
     assert set(tools) == EXPECTED_TOOLS
     for tool in tools.values():
@@ -349,10 +350,34 @@ def phase_propose(
         assert annotations["destructiveHint"] is False
         assert annotations["openWorldHint"] is False
 
+    measurement_tool = tools["raos-measurement-aggregate-report"]
+    assert measurement_tool["annotations"] == {
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False,
+    }
+    aggregate = mcp.call(
+        "raos-measurement-aggregate-report",
+        {"start_date": "2026-08-01", "end_date": "2026-08-30"},
+    )
+    assert aggregate["schema"] == "RAOSMeasurementAggregateReportV1"
+    assert aggregate["measurement_enabled"] is False
+    assert aggregate["raw_events_exposed"] is False
+    assert aggregate["rows"] == []
+
     status = mcp.call("raos-codex-site-status", {})
     assert status["origin"] == ORIGIN
     assert status["wordpress_version"].startswith("7.1")
     assert status["mcp_adapter_version"] == "0.6.1"
+    assert status["plugin_version"] == "1.3.0"
+    assert status["measurement"] == {
+        "plugin_active": True,
+        "plugin_version": "1.0.0",
+        "collection_enabled": False,
+        "aggregate_ability_registered": True,
+        "raw_event_tool_exposed": False,
+    }
     assert status["plugin_runtime_revision"] == EXPECTED_PLUGIN_RUNTIME_REVISION
     assert status["writes_enabled"] == {
         "global": True,

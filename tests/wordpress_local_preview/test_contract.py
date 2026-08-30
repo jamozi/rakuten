@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 
 import yaml
 
+from scripts import build_editorial_v3_theme_navigation as audit_inventory_builder
 
 ROOT = Path(__file__).resolve().parents[2]
 SLICE = ROOT / "changes/wordpress-local-preview-v1"
@@ -17,14 +18,17 @@ GATEWAY = SLICE / "gateway/nginx.conf"
 FIXTURES = SLICE / "fixtures"
 ARTICLES = FIXTURES / "articles"
 POSTS = FIXTURES / "posts.json"
+PAGES = FIXTURES / "pages.json"
 PRODUCTION_MAPPING = SLICE / "production-mapping.v1.json"
 MU_PLUGIN = SLICE / "mu-plugins/raos-local-preview.php"
 EDITORIAL_CSS = (
-    ROOT
-    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
     "kurashinoshirube-child/assets/editorial-v2.css"
 )
 SEED = SLICE / "seed.php"
+AUDIT_INVENTORY = (
+    ROOT / "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
+)
 
 MARIADB_IMAGE = (
     "mariadb:11.8.3@sha256:"
@@ -101,7 +105,9 @@ def test_compose_is_digest_pinned_loopback_only_and_isolated() -> None:
     assert gateway["image"] == NGINX_IMAGE
     assert cli["image"] == WP_CLI_IMAGE
     assert wordpress.get("ports") is None
-    assert gateway["ports"] == ["127.0.0.1:8888:8080"]
+    assert gateway["ports"] == [
+        "127.0.0.1:${RAOS_WORDPRESS_PREVIEW_PORT:?preview port is required}:8080"
+    ]
     assert database.get("ports") is None
     assert cli.get("ports") is None
     assert cli["profiles"] == ["cli"]
@@ -122,7 +128,7 @@ def test_theme_and_local_material_are_read_only_bind_mounts() -> None:
     for service_name in ("wordpress", "cli"):
         service = services[service_name]
         mounts = [item for item in service["volumes"] if isinstance(item, dict)]
-        assert len(mounts) == 5
+        assert len(mounts) == 6
         assert all(
             item["type"] == "bind" and item["read_only"] is True for item in mounts
         )
@@ -130,6 +136,7 @@ def test_theme_and_local_material_are_read_only_bind_mounts() -> None:
         assert targets == {
             "/var/www/html/wp-content/themes/kurashinoshirube-child",
             "/var/www/html/wp-content/mu-plugins",
+            "/var/www/html/wp-content/plugins/raos-editorial-measurement",
             "/var/www/raos-local-preview",
             "/var/www/raos-local-preview/fixtures/articles",
             "/var/www/raos-local-preview/fixtures/posts.json",
@@ -139,6 +146,14 @@ def test_theme_and_local_material_are_read_only_bind_mounts() -> None:
         )
         assert theme_mount["source"].endswith(
             "/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
+        )
+        measurement_mount = next(
+            item
+            for item in mounts
+            if item["target"].endswith("plugins/raos-editorial-measurement")
+        )
+        assert measurement_mount["source"].endswith(
+            "/changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement"
         )
         fixture_mount = next(
             item
@@ -181,7 +196,8 @@ def test_wordpress_runtime_is_explicitly_local_and_non_mutating() -> None:
     extra = services["wordpress"]["environment"]["WORDPRESS_CONFIG_EXTRA"]
     assert services["cli"]["environment"]["WORDPRESS_CONFIG_EXTRA"] == extra
     for marker in (
-        "define('WP_HOME', 'http://127.0.0.1:8888');",
+        "define('WP_HOME', '${RAOS_WORDPRESS_PREVIEW_ORIGIN:?preview origin is required}');",
+        "define('RAOS_WORDPRESS_PREVIEW_ORIGIN', '${RAOS_WORDPRESS_PREVIEW_ORIGIN:?preview origin is required}');",
         "define('WP_ENVIRONMENT_TYPE', 'local');",
         "define('RAOS_LOCAL_PREVIEW', true);",
         "define('WP_HTTP_BLOCK_EXTERNAL', true);",
@@ -195,6 +211,7 @@ def test_wordpress_runtime_is_explicitly_local_and_non_mutating() -> None:
         WRAPPER,
         SEED,
         POSTS,
+        PAGES,
         MU_PLUGIN,
         EDITORIAL_CSS,
         *sorted(FIXTURES.rglob("*.html")),
@@ -215,7 +232,7 @@ def test_synthetic_fixture_has_ten_closed_local_articles() -> None:
     posts = fixture["posts"]
     assert isinstance(posts, list)
     assert len(posts) == 10
-    assert {row["category"] for row in posts} == {"暮らしの道具", "移動", "家事"}
+    assert {row["category"] for row in posts} == {"移動", "家事", "備え"}
     assert len({row["article_id"] for row in posts}) == 10
     assert len({row["slug"] for row in posts}) == 10
     assert len({row["content_file"] for row in posts}) == 10
@@ -307,20 +324,18 @@ def test_production_mapping_matches_all_ten_local_articles() -> None:
     assert mapping["schema"] == "RAOS_WORDPRESS_PRODUCTION_MAPPING_V1"
     rows = mapping["articles"]
     assert len(rows) == 10
-    assert {row["local_slug"] for row in rows} == {
-        row["slug"] for row in fixture_rows
-    }
+    assert {row["local_slug"] for row in rows} == {row["slug"] for row in fixture_rows}
     assert len({row["production_slug"] for row in rows}) == 10
     for row in rows:
         assert row["local_slug"] == f"local-preview-{row['production_slug']}"
-        assert row["local_category"] in {"暮らしの道具", "移動", "家事"}
+        assert row["local_category"] in {"移動", "家事", "備え"}
         assert set(row["taxonomies"]) == {"category", "post_format", "post_tag"}
 
 
 def test_roomba_f155260_station_dimensions_keep_width_depth_order() -> None:
-    article = (
-        ARTICLES / "roomba-mini-vs-switchbot-k11-pro.html"
-    ).read_text(encoding="utf-8")
+    article = (ARTICLES / "roomba-mini-vs-switchbot-k11-pro.html").read_text(
+        encoding="utf-8"
+    )
 
     assert "21.2×17.8×28.5cm" not in article
     assert article.count("17.8×21.2×28.5cm") == 2
@@ -368,7 +383,8 @@ def test_local_guard_blocks_indexing_mail_http_and_updates() -> None:
 
 def test_seed_is_local_only_versioned_and_initialize_is_non_overwriting() -> None:
     seed = SEED.read_text(encoding="utf-8")
-    assert "home_url('/') !== 'http://127.0.0.1:8888/'" in seed
+    assert "home_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'" in seed
+    assert "site_url('/') !== RAOS_WORDPRESS_PREVIEW_ORIGIN . '/'" in seed
     assert "array('initialize', 'sync')" in seed
     assert "raos_local_preview_seed_version" in seed
     assert "RAOS_WORDPRESS_PREVIEW_ALREADY_INITIALIZED" in seed
@@ -396,7 +412,7 @@ def test_runtime_materialization_is_private_and_bound_read_only() -> None:
         'materialized_fixture_root="$private_root/materialized-fixtures-v2"',
         'product_media_root="$private_root/product-media"',
         "scripts/raos_editorial_portfolio_v2.py",
-        "materialize-local --output-root \"$private_root\"",
+        'materialize-local --output-root "$private_root"',
         (
             "RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_ROOT="
             '"$materialized_fixture_root/articles"'
@@ -405,7 +421,7 @@ def test_runtime_materialization_is_private_and_bound_read_only() -> None:
             "RAOS_WORDPRESS_PREVIEW_POST_FIXTURE="
             '"$materialized_fixture_root/posts.json"'
         ),
-        "RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT=\"$product_media_root\"",
+        'RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT="$product_media_root"',
         "validate_materialized_runtime",
     ):
         assert marker in wrapper
@@ -438,32 +454,39 @@ def test_root_makefile_exposes_the_documented_interface() -> None:
     assert 'CONFIRM="$(CONFIRM)"' in makefile
 
 
-def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
+def test_browser_audit_covers_home_ten_articles_and_three_pages_at_four_widths() -> (
+    None
+):
     audit = (SLICE / "browser/wordpress_local_preview_audit.function.js").read_text(
         encoding="utf-8"
     )
     check = (SLICE / "browser/check.sh").read_text(encoding="utf-8")
-    assert "{ name: 'home', path: '/' }" in audit
-    for route in (
-        "/local-preview-carry-on-suitcase-comparison/",
-        "/local-preview-portable-power-station-guide/",
-        "/local-preview-anker-solix-c300-c800-c1000-differences/",
-        "/local-preview-countertop-dishwasher-for-small-households/",
-        "/local-preview-compact-robot-vacuum-shortlist/",
-        "/local-preview-carry-on-suitcase-under-100-seats/",
-        "/local-preview-lightweight-carry-on-suitcase-under-3kg/",
-        "/local-preview-front-open-carry-on-suitcase-with-stopper/",
-        "/local-preview-roomba-mini-vs-switchbot-k11-pro/",
-        "/local-preview-solota-vs-rakua-mini-plus/",
-    ):
-        assert f"path: '{route}'" in audit
-    assert audit.count("article: true") == 10
-    assert "const widths = [360, 390, 768, 1440];" in audit
+    inventory = json.loads(AUDIT_INVENTORY.read_text(encoding="utf-8"))
+    generated = audit_inventory_builder.build_documents()[1]
+    assert AUDIT_INVENTORY.read_bytes() == generated
+    assert audit_inventory_builder.OUTPUT_AUDIT_INVENTORY_PATH == AUDIT_INVENTORY
+    assert inventory["schema"] == "RAOS_WORDPRESS_AUDIT_INVENTORY_V3"
+    assert inventory["viewports"] == [360, 390, 768, 1440]
+    assert len(inventory["surfaces"]) == 14
+    assert [row["kind"] for row in inventory["surfaces"]].count("article") == 10
+    assert [row["kind"] for row in inventory["surfaces"]].count("policy") == 3
+    assert len(inventory["clusters"]) == 3
+    assert len(inventory["surfaces"]) * len(inventory["viewports"]) == 56
+    for surface in inventory["surfaces"]:
+        if surface["local_path"] != "/":
+            assert surface["local_path"] not in audit
+    assert "const rawSurfaces = inventory?.surfaces;" in audit
+    assert "const rawClusters = inventory?.clusters;" in audit
+    assert "const widths = inventory?.viewports;" in audit
+    assert "path: surface.local_path" in audit
     for marker in (
         "audit.h1Count !== 1",
         "audit.h1Bounds.length !== 1",
         "audit.invalidH1Bounds !== 0",
         "audit.mainCount !== 1",
+        "audit.measurementConfigDefined",
+        "audit.measurementScriptCount !== 0",
+        "audit.measurementSessionKeyCount !== 0",
         "audit.cookieSettingsBounds.length !== 1",
         "audit.invalidCookieSettingsBounds !== 0",
         "audit.footerBackgroundColor !== 'rgb(23, 36, 63)'",
@@ -478,6 +501,18 @@ def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
         "audit.footerLinkBounds.some((bounds) => bounds.height < 44)",
         "width === 1440 ? 3 : width === 768 ? 2 : 1",
         "bounds.left < 16 || bounds.right > audit.clientWidth - 16",
+        "footerGridColumnCount: audit.footerGridColumnCount",
+        "footerGridDisplay: audit.footerGridDisplay",
+        "footerGridBounds: audit.footerGridBounds",
+        "footerLinkBounds: audit.footerLinkBounds",
+        "footerMinimumLinkHeight",
+        "invalidFooterBottomBounds: audit.invalidFooterBottomBounds",
+        "invalidFooterGridBounds: audit.invalidFooterGridBounds",
+        "invalidFooterLinkBounds: audit.invalidFooterLinkBounds",
+        "surface.article !== audit.editorialBodyClass",
+        "(surface.kind === 'policy') !== audit.policyBodyClass",
+        "editorialBodyClass: audit.editorialBodyClass",
+        "policyBodyClass: audit.policyBodyClass",
         "audit.cookieConsentBounds.length !== 1",
         "audit.cookieButtonBounds.length !== 3",
         "audit.cookieButtonOrder.join('|') !== '設定|拒否|同意'",
@@ -493,6 +528,8 @@ def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
         "audit.comparisonTablesVisible === 0",
         "audit.ctaBounds.length === 0",
         "audit.invalidCtaBounds !== 0",
+        "audit.contextualLinkCount !== 1",
+        "audit.relatedLinkCount !== surface.related_article_ids.length",
         "audit.missingAlt !== 0",
         "audit.unloadedImages !== 0",
         "audit.duplicateIds.length !== 0",
@@ -500,6 +537,7 @@ def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
         "audit.scrollWidth > audit.clientWidth",
         "RAOS_WORDPRESS_LOCAL_PREVIEW_EXTERNAL_REQUEST",
         "RAOS_WORDPRESS_LOCAL_PREVIEW_RUNTIME_ERROR",
+        "RAOS_WORDPRESS_LOCAL_PREVIEW_MEASUREMENT_DEFAULT_OFF_FAILED",
         "RAOS_WORDPRESS_LOCAL_PREVIEW_SCREEN_COUNT_INVALID",
         "document.querySelectorAll('.raos-editorial-v2').length",
         "document.querySelectorAll('.decision-list').length",
@@ -509,11 +547,77 @@ def test_browser_audit_covers_home_and_ten_articles_at_four_widths() -> None:
         "surface.article &&",
         "editorialRootCount !== 1",
         "fullPage: true",
+        "audit.homeClusters.length !== expectedClusters.length",
+        "cluster.anchor !== expected.anchor",
+        "cluster.links.length !== expected.paths.length",
+        "link.pathname !== expected.paths[linkIndex]",
+        "internalLinks.length !== expectedInternalLinks.length",
+        "surface.contextual_article_id",
+        "surface.related_article_ids.map",
+        "link.origin !== origin",
+        "link.search !== ''",
+        "link.hash !== ''",
+        "page.request.get(link.href, { maxRedirects: 0 })",
+        "linkResponse.status() !== 200",
+        "linkResponse.url() !== link.href",
+        "page.keyboard.press('Tab')",
+        "keyboardAudit.focusVisibleFailures !== 0",
+        "!keyboardAudit.escapedConsentDialog",
+        "!keyboardAudit.ctaReached",
+        "!keyboardAudit.contextualReached",
+        "!keyboardAudit.relatedReached",
+        "data-raos-to-article-id",
+        "data-raos-link-placement",
     ):
         assert marker in audit
-    assert "output/playwright/local-preview" in audit
+    assert "process.cwd()" not in audit
+    assert "wordpress-audit-inventory.v3.json" in check
+    assert "inventory.surfaces" in check
+    assert "inventory.viewports" in check
+    assert "artifact_name in $artifact_names" in check
+    assert "for surface in" not in check
     assert "output/playwright/local-preview" in check
-    assert '[ "$#" -eq 44 ]' in check
+    assert "results.length !== surfaces.length * widths.length" in audit
+    assert '[ "$#" -eq "$expected_count" ]' in check
+
+
+def test_fixed_policy_pages_are_tracked_and_match_the_implemented_boundaries() -> None:
+    fixture = json.loads(PAGES.read_text(encoding="utf-8"))
+    assert fixture["schema"] == "RAOS_WORDPRESS_LOCAL_PREVIEW_PAGES_V1"
+    pages = fixture["pages"]
+    assert [row["slug"] for row in pages] == [
+        "about-ad-policy",
+        "comparison-policy",
+        "privacy-policy",
+    ]
+    assert all(
+        isinstance(row["excerpt"], str) and 30 <= len(row["excerpt"]) <= 180
+        for row in pages
+    )
+    contents = {
+        row["slug"]: (FIXTURES / row["content_file"]).read_text(encoding="utf-8")
+        for row in pages
+    }
+    assert "実在しない個人名" in contents["about-ad-policy"]
+    assert "型番" in contents["about-ad-policy"]
+    assert "メーカー公式ページへ案内" in contents["about-ad-policy"]
+    assert "Evidence階層" in contents["comparison-policy"]
+    assert "A：公式仕様" in contents["comparison-policy"]
+    assert "B：第三者実測" in contents["comparison-policy"]
+    assert "C：利用者の傾向" in contents["comparison-policy"]
+    assert "D：編集部の判断" in contents["comparison-policy"]
+    assert "実機未使用" in contents["comparison-policy"]
+    assert "報酬率" in contents["comparison-policy"]
+    privacy = contents["privacy-policy"]
+    assert privacy.count("最終更新日") == 1
+    assert "生イベントは7日間" in privacy
+    assert "13か月" in privacy
+    assert "拒否または撤回" in privacy
+    assert "楽天市場やメーカー公式ページへの商品リンクは利用できます" in privacy
+    assert "楽天URLのクエリ" in privacy
+    seed = SEED.read_text(encoding="utf-8")
+    assert "array('content_file', 'excerpt', 'slug', 'title')" in seed
+    assert "'post_excerpt' => $page['excerpt']" in seed
 
 
 def test_shell_entrypoints_parse() -> None:

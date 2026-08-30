@@ -985,7 +985,18 @@ def changed_paths(*, root: Path = REPOSITORY_ROOT, base: str | None = None) -> t
             capture_output=True,
             text=True,
         )
-        base = branch.stdout.strip().removeprefix("refs/remotes/") or "HEAD"
+        base = branch.stdout.strip().removeprefix("refs/remotes/")
+        if not base:
+            for candidate in ("origin/main", "origin/master"):
+                available = subprocess.run(
+                    ("git", "show-ref", "--verify", "--quiet", f"refs/remotes/{candidate}"),
+                    cwd=root,
+                    check=False,
+                )
+                if available.returncode == 0:
+                    base = candidate
+                    break
+        base = base or "HEAD"
     merge_base = subprocess.run(
         ("git", "merge-base", base, "HEAD"),
         cwd=root,

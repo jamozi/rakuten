@@ -10,19 +10,19 @@
   "generated_by": "scripts/build_st1704_rakuten_capture_manifest.py",
   "paths": [
     {
-      "bytes": 8303,
+      "bytes": 8302,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "cedc2c0c315ba5a8cc18e4d60c85196aa4928c68579b417f6077639a8c52cd3a"
+      "sha256": "282610f23054a34ba1d52f1e2410f1126abc2066c5c0f3ac164412ddd14cd9fe"
     },
     {
-      "bytes": 3612,
+      "bytes": 4315,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
-      "sha256": "8e1ba9b5cdab55268b36800a3a7f6d1b899cae46927b7ee9043c43ec58585849"
+      "sha256": "dbb21a5ea0ef61a184ce1835d8366799cdb3641923071bcf75a553d09cf01d0c"
     },
     {
-      "bytes": 29520,
+      "bytes": 29517,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "6a28a3fe1e6f9d0fbc069b2d345dd3fbfd8922fa94c1db7e9489c5d663b384a8"
+      "sha256": "242f8cf57739f097ef2e7a02a0c5de61c69fa380bc0af23f858a345e150ca655"
     },
     {
       "bytes": 2486,
@@ -35,9 +35,9 @@
       "sha256": "ab88b54c667588554a0e8d683983f3b56fd543be5c775114057ece6e5cd4690c"
     },
     {
-      "bytes": 11651,
+      "bytes": 11648,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
-      "sha256": "868d8b9ba73b35c6347dc777fa1dd1a1a3ce34e2fa9421e47a58eeb7c354398e"
+      "sha256": "5a118462f76a8cefc1d44a4b444e45ba4e9bc84793a0f5825f98d262b0b67bb8"
     },
     {
       "bytes": 138382,

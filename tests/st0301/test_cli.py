@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 
 from .support import REPOSITORY_ROOT
+from raos.migrations import catalog
 from raos.migrations.cli import main
 
 
@@ -21,7 +22,7 @@ def test_verify_emits_one_deterministic_json_document() -> None:
     value = json.loads(first.getvalue())
     assert value["status"] == "PASS"
     assert value["command"] == "verify"
-    assert value["revision_source_count"] == 6
+    assert value["revision_source_count"] == len(catalog.REVISION_SPECS)
     assert value["checkpoint_source_count"] == 18
     assert set(value) == {
         "catalog_sha256",

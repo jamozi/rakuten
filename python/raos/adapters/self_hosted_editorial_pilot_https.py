@@ -130,9 +130,14 @@ _PRIVATE_DIRECTORY_MODE: Final = 0o700
 _MAX_GATE_BYTES: Final = 16_384
 _MAX_ROBOTS_BYTES: Final = 262_144
 _MAX_THEME_CONTRACT_BYTES: Final = 262_144
+_MAX_THEME_NAVIGATION_BYTES: Final = 262_144
 _THEME_CONTRACT_RELATIVE_PATH: Final = Path(
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
     "kurashinoshirube-child/theme-contract.v1.json"
+)
+_THEME_NAVIGATION_RELATIVE_PATH: Final = Path(
+    "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/assets/editorial-navigation.v3.json"
 )
 _SITEMAP_NAMESPACE: Final = "http://www.sitemaps.org/schemas/sitemap/0.9"
 _PUBLISHED_ROBOTS: Final = (
@@ -147,6 +152,16 @@ _WORDPRESS_API_DISCOVERY_LINK: Final = (
 )
 _YOAST_CORE_SITEMAP_REDIRECT: Final = f"{PILOT_ORIGIN}/sitemap_index.xml"
 _YOAST_REDIRECT_BY: Final = "Yoast SEO"
+
+
+@dataclass(frozen=True, slots=True)
+class _ThemeArticleIdentity:
+    article_id: str
+    slug: str
+    section: str
+    title: str
+
+
 _PUBLIC_KINDS: Final = frozenset(
     {
         "wordpress-post",
@@ -324,8 +339,13 @@ def _decode_response(raw: bytes) -> object:
         _fail(EditorialPilotFailureCode.OUTCOME_AMBIGUOUS)
 
 
-def _read_theme_contract(repository_root: Path) -> Mapping[str, object]:
-    path = repository_root / _THEME_CONTRACT_RELATIVE_PATH
+def _read_theme_document(
+    repository_root: Path,
+    relative_path: Path,
+    *,
+    maximum_bytes: int,
+) -> tuple[Mapping[str, object], str]:
+    path = repository_root / relative_path
     descriptor = -1
     try:
         before_path = path.lstat()
@@ -337,7 +357,7 @@ def _read_theme_contract(repository_root: Path) -> Mapping[str, object]:
             or not stat.S_ISREG(before.st_mode)
             or before_path.st_dev != before.st_dev
             or before_path.st_ino != before.st_ino
-            or not 2 <= before.st_size <= _MAX_THEME_CONTRACT_BYTES
+            or not 2 <= before.st_size <= maximum_bytes
         ):
             _fail(EditorialPilotFailureCode.PACKET_INVALID)
         raw = os.read(descriptor, before.st_size + 1)
@@ -356,57 +376,286 @@ def _read_theme_contract(repository_root: Path) -> Mapping[str, object]:
     finally:
         if descriptor >= 0:
             os.close(descriptor)
-    contract = _mapping(_decode_response(raw))
+    return _mapping(_decode_response(raw)), bytes_sha256(raw)
+
+
+def _read_theme_contract(repository_root: Path) -> Mapping[str, object]:
+    contract, _contract_sha256 = _read_theme_document(
+        repository_root,
+        _THEME_CONTRACT_RELATIVE_PATH,
+        maximum_bytes=_MAX_THEME_CONTRACT_BYTES,
+    )
     if contract.get("schema") != "SELF_HOSTED_EDITORIAL_THEME_CONTRACT_V1":
         _fail(EditorialPilotFailureCode.PACKET_INVALID)
     return contract
 
 
-def _load_theme_related_navigation(
+def _load_theme_navigation_v3(
     repository_root: Path,
-) -> dict[str, dict[str, object]]:
+) -> tuple[dict[str, Mapping[str, object]], tuple[Mapping[str, object], ...]]:
     contract = _read_theme_contract(repository_root)
-    related = _mapping(contract.get("related_navigation"))
-    raw_map = _mapping(related.get("map"))
-    article_ids = {identity.article_id for identity in PILOT_ARTICLE_IDENTITIES}
+    related_contract = _mapping(contract.get("related_navigation"))
+    homepage_contract = _mapping(contract.get("homepage_clusters"))
+    if related_contract != {
+        "availability_transition": "TARGET_HUMAN_PUBLICATION_ONLY",
+        "content_hash_scope": "THEME_CHROME_OUTSIDE_WORDPRESS_POST_CONTENT",
+        "minimum_targets_per_article": 2,
+        "owner": "EDITORIAL_V3_GENERATED_NAVIGATION",
+        "preparedness_two_article_policy": (
+            "ONE_SAME_CLUSTER_PLUS_ONE_ADJACENT_CONTEXT_WITHOUT_NEW_ARTICLE"
+        ),
+        "source": "assets/editorial-navigation.v3.json#articles[].related_articles",
+        "target_requirement": (
+            "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
+        ),
+    } or homepage_contract != {
+        "article_count": 10,
+        "cluster_count": 3,
+        "link_requirement": (
+            "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
+        ),
+        "owner": "EDITORIAL_V3_GENERATED_NAVIGATION",
+        "source": "assets/editorial-navigation.v3.json#clusters",
+    }:
+        _fail(EditorialPilotFailureCode.PACKET_INVALID)
+    navigation, navigation_sha256 = _read_theme_document(
+        repository_root,
+        _THEME_NAVIGATION_RELATIVE_PATH,
+        maximum_bytes=_MAX_THEME_NAVIGATION_BYTES,
+    )
+    source_navigation_sha256 = navigation.get("source_navigation_sha256")
+    source_portfolio_sha256 = navigation.get("source_portfolio_sha256")
     if (
-        related.get("owner") != "THEME_FIXED_ALLOWLIST"
-        or related.get("target_requirement")
-        != "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
-        or related.get("map_sha256") != canonical_sha256(dict(raw_map))
-        or set(raw_map) != article_ids
+        set(navigation)
+        != {
+            "articles",
+            "clusters",
+            "schema",
+            "source_navigation_sha256",
+            "source_portfolio_sha256",
+            "target_origin",
+            "version",
+        }
+        or navigation.get("schema") != "RAOS_EDITORIAL_THEME_NAVIGATION_V3"
+        or navigation.get("version") != "3.0.0"
+        or navigation.get("target_origin") != PILOT_ORIGIN
+        or type(source_navigation_sha256) is not str
+        or re.fullmatch(r"[0-9a-f]{64}", source_navigation_sha256, re.ASCII) is None
+        or type(source_portfolio_sha256) is not str
+        or re.fullmatch(r"[0-9a-f]{64}", source_portfolio_sha256, re.ASCII) is None
     ):
         _fail(EditorialPilotFailureCode.PACKET_INVALID)
-    normalized: dict[str, dict[str, object]] = {}
-    for article_id, raw_relation in raw_map.items():
-        relation = _mapping(raw_relation)
-        if set(relation) != {"home_anchor", "home_label", "targets"}:
+    editorial_navigation_contract = _mapping(contract.get("editorial_navigation"))
+    if editorial_navigation_contract != {
+        "article_count": 10,
+        "cluster_count": 3,
+        "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
+        "path": "assets/editorial-navigation.v3.json",
+        "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
+        "sha256": navigation_sha256,
+        "source_navigation_sha256": source_navigation_sha256,
+        "source_portfolio_sha256": source_portfolio_sha256,
+    }:
+        _fail(EditorialPilotFailureCode.PACKET_INVALID)
+    raw_articles = navigation.get("articles")
+    raw_clusters = navigation.get("clusters")
+    if (
+        type(raw_articles) is not list
+        or len(cast(list[object], raw_articles)) != 10
+        or type(raw_clusters) is not list
+        or len(cast(list[object], raw_clusters)) != 3
+    ):
+        _fail(EditorialPilotFailureCode.PACKET_INVALID)
+    articles: dict[str, Mapping[str, object]] = {}
+    article_codes: set[str] = set()
+    production_slugs: set[str] = set()
+    for raw_article in cast(list[object], raw_articles):
+        article = _mapping(raw_article)
+        if set(article) != {
+            "article_code",
+            "article_id",
+            "category_label",
+            "cluster_id",
+            "home_order",
+            "local_slug",
+            "production_slug",
+            "related_articles",
+            "snapshot_id",
+            "title",
+        }:
             _fail(EditorialPilotFailureCode.PACKET_INVALID)
-        anchor = relation["home_anchor"]
-        label = relation["home_label"]
-        targets = _mapping(relation["targets"])
+        article_id = article.get("article_id")
+        article_code = article.get("article_code")
+        category_label = article.get("category_label")
+        cluster_id = article.get("cluster_id")
+        home_order = article.get("home_order")
+        local_slug = article.get("local_slug")
+        production_slug = article.get("production_slug")
+        snapshot_id = article.get("snapshot_id")
+        title = article.get("title")
+        relations = article.get("related_articles")
+        if (
+            type(article_id) is not str
+            or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", article_id, re.ASCII) is None
+            or type(article_code) is not str
+            or re.fullmatch(r"a[0-9]{2}", article_code, re.ASCII) is None
+            or type(category_label) is not str
+            or not category_label
+            or category_label != category_label.strip()
+            or type(cluster_id) is not str
+            or re.fullmatch(r"[a-z]+", cluster_id, re.ASCII) is None
+            or type(home_order) is not int
+            or not 1 <= home_order <= 10
+            or type(local_slug) is not str
+            or re.fullmatch(
+                r"local-preview-[a-z0-9]+(?:-[a-z0-9]+)*", local_slug, re.ASCII
+            )
+            is None
+            or type(production_slug) is not str
+            or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", production_slug, re.ASCII)
+            is None
+            or type(snapshot_id) is not str
+            or re.fullmatch(r"snp-a[0-9]{2}-[0-9a-f]{12}", snapshot_id, re.ASCII)
+            is None
+            or type(title) is not str
+            or not title
+            or title != title.strip()
+            or type(relations) is not list
+            or len(cast(list[object], relations)) < 2
+            or article_id in articles
+            or article_code in article_codes
+            or production_slug in production_slugs
+        ):
+            _fail(EditorialPilotFailureCode.PACKET_INVALID)
+        articles[article_id] = article
+        article_codes.add(article_code)
+        production_slugs.add(production_slug)
+    clusters: list[Mapping[str, object]] = []
+    cluster_ids: set[str] = set()
+    anchors: set[str] = set()
+    observed_article_ids: list[str] = []
+    for raw_cluster in cast(list[object], raw_clusters):
+        cluster = _mapping(raw_cluster)
+        if set(cluster) != {
+            "anchor",
+            "article_ids",
+            "cluster_id",
+            "description",
+            "heading",
+            "home_order",
+            "label",
+        }:
+            _fail(EditorialPilotFailureCode.PACKET_INVALID)
+        anchor = cluster.get("anchor")
+        article_ids = cluster.get("article_ids")
+        cluster_id = cluster.get("cluster_id")
+        home_order = cluster.get("home_order")
         if (
             type(anchor) is not str
             or re.fullmatch(r"cluster-[a-z]+", anchor, re.ASCII) is None
-            or type(label) is not str
-            or not label
-            or len(targets) > 1
+            or type(cluster_id) is not str
+            or re.fullmatch(r"[a-z]+", cluster_id, re.ASCII) is None
+            or type(home_order) is not int
+            or not 1 <= home_order <= 3
+            or type(article_ids) is not list
+            or len(cast(list[object], article_ids)) < 2
+            or len(set(cast(list[object], article_ids)))
+            != len(cast(list[object], article_ids))
+            or cluster_id in cluster_ids
+            or anchor in anchors
         ):
             _fail(EditorialPilotFailureCode.PACKET_INVALID)
-        target: tuple[str, str] | None = None
-        if targets:
-            target_id, target_label = next(iter(targets.items()))
+        for key in ("description", "heading", "label"):
+            value = cluster.get(key)
+            if type(value) is not str or not value or value != value.strip():
+                _fail(EditorialPilotFailureCode.PACKET_INVALID)
+        for article_id in cast(list[object], article_ids):
             if (
-                target_id not in article_ids
-                or target_id == article_id
-                or type(target_label) is not str
-                or not target_label
+                type(article_id) is not str
+                or article_id not in articles
+                or articles[article_id].get("cluster_id") != cluster_id
             ):
                 _fail(EditorialPilotFailureCode.PACKET_INVALID)
-            target = (target_id, target_label)
+            observed_article_ids.append(article_id)
+        clusters.append(cluster)
+        cluster_ids.add(cluster_id)
+        anchors.add(anchor)
+    clusters.sort(key=lambda row: cast(int, row["home_order"]))
+    if (
+        [cast(int, row["home_order"]) for row in clusters] != [1, 2, 3]
+        or len(observed_article_ids) != len(set(observed_article_ids))
+        or set(observed_article_ids) != set(articles)
+    ):
+        _fail(EditorialPilotFailureCode.PACKET_INVALID)
+    for article_id, article in articles.items():
+        related_ids: set[str] = set()
+        for raw_relation in cast(list[object], article["related_articles"]):
+            relation = _mapping(raw_relation)
+            target_id = relation.get("article_id")
+            relationship = relation.get("relationship")
+            if (
+                set(relation) != {"article_id", "relationship"}
+                or type(target_id) is not str
+                or target_id not in articles
+                or target_id == article_id
+                or target_id in related_ids
+                or relationship not in {"same_cluster", "adjacent_context"}
+                or (
+                    relationship == "same_cluster"
+                    and articles[target_id].get("cluster_id")
+                    != article.get("cluster_id")
+                )
+                or (
+                    relationship == "adjacent_context"
+                    and articles[target_id].get("cluster_id")
+                    == article.get("cluster_id")
+                )
+            ):
+                _fail(EditorialPilotFailureCode.PACKET_INVALID)
+            related_ids.add(target_id)
+    return articles, tuple(clusters)
+
+
+def _load_theme_related_navigation(
+    repository_root: Path,
+) -> dict[str, dict[str, object]]:
+    articles, clusters = _load_theme_navigation_v3(repository_root)
+    pilot_identities = {
+        identity.article_id: identity for identity in PILOT_ARTICLE_IDENTITIES
+    }
+    for article_id, identity in pilot_identities.items():
+        article = articles.get(article_id)
+        if (
+            article is None
+            or article.get("production_slug") != identity.slug
+            or article.get("category_label") != identity.section
+        ):
+            _fail(EditorialPilotFailureCode.PACKET_INVALID)
+    cluster_by_id = {cast(str, row["cluster_id"]): row for row in clusters}
+    normalized: dict[str, dict[str, object]] = {}
+    for article_id, article in articles.items():
+        cluster = cluster_by_id.get(cast(str, article["cluster_id"]))
+        if cluster is None:
+            _fail(EditorialPilotFailureCode.PACKET_INVALID)
+        anchor = cast(str, cluster["anchor"])
+        home_label = f"暮らしの道具「{cluster['label']}」の一覧へ"
+        targets: list[_ThemeArticleIdentity] = []
+        for raw_relation in cast(list[object], article["related_articles"]):
+            target_id = cast(str, _mapping(raw_relation)["article_id"])
+            target = articles[target_id]
+            targets.append(
+                _ThemeArticleIdentity(
+                    article_id=target_id,
+                    slug=cast(str, target["production_slug"]),
+                    section=cast(str, target["category_label"]),
+                    title=cast(str, target["title"]),
+                )
+            )
+        if len(targets) < 2:
+            _fail(EditorialPilotFailureCode.PACKET_INVALID)
         normalized[article_id] = {
-            "home": (f"{PILOT_ORIGIN}/#{anchor}", label),
-            "target": target,
+            "home": (f"{PILOT_ORIGIN}/#{anchor}", home_label),
+            "targets": tuple(targets),
         }
     return normalized
 
@@ -414,85 +663,40 @@ def _load_theme_related_navigation(
 def _load_theme_homepage_clusters(
     repository_root: Path,
 ) -> dict[str, object]:
-    contract = _read_theme_contract(repository_root)
-    homepage = _mapping(contract.get("homepage_clusters"))
-    config = _mapping(homepage.get("config"))
-    clusters = _mapping(config.get("clusters"))
-    display_order = config.get("display_order")
-    article_ids = {identity.article_id for identity in PILOT_ARTICLE_IDENTITIES}
-    related = _mapping(_mapping(contract.get("related_navigation")).get("map"))
-    if (
-        set(homepage) != {"config", "config_sha256", "link_requirement", "owner"}
-        or homepage.get("owner") != "THEME_FIXED_ALLOWLIST"
-        or homepage.get("link_requirement")
-        != "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
-        or homepage.get("config_sha256") != canonical_sha256(dict(config))
-        or set(config) != {"clusters", "display_order"}
-        or type(display_order) is not list
-        or len(cast(list[object], display_order)) != 3
-        or len(set(cast(list[object], display_order))) != 3
-        or set(cast(list[object], display_order)) != set(clusters)
-    ):
-        _fail(EditorialPilotFailureCode.PACKET_INVALID)
+    articles, clusters = _load_theme_navigation_v3(repository_root)
     normalized_clusters: dict[str, dict[str, object]] = {}
     observed_article_ids: set[str] = set()
-    for cluster_id in cast(list[object], display_order):
-        if (
-            type(cluster_id) is not str
-            or re.fullmatch(r"cluster-[a-z]+", cluster_id, re.ASCII) is None
-        ):
-            _fail(EditorialPilotFailureCode.PACKET_INVALID)
-        cluster = _mapping(clusters[cluster_id])
-        if set(cluster) != {
-            "description",
-            "heading",
-            "label",
-            "post_order",
-            "posts",
-        }:
-            _fail(EditorialPilotFailureCode.PACKET_INVALID)
-        posts = _mapping(cluster["posts"])
-        post_order = cluster["post_order"]
-        if (
-            not posts
-            or type(post_order) is not list
-            or len(cast(list[object], post_order)) != len(posts)
-            or len(set(cast(list[object], post_order))) != len(posts)
-            or set(cast(list[object], post_order)) != set(posts)
-        ):
-            _fail(EditorialPilotFailureCode.PACKET_INVALID)
-        normalized_posts: list[tuple[str, str]] = []
-        for article_id in cast(list[object], post_order):
-            if type(article_id) is not str:
-                _fail(EditorialPilotFailureCode.PACKET_INVALID)
-            label = posts[article_id]
-            relation = _mapping(related.get(article_id))
-            if (
-                article_id not in article_ids
-                or article_id in observed_article_ids
-                or type(label) is not str
-                or not label
-                or label != label.strip()
-                or relation.get("home_anchor") != cluster_id
-            ):
+    display_order: list[str] = []
+    for cluster in clusters:
+        cluster_id = cast(str, cluster["anchor"])
+        display_order.append(cluster_id)
+        normalized_posts: list[_ThemeArticleIdentity] = []
+        for article_id in cast(list[str], cluster["article_ids"]):
+            if article_id in observed_article_ids:
                 _fail(EditorialPilotFailureCode.PACKET_INVALID)
             observed_article_ids.add(article_id)
-            normalized_posts.append((article_id, label))
-        for key in ("description", "heading", "label"):
-            value = cluster[key]
-            if type(value) is not str or not value or value != value.strip():
-                _fail(EditorialPilotFailureCode.PACKET_INVALID)
+            article = articles[article_id]
+            normalized_posts.append(
+                _ThemeArticleIdentity(
+                    article_id=article_id,
+                    slug=cast(str, article["production_slug"]),
+                    section=cast(str, article["category_label"]),
+                    title=cast(str, article["title"]),
+                )
+            )
+        if not normalized_posts:
+            _fail(EditorialPilotFailureCode.PACKET_INVALID)
         normalized_clusters[cluster_id] = {
             "description": cluster["description"],
             "heading": cluster["heading"],
             "label": cluster["label"],
             "posts": tuple(normalized_posts),
         }
-    if observed_article_ids != article_ids:
+    if observed_article_ids != set(articles):
         _fail(EditorialPilotFailureCode.PACKET_INVALID)
     return {
         "clusters": normalized_clusters,
-        "display_order": tuple(cast(list[str], display_order)),
+        "display_order": tuple(display_order),
     }
 
 
@@ -628,57 +832,59 @@ def _public_post_dates(value: object) -> tuple[str, str]:
     return published, modified
 
 
-def _related_target_identity(
+def _related_target_identities(
     request: ReviewDraftRequest,
     related_navigation: Mapping[str, Mapping[str, object]],
-) -> PilotArticleIdentity | None:
+) -> tuple[_ThemeArticleIdentity, ...]:
     relation = related_navigation.get(request.article_id)
     if relation is None:
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-    target = relation.get("target")
-    if target is None:
-        return None
-    if type(target) is not tuple:
+    targets = relation.get("targets")
+    if type(targets) is not tuple:
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-    target_values = cast(tuple[object, ...], target)
-    if len(target_values) != 2:
+    identities = cast(tuple[object, ...], targets)
+    if len(identities) < 2 or any(
+        type(identity) is not _ThemeArticleIdentity for identity in identities
+    ):
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-    target_id = target_values[0]
-    matches = [
-        identity
-        for identity in PILOT_ARTICLE_IDENTITIES
-        if identity.article_id == target_id
-    ]
-    if len(matches) != 1:
+    typed = cast(tuple[_ThemeArticleIdentity, ...], identities)
+    if len({identity.article_id for identity in typed}) != len(typed):
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-    return matches[0]
+    return typed
 
 
-def _related_target_is_bound(
+def _related_targets_bound(
     raw: bytes,
     request: ReviewDraftRequest,
     related_navigation: Mapping[str, Mapping[str, object]],
-) -> bool:
-    identity = _related_target_identity(request, related_navigation)
-    if identity is None:
-        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+) -> tuple[_ThemeArticleIdentity, ...]:
+    identities = _related_target_identities(request, related_navigation)
+    identities_by_slug = {identity.slug: identity for identity in identities}
     decoded = _decode_response(raw)
     if type(decoded) is not list:
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
     rows = cast(list[object], decoded)
-    if not rows:
-        return False
-    if len(rows) != 1:
+    if len(rows) > len(identities):
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-    relation = related_navigation[request.article_id]
-    target = cast(tuple[str, str], relation["target"])
-    _validate_bound_public_post(rows[0], identity, expected_title=target[1])
-    return True
+    bound_ids: set[str] = set()
+    for row in rows:
+        post = _mapping(row)
+        slug = post.get("slug")
+        if type(slug) is not str or slug not in identities_by_slug:
+            _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+        identity = identities_by_slug[slug]
+        _validate_v3_public_post(row, identity)
+        if identity.article_id in bound_ids:
+            _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+        bound_ids.add(identity.article_id)
+    return tuple(
+        identity for identity in identities if identity.article_id in bound_ids
+    )
 
 
 def _validate_bound_public_post(
     value: object,
-    identity: PilotArticleIdentity,
+    identity: PilotArticleIdentity | _ThemeArticleIdentity,
     *,
     expected_title: str | None = None,
 ) -> int:
@@ -798,13 +1004,111 @@ def _validate_bound_public_post(
     return post_id
 
 
-def _bound_home_articles(raw: bytes) -> dict[str, int]:
+def _validate_v3_public_post(
+    value: object,
+    identity: _ThemeArticleIdentity,
+) -> int:
+    post = _mapping(value)
+    required = {
+        "content",
+        "date_gmt",
+        "excerpt",
+        "id",
+        "meta",
+        "modified_gmt",
+        "slug",
+        "status",
+        "title",
+        "type",
+    }
+    if (
+        not required <= set(post)
+        or post["type"] != "post"
+        or post["status"] != "publish"
+        or post["slug"] != identity.slug
+    ):
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    title = _mapping(post["title"])
+    content = _mapping(post["content"])
+    excerpt = _mapping(post["excerpt"])
+    meta = _mapping(post["meta"])
+    if (
+        set(title) != {"raw"}
+        or set(content) != {"raw"}
+        or set(excerpt) != {"raw"}
+        or set(meta) != {PILOT_SNAPSHOT_META_KEY}
+        or title.get("raw") != identity.title
+        or type(content.get("raw")) is not str
+        or type(excerpt.get("raw")) is not str
+        or type(meta.get(PILOT_SNAPSHOT_META_KEY)) is not str
+    ):
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    snapshot_raw = cast(str, meta[PILOT_SNAPSHOT_META_KEY])
+    if snapshot_raw:
+        return _validate_bound_public_post(
+            value,
+            identity,
+            expected_title=identity.title,
+        )
+    raw_content = cast(str, content["raw"])
+    article_ids = re.findall(
+        r'\bdata-raos-article-id="([a-z0-9]+(?:-[a-z0-9]+)*)"',
+        raw_content,
+        re.ASCII,
+    )
+    if (
+        not raw_content.startswith('<div class="raos-editorial-v2">\n')
+        or not raw_content.endswith("</div>\n")
+        or raw_content.count('<div class="raos-editorial-v2">') != 1
+        or not article_ids
+        or set(article_ids) != {identity.article_id}
+    ):
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    _public_post_dates(post)
+    post_id = post.get("id")
+    if type(post_id) is not int or not 1 <= post_id <= (1 << 63) - 1:
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    return post_id
+
+
+def _homepage_article_identities(
+    homepage_clusters: Mapping[str, object],
+) -> tuple[_ThemeArticleIdentity, ...]:
+    clusters = cast(
+        Mapping[str, Mapping[str, object]], homepage_clusters.get("clusters")
+    )
+    display_order = homepage_clusters.get("display_order")
+    if type(display_order) is not tuple:
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    identities: list[_ThemeArticleIdentity] = []
+    for cluster_id in cast(tuple[object, ...], display_order):
+        if type(cluster_id) is not str or cluster_id not in clusters:
+            _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+        posts = clusters[cluster_id].get("posts")
+        if type(posts) is not tuple or any(
+            type(identity) is not _ThemeArticleIdentity
+            for identity in cast(tuple[object, ...], posts)
+        ):
+            _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+        identities.extend(cast(tuple[_ThemeArticleIdentity, ...], posts))
+    if (
+        len(identities) != 10
+        or len({identity.article_id for identity in identities}) != len(identities)
+        or len({identity.slug for identity in identities}) != len(identities)
+    ):
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
+    return tuple(identities)
+
+
+def _bound_home_articles(
+    raw: bytes,
+    homepage_clusters: Mapping[str, object],
+) -> dict[str, int]:
     decoded = _decode_response(raw)
     if type(decoded) is not list:
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-    identities_by_slug = {
-        identity.slug: identity for identity in PILOT_ARTICLE_IDENTITIES
-    }
+    identities = _homepage_article_identities(homepage_clusters)
+    identities_by_slug = {identity.slug: identity for identity in identities}
     bound: dict[str, int] = {}
     post_ids: set[int] = set()
     for raw_post in cast(list[object], decoded):
@@ -813,12 +1117,12 @@ def _bound_home_articles(raw: bytes) -> dict[str, int]:
         if type(slug) is not str or slug not in identities_by_slug:
             _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
         identity = identities_by_slug[slug]
-        post_id = _validate_bound_public_post(raw_post, identity)
+        post_id = _validate_v3_public_post(raw_post, identity)
         if identity.article_id in bound or post_id in post_ids:
             _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
         bound[identity.article_id] = post_id
         post_ids.add(post_id)
-    if not bound:
+    if set(bound) != {identity.article_id for identity in identities}:
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
     return bound
 
@@ -965,10 +1269,10 @@ class _RenderedContentParser(HTMLParser):
                 "rel",
             }
             allowed = required | {"aria-describedby"}
-            if not required.issubset(attributes) or not set(attributes).issubset(
-                allowed
-            ) or any(
-                type(attributes[key]) is not str for key in required
+            if (
+                not required.issubset(attributes)
+                or not set(attributes).issubset(allowed)
+                or any(type(attributes[key]) is not str for key in required)
             ):
                 _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
             placement = cast(str, attributes["data-raos-placement"])
@@ -1049,7 +1353,8 @@ class _RenderedContentParser(HTMLParser):
                     )
                     if (
                         set(attributes) != allowed
-                        or image_size not in {("64", "64"), ("96", "96"), ("128", "128")}
+                        or image_size
+                        not in {("64", "64"), ("96", "96"), ("128", "128")}
                         or attributes.get("loading") != "lazy"
                         or attributes.get("decoding") != "async"
                         or type(attributes.get("alt")) is not str
@@ -1208,7 +1513,7 @@ class _RelatedLinkParser(HTMLParser):
 
 
 class _HomepageClusterParser(HTMLParser):
-    """Collect the one theme-owned cluster navigation and all pilot links."""
+    """Collect the one theme-owned cluster navigation and all V3 article links."""
 
     __slots__ = (
         "active_cluster",
@@ -1223,8 +1528,10 @@ class _HomepageClusterParser(HTMLParser):
         "review_href_count",
     )
 
-    def __init__(self) -> None:
+    def __init__(self, article_urls: frozenset[str]) -> None:
         super().__init__(convert_charrefs=True)
+        if len(article_urls) != 10:
+            _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
         self.active_cluster: str | None = None
         self.active_href: str | None = None
         self.active_parts: list[str] = []
@@ -1232,9 +1539,7 @@ class _HomepageClusterParser(HTMLParser):
         self.cluster_container_depth = 0
         self.cluster_depth = 0
         self.cluster_links: dict[str, list[tuple[str, str]]] = {}
-        self.pilot_urls = {
-            f"{PILOT_ORIGIN}/{identity.slug}/" for identity in PILOT_ARTICLE_IDENTITIES
-        }
+        self.pilot_urls = article_urls
         self.pilot_hrefs: list[str] = []
         self.review_href_count = 0
 
@@ -1342,7 +1647,10 @@ def _validate_homepage_html(
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
     try:
         document = raw.decode("utf-8", errors="strict")
-        parser = _HomepageClusterParser()
+        identities = _homepage_article_identities(homepage_clusters)
+        parser = _HomepageClusterParser(
+            frozenset(f"{PILOT_ORIGIN}/{identity.slug}/" for identity in identities)
+        )
         parser.feed(document)
         parser.close()
     except EditorialPilotFailure:
@@ -1351,9 +1659,8 @@ def _validate_homepage_html(
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
     clusters = cast(Mapping[str, Mapping[str, object]], homepage_clusters["clusters"])
     display_order = cast(tuple[str, ...], homepage_clusters["display_order"])
-    identities = {
-        identity.article_id: identity for identity in PILOT_ARTICLE_IDENTITIES
-    }
+    if set(bound_articles) != {identity.article_id for identity in identities}:
+        _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
     expected_all: list[str] = []
     if (
         parser.cluster_container_count != 1
@@ -1365,11 +1672,12 @@ def _validate_homepage_html(
     ):
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
     for cluster_id in display_order:
-        posts = cast(tuple[tuple[str, str], ...], clusters[cluster_id]["posts"])
+        posts = cast(
+            tuple[_ThemeArticleIdentity, ...], clusters[cluster_id]["posts"]
+        )
         expected_links = [
-            (f"{PILOT_ORIGIN}/{identities[article_id].slug}/", label)
-            for article_id, label in posts
-            if article_id in bound_articles
+            (f"{PILOT_ORIGIN}/{identity.slug}/", identity.title)
+            for identity in posts
         ]
         if parser.cluster_links[cluster_id] != expected_links:
             _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
@@ -1622,7 +1930,7 @@ def _validate_article_html(
     request: ReviewDraftRequest,
     published: str,
     modified: str,
-    related_target_bound: bool,
+    bound_related_targets: tuple[_ThemeArticleIdentity, ...],
     related_navigation: Mapping[str, Mapping[str, object]],
 ) -> None:
     if raw.startswith(b"\xef\xbb\xbf") or b"\x00" in raw:
@@ -1727,24 +2035,17 @@ def _validate_article_html(
     relation = related_navigation[request.article_id]
     home = cast(tuple[str, str], relation["home"])
     expected_related: list[tuple[str, str]] = []
-    target = relation["target"]
-    if related_target_bound:
-        if type(target) is not tuple:
-            _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-        target_values = cast(tuple[object, ...], target)
-        if len(target_values) != 2:
-            _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-        target_identity = _related_target_identity(request, related_navigation)
-        if target_identity is None:
-            _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
-        expected_related.append(
-            (
-                f"{PILOT_ORIGIN}/{target_identity.slug}/",
-                _public_observation_string(target_values[1]),
-            )
+    if len(bound_related_targets) >= 2:
+        expected_related.extend(
+            (f"{PILOT_ORIGIN}/{identity.slug}/", identity.title)
+            for identity in bound_related_targets
         )
-    expected_related.append(home)
-    if related.container_count != 1 or related.links != expected_related:
+        expected_related.append(home)
+    expected_container_count = 1 if expected_related else 0
+    if (
+        related.container_count != expected_container_count
+        or related.links != expected_related
+    ):
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
 
 
@@ -1907,9 +2208,7 @@ def _validate_review_not_found_body(raw: bytes, *, request: ReviewDraftRequest) 
     observed_without_expected_route: list[str] = []
     for observed in observed_views:
         cleaned = observed
-        for allowed in sorted(
-            set(allowed_review_route_views), key=len, reverse=True
-        ):
+        for allowed in sorted(set(allowed_review_route_views), key=len, reverse=True):
             cleaned = cleaned.replace(allowed, "")
         if cleaned:
             observed_without_expected_route.append(cleaned)
@@ -2527,13 +2826,14 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
     ) -> _FixedPublicReadCapture:
         if kind not in _PUBLIC_KINDS or type(authorization) is not str:
             _fail(EditorialPilotFailureCode.OPERATION_NOT_ALLOWED)
-        related_identity = (
-            _related_target_identity(request, self._related_navigation)
+        related_identities = (
+            _related_target_identities(request, self._related_navigation)
             if kind == "related-target"
-            else None
+            else ()
         )
-        if kind == "related-target" and related_identity is None:
+        if kind == "related-target" and len(related_identities) < 2:
             _fail(EditorialPilotFailureCode.OPERATION_NOT_ALLOWED)
+        homepage_identities = _homepage_article_identities(self._homepage_clusters)
         exchanges = {
             "wordpress-post": (
                 self._collection_path(request, status="publish"),
@@ -2563,8 +2863,11 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
             "related-target": (
                 (
                     f"{PILOT_POSTS_PATH}?context=edit&slug="
-                    f"{related_identity.slug if related_identity is not None else ''}"
-                    f"&status=publish&_fields={_RECOVERY_FIELDS}&per_page=2"
+                    + "%2C".join(
+                        identity.slug for identity in related_identities
+                    )
+                    + f"&status=publish&_fields={_RECOVERY_FIELDS}"
+                    f"&per_page={len(related_identities)}"
                 ),
                 "application/json",
                 _CONTENT_TYPE,
@@ -2575,8 +2878,9 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
             "homepage-targets": (
                 (
                     f"{PILOT_POSTS_PATH}?context=edit&status=publish&slug="
-                    + "%2C".join(identity.slug for identity in PILOT_ARTICLE_IDENTITIES)
-                    + f"&page=1&per_page=5&_fields={_RECOVERY_FIELDS}"
+                    + "%2C".join(identity.slug for identity in homepage_identities)
+                    + f"&page=1&per_page={len(homepage_identities)}"
+                    f"&_fields={_RECOVERY_FIELDS}"
                 ),
                 "application/json",
                 _CONTENT_TYPE,
@@ -2725,7 +3029,9 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                 )
                 if (
                     type(http_status) is not int
-                    or (kind == "core-sitemap" and not exact_yoast_core_sitemap_redirect)
+                    or (
+                        kind == "core-sitemap" and not exact_yoast_core_sitemap_redirect
+                    )
                     or (kind != "core-sitemap" and http_status != expected_status)
                     or type(content_type) is not str
                     or content_type_pattern.fullmatch(content_type) is None
@@ -2809,7 +3115,7 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
                     collection = cast(list[object], decoded)
                     if (
-                        len(collection) not in {0, 1}
+                        not 0 <= len(collection) <= len(related_identities)
                         or response.getheader("X-WP-Total") != str(len(collection))
                         or response.getheader("X-WP-TotalPages")
                         != ("1" if collection else "0")
@@ -2824,7 +3130,7 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
                         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
                     collection = cast(list[object], decoded)
                     if (
-                        not 1 <= len(collection) <= len(PILOT_ARTICLE_IDENTITIES)
+                        len(collection) != len(homepage_identities)
                         or response.getheader("X-WP-Total") != str(len(collection))
                         or response.getheader("X-WP-TotalPages") != "1"
                         or not _collection_link_header_is_fixed(
@@ -3107,28 +3413,25 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
             authorization=authorization,
         )
         _validate_public_category(posts[0], category_raw)
-        related_identity = _related_target_identity(request, self._related_navigation)
-        if related_identity is None:
-            related_target_bound = False
-            related_target_sha256 = canonical_sha256(
-                {"article_id": request.article_id, "related_target": None}
-            )
-        else:
-            related_target_raw = self._fixed_public_read(
-                request,
-                kind="related-target",
-                authorization=authorization,
-            )
-            related_target_bound = _related_target_is_bound(
-                related_target_raw, request, self._related_navigation
-            )
-            related_target_sha256 = bytes_sha256(related_target_raw)
+        _related_target_identities(request, self._related_navigation)
+        related_target_raw = self._fixed_public_read(
+            request,
+            kind="related-target",
+            authorization=authorization,
+        )
+        bound_related_targets = _related_targets_bound(
+            related_target_raw, request, self._related_navigation
+        )
+        related_target_sha256 = bytes_sha256(related_target_raw)
         homepage_targets_raw = self._fixed_public_read(
             request,
             kind="homepage-targets",
             authorization=authorization,
         )
-        bound_home_articles = _bound_home_articles(homepage_targets_raw)
+        bound_home_articles = _bound_home_articles(
+            homepage_targets_raw,
+            self._homepage_clusters,
+        )
         if bound_home_articles.get(request.article_id) != expected_public_post_id:
             _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
         article_raw = self._fixed_public_read(
@@ -3205,7 +3508,7 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
             request=request,
             published=published,
             modified=modified,
-            related_target_bound=related_target_bound,
+            bound_related_targets=bound_related_targets,
             related_navigation=self._related_navigation,
         )
         _validate_homepage_html(

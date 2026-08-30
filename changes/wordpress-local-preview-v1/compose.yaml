@@ -31,8 +31,9 @@ services:
       WORDPRESS_DB_PASSWORD: ${RAOS_WORDPRESS_PREVIEW_DATABASE_PASSWORD:?database password is required}
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_CONFIG_EXTRA: |
-        define('WP_HOME', 'http://127.0.0.1:8888');
-        define('WP_SITEURL', 'http://127.0.0.1:8888');
+        define('WP_HOME', '${RAOS_WORDPRESS_PREVIEW_ORIGIN:?preview origin is required}');
+        define('WP_SITEURL', '${RAOS_WORDPRESS_PREVIEW_ORIGIN:?preview origin is required}');
+        define('RAOS_WORDPRESS_PREVIEW_ORIGIN', '${RAOS_WORDPRESS_PREVIEW_ORIGIN:?preview origin is required}');
         define('WP_ENVIRONMENT_TYPE', 'local');
         define('RAOS_LOCAL_PREVIEW', true);
         define('WP_HTTP_BLOCK_EXTERNAL', true);
@@ -53,6 +54,10 @@ services:
       - type: bind
         source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/wordpress-local-preview-v1/mu-plugins
         target: /var/www/html/wp-content/mu-plugins
+        read_only: true
+      - type: bind
+        source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement
+        target: /var/www/html/wp-content/plugins/raos-editorial-measurement
         read_only: true
       - type: bind
         source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/wordpress-local-preview-v1
@@ -82,7 +87,7 @@ services:
     security_opt:
       - no-new-privileges:true
     ports:
-      - '127.0.0.1:8888:8080'
+      - '127.0.0.1:${RAOS_WORDPRESS_PREVIEW_PORT:?preview port is required}:8080'
     tmpfs:
       - /tmp:mode=0700,uid=101,gid=101
     volumes:
@@ -115,8 +120,9 @@ services:
       WORDPRESS_DB_PASSWORD: ${RAOS_WORDPRESS_PREVIEW_DATABASE_PASSWORD:?database password is required}
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_CONFIG_EXTRA: |
-        define('WP_HOME', 'http://127.0.0.1:8888');
-        define('WP_SITEURL', 'http://127.0.0.1:8888');
+        define('WP_HOME', '${RAOS_WORDPRESS_PREVIEW_ORIGIN:?preview origin is required}');
+        define('WP_SITEURL', '${RAOS_WORDPRESS_PREVIEW_ORIGIN:?preview origin is required}');
+        define('RAOS_WORDPRESS_PREVIEW_ORIGIN', '${RAOS_WORDPRESS_PREVIEW_ORIGIN:?preview origin is required}');
         define('WP_ENVIRONMENT_TYPE', 'local');
         define('RAOS_LOCAL_PREVIEW', true);
         define('WP_HTTP_BLOCK_EXTERNAL', true);
@@ -139,6 +145,10 @@ services:
       - type: bind
         source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/wordpress-local-preview-v1/mu-plugins
         target: /var/www/html/wp-content/mu-plugins
+        read_only: true
+      - type: bind
+        source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement
+        target: /var/www/html/wp-content/plugins/raos-editorial-measurement
         read_only: true
       - type: bind
         source: ${RAOS_REPOSITORY_ROOT:?repository root is required}/changes/wordpress-local-preview-v1

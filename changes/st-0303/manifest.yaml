@@ -57,11 +57,11 @@ source_artifacts:
   bytes: 7
   sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab
 - uri: repo://pyproject.toml
-  bytes: 1753
-  sha256: 34ee344782dbaf4135cb235e2fec215a1c709089c0994415fdeadf33979a6207
+  bytes: 1800
+  sha256: 9c9dd49b7f08beebbc45febad001013e1151f1d4fb5d350e170d58a921436c87
 - uri: repo://uv.lock
-  bytes: 129836
-  sha256: 0fc086e9d00664d28654e03440962d926944e8019f54431f378f3182e292cebf
+  bytes: 165160
+  sha256: b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1
 - uri: repo://uv.toml
   bytes: 355
   sha256: 1511da8b08f4c030085b823f59fcf8cd8c6d0ba6393444efd5053848a7357085
@@ -84,8 +84,8 @@ source_artifacts:
   bytes: 36955
   sha256: 847c9eab92236b8f40d63423b6640e0aa299cf5562040aa64f60358248ea4375
 - uri: repo://scripts/build_st0301_migration_framework.py
-  bytes: 20418
-  sha256: 8846f478d85f7be611b683c9b5af64b562f60bc1fd5e648e4209618e72ecab6d
+  bytes: 20722
+  sha256: 3929f567a1ea14370c7987c1a682df4a94da15ab6beeb00076a27edd204fe3e0
 - uri: repo://changes/st-0301/contracts/migration-framework.v1.yaml
   bytes: 10671
   sha256: 8759a4af2d157fbde6867eb2ebdd22ccccf2f8acb58deafb63472ce8cb96722f
@@ -114,14 +114,14 @@ source_artifacts:
   bytes: 95
   sha256: af1ee19045159284d19a98affa97be2d7501a749ee4fe48ae074b74109bf6325
 - uri: repo://python/raos/migrations/catalog.py
-  bytes: 20363
-  sha256: c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642
+  bytes: 20865
+  sha256: a4181b2d1de4a01a898b60b3e57a1640d7aa539be61f35b9e84c984df80b4839
 - uri: repo://python/raos/migrations/cli.py
   bytes: 3695
   sha256: f3bedc3fb40b06595db6026d8ef50a30ef405ed4c0cb1ec94ca44f0b7bf6a0b0
 - uri: repo://python/raos/migrations/runner.py
-  bytes: 214267
-  sha256: 4119eae05837f39a1ab47223d1e8dd1bb9f72a6a175ee66500c2d304b1969cfb
+  bytes: 222535
+  sha256: 2e83bac7ca61ea44c08b95d8f13778e0b60de95ee7c43b6f04fe0886cc96145d
 - uri: repo://tests/conftest.py
   bytes: 1892
   sha256: 3cdb157bf4fabdc226ed3c3e764f29b2dd7993902f91f4e3ee8807087c99b9de
@@ -136,19 +136,19 @@ source_artifacts:
   sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0301/test_catalog.py
   bytes: 11938
-  sha256: bc9d6b419592f56a75490bda377c534f18985be00ab934b60db2a33b39e02b34
+  sha256: b8d917d9c0ea46a347787c37e6221ca023a5fc9d7c5422c877f9f2c5dbbba74e
 - uri: repo://tests/st0301/test_cli.py
-  bytes: 2723
-  sha256: fd0b0aabc1b870a42d9b2f4c67ae08937cda6f8ce91b3301b47dae41132f9409
+  bytes: 2785
+  sha256: 8409c76ad8151d7013efd5667df6d8d2311b0e57ed5928526787780fcdc793e9
 - uri: repo://tests/st0301/test_contract.py
-  bytes: 10581
-  sha256: 4b0cab077989393fc3d41c5663bf5dcbf9318abff471cce92ea06514e532bf5b
+  bytes: 10677
+  sha256: 9231caabe4dd03cf80489acd3ca283a433f06d07daa0f3bee5d242a13e519921
 - uri: repo://tests/st0301/test_generation.py
   bytes: 7594
   sha256: b1f806aa383afe176f34f59bdf03bd107412061e52351c3adf8bafda887b6d70
 - uri: repo://tests/st0301/test_postgresql.py
   bytes: 34214
-  sha256: 117c51b3cf5f4b39635d3a55090e8fbd69606bc2d703a2345bcd0ecbc04e8b7e
+  sha256: f6273b69e73a7c98a790eb9208def9fa5b23f1d2c827a6628468afde6054e92f
 - uri: repo://tests/st0301/test_runner.py
   bytes: 32118
   sha256: 71208aac56bc84825c0f140199fd388c09d1c9ec60e56c35719080f425e62d7e
@@ -159,8 +159,8 @@ source_artifacts:
   bytes: 234
   sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
 - uri: repo://tests/st0302/test_contract.py
-  bytes: 7049
-  sha256: c3727c274717eae2ff9cff8586b29e24a692747f6a8c3e1985c87094e641c8fd
+  bytes: 7435
+  sha256: c1b01dbfabe190fb18358195614461e2ae449445413a9a63a1685d0154aed1b2
 - uri: repo://tests/st0302/test_generation.py
   bytes: 8686
   sha256: f873f65645c68a4b8ea225a156ee7d34f99a602a8d0befe4c52ed52580dd3cc2
@@ -168,8 +168,8 @@ source_artifacts:
   bytes: 25958
   sha256: c7d2a301f40624a6d40d0de86913242ccbf0876fa7515a1a0fe32d891b0bf670
 - uri: repo://tests/st0302/test_revision.py
-  bytes: 5015
-  sha256: 4a962b419b4099ec6eea3d9a690ba624eb529b9c6bd5b18d3f38a3b3473cca98
+  bytes: 5053
+  sha256: 6dcc47756071bbd311f2f273080e186936d5f9cd95a8a833e474a6fcba0ddfb9
 - uri: repo://pyrightconfig.json
   bytes: 591
   sha256: ae00b6ec27e1938d762201d58eb3a476c2d2f7c06ff22f3a7c6b94d81642f5b2
@@ -180,8 +180,8 @@ source_artifacts:
   bytes: 3960
   sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
 - uri: repo://changes/st-0301/manifest.yaml
-  bytes: 10097
-  sha256: 46f38c965c0e966929f68fdeeeb411230b30a23a4702d4ca06214850f333f542
+  bytes: 10295
+  sha256: 7abb84a9e9560daaed49bd3127d69ea05f9bf9d5ba49ebf1d39776dee37ee8f6
 - uri: repo://changes/st-0303/contracts/iam-ops-schema.v1.yaml
   bytes: 84064
   sha256: efdecd00965052817879a52907dd7d76f5fe1d647337da89e09172f60e0ca6db
@@ -214,7 +214,7 @@ source_artifacts:
   sha256: 58ed5d965da4c2c2503bec8e47f60a049e7b1d842f72194b04a57e32bb0fe384
 - uri: repo://changes/st-0302/manifest.yaml
   bytes: 8657
-  sha256: e2a6fb387a43b16498169817dc0d00d4310eaf5cd48107c6ee6380641783801b
+  sha256: 531b2b9f1cd0b825fcc70a0ce00c26a996e4a879a6863be8eb67b29bcac1fa27
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://migrations/versions/202608030003_iam_ops_tables.py

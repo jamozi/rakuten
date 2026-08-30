@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -32,15 +33,34 @@ def test_owner_generator_defaults_to_manifest_mode(monkeypatch) -> None:
     assert calls == ["manifest"]
 
 
+def test_repo_plugin_registry_has_one_deterministic_owner_for_both_packages() -> None:
+    registry = json.loads(build_wordpress_mcp_v1.REGISTRY.read_text())
+    expected = build_wordpress_mcp_v1.repo_artifact_registry()
+    assert registry == expected
+    rows = {row["artifact_id"]: row for row in registry["artifacts"]}
+    abilities = build_wordpress_mcp_v1.package_bytes(
+        build_wordpress_mcp_v1.plugin_payloads()
+    )
+    assert rows["raos-codex-mcp-abilities-v1"]["package_sha256"] == (
+        hashlib.sha256(abilities).hexdigest()
+    )
+    measurement = json.loads(
+        (ROOT / build_wordpress_mcp_v1.MEASUREMENT_MANIFEST_PATH).read_text()
+    )
+    assert rows["raos-editorial-measurement-v1"]["package_sha256"] == (
+        measurement["package_sha256"]
+    )
+
+
 def test_owner_plugin_version_is_bound_across_package_and_runtime() -> None:
-    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.2.1"
+    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.3.0"
     entrypoint = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(
         encoding="utf-8"
     )
-    assert " * Version: 1.2.1" in entrypoint
-    assert "define('RAOS_CODEX_MCP_VERSION', '1.2.1');" in entrypoint
+    assert " * Version: 1.3.0" in entrypoint
+    assert "define('RAOS_CODEX_MCP_VERSION', '1.3.0');" in entrypoint
     assert (PLUGIN / "README.md").read_text(encoding="utf-8").startswith(
-        "# RAOS Codex MCP Abilities 1.2.1\n"
+        "# RAOS Codex MCP Abilities 1.3.0\n"
     )
 
 
@@ -152,7 +172,7 @@ def test_public_contract_and_schema_are_valid() -> None:
     contract = json.loads((SLICE / "contracts/wordpress-mcp.v1.json").read_text())
     schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
     Draft202012Validator.check_schema(schema)
-    assert contract["version"] == "1.1.0"
+    assert contract["version"] == "1.2.0"
     assert contract["wordpress_version"] == "7.1.x"
     assert contract["mcp_adapter"]["version"] == "0.6.1"
     assert contract["remote_proxy"]["version"] == "0.4.0"
@@ -279,6 +299,7 @@ def test_codex_project_enables_only_two_mcp_servers_without_secrets() -> None:
         "raos-codex-content-propose-release",
         "raos-codex-publication-batch-register",
         "raos-codex-operation-get",
+        "raos-measurement-aggregate-report",
     ]
     assert deployment["enabled_tools"] == [
         "deployment-status",

@@ -23,6 +23,10 @@ from urllib.parse import parse_qs, urlsplit
 from raos.adapters.self_hosted_editorial_pilot_json import (
     read_rakuten_product_evidence,
 )
+from raos.application.editorial.editorial_portfolio_v3 import (
+    EditorialPortfolioV3Failure,
+    load_editorial_portfolio_v3,
+)
 from raos.domain.editorial.self_hosted_editorial_pilot import (
     EditorialPilotFailure,
     RakutenProductEvidence,
@@ -304,6 +308,14 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
     )
     if fixtures.get("schema") != FIXTURE_SCHEMA:
         _fail("RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID")
+    target_origin = _https_url(document["target_origin"])
+    try:
+        successor = load_editorial_portfolio_v3(repository_root)
+    except EditorialPortfolioV3Failure:
+        _fail("RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID")
+    if successor.target_origin != target_origin:
+        _fail("RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID")
+    successor_articles = successor.article_by_id
     posts_by_slug: dict[str, Mapping[str, object]] = {}
     for raw_post in _list(fixtures.get("posts")):
         post = _mapping(raw_post)
@@ -382,6 +394,9 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
         )
         product_ids.add(product_id)
 
+    if product_ids != {product.product_id for product in successor.products}:
+        _fail("RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID")
+
     articles: list[ArticleBindingV2] = []
     article_ids: set[str] = set()
     local_slugs: set[str] = set()
@@ -412,6 +427,7 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
         content_ref = _text(article["content_ref"], maximum=500)
         references = _text_tuple(article["product_ids"], maximum=160)
         post_row = posts_by_slug.get(local_slug)
+        successor_article = successor_articles.get(article_id)
         expected_content_ref = (
             "changes/wordpress-local-preview-v1/fixtures/articles/"
             f"{production_slug}.html"
@@ -435,10 +451,13 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
             or not set(references).issubset(product_ids)
             or (source_kind == "html_fixture" and source_ref != f"articles/{production_slug}.html")
             or (source_kind == "st1704_renderer" and source_ref != article_id)
+            or successor_article is None
+            or successor_article.production_slug != production_slug
+            or successor_article.product_ids != references
             or post_row is None
             or post_row.get("title") != title
             or post_row.get("excerpt") != excerpt
-            or post_row.get("category") != article["category"]
+            or post_row.get("category") != successor_article.category_label
             or post_row.get("content_file") != f"articles/{production_slug}.html"
             or content_ref != expected_content_ref
             or content_path.is_symlink()
@@ -478,6 +497,7 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
         len(articles) != 10
         or len(products) != 32
         or occurrences != 37
+        or article_ids != set(successor_articles)
         or {product.product_id for product in products}
         != {product_id for article in articles for product_id in article.product_ids}
     ):
@@ -500,7 +520,7 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
         _fail("RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID")
     return EditorialPortfolioV2(
         version=_text(document["version"], maximum=30),
-        target_origin=_https_url(document["target_origin"]),
+        target_origin=target_origin,
         theme_version=_text(document["theme_version"], maximum=30),
         theme_runtime_revision=theme_runtime_revision,
         articles=tuple(articles),

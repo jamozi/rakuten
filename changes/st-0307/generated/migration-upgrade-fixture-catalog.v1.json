@@ -12,8 +12,8 @@
   },
   "checkpoint_catalog": {
     "authority": "python/raos/migrations/catalog.py",
-    "authority_catalog_sha256": "2b8632385969b95b92b03ef141cece50c109ef072023d934205532bcf3044e0c",
-    "authority_file_sha256": "c172ab80fad6e96b94ce23185ee9d7807622718db78b164f75f5c8d38ed99642",
+    "authority_catalog_sha256": "9f6adbf8f7fd3c771b438f68ca37d313bda333a4ede3b9efb43c84290243cf15",
+    "authority_file_sha256": "a4181b2d1de4a01a898b60b3e57a1640d7aa539be61f35b9e84c984df80b4839",
     "copy_or_concatenate": "FORBIDDEN",
     "count": 18,
     "entries": [
@@ -292,9 +292,13 @@
       },
       "bytes": 1363,
       "checkpoint_story": "ST-0306",
-      "expected_behavior": "DATA_AND_HISTORY_SURVIVE_UPGRADE_TO_202608030006",
+      "expected_behavior": "DATA_AND_HISTORY_SURVIVE_UPGRADE_TO_202608300001",
       "expected_rows": 1,
       "id": "ST0307-202608030005-PREDECESSOR",
+      "ordered_upgrade_story_ids": [
+        "ST-0306",
+        "ST-0305"
+      ],
       "path": "tests/fixtures/migrations/st0307/202608030005-predecessor.v1.sql",
       "sha256": "ac133f0d975241b22a8744bd7b78ec52904dc64414f344f7c3f1e83e9339cf3d",
       "version": "202608030005"
@@ -303,14 +307,14 @@
   "production_graph": {
     "anchor_revision": "202608030001",
     "checkpoint_activation": "FORBIDDEN",
-    "head_revision": "202608030006",
+    "head_revision": "202608300001",
     "mutation": "FORBIDDEN",
     "new_revision": "FORBIDDEN",
     "predecessor_revision": "202608030005",
-    "revision_count": 6
+    "revision_count": 7
   },
   "schema_version": "migration-upgrade-fixture-catalog.v1",
   "source_contract": "changes/st-0307/contracts/migration-upgrade-fixtures.v1.yaml",
-  "source_contract_sha256": "27c11f07d7dece60fb4fcc02169d4625d36196ac3548078f4453bae9506ca853",
+  "source_contract_sha256": "9d780a94e569bcffe830eef5b599d49406a3915aa8eeb2a8a4e78e1a6e271dd2",
   "story_id": "ST-0307"
 }

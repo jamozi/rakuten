@@ -33,11 +33,26 @@ import urllib.error
 import urllib.request
 from urllib.parse import urlsplit
 
+PYTHON_ROOT = Path(__file__).resolve().parents[1] / "python"
+if str(PYTHON_ROOT) not in sys.path:
+    sys.path.insert(0, str(PYTHON_ROOT))
+
+from raos.application.editorial.editorial_portfolio_v3 import (  # noqa: E402
+    EditorialPortfolioV3Failure,
+    load_editorial_portfolio_v3,
+)
+from raos.application.editorial.rakuten_measurement_activation_v3 import (  # noqa: E402
+    RakutenMeasurementActivationOverlayV3,
+    RakutenMeasurementActivationV3Failure,
+    validate_rakuten_measurement_activation_v3,
+)
+
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 PREVIEW_ROOT: Final = ROOT / "changes/wordpress-local-preview-v1"
 SOURCE_FIXTURE_ROOT: Final = PREVIEW_ROOT / "fixtures"
 FIXTURE_PATH: Final = SOURCE_FIXTURE_ROOT / "posts.json"
+PAGES_FIXTURE_PATH: Final = SOURCE_FIXTURE_ROOT / "pages.json"
 MAPPING_PATH: Final = PREVIEW_ROOT / "production-mapping.v1.json"
 PORTFOLIO_SCRIPT: Final = ROOT / "scripts/raos_editorial_portfolio_v2.py"
 PORTFOLIO_PRIVATE_ROOT: Final = ROOT / ".secrets/editorial-portfolio-v2"
@@ -70,6 +85,10 @@ THEME_STYLE_PATH: Final = (
 THEME_ROOT: Final = THEME_STYLE_PATH.parent
 THEME_FUNCTIONS_PATH: Final = THEME_ROOT / "functions.php"
 ORIGIN: Final = "https://kurashinoshirube.com"
+EXPECTED_SOCIAL_IMAGE_URL: Final = (
+    f"{ORIGIN}/wp-content/themes/kurashinoshirube-child/"
+    "assets/images/home-hero.webp"
+)
 EDITOR_ENDPOINT: Final = f"{ORIGIN}/wp-json/raos-codex-mcp/v1/editor"
 REVIEW_URL: Final = f"{ORIGIN}/wp-admin/tools.php?page=raos-codex-proposals"
 EDITOR_CREDENTIAL_PATH: Final = (
@@ -82,13 +101,13 @@ MAKE_BIN: Final = Path("/usr/bin/make")
 SG_BIN: Final = Path("/usr/bin/sg")
 DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
-EXPECTED_PLUGIN_VERSION: Final = "1.2.1"
+EXPECTED_PLUGIN_VERSION: Final = "1.3.0"
 EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
-    "7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755"
+    "1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a"
 )
-EXPECTED_THEME_VERSION: Final = "1.3.10"
+EXPECTED_THEME_VERSION: Final = "1.4.0"
 EXPECTED_THEME_RUNTIME_REVISION: Final = (
-    "30a84ec5dffb12c048181198ecc8745fa22be70f1854507237c19306589b341f"
+    "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
 )
 THEME_RUNTIME_SENTINEL_PROPERTIES: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -104,6 +123,9 @@ AUTOPTIMIZE_SINGLE_STYLESHEET_PREFIX: Final = (
     "/wp-content/cache/autoptimize/autoptimize_single_"
 )
 EXPECTED_ALL_ARTICLE_COUNT: Final = 10
+EXPECTED_POLICY_PAGE_COUNT: Final = 3
+CREATE_IF_MISSING_POLICY_PAGE_SLUGS: Final = frozenset({"comparison-policy"})
+MAX_PUBLICATION_PROPOSALS: Final = 14
 MAX_CONTENT_BYTES: Final = 1024 * 1024
 MAX_RESPONSE_BYTES: Final = 16 * 1024 * 1024
 MAX_PUBLIC_PAGE_BYTES: Final = 4 * 1024 * 1024
@@ -216,6 +238,14 @@ class _PublicPageEvidenceParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.canonical_urls: list[str] = []
+        self.meta_descriptions: list[str] = []
+        self.open_graph: dict[str, list[str]] = {
+            "og:title": [],
+            "og:description": [],
+            "og:url": [],
+            "og:image": [],
+        }
+        self.json_ld_payloads: list[str] = []
         self.page_titles: list[str] = []
         self.headings: list[str] = []
         self.heading_outline: list[tuple[str, str]] = []
@@ -231,6 +261,7 @@ class _PublicPageEvidenceParser(HTMLParser):
         self._heading_tag: str | None = None
         self._heading_parts: list[str] = []
         self._title_parts: list[str] | None = None
+        self._json_ld_parts: list[str] | None = None
         self._elements: list[tuple[str, str | None, bool]] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -250,6 +281,12 @@ class _PublicPageEvidenceParser(HTMLParser):
             classes & {"disclosure", "raos-disclosure"}
         )
         if lowered in {"script", "style", "noscript", "template"}:
+            if (
+                lowered == "script"
+                and (attributes.get("type") or "").strip().casefold()
+                == "application/ld+json"
+            ):
+                self._json_ld_parts = []
             self._suppressed_depth += 1
         if lowered == "link":
             rel = (attributes.get("rel") or "").lower().split()
@@ -265,6 +302,14 @@ class _PublicPageEvidenceParser(HTMLParser):
         }:
             if _robots_blocks_indexing(attributes.get("content")):
                 self.noindex = True
+        if lowered == "meta":
+            name = (attributes.get("name") or "").strip().casefold()
+            prop = (attributes.get("property") or "").strip().casefold()
+            content = attributes.get("content")
+            if name == "description" and isinstance(content, str):
+                self.meta_descriptions.append(content)
+            if prop in self.open_graph and isinstance(content, str):
+                self.open_graph[prop].append(content)
         if lowered == "title" and self._suppressed_depth == 0:
             self._title_parts = []
         if lowered == "a" and attributes.get("data-raos-placement") in {
@@ -282,8 +327,14 @@ class _PublicPageEvidenceParser(HTMLParser):
                         }
                     ),
                     "article_id": attributes.get("data-raos-article-id"),
+                    "cta_id": attributes.get("data-raos-cta-id"),
+                    "snapshot_id": attributes.get("data-raos-snapshot-id"),
+                    "offer_id": attributes.get("data-raos-offer-id"),
                     "product_id": attributes.get("data-raos-product-id"),
                     "placement": attributes.get("data-raos-placement"),
+                    "rakuten_measurement_id": attributes.get(
+                        "data-raos-rakuten-measurement-id"
+                    ),
                 }
             )
         if lowered == "a" and isinstance(attributes.get("href"), str):
@@ -339,6 +390,9 @@ class _PublicPageEvidenceParser(HTMLParser):
             if title:
                 self.page_titles.append(title)
             self._title_parts = None
+        if lowered == "script" and self._json_ld_parts is not None:
+            self.json_ld_payloads.append("".join(self._json_ld_parts))
+            self._json_ld_parts = None
         if lowered in {"script", "style", "noscript", "template"}:
             self._suppressed_depth = max(0, self._suppressed_depth - 1)
         for index in range(len(self._elements) - 1, -1, -1):
@@ -347,6 +401,8 @@ class _PublicPageEvidenceParser(HTMLParser):
                 break
 
     def handle_data(self, data: str) -> None:
+        if self._json_ld_parts is not None:
+            self._json_ld_parts.append(data)
         if self._suppressed_depth:
             return
         self.visible_text.append(data)
@@ -423,10 +479,12 @@ class Article:
     excerpt: str
     block_markup: str
     taxonomies: dict[str, list[int]]
+    post_type: str = "post"
+    required_key_content: tuple[str, ...] = ()
 
     def document(self) -> dict[str, object]:
         return {
-            "post_type": "post",
+            "post_type": self.post_type,
             "title": self.title,
             "slug": self.production_slug,
             "excerpt": self.excerpt,
@@ -492,7 +550,7 @@ def load_articles(
     )
     mapping = exact_object(
         load_json(MAPPING_PATH, 256 * 1024, "RAOS_WORDPRESS_REQUEST_MAPPING_INVALID"),
-        {"schema", "origin", "editor_endpoint", "review_url", "articles"},
+        {"schema", "origin", "editor_endpoint", "review_url", "articles", "pages"},
     )
     if (
         fixture["schema"] != "RAOS_WORDPRESS_LOCAL_PREVIEW_FIXTURE_V1"
@@ -636,6 +694,159 @@ def load_articles(
     return result
 
 
+def load_policy_pages(
+    *, fixture_root: Path = SOURCE_FIXTURE_ROOT
+) -> list[Article]:
+    """Load the three tracked policy pages as exact publication documents."""
+
+    if not fixture_root.is_absolute():
+        fail("RAOS_WORDPRESS_REQUEST_FIXTURE_INVALID")
+    page_directory = fixture_root / "pages"
+    try:
+        root_metadata = fixture_root.lstat()
+        directory_metadata = page_directory.lstat()
+    except OSError:
+        fail("RAOS_WORDPRESS_REQUEST_FIXTURE_INVALID")
+    if (
+        fixture_root.is_symlink()
+        or not stat.S_ISDIR(root_metadata.st_mode)
+        or root_metadata.st_uid != os.geteuid()
+        or page_directory.is_symlink()
+        or not stat.S_ISDIR(directory_metadata.st_mode)
+        or directory_metadata.st_uid != os.geteuid()
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_FIXTURE_INVALID")
+    fixture = exact_object(
+        load_json(
+            fixture_root / "pages.json",
+            64 * 1024,
+            "RAOS_WORDPRESS_REQUEST_PAGE_FIXTURE_INVALID",
+        ),
+        {"schema", "seed_version", "pages"},
+    )
+    mapping = exact_object(
+        load_json(MAPPING_PATH, 256 * 1024, "RAOS_WORDPRESS_REQUEST_MAPPING_INVALID"),
+        {"schema", "origin", "editor_endpoint", "review_url", "articles", "pages"},
+    )
+    raw_pages = fixture.get("pages")
+    raw_mappings = mapping.get("pages")
+    if (
+        fixture.get("schema") != "RAOS_WORDPRESS_LOCAL_PREVIEW_PAGES_V1"
+        or type(raw_pages) is not list
+        or type(raw_mappings) is not list
+        or len(raw_pages) != EXPECTED_POLICY_PAGE_COUNT
+        or len(raw_mappings) != EXPECTED_POLICY_PAGE_COUNT
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PAGE_FIXTURE_INVALID")
+    mapping_by_slug: dict[str, tuple[str, ...]] = {}
+    for raw_mapping in raw_mappings:
+        row = exact_object(raw_mapping, {"production_slug", "required_key_content"})
+        slug = row.get("production_slug")
+        key_content = row.get("required_key_content")
+        if (
+            type(slug) is not str
+            or SLUG_RE.fullmatch(slug) is None
+            or slug in mapping_by_slug
+            or type(key_content) is not list
+            or not 1 <= len(key_content) <= 8
+            or any(
+                type(value) is not str
+                or not value.strip()
+                or len(value.encode("utf-8")) > 512
+                for value in key_content
+            )
+            or len(set(key_content)) != len(key_content)
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_MAPPING_INVALID")
+        mapping_by_slug[slug] = tuple(key_content)
+
+    result: list[Article] = []
+    seen: set[str] = set()
+    for raw_page in raw_pages:
+        page = exact_object(raw_page, {"content_file", "excerpt", "slug", "title"})
+        slug = page.get("slug")
+        title = page.get("title")
+        excerpt = page.get("excerpt")
+        content_file = page.get("content_file")
+        if (
+            type(slug) is not str
+            or slug not in mapping_by_slug
+            or slug in seen
+            or type(title) is not str
+            or not title.strip()
+            or "<" in title
+            or ">" in title
+            or len(title.encode("utf-8")) > 2000
+            or type(excerpt) is not str
+            or not excerpt.strip()
+            or "<" in excerpt
+            or ">" in excerpt
+            or len(excerpt.encode("utf-8")) > 512
+            or content_file != f"pages/{slug}.html"
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_PAGE_FIXTURE_INVALID")
+        content_path = fixture_root / str(content_file)
+        try:
+            metadata = content_path.lstat()
+            payload = content_path.read_bytes()
+        except OSError:
+            fail("RAOS_WORDPRESS_REQUEST_PAGE_UNAVAILABLE")
+        if (
+            content_path.is_symlink()
+            or not stat.S_ISREG(metadata.st_mode)
+            or content_path.parent.resolve() != page_directory.resolve()
+            or metadata.st_size != len(payload)
+            or not 1 <= len(payload) <= MAX_CONTENT_BYTES
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_PAGE_INVALID")
+        try:
+            markup = payload.decode("utf-8", errors="strict")
+        except UnicodeError:
+            fail("RAOS_WORDPRESS_REQUEST_PAGE_INVALID")
+        if (
+            "\x00" in markup
+            or re.search(
+                r"<(?:script|style|iframe|object|embed|form|input)\b",
+                markup,
+                flags=re.IGNORECASE,
+            )
+            or re.search(r"(?:javascript|data)\s*:", markup, flags=re.IGNORECASE)
+            or any(value not in markup for value in mapping_by_slug[slug])
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_PAGE_KSES_INVALID")
+        seen.add(slug)
+        result.append(
+            Article(
+                local_slug=slug,
+                production_slug=slug,
+                title=title,
+                excerpt=excerpt,
+                block_markup=markup,
+                taxonomies={},
+                post_type="page",
+                required_key_content=mapping_by_slug[slug],
+            )
+        )
+    if seen != set(mapping_by_slug):
+        fail("RAOS_WORDPRESS_REQUEST_MAPPING_INVALID")
+    return result
+
+
+def load_publication_items(
+    selection: str,
+    *,
+    article_fixture_root: Path = SOURCE_FIXTURE_ROOT,
+    page_fixture_root: Path = SOURCE_FIXTURE_ROOT,
+) -> list[Article]:
+    articles = load_articles(selection, fixture_root=article_fixture_root)
+    if selection != "all":
+        return articles
+    items = [*articles, *load_policy_pages(fixture_root=page_fixture_root)]
+    if len(items) != EXPECTED_ALL_ARTICLE_COUNT + EXPECTED_POLICY_PAGE_COUNT:
+        fail("RAOS_WORDPRESS_REQUEST_PORTFOLIO_INCOMPLETE")
+    return items
+
+
 def run_editorial_portfolio_refresh(
     runner: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
 ) -> None:
@@ -720,6 +931,8 @@ def production_materialization_binding(
         },
     )
     generated_at = document["generated_at"]
+    if type(generated_at) is not str:
+        fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
     try:
         generated = datetime.strptime(generated_at, "%Y-%m-%dT%H:%M:%SZ").replace(
             tzinfo=UTC
@@ -854,9 +1067,12 @@ def _validate_local_materialization_pair(
             "products",
         },
     )
+    generated_at = local["generated_at"]
+    if type(generated_at) is not str:
+        fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
     try:
         generated = datetime.strptime(
-            local["generated_at"], "%Y-%m-%dT%H:%M:%SZ"
+            generated_at, "%Y-%m-%dT%H:%M:%SZ"
         ).replace(tzinfo=UTC)
     except TypeError, ValueError:
         fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
@@ -916,6 +1132,89 @@ def _validate_local_materialization_pair(
             fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
     if local_identities != production_identities:
         fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
+
+
+def validate_rakuten_activation_dry_run(
+    path: Path | None,
+    *,
+    require_recent: bool = False,
+) -> RakutenMeasurementActivationOverlayV3:
+    """Load an exact URL-free owner-private activation receipt and overlays."""
+
+    if path is None or not path.is_absolute():
+        fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_REQUIRED")
+    try:
+        portfolio = load_editorial_portfolio_v3(ROOT)
+        return validate_rakuten_measurement_activation_v3(
+            repository_root=ROOT,
+            dry_run_path=path,
+            portfolio=portfolio,
+            local_v2_fixture_root=LOCAL_MATERIALIZED_FIXTURE_ROOT,
+            production_v2_fixture_root=PRODUCTION_MATERIALIZED_FIXTURE_ROOT,
+            require_recent=require_recent,
+        )
+    except (EditorialPortfolioV3Failure, RakutenMeasurementActivationV3Failure):
+        fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
+
+
+def activation_materialization_binding(
+    activation: RakutenMeasurementActivationOverlayV3,
+    articles: Sequence[Article],
+    *,
+    require_recent: bool,
+) -> dict[str, object]:
+    """Bind activated output to the exact validated V2 local/production pair."""
+
+    v2_articles = load_articles(
+        "all",
+        fixture_root=PRODUCTION_MATERIALIZED_FIXTURE_ROOT,
+    )
+    v2_binding = production_materialization_binding(
+        v2_articles,
+        require_recent=require_recent,
+    )
+    activated_hashes = {
+        article.production_slug: hashlib.sha256(
+            article.block_markup.encode("utf-8")
+        ).hexdigest()
+        for article in articles
+        if article.post_type == "post"
+    }
+    if (
+        v2_binding.get("portfolio_sha256") != activation.v2_portfolio_sha256
+        or activated_hashes != dict(activation.production_article_sha256)
+        or len(activated_hashes) != EXPECTED_ALL_ARTICLE_COUNT
+        or activation.article_count != EXPECTED_ALL_ARTICLE_COUNT
+        or activation.cta_count != 74
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
+    products = v2_binding.get("products")
+    if type(products) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
+    return {
+        "schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+        "portfolio_sha256": activation.portfolio_sha256,
+        "articles": dict(sorted(activated_hashes.items())),
+        "products": products,
+        "activation": {
+            "dry_run_sha256": activation.dry_run_sha256,
+            "admin_receipt_sha256": activation.admin_receipt_sha256,
+            "money_link_mapping_sha256": activation.money_link_mapping_sha256,
+            "materialized_set_sha256": activation.materialized_set_sha256,
+            "local_article_set_sha256": activation.local_article_set_sha256,
+            "production_article_set_sha256": (
+                activation.production_article_set_sha256
+            ),
+            "local_overlay_receipt_sha256": (
+                activation.local_overlay_receipt_sha256
+            ),
+            "production_overlay_receipt_sha256": (
+                activation.production_overlay_receipt_sha256
+            ),
+            "article_count": activation.article_count,
+            "cta_count": activation.cta_count,
+        },
+    }
 
 
 def theme_version() -> str:
@@ -1053,7 +1352,11 @@ def tracked_theme_tree_sha256() -> str:
 
 def run_preview_checks(
     runner: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
+    *,
+    fixture_root: Path = LOCAL_MATERIALIZED_FIXTURE_ROOT,
 ) -> None:
+    if not fixture_root.is_absolute():
+        fail("RAOS_WORDPRESS_REQUEST_PREVIEW_FIXTURE_INVALID")
     use_stale_group_bridge = _docker_group_membership_is_stale()
     for target, code in (
         ("wordpress-preview-up", "RAOS_WORDPRESS_REQUEST_PREVIEW_UP_FAILED"),
@@ -1075,9 +1378,7 @@ def run_preview_checks(
                 check=False,
                 env={
                     **os.environ,
-                    "RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT": (
-                        LOCAL_MATERIALIZED_FIXTURE_ROOT.as_posix()
-                    ),
+                    "RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT": fixture_root.as_posix(),
                 },
             )
         except OSError, subprocess.SubprocessError:
@@ -1207,9 +1508,6 @@ class EditorMcpClient:
             fail(code)
         except urllib.error.URLError, TimeoutError, OSError:
             fail("RAOS_WORDPRESS_REQUEST_TRANSPORT_FAILED")
-        if notification:
-            fail("RAOS_WORDPRESS_REQUEST_NOTIFICATION_FAILED")
-
     def message(self, method: str, params: dict[str, object]) -> dict[str, object]:
         request_id = self.next_id
         self.next_id += 1
@@ -1238,7 +1536,10 @@ class EditorMcpClient:
             if type(session) is not str or not session:
                 fail("RAOS_WORDPRESS_REQUEST_MCP_SESSION_INVALID")
             self.session_id = session
-        return payload["result"]
+        result = payload["result"]
+        if type(result) is not dict:
+            fail("RAOS_WORDPRESS_REQUEST_MCP_RESPONSE_INVALID")
+        return dict(result)
 
     def initialize(self) -> dict[str, object]:
         result = self.message(
@@ -1336,9 +1637,12 @@ def validate_tool_contract(tools: Mapping[str, Mapping[str, object]]) -> None:
         fail("RAOS_WORDPRESS_REQUEST_BATCH_BOOTSTRAP_REQUIRED")
 
 
-def validate_site_status(status: Mapping[str, object]) -> None:
+def validate_site_status(
+    status: Mapping[str, object], *, require_measurement_ready: bool = False
+) -> None:
     writes = status.get("writes_enabled")
     theme = status.get("theme")
+    measurement = status.get("measurement")
     server = status.get("server")
     authorization = status.get("apply_authorization")
     if (
@@ -1353,7 +1657,13 @@ def validate_site_status(status: Mapping[str, object]) -> None:
         or type(writes) is not dict
         or any(
             writes.get(name) is not True
-            for name in ("global", "draft", "content_apply", "theme_apply")
+            for name in (
+                "global",
+                "draft",
+                "content_apply",
+                "theme_apply",
+                "plugin_apply",
+            )
         )
         or type(theme) is not dict
         or theme.get("slug") != "kurashinoshirube-child"
@@ -1384,6 +1694,17 @@ def validate_site_status(status: Mapping[str, object]) -> None:
         or server.get("delete_tool_exposed") is not False
         or server.get("media_write_tool_exposed") is not False
         or server.get("proposal_ttl_seconds") != 900
+        or (
+            require_measurement_ready
+            and (
+                type(measurement) is not dict
+                or measurement.get("plugin_active") is not True
+                or measurement.get("plugin_version") != "1.0.0"
+                or measurement.get("collection_enabled") is not False
+                or measurement.get("aggregate_ability_registered") is not True
+                or measurement.get("raw_event_tool_exposed") is not False
+            )
+        )
     ):
         fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
 
@@ -1414,53 +1735,69 @@ def document_projection(document: Mapping[str, object]) -> dict[str, object]:
     return {field: document[field] for field in WRITE_FIELDS}
 
 
-def list_all_documents(client: Any) -> list[dict[str, object]]:
+def list_all_documents(
+    client: Any, *, post_types: Sequence[str] = ("post",)
+) -> list[dict[str, object]]:
     documents: list[dict[str, object]] = []
     seen_ids: set[int] = set()
-    expected_total: int | None = None
-    page = 1
-    while True:
-        response = client.call(
-            "raos-codex-content-list",
-            {
-                "post_type": "post",
-                "status": "any",
-                "page": page,
-                "per_page": LIST_PER_PAGE,
-            },
-        )
-        total = response.get("total")
-        batch = response.get("documents")
-        if (
-            response.get("schema") != "ContentDocumentListV1"
-            or response.get("page") != page
-            or response.get("per_page") != LIST_PER_PAGE
-            or type(total) is not int
-            or total < 0
-            or total > MAX_LIST_DOCUMENTS
-            or type(batch) is not list
-            or len(batch) > LIST_PER_PAGE
-            or (expected_total is not None and total != expected_total)
-        ):
-            fail("RAOS_WORDPRESS_REQUEST_CONTENT_LIST_INVALID")
-        expected_total = total
-        for raw_document in batch:
-            if type(raw_document) is not dict:
+    if (
+        not post_types
+        or len(set(post_types)) != len(post_types)
+        or any(value not in {"post", "page"} for value in post_types)
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_CONTENT_LIST_INVALID")
+    for post_type in post_types:
+        expected_total: int | None = None
+        type_count = 0
+        page = 1
+        while True:
+            response = client.call(
+                "raos-codex-content-list",
+                {
+                    "post_type": post_type,
+                    "status": "any",
+                    "page": page,
+                    "per_page": LIST_PER_PAGE,
+                },
+            )
+            total = response.get("total")
+            batch = response.get("documents")
+            if (
+                response.get("schema") != "ContentDocumentListV1"
+                or response.get("page") != page
+                or response.get("per_page") != LIST_PER_PAGE
+                or type(total) is not int
+                or total < 0
+                or total > MAX_LIST_DOCUMENTS
+                or type(batch) is not list
+                or len(batch) > LIST_PER_PAGE
+                or (expected_total is not None and total != expected_total)
+            ):
                 fail("RAOS_WORDPRESS_REQUEST_CONTENT_LIST_INVALID")
-            document = raw_document
-            post_id = document.get("id")
-            if type(post_id) is not int or post_id < 1 or post_id in seen_ids:
+            expected_total = total
+            for raw_document in batch:
+                if type(raw_document) is not dict:
+                    fail("RAOS_WORDPRESS_REQUEST_CONTENT_LIST_INVALID")
+                document = raw_document
+                post_id = document.get("id")
+                if (
+                    type(post_id) is not int
+                    or post_id < 1
+                    or post_id in seen_ids
+                    or document.get("post_type") != post_type
+                ):
+                    fail("RAOS_WORDPRESS_REQUEST_CONTENT_LIST_UNSTABLE")
+                precondition(document)
+                seen_ids.add(post_id)
+                documents.append(document)
+                type_count += 1
+            if type_count >= total:
+                break
+            if not batch:
                 fail("RAOS_WORDPRESS_REQUEST_CONTENT_LIST_UNSTABLE")
-            precondition(document)
-            seen_ids.add(post_id)
-            documents.append(document)
-        if len(documents) >= total:
-            break
-        if not batch:
+            page += 1
+        if type_count != expected_total:
             fail("RAOS_WORDPRESS_REQUEST_CONTENT_LIST_UNSTABLE")
-        page += 1
-    if len(documents) != expected_total:
-        fail("RAOS_WORDPRESS_REQUEST_CONTENT_LIST_UNSTABLE")
     return documents
 
 
@@ -1555,6 +1892,46 @@ def _read_receipt(path: Path) -> dict[str, object] | None:
     return load_json(path, MAX_RECEIPT_BYTES, "RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
 
 
+def validate_measurement_plugin_apply_receipt(path: Path | None) -> None:
+    """Require the exact separate-admin plugin apply before an all-mode batch."""
+
+    _ensure_private_directory()
+    if path is None or not path.is_absolute():
+        fail("RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_REQUIRED")
+    try:
+        private_root = PRIVATE_REQUEST_DIRECTORY.resolve(strict=True)
+        lexical = Path(os.path.abspath(path))
+        resolved = path.resolve(strict=True)
+    except OSError:
+        fail("RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID")
+    if lexical != resolved or resolved.parent != private_root:
+        fail("RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID")
+    proposal_receipt = _read_receipt(
+        PRIVATE_REQUEST_DIRECTORY / "measurement-plugin-proposal-v3.json"
+    )
+    apply_receipt = _read_receipt(resolved)
+    if type(proposal_receipt) is not dict or type(apply_receipt) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID")
+    proposal = proposal_receipt.get("proposal")
+    if (
+        proposal_receipt.get("state")
+        != "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
+        or proposal_receipt.get("artifact_id")
+        != "raos-editorial-measurement-v1"
+        or proposal_receipt.get("plugin_slug") != "raos-editorial-measurement"
+        or proposal_receipt.get("plugin_version") != "1.0.0"
+        or proposal_receipt.get("measurement_gate_default_off") is not True
+        or type(proposal) is not dict
+        or apply_receipt.get("schema") != "OperationReceiptV1"
+        or apply_receipt.get("proposal_id") != proposal.get("proposal_id")
+        or apply_receipt.get("operation_id") != proposal.get("operation_id")
+        or apply_receipt.get("state") != "APPLIED"
+        or apply_receipt.get("result_code") != "PLUGIN_CHANGE_APPLIED"
+        or apply_receipt.get("after_sha256") != proposal.get("after_sha256")
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID")
+
+
 def _atomic_receipt(path: Path, value: Mapping[str, object]) -> None:
     payload = canonical_json_bytes(dict(value)) + b"\n"
     if len(payload) > MAX_RECEIPT_BYTES:
@@ -1611,6 +1988,9 @@ def _fresh_receipt(
         "schema": "RAOS_WORDPRESS_PUBLICATION_REQUEST_RECEIPT_V1",
         "receipt_path_sha256": hashlib.sha256(path.name.encode("ascii")).hexdigest(),
         "selected_slugs": sorted(article.production_slug for article in articles),
+        "selected_documents": {
+            article.production_slug: article.post_type for article in articles
+        },
         "desired_sha256": {
             article.production_slug: article.desired_sha256() for article in articles
         },
@@ -1642,17 +2022,27 @@ def _fresh_receipt(
 def _validate_materialization_binding(value: object) -> None:
     if value is None:
         return
-    if type(value) is not dict or set(value) != {
+    if type(value) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    schema = value.get("schema")
+    expected_keys = {
         "schema",
         "portfolio_sha256",
         "articles",
         "products",
-    }:
+    }
+    if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2":
+        expected_keys.add("activation")
+    if set(value) != expected_keys:
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     articles = value.get("articles")
     products = value.get("products")
     if (
-        value.get("schema") != "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1"
+        schema
+        not in {
+            "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1",
+            "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+        }
         or type(value.get("portfolio_sha256")) is not str
         or SHA256_RE.fullmatch(value["portfolio_sha256"]) is None
         or type(articles) is not dict
@@ -1680,22 +2070,56 @@ def _validate_materialization_binding(value: object) -> None:
             or SHA256_RE.fullmatch(raw["provider_binding_sha256"]) is None
         ):
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2":
+        activation = value.get("activation")
+        expected_activation_keys = {
+            "dry_run_sha256",
+            "admin_receipt_sha256",
+            "money_link_mapping_sha256",
+            "materialized_set_sha256",
+            "local_article_set_sha256",
+            "production_article_set_sha256",
+            "local_overlay_receipt_sha256",
+            "production_overlay_receipt_sha256",
+            "article_count",
+            "cta_count",
+        }
+        if (
+            type(activation) is not dict
+            or set(activation) != expected_activation_keys
+            or any(
+                type(activation.get(name)) is not str
+                or SHA256_RE.fullmatch(activation[name]) is None
+                for name in expected_activation_keys
+                if name.endswith("_sha256")
+            )
+            or activation.get("article_count") != EXPECTED_ALL_ARTICLE_COUNT
+            or activation.get("cta_count") != 74
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
 
 
-def _validate_baseline_record(value: object, slug: str) -> dict[str, object]:
-    if type(value) is not dict or set(value) != {
+def _validate_baseline_record(
+    value: object, slug: str, post_type: str | None = None
+) -> dict[str, object]:
+    old_fields = {
         "id",
         "slug",
         "status",
         "content_sha256",
         "revision_id",
         "modified_gmt",
+    }
+    if type(value) is not dict or set(value) not in {
+        frozenset(old_fields),
+        frozenset(old_fields | {"post_type"}),
     }:
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     if (
         type(value.get("id")) is not int
         or value["id"] < 1
         or value.get("slug") != slug
+        or (post_type is not None and value.get("post_type", "post") != post_type)
         or value.get("status") not in {"draft", "publish"}
     ):
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
@@ -1790,6 +2214,7 @@ def _validate_receipt(
             "operation_ids",
             "prior_applied_reconciliation",
             "public_readback",
+            "selected_documents",
         },
     )
     receipt.setdefault("authenticated_readback", None)
@@ -1803,10 +2228,16 @@ def _validate_receipt(
     receipt.setdefault("prior_applied_reconciliation", None)
     receipt.setdefault("public_readback", None)
     selected = sorted(article.production_slug for article in articles)
+    selected_documents = receipt.setdefault(
+        "selected_documents",
+        {article.production_slug: article.post_type for article in articles},
+    )
     desired = receipt.get("desired_sha256")
     if (
         receipt["schema"] != "RAOS_WORDPRESS_PUBLICATION_REQUEST_RECEIPT_V1"
         or receipt["selected_slugs"] != selected
+        or selected_documents
+        != {article.production_slug: article.post_type for article in articles}
         or type(desired) is not dict
         or set(desired) != set(selected)
         or any(
@@ -1859,7 +2290,7 @@ def _validate_receipt(
     if any(type(slug) is not str or slug not in selected for slug in baselines):
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     for slug, baseline in baselines.items():
-        _validate_baseline_record(baseline, slug)
+        _validate_baseline_record(baseline, slug, selected_documents[slug])
     operation_ids = receipt["operation_ids"]
     if not operation_ids and receipt["proposals"]:
         migrated: dict[str, str] = {}
@@ -1912,14 +2343,18 @@ def _baseline_record(document: Mapping[str, object]) -> dict[str, object]:
         or type(slug) is not str
         or SLUG_RE.fullmatch(slug) is None
         or status not in {"draft", "publish"}
+        or document.get("post_type") not in {"post", "page"}
     ):
         fail("RAOS_WORDPRESS_REQUEST_DOCUMENT_INVALID")
-    return {
+    result: dict[str, object] = {
         "id": post_id,
         "slug": slug,
         "status": status,
         **condition,
     }
+    if document.get("post_type") == "page":
+        result["post_type"] = "page"
+    return result
 
 
 def _known_baseline(
@@ -1942,6 +2377,8 @@ def _known_applied_target(
         type(proposal) is dict
         and proposal.get("kind") == "CONTENT_RELEASE"
         and proposal.get("slug") == slug
+        and proposal.get("post_type", document.get("post_type", "post"))
+        == document.get("post_type", "post")
         and proposal.get("after_sha256") == document.get("content_sha256")
         for proposal in proposals
     )
@@ -1985,9 +2422,10 @@ def _prior_applied_documents_for_fresh_capture(
         proposal_ids.add(proposal_id)
     if set(operations) != proposal_ids:
         return None
+    expected_document_count = EXPECTED_ALL_ARTICLE_COUNT + EXPECTED_POLICY_PAGE_COUNT
     if (
-        len(selected) != EXPECTED_ALL_ARTICLE_COUNT
-        or len(proposal_ids) != EXPECTED_ALL_ARTICLE_COUNT
+        len(selected) != expected_document_count
+        or len(proposal_ids) != expected_document_count
         or set(documents) != selected
     ):
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
@@ -2024,19 +2462,32 @@ def capture_existing_baselines(
     for article in articles:
         slug = article.production_slug
         candidates = listed.get(slug, [])
+        create_if_missing = (
+            article.post_type == "page"
+            and slug in CREATE_IF_MISSING_POLICY_PAGE_SLUGS
+        )
         if len(candidates) > 1:
             fail("RAOS_WORDPRESS_REQUEST_SLUG_CONFLICT")
         prior = baselines.get(slug)
         if not candidates:
             if (
                 prior is not None
-                or require_existing_published
                 or prior_applied_documents is not None
+                or (require_existing_published and not create_if_missing)
             ):
                 fail("RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT")
             continue
         listed_document = candidates[0]
-        if require_existing_published and listed_document.get("status") != "publish":
+        known_created_draft = create_if_missing and _known_draft(
+            receipt, slug, listed_document
+        )
+        if (
+            require_existing_published
+            and listed_document.get("status") != "publish"
+            and not known_created_draft
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT")
+        if listed_document.get("post_type") != article.post_type:
             fail("RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT")
         post_id = listed_document.get("id")
         if type(post_id) is not int or post_id < 1:
@@ -2068,7 +2519,7 @@ def capture_existing_baselines(
             baselines[slug] = current_baseline
             changed = True
         else:
-            _validate_baseline_record(prior, slug)
+            _validate_baseline_record(prior, slug, article.post_type)
             if prior != current_baseline:
                 if rebase_applied and _known_draft(receipt, slug, readback):
                     baselines[slug] = current_baseline
@@ -2252,6 +2703,7 @@ def _validate_deployment_tools(tools: object) -> None:
         or type(theme_key) is not dict
         or theme_key.get("type") != "string"
         or theme_key.get("pattern") != "^[0-9a-f]{64}$"
+        or type(wait_schema) is not dict
         or type(wait_ids) is not dict
         or wait_schema.get("type") != "object"
         or wait_schema.get("required")
@@ -2289,6 +2741,7 @@ def _deployment_mcp_call(
         "deployment-status",
         "publication-batch-status",
         "theme-propose-release",
+        "plugin-propose-change",
         "release-wait-and-apply",
     }:
         fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_COMMAND_INVALID")
@@ -2403,6 +2856,7 @@ def _proposal_record(
     key: str,
     response: Mapping[str, object],
     expected_after: str | None = None,
+    post_type: str | None = None,
 ) -> dict[str, object]:
     payload: object = response
     if kind == "THEME_RELEASE":
@@ -2424,7 +2878,7 @@ def _proposal_record(
         or re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", expires) is None
     ):
         fail("RAOS_WORDPRESS_REQUEST_PROPOSAL_INVALID")
-    return {
+    result: dict[str, object] = {
         "kind": kind,
         "slug": slug,
         "proposal_id": proposal_id,
@@ -2432,6 +2886,11 @@ def _proposal_record(
         "expires_at_gmt": expires,
         "idempotency_key": key,
     }
+    if kind == "CONTENT_RELEASE":
+        if post_type not in {"post", "page"}:
+            fail("RAOS_WORDPRESS_REQUEST_PROPOSAL_INVALID")
+        result["post_type"] = post_type
+    return result
 
 
 def deployment_status(
@@ -2646,11 +3105,14 @@ def create_proposals(
         if type(key) is not str or SHA256_RE.fullmatch(key) is None:
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
         draft = drafts[article.production_slug]
-        expected_after = _content_after_sha256(article.document(), draft["id"])
+        draft_id = draft.get("id")
+        if type(draft_id) is not int or draft_id < 1:
+            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+        expected_after = _content_after_sha256(article.document(), draft_id)
         response = client.call(
             "raos-codex-content-propose-release",
             {
-                "id": draft["id"],
+                "id": draft_id,
                 "precondition": precondition(draft),
                 "document": article.document(),
                 "idempotency_key": key,
@@ -2662,6 +3124,7 @@ def create_proposals(
             key=key,
             response=response,
             expected_after=expected_after,
+            post_type=article.post_type,
         )
         existing.append(proposal)
         by_identity[identity] = proposal
@@ -2684,12 +3147,14 @@ def create_proposals(
 def _proposal_ids(receipt: Mapping[str, object]) -> list[str]:
     proposals = receipt.get("proposals")
     selected_slugs = receipt.get("selected_slugs")
+    selected_documents = receipt.get("selected_documents")
     desired_tree = receipt.get("desired_theme_tree_sha256")
     if (
         type(proposals) is not list
-        or not 1 <= len(proposals) <= 20
+        or not 1 <= len(proposals) <= MAX_PUBLICATION_PROPOSALS
         or type(selected_slugs) is not list
         or any(type(slug) is not str for slug in selected_slugs)
+        or type(selected_documents) is not dict
         or type(desired_tree) is not str
         or SHA256_RE.fullmatch(desired_tree) is None
     ):
@@ -2697,7 +3162,7 @@ def _proposal_ids(receipt: Mapping[str, object]) -> list[str]:
     result: list[str] = []
     content_slugs: list[str] = []
     theme_count = 0
-    required = {
+    old_fields = {
         "kind",
         "slug",
         "proposal_id",
@@ -2706,7 +3171,10 @@ def _proposal_ids(receipt: Mapping[str, object]) -> list[str]:
         "idempotency_key",
     }
     for proposal in proposals:
-        if type(proposal) is not dict or set(proposal) != required:
+        if type(proposal) is not dict or set(proposal) not in {
+            frozenset(old_fields),
+            frozenset(old_fields | {"post_type"}),
+        }:
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
         kind = proposal.get("kind")
         slug = proposal.get("slug")
@@ -2733,6 +3201,8 @@ def _proposal_ids(receipt: Mapping[str, object]) -> list[str]:
                 fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
         else:
             if type(slug) is not str or SLUG_RE.fullmatch(slug) is None:
+                fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+            if proposal.get("post_type", "post") != selected_documents.get(slug):
                 fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
             content_slugs.append(slug)
         result.append(proposal_id)
@@ -2835,6 +3305,8 @@ def register_publication_batch(
             "expected_theme_tree_sha256": expected_theme_tree_sha256,
         },
     )
+    if type(response) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_BATCH_REGISTRATION_INVALID")
     batch_token = response.get("batch_token")
     manifest_hash = response.get("batch_manifest_sha256")
     expires = response.get("expires_at_gmt")
@@ -2855,7 +3327,7 @@ def register_publication_batch(
         fail("RAOS_WORDPRESS_REQUEST_BATCH_REGISTRATION_INVALID")
     receipt["batch_registration"] = response
     _touch_receipt(path, receipt, "BATCH_REGISTERED")
-    return response
+    return dict(response)
 
 
 def _registered_proposal_ids(receipt: Mapping[str, object]) -> list[str]:
@@ -2916,6 +3388,7 @@ def publication_batch_status(
         timeout=120,
         runner=runner,
     )
+    expires_at_gmt = response.get("expires_at_gmt")
     if (
         set(response)
         != {
@@ -2935,10 +3408,10 @@ def publication_batch_status(
         or response.get("proposal_ids") != proposal_ids
         or response.get("state")
         not in {"REGISTERED", "APPROVED", "APPLIED", "EXPIRED", "FAILED"}
-        or type(response.get("expires_at_gmt")) is not str
+        or type(expires_at_gmt) is not str
         or re.fullmatch(
             r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
-            response["expires_at_gmt"],
+            expires_at_gmt,
         )
         is None
         or type(response.get("preconditions_ready")) is not bool
@@ -2989,6 +3462,7 @@ def wait_and_apply(
         timeout=1080,
         runner=runner,
     )
+    aggregate_receipts = aggregate.get("receipts")
     if (
         aggregate.get("schema") != "ReleaseWaitApplyReceiptV1"
         or aggregate.get("batch_token") != batch_token
@@ -2996,8 +3470,8 @@ def wait_and_apply(
         or aggregate.get("proposal_count") != len(proposal_ids)
         or aggregate.get("proposal_ids") != proposal_ids
         or aggregate.get("state") != "APPLIED"
-        or type(aggregate.get("receipts")) is not list
-        or len(aggregate["receipts"]) != len(proposal_ids)
+        or type(aggregate_receipts) is not list
+        or len(aggregate_receipts) != len(proposal_ids)
     ):
         fail("RAOS_WORDPRESS_REQUEST_APPLY_RECEIPT_INVALID")
     proposal_by_id = {
@@ -3013,7 +3487,7 @@ def wait_and_apply(
         ),
     )
     for proposal_id, operation in zip(
-        expected_order, aggregate["receipts"], strict=True
+        expected_order, aggregate_receipts, strict=True
     ):
         proposal = proposal_by_id.get(proposal_id)
         expected_after = (
@@ -3035,7 +3509,7 @@ def wait_and_apply(
     receipt["apply_receipt"] = aggregate
     receipt["operation_ids"] = {
         operation["proposal_id"]: operation["operation_id"]
-        for operation in aggregate["receipts"]
+        for operation in aggregate_receipts
     }
     _touch_receipt(path, receipt, "APPLY_RETURNED")
     return aggregate
@@ -3085,15 +3559,25 @@ def _public_stylesheet_origin_is_valid(
     )
 
 
-def _public_theme_stylesheets_are_valid(stylesheet_urls: Sequence[str]) -> bool:
+def _public_theme_stylesheets_are_valid(
+    stylesheet_urls: Sequence[str],
+    *,
+    expected_assets: frozenset[str] = frozenset(THEME_RUNTIME_SENTINEL_PROPERTIES),
+) -> bool:
     """Validate direct or Autoptimize materialization of the two theme assets."""
 
+    if not expected_assets or not expected_assets.issubset(
+        THEME_RUNTIME_SENTINEL_PROPERTIES
+    ):
+        return False
     candidates = [
         (kind, href)
         for href in stylesheet_urls
         if (kind := _public_stylesheet_candidate_kind(href)) is not None
     ]
-    if len(candidates) != 2 or len({kind for kind, _href in candidates}) != 1:
+    if len(candidates) != len(expected_assets) or len(
+        {kind for kind, _href in candidates}
+    ) != 1:
         return False
     kind = candidates[0][0]
     if kind == "direct":
@@ -3114,7 +3598,10 @@ def _public_theme_stylesheets_are_valid(stylesheet_urls: Sequence[str]) -> bool:
             ):
                 return False
             paths.add(parsed.path)
-        return paths == DIRECT_THEME_STYLESHEET_PATHS
+        return paths == {
+            f"/wp-content/themes/kurashinoshirube-child/{asset}"
+            for asset in expected_assets
+        }
     if kind == "autoptimize":
         hashes: set[str] = set()
         for _kind, href in candidates:
@@ -3135,7 +3622,7 @@ def _public_theme_stylesheets_are_valid(stylesheet_urls: Sequence[str]) -> bool:
             if match is None or parsed.query != f"ver={EXPECTED_THEME_VERSION}":
                 return False
             hashes.add(match.group(1))
-        return len(hashes) == 2
+        return len(hashes) == len(expected_assets)
     return False
 
 
@@ -3270,10 +3757,14 @@ def _public_theme_stylesheet_evidence(
     cache: dict[str, dict[str, object]],
     *,
     authorization: str | None,
+    expected_assets: frozenset[str] = frozenset(THEME_RUNTIME_SENTINEL_PROPERTIES),
 ) -> list[dict[str, object]]:
     """Bind the accepted URL pair to two distinct fetched runtime sentinels."""
 
-    if not _public_theme_stylesheets_are_valid(stylesheet_urls):
+    if not _public_theme_stylesheets_are_valid(
+        stylesheet_urls,
+        expected_assets=expected_assets,
+    ):
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED")
     candidates = [
         (kind, href)
@@ -3312,7 +3803,7 @@ def _public_theme_stylesheet_evidence(
             "sentinel_property": THEME_RUNTIME_SENTINEL_PROPERTIES[asset],
             "runtime_revision": EXPECTED_THEME_RUNTIME_REVISION,
         }
-    if set(evidence_by_asset) != set(THEME_RUNTIME_SENTINEL_PROPERTIES):
+    if set(evidence_by_asset) != set(expected_assets):
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
     return [evidence_by_asset[asset] for asset in sorted(evidence_by_asset)]
 
@@ -3325,8 +3816,12 @@ def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]
         href = raw.get("href")
         rel = raw.get("rel")
         article_id = raw.get("article_id")
+        cta_id = raw.get("cta_id")
+        snapshot_id = raw.get("snapshot_id")
+        offer_id = raw.get("offer_id")
         product_id = raw.get("product_id")
         placement = raw.get("placement")
+        rakuten_measurement_id = raw.get("rakuten_measurement_id")
         if (
             type(href) is not str
             or len(href) > 8192
@@ -3349,8 +3844,27 @@ def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]
         ):
             fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
         if parsed.hostname == "hb.afl.rakuten.co.jp":
-            if set(rel) != {"sponsored", "nofollow"}:
+            if (
+                set(rel) != {"sponsored", "nofollow"}
+                or type(cta_id) is not str
+                or not cta_id
+                or type(snapshot_id) is not str
+                or not snapshot_id
+                or type(offer_id) is not str
+                or not offer_id
+                or type(rakuten_measurement_id) is not str
+                or re.fullmatch(
+                    r"[a-z0-9]+-[a-z0-9]+-(?:card|final)",
+                    rakuten_measurement_id,
+                )
+                is None
+            ):
                 fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
+        elif any(
+            value is not None
+            for value in (cta_id, snapshot_id, offer_id, rakuten_measurement_id)
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
         identity = (product_id, placement)
         if identity in identities:
             fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
@@ -3361,8 +3875,12 @@ def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]
                 "href": href,
                 "rel": rel,
                 "article_id": article_id,
+                "cta_id": cta_id,
+                "snapshot_id": snapshot_id,
+                "offer_id": offer_id,
                 "product_id": product_id,
                 "placement": placement,
+                "rakuten_measurement_id": rakuten_measurement_id,
             }
         )
     if not result:
@@ -3420,6 +3938,123 @@ def _validated_product_images(
     if seen != product_ids:
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_PRODUCT_IMAGE_INVALID")
     return result
+
+
+def _json_object_without_duplicates(
+    pairs: list[tuple[str, object]],
+) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+        result[key] = value
+    return result
+
+
+def _structured_data_types(
+    parser: _PublicPageEvidenceParser,
+    *,
+    post_type: str,
+) -> list[str]:
+    if (
+        len(parser.json_ld_payloads) != 1
+        or not parser.json_ld_payloads[0].strip()
+        or len(parser.json_ld_payloads[0].encode("utf-8")) > 256 * 1024
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+    try:
+        payload = json.loads(
+            parser.json_ld_payloads[0],
+            object_pairs_hook=_json_object_without_duplicates,
+        )
+    except (UnicodeError, json.JSONDecodeError, ValueError, RecursionError):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+    if (
+        type(payload) is not dict
+        or set(payload) != {"@context", "@graph"}
+        or payload.get("@context") != "https://schema.org"
+        or type(payload.get("@graph")) is not list
+        or not payload["@graph"]
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+    discovered: set[str] = set()
+
+    def add_type(value: str) -> None:
+        normalized = re.split(r"[/#:]", value)[-1]
+        if not normalized or re.fullmatch(r"[A-Za-z][A-Za-z0-9]*", normalized) is None:
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+        discovered.add(normalized)
+
+    def visit(value: object, depth: int = 0) -> None:
+        if depth > 16:
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+        if type(value) is dict:
+            node_type = value.get("@type")
+            if type(node_type) is str:
+                add_type(node_type)
+            elif type(node_type) is list:
+                if not node_type or any(type(item) is not str for item in node_type):
+                    fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+                for item in node_type:
+                    add_type(item)
+            elif node_type is not None:
+                fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+            for child in value.values():
+                visit(child, depth + 1)
+        elif type(value) is list:
+            for child in value:
+                visit(child, depth + 1)
+
+    visit(payload)
+    forbidden = {"Product", "Offer", "Review", "FAQPage"}
+    required = {"BreadcrumbList", "Organization", "WebSite"}
+    if post_type == "post":
+        required.add("Article")
+    elif post_type != "page":
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+    if (
+        forbidden & discovered
+        or not required.issubset(discovered)
+        or (post_type == "page" and "Article" in discovered)
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
+    return sorted(discovered)
+
+
+def _validated_public_head(
+    parser: _PublicPageEvidenceParser,
+    article: Article,
+    url: str,
+) -> dict[str, object]:
+    expected_og = {
+        "og:title": [article.title],
+        "og:description": [article.excerpt],
+        "og:url": [url],
+        "og:image": [EXPECTED_SOCIAL_IMAGE_URL],
+    }
+    image = urlsplit(EXPECTED_SOCIAL_IMAGE_URL)
+    if (
+        not article.excerpt.strip()
+        or parser.meta_descriptions != [article.excerpt]
+        or parser.open_graph != expected_og
+        or image.scheme != "https"
+        or image.hostname != urlsplit(ORIGIN).hostname
+        or image.username is not None
+        or image.password is not None
+        or image.query
+        or image.fragment
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_HEAD_INVALID")
+    return {
+        "meta_description": article.excerpt,
+        "open_graph": {
+            key: values[0] for key, values in sorted(parser.open_graph.items())
+        },
+        "json_ld_types": _structured_data_types(
+            parser,
+            post_type=article.post_type,
+        ),
+    }
 
 
 def _public_page_evidence(
@@ -3493,18 +4128,12 @@ def _public_page_evidence(
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_HTML_INVALID")
     visible = _normalized_public_text(parser.visible_text)
     required_headings = desired.headings
-    expected_ctas = _validated_ctas(desired)
-    actual_ctas = _validated_ctas(parser)
-    product_ids = {
-        str(cta["product_id"])
-        for cta in expected_ctas
-        if type(cta.get("product_id")) is str
-    }
-    expected_images = _validated_product_images(desired, product_ids=product_ids)
-    actual_images = _validated_product_images(parser, product_ids=product_ids)
-    expected_disclosure = _normalized_public_text(desired.disclosure_text)
-    actual_disclosure = _normalized_public_text(parser.disclosure_text)
-    if (
+    head_evidence = _validated_public_head(parser, article, url)
+    expected_stylesheet_assets = {"assets/theme.css"}
+    if article.post_type == "post":
+        expected_stylesheet_assets.add("assets/editorial-v2.css")
+    expected_assets = frozenset(expected_stylesheet_assets)
+    common_invalid = (
         response_noindex
         or parser.noindex
         or parser.canonical_urls != [url]
@@ -3519,19 +4148,79 @@ def _public_page_evidence(
             ("h2", "暮らしのしるべ"),
         ]
         or any(heading not in visible for heading in required_headings)
-        or expected_ctas != actual_ctas
-        or expected_images != actual_images
-        or "広告を含みます" not in expected_disclosure
-        or expected_disclosure != actual_disclosure
-        or not _public_theme_stylesheets_are_valid(parser.stylesheet_urls)
-    ):
+        or not _public_theme_stylesheets_are_valid(
+            parser.stylesheet_urls,
+            expected_assets=expected_assets,
+        )
+    )
+    if common_invalid:
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED")
     stylesheet_evidence = _public_theme_stylesheet_evidence(
         parser.stylesheet_urls,
         opener,
         stylesheet_cache if stylesheet_cache is not None else {},
         authorization=authorization,
+        expected_assets=expected_assets,
     )
+    if article.post_type == "page":
+        private_markers = {
+            "confirmed_contribution_profit",
+            "owner_hourly_rate",
+            "service_account_key",
+            "private_key",
+            ".secrets/",
+            "rakuten_order_id=",
+        }
+        if (
+            any(value not in visible for value in article.required_key_content)
+            or any(marker in visible.casefold() for marker in private_markers)
+            or parser.ctas
+            or parser.affiliate_links
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED")
+        return {
+            "url": url,
+            "status": 200,
+            "post_type": "page",
+            "canonical_url": parser.canonical_urls[0],
+            "indexable": True,
+            "title": parser.page_titles[0],
+            "h1": parser.h1_titles[0],
+            "heading_count": len(required_headings),
+            "required_key_content": list(article.required_key_content),
+            "private_financial_data_absent": True,
+            "theme_version": EXPECTED_THEME_VERSION,
+            "theme_runtime_revision": EXPECTED_THEME_RUNTIME_REVISION,
+            "theme_stylesheets": stylesheet_evidence,
+            **head_evidence,
+        }
+    expected_ctas = _validated_ctas(desired)
+    actual_ctas = _validated_ctas(parser)
+    product_ids = {
+        str(cta["product_id"])
+        for cta in expected_ctas
+        if type(cta.get("product_id")) is str
+    }
+    expected_images = _validated_product_images(desired, product_ids=product_ids)
+    actual_images = _validated_product_images(parser, product_ids=product_ids)
+    expected_disclosure = _normalized_public_text(desired.disclosure_text)
+    actual_disclosure = _normalized_public_text(parser.disclosure_text)
+    if (
+        expected_ctas != actual_ctas
+        or expected_images != actual_images
+        or "広告を含みます" not in expected_disclosure
+        or expected_disclosure != actual_disclosure
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED")
+    cta_evidence = [
+        {
+            **{key: value for key, value in cta.items() if key != "href"},
+            "destination_sha256": hashlib.sha256(
+                str(cta["href"]).encode("utf-8")
+            ).hexdigest(),
+        }
+        for cta in actual_ctas
+    ]
     return {
         "url": url,
         "status": 200,
@@ -3539,12 +4228,13 @@ def _public_page_evidence(
         "indexable": True,
         "title": parser.page_titles[0],
         "heading_count": len(required_headings),
-        "ctas": actual_ctas,
+        "ctas": cta_evidence,
         "product_images": actual_images,
         "advertising_disclosure": actual_disclosure,
         "theme_version": EXPECTED_THEME_VERSION,
         "theme_runtime_revision": EXPECTED_THEME_RUNTIME_REVISION,
         "theme_stylesheets": stylesheet_evidence,
+        **head_evidence,
     }
 
 
@@ -3610,6 +4300,7 @@ def _published_document_evidence(
         evidence[article.production_slug] = {
             "id": post_id,
             "slug": article.production_slug,
+            "post_type": article.post_type,
             "status": "publish",
             **precondition(document),
         }
@@ -3706,6 +4397,7 @@ def verify_published(
     expected_theme_version: str,
     expected_theme_tree_sha256: str,
     theme_was_proposed: bool,
+    require_measurement_ready: bool,
     deployment_runner: Callable[..., subprocess.CompletedProcess[bytes]],
 ) -> None:
     drafts = receipt.get("drafts")
@@ -3719,7 +4411,9 @@ def verify_published(
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     document_evidence = _published_document_evidence(client, articles, receipt)
     status = client.call("raos-codex-site-status", {})
-    validate_site_status(status)
+    validate_site_status(
+        status, require_measurement_ready=require_measurement_ready
+    )
     theme = status.get("theme")
     if (
         type(theme) is not dict
@@ -3824,6 +4518,13 @@ def _resume_ready(receipt: Mapping[str, object], expected_count: int) -> bool:
     )
 
 
+def _theme_was_proposed(
+    receipt: Mapping[str, object], content_count: int
+) -> bool:
+    proposals = receipt.get("proposals")
+    return type(proposals) is list and len(proposals) == content_count + 1
+
+
 def _require_applied_batch_ready(batch: Mapping[str, object]) -> None:
     if batch.get("state") != "APPLIED" or batch.get("preconditions_ready") is not True:
         fail("RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID")
@@ -3849,6 +4550,7 @@ def _resume_existing_all_attempt(
     loaded_receipt: dict[str, object] | None,
     path: Path,
     *,
+    activation: RakutenMeasurementActivationOverlayV3 | None = None,
     client_factory: Callable[[], Any],
     deployment_runner: Callable[..., subprocess.CompletedProcess[bytes]],
 ) -> bool:
@@ -3879,16 +4581,32 @@ def _resume_existing_all_attempt(
         _require_applied_batch_ready(batch)
     articles: Sequence[Article] | None = None
     if batch["state"] != "APPLIED":
-        articles = load_articles(
-            "all",
-            fixture_root=PRODUCTION_MATERIALIZED_FIXTURE_ROOT,
+        fixture_root = (
+            activation.production_fixture_root
+            if activation is not None
+            else PRODUCTION_MATERIALIZED_FIXTURE_ROOT
         )
-        binding = production_materialization_binding(articles, require_recent=False)
+        articles = load_publication_items(
+            "all",
+            article_fixture_root=fixture_root,
+        )
+        binding = (
+            activation_materialization_binding(
+                activation,
+                [article for article in articles if article.post_type == "post"],
+                require_recent=False,
+            )
+            if activation is not None
+            else production_materialization_binding(
+                [article for article in articles if article.post_type == "post"],
+                require_recent=False,
+            )
+        )
         desired_tree = receipt.get("desired_theme_tree_sha256")
         if (
             type(desired_tree) is not str
             or SHA256_RE.fullmatch(desired_tree) is None
-            or not _receipt_matches_captured_inputs(
+            or not _same_desired(
                 receipt,
                 articles,
                 desired_tree,
@@ -3900,7 +4618,10 @@ def _resume_existing_all_attempt(
     client = client_factory()
     client.initialize()
     validate_tool_contract(client.tools())
-    validate_site_status(client.call("raos-codex-site-status", {}))
+    validate_site_status(
+        client.call("raos-codex-site-status", {}),
+        require_measurement_ready=True,
+    )
     operations = read_content_operations(client, receipt)
     if batch["state"] == "APPLIED":
         _require_applied_receipt_content_operations(receipt, operations)
@@ -3940,21 +4661,45 @@ def _resume_existing_all_attempt(
 def execute(
     selection: str,
     *,
+    measurement_plugin_apply_receipt: Path | None = None,
+    rakuten_activation_dry_run: Path | None = None,
     portfolio_refresh: Callable[[], None] = run_editorial_portfolio_refresh,
     preview: Callable[[], None] = run_preview_checks,
+    preview_fixture: Callable[[Path], None] | None = None,
     client_factory: Callable[[], Any] = EditorMcpClient,
     deployment_runner: Callable[
         ..., subprocess.CompletedProcess[bytes]
     ] = subprocess.run,
 ) -> Path:
+    activation: RakutenMeasurementActivationOverlayV3 | None = None
+    if selection == "all":
+        # This owner-private, read-only validation is deliberately first. A
+        # missing, insecure, partial, or drifted activation cannot create a
+        # lock, refresh provider state, read credentials, or call WordPress.
+        activation = validate_rakuten_activation_dry_run(
+            rakuten_activation_dry_run,
+            require_recent=False,
+        )
+        validate_measurement_plugin_apply_receipt(
+            measurement_plugin_apply_receipt
+        )
     with request_lock():
-        source_articles = load_articles(selection, fixture_root=SOURCE_FIXTURE_ROOT)
+        initial_fixture_root = (
+            activation.production_fixture_root
+            if activation is not None
+            else SOURCE_FIXTURE_ROOT
+        )
+        source_articles = load_publication_items(
+            selection,
+            article_fixture_root=initial_fixture_root,
+        )
         initial_path = _receipt_path(source_articles)
         initial_receipt = _read_receipt(initial_path)
         if selection == "all" and _resume_existing_all_attempt(
             source_articles,
             initial_receipt,
             initial_path,
+            activation=activation,
             client_factory=client_factory,
             deployment_runner=deployment_runner,
         ):
@@ -3965,25 +4710,59 @@ def execute(
         fixture_root = SOURCE_FIXTURE_ROOT
         materialization_before_preview: dict[str, object] | None = None
         if selection == "all":
-            # Capture and both materializations run in the foreground. The local
-            # variant is what preview sync/check consumes; proposals use the
-            # separate production variant with provider image URLs.
-            portfolio_refresh()
-            fixture_root = PRODUCTION_MATERIALIZED_FIXTURE_ROOT
-        articles_before_preview = load_articles(selection, fixture_root=fixture_root)
+            assert activation is not None
+            # V2 capture/materialization happened before the separately
+            # attested activation dry-run. Re-running it here would mutate the
+            # reviewed input and make the Money Link receipt stale.
+            fixture_root = activation.production_fixture_root
+        articles_before_preview = load_publication_items(
+            selection,
+            article_fixture_root=fixture_root,
+        )
         if selection == "all":
-            materialization_before_preview = production_materialization_binding(
-                articles_before_preview
+            assert activation is not None
+            materialization_before_preview = activation_materialization_binding(
+                activation,
+                [
+                    article
+                    for article in articles_before_preview
+                    if article.post_type == "post"
+                ],
+                require_recent=True,
             )
         reviewed_article_hashes = {
             article.production_slug: article.desired_sha256()
             for article in articles_before_preview
         }
         theme_tree_before_preview = tracked_theme_tree_sha256()
-        preview()
-        articles = load_articles(selection, fixture_root=fixture_root)
+        if activation is None:
+            preview()
+        elif preview_fixture is not None:
+            preview_fixture(activation.local_fixture_root)
+        elif preview is run_preview_checks:
+            run_preview_checks(fixture_root=activation.local_fixture_root)
+        else:
+            # Compatibility for injected no-argument test/audit callbacks.
+            preview()
+        if activation is not None:
+            activation_after_preview = validate_rakuten_activation_dry_run(
+                rakuten_activation_dry_run,
+                require_recent=False,
+            )
+            if activation_after_preview != activation:
+                fail("RAOS_WORDPRESS_REQUEST_ARTICLE_CHANGED_DURING_PREVIEW")
+        articles = load_publication_items(
+            selection,
+            article_fixture_root=fixture_root,
+        )
         materialization_binding = (
-            production_materialization_binding(articles) if selection == "all" else None
+            activation_materialization_binding(
+                activation,
+                [article for article in articles if article.post_type == "post"],
+                require_recent=True,
+            )
+            if activation is not None
+            else None
         )
         if {
             article.production_slug: article.desired_sha256() for article in articles
@@ -4019,12 +4798,17 @@ def execute(
         tools = client.tools()
         validate_tool_contract(tools)
         status = client.call("raos-codex-site-status", {})
-        validate_site_status(status)
+        validate_site_status(
+            status, require_measurement_ready=selection == "all"
+        )
         live_theme = status["theme"]
         if type(live_theme) is not dict:
             fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
 
-        documents = list_all_documents(client)
+        documents = list_all_documents(
+            client,
+            post_types=("post", "page") if selection == "all" else ("post",),
+        )
         documents = capture_existing_baselines(
             client,
             articles,
@@ -4197,7 +4981,8 @@ def execute(
                     path,
                     expected_theme_version=local_theme_version,
                     expected_theme_tree_sha256=local_theme_tree_sha256,
-                    theme_was_proposed=len(receipt["proposals"]) == len(articles) + 1,
+                    theme_was_proposed=_theme_was_proposed(receipt, len(articles)),
+                    require_measurement_ready=selection == "all",
                     deployment_runner=deployment_runner,
                 )
                 return path
@@ -4236,6 +5021,7 @@ def execute(
             expected_theme_version=local_theme_version,
             expected_theme_tree_sha256=local_theme_tree_sha256,
             theme_was_proposed=include_theme,
+            require_measurement_ready=selection == "all",
             deployment_runner=deployment_runner,
         )
         return path
@@ -4248,13 +5034,45 @@ def parser() -> argparse.ArgumentParser:
         default=os.environ.get("ARTICLES", "all"),
         help="all (default) or a comma-separated list of exact production slugs",
     )
+    result.add_argument(
+        "--measurement-plugin-apply-receipt",
+        type=Path,
+        default=(
+            Path(os.environ["MEASUREMENT_PLUGIN_APPLY_RECEIPT"])
+            if os.environ.get("MEASUREMENT_PLUGIN_APPLY_RECEIPT")
+            else None
+        ),
+        help=(
+            "absolute owner-private OperationReceiptV1 from the separately "
+            "approved measurement plugin apply; required for --articles all"
+        ),
+    )
+    result.add_argument(
+        "--rakuten-activation-dry-run",
+        type=Path,
+        default=(
+            Path(os.environ["RAKUTEN_ACTIVATION_DRY_RUN"])
+            if os.environ.get("RAKUTEN_ACTIVATION_DRY_RUN")
+            else None
+        ),
+        help=(
+            "absolute owner-private URL-free Editorial V3 activation dry-run; "
+            "required for --articles all"
+        ),
+    )
     return result
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     try:
         arguments = parser().parse_args(argv)
-        path = execute(arguments.articles)
+        path = execute(
+            arguments.articles,
+            measurement_plugin_apply_receipt=(
+                arguments.measurement_plugin_apply_receipt
+            ),
+            rakuten_activation_dry_run=arguments.rakuten_activation_dry_run,
+        )
         print("公開と本番read-backが完了しました。")
         print(f"受領書: {path}")
         return 0

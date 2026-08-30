@@ -1,0 +1,291 @@
+{
+  "articles": [
+    {
+      "article_code": "a01",
+      "article_id": "st1703-first-suitcase-comparison",
+      "category_label": "移動",
+      "cluster_id": "mobility",
+      "home_order": 1,
+      "production_slug": "carry-on-suitcase-comparison",
+      "related_articles": [
+        {
+          "article_code": "a07",
+          "article_id": "lightweight-carry-on-suitcase-under-3kg",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "lightweight-carry-on-suitcase-under-3kg",
+          "relationship": "same_cluster"
+        },
+        {
+          "article_code": "a06",
+          "article_id": "carry-on-suitcase-under-100-seats",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "carry-on-suitcase-under-100-seats",
+          "relationship": "same_cluster"
+        }
+      ],
+      "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ"
+    },
+    {
+      "article_code": "a06",
+      "article_id": "carry-on-suitcase-under-100-seats",
+      "category_label": "移動",
+      "cluster_id": "mobility",
+      "home_order": 2,
+      "production_slug": "carry-on-suitcase-under-100-seats",
+      "related_articles": [
+        {
+          "article_code": "a01",
+          "article_id": "st1703-first-suitcase-comparison",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "carry-on-suitcase-comparison",
+          "relationship": "same_cluster"
+        },
+        {
+          "article_code": "a08",
+          "article_id": "front-open-carry-on-suitcase-with-stopper",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "front-open-carry-on-suitcase-with-stopper",
+          "relationship": "same_cluster"
+        }
+      ],
+      "title": "100席未満の国内線向けスーツケース4モデルを機内持ち込み規定で比較"
+    },
+    {
+      "article_code": "a07",
+      "article_id": "lightweight-carry-on-suitcase-under-3kg",
+      "category_label": "移動",
+      "cluster_id": "mobility",
+      "home_order": 3,
+      "production_slug": "lightweight-carry-on-suitcase-under-3kg",
+      "related_articles": [
+        {
+          "article_code": "a01",
+          "article_id": "st1703-first-suitcase-comparison",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "carry-on-suitcase-comparison",
+          "relationship": "same_cluster"
+        },
+        {
+          "article_code": "a08",
+          "article_id": "front-open-carry-on-suitcase-with-stopper",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "front-open-carry-on-suitcase-with-stopper",
+          "relationship": "same_cluster"
+        }
+      ],
+      "title": "30L以上・3kg以下の機内持ち込みスーツケース4モデルを比較"
+    },
+    {
+      "article_code": "a08",
+      "article_id": "front-open-carry-on-suitcase-with-stopper",
+      "category_label": "移動",
+      "cluster_id": "mobility",
+      "home_order": 4,
+      "production_slug": "front-open-carry-on-suitcase-with-stopper",
+      "related_articles": [
+        {
+          "article_code": "a01",
+          "article_id": "st1703-first-suitcase-comparison",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "carry-on-suitcase-comparison",
+          "relationship": "same_cluster"
+        },
+        {
+          "article_code": "a06",
+          "article_id": "carry-on-suitcase-under-100-seats",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "carry-on-suitcase-under-100-seats",
+          "relationship": "same_cluster"
+        }
+      ],
+      "title": "フロントオープンとキャスターストッパーを備えた機内持ち込みスーツケース4モデル比較"
+    },
+    {
+      "article_code": "a04",
+      "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "category_label": "家事",
+      "cluster_id": "household",
+      "home_order": 1,
+      "production_slug": "countertop-dishwasher-for-small-households",
+      "related_articles": [
+        {
+          "article_code": "a10",
+          "article_id": "solota-vs-rakua-mini-plus",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "solota-vs-rakua-mini-plus",
+          "relationship": "same_cluster"
+        },
+        {
+          "article_code": "a05",
+          "article_id": "st1704-compact-robot-vacuum-shortlist",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "compact-robot-vacuum-shortlist",
+          "relationship": "same_cluster"
+        }
+      ],
+      "title": "工事不要の食洗機を1〜2人暮らし向けに比較"
+    },
+    {
+      "article_code": "a05",
+      "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "category_label": "家事",
+      "cluster_id": "household",
+      "home_order": 2,
+      "production_slug": "compact-robot-vacuum-shortlist",
+      "related_articles": [
+        {
+          "article_code": "a09",
+          "article_id": "roomba-mini-vs-switchbot-k11-pro",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "roomba-mini-vs-switchbot-k11-pro",
+          "relationship": "same_cluster"
+        },
+        {
+          "article_code": "a04",
+          "article_id": "st1704-countertop-dishwasher-for-small-households",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "countertop-dishwasher-for-small-households",
+          "relationship": "same_cluster"
+        }
+      ],
+      "title": "省スペースのロボット掃除機を条件で絞る"
+    },
+    {
+      "article_code": "a09",
+      "article_id": "roomba-mini-vs-switchbot-k11-pro",
+      "category_label": "家事",
+      "cluster_id": "household",
+      "home_order": 3,
+      "production_slug": "roomba-mini-vs-switchbot-k11-pro",
+      "related_articles": [
+        {
+          "article_code": "a05",
+          "article_id": "st1704-compact-robot-vacuum-shortlist",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "compact-robot-vacuum-shortlist",
+          "relationship": "same_cluster"
+        },
+        {
+          "article_code": "a10",
+          "article_id": "solota-vs-rakua-mini-plus",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "solota-vs-rakua-mini-plus",
+          "relationship": "same_cluster"
+        }
+      ],
+      "title": "Roomba MiniとSwitchBot K11+ Proを公式仕様で比較"
+    },
+    {
+      "article_code": "a10",
+      "article_id": "solota-vs-rakua-mini-plus",
+      "category_label": "家事",
+      "cluster_id": "household",
+      "home_order": 4,
+      "production_slug": "solota-vs-rakua-mini-plus",
+      "related_articles": [
+        {
+          "article_code": "a04",
+          "article_id": "st1704-countertop-dishwasher-for-small-households",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "countertop-dishwasher-for-small-households",
+          "relationship": "same_cluster"
+        },
+        {
+          "article_code": "a05",
+          "article_id": "st1704-compact-robot-vacuum-shortlist",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "compact-robot-vacuum-shortlist",
+          "relationship": "same_cluster"
+        }
+      ],
+      "title": "SOLOTAとラクアmini Plusを設置条件から比較"
+    },
+    {
+      "article_code": "a02",
+      "article_id": "st1704-portable-power-station-guide",
+      "category_label": "備え",
+      "cluster_id": "preparedness",
+      "home_order": 1,
+      "production_slug": "portable-power-station-guide",
+      "related_articles": [
+        {
+          "article_code": "a03",
+          "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "anker-solix-c300-c800-c1000-differences",
+          "relationship": "same_cluster"
+        },
+        {
+          "article_code": "a01",
+          "article_id": "st1703-first-suitcase-comparison",
+          "context": "持ち運び条件の隣接文脈",
+          "production_slug": "carry-on-suitcase-comparison",
+          "relationship": "adjacent_context"
+        }
+      ],
+      "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める"
+    },
+    {
+      "article_code": "a03",
+      "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "category_label": "備え",
+      "cluster_id": "preparedness",
+      "home_order": 2,
+      "production_slug": "anker-solix-c300-c800-c1000-differences",
+      "related_articles": [
+        {
+          "article_code": "a02",
+          "article_id": "st1704-portable-power-station-guide",
+          "context": "同一クラスタの次の判断",
+          "production_slug": "portable-power-station-guide",
+          "relationship": "same_cluster"
+        },
+        {
+          "article_code": "a01",
+          "article_id": "st1703-first-suitcase-comparison",
+          "context": "持ち運び条件の隣接文脈",
+          "production_slug": "carry-on-suitcase-comparison",
+          "relationship": "adjacent_context"
+        }
+      ],
+      "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い"
+    }
+  ],
+  "clusters": [
+    {
+      "article_ids": [
+        "st1703-first-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats",
+        "lightweight-carry-on-suitcase-under-3kg",
+        "front-open-carry-on-suitcase-with-stopper"
+      ],
+      "category_label": "移動",
+      "cluster_id": "mobility",
+      "home_order": 1
+    },
+    {
+      "article_ids": [
+        "st1704-countertop-dishwasher-for-small-households",
+        "st1704-compact-robot-vacuum-shortlist",
+        "roomba-mini-vs-switchbot-k11-pro",
+        "solota-vs-rakua-mini-plus"
+      ],
+      "category_label": "家事",
+      "cluster_id": "household",
+      "home_order": 2
+    },
+    {
+      "article_ids": [
+        "st1704-portable-power-station-guide",
+        "st1704-anker-solix-c300-c800-c1000-differences"
+      ],
+      "category_label": "備え",
+      "cluster_id": "preparedness",
+      "home_order": 3
+    }
+  ],
+  "schema": "RAOS_EDITORIAL_NAVIGATION_V3",
+  "source_portfolio_schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
+  "target_origin": "https://kurashinoshirube.com",
+  "version": "3.0.0"
+}

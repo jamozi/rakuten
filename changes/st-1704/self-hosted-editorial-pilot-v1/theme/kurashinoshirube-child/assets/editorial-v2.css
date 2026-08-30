@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: 30a84ec5dffb12c048181198ecc8745fa22be70f1854507237c19306589b341f;
+  --raos-theme-runtime-revision-editorial-v2: 9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -863,6 +863,7 @@
     margin-top: 1rem;
   }
 
+  .raos-editorial-v2 .comparison-table-wrap:not(.raos-comparison),
   .raos-editorial-v2 .comparison-table-wrap > table,
   .raos-editorial-v2 .comparison-table-wrap > .raos-comparison__table-view {
     display: none;

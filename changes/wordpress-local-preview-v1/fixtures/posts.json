@@ -1,10 +1,10 @@
 {
   "schema": "RAOS_WORDPRESS_LOCAL_PREVIEW_FIXTURE_V1",
-  "seed_version": "2026-08-29.4",
+  "seed_version": "2026-08-30.1",
   "posts": [
     {
       "article_id": "local-preview-carry-on-suitcase-comparison",
-      "category": "暮らしの道具",
+      "category": "移動",
       "content_file": "articles/carry-on-suitcase-comparison.html",
       "date": "2026-08-24 00:00:00",
       "excerpt": "型番と一次情報を照合できたエース系3モデルを、軽さ・容量・開き方で条件別に比較。市場全体の順位ではなく、向く人と注意点を整理します。",
@@ -13,7 +13,7 @@
     },
     {
       "article_id": "local-preview-portable-power-station-guide",
-      "category": "暮らしの道具",
+      "category": "備え",
       "content_file": "articles/portable-power-station-guide.html",
       "date": "2026-08-23 00:00:00",
       "excerpt": "停電対策のポータブル電源4モデルを、容量・定格出力・重量・大きさで比較。使いたい機器と持ち運び条件から候補を絞ります。",
@@ -22,7 +22,7 @@
     },
     {
       "article_id": "local-preview-anker-solix-c300-c800-c1000-differences",
-      "category": "暮らしの道具",
+      "category": "備え",
       "content_file": "articles/anker-solix-c300-c800-c1000-differences.html",
       "date": "2026-08-22 00:00:00",
       "excerpt": "Anker Solix 4モデルの容量・定格出力・重量・寸法を同じ表で比較。持ち運び、出力、C1000の世代差から条件別に選びます。",
@@ -31,7 +31,7 @@
     },
     {
       "article_id": "local-preview-countertop-dishwasher-for-small-households",
-      "category": "暮らしの道具",
+      "category": "家事",
       "content_file": "articles/countertop-dishwasher-for-small-households.html",
       "date": "2026-08-21 00:00:00",
       "excerpt": "工事不要で使えるタンク式食洗機4モデルを、設置寸法・食器点数・使用水量・乾燥方法で比較。狭いキッチンで向く条件を整理します。",
@@ -40,7 +40,7 @@
     },
     {
       "article_id": "local-preview-compact-robot-vacuum-shortlist",
-      "category": "暮らしの道具",
+      "category": "家事",
       "content_file": "articles/compact-robot-vacuum-shortlist.html",
       "date": "2026-08-20 00:00:00",
       "excerpt": "省スペース候補のロボット掃除機4モデルを、本体の底面寸法・高さ・ステーション寸法・水拭き方式で比較。置ける条件から候補を絞ります。",

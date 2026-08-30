@@ -1,0 +1,588 @@
+{
+  "articles": [
+    {
+      "article_code": "a01",
+      "article_id": "st1703-first-suitcase-comparison",
+      "category_id": "mobility",
+      "cta_bindings": [
+        {
+          "cta_id": "cta-a01-p01-final",
+          "offer_id": "off-a01-p01",
+          "placement": "final_summary",
+          "product_id": "PRD-ACE-CRESTA-06316"
+        },
+        {
+          "cta_id": "cta-a01-p01-card",
+          "offer_id": "off-a01-p01",
+          "placement": "product_card",
+          "product_id": "PRD-ACE-CRESTA-06316"
+        },
+        {
+          "cta_id": "cta-a01-p02-final",
+          "offer_id": "off-a01-p02",
+          "placement": "final_summary",
+          "product_id": "PRD-ACE-DIFFERENCE-05721"
+        },
+        {
+          "cta_id": "cta-a01-p02-card",
+          "offer_id": "off-a01-p02",
+          "placement": "product_card",
+          "product_id": "PRD-ACE-DIFFERENCE-05721"
+        },
+        {
+          "cta_id": "cta-a01-p03-final",
+          "offer_id": "off-a01-p03",
+          "placement": "final_summary",
+          "product_id": "PRD-ACE-MAXPASS4-01471"
+        },
+        {
+          "cta_id": "cta-a01-p03-card",
+          "offer_id": "off-a01-p03",
+          "placement": "product_card",
+          "product_id": "PRD-ACE-MAXPASS4-01471"
+        }
+      ],
+      "related_article_ids": [
+        "lightweight-carry-on-suitcase-under-3kg",
+        "carry-on-suitcase-under-100-seats"
+      ],
+      "snapshot_id": "snp-a01-fe5903f372e1"
+    },
+    {
+      "article_code": "a02",
+      "article_id": "st1704-portable-power-station-guide",
+      "category_id": "preparedness",
+      "cta_bindings": [
+        {
+          "cta_id": "cta-a02-p04-final",
+          "offer_id": "off-a02-p04",
+          "placement": "final_summary",
+          "product_id": "PRD-ANKER-SOLIX-C300"
+        },
+        {
+          "cta_id": "cta-a02-p04-card",
+          "offer_id": "off-a02-p04",
+          "placement": "product_card",
+          "product_id": "PRD-ANKER-SOLIX-C300"
+        },
+        {
+          "cta_id": "cta-a02-p06-final",
+          "offer_id": "off-a02-p06",
+          "placement": "final_summary",
+          "product_id": "PRD-BLUETTI-AC70"
+        },
+        {
+          "cta_id": "cta-a02-p06-card",
+          "offer_id": "off-a02-p06",
+          "placement": "product_card",
+          "product_id": "PRD-BLUETTI-AC70"
+        },
+        {
+          "cta_id": "cta-a02-p07-final",
+          "offer_id": "off-a02-p07",
+          "placement": "final_summary",
+          "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC"
+        },
+        {
+          "cta_id": "cta-a02-p07-card",
+          "offer_id": "off-a02-p07",
+          "placement": "product_card",
+          "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC"
+        },
+        {
+          "cta_id": "cta-a02-p05-final",
+          "offer_id": "off-a02-p05",
+          "placement": "final_summary",
+          "product_id": "PRD-JACKERY-500-NEW"
+        },
+        {
+          "cta_id": "cta-a02-p05-card",
+          "offer_id": "off-a02-p05",
+          "placement": "product_card",
+          "product_id": "PRD-JACKERY-500-NEW"
+        }
+      ],
+      "related_article_ids": [
+        "st1704-anker-solix-c300-c800-c1000-differences",
+        "st1703-first-suitcase-comparison"
+      ],
+      "snapshot_id": "snp-a02-d37e9579edb4"
+    },
+    {
+      "article_code": "a03",
+      "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "category_id": "preparedness",
+      "cta_bindings": [
+        {
+          "cta_id": "cta-a03-p09-final",
+          "offer_id": "off-a03-p09",
+          "placement": "final_summary",
+          "product_id": "PRD-ANKER-SOLIX-C1000"
+        },
+        {
+          "cta_id": "cta-a03-p09-card",
+          "offer_id": "off-a03-p09",
+          "placement": "product_card",
+          "product_id": "PRD-ANKER-SOLIX-C1000"
+        },
+        {
+          "cta_id": "cta-a03-p10-final",
+          "offer_id": "off-a03-p10",
+          "placement": "final_summary",
+          "product_id": "PRD-ANKER-SOLIX-C1000-GEN2"
+        },
+        {
+          "cta_id": "cta-a03-p10-card",
+          "offer_id": "off-a03-p10",
+          "placement": "product_card",
+          "product_id": "PRD-ANKER-SOLIX-C1000-GEN2"
+        },
+        {
+          "cta_id": "cta-a03-p04-final",
+          "offer_id": "off-a03-p04",
+          "placement": "final_summary",
+          "product_id": "PRD-ANKER-SOLIX-C300"
+        },
+        {
+          "cta_id": "cta-a03-p04-card",
+          "offer_id": "off-a03-p04",
+          "placement": "product_card",
+          "product_id": "PRD-ANKER-SOLIX-C300"
+        },
+        {
+          "cta_id": "cta-a03-p08-final",
+          "offer_id": "off-a03-p08",
+          "placement": "final_summary",
+          "product_id": "PRD-ANKER-SOLIX-C800-PLUS"
+        },
+        {
+          "cta_id": "cta-a03-p08-card",
+          "offer_id": "off-a03-p08",
+          "placement": "product_card",
+          "product_id": "PRD-ANKER-SOLIX-C800-PLUS"
+        }
+      ],
+      "related_article_ids": [
+        "st1704-portable-power-station-guide",
+        "st1703-first-suitcase-comparison"
+      ],
+      "snapshot_id": "snp-a03-f24fa4f702d0"
+    },
+    {
+      "article_code": "a04",
+      "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "category_id": "household",
+      "cta_bindings": [
+        {
+          "cta_id": "cta-a04-p11-final",
+          "offer_id": "off-a04-p11",
+          "placement": "final_summary",
+          "product_id": "PRD-PANASONIC-NP-TMLK1"
+        },
+        {
+          "cta_id": "cta-a04-p11-card",
+          "offer_id": "off-a04-p11",
+          "placement": "product_card",
+          "product_id": "PRD-PANASONIC-NP-TMLK1"
+        },
+        {
+          "cta_id": "cta-a04-p14-final",
+          "offer_id": "off-a04-p14",
+          "placement": "final_summary",
+          "product_id": "PRD-PANASONIC-NP-TSP1"
+        },
+        {
+          "cta_id": "cta-a04-p14-card",
+          "offer_id": "off-a04-p14",
+          "placement": "product_card",
+          "product_id": "PRD-PANASONIC-NP-TSP1"
+        },
+        {
+          "cta_id": "cta-a04-p13-final",
+          "offer_id": "off-a04-p13",
+          "placement": "final_summary",
+          "product_id": "PRD-SIROCA-SS-MA251"
+        },
+        {
+          "cta_id": "cta-a04-p13-card",
+          "offer_id": "off-a04-p13",
+          "placement": "product_card",
+          "product_id": "PRD-SIROCA-SS-MA251"
+        },
+        {
+          "cta_id": "cta-a04-p12-final",
+          "offer_id": "off-a04-p12",
+          "placement": "final_summary",
+          "product_id": "PRD-THANKO-RAKUA-MINI-COLOR"
+        },
+        {
+          "cta_id": "cta-a04-p12-card",
+          "offer_id": "off-a04-p12",
+          "placement": "product_card",
+          "product_id": "PRD-THANKO-RAKUA-MINI-COLOR"
+        }
+      ],
+      "related_article_ids": [
+        "solota-vs-rakua-mini-plus",
+        "st1704-compact-robot-vacuum-shortlist"
+      ],
+      "snapshot_id": "snp-a04-6f5edb5a0a0d"
+    },
+    {
+      "article_code": "a05",
+      "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "category_id": "household",
+      "cta_bindings": [
+        {
+          "cta_id": "cta-a05-p15-final",
+          "offer_id": "off-a05-p15",
+          "placement": "final_summary",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"
+        },
+        {
+          "cta_id": "cta-a05-p15-card",
+          "offer_id": "off-a05-p15",
+          "placement": "product_card",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"
+        },
+        {
+          "cta_id": "cta-a05-p18-final",
+          "offer_id": "off-a05-p18",
+          "placement": "final_summary",
+          "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+        },
+        {
+          "cta_id": "cta-a05-p18-card",
+          "offer_id": "off-a05-p18",
+          "placement": "product_card",
+          "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+        },
+        {
+          "cta_id": "cta-a05-p17-final",
+          "offer_id": "off-a05-p17",
+          "placement": "final_summary",
+          "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO"
+        },
+        {
+          "cta_id": "cta-a05-p17-card",
+          "offer_id": "off-a05-p17",
+          "placement": "product_card",
+          "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO"
+        },
+        {
+          "cta_id": "cta-a05-p16-final",
+          "offer_id": "off-a05-p16",
+          "placement": "final_summary",
+          "product_id": "PRD-SWITCHBOT-K11-PRO"
+        },
+        {
+          "cta_id": "cta-a05-p16-card",
+          "offer_id": "off-a05-p16",
+          "placement": "product_card",
+          "product_id": "PRD-SWITCHBOT-K11-PRO"
+        }
+      ],
+      "related_article_ids": [
+        "roomba-mini-vs-switchbot-k11-pro",
+        "st1704-countertop-dishwasher-for-small-households"
+      ],
+      "snapshot_id": "snp-a05-2a75738808da"
+    },
+    {
+      "article_code": "a06",
+      "article_id": "carry-on-suitcase-under-100-seats",
+      "category_id": "mobility",
+      "cta_bindings": [
+        {
+          "cta_id": "cta-a06-p21-final",
+          "offer_id": "off-a06-p21",
+          "placement": "final_summary",
+          "product_id": "PRD-ACE-PALISADES3-Z-06910"
+        },
+        {
+          "cta_id": "cta-a06-p21-card",
+          "offer_id": "off-a06-p21",
+          "placement": "product_card",
+          "product_id": "PRD-ACE-PALISADES3-Z-06910"
+        },
+        {
+          "cta_id": "cta-a06-p22-final",
+          "offer_id": "off-a06-p22",
+          "placement": "final_summary",
+          "product_id": "PRD-BERMAS-INTER-CITY-60524"
+        },
+        {
+          "cta_id": "cta-a06-p22-card",
+          "offer_id": "off-a06-p22",
+          "placement": "product_card",
+          "product_id": "PRD-BERMAS-INTER-CITY-60524"
+        },
+        {
+          "cta_id": "cta-a06-p20-final",
+          "offer_id": "off-a06-p20",
+          "placement": "final_summary",
+          "product_id": "PRD-PROTECA-FRESTER-EX-01550"
+        },
+        {
+          "cta_id": "cta-a06-p20-card",
+          "offer_id": "off-a06-p20",
+          "placement": "product_card",
+          "product_id": "PRD-PROTECA-FRESTER-EX-01550"
+        },
+        {
+          "cta_id": "cta-a06-p19-final",
+          "offer_id": "off-a06-p19",
+          "placement": "final_summary",
+          "product_id": "PRD-PROTECA-STARIA-CXR-02350"
+        },
+        {
+          "cta_id": "cta-a06-p19-card",
+          "offer_id": "off-a06-p19",
+          "placement": "product_card",
+          "product_id": "PRD-PROTECA-STARIA-CXR-02350"
+        }
+      ],
+      "related_article_ids": [
+        "st1703-first-suitcase-comparison",
+        "front-open-carry-on-suitcase-with-stopper"
+      ],
+      "snapshot_id": "snp-a06-e21d9a5ed918"
+    },
+    {
+      "article_code": "a07",
+      "article_id": "lightweight-carry-on-suitcase-under-3kg",
+      "category_id": "mobility",
+      "cta_bindings": [
+        {
+          "cta_id": "cta-a07-p25-final",
+          "offer_id": "off-a07-p25",
+          "placement": "final_summary",
+          "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002"
+        },
+        {
+          "cta_id": "cta-a07-p25-card",
+          "offer_id": "off-a07-p25",
+          "placement": "product_card",
+          "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002"
+        },
+        {
+          "cta_id": "cta-a07-p26-final",
+          "offer_id": "off-a07-p26",
+          "placement": "final_summary",
+          "product_id": "PRD-FREQUENTER-LIEVE-1-250"
+        },
+        {
+          "cta_id": "cta-a07-p26-card",
+          "offer_id": "off-a07-p26",
+          "placement": "product_card",
+          "product_id": "PRD-FREQUENTER-LIEVE-1-250"
+        },
+        {
+          "cta_id": "cta-a07-p23-final",
+          "offer_id": "off-a07-p23",
+          "placement": "final_summary",
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521"
+        },
+        {
+          "cta_id": "cta-a07-p23-card",
+          "offer_id": "off-a07-p23",
+          "placement": "product_card",
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521"
+        },
+        {
+          "cta_id": "cta-a07-p24-final",
+          "offer_id": "off-a07-p24",
+          "placement": "final_summary",
+          "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007"
+        },
+        {
+          "cta_id": "cta-a07-p24-card",
+          "offer_id": "off-a07-p24",
+          "placement": "product_card",
+          "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007"
+        }
+      ],
+      "related_article_ids": [
+        "st1703-first-suitcase-comparison",
+        "front-open-carry-on-suitcase-with-stopper"
+      ],
+      "snapshot_id": "snp-a07-abc1202a749e"
+    },
+    {
+      "article_code": "a08",
+      "article_id": "front-open-carry-on-suitcase-with-stopper",
+      "category_id": "mobility",
+      "cta_bindings": [
+        {
+          "cta_id": "cta-a08-p02-final",
+          "offer_id": "off-a08-p02",
+          "placement": "final_summary",
+          "product_id": "PRD-ACE-DIFFERENCE-05721"
+        },
+        {
+          "cta_id": "cta-a08-p02-card",
+          "offer_id": "off-a08-p02",
+          "placement": "product_card",
+          "product_id": "PRD-ACE-DIFFERENCE-05721"
+        },
+        {
+          "cta_id": "cta-a08-p29-final",
+          "offer_id": "off-a08-p29",
+          "placement": "final_summary",
+          "product_id": "PRD-BERMAS-INTER-CITY-II-60561"
+        },
+        {
+          "cta_id": "cta-a08-p29-card",
+          "offer_id": "off-a08-p29",
+          "placement": "product_card",
+          "product_id": "PRD-BERMAS-INTER-CITY-II-60561"
+        },
+        {
+          "cta_id": "cta-a08-p27-final",
+          "offer_id": "off-a08-p27",
+          "placement": "final_summary",
+          "product_id": "PRD-INNOVATOR-INV50"
+        },
+        {
+          "cta_id": "cta-a08-p27-card",
+          "offer_id": "off-a08-p27",
+          "placement": "product_card",
+          "product_id": "PRD-INNOVATOR-INV50"
+        },
+        {
+          "cta_id": "cta-a08-p28-final",
+          "offer_id": "off-a08-p28",
+          "placement": "final_summary",
+          "product_id": "PRD-PROTECA-FRESTER-EX-01551"
+        },
+        {
+          "cta_id": "cta-a08-p28-card",
+          "offer_id": "off-a08-p28",
+          "placement": "product_card",
+          "product_id": "PRD-PROTECA-FRESTER-EX-01551"
+        }
+      ],
+      "related_article_ids": [
+        "st1703-first-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats"
+      ],
+      "snapshot_id": "snp-a08-29e1fc0be118"
+    },
+    {
+      "article_code": "a09",
+      "article_id": "roomba-mini-vs-switchbot-k11-pro",
+      "category_id": "household",
+      "cta_bindings": [
+        {
+          "cta_id": "cta-a09-p15-final",
+          "offer_id": "off-a09-p15",
+          "placement": "final_summary",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"
+        },
+        {
+          "cta_id": "cta-a09-p15-card",
+          "offer_id": "off-a09-p15",
+          "placement": "product_card",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"
+        },
+        {
+          "cta_id": "cta-a09-p30-final",
+          "offer_id": "off-a09-p30",
+          "placement": "final_summary",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
+        },
+        {
+          "cta_id": "cta-a09-p30-card",
+          "offer_id": "off-a09-p30",
+          "placement": "product_card",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
+        },
+        {
+          "cta_id": "cta-a09-p16-final",
+          "offer_id": "off-a09-p16",
+          "placement": "final_summary",
+          "product_id": "PRD-SWITCHBOT-K11-PRO"
+        },
+        {
+          "cta_id": "cta-a09-p16-card",
+          "offer_id": "off-a09-p16",
+          "placement": "product_card",
+          "product_id": "PRD-SWITCHBOT-K11-PRO"
+        }
+      ],
+      "related_article_ids": [
+        "st1704-compact-robot-vacuum-shortlist",
+        "solota-vs-rakua-mini-plus"
+      ],
+      "snapshot_id": "snp-a09-186ea496f9e2"
+    },
+    {
+      "article_code": "a10",
+      "article_id": "solota-vs-rakua-mini-plus",
+      "category_id": "household",
+      "cta_bindings": [
+        {
+          "cta_id": "cta-a10-p31-final",
+          "offer_id": "off-a10-p31",
+          "placement": "final_summary",
+          "product_id": "PRD-PANASONIC-SOLOTA-NP-TML1-W"
+        },
+        {
+          "cta_id": "cta-a10-p31-card",
+          "offer_id": "off-a10-p31",
+          "placement": "product_card",
+          "product_id": "PRD-PANASONIC-SOLOTA-NP-TML1-W"
+        },
+        {
+          "cta_id": "cta-a10-p13-final",
+          "offer_id": "off-a10-p13",
+          "placement": "final_summary",
+          "product_id": "PRD-SIROCA-SS-MA251"
+        },
+        {
+          "cta_id": "cta-a10-p13-card",
+          "offer_id": "off-a10-p13",
+          "placement": "product_card",
+          "product_id": "PRD-SIROCA-SS-MA251"
+        },
+        {
+          "cta_id": "cta-a10-p32-final",
+          "offer_id": "off-a10-p32",
+          "placement": "final_summary",
+          "product_id": "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B"
+        },
+        {
+          "cta_id": "cta-a10-p32-card",
+          "offer_id": "off-a10-p32",
+          "placement": "product_card",
+          "product_id": "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B"
+        }
+      ],
+      "related_article_ids": [
+        "st1704-countertop-dishwasher-for-small-households",
+        "st1704-compact-robot-vacuum-shortlist"
+      ],
+      "snapshot_id": "snp-a10-01c4279c69ac"
+    }
+  ],
+  "events": [
+    "affiliate_click",
+    "affiliate_cta_impression",
+    "article_view",
+    "comparison_interaction",
+    "disclosure_view",
+    "internal_link_click",
+    "product_card_view",
+    "qualified_decision_engagement"
+  ],
+  "schema": "RAOS_EDITORIAL_MEASUREMENT_ALLOWLIST_V1",
+  "site_id": "kurashinoshirube",
+  "source": {
+    "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+    "schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
+    "sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d",
+    "version": "3.0.0"
+  },
+  "target_origin": "https://kurashinoshirube.com",
+  "version": "1.0.0"
+}

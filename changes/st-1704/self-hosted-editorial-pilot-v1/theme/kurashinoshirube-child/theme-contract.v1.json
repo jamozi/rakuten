@@ -74,24 +74,14 @@
     "asset": "assets/editorial-v2.css",
     "base_style_dependency": "kurashinoshirube-editorial",
     "body_class": "raos-editorial-v2-page",
-    "category_fallback_allowlist": ["移動", "家事"],
+    "category_fallback_allowlist": ["移動", "家事", "備え"],
     "content_root": "<div class=\"raos-editorial-v2\">",
     "detection": "EXACT_RAW_CONTENT_PREFIX_ON_SINGULAR_POST",
     "publication_snapshot_required": false,
     "publication_identity_predicate": "PUBLISH_POST_EXACT_SINGLE_EDITORIAL_V2_ROOT_AND_CLOSED_SLUG_ARTICLE_ID_MATCH",
     "scope": "ORDINARY_WORDPRESS_POST_ONLY",
-    "section_slug_allowlist": {
-      "anker-solix-c300-c800-c1000-differences": "備え",
-      "carry-on-suitcase-comparison": "移動",
-      "carry-on-suitcase-under-100-seats": "移動",
-      "compact-robot-vacuum-shortlist": "家事",
-      "countertop-dishwasher-for-small-households": "家事",
-      "front-open-carry-on-suitcase-with-stopper": "移動",
-      "lightweight-carry-on-suitcase-under-3kg": "移動",
-      "portable-power-station-guide": "備え",
-      "roomba-mini-vs-switchbot-k11-pro": "家事",
-      "solota-vs-rakua-mini-plus": "家事"
-    }
+    "section_binding_count": 10,
+    "section_binding_source": "assets/editorial-navigation.v3.json#articles"
   },
   "homepage_section_order": [
     "ヒーロー",
@@ -105,11 +95,47 @@
     "このサイトについて"
   ],
   "measurement": {
-    "analytics_transmission_added": false,
-    "semantic_only_events": [
-      "affiliate_cta_activate",
-      "product_card_reach",
-      "comparison_table_view"
+    "analytics_transmission_added": true,
+    "asset": "assets/measurement.js",
+    "client_config_schema": "RAOSMeasurementClientConfigV1",
+    "consent_gate": [
+      "COOKIEYES_EXPLICIT_ANALYTICS_GRANTED",
+      "WP_CONSENT_API_STATISTICS_GRANTED",
+      "SITE_KIT_ANALYTICS_STORAGE_GRANTED"
+    ],
+    "default_enabled": false,
+    "events": [
+      "article_view",
+      "qualified_decision_engagement",
+      "affiliate_cta_impression",
+      "affiliate_click",
+      "product_card_view",
+      "comparison_interaction",
+      "internal_link_click",
+      "disclosure_view"
+    ],
+    "first_party_endpoint": "/wp-json/raos/v1/events",
+    "ga4_mirror": "SAME_VALIDATED_EVENT_AFTER_TRIPLE_CONSENT_ONLY",
+    "host_gate": "RAOS_MEASUREMENT_ENABLED",
+    "mcp_surface": "READ_ONLY_DAILY_AGGREGATES_NO_RAW_EVENTS",
+    "navigation_behavior": "NO_PREVENT_DEFAULT_NO_AWAIT_SEND_BEACON_OR_KEEPALIVE",
+    "plugin": "raos-editorial-measurement",
+    "retention": {
+      "daily_aggregate_months": 13,
+      "raw_days": 7
+    },
+    "revocation_behavior": "STOP_SEND_AND_CLEAR_MEASUREMENT_SESSION",
+    "target_origin": "https://kurashinoshirube.com"
+  },
+  "policy_v3": {
+    "body_class": "raos-policy-v3-page",
+    "detection": "EXACT_PUBLISHED_PAGE_SLUG_TITLE_AND_EXCERPT_MATCH_CLOSED_HEAD_MAP",
+    "footer_presentation": "SAME_RICH_RESPONSIVE_FOOTER_AS_HOME_AND_EDITORIAL_V2",
+    "scope": "EXACT_THREE_REVIEWED_WORDPRESS_POLICY_PAGES_ONLY",
+    "slugs": [
+      "about-ad-policy",
+      "comparison-policy",
+      "privacy-policy"
     ]
   },
   "head": {
@@ -120,6 +146,11 @@
       "Organization",
       "WebSite"
     ],
+    "closed_head_contexts": {
+      "article": "EXACT_EDITORIAL_V3_PUBLIC_IDENTITY_PLUS_CLEAN_TITLE_AND_EXCERPT",
+      "fixed_page": "EXACT_THREE_POLICY_SLUG_TITLE_EXCERPT_RECORDS",
+      "home": "FIXED_SITE_TITLE_AND_DESCRIPTION"
+    },
     "canonical": {
       "editorial_v2_fallback": "FIXED_SITE_ORIGIN_PLUS_SLUG_FOR_SINGULAR_PUBLISHED_CLOSED_PUBLIC_ARTICLE_IDENTITY",
       "invalid_or_unpublished_policy": "PRESERVE_UPSTREAM_VALUE",
@@ -143,7 +174,7 @@
       "Product",
       "Review"
     ],
-    "metadata_owner": "YOAST_SEO_FILTERS_WITH_SNAPSHOT_METADATA_AND_CLOSED_EDITORIAL_V2_CANONICAL_FALLBACK",
+    "metadata_owner": "YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK",
     "raos_metadata_delivery": "YOAST_METADATA_FILTERS_ONLY",
     "rest_output": {
       "preserved_route": "/wp/v2/posts",
@@ -165,6 +196,24 @@
       "editorial_v2": "CLOSED_PUBLISHED_IDENTITY_PLUS_CLEAN_RAW_TITLE_8_TO_100_AND_EXCERPT_30_TO_180_WITH_FIXED_ORIGIN_CANONICAL",
       "legacy": "VALID_BOUND_RAOS_SNAPSHOT",
       "unknown_or_invalid": "NO_OUTPUT"
+    },
+    "structured_data_contexts": {
+      "article": [
+        "Article",
+        "BreadcrumbList",
+        "Organization",
+        "WebSite"
+      ],
+      "fixed_page": [
+        "BreadcrumbList",
+        "Organization",
+        "WebSite"
+      ],
+      "home": [
+        "Organization",
+        "WebSite"
+      ],
+      "unknown_or_invalid": []
     },
     "yoast_configuration_authority": "HUMAN_PERSISTED_OPTIONS_WITH_THEME_READBACK_GATE",
     "yoast_social_option_values": {
@@ -232,50 +281,22 @@
     "step_up_authentication": "CURRENT_WORDPRESS_USER_REAUTHENTICATED_VIA_WP_AUTHENTICATE_PASSWORD_NOT_PERSISTED",
     "transport": "POST_ONLY_WORDPRESS_ADMIN_ACTION_NO_REST_AJAX_OR_NOPRIV"
   },
+  "editorial_navigation": {
+    "article_count": 10,
+    "cluster_count": 3,
+    "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
+    "path": "assets/editorial-navigation.v3.json",
+    "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
+    "sha256": "100cdd6f95cc0bb224c43c77a9328237fbeb338d54220aba554bfa0423912bc6",
+    "source_navigation_sha256": "5fb0dc9ac677569151a41e25fe428c04a7a1ea259a67e1efff4915f0a235b566",
+    "source_portfolio_sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d"
+  },
   "homepage_clusters": {
-    "config": {
-      "clusters": {
-        "cluster-home": {
-          "description": "置き場所と手間から、無理のない一台を選ぶ。",
-          "heading": "置き場所と日々の手間を整える",
-          "label": "家事",
-          "post_order": [
-            "st1704-countertop-dishwasher-for-small-households",
-            "st1704-compact-robot-vacuum-shortlist"
-          ],
-          "posts": {
-            "st1704-compact-robot-vacuum-shortlist": "省スペースのロボット掃除機を条件で絞る",
-            "st1704-countertop-dishwasher-for-small-households": "工事不要の食洗機を1〜2人暮らし向けに比較"
-          }
-        },
-        "cluster-mobility": {
-          "description": "軽さ、容量、持ち運び方の違いをほどく。",
-          "heading": "持ち運ぶ負担を小さくする",
-          "label": "移動",
-          "post_order": ["st1703-first-suitcase-comparison"],
-          "posts": {
-            "st1703-first-suitcase-comparison": "エースの機内持ち込みスーツケース3モデル比較"
-          }
-        },
-        "cluster-ready": {
-          "description": "必要な容量と出力を、使う場面から逆算する。",
-          "heading": "必要な電力を過不足なく備える",
-          "label": "備え",
-          "post_order": [
-            "st1704-portable-power-station-guide",
-            "st1704-anker-solix-c300-c800-c1000-differences"
-          ],
-          "posts": {
-            "st1704-anker-solix-c300-c800-c1000-differences": "Anker Solix 4モデルの違い",
-            "st1704-portable-power-station-guide": "停電対策用ポータブル電源の選び方"
-          }
-        }
-      },
-      "display_order": ["cluster-mobility", "cluster-home", "cluster-ready"]
-    },
-    "config_sha256": "d9e2e40d369723e2e8dc2f6d5bfc0e74e2873c7748936a287f04a4acbc7dc7da",
+    "article_count": 10,
+    "cluster_count": 3,
     "link_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY",
-    "owner": "THEME_FIXED_ALLOWLIST"
+    "owner": "EDITORIAL_V3_GENERATED_NAVIGATION",
+    "source": "assets/editorial-navigation.v3.json#clusters"
   },
   "homepage_featured": {
     "article_id": "st1704-portable-power-station-guide",
@@ -339,43 +360,10 @@
   "related_navigation": {
     "availability_transition": "TARGET_HUMAN_PUBLICATION_ONLY",
     "content_hash_scope": "THEME_CHROME_OUTSIDE_WORDPRESS_POST_CONTENT",
-    "map": {
-      "st1703-first-suitcase-comparison": {
-        "home_anchor": "cluster-mobility",
-        "home_label": "暮らしの道具「移動」の一覧へ",
-        "targets": {}
-      },
-      "st1704-anker-solix-c300-c800-c1000-differences": {
-        "home_anchor": "cluster-ready",
-        "home_label": "暮らしの道具「備え」の一覧へ",
-        "targets": {
-          "st1704-portable-power-station-guide": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める"
-        }
-      },
-      "st1704-compact-robot-vacuum-shortlist": {
-        "home_anchor": "cluster-home",
-        "home_label": "暮らしの道具「家事」の一覧へ",
-        "targets": {
-          "st1704-countertop-dishwasher-for-small-households": "工事不要の食洗機を1〜2人暮らし向けに比較"
-        }
-      },
-      "st1704-countertop-dishwasher-for-small-households": {
-        "home_anchor": "cluster-home",
-        "home_label": "暮らしの道具「家事」の一覧へ",
-        "targets": {
-          "st1704-compact-robot-vacuum-shortlist": "省スペースのロボット掃除機を条件で絞る"
-        }
-      },
-      "st1704-portable-power-station-guide": {
-        "home_anchor": "cluster-ready",
-        "home_label": "暮らしの道具「備え」の一覧へ",
-        "targets": {
-          "st1704-anker-solix-c300-c800-c1000-differences": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い"
-        }
-      }
-    },
-    "map_sha256": "5db17f3cff259d4abe35cf616b2e953d25f33b5187ac637d6c1c6f3a86174028",
-    "owner": "THEME_FIXED_ALLOWLIST",
+    "minimum_targets_per_article": 2,
+    "owner": "EDITORIAL_V3_GENERATED_NAVIGATION",
+    "preparedness_two_article_policy": "ONE_SAME_CLUSTER_PLUS_ONE_ADJACENT_CONTEXT_WITHOUT_NEW_ARTICLE",
+    "source": "assets/editorial-navigation.v3.json#articles[].related_articles",
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "schema": "SELF_HOSTED_EDITORIAL_THEME_CONTRACT_V1",
@@ -439,12 +427,12 @@
     "wrapper_keys": ["payload", "payload_sha256", "schema"]
   },
   "runtime_evidence": {
-    "revision": "30a84ec5dffb12c048181198ecc8745fa22be70f1854507237c19306589b341f",
+    "revision": "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019",
     "stylesheets": {
       "assets/editorial-v2.css": "--raos-theme-runtime-revision-editorial-v2",
       "assets/theme.css": "--raos-theme-runtime-revision-base"
     }
   },
   "theme_slug": "kurashinoshirube-child",
-  "theme_version": "1.3.10"
+  "theme_version": "1.4.0"
 }

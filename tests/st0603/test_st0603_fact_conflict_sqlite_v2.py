@@ -10,6 +10,8 @@ from pathlib import Path
 import shutil
 import sqlite3
 import tempfile
+from threading import Event, get_ident
+from typing import Any, cast
 
 import pytest
 
@@ -22,6 +24,7 @@ from raos.application.evidence.fact_conflict_runtime_v2 import (
 )
 from raos.config.runtime import RuntimeEnvironment
 from raos.domain.evidence.fact_conflict_runtime_v2 import (
+    FactConflictDetectionResultV2,
     FactConflictFailureCodeV2,
     FactConflictFailureV2,
     FactConflictReplayStatusV2,
@@ -201,6 +204,117 @@ def test_concurrent_calls_commit_once_and_replay_exactly(
         == 1
     )
     assert all(store.verify_chain()[1] == 1 for store in stores)
+
+
+def test_integrity_reads_share_one_snapshot_and_release_owned_transaction(
+    st0603_sqlite_root_v2,
+    monkeypatch,
+) -> None:
+    inputs = _inputs(st0603_sqlite_root_v2)
+    root = st0603_sqlite_root_v2 / "store"
+    observed_transactions: list[bool] = []
+    original = OwnerPrivateSqliteFactConflictStoreV2._verify_integrity
+
+    def recording_verify_integrity(
+        connection: sqlite3.Connection,
+    ) -> tuple[str, int]:
+        observed_transactions.append(connection.in_transaction)
+        return original(connection)
+
+    monkeypatch.setattr(
+        OwnerPrivateSqliteFactConflictStoreV2,
+        "_verify_integrity",
+        staticmethod(recording_verify_integrity),
+    )
+
+    store = conflict_store_v2(root)
+    assert observed_transactions == [True]
+    observed_transactions.clear()
+    store = conflict_store_v2(root)
+    assert observed_transactions == [True]
+    observed_transactions.clear()
+
+    DurableFactConflictDetectionServiceV2(store).detect(inputs=inputs)
+    store.verify_chain()
+    assert observed_transactions
+    assert all(observed_transactions)
+
+    connection = store._connect(verify=False)  # noqa: SLF001
+    try:
+        store._verified_state(connection)  # noqa: SLF001
+        assert not connection.in_transaction
+    finally:
+        store._close_safely(connection)  # noqa: SLF001
+
+
+def test_constructor_snapshot_is_stable_during_concurrent_commit(
+    st0603_sqlite_root_v2,
+    monkeypatch,
+) -> None:
+    root = st0603_sqlite_root_v2 / "store"
+    initial_store = conflict_store_v2(root)
+    initial = DurableFactConflictDetectionServiceV2(initial_store).detect(
+        inputs=_inputs(st0603_sqlite_root_v2 / "initial")
+    )
+    writer_store = conflict_store_v2(root)
+    writer_service = DurableFactConflictDetectionServiceV2(writer_store)
+    writer_inputs = _inputs(
+        st0603_sqlite_root_v2 / "concurrent",
+        label="concurrent",
+        delta=2,
+    )
+    writer_start = Event()
+    writer_at_commit = Event()
+    writer_committed = Event()
+    constructor_scan_seen = Event()
+    commit_was_blocked: list[bool] = []
+    constructor_thread = get_ident()
+    original_connect = sqlite3.connect
+
+    class CoordinatedConnection(sqlite3.Connection):
+        def execute(
+            self,
+            sql: str,
+            parameters: Any = (),
+            /,
+        ) -> sqlite3.Cursor:
+            if get_ident() != constructor_thread and sql == "COMMIT":
+                writer_at_commit.set()
+                result = super().execute(sql, parameters)
+                writer_committed.set()
+                return result
+            if (
+                get_ident() == constructor_thread
+                and sql == "SELECT * FROM st0603_scans ORDER BY sequence"
+                and not constructor_scan_seen.is_set()
+            ):
+                constructor_scan_seen.set()
+                writer_start.set()
+                assert writer_at_commit.wait(timeout=2.0)
+                commit_was_blocked.append(not writer_committed.wait(timeout=0.25))
+            return super().execute(sql, parameters)
+
+    def coordinated_connect(*args: Any, **kwargs: Any) -> sqlite3.Connection:
+        kwargs["factory"] = CoordinatedConnection
+        return cast(sqlite3.Connection, original_connect(*args, **kwargs))
+
+    def append_while_constructing() -> FactConflictDetectionResultV2:
+        assert writer_start.wait(timeout=2.0)
+        return writer_service.detect(inputs=writer_inputs)
+
+    monkeypatch.setattr(sqlite3, "connect", coordinated_connect)
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(append_while_constructing)
+        restarted = conflict_store_v2(root)
+        appended = future.result(timeout=5.0)
+
+    assert constructor_scan_seen.is_set()
+    assert writer_at_commit.is_set()
+    assert writer_committed.is_set()
+    assert commit_was_blocked == [True]
+    assert initial.persisted.sequence == 1
+    assert appended.persisted.sequence == 2
+    assert restarted.verify_chain() == (appended.persisted.chain_hash, 2)
 
 
 def test_preexisting_empty_partial_and_wrong_mode_databases_fail_closed(

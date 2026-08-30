@@ -377,15 +377,9 @@ class OwnerPrivateSqliteFactConflictStoreV2:
             try:
                 if created:
                     self._initialize_new(connection)
-                else:
-                    self._verify_schema(connection)
-                    self._verify_integrity(connection)
-                    self._validate_database_identity()
-            finally:
-                self._close_safely(connection)
-            connection = self._connect(verify=False)
-            try:
                 head, count = self._verified_state(connection)
+                if created and (head != FACT_CONFLICT_GENESIS_SHA256_V2 or count != 0):
+                    fail_fact_conflict_v2(FactConflictFailureCodeV2.TAMPER_DETECTED)
                 self._pin_state(head=head, count=count)
             finally:
                 self._close_safely(connection)
@@ -525,10 +519,7 @@ class OwnerPrivateSqliteFactConflictStoreV2:
         if verify:
             try:
                 with self._state_lock:
-                    self._verify_schema(connection)
-                    head, count = self._verify_integrity(connection)
-                    self._require_monotonic_state(connection, head=head, count=count)
-                    self._validate_database_identity()
+                    self._verified_state(connection)
             except FactConflictFailureV2:
                 self._close_safely(connection)
                 raise
@@ -577,10 +568,6 @@ class OwnerPrivateSqliteFactConflictStoreV2:
         except sqlite3.Error:
             self._rollback(connection)
             fail_fact_conflict_v2(FactConflictFailureCodeV2.SCHEMA_INTEGRITY)
-        self._verify_schema(connection)
-        head, count = self._verify_integrity(connection)
-        if head != FACT_CONFLICT_GENESIS_SHA256_V2 or count != 0:
-            fail_fact_conflict_v2(FactConflictFailureCodeV2.TAMPER_DETECTED)
 
     @staticmethod
     def _verify_schema(connection: sqlite3.Connection) -> None:
@@ -827,12 +814,19 @@ class OwnerPrivateSqliteFactConflictStoreV2:
         self._seen_head = head
 
     def _verified_state(self, connection: sqlite3.Connection) -> tuple[str, int]:
-        self._validate_database_identity()
-        self._verify_schema(connection)
-        head, count = self._verify_integrity(connection)
-        self._require_monotonic_state(connection, head=head, count=count)
-        self._validate_database_identity()
-        return head, count
+        owns_snapshot = not connection.in_transaction
+        if owns_snapshot:
+            connection.execute("BEGIN")
+        try:
+            self._validate_database_identity()
+            self._verify_schema(connection)
+            head, count = self._verify_integrity(connection)
+            self._require_monotonic_state(connection, head=head, count=count)
+            self._validate_database_identity()
+            return head, count
+        finally:
+            if owns_snapshot:
+                connection.execute("ROLLBACK")
 
     @staticmethod
     def _close_safely(connection: sqlite3.Connection) -> None:

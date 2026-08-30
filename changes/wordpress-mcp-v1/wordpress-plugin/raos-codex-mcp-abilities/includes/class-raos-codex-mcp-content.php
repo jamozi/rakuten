@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Content
 {
-    const RUNTIME_REVISION = '7e3d953db3b76a199eac7928777d7af4602feeb2bb7c4188d6c63a2e3d1f3755';
+    const RUNTIME_REVISION = '1b0ba02006daff06d67ab84107b3d97b73a2c1d334b51d8385fd8f0939ad265a';
     const MAX_CONTENT_BYTES = 1048576;
 
     private $plugin;
@@ -299,6 +299,17 @@ final class RAOS_Codex_MCP_Content
                 'runtime_version' => $theme_runtime_version,
                 'runtime_revision' => $theme_runtime_revision,
                 'active' => $theme_active,
+            ),
+            'measurement' => array(
+                'plugin_active' => defined('RAOS_EDITORIAL_MEASUREMENT_VERSION'),
+                'plugin_version' => defined('RAOS_EDITORIAL_MEASUREMENT_VERSION')
+                    ? RAOS_EDITORIAL_MEASUREMENT_VERSION
+                    : null,
+                'collection_enabled' => function_exists('raos_editorial_measurement_enabled')
+                    && raos_editorial_measurement_enabled(),
+                'aggregate_ability_registered' => function_exists('wp_get_ability')
+                    && (bool) wp_get_ability('raos-measurement/aggregate-report'),
+                'raw_event_tool_exposed' => false,
             ),
             'server' => array(
                 'endpoint' => home_url('/wp-json/raos-codex-mcp/v1/editor'),

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import hashlib
+import html
 import json
 import os
 from pathlib import Path
@@ -9,6 +10,7 @@ import re
 import stat
 import subprocess
 import sys
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -40,7 +42,7 @@ def no_live_public_readback(monkeypatch: pytest.MonkeyPatch) -> None:
         },
     )
     # The shared integration worktree intentionally contains the candidate
-    # 1.3.10 theme. Workflow unit tests use a stable reviewed tree while the
+    # 1.4.0 theme. Workflow unit tests use a stable reviewed tree while the
     # production function continues to refuse dirty theme sources.
     monkeypatch.setattr(
         publication,
@@ -132,18 +134,49 @@ def _public_markup(
     *,
     head_extra: str = "",
     block_markup: str | None = None,
+    schema_types: list[str] | None = None,
     stylesheets: str | None = None,
     footer_markup: str = "<footer><h2>暮らしのしるべ</h2></footer>",
 ) -> str:
     url = f"{publication.ORIGIN}/{article.production_slug}/"
+    required_schema_types = schema_types or (
+        ["Article", "BreadcrumbList", "Organization", "WebSite"]
+        if article.post_type == "post"
+        else ["BreadcrumbList", "Organization", "WebSite"]
+    )
+    structured_data = json.dumps(
+        {
+            "@context": "https://schema.org",
+            "@graph": [{"@type": value} for value in required_schema_types],
+        },
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+    excerpt = html.escape(article.excerpt, quote=True)
+    title = html.escape(article.title, quote=True)
+    seo_head = (
+        f'<meta name="description" content="{excerpt}">'
+        f'<meta property="og:title" content="{title}">'
+        f'<meta property="og:description" content="{excerpt}">'
+        f'<meta property="og:url" content="{url}">'
+        f'<meta property="og:image" content="{publication.EXPECTED_SOCIAL_IMAGE_URL}">'
+        '<script id="raos-structured-data" type="application/ld+json">'
+        + structured_data
+        + "</script>"
+    )
     stylesheet_markup = stylesheets
     if stylesheet_markup is None:
         stylesheet_markup = (
             '<link rel="stylesheet" href="/wp-content/themes/'
-            'kurashinoshirube-child/assets/theme.css?ver=1.3.10">'
-            '<link rel="stylesheet" href="/wp-content/themes/'
-            'kurashinoshirube-child/assets/editorial-v2.css?ver=1.3.10">'
+            "kurashinoshirube-child/assets/theme.css?ver="
+            f'{publication.EXPECTED_THEME_VERSION}">'
         )
+        if article.post_type == "post":
+            stylesheet_markup += (
+                '<link rel="stylesheet" href="/wp-content/themes/'
+                "kurashinoshirube-child/assets/editorial-v2.css?ver="
+                f'{publication.EXPECTED_THEME_VERSION}">'
+            )
     return (
         "<!doctype html><html><head><title>"
         + article.title
@@ -152,6 +185,7 @@ def _public_markup(
         + '<link rel="canonical" href="'
         + url
         + '">'
+        + seo_head
         + head_extra
         + "</head><body><main><h1>"
         + article.title
@@ -186,6 +220,19 @@ def test_anonymous_public_readback_requires_exact_canonical_title_and_headings()
 
     assert evidence[article.production_slug]["canonical_url"] == url
     assert evidence[article.production_slug]["heading_count"] >= 1
+    assert evidence[article.production_slug]["meta_description"] == article.excerpt
+    assert evidence[article.production_slug]["open_graph"] == {
+        "og:description": article.excerpt,
+        "og:image": publication.EXPECTED_SOCIAL_IMAGE_URL,
+        "og:title": article.title,
+        "og:url": url,
+    }
+    assert set(evidence[article.production_slug]["json_ld_types"]) >= {
+        "Article",
+        "BreadcrumbList",
+        "Organization",
+        "WebSite",
+    }
     request = opener.requests[0]
     assert request.full_url == url
     assert request.get_header("Authorization") is None
@@ -197,23 +244,23 @@ def test_anonymous_public_readback_requires_exact_canonical_title_and_headings()
         _stylesheet_links(
             "https://example.invalid/unrelated.css?build=42",
             f"{publication.ORIGIN}/wp-content/themes/kurashinoshirube-child/"
-            "assets/theme.css?ver=1.3.10",
+            "assets/theme.css?ver=1.4.0",
             f"{publication.ORIGIN}/wp-content/themes/kurashinoshirube-child/"
-            "assets/editorial-v2.css?ver=1.3.10",
+            "assets/editorial-v2.css?ver=1.4.0",
         ),
         _stylesheet_links(
             "https://example.invalid/unrelated.css?build=42",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'b' * 32}.php?ver=1.4.0",
         ),
         _stylesheet_links(
             "https://example.invalid/unrelated.css?build=42",
             "/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0",
             "/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'b' * 32}.php?ver=1.4.0",
         ),
     ],
     ids=(
@@ -238,7 +285,7 @@ def test_public_readback_accepts_exact_theme_stylesheet_materializations(
     )
 
     page = evidence[article.production_slug]
-    assert page["theme_version"] == "1.3.10"
+    assert page["theme_version"] == "1.4.0"
     assert page["theme_runtime_revision"] == (
         publication.EXPECTED_THEME_RUNTIME_REVISION
     )
@@ -334,7 +381,7 @@ def test_public_readback_rejects_invalid_fetched_stylesheet_evidence(
     page_url = f"{publication.ORIGIN}/{article.production_slug}/"
     stylesheet_url = (
         f"{publication.ORIGIN}/wp-content/themes/kurashinoshirube-child/"
-        "assets/theme.css?ver=1.3.10"
+        "assets/theme.css?ver=1.4.0"
     )
     response_final_url = (
         f"{publication.ORIGIN}/redirected.css"
@@ -430,69 +477,69 @@ def test_public_readback_requires_one_exact_trailing_site_footer_heading(
     "stylesheets",
     [
         _stylesheet_links(
-            "/wp-content/themes/kurashinoshirube-child/assets/theme.css?ver=1.3.10",
+            "/wp-content/themes/kurashinoshirube-child/assets/theme.css?ver=1.4.0",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0",
         ),
         _stylesheet_links(
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0",
         ),
         _stylesheet_links(
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'A' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'A' * 32}.php?ver=1.4.0",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'b' * 32}.php?ver=1.4.0",
         ),
         _stylesheet_links(
             "http://kurashinoshirube.com/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'b' * 32}.php?ver=1.4.0",
         ),
         _stylesheet_links(
             "https://user@kurashinoshirube.com/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'b' * 32}.php?ver=1.4.0",
         ),
         _stylesheet_links(
             "https://kurashinoshirube.com:443/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'b' * 32}.php?ver=1.4.0",
         ),
         _stylesheet_links(
             "https://example.invalid/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'b' * 32}.php?ver=1.4.0",
         ),
         _stylesheet_links(
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10#fragment",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0#fragment",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'b' * 32}.php?ver=1.4.0",
         ),
         _stylesheet_links(
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10&extra=1",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0&extra=1",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'b' * 32}.php?ver=1.4.0",
         ),
         _stylesheet_links(
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'a' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'a' * 32}.php?ver=1.4.0",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'b' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'b' * 32}.php?ver=1.4.0",
             f"{publication.ORIGIN}/wp-content/cache/autoptimize/"
-            f"autoptimize_single_{'c' * 32}.php?ver=1.3.10",
+            f"autoptimize_single_{'c' * 32}.php?ver=1.4.0",
         ),
         _stylesheet_links(
-            "/wp-content/themes/kurashinoshirube-child/assets/theme.css?ver=1.3.10&extra=1",
-            "/wp-content/themes/kurashinoshirube-child/assets/editorial-v2.css?ver=1.3.10",
+            "/wp-content/themes/kurashinoshirube-child/assets/theme.css?ver=1.4.0&extra=1",
+            "/wp-content/themes/kurashinoshirube-child/assets/editorial-v2.css?ver=1.4.0",
         ),
     ],
     ids=(
@@ -546,6 +593,175 @@ def test_anonymous_public_readback_rejects_noindex() -> None:
             sleeper=lambda seconds: None,
             opener=_PublicOpener(_PublicResponse(url, markup)),
         )
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    [
+        lambda markup, article, url: markup.replace(
+            f'<meta name="description" content="{html.escape(article.excerpt, quote=True)}">',
+            "",
+        ),
+        lambda markup, article, url: markup.replace(
+            html.escape(article.excerpt, quote=True),
+            "wrong-description",
+            1,
+        ),
+        lambda markup, article, url: markup.replace(
+            f'<meta property="og:title" content="{html.escape(article.title, quote=True)}">',
+            '<meta property="og:title" content="wrong-title">',
+        ),
+        lambda markup, article, url: markup.replace(
+            f'<meta property="og:description" content="{html.escape(article.excerpt, quote=True)}">',
+            '<meta property="og:description" content="wrong-description">',
+        ),
+        lambda markup, article, url: markup.replace(
+            f'<meta property="og:url" content="{url}">',
+            '<meta property="og:url" content="https://example.invalid/wrong/">',
+        ),
+        lambda markup, article, url: markup.replace(
+            publication.EXPECTED_SOCIAL_IMAGE_URL,
+            "http://kurashinoshirube.com/wp-content/themes/"
+            "kurashinoshirube-child/assets/images/home-hero.webp",
+        ),
+        lambda markup, article, url: markup.replace(
+            publication.EXPECTED_SOCIAL_IMAGE_URL,
+            "https://example.invalid/home-hero.webp",
+        ),
+        lambda markup, article, url: markup.replace(
+            publication.EXPECTED_SOCIAL_IMAGE_URL,
+            f"{publication.ORIGIN}/wp-content/themes/"
+            "kurashinoshirube-child/assets/images/other.webp",
+        ),
+        lambda markup, article, url: markup.replace(
+            "</head>",
+            f'<meta name="description" content="{html.escape(article.excerpt, quote=True)}">'
+            "</head>",
+        ),
+    ],
+    ids=(
+        "missing-meta-description",
+        "description-not-tracked-excerpt",
+        "og-title-drift",
+        "og-description-drift",
+        "og-url-drift",
+        "og-image-not-https",
+        "og-image-cross-origin",
+        "og-image-not-default-theme-image",
+        "duplicate-meta-description",
+    ),
+)
+def test_public_readback_rejects_meta_and_open_graph_drift(tamper: Any) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    markup = tamper(_public_markup(article), article, url)
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_HEAD_INVALID",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(_PublicResponse(url, markup)),
+        )
+
+
+@pytest.mark.parametrize(
+    "missing_type",
+    ["Article", "BreadcrumbList", "Organization", "WebSite"],
+)
+def test_article_public_readback_requires_each_json_ld_type(
+    missing_type: str,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    types = [
+        value
+        for value in ["Article", "BreadcrumbList", "Organization", "WebSite"]
+        if value != missing_type
+    ]
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(url, _public_markup(article, schema_types=types))
+            ),
+        )
+
+
+@pytest.mark.parametrize("forbidden_type", ["Product", "Offer", "Review", "FAQPage"])
+def test_public_readback_rejects_forbidden_commercial_json_ld(
+    forbidden_type: str,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    url = f"{publication.ORIGIN}/{article.production_slug}/"
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [article],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(
+                    url,
+                    _public_markup(
+                        article,
+                        schema_types=[
+                            "Article",
+                            "BreadcrumbList",
+                            "Organization",
+                            "WebSite",
+                            f"https://schema.org/{forbidden_type}",
+                        ],
+                    ),
+                )
+            ),
+        )
+
+
+def test_policy_page_json_ld_requires_page_graph_and_refuses_article_type() -> None:
+    page = publication.load_policy_pages()[0]
+    url = f"{publication.ORIGIN}/{page.production_slug}/"
+    markup = _public_markup(page)
+    assert "editorial-v2.css" not in markup
+    evidence = ORIGINAL_VERIFY_PUBLIC_PAGES(
+        [page],
+        attempts=1,
+        sleeper=lambda seconds: None,
+        opener=_PublicOpener(_PublicResponse(url, markup)),
+    )
+    assert set(evidence[page.production_slug]["json_ld_types"]) == {
+        "BreadcrumbList",
+        "Organization",
+        "WebSite",
+    }
+    for invalid_types in (
+        ["BreadcrumbList", "Organization"],
+        ["Article", "BreadcrumbList", "Organization", "WebSite"],
+    ):
+        with pytest.raises(
+            publication.PublicationFailure,
+            match="RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID",
+        ):
+            ORIGINAL_VERIFY_PUBLIC_PAGES(
+                [page],
+                attempts=1,
+                sleeper=lambda seconds: None,
+                opener=_PublicOpener(
+                    _PublicResponse(
+                        url,
+                        _public_markup(page, schema_types=invalid_types),
+                    )
+                ),
+            )
 
 
 @pytest.mark.parametrize(
@@ -621,7 +837,10 @@ def test_anonymous_public_readback_rejects_cta_identity_or_theme_drift() -> None
             ),
         )
 
-    wrong_theme = _public_markup(article).replace("?ver=1.3.10", "?ver=1.3.8")
+    wrong_theme = _public_markup(article).replace(
+        f"?ver={publication.EXPECTED_THEME_VERSION}",
+        "?ver=1.3.8",
+    )
     with pytest.raises(
         publication.PublicationFailure,
         match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
@@ -649,6 +868,41 @@ def test_authenticated_public_readback_sends_only_the_supplied_basic_header() ->
 
     request = opener.requests[0]
     assert request.get_header("Authorization") == "Basic dXNlcjpwYXNz"
+
+
+def test_policy_page_public_readback_checks_policy_content_and_private_absence() -> None:
+    page = publication.load_policy_pages()[2]
+    url = f"{publication.ORIGIN}/{page.production_slug}/"
+    evidence = ORIGINAL_VERIFY_PUBLIC_PAGES(
+        [page],
+        attempts=1,
+        sleeper=lambda seconds: None,
+        opener=_PublicOpener(_PublicResponse(url, _public_markup(page))),
+    )
+
+    assert evidence[page.production_slug]["post_type"] == "page"
+    assert evidence[page.production_slug]["h1"] == page.title
+    assert evidence[page.production_slug]["private_financial_data_absent"] is True
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PUBLIC_READBACK_FAILED",
+    ):
+        ORIGINAL_VERIFY_PUBLIC_PAGES(
+            [page],
+            attempts=1,
+            sleeper=lambda seconds: None,
+            opener=_PublicOpener(
+                _PublicResponse(
+                    url,
+                    _public_markup(
+                        page,
+                        block_markup=page.block_markup
+                        + "<p>owner_hourly_rate=1234</p>",
+                    ),
+                )
+            ),
+        )
 
 
 @pytest.mark.parametrize(
@@ -710,6 +964,24 @@ def test_mapping_is_closed_numeric_and_exact_slug_conversion() -> None:
     assert mapping["editor_endpoint"] == publication.EDITOR_ENDPOINT
     assert mapping["review_url"] == publication.REVIEW_URL
     assert len(articles) == 10
+    pages = publication.load_policy_pages()
+    assert [(page.production_slug, page.document()["post_type"]) for page in pages] == [
+        ("about-ad-policy", "page"),
+        ("comparison-policy", "page"),
+        ("privacy-policy", "page"),
+    ]
+    assert all(
+        isinstance(page.document()["excerpt"], str)
+        and page.document()["excerpt"]
+        and page.document()["taxonomies"] == {}
+        and page.document()["media_ids"] == []
+        for page in pages
+    )
+    assert [page.excerpt for page in pages] == [
+        "暮らしのしるべの情報源選定、型番照合、広告との分離、更新・訂正の責任を説明します。",
+        "暮らしのしるべのEvidence階層、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。",
+        "暮らしのしるべの同一オリジン計測とGA4、保持期間、同意の拒否・撤回、アフィリエイトリンクの取扱いを説明します。",
+    ]
     for row in mapping["articles"]:
         assert row["production_slug"] == row["local_slug"].removeprefix(
             "local-preview-"
@@ -900,6 +1172,42 @@ def test_existing_published_target_is_bound_to_private_baseline_before_reuse(
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
 
 
+def test_policy_page_baseline_is_page_typed_and_unknown_drift_is_refused(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    page = publication.load_policy_pages()[0]
+    published = _document(page, status="publish")
+    path = _private_path(monkeypatch, tmp_path)
+    receipt = publication._fresh_receipt([page], path)
+    publication.capture_existing_baselines(
+        ReconcileClient(published),
+        [page],
+        [published],
+        receipt,
+        path,
+        require_existing_published=True,
+    )
+    assert receipt["selected_documents"] == {page.production_slug: "page"}
+    assert receipt["baselines"][page.production_slug]["post_type"] == "page"
+
+    drifted = dict(published)
+    drifted["revision_id"] += 1
+    drifted["modified_gmt"] = "2026-08-29T00:01:00Z"
+    drifted["content_sha256"] = "f" * 64
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT",
+    ):
+        publication.capture_existing_baselines(
+            ReconcileClient(drifted),
+            [page],
+            [drifted],
+            receipt,
+            path,
+            require_existing_published=True,
+        )
+
+
 def test_known_draft_does_not_authorize_a_published_target_in_normal_state(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
@@ -976,6 +1284,57 @@ def test_all_mode_refuses_a_missing_or_unpublished_existing_target(
             path,
             require_existing_published=True,
         )
+
+
+def test_all_mode_allows_only_the_explicit_missing_comparison_policy_page(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    page = next(
+        item
+        for item in publication.load_policy_pages()
+        if item.production_slug == "comparison-policy"
+    )
+    path = _private_path(monkeypatch, tmp_path)
+    receipt = publication._fresh_receipt([page], path)
+
+    assert publication.capture_existing_baselines(
+        ReconcileClient(_document(page)),
+        [page],
+        [],
+        receipt,
+        path,
+        require_existing_published=True,
+    ) == []
+
+    unknown_draft = _document(page, status="draft")
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_UNKNOWN_BASELINE_DRIFT",
+    ):
+        publication.capture_existing_baselines(
+            ReconcileClient(unknown_draft),
+            [page],
+            [unknown_draft],
+            receipt,
+            path,
+            require_existing_published=True,
+        )
+
+    receipt["drafts"] = {
+        page.production_slug: {
+            "id": unknown_draft["id"],
+            "content_sha256": unknown_draft["content_sha256"],
+        }
+    }
+    authoritative = publication.capture_existing_baselines(
+        ReconcileClient(unknown_draft),
+        [page],
+        [unknown_draft],
+        receipt,
+        path,
+        require_existing_published=True,
+    )
+    assert authoritative == [unknown_draft]
 
 
 def test_published_target_revision_only_race_is_refused_on_second_read(
@@ -1218,6 +1577,14 @@ class WorkflowClient:
                 "draft": True,
                 "content_apply": True,
                 "theme_apply": True,
+                "plugin_apply": True,
+            },
+            "measurement": {
+                "plugin_active": True,
+                "plugin_version": "1.0.0",
+                "collection_enabled": False,
+                "aggregate_ability_registered": True,
+                "raw_event_tool_exposed": False,
             },
             "theme": {
                 "slug": "kurashinoshirube-child",
@@ -1563,7 +1930,7 @@ def test_stale_theme_runtime_forces_a_theme_proposal_even_when_tree_matches(
     assert "deployment:theme-propose-release" in events
     assert deployment.runtime_version == publication.EXPECTED_THEME_VERSION
     receipt = json.loads(path.read_text(encoding="utf-8"))
-    assert receipt["authenticated_readback"]["theme"]["runtime_version"] == "1.3.10"
+    assert receipt["authenticated_readback"]["theme"]["runtime_version"] == "1.4.0"
     assert receipt["authenticated_readback"]["theme"]["runtime_revision"] == (
         publication.EXPECTED_THEME_RUNTIME_REVISION
     )
@@ -2018,12 +2385,14 @@ def test_partial_proposal_checkpoint_is_never_ready_for_batch_registration(
     assert publication._unregistered_proposal_set_ready(receipt, len(articles)) is True
 
 
-def test_all_selection_builds_one_theme_and_ten_content_proposals(
+def test_all_selection_builds_one_theme_ten_posts_and_three_page_proposals(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    articles = publication.load_articles("all")
-    assert len(articles) == publication.EXPECTED_ALL_ARTICLE_COUNT == 10
+    articles = publication.load_publication_items("all")
+    assert len(articles) == 13
+    assert [article.post_type for article in articles].count("post") == 10
+    assert [article.post_type for article in articles].count("page") == 3
     path = _private_path(monkeypatch, tmp_path)
     receipt = publication._fresh_receipt(articles, path, TEST_THEME_TREE_SHA256)
     drafts = {
@@ -2058,7 +2427,7 @@ def test_all_selection_builds_one_theme_and_ten_content_proposals(
                     "batch_token": "c" * 64,
                     "batch_manifest_sha256": "d" * 64,
                     "expected_theme_tree_sha256": TEST_THEME_TREE_SHA256,
-                    "proposal_count": 11,
+                    "proposal_count": 14,
                     "proposal_ids": ids,
                     "state": "REGISTERED",
                     "expires_at_gmt": "2099-08-29T00:15:00Z",
@@ -2094,11 +2463,14 @@ def test_all_selection_builds_one_theme_and_ten_content_proposals(
 
     assert [proposal["kind"] for proposal in proposals] == ["THEME_RELEASE"] + [
         "CONTENT_RELEASE"
-    ] * 10
+    ] * 13
     assert [proposal["slug"] for proposal in proposals[1:]] == [
         article.production_slug for article in articles
     ]
-    assert registration["proposal_count"] == 11
+    assert [proposal.get("post_type") for proposal in proposals[1:]] == [
+        "post"
+    ] * 10 + ["page"] * 3
+    assert registration["proposal_count"] == 14
     assert set(receipt["operation_ids"]) == {
         proposal["proposal_id"] for proposal in proposals
     }
@@ -2152,7 +2524,7 @@ def test_missing_idempotency_schema_stops_before_mutation() -> None:
         publication.validate_tool_contract(tools)
 
 
-def test_site_status_requires_plugin_1_2_1_runtime_and_scoped_approval_lease() -> None:
+def test_site_status_requires_plugin_1_3_runtime_and_scoped_approval_lease() -> None:
     article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
     client = WorkflowClient(article, [])
     status = client.status()
@@ -2213,6 +2585,36 @@ def test_site_status_requires_plugin_1_2_1_runtime_and_scoped_approval_lease() -
         match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
     ):
         publication.validate_site_status(status)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("plugin_active", False),
+        ("plugin_version", "0.9.0"),
+        ("collection_enabled", True),
+        ("aggregate_ability_registered", False),
+        ("raw_event_tool_exposed", True),
+    ],
+)
+def test_all_mode_site_status_requires_measurement_active_and_default_off(
+    field: str, value: object
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    status = WorkflowClient(article, []).status()
+    measurement = status["measurement"]
+    assert type(measurement) is dict
+    measurement[field] = value
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status, require_measurement_ready=True)
+
+    # A legacy/single-article diagnostic read does not authorize collection,
+    # but remains usable before the measurement plugin release is proposed.
+    publication.validate_site_status(status, require_measurement_ready=False)
 
 
 def test_deployment_status_requires_runtime_revision_key_but_accepts_null(
@@ -2444,11 +2846,66 @@ def test_materialization_pair_refuses_evidence_set_drift(
         publication.production_materialization_binding(articles)
 
 
+def test_activation_binding_persists_only_exact_hashes_and_counts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    articles = publication.load_articles("all")
+    article_hashes = {
+        article.production_slug: hashlib.sha256(
+            article.block_markup.encode("utf-8")
+        ).hexdigest()
+        for article in articles
+    }
+    activation = SimpleNamespace(
+        v2_portfolio_sha256="a" * 64,
+        portfolio_sha256="b" * 64,
+        production_article_sha256=article_hashes,
+        article_count=10,
+        cta_count=74,
+        dry_run_sha256="c" * 64,
+        admin_receipt_sha256="d" * 64,
+        money_link_mapping_sha256="e" * 64,
+        materialized_set_sha256="f" * 64,
+        local_article_set_sha256="1" * 64,
+        production_article_set_sha256="2" * 64,
+        local_overlay_receipt_sha256="3" * 64,
+        production_overlay_receipt_sha256="4" * 64,
+    )
+    monkeypatch.setattr(
+        publication,
+        "production_materialization_binding",
+        lambda *_args, **_kwargs: {
+            "schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1",
+            "portfolio_sha256": "a" * 64,
+            "articles": article_hashes,
+            "products": {
+                "PRD-TEST": {
+                    "state": "verified",
+                    "provider_binding_sha256": "5" * 64,
+                }
+            },
+        },
+    )
+    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
+
+    binding = publication.activation_materialization_binding(
+        activation,
+        articles,
+        require_recent=True,
+    )
+
+    publication._validate_materialization_binding(binding)
+    assert binding["schema"] == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2"
+    assert "://" not in json.dumps(binding, sort_keys=True)
+    assert binding["activation"]["article_count"] == 10
+    assert binding["activation"]["cta_count"] == 74
+
+
 def test_all_mode_recovers_registered_batch_before_provider_refresh(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    articles = publication.load_articles("all")
+    articles = publication.load_publication_items("all")
     path = tmp_path / "existing.json"
     loaded = {"state": "WAITING_FOR_APPROVAL"}
     calls: list[str] = []
@@ -2461,7 +2918,9 @@ def test_all_mode_recovers_registered_batch_before_provider_refresh(
             return None
 
     monkeypatch.setattr(publication, "request_lock", lambda: NoopLock())
-    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
+    monkeypatch.setattr(
+        publication, "load_publication_items", lambda *_args, **_kwargs: articles
+    )
     monkeypatch.setattr(publication, "_receipt_path", lambda _articles: path)
     monkeypatch.setattr(publication, "_read_receipt", lambda _path: loaded)
 
@@ -2478,6 +2937,22 @@ def test_all_mode_recovers_registered_batch_before_provider_refresh(
         return True
 
     monkeypatch.setattr(publication, "_resume_existing_all_attempt", resume)
+    def activation_receipt(_path: Path | None, **_kwargs: object) -> object:
+        calls.append("activation-receipt")
+        return SimpleNamespace(
+            production_fixture_root=publication.SOURCE_FIXTURE_ROOT
+        )
+
+    monkeypatch.setattr(
+        publication,
+        "validate_rakuten_activation_dry_run",
+        activation_receipt,
+    )
+    monkeypatch.setattr(
+        publication,
+        "validate_measurement_plugin_apply_receipt",
+        lambda _path: calls.append("plugin-receipt"),
+    )
 
     result = publication.execute(
         "all",
@@ -2485,7 +2960,112 @@ def test_all_mode_recovers_registered_batch_before_provider_refresh(
     )
 
     assert result == path
-    assert calls == ["resume"]
+    assert calls == ["activation-receipt", "plugin-receipt", "resume"]
+
+
+def test_all_mode_requires_activation_before_any_lock_plugin_or_provider_action(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    events: list[str] = []
+    monkeypatch.setattr(
+        publication,
+        "validate_measurement_plugin_apply_receipt",
+        lambda _path: events.append("plugin"),
+    )
+    monkeypatch.setattr(
+        publication,
+        "request_lock",
+        lambda: (_ for _ in ()).throw(AssertionError("lock must not be created")),
+    )
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_REQUIRED",
+    ):
+        publication.execute(
+            "all",
+            portfolio_refresh=lambda: events.append("provider"),
+            preview=lambda: events.append("preview"),
+        )
+
+    assert events == []
+
+
+def test_partial_selection_keeps_official_fallback_and_never_requires_activation(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    parser = publication._PublicPageEvidenceParser()
+    parser.feed(article.block_markup)
+    parser.close()
+    ctas = publication._validated_ctas(parser)
+    assert ctas
+    assert all(
+        publication.urlsplit(str(cta["href"])).hostname != "hb.afl.rakuten.co.jp"
+        and cta["cta_id"] is None
+        and cta["snapshot_id"] is None
+        and cta["offer_id"] is None
+        and cta["rakuten_measurement_id"] is None
+        for cta in ctas
+    )
+    monkeypatch.setattr(
+        publication,
+        "validate_rakuten_activation_dry_run",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("partial selection must not read activation")
+        ),
+    )
+    # Loading the partial publication input remains independent of every V3
+    # owner-private activation artifact.
+    assert publication.load_publication_items(article.production_slug) == [article]
+
+
+def test_all_mode_requires_exact_separate_admin_measurement_plugin_receipt(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    _private_path(monkeypatch, tmp_path)
+    proposal_path = (
+        publication.PRIVATE_REQUEST_DIRECTORY
+        / "measurement-plugin-proposal-v3.json"
+    )
+    apply_path = publication.PRIVATE_REQUEST_DIRECTORY / "plugin-applied.json"
+    proposal = {
+        "state": "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL",
+        "artifact_id": "raos-editorial-measurement-v1",
+        "plugin_slug": "raos-editorial-measurement",
+        "plugin_version": "1.0.0",
+        "measurement_gate_default_off": True,
+        "proposal": {
+            "proposal_id": "a" * 64,
+            "operation_id": "b" * 64,
+            "after_sha256": "c" * 64,
+        },
+    }
+    applied = {
+        "schema": "OperationReceiptV1",
+        "proposal_id": "a" * 64,
+        "operation_id": "b" * 64,
+        "state": "APPLIED",
+        "result_code": "PLUGIN_CHANGE_APPLIED",
+        "after_sha256": "c" * 64,
+    }
+    publication._atomic_receipt(proposal_path, proposal)
+    publication._atomic_receipt(apply_path, applied)
+
+    publication.validate_measurement_plugin_apply_receipt(apply_path.resolve())
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_REQUIRED",
+    ):
+        publication.validate_measurement_plugin_apply_receipt(None)
+    applied["state"] = "APPROVED"
+    publication._atomic_receipt(apply_path, applied)
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID",
+    ):
+        publication.validate_measurement_plugin_apply_receipt(apply_path.resolve())
 
 
 def test_all_mode_applied_receipt_cannot_short_circuit_fresh_capture(
@@ -2525,7 +3105,7 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
-    articles = publication.load_articles("all")
+    articles = publication.load_publication_items("all")
     path = tmp_path / "waiting.json"
     receipt = publication._fresh_receipt(
         articles,
@@ -2559,7 +3139,7 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
     )
     monkeypatch.setattr(
         publication,
-        "load_articles",
+        "load_publication_items",
         lambda *_args, **_kwargs: articles,
     )
     monkeypatch.setattr(
@@ -2568,7 +3148,9 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
         lambda *_args, **_kwargs: None,
     )
     monkeypatch.setattr(publication, "validate_tool_contract", lambda _value: None)
-    monkeypatch.setattr(publication, "validate_site_status", lambda _value: None)
+    monkeypatch.setattr(
+        publication, "validate_site_status", lambda _value, **_kwargs: None
+    )
     monkeypatch.setattr(
         publication,
         "read_content_operations",
@@ -2614,7 +3196,7 @@ def _write_remote_applied_legacy_all_attempt(
     dict[str, dict[str, object]],
     dict[str, dict[str, object]],
 ]:
-    articles = publication.load_articles("all")
+    articles = publication.load_publication_items("all")
     path = _private_path(monkeypatch, tmp_path)
     old_tree = "0" * 64
     receipt = publication._fresh_receipt(articles, path, old_tree)
@@ -2632,6 +3214,7 @@ def _write_remote_applied_legacy_all_attempt(
             {
                 "kind": "CONTENT_RELEASE",
                 "slug": article.production_slug,
+                "post_type": article.post_type,
                 "proposal_id": proposal_id,
                 "after_sha256": after_sha256,
                 "expires_at_gmt": "2099-08-29T00:15:00Z",
@@ -2650,6 +3233,8 @@ def _write_remote_applied_legacy_all_attempt(
             "revision_id": post_id,
             "modified_gmt": "2026-08-29T00:00:00Z",
         }
+        if article.post_type == "page":
+            documents[article.production_slug]["post_type"] = "page"
         operations[proposal_id] = {
             "schema": "OperationReceiptV1",
             "proposal_id": proposal_id,
@@ -2680,6 +3265,34 @@ def _write_remote_applied_legacy_all_attempt(
     receipt["drafts"] = drafts
     publication._atomic_receipt(path, receipt)
     return articles, path, old_tree, operations, documents, drafts
+
+
+def _stub_required_all_mode_activation(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> tuple[Path, Path]:
+    activation_path = (tmp_path / "activation-dry-run-v2.json").resolve()
+    plugin_receipt_path = (tmp_path / "measurement-plugin-applied.json").resolve()
+    activation = SimpleNamespace(
+        local_fixture_root=publication.SOURCE_FIXTURE_ROOT,
+        production_fixture_root=publication.SOURCE_FIXTURE_ROOT,
+    )
+    monkeypatch.setattr(
+        publication,
+        "validate_rakuten_activation_dry_run",
+        lambda *_args, **_kwargs: activation,
+    )
+    monkeypatch.setattr(
+        publication,
+        "validate_measurement_plugin_apply_receipt",
+        lambda *_args, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        publication,
+        "activation_materialization_binding",
+        lambda *_args, **_kwargs: None,
+    )
+    return activation_path, plugin_receipt_path
 
 
 def test_all_mode_remote_applied_reconciliation_ignores_stale_materialization(
@@ -2729,7 +3342,11 @@ def test_all_mode_remote_applied_reconciliation_ignores_stale_materialization(
         },
     )
     monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
-    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "validate_site_status",
+        lambda _status, **_kwargs: None,
+    )
 
     def operation_readback(*_args: object) -> dict[str, dict[str, object]]:
         lifecycle.append("operations")
@@ -2859,7 +3476,11 @@ def test_all_mode_remote_applied_reconciliation_rechecks_preconditions(
         lambda *_args, **_kwargs: next(statuses),
     )
     monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
-    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "validate_site_status",
+        lambda _status, **_kwargs: None,
+    )
     monkeypatch.setattr(
         publication,
         "read_content_operations",
@@ -2940,7 +3561,11 @@ def test_all_mode_remote_applied_reconciliation_refuses_live_hash_mismatch(
         },
     )
     monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
-    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "validate_site_status",
+        lambda _status, **_kwargs: None,
+    )
     monkeypatch.setattr(
         publication,
         "read_content_operations",
@@ -2994,6 +3619,10 @@ def test_all_mode_remote_applied_legacy_attempt_checks_replacement_preconditions
     articles, path, old_tree, operations, documents, drafts = (
         _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
     )
+    activation_path, plugin_receipt_path = _stub_required_all_mode_activation(
+        monkeypatch,
+        tmp_path,
+    )
 
     class Client:
         def initialize(self) -> None:
@@ -3020,14 +3649,18 @@ def test_all_mode_remote_applied_legacy_attempt_checks_replacement_preconditions
 
     monkeypatch.setattr(publication, "request_lock", lambda: NoopLock())
     monkeypatch.setattr(publication, "_receipt_path", lambda _articles: path)
-    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
     monkeypatch.setattr(
         publication,
-        "production_materialization_binding",
-        lambda *_args, **_kwargs: None,
+        "load_publication_items",
+        lambda *_args, **_kwargs: articles,
     )
     monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
-    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "validate_site_status",
+        lambda _status, **_kwargs: None,
+    )
+
     def batch_status(*_args: object, **_kwargs: object) -> dict[str, object]:
         nonlocal status_calls
         status_calls += 1
@@ -3049,7 +3682,11 @@ def test_all_mode_remote_applied_legacy_attempt_checks_replacement_preconditions
         "_published_receipt_document_evidence",
         lambda *_args: documents,
     )
-    monkeypatch.setattr(publication, "list_all_documents", lambda _client: [])
+    monkeypatch.setattr(
+        publication,
+        "list_all_documents",
+        lambda _client, **_kwargs: [],
+    )
     monkeypatch.setattr(
         publication,
         "capture_existing_baselines",
@@ -3112,18 +3749,22 @@ def test_all_mode_remote_applied_legacy_attempt_checks_replacement_preconditions
     ):
         publication.execute(
             "all",
-            portfolio_refresh=lambda: calls.append("refresh"),
+            measurement_plugin_apply_receipt=plugin_receipt_path,
+            rakuten_activation_dry_run=activation_path,
+            portfolio_refresh=lambda: (_ for _ in ()).throw(
+                AssertionError("validated activation must not be rematerialized")
+            ),
             preview=lambda: calls.append("preview"),
             client_factory=Client,
         )
 
     assert status_calls == 3
     if replacement_preconditions_ready:
-        assert calls == ["finalized-old", "refresh", "preview", "registered"]
+        assert calls == ["finalized-old", "preview", "registered"]
         assert replacement_includes_theme is True
-        assert replacement_count == 11
+        assert replacement_count == 14
     else:
-        assert calls == ["finalized-old", "refresh", "preview"]
+        assert calls == ["finalized-old", "preview"]
         assert replacement_includes_theme is False
         assert replacement_count == 0
 
@@ -3134,6 +3775,10 @@ def test_all_mode_applied_recovery_failure_stops_before_fresh_cycle(
 ) -> None:
     articles, path, _old_tree, operations, _documents, _drafts = (
         _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
+    activation_path, plugin_receipt_path = _stub_required_all_mode_activation(
+        monkeypatch,
+        tmp_path,
     )
     lifecycle: list[str] = []
 
@@ -3149,14 +3794,17 @@ def test_all_mode_applied_recovery_failure_stops_before_fresh_cycle(
             return {"theme": {}}
 
     monkeypatch.setattr(publication, "_receipt_path", lambda _articles: path)
-    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
     monkeypatch.setattr(
         publication,
-        "production_materialization_binding",
-        lambda *_args, **_kwargs: None,
+        "load_publication_items",
+        lambda *_args, **_kwargs: articles,
     )
     monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
-    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "validate_site_status",
+        lambda _status, **_kwargs: None,
+    )
     monkeypatch.setattr(
         publication,
         "publication_batch_status",
@@ -3199,7 +3847,11 @@ def test_all_mode_applied_recovery_failure_stops_before_fresh_cycle(
     ):
         publication.execute(
             "all",
-            portfolio_refresh=lambda: lifecycle.append("refresh"),
+            measurement_plugin_apply_receipt=plugin_receipt_path,
+            rakuten_activation_dry_run=activation_path,
+            portfolio_refresh=lambda: (_ for _ in ()).throw(
+                AssertionError("validated activation must not be rematerialized")
+            ),
             preview=lambda: lifecycle.append("preview"),
             client_factory=Client,
         )
@@ -3216,6 +3868,10 @@ def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
 ) -> None:
     articles, path, _old_tree, operations, documents, _drafts = (
         _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+    )
+    activation_path, plugin_receipt_path = _stub_required_all_mode_activation(
+        monkeypatch,
+        tmp_path,
     )
     current_documents = {
         article.production_slug: article.document()
@@ -3242,18 +3898,25 @@ def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
             if name == "raos-codex-site-status":
                 return {"theme": {}}
             if name == "raos-codex-content-list":
+                post_type = arguments.get("post_type")
+                assert post_type in {"post", "page"}
                 assert arguments == {
-                    "post_type": "post",
+                    "post_type": post_type,
                     "status": "any",
                     "page": 1,
                     "per_page": publication.LIST_PER_PAGE,
                 }
+                matching_documents = [
+                    document
+                    for document in current_documents.values()
+                    if document["post_type"] == post_type
+                ]
                 return {
                     "schema": "ContentDocumentListV1",
                     "page": 1,
                     "per_page": publication.LIST_PER_PAGE,
-                    "total": len(current_documents),
-                    "documents": list(current_documents.values()),
+                    "total": len(matching_documents),
+                    "documents": matching_documents,
                 }
             if name == "raos-codex-content-get":
                 post_id = arguments.get("id")
@@ -3266,14 +3929,17 @@ def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
 
     client = Client()
     monkeypatch.setattr(publication, "_receipt_path", lambda _articles: path)
-    monkeypatch.setattr(publication, "load_articles", lambda *_args, **_kwargs: articles)
     monkeypatch.setattr(
         publication,
-        "production_materialization_binding",
-        lambda *_args, **_kwargs: None,
+        "load_publication_items",
+        lambda *_args, **_kwargs: articles,
     )
     monkeypatch.setattr(publication, "validate_tool_contract", lambda _tools: None)
-    monkeypatch.setattr(publication, "validate_site_status", lambda _status: None)
+    monkeypatch.setattr(
+        publication,
+        "validate_site_status",
+        lambda _status, **_kwargs: None,
+    )
     monkeypatch.setattr(
         publication,
         "publication_batch_status",
@@ -3327,7 +3993,7 @@ def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
     )
 
     def preview() -> None:
-        assert lifecycle == ["finalize:True", "resume-readback", "refresh"]
+        assert lifecycle == ["finalize:True", "resume-readback"]
         lifecycle.append("preview")
         slug = articles[0].production_slug
         revised = dict(current_documents[slug])
@@ -3342,7 +4008,11 @@ def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
     ):
         publication.execute(
             "all",
-            portfolio_refresh=lambda: lifecycle.append("refresh"),
+            measurement_plugin_apply_receipt=plugin_receipt_path,
+            rakuten_activation_dry_run=activation_path,
+            portfolio_refresh=lambda: (_ for _ in ()).throw(
+                AssertionError("validated activation must not be rematerialized")
+            ),
             preview=preview,
             client_factory=lambda: client,
         )
@@ -3350,7 +4020,6 @@ def test_all_mode_refuses_revision_only_drift_after_applied_reconciliation(
     assert lifecycle == [
         "finalize:True",
         "resume-readback",
-        "refresh",
         "preview",
     ]
     assert "raos-codex-content-update-draft" not in remote_calls
@@ -3392,6 +4061,27 @@ def test_stale_docker_group_uses_only_fixed_sg_commands(
     ]
     assert all("ARTICLES" not in part for command in commands for part in command)
     assert fixture_roots == [publication.LOCAL_MATERIALIZED_FIXTURE_ROOT.as_posix()] * 3
+
+
+def test_preview_commands_receive_exact_activation_overlay_root(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(publication, "_docker_group_membership_is_stale", lambda: False)
+    activation_overlay_root = (tmp_path / "local-materialized-fixtures-v3-deadbeef").resolve()
+    fixture_roots: list[str] = []
+
+    def runner(
+        command: tuple[str, ...], **kwargs: object
+    ) -> subprocess.CompletedProcess[bytes]:
+        environment = kwargs["env"]
+        assert isinstance(environment, dict)
+        fixture_roots.append(environment["RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT"])
+        return subprocess.CompletedProcess(command, 0, b"", b"")
+
+    publication.run_preview_checks(runner, fixture_root=activation_overlay_root)
+
+    assert fixture_roots == [activation_overlay_root.as_posix()] * 3
 
 
 def test_make_target_passes_articles_via_environment_without_shell_expansion() -> None:

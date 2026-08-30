@@ -55,8 +55,8 @@ def test_runtime_authenticates_migration_role_with_password_file(
 _FUTURE_REVISION_SOURCE = b'''\
 """Synthetic future revision used only by the ST-0301 framework test.
 
-Revision ID: 202608030007
-Revises: 202608030006
+Revision ID: 202608300002
+Revises: 202608300001
 Create Date: 2026-08-03
 
 RAOS metadata:
@@ -75,8 +75,8 @@ from collections.abc import Sequence
 
 from alembic import op
 
-revision: str = "202608030007"
-down_revision: str | None = "202608030006"
+revision: str = "202608300002"
+down_revision: str | None = "202608300001"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
@@ -94,12 +94,12 @@ def _install_future_graph(monkeypatch: pytest.MonkeyPatch) -> catalog.RevisionSp
     verification = runner.verify_repository(REPOSITORY_ROOT)
     digest = hashlib.sha256(_FUTURE_REVISION_SOURCE).hexdigest()
     future = catalog.RevisionSpec(
-        revision="202608030007",
+        revision="202608300002",
         down_revision=catalog.HEAD_REVISION,
         story_id="ST-0308",
         relative_path=Path("migrations/versions/202608030007_future_fixture.py"),
         sha256=digest,
-        runner_version="1.6.0",
+        runner_version="1.7.0",
         server_version_num=EXPECTED_SERVER_VERSION_NUM,
     )
     future_source = catalog.VerifiedSource(

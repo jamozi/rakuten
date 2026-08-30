@@ -9,10 +9,10 @@ The slice owns five things:
 1. five closed article/resource packets covering all MVP article types;
 2. a deterministic renderer and draft-only WordPress review boundary;
 3. a credential-free, allowlisted official-source capture boundary;
-4. child theme 1.3.10 with the Editorial Compass homepage, white-paper article UI, and RAOS/Yoast bridge;
+4. child theme 1.4.0 with the Editorial Compass homepage, white-paper article UI, and RAOS/Yoast bridge;
 5. local/CI evidence and a handoff for the remaining human-controlled actions.
 
-Theme 1.3.10 declares one 64-hex runtime revision in `functions.php`. The base and
+Theme 1.4.0 declares one 64-hex runtime revision in `functions.php`. The base and
 Editorial V2 stylesheets carry two distinct custom-property sentinels bound to the
 same revision. Production readback accepts only two exact same-origin stylesheet
 responses whose UTF-8 bodies prove those sentinels one-to-one; each observed body
@@ -144,7 +144,7 @@ post-activation Site Health readback must confirm the exact persisted configurat
 The archive digest alone is never promoted to installed-file evidence.
 
 The existing suitcase post is never replaced by a clone. Its reviewed draft uses a
-digest-bound temporary slug, and theme 1.3.10 exposes one POST-only administrator
+digest-bound temporary slug, and theme 1.4.0 exposes one POST-only administrator
 screen that can copy only the approved title, excerpt, content, and closed snapshot
 back to the exact existing public post. That screen requires an explicit nonce-bound
 human action, preserves the target ID/slug/status/date/author/taxonomies, uses a

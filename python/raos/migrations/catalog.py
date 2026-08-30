@@ -1,4 +1,4 @@
-"""Checksum-pinned migration source catalog through ST-0306."""
+"""Checksum-pinned migration source catalog through the Google live successor."""
 
 from __future__ import annotations
 
@@ -115,8 +115,9 @@ IAM_OPS_REVISION: Final = "202608030003"
 DOMAIN_REVISION: Final = "202608030004"
 PUBLICATION_ANALYTICS_FINANCE_REVISION: Final = "202608030005"
 DATABASE_ROLES_REVISION: Final = "202608030006"
-HEAD_REVISION: Final = DATABASE_ROLES_REVISION
-RUNNER_VERSION: Final = "1.5.0"
+GOOGLE_ANALYTICS_LIVE_REVISION: Final = "202608300001"
+HEAD_REVISION: Final = GOOGLE_ANALYTICS_LIVE_REVISION
+RUNNER_VERSION: Final = "1.6.0"
 
 REVISION_SPECS: Final = (
     RevisionSpec(
@@ -174,6 +175,17 @@ REVISION_SPECS: Final = (
         story_id="ST-0306",
         relative_path=Path("migrations/versions/202608030006_database_roles.py"),
         sha256="472690c8ca8080e3e3c0e294e40ea31b30c7d9314daa4cd5ee83a4841d439825",
+        runner_version="1.5.0",
+        server_version_num=180004,
+    ),
+    RevisionSpec(
+        revision=GOOGLE_ANALYTICS_LIVE_REVISION,
+        down_revision=DATABASE_ROLES_REVISION,
+        story_id="ST-0305",
+        relative_path=Path(
+            "migrations/versions/202608300001_google_analytics_live_persistence.py"
+        ),
+        sha256="78fb502b760dbc5a6ef028ac50e8b596d3d9fe8134a5274d0c708c9a214d13eb",
         runner_version=RUNNER_VERSION,
         server_version_num=180004,
     ),

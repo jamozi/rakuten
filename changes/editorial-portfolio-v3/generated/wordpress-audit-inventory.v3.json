@@ -1,0 +1,199 @@
+{
+  "clusters": [
+    {
+      "anchor": "cluster-mobility",
+      "article_ids": [
+        "st1703-first-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats",
+        "lightweight-carry-on-suitcase-under-3kg",
+        "front-open-carry-on-suitcase-with-stopper"
+      ],
+      "cluster_id": "mobility"
+    },
+    {
+      "anchor": "cluster-home",
+      "article_ids": [
+        "st1704-countertop-dishwasher-for-small-households",
+        "st1704-compact-robot-vacuum-shortlist",
+        "roomba-mini-vs-switchbot-k11-pro",
+        "solota-vs-rakua-mini-plus"
+      ],
+      "cluster_id": "household"
+    },
+    {
+      "anchor": "cluster-ready",
+      "article_ids": [
+        "st1704-portable-power-station-guide",
+        "st1704-anker-solix-c300-c800-c1000-differences"
+      ],
+      "cluster_id": "preparedness"
+    }
+  ],
+  "schema": "RAOS_WORDPRESS_AUDIT_INVENTORY_V3",
+  "source_navigation_sha256": "5fb0dc9ac677569151a41e25fe428c04a7a1ea259a67e1efff4915f0a235b566",
+  "source_portfolio_sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d",
+  "surfaces": [
+    {
+      "kind": "home",
+      "local_path": "/",
+      "production_path": "/",
+      "surface_id": "home"
+    },
+    {
+      "article_id": "st1703-first-suitcase-comparison",
+      "cluster_id": "mobility",
+      "contextual_article_id": "lightweight-carry-on-suitcase-under-3kg",
+      "kind": "article",
+      "local_path": "/local-preview-carry-on-suitcase-comparison/",
+      "production_path": "/carry-on-suitcase-comparison/",
+      "related_article_ids": [
+        "lightweight-carry-on-suitcase-under-3kg",
+        "carry-on-suitcase-under-100-seats"
+      ],
+      "surface_id": "article-a01"
+    },
+    {
+      "article_id": "st1704-portable-power-station-guide",
+      "cluster_id": "preparedness",
+      "contextual_article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "kind": "article",
+      "local_path": "/local-preview-portable-power-station-guide/",
+      "production_path": "/portable-power-station-guide/",
+      "related_article_ids": [
+        "st1704-anker-solix-c300-c800-c1000-differences",
+        "st1703-first-suitcase-comparison"
+      ],
+      "surface_id": "article-a02"
+    },
+    {
+      "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "cluster_id": "preparedness",
+      "contextual_article_id": "st1704-portable-power-station-guide",
+      "kind": "article",
+      "local_path": "/local-preview-anker-solix-c300-c800-c1000-differences/",
+      "production_path": "/anker-solix-c300-c800-c1000-differences/",
+      "related_article_ids": [
+        "st1704-portable-power-station-guide",
+        "st1703-first-suitcase-comparison"
+      ],
+      "surface_id": "article-a03"
+    },
+    {
+      "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "cluster_id": "household",
+      "contextual_article_id": "solota-vs-rakua-mini-plus",
+      "kind": "article",
+      "local_path": "/local-preview-countertop-dishwasher-for-small-households/",
+      "production_path": "/countertop-dishwasher-for-small-households/",
+      "related_article_ids": [
+        "solota-vs-rakua-mini-plus",
+        "st1704-compact-robot-vacuum-shortlist"
+      ],
+      "surface_id": "article-a04"
+    },
+    {
+      "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "cluster_id": "household",
+      "contextual_article_id": "roomba-mini-vs-switchbot-k11-pro",
+      "kind": "article",
+      "local_path": "/local-preview-compact-robot-vacuum-shortlist/",
+      "production_path": "/compact-robot-vacuum-shortlist/",
+      "related_article_ids": [
+        "roomba-mini-vs-switchbot-k11-pro",
+        "st1704-countertop-dishwasher-for-small-households"
+      ],
+      "surface_id": "article-a05"
+    },
+    {
+      "article_id": "carry-on-suitcase-under-100-seats",
+      "cluster_id": "mobility",
+      "contextual_article_id": "st1703-first-suitcase-comparison",
+      "kind": "article",
+      "local_path": "/local-preview-carry-on-suitcase-under-100-seats/",
+      "production_path": "/carry-on-suitcase-under-100-seats/",
+      "related_article_ids": [
+        "st1703-first-suitcase-comparison",
+        "front-open-carry-on-suitcase-with-stopper"
+      ],
+      "surface_id": "article-a06"
+    },
+    {
+      "article_id": "lightweight-carry-on-suitcase-under-3kg",
+      "cluster_id": "mobility",
+      "contextual_article_id": "st1703-first-suitcase-comparison",
+      "kind": "article",
+      "local_path": "/local-preview-lightweight-carry-on-suitcase-under-3kg/",
+      "production_path": "/lightweight-carry-on-suitcase-under-3kg/",
+      "related_article_ids": [
+        "st1703-first-suitcase-comparison",
+        "front-open-carry-on-suitcase-with-stopper"
+      ],
+      "surface_id": "article-a07"
+    },
+    {
+      "article_id": "front-open-carry-on-suitcase-with-stopper",
+      "cluster_id": "mobility",
+      "contextual_article_id": "st1703-first-suitcase-comparison",
+      "kind": "article",
+      "local_path": "/local-preview-front-open-carry-on-suitcase-with-stopper/",
+      "production_path": "/front-open-carry-on-suitcase-with-stopper/",
+      "related_article_ids": [
+        "st1703-first-suitcase-comparison",
+        "carry-on-suitcase-under-100-seats"
+      ],
+      "surface_id": "article-a08"
+    },
+    {
+      "article_id": "roomba-mini-vs-switchbot-k11-pro",
+      "cluster_id": "household",
+      "contextual_article_id": "st1704-compact-robot-vacuum-shortlist",
+      "kind": "article",
+      "local_path": "/local-preview-roomba-mini-vs-switchbot-k11-pro/",
+      "production_path": "/roomba-mini-vs-switchbot-k11-pro/",
+      "related_article_ids": [
+        "st1704-compact-robot-vacuum-shortlist",
+        "solota-vs-rakua-mini-plus"
+      ],
+      "surface_id": "article-a09"
+    },
+    {
+      "article_id": "solota-vs-rakua-mini-plus",
+      "cluster_id": "household",
+      "contextual_article_id": "st1704-countertop-dishwasher-for-small-households",
+      "kind": "article",
+      "local_path": "/local-preview-solota-vs-rakua-mini-plus/",
+      "production_path": "/solota-vs-rakua-mini-plus/",
+      "related_article_ids": [
+        "st1704-countertop-dishwasher-for-small-households",
+        "st1704-compact-robot-vacuum-shortlist"
+      ],
+      "surface_id": "article-a10"
+    },
+    {
+      "kind": "policy",
+      "local_path": "/about-ad-policy/",
+      "production_path": "/about-ad-policy/",
+      "surface_id": "policy-about-ad-policy"
+    },
+    {
+      "kind": "policy",
+      "local_path": "/comparison-policy/",
+      "production_path": "/comparison-policy/",
+      "surface_id": "policy-comparison-policy"
+    },
+    {
+      "kind": "policy",
+      "local_path": "/privacy-policy/",
+      "production_path": "/privacy-policy/",
+      "surface_id": "policy-privacy-policy"
+    }
+  ],
+  "target_origin": "https://kurashinoshirube.com",
+  "version": "3.0.0",
+  "viewports": [
+    360,
+    390,
+    768,
+    1440
+  ]
+}
