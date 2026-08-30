@@ -22,6 +22,9 @@ from uuid import UUID
 
 GSC_READONLY_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
 GA4_READONLY_SCOPE = "https://www.googleapis.com/auth/analytics.readonly"
+GSC_IMPORT_JOB_TYPE = "analytics.import_search_console.v1"
+GA4_IMPORT_JOB_TYPE = "analytics.import_ga4.v1"
+GOOGLE_ANALYTICS_JOB_QUEUE = "analytics"
 GSC_DIMENSIONS = ("date", "query", "page", "country", "device")
 GSC_URL_INSPECTION_INVENTORY_SIZE = 14
 GSC_URL_INSPECTION_LANGUAGE_CODE = "ja-JP"
@@ -781,8 +784,11 @@ __all__ = [
     "GA4_BASELINE_METRICS",
     "GA4_EVENT_CUSTOM_DIMENSIONS",
     "GA4_EVENT_PARAMETER_NAMES",
+    "GA4_IMPORT_JOB_TYPE",
     "GA4_READONLY_SCOPE",
+    "GOOGLE_ANALYTICS_JOB_QUEUE",
     "GSC_DIMENSIONS",
+    "GSC_IMPORT_JOB_TYPE",
     "GSC_READONLY_SCOPE",
     "GSC_URL_INSPECTION_INVENTORY_SIZE",
     "GSC_URL_INSPECTION_LANGUAGE_CODE",

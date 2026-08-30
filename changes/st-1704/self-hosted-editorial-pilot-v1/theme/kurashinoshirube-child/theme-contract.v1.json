@@ -4,8 +4,12 @@
       "class": "raos-cta",
       "data_attributes": [
         "data-raos-article-id",
+        "data-raos-cta-id",
+        "data-raos-offer-id",
         "data-raos-placement",
-        "data-raos-product-id"
+        "data-raos-product-id",
+        "data-raos-rakuten-provider-slot-id",
+        "data-raos-snapshot-id"
       ],
       "exact_label": "楽天市場で現在の価格・在庫・カラーを見る",
       "rel_tokens": ["nofollow", "sponsored"],
@@ -301,9 +305,9 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "100cdd6f95cc0bb224c43c77a9328237fbeb338d54220aba554bfa0423912bc6",
+    "sha256": "9dcb74c51d5fa0ca8417f4bde7568c3303d7242a9f02d620eac837b271f41373",
     "source_navigation_sha256": "5fb0dc9ac677569151a41e25fe428c04a7a1ea259a67e1efff4915f0a235b566",
-    "source_portfolio_sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d"
+    "source_portfolio_sha256": "2d80ec0a170ff28a4a09e67426e9ed58d3a05864c9a493062436a58a6c7b9b52"
   },
   "homepage_clusters": {
     "article_count": 10,
@@ -441,7 +445,7 @@
     "wrapper_keys": ["payload", "payload_sha256", "schema"]
   },
   "runtime_evidence": {
-    "revision": "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019",
+    "revision": "44b8eb82ac770a93b7b25aef1353007b6da650fb49ef5a6d2567915940595684",
     "stylesheets": {
       "assets/editorial-v2.css": "--raos-theme-runtime-revision-editorial-v2",
       "assets/theme.css": "--raos-theme-runtime-revision-base"

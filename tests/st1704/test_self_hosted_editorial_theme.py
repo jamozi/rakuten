@@ -193,7 +193,7 @@ def test_theme_is_an_isolated_1_4_0_successor() -> None:
     assert _load_json(CONTRACT_PATH)["theme_version"] == "1.4.0"
     assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.4.0'") == 1
     runtime_revision = (
-        "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
+        "44b8eb82ac770a93b7b25aef1353007b6da650fb49ef5a6d2567915940595684"
     )
     assert functions.count(
         "KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = "
@@ -1591,6 +1591,15 @@ def test_comparison_and_cta_contracts_are_accessible_and_closed() -> None:
     ]
     cta = markup["affiliate_cta"]
     assert cta["exact_label"] == "楽天市場で現在の価格・在庫・カラーを見る"
+    assert cta["data_attributes"] == [
+        "data-raos-article-id",
+        "data-raos-cta-id",
+        "data-raos-offer-id",
+        "data-raos-placement",
+        "data-raos-product-id",
+        "data-raos-rakuten-provider-slot-id",
+        "data-raos-snapshot-id",
+    ]
     assert sorted(cta["rel_tokens"]) == ["nofollow", "sponsored"]
     assert cta["required_host_provenance"].startswith("VALIDATED_RAKUTEN_")
     css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")

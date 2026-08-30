@@ -12,7 +12,7 @@ from calendar import monthrange
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
 import csv
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime
 from html import escape
 import hashlib
 import io
@@ -68,14 +68,48 @@ READBACK_COMPONENTS: Final = (
     "GA4",
 )
 NEW_ARTICLE_CANDIDATE_ID: Final = "rakua-mini-color-vs-mini-plus"
-NEW_ARTICLE_SOURCE_ID: Final = "solota-vs-rakua-mini-plus"
 CANDIDATE_QUERY_DEMAND_SCHEMA: Final = "RAOS_EDITORIAL_V3_CANDIDATE_QUERY_DEMAND_V1"
 CANDIDATE_QUERY_DEMAND_BASIS: Final = (
     "GSC_QUERY_DIMENSION_CANDIDATE_CLUSTER_NOT_ARTICLE_TOTAL"
 )
 RAKUTEN_ACTIVATION_DRY_RUN_SCHEMA: Final = (
-    "RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_DRY_RUN_V2"
+    "RAOS_EDITORIAL_V3_RAKUTEN_MEASUREMENT_DRY_RUN_V3"
 )
+RAKUTEN_BIND_REQUEST_SCHEMA: Final = "RAOS_EDITORIAL_V3_RAKUTEN_BIND_REQUEST_V2"
+RAKUTEN_PARSER_PROFILE_SCHEMA: Final = "RAOS_EDITORIAL_V3_RAKUTEN_PARSER_PROFILE_V2"
+RAKUTEN_REPORT_DRY_RUN_SCHEMA: Final = "RAOS_EDITORIAL_V3_RAKUTEN_DRY_RUN_V2"
+RAKUTEN_REPORT_COMMIT_SCHEMA: Final = "RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_V2"
+RAKUTEN_REPORT_DRY_RUN_KEYS: Final = frozenset(
+    {
+        "schema",
+        "version",
+        "state",
+        "source_sha256",
+        "profile_sha256",
+        "parser_version",
+        "period",
+        "row_count",
+        "currency",
+        "totals_jpy",
+        "attribution",
+        "direct_by_article_jpy",
+        "direct_by_provider_slot_jpy",
+        "unmatched_measurement_row_count",
+        "raw_rows_persisted",
+        "commit_gate",
+    }
+)
+PRODUCTION_READBACK_INPUT_SCHEMA: Final = (
+    "RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INPUT_V4"
+)
+T0_RECEIPT_SCHEMA: Final = "RAOS_EDITORIAL_V3_T0_RECEIPT_V4"
+TRUSTED_T0_EVIDENCE_REQUIRED: Final = "RAOS_EDITORIAL_V3_TRUSTED_T0_EVIDENCE_REQUIRED"
+BASELINE_INCOMPLETE_STATE: Final = "INCOMPLETE_TRUSTED_T0_EVIDENCE_REQUIRED"
+PUBLIC_READBACK_RECEIPT_SCHEMA: Final = "RAOS_WORDPRESS_PUBLIC_READBACK_RECEIPT_V1"
+PROVIDER_SLOT_COUNT: Final = 20
+INTERNAL_CTA_IDENTITY_COUNT: Final = 74
+LIVE_LINK_COUNT: Final = 74
+PUBLICATION_DOCUMENT_COUNT: Final = 13
 
 
 class EditorialEconomicsV3Failure(RuntimeError):
@@ -313,9 +347,9 @@ def _decode_csv(content: bytes, encoding: str) -> str:
         _fail("RAOS_EDITORIAL_V3_CSV_DECODE_FAILED")
 
 
-def _csv_rows(
+def _csv_sections(
     content: bytes, *, encoding: str, delimiter_name: str
-) -> tuple[tuple[str, ...], list[tuple[str, ...]]]:
+) -> tuple[int, list[dict[str, object]]]:
     delimiter = DELIMITERS.get(delimiter_name)
     if delimiter is None:
         _fail("RAOS_EDITORIAL_V3_CSV_DELIMITER_UNSUPPORTED")
@@ -325,64 +359,141 @@ def _csv_rows(
             delimiter=delimiter,
             strict=True,
         )
-        rows = [tuple(row) for row in reader]
+        physical_rows = [tuple(row) for row in reader]
     except csv.Error, UnicodeError:
         _fail("RAOS_EDITORIAL_V3_CSV_INVALID")
-    if not 2 <= len(rows) <= MAX_ROWS + 1:
+    if not 2 <= len(physical_rows) <= MAX_ROWS + 1:
         _fail("RAOS_EDITORIAL_V3_CSV_CARDINALITY_INVALID")
-    header = rows[0]
-    if (
-        not 1 <= len(header) <= MAX_COLUMNS
-        or len(set(header)) != len(header)
-        or any(
-            not cell
-            or cell != cell.strip()
+    if any(
+        len(row) > MAX_COLUMNS
+        or any(len(cell) > MAX_CELL_LENGTH or "\x00" in cell for cell in row)
+        for row in physical_rows
+    ):
+        _fail("RAOS_EDITORIAL_V3_CSV_CELL_INVALID")
+
+    groups: list[tuple[int, list[tuple[str, ...]]]] = []
+    current_start: int | None = None
+    current_rows: list[tuple[str, ...]] = []
+    for row_index, row in enumerate(physical_rows):
+        is_blank = not row or all(not cell.strip() for cell in row)
+        if is_blank:
+            if current_start is not None:
+                groups.append((current_start, current_rows))
+                current_start = None
+                current_rows = []
+            continue
+        if current_start is None:
+            current_start = row_index
+        current_rows.append(row)
+    if current_start is not None:
+        groups.append((current_start, current_rows))
+
+    sections: list[dict[str, object]] = []
+    for header_row_index, group in groups:
+        # A single non-blank line is explanatory material, not a report table.
+        if len(group) < 2:
+            continue
+        header = group[0]
+        width = len(header)
+        if width < 2 or any(len(row) != width for row in group):
+            _fail("RAOS_EDITORIAL_V3_CSV_SECTION_INVALID")
+        # Rakuten's order export can include a rectangular summary block whose
+        # first row represents merged headings with empty CSV cells.  It is not
+        # a bindable detail table, so ignore that block while retaining strict
+        # validation for every non-empty candidate header.
+        if any(not cell for cell in header):
+            continue
+        if len(set(header)) != len(header) or any(
+            cell != cell.strip()
             or len(cell) > 300
             or "\x00" in cell
             or any(ord(character) < 32 for character in cell)
             for cell in header
+        ):
+            _fail("RAOS_EDITORIAL_V3_CSV_HEADER_INVALID")
+        section_index = len(sections)
+        section_rows = [list(row) for row in group]
+        sections.append(
+            {
+                "section_index": section_index,
+                "header_row_index": header_row_index,
+                "column_count": width,
+                "header": header,
+                "rows": group[1:],
+                "section_sha256": sha256_bytes(
+                    canonical_json_bytes(
+                        {
+                            "section_index": section_index,
+                            "header_row_index": header_row_index,
+                            "rows": section_rows,
+                        }
+                    )
+                ),
+            }
         )
-    ):
-        _fail("RAOS_EDITORIAL_V3_CSV_HEADER_INVALID")
-    body = rows[1:]
-    if any(len(row) != len(header) for row in body):
-        _fail("RAOS_EDITORIAL_V3_CSV_ROW_INVALID")
-    if any(
-        len(cell) > MAX_CELL_LENGTH or "\x00" in cell for row in body for cell in row
-    ):
-        _fail("RAOS_EDITORIAL_V3_CSV_CELL_INVALID")
-    return header, body
+    if not sections:
+        _fail("RAOS_EDITORIAL_V3_CSV_SECTION_INVALID")
+    return len(physical_rows), sections
 
 
 def detect_rakuten_sample(
     content: bytes, *, encoding: str, delimiter_name: str
 ) -> dict[str, object]:
-    header, rows = _csv_rows(content, encoding=encoding, delimiter_name=delimiter_name)
+    physical_row_count, sections = _csv_sections(
+        content, encoding=encoding, delimiter_name=delimiter_name
+    )
     return {
-        "schema": "RAOS_EDITORIAL_V3_RAKUTEN_SCHEMA_DETECTION_V1",
-        "version": "1.0.0",
-        "state": "HEADER_DETECTED_PROFILE_NOT_BOUND",
+        "schema": "RAOS_EDITORIAL_V3_RAKUTEN_SCHEMA_DETECTION_V2",
+        "version": "2.0.0",
+        "state": "RECTANGULAR_SECTIONS_DETECTED_PROFILE_NOT_BOUND",
         "source_sha256": sha256_bytes(content),
         "encoding": encoding,
         "delimiter": delimiter_name,
-        "header": list(header),
-        "row_count": len(rows),
+        "physical_row_count": physical_row_count,
+        "sections": [
+            {
+                "section_index": section["section_index"],
+                "header_row_index": section["header_row_index"],
+                "column_count": section["column_count"],
+                "data_row_count": len(cast(list[tuple[str, ...]], section["rows"])),
+                "header": list(cast(tuple[str, ...], section["header"])),
+                "section_sha256": section["section_sha256"],
+            }
+            for section in sections
+        ],
         "owner_attestation_required": True,
         "live_parser_enabled": False,
     }
 
 
 def rakuten_binding_template(
-    detection: Mapping[str, object], *, detection_sha256: str
+    detection: Mapping[str, object],
+    *,
+    detection_sha256: str,
+    portfolio: EditorialPortfolioV3,
 ) -> dict[str, object]:
     _validate_detection(detection)
     return {
-        "schema": "RAOS_EDITORIAL_V3_RAKUTEN_BIND_REQUEST_V1",
-        "version": "1.0.0",
+        "schema": RAKUTEN_BIND_REQUEST_SCHEMA,
+        "version": "2.0.0",
         "detection_receipt_sha256": detection_sha256,
         "detection_source_sha256": detection["source_sha256"],
         "owner_verified_sanitized_real_sample": False,
-        "measurement_id_echo_verified_in_provider_report": False,
+        "provider_measurement_id_echo_verified_in_provider_report": False,
+        "section_selection": {
+            "section_index": None,
+            "header_row_index": None,
+            "section_sha256": None,
+        },
+        "provider_slot_count": PROVIDER_SLOT_COUNT,
+        "provider_measurement_id_count": PROVIDER_SLOT_COUNT,
+        "provider_slots": [
+            {
+                "provider_slot_id": descriptor["provider_slot_id"],
+                "rakuten_measurement_id": None,
+            }
+            for descriptor in _provider_slot_descriptors(portfolio)
+        ],
         "columns": {
             "provider_row_id": None,
             "status": None,
@@ -410,27 +521,51 @@ def _validate_detection(detection: Mapping[str, object]) -> None:
         "source_sha256",
         "encoding",
         "delimiter",
-        "header",
-        "row_count",
+        "physical_row_count",
+        "sections",
         "owner_attestation_required",
         "live_parser_enabled",
     }:
         _fail("RAOS_EDITORIAL_V3_DETECTION_INVALID")
-    header = [_text(value, maximum=300) for value in _list(detection["header"])]
     if (
-        detection["schema"] != "RAOS_EDITORIAL_V3_RAKUTEN_SCHEMA_DETECTION_V1"
-        or detection["version"] != "1.0.0"
-        or detection["state"] != "HEADER_DETECTED_PROFILE_NOT_BOUND"
+        detection["schema"] != "RAOS_EDITORIAL_V3_RAKUTEN_SCHEMA_DETECTION_V2"
+        or detection["version"] != "2.0.0"
+        or detection["state"] != "RECTANGULAR_SECTIONS_DETECTED_PROFILE_NOT_BOUND"
         or _sha256(detection["source_sha256"]) != detection["source_sha256"]
         or detection["encoding"] not in ENCODINGS
         or detection["delimiter"] not in DELIMITERS
-        or not header
-        or len(header) != len(set(header))
-        or _positive_integer(detection["row_count"]) != detection["row_count"]
+        or _positive_integer(detection["physical_row_count"])
+        != detection["physical_row_count"]
         or detection["owner_attestation_required"] is not True
         or detection["live_parser_enabled"] is not False
     ):
         _fail("RAOS_EDITORIAL_V3_DETECTION_INVALID")
+    sections = _list(detection["sections"])
+    if not sections:
+        _fail("RAOS_EDITORIAL_V3_DETECTION_INVALID")
+    for expected_index, raw in enumerate(sections):
+        section = _mapping(raw)
+        if set(section) != {
+            "section_index",
+            "header_row_index",
+            "column_count",
+            "data_row_count",
+            "header",
+            "section_sha256",
+        }:
+            _fail("RAOS_EDITORIAL_V3_DETECTION_INVALID")
+        header = [_text(value, maximum=300) for value in _list(section["header"])]
+        if (
+            section["section_index"] != expected_index
+            or _nonnegative_integer(section["header_row_index"])
+            != section["header_row_index"]
+            or _positive_integer(section["column_count"]) != len(header)
+            or _positive_integer(section["data_row_count"]) != section["data_row_count"]
+            or len(header) < 2
+            or len(header) != len(set(header))
+            or _sha256(section["section_sha256"]) != section["section_sha256"]
+        ):
+            _fail("RAOS_EDITORIAL_V3_DETECTION_INVALID")
 
 
 def _parse_amount(value: str, amount_format: str) -> int:
@@ -473,6 +608,92 @@ def _column_value(
     return row[position].strip()
 
 
+def _provider_slot_descriptors(
+    portfolio: EditorialPortfolioV3,
+) -> list[dict[str, str]]:
+    descriptors = sorted(
+        (
+            {
+                "provider_slot_id": slot.provider_slot_id,
+                "article_id": slot.article_id,
+                "placement": slot.placement,
+            }
+            for slot in portfolio.provider_slots
+        ),
+        key=lambda row: row["provider_slot_id"],
+    )
+    provider_slot_ids = {row["provider_slot_id"] for row in descriptors}
+    provider_slot_keys = {(row["article_id"], row["placement"]) for row in descriptors}
+    live_links = [
+        binding for article in portfolio.articles for binding in article.cta_bindings
+    ]
+    if (
+        len(descriptors) != PROVIDER_SLOT_COUNT
+        or len(provider_slot_ids) != PROVIDER_SLOT_COUNT
+        or len(provider_slot_keys) != PROVIDER_SLOT_COUNT
+        or len(live_links) != LIVE_LINK_COUNT
+        or any(
+            binding.provider_slot_id not in provider_slot_ids
+            or portfolio.provider_slot_by_id[binding.provider_slot_id].article_id
+            != binding.article_id
+            or portfolio.provider_slot_by_id[binding.provider_slot_id].placement
+            != binding.placement
+            for binding in live_links
+        )
+    ):
+        _fail("RAOS_EDITORIAL_V3_PROVIDER_SLOT_CONTRACT_INVALID")
+    return descriptors
+
+
+def _provider_slot_set_sha256(portfolio: EditorialPortfolioV3) -> str:
+    return sha256_bytes(canonical_json_bytes(_provider_slot_descriptors(portfolio)))
+
+
+def _provider_measurement_mapping(
+    value: object,
+    *,
+    portfolio: EditorialPortfolioV3,
+    failure_code: str,
+) -> tuple[list[dict[str, str]], dict[str, str]]:
+    expected_slot_ids = {
+        descriptor["provider_slot_id"]
+        for descriptor in _provider_slot_descriptors(portfolio)
+    }
+    normalized: list[dict[str, str]] = []
+    slot_ids: set[str] = set()
+    measurement_ids: set[str] = set()
+    for raw in _list(value):
+        row = _mapping(raw)
+        if set(row) != {"provider_slot_id", "rakuten_measurement_id"}:
+            _fail(failure_code)
+        provider_slot_id = _text(row["provider_slot_id"], maximum=64)
+        measurement_id = _text(row["rakuten_measurement_id"], maximum=64)
+        if (
+            provider_slot_id in slot_ids
+            or measurement_id in measurement_ids
+            or measurement_id.lstrip().startswith(FORMULA_PREFIXES)
+        ):
+            _fail(failure_code)
+        slot_ids.add(provider_slot_id)
+        measurement_ids.add(measurement_id)
+        normalized.append(
+            {
+                "provider_slot_id": provider_slot_id,
+                "rakuten_measurement_id": measurement_id,
+            }
+        )
+    normalized.sort(key=lambda row: row["provider_slot_id"])
+    if (
+        slot_ids != expected_slot_ids
+        or len(measurement_ids) != PROVIDER_SLOT_COUNT
+        or len(normalized) != PROVIDER_SLOT_COUNT
+    ):
+        _fail(failure_code)
+    return normalized, {
+        row["rakuten_measurement_id"]: row["provider_slot_id"] for row in normalized
+    }
+
+
 def bind_rakuten_profile(
     *,
     sample_content: bytes,
@@ -488,7 +709,11 @@ def bind_rakuten_profile(
         "detection_receipt_sha256",
         "detection_source_sha256",
         "owner_verified_sanitized_real_sample",
-        "measurement_id_echo_verified_in_provider_report",
+        "provider_measurement_id_echo_verified_in_provider_report",
+        "section_selection",
+        "provider_slot_count",
+        "provider_measurement_id_count",
+        "provider_slots",
         "columns",
         "status_values",
         "amount_format",
@@ -498,16 +723,46 @@ def bind_rakuten_profile(
     if set(request) != expected_request_keys:
         _fail("RAOS_EDITORIAL_V3_BIND_REQUEST_INVALID")
     if (
-        request["schema"] != "RAOS_EDITORIAL_V3_RAKUTEN_BIND_REQUEST_V1"
-        or request["version"] != "1.0.0"
+        request["schema"] != RAKUTEN_BIND_REQUEST_SCHEMA
+        or request["version"] != "2.0.0"
         or _sha256(request["detection_receipt_sha256"]) != detection_content_sha256
         or _sha256(request["detection_source_sha256"]) != sha256_bytes(sample_content)
         or request["detection_source_sha256"] != detection["source_sha256"]
         or request["owner_verified_sanitized_real_sample"] is not True
-        or request["measurement_id_echo_verified_in_provider_report"] is not True
+        or request["provider_measurement_id_echo_verified_in_provider_report"]
+        is not True
+        or request["provider_slot_count"] != PROVIDER_SLOT_COUNT
+        or request["provider_measurement_id_count"] != PROVIDER_SLOT_COUNT
         or request["amount_format"] not in AMOUNT_FORMATS
         or request["date_format"] not in DATE_FORMATS
         or request["expected_currency"] != "JPY"
+    ):
+        _fail("RAOS_EDITORIAL_V3_BIND_REQUEST_INVALID")
+    recomputed_detection = detect_rakuten_sample(
+        sample_content,
+        encoding=_text(detection["encoding"]),
+        delimiter_name=_text(detection["delimiter"]),
+    )
+    if dict(detection) != recomputed_detection:
+        _fail("RAOS_EDITORIAL_V3_DETECTION_INVALID")
+    selection = _mapping(request["section_selection"])
+    if set(selection) != {
+        "section_index",
+        "header_row_index",
+        "section_sha256",
+    }:
+        _fail("RAOS_EDITORIAL_V3_BIND_REQUEST_INVALID")
+    section_index = _nonnegative_integer(selection["section_index"])
+    header_row_index = _nonnegative_integer(selection["header_row_index"])
+    section_sha256 = _sha256(selection["section_sha256"])
+    detected_sections = _list(detection["sections"])
+    if section_index >= len(detected_sections):
+        _fail("RAOS_EDITORIAL_V3_BIND_REQUEST_INVALID")
+    selected_detection = _mapping(detected_sections[section_index])
+    if (
+        selected_detection["section_index"] != section_index
+        or selected_detection["header_row_index"] != header_row_index
+        or selected_detection["section_sha256"] != section_sha256
     ):
         _fail("RAOS_EDITORIAL_V3_BIND_REQUEST_INVALID")
     columns = _mapping(request["columns"])
@@ -529,7 +784,7 @@ def bind_rakuten_profile(
         _text(value, maximum=300) for value in columns.values() if value is not None
     ]
     detected_header = [
-        _text(value, maximum=300) for value in _list(detection["header"])
+        _text(value, maximum=300) for value in _list(selected_detection["header"])
     ]
     if len(mapped_headers) != len(set(mapped_headers)) or not set(
         mapped_headers
@@ -551,13 +806,31 @@ def bind_rakuten_profile(
     if len(flattened) != len(set(flattened)):
         _fail("RAOS_EDITORIAL_V3_STATUS_MAPPING_INVALID")
 
+    provider_slots, provider_slot_by_measurement_id = _provider_measurement_mapping(
+        request["provider_slots"],
+        portfolio=portfolio,
+        failure_code="RAOS_EDITORIAL_V3_BIND_REQUEST_INVALID",
+    )
+    provider_slot_set_sha256 = _provider_slot_set_sha256(portfolio)
+    provider_measurement_binding_sha256 = sha256_bytes(
+        canonical_json_bytes(provider_slots)
+    )
+
     encoding = _text(detection["encoding"])
     delimiter_name = _text(detection["delimiter"])
-    header, rows = _csv_rows(
+    _physical_row_count, sections = _csv_sections(
         sample_content, encoding=encoding, delimiter_name=delimiter_name
     )
+    selected_section = sections[section_index]
+    header = cast(tuple[str, ...], selected_section["header"])
+    rows = cast(list[tuple[str, ...]], selected_section["rows"])
     if list(header) != detected_header:
         _fail("RAOS_EDITORIAL_V3_SAMPLE_HEADER_CHANGED")
+    if (
+        selected_section["header_row_index"] != header_row_index
+        or selected_section["section_sha256"] != section_sha256
+    ):
+        _fail("RAOS_EDITORIAL_V3_SAMPLE_SECTION_CHANGED")
     header_index = {value: position for position, value in enumerate(header)}
     inverse_status = {
         provider_value: canonical
@@ -565,7 +838,7 @@ def bind_rakuten_profile(
         for provider_value in values
     }
     observed_statuses: set[str] = set()
-    expected_measurements = set(portfolio.cta_by_measurement_id)
+    expected_measurements = set(provider_slot_by_measurement_id)
     matched_measurement_seen = False
     for row in rows:
         if any(value.lstrip().startswith(FORMULA_PREFIXES) for value in row):
@@ -590,14 +863,19 @@ def bind_rakuten_profile(
     if observed_statuses != set(CANONICAL_STATUSES) or not matched_measurement_seen:
         _fail("RAOS_EDITORIAL_V3_SAMPLE_COVERAGE_INVALID")
     return {
-        "schema": "RAOS_EDITORIAL_V3_RAKUTEN_PARSER_PROFILE_V1",
-        "version": "1.0.0",
+        "schema": RAKUTEN_PARSER_PROFILE_SCHEMA,
+        "version": "2.0.0",
         "state": "VERIFIED_SAMPLE_BOUND",
-        "parser_version": "rakuten-sanitized-csv.v1",
+        "parser_version": "rakuten-sanitized-csv.v2",
         "sample_source_sha256": sha256_bytes(sample_content),
         "detection_receipt_sha256": detection_content_sha256,
         "encoding": encoding,
         "delimiter": delimiter_name,
+        "section_selection": {
+            "section_index": section_index,
+            "header_row_index": header_row_index,
+            "sample_section_sha256": section_sha256,
+        },
         "header": detected_header,
         "columns": dict(columns),
         "status_values": {
@@ -606,13 +884,20 @@ def bind_rakuten_profile(
         "amount_format": request["amount_format"],
         "date_format": request["date_format"],
         "expected_currency": "JPY",
-        "measurement_id_echo_verified_in_provider_report": True,
+        "provider_measurement_id_echo_verified_in_provider_report": True,
+        "provider_slot_count": PROVIDER_SLOT_COUNT,
+        "provider_measurement_id_count": PROVIDER_SLOT_COUNT,
+        "provider_slot_set_sha256": provider_slot_set_sha256,
+        "provider_measurement_binding_sha256": (provider_measurement_binding_sha256),
+        "provider_slots": provider_slots,
         "direct_attribution_enabled": True,
         "estimated_attribution_enabled": False,
     }
 
 
-def _validate_profile(profile: Mapping[str, object]) -> None:
+def _validate_profile(
+    profile: Mapping[str, object], portfolio: EditorialPortfolioV3
+) -> dict[str, str]:
     if set(profile) != {
         "schema",
         "version",
@@ -622,22 +907,28 @@ def _validate_profile(profile: Mapping[str, object]) -> None:
         "detection_receipt_sha256",
         "encoding",
         "delimiter",
+        "section_selection",
         "header",
         "columns",
         "status_values",
         "amount_format",
         "date_format",
         "expected_currency",
-        "measurement_id_echo_verified_in_provider_report",
+        "provider_measurement_id_echo_verified_in_provider_report",
+        "provider_slot_count",
+        "provider_measurement_id_count",
+        "provider_slot_set_sha256",
+        "provider_measurement_binding_sha256",
+        "provider_slots",
         "direct_attribution_enabled",
         "estimated_attribution_enabled",
     }:
         _fail("RAOS_EDITORIAL_V3_PROFILE_INVALID")
     if (
-        profile["schema"] != "RAOS_EDITORIAL_V3_RAKUTEN_PARSER_PROFILE_V1"
-        or profile["version"] != "1.0.0"
+        profile["schema"] != RAKUTEN_PARSER_PROFILE_SCHEMA
+        or profile["version"] != "2.0.0"
         or profile["state"] != "VERIFIED_SAMPLE_BOUND"
-        or profile["parser_version"] != "rakuten-sanitized-csv.v1"
+        or profile["parser_version"] != "rakuten-sanitized-csv.v2"
         or _sha256(profile["sample_source_sha256"]) != profile["sample_source_sha256"]
         or _sha256(profile["detection_receipt_sha256"])
         != profile["detection_receipt_sha256"]
@@ -646,16 +937,30 @@ def _validate_profile(profile: Mapping[str, object]) -> None:
         or profile["amount_format"] not in AMOUNT_FORMATS
         or profile["date_format"] not in DATE_FORMATS
         or profile["expected_currency"] != "JPY"
-        or profile["measurement_id_echo_verified_in_provider_report"] is not True
+        or profile["provider_measurement_id_echo_verified_in_provider_report"]
+        is not True
+        or profile["provider_slot_count"] != PROVIDER_SLOT_COUNT
+        or profile["provider_measurement_id_count"] != PROVIDER_SLOT_COUNT
+        or _sha256(profile["provider_slot_set_sha256"])
+        != _provider_slot_set_sha256(portfolio)
         or profile["direct_attribution_enabled"] is not True
         or profile["estimated_attribution_enabled"] is not False
     ):
         _fail("RAOS_EDITORIAL_V3_PROFILE_INVALID")
     header = [_text(value, maximum=300) for value in _list(profile["header"])]
+    selection = _mapping(profile["section_selection"])
     columns = _mapping(profile["columns"])
     if (
         not header
         or len(header) != len(set(header))
+        or set(selection)
+        != {"section_index", "header_row_index", "sample_section_sha256"}
+        or _nonnegative_integer(selection["section_index"])
+        != selection["section_index"]
+        or _nonnegative_integer(selection["header_row_index"])
+        != selection["header_row_index"]
+        or _sha256(selection["sample_section_sha256"])
+        != selection["sample_section_sha256"]
         or set(columns)
         != {
             "provider_row_id",
@@ -685,6 +990,16 @@ def _validate_profile(profile: Mapping[str, object]) -> None:
         provider_values.extend(values)
     if len(provider_values) != len(set(provider_values)):
         _fail("RAOS_EDITORIAL_V3_PROFILE_INVALID")
+    provider_slots, provider_slot_by_measurement_id = _provider_measurement_mapping(
+        profile["provider_slots"],
+        portfolio=portfolio,
+        failure_code="RAOS_EDITORIAL_V3_PROFILE_INVALID",
+    )
+    if _sha256(profile["provider_measurement_binding_sha256"]) != sha256_bytes(
+        canonical_json_bytes(provider_slots)
+    ):
+        _fail("RAOS_EDITORIAL_V3_PROFILE_INVALID")
+    return provider_slot_by_measurement_id
 
 
 def parse_rakuten_report(
@@ -694,15 +1009,27 @@ def parse_rakuten_report(
     profile_sha256: str,
     portfolio: EditorialPortfolioV3,
 ) -> dict[str, object]:
-    _validate_profile(profile)
+    provider_slot_by_measurement_id = _validate_profile(profile, portfolio)
     _sha256(profile_sha256)
     encoding = _text(profile["encoding"])
     delimiter_name = _text(profile["delimiter"])
-    header, rows = _csv_rows(content, encoding=encoding, delimiter_name=delimiter_name)
+    _physical_row_count, sections = _csv_sections(
+        content, encoding=encoding, delimiter_name=delimiter_name
+    )
+    selection = _mapping(profile["section_selection"])
+    section_index = _nonnegative_integer(selection["section_index"])
+    if section_index >= len(sections):
+        _fail("RAOS_EDITORIAL_V3_REPORT_SECTION_MISMATCH")
+    section = sections[section_index]
+    header = cast(tuple[str, ...], section["header"])
+    rows = cast(list[tuple[str, ...]], section["rows"])
     expected_header = tuple(
         _text(value, maximum=300) for value in _list(profile["header"])
     )
-    if header != expected_header:
+    if (
+        header != expected_header
+        or section["header_row_index"] != selection["header_row_index"]
+    ):
         _fail("RAOS_EDITORIAL_V3_REPORT_HEADER_MISMATCH")
     columns = _mapping(profile["columns"])
     header_index = {value: position for position, value in enumerate(header)}
@@ -712,11 +1039,15 @@ def parse_rakuten_report(
         for canonical in CANONICAL_STATUSES
         for provider_value in _list(statuses[canonical])
     }
-    cta_by_measurement = portfolio.cta_by_measurement_id
+    provider_slots = portfolio.provider_slot_by_id
     totals = {status: 0 for status in CANONICAL_STATUSES}
     direct_by_article: dict[str, dict[str, int]] = {
         article.article_id: {status: 0 for status in CANONICAL_STATUSES}
         for article in portfolio.articles
+    }
+    direct_by_provider_slot: dict[str, dict[str, int]] = {
+        slot.provider_slot_id: {status: 0 for status in CANONICAL_STATUSES}
+        for slot in portfolio.provider_slots
     }
     basis_totals = {
         basis: {status: 0 for status in CANONICAL_STATUSES}
@@ -758,18 +1089,30 @@ def parse_rakuten_report(
         row_keys.add(row_key)
         dates.append(occurred_on)
         totals[status] += reward
-        binding = cta_by_measurement.get(measurement_id)
-        if binding is None:
+        provider_slot_id = provider_slot_by_measurement_id.get(measurement_id)
+        if provider_slot_id is None:
             basis = "UNATTRIBUTED"
             unmatched_measurement_count += 1
         else:
             basis = "DIRECT"
-            direct_by_article[binding.article_id][status] += reward
+            direct_by_provider_slot[provider_slot_id][status] += reward
+            direct_by_article[provider_slots[provider_slot_id].article_id][status] += (
+                reward
+            )
         basis_totals[basis][status] += reward
 
+    for status in CANONICAL_STATUSES:
+        if (
+            sum(row[status] for row in direct_by_provider_slot.values())
+            != sum(row[status] for row in direct_by_article.values())
+            or sum(row[status] for row in direct_by_article.values())
+            != basis_totals["DIRECT"][status]
+        ):
+            _fail("RAOS_EDITORIAL_V3_REPORT_ATTRIBUTION_RECONCILIATION_FAILED")
+
     return {
-        "schema": "RAOS_EDITORIAL_V3_RAKUTEN_DRY_RUN_V1",
-        "version": "1.0.0",
+        "schema": RAKUTEN_REPORT_DRY_RUN_SCHEMA,
+        "version": "2.0.0",
         "state": "DRY_RUN_NOT_COMMITTED",
         "source_sha256": sha256_bytes(content),
         "profile_sha256": profile_sha256,
@@ -793,12 +1136,14 @@ def parse_rakuten_report(
             },
         },
         "direct_by_article_jpy": direct_by_article,
+        "direct_by_provider_slot_jpy": direct_by_provider_slot,
         "unmatched_measurement_row_count": unmatched_measurement_count,
         "raw_rows_persisted": False,
         "commit_gate": {
             "source_hash_equality_required": True,
             "profile_hash_equality_required": True,
             "provider_total_reconciliation_required": True,
+            "provider_slot_reconciliation_required": True,
         },
     }
 
@@ -810,11 +1155,14 @@ def commit_rakuten_report(
     expected_source_sha256: str,
     provider_row_count: int,
     provider_totals_jpy: Mapping[str, int],
+    portfolio: EditorialPortfolioV3,
 ) -> dict[str, object]:
     if dry_run != reparsed:
         _fail("RAOS_EDITORIAL_V3_DRY_RUN_REPARSE_MISMATCH")
     if (
-        dry_run.get("schema") != "RAOS_EDITORIAL_V3_RAKUTEN_DRY_RUN_V1"
+        frozenset(dry_run) != RAKUTEN_REPORT_DRY_RUN_KEYS
+        or dry_run.get("schema") != RAKUTEN_REPORT_DRY_RUN_SCHEMA
+        or dry_run.get("version") != "2.0.0"
         or dry_run.get("state") != "DRY_RUN_NOT_COMMITTED"
         or _sha256(expected_source_sha256) != dry_run.get("source_sha256")
         or _positive_integer(provider_row_count) != dry_run.get("row_count")
@@ -827,9 +1175,53 @@ def commit_rakuten_report(
     }
     if normalized_provider_totals != dry_run.get("totals_jpy"):
         _fail("RAOS_EDITORIAL_V3_PROVIDER_RECONCILIATION_FAILED")
+    direct_by_article = _mapping(dry_run.get("direct_by_article_jpy"))
+    direct_by_provider_slot = _mapping(dry_run.get("direct_by_provider_slot_jpy"))
+    attribution = _mapping(dry_run.get("attribution"))
+    direct_attribution = _mapping(attribution.get("DIRECT"))
+    direct_totals = _mapping(direct_attribution.get("totals_jpy"))
+    if set(direct_by_article) != set(portfolio.article_by_id) or set(
+        direct_by_provider_slot
+    ) != set(portfolio.provider_slot_by_id):
+        _fail("RAOS_EDITORIAL_V3_COMMIT_PRECONDITION_FAILED")
+    normalized_article_direct: dict[str, dict[str, int]] = {}
+    normalized_slot_direct: dict[str, dict[str, int]] = {}
+    for identity, raw in direct_by_article.items():
+        normalized_identity = _text(identity, maximum=128)
+        row = _mapping(raw)
+        if normalized_identity != identity or set(row) != set(CANONICAL_STATUSES):
+            _fail("RAOS_EDITORIAL_V3_COMMIT_PRECONDITION_FAILED")
+        normalized_article_direct[normalized_identity] = {
+            status: _nonnegative_integer(row[status]) for status in CANONICAL_STATUSES
+        }
+    for identity, raw in direct_by_provider_slot.items():
+        normalized_identity = _text(identity, maximum=64)
+        row = _mapping(raw)
+        if normalized_identity != identity or set(row) != set(CANONICAL_STATUSES):
+            _fail("RAOS_EDITORIAL_V3_COMMIT_PRECONDITION_FAILED")
+        normalized_slot_direct[normalized_identity] = {
+            status: _nonnegative_integer(row[status]) for status in CANONICAL_STATUSES
+        }
+    if set(direct_totals) != set(CANONICAL_STATUSES) or any(
+        sum(row[status] for row in normalized_slot_direct.values())
+        != sum(row[status] for row in normalized_article_direct.values())
+        or sum(row[status] for row in normalized_article_direct.values())
+        != _nonnegative_integer(direct_totals[status])
+        or any(
+            sum(
+                normalized_slot_direct[slot.provider_slot_id][status]
+                for slot in portfolio.provider_slots
+                if slot.article_id == article_id
+            )
+            != normalized_article_direct[article_id][status]
+            for article_id in portfolio.article_by_id
+        )
+        for status in CANONICAL_STATUSES
+    ):
+        _fail("RAOS_EDITORIAL_V3_COMMIT_PRECONDITION_FAILED")
     return {
         **dry_run,
-        "schema": "RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_V1",
+        "schema": RAKUTEN_REPORT_COMMIT_SCHEMA,
         "state": "COMMITTED_OWNER_PRIVATE_RECONCILED",
         "reconciliation": {
             "status": "PASS",
@@ -919,7 +1311,7 @@ def _validate_rakuten_activation_dry_run(
     document_sha256: str,
     expected_portfolio_sha256: str,
     portfolio: EditorialPortfolioV3,
-) -> dict[str, str]:
+) -> dict[str, object]:
     """Validate the exact owner-private activation set bound to live readback."""
 
     if set(document) != {
@@ -934,6 +1326,12 @@ def _validate_rakuten_activation_dry_run(
         "materialized_set_sha256",
         "article_count",
         "cta_count",
+        "provider_slot_count",
+        "provider_measurement_id_count",
+        "internal_cta_identity_count",
+        "live_link_count",
+        "provider_slot_set_sha256",
+        "provider_measurement_binding_sha256",
         "provider_parameter_inference_used",
         "tracked_source_modified",
         "live_write_performed",
@@ -946,18 +1344,28 @@ def _validate_rakuten_activation_dry_run(
     admin_receipt_sha256 = _sha256(document["admin_receipt_sha256"])
     money_link_mapping_sha256 = _sha256(document["money_link_mapping_sha256"])
     materialized_set_sha256 = _sha256(document["materialized_set_sha256"])
+    provider_slot_set_sha256 = _sha256(document["provider_slot_set_sha256"])
+    provider_measurement_binding_sha256 = _sha256(
+        document["provider_measurement_binding_sha256"]
+    )
     expected_cta_count = sum(
         len(article.cta_bindings) for article in portfolio.articles
     )
+    expected_provider_slot_set_sha256 = _provider_slot_set_sha256(portfolio)
     if (
         document["schema"] != RAKUTEN_ACTIVATION_DRY_RUN_SCHEMA
-        or document["version"] != "2.0.0"
+        or document["version"] != "3.0.0"
         or document["state"] != "OWNER_PRIVATE_MATERIALIZED_NOT_PUBLISHED"
         or portfolio_sha256 != expected_portfolio
         or expected_portfolio != portfolio.source_sha256
         or document["article_count"] != len(portfolio.articles)
         or document["cta_count"] != expected_cta_count
-        or expected_cta_count != len(portfolio.cta_by_measurement_id)
+        or expected_cta_count != INTERNAL_CTA_IDENTITY_COUNT
+        or document["provider_slot_count"] != PROVIDER_SLOT_COUNT
+        or document["provider_measurement_id_count"] != PROVIDER_SLOT_COUNT
+        or document["internal_cta_identity_count"] != INTERNAL_CTA_IDENTITY_COUNT
+        or document["live_link_count"] != LIVE_LINK_COUNT
+        or provider_slot_set_sha256 != expected_provider_slot_set_sha256
         or document["provider_parameter_inference_used"] is not False
         or document["tracked_source_modified"] is not False
         or document["live_write_performed"] is not False
@@ -1059,13 +1467,11 @@ def _validate_rakuten_activation_dry_run(
             )
         )
         v2_receipt_sha256 = (
-            v2_local_receipt_sha256
-            if mode == "local"
-            else v2_production_receipt_sha256
+            v2_local_receipt_sha256 if mode == "local" else v2_production_receipt_sha256
         )
         overlay_receipt = {
-            "schema": "RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_OVERLAY_RECEIPT_V1",
-            "version": "1.0.0",
+            "schema": "RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_OVERLAY_RECEIPT_V2",
+            "version": "2.0.0",
             "mode": mode,
             "portfolio_sha256": portfolio_sha256,
             "v2_portfolio_sha256": v2_portfolio_sha256,
@@ -1074,7 +1480,15 @@ def _validate_rakuten_activation_dry_run(
             "posts_sha256": posts_sha256,
             "article_set_sha256": article_set_sha256,
             "article_count": len(normalized_rows),
+            "provider_slot_count": PROVIDER_SLOT_COUNT,
+            "provider_measurement_id_count": PROVIDER_SLOT_COUNT,
+            "internal_cta_identity_count": INTERNAL_CTA_IDENTITY_COUNT,
+            "live_link_count": LIVE_LINK_COUNT,
             "cta_count": total_ctas,
+            "provider_slot_set_sha256": provider_slot_set_sha256,
+            "provider_measurement_binding_sha256": (
+                provider_measurement_binding_sha256
+            ),
             "articles": normalized_rows,
         }
         if (
@@ -1100,6 +1514,12 @@ def _validate_rakuten_activation_dry_run(
         "portfolio_sha256": portfolio_sha256,
         "admin_receipt_sha256": admin_receipt_sha256,
         "money_link_mapping_sha256": money_link_mapping_sha256,
+        "provider_slot_count": document["provider_slot_count"],
+        "provider_measurement_id_count": document["provider_measurement_id_count"],
+        "internal_cta_identity_count": document["internal_cta_identity_count"],
+        "live_link_count": document["live_link_count"],
+        "provider_slot_set_sha256": provider_slot_set_sha256,
+        "provider_measurement_binding_sha256": (provider_measurement_binding_sha256),
         "v2_portfolio_sha256": v2_portfolio_sha256,
         "v2_evidence_status_sha256": v2_evidence_status_sha256,
         "v2_local_receipt_sha256": v2_local_receipt_sha256,
@@ -1115,16 +1535,694 @@ def _validate_rakuten_activation_dry_run(
     }
 
 
+def _validate_publication_binding(
+    value: object, *, failure_code: str
+) -> dict[str, object]:
+    if type(value) is not dict:
+        _fail(failure_code)
+    binding = cast(Mapping[str, object], value)
+    if set(binding) != {
+        "separate_admin_apply_receipt_sha256",
+        "separate_admin_apply_state",
+        "separate_admin_verified",
+        "self_approval_performed",
+        "publication_receipt_sha256",
+        "publication_receipt_state",
+        "public_readback_receipt_sha256",
+        "public_readback_receipt_state",
+    }:
+        _fail(failure_code)
+    try:
+        separate_admin_apply_receipt_sha256 = _sha256(
+            binding["separate_admin_apply_receipt_sha256"]
+        )
+        publication_receipt_sha256 = _sha256(binding["publication_receipt_sha256"])
+        public_readback_receipt_sha256 = _sha256(
+            binding["public_readback_receipt_sha256"]
+        )
+    except EditorialEconomicsV3Failure:
+        _fail(failure_code)
+    if (
+        binding["separate_admin_apply_state"] != "APPLIED"
+        or binding["separate_admin_verified"] is not True
+        or binding["self_approval_performed"] is not False
+        or binding["publication_receipt_state"] != "APPLIED"
+        or binding["public_readback_receipt_state"] != "READBACK_VERIFIED"
+    ):
+        _fail(failure_code)
+    return {
+        "separate_admin_apply_receipt_sha256": (separate_admin_apply_receipt_sha256),
+        "separate_admin_apply_state": "APPLIED",
+        "separate_admin_verified": True,
+        "self_approval_performed": False,
+        "publication_receipt_sha256": publication_receipt_sha256,
+        "publication_receipt_state": "APPLIED",
+        "public_readback_receipt_sha256": public_readback_receipt_sha256,
+        "public_readback_receipt_state": "READBACK_VERIFIED",
+    }
+
+
+def _publication_evidence_document(content: bytes) -> Mapping[str, object]:
+    failure_code = "RAOS_EDITORIAL_V3_PUBLICATION_EVIDENCE_INVALID"
+    if type(content) is not bytes or not 1 <= len(content) <= MAX_PRIVATE_BYTES:
+        _fail(failure_code)
+    try:
+        value = json.loads(
+            content.decode("utf-8", errors="strict"),
+            object_pairs_hook=_unique_json_object,
+        )
+    except EditorialEconomicsV3Failure, UnicodeError, json.JSONDecodeError:
+        _fail(failure_code)
+    if type(value) is not dict:
+        _fail(failure_code)
+    return cast(Mapping[str, object], value)
+
+
+def _publication_evidence_sha256(value: object) -> str:
+    try:
+        return _sha256(value)
+    except EditorialEconomicsV3Failure:
+        _fail("RAOS_EDITORIAL_V3_PUBLICATION_EVIDENCE_INVALID")
+
+
+def _publication_evidence_datetime(value: object) -> str:
+    try:
+        return _iso_datetime(value)
+    except EditorialEconomicsV3Failure:
+        _fail("RAOS_EDITORIAL_V3_PUBLICATION_EVIDENCE_INVALID")
+
+
+def _validate_applied_operation_receipt(value: object) -> dict[str, object]:
+    failure_code = "RAOS_EDITORIAL_V3_PUBLICATION_EVIDENCE_INVALID"
+    if type(value) is not dict:
+        _fail(failure_code)
+    operation = cast(Mapping[str, object], value)
+    if set(operation) != {
+        "schema",
+        "proposal_id",
+        "operation_id",
+        "state",
+        "result_code",
+        "before_sha256",
+        "after_sha256",
+        "audit_id",
+    }:
+        _fail(failure_code)
+    proposal_id = _publication_evidence_sha256(operation["proposal_id"])
+    operation_id = _publication_evidence_sha256(operation["operation_id"])
+    after_sha256 = _publication_evidence_sha256(operation["after_sha256"])
+    audit_id = _publication_evidence_sha256(operation["audit_id"])
+    before_value = operation["before_sha256"]
+    before_sha256 = (
+        None if before_value is None else _publication_evidence_sha256(before_value)
+    )
+    if (
+        operation["schema"] != "OperationReceiptV1"
+        or operation["state"] != "APPLIED"
+        or operation["result_code"]
+        not in {"CONTENT_RELEASE_APPLIED", "THEME_RELEASE_APPLIED"}
+    ):
+        _fail(failure_code)
+    return {
+        "schema": "OperationReceiptV1",
+        "proposal_id": proposal_id,
+        "operation_id": operation_id,
+        "state": "APPLIED",
+        "result_code": operation["result_code"],
+        "before_sha256": before_sha256,
+        "after_sha256": after_sha256,
+        "audit_id": audit_id,
+    }
+
+
+def _validate_separate_admin_apply_receipt(
+    value: Mapping[str, object],
+) -> tuple[dict[str, object], dict[str, dict[str, object]]]:
+    failure_code = "RAOS_EDITORIAL_V3_PUBLICATION_EVIDENCE_INVALID"
+    if set(value) != {
+        "schema",
+        "batch_token",
+        "batch_manifest_sha256",
+        "proposal_count",
+        "proposal_ids",
+        "state",
+        "receipts",
+    }:
+        _fail(failure_code)
+    batch_token = _publication_evidence_sha256(value["batch_token"])
+    manifest_sha256 = _publication_evidence_sha256(value["batch_manifest_sha256"])
+    raw_proposal_ids = value["proposal_ids"]
+    raw_receipts = value["receipts"]
+    if type(raw_proposal_ids) is not list or type(raw_receipts) is not list:
+        _fail(failure_code)
+    raw_proposal_id_list = cast(list[object], raw_proposal_ids)
+    raw_receipt_list = cast(list[object], raw_receipts)
+    proposal_ids = [_publication_evidence_sha256(item) for item in raw_proposal_id_list]
+    proposal_count = value["proposal_count"]
+    if (
+        value["schema"] != "ReleaseWaitApplyReceiptV1"
+        or value["state"] != "APPLIED"
+        or type(proposal_count) is not int
+        or proposal_count
+        not in {PUBLICATION_DOCUMENT_COUNT, PUBLICATION_DOCUMENT_COUNT + 1}
+        or proposal_ids != sorted(proposal_ids)
+        or len(proposal_ids) != proposal_count
+        or len(set(proposal_ids)) != proposal_count
+        or len(raw_receipt_list) != proposal_count
+    ):
+        _fail(failure_code)
+    receipts = [_validate_applied_operation_receipt(item) for item in raw_receipt_list]
+    by_proposal = {cast(str, row["proposal_id"]): row for row in receipts}
+    if set(by_proposal) != set(proposal_ids):
+        _fail(failure_code)
+    return (
+        {
+            "schema": "ReleaseWaitApplyReceiptV1",
+            "batch_token": batch_token,
+            "batch_manifest_sha256": manifest_sha256,
+            "proposal_count": proposal_count,
+            "proposal_ids": proposal_ids,
+            "state": "APPLIED",
+            "receipts": receipts,
+        },
+        by_proposal,
+    )
+
+
+def _validate_publication_materialization_binding(
+    value: object,
+    *,
+    expected_portfolio_sha256: str,
+    expected_activation_binding: Mapping[str, object],
+) -> None:
+    failure_code = "RAOS_EDITORIAL_V3_PUBLICATION_EVIDENCE_INVALID"
+    if type(value) is not dict:
+        _fail(failure_code)
+    binding = cast(Mapping[str, object], value)
+    if (
+        set(binding)
+        != {
+            "schema",
+            "portfolio_sha256",
+            "articles",
+            "products",
+            "activation",
+        }
+        or binding["schema"] != "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3"
+    ):
+        _fail(failure_code)
+    if (
+        _publication_evidence_sha256(binding["portfolio_sha256"])
+        != expected_portfolio_sha256
+    ):
+        _fail(failure_code)
+    articles_value = binding["articles"]
+    products_value = binding["products"]
+    activation_value = binding["activation"]
+    if type(articles_value) is not dict:
+        _fail(failure_code)
+    articles = cast(Mapping[object, object], articles_value)
+    if len(articles) != 10 or any(
+        type(slug) is not str
+        or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) is None
+        or SHA256_RE.fullmatch(str(digest)) is None
+        for slug, digest in articles.items()
+    ):
+        _fail(failure_code)
+    if type(products_value) is not dict:
+        _fail(failure_code)
+    products = cast(Mapping[object, object], products_value)
+    if len(products) != 32 or type(activation_value) is not dict:
+        _fail(failure_code)
+    for product_id, raw_product in products.items():
+        if type(product_id) is not str or type(raw_product) is not dict:
+            _fail(failure_code)
+        product = cast(Mapping[str, object], raw_product)
+        if set(product) != {"state", "provider_binding_sha256"} or product.get(
+            "state"
+        ) not in {"verified", "not_found", "ambiguous", "expired"}:
+            _fail(failure_code)
+        _publication_evidence_sha256(product["provider_binding_sha256"])
+    activation = cast(Mapping[str, object], activation_value)
+    activation_hash_fields = {
+        "dry_run_sha256",
+        "admin_receipt_sha256",
+        "money_link_mapping_sha256",
+        "materialized_set_sha256",
+        "local_article_set_sha256",
+        "production_article_set_sha256",
+        "local_overlay_receipt_sha256",
+        "production_overlay_receipt_sha256",
+        "provider_slot_set_sha256",
+        "provider_measurement_binding_sha256",
+    }
+    activation_count_fields = {
+        "article_count": 10,
+        "cta_count": INTERNAL_CTA_IDENTITY_COUNT,
+        "provider_slot_count": PROVIDER_SLOT_COUNT,
+        "provider_measurement_id_count": PROVIDER_SLOT_COUNT,
+        "internal_cta_identity_count": INTERNAL_CTA_IDENTITY_COUNT,
+        "live_link_count": LIVE_LINK_COUNT,
+    }
+    if set(activation) != activation_hash_fields | set(activation_count_fields):
+        _fail(failure_code)
+    for name in activation_hash_fields:
+        _publication_evidence_sha256(activation[name])
+    if any(
+        activation[name] != expected
+        for name, expected in activation_count_fields.items()
+    ):
+        _fail(failure_code)
+    expected_pairs = {
+        "dry_run_sha256": "dry_run_sha256",
+        "admin_receipt_sha256": "admin_receipt_sha256",
+        "money_link_mapping_sha256": "money_link_mapping_sha256",
+        "materialized_set_sha256": "materialized_set_sha256",
+        "production_article_set_sha256": "production_article_set_sha256",
+        "production_overlay_receipt_sha256": "production_overlay_receipt_sha256",
+        "provider_slot_set_sha256": "provider_slot_set_sha256",
+        "provider_measurement_binding_sha256": "provider_measurement_binding_sha256",
+    }
+    if any(
+        activation[publication_name] != expected_activation_binding[activation_name]
+        for publication_name, activation_name in expected_pairs.items()
+    ):
+        _fail(failure_code)
+
+
+def _validate_applied_publication_receipt(
+    value: Mapping[str, object],
+    *,
+    apply_receipt: Mapping[str, object],
+    apply_operations: Mapping[str, Mapping[str, object]],
+    expected_portfolio_sha256: str,
+    expected_activation_binding: Mapping[str, object],
+) -> tuple[list[str], Mapping[str, object]]:
+    failure_code = "RAOS_EDITORIAL_V3_PUBLICATION_EVIDENCE_INVALID"
+    if set(value) != {
+        "schema",
+        "receipt_path_sha256",
+        "selected_slugs",
+        "selected_documents",
+        "desired_sha256",
+        "desired_theme_tree_sha256",
+        "desired_theme_runtime_revision",
+        "state",
+        "attempt_id",
+        "attempt_created_at_gmt",
+        "materialization_binding",
+        "baselines",
+        "drafts",
+        "proposal_keys",
+        "proposals",
+        "operation_ids",
+        "batch_registration",
+        "review_url",
+        "apply_receipt",
+        "authenticated_readback",
+        "prior_applied_reconciliation",
+        "public_readback",
+        "updated_at_gmt",
+    }:
+        _fail(failure_code)
+    selected_value = value["selected_slugs"]
+    selected_documents_value = value["selected_documents"]
+    desired_value = value["desired_sha256"]
+    proposals_value = value["proposals"]
+    operation_ids_value = value["operation_ids"]
+    registration_value = value["batch_registration"]
+    authenticated_value = value["authenticated_readback"]
+    public_readback_value = value["public_readback"]
+    if (
+        value["schema"] != "RAOS_WORDPRESS_PUBLICATION_REQUEST_RECEIPT_V1"
+        or value["state"] != "APPLIED"
+        or type(selected_value) is not list
+        or type(selected_documents_value) is not dict
+        or type(desired_value) is not dict
+        or type(proposals_value) is not list
+        or type(operation_ids_value) is not dict
+        or type(registration_value) is not dict
+        or type(authenticated_value) is not dict
+        or type(public_readback_value) is not dict
+        or type(value["baselines"]) is not dict
+        or type(value["drafts"]) is not dict
+        or type(value["proposal_keys"]) is not dict
+        or type(value["review_url"]) is not str
+        or not value["review_url"]
+        or value["apply_receipt"] != apply_receipt
+    ):
+        _fail(failure_code)
+    selected_slugs = cast(list[object], selected_value)
+    if len(selected_slugs) != PUBLICATION_DOCUMENT_COUNT or any(
+        type(slug) is not str or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) is None
+        for slug in selected_slugs
+    ):
+        _fail(failure_code)
+    selected = cast(list[str], selected_slugs)
+    if selected != sorted(selected) or len(set(selected)) != PUBLICATION_DOCUMENT_COUNT:
+        _fail(failure_code)
+    selected_documents = cast(Mapping[str, object], selected_documents_value)
+    desired = cast(Mapping[str, object], desired_value)
+    if (
+        set(selected_documents) != set(selected)
+        or sum(kind == "post" for kind in selected_documents.values()) != 10
+        or sum(kind == "page" for kind in selected_documents.values()) != 3
+        or set(desired) != set(selected)
+    ):
+        _fail(failure_code)
+    for digest in desired.values():
+        _publication_evidence_sha256(digest)
+    _publication_evidence_sha256(value["receipt_path_sha256"])
+    desired_theme_tree_sha256 = _publication_evidence_sha256(
+        value["desired_theme_tree_sha256"]
+    )
+    desired_theme_runtime_revision = _publication_evidence_sha256(
+        value["desired_theme_runtime_revision"]
+    )
+    _publication_evidence_sha256(value["attempt_id"])
+    _publication_evidence_datetime(value["attempt_created_at_gmt"])
+    _publication_evidence_datetime(value["updated_at_gmt"])
+    _validate_publication_materialization_binding(
+        value["materialization_binding"],
+        expected_portfolio_sha256=expected_portfolio_sha256,
+        expected_activation_binding=expected_activation_binding,
+    )
+    proposal_by_id: dict[str, Mapping[str, object]] = {}
+    content_by_slug: dict[str, Mapping[str, object]] = {}
+    theme_count = 0
+    for raw_proposal in cast(list[object], proposals_value):
+        if type(raw_proposal) is not dict:
+            _fail(failure_code)
+        proposal = cast(Mapping[str, object], raw_proposal)
+        kind = proposal.get("kind")
+        expected_fields = {
+            "kind",
+            "slug",
+            "proposal_id",
+            "after_sha256",
+            "expires_at_gmt",
+            "idempotency_key",
+        }
+        if kind == "CONTENT_RELEASE":
+            expected_fields.add("post_type")
+        if set(proposal) != expected_fields:
+            _fail(failure_code)
+        proposal_id = _publication_evidence_sha256(proposal["proposal_id"])
+        after_sha256 = _publication_evidence_sha256(proposal["after_sha256"])
+        _publication_evidence_sha256(proposal["idempotency_key"])
+        _publication_evidence_datetime(proposal["expires_at_gmt"])
+        if proposal_id in proposal_by_id:
+            _fail(failure_code)
+        proposal_by_id[proposal_id] = proposal
+        if kind == "THEME_RELEASE":
+            theme_count += 1
+            if (
+                proposal["slug"] is not None
+                or after_sha256 != desired_theme_tree_sha256
+            ):
+                _fail(failure_code)
+        elif kind == "CONTENT_RELEASE":
+            slug = proposal["slug"]
+            if (
+                type(slug) is not str
+                or slug not in selected_documents
+                or proposal["post_type"] != selected_documents[slug]
+                or slug in content_by_slug
+            ):
+                _fail(failure_code)
+            content_by_slug[slug] = proposal
+        else:
+            _fail(failure_code)
+    if (
+        set(content_by_slug) != set(selected)
+        or theme_count not in {0, 1}
+        or set(proposal_by_id) != set(apply_operations)
+    ):
+        _fail(failure_code)
+    operation_ids = cast(Mapping[str, object], operation_ids_value)
+    if set(operation_ids) != set(proposal_by_id) or any(
+        operation_ids[proposal_id] != proposal_id for proposal_id in proposal_by_id
+    ):
+        _fail(failure_code)
+    for proposal_id, proposal in proposal_by_id.items():
+        operation = apply_operations[proposal_id]
+        if (
+            operation["operation_id"] != operation_ids[proposal_id]
+            or operation["after_sha256"] != proposal["after_sha256"]
+            or operation["result_code"]
+            != (
+                "THEME_RELEASE_APPLIED"
+                if proposal["kind"] == "THEME_RELEASE"
+                else "CONTENT_RELEASE_APPLIED"
+            )
+        ):
+            _fail(failure_code)
+    registration = cast(Mapping[str, object], registration_value)
+    if set(registration) != {
+        "schema",
+        "batch_token",
+        "batch_manifest_sha256",
+        "expected_theme_tree_sha256",
+        "proposal_count",
+        "proposal_ids",
+        "state",
+        "expires_at_gmt",
+        "review_url",
+    } or (
+        registration["schema"] != "RAOSWordPressPublicationBatchV1"
+        or registration["batch_token"] != apply_receipt["batch_token"]
+        or registration["batch_manifest_sha256"]
+        != apply_receipt["batch_manifest_sha256"]
+        or registration["expected_theme_tree_sha256"] != desired_theme_tree_sha256
+        or registration["proposal_count"] != len(proposal_by_id)
+        or registration["proposal_ids"] != sorted(proposal_by_id)
+        or registration["state"] not in {"REGISTERED", "APPROVED"}
+        or registration["review_url"] != value["review_url"]
+    ):
+        _fail(failure_code)
+    _publication_evidence_datetime(registration["expires_at_gmt"])
+    authenticated = cast(Mapping[str, object], authenticated_value)
+    if set(authenticated) != {"documents", "operations", "public_pages", "theme"}:
+        _fail(failure_code)
+    documents_value = authenticated["documents"]
+    operations_value = authenticated["operations"]
+    authenticated_pages_value = authenticated["public_pages"]
+    theme_value = authenticated["theme"]
+    if (
+        type(documents_value) is not dict
+        or type(operations_value) is not dict
+        or type(authenticated_pages_value) is not dict
+        or type(theme_value) is not dict
+    ):
+        _fail(failure_code)
+    documents = cast(Mapping[str, object], documents_value)
+    operations = cast(Mapping[str, object], operations_value)
+    authenticated_pages = cast(Mapping[str, object], authenticated_pages_value)
+    public_readback = cast(Mapping[str, object], public_readback_value)
+    theme = cast(Mapping[str, object], theme_value)
+    if (
+        set(documents) != set(selected)
+        or set(authenticated_pages) != set(selected)
+        or set(public_readback) != set(selected)
+    ):
+        _fail(failure_code)
+    for slug, raw_document in documents.items():
+        proposal = content_by_slug[slug]
+        if type(raw_document) is not dict:
+            _fail(failure_code)
+        document = cast(Mapping[str, object], raw_document)
+        if (
+            set(document)
+            != {
+                "id",
+                "slug",
+                "post_type",
+                "status",
+                "content_sha256",
+                "revision_id",
+                "modified_gmt",
+            }
+            or document.get("slug") != slug
+            or document.get("post_type") != selected_documents[slug]
+            or document.get("status") != "publish"
+            or document.get("content_sha256") != proposal["after_sha256"]
+            or type(document.get("id")) is not int
+            or cast(int, document["id"]) < 1
+            or type(document.get("revision_id")) is not int
+            or cast(int, document["revision_id"]) < 1
+        ):
+            _fail(failure_code)
+        _publication_evidence_datetime(document["modified_gmt"])
+    content_proposal_ids = {
+        proposal_id
+        for proposal_id, proposal in proposal_by_id.items()
+        if proposal["kind"] == "CONTENT_RELEASE"
+    }
+    if set(operations) != content_proposal_ids:
+        _fail(failure_code)
+    for proposal_id, raw_operation in operations.items():
+        if (
+            _validate_applied_operation_receipt(raw_operation)
+            != apply_operations[proposal_id]
+        ):
+            _fail(failure_code)
+    if set(theme) != {
+        "version",
+        "runtime_version",
+        "runtime_revision",
+        "tree_sha256",
+        "proposed",
+    } or (
+        theme["runtime_revision"] != desired_theme_runtime_revision
+        or theme["tree_sha256"] != desired_theme_tree_sha256
+        or type(theme["version"]) is not str
+        or theme["runtime_version"] != theme["version"]
+        or type(theme["proposed"]) is not bool
+    ):
+        _fail(failure_code)
+    for pages in (public_readback, authenticated_pages):
+        for raw_page in pages.values():
+            if type(raw_page) is not dict:
+                _fail(failure_code)
+            page = cast(Mapping[str, object], raw_page)
+            if (
+                page.get("status") != 200
+                or page.get("indexable") is not True
+                or type(page.get("url")) is not str
+                or type(page.get("canonical_url")) is not str
+                or page.get("theme_runtime_revision") != desired_theme_runtime_revision
+            ):
+                _fail(failure_code)
+    return selected, public_readback
+
+
+def validate_t0_publication_receipts(
+    *,
+    separate_admin_apply_receipt_content: bytes,
+    publication_receipt_content: bytes,
+    public_readback_receipt_content: bytes,
+    expected_target_origin: str,
+    expected_portfolio_sha256: str,
+    expected_activation_binding: Mapping[str, object],
+) -> dict[str, object]:
+    """Validate three exact, mutually bound owner-private publication receipts."""
+
+    failure_code = "RAOS_EDITORIAL_V3_PUBLICATION_EVIDENCE_INVALID"
+    expected_portfolio_sha256 = _publication_evidence_sha256(expected_portfolio_sha256)
+    apply_document = _publication_evidence_document(
+        separate_admin_apply_receipt_content
+    )
+    publication_document = _publication_evidence_document(publication_receipt_content)
+    readback_document = _publication_evidence_document(public_readback_receipt_content)
+    apply_receipt, apply_operations = _validate_separate_admin_apply_receipt(
+        apply_document
+    )
+    selected_slugs, public_readback = _validate_applied_publication_receipt(
+        publication_document,
+        apply_receipt=apply_receipt,
+        apply_operations=apply_operations,
+        expected_portfolio_sha256=expected_portfolio_sha256,
+        expected_activation_binding=expected_activation_binding,
+    )
+    try:
+        expected_origin = urlsplit(expected_target_origin)
+    except ValueError:
+        _fail(failure_code)
+    if (
+        expected_origin.scheme != "https"
+        or not expected_origin.netloc
+        or expected_origin.path not in {"", "/"}
+        or expected_origin.query
+        or expected_origin.fragment
+    ):
+        _fail(failure_code)
+    for slug in selected_slugs:
+        page = cast(Mapping[str, object], public_readback[slug])
+        for field in ("url", "canonical_url"):
+            try:
+                parsed = urlsplit(cast(str, page[field]))
+            except ValueError:
+                _fail(failure_code)
+            if (
+                parsed.scheme != expected_origin.scheme
+                or parsed.netloc != expected_origin.netloc
+                or parsed.path != f"/{slug}/"
+                or parsed.query
+                or parsed.fragment
+            ):
+                _fail(failure_code)
+    if set(readback_document) != {
+        "schema",
+        "state",
+        "target_origin",
+        "verification_authority",
+        "self_approval_performed",
+        "separate_admin_apply_receipt_sha256",
+        "publication_receipt_sha256",
+        "public_readback_sha256",
+        "selected_slugs_sha256",
+        "verified_at",
+    }:
+        _fail(failure_code)
+    apply_sha256 = sha256_bytes(separate_admin_apply_receipt_content)
+    publication_sha256 = sha256_bytes(publication_receipt_content)
+    public_readback_sha256 = sha256_bytes(canonical_json_bytes(public_readback))
+    selected_slugs_sha256 = sha256_bytes(canonical_json_bytes(selected_slugs))
+    separate_admin_verified = (
+        readback_document["verification_authority"] == "SEPARATE_ADMIN"
+    )
+    self_approval_performed = readback_document["self_approval_performed"]
+    if (
+        readback_document["schema"] != PUBLIC_READBACK_RECEIPT_SCHEMA
+        or readback_document["state"] != "READBACK_VERIFIED"
+        or readback_document["target_origin"] != expected_target_origin
+        or separate_admin_verified is not True
+        or self_approval_performed is not False
+        or _publication_evidence_sha256(
+            readback_document["separate_admin_apply_receipt_sha256"]
+        )
+        != apply_sha256
+        or _publication_evidence_sha256(readback_document["publication_receipt_sha256"])
+        != publication_sha256
+        or _publication_evidence_sha256(readback_document["public_readback_sha256"])
+        != public_readback_sha256
+        or _publication_evidence_sha256(readback_document["selected_slugs_sha256"])
+        != selected_slugs_sha256
+    ):
+        _fail(failure_code)
+    _publication_evidence_datetime(readback_document["verified_at"])
+    return {
+        "separate_admin_apply_receipt_sha256": apply_sha256,
+        "separate_admin_apply_state": "APPLIED",
+        "separate_admin_verified": separate_admin_verified,
+        "self_approval_performed": self_approval_performed,
+        "publication_receipt_sha256": publication_sha256,
+        "publication_receipt_state": "APPLIED",
+        "public_readback_receipt_sha256": sha256_bytes(public_readback_receipt_content),
+        "public_readback_receipt_state": "READBACK_VERIFIED",
+    }
+
+
 def production_readback_template(
     portfolio: EditorialPortfolioV3,
 ) -> dict[str, object]:
     """Return a disabled template; it is not evidence until fully attested."""
 
     return {
-        "schema": "RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INPUT_V2",
-        "version": "2.0.0",
+        "schema": PRODUCTION_READBACK_INPUT_SCHEMA,
+        "version": "4.0.0",
         "owner_attested": False,
         "target_origin": portfolio.target_origin,
+        "publication_binding": {
+            "separate_admin_apply_receipt_sha256": None,
+            "separate_admin_apply_state": "NOT_RECORDED",
+            "separate_admin_verified": False,
+            "self_approval_performed": None,
+            "publication_receipt_sha256": None,
+            "publication_receipt_state": "NOT_RECORDED",
+            "public_readback_receipt_sha256": None,
+            "public_readback_receipt_state": "NOT_RECORDED",
+        },
         "analytics_site_binding": {
             "state": "NOT_RECORDED",
             "binding_sha256": None,
@@ -1139,9 +2237,13 @@ def production_readback_template(
                 "request_sha256": None,
                 "response_sha256": None,
                 "details": {
-                    "measurement_ids": sorted(portfolio.cta_by_measurement_id),
+                    "provider_slot_count": PROVIDER_SLOT_COUNT,
+                    "provider_measurement_id_count": None,
+                    "internal_cta_identity_count": None,
                     "live_link_count": None,
-                    "all_ids_echo_verified": False,
+                    "all_provider_measurement_ids_echo_verified": False,
+                    "provider_slot_set_sha256": _provider_slot_set_sha256(portfolio),
+                    "provider_measurement_binding_sha256": None,
                     "activation_dry_run_sha256": None,
                     "materialized_set_sha256": None,
                     "production_posts_sha256": None,
@@ -1181,7 +2283,7 @@ def production_readback_template(
     }
 
 
-def establish_t0_receipt(
+def _derive_unsigned_t0_candidate(
     *,
     document: Mapping[str, object],
     observation_sha256: str,
@@ -1189,6 +2291,9 @@ def establish_t0_receipt(
     rakuten_activation_sha256: str,
     expected_portfolio_sha256: str,
     portfolio: EditorialPortfolioV3,
+    separate_admin_apply_receipt_content: bytes,
+    publication_receipt_content: bytes,
+    public_readback_receipt_content: bytes,
     evaluated_at: datetime | None = None,
 ) -> dict[str, object]:
     activation_binding = _validate_rakuten_activation_dry_run(
@@ -1202,9 +2307,24 @@ def establish_t0_receipt(
         "version",
         "owner_attested",
         "target_origin",
+        "publication_binding",
         "analytics_site_binding",
         "observations",
     }:
+        _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
+    claimed_publication_binding = _validate_publication_binding(
+        document["publication_binding"],
+        failure_code="RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID",
+    )
+    publication_binding = validate_t0_publication_receipts(
+        separate_admin_apply_receipt_content=(separate_admin_apply_receipt_content),
+        publication_receipt_content=publication_receipt_content,
+        public_readback_receipt_content=public_readback_receipt_content,
+        expected_target_origin=portfolio.target_origin,
+        expected_portfolio_sha256=expected_portfolio_sha256,
+        expected_activation_binding=activation_binding,
+    )
+    if publication_binding != claimed_publication_binding:
         _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
     binding = _mapping(document["analytics_site_binding"])
     if (
@@ -1224,17 +2344,16 @@ def establish_t0_receipt(
         binding["ga4_configuration_response_sha256"]
     )
     if (
-        document["schema"] != "RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INPUT_V2"
-        or document["version"] != "2.0.0"
+        document["schema"] != PRODUCTION_READBACK_INPUT_SCHEMA
+        or document["version"] != "4.0.0"
         or document["owner_attested"] is not True
         or document["target_origin"] != portfolio.target_origin
     ):
         _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
     source_sha256 = _sha256(observation_sha256)
     now = (evaluated_at or datetime.now(UTC)).astimezone(UTC)
-    expected_measurements = set(portfolio.cta_by_measurement_id)
     article_ids = set(portfolio.article_by_id)
-    earliest_success: dict[str, dict[str, str]] = {}
+    earliest_success: dict[str, dict[str, object]] = {}
     for raw in _list(document["observations"]):
         row = _mapping(raw)
         if set(row) != {
@@ -1258,9 +2377,13 @@ def establish_t0_receipt(
         details = _mapping(row["details"])
         if component == "RAKUTEN_MEASUREMENT_IDS":
             if set(details) != {
-                "measurement_ids",
+                "provider_slot_count",
+                "provider_measurement_id_count",
+                "internal_cta_identity_count",
                 "live_link_count",
-                "all_ids_echo_verified",
+                "all_provider_measurement_ids_echo_verified",
+                "provider_slot_set_sha256",
+                "provider_measurement_binding_sha256",
                 "activation_dry_run_sha256",
                 "materialized_set_sha256",
                 "production_posts_sha256",
@@ -1268,14 +2391,18 @@ def establish_t0_receipt(
                 "production_overlay_receipt_sha256",
             }:
                 _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
-            measurement_ids = {
-                _text(value, maximum=64) for value in _list(details["measurement_ids"])
-            }
             if (
-                measurement_ids != expected_measurements
-                or _positive_integer(details["live_link_count"])
-                != len(expected_measurements)
-                or details["all_ids_echo_verified"] is not True
+                _positive_integer(details["provider_slot_count"]) != PROVIDER_SLOT_COUNT
+                or _positive_integer(details["provider_measurement_id_count"])
+                != PROVIDER_SLOT_COUNT
+                or _positive_integer(details["internal_cta_identity_count"])
+                != INTERNAL_CTA_IDENTITY_COUNT
+                or _positive_integer(details["live_link_count"]) != LIVE_LINK_COUNT
+                or details["all_provider_measurement_ids_echo_verified"] is not True
+                or _sha256(details["provider_slot_set_sha256"])
+                != activation_binding["provider_slot_set_sha256"]
+                or _sha256(details["provider_measurement_binding_sha256"])
+                != activation_binding["provider_measurement_binding_sha256"]
                 or _sha256(details["activation_dry_run_sha256"])
                 != activation_binding["dry_run_sha256"]
                 or _sha256(details["materialized_set_sha256"])
@@ -1324,13 +2451,23 @@ def establish_t0_receipt(
                 or details["event_observed"] is not True
             ):
                 _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INVALID")
-        candidate = {
+        candidate: dict[str, object] = {
             "component": component,
             "observed_at": observed_at,
             "request_sha256": request_sha256,
             "response_sha256": response_sha256,
         }
         if component == "RAKUTEN_MEASUREMENT_IDS":
+            candidate["provider_slot_count"] = PROVIDER_SLOT_COUNT
+            candidate["provider_measurement_id_count"] = PROVIDER_SLOT_COUNT
+            candidate["internal_cta_identity_count"] = INTERNAL_CTA_IDENTITY_COUNT
+            candidate["live_link_count"] = LIVE_LINK_COUNT
+            candidate["provider_slot_set_sha256"] = activation_binding[
+                "provider_slot_set_sha256"
+            ]
+            candidate["provider_measurement_binding_sha256"] = activation_binding[
+                "provider_measurement_binding_sha256"
+            ]
             candidate["activation_dry_run_sha256"] = activation_binding[
                 "dry_run_sha256"
             ]
@@ -1347,17 +2484,18 @@ def establish_t0_receipt(
                 "production_overlay_receipt_sha256"
             ]
         previous = earliest_success.get(component)
-        if previous is None or observed_at < previous["observed_at"]:
+        if previous is None or observed_at < _text(previous["observed_at"]):
             earliest_success[component] = candidate
     if set(earliest_success) != set(READBACK_COMPONENTS):
         _fail("RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INCOMPLETE")
     ordered = [earliest_success[component] for component in READBACK_COMPONENTS]
-    t0 = max(row["observed_at"] for row in ordered)
+    t0 = max(_text(row["observed_at"]) for row in ordered)
     return {
-        "schema": "RAOS_EDITORIAL_V3_T0_RECEIPT_V2",
-        "version": "2.0.0",
-        "state": "ESTABLISHED_FROM_EXACT_PRODUCTION_READBACKS",
+        "schema": T0_RECEIPT_SCHEMA,
+        "version": "4.0.0",
+        "state": "ESTABLISHED_FROM_APPLIED_PUBLICATION_AND_EXACT_READBACKS",
         "target_origin": portfolio.target_origin,
+        "publication_binding": publication_binding,
         "analytics_site_binding": {
             "binding_sha256": binding_sha256,
             "ga4_property_id_sha256": expected_ga4_property_id_sha256,
@@ -1373,6 +2511,41 @@ def establish_t0_receipt(
     }
 
 
+def establish_t0_receipt(
+    *,
+    document: Mapping[str, object],
+    observation_sha256: str,
+    rakuten_activation: Mapping[str, object],
+    rakuten_activation_sha256: str,
+    expected_portfolio_sha256: str,
+    portfolio: EditorialPortfolioV3,
+    separate_admin_apply_receipt_content: bytes,
+    publication_receipt_content: bytes,
+    public_readback_receipt_content: bytes,
+    evaluated_at: datetime | None = None,
+) -> dict[str, object]:
+    """Reject unsigned evidence after preserving strict structural validation.
+
+    The current inputs are useful validation candidates, but none carries an
+    independently verifiable signature or trusted provider execution receipt.
+    They therefore cannot cross the public T0 establishment boundary.
+    """
+
+    _derive_unsigned_t0_candidate(
+        document=document,
+        observation_sha256=observation_sha256,
+        rakuten_activation=rakuten_activation,
+        rakuten_activation_sha256=rakuten_activation_sha256,
+        expected_portfolio_sha256=expected_portfolio_sha256,
+        portfolio=portfolio,
+        separate_admin_apply_receipt_content=(separate_admin_apply_receipt_content),
+        publication_receipt_content=publication_receipt_content,
+        public_readback_receipt_content=public_readback_receipt_content,
+        evaluated_at=evaluated_at,
+    )
+    _fail(TRUSTED_T0_EVIDENCE_REQUIRED)
+
+
 def validate_t0_receipt(
     document: Mapping[str, object], portfolio: EditorialPortfolioV3
 ) -> str:
@@ -1381,6 +2554,7 @@ def validate_t0_receipt(
         "version",
         "state",
         "target_origin",
+        "publication_binding",
         "analytics_site_binding",
         "rakuten_activation_binding",
         "observation_sha256",
@@ -1392,9 +2566,10 @@ def validate_t0_receipt(
     }:
         _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
     if (
-        document["schema"] != "RAOS_EDITORIAL_V3_T0_RECEIPT_V2"
-        or document["version"] != "2.0.0"
-        or document["state"] != "ESTABLISHED_FROM_EXACT_PRODUCTION_READBACKS"
+        document["schema"] != T0_RECEIPT_SCHEMA
+        or document["version"] != "4.0.0"
+        or document["state"]
+        != "ESTABLISHED_FROM_APPLIED_PUBLICATION_AND_EXACT_READBACKS"
         or document["target_origin"] != portfolio.target_origin
         or _sha256(document["observation_sha256"]) != document["observation_sha256"]
         or document["derivation"] != "MAX_OF_EARLIEST_SUCCESS_PER_REQUIRED_COMPONENT"
@@ -1402,6 +2577,10 @@ def validate_t0_receipt(
         or document["external_mutation_performed"] is not False
     ):
         _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
+    _validate_publication_binding(
+        document["publication_binding"],
+        failure_code="RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID",
+    )
     binding = _mapping(document["analytics_site_binding"])
     if set(binding) != {
         "binding_sha256",
@@ -1418,6 +2597,12 @@ def validate_t0_receipt(
         "portfolio_sha256",
         "admin_receipt_sha256",
         "money_link_mapping_sha256",
+        "provider_slot_count",
+        "provider_measurement_id_count",
+        "internal_cta_identity_count",
+        "live_link_count",
+        "provider_slot_set_sha256",
+        "provider_measurement_binding_sha256",
         "v2_portfolio_sha256",
         "v2_evidence_status_sha256",
         "v2_local_receipt_sha256",
@@ -1428,9 +2613,33 @@ def validate_t0_receipt(
         "materialized_set_sha256",
     }:
         _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
-    for digest in activation.values():
-        _sha256(digest)
-    if activation["portfolio_sha256"] != portfolio.source_sha256:
+    digest_fields = {
+        "dry_run_sha256",
+        "portfolio_sha256",
+        "admin_receipt_sha256",
+        "money_link_mapping_sha256",
+        "provider_slot_set_sha256",
+        "provider_measurement_binding_sha256",
+        "v2_portfolio_sha256",
+        "v2_evidence_status_sha256",
+        "v2_local_receipt_sha256",
+        "v2_production_receipt_sha256",
+        "production_posts_sha256",
+        "production_article_set_sha256",
+        "production_overlay_receipt_sha256",
+        "materialized_set_sha256",
+    }
+    for field in digest_fields:
+        _sha256(activation[field])
+    if (
+        activation["portfolio_sha256"] != portfolio.source_sha256
+        or activation["provider_slot_count"] != PROVIDER_SLOT_COUNT
+        or activation["provider_measurement_id_count"] != PROVIDER_SLOT_COUNT
+        or activation["internal_cta_identity_count"] != INTERNAL_CTA_IDENTITY_COUNT
+        or activation["live_link_count"] != LIVE_LINK_COUNT
+        or activation["provider_slot_set_sha256"]
+        != _provider_slot_set_sha256(portfolio)
+    ):
         _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
     components: list[Mapping[str, object]] = []
     for raw in _list(document["components"]):
@@ -1444,6 +2653,12 @@ def validate_t0_receipt(
         }
         if component == "RAKUTEN_MEASUREMENT_IDS":
             expected_fields |= {
+                "provider_slot_count",
+                "provider_measurement_id_count",
+                "internal_cta_identity_count",
+                "live_link_count",
+                "provider_slot_set_sha256",
+                "provider_measurement_binding_sha256",
                 "activation_dry_run_sha256",
                 "materialized_set_sha256",
                 "production_posts_sha256",
@@ -1456,8 +2671,19 @@ def validate_t0_receipt(
         _sha256(row["request_sha256"])
         _sha256(row["response_sha256"])
         if component == "RAKUTEN_MEASUREMENT_IDS" and (
-            _sha256(row["activation_dry_run_sha256"])
-            != activation["dry_run_sha256"]
+            _positive_integer(row["provider_slot_count"])
+            != activation["provider_slot_count"]
+            or _positive_integer(row["provider_measurement_id_count"])
+            != activation["provider_measurement_id_count"]
+            or _positive_integer(row["internal_cta_identity_count"])
+            != activation["internal_cta_identity_count"]
+            or _positive_integer(row["live_link_count"])
+            != activation["live_link_count"]
+            or _sha256(row["provider_slot_set_sha256"])
+            != activation["provider_slot_set_sha256"]
+            or _sha256(row["provider_measurement_binding_sha256"])
+            != activation["provider_measurement_binding_sha256"]
+            or _sha256(row["activation_dry_run_sha256"]) != activation["dry_run_sha256"]
             or _sha256(row["materialized_set_sha256"])
             != activation["materialized_set_sha256"]
             or _sha256(row["production_posts_sha256"])
@@ -1475,7 +2701,7 @@ def validate_t0_receipt(
     t0 = _iso_datetime(document["t0"])
     if t0 != expected_t0:
         _fail("RAOS_EDITORIAL_V3_T0_RECEIPT_INVALID")
-    return t0
+    _fail(TRUSTED_T0_EVIDENCE_REQUIRED)
 
 
 def _strict_number(value: object, *, minimum: float = 0.0) -> float:
@@ -1757,11 +2983,40 @@ def _validate_rakuten_commit(
     document: Mapping[str, object], portfolio: EditorialPortfolioV3
 ) -> dict[str, object]:
     if (
-        document.get("schema") != "RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_V1"
+        frozenset(document) != RAKUTEN_REPORT_DRY_RUN_KEYS | {"reconciliation"}
+        or document.get("schema") != RAKUTEN_REPORT_COMMIT_SCHEMA
+        or document.get("version") != "2.0.0"
         or document.get("state") != "COMMITTED_OWNER_PRIVATE_RECONCILED"
         or _mapping(document.get("reconciliation")).get("status") != "PASS"
         or document.get("currency") != "JPY"
         or document.get("raw_rows_persisted") is not False
+    ):
+        _fail("RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_INVALID")
+    commit_gate = _mapping(document["commit_gate"])
+    reconciliation = _mapping(document["reconciliation"])
+    if (
+        commit_gate
+        != {
+            "source_hash_equality_required": True,
+            "profile_hash_equality_required": True,
+            "provider_total_reconciliation_required": True,
+            "provider_slot_reconciliation_required": True,
+        }
+        or set(reconciliation)
+        != {
+            "status",
+            "provider_row_count",
+            "provider_totals_jpy",
+            "source_sha256_equal_to_dry_run",
+            "profile_sha256_equal_to_dry_run",
+        }
+        or reconciliation["status"] != "PASS"
+        or reconciliation["source_sha256_equal_to_dry_run"] is not True
+        or reconciliation["profile_sha256_equal_to_dry_run"] is not True
+        or _positive_integer(reconciliation["provider_row_count"])
+        != _positive_integer(document["row_count"])
+        or _mapping(reconciliation["provider_totals_jpy"])
+        != _mapping(document["totals_jpy"])
     ):
         _fail("RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_INVALID")
     period = _mapping(document.get("period"))
@@ -1785,6 +3040,18 @@ def _validate_rakuten_commit(
         if set(row) != set(CANONICAL_STATUSES):
             _fail("RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_INVALID")
         normalized_direct[article_id] = {
+            status: _nonnegative_integer(row[status]) for status in CANONICAL_STATUSES
+        }
+    direct_by_provider_slot = _mapping(document.get("direct_by_provider_slot_jpy"))
+    expected_provider_slot_ids = set(portfolio.provider_slot_by_id)
+    if set(direct_by_provider_slot) != expected_provider_slot_ids:
+        _fail("RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_INVALID")
+    normalized_slot_direct: dict[str, dict[str, int]] = {}
+    for provider_slot_id, raw in direct_by_provider_slot.items():
+        row = _mapping(raw)
+        if set(row) != set(CANONICAL_STATUSES):
+            _fail("RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_INVALID")
+        normalized_slot_direct[provider_slot_id] = {
             status: _nonnegative_integer(row[status]) for status in CANONICAL_STATUSES
         }
     attribution = _mapping(document.get("attribution"))
@@ -1814,12 +3081,30 @@ def _validate_rakuten_commit(
             },
         }
     for status in CANONICAL_STATUSES:
-        if sum(
-            cast(int, normalized_attribution[basis][status])
-            for basis in ATTRIBUTION_BASES
-        ) != normalized_totals[status] or sum(
-            normalized_direct[article_id][status] for article_id in expected_ids
-        ) != cast(int, normalized_attribution["DIRECT"][status]):
+        direct_total = cast(int, normalized_attribution["DIRECT"][status])
+        if (
+            sum(
+                cast(int, normalized_attribution[basis][status])
+                for basis in ATTRIBUTION_BASES
+            )
+            != normalized_totals[status]
+            or sum(normalized_direct[article_id][status] for article_id in expected_ids)
+            != direct_total
+            or sum(
+                normalized_slot_direct[provider_slot_id][status]
+                for provider_slot_id in expected_provider_slot_ids
+            )
+            != direct_total
+            or any(
+                sum(
+                    normalized_slot_direct[slot.provider_slot_id][status]
+                    for slot in portfolio.provider_slots
+                    if slot.article_id == article_id
+                )
+                != normalized_direct[article_id][status]
+                for article_id in expected_ids
+            )
+        ):
             _fail("RAOS_EDITORIAL_V3_RAKUTEN_COMMIT_INVALID")
     unattributed = normalized_attribution["UNATTRIBUTED"]
     return {
@@ -1827,6 +3112,7 @@ def _validate_rakuten_commit(
         "source_sha256": _sha256(document["source_sha256"]),
         "totals_jpy": normalized_totals,
         "direct_by_article_jpy": normalized_direct,
+        "direct_by_provider_slot_jpy": normalized_slot_direct,
         "attribution_jpy": normalized_attribution,
         "unattributed_jpy": {
             status: cast(int, unattributed[status]) for status in CANONICAL_STATUSES
@@ -1901,9 +3187,16 @@ def build_baseline_report(
     )
     gsc = summarize_gsc(gsc_input, portfolio) if gsc_input is not None else None
     ga4 = summarize_ga4(ga4_input, portfolio) if ga4_input is not None else None
-    normalized_t0 = (
-        validate_t0_receipt(t0_receipt, portfolio) if t0_receipt is not None else None
-    )
+    # T0 V4 is an unsigned, self-contained candidate.  Keep its strict parser
+    # available for diagnostics, but never let either a well-formed candidate
+    # or a synthetic/modified document establish the baseline epoch.  A future
+    # trusted-evidence schema must update this boundary explicitly.
+    if t0_receipt is not None:
+        try:
+            validate_t0_receipt(t0_receipt, portfolio)
+        except EditorialEconomicsV3Failure:
+            pass
+    normalized_t0: str | None = None
     now = (generated_at or datetime.now(UTC)).astimezone(UTC)
     periods = [
         cast(Mapping[str, str], source["period"])
@@ -2100,14 +3393,11 @@ def build_baseline_report(
     return {
         "schema": "RAOS_EDITORIAL_V3_ACTUAL_BASELINE_REPORT_V1",
         "version": "1.0.0",
+        "state": BASELINE_INCOMPLETE_STATE,
         "classification": "OWNER_PRIVATE_FINANCIAL_AND_PROVIDER_DATA",
         "generated_at": now.isoformat().replace("+00:00", "Z"),
-        "t0": normalized_t0 or "UNAVAILABLE",
-        "t0_receipt_sha256": (
-            sha256_bytes(canonical_json_bytes(t0_receipt))
-            if t0_receipt is not None
-            else "UNAVAILABLE"
-        ),
+        "t0": "UNAVAILABLE",
+        "t0_receipt_sha256": "UNAVAILABLE",
         "cohort": cohort,
         "period": report_period,
         "period_alignment": period_alignment,
@@ -2123,7 +3413,7 @@ def build_baseline_report(
             "cost": _source_state(costs),
             "gsc": _source_state(gsc),
             "ga4": _source_state(ga4),
-            "t0_receipt": _source_state(t0_receipt),
+            "t0_receipt": TRUSTED_T0_EVIDENCE_REQUIRED,
         },
         "freshness": {
             "generated_at": now.isoformat().replace("+00:00", "Z"),
@@ -2194,65 +3484,6 @@ def candidate_query_demand_template() -> dict[str, object]:
     }
 
 
-def _validate_candidate_query_demand(
-    document: Mapping[str, object],
-) -> dict[str, object]:
-    if set(document) != {
-        "schema",
-        "version",
-        "candidate_id",
-        "source",
-        "aggregation_basis",
-        "period",
-        "retrieved_at",
-        "request_sha256",
-        "query_cluster_sha256",
-        "impressions",
-        "clicks",
-        "raw_queries_included",
-        "article_totals_reused",
-    }:
-        _fail("RAOS_EDITORIAL_V3_CANDIDATE_QUERY_DEMAND_INVALID")
-    if (
-        document["schema"] != CANDIDATE_QUERY_DEMAND_SCHEMA
-        or document["version"] != "1.0.0"
-        or document["candidate_id"] != NEW_ARTICLE_CANDIDATE_ID
-        or document["source"] != "GSC"
-        or document["aggregation_basis"] != CANDIDATE_QUERY_DEMAND_BASIS
-        or document["raw_queries_included"] is not False
-        or document["article_totals_reused"] is not False
-    ):
-        _fail("RAOS_EDITORIAL_V3_CANDIDATE_QUERY_DEMAND_INVALID")
-    period = _mapping(document["period"])
-    if set(period) != {"date_from", "date_to"}:
-        _fail("RAOS_EDITORIAL_V3_CANDIDATE_QUERY_DEMAND_INVALID")
-    date_from = _iso_date(period["date_from"])
-    date_to = _iso_date(period["date_to"])
-    impressions = _nonnegative_integer(document["impressions"])
-    clicks = _nonnegative_integer(document["clicks"])
-    if date_from > date_to or clicks > impressions:
-        _fail("RAOS_EDITORIAL_V3_CANDIDATE_QUERY_DEMAND_INVALID")
-    return {
-        "state": "OBSERVED_INDEPENDENT_QUERY_CLUSTER",
-        "period": {"date_from": date_from, "date_to": date_to},
-        "retrieved_at": _iso_datetime(document["retrieved_at"]),
-        "request_sha256": _sha256(document["request_sha256"]),
-        "query_cluster_sha256": _sha256(document["query_cluster_sha256"]),
-        "impressions": impressions,
-        "clicks": clicks,
-        "raw_queries_included": False,
-        "article_totals_reused": False,
-    }
-
-
-def _coverage_days(
-    *, date_from: date, date_to: date, t0_day: date, as_of_date: date
-) -> int:
-    coverage_start = max(date_from, t0_day + timedelta(days=1))
-    coverage_end = min(date_to, as_of_date)
-    return max(0, (coverage_end - coverage_start).days + 1)
-
-
 def evaluate_followups(
     *,
     baseline: Mapping[str, object],
@@ -2262,174 +3493,17 @@ def evaluate_followups(
     candidate_query_demand: Mapping[str, object] | None = None,
     generated_at: datetime | None = None,
 ) -> dict[str, object]:
-    if baseline.get("schema") != "RAOS_EDITORIAL_V3_ACTUAL_BASELINE_REPORT_V1":
-        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
-    source_sha256 = _sha256(baseline_sha256)
-    if _sha256(baseline.get("t0_receipt_sha256")) != baseline.get("t0_receipt_sha256"):
-        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
-    t0 = baseline.get("t0")
-    if t0 == "UNAVAILABLE":
-        _fail("RAOS_EDITORIAL_V3_FOLLOWUP_T0_UNAVAILABLE")
-    normalized_t0 = _iso_datetime(t0)
-    t0_time = datetime.fromisoformat(normalized_t0.replace("Z", "+00:00"))
-    as_of_date = date.fromisoformat(_iso_date(as_of))
-    now = (generated_at or datetime.now(UTC)).astimezone(UTC)
-    if as_of_date > now.date() or as_of_date < t0_time.date():
-        _fail("RAOS_EDITORIAL_V3_FOLLOWUP_DATE_INVALID")
-    elapsed_days = (as_of_date - t0_time.date()).days
-    period = _mapping(baseline.get("period"))
-    if set(period) != {"date_from", "date_to"}:
-        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
-    period_date_from = period.get("date_from")
-    period_date_to = period.get("date_to")
-    coverage_days = 0
-    if period_date_from != "UNAVAILABLE" and period_date_to != "UNAVAILABLE":
-        coverage_days = _coverage_days(
-            date_from=date.fromisoformat(_iso_date(period_date_from)),
-            date_to=date.fromisoformat(_iso_date(period_date_to)),
-            t0_day=t0_time.date(),
-            as_of_date=as_of_date,
-        )
-    elif period_date_from != "UNAVAILABLE" or period_date_to != "UNAVAILABLE":
-        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
-    cohort = baseline.get("cohort")
-    if cohort not in {
-        "POST_T0_COHORT",
-        "MIXED_T0_BOUNDARY",
-        "PRE_T0_BASELINE",
-        "UNAVAILABLE",
-        # Accepted only as a legacy mixed/unknown value; it is never eligible.
-        "POST_T0_OR_MIXED_REVIEW_REQUIRED",
-    }:
-        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
-    post_t0_cohort = cohort == "POST_T0_COHORT"
+    """Reject follow-ups until a trusted T0 evidence verifier exists."""
 
-    candidate_article = portfolio.article_by_id.get(NEW_ARTICLE_SOURCE_ID)
-    if candidate_article is None:
-        _fail("RAOS_EDITORIAL_V3_CANDIDATE_SOURCE_INVALID")
-    article_rows = {
-        _text(_mapping(raw).get("article_id")): _mapping(raw)
-        for raw in _list(baseline.get("articles"))
-    }
-    if set(article_rows) != set(portfolio.article_by_id):
-        _fail("RAOS_EDITORIAL_V3_BASELINE_REPORT_INVALID")
-    source = article_rows[NEW_ARTICLE_SOURCE_ID]
-    direct = _mapping(source.get("rakuten_direct_jpy"))
-    demand = (
-        _validate_candidate_query_demand(candidate_query_demand)
-        if candidate_query_demand is not None
-        else None
+    del (
+        baseline,
+        baseline_sha256,
+        portfolio,
+        as_of,
+        candidate_query_demand,
+        generated_at,
     )
-    demand_coverage_days = 0
-    independent_query_demand_confirmed = False
-    if demand is not None:
-        demand_period = _mapping(demand["period"])
-        demand_date_from = date.fromisoformat(_iso_date(demand_period["date_from"]))
-        demand_date_to = date.fromisoformat(_iso_date(demand_period["date_to"]))
-        demand_coverage_days = _coverage_days(
-            date_from=demand_date_from,
-            date_to=demand_date_to,
-            t0_day=t0_time.date(),
-            as_of_date=as_of_date,
-        )
-        independent_query_demand_confirmed = (
-            demand_date_from > t0_time.date() and demand_date_to <= as_of_date
-        )
-    impressions = cast(int, demand["impressions"]) if demand is not None else None
-    clicks = cast(int, demand["clicks"]) if demand is not None else None
-    confirmed_reward = (
-        _nonnegative_integer(direct["CONFIRMED"])
-        if post_t0_cohort
-        and direct.get("state") == "RECONCILED"
-        and "CONFIRMED" in direct
-        else None
-    )
-    conditions = {
-        "post_t0_cohort": post_t0_cohort,
-        "independent_query_demand_confirmed": independent_query_demand_confirmed,
-        "observation_days_ge_28": (
-            elapsed_days >= 28
-            and demand_coverage_days >= 28
-            and independent_query_demand_confirmed
-        ),
-        "impressions_ge_200": (
-            independent_query_demand_confirmed
-            and impressions is not None
-            and impressions >= 200
-        ),
-        "measurable_clicks": (
-            independent_query_demand_confirmed and clicks is not None and clicks > 0
-        ),
-        "mature_confirmed_result": (
-            confirmed_reward is not None and confirmed_reward > 0
-        ),
-    }
-    eligible = all(conditions.values())
-
-    def review(day: int, areas: Sequence[str]) -> dict[str, object]:
-        due = elapsed_days >= day
-        status = (
-            "NOT_DUE"
-            if not due
-            else "HUMAN_REVIEW_REQUIRED"
-            if post_t0_cohort
-            else "BLOCKED_NON_POST_T0_COHORT"
-        )
-        return {
-            "day": day,
-            "due": due,
-            "status": status,
-            "data_cohort": cohort,
-            "data_eligible": post_t0_cohort,
-            "review_areas": list(areas),
-            "automatic_pass": False,
-            "automatic_publication": False,
-        }
-
-    return {
-        "schema": "RAOS_EDITORIAL_V3_FOLLOWUP_EVALUATION_V1",
-        "version": "1.0.0",
-        "generated_at": now.isoformat().replace("+00:00", "Z"),
-        "baseline_sha256": source_sha256,
-        "t0": normalized_t0,
-        "as_of": as_of_date.isoformat(),
-        "elapsed_days": elapsed_days,
-        "actual_data_coverage_days_after_t0": coverage_days,
-        "data_cohort": cohort,
-        "reviews": {
-            "day_30": review(
-                30,
-                ("indexing", "search_intent", "cta", "generated_reward"),
-            ),
-            "day_90": review(
-                90,
-                ("confirmed_reward", "contribution_profit", "gate_readiness"),
-            ),
-        },
-        "new_article_candidate_gate": {
-            "candidate_id": NEW_ARTICLE_CANDIDATE_ID,
-            "source_article_id": candidate_article.article_id,
-            "source_article_code": candidate_article.article_code,
-            "observations": {
-                "independent_query_demand": (
-                    demand if demand is not None else {"state": "UNAVAILABLE"}
-                ),
-                "query_demand_coverage_days_after_t0": demand_coverage_days,
-                "impressions": impressions
-                if impressions is not None
-                else "UNAVAILABLE",
-                "clicks": clicks if clicks is not None else "UNAVAILABLE",
-                "direct_confirmed_reward_jpy": (
-                    confirmed_reward if confirmed_reward is not None else "UNAVAILABLE"
-                ),
-            },
-            "conditions": conditions,
-            "status": ("ELIGIBLE_FOR_HUMAN_PROPOSAL" if eligible else "NOT_ELIGIBLE"),
-            "automatic_article_creation": False,
-            "automatic_pass": False,
-            "automatic_publication": False,
-        },
-    }
+    _fail(TRUSTED_T0_EVIDENCE_REQUIRED)
 
 
 def render_baseline_html(report: Mapping[str, object]) -> bytes:
@@ -2551,6 +3625,7 @@ def render_baseline_html(report: Mapping[str, object]) -> bytes:
             "width:100%;display:block;overflow-x:auto}",
             "th,td{border:1px solid #bbb;padding:.5rem;text-align:left}</style>",
             "<h1>Editorial V3 実データ基準値</h1>",
+            f"<p>state: {escape(str(report.get('state')))}</p>",
             f"<p>期間: {escape(str(_mapping(report.get('period')).get('date_from')))}",
             f"〜{escape(str(_mapping(report.get('period')).get('date_to')))}</p>",
             f"<p>T0: {escape(str(report.get('t0')))}</p>",
@@ -2584,7 +3659,9 @@ def render_baseline_html(report: Mapping[str, object]) -> bytes:
 
 
 __all__ = [
+    "BASELINE_INCOMPLETE_STATE",
     "EditorialEconomicsV3Failure",
+    "TRUSTED_T0_EVIDENCE_REQUIRED",
     "bind_rakuten_profile",
     "build_baseline_report",
     "candidate_query_demand_template",
@@ -2606,6 +3683,7 @@ __all__ = [
     "summarize_ga4",
     "summarize_gsc",
     "validate_cost_input",
+    "validate_t0_publication_receipts",
     "validate_t0_receipt",
     "write_private_bytes",
     "write_private_json",

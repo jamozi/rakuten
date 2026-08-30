@@ -2,8 +2,8 @@
   "artifact_id": "raos-editorial-measurement-v1",
   "default_enabled": false,
   "host_gate": "RAOS_MEASUREMENT_ENABLED",
-  "package_sha256": "a8f5f8153beea91a9ce5f33a4e68b98883025ab61f7388f4a5c115fab815d6f7",
-  "package_size": 16196,
+  "package_sha256": "91b0012ab2502bfa9b6bc107abda0cd869b2a46a9bed8fd6b73b030b37d24e41",
+  "package_size": 16216,
   "plugin_files": [
     {
       "path": "README.md",
@@ -12,8 +12,8 @@
     },
     {
       "path": "config/measurement-allowlist.v1.json",
-      "sha256": "d215f399cecfe3f940d5eb49d56916a3558099642216ac96db4598fbc2f72e5c",
-      "size": 18254
+      "sha256": "880fc0f9d567584c5856e0ab11f029d8b2f51983c3cb8d0627275e0db3af72dd",
+      "size": 18328
     },
     {
       "path": "includes/class-raos-measurement-contract.php",
@@ -36,8 +36,8 @@
   "runtime_files": [
     {
       "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
-      "sha256": "ef30f3394efdbcd118967752f2f3a165efd29fc1fa9a5c7c5b1c275254ba690d",
-      "size": 79388
+      "sha256": "2d80ec0a170ff28a4a09e67426e9ed58d3a05864c9a493062436a58a6c7b9b52",
+      "size": 84724
     },
     {
       "path": "changes/editorial-measurement-v1/measurement-runtime.v1.json",
@@ -51,23 +51,23 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
-      "sha256": "5b0c1bc9a58adfa73794e4fff91d26c45fb466c7d7fbdaab23d29c2a6e3a6ff2",
+      "sha256": "ece2b4c0546703197dbf94775bd0a9ca2513cb6ea00fb2d1faf3d0dbd191e65e",
       "size": 130005
     },
     {
       "path": "scripts/build_editorial_measurement_v1.py",
-      "sha256": "757416d0c3e8decddd5137b0f2eb7cdbdc9d886ae07b929c74428b81050f33b0",
-      "size": 15695
+      "sha256": "6a07f220ec7f3396557d4ce1f525d697720ecb2d52461d9bc4472a1caece9b71",
+      "size": 19098
     },
     {
       "path": "tests/editorial_measurement_v1/test_contract.py",
-      "sha256": "8b06d73fbd37a83794a111027a7b198507c70959f3bb431b158128d6e11809e8",
-      "size": 13743
+      "sha256": "90c08dc0ad634ff401453c4c0fd7ef5aea824d9d8f5010f0b673d67111d07d57",
+      "size": 14180
     },
     {
       "path": "tests/editorial_measurement_v1/measurement_client_harness.mjs",
-      "sha256": "87bf86c98a35d9c556771d69faf6b8f214ed4f87607472f0ab34d6a3d8f89a8c",
-      "size": 9412
+      "sha256": "653377ff09e819207c2d600d109c41facd071299021093f34ad6241f92e5a3e8",
+      "size": 9413
     },
     {
       "path": "tests/editorial_measurement_v1/measurement_store_rate_harness.php",

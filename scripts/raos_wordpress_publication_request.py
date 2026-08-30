@@ -111,7 +111,7 @@ ATTEMPT_PREPARED_EXPIRY_SECONDS: Final = EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS + 
 RELEASE_FOREGROUND_TIMEOUT_SECONDS: Final = 4680
 EXPECTED_THEME_VERSION: Final = "1.4.0"
 EXPECTED_THEME_RUNTIME_REVISION: Final = (
-    "9d514cb4237cf2b0af40e514eb870ea54d1a80647835d2b41d3bee545ff8a019"
+    "44b8eb82ac770a93b7b25aef1353007b6da650fb49ef5a6d2567915940595684"
 )
 THEME_RUNTIME_SENTINEL_PROPERTIES: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -273,6 +273,11 @@ class _PublicPageEvidenceParser(HTMLParser):
         attributes = {
             key.lower(): value for key, value in attrs if isinstance(key, str)
         }
+        raos_attribute_names = sorted(
+            key.lower()
+            for key, _value in attrs
+            if isinstance(key, str) and key.lower().startswith("data-raos-")
+        )
         parent_product = self._elements[-1][1] if self._elements else None
         product_id = attributes.get("data-raos-product-id") or parent_product
         classes = {
@@ -336,9 +341,10 @@ class _PublicPageEvidenceParser(HTMLParser):
                     "offer_id": attributes.get("data-raos-offer-id"),
                     "product_id": attributes.get("data-raos-product-id"),
                     "placement": attributes.get("data-raos-placement"),
-                    "rakuten_measurement_id": attributes.get(
-                        "data-raos-rakuten-measurement-id"
+                    "rakuten_provider_slot_id": attributes.get(
+                        "data-raos-rakuten-provider-slot-id"
                     ),
+                    "raos_attribute_names": raos_attribute_names,
                 }
             )
         if lowered == "a" and isinstance(attributes.get("href"), str):
@@ -1197,14 +1203,18 @@ def activation_materialization_binding(
         or activated_hashes != dict(activation.production_article_sha256)
         or len(activated_hashes) != EXPECTED_ALL_ARTICLE_COUNT
         or activation.article_count != EXPECTED_ALL_ARTICLE_COUNT
+        or activation.provider_slot_count != 20
+        or activation.provider_measurement_id_count != 20
+        or activation.internal_cta_identity_count != 74
         or activation.cta_count != 74
+        or activation.live_link_count != 74
     ):
         fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
     products = v2_binding.get("products")
     if type(products) is not dict:
         fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
     return {
-        "schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+        "schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3",
         "portfolio_sha256": activation.portfolio_sha256,
         "articles": dict(sorted(activated_hashes.items())),
         "products": products,
@@ -1212,6 +1222,10 @@ def activation_materialization_binding(
             "dry_run_sha256": activation.dry_run_sha256,
             "admin_receipt_sha256": activation.admin_receipt_sha256,
             "money_link_mapping_sha256": activation.money_link_mapping_sha256,
+            "provider_slot_set_sha256": activation.provider_slot_set_sha256,
+            "provider_measurement_binding_sha256": (
+                activation.provider_measurement_binding_sha256
+            ),
             "materialized_set_sha256": activation.materialized_set_sha256,
             "local_article_set_sha256": activation.local_article_set_sha256,
             "production_article_set_sha256": (
@@ -1224,7 +1238,15 @@ def activation_materialization_binding(
                 activation.production_overlay_receipt_sha256
             ),
             "article_count": activation.article_count,
+            "provider_slot_count": activation.provider_slot_count,
+            "provider_measurement_id_count": (
+                activation.provider_measurement_id_count
+            ),
+            "internal_cta_identity_count": (
+                activation.internal_cta_identity_count
+            ),
             "cta_count": activation.cta_count,
+            "live_link_count": activation.live_link_count,
         },
     }
 
@@ -1264,7 +1286,7 @@ def theme_runtime_revision() -> str:
     if len(matches) != 1:
         fail("RAOS_WORDPRESS_REQUEST_THEME_SOURCE_INVALID")
     try:
-        value = matches[0].decode("ascii", errors="strict")
+        value: str = matches[0].decode("ascii", errors="strict")
     except UnicodeError:
         fail("RAOS_WORDPRESS_REQUEST_THEME_SOURCE_INVALID")
     if value != EXPECTED_THEME_RUNTIME_REVISION:
@@ -2044,7 +2066,10 @@ def _validate_materialization_binding(value: object) -> None:
         "articles",
         "products",
     }
-    if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2":
+    if schema in {
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3",
+    }:
         expected_keys.add("activation")
     if set(value) != expected_keys:
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
@@ -2055,6 +2080,7 @@ def _validate_materialization_binding(value: object) -> None:
         not in {
             "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1",
             "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+            "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3",
         }
         or type(value.get("portfolio_sha256")) is not str
         or SHA256_RE.fullmatch(value["portfolio_sha256"]) is None
@@ -2083,7 +2109,10 @@ def _validate_materialization_binding(value: object) -> None:
             or SHA256_RE.fullmatch(raw["provider_binding_sha256"]) is None
         ):
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
-    if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2":
+    if schema in {
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3",
+    }:
         activation = value.get("activation")
         expected_activation_keys = {
             "dry_run_sha256",
@@ -2097,6 +2126,15 @@ def _validate_materialization_binding(value: object) -> None:
             "article_count",
             "cta_count",
         }
+        if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3":
+            expected_activation_keys |= {
+                "provider_slot_set_sha256",
+                "provider_measurement_binding_sha256",
+                "provider_slot_count",
+                "provider_measurement_id_count",
+                "internal_cta_identity_count",
+                "live_link_count",
+            }
         if (
             type(activation) is not dict
             or set(activation) != expected_activation_keys
@@ -2108,6 +2146,15 @@ def _validate_materialization_binding(value: object) -> None:
             )
             or activation.get("article_count") != EXPECTED_ALL_ARTICLE_COUNT
             or activation.get("cta_count") != 74
+            or (
+                schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3"
+                and (
+                    activation.get("provider_slot_count") != 20
+                    or activation.get("provider_measurement_id_count") != 20
+                    or activation.get("internal_cta_identity_count") != 74
+                    or activation.get("live_link_count") != 74
+                )
+            )
         ):
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
 
@@ -3828,6 +3875,7 @@ def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]
     result: list[dict[str, object]] = []
     identities: set[tuple[str, str]] = set()
     placements_by_product: dict[str, set[str]] = {}
+    provider_slots_by_placement: dict[str, str] = {}
     for raw in parser.ctas:
         href = raw.get("href")
         rel = raw.get("rel")
@@ -3837,7 +3885,8 @@ def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]
         offer_id = raw.get("offer_id")
         product_id = raw.get("product_id")
         placement = raw.get("placement")
-        rakuten_measurement_id = raw.get("rakuten_measurement_id")
+        rakuten_provider_slot_id = raw.get("rakuten_provider_slot_id")
+        raos_attribute_names = raw.get("raos_attribute_names")
         if (
             type(href) is not str
             or len(href) > 8192
@@ -3860,32 +3909,67 @@ def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]
         ):
             fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
         if parsed.hostname == "hb.afl.rakuten.co.jp":
+            expected_raos_attributes = {
+                "data-raos-article-id",
+                "data-raos-cta-id",
+                "data-raos-snapshot-id",
+                "data-raos-offer-id",
+                "data-raos-product-id",
+                "data-raos-placement",
+                "data-raos-rakuten-provider-slot-id",
+            }
             if (
                 set(rel) != {"sponsored", "nofollow"}
+                or type(raos_attribute_names) is not list
+                or len(raos_attribute_names) != len(expected_raos_attributes)
+                or set(raos_attribute_names) != expected_raos_attributes
                 or type(cta_id) is not str
                 or not cta_id
                 or type(snapshot_id) is not str
                 or not snapshot_id
                 or type(offer_id) is not str
                 or not offer_id
-                or type(rakuten_measurement_id) is not str
+                or type(rakuten_provider_slot_id) is not str
                 or re.fullmatch(
-                    r"[a-z0-9]+-[a-z0-9]+-(?:card|final)",
-                    rakuten_measurement_id,
+                    r"rps-a[0-9]{2}-(?:card|final)",
+                    rakuten_provider_slot_id,
                 )
                 is None
             ):
                 fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
-        elif any(
-            value is not None
-            for value in (cta_id, snapshot_id, offer_id, rakuten_measurement_id)
-        ):
-            fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
+        else:
+            expected_raos_attributes = {
+                "data-raos-article-id",
+                "data-raos-product-id",
+                "data-raos-placement",
+            }
+            if (
+                type(raos_attribute_names) is not list
+                or len(raos_attribute_names) != len(expected_raos_attributes)
+                or set(raos_attribute_names) != expected_raos_attributes
+                or any(
+                    value is not None
+                    for value in (
+                        cta_id,
+                        snapshot_id,
+                        offer_id,
+                        rakuten_provider_slot_id,
+                    )
+                )
+            ):
+                fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
         identity = (product_id, placement)
         if identity in identities:
             fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
         identities.add(identity)
         placements_by_product.setdefault(product_id, set()).add(placement)
+        if parsed.hostname == "hb.afl.rakuten.co.jp":
+            assert isinstance(rakuten_provider_slot_id, str)
+            existing_slot = provider_slots_by_placement.setdefault(
+                placement, rakuten_provider_slot_id
+            )
+            if existing_slot != rakuten_provider_slot_id:
+                fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
         result.append(
             {
                 "href": href,
@@ -3896,7 +3980,7 @@ def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]
                 "offer_id": offer_id,
                 "product_id": product_id,
                 "placement": placement,
-                "rakuten_measurement_id": rakuten_measurement_id,
+                "rakuten_provider_slot_id": rakuten_provider_slot_id,
             }
         )
     if not result:
@@ -4574,6 +4658,160 @@ def _unregistered_proposal_set_ready(
     return len(_proposal_ids(receipt)) == len(proposals)
 
 
+def _uses_current_activation_binding(receipt: Mapping[str, object]) -> bool:
+    materialization_binding = receipt.get("materialization_binding")
+    return (
+        type(materialization_binding) is dict
+        and materialization_binding.get("schema")
+        == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3"
+    )
+
+
+def _uses_historical_activation_binding(receipt: Mapping[str, object]) -> bool:
+    materialization_binding = receipt.get("materialization_binding")
+    return type(materialization_binding) is dict and materialization_binding.get(
+        "schema"
+    ) in {
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1",
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+    }
+
+
+def _replace_unregistered_terminal_attempt(
+    client: Any,
+    receipt: dict[str, object],
+    path: Path,
+    *,
+    articles: Sequence[Article],
+    desired_theme_tree_sha256: str,
+    materialization_binding: Mapping[str, object],
+) -> None:
+    """Read back an unregistered legacy attempt and safely enter V3.
+
+    The editor credential can read only content operations. Consequently an
+    unregistered legacy set containing a theme proposal has no complete
+    read-only terminal proof and remains fail-closed.
+    """
+
+    proposals = receipt.get("proposals")
+    if (
+        type(proposals) is not list
+        or len(proposals) != len(articles)
+        or any(
+            type(proposal) is not dict
+            or proposal.get("kind") != "CONTENT_RELEASE"
+            for proposal in proposals
+        )
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+    operations = read_content_operations(client, receipt)
+    proposal_ids = set(_proposal_ids(receipt))
+    if set(operations) != proposal_ids:
+        fail("RAOS_WORDPRESS_REQUEST_OPERATION_READBACK_INVALID")
+    states = {operation.get("state") for operation in operations.values()}
+    if states not in ({"EXPIRED"}, {"APPLIED"}):
+        fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+    terminal_state = next(iter(states))
+
+    preserved_baselines = receipt.get("baselines")
+    preserved_drafts = receipt.get("drafts")
+    prior_reconciliation = receipt.get("prior_applied_reconciliation")
+    if (
+        type(preserved_baselines) is not dict
+        or type(preserved_drafts) is not dict
+        or any(
+            type(slug) is not str or type(value) is not dict
+            for slug, value in preserved_drafts.items()
+        )
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    preserved_baselines = dict(preserved_baselines)
+    preserved_drafts = {
+        slug: dict(value) for slug, value in preserved_drafts.items()
+    }
+    if terminal_state == "APPLIED":
+        _require_applied_receipt_content_operations(receipt, operations)
+        for proposal in proposals:
+            slug = proposal.get("slug")
+            after_sha256 = proposal.get("after_sha256")
+            target = preserved_drafts.get(slug) if type(slug) is str else None
+            if (
+                type(target) is not dict
+                or type(target.get("id")) is not int
+                or type(after_sha256) is not str
+                or SHA256_RE.fullmatch(after_sha256) is None
+            ):
+                fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+            target["content_sha256"] = after_sha256
+        prior_reconciliation = {
+            "schema": "RAOS_WORDPRESS_PRIOR_APPLIED_RECONCILIATION_V1",
+            "captured_at_gmt": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "documents": _published_receipt_document_evidence(client, receipt),
+            "operations": operations,
+        }
+
+    replacement = _fresh_receipt(
+        articles,
+        path,
+        desired_theme_tree_sha256,
+        materialization_binding,
+    ) | {
+        "baselines": preserved_baselines,
+        "drafts": preserved_drafts,
+        "prior_applied_reconciliation": prior_reconciliation,
+    }
+    receipt.clear()
+    receipt.update(replacement)
+    _touch_receipt(path, receipt, f"{terminal_state}_ATTEMPT_REPLACED")
+
+
+def _register_unregistered_proposal_set(
+    client: Any,
+    receipt: dict[str, object],
+    path: Path,
+    *,
+    articles: Sequence[Article],
+    desired_theme_tree_sha256: str,
+    activation: RakutenMeasurementActivationOverlayV3 | None,
+    materialization_binding: Mapping[str, object] | None,
+) -> None:
+    if not _unregistered_proposal_set_ready(receipt, len(articles)):
+        return
+    if activation is None:
+        if not _same_desired(
+            receipt,
+            articles,
+            desired_theme_tree_sha256,
+            materialization_binding,
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_UNREGISTERED_BATCH_HANDOFF_REQUIRED")
+        register_publication_batch(client, receipt, path)
+        return
+    if _uses_current_activation_binding(receipt):
+        if not _same_desired(
+            receipt,
+            articles,
+            desired_theme_tree_sha256,
+            materialization_binding,
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_UNREGISTERED_BATCH_HANDOFF_REQUIRED")
+        register_publication_batch(client, receipt, path)
+        return
+    if (
+        not _uses_historical_activation_binding(receipt)
+        or materialization_binding is None
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+    _replace_unregistered_terminal_attempt(
+        client,
+        receipt,
+        path,
+        articles=articles,
+        desired_theme_tree_sha256=desired_theme_tree_sha256,
+        materialization_binding=materialization_binding,
+    )
+
+
 def _resume_existing_all_attempt(
     source_articles: Sequence[Article],
     loaded_receipt: dict[str, object] | None,
@@ -4601,7 +4839,17 @@ def _resume_existing_all_attempt(
         return False
     if not _resume_ready(receipt, len(source_articles)):
         return False
+    legacy_activation_binding = activation is not None and not (
+        _uses_current_activation_binding(receipt)
+    )
     batch = publication_batch_status(receipt, deployment_runner)
+    if legacy_activation_binding and batch["state"] not in {"APPLIED", "EXPIRED"}:
+        # A local state can lag an action performed by the separate admin, so
+        # every resume-ready historical V2 receipt gets one read-only remote
+        # status check. An already-APPLIED batch may be reconciled and an
+        # irreversibly EXPIRED batch may enter fresh V3 replacement; V2 can
+        # never resume approval/application under the new slot contract.
+        fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
     if batch["state"] == "EXPIRED":
         return False
     if batch["state"] == "FAILED":
@@ -4847,11 +5095,18 @@ def execute(
             require_existing_published=selection == "all",
         )
 
-        if _unregistered_proposal_set_ready(receipt, len(articles)):
-            # Reconcile a potentially lost registration response before
-            # comparing against newly edited local inputs. The exact reviewed
-            # old proposal set must first regain its authoritative batch token.
-            register_publication_batch(client, receipt, path)
+        # Reconcile a potentially lost registration response before comparing
+        # against newly edited local inputs, but never register a historical
+        # V1/V2 proposal set under the current V3 activation contract.
+        _register_unregistered_proposal_set(
+            client,
+            receipt,
+            path,
+            articles=articles,
+            desired_theme_tree_sha256=local_theme_tree_sha256,
+            activation=activation,
+            materialization_binding=materialization_binding,
+        )
 
         desired_matches = _same_desired(
             receipt,
