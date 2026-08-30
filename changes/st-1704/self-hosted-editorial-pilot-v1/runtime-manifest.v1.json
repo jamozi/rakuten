@@ -1787,9 +1787,9 @@
       "sha256": "4dc3385351f150bd8e1dff2876e9615ae253f17d9470d68d377b5592676aecd5"
     },
     {
-      "bytes": 5112,
+      "bytes": 5366,
       "path": "scripts/build_st1704_theme_assets.py",
-      "sha256": "3d7df23adee1d8195538b78b447196b2b49bc1f9c84b01458d721e8d29e92755"
+      "sha256": "6657afc0272deadf5c2aaaef06e08e0a84e9842b3cb9c274d147c4df9795b3fa"
     },
     {
       "bytes": 52968,

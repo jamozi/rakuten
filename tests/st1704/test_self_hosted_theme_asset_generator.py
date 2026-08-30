@@ -4,6 +4,10 @@ import hashlib
 from pathlib import Path
 import subprocess
 
+import pytest
+
+from scripts import build_st1704_theme_assets as generator
+
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (
@@ -32,7 +36,7 @@ def test_portable_power_asset_is_generated_webp_with_png_kept_outside_theme() ->
     assert not (OUTPUT.parent / "article-portable-power-guide.png").exists()
 
 
-def test_owner_generator_reproduces_the_tracked_webp() -> None:
+def test_owner_generator_validates_the_tracked_webp() -> None:
     completed = subprocess.run(
         [str(ROOT / ".venv/bin/python"), str(GENERATOR), "--check"],
         cwd=ROOT,
@@ -40,4 +44,28 @@ def test_owner_generator_reproduces_the_tracked_webp() -> None:
         capture_output=True,
         text=True,
     )
-    assert completed.stdout.startswith("ST1704_THEME_ASSET_OK sha256=")
+    assert completed.stdout == (
+        f"ST1704_THEME_ASSET_OK sha256={generator.OUTPUT_SHA256}\n"
+    )
+
+
+def test_check_is_portable_when_the_pinned_encoder_is_not_installed(
+    monkeypatch,
+) -> None:
+    monkeypatch.setattr(generator, "FFMPEG", ROOT / "missing-ffmpeg")
+
+    assert generator.generate(check=True) == generator.OUTPUT_SHA256
+
+
+def test_check_rejects_a_corrupted_tracked_webp(tmp_path, monkeypatch) -> None:
+    corrupted = bytearray(OUTPUT.read_bytes())
+    corrupted[-1] ^= 1
+    candidate = tmp_path / OUTPUT.name
+    candidate.write_bytes(corrupted)
+    monkeypatch.setattr(generator, "OUTPUT", candidate)
+
+    with pytest.raises(
+        generator.AssetGenerationFailure,
+        match="ST1704_THEME_ASSET_GENERATION_INVALID",
+    ):
+        generator.generate(check=True)

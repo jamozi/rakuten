@@ -26,6 +26,7 @@ OUTPUT: Final = (
 )
 FFMPEG: Final = Path("/usr/bin/ffmpeg")
 SOURCE_SHA256: Final = "703444cdf29740bb72de42d09c7c7222a3ee46a09bcaf4f78875df9131cc56d6"
+OUTPUT_SHA256: Final = "54b84689cff952f6a384982b89d2f56adfbdeff9ff03fe628fcaf5a949ab0f5a"
 MAX_SOURCE_BYTES: Final = 8 * 1024 * 1024
 MAX_OUTPUT_BYTES: Final = 2 * 1024 * 1024
 
@@ -150,13 +151,18 @@ def _render(directory: Path) -> bytes:
 
 def generate(*, check: bool) -> str:
     _validate_source()
+    if check:
+        payload = _regular_payload(OUTPUT, MAX_OUTPUT_BYTES)
+        _validate_webp(payload)
+        digest = hashlib.sha256(payload).hexdigest()
+        if digest != OUTPUT_SHA256:
+            _fail()
+        return digest
     with tempfile.TemporaryDirectory(prefix="raos-st1704-theme-asset.") as raw:
         payload = _render(Path(raw))
     digest = hashlib.sha256(payload).hexdigest()
-    if check:
-        if _regular_payload(OUTPUT, MAX_OUTPUT_BYTES) != payload:
-            _fail()
-        return digest
+    if digest != OUTPUT_SHA256:
+        _fail()
     try:
         OUTPUT.parent.mkdir(parents=True, exist_ok=True)
         temporary = OUTPUT.with_name(f".{OUTPUT.name}.{os.getpid()}.tmp")
