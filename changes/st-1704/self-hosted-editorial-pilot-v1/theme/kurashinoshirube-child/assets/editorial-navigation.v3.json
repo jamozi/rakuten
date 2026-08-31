@@ -3,212 +3,248 @@
     {
       "article_code": "a01",
       "article_id": "st1703-first-suitcase-comparison",
+      "broader_article_id": "lightweight-carry-on-suitcase-under-3kg",
       "category_label": "移動",
       "cluster_id": "mobility",
+      "comparison_scope": "エース系3モデルの仕様比較（市場全体のランキングではありません）",
+      "content_role": "brand_family_comparison",
+      "content_role_label": "ブランド内比較",
       "home_order": 1,
+      "intent_group_id": "carry-on-suitcase",
       "local_slug": "local-preview-carry-on-suitcase-comparison",
+      "primary_query_intent": "エース系3モデルの仕様差を知り、優先条件に合う型番を選ぶ",
       "production_slug": "carry-on-suitcase-comparison",
       "related_articles": [
         {
           "article_id": "lightweight-carry-on-suitcase-under-3kg",
-          "relationship": "same_cluster"
+          "relationship": "broader_guide"
         },
         {
           "article_id": "carry-on-suitcase-under-100-seats",
-          "relationship": "same_cluster"
+          "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a01-5991c5125876",
+      "snapshot_id": "snp-a01-a41810831087",
       "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ"
     },
     {
       "article_code": "a02",
       "article_id": "st1704-portable-power-station-guide",
+      "broader_article_id": null,
       "category_label": "備え",
       "cluster_id": "preparedness",
+      "comparison_scope": "容量・定格出力・重量・保証を公式情報で照合できる現行ポータブル電源",
+      "content_role": "category_guide",
+      "content_role_label": "選び方",
       "home_order": 1,
+      "intent_group_id": "portable-power",
       "local_slug": "local-preview-portable-power-station-guide",
+      "primary_query_intent": "停電時に使う機器から必要な容量・出力と持ち運べる候補を選ぶ",
       "production_slug": "portable-power-station-guide",
       "related_articles": [
         {
           "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "st1703-first-suitcase-comparison",
-          "relationship": "adjacent_context"
+          "relationship": "narrower_comparison"
         }
       ],
-      "snapshot_id": "snp-a02-c8be0a75b041",
+      "snapshot_id": "snp-a02-24f3cc56674c",
       "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める"
     },
     {
       "article_code": "a03",
       "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "broader_article_id": "st1704-portable-power-station-guide",
       "category_label": "備え",
       "cluster_id": "preparedness",
+      "comparison_scope": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の型番別比較",
+      "content_role": "model_family_comparison",
+      "content_role_label": "ブランド内比較",
       "home_order": 2,
+      "intent_group_id": "portable-power",
       "local_slug": "local-preview-anker-solix-c300-c800-c1000-differences",
+      "primary_query_intent": "Anker Solix 4型番の容量帯とC1000世代差を知り、用途に合う型番を選ぶ",
       "production_slug": "anker-solix-c300-c800-c1000-differences",
       "related_articles": [
         {
           "article_id": "st1704-portable-power-station-guide",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "st1703-first-suitcase-comparison",
-          "relationship": "adjacent_context"
+          "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a03-37d844e9b115",
+      "snapshot_id": "snp-a03-55b5ce791cbd",
       "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い"
     },
     {
       "article_code": "a04",
       "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "broader_article_id": null,
       "category_label": "家事",
       "cluster_id": "household",
+      "comparison_scope": "少人数世帯向け卓上食洗機を設置寸法・容量・給水方式で比較",
+      "content_role": "category_guide",
+      "content_role_label": "選び方",
       "home_order": 1,
+      "intent_group_id": "countertop-dishwasher",
       "local_slug": "local-preview-countertop-dishwasher-for-small-households",
+      "primary_query_intent": "1〜2人分の食器量と設置条件から工事不要の卓上食洗機を選ぶ",
       "production_slug": "countertop-dishwasher-for-small-households",
       "related_articles": [
         {
           "article_id": "solota-vs-rakua-mini-plus",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "st1704-compact-robot-vacuum-shortlist",
-          "relationship": "same_cluster"
+          "relationship": "narrower_comparison"
         }
       ],
-      "snapshot_id": "snp-a04-0a8944aabfba",
-      "title": "工事不要の食洗機4モデル比較｜1〜2人暮らしの設置条件で選ぶ"
+      "snapshot_id": "snp-a04-2f880e524f55",
+      "title": "工事不要の食洗機4候補｜1〜2人暮らしの設置条件で選ぶ"
     },
     {
       "article_code": "a05",
       "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "broader_article_id": null,
       "category_label": "家事",
       "cluster_id": "household",
+      "comparison_scope": "置き場所優先の2モデルとモップ自動手入れ優先の2モデル",
+      "content_role": "category_guide",
+      "content_role_label": "選び方",
       "home_order": 2,
+      "intent_group_id": "robot-vacuum",
       "local_slug": "local-preview-compact-robot-vacuum-shortlist",
+      "primary_query_intent": "ロボット掃除機4モデルを設置寸法とモップ自動手入れの範囲で選ぶ",
       "production_slug": "compact-robot-vacuum-shortlist",
       "related_articles": [
         {
           "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "st1704-countertop-dishwasher-for-small-households",
-          "relationship": "same_cluster"
+          "relationship": "narrower_comparison"
         }
       ],
-      "snapshot_id": "snp-a05-6fdf1d3b2787",
-      "title": "省スペース向けロボット掃除機4モデル比較｜本体・ステーション寸法で選ぶ"
+      "snapshot_id": "snp-a05-eb002766da01",
+      "title": "ロボット掃除機4モデル比較｜設置寸法・モップ自動手入れで選ぶ"
     },
     {
       "article_code": "a06",
       "article_id": "carry-on-suitcase-under-100-seats",
+      "broader_article_id": null,
       "category_label": "移動",
       "cluster_id": "mobility",
+      "comparison_scope": "100席未満便の一般的な機内持ち込み外寸条件に収まる4モデル",
+      "content_role": "constraint_shortlist",
+      "content_role_label": "条件別比較",
       "home_order": 2,
+      "intent_group_id": "carry-on-suitcase",
       "local_slug": "local-preview-carry-on-suitcase-under-100-seats",
+      "primary_query_intent": "100席未満便の寸法条件に合う候補と、購入前の確認手順を知る",
       "production_slug": "carry-on-suitcase-under-100-seats",
       "related_articles": [
         {
           "article_id": "st1703-first-suitcase-comparison",
-          "relationship": "same_cluster"
+          "relationship": "adjacent_condition"
         },
         {
           "article_id": "front-open-carry-on-suitcase-with-stopper",
-          "relationship": "same_cluster"
+          "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a06-0f127feabaca",
+      "snapshot_id": "snp-a06-9b1417e892ee",
       "title": "100席未満の国内線向けスーツケース4モデルを機内持ち込み規定で比較"
     },
     {
       "article_code": "a07",
       "article_id": "lightweight-carry-on-suitcase-under-3kg",
+      "broader_article_id": null,
       "category_label": "移動",
       "cluster_id": "mobility",
+      "comparison_scope": "30L以上・本体3kg以下・機内持ち込み目安内の4モデル",
+      "content_role": "constraint_shortlist",
+      "content_role_label": "条件別比較",
       "home_order": 3,
+      "intent_group_id": "carry-on-suitcase",
       "local_slug": "local-preview-lightweight-carry-on-suitcase-under-3kg",
+      "primary_query_intent": "30L以上・3kg以下の機内持ち込み候補を、容量と軽さから選ぶ",
       "production_slug": "lightweight-carry-on-suitcase-under-3kg",
       "related_articles": [
         {
           "article_id": "st1703-first-suitcase-comparison",
-          "relationship": "same_cluster"
+          "relationship": "narrower_comparison"
         },
         {
           "article_id": "front-open-carry-on-suitcase-with-stopper",
-          "relationship": "same_cluster"
+          "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a07-827f5cd2d7d5",
+      "snapshot_id": "snp-a07-294a80b422a1",
       "title": "100席以上便向け｜30L以上・3kg以下の機内持ち込みスーツケース4モデル比較"
     },
     {
       "article_code": "a08",
       "article_id": "front-open-carry-on-suitcase-with-stopper",
+      "broader_article_id": null,
       "category_label": "移動",
       "cluster_id": "mobility",
+      "comparison_scope": "前開き機構とキャスターストッパーを公式情報で確認できる4モデル",
+      "content_role": "feature_shortlist",
+      "content_role_label": "機能別比較",
       "home_order": 4,
+      "intent_group_id": "carry-on-suitcase",
       "local_slug": "local-preview-front-open-carry-on-suitcase-with-stopper",
+      "primary_query_intent": "前開きとストッパーを両方備える候補を、開き方の違いから選ぶ",
       "production_slug": "front-open-carry-on-suitcase-with-stopper",
       "related_articles": [
         {
           "article_id": "st1703-first-suitcase-comparison",
-          "relationship": "same_cluster"
+          "relationship": "adjacent_condition"
         },
         {
           "article_id": "carry-on-suitcase-under-100-seats",
-          "relationship": "same_cluster"
+          "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a08-0af5dcd69033",
+      "snapshot_id": "snp-a08-dd6a62dfa8d8",
       "title": "100席以上便向け｜前開き・ストッパー付き機内持ち込みスーツケース4モデル比較"
     },
     {
       "article_code": "a09",
       "article_id": "roomba-mini-vs-switchbot-k11-pro",
+      "broader_article_id": "st1704-compact-robot-vacuum-shortlist",
       "category_label": "家事",
       "cluster_id": "household",
+      "comparison_scope": "Roomba Mini Slim・SwitchBot K11+ Pro・Eufy Auto-Empty C10の現行3構成",
+      "content_role": "constraint_shortlist",
+      "content_role_label": "条件別比較",
       "home_order": 3,
+      "intent_group_id": "robot-vacuum",
       "local_slug": "local-preview-roomba-mini-vs-switchbot-k11-pro",
+      "primary_query_intent": "薄型・小径・水拭きの要否から、現行3構成の置き場所と手入れ条件を比べる",
       "production_slug": "roomba-mini-vs-switchbot-k11-pro",
       "related_articles": [
         {
           "article_id": "st1704-compact-robot-vacuum-shortlist",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "solota-vs-rakua-mini-plus",
-          "relationship": "same_cluster"
+          "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a09-d847e6062f42",
-      "title": "Roomba Mini 2構成とSwitchBot K11+ Proを公式仕様で比較"
+      "snapshot_id": "snp-a09-aa95a8b8d35b",
+      "title": "Roomba Mini Slim・SwitchBot K11+ Pro・Eufy C10を公式仕様で比較"
     },
     {
       "article_code": "a10",
       "article_id": "solota-vs-rakua-mini-plus",
+      "broader_article_id": "st1704-countertop-dishwasher-for-small-households",
       "category_label": "家事",
       "cluster_id": "household",
+      "comparison_scope": "SOLOTA・ラクアmini Plusは仕様参考、ラクアmini・siroca SS-M171・通常商品SS-MA251は現行候補",
+      "content_role": "head_to_head_with_reference",
+      "content_role_label": "2製品比較＋参考機種",
       "home_order": 4,
+      "intent_group_id": "countertop-dishwasher",
       "local_slug": "local-preview-solota-vs-rakua-mini-plus",
+      "primary_query_intent": "SOLOTA・ラクアmini Plusの販売状況を確認し、現行3候補から代替機を選ぶ",
       "production_slug": "solota-vs-rakua-mini-plus",
       "related_articles": [
         {
           "article_id": "st1704-countertop-dishwasher-for-small-households",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "st1704-compact-robot-vacuum-shortlist",
-          "relationship": "same_cluster"
+          "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a10-cc93bab11e79",
-      "title": "SOLOTAとラクアmini Plusを比較｜設置寸法・容量・乾燥方式の違い"
+      "snapshot_id": "snp-a10-e407764d9bc5",
+      "title": "SOLOTA・ラクアmini Plusの販売状況と現行3候補の選び方"
     }
   ],
   "clusters": [
@@ -254,8 +290,8 @@
     }
   ],
   "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-  "source_navigation_sha256": "a50b9709fc0e561ac2adc8dc9394b783e2fcfad19b3f5fe9a730f2eb0f808c94",
-  "source_portfolio_sha256": "c82746904cc27365166abec78021c711262220171e123851caa844a8db379abe",
+  "source_navigation_sha256": "e61906dc48bf8849dea289a58fbe9693373cf6cb7c7d27696b5a3b3cb72c2728",
+  "source_portfolio_sha256": "44a1a4726d29f10261fdd381d75a22f23d8c7b1b7752532e30772a93c693db15",
   "target_origin": "https://kurashinoshirube.com",
   "version": "3.0.0"
 }

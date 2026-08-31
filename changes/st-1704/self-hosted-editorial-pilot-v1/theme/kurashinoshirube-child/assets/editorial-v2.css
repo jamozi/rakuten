@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: 3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a;
+  --raos-theme-runtime-revision-editorial-v2: 898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -96,6 +96,7 @@
 }
 
 .raos-editorial-v2 {
+  --raos-toc-scroll-offset: 2rem;
   color: var(--rev2-ink);
   font-size: 1rem;
   overflow-wrap: anywhere;
@@ -161,7 +162,7 @@
 .raos-editorial-v2 section,
 .raos-editorial-v2 .editors-note,
 .raos-editorial-v2 .purchase-caution {
-  scroll-margin-top: 2rem;
+  scroll-margin-top: var(--raos-toc-scroll-offset);
 }
 
 .raos-editorial-v2 .lead-section,
@@ -259,18 +260,33 @@
   grid-template-columns: 7.5rem 1fr;
   gap: 1.2rem;
   margin-top: 2.5rem;
-  padding-block: 1.2rem;
-  border-block: 1px solid var(--rev2-line-soft);
-  color: var(--rev2-muted);
-  font-size: 0.8rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--rev2-line-soft);
+  border-inline-start: 0.3rem solid var(--rev2-clay);
+  border-radius: 0.35rem;
+  background: #fffaf6;
+  color: var(--rev2-ink);
+  font-size: 0.95rem;
 }
 
 .raos-editorial-v2 .disclosure strong {
   color: var(--rev2-clay);
+  font-size: 1rem;
 }
 
 .raos-editorial-v2 .disclosure p {
   margin: 0;
+}
+
+.raos-editorial-v2 .disclosure details > summary {
+  color: var(--rev2-indigo);
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.raos-editorial-v2 .disclosure details > summary:focus-visible {
+  outline: 3px solid var(--rev2-clay);
+  outline-offset: 0.2rem;
 }
 
 .raos-editorial-v2 .raos-article-toc {
@@ -279,6 +295,7 @@
   border: 1px solid var(--rev2-line-soft);
   border-radius: 0.35rem;
   background: #f8f7f3;
+  scroll-margin-top: 1.5rem;
 }
 
 .raos-editorial-v2 .raos-article-toc summary {
@@ -302,6 +319,10 @@
   padding: 0 2.5rem 1.25rem 3rem;
 }
 
+.raos-editorial-v2 .raos-article-toc details:not([open]) > :not(summary) {
+  display: none;
+}
+
 .raos-editorial-v2 .raos-article-toc li {
   padding-left: 0.2rem;
   color: var(--rev2-muted);
@@ -313,7 +334,53 @@
 }
 
 .raos-editorial-v2 h2[id] {
-  scroll-margin-top: 2rem;
+  scroll-margin-top: var(--raos-toc-scroll-offset);
+}
+
+.raos-editorial-v2 :where(h2[id], .raos-article-toc):focus-visible {
+  outline: 3px solid var(--rev2-clay);
+  outline-offset: 5px;
+}
+
+.raos-editorial-v2 .raos-back-to-toc-wrap {
+  border-top: 1px solid var(--rev2-line-soft);
+  margin: 2.5rem 0 0;
+  padding-top: 1rem;
+  text-align: right;
+}
+
+.raos-editorial-v2 .raos-back-to-toc {
+  align-items: center;
+  color: var(--rev2-indigo);
+  display: inline-flex;
+  font-size: 0.82rem;
+  font-weight: 800;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+}
+
+@media (min-width: 48.0625rem) {
+  .raos-editorial-v2 .raos-article-toc {
+    position: sticky;
+    top: 1rem;
+    z-index: 2;
+  }
+
+  .admin-bar .raos-editorial-v2 .raos-article-toc {
+    top: 3.5rem;
+  }
+
+  .raos-editorial-v2 .raos-article-toc summary {
+    display: none;
+  }
+
+  .raos-editorial-v2 .raos-article-toc details:not([open]) > :not(summary) {
+    display: grid;
+  }
+
+  .raos-editorial-v2 .raos-article-toc ol {
+    padding-top: 1.25rem;
+  }
 }
 
 .raos-editorial-v2 .decision-section,
@@ -485,6 +552,12 @@
   overscroll-behavior-inline: contain;
 }
 
+.raos-editorial-v2
+  .comparison-table-wrap[role="region"][data-raos-horizontal-scroll="available"]:focus-visible {
+  outline: 3px solid var(--rev2-clay);
+  outline-offset: 0.25rem;
+}
+
 .raos-editorial-v2 .comparison-table {
   width: 100%;
   min-width: 58rem;
@@ -560,6 +633,7 @@
   height: 20.5rem;
   margin: 0;
   overflow: hidden;
+  position: relative;
   background: #f3eee5;
   place-items: center;
 }
@@ -578,6 +652,18 @@
   width: 128px;
   height: 128px;
   padding: 0;
+}
+
+.raos-editorial-v2 .product-profile figure figcaption {
+  background: rgb(23 36 63 / 92%);
+  bottom: 0;
+  color: #fff;
+  font-size: 0.8rem;
+  left: 0;
+  line-height: 1.5;
+  padding: 0.65rem 0.8rem;
+  position: absolute;
+  right: 0;
 }
 
 .raos-editorial-v2 .product-profile--b {
@@ -642,6 +728,45 @@
 .raos-editorial-v2 .rakuten-cta:hover {
   background: var(--rev2-clay);
   color: #fff;
+}
+
+.raos-editorial-v2 .raos-final-summary-actions {
+  border-top: 1px solid var(--rev2-line);
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+}
+
+.raos-editorial-v2 .raos-final-summary-actions ul {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+.raos-editorial-v2 .raos-final-summary-actions li {
+  align-items: center;
+  border-top: 1px solid var(--rev2-line-soft);
+  display: grid;
+  gap: 0.75rem 1.25rem;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 22rem);
+  padding-block: 1rem;
+}
+
+.raos-editorial-v2 .raos-final-summary-actions li > strong,
+.raos-editorial-v2 .raos-final-summary-actions .final-summary-action {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.raos-editorial-v2 .raos-final-summary-actions .raos-cta {
+  align-items: center;
+  display: inline-flex;
+  justify-content: space-between;
+  min-height: 3rem;
+  width: 100%;
+}
+
+.raos-editorial-v2 .raos-final-summary-actions .raos-cta > span[aria-hidden="true"] {
+  flex: 0 0 auto;
 }
 
 .raos-editorial-v2 .editorial-body-section {
@@ -795,7 +920,7 @@
   }
 
   .raos-editorial-v2-page .raos-article-title-grid h1 {
-    font-size: clamp(1.9rem, 8.5vw, 2.15rem);
+    font-size: clamp(1.75rem, 7.4vw, 2rem);
     line-height: 1.33;
   }
 
@@ -831,7 +956,7 @@
   .raos-editorial-v2 .sources-section,
   .raos-editorial-v2 .editorial-body-section,
   .raos-editorial-v2 .faq-section {
-    margin-top: 5rem;
+    margin-top: 4rem;
   }
 
   .raos-editorial-v2 .section-heading,
@@ -1009,6 +1134,15 @@
     width: 100%;
     min-height: 3.25rem;
     justify-content: center;
+  }
+
+  .raos-editorial-v2 .raos-final-summary-actions li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .raos-editorial-v2 .raos-final-summary-actions .final-summary-action,
+  .raos-editorial-v2 .raos-final-summary-actions .raos-cta {
+    width: 100%;
   }
 
   .raos-editorial-v2 .source-list li.source-list__history {

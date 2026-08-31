@@ -7,26 +7,66 @@
         "data-raos-placement",
         "data-raos-product-id"
       ],
-      "exact_label": "楽天市場で現在の価格・在庫・カラーを見る",
-      "rel_tokens": ["nofollow", "sponsored"],
-      "required_host_provenance": "VALIDATED_RAKUTEN_DIRECT_AFFILIATE_URL"
+      "fallback_target_sources": {
+        "available_official_fallback_final_summary": "manufacturer_sales_state.status_evidence_urls[0]",
+        "available_official_fallback_product_card": "product.official_url",
+        "out_of_stock_official_fallback": "manufacturer_sales_state.status_evidence_urls[0]"
+      },
+      "materialized_labels": {
+        "available_official_fallback_final_summary": "メーカー公式で販売状況を確認する",
+        "available_official_fallback_product_card": "メーカー公式で仕様と型番を確認する",
+        "out_of_stock_official_fallback": "メーカー公式で販売状況を確認する",
+        "verified_final_summary": "楽天市場でこの候補の型番・在庫を確認する",
+        "verified_product_card": "楽天市場で型番・在庫・販売元を確認する"
+      },
+      "rel_tokens": [
+        "nofollow",
+        "sponsored"
+      ],
+      "required_host_provenance": "VALIDATED_RAKUTEN_DIRECT_AFFILIATE_URL",
+      "source_placeholder_label": "楽天市場で現在の価格・在庫・カラーを見る"
     },
     "comparison": {
       "class": "raos-comparison",
       "desktop_view_class": "raos-comparison__table-view",
+      "difference_marker": "data-raos-difference=true plus visible value/evidence label",
+      "event_attributes": [
+        "data-raos-article-id",
+        "data-raos-placement=comparison_table"
+      ],
       "mobile_breakpoint_max_px": 768,
       "mobile_card_class": "raos-comparison-card",
       "mobile_semantics": "article>dl>div>dt+dd",
       "mobile_view_class": "raos-comparison__cards",
-      "difference_marker": "data-raos-difference=true plus visible value/evidence label",
-      "event_attributes": ["data-raos-article-id", "data-raos-placement=comparison_table"],
-      "required_attributes": ["aria-labelledby", "role=region", "tabindex=0"],
+      "required_attributes": [
+        "aria-label or aria-labelledby",
+        "role=region"
+      ],
+      "responsive_focusability": {
+        "focus_attribute": "tabindex=0",
+        "focus_policy": "ONLY_WHILE_VISIBLE_CLIENT_WIDTH_IS_LESS_THAN_SCROLL_WIDTH",
+        "owner": "assets/editorial-navigation.js",
+        "updates": [
+          "initial-layout",
+          "ResizeObserver",
+          "window-load",
+          "window-resize"
+        ]
+      },
       "semantic_element": "table"
     },
     "condition_label_class": "raos-condition-label",
+    "evidence_labels": {
+      "A": "公式仕様",
+      "B": "第三者実測",
+      "C": "利用者の傾向",
+      "D": "編集部の判断",
+      "UNKNOWN": "未確認"
+    },
     "product_card": {
       "body_class": "raos-product-card__body",
       "card_class": "raos-product-card",
+      "event_attribute": "data-raos-product-id",
       "grid_class": "raos-product-grid",
       "image": {
         "css_max_height_px": 128,
@@ -37,7 +77,6 @@
         "transformation": "NONE",
         "upscale": false
       },
-      "event_attribute": "data-raos-product-id",
       "presentation_v2_fields": [
         "benefit",
         "recommendation_reason",
@@ -49,52 +88,261 @@
         "cta_context"
       ],
       "source_link_class": "raos-source-link"
-    },
-    "evidence_labels": {
-      "A": "公式仕様",
-      "B": "第三者実測",
-      "C": "利用者の傾向",
-      "D": "編集部の判断",
-      "UNKNOWN": "未確認"
     }
   },
   "design_system": {
+    "article_background": "#ffffff",
+    "article_component_shape": "SQUARE_CORNERS_THIN_RULES_NO_SHADOWS",
     "article_image_ratio": "4:3",
     "body_width": "45rem",
     "desktop_hero_height": "clamp(32rem, 56svh, 42rem)",
     "mobile_hero_height": "content-driven",
     "product_image_box": "square contain no-upscale",
-    "article_background": "#ffffff",
-    "article_component_shape": "SQUARE_CORNERS_THIN_RULES_NO_SHADOWS",
-    "radius_tokens": ["0"],
-    "spacing_tokens_rem": [0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4],
+    "radius_tokens": [
+      "0"
+    ],
+    "spacing_tokens_rem": [
+      0.25,
+      0.5,
+      0.75,
+      1,
+      1.5,
+      2,
+      3,
+      4
+    ],
     "wide_width": "76rem"
+  },
+  "editorial_navigation": {
+    "article_count": 10,
+    "cluster_count": 3,
+    "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
+    "path": "assets/editorial-navigation.v3.json",
+    "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
+    "sha256": "878befcb921fb965fc805b323bbd440bd973bd87e44fb0f75f19e4f2c7bdd109",
+    "source_navigation_sha256": "e61906dc48bf8849dea289a58fbe9693373cf6cb7c7d27696b5a3b3cb72c2728",
+    "source_portfolio_sha256": "44a1a4726d29f10261fdd381d75a22f23d8c7b1b7752532e30772a93c693db15"
   },
   "editorial_v2": {
     "asset": "assets/editorial-v2.css",
     "base_style_dependency": "kurashinoshirube-editorial",
     "body_class": "raos-editorial-v2-page",
-    "category_fallback_allowlist": ["移動", "家事", "備え"],
+    "category_fallback_allowlist": [
+      "移動",
+      "家事",
+      "備え"
+    ],
     "content_root": "<div class=\"raos-editorial-v2\">",
     "detection": "EXACT_RAW_CONTENT_PREFIX_ON_SINGULAR_POST",
-    "publication_snapshot_required": false,
     "publication_identity_predicate": "PUBLISH_POST_EXACT_SINGLE_EDITORIAL_V2_ROOT_AND_CLOSED_SLUG_ARTICLE_ID_MATCH",
+    "publication_snapshot_required": false,
     "scope": "ORDINARY_WORDPRESS_POST_ONLY",
     "section_binding_count": 10,
     "section_binding_source": "assets/editorial-navigation.v3.json#articles"
   },
+  "head": {
+    "allowed_json_ld_types": [
+      "AboutPage",
+      "Article",
+      "BreadcrumbList",
+      "ListItem",
+      "Organization",
+      "WebPage",
+      "WebSite"
+    ],
+    "canonical": {
+      "editorial_v2_fallback": "FIXED_SITE_ORIGIN_PLUS_SLUG_FOR_SINGULAR_PUBLISHED_CLOSED_PUBLIC_ARTICLE_IDENTITY",
+      "invalid_or_unpublished_policy": "PRESERVE_UPSTREAM_VALUE",
+      "snapshot_precedence": "VALID_BOUND_RAOS_SNAPSHOT"
+    },
+    "closed_head_contexts": {
+      "article": "EXACT_EDITORIAL_V3_PUBLIC_IDENTITY_PLUS_CLEAN_TITLE_AND_EXCERPT",
+      "fixed_page": "EXACT_THREE_POLICY_SLUG_TITLE_EXCERPT_RECORDS",
+      "home": "FIXED_SITE_TITLE_AND_DESCRIPTION"
+    },
+    "document_title_deduplication": {
+      "active_when": "WPSEO_VERSION_DEFINED",
+      "hook": "wp_head",
+      "hook_priority": 0,
+      "removed_priority_1_callbacks": [
+        "_wp_render_title_tag",
+        "_block_template_render_title_tag",
+        "gutenberg_render_title_tag"
+      ]
+    },
+    "document_title_owner": "YOAST_WHEN_ACTIVE_OTHERWISE_WORDPRESS_OR_GUTENBERG_FALLBACK",
+    "forbidden_json_ld_types": [
+      "AggregateRating",
+      "FAQPage",
+      "Offer",
+      "Product",
+      "Review"
+    ],
+    "metadata_owner": "YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK",
+    "raos_metadata_delivery": "YOAST_METADATA_FILTERS_ONLY",
+    "rest_output": {
+      "preserved_route": "/wp/v2/posts",
+      "removed_fields": [
+        "yoast_head",
+        "yoast_head_json"
+      ],
+      "removed_route": "/yoast/v1/get_head"
+    },
+    "robots": {
+      "invalid_or_unpublished_portfolio_route": "noindex, nofollow",
+      "published_public_article_identity": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+      "unneeded_archives": "noindex, follow"
+    },
+    "sitemap": {
+      "authors": false,
+      "post_types": [
+        "page",
+        "post"
+      ],
+      "taxonomies": []
+    },
+    "structured_data_article_values": {
+      "editorial_v2": "CLOSED_PUBLISHED_IDENTITY_PLUS_CLEAN_RAW_TITLE_8_TO_100_AND_EXCERPT_30_TO_180_WITH_FIXED_ORIGIN_CANONICAL",
+      "legacy": "VALID_BOUND_RAOS_SNAPSHOT",
+      "unknown_or_invalid": "NO_OUTPUT"
+    },
+    "structured_data_contexts": {
+      "article": [
+        "Article",
+        "BreadcrumbList",
+        "Organization",
+        "WebSite"
+      ],
+      "fixed_page": [
+        "AboutPage",
+        "BreadcrumbList",
+        "Organization",
+        "WebPage",
+        "WebSite"
+      ],
+      "home": [
+        "Organization",
+        "WebSite"
+      ],
+      "unknown_or_invalid": []
+    },
+    "structured_data_owner": "RAOS_THEME",
+    "yoast_configuration_authority": "HUMAN_PERSISTED_OPTIONS_WITH_THEME_READBACK_GATE",
+    "yoast_headless_rest": "PERSISTED_OPTION_PLUS_REST_OUTPUT_FILTER",
+    "yoast_option_write": "ABSENT",
+    "yoast_schema_frontend": "PERSISTED_OPTION_PLUS_WPSEO_JSON_LD_OUTPUT_FILTER",
+    "yoast_social_option_values": {
+      "og_default_image": "VERIFIED_THEME_SOCIAL_IMAGE_URI",
+      "og_default_image_id": "",
+      "opengraph": true,
+      "twitter": true,
+      "twitter_card_type": "summary_large_image"
+    }
+  },
+  "homepage_clusters": {
+    "article_count": 10,
+    "cluster_count": 3,
+    "link_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY",
+    "owner": "EDITORIAL_V3_GENERATED_NAVIGATION",
+    "source": "assets/editorial-navigation.v3.json#clusters"
+  },
+  "homepage_featured": {
+    "article_id": "st1704-portable-power-station-guide",
+    "exclude_from_latest": true,
+    "local_preview_substitute": "EXACT_LOCAL_SLUG_FOR_SAME_ARTICLE_ID",
+    "selection": "FIXED_ARTICLE_ID_WITH_EXACT_PUBLIC_ARTICLE_IDENTITY"
+  },
   "homepage_section_order": [
     "ヒーロー",
-    "編集方針の約束",
+    "比較記事の3つの約束",
     "暮らしの目的",
-    "今、読んでほしい選び方",
+    "条件を整理する比較ガイド",
     "困りごとから探す",
-    "新しい記事",
+    "最近更新したガイド",
     "目的別の記事",
-    "商品選びの方法",
+    "比較記事ができるまで",
     "このサイトについて"
   ],
+  "human_existing_update": {
+    "allowed_article_id": "st1703-first-suitcase-comparison",
+    "allowed_copy_fields": [
+      "post_content",
+      "post_excerpt",
+      "post_title",
+      "_raos_publication_snapshot_v1"
+    ],
+    "approval_receipt_fields": [
+      "approved_at",
+      "approved_by_user_id",
+      "approval_reason",
+      "decision",
+      "operation_sha256",
+      "packet_sha256",
+      "payload_sha256",
+      "pre_state",
+      "pre_state_sha256",
+      "request_sha256",
+      "rollback_artifact",
+      "schema",
+      "source_post_id",
+      "target_post_id"
+    ],
+    "authority": "EXPLICIT_ADMIN_POST_NONCE_AND_HASH_CONFIRMATION",
+    "autonomous_authority": "NONE",
+    "durable_lock": "ADD_OPTION_ONCE_PER_PAYLOAD_SHA256_NEVER_AUTOMATICALLY_DELETED",
+    "failure_behavior": "ATTEMPT_COPY_FIELD_ROLLBACK_RETAIN_LOCK_AND_FAIL_VISIBLE_ON_PRESERVED_INVARIANT_DRIFT",
+    "journal_assertions": [
+      "review_draft_id",
+      "target_public_post_id",
+      "packet_sha256",
+      "request_sha256",
+      "payload_sha256"
+    ],
+    "mutation_order": "SNAPSHOT_META_THEN_POST_FIELDS_THEN_EXACT_READBACK",
+    "preserved_target_fields": [
+      "post_id",
+      "post_slug",
+      "post_status",
+      "post_date",
+      "post_author",
+      "post_parent",
+      "password",
+      "comment_status",
+      "ping_status",
+      "guid",
+      "taxonomy"
+    ],
+    "reason_policy": "REQUIRED_CLEAN_TEXT_10_TO_300_CHARACTERS",
+    "rollback_artifact": "EXACT_OLD_TITLE_EXCERPT_CONTENT_SNAPSHOT_AND_PRESERVED_INVARIANTS_IN_NON_AUTOLOADED_APPROVAL_LOCK",
+    "step_up_authentication": "CURRENT_WORDPRESS_USER_REAUTHENTICATED_VIA_WP_AUTHENTICATE_PASSWORD_NOT_PERSISTED",
+    "transport": "POST_ONLY_WORDPRESS_ADMIN_ACTION_NO_REST_AJAX_OR_NOPRIV"
+  },
+  "listing_templates": {
+    "404": {
+      "document_title_language": "ja-JP",
+      "language": "ja-JP",
+      "search_available": true,
+      "template": "templates/404.html"
+    },
+    "archive": {
+      "body_class": "raos-listing-page",
+      "content_mode": "EXCERPT_ONLY",
+      "document_title_language": "ja-JP",
+      "template": "templates/archive.html"
+    },
+    "search": {
+      "body_class": "raos-listing-page",
+      "content_mode": "EXCERPT_ONLY",
+      "document_title_language": "ja-JP",
+      "empty_query_results": "NONE",
+      "empty_state_language": "ja-JP",
+      "result_post_type": "post",
+      "result_visibility": "PUBLIC_LISTING_ELIGIBILITY",
+      "template": "templates/search.html"
+    }
+  },
   "measurement": {
+    "analytics_consent_gate_asset": "assets/analytics-consent-gate.js",
     "analytics_transmission_added": true,
     "asset": "assets/measurement.js",
     "client_config_schema": "RAOSMeasurementClientConfigV1",
@@ -120,12 +368,47 @@
     "mcp_surface": "READ_ONLY_DAILY_AGGREGATES_NO_RAW_EVENTS",
     "navigation_behavior": "NO_PREVENT_DEFAULT_NO_AWAIT_SEND_BEACON_OR_KEEPALIVE",
     "plugin": "raos-editorial-measurement",
+    "preconsent_data_layer_policy": "REPLACE_WITH_EMPTY_OWNED_QUEUE_AT_ACTIVATION",
     "retention": {
       "daily_aggregate_months": 13,
       "raw_days": 7
     },
-    "revocation_behavior": "STOP_SEND_AND_CLEAR_MEASUREMENT_SESSION",
+    "revocation_behavior": "DISABLE_MEASUREMENT_ID_SEND_ALL_DENIED_REMOVE_LOADER_CLEAR_MEASUREMENT_SESSION_AND_GA_COOKIES_THEN_RELOAD",
+    "site_kit_loader_policy": "INERT_CLOSED_CONFIGURATION_THEN_EXACT_GA4_SOURCE_AFTER_TRIPLE_CONSENT",
     "target_origin": "https://kurashinoshirube.com"
+  },
+  "policy_profiles": {
+    "contact": "contact@kurashinoshirube.com",
+    "local": {
+      "consent_ui": "ABSENT_WITHOUT_A_READY_PROVIDER",
+      "cookie_settings_link": "ABSENT",
+      "cookie_storage": "NONE",
+      "measurement": "OFF_NO_NETWORK_OR_LOCAL_STORAGE",
+      "retention": {
+        "analytics_cookie_default_max_days": 0,
+        "consent_cookie_days": 0,
+        "daily_aggregate_months": 0,
+        "ga4_user_event_retention_months": 0,
+        "raw_event_days": 0
+      },
+      "source": "changes/wordpress-local-preview-v1/policy-profiles.v1.json#local"
+    },
+    "operator": "暮らしのしるべ編集者",
+    "production": {
+      "body_reuse_from_local": "FORBIDDEN",
+      "consent_ui": "ONLY_WHEN_COOKIEYES_AND_WP_CONSENT_API_ARE_READY",
+      "cookie_storage": "CONSENT_PROVIDER_CONTROLLED",
+      "ga4_activation_gate": "BLOCKED_UNTIL_LIVE_PROPERTY_RETENTION_READBACK",
+      "retention": {
+        "analytics_cookie_default_max_days": 730,
+        "consent_cookie_days": 365,
+        "daily_aggregate_months": 13,
+        "ga4_user_event_retention_months": "LIVE_READBACK_REQUIRED",
+        "raw_event_days": 7
+      },
+      "source": "WORDPRESS_EDITOR_READ_ONLY_PAGES_3_10_120"
+    },
+    "updated_at": "2026-08-31"
   },
   "policy_v3": {
     "body_class": "raos-policy-v3-page",
@@ -138,191 +421,20 @@
       "privacy-policy"
     ]
   },
-  "head": {
-  "allowed_json_ld_types": [
-    "AboutPage",
-    "Article",
-    "BreadcrumbList",
-    "ListItem",
-    "Organization",
-    "WebPage",
-    "WebSite"
-    ],
-    "closed_head_contexts": {
-      "article": "EXACT_EDITORIAL_V3_PUBLIC_IDENTITY_PLUS_CLEAN_TITLE_AND_EXCERPT",
-      "fixed_page": "EXACT_THREE_POLICY_SLUG_TITLE_EXCERPT_RECORDS",
-      "home": "FIXED_SITE_TITLE_AND_DESCRIPTION"
-    },
-    "canonical": {
-      "editorial_v2_fallback": "FIXED_SITE_ORIGIN_PLUS_SLUG_FOR_SINGULAR_PUBLISHED_CLOSED_PUBLIC_ARTICLE_IDENTITY",
-      "invalid_or_unpublished_policy": "PRESERVE_UPSTREAM_VALUE",
-      "snapshot_precedence": "VALID_BOUND_RAOS_SNAPSHOT"
-    },
-    "document_title_deduplication": {
-      "active_when": "WPSEO_VERSION_DEFINED",
-      "hook": "wp_head",
-      "hook_priority": 0,
-      "removed_priority_1_callbacks": [
-        "_wp_render_title_tag",
-        "_block_template_render_title_tag",
-        "gutenberg_render_title_tag"
-      ]
-    },
-    "document_title_owner": "YOAST_WHEN_ACTIVE_OTHERWISE_WORDPRESS_OR_GUTENBERG_FALLBACK",
-    "forbidden_json_ld_types": [
-      "AggregateRating",
-      "FAQPage",
-      "Offer",
-      "Product",
-      "Review"
-    ],
-    "metadata_owner": "YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK",
-    "raos_metadata_delivery": "YOAST_METADATA_FILTERS_ONLY",
-    "rest_output": {
-      "preserved_route": "/wp/v2/posts",
-      "removed_fields": ["yoast_head", "yoast_head_json"],
-      "removed_route": "/yoast/v1/get_head"
-    },
-    "robots": {
-      "invalid_or_unpublished_portfolio_route": "noindex, nofollow",
-      "published_public_article_identity": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
-      "unneeded_archives": "noindex, follow"
-    },
-    "sitemap": {
-      "authors": false,
-      "post_types": ["page", "post"],
-      "taxonomies": []
-    },
-    "structured_data_owner": "RAOS_THEME",
-    "structured_data_article_values": {
-      "editorial_v2": "CLOSED_PUBLISHED_IDENTITY_PLUS_CLEAN_RAW_TITLE_8_TO_100_AND_EXCERPT_30_TO_180_WITH_FIXED_ORIGIN_CANONICAL",
-      "legacy": "VALID_BOUND_RAOS_SNAPSHOT",
-      "unknown_or_invalid": "NO_OUTPUT"
-    },
-    "structured_data_contexts": {
-      "article": [
-        "Article",
-        "BreadcrumbList",
-        "Organization",
-        "WebSite"
-      ],
-    "fixed_page": [
-      "AboutPage",
-      "BreadcrumbList",
-      "Organization",
-      "WebPage",
-      "WebSite"
-      ],
-      "home": [
-        "Organization",
-        "WebSite"
-      ],
-      "unknown_or_invalid": []
-    },
-    "yoast_configuration_authority": "HUMAN_PERSISTED_OPTIONS_WITH_THEME_READBACK_GATE",
-    "yoast_social_option_values": {
-      "og_default_image": "VERIFIED_THEME_SOCIAL_IMAGE_URI",
-      "og_default_image_id": "",
-      "opengraph": true,
-      "twitter": true,
-      "twitter_card_type": "summary_large_image"
-    },
-    "yoast_headless_rest": "PERSISTED_OPTION_PLUS_REST_OUTPUT_FILTER",
-    "yoast_option_write": "ABSENT",
-    "yoast_schema_frontend": "PERSISTED_OPTION_PLUS_WPSEO_JSON_LD_OUTPUT_FILTER"
-  },
-  "human_existing_update": {
-    "allowed_article_id": "st1703-first-suitcase-comparison",
-    "allowed_copy_fields": [
-      "post_content",
-      "post_excerpt",
-      "post_title",
-      "_raos_publication_snapshot_v1"
-    ],
-    "authority": "EXPLICIT_ADMIN_POST_NONCE_AND_HASH_CONFIRMATION",
-    "approval_receipt_fields": [
-      "approved_at",
-      "approved_by_user_id",
-      "approval_reason",
-      "decision",
-      "operation_sha256",
-      "packet_sha256",
-      "payload_sha256",
-      "pre_state",
-      "pre_state_sha256",
-      "request_sha256",
-      "rollback_artifact",
-      "schema",
-      "source_post_id",
-      "target_post_id"
-    ],
-    "autonomous_authority": "NONE",
-    "durable_lock": "ADD_OPTION_ONCE_PER_PAYLOAD_SHA256_NEVER_AUTOMATICALLY_DELETED",
-    "failure_behavior": "ATTEMPT_COPY_FIELD_ROLLBACK_RETAIN_LOCK_AND_FAIL_VISIBLE_ON_PRESERVED_INVARIANT_DRIFT",
-    "journal_assertions": [
-      "review_draft_id",
-      "target_public_post_id",
-      "packet_sha256",
-      "request_sha256",
-      "payload_sha256"
-    ],
-    "mutation_order": "SNAPSHOT_META_THEN_POST_FIELDS_THEN_EXACT_READBACK",
-    "reason_policy": "REQUIRED_CLEAN_TEXT_10_TO_300_CHARACTERS",
-    "rollback_artifact": "EXACT_OLD_TITLE_EXCERPT_CONTENT_SNAPSHOT_AND_PRESERVED_INVARIANTS_IN_NON_AUTOLOADED_APPROVAL_LOCK",
-    "preserved_target_fields": [
-      "post_id",
-      "post_slug",
-      "post_status",
-      "post_date",
-      "post_author",
-      "post_parent",
-      "password",
-      "comment_status",
-      "ping_status",
-      "guid",
-      "taxonomy"
-    ],
-    "step_up_authentication": "CURRENT_WORDPRESS_USER_REAUTHENTICATED_VIA_WP_AUTHENTICATE_PASSWORD_NOT_PERSISTED",
-    "transport": "POST_ONLY_WORDPRESS_ADMIN_ACTION_NO_REST_AJAX_OR_NOPRIV"
-  },
-  "editorial_navigation": {
-    "article_count": 10,
-    "cluster_count": 3,
-    "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
-    "path": "assets/editorial-navigation.v3.json",
-    "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "102a3f20f05ebf6992db7a5a9304d2d7e504072376c2d75f752ebdd9b1c3c478",
-    "source_navigation_sha256": "a50b9709fc0e561ac2adc8dc9394b783e2fcfad19b3f5fe9a730f2eb0f808c94",
-    "source_portfolio_sha256": "c82746904cc27365166abec78021c711262220171e123851caa844a8db379abe"
-  },
-  "homepage_clusters": {
-    "article_count": 10,
-    "cluster_count": 3,
-    "link_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY",
-    "owner": "EDITORIAL_V3_GENERATED_NAVIGATION",
-    "source": "assets/editorial-navigation.v3.json#clusters"
-  },
-  "homepage_featured": {
-    "article_id": "st1704-portable-power-station-guide",
-    "exclude_from_latest": true,
-    "local_preview_substitute": "EXACT_LOCAL_SLUG_FOR_SAME_ARTICLE_ID",
-    "selection": "FIXED_ARTICLE_ID_WITH_EXACT_PUBLIC_ARTICLE_IDENTITY"
-  },
-  "publication_authority": "NONE",
   "public_listing_eligibility": {
+    "candidate_overflow_policy": "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS",
     "candidate_query": {
       "max_candidates_per_slot": 2,
       "max_rows": 20,
       "post_type": "post",
       "query_limit": 21,
+      "slot_count": 10,
       "slug_classes": [
         "raos-review-*",
         "editorial_v2_publication_bindings[].slug",
         "raw_content_prefix:<div class=\"raos-editorial-v2\">"
-      ],
-      "slot_count": 10
+      ]
     },
-    "candidate_overflow_policy": "LOOKUP_FAILURE_WHEN_RESULT_COUNT_EXCEEDS_MAX_ROWS",
     "consumers": {
       "front_page_latest_posts": {
         "additional_exclusion": "FIXED_FEATURED_POST_WHEN_ELIGIBLE",
@@ -361,15 +473,70 @@
     "query_cache": "REQUEST_LOCAL_ONLY",
     "snapshot_validator": "kurashinoshirube_public_article_identity(post_id)"
   },
+  "publication_authority": "NONE",
   "related_navigation": {
+    "article_link_placements": {
+      "article_body": {
+        "maximum": 1,
+        "minimum": 1
+      },
+      "related_navigation": {
+        "maximum": 1,
+        "minimum": 0
+      }
+    },
     "availability_transition": "TARGET_HUMAN_PUBLICATION_ONLY",
+    "category_home_links_per_article": 1,
     "content_hash_scope": "THEME_CHROME_OUTSIDE_WORDPRESS_POST_CONTENT",
-    "minimum_targets_per_article": 2,
+    "duplicate_article_urls_allowed": false,
+    "intent_group_policy": "RELATED_TARGETS_MUST_SHARE_INTENT_GROUP",
+    "maximum_targets_per_article": 2,
+    "minimum_targets_per_article": 1,
     "owner": "EDITORIAL_V3_GENERATED_NAVIGATION",
-    "preparedness_two_article_policy": "ONE_SAME_CLUSTER_PLUS_ONE_ADJACENT_CONTEXT_WITHOUT_NEW_ARTICLE",
-    "rendered_relationships": "SAME_CLUSTER_ONLY_PLUS_CLUSTER_HOME_LINK",
+    "reader_link_count_per_article": {
+      "maximum": 3,
+      "minimum": 2
+    },
+    "relationship_types": [
+      "broader_guide",
+      "narrower_comparison",
+      "adjacent_condition"
+    ],
+    "rendered_relationships": "FIRST_SEMANTIC_SAME_INTENT_IN_BODY_PLUS_OPTIONAL_SECOND_SEMANTIC_SAME_INTENT_AND_CLUSTER_HOME_LINK",
     "source": "assets/editorial-navigation.v3.json#articles[].related_articles",
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
+  },
+  "runtime_evidence": {
+    "revision": "898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7",
+    "source_fingerprint": "898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7",
+    "source_fingerprint_files": [
+      "assets/analytics-consent-gate.js",
+      "assets/editorial-navigation.js",
+      "assets/editorial-navigation.v3.json",
+      "assets/editorial-v2.css",
+      "assets/images/article-countertop-dishwasher-guide.webp",
+      "assets/images/article-portable-power-guide.webp",
+      "assets/images/article-robot-vacuum-guide.webp",
+      "assets/images/article-suitcase-guide.webp",
+      "assets/images/brand-mark.svg",
+      "assets/images/home-hero.webp",
+      "assets/measurement.js",
+      "assets/theme.css",
+      "functions.php",
+      "parts/footer.html",
+      "parts/header.html",
+      "style.css",
+      "templates/404.html",
+      "templates/archive.html",
+      "templates/front-page.html",
+      "templates/search.html",
+      "templates/single.html",
+      "theme.json"
+    ],
+    "stylesheets": {
+      "assets/editorial-v2.css": "--raos-theme-runtime-revision-editorial-v2",
+      "assets/theme.css": "--raos-theme-runtime-revision-base"
+    }
   },
   "schema": "SELF_HOSTED_EDITORIAL_THEME_CONTRACT_V1",
   "snapshot": {
@@ -400,13 +567,14 @@
         "slug": "compact-robot-vacuum-shortlist"
       }
     ],
-    "author_name": "暮らしのしるべ編集部",
+    "author_name": "暮らしのしるべ編集者",
     "canonical_encoding": "RECURSIVE_LEXICOGRAPHIC_OBJECT_KEYS_JSON_UNESCAPED_SLASHES_UNICODE_PRESERVE_ZERO_FRACTION",
     "canonical_origin": "https://kurashinoshirube.com",
     "content_binding": "SHA256_EXACT_WORDPRESS_POST_CONTENT_RAW_UTF8",
     "excerpt_binding": "EXACT_WORDPRESS_POST_EXCERPT_EQUALS_DESCRIPTION_RAW_UTF8",
     "max_bytes": 16384,
     "meta_key": "_raos_publication_snapshot_v1",
+    "packet_binding": "EXACT_PREPARED_ARTICLE_PACKET_SHA256",
     "payload_keys": [
       "article_id",
       "author_name",
@@ -424,20 +592,16 @@
       "visible_content_sha256"
     ],
     "payload_sha256": "SHA256_CANONICAL_PAYLOAD_UTF8",
-    "packet_binding": "EXACT_PREPARED_ARTICLE_PACKET_SHA256",
     "review_draft_slug": "raos-review-{public_slug}-{payload_sha256_lower_hex}",
-    "slug_binding": "PUBLIC_SLUG_ONLY_WHEN_PUBLISHED_OR_EXACT_DERIVED_REVIEW_SLUG_WHEN_DRAFT",
     "schema_value": "RAOS_PUBLICATION_SNAPSHOT_V1",
+    "slug_binding": "PUBLIC_SLUG_ONLY_WHEN_PUBLISHED_OR_EXACT_DERIVED_REVIEW_SLUG_WHEN_DRAFT",
     "timestamp_profile": "NULL_OR_RFC3339_UTC_SECONDS",
-    "wrapper_keys": ["payload", "payload_sha256", "schema"]
-  },
-  "runtime_evidence": {
-    "revision": "3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a",
-    "stylesheets": {
-      "assets/editorial-v2.css": "--raos-theme-runtime-revision-editorial-v2",
-      "assets/theme.css": "--raos-theme-runtime-revision-base"
-    }
+    "wrapper_keys": [
+      "payload",
+      "payload_sha256",
+      "schema"
+    ]
   },
   "theme_slug": "kurashinoshirube-child",
-  "theme_version": "1.4.0"
+  "theme_version": "1.5.0"
 }

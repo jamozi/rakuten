@@ -12,13 +12,14 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.4.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.5.0';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
-const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = 'df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea';
+const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
 const KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH = 'assets/images/article-suitcase-guide.webp';
-const KURASHINOSHIRUBE_ARTICLE_IMAGE_SHA256 = '23c585a03598a8521fd797c036d2caad4350139ad709ca9b0cfc3ab18ad993ad';
+const KURASHINOSHIRUBE_ARTICLE_IMAGE_SHA256 = 'dc8133377f21355ac0c187273d70904c305dd5687bf0e5e8ce3af76fab668046';
 const KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_PATH = 'assets/images/article-portable-power-guide.webp';
 const KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_SHA256 = '54b84689cff952f6a384982b89d2f56adfbdeff9ff03fe628fcaf5a949ab0f5a';
 const KURASHINOSHIRUBE_DISHWASHER_ARTICLE_IMAGE_PATH = 'assets/images/article-countertop-dishwasher-guide.webp';
@@ -28,7 +29,11 @@ const KURASHINOSHIRUBE_ROBOT_ARTICLE_IMAGE_SHA256 = 'f589471aeed1064f2499ec5d32a
 const KURASHINOSHIRUBE_BRAND_MARK_PATH = 'assets/images/brand-mark.svg';
 const KURASHINOSHIRUBE_BRAND_MARK_SHA256 = 'bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3';
 const KURASHINOSHIRUBE_MEASUREMENT_ASSET_PATH = 'assets/measurement.js';
-const KURASHINOSHIRUBE_MEASUREMENT_ASSET_SHA256 = 'b2e6fa68a15729569ea45a97e9a5d8e79868ed97dee42238299bf95caa32f5e5';
+const KURASHINOSHIRUBE_MEASUREMENT_ASSET_SHA256 = '181dff17451e52bb5bc548964e6c951573a4ddde42072ee0f1165bfc6faa1772';
+const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_PATH = 'assets/analytics-consent-gate.js';
+const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_SHA256 = '09b2bff8deba45af068ad8566a8d4e237da7da21fd310aaa62fedc10aa24a38a';
+const KURASHINOSHIRUBE_NAVIGATION_ASSET_PATH = 'assets/editorial-navigation.js';
+const KURASHINOSHIRUBE_NAVIGATION_ASSET_SHA256 = 'd8d7e78b9df43ab0367cb977051eaa8e1b9b03beec0e00a336dc0b261e306d43';
 const KURASHINOSHIRUBE_HOMEPAGE_FEATURED_ARTICLE_ID = 'st1704-portable-power-station-guide';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ARTICLE_ID = 'st1703-first-suitcase-comparison';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ACTION = 'kurashinoshirube_apply_at003_review_v1';
@@ -36,8 +41,9 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1'
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = 'assets/editorial-navigation.v3.json';
-const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '102a3f20f05ebf6992db7a5a9304d2d7e504072376c2d75f752ebdd9b1c3c478';
+const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '878befcb921fb965fc805b323bbd440bd973bd87e44fb0f75f19e4f2c7bdd109';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_MAX_BYTES = 262144;
+const KURASHINOSHIRUBE_HOME_TITLE = '生活用品を公式仕様で比較｜暮らしのしるべ';
 const KURASHINOSHIRUBE_HOME_DESCRIPTION = '暮らしのしるべは、移動・家事・備えの生活用品を、公式情報と確認条件に基づいて比較し、選び方を分かりやすく案内します。';
 
 /** Load the generated public-safe Editorial V3 navigation or fail closed. */
@@ -128,7 +134,13 @@ function kurashinoshirube_article_bindings(): array
                     'article_id',
                     'category_label',
                     'cluster_id',
+                    'comparison_scope',
+                    'content_role',
+                    'content_role_label',
+                    'primary_query_intent',
+                    'broader_article_id',
                     'home_order',
+                    'intent_group_id',
                     'local_slug',
                     'production_slug',
                     'related_articles',
@@ -144,6 +156,41 @@ function kurashinoshirube_article_bindings(): array
             || ! is_string($article['local_slug'])
             || $article['local_slug'] !== 'local-preview-' . $article['production_slug']
             || ! in_array($article['category_label'], array('移動', '家事', '備え'), true)
+            || ! is_string($article['intent_group_id'])
+            || preg_match('/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/D', $article['intent_group_id']) !== 1
+            || ! is_string($article['content_role'])
+            || ! isset(
+                array(
+                    'brand_family_comparison' => 'ブランド内比較',
+                    'category_guide' => '選び方',
+                    'constraint_shortlist' => '条件別比較',
+                    'feature_shortlist' => '機能別比較',
+                    'head_to_head_comparison' => '2製品比較',
+                    'head_to_head_with_reference' => '2製品比較＋参考機種',
+                    'model_family_comparison' => 'ブランド内比較',
+                )[$article['content_role']]
+            )
+            || array(
+                'brand_family_comparison' => 'ブランド内比較',
+                'category_guide' => '選び方',
+                'constraint_shortlist' => '条件別比較',
+                'feature_shortlist' => '機能別比較',
+                'head_to_head_comparison' => '2製品比較',
+                'head_to_head_with_reference' => '2製品比較＋参考機種',
+                'model_family_comparison' => 'ブランド内比較',
+            )[$article['content_role']] !== $article['content_role_label']
+            || ! kurashinoshirube_is_clean_text($article['primary_query_intent'], 1, 180)
+            || ! kurashinoshirube_is_clean_text($article['comparison_scope'], 1, 120)
+            || (
+                $article['broader_article_id'] !== null
+                && (
+                    ! is_string($article['broader_article_id'])
+                    || preg_match(
+                        '/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/D',
+                        $article['broader_article_id']
+                    ) !== 1
+                )
+            )
             || ! is_string($article['article_code'])
             || preg_match('/\Aa[0-9]{2}\z/D', $article['article_code']) !== 1
             || ! is_string($article['snapshot_id'])
@@ -154,7 +201,13 @@ function kurashinoshirube_article_bindings(): array
         }
         $bindings[$article['article_id']] = array(
             'article_code' => $article['article_code'],
+            'broader_article_id' => $article['broader_article_id'],
             'cluster_id' => $article['cluster_id'],
+            'comparison_scope' => $article['comparison_scope'],
+            'content_role' => $article['content_role'],
+            'content_role_label' => $article['content_role_label'],
+            'primary_query_intent' => $article['primary_query_intent'],
+            'intent_group_id' => $article['intent_group_id'],
             'local_slug' => $article['local_slug'],
             'section' => $article['category_label'],
             'slug' => $article['production_slug'],
@@ -164,6 +217,37 @@ function kurashinoshirube_article_bindings(): array
     }
     if (count($bindings) !== 10) {
         $bindings = array();
+        return $bindings;
+    }
+    $query_intents_by_group = array();
+    foreach ($bindings as $binding) {
+        $query_intents_by_group[$binding['intent_group_id']][] = $binding['primary_query_intent'];
+    }
+    foreach ($query_intents_by_group as $query_intents) {
+        if (count($query_intents) !== count(array_unique($query_intents))) {
+            $bindings = array();
+            return $bindings;
+        }
+    }
+    foreach ($bindings as $article_id => $binding) {
+        $broader_id = $binding['broader_article_id'];
+        if ($broader_id === null) {
+            continue;
+        }
+        $broader = $bindings[$broader_id] ?? null;
+        if (
+            $broader_id === $article_id
+            || ! is_array($broader)
+            || $broader['intent_group_id'] !== $binding['intent_group_id']
+            || ! in_array(
+                $broader['content_role'],
+                array('category_guide', 'constraint_shortlist'),
+                true
+            )
+        ) {
+            $bindings = array();
+            return $bindings;
+        }
     }
     return $bindings;
 }
@@ -203,7 +287,8 @@ function kurashinoshirube_related_article_map(): array
             ! is_string($article_id)
             || ! is_array($cluster)
             || ! is_array($related)
-            || count($related) < 2
+            || count($related) < 1
+            || count($related) > 2
         ) {
             return array();
         }
@@ -213,10 +298,18 @@ function kurashinoshirube_related_article_map(): array
             $target_id = is_array($relation) ? ($relation['article_id'] ?? null) : null;
             $relationship = is_array($relation) ? ($relation['relationship'] ?? null) : null;
             $target = is_string($target_id) ? ($bindings[$target_id] ?? null) : null;
+            $expected_relationship = is_array($target) && $article['broader_article_id'] === $target_id
+                ? 'broader_guide'
+                : (
+                    is_array($target) && $target['broader_article_id'] === $article_id
+                        ? 'narrower_comparison'
+                        : 'adjacent_condition'
+                );
             if (
                 ! is_array($target)
-                || ! in_array($relationship, array('same_cluster', 'adjacent_context'), true)
+                || $relationship !== $expected_relationship
                 || isset($targets[$target_id])
+                || $target['intent_group_id'] !== $article['intent_group_id']
             ) {
                 return array();
             }
@@ -229,6 +322,22 @@ function kurashinoshirube_related_article_map(): array
             'target_relationships' => $relationships,
             'targets' => $targets,
         );
+    }
+    foreach ($bindings as $article_id => $binding) {
+        $broader_id = $binding['broader_article_id'];
+        if ($broader_id === null) {
+            continue;
+        }
+        if (
+            ! isset($map[$article_id]['targets'][$broader_id])
+            || ! isset($map[$broader_id]['targets'][$article_id])
+            || ($map[$article_id]['target_relationships'][$broader_id] ?? null)
+                !== 'broader_guide'
+            || ($map[$broader_id]['target_relationships'][$article_id] ?? null)
+                !== 'narrower_comparison'
+        ) {
+            return array();
+        }
     }
     return count($map) === 10 ? $map : array();
 }
@@ -437,7 +546,7 @@ function kurashinoshirube_parse_snapshot($raw): ?array
         || $payload['slug'] !== $binding['slug']
         || $payload['section'] !== $binding['section']
         || ($payload['canonical_url'] ?? null) !== $canonical
-        || ($payload['author_name'] ?? null) !== '暮らしのしるべ編集部'
+        || ($payload['author_name'] ?? null) !== '暮らしのしるべ編集者'
         || ! kurashinoshirube_is_clean_text($payload['title'] ?? null, 8, 100)
         || ! kurashinoshirube_is_clean_text($payload['seo_title'] ?? null, 8, 100)
         || ! kurashinoshirube_is_clean_text($payload['description'] ?? null, 30, 180)
@@ -619,7 +728,8 @@ function kurashinoshirube_yoast_configuration_is_exact(): bool
     }
     $social_image = kurashinoshirube_verified_asset_uri(
         KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH,
-        KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256
+        KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256,
+        kurashinoshirube_is_local_preview()
     );
     if ($social_image === null) {
         return false;
@@ -706,7 +816,7 @@ function kurashinoshirube_verified_asset_uri(
 {
     if (
         preg_match(
-            '#\A(?:assets/images/[a-z0-9-]+\.(?:svg|webp)|assets/measurement\.js)\z#D',
+            '#\A(?:assets/images/[a-z0-9-]+\.(?:svg|webp)|assets/(?:analytics-consent-gate|measurement|editorial-navigation)\.js)\z#D',
             $relative
         ) !== 1
         || preg_match('/\A[0-9a-f]{64}\z/D', $sha256) !== 1
@@ -757,7 +867,7 @@ function kurashinoshirube_verified_asset_uri(
     return $base . '/' . $relative;
 }
 
-/** Resolve one reviewed category illustration for an exact portfolio article. */
+/** Resolve one reviewed, article-specific comparison visual. */
 function kurashinoshirube_article_visual_asset(int $post_id): ?array
 {
     if ($post_id <= 0 || get_post_type($post_id) !== 'post') {
@@ -777,54 +887,109 @@ function kurashinoshirube_article_visual_asset(int $post_id): ?array
             ? $identity['article_id']
             : null;
     }
-    $asset_key_by_article = array(
-        'st1703-first-suitcase-comparison' => 'suitcase',
-        'st1704-portable-power-station-guide' => 'power',
-        'st1704-anker-solix-c300-c800-c1000-differences' => 'power',
-        'st1704-countertop-dishwasher-for-small-households' => 'dishwasher',
-        'st1704-compact-robot-vacuum-shortlist' => 'robot',
-        'carry-on-suitcase-under-100-seats' => 'suitcase',
-        'lightweight-carry-on-suitcase-under-3kg' => 'suitcase',
-        'front-open-carry-on-suitcase-with-stopper' => 'suitcase',
-        'roomba-mini-vs-switchbot-k11-pro' => 'robot',
-        'solota-vs-rakua-mini-plus' => 'dishwasher',
+    $article_visuals = array(
+        'st1703-first-suitcase-comparison' => array(
+            'asset_key' => 'suitcase',
+            'caption' => 'エース3モデルの軽さ・容量・開き方を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('軽さ', '容量', '開き方'),
+        ),
+        'st1704-portable-power-station-guide' => array(
+            'asset_key' => 'power',
+            'caption' => '停電時に使う機器から容量・出力・重量を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('容量', '出力', '重量'),
+        ),
+        'st1704-anker-solix-c300-c800-c1000-differences' => array(
+            'asset_key' => 'power',
+            'caption' => 'Anker Solix 4型番の世代・出力・持ち運び条件を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('型番・世代', '出力', '持ち運び'),
+        ),
+        'st1704-countertop-dishwasher-for-small-households' => array(
+            'asset_key' => 'dishwasher',
+            'caption' => '少人数向け卓上食洗機の設置・容量・給水方式を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('設置寸法', '食器点数', '給水方式'),
+        ),
+        'st1704-compact-robot-vacuum-shortlist' => array(
+            'asset_key' => 'robot',
+            'caption' => 'ロボット掃除機4モデルの本体・ステーション寸法と自動手入れ範囲を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('本体寸法', 'ステーション', '高さ'),
+        ),
+        'carry-on-suitcase-under-100-seats' => array(
+            'asset_key' => 'suitcase',
+            'caption' => '100席未満便の機内持ち込み条件を各辺と3辺合計で整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('45×35×20cm', '3辺合計100cm', '便・機材'),
+        ),
+        'lightweight-carry-on-suitcase-under-3kg' => array(
+            'asset_key' => 'suitcase',
+            'caption' => '軽量スーツケースの容量・重量・外寸を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('30L以上', '3kg以下', '外寸'),
+        ),
+        'front-open-carry-on-suitcase-with-stopper' => array(
+            'asset_key' => 'suitcase',
+            'caption' => '機内持ち込みスーツケースの前開き・ストッパー・拡張時寸法を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('前開き', 'ストッパー', '拡張時寸法'),
+        ),
+        'roomba-mini-vs-switchbot-k11-pro' => array(
+            'asset_key' => 'robot',
+            'caption' => '小型ロボット掃除機3構成の本体幅・ステーション・販売状態を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('本体幅', 'ステーション', '販売状態'),
+        ),
+        'solota-vs-rakua-mini-plus' => array(
+            'asset_key' => 'dishwasher',
+            'caption' => '小型食洗機の販売状態・設置寸法・食器点数・給水方式を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('設置寸法', '食器点数', '給水方式'),
+        ),
     );
     $assets = array(
         'dishwasher' => array(
-            'caption' => '設置寸法と扉の動きを、購入前に確かめるためのイメージ',
             'height' => 1024,
             'path' => KURASHINOSHIRUBE_DISHWASHER_ARTICLE_IMAGE_PATH,
             'sha256' => KURASHINOSHIRUBE_DISHWASHER_ARTICLE_IMAGE_SHA256,
             'width' => 1536,
         ),
         'power' => array(
-            'caption' => '停電への備えを、置き場所と持ち運び方から考えるためのイメージ',
             'height' => 1024,
             'path' => KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_PATH,
             'sha256' => KURASHINOSHIRUBE_POWER_ARTICLE_IMAGE_SHA256,
             'width' => 1536,
         ),
         'robot' => array(
-            'caption' => '本体とステーションの設置条件を整理するためのイメージ',
             'height' => 1024,
             'path' => KURASHINOSHIRUBE_ROBOT_ARTICLE_IMAGE_PATH,
             'sha256' => KURASHINOSHIRUBE_ROBOT_ARTICLE_IMAGE_SHA256,
             'width' => 1536,
         ),
         'suitcase' => array(
-            'caption' => '機内持ち込み手荷物の寸法を考えるための旅支度のイメージ',
             'height' => 900,
             'path' => KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH,
             'sha256' => KURASHINOSHIRUBE_ARTICLE_IMAGE_SHA256,
             'width' => 1600,
         ),
     );
-    $asset_key = is_string($article_id)
-        ? ($asset_key_by_article[$article_id] ?? null)
+    $definition = is_string($article_id)
+        ? ($article_visuals[$article_id] ?? null)
         : null;
-    return is_string($asset_key) && is_array($assets[$asset_key] ?? null)
-        ? $assets[$asset_key]
-        : null;
+    if (
+        ! is_array($definition)
+        || ! is_string($definition['asset_key'] ?? null)
+        || ! is_string($definition['caption'] ?? null)
+        || ! is_array($definition['points'] ?? null)
+        || count($definition['points']) !== 3
+        || ! is_array($assets[$definition['asset_key']] ?? null)
+    ) {
+        return null;
+    }
+    foreach ($definition['points'] as $point) {
+        if (! is_string($point) || $point === '') {
+            return null;
+        }
+    }
+    return array_merge(
+        $assets[$definition['asset_key']],
+        array(
+            'caption' => $definition['caption'],
+            'points' => $definition['points'],
+        )
+    );
 }
 
 /** Resolve the current head image without widening any article identity. */
@@ -2007,14 +2172,147 @@ add_action(
 );
 
 add_action('wp_enqueue_scripts', static function (): void {
-    $theme = wp_get_theme();
     wp_enqueue_style(
         'kurashinoshirube-editorial',
         get_stylesheet_directory_uri() . '/assets/theme.css',
         array(),
-        $theme->get('Version')
+        KURASHINOSHIRUBE_THEME_RUNTIME_REVISION
     );
 });
+
+/** Load the closed consent state machine before any eligible Google tag. */
+function kurashinoshirube_enqueue_analytics_consent_gate(): void
+{
+    if (is_admin()) {
+        return;
+    }
+    $asset_uri = kurashinoshirube_verified_asset_uri(
+        KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_PATH,
+        KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_SHA256,
+        true
+    );
+    if ($asset_uri === null) {
+        return;
+    }
+    wp_enqueue_script(
+        'kurashinoshirube-analytics-consent-gate',
+        $asset_uri,
+        array(),
+        KURASHINOSHIRUBE_THEME_RUNTIME_REVISION,
+        array('in_footer' => false, 'strategy' => 'defer')
+    );
+}
+add_action(
+    'wp_enqueue_scripts',
+    'kurashinoshirube_enqueue_analytics_consent_gate',
+    1
+);
+
+/** Discover the always-required base stylesheet before later inline block CSS. */
+function kurashinoshirube_preload_base_stylesheet(array $preloads): array
+{
+    if (is_admin()) {
+        return $preloads;
+    }
+    $preloads[] = array(
+        'href' => add_query_arg(
+            'ver',
+            rawurlencode(KURASHINOSHIRUBE_THEME_RUNTIME_REVISION),
+            get_stylesheet_directory_uri() . '/assets/theme.css'
+        ),
+        'as' => 'style',
+    );
+    return $preloads;
+}
+add_filter(
+    'wp_preload_resources',
+    'kurashinoshirube_preload_base_stylesheet'
+);
+
+/**
+ * Let WordPress inline its small, version-matched navigation block stylesheet.
+ *
+ * The core stylesheet is already required by the header and footer navigation
+ * blocks. Supplying its local path opts it into WordPress's bounded
+ * wp_maybe_inline_styles() pass, removing one render-blocking request without
+ * copying or replacing core CSS.
+ */
+function kurashinoshirube_inline_core_navigation_style(): void
+{
+    if (is_admin()) {
+        return;
+    }
+    $navigation_style_path = ABSPATH . WPINC . '/blocks/navigation/style.css';
+    if (
+        ! is_readable($navigation_style_path)
+        || is_link($navigation_style_path)
+        || ! wp_style_is('wp-block-navigation', 'registered')
+    ) {
+        return;
+    }
+    wp_style_add_data(
+        'wp-block-navigation',
+        'path',
+        $navigation_style_path
+    );
+}
+add_action(
+    'wp_head',
+    'kurashinoshirube_inline_core_navigation_style',
+    0
+);
+
+/** Reserve only the verified core navigation bytes in the inline-style budget. */
+function kurashinoshirube_navigation_inline_style_limit(int $limit): int
+{
+    $navigation_style_path = ABSPATH . WPINC . '/blocks/navigation/style.css';
+    if (
+        $limit < 0
+        || ! is_readable($navigation_style_path)
+        || is_link($navigation_style_path)
+    ) {
+        return $limit;
+    }
+    $navigation_style_bytes = wp_filesize($navigation_style_path);
+    if (
+        ! is_int($navigation_style_bytes)
+        || $navigation_style_bytes <= 0
+        || $navigation_style_bytes > 32768
+        || $limit > PHP_INT_MAX - $navigation_style_bytes
+    ) {
+        return $limit;
+    }
+    return $limit + $navigation_style_bytes;
+}
+add_filter(
+    'styles_inline_size_limit',
+    'kurashinoshirube_navigation_inline_style_limit'
+);
+
+/** Make the core skip-link target programmatically focusable on every template. */
+function kurashinoshirube_make_main_focusable(
+    string $block_content,
+    array $block
+): string {
+    if (
+        ($block['attrs']['tagName'] ?? null) !== 'main'
+        || ! class_exists('WP_HTML_Tag_Processor')
+    ) {
+        return $block_content;
+    }
+    $processor = new WP_HTML_Tag_Processor($block_content);
+    if (! $processor->next_tag(array('tag_name' => 'MAIN'))) {
+        return $block_content;
+    }
+    $processor->set_attribute('tabindex', '-1');
+    return $processor->get_updated_html();
+}
+add_filter(
+    'render_block_core/group',
+    'kurashinoshirube_make_main_focusable',
+    10,
+    2
+);
 
 /** Identify ordinary posts that opt into the bounded Editorial V2 presentation. */
 function kurashinoshirube_is_editorial_v2_post(): bool
@@ -2081,6 +2379,12 @@ function kurashinoshirube_editorial_v2_body_class(array $classes): array
     if (kurashinoshirube_is_policy_v3_page()) {
         $classes[] = 'raos-policy-v3-page';
     }
+    if (is_search() || is_archive()) {
+        $classes[] = 'raos-listing-page';
+    }
+    if (is_404()) {
+        $classes[] = 'raos-not-found-page';
+    }
     return array_values(array_unique($classes));
 }
 add_filter('body_class', 'kurashinoshirube_editorial_v2_body_class');
@@ -2091,18 +2395,45 @@ function kurashinoshirube_enqueue_editorial_v2_stylesheet(): void
     if (! kurashinoshirube_is_editorial_v2_post()) {
         return;
     }
-    $theme = wp_get_theme();
     wp_enqueue_style(
         'kurashinoshirube-editorial-v2',
         get_stylesheet_directory_uri() . '/assets/editorial-v2.css',
         array('kurashinoshirube-editorial'),
-        $theme->get('Version')
+        KURASHINOSHIRUBE_THEME_RUNTIME_REVISION
     );
 }
 add_action(
     'wp_enqueue_scripts',
     'kurashinoshirube_enqueue_editorial_v2_stylesheet',
     20
+);
+
+/** Add focus handoff only on article routes that render the generated TOC. */
+function kurashinoshirube_enqueue_editorial_navigation(): void
+{
+    if (! kurashinoshirube_is_editorial_v2_post()) {
+        return;
+    }
+    $asset_uri = kurashinoshirube_verified_asset_uri(
+        KURASHINOSHIRUBE_NAVIGATION_ASSET_PATH,
+        KURASHINOSHIRUBE_NAVIGATION_ASSET_SHA256,
+        true
+    );
+    if ($asset_uri === null) {
+        return;
+    }
+    wp_enqueue_script(
+        'kurashinoshirube-editorial-navigation',
+        $asset_uri,
+        array(),
+        KURASHINOSHIRUBE_THEME_RUNTIME_REVISION,
+        array('in_footer' => true, 'strategy' => 'defer')
+    );
+}
+add_action(
+    'wp_enqueue_scripts',
+    'kurashinoshirube_enqueue_editorial_navigation',
+    25
 );
 
 /** Render the predecessor-bound lead illustration without media authority. */
@@ -2128,7 +2459,7 @@ function kurashinoshirube_render_first_article_lead_image($attributes, $content,
     if ($image_uri === null) {
         return '';
     }
-    $alt = '機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景';
+    $alt = '機内持ち込みスーツケースの比較軸を整理した編集部のイメージ（商品写真ではありません）';
     return '<figure class="wp-block-image size-full raos-first-article-lead-image">'
         . '<img src="' . esc_url($image_uri) . '" alt="' . esc_attr($alt)
         . '" width="1600" height="900">'
@@ -2139,7 +2470,7 @@ add_shortcode(
     'kurashinoshirube_render_first_article_lead_image'
 );
 
-/** Render a theme-owned, non-product hero for the five generated guides. */
+/** Render a theme-owned, non-product comparison hero for all ten guides. */
 function kurashinoshirube_render_article_hero($attributes, $content, $tag): string
 {
     $post_id = (int) get_the_ID();
@@ -2153,6 +2484,11 @@ function kurashinoshirube_render_article_hero($attributes, $content, $tag): stri
         'st1704-anker-solix-c300-c800-c1000-differences',
         'st1704-countertop-dishwasher-for-small-households',
         'st1704-compact-robot-vacuum-shortlist',
+        'carry-on-suitcase-under-100-seats',
+        'lightweight-carry-on-suitcase-under-3kg',
+        'front-open-carry-on-suitcase-with-stopper',
+        'roomba-mini-vs-switchbot-k11-pro',
+        'solota-vs-rakua-mini-plus',
     );
     if (
         $attributes !== array()
@@ -2177,10 +2513,17 @@ function kurashinoshirube_render_article_hero($attributes, $content, $tag): stri
     if ($image_uri === null) {
         return '';
     }
+    $point_items = '';
+    foreach ($visual['points'] as $point) {
+        $point_items .= '<li>' . esc_html($point) . '</li>';
+    }
     return '<figure class="wp-block-image size-full raos-article-hero-image">'
-        . '<img src="' . esc_url($image_uri) . '" alt="" width="'
+        . '<div class="raos-article-hero-image__canvas"><img src="'
+        . esc_url($image_uri) . '" alt="" width="'
         . esc_attr((string) $visual['width']) . '" height="'
         . esc_attr((string) $visual['height']) . '">'
+        . '<div class="raos-article-hero-image__overlay"><span>この記事の比較軸</span>'
+        . '<ul aria-label="この記事で比べる3つの軸">' . $point_items . '</ul></div></div>'
         . '<figcaption>' . esc_html($visual['caption']) . '</figcaption>'
         . '</figure>';
 }
@@ -2254,8 +2597,18 @@ function kurashinoshirube_render_article_category($attributes, $content, $tag): 
     if ($section === null) {
         return '';
     }
+    $role_label = null;
+    $identity = kurashinoshirube_public_article_identity(
+        (int) get_queried_object_id()
+    );
+    if (is_array($identity)) {
+        $binding = kurashinoshirube_article_bindings()[$identity['article_id']] ?? null;
+        if (is_array($binding) && is_string($binding['content_role_label'] ?? null)) {
+            $role_label = $binding['content_role_label'];
+        }
+    }
     return '<p class="raos-article-category">' . esc_html($section)
-        . '／比較ガイド</p>';
+        . '／' . esc_html($role_label ?? '比較ガイド') . '</p>';
 }
 add_shortcode(
     'kurashinoshirube_article_category',
@@ -2294,6 +2647,20 @@ function kurashinoshirube_resolve_related_target(string $target_id): ?array
     return array('title' => $binding['title'], 'url' => $expected_url);
 }
 
+/** Pick the most useful same-intent guide for the in-article decision handoff. */
+function kurashinoshirube_contextual_target_id(array $relation): ?string
+{
+    $relationships = $relation['target_relationships'] ?? array();
+    foreach (array('broader_guide', 'narrower_comparison', 'adjacent_condition') as $priority) {
+        foreach ($relationships as $candidate => $relationship) {
+            if (is_string($candidate) && $relationship === $priority) {
+                return $candidate;
+            }
+        }
+    }
+    return null;
+}
+
 /** Add a compact table of contents without changing the authored evidence copy. */
 function kurashinoshirube_inject_article_toc($content)
 {
@@ -2314,7 +2681,11 @@ function kurashinoshirube_inject_article_toc($content)
     $transformed = preg_replace_callback(
         '#<h2(?P<attributes>[^>]*)>(?P<label>.*?)</h2>#isu',
         static function (array $matches) use (&$items, &$seen, &$generated_index): string {
-            $opening = '<h2' . $matches['attributes'] . '>';
+            $attributes = $matches['attributes'];
+            $focus_attribute = preg_match('/\btabindex\s*=/iu', $attributes) === 1
+                ? ''
+                : ' tabindex="-1"';
+            $opening = '<h2' . $attributes . $focus_attribute . '>';
             $label = html_entity_decode(
                 wp_strip_all_tags($matches['label']),
                 ENT_QUOTES | ENT_HTML5,
@@ -2337,7 +2708,7 @@ function kurashinoshirube_inject_article_toc($content)
                     $section_id = 'raos-section-' . $generated_index;
                 } while (isset($seen[$section_id]));
                 $opening = '<h2 id="' . esc_attr($section_id) . '"'
-                    . $matches['attributes'] . '>';
+                    . $attributes . $focus_attribute . '>';
             }
             if (isset($seen[$section_id])) {
                 return $matches[0];
@@ -2356,8 +2727,29 @@ function kurashinoshirube_inject_article_toc($content)
         $links .= '<li><a href="#' . esc_attr($item['id']) . '">'
             . esc_html($item['label']) . '</a></li>';
     }
-    $toc = '<nav class="raos-article-toc" aria-label="記事内の目次">'
-        . '<details><summary>この記事の目次</summary><ol>' . $links
+    $back_link = '<p class="raos-back-to-toc-wrap"><a class="raos-back-to-toc" '
+        . 'href="#raos-article-toc">記事内の目次へ戻る <span aria-hidden="true">↑</span></a></p>';
+    $with_back_links = preg_replace_callback(
+        '#<section(?P<attributes>[^>]*)>(?P<body>.*?)</section>#isu',
+        static function (array $matches) use ($back_link): string {
+            if (
+                stripos($matches['body'], '<h2') === false
+                || strpos($matches['body'], 'class="raos-back-to-toc"') !== false
+            ) {
+                return $matches[0];
+            }
+            return '<section' . $matches['attributes'] . '>'
+                . $matches['body'] . $back_link . '</section>';
+        },
+        $transformed
+    );
+    if (! is_string($with_back_links)) {
+        return $content;
+    }
+    $transformed = $with_back_links;
+    $toc = '<nav id="raos-article-toc" class="raos-article-toc" '
+        . 'aria-label="記事内の目次" tabindex="-1">'
+        . '<details open><summary>この記事の目次</summary><ol>' . $links
         . '</ol></details></nav>';
     $disclosure_end = strpos($transformed, '</aside>');
     if ($disclosure_end !== false) {
@@ -2395,20 +2787,24 @@ function kurashinoshirube_inject_contextual_guide($content)
     if (! is_array($relation)) {
         return $content;
     }
-    $target_id = null;
-    foreach ($relation['target_relationships'] as $candidate => $relationship) {
-        if ($relationship === 'same_cluster') {
-            $target_id = $candidate;
-            break;
-        }
-    }
+    $target_id = kurashinoshirube_contextual_target_id($relation);
     $target = is_string($target_id)
         ? kurashinoshirube_resolve_related_target($target_id)
         : null;
     if (! is_array($target)) {
         return $content;
     }
-    $markup = '<p class="raos-contextual-guide"><strong>次に確認する条件：</strong>'
+    $relationship = $relation['target_relationships'][$target_id] ?? null;
+    $handoff_label = array(
+        'broader_guide' => '候補を広げて選び直す：',
+        'narrower_comparison' => '条件を絞って比較する：',
+        'adjacent_condition' => '別の条件も確認する：',
+    )[$relationship] ?? null;
+    if (! is_string($handoff_label)) {
+        return $content;
+    }
+    $markup = '<p class="raos-contextual-guide"><strong>'
+        . esc_html($handoff_label) . '</strong>'
         . '<a href="' . esc_url($target['url']) . '" data-raos-internal-link="contextual"'
         . ' data-raos-to-article-id="' . esc_attr($target_id) . '"'
         . ' data-raos-link-placement="article_body">'
@@ -2458,12 +2854,13 @@ function kurashinoshirube_render_related_guides($attributes, $content, $tag): st
     if (! is_array($relation)) {
         return '';
     }
+    $contextual_target_id = kurashinoshirube_contextual_target_id($relation);
+    if ($contextual_target_id === null) {
+        return '';
+    }
     $items = array();
     foreach ($relation['targets'] as $target_id => $label) {
-        if (
-            ($relation['target_relationships'][$target_id] ?? null)
-            !== 'same_cluster'
-        ) {
+        if ($target_id === $contextual_target_id) {
             continue;
         }
         $target = kurashinoshirube_resolve_related_target($target_id);
@@ -2476,17 +2873,20 @@ function kurashinoshirube_render_related_guides($attributes, $content, $tag): st
             . ' data-raos-link-placement="related_navigation">'
             . esc_html($label) . '</a></li>';
     }
-    if (count($items) < 1) {
+    if (count($items) > 1) {
         return '';
     }
     $local_origin = kurashinoshirube_local_preview_origin();
     $home_url = (is_string($local_origin)
         ? $local_origin
         : KURASHINOSHIRUBE_SITE_ORIGIN) . '/#' . $relation['home_anchor'];
-    $items[] = '<li><a href="' . esc_url($home_url) . '">'
+    $items[] = '<li><a href="' . esc_url($home_url) . '"'
+        . ' data-raos-internal-link="cluster-home"'
+        . ' data-raos-cluster-anchor="' . esc_attr($relation['home_anchor']) . '"'
+        . ' data-raos-link-placement="cluster_home">'
         . esc_html($relation['home_label']) . '</a></li>';
     return '<aside class="raos-related-guides" aria-labelledby="raos-related-title">'
-        . '<h2 id="raos-related-title">関連記事</h2><ul>'
+        . '<h2 id="raos-related-title">次に確認したいガイド</h2><ul>'
         . implode('', $items) . '</ul></aside>';
 }
 add_shortcode(
@@ -2632,9 +3032,9 @@ function kurashinoshirube_render_featured_guide($attributes, $content, $tag): st
     $read_label = $title . 'を読む';
     return '<section id="featured" class="raos-featured raos-home-section alignwide" '
         . 'aria-labelledby="raos-featured-title"><div class="raos-home-heading '
-        . 'raos-home-heading--split"><div><p class="raos-home-eyebrow">FEATURED GUIDE</p>'
-        . '<h2 id="raos-featured-title">今、読んでほしい選び方</h2></div>'
-        . '<p>人気順ではなく、いまの比較テーマを編集部が案内します。</p></div>'
+        . 'raos-home-heading--split"><div><p class="raos-home-eyebrow">注目ガイド</p>'
+        . '<h2 id="raos-featured-title">条件を整理する比較ガイド</h2></div>'
+        . '<p>停電時に使う機器と持ち運び方から、必要な容量と出力を整理します。</p></div>'
         . '<article class="raos-featured-guide"><figure class="raos-featured-guide__visual '
         . 'raos-featured-guide__visual--power"><a href="' . esc_url($permalink)
         . '"><span class="screen-reader-text">' . esc_html($read_label)
@@ -2692,6 +3092,8 @@ function kurashinoshirube_local_preview_cluster_items(
         }
         $items .= '<li><a href="' . esc_url($permalink) . '">'
             . esc_html($binding['title'])
+            . '<small class="raos-guide-role">'
+            . esc_html($binding['content_role_label']) . '</small>'
             . '<span aria-hidden="true">→</span></a></li>';
     }
     return $items;
@@ -2761,7 +3163,9 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
                 continue;
             }
             $items .= '<li><a href="' . esc_url($expected_permalink) . '">'
-                . esc_html($title) . '<span aria-hidden="true">→</span></a></li>';
+                . esc_html($title) . '<small class="raos-guide-role">'
+                . esc_html($binding['content_role_label'])
+                . '</small><span aria-hidden="true">→</span></a></li>';
         }
         if ($items === '') {
             $items = kurashinoshirube_local_preview_cluster_items(
@@ -2784,9 +3188,9 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
             . '根拠と公開条件の確認が完了したものから掲載します。</p>';
     }
 
-    return '<section class="raos-cluster-nav raos-home-section alignwide" '
+    return '<section id="all-guides" class="raos-cluster-nav raos-home-section alignwide" '
         . 'aria-labelledby="raos-cluster-nav-title"><div class="raos-home-heading '
-        . 'raos-home-heading--split"><div><p class="raos-home-eyebrow">PURPOSE GUIDES</p>'
+        . 'raos-home-heading--split"><div><p class="raos-home-eyebrow">目的別ガイド</p>'
         . '<h2 id="raos-cluster-nav-title">目的別の記事</h2></div>'
         . '<p>総合1位ではなく、暮らしの条件に近いテーマから記事を選べます。</p>'
         . '</div><div class="raos-clusters">' . $sections . '</div></section>';
@@ -2796,16 +3200,130 @@ add_shortcode(
     'kurashinoshirube_render_published_clusters'
 );
 
-/** Return the three tracked policy-page head records and no mutable options. */
+/** Search public guides only; an empty query never means "show all". */
+function kurashinoshirube_constrain_public_search($query): void
+{
+    if (
+        is_admin()
+        || ! ($query instanceof WP_Query)
+        || ! $query->is_main_query()
+        || ! $query->is_search()
+    ) {
+        return;
+    }
+    $query->set('post_type', 'post');
+    $excluded = kurashinoshirube_merge_public_listing_exclusions(
+        $query->get('post__not_in')
+    );
+    if ($excluded === null) {
+        $query->set('post__in', array(0));
+        return;
+    }
+    $query->set('post__not_in', $excluded);
+    $search = $query->get('s');
+    if (is_string($search) && trim($search) === '') {
+        $query->set('post__in', array(0));
+    }
+}
+add_action(
+    'pre_get_posts',
+    'kurashinoshirube_constrain_public_search',
+    20
+);
+
+/** Render one bounded Japanese summary for the native search result route. */
+function kurashinoshirube_render_search_summary($attributes, $content, $tag): string
+{
+    if (
+        $attributes !== array()
+        || ! in_array($content, array(null, ''), true)
+        || $tag !== 'kurashinoshirube_search_summary'
+        || ! is_search()
+    ) {
+        return '';
+    }
+    $query = trim((string) get_search_query(false));
+    if ($query === '') {
+        return '<p class="raos-listing-summary">商品名や条件を入力して、比較ガイドを検索できます。</p>';
+    }
+    $count = isset($GLOBALS['wp_query']) && $GLOBALS['wp_query'] instanceof WP_Query
+        ? (int) $GLOBALS['wp_query']->found_posts
+        : 0;
+    return '<p class="raos-listing-summary">「' . esc_html($query)
+        . '」に一致する記事：' . esc_html((string) $count) . '件</p>';
+}
+add_shortcode(
+    'kurashinoshirube_search_summary',
+    'kurashinoshirube_render_search_summary'
+);
+
+/** Render wording that distinguishes an empty query from a zero-result query. */
+function kurashinoshirube_render_search_empty_state($attributes, $content, $tag): string
+{
+    if (
+        $attributes !== array()
+        || ! in_array($content, array(null, ''), true)
+        || $tag !== 'kurashinoshirube_search_empty_state'
+        || ! is_search()
+    ) {
+        return '';
+    }
+    $query = trim((string) get_search_query(false));
+    if ($query === '') {
+        return '<h2>検索語を入力してください</h2>'
+            . '<p>商品名や選びたい条件を、検索欄へ入力してください。</p>';
+    }
+    return '<h2>一致する記事はありません</h2>'
+        . '<p>検索語を短くするか、別の言葉でお試しください。</p>';
+}
+add_shortcode(
+    'kurashinoshirube_search_empty_state',
+    'kurashinoshirube_render_search_empty_state'
+);
+
+/** Render one Japanese H1 for supported archive contexts. */
+function kurashinoshirube_render_archive_heading($attributes, $content, $tag): string
+{
+    if (
+        $attributes !== array()
+        || ! in_array($content, array(null, ''), true)
+        || $tag !== 'kurashinoshirube_archive_heading'
+        || ! is_archive()
+    ) {
+        return '';
+    }
+    if (is_category()) {
+        $label = single_cat_title('', false) . 'の記事';
+    } elseif (is_tag()) {
+        $label = single_tag_title('', false) . 'の記事';
+    } elseif (is_author()) {
+        $label = '執筆者別の記事';
+    } elseif (is_date()) {
+        $label = get_the_archive_title();
+    } else {
+        $label = '記事一覧';
+    }
+    $label = trim(wp_strip_all_tags((string) $label));
+    if (! kurashinoshirube_is_clean_text($label, 2, 100)) {
+        $label = '記事一覧';
+    }
+    return '<h1 class="raos-listing-title">' . esc_html($label) . '</h1>';
+}
+add_shortcode(
+    'kurashinoshirube_archive_heading',
+    'kurashinoshirube_render_archive_heading'
+);
+
+/** Return environment-specific policy-page head records from closed baselines. */
 function kurashinoshirube_policy_page_head_map(): array
 {
-    return array(
+    $local = array(
         'about-ad-policy' => array(
             'description' => '暮らしのしるべの情報源、型番照合、広告との分離、更新・訂正と現在の問い合わせ窓口の扱いを説明します。',
             'title' => '運営・広告方針',
         ),
         'comparison-policy' => array(
-            'description' => '暮らしのしるべの比較対象・除外、Evidence階層、掲載順、販売条件、利益相反、更新・訂正の方針を説明します。',
+            'description' => '暮らしのしるべの比較対象・除外、根拠の扱い、掲載順、販売条件、利益相反、更新・訂正の方針を説明します。',
             'title' => '比較・編集方針',
         ),
         'privacy-policy' => array(
@@ -2813,6 +3331,21 @@ function kurashinoshirube_policy_page_head_map(): array
             'title' => 'プライバシーポリシー',
         ),
     );
+    $production = array(
+        'about-ad-policy' => array(
+            'description' => '暮らしのしるべの運営者、情報源と型番の照合、AI支援、広告との分離、更新・訂正の責任を説明します。',
+            'title' => '運営・広告方針',
+        ),
+        'comparison-policy' => array(
+            'description' => '暮らしのしるべの比較対象、根拠の扱い、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。',
+            'title' => '比較・編集方針',
+        ),
+        'privacy-policy' => array(
+            'description' => '暮らしのしるべの取得情報、任意計測の初期状態、同意・撤回、保持期間、外部送信、問い合わせ先を説明します。',
+            'title' => 'プライバシーポリシー',
+        ),
+    );
+    return kurashinoshirube_is_local_preview() ? $local : $production;
 }
 
 /**
@@ -2833,7 +3366,7 @@ function kurashinoshirube_public_head_context(): ?array
             'canonical_url' => $origin . '/',
             'description' => KURASHINOSHIRUBE_HOME_DESCRIPTION,
             'kind' => 'home',
-            'title' => '暮らしのしるべ',
+            'title' => KURASHINOSHIRUBE_HOME_TITLE,
         );
     }
     if (is_singular('post')) {
@@ -2907,9 +3440,83 @@ function kurashinoshirube_filter_snapshot_value($original, string $field)
     return $snapshot === null ? $original : $snapshot[$field];
 }
 
+/** Keep the public shell's WordPress-generated control names in Japanese. */
+function kurashinoshirube_translate_public_control_label(
+    $translation,
+    $text,
+    $domain
+) {
+    unset($domain);
+    if (is_admin() || ! is_string($text)) {
+        return $translation;
+    }
+    $labels = array(
+        'Close menu' => 'メニューを閉じる',
+        'Expand search field' => '検索欄を開く',
+        'Menu' => 'メニュー',
+        'Open menu' => 'メニューを開く',
+        'Pagination' => 'ページ送り',
+        'Skip to content' => '本文へ移動',
+        'Submit Search' => '検索する',
+    );
+    return $labels[$text] ?? $translation;
+}
+add_filter(
+    'gettext',
+    'kurashinoshirube_translate_public_control_label',
+    20,
+    3
+);
+
+/** Return one bounded Japanese title for every intentionally noindex route. */
+function kurashinoshirube_non_index_title(): ?string
+{
+    if (is_search()) {
+        $query = trim(wp_strip_all_tags((string) get_search_query(false)));
+        if (! kurashinoshirube_is_clean_text($query, 1, 60)) {
+            return '記事の検索結果｜暮らしのしるべ';
+        }
+        return '「' . $query . '」の検索結果｜暮らしのしるべ';
+    }
+    if (is_404()) {
+        return 'ページが見つかりません｜暮らしのしるべ';
+    }
+    if (is_category()) {
+        $label = trim(wp_strip_all_tags((string) single_cat_title('', false)));
+        return kurashinoshirube_is_clean_text($label, 1, 60)
+            ? '「' . $label . '」の記事一覧｜暮らしのしるべ'
+            : 'カテゴリ別の記事一覧｜暮らしのしるべ';
+    }
+    if (is_tag()) {
+        $label = trim(wp_strip_all_tags((string) single_tag_title('', false)));
+        return kurashinoshirube_is_clean_text($label, 1, 60)
+            ? '「' . $label . '」の記事一覧｜暮らしのしるべ'
+            : 'タグ別の記事一覧｜暮らしのしるべ';
+    }
+    if (is_author()) {
+        return '執筆者別の記事一覧｜暮らしのしるべ';
+    }
+    if (is_date()) {
+        return '更新日別の記事一覧｜暮らしのしるべ';
+    }
+    if (is_post_type_archive()) {
+        return '記事一覧｜暮らしのしるべ';
+    }
+    return null;
+}
+
 function kurashinoshirube_filter_title($value)
 {
-    return kurashinoshirube_filter_snapshot_value($value, 'seo_title');
+    $snapshot_value = kurashinoshirube_filter_snapshot_value($value, 'seo_title');
+    if ($snapshot_value !== $value) {
+        return $snapshot_value;
+    }
+    $non_index_title = kurashinoshirube_non_index_title();
+    if ($non_index_title !== null) {
+        return $non_index_title;
+    }
+    $context = kurashinoshirube_public_head_context();
+    return $context === null ? $value : $context['title'];
 }
 function kurashinoshirube_filter_description($value)
 {
@@ -2934,6 +3541,10 @@ function kurashinoshirube_filter_og_title($value)
     $snapshot_value = kurashinoshirube_filter_snapshot_value($value, 'og_title');
     if ($snapshot_value !== $value) {
         return $snapshot_value;
+    }
+    $non_index_title = kurashinoshirube_non_index_title();
+    if ($non_index_title !== null) {
+        return $non_index_title;
     }
     $context = kurashinoshirube_public_head_context();
     return $context === null ? $value : $context['title'];
@@ -2976,7 +3587,31 @@ function kurashinoshirube_filter_twitter_card($value)
         : 'summary_large_image';
 }
 
+function kurashinoshirube_filter_og_type($value)
+{
+    $context = kurashinoshirube_public_head_context();
+    if ($context === null) {
+        return $value;
+    }
+    return $context['kind'] === 'article' ? 'article' : 'website';
+}
+
+function kurashinoshirube_filter_og_site_name($value)
+{
+    return kurashinoshirube_public_head_context() === null
+        ? $value
+        : '暮らしのしるべ';
+}
+
+function kurashinoshirube_filter_og_locale($value)
+{
+    return kurashinoshirube_public_head_context() === null
+        ? $value
+        : 'ja_JP';
+}
+
 add_filter('wpseo_title', 'kurashinoshirube_filter_title');
+add_filter('pre_get_document_title', 'kurashinoshirube_filter_title', 20);
 add_filter('wpseo_metadesc', 'kurashinoshirube_filter_description');
 add_filter('wpseo_canonical', 'kurashinoshirube_filter_canonical');
 add_filter('wpseo_opengraph_title', 'kurashinoshirube_filter_og_title');
@@ -2996,10 +3631,16 @@ add_filter('wpseo_twitter_title', 'kurashinoshirube_filter_og_title');
 add_filter('wpseo_twitter_description', 'kurashinoshirube_filter_og_description');
 add_filter('wpseo_twitter_image', 'kurashinoshirube_filter_social_image');
 add_filter('wpseo_twitter_card_type', 'kurashinoshirube_filter_twitter_card');
+add_filter('wpseo_opengraph_type', 'kurashinoshirube_filter_og_type');
+add_filter('wpseo_opengraph_site_name', 'kurashinoshirube_filter_og_site_name');
+add_filter('wpseo_og_locale', 'kurashinoshirube_filter_og_locale');
 
 /** Index only a review-safe route or one exact public article identity. */
 function kurashinoshirube_filter_robots($robots, $presentation)
 {
+    if (kurashinoshirube_is_local_preview()) {
+        return 'noindex, nofollow, noarchive, nosnippet';
+    }
     if (is_singular('post')) {
         $post_id = (int) get_queried_object_id();
         $slug = get_post_field('post_name', $post_id, 'raw');
@@ -3052,6 +3693,9 @@ function kurashinoshirube_filter_robots($robots, $presentation)
         || is_attachment()
     ) {
         return 'noindex, follow';
+    }
+    if (is_404()) {
+        return 'noindex, nofollow';
     }
     return $robots;
 }
@@ -3454,7 +4098,7 @@ function kurashinoshirube_emit_json_ld(): void
     $nodes[] = array(
         '@id' => $organization_id,
         '@type' => 'Organization',
-        'name' => '暮らしのしるべ編集部',
+        'name' => '暮らしのしるべ編集者',
         'url' => $schema_origin . '/',
     );
     $nodes[] = array(
@@ -3543,7 +4187,7 @@ add_filter(
     'kurashinoshirube_site_kit_global_consent_defaults'
 );
 
-/** Load Site Kit Analytics only after WP Consent API reports statistics consent. */
+/** Replace Site Kit's executable payload with one closed inert configuration. */
 function kurashinoshirube_gate_site_kit_analytics_loader($tag, $handle)
 {
     if (
@@ -3572,95 +4216,28 @@ function kurashinoshirube_gate_site_kit_analytics_loader($tag, $handle)
         || ($source_parts['scheme'] ?? '') !== 'https'
         || ($source_parts['host'] ?? '') !== 'www.googletagmanager.com'
         || ($source_parts['path'] ?? '') !== '/gtag/js'
+        || isset($source_parts['port'])
+        || isset($source_parts['user'])
+        || isset($source_parts['pass'])
+        || isset($source_parts['fragment'])
+        || !is_string($source_parts['query'] ?? null)
+        || preg_match(
+            '/\Aid=(G-[A-Z0-9]{6,20})\z/D',
+            $source_parts['query'],
+            $measurement_match
+        ) !== 1
+        || !isset($measurement_match[1])
     ) {
         return '';
     }
-    $source_json = wp_json_encode(
-        $source,
-        JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
-    );
-    if (!is_string($source_json)) {
-        return '';
-    }
-    $gate = '<script id="google_gtagjs-js" data-raos-consent-gate="statistics">'
-        . '(function(){'
-        . 'var source=' . $source_json . ';'
-        . 'var activated=false;'
-        . 'function consentIsGranted(){'
-        . 'if(typeof window.getCkyConsent!=="function"'
-        . '||typeof window.wp_has_consent!=="function"){return false;}'
-        . 'var cookieYes=window.getCkyConsent();'
-        . 'return !!(cookieYes'
-        . '&&cookieYes.isUserActionCompleted===true'
-        . '&&cookieYes.categories'
-        . '&&cookieYes.categories.analytics===true'
-        . '&&window.wp_has_consent("statistics")===true'
-        . '&&window._googlesitekitConsents'
-        . '&&window._googlesitekitConsents.analytics_storage==="granted");'
-        . '}'
-        . 'function activate(){'
-        . 'if(activated||!consentIsGranted()){return;}'
-        . 'var loader=document.getElementById("google_gtagjs-js");'
-        . 'var config=document.getElementById("google_gtagjs-js-after");'
-        . 'if(!loader'
-        . '||loader.getAttribute("data-raos-consent-gate")!=="statistics"'
-        . '||!config'
-        . '||config.getAttribute("data-raos-consent-config")!=="statistics")'
-        . '{return;}'
-        . 'var parsed;'
-        . 'try{parsed=new URL(source);}catch(error){return;}'
-        . 'if(parsed.protocol!=="https:"'
-        . '||parsed.hostname!=="www.googletagmanager.com"'
-        . '||parsed.pathname!=="/gtag/js"){return;}'
-        . 'activated=true;'
-        . 'var configScript=document.createElement("script");'
-        . 'configScript.id="google_gtagjs-js-after";'
-        . 'configScript.setAttribute("data-cookieyes","cookieyes-analytics");'
-        . 'configScript.type="text/javascript";'
-        . 'configScript.text=config.textContent||"";'
-        . 'config.replaceWith(configScript);'
-        . 'var analytics=document.createElement("script");'
-        . 'analytics.id="google_gtagjs-js";'
-        . 'analytics.async=true;'
-        . 'analytics.setAttribute("data-cookieyes","cookieyes-analytics");'
-        . 'analytics.type="text/javascript";'
-        . 'analytics.src=source;'
-        . 'loader.replaceWith(analytics);'
-        . '}'
-        . 'document.addEventListener("wp_consent_type_defined",activate);'
-        . 'document.addEventListener("wp_listen_for_consent_change",activate);'
-        . 'document.addEventListener("cookieyes_consent_update",activate);'
-        . 'if(document.readyState==="complete"){activate();}'
-        . 'else{window.addEventListener("load",activate,{once:true});}'
-        . '})();'
-        . '</script>';
-    $gated_tag = preg_replace(
-        '/<script\b(?=[^>]*\bid=(["\'])google_gtagjs-js\1)'
-            . '[^>]*>\s*<\/script>/u',
-        $gate,
-        $tag,
-        1,
-        $loader_replacement_count
-    );
-    if ($loader_replacement_count !== 1 || !is_string($gated_tag)) {
-        return '';
-    }
-    $gated_tag = preg_replace_callback(
-        '/<script\b(?=[^>]*\bid=(["\'])google_gtagjs-js-after\1)'
-            . '([^>]*)>/u',
-        static function (array $match): string {
-            return '<script type="text/plain" '
-                . 'data-raos-consent-config="statistics"'
-                . ($match[2] ?? '')
-                . '>';
-        },
-        $gated_tag,
-        1,
-        $config_replacement_count
-    );
-    return $config_replacement_count === 1 && is_string($gated_tag)
-        ? $gated_tag
-        : '';
+    $measurement_id = $measurement_match[1];
+    $canonical_source = 'https://www.googletagmanager.com/gtag/js?id='
+        . rawurlencode($measurement_id);
+    return '<script id="google_gtagjs-js" type="application/json"'
+        . ' data-raos-consent-gate="statistics"'
+        . ' data-raos-source="' . esc_attr($canonical_source) . '"'
+        . ' data-raos-measurement-id="' . esc_attr($measurement_id) . '"'
+        . '></script>';
 }
 add_filter(
     'script_loader_tag',

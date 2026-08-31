@@ -1,11 +1,34 @@
 {
   "required_images": [
     {
+      "alt": "",
       "canvas_height": 900,
       "canvas_width": 1600,
       "delivery": "THEME_CSS_BACKGROUND_AND_SOCIAL_FALLBACK",
       "path": "assets/images/home-hero.webp",
-      "sha256": "df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "HOMEPAGE_HERO",
+          "SOCIAL_PREVIEW_FALLBACK"
+        ],
+        "created_on": "2026-08-31",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ABSTRACT_EDITORIAL_PURCHASE_DECISION",
+        "original_sha256": "91dc5bdd9d0047b45a324ca0aa72c3fe8bf5060baf9f8c52d59e022c81f24252",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-hero-v2.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493",
       "status": "FINAL",
       "usage": "Homepage hero and neutral social fallback"
     },
@@ -15,6 +38,27 @@
       "canvas_width": 1536,
       "delivery": "DISHWASHER_ARTICLE_THEME_SHORTCODE_AND_EDITORIAL_FIGURE",
       "path": "assets/images/article-countertop-dishwasher-guide.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "DISHWASHER_ARTICLE_ILLUSTRATION"
+        ],
+        "created_on": "2026-08-30",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "COUNTERTOP_DISHWASHER_SELECTION_GUIDE",
+        "original_sha256": "26e50a383b313d79e65999e100fc82037a434550136fb293c3f20574965d090a",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-countertop-dishwasher-guide.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
       "sha256": "c36e87682ce9be33f70bc5b1a55e20a63b19ab6155172d670d5c019a984bcf9f",
       "status": "FINAL",
       "usage": "Decorative editorial selection illustration for dishwasher guides"
@@ -25,6 +69,27 @@
       "canvas_width": 1536,
       "delivery": "PORTABLE_POWER_ARTICLE_THEME_SHORTCODE",
       "path": "assets/images/article-portable-power-guide.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "PORTABLE_POWER_ARTICLE_HEADER"
+        ],
+        "created_on": "2026-08-28",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "PORTABLE_POWER_SELECTION_GUIDE",
+        "original_sha256": "703444cdf29740bb72de42d09c7c7222a3ee46a09bcaf4f78875df9131cc56d6",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-portable-power-guide.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
       "sha256": "54b84689cff952f6a384982b89d2f56adfbdeff9ff03fe628fcaf5a949ab0f5a",
       "status": "FINAL",
       "usage": "Decorative editorial hero for the two portable-power guides"
@@ -35,32 +100,97 @@
       "canvas_width": 1536,
       "delivery": "ROBOT_VACUUM_ARTICLE_THEME_SHORTCODE_AND_EDITORIAL_FIGURE",
       "path": "assets/images/article-robot-vacuum-guide.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "ROBOT_VACUUM_ARTICLE_ILLUSTRATION"
+        ],
+        "created_on": "2026-08-30",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ROBOT_VACUUM_SELECTION_GUIDE",
+        "original_sha256": "2ecd4dc8e55ea70a76287df30e44c874fea6292bf1be457934e049f1cfbcee4b",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-robot-vacuum-guide.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
       "sha256": "f589471aeed1064f2499ec5d32a8e9c4b6b14db8613d3b1743b37d245ecc2384",
       "status": "FINAL",
       "usage": "Decorative editorial selection illustration for robot-vacuum guides"
     },
     {
-      "alt": "機内持ち込み手荷物の寸法を考えるための抽象的な旅支度の情景",
+      "alt": "機内持ち込みスーツケースの比較軸を整理した編集部のイメージ（商品写真ではありません）",
       "canvas_height": 900,
       "canvas_width": 1600,
       "delivery": "FIRST_ARTICLE_THEME_SHORTCODE",
       "path": "assets/images/article-suitcase-guide.webp",
-      "sha256": "23c585a03598a8521fd797c036d2caad4350139ad709ca9b0cfc3ab18ad993ad",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "SUITCASE_ARTICLE_HEADER"
+        ],
+        "created_on": "2026-08-31",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "GENERIC_SUITCASE_DIMENSION_AND_CAPACITY_COMPARISON",
+        "original_sha256": "14377a0035501c42e467e2fe962bef91059723992ddf35975a4106fb7ce7c949",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-guide-v2.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "dc8133377f21355ac0c187273d70904c305dd5687bf0e5e8ce3af76fab668046",
       "status": "FINAL",
       "usage": "Existing suitcase article inline lead illustration"
     },
     {
+      "alt": "",
       "canvas_height": 64,
       "canvas_width": 64,
       "delivery": "FAVICON_FALLBACK",
       "path": "assets/images/brand-mark.svg",
+      "provenance": {
+        "allowed_modifications": [
+          "COLOR_ADAPTATION",
+          "FORMAT_CONVERSION",
+          "RESIZE"
+        ],
+        "allowed_uses": [
+          "FAVICON_FALLBACK"
+        ],
+        "created_on": "2026-08-23",
+        "creation_method": "REPOSITORY_AUTHORED_VECTOR",
+        "creator_record": "SITE_REPOSITORY_MAINTAINER",
+        "external_license_dependency": false,
+        "generation_intent": "ORIGINAL_SITE_IDENTITY_MARK",
+        "original_sha256": "bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
+        "provenance_evidence": "GIT_TRACKED_SOURCE",
+        "rights_basis": "OWNER_AUTHORIZED_REPOSITORY_ORIGINAL",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
       "sha256": "bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3",
       "status": "FINAL",
       "usage": "Theme-owned SVG favicon when no WordPress Site Icon is configured"
     }
   ],
-  "schema": "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V1",
+  "schema": "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V2",
   "source_files": [
+    "assets/analytics-consent-gate.js",
+    "assets/editorial-navigation.js",
     "assets/editorial-navigation.v3.json",
     "assets/editorial-v2.css",
     "assets/images/article-countertop-dishwasher-guide.webp",
@@ -76,12 +206,16 @@
     "parts/header.html",
     "raos-assets.v1.json",
     "style.css",
+    "templates/404.html",
+    "templates/archive.html",
     "templates/front-page.html",
+    "templates/search.html",
     "templates/single.html",
     "theme-contract.v1.json",
     "theme.json"
   ],
+  "theme_runtime_revision": "898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7",
   "theme_slug": "kurashinoshirube-child",
-  "theme_runtime_revision": "3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a",
-  "theme_version": "1.4.0"
+  "theme_source_fingerprint": "898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7",
+  "theme_version": "1.5.0"
 }

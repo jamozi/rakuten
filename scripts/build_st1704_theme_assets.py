@@ -16,33 +16,43 @@ from typing import Final, NoReturn
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 PORTABLE_POWER_SOURCE: Final = (
-    ROOT
-    / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
     "article-portable-power-guide.png"
 )
 PORTABLE_POWER_OUTPUT: Final = (
-    ROOT
-    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
     "kurashinoshirube-child/assets/images/article-portable-power-guide.webp"
 )
+HOME_HERO_SOURCE: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    "home-hero-v2.png"
+)
+HOME_HERO_OUTPUT: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/assets/images/home-hero.webp"
+)
+SUITCASE_GUIDE_SOURCE: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    "article-suitcase-guide-v2.png"
+)
+SUITCASE_GUIDE_OUTPUT: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/assets/images/article-suitcase-guide.webp"
+)
 DISHWASHER_SOURCE: Final = (
-    ROOT
-    / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
     "article-countertop-dishwasher-guide.png"
 )
 DISHWASHER_OUTPUT: Final = (
-    ROOT
-    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
     "kurashinoshirube-child/assets/images/article-countertop-dishwasher-guide.webp"
 )
 ROBOT_VACUUM_SOURCE: Final = (
-    ROOT
-    / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
     "article-robot-vacuum-guide.png"
 )
 ROBOT_VACUUM_OUTPUT: Final = (
-    ROOT
-    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
     "kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp"
 )
 FFMPEG: Final = Path("/usr/bin/ffmpeg")
@@ -58,9 +68,53 @@ class AssetSpec:
     output: Path
     source_sha256: str
     output_sha256: str
+    source_width: int = 1536
+    source_height: int = 1024
+    output_width: int = 1536
+    output_height: int = 1024
+    video_filter: str | None = None
+    created_on: str = "2026-08-30"
+    generation_intent: str = "EDITORIAL_SELECTION_GUIDE"
+    allowed_uses: tuple[str, ...] = ("ARTICLE_EDITORIAL_ILLUSTRATION",)
 
 
 ASSETS: Final = (
+    AssetSpec(
+        source=HOME_HERO_SOURCE,
+        output=HOME_HERO_OUTPUT,
+        source_sha256=(
+            "91dc5bdd9d0047b45a324ca0aa72c3fe8bf5060baf9f8c52d59e022c81f24252"
+        ),
+        output_sha256=(
+            "9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493"
+        ),
+        source_width=1672,
+        source_height=941,
+        output_width=1600,
+        output_height=900,
+        video_filter="crop=1672:940:0:0,scale=1600:900:flags=lanczos",
+        created_on="2026-08-31",
+        generation_intent="ABSTRACT_EDITORIAL_PURCHASE_DECISION",
+        allowed_uses=("HOMEPAGE_HERO", "SOCIAL_PREVIEW_FALLBACK"),
+    ),
+    AssetSpec(
+        source=SUITCASE_GUIDE_SOURCE,
+        output=SUITCASE_GUIDE_OUTPUT,
+        source_sha256=(
+            "14377a0035501c42e467e2fe962bef91059723992ddf35975a4106fb7ce7c949"
+        ),
+        output_sha256=(
+            "dc8133377f21355ac0c187273d70904c305dd5687bf0e5e8ce3af76fab668046"
+        ),
+        source_width=1672,
+        source_height=941,
+        output_width=1600,
+        output_height=900,
+        video_filter="crop=1672:940:0:0,scale=1600:900:flags=lanczos",
+        created_on="2026-08-31",
+        generation_intent="GENERIC_SUITCASE_DIMENSION_AND_CAPACITY_COMPARISON",
+        allowed_uses=("SUITCASE_ARTICLE_HEADER",),
+    ),
     AssetSpec(
         source=PORTABLE_POWER_SOURCE,
         output=PORTABLE_POWER_OUTPUT,
@@ -70,6 +124,9 @@ ASSETS: Final = (
         output_sha256=(
             "54b84689cff952f6a384982b89d2f56adfbdeff9ff03fe628fcaf5a949ab0f5a"
         ),
+        created_on="2026-08-28",
+        generation_intent="PORTABLE_POWER_SELECTION_GUIDE",
+        allowed_uses=("PORTABLE_POWER_ARTICLE_HEADER",),
     ),
     AssetSpec(
         source=DISHWASHER_SOURCE,
@@ -80,6 +137,8 @@ ASSETS: Final = (
         output_sha256=(
             "c36e87682ce9be33f70bc5b1a55e20a63b19ab6155172d670d5c019a984bcf9f"
         ),
+        generation_intent="COUNTERTOP_DISHWASHER_SELECTION_GUIDE",
+        allowed_uses=("DISHWASHER_ARTICLE_ILLUSTRATION",),
     ),
     AssetSpec(
         source=ROBOT_VACUUM_SOURCE,
@@ -90,14 +149,20 @@ ASSETS: Final = (
         output_sha256=(
             "f589471aeed1064f2499ec5d32a8e9c4b6b14db8613d3b1743b37d245ecc2384"
         ),
+        generation_intent="ROBOT_VACUUM_SELECTION_GUIDE",
+        allowed_uses=("ROBOT_VACUUM_ARTICLE_ILLUSTRATION",),
     ),
 )
 
 # Compatibility aliases for callers that identify the original portable-power asset.
 SOURCE: Final = PORTABLE_POWER_SOURCE
 OUTPUT: Final = PORTABLE_POWER_OUTPUT
-SOURCE_SHA256: Final = ASSETS[0].source_sha256
-OUTPUT_SHA256: Final = ASSETS[0].output_sha256
+SOURCE_SHA256: Final = next(
+    asset.source_sha256 for asset in ASSETS if asset.source == PORTABLE_POWER_SOURCE
+)
+OUTPUT_SHA256: Final = next(
+    asset.output_sha256 for asset in ASSETS if asset.output == PORTABLE_POWER_OUTPUT
+)
 
 
 class AssetGenerationFailure(RuntimeError):
@@ -132,13 +197,39 @@ def _validate_source(asset: AssetSpec) -> None:
         or len(payload) < 33
         or payload[:8] != b"\x89PNG\r\n\x1a\n"
         or payload[12:16] != b"IHDR"
-        or int.from_bytes(payload[16:20], "big") != 1536
-        or int.from_bytes(payload[20:24], "big") != 1024
+        or int.from_bytes(payload[16:20], "big") != asset.source_width
+        or int.from_bytes(payload[20:24], "big") != asset.source_height
+        or b"c2pa" not in payload
+        or b"OpenAI Media Service API" not in payload
     ):
         _fail()
 
 
-def _validate_webp(payload: bytes) -> None:
+def manifest_provenance(asset: AssetSpec) -> dict[str, object]:
+    """Return the closed, non-prompt provenance record for a generated asset."""
+
+    return {
+        "allowed_modifications": [
+            "CROP",
+            "FORMAT_CONVERSION",
+            "RESIZE",
+            "WEB_OPTIMIZATION",
+        ],
+        "allowed_uses": list(asset.allowed_uses),
+        "created_on": asset.created_on,
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": False,
+        "generation_intent": asset.generation_intent,
+        "original_sha256": asset.source_sha256,
+        "original_source_path": asset.source.relative_to(ROOT).as_posix(),
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE",
+    }
+
+
+def _validate_webp(payload: bytes, asset: AssetSpec) -> None:
     if (
         len(payload) < 20
         or len(payload) > MAX_OUTPUT_BYTES
@@ -149,6 +240,21 @@ def _validate_webp(payload: bytes) -> None:
         or b"ANMF" in payload
     ):
         _fail()
+    dimensions = _webp_dimensions(payload)
+    if dimensions != (asset.output_width, asset.output_height):
+        _fail()
+
+
+def _webp_dimensions(payload: bytes) -> tuple[int, int] | None:
+    vp8 = payload.find(b"VP8 ")
+    if vp8 < 0 or vp8 + 30 > len(payload):
+        return None
+    frame = vp8 + 8
+    if payload[frame + 3 : frame + 6] != b"\x9d\x01\x2a":
+        return None
+    width = int.from_bytes(payload[frame + 6 : frame + 8], "little") & 0x3FFF
+    height = int.from_bytes(payload[frame + 8 : frame + 10], "little") & 0x3FFF
+    return (width, height)
 
 
 def _render(asset: AssetSpec, directory: Path) -> bytes:
@@ -175,25 +281,31 @@ def _render(asset: AssetSpec, directory: Path) -> bytes:
         "-an",
         "-sn",
         "-dn",
-        "-c:v",
-        "libwebp",
-        "-lossless",
-        "0",
-        "-quality",
-        "82",
-        "-compression_level",
-        "6",
-        "-preset",
-        "picture",
-        "-pix_fmt",
-        "yuv420p",
-        "-threads",
-        "1",
-        "-f",
-        "webp",
-        "-y",
-        target.as_posix(),
     ]
+    if asset.video_filter is not None:
+        command.extend(["-vf", asset.video_filter])
+    command.extend(
+        [
+            "-c:v",
+            "libwebp",
+            "-lossless",
+            "0",
+            "-quality",
+            "82",
+            "-compression_level",
+            "6",
+            "-preset",
+            "picture",
+            "-pix_fmt",
+            "yuv420p",
+            "-threads",
+            "1",
+            "-f",
+            "webp",
+            "-y",
+            target.as_posix(),
+        ]
+    )
     try:
         version = subprocess.run(
             [FFMPEG.as_posix(), "-version"],
@@ -211,10 +323,10 @@ def _render(asset: AssetSpec, directory: Path) -> bytes:
             env=environment,
             timeout=120,
         )
-    except (OSError, subprocess.SubprocessError):
+    except OSError, subprocess.SubprocessError:
         _fail()
     payload = _regular_payload(target, MAX_OUTPUT_BYTES)
-    _validate_webp(payload)
+    _validate_webp(payload, asset)
     return payload
 
 
@@ -224,11 +336,9 @@ def generate(*, check: bool) -> dict[str, str]:
         _validate_source(asset)
         if check:
             payload = _regular_payload(asset.output, MAX_OUTPUT_BYTES)
-            _validate_webp(payload)
+            _validate_webp(payload, asset)
         else:
-            with tempfile.TemporaryDirectory(
-                prefix="raos-st1704-theme-asset."
-            ) as raw:
+            with tempfile.TemporaryDirectory(prefix="raos-st1704-theme-asset.") as raw:
                 payload = _render(asset, Path(raw))
         digest = hashlib.sha256(payload).hexdigest()
         if digest != asset.output_sha256:

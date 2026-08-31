@@ -26,8 +26,7 @@ OUTPUT: Final = (
     "kurashinoshirube-child/assets/editorial-navigation.v3.json"
 )
 OUTPUT_AUDIT_INVENTORY_PATH: Final = (
-    ROOT / "changes/editorial-portfolio-v3/generated/"
-    "wordpress-audit-inventory.v3.json"
+    ROOT / "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
 )
 OUTPUT_PATHS: Final = (OUTPUT, OUTPUT_AUDIT_INVENTORY_PATH)
 TEST_PATHS: Final = (
@@ -38,12 +37,225 @@ MAX_INPUT_BYTES: Final = 2 * 1024 * 1024
 MAX_OUTPUT_BYTES: Final = 256 * 1024
 SLUG_RE: Final = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 CODE_RE: Final = re.compile(r"^a[0-9]{2}$")
+CONTENT_ROLE_LABELS: Final = {
+    "brand_family_comparison": "ブランド内比較",
+    "category_guide": "選び方",
+    "constraint_shortlist": "条件別比較",
+    "feature_shortlist": "機能別比較",
+    "head_to_head_comparison": "2製品比較",
+    "head_to_head_with_reference": "2製品比較＋参考機種",
+    "model_family_comparison": "ブランド内比較",
+}
 AUDIT_VIEWPORTS: Final = (360, 390, 768, 1440)
 AUDIT_POLICY_SLUGS: Final = (
     "about-ad-policy",
     "comparison-policy",
     "privacy-policy",
 )
+AUDIT_LOCAL_SURFACES: Final = (
+    {
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 200,
+        "expected_page_number": None,
+        "expected_search_query": "",
+        "expected_state": "EMPTY_QUERY",
+        "expected_ui_text": [
+            "検索結果",
+            "商品名や条件を入力して、比較ガイドを検索できます。",
+            "検索語を入力してください",
+        ],
+        "kind": "search",
+        "local_path": "/?s=",
+        "route_class": "SEARCH_EMPTY_QUERY",
+        "surface_id": "search-empty-query",
+    },
+    {
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 200,
+        "expected_page_number": None,
+        "expected_search_query": "",
+        "expected_state": "WHITESPACE_QUERY",
+        "expected_ui_text": [
+            "検索結果",
+            "商品名や条件を入力して、比較ガイドを検索できます。",
+            "検索語を入力してください",
+        ],
+        "kind": "search",
+        "local_path": "/?s=%20%20%20",
+        "route_class": "SEARCH_WHITESPACE_QUERY",
+        "surface_id": "search-whitespace-query",
+    },
+    {
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 200,
+        "expected_page_number": None,
+        "expected_search_query": "ロボット",
+        "expected_state": "RESULTS_PRESENT",
+        "expected_ui_text": ["検索結果", "「ロボット」に一致する記事："],
+        "kind": "search",
+        "local_path": "/?s=%E3%83%AD%E3%83%9C%E3%83%83%E3%83%88",
+        "route_class": "SEARCH_RESULTS",
+        "surface_id": "search-results",
+    },
+    {
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 200,
+        "expected_page_number": None,
+        "expected_search_query": "raos-no-result-20260831",
+        "expected_state": "NO_RESULTS",
+        "expected_ui_text": [
+            "検索結果",
+            "「raos-no-result-20260831」に一致する記事：0件",
+            "一致する記事はありません",
+        ],
+        "kind": "search",
+        "local_path": "/?s=raos-no-result-20260831",
+        "route_class": "SEARCH_NO_RESULTS",
+        "surface_id": "search-no-results",
+    },
+    {
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 200,
+        "expected_page_number": None,
+        "expected_search_query": "<script>alert(1)</script>",
+        "expected_state": "HOSTILE_QUERY_ESCAPED",
+        "expected_ui_text": [
+            "「<script>alert(1)</script>」に一致する記事：0件",
+            "一致する記事はありません",
+        ],
+        "kind": "search",
+        "local_path": "/?s=%3Cscript%3Ealert%281%29%3C%2Fscript%3E",
+        "route_class": "SEARCH_HOSTILE_QUERY",
+        "surface_id": "search-hostile-query",
+    },
+    {
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 200,
+        "expected_page_number": 2,
+        "expected_search_query": "比較",
+        "expected_state": "PAGED_RESULTS",
+        "expected_ui_text": ["検索結果", "「比較」に一致する記事：", "前のページ"],
+        "kind": "search",
+        "local_path": "/?s=%E6%AF%94%E8%BC%83&paged=2",
+        "route_class": "SEARCH_PAGED_RESULTS",
+        "surface_id": "search-results-page-2",
+    },
+    {
+        "archive_type": "category",
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 200,
+        "expected_state": "EXCERPT_LIST",
+        "expected_ui_text": ["移動の記事", "比較ガイド一覧"],
+        "kind": "archive",
+        "local_path": "/category/mobility/",
+        "route_class": "ARCHIVE_CATEGORY",
+        "surface_id": "archive-category-mobility",
+    },
+    {
+        "archive_type": "category",
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 200,
+        "expected_state": "EXCERPT_LIST",
+        "expected_ui_text": ["家事の記事", "比較ガイド一覧"],
+        "kind": "archive",
+        "local_path": "/category/household/",
+        "route_class": "ARCHIVE_CATEGORY",
+        "surface_id": "archive-category-household",
+    },
+    {
+        "archive_type": "category",
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 200,
+        "expected_state": "EXCERPT_LIST",
+        "expected_ui_text": ["備えの記事", "比較ガイド一覧"],
+        "kind": "archive",
+        "local_path": "/category/preparedness/",
+        "route_class": "ARCHIVE_CATEGORY",
+        "surface_id": "archive-category-preparedness",
+    },
+    {
+        "archive_type": "date",
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 200,
+        "expected_state": "EXCERPT_LIST",
+        "expected_ui_text": ["2026年8月", "比較ガイド一覧"],
+        "kind": "archive",
+        "local_path": "/2026/08/",
+        "route_class": "ARCHIVE_DATE",
+        "surface_id": "archive-date-2026-08",
+    },
+    {
+        "archive_type": "author",
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 200,
+        "expected_state": "EXCERPT_LIST",
+        "expected_ui_text": ["執筆者別の記事", "比較ガイド一覧"],
+        "kind": "archive",
+        "local_path": "/author/raos-local-admin/",
+        "route_class": "ARCHIVE_AUTHOR",
+        "surface_id": "archive-author-local-admin",
+    },
+    {
+        "expected_canonical": "ABSENT",
+        "expected_http_status": 404,
+        "expected_state": "NOT_FOUND",
+        "expected_ui_text": ["ページが見つかりませんでした", "ホームへ戻る"],
+        "kind": "not_found",
+        "local_path": "/local-preview-page-not-found/",
+        "route_class": "NOT_FOUND",
+        "surface_id": "not-found",
+    },
+)
+AUDIT_ROUTE_COVERAGE: Final = {
+    "archive_types": [
+        {
+            "archive_type": "category",
+            "reason": None,
+            "reason_code": None,
+            "status": "APPLICABLE",
+            "surface_ids": [
+                "archive-category-mobility",
+                "archive-category-household",
+                "archive-category-preparedness",
+            ],
+        },
+        {
+            "archive_type": "date",
+            "reason": None,
+            "reason_code": None,
+            "status": "APPLICABLE",
+            "surface_ids": ["archive-date-2026-08"],
+        },
+        {
+            "archive_type": "author",
+            "reason": None,
+            "reason_code": None,
+            "status": "APPLICABLE",
+            "surface_ids": ["archive-author-local-admin"],
+        },
+        {
+            "archive_type": "tag",
+            "reason": "The closed ten-post fixture assigns no tag terms.",
+            "reason_code": "NO_SEEDED_TAG_TERMS",
+            "status": "NOT_APPLICABLE",
+            "surface_ids": [],
+        },
+        {
+            "archive_type": "post_type",
+            "reason": "The seed exposes no public custom post type with has_archive enabled.",
+            "reason_code": "NO_PUBLIC_HAS_ARCHIVE_POST_TYPE",
+            "status": "NOT_APPLICABLE",
+            "surface_ids": [],
+        },
+    ],
+    "robots_profile": {
+        "local_observed_policy": "FORCED_ALL_NOINDEX_NOFOLLOW_NOARCHIVE_NOSNIPPET",
+        "local_profile_id": "LOCAL_PREVIEW",
+        "production_expected_not_found": "noindex, nofollow",
+        "production_expected_search_archive": "noindex, follow",
+        "production_robots_evidence": False,
+    },
+}
 PRESENTATION: Final = {
     "household": {
         "anchor": "cluster-home",
@@ -138,6 +350,12 @@ def build_documents() -> tuple[bytes, bytes]:
         local_slug = raw.get("local_slug")
         production_slug = raw.get("production_slug")
         article_code = raw.get("article_code")
+        intent_group_id = raw.get("intent_group_id")
+        content_role = raw.get("content_role")
+        content_role_label = raw.get("content_role_label")
+        primary_query_intent = raw.get("primary_query_intent")
+        comparison_scope = raw.get("comparison_scope")
+        broader_article_id = raw.get("broader_article_id")
         if (
             type(article_id) is not str
             or article_id in portfolio_by_id
@@ -148,9 +366,44 @@ def build_documents() -> tuple[bytes, bytes]:
             or local_slug != f"local-preview-{production_slug}"
             or type(article_code) is not str
             or CODE_RE.fullmatch(article_code) is None
+            or type(intent_group_id) is not str
+            or SLUG_RE.fullmatch(intent_group_id) is None
+            or type(content_role) is not str
+            or CONTENT_ROLE_LABELS.get(content_role) != content_role_label
+            or type(primary_query_intent) is not str
+            or primary_query_intent.strip() != primary_query_intent
+            or not primary_query_intent
+            or len(primary_query_intent) > 180
+            or type(comparison_scope) is not str
+            or not comparison_scope.strip()
+            or len(comparison_scope) > 120
+            or (broader_article_id is not None and type(broader_article_id) is not str)
         ):
             _fail()
         portfolio_by_id[article_id] = raw
+    for intent_group_id in {
+        str(row["intent_group_id"]) for row in portfolio_by_id.values()
+    }:
+        query_intents = [
+            str(row["primary_query_intent"])
+            for row in portfolio_by_id.values()
+            if row["intent_group_id"] == intent_group_id
+        ]
+        if len(query_intents) != len(set(query_intents)):
+            _fail()
+    for article_id, raw in portfolio_by_id.items():
+        broader_article_id = raw.get("broader_article_id")
+        if broader_article_id is None:
+            continue
+        broader = portfolio_by_id.get(broader_article_id)
+        if (
+            broader is None
+            or broader_article_id == article_id
+            or broader.get("intent_group_id") != raw.get("intent_group_id")
+            or broader.get("content_role")
+            not in {"category_guide", "constraint_shortlist"}
+        ):
+            _fail()
 
     projected_articles: list[dict[str, object]] = []
     seen_codes: set[str] = set()
@@ -164,10 +417,16 @@ def build_documents() -> tuple[bytes, bytes]:
         if (
             source is None
             or type(related) is not list
-            or len(related) < 2
+            or len(related) < 1
             or raw.get("article_code") != source.get("article_code")
             or raw.get("production_slug") != source.get("production_slug")
             or raw.get("cluster_id") != source.get("cluster_id")
+            or raw.get("intent_group_id") != source.get("intent_group_id")
+            or raw.get("content_role") != source.get("content_role")
+            or raw.get("content_role_label") != source.get("content_role_label")
+            or raw.get("primary_query_intent") != source.get("primary_query_intent")
+            or raw.get("comparison_scope") != source.get("comparison_scope")
+            or raw.get("broader_article_id") != source.get("broader_article_id")
             or raw.get("category_label") != source.get("category_label")
             or type(raw.get("home_order")) is not int
             or type(raw.get("title")) is not str
@@ -189,18 +448,29 @@ def build_documents() -> tuple[bytes, bytes]:
                 portfolio_by_id.get(related_id) if type(related_id) is str else None
             )
             relationship = relation.get("relationship")
-            if relationship is None:
-                relationship = (
-                    "same_cluster"
+            expected_relationship = (
+                "broader_guide"
+                if source.get("broader_article_id") == related_id
+                else (
+                    "narrower_comparison"
                     if related_source is not None
-                    and related_source.get("cluster_id") == source.get("cluster_id")
-                    else "adjacent_context"
+                    and related_source.get("broader_article_id") == article_id
+                    else "adjacent_condition"
                 )
+            )
+            expected_context = {
+                "adjacent_condition": "近い条件を別の軸で比べる",
+                "broader_guide": "候補を広げて選び直す",
+                "narrower_comparison": "条件を絞った比較へ進む",
+            }[expected_relationship]
             if (
                 related_source is None
                 or related_id == article_id
                 or related_id in related_ids
-                or relationship not in {"same_cluster", "adjacent_context"}
+                or relationship != expected_relationship
+                or relation.get("context") != expected_context
+                or related_source.get("intent_group_id")
+                != source.get("intent_group_id")
             ):
                 _fail()
             related_ids.add(related_id)
@@ -210,17 +480,7 @@ def build_documents() -> tuple[bytes, bytes]:
                     "relationship": relationship,
                 }
             )
-        cluster_size = sum(
-            1
-            for candidate in portfolio_by_id.values()
-            if candidate.get("cluster_id") == source.get("cluster_id")
-        )
-        same_cluster_count = sum(
-            item["relationship"] == "same_cluster" for item in projected_related
-        )
-        if (cluster_size >= 3 and same_cluster_count < 2) or (
-            cluster_size == 2 and same_cluster_count != 1
-        ):
+        if not 1 <= len(projected_related) <= 2:
             _fail()
         projected_articles.append(
             {
@@ -228,6 +488,12 @@ def build_documents() -> tuple[bytes, bytes]:
                 "article_id": article_id,
                 "category_label": source["category_label"],
                 "cluster_id": source["cluster_id"],
+                "intent_group_id": source["intent_group_id"],
+                "content_role": source["content_role"],
+                "content_role_label": source["content_role_label"],
+                "primary_query_intent": source["primary_query_intent"],
+                "comparison_scope": source["comparison_scope"],
+                "broader_article_id": source["broader_article_id"],
                 "home_order": raw["home_order"],
                 "local_slug": source["local_slug"],
                 "production_slug": slug,
@@ -236,6 +502,35 @@ def build_documents() -> tuple[bytes, bytes]:
                 "title": raw["title"],
             }
         )
+
+    projected_by_id = {
+        str(article["article_id"]): article for article in projected_articles
+    }
+    for article_id, article in projected_by_id.items():
+        broader_article_id = article["broader_article_id"]
+        if broader_article_id is None:
+            continue
+        relations = article["related_articles"]
+        broader = projected_by_id.get(str(broader_article_id))
+        if type(relations) is not list or type(broader) is not dict:
+            _fail()
+        reciprocal = broader["related_articles"]
+        if (
+            type(reciprocal) is not list
+            or not any(
+                type(row) is dict
+                and row.get("article_id") == broader_article_id
+                and row.get("relationship") == "broader_guide"
+                for row in relations
+            )
+            or not any(
+                type(row) is dict
+                and row.get("article_id") == article_id
+                and row.get("relationship") == "narrower_comparison"
+                for row in reciprocal
+            )
+        ):
+            _fail()
 
     clusters: list[dict[str, object]] = []
     membership: list[str] = []
@@ -284,6 +579,7 @@ def build_documents() -> tuple[bytes, bytes]:
     article_by_id = {
         str(article["article_id"]): article for article in projected_articles
     }
+    cluster_by_id = {str(cluster["cluster_id"]): cluster for cluster in clusters}
     audit_surfaces: list[dict[str, object]] = [
         {
             "kind": "home",
@@ -297,29 +593,35 @@ def build_documents() -> tuple[bytes, bytes]:
         if type(related) is not list:
             _fail()
         contextual = next(
-            (
-                relation["article_id"]
-                for relation in related
-                if type(relation) is dict
-                and relation.get("relationship") == "same_cluster"
-            ),
+            (relation["article_id"] for relation in related if type(relation) is dict),
             None,
         )
         if type(contextual) is not str:
             _fail()
+        terminal_related = [
+            relation["article_id"]
+            for relation in related
+            if type(relation) is dict and relation.get("article_id") != contextual
+        ]
+        cluster = cluster_by_id.get(str(article["cluster_id"]))
+        if len(terminal_related) > 1 or type(cluster) is not dict:
+            _fail()
         audit_surfaces.append(
             {
                 "article_id": article["article_id"],
+                "cluster_anchor": cluster["anchor"],
                 "cluster_id": article["cluster_id"],
+                "intent_group_id": article["intent_group_id"],
+                "content_role": article["content_role"],
+                "content_role_label": article["content_role_label"],
+                "primary_query_intent": article["primary_query_intent"],
+                "comparison_scope": article["comparison_scope"],
+                "broader_article_id": article["broader_article_id"],
                 "contextual_article_id": contextual,
                 "kind": "article",
                 "local_path": f"/{article['local_slug']}/",
                 "production_path": f"/{article['production_slug']}/",
-                "related_article_ids": [
-                    relation["article_id"]
-                    for relation in related
-                    if relation["relationship"] == "same_cluster"
-                ],
+                "related_article_ids": terminal_related,
                 "surface_id": f"article-{article['article_code']}",
             }
         )
@@ -348,6 +650,8 @@ def build_documents() -> tuple[bytes, bytes]:
         )
     audit_inventory = {
         "clusters": audit_clusters,
+        "local_surfaces": list(AUDIT_LOCAL_SURFACES),
+        "route_coverage": AUDIT_ROUTE_COVERAGE,
         "schema": "RAOS_WORDPRESS_AUDIT_INVENTORY_V3",
         "source_navigation_sha256": hashlib.sha256(navigation_bytes).hexdigest(),
         "source_portfolio_sha256": hashlib.sha256(portfolio_bytes).hexdigest(),

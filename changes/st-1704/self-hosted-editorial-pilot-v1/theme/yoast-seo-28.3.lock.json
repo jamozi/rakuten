@@ -67,6 +67,17 @@
     "required_command": "wp plugin verify-checksums wordpress-seo --version=28.3 --strict",
     "status": "NOT_EXECUTED"
   },
+  "local_preview": {
+    "activation": "REQUIRED_EXACT_VERSION_28_3",
+    "archive_storage": "OWNER_PRIVATE_UNTRACKED_CACHE",
+    "checksum_verification": "ALL_1952_FILES_MATCH_OFFICIAL_SHA256_MANIFEST",
+    "completion": "READY_ONLY_AFTER_PLUGIN_VERSION_AND_THEME_CONFIGURATION_READBACK",
+    "compose_mount": "READ_ONLY_PLUGIN_DIRECTORY",
+    "configuration": "DETERMINISTIC_SEED_OF_REQUIRED_WPSEO_AND_WPSEO_SOCIAL_OPTIONS",
+    "materializer": "changes/wordpress-local-preview-v1/bin/materialize_yoast.py",
+    "production_effect": "NONE",
+    "status": "IMPLEMENTED"
+  },
   "official_plugin_info_url": "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request%5Bslug%5D=wordpress-seo",
   "official_plugin_page": "https://wordpress.org/plugins/wordpress-seo/",
   "observed_at": "2026-08-23T10:55:54Z",

@@ -61,13 +61,13 @@ Review URL appears on the home page or in the Yoast post sitemap. Post ID 19 rem
 unchanged until its separate AT-003 snapshot update. Any mismatch stops later
 publication; it does not authorize an automated retry or a broader WordPress write.
 
-Child theme 1.4.0 independently excludes every temporary Review slug and every
+Child theme 1.5.0 independently excludes every temporary Review slug and every
 allowlisted final slug without an exact bound public snapshot from both the Yoast
 post sitemap and the front-page latest-guides Query block. This is defense in depth,
 not authority to perform the human containment action.
 
-For a 1.4.0 publication readback, both MCP status surfaces must report runtime
-revision `3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a`.
+For a 1.5.0 publication readback, both MCP status surfaces must report runtime
+revision `898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7`.
 The anonymous and authenticated page checks also fetch the two same-origin theme
 stylesheets without redirects and require distinct base/Editorial V2 sentinels,
 HTTP 200, `text/css`, bounded strict UTF-8, and an observed content hash and size.
@@ -82,7 +82,7 @@ it does not shift an independently ready article or authorize a bypass.
 | Offset | Article and WordPress identity | Required gate before the human public action |
 | --- | --- | --- |
 | Day 1 | Suitcase: Review post 26 remains Draft; existing final post 19 is the only update target | Uniquely reconcile the immutable AT-003 request and exact hashes in `REVENUE_UNBLOCK_WORKLOG.md`; use only the human Tools screen if its server-side validation accepts the one-off journal state |
-| Day 4 | Portable power: post 28 moves from Draft to its final slug only after a valid successor snapshot is confirmed | Resolve the Jackery 500 New source conflict from current official specifications; if the packet changes, use the closed revision path and do not reuse a stale snapshot or Rakuten capture |
+| Day 4 | Portable power: post 28 moves from Draft to its final slug only after a valid successor snapshot is confirmed | Recheck the resolved Jackery 500 New evidence under the conditions below; if the packet changes, use the closed revision path and do not reuse a stale snapshot or Rakuten capture |
 | Day 7 | Anker model comparison: post 29 moves from Draft to its final slug | Confirm the existing committed request, final slug, category, exact snapshot, and current product evidence |
 | Day 10 | Dishwasher: prepare and create one new Review Draft; no post ID is preassigned | Capture exact Rakuten link/image evidence for all four products, including one exact THANKO variant, no more than 24 hours before `prepare`; any missing identity or image stops this article |
 | Day 13 | Robot vacuum: post 30 moves from Draft to its final slug | Confirm the existing committed request, final slug, category, exact snapshot, and current product evidence |
@@ -90,6 +90,35 @@ it does not shift an independently ready article or authorize a bypass.
 Every status, slug, category, AT-003 update, and publication step in this table is a
 human WordPress operation. The repository only prepares, records, or verifies the
 closed artifacts allowed by the existing CLI.
+
+## Jackery 500 New source resolution and recheck
+
+The former Jackery 500 New conflict is resolved for the current comparison scope.
+The 2026-08-31 manufacturer product page is the bound primary source for 512Wh,
+500W rated output, and approximately 5.7kg. The earlier conflicting enclosure
+dimensions are not part of the source claim, comparison table, product card, or
+recommendation rationale. Do not restore those dimensions from an old snapshot,
+search result, retailer copy, or a similarly named Jackery generation.
+
+Before a fresh portable-power `prepare`, recapture the exact official URL and reopen
+the source review if any of these conditions is true:
+
+- the page redirects to another model or generation, or no longer identifies
+  `500 New`;
+- capacity, rated output, or weight differs from 512Wh, 500W, or approximately
+  5.7kg anywhere in the current official page or its current manual;
+- a newly published official dimension is proposed for use but conflicts with any
+  other current Jackery primary source;
+- a required locator no longer resolves, the immutable capture or statement hash
+  changes, or the official capture is older than the 14-day article-fact limit;
+- the manufacturer marks the model discontinued or changes the Japanese-market
+  configuration used by the article.
+
+Any triggered condition returns the article to blocked review. Update the source
+packet and locator contract from current primary evidence, remove unresolved facts
+from every decision path, generate a new prepared packet and snapshot, and obtain
+fresh product evidence within its 24-hour limit. A previous human confirmation,
+snapshot, source capture, or Rakuten capture must not be reused.
 
 ## Owner-private evidence and operation gates
 
@@ -284,7 +313,7 @@ recover and verify do not rebuild the confirmed request from current provider fi
    must be `summary_large_image`, and the default social image must be the verified
    1600×900 theme asset with an empty attachment ID. These are persisted human
    settings, not values written by the theme.
-3. A human WordPress administrator installs and activates the generated child-theme 1.4.0
+3. A human WordPress administrator installs and activates the generated child-theme 1.5.0
    package only after reviewing its exact hash. No repository command activates
    either component.
 4. Start a fresh WordPress request and require the Site Health test
