@@ -51,6 +51,270 @@ POLICY_REFS = frozenset(
         "SRC-RAKUTEN-AFFILIATE-GUIDELINE",
     }
 )
+NEW_SOURCE_REQUIRED_LOCATOR_TOKENS: Final[dict[str, tuple[str, ...]]] = {
+    "SRC-ANKER-SOLIX-C300-SAFETY-MANUAL": (
+        "Product Number: A1722",
+        "分解しないでください",
+        "一般ゴミとして廃棄しないでください",
+        "3 ヶ月に一度",
+    ),
+    "SRC-ANKER-SOLIX-C800-SAFETY-MANUAL": (
+        "Product Number: A1753",
+        "分解しないでください",
+        "3 ヶ月に一度",
+    ),
+    "SRC-ANKER-SOLIX-C800-PLUS-SAFETY-MANUAL": (
+        "Product Number: A1754",
+        "分解しないでください",
+        "3 ヶ月に一度",
+    ),
+    "SRC-ANKER-SOLIX-C1000-SAFETY-MANUAL": (
+        "Product Number: A1761",
+        "分解しないでください",
+        "3 ヶ月に一度",
+    ),
+    "SRC-ANKER-SOLIX-C1000-GEN2-SAFETY-MANUAL": (
+        "Product Number: A1763",
+        "分解しないでください",
+        "3 ヶ月に一度",
+    ),
+    "SRC-ANKER-SOLIX-JP-SUPPORT": (
+        "国内に修理センター",
+        "電話 / LINE / メール / チャット",
+        "送料はお客様ご負担",
+    ),
+    "SRC-JACKERY-JP-REPAIR-SERVICE": (
+        "ポータブル電源修理の申し込み",
+        "Jackery Japan カスタマーサポート",
+    ),
+    "SRC-JACKERY-JP-RECYCLING": (
+        "日本国内で販売されたJackery ポータブル電源本体のみ",
+        "送料はお客様のご負担",
+    ),
+    "SRC-DJI-POWER-1000-V2-SAFETY-GUIDELINES-JA": (
+        "DYM1000V2L/DYM1000V2H",
+        "公式サポートまたは正規販売店",
+    ),
+    "SRC-DJI-POWER-1000-V2-USER-MANUAL-JA": (
+        "メンテナンス",
+        "6 ヶ月に 1 回",
+        "通常の廃棄コンテナ",
+    ),
+    "SRC-DJI-JP-AFTERSALES-POLICY": (
+        "DJI Power 1000 V2",
+        "60ヶ月",
+        "オンライン修理受付サービス",
+    ),
+    "SRC-PROTECA-STARIA-CXR-02350": ("H45×W34×D20", "22 L", "2.4kg"),
+    "SRC-PROTECA-FRESTER-EX-01550": (
+        "H45×W34×D20/24",
+        "26/33 L",
+        "2.8kg",
+        "フロントオープン",
+    ),
+    "SRC-ACE-PALISADES3-Z-06910": (
+        "H45×W34×D20",
+        "21 L",
+        "2.6kg",
+        "キャスターストッパー",
+    ),
+    "SRC-BERMAS-INTER-CITY-60524": (
+        "W34×H45×D20",
+        "約22L",
+        "約2.8kg",
+        "USBポートの廃止",
+    ),
+    "SRC-JAL-DOMESTIC-CARRY-ON": (
+        "55cm×40cm×25cm",
+        "45cm×35cm×20cm",
+        "10kg",
+        "ハンドルやキャスター",
+    ),
+    "SRC-PROTECA-AEROFLEX-DX2-01521": (
+        "H55×W36×D23",
+        "35 L",
+        "2.1kg",
+        "MADE IN JAPAN",
+    ),
+    "SRC-SAMSONITE-C-LITE-CS2-09007": (
+        "CS2*09007",
+        "55*40*20",
+        "Curv",
+        "36(42) L",
+        "2,1 kg",
+    ),
+    "SRC-SAMSONITE-CATALOG-2025": (
+        "A154 C-LITE",
+        "134679",
+        "40 x 55 x 20/23",
+        "36/42 l",
+        "2.1 kg",
+    ),
+    "SRC-AMERICAN-TOURISTER-APPLITE4-QJ6-68002": (
+        "QJ6-68002",
+        "55 x 35 x 25/28",
+        "38 /40",
+        "2.1",
+        "リサイクルポリエステル",
+        "ソフトケース",
+    ),
+    "SRC-FREQUENTER-LIEVE-1-250": (
+        "横33cm×縦48cm×奥行23cm",
+        "横35cm×縦55cm×奥行23m=113cm",
+        "約2.7kg",
+        "約33L",
+        "1-623",
+    ),
+    "SRC-INNOVATOR-INV50": (
+        "INV50 Pale Blue 38L Cabin",
+        "H55 x W35 x D25",
+        "3.3 kg",
+        "3room収納",
+        "ワイドオープン",
+        "ブレーキ",
+    ),
+    "SRC-PROTECA-FRESTER-EX-01551": (
+        "H55×W37×D23/27",
+        "36/45 L",
+        "3.4kg",
+        "MADE IN JAPAN",
+    ),
+    "SRC-BERMAS-INTER-CITY-III-60570": (
+        "W36×H54×D24",
+        "約36L",
+        "約3.3kg",
+        "13インチPC",
+        "55mm",
+    ),
+    "SRC-BERMAS-INTER-CITY-II-60561": (
+        "W35×H55×D25",
+        "約36L",
+        "約3.5kg",
+        "13インチPC",
+        "Type-C",
+    ),
+    "SRC-IROBOT-ROOMBA-MINI-SLIM-F115060": (
+        "F115060",
+        "24.5（奥行き）×24.5（幅）×9.2（高さ）",
+        "8.6（奥行き）×22.2（幅）×12.3（高さ）",
+        "約2kg",
+        "充電スタンドでの自動ゴミ収集なし",
+    ),
+    "SRC-PANASONIC-NP-TML1": (
+        "6点",
+        "送風乾燥",
+        "約2.5L",
+        "幅310×高さ435×奥行225",
+        "約7.5㎏",
+    ),
+    "SRC-PANASONIC-SOLOTA-IDENTITY": ("SOLOTA", "NP-TML1", "ホワイト"),
+    "SRC-THANKO-RAKUA-MINI-PLUS": (
+        "tk-mdw22b",
+        "再入荷(予約開始)通知",
+    ),
+    "SRC-SIROCA-DISHWASHER-INSTALLATION": (
+        "SS-MA251",
+        "幅 42 cm",
+        "奥行 44 cm",
+        "高さ 47 cm",
+        "76.0 cm",
+        "上面：70 cm以上",
+    ),
+    "SRC-ELECOM-NESTOUT-700N": ("DE-NEPS700NBE", "712.25Wh", "700W"),
+    "SRC-BLUETTI-DISCONTINUED-MODELS": (
+        "BLUETTI AORA 80",
+        "2026年4月20日に販売終了",
+        "終売",
+    ),
+    "SRC-ANKER-SOLIX-C1000-PLUS": ("1024Wh", "1700W", "11.3kg"),
+    "SRC-AQUA-ADW-M28B": ("28点", "幅370×奥行510×高さ452", "4.5L"),
+    "SRC-PANASONIC-RULO-MINI-MC-RSC10": (
+        "幅249mm×奥行249mm×高さ92mm",
+        "幅134mm×奥行100mm×高さ99mm",
+    ),
+    "SRC-EUFY-E20-T2070": ("T2070511", "Sold Out", "在庫切れ"),
+    "SRC-EUFY-AUTOEMPTY-C10-T2292": (
+        "T2292511",
+        "在庫わずか",
+        "約32.5 x 32.3 x 7.2cm",
+        "約27.5 x 19.1 x 21.2cm",
+        "水拭き",
+        "自動ゴミ収集システム",
+        "18ヶ月保証 + 6ヶ月",
+        "交換用ダストバッグ",
+        "交換用サイドブラシ",
+        "交換用フィルター",
+        "交換用回転ブラシ",
+        "交換用バッテリー",
+    ),
+    "SRC-ROBOROCK-SAROS-10": (
+        "350 × 353 × 79.8",
+        "409 × 440 × 470",
+        "8way全自動ドック",
+    ),
+    "SRC-EUFY-OMNI-E25-T2353": (
+        "32.7 x 34.6 x 11.1",
+        "37.0 x 46.2 x 43.7",
+        "HydroJet",
+        "全自動クリーニングステーション",
+    ),
+    "SRC-DREAME-X50-ULTRA": (
+        "89mm",
+        "457 × 340 × 590",
+        "最大6cm段差対応",
+        "6way全自動PowerDock",
+    ),
+    "SRC-ECOVACS-DEEBOT-X8-PRO": (
+        "353*351.5*98",
+        "350*477*533",
+        "ローラーモップを完璧に洗浄",
+        "最大63℃の熱風乾燥",
+    ),
+    "SRC-RIMOWA-CABIN-U-82350181": ("50 x 幅 35 x 奥行 20", "2 kg", "28 L"),
+    "SRC-SAMSONITE-AUDRINA-SPINNER45": ("47.5 x 37.5 x 24.0", "UB8*09001"),
+    "SRC-MUJI-HARD-CARRY-20L": (
+        "商品番号23184182",
+        "タテ４７×ヨコ３２×マチ２０．５ｃｍ",
+        "ストッパー機能付き",
+    ),
+    "SRC-SAMSONITE-C-LITE-SPINNER55EXP-MIDNIGHT": (
+        "55 x 40 x 20/23",
+        "36 /42",
+        "2.1",
+    ),
+    "SRC-MUJI-HARD-CARRY-36L-SECTION": ("36L", "2.9kg", "キャスターストッパー"),
+    "SRC-MUJI-FRONT-OPEN-32L": (
+        "商品番号84950087",
+        "タテ５４×ヨコ３７×マチ２４ｃｍ",
+        "フルオーブンも可能",
+        "高さ1cmきざみ",
+        "静かな双輪キャスター",
+    ),
+    "SRC-SAMSONITE-C-LITE-SPINNER55EXP-BLACK": ("55 x 40 x 20/23", "36 /42"),
+    "SRC-SWITCHBOT-K11-WIFI-FUNCTIONS": ("2.4GHz", "Schedule", "Map"),
+    "SRC-SWITCHBOT-K11-SETUP": ("SwitchBot App", "SSID", "2.4GHz"),
+    "SRC-ECOFLOW-RIVER3-PLUS": (
+        "286Wh",
+        "600W",
+        "販売終了",
+        "RIVER 3 Plus (290)",
+    ),
+    "SRC-ECOFLOW-DELTA3-PLUS": (
+        "1024Wh",
+        "1500W",
+        "12.5",
+        "売り切れ",
+        "available",
+    ),
+    "SRC-BLUETTI-AORA30-V2": ("AORA 30 V2", '"available":true'),
+    "SRC-BLUETTI-AORA100-V2": ("AORA 100 V2", '"available":true'),
+    "SRC-BLUETTI-AORA-SERIES-COLLECTION": (
+        "AORA 30 V2: 288Wh",
+        "重量約4.3kg",
+        "AORA 100 V2: 1024Wh",
+        "重量約11.5kg",
+    ),
+}
 REMOVED_RAKUTEN_ACE_REFS = frozenset(
     {
         "SRC-RAKUTEN-ACE-CRESTA-06316",
@@ -65,32 +329,89 @@ REMOVED_RAKUTEN_ACE_REFS = frozenset(
 EXPECTED_LOCATOR_ATOMIC_FACTS: Final[dict[tuple[str, str], tuple[str, ...]]] = {
     (
         "SRC-ACE-CRESTA-06316",
-        "CLM-ST1704-SUITCASE-CRESTA-SPECS",
-    ): ("H55×W35×D25/29cm", "34/39L", "3.2kg"),
-    (
-        "SRC-ACE-CRESTA-06316",
-        "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
-    ): ("34/39L", "3.2kg"),
+        "CLM-ST1704-SUITCASE-CRESTA-06316-EXCLUDED",
+    ): (
+        "ACEクレスタ",
+        "06316",
+        "ブラックカーボン",
+        "H55×W35×D25/29cm",
+        "34/39L",
+        "3.2kg",
+        "在庫切れ",
+    ),
     (
         "SRC-ACE-DIFFERENCE-05721",
         "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS",
     ): (
+        "05721",
+        "06：ホワイト",
         "H55×W36×D24/27cm",
         "32/38L",
         "3.5kg",
         "2通りの開閉",
         "容量拡張",
         "キャスターストッパー",
+        "在庫あります",
+        "カートに入れる",
     ),
     (
         "SRC-ACE-DIFFERENCE-05721",
         "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
     ): (
+        "05721",
+        "06：ホワイト",
         "32/38L",
         "3.5kg",
         "容量拡張",
         "2通りの開閉",
         "キャスターストッパー",
+        "在庫あります",
+        "カートに入れる",
+    ),
+    (
+        "SRC-ACE-DIFFERENCE-05721",
+        "CLM-PORTFOLIO-FRONT-DIFFERENCE-05721",
+    ): (
+        "05721",
+        "06：ホワイト",
+        "H55×W36×D24/27cm",
+        "32/38L",
+        "3.5kg",
+        "2通りの開閉",
+        "容量拡張",
+        "キャスターストッパー",
+        "在庫あります",
+        "カートに入れる",
+    ),
+    (
+        "SRC-ACE-DIFFERENCE-05721",
+        "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
+    ): (
+        "05721",
+        "06：ホワイト",
+        "H55×W36×D24/27cm",
+        "32/38L",
+        "3.5kg",
+        "2通りの開閉",
+        "容量拡張",
+        "キャスターストッパー",
+        "在庫あります",
+        "カートに入れる",
+    ),
+    (
+        "SRC-ACE-DIFFERENCE-05721",
+        "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+    ): (
+        "05721",
+        "06：ホワイト",
+        "H55×W36×D24/27cm",
+        "32/38L",
+        "3.5kg",
+        "2通りの開閉",
+        "容量拡張",
+        "キャスターストッパー",
+        "在庫あります",
+        "カートに入れる",
     ),
     (
         "SRC-ACE-MAXPASS4-01471",
@@ -146,54 +467,47 @@ EXPECTED_LOCATOR_ATOMIC_FACTS: Final[dict[tuple[str, str], tuple[str, ...]]] = {
     ): ("512Wh", "500W", "5.7kg"),
     (
         "SRC-BLUETTI-AC70",
-        "CLM-ST1704-POWER-AC70-SPECS",
-    ): ("768Wh", "1,000W", "10.2kg", "314mm×209.5mm×255.8mm"),
-    (
-        "SRC-BLUETTI-AC70",
-        "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
-    ): ("768Wh", "1,000W", "10.2kg"),
+        "CLM-ST1704-POWER-AC70-EXCLUDED",
+    ): ("お知らせ", "終売", "売り切れ"),
     (
         "SRC-ECOFLOW-DELTA3-CLASSIC",
-        "CLM-ST1704-POWER-DELTA-SPECS",
-    ): ("1024Wh", "1500W", "12.1kg", "20.0×39.8×28.3cm"),
+        "CLM-ST1704-POWER-DELTA3-CLASSIC-EXCLUDED",
+    ): ("売り切れ", '"available":true'),
     (
-        "SRC-ECOFLOW-DELTA3-CLASSIC",
-        "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
-    ): ("1024Wh", "1500W", "12.1kg"),
-    (
-        "SRC-PANASONIC-NP-TMLK1",
-        "CLM-ST1704-DISH-NP-TMLK1-SPECS",
+        "SRC-SIROCA-SS-M171",
+        "CLM-ST1704-DISH-SS-M171-SPECS",
     ): (
-        "6点",
-        "2.5L",
-        "幅310×高さ435×奥行225",
-        "7.5kg",
-        "着脱タンク式",
+        "SS-M171",
+        "16点",
+        "5L",
+        "幅42×奥行43.5×高さ43.5cm",
+        "13kg",
+        "タンク式（手動給水）/分岐水栓式",
         "送風乾燥",
     ),
     (
-        "SRC-PANASONIC-NP-TMLK1",
+        "SRC-SIROCA-SS-M171",
         "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
-    ): ("6点", "2.5L", "幅310×高さ435×奥行225", "送風乾燥"),
+    ): ("16点", "5L", "幅42×奥行43.5×高さ43.5cm", "送風乾燥"),
     (
-        "SRC-THANKO-RAKUA-MINI-COLOR",
+        "SRC-THANKO-RAKUA-MINI-TK-MDW22W",
         "CLM-ST1704-DISH-RAKUA-SPECS",
     ): (
         "11〜12点",
         "3.2L",
-        "幅308×奥行315×高さ415",
+        "幅 308× 高さ 415× 奥行 315",
         "開扉時奥行:594mm",
         "8kg",
-        "タンク式",
-        "温風乾燥",
+        "下ノズル噴射式",
+        "熱風乾燥",
     ),
     (
-        "SRC-THANKO-RAKUA-MINI-COLOR",
+        "SRC-THANKO-RAKUA-MINI-TK-MDW22W",
         "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
     ): (
         "11〜12点",
         "3.2L",
-        "幅308×奥行315×高さ415",
+        "幅 308× 高さ 415× 奥行 315",
         "開扉時奥行:594mm",
     ),
     (
@@ -213,32 +527,6 @@ EXPECTED_LOCATOR_ATOMIC_FACTS: Final[dict[tuple[str, str], tuple[str, ...]]] = {
         "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
     ): ("16点", "6L", "幅42×奥行44×高さ47cm", "送風", "オートオープン"),
     (
-        "SRC-PANASONIC-NP-TSP1",
-        "CLM-ST1704-DISH-NP-TSP1-SPECS",
-    ): (
-        "24点",
-        "9L",
-        "幅550",
-        "高さ600",
-        "奥行341",
-        "19kg",
-        "タンク式",
-        "乾燥機能",
-        "リフトアップオープンドア",
-    ),
-    (
-        "SRC-PANASONIC-NP-TSP1",
-        "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
-    ): (
-        "24点",
-        "9L",
-        "幅550",
-        "高さ600",
-        "奥行341",
-        "乾燥機能",
-        "リフトアップオープンドア",
-    ),
-    (
         "SRC-ANKER-SOLIX-C800-PLUS",
         "CLM-ST1704-ANKER-C800-SPECS",
     ): ("768Wh", "1200W", "10.9kg", "37.1×20.5×25.0cm"),
@@ -256,27 +544,67 @@ EXPECTED_LOCATOR_ATOMIC_FACTS: Final[dict[tuple[str, str], tuple[str, ...]]] = {
     ): ("1024Wh", "1550W", "11.3kg", "38.4×20.8×24.4cm"),
     (
         "SRC-ANKER-SOLIX-C1000-GEN2",
+        "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
+    ): (
+        "4000回",
+        "AC×5/USB-C×3",
+        "AC×6/USB-C×2",
+        "SurgePad",
+        "拡張バッテリー対応",
+        "3,000回",
+        "0.01秒",
+        "0.02秒",
+    ),
+    (
+        "SRC-ANKER-SOLIX-C1000-GEN2",
         "CLM-ST1704-ANKER-C1000-GENERATION-DIFF",
     ): ("1024Wh", "1550W", "11.3kg"),
     (
         "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY",
-        "CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS",
-    ): (
-        "24.5×24.5×9.2",
-        "17.8×21.2×28.5",
-        "掃除機がけ",
-        "使い捨て床拭きシート",
-        "自動ゴミ収集",
-        "自動給水/ローラーモップの自動洗浄/自動乾燥―",
-    ),
+        "CLM-ST1704-ROBOT-ROOMBA-MINI-F155260-EXCLUDED",
+    ): ("Roomba Mini", "在庫切れ"),
     (
         "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "CLM-PORTFOLIO-ROBOT-ROOMBA-MINI-F155260-EXCLUDED",
+    ): ("Roomba Mini", "在庫切れ"),
+    (
+        "SRC-EUFY-AUTOEMPTY-C10-T2292",
+        "CLM-ST1704-ROBOT-EUFY-C10-SPECS",
+    ): (
+        "T2292511",
+        "32.5x32.3x7.2cm",
+        "27.5x19.1x21.2cm",
+        "水拭き-",
+        "自動ゴミ収集システム◯",
+        "在庫わずか",
+    ),
+    (
+        "SRC-EUFY-AUTOEMPTY-C10-T2292",
         "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
     ): (
-        "24.5×24.5×9.2",
-        "17.8×21.2×28.5",
-        "使い捨て床拭きシート",
-        "自動ゴミ収集",
+        "T2292511",
+        "32.5x32.3x7.2cm",
+        "27.5x19.1x21.2cm",
+        "在庫わずか",
+    ),
+    (
+        "SRC-EUFY-AUTOEMPTY-C10-T2292",
+        "CLM-PORTFOLIO-ROBOT-EUFY-C10",
+    ): (
+        "T2292511",
+        "32.5x32.3x7.2cm",
+        "27.5x19.1x21.2cm",
+        "水拭き-",
+        "在庫わずか",
+    ),
+    (
+        "SRC-EUFY-AUTOEMPTY-C10-T2292",
+        "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+    ): (
+        "T2292511",
+        "32.5x32.3x7.2cm",
+        "27.5x19.1x21.2cm",
+        "在庫わずか",
     ),
     (
         "SRC-SWITCHBOT-K11-PRO",
@@ -301,21 +629,12 @@ EXPECTED_LOCATOR_ATOMIC_FACTS: Final[dict[tuple[str, str], tuple[str, ...]]] = {
     ),
     (
         "SRC-SWITCHBOT-K10-PRO-COMBO",
-        "CLM-ST1704-ROBOT-K10-COMBO-SPECS",
+        "CLM-ST1704-ROBOT-K10-COMBO-EXCLUDED",
     ): (
         "248×248×92mm",
         "195×297×410mm",
         "お掃除シート",
         "デュアル集塵ステーション",
-        "ロボット+スティックが1つのステーション",
-    ),
-    (
-        "SRC-SWITCHBOT-K10-PRO-COMBO",
-        "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
-    ): (
-        "248×248×92mm",
-        "195×297×410mm",
-        "お掃除シート",
         "ロボット+スティックが1つのステーション",
     ),
     (
@@ -569,6 +888,11 @@ def _target(
     fragment: str = UNIQUE_FRAGMENT,
     charset: str | None = None,
     observed_on: date = date(2026, 8, 23),
+    media_type: str = "text/html",
+    locator_mode: str = "RAW_BODY_EXACTLY_ONCE",
+    expected_body_sha256: str | None = None,
+    reviewed_page_number: int | None = None,
+    host: str = "official.example",
 ) -> capture_module.SourceCaptureTarget:
     locators: tuple[capture_module.SourceLocator, ...]
     if locator_status == "READY":
@@ -577,19 +901,23 @@ def _target(
                 "CLM-ST1704-TEST-OFFICIAL-SPECS",
                 "a" * 64,
                 (fragment,),
+                reviewed_page_number,
             ),
         )
     else:
         locators = ()
     return capture_module.SourceCaptureTarget(
         source_ref="SRC-TEST-OFFICIAL",
-        url="https://official.example/specifications",
-        host="official.example",
+        url=f"https://{host}/specifications",
+        host=host,
         path="/specifications",
         observed_on=observed_on,
         charset=charset,
         locator_status=locator_status,
         locators=locators,
+        media_type=media_type,
+        locator_mode=locator_mode,
+        expected_body_sha256=expected_body_sha256,
     )
 
 
@@ -627,7 +955,7 @@ def _failure_code(error: pytest.ExceptionInfo[Exception]) -> object:
     return cast(capture_module.OfficialSourceCaptureFailure, error.value).code
 
 
-def test_tracked_plan_is_exactly_19_official_plus_three_policy_sources() -> None:
+def test_tracked_plan_exactly_matches_registry_and_policy_inventory() -> None:
     plan = capture_module.load_source_capture_plan(REPOSITORY_ROOT)
     registry = json.loads(
         (SOURCES_ROOT / "source-registry.v1.json").read_text(encoding="utf-8")
@@ -638,14 +966,31 @@ def test_tracked_plan_is_exactly_19_official_plus_three_policy_sources() -> None
         for collection in (registry["sources"], registry["policy_sources"])
         for value in collection
     }
+    locator_contract = json.loads(
+        (SOURCES_ROOT / "source-locator-contract.v1.json").read_text(encoding="utf-8")
+    )
+    expected_locator_count = sum(
+        len(source["locators"]) for source in locator_contract["sources"]
+    )
 
-    assert len(plan.targets) == 22
-    assert len(expected_urls) == 22
+    assert len(plan.targets) == len(expected_urls)
+    pending = {
+        target.source_ref
+        for target in plan.targets
+        if target.locator_status == "LOCATORS_PENDING"
+    }
+    assert pending == set()
     assert all(target.locator_status == "READY" for target in plan.targets)
-    assert sum(len(target.locators) for target in plan.targets) == 40
+    assert (
+        sum(len(target.locators) for target in plan.targets) == expected_locator_count
+    )
     assert set(expected_urls) == set(capture_namespace["SOURCE_REFS"])
-    assert sum(target.source_ref not in POLICY_REFS for target in plan.targets) == 19
-    assert sum(target.source_ref in POLICY_REFS for target in plan.targets) == 3
+    assert sum(target.source_ref not in POLICY_REFS for target in plan.targets) == len(
+        registry["sources"]
+    )
+    assert sum(target.source_ref in POLICY_REFS for target in plan.targets) == len(
+        registry["policy_sources"]
+    )
     assert {target.source_ref: target.url for target in plan.targets} == expected_urls
     assert not REMOVED_RAKUTEN_ACE_REFS & set(expected_urls)
     assert all(not value.startswith("SRC-RAKUTEN-ACE-") for value in expected_urls)
@@ -659,9 +1004,16 @@ def test_tracked_contract_uses_grouped_string_fragments_only() -> None:
         locator for source in contract["sources"] for locator in source["locators"]
     ]
 
-    assert len(locators) == 40
+    assert len(locators) == sum(
+        len(source["locators"]) for source in contract["sources"]
+    )
     assert all(
-        set(locator) == {"claim_id", "exact_utf8_fragments"} for locator in locators
+        set(locator)
+        in (
+            {"claim_id", "exact_utf8_fragments"},
+            {"claim_id", "exact_utf8_fragments", "reviewed_page_number"},
+        )
+        for locator in locators
     )
     assert all(
         type(locator["exact_utf8_fragments"]) is list
@@ -670,7 +1022,7 @@ def test_tracked_contract_uses_grouped_string_fragments_only() -> None:
         for locator in locators
     )
     assert any(len(locator["exact_utf8_fragments"]) > 1 for locator in locators)
-    assert sum(len(locator["exact_utf8_fragments"]) for locator in locators) > 40
+    assert sum(len(locator["exact_utf8_fragments"]) for locator in locators) > 98
     assert all(
         1 <= len(fragment.encode("utf-8")) <= 2_000
         for locator in locators
@@ -678,7 +1030,7 @@ def test_tracked_contract_uses_grouped_string_fragments_only() -> None:
     )
 
 
-def test_all_40_logical_locators_cover_claim_specific_atomic_facts() -> None:
+def test_reviewed_legacy_and_exclusion_locators_cover_atomic_facts() -> None:
     plan = capture_module.load_source_capture_plan(REPOSITORY_ROOT)
     observed: dict[tuple[str, str], tuple[str, ...]] = {}
     missing: dict[tuple[str, str], tuple[str, ...]] = {}
@@ -688,7 +1040,8 @@ def test_all_40_logical_locators_cover_claim_specific_atomic_facts() -> None:
             key = (target.source_ref, locator.claim_id)
             material = _semantic_text("\n".join(locator.exact_utf8_fragments))
             expected = EXPECTED_LOCATOR_ATOMIC_FACTS.get(key)
-            assert expected is not None, f"unreviewed logical locator: {key!r}"
+            if expected is None:
+                continue
             absent = tuple(
                 token for token in expected if _semantic_text(token) not in material
             )
@@ -697,31 +1050,88 @@ def test_all_40_logical_locators_cover_claim_specific_atomic_facts() -> None:
                 missing[key] = absent
 
     assert set(observed) == set(EXPECTED_LOCATOR_ATOMIC_FACTS)
-    assert len(observed) == 40
+    assert len(observed) == len(EXPECTED_LOCATOR_ATOMIC_FACTS)
     assert not missing, "claim-source locator semantic gaps: " + "; ".join(
         f"{source_ref}/{claim_id}: {tokens!r}"
         for (source_ref, claim_id), tokens in sorted(missing.items())
     )
 
+    # The exact F155260 SKU is encoded in the official page's hidden item
+    # field rather than reader-visible text.  Keep that structural identity
+    # bound even though the semantic-text assertions above intentionally
+    # discard HTML attributes.
+    f155_target = plan.target("SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY")
+    f155_locators = {
+        locator.claim_id: "\n".join(locator.exact_utf8_fragments)
+        for locator in f155_target.locators
+    }
+    for claim_id in (
+        "CLM-ST1704-ROBOT-ROOMBA-MINI-F155260-EXCLUDED",
+        "CLM-PORTFOLIO-ROBOT-ROOMBA-MINI-F155260-EXCLUDED",
+    ):
+        assert '<input type="hidden" name="item_cd" value="F155260" />' in (
+            f155_locators[claim_id]
+        )
 
-def test_each_of_five_article_plans_has_four_sources_plus_fixed_policy_sources() -> (
-    None
-):
+    difference_target = plan.target("SRC-ACE-DIFFERENCE-05721")
+    for locator in difference_target.locators:
+        material = "\n".join(locator.exact_utf8_fragments)
+        assert '<input type="hidden" name="goods" value="05721-06">' in material
+        assert '<dd id="spec_stock_msg">在庫あります</dd>' in material
+        assert 'value="カートに入れる">カートに入れる</button>' in material
+
+
+def test_new_primary_source_locators_cover_reviewed_atomic_facts() -> None:
+    plan = capture_module.load_source_capture_plan(REPOSITORY_ROOT)
+    observed: set[str] = set()
+    for source_ref, expected_tokens in NEW_SOURCE_REQUIRED_LOCATOR_TOKENS.items():
+        target = plan.target(source_ref)
+        material = _semantic_text(
+            "\n".join(
+                fragment
+                for locator in target.locators
+                for fragment in locator.exact_utf8_fragments
+            )
+        )
+        assert all(_semantic_text(token) in material for token in expected_tokens), (
+            source_ref
+        )
+        observed.add(source_ref)
+
+    assert observed == set(NEW_SOURCE_REQUIRED_LOCATOR_TOKENS)
+
+
+def test_each_of_ten_article_plans_has_exact_sources_plus_fixed_policy() -> None:
     plan = capture_module.load_source_capture_plan(REPOSITORY_ROOT)
     namespace = runpy.run_path(str(CAPTURE_SCRIPT))
     article_ids = cast(tuple[str, ...], namespace["ARTICLE_IDS"])
 
-    assert len(article_ids) == 5
+    assert len(article_ids) == 10
     assert {article_id for article_id, _refs in plan.article_sources} == set(
         article_ids
     )
+    expected_product_source_counts = {
+        "st1703-first-suitcase-comparison": 7,
+        "st1704-portable-power-station-guide": 29,
+        "st1704-anker-solix-c300-c800-c1000-differences": 13,
+        "st1704-countertop-dishwasher-for-small-households": 15,
+        "st1704-compact-robot-vacuum-shortlist": 15,
+        "carry-on-suitcase-under-100-seats": 10,
+        "lightweight-carry-on-suitcase-under-3kg": 14,
+        "front-open-carry-on-suitcase-with-stopper": 10,
+        "roomba-mini-vs-switchbot-k11-pro": 10,
+        "solota-vs-rakua-mini-plus": 8,
+    }
     for article_id in article_ids:
         selected = plan.for_article(article_id)
         selected_refs = [target.source_ref for target in selected]
-        assert len(selected_refs) == 7
+        assert len(selected_refs) == expected_product_source_counts[article_id] + 3
         assert len(selected_refs) == len(set(selected_refs))
         assert POLICY_REFS < set(selected_refs)
-        assert sum(source_ref not in POLICY_REFS for source_ref in selected_refs) == 4
+        assert (
+            sum(source_ref not in POLICY_REFS for source_ref in selected_refs)
+            == expected_product_source_counts[article_id]
+        )
 
 
 def test_plan_refuses_unknown_source_and_article_identifiers() -> None:
@@ -754,6 +1164,37 @@ def test_registry_change_without_locator_contract_rebind_is_rejected(
     )
     (destination / "source-locator-contract.v1.json").write_bytes(
         (SOURCES_ROOT / "source-locator-contract.v1.json").read_bytes()
+    )
+
+    with pytest.raises(capture_module.OfficialSourceCaptureFailure) as failure:
+        capture_module.load_source_capture_plan(private_root)
+    assert _failure_code(failure) is (
+        capture_module.OfficialSourceCaptureFailureCode.CONTRACT_INVALID
+    )
+
+
+def test_rebound_registry_and_locator_cannot_substitute_an_unreviewed_url(
+    private_root: Path,
+) -> None:
+    destination = private_root / capture_module.SOURCE_REGISTRY_RELATIVE_PATH.parent
+    destination.mkdir(parents=True)
+    registry = json.loads(
+        (SOURCES_ROOT / "source-registry.v1.json").read_text(encoding="utf-8")
+    )
+    contract = json.loads(
+        (SOURCES_ROOT / "source-locator-contract.v1.json").read_text(encoding="utf-8")
+    )
+    registry["sources"][0]["url"] = (
+        "https://www.ankerjapan.com/products/unreviewed-substitute"
+    )
+    contract["source_registry_sha256"] = capture_module.canonical_sha256(registry)
+    (destination / "source-registry.v1.json").write_text(
+        json.dumps(registry, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8",
+    )
+    (destination / "source-locator-contract.v1.json").write_text(
+        json.dumps(contract, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8",
     )
 
     with pytest.raises(capture_module.OfficialSourceCaptureFailure) as failure:
@@ -850,6 +1291,110 @@ def test_exact_get_uses_fixed_tls_timeouts_and_no_credentials() -> None:
     headers = connection.requests[0][2]
     assert "Authorization" not in headers
     assert "Cookie" not in headers
+
+
+def test_machine_readable_product_endpoint_accepts_verified_json_javascript() -> None:
+    body = b'{"id":123,"title":"INV50","weight_kg":3.3}'
+    target = _target(media_type="text/javascript", charset="utf-8")
+    fetched, factory = _fetch(
+        _Response(
+            body,
+            headers=[
+                ("Content-Type", "text/javascript; charset=utf-8"),
+                ("Content-Length", str(len(body))),
+            ],
+        ),
+        target=target,
+    )
+
+    assert fetched.content_type == "text/javascript"
+    assert fetched.body == body
+    assert factory.connection.requests[0][2]["Accept"] == (
+        "application/json, text/javascript"
+    )
+
+
+def test_pdf_capture_requires_pinned_body_but_uses_reviewed_page_text() -> None:
+    body = b"%PDF-1.7\nreviewed binary fixture\n%%EOF\n"
+    target = _target(
+        locator_status="READY",
+        fragment="134679\nSpinner 55 EXP\n40 x 55 x 20/23\n36/42 l\n2.1 kg",
+        media_type="application/pdf",
+        locator_mode="PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+        expected_body_sha256=bytes_sha256(body),
+        reviewed_page_number=10,
+    )
+    fetched, factory = _fetch(
+        _Response(
+            body,
+            headers=[
+                ("Content-Type", "application/pdf"),
+                ("Content-Length", str(len(body))),
+            ],
+        ),
+        target=target,
+    )
+    evidence = capture_module._evidence(fetched)
+
+    assert fetched.content_type == "application/pdf"
+    assert evidence.body_sha256 == bytes_sha256(body)
+    assert evidence.locators[0][2][0][0].startswith("134679")
+    assert factory.connection.requests[0][2]["Accept"] == "application/pdf"
+
+
+def test_pdf_capture_rejects_body_drift_before_reviewed_locator_binding() -> None:
+    expected = b"%PDF-1.7\nexpected\n%%EOF\n"
+    changed = b"%PDF-1.7\nchanged\n%%EOF\n"
+    target = _target(
+        locator_status="READY",
+        fragment="reviewed page text",
+        media_type="application/pdf",
+        locator_mode="PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+        expected_body_sha256=bytes_sha256(expected),
+        reviewed_page_number=10,
+    )
+    with pytest.raises(capture_module.OfficialSourceCaptureFailure) as failure:
+        _fetch(
+            _Response(
+                changed,
+                headers=[
+                    ("Content-Type", "application/pdf"),
+                    ("Content-Length", str(len(changed))),
+                ],
+            ),
+            target=target,
+        )
+    assert _failure_code(failure) is (
+        capture_module.OfficialSourceCaptureFailureCode.LOCATOR_MISMATCH
+    )
+
+
+def test_american_tourister_uses_official_intermediate_with_system_verification() -> (
+    None
+):
+    der = ssl.PEM_cert_to_DER_cert(capture_module._AMERICAN_TOURISTER_INTERMEDIATE_PEM)
+    assert bytes_sha256(der) == (
+        capture_module._AMERICAN_TOURISTER_INTERMEDIATE_SHA256_FINGERPRINT
+    )
+    assert capture_module._AMERICAN_TOURISTER_INTERMEDIATE_SOURCE == (
+        "https://secure.globalsign.com/cacert/gsgccr3dvtlsca2020.crt"
+    )
+
+    fetched, factory = _fetch(
+        _Response(), target=_target(host="www.americantourister.jp")
+    )
+    context = cast(ssl.SSLContext, factory.opens[0]["tls_context"])
+    assert fetched.target.host == "www.americantourister.jp"
+    assert context.verify_mode == ssl.CERT_REQUIRED
+    assert context.check_hostname is True
+
+
+def test_antibot_or_other_non_200_response_fails_closed_without_capture() -> None:
+    with pytest.raises(capture_module.OfficialSourceCaptureFailure) as failure:
+        _fetch(_Response(status=403))
+    assert _failure_code(failure) is (
+        capture_module.OfficialSourceCaptureFailureCode.RESPONSE_INVALID
+    )
 
 
 def test_system_transport_tries_later_verified_endpoint_before_one_get(
@@ -1548,8 +2093,13 @@ def test_capture_cli_exposes_only_two_closed_commands_and_fixed_selectors() -> N
         "--help",
         "--article-id",
     }
-    assert len(cast(tuple[str, ...], namespace["SOURCE_REFS"])) == 22
-    assert len(cast(tuple[str, ...], namespace["ARTICLE_IDS"])) == 5
+    registry = json.loads(
+        (SOURCES_ROOT / "source-registry.v1.json").read_text(encoding="utf-8")
+    )
+    assert len(cast(tuple[str, ...], namespace["SOURCE_REFS"])) == (
+        len(registry["sources"]) + len(registry["policy_sources"])
+    )
+    assert len(cast(tuple[str, ...], namespace["ARTICLE_IDS"])) == 10
     assert not REMOVED_RAKUTEN_ACE_REFS & set(namespace["SOURCE_REFS"])
 
 
@@ -1603,7 +2153,7 @@ def test_public_capture_entries_rebind_only_tracked_source_and_article_targets(
 
     assert source_result == article_result == ()
     assert [target.source_ref for target in selected[0]] == ["SRC-ANKER-SOLIX-C300"]
-    assert len(selected[1]) == 7
+    assert len(selected[1]) == 32
     assert {target.source_ref for target in selected[1]} >= POLICY_REFS
     assert factory.opens == []
 

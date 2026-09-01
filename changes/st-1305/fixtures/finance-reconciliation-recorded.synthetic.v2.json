@@ -3,13 +3,13 @@
   "profile": "RAOS_ST1305_RECORDED_SYNTHETIC_V2",
   "scenario_id": "ST1305.RECORDED.SYNTHETIC.0001",
   "synthetic": true,
-  "unit_economics_fixture_sha256": "5d7d0f5676c819183a49a13994718e559d01eab3dceb12c1ad1966d385f90734",
-  "expected_unit_economics_input_sha256": "8deb4c2f93c4afac5136c54d98d565359f118516bf074881478f38e70749d5d3",
-  "expected_unit_economics_result_sha256": "88797cb793f61184fb28efaa8373367aa3eb35b9e2814f10925943ee7b7ff94d",
+  "unit_economics_fixture_sha256": "be6f9d9a14dd91078d66805f47ac1d4828e4a7d5f2275c58e9ab4e2cdb382fb1",
+  "expected_unit_economics_input_sha256": "ff1909fffee9cfd9a0e34502c6f8ed9376aaa9ab16fafbad08fc02490add2508",
+  "expected_unit_economics_result_sha256": "1b46e45d89d24d16875bb11d153def331bfa2bae45ebce8b26920a4892d78f91",
   "request": {
     "run_id": "018f3e90-7b00-7000-8000-000000001305",
     "requested_at": "2026-09-08T00:00:00Z"
   },
-  "expected_input_sha256": "c0020a6a65da017442c55139870a2cf39024defe0536e6df50f015acae1dea8a",
-  "expected_result_sha256": "1d8897dd5d3a79364f942dff7ea361a1d920fd1fe143c688f7f1fe2c5bc5e598"
+  "expected_input_sha256": "95f8f83c3cbb23c6082c6fdd58c8e12c84b903b77f88953cb6704df56a3ace4d",
+  "expected_result_sha256": "9e38edf8fd61a15d58cafdea996b05f4f8f77dfc937b52f79aa6c06c241b6cd0"
 }

@@ -9,11 +9,20 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Deployment
 {
-    const RUNTIME_REVISION = '24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55';
+    const RUNTIME_REVISION = '8204d0f1ff573a5edf72abe4ef69ef422af15815adf5ecbc3a74bf8ec1d9c7d8';
     const MAX_PACKAGE_BYTES = 33554432;
     const MAX_FILE_BYTES = 8388608;
     const MAX_FILE_COUNT = 2048;
     const THEME_SLUG = 'kurashinoshirube-child';
+    const REVIEWED_MIGRATION_ASSESSMENT = 'REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION';
+    const REVIEWED_MEASUREMENT_ARTIFACT_ID = 'raos-editorial-measurement-v1';
+    const REVIEWED_MEASUREMENT_SLUG = 'raos-editorial-measurement';
+    const REVIEWED_MEASUREMENT_VERSION = '1.0.0';
+    const REVIEWED_MEASUREMENT_PACKAGE_SHA256 = 'b351fd53e6c62e3fa363a67a994dfe2ce2a934e1f3b65b8c3102906eaa190d5a';
+    const REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256 = 'ed4374ef7e7efca82c8f2063283f50b5a7b316ee98b3fb71b18a46acb2a61aa3';
+    const BOOTSTRAP_ARTIFACT_ID = 'raos-codex-mcp-abilities-v1';
+    const BOOTSTRAP_SLUG = 'raos-codex-mcp-abilities';
+    const BOOTSTRAP_VERSION = '1.3.1';
 
     private $plugin;
 
@@ -148,6 +157,157 @@ final class RAOS_Codex_MCP_Deployment
             ),
             'private_directory_ready' => $private_ready,
         );
+    }
+
+    /**
+     * Validate the sole manual-bootstrap exception without changing state.
+     * The staged package, immutable proposal, installed tree, active plugin
+     * header, host package pin, and loaded runtime must all describe one exact
+     * abilities 1.3.1 release.
+     */
+    public static function validate_manual_bootstrap_attestation($row)
+    {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
+        if (! is_array($row)
+            || ! isset(
+                $row['proposal_id'],
+                $row['kind'],
+                $row['state'],
+                $row['result_code'],
+                $row['created_by'],
+                $row['expires_at_gmt'],
+                $row['after_sha256'],
+                $row['payload'],
+                $row['package_path']
+            )
+            || 'PLUGIN_CHANGE' !== $row['kind']
+            || 'MANUAL_REQUIRED' !== $row['state']
+            || 'MANUAL_REVIEW_REQUIRED' !== $row['result_code']
+            || strtotime($row['expires_at_gmt'] . ' UTC') <= time()
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['proposal_id'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($row['after_sha256'])
+            || ! is_array($row['payload'])
+            || ! isset($row['payload']['code_package'])
+            || ! is_array($row['payload']['code_package'])
+            || ! is_string($row['package_path'])
+            || is_wp_error(RAOS_Codex_MCP_Store::validate_proposal_integrity($row))) {
+            return self::error('raos_codex_bootstrap_attestation_precondition_failed', 409);
+        }
+        $descriptor = $row['payload']['code_package'];
+        if (! isset(
+            $descriptor['schema'],
+            $descriptor['kind'],
+            $descriptor['source'],
+            $descriptor['artifact_id'],
+            $descriptor['slug'],
+            $descriptor['new_version'],
+            $descriptor['package_sha256'],
+            $descriptor['file_manifest_sha256'],
+            $descriptor['activation_intent'],
+            $descriptor['migration_assessment'],
+            $descriptor['automatic_apply_eligible']
+        )
+            || 'CodePackageV1' !== $descriptor['schema']
+            || 'plugin' !== $descriptor['kind']
+            || 'repo_artifact' !== $descriptor['source']
+            || self::BOOTSTRAP_ARTIFACT_ID !== $descriptor['artifact_id']
+            || self::BOOTSTRAP_SLUG !== $descriptor['slug']
+            || self::BOOTSTRAP_VERSION !== $descriptor['new_version']
+            || 'activate' !== $descriptor['activation_intent']
+            || 'MANUAL_REVIEW_REQUIRED' !== $descriptor['migration_assessment']
+            || false !== $descriptor['automatic_apply_eligible']
+            || ! RAOS_Codex_MCP_Store::is_sha256($descriptor['package_sha256'])
+            || ! RAOS_Codex_MCP_Store::is_sha256($descriptor['file_manifest_sha256'])
+            || ! hash_equals($row['after_sha256'], $descriptor['file_manifest_sha256'])
+            || ! self::secure_staged_file($row['package_path'])) {
+            return self::error('raos_codex_bootstrap_attestation_binding_invalid', 409);
+        }
+        $package = @file_get_contents($row['package_path']);
+        if (! is_string($package)
+            || ! hash_equals($descriptor['package_sha256'], hash('sha256', $package))) {
+            return self::error('raos_codex_bootstrap_attestation_package_drift', 412);
+        }
+        $validated = self::validate_code_package($descriptor, $package, 'plugin');
+        $validated_json = is_wp_error($validated)
+            ? false
+            : RAOS_Codex_MCP_Store::canonical_json($validated);
+        $descriptor_json = RAOS_Codex_MCP_Store::canonical_json($descriptor);
+        if (is_wp_error($validated)
+            || ! is_string($validated_json)
+            || ! is_string($descriptor_json)
+            || ! hash_equals($descriptor_json, $validated_json)) {
+            return self::error('raos_codex_bootstrap_attestation_manifest_invalid', 412);
+        }
+        $provenance = self::verify_package_provenance($validated, $package);
+        if (is_wp_error($provenance)) {
+            return $provenance;
+        }
+        $target = self::target_status($validated);
+        if (is_wp_error($target)
+            || ! isset($target['tree_sha256'], $target['version'], $target['active'])
+            || ! is_string($target['tree_sha256'])
+            || ! hash_equals($row['after_sha256'], $target['tree_sha256'])
+            || self::BOOTSTRAP_VERSION !== $target['version']
+            || true !== $target['active']) {
+            return self::error('raos_codex_bootstrap_attestation_installed_drift', 412);
+        }
+        return array(
+            'schema' => 'RAOSWordPressManualBootstrapEvidenceV1',
+            'proposal_id' => $row['proposal_id'],
+            'artifact_id' => self::BOOTSTRAP_ARTIFACT_ID,
+            'slug' => self::BOOTSTRAP_SLUG,
+            'version' => self::BOOTSTRAP_VERSION,
+            'package_sha256' => $descriptor['package_sha256'],
+            'file_manifest_sha256' => $descriptor['file_manifest_sha256'],
+            'installed_tree_sha256' => $target['tree_sha256'],
+        );
+    }
+
+    public static function attest_manual_bootstrap(
+        $proposal_id,
+        $attester_id,
+        $reason
+    ) {
+        if (! is_admin()
+            || wp_doing_ajax()
+            || wp_doing_cron()
+            || ! current_user_can('manage_options')
+            || get_current_user_id() !== (int) $attester_id) {
+            return self::error('raos_codex_bootstrap_attestation_channel_refused', 403);
+        }
+        $gate = self::apply_gate('PLUGIN_CHANGE');
+        if (is_wp_error($gate)) {
+            return $gate;
+        }
+        if (! RAOS_Codex_MCP_Store::is_sha256($proposal_id)) {
+            return self::error('raos_codex_bootstrap_attestation_invalid', 400);
+        }
+        $operation_lock = self::acquire_operation_lock($proposal_id);
+        if (is_wp_error($operation_lock)) {
+            return $operation_lock;
+        }
+        try {
+            $row = RAOS_Codex_MCP_Store::get($proposal_id);
+            if (is_wp_error($row)) {
+                return $row;
+            }
+            $evidence = self::validate_manual_bootstrap_attestation($row);
+            if (is_wp_error($evidence)) {
+                return $evidence;
+            }
+            return RAOS_Codex_MCP_Store::attest_manual_bootstrap(
+                $proposal_id,
+                (int) $attester_id,
+                $reason,
+                $evidence['package_sha256'],
+                $evidence['file_manifest_sha256']
+            );
+        } finally {
+            self::release_operation_lock($operation_lock);
+        }
     }
 
     public static function active_theme_tree_sha256()
@@ -2069,7 +2229,14 @@ final class RAOS_Codex_MCP_Deployment
         }
         $descriptor = $payload['code_package'];
         if (empty($descriptor['automatic_apply_eligible'])
-            || 'NO_IRREVERSIBLE_MIGRATION_SIGNALS' !== $descriptor['migration_assessment']) {
+            || ! in_array(
+                $descriptor['migration_assessment'],
+                array(
+                    'NO_IRREVERSIBLE_MIGRATION_SIGNALS',
+                    self::REVIEWED_MIGRATION_ASSESSMENT,
+                ),
+                true
+            )) {
             return self::error('raos_codex_migration_manual_required', 409);
         }
         $package_path = $row['package_path'];
@@ -2083,6 +2250,17 @@ final class RAOS_Codex_MCP_Deployment
         $validated = self::validate_code_package($descriptor, $package, $descriptor['kind']);
         if (is_wp_error($validated)) {
             return $validated;
+        }
+        $validated_json = RAOS_Codex_MCP_Store::canonical_json($validated);
+        $descriptor_json = RAOS_Codex_MCP_Store::canonical_json($descriptor);
+        if (! is_string($validated_json)
+            || ! is_string($descriptor_json)
+            || ! hash_equals($descriptor_json, $validated_json)) {
+            return self::error('raos_codex_code_validation_drift', 412);
+        }
+        $provenance = self::verify_package_provenance($validated, $package);
+        if (is_wp_error($provenance)) {
+            return $provenance;
         }
         $target = self::target_path($descriptor);
         if (! is_string($target)) {
@@ -2689,11 +2867,44 @@ final class RAOS_Codex_MCP_Deployment
                 || 'twentytwentyfive' !== trim($template_match[1]))) {
             return self::error('raos_codex_theme_parent_invalid', 409);
         }
+        $reviewed_migration = $migration_signal
+            && self::reviewed_migration_eligible(
+                $descriptor,
+                hash('sha256', $manifest_json)
+            );
         $descriptor['migration_assessment'] = $migration_signal
-            ? 'MANUAL_REVIEW_REQUIRED'
+            ? ($reviewed_migration
+                ? self::REVIEWED_MIGRATION_ASSESSMENT
+                : 'MANUAL_REVIEW_REQUIRED')
             : 'NO_IRREVERSIBLE_MIGRATION_SIGNALS';
-        $descriptor['automatic_apply_eligible'] = ! $migration_signal;
+        $descriptor['automatic_apply_eligible'] = ! $migration_signal
+            || $reviewed_migration;
         return $descriptor;
+    }
+
+    /**
+     * One source-reviewed migration exception, bound to every immutable
+     * artifact identity field. Unknown or changed packages remain manual.
+     */
+    private static function reviewed_migration_eligible($descriptor, $manifest_sha256)
+    {
+        return is_array($descriptor)
+            && 'plugin' === $descriptor['kind']
+            && 'repo_artifact' === $descriptor['source']
+            && self::REVIEWED_MEASUREMENT_ARTIFACT_ID === $descriptor['artifact_id']
+            && self::REVIEWED_MEASUREMENT_SLUG === $descriptor['slug']
+            && self::REVIEWED_MEASUREMENT_VERSION === $descriptor['new_version']
+            && 'activate' === $descriptor['activation_intent']
+            && RAOS_Codex_MCP_Store::is_sha256($descriptor['package_sha256'])
+            && hash_equals(
+                self::REVIEWED_MEASUREMENT_PACKAGE_SHA256,
+                $descriptor['package_sha256']
+            )
+            && RAOS_Codex_MCP_Store::is_sha256($manifest_sha256)
+            && hash_equals(
+                self::REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256,
+                $manifest_sha256
+            );
     }
 
     private static function migration_patterns()

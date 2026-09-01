@@ -158,6 +158,192 @@
     },
     {
       "alt": "",
+      "canvas_height": 1024,
+      "canvas_width": 1536,
+      "delivery": "ARTICLE_THEME_SHORTCODE_AND_SOCIAL_PREVIEW",
+      "path": "assets/images/article-suitcase-under-100-seats.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "UNDER_100_SEAT_SUITCASE_ARTICLE_HEADER"
+        ],
+        "created_on": "2026-09-01",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "UNDER_100_SEAT_CARRY_ON_DIMENSION_COMPARISON",
+        "original_sha256": "9869fd732cd56a1153159b6147da25a6cb569969a3683685d1d14310ee010cdc",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-under-100-seats.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "0a2682459af1562593ccae37a877bbae26585f269c86d79775e98c015fd40f10",
+      "status": "FINAL",
+      "usage": "Comparison image, not a product photograph, for the under-100-seat suitcase article"
+    },
+    {
+      "alt": "",
+      "canvas_height": 1024,
+      "canvas_width": 1536,
+      "delivery": "ARTICLE_THEME_SHORTCODE_AND_SOCIAL_PREVIEW",
+      "path": "assets/images/article-suitcase-under-3kg.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "UNDER_3KG_SUITCASE_ARTICLE_HEADER"
+        ],
+        "created_on": "2026-09-01",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "UNDER_3KG_CARRY_ON_WEIGHT_AND_CAPACITY_COMPARISON",
+        "original_sha256": "2a8521d52a85e0ad320dbed37fe279ff89b8f1c632839eeba2f27efd494ed089",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-under-3kg.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "43db66a0e12a20cc8f31f44293691811734a41b0d0afa0374c73cf95d6cfd394",
+      "status": "FINAL",
+      "usage": "Comparison image, not a product photograph, for the under-3kg suitcase article"
+    },
+    {
+      "alt": "",
+      "canvas_height": 1024,
+      "canvas_width": 1536,
+      "delivery": "ARTICLE_THEME_SHORTCODE_AND_SOCIAL_PREVIEW",
+      "path": "assets/images/article-suitcase-front-open-stopper.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "FRONT_OPEN_STOPPER_SUITCASE_ARTICLE_HEADER"
+        ],
+        "created_on": "2026-09-01",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "FRONT_OPEN_STOPPER_CARRY_ON_FEATURE_COMPARISON",
+        "original_sha256": "8005abfdce55db8f9e31c03f907040e07bd7afe103333387a2796e27b105975b",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-front-open-stopper.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "6cffe92e50ce644ae60c72d4acaece34609acaa25a943a41811833063afb9d1e",
+      "status": "FINAL",
+      "usage": "Comparison image, not a product photograph, for the front-open stopper suitcase article"
+    },
+    {
+      "alt": "",
+      "canvas_height": 1024,
+      "canvas_width": 1536,
+      "delivery": "ARTICLE_THEME_SHORTCODE_AND_SOCIAL_PREVIEW",
+      "path": "assets/images/article-anker-solix-generations.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "ANKER_SOLIX_COMPARISON_ARTICLE_HEADER"
+        ],
+        "created_on": "2026-09-01",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ANKER_SOLIX_GENERATION_AND_OUTPUT_COMPARISON",
+        "original_sha256": "2eec59720c0bce9d6537beeb5f5497b368f18d713dd0020eee91e65e74c6281c",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-anker-solix-generations.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "b8db0de1e65653539d327c3645f8c0722a71be1b2a8291c338ce7b37bd5545a0",
+      "status": "FINAL",
+      "usage": "Comparison image, not a product photograph, for the Anker Solix generations article"
+    },
+    {
+      "alt": "",
+      "canvas_height": 1024,
+      "canvas_width": 1536,
+      "delivery": "ARTICLE_THEME_SHORTCODE_AND_SOCIAL_PREVIEW",
+      "path": "assets/images/article-solota-rakua-replacement.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "SOLOTA_RAKUA_COMPARISON_ARTICLE_HEADER"
+        ],
+        "created_on": "2026-09-01",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "SOLOTA_RAKUA_REPLACEMENT_CONDITION_COMPARISON",
+        "original_sha256": "254ff9a0d263282ffd58b976dfb9122ac18bad3c482031e496655750f045c5a2",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-solota-rakua-replacement.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "a413f3c1a70282eb0d1362959f746421bec4c1fc640f072eb045d9c4009d3374",
+      "status": "FINAL",
+      "usage": "Comparison image, not a product photograph, for the Solota and Rakua article"
+    },
+    {
+      "alt": "",
+      "canvas_height": 1024,
+      "canvas_width": 1536,
+      "delivery": "ARTICLE_THEME_SHORTCODE_AND_SOCIAL_PREVIEW",
+      "path": "assets/images/article-roomba-mini-k11-comparison.webp",
+      "provenance": {
+        "allowed_modifications": [
+          "CROP",
+          "FORMAT_CONVERSION",
+          "RESIZE",
+          "WEB_OPTIMIZATION"
+        ],
+        "allowed_uses": [
+          "ROOMBA_K11_COMPARISON_ARTICLE_HEADER"
+        ],
+        "created_on": "2026-09-01",
+        "creation_method": "OPENAI_IMAGE_GENERATION",
+        "creator_record": "SITE_OWNER_DIRECTED_OPENAI_MEDIA_SERVICE",
+        "external_license_dependency": false,
+        "generation_intent": "ROOMBA_MINI_SWITCHBOT_K11_SIZE_AND_STATION_COMPARISON",
+        "original_sha256": "5500d9395c9444e16f4a854d6f4e3c5b4e237342995afd501bab3e78bf829023",
+        "original_source_path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-roomba-mini-k11-comparison.png",
+        "provenance_evidence": "C2PA_OPENAI_MEDIA_SERVICE_API",
+        "rights_basis": "OWNER_AUTHORIZED_GENERATION_FOR_THIS_SITE",
+        "rights_status": "RECORDED_FOR_SITE_USE"
+      },
+      "sha256": "a601dd1913fe0c54551e9e894666dd5dd793b36e193d47bb292e85ed22a2b1d2",
+      "status": "FINAL",
+      "usage": "Comparison image, not a product photograph, for the Roomba Mini and K11 article"
+    },
+    {
+      "alt": "",
       "canvas_height": 64,
       "canvas_width": 64,
       "delivery": "FAVICON_FALLBACK",
@@ -193,10 +379,16 @@
     "assets/editorial-navigation.js",
     "assets/editorial-navigation.v3.json",
     "assets/editorial-v2.css",
+    "assets/images/article-anker-solix-generations.webp",
     "assets/images/article-countertop-dishwasher-guide.webp",
     "assets/images/article-portable-power-guide.webp",
     "assets/images/article-robot-vacuum-guide.webp",
+    "assets/images/article-roomba-mini-k11-comparison.webp",
+    "assets/images/article-solota-rakua-replacement.webp",
+    "assets/images/article-suitcase-front-open-stopper.webp",
     "assets/images/article-suitcase-guide.webp",
+    "assets/images/article-suitcase-under-100-seats.webp",
+    "assets/images/article-suitcase-under-3kg.webp",
     "assets/images/brand-mark.svg",
     "assets/images/home-hero.webp",
     "assets/measurement.js",
@@ -214,8 +406,8 @@
     "theme-contract.v1.json",
     "theme.json"
   ],
-  "theme_runtime_revision": "898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7",
+  "theme_runtime_revision": "05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee",
   "theme_slug": "kurashinoshirube-child",
-  "theme_source_fingerprint": "898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7",
+  "theme_source_fingerprint": "05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee",
   "theme_version": "1.5.0"
 }

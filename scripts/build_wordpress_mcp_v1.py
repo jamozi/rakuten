@@ -29,7 +29,7 @@ SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
 PLUGIN_VERSION: Final = "1.3.1"
 PLUGIN_RUNTIME_REVISION: Final = (
-    "24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55"
+    "8204d0f1ff573a5edf72abe4ef69ef422af15815adf5ecbc3a74bf8ec1d9c7d8"
 )
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
 MANIFEST_PATH: Final = Path("changes/wordpress-mcp-v1/runtime-manifest.v1.json")
@@ -46,6 +46,15 @@ OUTPUT: Final = (
     ROOT / ".secrets/wordpress-mcp/plugin" / f"{PLUGIN_SLUG}-{PLUGIN_VERSION}.zip"
 )
 REPO_ARTIFACT_ID: Final = "raos-codex-mcp-abilities-v1"
+REVIEWED_MIGRATION_ASSESSMENT: Final = (
+    "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION"
+)
+REVIEWED_MEASUREMENT_PACKAGE_SHA256: Final = (
+    "b351fd53e6c62e3fa363a67a994dfe2ce2a934e1f3b65b8c3102906eaa190d5a"
+)
+REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256: Final = (
+    "ed4374ef7e7efca82c8f2063283f50b5a7b316ee98b3fb71b18a46acb2a61aa3"
+)
 REPO_OUTPUT: Final = (
     ROOT
     / ".secrets/wordpress-mcp/repo-plugin-artifacts"
@@ -99,8 +108,10 @@ RUNTIME_INPUT_PATHS: Final = (
         "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
     ),
     Path("changes/wordpress-local-preview-v1/README.md"),
+    Path("changes/wordpress-local-preview-v1/bin/materialize_yoast.py"),
     Path("changes/wordpress-local-preview-v1/bin/wordpress_preview.sh"),
     Path("changes/wordpress-local-preview-v1/browser/check.sh"),
+    Path("changes/wordpress-local-preview-v1/browser/lighthouse_check.sh"),
     Path(
         "changes/wordpress-local-preview-v1/browser/"
         "wordpress_local_preview_audit.function.js"
@@ -151,6 +162,20 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("changes/wordpress-local-preview-v1/fixtures/pages/privacy-policy.html"),
     Path("changes/wordpress-local-preview-v1/fixtures/pages.json"),
     Path("changes/wordpress-local-preview-v1/fixtures/posts.json"),
+    Path("changes/wordpress-local-preview-v1/fixtures/production-pages.json"),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/production-pages/"
+        "about-ad-policy.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/production-pages/"
+        "comparison-policy.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/production-pages/"
+        "privacy-policy.html"
+    ),
+    Path("changes/wordpress-local-preview-v1/policy-profiles.v1.json"),
     Path("changes/wordpress-local-preview-v1/production-mapping.v1.json"),
     Path("changes/wordpress-local-preview-v1/seed.php"),
     Path("changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.json"),
@@ -160,6 +185,13 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("changes/wordpress-publication-bundle-v3/abilities_plugin_proposal.py"),
     Path("changes/wordpress-publication-bundle-v3/measurement_plugin_proposal.py"),
     Path("changes/wordpress-publication-bundle-v3/production-sequence.v3.json"),
+    # Publication validates this tracked ledger directly. It is regenerated after
+    # each audit round, so the MCP manifest must be regenerated with it. Ephemeral
+    # Lighthouse/output artifacts remain excluded because the runtime never reads
+    # them as publication authority and including them would make provenance
+    # depend on unbounded run output.
+    Path("changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json"),
+    Path("changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"),
     Path("changes/wordpress-seo-audit-v1/README.md"),
     Path("changes/wordpress-seo-audit-v1/seo-audit-contract.v1.json"),
     Path("packages/wordpress-mcp-bridge/package.json"),
@@ -167,7 +199,9 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("packages/wordpress-mcp-bridge/tsconfig.json"),
     Path("python/raos/adapters/self_hosted_editorial_pilot_json.py"),
     Path("python/raos/adapters/self_hosted_editorial_rakuten_capture.py"),
+    Path("python/raos/adapters/self_hosted_editorial_source_capture.py"),
     Path("python/raos/application/editorial/editorial_portfolio_v2.py"),
+    Path("python/raos/application/editorial/product_safety_receipts.py"),
     Path("python/raos/application/editorial/self_hosted_editorial_pilot.py"),
     Path("python/raos/domain/editorial/content_ast.py"),
     Path("python/raos/domain/editorial/self_hosted_editorial_pilot.py"),
@@ -180,6 +214,7 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("scripts/raos_wordpress_editor_mcp_launcher.mjs"),
     Path("scripts/store_wordpress_mcp_credential.py"),
     Path("scripts/wordpress_public_ui_audit.function.js"),
+    Path("scripts/wordpress_quality_audit_v1.py"),
     Path("tests/wordpress_mcp_v1/e2e/approve_harness.php"),
     Path("tests/wordpress_mcp_v1/e2e/batch_approve_harness.php"),
     Path("tests/wordpress_mcp_v1/e2e/client.py"),
@@ -394,6 +429,19 @@ def repo_artifact_registry() -> dict[str, object]:
         )
     except UnicodeError, json.JSONDecodeError:
         fail("WORDPRESS_MCP_V1_MEASUREMENT_MANIFEST_INVALID")
+    measurement_files = measurement.get("plugin_files") if type(measurement) is dict else None
+    try:
+        measurement_manifest_sha256 = sha256(
+            json.dumps(
+                measurement_files,
+                allow_nan=False,
+                ensure_ascii=True,
+                separators=(",", ":"),
+                sort_keys=True,
+            ).encode("ascii", errors="strict")
+        )
+    except TypeError, ValueError, UnicodeError:
+        fail("WORDPRESS_MCP_V1_MEASUREMENT_MANIFEST_INVALID")
     if (
         type(measurement) is not dict
         or measurement.get("schema")
@@ -403,6 +451,10 @@ def repo_artifact_registry() -> dict[str, object]:
         or measurement.get("plugin_version") != "1.0.0"
         or type(measurement.get("package_sha256")) is not str
         or re.fullmatch(r"[0-9a-f]{64}", measurement["package_sha256"]) is None
+        or type(measurement_files) is not list
+        or measurement["package_sha256"] != REVIEWED_MEASUREMENT_PACKAGE_SHA256
+        or measurement_manifest_sha256
+        != REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256
     ):
         fail("WORDPRESS_MCP_V1_MEASUREMENT_MANIFEST_INVALID")
     abilities_sha256 = sha256(package_bytes(plugin_payloads()))
@@ -417,6 +469,12 @@ def repo_artifact_registry() -> dict[str, object]:
             },
             {
                 "artifact_id": measurement["artifact_id"],
+                "migration_review": {
+                    "assessment": REVIEWED_MIGRATION_ASSESSMENT,
+                    "file_manifest_sha256": measurement_manifest_sha256,
+                    "package_sha256": measurement["package_sha256"],
+                    "schema": "RAOS_WORDPRESS_PLUGIN_MIGRATION_REVIEW_V1",
+                },
                 "package_sha256": measurement["package_sha256"],
                 "slug": measurement["plugin_slug"],
                 "version": measurement["plugin_version"],

@@ -28,17 +28,103 @@ def response(url: str, status: int, body: str, **headers: str) -> audit.HttpResp
 
 
 def html(item: audit.InventoryItem, required: frozenset[str]) -> str:
-    graph = [{"@type": schema_type} for schema_type in sorted(required)]
+    del required
+    origin = "https://kurashinoshirube.com"
+    title = "Valid title"
+    description = "Valid description"
+    image = origin + "/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp"
+    organization_id = origin + "/#organization"
+    website_id = origin + "/#website"
+    organization = {
+        "@id": organization_id,
+        "@type": "Organization",
+        "name": "暮らしのしるべ編集者",
+        "url": origin + "/",
+    }
+    website = {
+        "@id": website_id,
+        "@type": "WebSite",
+        "inLanguage": "ja-JP",
+        "name": "暮らしのしるべ",
+        "publisher": {"@id": organization_id},
+        "url": origin + "/",
+    }
+    graph: list[dict[str, Any]] = []
+    if item.role == "article":
+        graph.append(
+            {
+                "@id": item.url + "#article",
+                "@type": "Article",
+                "articleSection": "移動",
+                "author": {"@id": organization_id},
+                "breadcrumb": {"@id": item.url + "#breadcrumb"},
+                "dateModified": "2026-08-30T00:00:00Z",
+                "datePublished": "2026-08-29T00:00:00Z",
+                "description": description,
+                "headline": title,
+                "image": [image],
+                "inLanguage": "ja-JP",
+                "mainEntityOfPage": item.url,
+                "publisher": {"@id": organization_id},
+                "url": item.url,
+            }
+        )
+    elif item.role == "fixed_page":
+        page_type = "AboutPage" if item.identifier == "about-ad-policy" else "WebPage"
+        graph.append(
+            {
+                "@id": item.url + "#webpage",
+                "@type": page_type,
+                "breadcrumb": {"@id": item.url + "#breadcrumb"},
+                "description": description,
+                "inLanguage": "ja-JP",
+                "isPartOf": {"@id": website_id},
+                "name": title,
+                "url": item.url,
+            }
+        )
+    if item.role != "home":
+        graph.append(
+            {
+                "@id": item.url + "#breadcrumb",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "item": origin + "/",
+                        "name": "ホーム",
+                        "position": 1,
+                    },
+                    {
+                        "@type": "ListItem",
+                        "item": item.url,
+                        "name": title,
+                        "position": 2,
+                    },
+                ],
+            }
+        )
+    graph.extend([organization, website])
     return f"""<!doctype html><html><head>
-<title>Valid title</title>
-<meta name="description" content="Valid description">
+<title>{title}</title>
+<meta name="description" content="{description}">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{item.url}">
-<meta property="og:title" content="Valid title">
-<meta property="og:description" content="Valid description">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{description}">
 <meta property="og:url" content="{item.url}">
-<meta property="og:image" content="https://kurashinoshirube.com/media/og.webp">
-<script type="application/ld+json">{json.dumps({"@graph": graph})}</script>
+<meta property="og:image" content="{image}">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="900">
+<meta property="og:image:type" content="image/webp">
+<meta property="og:type" content="{'article' if item.role == 'article' else 'website'}">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="暮らしのしるべ">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{description}">
+<meta name="twitter:image" content="{image}">
+<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graph})}</script>
 </head><body>Public content</body></html>"""
 
 
@@ -255,7 +341,9 @@ def test_missing_required_schema_fails(
     assert "required_schema" in failed_checks(report, item.identifier)
 
 
-@pytest.mark.parametrize("forbidden", ["Product", "Offer", "Review", "FAQPage"])
+@pytest.mark.parametrize(
+    "forbidden", ["Product", "Offer", "Review", "AggregateRating", "FAQPage"]
+)
 def test_forbidden_schema_types_fail(
     contract: audit.AuditContract,
     valid_responses: dict[str, audit.HttpResponse],
@@ -270,6 +358,118 @@ def test_forbidden_schema_types_fail(
     valid_responses[item.url] = response(item.url, 200, body)
     report = run(contract, valid_responses)
     assert "forbidden_schema_absent" in failed_checks(report, item.identifier)
+
+
+@pytest.mark.parametrize(
+    "old,new,expected",
+    [
+        (
+            '<meta property="og:title" content="Valid title">',
+            '<meta property="og:title" content="Different title">',
+            "og_title",
+        ),
+        (
+            '<meta name="twitter:image" content="https://kurashinoshirube.com/',
+            '<meta name="twitter:image" content="https://kurashinoshirube.com/wrong-',
+            "twitter_image",
+        ),
+        (
+            "<title>Valid title</title>",
+            "<title>Valid title</title><title>Duplicate</title>",
+            "title",
+        ),
+    ],
+)
+def test_head_relationship_tampering_fails(
+    contract: audit.AuditContract,
+    valid_responses: dict[str, audit.HttpResponse],
+    old: str,
+    new: str,
+    expected: str,
+) -> None:
+    item = contract.items[1]
+    body = valid_responses[item.url].body.decode().replace(old, new, 1)
+    valid_responses[item.url] = response(item.url, 200, body)
+
+    report = run(contract, valid_responses)
+
+    assert expected in failed_checks(report, item.identifier)
+
+
+@pytest.mark.parametrize(
+    "old,new",
+    [
+        ("#article", "#tampered-article"),
+        (
+            '"publisher": {"@id": "https://kurashinoshirube.com/#organization"}',
+            '"publisher": {"@id": "https://kurashinoshirube.com/#website"}',
+        ),
+        ("2026-08-30T00:00:00Z", "2026-08-28T00:00:00Z"),
+        (
+            '"mainEntityOfPage": "https://kurashinoshirube.com/',
+            '"mainEntityOfPage": "https://kurashinoshirube.com/wrong-',
+        ),
+        (
+            '"url": "https://kurashinoshirube.com/',
+            '"url": "https://kurashinoshirube.com/wrong-',
+        ),
+        (
+            '"breadcrumb": {"@id": "https://kurashinoshirube.com/',
+            '"breadcrumb": {"@id": "https://kurashinoshirube.com/wrong-',
+        ),
+    ],
+)
+def test_json_ld_relationship_tampering_fails(
+    contract: audit.AuditContract,
+    valid_responses: dict[str, audit.HttpResponse],
+    old: str,
+    new: str,
+) -> None:
+    item = contract.items[1]
+    body = valid_responses[item.url].body.decode().replace(old, new, 1)
+    valid_responses[item.url] = response(item.url, 200, body)
+
+    report = run(contract, valid_responses)
+
+    assert "structured_data_semantics" in failed_checks(report, item.identifier)
+
+
+@pytest.mark.parametrize("field", ["url", "breadcrumb"])
+def test_article_json_ld_url_and_breadcrumb_are_required(
+    contract: audit.AuditContract,
+    valid_responses: dict[str, audit.HttpResponse],
+    field: str,
+) -> None:
+    item = contract.items[1]
+    serialized = (
+        f', "url": "{item.url}"'
+        if field == "url"
+        else f', "breadcrumb": {json.dumps({"@id": item.url + "#breadcrumb"})}'
+    )
+    body = valid_responses[item.url].body.decode().replace(serialized, "", 1)
+    assert body != valid_responses[item.url].body.decode()
+    valid_responses[item.url] = response(item.url, 200, body)
+
+    report = run(contract, valid_responses)
+
+    assert "structured_data_semantics" in failed_checks(report, item.identifier)
+
+
+def test_json_ld_non_scalar_top_level_type_fails_closed_without_crashing(
+    contract: audit.AuditContract,
+    valid_responses: dict[str, audit.HttpResponse],
+) -> None:
+    item = contract.items[1]
+    body = valid_responses[item.url].body.decode().replace(
+        '"@type": "Article"',
+        '"@type": ["Article"]',
+        1,
+    )
+    valid_responses[item.url] = response(item.url, 200, body)
+
+    report = run(contract, valid_responses)
+
+    assert "structured_data_semantics" in failed_checks(report, item.identifier)
 
 
 def test_robots_txt_disallow_fails_surface(

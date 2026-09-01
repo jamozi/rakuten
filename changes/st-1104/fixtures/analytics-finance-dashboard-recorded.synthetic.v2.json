@@ -16,9 +16,9 @@
   "source_bindings": {
     "st1205_fixture_sha256": "da6d51ccd7ba56411ec81e316994659849e4ea7fa11e5458982a99a6f2317676",
     "st1205_input_sha256": "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92",
-    "st1304_fixture_sha256": "5d7d0f5676c819183a49a13994718e559d01eab3dceb12c1ad1966d385f90734",
-    "st1304_input_sha256": "8deb4c2f93c4afac5136c54d98d565359f118516bf074881478f38e70749d5d3",
-    "st1304_result_sha256": "88797cb793f61184fb28efaa8373367aa3eb35b9e2814f10925943ee7b7ff94d"
+    "st1304_fixture_sha256": "be6f9d9a14dd91078d66805f47ac1d4828e4a7d5f2275c58e9ab4e2cdb382fb1",
+    "st1304_input_sha256": "ff1909fffee9cfd9a0e34502c6f8ed9376aaa9ab16fafbad08fc02490add2508",
+    "st1304_result_sha256": "1b46e45d89d24d16875bb11d153def331bfa2bae45ebce8b26920a4892d78f91"
   },
   "view_mapping": {
     "ANA-001": ["KPI-012", "KPI-014", "KPI-006", "KPI-018", "KPI-020"],

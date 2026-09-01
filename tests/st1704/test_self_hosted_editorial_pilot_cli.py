@@ -92,7 +92,7 @@ _WORDPRESS_API_DISCOVERY_LINK = (
 
 
 def _fixed_clock() -> datetime:
-    return datetime(2026, 8, 26, 11, 30, tzinfo=timezone.utc)
+    return datetime(2026, 9, 1, 10, 30, tzinfo=timezone.utc)
 
 
 def _documents() -> tuple[dict[str, object], dict[str, object], dict[str, object]]:
@@ -104,6 +104,50 @@ def _documents() -> tuple[dict[str, object], dict[str, object], dict[str, object
             "media/product-media-registry.v1.json",
         )
     )
+
+
+def test_source_contract_rejects_unlabeled_dimensions_and_decision_critical_conflicts() -> None:
+    _articles, source_registry, _media = _documents()
+    robot_registry = json.loads(json.dumps(source_registry, ensure_ascii=False))
+    robot_packet = next(
+        packet
+        for packet in robot_registry["source_packets"]
+        if packet["source_packet_ref"] == "SPV-ST1704-ROBOT-VACUUM-V1"
+    )
+    robot_claim = next(
+        claim
+        for claim in robot_packet["claims"]
+        if claim["claim_id"] == "CLM-ST1704-ROBOT-EUFY-C10-SPECS"
+    )
+    robot_claim["dimension_values"] = [32.5, 32.3, 7.2]
+    robot_packet["fact_packet_sha256"] = application_module._source_packet_hash(  # type: ignore[attr-defined]
+        robot_packet
+    )
+    with pytest.raises(EditorialPilotFailure) as unlabeled:
+        application_module._validate_sources(robot_registry)  # type: ignore[attr-defined]
+    assert (
+        unlabeled.value.code
+        is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
+    )
+
+    anker_registry = json.loads(json.dumps(source_registry, ensure_ascii=False))
+    anker_packet = next(
+        packet
+        for packet in anker_registry["source_packets"]
+        if packet["source_packet_ref"] == "SPV-ST1704-ANKER-DIFFERENCES-V1"
+    )
+    anker_claim = next(
+        claim
+        for claim in anker_packet["claims"]
+        if claim["claim_id"] == "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
+    )
+    anker_claim["status"] = "SOURCE_CONFLICT"
+    anker_packet["fact_packet_sha256"] = application_module._source_packet_hash(  # type: ignore[attr-defined]
+        anker_packet
+    )
+    with pytest.raises(EditorialPilotFailure) as conflict:
+        application_module._validate_sources(anker_registry)  # type: ignore[attr-defined]
+    assert conflict.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
 
 
 def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
@@ -156,7 +200,7 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
         )
         + b"\n"
     )
-    image = _synthetic_image_bytes()
+    image = _synthetic_jpeg_bytes(valid_entropy=True)
     request_material = {
         "api_version": "2026-07-01",
         "elements": [
@@ -237,7 +281,7 @@ def _synthetic_evidence(product_id: str) -> RakutenProductEvidence:
         image_url=image_url,
         width=128,
         height=128,
-        retrieved_at="2026-08-26T11:00:00Z",
+        retrieved_at="2026-08-31T11:00:00Z",
         request_fingerprint=canonical_sha256(request_material),
         response_sha256=bytes_sha256(response),
         selected_result_sha256=canonical_sha256(selected_result),
@@ -695,7 +739,7 @@ def _install_overlay(root: Path, evidence: RakutenProductEvidence) -> Path:
     finally:
         os.close(affiliate_response_descriptor)
     image_path = root / rakuten_image_relative_path(evidence.product_id)
-    image_payload = _synthetic_image_bytes()
+    image_payload = _synthetic_jpeg_bytes(valid_entropy=True)
     assert bytes_sha256(image_payload) == evidence.image_sha256
     image_descriptor = os.open(image_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     try:
@@ -731,26 +775,15 @@ def _install_source_overlay(
 
 def test_all_five_packets_render_deterministically_with_closed_draft_payload() -> None:
     total_cards = 0
+    article_document, source_document, _media_document = _documents()
+    articles_by_id = {
+        cast(str, article["article_id"]): article
+        for article in cast(list[dict[str, object]], article_document["articles"])
+    }
+    assert source_document["source_packets"]
     for identity in PILOT_ARTICLE_IDENTITIES:
-        is_replacement_article = (
-            identity.article_id
-            == "st1704-countertop-dishwasher-for-small-households"
-        )
-        clock = (
-            (lambda: datetime(2026, 8, 26, 11, 0, tzinfo=timezone.utc))
-            if is_replacement_article
-            else _fixed_clock
-        )
-        evidence_reader = (
-            (
-                lambda repository_root, *, product_id: replace(
-                    _reader(repository_root, product_id=product_id),
-                    retrieved_at="2026-08-26T11:00:00Z",
-                )
-            )
-            if is_replacement_article
-            else _reader
-        )
+        clock = _fixed_clock
+        evidence_reader = _reader
         first = prepare_editorial_article(
             REPOSITORY_ROOT,
             identity.article_id,
@@ -782,9 +815,20 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
         }
         content = first.request.content
         assert content.startswith(
-            '<div class="raos-editorial-v2">\n<dl class="raos-article-facts'
+            '<div class="raos-editorial-v2">\n'
+            '<section class="raos-article-intro" aria-label="比較の要点">'
         )
         assert content.endswith("</div>\n")
+        assert content.count('class="raos-article-intro"') == 1
+        assert content.count('class="raos-article-intro__hook"') == 1
+        assert 1 <= content.count('class="raos-article-intro__scope"') <= 2
+        assert "選ぶ前に、条件を整理する。" not in content
+        article = articles_by_id[identity.article_id]
+        facts_checked_on = cast(str, article["freshness"]["facts_checked_on"])
+        checked = datetime.strptime(facts_checked_on, "%Y-%m-%d")
+        checked_label = f"{checked.year}年{checked.month}月{checked.day}日"
+        assert f"<dt>最終確認日</dt><dd>{checked_label}</dd>" in content
+        assert f"編集内容の最終確認日：{checked_label}" in content
         assert content.index('<dl class="raos-article-facts') < content.index(
             '<aside class="raos-disclosure disclosure"'
         )
@@ -804,9 +848,21 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
         )
         assert content.count(PILOT_CTA_LABEL) == first.product_count * 2
         assert 'data-raos-evidence-level="A"' in content
-        assert "A：公式仕様" in content
+        assert "公式確認済み" in content
+        assert "A：公式仕様" not in content
+        assert "<dt>対象読者</dt>" in content
+        assert "<dt>比較範囲</dt>" in content
+        assert "<dt>執筆担当</dt><dd>暮らしのしるべ編集者</dd>" in content
+        assert (
+            "<dt>事実確認担当</dt><dd>暮らしのしるべ編集者（一次情報確認）</dd>"
+            in content
+        )
+        assert "<dt>最終確認日</dt>" in content
+        assert "<dt>実機確認</dt><dd>未実施（公式仕様比較）</dd>" in content
+        assert 'href="/comparison-policy/"' in content
+        assert "編集・比較方針（AI支援範囲を含む）を確認する" in content
         if identity.article_id == "st1703-first-suitcase-comparison":
-            assert "UNKNOWN：未確認" in content
+            assert "未確認" in content
         assert content.count('class="raos-comparison__product-image"') == (
             first.product_count * 2
         )
@@ -823,11 +879,11 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
         if identity.article_id == "st1703-first-suitcase-comparison":
             assert 'class="raos-article-facts article-meta"' in content
             assert "エース系3モデル" in content
-            assert "市場全体のおすすめ順位ではなく" in content
-            assert "<dt>実機確認</dt><dd>未実施" in content
+            assert "市場全体を順位づけする記事ではありません" in content
+            assert "<dt>実機確認</dt><dd>未実施（公式仕様比較）</dd>" in content
             assert content.index("<dt>対象読者</dt>") < content.index("広告を含みます。")
             assert content.index("広告を含みます。") < content.index("比較範囲：")
-            assert "D：編集部の判断" in content
+            assert "編集者による条件整理" in content
         assert first.request.snapshot.payload.seo_title
         assert first.request.snapshot.payload.seo_title != ""
         assert first.request.snapshot.payload.packet_sha256 == first.packet_sha256
@@ -840,7 +896,7 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
         assert not first.production_evidence
         assert first.network_requests == first.external_writes == 0
         total_cards += first.product_count
-    assert total_cards == 19
+    assert total_cards == 20
 
 
 def test_rendered_content_parser_accepts_strict_official_cta_arrow() -> None:
@@ -852,7 +908,7 @@ def test_rendered_content_parser_accepts_strict_official_cta_arrow() -> None:
         'data-raos-article-id="st1704-portable-power-station-guide" '
         'data-raos-product-id="PRD-ANKER-SOLIX-C300" '
         'data-raos-placement="final_summary">'
-        'メーカー公式で仕様を確認する '
+        'メーカー公式で販売状況を確認する '
         '<span aria-hidden="true">→</span></a>'
     )
     parser.close()
@@ -867,7 +923,7 @@ def test_rendered_content_parser_accepts_strict_official_cta_arrow() -> None:
             "st1704-portable-power-station-guide",
             "PRD-ANKER-SOLIX-C300",
             "final_summary",
-            "メーカー公式で仕様を確認する →",
+            "メーカー公式で販売状況を確認する →",
         )
     ]
 
@@ -895,7 +951,7 @@ def test_rendered_content_parser_rejects_noncanonical_cta_arrow(
         'data-raos-article-id="st1704-portable-power-station-guide" '
         'data-raos-product-id="PRD-ANKER-SOLIX-C300" '
         'data-raos-placement="final_summary">'
-        f"メーカー公式で仕様を確認する {nested_markup}</a>"
+        f"メーカー公式で販売状況を確認する {nested_markup}</a>"
     )
 
     with pytest.raises(EditorialPilotFailure) as failure:
@@ -918,7 +974,7 @@ def test_committed_request_survives_three_day_freshness_and_shared_c300_refresh(
     port = _ArtifactJournalPort()
     journal = OwnerPrivateLiveReviewDraftJournal(private_root, port)
     journal.create(original.request)
-    day_seven = datetime(2026, 8, 29, 11, 30, tzinfo=timezone.utc)
+    day_seven = datetime(2026, 9, 3, 11, 30, tzinfo=timezone.utc)
 
     with pytest.raises(EditorialPilotFailure) as stale_current_evidence:
         prepare_editorial_article(
@@ -937,7 +993,7 @@ def test_committed_request_survives_three_day_freshness_and_shared_c300_refresh(
         del root
         return replace(
             _synthetic_evidence(product_id),
-            retrieved_at="2026-08-29T11:00:00Z",
+            retrieved_at="2026-09-03T11:00:00Z",
         )
 
     refreshed = prepare_editorial_article(
@@ -1101,7 +1157,7 @@ def test_source_capture_time_is_truthful_monotonic_and_independently_fresh() -> 
         REPOSITORY_ROOT,
         "st1704-portable-power-station-guide",
         evidence_reader=_reader,
-        source_evidence_reader=reader_at("2026-08-23T10:00:00Z"),
+        source_evidence_reader=reader_at("2026-09-01T10:00:00Z"),
         clock=_fixed_clock,
     )
     assert current.request.packet_sha256
@@ -1129,7 +1185,7 @@ def test_source_capture_time_is_truthful_monotonic_and_independently_fresh() -> 
             REPOSITORY_ROOT,
             "st1704-portable-power-station-guide",
             evidence_reader=_reader,
-            source_evidence_reader=reader_at("2026-08-11T23:59:59Z"),
+            source_evidence_reader=reader_at("2026-08-30T23:59:59Z"),
             clock=_fixed_clock,
         )
     assert backdated.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID
@@ -1409,12 +1465,12 @@ def test_product_identity_rejects_accessory_title_and_synthetic_or_variant() -> 
             "PRD-ANKER-SOLIX-C300",
             "Anker Solix C300 DC Portable Power Station",
         ),
-        ("PRD-BLUETTI-AC70", "BLUETTI AC70P Portable Power Station"),
+        ("PRD-ANKER-SOLIX-C800", "Anker Solix C800 Plus Portable Power Station"),
     ],
     ids=[
         "alphanumeric-model-prefix",
         "known-c300-dc-sibling",
-        "known-ac70p-sibling",
+        "known-c800-plus-sibling",
     ],
 )
 def test_product_identity_rejects_model_prefix_and_known_sibling(
@@ -1555,19 +1611,14 @@ def test_source_capture_rejects_same_claim_duplicate_statement_drift_and_fake_fo
 
 def test_product_image_parser_rejects_truncated_or_corrupt_128_headers() -> None:
     valid = _synthetic_image_bytes()
-    assert json_module._image_dimensions(valid) == (128, 128)  # type: ignore[attr-defined]
     valid_indexed = _synthetic_image_bytes(color_type=3, include_palette=True)
-    assert json_module._image_dimensions(valid_indexed) == (  # type: ignore[attr-defined]
-        128,
-        128,
-    )
     valid_gif = _synthetic_gif_bytes(valid_lzw=True)
-    assert json_module._image_dimensions(valid_gif) == (128, 128)  # type: ignore[attr-defined]
     valid_jpeg = _synthetic_jpeg_bytes(valid_entropy=True)
-    assert json_module._image_dimensions(valid_jpeg) == (  # type: ignore[attr-defined]
-        128,
-        128,
-    )
+    for raw in (valid, valid_indexed, valid_gif, valid_jpeg):
+        assert json_module._image_dimensions(raw) == (  # type: ignore[attr-defined]
+            128,
+            128,
+        )
     truncated = b"\x89PNG\r\n\x1a\n" + b"\x00" * 16
     corrupt = bytearray(valid)
     idat = valid.index(b"IDAT") + 4
@@ -2262,7 +2313,7 @@ def _install_fake_live_boundary(monkeypatch: pytest.MonkeyPatch) -> None:
     )
 
 
-def test_public_verifier_projects_only_same_cluster_relations_from_v3() -> None:
+def test_public_verifier_projects_only_same_intent_relations_from_v3() -> None:
     related = https_module._load_theme_related_navigation(  # type: ignore[attr-defined]
         REPOSITORY_ROOT
     )
@@ -2321,6 +2372,46 @@ def test_public_verifier_projects_only_same_cluster_relations_from_v3() -> None:
         len(cast(tuple[object, ...], clusters[key]["posts"]))
         for key in homepage["display_order"]
     ) == (4, 4, 2)
+
+
+@pytest.mark.parametrize("mutation", ["required-broader-missing", "broader-disallowed"])
+def test_theme_navigation_rejects_content_role_broader_contract_tamper(
+    tmp_path: Path,
+    mutation: str,
+) -> None:
+    navigation_relative = https_module._THEME_NAVIGATION_RELATIVE_PATH  # type: ignore[attr-defined]
+    contract_relative = https_module._THEME_CONTRACT_RELATIVE_PATH  # type: ignore[attr-defined]
+    navigation = json.loads(
+        (REPOSITORY_ROOT / navigation_relative).read_text(encoding="utf-8")
+    )
+    articles = {row["article_id"]: row for row in navigation["articles"]}
+    if mutation == "required-broader-missing":
+        articles["st1704-anker-solix-c300-c800-c1000-differences"][
+            "broader_article_id"
+        ] = None
+    elif mutation == "broader-disallowed":
+        articles["front-open-carry-on-suitcase-with-stopper"][
+            "broader_article_id"
+        ] = "carry-on-suitcase-under-100-seats"
+    else:
+        raise AssertionError("unknown mutation")
+    navigation_raw = canonical_json_bytes(navigation) + b"\n"
+
+    contract = json.loads(
+        (REPOSITORY_ROOT / contract_relative).read_text(encoding="utf-8")
+    )
+    contract["editorial_navigation"]["sha256"] = bytes_sha256(navigation_raw)
+    for relative, raw in (
+        (navigation_relative, navigation_raw),
+        (contract_relative, canonical_json_bytes(contract) + b"\n"),
+    ):
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(raw)
+
+    with pytest.raises(EditorialPilotFailure) as captured:
+        https_module._load_theme_related_navigation(tmp_path)  # type: ignore[attr-defined]
+    assert captured.value.code is EditorialPilotFailureCode.PACKET_INVALID
 
 
 def test_owner_https_create_posts_only_the_exact_draft_payload(
@@ -2885,9 +2976,10 @@ def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
             b'<article vocab="https://schema.org/" typeof="Product">',
         )
     elif mutation == "body-text-change":
-        assert "比較のしかた".encode() in response.body
+        methodology_heading = "容量・定格出力・重量を同じ条件で比べる"
+        assert methodology_heading.encode() in response.body
         response.body = response.body.replace(
-            "比較のしかた".encode(), "比較手順".encode(), 1
+            methodology_heading.encode(), "比較手順".encode(), 1
         )
     elif mutation == "bot-noindex":
         response.body = response.body.replace(
@@ -3042,8 +3134,8 @@ def test_verify_public_rejects_duplicate_or_unindexable_public_surfaces(
         response.body = _public_article_html(candidate)
     elif mutation == "review-url-partial-content-leak":
         fragment = (
-            "停電への備えは、容量が大きいほど合うとは限りません。"
-            "目安の使用時間は「容量（Wh）÷機器の消費電力（W）」が出発点"
+            "停電中に使いたい機器を決めず容量だけで選ぶと、起動時電力が足りないか、"
+            "重くて保管場所から動かせない失敗につながります。"
         )
         assert fragment in candidate.content
         response.body = f"<html><body>{fragment}</body></html>".encode()

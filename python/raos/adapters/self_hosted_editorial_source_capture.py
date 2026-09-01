@@ -16,6 +16,7 @@ import fcntl
 import http.client
 import ipaddress
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -52,8 +53,16 @@ LOCATOR_CONTRACT_RELATIVE_PATH: Final = Path(
 LOCATOR_CONTRACT_SCHEMA: Final = "SELF_HOSTED_EDITORIAL_SOURCE_LOCATOR_CONTRACT_V1"
 RAW_CAPTURE_SCHEMA: Final = "RAOS_ST1704_OFFICIAL_SOURCE_RAW_CAPTURE_V1"
 PUBLICATION_AUTHORITY: Final = "NONE"
-CAPTURE_USER_AGENT: Final = "RAOS-ST-1704-official-source-capture/1"
-CAPTURE_ACCEPT: Final = "text/html"
+CAPTURE_USER_AGENT: Final = (
+    "Mozilla/5.0 (compatible; RAOS-ST-1704-official-source-capture/2; "
+    "+https://kurashinoshirube.com/comparison-policy/)"
+)
+_HTML_ACCEPT: Final = "text/html"
+_JAVASCRIPT_ACCEPT: Final = "application/json, text/javascript"
+_PDF_ACCEPT: Final = "application/pdf"
+# Backward-compatible public default used by transport tests and callers that
+# construct an HTML-only fake response.
+CAPTURE_ACCEPT: Final = _HTML_ACCEPT
 CONNECT_TIMEOUT_SECONDS: Final = 10
 READ_TIMEOUT_SECONDS: Final = 20
 MAX_CONTRACT_BYTES: Final = 1_000_000
@@ -65,12 +74,30 @@ CAPTURE_LOCK_FILE: Final = "official-source-capture.lock"
 _SOURCE_REF = re.compile(r"SRC-[A-Z0-9]+(?:-[A-Z0-9]+)*\Z", re.ASCII)
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 _CONTENT_LENGTH = re.compile(r"0|[1-9][0-9]*\Z", re.ASCII)
-_CONTENT_TYPE = re.compile(
+_HTML_CONTENT_TYPE = re.compile(
     r'text/html(?:\s*;\s*charset="?([A-Za-z0-9._-]+)"?)?\Z',
     re.ASCII | re.IGNORECASE,
 )
 _ARTICLE_IDS: Final = frozenset(
-    identity.article_id for identity in PILOT_ARTICLE_IDENTITIES
+    {
+        *(identity.article_id for identity in PILOT_ARTICLE_IDENTITIES),
+        "carry-on-suitcase-under-100-seats",
+        "front-open-carry-on-suitcase-with-stopper",
+        "lightweight-carry-on-suitcase-under-3kg",
+        "roomba-mini-vs-switchbot-k11-pro",
+        "solota-vs-rakua-mini-plus",
+    }
+)
+# The allowlist is pinned to exact source-ref/official-URL pairs rather than a
+# fragile item count.  Registry and locator hashes close the two documents to
+# each other; these independent inventory digests prevent an attacker (or an
+# accidental bulk edit) from replacing both documents with a different set of
+# capture targets while preserving their internal consistency.
+_PRODUCT_SOURCE_INVENTORY_SHA256: Final = (
+    "54dd657aa5289d7d19cf9861089c9485c2e756e9ef17eefc5c811898a8118b4d"
+)
+_POLICY_SOURCE_INVENTORY_SHA256: Final = (
+    "5509d907252fe67cbb7aea1fa37ced915cf02d50f5a4a6b2b08341292ddd55c8"
 )
 _REGISTRY_ROOT_KEYS: Final = frozenset(
     {
@@ -135,13 +162,65 @@ _LOCATOR_POLICY: Final = {
     "pending_behavior": "BODY_CAPTURED_LOCATORS_PENDING_PREPARE_BLOCKED",
     "review_body_as_evidence": False,
     "review_body_locator_allowed": False,
+    "pdf_fragment_match": "PINNED_BODY_SHA256_PLUS_REVIEWED_EXTRACTED_PAGE_TEXT",
 }
-_LOCATOR_SOURCE_KEYS: Final = frozenset(
+_HTML_LOCATOR_SOURCE_KEYS: Final = frozenset(
     {"charset", "locator_status", "locators", "source_ref"}
 )
-_LOCATOR_KEYS: Final = frozenset({"claim_id", "exact_utf8_fragments"})
+_PDF_LOCATOR_SOURCE_KEYS: Final = frozenset(
+    {
+        "charset",
+        "expected_body_sha256",
+        "locator_mode",
+        "locator_status",
+        "locators",
+        "source_ref",
+    }
+)
+_HTML_LOCATOR_KEYS: Final = frozenset({"claim_id", "exact_utf8_fragments"})
+_PDF_LOCATOR_KEYS: Final = frozenset(
+    {"claim_id", "exact_utf8_fragments", "reviewed_page_number"}
+)
 _READY = "READY"
 _PENDING = "LOCATORS_PENDING"
+_RAW_BODY_LOCATOR_MODE = "RAW_BODY_EXACTLY_ONCE"
+_PDF_LOCATOR_MODE = "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT"
+_AMERICAN_TOURISTER_HOST: Final = "www.americantourister.jp"
+_AMERICAN_TOURISTER_INTERMEDIATE_SOURCE: Final = (
+    "https://secure.globalsign.com/cacert/gsgccr3dvtlsca2020.crt"
+)
+_AMERICAN_TOURISTER_INTERMEDIATE_SHA256_FINGERPRINT: Final = (
+    "762538439509c411c437d3c567563e1378671281fc4a1464add031870843676e"
+)
+_AMERICAN_TOURISTER_INTERMEDIATE_PEM: Final = """-----BEGIN CERTIFICATE-----
+MIIEsDCCA5igAwIBAgIQd70OB0LV2enQSdd00CpvmjANBgkqhkiG9w0BAQsFADBM
+MSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xv
+YmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0y
+OTAzMTgwMDAwMDBaMFMxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMSkwJwYDVQQDEyBHbG9iYWxTaWduIEdDQyBSMyBEViBUTFMgQ0EgMjAy
+MDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKxnlJV/de+OpwyvCXAJ
+IcxPCqkFPh1lttW2oljS3oUqPKq8qX6m7K0OVKaKG3GXi4CJ4fHVUgZYE6HRdjqj
+hhnuHY6EBCBegcUFgPG0scB12Wi8BHm9zKjWxo3Y2bwhO8Fvr8R42pW0eINc6OTb
+QXC0VWFCMVzpcqgz6X49KMZowAMFV6XqtItcG0cMS//9dOJs4oBlpuqX9INxMTGp
+6EASAF9cnlAGy/RXkVS9nOLCCa7pCYV+WgDKLTF+OK2Vxw3RUJ/p8009lQeUARv2
+UCcNNPCifYX1xIspvarkdjzLwzOdLahDdQbJON58zN4V+lMj0msg+c0KnywPIRp3
+BMkCAwEAAaOCAYUwggGBMA4GA1UdDwEB/wQEAwIBhjAdBgNVHSUEFjAUBggrBgEF
+BQcDAQYIKwYBBQUHAwIwEgYDVR0TAQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQUDZjA
+c3+rvb3ZR0tJrQpKDKw+x3wwHwYDVR0jBBgwFoAUj/BLf6guRSSuTVD6Y5qL3uLd
+G7wwewYIKwYBBQUHAQEEbzBtMC4GCCsGAQUFBzABhiJodHRwOi8vb2NzcDIuZ2xv
+YmFsc2lnbi5jb20vcm9vdHIzMDsGCCsGAQUFBzAChi9odHRwOi8vc2VjdXJlLmds
+b2JhbHNpZ24uY29tL2NhY2VydC9yb290LXIzLmNydDA2BgNVHR8ELzAtMCugKaAn
+hiVodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL3Jvb3QtcjMuY3JsMEcGA1UdIARA
+MD4wPAYEVR0gADA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWdu
+LmNvbS9yZXBvc2l0b3J5LzANBgkqhkiG9w0BAQsFAAOCAQEAy8j/c550ea86oCkf
+r2W+ptTCYe6iVzvo7H0V1vUEADJOWelTv07Obf+YkEatdN1Jg09ctgSNv2h+LMTk
+KRZdAXmsE3N5ve+z1Oa9kuiu7284LjeS09zHJQB4DJJJkvtIbjL/ylMK1fbMHhAW
+i0O194TWvH3XWZGXZ6ByxTUIv1+kAIql/Mt29PmKraTT5jrzcVzQ5A9jw16yysuR
+XRrLODlkS1hyBjsfyTNZrmL1h117IFgntBA5SQNVl9ckedq5r4RSAU85jV8XK5UL
+REjRZt2I6M9Po9QL7guFLu4sPFJpwR1sPJvubS2THeo7SxYoNDtdyBHs7euaGcMa
+D/fayQ==
+-----END CERTIFICATE-----
+"""
 
 
 class OfficialSourceCaptureFailureCode(StrEnum):
@@ -204,7 +283,14 @@ def _pairs(pairs: list[tuple[object, object]]) -> dict[str, object]:
     return result
 
 
-def _reject_number(value: str) -> NoReturn:
+def _finite_float(value: str) -> float:
+    parsed = float(value)
+    if not math.isfinite(parsed):
+        _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
+    return parsed
+
+
+def _reject_constant(value: str) -> NoReturn:
     del value
     _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
 
@@ -220,8 +306,8 @@ def _strict_json(raw: bytes, *, maximum: int) -> object:
         return json.loads(
             raw.decode("utf-8", errors="strict"),
             object_pairs_hook=_pairs,
-            parse_float=_reject_number,
-            parse_constant=_reject_number,
+            parse_float=_finite_float,
+            parse_constant=_reject_constant,
         )
     except OfficialSourceCaptureFailure:
         raise
@@ -327,6 +413,43 @@ def _date(value: object) -> date:
 
 def _source_url(value: object) -> tuple[str, SplitResult]:
     raw = _text(value)
+    allowed_queries = {
+        (
+            "cdn.shopify.com",
+            "/s/files/1/0100/1537/5438/files/Jackery_500_New_20250617.pdf",
+            "v=1750410730",
+        ),
+        (
+            "store.ace.jp",
+            "/shop/pages/new_proteca_warranty.aspx",
+            "ismodesmartphone=off",
+        ),
+        (
+            "www.ana.co.jp",
+            "/ja/jp/special-notice/001379.html",
+            "p1=domestic&p2=ja&p3=global",
+        ),
+        (
+            "www.thanko.jp",
+            "/view/item/000000003922",
+            "category_page_id=ct576",
+        ),
+        (
+            "www.thanko.jp",
+            "/view/item/000000004055",
+            "category_page_id=thanko-origin",
+        ),
+        (
+            "www.thanko.jp",
+            "/view/item/000000004715",
+            "category_page_id=thanko-origin",
+        ),
+        (
+            "store.siroca.jp",
+            "/products/ss-mu251",
+            "variant=41121812643976",
+        ),
+    }
     if (
         not raw.isascii()
         or any(character.isspace() or ord(character) < 0x21 for character in raw)
@@ -346,12 +469,17 @@ def _source_url(value: object) -> tuple[str, SplitResult]:
         or parsed.password is not None
         or port is not None
         or not parsed.path.startswith("/")
-        or parsed.query
         or parsed.fragment
         or parsed.hostname.endswith(".")
+        or bool(parsed.query)
+        and (parsed.hostname, parsed.path, parsed.query) not in allowed_queries
     ):
         _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
     return raw, parsed
+
+
+def _request_path(parsed: SplitResult) -> str:
+    return parsed.path + (f"?{parsed.query}" if parsed.query else "")
 
 
 @dataclass(frozen=True, slots=True)
@@ -359,6 +487,7 @@ class SourceLocator:
     claim_id: str
     claim_statement_sha256: str
     exact_utf8_fragments: tuple[str, ...]
+    reviewed_page_number: int | None = None
 
     def __post_init__(self) -> None:
         if (
@@ -366,6 +495,13 @@ class SourceLocator:
             or _SHA256.fullmatch(self.claim_statement_sha256) is None
             or type(self.exact_utf8_fragments) is not tuple
             or not self.exact_utf8_fragments
+            or (
+                self.reviewed_page_number is not None
+                and (
+                    type(self.reviewed_page_number) is not int
+                    or self.reviewed_page_number < 1
+                )
+            )
         ):
             _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
         observed: set[str] = set()
@@ -390,6 +526,9 @@ class SourceCaptureTarget:
     charset: str | None
     locator_status: str
     locators: tuple[SourceLocator, ...]
+    media_type: str = "text/html"
+    locator_mode: str = _RAW_BODY_LOCATOR_MODE
+    expected_body_sha256: str | None = None
 
     def __post_init__(self) -> None:
         raw, parsed = _source_url(self.url)
@@ -397,11 +536,37 @@ class SourceCaptureTarget:
             _SOURCE_REF.fullmatch(self.source_ref) is None
             or raw != self.url
             or parsed.hostname != self.host
-            or parsed.path != self.path
+            or _request_path(parsed) != self.path
             or self.charset not in {None, "utf-8", "euc-jp"}
+            or self.media_type
+            not in {"application/pdf", "text/html", "text/javascript"}
+            or self.locator_mode not in {_RAW_BODY_LOCATOR_MODE, _PDF_LOCATOR_MODE}
             or self.locator_status not in {_READY, _PENDING}
             or (self.locator_status == _READY and not self.locators)
             or (self.locator_status == _PENDING and self.locators)
+            or (
+                self.locator_mode == _PDF_LOCATOR_MODE
+                and (
+                    self.media_type != "application/pdf"
+                    or self.charset is not None
+                    or self.expected_body_sha256 is None
+                    or _SHA256.fullmatch(self.expected_body_sha256) is None
+                    or any(
+                        locator.reviewed_page_number is None
+                        for locator in self.locators
+                    )
+                )
+            )
+            or (
+                self.locator_mode == _RAW_BODY_LOCATOR_MODE
+                and (
+                    self.expected_body_sha256 is not None
+                    or any(
+                        locator.reviewed_page_number is not None
+                        for locator in self.locators
+                    )
+                )
+            )
         ):
             _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
 
@@ -464,6 +629,23 @@ def _claim_bindings(
     return claims, tuple(articles)
 
 
+def _source_inventory_sha256(
+    registry_sources: Mapping[str, Mapping[str, object]], source_refs: Sequence[str]
+) -> str:
+    return canonical_sha256(
+        sorted(
+            (
+                {
+                    "source_ref": source_ref,
+                    "url": registry_sources[source_ref]["url"],
+                }
+                for source_ref in source_refs
+            ),
+            key=lambda value: cast(str, value["source_ref"]),
+        )
+    )
+
+
 def load_source_capture_plan(repository_root: Path) -> SourceCapturePlan:
     """Load and cross-bind the tracked registry and reviewed locator contract."""
 
@@ -512,7 +694,12 @@ def load_source_capture_plan(repository_root: Path) -> SourceCapturePlan:
             _date(source["retrieved_on"])
             registry_sources[source_ref] = source
             output.append(source_ref)
-    if len(product_refs) != 19 or len(policy_refs) != 3:
+    if (
+        _source_inventory_sha256(registry_sources, product_refs)
+        != _PRODUCT_SOURCE_INVENTORY_SHA256
+        or _source_inventory_sha256(registry_sources, policy_refs)
+        != _POLICY_SOURCE_INVENTORY_SHA256
+    ):
         _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
     claims, article_sources = _claim_bindings(registry, frozenset(product_refs))
     for source_ref in policy_refs:
@@ -527,7 +714,15 @@ def load_source_capture_plan(repository_root: Path) -> SourceCapturePlan:
     observed: set[str] = set()
     for raw_contract_source in contract_sources:
         locator_source = _mapping(raw_contract_source)
-        _exact(locator_source, _LOCATOR_SOURCE_KEYS)
+        locator_mode = cast(
+            str, locator_source.get("locator_mode", _RAW_BODY_LOCATOR_MODE)
+        )
+        _exact(
+            locator_source,
+            _PDF_LOCATOR_SOURCE_KEYS
+            if locator_mode == _PDF_LOCATOR_MODE
+            else _HTML_LOCATOR_SOURCE_KEYS,
+        )
         source_ref = _text(locator_source["source_ref"], maximum=300)
         target_source = registry_sources.get(source_ref)
         if target_source is None or source_ref in observed:
@@ -537,11 +732,21 @@ def load_source_capture_plan(repository_root: Path) -> SourceCapturePlan:
         if charset_value is not None and type(charset_value) is not str:
             _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
         locator_status = _text(locator_source["locator_status"], maximum=40)
+        expected_body_sha256_value = locator_source.get("expected_body_sha256")
+        if expected_body_sha256_value is not None:
+            expected_body_sha256 = _text(expected_body_sha256_value, maximum=64)
+        else:
+            expected_body_sha256 = None
         locators: list[SourceLocator] = []
         observed_claims: set[str] = set()
         for raw_locator in _list(locator_source["locators"]):
             locator = _mapping(raw_locator)
-            _exact(locator, _LOCATOR_KEYS)
+            _exact(
+                locator,
+                _PDF_LOCATOR_KEYS
+                if locator_mode == _PDF_LOCATOR_MODE
+                else _HTML_LOCATOR_KEYS,
+            )
             claim_id = _text(locator["claim_id"], maximum=300)
             raw_fragments = _list(locator["exact_utf8_fragments"])
             fragments = tuple(
@@ -556,22 +761,49 @@ def load_source_capture_plan(repository_root: Path) -> SourceCapturePlan:
             ):
                 _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
             observed_claims.add(claim_id)
-            locators.append(SourceLocator(claim_id, statement_sha256, fragments))
+            reviewed_page_number_value = locator.get("reviewed_page_number")
+            if (
+                reviewed_page_number_value is not None
+                and type(reviewed_page_number_value) is not int
+            ):
+                _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
+            locators.append(
+                SourceLocator(
+                    claim_id,
+                    statement_sha256,
+                    fragments,
+                    reviewed_page_number_value,
+                )
+            )
         if locator_status == _READY and observed_claims != set(claims[source_ref]):
             _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
         if locator_status == _PENDING and observed_claims:
             _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
         url, parsed = _source_url(target_source["url"])
+        source_type = target_source["source_type"]
+        media_type = (
+            "application/pdf"
+            if source_type
+            in {"OFFICIAL_PRODUCT_CATALOG_PDF", "OFFICIAL_PRODUCT_MANUAL_PDF"}
+            else (
+                "text/javascript"
+                if source_type == "PRODUCT_DATA_ENDPOINT"
+                else "text/html"
+            )
+        )
         targets.append(
             SourceCaptureTarget(
                 source_ref=source_ref,
                 url=url,
                 host=cast(str, parsed.hostname),
-                path=parsed.path,
+                path=_request_path(parsed),
                 observed_on=_date(target_source["retrieved_on"]),
                 charset=charset_value,
                 locator_status=locator_status,
                 locators=tuple(locators),
+                media_type=media_type,
+                locator_mode=locator_mode,
+                expected_body_sha256=expected_body_sha256,
             )
         )
     if observed != set(registry_sources):
@@ -986,18 +1218,39 @@ def _bounded_body(
     return b"".join(chunks)
 
 
-def _mime(headers: Mapping[str, str], expected_charset: str | None) -> str:
+def _mime(
+    headers: Mapping[str, str],
+    expected_charset: str | None,
+    expected_media_type: str,
+) -> str:
     value = headers.get("content-type")
     if type(value) is not str:
         _fail(OfficialSourceCaptureFailureCode.MIME_INVALID)
-    match = _CONTENT_TYPE.fullmatch(value)
-    if match is None:
+    if expected_media_type == "text/html":
+        match = _HTML_CONTENT_TYPE.fullmatch(value)
+        if match is None:
+            _fail(OfficialSourceCaptureFailureCode.MIME_INVALID)
+        charset = match.group(1)
+    elif expected_media_type == "text/javascript":
+        match = re.fullmatch(
+            r"(?:application/json|application/javascript|text/javascript)"
+            r'(?:\s*;\s*charset="?([A-Za-z0-9._-]+)"?)?',
+            value,
+            flags=re.ASCII | re.IGNORECASE,
+        )
+        if match is None:
+            _fail(OfficialSourceCaptureFailureCode.MIME_INVALID)
+        charset = match.group(1)
+    elif expected_media_type == "application/pdf":
+        if value.casefold().strip() != "application/pdf":
+            _fail(OfficialSourceCaptureFailureCode.MIME_INVALID)
+        charset = None
+    else:
         _fail(OfficialSourceCaptureFailureCode.MIME_INVALID)
-    charset = match.group(1)
     normalized = None if charset is None else charset.casefold().replace("_", "-")
     if normalized != expected_charset:
         _fail(OfficialSourceCaptureFailureCode.MIME_INVALID)
-    return "text/html"
+    return expected_media_type
 
 
 def _validate_html(body: bytes, *, charset: str | None) -> None:
@@ -1014,6 +1267,53 @@ def _validate_html(body: bytes, *, charset: str | None) -> None:
         body.decode(codec, errors="strict")
     except UnicodeError:
         _fail(OfficialSourceCaptureFailureCode.HTML_INVALID)
+
+
+def _validate_body(target: SourceCaptureTarget, body: bytes) -> None:
+    if target.media_type == "text/html":
+        _validate_html(body, charset=target.charset)
+        return
+    if target.media_type == "text/javascript":
+        try:
+            decoded = body.decode("utf-8", errors="strict")
+            json.loads(
+                decoded,
+                object_pairs_hook=_pairs,
+                parse_float=_finite_float,
+                parse_constant=_reject_constant,
+            )
+        except OfficialSourceCaptureFailure:
+            raise
+        except (
+            UnicodeError,
+            json.JSONDecodeError,
+            ValueError,
+            TypeError,
+            RecursionError,
+        ):
+            _fail(OfficialSourceCaptureFailureCode.HTML_INVALID)
+        return
+    if target.media_type == "application/pdf":
+        stripped = body.rstrip(b"\t\n\r ")
+        if (
+            not body.startswith(b"%PDF-")
+            or not stripped.endswith(b"%%EOF")
+            or target.expected_body_sha256 is None
+            or bytes_sha256(body) != target.expected_body_sha256
+        ):
+            _fail(OfficialSourceCaptureFailureCode.LOCATOR_MISMATCH)
+        return
+    _fail(OfficialSourceCaptureFailureCode.MIME_INVALID)
+
+
+def _capture_accept(target: SourceCaptureTarget) -> str:
+    if target.media_type == "text/html":
+        return _HTML_ACCEPT
+    if target.media_type == "text/javascript":
+        return _JAVASCRIPT_ACCEPT
+    if target.media_type == "application/pdf":
+        return _PDF_ACCEPT
+    _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
 
 
 @dataclass(frozen=True, slots=True)
@@ -1057,6 +1357,8 @@ def _fetch_source(
     try:
         context = ssl.create_default_context(purpose=ssl.Purpose.SERVER_AUTH)
         context.minimum_version = ssl.TLSVersion.TLSv1_2
+        if target.host == _AMERICAN_TOURISTER_HOST:
+            context.load_verify_locations(cadata=_AMERICAN_TOURISTER_INTERMEDIATE_PEM)
     except OSError, ssl.SSLError, ValueError:
         _fail(OfficialSourceCaptureFailureCode.TLS_CONTEXT_INVALID)
     connection: OfficialSourceHttpsConnection | None = None
@@ -1072,7 +1374,7 @@ def _fetch_source(
         connection.set_read_timeout(READ_TIMEOUT_SECONDS)
         request_started = True
         headers = {
-            "Accept": CAPTURE_ACCEPT,
+            "Accept": _capture_accept(target),
             "Accept-Encoding": "identity",
             "Connection": "close",
             "Host": target.host,
@@ -1088,9 +1390,9 @@ def _fetch_source(
             or response_headers.get("content-encoding") not in {None, "identity"}
         ):
             _fail(OfficialSourceCaptureFailureCode.RESPONSE_INVALID)
-        content_type = _mime(response_headers, target.charset)
+        content_type = _mime(response_headers, target.charset, target.media_type)
         body = _bounded_body(response, response_headers)
-        _validate_html(body, charset=target.charset)
+        _validate_body(target, body)
     except OfficialSourceCaptureFailure:
         raise
     except socket.gaierror:
@@ -1312,8 +1614,16 @@ def _evidence(fetched: FetchedSource) -> OfficialSourceCaptureEvidence:
         fragments: list[tuple[str, str]] = []
         for exact_fragment in locator.exact_utf8_fragments:
             fragment = exact_fragment.encode("utf-8", errors="strict")
-            if fetched.body.count(fragment) != 1:
+            if (
+                fetched.target.locator_mode == _RAW_BODY_LOCATOR_MODE
+                and fetched.body.count(fragment) != 1
+            ):
                 _fail(OfficialSourceCaptureFailureCode.LOCATOR_MISMATCH)
+            if (
+                fetched.target.locator_mode == _PDF_LOCATOR_MODE
+                and locator.reviewed_page_number is None
+            ):
+                _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
             fragments.append((exact_fragment, bytes_sha256(fragment)))
         locators.append(
             (

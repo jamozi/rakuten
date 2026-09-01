@@ -5,7 +5,7 @@
   const editorialRoot = document.querySelector('.raos-editorial-v2');
   const toc = document.querySelector('.raos-article-toc');
   const tocDetails = document.querySelector('.raos-article-toc details');
-  const desktopQuery = window.matchMedia('(min-width: 48.0625rem)');
+  const desktopQuery = window.matchMedia('(min-width: 64.0625rem)');
   const comparisonRegions = [
     ...document.querySelectorAll('.comparison-table-wrap[role="region"]'),
   ];
@@ -38,8 +38,7 @@
       return;
     }
     const stickyTop = Number.parseFloat(window.getComputedStyle(toc).top);
-    const offset = Math.ceil(toc.getBoundingClientRect().height +
-      (Number.isFinite(stickyTop) ? stickyTop : 0) + 16);
+    const offset = Math.ceil((Number.isFinite(stickyTop) ? stickyTop : 0) + 16);
     editorialRoot.style.setProperty('--raos-toc-scroll-offset', `${offset}px`);
   };
 

@@ -165,12 +165,12 @@ source_artifacts:
   sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
   role: DEPENDENCY_CONTRACT
 - uri: repo://package.json
-  bytes: 2245
-  sha256: e1665573013d997af81a1b64717a8c176d3619d0e7f1f742c2630802dabc0992
+  bytes: 2273
+  sha256: 730029961c3713d0b2cd6888ae3f04c25d0dbf0ee97b2ed562a43ea792f7e968
   role: LOCKED_TOOLCHAIN
 - uri: repo://package-lock.json
-  bytes: 329409
-  sha256: 8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca
+  bytes: 411015
+  sha256: 37394f25fe870c11cdbd4ba1b1173ed86bc677ca51a85e6fe0b999ec425efa4f
   role: LOCKED_TOOLCHAIN
 - uri: repo://pyproject.toml
   bytes: 1800

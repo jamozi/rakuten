@@ -36,16 +36,31 @@ from urllib.parse import urlsplit
 PYTHON_ROOT = Path(__file__).resolve().parents[1] / "python"
 if str(PYTHON_ROOT) not in sys.path:
     sys.path.insert(0, str(PYTHON_ROOT))
+SCRIPTS_ROOT = Path(__file__).resolve().parent
+if str(SCRIPTS_ROOT) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_ROOT))
 
 from raos.application.editorial.editorial_portfolio_v3 import (  # noqa: E402
     EditorialPortfolioV3Failure,
     load_editorial_portfolio_v3,
 )
+from raos.application.editorial.editorial_portfolio_v2 import (  # noqa: E402
+    EditorialPortfolioV2Failure,
+    STATUS_RELATIVE_PATH as V2_STATUS_RELATIVE_PATH,
+    load_editorial_portfolio_v2,
+    portfolio_sha256 as v2_portfolio_sha256,
+    require_manufacturer_sales_state_for_products_v1,
+)
 from raos.application.editorial.rakuten_measurement_activation_v3 import (  # noqa: E402
     RakutenMeasurementActivationOverlayV3,
     RakutenMeasurementActivationV3Failure,
+    _load_verified_v2_evidence,
+    _validate_product_safety_publication_binding,
     validate_rakuten_measurement_activation_v3,
 )
+import raos_wordpress_seo_audit as wordpress_seo_audit  # noqa: E402
+import wordpress_quality_audit_v1 as wordpress_quality_audit  # noqa: E402
+import build_st1704_self_hosted_theme as theme_owner  # noqa: E402
 
 
 ROOT: Final = Path(__file__).resolve().parents[1]
@@ -86,24 +101,25 @@ THEME_ROOT: Final = THEME_STYLE_PATH.parent
 THEME_FUNCTIONS_PATH: Final = THEME_ROOT / "functions.php"
 ORIGIN: Final = "https://kurashinoshirube.com"
 EXPECTED_SOCIAL_IMAGE_URL: Final = (
-    f"{ORIGIN}/wp-content/themes/kurashinoshirube-child/"
-    "assets/images/home-hero.webp"
+    f"{ORIGIN}/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp"
 )
 EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG: Final = {
     "carry-on-suitcase-comparison": "article-suitcase-guide.webp",
     "portable-power-station-guide": "article-portable-power-guide.webp",
     "anker-solix-c300-c800-c1000-differences": (
-        "article-portable-power-guide.webp"
+        "article-anker-solix-generations.webp"
     ),
     "countertop-dishwasher-for-small-households": (
         "article-countertop-dishwasher-guide.webp"
     ),
     "compact-robot-vacuum-shortlist": "article-robot-vacuum-guide.webp",
-    "carry-on-suitcase-under-100-seats": "article-suitcase-guide.webp",
-    "lightweight-carry-on-suitcase-under-3kg": "article-suitcase-guide.webp",
-    "front-open-carry-on-suitcase-with-stopper": "article-suitcase-guide.webp",
-    "roomba-mini-vs-switchbot-k11-pro": "article-robot-vacuum-guide.webp",
-    "solota-vs-rakua-mini-plus": "article-countertop-dishwasher-guide.webp",
+    "carry-on-suitcase-under-100-seats": "article-suitcase-under-100-seats.webp",
+    "lightweight-carry-on-suitcase-under-3kg": "article-suitcase-under-3kg.webp",
+    "front-open-carry-on-suitcase-with-stopper": (
+        "article-suitcase-front-open-stopper.webp"
+    ),
+    "roomba-mini-vs-switchbot-k11-pro": "article-roomba-mini-k11-comparison.webp",
+    "solota-vs-rakua-mini-plus": "article-solota-rakua-replacement.webp",
 }
 EDITOR_ENDPOINT: Final = f"{ORIGIN}/wp-json/raos-codex-mcp/v1/editor"
 REVIEW_URL: Final = f"{ORIGIN}/wp-admin/tools.php?page=raos-codex-proposals"
@@ -111,6 +127,12 @@ EDITOR_CREDENTIAL_PATH: Final = (
     ROOT / ".secrets/wordpress-mcp/editor-application-password.v1.json"
 )
 PRIVATE_REQUEST_DIRECTORY: Final = ROOT / ".secrets/wordpress-mcp/publication-requests"
+MEASUREMENT_PLUGIN_MANIFEST_PATH: Final = (
+    ROOT / "changes/editorial-measurement-v1/runtime-manifest.v1.json"
+)
+REPO_PLUGIN_ARTIFACTS_PATH: Final = (
+    ROOT / "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
+)
 NODE_BIN: Final = Path("/home/minami/.nvm/versions/node/v24.18.1/bin/node")
 DEPLOYMENT_BRIDGE: Final = ROOT / "packages/wordpress-mcp-bridge/src/index.ts"
 MAKE_BIN: Final = Path("/usr/bin/make")
@@ -119,16 +141,14 @@ DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
 EXPECTED_PLUGIN_VERSION: Final = "1.3.1"
 EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
-    "24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55"
+    "8204d0f1ff573a5edf72abe4ef69ef422af15815adf5ecbc3a74bf8ec1d9c7d8"
 )
 EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS: Final = 3600
 EXPECTED_APPLY_LEASE_TTL_SECONDS: Final = 900
 ATTEMPT_PREPARED_EXPIRY_SECONDS: Final = EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS + 30
 RELEASE_FOREGROUND_TIMEOUT_SECONDS: Final = 4680
-EXPECTED_THEME_VERSION: Final = "1.4.0"
-EXPECTED_THEME_RUNTIME_REVISION: Final = (
-    "3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a"
-)
+EXPECTED_THEME_VERSION: Final = theme_owner.THEME_VERSION
+EXPECTED_THEME_RUNTIME_REVISION: Final = theme_owner.THEME_RUNTIME_REVISION
 THEME_RUNTIME_SENTINEL_PROPERTIES: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
     "assets/editorial-v2.css": "--raos-theme-runtime-revision-editorial-v2",
@@ -143,6 +163,9 @@ AUTOPTIMIZE_SINGLE_STYLESHEET_PREFIX: Final = (
     "/wp-content/cache/autoptimize/autoptimize_single_"
 )
 EXPECTED_ALL_ARTICLE_COUNT: Final = 10
+EXPECTED_MATERIALIZED_PRODUCT_CARD_COUNT: Final = 37
+EXPECTED_MATERIALIZED_AFFILIATE_CTA_COUNT: Final = 74
+ZERO_PRODUCT_ROUTE_SLUGS: Final = frozenset({"solota-vs-rakua-mini-plus"})
 EXPECTED_POLICY_PAGE_COUNT: Final = 3
 CREATE_IF_MISSING_POLICY_PAGE_SLUGS: Final = frozenset({"comparison-policy"})
 MAX_PUBLICATION_PROPOSALS: Final = 14
@@ -151,6 +174,7 @@ MAX_RESPONSE_BYTES: Final = 16 * 1024 * 1024
 MAX_PUBLIC_PAGE_BYTES: Final = 4 * 1024 * 1024
 MAX_PUBLIC_STYLESHEET_BYTES: Final = 1024 * 1024
 MAX_PUBLIC_STYLESHEET_CACHE_ENTRIES: Final = EXPECTED_ALL_ARTICLE_COUNT * 2
+MAX_PUBLIC_SEO_AUDIT_AGE: Final = timedelta(minutes=5)
 MAX_RECEIPT_BYTES: Final = 4 * 1024 * 1024
 MAX_THEME_PACKAGE_BYTES: Final = 32 * 1024 * 1024
 MAX_THEME_FILE_BYTES: Final = 8 * 1024 * 1024
@@ -158,6 +182,11 @@ MAX_THEME_FILE_COUNT: Final = 2048
 LIST_PER_PAGE: Final = 10
 MAX_LIST_DOCUMENTS: Final = 10_000
 SHA256_RE: Final = re.compile(r"^[0-9a-f]{64}$")
+TIMESTAMP_RE: Final = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z\Z")
+QUALITY_AUDIT_IDENTIFIER_RE: Final = re.compile(
+    r"[a-z0-9][a-z0-9._-]{7,95}\Z",
+    re.ASCII,
+)
 SLUG_RE: Final = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 VERSION_RE: Final = re.compile(r"^[0-9]+(?:\.[0-9]+){1,3}(?:[-+][0-9A-Za-z.-]+)?$")
 EXPECTED_TOOLS: Final = {
@@ -187,6 +216,51 @@ WRITE_FIELDS: Final = (
     "block_markup",
     "taxonomies",
     "media_ids",
+)
+SEO_CORE_PAGE_CHECKS: Final = frozenset(
+    {
+        "http_200_no_redirect",
+        "self_canonical",
+        "robots_index_follow",
+        "title",
+        "meta_description",
+        "og_title",
+        "og_description",
+        "og_url",
+        "og_image",
+        "og_type",
+        "og_locale",
+        "og_site_name",
+        "og_image_width",
+        "og_image_height",
+        "og_image_type",
+        "twitter_card",
+        "twitter_title",
+        "twitter_description",
+        "twitter_image",
+        "required_schema",
+        "forbidden_schema_absent",
+        "structured_data_semantics",
+    }
+)
+SEO_SURFACE_CHECKS: Final = frozenset(
+    {"robots", "sitemap", "sitemap_home", "llms_txt_absent"}
+)
+SEO_INDEX_STATE_BASES: Final = frozenset(
+    {
+        "UNAVAILABLE",
+        "OWNER_PRIVATE_LIVE_GSC_URL_INSPECTION_V1",
+        "OWNER_PRIVATE_RECORDED_URL_INSPECTION_V1",
+    }
+)
+SEO_INVENTORY_IDENTIFIERS: Final = frozenset(
+    {
+        "home",
+        *(f"a{number:02d}" for number in range(1, 11)),
+        "about-ad-policy",
+        "comparison-policy",
+        "privacy-policy",
+    }
 )
 
 
@@ -389,6 +463,8 @@ class _PublicPageEvidenceParser(HTMLParser):
             "h5",
             "h6",
         }:
+            if self._heading_tag is not None:
+                raise ValueError("nested public heading")
             self._heading_tag = lowered
             self._heading_parts = []
         if lowered not in self._VOID_ELEMENTS:
@@ -398,11 +474,12 @@ class _PublicPageEvidenceParser(HTMLParser):
         lowered = tag.lower()
         if lowered == self._heading_tag:
             heading = _normalized_public_text(self._heading_parts)
-            if heading:
-                self.headings.append(heading)
-                self.heading_outline.append((lowered, heading))
-                if lowered == "h1":
-                    self.h1_titles.append(heading)
+            if not heading:
+                raise ValueError("empty public heading")
+            self.headings.append(heading)
+            self.heading_outline.append((lowered, heading))
+            if lowered == "h1":
+                self.h1_titles.append(heading)
             self._heading_tag = None
             self._heading_parts = []
         if lowered == "title" and self._title_parts is not None:
@@ -432,6 +509,11 @@ class _PublicPageEvidenceParser(HTMLParser):
             self._heading_parts.append(data)
         if self._elements and self._elements[-1][2]:
             self.disclosure_text.append(data)
+
+    def close(self) -> None:
+        super().close()
+        if self._heading_tag is not None:
+            raise ValueError("unclosed public heading")
 
 
 def fail(code: str) -> NoReturn:
@@ -491,6 +573,62 @@ def load_json(path: Path, maximum: int, code: str) -> dict[str, object]:
     return value
 
 
+def _load_owner_private_json_snapshot(
+    path: Path,
+    maximum: int,
+    code: str,
+) -> tuple[dict[str, object], bytes]:
+    """Load one exact private receipt through a non-following file descriptor."""
+
+    descriptor = -1
+    try:
+        descriptor = os.open(
+            path,
+            os.O_RDONLY | os.O_CLOEXEC | getattr(os, "O_NOFOLLOW", 0),
+        )
+        before = os.fstat(descriptor)
+        if (
+            not stat.S_ISREG(before.st_mode)
+            or before.st_uid != os.geteuid()
+            or before.st_nlink != 1
+            or stat.S_IMODE(before.st_mode) != 0o600
+            or not 1 <= before.st_size <= maximum
+        ):
+            fail(code)
+        chunks: list[bytes] = []
+        remaining = before.st_size
+        while remaining:
+            chunk = os.read(descriptor, min(remaining, 1024 * 1024))
+            if not chunk:
+                fail(code)
+            chunks.append(chunk)
+            remaining -= len(chunk)
+        payload = b"".join(chunks)
+        after = os.fstat(descriptor)
+    except OSError:
+        fail(code)
+    finally:
+        if descriptor >= 0:
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
+    if len(payload) != before.st_size or (
+        before.st_dev,
+        before.st_ino,
+        before.st_size,
+        before.st_mtime_ns,
+    ) != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns):
+        fail(code)
+    try:
+        value = json.loads(payload.decode("utf-8", errors="strict"))
+    except UnicodeError, json.JSONDecodeError:
+        fail(code)
+    if type(value) is not dict:
+        fail(code)
+    return value, payload
+
+
 @dataclass(frozen=True)
 class Article:
     local_slug: str
@@ -526,8 +664,7 @@ def expected_social_image_url(article: Article) -> str:
     if image_name is None:
         fail("RAOS_WORDPRESS_REQUEST_ARTICLE_SELECTION_INVALID")
     return (
-        f"{ORIGIN}/wp-content/themes/kurashinoshirube-child/assets/images/"
-        f"{image_name}"
+        f"{ORIGIN}/wp-content/themes/kurashinoshirube-child/assets/images/{image_name}"
     )
 
 
@@ -729,13 +866,22 @@ def load_articles(
 
 
 def load_policy_pages(
-    *, fixture_root: Path = SOURCE_FIXTURE_ROOT
+    *,
+    fixture_root: Path = SOURCE_FIXTURE_ROOT,
+    profile: str = "local",
 ) -> list[Article]:
-    """Load the three tracked policy pages as exact publication documents."""
+    """Load one closed local-preview or production policy document set."""
 
-    if not fixture_root.is_absolute():
+    if not fixture_root.is_absolute() or profile not in {"local", "production"}:
         fail("RAOS_WORDPRESS_REQUEST_FIXTURE_INVALID")
-    page_directory = fixture_root / "pages"
+    page_directory_name = "pages" if profile == "local" else "production-pages"
+    fixture_name = "pages.json" if profile == "local" else "production-pages.json"
+    expected_schema = (
+        "RAOS_WORDPRESS_LOCAL_PREVIEW_PAGES_V1"
+        if profile == "local"
+        else "RAOS_WORDPRESS_PRODUCTION_POLICY_PAGES_V1"
+    )
+    page_directory = fixture_root / page_directory_name
     try:
         root_metadata = fixture_root.lstat()
         directory_metadata = page_directory.lstat()
@@ -752,7 +898,7 @@ def load_policy_pages(
         fail("RAOS_WORDPRESS_REQUEST_FIXTURE_INVALID")
     fixture = exact_object(
         load_json(
-            fixture_root / "pages.json",
+            fixture_root / fixture_name,
             64 * 1024,
             "RAOS_WORDPRESS_REQUEST_PAGE_FIXTURE_INVALID",
         ),
@@ -765,7 +911,7 @@ def load_policy_pages(
     raw_pages = fixture.get("pages")
     raw_mappings = mapping.get("pages")
     if (
-        fixture.get("schema") != "RAOS_WORDPRESS_LOCAL_PREVIEW_PAGES_V1"
+        fixture.get("schema") != expected_schema
         or type(raw_pages) is not list
         or type(raw_mappings) is not list
         or len(raw_pages) != EXPECTED_POLICY_PAGE_COUNT
@@ -774,9 +920,16 @@ def load_policy_pages(
         fail("RAOS_WORDPRESS_REQUEST_PAGE_FIXTURE_INVALID")
     mapping_by_slug: dict[str, tuple[str, ...]] = {}
     for raw_mapping in raw_mappings:
-        row = exact_object(raw_mapping, {"production_slug", "required_key_content"})
+        row = exact_object(
+            raw_mapping,
+            {
+                "production_slug",
+                "local_required_key_content",
+                "production_required_key_content",
+            },
+        )
         slug = row.get("production_slug")
-        key_content = row.get("required_key_content")
+        key_content = row.get(f"{profile}_required_key_content")
         if (
             type(slug) is not str
             or SLUG_RE.fullmatch(slug) is None
@@ -816,7 +969,7 @@ def load_policy_pages(
             or "<" in excerpt
             or ">" in excerpt
             or len(excerpt.encode("utf-8")) > 512
-            or content_file != f"pages/{slug}.html"
+            or content_file != f"{page_directory_name}/{slug}.html"
         ):
             fail("RAOS_WORDPRESS_REQUEST_PAGE_FIXTURE_INVALID")
         content_path = fixture_root / str(content_file)
@@ -846,6 +999,17 @@ def load_policy_pages(
             )
             or re.search(r"(?:javascript|data)\s*:", markup, flags=re.IGNORECASE)
             or any(value not in markup for value in mapping_by_slug[slug])
+            or (
+                profile == "production"
+                and any(
+                    marker in markup
+                    for marker in {
+                        "LOCAL WORDPRESS PREVIEW",
+                        "このローカルプレビュー",
+                        "ローカルWordPressプレビュー",
+                    }
+                )
+            )
         ):
             fail("RAOS_WORDPRESS_REQUEST_PAGE_KSES_INVALID")
         seen.add(slug)
@@ -875,7 +1039,13 @@ def load_publication_items(
     articles = load_articles(selection, fixture_root=article_fixture_root)
     if selection != "all":
         return articles
-    items = [*articles, *load_policy_pages(fixture_root=page_fixture_root)]
+    items = [
+        *articles,
+        *load_policy_pages(
+            fixture_root=page_fixture_root,
+            profile="production",
+        ),
+    ]
     if len(items) != EXPECTED_ALL_ARTICLE_COUNT + EXPECTED_POLICY_PAGE_COUNT:
         fail("RAOS_WORDPRESS_REQUEST_PORTFOLIO_INCOMPLETE")
     return items
@@ -929,6 +1099,186 @@ def run_editorial_portfolio_refresh(
             fail(code)
 
 
+def _validated_materialization_media(
+    value: object,
+    expected_product_ids: set[str],
+    *,
+    code: str,
+) -> list[dict[str, str]]:
+    """Validate the complete, one-image-per-product materialization receipt."""
+
+    if type(value) is not list or len(value) != len(expected_product_ids):
+        fail(code)
+    media: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for raw in value:
+        if type(raw) is not dict or set(raw) != {
+            "product_id",
+            "image_sha256",
+            "image_extension",
+        }:
+            fail(code)
+        product_id = raw.get("product_id")
+        image_sha256 = raw.get("image_sha256")
+        image_extension = raw.get("image_extension")
+        if (
+            type(product_id) is not str
+            or product_id not in expected_product_ids
+            or product_id in seen
+            or type(image_sha256) is not str
+            or SHA256_RE.fullmatch(image_sha256) is None
+            or image_sha256 == "0" * 64
+            or type(image_extension) is not str
+            or image_extension not in {"jpg", "png", "gif"}
+        ):
+            fail(code)
+        seen.add(product_id)
+        media.append(
+            {
+                "product_id": product_id,
+                "image_sha256": image_sha256,
+                "image_extension": image_extension,
+            }
+        )
+    if seen != expected_product_ids:
+        fail(code)
+    return media
+
+
+def _expected_materialization_completion(
+    expected_product_count: int,
+) -> dict[str, object]:
+    if type(expected_product_count) is not int or expected_product_count <= 0:
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    return {
+        "state": "COMPLETE",
+        "product_count": expected_product_count,
+        "verified_product_count": expected_product_count,
+        "product_card_count": EXPECTED_MATERIALIZED_PRODUCT_CARD_COUNT,
+        "verified_product_card_count": EXPECTED_MATERIALIZED_PRODUCT_CARD_COUNT,
+        "affiliate_cta_count": EXPECTED_MATERIALIZED_AFFILIATE_CTA_COUNT,
+        "verified_affiliate_cta_count": EXPECTED_MATERIALIZED_AFFILIATE_CTA_COUNT,
+        "neutral_product_image_count": 0,
+        "manufacturer_fallback_cta_count": 0,
+        "measurement_collection_enabled": False,
+    }
+
+
+def _validated_materialization_completion(
+    value: object,
+    *,
+    expected_product_count: int,
+    code: str,
+) -> dict[str, object]:
+    """Require the fail-closed, fully verified V2 completion declaration."""
+
+    expected = _expected_materialization_completion(expected_product_count)
+    if type(value) is not dict or set(value) != set(expected):
+        fail(code)
+    if (
+        type(value.get("state")) is not str
+        or any(
+            type(value.get(name)) is not int
+            for name in {
+                "product_count",
+                "verified_product_count",
+                "product_card_count",
+                "verified_product_card_count",
+                "affiliate_cta_count",
+                "verified_affiliate_cta_count",
+                "neutral_product_image_count",
+                "manufacturer_fallback_cta_count",
+            }
+        )
+        or type(value.get("measurement_collection_enabled")) is not bool
+        or value != expected
+    ):
+        fail(code)
+    return dict(value)
+
+
+def _owner_materialized_product_ids(*, code: str) -> set[str]:
+    """Derive the exact product set from the tracked V2 owner contract."""
+
+    try:
+        portfolio = load_editorial_portfolio_v2(ROOT)
+    except EditorialPortfolioV2Failure:
+        fail(code)
+    product_ids = {product.product_id for product in portfolio.products}
+    if not product_ids or len(product_ids) != len(portfolio.products):
+        fail(code)
+    return product_ids
+
+
+def _current_v2_source_binding(*, now: datetime) -> tuple[str, str, str, str]:
+    """Reload the V2 portfolio, status and sales audit as one exact binding."""
+
+    try:
+        portfolio_before = v2_portfolio_sha256(ROOT)
+    except EditorialPortfolioV2Failure:
+        fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
+    _, status_before = _load_owner_private_json_snapshot(
+        ROOT / V2_STATUS_RELATIVE_PATH,
+        MAX_RECEIPT_BYTES,
+        "RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID",
+    )
+    try:
+        portfolio = load_editorial_portfolio_v2(ROOT)
+        audit = require_manufacturer_sales_state_for_products_v1(
+            portfolio,
+            tuple(product.product_id for product in portfolio.products),
+            now=now,
+        )
+        portfolio_after = v2_portfolio_sha256(ROOT)
+    except EditorialPortfolioV2Failure:
+        fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
+    _, status_after = _load_owner_private_json_snapshot(
+        ROOT / V2_STATUS_RELATIVE_PATH,
+        MAX_RECEIPT_BYTES,
+        "RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID",
+    )
+    if portfolio_before != portfolio_after or status_before != status_after:
+        fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
+    return (
+        portfolio_before,
+        hashlib.sha256(status_before).hexdigest(),
+        audit.document_sha256,
+        audit.checked_at_utc,
+    )
+
+
+def _current_activation_v2_evidence_binding(*, now: datetime) -> dict[str, object]:
+    """Return the URL-free provider identities behind the current V2 receipts."""
+
+    try:
+        evidence = _load_verified_v2_evidence(ROOT, now=now)
+    except RakutenMeasurementActivationV3Failure:
+        fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
+    return {
+        "portfolio_sha256": evidence.portfolio_sha256,
+        "evidence_status_sha256": evidence.status_sha256,
+        "manufacturer_sales_state_sha256": (evidence.manufacturer_sales_state_sha256),
+        "manufacturer_sales_state_checked_at_utc": (
+            evidence.manufacturer_sales_state_checked_at_utc
+        ),
+        "product_safety": dict(evidence.product_safety),
+        "products": {
+            product_id: {
+                "state": "verified",
+                "provider_binding_sha256": product.provider_binding_sha256,
+            }
+            for product_id, product in sorted(evidence.products.items())
+        },
+        "media": [
+            {
+                "product_id": product_id,
+                "image_sha256": product.image_sha256,
+            }
+            for product_id, product in sorted(evidence.products.items())
+        ],
+    }
+
+
 def production_materialization_binding(
     articles: Sequence[Article],
     *,
@@ -936,32 +1286,26 @@ def production_materialization_binding(
 ) -> dict[str, object]:
     """Bind publication to stable, private provider/materialization evidence."""
 
-    try:
-        metadata = PRODUCTION_MATERIALIZATION_RECEIPT.lstat()
-    except OSError:
-        fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
-    if (
-        PRODUCTION_MATERIALIZATION_RECEIPT.is_symlink()
-        or not stat.S_ISREG(metadata.st_mode)
-        or metadata.st_uid != os.geteuid()
-        or metadata.st_nlink != 1
-        or stat.S_IMODE(metadata.st_mode) != 0o600
-    ):
-        fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
+    production_document, production_receipt_raw = _load_owner_private_json_snapshot(
+        PRODUCTION_MATERIALIZATION_RECEIPT,
+        MAX_RECEIPT_BYTES,
+        "RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID",
+    )
     document = exact_object(
-        load_json(
-            PRODUCTION_MATERIALIZATION_RECEIPT,
-            MAX_RECEIPT_BYTES,
-            "RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID",
-        ),
+        production_document,
         {
             "schema",
             "mode",
             "generated_at",
             "portfolio_sha256",
             "evidence_status_sha256",
+            "manufacturer_sales_state_sha256",
+            "manufacturer_sales_state_checked_at_utc",
+            "product_safety",
             "articles",
             "products",
+            "media",
+            "completion",
         },
     )
     generated_at = document["generated_at"]
@@ -974,14 +1318,39 @@ def production_materialization_binding(
     except TypeError, ValueError:
         fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
     now = datetime.now(UTC)
+    (
+        current_portfolio_sha256,
+        current_status_sha256,
+        current_sales_sha256,
+        current_sales_checked_at,
+    ) = _current_v2_source_binding(now=now)
+    try:
+        product_safety = _validate_product_safety_publication_binding(
+            document["product_safety"],
+            require_complete=True,
+        )
+    except RakutenMeasurementActivationV3Failure:
+        fail("RAOS_WORDPRESS_REQUEST_PRODUCT_SAFETY_INVALID")
+    current_product_safety = _current_activation_v2_evidence_binding(
+        now=now
+    ).get("product_safety")
+    if current_product_safety != product_safety:
+        fail("RAOS_WORDPRESS_REQUEST_PRODUCT_SAFETY_INVALID")
     if (
         document["schema"] != "RAOS_EDITORIAL_PORTFOLIO_MATERIALIZATION_RECEIPT_V2"
         or document["mode"] != "production"
         or type(document["portfolio_sha256"]) is not str
         or SHA256_RE.fullmatch(document["portfolio_sha256"]) is None
+        or document["portfolio_sha256"] != current_portfolio_sha256
         or type(document["evidence_status_sha256"]) is not str
         or SHA256_RE.fullmatch(document["evidence_status_sha256"]) is None
         or document["evidence_status_sha256"] == "0" * 64
+        or document["evidence_status_sha256"] != current_status_sha256
+        or type(document["manufacturer_sales_state_sha256"]) is not str
+        or SHA256_RE.fullmatch(document["manufacturer_sales_state_sha256"]) is None
+        or document["manufacturer_sales_state_sha256"] != current_sales_sha256
+        or document["manufacturer_sales_state_checked_at_utc"]
+        != current_sales_checked_at
         or generated > now + timedelta(seconds=30)
         or (require_recent and now - generated > timedelta(minutes=15))
         or type(document["articles"]) is not list
@@ -1027,7 +1396,7 @@ def production_materialization_binding(
             type(product_id) is not str
             or not re.fullmatch(r"PRD-[A-Z0-9]+(?:-[A-Z0-9]+)*", product_id)
             or product_id in product_bindings
-            or state not in {"verified", "not_found", "ambiguous", "expired"}
+            or state != "verified"
             or type(digest) is not str
             or SHA256_RE.fullmatch(digest) is None
         ):
@@ -1046,23 +1415,77 @@ def production_materialization_binding(
             fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
         expected_product_ids.update(
             str(cta["product_id"])
-            for cta in _validated_ctas(parser)
+            for cta in _validated_ctas(
+                parser,
+                allow_empty=article.production_slug in ZERO_PRODUCT_ROUTE_SLUGS,
+            )
             if type(cta.get("product_id")) is str
         )
     if set(product_bindings) != expected_product_ids:
         fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
-    _validate_local_materialization_pair(
+    if expected_product_ids != _owner_materialized_product_ids(
+        code="RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID"
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
+    media = _validated_materialization_media(
+        document["media"],
+        expected_product_ids,
+        code="RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID",
+    )
+    completion = _validated_materialization_completion(
+        document["completion"],
+        expected_product_count=len(expected_product_ids),
+        code="RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID",
+    )
+    local_receipt_raw = _validate_local_materialization_pair(
         document,
         require_recent=require_recent,
     )
+    final_now = datetime.now(UTC)
+    if (
+        _current_v2_source_binding(now=final_now)
+        != (
+            current_portfolio_sha256,
+            current_status_sha256,
+            current_sales_sha256,
+            current_sales_checked_at,
+        )
+        or generated > final_now + timedelta(seconds=30)
+        or (require_recent and final_now - generated > timedelta(minutes=15))
+        or _load_owner_private_json_snapshot(
+            PRODUCTION_MATERIALIZATION_RECEIPT,
+            MAX_RECEIPT_BYTES,
+            "RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID",
+        )[1]
+        != production_receipt_raw
+        or _load_owner_private_json_snapshot(
+            LOCAL_MATERIALIZATION_RECEIPT,
+            MAX_RECEIPT_BYTES,
+            "RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID",
+        )[1]
+        != local_receipt_raw
+        or _current_activation_v2_evidence_binding(now=final_now).get(
+            "product_safety"
+        )
+        != product_safety
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PRODUCTION_MATERIALIZATION_INVALID")
     return {
         "schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1",
         "portfolio_sha256": document["portfolio_sha256"],
+        "evidence_status_sha256": current_status_sha256,
+        "local_receipt_sha256": hashlib.sha256(local_receipt_raw).hexdigest(),
+        "production_receipt_sha256": hashlib.sha256(production_receipt_raw).hexdigest(),
+        "manufacturer_sales_state_sha256": current_sales_sha256,
+        "manufacturer_sales_state_checked_at_utc": current_sales_checked_at,
+        "product_safety": product_safety,
         "articles": dict(sorted(article_hashes.items())),
         "products": {
             product_id: product_bindings[product_id]
             for product_id in sorted(product_bindings)
         },
+        "media": sorted(media, key=lambda row: row["product_id"]),
+        "completion": completion,
     }
 
 
@@ -1070,63 +1493,84 @@ def _validate_local_materialization_pair(
     production: Mapping[str, object],
     *,
     require_recent: bool,
-) -> None:
+) -> bytes:
     """Prove that preview and proposal variants came from one evidence set."""
 
-    try:
-        metadata = LOCAL_MATERIALIZATION_RECEIPT.lstat()
-    except OSError:
-        fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
-    if (
-        LOCAL_MATERIALIZATION_RECEIPT.is_symlink()
-        or not stat.S_ISREG(metadata.st_mode)
-        or metadata.st_uid != os.geteuid()
-        or metadata.st_nlink != 1
-        or stat.S_IMODE(metadata.st_mode) != 0o600
-    ):
-        fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
+    local_document, local_receipt_raw = _load_owner_private_json_snapshot(
+        LOCAL_MATERIALIZATION_RECEIPT,
+        MAX_RECEIPT_BYTES,
+        "RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID",
+    )
     local = exact_object(
-        load_json(
-            LOCAL_MATERIALIZATION_RECEIPT,
-            MAX_RECEIPT_BYTES,
-            "RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID",
-        ),
+        local_document,
         {
             "schema",
             "mode",
             "generated_at",
             "portfolio_sha256",
             "evidence_status_sha256",
+            "manufacturer_sales_state_sha256",
+            "manufacturer_sales_state_checked_at_utc",
+            "product_safety",
             "articles",
             "products",
+            "media",
+            "completion",
         },
     )
     generated_at = local["generated_at"]
     if type(generated_at) is not str:
         fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
     try:
-        generated = datetime.strptime(
-            generated_at, "%Y-%m-%dT%H:%M:%SZ"
-        ).replace(tzinfo=UTC)
+        generated = datetime.strptime(generated_at, "%Y-%m-%dT%H:%M:%SZ").replace(
+            tzinfo=UTC
+        )
     except TypeError, ValueError:
         fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
     now = datetime.now(UTC)
     production_articles = production.get("articles")
     production_products = production.get("products")
+    production_media = production.get("media")
+    production_completion = production.get("completion")
     if (
         local["schema"] != "RAOS_EDITORIAL_PORTFOLIO_MATERIALIZATION_RECEIPT_V2"
         or local["mode"] != "local"
         or generated > now + timedelta(seconds=30)
         or (require_recent and now - generated > timedelta(minutes=15))
         or local["portfolio_sha256"] != production.get("portfolio_sha256")
-        or local["evidence_status_sha256"]
-        != production.get("evidence_status_sha256")
+        or local["evidence_status_sha256"] != production.get("evidence_status_sha256")
+        or local["manufacturer_sales_state_sha256"]
+        != production.get("manufacturer_sales_state_sha256")
+        or local["manufacturer_sales_state_checked_at_utc"]
+        != production.get("manufacturer_sales_state_checked_at_utc")
+        or local["product_safety"] != production.get("product_safety")
         or local["products"] != production_products
+        or local["media"] != production_media
+        or local["completion"] != production_completion
         or type(local["articles"]) is not list
         or type(production_articles) is not list
         or len(local["articles"]) != EXPECTED_ALL_ARTICLE_COUNT
     ):
         fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
+    expected_product_ids = {
+        row.get("product_id")
+        for row in local["products"]
+        if type(row) is dict and type(row.get("product_id")) is str
+    }
+    if expected_product_ids != _owner_materialized_product_ids(
+        code="RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID"
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
+    _validated_materialization_media(
+        local["media"],
+        expected_product_ids,
+        code="RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID",
+    )
+    _validated_materialization_completion(
+        local["completion"],
+        expected_product_count=len(expected_product_ids),
+        code="RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID",
+    )
     production_identities = {
         (row.get("article_id"), row.get("production_slug"))
         for row in production_articles
@@ -1166,6 +1610,7 @@ def _validate_local_materialization_pair(
             fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
     if local_identities != production_identities:
         fail("RAOS_WORDPRESS_REQUEST_LOCAL_MATERIALIZATION_INVALID")
+    return local_receipt_raw
 
 
 def validate_rakuten_activation_dry_run(
@@ -1187,7 +1632,7 @@ def validate_rakuten_activation_dry_run(
             production_v2_fixture_root=PRODUCTION_MATERIALIZED_FIXTURE_ROOT,
             require_recent=require_recent,
         )
-    except (EditorialPortfolioV3Failure, RakutenMeasurementActivationV3Failure):
+    except EditorialPortfolioV3Failure, RakutenMeasurementActivationV3Failure:
         fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
 
 
@@ -1207,6 +1652,7 @@ def activation_materialization_binding(
         v2_articles,
         require_recent=require_recent,
     )
+    current_v2_evidence = _current_activation_v2_evidence_binding(now=datetime.now(UTC))
     activated_hashes = {
         article.production_slug: hashlib.sha256(
             article.block_markup.encode("utf-8")
@@ -1216,39 +1662,92 @@ def activation_materialization_binding(
     }
     if (
         v2_binding.get("portfolio_sha256") != activation.v2_portfolio_sha256
+        or v2_binding.get("evidence_status_sha256")
+        != activation.v2_evidence_status_sha256
+        or v2_binding.get("local_receipt_sha256") != activation.v2_local_receipt_sha256
+        or v2_binding.get("production_receipt_sha256")
+        != activation.v2_production_receipt_sha256
+        or current_v2_evidence.get("portfolio_sha256") != activation.v2_portfolio_sha256
+        or current_v2_evidence.get("evidence_status_sha256")
+        != activation.v2_evidence_status_sha256
+        or v2_binding.get("manufacturer_sales_state_sha256")
+        != activation.v2_manufacturer_sales_state_sha256
+        or v2_binding.get("manufacturer_sales_state_checked_at_utc")
+        != activation.v2_manufacturer_sales_state_checked_at_utc
+        or current_v2_evidence.get("manufacturer_sales_state_sha256")
+        != activation.v2_manufacturer_sales_state_sha256
+        or current_v2_evidence.get("manufacturer_sales_state_checked_at_utc")
+        != activation.v2_manufacturer_sales_state_checked_at_utc
+        or v2_binding.get("product_safety") != activation.v2_product_safety
+        or current_v2_evidence.get("product_safety")
+        != activation.v2_product_safety
         or activated_hashes != dict(activation.production_article_sha256)
         or len(activated_hashes) != EXPECTED_ALL_ARTICLE_COUNT
         or activation.article_count != EXPECTED_ALL_ARTICLE_COUNT
-        or activation.cta_count != 74
+        or activation.cta_count != EXPECTED_MATERIALIZED_AFFILIATE_CTA_COUNT
     ):
         fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
     products = v2_binding.get("products")
-    if type(products) is not dict:
+    media = v2_binding.get("media")
+    completion = v2_binding.get("completion")
+    if (
+        type(products) is not dict
+        or type(media) is not list
+        or type(completion) is not dict
+    ):
         fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
-    return {
+    if (
+        current_v2_evidence.get("products") != products
+        or current_v2_evidence.get("media") != media
+        or production_materialization_binding(
+            v2_articles,
+            require_recent=require_recent,
+        )
+        != v2_binding
+        or _current_activation_v2_evidence_binding(now=datetime.now(UTC))
+        != current_v2_evidence
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
+    binding: dict[str, object] = {
         "schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
         "portfolio_sha256": activation.portfolio_sha256,
+        "evidence_status_sha256": activation.v2_evidence_status_sha256,
+        "local_receipt_sha256": activation.v2_local_receipt_sha256,
+        "production_receipt_sha256": activation.v2_production_receipt_sha256,
+        "manufacturer_sales_state_sha256": (
+            activation.v2_manufacturer_sales_state_sha256
+        ),
+        "manufacturer_sales_state_checked_at_utc": (
+            activation.v2_manufacturer_sales_state_checked_at_utc
+        ),
+        "product_safety": dict(activation.v2_product_safety),
         "articles": dict(sorted(activated_hashes.items())),
         "products": products,
+        "media": media,
+        "completion": completion,
         "activation": {
             "dry_run_sha256": activation.dry_run_sha256,
+            "v2_evidence_status_sha256": activation.v2_evidence_status_sha256,
+            "v2_local_receipt_sha256": activation.v2_local_receipt_sha256,
+            "v2_production_receipt_sha256": (activation.v2_production_receipt_sha256),
             "admin_receipt_sha256": activation.admin_receipt_sha256,
             "money_link_mapping_sha256": activation.money_link_mapping_sha256,
             "materialized_set_sha256": activation.materialized_set_sha256,
             "local_article_set_sha256": activation.local_article_set_sha256,
-            "production_article_set_sha256": (
-                activation.production_article_set_sha256
-            ),
-            "local_overlay_receipt_sha256": (
-                activation.local_overlay_receipt_sha256
-            ),
+            "production_article_set_sha256": (activation.production_article_set_sha256),
+            "local_overlay_receipt_sha256": (activation.local_overlay_receipt_sha256),
             "production_overlay_receipt_sha256": (
                 activation.production_overlay_receipt_sha256
             ),
+            "mapping_generated_at_utc": activation.mapping_generated_at_utc,
+            "admin_verified_at_utc": activation.admin_verified_at_utc,
+            "activated_at_utc": activation.activated_at_utc,
             "article_count": activation.article_count,
             "cta_count": activation.cta_count,
         },
     }
+    _validate_materialization_binding(binding)
+    return binding
 
 
 def theme_version() -> str:
@@ -1542,6 +2041,7 @@ class EditorMcpClient:
             fail(code)
         except urllib.error.URLError, TimeoutError, OSError:
             fail("RAOS_WORDPRESS_REQUEST_TRANSPORT_FAILED")
+
     def message(self, method: str, params: dict[str, object]) -> dict[str, object]:
         request_id = self.next_id
         self.next_id += 1
@@ -1686,8 +2186,7 @@ def validate_site_status(
         or status.get("mcp_adapter_version") != "0.6.1"
         or status.get("mcp_adapter_version_compatible") is not True
         or status.get("plugin_version") != EXPECTED_PLUGIN_VERSION
-        or status.get("plugin_runtime_revision")
-        != EXPECTED_PLUGIN_RUNTIME_REVISION
+        or status.get("plugin_runtime_revision") != EXPECTED_PLUGIN_RUNTIME_REVISION
         or type(writes) is not dict
         or any(
             writes.get(name) is not True
@@ -1947,16 +2446,64 @@ def validate_measurement_plugin_apply_receipt(path: Path | None) -> None:
     apply_receipt = _read_receipt(resolved)
     if type(proposal_receipt) is not dict or type(apply_receipt) is not dict:
         fail("RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID")
+    manifest = load_json(
+        MEASUREMENT_PLUGIN_MANIFEST_PATH,
+        MAX_RECEIPT_BYTES,
+        "RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID",
+    )
+    registry = load_json(
+        REPO_PLUGIN_ARTIFACTS_PATH,
+        MAX_RECEIPT_BYTES,
+        "RAOS_WORDPRESS_REQUEST_MEASUREMENT_PLUGIN_RECEIPT_INVALID",
+    )
+    manifest_files = manifest.get("plugin_files")
+    artifacts = registry.get("artifacts")
+    matching_artifacts = (
+        [
+            artifact
+            for artifact in artifacts
+            if type(artifact) is dict
+            and artifact.get("artifact_id") == "raos-editorial-measurement-v1"
+        ]
+        if type(artifacts) is list
+        else []
+    )
+    expected_file_manifest_sha256 = (
+        hashlib.sha256(canonical_json_bytes(manifest_files)).hexdigest()
+        if type(manifest_files) is list
+        else None
+    )
     proposal = proposal_receipt.get("proposal")
     if (
-        proposal_receipt.get("state")
+        manifest.get("schema")
+        != "RAOS_EDITORIAL_MEASUREMENT_RUNTIME_MANIFEST_V1"
+        or manifest.get("artifact_id") != "raos-editorial-measurement-v1"
+        or manifest.get("plugin_slug") != "raos-editorial-measurement"
+        or manifest.get("plugin_version") != "1.0.0"
+        or manifest.get("default_enabled") is not False
+        or manifest.get("host_gate") != "RAOS_MEASUREMENT_ENABLED"
+        or type(manifest.get("package_sha256")) is not str
+        or SHA256_RE.fullmatch(manifest["package_sha256"]) is None
+        or expected_file_manifest_sha256 is None
+        or len(matching_artifacts) != 1
+        or matching_artifacts[0].get("slug") != manifest.get("plugin_slug")
+        or matching_artifacts[0].get("version") != manifest.get("plugin_version")
+        or matching_artifacts[0].get("package_sha256")
+        != manifest.get("package_sha256")
+        or proposal_receipt.get("schema")
+        != "RAOS_MEASUREMENT_PLUGIN_PROPOSAL_RECEIPT_V3"
+        or proposal_receipt.get("state")
         != "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
-        or proposal_receipt.get("artifact_id")
-        != "raos-editorial-measurement-v1"
+        or proposal_receipt.get("artifact_id") != "raos-editorial-measurement-v1"
         or proposal_receipt.get("plugin_slug") != "raos-editorial-measurement"
         or proposal_receipt.get("plugin_version") != "1.0.0"
+        or proposal_receipt.get("package_sha256")
+        != manifest.get("package_sha256")
+        or proposal_receipt.get("file_manifest_sha256")
+        != expected_file_manifest_sha256
         or proposal_receipt.get("measurement_gate_default_off") is not True
         or type(proposal) is not dict
+        or proposal.get("after_sha256") != expected_file_manifest_sha256
         or apply_receipt.get("schema") != "OperationReceiptV1"
         or apply_receipt.get("proposal_id") != proposal.get("proposal_id")
         or apply_receipt.get("operation_id") != proposal.get("operation_id")
@@ -2011,6 +2558,7 @@ def _fresh_receipt(
     path: Path,
     desired_theme_tree_sha256: str | None = None,
     materialization_binding: Mapping[str, object] | None = None,
+    quality_audit_binding: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     theme_tree = (
         tracked_theme_tree_sha256()
@@ -2039,6 +2587,9 @@ def _fresh_receipt(
             if materialization_binding is not None
             else None
         ),
+        "quality_audit_binding": (
+            dict(quality_audit_binding) if quality_audit_binding is not None else None
+        ),
         "baselines": {},
         "drafts": {},
         "proposal_keys": {},
@@ -2050,6 +2601,7 @@ def _fresh_receipt(
         "authenticated_readback": None,
         "prior_applied_reconciliation": None,
         "public_readback": None,
+        "seo_audit_readback": None,
         "updated_at_gmt": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
 
@@ -2063,8 +2615,16 @@ def _validate_materialization_binding(value: object) -> None:
     expected_keys = {
         "schema",
         "portfolio_sha256",
+        "evidence_status_sha256",
+        "local_receipt_sha256",
+        "production_receipt_sha256",
+        "manufacturer_sales_state_sha256",
+        "manufacturer_sales_state_checked_at_utc",
+        "product_safety",
         "articles",
         "products",
+        "media",
+        "completion",
     }
     if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2":
         expected_keys.add("activation")
@@ -2072,6 +2632,7 @@ def _validate_materialization_binding(value: object) -> None:
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     articles = value.get("articles")
     products = value.get("products")
+    media = value.get("media")
     if (
         schema
         not in {
@@ -2080,10 +2641,22 @@ def _validate_materialization_binding(value: object) -> None:
         }
         or type(value.get("portfolio_sha256")) is not str
         or SHA256_RE.fullmatch(value["portfolio_sha256"]) is None
+        or any(
+            type(value.get(name)) is not str or SHA256_RE.fullmatch(value[name]) is None
+            for name in {
+                "evidence_status_sha256",
+                "local_receipt_sha256",
+                "production_receipt_sha256",
+            }
+        )
+        or type(value.get("manufacturer_sales_state_sha256")) is not str
+        or SHA256_RE.fullmatch(value["manufacturer_sales_state_sha256"]) is None
+        or type(value.get("manufacturer_sales_state_checked_at_utc")) is not str
+        or TIMESTAMP_RE.fullmatch(value["manufacturer_sales_state_checked_at_utc"])
+        is None
         or type(articles) is not dict
         or len(articles) != EXPECTED_ALL_ARTICLE_COUNT
         or type(products) is not dict
-        or not products
     ):
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     if any(
@@ -2094,21 +2667,45 @@ def _validate_materialization_binding(value: object) -> None:
         for slug, digest in articles.items()
     ):
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    try:
+        _validate_product_safety_publication_binding(
+            value.get("product_safety"),
+            require_complete=True,
+        )
+    except RakutenMeasurementActivationV3Failure:
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     for product_id, raw in products.items():
         if (
             type(product_id) is not str
             or not re.fullmatch(r"PRD-[A-Z0-9]+(?:-[A-Z0-9]+)*", product_id)
             or type(raw) is not dict
             or set(raw) != {"state", "provider_binding_sha256"}
-            or raw.get("state") not in {"verified", "not_found", "ambiguous", "expired"}
+            or raw.get("state") != "verified"
             or type(raw.get("provider_binding_sha256")) is not str
             or SHA256_RE.fullmatch(raw["provider_binding_sha256"]) is None
         ):
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    if set(products) != _owner_materialized_product_ids(
+        code="RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID"
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    _validated_materialization_media(
+        media,
+        set(products),
+        code="RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID",
+    )
+    _validated_materialization_completion(
+        value.get("completion"),
+        expected_product_count=len(products),
+        code="RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID",
+    )
     if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2":
         activation = value.get("activation")
         expected_activation_keys = {
             "dry_run_sha256",
+            "v2_evidence_status_sha256",
+            "v2_local_receipt_sha256",
+            "v2_production_receipt_sha256",
             "admin_receipt_sha256",
             "money_link_mapping_sha256",
             "materialized_set_sha256",
@@ -2116,9 +2713,30 @@ def _validate_materialization_binding(value: object) -> None:
             "production_article_set_sha256",
             "local_overlay_receipt_sha256",
             "production_overlay_receipt_sha256",
+            "mapping_generated_at_utc",
+            "admin_verified_at_utc",
+            "activated_at_utc",
             "article_count",
             "cta_count",
         }
+        activation_times: list[datetime] = []
+        if type(activation) is dict:
+            for name in (
+                "mapping_generated_at_utc",
+                "admin_verified_at_utc",
+                "activated_at_utc",
+            ):
+                raw_time = activation.get(name)
+                if type(raw_time) is not str or TIMESTAMP_RE.fullmatch(raw_time) is None:
+                    fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+                try:
+                    activation_times.append(
+                        datetime.strptime(raw_time, "%Y-%m-%dT%H:%M:%SZ").replace(
+                            tzinfo=UTC
+                        )
+                    )
+                except ValueError:
+                    fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
         if (
             type(activation) is not dict
             or set(activation) != expected_activation_keys
@@ -2129,7 +2747,9 @@ def _validate_materialization_binding(value: object) -> None:
                 if name.endswith("_sha256")
             )
             or activation.get("article_count") != EXPECTED_ALL_ARTICLE_COUNT
-            or activation.get("cta_count") != 74
+            or activation.get("cta_count")
+            != EXPECTED_MATERIALIZED_AFFILIATE_CTA_COUNT
+            or activation_times != sorted(activation_times)
         ):
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
 
@@ -2178,8 +2798,7 @@ def _validate_prior_applied_reconciliation(
     documents = value.get("documents")
     operations = value.get("operations")
     if (
-        value.get("schema")
-        != "RAOS_WORDPRESS_PRIOR_APPLIED_RECONCILIATION_V1"
+        value.get("schema") != "RAOS_WORDPRESS_PRIOR_APPLIED_RECONCILIATION_V1"
         or type(value.get("captured_at_gmt")) is not str
         or re.fullmatch(
             r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
@@ -2249,6 +2868,8 @@ def _validate_receipt(
             "operation_ids",
             "prior_applied_reconciliation",
             "public_readback",
+            "quality_audit_binding",
+            "seo_audit_readback",
             "selected_documents",
         },
     )
@@ -2262,6 +2883,8 @@ def _validate_receipt(
     receipt.setdefault("operation_ids", {})
     receipt.setdefault("prior_applied_reconciliation", None)
     receipt.setdefault("public_readback", None)
+    receipt.setdefault("quality_audit_binding", None)
+    receipt.setdefault("seo_audit_readback", None)
     selected = sorted(article.production_slug for article in articles)
     selected_documents = receipt.setdefault(
         "selected_documents",
@@ -2285,9 +2908,7 @@ def _validate_receipt(
             receipt["desired_theme_runtime_revision"] is not None
             and (
                 type(receipt["desired_theme_runtime_revision"]) is not str
-                or SHA256_RE.fullmatch(
-                    receipt["desired_theme_runtime_revision"]
-                )
+                or SHA256_RE.fullmatch(receipt["desired_theme_runtime_revision"])
                 is None
             )
         )
@@ -2309,6 +2930,14 @@ def _validate_receipt(
             and type(receipt["public_readback"]) is not dict
         )
         or (
+            receipt["quality_audit_binding"] is not None
+            and type(receipt["quality_audit_binding"]) is not dict
+        )
+        or (
+            receipt["seo_audit_readback"] is not None
+            and type(receipt["seo_audit_readback"]) is not dict
+        )
+        or (
             receipt["prior_applied_reconciliation"] is not None
             and type(receipt["prior_applied_reconciliation"]) is not dict
         )
@@ -2317,6 +2946,8 @@ def _validate_receipt(
     ):
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     _validate_materialization_binding(receipt["materialization_binding"])
+    _validate_quality_audit_binding(receipt["quality_audit_binding"])
+    _validate_seo_audit_binding(receipt["seo_audit_readback"])
     _validate_prior_applied_reconciliation(
         receipt["prior_applied_reconciliation"],
         selected,
@@ -2498,8 +3129,7 @@ def capture_existing_baselines(
         slug = article.production_slug
         candidates = listed.get(slug, [])
         create_if_missing = (
-            article.post_type == "page"
-            and slug in CREATE_IF_MISSING_POLICY_PAGE_SLUGS
+            article.post_type == "page" and slug in CREATE_IF_MISSING_POLICY_PAGE_SLUGS
         )
         if len(candidates) > 1:
             fail("RAOS_WORDPRESS_REQUEST_SLUG_CONFLICT")
@@ -2938,8 +3568,7 @@ def deployment_status(
     if (
         response.get("schema") != "RAOSWordPressDeploymentStatusV1"
         or response.get("origin") != ORIGIN
-        or response.get("plugin_runtime_revision")
-        != EXPECTED_PLUGIN_RUNTIME_REVISION
+        or response.get("plugin_runtime_revision") != EXPECTED_PLUGIN_RUNTIME_REVISION
         or response.get("private_directory_ready") is not True
         or type(theme) is not dict
         or theme.get("slug") != "kurashinoshirube-child"
@@ -3044,6 +3673,7 @@ def _prepare_attempt(
         receipt["apply_receipt"] = None
         receipt["authenticated_readback"] = None
         receipt["public_readback"] = None
+        receipt["seo_audit_readback"] = None
         receipt["proposal_keys"] = {}
     keys = receipt["proposal_keys"]
     if type(keys) is not dict:
@@ -3487,7 +4117,9 @@ def wait_and_apply(
         print(f"承認対象バッチtoken末尾12文字: {batch_token[-12:]}")
         print(f"入力するbatch manifest hash末尾8文字: {manifest_hash[-8:]}")
         print(REVIEW_URL)
-        print("承認期限は提案作成から60分です。承認後は15分の適用・復旧枠へ切り替わります。")
+        print(
+            "承認期限は提案作成から60分です。承認後は15分の適用・復旧枠へ切り替わります。"
+        )
         print("承認待機中です。このコマンドは閉じないでください。", flush=True)
         _touch_receipt(path, receipt, "WAITING_FOR_APPROVAL")
     aggregate = _deployment_mcp_call(
@@ -3524,9 +4156,7 @@ def wait_and_apply(
             proposal_ids.index(proposal_id),
         ),
     )
-    for proposal_id, operation in zip(
-        expected_order, aggregate_receipts, strict=True
-    ):
+    for proposal_id, operation in zip(expected_order, aggregate_receipts, strict=True):
         proposal = proposal_by_id.get(proposal_id)
         expected_after = (
             proposal.get("after_sha256") if type(proposal) is dict else None
@@ -3613,9 +4243,10 @@ def _public_theme_stylesheets_are_valid(
         for href in stylesheet_urls
         if (kind := _public_stylesheet_candidate_kind(href)) is not None
     ]
-    if len(candidates) != len(expected_assets) or len(
-        {kind for kind, _href in candidates}
-    ) != 1:
+    if (
+        len(candidates) != len(expected_assets)
+        or len({kind for kind, _href in candidates}) != 1
+    ):
         return False
     kind = candidates[0][0]
     if kind == "direct":
@@ -3632,7 +4263,7 @@ def _public_theme_stylesheets_are_valid(
                 return False
             if (
                 parsed.path not in DIRECT_THEME_STYLESHEET_PATHS
-                or parsed.query != f"ver={EXPECTED_THEME_VERSION}"
+                or parsed.query != f"ver={EXPECTED_THEME_RUNTIME_REVISION}"
             ):
                 return False
             paths.add(parsed.path)
@@ -3657,7 +4288,10 @@ def _public_theme_stylesheets_are_valid(
                 + r"([0-9a-f]{32})\.php",
                 parsed.path,
             )
-            if match is None or parsed.query != f"ver={EXPECTED_THEME_VERSION}":
+            if (
+                match is None
+                or parsed.query != f"ver={EXPECTED_THEME_RUNTIME_REVISION}"
+            ):
                 return False
             hashes.add(match.group(1))
         return len(hashes) == len(expected_assets)
@@ -3770,7 +4404,7 @@ def _fetch_public_stylesheet_sentinels(
             final_url = response.geturl()
             content_types = _response_header_values(response.headers, "Content-Type")
             payload = response.read(MAX_PUBLIC_STYLESHEET_BYTES + 1)
-    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError):
+    except urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError:
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_STYLESHEET_INVALID")
     if (
         status != 200
@@ -3846,7 +4480,11 @@ def _public_theme_stylesheet_evidence(
     return [evidence_by_asset[asset] for asset in sorted(evidence_by_asset)]
 
 
-def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]]:
+def _validated_ctas(
+    parser: _PublicPageEvidenceParser,
+    *,
+    allow_empty: bool = False,
+) -> list[dict[str, object]]:
     result: list[dict[str, object]] = []
     identities: set[tuple[str, str]] = set()
     placements_by_product: dict[str, set[str]] = {}
@@ -3921,6 +4559,8 @@ def _validated_ctas(parser: _PublicPageEvidenceParser) -> list[dict[str, object]
                 "rakuten_measurement_id": rakuten_measurement_id,
             }
         )
+    if not result and allow_empty and not parser.affiliate_links:
+        return []
     if not result:
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_CTA_INVALID")
     if any(
@@ -4005,7 +4645,7 @@ def _structured_data_types(
             parser.json_ld_payloads[0],
             object_pairs_hook=_json_object_without_duplicates,
         )
-    except (UnicodeError, json.JSONDecodeError, ValueError, RecursionError):
+    except UnicodeError, json.JSONDecodeError, ValueError, RecursionError:
         fail("RAOS_WORDPRESS_REQUEST_PUBLIC_JSON_LD_INVALID")
     if (
         type(payload) is not dict
@@ -4168,6 +4808,24 @@ def _public_page_evidence(
     visible = _normalized_public_text(parser.visible_text)
     required_headings = desired.headings
     head_evidence = _validated_public_head(parser, article, url)
+    expected_heading_prefix = [
+        ("h1", article.title),
+        *desired.heading_outline,
+    ]
+    allowed_heading_outlines = [
+        [
+            *expected_heading_prefix,
+            ("h2", "暮らしのしるべ"),
+        ]
+    ]
+    if article.post_type == "post":
+        allowed_heading_outlines.append(
+            [
+                *expected_heading_prefix,
+                ("h2", "関連記事"),
+                ("h2", "暮らしのしるべ"),
+            ]
+        )
     expected_stylesheet_assets = {"assets/theme.css"}
     if article.post_type == "post":
         expected_stylesheet_assets.add("assets/editorial-v2.css")
@@ -4180,12 +4838,7 @@ def _public_page_evidence(
         or article.title not in parser.page_titles[0]
         or parser.h1_titles != [article.title]
         or not required_headings
-        or parser.heading_outline
-        != [
-            ("h1", article.title),
-            *desired.heading_outline,
-            ("h2", "暮らしのしるべ"),
-        ]
+        or parser.heading_outline not in allowed_heading_outlines
         or any(heading not in visible for heading in required_headings)
         or not _public_theme_stylesheets_are_valid(
             parser.stylesheet_urls,
@@ -4233,8 +4886,9 @@ def _public_page_evidence(
             "theme_stylesheets": stylesheet_evidence,
             **head_evidence,
         }
-    expected_ctas = _validated_ctas(desired)
-    actual_ctas = _validated_ctas(parser)
+    allow_empty_ctas = article.production_slug in ZERO_PRODUCT_ROUTE_SLUGS
+    expected_ctas = _validated_ctas(desired, allow_empty=allow_empty_ctas)
+    actual_ctas = _validated_ctas(parser, allow_empty=allow_empty_ctas)
     product_ids = {
         str(cta["product_id"])
         for cta in expected_ctas
@@ -4312,6 +4966,440 @@ def verify_public_pages(
         if last_error is not None:
             raise last_error
     return evidence
+
+
+def _require_quality_audit_attestation_inputs(
+    attestation_path: Path | None,
+    signature_path: Path | None,
+) -> tuple[Path, Path]:
+    """Require the exact owner-private detached-attestation input pair."""
+
+    if attestation_path is None or signature_path is None:
+        fail("RAOS_WORDPRESS_REQUEST_QUALITY_AUDIT_ATTESTATION_REQUIRED")
+    if not attestation_path.is_absolute() or not signature_path.is_absolute():
+        fail("RAOS_WORDPRESS_REQUEST_QUALITY_AUDIT_ATTESTATION_INVALID")
+    return attestation_path, signature_path
+
+
+def _validate_quality_audit_binding(value: object) -> None:
+    if value is None:
+        return
+    if type(value) is not dict or set(value) != {
+        "schema",
+        "audit_phase",
+        "status",
+        "completion_state",
+        "production_parity_state",
+        "evaluated_at",
+        "contract_file_sha256",
+        "ledger_file_sha256",
+        "ledger_sha256",
+        "fingerprint_bundle_sha256",
+        "latest_round_sha256",
+        "round_count",
+        "consecutive_clean_rounds",
+        "attestation_payload_sha256",
+        "attestation_signature_sha256",
+        "reviewer_key_id",
+        "reviewer_id",
+        "expires_at",
+        "reviewer_attestation_verified",
+    }:
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    evaluated_at = value.get("evaluated_at")
+    expires_at = value.get("expires_at")
+    try:
+        evaluated = datetime.strptime(
+            evaluated_at,
+            "%Y-%m-%dT%H:%M:%SZ",
+        ).replace(tzinfo=UTC)
+        expires = datetime.strptime(
+            expires_at,
+            "%Y-%m-%dT%H:%M:%SZ",
+        ).replace(tzinfo=UTC)
+    except (TypeError, ValueError):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    if (
+        value.get("schema") != "RAOS_WORDPRESS_QUALITY_AUDIT_BINDING_V3"
+        or value.get("audit_phase") != wordpress_quality_audit.PRE_PUBLICATION_PHASE_ID
+        or value.get("status") != "COMPLETE"
+        or value.get("completion_state")
+        != wordpress_quality_audit.PRE_PUBLICATION_COMPLETION_STATE
+        or value.get("production_parity_state")
+        != wordpress_quality_audit.POST_APPLY_PENDING_STATE
+        or type(evaluated_at) is not str
+        or TIMESTAMP_RE.fullmatch(evaluated_at) is None
+        or type(expires_at) is not str
+        or TIMESTAMP_RE.fullmatch(expires_at) is None
+        or expires <= evaluated
+        or any(
+            type(value.get(name)) is not str or SHA256_RE.fullmatch(value[name]) is None
+            for name in {
+                "contract_file_sha256",
+                "ledger_file_sha256",
+                "ledger_sha256",
+                "fingerprint_bundle_sha256",
+                "latest_round_sha256",
+                "attestation_payload_sha256",
+                "attestation_signature_sha256",
+            }
+        )
+        or type(value.get("reviewer_key_id")) is not str
+        or QUALITY_AUDIT_IDENTIFIER_RE.fullmatch(value["reviewer_key_id"]) is None
+        or type(value.get("reviewer_id")) is not str
+        or QUALITY_AUDIT_IDENTIFIER_RE.fullmatch(value["reviewer_id"]) is None
+        or value.get("reviewer_attestation_verified") is not True
+        or type(value.get("round_count")) is not int
+        or value["round_count"] < 2
+        or type(value.get("consecutive_clean_rounds")) is not int
+        or value["consecutive_clean_rounds"] < 2
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+
+
+def strict_local_quality_audit(
+    attestation_path: Path | None,
+    signature_path: Path | None,
+) -> dict[str, object]:
+    """Require two fresh, independent clean rounds for the exact repository."""
+
+    attestation_path, signature_path = _require_quality_audit_attestation_inputs(
+        attestation_path,
+        signature_path,
+    )
+    try:
+        attestation_raw_before = wordpress_quality_audit._read_secure_exact_path(
+            attestation_path,
+            maximum=wordpress_quality_audit.MAX_ATTESTATION_BYTES,
+        )
+        signature_raw_before = wordpress_quality_audit._read_secure_exact_path(
+            signature_path,
+            maximum=wordpress_quality_audit.MAX_ATTESTATION_SIGNATURE_BYTES,
+        )
+        contract, contract_file_sha256 = wordpress_quality_audit.load_contract()
+        ledger, ledger_raw = wordpress_quality_audit.read_json(
+            wordpress_quality_audit.DEFAULT_LEDGER_PATH
+        )
+        result = wordpress_quality_audit.validate_document(
+            ledger,
+            contract,
+            contract_file_sha256,
+            attestation_path=attestation_path,
+            attestation_signature_path=signature_path,
+        )
+        attestation_payload = wordpress_quality_audit._read_canonical_attestation(
+            attestation_path
+        )
+        attestation_raw_after = wordpress_quality_audit._read_secure_exact_path(
+            attestation_path,
+            maximum=wordpress_quality_audit.MAX_ATTESTATION_BYTES,
+        )
+        signature_raw_after = wordpress_quality_audit._read_secure_exact_path(
+            signature_path,
+            maximum=wordpress_quality_audit.MAX_ATTESTATION_SIGNATURE_BYTES,
+        )
+        completion = ledger.get("completion")
+        rounds = ledger.get("rounds")
+        repository_fingerprints = ledger.get("repository_fingerprints")
+        completion_streak = (
+            completion.get("consecutive_clean_rounds")
+            if type(completion) is dict
+            else None
+        )
+        if (
+            result.status != "COMPLETE"
+            or result.audit_phase != wordpress_quality_audit.PRE_PUBLICATION_PHASE_ID
+            or result.completion_state
+            != wordpress_quality_audit.PRE_PUBLICATION_COMPLETION_STATE
+            or result.production_parity_state
+            != wordpress_quality_audit.POST_APPLY_PENDING_STATE
+            or result.round_count < 2
+            or result.consecutive_clean_rounds < 2
+            or result.reviewer_attestation_verified is not True
+            or attestation_raw_before != attestation_raw_after
+            or signature_raw_before != signature_raw_after
+            or attestation_raw_after
+            != wordpress_quality_audit.canonical_json(attestation_payload) + b"\n"
+            or type(completion) is not dict
+            or completion.get("status") != "COMPLETE"
+            or completion.get("audit_phase")
+            != wordpress_quality_audit.PRE_PUBLICATION_PHASE_ID
+            or completion.get("completion_state")
+            != wordpress_quality_audit.PRE_PUBLICATION_COMPLETION_STATE
+            or completion.get("production_parity_state")
+            != wordpress_quality_audit.POST_APPLY_PENDING_STATE
+            or type(completion_streak) is not int
+            or completion_streak < 2
+            or type(rounds) is not list
+            or len(rounds) != result.round_count
+            or type(rounds[-1]) is not dict
+            or type(rounds[-1].get("round_sha256")) is not str
+            or type(repository_fingerprints) is not dict
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_QUALITY_AUDIT_INCOMPLETE")
+        binding: dict[str, object] = {
+            "schema": "RAOS_WORDPRESS_QUALITY_AUDIT_BINDING_V3",
+            "audit_phase": result.audit_phase,
+            "status": "COMPLETE",
+            "completion_state": result.completion_state,
+            "production_parity_state": result.production_parity_state,
+            "evaluated_at": ledger["evaluated_at"],
+            "contract_file_sha256": contract_file_sha256,
+            "ledger_file_sha256": hashlib.sha256(ledger_raw).hexdigest(),
+            "ledger_sha256": result.ledger_sha256,
+            "fingerprint_bundle_sha256": (
+                wordpress_quality_audit.fingerprint_bundle_sha256(
+                    repository_fingerprints
+                )
+            ),
+            "latest_round_sha256": rounds[-1]["round_sha256"],
+            "round_count": result.round_count,
+            "consecutive_clean_rounds": result.consecutive_clean_rounds,
+            "attestation_payload_sha256": hashlib.sha256(
+                attestation_raw_after
+            ).hexdigest(),
+            "attestation_signature_sha256": hashlib.sha256(
+                signature_raw_after
+            ).hexdigest(),
+            "reviewer_key_id": attestation_payload["reviewer_key_id"],
+            "reviewer_id": attestation_payload["reviewer_id"],
+            "expires_at": attestation_payload["expires_at"],
+            "reviewer_attestation_verified": True,
+        }
+    except wordpress_quality_audit.QualityAuditFailure:
+        fail("RAOS_WORDPRESS_REQUEST_QUALITY_AUDIT_INVALID")
+    _validate_quality_audit_binding(binding)
+    return binding
+
+
+def _seo_utc_instant(value: object) -> datetime:
+    if type(value) is not str or not value.endswith("Z"):
+        fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+    try:
+        parsed = datetime.fromisoformat(f"{value[:-1]}+00:00")
+    except ValueError:
+        fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+    if parsed.utcoffset() != timedelta(0):
+        fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+    return parsed.astimezone(UTC)
+
+
+def _validated_seo_check(
+    value: object,
+    *,
+    now: datetime,
+    require_recent: bool,
+) -> dict[str, str]:
+    if type(value) is not dict or set(value) != {
+        "status",
+        "detail",
+        "evidence_sha256",
+        "observed_at",
+    }:
+        fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+    observed = _seo_utc_instant(value.get("observed_at"))
+    if (
+        value.get("status") != "PASS"
+        or type(value.get("detail")) is not str
+        or not value["detail"]
+        or type(value.get("evidence_sha256")) is not str
+        or SHA256_RE.fullmatch(value["evidence_sha256"]) is None
+        or observed > now + timedelta(seconds=30)
+        or (require_recent and now - observed > MAX_PUBLIC_SEO_AUDIT_AGE)
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+    return dict(value)
+
+
+def _validate_seo_audit_binding(value: object) -> None:
+    if value is None:
+        return
+    if type(value) is not dict or set(value) != {
+        "schema",
+        "origin",
+        "status",
+        "generated_at",
+        "inventory_count",
+        "content_sitemap_count",
+        "contract_sha256",
+        "portfolio_sha256",
+        "report_sha256",
+        "page_evidence_sha256",
+        "surface_evidence_sha256",
+        "index_state_basis",
+    }:
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    pages = value.get("page_evidence_sha256")
+    surfaces = value.get("surface_evidence_sha256")
+    if (
+        value.get("schema") != "RAOS_WORDPRESS_SEO_AUDIT_BINDING_V1"
+        or value.get("origin") != ORIGIN
+        or value.get("status") != "PASS"
+        or value.get("inventory_count") != 14
+        or value.get("content_sitemap_count") != 13
+        or type(value.get("contract_sha256")) is not str
+        or SHA256_RE.fullmatch(value["contract_sha256"]) is None
+        or type(value.get("portfolio_sha256")) is not str
+        or SHA256_RE.fullmatch(value["portfolio_sha256"]) is None
+        or type(value.get("report_sha256")) is not str
+        or SHA256_RE.fullmatch(value["report_sha256"]) is None
+        or type(pages) is not dict
+        or set(pages) != SEO_INVENTORY_IDENTIFIERS
+        or any(
+            type(digest) is not str or SHA256_RE.fullmatch(digest) is None
+            for digest in pages.values()
+        )
+        or type(surfaces) is not dict
+        or set(surfaces) != SEO_SURFACE_CHECKS
+        or any(
+            type(digest) is not str or SHA256_RE.fullmatch(digest) is None
+            for digest in surfaces.values()
+        )
+        or value.get("index_state_basis") not in SEO_INDEX_STATE_BASES
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    try:
+        _seo_utc_instant(value.get("generated_at"))
+    except PublicationFailure:
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+
+
+def _validated_public_seo_audit_report(
+    report: object,
+    contract: wordpress_seo_audit.AuditContract,
+    *,
+    now: datetime | None = None,
+) -> dict[str, object]:
+    observed_now = datetime.now(UTC) if now is None else now.astimezone(UTC)
+    if type(report) is not dict or set(report) != {
+        "schema",
+        "generated_at",
+        "origin",
+        "status",
+        "inventory_count",
+        "content_sitemap_count",
+        "contract_sha256",
+        "portfolio_sha256",
+        "pages",
+        "surfaces",
+        "index_state_basis",
+    }:
+        fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+    generated = _seo_utc_instant(report.get("generated_at"))
+    pages = report.get("pages")
+    surfaces = report.get("surfaces")
+    index_basis = report.get("index_state_basis")
+    if (
+        report.get("schema") != "RAOS_WORDPRESS_SEO_AUDIT_REPORT_V1"
+        or report.get("origin") != contract.origin
+        or contract.origin != ORIGIN
+        or report.get("status") != "PASS"
+        or report.get("inventory_count") != len(contract.items)
+        or report.get("inventory_count") != 14
+        or report.get("content_sitemap_count") != len(contract.content_urls)
+        or report.get("content_sitemap_count") != 13
+        or report.get("contract_sha256") != contract.contract_sha256
+        or report.get("portfolio_sha256") != contract.portfolio_sha256
+        or generated > observed_now + timedelta(seconds=30)
+        or observed_now - generated > MAX_PUBLIC_SEO_AUDIT_AGE
+        or type(pages) is not list
+        or len(pages) != 14
+        or type(surfaces) is not dict
+        or set(surfaces) != SEO_SURFACE_CHECKS
+        or index_basis not in SEO_INDEX_STATE_BASES
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+
+    expected_items = {item.identifier: item for item in contract.items}
+    page_hashes: dict[str, str] = {}
+    for page in pages:
+        if type(page) is not dict or set(page) != {
+            "identifier",
+            "role",
+            "url",
+            "status",
+            "checks",
+            "schema_types",
+            "index_state",
+        }:
+            fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+        identifier = page.get("identifier")
+        if type(identifier) is not str or identifier in page_hashes:
+            fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+        item = expected_items.get(identifier)
+        checks = page.get("checks")
+        schema_types = page.get("schema_types")
+        index_state = page.get("index_state")
+        if (
+            item is None
+            or page.get("role") != item.role
+            or page.get("url") != item.url
+            or page.get("status") != "PASS"
+            or type(checks) is not dict
+            or frozenset(checks)
+            not in {
+                SEO_CORE_PAGE_CHECKS,
+                SEO_CORE_PAGE_CHECKS | {"gsc_indexed"},
+            }
+            or type(schema_types) is not list
+            or any(type(name) is not str for name in schema_types)
+            or not contract.required_types[item.role].issubset(schema_types)
+            or bool(contract.forbidden_types & set(schema_types))
+            or type(index_state) is not dict
+            or index_state.get("basis") != index_basis
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+        for name, check in checks.items():
+            _validated_seo_check(
+                check,
+                now=observed_now,
+                require_recent=name != "gsc_indexed",
+            )
+        if index_basis == "UNAVAILABLE":
+            if index_state.get("state") != "UNAVAILABLE" or "gsc_indexed" in checks:
+                fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+        elif index_state.get("state") != "INDEXED" or "gsc_indexed" not in checks:
+            fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+        page_hashes[identifier] = hashlib.sha256(canonical_json_bytes(page)).hexdigest()
+    if set(page_hashes) != set(expected_items) or set(page_hashes) != (
+        SEO_INVENTORY_IDENTIFIERS
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+
+    surface_hashes: dict[str, str] = {}
+    for name, check in surfaces.items():
+        _validated_seo_check(check, now=observed_now, require_recent=True)
+        surface_hashes[name] = hashlib.sha256(canonical_json_bytes(check)).hexdigest()
+    binding: dict[str, object] = {
+        "schema": "RAOS_WORDPRESS_SEO_AUDIT_BINDING_V1",
+        "origin": ORIGIN,
+        "status": "PASS",
+        "generated_at": report["generated_at"],
+        "inventory_count": 14,
+        "content_sitemap_count": 13,
+        "contract_sha256": contract.contract_sha256,
+        "portfolio_sha256": contract.portfolio_sha256,
+        "report_sha256": hashlib.sha256(canonical_json_bytes(report)).hexdigest(),
+        "page_evidence_sha256": dict(sorted(page_hashes.items())),
+        "surface_evidence_sha256": dict(sorted(surface_hashes.items())),
+        "index_state_basis": index_basis,
+    }
+    _validate_seo_audit_binding(binding)
+    return binding
+
+
+def strict_public_seo_audit() -> dict[str, object]:
+    """Run the complete 14-URL semantic SEO audit after publication readback."""
+
+    try:
+        contract = wordpress_seo_audit.load_contract()
+        report = wordpress_seo_audit.run_audit(
+            wordpress_seo_audit.BoundedHttpsTransport(contract),
+            contract,
+        )
+    except wordpress_seo_audit.AuditError:
+        fail("RAOS_WORDPRESS_REQUEST_SEO_AUDIT_INVALID")
+    return _validated_public_seo_audit_report(report, contract)
 
 
 def _published_document_evidence(
@@ -4440,9 +5528,7 @@ def verify_published(
     deployment_runner: Callable[..., subprocess.CompletedProcess[bytes]],
 ) -> None:
     drafts = receipt.get("drafts")
-    expected_theme_runtime_revision = receipt.get(
-        "desired_theme_runtime_revision"
-    )
+    expected_theme_runtime_revision = receipt.get("desired_theme_runtime_revision")
     if (
         type(drafts) is not dict
         or expected_theme_runtime_revision != EXPECTED_THEME_RUNTIME_REVISION
@@ -4450,9 +5536,7 @@ def verify_published(
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     document_evidence = _published_document_evidence(client, articles, receipt)
     status = client.call("raos-codex-site-status", {})
-    validate_site_status(
-        status, require_measurement_ready=require_measurement_ready
-    )
+    validate_site_status(status, require_measurement_ready=require_measurement_ready)
     theme = status.get("theme")
     if (
         type(theme) is not dict
@@ -4500,6 +5584,8 @@ def verify_published(
         },
     }
     receipt["public_readback"] = verify_public_pages(articles)
+    receipt["seo_audit_readback"] = strict_public_seo_audit()
+    _validate_seo_audit_binding(receipt["seo_audit_readback"])
     _touch_receipt(path, receipt, "APPLIED")
 
 
@@ -4508,6 +5594,7 @@ def _receipt_matches_captured_inputs(
     articles: Sequence[Article],
     desired_theme_tree_sha256: str,
     materialization_binding: Mapping[str, object] | None,
+    quality_audit_binding: Mapping[str, object] | None,
 ) -> bool:
     return (
         receipt.get("desired_sha256")
@@ -4519,6 +5606,12 @@ def _receipt_matches_captured_inputs(
             if materialization_binding is not None
             else None
         )
+        and receipt.get("quality_audit_binding")
+        == (
+            dict(quality_audit_binding)
+            if quality_audit_binding is not None
+            else None
+        )
     )
 
 
@@ -4527,6 +5620,7 @@ def _same_desired(
     articles: Sequence[Article],
     desired_theme_tree_sha256: str,
     materialization_binding: Mapping[str, object] | None,
+    quality_audit_binding: Mapping[str, object] | None,
 ) -> bool:
     return (
         _receipt_matches_captured_inputs(
@@ -4534,9 +5628,66 @@ def _same_desired(
             articles,
             desired_theme_tree_sha256,
             materialization_binding,
+            quality_audit_binding,
         )
         and receipt.get("desired_theme_runtime_revision")
         == EXPECTED_THEME_RUNTIME_REVISION
+    )
+
+
+def _revalidate_apply_inputs(
+    receipt: Mapping[str, object],
+    *,
+    rakuten_activation_dry_run: Path | None,
+    expected_activation: RakutenMeasurementActivationOverlayV3 | None,
+    quality_audit_attestation: Path | None,
+    quality_audit_signature: Path | None,
+) -> tuple[
+    RakutenMeasurementActivationOverlayV3,
+    list[Article],
+    dict[str, object],
+    dict[str, object],
+]:
+    """Revalidate every mutable local authorization input before live apply."""
+
+    current_activation = validate_rakuten_activation_dry_run(
+        rakuten_activation_dry_run,
+        require_recent=True,
+    )
+    if expected_activation is not None and current_activation != expected_activation:
+        fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+    current_articles = load_publication_items(
+        "all",
+        article_fixture_root=current_activation.production_fixture_root,
+    )
+    current_materialization = activation_materialization_binding(
+        current_activation,
+        [article for article in current_articles if article.post_type == "post"],
+        require_recent=True,
+    )
+    current_theme_tree = tracked_theme_tree_sha256()
+    if (
+        theme_version() != EXPECTED_THEME_VERSION
+        or theme_runtime_revision() != EXPECTED_THEME_RUNTIME_REVISION
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PENDING_THEME_DRIFT")
+    current_quality = strict_local_quality_audit(
+        quality_audit_attestation,
+        quality_audit_signature,
+    )
+    if not _same_desired(
+        receipt,
+        current_articles,
+        current_theme_tree,
+        current_materialization,
+        current_quality,
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+    return (
+        current_activation,
+        current_articles,
+        current_materialization,
+        current_quality,
     )
 
 
@@ -4557,9 +5708,7 @@ def _resume_ready(receipt: Mapping[str, object], expected_count: int) -> bool:
     )
 
 
-def _theme_was_proposed(
-    receipt: Mapping[str, object], content_count: int
-) -> bool:
+def _theme_was_proposed(receipt: Mapping[str, object], content_count: int) -> bool:
     proposals = receipt.get("proposals")
     return type(proposals) is list and len(proposals) == content_count + 1
 
@@ -4590,6 +5739,9 @@ def _resume_existing_all_attempt(
     path: Path,
     *,
     activation: RakutenMeasurementActivationOverlayV3 | None = None,
+    rakuten_activation_dry_run: Path | None = None,
+    quality_audit_attestation: Path | None = None,
+    quality_audit_signature: Path | None = None,
     client_factory: Callable[[], Any],
     deployment_runner: Callable[..., subprocess.CompletedProcess[bytes]],
 ) -> bool:
@@ -4618,41 +5770,13 @@ def _resume_existing_all_attempt(
         fail("RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID")
     if batch["state"] == "APPLIED":
         _require_applied_batch_ready(batch)
-    articles: Sequence[Article] | None = None
-    if batch["state"] != "APPLIED":
-        fixture_root = (
-            activation.production_fixture_root
-            if activation is not None
-            else PRODUCTION_MATERIALIZED_FIXTURE_ROOT
-        )
-        articles = load_publication_items(
-            "all",
-            article_fixture_root=fixture_root,
-        )
-        binding = (
-            activation_materialization_binding(
-                activation,
-                [article for article in articles if article.post_type == "post"],
-                require_recent=False,
-            )
-            if activation is not None
-            else production_materialization_binding(
-                [article for article in articles if article.post_type == "post"],
-                require_recent=False,
-            )
-        )
-        desired_tree = receipt.get("desired_theme_tree_sha256")
-        if (
-            type(desired_tree) is not str
-            or SHA256_RE.fullmatch(desired_tree) is None
-            or not _same_desired(
-                receipt,
-                articles,
-                desired_tree,
-                binding,
-            )
-        ):
-            fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+    _current_activation, articles, _binding, _quality = _revalidate_apply_inputs(
+        receipt,
+        rakuten_activation_dry_run=rakuten_activation_dry_run,
+        expected_activation=activation,
+        quality_audit_attestation=quality_audit_attestation,
+        quality_audit_signature=quality_audit_signature,
+    )
 
     client = client_factory()
     client.initialize()
@@ -4678,7 +5802,7 @@ def _resume_existing_all_attempt(
     documents = (
         _published_receipt_document_evidence(client, receipt)
         if batch["state"] == "APPLIED"
-        else _published_document_evidence(client, articles or (), receipt)
+        else _published_document_evidence(client, articles, receipt)
     )
     if batch["state"] == "APPLIED":
         _require_applied_batch_ready(
@@ -4702,6 +5826,8 @@ def execute(
     *,
     measurement_plugin_apply_receipt: Path | None = None,
     rakuten_activation_dry_run: Path | None = None,
+    quality_audit_attestation: Path | None = None,
+    quality_audit_signature: Path | None = None,
     portfolio_refresh: Callable[[], None] = run_editorial_portfolio_refresh,
     preview: Callable[[], None] = run_preview_checks,
     preview_fixture: Callable[[Path], None] | None = None,
@@ -4710,6 +5836,13 @@ def execute(
         ..., subprocess.CompletedProcess[bytes]
     ] = subprocess.run,
 ) -> Path:
+    if selection != "all":
+        # A production proposal is valid only for the exact portfolio whose
+        # product evidence, images, Money Links, policy pages, theme and local
+        # quality audit are bound by the all-mode receipts.  Historical narrow
+        # requests used tracked source fixtures and therefore could bypass the
+        # Owner-derived 31-product/37-image/74-CTA completion gate.
+        fail("RAOS_WORDPRESS_REQUEST_COMPLETE_PORTFOLIO_REQUIRED")
     activation: RakutenMeasurementActivationOverlayV3 | None = None
     if selection == "all":
         # This owner-private, read-only validation is deliberately first. A
@@ -4719,8 +5852,10 @@ def execute(
             rakuten_activation_dry_run,
             require_recent=False,
         )
-        validate_measurement_plugin_apply_receipt(
-            measurement_plugin_apply_receipt
+        validate_measurement_plugin_apply_receipt(measurement_plugin_apply_receipt)
+        _require_quality_audit_attestation_inputs(
+            quality_audit_attestation,
+            quality_audit_signature,
         )
     with request_lock():
         initial_fixture_root = (
@@ -4739,6 +5874,9 @@ def execute(
             initial_receipt,
             initial_path,
             activation=activation,
+            rakuten_activation_dry_run=rakuten_activation_dry_run,
+            quality_audit_attestation=quality_audit_attestation,
+            quality_audit_signature=quality_audit_signature,
             client_factory=client_factory,
             deployment_runner=deployment_runner,
         ):
@@ -4786,7 +5924,7 @@ def execute(
         if activation is not None:
             activation_after_preview = validate_rakuten_activation_dry_run(
                 rakuten_activation_dry_run,
-                require_recent=False,
+                require_recent=True,
             )
             if activation_after_preview != activation:
                 fail("RAOS_WORDPRESS_REQUEST_ARTICLE_CHANGED_DURING_PREVIEW")
@@ -4818,6 +5956,14 @@ def execute(
         local_theme_tree_sha256 = tracked_theme_tree_sha256()
         if local_theme_tree_sha256 != theme_tree_before_preview:
             fail("RAOS_WORDPRESS_REQUEST_THEME_CHANGED_DURING_PREVIEW")
+        quality_audit_binding = (
+            strict_local_quality_audit(
+                quality_audit_attestation,
+                quality_audit_signature,
+            )
+            if selection == "all"
+            else None
+        )
         path = _receipt_path(articles)
         loaded = _read_receipt(path)
         is_new_receipt = loaded is None
@@ -4827,19 +5973,17 @@ def execute(
                 path,
                 local_theme_tree_sha256,
                 materialization_binding,
+                quality_audit_binding,
             )
             if loaded is None
             else _validate_receipt(loaded, articles)
         )
-
         client = client_factory()
         client.initialize()
         tools = client.tools()
         validate_tool_contract(tools)
         status = client.call("raos-codex-site-status", {})
-        validate_site_status(
-            status, require_measurement_ready=selection == "all"
-        )
+        validate_site_status(status, require_measurement_ready=selection == "all")
         live_theme = status["theme"]
         if type(live_theme) is not dict:
             fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
@@ -4868,6 +6012,7 @@ def execute(
             articles,
             local_theme_tree_sha256,
             materialization_binding,
+            quality_audit_binding,
         )
         desired_change_with_proposals = bool(
             not desired_matches and receipt.get("proposals")
@@ -4885,10 +6030,9 @@ def execute(
                 for article in articles
             }
             receipt["desired_theme_tree_sha256"] = local_theme_tree_sha256
-            receipt["desired_theme_runtime_revision"] = (
-                EXPECTED_THEME_RUNTIME_REVISION
-            )
+            receipt["desired_theme_runtime_revision"] = EXPECTED_THEME_RUNTIME_REVISION
             receipt["materialization_binding"] = materialization_binding
+            receipt["quality_audit_binding"] = quality_audit_binding
             receipt["attempt_id"] = None
             receipt["attempt_created_at_gmt"] = None
             receipt["proposal_keys"] = {}
@@ -4898,6 +6042,7 @@ def execute(
             receipt["apply_receipt"] = None
             receipt["authenticated_readback"] = None
             receipt["public_readback"] = None
+            receipt["seo_audit_readback"] = None
         if is_new_receipt or (
             not desired_matches and not desired_change_with_proposals
         ):
@@ -4948,6 +6093,7 @@ def execute(
                 path,
                 local_theme_tree_sha256,
                 materialization_binding,
+                quality_audit_binding,
             ) | {
                 "baselines": preserved_baselines,
                 "drafts": preserved_drafts,
@@ -4970,12 +6116,10 @@ def execute(
             deployed_theme.get("tree_sha256") != local_theme_tree_sha256
             or deployed_theme.get("version") != EXPECTED_THEME_VERSION
             or deployed_theme.get("runtime_version") != EXPECTED_THEME_VERSION
-            or deployed_theme.get("runtime_revision")
-            != EXPECTED_THEME_RUNTIME_REVISION
+            or deployed_theme.get("runtime_revision") != EXPECTED_THEME_RUNTIME_REVISION
             or live_theme.get("version") != EXPECTED_THEME_VERSION
             or live_theme.get("runtime_version") != EXPECTED_THEME_VERSION
-            or live_theme.get("runtime_revision")
-            != EXPECTED_THEME_RUNTIME_REVISION
+            or live_theme.get("runtime_revision") != EXPECTED_THEME_RUNTIME_REVISION
         )
 
         if _resume_ready(receipt, len(articles)):
@@ -4994,6 +6138,13 @@ def execute(
                 # theme drifts away from the locally reviewed exact tree.
                 fail("RAOS_WORDPRESS_REQUEST_PENDING_THEME_DRIFT")
             read_content_operations(client, receipt)
+            _revalidate_apply_inputs(
+                receipt,
+                rakuten_activation_dry_run=rakuten_activation_dry_run,
+                expected_activation=activation,
+                quality_audit_attestation=quality_audit_attestation,
+                quality_audit_signature=quality_audit_signature,
+            )
             try:
                 wait_and_apply(receipt, path, deployment_runner)
             except PublicationFailure as error:
@@ -5011,6 +6162,7 @@ def execute(
                 receipt["apply_receipt"] = None
                 receipt["authenticated_readback"] = None
                 receipt["public_readback"] = None
+                receipt["seo_audit_readback"] = None
                 _touch_receipt(path, receipt, "EXPIRED_ATTEMPT_REPLACED")
             else:
                 verify_published(
@@ -5036,6 +6188,7 @@ def execute(
             receipt["apply_receipt"] = None
             receipt["authenticated_readback"] = None
             receipt["public_readback"] = None
+            receipt["seo_audit_readback"] = None
             _touch_receipt(path, receipt, "EXPIRED_ATTEMPT_REPLACED")
 
         drafts = reconcile_drafts(client, articles, documents, receipt, path)
@@ -5051,6 +6204,13 @@ def execute(
         if len(proposals) != len(articles) + (1 if include_theme else 0):
             fail("RAOS_WORDPRESS_REQUEST_PROPOSAL_SET_INVALID")
         register_publication_batch(client, receipt, path)
+        _revalidate_apply_inputs(
+            receipt,
+            rakuten_activation_dry_run=rakuten_activation_dry_run,
+            expected_activation=activation,
+            quality_audit_attestation=quality_audit_attestation,
+            quality_audit_signature=quality_audit_signature,
+        )
         wait_and_apply(receipt, path, deployment_runner)
         verify_published(
             client,
@@ -5099,6 +6259,32 @@ def parser() -> argparse.ArgumentParser:
             "required for --articles all"
         ),
     )
+    result.add_argument(
+        "--quality-audit-attestation",
+        type=Path,
+        default=(
+            Path(os.environ["QUALITY_AUDIT_ATTESTATION"])
+            if os.environ.get("QUALITY_AUDIT_ATTESTATION")
+            else None
+        ),
+        help=(
+            "absolute owner-private canonical independent-reviewer attestation; "
+            "required with --quality-audit-signature for --articles all"
+        ),
+    )
+    result.add_argument(
+        "--quality-audit-signature",
+        type=Path,
+        default=(
+            Path(os.environ["QUALITY_AUDIT_SIGNATURE"])
+            if os.environ.get("QUALITY_AUDIT_SIGNATURE")
+            else None
+        ),
+        help=(
+            "absolute owner-private detached Ed25519 signature for the quality "
+            "audit attestation; required with --quality-audit-attestation"
+        ),
+    )
     return result
 
 
@@ -5111,6 +6297,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 arguments.measurement_plugin_apply_receipt
             ),
             rakuten_activation_dry_run=arguments.rakuten_activation_dry_run,
+            quality_audit_attestation=arguments.quality_audit_attestation,
+            quality_audit_signature=arguments.quality_audit_signature,
         )
         print("公開と本番read-backが完了しました。")
         print(f"受領書: {path}")

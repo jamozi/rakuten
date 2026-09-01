@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: 898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7;
+  --raos-theme-runtime-revision-editorial-v2: 05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -100,6 +100,10 @@
   color: var(--rev2-ink);
   font-size: 1rem;
   overflow-wrap: anywhere;
+}
+
+.raos-editorial-v2__main {
+  min-width: 0;
 }
 
 .raos-editorial-v2,
@@ -298,6 +302,10 @@
   scroll-margin-top: 1.5rem;
 }
 
+.raos-editorial-v2 .raos-article-toc__title {
+  display: none;
+}
+
 .raos-editorial-v2 .raos-article-toc summary {
   padding: 1rem 1.2rem;
   color: var(--rev2-indigo);
@@ -359,11 +367,30 @@
   min-height: 2.75rem;
 }
 
-@media (min-width: 48.0625rem) {
+@media (min-width: 64.0625rem) {
+  .raos-editorial-v2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 18rem);
+    gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  .raos-editorial-v2__main {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
   .raos-editorial-v2 .raos-article-toc {
+    grid-column: 2;
+    grid-row: 1;
+    max-height: calc(100vh - 2rem);
+    max-width: none;
+    margin: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     position: sticky;
     top: 1rem;
-    z-index: 2;
+    z-index: 1;
   }
 
   .admin-bar .raos-editorial-v2 .raos-article-toc {
@@ -374,12 +401,28 @@
     display: none;
   }
 
+  .raos-editorial-v2 .raos-article-toc__title {
+    display: block;
+    margin: 0;
+    padding: 1rem 1.2rem 0;
+    color: var(--rev2-indigo);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
   .raos-editorial-v2 .raos-article-toc details:not([open]) > :not(summary) {
-    display: grid;
+    display: block;
   }
 
   .raos-editorial-v2 .raos-article-toc ol {
+    display: block;
+    padding-inline: 2.4rem 1.2rem;
     padding-top: 1.25rem;
+  }
+
+  .raos-editorial-v2 .raos-article-toc li + li {
+    margin-top: 0.65rem;
   }
 }
 

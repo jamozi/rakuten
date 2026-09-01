@@ -22,6 +22,7 @@ from raos.adapters.self_hosted_editorial_pilot_json import (
 from raos.adapters.self_hosted_editorial_rakuten_capture import (
     MEDIA_REGISTRY_RELATIVE_PATH,
     ARTICLES_RELATIVE_PATH,
+    PORTFOLIO_RELATIVE_PATH,
     SOURCE_REGISTRY_RELATIVE_PATH,
     ProductCaptureTarget,
     RakutenHttpsConnectionFactory,
@@ -40,11 +41,9 @@ ARTICLE_ID = "st1703-first-suitcase-comparison"
 DISCOVERY_ARTICLE_ID = "st1704-compact-robot-vacuum-shortlist"
 DISHWASHER_ARTICLE_ID = "st1704-countertop-dishwasher-for-small-households"
 PORTABLE_POWER_ARTICLE_ID = "st1704-portable-power-station-guide"
-CURRENT_BLUETTI_AC70_TITLE = (
-    "【在庫一掃 クーポン利用で39,600円】BLUETTI ポータブル電源 AC70 "
-    "768Wh/1000W 大容量 家庭用 蓄電池 5年保証 リン酸鉄 長寿命 "
-    "バックアップ電源 (サージ2000W) 自動切替機能 アプリ遠隔操作 "
-    "発電機 アウトドア キャンプ 車中泊 お釣り 防災 停電 台風 節電対策"
+CURRENT_ANKER_SOLIX_C800_TITLE = (
+    "Anker Solix C800 Portable Power Station A1753 ポータブル電源 "
+    "768Wh 1200W リン酸鉄 長寿命 防災 停電対策"
 )
 
 
@@ -256,8 +255,8 @@ class _Factory:
         self.first_image_not_square = first_image_not_square
         self.image_candidate_count = image_candidate_count
         self.reflected_value = reflected_value
-        self.image = _png()
-        self.non_square_image = _png(width=96)
+        self.image = _jpeg(valid_entropy=True)
+        self.non_square_image = _jpeg(valid_entropy=True, width=96)
         self.invalid_compressed_image = _png(compressed_payload=b"not-zlib-data")
         self.indexed_image_without_palette = _png(color_type=3)
         self.indexed_image_outside_palette = _png(
@@ -356,17 +355,17 @@ class _Factory:
         source, destination = self._source_and_destination(target, code)
         image = (
             f"https://thumbnail.image.rakuten.co.jp/@0_mall/{target.shop_code}/"
-            f"cabinet/{code.split(':', 1)[1]}.png?_ex=128x128"
+            f"cabinet/{code.split(':', 1)[1]}.jpg?_ex=128x128"
         )
         image_urls = [image]
         if self.first_image_not_square:
             image_urls = [
-                image.replace(".png?_ex=128x128", "-non-square.png?_ex=128x128"),
+                image.replace(".jpg?_ex=128x128", "-non-square.jpg?_ex=128x128"),
                 image,
             ]
         if self.image_candidate_count is not None:
             image_urls = [
-                image.replace(".png?_ex=128x128", f"-{index}.png?_ex=128x128")
+                image.replace(".jpg?_ex=128x128", f"-{index}.jpg?_ex=128x128")
                 for index in range(self.image_candidate_count)
             ]
         row: dict[str, object] = {
@@ -391,6 +390,7 @@ class _Factory:
         self.requests.append((host, path))
         if host == "thumbnail.image.rakuten.co.jp":
             assert "accessKey" not in headers
+            assert headers["Accept"] == "image/jpeg,image/png,image/gif"
             image = (
                 self.truncated_image
                 if self.use_truncated_image
@@ -413,19 +413,28 @@ class _Factory:
                 else self.invalid_compressed_image
                 if self.use_invalid_compressed_image
                 else self.non_square_image
-                if "-non-square.png" in path
+                if "-non-square.jpg" in path
                 else self.image
             )
             return _Response(
                 image,
-                "image/jpeg"
+                "image/png"
+                if (
+                    self.use_indexed_image_without_palette
+                    or self.use_indexed_image_outside_palette
+                    or self.use_malformed_idat_sequence
+                    or self.use_invalid_compressed_image
+                )
+                else "image/gif"
+                if self.use_invalid_gif_image or self.use_non_target_gif_dimensions
+                else "image/jpeg"
                 if (
                     self.use_invalid_jpeg_image
                     or self.use_invalid_jpeg_huffman
                     or self.use_non_target_jpeg_dimensions
+                    or self.first_image_not_square
+                    or not path.endswith(".png")
                 )
-                else "image/gif"
-                if self.use_invalid_gif_image or self.use_non_target_gif_dimensions
                 else "image/png",
             )
         assert host == "openapi.rakuten.co.jp"
@@ -522,6 +531,7 @@ def private_root_path() -> Iterator[Path]:
 def _private_root(tmp_path: Path) -> Path:
     for relative in (
         ARTICLES_RELATIVE_PATH,
+        PORTFOLIO_RELATIVE_PATH,
         SOURCE_REGISTRY_RELATIVE_PATH,
         MEDIA_REGISTRY_RELATIVE_PATH,
     ):
@@ -541,22 +551,28 @@ def _private_root(tmp_path: Path) -> Path:
     return tmp_path
 
 
-def test_capture_plan_binds_five_articles_and_eighteen_unique_products() -> None:
+def test_capture_plan_binds_final_inventory_and_bounded_capture_slice() -> None:
     plan = load_product_capture_plan(ROOT)
     rows = [plan.for_article(article_id) for article_id in manifest_builder.ARTICLE_IDS]
-    assert [len(row) for row in rows] == [3, 4, 4, 4, 4]
-    assert len({target.product_id for row in rows for target in row}) == 18
+    assert len(plan.portfolio_article_products) == 10
+    assert plan.portfolio_product_count == 31
+    assert plan.portfolio_product_placement_count == 37
+    assert plan.portfolio_cta_placement_count == 74
+    assert [len(row) for row in rows] == [3, 5, 4, 4, 4]
+    assert len({target.product_id for row in rows for target in row}) == 19
     assert [target.shop_code for target in rows[1]] == [
         "anker",
         "jackery-japan",
-        "bluettijapan",
-        "ecoflow",
+        "wich",
+        "jackery-japan",
+        "dji-shop",
     ]
     assert [target.fixed_item_code for target in rows[1]] == [
         "anker:10002036",
         "jackery-japan:10000000",
-        "bluettijapan:10000107",
-        "ecoflow:10000092",
+        "wich:a-a17535z1",
+        None,
+        "dji-shop:6937224104761",
     ]
     assert [target.fixed_item_code for target in rows[2]] == [
         "anker:10002036",
@@ -565,29 +581,103 @@ def test_capture_plan_binds_five_articles_and_eighteen_unique_products() -> None
         "anker:10002336",
     ]
     assert [target.fixed_item_code for target in rows[3]] == [
-        "panasonic-store:10000735",
+        None,
         "thanko:10005443",
         "siroca:10000024",
         "jyupro:10136298",
     ]
     assert [target.fixed_item_code for target in rows[4]] == [
-        "edion:10895202",
+        None,
         "switchbot:10000327",
-        "switchbot:10000240",
+        "store-ecovacs-japan:djx28-01ee",
         "edion:10909675",
     ]
     assert [target.shop_code for target in rows[4]] == [
-        "edion",
+        "anker",
         "switchbot",
-        "switchbot",
+        "store-ecovacs-japan",
         "edion",
     ]
     assert "掃除機&床拭きロボット" in rows[4][0].product_kind_tokens
-    assert [target.fixed_item_code for target in rows[0]] == [None, None, None]
+    assert [target.fixed_item_code for target in rows[0]] == [
+        "ace-store:01541",
+        None,
+        None,
+    ]
     assert [target.fixed_destination_url for target in rows[0]] == [None, None, None]
 
 
-def test_capture_accepts_current_ac70_title_with_product_warranty(
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "portfolio-drop-product",
+        "portfolio-drop-placement",
+        "portfolio-count-gate",
+        "bounded-card-multiplicity",
+        "affiliate-extra",
+        "media-missing",
+    ],
+)
+def test_capture_plan_rejects_inventory_set_count_and_multiplicity_tamper(
+    private_root_path: Path,
+    mutation: str,
+) -> None:
+    repository = _private_root(private_root_path)
+    portfolio_path = repository / PORTFOLIO_RELATIVE_PATH
+    articles_path = repository / ARTICLES_RELATIVE_PATH
+    sources_path = repository / SOURCE_REGISTRY_RELATIVE_PATH
+    media_path = repository / MEDIA_REGISTRY_RELATIVE_PATH
+    portfolio = json.loads(portfolio_path.read_text(encoding="utf-8"))
+    articles = json.loads(articles_path.read_text(encoding="utf-8"))
+    sources = json.loads(sources_path.read_text(encoding="utf-8"))
+    media = json.loads(media_path.read_text(encoding="utf-8"))
+
+    if mutation == "portfolio-drop-product":
+        portfolio["products"].pop()
+    elif mutation == "portfolio-drop-placement":
+        # A10 is intentionally a zero-product lifecycle route.  Remove the
+        # final A09 placement instead; that product is still referenced by A05,
+        # so this mutation isolates placement-count drift from inventory drift.
+        portfolio["articles"][-2]["product_ids"].pop()
+    elif mutation == "portfolio-count-gate":
+        portfolio["evidence_policy"]["completion_gate"][
+            "required_product_card_count"
+        ] = 36
+    elif mutation == "bounded-card-multiplicity":
+        cards = articles["articles"][0]["render_model"]["product_cards"]
+        cards[-1] = dict(cards[0])
+    elif mutation == "affiliate-extra":
+        extra = dict(sources["affiliate_resources"][0])
+        extra["product_id"] = "PRD-UNEXPECTED-INVENTORY-ROW"
+        extra["affiliate_ref"] = "AFF-UNEXPECTED-INVENTORY-ROW"
+        sources["affiliate_resources"].append(extra)
+    elif mutation == "media-missing":
+        media["assets"].pop()
+    else:
+        raise AssertionError("unknown mutation")
+
+    portfolio_path.write_text(
+        json.dumps(portfolio, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    articles_path.write_text(
+        json.dumps(articles, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    sources_path.write_text(
+        json.dumps(sources, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    media_path.write_text(
+        json.dumps(media, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(RakutenProductCaptureFailure) as captured:
+        load_product_capture_plan(repository)
+    assert captured.value.code is RakutenProductCaptureFailureCode.CONTRACT_INVALID
+
+
+def test_capture_accepts_exact_c800_title_with_product_warranty(
     private_root_path: Path, clean_network_environment: None
 ) -> None:
     repository = _private_root(private_root_path)
@@ -596,7 +686,7 @@ def test_capture_accepts_current_ac70_title_with_product_warranty(
         for target in load_product_capture_plan(repository).for_article(
             PORTABLE_POWER_ARTICLE_ID
         )
-        if target.product_id == "PRD-BLUETTI-AC70"
+        if target.product_id == "PRD-ANKER-SOLIX-C800"
     )
     result = capture_module._capture_product(
         repository,
@@ -606,16 +696,20 @@ def test_capture_accepts_current_ac70_title_with_product_warranty(
             RakutenHttpsConnectionFactory,
             _Factory(
                 (target,),
-                item_name_overrides={"PRD-BLUETTI-AC70": CURRENT_BLUETTI_AC70_TITLE},
+                item_name_overrides={
+                    "PRD-ANKER-SOLIX-C800": CURRENT_ANKER_SOLIX_C800_TITLE
+                },
             ),
         ),
         clock=lambda: datetime(2026, 8, 27, 12, 0, tzinfo=timezone.utc),
     )
 
     assert result.product_id == target.product_id
-    evidence = read_rakuten_product_evidence(repository, product_id="PRD-BLUETTI-AC70")
-    assert evidence.item_code == "bluettijapan:10000107"
-    assert evidence.item_name == CURRENT_BLUETTI_AC70_TITLE
+    evidence = read_rakuten_product_evidence(
+        repository, product_id="PRD-ANKER-SOLIX-C800"
+    )
+    assert evidence.item_code == "wich:a-a17535z1"
+    assert evidence.item_name == CURRENT_ANKER_SOLIX_C800_TITLE
 
 
 @pytest.mark.parametrize(
@@ -633,12 +727,14 @@ def test_capture_rejects_warranty_service_only_listing(
         for target in load_product_capture_plan(repository).for_article(
             PORTABLE_POWER_ARTICLE_ID
         )
-        if target.product_id == "PRD-BLUETTI-AC70"
+        if target.product_id == "PRD-ANKER-SOLIX-C800"
     )
     factory = _Factory(
         (target,),
         item_name_overrides={
-            "PRD-BLUETTI-AC70": (f"BLUETTI AC70 ポータブル電源 {service_label} 単品")
+            "PRD-ANKER-SOLIX-C800": (
+                f"Anker Solix C800 A1753 ポータブル電源 {service_label} 単品"
+            )
         },
     )
 
@@ -694,9 +790,9 @@ def test_item_search_without_official_jan_is_a_listing_mismatch(
     target = next(
         target
         for target in load_product_capture_plan(repository).for_article(
-            DISCOVERY_ARTICLE_ID
+            PORTABLE_POWER_ARTICLE_ID
         )
-        if target.product_id == "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"
+        if target.product_id == "PRD-JACKERY-500-NEW"
     )
     factory = _Factory((target,))
 
@@ -799,8 +895,10 @@ def test_capture_accepts_documented_lowercase_envelope_and_validates_evidence(
         evidence = read_rakuten_product_evidence(
             repository, product_id=target.product_id
         )
-        assert target.fixed_item_code is None
-        assert evidence.item_code.startswith(f"{target.shop_code}:")
+        if target.fixed_item_code is None:
+            assert evidence.item_code.startswith(f"{target.shop_code}:")
+        else:
+            assert evidence.item_code == target.fixed_item_code
 
 
 def test_capture_selects_first_provider_image_with_exact_128_dimensions(
@@ -820,9 +918,9 @@ def test_capture_selects_first_provider_image_with_exact_128_dimensions(
         evidence = read_rakuten_product_evidence(
             repository, product_id=target.product_id
         )
-        assert "-non-square.png" not in evidence.image_url
+        assert "-non-square.jpg" not in evidence.image_url
         assert evidence.width == evidence.height == 128
-    assert [result.request_count for result in results] == [5, 5, 5]
+    assert [result.request_count for result in results] == [4, 5, 5]
 
 
 def test_capture_rejects_unrequested_provider_fields(
@@ -900,10 +998,25 @@ def test_capture_rejects_truncated_image_with_valid_header_dimensions(
     assert captured.value.code is RakutenProductCaptureFailureCode.IMAGE_INVALID
 
 
-@pytest.mark.parametrize("raw", (_png(width=96), _gif(valid_lzw=True, width=96)))
-def test_capture_image_parser_rejects_non_target_dimensions_at_header(
-    raw: bytes,
-) -> None:
+@pytest.mark.parametrize(
+    "raw",
+    (
+        _png(),
+        _gif(valid_lzw=True),
+    ),
+)
+def test_capture_image_parser_accepts_valid_png_and_gif(raw: bytes) -> None:
+    assert capture_module._image_dimensions(raw) == (128, 128)  # type: ignore[attr-defined]
+
+
+@pytest.mark.parametrize(
+    "raw",
+    (
+        _png(width=96),
+        _gif(valid_lzw=True, width=96),
+    ),
+)
+def test_capture_image_parser_rejects_non_target_dimensions(raw: bytes) -> None:
     with pytest.raises(RakutenProductCaptureFailure) as captured:
         capture_module._image_dimensions(raw)  # type: ignore[attr-defined]
     assert captured.value.code is RakutenProductCaptureFailureCode.IMAGE_INVALID
@@ -1249,7 +1362,9 @@ def test_ambiguous_discovery_stops_before_discovered_product_evidence(
     monkeypatch.setattr(capture_module, "_FIXED_PRODUCT_ITEM_CODES", fixed_codes)
     targets = load_product_capture_plan(repository).for_article(DISCOVERY_ARTICLE_ID)
     discovered_target = next(
-        target for target in targets if target.fixed_item_code is None
+        target
+        for target in targets
+        if target.product_id == "PRD-SWITCHBOT-K11-PRO"
     )
     factory = _Factory((discovered_target,), ambiguous=True)
     with pytest.raises(RakutenProductCaptureFailure) as captured:
@@ -1273,11 +1388,13 @@ def test_discovery_aggregates_identity_across_every_allowed_variant(
 ) -> None:
     repository = _private_root(private_root_path)
     fixed_codes = dict(capture_module._FIXED_PRODUCT_ITEM_CODES)
-    del fixed_codes["PRD-THANKO-RAKUA-MINI-COLOR"]
+    del fixed_codes["PRD-ANKER-SOLIX-C300"]
     monkeypatch.setattr(capture_module, "_FIXED_PRODUCT_ITEM_CODES", fixed_codes)
-    targets = load_product_capture_plan(repository).for_article(DISHWASHER_ARTICLE_ID)
+    targets = load_product_capture_plan(repository).for_article(PORTABLE_POWER_ARTICLE_ID)
     discovered_target = next(
-        target for target in targets if target.fixed_item_code is None
+        target
+        for target in targets
+        if target.product_id == "PRD-ANKER-SOLIX-C300"
     )
     factory = _Factory((discovered_target,))
     with pytest.raises(RakutenProductCaptureFailure) as captured:
@@ -1323,4 +1440,5 @@ def test_separate_manifest_keeps_publication_absent_and_wordpress_runtime_unchan
     assert manifest["article_ids"] == list(manifest_builder.ARTICLE_IDS)
     paths = [row["path"] for row in manifest["paths"]]
     assert paths == list(manifest_builder.REQUIRED_RUNTIME_PATHS)
+    assert str(PORTFOLIO_RELATIVE_PATH) in paths
     assert "scripts/st1704_self_hosted_editorial_pilot.py" not in paths

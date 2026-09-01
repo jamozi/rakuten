@@ -52,8 +52,8 @@ source_sha256:
   packages/web-ui/src/dialog.ts: 494ac8b9e2a4087de2d003dd6c28bfcab7c85961f418a5892453c865058724bc
   packages/web-ui/src/article-workspace.ts: 01d2f680ddfb5a64fa9d84db1c10e1ae9cd3de490520e67f135f3be63260db89
   scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
-  package.json: e1665573013d997af81a1b64717a8c176d3619d0e7f1f742c2630802dabc0992
-  package-lock.json: 8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca
+  package.json: 730029961c3713d0b2cd6888ae3f04c25d0dbf0ee97b2ed562a43ea792f7e968
+  package-lock.json: 37394f25fe870c11cdbd4ba1b1173ed86bc677ca51a85e6fe0b999ec425efa4f
   pyproject.toml: 9c9dd49b7f08beebbc45febad001013e1151f1d4fb5d350e170d58a921436c87
   uv.lock: b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1
 generated_sha256:

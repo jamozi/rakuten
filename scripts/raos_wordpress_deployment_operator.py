@@ -61,6 +61,24 @@ SHA256_RE: Final = re.compile(r"^[0-9a-f]{64}$")
 SLUG_RE: Final = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 VERSION_RE: Final = re.compile(r"^[0-9]+(?:\.[0-9]+){1,3}(?:[-+][0-9A-Za-z.-]+)?$")
 ARTIFACT_ID_RE: Final = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
+REVIEWED_MIGRATION_ASSESSMENT: Final = (
+    "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION"
+)
+# This is deliberately a single, immutable exception rather than a migration
+# bypass.  Any package, manifest, slug, version, or artifact change requires a
+# new code review and an explicit source update before it can become eligible.
+REVIEWED_MIGRATION_BINDINGS: Final = {
+    "raos-editorial-measurement-v1": {
+        "slug": "raos-editorial-measurement",
+        "version": "1.0.0",
+        "package_sha256": (
+            "b351fd53e6c62e3fa363a67a994dfe2ce2a934e1f3b65b8c3102906eaa190d5a"
+        ),
+        "file_manifest_sha256": (
+            "ed4374ef7e7efca82c8f2063283f50b5a7b316ee98b3fb71b18a46acb2a61aa3"
+        ),
+    }
+}
 MIGRATION_SIGNALS: Final = (
     re.compile(rb"register_activation_hook\s*\(", re.IGNORECASE),
     re.compile(rb"\bdbDelta\s*\(", re.IGNORECASE),
@@ -1109,7 +1127,9 @@ def _download_official_plugin(slug: str, version: str) -> bytes:
     return payload
 
 
-def _repo_artifact(artifact_id: str, slug: str, version: str) -> bytes:
+def _repo_artifact_binding(
+    artifact_id: str, slug: str, version: str
+) -> dict[str, object]:
     try:
         registry_raw = ARTIFACT_REGISTRY.read_bytes()
         registry = json.loads(registry_raw.decode("utf-8", errors="strict"))
@@ -1121,23 +1141,95 @@ def _repo_artifact(artifact_id: str, slug: str, version: str) -> bytes:
         or type(registry.get("artifacts")) is not list
     ):
         fail("WORDPRESS_MCP_ARTIFACT_REGISTRY_INVALID")
-    match: dict[str, object] | None = None
-    for candidate in registry["artifacts"]:
-        if type(candidate) is dict and candidate.get("artifact_id") == artifact_id:
-            match = candidate
-            break
-    if match is None:
+    matches = [
+        candidate
+        for candidate in registry["artifacts"]
+        if type(candidate) is dict and candidate.get("artifact_id") == artifact_id
+    ]
+    if not matches:
         fail("WORDPRESS_MCP_ARTIFACT_NOT_REGISTERED")
+    if len(matches) != 1:
+        fail("WORDPRESS_MCP_ARTIFACT_REGISTRY_INVALID")
+    match = matches[0]
     if match.get("slug") != slug or match.get("version") != version:
         fail("WORDPRESS_MCP_ARTIFACT_BINDING_MISMATCH")
-    expected = require_sha256(
+    require_sha256(
         match.get("package_sha256"), "WORDPRESS_MCP_ARTIFACT_REGISTRY_INVALID"
+    )
+    return match
+
+
+def _repo_artifact(
+    artifact_id: str,
+    slug: str,
+    version: str,
+    binding: Mapping[str, object] | None = None,
+) -> bytes:
+    match = (
+        _repo_artifact_binding(artifact_id, slug, version)
+        if binding is None
+        else binding
+    )
+    if (
+        match.get("artifact_id") != artifact_id
+        or match.get("slug") != slug
+        or match.get("version") != version
+    ):
+        fail("WORDPRESS_MCP_ARTIFACT_BINDING_MISMATCH")
+    expected = require_sha256(
+        match["package_sha256"], "WORDPRESS_MCP_ARTIFACT_REGISTRY_INVALID"
     )
     path = REPO_ARTIFACT_DIRECTORY / f"{artifact_id}.zip"
     payload = _secure_regular_file(path, MAX_PACKAGE_BYTES)
     if sha256(payload) != expected:
         fail("WORDPRESS_MCP_ARTIFACT_DIGEST_MISMATCH")
     return payload
+
+
+def _reviewed_migration_eligible(
+    binding: Mapping[str, object],
+    *,
+    artifact_id: str,
+    slug: str,
+    version: str,
+    activation_intent: str,
+    package_sha256: str,
+    file_manifest_sha256: str,
+) -> bool:
+    """Accept only the one exact, source-reviewed activation migration."""
+
+    expected = REVIEWED_MIGRATION_BINDINGS.get(artifact_id)
+    review = binding.get("migration_review")
+    if type(expected) is not dict or type(review) is not dict:
+        return False
+    if set(binding) != {
+        "artifact_id",
+        "slug",
+        "version",
+        "package_sha256",
+        "migration_review",
+    } or set(review) != {
+        "schema",
+        "assessment",
+        "package_sha256",
+        "file_manifest_sha256",
+    }:
+        return False
+    return (
+        review.get("schema") == "RAOS_WORDPRESS_PLUGIN_MIGRATION_REVIEW_V1"
+        and review.get("assessment") == REVIEWED_MIGRATION_ASSESSMENT
+        and binding.get("artifact_id") == artifact_id
+        and binding.get("slug") == slug == expected.get("slug")
+        and binding.get("version") == version == expected.get("version")
+        and activation_intent == "activate"
+        and binding.get("package_sha256")
+        == package_sha256
+        == expected.get("package_sha256")
+        and review.get("package_sha256") == package_sha256
+        and review.get("file_manifest_sha256")
+        == file_manifest_sha256
+        == expected.get("file_manifest_sha256")
+    )
 
 
 def plugin_package(inputs: dict[str, object]) -> tuple[bytes, dict[str, object]]:
@@ -1153,6 +1245,7 @@ def plugin_package(inputs: dict[str, object]) -> tuple[bytes, dict[str, object]]
     if intent not in {"preserve", "activate", "deactivate"}:
         fail("WORDPRESS_MCP_ACTIVATION_INTENT_INVALID")
     artifact_id: str | None = None
+    artifact_binding: dict[str, object] | None = None
     if source == "wordpress_org":
         if "artifact_id" in record:
             fail("WORDPRESS_MCP_INPUT_INVALID")
@@ -1162,11 +1255,26 @@ def plugin_package(inputs: dict[str, object]) -> tuple[bytes, dict[str, object]]
         if type(value) is not str or ARTIFACT_ID_RE.fullmatch(value) is None:
             fail("WORDPRESS_MCP_ARTIFACT_ID_INVALID")
         artifact_id = value
-        payload = _repo_artifact(artifact_id, slug, version)
+        artifact_binding = _repo_artifact_binding(artifact_id, slug, version)
+        payload = _repo_artifact(artifact_id, slug, version, artifact_binding)
     else:
         fail("WORDPRESS_MCP_PLUGIN_SOURCE_REFUSED")
     manifest, manifest_hash, _, migration_safe = validate_package(
         payload, kind="plugin", slug=slug, expected_version=version
+    )
+    reviewed_migration = (
+        not migration_safe
+        and artifact_id is not None
+        and artifact_binding is not None
+        and _reviewed_migration_eligible(
+            artifact_binding,
+            artifact_id=artifact_id,
+            slug=slug,
+            version=version,
+            activation_intent=intent,
+            package_sha256=sha256(payload),
+            file_manifest_sha256=manifest_hash,
+        )
     )
     descriptor: dict[str, object] = {
         "schema": "CodePackageV1",
@@ -1184,9 +1292,13 @@ def plugin_package(inputs: dict[str, object]) -> tuple[bytes, dict[str, object]]
         "migration_assessment": (
             "NO_IRREVERSIBLE_MIGRATION_SIGNALS"
             if migration_safe
-            else "MANUAL_REVIEW_REQUIRED"
+            else (
+                REVIEWED_MIGRATION_ASSESSMENT
+                if reviewed_migration
+                else "MANUAL_REVIEW_REQUIRED"
+            )
         ),
-        "automatic_apply_eligible": migration_safe,
+        "automatic_apply_eligible": migration_safe or reviewed_migration,
     }
     return payload, descriptor
 

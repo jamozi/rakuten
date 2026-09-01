@@ -39,6 +39,7 @@ ABILITIES_PROPOSAL_RECEIPT_PATH = (
     / "abilities-plugin-proposal-v3.json"
 )
 SHA256_RE = __import__("re").compile(r"^[0-9a-f]{64}$")
+REVIEWED_MIGRATION_ASSESSMENT = "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION"
 
 spec = importlib.util.spec_from_file_location("raos_publication_for_plugin", PUBLICATION_SCRIPT)
 if spec is None or spec.loader is None:
@@ -114,7 +115,7 @@ def validate_abilities_apply_receipt(path: Path | None) -> dict[str, object]:
     proposal = proposal_receipt.get("proposal")
     if (
         proposal_receipt.get("state")
-        != "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
+        != "WAITING_FOR_SEPARATE_HUMAN_WP_ADMIN_BOOTSTRAP_ATTESTATION"
         or proposal_receipt.get("artifact_id") != "raos-codex-mcp-abilities-v1"
         or proposal_receipt.get("plugin_slug") != "raos-codex-mcp-abilities"
         or proposal_receipt.get("plugin_version") != "1.3.1"
@@ -123,7 +124,11 @@ def validate_abilities_apply_receipt(path: Path | None) -> dict[str, object]:
         or apply_receipt.get("proposal_id") != proposal.get("proposal_id")
         or apply_receipt.get("operation_id") != proposal.get("operation_id")
         or apply_receipt.get("state") != "APPLIED"
-        or apply_receipt.get("result_code") != "PLUGIN_CHANGE_APPLIED"
+        or apply_receipt.get("result_code")
+        not in {
+            "PLUGIN_CHANGE_APPLIED",
+            "PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL",
+        }
         or apply_receipt.get("after_sha256") != proposal.get("after_sha256")
     ):
         fail("RAOS_MEASUREMENT_PLUGIN_ABILITIES_RECEIPT_INVALID")
@@ -176,6 +181,18 @@ def prepare(
         if type(row) is dict
         and row.get("artifact_id") == "raos-editorial-measurement-v1"
     ] if type(artifacts) is list else []
+    file_manifest_sha256 = hashlib.sha256(
+        json.dumps(
+            manifest.get("plugin_files"),
+            ensure_ascii=False,
+            allow_nan=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("utf-8")
+    ).hexdigest()
+    migration_review = (
+        matching[0].get("migration_review") if len(matching) == 1 else None
+    )
     if (
         manifest.get("schema") != "RAOS_EDITORIAL_MEASUREMENT_RUNTIME_MANIFEST_V1"
         or manifest.get("artifact_id") != "raos-editorial-measurement-v1"
@@ -189,6 +206,20 @@ def prepare(
         or matching[0].get("slug") != manifest.get("plugin_slug")
         or matching[0].get("version") != manifest.get("plugin_version")
         or matching[0].get("package_sha256") != package_sha256
+        or type(migration_review) is not dict
+        or set(migration_review)
+        != {
+            "schema",
+            "assessment",
+            "package_sha256",
+            "file_manifest_sha256",
+        }
+        or migration_review.get("schema")
+        != "RAOS_WORDPRESS_PLUGIN_MIGRATION_REVIEW_V1"
+        or migration_review.get("assessment") != REVIEWED_MIGRATION_ASSESSMENT
+        or migration_review.get("package_sha256") != package_sha256
+        or migration_review.get("file_manifest_sha256")
+        != file_manifest_sha256
         or PACKAGE_PATH.is_symlink()
         or not stat.S_ISREG(package_metadata.st_mode)
         or package_metadata.st_uid != os.geteuid()
@@ -203,15 +234,7 @@ def prepare(
         "plugin_slug": manifest["plugin_slug"],
         "plugin_version": manifest["plugin_version"],
         "package_sha256": package_sha256,
-        "file_manifest_sha256": hashlib.sha256(
-            json.dumps(
-                manifest.get("plugin_files"),
-                ensure_ascii=False,
-                allow_nan=False,
-                separators=(",", ":"),
-                sort_keys=True,
-            ).encode("utf-8")
-        ).hexdigest(),
+        "file_manifest_sha256": file_manifest_sha256,
         "activation_intent": "activate",
         "separate_admin_approval_required": True,
         "apply_command_exposed": False,
@@ -255,12 +278,15 @@ def propose(
         or code_package.get("file_manifest_sha256")
         != receipt["file_manifest_sha256"]
         or code_package.get("activation_intent") != "activate"
+        or code_package.get("migration_assessment")
+        != REVIEWED_MIGRATION_ASSESSMENT
+        or code_package.get("automatic_apply_eligible") is not True
         or proposal.get("after_tree_sha256") != receipt["file_manifest_sha256"]
         or type(proposal.get("proposal_id")) is not str
         or SHA256_RE.fullmatch(proposal["proposal_id"]) is None
         or type(operation) is not dict
         or operation.get("proposal_id") != proposal["proposal_id"]
-        or operation.get("state") not in {"PENDING", "MANUAL_REQUIRED"}
+        or operation.get("state") != "PENDING"
     ):
         fail("RAOS_MEASUREMENT_PLUGIN_PROPOSAL_INVALID")
     assert type(proposal) is dict
@@ -278,6 +304,8 @@ def propose(
 def content_command(
     apply_receipt_path: Path,
     rakuten_activation_dry_run: Path | None,
+    quality_audit_attestation: Path | None,
+    quality_audit_signature: Path | None,
 ) -> str:
     proposal_receipt = load_private_json(RECEIPT_PATH)
     apply_receipt = load_private_json(apply_receipt_path)
@@ -303,12 +331,25 @@ def content_command(
     assert rakuten_activation_dry_run is not None
     if activation.article_count != 10 or activation.cta_count != 74:
         fail("RAOS_MEASUREMENT_PLUGIN_RAKUTEN_ACTIVATION_INVALID")
+    try:
+        publication.strict_local_quality_audit(
+            quality_audit_attestation,
+            quality_audit_signature,
+        )
+    except publication.PublicationFailure:
+        fail("RAOS_MEASUREMENT_PLUGIN_QUALITY_AUDIT_INVALID")
+    assert quality_audit_attestation is not None
+    assert quality_audit_signature is not None
     return (
         ".venv/bin/python scripts/raos_wordpress_publication_request.py "
         "--articles all --measurement-plugin-apply-receipt "
         + shlex.quote(apply_receipt_path.resolve(strict=True).as_posix())
         + " --rakuten-activation-dry-run "
         + shlex.quote(rakuten_activation_dry_run.resolve(strict=True).as_posix())
+        + " --quality-audit-attestation "
+        + shlex.quote(quality_audit_attestation.resolve(strict=True).as_posix())
+        + " --quality-audit-signature "
+        + shlex.quote(quality_audit_signature.resolve(strict=True).as_posix())
     )
 
 
@@ -320,6 +361,8 @@ def parser() -> argparse.ArgumentParser:
     group.add_argument("--content-ready", type=Path)
     result.add_argument("--abilities-plugin-apply-receipt", type=Path)
     result.add_argument("--rakuten-activation-dry-run", type=Path)
+    result.add_argument("--quality-audit-attestation", type=Path)
+    result.add_argument("--quality-audit-signature", type=Path)
     return result
 
 
@@ -341,6 +384,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 content_command(
                     arguments.content_ready,
                     arguments.rakuten_activation_dry_run,
+                    arguments.quality_audit_attestation,
+                    arguments.quality_audit_signature,
                 )
             )
         return 0

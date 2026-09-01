@@ -27,6 +27,7 @@ EXPECTED_DIRECT_PINS = {
     "@types/react-dom": "19.2.4",
     "eslint": "9.39.5",
     "eslint-config-next": "16.2.12",
+    "lighthouse": "12.8.2",
     "next": "16.2.12",
     "prettier": "3.9.6",
     "pyright": "1.1.411",

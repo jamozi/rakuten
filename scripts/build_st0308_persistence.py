@@ -290,7 +290,7 @@ EXPECTED_RUNTIME_SCHEMAS: Final = (
 EXPECTED_BOUND_INPUT_SHA256: Final = MappingProxyType(
     {
         "changes/st-0303/generated/iam-ops-catalog.v1.json": (
-            "0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a"
+            "8ebf0d20ae07e4f82564f16c675b60f4a782464f5b25aa0a2b0df668f8475128"
         ),
         "changes/st-0304/generated/domain-catalog.v1.json": (
             "41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208"
@@ -335,7 +335,7 @@ EXPECTED_BOUND_INPUT_SHA256: Final = MappingProxyType(
             "66cb474d428703e83b7b84744c4f843463b0a040714b907e00137438f5ba08ab"
         ),
         "changes/st-0308/contracts/persistence/domain-mapper-matrix.v1.yaml": (
-            "8b2499f99faa223fbc5b6329bd0f0e441441e89b45d507b6bbb0ffbce470e872"
+            "c37ca853e49c09084c4174ad8a74dc8f6f8c43fee169601393b391413194ed3e"
         ),
         "changes/st-0308/contracts/persistence/event-emission-matrix.v1.yaml": (
             "3c4f8e429824849b9219faefb2867dd8444828562d0d0a1d9c79bfa2cc511ad0"

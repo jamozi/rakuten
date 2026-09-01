@@ -216,8 +216,46 @@ def load_contract() -> AuditContract:
             _fail("REQUIRED_SCHEMA_INVALID")
         required[role] = frozenset(values)
     forbidden_raw = raw.get("forbidden_schema_types")
-    if forbidden_raw != ["Product", "Offer", "Review", "FAQPage"]:
+    if forbidden_raw != [
+        "Product",
+        "Offer",
+        "Review",
+        "AggregateRating",
+        "FAQPage",
+    ]:
         _fail("FORBIDDEN_SCHEMA_INVALID")
+    if raw.get("head_profile") != {
+        "canonical_count": 1,
+        "meta_description_count": 1,
+        "open_graph": [
+            "og:title",
+            "og:description",
+            "og:url",
+            "og:image",
+            "og:image:width",
+            "og:image:height",
+            "og:image:type",
+            "og:type",
+            "og:locale",
+            "og:site_name",
+        ],
+        "title_count": 1,
+        "twitter": [
+            "twitter:card",
+            "twitter:title",
+            "twitter:description",
+            "twitter:image",
+        ],
+    }:
+        _fail("HEAD_PROFILE_INVALID")
+    if raw.get("json_ld_semantics") != {
+        "article": "EXACT_ARTICLE_BREADCRUMB_ORGANIZATION_WEBSITE_RELATIONSHIPS",
+        "fixed_page": "EXACT_PAGE_BREADCRUMB_ORGANIZATION_WEBSITE_RELATIONSHIPS",
+        "home": "EXACT_ORGANIZATION_WEBSITE_RELATIONSHIPS",
+        "language": "ja-JP",
+        "publisher": "https://kurashinoshirube.com/#organization",
+    }:
+        _fail("JSON_LD_SEMANTICS_INVALID")
     http = raw.get("http_boundary")
     surfaces = raw.get("surfaces")
     if not isinstance(http, dict) or not isinstance(surfaces, dict):
@@ -351,6 +389,7 @@ class _SeoHtmlParser(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.in_title = False
         self.in_jsonld = False
+        self.title_count = 0
         self.title_parts: list[str] = []
         self.jsonld_parts: list[str] = []
         self.jsonld_documents: list[str] = []
@@ -362,6 +401,7 @@ class _SeoHtmlParser(HTMLParser):
         lowered = tag.lower()
         if lowered == "title":
             self.in_title = True
+            self.title_count += 1
         elif lowered == "meta":
             self.meta.append(values)
         elif lowered == "link":
@@ -411,6 +451,159 @@ def _schema_types(value: Any) -> set[str]:
         for child in value:
             found.update(_schema_types(child))
     return found
+
+
+def _single_graph(parser: _SeoHtmlParser) -> tuple[dict[str, Any] | None, set[str]]:
+    if len(parser.jsonld_documents) != 1:
+        return None, set()
+    try:
+        document = json.loads(parser.jsonld_documents[0])
+    except json.JSONDecodeError:
+        return None, set()
+    if (
+        not isinstance(document, dict)
+        or document.get("@context") != "https://schema.org"
+        or not isinstance(document.get("@graph"), list)
+    ):
+        return None, _schema_types(document)
+    return document, _schema_types(document)
+
+
+def _same_origin_https_url(value: object, origin: str) -> bool:
+    if not isinstance(value, str):
+        return False
+    parsed = urlsplit(value)
+    expected = urlsplit(origin)
+    return (
+        parsed.scheme == "https"
+        and parsed.netloc == expected.netloc
+        and parsed.username is None
+        and parsed.password is None
+        and not parsed.query
+        and not parsed.fragment
+        and parsed.path.startswith("/")
+    )
+
+
+def _structured_data_semantics(
+    document: dict[str, Any] | None,
+    item: InventoryItem,
+    contract: AuditContract,
+    title: str,
+    description: str,
+    social_image: str,
+) -> bool:
+    if document is None:
+        return False
+    graph = document.get("@graph")
+    if not isinstance(graph, list) or not all(isinstance(node, dict) for node in graph):
+        return False
+    typed_nodes = [node for node in graph if isinstance(node, dict)]
+    top_types = [node.get("@type") for node in typed_nodes]
+    if not all(isinstance(value, str) for value in top_types):
+        return False
+    expected_page_type = (
+        "AboutPage" if item.identifier == "about-ad-policy" else "WebPage"
+    )
+    expected_types = {
+        "home": ["Organization", "WebSite"],
+        "article": ["Article", "BreadcrumbList", "Organization", "WebSite"],
+        "fixed_page": [
+            expected_page_type,
+            "BreadcrumbList",
+            "Organization",
+            "WebSite",
+        ],
+    }[item.role]
+    if sorted(top_types) != sorted(expected_types):
+        return False
+    identifiers = [node.get("@id") for node in typed_nodes]
+    if (
+        not all(isinstance(value, str) for value in identifiers)
+        or len(set(identifiers)) != len(identifiers)
+        or not all(
+            _same_origin_https_url(str(value).split("#", 1)[0], contract.origin)
+            for value in identifiers
+        )
+    ):
+        return False
+    by_type = {str(node["@type"]): node for node in typed_nodes}
+    organization_id = contract.origin + "/#organization"
+    website_id = contract.origin + "/#website"
+    organization = by_type.get("Organization", {})
+    website = by_type.get("WebSite", {})
+    if organization != {
+        "@id": organization_id,
+        "@type": "Organization",
+        "name": "暮らしのしるべ編集者",
+        "url": contract.origin + "/",
+    }:
+        return False
+    if website != {
+        "@id": website_id,
+        "@type": "WebSite",
+        "inLanguage": "ja-JP",
+        "name": "暮らしのしるべ",
+        "publisher": {"@id": organization_id},
+        "url": contract.origin + "/",
+    }:
+        return False
+    if item.role == "home":
+        return len(typed_nodes) == 2
+    breadcrumb = by_type.get("BreadcrumbList", {})
+    items = breadcrumb.get("itemListElement")
+    if (
+        breadcrumb.get("@id") != item.url + "#breadcrumb"
+        or not isinstance(items, list)
+        or len(items) != 2
+        or items[0]
+        != {
+            "@type": "ListItem",
+            "item": contract.origin + "/",
+            "name": "ホーム",
+            "position": 1,
+        }
+        or items[1]
+        != {
+            "@type": "ListItem",
+            "item": item.url,
+            "name": title,
+            "position": 2,
+        }
+    ):
+        return False
+    if item.role == "article":
+        article = by_type.get("Article", {})
+        published = article.get("datePublished")
+        modified = article.get("dateModified")
+        if not _valid_utc_text(published) or not _valid_utc_text(modified):
+            return False
+        assert isinstance(published, str) and isinstance(modified, str)
+        return (
+            modified >= published
+            and article.get("@id") == item.url + "#article"
+            and article.get("articleSection") in {"移動", "家事", "備え"}
+            and article.get("author") == {"@id": organization_id}
+            and article.get("breadcrumb") == {"@id": item.url + "#breadcrumb"}
+            and article.get("description") == description
+            and article.get("headline") == title
+            and article.get("image") == [social_image]
+            and article.get("inLanguage") == "ja-JP"
+            and article.get("mainEntityOfPage") == item.url
+            and article.get("publisher") == {"@id": organization_id}
+            and article.get("url") == item.url
+        )
+    page = by_type.get(expected_page_type, {})
+    return page == {
+        "@id": item.url + "#webpage",
+        "@type": expected_page_type,
+        "breadcrumb": {"@id": item.url + "#breadcrumb"},
+        "description": description,
+        "inLanguage": "ja-JP",
+        "isPartOf": {"@id": website_id},
+        "name": title,
+        "url": item.url,
+    }
 
 
 def _check(
@@ -465,7 +658,7 @@ def _page_checks(
     }
     robots_ok = "noindex" not in directives and "nofollow" not in directives
     checks["robots_index_follow"] = _check(
-        robots_ok,
+        len(robots_values) == 1 and robots_ok,
         _sha256(_canonical_json([body_hash, header_hash])),
         observed,
         "NO_NOINDEX_OR_NOFOLLOW",
@@ -473,7 +666,12 @@ def _page_checks(
 
     title = " ".join("".join(parser.title_parts).split())
     descriptions = _meta_values(parser, "name", "description")
-    checks["title"] = _check(bool(title), body_hash, observed, "NONEMPTY")
+    checks["title"] = _check(
+        parser.title_count == 1 and bool(title),
+        body_hash,
+        observed,
+        "EXACT_ONE_NONEMPTY",
+    )
     checks["meta_description"] = _check(
         len(descriptions) == 1 and bool(descriptions[0]),
         body_hash,
@@ -481,26 +679,49 @@ def _page_checks(
         "EXACT_ONE_NONEMPTY",
     )
 
+    description = descriptions[0] if len(descriptions) == 1 else ""
     og_requirements = {
-        "og_title": ("og:title", None),
-        "og_description": ("og:description", None),
+        "og_title": ("og:title", title),
+        "og_description": ("og:description", description),
         "og_url": ("og:url", item.url),
         "og_image": ("og:image", None),
+        "og_type": ("og:type", "article" if item.role == "article" else "website"),
+        "og_locale": ("og:locale", "ja_JP"),
+        "og_site_name": ("og:site_name", "暮らしのしるべ"),
+        "og_image_width": ("og:image:width", None),
+        "og_image_height": ("og:image:height", None),
+        "og_image_type": ("og:image:type", "image/webp"),
     }
     for check_name, (property_name, exact) in og_requirements.items():
         values = _meta_values(parser, "property", property_name)
         ok = len(values) == 1 and bool(values[0])
         if exact is not None:
             ok = ok and values[0] == exact
+        if property_name in {"og:image:width", "og:image:height"}:
+            ok = ok and values[0].isdigit() and int(values[0]) > 0
+        if property_name == "og:image":
+            ok = ok and _same_origin_https_url(values[0], contract.origin)
         checks[check_name] = _check(ok, body_hash, observed, "EXACT_ONE_VALID")
 
-    schema_types: set[str] = set()
-    jsonld_valid = True
-    for document in parser.jsonld_documents:
-        try:
-            schema_types.update(_schema_types(json.loads(document)))
-        except json.JSONDecodeError:
-            jsonld_valid = False
+    og_images = _meta_values(parser, "property", "og:image")
+    social_image = og_images[0] if len(og_images) == 1 else ""
+    twitter_requirements = {
+        "twitter_card": ("twitter:card", "summary_large_image"),
+        "twitter_title": ("twitter:title", title),
+        "twitter_description": ("twitter:description", description),
+        "twitter_image": ("twitter:image", social_image),
+    }
+    for check_name, (name, exact) in twitter_requirements.items():
+        values = _meta_values(parser, "name", name)
+        checks[check_name] = _check(
+            values == [exact] and bool(exact),
+            body_hash,
+            observed,
+            "EXACT_ONE_MATCHED",
+        )
+
+    document, schema_types = _single_graph(parser)
+    jsonld_valid = document is not None
     required = contract.required_types[item.role]
     checks["required_schema"] = _check(
         jsonld_valid and required.issubset(schema_types),
@@ -513,6 +734,19 @@ def _page_checks(
         body_hash,
         observed,
         "FORBIDDEN_TYPES_ABSENT",
+    )
+    checks["structured_data_semantics"] = _check(
+        _structured_data_semantics(
+            document,
+            item,
+            contract,
+            title,
+            description,
+            social_image,
+        ),
+        body_hash,
+        observed,
+        "EXACT_GRAPH_RELATIONSHIPS_AND_VALUES",
     )
     return checks, schema_types
 

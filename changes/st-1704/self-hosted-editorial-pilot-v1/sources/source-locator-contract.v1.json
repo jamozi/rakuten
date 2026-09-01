@@ -3,15 +3,16 @@
   "story_id": "ST-1704",
   "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
   "publication_authority": "NONE",
-  "generated_on": "2026-08-26",
-  "source_registry_sha256": "35e40d723fdf9ccd0442fdedf14e11e3c041fe989a011143f00209beed8b6484",
+  "generated_on": "2026-08-31",
+  "source_registry_sha256": "2fb15941970a26ed33e453b1f988216bef59f54f8f5d83e02e7c8cdf4e45b85d",
   "locator_policy": {
     "claim_statement_source": "TRACKED_SOURCE_PACKET_EXACT",
     "fragment_source": "TRACKED_REVIEWED_EXACT_UTF8_FRAGMENT",
     "fragment_match": "RAW_BODY_EXACTLY_ONCE",
     "pending_behavior": "BODY_CAPTURED_LOCATORS_PENDING_PREPARE_BLOCKED",
     "review_body_as_evidence": false,
-    "review_body_locator_allowed": false
+    "review_body_locator_allowed": false,
+    "pdf_fragment_match": "PINNED_BODY_SHA256_PLUS_REVIEWED_EXTRACTED_PAGE_TEXT"
   },
   "sources": [
     {
@@ -20,19 +21,13 @@
       "locator_status": "READY",
       "locators": [
         {
-          "claim_id": "CLM-ST1704-SUITCASE-CRESTA-SPECS",
+          "claim_id": "CLM-ST1704-SUITCASE-CRESTA-06316-EXCLUDED",
           "exact_utf8_fragments": [
+            "<title>【WEB限定】 ACE クレスタ スーツケース 34/39L エキスパンド機能 機内持ち込み 06316(01：ブラックカーボン): ACE｜エース公式通販</title>",
             "<dt>サイズ</dt>\r\n\t\t\t<dd>H55×W35×D25/29 cm <br>※キャスター・ハンドルを含む外寸表記です。</dd>",
             "<dt>容量</dt>\r\n\t\t\t<dd>34/39 L</dd>",
-            "<dt>重量</dt>\r\n\t\t\t<dd>3.2kg</dd>"
-          ]
-        },
-        {
-          "claim_id": "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
-          "exact_utf8_fragments": [
-            "<dt>容量</dt>\r\n\t\t\t<dd>34/39 L</dd>",
             "<dt>重量</dt>\r\n\t\t\t<dd>3.2kg</dd>",
-            "通常時は34L、マチを広げると最大39Lまで容量アップが可能。"
+            "<dd id=\"spec_stock_msg\">申し訳ございません。在庫切れとなっております</dd>"
           ]
         }
       ]
@@ -45,22 +40,76 @@
         {
           "claim_id": "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS",
           "exact_utf8_fragments": [
+            "<title>ace.／エース ディフェレンス フロントオープン 機内持ち込み エキスパンド機能 32/38L 05721(06：ホワイト): ace.｜エース公式通販</title>",
+            "<input type=\"hidden\" name=\"goods\" value=\"05721-06\">",
             "<dt>サイズ</dt>\r\n\t\t\t<dd>H55×W36×D24/27 cm <br>※キャスター・ハンドルを含む外寸表記です。</dd>",
             "<dt>容量</dt>\r\n\t\t\t<dd>32/38 L</dd>",
             "<dt>重量</dt>\r\n\t\t\t<dd>3.5kg</dd>",
             "● エキスパンド機能(容量拡張)",
             "● キャスターストッパー",
-            "２通りの開閉が可能"
+            "２通りの開閉が可能",
+            "<dd id=\"spec_stock_msg\">在庫あります</dd>",
+            "<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         },
         {
           "claim_id": "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
+            "<title>ace.／エース ディフェレンス フロントオープン 機内持ち込み エキスパンド機能 32/38L 05721(06：ホワイト): ace.｜エース公式通販</title>",
+            "<input type=\"hidden\" name=\"goods\" value=\"05721-06\">",
+            "<dt>サイズ</dt>\r\n\t\t\t<dd>H55×W36×D24/27 cm <br>※キャスター・ハンドルを含む外寸表記です。</dd>",
             "<dt>容量</dt>\r\n\t\t\t<dd>32/38 L</dd>",
             "<dt>重量</dt>\r\n\t\t\t<dd>3.5kg</dd>",
             "● エキスパンド機能(容量拡張)",
             "● キャスターストッパー",
-            "２通りの開閉が可能"
+            "２通りの開閉が可能",
+            "<dd id=\"spec_stock_msg\">在庫あります</dd>",
+            "<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-DIFFERENCE-05721",
+          "exact_utf8_fragments": [
+            "<title>ace.／エース ディフェレンス フロントオープン 機内持ち込み エキスパンド機能 32/38L 05721(06：ホワイト): ace.｜エース公式通販</title>",
+            "<input type=\"hidden\" name=\"goods\" value=\"05721-06\">",
+            "<dt>サイズ</dt>\r\n\t\t\t<dd>H55×W36×D24/27 cm <br>※キャスター・ハンドルを含む外寸表記です。</dd>",
+            "<dt>容量</dt>\r\n\t\t\t<dd>32/38 L</dd>",
+            "<dt>重量</dt>\r\n\t\t\t<dd>3.5kg</dd>",
+            "● エキスパンド機能(容量拡張)",
+            "● キャスターストッパー",
+            "２通りの開閉が可能",
+            "<dd id=\"spec_stock_msg\">在庫あります</dd>",
+            "<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<title>ace.／エース ディフェレンス フロントオープン 機内持ち込み エキスパンド機能 32/38L 05721(06：ホワイト): ace.｜エース公式通販</title>",
+            "<input type=\"hidden\" name=\"goods\" value=\"05721-06\">",
+            "<dt>サイズ</dt>\r\n\t\t\t<dd>H55×W36×D24/27 cm <br>※キャスター・ハンドルを含む外寸表記です。</dd>",
+            "<dt>容量</dt>\r\n\t\t\t<dd>32/38 L</dd>",
+            "<dt>重量</dt>\r\n\t\t\t<dd>3.5kg</dd>",
+            "● エキスパンド機能(容量拡張)",
+            "● キャスターストッパー",
+            "２通りの開閉が可能",
+            "<dd id=\"spec_stock_msg\">在庫あります</dd>",
+            "<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<title>ace.／エース ディフェレンス フロントオープン 機内持ち込み エキスパンド機能 32/38L 05721(06：ホワイト): ace.｜エース公式通販</title>",
+            "<input type=\"hidden\" name=\"goods\" value=\"05721-06\">",
+            "<dt>サイズ</dt>\r\n\t\t\t<dd>H55×W36×D24/27 cm <br>※キャスター・ハンドルを含む外寸表記です。</dd>",
+            "<dt>容量</dt>\r\n\t\t\t<dd>32/38 L</dd>",
+            "<dt>重量</dt>\r\n\t\t\t<dd>3.5kg</dd>",
+            "● エキスパンド機能(容量拡張)",
+            "● キャスターストッパー",
+            "２通りの開閉が可能",
+            "<dd id=\"spec_stock_msg\">在庫あります</dd>",
+            "<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         }
       ]
@@ -89,6 +138,18 @@
             "<dt>重量</dt>\r\n\t\t\t<dd>3.6 kg</dd>",
             "● フロントポケット",
             "メイン気室へアクセス可能"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-MAXPASS4-REFERENCE",
+          "exact_utf8_fragments": [
+            "<dt>サイズ</dt>\r\n\t\t\t<dd>H50×W40×D25 cm <br>※キャスター・ハンドルを含む外寸表記です。</dd>",
+            "<dt>容量</dt>\r\n\t\t\t<dd>40 L</dd>",
+            "<dt>重量</dt>\r\n\t\t\t<dd>3.6 kg</dd>",
+            "● フロントポケット",
+            "メイン気室へアクセス可能",
+            "※PC収納可能サイズ：14.0インチ(W33×H24×D2.5cm)",
+            "キャスターストッパー機能を搭載。"
           ]
         }
       ]
@@ -122,7 +183,12 @@
             "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約16.4 x 16.1 x 24.0cm （ 幅 x 奥行 x 高さ )</td>",
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約4.1kg</td>",
             "<td class=\"product-specs-heading\">出力</td>\n                <td>定格300W / 瞬間最大600W</td>",
-            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>"
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>",
+            "<meta property=\"og:title\" content=\"Anker Solix C300 Portable Power Station | ポータブル電源の製品情報\">",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
         },
         {
@@ -134,12 +200,40 @@
           ]
         },
         {
-          "claim_id": "CLM-ST1704-ANKER-C300-SPECS",
+          "claim_id": "CLM-ST1704-POWER-AORA30-V2-EXCLUDED",
           "exact_utf8_fragments": [
             "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約16.4 x 16.1 x 24.0cm （ 幅 x 奥行 x 高さ )</td>",
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約4.1kg</td>",
             "<td class=\"product-specs-heading\">出力</td>\n                <td>定格300W / 瞬間最大600W</td>",
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C300-SPECS",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約16.4 x 16.1 x 24.0cm （ 幅 x 奥行 x 高さ )</td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約4.1kg</td>",
+            "<td class=\"product-specs-heading\">出力</td>\n                <td>定格300W / 瞬間最大600W</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>",
+            "<meta property=\"og:title\" content=\"Anker Solix C300 Portable Power Station | ポータブル電源の製品情報\">",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約16.4 x 16.1 x 24.0cm （ 幅 x 奥行 x 高さ )</td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約4.1kg</td>",
+            "<td class=\"product-specs-heading\">出力</td>\n                <td>定格300W / 瞬間最大600W</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>",
+            "<meta property=\"og:title\" content=\"Anker Solix C300 Portable Power Station | ポータブル電源の製品情報\">",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
         }
       ]
@@ -153,7 +247,8 @@
           "claim_id": "CLM-ST1704-POWER-JACKERY-SPECS",
           "exact_utf8_fragments": [
             "<h2 style=\"font-size: 1.2em; line-height: 35px;\">【防災とアウトドアにぴったりの容量512Wh、定格出力500W】</h2>",
-            "<p>500Whクラスで最軽量の5.7kg"
+            "<p>500Whクラスで最軽量の5.7kg",
+            "62種類の保護機能を搭載した、最先端の高速充電技術 「ChargeShieldテクノロジー2.0」 は、独自の段階的可変速充電アルゴリズムを用いることで、さらなる安全性能向上を実現しました。また、高性能のBMSを搭載。バッテリーの充放電の安全性を確保します。"
           ]
         },
         {
@@ -161,6 +256,13 @@
           "exact_utf8_fragments": [
             "<h2 style=\"font-size: 1.2em; line-height: 35px;\">【防災とアウトドアにぴったりの容量512Wh、定格出力500W】</h2>",
             "<p>500Whクラスで最軽量の5.7kg"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-WARRANTY",
+          "exact_utf8_fragments": [
+            "<h2 style=\"font-size: 1.2em; line-height: 35px;\">【5年保証・無償回収リサイクル】</h2>",
+            "<p>公式サイトで購入日から3年の保証に加えて、2年の自動延長保証を追加（製品の保証登録が不要です）。5年間の長期保証を実現しました。故障時の修理サービスや製品回収サービスもご用意しているので購入後も安心です。</p>"
           ]
         }
       ]
@@ -171,20 +273,11 @@
       "locator_status": "READY",
       "locators": [
         {
-          "claim_id": "CLM-ST1704-POWER-AC70-SPECS",
+          "claim_id": "CLM-ST1704-POWER-AC70-EXCLUDED",
           "exact_utf8_fragments": [
-            "容量:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>768Wh </span>",
-            "AC出力:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>2×100V/10A、\n合計1,000W</span>",
-            "重量:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>約10.2kg</span>",
-            "本体サイズ:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>314mm × 209.5mm × 255.8mm</span>"
-          ]
-        },
-        {
-          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
-          "exact_utf8_fragments": [
-            "容量:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>768Wh </span>",
-            "AC出力:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>2×100V/10A、\n合計1,000W</span>",
-            "重量:\n                              </span>\n                            </div>\n                            <div class=\"uk-width-expand\">\n                              <span>約10.2kg</span>"
+            "お知らせ",
+            "終売",
+            "売り切れ"
           ]
         }
       ]
@@ -195,20 +288,10 @@
       "locator_status": "READY",
       "locators": [
         {
-          "claim_id": "CLM-ST1704-POWER-DELTA-SPECS",
+          "claim_id": "CLM-ST1704-POWER-DELTA3-CLASSIC-EXCLUDED",
           "exact_utf8_fragments": [
-            "<p class=\"pdp-specs-title\">容量</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>1024Wh</p>",
-            "<p class=\"pdp-specs-title\">定格出力</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>1500W</p>",
-            "<p class=\"pdp-specs-title\">重量</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>約12.1㎏</p>",
-            "<p class=\"pdp-specs-title\">サイズ（W×D×H）</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>20.0×39.8×28.3cm</p>"
-          ]
-        },
-        {
-          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
-          "exact_utf8_fragments": [
-            "<p class=\"pdp-specs-title\">容量</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>1024Wh</p>",
-            "<p class=\"pdp-specs-title\">定格出力</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>1500W</p>",
-            "<p class=\"pdp-specs-title\">重量</p>\n                \n                \n                    <div class=\"pdp-specs-content\"><p>約12.1㎏</p>"
+            "売り切れ",
+            "\"available\":true"
           ]
         }
       ]
@@ -219,7 +302,7 @@
       "locator_status": "READY",
       "locators": [
         {
-          "claim_id": "CLM-ST1704-DISH-NP-TMLK1-SPECS",
+          "claim_id": "CLM-ST1704-DISH-NP-TMLK1-EXCLUDED",
           "exact_utf8_fragments": [
             "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">6点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
             "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約2.5L&#xff08;着脱タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
@@ -229,32 +312,23 @@
           ]
         },
         {
-          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "claim_id": "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-IDENTITY-REFERENCE",
           "exact_utf8_fragments": [
             "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">6点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
             "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約2.5L&#xff08;着脱タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
             "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★5</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">製品質量\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約7.5㎏\n\t\t</td>\n\t\n\t\n\n\t</tr>",
             "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○&#xff08;送風乾燥&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>"
-          ]
-        }
-      ]
-    },
-    {
-      "source_ref": "SRC-THANKO-RAKUA-MINI-COLOR",
-      "charset": "utf-8",
-      "locator_status": "READY",
-      "locators": [
-        {
-          "claim_id": "CLM-ST1704-DISH-RAKUA-SPECS",
-          "exact_utf8_fragments": [
-            "<div class=\"item-spec-container none-sp\">\r\n                    <h3 class=\"item-section-title spec-header\">仕様</h3>\r\n                    <div class=\"spec-scroll-box\">\r\n                        <section class=\"section item\">\r\n                            <div class=\"add-image\">\r\n                                                                <div class=\"add-image-list\">\r\n                                    <div class=\"add-description\"><table class=\"new-table\">\n<tr>\n<th>サイズ</th>\n<td>幅308×奥行315×高さ415(mm) 開扉時奥行：594mm</td>\n</tr>\n\n<tr>\n<th>重量</th>\n<td>約8kg</td>\n</tr>\n\n<tr>\n<th>定格電圧</th>\n<td>AC100V</td>\n</tr>\n\n<tr>\n<th>定格周波数</th>\n<td>50/60Hz</td>\n</tr>\n\n<tr>\n<th>定格消費電力</th>\n<td>900W</td>\n</tr>\n\n<tr>\n<th>使用水量</th>\n<td>3.2L</td>\n</tr>\n\n<tr>\n<th>洗浄方式</th>\n<td>ダブルノズル噴射式</td>\n</tr>\n\n<tr>\n<th>すすぎ方式</th>\n<td>ためすすぎ</td>\n</tr>\n\n<tr>\n<th>乾燥方式</th>\n<td>温風乾燥</td>\n</tr>\n\n<tr>\n<th>標準収納容量</th>\n<td>11～12 点（大皿…2 点　中皿またはコップ…2 点　小皿…2～3 点　小鉢…3 点　茶わん…2 点　小物類（はし、スプーン、フォーク、レンゲなど））</td>\n</tr>",
-            "<h1 class=\"item-name\">タンク式食洗機「ラクアmini color」</h1>"
           ]
         },
         {
-          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "claim_id": "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE",
           "exact_utf8_fragments": [
-            "<div class=\"item-spec-container none-sp\">\r\n                    <h3 class=\"item-section-title spec-header\">仕様</h3>\r\n                    <div class=\"spec-scroll-box\">\r\n                        <section class=\"section item\">\r\n                            <div class=\"add-image\">\r\n                                                                <div class=\"add-image-list\">\r\n                                    <div class=\"add-description\"><table class=\"new-table\">\n<tr>\n<th>サイズ</th>\n<td>幅308×奥行315×高さ415(mm) 開扉時奥行：594mm</td>\n</tr>\n\n<tr>\n<th>重量</th>\n<td>約8kg</td>\n</tr>\n\n<tr>\n<th>定格電圧</th>\n<td>AC100V</td>\n</tr>\n\n<tr>\n<th>定格周波数</th>\n<td>50/60Hz</td>\n</tr>\n\n<tr>\n<th>定格消費電力</th>\n<td>900W</td>\n</tr>\n\n<tr>\n<th>使用水量</th>\n<td>3.2L</td>\n</tr>\n\n<tr>\n<th>洗浄方式</th>\n<td>ダブルノズル噴射式</td>\n</tr>\n\n<tr>\n<th>すすぎ方式</th>\n<td>ためすすぎ</td>\n</tr>\n\n<tr>\n<th>乾燥方式</th>\n<td>温風乾燥</td>\n</tr>\n\n<tr>\n<th>標準収納容量</th>\n<td>11～12 点（大皿…2 点　中皿またはコップ…2 点　小皿…2～3 点　小鉢…3 点　茶わん…2 点　小物類（はし、スプーン、フォーク、レンゲなど））</td>\n</tr>"
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">6点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約2.5L&#xff08;着脱タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★5</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">製品質量\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約7.5㎏\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○&#xff08;送風乾燥&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>"
           ]
         }
       ]
@@ -285,33 +359,17 @@
             "* SS-MA251で、おいそぎコースや、その他のコースでオートオープンを設定している場合は、送風（1時間）を行いません。",
             "洗浄後に自動でドアが開く「オートオープン」機能を搭載。"
           ]
-        }
-      ]
-    },
-    {
-      "source_ref": "SRC-PANASONIC-NP-TSP1",
-      "charset": "utf-8",
-      "locator_status": "READY",
-      "locators": [
-        {
-          "claim_id": "CLM-ST1704-DISH-NP-TSP1-SPECS",
-          "exact_utf8_fragments": [
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">24点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約9L&#xff08;タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★6</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅550×高さ600&#xff1c;712&#xff1e;×奥行341&#xff1c;上386,下362&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">製品質量\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約19㎏\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">ドアタイプ\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">リフトアップオープンドア\n\t\t</td>\n\t\n\t\n\n\t</tr>"
-          ]
         },
         {
-          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "claim_id": "CLM-PORTFOLIO-DISH-SS-MA251-REFERENCE",
           "exact_utf8_fragments": [
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">24点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約9L&#xff08;タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★6</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅550×高さ600&#xff1c;712&#xff1e;×奥行341&#xff1c;上386,下362&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">ドアタイプ\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">リフトアップオープンドア\n\t\t</td>\n\t\n\t\n\n\t</tr>"
+            "<p class=\"link\">SS-MA251</p>",
+            "家族3人分の食器<span class=\"no-break\">16点",
+            "<tr>\n<th>使用水量(約)</th>\n<td>8.5L(分岐水栓使用時)<br />9L(自動給水時)</td>\n<td>8.5L(分岐水栓使用時)<br />9L(自動給水時)</td>\n<td class=\"gray\">6L</td>\n<td class=\"gray\">6L</td>\n<td>5L</td>\n</tr>",
+            "<tr>\n<th>本体重量(約)</th>\n<td>21kg(本体、上かご、下かご、小物トレイ、小物入れ、UV除菌コース専用トレイ)</td>\n<td>21kg(本体、上かご、下かご、小物トレイ、小物入れ、UV除菌コース専用トレイ)</td>\n<td class=\"gray\">13.5kg<br />（本体、かご、小物入れ、小物かご）</td>\n<td class=\"gray\">13.5kg<br />（本体、かご、小物入れ、小物かご）</td>\n<td>13kg<br />（本体、かご、小物入れ）</td>\n</tr>",
+            "<tr>\n<th>外形寸法(約)</th>\n<td>幅55×奥行35×高さ50cm</td>\n<td>幅55×奥行35×高さ50cm</td>\n<td class=\"gray\">幅42×奥行44×高さ47cm</td>\n<td class=\"gray\">幅42×奥行44×高さ47cm</td>\n<td>幅42×奥行43.5×高さ43.5cm</td>\n</tr>",
+            "* SS-MA251で、おいそぎコースや、その他のコースでオートオープンを設定している場合は、送風（1時間）を行いません。",
+            "洗浄後に自動でドアが開く「オートオープン」機能を搭載。"
           ]
         }
       ]
@@ -327,7 +385,26 @@
             "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約37.1 x 20.5 x 25.0cm （ 幅 x 奥行 x 高さ )</td>",
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約10.9kg</td>",
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>768Wh</td>",
-            "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1200W(50/60Hz) / 1600W"
+            "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1200W(50/60Hz) / 1600W",
+            "<meta property=\"og:title\" content=\"Anker Solix C800 Plus Portable Power Station | ポータブル電源の製品情報\">",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<td>A17545Z1 (ダークグレー) / A1754511 (ブラック)",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約37.1 x 20.5 x 25.0cm （ 幅 x 奥行 x 高さ )</td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約10.9kg</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>768Wh</td>",
+            "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1200W(50/60Hz) / 1600W",
+            "<meta property=\"og:title\" content=\"Anker Solix C800 Plus Portable Power Station | ポータブル電源の製品情報\">",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<td>A17545Z1 (ダークグレー) / A1754511 (ブラック)",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
         }
       ]
@@ -343,7 +420,12 @@
             "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約37.6 x 20.5 x 26.7cm （ 幅 x 奥行 x 高さ )</td>",
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約12.9kg</td>",
             "<td class=\"product-specs-heading\">出力</td>\n                <td>AC出力：1500W</td>",
-            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1056Wh</td>"
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1056Wh</td>",
+            "<meta property=\"og:title\" content=\"Anker Solix C1000 Portable Power Station | ポータブル電源の製品情報\">",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<td>A17615Z1 (ダークグレー) / A1761521 (ベージュ) / A1761511 (ブラック)",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
         },
         {
@@ -352,6 +434,29 @@
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1056Wh</td>",
             "<td class=\"product-specs-heading\">出力</td>\n                <td>AC出力：1500W</td>",
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約12.9kg</td>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約37.6 x 20.5 x 26.7cm （ 幅 x 奥行 x 高さ )</td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約12.9kg</td>",
+            "<td class=\"product-specs-heading\">出力</td>\n                <td>AC出力：1500W</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1056Wh</td>",
+            "<meta property=\"og:title\" content=\"Anker Solix C1000 Portable Power Station | ポータブル電源の製品情報\">",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<td>A17615Z1 (ダークグレー) / A1761521 (ベージュ) / A1761511 (ブラック)",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-PLUS-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約37.6 x 20.5 x 26.7cm （ 幅 x 奥行 x 高さ )</td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約12.9kg</td>",
+            "<td class=\"product-specs-heading\">出力</td>\n                <td>AC出力：1500W</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1056Wh</td>"
           ]
         }
       ]
@@ -362,7 +467,7 @@
       "locator_status": "READY",
       "locators": [
         {
-          "claim_id": "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
+          "claim_id": "CLM-ST1704-POWER-C1000-GEN2-REFERENCE",
           "exact_utf8_fragments": [
             "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約38.4 x 20.8 x 24.4cm ( 幅 x 奥行 x 高さ ) </td>",
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約11.3kg</td>",
@@ -371,11 +476,57 @@
           ]
         },
         {
+          "claim_id": "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約38.4 x 20.8 x 24.4cm ( 幅 x 奥行 x 高さ ) </td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約11.3kg</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1024Wh</td>",
+            "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1550W (50/60Hz) / 2300W",
+            "<meta property=\"og:title\" content=\"Anker Solix C1000 Gen 2 Portable Power Station | ポータブル電源の製品情報\">",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<td>A17635Z1 (ダークグレー) / A1763521 (オフホワイト)",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
+          "exact_utf8_fragments": [
+            "<h3>【10年長寿命・4000回サイクル】</h3>\n<p>リン酸鉄リチウムイオン電池採用で4000回以上の充放電サイクルを実現。",
+            "AC x 5 / USB-C x 3 / USB-A x 1 / シガーソケット x 1",
+            "AC x 6 / USB-C x 2 / USB-A x 2 / シガーソケット x 1",
+            "<th>AC出力 (SurgePad™技術)</th>",
+            "<th>拡張バッテリー対応</th>",
+            "電池 4,000回 / 電子部品 50,000時間",
+            "電池 3,000回/ 電子部品 50,000時間",
+            "停電時に約0.01秒で自動切り替えする機能搭載",
+            "停電時も約0.02秒で自動切替し"
+          ]
+        },
+        {
           "claim_id": "CLM-ST1704-ANKER-C1000-GENERATION-DIFF",
           "exact_utf8_fragments": [
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1024Wh</td>",
             "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1550W (50/60Hz) / 2300W",
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約11.3kg</td>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約38.4 x 20.8 x 24.4cm ( 幅 x 奥行 x 高さ ) </td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約11.3kg</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1024Wh</td>",
+            "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1550W (50/60Hz) / 2300W"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-PLUS-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約38.4 x 20.8 x 24.4cm ( 幅 x 奥行 x 高さ ) </td>",
+            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約11.3kg</td>",
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1024Wh</td>",
+            "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1550W (50/60Hz) / 2300W"
           ]
         }
       ]
@@ -386,22 +537,19 @@
       "locator_status": "READY",
       "locators": [
         {
-          "claim_id": "CLM-ST1704-ROBOT-ROOMBA-MINI-SPECS",
+          "claim_id": "CLM-ST1704-ROBOT-ROOMBA-MINI-F155260-EXCLUDED",
           "exact_utf8_fragments": [
-            "<tr>\n              <th class=\"table_head\">ルンバ本体サイズ(cm)</th>\n              <td class=\"table_data\">24.5 (奥行き) ×24.5 (幅) ×9.2 (高さ)</td>\n            </tr>",
-            "<tr>\n              <th class=\"table_head\">充電ステーションサイズ(cm)</th>\n              <td class=\"table_data\">17.8 (奥行き) ×21.2 (幅) ×28.5 (高さ)</td>\n            </tr>",
-            "掃除機がけ、または<br />\n                使い捨て床拭きシートで",
-            "<tr>\n              <th class=\"table_head\">充電ステーション</th>\n              <td class=\"table_data\"><span class=\"check\">◯</span><br />自動ゴミ収集：最大90日分<sup>*3</sup></td>\n            </tr>",
-            "<tr>\n              <th class=\"table_head\">自動給水 / ローラーモップの自動洗浄 / 自動乾燥</th>\n              <td class=\"table_data\">―</td>\n            </tr>"
+            "<h1 class=\"purchase_name\">Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション</h1>",
+            "<input type=\"hidden\" name=\"item_cd\" value=\"F155260\" />",
+            "<div class=\"purchase_btn-buy soldout\">在庫切れ</div>"
           ]
         },
         {
-          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_id": "CLM-PORTFOLIO-ROBOT-ROOMBA-MINI-F155260-EXCLUDED",
           "exact_utf8_fragments": [
-            "<tr>\n              <th class=\"table_head\">ルンバ本体サイズ(cm)</th>\n              <td class=\"table_data\">24.5 (奥行き) ×24.5 (幅) ×9.2 (高さ)</td>\n            </tr>",
-            "<tr>\n              <th class=\"table_head\">充電ステーションサイズ(cm)</th>\n              <td class=\"table_data\">17.8 (奥行き) ×21.2 (幅) ×28.5 (高さ)</td>\n            </tr>",
-            "掃除機がけ、または<br />\n                使い捨て床拭きシートで",
-            "<tr>\n              <th class=\"table_head\">充電ステーション</th>\n              <td class=\"table_data\"><span class=\"check\">◯</span><br />自動ゴミ収集：最大90日分<sup>*3</sup></td>\n            </tr>"
+            "<h1 class=\"purchase_name\">Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション</h1>",
+            "<input type=\"hidden\" name=\"item_cd\" value=\"F155260\" />",
+            "<div class=\"purchase_btn-buy soldout\">在庫切れ</div>"
           ]
         }
       ]
@@ -431,6 +579,28 @@
             "市販のお掃除シートで 、拭き掃除もおまかせ",
             "使い終わったらそのまま捨てるだけ。モップを洗う手間もありません。"
           ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-K11-PRO",
+          "exact_utf8_fragments": [
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-cMa-dPg gqnfAG rid-188\">本体サイズ</h3><p class=\"sc-leXARK dphlZo rid-190\" data-pf-type=\"Paragraph3\">248&nbsp;×&nbsp;248&nbsp;×&nbsp;92&nbsp;mm</p>",
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-cMa-dPg gqnfAG rid-237\">本体サイズ</h3><p class=\"sc-leXARK dphlZo rid-239\" data-pf-type=\"Paragraph3\">240×180×250mm</p>",
+            "<h2><span>A4用紙以下の設置面積＋90日ごみ捨て不要</span></h2>",
+            ">ゴミ収集ステーション</button>",
+            "市販のお掃除シートで 、拭き掃除もおまかせ",
+            "使い終わったらそのまま捨てるだけ。モップを洗う手間もありません。"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-cMa-dPg gqnfAG rid-188\">本体サイズ</h3><p class=\"sc-leXARK dphlZo rid-190\" data-pf-type=\"Paragraph3\">248&nbsp;×&nbsp;248&nbsp;×&nbsp;92&nbsp;mm</p>",
+            "<h3 data-pf-type=\"Heading2\" class=\"sc-cMa-dPg gqnfAG rid-237\">本体サイズ</h3><p class=\"sc-leXARK dphlZo rid-239\" data-pf-type=\"Paragraph3\">240×180×250mm</p>",
+            "<h2><span>A4用紙以下の設置面積＋90日ごみ捨て不要</span></h2>",
+            ">ゴミ収集ステーション</button>",
+            "市販のお掃除シートで 、拭き掃除もおまかせ",
+            "使い終わったらそのまま捨てるだけ。モップを洗う手間もありません。"
+          ]
         }
       ]
     },
@@ -440,17 +610,7 @@
       "locator_status": "READY",
       "locators": [
         {
-          "claim_id": "CLM-ST1704-ROBOT-K10-COMBO-SPECS",
-          "exact_utf8_fragments": [
-            "<h3 data-pf-type=\"Heading2\" class=\"sc-iLsJvT gbBbPZ rid-188 pf-heading-2-h3\">本体サイズ</h3><p class=\"sc-doOhAX dfRERk rid-190 pf-text-5\" data-pf-type=\"Paragraph3\">248 x 248 x 92 mm</p>",
-            "<h3 data-pf-type=\"Heading2\" class=\"sc-iLsJvT gbBbPZ rid-237 pf-heading-2-h3\">本体サイズ</h3><p class=\"sc-doOhAX dfRERk rid-239 pf-text-5\" data-pf-type=\"Paragraph3\">195 x 297 x 410 mm</p>",
-            "仕上げはお掃除シートで拭き上げます。</p>",
-            "<h2>デュアル集塵ステーション</h2>",
-            "<p>ロボット+スティックが1つのステーションに。"
-          ]
-        },
-        {
-          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_id": "CLM-ST1704-ROBOT-K10-COMBO-EXCLUDED",
           "exact_utf8_fragments": [
             "<h3 data-pf-type=\"Heading2\" class=\"sc-iLsJvT gbBbPZ rid-188 pf-heading-2-h3\">本体サイズ</h3><p class=\"sc-doOhAX dfRERk rid-190 pf-text-5\" data-pf-type=\"Paragraph3\">248 x 248 x 92 mm</p>",
             "<h3 data-pf-type=\"Heading2\" class=\"sc-iLsJvT gbBbPZ rid-237 pf-heading-2-h3\">本体サイズ</h3><p class=\"sc-doOhAX dfRERk rid-239 pf-text-5\" data-pf-type=\"Paragraph3\">195 x 297 x 410 mm</p>",
@@ -525,6 +685,2672 @@
           "claim_id": "POLICY-SOURCE-STATEMENT",
           "exact_utf8_fragments": [
             "Mark links that are advertisements or paid placements (commonly called <i>paid\n              links</i>) with the <code translate=\"no\" dir=\"ltr\">sponsored</code> value."
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PROTECA-TRI-AIR-01541",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS",
+          "exact_utf8_fragments": [
+            "PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541",
+            "H55×W37×D23 cm",
+            "<dd>115 cm</dd>",
+            "<dd>35 L</dd>",
+            "<dd>1.8kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "＜10年間の製品保証＞",
+            "＜最初の3年間は完全保証プレミアムケア＞",
+            "在庫あります",
+            "カートに入れる"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541",
+            "H55×W37×D23 cm",
+            "<dd>115 cm</dd>",
+            "<dd>35 L</dd>",
+            "<dd>1.8kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "＜10年間の製品保証＞",
+            "＜最初の3年間は完全保証プレミアムケア＞",
+            "在庫あります",
+            "カートに入れる"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-CRESTA-06316-EXCLUDED",
+          "exact_utf8_fragments": [
+            "PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541",
+            "H55×W37×D23 cm",
+            "<dd>115 cm</dd>",
+            "<dd>35 L</dd>",
+            "<dd>1.8kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "＜10年間の製品保証＞",
+            "＜最初の3年間は完全保証プレミアムケア＞",
+            "在庫あります",
+            "カートに入れる"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-TRIAIR-01541",
+          "exact_utf8_fragments": [
+            "PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541",
+            "H55×W37×D23 cm",
+            "<dd>115 cm</dd>",
+            "<dd>35 L</dd>",
+            "<dd>1.8kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "＜10年間の製品保証＞",
+            "＜最初の3年間は完全保証プレミアムケア＞",
+            "在庫あります",
+            "カートに入れる"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541",
+            "H55×W37×D23 cm",
+            "<dd>115 cm</dd>",
+            "<dd>35 L</dd>",
+            "<dd>1.8kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "＜10年間の製品保証＞",
+            "＜最初の3年間は完全保証プレミアムケア＞",
+            "在庫あります",
+            "カートに入れる"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C800",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-ANKER-C800-SPECS",
+          "exact_utf8_fragments": [
+            "<title>Anker Solix C800 Portable Power Station | リン酸鉄ポータブル電源の製品情報 | Anker Japan 公式オンラインストア</title>",
+            "data-variant-sku=\"A17535Z1\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "aria-label=\"カートに入れる\"",
+            "768Whの中容量帯ながら、1200Wを安定して出力できる",
+            "約37.1 x 20.5 x 25.0cm （ 幅 x 奥行 x 高さ )",
+            "約10.5kg",
+            "電池容量が初期容量の80%まで劣化するまでのサイクル回数は3,000回以上",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。",
+            "ご使用済みポータブル電源の回収サービス"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<title>Anker Solix C800 Portable Power Station | リン酸鉄ポータブル電源の製品情報 | Anker Japan 公式オンラインストア</title>",
+            "data-variant-sku=\"A17535Z1\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "aria-label=\"カートに入れる\"",
+            "768Whの中容量帯ながら、1200Wを安定して出力できる",
+            "約37.1 x 20.5 x 25.0cm （ 幅 x 奥行 x 高さ )",
+            "約10.5kg",
+            "電池容量が初期容量の80%まで劣化するまでのサイクル回数は3,000回以上",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。",
+            "ご使用済みポータブル電源の回収サービス"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-NESTOUT-700N-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<title>Anker Solix C800 Portable Power Station | リン酸鉄ポータブル電源の製品情報 | Anker Japan 公式オンラインストア</title>",
+            "data-variant-sku=\"A17535Z1\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "aria-label=\"カートに入れる\"",
+            "768Whの中容量帯ながら、1200Wを安定して出力できる",
+            "約37.1 x 20.5 x 25.0cm （ 幅 x 奥行 x 高さ )",
+            "約10.5kg",
+            "電池容量が初期容量の80%まで劣化するまでのサイクル回数は3,000回以上",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。",
+            "ご使用済みポータブル電源の回収サービス"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C800-A1753-REFERENCE",
+          "exact_utf8_fragments": [
+            "<title>Anker Solix C800 Portable Power Station | リン酸鉄ポータブル電源の製品情報 | Anker Japan 公式オンラインストア</title>",
+            "data-variant-sku=\"A17535Z1\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "aria-label=\"カートに入れる\"",
+            "768Whの中容量帯ながら、1200Wを安定して出力できる",
+            "約37.1 x 20.5 x 25.0cm （ 幅 x 奥行 x 高さ )",
+            "約10.5kg",
+            "電池容量が初期容量の80%まで劣化するまでのサイクル回数は3,000回以上",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。",
+            "ご使用済みポータブル電源の回収サービス"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-DJI-POWER-1000-V2-STORE",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-DJI-1000-V2-SPECS",
+          "exact_utf8_fragments": [
+            "DJI Power 1000 V2",
+            "\"ean\":\"6937224115101\"",
+            "\"status\":{\"code\":\"on_sale\",\"text\":\"今すぐ購入\"}",
+            "1024Wh",
+            "最大2600Wの連続出力"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "DJI Power 1000 V2",
+            "\"ean\":\"6937224115101\"",
+            "\"status\":{\"code\":\"on_sale\",\"text\":\"今すぐ購入\"}",
+            "1024Wh",
+            "最大2600Wの連続出力"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA100-V2-EXCLUDED",
+          "exact_utf8_fragments": [
+            "DJI Power 1000 V2",
+            "\"ean\":\"6937224115101\"",
+            "\"status\":{\"code\":\"on_sale\",\"text\":\"今すぐ購入\"}",
+            "1024Wh",
+            "最大2600Wの連続出力"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-DJI-POWER-1000-V2-SPECS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-DJI-1000-V2-SPECS",
+          "exact_utf8_fragments": [
+            "DYM1000V2L/DYM1000V2H",
+            "1024 Wh",
+            "約14.2 kg",
+            "448×225×230 mm（長さ×幅×高さ）",
+            "4000サイクル以降は、80%以上の電池容量を維持"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "DYM1000V2L/DYM1000V2H",
+            "1024 Wh",
+            "約14.2 kg",
+            "448×225×230 mm（長さ×幅×高さ）",
+            "4000サイクル以降は、80%以上の電池容量を維持"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA100-V2-EXCLUDED",
+          "exact_utf8_fragments": [
+            "DYM1000V2L/DYM1000V2H",
+            "1024 Wh",
+            "約14.2 kg",
+            "448×225×230 mm（長さ×幅×高さ）",
+            "4000サイクル以降は、80%以上の電池容量を維持"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-JACKERY-1000-NEW-V3",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "Jackery ポータブル電源 1000 New V3",
+            "ポータブル電源 1000 New V3 白（JE-1000G-WH）",
+            "ポータブル電源 1000 New V3（JE-1000G）",
+            "カートに追加する",
+            "前モデル比19%小型化・約10.6kgの軽量ボディ",
+            "約6000回の充放電サイクル"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+          "exact_utf8_fragments": [
+            "Jackery ポータブル電源 1000 New V3",
+            "ポータブル電源 1000 New V3 白（JE-1000G-WH）",
+            "ポータブル電源 1000 New V3（JE-1000G）",
+            "カートに追加する",
+            "前モデル比19%小型化・約10.6kgの軽量ボディ",
+            "約6000回の充放電サイクル"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-JACKERY-1000-NEW-V3-LAUNCH",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "2026年7月24日（金）より、Jackery人気モデルの「1000 New」より進化した「Jackery ポータブル電源 1000 New V3」を発売いたします。",
+            "AC定格出力1500W（瞬間最大3000W）・容量1024Wh",
+            "重さ  | 10.6kg  | 10.8kg",
+            "サイズ  | 314x201x234mm  | 327x224x247mm",
+            "発売日：2026年7月24日（金）11時～"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+          "exact_utf8_fragments": [
+            "2026年7月24日（金）より、Jackery人気モデルの「1000 New」より進化した「Jackery ポータブル電源 1000 New V3」を発売いたします。",
+            "AC定格出力1500W（瞬間最大3000W）・容量1024Wh",
+            "重さ  | 10.6kg  | 10.8kg",
+            "サイズ  | 314x201x234mm  | 327x224x247mm",
+            "発売日：2026年7月24日（金）11時～"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-JACKERY-500-NEW-MANUAL",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-SPECS",
+          "exact_utf8_fragments": [
+            "JE-500A",
+            "リン酸鉄リチウムイオン電池",
+            "約311 x 205 x 157 mm",
+            "約5.7 kg",
+            "6,000回の充放電サイクル後も70%以上"
+          ],
+          "reviewed_page_number": 17
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-STORAGE",
+          "exact_utf8_fragments": [
+            "長期保管する場合",
+            "3ヶ月に一度",
+            "充電",
+            "電池残量が0%にならない"
+          ],
+          "reviewed_page_number": 15
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-WARRANTY",
+          "exact_utf8_fragments": [
+            "保証期間：3年間",
+            "延長保証登録",
+            "2年間",
+            "正規代理店"
+          ],
+          "reviewed_page_number": 18
+        }
+      ],
+      "locator_mode": "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+      "expected_body_sha256": "9173e08ad1239d5522f7b30f29401ea4d18912de4ff9a91949cfc26fdeb33b45"
+    },
+    {
+      "source_ref": "SRC-JACKERY-500-NEW-DIMENSION-AXES",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-SPECS",
+          "exact_utf8_fragments": [
+            "サイズ（幅×奥行×高さ）",
+            "500 New",
+            "311×205×157mm"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C300-SAFETY-MANUAL",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-C300-SPECS",
+          "exact_utf8_fragments": [
+            "Product Number: A1722",
+            "本製品を分解しないでください。",
+            "本製品を一般ゴミとして廃棄しないでください。",
+            "保管およびお手入れ方法",
+            "3 ヶ月に一度を目安に定期的にバッテリー残量を確認し、100% まで充電した状態で保管してください。"
+          ],
+          "reviewed_page_number": 7
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C300-SPECS",
+          "exact_utf8_fragments": [
+            "Product Number: A1722",
+            "本製品を分解しないでください。",
+            "本製品を一般ゴミとして廃棄しないでください。",
+            "保管およびお手入れ方法",
+            "3 ヶ月に一度を目安に定期的にバッテリー残量を確認し、100% まで充電した状態で保管してください。"
+          ],
+          "reviewed_page_number": 7
+        }
+      ],
+      "locator_mode": "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+      "expected_body_sha256": "0cb763561ebcc4eaf230bf5a16a850023b36302ea008fb3cabd8becc0e2853a6"
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C800-SAFETY-MANUAL",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-ANKER-C800-SPECS",
+          "exact_utf8_fragments": [
+            "Product Number: A1753",
+            "本製品を分解しないでください。",
+            "本製品を一般ゴミとして廃棄しないでください。",
+            "保管およびお手入れ方法",
+            "3 ヶ月に一度を目安に定期的にバッテリー残量を確認し、100% まで充電した状態で保管してください。"
+          ],
+          "reviewed_page_number": 2
+        }
+      ],
+      "locator_mode": "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+      "expected_body_sha256": "d3b6e6e704c7d68e32334489efd9e9b1825ef906baf9fb0d78d190d6dc8e6e6a"
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C800-PLUS-SAFETY-MANUAL",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ANKER-C800-SPECS",
+          "exact_utf8_fragments": [
+            "Product Number: A1754",
+            "本製品を分解しないでください。",
+            "本製品を一般ゴミとして廃棄しないでください。",
+            "保管およびお手入れ方法",
+            "3 ヶ月に一度を目安に定期的にバッテリー残量を確認し、100% まで充電した状態で保管してください。"
+          ],
+          "reviewed_page_number": 2
+        }
+      ],
+      "locator_mode": "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+      "expected_body_sha256": "41499aea5474caa77a62a41c295b853cafa89f3be3de471b1e0fd3ca5b67b3c4"
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C1000-SAFETY-MANUAL",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-SPECS",
+          "exact_utf8_fragments": [
+            "Product Number: A1761",
+            "本製品を分解しないでください。",
+            "本製品を一般ゴミとして廃棄しないでください。",
+            "保管およびお手入れ方法",
+            "3 ヶ月に一度を目安に定期的にバッテリー残量を確認し、100% まで充電した状態で保管してください。"
+          ],
+          "reviewed_page_number": 5
+        }
+      ],
+      "locator_mode": "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+      "expected_body_sha256": "4b137db82b45db52ccadc27a7724591d788946c47da866088e9812b4712ce474"
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C1000-GEN2-SAFETY-MANUAL",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
+          "exact_utf8_fragments": [
+            "Product Number: A1763",
+            "本製品を分解しないでください。",
+            "本製品を一般ゴミとして廃棄しないでください。",
+            "保管およびお手入れ方法",
+            "3 ヶ月に一度を目安に定期的にバッテリー残量を確認し、100% まで充電した状態で保管してください。"
+          ],
+          "reviewed_page_number": 2
+        }
+      ],
+      "locator_mode": "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+      "expected_body_sha256": "58ec831d2c6889e997b6f8540265c133f7c70b6a58ca59935acebe9d8a44e39b"
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-JP-SUPPORT",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-C300-SPECS",
+          "exact_utf8_fragments": [
+            "Ankerは国内に修理センターを設けており、万が一製品に不具合が生じた際も、スムーズかつ迅速な対応が可能です。",
+            "電話 / LINE / メール / チャットで<br>",
+            "Ankerでは、ご使用済み、または故障・破損しているポータブル電源の回収を承っております。",
+            "※ 対象製品：Anker のポータブル電源。送料はお客様ご負担となります"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-ANKER-C800-SPECS",
+          "exact_utf8_fragments": [
+            "Ankerは国内に修理センターを設けており、万が一製品に不具合が生じた際も、スムーズかつ迅速な対応が可能です。",
+            "電話 / LINE / メール / チャットで<br>",
+            "Ankerでは、ご使用済み、または故障・破損しているポータブル電源の回収を承っております。",
+            "※ 対象製品：Anker のポータブル電源。送料はお客様ご負担となります"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C300-SPECS",
+          "exact_utf8_fragments": [
+            "Ankerは国内に修理センターを設けており、万が一製品に不具合が生じた際も、スムーズかつ迅速な対応が可能です。",
+            "電話 / LINE / メール / チャットで<br>",
+            "Ankerでは、ご使用済み、または故障・破損しているポータブル電源の回収を承っております。",
+            "※ 対象製品：Anker のポータブル電源。送料はお客様ご負担となります"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C800-SPECS",
+          "exact_utf8_fragments": [
+            "Ankerは国内に修理センターを設けており、万が一製品に不具合が生じた際も、スムーズかつ迅速な対応が可能です。",
+            "電話 / LINE / メール / チャットで<br>",
+            "Ankerでは、ご使用済み、または故障・破損しているポータブル電源の回収を承っております。",
+            "※ 対象製品：Anker のポータブル電源。送料はお客様ご負担となります"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-SPECS",
+          "exact_utf8_fragments": [
+            "Ankerは国内に修理センターを設けており、万が一製品に不具合が生じた際も、スムーズかつ迅速な対応が可能です。",
+            "電話 / LINE / メール / チャットで<br>",
+            "Ankerでは、ご使用済み、または故障・破損しているポータブル電源の回収を承っております。",
+            "※ 対象製品：Anker のポータブル電源。送料はお客様ご負担となります"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
+          "exact_utf8_fragments": [
+            "Ankerは国内に修理センターを設けており、万が一製品に不具合が生じた際も、スムーズかつ迅速な対応が可能です。",
+            "電話 / LINE / メール / チャットで<br>",
+            "Ankerでは、ご使用済み、または故障・破損しているポータブル電源の回収を承っております。",
+            "※ 対象製品：Anker のポータブル電源。送料はお客様ご負担となります"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-JACKERY-JP-REPAIR-SERVICE",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-WARRANTY",
+          "exact_utf8_fragments": [
+            "STEP1：ポータブル電源修理の申し込みをする",
+            "受付窓口は、Jackery Japan カスタマーサポートです。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-JACKERY-JP-RECYCLING",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-WARRANTY",
+          "exact_utf8_fragments": [
+            "日本国内で販売されたJackery ポータブル電源本体のみ",
+            "無料、ただし送料はお客様のご負担となります。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-DJI-POWER-1000-V2-SAFETY-GUIDELINES-JA",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-DJI-1000-V2-SPECS",
+          "exact_utf8_fragments": [
+            "モデル DYM1000V2L/DYM1000V2H",
+            "火災、感電、または人身傷害といった危険を避けるため",
+            "公式サポートまたは正規販売店に連絡して、指示を受けてください。",
+            "規定の動作環境温度で使用してください。"
+          ],
+          "reviewed_page_number": 7
+        }
+      ],
+      "locator_mode": "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+      "expected_body_sha256": "32aff6629ae6c1ef527b944e04105db246e2cefb253b89469e921773c0c08712"
+    },
+    {
+      "source_ref": "SRC-DJI-POWER-1000-V2-USER-MANUAL-JA",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-DJI-1000-V2-SPECS",
+          "exact_utf8_fragments": [
+            "5.5 メンテナンス",
+            "バッテリー残量を 60%まで放電することをお勧めします。",
+            "パワーステーションを6 ヶ月に 1 回充電および放電します。",
+            "きれいな乾いた布で拭いてください。",
+            "通常の廃棄コンテナにパワーステーションを入れて、廃棄しないでください。",
+            "DJI は廃棄時の回収も行っております"
+          ],
+          "reviewed_page_number": 20
+        }
+      ],
+      "locator_mode": "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+      "expected_body_sha256": "24abd72b764139afec6d9f3a92a68061d7adafc12db6921307ef9583e1e082ed"
+    },
+    {
+      "source_ref": "SRC-DJI-JP-AFTERSALES-POLICY",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-DJI-1000-V2-SPECS",
+          "exact_utf8_fragments": [
+            "<strong>DJI Power 1000 Mini / DJI Power 1000 V2 / DJI Power 2000 / DJI Power 1000 / DJI Power 500</strong>",
+            "<td>DJI Power 1000 Mini / DJI Power 1000 V2 / DJI Power 2000 / DJI Power 1000 / DJI Power 500</td><td>60ヶ月</td>",
+            "修理を希望される場合、オンライン修理受付サービス （https://repair.dji.com）から申請する事ができます。",
+            "修理後に製品のメーカー保証期間はリセットされません。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-METI-PORTABLE-POWER-SAFETY",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-SAFETY-PRACTICE",
+          "exact_utf8_fragments": [
+            "ポータブル電源の安全性要求事項",
+            "電気用品安全法の規制対象外",
+            "火災や感電等の電気的なリスク"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-SAFETY-PRACTICE",
+          "exact_utf8_fragments": [
+            "ポータブル電源の安全性要求事項",
+            "電気用品安全法の規制対象外",
+            "火災や感電等の電気的なリスク"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-METI-ELECTRICAL-RECALLS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-SAFETY-PRACTICE",
+          "exact_utf8_fragments": [
+            "家庭用電気製品のリコール情報",
+            "ポータブル電源"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-SAFETY-PRACTICE",
+          "exact_utf8_fragments": [
+            "家庭用電気製品のリコール情報",
+            "ポータブル電源"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-TOSHIBA-DWS-33B",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
+          "exact_utf8_fragments": [
+            "DWS-33B",
+            "幅420×奥行435×高さ465mm",
+            "約13kg",
+            "18点",
+            "約6L",
+            "ヒーター加熱とファンによる強制排気乾燥",
+            "41／43dB"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "DWS-33B",
+            "幅420×奥行435×高さ465mm",
+            "約13kg",
+            "18点",
+            "約6L",
+            "ヒーター加熱とファンによる強制排気乾燥",
+            "41／43dB"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-DISH-TOSHIBA-DWS-33B-REFERENCE",
+          "exact_utf8_fragments": [
+            "DWS-33B",
+            "幅420×奥行435×高さ465mm",
+            "約13kg",
+            "18点",
+            "約6L",
+            "ヒーター加熱とファンによる強制排気乾燥",
+            "41／43dB"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-TOSHIBA-DWS-33B-STORE",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
+          "exact_utf8_fragments": [
+            "DWS-33B(W)",
+            "2025年07月15日",
+            "買い物かごに入れる"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-TOSHIBA-PARTS-RETENTION",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
+          "exact_utf8_fragments": [
+            "食器洗い乾燥機",
+            "6年",
+            "製造打ち切り後"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "食器洗い乾燥機",
+            "6年",
+            "製造打ち切り後"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SUPPORT",
+          "exact_utf8_fragments": [
+            "食器洗い乾燥機",
+            "6年",
+            "製造打ち切り後"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PANASONIC-NP-TSP2-LAUNCH",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-NP-TSP2-EXCLUDED",
+          "exact_utf8_fragments": [
+            "NP-TSP2",
+            "2026年9月",
+            "発売予定"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-NP-TSP2-LAUNCH-REFERENCE",
+          "exact_utf8_fragments": [
+            "NP-TSP2",
+            "2026年9月",
+            "発売予定"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PANASONIC-NP-TSP2-SUBSCRIPTION",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-NP-TSP2-EXCLUDED",
+          "exact_utf8_fragments": [
+            "NP-TSP2",
+            "予約受付中",
+            "9月中旬以降"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-NP-TSP2-LAUNCH-REFERENCE",
+          "exact_utf8_fragments": [
+            "NP-TSP2",
+            "予約受付中",
+            "9月中旬以降"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ANA-DOMESTIC-CARRY-ON",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-ANA-RULE",
+          "exact_utf8_fragments": [
+            "「機内持ち込み手荷物」1個と「身の回り品」1個の合計2個、重さは合計10kgまで",
+            "3辺（縦・横・高さ）の和が115cm以内かつ3辺それぞれの長さが（55cm × 40cm × 25cm以内）",
+            "3辺（縦・横・高さ）の和が100cm以内かつ3辺それぞれの長さが（45cm × 35cm × 20cm以内）",
+            "<div>40cm × 30cm × 20cm以内</div>",
+            "（機内持ち込み手荷物と身の回り品の総重量）"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "「機内持ち込み手荷物」1個と「身の回り品」1個の合計2個、重さは合計10kgまで",
+            "3辺（縦・横・高さ）の和が115cm以内かつ3辺それぞれの長さが（55cm × 40cm × 25cm以内）",
+            "3辺（縦・横・高さ）の和が100cm以内かつ3辺それぞれの長さが（45cm × 35cm × 20cm以内）",
+            "<div>40cm × 30cm × 20cm以内</div>",
+            "（機内持ち込み手荷物と身の回り品の総重量）"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-ANA-RULE",
+          "exact_utf8_fragments": [
+            "「機内持ち込み手荷物」1個と「身の回り品」1個の合計2個、重さは合計10kgまで",
+            "3辺（縦・横・高さ）の和が115cm以内かつ3辺それぞれの長さが（55cm × 40cm × 25cm以内）",
+            "3辺（縦・横・高さ）の和が100cm以内かつ3辺それぞれの長さが（45cm × 35cm × 20cm以内）",
+            "<div>40cm × 30cm × 20cm以内</div>",
+            "（機内持ち込み手荷物と身の回り品の総重量）"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-ANA-RULE",
+          "exact_utf8_fragments": [
+            "「機内持ち込み手荷物」1個と「身の回り品」1個の合計2個、重さは合計10kgまで",
+            "3辺（縦・横・高さ）の和が115cm以内かつ3辺それぞれの長さが（55cm × 40cm × 25cm以内）",
+            "3辺（縦・横・高さ）の和が100cm以内かつ3辺それぞれの長さが（45cm × 35cm × 20cm以内）",
+            "<div>40cm × 30cm × 20cm以内</div>",
+            "（機内持ち込み手荷物と身の回り品の総重量）"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PROTECA-STARIA-CXR-02350",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-STARIA-02350",
+          "exact_utf8_fragments": [
+            "H45×W34×D20 cm",
+            "<dd>99 cm</dd>",
+            "<dd>22 L</dd>",
+            "<dd>2.4kg</dd>",
+            "MAGIC STOP(キャスターストッパー)"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "H45×W34×D20 cm",
+            "<dd>99 cm</dd>",
+            "<dd>22 L</dd>",
+            "<dd>2.4kg</dd>",
+            "MAGIC STOP(キャスターストッパー)"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PROTECA-FRESTER-EX-01550",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-FRESTER-01550",
+          "exact_utf8_fragments": [
+            "H45×W34×D20/24 cm",
+            "<dd>99/103 cm</dd>",
+            "<dd>26/33 L</dd>",
+            "<dd>2.8kg</dd>",
+            "国内100席未満・機内持込み対応／／フロントオープン／エキスバンダブル／4輪／TSダイヤルファスナーロック／キャスターストッパー"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "H45×W34×D20/24 cm",
+            "<dd>99/103 cm</dd>",
+            "<dd>26/33 L</dd>",
+            "<dd>2.8kg</dd>",
+            "国内100席未満・機内持込み対応／／フロントオープン／エキスバンダブル／4輪／TSダイヤルファスナーロック／キャスターストッパー"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ACE-PALISADES3-Z-06910",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-PALISADES-06910",
+          "exact_utf8_fragments": [
+            "H45×W34×D20 cm",
+            "<dd>99 cm</dd>",
+            "<dd>21 L</dd>",
+            "<dd>2.6kg</dd>",
+            "TSAダイヤルファスナーロック／キャスターストッパー／小型コインロッカーサイズ／国内100席未満機内持込み"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "H45×W34×D20 cm",
+            "<dd>99 cm</dd>",
+            "<dd>21 L</dd>",
+            "<dd>2.6kg</dd>",
+            "TSAダイヤルファスナーロック／キャスターストッパー／小型コインロッカーサイズ／国内100席未満機内持込み"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-BERMAS-INTER-CITY-60524",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-BERMAS-60524",
+          "exact_utf8_fragments": [
+            "<div class=\"fs-p-productDescription fs-p-productDescription--full\"><div class=\"detail-cont\">\r\n<div class=\"tit\">DETAILS</div>\r\n<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr>\r\n<th scope=\"row\">サイズ</th>\r\n<td> \r\nW33×H38×D20cm(本体サイズ)<br>\r\nW34×H45×D20cm(全体サイズ)</td>\r\n</tr>\r\n<tr>\r\n<th scope=\"row\">素材</th>\r\n<td>PC+</td>\r\n</tr>\r\n<tr>\r\n<th scope=\"row\">容量/重量</th>\r\n<td>約22L / 約2.8kg（付属物含まず）</tr>\r\n</tbody>\r\n</table>",
+            "<meta name=\"description\" content=\"BERMAS INTER CITY No.60524は、1～2泊の出張や旅行に適した22L容量のコンパクトスーツケース。コインロッカー収納対応の38cmサイズで、13インチPC収納対応のフロントオープン設計やストッパー付き静音キャスターを備えたビジネスキャリーです。\">",
+            "特徴<span class=\"detail-data01\">：100席未満航空機＆LCC機内持込対応・TSロック装備（ダイヤルロック式）・HINOMOTO製ストッパー付き静音キャスター(SILENT RUN)・伸縮ハンドル2段階調節・トラベルセントリーID付属</span>",
+            "<b>[新仕様の変更点]　<br>\r\n・USBポートの廃止<br>\r\n・上記USBポート廃止に伴う内装仕様の変更"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<div class=\"fs-p-productDescription fs-p-productDescription--full\"><div class=\"detail-cont\">\r\n<div class=\"tit\">DETAILS</div>\r\n<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr>\r\n<th scope=\"row\">サイズ</th>\r\n<td> \r\nW33×H38×D20cm(本体サイズ)<br>\r\nW34×H45×D20cm(全体サイズ)</td>\r\n</tr>\r\n<tr>\r\n<th scope=\"row\">素材</th>\r\n<td>PC+</td>\r\n</tr>\r\n<tr>\r\n<th scope=\"row\">容量/重量</th>\r\n<td>約22L / 約2.8kg（付属物含まず）</tr>\r\n</tbody>\r\n</table>",
+            "<meta name=\"description\" content=\"BERMAS INTER CITY No.60524は、1～2泊の出張や旅行に適した22L容量のコンパクトスーツケース。コインロッカー収納対応の38cmサイズで、13インチPC収納対応のフロントオープン設計やストッパー付き静音キャスターを備えたビジネスキャリーです。\">",
+            "特徴<span class=\"detail-data01\">：100席未満航空機＆LCC機内持込対応・TSロック装備（ダイヤルロック式）・HINOMOTO製ストッパー付き静音キャスター(SILENT RUN)・伸縮ハンドル2段階調節・トラベルセントリーID付属</span>",
+            "<b>[新仕様の変更点]　<br>\r\n・USBポートの廃止<br>\r\n・上記USBポート廃止に伴う内装仕様の変更"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-JAL-DOMESTIC-CARRY-ON",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-JAL-RULE",
+          "exact_utf8_fragments": [
+            "身の回り品1個＋お手荷物1個の合計2個まで",
+            "合計重量　10kg以内まで",
+            "ハンドルやキャスター、車輪などもサイズに含みます。",
+            "合計：115cm以内",
+            "55cm×40cm×25cm以内",
+            "合計：100cm以内",
+            "45cm×35cm×20cm以内"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "身の回り品1個＋お手荷物1個の合計2個まで",
+            "合計重量　10kg以内まで",
+            "ハンドルやキャスター、車輪などもサイズに含みます。",
+            "合計：115cm以内",
+            "55cm×40cm×25cm以内",
+            "合計：100cm以内",
+            "45cm×35cm×20cm以内"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-JAL-RULE",
+          "exact_utf8_fragments": [
+            "身の回り品1個＋お手荷物1個の合計2個まで",
+            "合計重量　10kg以内まで",
+            "ハンドルやキャスター、車輪などもサイズに含みます。",
+            "合計：115cm以内",
+            "55cm×40cm×25cm以内",
+            "合計：100cm以内",
+            "45cm×35cm×20cm以内"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-JAL-RULE",
+          "exact_utf8_fragments": [
+            "身の回り品1個＋お手荷物1個の合計2個まで",
+            "合計重量　10kg以内まで",
+            "ハンドルやキャスター、車輪などもサイズに含みます。",
+            "合計：115cm以内",
+            "55cm×40cm×25cm以内",
+            "合計：100cm以内",
+            "45cm×35cm×20cm以内"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PROTECA-AEROFLEX-DX2-01521",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-AEROFLEX-DX2-REFERENCE",
+          "exact_utf8_fragments": [
+            "H55×W36×D23 cm",
+            "<dd>114 cm</dd>",
+            "<dd>35 L</dd>",
+            "<dd>2.1kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "キャスターストッパー／国内100席以上・国際機内持込み"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-AEROFLEX-01521",
+          "exact_utf8_fragments": [
+            "H55×W36×D23 cm",
+            "<dd>114 cm</dd>",
+            "<dd>35 L</dd>",
+            "<dd>2.1kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "キャスターストッパー／国内100席以上・国際機内持込み"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "H55×W36×D23 cm",
+            "<dd>114 cm</dd>",
+            "<dd>35 L</dd>",
+            "<dd>2.1kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "キャスターストッパー／国内100席以上・国際機内持込み"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-MUJI36-EXCLUDED",
+          "exact_utf8_fragments": [
+            "H55×W36×D23 cm",
+            "<dd>114 cm</dd>",
+            "<dd>35 L</dd>",
+            "<dd>2.1kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "キャスターストッパー／国内100席以上・国際機内持込み"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PROTECA-SUITCASE-WARRANTY",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS",
+          "exact_utf8_fragments": [
+            "通常製品保証",
+            "10年",
+            "素材及び製造上の不具合",
+            "完全保証 / 購入後 3年間",
+            "航空会社による破損、またはその他の運送中に生じた損傷"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "通常製品保証",
+            "10年",
+            "素材及び製造上の不具合",
+            "完全保証 / 購入後 3年間",
+            "航空会社による破損、またはその他の運送中に生じた損傷"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-AEROFLEX-01521",
+          "exact_utf8_fragments": [
+            "通常製品保証",
+            "10年",
+            "素材及び製造上の不具合",
+            "完全保証 / 購入後 3年間",
+            "航空会社による破損、またはその他の運送中に生じた損傷"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "通常製品保証",
+            "10年",
+            "素材及び製造上の不具合",
+            "完全保証 / 購入後 3年間",
+            "航空会社による破損、またはその他の運送中に生じた損傷"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-RIMOWA-82353171",
+          "exact_utf8_fragments": [
+            "82353171",
+            "在庫あり",
+            "カートに追加",
+            "高さ55 x 幅37 x 奥行23 cm",
+            "重量 2.2 kg",
+            "容量 37 L"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "82353171",
+            "在庫あり",
+            "カートに追加",
+            "高さ55 x 幅37 x 奥行23 cm",
+            "重量 2.2 kg",
+            "容量 37 L"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-RIMOWA-REFERENCE",
+          "exact_utf8_fragments": [
+            "82353171",
+            "在庫あり",
+            "カートに追加",
+            "高さ55 x 幅37 x 奥行23 cm",
+            "重量 2.2 kg",
+            "容量 37 L"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-RIMOWA-LIFETIME-GUARANTEE",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-RIMOWA-82353171",
+          "exact_utf8_fragments": [
+            "2022年7月25日以降",
+            "新品のスーツケース",
+            "永久保証",
+            "機能面の不具合"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "2022年7月25日以降",
+            "新品のスーツケース",
+            "永久保証",
+            "機能面の不具合"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-RIMOWA-WARRANTY-FAQ",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-RIMOWA-82353171",
+          "exact_utf8_fragments": [
+            "外観上の経年劣化",
+            "不適切な使用、誤用または乱用",
+            "保証の対象外"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "外観上の経年劣化",
+            "不適切な使用、誤用または乱用",
+            "保証の対象外"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SAMSONITE-C-LITE-CS2-09007",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-SAMSONITE-C-LITE-134679-1549",
+          "exact_utf8_fragments": [
+            "<h3>CS2*09007</h3>",
+            "<span>Size</span></section><section class=\"product-params-row__value\"><span>55*40*20 / S</span>",
+            "<span>Material</span></section><section class=\"product-params-row__value\"><span>Curv</span>",
+            "<span>Volume</span></section><section class=\"product-params-row__value\"><span>36(42) L</span>",
+            "<span>Weight</span></section><section class=\"product-params-row__value\"><span>2,1 kg</span>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SAMSONITE-CATALOG-2025",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-SAMSONITE-C-LITE-134679-1549",
+          "exact_utf8_fragments": [
+            "A154 C-LITE",
+            "134679\nSpinner 55 EXP\n40 x 55 x 20/23\n36/42 l\n2.1 kg"
+          ],
+          "reviewed_page_number": 10
+        }
+      ],
+      "locator_mode": "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+      "expected_body_sha256": "6d874e47c4999547adc3b6671024405a29f90c3ade1d0ab0f27d22449284b5cd"
+    },
+    {
+      "source_ref": "SRC-AMERICAN-TOURISTER-APPLITE4-QJ6-68002",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-APPLITE-QJ6-68002",
+          "exact_utf8_fragments": [
+            "<span class=\"value\">QJ6-68002</span>",
+            "サイズ（外寸）: <span class=\"product-dimension-value\">55 x 35 x 25/28</span>cm",
+            "容量: 約 <span class=\"product-volume-value\">38 /40</span>L",
+            "重量: 約 <span class=\"product-weight-value\"> 2.1</span>kg",
+            "素材: <span class=\"product-material-value\">リサイクルポリエステル</span>",
+            "ソフトケース「APPLITE 4.0（アップライト 4.0）」"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<span class=\"value\">QJ6-68002</span>",
+            "サイズ（外寸）: <span class=\"product-dimension-value\">55 x 35 x 25/28</span>cm",
+            "容量: 約 <span class=\"product-volume-value\">38 /40</span>L",
+            "重量: 約 <span class=\"product-weight-value\"> 2.1</span>kg",
+            "素材: <span class=\"product-material-value\">リサイクルポリエステル</span>",
+            "ソフトケース「APPLITE 4.0（アップライト 4.0）」"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-FREQUENTER-LIEVE-1-250",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-FREQUENTER-REFERENCE",
+          "exact_utf8_fragments": [
+            "<tr><td class=\"cent\">サイズ</td><td> 横33cm×縦48cm×奥行23cm</td></tr>",
+            "<tr><td class=\"cent\">総外周</td><td> 横35cm×縦55cm×奥行23m=113cm<br>国内線（100席以上）機内持込みサイズ</td></tr>",
+            "<tr><td class=\"cent\">重量</td><td> 約2.7kg</td></tr>",
+            "<tr><td class=\"cent\">容量</td><td> 約33L</td></tr>",
+            "簡単に静粛タイヤを自分で交換可能！交換用静音タイヤキット【1-623】"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-INNOVATOR-INV50",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-INNOVATOR-INV50",
+          "exact_utf8_fragments": [
+            "\"title\":\"INV50 Pale Blue 38L Cabin\"",
+            "サイズ : H55 x W35 x D25 cm",
+            "容　量 : 38 L",
+            "重　量 : 3.3 kg",
+            "3room収納",
+            "フロントとミドルスペースの間のファスナーをあけるとワイドオープンし",
+            "ワンタッチでブレーキのオン・オフが可能です。"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "\"title\":\"INV50 Pale Blue 38L Cabin\"",
+            "サイズ : H55 x W35 x D25 cm",
+            "容　量 : 38 L",
+            "重　量 : 3.3 kg",
+            "3room収納",
+            "フロントとミドルスペースの間のファスナーをあけるとワイドオープンし",
+            "ワンタッチでブレーキのオン・オフが可能です。"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+          "exact_utf8_fragments": [
+            "\"title\":\"INV50 Pale Blue 38L Cabin\"",
+            "サイズ : H55 x W35 x D25 cm",
+            "容　量 : 38 L",
+            "重　量 : 3.3 kg",
+            "3room収納",
+            "フロントとミドルスペースの間のファスナーをあけるとワイドオープンし",
+            "ワンタッチでブレーキのオン・オフが可能です。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PROTECA-FRESTER-EX-01551",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-FRESTER-01551",
+          "exact_utf8_fragments": [
+            "H55×W37×D23/27 cm",
+            "<dd>115/119 cm</dd>",
+            "<dd>36/45 L</dd>",
+            "<dd>3.4kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "国内100席以上・機内持込み対応／フロントオープン／エキスバンダブル／4輪／TSダイヤルファスナーロック／キャスターストッパー"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "H55×W37×D23/27 cm",
+            "<dd>115/119 cm</dd>",
+            "<dd>36/45 L</dd>",
+            "<dd>3.4kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "国内100席以上・機内持込み対応／フロントオープン／エキスバンダブル／4輪／TSダイヤルファスナーロック／キャスターストッパー"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+          "exact_utf8_fragments": [
+            "H55×W37×D23/27 cm",
+            "<dd>115/119 cm</dd>",
+            "<dd>36/45 L</dd>",
+            "<dd>3.4kg</dd>",
+            "<dd>MADE IN JAPAN</dd>",
+            "国内100席以上・機内持込み対応／フロントオープン／エキスバンダブル／4輪／TSダイヤルファスナーロック／キャスターストッパー"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-BERMAS-INTER-CITY-III-60570",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60570",
+          "exact_utf8_fragments": [
+            "W34×H47×D24cm(本体サイズ)",
+            "W36×H54×D24cm(全体サイズ)",
+            "約36L / 約3.3kg（付属物含まず）",
+            "フロントポケット＋メインルーム直結",
+            "～13インチPC対応可能",
+            "HINOMOTO製ストッパー付き55mm静音キャスター"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "W34×H47×D24cm(本体サイズ)",
+            "W36×H54×D24cm(全体サイズ)",
+            "約36L / 約3.3kg（付属物含まず）",
+            "フロントポケット＋メインルーム直結",
+            "～13インチPC対応可能",
+            "HINOMOTO製ストッパー付き55mm静音キャスター"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60561-EXCLUDED",
+          "exact_utf8_fragments": [
+            "W34×H47×D24cm(本体サイズ)",
+            "W36×H54×D24cm(全体サイズ)",
+            "約36L / 約3.3kg（付属物含まず）",
+            "フロントポケット＋メインルーム直結",
+            "～13インチPC対応可能",
+            "HINOMOTO製ストッパー付き55mm静音キャスター"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+          "exact_utf8_fragments": [
+            "W34×H47×D24cm(本体サイズ)",
+            "W36×H54×D24cm(全体サイズ)",
+            "約36L / 約3.3kg（付属物含まず）",
+            "フロントポケット＋メインルーム直結",
+            "～13インチPC対応可能",
+            "HINOMOTO製ストッパー付き55mm静音キャスター"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-BERMAS-INTER-CITY-II-60561",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60561-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<div class=\"fs-p-productDescription fs-p-productDescription--full\"><div class=\"detail-cont\">\r\n<div class=\"tit\">DETAILS</div>\r\n<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\r\n<tbody>\r\n<tr>\r\n<th scope=\"row\">サイズ</th>\r\n<td> \r\nW33×H47×D25cm(本体サイズ)<br>\r\nW35×H55×D25cm(全体サイズ)</td>\r\n</tr>\r\n<tr>\r\n<th scope=\"row\">素材</th>\r\n<td>ポリカーボネート</td>\r\n</tr>\r\n<tr>\r\n<th scope=\"row\">容量/重量</th>\r\n<td>約36L / 約3.5kg（付属物含まず）</tr>\r\n</tbody>\r\n</table>",
+            "モバイル機器クッションポケット：～13インチPC対応可能",
+            "USBポート(Type-A 1口・Type-C 1口付き)・HINOMOTO製ストッパー付き60mm大径静音キャスター"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-IROBOT-ROOMBA-MINI-SLIM-F115060",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-F115060-REFERENCE",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:url\" content=\"https://store.irobot-jp.com/item/F115060.html\"",
+            "Wi-Fi 2.4GHz帯 / 5GHz帯",
+            "24.5（奥行き）×24.5（幅）×9.2（高さ）",
+            "（縦置き時）8.6（奥行き）×22.2（幅）×12.3（高さ）",
+            "ロボット本体：約2kg",
+            "専用使い捨てお掃除シート",
+            "市販の床拭きシートも使用可能",
+            "充電スタンドでの自動ゴミ収集なし"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-ROOMBA-SLIM-F115060",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:url\" content=\"https://store.irobot-jp.com/item/F115060.html\"",
+            "Wi-Fi 2.4GHz帯 / 5GHz帯",
+            "24.5（奥行き）×24.5（幅）×9.2（高さ）",
+            "（縦置き時）8.6（奥行き）×22.2（幅）×12.3（高さ）",
+            "ロボット本体：約2kg",
+            "専用使い捨てお掃除シート",
+            "市販の床拭きシートも使用可能",
+            "充電スタンドでの自動ゴミ収集なし"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:url\" content=\"https://store.irobot-jp.com/item/F115060.html\"",
+            "Wi-Fi 2.4GHz帯 / 5GHz帯",
+            "24.5（奥行き）×24.5（幅）×9.2（高さ）",
+            "（縦置き時）8.6（奥行き）×22.2（幅）×12.3（高さ）",
+            "ロボット本体：約2kg",
+            "専用使い捨てお掃除シート",
+            "市販の床拭きシートも使用可能",
+            "充電スタンドでの自動ゴミ収集なし"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ECOVACS-DEEBOT-MINI2",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "exact_utf8_fragments": [
+            "DEEBOT mini 2",
+            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            "6mmの自動リフトモップ",
+            "ビデオマネージャー（ペット見守り機能）",
+            "外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能",
+            "DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"",
+            "カートに追加",
+            "今すぐ購入"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "DEEBOT mini 2",
+            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            "6mmの自動リフトモップ",
+            "ビデオマネージャー（ペット見守り機能）",
+            "外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能",
+            "DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"",
+            "カートに追加",
+            "今すぐ購入"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "exact_utf8_fragments": [
+            "DEEBOT mini 2",
+            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            "6mmの自動リフトモップ",
+            "ビデオマネージャー（ペット見守り機能）",
+            "外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能",
+            "DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"",
+            "カートに追加",
+            "今すぐ購入"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "exact_utf8_fragments": [
+            "DEEBOT mini 2",
+            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            "6mmの自動リフトモップ",
+            "ビデオマネージャー（ペット見守り機能）",
+            "外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能",
+            "DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"",
+            "カートに追加",
+            "今すぐ購入"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "exact_utf8_fragments": [
+            "DEEBOT mini 2",
+            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            "6mmの自動リフトモップ",
+            "ビデオマネージャー（ペット見守り機能）",
+            "外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能",
+            "DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"",
+            "カートに追加",
+            "今すぐ購入"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "exact_utf8_fragments": [
+            "DEEBOT mini 2",
+            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            "6mmの自動リフトモップ",
+            "ビデオマネージャー（ペット見守り機能）",
+            "外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能",
+            "DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"",
+            "カートに追加",
+            "今すぐ購入"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2",
+          "exact_utf8_fragments": [
+            "DEEBOT mini 2",
+            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            "6mmの自動リフトモップ",
+            "ビデオマネージャー（ペット見守り機能）",
+            "外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能",
+            "DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"",
+            "カートに追加",
+            "今すぐ購入"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "DEEBOT mini 2",
+            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            "6mmの自動リフトモップ",
+            "ビデオマネージャー（ペット見守り機能）",
+            "外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能",
+            "DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"",
+            "カートに追加",
+            "今すぐ購入"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ECOVACS-WARRANTY",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "exact_utf8_fragments": [
+            "全商品1年間保証",
+            "2026年2月20日以降",
+            "ECOVACS HOMEアプリにてご登録",
+            "製品の保証期間は2年",
+            "正規取扱店舗"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "全商品1年間保証",
+            "2026年2月20日以降",
+            "ECOVACS HOMEアプリにてご登録",
+            "製品の保証期間は2年",
+            "正規取扱店舗"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SWITCHBOT-K11-PRO-EXTENDED-WARRANTY",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+          "exact_utf8_fragments": [
+            "SwitchBot公式有料5年延長保証サービス",
+            "製品のメーカー保証期間（1年または2年）の終了後も",
+            "保証期間は、購入日から最長5年間となります",
+            "ロボット掃除機K11+ Pro"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+          "exact_utf8_fragments": [
+            "SwitchBot公式有料5年延長保証サービス",
+            "製品のメーカー保証期間（1年または2年）の終了後も",
+            "保証期間は、購入日から最長5年間となります",
+            "ロボット掃除機K11+ Pro"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "SwitchBot公式有料5年延長保証サービス",
+            "製品のメーカー保証期間（1年または2年）の終了後も",
+            "保証期間は、購入日から最長5年間となります",
+            "ロボット掃除機K11+ Pro"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SWITCHBOT-AUTOEMPTY-INSTALLATION-SPACE",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-K11-INSTALLATION-SPACE",
+          "exact_utf8_fragments": [
+            "Related Products: SwitchBot Mini Robot Vacuum K10+/K10+ Pro/K11+/K11+ Pro",
+            "We recommend a distance of 1 meter for left and right and 1.5 meters in front (no limit on top).",
+            "Insufficient space may affect the vacuum body to return to the charging station."
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "Related Products: SwitchBot Mini Robot Vacuum K10+/K10+ Pro/K11+/K11+ Pro",
+            "We recommend a distance of 1 meter for left and right and 1.5 meters in front (no limit on top).",
+            "Insufficient space may affect the vacuum body to return to the charging station."
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PANASONIC-NP-TML1",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-REFERENCE",
+          "exact_utf8_fragments": [
+            "容量&#xff08;食器点数&#xff09;<sup>★1</sup>",
+            "<td colspan=\"1\" rowspan=\"1\">6点",
+            "○&#xff08;送風乾燥&#xff09;",
+            "約2.5L&#xff08;着脱タンク式&#xff09;",
+            "約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm",
+            "<td colspan=\"1\" rowspan=\"1\">約7.5㎏"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE",
+          "exact_utf8_fragments": [
+            "容量&#xff08;食器点数&#xff09;<sup>★1</sup>",
+            "<td colspan=\"1\" rowspan=\"1\">6点",
+            "○&#xff08;送風乾燥&#xff09;",
+            "約2.5L&#xff08;着脱タンク式&#xff09;",
+            "約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm",
+            "<td colspan=\"1\" rowspan=\"1\">約7.5㎏"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-EXCLUDED",
+          "exact_utf8_fragments": [
+            "容量&#xff08;食器点数&#xff09;<sup>★1</sup>",
+            "<td colspan=\"1\" rowspan=\"1\">6点",
+            "○&#xff08;送風乾燥&#xff09;",
+            "約2.5L&#xff08;着脱タンク式&#xff09;",
+            "約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm",
+            "<td colspan=\"1\" rowspan=\"1\">約7.5㎏"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PANASONIC-SOLOTA-IDENTITY",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-REFERENCE",
+          "exact_utf8_fragments": [
+            "<title>食器洗い乾燥機 パーソナルタイプ（SOLOTA） | 食器洗い乾燥機（食洗機） | Panasonic</title>",
+            "<strong>NP-TML1</strong><br />-W&#xff08;ホワイト&#xff09;"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE",
+          "exact_utf8_fragments": [
+            "<title>食器洗い乾燥機 パーソナルタイプ（SOLOTA） | 食器洗い乾燥機（食洗機） | Panasonic</title>",
+            "<strong>NP-TML1</strong><br />-W&#xff08;ホワイト&#xff09;"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-THANKO-RAKUA-MINI-TK-MDW22W",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-RAKUA-SPECS",
+          "exact_utf8_fragments": [
+            "<div class=\"item-code\">JAN：4580060593095</div>",
+            "<a href=\"#makeshop-item-sku-cart-entry-url:1-1-0\" class=\"btn sku-cart1 add_to_cart\">カートに入れる</a>",
+            "<tr>\n<th>サイズ</th>\n<td>幅 308× 高さ 415× 奥行 315(mm) 開扉時奥行：594mm</td>\n</tr>",
+            "<tr>\n<th>重量</th>\n<td>約 8kg</td>\n</tr>",
+            "<tr>\n<th>定格消費電力</th>\n<td>900W</td>\n</tr>",
+            "<tr>\n<th>使用水量</th>\n<td>3.2L</td>\n</tr>",
+            "<tr>\n<th>洗浄方式</th>\n<td>下ノズル噴射式</td>\n</tr>",
+            "<tr>\n<th>すすぎ方式</th>\n<td>ためすすぎ</td>\n</tr>",
+            "<tr>\n<th>乾燥方式</th>\n<td>熱風乾燥</td>\n</tr>",
+            "<tr>\n<th>標準収納容量</th>\n<td>11～12 点（大皿…2 点　中皿またはコップ…2 点　小皿…2～3 点　小鉢…3 点　茶わん…2 点　小物類（はし、スプーン、フォーク、レンゲなど））</td>\n</tr>",
+            "単体:TK-MDW22W <br>",
+            "<tr>\n<th>保証期間</th>\n<td>購入日より12ヶ月</td>\n</tr>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<div class=\"item-code\">JAN：4580060593095</div>",
+            "<a href=\"#makeshop-item-sku-cart-entry-url:1-1-0\" class=\"btn sku-cart1 add_to_cart\">カートに入れる</a>",
+            "<tr>\n<th>サイズ</th>\n<td>幅 308× 高さ 415× 奥行 315(mm) 開扉時奥行：594mm</td>\n</tr>",
+            "<tr>\n<th>重量</th>\n<td>約 8kg</td>\n</tr>",
+            "<tr>\n<th>定格消費電力</th>\n<td>900W</td>\n</tr>",
+            "<tr>\n<th>使用水量</th>\n<td>3.2L</td>\n</tr>",
+            "<tr>\n<th>洗浄方式</th>\n<td>下ノズル噴射式</td>\n</tr>",
+            "<tr>\n<th>すすぎ方式</th>\n<td>ためすすぎ</td>\n</tr>",
+            "<tr>\n<th>乾燥方式</th>\n<td>熱風乾燥</td>\n</tr>",
+            "<tr>\n<th>標準収納容量</th>\n<td>11～12 点（大皿…2 点　中皿またはコップ…2 点　小皿…2～3 点　小鉢…3 点　茶わん…2 点　小物類（はし、スプーン、フォーク、レンゲなど））</td>\n</tr>",
+            "単体:TK-MDW22W <br>",
+            "<tr>\n<th>保証期間</th>\n<td>購入日より12ヶ月</td>\n</tr>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-THANKO-RAKUA-MINI-COLOR-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<div class=\"item-code\">JAN：4580060593095</div>",
+            "<a href=\"#makeshop-item-sku-cart-entry-url:1-1-0\" class=\"btn sku-cart1 add_to_cart\">カートに入れる</a>",
+            "<tr>\n<th>サイズ</th>\n<td>幅 308× 高さ 415× 奥行 315(mm) 開扉時奥行：594mm</td>\n</tr>",
+            "<tr>\n<th>重量</th>\n<td>約 8kg</td>\n</tr>",
+            "<tr>\n<th>定格消費電力</th>\n<td>900W</td>\n</tr>",
+            "<tr>\n<th>使用水量</th>\n<td>3.2L</td>\n</tr>",
+            "<tr>\n<th>洗浄方式</th>\n<td>下ノズル噴射式</td>\n</tr>",
+            "<tr>\n<th>すすぎ方式</th>\n<td>ためすすぎ</td>\n</tr>",
+            "<tr>\n<th>乾燥方式</th>\n<td>熱風乾燥</td>\n</tr>",
+            "<tr>\n<th>標準収納容量</th>\n<td>11～12 点（大皿…2 点　中皿またはコップ…2 点　小皿…2～3 点　小鉢…3 点　茶わん…2 点　小物類（はし、スプーン、フォーク、レンゲなど））</td>\n</tr>",
+            "単体:TK-MDW22W <br>",
+            "<tr>\n<th>保証期間</th>\n<td>購入日より12ヶ月</td>\n</tr>"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-DISH-RAKUA-MINI-REFERENCE",
+          "exact_utf8_fragments": [
+            "<div class=\"item-code\">JAN：4580060593095</div>",
+            "<a href=\"#makeshop-item-sku-cart-entry-url:1-1-0\" class=\"btn sku-cart1 add_to_cart\">カートに入れる</a>",
+            "<tr>\n<th>サイズ</th>\n<td>幅 308× 高さ 415× 奥行 315(mm) 開扉時奥行：594mm</td>\n</tr>",
+            "<tr>\n<th>重量</th>\n<td>約 8kg</td>\n</tr>",
+            "<tr>\n<th>定格消費電力</th>\n<td>900W</td>\n</tr>",
+            "<tr>\n<th>使用水量</th>\n<td>3.2L</td>\n</tr>",
+            "<tr>\n<th>洗浄方式</th>\n<td>下ノズル噴射式</td>\n</tr>",
+            "<tr>\n<th>すすぎ方式</th>\n<td>ためすすぎ</td>\n</tr>",
+            "<tr>\n<th>乾燥方式</th>\n<td>熱風乾燥</td>\n</tr>",
+            "<tr>\n<th>標準収納容量</th>\n<td>11～12 点（大皿…2 点　中皿またはコップ…2 点　小皿…2～3 点　小鉢…3 点　茶わん…2 点　小物類（はし、スプーン、フォーク、レンゲなど））</td>\n</tr>",
+            "単体:TK-MDW22W <br>",
+            "<tr>\n<th>保証期間</th>\n<td>購入日より12ヶ月</td>\n</tr>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-THANKO-RAKUA-MINI-COLOR",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-THANKO-RAKUA-MINI-COLOR-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<h1 class=\"item-name\">タンク式食洗機「ラクアmini color」</h1>",
+            "<a href=\"#makeshop-item-sku-restock-url:1-0\" class=\"btn btn-cart3 test3\">再入荷(予約開始)通知</a>",
+            "<a href=\"#makeshop-item-sku-restock-url:2-0\" class=\"btn btn-cart3 test3\">再入荷(予約開始)通知</a>",
+            "【ミスティーブルー】 TDWS25SBL/4580060603756<br>",
+            "【クラシックローズ】 TDWS25SRD/4580060603749<br>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-THANKO-RAKUA-MINI-PLUS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-DISH-RAKUA-MINI-PLUS-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<a href=\"#makeshop-item-restock-url\" class=\"btn btn-cart3 test1\">再入荷(予約開始)通知</a>",
+            "data-original=\"//data.thanko.jp/product/img-product/tk-mdw22b-top.jpg\""
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE",
+          "exact_utf8_fragments": [
+            "<a href=\"#makeshop-item-restock-url\" class=\"btn btn-cart3 test1\">再入荷(予約開始)通知</a>",
+            "data-original=\"//data.thanko.jp/product/img-product/tk-mdw22b-top.jpg\""
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SIROCA-SS-M171",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<p class=\"title title_detail\">SS-M171</p>",
+            "<span class=\"top\">分岐水栓にも対応の2WAYだから、キッチンの環境に合わせて使える</span>",
+            "家族3人分の食器16点<sup>*4</sup>が一度に",
+            "標準、念入り、おいそぎ、ソフト、選べる4つの洗浄コース",
+            "<th>給水方式</th>\n<td colspan=\"2\">タンク式（手動給水）/分岐水栓式</td>",
+            "<th>使用水量(約)</th>\n<td colspan=\"2\">5L</td>",
+            "<th>標準収納容量(約)</th>\n<td colspan=\"2\">16点",
+            "<th>対応可能な<br />\n大皿サイズ(約)</th>\n<td colspan=\"2\">直径23cmまで</td>",
+            "<th>洗浄方式</th>\n<td colspan=\"2\">回転ノズル噴射式</td>",
+            "<th>すすぎ方式</th>\n<td colspan=\"2\">ためすすぎ</td>",
+            "<th>乾燥方式</th>\n<td colspan=\"2\">送風乾燥</td>",
+            "<th>本体重量(約)</th>\n<td colspan=\"2\">13kg",
+            "<th>外形寸法(約)</th>\n<td colspan=\"2\">幅42×奥行43.5×高さ43.5cm</td>",
+            "<th>消費電力</th>\n<td colspan=\"2\">512W／526W</td>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-SS-M171-SPECS",
+          "exact_utf8_fragments": [
+            "<p class=\"title title_detail\">SS-M171</p>",
+            "<span class=\"top\">分岐水栓にも対応の2WAYだから、キッチンの環境に合わせて使える</span>",
+            "家族3人分の食器16点<sup>*4</sup>が一度に",
+            "標準、念入り、おいそぎ、ソフト、選べる4つの洗浄コース",
+            "<th>給水方式</th>\n<td colspan=\"2\">タンク式（手動給水）/分岐水栓式</td>",
+            "<th>使用水量(約)</th>\n<td colspan=\"2\">5L</td>",
+            "<th>標準収納容量(約)</th>\n<td colspan=\"2\">16点",
+            "<th>対応可能な<br />\n大皿サイズ(約)</th>\n<td colspan=\"2\">直径23cmまで</td>",
+            "<th>洗浄方式</th>\n<td colspan=\"2\">回転ノズル噴射式</td>",
+            "<th>すすぎ方式</th>\n<td colspan=\"2\">ためすすぎ</td>",
+            "<th>乾燥方式</th>\n<td colspan=\"2\">送風乾燥</td>",
+            "<th>本体重量(約)</th>\n<td colspan=\"2\">13kg",
+            "<th>外形寸法(約)</th>\n<td colspan=\"2\">幅42×奥行43.5×高さ43.5cm</td>",
+            "<th>消費電力</th>\n<td colspan=\"2\">512W／526W</td>"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-DISH-SS-M171-REFERENCE",
+          "exact_utf8_fragments": [
+            "<p class=\"title title_detail\">SS-M171</p>",
+            "<span class=\"top\">分岐水栓にも対応の2WAYだから、キッチンの環境に合わせて使える</span>",
+            "家族3人分の食器16点<sup>*4</sup>が一度に",
+            "標準、念入り、おいそぎ、ソフト、選べる4つの洗浄コース",
+            "<th>給水方式</th>\n<td colspan=\"2\">タンク式（手動給水）/分岐水栓式</td>",
+            "<th>使用水量(約)</th>\n<td colspan=\"2\">5L</td>",
+            "<th>標準収納容量(約)</th>\n<td colspan=\"2\">16点",
+            "<th>対応可能な<br />\n大皿サイズ(約)</th>\n<td colspan=\"2\">直径23cmまで</td>",
+            "<th>洗浄方式</th>\n<td colspan=\"2\">回転ノズル噴射式</td>",
+            "<th>すすぎ方式</th>\n<td colspan=\"2\">ためすすぎ</td>",
+            "<th>乾燥方式</th>\n<td colspan=\"2\">送風乾燥</td>",
+            "<th>本体重量(約)</th>\n<td colspan=\"2\">13kg",
+            "<th>外形寸法(約)</th>\n<td colspan=\"2\">幅42×奥行43.5×高さ43.5cm</td>",
+            "<th>消費電力</th>\n<td colspan=\"2\">512W／526W</td>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SIROCA-SS-M171-MANUAL",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "保証期間  お買い上げ日より1年間",
+            "SS-M171"
+          ],
+          "reviewed_page_number": 31
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-SS-M171-SPECS",
+          "exact_utf8_fragments": [
+            "保証期間  お買い上げ日より1年間",
+            "SS-M171"
+          ],
+          "reviewed_page_number": 31
+        }
+      ],
+      "locator_mode": "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+      "expected_body_sha256": "8693f01c5fba96c146d4a7d8fa863003e8d67f3465a40d5b56008ac0ae5b974e"
+    },
+    {
+      "source_ref": "SRC-SIROCA-SS-M171-STORE",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "SS-M171",
+            "メタリックウォームグレー",
+            "出荷予定日 9/1",
+            "購入する"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-DISH-SS-M171-SPECS",
+          "exact_utf8_fragments": [
+            "SS-M171",
+            "メタリックウォームグレー",
+            "出荷予定日 9/1",
+            "購入する"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SIROCA-SS-MA251-STORE",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-SS-MA251-SPECS",
+          "exact_utf8_fragments": [
+            "オートオープンタイプ／シルバー（SS-MA251）",
+            "出荷予定日 9/1",
+            "購入する"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SIROCA-DISHWASHER-INSTALLATION",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-SS-M171-SPECS",
+          "exact_utf8_fragments": [
+            "SS-MA251/SS-MU251</span></strong></span>　（約）A: 横38.8 cm　B: 縦35.0 cm／a: 幅 42 cm　b: 奥行 44 cm　c: 高さ 47 cm　d: ドアを開いたときの奥行き 76.0 cm",
+            "SS-MA251/SS-MU251/PDW-M151/SS-M171/SS-M151/PDW-5D</span></strong></span></div><div class=\"line\">上面：70 cm以上</div><div class=\"line\">側面：5 cm以上</div><div class=\"line\">背面：6 cm以上</div>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ELECOM-NESTOUT-700N",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-NESTOUT-700N-EXCLUDED",
+          "exact_utf8_fragments": [
+            "NESTOUT ポータブル電源 700N(容量712Wh/AC出力700W)",
+            "DE-NEPS700NBE",
+            "発売中",
+            "712.25Wh",
+            "約6.2kg",
+            "搭載のリチウムイオン電池は充電式で、約500回繰り返し使用可能。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-BLUETTI-DISCONTINUED-MODELS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-AC70-EXCLUDED",
+          "exact_utf8_fragments": [
+            "生産終了製品一覧",
+            "alt=\"BLUETTI AORA 80\"",
+            "BLUETTI AORA 80",
+            "2026年4月20日に販売終了",
+            "<span>終売</span>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA80-EXCLUDED",
+          "exact_utf8_fragments": [
+            "生産終了製品一覧",
+            "alt=\"BLUETTI AORA 80\"",
+            "BLUETTI AORA 80",
+            "2026年4月20日に販売終了",
+            "<span>終売</span>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ANKER-SOLIX-C1000-PLUS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-PLUS-EXCLUDED",
+          "exact_utf8_fragments": [
+            "Anker Solix C1000 Plus Portable Power Station",
+            "定格は家庭用コンセントを上回る1700Wの高出力を実現",
+            "SurgePad™により消費電力2000Wまでの家電に複数同時給電に対応",
+            "約38.4 x 20.8 x 24.4cm",
+            "約11.3kg",
+            "1024Wh"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-AQUA-ADW-M28B",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-AQUA-M28B-EXCLUDED",
+          "exact_utf8_fragments": [
+            "ADW-M28B",
+            "（標準収納容量：28点）",
+            "<p class=\"ProductDetail_Section_Spec_Item_Body\">幅370×奥行510×高さ452㎜</p>",
+            "<p class=\"ProductDetail_Section_Spec_Item_Body\">約4.5L(タンク式) /約6.0L(分岐水栓)</p>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-PANASONIC-RULO-MINI-MC-RSC10",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-RULO-MINI-REFERENCE",
+          "exact_utf8_fragments": [
+            "MC-RSC10",
+            "幅249mm×奥行249mm×高さ92mm",
+            "幅134mm×奥行100mm×高さ99mm",
+            "繰り返し充放電 約1100回"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-RULO-MINI-REFERENCE",
+          "exact_utf8_fragments": [
+            "MC-RSC10",
+            "幅249mm×奥行249mm×高さ92mm",
+            "幅134mm×奥行100mm×高さ99mm",
+            "繰り返し充放電 約1100回"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-EUFY-E20-T2070",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E20-EXCLUDED",
+          "exact_utf8_fragments": [
+            "\"sku\":\"T2070511\"",
+            "\"title\":\"ブラック\"",
+            "soldOut: \"Sold Out\"",
+            "在庫切れ"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-EUFY-AUTOEMPTY-C10-T2292",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-EUFY-C10-SPECS",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
+            "data-variant-sku=\"T2292511\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<td class=\"product-specs-heading\">\n                    ロボット掃除機<br>本体サイズ\n                  </td>\n                  <td>約32.5 x 32.3 x 7.2cm</td>",
+            "<td class=\"product-specs-heading\">\n                    ステーション<br>サイズ\n                  </td>\n                  <td>約27.5 x 19.1 x 21.2cm</td>",
+            "<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>",
+            "<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>",
+            "<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>",
+            "最大4000Paの強力な吸引力",
+            "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
+            "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
+            "<td>T2292511 (ブラック)",
+            "本製品は2.4GHz周波数帯のみに対応しています。5GHz周波数帯には対応していません。",
+            "<a href=\"/products/t291c?variant=44872030814369\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用ダストバッグ (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291d?variant=44872026587297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用サイドブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t290y?variant=44872030683297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用フィルター (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291f?variant=44872026226849\" class=\"product-card-default-name-link\">Eufy Robot Vacuum 交換用回転ブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t29k2?variant=44922334806177\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
+            "data-variant-sku=\"T2292511\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<td class=\"product-specs-heading\">\n                    ロボット掃除機<br>本体サイズ\n                  </td>\n                  <td>約32.5 x 32.3 x 7.2cm</td>",
+            "<td class=\"product-specs-heading\">\n                    ステーション<br>サイズ\n                  </td>\n                  <td>約27.5 x 19.1 x 21.2cm</td>",
+            "<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>",
+            "<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>",
+            "<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>",
+            "最大4000Paの強力な吸引力",
+            "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
+            "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
+            "<td>T2292511 (ブラック)",
+            "本製品は2.4GHz周波数帯のみに対応しています。5GHz周波数帯には対応していません。",
+            "<a href=\"/products/t291c?variant=44872030814369\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用ダストバッグ (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291d?variant=44872026587297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用サイドブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t290y?variant=44872030683297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用フィルター (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291f?variant=44872026226849\" class=\"product-card-default-name-link\">Eufy Robot Vacuum 交換用回転ブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t29k2?variant=44922334806177\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
+            "data-variant-sku=\"T2292511\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<td class=\"product-specs-heading\">\n                    ロボット掃除機<br>本体サイズ\n                  </td>\n                  <td>約32.5 x 32.3 x 7.2cm</td>",
+            "<td class=\"product-specs-heading\">\n                    ステーション<br>サイズ\n                  </td>\n                  <td>約27.5 x 19.1 x 21.2cm</td>",
+            "<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>",
+            "<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>",
+            "<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>",
+            "最大4000Paの強力な吸引力",
+            "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
+            "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
+            "<td>T2292511 (ブラック)",
+            "本製品は2.4GHz周波数帯のみに対応しています。5GHz周波数帯には対応していません。",
+            "<a href=\"/products/t291c?variant=44872030814369\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用ダストバッグ (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291d?variant=44872026587297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用サイドブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t290y?variant=44872030683297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用フィルター (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291f?variant=44872026226849\" class=\"product-card-default-name-link\">Eufy Robot Vacuum 交換用回転ブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t29k2?variant=44922334806177\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
+            "data-variant-sku=\"T2292511\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<td class=\"product-specs-heading\">\n                    ロボット掃除機<br>本体サイズ\n                  </td>\n                  <td>約32.5 x 32.3 x 7.2cm</td>",
+            "<td class=\"product-specs-heading\">\n                    ステーション<br>サイズ\n                  </td>\n                  <td>約27.5 x 19.1 x 21.2cm</td>",
+            "<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>",
+            "<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>",
+            "<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>",
+            "最大4000Paの強力な吸引力",
+            "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
+            "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
+            "<td>T2292511 (ブラック)",
+            "本製品は2.4GHz周波数帯のみに対応しています。5GHz周波数帯には対応していません。",
+            "<a href=\"/products/t291c?variant=44872030814369\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用ダストバッグ (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291d?variant=44872026587297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用サイドブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t290y?variant=44872030683297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用フィルター (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291f?variant=44872026226849\" class=\"product-card-default-name-link\">Eufy Robot Vacuum 交換用回転ブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t29k2?variant=44922334806177\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
+            "data-variant-sku=\"T2292511\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<td class=\"product-specs-heading\">\n                    ロボット掃除機<br>本体サイズ\n                  </td>\n                  <td>約32.5 x 32.3 x 7.2cm</td>",
+            "<td class=\"product-specs-heading\">\n                    ステーション<br>サイズ\n                  </td>\n                  <td>約27.5 x 19.1 x 21.2cm</td>",
+            "<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>",
+            "<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>",
+            "<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>",
+            "最大4000Paの強力な吸引力",
+            "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
+            "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
+            "<td>T2292511 (ブラック)",
+            "本製品は2.4GHz周波数帯のみに対応しています。5GHz周波数帯には対応していません。",
+            "<a href=\"/products/t291c?variant=44872030814369\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用ダストバッグ (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291d?variant=44872026587297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用サイドブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t290y?variant=44872030683297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用フィルター (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291f?variant=44872026226849\" class=\"product-card-default-name-link\">Eufy Robot Vacuum 交換用回転ブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t29k2?variant=44922334806177\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
+            "data-variant-sku=\"T2292511\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<td class=\"product-specs-heading\">\n                    ロボット掃除機<br>本体サイズ\n                  </td>\n                  <td>約32.5 x 32.3 x 7.2cm</td>",
+            "<td class=\"product-specs-heading\">\n                    ステーション<br>サイズ\n                  </td>\n                  <td>約27.5 x 19.1 x 21.2cm</td>",
+            "<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>",
+            "<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>",
+            "<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>",
+            "最大4000Paの強力な吸引力",
+            "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
+            "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
+            "<td>T2292511 (ブラック)",
+            "本製品は2.4GHz周波数帯のみに対応しています。5GHz周波数帯には対応していません。",
+            "<a href=\"/products/t291c?variant=44872030814369\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用ダストバッグ (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291d?variant=44872026587297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用サイドブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t290y?variant=44872030683297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用フィルター (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291f?variant=44872026226849\" class=\"product-card-default-name-link\">Eufy Robot Vacuum 交換用回転ブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t29k2?variant=44922334806177\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-EUFY-C10",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
+            "data-variant-sku=\"T2292511\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<td class=\"product-specs-heading\">\n                    ロボット掃除機<br>本体サイズ\n                  </td>\n                  <td>約32.5 x 32.3 x 7.2cm</td>",
+            "<td class=\"product-specs-heading\">\n                    ステーション<br>サイズ\n                  </td>\n                  <td>約27.5 x 19.1 x 21.2cm</td>",
+            "<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>",
+            "<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>",
+            "<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>",
+            "最大4000Paの強力な吸引力",
+            "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
+            "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
+            "<td>T2292511 (ブラック)",
+            "本製品は2.4GHz周波数帯のみに対応しています。5GHz周波数帯には対応していません。",
+            "<a href=\"/products/t291c?variant=44872030814369\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用ダストバッグ (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291d?variant=44872026587297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用サイドブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t290y?variant=44872030683297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用フィルター (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291f?variant=44872026226849\" class=\"product-card-default-name-link\">Eufy Robot Vacuum 交換用回転ブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t29k2?variant=44922334806177\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-EUFY-C10-INSTALLATION-SPACE",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
+            "data-variant-sku=\"T2292511\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<td class=\"product-specs-heading\">\n                    ロボット掃除機<br>本体サイズ\n                  </td>\n                  <td>約32.5 x 32.3 x 7.2cm</td>",
+            "<td class=\"product-specs-heading\">\n                    ステーション<br>サイズ\n                  </td>\n                  <td>約27.5 x 19.1 x 21.2cm</td>",
+            "<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>",
+            "<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>",
+            "<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>",
+            "最大4000Paの強力な吸引力",
+            "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
+            "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
+            "<td>T2292511 (ブラック)",
+            "本製品は2.4GHz周波数帯のみに対応しています。5GHz周波数帯には対応していません。",
+            "<a href=\"/products/t291c?variant=44872030814369\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用ダストバッグ (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291d?variant=44872026587297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用サイドブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t290y?variant=44872030683297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用フィルター (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291f?variant=44872026226849\" class=\"product-card-default-name-link\">Eufy Robot Vacuum 交換用回転ブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t29k2?variant=44922334806177\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
+            "data-variant-sku=\"T2292511\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<td class=\"product-specs-heading\">\n                    ロボット掃除機<br>本体サイズ\n                  </td>\n                  <td>約32.5 x 32.3 x 7.2cm</td>",
+            "<td class=\"product-specs-heading\">\n                    ステーション<br>サイズ\n                  </td>\n                  <td>約27.5 x 19.1 x 21.2cm</td>",
+            "<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>",
+            "<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>",
+            "<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>",
+            "最大4000Paの強力な吸引力",
+            "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
+            "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
+            "<td>T2292511 (ブラック)",
+            "本製品は2.4GHz周波数帯のみに対応しています。5GHz周波数帯には対応していません。",
+            "<a href=\"/products/t291c?variant=44872030814369\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用ダストバッグ (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291d?variant=44872026587297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用サイドブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t290y?variant=44872030683297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用フィルター (Auto-Empty C10対応 / Omni C20対応)</a>",
+            "<a href=\"/products/t291f?variant=44872026226849\" class=\"product-card-default-name-link\">Eufy Robot Vacuum 交換用回転ブラシ (Auto-Empty C10対応)</a>",
+            "<a href=\"/products/t29k2?variant=44922334806177\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ROBOROCK-SAROS-10",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "exact_utf8_fragments": [
+            "Roborock Saros 10",
+            "本体サイズ：350 × 353 × 79.8 mm",
+            "ドックサイズ：409 × 440 × 470 mm",
+            "8way全自動ドック搭載。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-EUFY-OMNI-E25-T2353",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "exact_utf8_fragments": [
+            "Eufy Robot Vacuum Omni E25",
+            "約32.7 x 34.6 x 11.1cm",
+            "約37.0 x 46.2 x 43.7cm",
+            "水拭きしながらモップ洗浄するHydroJet システムを搭載で常にモップを清潔に保ちます。",
+            "全自動クリーニングステーションで、ゴミ収集、モップ洗浄、温風乾燥、洗剤の自動投入まで全て自動で完結。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-DREAME-X50-ULTRA",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "exact_utf8_fragments": [
+            "Dreame X50 Ultra",
+            "350 × 350 × 89mm",
+            "センサー部を格納すると本体高さはわずか89mm",
+            "457 × 340 × 590mm",
+            "【敷居・レールも静かに走破。最大6cm段差対応の耐久設計】",
+            "【6way全自動PowerDock＋汚れ検知。お手入れまでほぼ全自動】"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ECOVACS-DEEBOT-X8-PRO",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "exact_utf8_fragments": [
+            "DEEBOT X8 PRO OMNI",
+            "サイズ（WxDxH) 本体：353*351.5*98 ステーション：350*477*533",
+            "インテリジェントモップ洗浄温度制御で、ローラーモップを完璧に洗浄",
+            "最大63℃の熱風乾燥システムで、モップを乾燥し、清潔に保ちます"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-RIMOWA-CABIN-U-82350181",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-RIMOWA-CABIN-U-EXCLUDED",
+          "exact_utf8_fragments": [
+            "82350181",
+            "高さ 50 x 幅 35 x 奥行 20 cm",
+            "重量 2 kg",
+            "容量 28 L"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SAMSONITE-AUDRINA-SPINNER45",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-AUDRINA-EXCLUDED",
+          "exact_utf8_fragments": [
+            "オードリナ スピナー45",
+            "<span class=\"product-dimension-value\">47.5 x 37.5 x 24.0</span>",
+            "<span class=\"product-volume-value\">25.5</span>",
+            "<span class=\"product-weight-value\"> 2.29</span>",
+            "UB8*09001"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-MUJI-HARD-CARRY-20L",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-UNDER100-MUJI20-EXCLUDED",
+          "exact_utf8_fragments": [
+            "バーを自由に調節できる　ハードキャリーケース　（２０Ｌ）",
+            "黒・タテ４７×ヨコ３２×マチ２０．５ｃｍ",
+            "商品番号23184182",
+            "ストッパー機能付きのキャリーケースです。"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SAMSONITE-C-LITE-SPINNER55EXP-MIDNIGHT",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-SAMSONITE-C-LITE-134679-1549",
+          "exact_utf8_fragments": [
+            "シーライト スピナー55 エキスパンダブル",
+            "カートに入れる",
+            "※電子機器部分の保証期間は購入後1年です。",
+            "CS2*31007",
+            "<span class=\"product-dimension-value\">55 x 40 x 20/23</span>",
+            "<span class=\"product-volume-value\">36 /42</span>",
+            "<span class=\"product-weight-value\"> 2.1</span>",
+            "条件付き10年"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "シーライト スピナー55 エキスパンダブル",
+            "カートに入れる",
+            "※電子機器部分の保証期間は購入後1年です。",
+            "CS2*31007",
+            "<span class=\"product-dimension-value\">55 x 40 x 20/23</span>",
+            "<span class=\"product-volume-value\">36 /42</span>",
+            "<span class=\"product-weight-value\"> 2.1</span>",
+            "条件付き10年"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-FREQUENTER-REFERENCE",
+          "exact_utf8_fragments": [
+            "シーライト スピナー55 エキスパンダブル",
+            "カートに入れる",
+            "※電子機器部分の保証期間は購入後1年です。",
+            "CS2*31007",
+            "<span class=\"product-dimension-value\">55 x 40 x 20/23</span>",
+            "<span class=\"product-volume-value\">36 /42</span>",
+            "<span class=\"product-weight-value\"> 2.1</span>",
+            "条件付き10年"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-MUJI36-EXCLUDED",
+          "exact_utf8_fragments": [
+            "シーライト スピナー55 エキスパンダブル",
+            "カートに入れる",
+            "※電子機器部分の保証期間は購入後1年です。",
+            "CS2*31007",
+            "<span class=\"product-dimension-value\">55 x 40 x 20/23</span>",
+            "<span class=\"product-volume-value\">36 /42</span>",
+            "<span class=\"product-weight-value\"> 2.1</span>",
+            "条件付き10年"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-MUJI-HARD-CARRY-36L-SECTION",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-LIGHT-MUJI36-EXCLUDED",
+          "exact_utf8_fragments": [
+            "バーを自由に調節できる　ハードキャリーケース（３６Ｌ）",
+            "36L",
+            "2.9kg",
+            "キャスターストッパー"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-MUJI-FRONT-OPEN-32L",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+          "exact_utf8_fragments": [
+            "バーを自由に調節できる　フロントオープンキャリーケース（３２Ｌ）",
+            "黒・タテ５４×ヨコ３７×マチ２４ｃｍ",
+            "商品番号84950087",
+            "フロントオープンポケットを搭載しました。",
+            "ストラップはアタッチメント仕様になっているためフルオーブンも可能です。",
+            "キャリーバーの高さ1cmきざみでお好みの高さに調整できます。",
+            "走行音が静かな双輪キャスターを採用"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SAMSONITE-C-LITE-SPINNER55EXP-BLACK",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-C-LITE-KNOWN-SPECS-REFERENCE",
+          "exact_utf8_fragments": [
+            "シーライト スピナー55 エキスパンダブル",
+            "在庫あり",
+            "カートに入れる",
+            "CS2*09007",
+            "<span class=\"product-dimension-value\">55 x 40 x 20/23</span>",
+            "<span class=\"product-volume-value\">36 /42</span>",
+            "<span class=\"product-weight-value\"> 2.1</span>"
+          ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-C-LITE-REFERENCE",
+          "exact_utf8_fragments": [
+            "シーライト スピナー55 エキスパンダブル",
+            "在庫あり",
+            "カートに入れる",
+            "CS2*09007",
+            "<span class=\"product-dimension-value\">55 x 40 x 20/23</span>",
+            "<span class=\"product-volume-value\">36 /42</span>",
+            "<span class=\"product-weight-value\"> 2.1</span>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SWITCHBOT-K11-WIFI-FUNCTIONS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-K11-PRO",
+          "exact_utf8_fragments": [
+            "even without connecting to a Wi-Fi network",
+            "connecting to Wi-Fi using SwitchBot App enables more convenient features like Schedule and Map",
+            "Please make sure to connect to a 2.4GHz Wi-Fi network"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-SWITCHBOT-K11-SETUP",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-K11-PRO",
+          "exact_utf8_fragments": [
+            "SwitchBot App Version: 8.2 or newer",
+            "Launch the SwitchBot App and login",
+            "Enter your home Wi-Fi SSID and password",
+            "2.4GHz Wi-Fi tethering"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ECOFLOW-RIVER3-PLUS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-RIVER3-PLUS-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<h5>286Whの容量と600Wの定格出力を備えたRIVER 3 Plusは、3WのWi-Fiルーターを最大35時間稼働させることができます。さらに、600Wのパソコンをはじめ、ほとんどのオフィス機器も動作可能で、少なくとも21分間の動作が確保できるため、安全に作業を完了しシャットダウンできます。</h5>",
+            "約4.7kg",
+            "class=\"swatch-element  swatch_販売終了-river-3-plus-290 soldout \"",
+            "<span class=\"swatch-title\">【販売終了】RIVER 3 Plus (290)</span>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-ECOFLOW-DELTA3-PLUS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-DELTA3-PLUS-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<div class=\"pdp-grid-section__product-title\">DELTA 3 Plus</div>",
+            "<div class=\"pdp-grid-section__product-content\"><p>容量<br/>1024Wh</p><p>容量拡張<br/>最大5kWh<br/><br/>定格出力<br/>1500W (サージ3000W)<br/></p><p>X-Boost<br/>2000W<br/><br/>AC充電時間<br/>最短56分</p><p>ソーラー入力<br/>1000W（500W x2）<br/><br/>バッテリー寿命<br/>4000回以上<br/><br/>UPS機能<br/>&lt;10ms(サージ保護/NAS)<br/><br/><br/>重量(kg)<br/>約12.5<br/><br/>サイズ<br/>39.8x20.2x28.4cm<br/><br/>騷音&lt;30dB<br/>600W出力以下で30ds<br/><br/></p></div>",
+            "<span>売り切れ</span>",
+            "class=\"swatch-element  swatch_delta-3-plus-防災に最適 available \"",
+            "<span class=\"swatch-title\">DELTA 3 Plus | 防災に最適</span>"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-BLUETTI-AORA30-V2",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA30-V2-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<title>\n      AORA 30 V2 | グレー\n      \n      \n      ブルーティ \n    </title>",
+            "\"available\":true"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-BLUETTI-AORA100-V2",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA100-V2-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<title>\n      AORA 100 V2 | インディゴ\n      \n      \n      ブルーティ \n    </title>",
+            "\"available\":true"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-BLUETTI-AORA-SERIES-COLLECTION",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA30-V2-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<span>AORA 30 V2: 288Wh容量、600W出力（リフト1500W）、重量約4.3kg。キャンプや旅行、バックアップに最適。</span>",
+            "<span>AORA 100 V2: 1024Wh容量、1800W出力（サージ3600W、リフト2700W）、重量約11.5kg、サイズ320x215x250mm。停電時、キャンプ、RV、CPAP機器などに。</span>",
+            "\"bluetti-aora-30-v2-288wh-600w\" : {",
+            "\"bluetti-aora-100-v2-portable-power-station-blue\" : {"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA100-V2-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<span>AORA 30 V2: 288Wh容量、600W出力（リフト1500W）、重量約4.3kg。キャンプや旅行、バックアップに最適。</span>",
+            "<span>AORA 100 V2: 1024Wh容量、1800W出力（サージ3600W、リフト2700W）、重量約11.5kg、サイズ320x215x250mm。停電時、キャンプ、RV、CPAP機器などに。</span>",
+            "\"bluetti-aora-30-v2-288wh-600w\" : {",
+            "\"bluetti-aora-100-v2-portable-power-station-blue\" : {"
           ]
         }
       ]

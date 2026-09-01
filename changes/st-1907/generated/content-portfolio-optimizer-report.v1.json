@@ -37,8 +37,8 @@
       "RECORDED_SYNTHETIC_ONLY",
       "SEPARATE_RELEASE_DECISION_REQUIRED"
     ],
-    "command_sha256": "81569c12a2436c1d784916c3252e986825984892b06a20a8f999f42e2898a6e3",
-    "contract_sha256": "d2fbb03c2d7ffccc4aea9b20ab2782fe4cedf7148767c2d886bb6174fee4bd91",
+    "command_sha256": "c3b7a37562e2eaca240c1074fb67c9f9b8694126980dcfaef6175f4722387f79",
+    "contract_sha256": "88e5d399c97bc4c43a83924659dcd7909d56df58f025606697c7de377ba6a726",
     "dependency": {
       "acceptance_criteria_satisfied": false,
       "actual_observation_count": 0,
@@ -51,7 +51,7 @@
       "source_overall": "BLOCKED",
       "story_id": "ST-1805"
     },
-    "measurement_contract_sha256": "7f1eb69d554b26f8e954f36e9a330ba19425062c98a157683c8126c39f336471",
+    "measurement_contract_sha256": "3a59ad41be34f2f01435cc1e85addabbf5b37507ea6b523f6a0898d3dfd9b32b",
     "method_version": "RAOS_ST1907_HUMAN_PROPOSAL_PORTFOLIO_OPTIMIZER_V1",
     "policy": {
       "action_vocabulary": [
@@ -80,16 +80,16 @@
     "proposal_count": 0,
     "proposal_state": "NO_PROPOSALS",
     "proposals": [],
-    "report_sha256": "a65d56d7129f3ec5a7a6c1ab54d8c771526f6ecc5e255dfaffc3fbe7c8449196",
-    "signal_policy_sha256": "60152d185ac2f5da249c5d8fc0f75c19e73a62fa612107d524a7f01692d7c264",
-    "source_sha256": "6684a31b30fdb05e4bf991b43c95f87023b25fcb934b9e95dae6c26c0c14ad13",
+    "report_sha256": "d67d4c3ecd83f2ab8a756879218c01aba72992898864b207ac213580b0070c4c",
+    "signal_policy_sha256": "eed985fa3fe53d5e5e0a5c9fb12631709b83f37ea3ffcf700b1ca64825edf0d4",
+    "source_sha256": "1d5a9caa30ce52dcadfd8b106737b8f999b49239bb65d43426bf234bc97bd14e",
     "unavailable_reason": "DEPENDENCY_BLOCKED_NO_DECISION"
   },
   "source": {
     "bytes": 986,
     "fixture_profile": "RAOS_ST1907_RECORDED_SYNTHETIC_V1",
     "path": "changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json",
-    "sha256": "6684a31b30fdb05e4bf991b43c95f87023b25fcb934b9e95dae6c26c0c14ad13",
+    "sha256": "1d5a9caa30ce52dcadfd8b106737b8f999b49239bb65d43426bf234bc97bd14e",
     "synthetic": true
   }
 }

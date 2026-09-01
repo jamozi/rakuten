@@ -23,11 +23,36 @@ ORIGIN = "https://kurashinoshirube.com"
 HOST = "kurashinoshirube.com"
 PROTOCOL_VERSION = "2025-11-25"
 EXPECTED_PLUGIN_RUNTIME_REVISION = (
-    "24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55"
+    "8204d0f1ff573a5edf72abe4ef69ef422af15815adf5ecbc3a74bf8ec1d9c7d8"
 )
-EXPECTED_THEME_RUNTIME_REVISION = (
-    "3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a"
+THEME_CONTRACT_PATH = (
+    Path(__file__).resolve().parents[3]
+    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/theme-contract.v1.json"
 )
+
+
+def expected_theme_runtime_revision() -> str:
+    try:
+        document = json.loads(THEME_CONTRACT_PATH.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise RuntimeError("theme contract is unavailable") from error
+    try:
+        evidence = document["runtime_evidence"]
+        revision = evidence["revision"]
+        fingerprint = evidence["source_fingerprint"]
+    except (KeyError, TypeError) as error:
+        raise RuntimeError("theme contract source fingerprint is unavailable") from error
+    if (
+        not isinstance(revision, str)
+        or revision != fingerprint
+        or re.fullmatch(r"[0-9a-f]{64}", revision) is None
+    ):
+        raise RuntimeError("theme contract source fingerprint is invalid")
+    return revision
+
+
+EXPECTED_THEME_RUNTIME_REVISION = expected_theme_runtime_revision()
 EXPECTED_TOOLS = {
     "raos-codex-site-status",
     "raos-codex-content-list",

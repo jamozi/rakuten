@@ -31,7 +31,7 @@
         "start_date": "2026-08-25"
       },
       "reconciliation_availability": "PARTIAL",
-      "result_sha256": "1d8897dd5d3a79364f942dff7ea361a1d920fd1fe143c688f7f1fe2c5bc5e598",
+      "result_sha256": "9e38edf8fd61a15d58cafdea996b05f4f8f77dfc937b52f79aa6c06c241b6cd0",
       "synthetic": true
     },
     "ST-1803": {
@@ -95,7 +95,7 @@
     ],
     "finance_used_for_product_or_recommendation_ranking": false,
     "modifications_applied": [],
-    "source_result_sha256": "1d8897dd5d3a79364f942dff7ea361a1d920fd1fe143c688f7f1fe2c5bc5e598"
+    "source_result_sha256": "9e38edf8fd61a15d58cafdea996b05f4f8f77dfc937b52f79aa6c06c241b6cd0"
   },
   "mandatory_criteria": [
     {

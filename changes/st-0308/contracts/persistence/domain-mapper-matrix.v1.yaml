@@ -5,7 +5,7 @@ document:
 canonical_serialization: UTF8_LF_YAML_CANONICALIZED_TO_SORTED_COMPACT_JSON_FOR_HASH
 physical_inputs:
 - path: changes/st-0303/generated/iam-ops-catalog.v1.json
-  sha256: 0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a
+  sha256: 8ebf0d20ae07e4f82564f16c675b60f4a782464f5b25aa0a2b0df668f8475128
 - path: changes/st-0304/generated/domain-catalog.v1.json
   sha256: 41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208
 layout:

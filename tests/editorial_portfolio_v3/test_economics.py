@@ -340,6 +340,8 @@ def _rakuten_activation(
     v2_materialization: dict[str, object] = {
         "portfolio_sha256": "3" * 64,
         "evidence_status_sha256": "4" * 64,
+        "manufacturer_sales_state_sha256": "7" * 64,
+        "manufacturer_sales_state_checked_at_utc": "2026-08-01T00:00:00Z",
         "local_generated_at": "2026-08-01T00:00:00Z",
         "production_generated_at": "2026-08-01T00:00:00Z",
         "local_receipt_sha256": "5" * 64,
@@ -392,6 +394,12 @@ def _rakuten_activation(
             "v2_evidence_status_sha256": v2_materialization[
                 "evidence_status_sha256"
             ],
+            "v2_manufacturer_sales_state_sha256": v2_materialization[
+                "manufacturer_sales_state_sha256"
+            ],
+            "v2_manufacturer_sales_state_checked_at_utc": v2_materialization[
+                "manufacturer_sales_state_checked_at_utc"
+            ],
             "v2_materialization_receipt_sha256": v2_receipt_sha256,
             "posts_sha256": posts_sha256,
             "article_set_sha256": article_set_sha256,
@@ -419,11 +427,18 @@ def _rakuten_activation(
         }
     document: dict[str, object] = {
         "schema": "RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_DRY_RUN_V2",
-        "version": "2.0.0",
+        "version": "2.1.0",
         "state": "OWNER_PRIVATE_MATERIALIZED_NOT_PUBLISHED",
         "portfolio_sha256": portfolio_sha256,
         "admin_receipt_sha256": "1" * 64,
         "money_link_mapping_sha256": "2" * 64,
+        "activation_inputs": {
+            "admin_receipt_name": "admin-receipt.json",
+            "money_link_mapping_name": "money-links.json",
+            "mapping_generated_at_utc": "2026-08-01T00:00:00Z",
+            "admin_verified_at_utc": "2026-08-01T00:05:00Z",
+            "activated_at_utc": "2026-08-01T00:06:00Z",
+        },
         "v2_materialization": v2_materialization,
         "overlays": overlays,
         "materialized_set_sha256": sha256_bytes(canonical_json_bytes(overlay_bindings)),

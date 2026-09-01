@@ -24,40 +24,40 @@
       {
         "article_id": "st1703-first-suitcase-comparison",
         "intent_classification": "CONDITION_COMPARISON",
-        "packet_sha256": "45c2626babf8e39a0e1371c77d8d506ea71f18bb74470c31f45d8a512a4c7438",
+        "packet_sha256": "53868ff59be25f1b4fb748b9a3a2fd3060872fd24288888d875a9b6490be48c2",
         "slot": 1,
         "slug": "carry-on-suitcase-comparison"
       },
       {
         "article_id": "st1704-portable-power-station-guide",
         "intent_classification": "SELECTION_GUIDE",
-        "packet_sha256": "d8e3723374162298fbccbbe7544f4590fb324446725312666d731ed95463f123",
+        "packet_sha256": "1e2974b06b71da55b7af19e27f893a21afc933bc155bd753a244b01690da8562",
         "slot": 2,
         "slug": "portable-power-station-guide"
       },
       {
         "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
         "intent_classification": "MODEL_DIFFERENCES",
-        "packet_sha256": "6bcdc286117bbd6b9b7b32a33cf59228cce608100308fb56b308b9f9fe57e4c6",
+        "packet_sha256": "a75331cc78827097a3024e10b42a2221bba1fcd36e00eb66d0b702e0fe4b79aa",
         "slot": 3,
         "slug": "anker-solix-c300-c800-c1000-differences"
       },
       {
         "article_id": "st1704-countertop-dishwasher-for-small-households",
         "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
-        "packet_sha256": "b42716ecf9a1bee5aa9c9a440e47e876c1bb7e67b75a3ee59b6d079d08abdb20",
+        "packet_sha256": "754bb5d2bdf04eefd1867bc53ebb5d2f4307ff1aa49f8414fe5e9d436e5c1cbf",
         "slot": 4,
         "slug": "countertop-dishwasher-for-small-households"
       },
       {
         "article_id": "st1704-compact-robot-vacuum-shortlist",
         "intent_classification": "CONDITION_SHORTLIST",
-        "packet_sha256": "611ad2038feaf87a318b2b1a99ee9b6984e6299f0214d07f02f95d8d9ee0ab99",
+        "packet_sha256": "4aae0a80274bdba88cd49eb25fdac3862911831d66ddd0b62267f9fa16f13320",
         "slot": 5,
         "slug": "compact-robot-vacuum-shortlist"
       }
     ],
-    "contract_sha256": "b53721ebbdee7b24a0b704d1369dbc841689934d08deddc1a9116a92f92e1801",
+    "contract_sha256": "d93eda4364aa5277a800382ab6d046f2554ef04aca6d0abe3a38bd69e6678351",
     "period": {
       "duration_days": 14,
       "end_exclusive_date": "2026-09-08",
@@ -92,18 +92,18 @@
     }
   },
   "provenance": {
-    "fixture_sha256": "fd31087a3283ef8996cac4c4596c4ffe1b34ec7ff3130e7dde73ec10e9d6d9db",
+    "fixture_sha256": "fbff7c293f10af6381d6f324a75da09bf258be886d798a263a38240a52d8767a",
     "generated_by": "repo://scripts/build_st1305_finance_reconciliation.py",
     "generation_command": ".venv/bin/python scripts/build_st1305_finance_reconciliation.py",
     "source_artifacts": [
       {
         "bytes": 8041,
-        "sha256": "60152d185ac2f5da249c5d8fc0f75c19e73a62fa612107d524a7f01692d7c264",
+        "sha256": "eed985fa3fe53d5e5e0a5c9fb12631709b83f37ea3ffcf700b1ca64825edf0d4",
         "uri": "repo://changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
       },
       {
         "bytes": 786,
-        "sha256": "fd31087a3283ef8996cac4c4596c4ffe1b34ec7ff3130e7dde73ec10e9d6d9db",
+        "sha256": "fbff7c293f10af6381d6f324a75da09bf258be886d798a263a38240a52d8767a",
         "uri": "repo://changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json"
       },
       {
@@ -161,7 +161,7 @@
       },
       "five_slot_measurement": {
         "path": "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json",
-        "sha256": "7f1eb69d554b26f8e954f36e9a330ba19425062c98a157683c8126c39f336471"
+        "sha256": "3a59ad41be34f2f01435cc1e85addabbf5b37507ea6b523f6a0898d3dfd9b32b"
       },
       "integration_precedence": {
         "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
@@ -185,27 +185,27 @@
       },
       "st1303_fixture": {
         "path": "changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json",
-        "sha256": "6be26be2aec03be5761a4a42560d728d5dc326f80ffba9e1893a23ef29a4c6ee"
+        "sha256": "ec6e793680946b317ac97cd0ba9c067cfcf9f06841a3558e52949c950b3e2793"
       },
       "st1303_projection": {
         "path": "changes/st-1303/generated/attribution-engine-recorded.v2.json",
-        "sha256": "ef620013020c08b64143f7902d97d21b86cb2aa0d66f1c4d697626c85bebb24b"
+        "sha256": "cc11e2cce266b2391eca5c041b5417feb2e3e6abbb21460013b5e65686690da8"
       },
       "st1303_runtime": {
         "path": "changes/st-1303/contracts/attribution-engine-runtime.v2.yaml",
-        "sha256": "15b2ea5ac92475ddc8231223f8354bc2f4684928266ef416301c4a321c3c8b63"
+        "sha256": "00feba86e4ca349d5348421679111c21e20fd13e898d8000491dd8d708afcbe3"
       },
       "st1304_fixture": {
         "path": "changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json",
-        "sha256": "5d7d0f5676c819183a49a13994718e559d01eab3dceb12c1ad1966d385f90734"
+        "sha256": "be6f9d9a14dd91078d66805f47ac1d4828e4a7d5f2275c58e9ab4e2cdb382fb1"
       },
       "st1304_projection": {
         "path": "changes/st-1304/generated/cost-unit-economics-recorded.v2.json",
-        "sha256": "2e47ab37399d54bfaaf7769a405efff6c1028c1800cd3ae282d4d39522a39b55"
+        "sha256": "fdb5728eeffe95cf4de4f9873e5ddefc924e3c8cbf9ae84f8ea42df6698b921d"
       },
       "st1304_runtime": {
         "path": "changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml",
-        "sha256": "d4764553c28b14556213c4f62288b8344113a4a40702042c5849e400a0e4b921"
+        "sha256": "0dec8138778668e5a7b063a7bc5d40feb63aadb9cfabcbad5974328ccb3d48ea"
       },
       "test_catalog": {
         "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
@@ -216,7 +216,7 @@
         "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
       }
     },
-    "unit_economics_fixture_sha256": "5d7d0f5676c819183a49a13994718e559d01eab3dceb12c1ad1966d385f90734"
+    "unit_economics_fixture_sha256": "be6f9d9a14dd91078d66805f47ac1d4828e4a7d5f2275c58e9ab4e2cdb382fb1"
   },
   "recorded_report": {
     "authority": {
@@ -272,8 +272,8 @@
         "left_value": "JPY",
         "right_value": "JPY",
         "source_sha256s": [
-          "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723",
-          "8deb4c2f93c4afac5136c54d98d565359f118516bf074881478f38e70749d5d3"
+          "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb",
+          "ff1909fffee9cfd9a0e34502c6f8ed9376aaa9ab16fafbad08fc02490add2508"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -284,8 +284,8 @@
         "left_value": "{\"duration_days\": 14, \"end_exclusive_date\": \"2026-09-08\", \"start_date\": \"2026-08-25\"}",
         "right_value": "{\"duration_days\": 14, \"end_exclusive_date\": \"2026-09-08\", \"start_date\": \"2026-08-25\"}",
         "source_sha256s": [
-          "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723",
-          "8deb4c2f93c4afac5136c54d98d565359f118516bf074881478f38e70749d5d3"
+          "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb",
+          "ff1909fffee9cfd9a0e34502c6f8ed9376aaa9ab16fafbad08fc02490add2508"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -296,7 +296,7 @@
         "left_value": 3,
         "right_value": 3,
         "source_sha256s": [
-          "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723"
+          "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -316,7 +316,7 @@
         "left_value": "300",
         "right_value": "300",
         "source_sha256s": [
-          "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723"
+          "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -327,8 +327,8 @@
         "left_value": "300",
         "right_value": "300",
         "source_sha256s": [
-          "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723",
-          "8deb4c2f93c4afac5136c54d98d565359f118516bf074881478f38e70749d5d3"
+          "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb",
+          "ff1909fffee9cfd9a0e34502c6f8ed9376aaa9ab16fafbad08fc02490add2508"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -340,7 +340,7 @@
         "right_value": 120,
         "source_sha256s": [
           "1111111111111111111111111111111111111111111111111111111111111111",
-          "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723"
+          "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -352,7 +352,7 @@
         "right_value": 79,
         "source_sha256s": [
           "4444444444444444444444444444444444444444444444444444444444444444",
-          "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723"
+          "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -385,8 +385,8 @@
         "left_value": "VERIFIED_SAME_PROGRAM_PERIOD_MATURE_FIVE_SLOTS",
         "right_value": "VERIFIED_SAME_PROGRAM_PERIOD_MATURE_FIVE_SLOTS",
         "source_sha256s": [
-          "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723",
-          "8deb4c2f93c4afac5136c54d98d565359f118516bf074881478f38e70749d5d3"
+          "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb",
+          "ff1909fffee9cfd9a0e34502c6f8ed9376aaa9ab16fafbad08fc02490add2508"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -416,7 +416,7 @@
         "severity": "EXTERNAL_BLOCKER"
       }
     ],
-    "input_sha256": "c0020a6a65da017442c55139870a2cf39024defe0536e6df50f015acae1dea8a",
+    "input_sha256": "95f8f83c3cbb23c6082c6fdd58c8e12c84b903b77f88953cb6704df56a3ace4d",
     "learning_report": {
       "availability": "AVAILABLE",
       "candidates": [
@@ -424,7 +424,7 @@
           "article": {
             "article_id": "st1704-countertop-dishwasher-for-small-households",
             "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
-            "packet_sha256": "b42716ecf9a1bee5aa9c9a440e47e876c1bb7e67b75a3ee59b6d079d08abdb20",
+            "packet_sha256": "754bb5d2bdf04eefd1867bc53ebb5d2f4307ff1aa49f8414fe5e9d436e5c1cbf",
             "slot": 4,
             "slug": "countertop-dishwasher-for-small-households"
           },
@@ -535,7 +535,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723"
+            "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb"
           ],
           "unavailable_reason": null,
           "unit": "JPY",
@@ -555,7 +555,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723"
+            "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb"
           ],
           "unavailable_reason": null,
           "unit": "JPY",
@@ -575,7 +575,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723",
+            "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb",
             "1111111111111111111111111111111111111111111111111111111111111111",
             "6666666666666666666666666666666666666666666666666666666666666666",
             "7777777777777777777777777777777777777777777777777777777777777777",
@@ -601,7 +601,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723",
+            "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb",
             "1111111111111111111111111111111111111111111111111111111111111111"
           ],
           "unavailable_reason": null,
@@ -622,7 +622,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723",
+            "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb",
             "6666666666666666666666666666666666666666666666666666666666666666",
             "7777777777777777777777777777777777777777777777777777777777777777",
             "8888888888888888888888888888888888888888888888888888888888888888",
@@ -652,7 +652,7 @@
             "8888888888888888888888888888888888888888888888888888888888888888",
             "9999999999999999999999999999999999999999999999999999999999999999",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723"
+            "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb"
           ],
           "unavailable_reason": null,
           "unit": "RATIO",
@@ -720,7 +720,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "03e7d2a38e577024efde6f4b807862db16ec9cbc7e55049c95264f2d8d7b0723",
+            "137d0ab129beb3593d6fb3348c232861a66bb1a06e709740d0d8c14be2d253fb",
             "1111111111111111111111111111111111111111111111111111111111111111"
           ],
           "unavailable_reason": null,
@@ -750,7 +750,7 @@
       "finance_may_change_publication_snapshot": false,
       "finance_may_change_recommendation_order": false
     },
-    "result_sha256": "1d8897dd5d3a79364f942dff7ea361a1d920fd1fe143c688f7f1fe2c5bc5e598",
+    "result_sha256": "9e38edf8fd61a15d58cafdea996b05f4f8f77dfc937b52f79aa6c06c241b6cd0",
     "run_id": "018f3e90-7b00-7000-8000-000000001305",
     "totals": {
       "amount_totals": {

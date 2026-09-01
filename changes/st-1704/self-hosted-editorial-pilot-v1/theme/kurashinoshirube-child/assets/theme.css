@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7;
+  --raos-theme-runtime-revision-base: 05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -68,6 +68,30 @@ a:hover {
 
 .raos-site-header .raos-masthead {
   position: relative;
+}
+
+.raos-site-header .raos-masthead__actions {
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.raos-site-header .raos-header-search,
+.raos-site-header .raos-header-search .wp-block-search__inside-wrapper {
+  margin: 0;
+  min-width: 2.75rem;
+}
+
+.raos-site-header .raos-header-search .wp-block-search__button {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  height: 2.75rem;
+  justify-content: center;
+  margin: 0;
+  min-width: 2.75rem;
+  padding: 0.625rem;
+  width: 2.75rem;
 }
 
 /*
@@ -634,6 +658,22 @@ a:hover {
   position: relative;
 }
 
+.raos-article-hero-image__notice {
+  background: rgb(23 36 63 / 94%);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  left: clamp(0.75rem, 2.5vw, 1.5rem);
+  letter-spacing: 0.025em;
+  line-height: 1.45;
+  margin: 0;
+  max-width: calc(100% - clamp(1.5rem, 5vw, 3rem));
+  padding: 0.45rem 0.7rem;
+  position: absolute;
+  top: clamp(0.75rem, 2.5vw, 1.5rem);
+  z-index: 2;
+}
+
 .raos-article-hero-image img {
   aspect-ratio: 3 / 1.55;
   display: block;
@@ -652,12 +692,12 @@ a:hover {
   position: absolute;
 }
 
-.raos-article-hero-image__overlay > span {
+.raos-article-hero-image__overlay > p {
   display: block;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.09em;
-  margin-bottom: 0.65rem;
+  margin: 0 0 0.65rem;
 }
 
 .raos-article-hero-image__overlay ul {
@@ -1392,6 +1432,33 @@ figure.raos-first-article-lead-image > img {
   }
 }
 
+@media (min-width: 37.501rem) and (max-width: 64rem) {
+  .raos-site-header .raos-masthead {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: 0.625rem;
+  }
+
+  .raos-site-header .raos-wordmark a {
+    white-space: nowrap;
+  }
+
+  .raos-site-header .raos-masthead__actions {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .raos-site-header .raos-primary-nav {
+    justify-self: start;
+  }
+
+  .raos-site-header .raos-primary-nav .wp-block-navigation__container {
+    flex-wrap: nowrap;
+    gap: clamp(0.65rem, 2vw, 1rem);
+  }
+}
+
 @media (max-width: 48rem) {
   .raos-masthead {
     display: flex;
@@ -1719,6 +1786,10 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 .raos-home-v2-page .raos-home-v2,
 .raos-home-v2-page .raos-home-v2 > * {
   margin-block-start: 0;
+}
+
+.raos-policy-v3-page .wp-block-post-content {
+  overflow-wrap: anywhere;
 }
 
 .raos-home-v2,
@@ -2318,7 +2389,9 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
   display: inline-flex;
   flex-wrap: wrap;
   gap: 0.35rem 0.6rem;
+  max-width: 100%;
   min-height: 2.75rem;
+  overflow-wrap: anywhere;
   padding-block: 0.375rem;
 }
 
@@ -2330,8 +2403,10 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
   font-size: 0.72rem;
   font-weight: 700;
   line-height: 1.4;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   padding: 0.12rem 0.48rem;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 /* Featured guide */
@@ -3193,10 +3268,11 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
   .raos-home-v2-page .raos-masthead nav {
     justify-self: start;
   }
+
 }
 
 @media (max-width: 37.5rem) {
-  .raos-home-v2 > :not(.raos-home-hero) {
+  .raos-home-v2 > :not(.raos-home-hero):not(.raos-home-method) {
     contain: layout paint style;
     contain-intrinsic-size: auto 42rem;
     content-visibility: auto;
@@ -3214,12 +3290,35 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 
   .raos-home-v2-page .raos-masthead {
     gap: 0.75rem;
+    grid-template-columns: minmax(0, 1fr);
     min-height: 4rem;
   }
 
   .raos-home-v2-page .raos-wordmark {
     font-size: 1.05rem;
     letter-spacing: 0.055em;
+    max-width: 100%;
+    width: auto;
+  }
+
+  .raos-home-v2-page .raos-wordmark a {
+    white-space: nowrap;
+  }
+
+  .raos-home-v2-page .raos-masthead__actions {
+    justify-content: space-between;
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  .raos-home-v2-page .raos-masthead nav {
+    justify-self: start;
+  }
+
+  .raos-footer .raos-wordmark a {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 
   .raos-home-v2-page .raos-wordmark::before {

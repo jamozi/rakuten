@@ -17,10 +17,34 @@ are seeded. Before startup or synchronization, the tracked ten-article source
 portfolio is materialized below `.secrets/wordpress-local-preview/`. Fresh,
 exactly matched product evidence may supply an affiliate destination and a
 local copy of its 128px product image; missing, ambiguous, or expired evidence
-falls back to the manufacturer page and the tracked neutral image. The browser
-never loads a product image or script from an external origin. No live post,
-production credential, analytics integration, or MCP publication tool is used
-by the preview.
+shows the visible non-image state `商品画像未確認・購入導線停止` and may retain a
+clearly labelled manufacturer page link only as an incomplete development
+fallback. It never reuses a neutral or article-level visual as a product image,
+and this fallback is never a production candidate. Production still requires
+34/34 verified product-card images and 68/68 verified affiliate CTAs, with zero
+neutral images and zero manufacturer-link fallbacks. The browser never loads a
+product image or script from an external origin. No live post, production
+credential, analytics integration, or MCP publication tool is used by the
+preview.
+
+### Exact JAN evidence
+
+Rakuten Item Search does not return JAN. For every owner-registered product
+whose V2 binding has `official_jan`, capture therefore requires a separate
+owner-private official-source receipt at
+`.secrets/editorial-portfolio-v2/product-jan-evidence.v1.json` and one snapshot
+at `.secrets/editorial-portfolio-v2/jan-evidence/<product_id>.snapshot.txt`.
+The receipt and snapshots must be owner-only regular files with mode `0600`;
+the JSON schema is `RAOS_EDITORIAL_PORTFOLIO_PRODUCT_JAN_EVIDENCE_V1` and must
+contain the exact current portfolio hash, a single UTC `verified_at` no more
+than 24 hours old, `owner_attested: true`, and exactly one row for every product
+with an official JAN. Each row binds the product ID, representative model,
+official JAN, official URL, source locator, exact snapshot filename and SHA-256,
+and the same `verified_at`. The snapshot text must contain both the exact JAN
+and representative model. Missing, extra, stale, mismatched, symlinked,
+non-owner, or wrongly permissioned evidence fails before the Rakuten credential
+is read. Provider evidence may omit JAN, but it can never replace or weaken this
+separate exact official-source binding.
 
 ## Promotion rule
 
@@ -45,21 +69,18 @@ separate-admin approval/apply receipt. That exact receipt is required before the
 measurement plugin can be proposed. After the separately approved measurement
 plugin apply receipt has been validated with
 `measurement_plugin_proposal.py --content-ready`, run the full tracked batch
-with that owner-private receipt. Narrow historical article-only requests remain
-available without the plugin gate:
+with that owner-private receipt. Production submission is deliberately limited
+to the exact complete portfolio; article-only and other partial selections fail
+before a lock, credential read, preview mutation, or remote call:
 
 ```sh
 MEASUREMENT_PLUGIN_APPLY_RECEIPT="$PWD/.secrets/wordpress-mcp/publication-requests/plugin-applied.json" \
   make wordpress-production-request
-make wordpress-production-request ARTICLES=roomba-mini-vs-switchbot-k11-pro
-make wordpress-production-request ARTICLES=carry-on-suitcase-under-100-seats,solota-vs-rakua-mini-plus
 ```
 
-`ARTICLES` defaults to `all`; that mode fails before preview or remote access
+`ARTICLES` must be `all`; any other value fails closed. Full mode fails before preview or remote access
 unless the exact separate-admin plugin apply receipt is present under the
-owner-private publication-request directory. Otherwise `ARTICLES` accepts an exact,
-comma-separated set of production slugs registered in
-`production-mapping.v1.json`. The command always runs preview `up`, `sync`, and
+owner-private publication-request directory. The command always runs preview `up`, `sync`, and
 `check` before it reads the editor credential or makes any live call. It then
 uses only the exact project MCP editor endpoint to reuse an identical draft,
 CAS-update a draft previously written by this workflow, or create a missing
@@ -164,13 +185,70 @@ fixture or theme source.
 ## Browser evidence
 
 `make wordpress-preview-check` audits the home page, all ten editorial
-drafts, and the three fixed policy pages at widths 360, 390, 768, and 1440
-pixels. It fails on HTTP errors,
+drafts, the three fixed policy pages, true-empty and whitespace-only search,
+populated and zero-result search, an encoded hostile query, a second result
+page with its query preserved, all three category archives, the date and local
+author archives, and the 404 template at widths 360, 390, 768, and 1440 pixels.
+The generated route contract records tag and custom-post-type archives as
+`NOT_APPLICABLE` with closed reason codes because the seed exposes neither; a
+missing applicable archive cannot be silently reclassified. The audit fails on HTTP errors,
 console/page errors, external requests, horizontal overflow, missing image
 alternatives, duplicate IDs, broken ARIA references, missing Japanese language
 metadata, incorrect H1/main counts, out-of-bounds H1, Cookie-settings, or CTA
-boxes, or a missing Editorial V2 article module. The 56 screenshots are ignored
-build artifacts under `output/playwright/local-preview/`.
+boxes, or a missing Editorial V2 article module. It also fails if the anonymous
+browser acquires any Cookie (including HttpOnly), local/session storage entry,
+IndexedDB database, Cache Storage, or Service Worker registration. In addition
+to the 104 viewport screenshots, it captures 26 text-resize screenshots after
+raising the root font size to 200% and rejects horizontal overflow, clipped
+text, or off-screen controls. These 130 files are ignored build artifacts under
+`output/playwright/local-preview/`.
+
+Search and archive checks bind the expected Japanese text, response status,
+absence of a canonical on these intentionally non-canonical routes, escaped
+hostile-query rendering, and pagination continuity. The local MU plugin forces
+every route to `noindex, nofollow, noarchive, nosnippet`; the evidence therefore
+records the `LOCAL_PREVIEW` profile and `production_robots_evidence: false`.
+Production expectations (`noindex, follow` for search/archive and `noindex,
+nofollow` for 404) remain a separate contract and are not claimed as observed
+by a local pass.
+
+Every article must expose exactly one visible advertising disclosure. The
+audit scrolls that element into view, rejects clipped or off-screen placement,
+and requires it before the first purchase CTA in both DOM and visual order. It
+also checks the standard disclosure statements, its comparison
+policy link, and native `details`/`summary` operation with Enter and Space at
+390px. All links are parsed from their actual DOM attributes: arbitrary or
+active URL schemes and non-local plain HTTP destinations are rejected,
+affiliate destinations require `sponsored nofollow`, and every `_blank` link
+requires `noopener noreferrer`. Forbidden Product, Offer, Review,
+AggregateRating, and FAQPage types are found recursively in JSON-LD rather than
+only at the graph root.
+
+The browser records request method, resource type, and origin class as counts
+only; it never records request values or Cookie contents. Only GET/HEAD for the
+closed document, stylesheet, script, image, and font resource types are
+accepted, so POST and beacon traffic fail even when it does not use the known
+measurement endpoint. At 390px and 1440px the audit exercises forward and
+reverse keyboard tab order, verifies a visible unobscured focus indicator, and
+emulates reduced motion to confirm computed animation, transition, and smooth
+scroll behavior are disabled.
+
+Main-document responses must include `X-Content-Type-Options: nosniff`,
+`Referrer-Policy: no-referrer`, the closed local `Permissions-Policy`, and
+`X-Frame-Options: DENY`. A Content Security Policy is deliberately not claimed
+by this local contract: WordPress currently owns inline bootstrap markup, while
+the public CSP belongs to the production server or edge. Verify the deployed
+header separately before publication; a local pass is not evidence that a
+production CSP exists.
+
+The mobile Lighthouse gate invalidates all previous reports and its summary
+before each run. It captures three samples for the home page and a representative
+article, then writes only a median-based summary bound to a UTC capture time,
+the current theme source fingerprint and runtime revision, navigation and route
+inventory hashes, browser-audit hash, and the hash and fetch time of every
+Lighthouse report. Changed inputs, mismatched fingerprints, stale timestamps,
+or a missing report fail closed; an older `summary.json` can never satisfy a new
+run.
 
 ## Reset and boundaries
 
@@ -183,7 +261,7 @@ make wordpress-preview-reset CONFIRM=YES
 ```
 
 The local must-use plugin adds a visible non-production banner, sends
-`X-Robots-Tag: noindex`, keeps `blog_public=0`, blocks mail and WordPress HTTP
-requests, disables file modification and automatic updates, and never ships in
-the child-theme package. This environment is not staging, release, or
-Production evidence.
+`X-Robots-Tag: noindex`, the four response hardening headers audited above,
+keeps `blog_public=0`, blocks mail and WordPress HTTP requests, disables file
+modification and automatic updates, and never ships in the child-theme package.
+This environment is not staging, release, or Production evidence.

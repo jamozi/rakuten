@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.5.0"
 THEME_RUNTIME_REVISION: Final = (
-    "898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7"
+    "05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -57,6 +57,9 @@ ZIP_TIMESTAMP: Final = (2026, 8, 23, 0, 0, 0)
 EDITORIAL_NAVIGATION_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/editorial-navigation.v3.json"
 )
+ANKER_GENERATIONS_ASSET_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/article-anker-solix-generations.webp"
+)
 PORTABLE_POWER_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/article-portable-power-guide.webp"
 )
@@ -66,11 +69,26 @@ DISHWASHER_ASSET_INPUT_PATH: Final = (
 ROBOT_VACUUM_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/article-robot-vacuum-guide.webp"
 )
+ROOMBA_K11_ASSET_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/article-roomba-mini-k11-comparison.webp"
+)
+SOLOTA_RAKUA_ASSET_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/article-solota-rakua-replacement.webp"
+)
 HOME_HERO_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/home-hero.webp"
 )
 SUITCASE_GUIDE_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-guide.webp"
+)
+SUITCASE_FRONT_OPEN_ASSET_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-front-open-stopper.webp"
+)
+SUITCASE_UNDER_100_ASSET_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-under-100-seats.webp"
+)
+SUITCASE_UNDER_3KG_ASSET_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-under-3kg.webp"
 )
 MEASUREMENT_CLIENT_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/measurement.js"
 ANALYTICS_CONSENT_GATE_INPUT_PATH: Final = (
@@ -82,10 +100,16 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     THEME_REPOSITORY_ROOT / "assets/editorial-navigation.js",
     EDITORIAL_NAVIGATION_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/editorial-v2.css",
+    ANKER_GENERATIONS_ASSET_INPUT_PATH,
     DISHWASHER_ASSET_INPUT_PATH,
     PORTABLE_POWER_ASSET_INPUT_PATH,
     ROBOT_VACUUM_ASSET_INPUT_PATH,
+    ROOMBA_K11_ASSET_INPUT_PATH,
+    SOLOTA_RAKUA_ASSET_INPUT_PATH,
+    SUITCASE_FRONT_OPEN_ASSET_INPUT_PATH,
     SUITCASE_GUIDE_ASSET_INPUT_PATH,
+    SUITCASE_UNDER_100_ASSET_INPUT_PATH,
+    SUITCASE_UNDER_3KG_ASSET_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/images/brand-mark.svg",
     HOME_HERO_ASSET_INPUT_PATH,
     MEASUREMENT_CLIENT_INPUT_PATH,
@@ -128,6 +152,24 @@ PHP_INTEGRITY_BINDINGS: Final = {
     ),
     "KURASHINOSHIRUBE_ROBOT_ARTICLE_IMAGE_SHA256": (
         "assets/images/article-robot-vacuum-guide.webp"
+    ),
+    "KURASHINOSHIRUBE_SUITCASE_UNDER_100_IMAGE_SHA256": (
+        "assets/images/article-suitcase-under-100-seats.webp"
+    ),
+    "KURASHINOSHIRUBE_SUITCASE_UNDER_3KG_IMAGE_SHA256": (
+        "assets/images/article-suitcase-under-3kg.webp"
+    ),
+    "KURASHINOSHIRUBE_SUITCASE_FRONT_OPEN_IMAGE_SHA256": (
+        "assets/images/article-suitcase-front-open-stopper.webp"
+    ),
+    "KURASHINOSHIRUBE_ANKER_GENERATIONS_IMAGE_SHA256": (
+        "assets/images/article-anker-solix-generations.webp"
+    ),
+    "KURASHINOSHIRUBE_SOLOTA_RAKUA_IMAGE_SHA256": (
+        "assets/images/article-solota-rakua-replacement.webp"
+    ),
+    "KURASHINOSHIRUBE_ROOMBA_K11_IMAGE_SHA256": (
+        "assets/images/article-roomba-mini-k11-comparison.webp"
     ),
     "KURASHINOSHIRUBE_BRAND_MARK_SHA256": "assets/images/brand-mark.svg",
     "KURASHINOSHIRUBE_MEASUREMENT_ASSET_SHA256": "assets/measurement.js",
@@ -249,11 +291,17 @@ def _validate_owner_bindings() -> None:
         != EDITORIAL_NAVIGATION_INPUT_PATH
         or generated_theme_assets
         != {
+            ANKER_GENERATIONS_ASSET_INPUT_PATH,
             DISHWASHER_ASSET_INPUT_PATH,
             HOME_HERO_ASSET_INPUT_PATH,
             PORTABLE_POWER_ASSET_INPUT_PATH,
             ROBOT_VACUUM_ASSET_INPUT_PATH,
+            ROOMBA_K11_ASSET_INPUT_PATH,
+            SOLOTA_RAKUA_ASSET_INPUT_PATH,
+            SUITCASE_FRONT_OPEN_ASSET_INPUT_PATH,
             SUITCASE_GUIDE_ASSET_INPUT_PATH,
+            SUITCASE_UNDER_100_ASSET_INPUT_PATH,
+            SUITCASE_UNDER_3KG_ASSET_INPUT_PATH,
         }
         or not {
             MEASUREMENT_CLIENT_INPUT_PATH,
@@ -398,7 +446,7 @@ def _canonical_json(document: object) -> bytes:
             )
             + "\n"
         ).encode("utf-8", errors="strict")
-    except TypeError, ValueError, UnicodeError, RecursionError:
+    except (TypeError, ValueError, UnicodeError, RecursionError):
         _fail()
 
 
@@ -458,7 +506,7 @@ def _decoded_utf8(payload: bytes) -> str:
 def _load_json_payload(payload: bytes) -> dict[str, object]:
     try:
         document = json.loads(payload.decode("utf-8", errors="strict"))
-    except UnicodeError, json.JSONDecodeError:
+    except (UnicodeError, json.JSONDecodeError):
         _fail()
     if type(document) is not dict:
         _fail()
@@ -596,7 +644,7 @@ def _write_theme_stamp_payloads(payloads: Mapping[Path, bytes]) -> None:
             staged.append((target, temporary))
         for target, temporary in staged:
             os.replace(temporary, target)
-    except OSError, ThemeBuildFailure:
+    except (OSError, ThemeBuildFailure):
         for _target, temporary in staged:
             try:
                 temporary.unlink(missing_ok=True)
@@ -719,7 +767,7 @@ def _validate_asset_manifest(
         _fail()
 
     records = assets.get("required_images")
-    if type(records) is not list or len(records) != 6:
+    if type(records) is not list or len(records) != 12:
         _fail()
     generated_assets = {
         asset.output.relative_to(THEME_ROOT).as_posix(): asset
@@ -797,10 +845,16 @@ def _validate_asset_manifest(
         }:
             _fail()
     if seen_paths != {
+        "assets/images/article-anker-solix-generations.webp",
         "assets/images/article-countertop-dishwasher-guide.webp",
         "assets/images/article-portable-power-guide.webp",
         "assets/images/article-robot-vacuum-guide.webp",
+        "assets/images/article-roomba-mini-k11-comparison.webp",
+        "assets/images/article-solota-rakua-replacement.webp",
+        "assets/images/article-suitcase-front-open-stopper.webp",
         "assets/images/article-suitcase-guide.webp",
+        "assets/images/article-suitcase-under-100-seats.webp",
+        "assets/images/article-suitcase-under-3kg.webp",
         "assets/images/brand-mark.svg",
         "assets/images/home-hero.webp",
     }:
@@ -1118,11 +1172,8 @@ def validate_sources() -> dict[str, str]:
         _fail()
     _validate_asset_manifest(_json("raos-assets.v1.json"), sources)
 
-    _validate_webp("assets/images/article-countertop-dishwasher-guide.webp")
-    _validate_webp("assets/images/article-portable-power-guide.webp")
-    _validate_webp("assets/images/article-robot-vacuum-guide.webp")
-    _validate_webp("assets/images/article-suitcase-guide.webp")
-    _validate_webp("assets/images/home-hero.webp")
+    for asset in theme_asset_owner.ASSETS:
+        _validate_webp(asset.output.relative_to(THEME_ROOT).as_posix())
     _validate_svg()
     return {
         relative: hashlib.sha256(payload).hexdigest()
@@ -1173,7 +1224,7 @@ def _write_package(payload: bytes) -> None:
             os.fsync(handle.fileno())
         os.replace(temporary, OUTPUT_PATH)
         os.chmod(OUTPUT_PATH, 0o600)
-    except OSError, ThemeBuildFailure:
+    except (OSError, ThemeBuildFailure):
         _fail()
 
 

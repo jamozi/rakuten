@@ -6,7 +6,10 @@ set -o pipefail
 
 readonly script_directory="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
 readonly repository_root="$(CDPATH= cd -- "$script_directory/.." && pwd -P)"
-readonly node_bin=/home/minami/.nvm/versions/node/v24.18.1/bin/node
+node_bin="${RAOS_NODE:-}"
+[ -n "$node_bin" ] || node_bin="$(command -v node 2>/dev/null || true)"
+readonly node_bin
+readonly node_directory="$(dirname -- "$node_bin")"
 readonly cli_js=$repository_root/node_modules/@playwright/cli/playwright-cli.js
 readonly audit_function=$repository_root/scripts/wordpress_public_ui_audit.function.js
 readonly audit_inventory=$repository_root/changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json
@@ -50,7 +53,7 @@ fs.writeFileSync(
 TMPDIR=/tmp
 TEMP=/tmp
 TMP=/tmp
-PATH=/home/minami/.nvm/versions/node/v24.18.1/bin:/usr/bin:/bin
+PATH=$node_directory:/usr/bin:/bin
 LANG=C.UTF-8
 LC_ALL=C.UTF-8
 TZ=UTC

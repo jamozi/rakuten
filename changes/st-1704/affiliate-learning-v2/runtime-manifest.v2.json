@@ -7,11 +7,11 @@
     "recommendation_mutation": false,
     "tracking": false
   },
-  "contract_sha256": "fed64869209f0e2fb800cfe4f9ab858fccc84f5f558506251dded55a33da186b",
+  "contract_sha256": "791b11b5a5ecbf873f803364514fce1d1d4e124219e53da306573ec442716772",
   "fixtures": [
     {
       "path": "changes/st-1704/affiliate-learning-v2/examples/article-observation.v2.json",
-      "sha256": "9c3da962baa09629d03a96854620a2b875851ed973267179895c61cf8a29fc5d"
+      "sha256": "6099500eefde69c07c55b0107745ab4163d59d03c5360cd1f6f38f374d26bbdb"
     },
     {
       "path": "changes/st-1704/affiliate-learning-v2/examples/program-observation.v2.json",
@@ -23,7 +23,7 @@
   "runtime_sources": [
     {
       "path": "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json",
-      "sha256": "7f1eb69d554b26f8e954f36e9a330ba19425062c98a157683c8126c39f336471",
+      "sha256": "3a59ad41be34f2f01435cc1e85addabbf5b37507ea6b523f6a0898d3dfd9b32b",
       "size": 4785
     },
     {

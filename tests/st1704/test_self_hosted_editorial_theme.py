@@ -302,6 +302,17 @@ def test_theme_stamp_generator_converges_once_is_idempotent_and_rotates(
     assert rotated_revision in runbook_path.read_text(encoding="utf-8")
 
 
+def test_theme_builder_parenthesizes_multiple_exception_types() -> None:
+    builder = theme_builder.THEME_BUILDER_SOURCE_PATH.read_text(encoding="utf-8")
+    assert re.search(r"(?m)^\s*except [^(\n][^:\n]*,", builder) is None
+    for clause in (
+        "except (TypeError, ValueError, UnicodeError, RecursionError):",
+        "except (UnicodeError, json.JSONDecodeError):",
+        "except (OSError, ThemeBuildFailure):",
+    ):
+        assert clause in builder
+
+
 def test_every_theme_fingerprint_input_rotates_the_revision(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -379,7 +390,7 @@ def test_asset_manifest_is_complete_and_hash_bound() -> None:
         theme_builder.theme_source_fingerprint()
     )
     records = manifest["required_images"]
-    assert isinstance(records, list) and len(records) == 6
+    assert isinstance(records, list) and len(records) == 12
     for record in records:
         assert isinstance(record, dict)
         path = THEME_ROOT / str(record["path"])
@@ -561,13 +572,15 @@ def test_mobile_home_defers_only_below_fold_sections_with_stable_intrinsic_size(
 ):
     css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
     mobile = css.split("@media (max-width: 37.5rem) {", 1)[1]
-    rule = mobile.split(".raos-home-v2 > :not(.raos-home-hero) {", 1)[1].split("}", 1)[
-        0
-    ]
+    selector = (
+        ".raos-home-v2 > :not(.raos-home-hero):not(.raos-home-method) {"
+    )
+    rule = mobile.split(selector, 1)[1].split("}", 1)[0]
     assert "contain: layout paint style;" in rule
     assert "content-visibility: auto;" in rule
     assert "contain-intrinsic-size: auto 42rem;" in rule
     assert ".raos-home-hero" not in rule
+    assert ".raos-home-method" not in rule
 
 
 def test_core_skip_link_main_target_is_programmatically_focusable() -> None:
@@ -649,7 +662,7 @@ def test_editorial_v2_category_fallback_is_allowlisted() -> None:
         "ブランド内比較",
         "条件別比較",
         "機能別比較",
-        "2製品比較＋参考機種",
+        "旧製品の販売状態確認＋現行比較への案内",
     }
     assert all(article["comparison_scope"] for article in navigation["articles"])
     assert all(article["primary_query_intent"] for article in navigation["articles"])
@@ -689,6 +702,10 @@ def test_article_hero_allows_only_exact_local_preview_counterparts() -> None:
         assert article["article_id"] in renderer
     assert "kurashinoshirube_article_visual_asset($post_id)" in renderer
     assert "raos-article-hero-image__overlay" in renderer
+    assert "raos-article-hero-image__media" in renderer
+    assert "raos-article-hero-image__notice" in renderer
+    assert "比較イメージ／商品写真ではありません" in renderer
+    assert "<p>この記事の比較軸</p>" in renderer
     assert 'aria-label="この記事で比べる3つの軸"' in renderer
     assert "preg_match(" not in renderer
     assert "$visual['sha256'],\n        true" in renderer
@@ -730,10 +747,16 @@ def test_article_visuals_and_toc_are_closed_to_the_reviewed_portfolio() -> None:
     for article_id in _load_json(EDITORIAL_NAVIGATION_PATH)["articles"]:
         assert article_id["article_id"] in visual
     for image_name in (
+        "article-anker-solix-generations.webp",
         "article-countertop-dishwasher-guide.webp",
         "article-portable-power-guide.webp",
         "article-robot-vacuum-guide.webp",
+        "article-roomba-mini-k11-comparison.webp",
+        "article-solota-rakua-replacement.webp",
+        "article-suitcase-front-open-stopper.webp",
         "article-suitcase-guide.webp",
+        "article-suitcase-under-100-seats.webp",
+        "article-suitcase-under-3kg.webp",
     ):
         assert image_name in functions
     assert "count($definition['points']) !== 3" in visual
@@ -741,14 +764,28 @@ def test_article_visuals_and_toc_are_closed_to_the_reviewed_portfolio() -> None:
         "$assets = array(", 1
     )[0]
     assert article_visuals.count("'caption' =>") == 10
+    asset_keys = re.findall(r"'asset_key' => '([^']+)'", article_visuals)
+    assert len(asset_keys) == len(set(asset_keys)) == 10
+    asset_definitions = visual.split("$assets = array(", 1)[1].split(
+        "$definition =", 1
+    )[0]
+    asset_paths = re.findall(
+        r"'path' => (KURASHINOSHIRUBE_[A-Z0-9_]+_PATH)", asset_definitions
+    )
+    assert len(asset_paths) == len(set(asset_paths)) == 10
     assert article_visuals.count("'points' => array(") == 10
     assert (
             article_visuals.count("暮らしのしるべ編集者の比較イメージ（商品写真ではありません）")
         == 10
     )
     assert "抽象図" not in article_visuals
+    assert "小型ロボット掃除機3構成" not in article_visuals
+    assert "小型ロボット掃除機の本体幅・ステーション・販売状態" in (
+        article_visuals
+    )
     for selector in (
         ".raos-article-hero-image__canvas",
+        ".raos-article-hero-image__notice",
         ".raos-article-hero-image__overlay",
         ".raos-article-hero-image__overlay ul",
         ".raos-article-hero-image__overlay li",
@@ -757,6 +794,11 @@ def test_article_visuals_and_toc_are_closed_to_the_reviewed_portfolio() -> None:
     assert "kurashinoshirube_public_article_identity((int) get_the_ID())" in toc
     assert "count($items) < 3 || count($items) > 24" in toc
     assert "<details open><summary>この記事の目次</summary><ol>" in toc
+    assert "$root_end = strpos($transformed, '>');" in toc
+    assert "$root_close = strrpos($transformed, '</div>');" in toc
+    assert "<div class=\"raos-editorial-v2__main\">" in toc
+    assert "<p class=\"raos-article-toc__title\">この記事の目次</p>" in toc
+    assert "$disclosure_end" not in toc
     assert (
         "add_filter('the_content', 'kurashinoshirube_inject_article_toc', 12);" in toc
     )
@@ -768,13 +810,15 @@ def test_article_visuals_and_toc_are_closed_to_the_reviewed_portfolio() -> None:
         == 2
     )
     assert ".raos-editorial-v2 h2[id]" in css
-    assert "window.matchMedia('(min-width: 48.0625rem)')" in navigation_script
+    assert "window.matchMedia('(min-width: 64.0625rem)')" in navigation_script
     assert "tocDetails.open = desktopQuery.matches || mobileOpen" in navigation_script
     assert "desktopQuery.addEventListener('change', synchronizeToc)" in (
         navigation_script
     )
     assert "--raos-toc-scroll-offset" in css
-    assert "toc.getBoundingClientRect().height" in navigation_script
+    assert "toc.getBoundingClientRect().height" not in navigation_script
+    assert "grid-template-columns: minmax(0, 1fr) minmax(15rem, 18rem)" in css
+    assert ".raos-editorial-v2 .raos-article-toc__title" in css
     assert "editorialRoot.style.setProperty('--raos-toc-scroll-offset'" in (
         navigation_script
     )
@@ -789,6 +833,11 @@ def test_article_visuals_and_toc_are_closed_to_the_reviewed_portfolio() -> None:
     assert "region.tabIndex = 0" in navigation_script
     assert "region.removeAttribute('tabindex')" in navigation_script
     assert "new ResizeObserver(synchronizeComparisonRegions)" in navigation_script
+    assert ".raos-primary-nav" in theme_css
+    assert "@media (min-width: 37.501rem) and (max-width: 64rem)" in theme_css
+    assert "flex-wrap: nowrap" in theme_css
+    assert ".raos-home-v2-page .raos-wordmark a" in theme_css
+    assert "white-space: nowrap" in theme_css
     assert "kurashinoshirube_verified_asset_uri(" in social_visual
     assert "if ($uri === null)" in social_visual
     assert "$visual['uri'] = $uri;" in social_visual
@@ -1276,6 +1325,26 @@ def test_consent_defaults_are_opt_in_and_global() -> None:
     assert result.stdout.strip() == "ANALYTICS_CONSENT_GATE_HARNESS_OK"
 
 
+def test_public_theme_disables_core_emoji_session_storage_probe() -> None:
+    functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    block = functions.split(
+        "function kurashinoshirube_disable_core_emoji_assets", 1
+    )[1].split("add_action('after_setup_theme', static function", 1)[0]
+    for marker in (
+        "remove_action('wp_head', 'print_emoji_detection_script', 7);",
+        "remove_action('wp_enqueue_scripts', 'wp_enqueue_emoji_styles');",
+        "remove_action('wp_print_styles', 'print_emoji_styles');",
+        "remove_action('embed_head', 'print_emoji_detection_script');",
+        "remove_action('enqueue_embed_scripts', 'wp_enqueue_emoji_styles');",
+    ):
+        assert marker in block
+    assert (
+        "'after_setup_theme',\n"
+        "    'kurashinoshirube_disable_core_emoji_assets',\n"
+        "    0"
+    ) in block
+
+
 def test_brand_mark_is_bounded_accessible_svg() -> None:
     mark = THEME_ROOT / "assets/images/brand-mark.svg"
     root = ET.fromstring(mark.read_text(encoding="utf-8"))
@@ -1479,6 +1548,8 @@ def test_navigation_and_listing_labels_are_reader_facing_japanese() -> None:
     assert "[kurashinoshirube_search_empty_state]" in search
     assert "kurashinoshirube_constrain_public_search" in functions
     assert "'pre_get_posts'" in functions
+    assert "sprintf('%d年%d月の記事', $year, $month)" in functions
+    assert "get_the_archive_title()" not in functions
     for source, translated in (
         ("Close menu", "メニューを閉じる"),
         ("Expand search field", "検索欄を開く"),
@@ -1793,6 +1864,11 @@ def test_homepage_cluster_contract_is_hash_bound_and_covers_all_articles() -> No
     assert 'class="raos-guide-role"' in source
     assert "$binding['content_role_label']" in source
     assert ".raos-home-v2 .raos-cluster .raos-guide-role" in css
+    assert "overflow-wrap: anywhere;" in css
+    assert "white-space: normal;" in css
+    assert ".raos-site-header .raos-header-search .wp-block-search__button" in css
+    assert "width: 2.75rem;" in css
+    assert ".raos-policy-v3-page .wp-block-post-content" in css
 
     renderer = source.split("function kurashinoshirube_render_published_clusters", 1)[
         1
@@ -2573,6 +2649,8 @@ def test_yoast_is_the_only_generic_head_metadata_owner() -> None:
         "wpseo_twitter_description",
         "wpseo_twitter_image",
         "wpseo_twitter_card_type",
+        "wpseo_meta_author",
+        "wpseo_enhanced_slack_data",
         "wpseo_robots",
     )
     for name in expected_filters:
@@ -2581,6 +2659,21 @@ def test_yoast_is_the_only_generic_head_metadata_owner() -> None:
     assert "wpseo_add_opengraph_images" not in source
     assert "kurashinoshirube_filter_snapshot_value($value, 'seo_title')" in source
     assert "$payload['title'] !== $title" in source
+    author_filter = source.split(
+        "function kurashinoshirube_filter_meta_author", 1
+    )[1].split("function kurashinoshirube_filter_enhanced_slack_data", 1)[0]
+    slack_filter = source.split(
+        "function kurashinoshirube_filter_enhanced_slack_data", 1
+    )[1].split("function kurashinoshirube_filter_og_type", 1)[0]
+    for owner in (author_filter, slack_filter):
+        assert "kurashinoshirube_public_head_context()" in owner
+    assert "($context['kind'] ?? null) === 'article'" in author_filter
+    assert "($context['kind'] ?? null) !== 'article'" in slack_filter
+    assert "'暮らしのしるべ編集者'" in author_filter
+    assert "array('執筆' => '暮らしのしるべ編集者')" in slack_filter
+    assert "['読了時間の目安'] = (string) $minutes . '分';" in slack_filter
+    for stale_copy in ("Written by", "Est. reading time", "raos-local-admin"):
+        assert stale_copy not in source
     combined = "\n".join(
         path.read_text(encoding="utf-8")
         for path in (
@@ -2779,6 +2872,8 @@ def test_structured_data_is_one_closed_raos_graph() -> None:
     assert "kurashinoshirube_is_nullable_timestamp($published)" in emitter
     assert "kurashinoshirube_is_nullable_timestamp($modified)" in emitter
     assert "strcmp($modified, $published) < 0" in emitter
+    assert "'breadcrumb' => array('@id' => $canonical . '#breadcrumb')" in emitter
+    assert "'url' => $canonical" in emitter
     for flag in (
         "JSON_HEX_TAG",
         "JSON_HEX_AMP",

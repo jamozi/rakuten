@@ -1,0 +1,427 @@
+{
+  "schema": "RAOS_WORDPRESS_QUALITY_AUDIT_CONTRACT_V1",
+  "version": "1.1.0",
+  "fingerprint_algorithm": "RAOS_FILE_SET_SHA256_V1",
+  "hash_algorithm": "SHA256_CANONICAL_JSON_V1",
+  "editorial_evidence_policy": {
+    "third_party_blog_use": "SELECTION_AXIS_DISCOVERY_ONLY",
+    "third_party_blog_recommendation_evidence": "PROHIBITED",
+    "third_party_experience_as_editorial_hands_on": "PROHIBITED",
+    "third_party_report_review_or_best_evidence": "PROHIBITED",
+    "quotation_policy": "EXPLICIT_ATTRIBUTED_MINIMUM_NECESSARY",
+    "editorial_hands_on_label_requirement": "DIRECT_USE_ACQUISITION_CONFLICT_PERIOD_ENVIRONMENT_METHOD_ORIGINAL_EVIDENCE_REQUIRED",
+    "third_party_report_required_fields": "EXACT_MODEL_PUBLISHER_PUBLISHED_DATE_CHECKED_DATE_USE_CONDITIONS_SOURCE_URL_LOCATOR",
+    "review_schema_for_non_hands_on": "PROHIBITED"
+  },
+  "independent_reviewer_attestation": {
+    "schema": "RAOS_WORDPRESS_QUALITY_AUDIT_INDEPENDENT_REVIEWER_ATTESTATION_V1",
+    "signature_algorithm": "ED25519",
+    "canonicalization": "RAOS_SORTED_UTF8_JSON_V1",
+    "independence_statement": "I_ATTEST_THAT_THE_BOUND_REVIEW_ROUNDS_WERE_PERFORMED_INDEPENDENTLY_OF_CONTENT_AUTHORING_AND_OF_EACH_OTHER_WITHOUT_SELF_REVIEW",
+    "max_validity_seconds": 3600,
+    "trusted_reviewer_keys": []
+  },
+  "fingerprint_groups": [
+    {
+      "fingerprint_id": "source",
+      "inputs": [
+        "Makefile",
+        "changes/analytics-google-live-v1/runtime-manifest.v1.json",
+        "changes/editorial-measurement-v1",
+        "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+        "changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
+        "changes/editorial-portfolio-v3/editorial-identities.v1.json",
+        "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+        "changes/editorial-portfolio-v3/market-candidate-audit.v1.json",
+        "changes/editorial-portfolio-v3/rakuten-parser-boundary.v1.json",
+        "changes/editorial-portfolio-v3/README.md",
+        "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json",
+        "changes/st-1704/carry-on-single-url-evidence-loop-v1",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/BRAND_VOICE.md",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_SYSTEM.md",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/EDITORIAL_RESEARCH_NOTES.md",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/PREFLIGHT.md",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/RAKUTEN_CAPTURE_WORKLOG.md",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_EXPERIMENT_RUNBOOK.md",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_UNBLOCK_WORKLOG.md",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/content",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/media",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/operations",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/sources",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/yoast-seo-28.3.lock.json",
+        "changes/wordpress-local-preview-v1/bin",
+        "changes/wordpress-local-preview-v1/browser",
+        "changes/wordpress-local-preview-v1/compose.yaml",
+        "changes/wordpress-local-preview-v1/gateway/nginx.conf",
+        "changes/wordpress-local-preview-v1/mu-plugins/raos-local-preview.php",
+        "changes/wordpress-local-preview-v1/policy-profiles.v1.json",
+        "changes/wordpress-local-preview-v1/production-mapping.v1.json",
+        "changes/wordpress-local-preview-v1/seed.php",
+        "changes/wordpress-quality-audit-v1/README.md",
+        "changes/wordpress-quality-audit-v1/editorial-evidence.schema.json",
+        "changes/wordpress-quality-audit-v1/editorial-evidence-register.v1.json",
+        "changes/wordpress-seo-audit-v1/seo-audit-contract.v1.json",
+        "contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json",
+        "package-lock.json",
+        "package.json",
+        "python/raos/adapters/self_hosted_editorial_pilot_https.py",
+        "python/raos/adapters/self_hosted_editorial_pilot_json.py",
+        "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
+        "python/raos/adapters/self_hosted_editorial_source_capture.py",
+        "python/raos/adapters/self_hosted_wordpress_credentials.py",
+        "python/raos/adapters/self_hosted_wordpress_https.py",
+        "python/raos/adapters/self_hosted_wordpress_rest.py",
+        "python/raos/adapters/wordpress_rest.py",
+        "python/raos/application/editorial/editorial_portfolio_v2.py",
+        "python/raos/application/editorial/editorial_portfolio_v3.py",
+        "python/raos/application/editorial/product_safety_receipts.py",
+        "python/raos/application/editorial/rakuten_measurement_activation_v3.py",
+        "python/raos/application/editorial/self_hosted_editorial_pilot.py",
+        "python/raos/application/finance/editorial_economics_v3.py",
+        "python/raos/domain/editorial/content_ast.py",
+        "python/raos/domain/editorial/market_learning_pilot.py",
+        "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
+        "python/raos/domain/editorial/self_hosted_wordpress.py",
+        "python/raos/generated/contracts",
+        "python/raos/ports/self_hosted_editorial_pilot.py",
+        "scripts/build_editorial_measurement_v1.py",
+        "scripts/build_editorial_portfolio_v3.py",
+        "scripts/build_editorial_v3_theme_navigation.py",
+        "scripts/build_st1704_portfolio_source_packets.py",
+        "scripts/build_st1704_rakuten_capture_manifest.py",
+        "scripts/build_st1704_reader_claim_coverage.py",
+        "scripts/build_st1704_self_hosted_editorial_manifest.py",
+        "scripts/build_st1704_self_hosted_theme.py",
+        "scripts/build_st1704_theme_assets.py",
+        "scripts/check_wordpress_public_ui_playwright.sh",
+        "scripts/raos_build_core.py",
+        "scripts/raos_editorial_economics_v3.py",
+        "scripts/raos_editorial_portfolio_v2.py",
+        "scripts/raos_rakuten_measurement_activation_v3.py",
+        "scripts/raos_wordpress_publication_request.py",
+        "scripts/raos_wordpress_seo_audit.py",
+        "scripts/st1704_official_source_capture.py",
+        "scripts/st1704_rakuten_product_capture.py",
+        "scripts/st1704_self_hosted_editorial_pilot.py",
+        "scripts/wordpress_public_ui_audit.function.js",
+        "scripts/wordpress_quality_audit_v1.py",
+        "tests/editorial_measurement_v1",
+        "tests/editorial_portfolio_v2",
+        "tests/editorial_portfolio_v3",
+        "tests/editorial_product_safety_receipts",
+        "tests/st1704",
+        "tests/wordpress_local_preview",
+        "tests/wordpress_quality_audit_v1",
+        "tests/wordpress_seo_audit_v1"
+      ]
+    },
+    {
+      "fingerprint_id": "theme",
+      "inputs": ["changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"]
+    },
+    {
+      "fingerprint_id": "fixture",
+      "inputs": ["changes/wordpress-local-preview-v1/fixtures"]
+    },
+    {
+      "fingerprint_id": "navigation",
+      "inputs": [
+        "changes/editorial-portfolio-v3/generated/navigation.v3.json",
+        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
+      ]
+    },
+    {
+      "fingerprint_id": "inventory",
+      "inputs": ["changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"]
+    }
+  ],
+  "audit_phases": {
+    "pre_publication": {
+      "phase_id": "PRE_PUBLICATION",
+      "completion_state": "READY_FOR_PUBLICATION_PROPOSAL",
+      "required_surfaces": [
+        {
+          "surface_id": "code",
+          "gate_id": "code_static_and_tests",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["test-report"]
+        },
+        {
+          "surface_id": "editorial_sources",
+          "gate_id": "editorial_source_integrity",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["source-trace-report"]
+        },
+        {
+          "surface_id": "epistemic_negative_claims_and_calculation_semantics",
+          "gate_id": "epistemic_negative_claims_and_calculation_semantics",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["claim-semantics-report"]
+        },
+        {
+          "surface_id": "editorial_language_story_ia",
+          "gate_id": "editorial_language_story_information_architecture",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["editorial-review-report"]
+        },
+        {
+          "surface_id": "editorial_accountability_author_credentials_corrections",
+          "gate_id": "editorial_accountability_author_credentials_corrections",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["accountability-report"]
+        },
+        {
+          "surface_id": "content_originality_copyright_near_duplicate_risk",
+          "gate_id": "content_originality_copyright_near_duplicate_risk",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["originality-report"]
+        },
+        {
+          "surface_id": "contact_corrections_operational_deliverability",
+          "gate_id": "contact_corrections_operational_deliverability",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["delivery-test-report"]
+        },
+        {
+          "surface_id": "search_intent_cannibalization_orphaning",
+          "gate_id": "search_intent_cannibalization_orphaning_integrity",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["information-architecture-report"]
+        },
+        {
+          "surface_id": "product_selection_lifecycle_support",
+          "gate_id": "product_selection_lifecycle_support_integrity",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["product-lifecycle-report"]
+        },
+        {
+          "surface_id": "candidate_universe_representativeness_and_brand_blindspots",
+          "gate_id": "candidate_universe_representativeness_and_brand_blindspots",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["candidate-universe-report"]
+        },
+        {
+          "surface_id": "consumer_safety_recall_compatibility",
+          "gate_id": "consumer_safety_recall_compatibility_integrity",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["recall-query-report"]
+        },
+        {
+          "surface_id": "smart_device_app_cloud_security_update_eol_privacy",
+          "gate_id": "smart_device_app_cloud_security_update_eol_privacy",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["cloud-lifecycle-report"]
+        },
+        {
+          "surface_id": "battery_large_appliance_disposal_recycling_transport",
+          "gate_id": "battery_large_appliance_disposal_recycling_transport",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["disposal-guidance-report"]
+        },
+        {
+          "surface_id": "freshness_maintenance_ownership",
+          "gate_id": "freshness_maintenance_ownership_integrity",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["freshness-report"]
+        },
+        {
+          "surface_id": "affiliate_fairness_dark_patterns",
+          "gate_id": "affiliate_fairness_dark_pattern_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["dark-pattern-review-report"]
+        },
+        {
+          "surface_id": "legal_disclosure_media_rights",
+          "gate_id": "legal_disclosure_media_rights_review",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["media-rights-report"]
+        },
+        {
+          "surface_id": "provenance_reproducibility_recovery",
+          "gate_id": "provenance_reproducibility_recovery_integrity",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["roundtrip-provenance-report"]
+        },
+        {
+          "surface_id": "wordpress_backup_rollback_reproducible_restoration",
+          "gate_id": "wordpress_backup_rollback_reproducible_restoration",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["restoration-rehearsal-report"]
+        },
+        {
+          "surface_id": "dependency_supply_chain_plugin_integrity",
+          "gate_id": "dependency_supply_chain_plugin_integrity",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["dependency-integrity-report"]
+        },
+        {
+          "surface_id": "seo_schema",
+          "gate_id": "seo_schema_semantics",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["seo-schema-browser-report"]
+        },
+        {
+          "surface_id": "policy_privacy_consent",
+          "gate_id": "policy_privacy_consent_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["policy-profile-report"]
+        },
+        {
+          "surface_id": "analytics_data_minimization_accuracy",
+          "gate_id": "analytics_data_minimization_accuracy_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["storage-consent-report"]
+        },
+        {
+          "surface_id": "ui_a11y_keyboard_zoom",
+          "gate_id": "ui_a11y_keyboard_zoom_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["a11y-runtime-report"]
+        },
+        {
+          "surface_id": "cognitive_accessibility_japanese_readability",
+          "gate_id": "cognitive_accessibility_japanese_readability_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["readability-review-report"]
+        },
+        {
+          "surface_id": "links_security_headers",
+          "gate_id": "links_security_headers_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["link-security-report"]
+        },
+        {
+          "surface_id": "product_media_cta_evidence",
+          "gate_id": "product_media_cta_activation",
+          "max_age_seconds": 900,
+          "required_evidence_types": ["product-activation-report"]
+        },
+        {
+          "surface_id": "search_archive_404",
+          "gate_id": "search_archive_404_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["template-browser-report"]
+        },
+        {
+          "surface_id": "browser_resilience_no_js_error_recovery",
+          "gate_id": "browser_resilience_no_js_error_recovery_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["browser-error-recovery-report"]
+        },
+        {
+          "surface_id": "browser_compatibility_restricted_environment_resilience",
+          "gate_id": "browser_compatibility_restricted_environment_resilience",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["restricted-environment-report"]
+        },
+        {
+          "surface_id": "performance_browser",
+          "gate_id": "performance_browser_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["lighthouse-median-report"]
+        },
+        {
+          "surface_id": "task_based_decision_usability_reader_comprehension",
+          "gate_id": "task_based_decision_usability_reader_comprehension_research",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["task-research-report"]
+        },
+        {
+          "surface_id": "japanese_locale_measurement_semantics_inclusive_language",
+          "gate_id": "japanese_locale_measurement_semantics_inclusive_language",
+          "max_age_seconds": 86400,
+          "required_evidence_types": ["locale-measurement-report"]
+        },
+        {
+          "surface_id": "touch_gesture_orientation_400_percent_reflow_target_size",
+          "gate_id": "touch_gesture_orientation_400_percent_reflow_target_size_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["touch-reflow-report"]
+        },
+        {
+          "surface_id": "wordpress_public_attack_abuse_surface",
+          "gate_id": "wordpress_public_attack_abuse_surface_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["wordpress-abuse-report"]
+        },
+        {
+          "surface_id": "operations_observability_incident_ownership",
+          "gate_id": "operations_observability_incident_ownership_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["observability-rehearsal-report"]
+        },
+        {
+          "surface_id": "affiliate_program_compliance_destination_integrity",
+          "gate_id": "affiliate_program_compliance_destination_integrity",
+          "max_age_seconds": 900,
+          "required_evidence_types": ["affiliate-destination-report"]
+        },
+        {
+          "surface_id": "slow_device_network_resource_budget_caching",
+          "gate_id": "slow_device_network_resource_budget_caching_runtime",
+          "max_age_seconds": 3600,
+          "required_evidence_types": ["resource-budget-report"]
+        }
+      ],
+      "completion_policy": {
+        "required_consecutive_clean_rounds": 2,
+        "max_evaluation_age_seconds": 900,
+        "max_future_skew_seconds": 300
+      }
+    },
+    "post_apply": {
+      "phase_id": "POST_APPLY",
+      "completion_state": "PRODUCTION_PARITY_VERIFIED",
+      "required_surfaces": [
+        {
+          "surface_id": "production_migration_parity_readback",
+          "gate_id": "production_migration_parity_readback",
+          "max_age_seconds": 900,
+          "required_evidence_types": ["production-readback-report"]
+        }
+      ],
+      "completion_policy": {
+        "required_fresh_passes": 1,
+        "max_evaluation_age_seconds": 900,
+        "max_future_skew_seconds": 300
+      },
+      "required_external_execution": [
+        "deployment",
+        "live_read",
+        "live_write",
+        "production",
+        "production_migration_parity_readback",
+        "publication",
+        "release"
+      ]
+    }
+  },
+  "external_execution": {
+    "contact_delivery_operational_test": "NOT_EXECUTED",
+    "deployment": "NOT_EXECUTED",
+    "independent_reviewer_attestation_verification": "NOT_EXECUTED",
+    "legal_review": "NOT_EXECUTED",
+    "live_read": "NOT_EXECUTED",
+    "live_write": "NOT_EXECUTED",
+    "production": "NOT_EXECUTED",
+    "production_affiliate_destination_integrity_readback": "NOT_EXECUTED",
+    "production_cache_cdn_invalidation_readback": "NOT_EXECUTED",
+    "production_consent_runtime_readback": "NOT_EXECUTED",
+    "production_content_roundtrip_readback": "NOT_EXECUTED",
+    "production_migration_parity_readback": "NOT_EXECUTED",
+    "production_observability_readback": "NOT_EXECUTED",
+    "production_public_attack_surface_readback": "NOT_EXECUTED",
+    "production_robots_indexability_readback": "NOT_EXECUTED",
+    "production_seo_schema_readback": "NOT_EXECUTED",
+    "production_taxonomy_term_identity": "NOT_EXECUTED",
+    "publication": "NOT_EXECUTED",
+    "release": "NOT_EXECUTED",
+    "staging": "NOT_EXECUTED"
+  }
+}

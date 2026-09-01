@@ -16,7 +16,7 @@ There are exactly two project MCP servers:
 
 The WordPress plugin requires WordPress 7.1.x and exactly MCP Adapter 0.6.1.
 Abilities 1.3.1 is bound to runtime revision
-`24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55`;
+`8204d0f1ff573a5edf72abe4ef69ef422af15815adf5ecbc3a74bf8ec1d9c7d8`;
 the entrypoint and every critical class must report that exact identity.
 It disables MCP Adapter's generic default server and exposes only the nine
 tools listed in `contracts/wordpress-mcp.v1.json`. The local bridge exposes only
@@ -104,7 +104,22 @@ owner-private receipts are stored under
   WordPress.
 - Plugin packages with activation, database, option-schema, SQL DDL, or generic
   migration signals become `MANUAL_REQUIRED`; wp-admin cannot approve them for
-  this automatic path.
+  this automatic path. The only automatic exception is the reviewed
+  `raos-editorial-measurement` 1.0.0 repo artifact, whose artifact ID, slug,
+  version, package SHA-256, and complete file-manifest SHA-256 are fixed in the
+  owner-generated registry and independently rechecked by both the local
+  operator and installed plugin. Any changed or unknown package returns to
+  `MANUAL_REQUIRED`.
+- The abilities 1.3.1 upgrade itself remains `MANUAL_REQUIRED`. After a
+  different human administrator manually installs and activates the exact
+  proposal package in wp-admin, the new plugin may show one narrow attestation
+  form. It reauthenticates the administrator and requires visible proposal,
+  package, and installed-tree hash suffixes. The server rechecks the staged
+  package, host artifact pin, complete manifest, active installed tree,
+  version, runtime revision, and immutable proposal before storing
+  `PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL`. This is a proposal-bound
+  `APPLIED` receipt only; it cannot install code, issue an apply lease, approve
+  another migration, or be called through REST/MCP.
 - The editor registers the exact 1–20 content/theme proposal IDs as one
   immutable server-side publication batch; unrelated pending proposals and all
   plugin proposals are excluded. A different cookie-authenticated

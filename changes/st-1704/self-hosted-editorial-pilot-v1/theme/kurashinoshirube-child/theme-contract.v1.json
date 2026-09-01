@@ -119,9 +119,9 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "878befcb921fb965fc805b323bbd440bd973bd87e44fb0f75f19e4f2c7bdd109",
-    "source_navigation_sha256": "e61906dc48bf8849dea289a58fbe9693373cf6cb7c7d27696b5a3b3cb72c2728",
-    "source_portfolio_sha256": "44a1a4726d29f10261fdd381d75a22f23d8c7b1b7752532e30772a93c693db15"
+    "sha256": "9bcd7478912adbf0d09ec79ea3984a4bd762f425c7014211902c83e1f15cf688",
+    "source_navigation_sha256": "35571f11070f44391de5555684e2ab7ef18ddcaeac7c94821b043e0dc38d90d4",
+    "source_portfolio_sha256": "fc923f189f171012cee9429ddb70291d74f37eea6a80eb9796947c42218ab305"
   },
   "editorial_v2": {
     "asset": "assets/editorial-v2.css",
@@ -507,17 +507,23 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7",
-    "source_fingerprint": "898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7",
+    "revision": "05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee",
+    "source_fingerprint": "05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",
       "assets/editorial-navigation.v3.json",
       "assets/editorial-v2.css",
+      "assets/images/article-anker-solix-generations.webp",
       "assets/images/article-countertop-dishwasher-guide.webp",
       "assets/images/article-portable-power-guide.webp",
       "assets/images/article-robot-vacuum-guide.webp",
+      "assets/images/article-roomba-mini-k11-comparison.webp",
+      "assets/images/article-solota-rakua-replacement.webp",
+      "assets/images/article-suitcase-front-open-stopper.webp",
       "assets/images/article-suitcase-guide.webp",
+      "assets/images/article-suitcase-under-100-seats.webp",
+      "assets/images/article-suitcase-under-3kg.webp",
       "assets/images/brand-mark.svg",
       "assets/images/home-hero.webp",
       "assets/measurement.js",

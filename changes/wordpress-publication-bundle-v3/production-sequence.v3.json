@@ -7,10 +7,16 @@
     "plugin_slug": "raos-codex-mcp-abilities",
     "plugin_version": "1.3.1",
     "proposal_requires_local_preview": true,
+    "manual_bootstrap_attestation": {
+      "allowed_only_after_exact_human_wp_admin_install": true,
+      "installed_slug_version_package_manifest_tree_and_proposal_hashes_required": true,
+      "result_code": "PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL",
+      "wp_admin_only": true
+    },
     "separate_admin_approval_required": true
   },
   "content_batch": {
-    "command": ".venv/bin/python scripts/raos_wordpress_publication_request.py --articles all --measurement-plugin-apply-receipt <owner-private-operation-receipt> --rakuten-activation-dry-run <owner-private-url-free-activation-dry-run>",
+    "command": ".venv/bin/python scripts/raos_wordpress_publication_request.py --articles all --measurement-plugin-apply-receipt <owner-private-operation-receipt> --rakuten-activation-dry-run <owner-private-url-free-activation-dry-run> --quality-audit-attestation <owner-private-canonical-attestation> --quality-audit-signature <owner-private-detached-ed25519-signature>",
     "maximum_proposals": 14,
     "members": {
       "policy_pages": 3,
@@ -18,9 +24,11 @@
       "theme_maximum": 1
     },
     "requires": [
-      "local_preview_passed_for_56_screenshots",
+      "local_preview_passed_for_130_screenshots",
       "rakuten_activation_exact_10_articles_74_ctas",
       "rakuten_activation_local_and_production_overlay_hashes_match",
+      "two_clean_independent_audit_rounds_for_exact_repository_fingerprints",
+      "trusted_reviewer_ed25519_attestation_is_current",
       "measurement_plugin_apply_receipt_from_separate_admin",
       "measurement_gate_remains_default_off"
     ]
@@ -57,6 +65,8 @@
     "package_source": "repo_artifact",
     "plugin_slug": "raos-editorial-measurement",
     "plugin_version": "1.0.0",
+    "migration_assessment": "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION",
+    "migration_review_bound_to_registered_artifact_package_and_file_manifest": true,
     "proposal_requires_abilities_plugin_apply_receipt": true,
     "proposal_requires_local_preview": true,
     "separate_admin_approval_required": true
@@ -65,14 +75,15 @@
     "local_preview",
     "abilities_plugin_package",
     "abilities_plugin_proposal",
-    "separate_admin_abilities_plugin_approval_and_apply",
+    "separate_human_wp_admin_exact_abilities_install_and_bootstrap_attestation",
     "measurement_plugin_package",
     "measurement_plugin_proposal",
     "separate_admin_measurement_plugin_approval_and_apply",
     "rakuten_admin_csv_verification_and_money_link_mapping",
     "v2_local_and_production_materialization",
     "rakuten_v3_activation_dry_run_and_overlay",
-    "local_preview_56_screenshots_from_v3_local_overlay",
+    "local_preview_130_screenshots_from_v3_local_overlay",
+    "two_clean_independent_audit_rounds_and_trusted_signature",
     "content_theme_batch_proposal",
     "separate_admin_content_theme_approval_and_apply",
     "readback",

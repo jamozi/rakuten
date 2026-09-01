@@ -191,7 +191,7 @@
     },
     {
       "path": "changes/st-0308/contracts/persistence-runtime.v2.yaml",
-      "sha256": "ef820fde78ac51202d9e3386a7a82f640e8727eb5c7c89205b8885d3abd29bef"
+      "sha256": "2c2722385e0c2950bcbc834d809967a5e50b94adf849b7f57432cb8718a6236b"
     }
   ],
   "story_id": "ST-0401"

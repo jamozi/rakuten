@@ -31,6 +31,7 @@ def fake_runtime(tmp_path: Path) -> Iterator[dict[str, str]]:
     fake_docker = tmp_path / "docker"
     fake_curl = tmp_path / "curl"
     fake_materializer = tmp_path / "materialize"
+    fake_yoast_materializer = tmp_path / "materialize-yoast"
     _write_executable(
         fake_docker,
         """#!/usr/bin/env bash
@@ -39,6 +40,7 @@ printf '%s\\n' "$*" >>"$RAOS_FAKE_DOCKER_LOG"
 printf 'article_fixture_root=%s\\n' "${RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_ROOT:-}" >>"$RAOS_FAKE_DOCKER_LOG"
 printf 'post_fixture=%s\\n' "${RAOS_WORDPRESS_PREVIEW_POST_FIXTURE:-}" >>"$RAOS_FAKE_DOCKER_LOG"
 printf 'product_media_root=%s\\n' "${RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT:-}" >>"$RAOS_FAKE_DOCKER_LOG"
+printf 'yoast_root=%s\\n' "${RAOS_WORDPRESS_PREVIEW_YOAST_ROOT:-}" >>"$RAOS_FAKE_DOCKER_LOG"
 if [[ "$*" == "compose version" ]]; then
   exit 0
 fi
@@ -63,6 +65,12 @@ fi
 if [[ "$*" == *" plugin list --name=raos-editorial-measurement --field=status"* ]]; then
   printf '%s\\n' active
 fi
+if [[ "$*" == *" plugin list --name=wordpress-seo --field=status"* ]]; then
+  printf '%s\\n' active
+fi
+if [[ "$*" == *" plugin get wordpress-seo --field=version"* ]]; then
+  printf '%s\\n' 28.3
+fi
 exit 0
 """,
     )
@@ -80,6 +88,16 @@ for index in {1..10}; do
 done
 """,
     )
+    _write_executable(
+        fake_yoast_materializer,
+        """#!/usr/bin/env bash
+set -eu
+private_root="$1"
+plugin_root="$private_root/plugins/wordpress-seo"
+mkdir -p "$plugin_root"
+printf '%s\n' '<?php /* Plugin Name: Yoast SEO */' >"$plugin_root/wp-seo.php"
+""",
+    )
     private_root = _private_root(tmp_path)
     shutil.rmtree(private_root, ignore_errors=True)
     yield {
@@ -89,6 +107,9 @@ done
         "RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT": str(private_root),
         "RAOS_WORDPRESS_PREVIEW_PORT": "18888",
         "RAOS_WORDPRESS_PREVIEW_TEST_MATERIALIZER_BIN": str(fake_materializer),
+        "RAOS_WORDPRESS_PREVIEW_TEST_YOAST_MATERIALIZER_BIN": str(
+            fake_yoast_materializer
+        ),
     }
     shutil.rmtree(private_root, ignore_errors=True)
 
@@ -158,10 +179,16 @@ def test_up_generates_private_credentials_and_runs_initial_seed(
     media_root = (
         Path(environment["RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT"]) / "product-media"
     )
+    yoast_root = (
+        Path(environment["RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT"])
+        / "plugins"
+        / "wordpress-seo"
+    )
     assert stat.S_IMODE(credentials.stat().st_mode) == 0o600
     assert (fixture_root / "posts.json").is_file()
     assert len(list((fixture_root / "articles").glob("*.html"))) == 10
     assert media_root.is_dir()
+    assert (yoast_root / "wp-seo.php").is_file()
     values = [line.split("=", 1)[1] for line in credentials.read_text().splitlines()]
     assert len(values) == 3
     assert len(set(values)) == 3
@@ -172,10 +199,12 @@ def test_up_generates_private_credentials_and_runs_initial_seed(
     assert "core install" in docker_log
     assert "theme activate kurashinoshirube-child" in docker_log
     assert "plugin activate raos-editorial-measurement" in docker_log
+    assert "plugin activate wordpress-seo" in docker_log
     assert "RAOS_PREVIEW_SEED_MODE=initialize" in docker_log
     assert f"article_fixture_root={fixture_root / 'articles'}" in docker_log
     assert f"post_fixture={fixture_root / 'posts.json'}" in docker_log
     assert f"product_media_root={media_root}" in docker_log
+    assert f"yoast_root={yoast_root}" in docker_log
     assert all(value not in docker_log for value in values)
     assert all(value not in result.stdout for value in values)
 

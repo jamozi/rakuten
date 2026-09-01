@@ -27,6 +27,7 @@ if (! in_array($mode, array('initialize', 'sync'), true)) {
 $fixture_root = '/var/www/raos-local-preview/fixtures';
 $fixture_path = $fixture_root . '/posts.json';
 $page_fixture_path = $fixture_root . '/pages.json';
+$policy_profile_path = '/var/www/raos-local-preview/policy-profiles.v1.json';
 if (! is_file($fixture_path) || is_link($fixture_path) || ! is_readable($fixture_path)) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_FIXTURE_UNAVAILABLE');
 }
@@ -69,6 +70,142 @@ if (
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
 }
 
+if (
+    ! is_file($policy_profile_path)
+    || is_link($policy_profile_path)
+    || ! is_readable($policy_profile_path)
+) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POLICY_PROFILE_UNAVAILABLE');
+}
+$policy_profile_bytes = file_get_contents($policy_profile_path);
+$policy_profiles = is_string($policy_profile_bytes)
+    ? json_decode($policy_profile_bytes, true, 12, JSON_BIGINT_AS_STRING)
+    : null;
+if (
+    ! is_array($policy_profiles)
+    || array_keys($policy_profiles) !== array(
+        'schema',
+        'version',
+        'operator',
+        'contact_email',
+        'updated_at',
+        'local',
+        'production',
+    )
+    || $policy_profiles['schema'] !== 'RAOS_WORDPRESS_POLICY_PROFILES_V1'
+    || $policy_profiles['version'] !== 1
+    || $policy_profiles['operator'] !== '暮らしのしるべ編集者'
+    || $policy_profiles['contact_email'] !== 'contact@kurashinoshirube.com'
+    || $policy_profiles['updated_at'] !== '2026-09-01'
+    || ! is_array($policy_profiles['local'])
+    || ! is_array($policy_profiles['production'])
+    || array_keys($policy_profiles['local']) !== array(
+        'environment',
+        'operator',
+        'contact_email',
+        'measurement',
+        'consent_ui',
+        'cookie_settings_control',
+        'cookie_storage',
+        'retention',
+        'updated_at',
+        'required_markers',
+        'forbidden_markers',
+    )
+    || ($policy_profiles['local']['environment'] ?? null)
+        !== 'LOCAL_WORDPRESS_PREVIEW'
+    || ($policy_profiles['local']['operator'] ?? null)
+        !== '暮らしのしるべ編集者'
+    || ($policy_profiles['local']['contact_email'] ?? null)
+        !== 'contact@kurashinoshirube.com'
+    || ($policy_profiles['local']['measurement'] ?? null) !== 'OFF'
+    || ($policy_profiles['local']['consent_ui'] ?? null) !== 'ABSENT'
+    || ($policy_profiles['local']['cookie_settings_control'] ?? null) !== 'ABSENT'
+    || ($policy_profiles['local']['cookie_storage'] ?? null) !== 'NONE'
+    || ($policy_profiles['local']['retention'] ?? null) !== array(
+        'raw_event_days' => 0,
+        'daily_aggregate_months' => 0,
+        'consent_cookie_days' => 0,
+        'analytics_cookie_default_max_days' => 0,
+        'ga4_user_event_retention_months' => 0,
+    )
+    || ($policy_profiles['local']['updated_at'] ?? null) !== '2026-09-01'
+    || ! is_array($policy_profiles['local']['required_markers'] ?? null)
+    || ! is_array($policy_profiles['local']['forbidden_markers'] ?? null)
+    || array_keys($policy_profiles['production']) !== array(
+        'environment',
+        'operator',
+        'contact_email',
+        'source',
+        'pages',
+        'measurement',
+        'cookie_storage',
+        'ga4_activation_gate',
+        'retention',
+        'updated_at',
+        'consent_providers',
+        'required_markers',
+        'must_not_reuse_local_body',
+    )
+    || ($policy_profiles['production']['environment'] ?? null)
+        !== 'KURASHINOSHIRUBE_PRODUCTION'
+    || ($policy_profiles['production']['operator'] ?? null)
+        !== '暮らしのしるべ編集者'
+    || ($policy_profiles['production']['contact_email'] ?? null)
+        !== 'contact@kurashinoshirube.com'
+    || ($policy_profiles['production']['source'] ?? null)
+        !== 'READ_ONLY_WORDPRESS_EDITOR_BASELINE_2026_08_31'
+    || ($policy_profiles['production']['must_not_reuse_local_body'] ?? null)
+        !== true
+    || ($policy_profiles['production']['measurement'] ?? null)
+        !== 'CONSENT_GATED'
+    || ($policy_profiles['production']['cookie_storage'] ?? null)
+        !== 'CONSENT_PROVIDER_CONTROLLED'
+    || ($policy_profiles['production']['ga4_activation_gate'] ?? null)
+        !== 'BLOCKED_UNTIL_LIVE_PROPERTY_RETENTION_READBACK'
+    || ($policy_profiles['production']['retention'] ?? null) !== array(
+        'raw_event_days' => 7,
+        'daily_aggregate_months' => 13,
+        'consent_cookie_days' => 365,
+        'analytics_cookie_default_max_days' => 730,
+        'ga4_user_event_retention_months' => 'LIVE_READBACK_REQUIRED',
+    )
+    || ($policy_profiles['production']['updated_at'] ?? null) !== '2026-09-01'
+    || ($policy_profiles['production']['consent_providers'] ?? null) !== array(
+        'CookieYes',
+        'WP Consent API',
+        'Google Site Kit Consent Mode',
+    )
+    || ! is_array($policy_profiles['production']['required_markers'] ?? null)
+    || ! is_array($policy_profiles['production']['pages'] ?? null)
+    || count($policy_profiles['production']['pages']) !== 3
+) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POLICY_PROFILE_INVALID');
+}
+$expected_production_policy_pages = array(
+    array(
+        'id' => 10,
+        'slug' => 'about-ad-policy',
+        'title' => '運営・広告方針',
+        'excerpt' => '暮らしのしるべの情報源選定、型番照合、広告との分離、更新・訂正の責任を説明します。',
+    ),
+    array(
+        'id' => 120,
+        'slug' => 'comparison-policy',
+        'title' => '比較・編集方針',
+        'excerpt' => '暮らしのしるべのEvidence階層、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。',
+    ),
+    array(
+        'id' => 3,
+        'slug' => 'privacy-policy',
+        'title' => 'プライバシーポリシー',
+        'excerpt' => '暮らしのしるべの同一オリジン計測とGA4、保持期間、同意の拒否・撤回、アフィリエイトリンクの取扱いを説明します。',
+    ),
+);
+if ($policy_profiles['production']['pages'] !== $expected_production_policy_pages) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POLICY_PROFILE_INVALID');
+}
+
 /** Permit source links only to the reviewed manufacturer and carrier hosts. */
 function raos_local_preview_has_only_reviewed_https_links(string $content): bool
 {
@@ -84,28 +221,44 @@ function raos_local_preview_has_only_reviewed_https_links(string $content): bool
         return false;
     }
     $allowed_hosts = array(
+        'aqua-has.com',
         'hb.afl.rakuten.co.jp',
+        'cdn.shopify.com',
         'developers.rakuten.com',
+        'help.ecovacs.com',
         'jp.ecoflow.com',
+        'jp.roborock.com',
         'panasonic.jp',
-        'store.ace.jp',
-        'store.irobot-jp.com',
-        'support.switch-bot.com',
-        'store.shopping.yahoo.co.jp',
         'shop.innovator.co.jp',
+        'shop.toshiba-lifestyle.com',
+        'store.ace.jp',
+        'store.dji.com',
+        'store.irobot-jp.com',
+        'store.shopping.yahoo.co.jp',
+        'store.siroca.jp',
+        'support.switch-bot.com',
         'www.americantourister.jp',
         'www.ana.co.jp',
         'www.ankerjapan.com',
         'www.bagworld.co.jp',
         'www.bermas.co.jp',
         'www.bluetti.jp',
+        'www.dji.com',
+        'www.dreametech.jp',
+        'www.ecovacs.com',
+        'www.elecom.co.jp',
+        'www.irisohyama.co.jp',
         'www.jackery.jp',
         'www.jal.co.jp',
+        'www.meti.go.jp',
+        'www.muji.com',
         'www.proteca.jp',
+        'www.rimowa.com',
         'www.samsonite.co.jp',
         'www.siroca.co.jp',
         'www.switchbot.jp',
         'www.thanko.jp',
+        'www.toshiba-lifestyle.com',
     );
     foreach ($matches[0] as $encoded_url) {
         $url = html_entity_decode($encoded_url, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -135,12 +288,23 @@ if ($mode === 'initialize' && is_string($previous_seed) && $previous_seed !== ''
     return;
 }
 
-update_option('blogname', '暮らしのしるべ — ローカルプレビュー');
+update_option('blogname', '暮らしのしるべ');
 update_option('blogdescription', '本番へ影響しない合成記事の表示確認環境');
 update_option('blog_public', '0');
 update_option('timezone_string', 'Asia/Tokyo');
 update_option('date_format', 'Y年n月j日');
+update_option('posts_per_page', 3);
 update_option('permalink_structure', '/%postname%/');
+update_option('default_comment_status', 'closed');
+update_option('default_ping_status', 'closed');
+update_option('default_pingback_flag', '0');
+update_option('ping_sites', '');
+
+$preview_author = get_user_by('login', 'raos-local-admin');
+if (! ($preview_author instanceof WP_User) || (int) $preview_author->ID <= 0) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_AUTHOR_UNAVAILABLE');
+}
+$preview_author_id = (int) $preview_author->ID;
 
 foreach ($page_fixture['pages'] as $page) {
     if (
@@ -182,9 +346,17 @@ foreach ($page_fixture['pages'] as $page) {
     ) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
     }
+    foreach ($policy_profiles['local']['forbidden_markers'] as $marker) {
+        if (! is_string($marker) || $marker === '' || strpos($content, $marker) !== false) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POLICY_PROFILE_INVALID');
+        }
+    }
     $slug = $page['slug'];
     $existing = get_page_by_path($slug, OBJECT, 'page');
     $page_data = array(
+        'comment_status' => 'closed',
+        'ping_status' => 'closed',
+        'post_author' => $preview_author_id,
         'post_content' => $content,
         'post_excerpt' => $page['excerpt'],
         'post_name' => $slug,
@@ -199,6 +371,37 @@ foreach ($page_fixture['pages'] as $page) {
     if (is_wp_error($result) || (int) $result <= 0) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_SEED_FAILED');
     }
+}
+
+$article_path_replacements = array();
+foreach ($fixture['posts'] as $candidate_post) {
+    if (
+        ! is_array($candidate_post)
+        || ! is_string($candidate_post['slug'] ?? null)
+        || preg_match(
+            '/\Alocal-preview-[a-z0-9]+(?:-[a-z0-9]+)*\z/D',
+            $candidate_post['slug']
+        ) !== 1
+    ) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POST_FIXTURE_INVALID');
+    }
+    $production_slug = substr(
+        $candidate_post['slug'],
+        strlen('local-preview-')
+    );
+    if (
+        $production_slug === ''
+        || isset($article_path_replacements['href="/' . $production_slug . '/"'])
+    ) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POST_FIXTURE_INVALID');
+    }
+    $article_path_replacements['href="/' . $production_slug . '/"'] =
+        'href="/' . $candidate_post['slug'] . '/"';
+    $article_path_replacements["href='/" . $production_slug . "/'"] =
+        "href='/" . $candidate_post['slug'] . "/'";
+}
+if (count($article_path_replacements) !== 20) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POST_FIXTURE_INVALID');
 }
 
 $seen_ids = array();
@@ -247,9 +450,18 @@ foreach ($fixture['posts'] as $index => $post) {
     $seen_ids[$post['article_id']] = true;
     $seen_slugs[$post['slug']] = true;
 
+    $category_slugs = array(
+        '移動' => 'mobility',
+        '家事' => 'household',
+        '備え' => 'preparedness',
+    );
     $term = term_exists($post['category'], 'category');
     if ($term === 0 || $term === null) {
-        $term = wp_insert_term($post['category'], 'category');
+        $term = wp_insert_term(
+            $post['category'],
+            'category',
+            array('slug' => $category_slugs[$post['category']])
+        );
     }
     if (is_wp_error($term)) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_CATEGORY_SEED_FAILED');
@@ -257,6 +469,20 @@ foreach ($fixture['posts'] as $index => $post) {
     $category_id = is_array($term) ? (int) $term['term_id'] : (int) $term;
     if ($category_id <= 0) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_CATEGORY_SEED_FAILED');
+    }
+    $category = get_term($category_id, 'category');
+    if (
+        ! ($category instanceof WP_Term)
+        || $category->slug !== $category_slugs[$post['category']]
+    ) {
+        $updated_category = wp_update_term(
+            $category_id,
+            'category',
+            array('slug' => $category_slugs[$post['category']])
+        );
+        if (is_wp_error($updated_category)) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_CATEGORY_SEED_FAILED');
+        }
     }
 
     $content_path = $fixture_root . '/' . $post['content_file'];
@@ -271,8 +497,6 @@ foreach ($fixture['posts'] as $index => $post) {
         ! is_string($content)
         || $content === ''
         || strlen($content) > 1048576
-        || wp_kses_post($content) !== $content
-        || ! raos_local_preview_has_only_reviewed_https_links($content)
         || stripos($content, '<script') !== false
         || stripos($content, '<style') !== false
         || stripos($content, '<h1') !== false
@@ -282,9 +506,21 @@ foreach ($fixture['posts'] as $index => $post) {
             'RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_INVALID_' . (string) $index
         );
     }
+    $content = strtr($content, $article_path_replacements);
+    if (
+        wp_kses_post($content) !== $content
+        || ! raos_local_preview_has_only_reviewed_https_links($content)
+    ) {
+        WP_CLI::error(
+            'RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_INVALID_' . (string) $index
+        );
+    }
 
     $existing = get_page_by_path($post['slug'], OBJECT, 'post');
     $post_data = array(
+        'comment_status' => 'closed',
+        'ping_status' => 'closed',
+        'post_author' => $preview_author_id,
         'post_category' => array($category_id),
         'post_content' => $content,
         'post_date' => $post['date'],
@@ -327,6 +563,79 @@ foreach (array('post', 'page') as $post_type) {
     if ($default instanceof WP_Post) {
         wp_delete_post((int) $default->ID, true);
     }
+}
+
+$required_local_markers = $policy_profiles['local']['required_markers'];
+$all_policy_content = implode(
+    "\n",
+    array_map(
+        static function (array $page) use ($fixture_root): string {
+            $bytes = file_get_contents($fixture_root . '/' . $page['content_file']);
+            return is_string($bytes) ? $bytes : '';
+        },
+        $page_fixture['pages']
+    )
+);
+foreach ($required_local_markers as $marker) {
+    if (! is_string($marker) || $marker === '' || strpos($all_policy_content, $marker) === false) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POLICY_PROFILE_INVALID');
+    }
+}
+
+if (
+    ! defined('WPSEO_VERSION')
+    || WPSEO_VERSION !== '28.3'
+    || ! function_exists('kurashinoshirube_verified_asset_uri')
+) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_YOAST_VERSION_INVALID');
+}
+$social_image = kurashinoshirube_verified_asset_uri(
+    KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH,
+    KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256,
+    true
+);
+if (! is_string($social_image) || $social_image === '') {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_YOAST_SOCIAL_IMAGE_INVALID');
+}
+$yoast = get_option('wpseo', array());
+$yoast = is_array($yoast) ? $yoast : array();
+foreach (
+    array(
+        'enable_ai_generator' => false,
+        'enable_headless_rest_endpoints' => false,
+        'enable_index_now' => false,
+        'enable_schema' => false,
+        'enable_schema_aggregation_endpoint' => false,
+        'enable_xml_sitemap' => true,
+        'google_site_kit_feature_enabled' => false,
+        'googleverify' => '',
+        'semrush_integration_active' => false,
+        'tracking' => false,
+        'wincher_integration_active' => false,
+    ) as $key => $value
+) {
+    $yoast[$key] = $value;
+}
+update_option('wpseo', $yoast, false);
+$yoast_social = get_option('wpseo_social', array());
+$yoast_social = is_array($yoast_social) ? $yoast_social : array();
+foreach (
+    array(
+        'og_default_image' => $social_image,
+        'og_default_image_id' => '',
+        'opengraph' => true,
+        'twitter' => true,
+        'twitter_card_type' => 'summary_large_image',
+    ) as $key => $value
+) {
+    $yoast_social[$key] = $value;
+}
+update_option('wpseo_social', $yoast_social, false);
+if (
+    ! function_exists('kurashinoshirube_yoast_configuration_is_exact')
+    || ! kurashinoshirube_yoast_configuration_is_exact()
+) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_YOAST_CONFIGURATION_INVALID');
 }
 
 update_option($seed_option, $fixture['seed_version'], false);

@@ -19,10 +19,12 @@ setup:
 	$(PYTHON) scripts/verify_dev_toolchain.py
 
 generate:
+	$(PYTHON) scripts/raos_editorial_portfolio_v2.py generate-old-fixtures
 	$(PYTHON) scripts/raos_build.py $(BASE_ARGUMENT) generate
 	$(PYTHON) scripts/status_v2.py
 
 check: final-static
+	$(PYTHON) scripts/raos_editorial_portfolio_v2.py check-source-fixtures
 	$(PYTHON) scripts/raos_build.py $(BASE_ARGUMENT) check
 	$(PYTHON) scripts/status_v2.py --check
 

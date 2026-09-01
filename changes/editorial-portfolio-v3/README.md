@@ -1,9 +1,45 @@
 # Editorial V3 portfolio and owner-private economics
 
 `editorial-portfolio.v3.json` is an additive, generated successor to Editorial
-V2. It covers the current ten articles and thirty-two products without changing
+V2. It covers the current ten articles and thirty-one products without changing
 the historical V2 contract. `generated/navigation.v3.json` is the single
 machine-readable home/related-article source.
+
+`editorial-identities.v1.json` also classifies every existing article as a
+category guide, brand/model-family comparison, constraint shortlist, feature
+shortlist, or two-product comparison. The generated navigation carries the
+reader-facing Japanese role label, the exact comparison scope, and a broader
+article route for narrow comparisons so a narrow article cannot silently pose
+as a market-wide ranking. It also owns the primary query intent: intents must
+be unique within an intent group and the browser audit requires the visible
+`記事分類` and `この記事で答えること` values to match this contract exactly.
+
+`market-candidate-audit.v1.json` is the named-candidate negative-space audit.
+It records all seven selection axes, concrete current or recently excluded
+models, lifecycle evidence, exclusion reasons, and scope separation for all ten
+articles. Each article declares non-empty hard filters and official category
+sources. Each named candidate binds an exact model and variant scope, use role,
+separate model/variant lifecycle, reader-visible and embedded lifecycle
+observations, and an `EXCLUDED` or `DEFERRED` disposition. Products already in
+the portfolio reuse their product identity through a `REFERENCE_ONLY` binding
+to the article that actually includes them; they are never duplicated as
+`EXT-*` candidates. The selected product list is the included disposition. The
+reader-visible lifecycle governs the effective state; an embedded mismatch is
+recorded as `CONFLICT`. `RESTOCK_NOTIFICATION_ONLY` records the narrower case
+where the visible store offers only a restock notice and no cart action; it is
+kept distinct from an explicit `SOLD_OUT` statement. Generic unnamed alternatives,
+audits containing only already-selected products, decision-critical unknowns,
+missing reader-visible exclusions, and price/reward/Rakuten weighting are
+rejected by the V3 generator.
+
+Article-wide guidance does not establish product-specific due diligence. The
+market audit therefore mirrors the current V2 selection audit: safety/recall,
+Japan-region warranty/support, and maintenance/repair/consumables remain
+`SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED` until every selected product
+is bound to locator-backed official evidence. Each incomplete axis has a
+recheck date, is excluded from recommendation rationale, and blocks strict
+publication. The generator rejects an article-level official link being
+promoted to product-level completion.
 
 The tracked Rakuten parser boundary is intentionally disabled. It contains no
 guessed live column names or status values. A parser can be enabled only inside
@@ -20,6 +56,80 @@ be mode `0600`.
 ```
 
 ## Private Rakuten workflow
+
+Editorial V2 owns the full ten-article, thirty-one-product and seventy-four-CTA
+capture contract. Development preview may render a clearly labelled manufacturer
+link together with the visible non-image state `商品画像未確認・購入導線停止`,
+but that incomplete fallback is never a successful completion or production
+candidate. Article-level or neutral visuals are never reused as product images.
+The strict gate requires every product identity registered by the current V2 owner contract,
+all 37 product-card image occurrences and all 74 CTA occurrences to be
+`verified`; it also requires zero neutral images and zero manufacturer-link
+fallbacks. Measurement collection remains disabled by default.
+
+Run the URL-free readiness diagnostic after capture:
+
+```sh
+.venv/bin/python scripts/raos_editorial_portfolio_v2.py validate-readiness
+.venv/bin/python scripts/raos_editorial_portfolio_v2.py materialize-local \
+  --require-complete
+.venv/bin/python scripts/raos_editorial_portfolio_v2.py materialize-production
+```
+
+The current tracked registry intentionally leaves these thirteen owner-verification
+inputs unset; no value may be guessed:
+
+- `PRD-PROTECA-TRI-AIR-01541`
+- `PRD-ANKER-SOLIX-C800`
+- `PRD-JACKERY-1000-NEW-V3`
+- `PRD-DJI-POWER-1000-V2`
+- `PRD-THANKO-RAKUA-MINI-TK-MDW22W`
+- `PRD-TOSHIBA-DWS-33B-W`
+- `PRD-EUFY-AUTOEMPTY-C10-T2292`
+- `PRD-ECOVACS-DEEBOT-MINI2`
+- `PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171`
+- `PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002`
+- `PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549`
+- `PRD-BERMAS-INTER-CITY-III-60570`
+- `PRD-SIROCA-SS-M171`
+
+After all product evidence is complete, generate the 74-row Money Link mapping
+template without credentials or live calls. The template is deliberately
+invalid for activation (`destination_url` is null and the copied flag is false)
+until the owner copies every exact Money Link from Rakuten administration:
+
+```sh
+.venv/bin/python scripts/raos_rakuten_measurement_activation_v3.py \
+  --private-root "$PWD/.secrets/editorial-portfolio-v3" \
+  money-link-template --output money-links.json
+```
+
+After filling all 74 distinct URLs and setting only
+`urls_copied_from_rakuten_admin` to true, validate the mapping and generate the
+hash-bound administrator/CSV receipt template:
+
+```sh
+.venv/bin/python scripts/raos_rakuten_measurement_activation_v3.py \
+  --private-root "$PWD/.secrets/editorial-portfolio-v3" \
+  admin-receipt-template --money-link-mapping money-links.json \
+  --output admin-receipt.json
+```
+
+The owner must then copy the CSV-echoed measurement ID and representative model
+for every row, perform the two identity checks, set the verification booleans
+and attestation, and retain `production_publication_authorized: false`. Activation
+validates the exact 74-row set, unique HTTPS Money Link URLs, product/model
+identity receipt, mapping hash, 24-hour product evidence and 15-minute V2
+materialization window before writing URL-free receipts and private overlays:
+
+```sh
+.venv/bin/python scripts/raos_rakuten_measurement_activation_v3.py \
+  --private-root "$PWD/.secrets/editorial-portfolio-v3" activate \
+  --money-link-mapping money-links.json --admin-receipt admin-receipt.json \
+  --dry-run-output rakuten-activation-dry-run.json
+```
+
+No command in this sequence authorizes publication or enables measurement.
 
 Place a sanitized real sample in the private directory, then run:
 

@@ -55,6 +55,54 @@ ROBOT_VACUUM_OUTPUT: Final = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
     "kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp"
 )
+SUITCASE_UNDER_100_SOURCE: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    "article-suitcase-under-100-seats.png"
+)
+SUITCASE_UNDER_100_OUTPUT: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/assets/images/article-suitcase-under-100-seats.webp"
+)
+SUITCASE_UNDER_3KG_SOURCE: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    "article-suitcase-under-3kg.png"
+)
+SUITCASE_UNDER_3KG_OUTPUT: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/assets/images/article-suitcase-under-3kg.webp"
+)
+SUITCASE_FRONT_OPEN_SOURCE: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    "article-suitcase-front-open-stopper.png"
+)
+SUITCASE_FRONT_OPEN_OUTPUT: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/assets/images/article-suitcase-front-open-stopper.webp"
+)
+ANKER_GENERATIONS_SOURCE: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    "article-anker-solix-generations.png"
+)
+ANKER_GENERATIONS_OUTPUT: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/assets/images/article-anker-solix-generations.webp"
+)
+SOLOTA_RAKUA_SOURCE: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    "article-solota-rakua-replacement.png"
+)
+SOLOTA_RAKUA_OUTPUT: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/assets/images/article-solota-rakua-replacement.webp"
+)
+ROOMBA_K11_SOURCE: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    "article-roomba-mini-k11-comparison.png"
+)
+ROOMBA_K11_OUTPUT: Final = (
+    ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/assets/images/article-roomba-mini-k11-comparison.webp"
+)
 FFMPEG: Final = Path("/usr/bin/ffmpeg")
 MAX_SOURCE_BYTES: Final = 8 * 1024 * 1024
 MAX_OUTPUT_BYTES: Final = 2 * 1024 * 1024
@@ -151,6 +199,87 @@ ASSETS: Final = (
         ),
         generation_intent="ROBOT_VACUUM_SELECTION_GUIDE",
         allowed_uses=("ROBOT_VACUUM_ARTICLE_ILLUSTRATION",),
+    ),
+    AssetSpec(
+        source=SUITCASE_UNDER_100_SOURCE,
+        output=SUITCASE_UNDER_100_OUTPUT,
+        source_sha256=(
+            "9869fd732cd56a1153159b6147da25a6cb569969a3683685d1d14310ee010cdc"
+        ),
+        output_sha256=(
+            "0a2682459af1562593ccae37a877bbae26585f269c86d79775e98c015fd40f10"
+        ),
+        created_on="2026-09-01",
+        generation_intent="UNDER_100_SEAT_CARRY_ON_DIMENSION_COMPARISON",
+        allowed_uses=("UNDER_100_SEAT_SUITCASE_ARTICLE_HEADER",),
+    ),
+    AssetSpec(
+        source=SUITCASE_UNDER_3KG_SOURCE,
+        output=SUITCASE_UNDER_3KG_OUTPUT,
+        source_sha256=(
+            "2a8521d52a85e0ad320dbed37fe279ff89b8f1c632839eeba2f27efd494ed089"
+        ),
+        output_sha256=(
+            "43db66a0e12a20cc8f31f44293691811734a41b0d0afa0374c73cf95d6cfd394"
+        ),
+        created_on="2026-09-01",
+        generation_intent="UNDER_3KG_CARRY_ON_WEIGHT_AND_CAPACITY_COMPARISON",
+        allowed_uses=("UNDER_3KG_SUITCASE_ARTICLE_HEADER",),
+    ),
+    AssetSpec(
+        source=SUITCASE_FRONT_OPEN_SOURCE,
+        output=SUITCASE_FRONT_OPEN_OUTPUT,
+        source_sha256=(
+            "8005abfdce55db8f9e31c03f907040e07bd7afe103333387a2796e27b105975b"
+        ),
+        output_sha256=(
+            "6cffe92e50ce644ae60c72d4acaece34609acaa25a943a41811833063afb9d1e"
+        ),
+        source_width=1535,
+        output_width=1536,
+        video_filter="scale=1536:1024:flags=lanczos",
+        created_on="2026-09-01",
+        generation_intent="FRONT_OPEN_STOPPER_CARRY_ON_FEATURE_COMPARISON",
+        allowed_uses=("FRONT_OPEN_STOPPER_SUITCASE_ARTICLE_HEADER",),
+    ),
+    AssetSpec(
+        source=ANKER_GENERATIONS_SOURCE,
+        output=ANKER_GENERATIONS_OUTPUT,
+        source_sha256=(
+            "2eec59720c0bce9d6537beeb5f5497b368f18d713dd0020eee91e65e74c6281c"
+        ),
+        output_sha256=(
+            "b8db0de1e65653539d327c3645f8c0722a71be1b2a8291c338ce7b37bd5545a0"
+        ),
+        created_on="2026-09-01",
+        generation_intent="ANKER_SOLIX_GENERATION_AND_OUTPUT_COMPARISON",
+        allowed_uses=("ANKER_SOLIX_COMPARISON_ARTICLE_HEADER",),
+    ),
+    AssetSpec(
+        source=SOLOTA_RAKUA_SOURCE,
+        output=SOLOTA_RAKUA_OUTPUT,
+        source_sha256=(
+            "254ff9a0d263282ffd58b976dfb9122ac18bad3c482031e496655750f045c5a2"
+        ),
+        output_sha256=(
+            "a413f3c1a70282eb0d1362959f746421bec4c1fc640f072eb045d9c4009d3374"
+        ),
+        created_on="2026-09-01",
+        generation_intent="SOLOTA_RAKUA_REPLACEMENT_CONDITION_COMPARISON",
+        allowed_uses=("SOLOTA_RAKUA_COMPARISON_ARTICLE_HEADER",),
+    ),
+    AssetSpec(
+        source=ROOMBA_K11_SOURCE,
+        output=ROOMBA_K11_OUTPUT,
+        source_sha256=(
+            "5500d9395c9444e16f4a854d6f4e3c5b4e237342995afd501bab3e78bf829023"
+        ),
+        output_sha256=(
+            "a601dd1913fe0c54551e9e894666dd5dd793b36e193d47bb292e85ed22a2b1d2"
+        ),
+        created_on="2026-09-01",
+        generation_intent="ROOMBA_MINI_SWITCHBOT_K11_SIZE_AND_STATION_COMPARISON",
+        allowed_uses=("ROOMBA_K11_COMPARISON_ARTICLE_HEADER",),
     ),
 )
 

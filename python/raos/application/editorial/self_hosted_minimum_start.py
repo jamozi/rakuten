@@ -46,7 +46,7 @@ FIRST_ARTICLE_TITLE = (
 RAKUTEN_CREDIT_FROM_COMMENT = "Rakuten Web Services Attribution Snippet FROM HERE"
 RAKUTEN_CREDIT_TO_COMMENT = "Rakuten Web Services Attribution Snippet TO HERE"
 RAKUTEN_CREDIT_ANCHOR = (
-    '<a href="https://developers.rakuten.com/" target="_blank">'
+    '<a href="https://developers.rakuten.com/" target="_blank" rel="noopener noreferrer">'
     "Supported by Rakuten Developers</a>"
 )
 RAKUTEN_CREDIT_SNIPPET = (

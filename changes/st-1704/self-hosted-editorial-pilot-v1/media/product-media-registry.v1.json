@@ -16,9 +16,9 @@
   },
   "assets": [
     {
-      "media_asset_ref": "MEDIA-ACE-CRESTA-06316",
-      "product_id": "PRD-ACE-CRESTA-06316",
-      "product_name": "ACE クレスタ 06316",
+      "media_asset_ref": "MEDIA-PROTECA-TRI-AIR-01541",
+      "product_id": "PRD-PROTECA-TRI-AIR-01541",
+      "product_name": "PROTECA Tri-Air 01541",
       "asset_class": "rakuten_api_product_image",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
@@ -28,12 +28,46 @@
       "height": null,
       "required_width": 128,
       "required_height": 128,
-      "alt": "ACE クレスタ 06316の商品画像",
+      "alt": "PROTECA Tri-Air 01541の商品画像",
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["06316"], "required_title_tokens": ["ACE", "クレスタ", "06316"], "product_kind_tokens": ["スーツケース", "キャリーケース"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "01541"
+        ],
+        "required_title_tokens": [
+          "PROTECA",
+          "トライエアー",
+          "01541"
+        ],
+        "product_kind_tokens": [
+          "スーツケース",
+          "キャリーケース"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
@@ -53,8 +87,41 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["05721"], "required_title_tokens": ["ディフェレンス", "05721"], "product_kind_tokens": ["スーツケース", "キャリーケース"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "05721"
+        ],
+        "required_title_tokens": [
+          "ディフェレンス",
+          "05721"
+        ],
+        "product_kind_tokens": [
+          "スーツケース",
+          "キャリーケース"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
@@ -74,8 +141,41 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["01471"], "required_title_tokens": ["マックスパス4", "01471"], "product_kind_tokens": ["スーツケース", "キャリーケース"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "01471"
+        ],
+        "required_title_tokens": [
+          "マックスパス4",
+          "01471"
+        ],
+        "product_kind_tokens": [
+          "スーツケース",
+          "キャリーケース"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
@@ -95,8 +195,44 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["A17225Z1", "A1722511"], "required_title_tokens": ["Anker", "Solix", "C300"], "product_kind_tokens": ["ポータブル電源", "Portable Power Station"], "forbidden_title_tokens": ["C300 DC", "収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "A17225Z1",
+          "A1722511"
+        ],
+        "required_title_tokens": [
+          "Anker",
+          "Solix",
+          "C300"
+        ],
+        "product_kind_tokens": [
+          "ポータブル電源",
+          "Portable Power Station"
+        ],
+        "forbidden_title_tokens": [
+          "C300 DC",
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
@@ -116,14 +252,47 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": "7640974000206", "allowed_variants": ["500 New"], "required_title_tokens": ["Jackery", "500 New"], "product_kind_tokens": ["ポータブル電源", "Portable Power Station"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": "7640974000206",
+        "allowed_variants": [
+          "500 New"
+        ],
+        "required_title_tokens": [
+          "Jackery",
+          "500 New"
+        ],
+        "product_kind_tokens": [
+          "ポータブル電源",
+          "Portable Power Station"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
-      "media_asset_ref": "MEDIA-BLUETTI-AC70",
-      "product_id": "PRD-BLUETTI-AC70",
-      "product_name": "BLUETTI AC70",
+      "media_asset_ref": "MEDIA-JACKERY-1000-NEW-V3",
+      "product_id": "PRD-JACKERY-1000-NEW-V3",
+      "product_name": "Jackery ポータブル電源 1000 New V3",
       "asset_class": "rakuten_api_product_image",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
@@ -133,18 +302,52 @@
       "height": null,
       "required_width": 128,
       "required_height": 128,
-      "alt": "BLUETTI AC70の商品画像",
+      "alt": "Jackery ポータブル電源 1000 New V3の商品画像",
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["AC70"], "required_title_tokens": ["BLUETTI", "AC70"], "product_kind_tokens": ["ポータブル電源", "Portable Power Station"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "JE-1000G",
+          "JE-1000G-WH"
+        ],
+        "required_title_tokens": [
+          "Jackery",
+          "1000 New V3"
+        ],
+        "product_kind_tokens": [
+          "ポータブル電源",
+          "Portable Power Station"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
-      "media_asset_ref": "MEDIA-ECOFLOW-DELTA3-CLASSIC",
-      "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
-      "product_name": "EcoFlow DELTA 3 Classic",
+      "media_asset_ref": "MEDIA-ANKER-SOLIX-C800",
+      "product_id": "PRD-ANKER-SOLIX-C800",
+      "product_name": "Anker Solix C800 Portable Power Station",
       "asset_class": "rakuten_api_product_image",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
@@ -154,18 +357,52 @@
       "height": null,
       "required_width": 128,
       "required_height": 128,
-      "alt": "EcoFlow DELTA 3 Classicの商品画像",
+      "alt": "Anker Solix C800 Portable Power Stationの商品画像",
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["DELTA 3 Classic"], "required_title_tokens": ["EcoFlow", "DELTA 3 Classic"], "product_kind_tokens": ["ポータブル電源", "Portable Power Station"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "A17535Z1",
+          "A1753"
+        ],
+        "required_title_tokens": [
+          "Anker",
+          "Solix C800",
+          "A1753"
+        ],
+        "product_kind_tokens": [
+          "ポータブル電源"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
-      "media_asset_ref": "MEDIA-PANASONIC-NP-TMLK1",
-      "product_id": "PRD-PANASONIC-NP-TMLK1",
-      "product_name": "SOLOTA",
+      "media_asset_ref": "MEDIA-DJI-POWER-1000-V2",
+      "product_id": "PRD-DJI-POWER-1000-V2",
+      "product_name": "DJI Power 1000 V2",
       "asset_class": "rakuten_api_product_image",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
@@ -175,18 +412,50 @@
       "height": null,
       "required_width": 128,
       "required_height": 128,
-      "alt": "SOLOTAの商品画像",
+      "alt": "DJI Power 1000 V2の商品画像",
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["NP-TMLK1-K"], "required_title_tokens": ["TMLK1"], "product_kind_tokens": ["食器洗い乾燥機", "食洗機", "Dishwasher"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "DYM1000V2L",
+          "DYM1000V2H"
+        ],
+        "required_title_tokens": [
+          "DJI Power 1000 V2"
+        ],
+        "product_kind_tokens": [
+          "ポータブル電源"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
-      "media_asset_ref": "MEDIA-THANKO-RAKUA-MINI-COLOR",
-      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
-      "product_name": "ラクアmini color",
+      "media_asset_ref": "MEDIA-SIROCA-SS-M171",
+      "product_id": "PRD-SIROCA-SS-M171",
+      "product_name": "siroca SS-M171",
       "asset_class": "rakuten_api_product_image",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
@@ -196,12 +465,105 @@
       "height": null,
       "required_width": 128,
       "required_height": 128,
-      "alt": "ラクアmini colorの商品画像",
+      "alt": "siroca SS-M171の商品画像",
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["TDWS25SBL", "TDWS25SRD"], "required_title_tokens": ["ラクア", "mini", "color"], "product_kind_tokens": ["食器洗い乾燥機", "食洗機", "Dishwasher"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー", "スチールラックセット", "RSET"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "SS-M171"
+        ],
+        "required_title_tokens": [
+          "SS-M171"
+        ],
+        "product_kind_tokens": [
+          "食器洗い乾燥機",
+          "食洗機",
+          "Dishwasher"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
+      "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
+    },
+    {
+      "media_asset_ref": "MEDIA-THANKO-RAKUA-MINI-TK-MDW22W",
+      "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+      "product_name": "THANKO ラクアmini TK-MDW22W",
+      "asset_class": "rakuten_api_product_image",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
+      "source_url": null,
+      "image_url": null,
+      "width": null,
+      "height": null,
+      "required_width": 128,
+      "required_height": 128,
+      "alt": "THANKO ラクアmini TK-MDW22Wの商品画像",
+      "retrieved_at": null,
+      "response_sha256": null,
+      "image_sha256": null,
+      "identity": {
+        "item_code": null,
+        "jan": "4580060593095",
+        "allowed_variants": [
+          "TK-MDW22W"
+        ],
+        "required_title_tokens": [
+          "ラクア",
+          "mini",
+          "TK-MDW22W"
+        ],
+        "product_kind_tokens": [
+          "食器洗い乾燥機",
+          "食洗機",
+          "Dishwasher"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー",
+          "ポンプセット",
+          "スチールラックセット",
+          "PSET",
+          "RSET"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
@@ -221,14 +583,47 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["SS-MA251"], "required_title_tokens": ["SS-MA251"], "product_kind_tokens": ["食器洗い乾燥機", "食洗機", "Dishwasher"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "SS-MA251"
+        ],
+        "required_title_tokens": [
+          "SS-MA251"
+        ],
+        "product_kind_tokens": [
+          "食器洗い乾燥機",
+          "食洗機",
+          "Dishwasher"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
-      "media_asset_ref": "MEDIA-PANASONIC-NP-TSP1",
-      "product_id": "PRD-PANASONIC-NP-TSP1",
-      "product_name": "NP-TSP1",
+      "media_asset_ref": "MEDIA-TOSHIBA-DWS-33B-W",
+      "product_id": "PRD-TOSHIBA-DWS-33B-W",
+      "product_name": "東芝 DWS-33B(W)",
       "asset_class": "rakuten_api_product_image",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
@@ -238,12 +633,44 @@
       "height": null,
       "required_width": 128,
       "required_height": 128,
-      "alt": "NP-TSP1の商品画像",
+      "alt": "東芝 DWS-33B(W)の商品画像",
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["NP-TSP1-W"], "required_title_tokens": ["NP-TSP1"], "product_kind_tokens": ["食器洗い乾燥機", "食洗機", "Dishwasher"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "DWS-33B"
+        ],
+        "required_title_tokens": [
+          "DWS-33B"
+        ],
+        "product_kind_tokens": [
+          "食器洗い乾燥機",
+          "食洗機"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
@@ -263,8 +690,42 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["A1754"], "required_title_tokens": ["Anker", "Solix", "C800 Plus"], "product_kind_tokens": ["ポータブル電源", "Portable Power Station"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "A1754"
+        ],
+        "required_title_tokens": [
+          "Anker",
+          "Solix",
+          "C800 Plus"
+        ],
+        "product_kind_tokens": [
+          "ポータブル電源",
+          "Portable Power Station"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
@@ -284,8 +745,46 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["A17615Z1", "A1761521", "A1761511"], "required_title_tokens": ["Anker", "Solix", "C1000"], "product_kind_tokens": ["ポータブル電源", "Portable Power Station"], "forbidden_title_tokens": ["Gen 2", "Gen2", "収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "A17615Z1",
+          "A1761521",
+          "A1761511"
+        ],
+        "required_title_tokens": [
+          "Anker",
+          "Solix",
+          "C1000"
+        ],
+        "product_kind_tokens": [
+          "ポータブル電源",
+          "Portable Power Station"
+        ],
+        "forbidden_title_tokens": [
+          "Gen 2",
+          "Gen2",
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
@@ -305,14 +804,49 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["A17635Z1", "A1763521"], "required_title_tokens": ["Anker", "Solix", "C1000 Gen 2"], "product_kind_tokens": ["ポータブル電源", "Portable Power Station"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "A17635Z1",
+          "A1763521"
+        ],
+        "required_title_tokens": [
+          "Anker",
+          "Solix",
+          "C1000 Gen 2"
+        ],
+        "product_kind_tokens": [
+          "ポータブル電源",
+          "Portable Power Station"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
-      "media_asset_ref": "MEDIA-IROBOT-ROOMBA-MINI-AUTOEMPTY",
-      "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
-      "product_name": "Roomba Mini + AutoEmpty F155260",
+      "media_asset_ref": "MEDIA-EUFY-AUTOEMPTY-C10",
+      "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
+      "product_name": "Eufy Robot Vacuum Auto-Empty C10 (T2292511)",
       "asset_class": "rakuten_api_product_image",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
@@ -322,12 +856,48 @@
       "height": null,
       "required_width": 128,
       "required_height": 128,
-      "alt": "Roomba Mini + AutoEmpty F155260の商品画像",
+      "alt": "Eufy Robot Vacuum Auto-Empty C10 (T2292511)の商品画像",
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": "0885155053053", "allowed_variants": ["F155260"], "required_title_tokens": ["Roomba", "Mini", "AutoEmpty"], "product_kind_tokens": ["ロボット掃除機", "掃除機＆床拭きロボット", "掃除機&床拭きロボット", "Robot Vacuum"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": "4571411228995",
+        "allowed_variants": [
+          "T2292511"
+        ],
+        "required_title_tokens": [
+          "Eufy",
+          "Auto-Empty C10",
+          "T2292511"
+        ],
+        "product_kind_tokens": [
+          "ロボット掃除機",
+          "掃除機＆床拭きロボット",
+          "掃除機&床拭きロボット",
+          "Robot Vacuum"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
@@ -347,14 +917,47 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": null, "allowed_variants": ["K11+ Pro"], "required_title_tokens": ["SwitchBot", "K11+ Pro"], "product_kind_tokens": ["ロボット掃除機", "Robot Vacuum"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "K11+ Pro"
+        ],
+        "required_title_tokens": [
+          "SwitchBot",
+          "K11+ Pro"
+        ],
+        "product_kind_tokens": [
+          "ロボット掃除機",
+          "Robot Vacuum"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
-      "media_asset_ref": "MEDIA-SWITCHBOT-K10-PRO-COMBO",
-      "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
-      "product_name": "SwitchBot ロボット掃除機 K10+ Pro Combo",
+      "media_asset_ref": "MEDIA-ECOVACS-DEEBOT-MINI2",
+      "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
+      "product_name": "ECOVACS DEEBOT mini 2",
       "asset_class": "rakuten_api_product_image",
       "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
       "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
@@ -364,12 +967,44 @@
       "height": null,
       "required_width": 128,
       "required_height": 128,
-      "alt": "SwitchBot ロボット掃除機 K10+ Pro Comboの商品画像",
+      "alt": "ECOVACS DEEBOT mini 2の商品画像",
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": "8113238474927", "allowed_variants": ["K10+ Pro Combo"], "required_title_tokens": ["SwitchBot", "K10+ProCombo"], "product_kind_tokens": ["ロボット掃除機", "Robot Vacuum"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "DEEBOT mini 2",
+          "110-2519-0301"
+        ],
+        "required_title_tokens": [
+          "DEEBOT mini 2"
+        ],
+        "product_kind_tokens": [
+          "ロボット掃除機"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     },
     {
@@ -389,8 +1024,43 @@
       "retrieved_at": null,
       "response_sha256": null,
       "image_sha256": null,
-      "identity": {"item_code": null, "jan": "0885155054982", "allowed_variants": ["N285060"], "required_title_tokens": ["Roomba", "Plus 515 Combo", "AutoWash"], "product_kind_tokens": ["Roomba", "ロボット掃除機", "Robot Vacuum"], "forbidden_title_tokens": ["収納ケース", "専用ケース", "保護ケース", "交換用", "互換", "カバー", "バッグ単品", "フィルター", "ブラシ単品", "モップパッド", "バッテリー単体", "アクセサリー"], "status": "PENDING_EXACT_MATCH"},
-      "display_policy": {"object_fit": "contain", "lazy_load": true, "linked_image": false},
+      "identity": {
+        "item_code": null,
+        "jan": "0885155054982",
+        "allowed_variants": [
+          "N285060"
+        ],
+        "required_title_tokens": [
+          "Roomba",
+          "Plus 515 Combo",
+          "AutoWash"
+        ],
+        "product_kind_tokens": [
+          "Roomba",
+          "ロボット掃除機",
+          "Robot Vacuum"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     }
   ]

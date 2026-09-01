@@ -18,7 +18,7 @@ sources:
   - {path: docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml, sha256: 7ccbb8449118e64275c8f44a876d1a49eebb8dde23847f81c76493d6cd8de98b}
   - {path: changes/st-0105/README.md, sha256: 15adf4e461592453f78a363ccba411c861f476aeaf58444039c6eaff12ade8de}
   - {path: changes/st-0105/manifest.json, sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7}
-  - {path: changes/st-0303/generated/iam-ops-catalog.v1.json, sha256: 0cab8decf1a9a874248ef16a5b1bfd01c19d1babbf45bb0f73eb42b89913720a}
+  - {path: changes/st-0303/generated/iam-ops-catalog.v1.json, sha256: 8ebf0d20ae07e4f82564f16c675b60f4a782464f5b25aa0a2b0df668f8475128}
   - {path: changes/st-0304/contracts/domain-schema.v1.yaml, sha256: 8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122}
   - {path: changes/st-0304/generated/domain-catalog.v1.json, sha256: 41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208}
   - {path: docs/upstream/key_documents/RAOS_02_system_architecture_v0.1.md, sha256: 00da457014aaf6dd1b726c1a9972a4b371720cb8604d517bccc180ba7a9a93f3}
@@ -41,7 +41,7 @@ executable_matrices:
   concurrency: {path: changes/st-0308/contracts/persistence/concurrency-matrix.v1.yaml, sha256: 66cb474d428703e83b7b84744c4f843463b0a040714b907e00137438f5ba08ab}
   state_cas: {path: changes/st-0308/contracts/persistence/state-cas-matrix.v1.yaml, sha256: f865a30c2c000dfd9ca6f2f43d0be7c5cc3883077cfd41f3dcc4c340d03c94d1}
   uow_surface: {path: changes/st-0308/contracts/persistence/uow-surface-matrix.v1.yaml, sha256: 2e298605a9679b593244d78b49a6e4f331d8927363d3513d8f7aa6527c10bdc0}
-  domain_mapper: {path: changes/st-0308/contracts/persistence/domain-mapper-matrix.v1.yaml, sha256: 8b2499f99faa223fbc5b6329bd0f0e441441e89b45d507b6bbb0ffbce470e872}
+  domain_mapper: {path: changes/st-0308/contracts/persistence/domain-mapper-matrix.v1.yaml, sha256: c37ca853e49c09084c4174ad8a74dc8f6f8c43fee169601393b391413194ed3e}
   event_emission: {path: changes/st-0308/contracts/persistence/event-emission-matrix.v1.yaml, sha256: 3c4f8e429824849b9219faefb2867dd8444828562d0d0a1d9c79bfa2cc511ad0}
   idempotency: {path: changes/st-0308/contracts/persistence/idempotency-matrix.v1.yaml, sha256: 1645b6b67d8ab6ae01520094cbc7f14405f2545c41d019ecb98ea48412c39e1b}
   identity: {path: changes/st-0308/contracts/persistence/identity-matrix.v1.yaml, sha256: aa009ab2423069f782621d6f7e4cb4c4fa57185d03ad3195ad5df29c75360d0b}

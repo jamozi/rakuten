@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -21,7 +22,15 @@ from raos.application.editorial.editorial_portfolio_v3 import (  # noqa: E402
 )
 from raos.application.editorial.rakuten_measurement_activation_v3 import (  # noqa: E402
     RakutenMeasurementActivationV3Failure,
+    admin_verification_receipt_template_v3,
     materialize_rakuten_measurement_activation_v3,
+    money_link_mapping_template_v3,
+)
+from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
+    EditorialEconomicsV3Failure,
+    canonical_json_bytes,
+    read_private_bytes,
+    write_private_bytes,
 )
 
 
@@ -36,17 +45,36 @@ def _parser() -> argparse.ArgumentParser:
         default=DEFAULT_PRIVATE_ROOT,
         help="absolute owner-private directory; mode must be 0700",
     )
-    parser.add_argument(
+    subcommands = parser.add_subparsers(dest="command", required=True)
+    mapping_template = subcommands.add_parser("money-link-template")
+    mapping_template.add_argument(
+        "--output",
+        required=True,
+        help="relative mode-0600 incomplete 74-row mapping template to write",
+    )
+    admin_template = subcommands.add_parser("admin-receipt-template")
+    admin_template.add_argument(
+        "--money-link-mapping",
+        required=True,
+        help="relative mode-0600 completed Money Link mapping",
+    )
+    admin_template.add_argument(
+        "--output",
+        required=True,
+        help="relative mode-0600 administrator/CSV receipt template to write",
+    )
+    activation = subcommands.add_parser("activate")
+    activation.add_argument(
         "--admin-receipt",
         required=True,
         help="relative mode-0600 administrator/CSV verification receipt",
     )
-    parser.add_argument(
+    activation.add_argument(
         "--money-link-mapping",
         required=True,
         help="relative mode-0600 final Money Link mapping",
     )
-    parser.add_argument(
+    activation.add_argument(
         "--dry-run-output",
         required=True,
         help="relative mode-0600 hash/count receipt to write",
@@ -59,15 +87,53 @@ def main(argv: list[str] | None = None) -> int:
     try:
         private_root = arguments.private_root.resolve()
         portfolio = load_editorial_portfolio_v3(REPOSITORY_ROOT)
-        report = materialize_rakuten_measurement_activation_v3(
-            repository_root=REPOSITORY_ROOT,
-            private_root=private_root,
-            portfolio=portfolio,
-            admin_receipt_name=arguments.admin_receipt,
-            money_link_mapping_name=arguments.money_link_mapping,
-            dry_run_output_name=arguments.dry_run_output,
-        )
-    except (EditorialPortfolioV3Failure, RakutenMeasurementActivationV3Failure) as exc:
+        if arguments.command == "money-link-template":
+            document = money_link_mapping_template_v3(
+                repository_root=REPOSITORY_ROOT,
+                portfolio=portfolio,
+            )
+            raw = canonical_json_bytes(document)
+            write_private_bytes(private_root, arguments.output, raw)
+            report: object = {
+                "schema": "RAOS_EDITORIAL_V3_PRIVATE_TEMPLATE_RESULT_V1",
+                "kind": "money_link_mapping",
+                "row_count": len(portfolio.cta_by_measurement_id),
+                "sha256": hashlib.sha256(raw).hexdigest(),
+                "complete": False,
+            }
+        elif arguments.command == "admin-receipt-template":
+            mapping_raw = read_private_bytes(
+                private_root,
+                arguments.money_link_mapping,
+            )
+            document = admin_verification_receipt_template_v3(
+                repository_root=REPOSITORY_ROOT,
+                portfolio=portfolio,
+                money_link_mapping=mapping_raw,
+            )
+            raw = canonical_json_bytes(document)
+            write_private_bytes(private_root, arguments.output, raw)
+            report = {
+                "schema": "RAOS_EDITORIAL_V3_PRIVATE_TEMPLATE_RESULT_V1",
+                "kind": "admin_verification_receipt",
+                "row_count": len(portfolio.cta_by_measurement_id),
+                "sha256": hashlib.sha256(raw).hexdigest(),
+                "complete": False,
+            }
+        else:
+            report = materialize_rakuten_measurement_activation_v3(
+                repository_root=REPOSITORY_ROOT,
+                private_root=private_root,
+                portfolio=portfolio,
+                admin_receipt_name=arguments.admin_receipt,
+                money_link_mapping_name=arguments.money_link_mapping,
+                dry_run_output_name=arguments.dry_run_output,
+            )
+    except (
+        EditorialEconomicsV3Failure,
+        EditorialPortfolioV3Failure,
+        RakutenMeasurementActivationV3Failure,
+    ) as exc:
         print(str(exc), file=sys.stderr)
         return 2
     print(json.dumps(report, ensure_ascii=False, sort_keys=True, separators=(",", ":")))

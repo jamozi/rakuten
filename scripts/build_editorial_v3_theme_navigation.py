@@ -44,6 +44,7 @@ CONTENT_ROLE_LABELS: Final = {
     "feature_shortlist": "機能別比較",
     "head_to_head_comparison": "2製品比較",
     "head_to_head_with_reference": "2製品比較＋参考機種",
+    "lifecycle_status_route": "旧製品の販売状態確認＋現行比較への案内",
     "model_family_comparison": "ブランド内比較",
 }
 AUDIT_VIEWPORTS: Final = (360, 390, 768, 1440)

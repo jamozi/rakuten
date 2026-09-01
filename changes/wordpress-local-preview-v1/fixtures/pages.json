@@ -1,6 +1,6 @@
 {
   "schema": "RAOS_WORDPRESS_LOCAL_PREVIEW_PAGES_V1",
-  "seed_version": "2026-08-30.1",
+  "seed_version": "2026-09-01.1",
   "pages": [
     {
       "content_file": "pages/about-ad-policy.html",
@@ -10,7 +10,7 @@
     },
     {
       "content_file": "pages/comparison-policy.html",
-      "excerpt": "暮らしのしるべの比較対象・除外、Evidence階層、掲載順、販売条件、利益相反、更新・訂正の方針を説明します。",
+      "excerpt": "暮らしのしるべの比較対象・除外、根拠の扱い、掲載順、販売条件、利益相反、更新・訂正の方針を説明します。",
       "slug": "comparison-policy",
       "title": "比較・編集方針"
     },

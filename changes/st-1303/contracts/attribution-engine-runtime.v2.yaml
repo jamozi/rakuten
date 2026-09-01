@@ -39,7 +39,7 @@ source_bindings:
     sha256: cd49fd67e860a52670799bfaa8ec60711341ddc3fbbf37ceff89b76c85609dd9
   five_slot_measurement:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: e902d9a6f69d19ffab24b348f962e78bf8b1f57a159ad1e8798f1e7b81ec2e9e
+    sha256: 3a59ad41be34f2f01435cc1e85addabbf5b37507ea6b523f6a0898d3dfd9b32b
 
 open_decision_boundary:
   id: OD-003
@@ -50,34 +50,34 @@ open_decision_boundary:
 
 measurement_contract:
   schema_version: RAOS_ST1303_MEASUREMENT_ATTRIBUTION_CONTRACT_V2
-  source_contract_sha256: 7f1eb69d554b26f8e954f36e9a330ba19425062c98a157683c8126c39f336471
+  source_contract_sha256: 3a59ad41be34f2f01435cc1e85addabbf5b37507ea6b523f6a0898d3dfd9b32b
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
   articles:
     - slot: 1
       article_id: st1703-first-suitcase-comparison
       slug: carry-on-suitcase-comparison
-      packet_sha256: 45c2626babf8e39a0e1371c77d8d506ea71f18bb74470c31f45d8a512a4c7438
+      packet_sha256: 53868ff59be25f1b4fb748b9a3a2fd3060872fd24288888d875a9b6490be48c2
       intent_classification: CONDITION_COMPARISON
     - slot: 2
       article_id: st1704-portable-power-station-guide
       slug: portable-power-station-guide
-      packet_sha256: d8e3723374162298fbccbbe7544f4590fb324446725312666d731ed95463f123
+      packet_sha256: 1e2974b06b71da55b7af19e27f893a21afc933bc155bd753a244b01690da8562
       intent_classification: SELECTION_GUIDE
     - slot: 3
       article_id: st1704-anker-solix-c300-c800-c1000-differences
       slug: anker-solix-c300-c800-c1000-differences
-      packet_sha256: 6bcdc286117bbd6b9b7b32a33cf59228cce608100308fb56b308b9f9fe57e4c6
+      packet_sha256: a75331cc78827097a3024e10b42a2221bba1fcd36e00eb66d0b702e0fe4b79aa
       intent_classification: MODEL_DIFFERENCES
     - slot: 4
       article_id: st1704-countertop-dishwasher-for-small-households
       slug: countertop-dishwasher-for-small-households
-      packet_sha256: b42716ecf9a1bee5aa9c9a440e47e876c1bb7e67b75a3ee59b6d079d08abdb20
+      packet_sha256: 754bb5d2bdf04eefd1867bc53ebb5d2f4307ff1aa49f8414fe5e9d436e5c1cbf
       intent_classification: HOUSEHOLD_FIT_COMPARISON
     - slot: 5
       article_id: st1704-compact-robot-vacuum-shortlist
       slug: compact-robot-vacuum-shortlist
-      packet_sha256: 611ad2038feaf87a318b2b1a99ee9b6984e6299f0214d07f02f95d8d9ee0ab99
+      packet_sha256: 4aae0a80274bdba88cd49eb25fdac3862911831d66ddd0b62267f9fa16f13320
       intent_classification: CONDITION_SHORTLIST
   article_metrics:
     - search_impressions

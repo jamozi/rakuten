@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.5.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '898e85031f5cab609ba6d9bb601608b5b0b6205c759842d292a3f86ae66d39e7';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -26,6 +26,18 @@ const KURASHINOSHIRUBE_DISHWASHER_ARTICLE_IMAGE_PATH = 'assets/images/article-co
 const KURASHINOSHIRUBE_DISHWASHER_ARTICLE_IMAGE_SHA256 = 'c36e87682ce9be33f70bc5b1a55e20a63b19ab6155172d670d5c019a984bcf9f';
 const KURASHINOSHIRUBE_ROBOT_ARTICLE_IMAGE_PATH = 'assets/images/article-robot-vacuum-guide.webp';
 const KURASHINOSHIRUBE_ROBOT_ARTICLE_IMAGE_SHA256 = 'f589471aeed1064f2499ec5d32a8e9c4b6b14db8613d3b1743b37d245ecc2384';
+const KURASHINOSHIRUBE_SUITCASE_UNDER_100_IMAGE_PATH = 'assets/images/article-suitcase-under-100-seats.webp';
+const KURASHINOSHIRUBE_SUITCASE_UNDER_100_IMAGE_SHA256 = '0a2682459af1562593ccae37a877bbae26585f269c86d79775e98c015fd40f10';
+const KURASHINOSHIRUBE_SUITCASE_UNDER_3KG_IMAGE_PATH = 'assets/images/article-suitcase-under-3kg.webp';
+const KURASHINOSHIRUBE_SUITCASE_UNDER_3KG_IMAGE_SHA256 = '43db66a0e12a20cc8f31f44293691811734a41b0d0afa0374c73cf95d6cfd394';
+const KURASHINOSHIRUBE_SUITCASE_FRONT_OPEN_IMAGE_PATH = 'assets/images/article-suitcase-front-open-stopper.webp';
+const KURASHINOSHIRUBE_SUITCASE_FRONT_OPEN_IMAGE_SHA256 = '6cffe92e50ce644ae60c72d4acaece34609acaa25a943a41811833063afb9d1e';
+const KURASHINOSHIRUBE_ANKER_GENERATIONS_IMAGE_PATH = 'assets/images/article-anker-solix-generations.webp';
+const KURASHINOSHIRUBE_ANKER_GENERATIONS_IMAGE_SHA256 = 'b8db0de1e65653539d327c3645f8c0722a71be1b2a8291c338ce7b37bd5545a0';
+const KURASHINOSHIRUBE_SOLOTA_RAKUA_IMAGE_PATH = 'assets/images/article-solota-rakua-replacement.webp';
+const KURASHINOSHIRUBE_SOLOTA_RAKUA_IMAGE_SHA256 = 'a413f3c1a70282eb0d1362959f746421bec4c1fc640f072eb045d9c4009d3374';
+const KURASHINOSHIRUBE_ROOMBA_K11_IMAGE_PATH = 'assets/images/article-roomba-mini-k11-comparison.webp';
+const KURASHINOSHIRUBE_ROOMBA_K11_IMAGE_SHA256 = 'a601dd1913fe0c54551e9e894666dd5dd793b36e193d47bb292e85ed22a2b1d2';
 const KURASHINOSHIRUBE_BRAND_MARK_PATH = 'assets/images/brand-mark.svg';
 const KURASHINOSHIRUBE_BRAND_MARK_SHA256 = 'bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3';
 const KURASHINOSHIRUBE_MEASUREMENT_ASSET_PATH = 'assets/measurement.js';
@@ -33,7 +45,7 @@ const KURASHINOSHIRUBE_MEASUREMENT_ASSET_SHA256 = '181dff17451e52bb5bc548964e6c9
 const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_PATH = 'assets/analytics-consent-gate.js';
 const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_SHA256 = '09b2bff8deba45af068ad8566a8d4e237da7da21fd310aaa62fedc10aa24a38a';
 const KURASHINOSHIRUBE_NAVIGATION_ASSET_PATH = 'assets/editorial-navigation.js';
-const KURASHINOSHIRUBE_NAVIGATION_ASSET_SHA256 = 'd8d7e78b9df43ab0367cb977051eaa8e1b9b03beec0e00a336dc0b261e306d43';
+const KURASHINOSHIRUBE_NAVIGATION_ASSET_SHA256 = '29fc68a8929aadfb49ef39740b4c7cbc5be66d6a8bd94f1fc5a8dcdc4345eac7';
 const KURASHINOSHIRUBE_HOMEPAGE_FEATURED_ARTICLE_ID = 'st1704-portable-power-station-guide';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ARTICLE_ID = 'st1703-first-suitcase-comparison';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ACTION = 'kurashinoshirube_apply_at003_review_v1';
@@ -41,7 +53,7 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1'
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = 'assets/editorial-navigation.v3.json';
-const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '878befcb921fb965fc805b323bbd440bd973bd87e44fb0f75f19e4f2c7bdd109';
+const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '9bcd7478912adbf0d09ec79ea3984a4bd762f425c7014211902c83e1f15cf688';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_MAX_BYTES = 262144;
 const KURASHINOSHIRUBE_HOME_TITLE = '生活用品を公式仕様で比較｜暮らしのしるべ';
 const KURASHINOSHIRUBE_HOME_DESCRIPTION = '暮らしのしるべは、移動・家事・備えの生活用品を、公式情報と確認条件に基づいて比較し、選び方を分かりやすく案内します。';
@@ -167,6 +179,7 @@ function kurashinoshirube_article_bindings(): array
                     'feature_shortlist' => '機能別比較',
                     'head_to_head_comparison' => '2製品比較',
                     'head_to_head_with_reference' => '2製品比較＋参考機種',
+                    'lifecycle_status_route' => '旧製品の販売状態確認＋現行比較への案内',
                     'model_family_comparison' => 'ブランド内比較',
                 )[$article['content_role']]
             )
@@ -177,6 +190,7 @@ function kurashinoshirube_article_bindings(): array
                 'feature_shortlist' => '機能別比較',
                 'head_to_head_comparison' => '2製品比較',
                 'head_to_head_with_reference' => '2製品比較＋参考機種',
+                'lifecycle_status_route' => '旧製品の販売状態確認＋現行比較への案内',
                 'model_family_comparison' => 'ブランド内比較',
             )[$article['content_role']] !== $article['content_role_label']
             || ! kurashinoshirube_is_clean_text($article['primary_query_intent'], 1, 180)
@@ -899,7 +913,7 @@ function kurashinoshirube_article_visual_asset(int $post_id): ?array
             'points' => array('容量', '出力', '重量'),
         ),
         'st1704-anker-solix-c300-c800-c1000-differences' => array(
-            'asset_key' => 'power',
+            'asset_key' => 'anker-generations',
             'caption' => 'Anker Solix 4型番の世代・出力・持ち運び条件を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
             'points' => array('型番・世代', '出力', '持ち運び'),
         ),
@@ -914,32 +928,38 @@ function kurashinoshirube_article_visual_asset(int $post_id): ?array
             'points' => array('本体寸法', 'ステーション', '高さ'),
         ),
         'carry-on-suitcase-under-100-seats' => array(
-            'asset_key' => 'suitcase',
+            'asset_key' => 'suitcase-under-100',
             'caption' => '100席未満便の機内持ち込み条件を各辺と3辺合計で整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
             'points' => array('45×35×20cm', '3辺合計100cm', '便・機材'),
         ),
         'lightweight-carry-on-suitcase-under-3kg' => array(
-            'asset_key' => 'suitcase',
+            'asset_key' => 'suitcase-under-3kg',
             'caption' => '軽量スーツケースの容量・重量・外寸を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
             'points' => array('30L以上', '3kg以下', '外寸'),
         ),
         'front-open-carry-on-suitcase-with-stopper' => array(
-            'asset_key' => 'suitcase',
+            'asset_key' => 'suitcase-front-open',
             'caption' => '機内持ち込みスーツケースの前開き・ストッパー・拡張時寸法を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
             'points' => array('前開き', 'ストッパー', '拡張時寸法'),
         ),
         'roomba-mini-vs-switchbot-k11-pro' => array(
-            'asset_key' => 'robot',
-            'caption' => '小型ロボット掃除機3構成の本体幅・ステーション・販売状態を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'asset_key' => 'roomba-k11',
+            'caption' => '小型ロボット掃除機の本体幅・ステーション・販売状態を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
             'points' => array('本体幅', 'ステーション', '販売状態'),
         ),
         'solota-vs-rakua-mini-plus' => array(
-            'asset_key' => 'dishwasher',
+            'asset_key' => 'solota-rakua',
             'caption' => '小型食洗機の販売状態・設置寸法・食器点数・給水方式を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
             'points' => array('設置寸法', '食器点数', '給水方式'),
         ),
     );
     $assets = array(
+        'anker-generations' => array(
+            'height' => 1024,
+            'path' => KURASHINOSHIRUBE_ANKER_GENERATIONS_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_ANKER_GENERATIONS_IMAGE_SHA256,
+            'width' => 1536,
+        ),
         'dishwasher' => array(
             'height' => 1024,
             'path' => KURASHINOSHIRUBE_DISHWASHER_ARTICLE_IMAGE_PATH,
@@ -958,11 +978,41 @@ function kurashinoshirube_article_visual_asset(int $post_id): ?array
             'sha256' => KURASHINOSHIRUBE_ROBOT_ARTICLE_IMAGE_SHA256,
             'width' => 1536,
         ),
+        'roomba-k11' => array(
+            'height' => 1024,
+            'path' => KURASHINOSHIRUBE_ROOMBA_K11_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_ROOMBA_K11_IMAGE_SHA256,
+            'width' => 1536,
+        ),
+        'solota-rakua' => array(
+            'height' => 1024,
+            'path' => KURASHINOSHIRUBE_SOLOTA_RAKUA_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_SOLOTA_RAKUA_IMAGE_SHA256,
+            'width' => 1536,
+        ),
         'suitcase' => array(
             'height' => 900,
             'path' => KURASHINOSHIRUBE_ARTICLE_IMAGE_PATH,
             'sha256' => KURASHINOSHIRUBE_ARTICLE_IMAGE_SHA256,
             'width' => 1600,
+        ),
+        'suitcase-front-open' => array(
+            'height' => 1024,
+            'path' => KURASHINOSHIRUBE_SUITCASE_FRONT_OPEN_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_SUITCASE_FRONT_OPEN_IMAGE_SHA256,
+            'width' => 1536,
+        ),
+        'suitcase-under-100' => array(
+            'height' => 1024,
+            'path' => KURASHINOSHIRUBE_SUITCASE_UNDER_100_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_SUITCASE_UNDER_100_IMAGE_SHA256,
+            'width' => 1536,
+        ),
+        'suitcase-under-3kg' => array(
+            'height' => 1024,
+            'path' => KURASHINOSHIRUBE_SUITCASE_UNDER_3KG_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_SUITCASE_UNDER_3KG_IMAGE_SHA256,
+            'width' => 1536,
         ),
     );
     $definition = is_string($article_id)
@@ -2143,6 +2193,31 @@ add_action(
     'kurashinoshirube_handle_existing_update'
 );
 
+/**
+ * Keep the public site free of WordPress's browser-storage emoji probe.
+ *
+ * Modern system fonts cover the editorial UI. The core compatibility probe
+ * writes wpEmojiSettingsSupports to sessionStorage even when analytics and
+ * consent storage are disabled, which would make the published privacy state
+ * disagree with the actual browser state.
+ */
+function kurashinoshirube_disable_core_emoji_assets(): void
+{
+    remove_action('wp_head', 'print_emoji_detection_script', 7);
+    remove_action('wp_enqueue_scripts', 'wp_enqueue_emoji_styles');
+    remove_action('wp_print_styles', 'print_emoji_styles');
+    remove_action('embed_head', 'print_emoji_detection_script');
+    remove_action('enqueue_embed_scripts', 'wp_enqueue_emoji_styles');
+    remove_filter('the_content_feed', 'wp_staticize_emoji');
+    remove_filter('comment_text_rss', 'wp_staticize_emoji');
+    remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
+}
+add_action(
+    'after_setup_theme',
+    'kurashinoshirube_disable_core_emoji_assets',
+    0
+);
+
 add_action('after_setup_theme', static function (): void {
     add_theme_support('title-tag');
     add_theme_support('responsive-embeds');
@@ -2518,11 +2593,15 @@ function kurashinoshirube_render_article_hero($attributes, $content, $tag): stri
         $point_items .= '<li>' . esc_html($point) . '</li>';
     }
     return '<figure class="wp-block-image size-full raos-article-hero-image">'
-        . '<div class="raos-article-hero-image__canvas"><img src="'
+        . '<div class="raos-article-hero-image__canvas">'
+        . '<p class="raos-article-hero-image__notice">'
+        . '比較イメージ／商品写真ではありません</p>'
+        . '<div class="raos-article-hero-image__media"><img src="'
         . esc_url($image_uri) . '" alt="" width="'
         . esc_attr((string) $visual['width']) . '" height="'
-        . esc_attr((string) $visual['height']) . '">'
-        . '<div class="raos-article-hero-image__overlay"><span>この記事の比較軸</span>'
+        . esc_attr((string) $visual['height']) . '"></div>'
+        . '<div class="raos-article-hero-image__overlay">'
+        . '<p>この記事の比較軸</p>'
         . '<ul aria-label="この記事で比べる3つの軸">' . $point_items . '</ul></div></div>'
         . '<figcaption>' . esc_html($visual['caption']) . '</figcaption>'
         . '</figure>';
@@ -2749,21 +2828,19 @@ function kurashinoshirube_inject_article_toc($content)
     $transformed = $with_back_links;
     $toc = '<nav id="raos-article-toc" class="raos-article-toc" '
         . 'aria-label="記事内の目次" tabindex="-1">'
+        . '<p class="raos-article-toc__title">この記事の目次</p>'
         . '<details open><summary>この記事の目次</summary><ol>' . $links
         . '</ol></details></nav>';
-    $disclosure_end = strpos($transformed, '</aside>');
-    if ($disclosure_end !== false) {
-        $position = $disclosure_end + strlen('</aside>');
-        return substr($transformed, 0, $position) . $toc
-            . substr($transformed, $position);
-    }
     $root_end = strpos($transformed, '>');
-    if ($root_end === false) {
+    $root_close = strrpos($transformed, '</div>');
+    if ($root_end === false || $root_close === false || $root_close <= $root_end) {
         return $content;
     }
     $position = $root_end + 1;
     return substr($transformed, 0, $position) . $toc
-        . substr($transformed, $position);
+        . '<div class="raos-editorial-v2__main">'
+        . substr($transformed, $position, $root_close - $position)
+        . '</div>' . substr($transformed, $root_close);
 }
 add_filter('the_content', 'kurashinoshirube_inject_article_toc', 12);
 
@@ -3299,7 +3376,18 @@ function kurashinoshirube_render_archive_heading($attributes, $content, $tag): s
     } elseif (is_author()) {
         $label = '執筆者別の記事';
     } elseif (is_date()) {
-        $label = get_the_archive_title();
+        $year = (int) get_query_var('year');
+        $month = (int) get_query_var('monthnum');
+        $day = (int) get_query_var('day');
+        if ($year >= 1970 && $year <= 9999 && $month >= 1 && $month <= 12) {
+            $label = $day >= 1 && $day <= 31
+                ? sprintf('%d年%d月%d日の記事', $year, $month, $day)
+                : sprintf('%d年%d月の記事', $year, $month);
+        } elseif ($year >= 1970 && $year <= 9999) {
+            $label = sprintf('%d年の記事', $year);
+        } else {
+            $label = '更新日別の記事';
+        }
     } else {
         $label = '記事一覧';
     }
@@ -3587,6 +3675,32 @@ function kurashinoshirube_filter_twitter_card($value)
         : 'summary_large_image';
 }
 
+/** Keep Yoast's author and reading-time labels consistent with the visible copy. */
+function kurashinoshirube_filter_meta_author($value, $presentation)
+{
+    unset($presentation);
+    $context = kurashinoshirube_public_head_context();
+    return is_array($context) && ($context['kind'] ?? null) === 'article'
+        ? '暮らしのしるべ編集者'
+        : $value;
+}
+
+function kurashinoshirube_filter_enhanced_slack_data($data, $presentation): array
+{
+    $context = kurashinoshirube_public_head_context();
+    if (! is_array($context) || ($context['kind'] ?? null) !== 'article') {
+        return is_array($data) ? $data : array();
+    }
+    $localized = array('執筆' => '暮らしのしるべ編集者');
+    $minutes = is_object($presentation)
+        ? ($presentation->estimated_reading_time_minutes ?? null)
+        : null;
+    if (is_int($minutes) && $minutes > 0 && $minutes <= 999) {
+        $localized['読了時間の目安'] = (string) $minutes . '分';
+    }
+    return $localized;
+}
+
 function kurashinoshirube_filter_og_type($value)
 {
     $context = kurashinoshirube_public_head_context();
@@ -3631,6 +3745,13 @@ add_filter('wpseo_twitter_title', 'kurashinoshirube_filter_og_title');
 add_filter('wpseo_twitter_description', 'kurashinoshirube_filter_og_description');
 add_filter('wpseo_twitter_image', 'kurashinoshirube_filter_social_image');
 add_filter('wpseo_twitter_card_type', 'kurashinoshirube_filter_twitter_card');
+add_filter('wpseo_meta_author', 'kurashinoshirube_filter_meta_author', 10, 2);
+add_filter(
+    'wpseo_enhanced_slack_data',
+    'kurashinoshirube_filter_enhanced_slack_data',
+    10,
+    2
+);
 add_filter('wpseo_opengraph_type', 'kurashinoshirube_filter_og_type');
 add_filter('wpseo_opengraph_site_name', 'kurashinoshirube_filter_og_site_name');
 add_filter('wpseo_og_locale', 'kurashinoshirube_filter_og_locale');
@@ -4046,6 +4167,7 @@ function kurashinoshirube_emit_json_ld(): void
             '@type' => 'Article',
             'articleSection' => $context['section'],
             'author' => array('@id' => $organization_id),
+            'breadcrumb' => array('@id' => $canonical . '#breadcrumb'),
             'dateModified' => $modified,
             'datePublished' => $published,
             'description' => $context['description'],
@@ -4054,6 +4176,7 @@ function kurashinoshirube_emit_json_ld(): void
             'inLanguage' => 'ja-JP',
             'mainEntityOfPage' => $canonical,
             'publisher' => array('@id' => $organization_id),
+            'url' => $canonical,
         );
     }
     if ($context['kind'] === 'fixed_page') {

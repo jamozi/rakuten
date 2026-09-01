@@ -219,6 +219,10 @@ def test_client_is_syntax_valid_consent_gated_and_navigation_independent() -> No
         "IntersectionObserver",
         "intersectionRatio >= 0.5",
         "window.navigator.sendBeacon",
+        "endpoint.origin !== window.location.origin",
+        "endpoint.pathname !== '/wp-json/raos/v1/events'",
+        "endpoint.username !== ''",
+        "endpoint.search !== ''",
         "keepalive: true",
         "window.gtag('event'",
     ):
@@ -264,7 +268,10 @@ def test_theme_enqueues_only_verified_asset_and_plugin_context() -> None:
     verifier = functions.split(
         "function kurashinoshirube_verified_asset_uri", 1
     )[1].split("function kurashinoshirube_bound_post_snapshot", 1)[0]
-    assert "assets/measurement\\.js" in verifier
+    assert (
+        "assets/(?:analytics-consent-gate|measurement|editorial-navigation)\\.js"
+        in verifier
+    )
     assert "'/wp-json/raos/v1/events'" in block
     assert "wp_add_inline_script(" in block
     assert "wp_dequeue_script('kurashinoshirube-measurement-v1')" in block

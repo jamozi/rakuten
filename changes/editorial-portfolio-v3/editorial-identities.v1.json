@@ -23,6 +23,12 @@
       "article_id": "st1703-first-suitcase-comparison",
       "article_code": "a01",
       "cluster_id": "mobility",
+      "intent_group_id": "carry-on-suitcase",
+      "content_role": "brand_family_comparison",
+      "content_role_label": "ブランド内比較",
+      "primary_query_intent": "エース系3モデルの仕様差を知り、優先条件に合う型番を選ぶ",
+      "comparison_scope": "エース系3モデルの仕様比較（市場全体のランキングではありません）",
+      "broader_article_id": "lightweight-carry-on-suitcase-under-3kg",
       "home_order": 1,
       "related_article_ids": [
         "lightweight-carry-on-suitcase-under-3kg",
@@ -33,46 +39,72 @@
       "article_id": "st1704-portable-power-station-guide",
       "article_code": "a02",
       "cluster_id": "preparedness",
+      "intent_group_id": "portable-power",
+      "content_role": "category_guide",
+      "content_role_label": "選び方",
+      "primary_query_intent": "停電時に使う機器から必要な容量・出力と持ち運べる候補を選ぶ",
+      "comparison_scope": "容量・各社公表の出力・重量・寸法を公式情報で照合できる現行ポータブル電源。安全・保証・回収は全採用品の照合完了まで選定根拠から除外",
+      "broader_article_id": null,
       "home_order": 1,
       "related_article_ids": [
-        "st1704-anker-solix-c300-c800-c1000-differences",
-        "st1703-first-suitcase-comparison"
+        "st1704-anker-solix-c300-c800-c1000-differences"
       ]
     },
     {
       "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
       "article_code": "a03",
       "cluster_id": "preparedness",
+      "intent_group_id": "portable-power",
+      "content_role": "model_family_comparison",
+      "content_role_label": "ブランド内比較",
+      "primary_query_intent": "Anker Solix 4型番の容量帯とC1000世代差を知り、用途に合う型番を選ぶ",
+      "comparison_scope": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の型番別比較",
+      "broader_article_id": "st1704-portable-power-station-guide",
       "home_order": 2,
       "related_article_ids": [
-        "st1704-portable-power-station-guide",
-        "st1703-first-suitcase-comparison"
+        "st1704-portable-power-station-guide"
       ]
     },
     {
       "article_id": "st1704-countertop-dishwasher-for-small-households",
       "article_code": "a04",
       "cluster_id": "household",
+      "intent_group_id": "countertop-dishwasher",
+      "content_role": "category_guide",
+      "content_role_label": "選び方",
+      "primary_query_intent": "1〜2人分の食器量と設置条件から工事不要の卓上食洗機を選ぶ",
+      "comparison_scope": "少人数世帯向け卓上食洗機を設置寸法・容量・給水方式で比較",
+      "broader_article_id": null,
       "home_order": 1,
       "related_article_ids": [
-        "solota-vs-rakua-mini-plus",
-        "st1704-compact-robot-vacuum-shortlist"
+        "solota-vs-rakua-mini-plus"
       ]
     },
     {
       "article_id": "st1704-compact-robot-vacuum-shortlist",
       "article_code": "a05",
       "cluster_id": "household",
+      "intent_group_id": "robot-vacuum",
+      "content_role": "category_guide",
+      "content_role_label": "選び方",
+      "primary_query_intent": "ロボット掃除機4モデルを設置寸法とモップ自動手入れの範囲で選ぶ",
+      "comparison_scope": "置き場所優先の2モデルとモップ自動手入れ優先の2モデル",
+      "broader_article_id": null,
       "home_order": 2,
       "related_article_ids": [
-        "roomba-mini-vs-switchbot-k11-pro",
-        "st1704-countertop-dishwasher-for-small-households"
+        "roomba-mini-vs-switchbot-k11-pro"
       ]
     },
     {
       "article_id": "carry-on-suitcase-under-100-seats",
       "article_code": "a06",
       "cluster_id": "mobility",
+      "intent_group_id": "carry-on-suitcase",
+      "content_role": "constraint_shortlist",
+      "content_role_label": "条件別比較",
+      "primary_query_intent": "100席未満便の寸法条件に合う候補と、購入前の確認手順を知る",
+      "comparison_scope": "100席未満便の一般的な機内持ち込み外寸条件に収まる4モデル",
+      "broader_article_id": null,
       "home_order": 2,
       "related_article_ids": [
         "st1703-first-suitcase-comparison",
@@ -83,6 +115,12 @@
       "article_id": "lightweight-carry-on-suitcase-under-3kg",
       "article_code": "a07",
       "cluster_id": "mobility",
+      "intent_group_id": "carry-on-suitcase",
+      "content_role": "constraint_shortlist",
+      "content_role_label": "条件別比較",
+      "primary_query_intent": "30L以上・3kg以下の機内持ち込み候補を、容量と軽さから選ぶ",
+      "comparison_scope": "30L以上・本体3kg以下・機内持ち込み目安内の5モデル",
+      "broader_article_id": null,
       "home_order": 3,
       "related_article_ids": [
         "st1703-first-suitcase-comparison",
@@ -93,6 +131,12 @@
       "article_id": "front-open-carry-on-suitcase-with-stopper",
       "article_code": "a08",
       "cluster_id": "mobility",
+      "intent_group_id": "carry-on-suitcase",
+      "content_role": "feature_shortlist",
+      "content_role_label": "機能別比較",
+      "primary_query_intent": "前開きとストッパーを両方備える候補を、開き方の違いから選ぶ",
+      "comparison_scope": "前開き機構とキャスターストッパーを公式情報で確認できる4モデル",
+      "broader_article_id": null,
       "home_order": 4,
       "related_article_ids": [
         "st1703-first-suitcase-comparison",
@@ -103,55 +147,64 @@
       "article_id": "roomba-mini-vs-switchbot-k11-pro",
       "article_code": "a09",
       "cluster_id": "household",
+      "intent_group_id": "robot-vacuum",
+      "content_role": "constraint_shortlist",
+      "content_role_label": "条件別比較",
+      "primary_query_intent": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を比べ、薄型またはモップ自動手入れが必要な場合だけ別候補を確認する",
+      "comparison_scope": "Roomba Mini SlimとSwitchBot K11+ Proを主比較とし、Eufy Auto-Empty C10は薄型、DEEBOT mini 2はモップ自動手入れの条件別候補として確認",
+      "broader_article_id": "st1704-compact-robot-vacuum-shortlist",
       "home_order": 3,
       "related_article_ids": [
-        "st1704-compact-robot-vacuum-shortlist",
-        "solota-vs-rakua-mini-plus"
+        "st1704-compact-robot-vacuum-shortlist"
       ]
     },
     {
       "article_id": "solota-vs-rakua-mini-plus",
       "article_code": "a10",
       "cluster_id": "household",
+      "intent_group_id": "countertop-dishwasher",
+      "content_role": "lifecycle_status_route",
+      "content_role_label": "旧製品の販売状態確認＋現行比較への案内",
+      "primary_query_intent": "旧SOLOTA・ラクアmini Plusの販売状態と型番を確認し、現行4候補の比較記事へ移る",
+      "comparison_scope": "旧SOLOTA NP-TML1-W／NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
+      "broader_article_id": "st1704-countertop-dishwasher-for-small-households",
       "home_order": 4,
       "related_article_ids": [
-        "st1704-countertop-dishwasher-for-small-households",
-        "st1704-compact-robot-vacuum-shortlist"
+        "st1704-countertop-dishwasher-for-small-households"
       ]
     }
   ],
   "products": [
-    {"product_id": "PRD-ACE-CRESTA-06316", "product_code": "p01"},
+    {"product_id": "PRD-PROTECA-TRI-AIR-01541", "product_code": "p01"},
     {"product_id": "PRD-ACE-DIFFERENCE-05721", "product_code": "p02"},
     {"product_id": "PRD-ACE-MAXPASS4-01471", "product_code": "p03"},
     {"product_id": "PRD-ANKER-SOLIX-C300", "product_code": "p04"},
     {"product_id": "PRD-JACKERY-500-NEW", "product_code": "p05"},
-    {"product_id": "PRD-BLUETTI-AC70", "product_code": "p06"},
-    {"product_id": "PRD-ECOFLOW-DELTA3-CLASSIC", "product_code": "p07"},
-    {"product_id": "PRD-ANKER-SOLIX-C800-PLUS", "product_code": "p08"},
-    {"product_id": "PRD-ANKER-SOLIX-C1000", "product_code": "p09"},
-    {"product_id": "PRD-ANKER-SOLIX-C1000-GEN2", "product_code": "p10"},
-    {"product_id": "PRD-PANASONIC-NP-TMLK1", "product_code": "p11"},
-    {"product_id": "PRD-THANKO-RAKUA-MINI-COLOR", "product_code": "p12"},
+    {"product_id": "PRD-ANKER-SOLIX-C800", "product_code": "p06"},
+    {"product_id": "PRD-JACKERY-1000-NEW-V3", "product_code": "p07"},
+    {"product_id": "PRD-DJI-POWER-1000-V2", "product_code": "p08"},
+    {"product_id": "PRD-ANKER-SOLIX-C800-PLUS", "product_code": "p09"},
+    {"product_id": "PRD-ANKER-SOLIX-C1000", "product_code": "p10"},
+    {"product_id": "PRD-ANKER-SOLIX-C1000-GEN2", "product_code": "p11"},
+    {"product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W", "product_code": "p12"},
     {"product_id": "PRD-SIROCA-SS-MA251", "product_code": "p13"},
-    {"product_id": "PRD-PANASONIC-NP-TSP1", "product_code": "p14"},
-    {"product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY", "product_code": "p15"},
+    {"product_id": "PRD-TOSHIBA-DWS-33B-W", "product_code": "p14"},
+    {"product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292", "product_code": "p15"},
     {"product_id": "PRD-SWITCHBOT-K11-PRO", "product_code": "p16"},
-    {"product_id": "PRD-SWITCHBOT-K10-PRO-COMBO", "product_code": "p17"},
+    {"product_id": "PRD-ECOVACS-DEEBOT-MINI2", "product_code": "p17"},
     {"product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO", "product_code": "p18"},
     {"product_id": "PRD-PROTECA-STARIA-CXR-02350", "product_code": "p19"},
     {"product_id": "PRD-PROTECA-FRESTER-EX-01550", "product_code": "p20"},
     {"product_id": "PRD-ACE-PALISADES3-Z-06910", "product_code": "p21"},
     {"product_id": "PRD-BERMAS-INTER-CITY-60524", "product_code": "p22"},
     {"product_id": "PRD-PROTECA-AEROFLEX-DX2-01521", "product_code": "p23"},
-    {"product_id": "PRD-SAMSONITE-C-LITE-CS2-09007", "product_code": "p24"},
+    {"product_id": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171", "product_code": "p24"},
     {"product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002", "product_code": "p25"},
-    {"product_id": "PRD-FREQUENTER-LIEVE-1-250", "product_code": "p26"},
+    {"product_id": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549", "product_code": "p26"},
     {"product_id": "PRD-INNOVATOR-INV50", "product_code": "p27"},
     {"product_id": "PRD-PROTECA-FRESTER-EX-01551", "product_code": "p28"},
-    {"product_id": "PRD-BERMAS-INTER-CITY-II-60561", "product_code": "p29"},
+    {"product_id": "PRD-BERMAS-INTER-CITY-III-60570", "product_code": "p29"},
     {"product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060", "product_code": "p30"},
-    {"product_id": "PRD-PANASONIC-SOLOTA-NP-TML1-W", "product_code": "p31"},
-    {"product_id": "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B", "product_code": "p32"}
+    {"product_id": "PRD-SIROCA-SS-M171", "product_code": "p31"}
   ]
 }

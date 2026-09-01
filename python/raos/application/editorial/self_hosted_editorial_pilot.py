@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from html import escape
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -64,24 +65,188 @@ _SOURCE_SCHEMA: Final = "SELF_HOSTED_EDITORIAL_SOURCE_REGISTRY_V1"
 _MEDIA_SCHEMA: Final = "SELF_HOSTED_EDITORIAL_PRODUCT_MEDIA_REGISTRY_V1"
 _RENDERER_SCHEMA: Final = "RAOS_ST1704_DETERMINISTIC_HTML_RENDERER_V1"
 _ARTICLE_IDS: Final = tuple(x.article_id for x in PILOT_ARTICLE_IDENTITIES)
+_SOURCE_PACKET_ARTICLE_IDS: Final = frozenset(
+    {
+        *_ARTICLE_IDS,
+        "carry-on-suitcase-under-100-seats",
+        "front-open-carry-on-suitcase-with-stopper",
+        "lightweight-carry-on-suitcase-under-3kg",
+        "roomba-mini-vs-switchbot-k11-pro",
+        "solota-vs-rakua-mini-plus",
+    }
+)
 _SOURCE_HOSTS: Final = frozenset(
     {
         "affiliate.rakuten.co.jp",
+        "aqua-has.com",
+        "cdn.shopify.com",
         "developers.google.com",
+        "help.ecovacs.com",
         "item.rakuten.co.jp",
         "jp.ecoflow.com",
+        "jp.roborock.com",
+        "lp.ankerjapan.com",
         "panasonic.jp",
         "store.ace.jp",
         "store.irobot-jp.com",
+        "support.switch-bot.com",
+        "shop.innovator.co.jp",
+        "shop.toshiba-lifestyle.com",
+        "store.dji.com",
+        "www.americantourister.jp",
         "www.ana.co.jp",
         "www.ankerjapan.com",
+        "www.bagworld.co.jp",
+        "www.bermas.co.jp",
         "www.bluetti.jp",
         "www.caa.go.jp",
+        "www.dji.com",
+        "dl.djicdn.com",
+        "www.dreametech.jp",
+        "www.ecovacs.com",
+        "www.elecom.co.jp",
+        "www.irisohyama.co.jp",
         "www.jackery.jp",
+        "www.jal.co.jp",
+        "www.meti.go.jp",
+        "www.muji.com",
+        "www.rimowa.com",
+        "www.samsonite.az",
+        "www.samsonite.co.jp",
+        "www.samsonite.ro",
         "www.siroca.co.jp",
         "www.switchbot.jp",
         "www.thanko.jp",
+        "www.toshiba-lifestyle.com",
+        "store.siroca.jp",
     }
+)
+# Independently pin the complete reviewed official-source inventory.  A count
+# alone permits an unknown source/URL substitution to pass; hashing the sorted
+# source-ref/URL pairs keeps the application boundary closed while allowing
+# the generator to expand the reviewed inventory deliberately.
+_PRODUCT_SOURCE_INVENTORY_SHA256: Final = (
+    "54dd657aa5289d7d19cf9861089c9485c2e756e9ef17eefc5c811898a8118b4d"
+)
+_POLICY_SOURCE_INVENTORY_SHA256: Final = (
+    "5509d907252fe67cbb7aea1fa37ced915cf02d50f5a4a6b2b08341292ddd55c8"
+)
+_CLAIM_BASE_KEYS: Final = frozenset(
+    {
+        "claim_id",
+        "classification",
+        "evidence_level",
+        "evidence_refs",
+        "statement",
+        "status",
+        "subject_product_ids",
+    }
+)
+_MARKET_CLAIM_KEYS: Final = frozenset(
+    {
+        "effective_lifecycle",
+        "embedded_structured_lifecycle",
+        "evaluated_at",
+        "exact_model",
+        "exact_variant_scope",
+        "lifecycle_evidence_state",
+        "market_candidate_id",
+        "market_disposition",
+        "model_lifecycle",
+        "official_url",
+        "reader_visible_lifecycle",
+        "variant_lifecycle",
+    }
+)
+_PORTFOLIO_REFERENCE_CLAIM_KEYS: Final = frozenset(
+    {
+        "portfolio_candidate_disposition",
+        "portfolio_candidate_reason",
+        "route_article_id",
+    }
+)
+_PORTFOLIO_REFERENCE_CLAIMS: Final = {
+    "CLM-ST1704-SUITCASE-AEROFLEX-DX2-REFERENCE": (
+        "st1703-first-suitcase-comparison",
+        "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "lightweight-carry-on-suitcase-under-3kg",
+    ),
+    "CLM-ST1704-POWER-C1000-GEN2-REFERENCE": (
+        "st1704-portable-power-station-guide",
+        "PRD-ANKER-SOLIX-C1000-GEN2",
+        "st1704-anker-solix-c300-c800-c1000-differences",
+    ),
+    "CLM-ST1704-ANKER-C800-A1753-REFERENCE": (
+        "st1704-anker-solix-c300-c800-c1000-differences",
+        "PRD-ANKER-SOLIX-C800",
+        "st1704-portable-power-station-guide",
+    ),
+    "CLM-ST1704-ROBOT-F115060-REFERENCE": (
+        "st1704-compact-robot-vacuum-shortlist",
+        "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+        "roomba-mini-vs-switchbot-k11-pro",
+    ),
+    "CLM-PORTFOLIO-UNDER100-MAXPASS4-REFERENCE": (
+        "carry-on-suitcase-under-100-seats",
+        "PRD-ACE-MAXPASS4-01471",
+        "st1703-first-suitcase-comparison",
+    ),
+    "CLM-PORTFOLIO-FRONT-RIMOWA-REFERENCE": (
+        "front-open-carry-on-suitcase-with-stopper",
+        "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
+        "lightweight-carry-on-suitcase-under-3kg",
+    ),
+    "CLM-PORTFOLIO-DISH-TOSHIBA-DWS-33B-REFERENCE": (
+        "solota-vs-rakua-mini-plus",
+        "PRD-TOSHIBA-DWS-33B-W",
+        "st1704-countertop-dishwasher-for-small-households",
+    ),
+    "CLM-PORTFOLIO-DISH-RAKUA-MINI-REFERENCE": (
+        "solota-vs-rakua-mini-plus",
+        "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+        "st1704-countertop-dishwasher-for-small-households",
+    ),
+    "CLM-PORTFOLIO-DISH-SS-M171-REFERENCE": (
+        "solota-vs-rakua-mini-plus",
+        "PRD-SIROCA-SS-M171",
+        "st1704-countertop-dishwasher-for-small-households",
+    ),
+    "CLM-PORTFOLIO-DISH-SS-MA251-REFERENCE": (
+        "solota-vs-rakua-mini-plus",
+        "PRD-SIROCA-SS-MA251",
+        "st1704-countertop-dishwasher-for-small-households",
+    ),
+}
+_CLAIM_OPTIONAL_KEYS: Final = frozenset(
+    {
+        "dimensions",
+        "manufacturer_sales_state",
+        "negative_claim_evidence",
+        "product_specific_recall_query_gate",
+        *_MARKET_CLAIM_KEYS,
+        *_PORTFOLIO_REFERENCE_CLAIM_KEYS,
+    }
+)
+_SOURCE_CAPTURE_CLAIM_OPTIONAL_KEYS: Final = (
+    "dimensions",
+    "market_candidate_id",
+    "market_disposition",
+    "official_url",
+    "exact_model",
+    "exact_variant_scope",
+    "evaluated_at",
+    "model_lifecycle",
+    "variant_lifecycle",
+    "reader_visible_lifecycle",
+    "embedded_structured_lifecycle",
+    "lifecycle_evidence_state",
+    "effective_lifecycle",
+    "negative_claim_evidence",
+    "product_specific_recall_query_gate",
+    "manufacturer_sales_state",
+    "portfolio_candidate_disposition",
+    "portfolio_candidate_reason",
+    "route_article_id",
 )
 _ARTICLE_KEYS: Final = {
     "article_id",
@@ -116,10 +281,10 @@ _FINAL_SOURCE_APPROVAL: Final = "READY_FOR_HUMAN_PUBLICATION_REVIEW"
 ARTICLE_FACT_MAX_AGE_DAYS: Final = 14
 RAKUTEN_EVIDENCE_MAX_AGE: Final = timedelta(hours=24)
 _EVIDENCE_LEVEL_LABELS: Final = {
-    "A": "公式仕様",
-    "B": "第三者実測",
-    "C": "利用者の傾向",
-    "D": "編集部の判断",
+    "A": "公式確認済み",
+    "B": "第三者による実測",
+    "C": "利用者情報の傾向",
+    "D": "編集者による条件整理",
     "UNKNOWN": "未確認",
 }
 
@@ -143,7 +308,14 @@ def _pairs(pairs: list[tuple[object, object]]) -> dict[str, object]:
     return result
 
 
-def _reject_number(value: str) -> NoReturn:
+def _finite_float(value: str) -> float:
+    parsed = float(value)
+    if not math.isfinite(parsed):
+        _fail()
+    return parsed
+
+
+def _reject_constant(value: str) -> NoReturn:
     del value
     _fail()
 
@@ -207,8 +379,8 @@ def _read_fixed_json(repository_root: Path, relative: Path) -> object:
         return json.loads(
             raw.decode("utf-8", errors="strict"),
             object_pairs_hook=_pairs,
-            parse_float=_reject_number,
-            parse_constant=_reject_number,
+            parse_float=_finite_float,
+            parse_constant=_reject_constant,
         )
     except EditorialPilotFailure:
         raise
@@ -336,10 +508,18 @@ def _source_capture_hash(
         "authority": source["authority"],
         "claims": [
             {
-                "claim_id": claim["claim_id"],
-                "classification": claim["classification"],
-                "statement": claim["statement"],
-                "status": claim["status"],
+                **{
+                    "claim_id": claim["claim_id"],
+                    "classification": claim["classification"],
+                    "statement": claim["statement"],
+                    "status": claim["status"],
+                    "subject_product_ids": claim["subject_product_ids"],
+                },
+                **{
+                    key: claim[key]
+                    for key in _SOURCE_CAPTURE_CLAIM_OPTIONAL_KEYS
+                    if key in claim
+                },
             }
             for claim in sorted(claims, key=lambda value: cast(str, value["claim_id"]))
         ],
@@ -364,6 +544,257 @@ def _source_packet_hash(packet: Mapping[str, object]) -> str:
             "source_refs": packet["source_refs"],
         }
     )
+
+
+def _source_inventory_sha256(
+    sources: Mapping[str, Mapping[str, object]],
+) -> str:
+    return canonical_sha256(
+        sorted(
+            (
+                {"source_ref": source_ref, "url": source["url"]}
+                for source_ref, source in sources.items()
+            ),
+            key=lambda value: cast(str, value["source_ref"]),
+        )
+    )
+
+
+def _validate_extended_claim_fields(
+    claim: Mapping[str, object],
+    *,
+    article_id: str,
+    sources: Mapping[str, Mapping[str, object]],
+    evidence_refs: list[str],
+    subject_product_ids: list[str],
+) -> None:
+    market_keys = set(claim) & _MARKET_CLAIM_KEYS
+    if market_keys and market_keys != set(_MARKET_CLAIM_KEYS):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    if market_keys:
+        candidate_id = _text(claim["market_candidate_id"], maximum=300)
+        official_url = _source_url(claim["official_url"])
+        lifecycle_values = {
+            key: _text(claim[key], maximum=100)
+            for key in (
+                "model_lifecycle",
+                "variant_lifecycle",
+                "reader_visible_lifecycle",
+                "embedded_structured_lifecycle",
+                "effective_lifecycle",
+            )
+        }
+        lifecycle_states = {
+            "AVAILABLE",
+            "PREORDER",
+            "PRODUCTION_ENDED",
+            "RESTOCK_NOTIFICATION_ONLY",
+            "SOLD_OUT",
+            "UNKNOWN",
+        }
+        embedded_states = {"AVAILABLE", "NOT_PRESENT", "SOLD_OUT"}
+        evidence_state = _text(claim["lifecycle_evidence_state"], maximum=100)
+        if (
+            re.fullmatch(r"EXT-[A-Z0-9]+(?:-[A-Z0-9]+)*", candidate_id) is None
+            or claim["market_disposition"] not in {"DEFERRED", "EXCLUDED"}
+            or not _text(claim["exact_model"], maximum=500)
+            or not _text(claim["exact_variant_scope"], maximum=500)
+            or _date(claim["evaluated_at"]) != claim["evaluated_at"]
+            or any(
+                lifecycle_values[key] not in lifecycle_states
+                for key in (
+                    "model_lifecycle",
+                    "variant_lifecycle",
+                    "reader_visible_lifecycle",
+                    "effective_lifecycle",
+                )
+            )
+            or lifecycle_values["embedded_structured_lifecycle"]
+            not in embedded_states
+            or evidence_state not in {
+                "CONFLICT",
+                "CONSISTENT",
+                "READER_VISIBLE_ONLY",
+            }
+            or lifecycle_values["effective_lifecycle"]
+            != lifecycle_values["reader_visible_lifecycle"]
+            or (
+                evidence_state == "READER_VISIBLE_ONLY"
+                and lifecycle_values["embedded_structured_lifecycle"] != "NOT_PRESENT"
+            )
+            or (
+                evidence_state == "CONFLICT"
+                and (
+                    lifecycle_values["embedded_structured_lifecycle"] == "NOT_PRESENT"
+                    or lifecycle_values["embedded_structured_lifecycle"]
+                    == lifecycle_values["reader_visible_lifecycle"]
+                )
+            )
+            or (
+                evidence_state == "CONSISTENT"
+                and (
+                    lifecycle_values["embedded_structured_lifecycle"]
+                    == "NOT_PRESENT"
+                    or lifecycle_values["embedded_structured_lifecycle"]
+                    != lifecycle_values["reader_visible_lifecycle"]
+                )
+            )
+            or subject_product_ids
+            or official_url
+            not in {cast(str, sources[source_ref]["url"]) for source_ref in evidence_refs}
+        ):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+
+    portfolio_reference_keys = set(claim) & _PORTFOLIO_REFERENCE_CLAIM_KEYS
+    if (
+        portfolio_reference_keys
+        and portfolio_reference_keys != set(_PORTFOLIO_REFERENCE_CLAIM_KEYS)
+    ):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    if portfolio_reference_keys:
+        reason = _text(claim["portfolio_candidate_reason"], maximum=2000)
+        route_article_id = _text(claim["route_article_id"], maximum=300)
+        claim_id = _text(claim["claim_id"], maximum=300)
+        expected_reference = _PORTFOLIO_REFERENCE_CLAIMS.get(claim_id)
+        if (
+            claim["portfolio_candidate_disposition"] != "REFERENCE_ONLY"
+            or not reason
+            or reason not in _text(claim["statement"], maximum=4000)
+            or route_article_id not in _SOURCE_PACKET_ARTICLE_IDS
+            or route_article_id == article_id
+            or len(subject_product_ids) != 1
+            or market_keys
+            or expected_reference
+            != (article_id, subject_product_ids[0], route_article_id)
+        ):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+
+    if "negative_claim_evidence" in claim:
+        negative = _mapping(claim["negative_claim_evidence"])
+        _exact(
+            negative,
+            {"mode", "page_omission_is_not_evidence", "source_refs"},
+        )
+        negative_refs = [
+            _text(value, maximum=300) for value in _list(negative["source_refs"])
+        ]
+        if (
+            negative["mode"]
+            not in {
+                "EXPLICIT_OFFICIAL_TEXT",
+                "OFFICIAL_COMPARISON_TABLE",
+                "OFFICIAL_MANUAL",
+            }
+            or negative["page_omission_is_not_evidence"] is not True
+            or not negative_refs
+            or len(negative_refs) != len(set(negative_refs))
+            or any(source_ref not in evidence_refs for source_ref in negative_refs)
+        ):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+
+    if "product_specific_recall_query_gate" in claim:
+        gate = _mapping(claim["product_specific_recall_query_gate"])
+        _exact(
+            gate,
+            {
+                "coverage_caveat",
+                "general_safety_guidance_is_not_a_receipt",
+                "receipt_document_ref",
+                "receipt_document_schema",
+                "required_authority_kinds",
+                "required_product_ids",
+                "schema",
+            },
+        )
+        required_product_ids = [
+            _text(value, maximum=300)
+            for value in _list(gate["required_product_ids"])
+        ]
+        if (
+            gate["schema"] != "PRODUCT_SPECIFIC_RECALL_QUERY_REQUIREMENT_V2"
+            or gate["required_authority_kinds"]
+            != ["MANUFACTURER_OFFICIAL", "JAPAN_ADMINISTRATIVE_OFFICIAL"]
+            or gate["receipt_document_ref"]
+            != (
+                "changes/st-1704/self-hosted-editorial-pilot-v1/sources/"
+                "product-safety-query-receipts.v1.json"
+            )
+            or gate["receipt_document_schema"]
+            != "RAOS_PRODUCT_SAFETY_QUERY_RECEIPTS_V1"
+            or gate["general_safety_guidance_is_not_a_receipt"] is not True
+            or not _text(gate["coverage_caveat"], maximum=1000)
+            or not required_product_ids
+            or len(required_product_ids) != len(set(required_product_ids))
+            or any(
+                re.fullmatch(r"PRD-[A-Z0-9]+(?:-[A-Z0-9]+)*", product_id) is None
+                for product_id in required_product_ids
+            )
+            or not set(subject_product_ids) <= set(required_product_ids)
+        ):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+
+    if "manufacturer_sales_state" in claim:
+        sales = _mapping(claim["manufacturer_sales_state"])
+        status = _text(sales.get("status"), maximum=100)
+        common_keys = {
+            "checked_at",
+            "exact_variant",
+            "reader_visible_label",
+            "source_ref",
+            "status",
+        }
+        expected_keys = (
+            common_keys | {"product_id", "selection_gate", "variant_caveat"}
+            if status == "AVAILABLE"
+            else common_keys | {"cta_gate", "recommendation_gate"}
+        )
+        _exact(sales, expected_keys)
+        checked_at = _text(sales["checked_at"], maximum=100)
+        try:
+            parsed_checked_at = datetime.fromisoformat(
+                checked_at.removesuffix("Z") + "+00:00"
+            )
+        except (OverflowError, ValueError):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        source_ref = _text(sales["source_ref"], maximum=300)
+        variant_caveat = sales.get("variant_caveat")
+        if variant_caveat is not None:
+            caveat = _mapping(variant_caveat)
+            _exact(
+                caveat,
+                {"code", "detail", "establishes_exact_rakuten_variant"},
+            )
+            if (
+                caveat["code"]
+                not in {"OTHER_COLOR_NOT_ATTESTED", "STANDARD_PRODUCT_ONLY"}
+                or not _text(caveat["detail"], maximum=1000)
+                or caveat["establishes_exact_rakuten_variant"] is not False
+            ):
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        if (
+            not checked_at.endswith("Z")
+            or parsed_checked_at.tzinfo is None
+            or not _text(sales["exact_variant"], maximum=500)
+            or not _text(sales["reader_visible_label"], maximum=300)
+            or source_ref not in evidence_refs
+            or (
+                status == "AVAILABLE"
+                and (
+                    sales["selection_gate"] != "ELIGIBLE"
+                    or _text(sales["product_id"], maximum=300)
+                    not in subject_product_ids
+                )
+            )
+            or (
+                status == "OUT_OF_STOCK"
+                and (
+                    sales["recommendation_gate"] != "BLOCKED"
+                    or sales["cta_gate"] != "BLOCKED"
+                )
+            )
+            or status not in {"AVAILABLE", "OUT_OF_STOCK"}
+        ):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
 
 
 def _validate_sources(
@@ -459,7 +890,11 @@ def _validate_sources(
             "url",
         },
     )
-    if len(sources) != 19 or len(policy_sources) != 3:
+    if (
+        _source_inventory_sha256(sources) != _PRODUCT_SOURCE_INVENTORY_SHA256
+        or _source_inventory_sha256(policy_sources)
+        != _POLICY_SOURCE_INVENTORY_SHA256
+    ):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     packets = _index(
         registry["source_packets"],
@@ -491,7 +926,7 @@ def _validate_sources(
             "status",
         },
     )
-    if len(affiliates) != 18 or len(
+    if len(affiliates) != 19 or len(
         {affiliate["product_id"] for affiliate in affiliates.values()}
     ) != len(affiliates):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
@@ -529,42 +964,82 @@ def _validate_sources(
         verifiable_count = 0
         for raw_claim in packet_claims:
             claim = _mapping(raw_claim)
-            _exact(
-                claim,
-                {
-                    "claim_id",
-                    "classification",
-                    "evidence_level",
-                    "evidence_refs",
-                    "statement",
-                    "status",
-                },
-            )
+            claim_keys = set(claim)
+            if (
+                not _CLAIM_BASE_KEYS <= claim_keys
+                or not claim_keys <= _CLAIM_BASE_KEYS | _CLAIM_OPTIONAL_KEYS
+            ):
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            subject_product_ids = [
+                _text(value, maximum=300)
+                for value in _list(claim["subject_product_ids"])
+            ]
+            if len(subject_product_ids) != len(set(subject_product_ids)) or any(
+                re.fullmatch(r"PRD-[A-Z0-9]+(?:-[A-Z0-9]+)*", product_id) is None
+                for product_id in subject_product_ids
+            ):
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            for raw_dimensions in _list(claim.get("dimensions", [])):
+                dimensions = _mapping(raw_dimensions)
+                _exact(
+                    dimensions,
+                    {"depth_cm", "height_cm", "subject", "width_cm"},
+                )
+                if (
+                    not _text(dimensions["subject"], maximum=300)
+                    or any(
+                        type(dimensions[axis]) not in {int, float}
+                        or cast(float, dimensions[axis]) <= 0
+                        for axis in ("width_cm", "depth_cm", "height_cm")
+                    )
+                ):
+                    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
             claim_id = _text(claim["claim_id"], maximum=300)
-            if claim_id in all_claims:
+            if (
+                re.fullmatch(r"CLM-[A-Z0-9]+(?:-[A-Z0-9]+)*", claim_id) is None
+                or not _text(claim["statement"], maximum=4000)
+                or claim_id in all_claims
+            ):
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
             evidence_refs = [
                 _text(value, maximum=300) for value in _list(claim["evidence_refs"])
             ]
-            if not evidence_refs or any(
-                value not in packet_refs for value in evidence_refs
+            if (
+                not evidence_refs
+                or len(evidence_refs) != len(set(evidence_refs))
+                or any(value not in packet_refs for value in evidence_refs)
             ):
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            _validate_extended_claim_fields(
+                claim,
+                article_id=_text(packet["article_id"], maximum=300),
+                sources=sources,
+                evidence_refs=evidence_refs,
+                subject_product_ids=subject_product_ids,
+            )
             classification = claim["classification"]
             evidence_level = claim["evidence_level"]
             status = claim["status"]
             if classification == "MAJOR_VERIFIABLE":
                 verifiable_count += 1
-                if evidence_level != "A" or status not in {
-                    "BOUND_TO_OFFICIAL_SOURCE",
-                    "BOUND_WITH_EXPLICIT_SOURCE_CONFLICT",
-                }:
+                if (
+                    evidence_level != "A"
+                    or status != "BOUND_TO_OFFICIAL_SOURCE"
+                ):
                     _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-            elif (
-                classification != "EDITORIAL_INFERENCE"
-                or evidence_level != "D"
-                or status != "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
-            ):
+            elif classification == "EDITORIAL_INFERENCE":
+                if (
+                    evidence_level != "D"
+                    or status != "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
+                ):
+                    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            elif classification == "DECISION_CRITICAL_UNKNOWN":
+                if (
+                    evidence_level != "UNKNOWN"
+                    or status != "UNCONFIRMED_FROM_BOUND_OFFICIAL_SOURCE"
+                ):
+                    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            else:
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
             all_claims[claim_id] = claim
         coverage = _mapping(packet["draft_claim_coverage"])
@@ -584,6 +1059,13 @@ def _validate_sources(
             "verifiable_claim_count": verifiable_count,
         }:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    portfolio_reference_claim_ids = {
+        claim_id
+        for claim_id, claim in all_claims.items()
+        if set(claim) & _PORTFOLIO_REFERENCE_CLAIM_KEYS
+    }
+    if portfolio_reference_claim_ids != set(_PORTFOLIO_REFERENCE_CLAIMS):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     for source_ref, source in sources.items():
         _source_url(source["url"])
         if (
@@ -663,7 +1145,7 @@ def _validate_media(document: object) -> dict[str, Mapping[str, object]]:
             "width",
         },
     )
-    if len(assets) != 18 or len(
+    if len(assets) != 19 or len(
         {asset["product_id"] for asset in assets.values()}
     ) != len(assets):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
@@ -927,14 +1409,8 @@ def _bind_source_capture_evidence(
                 evidence.retrieved_at.removesuffix("Z") + "+00:00"
             )
             source_observed_on = date.fromisoformat(_date(source["retrieved_on"]))
-            editorial_observed_on = date.fromisoformat(
-                _date(editorial_facts_checked_on)
-            )
-            capture_floor = (
-                source_observed_on
-                if is_policy
-                else max(source_observed_on, editorial_observed_on)
-            )
+            _date(editorial_facts_checked_on)
+            capture_floor = source_observed_on
         except OverflowError, ValueError:
             _fail(EditorialPilotFailureCode.RESOURCE_NOT_READY)
         if (
@@ -1004,12 +1480,15 @@ def _bind_product_evidence(
     affiliates: Mapping[str, Mapping[str, object]],
     media: Mapping[str, Mapping[str, object]],
     reader: Callable[..., RakutenProductEvidence],
+    *,
+    facts_checked_on: str,
 ) -> tuple[
     dict[str, Mapping[str, object]],
     dict[str, RakutenProductEvidence],
     list[Mapping[str, object]],
     list[Mapping[str, object]],
 ]:
+    _date(facts_checked_on)
     render = _mapping(article["render_model"])
     render_keys = set(_RENDER_KEYS)
     render_keys.add("presentation")
@@ -1141,10 +1620,7 @@ def _bind_product_evidence(
             ]
         if _text(card["caution"], maximum=2000) in presentation_lists["not_fits"]:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-        if _date(card_presentation["facts_checked_on"]) != _date(
-            _mapping(article["freshness"])["facts_checked_on"]
-        ):
-            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        _date(card_presentation["facts_checked_on"])
         official_source_ref = _text(
             card_presentation["official_source_ref"], maximum=300
         )
@@ -1312,6 +1788,62 @@ def _require_public_blocks(
     return blocks
 
 
+_ARTICLE_SECTION_HEADINGS: Final[Mapping[str, Mapping[str, str]]] = {
+    "st1703-first-suitcase-comparison": {
+        "decision_summary": "軽さ・容量・開き方で分ける",
+        "intended_reader": "機内持ち込み候補を絞れる人・絞れない人",
+        "methodology": "外寸・容量・開き方を同じ条件で比べる",
+        "selection_criteria": "機内持ち込み候補を絞る4条件",
+        "comparison_table": "3モデルの外寸・容量・開き方",
+        "product_cards": "3モデルを条件別に見る",
+        "caution": "便・機材・運賃種別を最後に確認する",
+    },
+    "st1704-portable-power-station-guide": {
+        "decision_summary": "使う機器・必要時間・運べる重さで分ける",
+        "intended_reader": "停電時の使い方から候補を絞る",
+        "methodology": "容量・定格出力・重量を同じ条件で比べる",
+        "selection_criteria": "使う機器から必要容量を決める",
+        "comparison_table": "5モデルの容量・各社公表出力・重量",
+        "product_cards": "容量帯ごとの向き・不向き",
+        "caution": "接続機器・保管・安全条件を最後に確認する",
+    },
+    "st1704-anker-solix-c300-c800-c1000-differences": {
+        "decision_summary": "容量・定格出力・世代差で分ける",
+        "intended_reader": "Anker Solix 4モデルの違いを整理する",
+        "methodology": "型番・世代・拡張互換を分けて比べる",
+        "selection_criteria": "用途からAnker Solixを絞る",
+        "comparison_table": "C300・C800 Plus・C1000 2世代の仕様差",
+        "product_cards": "4モデルの向き・互換性・注意点",
+        "caution": "型番・拡張互換・安全条件を最後に確認する",
+    },
+    "st1704-countertop-dishwasher-for-small-households": {
+        "decision_summary": "置ける寸法・洗う点数・乾燥方式で分ける",
+        "intended_reader": "少人数向けタンク式食洗機を選ぶ前提",
+        "methodology": "設置寸法・食器点数・乾燥方式を比べる",
+        "selection_criteria": "置き場所と食器量から絞る",
+        "comparison_table": "4モデルの設置寸法・容量・給水方式",
+        "product_cards": "4モデルの設置条件と注意点",
+        "caution": "給排水・扉・耐熱条件を最後に確認する",
+    },
+    "st1704-compact-robot-vacuum-shortlist": {
+        "decision_summary": "設置寸法と手入れ範囲で分ける",
+        "intended_reader": "本体・ステーション・帰還余白を確認する",
+        "methodology": "本体・ステーション・設置余白を分けて比べる",
+        "selection_criteria": "置き場所と手入れ負担から絞る",
+        "comparison_table": "4モデルの本体・ステーション寸法",
+        "product_cards": "4モデルの設置条件と手入れ範囲",
+        "caution": "帰還余白・段差・アプリ条件を最後に確認する",
+    },
+}
+
+
+def _article_section_heading(
+    article: Mapping[str, object], section: str, fallback: str
+) -> str:
+    article_id = _text(article.get("article_id"), maximum=300)
+    return _ARTICLE_SECTION_HEADINGS.get(article_id, {}).get(section, fallback)
+
+
 @final
 class _Renderer:
     __slots__ = (
@@ -1321,7 +1853,9 @@ class _Renderer:
         "cards",
         "claims",
         "evidences",
+        "facts_checked_on",
         "model",
+        "product_media_verified",
         "recommendations",
         "routes",
         "sources",
@@ -1338,6 +1872,8 @@ class _Renderer:
         cards: Mapping[str, Mapping[str, object]],
         evidences: Mapping[str, RakutenProductEvidence],
         alts: Mapping[str, str],
+        facts_checked_on: str,
+        product_media_verified: bool = True,
     ) -> None:
         self.article = article
         self.routes = routes
@@ -1346,6 +1882,8 @@ class _Renderer:
         self.cards = cards
         self.evidences = evidences
         self.alts = alts
+        self.facts_checked_on = _date(facts_checked_on)
+        self.product_media_verified = product_media_verified
         self.model = _mapping(article["render_model"])
         self.axes = _index(
             self.model["comparison_axes"],
@@ -1392,23 +1930,41 @@ class _Renderer:
             '<span class="raos-evidence-badge" data-raos-evidence-level="'
             + escape(level, quote=True)
             + '">'
-            + escape(f"{level}：{_EVIDENCE_LEVEL_LABELS[level]}")
+            + escape(_EVIDENCE_LEVEL_LABELS[level])
             + "</span>"
             for level in levels
         )
 
+    def comparison_cell_badges(self, cell: Mapping[str, object]) -> str:
+        state = _text(cell["state"], maximum=20)
+        claim_ids = _list(cell["claim_ids"])
+        if state == "KNOWN":
+            if not claim_ids:
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            return self.evidence_badges(claim_ids)
+        if state != "UNKNOWN":
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        badges = self.evidence_badges(claim_ids)
+        if claim_ids:
+            badges += (
+                '<span class="raos-evidence-badge" '
+                'data-raos-evidence-level="UNKNOWN">軸未確認</span>'
+            )
+        return badges
+
     def article_facts(self) -> str:
         values = _mapping(self.model["presentation"])
-        freshness = _mapping(self.article["freshness"])
         return (
             '<dl class="raos-article-facts article-meta">'
             "<div><dt>対象読者</dt><dd>"
             + escape(cast(str, values["reader_summary"]))
-            + "</dd></div><div><dt>執筆</dt><dd>暮らしのしるべ編集部</dd></div>"
-            + "<div><dt>商品情報確認</dt><dd>"
+            + "</dd></div><div><dt>比較範囲</dt><dd>"
+            + escape(cast(str, values["scope_label"]))
+            + "</dd></div><div><dt>執筆担当</dt><dd>暮らしのしるべ編集者</dd></div>"
+            + "<div><dt>事実確認担当</dt><dd>"
             + escape(cast(str, values["fact_checker"]))
             + "</dd></div><div><dt>最終確認日</dt><dd>"
-            + escape(_display_date(freshness["facts_checked_on"]))
+            + escape(_display_date(self.facts_checked_on))
             + "</dd></div><div><dt>実機確認</dt><dd>"
             + escape(cast(str, values["first_hand_test"]))
             + "</dd></div></dl>"
@@ -1443,6 +1999,19 @@ class _Renderer:
         source = self.sources.get(cast(str, presentation["official_source_ref"]))
         if source is None:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        card_source_dates: list[str] = []
+        for raw_source_ref in _list(card["source_refs"]):
+            card_source = self.sources.get(_text(raw_source_ref, maximum=300))
+            if card_source is None:
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            card_source_dates.append(_date(card_source["retrieved_on"]))
+        card_checked_on = _date(presentation["facts_checked_on"])
+        if (
+            not card_source_dates
+            or card_checked_on < max(card_source_dates)
+            or card_checked_on > self.facts_checked_on
+        ):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         detail_anchor = cast(str, presentation["detail_anchor"])
         cta_context_id = f"{detail_anchor}-cta-note"
         fits = "".join(
@@ -1454,20 +2023,44 @@ class _Renderer:
             for value in _list(presentation["not_fits"])
         )
         profile_variant = "product-profile--b" if alternate else "product-profile--a"
+        condition_label = cast(str, card["condition_label"])
+        reason_label = (
+            "仕様上の比較ポイント："
+            if any(
+                marker in condition_label
+                for marker in ("在庫切れ", "販売状態未確認")
+            )
+            else "おすすめする理由："
+        )
+        if self.product_media_verified:
+            product_media = (
+                f'<img src="{escape(evidence.image_url, quote=True)}" '
+                f'alt="{escape(self.alts[product_id], quote=True)}" '
+                'width="128" height="128" loading="lazy" decoding="async" '
+                f'data-raos-product-image-id="{escape(product_id, quote=True)}" '
+                'data-raos-product-image-placement="product_card" '
+                'data-raos-product-image-state="verified">'
+            )
+        else:
+            product_media = (
+                '<p class="raos-product-image-status" '
+                f'data-raos-product-image-id="{escape(product_id, quote=True)}" '
+                'data-raos-product-image-placement="product_card" '
+                'data-raos-product-image-state="unverified">'
+                "商品画像未確認・購入導線停止</p>"
+            )
         return (
             f'<article id="{escape(detail_anchor, quote=True)}" '
             f'class="raos-product-card product-profile {profile_variant}" '
             f'data-raos-product-id="{escape(product_id, quote=True)}">'
             '<div class="raos-product-card__media">'
-            f'<img src="{escape(evidence.image_url, quote=True)}" '
-            f'alt="{escape(self.alts[product_id], quote=True)}" '
-            'width="128" height="128" loading="lazy" decoding="async">'
+            f"{product_media}"
             "</div>"
             '<div class="raos-product-card__body product-profile__body">'
             f"<h3>{escape(cast(str, card['product_name']))}</h3>"
             f'<p class="raos-condition-label">{escape(cast(str, card["condition_label"]))}</p>'
             f'<p class="raos-product-card__lead">{escape(cast(str, presentation["benefit"]))}</p>'
-            "<p><strong>おすすめする理由：</strong>"
+            f"<p><strong>{reason_label}</strong>"
             f'{escape(cast(str, presentation["recommendation_reason"]))}</p>'
             f'<dl class="raos-product-card__facts">{facts}</dl>'
             f'<div class="raos-product-card__fit"><strong>合いやすい条件</strong><ul>{fits}</ul>'
@@ -1475,7 +2068,7 @@ class _Renderer:
             f'<p id="{escape(detail_anchor, quote=True)}-caution" class="raos-product-card__caution">'
             f'<strong>注意点：</strong>{escape(cast(str, card["caution"]))}</p>'
             '<p class="raos-source-link">情報確認日 '
-            f'{escape(_display_date(presentation["facts_checked_on"]))}・'
+            f'{escape(_display_date(card_checked_on))}・'
             f'<a href="{escape(cast(str, source["url"]), quote=True)}">公式サイトで仕様を確認する</a></p>'
             '<div class="raos-product-card__actions">'
             f'<p id="{escape(cta_context_id, quote=True)}" class="raos-cta-context cta-note">'
@@ -1542,23 +2135,41 @@ class _Renderer:
                 + '"><span>'
                 + escape(cast(str, cells[ref]["value"]))
                 + "</span>"
-                + self.evidence_badges(cells[ref]["claim_ids"])
+                + self.comparison_cell_badges(cells[ref])
                 + "</td>"
                 for ref in axis_refs
             )
             product_id = cast(str, card["product_id"])
             evidence = self.evidences[product_id]
+            if self.product_media_verified:
+                comparison_media = (
+                    '<img class="raos-comparison__product-image" '
+                    f'src="{escape(evidence.image_url, quote=True)}" '
+                    f'alt="{escape(cast(str, card["product_name"]))}の商品画像" '
+                    'width="64" height="64" loading="lazy" decoding="async" '
+                    f'data-raos-product-image-id="{escape(product_id, quote=True)}" '
+                    'data-raos-product-image-placement="comparison_table" '
+                    'data-raos-product-image-state="verified">'
+                )
+            else:
+                comparison_media = (
+                    '<span class="raos-product-image-status '
+                    'raos-product-image-status--compact" '
+                    f'data-raos-product-image-id="{escape(product_id, quote=True)}" '
+                    'data-raos-product-image-placement="comparison_table" '
+                    'data-raos-product-image-state="unverified">'
+                    "商品画像未確認・購入導線停止</span>"
+                )
             rows.append(
-                '<tr class="has-difference"><th scope="row"><img class="raos-comparison__product-image" '
-                f'src="{escape(evidence.image_url, quote=True)}" alt="" width="64" height="64" '
-                'loading="lazy" decoding="async"><span>'
+                '<tr class="has-difference"><th scope="row">'
+                f"{comparison_media}<span>"
                 f'{escape(cast(str, card["product_name"]))}</span></th>'
                 f"{rendered_cells}</tr>"
             )
             mobile_pairs = [
-                '<div><dt>商品</dt><dd><img class="raos-comparison__product-image" '
-                + f'src="{escape(evidence.image_url, quote=True)}" alt="" width="64" height="64" '
-                + 'loading="lazy" decoding="async"><span>'
+                '<div><dt>商品</dt><dd>'
+                + comparison_media
+                + "<span>"
                 + escape(cast(str, card["product_name"]))
                 + "</span></dd></div>"
             ]
@@ -1567,7 +2178,7 @@ class _Renderer:
                 + escape(cast(str, self.axes[ref]["label"]))
                 + "</dt><dd>"
                 + escape(cast(str, cells[ref]["value"]))
-                + self.evidence_badges(cells[ref]["claim_ids"])
+                + self.comparison_cell_badges(cells[ref])
                 + "</dd></div>"
                 for ref in axis_refs
             )
@@ -1584,16 +2195,30 @@ class _Renderer:
         if observed_products != expected_products:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         title_id = f"{cast(str, block['block_id']).lower()}-title"
-        facts_checked_on = _display_date(
-            _mapping(self.article["freshness"])["facts_checked_on"]
+        row_checked_dates = [
+            _date(
+                _mapping(self.cards[product_ref]["presentation_v2"])[
+                    "facts_checked_on"
+                ]
+            )
+            for product_ref in observed_products
+        ]
+        if not row_checked_dates:
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        first_checked_on = _display_date(min(row_checked_dates))
+        last_checked_on = _display_date(max(row_checked_dates))
+        facts_checked_on = (
+            first_checked_on
+            if first_checked_on == last_checked_on
+            else f"{first_checked_on}〜{last_checked_on}"
         )
         return (
-            f'<section class="comparison-section" aria-labelledby="{title_id}">'
+            '<section class="comparison-section">'
             '<header class="section-heading section-heading--inline"><div>'
-            f'<h2 id="{title_id}">公表仕様を比べる</h2></div>'
-            f'<p class="raos-comparison__checked">情報確認日：{escape(facts_checked_on)}。'
+            f'<h2 id="{title_id}">{escape(_article_section_heading(self.article, "comparison_table", "公表仕様を比べる"))}</h2></div>'
+            f'<p class="raos-comparison__checked">一次情報の取得期間：{escape(facts_checked_on)}。'
             "価格・在庫・カラーは候補の順序に反映していません。</p></header>"
-            f'<div class="raos-comparison comparison-table-wrap" role="region" tabindex="0" aria-labelledby="{title_id}" '
+            f'<div class="raos-comparison comparison-table-wrap" role="region" aria-labelledby="{title_id}" '
             f'data-raos-article-id="{escape(cast(str, self.article["article_id"]), quote=True)}" '
             'data-raos-placement="comparison_table">'
             '<div class="raos-comparison__table-view">'
@@ -1654,6 +2279,23 @@ class _Renderer:
             block = blocks[index]
             kind = block.get("type")
             if kind == "disclosure_slot":
+                if index + 1 >= len(blocks) or blocks[index + 1].get("type") != "lead":
+                    _fail(EditorialPilotFailureCode.CONTENT_AST_INVALID)
+                lead_parts = self.rich(blocks[index + 1]["content"]).split("<br>")
+                if len(lead_parts) not in {2, 3} or any(
+                    not value.strip() for value in lead_parts
+                ):
+                    _fail(EditorialPilotFailureCode.CONTENT_AST_INVALID)
+                scope_paragraphs = "".join(
+                    f'<p class="raos-article-intro__scope">{part}</p>'
+                    for part in lead_parts[1:]
+                )
+                output.append(
+                    '<section class="raos-article-intro" aria-label="比較の要点">'
+                    f'<p class="raos-article-intro__hook">{lead_parts[0]}</p>'
+                    f"{scope_paragraphs}"
+                    "</section>"
+                )
                 disclosure = _mapping(self.model["disclosure"])
                 _exact(disclosure, {"label", "paragraphs"})
                 paragraphs = "".join(
@@ -1667,18 +2309,14 @@ class _Renderer:
                     "<p>広告を含みます。購入リンクから成果報酬を受け取る場合がありますが、"
                     "選定・掲載順には使いません。</p>"
                     f"<details><summary>{escape(cast(str, disclosure['label']))}の詳細</summary>"
-                    f"{paragraphs}</details></div></aside>"
+                    f"{paragraphs}<p><a href=\"/comparison-policy/\">"
+                    "編集・比較方針（AI支援範囲を含む）を確認する"
+                    "</a></p></details></div></aside>"
                 )
                 output.append(self.article_scope())
+                index += 1
             elif kind == "lead":
-                title_id = f"{cast(str, block['block_id']).lower()}-title"
-                output.append(
-                    f'<section class="lead-section" aria-labelledby="{title_id}">'
-                    '<header class="section-heading section-heading--side">'
-                    f'<h2 id="{title_id}">選ぶ前に、条件を整理する。</h2></header>'
-                    '<div class="lead-copy">'
-                    f'<p class="raos-lead">{self.rich(block["content"])}</p></div></section>'
-                )
+                _fail(EditorialPilotFailureCode.CONTENT_AST_INVALID)
             elif kind == "decision_summary":
                 rendered_items: list[str] = []
                 for position, raw in enumerate(_list(block["items"]), start=1):
@@ -1715,7 +2353,7 @@ class _Renderer:
                 output.append(
                     f'<section class="raos-decision-summary decision-section" aria-labelledby="{title_id}">'
                     '<header class="section-heading">'
-                    f'<h2 id="{title_id}">条件ごとの結論</h2></header>'
+                    f'<h2 id="{title_id}">{escape(_article_section_heading(self.article, "decision_summary", "条件ごとの結論"))}</h2></header>'
                     f'<ol class="decision-list">{"".join(rendered_items)}</ol></section>'
                 )
             elif kind == "intended_reader":
@@ -1723,10 +2361,10 @@ class _Renderer:
                 output.append(
                     f'<section class="reader-section" aria-labelledby="{title_id}">'
                     '<header class="section-heading">'
-                    f'<h2 id="{title_id}">この記事でわかること</h2></header>'
+                    f'<h2 id="{title_id}">{escape(_article_section_heading(self.article, "intended_reader", "この記事でわかること"))}</h2></header>'
                     '<div class="reader-columns"><section><h3>この比較が役立つ人</h3>'
                     f"<ul>{_list_html(block['fits'], routes=self.routes, sources=self.sources)}</ul></section>"
-                    '<section><h3>別の確認が必要な人</h3>'
+                    '<section><h3>この比較だけでは決めにくい人</h3>'
                     f"<ul>{_list_html(block['not_fits'], routes=self.routes, sources=self.sources)}</ul></section>"
                     '<section><h3>購入前の前提</h3>'
                     f"<ul>{_list_html(block['assumptions'], routes=self.routes, sources=self.sources)}</ul>"
@@ -1735,16 +2373,17 @@ class _Renderer:
             elif kind == "methodology":
                 title_id = f"{cast(str, block['block_id']).lower()}-title"
                 checked_at = _text(block["data_checked_at"], maximum=64)
+                _date(checked_at[:10])
                 output.append(
                     f'<section class="method-section" aria-labelledby="{title_id}">'
                     '<header class="section-heading section-heading--side">'
-                    f'<h2 id="{title_id}">比較のしかた</h2>'
+                    f'<h2 id="{title_id}">{escape(_article_section_heading(self.article, "methodology", "比較のしかた"))}</h2>'
                     f"<p>{self.rich(block['candidate_universe_summary'])}</p></header><div>"
                     "<h3>比較対象にした条件</h3>"
                     f"<ul>{_list_html(block['inclusion_rules'], routes=self.routes, sources=self.sources)}</ul>"
                     "<h3>比較に含めていないもの</h3>"
                     f"<ul>{_list_html(block['exclusion_rules'], routes=self.routes, sources=self.sources)}</ul>"
-                    f'<p class="table-note">商品情報の確認日：{escape(_display_date(checked_at[:10]))}</p>'
+                    f'<p class="table-note">編集内容の最終確認日：{escape(_display_date(self.facts_checked_on))}</p>'
                     "</div></section>"
                 )
             elif kind == "selection_criteria":
@@ -1760,7 +2399,7 @@ class _Renderer:
                 output.append(
                     f'<section class="method-section" aria-labelledby="{title_id}">'
                     '<header class="section-heading section-heading--side">'
-                    f'<h2 id="{title_id}">選ぶ前に確認するポイント</h2></header>'
+                    f'<h2 id="{title_id}">{escape(_article_section_heading(self.article, "selection_criteria", "選ぶ前に確認するポイント"))}</h2></header>'
                     f"<ul>{criteria}</ul></section>"
                 )
             elif kind == "difference_matrix":
@@ -1791,7 +2430,7 @@ class _Renderer:
                 output.append(
                     f'<section class="products-section" aria-labelledby="{title_id}">'
                     '<header class="section-heading">'
-                    f'<h2 id="{title_id}">候補ごとの特徴と注意点</h2></header>'
+                    f'<h2 id="{title_id}">{escape(_article_section_heading(self.article, "product_cards", "候補ごとの特徴と注意点"))}</h2></header>'
                     '<div class="raos-product-grid">'
                     + "".join(
                         self.card(
@@ -1810,9 +2449,17 @@ class _Renderer:
             elif kind == "recommendation_group":
                 output.append(self.recommendation_group(block))
             elif kind == "caution":
+                caution_content = _list(block["content"])
+                if len(caution_content) == 1:
+                    caution_body = f"<p>{self.rich(caution_content)}</p>"
+                else:
+                    caution_body = "<ul>" + "".join(
+                        f"<li>{self.rich([node])}</li>" for node in caution_content
+                    ) + "</ul>"
                 output.append(
-                    '<aside class="raos-caution purchase-caution"><h2>購入前に確認したいこと</h2>'
-                    f"<p>{self.rich(block['content'])}</p></aside>"
+                    '<aside class="raos-caution purchase-caution"><h2>'
+                    f'{escape(_article_section_heading(self.article, "caution", "購入前に確認したいこと"))}</h2>'
+                    f"{caution_body}</aside>"
                 )
             elif kind == "source_summary":
                 refs = [
@@ -1985,6 +2632,20 @@ def prepare_editorial_article(
     if packet is None or packet["article_id"] != article_id:
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     try:
+        selected_sources = [
+            sources[_text(value, maximum=300)]
+            for value in _list(packet["source_refs"])
+        ]
+    except KeyError:
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    facts_checked_on = _date(freshness["facts_checked_on"])
+    if any(
+        _date(source["retrieved_on"]) > facts_checked_on
+        for source in selected_sources
+    ):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    _require_observed_date_not_future(facts_checked_on, now=now)
+    try:
         ast_model = load_content_ast(canonical_json_bytes(article["content_ast"]))
         ast = cast(
             Mapping[str, object],
@@ -2014,6 +2675,16 @@ def prepare_editorial_article(
     observed_claim_ids.update(
         _claim_references(article["render_model"], packet_claim_ids)
     )
+    # External-market and cross-portfolio reference claims are projected by
+    # the closed reader ledger rather than duplicated into the authored AST.
+    # Their extended fields were validated above, so include exactly that
+    # contract-owned projection in the packet coverage set.
+    observed_claim_ids.update(
+        _text(_mapping(value)["claim_id"], maximum=300)
+        for value in _list(packet["claims"])
+        if "market_candidate_id" in _mapping(value)
+        or "portfolio_candidate_disposition" in _mapping(value)
+    )
     if observed_claim_ids != packet_claim_ids:
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     cards, evidences, affiliate_records, media_records = _bind_product_evidence(
@@ -2022,7 +2693,25 @@ def prepare_editorial_article(
         affiliates,
         media,
         evidence_reader,
+        facts_checked_on=facts_checked_on,
     )
+    article_product_ids = {
+        _text(card["product_id"], maximum=300) for card in cards.values()
+    }
+    for raw_claim in _list(packet["claims"]):
+        claim = _mapping(raw_claim)
+        subject_product_ids = {
+            _text(value, maximum=300)
+            for value in _list(claim["subject_product_ids"])
+        }
+        is_portfolio_reference = (
+            set(claim) & _PORTFOLIO_REFERENCE_CLAIM_KEYS
+        ) == set(_PORTFOLIO_REFERENCE_CLAIM_KEYS)
+        if (
+            not subject_product_ids <= article_product_ids
+            and not is_portfolio_reference
+        ):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     packet_source_refs = set(cast(list[str], packet["source_refs"]))
     render = _mapping(article["render_model"])
     primary_refs = set(cast(list[str], render["primary_source_refs"]))
@@ -2043,11 +2732,9 @@ def prepare_editorial_article(
             cast(str, asset["product_id"]): cast(str, asset["alt"])
             for asset in media_records
         },
+        facts_checked_on=facts_checked_on,
     ).render(ast)
     content_sha256 = bytes_sha256(content.encode("utf-8", errors="strict"))
-    selected_sources = [
-        sources[value] for value in cast(list[str], packet["source_refs"])
-    ]
     for source in selected_sources:
         _require_observed_date_not_future(source["retrieved_on"], now=now)
     for raw_policy_source in _list(source_registry["policy_sources"]):
@@ -2063,7 +2750,7 @@ def prepare_editorial_article(
         all_registry_claims=all_registry_claims,
         selected_sources=selected_sources,
         policy_sources=policy_sources,
-        editorial_facts_checked_on=cast(str, freshness["facts_checked_on"]),
+        editorial_facts_checked_on=facts_checked_on,
         reader=source_evidence_reader,
         now=now,
     )

@@ -163,6 +163,11 @@ ARTICLE_IDS: Final = (
     "st1704-anker-solix-c300-c800-c1000-differences",
     "st1704-countertop-dishwasher-for-small-households",
     "st1704-compact-robot-vacuum-shortlist",
+    "carry-on-suitcase-under-100-seats",
+    "lightweight-carry-on-suitcase-under-3kg",
+    "front-open-carry-on-suitcase-with-stopper",
+    "roomba-mini-vs-switchbot-k11-pro",
+    "solota-vs-rakua-mini-plus",
 )
 
 
@@ -733,7 +738,8 @@ def _bind_verified_tracked_reads(
     https_adapter = cast(types.ModuleType, https_adapter)
     domain = cast(types.ModuleType, domain)
     application_pairs = getattr(application, "_pairs", None)
-    application_reject_number = getattr(application, "_reject_number", None)
+    application_finite_float = getattr(application, "_finite_float", None)
+    application_reject_constant = getattr(application, "_reject_constant", None)
     application_fail = getattr(application, "_fail", None)
     decode_response = getattr(https_adapter, "_decode_response", None)
     https_mapping = getattr(https_adapter, "_mapping", None)
@@ -744,7 +750,8 @@ def _bind_verified_tracked_reads(
         callable(value)
         for value in (
             application_pairs,
-            application_reject_number,
+            application_finite_float,
+            application_reject_constant,
             application_fail,
             decode_response,
             https_mapping,
@@ -777,8 +784,8 @@ def _bind_verified_tracked_reads(
             return json.loads(
                 raw.decode("utf-8", errors="strict"),
                 object_pairs_hook=cast(Any, application_pairs),
-                parse_float=cast(Any, application_reject_number),
-                parse_constant=cast(Any, application_reject_number),
+                parse_float=cast(Any, application_finite_float),
+                parse_constant=cast(Any, application_reject_constant),
             )
         except BaseException as error:
             editorial_failure = getattr(domain, "EditorialPilotFailure", None)

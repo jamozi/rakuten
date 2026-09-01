@@ -2,7 +2,7 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 145,
+    "owner_count": 147,
     "version": "2.0.0"
   },
   "owners": [
@@ -10,13 +10,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 2877,
-          "sha256": "b026d6f24530ce22c7225b329111b51b0164b470c415161a6ea00604416d96bf",
+          "bytes": 2879,
+          "sha256": "9549288c316ec4475890e1e901236cb466a3ed4405d5a9d7c8274cc9dbea0600",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
-          "bytes": 18254,
-          "sha256": "bcdf0b95a3d345cc6d08321bf0359691ea6a5285fa9de3f6af8d349af83e9962",
+          "bytes": 17984,
+          "sha256": "27ecbcf0c3abab3f06116148d0c734a3d1ceb6bf0e16a9186dbc12b2d93701ee",
           "uri": "repo://changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement/config/measurement-allowlist.v1.json"
         }
       ],
@@ -93,13 +93,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 79749,
-          "sha256": "c82746904cc27365166abec78021c711262220171e123851caa844a8db379abe",
+          "bytes": 183864,
+          "sha256": "fc923f189f171012cee9429ddb70291d74f37eea6a80eb9796947c42218ab305",
           "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
         },
         {
-          "bytes": 10764,
-          "sha256": "a50b9709fc0e561ac2adc8dc9394b783e2fcfad19b3f5fe9a730f2eb0f808c94",
+          "bytes": 13649,
+          "sha256": "35571f11070f44391de5555684e2ab7ef18ddcaeac7c94821b043e0dc38d90d4",
           "uri": "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json"
         }
       ],
@@ -123,6 +123,12 @@
           "kind": "tracked",
           "semantic_id": "changes/editorial-portfolio-v3/editorial-identities.v1.json",
           "uri": "repo://changes/editorial-portfolio-v3/editorial-identities.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/market-candidate-audit.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/market-candidate-audit.v1.json",
           "version": 2
         },
         {
@@ -252,13 +258,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 6880,
-          "sha256": "f30c230d36f38d190b3c54f645de93dc9a68e9e96c88fc89a6cc95f3719b0e50",
+          "bytes": 18350,
+          "sha256": "69fb66debf8b6456a209e55da8b82e0edc7bfa3e42d41402ea0485ec8c00dcea",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
-          "bytes": 9457,
-          "sha256": "102a3f20f05ebf6992db7a5a9304d2d7e504072376c2d75f752ebdd9b1c3c478",
+          "bytes": 13263,
+          "sha256": "9bcd7478912adbf0d09ec79ea3984a4bd762f425c7014211902c83e1f15cf688",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
         }
       ],
@@ -306,7 +312,7 @@
       "outputs": [
         {
           "bytes": 2449,
-          "sha256": "25267c2ea1ccd9238bced96b1af0a0d9ff6b7354df8c835a4e282d626390a3db",
+          "sha256": "009d8aecd002a71ff7408463df1d6aaa50170963115a16682e2565761afeb2a0",
           "uri": "repo://changes/analytics-google-live-v1/runtime-manifest.v1.json"
         }
       ],
@@ -8973,7 +8979,7 @@
       "outputs": [
         {
           "bytes": 5784,
-          "sha256": "84f64c98462cf748c8db7f4291f90b029dac110f587107e146ac73c9bf4ff2f6",
+          "sha256": "32cbaa46ae82e126e7f0e2fa6cb632bfb780f09c8d9d3d5608897dede84e496e",
           "uri": "repo://changes/st-0203/manifest.yaml"
         }
       ],
@@ -9124,7 +9130,7 @@
       "outputs": [
         {
           "bytes": 5972,
-          "sha256": "f7d0ddf207eebfed415f187cf5b50dc38782c3102bfcf832d8d97f43c7605ec3",
+          "sha256": "762532c6e41b2b31cdeb25d56fe4aac1c785b0b8ce87fb7be3c4a04a96c8c211",
           "uri": "repo://changes/st-0204/manifest.yaml"
         }
       ],
@@ -9293,7 +9299,7 @@
         },
         {
           "bytes": 5351,
-          "sha256": "128076657f6193b11c9102a3f161c17925db50168b16e61cc7e00df7d0204ebe",
+          "sha256": "6657a7cf14185542c7b4f6e00e61c6df8a3ecb413fa669cddf0f8767c2ea7dfd",
           "uri": "repo://changes/st-0205/manifest.yaml"
         }
       ],
@@ -9622,7 +9628,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "531b2b9f1cd0b825fcc70a0ce00c26a996e4a879a6863be8eb67b29bcac1fa27",
+          "sha256": "745c900c9a72d4ef9404af5166020ecef290a2fb3fef970ca15a2c75a70cc466",
           "uri": "repo://changes/st-0302/manifest.yaml"
         },
         {
@@ -9913,7 +9919,7 @@
         },
         {
           "bytes": 11451,
-          "sha256": "d6cc0ab37029105b8e425e855402792c97c1615be83da3cf7a1590fcbff77b39",
+          "sha256": "3fe379c4771800323f958c17b75696eca83cecf1fd69c39e26c9a1f43f696baa",
           "uri": "repo://changes/st-0303/manifest.yaml"
         },
         {
@@ -10270,7 +10276,7 @@
         },
         {
           "bytes": 11664,
-          "sha256": "6528b7808a231bcc84997f01ad599eb46cfb55a250e53a4ce1713d9e8cdad06a",
+          "sha256": "8b86171503d655f43c893e46ace1e79415de03e192b1a1a9c9790a124cc7edcb",
           "uri": "repo://changes/st-0304/manifest.yaml"
         },
         {
@@ -10490,7 +10496,7 @@
         },
         {
           "bytes": 14860,
-          "sha256": "81a561cf6c7cc3f24e72b0e38169eb075f4c95ac20f2c1c0f80bd57ac4c04c10",
+          "sha256": "ca507f72c17ba7c72f8fa0929e5569c81af8d17746e98c19ae50ea9597245e6b",
           "uri": "repo://changes/st-0305/manifest.yaml"
         },
         {
@@ -10721,7 +10727,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "a3a1361136af2180b7388d2baf66dd4d04682e1fba5bbd7d3d4e0389e99ea238",
+          "sha256": "652b67fae868b6e463deb2c2200e31b2cfd9eb883844bfc215bf7f89f580bb7e",
           "uri": "repo://changes/st-0306/manifest.yaml"
         },
         {
@@ -10973,7 +10979,7 @@
         },
         {
           "bytes": 15544,
-          "sha256": "6fcf73ed369442e6deb7cf59693f13dd2f22b2b8c7300cace385298481365b4a",
+          "sha256": "6aa0ba2e1879bc1a4eccbbe3211fee90ddb7d05f923ac92be9068425047585d1",
           "uri": "repo://changes/st-0307/manifest.yaml"
         },
         {
@@ -11102,37 +11108,37 @@
       "outputs": [
         {
           "bytes": 2391514,
-          "sha256": "4dea40b1261db5a8b16873918620fba1fbee8b87de22fe8ca099146f10f146c4",
+          "sha256": "c1df80a0be18cf321986ef729db9202850e8224293ecc8644338ac678258ecd8",
           "uri": "repo://changes/st-0308/generated/persistence-catalog-ir.v1.json"
         },
         {
           "bytes": 14179,
-          "sha256": "6837dd24f7fcf4fcca7493da7a6187a739cccff6db4073319f201801eb45d7d6",
+          "sha256": "311955628ffd3b103f06be26b89aa69b464758ad1e3a9e56a519ed69e87eb226",
           "uri": "repo://changes/st-0308/generated/persistence-runtime.ops-reference.v1.json"
         },
         {
           "bytes": 7561,
-          "sha256": "9529b0975913d4d3b9314ff2675cbd6e136a7676ec96cb87943c0173d7f5b55c",
+          "sha256": "6664da083f2fb2a2fe78445017f4c435f37d2f16038f886162c8d9eeba0d1bf5",
           "uri": "repo://python/raos/adapters/persistence/sqlalchemy/generated/__init__.py"
         },
         {
           "bytes": 301118,
-          "sha256": "f166e01755fb976fd14d1b2926709b0065e38076183a21b1c13d278a04912fca",
+          "sha256": "306817f9fd967bbe6172111ae192547677949fc16b3e002b3751d09b5607de9a",
           "uri": "repo://python/raos/adapters/persistence/sqlalchemy/generated/catalog.py"
         },
         {
           "bytes": 21686,
-          "sha256": "9f06a88589f38d522729296b913bb46f4b83fa7d5155e6291a79825a0fa04776",
+          "sha256": "302e222c16647d9dd68235033c51a5cac3f66bddb2294ab439ac131fe745b337",
           "uri": "repo://python/raos/adapters/persistence/sqlalchemy/generated/identity_contract.py"
         },
         {
           "bytes": 26732,
-          "sha256": "0d224b0f5fcf2b2a3be8c46efe659698fc9b895368b8f4885809375716ee4102",
+          "sha256": "edc40ff68f25265a3a06c011d8926396e7affdd52b43458d771fe2f961545b15",
           "uri": "repo://python/raos/adapters/persistence/sqlalchemy/generated/ops_reference.py"
         },
         {
           "bytes": 365732,
-          "sha256": "be93b09e57bf53978ba32a9ac8d7a461f1c16a29e21db336437c3e9e2773ae1b",
+          "sha256": "6f438a2570531151fdf3388d6e7cb2d9a36bd904824d06676b31149dc6d4a3d6",
           "uri": "repo://python/raos/adapters/persistence/sqlalchemy/generated/physical_constraints.py"
         }
       ],
@@ -11269,12 +11275,12 @@
       "outputs": [
         {
           "bytes": 3958,
-          "sha256": "83b65552f1c9f8a0e8c6ffebc2ce0578d845e806c4023bf2d0ac41983c659ed7",
+          "sha256": "af40a470d24fc0f80806ce282ad384ba70a4f289a325f7ff874b1c3b955baf9f",
           "uri": "repo://changes/st-0401/generated/local-auth-runtime-manifest.v2.json"
         },
         {
           "bytes": 7448,
-          "sha256": "59099f477a7e0081aa732e8e4fe2461e06f341e46a978c795bec0283abe8cda9",
+          "sha256": "8b3f04c11cf3480e2b6965fa313732c52cba24da50d171e7d44e82ef5345a9a3",
           "uri": "repo://changes/st-0401/generated/local-auth-runtime.v2.json"
         }
       ],
@@ -14583,7 +14589,7 @@
         },
         {
           "bytes": 15112,
-          "sha256": "efe190575d0e6d0fc8cb366b770a4147cad300818878ea2500814e189a6b80c0",
+          "sha256": "c97ddb3568d88a31c042dd7eb55d4e75d2a98554ab0a80d8aebeab535bed830c",
           "uri": "repo://changes/st-0701/manifest.yaml"
         }
       ],
@@ -15617,7 +15623,7 @@
       "outputs": [
         {
           "bytes": 7913,
-          "sha256": "54e235de24e8eaab19629abb0a991e169b499bb5be0cc539fa0cfeaa8b742a99",
+          "sha256": "8ee7275d51e62463c7398226d382cb3f0eb05922c35090b25a1f8c0af85005e7",
           "uri": "repo://changes/st-0709/runtime-manifest.v2.json"
         }
       ],
@@ -15842,7 +15848,7 @@
       "outputs": [
         {
           "bytes": 32582,
-          "sha256": "47bbc2e7f35ffea98c64a621ad29d8eda8b02ac5d383fa52b584aad477b99205",
+          "sha256": "3d562c6396c5ee1c29019eb063181da40c03dac4cb3fd91087e8f7ebe988733b",
           "uri": "repo://changes/st-0801/manifest.yaml"
         }
       ],
@@ -19647,7 +19653,7 @@
         },
         {
           "bytes": 12124,
-          "sha256": "9c0b7d495bba720aea7b829dd7315de7ce2aeb7f96d32b372efab9ab5a1538bb",
+          "sha256": "d3d37b4f72f4fadabfba60df25c23d7e001435dbe1344694bf27c950674db1d2",
           "uri": "repo://changes/st-0906/runtime-manifest.v2.yaml"
         },
         {
@@ -19785,7 +19791,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
+          "sha256": "37394f25fe870c11cdbd4ba1b1173ed86bc677ca51a85e6fe0b999ec425efa4f",
           "uri": "repo://package-lock.json"
         },
         {
@@ -19945,7 +19951,7 @@
         },
         {
           "bytes": 8827,
-          "sha256": "6cb549c4575a4945cc7c6c82ee86599088b5928534ed17c82ced463ab30602f7",
+          "sha256": "843182703c0222082f0e174a37a103f0949e79e3fdc0ea93545da044ab7fa432",
           "uri": "repo://changes/st-1001/runtime-manifest.v2.yaml"
         }
       ],
@@ -20107,7 +20113,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
+          "sha256": "37394f25fe870c11cdbd4ba1b1173ed86bc677ca51a85e6fe0b999ec425efa4f",
           "uri": "repo://package-lock.json"
         },
         {
@@ -20187,7 +20193,7 @@
         },
         {
           "bytes": 8759,
-          "sha256": "2b65f30171c4fe430b5f347781855e2a762dc70c9ecf72353a13a7f84e056ad9",
+          "sha256": "c94d7d362b87f1e900e453b83b108b588b3cb21fd0c2e6e55de563c7e8653b87",
           "uri": "repo://changes/st-1002/runtime-manifest.v2.yaml"
         },
         {
@@ -20346,7 +20352,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
+          "sha256": "37394f25fe870c11cdbd4ba1b1173ed86bc677ca51a85e6fe0b999ec425efa4f",
           "uri": "repo://package-lock.json"
         },
         {
@@ -20444,7 +20450,7 @@
         },
         {
           "bytes": 7245,
-          "sha256": "08f33bb3dc34ab8255243bfbc5a95f1fa7f9eddad52f661de3e30449b6dd2ba1",
+          "sha256": "39e400a4247ffb2ca6ed182f9cd63e579d6adfb20865a2374274d293dcf2ee24",
           "uri": "repo://changes/st-1004/runtime-manifest.v2.yaml"
         }
       ],
@@ -20543,7 +20549,7 @@
         },
         {
           "bytes": 4108,
-          "sha256": "f66b5ca5b0f6b4230b7c0d126cf17ee5a2d406835ebd83d4a9c33c3e7ee1e4ca",
+          "sha256": "7b6605d9172f6182a69bcdcba200db4ccd174ed57eea46aa88b2af20ee2cd966",
           "uri": "repo://changes/st-1006/runtime-manifest.v2.yaml"
         }
       ],
@@ -20697,7 +20703,7 @@
         },
         {
           "bytes": 6739,
-          "sha256": "e0cc8b46fe92d0108fb4a749b09e7828e86d3a1a7f23f58d7c75729225348c5f",
+          "sha256": "05cca94f6f5d1fd175a05fa95fb09c57d22c60b6d358abf1f9ba6d89251fd182",
           "uri": "repo://changes/st-1102/runtime-manifest.v2.yaml"
         },
         {
@@ -20843,7 +20849,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
+          "sha256": "37394f25fe870c11cdbd4ba1b1173ed86bc677ca51a85e6fe0b999ec425efa4f",
           "uri": "repo://package-lock.json"
         },
         {
@@ -20994,7 +21000,7 @@
         },
         {
           "bytes": 9372,
-          "sha256": "709610d52ebc6752405aa60be84dbd5f0035e1f79fc619458994495805f6c917",
+          "sha256": "fe186c0ed98d376eda20aca13280e1ba59deba748dc35b006aa6097cfe2350cb",
           "uri": "repo://changes/st-1103/runtime-manifest.v2.yaml"
         },
         {
@@ -21071,7 +21077,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
+          "sha256": "37394f25fe870c11cdbd4ba1b1173ed86bc677ca51a85e6fe0b999ec425efa4f",
           "uri": "repo://package-lock.json"
         },
         {
@@ -21252,12 +21258,12 @@
       "outputs": [
         {
           "bytes": 30334,
-          "sha256": "9ce208ba4f19487489421145edfd9d155a70e63aa2f9d4a3875e0241b845cd74",
+          "sha256": "2c5d3a2d02d602ad5a8d3eebe5eb052830c6c6381b84e4b1c9259886891f88fd",
           "uri": "repo://changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json"
         },
         {
           "bytes": 11818,
-          "sha256": "f683235a244ca4ccfe1722fa7c85ea6872b4930af469bde623bc0383b81e63ae",
+          "sha256": "2312120de53ec7677f6f21d702bba6cc7822d10fc8db91657e29f940dbaaf357",
           "uri": "repo://changes/st-1104/runtime-manifest.v2.yaml"
         }
       ],
@@ -21305,7 +21311,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
+          "sha256": "37394f25fe870c11cdbd4ba1b1173ed86bc677ca51a85e6fe0b999ec425efa4f",
           "uri": "repo://package-lock.json"
         },
         {
@@ -21424,7 +21430,7 @@
         },
         {
           "bytes": 16756,
-          "sha256": "c89df15ca4ac9361b67dbf65cc855423a2d83becd4d8344951e9aed72efd4959",
+          "sha256": "51f96f1fcdad88db4e56895b5a3d2c2a53ac63631a0d7ca26c6307133612ad1b",
           "uri": "repo://changes/st-1105/runtime-manifest.v2.json"
         }
       ],
@@ -21508,7 +21514,7 @@
         },
         {
           "kind": "dependency",
-          "sha256": "8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca",
+          "sha256": "37394f25fe870c11cdbd4ba1b1173ed86bc677ca51a85e6fe0b999ec425efa4f",
           "uri": "repo://package-lock.json"
         },
         {
@@ -21772,7 +21778,7 @@
         },
         {
           "bytes": 9166,
-          "sha256": "311e3c8c54ba9b4d1700543c68ebc4ecf99a14585109c1915f355c3c4ebf6cc5",
+          "sha256": "dac0a05f6c29b7bd6288af4f8fe77a28bf9305ff7d162fff5487cae8ac8bfa01",
           "uri": "repo://changes/st-1202/runtime-manifest.v2.yaml"
         }
       ],
@@ -22789,7 +22795,7 @@
       "outputs": [
         {
           "bytes": 18895,
-          "sha256": "ef620013020c08b64143f7902d97d21b86cb2aa0d66f1c4d697626c85bebb24b",
+          "sha256": "cc11e2cce266b2391eca5c041b5417feb2e3e6abbb21460013b5e65686690da8",
           "uri": "repo://changes/st-1303/generated/attribution-engine-recorded.v2.json"
         }
       ],
@@ -23051,7 +23057,7 @@
       "outputs": [
         {
           "bytes": 39444,
-          "sha256": "2e47ab37399d54bfaaf7769a405efff6c1028c1800cd3ae282d4d39522a39b55",
+          "sha256": "fdb5728eeffe95cf4de4f9873e5ddefc924e3c8cbf9ae84f8ea42df6698b921d",
           "uri": "repo://changes/st-1304/generated/cost-unit-economics-recorded.v2.json"
         }
       ],
@@ -23292,7 +23298,7 @@
       "outputs": [
         {
           "bytes": 31267,
-          "sha256": "3ff4e1f327734da83f6a24bc3efcea14debf6980b53d3bb357fafdaf232dd422",
+          "sha256": "51cd0191927020935319db3bc4be33289a21808619686146985227dfba9c32fe",
           "uri": "repo://changes/st-1305/generated/finance-reconciliation-recorded.v2.json"
         }
       ],
@@ -26025,7 +26031,7 @@
       "outputs": [
         {
           "bytes": 2428,
-          "sha256": "5ec93e7ef5ee38d52b60ca01e3ea9d7e7192b7e281223c1ce450d0ffee5f1915",
+          "sha256": "9c9bc51ff0787a2929fb35747ad7b867ce20f254dbcc461eff6b0b6e46b3ab2f",
           "uri": "repo://changes/st-1704/affiliate-learning-v2/runtime-manifest.v2.json"
         }
       ],
@@ -26142,10 +26148,64 @@
     },
     {
       "output_scope": "tracked",
+      "outputs": [],
+      "owner_dependencies": [],
+      "owner_id": "build_st1704_portfolio_source_packets",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "uri": "repo://changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/market-candidate-audit.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/market-candidate-audit.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_portfolio_source_packets.py",
+          "uri": "repo://scripts/build_st1704_portfolio_source_packets.py",
+          "version": 2
+        }
+      ],
+      "story_ids": [
+        "ST-1704"
+      ]
+    },
+    {
+      "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 3170,
-          "sha256": "5a9d5fb2af831dd5fc824ad0639d0e48fae715905cf0c51f005bee013ef873a7",
+          "bytes": 3365,
+          "sha256": "16ce9f9b008c5677bb7cd2f22bbd8d617a87b6ad60bd9f08d3dd0aa4702304ed",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26163,6 +26223,84 @@
           "kind": "tracked",
           "semantic_id": "scripts/build_st1704_rakuten_capture_manifest.py",
           "uri": "repo://scripts/build_st1704_rakuten_capture_manifest.py",
+          "version": 2
+        }
+      ],
+      "story_ids": [
+        "ST-1704"
+      ]
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [],
+      "owner_dependencies": [],
+      "owner_id": "build_st1704_reader_claim_coverage",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "uri": "repo://changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/market-candidate-audit.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/market-candidate-audit.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/product-safety-query-receipts.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/product-safety-query-receipts.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/reader-claim-bindings.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/reader-claim-bindings.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/posts.json",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/posts.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_reader_claim_coverage.py",
+          "uri": "repo://scripts/build_st1704_reader_claim_coverage.py",
           "version": 2
         }
       ],
@@ -26289,8 +26427,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 73523,
-          "sha256": "506f8a63b6c5226d34d63d3ec7574e249ee16d6546b98ca3db60fd546ebdb942",
+          "bytes": 78177,
+          "sha256": "084cba1e8e63973bd1bdcdd244e74dd97dea5ef7c5b1c363197a6c00d3a40408",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -26301,12 +26439,25 @@
         "build_st0104_contract_repository",
         "build_st0105_generated_contracts",
         "build_st1703_self_hosted_runtime_manifest",
+        "build_st1704_reader_claim_coverage",
         "build_st1704_self_hosted_theme",
         "build_st1704_theme_assets"
       ],
       "owner_id": "build_st1704_self_hosted_editorial_manifest",
       "owner_version": 2,
       "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "uri": "repo://changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
+          "version": 2
+        },
         {
           "kind": "tracked",
           "semantic_id": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
@@ -26431,6 +26582,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/reader-claim-bindings.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/reader-claim-bindings.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
           "version": 2
@@ -26445,6 +26602,18 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/analytics-consent-gate.js",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/analytics-consent-gate.js",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.js",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.js",
           "version": 2
         },
         {
@@ -26539,8 +26708,26 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/404.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/404.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/archive.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/archive.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/search.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/search.html",
           "version": 2
         },
         {
@@ -26565,6 +26752,66 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/yoast-seo-28.3.lock.json",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/yoast-seo-28.3.lock.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
           "version": 2
         },
         {
@@ -26667,6 +26914,18 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_portfolio_source_packets.py",
+          "uri": "repo://scripts/build_st1704_portfolio_source_packets.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_reader_claim_coverage.py",
+          "uri": "repo://scripts/build_st1704_reader_claim_coverage.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/build_st1704_self_hosted_editorial_manifest.py",
           "uri": "repo://scripts/build_st1704_self_hosted_editorial_manifest.py",
           "version": 2
@@ -26719,8 +26978,26 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/analytics-consent-gate.js",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/analytics-consent-gate.js",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.js",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.js",
           "version": 2
         },
         {
@@ -26733,6 +27010,12 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-anker-solix-generations.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-anker-solix-generations.webp",
           "version": 2
         },
         {
@@ -26755,8 +27038,38 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-roomba-mini-k11-comparison.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-roomba-mini-k11-comparison.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-solota-rakua-replacement.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-solota-rakua-replacement.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-front-open-stopper.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-front-open-stopper.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-under-100-seats.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-under-100-seats.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-under-3kg.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-under-3kg.webp",
           "version": 2
         },
         {
@@ -26815,8 +27128,26 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/404.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/404.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/archive.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/archive.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/search.html",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/search.html",
           "version": 2
         },
         {
@@ -26863,6 +27194,12 @@
       "semantic_inputs": [
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-anker-solix-generations.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-anker-solix-generations.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-countertop-dishwasher-guide.png",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-countertop-dishwasher-guide.png",
           "version": 2
@@ -26881,6 +27218,54 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-roomba-mini-k11-comparison.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-roomba-mini-k11-comparison.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-solota-rakua-replacement.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-solota-rakua-replacement.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-front-open-stopper.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-front-open-stopper.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-guide-v2.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-guide-v2.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-under-100-seats.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-under-100-seats.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-under-3kg.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-suitcase-under-3kg.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-hero-v2.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/home-hero-v2.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-anker-solix-generations.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-anker-solix-generations.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-countertop-dishwasher-guide.webp",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-countertop-dishwasher-guide.webp",
           "version": 2
@@ -26889,6 +27274,48 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-roomba-mini-k11-comparison.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-roomba-mini-k11-comparison.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-solota-rakua-replacement.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-solota-rakua-replacement.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-front-open-stopper.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-front-open-stopper.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-under-100-seats.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-under-100-seats.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-under-3kg.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-under-3kg.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
           "version": 2
         },
         {
@@ -26907,7 +27334,7 @@
       "outputs": [
         {
           "bytes": 12062,
-          "sha256": "9174709651b78f4d192f94ffad04a05329b78aa739b61e6f954bcd2a664e802a",
+          "sha256": "7ac85a7dc1e4e7d6568580c98f7247bed84f52fcf868c9969934884c21af7f40",
           "uri": "repo://changes/st-1704/publication-operator-v2/runtime-manifest.v2.json"
         }
       ],
@@ -27335,7 +27762,7 @@
       "outputs": [
         {
           "bytes": 29183,
-          "sha256": "0bd3a70d01a55084cff5cedc8293e5ad0ef3d2dcae71b9ef0f23af0db8caef11",
+          "sha256": "90353461bab36d3197fcda5822654853efcfee0242e16c81962ae878ce972ed2",
           "uri": "repo://changes/st-1804/generated/gate3-economics.local-blocked.v1.json"
         }
       ],
@@ -28231,12 +28658,12 @@
       "outputs": [
         {
           "bytes": 3342,
-          "sha256": "ad05853a88ddfd8fb2d94a79dd793f3c95c18086b9475d7df502f496b5ec7ed8",
+          "sha256": "85afed8042f6b98136b3fc647c7f6efc88844f6bfd3379b6df319e1568c2e905",
           "uri": "repo://changes/st-1907/generated/content-portfolio-optimizer-report.v1.json"
         },
         {
           "bytes": 8474,
-          "sha256": "0ea3df2cd2bc5fa4b6f37c138d88da0513271ebbaf9f47e762e1b01037a1a1cd",
+          "sha256": "a79b23dbe459f314582cb81717061e38ae120117465879cd313b3218e63cfbbf",
           "uri": "repo://changes/st-1907/manifest.yaml"
         }
       ],
@@ -28536,13 +28963,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 531,
-          "sha256": "c19165f3292c6592b96d63c16f3ae2c2527e9dc5beb80ec440e763d16ca98fa9",
+          "bytes": 892,
+          "sha256": "76d232a94166c3077f8a8a82cec76364cfc31658801dc96cb8ddfeb649126e56",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
-          "bytes": 17117,
-          "sha256": "a4a2221c3357a9971bce6b91691a49fefa912082dafeb6cba5f353da2bf526d5",
+          "bytes": 19509,
+          "sha256": "28e3b467607076b33c6d908017595331066b6f88a4eced7aa0d631cc56f36930",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -28598,6 +29025,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/bin/materialize_yoast.py",
+          "uri": "repo://changes/wordpress-local-preview-v1/bin/materialize_yoast.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
           "uri": "repo://changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
           "version": 2
@@ -28606,6 +29039,12 @@
           "kind": "tracked",
           "semantic_id": "changes/wordpress-local-preview-v1/browser/check.sh",
           "uri": "repo://changes/wordpress-local-preview-v1/browser/check.sh",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/browser/lighthouse_check.sh",
+          "uri": "repo://changes/wordpress-local-preview-v1/browser/lighthouse_check.sh",
           "version": 2
         },
         {
@@ -28712,6 +29151,36 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/production-pages.json",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/production-pages.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/production-pages/about-ad-policy.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/production-pages/about-ad-policy.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/production-pages/comparison-policy.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/production-pages/comparison-policy.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/production-pages/privacy-policy.html",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/production-pages/privacy-policy.html",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/policy-profiles.v1.json",
+          "uri": "repo://changes/wordpress-local-preview-v1/policy-profiles.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/wordpress-local-preview-v1/production-mapping.v1.json",
           "uri": "repo://changes/wordpress-local-preview-v1/production-mapping.v1.json",
           "version": 2
@@ -28802,6 +29271,18 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json",
+          "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
+          "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/wordpress-seo-audit-v1/README.md",
           "uri": "repo://changes/wordpress-seo-audit-v1/README.md",
           "version": 2
@@ -28844,8 +29325,20 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_editorial_source_capture.py",
+          "uri": "repo://python/raos/adapters/self_hosted_editorial_source_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "python/raos/application/editorial/editorial_portfolio_v2.py",
           "uri": "repo://python/raos/application/editorial/editorial_portfolio_v2.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/product_safety_receipts.py",
+          "uri": "repo://python/raos/application/editorial/product_safety_receipts.py",
           "version": 2
         },
         {
@@ -28918,6 +29411,12 @@
           "kind": "tracked",
           "semantic_id": "scripts/wordpress_public_ui_audit.function.js",
           "uri": "repo://scripts/wordpress_public_ui_audit.function.js",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/wordpress_quality_audit_v1.py",
+          "uri": "repo://scripts/wordpress_quality_audit_v1.py",
           "version": 2
         },
         {
