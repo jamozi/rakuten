@@ -141,7 +141,7 @@ DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
 EXPECTED_PLUGIN_VERSION: Final = "1.3.1"
 EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
-    "8204d0f1ff573a5edf72abe4ef69ef422af15815adf5ecbc3a74bf8ec1d9c7d8"
+    "82d3295080cb9723881773348e5366501af360b8b4301681ca9af82d22c7f368"
 )
 EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS: Final = 3600
 EXPECTED_APPLY_LEASE_TTL_SECONDS: Final = 900
@@ -1684,7 +1684,12 @@ def activation_materialization_binding(
         or activated_hashes != dict(activation.production_article_sha256)
         or len(activated_hashes) != EXPECTED_ALL_ARTICLE_COUNT
         or activation.article_count != EXPECTED_ALL_ARTICLE_COUNT
+        or activation.provider_slot_count != 20
+        or activation.provider_measurement_id_count != 20
+        or activation.internal_cta_identity_count
+        != EXPECTED_MATERIALIZED_AFFILIATE_CTA_COUNT
         or activation.cta_count != EXPECTED_MATERIALIZED_AFFILIATE_CTA_COUNT
+        or activation.live_link_count != EXPECTED_MATERIALIZED_AFFILIATE_CTA_COUNT
     ):
         fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
     products = v2_binding.get("products")
@@ -1709,7 +1714,7 @@ def activation_materialization_binding(
     ):
         fail("RAOS_WORDPRESS_REQUEST_RAKUTEN_ACTIVATION_INVALID")
     binding: dict[str, object] = {
-        "schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+        "schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3",
         "portfolio_sha256": activation.portfolio_sha256,
         "evidence_status_sha256": activation.v2_evidence_status_sha256,
         "local_receipt_sha256": activation.v2_local_receipt_sha256,
@@ -1732,6 +1737,10 @@ def activation_materialization_binding(
             "v2_production_receipt_sha256": (activation.v2_production_receipt_sha256),
             "admin_receipt_sha256": activation.admin_receipt_sha256,
             "money_link_mapping_sha256": activation.money_link_mapping_sha256,
+            "provider_slot_set_sha256": activation.provider_slot_set_sha256,
+            "provider_measurement_binding_sha256": (
+                activation.provider_measurement_binding_sha256
+            ),
             "materialized_set_sha256": activation.materialized_set_sha256,
             "local_article_set_sha256": activation.local_article_set_sha256,
             "production_article_set_sha256": (activation.production_article_set_sha256),
@@ -1743,7 +1752,15 @@ def activation_materialization_binding(
             "admin_verified_at_utc": activation.admin_verified_at_utc,
             "activated_at_utc": activation.activated_at_utc,
             "article_count": activation.article_count,
+            "provider_slot_count": activation.provider_slot_count,
+            "provider_measurement_id_count": (
+                activation.provider_measurement_id_count
+            ),
+            "internal_cta_identity_count": (
+                activation.internal_cta_identity_count
+            ),
             "cta_count": activation.cta_count,
+            "live_link_count": activation.live_link_count,
         },
     }
     _validate_materialization_binding(binding)
@@ -2626,7 +2643,10 @@ def _validate_materialization_binding(value: object) -> None:
         "media",
         "completion",
     }
-    if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2":
+    if schema in {
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3",
+    }:
         expected_keys.add("activation")
     if set(value) != expected_keys:
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
@@ -2638,6 +2658,7 @@ def _validate_materialization_binding(value: object) -> None:
         not in {
             "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1",
             "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+            "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3",
         }
         or type(value.get("portfolio_sha256")) is not str
         or SHA256_RE.fullmatch(value["portfolio_sha256"]) is None
@@ -2699,7 +2720,10 @@ def _validate_materialization_binding(value: object) -> None:
         expected_product_count=len(products),
         code="RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID",
     )
-    if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2":
+    if schema in {
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3",
+    }:
         activation = value.get("activation")
         expected_activation_keys = {
             "dry_run_sha256",
@@ -2719,6 +2743,15 @@ def _validate_materialization_binding(value: object) -> None:
             "article_count",
             "cta_count",
         }
+        if schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3":
+            expected_activation_keys |= {
+                "provider_slot_set_sha256",
+                "provider_measurement_binding_sha256",
+                "provider_slot_count",
+                "provider_measurement_id_count",
+                "internal_cta_identity_count",
+                "live_link_count",
+            }
         activation_times: list[datetime] = []
         if type(activation) is dict:
             for name in (
@@ -2749,6 +2782,17 @@ def _validate_materialization_binding(value: object) -> None:
             or activation.get("article_count") != EXPECTED_ALL_ARTICLE_COUNT
             or activation.get("cta_count")
             != EXPECTED_MATERIALIZED_AFFILIATE_CTA_COUNT
+            or (
+                schema == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3"
+                and (
+                    activation.get("provider_slot_count") != 20
+                    or activation.get("provider_measurement_id_count") != 20
+                    or activation.get("internal_cta_identity_count")
+                    != EXPECTED_MATERIALIZED_AFFILIATE_CTA_COUNT
+                    or activation.get("live_link_count")
+                    != EXPECTED_MATERIALIZED_AFFILIATE_CTA_COUNT
+                )
+            )
             or activation_times != sorted(activation_times)
         ):
             fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
@@ -5733,6 +5777,165 @@ def _unregistered_proposal_set_ready(
     return len(_proposal_ids(receipt)) == len(proposals)
 
 
+def _uses_current_activation_binding(receipt: Mapping[str, object]) -> bool:
+    materialization_binding = receipt.get("materialization_binding")
+    return (
+        type(materialization_binding) is dict
+        and materialization_binding.get("schema")
+        == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3"
+    )
+
+
+def _uses_historical_activation_binding(receipt: Mapping[str, object]) -> bool:
+    materialization_binding = receipt.get("materialization_binding")
+    return type(materialization_binding) is dict and materialization_binding.get(
+        "schema"
+    ) in {
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1",
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+    }
+
+
+def _replace_unregistered_terminal_attempt(
+    client: Any,
+    receipt: dict[str, object],
+    path: Path,
+    *,
+    articles: Sequence[Article],
+    desired_theme_tree_sha256: str,
+    materialization_binding: Mapping[str, object],
+    quality_audit_binding: Mapping[str, object] | None,
+) -> None:
+    """Read back a terminal unregistered legacy attempt before entering V3.
+
+    An unregistered legacy set containing a theme proposal has no complete
+    editor-side read-only proof, so it remains fail-closed.
+    """
+
+    proposals = receipt.get("proposals")
+    if (
+        type(proposals) is not list
+        or len(proposals) != len(articles)
+        or any(
+            type(proposal) is not dict
+            or proposal.get("kind") != "CONTENT_RELEASE"
+            for proposal in proposals
+        )
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+    operations = read_content_operations(client, receipt)
+    proposal_ids = set(_proposal_ids(receipt))
+    if set(operations) != proposal_ids:
+        fail("RAOS_WORDPRESS_REQUEST_OPERATION_READBACK_INVALID")
+    states = {operation.get("state") for operation in operations.values()}
+    if states not in ({"EXPIRED"}, {"APPLIED"}):
+        fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+    terminal_state = next(iter(states))
+
+    preserved_baselines = receipt.get("baselines")
+    preserved_drafts = receipt.get("drafts")
+    prior_reconciliation = receipt.get("prior_applied_reconciliation")
+    if (
+        type(preserved_baselines) is not dict
+        or type(preserved_drafts) is not dict
+        or any(
+            type(slug) is not str or type(value) is not dict
+            for slug, value in preserved_drafts.items()
+        )
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    preserved_baselines = dict(preserved_baselines)
+    preserved_drafts = {
+        slug: dict(value) for slug, value in preserved_drafts.items()
+    }
+    if terminal_state == "APPLIED":
+        _require_applied_receipt_content_operations(receipt, operations)
+        for proposal in proposals:
+            slug = proposal.get("slug")
+            after_sha256 = proposal.get("after_sha256")
+            target = preserved_drafts.get(slug) if type(slug) is str else None
+            if (
+                type(target) is not dict
+                or type(target.get("id")) is not int
+                or type(after_sha256) is not str
+                or SHA256_RE.fullmatch(after_sha256) is None
+            ):
+                fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+            target["content_sha256"] = after_sha256
+        prior_reconciliation = {
+            "schema": "RAOS_WORDPRESS_PRIOR_APPLIED_RECONCILIATION_V1",
+            "captured_at_gmt": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "documents": _published_receipt_document_evidence(client, receipt),
+            "operations": operations,
+        }
+
+    replacement = _fresh_receipt(
+        articles,
+        path,
+        desired_theme_tree_sha256,
+        materialization_binding,
+        quality_audit_binding,
+    ) | {
+        "baselines": preserved_baselines,
+        "drafts": preserved_drafts,
+        "prior_applied_reconciliation": prior_reconciliation,
+    }
+    receipt.clear()
+    receipt.update(replacement)
+    _touch_receipt(path, receipt, f"{terminal_state}_ATTEMPT_REPLACED")
+
+
+def _register_unregistered_proposal_set(
+    client: Any,
+    receipt: dict[str, object],
+    path: Path,
+    *,
+    articles: Sequence[Article],
+    desired_theme_tree_sha256: str,
+    activation: RakutenMeasurementActivationOverlayV3 | None,
+    materialization_binding: Mapping[str, object] | None,
+    quality_audit_binding: Mapping[str, object] | None,
+) -> None:
+    if not _unregistered_proposal_set_ready(receipt, len(articles)):
+        return
+    if activation is None:
+        if not _same_desired(
+            receipt,
+            articles,
+            desired_theme_tree_sha256,
+            materialization_binding,
+            quality_audit_binding,
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_UNREGISTERED_BATCH_HANDOFF_REQUIRED")
+        register_publication_batch(client, receipt, path)
+        return
+    if _uses_current_activation_binding(receipt):
+        if not _same_desired(
+            receipt,
+            articles,
+            desired_theme_tree_sha256,
+            materialization_binding,
+            quality_audit_binding,
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_UNREGISTERED_BATCH_HANDOFF_REQUIRED")
+        register_publication_batch(client, receipt, path)
+        return
+    if (
+        not _uses_historical_activation_binding(receipt)
+        or materialization_binding is None
+    ):
+        fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
+    _replace_unregistered_terminal_attempt(
+        client,
+        receipt,
+        path,
+        articles=articles,
+        desired_theme_tree_sha256=desired_theme_tree_sha256,
+        materialization_binding=materialization_binding,
+        quality_audit_binding=quality_audit_binding,
+    )
+
+
 def _resume_existing_all_attempt(
     source_articles: Sequence[Article],
     loaded_receipt: dict[str, object] | None,
@@ -5763,20 +5966,35 @@ def _resume_existing_all_attempt(
         return False
     if not _resume_ready(receipt, len(source_articles)):
         return False
+    historical_activation_binding = activation is not None and not (
+        _uses_current_activation_binding(receipt)
+    )
     batch = publication_batch_status(receipt, deployment_runner)
+    if historical_activation_binding and batch["state"] not in {
+        "APPLIED",
+        "EXPIRED",
+    }:
+        # A pre-provider-slot receipt may be reconciled after exact APPLIED
+        # readback or replaced after irreversible expiry. It can never resume
+        # approval/application under the V3 attribution contract.
+        fail("RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT")
     if batch["state"] == "EXPIRED":
         return False
     if batch["state"] == "FAILED":
         fail("RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID")
     if batch["state"] == "APPLIED":
         _require_applied_batch_ready(batch)
-    _current_activation, articles, _binding, _quality = _revalidate_apply_inputs(
-        receipt,
-        rakuten_activation_dry_run=rakuten_activation_dry_run,
-        expected_activation=activation,
-        quality_audit_attestation=quality_audit_attestation,
-        quality_audit_signature=quality_audit_signature,
-    )
+    articles: Sequence[Article] | None = None
+    if batch["state"] != "APPLIED":
+        _current_activation, articles, _binding, _quality = (
+            _revalidate_apply_inputs(
+                receipt,
+                rakuten_activation_dry_run=rakuten_activation_dry_run,
+                expected_activation=activation,
+                quality_audit_attestation=quality_audit_attestation,
+                quality_audit_signature=quality_audit_signature,
+            )
+        )
 
     client = client_factory()
     client.initialize()
@@ -5802,7 +6020,7 @@ def _resume_existing_all_attempt(
     documents = (
         _published_receipt_document_evidence(client, receipt)
         if batch["state"] == "APPLIED"
-        else _published_document_evidence(client, articles, receipt)
+        else _published_document_evidence(client, articles or (), receipt)
     )
     if batch["state"] == "APPLIED":
         _require_applied_batch_ready(
@@ -6001,11 +6219,16 @@ def execute(
             require_existing_published=selection == "all",
         )
 
-        if _unregistered_proposal_set_ready(receipt, len(articles)):
-            # Reconcile a potentially lost registration response before
-            # comparing against newly edited local inputs. The exact reviewed
-            # old proposal set must first regain its authoritative batch token.
-            register_publication_batch(client, receipt, path)
+        _register_unregistered_proposal_set(
+            client,
+            receipt,
+            path,
+            articles=articles,
+            desired_theme_tree_sha256=local_theme_tree_sha256,
+            activation=activation,
+            materialization_binding=materialization_binding,
+            quality_audit_binding=quality_audit_binding,
+        )
 
         desired_matches = _same_desired(
             receipt,

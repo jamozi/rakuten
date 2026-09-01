@@ -139,9 +139,38 @@ def load_source() -> tuple[dict[str, object], bytes]:
         or value.get("target_origin") != "https://kurashinoshirube.com"
         or type(value.get("articles")) is not list
         or type(value.get("products")) is not list
+        or type(value.get("rakuten_provider_slots")) is not list
         or len(value["articles"]) != 10
+        or len(value["rakuten_provider_slots"]) != 20
     ):
         fail("EDITORIAL_MEASUREMENT_PORTFOLIO_INVALID")
+    policy = value.get("rakuten_measurement_policy")
+    if (
+        type(policy) is not dict
+        or policy.get("provider_slot_count") != 20
+        or policy.get("provider_slot_limit") != 20
+        or policy.get("provider_slot_granularity") != "ARTICLE_PLACEMENT"
+        or policy.get("provider_measurement_id_storage") != "OWNER_PRIVATE_ONLY"
+        or policy.get("internal_cta_identity_count") != 74
+        or policy.get("internal_cta_namespace") != "RAOS_INTERNAL_CTA_V1"
+        or policy.get("internal_cta_id_format")
+        != "icta_{article_code}_{product_code}_{card|final}"
+    ):
+        fail("EDITORIAL_MEASUREMENT_PORTFOLIO_INVALID")
+
+    def reject_provider_values(document: object) -> None:
+        if type(document) is list:
+            for item in document:
+                reject_provider_values(item)
+        elif type(document) is dict:
+            if {"provider_measurement_id", "rakuten_measurement_id"}.intersection(
+                document
+            ):
+                fail("EDITORIAL_MEASUREMENT_PORTFOLIO_INVALID")
+            for item in document.values():
+                reject_provider_values(item)
+
+    reject_provider_values(value)
     return value, raw
 
 
@@ -174,12 +203,59 @@ def generated_allowlist() -> dict[str, object]:
             fail("EDITORIAL_MEASUREMENT_PRODUCT_DUPLICATE")
         products[product_id] = product_code
         product_codes.add(product_code)
+    provider_slots: dict[str, tuple[str, str, str, str]] = {}
+    provider_slot_keys: set[tuple[str, str]] = set()
+    for row in source["rakuten_provider_slots"]:
+        if type(row) is not dict or set(row) != {
+            "provider_slot_id",
+            "article_id",
+            "article_code",
+            "placement",
+            "placement_code",
+            "provider_profile_state",
+        }:
+            fail("EDITORIAL_MEASUREMENT_PROVIDER_SLOT_INVALID")
+        provider_slot_id = token(
+            row.get("provider_slot_id"),
+            "EDITORIAL_MEASUREMENT_PROVIDER_SLOT_INVALID",
+        )
+        article_id = token(
+            row.get("article_id"),
+            "EDITORIAL_MEASUREMENT_PROVIDER_SLOT_INVALID",
+        )
+        article_code = token(
+            row.get("article_code"),
+            "EDITORIAL_MEASUREMENT_PROVIDER_SLOT_INVALID",
+            16,
+        )
+        placement = row.get("placement")
+        if placement not in {"product_card", "final_summary"}:
+            fail("EDITORIAL_MEASUREMENT_PROVIDER_SLOT_INVALID")
+        placement_code = "card" if placement == "product_card" else "final"
+        key = (article_id, placement)
+        if (
+            row.get("placement_code") != placement_code
+            or row.get("provider_profile_state") != "UNVERIFIED_DISABLED"
+            or provider_slot_id != f"rps-{article_code}-{placement_code}"
+            or provider_slot_id in provider_slots
+            or key in provider_slot_keys
+        ):
+            fail("EDITORIAL_MEASUREMENT_PROVIDER_SLOT_INVALID")
+        provider_slots[provider_slot_id] = (
+            article_id,
+            article_code,
+            placement,
+            placement_code,
+        )
+        provider_slot_keys.add(key)
+    if len(provider_slots) != 20:
+        fail("EDITORIAL_MEASUREMENT_PROVIDER_SLOT_INVALID")
     articles: list[dict[str, object]] = []
     seen_articles: set[str] = set()
     seen_codes: set[str] = set()
     seen_snapshots: set[str] = set()
     seen_ctas: set[str] = set()
-    seen_measurement_ids: set[str] = set()
+    seen_internal_cta_ids: set[str] = set()
     offer_owners: dict[str, tuple[str, str]] = {}
     for row in source["articles"]:
         if type(row) is not dict:
@@ -243,12 +319,12 @@ def generated_allowlist() -> dict[str, object]:
             if placement not in {"product_card", "final_summary"}:
                 fail("EDITORIAL_MEASUREMENT_CTA_INVALID")
             placement_code = "card" if placement == "product_card" else "final"
-            measurement_id = token(
-                binding.get("rakuten_measurement_id"),
+            provider_slot_id = token(
+                binding.get("provider_slot_id"),
                 "EDITORIAL_MEASUREMENT_CTA_INVALID",
             )
-            expected_measurement_id = (
-                f"{article_code}-{product_code}-{placement_code}"
+            expected_cta_id = (
+                f"icta_{article_code}_{product_code}_{placement_code}"
             )
             if (
                 binding.get("article_id") != article_id
@@ -256,17 +332,18 @@ def generated_allowlist() -> dict[str, object]:
                 or binding.get("snapshot_id") != snapshot_id
                 or binding.get("placement_code") != placement_code
                 or products.get(product_id) != product_code
-                or measurement_id != expected_measurement_id
-                or cta_id != f"cta-{expected_measurement_id}"
+                or provider_slots.get(provider_slot_id)
+                != (article_id, article_code, placement, placement_code)
+                or cta_id != expected_cta_id
                 or offer_id != f"off-{article_code}-{product_code}"
                 or cta_id in seen_ctas
-                or measurement_id in seen_measurement_ids
+                or cta_id in seen_internal_cta_ids
                 or offer_owners.get(offer_id, (article_id, product_id))
                 != (article_id, product_id)
             ):
                 fail("EDITORIAL_MEASUREMENT_CTA_INVALID")
             seen_ctas.add(cta_id)
-            seen_measurement_ids.add(measurement_id)
+            seen_internal_cta_ids.add(cta_id)
             offer_owners[offer_id] = (article_id, product_id)
             key = (product_id, placement)
             if key in binding_keys:
@@ -297,6 +374,12 @@ def generated_allowlist() -> dict[str, object]:
             row["related_article_ids"]
         ).issubset(seen_articles):
             fail("EDITORIAL_MEASUREMENT_RELATED_INVALID")
+    if provider_slot_keys != {
+        (str(row["article_id"]), placement)
+        for row in articles
+        for placement in ("product_card", "final_summary")
+    }:
+        fail("EDITORIAL_MEASUREMENT_PROVIDER_SLOT_INVALID")
     return {
         "schema": "RAOS_EDITORIAL_MEASUREMENT_ALLOWLIST_V1",
         "version": "1.0.0",

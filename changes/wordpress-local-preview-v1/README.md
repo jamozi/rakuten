@@ -250,6 +250,15 @@ Lighthouse report. Changed inputs, mismatched fingerprints, stale timestamps,
 or a missing report fail closed; an older `summary.json` can never satisfy a new
 run.
 
+The preview deliberately keeps `blog_public=0` and does not install Yoast, so
+its XML sitemap endpoints remain disabled. Production `robots.txt` and the
+exact sitemap URL union are checked only by the bounded, anonymous
+`scripts/raos_wordpress_seo_audit.py`; the local browser gate instead proves
+that every closed core URL has exactly one self canonical, one non-empty meta
+description, a complete self-bound Open Graph/Twitter record, and the
+role-specific RAOS JSON-LD graph without commercial review types. A local pass
+does not claim production sitemap or robots evidence.
+
 ## Reset and boundaries
 
 Ordinary shutdown preserves both named volumes. A full reset is deliberately

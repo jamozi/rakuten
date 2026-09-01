@@ -715,15 +715,17 @@ def test_article_hero_allows_only_exact_local_preview_counterparts() -> None:
         "        ? kurashinoshirube_local_preview_origin()" in asset_resolver
     )
     assert (
-        "$local_origin . '/wp-content/themes/kurashinoshirube-child'" in asset_resolver
+        "$base === $local_origin\n"
+        "            . '/wp-content/themes/kurashinoshirube-child'"
+    ) in asset_resolver
+    assert asset_resolver.index("$local_origin = $allow_local_preview") < (
+        asset_resolver.index("$parts = wp_parse_url($base);")
     )
     assert "($parts['scheme'] ?? null) !== 'https'" in asset_resolver
     assert "($parts['host'] ?? null) !== 'kurashinoshirube.com'" in asset_resolver
-    assert "$local_base_is_valid = is_string($local_base) && $base === $local_base" in (
+    assert "array_flip(array('port', 'user', 'pass', 'query', 'fragment'))" in (
         asset_resolver
     )
-    assert "! $local_base_is_valid" in asset_resolver
-    assert "|| isset($parts['port'])" in asset_resolver
 
 
 def test_article_visuals_and_toc_are_closed_to_the_reviewed_portfolio() -> None:
@@ -1086,9 +1088,30 @@ def test_canonical_fallback_contract_prefers_snapshot_and_shares_robots_identity
 
     contract = _load_json(CONTRACT_PATH)
     assert contract["head"]["metadata_owner"] == (
-        "YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_PUBLIC_HEAD_"
-        "CONTEXT_AND_CONFIG_READBACK"
+        "PRODUCTION_YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_"
+        "PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK"
     )
+    assert contract["head"]["raos_metadata_delivery"] == (
+        "PRODUCTION_YOAST_METADATA_FILTERS_WITH_LOCAL_PREVIEW_NO_YOAST_"
+        "FALLBACK"
+    )
+    assert contract["head"]["local_preview_metadata_fallback"] == {
+        "active_when": (
+            "EXACT_RAOS_LOCAL_PREVIEW_AND_WPSEO_VERSION_UNDEFINED_AND_"
+            "CLOSED_HEAD_CONTEXT_AND_VERIFIED_SOCIAL_IMAGE"
+        ),
+        "canonical_owner": "RAOS_THEME_AFTER_REMOVING_CORE_REL_CANONICAL",
+        "document_title_owner": "WORDPRESS_PRE_GET_DOCUMENT_TITLE_FILTER",
+        "fields": [
+            "canonical",
+            "meta_description",
+            "og_description",
+            "og_image",
+            "og_title",
+            "og_url",
+        ],
+        "production_effect": "NONE",
+    }
     assert contract["head"]["canonical"] == {
         "editorial_v2_fallback": (
             "FIXED_SITE_ORIGIN_PLUS_SLUG_FOR_SINGULAR_PUBLISHED_"
@@ -2311,6 +2334,15 @@ def test_comparison_and_cta_contracts_are_accessible_and_closed() -> None:
             "manufacturer_sales_state.status_evidence_urls[0]"
         ),
     }
+    assert cta["data_attributes"] == [
+        "data-raos-article-id",
+        "data-raos-cta-id",
+        "data-raos-offer-id",
+        "data-raos-placement",
+        "data-raos-product-id",
+        "data-raos-rakuten-provider-slot-id",
+        "data-raos-snapshot-id",
+    ]
     assert sorted(cta["rel_tokens"]) == ["nofollow", "sponsored"]
     assert cta["required_host_provenance"].startswith("VALIDATED_RAKUTEN_")
     css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
@@ -2632,7 +2664,7 @@ def test_snapshot_bridge_is_private_and_existing_update_is_human_bounded() -> No
     assert "kurashinoshirube_existing_update_invariants(" in source
 
 
-def test_yoast_is_the_only_generic_head_metadata_owner() -> None:
+def test_yoast_is_the_production_owner_with_one_bounded_local_fallback() -> None:
     source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
     expected_filters = (
         "wpseo_title",
@@ -2674,10 +2706,9 @@ def test_yoast_is_the_only_generic_head_metadata_owner() -> None:
     assert "['読了時間の目安'] = (string) $minutes . '分';" in slack_filter
     for stale_copy in ("Written by", "Est. reading time", "raos-local-admin"):
         assert stale_copy not in source
-    combined = "\n".join(
+    static_templates = "\n".join(
         path.read_text(encoding="utf-8")
         for path in (
-            THEME_ROOT / "functions.php",
             THEME_ROOT / "parts/header.html",
             THEME_ROOT / "parts/footer.html",
             THEME_ROOT / "templates/front-page.html",
@@ -2691,7 +2722,59 @@ def test_yoast_is_the_only_generic_head_metadata_owner() -> None:
         'property="og:',
         'name="twitter:',
     ):
-        assert duplicate not in combined
+        assert duplicate not in static_templates
+
+    fallback = source.split(
+        "function kurashinoshirube_emit_local_fallback_head(): void", 1
+    )[1].split(
+        "add_action('wp_head', 'kurashinoshirube_emit_local_fallback_head'", 1
+    )[0]
+    assert "defined('WPSEO_VERSION')" in fallback
+    assert "! kurashinoshirube_is_local_preview()" in fallback
+    assert "kurashinoshirube_public_head_context()" in fallback
+    assert "kurashinoshirube_verified_asset_uri(" in fallback
+    assert fallback.index("$context === null || $image === null") < fallback.index(
+        "remove_action('wp_head', 'rel_canonical');"
+    )
+    assert source.count('<meta name="description"') == 1
+    assert source.count('<link rel="canonical"') == 1
+    for property_name in ("og:title", "og:description", "og:url", "og:image"):
+        assert source.count(f'<meta property="{property_name}"') == 1
+    for forbidden in ('name="twitter:', "og:type"):
+        assert forbidden not in fallback
+
+
+def test_local_head_fallback_preserves_core_title_and_unrelated_routes() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    title_filter = source.split(
+        "function kurashinoshirube_filter_local_document_title", 1
+    )[1].split("add_filter('wpseo_title'", 1)[0]
+    assert "defined('WPSEO_VERSION')" in title_filter
+    assert "! kurashinoshirube_is_local_preview()" in title_filter
+    assert "kurashinoshirube_public_head_context()" in title_filter
+    assert "$context === null ? $title : $context['title']" in title_filter
+    assert source.count("add_filter(\n    'pre_get_document_title'") == 1
+    assert source.count("<title") == 0
+
+
+def test_verified_asset_uri_accepts_only_the_exact_local_theme_base() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    verifier = source.split(
+        "function kurashinoshirube_verified_asset_uri", 1
+    )[1].split("function kurashinoshirube_bound_post_snapshot", 1)[0]
+    local = "$local_origin = $allow_local_preview"
+    assert verifier.count(local) == 1
+    assert (
+        "$base === $local_origin\n"
+        "            . '/wp-content/themes/kurashinoshirube-child'"
+    ) in verifier
+    assert verifier.index(local) < verifier.index("$parts = wp_parse_url($base);")
+    for production_boundary in (
+        "($parts['scheme'] ?? null) !== 'https'",
+        "($parts['host'] ?? null) !== 'kurashinoshirube.com'",
+        "array_flip(array('port', 'user', 'pass', 'query', 'fragment'))",
+    ):
+        assert production_boundary in verifier
 
 
 def test_closed_head_contexts_cover_home_articles_and_exact_policy_excerpts() -> None:

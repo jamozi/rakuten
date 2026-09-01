@@ -29,6 +29,9 @@ from raos.adapters.persistence.sqlalchemy.provider import (
     invalidate_and_close,
 )
 from raos.domain.analytics.google_live import (
+    GA4_IMPORT_JOB_TYPE,
+    GOOGLE_ANALYTICS_JOB_QUEUE,
+    GSC_IMPORT_JOB_TYPE,
     Ga4ImportBatch,
     GoogleImportCommitResult,
     GoogleImportExecutionContext,
@@ -456,16 +459,39 @@ def _replay_result(
     )
 
 
-def _lock_scope(session: Session, context: GoogleImportExecutionContext) -> None:
+_JOB_SCOPE_FIELDS = frozenset({"job_type", "queue_name", "site_id"})
+
+
+def _lock_scope(
+    session: Session,
+    context: GoogleImportExecutionContext,
+    *,
+    expected_job_type: str,
+) -> None:
     site_id = session.execute(
         text("SELECT id FROM portfolio.site WHERE id = :site_id FOR UPDATE"),
         {"site_id": context.site_id},
     ).scalar_one_or_none()
-    job_site_id = session.execute(
-        text("SELECT site_id FROM ops.job WHERE id = :job_id FOR UPDATE"),
-        {"job_id": context.ops_job_id},
-    ).scalar_one_or_none()
-    if site_id != context.site_id or job_site_id != context.site_id:
+    candidate = (
+        session.execute(
+            text(
+                "SELECT site_id, job_type, queue_name "
+                "FROM ops.job WHERE id = :job_id FOR UPDATE"
+            ),
+            {"job_id": context.ops_job_id},
+        )
+        .mappings()
+        .one_or_none()
+    )
+    if candidate is None:
+        _persistence_failure()
+    job = _mapping(candidate, _JOB_SCOPE_FIELDS)
+    if (
+        site_id != context.site_id
+        or job["site_id"] != context.site_id
+        or job["job_type"] != expected_job_type
+        or job["queue_name"] != GOOGLE_ANALYTICS_JOB_QUEUE
+    ):
         _persistence_failure()
 
 
@@ -970,7 +996,7 @@ class SqlAlchemyAnalyticsImportRepository:
             _persistence_failure()
 
         def operation(session: Session) -> GoogleImportCommitResult:
-            _lock_scope(session, context)
+            _lock_scope(session, context, expected_job_type=GSC_IMPORT_JOB_TYPE)
             replay = _replay_result(
                 session=session,
                 context=context,
@@ -1085,7 +1111,7 @@ class SqlAlchemyAnalyticsImportRepository:
         )
 
         def operation(session: Session) -> GoogleImportCommitResult:
-            _lock_scope(session, context)
+            _lock_scope(session, context, expected_job_type=GA4_IMPORT_JOB_TYPE)
             replay = _replay_result(
                 session=session,
                 context=context,

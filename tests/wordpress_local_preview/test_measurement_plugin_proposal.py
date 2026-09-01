@@ -152,6 +152,14 @@ def test_prepare_requires_preview_then_check_and_package(
     assert receipt["state"] == "LOCAL_PREVIEW_VERIFIED_PACKAGE_READY"
     assert receipt["measurement_gate_default_off"] is True
     assert receipt["apply_command_exposed"] is False
+    assert receipt["rakuten_attribution_contract"] == {
+        "provider_slot_count": 20,
+        "provider_measurement_id_count": 20,
+        "internal_cta_identity_count": 74,
+        "live_link_count": 74,
+        "direct_attribution_granularity": "ARTICLE_PLACEMENT",
+        "product_or_cta_provider_attribution_allowed": False,
+    }
     assert stat.S_IMODE(bundle.PACKAGE_PATH.stat().st_mode) == 0o600
 
 
@@ -292,6 +300,9 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
         json.dumps(
             {
                 "state": "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL",
+                "rakuten_attribution_contract": dict(
+                    bundle.RAKUTEN_ATTRIBUTION_CONTRACT
+                ),
                 "proposal": {
                     "proposal_id": "a" * 64,
                     "operation_id": "c" * 64,
@@ -325,7 +336,14 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
         observed_activation.append(path)
         if path is None:
             raise bundle.publication.PublicationFailure("required")
-        return SimpleNamespace(article_count=10, cta_count=74)
+        return SimpleNamespace(
+            article_count=10,
+            provider_slot_count=20,
+            provider_measurement_id_count=20,
+            internal_cta_identity_count=74,
+            cta_count=74,
+            live_link_count=74,
+        )
 
     monkeypatch.setattr(
         bundle.publication,
@@ -363,6 +381,38 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
     assert observed_activation == [activation_path]
     assert observed_quality == [(attestation_path, signature_path)]
 
+    for field, value in (
+        ("provider_slot_count", 19),
+        ("provider_measurement_id_count", 19),
+        ("internal_cta_identity_count", 73),
+        ("cta_count", 73),
+        ("live_link_count", 73),
+    ):
+        counts = {
+            "article_count": 10,
+            "provider_slot_count": 20,
+            "provider_measurement_id_count": 20,
+            "internal_cta_identity_count": 74,
+            "cta_count": 74,
+            "live_link_count": 74,
+        }
+        counts[field] = value
+        monkeypatch.setattr(
+            bundle.publication,
+            "validate_rakuten_activation_dry_run",
+            lambda *_args, _counts=counts, **_kwargs: SimpleNamespace(**_counts),
+        )
+        with pytest.raises(
+            bundle.SequenceFailure,
+            match="RAOS_MEASUREMENT_PLUGIN_RAKUTEN_ACTIVATION_INVALID",
+        ):
+            bundle.content_command(
+                apply_path,
+                activation_path,
+                attestation_path,
+                signature_path,
+            )
+
     with pytest.raises(
         bundle.SequenceFailure,
         match="RAOS_MEASUREMENT_PLUGIN_RAKUTEN_ACTIVATION_INVALID",
@@ -374,6 +424,18 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
             signature_path,
         )
 
+    monkeypatch.setattr(
+        bundle.publication,
+        "validate_rakuten_activation_dry_run",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            article_count=10,
+            provider_slot_count=20,
+            provider_measurement_id_count=20,
+            internal_cta_identity_count=74,
+            cta_count=74,
+            live_link_count=74,
+        ),
+    )
     with pytest.raises(
         bundle.SequenceFailure,
         match="RAOS_MEASUREMENT_PLUGIN_QUALITY_AUDIT_INVALID",
@@ -410,6 +472,13 @@ def test_sequence_contract_orders_plugin_before_content_and_caps_batch() -> None
         "theme_maximum": 1,
     }
     assert contract["content_batch"]["maximum_proposals"] == 14
+    attribution = contract["content_batch"]["rakuten_attribution_contract"]
+    assert attribution["provider_slot_count"] == 20
+    assert attribution["provider_measurement_id_count"] == 20
+    assert attribution["internal_cta_identity_count"] == 74
+    assert attribution["live_link_count"] == 74
+    assert attribution["direct_attribution_granularity"] == "ARTICLE_PLACEMENT"
+    assert attribution["product_or_cta_provider_attribution_allowed"] is False
     assert "--rakuten-activation-dry-run" in contract["content_batch"]["command"]
     assert "--quality-audit-attestation" in contract["content_batch"]["command"]
     assert "--quality-audit-signature" in contract["content_batch"]["command"]

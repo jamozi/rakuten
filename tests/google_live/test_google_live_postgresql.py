@@ -16,13 +16,17 @@ from raos.adapters.persistence.sqlalchemy.google_live import (
 from raos.adapters.persistence.sqlalchemy.identity import WorkloadProfile
 from raos.adapters.persistence.sqlalchemy.provider import SqlAlchemyEngineProvider
 from raos.domain.analytics.google_live import (
+    GA4_IMPORT_JOB_TYPE,
     GA4_BASELINE_DIMENSIONS,
     GA4_BASELINE_METRICS,
     GA4_EVENT_PARAMETER_NAMES,
+    GSC_IMPORT_JOB_TYPE,
     Ga4ImportBatch,
     Ga4Observation,
     Ga4PropertyConfigSnapshot,
     GoogleImportExecutionContext,
+    GoogleProviderFailure,
+    GoogleProviderFailureCode,
     SearchConsoleImportBatch,
     SearchConsoleObservation,
     canonical_json_bytes,
@@ -98,16 +102,19 @@ def _seed_scope(cluster: PostgreSQLCluster, database: str) -> None:
             """,
             (SITE_ID,),
         )
-        for index, job_id in enumerate((*GSC_JOB_IDS, GA4_JOB_ID), start=1):
+        jobs = tuple((job_id, GSC_IMPORT_JOB_TYPE) for job_id in GSC_JOB_IDS) + (
+            (GA4_JOB_ID, GA4_IMPORT_JOB_TYPE),
+        )
+        for index, (job_id, job_type) in enumerate(jobs, start=1):
             connection.execute(
                 """
                 INSERT INTO ops.job (
                     id, display_id, job_type, queue_name, status, site_id,
                     created_by_actor_type
-                ) VALUES (%s, %s, 'GOOGLE_ANALYTICS_IMPORT', 'analytics',
+                ) VALUES (%s, %s, %s, 'analytics',
                           'REQUESTED', %s, 'SERVICE')
                 """,
-                (job_id, f"JOB-GOOGLE-{index}", SITE_ID),
+                (job_id, f"JOB-GOOGLE-{index}", job_type, SITE_ID),
             )
 
 
@@ -194,9 +201,7 @@ def _ga4_batch() -> Ga4ImportBatch:
                 "currency_code": "JPY",
                 "display_name": "Production-like test",
                 "property_resource": "properties/123456",
-                "required_event_custom_dimensions": list(
-                    GA4_EVENT_PARAMETER_NAMES
-                ),
+                "required_event_custom_dimensions": list(GA4_EVENT_PARAMETER_NAMES),
                 "reporting_identity": "BLENDED",
                 "time_zone": "Asia/Tokyo",
             }
@@ -252,6 +257,69 @@ def test_empty_successor_downgrade_and_reupgrade_are_structurally_reversible(
     assert downgraded.current_revision == catalog.DATABASE_ROLES_REVISION
     upgraded = instance.upgrade()
     assert upgraded.current_revision == catalog.GOOGLE_ANALYTICS_LIVE_REVISION
+
+
+def test_cross_source_and_wrong_queue_jobs_fail_before_any_analytics_write(
+    postgresql_cluster: PostgreSQLCluster,
+    empty_database: str,
+) -> None:
+    _upgrade(postgresql_cluster, empty_database)
+    _seed_scope(postgresql_cluster, empty_database)
+    with postgresql_cluster.connect(empty_database) as connection:
+        connection.execute(
+            "UPDATE ops.job SET queue_name = 'wrong' WHERE id = %s",
+            (GSC_JOB_IDS[1],),
+        )
+    engine = _worker_engine(postgresql_cluster, empty_database)
+    repository = SqlAlchemyAnalyticsImportRepository(
+        SqlAlchemyEngineProvider(engine, WorkloadProfile.WORKER_COMMAND)
+    )
+    try:
+        calls = (
+            lambda: repository.commit_gsc(
+                context=GoogleImportExecutionContext(
+                    display_id="AIR-GSC-WITH-GA4-JOB",
+                    site_id=SITE_ID,
+                    ops_job_id=GA4_JOB_ID,
+                    started_at=NOW,
+                ),
+                batch=_gsc_batch(clicks=3),
+            ),
+            lambda: repository.commit_ga4(
+                context=GoogleImportExecutionContext(
+                    display_id="AIR-GA4-WITH-GSC-JOB",
+                    site_id=SITE_ID,
+                    ops_job_id=GSC_JOB_IDS[0],
+                    started_at=NOW,
+                ),
+                batch=_ga4_batch(),
+            ),
+            lambda: repository.commit_gsc(
+                context=GoogleImportExecutionContext(
+                    display_id="AIR-GSC-WRONG-QUEUE",
+                    site_id=SITE_ID,
+                    ops_job_id=GSC_JOB_IDS[1],
+                    started_at=NOW,
+                ),
+                batch=_gsc_batch(clicks=3),
+            ),
+        )
+        for call in calls:
+            with pytest.raises(GoogleProviderFailure) as raised:
+                call()
+            assert raised.value.code is GoogleProviderFailureCode.PERSISTENCE_FAILED
+
+        with postgresql_cluster.connect(empty_database) as connection:
+            assert connection.execute(
+                """
+                SELECT (SELECT count(*) FROM analytics.import_run),
+                       (SELECT count(*) FROM analytics.gsc_observation),
+                       (SELECT count(*) FROM analytics.ga4_observation),
+                       (SELECT count(*) FROM analytics.ga4_property_config_snapshot)
+                """
+            ).fetchone() == (0, 0, 0, 0)
+    finally:
+        engine.dispose()
 
 
 def test_atomic_replay_unchanged_supersession_and_no_raw_query_persistence(

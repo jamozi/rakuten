@@ -23,9 +23,21 @@
       "posts": 10,
       "theme_maximum": 1
     },
+    "rakuten_attribution_contract": {
+      "article_count": 10,
+      "direct_attribution_granularity": "ARTICLE_PLACEMENT",
+      "internal_cta_identity_count": 74,
+      "live_link_count": 74,
+      "product_or_cta_provider_attribution_allowed": false,
+      "provider_measurement_id_count": 20,
+      "provider_measurement_id_storage": "OWNER_PRIVATE_ONLY",
+      "provider_slot_count": 20
+    },
     "requires": [
       "local_preview_passed_for_130_screenshots",
       "rakuten_activation_exact_10_articles_74_ctas",
+      "rakuten_activation_exact_20_provider_slots_and_measurement_ids",
+      "rakuten_activation_exact_74_live_links",
       "rakuten_activation_local_and_production_overlay_hashes_match",
       "two_clean_independent_audit_rounds_for_exact_repository_fingerprints",
       "trusted_reviewer_ed25519_attestation_is_current",
@@ -90,5 +102,14 @@
     "measurement_gate_separate_decision"
   ],
   "schema": "RAOS_WORDPRESS_PRODUCTION_SEQUENCE_V3",
+  "t0_readback_contract": {
+    "production_readback_schema": "RAOS_EDITORIAL_V3_PRODUCTION_READBACK_INPUT_V4",
+    "publication_receipt_state": "APPLIED",
+    "public_readback_receipt_state": "READBACK_VERIFIED",
+    "self_approval_performed": false,
+    "separate_admin_apply_receipt_state": "APPLIED",
+    "separate_admin_verified": true,
+    "t0_receipt_schema": "RAOS_EDITORIAL_V3_T0_RECEIPT_V4"
+  },
   "version": "3.0.0"
 }

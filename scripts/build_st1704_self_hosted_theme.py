@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.5.0"
 THEME_RUNTIME_REVISION: Final = (
-    "05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee"
+    "f48d09a706e3ce9a25381734baf92d65e364a04f5394984567ab60cec2f80476"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -1028,6 +1028,34 @@ def validate_sources() -> dict[str, str]:
         != DOCUMENT_TITLE_DEDUPLICATION
         or contract.get("head", {}).get("document_title_owner")
         != "YOAST_WHEN_ACTIVE_OTHERWISE_WORDPRESS_OR_GUTENBERG_FALLBACK"
+        or contract.get("head", {}).get("metadata_owner")
+        != (
+            "PRODUCTION_YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_"
+            "PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK"
+        )
+        or contract.get("head", {}).get("raos_metadata_delivery")
+        != (
+            "PRODUCTION_YOAST_METADATA_FILTERS_WITH_LOCAL_PREVIEW_NO_YOAST_"
+            "FALLBACK"
+        )
+        or contract.get("head", {}).get("local_preview_metadata_fallback")
+        != {
+            "active_when": (
+                "EXACT_RAOS_LOCAL_PREVIEW_AND_WPSEO_VERSION_UNDEFINED_AND_"
+                "CLOSED_HEAD_CONTEXT_AND_VERIFIED_SOCIAL_IMAGE"
+            ),
+            "canonical_owner": "RAOS_THEME_AFTER_REMOVING_CORE_REL_CANONICAL",
+            "document_title_owner": "WORDPRESS_PRE_GET_DOCUMENT_TITLE_FILTER",
+            "fields": [
+                "canonical",
+                "meta_description",
+                "og_description",
+                "og_image",
+                "og_title",
+                "og_url",
+            ],
+            "production_effect": "NONE",
+        }
         or contract.get("public_listing_eligibility") != PUBLIC_LISTING_ELIGIBILITY
         or not isinstance(contract.get("snapshot"), dict)
         or contract["snapshot"].get("excerpt_binding")
@@ -1045,8 +1073,12 @@ def validate_sources() -> dict[str, str]:
         "class": "raos-cta",
         "data_attributes": [
             "data-raos-article-id",
+            "data-raos-cta-id",
+            "data-raos-offer-id",
             "data-raos-placement",
             "data-raos-product-id",
+            "data-raos-rakuten-provider-slot-id",
+            "data-raos-snapshot-id",
         ],
         "materialized_labels": {
             "available_official_fallback_final_summary": (

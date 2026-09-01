@@ -3,7 +3,7 @@
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
 The release is bound to runtime revision
-`8204d0f1ff573a5edf72abe4ef69ef422af15815adf5ecbc3a74bf8ec1d9c7d8`;
+`82d3295080cb9723881773348e5366501af360b8b4301681ca9af82d22c7f368`;
 every loaded critical class must report that exact value before any ability or
 mutation is authorized.
 

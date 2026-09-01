@@ -97,7 +97,7 @@ def main(argv: list[str] | None = None) -> int:
             report: object = {
                 "schema": "RAOS_EDITORIAL_V3_PRIVATE_TEMPLATE_RESULT_V1",
                 "kind": "money_link_mapping",
-                "row_count": len(portfolio.cta_by_measurement_id),
+                "row_count": len(portfolio.cta_by_candidate_id),
                 "sha256": hashlib.sha256(raw).hexdigest(),
                 "complete": False,
             }
@@ -116,7 +116,7 @@ def main(argv: list[str] | None = None) -> int:
             report = {
                 "schema": "RAOS_EDITORIAL_V3_PRIVATE_TEMPLATE_RESULT_V1",
                 "kind": "admin_verification_receipt",
-                "row_count": len(portfolio.cta_by_measurement_id),
+                "row_count": len(portfolio.cta_by_candidate_id),
                 "sha256": hashlib.sha256(raw).hexdigest(),
                 "complete": False,
             }

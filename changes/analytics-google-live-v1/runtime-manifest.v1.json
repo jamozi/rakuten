@@ -8,18 +8,18 @@
     },
     {
       "path": "python/raos/adapters/google_live.py",
-      "sha256": "bea9150c5efd2b6617a9725857fdd1a53a7fac0cab75404c8df67fc5c8c8ab1e",
-      "size": 36844
+      "sha256": "90c2d00e731c91a48242185694229a9c37d38460d42de61845dfee64d399f89f",
+      "size": 79378
     },
     {
       "path": "python/raos/adapters/google_live_database.py",
-      "sha256": "0a514e893daf652826212f599f3396cf01ed8cd7af17b6ea649dcff1ec91ed20",
-      "size": 6104
+      "sha256": "a219f085164f6d790123e1db8b051cedfeac8e3f5e898bb1f848514ad414fff8",
+      "size": 11155
     },
     {
       "path": "python/raos/adapters/persistence/sqlalchemy/google_live.py",
-      "sha256": "eb7ff03a217c62a5ea45872866e7178128dfdb61445c53bc8a936abaaabfd444",
-      "size": 39611
+      "sha256": "0f5a67867f4b5369ce3d5cc2ea056df4f7e520dacef441f2b254b7f553a350e3",
+      "size": 40247
     },
     {
       "path": "python/raos/application/analytics/google_live_import.py",
@@ -33,8 +33,8 @@
     },
     {
       "path": "python/raos/domain/analytics/google_live.py",
-      "sha256": "34f036a30697f76f1cdda7323c1023af7a6918c5e7fcc3c06930788e9358e4d9",
-      "size": 27622
+      "sha256": "2844214e69d33d3f308afe6a9779ecffaf727c821b3976c6301380fc5a954ee6",
+      "size": 27858
     },
     {
       "path": "python/raos/ports/google_live.py",
@@ -48,8 +48,13 @@
     },
     {
       "path": "scripts/raos_editorial_economics_v3.py",
-      "sha256": "c6c870eb7f6d35c6618fb10ddcb7380a22c383fd93921f3091b64df4c2c5e532",
-      "size": 19857
+      "sha256": "423e90ba999dec68a9a0a1336aa906cf919fe7f9275cc04f1a2159b1fd61505a",
+      "size": 33583
+    },
+    {
+      "path": "scripts/raos_google_owner_private_v1.py",
+      "sha256": "08abec418780723a1c65d733dacaa25699a6eb86ee2365442bad6934bd1bce64",
+      "size": 20885
     },
     {
       "path": "scripts/raos_wordpress_seo_audit.py",
@@ -58,8 +63,8 @@
     },
     {
       "path": "scripts/build_google_live_runtime_v1.py",
-      "sha256": "a03343f6eb0f30d7333889248f9b0b56fb7789b0dfe0a061e5e453c833bb8cf5",
-      "size": 3620
+      "sha256": "0b51ab6cd5325e59328b50b31a373db613af556951ee973236923e42fc9965c0",
+      "size": 3673
     }
   ],
   "provider_mode": "OWNER_PRIVATE_READ_ONLY",

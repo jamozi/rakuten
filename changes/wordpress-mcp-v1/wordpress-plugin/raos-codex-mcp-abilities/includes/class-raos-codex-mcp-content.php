@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Content
 {
-    const RUNTIME_REVISION = '8204d0f1ff573a5edf72abe4ef69ef422af15815adf5ecbc3a74bf8ec1d9c7d8';
+    const RUNTIME_REVISION = '82d3295080cb9723881773348e5366501af360b8b4301681ca9af82d22c7f368';
     const MAX_CONTENT_BYTES = 1048576;
 
     private $plugin;

@@ -29,7 +29,7 @@ SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
 PLUGIN_VERSION: Final = "1.3.1"
 PLUGIN_RUNTIME_REVISION: Final = (
-    "8204d0f1ff573a5edf72abe4ef69ef422af15815adf5ecbc3a74bf8ec1d9c7d8"
+    "82d3295080cb9723881773348e5366501af360b8b4301681ca9af82d22c7f368"
 )
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
 MANIFEST_PATH: Final = Path("changes/wordpress-mcp-v1/runtime-manifest.v1.json")
@@ -50,10 +50,10 @@ REVIEWED_MIGRATION_ASSESSMENT: Final = (
     "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION"
 )
 REVIEWED_MEASUREMENT_PACKAGE_SHA256: Final = (
-    "b351fd53e6c62e3fa363a67a994dfe2ce2a934e1f3b65b8c3102906eaa190d5a"
+    "e8db6e19b20f228ec0f105cefccfd5e795687364ab1991854cdc92677b250b5e"
 )
 REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256: Final = (
-    "ed4374ef7e7efca82c8f2063283f50b5a7b316ee98b3fb71b18a46acb2a61aa3"
+    "2808e0574ebdca0a1cc0a204ab4ab67fa4ce73274e4673f5b4f9a788bb4b09d9"
 )
 REPO_OUTPUT: Final = (
     ROOT

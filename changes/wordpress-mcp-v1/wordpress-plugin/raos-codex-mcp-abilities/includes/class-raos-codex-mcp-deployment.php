@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Deployment
 {
-    const RUNTIME_REVISION = '8204d0f1ff573a5edf72abe4ef69ef422af15815adf5ecbc3a74bf8ec1d9c7d8';
+    const RUNTIME_REVISION = '82d3295080cb9723881773348e5366501af360b8b4301681ca9af82d22c7f368';
     const MAX_PACKAGE_BYTES = 33554432;
     const MAX_FILE_BYTES = 8388608;
     const MAX_FILE_COUNT = 2048;
@@ -18,8 +18,8 @@ final class RAOS_Codex_MCP_Deployment
     const REVIEWED_MEASUREMENT_ARTIFACT_ID = 'raos-editorial-measurement-v1';
     const REVIEWED_MEASUREMENT_SLUG = 'raos-editorial-measurement';
     const REVIEWED_MEASUREMENT_VERSION = '1.0.0';
-    const REVIEWED_MEASUREMENT_PACKAGE_SHA256 = 'b351fd53e6c62e3fa363a67a994dfe2ce2a934e1f3b65b8c3102906eaa190d5a';
-    const REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256 = 'ed4374ef7e7efca82c8f2063283f50b5a7b316ee98b3fb71b18a46acb2a61aa3';
+    const REVIEWED_MEASUREMENT_PACKAGE_SHA256 = 'e8db6e19b20f228ec0f105cefccfd5e795687364ab1991854cdc92677b250b5e';
+    const REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256 = '2808e0574ebdca0a1cc0a204ab4ab67fa4ce73274e4673f5b4f9a788bb4b09d9';
     const BOOTSTRAP_ARTIFACT_ID = 'raos-codex-mcp-abilities-v1';
     const BOOTSTRAP_SLUG = 'raos-codex-mcp-abilities';
     const BOOTSTRAP_VERSION = '1.3.1';

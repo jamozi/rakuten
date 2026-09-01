@@ -23,7 +23,7 @@ ORIGIN = "https://kurashinoshirube.com"
 HOST = "kurashinoshirube.com"
 PROTOCOL_VERSION = "2025-11-25"
 EXPECTED_PLUGIN_RUNTIME_REVISION = (
-    "8204d0f1ff573a5edf72abe4ef69ef422af15815adf5ecbc3a74bf8ec1d9c7d8"
+    "82d3295080cb9723881773348e5366501af360b8b4301681ca9af82d22c7f368"
 )
 THEME_CONTRACT_PATH = (
     Path(__file__).resolve().parents[3]

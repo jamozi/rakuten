@@ -100,6 +100,9 @@ PLACEMENTS: Final = (
     ("product_card", "card"),
     ("final_summary", "final"),
 )
+INTERNAL_CTA_NAMESPACE: Final = "RAOS_INTERNAL_CTA_V1"
+PROVIDER_SLOT_GRANULARITY: Final = "ARTICLE_PLACEMENT"
+PROVIDER_SLOT_LIMIT: Final = 20
 CURRENT_THEME_VERSION: Final = "1.5.0"
 TARGET_ORIGIN: Final = "https://kurashinoshirube.com"
 INTENT_GROUP_CLUSTER: Final = {
@@ -865,6 +868,7 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
 
     home_orders: dict[str, set[int]] = {key: set() for key in cluster_by_id}
     v3_articles: list[dict[str, object]] = []
+    provider_slots: list[dict[str, object]] = []
     navigation_articles: list[dict[str, object]] = []
     for article in v2_articles:
         article_id = _text(article.get("article_id"))
@@ -903,6 +907,20 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
         ]
         content_sha256 = _content_sha256(article.get("content_ref"))
         snapshot_id = f"snp-{article_code}-{content_sha256[:12]}"
+        slot_by_placement: dict[str, str] = {}
+        for placement, placement_code in PLACEMENTS:
+            provider_slot_id = f"rps-{article_code}-{placement_code}"
+            slot_by_placement[placement] = provider_slot_id
+            provider_slots.append(
+                {
+                    "provider_slot_id": provider_slot_id,
+                    "article_id": article_id,
+                    "article_code": article_code,
+                    "placement": placement,
+                    "placement_code": placement_code,
+                    "provider_profile_state": "UNVERIFIED_DISABLED",
+                }
+            )
         bindings: list[dict[str, object]] = []
         for product_id in product_ids:
             bound_product_code = product_code_by_id.get(product_id)
@@ -910,7 +928,9 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
                 _fail("RAOS_EDITORIAL_V3_PRODUCT_REFERENCE_INVALID")
             offer_id = f"off-{article_code}-{bound_product_code}"
             for placement, placement_code in PLACEMENTS:
-                measurement_id = f"{article_code}-{bound_product_code}-{placement_code}"
+                internal_cta_id = (
+                    f"icta_{article_code}_{bound_product_code}_{placement_code}"
+                )
                 bindings.append(
                     {
                         "article_id": article_id,
@@ -919,10 +939,10 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
                         "product_code": bound_product_code,
                         "snapshot_id": snapshot_id,
                         "offer_id": offer_id,
-                        "cta_id": f"cta-{measurement_id}",
+                        "cta_id": internal_cta_id,
                         "placement": placement,
                         "placement_code": placement_code,
-                        "rakuten_measurement_id": measurement_id,
+                        "provider_slot_id": slot_by_placement[placement],
                         "provider_profile_state": "UNVERIFIED_DISABLED",
                     }
                 )
@@ -1015,20 +1035,23 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
         if orders != set(range(1, count + 1)):
             _fail("RAOS_EDITORIAL_V3_HOME_ORDER_INVALID")
 
-    measurement_ids = [
-        _text(binding["rakuten_measurement_id"])
-        for article in v3_articles
-        for binding in cast(list[dict[str, object]], article["cta_bindings"])
-    ]
-    cta_ids = [
+    internal_cta_ids = [
         _text(binding["cta_id"])
         for article in v3_articles
         for binding in cast(list[dict[str, object]], article["cta_bindings"])
     ]
-    if len(measurement_ids) != 74 or len(set(measurement_ids)) != 74:
-        _fail("RAOS_EDITORIAL_V3_MEASUREMENT_ID_INVALID")
-    if len(set(cta_ids)) != len(cta_ids):
+    provider_slot_ids = [_text(slot["provider_slot_id"]) for slot in provider_slots]
+    provider_slot_keys = [
+        (_text(slot["article_id"]), _text(slot["placement"])) for slot in provider_slots
+    ]
+    if len(internal_cta_ids) != 74 or len(set(internal_cta_ids)) != 74:
         _fail("RAOS_EDITORIAL_V3_CTA_ID_INVALID")
+    if (
+        len(provider_slot_ids) != PROVIDER_SLOT_LIMIT
+        or len(set(provider_slot_ids)) != PROVIDER_SLOT_LIMIT
+        or len(set(provider_slot_keys)) != PROVIDER_SLOT_LIMIT
+    ):
+        _fail("RAOS_EDITORIAL_V3_PROVIDER_SLOT_INVALID")
 
     clusters = [
         {
@@ -1076,15 +1099,24 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
             },
         },
         "rakuten_measurement_policy": {
-            "format": "{article_code}-{product_code}-{card|final}",
+            "internal_cta_id_format": (
+                "icta_{article_code}_{product_code}_{card|final}"
+            ),
             "placements": [placement for placement, _code in PLACEMENTS],
-            "candidate_id_count": len(measurement_ids),
+            "internal_cta_identity_count": len(internal_cta_ids),
+            "internal_cta_namespace": INTERNAL_CTA_NAMESPACE,
+            "provider_slot_format": "rps-{article_code}-{card|final}",
+            "provider_slot_count": len(provider_slots),
+            "provider_slot_limit": PROVIDER_SLOT_LIMIT,
+            "provider_slot_granularity": PROVIDER_SLOT_GRANULARITY,
+            "provider_measurement_id_storage": "OWNER_PRIVATE_ONLY",
             "provider_profile_state": "UNVERIFIED_DISABLED",
             "live_link_mutation_allowed": False,
             "client_measurement_default_enabled": False,
             "additional_tracking_default_enabled": False,
             "activation_gate": "VERIFIED_SAMPLE_PROFILE_AND_PROVIDER_CONSOLE_RECONCILIATION",
         },
+        "rakuten_provider_slots": provider_slots,
         "clusters": clusters,
         "articles": v3_articles,
         "products": v3_products,

@@ -4,8 +4,12 @@
       "class": "raos-cta",
       "data_attributes": [
         "data-raos-article-id",
+        "data-raos-cta-id",
+        "data-raos-offer-id",
         "data-raos-placement",
-        "data-raos-product-id"
+        "data-raos-product-id",
+        "data-raos-rakuten-provider-slot-id",
+        "data-raos-snapshot-id"
       ],
       "fallback_target_sources": {
         "available_official_fallback_final_summary": "manufacturer_sales_state.status_evidence_urls[0]",
@@ -119,9 +123,9 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "9bcd7478912adbf0d09ec79ea3984a4bd762f425c7014211902c83e1f15cf688",
+    "sha256": "e3a08018e580727e3a22b84686029bc69b534db10625061c74f85791a2cab658",
     "source_navigation_sha256": "35571f11070f44391de5555684e2ab7ef18ddcaeac7c94821b043e0dc38d90d4",
-    "source_portfolio_sha256": "fc923f189f171012cee9429ddb70291d74f37eea6a80eb9796947c42218ab305"
+    "source_portfolio_sha256": "aa90a81a05042f01eb326e24a84248f303b749b7996a7feb263b52bee8775d34"
   },
   "editorial_v2": {
     "asset": "assets/editorial-v2.css",
@@ -178,8 +182,22 @@
       "Product",
       "Review"
     ],
-    "metadata_owner": "YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK",
-    "raos_metadata_delivery": "YOAST_METADATA_FILTERS_ONLY",
+    "local_preview_metadata_fallback": {
+      "active_when": "EXACT_RAOS_LOCAL_PREVIEW_AND_WPSEO_VERSION_UNDEFINED_AND_CLOSED_HEAD_CONTEXT_AND_VERIFIED_SOCIAL_IMAGE",
+      "canonical_owner": "RAOS_THEME_AFTER_REMOVING_CORE_REL_CANONICAL",
+      "document_title_owner": "WORDPRESS_PRE_GET_DOCUMENT_TITLE_FILTER",
+      "fields": [
+        "canonical",
+        "meta_description",
+        "og_description",
+        "og_image",
+        "og_title",
+        "og_url"
+      ],
+      "production_effect": "NONE"
+    },
+    "metadata_owner": "PRODUCTION_YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK",
+    "raos_metadata_delivery": "PRODUCTION_YOAST_METADATA_FILTERS_WITH_LOCAL_PREVIEW_NO_YOAST_FALLBACK",
     "rest_output": {
       "preserved_route": "/wp/v2/posts",
       "removed_fields": [
@@ -507,8 +525,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee",
-    "source_fingerprint": "05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee",
+    "revision": "f48d09a706e3ce9a25381734baf92d65e364a04f5394984567ab60cec2f80476",
+    "source_fingerprint": "f48d09a706e3ce9a25381734baf92d65e364a04f5394984567ab60cec2f80476",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",

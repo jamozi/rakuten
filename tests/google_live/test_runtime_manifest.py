@@ -16,6 +16,7 @@ def test_google_live_runtime_manifest_is_current_and_owner_discoverable() -> Non
     assert manifest["provider_mode"] == "OWNER_PRIVATE_READ_ONLY"
     assert manifest["credential_material_tracked"] is False
     assert manifest["raw_gsc_queries_tracked"] is False
+    assert Path("scripts/raos_google_owner_private_v1.py") in build.RUNTIME_INPUT_PATHS
 
     owner = discover_registry()["build_google_live_runtime_v1"]
     assert owner.outputs == (build.OUTPUT_PATH,)

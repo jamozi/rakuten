@@ -1,4 +1,75 @@
-({ artifactDirectory, axeSource, inventory, origin }) => async (page) => {
+(() => {
+  const validateSeoHead = ({
+    audit,
+    expectedOpenGraphImageUrl,
+    expectedUrl,
+    forbiddenJsonLdTypes,
+    localNoindexHeaderValid,
+    openGraphImageResponseValid,
+    requiredJsonLdTypes,
+  }) => {
+    const missingJsonLdTypes = requiredJsonLdTypes.filter(
+      (type) => !audit.jsonLdTypes.includes(type),
+    );
+    const presentForbiddenJsonLdTypes = forbiddenJsonLdTypes.filter((type) =>
+      audit.jsonLdTypes.includes(type),
+    );
+    const invalidJsonLdTypes = audit.jsonLdTypes.filter(
+      (type) => typeof type !== 'string' || !/^[A-Za-z][A-Za-z0-9]*$/.test(type),
+    );
+    const openGraphFieldsValid = Object.values(audit.openGraph).every(
+      (values) => values.length === 1 && values[0] !== '',
+    );
+    const openGraphImageValid =
+      audit.openGraph.image.length === 1 &&
+      audit.openGraph.image[0] === expectedOpenGraphImageUrl &&
+      openGraphImageResponseValid;
+    const metaRobotsDirectives = audit.metaRobots.flatMap((value) =>
+      value
+        .split(',')
+        .map((directive) => directive.trim().toLowerCase())
+        .filter(Boolean),
+    );
+    const localNoindexMetaValid =
+      audit.metaRobots.length === 1 &&
+      metaRobotsDirectives.includes('noindex') &&
+      metaRobotsDirectives.includes('nofollow') &&
+      !metaRobotsDirectives.includes('index') &&
+      !metaRobotsDirectives.includes('follow');
+    const failed =
+      audit.currentUrl !== expectedUrl ||
+      audit.canonicalLinks.length !== 1 ||
+      audit.canonicalLinks[0]?.rawHref !== audit.currentUrl ||
+      audit.canonicalLinks[0]?.resolvedHref !== audit.currentUrl ||
+      audit.titleCount !== 1 ||
+      audit.title.trim() === '' ||
+      audit.metaDescriptions.length !== 1 ||
+      audit.metaDescriptions[0] === '' ||
+      !openGraphFieldsValid ||
+      audit.openGraph.title[0] !== audit.title ||
+      audit.openGraph.description[0] !== audit.metaDescriptions[0] ||
+      audit.openGraph.url[0] !== audit.currentUrl ||
+      !openGraphImageValid ||
+      audit.jsonLdScriptCount !== 1 ||
+      audit.jsonLdParseFailed ||
+      invalidJsonLdTypes.length !== 0 ||
+      missingJsonLdTypes.length !== 0 ||
+      presentForbiddenJsonLdTypes.length !== 0 ||
+      !localNoindexHeaderValid ||
+      !localNoindexMetaValid;
+    return {
+      failed,
+      invalidJsonLdTypes,
+      localNoindexMetaValid,
+      metaRobotsDirectives,
+      missingJsonLdTypes,
+      openGraphFieldsValid,
+      openGraphImageValid,
+      presentForbiddenJsonLdTypes,
+    };
+  };
+
+  const factory = ({ artifactDirectory, axeSource, inventory, origin }) => async (page) => {
   const publicPath = (value) =>
     typeof value === 'string' && /^\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)?$/.test(value);
   const localPath = (value, kind) => {
@@ -9,13 +80,15 @@
     return typeof value === 'string' &&
       /^\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)*(?:[0-9]{4}\/[0-9]{2}\/)?$/.test(value);
   };
-  const publicSurfaces = inventory?.surfaces;
+  const rawSurfaces = inventory?.surfaces;
+  const publicSurfaces = rawSurfaces;
   const localSurfaces = inventory?.local_surfaces;
   const routeCoverage = inventory?.route_coverage;
   const archiveCoverage = routeCoverage?.archive_types;
   const robotsProfile = routeCoverage?.robots_profile;
   const rawClusters = inventory?.clusters;
   const widths = inventory?.viewports;
+  const requiredWidths = [360, 390, 768, 1440];
   const articleRows = Array.isArray(publicSurfaces)
     ? publicSurfaces.filter((surface) => surface.kind === 'article')
     : [];
@@ -93,7 +166,10 @@
     homeRows.length !== 1 || articleRows.length !== 10 || policyRows.length !== 3 ||
     comparisonPolicyRows.length !== 1 || !publicPath(comparisonPolicyPath) ||
     !Array.isArray(rawClusters) || rawClusters.length !== 3 ||
-    !Array.isArray(widths) || widths.join('|') !== '360|390|768|1440' ||
+    !Array.isArray(widths) || widths.length !== requiredWidths.length ||
+    widths.some((width, index) => width !== requiredWidths[index]) ||
+    new Set(rawSurfaces.map((surface) => surface.local_path)).size !== 14 ||
+    new Set(rawSurfaces.map((surface) => surface.production_path)).size !== 14 ||
     new Set([...publicSurfaces, ...localSurfaces].map((row) => row.surface_id)).size !== 26 ||
     routeClassCounts.size !== 10 ||
     routeClassCounts.get('ARCHIVE_CATEGORY') !== 3 ||
@@ -242,6 +318,32 @@
     path: surface.local_path,
     publicCore: ['home', 'article', 'policy'].includes(surface.kind),
   }));
+  const requiredJsonLdTypesByKind = {
+    home: ['Organization', 'WebSite'],
+    article: ['Article', 'BreadcrumbList', 'Organization', 'WebSite'],
+    policy: ['BreadcrumbList', 'Organization', 'WebSite'],
+  };
+  const forbiddenJsonLdTypes = ['Product', 'Offer', 'Review', 'FAQPage'];
+  const extractJsonLdTypes = (documents) => {
+    const types = [];
+    const stack = [...documents];
+    while (stack.length > 0) {
+      const value = stack.pop();
+      if (value === null || typeof value !== 'object') continue;
+      if (Array.isArray(value)) {
+        stack.push(...value);
+        continue;
+      }
+      const rawTypes = Array.isArray(value['@type']) ? value['@type'] : [value['@type']];
+      for (const value of rawTypes) {
+        if (typeof value !== 'string') continue;
+        const normalized = value.trim();
+        if (normalized !== '') types.push(normalized);
+      }
+      stack.push(...Object.values(value));
+    }
+    return types;
+  };
   const expectedPathByArticleId = Object.fromEntries(
     articleRows.map((surface) => [surface.article_id, surface.local_path]),
   );
@@ -408,8 +510,13 @@
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ reducedMotion: 'reduce' });
       expectedNotFoundConsoleMessages = surface.expectedStatus === 404 ? 1 : 0;
-      const response = await page.goto(`${origin}${surface.path}`, { waitUntil: 'networkidle' });
-      if (!response || response.status() !== surface.expectedStatus) {
+      const expectedUrl = `${origin}${surface.path}`;
+      const response = await page.goto(expectedUrl, { waitUntil: 'networkidle' });
+      if (
+        !response || response.status() !== surface.expectedStatus ||
+        (surface.publicCore && response.status() !== 200) ||
+        response.url() !== expectedUrl
+      ) {
         throw new Error(`RAOS_WORDPRESS_LOCAL_PREVIEW_HTTP_FAILED_${surface.name}`);
       }
       await page.evaluate(async () => {
@@ -481,7 +588,6 @@
         );
       }
       await page.addScriptTag({ content: axeSource });
-      const expectedUrl = `${origin}${surface.path}`;
       const responseHeaders = await response.allHeaders();
       const normalizedPermissionsPolicy = (responseHeaders['permissions-policy'] || '')
         .split(',').map((value) => value.trim()).join(', ');
@@ -884,6 +990,82 @@
           ? row.tabindex !== '0' || row.availableState !== 'available'
           : row.tabindex !== null || row.availableState !== null));
       const head = audit.head;
+      const expectedOpenGraphImageUrl = head.ogImage.length === 1
+        ? head.ogImage[0] : '';
+      let openGraphImageResponse = null;
+      let openGraphImageResponseBodyBytes = 0;
+      let openGraphImageResponseContentType = '';
+      let openGraphImageResponseStatus = 0;
+      let openGraphImageResponseUrl = '';
+      try {
+        if (
+          /^http:\/\/127\.0\.0\.1:[0-9]{4,5}\/wp-content\/themes\//
+            .test(expectedOpenGraphImageUrl) &&
+          expectedOpenGraphImageUrl.endsWith('.webp')
+        ) {
+          openGraphImageResponse = await page.request.get(expectedOpenGraphImageUrl, {
+            maxRedirects: 0,
+            timeout: 5000,
+          });
+          openGraphImageResponseStatus = openGraphImageResponse.status();
+          openGraphImageResponseUrl = openGraphImageResponse.url();
+          openGraphImageResponseContentType = (
+            openGraphImageResponse.headers()['content-type'] || ''
+          ).split(';', 1)[0].trim().toLowerCase();
+          if (openGraphImageResponseStatus === 200) {
+            openGraphImageResponseBodyBytes = (await openGraphImageResponse.body()).length;
+          }
+        }
+      } catch (error) {
+        openGraphImageResponseBodyBytes = 0;
+      } finally {
+        if (openGraphImageResponse !== null) {
+          await openGraphImageResponse.dispose();
+        }
+      }
+      const openGraphImageResponseValid =
+        openGraphImageResponse !== null &&
+        openGraphImageResponseStatus === 200 &&
+        openGraphImageResponseUrl === expectedOpenGraphImageUrl &&
+        openGraphImageResponseContentType === 'image/webp' &&
+        openGraphImageResponseBodyBytes > 0 &&
+        openGraphImageResponseBodyBytes <= 2 * 1024 * 1024;
+      const localNoindexHeaderValid =
+        responseRobotsTokens.has('noindex') &&
+        responseRobotsTokens.has('nofollow') &&
+        !responseRobotsTokens.has('index') &&
+        !responseRobotsTokens.has('follow');
+      const seoHeadAudit = surface.publicCore
+        ? validateSeoHead({
+          audit: {
+            canonicalLinks: head.canonical.map((rawHref) => ({
+              rawHref,
+              resolvedHref: new URL(rawHref, expectedUrl).href,
+            })),
+            currentUrl: page.url(),
+            jsonLdParseFailed: audit.jsonLdParseFailures !== 0,
+            jsonLdScriptCount: audit.jsonLd.length + audit.jsonLdParseFailures,
+            jsonLdTypes: extractJsonLdTypes(audit.jsonLd),
+            metaDescriptions: head.description,
+            metaRobots: head.robots,
+            openGraph: {
+              description: head.ogDescription,
+              image: head.ogImage,
+              title: head.ogTitle,
+              url: head.ogUrl,
+            },
+            title: head.title,
+            titleCount: head.titleCount,
+          },
+          expectedOpenGraphImageUrl,
+          expectedUrl,
+          forbiddenJsonLdTypes,
+          localNoindexHeaderValid,
+          openGraphImageResponseValid,
+          requiredJsonLdTypes: requiredJsonLdTypesByKind[surface.kind],
+        })
+        : { failed: false };
+      const seoHeadAuditFailed = seoHeadAudit.failed;
       const headFailure = surface.publicCore
         ? head.titleCount !== 1 || !head.title ||
           head.canonical.length !== 1 || head.canonical[0] !== expectedUrl ||
@@ -1394,7 +1576,7 @@
         (surface.kind === 'policy') !== audit.policyBodyClass;
 
       if (
-        generalFailure || headFailure || robotsFailure || semanticGraphFailure ||
+        generalFailure || headFailure || seoHeadAuditFailed || robotsFailure || semanticGraphFailure ||
         securityHeaderFailure.length !== 0 || disclosureKeyboardFailure || focusFlowFailure ||
         navigationFailure || desktopTocPositionFailure || internalLinkFailure ||
         homeLinkFailure || localLinkFailure || listingFailure || missingUiText.length !== 0 ||
@@ -1407,7 +1589,7 @@
             disclosureKeyboardFailure, focusFlowFailure, generalFailure, headFailure,
             homeLinkFailure, internalLinkFailure, listingFailure, localLinkFailure,
             missingUiText, navigationFailure, notFoundFailure, robotsFailure, routeFailure,
-            semanticGraphFailure,
+            semanticGraphFailure, seoHeadAudit,
             securityHeaderFailure, skipLinkFailure, tocFailure }),
         );
       }
@@ -1623,4 +1805,8 @@
     throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_SCREEN_COUNT_INVALID');
   }
   return results;
-}
+  };
+
+  factory.validateSeoHead = validateSeoHead;
+  return factory;
+})()

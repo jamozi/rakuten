@@ -61,6 +61,14 @@ def test_generated_allowlist_is_exactly_bound_to_editorial_v3() -> None:
         "sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
     }
     assert len(allowlist["articles"]) == len(source["articles"]) == 10
+    assert source["rakuten_measurement_policy"]["provider_slot_count"] == 20
+    assert source["rakuten_measurement_policy"]["provider_slot_limit"] == 20
+    assert (
+        source["rakuten_measurement_policy"]["provider_measurement_id_storage"]
+        == "OWNER_PRIVATE_ONLY"
+    )
+    assert len(source["rakuten_provider_slots"]) == 20
+    assert all("provider_measurement_id" not in row for row in source["rakuten_provider_slots"])
     article_ids = {row["article_id"] for row in allowlist["articles"]}
     assert article_ids == {row["article_id"] for row in source["articles"]}
     assert all(set(row["related_article_ids"]) <= article_ids for row in allowlist["articles"])

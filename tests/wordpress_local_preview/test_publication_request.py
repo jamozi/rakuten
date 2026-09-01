@@ -3541,10 +3541,16 @@ def test_activation_binding_persists_only_exact_hashes_and_counts(
         portfolio_sha256="b" * 64,
         production_article_sha256=article_hashes,
         article_count=10,
+        provider_slot_count=20,
+        provider_measurement_id_count=20,
+        internal_cta_identity_count=74,
         cta_count=74,
+        live_link_count=74,
         dry_run_sha256="c" * 64,
         admin_receipt_sha256="d" * 64,
         money_link_mapping_sha256="e" * 64,
+        provider_slot_set_sha256="6" * 64,
+        provider_measurement_binding_sha256="7" * 64,
         materialized_set_sha256="f" * 64,
         local_article_set_sha256="1" * 64,
         production_article_set_sha256="2" * 64,
@@ -3598,10 +3604,14 @@ def test_activation_binding_persists_only_exact_hashes_and_counts(
     )
 
     publication._validate_materialization_binding(binding)
-    assert binding["schema"] == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2"
+    assert binding["schema"] == "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3"
     assert "://" not in json.dumps(binding, sort_keys=True)
     assert binding["activation"]["article_count"] == 10
+    assert binding["activation"]["provider_slot_count"] == 20
+    assert binding["activation"]["provider_measurement_id_count"] == 20
+    assert binding["activation"]["internal_cta_identity_count"] == 74
     assert binding["activation"]["cta_count"] == 74
+    assert binding["activation"]["live_link_count"] == 74
     assert binding["activation"]["v2_evidence_status_sha256"] == "e" * 64
     assert binding["activation"]["v2_local_receipt_sha256"] == "5" * 64
     assert binding["activation"]["v2_production_receipt_sha256"] == "6" * 64
@@ -3610,6 +3620,63 @@ def test_activation_binding_persists_only_exact_hashes_and_counts(
     )
     assert binding["activation"]["admin_verified_at_utc"] == "2026-08-31T00:02:00Z"
     assert binding["activation"]["activated_at_utc"] == "2026-08-31T00:03:00Z"
+
+    historical_v2 = json.loads(json.dumps(binding))
+    historical_v2["schema"] = "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2"
+    for field in (
+        "provider_slot_set_sha256",
+        "provider_measurement_binding_sha256",
+        "provider_slot_count",
+        "provider_measurement_id_count",
+        "internal_cta_identity_count",
+        "live_link_count",
+    ):
+        historical_v2["activation"].pop(field)
+    publication._validate_materialization_binding(historical_v2)
+    captured = publication._fresh_receipt(
+        articles,
+        Path("/tmp/provider-binding.json"),
+        TEST_THEME_TREE_SHA256,
+        historical_v2,
+    )
+    assert not publication._receipt_matches_captured_inputs(
+        captured,
+        articles,
+        TEST_THEME_TREE_SHA256,
+        binding,
+        None,
+    )
+
+    v2_with_provider_claim = json.loads(json.dumps(historical_v2))
+    v2_with_provider_claim["activation"]["provider_slot_count"] = 20
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID",
+    ):
+        publication._validate_materialization_binding(v2_with_provider_claim)
+
+    v3_without_internal_count = json.loads(json.dumps(binding))
+    v3_without_internal_count["activation"].pop("internal_cta_identity_count")
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID",
+    ):
+        publication._validate_materialization_binding(v3_without_internal_count)
+
+    for field, wrong_value in (
+        ("provider_slot_count", 19),
+        ("provider_measurement_id_count", 19),
+        ("internal_cta_identity_count", 73),
+        ("cta_count", 73),
+        ("live_link_count", 73),
+    ):
+        invalid_count = json.loads(json.dumps(binding))
+        invalid_count["activation"][field] = wrong_value
+        with pytest.raises(
+            publication.PublicationFailure,
+            match="RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID",
+        ):
+            publication._validate_materialization_binding(invalid_count)
 
     invalid_time_order = json.loads(json.dumps(binding))
     invalid_time_order["activation"]["admin_verified_at_utc"] = (
@@ -4025,11 +4092,13 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
     tmp_path: Path,
 ) -> None:
     articles = publication.load_publication_items("all")
+    current_binding = {"schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3"}
     path = tmp_path / "waiting.json"
     receipt = publication._fresh_receipt(
         articles,
         path,
         TEST_THEME_TREE_SHA256,
+        current_binding,
         quality_audit_binding=_test_quality_audit_binding(),
     )
     receipt["state"] = "WAITING_FOR_APPROVAL"
@@ -4064,7 +4133,12 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
     monkeypatch.setattr(
         publication,
         "activation_materialization_binding",
-        lambda *_args, **_kwargs: None,
+        lambda *_args, **_kwargs: current_binding,
+    )
+    monkeypatch.setattr(
+        publication,
+        "_validate_receipt",
+        lambda value, _articles: value,
     )
     activation = SimpleNamespace(
         production_fixture_root=publication.SOURCE_FIXTURE_ROOT,
@@ -4129,6 +4203,195 @@ def test_all_mode_exact_nonterminal_receipt_remains_recoverable(
         "operations",
         "touch",
     ]
+
+
+@pytest.mark.parametrize(
+    "remote_state",
+    ["REGISTERED", "WAITING_FOR_APPROVAL", "APPROVED", "APPLYING"],
+)
+def test_provider_slot_resume_rejects_historical_activation_binding(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    remote_state: str,
+) -> None:
+    articles = publication.load_publication_items("all")
+    receipt = publication._fresh_receipt(
+        articles,
+        tmp_path / "historical-v2.json",
+        TEST_THEME_TREE_SHA256,
+        {"schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2"},
+        _test_quality_audit_binding(),
+    )
+    receipt["state"] = "WAITING_FOR_APPROVAL"
+    receipt["proposals"] = [
+        {"proposal_id": f"{index + 1:064x}"} for index in range(len(articles))
+    ]
+    receipt["batch_registration"] = {}
+    monkeypatch.setattr(publication, "_validate_receipt", lambda value, _articles: value)
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: {"state": remote_state},
+    )
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT",
+    ):
+        publication._resume_existing_all_attempt(
+            articles,
+            receipt,
+            tmp_path / "historical-v2.json",
+            activation=SimpleNamespace(),
+            **_resume_gate_kwargs(tmp_path),
+            client_factory=lambda: (_ for _ in ()).throw(
+                AssertionError("historical proposal must not reach WordPress")
+            ),
+            deployment_runner=lambda *_args, **_kwargs: subprocess.CompletedProcess(
+                [], 0, b"", b""
+            ),
+        )
+
+
+def test_provider_slot_resume_allows_only_expired_historical_replacement(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles = publication.load_publication_items("all")
+    receipt = publication._fresh_receipt(
+        articles,
+        tmp_path / "expired-v2.json",
+        TEST_THEME_TREE_SHA256,
+        {"schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2"},
+        _test_quality_audit_binding(),
+    )
+
+
+def test_unregistered_current_provider_binding_cannot_register_after_drift(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles = publication.load_publication_items("all")
+    captured = {"schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3", "x": "a"}
+    current = {"schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3", "x": "b"}
+    receipt = publication._fresh_receipt(
+        articles,
+        tmp_path / "unregistered-v3.json",
+        TEST_THEME_TREE_SHA256,
+        captured,
+        _test_quality_audit_binding(),
+    )
+    monkeypatch.setattr(
+        publication,
+        "_unregistered_proposal_set_ready",
+        lambda *_args, **_kwargs: True,
+    )
+    monkeypatch.setattr(
+        publication,
+        "register_publication_batch",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("drifted provider binding must not register")
+        ),
+    )
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_UNREGISTERED_BATCH_HANDOFF_REQUIRED",
+    ):
+        publication._register_unregistered_proposal_set(
+            object(),
+            receipt,
+            tmp_path / "unregistered-v3.json",
+            articles=articles,
+            desired_theme_tree_sha256=TEST_THEME_TREE_SHA256,
+            activation=SimpleNamespace(),
+            materialization_binding=current,
+            quality_audit_binding=_test_quality_audit_binding(),
+        )
+
+
+def test_unregistered_historical_provider_binding_fails_closed_while_nonterminal(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    articles = publication.load_publication_items("all")
+    proposal_ids = [f"{index + 1:064x}" for index in range(len(articles))]
+    receipt = publication._fresh_receipt(
+        articles,
+        tmp_path / "unregistered-v2.json",
+        TEST_THEME_TREE_SHA256,
+        {"schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2"},
+        _test_quality_audit_binding(),
+    )
+    receipt["proposals"] = [
+        {"kind": "CONTENT_RELEASE", "proposal_id": proposal_id}
+        for proposal_id in proposal_ids
+    ]
+    receipt["baselines"] = {}
+    receipt["drafts"] = {}
+    monkeypatch.setattr(
+        publication,
+        "_unregistered_proposal_set_ready",
+        lambda *_args, **_kwargs: True,
+    )
+    monkeypatch.setattr(publication, "_proposal_ids", lambda _receipt: proposal_ids)
+    monkeypatch.setattr(
+        publication,
+        "read_content_operations",
+        lambda *_args, **_kwargs: {
+            proposal_id: {"state": "APPROVED"} for proposal_id in proposal_ids
+        },
+    )
+    monkeypatch.setattr(
+        publication,
+        "register_publication_batch",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            AssertionError("historical proposal must not register")
+        ),
+    )
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_PENDING_REQUEST_CONFLICT",
+    ):
+        publication._register_unregistered_proposal_set(
+            object(),
+            receipt,
+            tmp_path / "unregistered-v2.json",
+            articles=articles,
+            desired_theme_tree_sha256=TEST_THEME_TREE_SHA256,
+            activation=SimpleNamespace(),
+            materialization_binding={
+                "schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V3"
+            },
+            quality_audit_binding=_test_quality_audit_binding(),
+        )
+    receipt["state"] = "WAITING_FOR_APPROVAL"
+    receipt["proposals"] = [
+        {"proposal_id": f"{index + 1:064x}"} for index in range(len(articles))
+    ]
+    receipt["batch_registration"] = {}
+    monkeypatch.setattr(publication, "_validate_receipt", lambda value, _articles: value)
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: {"state": "EXPIRED"},
+    )
+
+    assert (
+        publication._resume_existing_all_attempt(
+            articles,
+            receipt,
+            tmp_path / "expired-v2.json",
+            activation=SimpleNamespace(),
+            **_resume_gate_kwargs(tmp_path),
+            client_factory=lambda: (_ for _ in ()).throw(AssertionError()),
+            deployment_runner=lambda *_args, **_kwargs: subprocess.CompletedProcess(
+                [], 0, b"", b""
+            ),
+        )
+        is False
+    )
 
 
 def test_all_mode_resume_refuses_stale_activation_before_client_or_apply(
@@ -4719,12 +4982,10 @@ def test_all_mode_remote_applied_legacy_attempt_checks_replacement_preconditions
     status_calls = 0
     replacement_count = 0
     replacement_includes_theme = False
-    tree_calls = 0
-
     def tracked_tree() -> str:
-        nonlocal tree_calls
-        tree_calls += 1
-        return old_tree if tree_calls == 1 else "2" * 64
+        # The old tree is bound by the immutable applied receipt and deployment
+        # readback; fresh-cycle source checks must observe one stable new tree.
+        return "2" * 64
 
     monkeypatch.setattr(publication, "tracked_theme_tree_sha256", tracked_tree)
 

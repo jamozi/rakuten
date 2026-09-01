@@ -6,37 +6,37 @@
       "category_id": "mobility",
       "cta_bindings": [
         {
-          "cta_id": "cta-a01-p02-final",
+          "cta_id": "icta_a01_p02_final",
           "offer_id": "off-a01-p02",
           "placement": "final_summary",
           "product_id": "PRD-ACE-DIFFERENCE-05721"
         },
         {
-          "cta_id": "cta-a01-p02-card",
+          "cta_id": "icta_a01_p02_card",
           "offer_id": "off-a01-p02",
           "placement": "product_card",
           "product_id": "PRD-ACE-DIFFERENCE-05721"
         },
         {
-          "cta_id": "cta-a01-p03-final",
+          "cta_id": "icta_a01_p03_final",
           "offer_id": "off-a01-p03",
           "placement": "final_summary",
           "product_id": "PRD-ACE-MAXPASS4-01471"
         },
         {
-          "cta_id": "cta-a01-p03-card",
+          "cta_id": "icta_a01_p03_card",
           "offer_id": "off-a01-p03",
           "placement": "product_card",
           "product_id": "PRD-ACE-MAXPASS4-01471"
         },
         {
-          "cta_id": "cta-a01-p01-final",
+          "cta_id": "icta_a01_p01_final",
           "offer_id": "off-a01-p01",
           "placement": "final_summary",
           "product_id": "PRD-PROTECA-TRI-AIR-01541"
         },
         {
-          "cta_id": "cta-a01-p01-card",
+          "cta_id": "icta_a01_p01_card",
           "offer_id": "off-a01-p01",
           "placement": "product_card",
           "product_id": "PRD-PROTECA-TRI-AIR-01541"
@@ -54,61 +54,61 @@
       "category_id": "preparedness",
       "cta_bindings": [
         {
-          "cta_id": "cta-a02-p04-final",
+          "cta_id": "icta_a02_p04_final",
           "offer_id": "off-a02-p04",
           "placement": "final_summary",
           "product_id": "PRD-ANKER-SOLIX-C300"
         },
         {
-          "cta_id": "cta-a02-p04-card",
+          "cta_id": "icta_a02_p04_card",
           "offer_id": "off-a02-p04",
           "placement": "product_card",
           "product_id": "PRD-ANKER-SOLIX-C300"
         },
         {
-          "cta_id": "cta-a02-p06-final",
+          "cta_id": "icta_a02_p06_final",
           "offer_id": "off-a02-p06",
           "placement": "final_summary",
           "product_id": "PRD-ANKER-SOLIX-C800"
         },
         {
-          "cta_id": "cta-a02-p06-card",
+          "cta_id": "icta_a02_p06_card",
           "offer_id": "off-a02-p06",
           "placement": "product_card",
           "product_id": "PRD-ANKER-SOLIX-C800"
         },
         {
-          "cta_id": "cta-a02-p08-final",
+          "cta_id": "icta_a02_p08_final",
           "offer_id": "off-a02-p08",
           "placement": "final_summary",
           "product_id": "PRD-DJI-POWER-1000-V2"
         },
         {
-          "cta_id": "cta-a02-p08-card",
+          "cta_id": "icta_a02_p08_card",
           "offer_id": "off-a02-p08",
           "placement": "product_card",
           "product_id": "PRD-DJI-POWER-1000-V2"
         },
         {
-          "cta_id": "cta-a02-p07-final",
+          "cta_id": "icta_a02_p07_final",
           "offer_id": "off-a02-p07",
           "placement": "final_summary",
           "product_id": "PRD-JACKERY-1000-NEW-V3"
         },
         {
-          "cta_id": "cta-a02-p07-card",
+          "cta_id": "icta_a02_p07_card",
           "offer_id": "off-a02-p07",
           "placement": "product_card",
           "product_id": "PRD-JACKERY-1000-NEW-V3"
         },
         {
-          "cta_id": "cta-a02-p05-final",
+          "cta_id": "icta_a02_p05_final",
           "offer_id": "off-a02-p05",
           "placement": "final_summary",
           "product_id": "PRD-JACKERY-500-NEW"
         },
         {
-          "cta_id": "cta-a02-p05-card",
+          "cta_id": "icta_a02_p05_card",
           "offer_id": "off-a02-p05",
           "placement": "product_card",
           "product_id": "PRD-JACKERY-500-NEW"
@@ -125,49 +125,49 @@
       "category_id": "preparedness",
       "cta_bindings": [
         {
-          "cta_id": "cta-a03-p10-final",
+          "cta_id": "icta_a03_p10_final",
           "offer_id": "off-a03-p10",
           "placement": "final_summary",
           "product_id": "PRD-ANKER-SOLIX-C1000"
         },
         {
-          "cta_id": "cta-a03-p10-card",
+          "cta_id": "icta_a03_p10_card",
           "offer_id": "off-a03-p10",
           "placement": "product_card",
           "product_id": "PRD-ANKER-SOLIX-C1000"
         },
         {
-          "cta_id": "cta-a03-p11-final",
+          "cta_id": "icta_a03_p11_final",
           "offer_id": "off-a03-p11",
           "placement": "final_summary",
           "product_id": "PRD-ANKER-SOLIX-C1000-GEN2"
         },
         {
-          "cta_id": "cta-a03-p11-card",
+          "cta_id": "icta_a03_p11_card",
           "offer_id": "off-a03-p11",
           "placement": "product_card",
           "product_id": "PRD-ANKER-SOLIX-C1000-GEN2"
         },
         {
-          "cta_id": "cta-a03-p04-final",
+          "cta_id": "icta_a03_p04_final",
           "offer_id": "off-a03-p04",
           "placement": "final_summary",
           "product_id": "PRD-ANKER-SOLIX-C300"
         },
         {
-          "cta_id": "cta-a03-p04-card",
+          "cta_id": "icta_a03_p04_card",
           "offer_id": "off-a03-p04",
           "placement": "product_card",
           "product_id": "PRD-ANKER-SOLIX-C300"
         },
         {
-          "cta_id": "cta-a03-p09-final",
+          "cta_id": "icta_a03_p09_final",
           "offer_id": "off-a03-p09",
           "placement": "final_summary",
           "product_id": "PRD-ANKER-SOLIX-C800-PLUS"
         },
         {
-          "cta_id": "cta-a03-p09-card",
+          "cta_id": "icta_a03_p09_card",
           "offer_id": "off-a03-p09",
           "placement": "product_card",
           "product_id": "PRD-ANKER-SOLIX-C800-PLUS"
@@ -184,49 +184,49 @@
       "category_id": "household",
       "cta_bindings": [
         {
-          "cta_id": "cta-a04-p31-final",
+          "cta_id": "icta_a04_p31_final",
           "offer_id": "off-a04-p31",
           "placement": "final_summary",
           "product_id": "PRD-SIROCA-SS-M171"
         },
         {
-          "cta_id": "cta-a04-p31-card",
+          "cta_id": "icta_a04_p31_card",
           "offer_id": "off-a04-p31",
           "placement": "product_card",
           "product_id": "PRD-SIROCA-SS-M171"
         },
         {
-          "cta_id": "cta-a04-p13-final",
+          "cta_id": "icta_a04_p13_final",
           "offer_id": "off-a04-p13",
           "placement": "final_summary",
           "product_id": "PRD-SIROCA-SS-MA251"
         },
         {
-          "cta_id": "cta-a04-p13-card",
+          "cta_id": "icta_a04_p13_card",
           "offer_id": "off-a04-p13",
           "placement": "product_card",
           "product_id": "PRD-SIROCA-SS-MA251"
         },
         {
-          "cta_id": "cta-a04-p12-final",
+          "cta_id": "icta_a04_p12_final",
           "offer_id": "off-a04-p12",
           "placement": "final_summary",
           "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W"
         },
         {
-          "cta_id": "cta-a04-p12-card",
+          "cta_id": "icta_a04_p12_card",
           "offer_id": "off-a04-p12",
           "placement": "product_card",
           "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W"
         },
         {
-          "cta_id": "cta-a04-p14-final",
+          "cta_id": "icta_a04_p14_final",
           "offer_id": "off-a04-p14",
           "placement": "final_summary",
           "product_id": "PRD-TOSHIBA-DWS-33B-W"
         },
         {
-          "cta_id": "cta-a04-p14-card",
+          "cta_id": "icta_a04_p14_card",
           "offer_id": "off-a04-p14",
           "placement": "product_card",
           "product_id": "PRD-TOSHIBA-DWS-33B-W"
@@ -243,49 +243,49 @@
       "category_id": "household",
       "cta_bindings": [
         {
-          "cta_id": "cta-a05-p17-final",
+          "cta_id": "icta_a05_p17_final",
           "offer_id": "off-a05-p17",
           "placement": "final_summary",
           "product_id": "PRD-ECOVACS-DEEBOT-MINI2"
         },
         {
-          "cta_id": "cta-a05-p17-card",
+          "cta_id": "icta_a05_p17_card",
           "offer_id": "off-a05-p17",
           "placement": "product_card",
           "product_id": "PRD-ECOVACS-DEEBOT-MINI2"
         },
         {
-          "cta_id": "cta-a05-p15-final",
+          "cta_id": "icta_a05_p15_final",
           "offer_id": "off-a05-p15",
           "placement": "final_summary",
           "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292"
         },
         {
-          "cta_id": "cta-a05-p15-card",
+          "cta_id": "icta_a05_p15_card",
           "offer_id": "off-a05-p15",
           "placement": "product_card",
           "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292"
         },
         {
-          "cta_id": "cta-a05-p18-final",
+          "cta_id": "icta_a05_p18_final",
           "offer_id": "off-a05-p18",
           "placement": "final_summary",
           "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
         },
         {
-          "cta_id": "cta-a05-p18-card",
+          "cta_id": "icta_a05_p18_card",
           "offer_id": "off-a05-p18",
           "placement": "product_card",
           "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
         },
         {
-          "cta_id": "cta-a05-p16-final",
+          "cta_id": "icta_a05_p16_final",
           "offer_id": "off-a05-p16",
           "placement": "final_summary",
           "product_id": "PRD-SWITCHBOT-K11-PRO"
         },
         {
-          "cta_id": "cta-a05-p16-card",
+          "cta_id": "icta_a05_p16_card",
           "offer_id": "off-a05-p16",
           "placement": "product_card",
           "product_id": "PRD-SWITCHBOT-K11-PRO"
@@ -302,49 +302,49 @@
       "category_id": "mobility",
       "cta_bindings": [
         {
-          "cta_id": "cta-a06-p21-final",
+          "cta_id": "icta_a06_p21_final",
           "offer_id": "off-a06-p21",
           "placement": "final_summary",
           "product_id": "PRD-ACE-PALISADES3-Z-06910"
         },
         {
-          "cta_id": "cta-a06-p21-card",
+          "cta_id": "icta_a06_p21_card",
           "offer_id": "off-a06-p21",
           "placement": "product_card",
           "product_id": "PRD-ACE-PALISADES3-Z-06910"
         },
         {
-          "cta_id": "cta-a06-p22-final",
+          "cta_id": "icta_a06_p22_final",
           "offer_id": "off-a06-p22",
           "placement": "final_summary",
           "product_id": "PRD-BERMAS-INTER-CITY-60524"
         },
         {
-          "cta_id": "cta-a06-p22-card",
+          "cta_id": "icta_a06_p22_card",
           "offer_id": "off-a06-p22",
           "placement": "product_card",
           "product_id": "PRD-BERMAS-INTER-CITY-60524"
         },
         {
-          "cta_id": "cta-a06-p20-final",
+          "cta_id": "icta_a06_p20_final",
           "offer_id": "off-a06-p20",
           "placement": "final_summary",
           "product_id": "PRD-PROTECA-FRESTER-EX-01550"
         },
         {
-          "cta_id": "cta-a06-p20-card",
+          "cta_id": "icta_a06_p20_card",
           "offer_id": "off-a06-p20",
           "placement": "product_card",
           "product_id": "PRD-PROTECA-FRESTER-EX-01550"
         },
         {
-          "cta_id": "cta-a06-p19-final",
+          "cta_id": "icta_a06_p19_final",
           "offer_id": "off-a06-p19",
           "placement": "final_summary",
           "product_id": "PRD-PROTECA-STARIA-CXR-02350"
         },
         {
-          "cta_id": "cta-a06-p19-card",
+          "cta_id": "icta_a06_p19_card",
           "offer_id": "off-a06-p19",
           "placement": "product_card",
           "product_id": "PRD-PROTECA-STARIA-CXR-02350"
@@ -362,61 +362,61 @@
       "category_id": "mobility",
       "cta_bindings": [
         {
-          "cta_id": "cta-a07-p25-final",
+          "cta_id": "icta_a07_p25_final",
           "offer_id": "off-a07-p25",
           "placement": "final_summary",
           "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002"
         },
         {
-          "cta_id": "cta-a07-p25-card",
+          "cta_id": "icta_a07_p25_card",
           "offer_id": "off-a07-p25",
           "placement": "product_card",
           "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002"
         },
         {
-          "cta_id": "cta-a07-p23-final",
+          "cta_id": "icta_a07_p23_final",
           "offer_id": "off-a07-p23",
           "placement": "final_summary",
           "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521"
         },
         {
-          "cta_id": "cta-a07-p23-card",
+          "cta_id": "icta_a07_p23_card",
           "offer_id": "off-a07-p23",
           "placement": "product_card",
           "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521"
         },
         {
-          "cta_id": "cta-a07-p01-final",
+          "cta_id": "icta_a07_p01_final",
           "offer_id": "off-a07-p01",
           "placement": "final_summary",
           "product_id": "PRD-PROTECA-TRI-AIR-01541"
         },
         {
-          "cta_id": "cta-a07-p01-card",
+          "cta_id": "icta_a07_p01_card",
           "offer_id": "off-a07-p01",
           "placement": "product_card",
           "product_id": "PRD-PROTECA-TRI-AIR-01541"
         },
         {
-          "cta_id": "cta-a07-p24-final",
+          "cta_id": "icta_a07_p24_final",
           "offer_id": "off-a07-p24",
           "placement": "final_summary",
           "product_id": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171"
         },
         {
-          "cta_id": "cta-a07-p24-card",
+          "cta_id": "icta_a07_p24_card",
           "offer_id": "off-a07-p24",
           "placement": "product_card",
           "product_id": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171"
         },
         {
-          "cta_id": "cta-a07-p26-final",
+          "cta_id": "icta_a07_p26_final",
           "offer_id": "off-a07-p26",
           "placement": "final_summary",
           "product_id": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549"
         },
         {
-          "cta_id": "cta-a07-p26-card",
+          "cta_id": "icta_a07_p26_card",
           "offer_id": "off-a07-p26",
           "placement": "product_card",
           "product_id": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549"
@@ -434,49 +434,49 @@
       "category_id": "mobility",
       "cta_bindings": [
         {
-          "cta_id": "cta-a08-p02-final",
+          "cta_id": "icta_a08_p02_final",
           "offer_id": "off-a08-p02",
           "placement": "final_summary",
           "product_id": "PRD-ACE-DIFFERENCE-05721"
         },
         {
-          "cta_id": "cta-a08-p02-card",
+          "cta_id": "icta_a08_p02_card",
           "offer_id": "off-a08-p02",
           "placement": "product_card",
           "product_id": "PRD-ACE-DIFFERENCE-05721"
         },
         {
-          "cta_id": "cta-a08-p29-final",
+          "cta_id": "icta_a08_p29_final",
           "offer_id": "off-a08-p29",
           "placement": "final_summary",
           "product_id": "PRD-BERMAS-INTER-CITY-III-60570"
         },
         {
-          "cta_id": "cta-a08-p29-card",
+          "cta_id": "icta_a08_p29_card",
           "offer_id": "off-a08-p29",
           "placement": "product_card",
           "product_id": "PRD-BERMAS-INTER-CITY-III-60570"
         },
         {
-          "cta_id": "cta-a08-p27-final",
+          "cta_id": "icta_a08_p27_final",
           "offer_id": "off-a08-p27",
           "placement": "final_summary",
           "product_id": "PRD-INNOVATOR-INV50"
         },
         {
-          "cta_id": "cta-a08-p27-card",
+          "cta_id": "icta_a08_p27_card",
           "offer_id": "off-a08-p27",
           "placement": "product_card",
           "product_id": "PRD-INNOVATOR-INV50"
         },
         {
-          "cta_id": "cta-a08-p28-final",
+          "cta_id": "icta_a08_p28_final",
           "offer_id": "off-a08-p28",
           "placement": "final_summary",
           "product_id": "PRD-PROTECA-FRESTER-EX-01551"
         },
         {
-          "cta_id": "cta-a08-p28-card",
+          "cta_id": "icta_a08_p28_card",
           "offer_id": "off-a08-p28",
           "placement": "product_card",
           "product_id": "PRD-PROTECA-FRESTER-EX-01551"
@@ -494,49 +494,49 @@
       "category_id": "household",
       "cta_bindings": [
         {
-          "cta_id": "cta-a09-p17-final",
+          "cta_id": "icta_a09_p17_final",
           "offer_id": "off-a09-p17",
           "placement": "final_summary",
           "product_id": "PRD-ECOVACS-DEEBOT-MINI2"
         },
         {
-          "cta_id": "cta-a09-p17-card",
+          "cta_id": "icta_a09_p17_card",
           "offer_id": "off-a09-p17",
           "placement": "product_card",
           "product_id": "PRD-ECOVACS-DEEBOT-MINI2"
         },
         {
-          "cta_id": "cta-a09-p15-final",
+          "cta_id": "icta_a09_p15_final",
           "offer_id": "off-a09-p15",
           "placement": "final_summary",
           "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292"
         },
         {
-          "cta_id": "cta-a09-p15-card",
+          "cta_id": "icta_a09_p15_card",
           "offer_id": "off-a09-p15",
           "placement": "product_card",
           "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292"
         },
         {
-          "cta_id": "cta-a09-p30-final",
+          "cta_id": "icta_a09_p30_final",
           "offer_id": "off-a09-p30",
           "placement": "final_summary",
           "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
         },
         {
-          "cta_id": "cta-a09-p30-card",
+          "cta_id": "icta_a09_p30_card",
           "offer_id": "off-a09-p30",
           "placement": "product_card",
           "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
         },
         {
-          "cta_id": "cta-a09-p16-final",
+          "cta_id": "icta_a09_p16_final",
           "offer_id": "off-a09-p16",
           "placement": "final_summary",
           "product_id": "PRD-SWITCHBOT-K11-PRO"
         },
         {
-          "cta_id": "cta-a09-p16-card",
+          "cta_id": "icta_a09_p16_card",
           "offer_id": "off-a09-p16",
           "placement": "product_card",
           "product_id": "PRD-SWITCHBOT-K11-PRO"
@@ -573,7 +573,7 @@
   "source": {
     "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
     "schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
-    "sha256": "fc923f189f171012cee9429ddb70291d74f37eea6a80eb9796947c42218ab305",
+    "sha256": "aa90a81a05042f01eb326e24a84248f303b749b7996a7feb263b52bee8775d34",
     "version": "3.0.0"
   },
   "target_origin": "https://kurashinoshirube.com",

@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.5.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '05b1085f71d8013100e2af341f5783d6be5cf82922175006cd68caba6e195fee';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'f48d09a706e3ce9a25381734baf92d65e364a04f5394984567ab60cec2f80476';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'f48d09a706e3ce9a25381734baf92d65e364a04f5394984567ab60cec2f80476';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -53,7 +53,7 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1'
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = 'assets/editorial-navigation.v3.json';
-const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '9bcd7478912adbf0d09ec79ea3984a4bd762f425c7014211902c83e1f15cf688';
+const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = 'e3a08018e580727e3a22b84686029bc69b534db10625061c74f85791a2cab658';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_MAX_BYTES = 262144;
 const KURASHINOSHIRUBE_HOME_TITLE = '生活用品を公式仕様で比較｜暮らしのしるべ';
 const KURASHINOSHIRUBE_HOME_DESCRIPTION = '暮らしのしるべは、移動・家事・備えの生活用品を、公式情報と確認条件に基づいて比較し、選び方を分かりやすく案内します。';
@@ -847,16 +847,21 @@ function kurashinoshirube_verified_asset_uri(
         return null;
     }
     $base = untrailingslashit(get_stylesheet_directory_uri());
-    $parts = wp_parse_url($base);
     $local_origin = $allow_local_preview
         ? kurashinoshirube_local_preview_origin()
         : null;
-    $local_base = is_string($local_origin)
-        ? $local_origin . '/wp-content/themes/kurashinoshirube-child'
-        : null;
-    $local_base_is_valid = is_string($local_base) && $base === $local_base;
+    if (
+        is_string($local_origin)
+        && $base === $local_origin
+            . '/wp-content/themes/kurashinoshirube-child'
+    ) {
+        return $base . '/' . $relative;
+    }
+    $parts = wp_parse_url($base);
     if (
         ! is_array($parts)
+        || ($parts['scheme'] ?? null) !== 'https'
+        || ($parts['host'] ?? null) !== 'kurashinoshirube.com'
         || ! isset($parts['path'])
         || ! is_string($parts['path'])
         || preg_match(
@@ -865,16 +870,8 @@ function kurashinoshirube_verified_asset_uri(
         ) !== 1
         || array_intersect_key(
             $parts,
-            array_flip(array('user', 'pass', 'query', 'fragment'))
+            array_flip(array('port', 'user', 'pass', 'query', 'fragment'))
         ) !== array()
-        || (
-            ! $local_base_is_valid
-            && (
-                ($parts['scheme'] ?? null) !== 'https'
-                || ($parts['host'] ?? null) !== 'kurashinoshirube.com'
-                || isset($parts['port'])
-            )
-        )
     ) {
         return null;
     }
@@ -3724,8 +3721,17 @@ function kurashinoshirube_filter_og_locale($value)
         : 'ja_JP';
 }
 
+/** Keep the WordPress title owner exact on the isolated no-Yoast preview. */
+function kurashinoshirube_filter_local_document_title($title)
+{
+    if (defined('WPSEO_VERSION') || ! kurashinoshirube_is_local_preview()) {
+        return $title;
+    }
+    $context = kurashinoshirube_public_head_context();
+    return $context === null ? $title : $context['title'];
+}
+
 add_filter('wpseo_title', 'kurashinoshirube_filter_title');
-add_filter('pre_get_document_title', 'kurashinoshirube_filter_title', 20);
 add_filter('wpseo_metadesc', 'kurashinoshirube_filter_description');
 add_filter('wpseo_canonical', 'kurashinoshirube_filter_canonical');
 add_filter('wpseo_opengraph_title', 'kurashinoshirube_filter_og_title');
@@ -3755,6 +3761,48 @@ add_filter(
 add_filter('wpseo_opengraph_type', 'kurashinoshirube_filter_og_type');
 add_filter('wpseo_opengraph_site_name', 'kurashinoshirube_filter_og_site_name');
 add_filter('wpseo_og_locale', 'kurashinoshirube_filter_og_locale');
+add_filter(
+    'pre_get_document_title',
+    'kurashinoshirube_filter_local_document_title',
+    PHP_INT_MAX
+);
+
+/**
+ * Supply the bounded SEO head only when the isolated preview has no Yoast.
+ *
+ * WordPress remains the document-title owner. The verified image is resolved
+ * before core's singular canonical is removed, so an invalid asset fails closed
+ * without suppressing upstream metadata. Production and unrelated routes never
+ * enter this fallback.
+ */
+function kurashinoshirube_emit_local_fallback_head(): void
+{
+    if (defined('WPSEO_VERSION') || ! kurashinoshirube_is_local_preview()) {
+        return;
+    }
+    $context = kurashinoshirube_public_head_context();
+    $image = kurashinoshirube_verified_asset_uri(
+        KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH,
+        KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256
+    );
+    if ($context === null || $image === null) {
+        return;
+    }
+    remove_action('wp_head', 'rel_canonical');
+    echo '<meta name="description" content="'
+        . esc_attr($context['description']) . '">' . "\n";
+    echo '<link rel="canonical" href="'
+        . esc_url($context['canonical_url']) . '">' . "\n";
+    echo '<meta property="og:title" content="'
+        . esc_attr($context['title']) . '">' . "\n";
+    echo '<meta property="og:description" content="'
+        . esc_attr($context['description']) . '">' . "\n";
+    echo '<meta property="og:url" content="'
+        . esc_url($context['canonical_url']) . '">' . "\n";
+    echo '<meta property="og:image" content="'
+        . esc_url($image) . '">' . "\n";
+}
+add_action('wp_head', 'kurashinoshirube_emit_local_fallback_head', 5);
 
 /** Index only a review-safe route or one exact public article identity. */
 function kurashinoshirube_filter_robots($robots, $presentation)

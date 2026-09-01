@@ -56,9 +56,10 @@ def test_generated_successor_covers_all_v2_identities_without_rewriting_v2() -> 
     }
 
 
-def test_stable_identity_and_measurement_bindings_are_unique_and_disabled() -> None:
+def test_internal_cta_candidates_and_provider_slots_are_separate_and_disabled() -> None:
     portfolio = load_editorial_portfolio_v3(ROOT)
-    measurements = portfolio.cta_by_measurement_id
+    candidates = portfolio.cta_by_candidate_id
+    slots = portfolio.provider_slot_by_id
 
     assert [article.article_code for article in portfolio.articles] == [
         f"a{position:02d}" for position in range(1, 11)
@@ -66,14 +67,27 @@ def test_stable_identity_and_measurement_bindings_are_unique_and_disabled() -> N
     assert [product.product_code for product in portfolio.products] == [
         f"p{position:02d}" for position in range(1, len(portfolio.products) + 1)
     ]
-    assert len(measurements) == 74
+    assert len(candidates) == 74
     assert all(
-        re.fullmatch(r"a[0-9]{2}-p[0-9]{2}-(?:card|final)", identifier)
-        for identifier in measurements
+        re.fullmatch(r"icta_a[0-9]{2}_p[0-9]{2}_(?:card|final)", identifier)
+        for identifier in candidates
     )
     assert all(
         binding.provider_profile_state == "UNVERIFIED_DISABLED"
-        for binding in measurements.values()
+        for binding in candidates.values()
+    )
+    assert candidates["icta_a01_p01_card"].cta_id == "icta_a01_p01_card"
+    assert candidates["icta_a01_p01_card"].provider_slot_id == "rps-a01-card"
+    assert len(slots) == 20
+    assert set(portfolio.provider_slot_by_key) == {
+        (article.article_id, placement)
+        for article in portfolio.articles
+        for placement in ("product_card", "final_summary")
+    }
+    assert all(
+        re.fullmatch(r"rps-a[0-9]{2}-(?:card|final)", identifier)
+        and slot.provider_profile_state == "UNVERIFIED_DISABLED"
+        for identifier, slot in slots.items()
     )
     document = json.loads((ROOT / PORTFOLIO_RELATIVE_PATH).read_text(encoding="utf-8"))
     assert (
@@ -90,6 +104,87 @@ def test_stable_identity_and_measurement_bindings_are_unique_and_disabled() -> N
             assert placements == set()
         else:
             assert placements == {"product_card", "final_summary"}
+    assert all(
+        portfolio.provider_slot_by_id[binding.provider_slot_id]
+        == portfolio.provider_slot_by_key[(article.article_id, binding.placement)]
+        for article in portfolio.articles
+        for binding in article.cta_bindings
+    )
+
+
+def test_tracked_provider_slots_never_contain_actual_provider_ids() -> None:
+    document = json.loads((ROOT / PORTFOLIO_RELATIVE_PATH).read_text(encoding="utf-8"))
+
+    def all_mapping_keys(value: object) -> set[str]:
+        if isinstance(value, dict):
+            return set(value) | {
+                key for child in value.values() for key in all_mapping_keys(child)
+            }
+        if isinstance(value, list):
+            return {key for child in value for key in all_mapping_keys(child)}
+        return set()
+
+    assert not {"provider_measurement_id", "rakuten_measurement_id"}.intersection(
+        all_mapping_keys(document)
+    )
+    assert document["rakuten_measurement_policy"] == {
+        "activation_gate": "VERIFIED_SAMPLE_PROFILE_AND_PROVIDER_CONSOLE_RECONCILIATION",
+        "additional_tracking_default_enabled": False,
+        "client_measurement_default_enabled": False,
+        "internal_cta_id_format": "icta_{article_code}_{product_code}_{card|final}",
+        "internal_cta_identity_count": 74,
+        "internal_cta_namespace": "RAOS_INTERNAL_CTA_V1",
+        "live_link_mutation_allowed": False,
+        "placements": ["product_card", "final_summary"],
+        "provider_measurement_id_storage": "OWNER_PRIVATE_ONLY",
+        "provider_profile_state": "UNVERIFIED_DISABLED",
+        "provider_slot_count": 20,
+        "provider_slot_format": "rps-{article_code}-{card|final}",
+        "provider_slot_granularity": "ARTICLE_PLACEMENT",
+        "provider_slot_limit": 20,
+    }
+    assert all(
+        "provider_measurement_id" not in slot
+        and set(slot)
+        == {
+            "article_code",
+            "article_id",
+            "placement",
+            "placement_code",
+            "provider_profile_state",
+            "provider_slot_id",
+        }
+        for slot in document["rakuten_provider_slots"]
+    )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "value"),
+    [
+        ("provider_measurement_id", "must-remain-owner-private"),
+        ("rakuten_measurement_id", "must-remain-owner-private"),
+        ("provider_slot_id", "rps-a99-card"),
+    ],
+)
+def test_loader_rejects_provider_slot_leak_or_cta_slot_drift(
+    tmp_path: Path,
+    mutation: str,
+    value: str,
+) -> None:
+    document = json.loads((ROOT / PORTFOLIO_RELATIVE_PATH).read_text(encoding="utf-8"))
+    if mutation == "provider_measurement_id":
+        document["rakuten_provider_slots"][0][mutation] = value
+    else:
+        document["articles"][0]["cta_bindings"][0][mutation] = value
+    target = tmp_path / PORTFOLIO_RELATIVE_PATH
+    target.parent.mkdir(parents=True)
+    target.write_text(json.dumps(document), encoding="utf-8")
+
+    with pytest.raises(
+        EditorialPortfolioV3Failure,
+        match="RAOS_EDITORIAL_V3_CONTRACT_INVALID",
+    ):
+        load_editorial_portfolio_v3(tmp_path)
 
 
 def test_navigation_has_three_clusters_and_explicit_relationship_policy() -> None:
