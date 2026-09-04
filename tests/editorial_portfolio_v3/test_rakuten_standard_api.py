@@ -1,6 +1,9 @@
 """Standard links preserve full coverage without impersonating admin review."""
 
 from copy import deepcopy
+from datetime import UTC, datetime, timedelta
+from html import escape
+import hashlib
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -145,3 +148,61 @@ def test_standard_mode_does_not_read_measurement_inputs_before_signature_gate(
             rakuten_activation_dry_run=Path("/private/measured.json"),
         )
     assert publication.parser().parse_args([]).link_mode == "measured-admin"
+
+
+@pytest.mark.parametrize("mode", ["local", "production"])
+def test_standard_rejects_materialization_older_than_fifteen_minutes(
+    api_pair: Path, mode: str
+) -> None:
+    path = api_pair.parent / "v2" / mode / "materialization-receipt.v2.json"
+    receipt = json.loads(path.read_bytes())
+    receipt["generated_at"] = (datetime.now(UTC) - timedelta(minutes=16)).strftime(
+        "%Y-%m-%dT%H:%M:%SZ"
+    )
+    path.write_bytes(standard.canonical_json_bytes(receipt))
+    with pytest.raises(measured.RakutenMeasurementActivationV3Failure):
+        standard.materialize_standard_api_v1(
+            repository_root=ROOT, private_root=api_pair, receipt_name="standard.json"
+        )
+
+
+@pytest.mark.parametrize(
+    "tamper", ["missing_cta", "different_product_url", "image_bytes"]
+)
+def test_standard_replays_inputs_even_when_article_receipt_hash_is_rewritten(
+    api_pair: Path, tamper: str
+) -> None:
+    local = api_pair.parent / "v2" / "local"
+    receipt_path = local / "materialization-receipt.v2.json"
+    receipt = json.loads(receipt_path.read_bytes())
+    row = receipt["articles"][0]
+    path = local / "articles" / f"{row['production_slug']}.html"
+    html = path.read_text()
+    anchor = next(measured.CTA_ANCHOR_RE.finditer(html))
+    if tamper == "missing_cta":
+        html = html[: anchor.start()] + html[anchor.end() :]
+    elif tamper == "different_product_url":
+        attrs = measured.anchor_attributes(anchor.group(1))
+        other = next(
+            product.product_id
+            for product in load_editorial_portfolio_v2(ROOT).products
+            if product.product_id != attrs["data-raos-product-id"]
+        )
+        original = anchor.group(0)
+
+        replaced = original.replace(
+            escape(attrs["href"], quote=True),
+            escape(_synthetic_destination_url(other), quote=True),
+        )
+        assert replaced != original
+        html = html[: anchor.start()] + replaced + html[anchor.end() :]
+    else:
+        media = next((api_pair.parent / "v2" / "product-media").iterdir())
+        media.write_bytes(b"different image bytes")
+    path.write_text(html)
+    row["content_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    receipt_path.write_bytes(standard.canonical_json_bytes(receipt))
+    with pytest.raises(measured.RakutenMeasurementActivationV3Failure):
+        standard.materialize_standard_api_v1(
+            repository_root=ROOT, private_root=api_pair, receipt_name="standard.json"
+        )
