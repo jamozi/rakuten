@@ -3,18 +3,22 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 import subprocess
 import sys
 
 import yaml
+import pytest
 
 from scripts.raos_build_core import (
     ACTIVE_MANIFEST_PATH,
     EXPLICIT_OWNER_DEPENDENCIES,
     OWNER_PRIVATE_OWNER_IDS,
+    VALIDATION_ONLY_OWNER_IDS,
     REPOSITORY_ROOT,
     InputKind,
+    BuildRegistryError,
     active_manifest_document,
     affected_owners,
     changed_paths,
@@ -43,6 +47,27 @@ def test_all_generators_have_one_owner_and_an_acyclic_graph() -> None:
     assert len(outputs) == len(set(outputs))
     for owner, dependencies in EXPLICIT_OWNER_DEPENDENCIES.items():
         assert set(dependencies) <= set(registry[owner].owner_dependencies)
+
+
+def test_validation_only_owners_cannot_hide_missing_generated_outputs() -> None:
+    registry = discover_registry()
+    assert VALIDATION_ONLY_OWNER_IDS == {
+        "build_st1704_portfolio_source_packets",
+        "build_st1704_reader_claim_coverage",
+    }
+    for owner_id in VALIDATION_ONLY_OWNER_IDS:
+        owner = registry[owner_id]
+        assert owner.output_scope == "validation_only"
+        assert owner.as_json()["output_scope"] == "validation_only"
+        assert owner.outputs == ()
+        with pytest.raises(BuildRegistryError, match="declares outputs"):
+            replace(owner, outputs=(Path("unexpected.json"),)).as_json()
+        with pytest.raises(BuildRegistryError, match="tracked owner has no outputs"):
+            replace(owner, owner_id="unregistered_empty_generator").as_json()
+    generated_owner = registry["build_st0105_generated_contracts"]
+    assert generated_owner.output_scope == "tracked"
+    with pytest.raises(BuildRegistryError, match="tracked owner has no outputs"):
+        replace(generated_owner, outputs=()).as_json()
 
 
 def test_build_infrastructure_change_selects_the_complete_graph() -> None:

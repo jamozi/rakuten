@@ -26159,7 +26159,7 @@
       ]
     },
     {
-      "output_scope": "tracked",
+      "output_scope": "validation_only",
       "outputs": [],
       "owner_dependencies": [],
       "owner_id": "build_st1704_portfolio_source_packets",
@@ -26243,7 +26243,7 @@
       ]
     },
     {
-      "output_scope": "tracked",
+      "output_scope": "validation_only",
       "outputs": [],
       "owner_dependencies": [],
       "owner_id": "build_st1704_reader_claim_coverage",
@@ -29041,7 +29041,7 @@
         },
         {
           "bytes": 20093,
-          "sha256": "b3092b9c407f19265a4f477626858dd0e2f91e6939994f38d1e1276027ad9f05",
+          "sha256": "2328ecab1f63e1aa6f1cb89a06a4b6458f2fdb5fa022129b115db1d9a1fbc2f3",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],

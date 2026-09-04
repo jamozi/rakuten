@@ -49,6 +49,12 @@ OWNER_PRIVATE_OWNER_IDS: Final = frozenset(
         "build_st1704_self_hosted_theme",
     }
 )
+VALIDATION_ONLY_OWNER_IDS: Final = frozenset(
+    {
+        "build_st1704_portfolio_source_packets",
+        "build_st1704_reader_claim_coverage",
+    }
+)
 DECLARED_OUTPUT_MANIFESTS: Final = {
     "build_st0002_revision": Path("changes/st-0002/manifest.yaml"),
     "build_st0003_revision": Path("changes/st-0003/manifest.yaml"),
@@ -181,6 +187,20 @@ class BuildSpec:
     isolated_python: bool
     owner_version: int = 2
 
+    @property
+    def output_scope(self) -> str:
+        if self.owner_id in OWNER_PRIVATE_OWNER_IDS:
+            return "owner_private"
+        if self.owner_id in VALIDATION_ONLY_OWNER_IDS:
+            if self.outputs:
+                raise BuildRegistryError(
+                    f"validation-only owner declares outputs: {self.owner_id}"
+                )
+            return "validation_only"
+        if not self.outputs:
+            raise BuildRegistryError(f"tracked owner has no outputs: {self.owner_id}")
+        return "tracked"
+
     def command(self, *, check: bool = False) -> tuple[str, ...]:
         command = [sys.executable]
         if self.isolated_python:
@@ -218,11 +238,7 @@ class BuildSpec:
             "supports_check": self.supports_check,
             "isolated_python": self.isolated_python,
             "owner_version": self.owner_version,
-            "output_scope": (
-                "owner_private"
-                if self.owner_id in OWNER_PRIVATE_OWNER_IDS
-                else "tracked"
-            ),
+            "output_scope": self.output_scope,
         }
 
 
@@ -1192,11 +1208,7 @@ def active_manifest_document(
                 "owner_version": spec.owner_version,
                 "story_ids": list(spec.story_ids),
                 "owner_dependencies": list(spec.owner_dependencies),
-                "output_scope": (
-                    "owner_private"
-                    if spec.owner_id in OWNER_PRIVATE_OWNER_IDS
-                    else "tracked"
-                ),
+                "output_scope": spec.output_scope,
                 "semantic_inputs": semantic_inputs,
                 "outputs": outputs,
             }
