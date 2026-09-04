@@ -30,6 +30,7 @@ check: final-static
 
 fast:
 	TMPDIR=/tmp $(PYTHON) scripts/raos_build.py $(BASE_ARGUMENT) fast
+	$(PYTHON) -m pytest -q tests/test_affiliate_ingestion.py
 
 final-lock:
 	$(PYTHON) scripts/verify_dev_toolchain.py
@@ -37,7 +38,7 @@ final-lock:
 	$(NPM) ls --all
 
 final-static:
-	$(PYTHON) -m ruff check python scripts tests
+	$(PYTHON) -m ruff check python scripts tests tools/affiliate_ingestion
 	$(PYTHON) -m mypy python/raos packages/web-ui/src/decision-support-v2/wordpress/projection.py
 	$(NPM) run format:check
 	$(NPM) run lint

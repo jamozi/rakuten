@@ -4,6 +4,10 @@
 !.env.example
 .secrets/
 
+# Owner-only affiliate accounts and provider data (never fixtures or source).
+affiliate-networks.json
+/var/affiliate_ingestion/
+
 # Python local state
 __pycache__/
 *.py[cod]
