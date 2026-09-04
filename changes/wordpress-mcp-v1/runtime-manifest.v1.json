@@ -67,8 +67,8 @@
     },
     {
       "path": "Makefile",
-      "sha256": "e99b504f55eb81ab4f26895f1d9eea441ed81f2811e7507fab4f694f319822ed",
-      "size": 3291
+      "sha256": "e3f37acc1025cd1876c0fef58ec69b60f88b35024120cd0c270826cd673fea1f",
+      "size": 3375
     },
     {
       "path": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
