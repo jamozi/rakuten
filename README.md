@@ -42,6 +42,10 @@ GitHub上の通常の開発操作を除くcredential入力、規約同意、支�
 
 ## Repository map
 
+6社のASP向けに既定で無効なデータ取得CLIを用意しています。
+[利用方法と審査後の残課題](docs/affiliate-network-ingestion.md)を参照してください。
+登録情報の受領、各社の接続仕様・利用権限の確認、初回接続は未完了です。
+
 | Path | Responsibility |
 | --- | --- |
 | `apps/` | Web/API/worker delivery boundaries |

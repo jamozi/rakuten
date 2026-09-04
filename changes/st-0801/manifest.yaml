@@ -352,11 +352,11 @@ source_artifacts:
   bytes: 5539
   sha256: 337b83529b73d25bffaa4d23fe0d7762b450db90950b26e6b330b0c3b43ba629
 - uri: repo://Makefile
-  bytes: 3291
-  sha256: e99b504f55eb81ab4f26895f1d9eea441ed81f2811e7507fab4f694f319822ed
+  bytes: 3375
+  sha256: e3f37acc1025cd1876c0fef58ec69b60f88b35024120cd0c270826cd673fea1f
 - uri: repo://README.md
-  bytes: 3960
-  sha256: 1a6edcd3c8b6739a5b9c37692b8ea1468d6cdca5e6ca41de40d24dd644287581
+  bytes: 4256
+  sha256: fb10da4d7ac97c258d561629ba37e51851c9de0cc9148605a6f4baa386c48ba7
 - uri: repo://changes/st-0105/manifest.json
   bytes: 250888
   sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7
