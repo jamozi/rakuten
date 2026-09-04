@@ -465,6 +465,12 @@ def test_registration_preserves_account_and_numeric_secret_strings(tmp_path):
                 "account_id=00123",
                 "--set",
                 "auth.token=00001",
+                "--set",
+                "resource.auth.token=00002",
+                "--set",
+                "resource.query.id=00003",
+                "--set",
+                "resource.pagination.max_pages=2",
             ]
         )
         == 0
@@ -472,6 +478,9 @@ def test_registration_preserves_account_and_numeric_secret_strings(tmp_path):
     provider = load_config(path)["providers"]["a8net"]
     assert provider["account_id"] == "00123"
     assert provider["auth"]["token"] == "00001"
+    assert provider["resources"]["programs"]["auth"]["token"] == "00002"
+    assert provider["resources"]["programs"]["query"]["id"] == "00003"
+    assert provider["resources"]["programs"]["pagination"]["max_pages"] == 2
     assert provider["enabled"] is False
 
 

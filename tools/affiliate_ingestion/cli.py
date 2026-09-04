@@ -113,9 +113,16 @@ def _set_path(target: dict[str, Any], dotted_path: str, value: Any) -> None:
     current[parts[-1]] = value
 
 
-def _coerce(value: str) -> Any:
+def _coerce(path: str, value: str) -> Any:
+    if path not in {
+        "enabled",
+        "pagination.max_pages",
+        "pagination.page_size",
+        "pagination.start",
+    }:
+        return value
     lowered = value.casefold()
-    if lowered in {"true", "false"}:
+    if path == "enabled" and lowered in {"true", "false"}:
         return lowered == "true"
     try:
         return int(value)
@@ -144,13 +151,14 @@ def _register(args: argparse.Namespace) -> int:
     for key, value in supplied.items():
         if key.startswith("provider."):
             field = key.removeprefix("provider.")
-            _set_path(provider, field, _coerce(value) if field == "enabled" else value)
+            _set_path(provider, field, _coerce(field, value))
         elif key.startswith("resource."):
-            _set_path(resource, key.removeprefix("resource."), _coerce(value))
+            field = key.removeprefix("resource.")
+            _set_path(resource, field, _coerce(field, value))
         elif key.startswith(("auth.", "account_")):
             _set_path(provider, key, value)
         else:
-            _set_path(resource, key, _coerce(value))
+            _set_path(resource, key, _coerce(key, value))
     if not args.non_interactive:
         print(f"Registering {manifest.display_name}; no network request will be made.")
         provider["account_id"] = _prompt(
