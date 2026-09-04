@@ -4,6 +4,7 @@ from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 import json
 from pathlib import Path
+from shutil import copyfile
 from typing import Callable
 
 import pytest
@@ -13,6 +14,10 @@ from raos.application.editorial.product_safety_manufacturer_capture import (
     BUNDLE_SCHEMA as MANUFACTURER_BUNDLE_SCHEMA,
     VERSION as MANUFACTURER_CAPTURE_VERSION,
     MANUAL_REQUIRED_REASON,
+    EMPTY_EVIDENCE_RELATIVE_PATH as MANUFACTURER_EMPTY_EVIDENCE_PATH,
+    OWNER_CAPTURE_RELATIVE_PATH as MANUFACTURER_CAPTURE_PATH,
+    PLAN_RELATIVE_PATH as MANUFACTURER_PLAN_PATH,
+    PORTFOLIO_RELATIVE_PATH,
     ProductSafetyManufacturerCaptureEvidence,
     ProductSafetyManufacturerEvidenceSet,
     ProductSafetyManufacturerProductEvidence,
@@ -20,6 +25,8 @@ from raos.application.editorial.product_safety_manufacturer_capture import (
 from raos.application.editorial.product_safety_query_capture import (
     CAPTURE_BUNDLE_SCHEMA,
     CAPTURE_BUNDLE_VERSION,
+    OWNER_CAPTURE_RELATIVE_PATH as ADMINISTRATIVE_CAPTURE_PATH,
+    QUERY_PLAN_RELATIVE_PATH,
     ProductSafetyAdministrativeCaptureEvidence,
     ProductSafetyAdministrativeEvidenceSet,
     ProductSafetyAdministrativeProductEvidence,
@@ -153,9 +160,28 @@ def _evaluate(document: object):
     )
 
 
-def test_empty_owner_document_is_structurally_valid_and_fail_closed() -> None:
+def _isolated_repository(tmp_path: Path) -> Path:
+    # Empty-evidence tests must not consume a developer's real private captures.
+    # Keep the production loader and its plan validation intact; copy only the
+    # five public inputs needed to exercise genuinely missing evidence.
+    for relative in (
+        PRODUCT_SAFETY_RECEIPTS_RELATIVE_PATH,
+        QUERY_PLAN_RELATIVE_PATH,
+        MANUFACTURER_PLAN_PATH,
+        MANUFACTURER_EMPTY_EVIDENCE_PATH,
+        PORTFOLIO_RELATIVE_PATH,
+    ):
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        copyfile(ROOT / relative, target)
+    return tmp_path
+
+
+def test_empty_owner_document_is_structurally_valid_and_fail_closed(
+    tmp_path: Path,
+) -> None:
     audit = load_product_safety_receipt_audit(
-        ROOT,
+        _isolated_repository(tmp_path),
         requirements=_requirements(),
         registry_context=_registry(),
         now=NOW,
@@ -171,6 +197,30 @@ def test_empty_owner_document_is_structurally_valid_and_fail_closed() -> None:
         match="RAOS_PRODUCT_SAFETY_RECEIPT_INCOMPLETE",
     ):
         require_product_safety_receipts_complete(audit)
+
+
+@pytest.mark.parametrize(
+    ("capture_path", "expected_error"),
+    (
+        (ADMINISTRATIVE_CAPTURE_PATH, "RAOS_PRODUCT_SAFETY_ADMIN_CAPTURE_SET_INVALID"),
+        (
+            MANUFACTURER_CAPTURE_PATH,
+            "RAOS_PRODUCT_SAFETY_MANUFACTURER_CAPTURE_SET_INVALID",
+        ),
+    ),
+)
+def test_invalid_private_capture_store_still_fails_closed(
+    tmp_path: Path, capture_path: Path, expected_error: str
+) -> None:
+    root = _isolated_repository(tmp_path)
+    # Deliberately unsafe permissions on a synthetic store, not live evidence.
+    (root / ".secrets").mkdir(mode=0o755)
+    (root / ".secrets").chmod(0o755)
+    (root / capture_path).mkdir(mode=0o755)
+    with pytest.raises(ProductSafetyReceiptFailure, match=expected_error):
+        load_product_safety_receipt_audit(
+            root, requirements=_requirements(), registry_context=_registry(), now=NOW
+        )
 
 
 def test_document_header_is_closed_and_does_not_accept_owner_status() -> None:
