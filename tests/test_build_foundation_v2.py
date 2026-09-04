@@ -66,6 +66,26 @@ def test_only_historical_editorial_builds_opt_into_development_replay() -> None:
             )
 
 
+def test_direct_offline_editorial_make_targets_replay_historical_evidence() -> None:
+    makefile = (
+        REPOSITORY_ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile"
+    ).read_text(encoding="utf-8")
+    commands = [
+        line.strip()
+        for line in makefile.splitlines()
+        if line.lstrip().startswith(
+            (
+                "scripts/build_st1704_reader_claim_coverage.py",
+                "scripts/build_st1704_self_hosted_editorial_manifest.py",
+            )
+        )
+        and "--skeleton" not in line
+    ]
+    assert len(commands) == 3
+    assert all("--development" in command for command in commands)
+    assert all("--for-source-refresh" not in command for command in commands)
+
+
 def test_changed_paths_falls_back_to_origin_main_without_origin_head(
     tmp_path: Path,
 ) -> None:

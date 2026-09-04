@@ -2266,7 +2266,10 @@ def validate_tool_contract(tools: Mapping[str, Mapping[str, object]]) -> None:
 
 
 def validate_site_status(
-    status: Mapping[str, object], *, require_measurement_ready: bool = False
+    status: Mapping[str, object],
+    *,
+    require_measurement_ready: bool = False,
+    require_measurement_off: bool = False,
 ) -> None:
     writes = status.get("writes_enabled")
     theme = status.get("theme")
@@ -2342,6 +2345,15 @@ def validate_site_status(
                 or measurement.get("plugin_version") != "1.0.0"
                 or measurement.get("collection_enabled") is not False
                 or measurement.get("aggregate_ability_registered") is not True
+                or measurement.get("raw_event_tool_exposed") is not False
+            )
+        )
+        or (
+            require_measurement_off
+            and (
+                type(measurement) is not dict
+                or measurement.get("plugin_active") is not False
+                or measurement.get("collection_enabled") is not False
                 or measurement.get("raw_event_tool_exposed") is not False
             )
         )
@@ -5680,7 +5692,11 @@ def verify_published(
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
     document_evidence = _published_document_evidence(client, articles, receipt)
     status = client.call("raos-codex-site-status", {})
-    validate_site_status(status, require_measurement_ready=require_measurement_ready)
+    validate_site_status(
+        status,
+        require_measurement_ready=require_measurement_ready,
+        require_measurement_off=not require_measurement_ready,
+    )
     theme = status.get("theme")
     if (
         type(theme) is not dict
@@ -6098,6 +6114,7 @@ def _resume_existing_all_attempt(
         require_measurement_ready=not isinstance(
             activation, RakutenStandardApiOverlayV1
         ),
+        require_measurement_off=isinstance(activation, RakutenStandardApiOverlayV1),
     )
     operations = read_content_operations(client, receipt)
     if batch["state"] == "APPLIED":
@@ -6317,7 +6334,11 @@ def execute(
         tools = client.tools()
         validate_tool_contract(tools)
         status = client.call("raos-codex-site-status", {})
-        validate_site_status(status, require_measurement_ready=require_measurement)
+        validate_site_status(
+            status,
+            require_measurement_ready=require_measurement,
+            require_measurement_off=not require_measurement,
+        )
         live_theme = status["theme"]
         if type(live_theme) is not dict:
             fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")

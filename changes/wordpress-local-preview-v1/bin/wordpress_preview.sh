@@ -383,7 +383,12 @@ activate_theme() {
 }
 
 activate_measurement_plugin() {
-  [[ "$link_mode" != standard-api ]] || return 0
+  if [[ "$link_mode" == standard-api ]]; then
+    if wordpress_cli plugin is-active raos-editorial-measurement >/dev/null; then
+      wordpress_cli plugin deactivate raos-editorial-measurement >/dev/null
+    fi
+    return 0
+  fi
   wordpress_cli plugin is-installed raos-editorial-measurement >/dev/null \
     || fail RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_MISSING
   wordpress_cli plugin activate raos-editorial-measurement >/dev/null
@@ -440,6 +445,8 @@ do_status() {
   if [[ "$link_mode" == measured-admin ]]; then
     [[ "$(wordpress_cli plugin list --name=raos-editorial-measurement --field=status)" == active ]] \
       || fail RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_INACTIVE
+  elif wordpress_cli plugin is-active raos-editorial-measurement >/dev/null; then
+    fail RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_ACTIVE
   fi
   [[ "$(wordpress_cli plugin list --name=wordpress-seo --field=status)" == active ]] \
     || fail RAOS_WORDPRESS_PREVIEW_YOAST_PLUGIN_INACTIVE

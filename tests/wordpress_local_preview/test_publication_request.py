@@ -514,9 +514,7 @@ def test_public_head_uses_one_closed_unique_image_for_every_article() -> None:
             "article-anker-solix-generations.webp"
         ),
         "carry-on-suitcase-comparison": "article-suitcase-guide.webp",
-        "carry-on-suitcase-under-100-seats": (
-            "article-suitcase-under-100-seats.webp"
-        ),
+        "carry-on-suitcase-under-100-seats": ("article-suitcase-under-100-seats.webp"),
         "compact-robot-vacuum-shortlist": "article-robot-vacuum-guide.webp",
         "countertop-dishwasher-for-small-households": (
             "article-countertop-dishwasher-guide.webp"
@@ -524,13 +522,9 @@ def test_public_head_uses_one_closed_unique_image_for_every_article() -> None:
         "front-open-carry-on-suitcase-with-stopper": (
             "article-suitcase-front-open-stopper.webp"
         ),
-        "lightweight-carry-on-suitcase-under-3kg": (
-            "article-suitcase-under-3kg.webp"
-        ),
+        "lightweight-carry-on-suitcase-under-3kg": ("article-suitcase-under-3kg.webp"),
         "portable-power-station-guide": "article-portable-power-guide.webp",
-        "roomba-mini-vs-switchbot-k11-pro": (
-            "article-roomba-mini-k11-comparison.webp"
-        ),
+        "roomba-mini-vs-switchbot-k11-pro": ("article-roomba-mini-k11-comparison.webp"),
         "solota-vs-rakua-mini-plus": "article-solota-rakua-replacement.webp",
     }
     assert {article.production_slug for article in articles} == set(
@@ -2421,9 +2415,7 @@ class WorkflowClient:
                 "active": True,
                 "version": publication.EXPECTED_YOAST_VERSION,
                 "version_exact": True,
-                "options": json.loads(
-                    json.dumps(publication.EXPECTED_YOAST_OPTIONS)
-                ),
+                "options": json.loads(json.dumps(publication.EXPECTED_YOAST_OPTIONS)),
                 "settings_fingerprint": (
                     publication.EXPECTED_YOAST_SETTINGS_FINGERPRINT
                 ),
@@ -3052,6 +3044,62 @@ def test_all_mode_site_status_requires_measurement_active_and_default_off(
     publication.validate_site_status(status, require_measurement_ready=False)
 
 
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("plugin_active", True),
+        ("plugin_active", None),
+        ("collection_enabled", True),
+        ("collection_enabled", None),
+        ("raw_event_tool_exposed", True),
+    ],
+)
+def test_standard_api_requires_explicitly_inactive_measurement(
+    field: str, value: object
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    status = WorkflowClient(article, []).status()
+    measurement = status["measurement"]
+    assert type(measurement) is dict
+    measurement["plugin_active"] = False
+    measurement["plugin_version"] = None
+    measurement["aggregate_ability_registered"] = False
+    publication.validate_site_status(status, require_measurement_off=True)
+    measurement[field] = value
+    with pytest.raises(publication.PublicationFailure, match="SITE_NOT_READY"):
+        publication.validate_site_status(status, require_measurement_off=True)
+    status.pop("measurement")
+    with pytest.raises(publication.PublicationFailure, match="SITE_NOT_READY"):
+        publication.validate_site_status(status, require_measurement_off=True)
+
+
+def test_standard_api_published_readback_rejects_active_measurement(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    client = WorkflowClient(article, [])
+    monkeypatch.setattr(publication, "_published_document_evidence", lambda *_args: {})
+
+    def no_deployment_after_invalid_status(*_args: object, **_kwargs: object):
+        raise AssertionError("deployment called after invalid measurement state")
+
+    with pytest.raises(publication.PublicationFailure, match="SITE_NOT_READY"):
+        publication.verify_published(
+            client,
+            [article],
+            {
+                "drafts": {},
+                "desired_theme_runtime_revision": publication.EXPECTED_THEME_RUNTIME_REVISION,
+            },
+            tmp_path / "receipt.json",
+            expected_theme_version=publication.EXPECTED_THEME_VERSION,
+            expected_theme_tree_sha256="a" * 64,
+            theme_was_proposed=False,
+            require_measurement_ready=False,
+            deployment_runner=no_deployment_after_invalid_status,
+        )
+
+
 def test_deployment_status_requires_runtime_revision_key_but_accepts_null(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -3451,9 +3499,7 @@ def test_publication_binding_rejects_missing_manufacturer_safety_even_with_valid
     binding["manufacturer_verified_product_count"] = 0
     binding["complete_product_count"] = 0
     binding["complete"] = False
-    material = {
-        key: value for key, value in binding.items() if key != "binding_sha256"
-    }
+    material = {key: value for key, value in binding.items() if key != "binding_sha256"}
     binding["binding_sha256"] = hashlib.sha256(
         json.dumps(
             material,
@@ -3683,9 +3729,7 @@ def test_activation_binding_persists_only_exact_hashes_and_counts(
     assert binding["activation"]["v2_evidence_status_sha256"] == "e" * 64
     assert binding["activation"]["v2_local_receipt_sha256"] == "5" * 64
     assert binding["activation"]["v2_production_receipt_sha256"] == "6" * 64
-    assert binding["activation"]["mapping_generated_at_utc"] == (
-        "2026-08-31T00:01:00Z"
-    )
+    assert binding["activation"]["mapping_generated_at_utc"] == ("2026-08-31T00:01:00Z")
     assert binding["activation"]["admin_verified_at_utc"] == "2026-08-31T00:02:00Z"
     assert binding["activation"]["activated_at_utc"] == "2026-08-31T00:03:00Z"
 
@@ -3747,9 +3791,7 @@ def test_activation_binding_persists_only_exact_hashes_and_counts(
             publication._validate_materialization_binding(invalid_count)
 
     invalid_time_order = json.loads(json.dumps(binding))
-    invalid_time_order["activation"]["admin_verified_at_utc"] = (
-        "2026-08-31T00:04:00Z"
-    )
+    invalid_time_order["activation"]["admin_verified_at_utc"] = "2026-08-31T00:04:00Z"
     with pytest.raises(
         publication.PublicationFailure,
         match="RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID",
@@ -4295,7 +4337,9 @@ def test_provider_slot_resume_rejects_historical_activation_binding(
         {"proposal_id": f"{index + 1:064x}"} for index in range(len(articles))
     ]
     receipt["batch_registration"] = {}
-    monkeypatch.setattr(publication, "_validate_receipt", lambda value, _articles: value)
+    monkeypatch.setattr(
+        publication, "_validate_receipt", lambda value, _articles: value
+    )
     monkeypatch.setattr(
         publication,
         "publication_batch_status",
@@ -4347,7 +4391,9 @@ def test_provider_slot_resume_allows_only_expired_historical_replacement(
         {"proposal_id": f"{index + 1:064x}"} for index in range(len(articles))
     ]
     receipt["batch_registration"] = {}
-    monkeypatch.setattr(publication, "_validate_receipt", lambda value, _articles: value)
+    monkeypatch.setattr(
+        publication, "_validate_receipt", lambda value, _articles: value
+    )
     monkeypatch.setattr(
         publication,
         "publication_batch_status",
@@ -5073,6 +5119,7 @@ def test_all_mode_remote_applied_legacy_attempt_checks_replacement_preconditions
     status_calls = 0
     replacement_count = 0
     replacement_includes_theme = False
+
     def tracked_tree() -> str:
         # The old tree is bound by the immutable applied receipt and deployment
         # readback; fresh-cycle source checks must observe one stable new tree.

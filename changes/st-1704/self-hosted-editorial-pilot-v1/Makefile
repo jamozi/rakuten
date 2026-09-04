@@ -57,7 +57,7 @@ source-packets-check:
 
 reader-claims-check: source-packets-check
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
-		scripts/build_st1704_reader_claim_coverage.py --check
+		scripts/build_st1704_reader_claim_coverage.py --check --development
 
 reader-claims-skeleton: source-packets-check
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
@@ -65,11 +65,11 @@ reader-claims-skeleton: source-packets-check
 
 manifest-generate: source-packets-generate reader-claims-check
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
-		scripts/build_st1704_self_hosted_editorial_manifest.py
+		scripts/build_st1704_self_hosted_editorial_manifest.py --development
 
 manifest-check: source-packets-check reader-claims-check
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
-		scripts/build_st1704_self_hosted_editorial_manifest.py --check
+		scripts/build_st1704_self_hosted_editorial_manifest.py --check --development
 
 rakuten-capture-manifest-generate:
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \

@@ -87,12 +87,12 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
-      "sha256": "605b2df301d497ac38d952afa41c56768c4544578cbb03f96d41b7268ffbd93b",
+      "sha256": "2bc8157feb74196d00044423109983a1e3214f29888000e39072c2258bae98a1",
       "size": 3365
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "3b1551242f41715c7ad3ba680484df49a6c0c260c6ce34ecbe6e01d4cc2d649c",
+      "sha256": "bbd24d6781c0de3fd856e53fe518f8a1c93bc9681a841ba7be50ff16ec5a8d62",
       "size": 80081
     },
     {
@@ -107,8 +107,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
-      "sha256": "6e77515d105810a36f23c6874a1c6bf71cd16b04bb65aeb7c1ddb441894872e6",
-      "size": 20779
+      "sha256": "ab00ecc23d9460be957587b58c8c48a53b318538bd8424e78485e5b5fc2d82e5",
+      "size": 21099
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/check.sh",
@@ -282,7 +282,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "c8298f297a81ec2549fb2f827edf65a852960d49f1f2e62aa740287f5a16a8c1",
+      "sha256": "37919e0cca13dec81beb6db200a820394ab49038c6a5f778bdce4e10ff856a08",
       "size": 54277
     },
     {
@@ -382,8 +382,8 @@
     },
     {
       "path": "scripts/raos_wordpress_publication_request.py",
-      "sha256": "8ca59b8e2af08b5bcac14938ace3bb82bb41d76df3a4c70401e5aef6afe03306",
-      "size": 258551
+      "sha256": "0674f875b018bae9d81b0cc959b2afc51211544446edaaa034e94a55abb83dcf",
+      "size": 259216
     },
     {
       "path": "scripts/raos_wordpress_seo_audit.py",
@@ -482,8 +482,8 @@
     },
     {
       "path": "tests/wordpress_local_preview/test_publication_request.py",
-      "sha256": "9976dbaefbb19f24259afa4561ba2d437984707b8b9ba6802752ddd1d6e00569",
-      "size": 195211
+      "sha256": "4f70e85f8a5616879c35daf203d798684bedb2c47d586267c55b3667529f8ae0",
+      "size": 197384
     },
     {
       "path": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/README.md",

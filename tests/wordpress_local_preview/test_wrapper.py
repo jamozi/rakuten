@@ -65,6 +65,13 @@ fi
 if [[ "$*" == *" plugin list --name=raos-editorial-measurement --field=status"* ]]; then
   printf '%s\\n' active
 fi
+if [[ "$*" == *" plugin is-active raos-editorial-measurement"* ]]; then
+  test ! -f "$RAOS_FAKE_DOCKER_LOG.measurement-inactive"
+  exit $?
+fi
+if [[ "$*" == *" plugin deactivate raos-editorial-measurement"* ]]; then
+  touch "$RAOS_FAKE_DOCKER_LOG.measurement-inactive"
+fi
 if [[ "$*" == *" plugin list --name=wordpress-seo --field=status"* ]]; then
   printf '%s\\n' active
 fi
@@ -207,6 +214,22 @@ def test_up_generates_private_credentials_and_runs_initial_seed(
     assert f"yoast_root={yoast_root}" in docker_log
     assert all(value not in docker_log for value in values)
     assert all(value not in result.stdout for value in values)
+
+
+def test_standard_api_deactivates_persisted_measurement_plugin(
+    fake_runtime: dict[str, str],
+) -> None:
+    environment = {**fake_runtime, "RAOS_WORDPRESS_LINK_MODE": "standard-api"}
+    _run("up", environment, check=True)
+    _run("status", environment, check=True)
+    log_path = Path(environment["RAOS_FAKE_DOCKER_LOG"])
+    log = log_path.read_text()
+    assert "plugin deactivate raos-editorial-measurement" in log
+    assert "plugin activate raos-editorial-measurement" not in log
+    Path(str(log_path) + ".measurement-inactive").unlink()
+    result = _run("status", environment)
+    assert result.returncode != 0
+    assert "RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_ACTIVE" in result.stderr
 
 
 def _activated_fixture(root: Path, *, mode: int = 0o700) -> Path:
