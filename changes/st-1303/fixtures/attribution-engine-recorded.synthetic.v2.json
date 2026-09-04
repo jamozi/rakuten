@@ -2,7 +2,7 @@
   "schema_version": "2.0.0",
   "profile": "RAOS_ST1303_RECORDED_SYNTHETIC_V2",
   "scenario_id": "ST1303.RECORDED.SYNTHETIC.0001",
-  "contract_sha256": "79661829426f54041ca4006dbd77ada5fea1beb065d426db6757eb58474ade54",
+  "contract_sha256": "2a2f70198776b3d39be4f7e61c2b956fc96622cbd7b585c5c4a18ec2c22bb525",
   "request": {
     "run_id": "018f3e90-7b00-7000-8000-000000001303",
     "requested_at": "2026-09-08T00:00:00Z",
@@ -106,7 +106,7 @@
           "slot": 4,
           "article_id": "st1704-countertop-dishwasher-for-small-households",
           "slug": "countertop-dishwasher-for-small-households",
-          "packet_sha256": "754bb5d2bdf04eefd1867bc53ebb5d2f4307ff1aa49f8414fe5e9d436e5c1cbf",
+          "packet_sha256": "b42a3715a4da0e7beec5902e1c898d9d35b04d414dc4f1d68f2aa3f7f853eeaf",
           "intent_classification": "HOUSEHOLD_FIT_COMPARISON"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
@@ -194,5 +194,5 @@
       }
     ]
   },
-  "expected_input_sha256": "8a0a4afac78d30023afc810476029c1cd391003e15c6ca9d0e9736ead5017a8f"
+  "expected_input_sha256": "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
 }

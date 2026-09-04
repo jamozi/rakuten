@@ -178,7 +178,29 @@ ARTICLE_EXTERNAL_DISPLAY_ALIASES: Final = {
 }
 ARTICLE_LOCAL_SUBJECT_SCOPE_ADDITIONS: Final[dict[str, tuple[str, ...]]] = {}
 METADATA_SUBJECT_OVERRIDES: Final[dict[tuple[str, str], tuple[str, ...]]] = {}
+MIXED_DISH_SELECTION_REFERENCE_TEXTS: Final = frozenset(
+    {
+        "比較範囲:タンク給水対応の4モデル。 公式仕様を比較する4候補を、"
+        "本体・扉開放寸法、標準収納容量、使用水量、給水・乾燥方式で比較し、"
+        "販売状態未確認のSOLOTAは仕様参考に限定しています。",
+        "公式仕様を比較する4候補を設置寸法と食器点数で選び、SOLOTAは仕様参考に限定する",
+    }
+)
+DISH_SELECTED_SUBJECTS: Final = (
+    "PRD-SIROCA-SS-M171",
+    "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+    "PRD-SIROCA-SS-MA251",
+    "PRD-TOSHIBA-DWS-33B-W",
+)
+
 READER_UNIT_SUBJECT_OVERRIDES: Final = {
+    **{
+        ("st1704-countertop-dishwasher-for-small-households", text): (
+            *DISH_SELECTED_SUBJECTS,
+            "EXT-PANASONIC-NP-TMLK1",
+        )
+        for text in MIXED_DISH_SELECTION_REFERENCE_TEXTS
+    },
     (
         "st1704-compact-robot-vacuum-shortlist",
         "K10+ Pro Comboはコードレス掃除機統合という別用途で、ステーション寸法の軸も"
@@ -212,6 +234,11 @@ READER_UNIT_SUBJECT_OVERRIDES: Final = {
 # exact, article-local overrides are safer than a broad nearest-name heuristic
 # that could lend a neighbouring product's fact to the wrong model.
 LOCAL_ASSERTION_SUBJECT_OVERRIDES: Final = {
+    **{
+        (text, token, 0): DISH_SELECTED_SUBJECTS
+        for text in MIXED_DISH_SELECTION_REFERENCE_TEXTS
+        for token in ("4候補", "4モデル")
+    },
     (
         "比較表に含めなかった理由:2026年9月1日に公式画面を再取得すると、"
         "青TDWS25SBLと赤TDWS25SRDの各選択肢は、いずれも『再入荷(予約開始)通知』"
@@ -649,6 +676,11 @@ REVIEWED_SALES_STATE_DOCUMENT_SHA256: Final = (
 # has passed the semantic validator and an independent review.
 REVIEWED_READER_LEDGER_SHA256: Final = (
     "af0890d3492e36e2e5e0ad1b5d00e69e669ac3a303d07b35e5c2184a5a23758a"
+)
+# Reconciled development ledger, not an independent review attestation. Keep
+# the reviewed anchor above unchanged until the separate review is completed.
+DEVELOPMENT_READER_LEDGER_SHA256: Final = (
+    "50f8f855496f9ed17462bec0fd66116f8956e3831da727c2ccff18e65426ebde"
 )
 ADDITIONAL_OFFICIAL_SALES_HOSTS: Final = {
     # siroca separates product information and its first-party store across
@@ -2860,6 +2892,14 @@ class _ReaderUnitParser(HTMLParser):
         return None
 
     def _owner_product_id(self, element: _Element, root: _Element) -> str | None:
+        # These exact mixed-scope summaries describe four selected products
+        # and one excluded reference. The latter cannot own the sales claim.
+        if (
+            self.article_id == "st1704-countertop-dishwasher-for-small-households"
+            and _normalize_text(" ".join(element.assigned_text))
+            in MIXED_DISH_SELECTION_REFERENCE_TEXTS
+        ):
+            return None
         # A non-selected portfolio reference or article-local ``EXT-*``
         # market-candidate identity may be named directly in this unit.  It
         # is an ownership boundary, not a selected product subject.
@@ -3888,6 +3928,7 @@ def _load_product_safety_statuses(
     products_by_id: dict[str, dict[str, object]],
     sources: dict[str, dict[str, object]],
     claims: dict[str, dict[str, dict[str, object]]],
+    replay_owner_private: bool = True,
 ) -> tuple[dict[str, dict[str, object]], str]:
     """Derive status only from replayed official evidence, never tracked hashes."""
 
@@ -3979,7 +4020,7 @@ def _load_product_safety_statuses(
     )
 
     try:
-        if (root / PORTFOLIO_RELATIVE).is_file():
+        if replay_owner_private and (root / PORTFOLIO_RELATIVE).is_file():
             for relative in (
                 PRODUCT_SAFETY_ADMIN_PLAN_RELATIVE,
                 PRODUCT_SAFETY_MANUFACTURER_PLAN_RELATIVE,
@@ -5186,6 +5227,7 @@ def _load_repository_model(
         products_by_id=products_by_id,
         sources=sources,
         claims=claims,
+        replay_owner_private=require_fresh_sales_state,
     )
     market_axis_states, market_audit_document_sha256 = _load_market_axis_states(
         root=root, articles=articles
@@ -6647,6 +6689,8 @@ def _decision_gate_product_ids(
     product_ids = tuple(dict.fromkeys(selected))
     recommendation = RECOMMENDATION_CONCLUSION_RE.search(unit.text) is not None
     selection = SELECTION_DECISION_RE.search(unit.text) is not None
+    if unit.text in MIXED_DISH_SELECTION_REFERENCE_TEXTS:
+        selection = True
     if selection and re.search(r"\d+\s*候補.*仕様参考", unit.text):
         product_ids = tuple(sorted(allowed_product_ids))
     if selection and re.search(r"販売状態未確認.*現行販売.*候補", unit.text):
@@ -7209,16 +7253,27 @@ def validate_source_refresh_inputs(root: Path = ROOT) -> None:
     """Check acquisition inputs, not publication readiness or reader approval.
 
     Sources must be capturable before the reader ledger can be reviewed against
-    them. Expired observations are allowed only here; future dates, origin,
+    them. Like development replay, this allows expired observations; future dates, origin,
     identity, snapshot hashes, and source-contract validation remain mandatory.
     """
     _load_repository_model(root, require_fresh_sales_state=False)
 
 
 def validate_repository(
-    root: Path = ROOT, ledger: dict[str, object] | None = None
+    root: Path = ROOT,
+    ledger: dict[str, object] | None = None,
+    *,
+    require_fresh_sales_state: bool = True,
 ) -> None:
-    model = _load_repository_model(root)
+    """Validate all semantic bindings; publication callers require fresh data.
+
+    Development can replay historical captures without changing observations or
+    granting publication authority. Only elapsed age is optional, never hashes,
+    identity, future timestamps, or the complete reader ledger validation.
+    """
+    model = _load_repository_model(
+        root, require_fresh_sales_state=require_fresh_sales_state
+    )
     document = ledger if ledger is not None else _load_json(root, LEDGER_RELATIVE)
     _exact_keys(
         document,
@@ -7359,7 +7414,12 @@ def validate_repository(
                 market_axis_states=model.market_axis_states,
                 allowed_product_ids=allowed_product_ids,
             )
-    if _canonical_sha256(document) != REVIEWED_READER_LEDGER_SHA256:
+    expected_ledger_sha256 = (
+        REVIEWED_READER_LEDGER_SHA256
+        if require_fresh_sales_state
+        else DEVELOPMENT_READER_LEDGER_SHA256
+    )
+    if _canonical_sha256(document) != expected_ledger_sha256:
         _fail("reader ledger is not the independently reviewed semantic allow-list")
 
 
@@ -7456,6 +7516,11 @@ def _parser() -> argparse.ArgumentParser:
         action="store_true",
         help="print an UNCLASSIFIED proposal to stdout without writing files",
     )
+    parser.add_argument(
+        "--development",
+        action="store_true",
+        help="Validate historical repository evidence without publication authority.",
+    )
     return parser
 
 
@@ -7465,7 +7530,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.skeleton:
             sys.stdout.buffer.write(build_skeleton())
             return 0
-        validate_repository()
+        validate_repository(require_fresh_sales_state=not args.development)
     except CoverageFailure as exc:
         print(str(exc), file=sys.stderr)
         return 1

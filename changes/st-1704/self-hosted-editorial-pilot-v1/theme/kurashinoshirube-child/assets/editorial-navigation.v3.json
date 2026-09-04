@@ -93,7 +93,7 @@
           "relationship": "lifecycle_reference"
         }
       ],
-      "snapshot_id": "snp-a04-ec3e66487fb1",
+      "snapshot_id": "snp-a04-585688f5db3f",
       "title": "工事不要の食洗機4候補｜1〜2人暮らしの設置条件で選ぶ"
     },
     {
@@ -291,7 +291,7 @@
   ],
   "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
   "source_navigation_sha256": "12ef041c11f4cddc7cb1924027f96c36ad7df475a4266a2bdae1b580e874fc7a",
-  "source_portfolio_sha256": "99cc7569957781727d8fc5c9331dcf498e341e630758947b6eed2a39bd3a7cb9",
+  "source_portfolio_sha256": "b04818d2c93fa4a4576b7fdb4580632e4e0a48f35eef667bfe0fdaa5e7bb0b1e",
   "target_origin": "https://kurashinoshirube.com",
   "version": "3.0.0"
 }

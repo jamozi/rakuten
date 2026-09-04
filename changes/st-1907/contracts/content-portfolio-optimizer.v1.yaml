@@ -95,10 +95,10 @@ dependency:
 measurement_and_signal_policy:
   measurement_contract:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 3a59ad41be34f2f01435cc1e85addabbf5b37507ea6b523f6a0898d3dfd9b32b
+    sha256: aa60d03210ef0cc3917104fff3a8a5b2fef1502fe37649cc5255c785c9b39edd
   signal_policy:
     path: changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml
-    sha256: eed985fa3fe53d5e5e0a5c9fb12631709b83f37ea3ffcf700b1ca64825edf0d4
+    sha256: 4a7ff35dd499f74828ee34b12ff33f43c5e190213f3f40b93da100070165ca9e
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
   same_program_required: true
@@ -142,7 +142,7 @@ proposal_contract:
 
 recorded_fixture:
   path: changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json
-  sha256: 1d5a9caa30ce52dcadfd8b106737b8f999b49239bb65d43426bf234bc97bd14e
+  sha256: 71cbdc3cfb14299402766b4a6a8d59c4b0316f5004fe6e31717597cae415de70
   bytes: 986
   synthetic: true
   current_availability: UNAVAILABLE

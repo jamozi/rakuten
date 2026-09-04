@@ -29,7 +29,7 @@
     {
       "bytes": 187765,
       "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
-      "sha256": "99cc7569957781727d8fc5c9331dcf498e341e630758947b6eed2a39bd3a7cb9"
+      "sha256": "b04818d2c93fa4a4576b7fdb4580632e4e0a48f35eef667bfe0fdaa5e7bb0b1e"
     },
     {
       "bytes": 13598,
@@ -59,7 +59,7 @@
     {
       "bytes": 8816,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "ee95176902cafa9d1a15c99d8d43323435eafb36c95d462d8f678a2c069b5d75"
+      "sha256": "ce5bfb906432543df10418b08ef636f9f8a0d7d57ff511e46f2da138325861dd"
     },
     {
       "bytes": 2528,
@@ -74,7 +74,7 @@
     {
       "bytes": 32133,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "5b37e0b50852410b37a93f1b4dbd633ea87ce87858499a84fbad4b33194658da"
+      "sha256": "3d92c31c2749d6a8aa88a657261bd056fa2a1d7dd2f971de9bfea85130c9b5bb"
     },
     {
       "bytes": 2486,
@@ -97,9 +97,9 @@
       "sha256": "ccfff1f1c0eb2f7f328034514319cedcfbde777cbc4ecec1ee2076c79744436d"
     },
     {
-      "bytes": 252143,
+      "bytes": 252137,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-      "sha256": "4d1a3cdd749309236a6ac0aaae07c2abe7f43263894d18b575c04326eb2551b2"
+      "sha256": "29e4398f74404330c49a6ad769ac2b1e21b1852acee0a556ab2ccae1f3220472"
     },
     {
       "bytes": 34324,
@@ -152,9 +152,9 @@
       "sha256": "b24a53168fc831330431bbf7c94382e7741e72aa245fd2310dc592b902ae93a2"
     },
     {
-      "bytes": 4117592,
+      "bytes": 3825787,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/reader-claim-bindings.v1.json",
-      "sha256": "d3cf3ff36c1de164738cf0389e8eb89bff37b623b54bd318a554521ea97dd825"
+      "sha256": "5ad206db4f88f1e67abdf1bc23d31739506781ee3d97b9b7f90a23581a62c25b"
     },
     {
       "bytes": 170931,
@@ -179,12 +179,12 @@
     {
       "bytes": 13194,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json",
-      "sha256": "8661ef74dc2fb4aebc4f9067bf5aa99b6ce058bb62cdb1948d70f5366f802a18"
+      "sha256": "25a7cad3916a0658509664abe1a69f2d8f3abe0706cc90e2c979b5c6866c631d"
     },
     {
       "bytes": 26629,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
-      "sha256": "d346420c8507d463cc63d35e5afc6612570fbe66fba1c6bd91a393425abacbc4"
+      "sha256": "15b8e637be726d1488de4e1986605d4072c2b9392073f2ce4695e92267217c28"
     },
     {
       "bytes": 94902,
@@ -224,12 +224,12 @@
     {
       "bytes": 81845,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
-      "sha256": "1ee2e7342de19876250a70522da30a1c38c083073b9cb71aa6774728cdb80cb3"
+      "sha256": "ef01b5ce4a451f8efa99cc0544e5765ccf2cc2bd17ca03ca81432543748e1105"
     },
     {
       "bytes": 167944,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
-      "sha256": "f0103a8b1becede1bd9b52eb1fadba793f260c92dcade27fee87f74731c5d567"
+      "sha256": "87c7b63c6d4d6fa8b4135b4a2f70b06400e7b562d2b4c772afe2b479ade8b0a2"
     },
     {
       "bytes": 2244,
@@ -244,7 +244,7 @@
     {
       "bytes": 17939,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
-      "sha256": "ba2db5e45fdf0c58866a76dd6576e569af72805c665c90c8d90c93cb4a8de281"
+      "sha256": "ec16d2087e99a4cb17dc9c0d558041f43132d7bda75b146e8b9f093c206cefed"
     },
     {
       "bytes": 274,
@@ -279,7 +279,7 @@
     {
       "bytes": 22308,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme-contract.v1.json",
-      "sha256": "574770566fdd6763ab752ce5bc03205367c03c16add883084ccab2bb7bd488d4"
+      "sha256": "7debaed0b54c19110867980d9635df60c132149dc6c762bfa5ad52c09e1369a5"
     },
     {
       "bytes": 1996,
@@ -312,9 +312,9 @@
       "sha256": "f7e50fc320be7959c0a66fd48be0991bf4b4f502085d0cf8cd5f0198c1ce83df"
     },
     {
-      "bytes": 42876,
+      "bytes": 42870,
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
-      "sha256": "ec3e66487fb1a8ab95cfebd83b4c5fd48cf9abe0452655a8751636c5326f0081"
+      "sha256": "585688f5db3f903d1f6ee1d2e84e70bc9753e68cb935912836471b810d7931eb"
     },
     {
       "bytes": 44648,
@@ -1932,19 +1932,19 @@
       "sha256": "d1be8fa73c4c36c97cb4079ffa9a427494a6249b18a95be6d8f04994dd4b4ce5"
     },
     {
-      "bytes": 317273,
+      "bytes": 320024,
       "path": "scripts/build_st1704_reader_claim_coverage.py",
-      "sha256": "a2e113815310deb593d6e5d94e7514176a213c6c1853045829794fdd8d72af92"
+      "sha256": "c30c6319dd6a1f78b8b4e941b903210b2ce7dc4c4fa3a231e0dc25d317044438"
     },
     {
-      "bytes": 16454,
+      "bytes": 16849,
       "path": "scripts/build_st1704_self_hosted_editorial_manifest.py",
-      "sha256": "28059dcb91c7334e1bcad11a5bfa2ad4847a226a3227fba5acec187a29cf6f89"
+      "sha256": "87567c987f58db8041e7dc422f914056ef3deb46c8318b3e4a63055fdb807d23"
     },
     {
       "bytes": 47114,
       "path": "scripts/build_st1704_self_hosted_theme.py",
-      "sha256": "38ea03903745883eea9ab9ef73a74c494cbf207204d847fa0306a1ac8c693273"
+      "sha256": "f3a6e73fedf7e41f362dac58572aad6d75a18568f82902caed5e562e774dee7a"
     },
     {
       "bytes": 17624,

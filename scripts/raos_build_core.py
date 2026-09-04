@@ -146,17 +146,11 @@ EXPLICIT_OWNER_DEPENDENCIES: Final[dict[str, tuple[str, ...]]] = {
     "build_st1902_champion_challenger": (
         "build_st0708_openai_live_bounded_evaluation_reference_plan",
     ),
-    "build_st1903_partial_auto_publication": (
-        "build_st1805_portfolio_decision",
-    ),
+    "build_st1903_partial_auto_publication": ("build_st1805_portfolio_decision",),
     "build_st1904_multi_category": ("build_st1805_portfolio_decision",),
     "build_st1905_advanced_rank_provider": ("build_st1206_keyword_rank_import",),
-    "build_st1906_advanced_causal_attribution": (
-        "build_st1303_attribution_engine",
-    ),
-    "build_st1908_fine_tuning_evaluation": (
-        "build_st0707_evaluation_harness_runtime",
-    ),
+    "build_st1906_advanced_causal_attribution": ("build_st1303_attribution_engine",),
+    "build_st1908_fine_tuning_evaluation": ("build_st0707_evaluation_harness_runtime",),
 }
 
 
@@ -192,6 +186,13 @@ class BuildSpec:
         if self.isolated_python:
             command.extend(("-I", "-B"))
         command.append(self.generator.as_posix())
+        # Repository builds replay historical evidence. Publication entrypoints
+        # retain their strict default and separately enforce live freshness.
+        if self.owner_id in {
+            "build_st1704_reader_claim_coverage",
+            "build_st1704_self_hosted_editorial_manifest",
+        }:
+            command.append("--development")
         if check:
             if not self.supports_check:
                 raise ValueError(f"{self.owner_id} has no check mode")
@@ -410,7 +411,7 @@ def load_yaml(path: Path) -> object:
         return cast(object, yaml.load(text, Loader=UniqueKeyLoader))
     except StagingDeploymentContractError:
         raise
-    except (UnicodeError, yaml.YAMLError):
+    except UnicodeError, yaml.YAMLError:
         _fail("YAML_INVALID", "yaml")
 
 
@@ -442,7 +443,7 @@ def load_json(path: Path) -> object:
         )
     except StagingDeploymentContractError:
         raise
-    except (UnicodeError, json.JSONDecodeError):
+    except UnicodeError, json.JSONDecodeError:
         _fail("JSON_INVALID", "json")
 
 
@@ -499,7 +500,7 @@ def _atomic_write(root: Path, relative: Path, content: bytes) -> None:
         _regular_file(target, "generated_output")
     try:
         atomic_write(relative, content, root=root)
-    except (BuildRegistryError, OSError):
+    except BuildRegistryError, OSError:
         _fail("OUTPUT_WRITE_FAILED", "output")
 
 
@@ -577,11 +578,16 @@ def _path_value(
         left = _path_value(node.left, known)
         if right and left:
             return tuple(base / suffix for base in left for suffix in right)
-        if right and isinstance(node.left, ast.Name) and node.left.id.upper() in {
-            "ROOT",
-            "REPO_ROOT",
-            "REPOSITORY_ROOT",
-        }:
+        if (
+            right
+            and isinstance(node.left, ast.Name)
+            and node.left.id.upper()
+            in {
+                "ROOT",
+                "REPO_ROOT",
+                "REPOSITORY_ROOT",
+            }
+        ):
             return right
     if isinstance(node, (ast.Tuple, ast.List, ast.Set)):
         paths: list[Path] = []
@@ -612,7 +618,9 @@ def _top_level_paths(source: str) -> dict[str, tuple[Path, ...]]:
             if isinstance(target, ast.Name):
                 name = target.id
                 value = statement.value
-        elif isinstance(statement, ast.AnnAssign) and isinstance(statement.target, ast.Name):
+        elif isinstance(statement, ast.AnnAssign) and isinstance(
+            statement.target, ast.Name
+        ):
             name = statement.target.id
             value = statement.value
         if name is not None and value is not None:
@@ -711,7 +719,10 @@ def _input_kind(path: Path) -> InputKind:
     value = path.as_posix()
     if value.startswith(("docs/canonical/", "docs/upstream/", "zip/")):
         return InputKind.IMMUTABLE
-    if path.name in {"uv.lock", "package-lock.json"} or "runtime-inventory" in path.name:
+    if (
+        path.name in {"uv.lock", "package-lock.json"}
+        or "runtime-inventory" in path.name
+    ):
         return InputKind.DEPENDENCY
     return InputKind.TRACKED
 
@@ -748,7 +759,9 @@ def _cross_builder_dependencies(source: str) -> set[str]:
     pending: list[ast.AST] = list(tree.body)
     while pending:
         node = pending.pop()
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)):
+        if isinstance(
+            node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)
+        ):
             continue
         module: str | None = None
         if isinstance(node, ast.ImportFrom):
@@ -778,7 +791,11 @@ def _declared_outputs(owner_id: str, *, root: Path) -> set[Path]:
         entries = manifest.get("artifacts")
     elif owner_id == "build_st0105_generated_contracts":
         output_section = manifest.get("outputs")
-        entries = output_section.get("artifacts") if isinstance(output_section, dict) else None
+        entries = (
+            output_section.get("artifacts")
+            if isinstance(output_section, dict)
+            else None
+        )
     else:
         entries = manifest.get("generated_artifacts")
     if not isinstance(entries, list):
@@ -786,12 +803,18 @@ def _declared_outputs(owner_id: str, *, root: Path) -> set[Path]:
     outputs.add(manifest_path)
     for entry in entries:
         if not isinstance(entry, dict):
-            raise BuildRegistryError(f"output inventory row is invalid: {manifest_path}")
+            raise BuildRegistryError(
+                f"output inventory row is invalid: {manifest_path}"
+            )
         value = entry.get("path") or entry.get("uri")
         if not isinstance(value, str):
-            raise BuildRegistryError(f"output inventory path is invalid: {manifest_path}")
+            raise BuildRegistryError(
+                f"output inventory path is invalid: {manifest_path}"
+            )
         relative = Path(value.removeprefix("repo://"))
-        if relative.is_absolute() or any(part in {"", ".", ".."} for part in relative.parts):
+        if relative.is_absolute() or any(
+            part in {"", ".", ".."} for part in relative.parts
+        ):
             raise BuildRegistryError(f"output inventory path is unsafe: {relative}")
         if owner_id == "build_st0104_contract_repository":
             # The repository index stores paths relative to the versioned
@@ -862,9 +885,7 @@ def discover_registry(*, root: Path = REPOSITORY_ROOT) -> dict[str, BuildSpec]:
         source = item["source"]
         paths = item["paths"]
         outputs = {
-            path
-            for path in item["outputs"]
-            if output_owner.get(path) == owner_id
+            path for path in item["outputs"] if output_owner.get(path) == owner_id
         }
         dependencies = set(item["dependencies"])
         dependencies.update(EXPLICIT_OWNER_DEPENDENCIES.get(owner_id, ()))
@@ -916,9 +937,7 @@ def discover_registry(*, root: Path = REPOSITORY_ROOT) -> dict[str, BuildSpec]:
             test_paths=tuple(
                 sorted(
                     set(_test_paths(item["story_ids"], root=root))
-                    | set(
-                        _declared_test_paths(_top_level_paths(source), root=root)
-                    )
+                    | set(_declared_test_paths(_top_level_paths(source), root=root))
                 )
             ),
             supports_check='"--check"' in source or "'--check'" in source,
@@ -976,7 +995,9 @@ def topological_order(
     return tuple(ordered)
 
 
-def changed_paths(*, root: Path = REPOSITORY_ROOT, base: str | None = None) -> tuple[Path, ...]:
+def changed_paths(
+    *, root: Path = REPOSITORY_ROOT, base: str | None = None
+) -> tuple[Path, ...]:
     if base is None:
         branch = subprocess.run(
             ("git", "symbolic-ref", "--quiet", "refs/remotes/origin/HEAD"),
@@ -989,7 +1010,13 @@ def changed_paths(*, root: Path = REPOSITORY_ROOT, base: str | None = None) -> t
         if not base:
             for candidate in ("origin/main", "origin/master"):
                 available = subprocess.run(
-                    ("git", "show-ref", "--verify", "--quiet", f"refs/remotes/{candidate}"),
+                    (
+                        "git",
+                        "show-ref",
+                        "--verify",
+                        "--quiet",
+                        f"refs/remotes/{candidate}",
+                    ),
                     cwd=root,
                     check=False,
                 )
@@ -1042,7 +1069,9 @@ def affected_owners(
         )
         if any(
             candidate in changed
-            or any(candidate.is_relative_to(path) for path in changed if path.suffix == "")
+            or any(
+                candidate.is_relative_to(path) for path in changed if path.suffix == ""
+            )
             for candidate in owned
         ):
             direct.add(owner)
@@ -1224,8 +1253,7 @@ def generation_relevant_paths(paths: Iterable[Path]) -> tuple[Path, ...]:
         and not path.as_posix().startswith(ignored_prefixes)
         and path != ACTIVE_MANIFEST_PATH
         and path.name not in {"manifest.yaml", "manifest.json"}
-        and path
-        != Path("changes/st-0107/contracts/pr-governance.v1.yaml")
+        and path != Path("changes/st-0107/contracts/pr-governance.v1.yaml")
         and not path.as_posix().startswith("changes/status/")
     )
 
@@ -1245,9 +1273,7 @@ def run_commands(
         if value
     )
     for command in commands:
-        process = subprocess.run(
-            tuple(command), cwd=root, check=False, env=environment
-        )
+        process = subprocess.run(tuple(command), cwd=root, check=False, env=environment)
         if process.returncode != 0:
             raise BuildRegistryError(
                 f"command failed ({process.returncode}): {' '.join(command)}"

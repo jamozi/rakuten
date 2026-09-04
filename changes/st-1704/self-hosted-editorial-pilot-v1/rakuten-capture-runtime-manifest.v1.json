@@ -17,7 +17,7 @@
     {
       "bytes": 8816,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "ee95176902cafa9d1a15c99d8d43323435eafb36c95d462d8f678a2c069b5d75"
+      "sha256": "ce5bfb906432543df10418b08ef636f9f8a0d7d57ff511e46f2da138325861dd"
     },
     {
       "bytes": 5387,
@@ -27,7 +27,7 @@
     {
       "bytes": 32133,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "5b37e0b50852410b37a93f1b4dbd633ea87ce87858499a84fbad4b33194658da"
+      "sha256": "3d92c31c2749d6a8aa88a657261bd056fa2a1d7dd2f971de9bfea85130c9b5bb"
     },
     {
       "bytes": 2486,
@@ -45,9 +45,9 @@
       "sha256": "73c13dd6f321dfe4ec8386fb0dcf0ab8a42578d4fe9b5b3f45eefbb4b1cbb32f"
     },
     {
-      "bytes": 252143,
+      "bytes": 252137,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-      "sha256": "4d1a3cdd749309236a6ac0aaae07c2abe7f43263894d18b575c04326eb2551b2"
+      "sha256": "29e4398f74404330c49a6ad769ac2b1e21b1852acee0a556ab2ccae1f3220472"
     },
     {
       "bytes": 34324,

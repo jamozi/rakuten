@@ -67,7 +67,7 @@ post sitemap and the front-page latest-guides Query block. This is defense in de
 not authority to perform the human containment action.
 
 For a 1.5.0 publication readback, both MCP status surfaces must report runtime
-revision `de73b422754d2b0c3c5b6c49e5ea1a1e97c403fa8c8c95461cc7b6d4251f9c90`.
+revision `2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e`.
 The anonymous and authenticated page checks also fetch the two same-origin theme
 stylesheets without redirects and require distinct base/Editorial V2 sentinels,
 HTTP 200, `text/css`, bounded strict UTF-8, and an observed content hash and size.

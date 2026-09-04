@@ -17,6 +17,57 @@ from scripts import build_st1704_reader_claim_coverage as owner
 
 
 ROOT = Path(__file__).resolve().parents[2]
+INDEPENDENT_REVIEW_ANCHOR = owner.REVIEWED_READER_LEDGER_SHA256
+SAFETY_STATUS_LOADER = owner._load_product_safety_statuses
+
+
+@pytest.fixture(autouse=True)
+def recorded_capture_clock(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Semantic fixture tests replay the capture date, not wall-clock expiry."""
+
+    class RecordedClock(datetime):
+        @classmethod
+        def now(cls, tz: tzinfo | None = None) -> datetime:
+            return datetime.fromisoformat("2026-09-01T00:00:00+00:00").astimezone(tz)
+
+    monkeypatch.setattr(owner, "datetime", RecordedClock)
+    safety_loader = owner._load_product_safety_statuses
+    monkeypatch.setattr(
+        owner,
+        "_load_product_safety_statuses",
+        lambda **kwargs: safety_loader(**{**kwargs, "replay_owner_private": False}),
+    )
+    # Unit tests exercise semantic validation, not independent attestation.
+    monkeypatch.setattr(
+        owner, "REVIEWED_READER_LEDGER_SHA256", owner.DEVELOPMENT_READER_LEDGER_SHA256
+    )
+
+
+def test_development_ledger_does_not_claim_independent_review(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        owner, "REVIEWED_READER_LEDGER_SHA256", INDEPENDENT_REVIEW_ANCHOR
+    )
+    owner.validate_repository(ROOT, require_fresh_sales_state=False)
+    with pytest.raises(owner.CoverageFailure, match="independently reviewed"):
+        owner.validate_repository(ROOT)
+
+
+def test_development_replay_does_not_depend_on_private_capture_cache(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(owner, "_load_product_safety_statuses", SAFETY_STATUS_LOADER)
+
+    def private_capture_must_not_run(*args: object, **kwargs: object) -> object:
+        raise AssertionError("private capture replay requested")
+
+    monkeypatch.setattr(
+        owner, "load_product_safety_receipt_audit", private_capture_must_not_run
+    )
+    owner.validate_repository(ROOT, require_fresh_sales_state=False)
+    with pytest.raises(AssertionError, match="private capture replay requested"):
+        owner.validate_repository(ROOT)
 
 
 def _ledger() -> dict[str, object]:
@@ -226,6 +277,12 @@ def test_source_refresh_can_acquire_after_expiry_but_normal_checks_still_fail(
         owner.validate_repository(ROOT)
     with pytest.raises(owner.CoverageFailure, match="snapshot is stale"):
         manifest.build_manifest()
+    owner.validate_repository(ROOT, require_fresh_sales_state=False)
+    assert manifest.build_manifest(development=True) == raw
+    invalid_ledger = _ledger()
+    invalid_ledger["article_ids"] = []
+    with pytest.raises(owner.CoverageFailure, match="article set/order"):
+        owner.validate_repository(ROOT, invalid_ledger, require_fresh_sales_state=False)
 
 
 def test_source_refresh_still_rejects_tampered_sales_evidence(tmp_path: Path) -> None:
@@ -236,6 +293,8 @@ def test_source_refresh_still_rejects_tampered_sales_evidence(tmp_path: Path) ->
     _write_json(path, sales)
     with pytest.raises(owner.CoverageFailure, match="not the reviewed capture"):
         owner.validate_source_refresh_inputs(root)
+    with pytest.raises(owner.CoverageFailure, match="not the reviewed capture"):
+        owner.validate_repository(root, require_fresh_sales_state=False)
 
 
 def test_source_refresh_still_rejects_future_sales_evidence(
@@ -252,6 +311,8 @@ def test_source_refresh_still_rejects_future_sales_evidence(
     monkeypatch.setattr(owner, "datetime", BeforeCaptureClock)
     with pytest.raises(owner.CoverageFailure, match="in the future"):
         owner.validate_source_refresh_inputs(ROOT)
+    with pytest.raises(owner.CoverageFailure, match="in the future"):
+        owner.validate_repository(ROOT, require_fresh_sales_state=False)
 
 
 def test_reader_inventory_includes_current_channels_and_extracts_image_alt() -> None:
@@ -847,13 +908,13 @@ def test_portfolio_reference_claims_are_route_bound_and_reader_owned(
                 for unit in _units(article_binding)
             )
 
-    assert len(reviewed_references) == 10
+    assert len(reviewed_references) == 8
     lifecycle_references = [
         claim
         for article_id, claim in reviewed_references
         if article_id == "solota-vs-rakua-mini-plus"
     ]
-    assert len(lifecycle_references) == 4
+    assert lifecycle_references == []
 
     # Integrity hashes are recomputed so this exercises the route semantic,
     # rather than failing early on ordinary generated-file drift.
@@ -1377,7 +1438,9 @@ def test_article_local_aliases_and_coordinated_heading_keep_fact_ownership() -> 
         owner_product_id="PRD-PROTECA-TRI-AIR-01541",
     ) == ("PRD-PROTECA-TRI-AIR-01541",)
 
-    dish_aliases = model.product_aliases["solota-vs-rakua-mini-plus"]
+    dish_aliases = model.product_aliases[
+        "st1704-countertop-dishwasher-for-small-households"
+    ]
     assert owner._local_assertion_subjects(
         "短い奥行ならSOLOTA、16点と2WAY給水ならSS-M171。",
         "16点",

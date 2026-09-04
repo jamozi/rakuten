@@ -259,7 +259,7 @@
       "related_article_ids": [
         "solota-vs-rakua-mini-plus"
       ],
-      "snapshot_id": "snp-a04-ec3e66487fb1"
+      "snapshot_id": "snp-a04-585688f5db3f"
     },
     {
       "article_code": "a05",
@@ -573,7 +573,7 @@
   "source": {
     "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
     "schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
-    "sha256": "99cc7569957781727d8fc5c9331dcf498e341e630758947b6eed2a39bd3a7cb9",
+    "sha256": "b04818d2c93fa4a4576b7fdb4580632e4e0a48f35eef667bfe0fdaa5e7bb0b1e",
     "version": "3.0.0"
   },
   "target_origin": "https://kurashinoshirube.com",

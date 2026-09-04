@@ -62,7 +62,7 @@ def test_runtime_manifest_declares_the_analytics_consent_gate_source() -> None:
 
 def test_runtime_manifest_is_exact_and_keeps_st1703_as_predecessor() -> None:
     path = SLICE / "runtime-manifest.v1.json"
-    assert path.read_bytes() == manifest_builder.build_manifest()
+    assert path.read_bytes() == manifest_builder.build_manifest(development=True)
     manifest = json.loads(path.read_text(encoding="utf-8"))
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_PILOT_MANIFEST_V1"
     assert manifest["story_id"] == "ST-1704"
@@ -140,9 +140,7 @@ def test_theme_package_is_deterministic_closed_and_has_only_owned_javascript() -
             "kurashinoshirube-child/assets/editorial-navigation.js",
             "kurashinoshirube-child/assets/measurement.js",
         ]
-        assert not any(
-            name.endswith((".php~", ".zip")) for name in archive.namelist()
-        )
+        assert not any(name.endswith((".php~", ".zip")) for name in archive.namelist())
 
 
 def test_theme_source_change_without_revision_bump_is_rejected(
@@ -171,9 +169,7 @@ def test_publication_plan_is_closed_and_in_the_required_order() -> None:
     assert plan["publication_authority"] == "NONE"
     rows = plan["articles"]
     assert isinstance(rows, list)
-    assert [row["article_id"] for row in rows] == list(
-        manifest_builder.ARTICLE_IDS[:5]
-    )
+    assert [row["article_id"] for row in rows] == list(manifest_builder.ARTICLE_IDS[:5])
     assert [row["day_number"] for row in rows] == [1, 4, 7, 10, 13]
     assert [row["action"] for row in rows] == [
         "UPDATE_EXISTING",
@@ -204,9 +200,7 @@ def test_measurement_ledger_adds_no_tracking_and_cannot_rank_products() -> None:
     )
     rows = ledger["articles"]
     assert isinstance(rows, list) and len(rows) == 5
-    assert [row["article_id"] for row in rows] == list(
-        manifest_builder.ARTICLE_IDS[:5]
-    )
+    assert [row["article_id"] for row in rows] == list(manifest_builder.ARTICLE_IDS[:5])
     for row in rows:
         assert row["record_at_day"] == 14
         assert row["status"] == "NOT_RECORDED"

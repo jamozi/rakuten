@@ -51,6 +51,21 @@ def test_build_infrastructure_change_selects_the_complete_graph() -> None:
     assert set(selected) == set(registry)
 
 
+def test_only_historical_editorial_builds_opt_into_development_replay() -> None:
+    registry = discover_registry()
+    historical = {
+        "build_st1704_reader_claim_coverage",
+        "build_st1704_self_hosted_editorial_manifest",
+    }
+    for owner_id, spec in registry.items():
+        assert ("--development" in spec.command()) == (owner_id in historical)
+        assert "--for-source-refresh" not in spec.command()
+        if spec.supports_check:
+            assert ("--development" in spec.command(check=True)) == (
+                owner_id in historical
+            )
+
+
 def test_changed_paths_falls_back_to_origin_main_without_origin_head(
     tmp_path: Path,
 ) -> None:
@@ -139,9 +154,10 @@ def test_wordpress_mcp_consumes_the_generated_audit_inventory() -> None:
 
     assert "build_editorial_v3_theme_navigation" in wordpress_mcp.owner_dependencies
     assert "build_editorial_measurement_v1" in wordpress_mcp.owner_dependencies
-    assert Path(
-        "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
-    ) in wordpress_mcp.outputs
+    assert (
+        Path("changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json")
+        in wordpress_mcp.outputs
+    )
     assert (
         "repo://changes/editorial-portfolio-v3/generated/"
         "wordpress-audit-inventory.v3.json"
@@ -228,8 +244,7 @@ def test_migration_catalog_changes_propagate_through_upgrade_fixtures() -> None:
         "build_st0306_database_roles",
     }
     assert any(
-        item.uri
-        == "repo://changes/st-0301/generated/migration-catalog.v1.json"
+        item.uri == "repo://changes/st-0301/generated/migration-catalog.v1.json"
         for item in fixture_owner.inputs
     )
     selected = affected_owners(registry, {Path("python/raos/migrations/catalog.py")})
@@ -256,9 +271,7 @@ def test_st0005_git_attributes_source_selects_its_generator() -> None:
     owner = registry["build_st0005_status"]
 
     assert any(item.uri == "repo://.gitattributes" for item in owner.inputs)
-    assert "build_st0005_status" in affected_owners(
-        registry, {Path(".gitattributes")}
-    )
+    assert "build_st0005_status" in affected_owners(registry, {Path(".gitattributes")})
 
 
 def test_ci_workflow_source_selects_owners_that_hash_it() -> None:
@@ -295,9 +308,10 @@ def test_v2_generated_evidence_is_independent_of_ignored_raw_receipts() -> None:
     assert validation["browser_evidence"]["raw_verification"] == (
         "RECORDED_NOT_REVERIFIED"
     )
-    assert validation["visual_review_evidence"]["verification"][
-        "raw_verification"
-    ] == "RECORDED_NOT_REVERIFIED"
+    assert (
+        validation["visual_review_evidence"]["verification"]["raw_verification"]
+        == "RECORDED_NOT_REVERIFIED"
+    )
 
 
 def test_owner_commands_do_not_write_python_bytecode(tmp_path: Path) -> None:
@@ -330,9 +344,7 @@ def test_active_manifest_uses_hashes_only_for_integrity_inputs_and_outputs() -> 
 
 def test_status_v2_is_compact_and_contains_no_evidence_bodies() -> None:
     status = yaml.safe_load(
-        (REPOSITORY_ROOT / "changes/status/status.v2.yaml").read_text(
-            encoding="utf-8"
-        )
+        (REPOSITORY_ROOT / "changes/status/status.v2.yaml").read_text(encoding="utf-8")
     )
     assert status["document"] == {
         "id": "RAOS-STATUS-002",
@@ -342,7 +354,8 @@ def test_status_v2_is_compact_and_contains_no_evidence_bodies() -> None:
     }
     assert len(status["stories"]) > 100
     assert all(
-        set(story) == {
+        set(story)
+        == {
             "story_id",
             "implementation",
             "verification",

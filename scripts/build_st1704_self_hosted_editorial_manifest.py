@@ -313,11 +313,17 @@ def _validate_required_paths() -> None:
         _read_regular_file(relative)
 
 
-def build_manifest(*, for_source_refresh: bool = False) -> bytes:
+def build_manifest(
+    *, for_source_refresh: bool = False, development: bool = False
+) -> bytes:
+    if for_source_refresh and development:
+        _fail()
     if for_source_refresh:
         reader_claim_owner.validate_source_refresh_inputs(ROOT)
     else:
-        reader_claim_owner.validate_repository(ROOT)
+        reader_claim_owner.validate_repository(
+            ROOT, require_fresh_sales_state=not development
+        )
     _validate_required_paths()
     _validate_content_identity()
     _read_regular_file(
@@ -391,9 +397,17 @@ def main() -> int:
             "sales evidence; does not satisfy publication or normal checks."
         ),
     )
+    parser.add_argument(
+        "--development",
+        action="store_true",
+        help="Replay the full historical ledger; does not authorize publication.",
+    )
     arguments = parser.parse_args()
     try:
-        expected = build_manifest(for_source_refresh=arguments.for_source_refresh)
+        expected = build_manifest(
+            for_source_refresh=arguments.for_source_refresh,
+            development=arguments.development,
+        )
         if arguments.check:
             actual = _read_regular_file(
                 f"{SLICE}/runtime-manifest.v1.json", maximum=MAX_MANIFEST_BYTES

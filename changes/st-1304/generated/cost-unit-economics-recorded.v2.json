@@ -38,7 +38,7 @@
       },
       {
         "article_id": "st1704-countertop-dishwasher-for-small-households",
-        "packet_sha256": "754bb5d2bdf04eefd1867bc53ebb5d2f4307ff1aa49f8414fe5e9d436e5c1cbf",
+        "packet_sha256": "b42a3715a4da0e7beec5902e1c898d9d35b04d414dc4f1d68f2aa3f7f853eeaf",
         "slot": 4
       },
       {
@@ -47,7 +47,7 @@
         "slot": 5
       }
     ],
-    "contract_sha256": "79661829426f54041ca4006dbd77ada5fea1beb065d426db6757eb58474ade54",
+    "contract_sha256": "2a2f70198776b3d39be4f7e61c2b956fc96622cbd7b585c5c4a18ec2c22bb525",
     "period": {
       "duration_days": 14,
       "end_exclusive_date": "2026-09-08",
@@ -72,19 +72,19 @@
     }
   },
   "provenance": {
-    "attribution_fixture_sha256": "3eb8f23ae8504312cff34330dcb112069fa50503fb0e3c8f00beff7185a436ad",
-    "fixture_sha256": "c1b0a91e25ee2f47a0667034f8493a1205996d0f6374e78cfa404d4b0fbc8a38",
+    "attribution_fixture_sha256": "c8bd1e2f5dfa07874239c9510113aa1a3363cc62144057b27bde707cb25b20e3",
+    "fixture_sha256": "15d6d058da46921b2288dd09c5b780b95fd67c3182d8316b2013283a6ad68f2c",
     "generated_by": "repo://scripts/build_st1304_cost_unit_economics.py",
     "generation_command": ".venv/bin/python scripts/build_st1304_cost_unit_economics.py",
     "source_artifacts": [
       {
         "bytes": 8101,
-        "sha256": "cbea905bf38d75a1f359ae5f225615e7ca1d17bf026201ded62c2972024fadfa",
+        "sha256": "d40469dde3483c4c0b8f74038e202ebd75d3eb9394f8b2e1f061ab92b1c69ce0",
         "uri": "repo://changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml"
       },
       {
         "bytes": 15482,
-        "sha256": "c1b0a91e25ee2f47a0667034f8493a1205996d0f6374e78cfa404d4b0fbc8a38",
+        "sha256": "15d6d058da46921b2288dd09c5b780b95fd67c3182d8316b2013283a6ad68f2c",
         "uri": "repo://changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json"
       },
       {
@@ -523,7 +523,7 @@
         "article": {
           "article_id": "st1704-countertop-dishwasher-for-small-households",
           "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
-          "packet_sha256": "754bb5d2bdf04eefd1867bc53ebb5d2f4307ff1aa49f8414fe5e9d436e5c1cbf",
+          "packet_sha256": "b42a3715a4da0e7beec5902e1c898d9d35b04d414dc4f1d68f2aa3f7f853eeaf",
           "slot": 4,
           "slug": "countertop-dishwasher-for-small-households"
         },
@@ -720,7 +720,7 @@
         }
       }
     ],
-    "input_sha256": "57446eed7e40ac77558b6b3138b19e14fbce3dbe29b57863cab606a989c4df03",
+    "input_sha256": "b6c80bc4b12e81a9d126793475c5c9650a2be5c01d5d398ddb1ca96199edcb47",
     "method_version": "RAOS_ST1304_DIRECT_UNIT_ECONOMICS_V2",
     "metrics": [
       {
@@ -737,7 +737,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "8a0a4afac78d30023afc810476029c1cd391003e15c6ca9d0e9736ead5017a8f"
+          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
         ],
         "unavailable_reason": null,
         "unit": "JPY",
@@ -757,7 +757,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "8a0a4afac78d30023afc810476029c1cd391003e15c6ca9d0e9736ead5017a8f"
+          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
         ],
         "unavailable_reason": null,
         "unit": "JPY",
@@ -777,7 +777,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "8a0a4afac78d30023afc810476029c1cd391003e15c6ca9d0e9736ead5017a8f",
+          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
           "1111111111111111111111111111111111111111111111111111111111111111",
           "6666666666666666666666666666666666666666666666666666666666666666",
           "7777777777777777777777777777777777777777777777777777777777777777",
@@ -803,7 +803,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "8a0a4afac78d30023afc810476029c1cd391003e15c6ca9d0e9736ead5017a8f",
+          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
           "1111111111111111111111111111111111111111111111111111111111111111"
         ],
         "unavailable_reason": null,
@@ -824,7 +824,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "8a0a4afac78d30023afc810476029c1cd391003e15c6ca9d0e9736ead5017a8f",
+          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
           "6666666666666666666666666666666666666666666666666666666666666666",
           "7777777777777777777777777777777777777777777777777777777777777777",
           "8888888888888888888888888888888888888888888888888888888888888888",
@@ -854,7 +854,7 @@
           "8888888888888888888888888888888888888888888888888888888888888888",
           "9999999999999999999999999999999999999999999999999999999999999999",
           "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "8a0a4afac78d30023afc810476029c1cd391003e15c6ca9d0e9736ead5017a8f"
+          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
         ],
         "unavailable_reason": null,
         "unit": "RATIO",
@@ -922,7 +922,7 @@
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
         "source_sha256s": [
-          "8a0a4afac78d30023afc810476029c1cd391003e15c6ca9d0e9736ead5017a8f",
+          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
           "1111111111111111111111111111111111111111111111111111111111111111"
         ],
         "unavailable_reason": null,
@@ -951,7 +951,7 @@
       "finance_may_change_publication_snapshot": false,
       "finance_may_change_recommendation_order": false
     },
-    "result_sha256": "7f97536c1d4bdc6cefb707f4a0cbb9ce87c8f36885eacb25d50a0a5570380434",
+    "result_sha256": "d69b2a6a40f3b79a294e9a3853936e7f6cbb733cb8986f93d09757422dade5b2",
     "reward_basis_policy": {
       "article_economics": "VERIFIED_DIRECT_ONLY_ESTIMATED_UNATTRIBUTED_EXCLUDED",
       "estimated_reward_in_article_metrics": false,

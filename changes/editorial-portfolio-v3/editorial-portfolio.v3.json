@@ -509,7 +509,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
       "content_role": "category_guide",
       "content_role_label": "選び方",
-      "content_snapshot_sha256": "ec3e66487fb1a8ab95cfebd83b4c5fd48cf9abe0452655a8751636c5326f0081",
+      "content_snapshot_sha256": "585688f5db3f903d1f6ee1d2e84e70bc9753e68cb935912836471b810d7931eb",
       "cta_bindings": [
         {
           "article_code": "a04",
@@ -522,7 +522,7 @@
           "product_id": "PRD-SIROCA-SS-M171",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-ec3e66487fb1"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -535,7 +535,7 @@
           "product_id": "PRD-SIROCA-SS-M171",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-ec3e66487fb1"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -548,7 +548,7 @@
           "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-ec3e66487fb1"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -561,7 +561,7 @@
           "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-ec3e66487fb1"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -574,7 +574,7 @@
           "product_id": "PRD-SIROCA-SS-MA251",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-ec3e66487fb1"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -587,7 +587,7 @@
           "product_id": "PRD-SIROCA-SS-MA251",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-ec3e66487fb1"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -600,7 +600,7 @@
           "product_id": "PRD-TOSHIBA-DWS-33B-W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-ec3e66487fb1"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -613,7 +613,7 @@
           "product_id": "PRD-TOSHIBA-DWS-33B-W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-ec3e66487fb1"
+          "snapshot_id": "snp-a04-585688f5db3f"
         }
       ],
       "excerpt": "工事不要のタンク式食洗機4候補を公式仕様で比較。標準食器11〜18点の現行モデルを、設置寸法、使用水量、給水・乾燥方式で選び分けます。SOLOTA NP-TMLK1は販売状態未確認の仕様参考にとどめます。",
@@ -638,7 +638,7 @@
           "relationship": "lifecycle_reference"
         }
       ],
-      "snapshot_id": "snp-a04-ec3e66487fb1",
+      "snapshot_id": "snp-a04-585688f5db3f",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-countertop-dishwasher-for-small-households",
       "title": "工事不要の食洗機4候補｜1〜2人暮らしの設置条件で選ぶ",

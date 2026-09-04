@@ -3,10 +3,10 @@
   "profile": "RAOS_ST1304_RECORDED_SYNTHETIC_V2",
   "scenario_id": "ST1304.RECORDED.SYNTHETIC.0001",
   "synthetic": true,
-  "attribution_fixture_sha256": "3eb8f23ae8504312cff34330dcb112069fa50503fb0e3c8f00beff7185a436ad",
-  "attribution_contract_sha256": "79661829426f54041ca4006dbd77ada5fea1beb065d426db6757eb58474ade54",
-  "expected_attribution_input_sha256": "8a0a4afac78d30023afc810476029c1cd391003e15c6ca9d0e9736ead5017a8f",
-  "expected_attribution_result_sha256": "b68121982fe817a6fa21104e9cc8bda472cfe5cbc0a4e45803d69d1ee8201a9b",
+  "attribution_fixture_sha256": "c8bd1e2f5dfa07874239c9510113aa1a3363cc62144057b27bde707cb25b20e3",
+  "attribution_contract_sha256": "2a2f70198776b3d39be4f7e61c2b956fc96622cbd7b585c5c4a18ec2c22bb525",
+  "expected_attribution_input_sha256": "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
+  "expected_attribution_result_sha256": "83468d41909fdd374bd87e5753775d95182b8eeb208f7270cfb57d1e45f25079",
   "request": {
     "run_id": "018f3e90-7b00-7000-8000-000000001304",
     "requested_at": "2026-09-08T00:00:00Z",
@@ -133,6 +133,6 @@
       }
     ]
   },
-  "expected_input_sha256": "57446eed7e40ac77558b6b3138b19e14fbce3dbe29b57863cab606a989c4df03",
-  "expected_result_sha256": "7f97536c1d4bdc6cefb707f4a0cbb9ce87c8f36885eacb25d50a0a5570380434"
+  "expected_input_sha256": "b6c80bc4b12e81a9d126793475c5c9650a2be5c01d5d398ddb1ca96199edcb47",
+  "expected_result_sha256": "d69b2a6a40f3b79a294e9a3853936e7f6cbb733cb8986f93d09757422dade5b2"
 }

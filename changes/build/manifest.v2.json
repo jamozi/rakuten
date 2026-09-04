@@ -11,12 +11,12 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "8e8eb896d5a5358e86cd4f8e934e50adfb859d771a1896e70431fbb1307489b2",
+          "sha256": "917a244bc235079753493c6d08d1b5aaf5c2d4d7c7f269a33e9035ab43e68f6c",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 18040,
-          "sha256": "19ce530b0a9de7f45415dedf0e6b87a6bf6d58baaa8c8fec85d04385320d256c",
+          "sha256": "a2bcf0b06e65c69bf4b1165e3d404e5d79ffb34943e18a12dc477093910999ce",
           "uri": "repo://changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement/config/measurement-allowlist.v1.json"
         }
       ],
@@ -94,7 +94,7 @@
       "outputs": [
         {
           "bytes": 187765,
-          "sha256": "99cc7569957781727d8fc5c9331dcf498e341e630758947b6eed2a39bd3a7cb9",
+          "sha256": "b04818d2c93fa4a4576b7fdb4580632e4e0a48f35eef667bfe0fdaa5e7bb0b1e",
           "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
         },
         {
@@ -265,12 +265,12 @@
       "outputs": [
         {
           "bytes": 18281,
-          "sha256": "c6f807222cb61c3c6460e430a918930ecd838b6a5c5f841c20962079760bc5bf",
+          "sha256": "eaeaa38424ea9aa84a547115c4470e58a64824249a159f5d8f69b71b6eb86bed",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
           "bytes": 13194,
-          "sha256": "8661ef74dc2fb4aebc4f9067bf5aa99b6ce058bb62cdb1948d70f5366f802a18",
+          "sha256": "25a7cad3916a0658509664abe1a69f2d8f3abe0706cc90e2c979b5c6866c631d",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
         }
       ],
@@ -21270,12 +21270,12 @@
       "outputs": [
         {
           "bytes": 30334,
-          "sha256": "4b3949a8e655c6aabc40da566c643d8f2d2e2cee0e4187b4628053dfe6cbac32",
+          "sha256": "d41582e1282349d8f5c8483e33eea1ad79855c17b6136248bd7337d0b7e49bdf",
           "uri": "repo://changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json"
         },
         {
           "bytes": 11818,
-          "sha256": "486c8f407be60e547f1a00684325026df959a1a212852481448d0933e4e2415a",
+          "sha256": "674d82d0253964fcabd21ae3d61bb3ce7347af1e2fce23c5d3b2d3251d8f02de",
           "uri": "repo://changes/st-1104/runtime-manifest.v2.yaml"
         }
       ],
@@ -22807,7 +22807,7 @@
       "outputs": [
         {
           "bytes": 18895,
-          "sha256": "3c668f7dc69bcbb5a8be91966fcdde1710feffee32458f985f5fe77c73e1c62c",
+          "sha256": "9733ac5bfc0b1c2e56e05e78236e566081e1d15721d30285d1ee8faddde6736b",
           "uri": "repo://changes/st-1303/generated/attribution-engine-recorded.v2.json"
         }
       ],
@@ -23069,7 +23069,7 @@
       "outputs": [
         {
           "bytes": 39444,
-          "sha256": "c585189cd438eb4592a254fdea686e6cfb8e2c97541de168617686c71d1adb8f",
+          "sha256": "6c53c6bf121d272c4fa2e9cc7e2d361abb2f55762a5478eaaaf8aca6d40a2644",
           "uri": "repo://changes/st-1304/generated/cost-unit-economics-recorded.v2.json"
         }
       ],
@@ -23310,7 +23310,7 @@
       "outputs": [
         {
           "bytes": 31267,
-          "sha256": "ea81ab47a4ac77ed5061333f49ebf5eda3502d1d40daf99f6713d0789d5f0691",
+          "sha256": "06dfb4853ff5e782b4f52b1e3b1a21fb79455ca8673a745d8108bc22d289e487",
           "uri": "repo://changes/st-1305/generated/finance-reconciliation-recorded.v2.json"
         }
       ],
@@ -26043,7 +26043,7 @@
       "outputs": [
         {
           "bytes": 2428,
-          "sha256": "3dc0ebba6df9120b8a70c9968ebcf994d58f9a7c939e6955ef41c062c2ec9821",
+          "sha256": "9883519feddb0f9b293c7a8a537d2ab754ece9b04bf53ac439cd30d9f5fde287",
           "uri": "repo://changes/st-1704/affiliate-learning-v2/runtime-manifest.v2.json"
         }
       ],
@@ -26217,7 +26217,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "a857a997d5f2531800aa8b27b7f78c9c338548fa3696aad1f6a031b7944f365a",
+          "sha256": "605b2df301d497ac38d952afa41c56768c4544578cbb03f96d41b7268ffbd93b",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26446,7 +26446,7 @@
       "outputs": [
         {
           "bytes": 80081,
-          "sha256": "643b771655cc0c943d35ffc9389db7bcae68ff75a03312a5afebc2f0ab758bf8",
+          "sha256": "3b1551242f41715c7ad3ba680484df49a6c0c260c6ce34ecbe6e01d4cc2d649c",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27834,7 +27834,7 @@
       "outputs": [
         {
           "bytes": 29183,
-          "sha256": "90353461bab36d3197fcda5822654853efcfee0242e16c81962ae878ce972ed2",
+          "sha256": "5aa3540352c9d64aef08e7a3762b0079e23e5792fb8cb174c2030a17ecfb6b5b",
           "uri": "repo://changes/st-1804/generated/gate3-economics.local-blocked.v1.json"
         }
       ],
@@ -28730,12 +28730,12 @@
       "outputs": [
         {
           "bytes": 3342,
-          "sha256": "85afed8042f6b98136b3fc647c7f6efc88844f6bfd3379b6df319e1568c2e905",
+          "sha256": "ebc1ff5276479cc9d90cde720ae7c968ecf54543b92f0ead0a2eb1b321d73c8a",
           "uri": "repo://changes/st-1907/generated/content-portfolio-optimizer-report.v1.json"
         },
         {
           "bytes": 8474,
-          "sha256": "a79b23dbe459f314582cb81717061e38ae120117465879cd313b3218e63cfbbf",
+          "sha256": "5754ee5d99fdaa94a61af08c22517e168b6eb2dba1c1d272710e6f9ed23f135b",
           "uri": "repo://changes/st-1907/manifest.yaml"
         }
       ],
@@ -29036,12 +29036,12 @@
       "outputs": [
         {
           "bytes": 892,
-          "sha256": "92a4d0691ef9bb41a1e17ec1c2dba6c3e4c3e18081fc73f34f39ac782bd0f4bf",
+          "sha256": "adb0b1b466a9d0e2950c28d365ec2320429d3a0a25524de594b87d167dc367b0",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
           "bytes": 20093,
-          "sha256": "18fe49a9766e88e060e2215265c2a26ccde87e11c2630a3a85379386e36dc731",
+          "sha256": "252c690e49fb6ff7c8b5b1539f729584248796e4e18c572991406c2ab0a479f5",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29625,7 +29625,7 @@
       "outputs": [
         {
           "bytes": 5708,
-          "sha256": "79bd8c7078780b4460e50fc3a3df1c28e528eddf3428c602d79aca8bce7a4f7f",
+          "sha256": "fb2a869536b698fd7fc90331701cc93a8a1abc213522ad503609dc4925a1e8a8",
           "uri": "repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json"
         }
       ],
