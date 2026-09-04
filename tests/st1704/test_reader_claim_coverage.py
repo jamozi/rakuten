@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from copy import deepcopy
-from datetime import timedelta
+from datetime import datetime, timedelta, tzinfo
 import hashlib
 import json
 from pathlib import Path
@@ -40,6 +40,9 @@ def _copy_repository_inputs(destination: Path) -> Path:
         owner.LEDGER_RELATIVE,
         owner.SALES_STATE_RELATIVE,
         owner.PRODUCT_SAFETY_RECEIPT_RELATIVE,
+        owner.PRODUCT_SAFETY_ADMIN_PLAN_RELATIVE,
+        owner.PRODUCT_SAFETY_MANUFACTURER_PLAN_RELATIVE,
+        owner.PRODUCT_SAFETY_MANUFACTURER_EMPTY_RELATIVE,
         owner.MARKET_AUDIT_RELATIVE,
         owner.LEGACY_CONTENT_RELATIVE,
         owner.POSTS_RELATIVE,
@@ -197,6 +200,58 @@ def test_tracked_ledger_covers_exactly_the_ten_final_article_fixtures() -> None:
         for article in _articles(document)
         for unit in _units(article)
     )
+
+
+def test_source_refresh_can_acquire_after_expiry_but_normal_checks_still_fail(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from scripts import build_st1704_self_hosted_editorial_manifest as manifest
+
+    sales = json.loads((ROOT / owner.SALES_STATE_RELATIVE).read_text())
+    observed = datetime.fromisoformat(sales["checked_at_utc"])
+
+    class ExpiredClock(datetime):
+        @classmethod
+        def now(cls, tz: tzinfo | None = None) -> datetime:
+            return (observed + timedelta(days=2)).astimezone(tz)
+
+    monkeypatch.setattr(owner, "datetime", ExpiredClock)
+    before = (ROOT / owner.SALES_STATE_RELATIVE).read_bytes()
+    raw = manifest.build_manifest(for_source_refresh=True)
+    document = json.loads(raw)
+    assert document["publication_authority"] == "NONE"
+    assert document["external_action_authority"] == "NONE"
+    assert (ROOT / owner.SALES_STATE_RELATIVE).read_bytes() == before
+    with pytest.raises(owner.CoverageFailure, match="snapshot is stale"):
+        owner.validate_repository(ROOT)
+    with pytest.raises(owner.CoverageFailure, match="snapshot is stale"):
+        manifest.build_manifest()
+
+
+def test_source_refresh_still_rejects_tampered_sales_evidence(tmp_path: Path) -> None:
+    root = _copy_repository_inputs(tmp_path)
+    path = root / owner.SALES_STATE_RELATIVE
+    sales = json.loads(path.read_text())
+    sales["products"][0]["basis"] += " tampered"
+    _write_json(path, sales)
+    with pytest.raises(owner.CoverageFailure, match="not the reviewed capture"):
+        owner.validate_source_refresh_inputs(root)
+
+
+def test_source_refresh_still_rejects_future_sales_evidence(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    sales = json.loads((ROOT / owner.SALES_STATE_RELATIVE).read_text())
+    observed = datetime.fromisoformat(sales["checked_at_utc"])
+
+    class BeforeCaptureClock(datetime):
+        @classmethod
+        def now(cls, tz: tzinfo | None = None) -> datetime:
+            return (observed - timedelta(hours=1)).astimezone(tz)
+
+    monkeypatch.setattr(owner, "datetime", BeforeCaptureClock)
+    with pytest.raises(owner.CoverageFailure, match="in the future"):
+        owner.validate_source_refresh_inputs(ROOT)
 
 
 def test_reader_inventory_includes_current_channels_and_extracts_image_alt() -> None:
@@ -458,9 +513,7 @@ def test_missing_claim_locator_and_evidence_outside_packet_fail_closed(
         owner.validate_repository(root)
 
 
-def test_source_capture_hash_binds_market_lifecycle_and_negative_attestation() -> (
-    None
-):
+def test_source_capture_hash_binds_market_lifecycle_and_negative_attestation() -> None:
     source = {
         "source_ref": "SRC-OFFICIAL",
         "authority": "MANUFACTURER",
@@ -509,9 +562,7 @@ def test_source_capture_hash_binds_market_lifecycle_and_negative_attestation() -
     }
     baseline = owner._source_capture_hash(source, [claim])
     changed_dimension = deepcopy(claim)
-    cast(list[dict[str, object]], changed_dimension["dimensions"])[0][
-        "width_cm"
-    ] = 24.6
+    cast(list[dict[str, object]], changed_dimension["dimensions"])[0]["width_cm"] = 24.6
     assert owner._source_capture_hash(source, [changed_dimension]) != baseline
 
     reordered_dimensions = deepcopy(claim)
@@ -553,10 +604,7 @@ def test_source_capture_hash_binds_market_lifecycle_and_negative_attestation() -
     }.items():
         tampered = deepcopy(reference_claim)
         tampered[field] = replacement
-        assert (
-            owner._source_capture_hash(source, [tampered])
-            != reference_baseline
-        )
+        assert owner._source_capture_hash(source, [tampered]) != reference_baseline
 
 
 def test_central_recall_requirements_and_embedded_sales_state_remain_fail_closed(
@@ -580,8 +628,7 @@ def test_central_recall_requirements_and_embedded_sales_state_remain_fail_closed
         gate["schema"] == "PRODUCT_SPECIFIC_RECALL_QUERY_REQUIREMENT_V2"
         and gate["receipt_document_ref"]
         == owner.PRODUCT_SAFETY_RECEIPT_RELATIVE.as_posix()
-        and gate["receipt_document_schema"]
-        == owner.PRODUCT_SAFETY_RECEIPT_SCHEMA
+        and gate["receipt_document_schema"] == owner.PRODUCT_SAFETY_RECEIPT_SCHEMA
         and gate["required_authority_kinds"]
         == owner.PRODUCT_SAFETY_REQUIRED_AUTHORITIES
         for gate in recall_gates
@@ -674,7 +721,9 @@ def test_central_recall_requirements_and_embedded_sales_state_remain_fail_closed
         )
 
     rewrite_registry(root, invert_sales)
-    with pytest.raises(owner.CoverageFailure, match="embedded manufacturer sales state drift"):
+    with pytest.raises(
+        owner.CoverageFailure, match="embedded manufacturer sales state drift"
+    ):
         owner._load_repository_model(root)
 
 
@@ -785,9 +834,7 @@ def test_portfolio_reference_claims_are_route_bound_and_reader_owned(
             subjects = cast(list[str], claim["subject_product_ids"])
             assert len(subjects) == 1
             reference_product_id = subjects[0]
-            selected = set(
-                cast(list[str], model.articles[article_id]["product_ids"])
-            )
+            selected = set(cast(list[str], model.articles[article_id]["product_ids"]))
             route_article_id = cast(str, claim["route_article_id"])
             route_selected = set(
                 cast(list[str], model.articles[route_article_id]["product_ids"])
@@ -821,14 +868,10 @@ def test_portfolio_reference_claims_are_route_bound_and_reader_owned(
         if claim.get("portfolio_candidate_disposition") == "REFERENCE_ONLY"
     )
     reference["route_article_id"] = packet["article_id"]
-    for source_packet in cast(
-        list[dict[str, object]], registry["source_packets"]
-    ):
+    for source_packet in cast(list[dict[str, object]], registry["source_packets"]):
         source_packet["fact_packet_sha256"] = owner._packet_hash(source_packet)
     claims_by_source: dict[str, list[dict[str, object]]] = {}
-    for source_packet in cast(
-        list[dict[str, object]], registry["source_packets"]
-    ):
+    for source_packet in cast(list[dict[str, object]], registry["source_packets"]):
         for claim in cast(list[dict[str, object]], source_packet["claims"]):
             for source_ref in cast(list[str], claim["evidence_refs"]):
                 claims_by_source.setdefault(source_ref, []).append(claim)
@@ -841,7 +884,9 @@ def test_portfolio_reference_claims_are_route_bound_and_reader_owned(
     locator = json.loads(locator_path.read_text(encoding="utf-8"))
     locator["source_registry_sha256"] = owner._canonical_sha256(registry)
     _write_json(locator_path, locator)
-    with pytest.raises(owner.CoverageFailure, match="invalid portfolio candidate route"):
+    with pytest.raises(
+        owner.CoverageFailure, match="invalid portfolio candidate route"
+    ):
         owner._load_repository_model(root)
 
 
@@ -1157,9 +1202,9 @@ def test_reader_sales_state_is_bound_to_product_snapshot_hash_and_locator(
     owner._validate_unit_binding(raw_binding=binding, **common)
 
     tampered_binding = deepcopy(binding)
-    cast(
-        list[dict[str, object]], tampered_binding["evidence_bindings"]
-    )[0]["structured_snapshot_sha256"] = "0" * 64
+    cast(list[dict[str, object]], tampered_binding["evidence_bindings"])[0][
+        "structured_snapshot_sha256"
+    ] = "0" * 64
     with pytest.raises(owner.CoverageFailure, match="snapshot_sha256 drift"):
         owner._validate_unit_binding(raw_binding=tampered_binding, **common)
 
@@ -1222,11 +1267,9 @@ def test_sales_state_uses_fresh_full_inventory_and_variant_scope(
         for article in model.articles.values()
         for product_id in cast(list[str], article["product_ids"])
     }
-    assert len(selected_products) == 31
+    assert len(selected_products) == 33
     assert set(model.sales_states) == selected_products
-    assert {state["state"] for state in model.sales_states.values()} == {
-        "AVAILABLE"
-    }
+    assert {state["state"] for state in model.sales_states.values()} == {"AVAILABLE"}
     state = model.sales_states["PRD-EUFY-AUTOEMPTY-C10-T2292"]
     assert state["variant_caveat"]["code"] == "OTHER_COLOR_NOT_ATTESTED"
     # A model-level row with a variant caveat does not support broad reader
@@ -1416,12 +1459,9 @@ def test_dimension_support_preserves_axis_role_and_repeated_occurrence() -> None
 
 def test_exact_measurements_support_only_true_editorial_thresholds() -> None:
     support = (
-        "本体は幅24.8×奥行24.8×高さ9.2cm、"
-        "ステーションは幅24×奥行18×高さ25cmです。"
+        "本体は幅24.8×奥行24.8×高さ9.2cm、ステーションは幅24×奥行18×高さ25cmです。"
     )
-    assert owner._token_supported(
-        "24.0cm", support, dimension_role="STATION"
-    )
+    assert owner._token_supported("24.0cm", support, dimension_role="STATION")
     assert owner._token_supported(
         "幅25cm以下", support, dimension_role="BODY", dimension_axis="WIDTH"
     )
@@ -1492,22 +1532,21 @@ def test_unknown_boundary_requires_the_same_explicit_topic() -> None:
     assert "在庫切れ" in owner.required_assertion_tokens(
         "在庫切れかつ購入UIを確認できない"
     )
-    assert owner._sales_unknown_overlap(
-        "在庫切れかつ購入UIを確認できない。"
-    )
+    assert owner._sales_unknown_overlap("在庫切れかつ購入UIを確認できない。")
     assert not owner._sales_unknown_overlap(
         "公式通販で在庫切れを確認した。実機は未確認です。"
     )
-    assert owner.required_assertion_tokens(
-        "公式商品ページと公式サイト内の分類情報が一致せず、"
-        "キャスターストッパーの有無は未確認 未確認"
-    ) == ()
+    assert (
+        owner.required_assertion_tokens(
+            "公式商品ページと公式サイト内の分類情報が一致せず、"
+            "キャスターストッパーの有無は未確認 未確認"
+        )
+        == ()
+    )
     assert "0.5m" in owner.required_assertion_tokens(
         "左右0.5m、前方1.5mの空間を確保する。"
     )
-    assert "販売中" not in owner.required_assertion_tokens(
-        "販売中の小型候補を選ぶ場合"
-    )
+    assert "販売中" not in owner.required_assertion_tokens("販売中の小型候補を選ぶ場合")
     assert not owner._has_reader_decision_unknown(
         "このページからは確定できません。"
         "利用する運航会社、便、機材、運賃種別の最新条件と、"
@@ -1527,9 +1566,7 @@ def test_closed_wifi_band_boundary_preserves_negative_meaning() -> None:
     )
 
 
-def test_external_recheck_cannot_be_promoted_to_a_completed_or_decision_kind() -> (
-    None
-):
+def test_external_recheck_cannot_be_promoted_to_a_completed_or_decision_kind() -> None:
     text = "販売状態は未確認（推奨根拠に使用しない） MC-RSC10"
     unit = owner.ReaderUnit(
         unit_id="RU-recheck-contract",
@@ -1568,19 +1605,19 @@ def test_external_recheck_cannot_be_promoted_to_a_completed_or_decision_kind() -
         "kind": "RECHECK_REQUIRED",
         "claim_ids": [claim_id],
         "evidence_bindings": [],
-            "assertion_tokens": [
-                {
-                    "assertion_text": "販売状態は未確認",
-                    "occurrence_index": 0,
-                    "claim_ids": [claim_id],
-                    "evidence_binding_ids": [],
-                },
-                {
-                    "assertion_text": "MC-RSC10",
+        "assertion_tokens": [
+            {
+                "assertion_text": "販売状態は未確認",
                 "occurrence_index": 0,
                 "claim_ids": [claim_id],
                 "evidence_binding_ids": [],
-            }
+            },
+            {
+                "assertion_text": "MC-RSC10",
+                "occurrence_index": 0,
+                "claim_ids": [claim_id],
+                "evidence_binding_ids": [],
+            },
         ],
         "exemption_code": None,
         "decision_gate": None,
@@ -1595,10 +1632,7 @@ def test_external_recheck_cannot_be_promoted_to_a_completed_or_decision_kind() -
     }
     owner._validate_unit_binding(unit=unit, raw_binding=binding, **common)
 
-    feature_text = (
-        "前開きとキャスターストッパーは未確認"
-        "(推奨根拠に使用しない)です。"
-    )
+    feature_text = "前開きとキャスターストッパーは未確認(推奨根拠に使用しない)です。"
     feature_unit = deepcopy(unit)
     object.__setattr__(feature_unit, "text", feature_text)
     object.__setattr__(feature_unit, "text_sha256", owner._text_sha256(feature_text))
@@ -1618,10 +1652,7 @@ def test_external_recheck_cannot_be_promoted_to_a_completed_or_decision_kind() -
     )
     feature_claim = {
         **claim,
-        "statement": (
-            "前開きとキャスターストッパーは未確認"
-            "(推奨根拠に使用しない)。"
-        ),
+        "statement": ("前開きとキャスターストッパーは未確認(推奨根拠に使用しない)。"),
     }
     owner._validate_unit_binding(
         unit=feature_unit,
@@ -1741,7 +1772,9 @@ def test_external_recheck_cannot_be_promoted_to_a_completed_or_decision_kind() -
     downgraded_recheck["claim_ids"] = []
     downgraded_recheck["assertion_tokens"] = []
     with pytest.raises(owner.CoverageFailure, match="UNKNOWN is allowed only"):
-        owner._validate_unit_binding(unit=unit, raw_binding=downgraded_recheck, **common)
+        owner._validate_unit_binding(
+            unit=unit, raw_binding=downgraded_recheck, **common
+        )
 
 
 def test_external_out_of_stock_ui_gap_requires_the_same_closed_exclusion() -> None:
@@ -1955,13 +1988,9 @@ def test_wordpress_metadata_is_closed_and_external_exclusion_does_not_borrow_sal
     assert a04_gate["publication_gate"] == "BLOCKED"
     assert {
         cast(str, binding["product_id"])
-        for binding in cast(
-            list[dict[str, object]], a04_excerpt["evidence_bindings"]
-        )
+        for binding in cast(list[dict[str, object]], a04_excerpt["evidence_bindings"])
     } == set(cast(list[str], a04_gate["product_ids"]))
-    a04_assertions = cast(
-        list[dict[str, object]], a04_excerpt["assertion_tokens"]
-    )
+    a04_assertions = cast(list[dict[str, object]], a04_excerpt["assertion_tokens"])
     current_models = next(
         assertion
         for assertion in a04_assertions
@@ -1992,9 +2021,7 @@ def test_wordpress_metadata_is_closed_and_external_exclusion_does_not_borrow_sal
     assert a10_excerpt["evidence_bindings"] == []
     assert all(
         assertion["evidence_binding_ids"] == []
-        for assertion in cast(
-            list[dict[str, object]], a10_excerpt["assertion_tokens"]
-        )
+        for assertion in cast(list[dict[str, object]], a10_excerpt["assertion_tokens"])
     )
 
     root = _copy_repository_inputs(tmp_path / "post-drift")
@@ -2018,8 +2045,7 @@ def test_conflicting_anker_switch_times_keep_explicit_two_product_scope() -> Non
         "PRD-ANKER-SOLIX-C1000-GEN2",
     }
     assertions = {
-        assertion["assertion_text"]: assertion
-        for assertion in unit["assertion_tokens"]
+        assertion["assertion_text"]: assertion for assertion in unit["assertion_tokens"]
     }
     assert {"0.01秒", "0.02秒"} <= assertions.keys()
     for token in ("0.01秒", "0.02秒"):
@@ -2062,7 +2088,9 @@ def _synthetic_sales_binding(state: dict[str, object]) -> dict[str, object]:
     }
 
 
-def test_decision_gate_binds_unknown_sales_safety_and_due_diligence_fail_closed() -> None:
+def test_decision_gate_binds_unknown_sales_safety_and_due_diligence_fail_closed() -> (
+    None
+):
     product_id = "PRD-TEST-PRODUCT"
     text = "この商品をおすすめする理由"
     unit = owner.ReaderUnit(
@@ -2151,9 +2179,7 @@ def test_decision_gate_binds_unknown_sales_safety_and_due_diligence_fail_closed(
     owner._validate_unit_binding(raw_binding=binding, **common)
 
     fail_open = deepcopy(binding)
-    cast(dict[str, object], fail_open["decision_gate"])["publication_gate"] = (
-        "ELIGIBLE"
-    )
+    cast(dict[str, object], fail_open["decision_gate"])["publication_gate"] = "ELIGIBLE"
     with pytest.raises(owner.CoverageFailure, match="decision gate drift"):
         owner._validate_unit_binding(raw_binding=fail_open, **common)
 
@@ -2235,7 +2261,9 @@ def test_recommendation_conclusion_requires_inference_and_gate() -> None:
         )
 
 
-def test_available_product_spec_in_decision_section_does_not_repeat_selection_gate() -> None:
+def test_available_product_spec_in_decision_section_does_not_repeat_selection_gate() -> (
+    None
+):
     product_id = "PRD-TEST-PRODUCT"
     text = "本体重量は2.4kgです。"
     unit = owner.ReaderUnit(
@@ -2470,9 +2498,7 @@ def test_new_sales_lexemes_dates_and_exact_variant_scope_are_bound() -> None:
         "購入UIを確認できる",
     )
     assert owner.required_assertion_tokens("現行候補から除外しました。") == ()
-    assert owner.required_assertion_tokens(
-        "Q. 商品ページがあれば販売中ですか。"
-    ) == ()
+    assert owner.required_assertion_tokens("Q. 商品ページがあれば販売中ですか。") == ()
     caveat = {
         "code": "OTHER_COLOR_NOT_ATTESTED",
         "detail": "ブラックT2292511のみ",
@@ -2482,12 +2508,8 @@ def test_new_sales_lexemes_dates_and_exact_variant_scope_are_bound() -> None:
         "PRD-EUFY-AUTOEMPTY-C10-T2292", state="AVAILABLE", caveat=caveat
     )
     assert not owner._sales_token_supported("現行販売", state)
-    assert owner._sales_token_supported(
-        "現行販売", state, "ブラックT2292511の現行販売"
-    )
-    assert not owner._sales_token_supported(
-        "現行販売", state, "ホワイトの現行販売"
-    )
+    assert owner._sales_token_supported("現行販売", state, "ブラックT2292511の現行販売")
+    assert not owner._sales_token_supported("現行販売", state, "ホワイトの現行販売")
 
 
 def test_missing_product_safety_receipts_derive_explicit_blocked_status(
@@ -2502,9 +2524,7 @@ def test_missing_product_safety_receipts_derive_explicit_blocked_status(
     _write_json(target, document)
     statuses, document_hash = owner._load_product_safety_statuses(
         root=root,
-        products_by_id={
-            "PRD-TEST-PRODUCT": {"official_models": ["MODEL-1"]}
-        },
+        products_by_id={"PRD-TEST-PRODUCT": {"official_models": ["MODEL-1"]}},
         sources={},
         claims={},
     )
@@ -2522,9 +2542,7 @@ def test_missing_product_safety_receipts_derive_explicit_blocked_status(
     with pytest.raises(owner.CoverageFailure, match="receipt contract mismatch"):
         owner._load_product_safety_statuses(
             root=root,
-            products_by_id={
-                "PRD-TEST-PRODUCT": {"official_models": ["MODEL-1"]}
-            },
+            products_by_id={"PRD-TEST-PRODUCT": {"official_models": ["MODEL-1"]}},
             sources={},
             claims={},
         )

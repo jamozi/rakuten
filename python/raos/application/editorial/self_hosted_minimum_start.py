@@ -465,6 +465,7 @@ class _ClosedArticleHtmlParser(HTMLParser):
         if tag == "a":
             if values == {
                 "href": "https://developers.rakuten.com/",
+                "rel": "noopener noreferrer",
                 "target": "_blank",
             }:
                 return

@@ -139,13 +139,21 @@ def test_public_audit_covers_home_ten_articles_and_three_pages_at_four_widths() 
         "visibleFactValues('この記事で答えること')",
         "audit.articleFacts.contentRoleLabels[0] !== surface.content_role_label",
         "audit.articleFacts.primaryQueryIntents[0] !== surface.primary_query_intent",
-        ".raos-disclosure[aria-label=\"広告表示\"]",
+        "page.locator('.raos-disclosure')",
         ".scrollIntoViewIfNeeded()",
         "disclosure.compareDocumentPosition(firstCta)",
         "disclosureRect.bottom <= innerHeight",
         "disclosureEffectiveOpacity > 0",
         "audit.disclosure.unobscured",
         "audit.disclosure.standardPhraseCount !== 3",
+        "audit.disclosure.nonaffiliatePhraseCount !== 3",
+        "'以前の比較対象の販売状態を確認する案内記事'",
+        "audit.disclosure.ariaLabel !== '収益化の対象外'",
+        "audit.disclosure.strongText !== '購入リンクなし'",
+        "audit.disclosure.detailsCount !== 0",
+        "audit.disclosure.standardPhraseCount !== 0",
+        "audit.disclosure.nonaffiliatePhraseCount !== 0",
+        "disclosureSemanticsFailure",
         "audit.disclosure.policyLinkCount !== 1",
         "audit.disclosure.detailsValid",
         "page.keyboard.press('Enter')",
@@ -163,6 +171,15 @@ def test_public_audit_covers_home_ten_articles_and_three_pages_at_four_widths() 
         "audit.forbiddenJsonLdTypeCount !== 0",
         "page.keyboard.press('Shift+Tab')",
         "TAB_ORDER_NOT_REVERSIBLE",
+        "lifecycleStatusRouteArticleId = 'solota-vs-rakua-mini-plus'",
+        "['lifecycle_status_route', '以前の比較対象の販売状態確認＋現行比較への案内']",
+        "lifecycleStatusRouteRows.length !== 1",
+        "surface.content_role === 'lifecycle_status_route'",
+        "zeroProducts !== isLifecycleStatusRoute",
+        "zeroCtas !== isLifecycleStatusRoute",
+        "lifecycleProductCtaInvariantFailure",
+        "audit.productProfileCount !== audit.productIds.length",
+        "requiresAffiliateCta",
         "document.elementFromPoint(sampleX, sampleY)",
         "page.emulateMedia({ reducedMotion: 'reduce' })",
         "audit.reducedMotion.animatedElementCount !== 0",
@@ -201,6 +218,56 @@ def test_public_audit_shell_requires_all_56_artifacts_and_is_portable() -> None:
     assert "PATH=$node_directory:/usr/bin:/bin" in source
     subprocess.run(
         ["/usr/bin/bash", "-n", str(SHELL)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def test_public_audit_rejects_a09_lifecycle_route_tamper_before_navigation() -> None:
+    inventory = json.loads(INVENTORY.read_text(encoding="utf-8"))
+    a10 = next(
+        surface
+        for surface in inventory["surfaces"]
+        if surface.get("article_id") == "solota-vs-rakua-mini-plus"
+    )
+    assert a10["content_role"] == "lifecycle_status_route"
+    assert (
+        a10["content_role_label"]
+        == "以前の比較対象の販売状態確認＋現行比較への案内"
+    )
+    script = r"""
+const fs = require('fs');
+const [auditPath, inventoryPath] = process.argv.slice(1);
+const factory = eval(fs.readFileSync(auditPath, 'utf8'));
+const inventory = JSON.parse(fs.readFileSync(inventoryPath, 'utf8'));
+const a09 = inventory.surfaces.find(
+  (surface) => surface.article_id === 'roomba-mini-vs-switchbot-k11-pro',
+);
+if (!a09) throw new Error('A09_MISSING');
+a09.content_role = 'lifecycle_status_route';
+a09.content_role_label = '以前の比較対象の販売状態確認＋現行比較への案内';
+(async () => {
+  try {
+    await factory({
+      artifactDirectory: '/tmp/raos-public-ui-a09-tamper',
+      inventory,
+    })({});
+  } catch (error) {
+    if (error instanceof Error && error.message === 'WORDPRESS_PUBLIC_UI_INVENTORY_INVALID') {
+      return;
+    }
+    throw error;
+  }
+  throw new Error('A09_LIFECYCLE_TAMPER_ACCEPTED');
+})().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+"""
+    subprocess.run(
+        [_node_executable(), "-e", script, str(AUDIT), str(INVENTORY)],
         cwd=ROOT,
         check=True,
         capture_output=True,

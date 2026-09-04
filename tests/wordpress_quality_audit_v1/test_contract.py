@@ -927,7 +927,7 @@ def test_v2_selection_input_cannot_mark_unfinished_due_diligence_complete() -> N
         )
     )
     products = portfolio["selection_audits"]["products"]
-    assert len(products) == len(portfolio["products"]) == 31
+    assert len(products) == len(portfolio["products"]) == 33
     assert {product["product_id"] for product in products} == {
         product["product_id"] for product in portfolio["products"]
     }
@@ -1011,7 +1011,7 @@ def test_split_crosscutting_surfaces_have_separate_blocked_receipts_and_findings
         "superlatives",
         "difference calculations across mismatched scope, units, dimension axes",
         "product names and sales state",
-        "seven-axis due diligence is 0/31 complete",
+        "seven-axis due diligence is 0/33 complete",
         "sku use fit",
         "no-buy/keep conclusions",
         "cross-brand multi-brand official sources",
@@ -1021,7 +1021,7 @@ def test_split_crosscutting_surfaces_have_separate_blocked_receipts_and_findings
         "brand bias",
         "dominant-peer role-only exclusion",
         "price/reward/rakuten weight zero",
-        "all 31 selected-product safety reviews are recheck_required",
+        "all 33 selected-product safety reviews are recheck_required",
         "sku recall receipts (query/period/ambiguity)",
         "safety/notice/compatibility/japan-warranty locators",
         "generic pages cannot pass",
@@ -1040,7 +1040,7 @@ def test_split_crosscutting_surfaces_have_separate_blocked_receipts_and_findings
         "recheck owners and cadence",
         "source-snapshot expiry",
         "consumables/repair continuity",
-        "per-article opening advertising disclosure",
+        "per-article opening monetization-status disclosure",
         "formal legal review has not been executed",
         "without asserting legal compliance",
         "dark-pattern absence",
@@ -1102,7 +1102,7 @@ def test_split_crosscutting_surfaces_have_separate_blocked_receipts_and_findings
         "legacy-slug and trailing-slash redirects",
         "sponsored/nofollow rel",
         "final destinations",
-        "37 product-card placements; 31 unique products",
+        "37 product-card placements; 33 unique products",
         "74 cta",
         "130 runtime screenshots",
         "product-misidentification controls",

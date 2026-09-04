@@ -255,6 +255,7 @@ def test_owner_build_rejects_stale_main_runtime_identity(remove_global: bool) ->
 def test_public_contract_and_schema_are_valid() -> None:
     contract = json.loads((SLICE / "contracts/wordpress-mcp.v1.json").read_text())
     schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
+    readme = (SLICE / "README.md").read_text(encoding="utf-8")
     Draft202012Validator.check_schema(schema)
     assert contract["version"] == "1.3.1"
     assert contract["wordpress_version"] == "7.1.x"
@@ -297,6 +298,9 @@ def test_public_contract_and_schema_are_valid() -> None:
         "anonymous_public_readback": True,
         "receipt_storage": ".secrets/wordpress-mcp/publication-requests",
     }
+    assert "`--articles all`" in readme
+    assert "partial or comma-separated selections fail closed" in readme
+    assert "may be an exact comma-separated subset" not in readme
     assert contract["host_gates"] == {
         "global_kill_switch": "RAOS_OPERATOR_WRITES_ENABLED",
         "draft": "RAOS_CODEX_DRAFT_WRITES_ENABLED",
@@ -425,6 +429,54 @@ def test_editor_status_exposes_loaded_theme_runtime_version_and_revision() -> No
     assert "constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
     assert "'runtime_revision' => $theme_runtime_revision" in status
     assert "'plugin_runtime_revision' => $plugin_runtime_revision" in status
+
+
+def test_editor_status_and_publication_mutations_require_exact_yoast_28_3() -> None:
+    content = (
+        PLUGIN / "includes/class-raos-codex-mcp-content.php"
+    ).read_text(encoding="utf-8")
+    deployment = (
+        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
+    ).read_text(encoding="utf-8")
+    status = content.split("public function site_status", 1)[1].split(
+        "public function content_list", 1
+    )[0]
+    yoast = content.split("public static function yoast_status", 1)[1].split(
+        "public static function exact_yoast_gate", 1
+    )[0]
+    gate = content.split("public static function exact_yoast_gate", 1)[1].split(
+        "public function site_status", 1
+    )[0]
+    claim = deployment.split("public function claim_publication_batch", 1)[1].split(
+        "private static function publication_batch_status", 1
+    )[0]
+    apply_gate = deployment.split("private static function apply_gate", 1)[1].split(
+        "private static function gate", 1
+    )[0]
+
+    assert "'yoast' => $yoast" in status
+    assert "'wordpress-seo/wp-seo.php'" in yoast
+    assert "get_file_data($plugin_path" in yoast
+    assert "get_option('active_plugins'" in yoast
+    assert "get_site_option('active_sitewide_plugins'" in yoast
+    assert "defined('WPSEO_VERSION')" in yoast
+    assert "'version_exact' => $version_exact" in yoast
+    assert "'options' => $selected" in yoast
+    assert "RAOS_Codex_MCP_Store::hash($settings)" in yoast
+    assert "'settings_fingerprint'" in yoast
+    assert "'settings_exact' => $settings_exact" in yoast
+    for option_name in ("wpseo", "wpseo_social"):
+        assert f"'{option_name}'" in yoast
+    assert "'28.3' !== $status['version']" in gate
+    assert "raos_codex_yoast_configuration_drift" in gate
+    assert claim.index("RAOS_Codex_MCP_Content::exact_yoast_gate()") < claim.index(
+        "RAOS_Codex_MCP_Store::claim_publication_batch_apply("
+    )
+    assert "array('CONTENT_RELEASE', 'THEME_RELEASE')" in apply_gate
+    assert "RAOS_Codex_MCP_Content::exact_yoast_gate()" in apply_gate
+    assert "PLUGIN_CHANGE" not in apply_gate.split("exact_yoast_gate", 1)[0].split(
+        "array('CONTENT_RELEASE', 'THEME_RELEASE')", 1
+    )[1]
 
 
 def test_deployment_status_exposes_loaded_theme_runtime_version_and_revision() -> None:
@@ -858,6 +910,21 @@ def test_disposable_wordpress_71_e2e_is_pinned_and_separate_from_live() -> None:
 
 
 def test_disposable_code_artifacts_are_reproducible(tmp_path: Path) -> None:
+    # The deployment operator intentionally refuses to package a dirty theme.
+    # This integration worktree contains the candidate theme edits, so the
+    # clean-checkout reproducibility assertion is exercised in CI/release
+    # checkouts while local development remains fail-closed.
+    relative_theme = (
+        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+        "kurashinoshirube-child"
+    )
+    if subprocess.run(
+        ("git", "status", "--porcelain=v1", "--", relative_theme),
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+    ).stdout:
+        pytest.skip("candidate theme is intentionally dirty in the integration worktree")
     script = ROOT / "tests/wordpress_mcp_v1/e2e/prepare_packages.py"
     first = tmp_path / "first"
     second = tmp_path / "second"

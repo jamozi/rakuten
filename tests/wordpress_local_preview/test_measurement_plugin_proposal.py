@@ -463,6 +463,9 @@ def test_sequence_contract_orders_plugin_before_content_and_caps_batch() -> None
     assert contract["order"].index("abilities_plugin_proposal") < contract[
         "order"
     ].index("measurement_plugin_proposal")
+    assert contract["order"].index(
+        "mcp_site_status_yoast_exact_options_and_fingerprint_readback"
+    ) < contract["order"].index("measurement_plugin_proposal")
     assert contract["order"].index("measurement_plugin_proposal") < contract[
         "order"
     ].index("content_theme_batch_proposal")
@@ -484,6 +487,33 @@ def test_sequence_contract_orders_plugin_before_content_and_caps_batch() -> None
     assert "--quality-audit-signature" in contract["content_batch"]["command"]
     assert "rakuten_v3_activation_dry_run_and_overlay" in contract["order"]
     assert contract["measurement_plugin"]["apply_command_exposed"] is False
+    assert contract["yoast_seo"] == {
+        "activation_required": True,
+        "bounded_profile_apply_command": (
+            "scripts/st1506_wordpress_operator_python.sh apply-yoast-profile "
+            "--proposal-id <separately-approved-proposal-id>"
+        ),
+        "bounded_profile_proposal_command": (
+            "scripts/st1506_wordpress_operator_python.sh propose-yoast-profile"
+        ),
+        "checksum_verification_command": (
+            "scripts/st1506_wordpress_operator_python.sh verify-yoast-checksums"
+        ),
+        "exact_options_readback_required": True,
+        "materialization_command": (
+            ".venv/bin/python changes/wordpress-local-preview-v1/bin/"
+            "materialize_yoast.py --archive <wordpress-seo.28.3.zip> "
+            "--checksums <wordpress-seo.28.3.checksums.json> --lock "
+            "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+            "yoast-seo-28.3.lock.json --output-parent "
+            "<owner-private-materialization-directory>"
+        ),
+        "plugin_slug": "wordpress-seo",
+        "plugin_version": "28.3",
+        "separate_admin_approval_required": True,
+        "settings_fingerprint_readback_required": True,
+        "site_status_preflight_required": True,
+    }
     assert contract["measurement_gate"]["enable_command_exposed"] is False
     rollback = contract["incident_rollback"]
     assert rollback["automatic_execution"] is False

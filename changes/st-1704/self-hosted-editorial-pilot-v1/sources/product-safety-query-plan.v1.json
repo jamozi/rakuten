@@ -9,13 +9,13 @@
     "notice_id_order": "LEXICOGRAPHIC_UNIQUE",
     "none_found_rule": "PARSEABLE_OFFICIAL_ZERO_RESULT_ONLY",
     "positive_result_rule": "MATCH_IF_COUNT_EQUALS_UNIQUE_NOTICE_IDS_ELSE_AMBIGUOUS",
-    "manufacturer_extension": "SEPARATE_FAIL_CLOSED_NOT_IMPLEMENTED_HERE"
+    "manufacturer_extension": "SEPARATE_FAIL_CLOSED_MANUFACTURER_EVIDENCE_REQUIRED"
   },
   "matrix": {
     "mode": "ALL_PRODUCTS_X_ALL_PROVIDER_SCOPES",
-    "expected_product_count": 31,
+    "expected_product_count": 33,
     "expected_provider_scope_count": 3,
-    "expected_query_count": 93
+    "expected_query_count": 99
   },
   "provider_scopes": [
     {
@@ -93,6 +93,8 @@
     {"product_id": "PRD-PROTECA-FRESTER-EX-01551", "exact_model_tokens": ["01551"], "query_model_token": "01551"},
     {"product_id": "PRD-BERMAS-INTER-CITY-III-60570", "exact_model_tokens": ["60570"], "query_model_token": "60570"},
     {"product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060", "exact_model_tokens": ["F115060"], "query_model_token": "F115060"},
-    {"product_id": "PRD-SIROCA-SS-M171", "exact_model_tokens": ["SS-M171"], "query_model_token": "SS-M171"}
+    {"product_id": "PRD-SIROCA-SS-M171", "exact_model_tokens": ["SS-M171"], "query_model_token": "SS-M171"},
+    {"product_id": "PRD-BLUETTI-AORA30-V2", "exact_model_tokens": ["AORA 30 V2"], "query_model_token": "AORA 30 V2"},
+    {"product_id": "PRD-BLUETTI-AORA100-V2", "exact_model_tokens": ["AORA 100 V2"], "query_model_token": "AORA 100 V2"}
   ]
 }

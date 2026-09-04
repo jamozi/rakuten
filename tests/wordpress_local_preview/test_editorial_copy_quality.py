@@ -47,11 +47,14 @@ def test_all_existing_articles_explain_role_accountability_and_limits() -> None:
         assert (
             markup.count("<dt>最終確認日</dt><dd>2026年9月1日</dd>") == 1
         ), slug
-        assert "広告・アフィリエイト開示" in markup, slug
+        disclosure_heading = (
+            "購入リンクなし"
+            if slug == "solota-vs-rakua-mini-plus"
+            else "広告・アフィリエイト開示"
+        )
+        assert disclosure_heading in markup, slug
         assert "/comparison-policy/" in markup, slug
-        assert markup.index("広告・アフィリエイト開示") < markup.index(
-            "decision-section"
-        ), slug
+        assert markup.index(disclosure_heading) < markup.index("decision-section"), slug
 
 
 def test_reader_copy_has_no_internal_workflow_labels_or_pressure_language() -> None:
@@ -200,6 +203,13 @@ def test_rakuten_web_service_credit_is_exact_and_explained_in_japanese() -> None
         "Supported by Rakuten Developers</a>"
     )
     for slug, markup in _documents().items():
+        # Lifecycle-only pages intentionally have no affiliate product data or
+        # Rakuten attribution (the V2 contract requires this fail-closed route).
+        if slug == "solota-vs-rakua-mini-plus":
+            assert "https://developers.rakuten.com/" not in markup, slug
+            assert "Rakuten Web Services Attribution Snippet" not in markup, slug
+            assert "商品情報の取得には楽天ウェブサービスを利用しています。" not in markup, slug
+            continue
         assert markup.count(exact_anchor) == 1, slug
         assert (
             markup.count("Rakuten Web Services Attribution Snippet FROM HERE") == 1

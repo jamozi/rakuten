@@ -3,7 +3,7 @@
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
 The release is bound to runtime revision
-`82d3295080cb9723881773348e5366501af360b8b4301681ca9af82d22c7f368`;
+`f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082`;
 every loaded critical class must report that exact value before any ability or
 mutation is authorized.
 
@@ -48,6 +48,12 @@ operation kind, creator, approver, timestamps, and complete before/after hashes;
 it is single-use, expires with the proposal, and is removed after success or
 failure. Content, theme, and plugin applies therefore require no per-deployment
 `wp-config.php` edit.
+
+The read-only site status includes the exact Yoast SEO 28.3 installed/active
+state, selected option projection, and canonical settings fingerprint.
+Publication-batch claim and content/theme apply reject a missing or drifted
+Yoast state; plugin-change bootstrap deliberately remains available so the
+required fixed dependency can be installed first.
 
 Publication, theme replacement, and plugin changes need an unexpired proposal
 approved by a different cookie-authenticated administrator in **Tools → RAOS

@@ -130,7 +130,7 @@ SOURCE_BINDINGS: Final = {
     },
     "five_slot_measurement": {
         "path": ST1704_CONTRACT_PATH.as_posix(),
-        "sha256": "3a59ad41be34f2f01435cc1e85addabbf5b37507ea6b523f6a0898d3dfd9b32b",
+        "sha256": "69bd518321cbd5327b920c6245a4cfa861f881234bd8ba93dc09bde5c85c7fb9",
     },
 }
 

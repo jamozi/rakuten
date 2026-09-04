@@ -37,12 +37,35 @@ from raos.domain.editorial.self_hosted_editorial_pilot import (
 from raos.adapters import self_hosted_editorial_rakuten_capture as capture_module
 from raos.adapters import self_hosted_editorial_source_capture as source_capture_module
 from raos.application.editorial import self_hosted_editorial_pilot as pilot_module
+from raos.application.editorial import product_safety_receipts as safety_receipts_module
 from scripts import raos_editorial_portfolio_v2 as portfolio_script
 
 
 ROOT = Path(__file__).resolve().parents[2]
 ARTICLE_ROOT = ROOT / "changes/wordpress-local-preview-v1/fixtures/articles"
 SELECTION_NOW = datetime(2026, 9, 1, 12, 0, tzinfo=UTC)
+
+
+@pytest.fixture(autouse=True)
+def _isolate_selection_audit_from_owner_private_captures(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Unit tests use tracked declarations, never a developer's live receipts."""
+
+    def evaluate(repository_root: Path, **kwargs: object) -> object:
+        document = json.loads(
+            (
+                repository_root
+                / safety_receipts_module.PRODUCT_SAFETY_RECEIPTS_RELATIVE_PATH
+            ).read_text(encoding="utf-8")
+        )
+        return safety_receipts_module.evaluate_product_safety_receipts(
+            document, **kwargs
+        )
+
+    monkeypatch.setattr(portfolio_script, "load_product_safety_receipt_audit", evaluate)
+
+
 FIXED_HEADING_BREAK = re.compile(
     r"<h([12])\b[^>]*>(?:(?!</h\1>).)*?<br\b", re.IGNORECASE | re.DOTALL
 )
@@ -66,6 +89,10 @@ STANDARD_AD_DETAILS = (
     "型番が一致する楽天商品を確認できた場合に、楽天アフィリエイトの購入リンクを掲載します。"
     "リンク経由で商品を購入すると、運営者が成果報酬を受け取る場合があります。"
 )
+NONAFFILIATE_DISCLOSURE = (
+    "この記事には購入リンクがありません。以前の比較対象の販売状態を確認する案内記事のため、"
+    "商品カードとアフィリエイトリンクは掲載していません。"
+)
 
 RENDERER_ARTICLE_IDS = (
     "st1703-first-suitcase-comparison",
@@ -79,17 +106,17 @@ RENDERER_ARTICLE_IDS = (
 def _complete_safety_binding() -> dict[str, object]:
     material: dict[str, object] = {
         "schema": "RAOS_PRODUCT_SAFETY_PUBLICATION_BINDING_V1",
-        "required_product_count": 31,
+        "required_product_count": 33,
         "required_authority_kinds": [
             "MANUFACTURER_OFFICIAL",
             "JAPAN_ADMINISTRATIVE_OFFICIAL",
         ],
-        "required_administrative_capture_count": 93,
+        "required_administrative_capture_count": 99,
         "administrative_bundle_sha256": "9" * 64,
-        "administrative_capture_count": 93,
-        "administrative_verified_product_count": 31,
-        "manufacturer_verified_product_count": 31,
-        "complete_product_count": 31,
+        "administrative_capture_count": 99,
+        "administrative_verified_product_count": 33,
+        "manufacturer_verified_product_count": 33,
+        "complete_product_count": 33,
         "complete": True,
     }
     return {
@@ -229,7 +256,7 @@ def test_portfolio_closes_ten_articles_owner_products_and_thirty_seven_cards() -
     assert portfolio.theme_version == "1.5.0"
     assert "theme_runtime_revision" not in tracked
     assert len(portfolio.articles) == 10
-    assert len(portfolio.products) == 31
+    assert len(portfolio.products) == 33
     assert sum(len(article.product_ids) for article in portfolio.articles) == 37
     assert len(portfolio.selection_audits) == len(portfolio.products)
     audits = {audit.product_id: audit for audit in portfolio.selection_audits}
@@ -316,9 +343,11 @@ def test_editorial_review_and_product_source_dates_remain_distinct() -> None:
     )
     assert contract.product_dates["st1704-portable-power-station-guide"] == {
         "PRD-ANKER-SOLIX-C300": "2026-08-31",
+        "PRD-BLUETTI-AORA30-V2": "2026-08-31",
         "PRD-JACKERY-500-NEW": "2026-08-31",
         "PRD-ANKER-SOLIX-C800": "2026-08-31",
         "PRD-JACKERY-1000-NEW-V3": "2026-09-01",
+        "PRD-BLUETTI-AORA100-V2": "2026-08-31",
         "PRD-DJI-POWER-1000-V2": "2026-08-31",
     }
     assert contract.product_dates["st1704-anker-solix-c300-c800-c1000-differences"] == {
@@ -382,6 +411,91 @@ def test_editorial_review_and_product_source_dates_remain_distinct() -> None:
     assert "2026年7月1日" in normalized
 
 
+def test_aora_products_replace_a09_boundary_products_without_weakening_counts() -> None:
+    portfolio = load_editorial_portfolio_v2(ROOT)
+    articles = {article.article_id: article for article in portfolio.articles}
+    assert articles["st1704-portable-power-station-guide"].product_ids == (
+        "PRD-ANKER-SOLIX-C300",
+        "PRD-BLUETTI-AORA30-V2",
+        "PRD-JACKERY-500-NEW",
+        "PRD-ANKER-SOLIX-C800",
+        "PRD-JACKERY-1000-NEW-V3",
+        "PRD-BLUETTI-AORA100-V2",
+        "PRD-DJI-POWER-1000-V2",
+    )
+    assert articles["roomba-mini-vs-switchbot-k11-pro"].product_ids == (
+        "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+        "PRD-SWITCHBOT-K11-PRO",
+    )
+    assert len(portfolio.products) == 33
+    assert sum(len(article.product_ids) for article in portfolio.articles) == 37
+
+    audits = {audit.product_id: audit for audit in portfolio.selection_audits}
+    for product_id in ("PRD-BLUETTI-AORA30-V2", "PRD-BLUETTI-AORA100-V2"):
+        audit = audits[product_id]
+        assert tuple(axis for axis, _state in audit.axis_assessments) == (
+            "use_case_fit",
+            "safety",
+            "dimensions",
+            "performance",
+            "warranty_and_support",
+            "maintainability",
+            "primary_source_confidence",
+        )
+        assert audit.article_ids == ("st1704-portable-power-station-guide",)
+        assert audit.evidence_refs
+        assert all(
+            ref.startswith("https://www.bluetti.jp/") for ref in audit.evidence_refs
+        )
+        assert not re.search(
+            r"枠|source packet|ソースパケット", audit.inclusion_reason, re.I
+        )
+
+
+def test_selected_tri_air_is_not_also_registered_as_an_excluded_alternative() -> None:
+    portfolio = load_editorial_portfolio_v2(ROOT)
+    assert "PRD-PROTECA-TRI-AIR-01541" in portfolio.product_by_id
+    excluded_scopes = {
+        alternative.scope
+        for audit in portfolio.selection_audits
+        for alternative in audit.excluded_alternatives
+    }
+    assert all("Tri-Air" not in scope for scope in excluded_scopes)
+
+
+def test_a09_and_a10_keep_their_reader_facing_scope_boundaries() -> None:
+    portfolio = load_editorial_portfolio_v2(ROOT)
+    a09_markup = (ARTICLE_ROOT / "roomba-mini-vs-switchbot-k11-pro.html").read_text(
+        encoding="utf-8"
+    )
+    a09_article = next(
+        article
+        for article in portfolio.articles
+        if article.article_id == "roomba-mini-vs-switchbot-k11-pro"
+    )
+    assert a09_article.product_ids == (
+        "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+        "PRD-SWITCHBOT-K11-PRO",
+    )
+    assert "PRD-EUFY-AUTOEMPTY-C10-T2292" not in a09_markup
+    assert "PRD-ECOVACS-DEEBOT-MINI2" not in a09_markup
+    assert a09_markup.count('href="/compact-robot-vacuum-shortlist/"') == 1
+    assert a09_markup.count('data-raos-placement="product_card"') == 2
+    assert a09_markup.count('data-raos-placement="final_summary"') == 2
+
+    a10_markup = (ARTICLE_ROOT / "solota-vs-rakua-mini-plus.html").read_text(
+        encoding="utf-8"
+    )
+    lead = a10_markup.split('<p class="pullquote">', 1)[0]
+    assert 'href="/countertop-dishwasher-for-small-households/"' in lead
+    assert "NP-TMLK1-K" in a10_markup
+    assert "NP-TML1-W" not in a10_markup
+    assert "data-raos-product-id=" not in a10_markup
+    assert "data-raos-placement=" not in a10_markup
+    assert "https://developers.rakuten.com/" not in a10_markup
+    assert NONAFFILIATE_DISCLOSURE in a10_markup
+
+
 def test_anker_generation_table_uses_bound_expansion_facts() -> None:
     portfolio = load_editorial_portfolio_v2(ROOT)
     article = next(
@@ -427,6 +541,52 @@ def test_v2_contract_is_self_contained_and_rejects_site_identity_drift(
         return original(path, maximum=maximum, private=private)
 
     monkeypatch.setattr(portfolio_module, "_read_json", substituted)
+    with pytest.raises(
+        EditorialPortfolioV2Failure,
+        match="RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID",
+    ):
+        load_editorial_portfolio_v2(ROOT)
+
+
+@pytest.mark.parametrize(
+    ("article_id", "from_text", "to_text"),
+    [
+        (
+            "solota-vs-rakua-mini-plus",
+            NONAFFILIATE_DISCLOSURE,
+            STANDARD_AD_DISCLOSURE,
+        ),
+        (
+            "roomba-mini-vs-switchbot-k11-pro",
+            STANDARD_AD_DISCLOSURE,
+            NONAFFILIATE_DISCLOSURE,
+        ),
+    ],
+)
+def test_v2_loader_rejects_affiliate_and_nonaffiliate_disclosure_mixing(
+    article_id: str,
+    from_text: str,
+    to_text: str,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    tracked = json.loads(
+        (ROOT / portfolio_module.PORTFOLIO_RELATIVE_PATH).read_text(encoding="utf-8")
+    )
+    article = next(
+        row for row in tracked["articles"] if row["article_id"] == article_id
+    )
+    target = ROOT / article["content_ref"]
+    original = Path.read_bytes
+
+    def substituted(path: Path) -> bytes:
+        payload = original(path)
+        if path == target:
+            text = payload.decode("utf-8", errors="strict")
+            assert text.count(from_text) == 1
+            return text.replace(from_text, to_text).encode("utf-8")
+        return payload
+
+    monkeypatch.setattr(Path, "read_bytes", substituted)
     with pytest.raises(
         EditorialPortfolioV2Failure,
         match="RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID",
@@ -725,7 +885,9 @@ def test_effective_selection_audit_is_product_specific_and_evidence_honest(
     monkeypatch.setattr(
         portfolio_script,
         "_load_sales_statuses",
-        lambda value, _dates, **_kwargs: portfolio_script._unknown_sales_statuses(value),
+        lambda value, _dates, **_kwargs: portfolio_script._unknown_sales_statuses(
+            value
+        ),
     )
 
     report = portfolio_script._selection_audit_report(portfolio, now=SELECTION_NOW)
@@ -831,6 +993,8 @@ def test_effective_selection_audit_is_product_specific_and_evidence_honest(
         "PRD-ANKER-SOLIX-C800-PLUS",
         "PRD-ANKER-SOLIX-C1000",
         "PRD-ANKER-SOLIX-C1000-GEN2",
+        "PRD-BLUETTI-AORA30-V2",
+        "PRD-BLUETTI-AORA100-V2",
         "PRD-DJI-POWER-1000-V2",
         "PRD-JACKERY-1000-NEW-V3",
         "PRD-JACKERY-500-NEW",
@@ -848,12 +1012,12 @@ def test_effective_selection_audit_is_product_specific_and_evidence_honest(
     }
     assert safety_binding == {
         "schema": "RAOS_PRODUCT_SAFETY_PUBLICATION_BINDING_V1",
-        "required_product_count": 31,
+        "required_product_count": 33,
         "required_authority_kinds": [
             "MANUFACTURER_OFFICIAL",
             "JAPAN_ADMINISTRATIVE_OFFICIAL",
         ],
-        "required_administrative_capture_count": 93,
+        "required_administrative_capture_count": 99,
         "administrative_bundle_sha256": None,
         "administrative_capture_count": 0,
         "administrative_verified_product_count": 0,
@@ -879,7 +1043,9 @@ def test_selection_recheck_deadline_and_future_sources_are_enforced(
     monkeypatch.setattr(
         portfolio_script,
         "_load_sales_statuses",
-        lambda value, _dates, **_kwargs: portfolio_script._unknown_sales_statuses(value),
+        lambda value, _dates, **_kwargs: portfolio_script._unknown_sales_statuses(
+            value
+        ),
     )
 
     expired = portfolio_script._selection_audit_report(
@@ -921,14 +1087,14 @@ def test_missing_official_sales_evidence_is_unknown_and_blocks_completion(
     monkeypatch.setattr(
         portfolio_script,
         "_selection_audit_report",
-            lambda _portfolio, **_kwargs: {
-                "product_safety_publication_binding": _complete_safety_binding(),
-                "completion": {
+        lambda _portfolio, **_kwargs: {
+            "product_safety_publication_binding": _complete_safety_binding(),
+            "completion": {
                 "state": "INCOMPLETE",
                 "product_count": len(portfolio.products),
                 "axis_complete_product_count": len(portfolio.products),
                 "unknown_product_ids": sorted(statuses),
-            }
+            },
         },
     )
     with pytest.raises(
@@ -957,7 +1123,7 @@ def test_selection_completion_rejects_an_unevaluated_decision_axis(
                 "product_count": len(portfolio.products),
                 "axis_complete_product_count": len(portfolio.products) - 1,
                 "axis_incomplete_product_ids": [portfolio.products[0].product_id],
-            }
+            },
         }
 
     monkeypatch.setattr(
@@ -1083,7 +1249,7 @@ def test_model_sales_state_contract_verifies_hash_and_does_not_attest_cta_varian
 
     statuses = portfolio_script._load_sales_statuses(portfolio, fact_dates)
 
-    assert sum(status.state == "AVAILABLE" for status in statuses.values()) == 29
+    assert sum(status.state == "AVAILABLE" for status in statuses.values()) == 31
     assert sum(status.state == "OUT_OF_STOCK" for status in statuses.values()) == 2
     assert all(status.state != "UNKNOWN" for status in statuses.values())
     assert statuses["PRD-ACE-DIFFERENCE-05721"].availability_scope == "VARIANT"
@@ -1108,7 +1274,10 @@ def test_model_sales_state_contract_verifies_hash_and_does_not_attest_cta_varian
         row["checked_at_utc"] = future_checked_at
         row["structured_snapshot_sha256"] = hashlib.sha256(
             portfolio_script._canonical_bytes(
-                {field: row[field] for field in portfolio_script.SALES_STATUS_HASH_FIELDS}
+                {
+                    field: row[field]
+                    for field in portfolio_script.SALES_STATUS_HASH_FIELDS
+                }
             )
         ).hexdigest()
     monkeypatch.setattr(
@@ -1149,7 +1318,7 @@ def test_tracked_manufacturer_sales_audit_binds_all_products_but_does_not_hide_d
     report = portfolio_script._selection_audit_report(portfolio, now=SELECTION_NOW)
     completion = cast(dict[str, object], report["completion"])
 
-    assert len(statuses) == len(portfolio.products) == 31
+    assert len(statuses) == len(portfolio.products) == 33
     assert sum(status.state == "AVAILABLE" for status in statuses.values()) == len(
         portfolio.products
     )
@@ -1176,7 +1345,7 @@ def test_tracked_manufacturer_sales_audit_binds_all_products_but_does_not_hide_d
         )["availability_scope"]
         == "VARIANT"
     )
-    assert completion["sales_state_verified_product_count"] == 31
+    assert completion["sales_state_verified_product_count"] == 33
     assert completion["axis_complete_product_count"] == 0
     assert set(cast(list[str], completion["axis_incomplete_product_ids"])) == {
         product.product_id for product in portfolio.products
@@ -1233,7 +1402,7 @@ def test_known_out_of_stock_requires_recheck_and_blocks_with_unknown_or_disconti
     report = portfolio_script._selection_audit_report(portfolio, now=SELECTION_NOW)
     completion = cast(dict[str, object], report["completion"])
     assert completion["state"] == "INCOMPLETE"
-    assert completion["sales_state_available_product_count"] == 29
+    assert completion["sales_state_available_product_count"] == 31
     assert completion["sales_state_out_of_stock_product_count"] == 2
     assert set(cast(list[str], completion["out_of_stock_recheck_product_ids"])) == (
         out_of_stock
@@ -1734,8 +1903,16 @@ def test_all_source_articles_are_editorial_v2_and_have_two_cta_slots_per_card() 
         )
         assert markup.count('class="raos-editorial-v2"') == 1
         assert markup.count('class="raos-disclosure disclosure"') == 1
-        assert markup.count(STANDARD_AD_DISCLOSURE) == 1
-        assert markup.count(STANDARD_AD_DETAILS) == 1
+        if article.article_id == "solota-vs-rakua-mini-plus":
+            assert article.product_ids == ()
+            assert markup.count(STANDARD_AD_DISCLOSURE) == 0
+            assert markup.count(STANDARD_AD_DETAILS) == 0
+            assert markup.count(NONAFFILIATE_DISCLOSURE) == 1
+        else:
+            assert article.product_ids
+            assert markup.count(STANDARD_AD_DISCLOSURE) == 1
+            assert markup.count(STANDARD_AD_DETAILS) == 1
+            assert markup.count(NONAFFILIATE_DISCLOSURE) == 0
         if article.article_id.startswith("st1704-") or article.article_id.startswith(
             "st1703-"
         ):
@@ -1786,18 +1963,16 @@ def test_all_source_articles_are_editorial_v2_and_have_two_cta_slots_per_card() 
         assert FIXED_HEADING_BREAK.search(markup) is None
         assert not any(term in markup for term in READER_FACING_PROHIBITED)
         observed_units = set(re.findall(r"(?<=\d)(?:cm|mm)", markup))
-        if article.article_id in {
-            "st1704-compact-robot-vacuum-shortlist",
-            "roomba-mini-vs-switchbot-k11-pro",
-        }:
+        if article.article_id == "st1704-compact-robot-vacuum-shortlist":
             assert observed_units == {"cm", "mm"}
-            if article.article_id == "st1704-compact-robot-vacuum-shortlist":
-                assert "幅32.0×奥行40.0×高さ38.5cm" in markup
-                assert "各数値の軸は未確認" not in markup
+            assert "幅32.0×奥行40.0×高さ38.5cm" in markup
+            assert "各数値の軸は未確認" not in markup
+        elif article.article_id == "roomba-mini-vs-switchbot-k11-pro":
+            assert observed_units == {"cm"}
         elif article.article_id == "solota-vs-rakua-mini-plus":
             assert observed_units == set()
-            assert "販売状態と型番だけ" in markup
-            assert "仕様表、個別の選定理由" in markup
+            assert "以前の比較対象の販売状態を確認し" in markup
+            assert "商品カードとアフィリエイトリンクは掲載していません" in markup
         elif article.article_id == "front-open-carry-on-suitcase-with-stopper":
             assert observed_units == {"cm", "mm"}
             assert "55mm静音キャスター" in markup
@@ -2131,7 +2306,9 @@ def test_materialization_uses_exact_two_affiliate_ctas_or_official_fallback() ->
         assert 'class="raos-comparison__product-image"' not in rendered
 
 
-def test_lifecycle_route_materializes_without_products_and_rejects_cta_injection() -> None:
+def test_lifecycle_route_materializes_without_products_and_rejects_cta_injection() -> (
+    None
+):
     portfolio = load_editorial_portfolio_v2(ROOT)
     article = portfolio.article_by_production_slug["solota-vs-rakua-mini-plus"]
     assert article.product_ids == ()
@@ -2422,9 +2599,9 @@ def test_each_unverified_state_uses_only_official_fallbacks(
             assert f"/raos-product-media/{product_id}." not in card.group(0)
 
 
-def test_production_materialization_uses_provider_image_and_rejects_heading_break() -> (
-    None
-):
+def test_production_materialization_uses_provider_image_and_rejects_heading_break(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     portfolio = load_editorial_portfolio_v2(ROOT)
     article = portfolio.article_by_production_slug["roomba-mini-vs-switchbot-k11-pro"]
     markup = (ARTICLE_ROOT / f"{article.production_slug}.html").read_text(
@@ -2434,6 +2611,15 @@ def test_production_materialization_uses_provider_image_and_rejects_heading_brea
         product_id: _fake_view(product_id, state="verified")
         for product_id in article.product_ids
     }
+    # The checked-in sales-state fixture is intentionally older than the
+    # production freshness window.  Keep this rendering contract test focused
+    # on provider-image materialization by extending the window locally; the
+    # real publication gate remains fail-closed on stale state.
+    monkeypatch.setattr(
+        portfolio_module,
+        "MANUFACTURER_SALES_STATE_FRESHNESS",
+        portfolio_module.MANUFACTURER_SALES_STATE_FRESHNESS * 365,
+    )
 
     rendered = materialize_article_v2(
         markup,
@@ -2490,7 +2676,7 @@ def test_completion_gate_reports_all_unresolved_product_codes(
     readiness = product_evidence_readiness_v2(ROOT)
 
     assert readiness.complete is False
-    assert readiness.product_count == len(portfolio.products) == 31
+    assert readiness.product_count == len(portfolio.products) == 33
     assert readiness.product_card_count == 37
     assert readiness.affiliate_cta_count == 74
     assert readiness.verified_product_count == 0
@@ -2498,6 +2684,8 @@ def test_completion_gate_reports_all_unresolved_product_codes(
         "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
         "PRD-ANKER-SOLIX-C800",
         "PRD-BERMAS-INTER-CITY-III-60570",
+        "PRD-BLUETTI-AORA100-V2",
+        "PRD-BLUETTI-AORA30-V2",
         "PRD-DJI-POWER-1000-V2",
         "PRD-ECOVACS-DEEBOT-MINI2",
         "PRD-EUFY-AUTOEMPTY-C10-T2292",
@@ -2512,7 +2700,7 @@ def test_completion_gate_reports_all_unresolved_product_codes(
 
     with pytest.raises(
         EditorialPortfolioV2Failure,
-        match="RAOS_EDITORIAL_PORTFOLIO_PRODUCT_CODES_INCOMPLETE",
+        match="RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_EXPIRED",
     ):
         product_evidence_views_v2(ROOT, require_verified_set=True)
 

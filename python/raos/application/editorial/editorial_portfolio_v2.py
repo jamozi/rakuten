@@ -7,7 +7,7 @@ read only while a local preview or a production document is materialized.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime, timedelta
 from html import escape
 import hashlib
@@ -24,6 +24,7 @@ from urllib.parse import parse_qs, urlsplit
 from raos.adapters.self_hosted_editorial_pilot_json import (
     read_rakuten_product_evidence,
 )
+from raos.adapters import self_hosted_editorial_rakuten_capture as identity_capture
 from raos.domain.editorial.self_hosted_editorial_pilot import (
     EditorialPilotFailure,
     RakutenProductEvidence,
@@ -93,6 +94,11 @@ REQUIRED_AD_DISCLOSURE: Final = (
     "広告を含みます。購入リンクから成果報酬を受け取る場合がありますが、"
     "選定・掲載順には使いません。"
 )
+NONAFFILIATE_ARTICLE_ID: Final = "solota-vs-rakua-mini-plus"
+REQUIRED_NONAFFILIATE_DISCLOSURE: Final = (
+    "この記事には購入リンクがありません。以前の比較対象の販売状態を確認する案内記事のため、"
+    "商品カードとアフィリエイトリンクは掲載していません。"
+)
 SHA256_RE: Final = re.compile(r"[0-9a-f]{64}\Z")
 PRODUCT_ID_RE: Final = re.compile(r"PRD-[A-Z0-9]+(?:-[A-Z0-9]+)*\Z")
 SLUG_RE: Final = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
@@ -109,6 +115,22 @@ class EditorialPortfolioV2Failure(RuntimeError):
 
 def _fail(code: str) -> NoReturn:
     raise EditorialPortfolioV2Failure(code) from None
+
+
+def _article_disclosure_is_exact(
+    markup: str,
+    *,
+    article_id: str,
+    product_ids: tuple[str, ...],
+) -> bool:
+    nonaffiliate_route = article_id == NONAFFILIATE_ARTICLE_ID
+    if nonaffiliate_route != (not product_ids):
+        return False
+    affiliate_count = markup.count(REQUIRED_AD_DISCLOSURE)
+    nonaffiliate_count = markup.count(REQUIRED_NONAFFILIATE_DISCLOSURE)
+    if nonaffiliate_route:
+        return affiliate_count == 0 and nonaffiliate_count == 1
+    return affiliate_count == 1 and nonaffiliate_count == 0
 
 
 def _read_bytes(path: Path, *, maximum: int, private: bool = False) -> bytes:
@@ -747,6 +769,8 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
         "body_format": "html_fragment",
         "required_editorial_root": "raos-editorial-v2",
         "required_ad_disclosure": REQUIRED_AD_DISCLOSURE,
+        "required_nonaffiliate_disclosure": REQUIRED_NONAFFILIATE_DISCLOSURE,
+        "nonaffiliate_article_ids": [NONAFFILIATE_ARTICLE_ID],
         "fixed_breaks_forbidden_in": ["h1", "h2", "th"],
         "article_metadata_fields": [
             "title",
@@ -878,8 +902,7 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
             _text(item, maximum=160) for item in _list(article["product_ids"])
         )
         if len(references) != len(set(references)) or (
-            not references
-            and article_id != "solota-vs-rakua-mini-plus"
+            not references and article_id != "solota-vs-rakua-mini-plus"
         ):
             _fail("RAOS_EDITORIAL_PORTFOLIO_CONTRACT_INVALID")
         post_row = posts_by_slug.get(local_slug)
@@ -920,7 +943,11 @@ def load_editorial_portfolio_v2(repository_root: Path) -> EditorialPortfolioV2:
             or metadata.st_nlink != 1
             or not 1 <= len(content_payload) <= MAX_CONTENT_BYTES
             or content.count('class="raos-editorial-v2"') != 1
-            or content.count(REQUIRED_AD_DISCLOSURE) != 1
+            or not _article_disclosure_is_exact(
+                content,
+                article_id=article_id,
+                product_ids=references,
+            )
             or re.search(
                 r"<(?:h1|h2|th)\b[^>]*>(?:(?!</(?:h1|h2|th)>).)*<br\b",
                 content,
@@ -1229,6 +1256,135 @@ def _validate_rakuten_identity(
         _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_INVALID")
 
 
+def rakuten_identity_query_v1(binding: ProductBindingV2) -> str:
+    """Widen only the search syntax; exact identity matching remains unchanged.
+
+    Rakuten rejects one-byte search terms (for example the '2' in 'mini 2').
+    Such terms are omitted from retrieval, not from product identity checks.
+    """
+    query = " ".join(
+        part
+        for part in binding.representative_model.split()
+        if not (len(part) == 1 and part.isascii())
+    )
+    if not query:
+        _fail("RAOS_EDITORIAL_PORTFOLIO_DISCOVERY_QUERY_INVALID")
+    return query
+
+
+def discover_rakuten_identity_v1(
+    binding: ProductBindingV2,
+    raw: bytes,
+) -> ProductBindingV2 | None:
+    """Resolve only a complete, unique API search; never select by price/rank."""
+    target = identity_capture.ProductCaptureTarget(
+        product_id=binding.product_id,
+        shop_code=binding.rakuten_shop_code or "unresolved",
+        affiliate_ref=binding.affiliate_ref,
+        media_asset_ref=binding.media_asset_ref,
+        variants=(binding.representative_model,),
+        required_title_tokens=binding.required_title_tokens,
+        product_kind_tokens=binding.product_kind_tokens,
+        forbidden_title_tokens=binding.forbidden_title_tokens,
+        jan=None,
+        fixed_item_code=None,
+        fixed_destination_url=None,
+    )
+    rows = identity_capture.discovery_rows(raw)
+    summary = json.loads(raw)
+    if summary.get("count") != len(rows) or summary.get("page") != 1:
+        return None  # An unexamined page can contain another matching listing.
+    candidates = [
+        row
+        for row in rows
+        if identity_capture.matches_product_identity(target, row)
+        and (
+            binding.rakuten_shop_code is None
+            or row.get("shopCode") == binding.rakuten_shop_code
+        )
+        and not any(
+            token in str(row.get("itemName", ""))
+            for token in ("中古", "レンタル", "ジャンク", "訳あり", "再生品")
+        )
+    ]
+    if len(candidates) != 1:
+        return None
+    row = candidates[0]
+    code, shop = row.get("itemCode"), row.get("shopCode")
+    if (
+        type(code) is not str
+        or ITEM_CODE_RE.fullmatch(code) is None
+        or type(shop) is not str
+        or code.split(":", 1)[0] != shop
+    ):
+        _fail("RAOS_EDITORIAL_PORTFOLIO_DISCOVERY_INVALID")
+    return replace(binding, rakuten_item_code=code, rakuten_shop_code=shop)
+
+
+def resolve_rakuten_identity_v1(
+    repository_root: Path,
+    binding: ProductBindingV2,
+    *,
+    now: datetime | None = None,
+) -> ProductBindingV2:
+    """Replay private API identity evidence, separate from human attestation."""
+    if binding.rakuten_item_code is not None:
+        return binding
+    root = repository_root / STATUS_RELATIVE_PATH.parent / "provider"
+    receipt = _mapping(
+        _read_json(
+            root / f"{binding.product_id}.identity.v1.json",
+            maximum=MAX_STATUS_BYTES,
+            private=True,
+        )
+    )
+    if set(receipt) != {
+        "schema",
+        "provenance",
+        "owner_attested",
+        "portfolio_sha256",
+        "product_id",
+        "query_model",
+        "search_keyword",
+        "retrieved_at",
+        "response_sha256",
+        "item_code",
+        "shop_code",
+    }:
+        _fail("RAOS_EDITORIAL_PORTFOLIO_DISCOVERY_INVALID")
+    retrieved = _parse_timestamp(receipt.get("retrieved_at"))
+    active_now = (now or datetime.now(UTC)).astimezone(UTC)
+    raw = _read_bytes(
+        root / f"{binding.product_id}.search-response.v2.json",
+        maximum=MAX_STATUS_BYTES,
+        private=True,
+    )
+    if (
+        receipt.get("schema") != "RAOS_RAKUTEN_API_IDENTITY_V1"
+        or receipt.get("provenance") != "API_VERIFIED"
+        or receipt.get("owner_attested") is not False
+        or receipt.get("portfolio_sha256") != portfolio_sha256(repository_root)
+        or receipt.get("product_id") != binding.product_id
+        or receipt.get("query_model") != binding.representative_model
+        or receipt.get("search_keyword") != rakuten_identity_query_v1(binding)
+        or receipt.get("response_sha256") != hashlib.sha256(raw).hexdigest()
+        or active_now < retrieved
+        or active_now - retrieved > FRESHNESS
+    ):
+        _fail("RAOS_EDITORIAL_PORTFOLIO_DISCOVERY_INVALID")
+    try:
+        resolved = discover_rakuten_identity_v1(binding, raw)
+    except identity_capture.RakutenProductCaptureFailure:
+        _fail("RAOS_EDITORIAL_PORTFOLIO_DISCOVERY_INVALID")
+    if (
+        resolved is None
+        or receipt.get("item_code") != resolved.rakuten_item_code
+        or receipt.get("shop_code") != resolved.rakuten_shop_code
+    ):
+        _fail("RAOS_EDITORIAL_PORTFOLIO_DISCOVERY_INVALID")
+    return resolved
+
+
 def _load_status_receipt(repository_root: Path) -> Mapping[str, object] | None:
     path = repository_root / STATUS_RELATIVE_PATH
     if not path.exists() and not path.is_symlink():
@@ -1376,10 +1532,6 @@ def product_evidence_views_v2(
         portfolio=portfolio,
         now=now,
     )
-    if require_verified_set and any(
-        product.rakuten_item_code is None for product in portfolio.products
-    ):
-        _fail("RAOS_EDITORIAL_PORTFOLIO_PRODUCT_CODES_INCOMPLETE")
     active_now = (now or datetime.now(UTC)).astimezone(UTC)
     receipt = _load_status_receipt(repository_root)
     receipt_rows: dict[str, Mapping[str, object]] = {}
@@ -1444,6 +1596,9 @@ def product_evidence_views_v2(
         image_extension: ProductImageExtension | None = None
         jan_evidence_sha256 = jan_evidence_bindings.get(binding.product_id)
         if stored_state == "verified":
+            binding = resolve_rakuten_identity_v1(
+                repository_root, binding, now=active_now
+            )
             verified_hashes = (
                 status_row.get("response_sha256"),
                 status_row.get("affiliate_response_sha256"),
@@ -1526,7 +1681,7 @@ def product_evidence_readiness_v2(
         sorted(
             product.product_id
             for product in portfolio.products
-            if product.rakuten_item_code is None
+            if product.rakuten_item_code is None and product.product_id not in verified
         )
     )
     unverified = tuple(
@@ -2106,7 +2261,11 @@ def materialize_article_v2(
             markup,
             flags=re.I | re.S,
         )
-        or markup.count(REQUIRED_AD_DISCLOSURE) != 1
+        or not _article_disclosure_is_exact(
+            markup,
+            article_id=article.article_id,
+            product_ids=article.product_ids,
+        )
     ):
         _fail("RAOS_EDITORIAL_PORTFOLIO_ARTICLE_INVALID")
     if mode == "production" and article.product_ids:

@@ -619,7 +619,7 @@ def _product_directory(repository: Path, index: int = 0) -> Path:
     return repository / OWNER_CAPTURE_RELATIVE_PATH / product_id
 
 
-def test_exact_93_capture_set_is_replayed_without_paths_or_writes(
+def test_exact_99_capture_set_is_replayed_without_paths_or_writes(
     complete_capture_repository: Path,
 ) -> None:
     root = complete_capture_repository / OWNER_CAPTURE_RELATIVE_PATH
@@ -639,8 +639,8 @@ def test_exact_93_capture_set_is_replayed_without_paths_or_writes(
         for path in root.rglob("*")
         if path.is_file()
     }
-    assert evidence.capture_count == 93
-    assert len(evidence.products) == 31
+    assert evidence.capture_count == 99
+    assert len(evidence.products) == 33
     assert evidence.complete is True
     assert all(row.status == "VERIFIED_NONE_FOUND" for row in evidence.products)
     assert len(evidence.bundle_sha256) == 64
@@ -666,11 +666,11 @@ def test_verify_set_cli_emits_only_aggregate_safe_binding(
     assert capture_cli.main(["verify-set"]) == 0
     output = json.loads(capsys.readouterr().out)
     assert output == {
-        "administratively_verified_product_count": 31,
+        "administratively_verified_product_count": 33,
         "bundle_sha256": output["bundle_sha256"],
-        "capture_count": 93,
+        "capture_count": 99,
         "network_used": False,
-        "product_count": 31,
+        "product_count": 33,
         "production_write": False,
         "status": "VERIFIED_ADMINISTRATIVE_CLEAR",
     }

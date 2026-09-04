@@ -35,7 +35,7 @@ def test_generated_successor_covers_all_v2_identities_without_rewriting_v2() -> 
     assert portfolio.version == "3.0.0"
     assert v3["theme_version"] == "1.5.0"
     assert len(portfolio.articles) == len(v2["articles"]) == 10
-    assert len(portfolio.products) == len(v2["products"]) == 31
+    assert len(portfolio.products) == len(v2["products"]) == 33
     assert {article.article_id for article in portfolio.articles} == {
         article["article_id"] for article in v2["articles"]
     }
@@ -230,9 +230,14 @@ def test_navigation_has_three_clusters_and_explicit_relationship_policy() -> Non
                 "broader_guide"
                 if article["broader_article_id"] == row["article_id"]
                 else (
-                    "narrower_comparison"
+                    "lifecycle_reference"
                     if target["broader_article_id"] == article["article_id"]
-                    else "adjacent_condition"
+                    and target["content_role"] == "lifecycle_status_route"
+                    else (
+                        "narrower_comparison"
+                        if target["broader_article_id"] == article["article_id"]
+                        else "adjacent_condition"
+                    )
                 )
             )
             assert row["relationship"] == expected_relationship
@@ -241,6 +246,7 @@ def test_navigation_has_three_clusters_and_explicit_relationship_policy() -> Non
                 == {
                     "adjacent_condition": "近い条件を別の軸で比べる",
                     "broader_guide": "候補を広げて選び直す",
+                    "lifecycle_reference": "以前の比較対象の販売状況を確認する",
                     "narrower_comparison": "条件を絞った比較へ進む",
                 }[expected_relationship]
             )
@@ -263,12 +269,20 @@ def test_every_article_has_a_reader_facing_role_scope_and_broader_route() -> Non
         "a06": "constraint_shortlist",
         "a07": "constraint_shortlist",
         "a08": "feature_shortlist",
-        "a09": "constraint_shortlist",
+        "a09": "head_to_head_comparison",
         "a10": "lifecycle_status_route",
     }
     assert all(article.content_role_label for article in portfolio.articles)
     assert all(article.primary_query_intent for article in portfolio.articles)
     assert all(article.comparison_scope for article in portfolio.articles)
+    assert by_code["a10"].article_id == "solota-vs-rakua-mini-plus"
+    assert by_code["a10"].product_ids == ()
+    assert by_code["a10"].cta_bindings == ()
+    assert all(
+        article.product_ids and article.cta_bindings
+        for code, article in by_code.items()
+        if code != "a10"
+    )
     assert {
         code: article.broader_article_id
         for code, article in by_code.items()
@@ -292,6 +306,32 @@ def test_every_article_has_a_reader_facing_role_scope_and_broader_route() -> Non
             if article.intent_group_id == intent_group_id
         ]
         assert len(primary_intents) == len(set(primary_intents))
+
+
+@pytest.mark.parametrize("tamper", ["lifecycle_role", "zero_products_and_ctas"])
+def test_loader_rejects_a09_lifecycle_status_route_tamper(
+    tmp_path: Path,
+    tamper: str,
+) -> None:
+    document = json.loads((ROOT / PORTFOLIO_RELATIVE_PATH).read_text(encoding="utf-8"))
+    a09 = next(
+        article for article in document["articles"] if article["article_code"] == "a09"
+    )
+    if tamper == "lifecycle_role":
+        a09["content_role"] = "lifecycle_status_route"
+        a09["content_role_label"] = "以前の比較対象の販売状態確認＋現行比較への案内"
+    else:
+        a09["product_ids"] = []
+        a09["cta_bindings"] = []
+    target = tmp_path / PORTFOLIO_RELATIVE_PATH
+    target.parent.mkdir(parents=True)
+    target.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(
+        EditorialPortfolioV3Failure,
+        match="RAOS_EDITORIAL_V3_CONTRACT_INVALID",
+    ):
+        load_editorial_portfolio_v3(tmp_path)
 
 
 def test_generator_rejects_duplicate_primary_query_intent_within_group(
@@ -854,12 +894,14 @@ def test_private_workflow_readme_lists_every_unset_product_identity() -> None:
         encoding="utf-8"
     )
     section = readme.split(
-        "The current tracked registry intentionally leaves these thirteen ", 1
+        "The current tracked registry leaves these fifteen identities unset.", 1
     )[1].split("After all product evidence is complete", 1)[0]
     documented = tuple(re.findall(r"^- `(PRD-[A-Z0-9-]+)`$", section, flags=re.M))
 
-    assert len(expected) == 13
+    assert len(expected) == 15
     assert documented == expected
+    assert "API discovery" in section
+    assert "manual worksheets are not prerequisites" in readme
 
 
 def test_loader_rejects_stale_fixed_completion_product_count(tmp_path: Path) -> None:

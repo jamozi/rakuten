@@ -35,17 +35,17 @@ THEME_REVISION = publication.EXPECTED_THEME_RUNTIME_REVISION
 def _test_product_safety_binding() -> dict[str, object]:
     material: dict[str, object] = {
         "schema": "RAOS_PRODUCT_SAFETY_PUBLICATION_BINDING_V1",
-        "required_product_count": 31,
+        "required_product_count": 33,
         "required_authority_kinds": [
             "MANUFACTURER_OFFICIAL",
             "JAPAN_ADMINISTRATIVE_OFFICIAL",
         ],
-        "required_administrative_capture_count": 93,
+        "required_administrative_capture_count": 99,
         "administrative_bundle_sha256": "9" * 64,
-        "administrative_capture_count": 93,
-        "administrative_verified_product_count": 31,
-        "manufacturer_verified_product_count": 31,
-        "complete_product_count": 31,
+        "administrative_capture_count": 99,
+        "administrative_verified_product_count": 33,
+        "manufacturer_verified_product_count": 33,
+        "complete_product_count": 33,
         "complete": True,
     }
     encoded = json.dumps(
@@ -2415,6 +2415,20 @@ class WorkflowClient:
                 "runtime_version": self.runtime_version,
                 "runtime_revision": self.runtime_revision,
             },
+            "yoast": {
+                "plugin_slug": "wordpress-seo",
+                "installed": True,
+                "active": True,
+                "version": publication.EXPECTED_YOAST_VERSION,
+                "version_exact": True,
+                "options": json.loads(
+                    json.dumps(publication.EXPECTED_YOAST_OPTIONS)
+                ),
+                "settings_fingerprint": (
+                    publication.EXPECTED_YOAST_SETTINGS_FINGERPRINT
+                ),
+                "settings_exact": True,
+            },
             "apply_authorization": {
                 "mode": "approval_scoped_lease",
                 "default": False,
@@ -2925,6 +2939,60 @@ def test_site_status_requires_plugin_1_3_1_and_distinct_review_and_lease_ttls() 
         publication.validate_site_status(status)
 
 
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("installed", False),
+        ("active", False),
+        ("version", "28.2"),
+        ("version_exact", False),
+        ("settings_fingerprint", "0" * 64),
+        ("settings_exact", False),
+    ],
+)
+def test_site_status_requires_exact_yoast_28_3_readback(
+    field: str,
+    value: object,
+) -> None:
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    status = WorkflowClient(article, []).status()
+    yoast = status["yoast"]
+    assert type(yoast) is dict
+    yoast[field] = value
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
+
+
+def test_site_status_requires_exact_yoast_options_and_bound_fingerprint() -> None:
+    assert publication.EXPECTED_YOAST_SETTINGS_FINGERPRINT == publication.sha256_json(
+        {
+            "schema": "RAOSYoastSettingsV1",
+            **publication.EXPECTED_YOAST_OPTIONS,
+        }
+    )
+    article = publication.load_articles("roomba-mini-vs-switchbot-k11-pro")[0]
+    status = WorkflowClient(article, []).status()
+    status["yoast"]["options"]["wpseo"]["tracking"] = True
+
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
+
+    status = WorkflowClient(article, []).status()
+    del status["yoast"]
+    with pytest.raises(
+        publication.PublicationFailure,
+        match="RAOS_WORDPRESS_REQUEST_SITE_NOT_READY",
+    ):
+        publication.validate_site_status(status)
+
+
 def test_attempt_prepared_without_proposals_uses_review_window_plus_grace(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -3286,7 +3354,7 @@ def test_materialization_pair_refuses_manufacturer_sales_state_drift(
             lambda receipt: receipt["completion"].update(
                 {
                     "state": "INCOMPLETE",
-                    "verified_product_count": 31,
+                    "verified_product_count": 33,
                 }
             ),
         ),
@@ -4253,17 +4321,54 @@ def test_provider_slot_resume_rejects_historical_activation_binding(
         )
 
 
+@pytest.mark.parametrize(
+    "historical_schema",
+    [
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V1",
+        "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2",
+    ],
+)
 def test_provider_slot_resume_allows_only_expired_historical_replacement(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
+    historical_schema: str,
 ) -> None:
     articles = publication.load_publication_items("all")
+    path = tmp_path / f"expired-{historical_schema[-2:].lower()}.json"
     receipt = publication._fresh_receipt(
         articles,
-        tmp_path / "expired-v2.json",
+        path,
         TEST_THEME_TREE_SHA256,
-        {"schema": "RAOS_WORDPRESS_MATERIALIZATION_BINDING_V2"},
+        {"schema": historical_schema},
         _test_quality_audit_binding(),
+    )
+    receipt["state"] = "WAITING_FOR_APPROVAL"
+    receipt["proposals"] = [
+        {"proposal_id": f"{index + 1:064x}"} for index in range(len(articles))
+    ]
+    receipt["batch_registration"] = {}
+    monkeypatch.setattr(publication, "_validate_receipt", lambda value, _articles: value)
+    monkeypatch.setattr(
+        publication,
+        "publication_batch_status",
+        lambda *_args, **_kwargs: {"state": "EXPIRED"},
+    )
+
+    assert (
+        publication._resume_existing_all_attempt(
+            articles,
+            receipt,
+            path,
+            activation=SimpleNamespace(),
+            **_resume_gate_kwargs(tmp_path),
+            client_factory=lambda: (_ for _ in ()).throw(
+                AssertionError("expired historical attempt must not call WordPress")
+            ),
+            deployment_runner=lambda *_args, **_kwargs: subprocess.CompletedProcess(
+                [], 0, b"", b""
+            ),
+        )
+        is False
     )
 
 
@@ -4366,32 +4471,6 @@ def test_unregistered_historical_provider_binding_fails_closed_while_nonterminal
             },
             quality_audit_binding=_test_quality_audit_binding(),
         )
-    receipt["state"] = "WAITING_FOR_APPROVAL"
-    receipt["proposals"] = [
-        {"proposal_id": f"{index + 1:064x}"} for index in range(len(articles))
-    ]
-    receipt["batch_registration"] = {}
-    monkeypatch.setattr(publication, "_validate_receipt", lambda value, _articles: value)
-    monkeypatch.setattr(
-        publication,
-        "publication_batch_status",
-        lambda *_args, **_kwargs: {"state": "EXPIRED"},
-    )
-
-    assert (
-        publication._resume_existing_all_attempt(
-            articles,
-            receipt,
-            tmp_path / "expired-v2.json",
-            activation=SimpleNamespace(),
-            **_resume_gate_kwargs(tmp_path),
-            client_factory=lambda: (_ for _ in ()).throw(AssertionError()),
-            deployment_runner=lambda *_args, **_kwargs: subprocess.CompletedProcess(
-                [], 0, b"", b""
-            ),
-        )
-        is False
-    )
 
 
 def test_all_mode_resume_refuses_stale_activation_before_client_or_apply(
@@ -4522,6 +4601,8 @@ def test_all_mode_resume_refuses_signed_quality_fingerprint_drift_before_apply(
 def _write_remote_applied_legacy_all_attempt(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
+    *,
+    interrupted_state: str = "APPLY_RETURNED",
 ) -> tuple[
     list[Any],
     Path,
@@ -4539,7 +4620,8 @@ def _write_remote_applied_legacy_all_attempt(
         old_tree,
         quality_audit_binding=_test_quality_audit_binding(),
     )
-    receipt["state"] = "APPLY_RETURNED"
+    assert interrupted_state in {"APPLY_RETURNED", "FINALIZING_APPLIED"}
+    receipt["state"] = interrupted_state
     content_proposals: list[dict[str, object]] = []
     operations: dict[str, dict[str, object]] = {}
     documents: dict[str, dict[str, object]] = {}
@@ -4653,12 +4735,21 @@ def _stub_required_all_mode_activation(
     )
 
 
+@pytest.mark.parametrize(
+    "interrupted_state",
+    ["APPLY_RETURNED", "FINALIZING_APPLIED"],
+)
 def test_all_mode_remote_applied_reconciliation_revalidates_fresh_inputs(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
+    interrupted_state: str,
 ) -> None:
     articles, path, _old_tree, operations, documents, _drafts = (
-        _write_remote_applied_legacy_all_attempt(monkeypatch, tmp_path)
+        _write_remote_applied_legacy_all_attempt(
+            monkeypatch,
+            tmp_path,
+            interrupted_state=interrupted_state,
+        )
     )
     live_documents = {
         article.production_slug: article.document()

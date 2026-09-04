@@ -24,6 +24,11 @@ from typing import Final, Literal, Mapping, NoReturn, Sequence, cast
 import unicodedata
 from urllib.parse import urlsplit
 
+from raos.application.editorial.product_safety_manufacturer_capture import (
+    ProductSafetyManufacturerCaptureFailure,
+    ProductSafetyManufacturerEvidenceSet,
+    verify_product_safety_manufacturer_capture_set,
+)
 from raos.application.editorial.product_safety_query_capture import (
     ProductSafetyAdministrativeEvidenceSet,
     ProductSafetyQueryCaptureFailure,
@@ -152,6 +157,8 @@ class ProductSafetyProductStatus:
     matched_notice_ids: tuple[str, ...]
     verified_authority_kinds: tuple[AuthorityKind, ...] = ()
     administrative_capture_sha256s: tuple[str, ...] = ()
+    manufacturer_capture_sha256: str | None = None
+    manufacturer_manual_required_reason: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -162,6 +169,9 @@ class ProductSafetyReceiptAudit:
     complete: bool
     administrative_bundle_sha256: str | None = None
     administrative_capture_count: int = 0
+    manufacturer_bundle_sha256: str | None = None
+    manufacturer_capture_count: int = 0
+    manufacturer_manual_required_count: int = 0
 
 
 def _canonical_bytes(value: object) -> bytes:
@@ -428,6 +438,7 @@ def _evaluate_product_safety_receipts(
     registry_context: ProductSafetySourceRegistryContext,
     now: datetime | None = None,
     administrative_evidence: ProductSafetyAdministrativeEvidenceSet | None = None,
+    manufacturer_evidence: ProductSafetyManufacturerEvidenceSet | None = None,
 ) -> ProductSafetyReceiptAudit:
     """Validate declarations and derive a fail-closed status per product."""
 
@@ -450,8 +461,7 @@ def _evaluate_product_safety_receipts(
         if (
             type(administrative_evidence) is not ProductSafetyAdministrativeEvidenceSet
             or administrative_evidence.evaluated_at != evaluated_at
-            or administrative_evidence.capture_count
-            != len(requirement_by_product) * 3
+            or administrative_evidence.capture_count != len(requirement_by_product) * 3
             or {row.product_id for row in administrative_evidence.products}
             != set(requirement_by_product)
             or any(
@@ -463,6 +473,26 @@ def _evaluate_product_safety_receipts(
             _fail("RAOS_PRODUCT_SAFETY_ADMIN_CAPTURE_CONTEXT_INVALID")
         administrative_by_product = {
             row.product_id: row for row in administrative_evidence.products
+        }
+
+    manufacturer_by_product = {}
+    if manufacturer_evidence is not None:
+        if (
+            type(manufacturer_evidence) is not ProductSafetyManufacturerEvidenceSet
+            or manufacturer_evidence.evaluated_at != evaluated_at
+            or {row.product_id for row in manufacturer_evidence.products}
+            != set(requirement_by_product)
+            or any(
+                row.exact_model_tokens
+                != requirement_by_product[row.product_id].exact_model_tokens
+                for row in manufacturer_evidence.products
+            )
+            or manufacturer_evidence.capture_count
+            != sum(row.capture is not None for row in manufacturer_evidence.products)
+        ):
+            _fail("RAOS_PRODUCT_SAFETY_MANUFACTURER_CAPTURE_CONTEXT_INVALID")
+        manufacturer_by_product = {
+            row.product_id: row for row in manufacturer_evidence.products
         }
 
     receipts_by_key: dict[tuple[str, AuthorityKind], ProductSafetyReceipt] = {}
@@ -570,22 +600,34 @@ def _evaluate_product_safety_receipts(
             if (requirement.product_id, authority) in receipts_by_key
         )
         administrative = administrative_by_product.get(requirement.product_id)
-        verified: tuple[AuthorityKind, ...] = (
-            ("JAPAN_ADMINISTRATIVE_OFFICIAL",)
-            if administrative is not None
+        manufacturer = manufacturer_by_product.get(requirement.product_id)
+        verified_values: list[AuthorityKind] = []
+        if manufacturer is not None and manufacturer.status == "VERIFIED_NONE_FOUND":
+            verified_values.append("MANUFACTURER_OFFICIAL")
+        if (
+            administrative is not None
             and administrative.status == "VERIFIED_NONE_FOUND"
-            else ()
-        )
-        missing_values: list[AuthorityKind] = ["MANUFACTURER_OFFICIAL"]
+        ):
+            verified_values.append("JAPAN_ADMINISTRATIVE_OFFICIAL")
+        verified = tuple(verified_values)
+        missing_values: list[AuthorityKind] = []
+        if manufacturer is None or manufacturer.status in {
+            "MANUAL_REQUIRED",
+            "BLOCKED_MISSING_CAPTURE",
+        }:
+            missing_values.append("MANUFACTURER_OFFICIAL")
         if administrative is None:
             missing_values.append("JAPAN_ADMINISTRATIVE_OFFICIAL")
         missing = tuple(missing_values)
-        stale: tuple[AuthorityKind, ...] = (
-            ("JAPAN_ADMINISTRATIVE_OFFICIAL",)
-            if administrative is not None
+        stale_values: list[AuthorityKind] = []
+        if manufacturer is not None and manufacturer.status == "BLOCKED_STALE_CAPTURE":
+            stale_values.append("MANUFACTURER_OFFICIAL")
+        if (
+            administrative is not None
             and administrative.status == "BLOCKED_STALE_CAPTURE"
-            else ()
-        )
+        ):
+            stale_values.append("JAPAN_ADMINISTRATIVE_OFFICIAL")
+        stale = tuple(stale_values)
         matched = tuple(
             dict.fromkeys(
                 notice_id
@@ -593,20 +635,35 @@ def _evaluate_product_safety_receipts(
                 for notice_id in receipt.matched_notice_ids
             )
             | dict.fromkeys(
-                ()
-                if administrative is None
-                else administrative.matched_notice_ids
+                () if administrative is None else administrative.matched_notice_ids
+            )
+            | dict.fromkeys(
+                () if manufacturer is None else manufacturer.matched_notice_ids
             )
         )
         if (
-            administrative is not None
-            and administrative.status == "BLOCKED_MATCH_FOUND"
-        ) or any(receipt.result == "MATCH" for receipt in product_receipts):
+            (
+                administrative is not None
+                and administrative.status == "BLOCKED_MATCH_FOUND"
+            )
+            or (
+                manufacturer is not None
+                and manufacturer.status == "BLOCKED_MATCH_FOUND"
+            )
+            or any(receipt.result == "MATCH" for receipt in product_receipts)
+        ):
             status: ProductSafetyStatus = "BLOCKED_MATCH_FOUND"
         elif (
-            administrative is not None
-            and administrative.status == "BLOCKED_AMBIGUOUS_RESULT"
-        ) or any(receipt.result == "AMBIGUOUS" for receipt in product_receipts):
+            (
+                administrative is not None
+                and administrative.status == "BLOCKED_AMBIGUOUS_RESULT"
+            )
+            or (
+                manufacturer is not None
+                and manufacturer.status == "BLOCKED_AMBIGUOUS_RESULT"
+            )
+            or any(receipt.result == "AMBIGUOUS" for receipt in product_receipts)
+        ):
             status = "BLOCKED_AMBIGUOUS_RESULT"
         elif stale:
             status = "BLOCKED_STALE_RECEIPT"
@@ -628,6 +685,16 @@ def _evaluate_product_safety_receipts(
                     if administrative is None
                     else tuple(row.capture_sha256 for row in administrative.captures)
                 ),
+                manufacturer_capture_sha256=(
+                    None
+                    if manufacturer is None or manufacturer.capture is None
+                    else manufacturer.capture.capture_sha256
+                ),
+                manufacturer_manual_required_reason=(
+                    None
+                    if manufacturer is None
+                    else manufacturer.manual_required_reason
+                ),
             )
         )
 
@@ -646,6 +713,22 @@ def _evaluate_product_safety_receipts(
             0
             if administrative_evidence is None
             else administrative_evidence.capture_count
+        ),
+        manufacturer_bundle_sha256=(
+            None
+            if manufacturer_evidence is None
+            else manufacturer_evidence.bundle_sha256
+        ),
+        manufacturer_capture_count=(
+            0 if manufacturer_evidence is None else manufacturer_evidence.capture_count
+        ),
+        manufacturer_manual_required_count=(
+            0
+            if manufacturer_evidence is None
+            else sum(
+                row.status == "MANUAL_REQUIRED"
+                for row in manufacturer_evidence.products
+            )
         ),
     )
 
@@ -672,6 +755,7 @@ def evaluate_product_safety_receipts(
         registry_context=registry_context,
         now=now,
         administrative_evidence=None,
+        manufacturer_evidence=None,
     )
 
 
@@ -697,12 +781,32 @@ def load_product_safety_receipt_audit(
             administrative_evidence = None
         else:
             _fail("RAOS_PRODUCT_SAFETY_ADMIN_CAPTURE_SET_INVALID")
+    try:
+        verified_manufacturer_evidence = verify_product_safety_manufacturer_capture_set(
+            repository_root,
+            now=evaluated_at,
+        )
+    except ProductSafetyManufacturerCaptureFailure:
+        _fail("RAOS_PRODUCT_SAFETY_MANUFACTURER_CAPTURE_SET_INVALID")
+    manufacturer_evidence: ProductSafetyManufacturerEvidenceSet | None = (
+        verified_manufacturer_evidence
+    )
+    # The evaluator remains usable for isolated contract tests and future
+    # non-portfolio callers.  Evidence for a different fixed portfolio grants
+    # no authority; it is treated as absent rather than projected onto an
+    # unrelated product identity.
+    required_product_ids = {row.product_id for row in requirements}
+    if required_product_ids != {
+        row.product_id for row in verified_manufacturer_evidence.products
+    }:
+        manufacturer_evidence = None
     return _evaluate_product_safety_receipts(
         document,
         requirements=requirements,
         registry_context=registry_context,
         now=evaluated_at,
         administrative_evidence=administrative_evidence,
+        manufacturer_evidence=manufacturer_evidence,
     )
 
 

@@ -17,7 +17,7 @@
     {
       "evidence_kind": "MANUFACTURER_SALES_STATE",
       "path": "changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
-      "document_sha256": "19cec6ee4ae0158d6b17ca026d91ce9c117a55f4a02c8a0da64b2b8286b5cd5f"
+      "document_sha256": "54a424b01070e0b6a362f799c5463c74a8a032469ece1e83b8729f81eab0c80f"
     },
     {
       "evidence_kind": "PRODUCT_SAFETY_QUERY_RECEIPTS",
@@ -27,7 +27,7 @@
     {
       "evidence_kind": "MARKET_CANDIDATE_DUE_DILIGENCE",
       "path": "changes/editorial-portfolio-v3/market-candidate-audit.v1.json",
-      "document_sha256": "93cfd135627a60b22af50de3d9eb369323bcaff9f99b897d797d80cd46d89466"
+      "document_sha256": "0ce68bad7df882ff3db508b6050a1ccc72d9912831713cb1b4cfca314e1542d8"
     }
   ],
   "articles": [

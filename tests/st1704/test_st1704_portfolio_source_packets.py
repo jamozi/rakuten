@@ -27,6 +27,29 @@ def _claims(registry: dict[str, object]) -> dict[str, dict[str, object]]:
     }
 
 
+def test_toshiba_locators_bind_values_to_their_specification_rows() -> None:
+    _registry, locator = _documents()
+    sources = {source["source_ref"]: source for source in locator["sources"]}
+    expected = {
+        "SRC-TOSHIBA-DWS-33B": {
+            '<h1><div class="text">DWS-33B</div></h1>',
+            "<tr><th>外形寸法</th><td>420(幅)×435(奥行)×465(高さ)mm</td></tr>",
+            "<tr><th>使用水量</th><td>約6L</td></tr>",
+            "<tr><th>乾燥方式</th><td>ヒーターとファンによる強制排気乾燥</td></tr>",
+            "<tr><th>運転音<sup>※8</sup>(50Hz/60Hz)</th><td>約41dB/約43dB</td></tr>",
+        },
+        "SRC-TOSHIBA-PARTS-RETENTION": {
+            '<tr><th class="th-2"><big><b>食器洗い乾燥機</b></big></th><th class="th-2"><big><b>６年</b></big></th></tr>',
+        },
+    }
+    obsolete = {"幅420×奥行435×高さ465mm", "41／43dB", "6年"}
+    for source_ref, required in expected.items():
+        for item in sources[source_ref]["locators"]:
+            fragments = set(item["exact_utf8_fragments"])
+            assert required <= fragments
+            assert not fragments & obsolete
+
+
 def test_locator_text_fragments_reject_embedded_meta_markup() -> None:
     _registry, locator = _documents()
     owner._validate_locator_text_fragments(locator)
@@ -398,16 +421,16 @@ def test_later_article_selection_facts_are_bound_or_explicitly_unconfirmed() -> 
             "2in1構造",
             "55mm静音キャスター",
         ),
-        "CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-REFERENCE": (
-            "NP-TML1-W",
-            "仕様参考に限定",
+        "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-IDENTITY-REFERENCE": (
+            "NP-TMLK1-K",
+            "正確な型番",
         ),
-            "CLM-PORTFOLIO-DISH-RAKUA-MINI-REFERENCE": (
-                "TK-MDW22W",
-                "少人数向け卓上食洗機4候補の比較",
-            ),
+        "CLM-PORTFOLIO-DISH-RAKUA-MINI-PLUS-EXCLUDED": (
+            "再入荷通知",
+            "商品カードや購入導線",
+        ),
         "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE": (
-            "旧2機種はいずれも仕様参考に限定",
+            "以前の比較対象2機種はいずれも仕様参考に限定",
             "現行品の仕様表",
             "商品カード、購入導線",
             "少人数向け卓上食洗機4候補の記事へ集約",
@@ -421,13 +444,6 @@ def test_later_article_selection_facts_are_bound_or_explicitly_unconfirmed() -> 
                 item["claim_id"] == claim_id
                 for item in locator_sources[source_ref]["locators"]
             )
-
-    route_locator = next(
-        item
-        for item in locator_sources["SRC-SIROCA-SS-MA251"]["locators"]
-        if item["claim_id"] == "CLM-PORTFOLIO-DISH-SS-MA251-REFERENCE"
-    )
-    assert "SS-MA251" in "\n".join(route_locator["exact_utf8_fragments"])
 
     selected = claims["CLM-PORTFOLIO-FRONT-BERMAS-60570"]
     assert selected["subject_product_ids"] == [
@@ -751,7 +767,10 @@ def test_selected_anker_sales_states_use_visible_cart_ui_and_exact_owner_rows() 
         )
         material = "\n".join(item["exact_utf8_fragments"])
         assert "在庫わずか" in material
-        assert 'aria-label="カートに入れる"' in material
+        assert (
+            'aria-label="カートに入れる"' in material
+            or 'value="カートに入れる"' in material
+        )
         for model_token in str(sales_state["exact_variant"]).split("A")[1:]:
             assert f"A{model_token.split()[0].rstrip('）/')}" in material
 
@@ -885,7 +904,9 @@ def test_reader_semantic_p0_boundaries_are_explicit() -> None:
 
     power = claims["CLM-ST1704-POWER-CONDITIONAL-CHOICES"]
     for token in (
-        "比較した5モデル",
+        "比較した7モデル",
+        "AORA 30 V2が288Wh・定格600W・約4.3kg",
+        "AORA 100 V2が1024Wh・定格1800W・約11.5kg",
         "Jackery 1000 New V3が1024Wh・AC定格1500W・約10.6kg",
         "各社公表の連続供給目安",
         "呼称・試験条件が異なる",
@@ -916,8 +937,6 @@ def test_reader_semantic_p0_boundaries_are_explicit() -> None:
     t2292_claim_ids = (
         "CLM-ST1704-ROBOT-EUFY-C10-SPECS",
         "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
-        "CLM-PORTFOLIO-ROBOT-EUFY-C10",
-        "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
     )
     for claim_id in t2292_claim_ids:
         claim = claims[claim_id]
@@ -962,12 +981,14 @@ def test_reader_semantic_p0_boundaries_are_explicit() -> None:
         "送風乾燥",
     ):
         assert token in ss_m171
-    solota = claims["CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-REFERENCE"]["statement"]
-    assert "NP-TML1-W" in solota
-    assert "仕様参考" in solota
+    solota = claims[
+        "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-IDENTITY-REFERENCE"
+    ]["statement"]
+    assert "NP-TMLK1-K" in solota
+    assert "正確な型番" in solota
     dish_decision = claims["CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE"]["statement"]
     for token in (
-        "旧2機種はいずれも仕様参考",
+        "以前の比較対象2機種はいずれも仕様参考",
         "現行品の仕様表",
         "少人数向け卓上食洗機4候補の記事へ集約",
         "公式な後継・同等品を意味しない",
@@ -991,9 +1012,10 @@ def test_article_local_reader_facts_keep_known_specs_separate_from_unknowns() ->
 
     power = claims["CLM-ST1704-POWER-CONDITIONAL-CHOICES"]
     for token in (
-        "閉じた5モデル比較",
+        "比較した7モデル",
         "C300が288Wh・定格300W",
-        "最小容量かつ最軽量",
+        "C300の288Whは7モデルで最小容量",
+        "C300が7モデルで最軽量",
         "同一指標として大小比較しない",
     ):
         assert token in power["statement"]
@@ -1047,22 +1069,20 @@ def test_article_local_reader_facts_keep_known_specs_separate_from_unknowns() ->
         },
     ]
 
-    eufy = claims["CLM-PORTFOLIO-ROBOT-EUFY-C10"]
-    eufy_space = claims["CLM-PORTFOLIO-ROBOT-EUFY-C10-INSTALLATION-SPACE"]
+    eufy = claims["CLM-ST1704-ROBOT-EUFY-C10-SPECS"]
     k11 = claims["CLM-PORTFOLIO-ROBOT-K11-PRO"]
     mini = claims["CLM-PORTFOLIO-ROBOT-ROOMBA-SLIM-F115060"]
     robot_decision = claims["CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES"]
-    assert "最大4,000Pa" in eufy["statement"]
-    assert "左右各0.5m" in eufy_space["statement"]
-    assert "前方1.5m" in eufy_space["statement"]
+    assert "高さ7.2cm" in eufy["statement"]
     assert "使用後に捨てる" in k11["statement"]
     assert "専用の使い捨てお掃除シート" in mini["statement"]
     for token in (
-        "4製品で本体高さが最小",
-        "4構成でステーションの幅・奥行がともに最小",
-        "最大4,000Pa",
+        "2製品",
+        "幅22.2×奥行8.6cm",
+        "左右各1m・前方1.5m",
         "最大12,000Pa",
         "使い捨てシート式",
+        "別記事の4モデル比較",
     ):
         assert token in robot_decision["statement"]
 
@@ -1070,15 +1090,15 @@ def test_article_local_reader_facts_keep_known_specs_separate_from_unknowns() ->
         "SRC-ACE-CRESTA-06316": (cresta["claim_id"], ("34/39 L", "3.2kg")),
         "SRC-TOSHIBA-PARTS-RETENTION": (
             dws_support["claim_id"],
-            ("6年", "製造打ち切り後"),
+            ("６年", "製造打ち切り後"),
         ),
         "SRC-SAMSONITE-C-LITE-SPINNER55EXP-BLACK": (
             c_lite_known["claim_id"],
             ("36 /42", "在庫あり", "カートに入れる", "CS2*09007"),
         ),
         "SRC-EUFY-AUTOEMPTY-C10-T2292": (
-            eufy_space["claim_id"],
-            ("最大4000Pa", "左右0.5m", "前方1.5m"),
+            eufy["claim_id"],
+            ("約32.5 x 32.3 x 7.2cm", "水拭き", "2.4GHz"),
         ),
         "SRC-IROBOT-ROOMBA-MINI-SLIM-F115060": (
             mini["claim_id"],
@@ -1315,7 +1335,7 @@ def test_product_specific_recall_queries_use_one_central_fail_closed_contract() 
         )
         assert gate["general_safety_guidance_is_not_a_receipt"] is True
     assert gated == required
-    assert len(required) == 31
+    assert len(required) == 33
     assert len(gates) == 9
 
 
@@ -1334,12 +1354,14 @@ def test_selected_power_stations_have_article_local_official_due_diligence() -> 
         "PRD-ANKER-SOLIX-C300",
         "PRD-JACKERY-500-NEW",
         "PRD-ANKER-SOLIX-C800",
+        "PRD-BLUETTI-AORA30-V2",
+        "PRD-BLUETTI-AORA100-V2",
         "PRD-DJI-POWER-1000-V2",
         "PRD-ANKER-SOLIX-C800-PLUS",
         "PRD-ANKER-SOLIX-C1000",
         "PRD-ANKER-SOLIX-C1000-GEN2",
     }
-    assert len(owner.POWER_STATION_DUE_DILIGENCE_GROUPS) == 8
+    assert len(owner.POWER_STATION_DUE_DILIGENCE_GROUPS) == 10
     for group in owner.POWER_STATION_DUE_DILIGENCE_GROUPS:
         for source_ref in group["required_source_refs"]:
             assert sources[source_ref]["authority"] == "MANUFACTURER_OFFICIAL"

@@ -80,11 +80,11 @@ def test_sales_state_contract_covers_the_portfolio_exactly() -> None:
     portfolio_rows = portfolio["products"]
     assert isinstance(sales_rows, list)
     assert isinstance(portfolio_rows, list)
-    assert len(sales_rows) == len(portfolio_rows) == 31
+    assert len(sales_rows) == len(portfolio_rows) == 33
 
     sales_by_id = {row["product_id"]: row for row in sales_rows}
     portfolio_by_id = {row["product_id"]: row for row in portfolio_rows}
-    assert len(sales_by_id) == len(portfolio_by_id) == 31
+    assert len(sales_by_id) == len(portfolio_by_id) == 33
     assert set(sales_by_id) == set(portfolio_by_id)
     assert {
         product_id: row["official_url"] for product_id, row in sales_by_id.items()
@@ -122,7 +122,7 @@ def test_sales_state_counts_match_the_official_source_audit() -> None:
     assert isinstance(rows, list)
 
     counts = Counter(row["state"] for row in rows)
-    assert counts == {"AVAILABLE": 31}
+    assert counts == {"AVAILABLE": 33}
 
 
 def test_structured_snapshot_hashes_reject_semantic_tampering() -> None:
@@ -187,11 +187,20 @@ def test_publication_policy_is_fail_closed_and_manufacturer_scope_is_not_cta_pro
     )
     assert {
         row["product_id"] for row in rows if row["availability_scope"] == "VARIANT"
-    } == {"PRD-ACE-DIFFERENCE-05721"}
+    } == {
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-BLUETTI-AORA30-V2",
+        "PRD-BLUETTI-AORA100-V2",
+    }
     assert all(
         row["availability_scope"] == "MODEL"
         for row in rows
-        if row["product_id"] != "PRD-ACE-DIFFERENCE-05721"
+        if row["product_id"]
+        not in {
+            "PRD-ACE-DIFFERENCE-05721",
+            "PRD-BLUETTI-AORA30-V2",
+            "PRD-BLUETTI-AORA100-V2",
+        }
     )
 
 

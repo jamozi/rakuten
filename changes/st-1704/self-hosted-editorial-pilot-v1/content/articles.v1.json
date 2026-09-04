@@ -123,14 +123,14 @@
             "content": [
               {
                 "type": "text",
-              "text": "軽さだけで選ぶと、拡張したときに機内持ち込みの寸法基準を超えたり、旅先の狭い部屋で十分に開けなかったりします。"
+                "text": "軽さだけで選ぶと、拡張したときに機内持ち込みの寸法基準を超えたり、旅先の狭い部屋で十分に開けなかったりします。"
               },
               {
                 "type": "line_break"
               },
               {
                 "type": "text",
-              "text": "比較するのはPROTECA Tri-Air 01541、ace. ディフェレンス 05721、PROTECA マックスパス4 01471です。本体の軽さ、2通りの開き方、拡張せずに使える容量という違いを整理します。耐久性や走行感は実機で比べていないため、順位を付けません。"
+                "text": "比較するのはPROTECA Tri-Air 01541、ace. ディフェレンス 05721、PROTECA マックスパス4 01471です。本体の軽さ、2通りの開き方、拡張せずに使える容量という違いを整理します。耐久性や走行感は実機で比べていないため、順位を付けません。"
               }
             ]
           },
@@ -214,12 +214,12 @@
               ]
             ]
           },
-      {
-        "block_id": "BLK-SUITCASE-005",
-        "type": "methodology",
-        "claim_ids": [
-          "CLM-ST1704-SUITCASE-CRESTA-06316-EXCLUDED"
-        ],
+          {
+            "block_id": "BLK-SUITCASE-005",
+            "type": "methodology",
+            "claim_ids": [
+              "CLM-ST1704-SUITCASE-CRESTA-06316-EXCLUDED"
+            ],
             "methodology_ref": "METH-ST1704-PILOT-V1",
             "candidate_universe_summary": [
               {
@@ -248,18 +248,18 @@
                   "text": "購入者レビュー、価格、在庫、ポイント、報酬率による順位付けは行っていません"
                 }
               ],
-          [
-            {
-              "type": "text",
-              "text": "実機を使用していないため、耐久性や使い勝手は比較対象外です"
-            }
-          ],
-          [
-            {
-              "type": "text",
+              [
+                {
+                  "type": "text",
+                  "text": "実機を使用していないため、耐久性や使い勝手は比較対象外です"
+                }
+              ],
+              [
+                {
+                  "type": "text",
                   "text": "ACE クレスタ 06316は通常時34L・拡張時39L、3.2kgです。本記事では、本体の軽さを比べやすい35L・1.8kgのTri-Airを掲載しています。クレスタとの耐久性の優劣は、実機で検証していないため判断していません"
-            }
-          ]
+                }
+              ]
             ],
             "data_checked_at": "2026-08-31T00:00:00Z"
           },
@@ -580,9 +580,9 @@
                   {
                     "axis_ref": "AXIS-SUITCASE-DIMENSIONS",
                     "value": "幅37×奥行23×高さ55cm",
-                "claim_ids": [
-                  "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS"
-                ],
+                    "claim_ids": [
+                      "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS"
+                    ],
                     "state": "KNOWN"
                   },
                   {
@@ -1016,8 +1016,8 @@
       "category": "暮らしの道具",
       "intent_cluster": "備え",
       "seo": {
-        "meta_title": "停電対策用ポータブル電源の選び方｜5モデルを条件別比較",
-        "meta_description": "停電対策のポータブル電源5モデルを、容量・各社公表の連続供給目安・重量・大きさで比較。使いたい機器と持ち運び条件から候補を絞ります。",
+        "meta_title": "停電対策用ポータブル電源の選び方｜7モデルを条件別比較",
+        "meta_description": "停電対策のポータブル電源7モデルを、容量・各社公表の出力・重量・寸法で比較。使いたい機器と持ち運び条件から候補を絞ります。",
         "draft_robots": "noindex,nofollow",
         "published_robots": "index,follow",
         "structured_data_allowed": [
@@ -1072,14 +1072,14 @@
               },
               {
                 "type": "text",
-                "text": "比較するのは、Anker Solix C300 Portable Power Station（型番：A17225Z1）、Jackery ポータブル電源 500 New、Anker Solix C800 Portable Power Station（型番：A17535Z1）、Jackery ポータブル電源 1000 New V3（型番：JE-1000G／JE-1000G-WH）、DJI Power 1000 V2（型番：DYM1000V2L）です。"
+                "text": "比較するのは、Anker Solix C300 Portable Power Station（型番：A17225Z1）、BLUETTI AORA 30 V2（グレー）、Jackery ポータブル電源 500 New、Anker Solix C800 Portable Power Station（型番：A17535Z1）、Jackery ポータブル電源 1000 New V3（型番：JE-1000G／JE-1000G-WH）、BLUETTI AORA 100 V2（インディゴ）、DJI Power 1000 V2（型番：DYM1000V2L）です。"
               },
               {
                 "type": "line_break"
               },
               {
                 "type": "text",
-                "text": "容量288〜1024Wh、各社公表の出力、重量、寸法を比べます。安全・保管・保証・回収は全5製品を同じ範囲で照合できていないため、選定根拠に使わず、購入前の個別確認事項として示します。価格や報酬率では並べません。"
+                "text": "容量288〜1024Wh、各社公表の出力、重量、寸法を比べます。安全・保管・保証・回収は全7製品を同じ範囲で照合できていないため、選定根拠に使わず、購入前の個別確認事項として示します。価格や報酬率では並べません。"
               }
             ]
           },
@@ -1098,6 +1098,20 @@
                 ],
                 "claim_ids": [
                   "CLM-ST1704-POWER-C300-SPECS",
+                  "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
+                ]
+              },
+              {
+                "condition": "288Whで定格600Wを必要とし、約4.3kgを運べる",
+                "recommendation_ref": "REC-POWER-AORA30-V2",
+                "summary": [
+                  {
+                    "type": "text",
+                    "text": "288Wh・定格600W・約4.3kg。C300より約0.2kg重い一方、同容量でメーカー公表の定格出力を広げたい場合の候補です。"
+                  }
+                ],
+                "claim_ids": [
+                  "CLM-ST1704-POWER-AORA30-V2-SPECS",
                   "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
                 ]
               },
@@ -1124,10 +1138,10 @@
                     "text": "768Wh・定格1200W。Jackery 500 Newの512Wh・定格500Wより容量と出力を広げたい中間候補です。"
                   }
                 ],
-            "claim_ids": [
-              "CLM-ST1704-POWER-ANKER-C800-SPECS",
-              "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
-            ]
+                "claim_ids": [
+                  "CLM-ST1704-POWER-ANKER-C800-SPECS",
+                  "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
+                ]
               },
               {
                 "condition": "1024Whを必要とし、約10.6kgを運べる",
@@ -1140,6 +1154,20 @@
                 ],
                 "claim_ids": [
                   "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+                  "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
+                ]
+              },
+              {
+                "condition": "1024Wh・定格1800Wを必要とし、約11.5kgを運べる",
+                "recommendation_ref": "REC-POWER-AORA100-V2",
+                "summary": [
+                  {
+                    "type": "text",
+                    "text": "1024Wh・定格1800W・約11.5kg。1000Wh帯で、メーカー公表の定格1800Wと持ち運べる重量を両立したい場合の候補です。"
+                  }
+                ],
+                "claim_ids": [
+                  "CLM-ST1704-POWER-AORA100-V2-SPECS",
                   "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
                 ]
               },
@@ -1196,16 +1224,16 @@
           },
           {
             "block_id": "BLK-POWER-005",
-        "type": "methodology",
-        "claim_ids": [
-          "CLM-ST1704-POWER-AC70-EXCLUDED",
-          "CLM-ST1704-POWER-DELTA3-CLASSIC-EXCLUDED"
-        ],
+            "type": "methodology",
+            "claim_ids": [
+              "CLM-ST1704-POWER-AC70-EXCLUDED",
+              "CLM-ST1704-POWER-DELTA3-CLASSIC-EXCLUDED"
+            ],
             "methodology_ref": "METH-ST1704-PILOT-V1",
             "candidate_universe_summary": [
               {
                 "type": "text",
-                "text": "容量帯と重量が異なる5モデルを、メーカー公式情報の同じ項目で比較しています。"
+                "text": "容量帯と重量が異なる7モデルを、メーカー公式情報の同じ項目で比較しています。"
               }
             ],
             "inclusion_rules": [
@@ -1298,7 +1326,7 @@
                 "explanation": [
                   {
                     "type": "text",
-                    "text": "全5製品を同じ範囲で照合できていないため、本記事では比較・推奨根拠に使いません。候補を絞った後、電池化学系、BMS・温度条件、リコール、保管時充電、保証条件、修理・回収窓口を正確な型番ごとに確認してください。"
+                    "text": "全7製品を同じ範囲で照合できていないため、本記事では比較・推奨根拠に使いません。候補を絞った後、電池化学系、BMS・温度条件、リコール、保管時充電、保証条件、修理・回収窓口を正確な型番ごとに確認してください。"
                   }
                 ],
                 "claim_ids": [
@@ -1317,7 +1345,9 @@
               "CLM-ST1704-POWER-JACKERY-SPECS",
               "CLM-ST1704-POWER-ANKER-C800-SPECS",
               "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
-              "CLM-ST1704-POWER-DJI-1000-V2-SPECS"
+              "CLM-ST1704-POWER-DJI-1000-V2-SPECS",
+              "CLM-ST1704-POWER-AORA30-V2-SPECS",
+              "CLM-ST1704-POWER-AORA100-V2-SPECS"
             ],
             "comparison_table_ref": "TABLE-POWER-V1",
             "comparison_axis_refs": [
@@ -1328,9 +1358,11 @@
             ],
             "product_selection_refs": [
               "PSEL-POWER-C300",
+              "PSEL-POWER-AORA30-V2",
               "PSEL-POWER-JACKERY",
               "PSEL-POWER-C800",
               "PSEL-POWER-JACKERY-1000-NEW-V3",
+              "PSEL-POWER-AORA100-V2",
               "PSEL-POWER-DJI-1000-V2"
             ],
             "display_mode": "desktop_table_mobile_cards",
@@ -1345,6 +1377,19 @@
             ],
             "recommendation_ref": "REC-POWER-C300",
             "product_selection_ref": "PSEL-POWER-C300",
+            "display_policy_ref": "DISPLAY-ST1704-PRODUCT-CARD-V1",
+            "show_price_when_fresh": false,
+            "show_availability_when_fresh": false
+          },
+          {
+            "block_id": "BLK-POWER-021",
+            "type": "product_card",
+            "claim_ids": [
+              "CLM-ST1704-POWER-AORA30-V2-SPECS",
+              "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
+            ],
+            "recommendation_ref": "REC-POWER-AORA30-V2",
+            "product_selection_ref": "PSEL-POWER-AORA30-V2",
             "display_policy_ref": "DISPLAY-ST1704-PRODUCT-CARD-V1",
             "show_price_when_fresh": false,
             "show_availability_when_fresh": false
@@ -1401,6 +1446,19 @@
             "show_availability_when_fresh": false
           },
           {
+            "block_id": "BLK-POWER-022",
+            "type": "product_card",
+            "claim_ids": [
+              "CLM-ST1704-POWER-AORA100-V2-SPECS",
+              "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
+            ],
+            "recommendation_ref": "REC-POWER-AORA100-V2",
+            "product_selection_ref": "PSEL-POWER-AORA100-V2",
+            "display_policy_ref": "DISPLAY-ST1704-PRODUCT-CARD-V1",
+            "show_price_when_fresh": false,
+            "show_availability_when_fresh": false
+          },
+          {
             "block_id": "BLK-POWER-012",
             "type": "tradeoff",
             "claim_ids": [
@@ -1411,13 +1469,13 @@
             "benefit": [
               {
                 "type": "text",
-                "text": "5モデルでは本体が最も軽く、本体寸法は幅約16.4×奥行約16.1×高さ約24.0cmです。"
+                "text": "7モデルでは本体が最も軽く、本体寸法は幅約16.4×奥行約16.1×高さ約24.0cmです。"
               }
             ],
             "cost_or_limitation": [
               {
                 "type": "text",
-                "text": "容量は5モデルで最小の288Wh、定格出力は300Wです。"
+                "text": "容量は7モデルで最小の288Wh、定格出力は300Wです。"
               }
             ],
             "applies_when": [
@@ -1508,6 +1566,60 @@
             ]
           },
           {
+            "block_id": "BLK-POWER-023",
+            "type": "tradeoff",
+            "claim_ids": [
+              "CLM-ST1704-POWER-AORA30-V2-SPECS",
+              "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
+            ],
+            "subject_ref": "PSEL-POWER-AORA30-V2",
+            "benefit": [
+              {
+                "type": "text",
+                "text": "288Whで定格600W、9ポートを備え、約4.3kgで持ち運べます。"
+              }
+            ],
+            "cost_or_limitation": [
+              {
+                "type": "text",
+                "text": "C300より約0.2kg重く、設置面積も大きいため、収納場所は幅25.0×奥行17.8cmで確認してください。"
+              }
+            ],
+            "applies_when": [
+              {
+                "type": "text",
+                "text": "小容量帯でも定格600Wを必要とする場合"
+              }
+            ]
+          },
+          {
+            "block_id": "BLK-POWER-024",
+            "type": "tradeoff",
+            "claim_ids": [
+              "CLM-ST1704-POWER-AORA100-V2-SPECS",
+              "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
+            ],
+            "subject_ref": "PSEL-POWER-AORA100-V2",
+            "benefit": [
+              {
+                "type": "text",
+                "text": "1024Wh・定格1800Wを約11.5kgで持ち運べます。"
+              }
+            ],
+            "cost_or_limitation": [
+              {
+                "type": "text",
+                "text": "Jackery 1000 New V3より約0.9kg重く、各社で異なる出力値の呼称・試験条件をそろえた実機性能比較ではありません。"
+              }
+            ],
+            "applies_when": [
+              {
+                "type": "text",
+                "text": "1000Wh帯で定格1800Wと持ち運べる重量を両立したい場合"
+              }
+            ]
+          },
+          {
             "block_id": "BLK-POWER-016",
             "type": "recommendation_group",
             "group_id": "GROUP-POWER-CONDITIONAL",
@@ -1520,9 +1632,11 @@
             ],
             "recommendation_refs": [
               "REC-POWER-C300",
+              "REC-POWER-AORA30-V2",
               "REC-POWER-JACKERY",
               "REC-POWER-C800",
               "REC-POWER-JACKERY-1000-NEW-V3",
+              "REC-POWER-AORA100-V2",
               "REC-POWER-DJI-1000-V2"
             ],
             "rationale_claim_ids": [
@@ -1542,7 +1656,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "接続前に通常時・起動時電力、使用温度、換気、BMSの保護条件を確認してください。経産省のリコール情報、メーカーの修理・回収窓口、長期保管時の充電周期も、購入する正確な型番についてメーカー公式情報で確認してください。これらは全5製品を同じ範囲で照合できていないため、この記事の推奨根拠には使っていません。医療機器や住宅配線への接続可否はこの記事で判断しません。"
+                "text": "接続前に通常時・起動時電力、使用温度、換気、バッテリー管理システム（BMS）の保護条件を確認してください。経産省のリコール情報、メーカーの修理・回収窓口、長期保管時の充電周期も、購入する正確な型番についてメーカー公式情報で確認してください。これらは全7製品を同じ範囲で照合できていないため、この記事の推奨根拠には使っていません。医療機器や住宅配線への接続可否はこの記事で判断しません。"
               }
             ]
           },
@@ -1581,7 +1695,7 @@
       "render_model": {
         "presentation": {
           "reader_summary": "停電時に使う機器の出力と、運べる本体重量から容量帯を選びたい人",
-          "scope_label": "容量帯の異なる5モデル",
+          "scope_label": "容量帯の異なる7モデル",
           "scope_note": "容量・定格出力・重量・寸法の公式仕様を比較し、価格や在庫は候補の順序に反映していません",
           "fact_checker": "暮らしのしるべ編集者（一次情報確認）",
           "first_hand_test": "未実施（公式仕様比較）"
@@ -1632,7 +1746,7 @@
         "comparison_tables": [
           {
             "comparison_table_ref": "TABLE-POWER-V1",
-            "caption": "停電対策用ポータブル電源5モデルの公表仕様",
+            "caption": "停電対策用ポータブル電源7モデルの公表仕様",
             "axis_refs": [
               "AXIS-POWER-CAPACITY",
               "AXIS-POWER-OUTPUT",
@@ -1672,6 +1786,43 @@
                     "value": "幅約16.4×奥行約16.1×高さ約24.0cm",
                     "claim_ids": [
                       "CLM-ST1704-POWER-C300-SPECS"
+                    ],
+                    "state": "KNOWN"
+                  }
+                ]
+              },
+              {
+                "product_selection_ref": "PSEL-POWER-AORA30-V2",
+                "cells": [
+                  {
+                    "axis_ref": "AXIS-POWER-CAPACITY",
+                    "value": "288Wh",
+                    "claim_ids": [
+                      "CLM-ST1704-POWER-AORA30-V2-SPECS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-POWER-OUTPUT",
+                    "value": "定格600W",
+                    "claim_ids": [
+                      "CLM-ST1704-POWER-AORA30-V2-SPECS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-POWER-WEIGHT",
+                    "value": "約4.3kg",
+                    "claim_ids": [
+                      "CLM-ST1704-POWER-AORA30-V2-SPECS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-POWER-SIZE",
+                    "value": "幅25.0×奥行17.8×高さ16.75cm",
+                    "claim_ids": [
+                      "CLM-ST1704-POWER-AORA30-V2-SPECS"
                     ],
                     "state": "KNOWN"
                   }
@@ -1789,6 +1940,43 @@
                 ]
               },
               {
+                "product_selection_ref": "PSEL-POWER-AORA100-V2",
+                "cells": [
+                  {
+                    "axis_ref": "AXIS-POWER-CAPACITY",
+                    "value": "1024Wh",
+                    "claim_ids": [
+                      "CLM-ST1704-POWER-AORA100-V2-SPECS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-POWER-OUTPUT",
+                    "value": "定格1800W",
+                    "claim_ids": [
+                      "CLM-ST1704-POWER-AORA100-V2-SPECS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-POWER-WEIGHT",
+                    "value": "約11.5kg",
+                    "claim_ids": [
+                      "CLM-ST1704-POWER-AORA100-V2-SPECS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-POWER-SIZE",
+                    "value": "幅32.0×奥行21.5×高さ25.0cm",
+                    "claim_ids": [
+                      "CLM-ST1704-POWER-AORA100-V2-SPECS"
+                    ],
+                    "state": "KNOWN"
+                  }
+                ]
+              },
+              {
                 "product_selection_ref": "PSEL-POWER-DJI-1000-V2",
                 "cells": [
                   {
@@ -1834,9 +2022,19 @@
             "recommendation_ref": "REC-POWER-C300",
             "product_selection_ref": "PSEL-POWER-C300",
             "condition": "小型機器中心で、本体約4.1kgを運べる",
-            "rationale": "5モデルで本体が最も軽く、容量が最小",
+            "rationale": "7モデルで本体が最も軽く、容量が最小",
             "claim_ids": [
               "CLM-ST1704-POWER-C300-SPECS",
+              "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
+            ]
+          },
+          {
+            "recommendation_ref": "REC-POWER-AORA30-V2",
+            "product_selection_ref": "PSEL-POWER-AORA30-V2",
+            "condition": "288Whで定格600Wを必要とし、約4.3kgを運べる",
+            "rationale": "AORA 30 V2はC300と同じ288Whで、メーカー公表の定格出力は600W",
+            "claim_ids": [
+              "CLM-ST1704-POWER-AORA30-V2-SPECS",
               "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
             ]
           },
@@ -1867,6 +2065,16 @@
             "rationale": "1024Wh・AC定格1500Wを約10.6kgで持ち運べる",
             "claim_ids": [
               "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+              "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
+            ]
+          },
+          {
+            "recommendation_ref": "REC-POWER-AORA100-V2",
+            "product_selection_ref": "PSEL-POWER-AORA100-V2",
+            "condition": "1024Wh・定格1800Wを必要とし、約11.5kgを運べる",
+            "rationale": "1024Wh・定格1800Wを約11.5kgで持ち運べる",
+            "claim_ids": [
+              "CLM-ST1704-POWER-AORA100-V2-SPECS",
               "CLM-ST1704-POWER-CONDITIONAL-CHOICES"
             ]
           },
@@ -1923,10 +2131,10 @@
               }
             ],
             "editorial_fit": "情報機器や照明を中心に、小さく備えたい場合の候補",
-            "caution": "容量は5モデルで最小の288Wh、定格出力は300Wです。本体寸法は幅約16.4×奥行約16.1×高さ約24.0cmです。",
+            "caution": "容量は7モデルで最小の288Wh、定格出力は300Wです。本体寸法は幅約16.4×奥行約16.1×高さ約24.0cmです。",
             "presentation_v2": {
               "benefit": "停電時にスマートフォンや照明など定格300W以内の小型機器を想定し、本体約4.1kgを保管場所から運べる場合に。",
-              "recommendation_reason": "288Wh・定格300Wで、比較した5モデルでは本体が最も軽い約4.1kgだからです。",
+              "recommendation_reason": "288Wh・定格300Wで、比較した7モデルでは本体が最も軽い約4.1kgだからです。",
               "fits": [
                 "スマートフォンや照明など、消費電力の小さい機器を中心に備えたい人",
                 "本体約4.1kgを保管場所から運べる人"
@@ -1946,6 +2154,75 @@
               "required_rel": "sponsored nofollow",
               "data_article_id": "st1704-portable-power-station-guide",
               "data_product_id": "PRD-ANKER-SOLIX-C300",
+              "data_placement": "product_card"
+            }
+          },
+          {
+            "product_selection_ref": "PSEL-POWER-AORA30-V2",
+            "product_id": "PRD-BLUETTI-AORA30-V2",
+            "product_name": "BLUETTI AORA 30 V2（グレー）",
+            "source_refs": [
+              "SRC-BLUETTI-AORA30-V2",
+              "SRC-BLUETTI-AORA30-V2-DIMENSIONS",
+              "SRC-BLUETTI-AORA-SERIES-COLLECTION"
+            ],
+            "affiliate_ref": "AFF-BLUETTI-AORA30-V2",
+            "media_asset_ref": "MEDIA-BLUETTI-AORA30-V2",
+            "condition_label": "288Wh・定格600W",
+            "confirmed_facts": [
+              {
+                "label": "容量",
+                "value": "288Wh",
+                "claim_ids": [
+                  "CLM-ST1704-POWER-AORA30-V2-SPECS"
+                ]
+              },
+              {
+                "label": "定格出力",
+                "value": "600W",
+                "claim_ids": [
+                  "CLM-ST1704-POWER-AORA30-V2-SPECS"
+                ]
+              },
+              {
+                "label": "重量",
+                "value": "約4.3kg",
+                "claim_ids": [
+                  "CLM-ST1704-POWER-AORA30-V2-SPECS"
+                ]
+              },
+              {
+                "label": "本体寸法",
+                "value": "幅25.0×奥行17.8×高さ16.75cm",
+                "claim_ids": [
+                  "CLM-ST1704-POWER-AORA30-V2-SPECS"
+                ]
+              }
+            ],
+            "editorial_fit": "小容量帯でも定格600Wを必要とし、約4.3kgを運べる場合の候補",
+            "caution": "接続機器の通常時・起動時電力を確認し、定格600Wを超える機器には使わないでください。",
+            "presentation_v2": {
+              "benefit": "C300と同じ288Whで、メーカー公表の定格出力を600Wへ広げたい場合に。",
+              "recommendation_reason": "288Wh・定格600Wを約4.3kgで持ち運べるためです。",
+              "fits": [
+                "定格600W以内の機器を使う人",
+                "約4.3kgを保管場所から運べる人"
+              ],
+              "not_fits": [
+                "設置面積を最小にしたい人",
+                "定格600Wを超える機器を使う人"
+              ],
+              "facts_checked_on": "2026-09-01",
+              "official_source_ref": "SRC-BLUETTI-AORA30-V2",
+              "detail_anchor": "product-power-bluetti-aora30-v2",
+              "cta_context": "楽天市場の商品ページで、対象型番、現在の価格・在庫・カラー、商品写真を確認できます。"
+            },
+            "cta": {
+              "copy": "楽天市場で現在の価格・在庫・カラーを見る",
+              "destination_label": "楽天市場",
+              "required_rel": "sponsored nofollow",
+              "data_article_id": "st1704-portable-power-station-guide",
+              "data_product_id": "PRD-BLUETTI-AORA30-V2",
               "data_placement": "product_card"
             }
           },
@@ -2154,6 +2431,74 @@
             }
           },
           {
+            "product_selection_ref": "PSEL-POWER-AORA100-V2",
+            "product_id": "PRD-BLUETTI-AORA100-V2",
+            "product_name": "BLUETTI AORA 100 V2（インディゴ）",
+            "source_refs": [
+              "SRC-BLUETTI-AORA100-V2",
+              "SRC-BLUETTI-AORA-SERIES-COLLECTION"
+            ],
+            "affiliate_ref": "AFF-BLUETTI-AORA100-V2",
+            "media_asset_ref": "MEDIA-BLUETTI-AORA100-V2",
+            "condition_label": "1024Wh・定格1800W",
+            "confirmed_facts": [
+              {
+                "label": "容量",
+                "value": "1024Wh",
+                "claim_ids": [
+                  "CLM-ST1704-POWER-AORA100-V2-SPECS"
+                ]
+              },
+              {
+                "label": "定格出力",
+                "value": "1800W",
+                "claim_ids": [
+                  "CLM-ST1704-POWER-AORA100-V2-SPECS"
+                ]
+              },
+              {
+                "label": "重量",
+                "value": "約11.5kg",
+                "claim_ids": [
+                  "CLM-ST1704-POWER-AORA100-V2-SPECS"
+                ]
+              },
+              {
+                "label": "本体寸法",
+                "value": "幅32.0×奥行21.5×高さ25.0cm",
+                "claim_ids": [
+                  "CLM-ST1704-POWER-AORA100-V2-SPECS"
+                ]
+              }
+            ],
+            "editorial_fit": "1024Wh帯で定格1800Wを必要とし、約11.5kgを運べる場合の候補",
+            "caution": "各社で呼称・試験条件が異なる出力値は直接順位付けせず、接続機器の通常時・起動時電力を確認してください。",
+            "presentation_v2": {
+              "benefit": "1024Wh帯で定格1800Wと持ち運べる重量を両立したい場合に。",
+              "recommendation_reason": "1024Wh・定格1800Wを約11.5kgで持ち運べるためです。",
+              "fits": [
+                "1024Whの容量帯と定格1800Wを必要とする人",
+                "約11.5kgを保管場所から運べる人"
+              ],
+              "not_fits": [
+                "約11.5kgを運ぶのが難しい人",
+                "各社出力値を同一試験条件で比べた実機評価が必要な人"
+              ],
+              "facts_checked_on": "2026-09-01",
+              "official_source_ref": "SRC-BLUETTI-AORA100-V2",
+              "detail_anchor": "product-power-bluetti-aora100-v2",
+              "cta_context": "楽天市場の商品ページで、対象型番、現在の価格・在庫・カラー、商品写真を確認できます。"
+            },
+            "cta": {
+              "copy": "楽天市場で現在の価格・在庫・カラーを見る",
+              "destination_label": "楽天市場",
+              "required_rel": "sponsored nofollow",
+              "data_article_id": "st1704-portable-power-station-guide",
+              "data_product_id": "PRD-BLUETTI-AORA100-V2",
+              "data_placement": "product_card"
+            }
+          },
+          {
             "product_selection_ref": "PSEL-POWER-DJI-1000-V2",
             "product_id": "PRD-DJI-POWER-1000-V2",
             "product_name": "DJI Power 1000 V2",
@@ -2233,7 +2578,11 @@
           "SRC-DJI-POWER-1000-V2-STORE",
           "SRC-DJI-POWER-1000-V2-SPECS",
           "SRC-METI-PORTABLE-POWER-SAFETY",
-          "SRC-METI-ELECTRICAL-RECALLS"
+          "SRC-METI-ELECTRICAL-RECALLS",
+          "SRC-BLUETTI-AORA30-V2",
+          "SRC-BLUETTI-AORA30-V2-DIMENSIONS",
+          "SRC-BLUETTI-AORA100-V2",
+          "SRC-BLUETTI-AORA-SERIES-COLLECTION"
         ],
         "internal_link_policy": {
           "resolve_only_when_target_is_published": true,
@@ -2331,7 +2680,7 @@
               },
               {
                 "type": "text",
-                  "text": "容量・定格出力・本体重量に加え、容量拡張の可否と端子構成で選択が分かれます。"
+                "text": "容量・定格出力・本体重量に加え、容量拡張の可否と端子構成で選択が分かれます。"
               }
             ]
           },
@@ -2469,7 +2818,7 @@
               [
                 {
                   "type": "text",
-                  "text": "C300とC800のアクセサリ互換性や全モデルの実効容量は、公式情報で確認できないため推奨根拠に使いません"
+                  "text": "C300とC800 Plusのアクセサリ互換性や全モデルの実効容量は、公式情報で確認できないため推奨根拠に使いません"
                 }
               ],
               [
@@ -3604,11 +3953,11 @@
           },
           {
             "block_id": "BLK-DISH-005",
-        "type": "methodology",
-        "claim_ids": [
-          "CLM-ST1704-DISH-NP-TSP2-EXCLUDED",
-          "CLM-ST1704-DISH-NP-TSP2-LAUNCH-REFERENCE"
-        ],
+            "type": "methodology",
+            "claim_ids": [
+              "CLM-ST1704-DISH-NP-TSP2-EXCLUDED",
+              "CLM-ST1704-DISH-NP-TSP2-LAUNCH-REFERENCE"
+            ],
             "methodology_ref": "METH-ST1704-PILOT-V1",
             "candidate_universe_summary": [
               {
@@ -3637,18 +3986,18 @@
                   "text": "実機を使用していないため、洗浄力、乾き具合、運転音は比較対象外です"
                 }
               ],
-          [
-            {
-              "type": "text",
-              "text": "価格、在庫、ポイント、報酬率による順位付けは行っていません"
-            }
-          ],
-          [
-            {
-              "type": "text",
-              "text": "Panasonic NP-TSP2は2026年9月発売予定で、確認日時点では予約受付中のため現行の比較表から除外しました"
-            }
-          ]
+              [
+                {
+                  "type": "text",
+                  "text": "価格、在庫、ポイント、報酬率による順位付けは行っていません"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "Panasonic NP-TSP2は2026年9月発売予定で、確認日時点では予約受付中のため現行の比較表から除外しました"
+                }
+              ]
             ],
             "data_checked_at": "2026-09-01T00:00:00Z"
           },
@@ -3948,7 +4297,7 @@
         "presentation": {
           "reader_summary": "1〜2人分の食器量と置ける寸法から工事不要の食洗機を選びたい人",
           "scope_label": "タンク給水対応の4モデル",
-            "scope_note": "現行販売を確認できた4候補を、本体・扉開放寸法、標準収納容量、使用水量、給水・乾燥方式で比較し、販売状態未確認のSOLOTAは仕様参考に限定しています",
+          "scope_note": "現行販売を確認できた4候補を、本体・扉開放寸法、標準収納容量、使用水量、給水・乾燥方式で比較し、販売状態未確認のSOLOTAは仕様参考に限定しています",
           "fact_checker": "暮らしのしるべ編集者（一次情報確認）",
           "first_hand_test": "未実施（公式仕様比較）"
         },
@@ -4669,12 +5018,12 @@
               ]
             ]
           },
-      {
-        "block_id": "BLK-ROBOT-005",
-        "type": "methodology",
-        "claim_ids": [
-          "CLM-ST1704-ROBOT-K10-COMBO-EXCLUDED"
-        ],
+          {
+            "block_id": "BLK-ROBOT-005",
+            "type": "methodology",
+            "claim_ids": [
+              "CLM-ST1704-ROBOT-K10-COMBO-EXCLUDED"
+            ],
             "methodology_ref": "METH-ST1704-PILOT-V1",
             "candidate_universe_summary": [
               {

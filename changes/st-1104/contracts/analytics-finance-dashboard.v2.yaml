@@ -93,13 +93,13 @@ source_bindings:
     sha256: 864e0f4f7d6925b3fe513ed329ad5b21a8fec32a193a18cd3aee91cbbac0b0f0
   st1304_runtime:
     path: changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
-    sha256: 0dec8138778668e5a7b063a7bc5d40feb63aadb9cfabcbad5974328ccb3d48ea
+    sha256: cbea905bf38d75a1f359ae5f225615e7ca1d17bf026201ded62c2972024fadfa
   st1304_projection:
     path: changes/st-1304/generated/cost-unit-economics-recorded.v2.json
-    sha256: fdb5728eeffe95cf4de4f9873e5ddefc924e3c8cbf9ae84f8ea42df6698b921d
+    sha256: c585189cd438eb4592a254fdea686e6cfb8e2c97541de168617686c71d1adb8f
   st1304_fixture:
     path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
-    sha256: be6f9d9a14dd91078d66805f47ac1d4828e4a7d5f2275c58e9ab4e2cdb382fb1
+    sha256: c1b0a91e25ee2f47a0667034f8493a1205996d0f6374e78cfa404d4b0fbc8a38
   st1304_domain:
     path: python/raos/domain/finance/unit_economics.py
     sha256: 5f21551473f0c3ac3a56d7b385c43b77f554ea45c1c55b28f1d0f3aee4e9a575
@@ -124,13 +124,13 @@ source_bindings:
 
 recorded_fixture:
   path: changes/st-1104/fixtures/analytics-finance-dashboard-recorded.synthetic.v2.json
-  sha256: 81342175ea58362cef8984088f6be909b4dc0274460749a43578db5fca3c1704
+  sha256: 7a569b91c27b0187bca1333d841de3d436a66dcb332e18c60ee2c1771b28c5f7
   bytes: 1734
   synthetic: true
   environment: ENV-CI
   st1205_input_sha256: 5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92
-  st1304_input_sha256: ff1909fffee9cfd9a0e34502c6f8ed9376aaa9ab16fafbad08fc02490add2508
-  st1304_result_sha256: 1b46e45d89d24d16875bb11d153def331bfa2bae45ebce8b26920a4892d78f91
+  st1304_input_sha256: 57446eed7e40ac77558b6b3138b19e14fbce3dbe29b57863cab606a989c4df03
+  st1304_result_sha256: 7f97536c1d4bdc6cefb707f4a0cbb9ce87c8f36885eacb25d50a0a5570380434
   provider_execution: NOT_EXECUTED
 
 screen_contract:

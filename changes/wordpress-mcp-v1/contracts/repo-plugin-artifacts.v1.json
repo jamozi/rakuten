@@ -2,7 +2,7 @@
   "artifacts": [
     {
       "artifact_id": "raos-codex-mcp-abilities-v1",
-      "package_sha256": "9fff9716e1cbc04d2bc3cc3ca2282559c18edb487cde263be9e3985ef981fd3f",
+      "package_sha256": "bd9806980ca8e26e42dd1a78f8cd6baa4ad9c481cd11607ac13dc6bff93b5edd",
       "slug": "raos-codex-mcp-abilities",
       "version": "1.3.1"
     },
@@ -10,11 +10,11 @@
       "artifact_id": "raos-editorial-measurement-v1",
       "migration_review": {
         "assessment": "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION",
-        "file_manifest_sha256": "2808e0574ebdca0a1cc0a204ab4ab67fa4ce73274e4673f5b4f9a788bb4b09d9",
-        "package_sha256": "e8db6e19b20f228ec0f105cefccfd5e795687364ab1991854cdc92677b250b5e",
+        "file_manifest_sha256": "2324791adf2586ceea69cf7fc607cf21f2ce4ad8e34660283164b6c3242f6536",
+        "package_sha256": "487193165588d5cac9feb33d4417fa5305d3d3a1a20b51f438441aac92ba32c0",
         "schema": "RAOS_WORDPRESS_PLUGIN_MIGRATION_REVIEW_V1"
       },
-      "package_sha256": "e8db6e19b20f228ec0f105cefccfd5e795687364ab1991854cdc92677b250b5e",
+      "package_sha256": "487193165588d5cac9feb33d4417fa5305d3d3a1a20b51f438441aac92ba32c0",
       "slug": "raos-editorial-measurement",
       "version": "1.0.0"
     }

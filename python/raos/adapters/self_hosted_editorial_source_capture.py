@@ -94,7 +94,7 @@ _ARTICLE_IDS: Final = frozenset(
 # accidental bulk edit) from replacing both documents with a different set of
 # capture targets while preserving their internal consistency.
 _PRODUCT_SOURCE_INVENTORY_SHA256: Final = (
-    "54dd657aa5289d7d19cf9861089c9485c2e756e9ef17eefc5c811898a8118b4d"
+    "d6179333137f0faf66526a1eadc86c085ada3d12245b6f16955946996210a70b"
 )
 _POLICY_SOURCE_INVENTORY_SHA256: Final = (
     "5509d907252fe67cbb7aea1fa37ced915cf02d50f5a4a6b2b08341292ddd55c8"
@@ -1685,7 +1685,24 @@ def _persist_capture(
             metadata_name = f"{fetched.target.source_ref}.capture.v1.json"
             status = "BODY_CAPTURED_LOCATORS_PENDING"
         else:
-            evidence = _evidence(fetched)
+            try:
+                evidence = _evidence(fetched)
+            except OfficialSourceCaptureFailure as error:
+                if error.code is OfficialSourceCaptureFailureCode.LOCATOR_MISMATCH:
+                    # Keep the newly observed page for locator review without
+                    # replacing, or claiming to refresh, accepted evidence.
+                    pending = _raw_capture_document(fetched)
+                    _replace_private(
+                        directory,
+                        f"{fetched.target.source_ref}.capture.body",
+                        fetched.body,
+                    )
+                    _replace_private(
+                        directory,
+                        f"{fetched.target.source_ref}.capture.v1.json",
+                        canonical_json_bytes(pending) + b"\n",
+                    )
+                raise
             document = evidence.value()
             body_name = source_body_relative_path(fetched.target.source_ref).name
             metadata_name = source_evidence_relative_path(

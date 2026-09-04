@@ -149,7 +149,7 @@
     "catalog_ir_check_constraint_count": 519,
     "catalog_ir_column_count": 1376,
     "catalog_ir_relation_count": 104,
-    "catalog_ir_sha256": "c1df80a0be18cf321986ef729db9202850e8224293ecc8644338ac678258ecd8",
+    "catalog_ir_sha256": "23a89369c96166b959bbece80cf7d282377bc4f41940ef5257509130e2626434",
     "lock_version_relation_membership_verified": 27,
     "physical_tables_matched_to_relation_contracts": 103,
     "physical_view_column_type_nullability_parity": "POSTGRESQL_RUNTIME_NOT_EXECUTED",
@@ -218,7 +218,7 @@
   },
   "source_sha256": {
     "changes/st-0105/README.md": "15adf4e461592453f78a363ccba411c861f476aeaf58444039c6eaff12ade8de",
-    "changes/st-0105/manifest.json": "7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7",
+    "changes/st-0105/manifest.json": "9d264a1a39a6781bc6a24973e0a14b1a52fd7a8485b8f2d563b357c56834eb0d",
     "changes/st-0303/generated/iam-ops-catalog.v1.json": "8ebf0d20ae07e4f82564f16c675b60f4a782464f5b25aa0a2b0df668f8475128",
     "changes/st-0304/contracts/domain-schema.v1.yaml": "8030f28f59124686c2fb975b507f66e70640b529ff5769666f88202628e19122",
     "changes/st-0304/contracts/physical/01-domain-physical.sql": "b2f937ae00d526a886e5e875e095e247702f4bd7831a3164e2eda93423d7fdb8",

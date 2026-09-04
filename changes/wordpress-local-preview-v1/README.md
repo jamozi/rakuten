@@ -5,7 +5,8 @@ This directory owns a persistent, non-production WordPress preview for the
 appearance without reading from or writing to `kurashinoshirube.com`.
 
 The preview uses digest-pinned WordPress 7.1.0, WP-CLI 2.12.0, MariaDB 11.8.3,
-and Nginx 1.29.1 images. A read-only, unprivileged Nginx gateway is the only
+Nginx 1.29.1 images, and checksum-pinned Yoast SEO 28.3. A read-only,
+unprivileged Nginx gateway is the only
 service attached to the loopback bridge and binds only to a deterministic
 worktree-specific `http://127.0.0.1:<port>` origin; WordPress and MariaDB remain
 on their internal network. The Compose project name, named volumes, bootstrap
@@ -21,7 +22,7 @@ shows the visible non-image state `商品画像未確認・購入導線停止` a
 clearly labelled manufacturer page link only as an incomplete development
 fallback. It never reuses a neutral or article-level visual as a product image,
 and this fallback is never a production candidate. Production still requires
-34/34 verified product-card images and 68/68 verified affiliate CTAs, with zero
+37/37 verified product-card images and 74/74 verified affiliate CTAs, with zero
 neutral images and zero manufacturer-link fallbacks. The browser never loads a
 product image or script from an external origin. No live post, production
 credential, analytics integration, or MCP publication tool is used by the
@@ -64,9 +65,16 @@ publication proposal. The required sequence is:
    proposal, precondition, and kill-switch requirements. A local pass is not
    production approval.
 
-First propose the fixed MCP abilities plugin 1.3 package and stop for its
+First propose the fixed MCP abilities plugin 1.3.1 package and stop for its
 separate-admin approval/apply receipt. That exact receipt is required before the
-measurement plugin can be proposed. After the separately approved measurement
+measurement plugin can be proposed. Before either measurement or content
+publication, materialize the checksum-pinned Yoast SEO 28.3 package, have a
+human WordPress administrator install and activate that exact package, run the
+bounded checksum verification, and separately propose, approve, and apply the
+fixed Yoast option profile. The MCP `site-status` readback must then report the
+exact installed, active, 28.3 version, selected option values, and settings
+fingerprint; any missing or drifted value blocks both publication-batch claim
+and content/theme apply. After the separately approved measurement
 plugin apply receipt has been validated with
 `measurement_plugin_proposal.py --content-ready`, run the full tracked batch
 with that owner-private receipt. Production submission is deliberately limited
@@ -132,9 +140,13 @@ make wordpress-preview-down
 `wordpress-preview-up` derives an isolated Compose project and unprivileged
 loopback port from the exact repository-root path, refuses a foreign container
 already bound to that port, creates owner-private random bootstrap credentials under
-`.secrets/wordpress-local-preview/`, starts WordPress and MariaDB, activates the
-tracked child theme, refreshes the owner-private materialized fixture, and seeds
-it only on first initialization. It does not print any password. The command
+`.secrets/wordpress-local-preview/`, verifies the pinned official Yoast 28.3
+archive and checksum manifest, materializes the plugin below the owner-private
+preview directory, mounts that exact plugin tree read-only, starts WordPress and
+MariaDB, activates Yoast 28.3 and the tracked child theme, refreshes the
+owner-private materialized fixture, and seeds it only on first initialization.
+Synchronization verifies the active Yoast version and the exact persisted
+`wpseo` / `wpseo_social` profile before succeeding. It does not print any password. The command
 prints the exact origin for this checkout. An operator may select a different
 free loopback port with `RAOS_WORDPRESS_PREVIEW_PORT`; the value is propagated
 to Compose, WordPress, seed validation, and the browser audit. With
@@ -212,12 +224,14 @@ Production expectations (`noindex, follow` for search/archive and `noindex,
 nofollow` for 404) remain a separate contract and are not claimed as observed
 by a local pass.
 
-Every article must expose exactly one visible advertising disclosure. The
-audit scrolls that element into view, rejects clipped or off-screen placement,
-and requires it before the first purchase CTA in both DOM and visual order. It
-also checks the standard disclosure statements, its comparison
-policy link, and native `details`/`summary` operation with Enter and Space at
-390px. All links are parsed from their actual DOM attributes: arbitrary or
+Every article must expose exactly one visible monetization-status disclosure.
+Nine affiliate articles require the standard advertising disclosure before the
+first purchase CTA in both DOM and visual order, plus the comparison-policy link
+and native `details`/`summary` operation with Enter and Space at 390px. The A10
+lifecycle-status route instead requires the exact `購入リンクなし` disclosure,
+has no `details`, product card, or CTA, and rejects either disclosure form on the
+wrong route. The audit scrolls either form into view and rejects clipped,
+off-screen, or obscured placement. All links are parsed from their actual DOM attributes: arbitrary or
 active URL schemes and non-local plain HTTP destinations are rejected,
 affiliate destinations require `sponsored nofollow`, and every `_blank` link
 requires `noopener noreferrer`. Forbidden Product, Offer, Review,
@@ -250,8 +264,12 @@ Lighthouse report. Changed inputs, mismatched fingerprints, stale timestamps,
 or a missing report fail closed; an older `summary.json` can never satisfy a new
 run.
 
-The preview deliberately keeps `blog_public=0` and does not install Yoast, so
-its XML sitemap endpoints remain disabled. Production `robots.txt` and the
+The preview deliberately keeps `blog_public=0`, while installing and activating
+only the checksum-pinned Yoast SEO 28.3 tree described above. The seed writes the
+fixed local option profile, and both synchronization and the theme's read-only
+configuration gate verify the active version and selected persisted options.
+Materialization, activation, or option drift fails closed. Production
+`robots.txt` and the
 exact sitemap URL union are checked only by the bounded, anonymous
 `scripts/raos_wordpress_seo_audit.py`; the local browser gate instead proves
 that every closed core URL has exactly one self canonical, one non-empty meta

@@ -44,7 +44,7 @@ CONTENT_ROLE_LABELS: Final = {
     "feature_shortlist": "機能別比較",
     "head_to_head_comparison": "2製品比較",
     "head_to_head_with_reference": "2製品比較＋参考機種",
-    "lifecycle_status_route": "旧製品の販売状態確認＋現行比較への案内",
+    "lifecycle_status_route": "以前の比較対象の販売状態確認＋現行比較への案内",
     "model_family_comparison": "ブランド内比較",
 }
 AUDIT_VIEWPORTS: Final = (360, 390, 768, 1440)
@@ -453,15 +453,23 @@ def build_documents() -> tuple[bytes, bytes]:
                 "broader_guide"
                 if source.get("broader_article_id") == related_id
                 else (
-                    "narrower_comparison"
+                    "lifecycle_reference"
                     if related_source is not None
                     and related_source.get("broader_article_id") == article_id
-                    else "adjacent_condition"
+                    and related_source.get("content_role")
+                    == "lifecycle_status_route"
+                    else (
+                        "narrower_comparison"
+                        if related_source is not None
+                        and related_source.get("broader_article_id") == article_id
+                        else "adjacent_condition"
+                    )
                 )
             )
             expected_context = {
                 "adjacent_condition": "近い条件を別の軸で比べる",
                 "broader_guide": "候補を広げて選び直す",
+                "lifecycle_reference": "以前の比較対象の販売状況を確認する",
                 "narrower_comparison": "条件を絞った比較へ進む",
             }[expected_relationship]
             if (
@@ -516,6 +524,11 @@ def build_documents() -> tuple[bytes, bytes]:
         if type(relations) is not list or type(broader) is not dict:
             _fail()
         reciprocal = broader["related_articles"]
+        reciprocal_relationship = (
+            "lifecycle_reference"
+            if article.get("content_role") == "lifecycle_status_route"
+            else "narrower_comparison"
+        )
         if (
             type(reciprocal) is not list
             or not any(
@@ -527,7 +540,7 @@ def build_documents() -> tuple[bytes, bytes]:
             or not any(
                 type(row) is dict
                 and row.get("article_id") == article_id
-                and row.get("relationship") == "narrower_comparison"
+                and row.get("relationship") == reciprocal_relationship
                 for row in reciprocal
             )
         ):

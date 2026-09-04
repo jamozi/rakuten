@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.5.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'f48d09a706e3ce9a25381734baf92d65e364a04f5394984567ab60cec2f80476';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'f48d09a706e3ce9a25381734baf92d65e364a04f5394984567ab60cec2f80476';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'de73b422754d2b0c3c5b6c49e5ea1a1e97c403fa8c8c95461cc7b6d4251f9c90';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'de73b422754d2b0c3c5b6c49e5ea1a1e97c403fa8c8c95461cc7b6d4251f9c90';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -53,7 +53,7 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1'
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = 'assets/editorial-navigation.v3.json';
-const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = 'e3a08018e580727e3a22b84686029bc69b534db10625061c74f85791a2cab658';
+const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '8661ef74dc2fb4aebc4f9067bf5aa99b6ce058bb62cdb1948d70f5366f802a18';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_MAX_BYTES = 262144;
 const KURASHINOSHIRUBE_HOME_TITLE = '生活用品を公式仕様で比較｜暮らしのしるべ';
 const KURASHINOSHIRUBE_HOME_DESCRIPTION = '暮らしのしるべは、移動・家事・備えの生活用品を、公式情報と確認条件に基づいて比較し、選び方を分かりやすく案内します。';
@@ -179,7 +179,7 @@ function kurashinoshirube_article_bindings(): array
                     'feature_shortlist' => '機能別比較',
                     'head_to_head_comparison' => '2製品比較',
                     'head_to_head_with_reference' => '2製品比較＋参考機種',
-                    'lifecycle_status_route' => '旧製品の販売状態確認＋現行比較への案内',
+                    'lifecycle_status_route' => '以前の比較対象の販売状態確認＋現行比較への案内',
                     'model_family_comparison' => 'ブランド内比較',
                 )[$article['content_role']]
             )
@@ -190,7 +190,7 @@ function kurashinoshirube_article_bindings(): array
                 'feature_shortlist' => '機能別比較',
                 'head_to_head_comparison' => '2製品比較',
                 'head_to_head_with_reference' => '2製品比較＋参考機種',
-                'lifecycle_status_route' => '旧製品の販売状態確認＋現行比較への案内',
+                'lifecycle_status_route' => '以前の比較対象の販売状態確認＋現行比較への案内',
                 'model_family_comparison' => 'ブランド内比較',
             )[$article['content_role']] !== $article['content_role_label']
             || ! kurashinoshirube_is_clean_text($article['primary_query_intent'], 1, 180)
@@ -316,7 +316,11 @@ function kurashinoshirube_related_article_map(): array
                 ? 'broader_guide'
                 : (
                     is_array($target) && $target['broader_article_id'] === $article_id
-                        ? 'narrower_comparison'
+                        ? (
+                            $target['content_role'] === 'lifecycle_status_route'
+                                ? 'lifecycle_reference'
+                                : 'narrower_comparison'
+                        )
                         : 'adjacent_condition'
                 );
             if (
@@ -348,7 +352,11 @@ function kurashinoshirube_related_article_map(): array
             || ($map[$article_id]['target_relationships'][$broader_id] ?? null)
                 !== 'broader_guide'
             || ($map[$broader_id]['target_relationships'][$article_id] ?? null)
-                !== 'narrower_comparison'
+                !== (
+                    $binding['content_role'] === 'lifecycle_status_route'
+                        ? 'lifecycle_reference'
+                        : 'narrower_comparison'
+                )
         ) {
             return array();
         }
@@ -2727,7 +2735,14 @@ function kurashinoshirube_resolve_related_target(string $target_id): ?array
 function kurashinoshirube_contextual_target_id(array $relation): ?string
 {
     $relationships = $relation['target_relationships'] ?? array();
-    foreach (array('broader_guide', 'narrower_comparison', 'adjacent_condition') as $priority) {
+    foreach (
+        array(
+            'broader_guide',
+            'narrower_comparison',
+            'lifecycle_reference',
+            'adjacent_condition',
+        ) as $priority
+    ) {
         foreach ($relationships as $candidate => $relationship) {
             if (is_string($candidate) && $relationship === $priority) {
                 return $candidate;
@@ -2872,6 +2887,7 @@ function kurashinoshirube_inject_contextual_guide($content)
     $handoff_label = array(
         'broader_guide' => '候補を広げて選び直す：',
         'narrower_comparison' => '条件を絞って比較する：',
+        'lifecycle_reference' => '以前の比較対象の販売状況を確認する：',
         'adjacent_condition' => '別の条件も確認する：',
     )[$relationship] ?? null;
     if (! is_string($handoff_label)) {

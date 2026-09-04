@@ -126,7 +126,7 @@ _SOURCE_HOSTS: Final = frozenset(
 # source-ref/URL pairs keeps the application boundary closed while allowing
 # the generator to expand the reviewed inventory deliberately.
 _PRODUCT_SOURCE_INVENTORY_SHA256: Final = (
-    "54dd657aa5289d7d19cf9861089c9485c2e756e9ef17eefc5c811898a8118b4d"
+    "d6179333137f0faf66526a1eadc86c085ada3d12245b6f16955946996210a70b"
 )
 _POLICY_SOURCE_INVENTORY_SHA256: Final = (
     "5509d907252fe67cbb7aea1fa37ced915cf02d50f5a4a6b2b08341292ddd55c8"
@@ -196,25 +196,15 @@ _PORTFOLIO_REFERENCE_CLAIMS: Final = {
         "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
         "lightweight-carry-on-suitcase-under-3kg",
     ),
-    "CLM-PORTFOLIO-DISH-TOSHIBA-DWS-33B-REFERENCE": (
-        "solota-vs-rakua-mini-plus",
-        "PRD-TOSHIBA-DWS-33B-W",
-        "st1704-countertop-dishwasher-for-small-households",
+    "CLM-PORTFOLIO-ROBOT-EUFY-C10-BOUNDARY-REFERENCE": (
+        "roomba-mini-vs-switchbot-k11-pro",
+        "PRD-EUFY-AUTOEMPTY-C10-T2292",
+        "st1704-compact-robot-vacuum-shortlist",
     ),
-    "CLM-PORTFOLIO-DISH-RAKUA-MINI-REFERENCE": (
-        "solota-vs-rakua-mini-plus",
-        "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
-        "st1704-countertop-dishwasher-for-small-households",
-    ),
-    "CLM-PORTFOLIO-DISH-SS-M171-REFERENCE": (
-        "solota-vs-rakua-mini-plus",
-        "PRD-SIROCA-SS-M171",
-        "st1704-countertop-dishwasher-for-small-households",
-    ),
-    "CLM-PORTFOLIO-DISH-SS-MA251-REFERENCE": (
-        "solota-vs-rakua-mini-plus",
-        "PRD-SIROCA-SS-MA251",
-        "st1704-countertop-dishwasher-for-small-households",
+    "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE": (
+        "roomba-mini-vs-switchbot-k11-pro",
+        "PRD-ECOVACS-DEEBOT-MINI2",
+        "st1704-compact-robot-vacuum-shortlist",
     ),
 }
 _CLAIM_OPTIONAL_KEYS: Final = frozenset(
@@ -926,7 +916,7 @@ def _validate_sources(
             "status",
         },
     )
-    if len(affiliates) != 19 or len(
+    if len(affiliates) != 21 or len(
         {affiliate["product_id"] for affiliate in affiliates.values()}
     ) != len(affiliates):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
@@ -1145,7 +1135,7 @@ def _validate_media(document: object) -> dict[str, Mapping[str, object]]:
             "width",
         },
     )
-    if len(assets) != 19 or len(
+    if len(assets) != 21 or len(
         {asset["product_id"] for asset in assets.values()}
     ) != len(assets):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
@@ -1803,7 +1793,7 @@ _ARTICLE_SECTION_HEADINGS: Final[Mapping[str, Mapping[str, str]]] = {
         "intended_reader": "停電時の使い方から候補を絞る",
         "methodology": "容量・定格出力・重量を同じ条件で比べる",
         "selection_criteria": "使う機器から必要容量を決める",
-        "comparison_table": "5モデルの容量・各社公表出力・重量",
+        "comparison_table": "7モデルの容量・各社公表出力・重量",
         "product_cards": "容量帯ごとの向き・不向き",
         "caution": "接続機器・保管・安全条件を最後に確認する",
     },

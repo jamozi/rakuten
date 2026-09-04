@@ -56,13 +56,11 @@ LATER_DECISION_AND_PRODUCTS = {
     "roomba-mini-vs-switchbot-k11-pro": (
         "robot-decision-title",
         (
-            ("PRD-EUFY-AUTOEMPTY-C10-T2292", "eufy-autoempty-c10-t2292511"),
             ("PRD-SWITCHBOT-K11-PRO", "switchbot-k11-pro"),
             (
                 "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
                 "roomba-mini-slim-f115060",
             ),
-            ("PRD-ECOVACS-DEEBOT-MINI2", "deebot-mini2"),
         ),
     ),
 }
@@ -191,7 +189,7 @@ def test_front_open_bermas_swap_is_identity_complete_and_rakuten_fail_closed() -
     assert old_candidate["disposition"] == "EXCLUDED"
 
 
-def test_robot_copy_uses_four_current_setups_without_repeating_caveats() -> None:
+def test_robot_copy_uses_two_named_products_without_repeating_caveats() -> None:
     fixture = json.loads((FIXTURES / "posts.json").read_text(encoding="utf-8"))
     post = next(
         row
@@ -206,19 +204,21 @@ def test_robot_copy_uses_four_current_setups_without_repeating_caveats() -> None
     )
 
     assert "本体単品" not in post["excerpt"]
-    assert "Eufy Auto-Empty C10" in post["excerpt"]
+    assert "Eufy Auto-Empty C10" not in post["excerpt"]
     assert "Roomba Mini Slim" in post["excerpt"]
-    assert "現行4構成" in markup
+    assert "2製品だけ" in markup
+    assert "現行4構成" not in markup
     assert "2製品3構成" not in markup
     assert "販売終了状況" not in markup
-    assert "在庫切れ／販売状態の確認内容" in markup
-    assert "Eufy C10のブラックT2292511への入替" in markup
-    assert "同型番・同色の現行販売状態" in markup
+    assert "2製品比較から外した候補" in markup
+    assert "在庫切れ／販売状態の確認内容" not in markup
+    assert "Eufy C10のブラックT2292511への入替" not in markup
+    assert "同型番・同色の現行販売状態" not in markup
     assert note is not None
     assert card is not None
-    assert "最大12,000Pa" in note.group(1)
     assert "左右各1m・前方1.5m" in note.group(1)
-    assert "最大12,000Pa" in card.group(0)
+    assert "最大12,000Pa" not in note.group(1)
+    assert "最大12,000Pa" not in card.group(0)
     assert "左右各1m・前方1.5m" in card.group(0)
     copy_outside_allowed = reader_copy.replace(note.group(0), "").replace(
         card.group(0), ""
@@ -260,23 +260,23 @@ def test_legacy_dishwasher_copy_is_lifecycle_only_and_routes_to_current_guide() 
     assert (
         markup.count(
             '<a href="/countertop-dishwasher-for-small-households/">'
-            "関連する比較記事を確認する</a>"
+            "現行比較へ迷わず移る（少人数向け卓上食洗機4候補の比較）</a>"
         )
         == 1
     )
-    assert markup.count("同じ比較記事で確認できます。") == 3
+    assert "同じ比較記事で確認できます。" not in markup
     assert "A04" not in markup
     assert "現行4候補の比較" in markup
     assert "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B" not in markup
     assert "PRD-PANASONIC-SOLOTA-NP-TML1-W" not in markup
-    assert "通常商品SS-MA251（シルバー）" in markup
-    assert "仕様表、個別の選定理由" in markup
+    assert "通常商品SS-MA251（シルバー）" not in markup
+    assert "仕様表、個別の選定理由" not in markup
     assert 'data-raos-product-id="' not in markup
     assert 'class="raos-cta' not in markup
     assert "dish-running-cost-title" not in markup
     assert "後継機です" not in markup
     assert "後継モデル" not in markup
-    assert "後継・同等品とは断定しません" in markup
+    assert "後継機・同等品とは断定しません" in markup
     assert "drop-in" not in markup
 
 
@@ -295,12 +295,12 @@ def test_legacy_dishwasher_intent_is_resolved_in_the_opening() -> None:
     assert first_paragraph is not None
     assert "このURLで以前比較していたTHANKO ラクアmini Plus" in first_paragraph.group(1)
     assert "公式ストアで再入荷通知のみ" in first_paragraph.group(1)
-    assert "SOLOTA NP-TML1-Wは正確な白色型番の販売状態を確認できません" in first_paragraph.group(1)
+    assert "SOLOTA NP-TMLK1-Kは正確な型番の購入UIを確認できません" in first_paragraph.group(1)
     assert "両機種は仕様参考に限定し、購入候補・商品カード・購入導線から外しました" in first_paragraph.group(1)
     assert "現行比較へ迷わず移る" in markup
-    assert "THANKO ラクアmini TK-MDW22W" in markup
-    assert "siroca SS-M171" in markup
-    assert "公式ストア通常商品SS-MA251（シルバー）" in markup
+    assert "THANKO ラクアmini TK-MDW22W" not in markup
+    assert "siroca SS-M171" not in markup
+    assert "公式ストア通常商品SS-MA251（シルバー）" not in markup
     assert post["excerpt"].startswith(
         "旧SOLOTAは正確な対象型番の販売状態を確認できず"
     )

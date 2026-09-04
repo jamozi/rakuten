@@ -80,6 +80,7 @@ RUNTIME_PATHS: Final = (
     Path("python/raos/application/editorial/editorial_portfolio_v2.py"),
     Path("python/raos/application/editorial/editorial_portfolio_v3.py"),
     Path("python/raos/application/editorial/rakuten_measurement_activation_v3.py"),
+    Path("python/raos/application/editorial/rakuten_standard_api_v1.py"),
     Path("python/raos/application/finance/editorial_economics_v3.py"),
     Path("scripts/raos_editorial_economics_v3.py"),
     Path("scripts/raos_rakuten_measurement_activation_v3.py"),
@@ -118,7 +119,7 @@ CONTENT_ROLE_LABELS: Final = {
     "feature_shortlist": "機能別比較",
     "head_to_head_comparison": "2製品比較",
     "head_to_head_with_reference": "2製品比較＋参考機種",
-    "lifecycle_status_route": "旧製品の販売状態確認＋現行比較への案内",
+    "lifecycle_status_route": "以前の比較対象の販売状態確認＋現行比較への案内",
     "model_family_comparison": "ブランド内比較",
 }
 ROLES_REQUIRING_BROADER_ARTICLE: Final = {
@@ -172,6 +173,7 @@ EXTERNAL_CANDIDATE_USE_ROLES: Final = {
 RELATIONSHIP_CONTEXTS: Final = {
     "adjacent_condition": "近い条件を別の軸で比べる",
     "broader_guide": "候補を広げて選び直す",
+    "lifecycle_reference": "以前の比較対象の販売状況を確認する",
     "narrower_comparison": "条件を絞った比較へ進む",
 }
 
@@ -951,6 +953,12 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
         def related_record(related_id: str) -> dict[str, str]:
             if broader_article_id == related_id:
                 relationship = "broader_guide"
+            elif (
+                article_broader_by_id[related_id] == article_id
+                and article_content_role_by_id[related_id]
+                == "lifecycle_status_route"
+            ):
+                relationship = "lifecycle_reference"
             elif article_broader_by_id[related_id] == article_id:
                 relationship = "narrower_comparison"
             else:
@@ -964,8 +972,9 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
         related_records = [related_record(related_id) for related_id in related]
         relationship_priority = {
             "broader_guide": 0,
-            "narrower_comparison": 1,
-            "adjacent_condition": 2,
+            "lifecycle_reference": 1,
+            "narrower_comparison": 2,
+            "adjacent_condition": 3,
         }
         observed_relationship_priority = [
             relationship_priority[row["relationship"]] for row in related_records

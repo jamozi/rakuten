@@ -78,8 +78,8 @@ def test_runtime_binds_model_and_variant_sales_states_without_attesting_rakuten_
 
     assert audit is not None
     assert audit.checked_at_utc == "2026-08-31T14:19:31Z"
-    assert len(audit.products) == len(portfolio.products) == 31
-    assert audit.known_product_count == 31
+    assert len(audit.products) == len(portfolio.products) == 33
+    assert audit.known_product_count == 33
     assert audit.publication_eligible is True
     assert set(audit.product_by_id) == {
         product.product_id for product in portfolio.products
@@ -87,17 +87,31 @@ def test_runtime_binds_model_and_variant_sales_states_without_attesting_rakuten_
     assert {
         row.product_id for row in audit.products if row.state == "OUT_OF_STOCK"
     } == OUT_OF_STOCK_PRODUCT_IDS
-    assert sum(row.state == "AVAILABLE" for row in audit.products) == 31
+    assert sum(row.state == "AVAILABLE" for row in audit.products) == 33
     assert {
         row.product_id for row in audit.products if row.state == "UNKNOWN"
     } == UNKNOWN_PRODUCT_IDS
     assert (
         audit.product_by_id["PRD-ACE-DIFFERENCE-05721"].availability_scope == "VARIANT"
     )
+    assert {
+        row.product_id
+        for row in audit.products
+        if row.availability_scope == "VARIANT"
+    } == {
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-BLUETTI-AORA30-V2",
+        "PRD-BLUETTI-AORA100-V2",
+    }
     assert all(
         row.availability_scope == "MODEL"
         for row in audit.products
-        if row.product_id != "PRD-ACE-DIFFERENCE-05721"
+        if row.product_id
+        not in {
+            "PRD-ACE-DIFFERENCE-05721",
+            "PRD-BLUETTI-AORA30-V2",
+            "PRD-BLUETTI-AORA100-V2",
+        }
     )
     assert audit.availability_scope == "MIXED"
     assert all(row.recheck_required for row in audit.products)
@@ -134,8 +148,8 @@ def test_runtime_binds_model_and_variant_sales_states_without_attesting_rakuten_
     assert readiness.complete is True
     assert readiness.manufacturer_sales_state_contract_complete is True
     assert readiness.manufacturer_sales_state_publication_eligible is True
-    assert readiness.manufacturer_sales_state_known_product_count == 31
-    assert readiness.manufacturer_sales_state_available_product_count == 31
+    assert readiness.manufacturer_sales_state_known_product_count == 33
+    assert readiness.manufacturer_sales_state_available_product_count == 33
     assert readiness.manufacturer_sales_state_out_of_stock_product_count == 0
     assert set(readiness.manufacturer_sales_state_out_of_stock_product_ids) == (
         OUT_OF_STOCK_PRODUCT_IDS
@@ -251,6 +265,13 @@ def test_unknown_and_discontinued_states_fail_closed(
         lambda *_args, **_kwargs: _verified_views(
             tuple(product.product_id for product in portfolio.products)
         ),
+    )
+    # The tracked fixture is deliberately old enough to fail the real
+    # 24-hour freshness gate; this test exercises the state-specific gate.
+    monkeypatch.setattr(
+        portfolio_module,
+        "MANUFACTURER_SALES_STATE_FRESHNESS",
+        portfolio_module.MANUFACTURER_SALES_STATE_FRESHNESS * 365,
     )
     readiness = product_evidence_readiness_v2(ROOT)
     assert readiness.complete is False

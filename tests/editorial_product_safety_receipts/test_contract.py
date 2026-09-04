@@ -9,6 +9,14 @@ from typing import Callable
 import pytest
 
 import raos.application.editorial.product_safety_receipts as receipts
+from raos.application.editorial.product_safety_manufacturer_capture import (
+    BUNDLE_SCHEMA as MANUFACTURER_BUNDLE_SCHEMA,
+    VERSION as MANUFACTURER_CAPTURE_VERSION,
+    MANUAL_REQUIRED_REASON,
+    ProductSafetyManufacturerCaptureEvidence,
+    ProductSafetyManufacturerEvidenceSet,
+    ProductSafetyManufacturerProductEvidence,
+)
 from raos.application.editorial.product_safety_query_capture import (
     CAPTURE_BUNDLE_SCHEMA,
     CAPTURE_BUNDLE_VERSION,
@@ -189,7 +197,9 @@ def test_document_header_is_closed_and_does_not_accept_owner_status() -> None:
         _evaluate(document)
 
 
-def test_self_hashed_v1_rows_are_declarations_and_never_derive_complete_status() -> None:
+def test_self_hashed_v1_rows_are_declarations_and_never_derive_complete_status() -> (
+    None
+):
     audit = _evaluate(_complete_document())
 
     assert audit.complete is False
@@ -258,6 +268,32 @@ def test_replayed_administrative_set_verifies_only_the_admin_authority(
         "verify_product_safety_query_capture_set",
         lambda repository_root, now: evidence,
     )
+    manufacturer_evidence = ProductSafetyManufacturerEvidenceSet(
+        schema=MANUFACTURER_BUNDLE_SCHEMA,
+        version=MANUFACTURER_CAPTURE_VERSION,
+        plan_sha256="d" * 64,
+        portfolio_sha256="e" * 64,
+        capture_count=0,
+        bundle_sha256="f" * 64,
+        evaluated_at=NOW,
+        products=(
+            ProductSafetyManufacturerProductEvidence(
+                product_id=PRODUCT_ID,
+                exact_model_tokens=MODEL_TOKENS,
+                status="MANUAL_REQUIRED",
+                capture=None,
+                matched_notice_ids=(),
+                endpoint_contract_id=None,
+                manual_required_reason=MANUAL_REQUIRED_REASON,
+            ),
+        ),
+        complete=False,
+    )
+    monkeypatch.setattr(
+        receipts,
+        "verify_product_safety_manufacturer_capture_set",
+        lambda repository_root, now: manufacturer_evidence,
+    )
 
     audit = load_product_safety_receipt_audit(
         tmp_path,
@@ -270,14 +306,122 @@ def test_replayed_administrative_set_verifies_only_the_admin_authority(
     assert audit.complete is False
     assert audit.administrative_bundle_sha256 == "c" * 64
     assert audit.administrative_capture_count == 3
-    assert product.verified_authority_kinds == (
-        "JAPAN_ADMINISTRATIVE_OFFICIAL",
-    )
+    assert product.verified_authority_kinds == ("JAPAN_ADMINISTRATIVE_OFFICIAL",)
     assert product.missing_authority_kinds == ("MANUFACTURER_OFFICIAL",)
     assert product.status == "BLOCKED_MISSING_RECEIPT"
     assert product.administrative_capture_sha256s == tuple(
         row.capture_sha256 for row in captures
     )
+
+
+def test_only_replayed_manufacturer_and_administrative_evidence_can_complete(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    target = tmp_path / PRODUCT_SAFETY_RECEIPTS_RELATIVE_PATH
+    target.parent.mkdir(parents=True)
+    target.write_text(
+        json.dumps(_owner_document(), ensure_ascii=False),
+        encoding="utf-8",
+    )
+    provider_scopes: tuple[tuple[Provider, Scope], ...] = (
+        ("CAA", "RECALL"),
+        ("NITE", "RECALL"),
+        ("NITE", "ACCIDENT"),
+    )
+    captures = tuple(
+        ProductSafetyAdministrativeCaptureEvidence(
+            product_id=PRODUCT_ID,
+            provider=provider,
+            scope=scope,
+            retrieved_at=NOW,
+            result="NONE_FOUND",
+            result_count=0,
+            notice_ids=(),
+            request_material_sha256=str(index) * 64,
+            response_raw_sha256=str(index + 3) * 64,
+            capture_sha256=str(index + 6) * 64,
+        )
+        for index, (provider, scope) in enumerate(provider_scopes, 1)
+    )
+    administrative = ProductSafetyAdministrativeEvidenceSet(
+        schema=CAPTURE_BUNDLE_SCHEMA,
+        version=CAPTURE_BUNDLE_VERSION,
+        plan_sha256="a" * 64,
+        portfolio_sha256="b" * 64,
+        capture_count=3,
+        bundle_sha256="c" * 64,
+        evaluated_at=NOW,
+        products=(
+            ProductSafetyAdministrativeProductEvidence(
+                product_id=PRODUCT_ID,
+                exact_model_tokens=MODEL_TOKENS,
+                status="VERIFIED_NONE_FOUND",
+                captures=captures,
+                matched_notice_ids=(),
+                stale_provider_scopes=(),
+            ),
+        ),
+        complete=True,
+    )
+    manufacturer_capture = ProductSafetyManufacturerCaptureEvidence(
+        product_id=PRODUCT_ID,
+        retrieved_at=NOW,
+        result="NONE_FOUND",
+        result_count=0,
+        notice_ids=(),
+        request_raw_sha256="d" * 64,
+        response_raw_sha256="e" * 64,
+        capture_sha256="f" * 64,
+    )
+    manufacturer = ProductSafetyManufacturerEvidenceSet(
+        schema=MANUFACTURER_BUNDLE_SCHEMA,
+        version=MANUFACTURER_CAPTURE_VERSION,
+        plan_sha256="1" * 64,
+        portfolio_sha256="2" * 64,
+        capture_count=1,
+        bundle_sha256="3" * 64,
+        evaluated_at=NOW,
+        products=(
+            ProductSafetyManufacturerProductEvidence(
+                product_id=PRODUCT_ID,
+                exact_model_tokens=MODEL_TOKENS,
+                status="VERIFIED_NONE_FOUND",
+                capture=manufacturer_capture,
+                matched_notice_ids=(),
+                endpoint_contract_id="EXAMPLE_NOTICE_JSON_V1",
+                manual_required_reason=None,
+            ),
+        ),
+        complete=True,
+    )
+    monkeypatch.setattr(
+        receipts,
+        "verify_product_safety_query_capture_set",
+        lambda repository_root, now: administrative,
+    )
+    monkeypatch.setattr(
+        receipts,
+        "verify_product_safety_manufacturer_capture_set",
+        lambda repository_root, now: manufacturer,
+    )
+
+    audit = load_product_safety_receipt_audit(
+        tmp_path,
+        requirements=_requirements(),
+        registry_context=_registry(),
+        now=NOW,
+    )
+    product = audit.products[0]
+
+    assert audit.complete is True
+    assert product.status == "COMPLETE_NONE_FOUND"
+    assert product.missing_authority_kinds == ()
+    assert product.verified_authority_kinds == REQUIRED_AUTHORITY_KINDS
+    assert product.manufacturer_capture_sha256 == "f" * 64
+    assert audit.manufacturer_capture_count == 1
+    assert audit.administrative_capture_count == 3
+    require_product_safety_receipts_complete(audit)
 
 
 def test_one_authority_never_completes_the_product() -> None:

@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Content
 {
-    const RUNTIME_REVISION = '82d3295080cb9723881773348e5366501af360b8b4301681ca9af82d22c7f368';
+    const RUNTIME_REVISION = 'f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082';
     const MAX_CONTENT_BYTES = 1048576;
 
     private $plugin;
@@ -239,6 +239,124 @@ final class RAOS_Codex_MCP_Content
         return $schema;
     }
 
+    private static function expected_yoast_options()
+    {
+        return array(
+            'wpseo' => array(
+                'enable_ai_generator' => false,
+                'enable_headless_rest_endpoints' => false,
+                'enable_index_now' => false,
+                'enable_schema' => false,
+                'enable_schema_aggregation_endpoint' => false,
+                'enable_xml_sitemap' => true,
+                'google_site_kit_feature_enabled' => false,
+                'googleverify' => '',
+                'semrush_integration_active' => false,
+                'tracking' => false,
+                'wincher_integration_active' => false,
+            ),
+            'wpseo_social' => array(
+                'og_default_image' => home_url(
+                    '/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp'
+                ),
+                'og_default_image_id' => '',
+                'opengraph' => true,
+                'twitter' => true,
+                'twitter_card_type' => 'summary_large_image',
+            ),
+        );
+    }
+
+    private static function selected_yoast_options($expected)
+    {
+        $selected = array();
+        foreach ($expected as $option_name => $expected_values) {
+            $stored = get_option($option_name, null);
+            $values = array();
+            foreach ($expected_values as $key => $unused) {
+                unset($unused);
+                $values[$key] = is_array($stored) && array_key_exists($key, $stored)
+                    ? $stored[$key]
+                    : null;
+            }
+            $selected[$option_name] = $values;
+        }
+        return $selected;
+    }
+
+    public static function yoast_status()
+    {
+        $plugin_file = 'wordpress-seo/wp-seo.php';
+        $plugin_path = WP_PLUGIN_DIR . '/' . $plugin_file;
+        $installed = is_file($plugin_path);
+        $plugin_data = $installed
+            ? get_file_data($plugin_path, array('Version' => 'Version'), 'plugin')
+            : array();
+        $installed_version = isset($plugin_data['Version'])
+            && is_string($plugin_data['Version'])
+            && '' !== trim($plugin_data['Version'])
+                ? trim($plugin_data['Version'])
+                : null;
+        $active_plugins = get_option('active_plugins', array());
+        $network_plugins = is_multisite()
+            ? get_site_option('active_sitewide_plugins', array())
+            : array();
+        $configured_active = is_array($active_plugins)
+            && in_array($plugin_file, $active_plugins, true);
+        if (! $configured_active && is_array($network_plugins)) {
+            $configured_active = array_key_exists($plugin_file, $network_plugins);
+        }
+        $loaded_version = defined('WPSEO_VERSION')
+            && is_string(constant('WPSEO_VERSION'))
+                ? constant('WPSEO_VERSION')
+                : null;
+        $active = $configured_active && is_string($loaded_version);
+        $expected = self::expected_yoast_options();
+        $selected = self::selected_yoast_options($expected);
+        $settings = array(
+            'schema' => 'RAOSYoastSettingsV1',
+            'wpseo' => $selected['wpseo'],
+            'wpseo_social' => $selected['wpseo_social'],
+        );
+        $expected_settings = array(
+            'schema' => 'RAOSYoastSettingsV1',
+            'wpseo' => $expected['wpseo'],
+            'wpseo_social' => $expected['wpseo_social'],
+        );
+        $fingerprint = RAOS_Codex_MCP_Store::hash($settings);
+        $expected_fingerprint = RAOS_Codex_MCP_Store::hash($expected_settings);
+        $version_exact = $installed_version === '28.3'
+            && $loaded_version === '28.3';
+        $settings_exact = $selected === $expected
+            && is_string($fingerprint)
+            && is_string($expected_fingerprint)
+            && hash_equals($expected_fingerprint, $fingerprint);
+        return array(
+            'plugin_slug' => 'wordpress-seo',
+            'installed' => $installed,
+            'active' => $active,
+            'version' => $installed_version,
+            'version_exact' => $version_exact,
+            'options' => $selected,
+            'settings_fingerprint' => is_string($fingerprint) ? $fingerprint : null,
+            'settings_exact' => $settings_exact,
+        );
+    }
+
+    public static function exact_yoast_gate()
+    {
+        $status = self::yoast_status();
+        if (true !== $status['installed']
+            || true !== $status['active']
+            || '28.3' !== $status['version']
+            || true !== $status['version_exact']
+            || true !== $status['settings_exact']
+            || ! RAOS_Codex_MCP_Store::is_sha256($status['settings_fingerprint'])) {
+            return self::error('raos_codex_yoast_configuration_drift', 412);
+        }
+        return true;
+    }
+
     public function site_status($input = array())
     {
         unset($input);
@@ -270,6 +388,7 @@ final class RAOS_Codex_MCP_Content
         $draft_ready = $global_writes
             && defined('RAOS_CODEX_DRAFT_WRITES_ENABLED')
             && true === RAOS_CODEX_DRAFT_WRITES_ENABLED;
+        $yoast = self::yoast_status();
         return array(
             'schema' => 'RAOSWordPressSiteStatusV1',
             'origin' => home_url(),
@@ -300,6 +419,7 @@ final class RAOS_Codex_MCP_Content
                 'runtime_revision' => $theme_runtime_revision,
                 'active' => $theme_active,
             ),
+            'yoast' => $yoast,
             'measurement' => array(
                 'plugin_active' => defined('RAOS_EDITORIAL_MEASUREMENT_VERSION'),
                 'plugin_version' => defined('RAOS_EDITORIAL_MEASUREMENT_VERSION')

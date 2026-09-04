@@ -21,6 +21,9 @@ readonly default_private_root="$repository_root/.secrets/wordpress-local-preview
 readonly private_root="${RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT:-$default_private_root}"
 readonly credentials_file="$private_root/credentials.env"
 readonly requested_fixture_root="${RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT:-}"
+readonly link_mode="${RAOS_WORDPRESS_LINK_MODE:-measured-admin}"
+[[ "$link_mode" == standard-api || "$link_mode" == measured-admin ]] \
+  || { printf '%s\n' RAOS_WORDPRESS_PREVIEW_LINK_MODE_INVALID >&2; exit 69; }
 if [[ -n "$requested_fixture_root" ]]; then
   readonly materialized_fixture_root="$requested_fixture_root"
   readonly fixture_override_enabled=true
@@ -380,6 +383,7 @@ activate_theme() {
 }
 
 activate_measurement_plugin() {
+  [[ "$link_mode" != standard-api ]] || return 0
   wordpress_cli plugin is-installed raos-editorial-measurement >/dev/null \
     || fail RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_MISSING
   wordpress_cli plugin activate raos-editorial-measurement >/dev/null
@@ -433,8 +437,10 @@ do_status() {
     || fail RAOS_WORDPRESS_PREVIEW_ORIGIN_INVALID
   [[ "$(wordpress_cli theme list --name=kurashinoshirube-child --field=status)" == active ]] \
     || fail RAOS_WORDPRESS_PREVIEW_THEME_INACTIVE
-  [[ "$(wordpress_cli plugin list --name=raos-editorial-measurement --field=status)" == active ]] \
-    || fail RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_INACTIVE
+  if [[ "$link_mode" == measured-admin ]]; then
+    [[ "$(wordpress_cli plugin list --name=raos-editorial-measurement --field=status)" == active ]] \
+      || fail RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_INACTIVE
+  fi
   [[ "$(wordpress_cli plugin list --name=wordpress-seo --field=status)" == active ]] \
     || fail RAOS_WORDPRESS_PREVIEW_YOAST_PLUGIN_INACTIVE
   [[ "$(wordpress_cli plugin get wordpress-seo --field=version)" == 28.3 ]] \

@@ -183,16 +183,18 @@ CLAIM_SUBJECT_PRODUCT_IDS: Final[dict[str, tuple[str, ...]]] = {
     ),
     "CLM-ST1704-POWER-NESTOUT-700N-EXCLUDED": (),
     "CLM-ST1704-POWER-AORA80-EXCLUDED": (),
-    "CLM-ST1704-POWER-AORA30-V2-EXCLUDED": (),
-    "CLM-ST1704-POWER-AORA100-V2-EXCLUDED": (),
+    "CLM-ST1704-POWER-AORA30-V2-SPECS": ("PRD-BLUETTI-AORA30-V2",),
+    "CLM-ST1704-POWER-AORA100-V2-SPECS": ("PRD-BLUETTI-AORA100-V2",),
     "CLM-ST1704-POWER-RIVER3-PLUS-EXCLUDED": (),
     "CLM-ST1704-POWER-DELTA3-PLUS-EXCLUDED": (),
     "CLM-ST1704-POWER-DELTA3-CLASSIC-EXCLUDED": (),
     "CLM-ST1704-POWER-CONDITIONAL-CHOICES": (
         "PRD-ANKER-SOLIX-C300",
+        "PRD-BLUETTI-AORA30-V2",
         "PRD-JACKERY-500-NEW",
         "PRD-ANKER-SOLIX-C800",
         "PRD-JACKERY-1000-NEW-V3",
+        "PRD-BLUETTI-AORA100-V2",
         "PRD-DJI-POWER-1000-V2",
     ),
     "CLM-ST1704-POWER-C1000-GEN2-REFERENCE": (
@@ -326,12 +328,6 @@ CLAIM_SUBJECT_PRODUCT_IDS: Final[dict[str, tuple[str, ...]]] = {
     "CLM-PORTFOLIO-FRONT-RIMOWA-REFERENCE": (
         "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
     ),
-    "CLM-PORTFOLIO-ROBOT-EUFY-C10": (
-        "PRD-EUFY-AUTOEMPTY-C10-T2292",
-    ),
-    "CLM-PORTFOLIO-ROBOT-EUFY-C10-INSTALLATION-SPACE": (
-        "PRD-EUFY-AUTOEMPTY-C10-T2292",
-    ),
     "CLM-PORTFOLIO-ROBOT-K11-PRO": ("PRD-SWITCHBOT-K11-PRO",),
     "CLM-PORTFOLIO-ROBOT-K11-PRO-WARRANTY-UNRESOLVED": (
         "PRD-SWITCHBOT-K11-PRO",
@@ -340,27 +336,19 @@ CLAIM_SUBJECT_PRODUCT_IDS: Final[dict[str, tuple[str, ...]]] = {
     "CLM-PORTFOLIO-ROBOT-K11-INSTALLATION-SPACE": ("PRD-SWITCHBOT-K11-PRO",),
     "CLM-PORTFOLIO-ROBOT-RULO-MINI-REFERENCE": (),
     "CLM-PORTFOLIO-ROBOT-ROOMBA-MINI-F155260-EXCLUDED": (),
-    "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES": (
+    "CLM-PORTFOLIO-ROBOT-EUFY-C10-BOUNDARY-REFERENCE": (
         "PRD-EUFY-AUTOEMPTY-C10-T2292",
-        "PRD-SWITCHBOT-K11-PRO",
+    ),
+    "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE": (
+        "PRD-ECOVACS-DEEBOT-MINI2",
+    ),
+    "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES": (
         "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
-        "PRD-ECOVACS-DEEBOT-MINI2",
+        "PRD-SWITCHBOT-K11-PRO",
     ),
-    "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2": (
-        "PRD-ECOVACS-DEEBOT-MINI2",
-    ),
-    "CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-REFERENCE": (),
     "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-IDENTITY-REFERENCE": (),
-    "CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-EXCLUDED": (),
+    "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-EXCLUDED": (),
     "CLM-PORTFOLIO-DISH-RAKUA-MINI-PLUS-EXCLUDED": (),
-    "CLM-PORTFOLIO-DISH-RAKUA-MINI-REFERENCE": (
-        "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
-    ),
-    "CLM-PORTFOLIO-DISH-SS-M171-REFERENCE": ("PRD-SIROCA-SS-M171",),
-    "CLM-PORTFOLIO-DISH-SS-MA251-REFERENCE": ("PRD-SIROCA-SS-MA251",),
-    "CLM-PORTFOLIO-DISH-TOSHIBA-DWS-33B-REFERENCE": (
-        "PRD-TOSHIBA-DWS-33B-W",
-    ),
     "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE": (),
 }
 
@@ -1088,6 +1076,14 @@ NEW_SOURCES: Final = (
         "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
     ),
     _source(
+        "SRC-BLUETTI-AORA30-V2-DIMENSIONS",
+        "MANUFACTURER_OFFICIAL",
+        "MANUFACTURER_EDITORIAL_PAGE",
+        "BLUETTI公式 AORA 30 V2 重量・寸法",
+        "https://www.bluetti.jp/blogs/buying-guide/aora-30-v2-vs-eb3a",
+        retrieved_on="2026-09-01",
+    ),
+    _source(
         "SRC-BLUETTI-AORA100-V2",
         "MANUFACTURER_OFFICIAL",
         "PRODUCT_STORE_PAGE",
@@ -1148,12 +1144,6 @@ MARKET_CANDIDATE_CLAIM_IDS: Final[dict[tuple[str, str], str]] = {
     ),
     ("st1704-portable-power-station-guide", "EXT-BLUETTI-AORA80"): (
         "CLM-ST1704-POWER-AORA80-EXCLUDED"
-    ),
-    ("st1704-portable-power-station-guide", "EXT-BLUETTI-AORA30-V2"): (
-        "CLM-ST1704-POWER-AORA30-V2-EXCLUDED"
-    ),
-    ("st1704-portable-power-station-guide", "EXT-BLUETTI-AORA100-V2"): (
-        "CLM-ST1704-POWER-AORA100-V2-EXCLUDED"
     ),
     ("st1704-portable-power-station-guide", "EXT-ECOFLOW-RIVER3-PLUS"): (
         "CLM-ST1704-POWER-RIVER3-PLUS-EXCLUDED"
@@ -1248,8 +1238,8 @@ MARKET_CANDIDATE_CLAIM_IDS: Final[dict[tuple[str, str], str]] = {
     ("solota-vs-rakua-mini-plus", "EXT-THANKO-RAKUA-MINI-PLUS"): (
         "CLM-PORTFOLIO-DISH-RAKUA-MINI-PLUS-EXCLUDED"
     ),
-    ("solota-vs-rakua-mini-plus", "EXT-PANASONIC-SOLOTA-NP-TML1-W"): (
-        "CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-EXCLUDED"
+    ("solota-vs-rakua-mini-plus", "EXT-PANASONIC-SOLOTA-NP-TMLK1-K"): (
+        "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-EXCLUDED"
     ),
 }
 
@@ -1290,6 +1280,20 @@ PORTFOLIO_CANDIDATE_REFERENCE_BINDINGS: Final[
         "CLM-ST1704-ROBOT-F115060-REFERENCE",
         ("SRC-IROBOT-ROOMBA-MINI-SLIM-F115060",),
     ),
+    (
+        "roomba-mini-vs-switchbot-k11-pro",
+        "PRD-EUFY-AUTOEMPTY-C10-T2292",
+    ): (
+        "CLM-PORTFOLIO-ROBOT-EUFY-C10-BOUNDARY-REFERENCE",
+        ("SRC-EUFY-AUTOEMPTY-C10-T2292",),
+    ),
+    (
+        "roomba-mini-vs-switchbot-k11-pro",
+        "PRD-ECOVACS-DEEBOT-MINI2",
+    ): (
+        "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
+        ("SRC-ECOVACS-DEEBOT-MINI2",),
+    ),
     ("carry-on-suitcase-under-100-seats", "PRD-ACE-MAXPASS4-01471"): (
         "CLM-PORTFOLIO-UNDER100-MAXPASS4-REFERENCE",
         ("SRC-ACE-MAXPASS4-01471",),
@@ -1300,22 +1304,6 @@ PORTFOLIO_CANDIDATE_REFERENCE_BINDINGS: Final[
     ): (
         "CLM-PORTFOLIO-FRONT-RIMOWA-REFERENCE",
         ("SRC-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",),
-    ),
-    ("solota-vs-rakua-mini-plus", "PRD-TOSHIBA-DWS-33B-W"): (
-        "CLM-PORTFOLIO-DISH-TOSHIBA-DWS-33B-REFERENCE",
-        ("SRC-TOSHIBA-DWS-33B",),
-    ),
-    ("solota-vs-rakua-mini-plus", "PRD-THANKO-RAKUA-MINI-TK-MDW22W"): (
-        "CLM-PORTFOLIO-DISH-RAKUA-MINI-REFERENCE",
-        ("SRC-THANKO-RAKUA-MINI-TK-MDW22W",),
-    ),
-    ("solota-vs-rakua-mini-plus", "PRD-SIROCA-SS-M171"): (
-        "CLM-PORTFOLIO-DISH-SS-M171-REFERENCE",
-        ("SRC-SIROCA-SS-M171",),
-    ),
-    ("solota-vs-rakua-mini-plus", "PRD-SIROCA-SS-MA251"): (
-        "CLM-PORTFOLIO-DISH-SS-MA251-REFERENCE",
-        ("SRC-SIROCA-SS-MA251",),
     ),
 }
 
@@ -1328,15 +1316,6 @@ REALLOCATED_SELECTED_CLAIMS: Final[dict[str, dict[str, object]]] = {
             "一般的な機内持ち込み目安内という本記事の条件を満たす。"
         ),
         "evidence_refs": ["SRC-PROTECA-TRI-AIR-01541"],
-    },
-    "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-REFERENCE": {
-        "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2",
-        "statement": (
-            "ECOVACS DEEBOT mini 2は本体幅28.6×奥行28.6×高さ9.98cm、"
-            "ステーション幅38.5×奥行32.0×高さ36.0cmで、自動ゴミ収集、"
-            "モップ洗浄・乾燥・自動給水に対応する現行構成である。"
-        ),
-        "evidence_refs": ["SRC-ECOVACS-DEEBOT-MINI2"],
     },
 }
 
@@ -1362,13 +1341,6 @@ PORTFOLIO_CANDIDATE_SOURCE_URL_ALIASES: Final[
 MARKET_CANDIDATE_EXTRA_EVIDENCE_REFS: Final[dict[tuple[str, str], tuple[str, ...]]] = {
     ("st1703-first-suitcase-comparison", "EXT-ACE-CRESTA-06316"): (
         "SRC-PROTECA-TRI-AIR-01541",
-    ),
-    ("st1704-portable-power-station-guide", "EXT-BLUETTI-AORA30-V2"): (
-        "SRC-ANKER-SOLIX-C300",
-    ),
-    ("st1704-portable-power-station-guide", "EXT-BLUETTI-AORA100-V2"): (
-        "SRC-DJI-POWER-1000-V2-STORE",
-        "SRC-DJI-POWER-1000-V2-SPECS",
     ),
     **{
         ("st1704-compact-robot-vacuum-shortlist", candidate_id): (
@@ -1595,10 +1567,6 @@ NEGATIVE_CLAIM_EVIDENCE: Final[dict[str, tuple[str, tuple[str, ...]]]] = {
         "OFFICIAL_COMPARISON_TABLE",
         ("SRC-EUFY-AUTOEMPTY-C10-T2292",),
     ),
-    "CLM-PORTFOLIO-ROBOT-EUFY-C10": (
-        "OFFICIAL_COMPARISON_TABLE",
-        ("SRC-EUFY-AUTOEMPTY-C10-T2292",),
-    ),
     "CLM-PORTFOLIO-LIGHT-RIMOWA-82353171": (
         "EXPLICIT_OFFICIAL_TEXT",
         ("SRC-RIMOWA-WARRANTY-FAQ",),
@@ -1653,6 +1621,9 @@ FIRST_FIVE_DIMENSION_CLAIMS: Final[dict[str, tuple[dict[str, object], ...]]] = {
     "CLM-ST1704-POWER-C300-SPECS": (
         _dimensions("Anker Solix C300本体", 16.4, 16.1, 24.0),
     ),
+    "CLM-ST1704-POWER-AORA30-V2-SPECS": (
+        _dimensions("BLUETTI AORA 30 V2本体", 25.0, 17.8, 16.75),
+    ),
     "CLM-ST1704-POWER-JACKERY-SPECS": (
         # The manual gives the raw three values; a separate Jackery-official
         # table labels them 幅×奥行×高さ.  Both are bound before normalization.
@@ -1668,6 +1639,9 @@ FIRST_FIVE_DIMENSION_CLAIMS: Final[dict[str, tuple[dict[str, object], ...]]] = {
             44.8,
             23.0,
         ),
+    ),
+    "CLM-ST1704-POWER-AORA100-V2-SPECS": (
+        _dimensions("BLUETTI AORA 100 V2本体", 32.0, 21.5, 25.0),
     ),
     "CLM-ST1704-ANKER-C300-SPECS": (
         _dimensions("Anker Solix C300本体", 16.4, 16.1, 24.0),
@@ -1797,12 +1771,18 @@ FIRST_FIVE_STATEMENT_OVERRIDES: Final[dict[str, str]] = {
         "公式条件下の4000サイクル後に80%以上の容量維持と案内される。"
     ),
     "CLM-ST1704-POWER-CONDITIONAL-CHOICES": (
-        "比較した5モデルの公表値はC300が288Wh・定格300W・約4.1kg、Jackery 500 Newが"
-        "512Wh・定格500W・約5.7kg、Anker Solix C800が768Wh・定格1200W・"
-        "約10.5kg、Jackery 1000 New V3が1024Wh・AC定格1500W・約10.6kg、"
-        "DJI Power 1000 V2が1024Wh・最大連続2600W・約14.2kgである。"
-        "この閉じた5モデル比較ではC300が最小容量かつ最軽量で、C800は1024Whの"
-        "1000 New V3より約0.1kg、Power 1000 V2より約3.7kg軽い。各社公表の"
+        "比較した7モデルの公表値はC300が288Wh・定格300W・約4.1kg、AORA 30 V2が"
+        "288Wh・定格600W・約4.3kg、Jackery 500 Newが512Wh・定格500W・約5.7kg、"
+        "Anker Solix C800が768Wh・定格1200W・約10.5kg、Jackery 1000 New V3が"
+        "1024Wh・AC定格1500W・約10.6kg、AORA 100 V2が1024Wh・定格1800W・"
+        "約11.5kg、DJI Power 1000 V2が1024Wh・最大連続2600W・約14.2kgである。"
+        "C300の288Whは7モデルで最小容量（AORA 30 V2も同じ288Wh）であり、"
+        "C300が7モデルで最軽量、"
+        "AORA 30 V2はC300より約0.2kg重い一方、同じ288Whで定格出力を広げる。"
+        "接続機器の通常時・起動時電力を確認し、AORA 30 V2の定格600Wを超える機器には使わない。"
+        "AORA "
+        "100 V2は1024Wh帯でJackeryとDJIの間の重量となる。"
+        "C800はDJI Power 1000 V2より約3.7kg軽い。各社公表の"
         "連続供給目安は呼称・試験条件が"
         "異なるため、定格出力と最大連続出力を同一指標として大小比較しない。"
         "接続機器の通常時・起動時電力と同時使用の合計を各製品の条件へ個別に照合し、"
@@ -1900,6 +1880,37 @@ FIRST_FIVE_ADDITIONAL_CLAIMS: Final[dict[str, tuple[dict[str, object], ...]]] = 
         ),
     ),
     "SPV-ST1704-PORTABLE-POWER-V1": (
+        _claim(
+            "CLM-ST1704-POWER-AORA30-V2-SPECS",
+            "BLUETTI AORA 30 V2（グレー）は288Wh、定格600W、約4.3kg、"
+            "本体寸法幅25.0×奥行17.8×高さ16.75cmの現行モデルである。"
+            "リン酸鉄リチウムイオン電池、3,000回以上の公表サイクル、5年保証、"
+            "アプリ、国内アフターサポートとリサイクルプログラムが案内される。"
+            "商品別のリコール照合、修理条件、交換部品の供給期間は別途確認する。",
+            [
+                "SRC-BLUETTI-AORA30-V2",
+                "SRC-BLUETTI-AORA30-V2-DIMENSIONS",
+                "SRC-BLUETTI-AORA-SERIES-COLLECTION",
+            ],
+            dimensions=[
+                _dimensions("BLUETTI AORA 30 V2本体", 25.0, 17.8, 16.75),
+            ],
+        ),
+        _claim(
+            "CLM-ST1704-POWER-AORA100-V2-SPECS",
+            "BLUETTI AORA 100 V2（インディゴ）は1024Wh、定格1800W、"
+            "約11.5kg、本体寸法幅32.0×奥行21.5×高さ25.0cmの現行モデルである。"
+            "リン酸鉄リチウムイオン電池、4,000回以上の公表サイクル、5年保証、"
+            "アプリ、国内アフターサポートとリサイクルプログラムが案内される。"
+            "商品別のリコール照合、修理条件、交換部品の供給期間は別途確認する。",
+            [
+                "SRC-BLUETTI-AORA100-V2",
+                "SRC-BLUETTI-AORA-SERIES-COLLECTION",
+            ],
+            dimensions=[
+                _dimensions("BLUETTI AORA 100 V2本体", 32.0, 21.5, 25.0),
+            ],
+        ),
         _claim(
             "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
             "Jackery ポータブル電源 1000 New V3（JE-1000G／JE-1000G-WH）は、"
@@ -2061,6 +2072,18 @@ ANKER_POWER_DUE_DILIGENCE_APPENDIX: Final = (
 )
 
 READER_SEMANTIC_APPENDICES: Final[dict[str, str]] = {
+    "CLM-ST1704-POWER-AORA30-V2-SPECS": (
+        " AORAシリーズ公式情報はLiFePO4、5年保証、国内アフターサポート、"
+        "リサイクルプログラムを案内する。一方、型番別リコール照合記録、"
+        "個別修理条件、交換部品の供給期間は確認できていないため、"
+        "安全・保証・保守性を優位性の根拠にせず公開判定は停止したままとする。"
+    ),
+    "CLM-ST1704-POWER-AORA100-V2-SPECS": (
+        " AORAシリーズ公式情報はLiFePO4、5年保証、国内アフターサポート、"
+        "リサイクルプログラムを案内する。一方、型番別リコール照合記録、"
+        "個別修理条件、交換部品の供給期間は確認できていないため、"
+        "安全・保証・保守性を優位性の根拠にせず公開判定は停止したままとする。"
+    ),
     "CLM-ST1704-POWER-C300-SPECS": ANKER_POWER_DUE_DILIGENCE_APPENDIX,
     "CLM-ST1704-POWER-ANKER-C800-SPECS": ANKER_POWER_DUE_DILIGENCE_APPENDIX,
     "CLM-ST1704-ANKER-C300-SPECS": ANKER_POWER_DUE_DILIGENCE_APPENDIX,
@@ -2097,7 +2120,7 @@ READER_SEMANTIC_APPENDICES: Final[dict[str, str]] = {
     ),
     "CLM-ST1704-ANKER-CONDITIONAL-CHOICES": (
         " C800 Plusの容量帯はC300より大きく、C1000系より小さい。必要出力と"
-        "持ち運べる重さを満たす最小の容量帯から選ぶ。C300とC800のアクセサリ"
+        "持ち運べる重さを満たす最小の容量帯から選ぶ。C300とC800 Plusのアクセサリ"
         "互換性、および4モデルの実効容量は公式情報で確認できないため、推奨根拠に"
         "使わない。"
     ),
@@ -2127,14 +2150,6 @@ READER_SEMANTIC_APPENDICES: Final[dict[str, str]] = {
     ),
     "CLM-PORTFOLIO-FRONT-FRESTER-01551": (
         " 前から全体へアクセスする構造で、中央開きはできない。"
-    ),
-    "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES": (
-        " 比較全体は4製品・4構成である。Eufy C10は本体高さ7.2cmの薄型性と"
-        "自動ゴミ収集、Roomba Mini Slim F115060は幅22.2×奥行8.6cmの縦置き"
-        "充電スタンド、K11+ Proは幅24.0×奥行18.0cmの自動ゴミ収集ステーションを"
-        "条件として分ける。DEEBOT mini 2は小型本体とモップ洗浄・乾燥・自動給水を"
-        "組み合わせる。C10のステーション設置面はSlimChargeより大きいため、"
-        "本体の薄さとステーションの小ささを同じ順位にしない。"
     ),
     "CLM-PORTFOLIO-ROBOT-K11-PRO": (
         " 本体ボタンではWi-Fi接続前でも基本的な清掃を開始できる。スケジュールと"
@@ -2351,8 +2366,6 @@ READER_SEMANTIC_FIELD_ADDITIONS: Final[
         for claim_id in (
             "CLM-ST1704-ROBOT-EUFY-C10-SPECS",
             "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
-            "CLM-PORTFOLIO-ROBOT-EUFY-C10",
-            "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
         )
     },
     "CLM-PORTFOLIO-LIGHT-SAMSONITE-C-LITE-134679-1549": {
@@ -2464,6 +2477,26 @@ POWER_STATION_DUE_DILIGENCE_GROUPS: Final = (
     },
     {
         "article_id": "st1704-portable-power-station-guide",
+        "product_id": "PRD-BLUETTI-AORA30-V2",
+        "claim_ids": ("CLM-ST1704-POWER-AORA30-V2-SPECS",),
+        "required_source_refs": (
+            "SRC-BLUETTI-AORA30-V2",
+            "SRC-BLUETTI-AORA30-V2-DIMENSIONS",
+            "SRC-BLUETTI-AORA-SERIES-COLLECTION",
+        ),
+        "required_statement_fragments": (
+            "LiFePO4",
+            "5年保証",
+            "国内アフターサポート",
+            "リサイクルプログラム",
+            "型番別リコール照合記録",
+            "個別修理条件",
+            "交換部品の供給期間",
+            "公開判定は停止",
+        ),
+    },
+    {
+        "article_id": "st1704-portable-power-station-guide",
         "product_id": "PRD-JACKERY-500-NEW",
         "claim_ids": (
             "CLM-ST1704-POWER-JACKERY-SPECS",
@@ -2527,6 +2560,25 @@ POWER_STATION_DUE_DILIGENCE_GROUPS: Final = (
             "60か月",
             "オンライン受付",
             "型番別リコール照合記録",
+            "公開判定は停止",
+        ),
+    },
+    {
+        "article_id": "st1704-portable-power-station-guide",
+        "product_id": "PRD-BLUETTI-AORA100-V2",
+        "claim_ids": ("CLM-ST1704-POWER-AORA100-V2-SPECS",),
+        "required_source_refs": (
+            "SRC-BLUETTI-AORA100-V2",
+            "SRC-BLUETTI-AORA-SERIES-COLLECTION",
+        ),
+        "required_statement_fragments": (
+            "LiFePO4",
+            "5年保証",
+            "国内アフターサポート",
+            "リサイクルプログラム",
+            "型番別リコール照合記録",
+            "個別修理条件",
+            "交換部品の供給期間",
             "公開判定は停止",
         ),
     },
@@ -2637,16 +2689,12 @@ FRONT_PRODUCTS: Final = [
     "SRC-BERMAS-INTER-CITY-III-60570",
 ]
 ROBOT_PRODUCTS: Final = [
-    "SRC-EUFY-AUTOEMPTY-C10-T2292",
     "SRC-SWITCHBOT-K11-PRO",
     "SRC-SWITCHBOT-K11-PRO-EXTENDED-WARRANTY",
     "SRC-IROBOT-ROOMBA-MINI-SLIM-F115060",
-    "SRC-ECOVACS-DEEBOT-MINI2",
     "SRC-SWITCHBOT-AUTOEMPTY-INSTALLATION-SPACE",
 ]
 DISH_PRODUCTS: Final = [
-    "SRC-PANASONIC-NP-TML1",
-    "SRC-PANASONIC-SOLOTA-IDENTITY",
     "SRC-PANASONIC-NP-TMLK1",
     "SRC-THANKO-RAKUA-MINI-PLUS",
 ]
@@ -2959,31 +3007,6 @@ NEW_PACKETS: Final = (
         ROBOT_PRODUCTS,
         [
             _claim(
-                "CLM-PORTFOLIO-ROBOT-EUFY-C10",
-                "Eufy Robot Vacuum Auto-Empty C10のブラックT2292511は、本体が"
-                "幅32.5×奥行32.3×高さ7.2cm・約2.5kg、ステーションが幅27.5×"
-                "奥行19.1×高さ21.2cm・約1.8kgで、自動ゴミ収集に対応する。"
-                "公式比較表の水拭き欄は「-」であり、水拭き非対応として扱う。"
-                "最大4,000Paを公表し、2.4GHz Wi-Fiだけに対応する。"
-                "パッケージ案内は18か月保証にAnker会員登録後6か月を加える。"
-                "2026年8月31日の公式ストア確認時は在庫わずか表示で、交換用"
-                "ダストバッグ、サイドブラシ、フィルター、回転ブラシ、バッテリーへの"
-                "販売導線を確認できた。",
-                ["SRC-EUFY-AUTOEMPTY-C10-T2292"],
-                dimensions=[
-                    _dimensions("Eufy Auto-Empty C10本体 T2292511", 32.5, 32.3, 7.2),
-                    _dimensions("Eufy Auto-Empty C10ステーション", 27.5, 19.1, 21.2),
-                ],
-            ),
-            _claim(
-                "CLM-PORTFOLIO-ROBOT-EUFY-C10-INSTALLATION-SPACE",
-                "Eufy Auto-Empty C10の公式商品ページは、ステーションの左右各0.5m・"
-                "前方1.5mの範囲から障害物を取り除いて設置し、取り除けない場合は"
-                "本体がステーションへ戻れるか確認するよう案内している。筐体寸法と"
-                "帰還に必要な空間は別の設置条件である。",
-                ["SRC-EUFY-AUTOEMPTY-C10-T2292"],
-            ),
-            _claim(
                 "CLM-PORTFOLIO-ROBOT-K11-PRO",
                 "SwitchBot K11+ Proは本体248×248×92mm、約2.3kg、ステーション"
                 "240×180×250mmで、自動ゴミ収集、4L紙パック、最大12,000Paと"
@@ -3018,38 +3041,19 @@ NEW_PACKETS: Final = (
                 ],
             ),
             _claim(
-                "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2",
-                "ECOVACS DEEBOT mini 2は本体が幅28.6×奥行28.6×高さ9.98cm、"
-                "ステーションが幅32.0×奥行40.0×高さ38.5cmである。メーカーは"
-                "吸引力10,000Pa、モップの6mm自動リフト、自動ゴミ収集・自動給水・"
-                "モップ自動洗浄・63℃熱風乾燥を案内している。ビデオマネージャーは"
-                "外出先からの見守り、声かけ、スクリーンショットに対応するため、"
-                "遠隔見守りを使わない人もカメラ・音声・アプリ利用を購入条件として"
-                "確認する。保証は通常1年で、2026年2月20日以降の正規販売店購入品は"
-                "購入後30日以内のアプリ連携などの条件を満たす場合に2年保証と案内される。",
-                ["SRC-ECOVACS-DEEBOT-MINI2"],
-                dimensions=[
-                    _dimensions("ECOVACS DEEBOT mini 2本体", 28.6, 28.6, 9.98),
-                    _dimensions("ECOVACS DEEBOT mini 2ステーション", 32, 40, 38.5),
-                ],
-            ),
-            _claim(
                 "CLM-PORTFOLIO-ROBOT-K11-INSTALLATION-SPACE",
                 "SwitchBot公式サポートはK11+ Proを含む対象機種の自動ゴミ収集ステーションについて、左右各1m、前方1.5mの空間を推奨し、不足すると本体の帰還に影響し得ると案内している。これはステーション筐体寸法とは別の設置条件である。",
                 ["SRC-SWITCHBOT-AUTOEMPTY-INSTALLATION-SPACE"],
             ),
             _claim(
                 "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
-                "比較する4製品・4構成では、Eufy C10は高さ7.2cmの薄型本体と"
-                "自動ゴミ収集、K11+ Proは小型本体と自動ゴミ収集、Roomba Mini Slim"
-                " F115060は小さい縦置き充電台、DEEBOT mini 2はモップの自動洗浄・"
-                "熱風乾燥を条件として分ける。K11+ Proは"
+                "Roomba Mini Slim F115060とK11+ Proの2製品では、前者は"
+                "幅22.2×奥行8.6cmの小さい縦置き充電台、後者は小型本体と"
+                "自動ゴミ収集を条件として分ける。K11+ Proは"
                 "ステーション筐体とは別に左右各1m・前方1.5mの推奨空間を確保する。"
-                "C10は4製品で本体高さが最小で、SlimChargeは幅22.2×奥行8.6cmの"
-                "ため4構成でステーションの幅・奥行がともに最小である。K11+ Proと"
-                "Mini Slimは使い捨てシート式である。C10の最大4,000PaとK11+ Proの"
-                "最大12,000Paは測定条件をそろえた実機比較ではないため、Pa値だけで"
-                "清掃性能を順位付けしない。",
+                "両製品とも使い捨てシート式の水拭きである。モップの自動洗浄・乾燥を"
+                "条件にする場合は別記事の4モデル比較へ進む。K11+ Proの最大12,000Paは実機で測定していないため、"
+                "吸引力の優劣を断定しない。",
                 ROBOT_PRODUCTS,
                 inference=True,
             ),
@@ -3061,15 +3065,10 @@ NEW_PACKETS: Final = (
         DISH_PRODUCTS,
         [
             _claim(
-                "CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-REFERENCE",
-                "Panasonic公式ページはSOLOTAの白色モデルをNP-TML1-Wとして識別できる。"
-                "仕様ページの存在だけでは正確な対象型番の現行販売を示さないため、"
-                "購入候補ではなく型番確認用の仕様参考に限定する。",
-                ["SRC-PANASONIC-NP-TML1", "SRC-PANASONIC-SOLOTA-IDENTITY"],
-            ),
-            _claim(
                 "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-IDENTITY-REFERENCE",
-                "PanasonicのNP-TMLK1公式ページは、SOLOTAのブラック色モデルをNP-TMLK1（製品画像の型番表記はNP-TMLK1-K）として案内し、白のNP-TML1-Wとは別の型番として識別できる。色名だけで仕様を流用せず、購入時は型番別の公式情報を確認する。",
+                "PanasonicのNP-TMLK1公式ページは、SOLOTAのブラックモデルを"
+                "NP-TMLK1-Kとして案内する。本記事ではこの正確な型番だけを対象にし、"
+                "購入時も型番別の公式情報を確認する。",
                 ["SRC-PANASONIC-NP-TMLK1"],
             ),
             _claim(
@@ -3081,8 +3080,8 @@ NEW_PACKETS: Final = (
             ),
             _claim(
                 "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE",
-                "SOLOTAの正確な対象型番は販売状態を確認できず、ラクアmini Plusは"
-                "再入荷通知のみのため、旧2機種はいずれも仕様参考に限定する。現行品の"
+                "SOLOTA NP-TMLK1-Kは販売状態を確認できず、ラクアmini Plusは"
+                "再入荷通知のみのため、以前の比較対象2機種はいずれも仕様参考に限定する。現行品の"
                 "仕様表、設置条件、個別の選定理由、商品カード、購入導線は少人数向け"
                 "卓上食洗機4候補の記事へ集約する。候補名は公式な後継・同等品を意味しない。",
                 DISH_PRODUCTS,
@@ -3115,7 +3114,7 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         '<a href="/products/t29k2?variant=44922334806177" class="product-card-default-name-link">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>',
     ),
     "SRC-PROTECA-TRI-AIR-01541": (
-        "PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541",
+        '<h1 class="h1 block-goods-name--text js-enhanced-ecommerce-goods-name">PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541</h1>',
         "H55×W37×D23 cm",
         "<dd>115 cm</dd>",
         "<dd>35 L</dd>",
@@ -3124,7 +3123,7 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         "＜10年間の製品保証＞",
         "＜最初の3年間は完全保証プレミアムケア＞",
         "在庫あります",
-        "カートに入れる",
+        '<input type="hidden" value=01541-10 name="goods">\r\n\t\t\t\t\t<div class="block-add-cart">\r\n<button class="block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail " type="submit" value="カートに入れる">カートに入れる</button>',
     ),
     "SRC-ANKER-SOLIX-C800": (
         "<title>Anker Solix C800 Portable Power Station | リン酸鉄ポータブル電源の製品情報 | Anker Japan 公式オンラインストア</title>",
@@ -3176,8 +3175,9 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
     ),
     "SRC-JACKERY-500-NEW-DIMENSION-AXES": (
         "サイズ（幅×奥行×高さ）",
-        "500 New",
-        "311×205×157mm",
+        '<span lang="ja">500 New</span></td>\n'
+        '<td style="height: 19.5982px; width: 71.0613%;">'
+        '<span lang="ja">311×205×157mm</span>',
     ),
     "SRC-ANKER-SOLIX-C300-SAFETY-MANUAL": (
         "Product Number: A1722",
@@ -3258,13 +3258,13 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         "ポータブル電源",
     ),
     "SRC-TOSHIBA-DWS-33B": (
-        "DWS-33B",
-        "幅420×奥行435×高さ465mm",
+        '<h1><div class="text">DWS-33B</div></h1>',
+        "<tr><th>外形寸法</th><td>420(幅)×435(奥行)×465(高さ)mm</td></tr>",
         "約13kg",
-        "18点",
-        "約6L",
-        "ヒーター加熱とファンによる強制排気乾燥",
-        "41／43dB",
+        "<tr><th>標準収納容量</th><td>18点(大皿3点、中鉢3点、小皿3点、茶わん3点、汁わん3点、コップ3点)<br>+小物(はし、スプーン、フォーク)</td></tr>",
+        "<tr><th>使用水量</th><td>約6L</td></tr>",
+        "<tr><th>乾燥方式</th><td>ヒーターとファンによる強制排気乾燥</td></tr>",
+        "<tr><th>運転音<sup>※8</sup>(50Hz/60Hz)</th><td>約41dB/約43dB</td></tr>",
     ),
     "SRC-TOSHIBA-DWS-33B-STORE": (
         "DWS-33B(W)",
@@ -3273,7 +3273,7 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
     ),
     "SRC-TOSHIBA-PARTS-RETENTION": (
         "食器洗い乾燥機",
-        "6年",
+        '<tr><th class="th-2"><big><b>食器洗い乾燥機</b></big></th><th class="th-2"><big><b>６年</b></big></th></tr>',
         "製造打ち切り後",
     ),
     "SRC-PANASONIC-NP-TSP2-LAUNCH": (
@@ -3726,6 +3726,12 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         "\n    </title>",
         '"available":true',
     ),
+    "SRC-BLUETTI-AORA30-V2-DIMENSIONS": (
+        "BLUETTI AORA 30 V2：重量4.3kg、サイズ250×178×167.5mm。",
+        "AORA 30 V2：3,000回以上の充放電に対応。8～10年の長寿命を実現。保証期間も5年",
+        "容量  | 288Wh",
+        "定格出力  | 600W",
+    ),
     "SRC-BLUETTI-AORA100-V2": (
         "<title>\n      AORA 100 V2 | インディゴ\n      \n      \n      "
         "ブルーティ \n    </title>",
@@ -3736,6 +3742,12 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         "<span>AORA 100 V2: 1024Wh容量、1800W出力（サージ3600W、リフト2700W）、重量約11.5kg、サイズ320x215x250mm。停電時、キャンプ、RV、CPAP機器などに。</span>",
         '"bluetti-aora-30-v2-288wh-600w" : {',
         '"bluetti-aora-100-v2-portable-power-station-blue" : {',
+        "AORA 30 V2: 288Wh、600W、9ポート。",
+        "AORA 100 V2 / 100: 1,024Wh/1,152Wh、1,800W、11ポート。",
+        "4,000回以上（AORA 100 V2）、3,500回以上（AORA 100）、3,000回以上（AORA 30 V2 / AORA 80）。",
+        "5年間保証で長期安心。",
+        "国内アフターサポートとリサイクルプログラム。",
+        "BLUETTIアプリでリモート操作、バッテリー低下通知（5～20%）、充電カスタマイズ。",
     ),
 }
 
@@ -3745,12 +3757,19 @@ REUSED_FRAGMENT_SOURCE_CLAIMS: Final = {
     "SRC-SIROCA-SS-MA251": "CLM-ST1704-DISH-SS-MA251-SPECS",
 }
 
+# Reviewed primary purchase block; the page also repeats its button in a footer.
+ANKER_STOCK_BOUND_PURCHASE_FRAGMENT: Final = "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-form__controls-group product-form__controls-group--submit\">\n  <div\n    class=\"\n      product-form__item product-form__item--submit\"\n  >\n    \n      <button\n        type=\"submit\"\n        name=\"add\"\n        \n        aria-label=\"カートに入れる\"\n        id=\"cafe-purchase-button\"\n        class=\"btn product-form__cart-submit\"\n        \n        \n          aria-haspopup=\"dialog\"\n        \n        data-add-to-cart\n        \n        \n        \n      >"
+
 LATER_CLAIM_FRAGMENT_ADDITIONS: Final[dict[tuple[str, str], tuple[str, ...]]] = {
     **{
         ("SRC-ANKER-SOLIX-C300", claim_id): (
+            '<td class="product-specs-heading">サイズ</td>\n                  <td>約16.4 x 16.1 x 24.0cm （ 幅 x 奥行 x 高さ )</td>',
+            '<td class="product-specs-heading">重さ</td>\n                <td>約4.1kg</td>',
+            '<td class="product-specs-heading">出力</td>\n                <td>定格300W / 瞬間最大600W</td>',
+            '<td class="product-specs-heading">バッテリー容量</td>\n                <td>288Wh</td>',
             '<meta property="og:title" content="Anker Solix C300 Portable Power Station | ポータブル電源の製品情報">',
             '<div id="product-variant-stock" class="product-variant-stock">在庫わずか</div>',
-            '<button type="submit" name="add" aria-label="カートに入れる" id="cafe-purchase-button"',
+            ANKER_STOCK_BOUND_PURCHASE_FRAGMENT,
             '<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)',
             "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。",
         )
@@ -3763,9 +3782,9 @@ LATER_CLAIM_FRAGMENT_ADDITIONS: Final[dict[tuple[str, str], tuple[str, ...]]] = 
         "SRC-ANKER-SOLIX-C800-PLUS",
         "CLM-ST1704-ANKER-C800-SPECS",
     ): (
-        '<meta property="og:title" content="Anker Solix C800 Plus Portable Power Station | ポータブル電源の製品情報">',
+        '<meta property="og:title" content="Anker Solix C800 Plus Portable Power Station | リン酸鉄ポータブル電源の製品情報">',
         '<div id="product-variant-stock" class="product-variant-stock">在庫わずか</div>',
-        '<button type="submit" name="add" aria-label="カートに入れる" id="cafe-purchase-button"',
+        ANKER_STOCK_BOUND_PURCHASE_FRAGMENT,
         '<td>A17545Z1 (ダークグレー) / A1754511 (ブラック)',
         "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。",
     ),
@@ -3773,9 +3792,9 @@ LATER_CLAIM_FRAGMENT_ADDITIONS: Final[dict[tuple[str, str], tuple[str, ...]]] = 
         "SRC-ANKER-SOLIX-C1000",
         "CLM-ST1704-ANKER-C1000-SPECS",
     ): (
-        '<meta property="og:title" content="Anker Solix C1000 Portable Power Station | ポータブル電源の製品情報">',
+        '<meta property="og:title" content="Anker Solix C1000 Portable Power Station | リン酸鉄ポータブル電源の製品情報">',
         '<div id="product-variant-stock" class="product-variant-stock">在庫わずか</div>',
-        '<button type="submit" name="add" aria-label="カートに入れる" id="cafe-purchase-button"',
+        ANKER_STOCK_BOUND_PURCHASE_FRAGMENT,
         '<td>A17615Z1 (ダークグレー) / A1761521 (ベージュ) / A1761511 (ブラック)',
         "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。",
     ),
@@ -3785,7 +3804,7 @@ LATER_CLAIM_FRAGMENT_ADDITIONS: Final[dict[tuple[str, str], tuple[str, ...]]] = 
     ): (
         '<meta property="og:title" content="Anker Solix C1000 Gen 2 Portable Power Station | ポータブル電源の製品情報">',
         '<div id="product-variant-stock" class="product-variant-stock">在庫わずか</div>',
-        '<button type="submit" name="add" aria-label="カートに入れる" id="cafe-purchase-button"',
+        ANKER_STOCK_BOUND_PURCHASE_FRAGMENT,
         '<td>A17635Z1 (ダークグレー) / A1763521 (オフホワイト)',
         "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。",
     ),
@@ -3896,6 +3915,35 @@ CLAIM_FRAGMENT_OVERRIDES: Final[dict[tuple[str, str], tuple[str, ...]]] = {
             "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
         )
     },
+    **{
+        ("SRC-ANKER-SOLIX-C300", claim_id): (
+            '<td class="product-specs-heading">サイズ</td>\n                  <td>約16.4 x 16.1 x 24.0cm （ 幅 x 奥行 x 高さ )</td>',
+            '<td class="product-specs-heading">重さ</td>\n                <td>約4.1kg</td>',
+            '<td class="product-specs-heading">出力</td>\n                <td>定格300W / 瞬間最大600W</td>',
+            '<td class="product-specs-heading">バッテリー容量</td>\n                <td>288Wh</td>',
+            '<meta property="og:title" content="Anker Solix C300 Portable Power Station | ポータブル電源の製品情報">',
+            '<div id="product-variant-stock" class="product-variant-stock">在庫わずか</div>',
+            ANKER_STOCK_BOUND_PURCHASE_FRAGMENT,
+            '<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)',
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。",
+        )
+        for claim_id in (
+            "CLM-ST1704-POWER-C300-SPECS",
+            "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+            "CLM-ST1704-ANKER-C300-SPECS",
+            "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
+        )
+    },
+    (
+        "SRC-JACKERY-500-NEW-DIMENSION-AXES",
+        "CLM-ST1704-POWER-JACKERY-SPECS",
+    ): (
+        "サイズ（幅×奥行×高さ）",
+        '<span lang="ja">500 New</span></td>'
+        '<td style="height: 19.5982px; width: 71.0613%;">'
+        '<span lang="ja">311×205×157mm</span>',
+        "311×205×157mm</span></td>",
+    ),
     **{
         ("SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY", claim_id): (
             '<h1 class="purchase_name">Roomba Mini 掃除機＆床拭きロボット + '
@@ -4103,6 +4151,40 @@ def _apply_first_five_product_replacements(registry: dict[str, object]) -> None:
         )
     elif len(jackery_v3_affiliates) != 1:
         raise ValueError("duplicate Jackery 1000 New V3 affiliate resources")
+    for product_id, affiliate_ref, product_name in (
+        (
+            "PRD-BLUETTI-AORA30-V2",
+            "AFF-BLUETTI-AORA30-V2",
+            "BLUETTI AORA 30 V2（グレー）",
+        ),
+        (
+            "PRD-BLUETTI-AORA100-V2",
+            "AFF-BLUETTI-AORA100-V2",
+            "BLUETTI AORA 100 V2（インディゴ）",
+        ),
+    ):
+        matches = [
+            resource
+            for resource in registry["affiliate_resources"]
+            if resource["product_id"] == product_id
+        ]
+        if not matches:
+            registry["affiliate_resources"].append(
+                {
+                    "affiliate_ref": affiliate_ref,
+                    "product_id": product_id,
+                    "product_name": product_name,
+                    "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+                    "destination_policy": "DIRECT_RAKUTEN_AFFILIATE_URL",
+                    "destination_url": None,
+                    "required_rel": "sponsored nofollow",
+                    "cta_copy": "楽天市場で現在の価格・在庫・カラーを見る",
+                    "evidence": None,
+                    "publication_blocker": "PENDING_AFFILIATE_EVIDENCE",
+                }
+            )
+        elif len(matches) != 1:
+            raise ValueError(f"duplicate BLUETTI affiliate resources: {product_id}")
     power_packet["source_refs"] = list(
         dict.fromkeys(
             [
@@ -4120,6 +4202,10 @@ def _apply_first_five_product_replacements(registry: dict[str, object]) -> None:
                 "SRC-JACKERY-500-NEW-DIMENSION-AXES",
                 "SRC-JACKERY-1000-NEW-V3",
                 "SRC-JACKERY-1000-NEW-V3-LAUNCH",
+                "SRC-BLUETTI-AORA30-V2",
+                "SRC-BLUETTI-AORA30-V2-DIMENSIONS",
+                "SRC-BLUETTI-AORA100-V2",
+                "SRC-BLUETTI-AORA-SERIES-COLLECTION",
                 "SRC-METI-PORTABLE-POWER-SAFETY",
                 "SRC-METI-ELECTRICAL-RECALLS",
             ]
@@ -4159,6 +4245,10 @@ def _apply_first_five_product_replacements(registry: dict[str, object]) -> None:
                         "SRC-ANKER-SOLIX-C800",
                         "SRC-JACKERY-1000-NEW-V3",
                         "SRC-JACKERY-1000-NEW-V3-LAUNCH",
+                        "SRC-BLUETTI-AORA30-V2",
+                        "SRC-BLUETTI-AORA30-V2-DIMENSIONS",
+                        "SRC-BLUETTI-AORA100-V2",
+                        "SRC-BLUETTI-AORA-SERIES-COLLECTION",
                         "SRC-DJI-POWER-1000-V2-STORE",
                         "SRC-DJI-POWER-1000-V2-SPECS",
                     ]
@@ -4781,10 +4871,6 @@ def _apply_portfolio_candidate_claims(registry: dict[str, object]) -> None:
                 "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
                 "SRC-PROTECA-TRI-AIR-01541",
             ),
-            "roomba-mini-vs-switchbot-k11-pro": (
-                "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
-                "SRC-ECOVACS-DEEBOT-MINI2",
-            ),
         }.get(str(packet["article_id"]))
         if conditional_source is not None:
             claim_id, source_ref = conditional_source
@@ -5301,14 +5387,16 @@ def _validate_power_station_due_diligence_contract(
 
     expected_products = {
         "PRD-ANKER-SOLIX-C300",
+        "PRD-BLUETTI-AORA30-V2",
         "PRD-JACKERY-500-NEW",
         "PRD-ANKER-SOLIX-C800",
         "PRD-DJI-POWER-1000-V2",
+        "PRD-BLUETTI-AORA100-V2",
         "PRD-ANKER-SOLIX-C800-PLUS",
         "PRD-ANKER-SOLIX-C1000",
         "PRD-ANKER-SOLIX-C1000-GEN2",
     }
-    if observed_products != expected_products or len(observed_pairs) != 8:
+    if observed_products != expected_products or len(observed_pairs) != 10:
         raise ValueError("power-station due-diligence inventory drift")
 
 
@@ -5684,6 +5772,36 @@ def _documents() -> tuple[bytes, bytes]:
         for fragment in additions:
             if fragment not in fragments:
                 fragments.append(fragment)
+
+    # Reused sources retain earlier fragments. Replace only the purchase/title
+    # fragments re-reviewed against the 2026-09-05 official captures, including
+    # inherited conditional-choice locators, so old markup cannot survive an
+    # additive refresh. All specification and warranty fragments stay intact.
+    for source_ref in (
+        "SRC-ANKER-SOLIX-C300",
+        "SRC-ANKER-SOLIX-C800-PLUS",
+        "SRC-ANKER-SOLIX-C1000",
+        "SRC-ANKER-SOLIX-C1000-GEN2",
+    ):
+        replacements = {
+            '<button type="submit" name="add" aria-label="カートに入れる" id="cafe-purchase-button"': ANKER_STOCK_BOUND_PURCHASE_FRAGMENT,
+        }
+        if source_ref in {"SRC-ANKER-SOLIX-C800-PLUS", "SRC-ANKER-SOLIX-C1000"}:
+            name = (
+                "Anker Solix C800 Plus Portable Power Station"
+                if source_ref == "SRC-ANKER-SOLIX-C800-PLUS"
+                else "Anker Solix C1000 Portable Power Station"
+            )
+            replacements[
+                f'<meta property="og:title" content="{name} | ポータブル電源の製品情報">'
+            ] = f'<meta property="og:title" content="{name} | リン酸鉄ポータブル電源の製品情報">'
+        for item in locator_by_ref[source_ref]["locators"]:
+            item["exact_utf8_fragments"] = list(
+                dict.fromkeys(
+                    replacements.get(fragment, fragment)
+                    for fragment in item["exact_utf8_fragments"]
+                )
+            )
 
     used_product_source_refs = {
         str(source_ref)

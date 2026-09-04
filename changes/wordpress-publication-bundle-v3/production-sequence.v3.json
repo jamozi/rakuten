@@ -1,4 +1,39 @@
 {
+  "selected_link_mode": "standard-api",
+  "standard_api": {
+    "command": ".venv/bin/python scripts/raos_wordpress_publication_request.py --articles all --link-mode standard-api --standard-api-receipt <owner-private-api-receipt> --quality-audit-attestation <owner-private-canonical-attestation> --quality-audit-signature <owner-private-detached-ed25519-signature>",
+    "receipt_schema": "RAOS_RAKUTEN_STANDARD_API_PUBLICATION_V1",
+    "materialization_binding_schema": "RAOS_WORDPRESS_STANDARD_API_BINDING_V1",
+    "verified_product_count": 33,
+    "verified_product_image_occurrence_count": 37,
+    "verified_cta_occurrence_count": 74,
+    "distinct_destination_urls_required": false,
+    "measurement_collection_enabled": false,
+    "measurement_plugin_required": false,
+    "admin_csv_measurement_verification_required": false,
+    "requires": [
+      "actual_api_identity_image_and_destination_evidence",
+      "fresh_manufacturer_sales_and_safety_evidence",
+      "local_and_production_materialization_hashes_match",
+      "local_preview_passed_for_130_screenshots",
+      "two_clean_independent_audit_rounds_for_exact_repository_fingerprints",
+      "trusted_reviewer_ed25519_attestation_is_current",
+      "separate_wp_admin_approval_and_single_use_lease",
+      "authenticated_and_public_readback"
+    ],
+    "order": [
+      "api_product_capture",
+      "v2_local_and_production_materialization",
+      "standard_api_receipt_and_overlays",
+      "local_preview_130_screenshots",
+      "two_clean_independent_audit_rounds_and_trusted_signature",
+      "required_abilities_and_yoast_separately_approved_setup",
+      "content_theme_batch_proposal",
+      "separate_admin_content_theme_approval_and_apply",
+      "readback"
+    ]
+  },
+  "legacy_sequence_link_mode": "measured-admin",
   "abilities_plugin": {
     "activation_intent": "activate",
     "apply_command_exposed": false,
@@ -83,11 +118,30 @@
     "proposal_requires_local_preview": true,
     "separate_admin_approval_required": true
   },
+  "yoast_seo": {
+    "activation_required": true,
+    "bounded_profile_apply_command": "scripts/st1506_wordpress_operator_python.sh apply-yoast-profile --proposal-id <separately-approved-proposal-id>",
+    "bounded_profile_proposal_command": "scripts/st1506_wordpress_operator_python.sh propose-yoast-profile",
+    "checksum_verification_command": "scripts/st1506_wordpress_operator_python.sh verify-yoast-checksums",
+    "exact_options_readback_required": true,
+    "materialization_command": ".venv/bin/python changes/wordpress-local-preview-v1/bin/materialize_yoast.py --archive <wordpress-seo.28.3.zip> --checksums <wordpress-seo.28.3.checksums.json> --lock changes/st-1704/self-hosted-editorial-pilot-v1/theme/yoast-seo-28.3.lock.json --output-parent <owner-private-materialization-directory>",
+    "plugin_slug": "wordpress-seo",
+    "plugin_version": "28.3",
+    "separate_admin_approval_required": true,
+    "settings_fingerprint_readback_required": true,
+    "site_status_preflight_required": true
+  },
   "order": [
     "local_preview",
     "abilities_plugin_package",
     "abilities_plugin_proposal",
     "separate_human_wp_admin_exact_abilities_install_and_bootstrap_attestation",
+    "yoast_28_3_checksum_pinned_materialization",
+    "separate_human_wp_admin_exact_yoast_28_3_install_and_activation",
+    "bounded_operator_yoast_checksum_verification",
+    "bounded_operator_yoast_profile_proposal",
+    "separate_admin_yoast_profile_approval_and_apply",
+    "mcp_site_status_yoast_exact_options_and_fingerprint_readback",
     "measurement_plugin_package",
     "measurement_plugin_proposal",
     "separate_admin_measurement_plugin_approval_and_apply",

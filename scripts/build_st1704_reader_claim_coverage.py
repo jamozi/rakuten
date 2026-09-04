@@ -29,6 +29,26 @@ from zoneinfo import ZoneInfo
 
 
 ROOT: Final = Path(__file__).resolve().parents[1]
+PYTHON_ROOT: Final = ROOT / "python"
+if str(PYTHON_ROOT) not in sys.path:
+    sys.path.insert(0, str(PYTHON_ROOT))
+
+from raos.application.editorial.product_safety_manufacturer_capture import (  # noqa: E402
+    EMPTY_EVIDENCE_RELATIVE_PATH as PRODUCT_SAFETY_MANUFACTURER_EMPTY_RELATIVE,
+    PLAN_RELATIVE_PATH as PRODUCT_SAFETY_MANUFACTURER_PLAN_RELATIVE,
+)
+from raos.application.editorial.product_safety_query_capture import (  # noqa: E402
+    QUERY_PLAN_RELATIVE_PATH as PRODUCT_SAFETY_ADMIN_PLAN_RELATIVE,
+)
+from raos.application.editorial.product_safety_receipts import (  # noqa: E402
+    ProductSafetyOfficialSource,
+    ProductSafetyReceiptFailure,
+    ProductSafetyRequirement,
+    ProductSafetySourceRegistryContext,
+    evaluate_product_safety_receipts,
+    load_product_safety_receipt_audit,
+)
+
 UTC: Final = timezone.utc
 SLICE_PATH: Final = Path("changes/st-1704/self-hosted-editorial-pilot-v1")
 LEDGER_RELATIVE: Final = SLICE_PATH / "sources/reader-claim-bindings.v1.json"
@@ -148,18 +168,16 @@ ARTICLE_EXTERNAL_DISPLAY_ALIASES: Final = {
         "EXT-IROBOT-ROOMBA-MINI-AUTOEMPTY-F155260": ("F155260",),
     },
     "solota-vs-rakua-mini-plus": {
-        "EXT-PANASONIC-SOLOTA-NP-TML1-W": (
+        "EXT-PANASONIC-SOLOTA-NP-TMLK1-K": (
             "SOLOTA",
-            "NP-TML1",
-            "NP-TML1-W",
+            "NP-TMLK1",
+            "NP-TMLK1-K",
         ),
         "EXT-THANKO-RAKUA-MINI-PLUS": ("ラクアmini Plus",),
     },
 }
 ARTICLE_LOCAL_SUBJECT_SCOPE_ADDITIONS: Final[dict[str, tuple[str, ...]]] = {}
-METADATA_SUBJECT_OVERRIDES: Final[
-    dict[tuple[str, str], tuple[str, ...]]
-] = {}
+METADATA_SUBJECT_OVERRIDES: Final[dict[tuple[str, str], tuple[str, ...]]] = {}
 READER_UNIT_SUBJECT_OVERRIDES: Final = {
     (
         "st1704-compact-robot-vacuum-shortlist",
@@ -187,125 +205,6 @@ READER_UNIT_SUBJECT_OVERRIDES: Final = {
         "front-open-carry-on-suitcase-with-stopper",
         "Q 60570のPC収納なら、13インチ端末は必ず入りますか。",
     ): ("PRD-BERMAS-INTER-CITY-III-60570",),
-    (
-        "solota-vs-rakua-mini-plus",
-        "アドバンスシリーズの容量参考型番です。SS-M171の仕様を読み替えず、"
-        "オートオープンと収納条件を個別に確認します。",
-    ): ("PRD-SIROCA-SS-MA251", "PRD-SIROCA-SS-M171"),
-    (
-        "solota-vs-rakua-mini-plus",
-        "同じ高さ43.5cmでも、必要な置き場所はまるで違う。",
-    ): (
-        "EXT-PANASONIC-SOLOTA-NP-TML1-W",
-        "PRD-SIROCA-SS-M171",
-    ),
-    (
-        "solota-vs-rakua-mini-plus",
-        "標準食器16点と直径23cmまでの皿が公表されています。"
-        "実際の食器の厚みや形は公式収納例と照合します。",
-    ): ("PRD-SIROCA-SS-M171",),
-    (
-        "solota-vs-rakua-mini-plus",
-        "A. 16点はメーカーが示す標準食器の構成です。食器の形や厚みにより"
-        "収まらない場合があるため、公式収納例と自宅の食器を照合します。",
-    ): ("PRD-SIROCA-SS-M171",),
-    (
-        "solota-vs-rakua-mini-plus",
-        "食器洗い乾燥機の補修用性能部品を製造打ち切り後6年保有する案内を確認。"
-        "確認日:2026年8月31日",
-    ): ("EXT-PANASONIC-SOLOTA-NP-TML1-W",),
-    (
-        "solota-vs-rakua-mini-plus",
-        "標準食器6点と16点のどちらが日常の量に近いか",
-    ): (
-        "EXT-PANASONIC-SOLOTA-NP-TML1-W",
-        "PRD-SIROCA-SS-M171",
-    ),
-    (
-        "solota-vs-rakua-mini-plus",
-        "現行候補と仕様参考を混ぜない。",
-    ): (
-        "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
-        "PRD-SIROCA-SS-M171",
-        "PRD-SIROCA-SS-MA251",
-    ),
-    (
-        "solota-vs-rakua-mini-plus",
-        "B 現行候補",
-    ): (
-        "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
-        "PRD-SIROCA-SS-M171",
-        "PRD-SIROCA-SS-MA251",
-    ),
-    (
-        "solota-vs-rakua-mini-plus",
-        "現行候補と販売状態未確認モデルを分けて読む。",
-    ): (
-        "EXT-PANASONIC-SOLOTA-NP-TML1-W",
-        "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
-        "PRD-SIROCA-SS-M171",
-        "PRD-SIROCA-SS-MA251",
-    ),
-    (
-        "solota-vs-rakua-mini-plus",
-        "現行候補(ラクアmini・SS-M171・通常商品SS-MA251)と販売状態未確認の"
-        "SOLOTAを分けて読む。",
-    ): (
-        "EXT-PANASONIC-SOLOTA-NP-TML1-W",
-        "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
-        "PRD-SIROCA-SS-M171",
-        "PRD-SIROCA-SS-MA251",
-    ),
-    (
-        "solota-vs-rakua-mini-plus",
-        "SS-M171はSOLOTAより幅が110mm、奥行が210mm大きい一方、"
-        "標準食器点数は10点多くなります。数字の大きい方を一律に勧める比較では"
-        "ありません。SOLOTAの数値は短い奥行の仕様参考であり、現行販売を確認できない"
-        "ため購入候補にはしません。",
-    ): (
-        "EXT-PANASONIC-SOLOTA-NP-TML1-W",
-        "PRD-SIROCA-SS-M171",
-    ),
-    (
-        "solota-vs-rakua-mini-plus",
-        "約2.5Lと約5Lは1回あたりの公表値です。1日の運転回数が違えば、"
-        "単純な大小だけでは使用量を決められません。",
-    ): (
-        "EXT-PANASONIC-SOLOTA-NP-TML1-W",
-        "PRD-SIROCA-SS-M171",
-    ),
-    (
-        "solota-vs-rakua-mini-plus",
-        "。SOLOTAとSS-M171以外も含めて選ぶ場合は、少人数向け卓上食洗機の"
-        "4モデル比較で確認できます。",
-    ): (
-        "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
-        "PRD-SIROCA-SS-M171",
-        "PRD-SIROCA-SS-MA251",
-        "PRD-TOSHIBA-DWS-33B-W",
-    ),
-    (
-        "solota-vs-rakua-mini-plus",
-        "現行販売を確認できた候補だけを購入検討へ進め、標準食器点数と手持ちの"
-        "食器形状を照合します。",
-    ): (
-        "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
-        "PRD-SIROCA-SS-M171",
-        "PRD-SIROCA-SS-MA251",
-    ),
-    (
-        "solota-vs-rakua-mini-plus",
-        "仕様参考と現行候補を分けて、販売状況を確かめる",
-    ): (
-        "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
-        "PRD-SIROCA-SS-M171",
-        "PRD-SIROCA-SS-MA251",
-    ),
-    (
-        "solota-vs-rakua-mini-plus",
-        "対象取扱説明書と修理・サポート導線を確認。取扱説明書では本体保証1年を確認。"
-        "確認日:2026年8月31日",
-    ): ("EXT-PANASONIC-SOLOTA-NP-TML1-W",),
 }
 
 # A small number of coordinated headings put the governing identity after a
@@ -739,7 +638,7 @@ SALES_STATE_MAX_FUTURE_SKEW_SECONDS: Final = 5 * 60
 # state edit; this document digest makes any replacement an explicit code and
 # ledger review rather than silently trusting a newly self-hashed JSON row.
 REVIEWED_SALES_STATE_DOCUMENT_SHA256: Final = (
-    "19cec6ee4ae0158d6b17ca026d91ce9c117a55f4a02c8a0da64b2b8286b5cd5f"
+    "54a424b01070e0b6a362f799c5463c74a8a032469ece1e83b8729f81eab0c80f"
 )
 # The ledger itself is an independently reviewed allow-list.  Regex extraction
 # is useful for numbers, comparisons, dimensions, availability, and a closed
@@ -1061,6 +960,24 @@ EXTERNAL_EXCLUSION_ACTION_RE: Final = re.compile(
     r"商品カード[^。！？]{0,24}(?:から)?外し|"
     r"比較表に含めなかった)"
 )
+A10_SOLOTA_UNKNOWN_EXCLUSION_CLAIM_ID: Final = (
+    "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-EXCLUDED"
+)
+A10_RAKUA_RESTOCK_EXCLUSION_CLAIM_ID: Final = (
+    "CLM-PORTFOLIO-DISH-RAKUA-MINI-PLUS-EXCLUDED"
+)
+A10_LIFECYCLE_ROUTE_CLAIM_ID: Final = "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE"
+EXTERNAL_UNKNOWN_PURCHASE_UI_RE: Final = re.compile(
+    r"(?:購入UI|カート(?:導線)?)[^。！？]{0,24}"
+    r"確認でき(?:ない|なかった|なく|ません|ず)"
+)
+EXTERNAL_UNKNOWN_EXCLUSION_ACTION_RE: Final = re.compile(
+    r"(?:仕様参考に(?:限定|とどめ)|"
+    r"商品カード・購入導線から除外|"
+    r"購入候補には戻しません|"
+    r"現行販売を確認できるまで推奨しません|"
+    r"(?:現行|いま購入できる)[^。！？]{0,48}で選び直してください)"
+)
 # A terse table value can be a decision-critical assertion even when it has no
 # useful lexical overlap with its evidence (for example, an "自動ゴミ収集"
 # column whose cells contain only "あり" / "なし").  Such units must still be
@@ -1228,6 +1145,7 @@ ACCESSIBILITY_FIXED_TEXTS: Final = frozenset(
         "この記事の確認状況",
         "この記事の確認範囲",
         "比較方法と外部リンクについて",
+        "収益化の対象外",
         "機内持ち込み用スーツケースの選び方を表現した旅支度のイメージ",
         "軽量な機内持ち込み用スーツケースを比較するイメージ",
         "フロントオープン型スーツケースの選び方を表現した旅支度のイメージ",
@@ -1250,6 +1168,12 @@ METHOD_FIXED_TEXTS: Final = frozenset(
         "A. いいえ。正確な型番の購入画面または再入荷通知を確認します。"
         "購入画面を確認できなければ、販売状態を再確認できるまで購入を見送ります。",
         "購入UIを確認できない型番を推奨対象にしないこと",
+        "実機レビューではありません",
+        "メーカー公式の製品情報、仕様表、設置案内を確認しています。"
+        "同じ床での清掃率、動作音、障害物回避、アプリの操作性は測定していないため、"
+        "使い勝手や清掃力の順位は示しません。",
+        "メーカー公式ページで型番と販売表示を確認しています。"
+        "洗浄・乾燥性能や操作性は試しておらず、このページでは性能順位を示しません。",
     }
 )
 LOCAL_MIXED_UNKNOWN_FIXED_TEXTS: Final = frozenset(
@@ -1594,7 +1518,7 @@ def _named_dimensions_cm(
                 raw = Decimal(match.group(value_group).replace(",", ""))
                 unit = (match.group(unit_group) or trailing_unit).casefold()
                 values.append(raw / 10 if unit == "mm" else raw)
-        except (InvalidOperation, AttributeError):
+        except InvalidOperation, AttributeError:
             continue
         subject = _dimension_subject_role(match.group("dimension_subject") or "")
         result.append((subject, values[0], values[1], values[2]))
@@ -1853,7 +1777,7 @@ def _ordered_dimensions_cm(
                 raw = Decimal(match.group(value_group).replace(",", ""))
                 unit = (match.group(unit_group) or trailing_unit).casefold()
                 values.append(raw / 10 if unit == "mm" else raw)
-        except (InvalidOperation, AttributeError):
+        except InvalidOperation, AttributeError:
             continue
         result.append((values[0], values[1], values[2]))
     return result
@@ -1985,9 +1909,7 @@ def _token_supported(
         lower = Decimal(re.match(r"\d+(?:[.,]\d+)?", token_key).group(0))
         return any(
             match.group("unit").casefold() == "kg"
-            and lower
-            <= Decimal(match.group("number").replace(",", ""))
-            < lower + 1
+            and lower <= Decimal(match.group("number").replace(",", "")) < lower + 1
             and _numeric_operator(match.group("suffix") or "") == "EQ"
             for match in MEASURED_ASSERTION_RE.finditer(support_key)
         )
@@ -2087,10 +2009,7 @@ def _token_supported(
         scalar_supports = any(
             support_axis == token_axis
             and (
-                (
-                    support_value == token_value
-                    and support_operator == token_operator
-                )
+                (support_value == token_value and support_operator == token_operator)
                 or (
                     support_operator == "EQ"
                     and _exact_value_satisfies(
@@ -2147,15 +2066,10 @@ def _token_supported(
             if any(
                 support_axis == dimension_axis
                 and (
-                    (
-                        support_value == value_cm
-                        and support_operator == operator
-                    )
+                    (support_value == value_cm and support_operator == operator)
                     or (
                         support_operator == "EQ"
-                        and _exact_value_satisfies(
-                            support_value, value_cm, operator
-                        )
+                        and _exact_value_satisfies(support_value, value_cm, operator)
                     )
                 )
                 and (
@@ -2300,8 +2214,7 @@ def _sales_token_supported(
                 )
             )
         )
-        else
-        "OUT_OF_STOCK"
+        else "OUT_OF_STOCK"
         if re.fullmatch(
             r"(?:購入UIを確認できな(?:い|かった|く|せん)|"
             r"再入荷(?:\(予約開始\))?通知(?:のみ|だけ)?|"
@@ -2409,9 +2322,7 @@ def _sales_unknown_overlap(text: str) -> bool:
         # note) remain independently claim-bound instead of poisoning it.
         if sentence_index + 1 < len(sentences):
             following = sentences[sentence_index + 1][2].lstrip()
-            if re.match(r"(?:ただし|なお)", following) and UNKNOWN_RE.search(
-                following
-            ):
+            if re.match(r"(?:ただし|なお)", following) and UNKNOWN_RE.search(following):
                 return True
     return False
 
@@ -2502,9 +2413,7 @@ def _sales_lexemes_are_affirmative(text: str) -> bool:
             return False
         sentence = sentence_spans[sentence_index][2]
         semantic_sentence = CLOSED_UNKNOWN_SALES_PHRASE_RE.sub("", sentence)
-        semantic_sentence = EXTERNAL_OUT_OF_STOCK_UI_GAP_RE.sub(
-            "", semantic_sentence
-        )
+        semantic_sentence = EXTERNAL_OUT_OF_STOCK_UI_GAP_RE.sub("", semantic_sentence)
         if SALES_NEGATED_OR_UNCERTAIN_RE.search(semantic_sentence):
             return False
         # Do not permit uncertainty to be separated by punctuation and then
@@ -2568,7 +2477,7 @@ def _load_json(root: Path, relative: Path) -> dict[str, object]:
         value = json.loads(
             payload.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys
         )
-    except (UnicodeDecodeError, json.JSONDecodeError):
+    except UnicodeDecodeError, json.JSONDecodeError:
         _fail(f"invalid JSON: {relative.as_posix()}")
     if type(value) is not dict:
         _fail(f"JSON root must be an object: {relative.as_posix()}")
@@ -3043,7 +2952,9 @@ class _ReaderUnitParser(HTMLParser):
         override = READER_UNIT_SUBJECT_OVERRIDES.get((self.article_id, text))
         if override is not None:
             if not set(override) <= set(self.product_aliases):
-                _fail(f"reader-unit subject override escaped article scope: {self.article_id}")
+                _fail(
+                    f"reader-unit subject override escaped article scope: {self.article_id}"
+                )
             return override
         direct = [
             product_id
@@ -3060,9 +2971,7 @@ class _ReaderUnitParser(HTMLParser):
         if owned or direct:
             subjects = tuple(dict.fromkeys((*owned, *direct, *groups)))
             if re.search(r"\d+\s*候補より", text):
-                return tuple(
-                    dict.fromkeys((*subjects, *self.selected_product_ids))
-                )
+                return tuple(dict.fromkeys((*subjects, *self.selected_product_ids)))
             return subjects
         if owner is not None and owner.startswith("EXT-"):
             # The market-candidate identity is carried by the owner boundary,
@@ -3973,28 +3882,6 @@ def _matching_product_group_ids(
     return ()
 
 
-def _parse_utc_timestamp(value: object, context: str) -> datetime:
-    text = _strict_string(value, context)
-    if not text.endswith("Z"):
-        _fail(f"{context} is not UTC")
-    try:
-        parsed = datetime.fromisoformat(text.removesuffix("Z") + "+00:00")
-    except ValueError:
-        _fail(f"{context} is invalid")
-    if parsed.tzinfo is None or parsed.utcoffset() != timedelta(0):
-        _fail(f"{context} is not UTC")
-    return parsed
-
-
-def _query_contains_exact_model_token(query_terms: tuple[str, ...], token: str) -> bool:
-    normalized_token = _normalize_text(token).casefold()
-    pattern = re.compile(
-        rf"(?<![0-9a-z]){re.escape(normalized_token)}(?![0-9a-z])",
-        re.IGNORECASE,
-    )
-    return any(pattern.search(_normalize_text(term).casefold()) for term in query_terms)
-
-
 def _load_product_safety_statuses(
     *,
     root: Path,
@@ -4002,53 +3889,32 @@ def _load_product_safety_statuses(
     sources: dict[str, dict[str, object]],
     claims: dict[str, dict[str, dict[str, object]]],
 ) -> tuple[dict[str, dict[str, object]], str]:
-    """Validate the owner receipt document and derive fail-closed product status."""
+    """Derive status only from replayed official evidence, never tracked hashes."""
 
     payload = _read_regular(root, PRODUCT_SAFETY_RECEIPT_RELATIVE, MAX_JSON_BYTES)
     try:
         raw = json.loads(
             payload.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys
         )
-    except (UnicodeDecodeError, json.JSONDecodeError):
+    except UnicodeDecodeError, json.JSONDecodeError:
         _fail("product-safety receipt document is invalid JSON")
     if type(raw) is not dict:
         _fail("product-safety receipt document root is not an object")
     document = cast(dict[str, object], raw)
-    _exact_keys(
-        document,
-        {
-            "schema",
-            "version",
-            "hash_contract",
-            "freshness_policy",
-            "required_authority_kinds",
-            "coverage_caveat_policy",
-            "receipts",
-        },
-        "product-safety receipt document",
-    )
-    canonicalization = (
-        "UTF-8 JSON with recursively sorted object keys, no insignificant "
-        "whitespace, and unescaped Unicode"
-    )
-    if (
-        document.get("schema") != PRODUCT_SAFETY_RECEIPT_SCHEMA
-        or document.get("version") != PRODUCT_SAFETY_RECEIPT_VERSION
-        or document.get("hash_contract")
-        != {
-            "algorithm": "SHA-256",
-            "canonicalization": canonicalization,
-            "fields": list(PRODUCT_SAFETY_RECEIPT_HASH_FIELDS),
-        }
-        or document.get("freshness_policy")
-        != {"maximum_age_days": 30, "maximum_future_skew_minutes": 5}
-        or document.get("required_authority_kinds")
-        != PRODUCT_SAFETY_REQUIRED_AUTHORITIES
-        or document.get("coverage_caveat_policy")
-        != {"required_receipt_value": PRODUCT_SAFETY_REQUIRED_CAVEAT}
-        or type(document.get("receipts")) is not list
-    ):
-        _fail("product-safety receipt contract mismatch")
+
+    requirements: list[ProductSafetyRequirement] = []
+    for product_id, product in products_by_id.items():
+        models = tuple(
+            _strict_string_list(
+                product.get("official_models"), f"official_models {product_id}"
+            )
+        )
+        requirements.append(
+            ProductSafetyRequirement(
+                product_id=product_id,
+                exact_model_tokens=models,
+            )
+        )
 
     source_products: dict[str, set[str]] = defaultdict(set)
     for packet_claims in claims.values():
@@ -4061,172 +3927,96 @@ def _load_product_safety_statuses(
             ):
                 source_products[source_ref].update(subjects)
 
-    receipt_by_key: dict[tuple[str, str], dict[str, object]] = {}
-    now = datetime.now(UTC)
-    receipt_keys = {*PRODUCT_SAFETY_RECEIPT_HASH_FIELDS, "receipt_sha256"}
-    for raw_receipt in cast(list[object], document["receipts"]):
-        if type(raw_receipt) is not dict:
-            _fail("product-safety receipt is not an object")
-        receipt = cast(dict[str, object], raw_receipt)
-        _exact_keys(receipt, receipt_keys, "product-safety receipt")
-        product_id = _strict_string(
-            receipt.get("product_id"), "product-safety product_id"
-        )
-        product = products_by_id.get(product_id)
-        authority = receipt.get("authority_kind")
-        if product is None or authority not in PRODUCT_SAFETY_REQUIRED_AUTHORITIES:
-            _fail(f"product-safety receipt identity is invalid: {product_id}")
-        key = (product_id, cast(str, authority))
-        if key in receipt_by_key:
-            _fail(f"duplicate product-safety receipt: {product_id}/{authority}")
-
-        model_tokens = tuple(
-            _strict_string_list(
-                receipt.get("model_tokens"), f"product-safety model_tokens {product_id}"
-            )
-        )
-        expected_tokens = tuple(
-            _strict_string_list(
-                product.get("official_models"), f"official_models {product_id}"
-            )
-        )
-        query_terms = tuple(
-            _strict_string_list(
-                receipt.get("query_terms"), f"product-safety query_terms {product_id}"
-            )
-        )
-        if (
-            model_tokens != expected_tokens
-            or not query_terms
-            or any(
-                not _query_contains_exact_model_token(query_terms, token)
-                for token in expected_tokens
-            )
-            or not any(
-                re.search(
-                    r"リコール|重要なお知らせ|安全情報|事故情報|recall|safety|incident",
-                    term,
-                    re.IGNORECASE,
-                )
-                for term in query_terms
-            )
-        ):
-            _fail(f"product-safety query scope is invalid: {product_id}")
-
-        source_ref = _strict_string(
-            receipt.get("official_source_ref"),
-            f"product-safety source_ref {product_id}",
-        )
-        source = sources.get(source_ref)
-        source_authority = None if source is None else source.get("authority")
-        expected_authority = (
-            "MANUFACTURER_OFFICIAL"
-            if source_authority == "MANUFACTURER_OFFICIAL"
-            else "JAPAN_ADMINISTRATIVE_OFFICIAL"
-            if source_authority == "GOVERNMENT_OFFICIAL"
-            else None
-        )
-        if (
-            source is None
-            or authority != expected_authority
-            or receipt.get("official_source_url") != source.get("url")
-            or receipt.get("capture_sha256")
-            != source.get("immutable_capture_sha256")
-            or (
-                authority == "MANUFACTURER_OFFICIAL"
-                and product_id not in source_products.get(source_ref, set())
-            )
-        ):
-            _fail(f"product-safety official source binding is invalid: {product_id}")
-        official_url = _strict_string(
-            receipt.get("official_source_url"),
-            f"product-safety official URL {product_id}",
-        )
-        parsed_url = urlsplit(official_url)
-        if (
-            parsed_url.scheme != "https"
-            or not parsed_url.hostname
-            or (
-                authority == "JAPAN_ADMINISTRATIVE_OFFICIAL"
-                and not cast(str, parsed_url.hostname).casefold().endswith(".go.jp")
-            )
-        ):
-            _fail(f"product-safety official URL is invalid: {product_id}")
-
-        checked_at = _parse_utc_timestamp(
-            receipt.get("checked_at_utc"),
-            f"product-safety checked_at_utc {product_id}",
-        )
-        if checked_at - now > PRODUCT_SAFETY_MAX_FUTURE_SKEW:
-            _fail(f"product-safety receipt is in the future: {product_id}")
-        result = receipt.get("result")
-        notice_ids = _strict_string_list(
-            receipt.get("matched_notice_ids"),
-            f"product-safety matched notices {product_id}",
-        )
-        if (
-            result not in {"NONE_FOUND", "MATCH", "AMBIGUOUS"}
-            or (result == "MATCH") != bool(notice_ids)
-            or (result == "NONE_FOUND" and notice_ids)
-            or receipt.get("coverage_caveat") != PRODUCT_SAFETY_REQUIRED_CAVEAT
-        ):
-            _fail(f"product-safety result contract is invalid: {product_id}")
-        material = {
-            field: receipt[field] for field in PRODUCT_SAFETY_RECEIPT_HASH_FIELDS
-        }
-        receipt_hash = receipt.get("receipt_sha256")
-        if (
-            type(receipt_hash) is not str
-            or SHA256_RE.fullmatch(receipt_hash) is None
-            or receipt_hash != _canonical_sha256(material)
-        ):
-            _fail(f"product-safety receipt hash mismatch: {product_id}")
-        receipt_by_key[key] = {**receipt, "_checked_at": checked_at}
-
-    statuses: dict[str, dict[str, object]] = {}
-    for product_id in products_by_id:
-        receipts = [
-            receipt_by_key[(product_id, authority)]
-            for authority in PRODUCT_SAFETY_REQUIRED_AUTHORITIES
-            if (product_id, authority) in receipt_by_key
-        ]
-        missing = [
-            authority
-            for authority in PRODUCT_SAFETY_REQUIRED_AUTHORITIES
-            if (product_id, authority) not in receipt_by_key
-        ]
-        stale = [
-            cast(str, receipt["authority_kind"])
-            for receipt in receipts
-            if now - cast(datetime, receipt["_checked_at"]) > PRODUCT_SAFETY_MAX_AGE
-        ]
-        matched = list(
-            dict.fromkeys(
-                notice
-                for receipt in receipts
-                for notice in cast(list[str], receipt["matched_notice_ids"])
-            )
-        )
-        if any(receipt["result"] == "MATCH" for receipt in receipts):
-            status = "BLOCKED_MATCH_FOUND"
-        elif any(receipt["result"] == "AMBIGUOUS" for receipt in receipts):
-            status = "BLOCKED_AMBIGUOUS_RESULT"
-        elif stale:
-            status = "BLOCKED_STALE_RECEIPT"
-        elif missing:
-            status = "BLOCKED_MISSING_RECEIPT"
+    manufacturer_hosts: set[str] = set()
+    administrative_hosts: set[str] = set()
+    official_sources: dict[str, ProductSafetyOfficialSource] = {}
+    for source_ref, source in sources.items():
+        authority = source.get("authority")
+        url = source.get("url")
+        capture_sha256 = source.get("immutable_capture_sha256")
+        if type(url) is not str:
+            continue
+        parsed = urlsplit(url)
+        host = (parsed.hostname or "").casefold()
+        if authority == "MANUFACTURER_OFFICIAL":
+            if host:
+                manufacturer_hosts.add(host)
+            covered = frozenset(source_products.get(source_ref, set()))
+            if not covered:
+                continue
+            source_authority = "MANUFACTURER_OFFICIAL"
+        elif authority == "GOVERNMENT_OFFICIAL":
+            if not host.endswith(".go.jp"):
+                continue
+            administrative_hosts.add(host)
+            covered = frozenset(products_by_id)
+            source_authority = "JAPAN_ADMINISTRATIVE_OFFICIAL"
         else:
-            status = "COMPLETE_NONE_FOUND"
-        statuses[product_id] = {
-            "product_id": product_id,
-            "status": status,
-            "receipt_sha256s": [
-                cast(str, receipt["receipt_sha256"]) for receipt in receipts
-            ],
-            "missing_authority_kinds": missing,
-            "stale_authority_kinds": stale,
-            "matched_notice_ids": matched,
+            continue
+        if type(capture_sha256) is not str:
+            _fail(f"product-safety source capture is invalid: {source_ref}")
+        official_sources[source_ref] = ProductSafetyOfficialSource(
+            source_ref=source_ref,
+            url=url,
+            authority_kind=source_authority,
+            capture_sha256=capture_sha256,
+            covered_product_ids=covered,
+        )
+
+    # Empty host sets are valid only for an evidence-free isolated evaluator.
+    # These non-routable sentinels cannot authorize a source because no source
+    # row can bind to them.
+    if not manufacturer_hosts:
+        manufacturer_hosts.add("manufacturer.invalid")
+    if not administrative_hosts:
+        administrative_hosts.add("administrative.invalid.go.jp")
+    registry = ProductSafetySourceRegistryContext(
+        sources=official_sources,
+        allowed_hosts_by_authority={
+            "MANUFACTURER_OFFICIAL": frozenset(manufacturer_hosts),
+            "JAPAN_ADMINISTRATIVE_OFFICIAL": frozenset(administrative_hosts),
+        },
+    )
+
+    try:
+        if (root / PORTFOLIO_RELATIVE).is_file():
+            for relative in (
+                PRODUCT_SAFETY_ADMIN_PLAN_RELATIVE,
+                PRODUCT_SAFETY_MANUFACTURER_PLAN_RELATIVE,
+                PRODUCT_SAFETY_MANUFACTURER_EMPTY_RELATIVE,
+            ):
+                if not (root / relative).is_file():
+                    _fail(
+                        "product-safety replay contract is missing: "
+                        f"{relative.as_posix()}"
+                    )
+            audit = load_product_safety_receipt_audit(
+                root,
+                requirements=tuple(requirements),
+                registry_context=registry,
+            )
+        else:
+            # A synthetic/non-portfolio caller can validate the declaration
+            # schema, but has no path to acquire either verified authority.
+            audit = evaluate_product_safety_receipts(
+                document,
+                requirements=tuple(requirements),
+                registry_context=registry,
+            )
+    except ProductSafetyReceiptFailure as exc:
+        _fail(f"product-safety receipt contract mismatch: {exc}")
+
+    statuses = {
+        product.product_id: {
+            "product_id": product.product_id,
+            "status": product.status,
+            "receipt_sha256s": [receipt.receipt_sha256 for receipt in product.receipts],
+            "missing_authority_kinds": list(product.missing_authority_kinds),
+            "stale_authority_kinds": list(product.stale_authority_kinds),
+            "matched_notice_ids": list(product.matched_notice_ids),
         }
+        for product in audit.products
+    }
     return statuses, hashlib.sha256(payload).hexdigest()
 
 
@@ -4240,7 +4030,7 @@ def _load_market_axis_states(
         raw = json.loads(
             payload.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys
         )
-    except (UnicodeDecodeError, json.JSONDecodeError):
+    except UnicodeDecodeError, json.JSONDecodeError:
         _fail("market candidate audit is invalid JSON")
     if type(raw) is not dict:
         _fail("market candidate audit root is not an object")
@@ -4279,9 +4069,7 @@ def _load_market_axis_states(
         "OFFICIAL_EVIDENCE_USED",
         "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED",
     }
-    for expected_article_id, raw_article in zip(
-        ARTICLE_IDS, raw_articles, strict=True
-    ):
+    for expected_article_id, raw_article in zip(ARTICLE_IDS, raw_articles, strict=True):
         if type(raw_article) is not dict:
             _fail(f"market candidate audit article is invalid: {expected_article_id}")
         article = cast(dict[str, object], raw_article)
@@ -4304,7 +4092,9 @@ def _load_market_axis_states(
         for axis in DECISION_GATE_AXES:
             assessment = cast(dict[str, object], assessments).get(axis)
             if type(assessment) is not dict:
-                _fail(f"market axis assessment is invalid: {expected_article_id}/{axis}")
+                _fail(
+                    f"market axis assessment is invalid: {expected_article_id}/{axis}"
+                )
             state = cast(dict[str, object], assessment).get("state")
             if state not in allowed_states:
                 _fail(f"market axis state is invalid: {expected_article_id}/{axis}")
@@ -4313,7 +4103,9 @@ def _load_market_axis_states(
     return axis_states, hashlib.sha256(payload).hexdigest()
 
 
-def _load_repository_model(root: Path) -> _RepositoryModel:
+def _load_repository_model(
+    root: Path, *, require_fresh_sales_state: bool = True
+) -> _RepositoryModel:
     portfolio = _load_json(root, PORTFOLIO_RELATIVE)
     posts_document = _load_json(root, POSTS_RELATIVE)
     legacy_content = _load_json(root, LEGACY_CONTENT_RELATIVE)
@@ -4329,7 +4121,7 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
         raw_sales_document = json.loads(
             sales_payload.decode("utf-8"), object_pairs_hook=_reject_duplicate_keys
         )
-    except (UnicodeDecodeError, json.JSONDecodeError):
+    except UnicodeDecodeError, json.JSONDecodeError:
         _fail("manufacturer sales-state document is invalid JSON")
     if type(raw_sales_document) is not dict:
         _fail("manufacturer sales-state document root is not an object")
@@ -4489,14 +4281,18 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
             }:
                 _fail(f"invalid claim classification: {claim_id}")
             if (
-                classification == "MAJOR_VERIFIABLE"
-                and status != "BOUND_TO_OFFICIAL_SOURCE"
-            ) or (
-                classification == "EDITORIAL_INFERENCE"
-                and status != "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
-            ) or (
-                classification == "DECISION_CRITICAL_UNKNOWN"
-                and status != "UNCONFIRMED_FROM_BOUND_OFFICIAL_SOURCE"
+                (
+                    classification == "MAJOR_VERIFIABLE"
+                    and status != "BOUND_TO_OFFICIAL_SOURCE"
+                )
+                or (
+                    classification == "EDITORIAL_INFERENCE"
+                    and status != "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
+                )
+                or (
+                    classification == "DECISION_CRITICAL_UNKNOWN"
+                    and status != "UNCONFIRMED_FROM_BOUND_OFFICIAL_SOURCE"
+                )
             ):
                 _fail(f"invalid claim status: {claim_id}")
             if classification == "DECISION_CRITICAL_UNKNOWN" and (
@@ -4536,8 +4332,7 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
                     else set()
                 )
                 if (
-                    claim.get("portfolio_candidate_disposition")
-                    != "REFERENCE_ONLY"
+                    claim.get("portfolio_candidate_disposition") != "REFERENCE_ONLY"
                     or classification != "EDITORIAL_INFERENCE"
                     or status != "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
                     or not claim_id.endswith("-REFERENCE")
@@ -4678,8 +4473,7 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
                     f"article product_ids {article_id}",
                 )
                 if (
-                    gate.get("schema")
-                    != "PRODUCT_SPECIFIC_RECALL_QUERY_REQUIREMENT_V2"
+                    gate.get("schema") != "PRODUCT_SPECIFIC_RECALL_QUERY_REQUIREMENT_V2"
                     or _strict_string_list(
                         gate.get("required_product_ids"),
                         f"recall required product_ids {claim_id}",
@@ -4696,7 +4490,9 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
                     != PRODUCT_SAFETY_RECEIPT_SCHEMA
                     or gate.get("general_safety_guidance_is_not_a_receipt") is not True
                 ):
-                    _fail(f"product-specific recall gate is not fail-closed: {claim_id}")
+                    _fail(
+                        f"product-specific recall gate is not fail-closed: {claim_id}"
+                    )
                 _strict_string(
                     gate.get("coverage_caveat"),
                     f"recall coverage caveat {claim_id}",
@@ -4751,12 +4547,8 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
                     embedded_variant_caveat = sales.get("variant_caveat")
                     if embedded_variant_caveat is not None:
                         if type(embedded_variant_caveat) is not dict:
-                            _fail(
-                                f"invalid embedded sales variant caveat: {claim_id}"
-                            )
-                        caveat_value = cast(
-                            dict[str, object], embedded_variant_caveat
-                        )
+                            _fail(f"invalid embedded sales variant caveat: {claim_id}")
+                        caveat_value = cast(dict[str, object], embedded_variant_caveat)
                         _exact_keys(
                             caveat_value,
                             {
@@ -4791,17 +4583,22 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
                     "reader_visible_label",
                 ):
                     _strict_string(
-                        sales.get(key), f"embedded manufacturer sales state {key} {claim_id}"
+                        sales.get(key),
+                        f"embedded manufacturer sales state {key} {claim_id}",
                     )
                 embedded_checked = cast(str, sales["checked_at"])
                 if not embedded_checked.endswith("Z"):
-                    _fail(f"embedded manufacturer sales timestamp is invalid: {claim_id}")
+                    _fail(
+                        f"embedded manufacturer sales timestamp is invalid: {claim_id}"
+                    )
                 try:
                     datetime.fromisoformat(
                         embedded_checked.removesuffix("Z") + "+00:00"
                     )
                 except ValueError:
-                    _fail(f"embedded manufacturer sales timestamp is invalid: {claim_id}")
+                    _fail(
+                        f"embedded manufacturer sales timestamp is invalid: {claim_id}"
+                    )
             _strict_string(claim.get("statement"), f"claim statement {claim_id}")
             _strict_string_list(claim.get("evidence_refs"), f"evidence {claim_id}")
             _strict_string_list(
@@ -5010,7 +4807,7 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
     if checked_at.tzinfo is None or checked_at.utcoffset() != UTC.utcoffset(checked_at):
         _fail("manufacturer sales-state checked_at_utc is not UTC")
     age_seconds = (datetime.now(UTC) - checked_at).total_seconds()
-    if age_seconds > SALES_STATE_MAX_AGE_SECONDS:
+    if require_fresh_sales_state and age_seconds > SALES_STATE_MAX_AGE_SECONDS:
         _fail("manufacturer sales-state snapshot is stale")
     if age_seconds < -SALES_STATE_MAX_FUTURE_SKEW_SECONDS:
         _fail("manufacturer sales-state snapshot is in the future")
@@ -5050,7 +4847,7 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
         ):
             _fail(f"manufacturer sales-state row timestamp is invalid: {product_id}")
         row_age_seconds = (datetime.now(UTC) - row_checked_at).total_seconds()
-        if row_age_seconds > SALES_STATE_MAX_AGE_SECONDS:
+        if require_fresh_sales_state and row_age_seconds > SALES_STATE_MAX_AGE_SECONDS:
             _fail(f"manufacturer sales-state row is stale: {product_id}")
         if row_age_seconds < -SALES_STATE_MAX_FUTURE_SKEW_SECONDS:
             _fail(f"manufacturer sales-state row is in the future: {product_id}")
@@ -5152,16 +4949,15 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
                 claim.get("subject_product_ids"), f"claim subjects {claim_id}"
             )
             if "recommendation_gate" in embedded:
-                if (
-                    not _is_external_candidate_claim(claim_id, tuple(subject_ids))
-                    or not _sales_token_supported(
-                        cast(str, embedded["reader_visible_label"]),
-                        {
-                            "availability_scope": "MODEL",
-                            "variant_caveat": None,
-                            "state": embedded["status"],
-                        },
-                    )
+                if not _is_external_candidate_claim(
+                    claim_id, tuple(subject_ids)
+                ) or not _sales_token_supported(
+                    cast(str, embedded["reader_visible_label"]),
+                    {
+                        "availability_scope": "MODEL",
+                        "variant_caveat": None,
+                        "state": embedded["status"],
+                    },
                 ):
                     _fail(f"embedded external sales state drift: {claim_id}")
                 continue
@@ -5190,9 +4986,7 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
                 or embedded["checked_at"] != state["checked_at_utc"]
                 or embedded.get("variant_caveat") != state.get("variant_caveat")
                 or _normalize_text(cast(str, embedded["reader_visible_label"]))
-                not in _normalize_text(
-                    f"{state['locator']} {state['basis']}"
-                )
+                not in _normalize_text(f"{state['locator']} {state['basis']}")
             ):
                 _fail(f"embedded manufacturer sales state drift: {claim_id}")
     product_aliases: dict[str, dict[str, tuple[str, ...]]] = {}
@@ -5382,19 +5176,16 @@ def _load_repository_model(root: Path) -> _RepositoryModel:
                 claim_id=claim_id,
                 claim_subjects=subjects,
                 has_manufacturer_evidence=any(
-                    sources[source_ref].get("authority")
-                    == "MANUFACTURER_OFFICIAL"
+                    sources[source_ref].get("authority") == "MANUFACTURER_OFFICIAL"
                     for source_ref in cast(list[str], claim["evidence_refs"])
                 ),
             )
             claim_subjects[article_id][claim_id] = subjects
-    safety_statuses, safety_receipt_document_sha256 = (
-        _load_product_safety_statuses(
-            root=root,
-            products_by_id=products_by_id,
-            sources=sources,
-            claims=claims,
-        )
+    safety_statuses, safety_receipt_document_sha256 = _load_product_safety_statuses(
+        root=root,
+        products_by_id=products_by_id,
+        sources=sources,
+        claims=claims,
     )
     market_axis_states, market_audit_document_sha256 = _load_market_axis_states(
         root=root, articles=articles
@@ -5476,15 +5267,11 @@ def _local_assertion_subjects(
         # lend its sales row or dimensions backwards to the excluded product.
         non_owner_spans = [
             (start, end)
-            for product_id, start, end in _matching_product_spans(
-                text, product_aliases
-            )
+            for product_id, start, end in _matching_product_spans(text, product_aliases)
             if product_id != owner_product_id
         ]
         first_non_owner = (
-            min(start for start, _ in non_owner_spans)
-            if non_owner_spans
-            else None
+            min(start for start, _ in non_owner_spans) if non_owner_spans else None
         )
         forward_gap = (
             normalized[position + len(token_key) : first_non_owner]
@@ -5496,12 +5283,9 @@ def _local_assertion_subjects(
             and len(forward_gap) <= 16
             and re.search(r"(?:を想定する|の|は|が)\s*$", forward_gap)
         )
-        if (
-            not non_owner_spans
-            or (
-                position < cast(int, first_non_owner)
-                and not tightly_governed_by_following_name
-            )
+        if not non_owner_spans or (
+            position < cast(int, first_non_owner)
+            and not tightly_governed_by_following_name
         ):
             return (owner_product_id,)
     sentence_start = (
@@ -5629,8 +5413,7 @@ def _local_assertion_subjects(
         return fallback
     if preceding:
         group_start = max(
-            normalized.rfind(marker, sentence_start, position)
-            for marker in ("、", ",")
+            normalized.rfind(marker, sentence_start, position) for marker in ("、", ",")
         )
         coordinated = [
             candidate for candidate in preceding if candidate[1] > group_start
@@ -5639,9 +5422,7 @@ def _local_assertion_subjects(
             r"(?:と|および|/|／)[^,、。]{0,24}は\s*$",
             normalized[min(start for _, start, _ in coordinated) : position],
         ):
-            return tuple(
-                dict.fromkeys(product_id for product_id, _, _ in coordinated)
-            )
+            return tuple(dict.fromkeys(product_id for product_id, _, _ in coordinated))
         nearest_end = max(end for _, _, end in preceding)
         nearest_ids = {
             product_id for product_id, _, end in preceding if end == nearest_end
@@ -6156,23 +5937,16 @@ def _bounded_external_out_of_stock_ui_gap(
         embedded = claim.get("manufacturer_sales_state")
         if (
             not claim_id.endswith("-EXCLUDED")
-            or not _is_external_candidate_claim(
-                claim_id, claim_subjects[claim_id]
-            )
+            or not _is_external_candidate_claim(claim_id, claim_subjects[claim_id])
             or claim.get("classification") == "DECISION_CRITICAL_UNKNOWN"
             or claim.get("effective_lifecycle") != "SOLD_OUT"
             or type(embedded) is not dict
             or cast(dict[str, object], embedded).get("status") != "OUT_OF_STOCK"
-            or cast(dict[str, object], embedded).get("recommendation_gate")
-            != "BLOCKED"
+            or cast(dict[str, object], embedded).get("recommendation_gate") != "BLOCKED"
             or cast(dict[str, object], embedded).get("cta_gate") != "BLOCKED"
-            or EXTERNAL_OUT_OF_STOCK_UI_GAP_RE.search(
-                support_by_claim[claim_id]
-            )
+            or EXTERNAL_OUT_OF_STOCK_UI_GAP_RE.search(support_by_claim[claim_id])
             is None
-            or not _unknown_boundary_supported(
-                unit.text, support_by_claim[claim_id]
-            )
+            or not _unknown_boundary_supported(unit.text, support_by_claim[claim_id])
         ):
             continue
         return True
@@ -6207,10 +5981,7 @@ def _bounded_external_restock_only_lifecycle(
         for product_id in _matching_product_ids(unit.text, product_aliases)
         if product_id.startswith("EXT-")
     }
-    if (
-        unit.owner_product_id is not None
-        and unit.owner_product_id.startswith("EXT-")
-    ):
+    if unit.owner_product_id is not None and unit.owner_product_id.startswith("EXT-"):
         visible_external_ids.add(unit.owner_product_id)
     for claim_id in claim_ids:
         claim = packet_claims[claim_id]
@@ -6228,6 +5999,91 @@ def _bounded_external_restock_only_lifecycle(
             continue
         return True
     return False
+
+
+def _bounded_a10_unknown_purchase_ui_exclusion(
+    *,
+    unit: ReaderUnit,
+    claim_ids: list[str],
+    packet_claims: dict[str, dict[str, object]],
+    support_by_claim: dict[str, str],
+    claim_subjects: dict[str, tuple[str, ...]],
+    product_aliases: dict[str, tuple[str, ...]],
+) -> bool:
+    """Allow only A10's exact UNKNOWN-variant, fail-closed removal boundary.
+
+    A missing purchase UI is not proof that a product is discontinued.  A10
+    therefore keeps NP-TMLK1-K at UNKNOWN and permits completed prose only
+    when the exact reviewed market candidate remains EXCLUDED and the reader
+    is explicitly routed away from purchasing it.  A compound sentence that
+    also mentions Rakua's restock-only state must bind both exact exclusions
+    and the lifecycle route claim.
+    """
+
+    if (
+        A10_SOLOTA_UNKNOWN_EXCLUSION_CLAIM_ID not in claim_ids
+        or EXTERNAL_UNKNOWN_PURCHASE_UI_RE.search(unit.text) is None
+        or EXTERNAL_UNKNOWN_EXCLUSION_ACTION_RE.search(unit.text) is None
+    ):
+        return False
+    claim = packet_claims[A10_SOLOTA_UNKNOWN_EXCLUSION_CLAIM_ID]
+    candidate_id = claim.get("market_candidate_id")
+    visible_external_ids = {
+        product_id
+        for product_id in _matching_product_ids(unit.text, product_aliases)
+        if product_id.startswith("EXT-")
+    }
+    if unit.owner_product_id is not None and unit.owner_product_id.startswith("EXT-"):
+        visible_external_ids.add(unit.owner_product_id)
+    if (
+        candidate_id not in visible_external_ids
+        or not A10_SOLOTA_UNKNOWN_EXCLUSION_CLAIM_ID.endswith("-EXCLUDED")
+        or not _is_external_candidate_claim(
+            A10_SOLOTA_UNKNOWN_EXCLUSION_CLAIM_ID,
+            claim_subjects[A10_SOLOTA_UNKNOWN_EXCLUSION_CLAIM_ID],
+        )
+        or claim.get("classification") != "EDITORIAL_INFERENCE"
+        or claim.get("status") != "INFERENCE_FROM_BOUND_OFFICIAL_FACTS"
+        or claim.get("market_disposition") != "EXCLUDED"
+        or claim.get("model_lifecycle") != "UNKNOWN"
+        or claim.get("variant_lifecycle") != "UNKNOWN"
+        or claim.get("reader_visible_lifecycle") != "UNKNOWN"
+        or claim.get("embedded_structured_lifecycle") != "NOT_PRESENT"
+        or claim.get("lifecycle_evidence_state") != "READER_VISIBLE_ONLY"
+        or claim.get("effective_lifecycle") != "UNKNOWN"
+        or EXTERNAL_UNKNOWN_PURCHASE_UI_RE.search(
+            support_by_claim[A10_SOLOTA_UNKNOWN_EXCLUSION_CLAIM_ID]
+        )
+        is None
+        or EXTERNAL_UNKNOWN_EXCLUSION_ACTION_RE.search(
+            support_by_claim[A10_SOLOTA_UNKNOWN_EXCLUSION_CLAIM_ID]
+        )
+        is None
+        or not _unknown_boundary_supported(
+            unit.text, support_by_claim[A10_SOLOTA_UNKNOWN_EXCLUSION_CLAIM_ID]
+        )
+    ):
+        return False
+
+    if EXTERNAL_RESTOCK_ONLY_RE.search(unit.text) is None:
+        return True
+    if not {
+        A10_RAKUA_RESTOCK_EXCLUSION_CLAIM_ID,
+        A10_LIFECYCLE_ROUTE_CLAIM_ID,
+    } <= set(claim_ids):
+        return False
+    restock = packet_claims[A10_RAKUA_RESTOCK_EXCLUSION_CLAIM_ID]
+    return bool(
+        restock.get("market_candidate_id") in visible_external_ids
+        and restock.get("market_disposition") == "EXCLUDED"
+        and restock.get("effective_lifecycle") == "RESTOCK_NOTIFICATION_ONLY"
+        and EXTERNAL_RESTOCK_ONLY_RE.search(
+            support_by_claim[A10_RAKUA_RESTOCK_EXCLUSION_CLAIM_ID]
+        )
+        and EXTERNAL_EXCLUSION_ACTION_RE.search(
+            support_by_claim[A10_RAKUA_RESTOCK_EXCLUSION_CLAIM_ID]
+        )
+    )
 
 
 def _validate_manufacturer_claim_subject_boundary(
@@ -6254,6 +6110,8 @@ def _external_candidate_token_supported(
     claim_subjects: tuple[str, ...],
     dimension_role: str | None,
     dimension_axis: str | None,
+    reader_text: str | None = None,
+    occurrence_index: int = 0,
 ) -> bool:
     """Match an external-candidate token only to its reviewed packet claim.
 
@@ -6270,6 +6128,15 @@ def _external_candidate_token_supported(
     normalized_token = _normalize_text(assertion_text)
     if SALES_STATE_ASSERTION_RE.fullmatch(normalized_token) is not None:
         support_key = _normalize_text(support)
+        if normalized_token == "現行販売" and "販売状態未確認" in support_key:
+            return bool(
+                reader_text is not None
+                and occurrence_index == 0
+                and re.search(
+                    r"現行販売を確認できるまで推奨しません",
+                    _normalize_text(reader_text),
+                )
+            )
         if re.fullmatch(
             r"販売状態(?:は|を)?(?:未確認|確認できな(?:い|かった|く|せん))",
             normalized_token,
@@ -6363,8 +6230,7 @@ def _validate_assertions(
         )
         if not set(assertion_claims) <= set(unit_claim_ids):
             _fail(
-                f"assertion claims escape unit claims: "
-                f"{unit.unit_id}/{assertion_text}"
+                f"assertion claims escape unit claims: {unit.unit_id}/{assertion_text}"
             )
         if not set(assertion_evidence) <= state_by_evidence_binding.keys():
             _fail(
@@ -6425,6 +6291,8 @@ def _validate_assertions(
                 claim_subjects=claim_subjects[claim_id],
                 dimension_role=assertion_dimension_role,
                 dimension_axis=assertion_dimension_axis,
+                reader_text=unit.text,
+                occurrence_index=cast(int, occurrence_index),
             )
             for claim_id in assertion_claims
         )
@@ -6439,9 +6307,7 @@ def _validate_assertions(
             claim_supported = claim_supported or any(
                 _support_key(assertion_text).replace("negative", "")
                 in _support_key(support_by_claim[claim_id]).replace("negative", "")
-                and _unknown_boundary_supported(
-                    unit.text, support_by_claim[claim_id]
-                )
+                and _unknown_boundary_supported(unit.text, support_by_claim[claim_id])
                 for claim_id in assertion_claims
             )
         count_match = COUNT_ASSERTION_RE.fullmatch(_normalize_text(assertion_text))
@@ -6531,8 +6397,7 @@ def _validate_assertions(
             and not external_sales_token
         ):
             _fail(
-                f"sales-state wording is not closed affirmative prose: "
-                f"{unit.unit_id}"
+                f"sales-state wording is not closed affirmative prose: {unit.unit_id}"
             )
         if sales_token and not assertion_evidence and not external_sales_token:
             _fail(
@@ -6735,9 +6600,7 @@ def _unit_requires_claim_review(unit: ReaderUnit) -> bool:
     if _source_citation_label_matches(unit):
         return False
     return bool(
-        required_assertion_tokens(
-            text, structural_fact=_is_structural_fact_value(unit)
-        )
+        required_assertion_tokens(text, structural_fact=_is_structural_fact_value(unit))
         or _affirmed_sales_matches(text)
         or RECOMMENDATION_CONCLUSION_RE.search(text)
         or CLAIM_REVIEW_REQUIRED_RE.search(text)
@@ -6753,7 +6616,9 @@ def _all_nonempty_clauses_match(pattern: re.Pattern[str], text: str) -> bool:
         for clause in re.split(r"(?<=[。！？])|\n", _normalize_text(text))
         if clause.strip()
     ]
-    return bool(clauses) and all(pattern.search(clause) is not None for clause in clauses)
+    return bool(clauses) and all(
+        pattern.search(clause) is not None for clause in clauses
+    )
 
 
 def _decision_gate_product_ids(
@@ -6776,21 +6641,18 @@ def _decision_gate_product_ids(
     group = _matching_product_group_ids(
         unit.text, product_aliases, tuple(sorted(allowed_product_ids))
     )
-    selected.extend(product_id for product_id in group if product_id in allowed_product_ids)
+    selected.extend(
+        product_id for product_id in group if product_id in allowed_product_ids
+    )
     product_ids = tuple(dict.fromkeys(selected))
     recommendation = RECOMMENDATION_CONCLUSION_RE.search(unit.text) is not None
     selection = SELECTION_DECISION_RE.search(unit.text) is not None
     if selection and re.search(r"\d+\s*候補.*仕様参考", unit.text):
         product_ids = tuple(sorted(allowed_product_ids))
-    if selection and re.search(
-        r"販売状態未確認.*現行販売.*候補", unit.text
-    ):
+    if selection and re.search(r"販売状態未確認.*現行販売.*候補", unit.text):
         product_ids = tuple(sorted(allowed_product_ids))
-    if (
-        SALES_STATE_ASSERTION_RE.search(unit.text)
-        and _matching_product_group_ids(
-            unit.text, product_aliases, tuple(sorted(allowed_product_ids))
-        )
+    if SALES_STATE_ASSERTION_RE.search(unit.text) and _matching_product_group_ids(
+        unit.text, product_aliases, tuple(sorted(allowed_product_ids))
     ):
         product_ids = tuple(sorted(allowed_product_ids))
     if (recommendation or selection) and not product_ids:
@@ -6835,7 +6697,9 @@ def _expected_decision_gate(
         sales = sales_states.get(product_id)
         safety = safety_statuses.get(product_id)
         if sales is None or safety is None:
-            _fail(f"decision gate product is outside evidence contracts: {unit.unit_id}")
+            _fail(
+                f"decision gate product is outside evidence contracts: {unit.unit_id}"
+            )
         caveat = sales.get("variant_caveat")
         sales_rows.append(
             {
@@ -6848,9 +6712,7 @@ def _expected_decision_gate(
         )
         safety_rows.append(dict(safety))
         if sales.get("state") != "AVAILABLE":
-            blocked_reasons.append(
-                f"SALES_STATE:{product_id}:{sales.get('state')}"
-            )
+            blocked_reasons.append(f"SALES_STATE:{product_id}:{sales.get('state')}")
         if caveat is not None and (
             type(caveat) is not dict
             or not _sales_variant_scope_is_explicit(
@@ -7015,9 +6877,7 @@ def _validate_unit_binding(
                 )
         if (
             external_owner is not None
-            and _is_external_candidate_claim(
-                claim_id, claim_subjects[claim_id]
-            )
+            and _is_external_candidate_claim(claim_id, claim_subjects[claim_id])
             and not _external_claim_matches_owner(
                 claim=packet_claims[claim_id],
                 support=support_by_claim[claim_id],
@@ -7045,6 +6905,14 @@ def _validate_unit_binding(
             claim_subjects=claim_subjects,
         )
         and not _bounded_external_restock_only_lifecycle(
+            unit=unit,
+            claim_ids=claim_ids,
+            packet_claims=packet_claims,
+            support_by_claim=support_by_claim,
+            claim_subjects=claim_subjects,
+            product_aliases=product_aliases,
+        )
+        and not _bounded_a10_unknown_purchase_ui_exclusion(
             unit=unit,
             claim_ids=claim_ids,
             packet_claims=packet_claims,
@@ -7152,9 +7020,7 @@ def _validate_unit_binding(
                 and not _is_structural_fact_value(unit)
                 and not risky
             ),
-            "SOURCE_CITATION_LABEL": bool(
-                _source_citation_label_matches(unit)
-            ),
+            "SOURCE_CITATION_LABEL": bool(_source_citation_label_matches(unit)),
             "TABLE_OR_DEFINITION_LABEL": bool(
                 unit.channel in READER_TEXT_CHANNELS
                 and _table_or_definition_label_matches(unit)
@@ -7212,30 +7078,25 @@ def _validate_unit_binding(
         if not claim_ids:
             _fail(f"RECHECK_REQUIRED unit has no external reference: {unit.unit_id}")
         if RECHECK_REQUIRED_DISCLOSURE_RE.search(unit.text) is None:
-            _fail(
-                f"RECHECK_REQUIRED disclosure is not reader-visible: {unit.unit_id}"
-            )
+            _fail(f"RECHECK_REQUIRED disclosure is not reader-visible: {unit.unit_id}")
         for claim_id in claim_ids:
             claim = packet_claims[claim_id]
             if (
                 claim["classification"] != "DECISION_CRITICAL_UNKNOWN"
                 or claim["status"] != "UNCONFIRMED_FROM_BOUND_OFFICIAL_SOURCE"
                 or not claim_id.endswith("-REFERENCE")
-                or not _is_external_candidate_claim(
-                    claim_id, claim_subjects[claim_id]
-                )
+                or not _is_external_candidate_claim(claim_id, claim_subjects[claim_id])
             ):
                 _fail(
                     f"RECHECK_REQUIRED unit uses a completed/non-reference claim: "
                     f"{unit.unit_id}/{claim_id}"
                 )
         external_closed_unknown = bool(CLOSED_UNKNOWN_SALES_PHRASE_RE.search(unit.text))
-        if (
-            not (_has_reader_decision_unknown(unit.text) or external_closed_unknown)
-            or not any(
+        if not (
+            _has_reader_decision_unknown(unit.text) or external_closed_unknown
+        ) or not any(
             _unknown_boundary_supported(unit.text, support_by_claim[claim_id])
             for claim_id in claim_ids
-            )
         ):
             _fail(
                 f"RECHECK_REQUIRED unit lacks a matching unknown boundary: "
@@ -7266,9 +7127,7 @@ def _validate_unit_binding(
         )
         for claim_id in claim_ids
     ):
-        _fail(
-            f"external candidate owner has no matching packet claim: {unit.unit_id}"
-        )
+        _fail(f"external candidate owner has no matching packet claim: {unit.unit_id}")
     if not claim_ids and not evidence_supports:
         _fail(f"claim-bearing reader unit has no semantic binding: {unit.unit_id}")
     if _has_reader_decision_unknown(unit.text) and not any(
@@ -7281,8 +7140,7 @@ def _validate_unit_binding(
     }
     if "DECISION_CRITICAL_UNKNOWN" in classifications:
         _fail(
-            f"unknown external claim was promoted to a completed kind: "
-            f"{unit.unit_id}"
+            f"unknown external claim was promoted to a completed kind: {unit.unit_id}"
         )
     if kind == "VERIFIABLE" and classifications - {"MAJOR_VERIFIABLE"}:
         _fail(f"VERIFIABLE unit has non-verifiable claim: {unit.unit_id}")
@@ -7345,6 +7203,16 @@ def _validate_unit_binding(
         allow_unknown_reference=False,
         gate_evidence_binding_ids=gate_evidence_binding_ids,
     )
+
+
+def validate_source_refresh_inputs(root: Path = ROOT) -> None:
+    """Check acquisition inputs, not publication readiness or reader approval.
+
+    Sources must be capturable before the reader ledger can be reviewed against
+    them. Expired observations are allowed only here; future dates, origin,
+    identity, snapshot hashes, and source-contract validation remain mandatory.
+    """
+    _load_repository_model(root, require_fresh_sales_state=False)
 
 
 def validate_repository(

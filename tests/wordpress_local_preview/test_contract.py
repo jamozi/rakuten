@@ -285,7 +285,7 @@ def test_synthetic_fixture_has_ten_closed_local_articles() -> None:
         assert 'class="hero-photo"' not in article
         if is_lifecycle_route:
             assert '<table class="comparison-table">' not in article
-            assert "このページには旧製品と現行機の比較表を重複掲載しません" in article
+            assert "現行品の仕様比較も重複掲載しません" in article
         else:
             assert '<table class="comparison-table">' in article
         for image_tag in re.findall(r"<img\b[^>]*>", article, re.IGNORECASE):
@@ -360,7 +360,10 @@ def test_synthetic_fixture_has_ten_closed_local_articles() -> None:
         assert "ローカル" not in article
         assert "ローカル草稿" not in article
         assert "公開前一次情報再確認は未実施" not in article
-        assert "広告を含みます" in article
+        if is_lifecycle_route:
+            assert "購入リンクなし" in article
+        else:
+            assert "広告を含みます" in article
         assert "比較テーマの共通イメージ" not in article
         assert 'tabindex="0"' not in article
         comparison_regions = [
@@ -451,43 +454,41 @@ def test_first_five_comparison_sections_do_not_duplicate_the_table_landmark_name
 def test_dishwasher_lifecycle_route_has_distinct_navigation_landmarks() -> None:
     article = (ARTICLES / "solota-vs-rakua-mini-plus.html").read_text(encoding="utf-8")
     assert "dish-capacity-reference" not in article
-    assert article.count('aria-labelledby="dish-comparison-title"') == 1
-    assert article.count('aria-labelledby="dish-products-title"') == 1
-    assert article.count('id="dish-comparison-title"') == 1
-    assert article.count('id="dish-products-title"') == 1
+    assert article.count('aria-labelledby="dish-faq-title"') == 1
+    assert article.count('aria-labelledby="dish-summary-title"') == 1
+    assert article.count('id="dish-faq-title"') == 1
+    assert article.count('id="dish-summary-title"') == 1
 
 
-def test_eufy_c10_station_dimensions_keep_width_depth_order() -> None:
+def test_robot_article_station_dimensions_keep_width_depth_order() -> None:
     article = (ARTICLES / "roomba-mini-vs-switchbot-k11-pro.html").read_text(
         encoding="utf-8"
     )
 
-    assert article.count("27.5×19.1×21.2cm") >= 2
-    assert "19.1×27.5×21.2cm" not in article
-    assert "幅約27.5×奥行約19.1×高さ約21.2cm" in article
+    assert article.count("幅約24×奥行約18×高さ約25cm") >= 2
+    assert "18×24×25cm" not in article
+    assert "ステーション：約24×18×25cm" in article
 
 
-def test_robot_article_separates_four_current_setups_and_installation_space() -> None:
+def test_robot_article_separates_two_current_products_and_installation_space() -> None:
     article = (ARTICLES / "roomba-mini-vs-switchbot-k11-pro.html").read_text(
         encoding="utf-8"
     )
 
-    assert "現行4構成" in article
-    assert "Eufy Auto-Empty C10" in article
+    assert "2製品だけ" in article
+    assert "Roomba Mini Slim" in article
+    assert "SwitchBot" in article
     assert "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY" not in article
     assert "左右各1m・前方1.5m" in article
-    assert "左右各0.5m・前方1.5m" in article
-    assert "筐体寸法とは別に確保" in article
-    assert "測定条件をそろえた実機試験ではありません" in article
-    assert "暗号化方式や権限を含む全条件は購入時に型番別サポート" in article
-    assert "実機と実際の家庭内ネットワークでの確認が必要" in article
-    assert "ゴミ収集部品、本体のフィルター・ブラシ、水拭き部品" in article
+    assert "筐体寸法とは別に" in article
+    assert "アプリの使いやすさ" in article
+    assert "手動でダスト容器を外す動線" in article
     assert "更新履歴" in article
     assert "実機を使用しない比較であることの表示を更新" in article
     assert "2026年8月29日" not in article
     assert "assets/images/home-hero.webp" not in article
     assert "assets/images/article-robot-vacuum-guide.webp" not in article
-    assert article.count("商品画像未確認・購入導線停止") == 4
+    assert article.count("商品画像未確認・購入導線停止") == 2
 
 
 def test_dishwasher_lifecycle_article_keeps_old_status_and_current_comparison_separate() -> (
@@ -497,19 +498,19 @@ def test_dishwasher_lifecycle_article_keeps_old_status_and_current_comparison_se
     assert '<table class="comparison-table">' not in article
     assert 'class="product-profile ' not in article
     assert 'class="official-product-link raos-cta"' not in article
-    assert "現行の工事不要食洗機" in article
+    assert "いま購入できる工事不要食洗機" in article
     assert "少人数向け卓上食洗機4候補の比較" in article
     assert article.count('href="/countertop-dishwasher-for-small-households/"') == 1
-    assert "NP-TML1-W" in article
+    assert "NP-TML1-W" not in article
     assert "NP-TMLK1-K" in article
     assert "ラクアmini Plus TK-MDW22B" in article
     assert "再入荷通知のみ" in article
-    assert "購入候補・商品カード・購入導線から外しました" in article
+    assert "商品カード・購入導線から除外しました" in article
     assert "SS-M171は奥行43.5cm" not in article
     assert "420×435×435mm" not in article
     assert "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B" not in article
     assert "後継機です" not in article
-    assert "公式な後継・同等品であることを意味しません" in article
+    assert "後継機・同等品とは断定しません" in article
     assert "2026年8月31日" in article
     assert "2026年8月29日" not in article
     assert "assets/images/home-hero.webp" not in article
@@ -757,7 +758,8 @@ def test_browser_audit_covers_core_and_local_templates_at_four_widths() -> None:
             )
             assert surface["intent_group_id"]
             assert surface["cluster_anchor"].startswith("cluster-")
-    assert "const publicSurfaces = inventory?.surfaces;" in audit
+    assert "const rawSurfaces = inventory?.surfaces;" in audit
+    assert "const publicSurfaces = rawSurfaces;" in audit
     assert "const localSurfaces = inventory?.local_surfaces;" in audit
     assert "routeClassCounts.size !== 10" in audit
     assert "routeClassCounts.get('ARCHIVE_CATEGORY') !== 3" in audit
@@ -766,7 +768,7 @@ def test_browser_audit_covers_core_and_local_templates_at_four_widths() -> None:
     assert "path: surface.local_path" in audit
     assert (
         "['lifecycle_status_route', "
-        "'旧製品の販売状態確認＋現行比較への案内']"
+        "'以前の比較対象の販売状態確認＋現行比較への案内']"
     ) in audit
     for marker in (
         "audit.h1Count !== 1",
@@ -865,7 +867,13 @@ def test_browser_audit_covers_core_and_local_templates_at_four_widths() -> None:
         "visibleFactValues('この記事で答えること')",
         "audit.articleFacts.contentRoleLabels[0] !== surface.content_role_label",
         "audit.articleFacts.primaryQueryIntents[0] !== surface.primary_query_intent",
-        "surface.content_role !== 'lifecycle_status_route'",
+        "lifecycleStatusRouteArticleId = 'solota-vs-rakua-mini-plus'",
+        "lifecycleStatusRouteRows.length !== 1",
+        "surface.content_role === 'lifecycle_status_route'",
+        "zeroProducts !== isLifecycleStatusRoute",
+        "zeroCtas !== isLifecycleStatusRoute",
+        "lifecycleProductCtaInvariantFailure",
+        "audit.productProfileCount !== audit.productIds.length",
         "requiresAffiliateCta",
         "document.documentElement.style.setProperty('font-size', '200%', 'important')",
         "document.documentElement.style.removeProperty('font-size')",
@@ -931,13 +939,21 @@ def test_browser_audit_fails_closed_on_cross_cutting_security_and_a11y_tamper() 
     readme = (SLICE / "README.md").read_text(encoding="utf-8")
 
     for marker in (
-        '.raos-disclosure[aria-label="広告表示"]',
+        "page.locator('.raos-disclosure')",
         ".scrollIntoViewIfNeeded()",
         "disclosure.compareDocumentPosition(firstCta)",
         "disclosureRect.bottom <= innerHeight",
         "disclosureEffectiveOpacity > 0",
         "audit.disclosure.unobscured",
         "audit.disclosure.standardPhraseCount !== 3",
+        "audit.disclosure.nonaffiliatePhraseCount !== 3",
+        "'以前の比較対象の販売状態を確認する案内記事'",
+        "audit.disclosure.ariaLabel !== '収益化の対象外'",
+        "audit.disclosure.strongText !== '購入リンクなし'",
+        "audit.disclosure.detailsCount !== 0",
+        "audit.disclosure.standardPhraseCount !== 0",
+        "audit.disclosure.nonaffiliatePhraseCount !== 0",
+        "disclosureSemanticsFailure",
         "audit.disclosure.policyLinkCount !== 1",
         "audit.disclosure.detailsValid",
         "page.keyboard.press('Enter')",
@@ -987,6 +1003,8 @@ def test_browser_audit_fails_closed_on_cross_cutting_security_and_a11y_tamper() 
 
     assert "method, resource type, and origin class as counts" in readme
     assert "A Content Security Policy is deliberately not claimed" in readme
+    assert "Nine affiliate articles require the standard advertising disclosure" in readme
+    assert "lifecycle-status route instead requires" in readme
 
 
 def test_browser_route_inventory_tamper_is_rejected_before_navigation() -> None:
@@ -1025,6 +1043,16 @@ def test_browser_route_inventory_tamper_is_rejected_before_navigation() -> None:
         "local_surfaces"
     ][2]["route_class"]
     cases.append(duplicate_route_class)
+
+    a09_lifecycle_tamper = json.loads(json.dumps(inventory))
+    a09 = next(
+        row
+        for row in a09_lifecycle_tamper["surfaces"]
+        if row.get("article_id") == "roomba-mini-vs-switchbot-k11-pro"
+    )
+    a09["content_role"] = "lifecycle_status_route"
+    a09["content_role_label"] = "以前の比較対象の販売状態確認＋現行比較への案内"
+    cases.append(a09_lifecycle_tamper)
 
     canonical_tamper = json.loads(json.dumps(inventory))
     canonical_tamper["local_surfaces"][0]["expected_canonical"] = "PRESENT"

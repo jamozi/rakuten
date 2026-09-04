@@ -123,9 +123,9 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "e3a08018e580727e3a22b84686029bc69b534db10625061c74f85791a2cab658",
-    "source_navigation_sha256": "35571f11070f44391de5555684e2ab7ef18ddcaeac7c94821b043e0dc38d90d4",
-    "source_portfolio_sha256": "aa90a81a05042f01eb326e24a84248f303b749b7996a7feb263b52bee8775d34"
+    "sha256": "8661ef74dc2fb4aebc4f9067bf5aa99b6ce058bb62cdb1948d70f5366f802a18",
+    "source_navigation_sha256": "12ef041c11f4cddc7cb1924027f96c36ad7df475a4266a2bdae1b580e874fc7a",
+    "source_portfolio_sha256": "99cc7569957781727d8fc5c9331dcf498e341e630758947b6eed2a39bd3a7cb9"
   },
   "editorial_v2": {
     "asset": "assets/editorial-v2.css",
@@ -518,6 +518,7 @@
     "relationship_types": [
       "broader_guide",
       "narrower_comparison",
+      "lifecycle_reference",
       "adjacent_condition"
     ],
     "rendered_relationships": "FIRST_SEMANTIC_SAME_INTENT_IN_BODY_PLUS_OPTIONAL_SECOND_SEMANTIC_SAME_INTENT_AND_CLUSTER_HOME_LINK",
@@ -525,8 +526,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "f48d09a706e3ce9a25381734baf92d65e364a04f5394984567ab60cec2f80476",
-    "source_fingerprint": "f48d09a706e3ce9a25381734baf92d65e364a04f5394984567ab60cec2f80476",
+    "revision": "de73b422754d2b0c3c5b6c49e5ea1a1e97c403fa8c8c95461cc7b6d4251f9c90",
+    "source_fingerprint": "de73b422754d2b0c3c5b6c49e5ea1a1e97c403fa8c8c95461cc7b6d4251f9c90",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",

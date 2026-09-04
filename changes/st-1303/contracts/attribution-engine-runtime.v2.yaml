@@ -39,7 +39,7 @@ source_bindings:
     sha256: cd49fd67e860a52670799bfaa8ec60711341ddc3fbbf37ceff89b76c85609dd9
   five_slot_measurement:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 3a59ad41be34f2f01435cc1e85addabbf5b37507ea6b523f6a0898d3dfd9b32b
+    sha256: 69bd518321cbd5327b920c6245a4cfa861f881234bd8ba93dc09bde5c85c7fb9
 
 open_decision_boundary:
   id: OD-003
@@ -50,7 +50,7 @@ open_decision_boundary:
 
 measurement_contract:
   schema_version: RAOS_ST1303_MEASUREMENT_ATTRIBUTION_CONTRACT_V2
-  source_contract_sha256: 3a59ad41be34f2f01435cc1e85addabbf5b37507ea6b523f6a0898d3dfd9b32b
+  source_contract_sha256: 69bd518321cbd5327b920c6245a4cfa861f881234bd8ba93dc09bde5c85c7fb9
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
   articles:
@@ -62,12 +62,12 @@ measurement_contract:
     - slot: 2
       article_id: st1704-portable-power-station-guide
       slug: portable-power-station-guide
-      packet_sha256: 1e2974b06b71da55b7af19e27f893a21afc933bc155bd753a244b01690da8562
+      packet_sha256: 3c464302fecbfe2552db7ef3330d1c8a317dae30250d0bc2c11dfb3fb3fac87d
       intent_classification: SELECTION_GUIDE
     - slot: 3
       article_id: st1704-anker-solix-c300-c800-c1000-differences
       slug: anker-solix-c300-c800-c1000-differences
-      packet_sha256: a75331cc78827097a3024e10b42a2221bba1fcd36e00eb66d0b702e0fe4b79aa
+      packet_sha256: 5a6d223eb930fba97991ec872ffe3f539b1d090b5a04606349f941452f19dc5a
       intent_classification: MODEL_DIFFERENCES
     - slot: 4
       article_id: st1704-countertop-dishwasher-for-small-households

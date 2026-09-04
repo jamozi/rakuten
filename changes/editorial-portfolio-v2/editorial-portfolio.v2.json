@@ -29,7 +29,7 @@
     },
     "local_product_image_origin": "/raos-product-media/",
     "completion_gate": {
-      "required_product_count": 31,
+      "required_product_count": 33,
       "required_product_card_count": 37,
       "required_affiliate_cta_count": 74,
       "required_product_state": "verified",
@@ -74,9 +74,9 @@
     "products": [
       {
         "product_id": "PRD-PROTECA-TRI-AIR-01541",
-      "article_ids": [
-        "st1703-first-suitcase-comparison",
-        "lightweight-carry-on-suitcase-under-3kg"
+        "article_ids": [
+          "st1703-first-suitcase-comparison",
+          "lightweight-carry-on-suitcase-under-3kg"
         ],
         "evaluated_at": "2026-08-31",
         "axis_assessments": {
@@ -88,7 +88,7 @@
           "maintainability": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED",
           "primary_source_confidence": "OFFICIAL_PRODUCT_PAGE_BOUND"
         },
-      "inclusion_reason": "エース3候補の軽量役に加え、30L以上・3kg以下の市場横断比較でも35L・1.8kgの条件を満たすため。日本製と保証条件は公式情報で確認した。",
+        "inclusion_reason": "エース3候補の軽量役に加え、30L以上・3kg以下の市場横断比較でも35L・1.8kgの条件を満たすため。日本製と保証条件は公式情報で確認した。",
         "excluded_alternatives": [
           {
             "scope": "以前の掲載候補 ACE クレスタ 06316",
@@ -292,6 +292,61 @@
         ]
       },
       {
+        "product_id": "PRD-BLUETTI-AORA30-V2",
+        "article_ids": [
+          "st1704-portable-power-station-guide"
+        ],
+        "evaluated_at": "2026-09-01",
+        "axis_assessments": {
+          "use_case_fit": "INCLUDED_FOR_DECLARED_USE_CASE",
+          "safety": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED",
+          "dimensions": "OFFICIAL_SPEC_CONFIRMED",
+          "performance": "OFFICIAL_SPEC_CONFIRMED",
+          "warranty_and_support": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED",
+          "maintainability": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED",
+          "primary_source_confidence": "OFFICIAL_PRODUCT_PAGE_BOUND"
+        },
+        "inclusion_reason": "288Wh帯で定格600Wと9ポートを必要とし、約4.3kgを運べる条件に対応するため。C300より約0.2kg重く設置面積も大きい一方、メーカー公表の定格出力は300W高い。必要な出力と運べる重量によって候補が変わる差を読者が判断できるため追加した。",
+        "excluded_alternatives": [
+          {
+            "scope": "小容量帯で販売状態・容量・定格出力・重量・外寸を同じ公式情報から確認できない候補",
+            "reason": "必要出力と持ち運び条件を同じ尺度で判断できないため、購入候補に含めない。"
+          }
+        ],
+        "evidence_refs": [
+          "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+          "https://www.bluetti.jp/collections/aora-series-portable-power-stations",
+          "https://www.bluetti.jp/blogs/buying-guide/aora-30-v2-vs-eb3a"
+        ]
+      },
+      {
+        "product_id": "PRD-BLUETTI-AORA100-V2",
+        "article_ids": [
+          "st1704-portable-power-station-guide"
+        ],
+        "evaluated_at": "2026-09-01",
+        "axis_assessments": {
+          "use_case_fit": "INCLUDED_FOR_DECLARED_USE_CASE",
+          "safety": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED",
+          "dimensions": "OFFICIAL_SPEC_CONFIRMED",
+          "performance": "OFFICIAL_SPEC_CONFIRMED",
+          "warranty_and_support": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED",
+          "maintainability": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED",
+          "primary_source_confidence": "OFFICIAL_PRODUCT_PAGE_BOUND"
+        },
+        "inclusion_reason": "1024Wh・定格1800W・約11.5kgという、Jackery 1000 New V3とDJI Power 1000 V2の間の重量で定格1800Wを必要とする条件に対応するため。各社で呼称・試験条件が異なる最大出力とは直接順位付けせず、容量、メーカー公表の定格出力、運べる重量から用途差を判断できる利益を優先して追加した。",
+        "excluded_alternatives": [
+          {
+            "scope": "1000Wh帯で販売状態・容量・出力・重量・外寸を同じ公式情報から確認できない候補",
+            "reason": "正確なモデルの販売状態と主要仕様を結び付けられず、同じ尺度で用途適合を判断できないため購入候補に含めない。"
+          }
+        ],
+        "evidence_refs": [
+          "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+          "https://www.bluetti.jp/collections/aora-series-portable-power-stations"
+        ]
+      },
+      {
         "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
         "article_ids": [
           "st1704-anker-solix-c300-c800-c1000-differences"
@@ -452,8 +507,7 @@
       {
         "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
         "article_ids": [
-          "st1704-compact-robot-vacuum-shortlist",
-          "roomba-mini-vs-switchbot-k11-pro"
+          "st1704-compact-robot-vacuum-shortlist"
         ],
         "evaluated_at": "2026-08-31",
         "axis_assessments": {
@@ -506,8 +560,7 @@
       {
         "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
         "article_ids": [
-          "st1704-compact-robot-vacuum-shortlist",
-          "roomba-mini-vs-switchbot-k11-pro"
+          "st1704-compact-robot-vacuum-shortlist"
         ],
         "evaluated_at": "2026-08-31",
         "axis_assessments": {
@@ -709,10 +762,6 @@
             "reason": "33L・2.7kgで比較条件を満たし、メーカーが『交換用静音タイヤキット』という名称で販売する交換部品も確認できる。ただし走行音は実測しておらず、静音性を選定根拠に使わない。比較表で容量と本体重量を同じ軸にそろえると、C-Liteより容量が3L少なく600g重いため除外し、車輪の交換性を確認する場合の代替候補として扱う。"
           },
           {
-            "scope": "PROTECA Tri-Air 01541",
-            "reason": "1.8kgだがストッパーがなく、A01の最軽量役として採用したためA07では重複掲載しない。"
-          },
-          {
             "scope": "無印良品 36Lハードキャリー",
             "reason": "36L・2.9kgで比較条件を満たし、ストッパーも備える。ただし比較表で容量と本体重量を同じ軸にそろえると、同容量帯のC-Liteより800g重く、ストッパー役もAeroflexと重なるため除外。ストッパーを優先する場合の代替候補として扱う。"
           }
@@ -911,6 +960,10 @@
     "body_format": "html_fragment",
     "required_editorial_root": "raos-editorial-v2",
     "required_ad_disclosure": "広告を含みます。購入リンクから成果報酬を受け取る場合がありますが、選定・掲載順には使いません。",
+    "required_nonaffiliate_disclosure": "この記事には購入リンクがありません。以前の比較対象の販売状態を確認する案内記事のため、商品カードとアフィリエイトリンクは掲載していません。",
+    "nonaffiliate_article_ids": [
+      "solota-vs-rakua-mini-plus"
+    ],
     "fixed_breaks_forbidden_in": [
       "h1",
       "h2",
@@ -965,13 +1018,15 @@
       "production_slug": "portable-power-station-guide",
       "category": "備え",
       "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める",
-      "excerpt": "停電対策のポータブル電源5モデルを、容量・各社公表の連続供給目安・重量・大きさで比較。使いたい機器と持ち運び条件から候補を絞ります。",
+      "excerpt": "停電対策のポータブル電源7モデルを、容量・各社公表の出力・重量・寸法で比較。使いたい機器と持ち運び条件から候補を絞ります。",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
       "product_ids": [
         "PRD-ANKER-SOLIX-C300",
+        "PRD-BLUETTI-AORA30-V2",
         "PRD-JACKERY-500-NEW",
         "PRD-ANKER-SOLIX-C800",
         "PRD-JACKERY-1000-NEW-V3",
+        "PRD-BLUETTI-AORA100-V2",
         "PRD-DJI-POWER-1000-V2"
       ]
     },
@@ -1085,14 +1140,12 @@
       "local_slug": "local-preview-roomba-mini-vs-switchbot-k11-pro",
       "production_slug": "roomba-mini-vs-switchbot-k11-pro",
       "category": "家事",
-      "title": "Roomba Mini Slim・SwitchBot K11+ Pro・Eufy C10・DEEBOT mini 2を比較",
-      "excerpt": "Roomba Mini Slim、SwitchBot K11+ Pro、Eufy Auto-Empty C10、DEEBOT mini 2を、本体・ステーション寸法、自動ゴミ収集、水拭き・モップ手入れ、Wi-Fiから公式仕様で比べます。",
+      "title": "Roomba Mini SlimとSwitchBot K11+ Proを設置寸法・水拭きで比較",
+      "excerpt": "Roomba Mini SlimとSwitchBot K11+ Proの2製品を、本体・充電台の寸法、自動ゴミ収集、水拭き、Wi-Fi条件で比較します。別条件の候補は4モデル比較へ案内します。",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
       "product_ids": [
-        "PRD-EUFY-AUTOEMPTY-C10-T2292",
-        "PRD-SWITCHBOT-K11-PRO",
         "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
-        "PRD-ECOVACS-DEEBOT-MINI2"
+        "PRD-SWITCHBOT-K11-PRO"
       ]
     },
     {
@@ -1730,6 +1783,44 @@
       "product_kind_tokens": [
         "食器洗い乾燥機",
         "食洗機"
+      ]
+    },
+    {
+      "product_id": "PRD-BLUETTI-AORA30-V2",
+      "official_name": "BLUETTI AORA 30 V2（グレー）",
+      "official_models": [
+        "AORA 30 V2"
+      ],
+      "representative_model": "AORA 30 V2",
+      "official_url": "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+      "rakuten_shop_code": null,
+      "rakuten_item_code": null,
+      "required_title_tokens": [
+        "BLUETTI",
+        "AORA 30 V2"
+      ],
+      "product_kind_tokens": [
+        "ポータブル電源",
+        "Portable Power Station"
+      ]
+    },
+    {
+      "product_id": "PRD-BLUETTI-AORA100-V2",
+      "official_name": "BLUETTI AORA 100 V2（インディゴ）",
+      "official_models": [
+        "AORA 100 V2"
+      ],
+      "representative_model": "AORA 100 V2",
+      "official_url": "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+      "rakuten_shop_code": null,
+      "rakuten_item_code": null,
+      "required_title_tokens": [
+        "BLUETTI",
+        "AORA 100 V2"
+      ],
+      "product_kind_tokens": [
+        "ポータブル電源",
+        "Portable Power Station"
       ]
     }
   ]

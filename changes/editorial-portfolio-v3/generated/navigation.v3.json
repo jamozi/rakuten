@@ -141,9 +141,9 @@
         {
           "article_code": "a10",
           "article_id": "solota-vs-rakua-mini-plus",
-          "context": "条件を絞った比較へ進む",
+          "context": "以前の比較対象の販売状況を確認する",
           "production_slug": "solota-vs-rakua-mini-plus",
-          "relationship": "narrower_comparison"
+          "relationship": "lifecycle_reference"
         }
       ],
       "title": "工事不要の食洗機4候補｜1〜2人暮らしの設置条件で選ぶ"
@@ -178,12 +178,12 @@
       "broader_article_id": "st1704-compact-robot-vacuum-shortlist",
       "category_label": "家事",
       "cluster_id": "household",
-      "comparison_scope": "Roomba Mini SlimとSwitchBot K11+ Proを主比較とし、Eufy Auto-Empty C10は薄型、DEEBOT mini 2はモップ自動手入れの条件別候補として確認",
-      "content_role": "constraint_shortlist",
-      "content_role_label": "条件別比較",
+      "comparison_scope": "Roomba Mini Slim F115060とSwitchBot K11+ Proの純2製品比較。薄型本体やモップ自動手入れを優先する別候補は4モデル比較へ案内",
+      "content_role": "head_to_head_comparison",
+      "content_role_label": "2製品比較",
       "home_order": 3,
       "intent_group_id": "robot-vacuum",
-      "primary_query_intent": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を比べ、薄型またはモップ自動手入れが必要な場合だけ別候補を確認する",
+      "primary_query_intent": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を二者択一で比べる",
       "production_slug": "roomba-mini-vs-switchbot-k11-pro",
       "related_articles": [
         {
@@ -194,7 +194,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "title": "Roomba Mini Slim・SwitchBot K11+ Pro・Eufy C10・DEEBOT mini 2を比較"
+      "title": "Roomba Mini SlimとSwitchBot K11+ Proを設置寸法・水拭きで比較"
     },
     {
       "article_code": "a10",
@@ -202,12 +202,12 @@
       "broader_article_id": "st1704-countertop-dishwasher-for-small-households",
       "category_label": "家事",
       "cluster_id": "household",
-      "comparison_scope": "旧SOLOTA NP-TML1-W／NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
+      "comparison_scope": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
       "content_role": "lifecycle_status_route",
-      "content_role_label": "旧製品の販売状態確認＋現行比較への案内",
+      "content_role_label": "以前の比較対象の販売状態確認＋現行比較への案内",
       "home_order": 4,
       "intent_group_id": "countertop-dishwasher",
-      "primary_query_intent": "旧SOLOTA・ラクアmini Plusの販売状態と型番を確認し、現行4候補の比較記事へ移る",
+      "primary_query_intent": "SOLOTA NP-TMLK1-Kとラクアmini Plusの販売状態を確認し、現行4候補の比較記事へ移る",
       "production_slug": "solota-vs-rakua-mini-plus",
       "related_articles": [
         {
@@ -226,7 +226,7 @@
       "broader_article_id": null,
       "category_label": "備え",
       "cluster_id": "preparedness",
-      "comparison_scope": "容量・各社公表の出力・重量・寸法を公式情報で照合できる現行ポータブル電源。安全・保証・回収は全採用品の照合完了まで選定根拠から除外",
+      "comparison_scope": "容量・各社公表の出力・重量・寸法を公式情報で照合できる現行ポータブル電源7モデル。安全・保証・回収は全採用品の照合完了まで選定根拠から除外",
       "content_role": "category_guide",
       "content_role_label": "選び方",
       "home_order": 1,

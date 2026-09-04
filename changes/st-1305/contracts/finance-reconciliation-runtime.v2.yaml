@@ -45,25 +45,25 @@ source_bindings:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   st1303_runtime:
     path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: 00feba86e4ca349d5348421679111c21e20fd13e898d8000491dd8d708afcbe3
+    sha256: 3ba471e700ae4a03a8e1c15b104c85ad645befa06863c5183a5110b5544b8d7d
   st1303_projection:
     path: changes/st-1303/generated/attribution-engine-recorded.v2.json
-    sha256: cc11e2cce266b2391eca5c041b5417feb2e3e6abbb21460013b5e65686690da8
+    sha256: 3c668f7dc69bcbb5a8be91966fcdde1710feffee32458f985f5fe77c73e1c62c
   st1303_fixture:
     path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
-    sha256: ec6e793680946b317ac97cd0ba9c067cfcf9f06841a3558e52949c950b3e2793
+    sha256: 3eb8f23ae8504312cff34330dcb112069fa50503fb0e3c8f00beff7185a436ad
   st1304_runtime:
     path: changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
-    sha256: 0dec8138778668e5a7b063a7bc5d40feb63aadb9cfabcbad5974328ccb3d48ea
+    sha256: cbea905bf38d75a1f359ae5f225615e7ca1d17bf026201ded62c2972024fadfa
   st1304_projection:
     path: changes/st-1304/generated/cost-unit-economics-recorded.v2.json
-    sha256: fdb5728eeffe95cf4de4f9873e5ddefc924e3c8cbf9ae84f8ea42df6698b921d
+    sha256: c585189cd438eb4592a254fdea686e6cfb8e2c97541de168617686c71d1adb8f
   st1304_fixture:
     path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
-    sha256: be6f9d9a14dd91078d66805f47ac1d4828e4a7d5f2275c58e9ab4e2cdb382fb1
+    sha256: c1b0a91e25ee2f47a0667034f8493a1205996d0f6374e78cfa404d4b0fbc8a38
   five_slot_measurement:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 3a59ad41be34f2f01435cc1e85addabbf5b37507ea6b523f6a0898d3dfd9b32b
+    sha256: 69bd518321cbd5327b920c6245a4cfa861f881234bd8ba93dc09bde5c85c7fb9
 
 open_decision_boundary:
   report_sample:
@@ -198,13 +198,13 @@ authority_boundary:
 
 recorded_fixture:
   path: changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json
-  sha256: fbff7c293f10af6381d6f324a75da09bf258be886d798a263a38240a52d8767a
+  sha256: 4536e66149cd7e4b18f9284c874b54cc56dcc9a062892ad49024a20b9e578166
   synthetic: true
-  unit_economics_fixture_sha256: be6f9d9a14dd91078d66805f47ac1d4828e4a7d5f2275c58e9ab4e2cdb382fb1
-  unit_economics_input_sha256: ff1909fffee9cfd9a0e34502c6f8ed9376aaa9ab16fafbad08fc02490add2508
-  unit_economics_result_sha256: 1b46e45d89d24d16875bb11d153def331bfa2bae45ebce8b26920a4892d78f91
-  reconciliation_input_sha256: 95f8f83c3cbb23c6082c6fdd58c8e12c84b903b77f88953cb6704df56a3ace4d
-  reconciliation_result_sha256: 9e38edf8fd61a15d58cafdea996b05f4f8f77dfc937b52f79aa6c06c241b6cd0
+  unit_economics_fixture_sha256: c1b0a91e25ee2f47a0667034f8493a1205996d0f6374e78cfa404d4b0fbc8a38
+  unit_economics_input_sha256: 57446eed7e40ac77558b6b3138b19e14fbce3dbe29b57863cab606a989c4df03
+  unit_economics_result_sha256: 7f97536c1d4bdc6cefb707f4a0cbb9ce87c8f36885eacb25d50a0a5570380434
+  reconciliation_input_sha256: ba30d2de59023b773673e7262a7e29534148d6633f1cbfc2cbf55c683b69ab45
+  reconciliation_result_sha256: 8b88ff2218d00d98326ec005123ca331a344eef646e0b048a66db1410d8fbf9f
   provider_execution: NOT_EXECUTED
 
 verification_boundary:

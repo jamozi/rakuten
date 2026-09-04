@@ -14,7 +14,7 @@
       "article_type_code": "AT-001",
       "intent_classification": "SELECTION_GUIDE",
       "intent_cluster": "備え",
-      "packet_sha256": "1e2974b06b71da55b7af19e27f893a21afc933bc155bd753a244b01690da8562",
+      "packet_sha256": "3c464302fecbfe2552db7ef3330d1c8a317dae30250d0bc2c11dfb3fb3fac87d",
       "slot": 2,
       "slug": "portable-power-station-guide"
     },
@@ -23,7 +23,7 @@
       "article_type_code": "AT-004",
       "intent_classification": "MODEL_DIFFERENCES",
       "intent_cluster": "備え",
-      "packet_sha256": "a75331cc78827097a3024e10b42a2221bba1fcd36e00eb66d0b702e0fe4b79aa",
+      "packet_sha256": "5a6d223eb930fba97991ec872ffe3f539b1d090b5a04606349f941452f19dc5a",
       "slot": 3,
       "slug": "anker-solix-c300-c800-c1000-differences"
     },
@@ -123,7 +123,7 @@
   "slice_id": "AFFILIATE_LEARNING_MEASUREMENT_V2",
   "source_bindings": {
     "article_collection_path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-    "article_collection_sha256": "aa188e09770d7411bf317ccc3265b8bfa3c7838fe0dde134f2f99ff28f15aa68",
+    "article_collection_sha256": "4d1a3cdd749309236a6ac0aaae07c2abe7f43263894d18b575c04326eb2551b2",
     "compatibility_template_path": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json",
     "compatibility_template_sha256": "885735bdf2df835c6725d92a7792328d292e56555e76cc0f3ac7df1eda08fc3b"
   },

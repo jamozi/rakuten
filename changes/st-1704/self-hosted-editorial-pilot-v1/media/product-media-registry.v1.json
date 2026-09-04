@@ -1062,6 +1062,114 @@
         "linked_image": false
       },
       "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
+    },
+    {
+      "media_asset_ref": "MEDIA-BLUETTI-AORA30-V2",
+      "product_id": "PRD-BLUETTI-AORA30-V2",
+      "product_name": "BLUETTI AORA 30 V2（グレー）",
+      "asset_class": "rakuten_api_product_image",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
+      "source_url": null,
+      "image_url": null,
+      "width": null,
+      "height": null,
+      "required_width": 128,
+      "required_height": 128,
+      "alt": "BLUETTI AORA 30 V2（グレー）の商品画像",
+      "retrieved_at": null,
+      "response_sha256": null,
+      "image_sha256": null,
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "AORA 30 V2"
+        ],
+        "required_title_tokens": [
+          "BLUETTI",
+          "AORA 30 V2"
+        ],
+        "product_kind_tokens": [
+          "ポータブル電源",
+          "Portable Power Station"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
+      "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
+    },
+    {
+      "media_asset_ref": "MEDIA-BLUETTI-AORA100-V2",
+      "product_id": "PRD-BLUETTI-AORA100-V2",
+      "product_name": "BLUETTI AORA 100 V2（インディゴ）",
+      "asset_class": "rakuten_api_product_image",
+      "status": "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE",
+      "provider": "RAKUTEN_ICHIBA_ITEM_SEARCH",
+      "source_url": null,
+      "image_url": null,
+      "width": null,
+      "height": null,
+      "required_width": 128,
+      "required_height": 128,
+      "alt": "BLUETTI AORA 100 V2（インディゴ）の商品画像",
+      "retrieved_at": null,
+      "response_sha256": null,
+      "image_sha256": null,
+      "identity": {
+        "item_code": null,
+        "jan": null,
+        "allowed_variants": [
+          "AORA 100 V2"
+        ],
+        "required_title_tokens": [
+          "BLUETTI",
+          "AORA 100 V2"
+        ],
+        "product_kind_tokens": [
+          "ポータブル電源",
+          "Portable Power Station"
+        ],
+        "forbidden_title_tokens": [
+          "収納ケース",
+          "専用ケース",
+          "保護ケース",
+          "交換用",
+          "互換",
+          "カバー",
+          "バッグ単品",
+          "フィルター",
+          "ブラシ単品",
+          "モップパッド",
+          "バッテリー単体",
+          "アクセサリー"
+        ],
+        "status": "PENDING_EXACT_MATCH"
+      },
+      "display_policy": {
+        "object_fit": "contain",
+        "lazy_load": true,
+        "linked_image": false
+      },
+      "publication_blocker": "PENDING_PRODUCT_MEDIA_EVIDENCE"
     }
   ]
 }

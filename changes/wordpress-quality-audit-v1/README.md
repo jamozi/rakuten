@@ -64,7 +64,7 @@ Required surfaces are:
    history, with assumptions kept distinct from proof;
 8. search-intent ownership, cannibalization and orphan detection, plus deliberate
    primary-secondary internal routes;
-9. the currently blocked 0/31 final-product seven-axis due-diligence state;
+9. the currently blocked 0/33 final-product seven-axis due-diligence state;
    reader/audit-material product-name and sales-state consistency;
    product-by-product use fit, Japan warranty, maintenance, consumables/repair,
    model-end/successor status; and no-buy/keep-existing conclusions;
@@ -87,9 +87,9 @@ Required surfaces are:
 15. comparison independence and conflict disclosure; proof-before-action CTA
     order, count, density, prominence, neutral labels, equal exposure for all
     selected products, and dark-pattern absence;
-16. clear advertising disclosure at the start of every article (a global notice
-    alone is insufficient), copyright/image rights provenance, and controls
-    against product misidentification;
+16. clear affiliate or nonaffiliate monetization-status disclosure at the start
+    of every article (a global notice alone is insufficient), copyright/image
+    rights provenance, and controls against product misidentification;
 17. WordPress REST-to-DB-to-REST/HTML content round-trip; KSES/Gutenberg
     preservation of required class, data, ARIA, `details`, table and CTA
     attributes; source-snapshot reconstruction; deterministic generation;
@@ -119,7 +119,7 @@ Required surfaces are:
 25. old-slug and trailing-slash redirects, internal/external tracking,
     sponsored/nofollow rel, opener isolation, final-target, mixed-content, CSP,
     and security-header behavior;
-26. 37 product-card placements covering 31 unique products, 74 CTA, and 130
+26. 37 product-card placements covering 33 unique products, 74 CTA, and 130
     required runtime screenshots; verified image MIME/dimensions/alt and
     accessible names; fallback absence; activation freshness; exactly one hero
     per page; and runtime verification of ten article-specific header comparison

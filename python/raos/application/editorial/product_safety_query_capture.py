@@ -412,7 +412,7 @@ _NORMALIZATION_POLICY: Final = {
     "notice_id_order": "LEXICOGRAPHIC_UNIQUE",
     "none_found_rule": "PARSEABLE_OFFICIAL_ZERO_RESULT_ONLY",
     "positive_result_rule": "MATCH_IF_COUNT_EQUALS_UNIQUE_NOTICE_IDS_ELSE_AMBIGUOUS",
-    "manufacturer_extension": "SEPARATE_FAIL_CLOSED_NOT_IMPLEMENTED_HERE",
+    "manufacturer_extension": "SEPARATE_FAIL_CLOSED_MANUFACTURER_EVIDENCE_REQUIRED",
 }
 
 
@@ -2006,7 +2006,7 @@ class ProductSafetyAdministrativeProductEvidence:
 
 @dataclass(frozen=True, slots=True)
 class ProductSafetyAdministrativeEvidenceSet:
-    """Replay-verified exact 31 x 3 capture bundle.
+    """Replay-verified exact selected-product x 3 capture bundle.
 
     The digest binds only safe canonical evidence identifiers.  Absolute private
     paths, raw response material, and query response bodies are deliberately not

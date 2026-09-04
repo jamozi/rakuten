@@ -564,6 +564,40 @@
       "alternative": null,
       "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
       "structured_snapshot_sha256": "9eff285b2b844ca0418e2ff7efcb09e8716fca8b61298f75ba07ed866973328b"
+    },
+    {
+      "checked_at_utc": "2026-09-01T00:00:00Z",
+      "product_id": "PRD-BLUETTI-AORA30-V2",
+      "state": "AVAILABLE",
+      "availability_scope": "VARIANT",
+      "official_url": "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+      "status_evidence_urls": [
+        "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+        "https://www.bluetti.jp/collections/aora-series-portable-power-stations"
+      ],
+      "locator": "商品名「AORA 30 V2 | グレー」、AORAシリーズ一覧の「AORA 30 V2 グレー」「288Wh | 600W」と販売価格表示",
+      "basis": "メーカー公式のexact色商品ページとAORAシリーズ一覧で、対象variantと読者向け販売表示を確認したためVARIANT scopeでAVAILABLE。楽天のexact variant確認は別証跡を必須とする。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "00cc3cf2d54172908526647d70ffb67696dad75bef115874fb5ba49d63fc5d7a"
+    },
+    {
+      "checked_at_utc": "2026-09-01T00:00:00Z",
+      "product_id": "PRD-BLUETTI-AORA100-V2",
+      "state": "AVAILABLE",
+      "availability_scope": "VARIANT",
+      "official_url": "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+      "status_evidence_urls": [
+        "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+        "https://www.bluetti.jp/collections/aora-series-portable-power-stations"
+      ],
+      "locator": "商品名「AORA 100 V2 | インディゴ」、AORAシリーズ一覧の「AORA 100 V2（Bio-Based Plastics）」「1,024Wh | 1,800W」と販売価格表示",
+      "basis": "メーカー公式のexact色商品ページとAORAシリーズ一覧で、対象variantと読者向け販売表示を確認したためVARIANT scopeでAVAILABLE。楽天のexact variant確認は別証跡を必須とする。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "816fdd0da0c7de53de72afbbe3f9e6a831ff41a45bd28d630630628f025a5b5c"
     }
   ],
   "evidence_resolution_policy": {

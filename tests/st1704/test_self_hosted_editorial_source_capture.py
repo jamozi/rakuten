@@ -200,14 +200,13 @@ NEW_SOURCE_REQUIRED_LOCATOR_TOKENS: Final[dict[str, tuple[str, ...]]] = {
         "約2kg",
         "充電スタンドでの自動ゴミ収集なし",
     ),
-    "SRC-PANASONIC-NP-TML1": (
+    "SRC-PANASONIC-NP-TMLK1": (
         "6点",
         "送風乾燥",
         "約2.5L",
         "幅310×高さ435×奥行225",
         "約7.5㎏",
     ),
-    "SRC-PANASONIC-SOLOTA-IDENTITY": ("SOLOTA", "NP-TML1", "ホワイト"),
     "SRC-THANKO-RAKUA-MINI-PLUS": (
         "tk-mdw22b",
         "再入荷(予約開始)通知",
@@ -307,6 +306,13 @@ NEW_SOURCE_REQUIRED_LOCATOR_TOKENS: Final[dict[str, tuple[str, ...]]] = {
         "available",
     ),
     "SRC-BLUETTI-AORA30-V2": ("AORA 30 V2", '"available":true'),
+    "SRC-BLUETTI-AORA30-V2-DIMENSIONS": (
+        "AORA 30 V2",
+        "重量4.3kg",
+        "250×178×167.5mm",
+        "288Wh",
+        "600W",
+    ),
     "SRC-BLUETTI-AORA100-V2": ("AORA 100 V2", '"available":true'),
     "SRC-BLUETTI-AORA-SERIES-COLLECTION": (
         "AORA 30 V2: 288Wh",
@@ -589,21 +595,12 @@ EXPECTED_LOCATOR_ATOMIC_FACTS: Final[dict[tuple[str, str], tuple[str, ...]]] = {
     ),
     (
         "SRC-EUFY-AUTOEMPTY-C10-T2292",
-        "CLM-PORTFOLIO-ROBOT-EUFY-C10",
+        "CLM-PORTFOLIO-ROBOT-EUFY-C10-BOUNDARY-REFERENCE",
     ): (
         "T2292511",
         "32.5x32.3x7.2cm",
         "27.5x19.1x21.2cm",
         "水拭き-",
-        "在庫わずか",
-    ),
-    (
-        "SRC-EUFY-AUTOEMPTY-C10-T2292",
-        "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
-    ): (
-        "T2292511",
-        "32.5x32.3x7.2cm",
-        "27.5x19.1x21.2cm",
         "在庫わずか",
     ),
     (
@@ -1112,7 +1109,7 @@ def test_each_of_ten_article_plans_has_exact_sources_plus_fixed_policy() -> None
     )
     expected_product_source_counts = {
         "st1703-first-suitcase-comparison": 7,
-        "st1704-portable-power-station-guide": 29,
+        "st1704-portable-power-station-guide": 30,
         "st1704-anker-solix-c300-c800-c1000-differences": 13,
         "st1704-countertop-dishwasher-for-small-households": 15,
         "st1704-compact-robot-vacuum-shortlist": 15,
@@ -1120,7 +1117,7 @@ def test_each_of_ten_article_plans_has_exact_sources_plus_fixed_policy() -> None
         "lightweight-carry-on-suitcase-under-3kg": 14,
         "front-open-carry-on-suitcase-with-stopper": 10,
         "roomba-mini-vs-switchbot-k11-pro": 10,
-        "solota-vs-rakua-mini-plus": 8,
+        "solota-vs-rakua-mini-plus": 2,
     }
     for article_id in article_ids:
         selected = plan.for_article(article_id)
@@ -1733,6 +1730,30 @@ def test_final_capture_rejects_zero_or_duplicate_locator_occurrences(
     )
     metadata = private_root / source_evidence_relative_path("SRC-TEST-OFFICIAL")
     assert not metadata.exists()
+    pending = metadata.parent / "SRC-TEST-OFFICIAL.capture.v1.json"
+    assert json.loads(pending.read_bytes())["locator_status"] == "LOCATORS_PENDING"
+    assert (metadata.parent / "SRC-TEST-OFFICIAL.capture.body").read_bytes() == body
+
+
+def test_mismatched_refresh_preserves_accepted_pair_and_returns_failure(
+    private_root: Path,
+) -> None:
+    capture_module._persist_capture(private_root, _fetched(locator_status="READY"))
+    metadata = private_root / source_evidence_relative_path("SRC-TEST-OFFICIAL")
+    body = private_root / source_body_relative_path("SRC-TEST-OFFICIAL")
+    original = (metadata.read_bytes(), body.read_bytes())
+    with pytest.raises(capture_module.OfficialSourceCaptureFailure) as failure:
+        capture_module._persist_capture(
+            private_root,
+            _fetched(
+                locator_status="READY",
+                body=b"<!doctype html><html><body>changed fact</body></html>",
+            ),
+        )
+    assert _failure_code(failure) is (
+        capture_module.OfficialSourceCaptureFailureCode.LOCATOR_MISMATCH
+    )
+    assert (metadata.read_bytes(), body.read_bytes()) == original
 
 
 def test_pending_capture_is_private_and_never_reader_accepted_as_final(
@@ -2153,7 +2174,7 @@ def test_public_capture_entries_rebind_only_tracked_source_and_article_targets(
 
     assert source_result == article_result == ()
     assert [target.source_ref for target in selected[0]] == ["SRC-ANKER-SOLIX-C300"]
-    assert len(selected[1]) == 32
+    assert len(selected[1]) == 33
     assert {target.source_ref for target in selected[1]} >= POLICY_REFS
     assert factory.opens == []
 

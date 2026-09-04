@@ -23,7 +23,10 @@ ORIGIN = "https://kurashinoshirube.com"
 HOST = "kurashinoshirube.com"
 PROTOCOL_VERSION = "2025-11-25"
 EXPECTED_PLUGIN_RUNTIME_REVISION = (
-    "82d3295080cb9723881773348e5366501af360b8b4301681ca9af82d22c7f368"
+    "f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082"
+)
+EXPECTED_YOAST_SETTINGS_FINGERPRINT = (
+    "907f32107299b0fb8154cdedc87ed20d18ab0b92c2aa3704516c8f44085ca5b9"
 )
 THEME_CONTRACT_PATH = (
     Path(__file__).resolve().parents[3]
@@ -404,6 +407,41 @@ def phase_propose(
         "raw_event_tool_exposed": False,
     }
     assert status["plugin_runtime_revision"] == EXPECTED_PLUGIN_RUNTIME_REVISION
+    assert status["yoast"] == {
+        "plugin_slug": "wordpress-seo",
+        "installed": True,
+        "active": True,
+        "version": "28.3",
+        "version_exact": True,
+        "options": {
+            "wpseo": {
+                "enable_ai_generator": False,
+                "enable_headless_rest_endpoints": False,
+                "enable_index_now": False,
+                "enable_schema": False,
+                "enable_schema_aggregation_endpoint": False,
+                "enable_xml_sitemap": True,
+                "google_site_kit_feature_enabled": False,
+                "googleverify": "",
+                "semrush_integration_active": False,
+                "tracking": False,
+                "wincher_integration_active": False,
+            },
+            "wpseo_social": {
+                "og_default_image": (
+                    ORIGIN
+                    + "/wp-content/themes/kurashinoshirube-child/"
+                    "assets/images/home-hero.webp"
+                ),
+                "og_default_image_id": "",
+                "opengraph": True,
+                "twitter": True,
+                "twitter_card_type": "summary_large_image",
+            },
+        },
+        "settings_fingerprint": EXPECTED_YOAST_SETTINGS_FINGERPRINT,
+        "settings_exact": True,
+    }
     assert status["writes_enabled"] == {
         "global": True,
         "draft": True,

@@ -102,6 +102,24 @@ NPM_PARENT_OVERRIDE_SPECS = {
     ("next", "16.2.12", "sharp"): "0.35.3",
 }
 NPM_REVIEWED_LOCK_PARTIAL_SPECS = {
+    (
+        "@paulirish/trace_engine",
+        "0.0.59",
+        "legacy-javascript",
+        "latest",
+    ): "0.0.1",
+    (
+        "@paulirish/trace_engine",
+        "0.0.59",
+        "third-party-web",
+        "latest",
+    ): "0.27.0",
+    (
+        "@sentry/node-core",
+        "9.47.1",
+        "@opentelemetry/instrumentation",
+        ">=0.57.1 <1",
+    ): ">=0.57.1 <1.0.0",
     ("express-rate-limit", "8.6.2", "express", ">= 4.11"): ">=4.11.0",
     ("https-proxy-agent", "7.0.6", "debug", "4"): ">=4.0.0 <5.0.0",
     (

@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Deployment
 {
-    const RUNTIME_REVISION = '82d3295080cb9723881773348e5366501af360b8b4301681ca9af82d22c7f368';
+    const RUNTIME_REVISION = 'f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082';
     const MAX_PACKAGE_BYTES = 33554432;
     const MAX_FILE_BYTES = 8388608;
     const MAX_FILE_COUNT = 2048;
@@ -18,8 +18,8 @@ final class RAOS_Codex_MCP_Deployment
     const REVIEWED_MEASUREMENT_ARTIFACT_ID = 'raos-editorial-measurement-v1';
     const REVIEWED_MEASUREMENT_SLUG = 'raos-editorial-measurement';
     const REVIEWED_MEASUREMENT_VERSION = '1.0.0';
-    const REVIEWED_MEASUREMENT_PACKAGE_SHA256 = 'e8db6e19b20f228ec0f105cefccfd5e795687364ab1991854cdc92677b250b5e';
-    const REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256 = '2808e0574ebdca0a1cc0a204ab4ab67fa4ce73274e4673f5b4f9a788bb4b09d9';
+    const REVIEWED_MEASUREMENT_PACKAGE_SHA256 = '487193165588d5cac9feb33d4417fa5305d3d3a1a20b51f438441aac92ba32c0';
+    const REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256 = '2324791adf2586ceea69cf7fc607cf21f2ce4ad8e34660283164b6c3242f6536';
     const BOOTSTRAP_ARTIFACT_ID = 'raos-codex-mcp-abilities-v1';
     const BOOTSTRAP_SLUG = 'raos-codex-mcp-abilities';
     const BOOTSTRAP_VERSION = '1.3.1';
@@ -493,6 +493,10 @@ final class RAOS_Codex_MCP_Deployment
             || 'APPROVED' !== $status['state']
             || true !== $status['preconditions_ready']) {
             return self::error('raos_codex_publication_batch_not_ready', 409);
+        }
+        $yoast_gate = RAOS_Codex_MCP_Content::exact_yoast_gate();
+        if (is_wp_error($yoast_gate)) {
+            return $yoast_gate;
         }
         return RAOS_Codex_MCP_Store::claim_publication_batch_apply(
             $batch_token,
@@ -4091,6 +4095,12 @@ final class RAOS_Codex_MCP_Deployment
         }
         if (! in_array($kind, array('CONTENT_RELEASE', 'THEME_RELEASE', 'PLUGIN_CHANGE'), true)) {
             return self::error('raos_codex_operation_kind_invalid', 409);
+        }
+        if (in_array($kind, array('CONTENT_RELEASE', 'THEME_RELEASE'), true)) {
+            $yoast_gate = RAOS_Codex_MCP_Content::exact_yoast_gate();
+            if (is_wp_error($yoast_gate)) {
+                return $yoast_gate;
+            }
         }
         return true;
     }

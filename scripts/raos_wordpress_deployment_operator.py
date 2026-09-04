@@ -72,10 +72,10 @@ REVIEWED_MIGRATION_BINDINGS: Final = {
         "slug": "raos-editorial-measurement",
         "version": "1.0.0",
         "package_sha256": (
-            "e8db6e19b20f228ec0f105cefccfd5e795687364ab1991854cdc92677b250b5e"
+            "487193165588d5cac9feb33d4417fa5305d3d3a1a20b51f438441aac92ba32c0"
         ),
         "file_manifest_sha256": (
-            "2808e0574ebdca0a1cc0a204ab4ab67fa4ce73274e4673f5b4f9a788bb4b09d9"
+            "2324791adf2586ceea69cf7fc607cf21f2ce4ad8e34660283164b6c3242f6536"
         ),
     }
 }

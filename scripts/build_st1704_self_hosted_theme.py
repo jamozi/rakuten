@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.5.0"
 THEME_RUNTIME_REVISION: Final = (
-    "f48d09a706e3ce9a25381734baf92d65e364a04f5394984567ab60cec2f80476"
+    "de73b422754d2b0c3c5b6c49e5ea1a1e97c403fa8c8c95461cc7b6d4251f9c90"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -1172,6 +1172,7 @@ def validate_sources() -> dict[str, str]:
         "relationship_types": [
             "broader_guide",
             "narrower_comparison",
+            "lifecycle_reference",
             "adjacent_condition",
         ],
         "rendered_relationships": (

@@ -896,7 +896,7 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
         assert not first.production_evidence
         assert first.network_requests == first.external_writes == 0
         total_cards += first.product_count
-    assert total_cards == 20
+    assert total_cards == 22
 
 
 def test_rendered_content_parser_accepts_strict_official_cta_arrow() -> None:

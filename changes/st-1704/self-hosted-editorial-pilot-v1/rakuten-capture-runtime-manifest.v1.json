@@ -10,14 +10,14 @@
   "generated_by": "scripts/build_st1704_rakuten_capture_manifest.py",
   "paths": [
     {
-      "bytes": 72552,
+      "bytes": 77072,
       "path": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
-      "sha256": "11fc947beb111b0a5d53ff5c72fadab0d0484e561f810b04631f347579618cbd"
+      "sha256": "5ef653b2444e77d912ddbcfc2c94e39bec1e37b4fee831be997546ec47cee6ba"
     },
     {
       "bytes": 8816,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "d075548c02c77e5d5f61e438be30844c6fcdf7cbf2067dea0dc6006d0b2d983d"
+      "sha256": "ee95176902cafa9d1a15c99d8d43323435eafb36c95d462d8f678a2c069b5d75"
     },
     {
       "bytes": 5387,
@@ -25,9 +25,9 @@
       "sha256": "95fc49ca35ab9e21199452cf11d33b179b59bd0147d545f3245b89c77869a0ac"
     },
     {
-      "bytes": 31201,
+      "bytes": 32133,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "66956e5f23162d7b092f89b745c0980f5cf7195317a5686cade041eeac3d9e40"
+      "sha256": "5b37e0b50852410b37a93f1b4dbd633ea87ce87858499a84fbad4b33194658da"
     },
     {
       "bytes": 2486,
@@ -45,24 +45,24 @@
       "sha256": "73c13dd6f321dfe4ec8386fb0dcf0ab8a42578d4fe9b5b3f45eefbb4b1cbb32f"
     },
     {
-      "bytes": 237414,
+      "bytes": 252143,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-      "sha256": "aa188e09770d7411bf317ccc3265b8bfa3c7838fe0dde134f2f99ff28f15aa68"
+      "sha256": "4d1a3cdd749309236a6ac0aaae07c2abe7f43263894d18b575c04326eb2551b2"
     },
     {
-      "bytes": 31136,
+      "bytes": 34324,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json",
-      "sha256": "1dc9c0f2c2309dce0e336cb3ec70809b4393b8ca38c2a5553a3d5a1c7acd3080"
+      "sha256": "5b2ac14d137016667e5647a38e6f35ab95d8ba441c50f531b99239a46baead7c"
     },
     {
-      "bytes": 243680,
+      "bytes": 235225,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
-      "sha256": "907d71b9c8043733fc7b7a53bc4106ede31f3ab3447235763a0476eaa341ef8b"
+      "sha256": "dec409494e6018fd89786ccbc02920e59a25f2aa548548e67e93e865be28aeee"
     },
     {
-      "bytes": 97316,
+      "bytes": 99644,
       "path": "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
-      "sha256": "ea47c4890cf51cffb2e35f12e9899bb151222c86d102486e2461751082f349c6"
+      "sha256": "8aba217c6cb9a780f5736b9ba205700759fb292a4e6eda4d68c2b822a72edb25"
     },
     {
       "bytes": 69252,

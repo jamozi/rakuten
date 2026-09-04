@@ -68,17 +68,17 @@ _SYNTHETIC_V2_PORTFOLIO_SHA256 = hashlib.sha256(
 def _synthetic_product_safety_binding() -> dict[str, object]:
     material: dict[str, object] = {
         "schema": "RAOS_PRODUCT_SAFETY_PUBLICATION_BINDING_V1",
-        "required_product_count": 31,
+        "required_product_count": 33,
         "required_authority_kinds": [
             "MANUFACTURER_OFFICIAL",
             "JAPAN_ADMINISTRATIVE_OFFICIAL",
         ],
-        "required_administrative_capture_count": 93,
+        "required_administrative_capture_count": 99,
         "administrative_bundle_sha256": "9" * 64,
-        "administrative_capture_count": 93,
-        "administrative_verified_product_count": 31,
-        "manufacturer_verified_product_count": 31,
-        "complete_product_count": 31,
+        "administrative_capture_count": 99,
+        "administrative_verified_product_count": 33,
+        "manufacturer_verified_product_count": 33,
+        "complete_product_count": 33,
         "complete": True,
     }
     return {
@@ -97,7 +97,7 @@ def _synthetic_administrative_safety_evidence(
         version=activation_module.CAPTURE_BUNDLE_VERSION,
         plan_sha256="8" * 64,
         portfolio_sha256=_SYNTHETIC_V2_PORTFOLIO_SHA256,
-        capture_count=93,
+        capture_count=99,
         bundle_sha256="9" * 64,
         evaluated_at=now,
         products=tuple(
@@ -201,7 +201,7 @@ def _stub_verified_v2_evidence(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(activation_module, "_load_verified_v2_evidence", load)
 
 
-def test_product_safety_gate_replays_93_admin_captures_and_blocks_without_manufacturer_evidence(
+def test_product_safety_gate_replays_99_admin_captures_and_blocks_without_manufacturer_evidence(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     now = datetime.now(UTC).replace(microsecond=0)
@@ -235,9 +235,9 @@ def test_product_safety_gate_replays_93_admin_captures_and_blocks_without_manufa
         portfolio,
         now=now,
     )
-    assert binding["administrative_capture_count"] == 93
-    assert binding["manufacturer_verified_product_count"] == 31
-    assert binding["complete_product_count"] == 31
+    assert binding["administrative_capture_count"] == 99
+    assert binding["manufacturer_verified_product_count"] == 33
+    assert binding["complete_product_count"] == 33
     assert binding["complete"] is True
     assert not {
         "query_terms",

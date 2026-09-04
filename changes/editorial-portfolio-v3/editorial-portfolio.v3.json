@@ -132,11 +132,11 @@
       "category": "preparedness",
       "category_label": "備え",
       "cluster_id": "preparedness",
-      "comparison_scope": "容量・各社公表の出力・重量・寸法を公式情報で照合できる現行ポータブル電源。安全・保証・回収は全採用品の照合完了まで選定根拠から除外",
+      "comparison_scope": "容量・各社公表の出力・重量・寸法を公式情報で照合できる現行ポータブル電源7モデル。安全・保証・回収は全採用品の照合完了まで選定根拠から除外",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
       "content_role": "category_guide",
       "content_role_label": "選び方",
-      "content_snapshot_sha256": "4431c630a4c7f9e6cd623d24ecaf5b29bd3998caea379fca27adb29c2b712e39",
+      "content_snapshot_sha256": "b50b6e5a25079b6c53f404e90433584997a493ccec3cd5d0ecddff6ca1b216a0",
       "cta_bindings": [
         {
           "article_code": "a02",
@@ -149,7 +149,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4431c630a4c7"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -162,7 +162,33 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4431c630a4c7"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
+        },
+        {
+          "article_code": "a02",
+          "article_id": "st1704-portable-power-station-guide",
+          "cta_id": "icta_a02_p32_card",
+          "offer_id": "off-a02-p32",
+          "placement": "product_card",
+          "placement_code": "card",
+          "product_code": "p32",
+          "product_id": "PRD-BLUETTI-AORA30-V2",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a02-card",
+          "snapshot_id": "snp-a02-b50b6e5a2507"
+        },
+        {
+          "article_code": "a02",
+          "article_id": "st1704-portable-power-station-guide",
+          "cta_id": "icta_a02_p32_final",
+          "offer_id": "off-a02-p32",
+          "placement": "final_summary",
+          "placement_code": "final",
+          "product_code": "p32",
+          "product_id": "PRD-BLUETTI-AORA30-V2",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a02-final",
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -175,7 +201,7 @@
           "product_id": "PRD-JACKERY-500-NEW",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4431c630a4c7"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -188,7 +214,7 @@
           "product_id": "PRD-JACKERY-500-NEW",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4431c630a4c7"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -201,7 +227,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4431c630a4c7"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -214,7 +240,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4431c630a4c7"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -227,7 +253,7 @@
           "product_id": "PRD-JACKERY-1000-NEW-V3",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4431c630a4c7"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -240,7 +266,33 @@
           "product_id": "PRD-JACKERY-1000-NEW-V3",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4431c630a4c7"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
+        },
+        {
+          "article_code": "a02",
+          "article_id": "st1704-portable-power-station-guide",
+          "cta_id": "icta_a02_p33_card",
+          "offer_id": "off-a02-p33",
+          "placement": "product_card",
+          "placement_code": "card",
+          "product_code": "p33",
+          "product_id": "PRD-BLUETTI-AORA100-V2",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a02-card",
+          "snapshot_id": "snp-a02-b50b6e5a2507"
+        },
+        {
+          "article_code": "a02",
+          "article_id": "st1704-portable-power-station-guide",
+          "cta_id": "icta_a02_p33_final",
+          "offer_id": "off-a02-p33",
+          "placement": "final_summary",
+          "placement_code": "final",
+          "product_code": "p33",
+          "product_id": "PRD-BLUETTI-AORA100-V2",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a02-final",
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -253,7 +305,7 @@
           "product_id": "PRD-DJI-POWER-1000-V2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4431c630a4c7"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -266,19 +318,21 @@
           "product_id": "PRD-DJI-POWER-1000-V2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4431c630a4c7"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         }
       ],
-      "excerpt": "停電対策のポータブル電源5モデルを、容量・各社公表の連続供給目安・重量・大きさで比較。使いたい機器と持ち運び条件から候補を絞ります。",
+      "excerpt": "停電対策のポータブル電源7モデルを、容量・各社公表の出力・重量・寸法で比較。使いたい機器と持ち運び条件から候補を絞ります。",
       "home_order": 1,
       "intent_group_id": "portable-power",
       "local_slug": "local-preview-portable-power-station-guide",
       "primary_query_intent": "停電時に使う機器から必要な容量・出力と持ち運べる候補を選ぶ",
       "product_ids": [
         "PRD-ANKER-SOLIX-C300",
+        "PRD-BLUETTI-AORA30-V2",
         "PRD-JACKERY-500-NEW",
         "PRD-ANKER-SOLIX-C800",
         "PRD-JACKERY-1000-NEW-V3",
+        "PRD-BLUETTI-AORA100-V2",
         "PRD-DJI-POWER-1000-V2"
       ],
       "production_slug": "portable-power-station-guide",
@@ -292,7 +346,7 @@
           "relationship": "narrower_comparison"
         }
       ],
-      "snapshot_id": "snp-a02-4431c630a4c7",
+      "snapshot_id": "snp-a02-b50b6e5a2507",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-portable-power-station-guide",
       "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める",
@@ -309,7 +363,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
       "content_role": "model_family_comparison",
       "content_role_label": "ブランド内比較",
-      "content_snapshot_sha256": "7994f801648318ec01e883b2aa289d943cff95372fad0779c1e6e395ec4aed12",
+      "content_snapshot_sha256": "43807ee851ba455427e82d8f3b9c580deb8f66f8b173937745c238904f258335",
       "cta_bindings": [
         {
           "article_code": "a03",
@@ -322,7 +376,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-7994f8016483"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -335,7 +389,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-7994f8016483"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -348,7 +402,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-7994f8016483"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -361,7 +415,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-7994f8016483"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -374,7 +428,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-7994f8016483"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -387,7 +441,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-7994f8016483"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -400,7 +454,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-7994f8016483"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -413,7 +467,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-7994f8016483"
+          "snapshot_id": "snp-a03-43807ee851ba"
         }
       ],
       "excerpt": "Anker Solix 4モデルの容量・定格出力・重量・寸法を同じ表で比較。持ち運び、出力、C1000の世代差から条件別に選びます。",
@@ -438,7 +492,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a03-7994f8016483",
+      "snapshot_id": "snp-a03-43807ee851ba",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-anker-solix-c300-c800-c1000-differences",
       "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い",
@@ -580,8 +634,8 @@
       "related_articles": [
         {
           "article_id": "solota-vs-rakua-mini-plus",
-          "context": "条件を絞った比較へ進む",
-          "relationship": "narrower_comparison"
+          "context": "以前の比較対象の販売状況を確認する",
+          "relationship": "lifecycle_reference"
         }
       ],
       "snapshot_id": "snp-a04-ec3e66487fb1",
@@ -1226,64 +1280,12 @@
       "category": "household",
       "category_label": "家事",
       "cluster_id": "household",
-      "comparison_scope": "Roomba Mini SlimとSwitchBot K11+ Proを主比較とし、Eufy Auto-Empty C10は薄型、DEEBOT mini 2はモップ自動手入れの条件別候補として確認",
+      "comparison_scope": "Roomba Mini Slim F115060とSwitchBot K11+ Proの純2製品比較。薄型本体やモップ自動手入れを優先する別候補は4モデル比較へ案内",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
-      "content_role": "constraint_shortlist",
-      "content_role_label": "条件別比較",
-      "content_snapshot_sha256": "44f379e5e7bcadf84b66ae91074ca093d2007c486d9cb42bd84cd1fdd8bca986",
+      "content_role": "head_to_head_comparison",
+      "content_role_label": "2製品比較",
+      "content_snapshot_sha256": "64168dbf12d10f3c44fea6ab92e236de70db1d9d1c3cb268a9db2f27f0b884e0",
       "cta_bindings": [
-        {
-          "article_code": "a09",
-          "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "cta_id": "icta_a09_p15_card",
-          "offer_id": "off-a09-p15",
-          "placement": "product_card",
-          "placement_code": "card",
-          "product_code": "p15",
-          "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a09-card",
-          "snapshot_id": "snp-a09-44f379e5e7bc"
-        },
-        {
-          "article_code": "a09",
-          "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "cta_id": "icta_a09_p15_final",
-          "offer_id": "off-a09-p15",
-          "placement": "final_summary",
-          "placement_code": "final",
-          "product_code": "p15",
-          "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a09-final",
-          "snapshot_id": "snp-a09-44f379e5e7bc"
-        },
-        {
-          "article_code": "a09",
-          "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "cta_id": "icta_a09_p16_card",
-          "offer_id": "off-a09-p16",
-          "placement": "product_card",
-          "placement_code": "card",
-          "product_code": "p16",
-          "product_id": "PRD-SWITCHBOT-K11-PRO",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a09-card",
-          "snapshot_id": "snp-a09-44f379e5e7bc"
-        },
-        {
-          "article_code": "a09",
-          "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "cta_id": "icta_a09_p16_final",
-          "offer_id": "off-a09-p16",
-          "placement": "final_summary",
-          "placement_code": "final",
-          "product_code": "p16",
-          "product_id": "PRD-SWITCHBOT-K11-PRO",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a09-final",
-          "snapshot_id": "snp-a09-44f379e5e7bc"
-        },
         {
           "article_code": "a09",
           "article_id": "roomba-mini-vs-switchbot-k11-pro",
@@ -1295,7 +1297,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a09-card",
-          "snapshot_id": "snp-a09-44f379e5e7bc"
+          "snapshot_id": "snp-a09-64168dbf12d1"
         },
         {
           "article_code": "a09",
@@ -1308,45 +1310,43 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a09-final",
-          "snapshot_id": "snp-a09-44f379e5e7bc"
+          "snapshot_id": "snp-a09-64168dbf12d1"
         },
         {
           "article_code": "a09",
           "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "cta_id": "icta_a09_p17_card",
-          "offer_id": "off-a09-p17",
+          "cta_id": "icta_a09_p16_card",
+          "offer_id": "off-a09-p16",
           "placement": "product_card",
           "placement_code": "card",
-          "product_code": "p17",
-          "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
+          "product_code": "p16",
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a09-card",
-          "snapshot_id": "snp-a09-44f379e5e7bc"
+          "snapshot_id": "snp-a09-64168dbf12d1"
         },
         {
           "article_code": "a09",
           "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "cta_id": "icta_a09_p17_final",
-          "offer_id": "off-a09-p17",
+          "cta_id": "icta_a09_p16_final",
+          "offer_id": "off-a09-p16",
           "placement": "final_summary",
           "placement_code": "final",
-          "product_code": "p17",
-          "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
+          "product_code": "p16",
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a09-final",
-          "snapshot_id": "snp-a09-44f379e5e7bc"
+          "snapshot_id": "snp-a09-64168dbf12d1"
         }
       ],
-      "excerpt": "Roomba Mini Slim、SwitchBot K11+ Pro、Eufy Auto-Empty C10、DEEBOT mini 2を、本体・ステーション寸法、自動ゴミ収集、水拭き・モップ手入れ、Wi-Fiから公式仕様で比べます。",
+      "excerpt": "Roomba Mini SlimとSwitchBot K11+ Proの2製品を、本体・充電台の寸法、自動ゴミ収集、水拭き、Wi-Fi条件で比較します。別条件の候補は4モデル比較へ案内します。",
       "home_order": 3,
       "intent_group_id": "robot-vacuum",
       "local_slug": "local-preview-roomba-mini-vs-switchbot-k11-pro",
-      "primary_query_intent": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を比べ、薄型またはモップ自動手入れが必要な場合だけ別候補を確認する",
+      "primary_query_intent": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を二者択一で比べる",
       "product_ids": [
-        "PRD-EUFY-AUTOEMPTY-C10-T2292",
-        "PRD-SWITCHBOT-K11-PRO",
         "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
-        "PRD-ECOVACS-DEEBOT-MINI2"
+        "PRD-SWITCHBOT-K11-PRO"
       ],
       "production_slug": "roomba-mini-vs-switchbot-k11-pro",
       "related_article_ids": [
@@ -1359,10 +1359,10 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a09-44f379e5e7bc",
+      "snapshot_id": "snp-a09-64168dbf12d1",
       "source_kind": "html_fixture",
       "source_ref": "articles/roomba-mini-vs-switchbot-k11-pro.html",
-      "title": "Roomba Mini Slim・SwitchBot K11+ Pro・Eufy C10・DEEBOT mini 2を比較",
+      "title": "Roomba Mini SlimとSwitchBot K11+ Proを設置寸法・水拭きで比較",
       "v2_category": "家事"
     },
     {
@@ -1372,17 +1372,17 @@
       "category": "household",
       "category_label": "家事",
       "cluster_id": "household",
-      "comparison_scope": "旧SOLOTA NP-TML1-W／NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
+      "comparison_scope": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
       "content_role": "lifecycle_status_route",
-      "content_role_label": "旧製品の販売状態確認＋現行比較への案内",
-      "content_snapshot_sha256": "b27f94c8674d08d0e655cd488f9d3d146e562c69c807f61a871bdd696492f9c3",
+      "content_role_label": "以前の比較対象の販売状態確認＋現行比較への案内",
+      "content_snapshot_sha256": "da82f148e08dda90cffda8d50982c318561ed82b6b59f22b711cd3ee8ca25365",
       "cta_bindings": [],
       "excerpt": "旧SOLOTAは正確な対象型番の販売状態を確認できず、ラクアmini Plusは再入荷通知のみ。両機種を仕様参考に限定し、現行品の詳しい比較は少人数向け卓上食洗機4候補の記事へ案内します。",
       "home_order": 4,
       "intent_group_id": "countertop-dishwasher",
       "local_slug": "local-preview-solota-vs-rakua-mini-plus",
-      "primary_query_intent": "旧SOLOTA・ラクアmini Plusの販売状態と型番を確認し、現行4候補の比較記事へ移る",
+      "primary_query_intent": "SOLOTA NP-TMLK1-Kとラクアmini Plusの販売状態を確認し、現行4候補の比較記事へ移る",
       "product_ids": [],
       "production_slug": "solota-vs-rakua-mini-plus",
       "related_article_ids": [
@@ -1395,7 +1395,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a10-b27f94c8674d",
+      "snapshot_id": "snp-a10-da82f148e08d",
       "source_kind": "html_fixture",
       "source_ref": "articles/solota-vs-rakua-mini-plus.html",
       "title": "SOLOTA・ラクアmini Plusの販売状況｜現行比較への案内",
@@ -1447,9 +1447,13 @@
       "h2",
       "th"
     ],
+    "nonaffiliate_article_ids": [
+      "solota-vs-rakua-mini-plus"
+    ],
     "primary_product_sources": "products[].official_url",
     "required_ad_disclosure": "広告を含みます。購入リンクから成果報酬を受け取る場合がありますが、選定・掲載順には使いません。",
-    "required_editorial_root": "raos-editorial-v2"
+    "required_editorial_root": "raos-editorial-v2",
+    "required_nonaffiliate_disclosure": "この記事には購入リンクがありません。以前の比較対象の販売状態を確認する案内記事のため、商品カードとアフィリエイトリンクは掲載していません。"
   },
   "evidence_policy": {
     "affiliate_rel": "sponsored nofollow",
@@ -1461,7 +1465,7 @@
       "maximum_neutral_product_images": 0,
       "required_affiliate_cta_count": 74,
       "required_product_card_count": 37,
-      "required_product_count": 31,
+      "required_product_count": 33,
       "required_product_image_state": "verified",
       "required_product_state": "verified"
     },
@@ -1599,10 +1603,15 @@
         "axis_assessments": {
           "dimensions": {
             "evidence_refs": [
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.bluetti.jp/blogs/buying-guide/aora-30-v2-vs-eb3a",
+              "https://www.jackery.jp/products/explorer-500-new",
               "https://www.ankerjapan.com/products/a1753",
-              "https://store.dji.com/jp/product/dji-power-1000-v2"
+              "https://www.jackery.jp/products/explorer-1000-new-v3",
+              "https://www.bluetti.jp/collections/aora-series-portable-power-stations",
+              "https://www.dji.com/jp/power-1000-v2/specs"
             ],
-            "rationale": "収納と搬送を判断できる外寸・重量を公式値で比較した。",
+            "rationale": "7モデルすべての本体の幅・奥行・高さと重量を、型番またはexact商品に結び付く公式値で比較した。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "maintainability": {
@@ -1613,19 +1622,28 @@
           },
           "performance": {
             "evidence_refs": [
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.bluetti.jp/collections/aora-series-portable-power-stations",
+              "https://www.jackery.jp/products/explorer-500-new",
               "https://www.ankerjapan.com/products/a1753",
-              "https://store.dji.com/jp/product/dji-power-1000-v2"
+              "https://www.jackery.jp/products/explorer-1000-new-v3",
+              "https://www.dji.com/jp/power-1000-v2/specs"
             ],
-            "rationale": "容量・定格出力・充電仕様を型番単位で比較した。",
+            "rationale": "7モデルの容量とメーカー公表の連続出力を型番単位で比較し、呼称・試験条件が異なる数値は直接順位付けしない。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "primary_source_confidence": {
             "evidence_refs": [
               "https://www.meti.go.jp/product_safety/consumer/system/potaburu-denngenn-youkyuu.html",
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+              "https://www.jackery.jp/products/explorer-500-new",
               "https://www.ankerjapan.com/products/a1753",
+              "https://www.jackery.jp/products/explorer-1000-new-v3",
+              "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
               "https://store.dji.com/jp/product/dji-power-1000-v2"
             ],
-            "rationale": "メーカー・行政の一次情報と読者が見える販売状態を優先した。",
+            "rationale": "7モデルのexact商品ページ、メーカー公式仕様、行政の安全要求事項を一次情報として使用し、販売状態と仕様を同じモデルへ結び付けた。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "safety": {
@@ -1636,10 +1654,15 @@
           },
           "use_case_fit": {
             "evidence_refs": [
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+              "https://www.jackery.jp/products/explorer-500-new",
               "https://www.ankerjapan.com/products/a1753",
+              "https://www.jackery.jp/products/explorer-1000-new-v3",
+              "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
               "https://store.dji.com/jp/product/dji-power-1000-v2"
             ],
-            "rationale": "停電時の機器数と持ち運びを容量帯・出力・重量で分けた。",
+            "rationale": "停電時に使う機器と運べる重量から、288Wh・512Wh・768Wh・1024Wh帯の7モデルを条件別に選べるよう整理した。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "warranty_and_support": {
@@ -1651,7 +1674,7 @@
         },
         "broader_article_id": null,
         "candidate_universe_method": "CROSS_BRAND_CURRENT_CATEGORY",
-        "comparison_scope": "容量・各社公表の出力・重量・寸法を公式情報で照合できる現行ポータブル電源。安全・保証・回収は全採用品の照合完了まで選定根拠から除外",
+        "comparison_scope": "容量・各社公表の出力・重量・寸法を公式情報で照合できる現行ポータブル電源7モデル。安全・保証・回収は全採用品の照合完了まで選定根拠から除外",
         "considered_external_candidates": [
           {
             "brand": "ELECOM",
@@ -1723,54 +1746,6 @@
             "reason": "メーカーの生産終了一覧に掲載されるため現行候補へ戻さない。",
             "use_role": "LIFECYCLE_REFERENCE",
             "variant_lifecycle": "PRODUCTION_ENDED"
-          },
-          {
-            "brand": "BLUETTI",
-            "candidate_id": "EXT-BLUETTI-AORA30-V2",
-            "decision_critical": true,
-            "decision_critical_unknowns": [],
-            "disposition": "EXCLUDED",
-            "effective_lifecycle": "AVAILABLE",
-            "embedded_structured_lifecycle": "NOT_PRESENT",
-            "evaluated_at": "2026-08-31",
-            "evidence_refs": [
-              "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
-              "https://www.bluetti.jp/collections/aora-series-portable-power-stations"
-            ],
-            "exact_model": "AORA 30 V2",
-            "exact_variant_scope": "グレー・日本向けAORA 30 V2",
-            "exclusion_axis": "comparison_scope",
-            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
-            "model_lifecycle": "AVAILABLE",
-            "official_url": "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
-            "reader_visible_lifecycle": "AVAILABLE",
-            "reason": "288Wh・定格600W・約4.3kgで、C300と同じ容量帯の現行直接候補です。5枠では約4.1kgで本体容積も小さいC300を最軽量・省スペース役として残しました。600Wの定格出力や9つの出力ポートを優先する場合はAORA 30 V2も同列に確認してください。掲載外であることは製品の優劣を意味しません。",
-            "use_role": "DIRECT_CATEGORY_PEER",
-            "variant_lifecycle": "AVAILABLE"
-          },
-          {
-            "brand": "BLUETTI",
-            "candidate_id": "EXT-BLUETTI-AORA100-V2",
-            "decision_critical": true,
-            "decision_critical_unknowns": [],
-            "disposition": "EXCLUDED",
-            "effective_lifecycle": "AVAILABLE",
-            "embedded_structured_lifecycle": "NOT_PRESENT",
-            "evaluated_at": "2026-08-31",
-            "evidence_refs": [
-              "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
-              "https://www.bluetti.jp/collections/aora-series-portable-power-stations"
-            ],
-            "exact_model": "AORA 100 V2",
-            "exact_variant_scope": "インディゴ（Bio-Based Plastics）・日本向けAORA 100 V2",
-            "exclusion_axis": "comparison_scope",
-            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
-            "model_lifecycle": "AVAILABLE",
-            "official_url": "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
-            "reader_visible_lifecycle": "AVAILABLE",
-            "reason": "AORA 100 V2は1024Wh・定格1800W・約11.5kgで、1000Wh帯の現行直接候補です。5枠では、保管方法・日本向け保証・サポートまで同一source packetへ結び付けたPower 1000 V2を1000Wh帯の掲載例として残しました。約2.7kg軽い本体を重視する場合はAORA 100 V2も同列に確認してください。定格出力と最大連続出力は呼称・試験条件が異なるため、数値の大小を採否根拠にしません。掲載外であることは製品の優劣を意味しません。",
-            "use_role": "DIRECT_CATEGORY_PEER",
-            "variant_lifecycle": "AVAILABLE"
           },
           {
             "brand": "EcoFlow",
@@ -1852,8 +1827,8 @@
         ],
         "content_role": "category_guide",
         "hard_filters": [
-          "日本向け現行モデルで容量・定格出力・重量・外寸を公式確認できること",
-          "安全情報・保証窓口・電池種別は全採用品を同じ範囲で照合できるまで推奨根拠に使わず、公開を停止すること"
+          "日本向け現行モデルで容量・メーカー公表の出力・重量・外寸を公式確認できること",
+          "7モデルを用途適合、安全性、寸法、性能、保証・サポート、保守性、一次情報の確度で同じ尺度にそろえ、未完了の安全・保証・保守は推奨根拠に使わず公開を停止すること"
         ],
         "official_category_sources": [
           "https://www.meti.go.jp/product_safety/consumer/system/potaburu-denngenn-youkyuu.html",
@@ -1864,7 +1839,10 @@
           "https://store.dji.com/jp/product/dji-power-1000-v2",
           "https://www.elecom.co.jp/products/DE-NEPS700NBE.html",
           "https://jp.ecoflow.com/collections/portable-power-stations",
-          "https://www.bluetti.jp/collections/aora-series-portable-power-stations"
+          "https://www.bluetti.jp/collections/aora-series-portable-power-stations",
+          "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+          "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+          "https://www.bluetti.jp/blogs/buying-guide/aora-30-v2-vs-eb3a"
         ],
         "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
         "primary_query_intent": "停電時に使う機器から必要な容量・出力と持ち運べる候補を選ぶ",
@@ -1873,9 +1851,11 @@
         "scope_separation": "市場横断の用途別入口とし、Anker内の型番差はA03へ分離する。",
         "selected_product_ids": [
           "PRD-ANKER-SOLIX-C300",
+          "PRD-BLUETTI-AORA30-V2",
           "PRD-JACKERY-500-NEW",
           "PRD-ANKER-SOLIX-C800",
           "PRD-JACKERY-1000-NEW-V3",
+          "PRD-BLUETTI-AORA100-V2",
           "PRD-DJI-POWER-1000-V2"
         ]
       },
@@ -2911,11 +2891,9 @@
           "dimensions": {
             "evidence_refs": [
               "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
-              "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
-              "https://www.ankerjapan.com/products/t2292",
-              "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2"
+              "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
             ],
-            "rationale": "本体・ステーションの幅・奥行・高さを構成別に比較した。",
+            "rationale": "2製品の本体と充電台・ステーションについて、幅・奥行・高さを対象別に公式値で比較した。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "maintainability": {
@@ -2926,22 +2904,20 @@
           },
           "performance": {
             "evidence_refs": [
-              "https://support.switch-bot.com/hc/en-us/articles/14490132658967-Can-I-Operate-SwitchBot-Mini-Robot-Vacuum-K10-K10-Pro-K11-K11-Pro-Without-a-Wi-Fi-Connection",
               "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
-              "https://www.ankerjapan.com/products/t2292",
-              "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2"
+              "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+              "https://support.switch-bot.com/hc/en-us/articles/14490132658967-Can-I-Operate-SwitchBot-Mini-Robot-Vacuum-K10-K10-Pro-K11-K11-Pro-Without-a-Wi-Fi-Connection"
             ],
-            "rationale": "ごみ収集・水拭き・モップ手入れ・Wi-Fi依存機能の差を公式仕様の範囲で比較した。",
+            "rationale": "自動ゴミ収集、水拭き方式、本体ボタンとWi-Fi接続時に使える機能の差を公式情報で比較した。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "primary_source_confidence": {
             "evidence_refs": [
               "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
-              "https://www.ankerjapan.com/products/t2292",
-              "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2",
+              "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
               "https://support.switch-bot.com/hc/en-us/articles/14490132658967-Can-I-Operate-SwitchBot-Mini-Robot-Vacuum-K10-K10-Pro-K11-K11-Pro-Without-a-Wi-Fi-Connection"
             ],
-            "rationale": "メーカー商品・サポート情報で構成と通信条件を照合した。",
+            "rationale": "両メーカーの商品・サポート情報でexact製品、寸法、水拭き、通信条件を照合した。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "safety": {
@@ -2953,11 +2929,9 @@
           "use_case_fit": {
             "evidence_refs": [
               "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
-              "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
-              "https://www.ankerjapan.com/products/t2292",
-              "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2"
+              "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
             ],
-            "rationale": "薄型・小径・水拭きの要否という置き場所と手入れ条件を現行4構成で比較した。",
+            "rationale": "小さい縦置き充電台を優先するF115060と、自動ゴミ収集を優先するK11+ Proの二者択一に範囲を限定した。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "warranty_and_support": {
@@ -2968,8 +2942,8 @@
           }
         },
         "broader_article_id": "st1704-compact-robot-vacuum-shortlist",
-        "candidate_universe_method": "CROSS_BRAND_CONSTRAINT_FILTER",
-        "comparison_scope": "Roomba Mini SlimとSwitchBot K11+ Proを主比較とし、Eufy Auto-Empty C10は薄型、DEEBOT mini 2はモップ自動手入れの条件別候補として確認",
+        "candidate_universe_method": "FIXED_HEAD_TO_HEAD_WITH_BROADER_ROUTE",
+        "comparison_scope": "Roomba Mini Slim F115060とSwitchBot K11+ Proの純2製品比較。薄型本体やモップ自動手入れを優先する別候補は4モデル比較へ案内",
         "considered_external_candidates": [
           {
             "brand": "iRobot",
@@ -2990,7 +2964,7 @@
             "model_lifecycle": "SOLD_OUT",
             "official_url": "https://store.irobot-jp.com/item/F155260.html",
             "reader_visible_lifecycle": "SOLD_OUT",
-            "reason": "メーカー公式ストアで在庫切れかつ購入UIを確認できないため、現行4構成から除外しました。Eufy C10のブラックT2292511への入替は、同型番・同色の現行販売状態を満たすためで、製品性能の劣位を意味しません。",
+            "reason": "メーカー公式ストアで在庫切れかつ購入UIを確認できないため、現行F115060との2製品比較から除外しました。性能の劣位を意味しません。",
             "use_role": "LIFECYCLE_REFERENCE",
             "variant_lifecycle": "SOLD_OUT"
           },
@@ -3013,34 +2987,43 @@
             "model_lifecycle": "UNKNOWN",
             "official_url": "https://panasonic.jp/soji/products/MC-RSC10/spec.html",
             "reader_visible_lifecycle": "UNKNOWN",
-            "reason": "仕様は確認できますが、販売状態は未確認（推奨根拠に使用しない）です。現行4構成の比較には含めず、RULO miniは次回確認へ回します。",
+            "reason": "RULO miniは次回確認へ回します。仕様は確認できますが、販売状態は未確認（推奨根拠に使用しない）です。指名された2製品の比較には加えません。",
             "use_role": "DIRECT_CATEGORY_PEER",
             "variant_lifecycle": "UNKNOWN"
           }
         ],
-        "considered_portfolio_candidates": [],
-        "content_role": "constraint_shortlist",
+        "considered_portfolio_candidates": [
+          {
+            "disposition": "REFERENCE_ONLY",
+            "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
+            "reason": "本体の薄さを最優先する場合は、設置条件の異なる4モデル比較で確認できます。",
+            "route_article_id": "st1704-compact-robot-vacuum-shortlist"
+          },
+          {
+            "disposition": "REFERENCE_ONLY",
+            "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
+            "reason": "モップの自動洗浄・乾燥を優先する場合は、設置条件の異なる4モデル比較で確認できます。",
+            "route_article_id": "st1704-compact-robot-vacuum-shortlist"
+          }
+        ],
+        "content_role": "head_to_head_comparison",
         "hard_filters": [
-          "日本向け現行モデルで本体とステーションの幅・奥行・高さを公式確認できること",
-          "薄型本体・小径本体・水拭き不要・モップ自動手入れという異なる条件を4構成で比較できること"
+          "日本向けF115060とK11+ Proの本体・充電台寸法を公式確認できること",
+          "2製品の自動ゴミ収集、水拭き方式、Wi-Fi依存機能を公式情報で比べ、別用途の候補を商品カードへ混在させないこと"
         ],
         "official_category_sources": [
           "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
-          "https://www.ankerjapan.com/products/t2292",
           "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
-          "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2",
           "https://support.switch-bot.com/hc/en-us/articles/14490132658967-Can-I-Operate-SwitchBot-Mini-Robot-Vacuum-K10-K10-Pro-K11-K11-Pro-Without-a-Wi-Fi-Connection"
         ],
         "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
-        "primary_query_intent": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を比べ、薄型またはモップ自動手入れが必要な場合だけ別候補を確認する",
-        "reader_visible_exclusions_heading": "現行4構成から外した候補",
+        "primary_query_intent": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を二者択一で比べる",
+        "reader_visible_exclusions_heading": "2製品比較から外した候補",
         "reader_visible_required": true,
-        "scope_separation": "Roomba Mini SlimとSwitchBot K11+ Proの指名比較を主目的にし、Eufy C10とDEEBOT mini 2は主比較で条件が合わない場合の境界候補に限定する。市場横断で設置寸法と自動手入れを選ぶ検索意図はA05へ送る。",
+        "scope_separation": "F115060とK11+ Proの指名比較だけを扱う。Eufy C10とDEEBOT mini 2は商品カードやCTAを置かず、別条件を検討する読者だけをA05の4モデル比較へ案内する。",
         "selected_product_ids": [
-          "PRD-EUFY-AUTOEMPTY-C10-T2292",
-          "PRD-SWITCHBOT-K11-PRO",
           "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
-          "PRD-ECOVACS-DEEBOT-MINI2"
+          "PRD-SWITCHBOT-K11-PRO"
         ]
       },
       {
@@ -3048,63 +3031,60 @@
         "axis_assessments": {
           "dimensions": {
             "evidence_refs": [
-              "https://panasonic.jp/dish/products/NP-TML1/spec.html"
+              "https://panasonic.jp/dish/products/NP-TMLK1.html"
             ],
-            "rationale": "寸法比較は本記事の判断軸から外し、旧SOLOTAの対象型番を識別する公式仕様ページだけを参照した。",
+            "rationale": "寸法比較は本記事の判断軸から外し、NP-TMLK1-Kを識別する公式製品ページだけを参照した。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "maintainability": {
             "evidence_refs": [],
-            "rationale": "一部の手入れ情報はあるが、全採用品の修理・部品・消耗品・回収経路を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "rationale": "本記事は購入候補を採用しない0商品記事です。旧型番の修理・部品・回収は商品別に完了とせず、推奨根拠に使いません。将来購入候補へ戻す場合も照合完了まで公開を停止します。",
             "recheck_by": "2026-09-30",
             "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
           },
           "performance": {
             "evidence_refs": [
-              "https://panasonic.jp/dish/products/NP-TML1.html",
               "https://panasonic.jp/dish/products/NP-TMLK1.html"
             ],
-            "rationale": "性能比較は本記事の判断軸から外し、製品名と型番を区別する公式製品ページだけを参照した。",
+            "rationale": "性能比較は本記事の判断軸から外し、製品名とNP-TMLK1-Kの型番を区別する公式製品ページだけを参照した。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "primary_source_confidence": {
             "evidence_refs": [
-              "https://panasonic.jp/dish/products/NP-TML1.html",
               "https://panasonic.jp/dish/products/NP-TMLK1.html",
               "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
             ],
-            "rationale": "メーカー製品ページで旧製品の型番と販売表示を照合し、現行候補の詳細はA04へ分離した。",
+            "rationale": "メーカー製品ページでNP-TMLK1-KとTK-MDW22Bの販売表示を照合し、現行候補の詳細はA04へ分離した。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "safety": {
             "evidence_refs": [],
-            "rationale": "記事全体の安全案内は商品別の重要情報・リコール照合を証明しない。全採用品の型番別確認が未完了のため推奨根拠に使わず、公開を停止して再確認する。",
+            "rationale": "本記事は購入候補を採用しない0商品記事です。旧型番の安全情報は商品別に完了とせず、推奨根拠に使いません。将来購入候補へ戻す場合も照合完了まで公開を停止します。",
             "recheck_by": "2026-09-30",
             "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
           },
           "use_case_fit": {
             "evidence_refs": [
-              "https://panasonic.jp/dish/products/NP-TML1.html",
               "https://panasonic.jp/dish/products/NP-TMLK1.html",
               "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
             ],
-            "rationale": "旧SOLOTAとラクアmini Plusを購入候補にせず、型番別の販売状態確認と現行比較への案内だけに範囲を限定した。",
+            "rationale": "NP-TMLK1-Kとラクアmini Plusを購入候補にせず、型番別の販売状態確認と現行比較への案内だけに範囲を限定した。",
             "state": "OFFICIAL_EVIDENCE_USED"
           },
           "warranty_and_support": {
             "evidence_refs": [],
-            "rationale": "一部の保証情報はあるが、全採用品の日本向け保証地域・期間・窓口を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "rationale": "本記事は購入候補を採用しない0商品記事です。旧型番の保証・サポートは商品別に完了とせず、推奨根拠に使いません。将来購入候補へ戻す場合も照合完了まで公開を停止します。",
             "recheck_by": "2026-09-30",
             "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
           }
         },
         "broader_article_id": "st1704-countertop-dishwasher-for-small-households",
         "candidate_universe_method": "FIXED_HEAD_TO_HEAD_WITH_BROADER_ROUTE",
-        "comparison_scope": "旧SOLOTA NP-TML1-W／NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
+        "comparison_scope": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
         "considered_external_candidates": [
           {
             "brand": "Panasonic",
-            "candidate_id": "EXT-PANASONIC-SOLOTA-NP-TML1-W",
+            "candidate_id": "EXT-PANASONIC-SOLOTA-NP-TMLK1-K",
             "decision_critical": false,
             "decision_critical_unknowns": [],
             "disposition": "EXCLUDED",
@@ -3112,16 +3092,16 @@
             "embedded_structured_lifecycle": "NOT_PRESENT",
             "evaluated_at": "2026-09-01",
             "evidence_refs": [
-              "https://panasonic.jp/dish/products/NP-TML1/spec.html"
+              "https://panasonic.jp/dish/products/NP-TMLK1.html"
             ],
-            "exact_model": "NP-TML1-W",
-            "exact_variant_scope": "日本向けホワイト NP-TML1-W",
+            "exact_model": "NP-TMLK1-K",
+            "exact_variant_scope": "日本向けブラック NP-TMLK1-K",
             "exclusion_axis": "lifecycle",
             "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
             "model_lifecycle": "UNKNOWN",
-            "official_url": "https://panasonic.jp/dish/products/NP-TML1/spec.html",
+            "official_url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
             "reader_visible_lifecycle": "UNKNOWN",
-            "reason": "公式仕様ページは参考に残しますが、正確な白色型番NP-TML1-Wの販売状態を確認できないため、商品カード・購入導線から除外しました。",
+            "reason": "公式製品ページは仕様参考に残しますが、正確なブラック型番NP-TMLK1-Kの購入UIを確認できないため、商品カード・購入導線から除外しました。",
             "use_role": "LIFECYCLE_REFERENCE",
             "variant_lifecycle": "UNKNOWN"
           },
@@ -3149,47 +3129,21 @@
             "variant_lifecycle": "RESTOCK_NOTIFICATION_ONLY"
           }
         ],
-        "considered_portfolio_candidates": [
-          {
-            "disposition": "REFERENCE_ONLY",
-            "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
-            "reason": "現行候補の仕様・設置条件・選定理由は、少人数向け卓上食洗機4候補の比較で確認できます。",
-            "route_article_id": "st1704-countertop-dishwasher-for-small-households"
-          },
-          {
-            "disposition": "REFERENCE_ONLY",
-            "product_id": "PRD-SIROCA-SS-M171",
-            "reason": "現行候補の仕様・設置条件・選定理由は、少人数向け卓上食洗機4候補の比較で確認できます。",
-            "route_article_id": "st1704-countertop-dishwasher-for-small-households"
-          },
-          {
-            "disposition": "REFERENCE_ONLY",
-            "product_id": "PRD-SIROCA-SS-MA251",
-            "reason": "現行候補の仕様・設置条件・選定理由は、少人数向け卓上食洗機4候補の比較で確認できます。",
-            "route_article_id": "st1704-countertop-dishwasher-for-small-households"
-          },
-          {
-            "disposition": "REFERENCE_ONLY",
-            "product_id": "PRD-TOSHIBA-DWS-33B-W",
-            "reason": "現行候補の仕様・設置条件・選定理由は、少人数向け卓上食洗機4候補の比較で確認できます。",
-            "route_article_id": "st1704-countertop-dishwasher-for-small-households"
-          }
-        ],
+        "considered_portfolio_candidates": [],
         "content_role": "lifecycle_status_route",
         "hard_filters": [
-          "SOLOTA NP-TML1-W／NP-TMLK1-Kは販売状態を確認できない仕様参考、ラクアmini Plus TK-MDW22Bは再入荷通知のみの仕様参考に限定し、購入候補へ含めないこと",
-          "現行候補の商品カード・購入導線・仕様比較は本記事に重複掲載せず、A04の4候補比較へ集約すること"
+          "SOLOTA NP-TMLK1-Kは販売状態を確認できない仕様参考、ラクアmini Plus TK-MDW22Bは再入荷通知のみの仕様参考に限定し、購入候補へ含めないこと",
+          "本記事は0商品・0購入導線とし、現行候補の比較は本文前半からA04へ案内すること"
         ],
         "official_category_sources": [
-          "https://panasonic.jp/dish/products/NP-TML1.html",
           "https://panasonic.jp/dish/products/NP-TMLK1.html",
           "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
         ],
         "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
-        "primary_query_intent": "旧SOLOTA・ラクアmini Plusの販売状態と型番を確認し、現行4候補の比較記事へ移る",
+        "primary_query_intent": "SOLOTA NP-TMLK1-Kとラクアmini Plusの販売状態を確認し、現行4候補の比較記事へ移る",
         "reader_visible_exclusions_heading": "旧候補の販売状態と現行比較への案内",
         "reader_visible_required": true,
-        "scope_separation": "旧SOLOTA・ラクアmini Plusの販売状態と型番境界だけを示し、現行品の仕様・設置・選定比較はA04へ一本化する。",
+        "scope_separation": "NP-TMLK1-Kとラクアmini Plusの販売状態だけを示し、現行品の仕様・設置・選定比較は本文前半からA04へ一本化する。",
         "selected_product_ids": []
       }
     ],
@@ -3888,6 +3842,46 @@
       "representative_model": "SS-M171",
       "required_title_tokens": [
         "SS-M171"
+      ]
+    },
+    {
+      "official_models": [
+        "AORA 30 V2"
+      ],
+      "official_name": "BLUETTI AORA 30 V2（グレー）",
+      "official_url": "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+      "product_code": "p32",
+      "product_id": "PRD-BLUETTI-AORA30-V2",
+      "product_kind_tokens": [
+        "ポータブル電源",
+        "Portable Power Station"
+      ],
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "AORA 30 V2",
+      "required_title_tokens": [
+        "BLUETTI",
+        "AORA 30 V2"
+      ]
+    },
+    {
+      "official_models": [
+        "AORA 100 V2"
+      ],
+      "official_name": "BLUETTI AORA 100 V2（インディゴ）",
+      "official_url": "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+      "product_code": "p33",
+      "product_id": "PRD-BLUETTI-AORA100-V2",
+      "product_kind_tokens": [
+        "ポータブル電源",
+        "Portable Power Station"
+      ],
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "AORA 100 V2",
+      "required_title_tokens": [
+        "BLUETTI",
+        "AORA 100 V2"
       ]
     }
   ],

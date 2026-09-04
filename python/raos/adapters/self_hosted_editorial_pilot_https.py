@@ -146,7 +146,7 @@ _CONTENT_ROLE_LABELS: Final = {
     "feature_shortlist": "機能別比較",
     "head_to_head_comparison": "2製品比較",
     "head_to_head_with_reference": "2製品比較＋参考機種",
-    "lifecycle_status_route": "旧製品の販売状態確認＋現行比較への案内",
+    "lifecycle_status_route": "以前の比較対象の販売状態確認＋現行比較への案内",
     "model_family_comparison": "ブランド内比較",
 }
 _CONTENT_ROLES_REQUIRING_BROADER_ARTICLE: Final = frozenset(
@@ -164,6 +164,7 @@ _CONTENT_ROLES_ALLOWING_BROADER_ARTICLE: Final = (
 _RELATED_RELATIONSHIP_TYPES: Final = (
     "broader_guide",
     "narrower_comparison",
+    "lifecycle_reference",
     "adjacent_condition",
 )
 _SITEMAP_NAMESPACE: Final = "http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -715,10 +716,16 @@ def _load_theme_navigation_v3(
                 "broader_guide"
                 if article.get("broader_article_id") == target_id
                 else (
-                    "narrower_comparison"
+                    "lifecycle_reference"
                     if target is not None
                     and target.get("broader_article_id") == article_id
-                    else "adjacent_condition"
+                    and target.get("content_role") == "lifecycle_status_route"
+                    else (
+                        "narrower_comparison"
+                        if target is not None
+                        and target.get("broader_article_id") == article_id
+                        else "adjacent_condition"
+                    )
                 )
             )
             if (

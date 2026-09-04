@@ -213,15 +213,15 @@
     },
     {
       "path": "changes/st-0308/contracts/persistence-runtime.v2.yaml",
-      "sha256": "ef820fde78ac51202d9e3386a7a82f640e8727eb5c7c89205b8885d3abd29bef"
+      "sha256": "2c2722385e0c2950bcbc834d809967a5e50b94adf849b7f57432cb8718a6236b"
     },
     {
       "path": "changes/st-0401/generated/local-auth-runtime.v2.json",
-      "sha256": "59099f477a7e0081aa732e8e4fe2461e06f341e46a978c795bec0283abe8cda9"
+      "sha256": "8b3f04c11cf3480e2b6965fa313732c52cba24da50d171e7d44e82ef5345a9a3"
     },
     {
       "path": "changes/st-0401/generated/local-auth-runtime-manifest.v2.json",
-      "sha256": "83b65552f1c9f8a0e8c6ffebc2ce0578d845e806c4023bf2d0ac41983c659ed7"
+      "sha256": "af40a470d24fc0f80806ce282ad384ba70a4f289a325f7ff874b1c3b955baf9f"
     }
   ],
   "story_id": "ST-0402"

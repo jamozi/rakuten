@@ -24,6 +24,8 @@ PROVIDER_SLOT_ID_RE: Final = re.compile(r"rps-a[0-9]{2}-(?:card|final)\Z")
 INTERNAL_CTA_NAMESPACE: Final = "RAOS_INTERNAL_CTA_V1"
 PROVIDER_SLOT_GRANULARITY: Final = "ARTICLE_PLACEMENT"
 PROVIDER_SLOT_LIMIT: Final = 20
+LIFECYCLE_STATUS_ROUTE_ARTICLE_ID: Final = "solota-vs-rakua-mini-plus"
+LIFECYCLE_STATUS_ROUTE_ARTICLE_CODE: Final = "a10"
 INTENT_GROUP_CLUSTER: Final = {
     "carry-on-suitcase": "mobility",
     "countertop-dishwasher": "household",
@@ -37,7 +39,7 @@ CONTENT_ROLE_LABELS: Final = {
     "feature_shortlist": "機能別比較",
     "head_to_head_comparison": "2製品比較",
     "head_to_head_with_reference": "2製品比較＋参考機種",
-    "lifecycle_status_route": "旧製品の販売状態確認＋現行比較への案内",
+    "lifecycle_status_route": "以前の比較対象の販売状態確認＋現行比較への案内",
     "model_family_comparison": "ブランド内比較",
 }
 ROLES_REQUIRING_BROADER_ARTICLE: Final = {
@@ -834,6 +836,19 @@ def load_editorial_portfolio_v3(repository_root: Path) -> EditorialPortfolioV3:
             bindings.append(binding)
         if len(bindings) != len(product_refs) * 2:
             _fail("RAOS_EDITORIAL_V3_CONTRACT_INVALID")
+        lifecycle_identity = (
+            article_id == LIFECYCLE_STATUS_ROUTE_ARTICLE_ID
+            and article_code == LIFECYCLE_STATUS_ROUTE_ARTICLE_CODE
+        )
+        lifecycle_role = content_role == "lifecycle_status_route"
+        zero_product_route = not product_refs
+        zero_cta_route = not bindings
+        if (
+            lifecycle_identity != lifecycle_role
+            or lifecycle_identity != zero_product_route
+            or lifecycle_identity != zero_cta_route
+        ):
+            _fail("RAOS_EDITORIAL_V3_CONTRACT_INVALID")
         articles.append(
             ArticleBindingV3(
                 article_id=article_id,
@@ -876,7 +891,7 @@ def load_editorial_portfolio_v3(repository_root: Path) -> EditorialPortfolioV3:
     }
     if (
         len(articles) != 10
-        or len(products) != 31
+        or len(products) != 33
         or {product_id for article in articles for product_id in article.product_ids}
         != product_ids
         or len(all_cta_ids) != 74

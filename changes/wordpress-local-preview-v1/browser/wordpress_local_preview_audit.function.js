@@ -104,6 +104,10 @@
   const comparisonPolicyPath = comparisonPolicyRows[0]?.local_path;
   const articleIds = new Set(articleRows.map((surface) => surface.article_id));
   const articleById = new Map(articleRows.map((surface) => [surface.article_id, surface]));
+  const lifecycleStatusRouteArticleId = 'solota-vs-rakua-mini-plus';
+  const lifecycleStatusRouteRows = articleRows.filter(
+    (surface) => surface.content_role === 'lifecycle_status_route',
+  );
   const roleLabelByRole = new Map([
     ['brand_family_comparison', 'ブランド内比較'],
     ['category_guide', '選び方'],
@@ -111,7 +115,7 @@
     ['feature_shortlist', '機能別比較'],
     ['head_to_head_comparison', '2製品比較'],
     ['head_to_head_with_reference', '2製品比較＋参考機種'],
-    ['lifecycle_status_route', '旧製品の販売状態確認＋現行比較への案内'],
+    ['lifecycle_status_route', '以前の比較対象の販売状態確認＋現行比較への案内'],
     ['model_family_comparison', 'ブランド内比較'],
   ]);
   const intentGroupByArticleId = new Map(
@@ -259,6 +263,10 @@
         )),
     ) ||
     articleIds.size !== 10 ||
+    lifecycleStatusRouteRows.length !== 1 ||
+    lifecycleStatusRouteRows[0]?.article_id !== lifecycleStatusRouteArticleId ||
+    articleById.get(lifecycleStatusRouteArticleId)?.content_role !==
+      'lifecycle_status_route' ||
     articleRows.some(
       (surface) =>
         !articleIds.has(surface.contextual_article_id) ||
@@ -580,7 +588,7 @@
         }
       }
       if (surface.article) {
-        await page.locator('.raos-disclosure[aria-label="広告表示"]')
+        await page.locator('.raos-disclosure')
           .scrollIntoViewIfNeeded();
         await page.evaluate(
           () => new Promise((resolve) =>
@@ -642,6 +650,9 @@
         const controls = [...document.querySelectorAll(
           'input:not([type="hidden"]),select,textarea,button',
         )];
+        const productProfiles = [...document.querySelectorAll('.product-profile')];
+        const productIds = productProfiles.map((profile) =>
+          (profile.getAttribute('data-raos-product-id') || '').trim());
         let sessionKeys = 0;
         try {
           for (let index = 0; index < sessionStorage.length; index += 1) {
@@ -688,7 +699,7 @@
         const h1Range = h1 ? document.createRange() : null;
         if (h1Range) h1Range.selectNodeContents(h1);
         const lineTops = h1Range ? [...h1Range.getClientRects()].map((rect) => Math.round(rect.top)) : [];
-        const disclosure = document.querySelector('.raos-disclosure[aria-label="広告表示"]');
+        const disclosure = document.querySelector('.raos-disclosure');
         const disclosureRect = disclosure instanceof HTMLElement
           ? disclosure.getBoundingClientRect() : null;
         const disclosureStyle = disclosure instanceof HTMLElement
@@ -846,15 +857,17 @@
           comparisonFocusability,
           cookieSettingsCount: document.querySelectorAll('.raos-cookie-settings').length,
           ctaBoxes: boxes('.raos-cta[data-raos-placement]'),
+          productIds,
+          productProfileCount: productProfiles.length,
           duplicateIds: [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))],
           disclosure: {
+            ariaLabel: disclosure?.getAttribute('aria-label') || '',
             beforeFirstCtaDom: disclosure instanceof HTMLElement && firstCta instanceof HTMLElement &&
               Boolean(disclosure.compareDocumentPosition(firstCta) & Node.DOCUMENT_POSITION_FOLLOWING),
             beforeFirstCtaVisual: disclosureRect !== null && firstCtaRect !== null &&
               disclosureRect.top + scrollY < firstCtaRect.top + scrollY,
-            count: document.querySelectorAll(
-              '.raos-disclosure[aria-label="広告表示"]',
-            ).length,
+            count: document.querySelectorAll('.raos-disclosure').length,
+            detailsCount: disclosureDetails.length,
             detailsValid: disclosureDetails.length === 1 &&
               disclosureDetails[0].querySelectorAll(':scope > summary').length === 1 &&
               disclosureDetails[0].firstElementChild === disclosureSummary &&
@@ -864,12 +877,18 @@
               disclosureRect.right <= innerWidth,
             opacityVisible: disclosureStyle !== null && disclosureAncestorsVisible &&
               disclosureEffectiveOpacity > 0 && visible(disclosure),
+            nonaffiliatePhraseCount: [
+              'この記事には購入リンクがありません',
+              '以前の比較対象の販売状態を確認する案内記事',
+              '商品カードとアフィリエイトリンクは掲載していません',
+            ].filter((phrase) => disclosureText.includes(phrase)).length,
             policyLinkCount: disclosurePolicyLinks.length,
             standardPhraseCount: [
               '広告を含みます',
               '選定・掲載順には使いません',
               '実機を使用したレビューではありません',
             ].filter((phrase) => disclosureText.includes(phrase)).length,
+            strongText: disclosure?.querySelector(':scope > strong')?.textContent?.trim() || '',
             summaryVisible: visible(disclosureSummary),
             unobscured: disclosure instanceof HTMLElement && disclosureTopmost !== null &&
               (disclosureTopmost === disclosure || disclosure.contains(disclosureTopmost)),
@@ -896,6 +915,8 @@
             })),
           head: {
             canonical: values('link[rel="canonical"]', 'href'),
+            canonicalResolved: [...document.querySelectorAll('link[rel="canonical"][href]')]
+              .map((link) => link.href),
             description: values('meta[name="description"]'),
             ogDescription: values('meta[property="og:description"]'),
             ogImage: values('meta[property="og:image"]'),
@@ -1038,9 +1059,9 @@
       const seoHeadAudit = surface.publicCore
         ? validateSeoHead({
           audit: {
-            canonicalLinks: head.canonical.map((rawHref) => ({
+            canonicalLinks: head.canonical.map((rawHref, index) => ({
               rawHref,
-              resolvedHref: new URL(rawHref, expectedUrl).href,
+              resolvedHref: head.canonicalResolved[index] || '',
             })),
             currentUrl: page.url(),
             jsonLdParseFailed: audit.jsonLdParseFailures !== 0,
@@ -1160,7 +1181,10 @@
       }
 
       let disclosureKeyboardFailure = null;
-      if (surface.article && width === 390) {
+      if (
+        surface.article && width === 390 &&
+        surface.article_id !== lifecycleStatusRouteArticleId
+      ) {
         disclosureKeyboardFailure = await (async () => {
           const details = page.locator(
             '.raos-disclosure[aria-label="広告表示"] details',
@@ -1520,8 +1544,38 @@
         box.width <= 0 || box.height <= 0 || box.left < -0.5 ||
         box.right > audit.clientWidth + 0.5;
       const expectedColumns = width === 1440 ? 3 : width === 768 ? 2 : 1;
+      const isLifecycleStatusRoute = surface.article &&
+        surface.article_id === lifecycleStatusRouteArticleId;
       const requiresAffiliateCta = surface.article &&
-        surface.content_role !== 'lifecycle_status_route';
+        !isLifecycleStatusRoute;
+      const zeroProducts = audit.productIds.length === 0;
+      const zeroCtas = audit.ctaBoxes.length === 0;
+      const lifecycleProductCtaInvariantFailure = surface.article && (
+        (surface.content_role === 'lifecycle_status_route') !== isLifecycleStatusRoute ||
+        zeroProducts !== isLifecycleStatusRoute ||
+        zeroCtas !== isLifecycleStatusRoute ||
+        audit.productProfileCount !== audit.productIds.length ||
+        audit.productIds.some((productId) => productId === '') ||
+        new Set(audit.productIds).size !== audit.productIds.length
+      );
+      const disclosureSemanticsFailure = surface.article && (
+        audit.disclosure.count !== 1 ||
+        !audit.disclosure.opacityVisible || !audit.disclosure.inViewport ||
+        !audit.disclosure.unobscured || audit.disclosure.policyLinkCount !== 1 ||
+        (isLifecycleStatusRoute
+          ? audit.disclosure.ariaLabel !== '収益化の対象外' ||
+            audit.disclosure.strongText !== '購入リンクなし' ||
+            audit.disclosure.detailsCount !== 0 || audit.disclosure.detailsValid ||
+            audit.disclosure.summaryVisible ||
+            audit.disclosure.standardPhraseCount !== 0 ||
+            audit.disclosure.nonaffiliatePhraseCount !== 3
+          : audit.disclosure.ariaLabel !== '広告表示' ||
+            audit.disclosure.strongText !== '広告・アフィリエイト開示' ||
+            audit.disclosure.detailsCount !== 1 || !audit.disclosure.detailsValid ||
+            !audit.disclosure.summaryVisible ||
+            audit.disclosure.standardPhraseCount !== 3 ||
+            audit.disclosure.nonaffiliatePhraseCount !== 0)
+      );
       const generalFailure =
         browserCookieCount !== 0 ||
         audit.lang !== 'ja' || audit.characterSet !== 'UTF-8' ||
@@ -1564,12 +1618,7 @@
               !audit.disclosure.beforeFirstCtaVisual
             : audit.ctaBoxes.length !== 0 || audit.disclosure.beforeFirstCtaDom ||
               audit.disclosure.beforeFirstCtaVisual) ||
-          audit.imageLoadingInvalid !== 0 || audit.disclosure.count !== 1 ||
-          !audit.disclosure.opacityVisible || !audit.disclosure.inViewport ||
-          !audit.disclosure.unobscured ||
-          audit.disclosure.standardPhraseCount !== 3 ||
-          audit.disclosure.policyLinkCount !== 1 || !audit.disclosure.detailsValid ||
-          !audit.disclosure.summaryVisible
+          audit.imageLoadingInvalid !== 0 || disclosureSemanticsFailure
         )) ||
         (!surface.article && audit.disclosure.count !== 0) ||
         surface.article !== audit.editorialBodyClass ||
@@ -1580,7 +1629,7 @@
         securityHeaderFailure.length !== 0 || disclosureKeyboardFailure || focusFlowFailure ||
         navigationFailure || desktopTocPositionFailure || internalLinkFailure ||
         homeLinkFailure || localLinkFailure || listingFailure || missingUiText.length !== 0 ||
-        notFoundFailure || routeFailure ||
+        lifecycleProductCtaInvariantFailure || notFoundFailure || routeFailure ||
         skipLinkFailure || tocFailure
       ) {
         throw new Error(

@@ -43,7 +43,7 @@
       "content_role": "category_guide",
       "content_role_label": "選び方",
       "primary_query_intent": "停電時に使う機器から必要な容量・出力と持ち運べる候補を選ぶ",
-      "comparison_scope": "容量・各社公表の出力・重量・寸法を公式情報で照合できる現行ポータブル電源。安全・保証・回収は全採用品の照合完了まで選定根拠から除外",
+      "comparison_scope": "容量・各社公表の出力・重量・寸法を公式情報で照合できる現行ポータブル電源7モデル。安全・保証・回収は全採用品の照合完了まで選定根拠から除外",
       "broader_article_id": null,
       "home_order": 1,
       "related_article_ids": [
@@ -148,10 +148,10 @@
       "article_code": "a09",
       "cluster_id": "household",
       "intent_group_id": "robot-vacuum",
-      "content_role": "constraint_shortlist",
-      "content_role_label": "条件別比較",
-      "primary_query_intent": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を比べ、薄型またはモップ自動手入れが必要な場合だけ別候補を確認する",
-      "comparison_scope": "Roomba Mini SlimとSwitchBot K11+ Proを主比較とし、Eufy Auto-Empty C10は薄型、DEEBOT mini 2はモップ自動手入れの条件別候補として確認",
+      "content_role": "head_to_head_comparison",
+      "content_role_label": "2製品比較",
+      "primary_query_intent": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を二者択一で比べる",
+      "comparison_scope": "Roomba Mini Slim F115060とSwitchBot K11+ Proの純2製品比較。薄型本体やモップ自動手入れを優先する別候補は4モデル比較へ案内",
       "broader_article_id": "st1704-compact-robot-vacuum-shortlist",
       "home_order": 3,
       "related_article_ids": [
@@ -164,9 +164,9 @@
       "cluster_id": "household",
       "intent_group_id": "countertop-dishwasher",
       "content_role": "lifecycle_status_route",
-      "content_role_label": "旧製品の販売状態確認＋現行比較への案内",
-      "primary_query_intent": "旧SOLOTA・ラクアmini Plusの販売状態と型番を確認し、現行4候補の比較記事へ移る",
-      "comparison_scope": "旧SOLOTA NP-TML1-W／NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
+      "content_role_label": "以前の比較対象の販売状態確認＋現行比較への案内",
+      "primary_query_intent": "SOLOTA NP-TMLK1-Kとラクアmini Plusの販売状態を確認し、現行4候補の比較記事へ移る",
+      "comparison_scope": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
       "broader_article_id": "st1704-countertop-dishwasher-for-small-households",
       "home_order": 4,
       "related_article_ids": [
@@ -205,6 +205,8 @@
     {"product_id": "PRD-PROTECA-FRESTER-EX-01551", "product_code": "p28"},
     {"product_id": "PRD-BERMAS-INTER-CITY-III-60570", "product_code": "p29"},
     {"product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060", "product_code": "p30"},
-    {"product_id": "PRD-SIROCA-SS-M171", "product_code": "p31"}
+    {"product_id": "PRD-SIROCA-SS-M171", "product_code": "p31"},
+    {"product_id": "PRD-BLUETTI-AORA30-V2", "product_code": "p32"},
+    {"product_id": "PRD-BLUETTI-AORA100-V2", "product_code": "p33"}
   ]
 }

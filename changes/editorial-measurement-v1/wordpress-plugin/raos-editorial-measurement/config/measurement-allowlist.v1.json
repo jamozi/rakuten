@@ -78,6 +78,30 @@
           "product_id": "PRD-ANKER-SOLIX-C800"
         },
         {
+          "cta_id": "icta_a02_p33_final",
+          "offer_id": "off-a02-p33",
+          "placement": "final_summary",
+          "product_id": "PRD-BLUETTI-AORA100-V2"
+        },
+        {
+          "cta_id": "icta_a02_p33_card",
+          "offer_id": "off-a02-p33",
+          "placement": "product_card",
+          "product_id": "PRD-BLUETTI-AORA100-V2"
+        },
+        {
+          "cta_id": "icta_a02_p32_final",
+          "offer_id": "off-a02-p32",
+          "placement": "final_summary",
+          "product_id": "PRD-BLUETTI-AORA30-V2"
+        },
+        {
+          "cta_id": "icta_a02_p32_card",
+          "offer_id": "off-a02-p32",
+          "placement": "product_card",
+          "product_id": "PRD-BLUETTI-AORA30-V2"
+        },
+        {
           "cta_id": "icta_a02_p08_final",
           "offer_id": "off-a02-p08",
           "placement": "final_summary",
@@ -117,7 +141,7 @@
       "related_article_ids": [
         "st1704-anker-solix-c300-c800-c1000-differences"
       ],
-      "snapshot_id": "snp-a02-4431c630a4c7"
+      "snapshot_id": "snp-a02-b50b6e5a2507"
     },
     {
       "article_code": "a03",
@@ -176,7 +200,7 @@
       "related_article_ids": [
         "st1704-portable-power-station-guide"
       ],
-      "snapshot_id": "snp-a03-7994f8016483"
+      "snapshot_id": "snp-a03-43807ee851ba"
     },
     {
       "article_code": "a04",
@@ -494,30 +518,6 @@
       "category_id": "household",
       "cta_bindings": [
         {
-          "cta_id": "icta_a09_p17_final",
-          "offer_id": "off-a09-p17",
-          "placement": "final_summary",
-          "product_id": "PRD-ECOVACS-DEEBOT-MINI2"
-        },
-        {
-          "cta_id": "icta_a09_p17_card",
-          "offer_id": "off-a09-p17",
-          "placement": "product_card",
-          "product_id": "PRD-ECOVACS-DEEBOT-MINI2"
-        },
-        {
-          "cta_id": "icta_a09_p15_final",
-          "offer_id": "off-a09-p15",
-          "placement": "final_summary",
-          "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292"
-        },
-        {
-          "cta_id": "icta_a09_p15_card",
-          "offer_id": "off-a09-p15",
-          "placement": "product_card",
-          "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292"
-        },
-        {
           "cta_id": "icta_a09_p30_final",
           "offer_id": "off-a09-p30",
           "placement": "final_summary",
@@ -545,7 +545,7 @@
       "related_article_ids": [
         "st1704-compact-robot-vacuum-shortlist"
       ],
-      "snapshot_id": "snp-a09-44f379e5e7bc"
+      "snapshot_id": "snp-a09-64168dbf12d1"
     },
     {
       "article_code": "a10",
@@ -555,7 +555,7 @@
       "related_article_ids": [
         "st1704-countertop-dishwasher-for-small-households"
       ],
-      "snapshot_id": "snp-a10-b27f94c8674d"
+      "snapshot_id": "snp-a10-da82f148e08d"
     }
   ],
   "events": [
@@ -573,7 +573,7 @@
   "source": {
     "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
     "schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
-    "sha256": "aa90a81a05042f01eb326e24a84248f303b749b7996a7feb263b52bee8775d34",
+    "sha256": "99cc7569957781727d8fc5c9331dcf498e341e630758947b6eed2a39bd3a7cb9",
     "version": "3.0.0"
   },
   "target_origin": "https://kurashinoshirube.com",

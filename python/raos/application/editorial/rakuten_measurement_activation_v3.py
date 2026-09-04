@@ -80,7 +80,7 @@ MAX_ACTIVATION_AGE: Final = timedelta(minutes=15)
 MAX_FUTURE_SKEW: Final = timedelta(seconds=30)
 EXPECTED_PRODUCT_CARD_COUNT: Final = 37
 EXPECTED_AFFILIATE_CTA_COUNT: Final = EXPECTED_PRODUCT_CARD_COUNT * 2
-EXPECTED_PRODUCT_COUNT: Final = 31
+EXPECTED_PRODUCT_COUNT: Final = 33
 PRODUCT_SAFETY_PUBLICATION_BINDING_SCHEMA: Final = (
     "RAOS_PRODUCT_SAFETY_PUBLICATION_BINDING_V1"
 )
@@ -309,10 +309,7 @@ def _validate_activation_time_chain(
         or activation_time > active_now + MAX_FUTURE_SKEW
         or verified_time - mapping_time > MAX_MAPPING_TO_VERIFICATION_AGE
         or activation_time - verified_time > MAX_VERIFICATION_TO_ACTIVATION_AGE
-        or (
-            require_recent
-            and active_now - activation_time > MAX_ACTIVATION_AGE
-        )
+        or (require_recent and active_now - activation_time > MAX_ACTIVATION_AGE)
     ):
         _fail("RAOS_RAKUTEN_ACTIVATION_INPUT_STALE")
     return mapping_text, verified_text, activated_text
@@ -416,12 +413,10 @@ def _validate_product_safety_publication_binding(
         != EXPECTED_PRODUCT_COUNT * PROVIDER_SCOPE_COUNT
         or binding.get("administrative_verified_product_count")
         != EXPECTED_PRODUCT_COUNT
-        or binding.get("manufacturer_verified_product_count")
-        != EXPECTED_PRODUCT_COUNT
+        or binding.get("manufacturer_verified_product_count") != EXPECTED_PRODUCT_COUNT
         or binding.get("complete_product_count") != EXPECTED_PRODUCT_COUNT
         or binding.get("complete") is not True
-        or _sha256(binding.get("binding_sha256"))
-        != _compact_json_sha256(hash_material)
+        or _sha256(binding.get("binding_sha256")) != _compact_json_sha256(hash_material)
     ):
         _fail("RAOS_RAKUTEN_ACTIVATION_PRODUCT_SAFETY_INVALID")
     if require_complete and binding.get("complete") is not True:
@@ -436,7 +431,7 @@ def _current_product_safety_publication_binding(
     now: datetime,
     require_complete: bool = True,
 ) -> dict[str, object]:
-    """Replay the exact 31 x 3 private set and derive a public-safe gate."""
+    """Replay the exact 33 x 3 private set and derive a public-safe gate."""
 
     expected_products = {product.product_id: product for product in portfolio.products}
     if len(expected_products) != EXPECTED_PRODUCT_COUNT:
@@ -461,15 +456,12 @@ def _current_product_safety_publication_binding(
                 maximum=MAX_PRIVATE_DOCUMENT_BYTES,
             )
         )
-        or administrative.capture_count
-        != EXPECTED_PRODUCT_COUNT * PROVIDER_SCOPE_COUNT
+        or administrative.capture_count != EXPECTED_PRODUCT_COUNT * PROVIDER_SCOPE_COUNT
         or SHA256_RE.fullmatch(administrative.bundle_sha256) is None
         or len(administrative.products) != EXPECTED_PRODUCT_COUNT
-        or {row.product_id for row in administrative.products}
-        != set(expected_products)
+        or {row.product_id for row in administrative.products} != set(expected_products)
         or any(
-            row.exact_model_tokens
-            != expected_products[row.product_id].official_models
+            row.exact_model_tokens != expected_products[row.product_id].official_models
             or len(row.captures) != PROVIDER_SCOPE_COUNT
             for row in administrative.products
         )
@@ -707,6 +699,13 @@ def _validate_rakuten_image_url(value: object) -> str:
     ):
         _fail("RAOS_RAKUTEN_ACTIVATION_URL_INVALID")
     return url
+
+
+def load_verified_v2_evidence(
+    repository_root: Path, *, now: datetime
+) -> _VerifiedV2EvidenceSet:
+    """Shared strict product/safety gate for measured and standard publication."""
+    return _load_verified_v2_evidence(repository_root, now=now)
 
 
 def _load_verified_v2_evidence(
@@ -1027,10 +1026,7 @@ def _expected_provider_slots(
     if (
         len(result) != EXPECTED_PROVIDER_SLOT_COUNT
         or len(portfolio.provider_slots) != EXPECTED_PROVIDER_SLOT_COUNT
-        or {
-            (slot.article_id, slot.placement)
-            for slot in portfolio.provider_slots
-        }
+        or {(slot.article_id, slot.placement) for slot in portfolio.provider_slots}
         != {
             (article.article_id, placement)
             for article in portfolio.articles
@@ -1365,6 +1361,7 @@ def _materialized_anchor(
     *,
     destination_url: str,
     described_by: str | None,
+    include_provider_slot: bool = True,
 ) -> str:
     described = ""
     if described_by is not None:
@@ -1376,6 +1373,12 @@ def _materialized_anchor(
         if binding.placement == "product_card"
         else "在庫・カラーを楽天市場で確認する"
     )
+    provider_slot = (
+        ' data-raos-rakuten-provider-slot-id="'
+        f'{escape(binding.provider_slot_id, quote=True)}"'
+        if include_provider_slot
+        else ""
+    )
     return (
         '<a class="rakuten-cta raos-cta"'
         f' href="{escape(destination_url, quote=True)}"'
@@ -1386,8 +1389,7 @@ def _materialized_anchor(
         f' data-raos-offer-id="{escape(binding.offer_id, quote=True)}"'
         f' data-raos-product-id="{escape(binding.product_id, quote=True)}"'
         f' data-raos-placement="{binding.placement}"'
-        ' data-raos-rakuten-provider-slot-id="'
-        f'{escape(binding.provider_slot_id, quote=True)}"'
+        f"{provider_slot}"
         f'{described}>{label} <span aria-hidden="true">→</span></a>'
     )
 
@@ -1396,6 +1398,8 @@ def materialize_article_html(
     article: ArticleBindingV3,
     source: bytes,
     urls: Mapping[tuple[str, str, str], str],
+    *,
+    include_provider_slot: bool = True,
 ) -> bytes:
     """Materialize exactly one tracked article into a private candidate."""
 
@@ -1439,6 +1443,7 @@ def materialize_article_html(
             binding,
             destination_url=destination_url,
             described_by=described_by,
+            include_provider_slot=include_provider_slot,
         )
 
     materialized = CTA_ANCHOR_RE.sub(replace, markup)
@@ -2728,9 +2733,7 @@ def validate_rakuten_measurement_activation_v3(
             "activated_at_utc",
         },
     )
-    admin_receipt_name = _text(
-        activation_inputs.get("admin_receipt_name"), maximum=255
-    )
+    admin_receipt_name = _text(activation_inputs.get("admin_receipt_name"), maximum=255)
     money_link_mapping_name = _text(
         activation_inputs.get("money_link_mapping_name"), maximum=255
     )
@@ -2797,8 +2800,7 @@ def validate_rakuten_measurement_activation_v3(
         )
     )
     if (
-        activation_inputs.get("mapping_generated_at_utc")
-        != mapping_generated_at_utc
+        activation_inputs.get("mapping_generated_at_utc") != mapping_generated_at_utc
         or activation_inputs.get("admin_verified_at_utc") != admin_verified_at_utc
         or activation_inputs.get("activated_at_utc") != activated_at_utc
     ):
@@ -2831,9 +2833,7 @@ def validate_rakuten_measurement_activation_v3(
         _timestamp(v2.get("local_generated_at")),
         _timestamp(v2.get("production_generated_at")),
     ]
-    activation_time = datetime.fromisoformat(
-        activated_at_utc.replace("Z", "+00:00")
-    )
+    activation_time = datetime.fromisoformat(activated_at_utc.replace("Z", "+00:00"))
     for value in generated_values:
         generated = datetime.fromisoformat(value.replace("Z", "+00:00"))
         if (
@@ -3047,7 +3047,28 @@ def validate_rakuten_measurement_activation_v3(
     )
 
 
+# Deliberate shared publication support API. These functions still enforce the
+# same private-file, source replay, completeness and freshness invariants.
+anchor_attributes = _anchor_attributes
+default_v2_fixture_roots = _default_v2_fixture_roots
+fail = _fail
+owner_directory = _owner_directory
+require_v2_materializations_current = _require_v2_materializations_current
+sha256_bytes = _sha256_bytes
+v2_materialization = _v2_materialization
+write_overlay = _write_overlay
+
+
 __all__ = [
+    "anchor_attributes",
+    "default_v2_fixture_roots",
+    "fail",
+    "load_verified_v2_evidence",
+    "owner_directory",
+    "require_v2_materializations_current",
+    "sha256_bytes",
+    "v2_materialization",
+    "write_overlay",
     "ADMIN_RECEIPT_SCHEMA",
     "DRY_RUN_SCHEMA",
     "MONEY_LINK_MAPPING_SCHEMA",

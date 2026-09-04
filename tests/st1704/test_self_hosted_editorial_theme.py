@@ -660,9 +660,10 @@ def test_editorial_v2_category_fallback_is_allowlisted() -> None:
     assert {article["content_role_label"] for article in navigation["articles"]} == {
         "選び方",
         "ブランド内比較",
+        "2製品比較",
         "条件別比較",
         "機能別比較",
-        "旧製品の販売状態確認＋現行比較への案内",
+        "以前の比較対象の販売状態確認＋現行比較への案内",
     }
     assert all(article["comparison_scope"] for article in navigation["articles"])
     assert all(article["primary_query_intent"] for article in navigation["articles"])
@@ -1815,6 +1816,7 @@ def test_related_navigation_is_generated_closed_and_contract_hashed() -> None:
     assert related["relationship_types"] == [
         "broader_guide",
         "narrower_comparison",
+        "lifecycle_reference",
         "adjacent_condition",
     ]
     assert related["article_link_placements"] == {

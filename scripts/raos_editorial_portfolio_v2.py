@@ -16,6 +16,7 @@ import re
 import secrets
 import stat
 import sys
+import time
 from typing import Any, Final, Literal, Mapping, NoReturn, Sequence, cast
 from urllib.parse import urlencode, urlsplit
 
@@ -43,6 +44,9 @@ from raos.application.editorial.editorial_portfolio_v2 import (  # noqa: E402
     PRODUCTION_FIXTURE_RELATIVE_PATH,
     STATUS_RELATIVE_PATH,
     _validate_rakuten_identity,
+    discover_rakuten_identity_v1,
+    rakuten_identity_query_v1,
+    resolve_rakuten_identity_v1,
     EditorialPortfolioV2Failure,
     EditorialPortfolioV2,
     ProductBindingV2,
@@ -112,9 +116,7 @@ SALES_STATUS_HASH_FIELDS = (
 SALES_STATES = frozenset({"AVAILABLE", "OUT_OF_STOCK", "DISCONTINUED", "UNKNOWN"})
 PUBLICATION_ELIGIBLE_SALES_STATES = frozenset({"AVAILABLE"})
 PRODUCT_SAFETY_GATE_SCHEMA = "PRODUCT_SPECIFIC_RECALL_QUERY_REQUIREMENT_V2"
-PRODUCT_SAFETY_PUBLICATION_BINDING_SCHEMA = (
-    "RAOS_PRODUCT_SAFETY_PUBLICATION_BINDING_V1"
-)
+PRODUCT_SAFETY_PUBLICATION_BINDING_SCHEMA = "RAOS_PRODUCT_SAFETY_PUBLICATION_BINDING_V1"
 PRODUCT_SAFETY_ADMINISTRATIVE_CAPTURE_COUNT_PER_PRODUCT = 3
 PRODUCT_SAFETY_GATE_CAVEAT = (
     "NONE_FOUNDは、receiptに記録した公式source・型番token・query・"
@@ -345,13 +347,21 @@ def _missing_listing_status(
 ) -> tuple[str, str, int]:
     parameters = [
         ("applicationId", credentials.application_id),
-        ("keyword", binding.representative_model),
+        ("keyword", rakuten_identity_query_v1(binding)),
         ("hits", "30"),
         ("page", "1"),
         ("format", "json"),
         ("formatVersion", "2"),
         ("imageFlag", "1"),
-        ("elements", ",".join(rakuten_capture._DISCOVERY_ELEMENTS)),
+        (
+            "elements",
+            ",".join(
+                (
+                    *rakuten_capture._DISCOVERY_ELEMENTS,
+                    *sorted(rakuten_capture._RESPONSE_SUMMARY_FIELDS),
+                )
+            ),
+        ),
     ]
     raw = rakuten_capture._fetch(
         host=rakuten_capture.RAKUTEN_API_HOST,
@@ -388,8 +398,125 @@ def _missing_listing_status(
         raw,
         mode=0o600,
     )
-    state = "not_found" if len(matches) == 0 else "ambiguous"
+    resolved = discover_rakuten_identity_v1(binding, raw)
+    if resolved is not None:
+        _atomic_write(
+            output_directory / f"{binding.product_id}.identity.v1.json",
+            _canonical_bytes(
+                {
+                    "schema": "RAOS_RAKUTEN_API_IDENTITY_V1",
+                    "provenance": "API_VERIFIED",
+                    "owner_attested": False,
+                    "portfolio_sha256": portfolio_sha256(ROOT),
+                    "product_id": binding.product_id,
+                    "query_model": binding.representative_model,
+                    "search_keyword": rakuten_identity_query_v1(binding),
+                    "retrieved_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "response_sha256": hashlib.sha256(raw).hexdigest(),
+                    "item_code": resolved.rakuten_item_code,
+                    "shop_code": resolved.rakuten_shop_code,
+                }
+            )
+            + b"\n",
+            mode=0o600,
+        )
+        return "resolved", hashlib.sha256(raw).hexdigest(), 1
+    summary = json.loads(raw)
+    truncated = summary.get("count", 0) > len(rows)
+    state = "not_found" if len(matches) == 0 and not truncated else "ambiguous"
     return state, hashlib.sha256(raw).hexdigest(), len(matches)
+
+
+def discover_identities(owner_checkout: Path) -> dict[str, object]:
+    """Acquire missing selectors privately without blocking on unrelated JAN data.
+
+    Source contracts remain anchored to ROOT. Credentials and API bodies remain
+    in the saved checkout; no copy of credentials is made into a worktree.
+    These identity receipts alone cannot materialize or publish any article.
+    """
+    allowed = Path("/home/minami/rakuten")
+    if (
+        owner_checkout != allowed
+        or owner_checkout.is_symlink()
+        or owner_checkout.resolve(strict=True) != allowed
+    ):
+        fail("RAOS_EDITORIAL_PORTFOLIO_OWNER_CHECKOUT_INVALID")
+    portfolio = load_editorial_portfolio_v2(ROOT)
+    source_hash = portfolio_sha256(ROOT)
+    rakuten_capture.require_clean_capture_environment()
+    credentials = rakuten_capture.read_owner_credentials(owner_checkout)
+    factory = rakuten_capture.SystemRakutenHttpsConnectionFactory(owner_checkout)
+    provider_root = owner_checkout / STATUS_RELATIVE_PATH.parent / "provider"
+    _ensure_directory(provider_root, mode=0o700)
+    counts = {
+        "registered": 0,
+        "resolved": 0,
+        "not_found": 0,
+        "ambiguous": 0,
+        "request_failed": 0,
+        "invalid_evidence": 0,
+    }
+    results: list[dict[str, object]] = []
+    for binding in portfolio.products:
+        if binding.rakuten_item_code is not None:
+            counts["registered"] += 1
+            continue
+        time.sleep(1.1)  # Space read-only requests; never hammer a limited endpoint.
+        try:
+            state, digest, matches = _missing_listing_status(
+                binding,
+                credentials,
+                factory,
+                output_directory=provider_root,
+            )
+        except rakuten_capture.RakutenProductCaptureFailure as error:
+            invalid_evidence = error.code in {
+                rakuten_capture.RakutenProductCaptureFailureCode.IMAGE_INVALID,
+                rakuten_capture.RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID,
+            }
+            if (
+                error.code
+                not in {
+                    rakuten_capture.RakutenProductCaptureFailureCode.RESPONSE_INVALID,
+                    rakuten_capture.RakutenProductCaptureFailureCode.REQUEST_AMBIGUOUS,
+                    rakuten_capture.RakutenProductCaptureFailureCode.CONNECTION_FAILED,
+                }
+                and not invalid_evidence
+            ):
+                raise
+            state = "invalid_evidence" if invalid_evidence else "request_failed"
+            counts[state] += 1
+            results.append(
+                {
+                    "product_id": binding.product_id,
+                    "state": state,
+                    "code": error.code.value,
+                }
+            )
+            print(json.dumps(results[-1]), flush=True)
+            continue
+        counts[state] += 1
+        results.append(
+            {
+                "product_id": binding.product_id,
+                "state": state,
+                "response_sha256": digest,
+                "matching_candidate_count": matches,
+            }
+        )
+        print(
+            json.dumps({"product_id": binding.product_id, "state": state}), flush=True
+        )
+    if portfolio_sha256(ROOT) != source_hash:
+        fail("RAOS_EDITORIAL_PORTFOLIO_SOURCE_CHANGED")
+    return {
+        "portfolio_sha256": source_hash,
+        "counts": counts,
+        "products": results,
+        "provenance": "API_DISCOVERY_ONLY",
+        "owner_attested": False,
+        "publication_authority": False,
+    }
 
 
 def _fixed_listing_failure_status(
@@ -472,6 +599,31 @@ def capture() -> dict[str, int]:
             f"{binding.product_id}",
             flush=True,
         )
+        if binding.rakuten_item_code is None:
+            state, response_sha256, _match_count = _missing_listing_status(
+                binding,
+                credentials,
+                factory,
+                output_directory=provider_root,
+            )
+            if state == "resolved":
+                binding = resolve_rakuten_identity_v1(ROOT, binding)
+            else:
+                records.append(
+                    {
+                        "product_id": binding.product_id,
+                        "state": state,
+                        "retrieved_at": datetime.now(UTC).strftime(
+                            "%Y-%m-%dT%H:%M:%SZ"
+                        ),
+                        "item_code": None,
+                        "response_sha256": response_sha256,
+                        "affiliate_response_sha256": None,
+                        "image_sha256": None,
+                    }
+                )
+                counts[state] += 1
+                continue
         if binding.rakuten_item_code is not None:
             try:
                 existing = read_rakuten_product_evidence(
@@ -549,25 +701,6 @@ def capture() -> dict[str, int]:
             )
             counts["verified"] += 1
             continue
-        state, response_sha256, _match_count = _missing_listing_status(
-            binding,
-            credentials,
-            factory,
-            output_directory=provider_root,
-        )
-        timestamp = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
-        records.append(
-            {
-                "product_id": binding.product_id,
-                "state": state,
-                "retrieved_at": timestamp,
-                "item_code": None,
-                "response_sha256": response_sha256,
-                "affiliate_response_sha256": None,
-                "image_sha256": None,
-            }
-        )
-        counts[state] += 1
     receipt = {
         "schema": "RAOS_EDITORIAL_PORTFOLIO_PRODUCT_EVIDENCE_STATUS_V2",
         "captured_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -920,21 +1053,6 @@ def _product_source_refs_for_article(
             "SRC-SAMSONITE-CATALOG-2025",
             "SRC-SAMSONITE-C-LITE-SPINNER55EXP-MIDNIGHT",
         ),
-        (
-            "solota-vs-rakua-mini-plus",
-            "PRD-PANASONIC-SOLOTA-NP-TML1-W",
-        ): (
-            "SRC-PANASONIC-NP-TML1",
-            "SRC-PANASONIC-SOLOTA-IDENTITY",
-        ),
-        (
-            "solota-vs-rakua-mini-plus",
-            "PRD-SIROCA-SS-M171",
-        ): (
-            "SRC-SIROCA-SS-M171",
-            "SRC-SIROCA-SS-M171-MANUAL",
-            "SRC-SIROCA-DISHWASHER-INSTALLATION",
-        ),
     }
     explicit = overrides.get((article_id, product_id))
     if explicit is not None:
@@ -1254,6 +1372,26 @@ def _ensure_exact_rakuten_credit(markup: str) -> str:
         + _RAKUTEN_CREDIT_BLOCK
         + without_credit[source_end:]
     )
+
+
+def _remove_rakuten_credit(markup: str) -> str:
+    """Remove unused Rakuten attribution from a non-affiliate article."""
+
+    credit_pattern = re.compile(
+        r'(?:<div class="raos-rakuten-credit">.*?'
+        r"Rakuten Web Services Attribution Snippet TO HERE -->.*?</div>|"
+        r'<p class="raos-source-link"><a href="https://developers\.rakuten\.com/"'
+        r"[^>]*>.*?</a></p>)",
+        flags=re.DOTALL,
+    )
+    without_credit = credit_pattern.sub("", markup)
+    if (
+        "https://developers.rakuten.com/" in without_credit
+        or "Rakuten Web Services Attribution Snippet" in without_credit
+        or "raos-rakuten-credit" in without_credit
+    ):
+        fail("RAOS_EDITORIAL_PORTFOLIO_RAKUTEN_CREDIT_INVALID")
+    return without_credit
 
 
 def _market_candidate_audit_for(article_id: str) -> Mapping[str, object]:
@@ -2212,7 +2350,7 @@ def _product_safety_publication_binding(
     if (
         type(audit) is not ProductSafetyReceiptAudit
         or type(required_product_count) is not int
-        or required_product_count != 31
+        or required_product_count < 1
         or len(audit.products) != required_product_count
         or len({row.product_id for row in audit.products}) != required_product_count
     ):
@@ -2222,16 +2360,12 @@ def _product_safety_publication_binding(
     if (
         type(administrative_capture_count) is not int
         or administrative_capture_count < 0
-        or (
-            administrative_bundle_sha256 is None
-            and administrative_capture_count != 0
-        )
+        or (administrative_bundle_sha256 is None and administrative_capture_count != 0)
         or (
             administrative_bundle_sha256 is not None
             and (
                 type(administrative_bundle_sha256) is not str
-                or re.fullmatch(r"[0-9a-f]{64}", administrative_bundle_sha256)
-                is None
+                or re.fullmatch(r"[0-9a-f]{64}", administrative_bundle_sha256) is None
                 or administrative_capture_count
                 != required_product_count
                 * PRODUCT_SAFETY_ADMINISTRATIVE_CAPTURE_COUNT_PER_PRODUCT
@@ -2952,9 +3086,7 @@ def _require_selection_completion(
     evaluated_at = _selection_audit_now(now)
     report = _selection_audit_report(portfolio, now=evaluated_at)
     completion = cast(Mapping[str, object], report["completion"])
-    safety = cast(
-        Mapping[str, object], report["product_safety_publication_binding"]
-    )
+    safety = cast(Mapping[str, object], report["product_safety_publication_binding"])
     if (
         safety.get("complete") is not True
         or safety.get("required_product_count") != len(portfolio.products)
@@ -2965,8 +3097,7 @@ def _require_selection_completion(
         != safety.get("required_administrative_capture_count")
         or safety.get("administrative_verified_product_count")
         != len(portfolio.products)
-        or safety.get("manufacturer_verified_product_count")
-        != len(portfolio.products)
+        or safety.get("manufacturer_verified_product_count") != len(portfolio.products)
         or safety.get("complete_product_count") != len(portfolio.products)
     ):
         fail("RAOS_EDITORIAL_PORTFOLIO_PRODUCT_SAFETY_INCOMPLETE")
@@ -3044,7 +3175,9 @@ def _sanitize_source_markup(
         article.article_id,
         portfolio,
     )
-    return _ensure_exact_rakuten_credit(content)
+    if article.product_ids:
+        return _ensure_exact_rakuten_credit(content)
+    return _remove_rakuten_credit(content)
 
 
 def check_source_fixtures() -> int:
@@ -3445,6 +3578,8 @@ def parser() -> argparse.ArgumentParser:
     subcommands = result.add_subparsers(dest="command", required=True)
     subcommands.add_parser("validate")
     subcommands.add_parser("capture")
+    discovery = subcommands.add_parser("discover-identities")
+    discovery.add_argument("--owner-checkout", type=Path, required=True)
     subcommands.add_parser("validate-readiness")
     subcommands.add_parser("selection-audit")
     subcommands.add_parser("generate-old-fixtures")
@@ -3488,6 +3623,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"{completion['sales_state_verified_product_count']}/"
                 f"{completion['product_count']} verified"
             )
+        elif arguments.command == "discover-identities":
+            result = discover_identities(arguments.owner_checkout)
+            print(json.dumps(result, sort_keys=True))
         elif arguments.command == "capture":
             counts = capture()
             print(

@@ -5922,7 +5922,7 @@
   "tools": {
     "@hey-api/openapi-ts": "0.99.0",
     "datamodel-code-generator": "0.71.0",
-    "node": "24.18.1",
+    "node": "22.22.0",
     "pydantic": "2.13.4",
     "python": "3.14.6",
     "typescript": "6.0.3"

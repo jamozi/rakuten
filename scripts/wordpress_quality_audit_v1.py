@@ -148,8 +148,11 @@ EXPECTED_FINGERPRINT_INPUTS: Final = {
         "python/raos/adapters/wordpress_rest.py",
         "python/raos/application/editorial/editorial_portfolio_v2.py",
         "python/raos/application/editorial/editorial_portfolio_v3.py",
+        "python/raos/application/editorial/product_safety_manufacturer_capture.py",
+        "python/raos/application/editorial/product_safety_query_capture.py",
         "python/raos/application/editorial/product_safety_receipts.py",
         "python/raos/application/editorial/rakuten_measurement_activation_v3.py",
+        "python/raos/application/editorial/rakuten_standard_api_v1.py",
         "python/raos/application/editorial/self_hosted_editorial_pilot.py",
         "python/raos/application/finance/editorial_economics_v3.py",
         "python/raos/domain/editorial/content_ast.py",
@@ -175,6 +178,8 @@ EXPECTED_FINGERPRINT_INPUTS: Final = {
         "scripts/raos_wordpress_publication_request.py",
         "scripts/raos_wordpress_seo_audit.py",
         "scripts/st1704_official_source_capture.py",
+        "scripts/st1704_product_safety_manufacturer_capture.py",
+        "scripts/st1704_product_safety_query_capture.py",
         "scripts/st1704_rakuten_product_capture.py",
         "scripts/st1704_self_hosted_editorial_pilot.py",
         "scripts/wordpress_public_ui_audit.function.js",
@@ -182,6 +187,8 @@ EXPECTED_FINGERPRINT_INPUTS: Final = {
         "tests/editorial_measurement_v1",
         "tests/editorial_portfolio_v2",
         "tests/editorial_portfolio_v3",
+        "tests/editorial_product_safety_manufacturer_capture",
+        "tests/editorial_product_safety_query_capture",
         "tests/editorial_product_safety_receipts",
         "tests/st1704",
         "tests/wordpress_local_preview",
@@ -498,7 +505,7 @@ BASELINE_FINDING_SUMMARIES: Final = {
         "all existing pages remain unaudited."
     ),
     "product_selection_lifecycle_support": (
-        "Final-product seven-axis due diligence is 0/31 complete; reader/audit product "
+        "Final-product seven-axis due diligence is 0/33 complete; reader/audit product "
         "names and sales state, SKU use fit, Japan warranty, maintenance/consumables/"
         "repair, model end/successor, and no-buy/keep conclusions remain unverified."
     ),
@@ -509,7 +516,7 @@ BASELINE_FINDING_SUMMARIES: Final = {
         "unaudited."
     ),
     "consumer_safety_recall_compatibility": (
-        "All 31 selected-product safety reviews are RECHECK_REQUIRED; SKU recall receipts (query/"
+        "All 33 selected-product safety reviews are RECHECK_REQUIRED; SKU recall receipts (query/"
         "period/ambiguity) and safety/notice/compatibility/Japan-warranty locators. "
         "Generic pages cannot pass; NONE_FOUND is observed-only; publication blocked."
     ),
@@ -534,7 +541,7 @@ BASELINE_FINDING_SUMMARIES: Final = {
         "density and prominence, neutral labels, and dark-pattern absence are unaudited."
     ),
     "legal_disclosure_media_rights": (
-        "Formal legal review has not been executed; per-article opening advertising "
+        "Formal legal review has not been executed; per-article opening monetization-status "
         "disclosure, image/copyright licenses, rights provenance, and product-"
         "misidentification controls remain blocked without asserting legal compliance."
     ),
@@ -584,7 +591,7 @@ BASELINE_FINDING_SUMMARIES: Final = {
         "remain unaudited."
     ),
     "product_media_cta_evidence": (
-        "37 product-card placements; 31 unique products; 74 CTA; 130 runtime screenshots; "
+        "37 product-card placements; 33 unique products; 74 CTA; 130 runtime screenshots; "
         "product-misidentification controls; neutral/manufacturer fallback absence; "
         "exactly one hero per page; 10 article-specific header comparison visuals unaudited."
     ),

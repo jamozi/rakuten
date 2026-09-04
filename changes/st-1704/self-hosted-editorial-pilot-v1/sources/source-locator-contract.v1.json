@@ -4,7 +4,7 @@
   "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
   "publication_authority": "NONE",
   "generated_on": "2026-08-31",
-  "source_registry_sha256": "2fb15941970a26ed33e453b1f988216bef59f54f8f5d83e02e7c8cdf4e45b85d",
+  "source_registry_sha256": "49fc5f5eddb49f2803149a001f29e742ab535e8752a5eae2991244b02e9c761d",
   "locator_policy": {
     "claim_statement_source": "TRACKED_SOURCE_PACKET_EXACT",
     "fragment_source": "TRACKED_REVIEWED_EXACT_UTF8_FRAGMENT",
@@ -186,7 +186,7 @@
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>",
             "<meta property=\"og:title\" content=\"Anker Solix C300 Portable Power Station | ポータブル電源の製品情報\">",
             "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
-            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-form__controls-group product-form__controls-group--submit\">\n  <div\n    class=\"\n      product-form__item product-form__item--submit\"\n  >\n    \n      <button\n        type=\"submit\"\n        name=\"add\"\n        \n        aria-label=\"カートに入れる\"\n        id=\"cafe-purchase-button\"\n        class=\"btn product-form__cart-submit\"\n        \n        \n          aria-haspopup=\"dialog\"\n        \n        data-add-to-cart\n        \n        \n        \n      >",
             "<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)",
             "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
@@ -194,18 +194,15 @@
         {
           "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>",
-            "<td class=\"product-specs-heading\">出力</td>\n                <td>定格300W / 瞬間最大600W</td>",
-            "<td class=\"product-specs-heading\">重さ</td>\n                <td>約4.1kg</td>"
-          ]
-        },
-        {
-          "claim_id": "CLM-ST1704-POWER-AORA30-V2-EXCLUDED",
-          "exact_utf8_fragments": [
             "<td class=\"product-specs-heading\">サイズ</td>\n                  <td>約16.4 x 16.1 x 24.0cm （ 幅 x 奥行 x 高さ )</td>",
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約4.1kg</td>",
             "<td class=\"product-specs-heading\">出力</td>\n                <td>定格300W / 瞬間最大600W</td>",
-            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>"
+            "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>",
+            "<meta property=\"og:title\" content=\"Anker Solix C300 Portable Power Station | ポータブル電源の製品情報\">",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-form__controls-group product-form__controls-group--submit\">\n  <div\n    class=\"\n      product-form__item product-form__item--submit\"\n  >\n    \n      <button\n        type=\"submit\"\n        name=\"add\"\n        \n        aria-label=\"カートに入れる\"\n        id=\"cafe-purchase-button\"\n        class=\"btn product-form__cart-submit\"\n        \n        \n          aria-haspopup=\"dialog\"\n        \n        data-add-to-cart\n        \n        \n        \n      >",
+            "<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)",
+            "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
         },
         {
@@ -217,7 +214,7 @@
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>",
             "<meta property=\"og:title\" content=\"Anker Solix C300 Portable Power Station | ポータブル電源の製品情報\">",
             "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
-            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-form__controls-group product-form__controls-group--submit\">\n  <div\n    class=\"\n      product-form__item product-form__item--submit\"\n  >\n    \n      <button\n        type=\"submit\"\n        name=\"add\"\n        \n        aria-label=\"カートに入れる\"\n        id=\"cafe-purchase-button\"\n        class=\"btn product-form__cart-submit\"\n        \n        \n          aria-haspopup=\"dialog\"\n        \n        data-add-to-cart\n        \n        \n        \n      >",
             "<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)",
             "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
@@ -231,7 +228,7 @@
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>288Wh</td>",
             "<meta property=\"og:title\" content=\"Anker Solix C300 Portable Power Station | ポータブル電源の製品情報\">",
             "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
-            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-form__controls-group product-form__controls-group--submit\">\n  <div\n    class=\"\n      product-form__item product-form__item--submit\"\n  >\n    \n      <button\n        type=\"submit\"\n        name=\"add\"\n        \n        aria-label=\"カートに入れる\"\n        id=\"cafe-purchase-button\"\n        class=\"btn product-form__cart-submit\"\n        \n        \n          aria-haspopup=\"dialog\"\n        \n        data-add-to-cart\n        \n        \n        \n      >",
             "<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)",
             "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
@@ -330,6 +327,16 @@
             "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">製品質量\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約7.5㎏\n\t\t</td>\n\t\n\t\n\n\t</tr>",
             "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○&#xff08;送風乾燥&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>"
           ]
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-EXCLUDED",
+          "exact_utf8_fragments": [
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">6点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約2.5L&#xff08;着脱タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★5</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">製品質量\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約7.5㎏\n\t\t</td>\n\t\n\t\n\n\t</tr>",
+            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○&#xff08;送風乾燥&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>"
+          ]
         }
       ]
     },
@@ -359,18 +366,6 @@
             "* SS-MA251で、おいそぎコースや、その他のコースでオートオープンを設定している場合は、送風（1時間）を行いません。",
             "洗浄後に自動でドアが開く「オートオープン」機能を搭載。"
           ]
-        },
-        {
-          "claim_id": "CLM-PORTFOLIO-DISH-SS-MA251-REFERENCE",
-          "exact_utf8_fragments": [
-            "<p class=\"link\">SS-MA251</p>",
-            "家族3人分の食器<span class=\"no-break\">16点",
-            "<tr>\n<th>使用水量(約)</th>\n<td>8.5L(分岐水栓使用時)<br />9L(自動給水時)</td>\n<td>8.5L(分岐水栓使用時)<br />9L(自動給水時)</td>\n<td class=\"gray\">6L</td>\n<td class=\"gray\">6L</td>\n<td>5L</td>\n</tr>",
-            "<tr>\n<th>本体重量(約)</th>\n<td>21kg(本体、上かご、下かご、小物トレイ、小物入れ、UV除菌コース専用トレイ)</td>\n<td>21kg(本体、上かご、下かご、小物トレイ、小物入れ、UV除菌コース専用トレイ)</td>\n<td class=\"gray\">13.5kg<br />（本体、かご、小物入れ、小物かご）</td>\n<td class=\"gray\">13.5kg<br />（本体、かご、小物入れ、小物かご）</td>\n<td>13kg<br />（本体、かご、小物入れ）</td>\n</tr>",
-            "<tr>\n<th>外形寸法(約)</th>\n<td>幅55×奥行35×高さ50cm</td>\n<td>幅55×奥行35×高さ50cm</td>\n<td class=\"gray\">幅42×奥行44×高さ47cm</td>\n<td class=\"gray\">幅42×奥行44×高さ47cm</td>\n<td>幅42×奥行43.5×高さ43.5cm</td>\n</tr>",
-            "* SS-MA251で、おいそぎコースや、その他のコースでオートオープンを設定している場合は、送風（1時間）を行いません。",
-            "洗浄後に自動でドアが開く「オートオープン」機能を搭載。"
-          ]
         }
       ]
     },
@@ -386,9 +381,9 @@
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約10.9kg</td>",
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>768Wh</td>",
             "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1200W(50/60Hz) / 1600W",
-            "<meta property=\"og:title\" content=\"Anker Solix C800 Plus Portable Power Station | ポータブル電源の製品情報\">",
+            "<meta property=\"og:title\" content=\"Anker Solix C800 Plus Portable Power Station | リン酸鉄ポータブル電源の製品情報\">",
             "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
-            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-form__controls-group product-form__controls-group--submit\">\n  <div\n    class=\"\n      product-form__item product-form__item--submit\"\n  >\n    \n      <button\n        type=\"submit\"\n        name=\"add\"\n        \n        aria-label=\"カートに入れる\"\n        id=\"cafe-purchase-button\"\n        class=\"btn product-form__cart-submit\"\n        \n        \n          aria-haspopup=\"dialog\"\n        \n        data-add-to-cart\n        \n        \n        \n      >",
             "<td>A17545Z1 (ダークグレー) / A1754511 (ブラック)",
             "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
@@ -400,9 +395,9 @@
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約10.9kg</td>",
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>768Wh</td>",
             "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1200W(50/60Hz) / 1600W",
-            "<meta property=\"og:title\" content=\"Anker Solix C800 Plus Portable Power Station | ポータブル電源の製品情報\">",
+            "<meta property=\"og:title\" content=\"Anker Solix C800 Plus Portable Power Station | リン酸鉄ポータブル電源の製品情報\">",
             "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
-            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-form__controls-group product-form__controls-group--submit\">\n  <div\n    class=\"\n      product-form__item product-form__item--submit\"\n  >\n    \n      <button\n        type=\"submit\"\n        name=\"add\"\n        \n        aria-label=\"カートに入れる\"\n        id=\"cafe-purchase-button\"\n        class=\"btn product-form__cart-submit\"\n        \n        \n          aria-haspopup=\"dialog\"\n        \n        data-add-to-cart\n        \n        \n        \n      >",
             "<td>A17545Z1 (ダークグレー) / A1754511 (ブラック)",
             "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
@@ -421,9 +416,9 @@
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約12.9kg</td>",
             "<td class=\"product-specs-heading\">出力</td>\n                <td>AC出力：1500W</td>",
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1056Wh</td>",
-            "<meta property=\"og:title\" content=\"Anker Solix C1000 Portable Power Station | ポータブル電源の製品情報\">",
+            "<meta property=\"og:title\" content=\"Anker Solix C1000 Portable Power Station | リン酸鉄ポータブル電源の製品情報\">",
             "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
-            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-form__controls-group product-form__controls-group--submit\">\n  <div\n    class=\"\n      product-form__item product-form__item--submit\"\n  >\n    \n      <button\n        type=\"submit\"\n        name=\"add\"\n        \n        aria-label=\"カートに入れる\"\n        id=\"cafe-purchase-button\"\n        class=\"btn product-form__cart-submit\"\n        \n        \n          aria-haspopup=\"dialog\"\n        \n        data-add-to-cart\n        \n        \n        \n      >",
             "<td>A17615Z1 (ダークグレー) / A1761521 (ベージュ) / A1761511 (ブラック)",
             "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
@@ -443,9 +438,9 @@
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約12.9kg</td>",
             "<td class=\"product-specs-heading\">出力</td>\n                <td>AC出力：1500W</td>",
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1056Wh</td>",
-            "<meta property=\"og:title\" content=\"Anker Solix C1000 Portable Power Station | ポータブル電源の製品情報\">",
+            "<meta property=\"og:title\" content=\"Anker Solix C1000 Portable Power Station | リン酸鉄ポータブル電源の製品情報\">",
             "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
-            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-form__controls-group product-form__controls-group--submit\">\n  <div\n    class=\"\n      product-form__item product-form__item--submit\"\n  >\n    \n      <button\n        type=\"submit\"\n        name=\"add\"\n        \n        aria-label=\"カートに入れる\"\n        id=\"cafe-purchase-button\"\n        class=\"btn product-form__cart-submit\"\n        \n        \n          aria-haspopup=\"dialog\"\n        \n        data-add-to-cart\n        \n        \n        \n      >",
             "<td>A17615Z1 (ダークグレー) / A1761521 (ベージュ) / A1761511 (ブラック)",
             "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
@@ -484,7 +479,7 @@
             "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1550W (50/60Hz) / 2300W",
             "<meta property=\"og:title\" content=\"Anker Solix C1000 Gen 2 Portable Power Station | ポータブル電源の製品情報\">",
             "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
-            "<button type=\"submit\" name=\"add\" aria-label=\"カートに入れる\" id=\"cafe-purchase-button\"",
+            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-form__controls-group product-form__controls-group--submit\">\n  <div\n    class=\"\n      product-form__item product-form__item--submit\"\n  >\n    \n      <button\n        type=\"submit\"\n        name=\"add\"\n        \n        aria-label=\"カートに入れる\"\n        id=\"cafe-purchase-button\"\n        class=\"btn product-form__cart-submit\"\n        \n        \n          aria-haspopup=\"dialog\"\n        \n        data-add-to-cart\n        \n        \n        \n      >",
             "<td>A17635Z1 (ダークグレー) / A1763521 (オフホワイト)",
             "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
@@ -697,7 +692,7 @@
         {
           "claim_id": "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS",
           "exact_utf8_fragments": [
-            "PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541",
+            "<h1 class=\"h1 block-goods-name--text js-enhanced-ecommerce-goods-name\">PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541</h1>",
             "H55×W37×D23 cm",
             "<dd>115 cm</dd>",
             "<dd>35 L</dd>",
@@ -706,13 +701,13 @@
             "＜10年間の製品保証＞",
             "＜最初の3年間は完全保証プレミアムケア＞",
             "在庫あります",
-            "カートに入れる"
+            "<input type=\"hidden\" value=01541-10 name=\"goods\">\r\n\t\t\t\t\t<div class=\"block-add-cart\">\r\n<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         },
         {
           "claim_id": "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541",
+            "<h1 class=\"h1 block-goods-name--text js-enhanced-ecommerce-goods-name\">PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541</h1>",
             "H55×W37×D23 cm",
             "<dd>115 cm</dd>",
             "<dd>35 L</dd>",
@@ -721,13 +716,13 @@
             "＜10年間の製品保証＞",
             "＜最初の3年間は完全保証プレミアムケア＞",
             "在庫あります",
-            "カートに入れる"
+            "<input type=\"hidden\" value=01541-10 name=\"goods\">\r\n\t\t\t\t\t<div class=\"block-add-cart\">\r\n<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         },
         {
           "claim_id": "CLM-ST1704-SUITCASE-CRESTA-06316-EXCLUDED",
           "exact_utf8_fragments": [
-            "PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541",
+            "<h1 class=\"h1 block-goods-name--text js-enhanced-ecommerce-goods-name\">PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541</h1>",
             "H55×W37×D23 cm",
             "<dd>115 cm</dd>",
             "<dd>35 L</dd>",
@@ -736,13 +731,13 @@
             "＜10年間の製品保証＞",
             "＜最初の3年間は完全保証プレミアムケア＞",
             "在庫あります",
-            "カートに入れる"
+            "<input type=\"hidden\" value=01541-10 name=\"goods\">\r\n\t\t\t\t\t<div class=\"block-add-cart\">\r\n<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         },
         {
           "claim_id": "CLM-PORTFOLIO-LIGHT-TRIAIR-01541",
           "exact_utf8_fragments": [
-            "PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541",
+            "<h1 class=\"h1 block-goods-name--text js-enhanced-ecommerce-goods-name\">PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541</h1>",
             "H55×W37×D23 cm",
             "<dd>115 cm</dd>",
             "<dd>35 L</dd>",
@@ -751,13 +746,13 @@
             "＜10年間の製品保証＞",
             "＜最初の3年間は完全保証プレミアムケア＞",
             "在庫あります",
-            "カートに入れる"
+            "<input type=\"hidden\" value=01541-10 name=\"goods\">\r\n\t\t\t\t\t<div class=\"block-add-cart\">\r\n<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         },
         {
           "claim_id": "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541",
+            "<h1 class=\"h1 block-goods-name--text js-enhanced-ecommerce-goods-name\">PROTECA／プロテカ トライエアー スーツケース 日本製 軽量 1.8kg 35L 01541</h1>",
             "H55×W37×D23 cm",
             "<dd>115 cm</dd>",
             "<dd>35 L</dd>",
@@ -766,7 +761,7 @@
             "＜10年間の製品保証＞",
             "＜最初の3年間は完全保証プレミアムケア＞",
             "在庫あります",
-            "カートに入れる"
+            "<input type=\"hidden\" value=01541-10 name=\"goods\">\r\n\t\t\t\t\t<div class=\"block-add-cart\">\r\n<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         }
       ]
@@ -862,16 +857,6 @@
             "1024Wh",
             "最大2600Wの連続出力"
           ]
-        },
-        {
-          "claim_id": "CLM-ST1704-POWER-AORA100-V2-EXCLUDED",
-          "exact_utf8_fragments": [
-            "DJI Power 1000 V2",
-            "\"ean\":\"6937224115101\"",
-            "\"status\":{\"code\":\"on_sale\",\"text\":\"今すぐ購入\"}",
-            "1024Wh",
-            "最大2600Wの連続出力"
-          ]
         }
       ]
     },
@@ -892,16 +877,6 @@
         },
         {
           "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
-          "exact_utf8_fragments": [
-            "DYM1000V2L/DYM1000V2H",
-            "1024 Wh",
-            "約14.2 kg",
-            "448×225×230 mm（長さ×幅×高さ）",
-            "4000サイクル以降は、80%以上の電池容量を維持"
-          ]
-        },
-        {
-          "claim_id": "CLM-ST1704-POWER-AORA100-V2-EXCLUDED",
           "exact_utf8_fragments": [
             "DYM1000V2L/DYM1000V2H",
             "1024 Wh",
@@ -1017,8 +992,8 @@
           "claim_id": "CLM-ST1704-POWER-JACKERY-SPECS",
           "exact_utf8_fragments": [
             "サイズ（幅×奥行×高さ）",
-            "500 New",
-            "311×205×157mm"
+            "<span lang=\"ja\">500 New</span></td><td style=\"height: 19.5982px; width: 71.0613%;\"><span lang=\"ja\">311×205×157mm</span>",
+            "311×205×157mm</span></td>"
           ]
         }
       ]
@@ -1331,37 +1306,25 @@
         {
           "claim_id": "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
           "exact_utf8_fragments": [
-            "DWS-33B",
-            "幅420×奥行435×高さ465mm",
+            "<h1><div class=\"text\">DWS-33B</div></h1>",
+            "<tr><th>外形寸法</th><td>420(幅)×435(奥行)×465(高さ)mm</td></tr>",
             "約13kg",
-            "18点",
-            "約6L",
-            "ヒーター加熱とファンによる強制排気乾燥",
-            "41／43dB"
+            "<tr><th>標準収納容量</th><td>18点(大皿3点、中鉢3点、小皿3点、茶わん3点、汁わん3点、コップ3点)<br>+小物(はし、スプーン、フォーク)</td></tr>",
+            "<tr><th>使用水量</th><td>約6L</td></tr>",
+            "<tr><th>乾燥方式</th><td>ヒーターとファンによる強制排気乾燥</td></tr>",
+            "<tr><th>運転音<sup>※8</sup>(50Hz/60Hz)</th><td>約41dB/約43dB</td></tr>"
           ]
         },
         {
           "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "DWS-33B",
-            "幅420×奥行435×高さ465mm",
+            "<h1><div class=\"text\">DWS-33B</div></h1>",
+            "<tr><th>外形寸法</th><td>420(幅)×435(奥行)×465(高さ)mm</td></tr>",
             "約13kg",
-            "18点",
-            "約6L",
-            "ヒーター加熱とファンによる強制排気乾燥",
-            "41／43dB"
-          ]
-        },
-        {
-          "claim_id": "CLM-PORTFOLIO-DISH-TOSHIBA-DWS-33B-REFERENCE",
-          "exact_utf8_fragments": [
-            "DWS-33B",
-            "幅420×奥行435×高さ465mm",
-            "約13kg",
-            "18点",
-            "約6L",
-            "ヒーター加熱とファンによる強制排気乾燥",
-            "41／43dB"
+            "<tr><th>標準収納容量</th><td>18点(大皿3点、中鉢3点、小皿3点、茶わん3点、汁わん3点、コップ3点)<br>+小物(はし、スプーン、フォーク)</td></tr>",
+            "<tr><th>使用水量</th><td>約6L</td></tr>",
+            "<tr><th>乾燥方式</th><td>ヒーターとファンによる強制排気乾燥</td></tr>",
+            "<tr><th>運転音<sup>※8</sup>(50Hz/60Hz)</th><td>約41dB/約43dB</td></tr>"
           ]
         }
       ]
@@ -1390,7 +1353,7 @@
           "claim_id": "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
           "exact_utf8_fragments": [
             "食器洗い乾燥機",
-            "6年",
+            "<tr><th class=\"th-2\"><big><b>食器洗い乾燥機</b></big></th><th class=\"th-2\"><big><b>６年</b></big></th></tr>",
             "製造打ち切り後"
           ]
         },
@@ -1398,7 +1361,7 @@
           "claim_id": "CLM-ST1704-DISH-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
             "食器洗い乾燥機",
-            "6年",
+            "<tr><th class=\"th-2\"><big><b>食器洗い乾燥機</b></big></th><th class=\"th-2\"><big><b>６年</b></big></th></tr>",
             "製造打ち切り後"
           ]
         },
@@ -1406,7 +1369,7 @@
           "claim_id": "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SUPPORT",
           "exact_utf8_fragments": [
             "食器洗い乾燥機",
-            "6年",
+            "<tr><th class=\"th-2\"><big><b>食器洗い乾燥機</b></big></th><th class=\"th-2\"><big><b>６年</b></big></th></tr>",
             "製造打ち切り後"
           ]
         }
@@ -2229,23 +2192,7 @@
           ]
         },
         {
-          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2",
-          "exact_utf8_fragments": [
-            "DEEBOT mini 2",
-            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
-            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
-            "6mmの自動リフトモップ",
-            "ビデオマネージャー（ペット見守り機能）",
-            "外出先からでも様子を見守り、声をかけ",
-            "スクリーンショット機能",
-            "DEEBOT mini2用アクセサリキット",
-            "aria-label=\"add to cart\"",
-            "カートに追加",
-            "今すぐ購入"
-          ]
-        },
-        {
-          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
           "exact_utf8_fragments": [
             "DEEBOT mini 2",
             "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
@@ -2347,67 +2294,6 @@
       ]
     },
     {
-      "source_ref": "SRC-PANASONIC-NP-TML1",
-      "charset": "utf-8",
-      "locator_status": "READY",
-      "locators": [
-        {
-          "claim_id": "CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-REFERENCE",
-          "exact_utf8_fragments": [
-            "容量&#xff08;食器点数&#xff09;<sup>★1</sup>",
-            "<td colspan=\"1\" rowspan=\"1\">6点",
-            "○&#xff08;送風乾燥&#xff09;",
-            "約2.5L&#xff08;着脱タンク式&#xff09;",
-            "約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm",
-            "<td colspan=\"1\" rowspan=\"1\">約7.5㎏"
-          ]
-        },
-        {
-          "claim_id": "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE",
-          "exact_utf8_fragments": [
-            "容量&#xff08;食器点数&#xff09;<sup>★1</sup>",
-            "<td colspan=\"1\" rowspan=\"1\">6点",
-            "○&#xff08;送風乾燥&#xff09;",
-            "約2.5L&#xff08;着脱タンク式&#xff09;",
-            "約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm",
-            "<td colspan=\"1\" rowspan=\"1\">約7.5㎏"
-          ]
-        },
-        {
-          "claim_id": "CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-EXCLUDED",
-          "exact_utf8_fragments": [
-            "容量&#xff08;食器点数&#xff09;<sup>★1</sup>",
-            "<td colspan=\"1\" rowspan=\"1\">6点",
-            "○&#xff08;送風乾燥&#xff09;",
-            "約2.5L&#xff08;着脱タンク式&#xff09;",
-            "約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm",
-            "<td colspan=\"1\" rowspan=\"1\">約7.5㎏"
-          ]
-        }
-      ]
-    },
-    {
-      "source_ref": "SRC-PANASONIC-SOLOTA-IDENTITY",
-      "charset": "utf-8",
-      "locator_status": "READY",
-      "locators": [
-        {
-          "claim_id": "CLM-PORTFOLIO-DISH-SOLOTA-NP-TML1-REFERENCE",
-          "exact_utf8_fragments": [
-            "<title>食器洗い乾燥機 パーソナルタイプ（SOLOTA） | 食器洗い乾燥機（食洗機） | Panasonic</title>",
-            "<strong>NP-TML1</strong><br />-W&#xff08;ホワイト&#xff09;"
-          ]
-        },
-        {
-          "claim_id": "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE",
-          "exact_utf8_fragments": [
-            "<title>食器洗い乾燥機 パーソナルタイプ（SOLOTA） | 食器洗い乾燥機（食洗機） | Panasonic</title>",
-            "<strong>NP-TML1</strong><br />-W&#xff08;ホワイト&#xff09;"
-          ]
-        }
-      ]
-    },
-    {
       "source_ref": "SRC-THANKO-RAKUA-MINI-TK-MDW22W",
       "charset": "utf-8",
       "locator_status": "READY",
@@ -2448,23 +2334,6 @@
         },
         {
           "claim_id": "CLM-ST1704-DISH-THANKO-RAKUA-MINI-COLOR-EXCLUDED",
-          "exact_utf8_fragments": [
-            "<div class=\"item-code\">JAN：4580060593095</div>",
-            "<a href=\"#makeshop-item-sku-cart-entry-url:1-1-0\" class=\"btn sku-cart1 add_to_cart\">カートに入れる</a>",
-            "<tr>\n<th>サイズ</th>\n<td>幅 308× 高さ 415× 奥行 315(mm) 開扉時奥行：594mm</td>\n</tr>",
-            "<tr>\n<th>重量</th>\n<td>約 8kg</td>\n</tr>",
-            "<tr>\n<th>定格消費電力</th>\n<td>900W</td>\n</tr>",
-            "<tr>\n<th>使用水量</th>\n<td>3.2L</td>\n</tr>",
-            "<tr>\n<th>洗浄方式</th>\n<td>下ノズル噴射式</td>\n</tr>",
-            "<tr>\n<th>すすぎ方式</th>\n<td>ためすすぎ</td>\n</tr>",
-            "<tr>\n<th>乾燥方式</th>\n<td>熱風乾燥</td>\n</tr>",
-            "<tr>\n<th>標準収納容量</th>\n<td>11～12 点（大皿…2 点　中皿またはコップ…2 点　小皿…2～3 点　小鉢…3 点　茶わん…2 点　小物類（はし、スプーン、フォーク、レンゲなど））</td>\n</tr>",
-            "単体:TK-MDW22W <br>",
-            "<tr>\n<th>保証期間</th>\n<td>購入日より12ヶ月</td>\n</tr>"
-          ]
-        },
-        {
-          "claim_id": "CLM-PORTFOLIO-DISH-RAKUA-MINI-REFERENCE",
           "exact_utf8_fragments": [
             "<div class=\"item-code\">JAN：4580060593095</div>",
             "<a href=\"#makeshop-item-sku-cart-entry-url:1-1-0\" class=\"btn sku-cart1 add_to_cart\">カートに入れる</a>",
@@ -2546,25 +2415,6 @@
         },
         {
           "claim_id": "CLM-ST1704-DISH-SS-M171-SPECS",
-          "exact_utf8_fragments": [
-            "<p class=\"title title_detail\">SS-M171</p>",
-            "<span class=\"top\">分岐水栓にも対応の2WAYだから、キッチンの環境に合わせて使える</span>",
-            "家族3人分の食器16点<sup>*4</sup>が一度に",
-            "標準、念入り、おいそぎ、ソフト、選べる4つの洗浄コース",
-            "<th>給水方式</th>\n<td colspan=\"2\">タンク式（手動給水）/分岐水栓式</td>",
-            "<th>使用水量(約)</th>\n<td colspan=\"2\">5L</td>",
-            "<th>標準収納容量(約)</th>\n<td colspan=\"2\">16点",
-            "<th>対応可能な<br />\n大皿サイズ(約)</th>\n<td colspan=\"2\">直径23cmまで</td>",
-            "<th>洗浄方式</th>\n<td colspan=\"2\">回転ノズル噴射式</td>",
-            "<th>すすぎ方式</th>\n<td colspan=\"2\">ためすすぎ</td>",
-            "<th>乾燥方式</th>\n<td colspan=\"2\">送風乾燥</td>",
-            "<th>本体重量(約)</th>\n<td colspan=\"2\">13kg",
-            "<th>外形寸法(約)</th>\n<td colspan=\"2\">幅42×奥行43.5×高さ43.5cm</td>",
-            "<th>消費電力</th>\n<td colspan=\"2\">512W／526W</td>"
-          ]
-        },
-        {
-          "claim_id": "CLM-PORTFOLIO-DISH-SS-M171-REFERENCE",
           "exact_utf8_fragments": [
             "<p class=\"title title_detail\">SS-M171</p>",
             "<span class=\"top\">分岐水栓にも対応の2WAYだから、キッチンの環境に合わせて使える</span>",
@@ -2927,53 +2777,7 @@
           ]
         },
         {
-          "claim_id": "CLM-PORTFOLIO-ROBOT-EUFY-C10",
-          "exact_utf8_fragments": [
-            "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
-            "data-variant-sku=\"T2292511\"",
-            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
-            "<td class=\"product-specs-heading\">\n                    ロボット掃除機<br>本体サイズ\n                  </td>\n                  <td>約32.5 x 32.3 x 7.2cm</td>",
-            "<td class=\"product-specs-heading\">\n                    ステーション<br>サイズ\n                  </td>\n                  <td>約27.5 x 19.1 x 21.2cm</td>",
-            "<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>",
-            "<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>",
-            "<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>",
-            "最大4000Paの強力な吸引力",
-            "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
-            "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
-            "<td>T2292511 (ブラック)",
-            "本製品は2.4GHz周波数帯のみに対応しています。5GHz周波数帯には対応していません。",
-            "<a href=\"/products/t291c?variant=44872030814369\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用ダストバッグ (Auto-Empty C10対応 / Omni C20対応)</a>",
-            "<a href=\"/products/t291d?variant=44872026587297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用サイドブラシ (Auto-Empty C10対応)</a>",
-            "<a href=\"/products/t290y?variant=44872030683297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用フィルター (Auto-Empty C10対応 / Omni C20対応)</a>",
-            "<a href=\"/products/t291f?variant=44872026226849\" class=\"product-card-default-name-link\">Eufy Robot Vacuum 交換用回転ブラシ (Auto-Empty C10対応)</a>",
-            "<a href=\"/products/t29k2?variant=44922334806177\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>"
-          ]
-        },
-        {
-          "claim_id": "CLM-PORTFOLIO-ROBOT-EUFY-C10-INSTALLATION-SPACE",
-          "exact_utf8_fragments": [
-            "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
-            "data-variant-sku=\"T2292511\"",
-            "<div id=\"product-variant-stock\" class=\"product-variant-stock\">在庫わずか</div>",
-            "<td class=\"product-specs-heading\">\n                    ロボット掃除機<br>本体サイズ\n                  </td>\n                  <td>約32.5 x 32.3 x 7.2cm</td>",
-            "<td class=\"product-specs-heading\">\n                    ステーション<br>サイズ\n                  </td>\n                  <td>約27.5 x 19.1 x 21.2cm</td>",
-            "<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>",
-            "<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>",
-            "<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>",
-            "最大4000Paの強力な吸引力",
-            "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
-            "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
-            "<td>T2292511 (ブラック)",
-            "本製品は2.4GHz周波数帯のみに対応しています。5GHz周波数帯には対応していません。",
-            "<a href=\"/products/t291c?variant=44872030814369\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用ダストバッグ (Auto-Empty C10対応 / Omni C20対応)</a>",
-            "<a href=\"/products/t291d?variant=44872026587297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用サイドブラシ (Auto-Empty C10対応)</a>",
-            "<a href=\"/products/t290y?variant=44872030683297\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用フィルター (Auto-Empty C10対応 / Omni C20対応)</a>",
-            "<a href=\"/products/t291f?variant=44872026226849\" class=\"product-card-default-name-link\">Eufy Robot Vacuum 交換用回転ブラシ (Auto-Empty C10対応)</a>",
-            "<a href=\"/products/t29k2?variant=44922334806177\" class=\"product-card-default-name-link\">Eufy Robot Vacuum  交換用バッテリー (Auto-Empty C10対応)</a>"
-          ]
-        },
-        {
-          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "claim_id": "CLM-PORTFOLIO-ROBOT-EUFY-C10-BOUNDARY-REFERENCE",
           "exact_utf8_fragments": [
             "<meta property=\"og:title\" content=\"Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報\">",
             "data-variant-sku=\"T2292511\"",
@@ -3308,10 +3112,42 @@
       "locator_status": "READY",
       "locators": [
         {
-          "claim_id": "CLM-ST1704-POWER-AORA30-V2-EXCLUDED",
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
             "<title>\n      AORA 30 V2 | グレー\n      \n      \n      ブルーティ \n    </title>",
             "\"available\":true"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA30-V2-SPECS",
+          "exact_utf8_fragments": [
+            "<title>\n      AORA 30 V2 | グレー\n      \n      \n      ブルーティ \n    </title>",
+            "\"available\":true"
+          ]
+        }
+      ]
+    },
+    {
+      "source_ref": "SRC-BLUETTI-AORA30-V2-DIMENSIONS",
+      "charset": "utf-8",
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "BLUETTI AORA 30 V2：重量4.3kg、サイズ250×178×167.5mm。",
+            "AORA 30 V2：3,000回以上の充放電に対応。8～10年の長寿命を実現。保証期間も5年",
+            "容量  | 288Wh",
+            "定格出力  | 600W"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA30-V2-SPECS",
+          "exact_utf8_fragments": [
+            "BLUETTI AORA 30 V2：重量4.3kg、サイズ250×178×167.5mm。",
+            "AORA 30 V2：3,000回以上の充放電に対応。8～10年の長寿命を実現。保証期間も5年",
+            "容量  | 288Wh",
+            "定格出力  | 600W"
           ]
         }
       ]
@@ -3322,7 +3158,14 @@
       "locator_status": "READY",
       "locators": [
         {
-          "claim_id": "CLM-ST1704-POWER-AORA100-V2-EXCLUDED",
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "exact_utf8_fragments": [
+            "<title>\n      AORA 100 V2 | インディゴ\n      \n      \n      ブルーティ \n    </title>",
+            "\"available\":true"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA100-V2-SPECS",
           "exact_utf8_fragments": [
             "<title>\n      AORA 100 V2 | インディゴ\n      \n      \n      ブルーティ \n    </title>",
             "\"available\":true"
@@ -3336,21 +3179,48 @@
       "locator_status": "READY",
       "locators": [
         {
-          "claim_id": "CLM-ST1704-POWER-AORA30-V2-EXCLUDED",
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
             "<span>AORA 30 V2: 288Wh容量、600W出力（リフト1500W）、重量約4.3kg。キャンプや旅行、バックアップに最適。</span>",
             "<span>AORA 100 V2: 1024Wh容量、1800W出力（サージ3600W、リフト2700W）、重量約11.5kg、サイズ320x215x250mm。停電時、キャンプ、RV、CPAP機器などに。</span>",
             "\"bluetti-aora-30-v2-288wh-600w\" : {",
-            "\"bluetti-aora-100-v2-portable-power-station-blue\" : {"
+            "\"bluetti-aora-100-v2-portable-power-station-blue\" : {",
+            "AORA 30 V2: 288Wh、600W、9ポート。",
+            "AORA 100 V2 / 100: 1,024Wh/1,152Wh、1,800W、11ポート。",
+            "4,000回以上（AORA 100 V2）、3,500回以上（AORA 100）、3,000回以上（AORA 30 V2 / AORA 80）。",
+            "5年間保証で長期安心。",
+            "国内アフターサポートとリサイクルプログラム。",
+            "BLUETTIアプリでリモート操作、バッテリー低下通知（5～20%）、充電カスタマイズ。"
           ]
         },
         {
-          "claim_id": "CLM-ST1704-POWER-AORA100-V2-EXCLUDED",
+          "claim_id": "CLM-ST1704-POWER-AORA30-V2-SPECS",
           "exact_utf8_fragments": [
             "<span>AORA 30 V2: 288Wh容量、600W出力（リフト1500W）、重量約4.3kg。キャンプや旅行、バックアップに最適。</span>",
             "<span>AORA 100 V2: 1024Wh容量、1800W出力（サージ3600W、リフト2700W）、重量約11.5kg、サイズ320x215x250mm。停電時、キャンプ、RV、CPAP機器などに。</span>",
             "\"bluetti-aora-30-v2-288wh-600w\" : {",
-            "\"bluetti-aora-100-v2-portable-power-station-blue\" : {"
+            "\"bluetti-aora-100-v2-portable-power-station-blue\" : {",
+            "AORA 30 V2: 288Wh、600W、9ポート。",
+            "AORA 100 V2 / 100: 1,024Wh/1,152Wh、1,800W、11ポート。",
+            "4,000回以上（AORA 100 V2）、3,500回以上（AORA 100）、3,000回以上（AORA 30 V2 / AORA 80）。",
+            "5年間保証で長期安心。",
+            "国内アフターサポートとリサイクルプログラム。",
+            "BLUETTIアプリでリモート操作、バッテリー低下通知（5～20%）、充電カスタマイズ。"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA100-V2-SPECS",
+          "exact_utf8_fragments": [
+            "<span>AORA 30 V2: 288Wh容量、600W出力（リフト1500W）、重量約4.3kg。キャンプや旅行、バックアップに最適。</span>",
+            "<span>AORA 100 V2: 1024Wh容量、1800W出力（サージ3600W、リフト2700W）、重量約11.5kg、サイズ320x215x250mm。停電時、キャンプ、RV、CPAP機器などに。</span>",
+            "\"bluetti-aora-30-v2-288wh-600w\" : {",
+            "\"bluetti-aora-100-v2-portable-power-station-blue\" : {",
+            "AORA 30 V2: 288Wh、600W、9ポート。",
+            "AORA 100 V2 / 100: 1,024Wh/1,152Wh、1,800W、11ポート。",
+            "4,000回以上（AORA 100 V2）、3,500回以上（AORA 100）、3,000回以上（AORA 30 V2 / AORA 80）。",
+            "5年間保証で長期安心。",
+            "国内アフターサポートとリサイクルプログラム。",
+            "BLUETTIアプリでリモート操作、バッテリー低下通知（5～20%）、充電カスタマイズ。"
           ]
         }
       ]

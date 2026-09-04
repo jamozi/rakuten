@@ -555,7 +555,7 @@ def test_capture_plan_binds_final_inventory_and_bounded_capture_slice() -> None:
     plan = load_product_capture_plan(ROOT)
     rows = [plan.for_article(article_id) for article_id in manifest_builder.ARTICLE_IDS]
     assert len(plan.portfolio_article_products) == 10
-    assert plan.portfolio_product_count == 31
+    assert plan.portfolio_product_count == 33
     assert plan.portfolio_product_placement_count == 37
     assert plan.portfolio_cta_placement_count == 74
     assert [len(row) for row in rows] == [3, 5, 4, 4, 4]

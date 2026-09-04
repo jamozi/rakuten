@@ -32,6 +32,9 @@ from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
     read_private_bytes,
     write_private_bytes,
 )
+from raos.application.editorial.rakuten_standard_api_v1 import (  # noqa: E402
+    materialize_standard_api_v1,
+)
 
 
 DEFAULT_PRIVATE_ROOT: Final = REPOSITORY_ROOT / ".secrets/editorial-portfolio-v3"
@@ -46,6 +49,10 @@ def _parser() -> argparse.ArgumentParser:
         help="absolute owner-private directory; mode must be 0700",
     )
     subcommands = parser.add_subparsers(dest="command", required=True)
+    standard = subcommands.add_parser("standard-api")
+    standard.add_argument(
+        "--output", required=True, help="private API-only publication receipt"
+    )
     mapping_template = subcommands.add_parser("money-link-template")
     mapping_template.add_argument(
         "--output",
@@ -87,6 +94,14 @@ def main(argv: list[str] | None = None) -> int:
     try:
         private_root = arguments.private_root.resolve()
         portfolio = load_editorial_portfolio_v3(REPOSITORY_ROOT)
+        if arguments.command == "standard-api":
+            document = materialize_standard_api_v1(
+                repository_root=REPOSITORY_ROOT,
+                private_root=private_root,
+                receipt_name=arguments.output,
+            )
+            print(json.dumps(document, sort_keys=True))
+            return 0
         if arguments.command == "money-link-template":
             document = money_link_mapping_template_v3(
                 repository_root=REPOSITORY_ROOT,

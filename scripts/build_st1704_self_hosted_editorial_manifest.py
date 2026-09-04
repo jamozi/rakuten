@@ -87,18 +87,42 @@ _BASE_RUNTIME_INPUT_PATHS: Final[tuple[Path, ...]] = (
     SLICE_PATH / "operations/measurement-ledger.v1.json",
     SLICE_PATH / "operations/publication-plan.v1.json",
     SLICE_PATH / "sources/source-locator-contract.v1.json",
+    SLICE_PATH / "sources/product-safety-query-plan.v1.json",
+    SLICE_PATH / "sources/product-safety-query-receipts.v1.json",
+    SLICE_PATH / "sources/product-safety-manufacturer-query-plan.v1.json",
+    SLICE_PATH / "sources/product-safety-manufacturer-query-evidence.empty.v1.json",
     SLICE_PATH / "sources/reader-claim-bindings.v1.json",
     SLICE_PATH / "sources/source-registry.v1.json",
-    Path("changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html"),
-    Path("changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html"),
-    Path("changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html"),
-    Path("changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html"),
-    Path("changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html"),
-    Path("changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html"),
-    Path("changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html"),
-    Path("changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html"),
-    Path("changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html"),
-    Path("changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html"),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html"
+    ),
     THEME_INPUT_ROOT / "assets/analytics-consent-gate.js",
     THEME_INPUT_ROOT / "assets/editorial-v2.css",
     THEME_INPUT_ROOT / "assets/editorial-navigation.js",
@@ -133,6 +157,9 @@ _BASE_RUNTIME_INPUT_PATHS: Final[tuple[Path, ...]] = (
     Path("python/raos/adapters/self_hosted_wordpress_rest.py"),
     Path("python/raos/adapters/wordpress_rest.py"),
     Path("python/raos/application/editorial/self_hosted_editorial_pilot.py"),
+    Path("python/raos/application/editorial/product_safety_manufacturer_capture.py"),
+    Path("python/raos/application/editorial/product_safety_query_capture.py"),
+    Path("python/raos/application/editorial/product_safety_receipts.py"),
     Path("python/raos/domain/editorial/content_ast.py"),
     Path("python/raos/domain/editorial/market_learning_pilot.py"),
     Path("python/raos/domain/editorial/self_hosted_editorial_pilot.py"),
@@ -145,6 +172,8 @@ _BASE_RUNTIME_INPUT_PATHS: Final[tuple[Path, ...]] = (
     Path("scripts/build_st1704_theme_assets.py"),
     Path("scripts/build_st1704_self_hosted_theme.py"),
     Path("scripts/st1704_official_source_capture.py"),
+    Path("scripts/st1704_product_safety_manufacturer_capture.py"),
+    Path("scripts/st1704_product_safety_query_capture.py"),
     Path("scripts/st1704_self_hosted_editorial_pilot.py"),
 )
 _BASE_RUNTIME_PATHS: Final[tuple[str, ...]] = tuple(
@@ -269,10 +298,9 @@ def _validate_content_identity() -> None:
         if type(article_id) is not str:
             _fail()
         portfolio_identities.append(article_id)
-    if (
-        tuple(portfolio_identities) != ARTICLE_IDS
-        or len(set(portfolio_identities)) != len(ARTICLE_IDS)
-    ):
+    if tuple(portfolio_identities) != ARTICLE_IDS or len(
+        set(portfolio_identities)
+    ) != len(ARTICLE_IDS):
         _fail()
 
 
@@ -285,8 +313,11 @@ def _validate_required_paths() -> None:
         _read_regular_file(relative)
 
 
-def build_manifest() -> bytes:
-    reader_claim_owner.validate_repository(ROOT)
+def build_manifest(*, for_source_refresh: bool = False) -> bytes:
+    if for_source_refresh:
+        reader_claim_owner.validate_source_refresh_inputs(ROOT)
+    else:
+        reader_claim_owner.validate_repository(ROOT)
     _validate_required_paths()
     _validate_content_identity()
     _read_regular_file(
@@ -310,7 +341,10 @@ def build_manifest() -> bytes:
         "paths": paths,
         "generator_owner": "build_st1704_self_hosted_editorial_manifest",
         "generator_version": "2",
-        "predecessor": {"owner_id": "build_st1703_self_hosted_runtime_manifest", "version": "2"},
+        "predecessor": {
+            "owner_id": "build_st1703_self_hosted_runtime_manifest",
+            "version": "2",
+        },
         "publication_authority": "NONE",
         "schema": "SELF_HOSTED_EDITORIAL_PILOT_MANIFEST_V1",
         "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
@@ -347,10 +381,19 @@ def _write_atomic(payload: bytes) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--check", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--check", action="store_true")
+    mode.add_argument(
+        "--for-source-refresh",
+        action="store_true",
+        help=(
+            "Prepare the credential-free source capture runtime with expired "
+            "sales evidence; does not satisfy publication or normal checks."
+        ),
+    )
     arguments = parser.parse_args()
     try:
-        expected = build_manifest()
+        expected = build_manifest(for_source_refresh=arguments.for_source_refresh)
         if arguments.check:
             actual = _read_regular_file(
                 f"{SLICE}/runtime-manifest.v1.json", maximum=MAX_MANIFEST_BYTES
@@ -360,10 +403,14 @@ def main() -> int:
         else:
             OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
             _write_atomic(expected)
-    except ManifestFailure as error:
+    except (ManifestFailure, reader_claim_owner.CoverageFailure) as error:
         print(str(error), file=sys.stderr)
         return 1
-    print("SELF_HOSTED_EDITORIAL_MANIFEST_OK")
+    print(
+        "SELF_HOSTED_EDITORIAL_SOURCE_REFRESH_MANIFEST_ONLY"
+        if arguments.for_source_refresh
+        else "SELF_HOSTED_EDITORIAL_MANIFEST_OK"
+    )
     return 0
 
 

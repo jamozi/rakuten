@@ -246,7 +246,7 @@ def test_editorial_sequence_and_twenty_product_card_placements_are_closed() -> N
         assert blocks[-2]["source_packet_version_ref"] == article["source_packet_ref"]
         assert len(card_indexes) == len(article["render_model"]["product_cards"])
         card_count += len(card_indexes)
-    assert card_count == 20
+    assert card_count == 22
 
 
 def test_each_lead_opens_with_a_unique_reader_failure_then_names_the_models() -> None:
@@ -297,7 +297,7 @@ def test_source_fact_packets_are_ready_hash_bound_and_cover_every_claim() -> Non
 
     assert len(registry_packets) == 10
     assert len(packets) == len(articles) == 5
-    assert len(sources) == 102
+    assert len(sources) == 101
     assert _canonical_sha256(
         sorted(
             (
@@ -306,7 +306,7 @@ def test_source_fact_packets_are_ready_hash_bound_and_cover_every_claim() -> Non
             ),
             key=lambda value: cast(str, value["source_ref"]),
         )
-    ) == "54dd657aa5289d7d19cf9861089c9485c2e756e9ef17eefc5c811898a8118b4d"
+    ) == "d6179333137f0faf66526a1eadc86c085ada3d12245b6f16955946996210a70b"
     assert sources["SRC-ACE-CRESTA-06316"]["url"] == (
         "https://store.ace.jp/shop/g/g06316-01/"
     )
@@ -753,9 +753,9 @@ def test_product_cards_bind_only_exact_rakuten_resources_and_pending_media_block
         for card in article["render_model"]["product_cards"]
     ]
 
-    assert len(placements) == 20
-    assert len({card["product_id"] for _, card in placements}) == 19
-    assert len(affiliates) == len(assets) == 19
+    assert len(placements) == 22
+    assert len({card["product_id"] for _, card in placements}) == 21
+    assert len(affiliates) == len(assets) == 21
     for article, card in placements:
         affiliate = affiliates[card["affiliate_ref"]]
         asset = assets[card["media_asset_ref"]]
@@ -781,7 +781,7 @@ def test_product_cards_bind_only_exact_rakuten_resources_and_pending_media_block
         for resource in affiliates.values()
         if resource["status"] == "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE"
     ]
-    assert len(pending) == 19
+    assert len(pending) == 21
     for resource in pending:
         assert resource["destination_url"] is None
         assert resource["evidence"] is None
@@ -970,7 +970,7 @@ def test_reader_copy_and_dimension_notation_are_normalized() -> None:
                     else:
                         assert dimension_pattern.fullmatch(cell["value"])
 
-    assert observed_dimensions == 24
+    assert observed_dimensions == 26
     assert unknown_dimensions == set()
     collection_text = CONTENT_PATH.read_text(encoding="utf-8")
     assert "購入する本体・付属品・ソーラーパネル・接続機器の型番" in collection_text
