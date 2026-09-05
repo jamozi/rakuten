@@ -10,8 +10,8 @@ provenance:
   contract_semantic_sha256: 3a5cd58608eedc0d5d1315f42089d8ac86f3a43c78feee75be9fc4b8bc1683e0
   authority_inputs:
   - uri: repo://AGENTS.md
-    bytes: 6243
-    sha256: 0ba3bb32077adb8cb18e758278739b541e6f6c5706f9b0ca03b94b99806f349a
+    semantic_id: repository-development-workflow
+    semantic_version: 1
   - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
     bytes: 2275
     sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40
@@ -169,8 +169,8 @@ source_artifacts:
   bytes: 3293
   sha256: 406da05e659fa41547209a8f25e4061832b6d938a2eef371f933298966ea90ff
 - uri: repo://scripts/build_st1506_production_canary_runtime.py
-  bytes: 21224
-  sha256: 4bb78ea2db2fb355d76c408adf8979ee6266abaf54e6c5e98fe6f953448e6149
+  bytes: 21452
+  sha256: 268a02ba96b4bebb50dbecff4d90aead130f8a6eaf3a7451403a9c7f73f7ea42
 - uri: repo://python/raos/domain/ops/production_canary.py
   bytes: 32436
   sha256: 97146df4c077310af5bf23a6c5c64361b77ac1c8142b16b97448b3686863faaf
@@ -199,8 +199,8 @@ source_artifacts:
   bytes: 24840
   sha256: 4df0ab8a7767fd1b220e51d4f8d7f13b2961d05f7c90e345f49c0971bffaaea4
 - uri: repo://tests/st1506/test_local_canary_generation.py
-  bytes: 7501
-  sha256: fcc9a4c601a40f1a3e3ce482d1c3f37578397fefc890c25f14b986fd4691715b
+  bytes: 7976
+  sha256: 86c0f3b6ab70396cb3cc8749ac99790ec0c056f45780ea2e62f8738488aff406
 generated_artifact_count: 2
 generated_artifacts:
 - uri: repo://infra/terraform/deployment-production/local-production-canary.pipeline.disabled.v2.yaml

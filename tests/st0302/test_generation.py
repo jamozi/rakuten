@@ -58,15 +58,34 @@ def test_generated_catalog_binds_revision_validation_and_exact_boundary() -> Non
     assert value["boundary"]["effective_canonical_status"] == "UNCHANGED"
 
 
-def test_contract_verification_uses_the_clean_repository_migration_gate() -> None:
+def test_full_diagnostic_retains_contract_database_and_storage_checks(
+    monkeypatch,
+) -> None:
+    from types import SimpleNamespace
+    from scripts import raos_build
+
     contract = generator._load_contract()
     command = contract["verification"]["local_command"]
-    makefile = (REPOSITORY_ROOT / "Makefile").read_text(encoding="utf-8")
-
     assert command == "make final"
-    assert "final:" in makefile
-    assert "$(MAKE) contracts database storage" in makefile
     assert "/home/" not in command
+    observed = []
+    monkeypatch.setattr(raos_build, "discover_registry", lambda: {})
+    monkeypatch.setattr(raos_build, "changed_paths", lambda **kwargs: ())
+    monkeypatch.setattr(
+        raos_build,
+        "create_plan",
+        lambda *args, **kwargs: SimpleNamespace(
+            full=True, generators=(), python_tests=(), node_tests=()
+        ),
+    )
+    monkeypatch.setattr(
+        raos_build,
+        "execute",
+        lambda *args, stage, **kwargs: observed.append(stage) or 0,
+    )
+    assert raos_build.main(["final"]) == 0
+    for required in ("contracts", "data", "storage"):
+        assert observed.count(required) == 1
 
 
 def test_entrypoint_checks_its_own_outputs(

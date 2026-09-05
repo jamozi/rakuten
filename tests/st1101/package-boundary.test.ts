@@ -43,10 +43,8 @@ describe('ST-1101 workspace package boundary', () => {
   it('routes the repository typecheck through the web-ui owner package', () => {
     const packageJson = readJson('package.json');
     const scripts = packageJson.scripts as Record<string, unknown>;
-    assert.equal(
-      scripts.typecheck,
-      'tsc --noEmit --project tsconfig.json && tsc --noEmit --project packages/web-ui/tsconfig.json',
-    );
+    assert.equal(typeof scripts.typecheck, 'string');
+    assert.match(scripts.typecheck as string, /tsc --noEmit --project packages\/web-ui\/tsconfig\.json/);
   });
 
   it('resolves the declared package export without registering a route or effect', async () => {

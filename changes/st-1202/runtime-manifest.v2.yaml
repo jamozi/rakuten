@@ -118,7 +118,7 @@ source_artifacts:
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1002/runtime-manifest.v2.yaml
   bytes: 8759
-  sha256: c94d7d362b87f1e900e453b83b108b588b3cb21fd0c2e6e55de563c7e8653b87
+  sha256: 474a8a51416f2dbc23b4380f8891fcd75a0bb668b9d06651007e2aa05e8167c2
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1004/contracts/disclosure-affiliate-runtime.v2.yaml
   bytes: 7905
@@ -130,7 +130,7 @@ source_artifacts:
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1004/runtime-manifest.v2.yaml
   bytes: 7245
-  sha256: 39e400a4247ffb2ca6ed182f9cd63e579d6adfb20865a2374274d293dcf2ee24
+  sha256: dbe7e93a94bc4c4c065c5234d5ba749bdc3b9cfc2d4d7f445db65fecd4a10869
   role: DEPENDENCY_ARTIFACT
 - uri: repo://changes/st-1201/README.md
   bytes: 5398

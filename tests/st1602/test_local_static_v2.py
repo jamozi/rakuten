@@ -5,7 +5,10 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
+import yaml
+
 from scripts import build_st1602_slo_alert_runtime as generator
+from scripts.raos_test_plan import JOBS
 
 
 RUNTIME_PATHS = (
@@ -95,8 +98,9 @@ def test_active_workflow_tree_uses_one_final_integration_gate() -> None:
     workflow = (generator.REPO_ROOT / ".github/workflows/ci.yml").read_text(
         encoding="utf-8"
     )
-    assert "name: Final Integration" in workflow
-    assert "needs: [lock, static, tests, contracts, data, storage, secrets]" in workflow
+    jobs = yaml.load(workflow, Loader=yaml.BaseLoader)["jobs"]
+    assert jobs["final"]["name"] == "Final Integration"
+    assert set(JOBS) <= set(jobs["final"]["needs"])
     assert "required approval" not in workflow.casefold()
 
 

@@ -139,11 +139,11 @@ source_artifacts:
   bytes: 1636
   sha256: 31bec8c705dfd1bfaeddba6334457c47b717f17602bcbaf0e9e5135519a5d9d1
 - uri: repo://Makefile
-  bytes: 3519
-  sha256: 767d48f0d0a5ad7eff621c022734a05cafbc7f92dc2d7f5ac809ab0034b97fe5
+  bytes: 3276
+  sha256: 3a644435fae4104c0baa09453cc7867543a448aa748c3d74c4acbb756e455407
 - uri: repo://README.md
-  bytes: 4256
-  sha256: fb10da4d7ac97c258d561629ba37e51851c9de0cc9148605a6f4baa386c48ba7
+  bytes: 6359
+  sha256: 9b1f870ad25bb8d968731f17a0597d34282fff5b4ed99c14534069219b522b1e
 - uri: repo://docs/execplans/ST-0304.md
   bytes: 2125
   sha256: 1c63270463dfa4afd6eb329d265ed18dd94dc9c9c6bace96796f4863be9772b8
@@ -158,7 +158,7 @@ source_artifacts:
   sha256: afaf1fcd180593faac3404a4f978aa9f44452657a74b5f301924e78f1a9a1e39
 - uri: repo://changes/st-0303/manifest.yaml
   bytes: 11451
-  sha256: 1289b12894401ed6b6abb1979d4189b31e14b56e0b3d5346c4f1b88980d54887
+  sha256: afae026bf0c6a46957e441eeed6eba0a57c148dcf1e947d14c97803756d01de5
 - uri: repo://migrations/versions/202608030003_iam_ops_tables.py
   bytes: 62827
   sha256: a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
@@ -175,8 +175,8 @@ source_artifacts:
   bytes: 8178
   sha256: 14d81fbbb7b35fd2672a11ccd162d8683905fe7216be6fb45b46d73d2b4d6085
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 3362
-  sha256: 2ff9163b43b7c445190d5a01a31485ab9e2c4474c5bade65041f541ea90dc333
+  bytes: 4693
+  sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
 - uri: repo://tests/st0304/conftest.py
   bytes: 234
   sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528

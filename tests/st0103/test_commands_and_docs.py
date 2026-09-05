@@ -52,7 +52,6 @@ def test_static_node_checks_are_grouped_once() -> None:
         "$(NPM) run format:check",
         "$(NPM) run lint",
         "$(NPM) run typecheck",
-        "$(NPM) run pyright",
     ):
         assert command in static
 

@@ -29,3 +29,29 @@ fresh official/product evidence, current activation materialization, independent
 review/signature and separate wp-admin approval. Neither a successful build nor
 a GitHub merge satisfies those requirements. The acquisition-only
 `--for-source-refresh` path is not used by CI or normal repository generation.
+
+## Shared verification plan
+
+`raos_build.py plan --json` is read-only and does not run generators. The plan
+combines generator consumers, imports and explicit component routes from
+`scripts/raos_test_plan.py`. `--critical` adds the bounded PR regressions;
+`--all` selects the complete local suite. Unknown executable/configuration
+inputs and shared infrastructure changes fall back to full verification.
+
+`make fast` and CI execute the same plan. CI selects jobs before running them;
+`Final Integration` accepts success only for required jobs and skipped only
+for jobs explicitly omitted from that plan. Draft checks wait until ready.
+Daily full CI runs at 03:00 JST. Results and timings stay in Actions rather
+than becoming additional tracked evidence or approval artifacts.
+Full test runs use twenty isolated CI runners; affected runs scale at one runner
+per 25 Python test files, capped at the same limit. The repository variable
+`RAOS_CI_TEST_SHARDS` can set capacity from 1 to 256 (default 20). Python
+cases are deterministically partitioned, with serial cases executed sequentially
+inside each runner. Node files run once across the shards. Python-invoked PHP
+tests use PHP 8.3; the Phase 3 PHP 7.4 compatibility harness has its own job.
+Database and Storage retain their separate, unsharded service partitions.
+
+The blocked WordPress quality template also has a generator owner. Its existing
+contract supplies fingerprint inputs and predecessor ordering, including Make
+and test edits. Regeneration retains a fixed NOT_EXECUTED timestamp and BLOCKED
+status; it creates no review, freshness, signature or publication authority.

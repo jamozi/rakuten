@@ -370,7 +370,16 @@ def render_outputs(root: Path = REPO_ROOT) -> dict[Path, bytes]:
     predecessor_owner_artifacts = [
         _artifact_row(root, path) for path in PREDECESSOR_OWNER_PATHS
     ]
-    authority_inputs = [_artifact_row(root, path) for path in AUTHORITY_PATHS]
+    authority_inputs = [
+        {
+            "uri": f"repo://{path.as_posix()}",
+            "semantic_id": "repository-development-workflow",
+            "semantic_version": 1,
+        }
+        if path.name == "AGENTS.md"
+        else _artifact_row(root, path)
+        for path in AUTHORITY_PATHS
+    ]
     generated_without_manifest = [
         {
             "uri": f"repo://{PIPELINE_PATH.as_posix()}",

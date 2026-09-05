@@ -75,6 +75,13 @@ EXPLICIT_OWNER_OUTPUTS: Final = {
         Path("changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"),
     ),
 }
+# This contract already owns the fingerprint input inventory. Consume it
+# directly rather than requiring manual rebinds or a second copied path list.
+FINGERPRINT_INPUT_CATALOGS: Final = {
+    "build_wordpress_quality_baseline": Path(
+        "changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json"
+    ),
+}
 EXPLICIT_OWNER_DEPENDENCIES: Final[dict[str, tuple[str, ...]]] = {
     # Some predecessor paths are declared by YAML contracts rather than Python
     # constants. Keep those semantic edges explicit so affected generation never
@@ -134,7 +141,10 @@ EXPLICIT_OWNER_DEPENDENCIES: Final[dict[str, tuple[str, ...]]] = {
     "build_st1704_reader_claim_coverage": (
         "build_st1704_product_safety_manufacturer_plan",
     ),
-    "build_wordpress_mcp_v1": ("build_st1704_product_safety_manufacturer_plan",),
+    "build_wordpress_mcp_v1": (
+        "build_st1704_product_safety_manufacturer_plan",
+        "build_wordpress_quality_baseline",
+    ),
     "build_st1502_data_services": ("build_st1501_terraform_foundation",),
     "build_st1503_compute_edge": ("build_st1501_terraform_foundation",),
     "build_st1504_github_oidc": (
@@ -880,6 +890,20 @@ def discover_registry(*, root: Path = REPOSITORY_ROOT) -> dict[str, BuildSpec]:
             for path in values
             if not _is_workflow_governance_path(path)
         }
+        catalog_path = FINGERPRINT_INPUT_CATALOGS.get(owner_id)
+        if catalog_path is not None:
+            catalog = _mapping(load_json(root / catalog_path), "fingerprint catalog")
+            for group in _list(catalog["fingerprint_groups"], "fingerprint groups"):
+                row = _mapping(group, "fingerprint group")
+                for value in _list(row["inputs"], "fingerprint inputs"):
+                    if not isinstance(value, str):
+                        raise BuildRegistryError("fingerprint input must be a path")
+                    path = Path(value)
+                    if path.is_absolute() or ".." in path.parts:
+                        raise BuildRegistryError(
+                            "fingerprint input must remain in the repository"
+                        )
+                    paths.add(path)
         story_ids = _story_ids(generator, source)
         provisional[owner_id] = {
             "generator": generator,
@@ -923,6 +947,13 @@ def discover_registry(*, root: Path = REPOSITORY_ROOT) -> dict[str, BuildSpec]:
         }
         dependencies = set(item["dependencies"])
         dependencies.update(EXPLICIT_OWNER_DEPENDENCIES.get(owner_id, ()))
+        if owner_id in FINGERPRINT_INPUT_CATALOGS:
+            dependencies.update(
+                producer
+                for output, producer in output_owner.items()
+                if producer != owner_id
+                and any(output.is_relative_to(path) for path in paths)
+            )
         inputs: list[BuildInput] = []
         for path in sorted(paths - outputs):
             predecessor = output_owner.get(path)
@@ -1067,23 +1098,30 @@ def changed_paths(
     )
     comparison = merge_base.stdout.strip() if merge_base.returncode == 0 else base
     result = subprocess.run(
-        ("git", "diff", "--name-only", comparison, "--"),
+        ("git", "diff", "--name-status", "-z", "--find-renames", comparison, "--"),
         cwd=root,
         check=True,
         capture_output=True,
         text=True,
     )
-    tracked = {Path(line) for line in result.stdout.splitlines() if line}
+    # NUL framing preserves spaces and quoting; both sides of a rename affect
+    # consumers, including consumers of a deleted module or fixture.
+    fields = iter(result.stdout.split("\0"))
+    tracked: set[Path] = set()
+    for status_code in fields:
+        if not status_code:
+            continue
+        tracked.add(Path(next(fields)))
+        if status_code.startswith(("R", "C")):
+            tracked.add(Path(next(fields)))
     status = subprocess.run(
-        ("git", "status", "--porcelain=v1"),
+        ("git", "ls-files", "--others", "--exclude-standard", "-z"),
         cwd=root,
         check=True,
         capture_output=True,
         text=True,
     )
-    for line in status.stdout.splitlines():
-        if len(line) > 3:
-            tracked.add(Path(line[3:]))
+    tracked.update(Path(value) for value in status.stdout.split("\0") if value)
     return tuple(sorted(tracked))
 
 
@@ -1102,9 +1140,11 @@ def affected_owners(
             if item.uri.startswith("repo://")
         )
         if any(
-            candidate in changed
-            or any(
-                candidate.is_relative_to(path) for path in changed if path.suffix == ""
+            any(
+                candidate == path
+                or path.is_relative_to(candidate)
+                or candidate.is_relative_to(path)
+                for path in changed
             )
             for candidate in owned
         ):
@@ -1286,6 +1326,18 @@ def generation_relevant_paths(paths: Iterable[Path]) -> tuple[Path, ...]:
         and path != Path("changes/st-0107/contracts/pr-governance.v1.yaml")
         and not path.as_posix().startswith("changes/status/")
     )
+
+
+def affected_generation_owners(
+    registry: Mapping[str, BuildSpec], paths: Iterable[Path]
+) -> tuple[str, ...]:
+    """Select generation inputs plus offline integrity-catalog refreshes."""
+    changed = tuple(paths)
+    relevant = set(generation_relevant_paths(changed))
+    for owner in affected_owners(registry, changed):
+        if owner in FINGERPRINT_INPUT_CATALOGS:
+            relevant.add(registry[owner].generator)
+    return affected_owners(registry, relevant)
 
 
 def run_commands(

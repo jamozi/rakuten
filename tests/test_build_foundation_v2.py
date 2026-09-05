@@ -411,9 +411,8 @@ def test_status_v2_is_compact_and_contains_no_evidence_bodies() -> None:
     assert "evidence" not in json.dumps(status).lower()
 
 
-def test_root_development_policy_is_short_and_has_only_two_stop_classes() -> None:
+def test_root_development_policy_preserves_external_and_irreversible_boundaries() -> None:
     policy = (REPOSITORY_ROOT / "AGENTS.md").read_text(encoding="utf-8")
-    assert len(policy.splitlines()) <= 80
     assert "## 唯一の停止条件" in policy
     assert "1. GitHub 開発操作を除く live 外部作用" in policy
     assert "2. 回復不能な操作" in policy

@@ -33,8 +33,8 @@ outputs:
   bytes: 1763
   sha256: 4c1ab89c06274fea1bd217ec40c9a79bd9e76f977ea164901c2bb4d44b0084b8
 - uri: repo://.github/PULL_REQUEST_TEMPLATE.md
-  bytes: 350
-  sha256: 5bdd3bee188409588f336037c89ba00f7e4d8197e606eae5672d5e4faeeea6ce
+  bytes: 396
+  sha256: 44b36e3be456a3debdbb270bd365a4bd308297ed42cba161bd1963aaad53b77d
 - uri: repo://changes/st-0107/ruleset-policy.v1.json
   bytes: 1861
   sha256: abed6eafc06732cd09098cdfda8b79d85e909ec5c7debaa2e1eee74075477dd2

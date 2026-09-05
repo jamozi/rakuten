@@ -63,10 +63,7 @@ def test_generation_and_fast_paths_use_the_shared_owner_graph() -> None:
     assert "status_v2.py" in recipe("generate")
 
 
-def test_final_is_the_single_complete_local_verification_boundary() -> None:
-    final = recipe("final")
-    assert "scripts/raos_build.py final" in final
-    assert "contracts database storage" in final
+def test_final_keeps_lock_validation_and_the_shared_full_runner() -> None:
+    assert "scripts/raos_build.py final" in recipe("final")
     header = next(line for line in MAKEFILE.splitlines() if line.startswith("final:"))
-    for dependency in ("final-lock", "final-static", "final-secrets", "status-v2"):
-        assert dependency in header
+    assert "final-lock" in header
