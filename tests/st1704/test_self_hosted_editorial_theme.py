@@ -403,6 +403,7 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
         ".raos-home-v2 .raos-featured-guide__diagram > span",
         ".raos-home-v2 .raos-home-problems__links strong",
         ".raos-home-v2 .raos-home-about__lead",
+        ".raos-home-v2 .raos-guide-card__title",
     }
     assert "ui-serif" not in css
     assert "ui-serif" not in families["editorial-serif"]
@@ -2517,7 +2518,7 @@ def test_article_type_density_ctas_and_cmp_are_responsive_without_home_scope() -
     assert "width: 128px;" in verified_image
     assert "height: 128px;" in verified_image
 
-    mobile = editorial_css.rsplit("@media (max-width: 48rem)", 1)[1]
+    mobile = editorial_css.split("@media (max-width: 48rem)", 1)[1]
     assert ".raos-comparison__table-view { display: block; }" in mobile
     assert ".comparison-cards { display: none; }" in mobile
     assert "overflow-x: auto" in editorial_css

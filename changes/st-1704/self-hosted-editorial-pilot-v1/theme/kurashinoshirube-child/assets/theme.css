@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 1a3f2dbbd0feefc8e018d136dcf09fdc1e8822dcf5af02bcbb1d1003b9e7f989;
+  --raos-theme-runtime-revision-base: 57aed3a03bcf502143d8d44c1c23b606f09ad7ab705dfc456fcc76b3e288e669;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -3835,5 +3835,8 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 .raos-home-v2 .raos-featured-guide__body { padding: 0; }
 @media (max-width: 64rem) { .raos-home-v2 .raos-guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 48rem) { .raos-home-v2 .raos-guide-grid { grid-template-columns: minmax(0, 1fr); } }
-.raos-home-v2 .raos-guide-card__title { display: block; margin: 0; font-size: 1.25rem; line-height: 1.55; font-family: var(--wp--preset--font-family--serif); }
+.raos-home-v2 .raos-guide-card__title { display: block; margin: 0; font-size: 1.25rem; line-height: 1.55; font-family: var(--raos-font-serif); }
 .raos-home-v2 .raos-guide-card > span { min-width: 0; overflow-wrap: anywhere; }
+.raos-guide-card__media { display: block; }
+.raos-guide-card__media img { display: block; width: 100%; height: auto; object-fit: contain; }
+.raos-guide-card__caption { display: block; font-size: .8rem; line-height: 1.6; margin-top: .5rem; }

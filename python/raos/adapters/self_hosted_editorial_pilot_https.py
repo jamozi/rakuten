@@ -465,18 +465,17 @@ def _load_theme_navigation_v3(
     source_navigation_sha256 = navigation.get("source_navigation_sha256")
     source_portfolio_sha256 = navigation.get("source_portfolio_sha256")
     if (
-        set(navigation)
+        set(navigation) - {"media_assets"}
         != {
             "articles",
             "clusters",
-            "media_assets",
             "schema",
             "source_navigation_sha256",
             "source_portfolio_sha256",
             "target_origin",
             "version",
         }
-        or type(navigation.get("media_assets")) is not list
+        or type(navigation.get("media_assets", [])) is not list
         or navigation.get("schema") != "RAOS_EDITORIAL_THEME_NAVIGATION_V3"
         or navigation.get("version") != "3.0.0"
         or navigation.get("target_origin") != PILOT_ORIGIN

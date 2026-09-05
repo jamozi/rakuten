@@ -584,12 +584,12 @@ def build_documents() -> tuple[bytes, bytes]:
     projected_articles.sort(key=lambda row: str(row["article_code"]))
     clusters.sort(key=lambda row: int(row["home_order"]))
     sys.path.insert(0, str(ROOT / "python"))
-    from raos.application.editorial.reader_experience_v1 import MediaAsset
-    registry = json.loads((ROOT / READER_INPUT_PATH).read_text(encoding="utf-8"))
+    from raos.application.editorial.reader_experience_v1 import approved_media_record
+    reader_path = ROOT / READER_INPUT_PATH
+    registry = json.loads(reader_path.read_text(encoding="utf-8")) if reader_path.exists() else {}
     approved_media = []
     for raw in registry.get("media", []):
-        asset = MediaAsset(**{key: raw[key] for key in MediaAsset.__dataclass_fields__})
-        if asset.displayable:
+        if isinstance(raw, dict) and approved_media_record(raw):
             approved_media.append(raw)
     output: dict[str, object] = {
         "articles": projected_articles,

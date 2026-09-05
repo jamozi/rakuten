@@ -41,7 +41,7 @@ def test_offer_requires_the_exact_product_url_and_sales_eligibility() -> None:
 
 
 def test_media_needs_approval_and_complete_usage_metadata() -> None:
-    asset = MediaAsset("diagram", "https://manufacturer.test/manual", "original specification diagram", "2026-09-01", "approved", "Door clearance diagram", "Official dimensions; not a product photo", (4, 3), "dimension")
+    asset = MediaAsset("diagram", "https://manufacturer.test/manual", "original specification diagram", "2026-09-01", "approved", "Door clearance diagram", "Official dimensions; not a product photo", (4, 3), "dimension", "svg")
     assert asset.displayable
     for change in ({"approval": "pending"}, {"checked_at": None}, {"usage_basis": ""}, {"alt": ""}, {"aspect_ratio": (0, 3)}):
         assert not replace(asset, **change).displayable
@@ -106,3 +106,56 @@ def test_unverified_experience_rejects_positive_claims_but_accepts_limits() -> N
         assert 'research_status.unverified_experience_claim' in validate_experience({**base,'dek':statement},product_refs=frozenset(),evidence_refs=frozenset())
     for statement in ('実際に使ってはいません。', '使ってみたときの洗浄力は未確認です。'):
         assert not validate_experience({**base,'dek':statement},product_refs=frozenset(),evidence_refs=frozenset())
+
+
+def test_reader_components_preserve_table_sources_and_unknowns() -> None:
+    from raos.application.editorial.reader_components import enhance_specification_tables
+    root = fragment('<div><div class="comparison-table-wrap"><table><caption>仕様</caption><thead><tr><th scope="col">商品</th><th scope="col">重量</th><th scope="col">方式</th></tr></thead><tbody><tr><th scope="row">A</th><td>UNKNOWN</td><td>同じ方式</td></tr><tr><th scope="row">B</th><td>2kg</td><td>同じ方式</td></tr></tbody></table></div><a id="source-a" href="https://manufacturer.test/manual">確認日2026-09-01の出典</a></div>')
+    enhance_specification_tables(root)
+    assert len(root.find(cls='raos-common-specifications')) == 1
+    assert root.find(tag='td')[0].attrs['data-raos-value-state'] == 'UNKNOWN'
+    assert root.find(tag='a')[0].attrs['id'] == 'source-a'
+    assert '2026-09-01' in root.text()
+    assert 'UNKNOWN' in root.text() and '2kg' in root.text()
+    assert len(root.find(tag='table')) == 2
+
+
+def test_optional_components_and_contextual_links_fail_closed() -> None:
+    from raos.application.editorial import reader_components as c
+    assert c.decision_axes([]) is None
+    assert c.unknowns_panel([]) is None
+    assert c.purchase_checklist([]) is None
+    assert c.contextual_link('置けるか確かめる', '/missing/', 'learn', existing_targets=frozenset()) is None
+    url='https://example.test/verified'
+    evidence=CtaEvidence(verified_offers=frozenset({('product',url)}),eligible_products=frozenset({'product'}))
+    assert not c.contextual_cta('offer','販売条件を確認',url,product_ref='product',evidence=evidence,article_type='shortlist',placement='after_conclusion')
+    assert 'sponsored nofollow' in c.contextual_cta('offer','販売条件を確認',url,product_ref='product',evidence=evidence,article_type='shortlist',placement='product_detail')
+    assert not c.contextual_cta('offer','販売条件を確認',url,product_ref='product',evidence=evidence,article_type='status_check',placement='final_check')
+
+
+def test_decision_rows_support_existing_product_counts_and_escape_copy() -> None:
+    from raos.application.editorial.reader_components import decision_table
+    for count in (2,4,5,7):
+        rows=[{'condition':'省スペースで選ぶ','product_name':'長い型番 <MODEL>&'+str(i),'anchor':f'product-{i}','reason':'給水条件を確認','tradeoff':'UNKNOWN','purchase_check':'メーカー公式で確認する'} for i in range(count)]
+        table=decision_table(rows)
+        assert table is not None
+        assert len(table.find(tag='tbody')[0].find(tag='tr')) == count
+        assert '&lt;MODEL&gt;&amp;' in table.html()
+        assert len(table.find(tag='a')) == count
+
+
+def test_price_and_fact_copy_require_source_references() -> None:
+    base={'article_type':'shortlist','research_status':{'real_world_tested':False,'ranking_uses_commission':False}}
+    assert 'price.checked_date_and_evidence_required' in validate_experience({**base,'dek':'29,800円'},product_refs=frozenset(),evidence_refs=frozenset())
+    assert 'products.evidence_must_reference_facts' in validate_experience({**base,'products':[{'product_ref':'a','evidence_facts':['重さは2kgです。']}]},product_refs=frozenset({'a'}),evidence_refs=frozenset({'claim-weight'}))
+    assert not validate_experience({**base,'dek':'29,800円','price_snapshot':{'checked_at':'2026-09-01','evidence_ref':'claim-price'}},product_refs=frozenset(),evidence_refs=frozenset({'claim-price'}))
+
+
+def test_common_specs_do_not_equate_unknowns_or_duplicate_identity_ids() -> None:
+    from raos.application.editorial.reader_components import enhance_specification_tables
+    root = fragment('<div><div class="comparison-table-wrap"><table><thead><tr><th id="model" scope="col">型番</th><th scope="col">給水</th><th scope="col">設置余白</th></tr></thead><tbody><tr><th scope="row" id="a">A</th><td>タンク式</td><td>UNKNOWN</td></tr><tr><th scope="row" id="b">B</th><td>タンク式</td><td>UNKNOWN</td></tr></tbody></table></div></div>')
+    enhance_specification_tables(root)
+    assert len(root.find(cls='raos-common-specifications')) == 1
+    assert 'UNKNOWN' not in root.find(cls='raos-common-specifications')[0].text()
+    ids = [n.attrs['id'] for n in root.walk() if n.attrs.get('id')]
+    assert len(ids) == len(set(ids))

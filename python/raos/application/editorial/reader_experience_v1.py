@@ -44,12 +44,12 @@ class CheckedFact:
     @property
     def usable(self) -> bool:
         try:
-            if self.checked_at is None:
+            if not isinstance(self.checked_at, str):
                 return False
             date.fromisoformat(self.checked_at)
         except ValueError:
             return False
-        return bool(self.evidence_ref and self.source_ref and self.state == "KNOWN")
+        return bool(isinstance(self.evidence_ref, str) and self.evidence_ref and isinstance(self.source_ref, str) and self.source_ref and self.state == "KNOWN")
 
 
 def comparison_issues(products: Mapping[str, Mapping[str, CheckedFact]]) -> tuple[str, ...]:
@@ -103,22 +103,36 @@ class MediaAsset:
     caption: str
     aspect_ratio: tuple[int, int]
     role: str
+    asset_type: str = ""
 
     @property
     def displayable(self) -> bool:
         if self.approval != "approved" or not all(
-            (self.asset_ref, self.source, self.usage_basis, self.alt, self.caption, self.role)
+            isinstance(value, str) and bool(value.strip()) for value in (self.asset_ref, self.source, self.usage_basis, self.alt, self.caption, self.role)
         ):
             return False
-        if not all(type(value) is int and value > 0 for value in self.aspect_ratio):
+        if self.asset_type not in {"photo", "svg", "html_diagram", "illustration"}:
             return False
-        if len(self.aspect_ratio) != 2 or not self.checked_at:
+        if not isinstance(self.aspect_ratio, (tuple, list)) or not all(type(value) is int and value > 0 for value in self.aspect_ratio):
+            return False
+        if len(self.aspect_ratio) != 2 or not isinstance(self.checked_at, str):
             return False
         try:
             date.fromisoformat(self.checked_at)
         except ValueError:
             return False
         return urlsplit(self.source).scheme in {"", "https"}
+
+
+def approved_media_record(raw: Mapping[str, object]) -> bool:
+    """Missing rights metadata omits the asset, including its visual frame."""
+    if not all(key in raw for key in MediaAsset.__dataclass_fields__):
+        return False
+    try:
+        asset = MediaAsset(**{key: raw[key] for key in MediaAsset.__dataclass_fields__})  # type: ignore[arg-type]
+        return asset.displayable
+    except (TypeError, ValueError):
+        return False
 
 
 def validate_experience(
@@ -150,7 +164,7 @@ def validate_experience(
     if isinstance(status, Mapping) and status.get("real_world_tested") is False:
         for text in prose(experience):
             for sentence in re.split(r"[。！？\n]", text):
-                if re.search(r"実際に使|使ってみ|使用したところ|実測した|試してみた", sentence) and not re.search(r"未確認|未実施|いません|いない|していない|ではありません", sentence):
+                if re.search(r"実際に使|使ってみ|使用したところ|実測した|試してみた|音が静か(?:です|でした)|使い心地[はが](?:良|快適)|よく落ちました|使いやすかった", sentence) and not re.search(r"未確認|未実施|いません|いない|していない|ではありません", sentence):
                     issues.append("research_status.unverified_experience_claim")
     summary = experience.get("decision_summary", {})
     if isinstance(summary, Mapping):
@@ -169,6 +183,44 @@ def validate_experience(
             issues.append("decision_summary.options_invalid")
     else:
         issues.append("decision_summary.invalid")
+    for name, required in (
+        ("decision_axes", ("label", "why_it_matters", "how_to_check")),
+        ("unknowns", ("topic", "why_unknown", "how_to_verify", "decision_effect")),
+        ("contextual_links", ("journey_stage", "question", "target_ref")),
+    ):
+        rows = experience.get(name, [])
+        if not isinstance(rows, list) or any(not isinstance(row, Mapping) or any(not isinstance(row.get(key), str) or not row[key].strip() for key in required) for row in rows):
+            issues.append(name + ".invalid")
+        if name == "decision_axes" and isinstance(rows, list) and len(rows) > 5:
+            issues.append("decision_axes.max_five")
+    products = experience.get("products", [])
+    if not isinstance(products, list):
+        issues.append("products.invalid")
+    else:
+        seen = set()
+        for product in products:
+            if not isinstance(product, Mapping):
+                issues.append("products.invalid")
+                continue
+            ref = product.get("product_ref")
+            if not isinstance(ref, str) or ref not in product_refs or ref in seen:
+                issues.append("products.unresolved_or_duplicate_reference")
+            else:
+                seen.add(ref)
+            facts = product.get("evidence_facts", [])
+            if not isinstance(facts, list) or any(not isinstance(ref, str) or ref not in evidence_refs for ref in facts):
+                issues.append("products.evidence_must_reference_facts")
+    if any(re.search(r"[0-9][0-9,]*\s*円", text) for text in prose(experience)):
+        price = experience.get("price_snapshot")
+        valid_price = False
+        if isinstance(price, Mapping) and isinstance(price.get("evidence_ref"), str) and price["evidence_ref"] in evidence_refs and isinstance(price.get("checked_at"), str):
+            try:
+                date.fromisoformat(price["checked_at"])
+                valid_price = True
+            except ValueError:
+                pass
+        if not valid_price:
+            issues.append("price.checked_date_and_evidence_required")
     facts = experience.get("evidence", [])
     if not isinstance(facts, list) or any(not isinstance(ref, str) or ref not in evidence_refs for ref in facts):
         issues.append("evidence.unresolved_reference")

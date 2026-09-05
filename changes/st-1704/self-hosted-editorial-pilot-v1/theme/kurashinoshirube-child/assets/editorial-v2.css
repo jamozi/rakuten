@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: 1a3f2dbbd0feefc8e018d136dcf09fdc1e8822dcf5af02bcbb1d1003b9e7f989;
+  --raos-theme-runtime-revision-editorial-v2: 57aed3a03bcf502143d8d44c1c23b606f09ad7ab705dfc456fcc76b3e288e669;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -1279,3 +1279,31 @@
 .raos-editorial-v2 .raos-summary-tradeoff { display: block; margin-top: .75rem; }
 /* Long model names retain the closing punctuation inside enlarged text columns. */
 .raos-editorial-v2 .product-profile h3 { overflow-wrap: anywhere; line-break: anywhere; }
+/* Reader decision components: editorial judgment precedes source specifications. */
+.raos-editorial-v2 :where(.raos-decision-axes, .raos-unknowns-panel, .raos-reader-purchase-checklist) { max-width: var(--rx-prose); margin-inline: auto; }
+.raos-reader-axes { list-style: decimal; padding-inline-start: 1.5rem; }
+.raos-reader-axes > li { padding: 1rem 0; border-bottom: 1px solid var(--rev2-line-soft); }
+.raos-reader-axes h3 { font-size: 1.15rem; line-height: 1.6; }
+.raos-reader-decision-table { max-width: 75rem; margin-inline: auto; }
+.raos-editorial-v2 .raos-decision-table { min-width: 0; table-layout: fixed; }
+.raos-editorial-v2 .raos-decision-table th { position: static; min-width: 0; }
+.raos-decision-table :where(th, td) { padding: 1rem; font-size: .95rem; vertical-align: top; border: 1px solid var(--rev2-line-soft); }
+.raos-unknowns-panel > div { border-left: 3px solid var(--rev2-ink); padding: 1rem 1.25rem; margin: 1.5rem 0; background: #f4f6f8; }
+.raos-unknowns-panel dt { font-weight: 700; margin-top: .75rem; }
+.raos-unknowns-panel dd { margin: .25rem 0; }
+.raos-purchase-checklist { list-style: square; padding-left: 1.5rem; }
+.raos-purchase-checklist li { margin-block: .75rem; }
+.raos-editorial-v2 .comparison-table-wrap { max-height: min(75vh, 52rem); overflow: auto; }
+.raos-editorial-v2 .comparison-table-wrap > .raos-comparison__table-view { overflow: visible; }
+.raos-editorial-v2 [data-raos-value-state="UNKNOWN"] { border-left: 3px dashed currentColor; }
+.raos-common-specifications { margin-block: 1rem; }
+.raos-common-specifications summary, .raos-evidence-panel summary { cursor: pointer; min-height: 2.75rem; padding: .5rem; }
+.raos-product-evidence { margin-block: 2rem; }
+.raos-contextual-related { border-block: 1px solid var(--rev2-line-soft); padding-block: 1rem; }
+@media (max-width: 48rem) {
+  .raos-editorial-v2 .raos-decision-table, .raos-decision-table tbody { display: block; width: 100%; }
+  .raos-decision-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .raos-decision-table tr { display: block; border: 1px solid var(--rev2-line-soft); padding: 1rem; margin-block: 1rem; }
+  .raos-editorial-v2 .raos-decision-table :where(td, th[scope="row"]) { display: block; width: auto; border: 0; padding: .5rem 0; }
+  .raos-decision-table [data-label]::before { content: attr(data-label); display: block; font-weight: 700; color: var(--rev2-ink); }
+}

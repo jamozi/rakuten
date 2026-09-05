@@ -33,7 +33,89 @@
           }
         ]
       },
-      "evidence": []
+      "evidence": [
+        "CLM-ST1704-DISH-SS-M171-SPECS",
+        "CLM-ST1704-DISH-RAKUA-SPECS",
+        "CLM-ST1704-DISH-SS-MA251-SPECS",
+        "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
+        "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SUPPORT"
+      ],
+      "components_enabled": true,
+      "reader_job": {
+        "situation": "少人数の食器を洗い、キッチンの置き場所を確かめたい。",
+        "motivation": "毎日の洗い物を減らしたい。",
+        "anxiety": "扉が開かない、食器が収まらないという不一致を避けたい。",
+        "desired_outcome": "設置と一回の食器量から候補を絞る。"
+      },
+      "decision_axes": [
+        {
+          "label": "扉を開ける空間を測る",
+          "why_it_matters": "本体が載っても、扉を開けて食器を出し入れする空間が必要です。",
+          "how_to_check": "設置面の幅・奥行・高さに加え、取扱説明書で扉前方と上部・左右・背面の指定空間を確認します。"
+        },
+        {
+          "label": "普段の一回分を並べる",
+          "why_it_matters": "標準食器点数は参考値で、皿の形や大きさによって収まり方が変わります。",
+          "how_to_check": "普段同時に洗う皿・茶わん・コップを並べ、大きさと点数を公式の収納例に照らします。"
+        },
+        {
+          "label": "給排水と電源の経路を確認する",
+          "why_it_matters": "毎回の給水、排水経路、電源・アースも設置条件に含まれます。",
+          "how_to_check": "水を入れる位置、排水先、コンセントとアース、蒸気の逃げ道を説明書で確認します。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "洗浄・乾燥・運転音",
+          "why_unknown": "公式の方式説明と実際の洗い上がり・感じる音は同じ指標ではありません。実機比較は未実施です。",
+          "how_to_verify": "メーカーの試験条件と説明書を確認し、必要なら自宅と条件が近い第三者試験の測定条件も確かめます。",
+          "decision_effect": "方式の名前だけで性能の優劣を決めません。重視する項目が確認できない場合は判断を保留します。"
+        },
+        {
+          "topic": "食器配置の自由度と毎回の作業",
+          "why_unknown": "自宅の食器を使った収納試験や、給水・フィルター清掃の負担の実測はしていません。",
+          "how_to_verify": "取扱説明書の収納例、使用可能洗剤、フィルターと庫内の手入れ手順を確認します。",
+          "decision_effect": "普段の皿が入り、給水と手入れを続けられるかが不明なら、候補を確定する前に確認します。"
+        }
+      ],
+      "purchase_checks": [
+        "本体寸法だけでなく、扉・指定空間・耐荷重を満たす。",
+        "給排水、電源・アース、蒸気の逃げ道を説明書で確認する。",
+        "普段の食器、使用可能洗剤、給水と手入れの作業を確認する。",
+        "販売先で型番、色、通常商品かセットか、同梱品、販売元、保証、現在価格と在庫を確認する。"
+      ],
+      "products": [
+        {
+          "product_ref": "PRD-SIROCA-SS-M171",
+          "evidence_facts": [
+            "CLM-ST1704-DISH-SS-M171-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+          "evidence_facts": [
+            "CLM-ST1704-DISH-RAKUA-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-SIROCA-SS-MA251",
+          "evidence_facts": [
+            "CLM-ST1704-DISH-SS-MA251-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-TOSHIBA-DWS-33B-W",
+          "evidence_facts": [
+            "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
+            "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SUPPORT"
+          ]
+        }
+      ],
+      "consolidate_sections": [
+        "reader-section",
+        "editors-note",
+        "purchase-caution"
+      ]
     },
     "solota-vs-rakua-mini-plus": {
       "article_type": "status_check",
@@ -41,7 +123,33 @@
         "real_world_tested": false,
         "ranking_uses_commission": false
       },
-      "evidence": []
+      "evidence": [],
+      "components_enabled": true,
+      "decision_axes": [
+        {
+          "label": "型番と構成",
+          "why_it_matters": "似た商品名でも、色・型番・セット内容が違う場合があります。",
+          "how_to_check": "NP-TMLK1-KとTK-MDW22Bのどちらか、色、本体のみかセットかを販売表示と照合します。"
+        },
+        {
+          "label": "販売元・在庫・保証",
+          "why_it_matters": "製品ページがあることと、注文できることは別です。",
+          "how_to_check": "新品・中古、販売元、在庫・納期、保証の適用条件を確認します。"
+        },
+        {
+          "label": "家に置ける条件",
+          "why_it_matters": "販売条件が分かっても、設置できるかは別に確かめる必要があります。",
+          "how_to_check": "説明書で本体・扉・給排水・電源・アースの条件を確認します。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "現在の販売状態と他店の在庫",
+          "why_unknown": "ページに示した確認日以後の販売表示や、他店の在庫は確定していません。",
+          "how_to_verify": "メーカーと検討中の販売元で、正確な型番の現在の表示を確認してください。",
+          "decision_effect": "購入リンクがないことを、性能が低い、販売終了、購入不可という判断に使わないでください。"
+        }
+      ]
     }
   },
   "media": []

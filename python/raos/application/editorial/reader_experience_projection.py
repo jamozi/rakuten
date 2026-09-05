@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
-from dataclasses import dataclass, field
-from html import escape, unescape
-from html.parser import HTMLParser
+from collections.abc import Mapping
+from html import escape
 import json
 from pathlib import Path
 from typing import cast
@@ -13,105 +11,10 @@ from typing import cast
 from raos.application.editorial.reader_experience_v1 import CtaEvidence, ROLE_TYPES, cta_visible, validate_experience
 
 
-VOID = frozenset("area base br col embed hr img input link meta param source track wbr".split())
+from raos.application.editorial.reader_html import Element, block, fragment
+from raos.application.editorial import reader_components as components
+
 REGISTRY_PATH = Path("changes/editorial-portfolio-v3/reader-experience.v1.json")
-
-
-@dataclass(eq=False)
-class Element:
-    tag: str
-    attrs: dict[str, str | None] = field(default_factory=dict)
-    children: list[Element | str] = field(default_factory=list)
-    parent: Element | None = field(default=None, repr=False)
-
-    def has(self, name: str) -> bool:
-        return name in (self.attrs.get("class") or "").split()
-
-    def walk(self) -> Iterable[Element]:
-        yield self
-        for child in self.children:
-            if isinstance(child, Element):
-                yield from child.walk()
-
-    def find(self, *, tag: str | None = None, cls: str | None = None) -> list[Element]:
-        return [e for e in self.walk() if (tag is None or e.tag == tag) and (cls is None or e.has(cls))]
-
-    def text(self) -> str:
-        return unescape("".join(c.text() if isinstance(c, Element) else c for c in self.children)).strip()
-
-    def html(self) -> str:
-        content = "".join(c.html() if isinstance(c, Element) else c for c in self.children)
-        if not self.tag:
-            return content
-        attrs = "".join(f" {key}" if value is None else f' {key}="{escape(value, quote=True)}"' for key, value in self.attrs.items())
-        return f"<{self.tag}{attrs}>" + ("" if self.tag in VOID else content + f"</{self.tag}>")
-
-    def remove(self) -> None:
-        if self.parent is not None and self in self.parent.children:
-            self.parent.children.remove(self)
-        self.parent = None
-
-    def append(self, child: Element | str) -> None:
-        if isinstance(child, Element):
-            child.remove()
-            child.parent = self
-        self.children.append(child)
-
-    def insert_before(self, child: Element) -> None:
-        parent = self.parent
-        if parent is None:
-            raise ValueError("READER_VIEW_PARENT_MISSING")
-        child.remove()
-        child.parent = parent
-        parent.children.insert(parent.children.index(self), child)
-
-
-class FragmentParser(HTMLParser):
-    def __init__(self) -> None:
-        super().__init__(convert_charrefs=False)
-        self.root = Element("")
-        self.current = self.root
-
-    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        element = Element(tag, dict(attrs))
-        self.current.append(element)
-        if tag not in VOID:
-            self.current = element
-
-    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        self.handle_starttag(tag, attrs)
-        if tag not in VOID:
-            self.handle_endtag(tag)
-
-    def handle_endtag(self, tag: str) -> None:
-        if self.current.tag != tag or self.current.parent is None:
-            raise ValueError("READER_VIEW_UNBALANCED_MARKUP")
-        self.current = self.current.parent
-
-    def handle_data(self, data: str) -> None:
-        self.current.append(data)
-
-    def handle_entityref(self, name: str) -> None:
-        self.handle_data(f"&{name};")
-
-    def handle_charref(self, name: str) -> None:
-        self.handle_data(f"&#{name};")
-
-    def handle_comment(self, data: str) -> None:
-        self.handle_data(f"<!--{data}-->")
-
-
-def fragment(markup: str) -> Element:
-    parser = FragmentParser()
-    parser.feed(markup)
-    parser.close()
-    if parser.current is not parser.root:
-        raise ValueError("READER_VIEW_UNBALANCED_MARKUP")
-    return parser.root
-
-
-def block(markup: str) -> Element:
-    return next(c for c in fragment(markup).children if isinstance(c, Element))
 
 
 def load_experiences(root: Path) -> dict[str, object]:
@@ -197,7 +100,7 @@ def _research(root: Element, article: Element, article_id: str) -> None:
     status = block(f'<p class="raos-research-status" data-raos-article-id="{escape(article_id, quote=True)}"><span>公式情報確認：{escape(checked)} ／ 実機確認：{escape(real_world)}</span><span>{label}。<a href="#reader-evidence">出典・調査範囲</a></span></p>')
     article.children.insert(0, status)
     status.parent = article
-    panel = block('<details class="raos-evidence-panel" id="reader-evidence"><summary>調査範囲・型番・確認日を詳しく見る</summary></details>')
+    panel = block('<details class="raos-evidence-panel" id="reader-evidence" tabindex="-1"><summary>調査範囲・型番・確認日を詳しく見る</summary></details>')
     panel.append(fact)
     for disclosure in list(article.find(cls="raos-disclosure")):
         panel.append(disclosure)
@@ -267,10 +170,112 @@ def project_article(
     if settings:
         _research(root, article, article_id)
         _summary(root, settings)
+        if settings.get("components_enabled") is True:
+            _decision_components(root, article, settings)
     marker = block(f'<span class="raos-reader-view" data-raos-article-id="{escape(article_id, quote=True)}" hidden></span>')
+    if settings.get("components_enabled") is True:
+        marker.attrs["data-raos-reader-components"] = "true"
     article.children.insert(0, marker)
     marker.parent = article
     return root.html()
+
+
+def _decision_components(root: Element, article: Element, settings: Mapping[str, object]) -> None:
+    summary = next(iter(root.find(cls="decision-section")), None)
+    insertion = summary
+    axes = settings.get("decision_axes", [])
+    if isinstance(axes, list):
+        axis_block = components.decision_axes(axes)
+        if axis_block is not None:
+            if insertion is not None and insertion.parent is not None:
+                parent = insertion.parent
+                axis_block.parent = parent
+                parent.children.insert(parent.children.index(insertion) + 1, axis_block)
+            else:
+                article.append(axis_block)
+            insertion = axis_block
+    # The decision table resolves identity, fit, and caution from existing cards.
+    cards = root.find(cls="raos-product-card")
+    rows = []
+    for card in cards:
+        headings = card.find(tag="h3")
+        labels = card.find(cls="raos-condition-label")
+        fit = card.find(cls="raos-product-card__fit")
+        caution = card.find(cls="raos-product-card__caution")
+        if not headings or not card.attrs.get("id"):
+            continue
+        fit_lists = fit[0].find(tag="ul") if fit else []
+        fit_items = fit_lists[0].find(tag="li") if fit_lists else []
+        exclusions = fit_lists[1].find(tag="li") if len(fit_lists) > 1 else []
+        rows.append({
+            "condition": labels[0].text() if labels else (fit_items[0].text() if fit_items else "条件を確認して候補にする"),
+            "product_name": headings[0].text(), "anchor": str(card.attrs["id"]),
+            "reason": fit_items[0].text() if fit_items else "商品の選択条件を確認してください。",
+            "tradeoff": exclusions[0].text() if exclusions else (caution[0].text() if caution else "未確認"),
+            "purchase_check": caution[0].text() if caution else "型番・同梱品・保証・販売元を確認してください。",
+        })
+    if settings.get("article_type") != "status_check":
+        table = components.decision_table(rows)
+        if table is not None and insertion is not None and insertion.parent is not None:
+            table.parent = insertion.parent
+            table.parent.children.insert(table.parent.children.index(insertion) + 1, table)
+    evidence = next(iter(root.find(cls="raos-evidence-panel")), None)
+    if evidence is not None:
+        for redundant in root.find(cls="raos-decision-summary")[1:]:
+            redundant.attrs["class"] = "raos-evidence-decision-basis"
+            for heading in redundant.find(tag="h2"):
+                heading.tag = "h3"
+            evidence.append(redundant)
+        for intro in root.find(cls="raos-article-intro"):
+            for extra in intro.find(tag="p")[2:]:
+                evidence.append(extra)
+        for node in list(root.find(cls="disclosure")) + list(root.find(cls="raos-article-scope")):
+            ancestor = node.parent
+            while ancestor is not None and ancestor is not evidence:
+                ancestor = ancestor.parent
+            if ancestor is None:
+                evidence.append(node)
+        for index, card in enumerate(cards, start=1):
+            facts = card.find(cls="raos-product-card__facts")
+            if not facts:
+                continue
+            anchor = f"reader-product-evidence-{index}"
+            panel = block(f'<div id="{anchor}" class="raos-product-evidence" role="region" aria-labelledby="{anchor}-title" tabindex="-1"><h3 id="{anchor}-title">{escape(card.find(tag="h3")[0].text())}：確認した根拠</h3></div>')
+            for fact in facts:
+                panel.append(fact)
+            evidence.append(panel)
+            card.append(block(f'<p><a href="#{anchor}">型番と仕様の根拠を見る</a></p>'))
+        # Preserve source headings/IDs, methods, and update history at the end.
+        additional = settings.get("consolidate_sections", [])
+        consolidation = ("sources-section", "method-section", *(additional if isinstance(additional, list) else []))
+        for child in list(article.children):
+            if isinstance(child, Element) and child is not evidence and any(child.has(cls) for cls in consolidation) and not child.has("raos-market-exclusions"):
+                for heading in child.find(tag="h2"):
+                    heading.tag = "h3"
+                evidence.append(child)
+    unknowns = settings.get("unknowns", [])
+    if isinstance(unknowns, list):
+        unknown_panel = components.unknowns_panel(unknowns)
+        if unknown_panel is not None:
+            evidence.insert_before(unknown_panel) if evidence is not None else article.append(unknown_panel)
+    checks = settings.get("purchase_checks", [])
+    if isinstance(checks, list):
+        checklist = components.purchase_checklist(checks)
+        if checklist is not None:
+            evidence.insert_before(checklist) if evidence is not None else article.append(checklist)
+    final_offers = block('<div class="raos-final-offers"></div>')
+    for link in list(root.find(tag="a")):
+        if link.attrs.get("data-raos-cta-type") == "offer" and link.attrs.get("data-raos-placement") == "final_summary":
+            product = link.attrs.get("data-raos-product-id")
+            offer_card = next((card for card in cards if card.attrs.get("data-raos-product-id") == product), None)
+            if offer_card is not None and offer_card.find(tag="h3"):
+                link.children = [escape(offer_card.find(tag="h3")[0].text() + "：型番・同梱品・保証・現在の販売条件を確認する")]
+            final_offers.append(link)
+    if final_offers.children:
+        evidence.insert_before(final_offers) if evidence is not None else article.append(final_offers)
+    components.enhance_specification_tables(root)
+    if summary is not None and summary.parent is not None:
+        summary.parent.children.insert(summary.parent.children.index(summary) + 1, '<!-- raos-reader-toc -->')
 
 
 def project_registered_article(root: Path, markup: str, *, article_id: str, evidence: CtaEvidence = CtaEvidence(), approved_product_images: frozenset[str] = frozenset()) -> str:

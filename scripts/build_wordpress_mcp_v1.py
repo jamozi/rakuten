@@ -208,6 +208,8 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("python/raos/application/editorial/editorial_portfolio_v2.py"),
     Path("python/raos/application/editorial/reader_experience_v1.py"),
     Path("python/raos/application/editorial/reader_experience_projection.py"),
+    Path("python/raos/application/editorial/reader_html.py"),
+    Path("python/raos/application/editorial/reader_components.py"),
     Path("changes/editorial-portfolio-v3/reader-experience.v1.json"),
     Path("changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs"),
     Path("python/raos/application/editorial/product_safety_manufacturer_capture.py"),

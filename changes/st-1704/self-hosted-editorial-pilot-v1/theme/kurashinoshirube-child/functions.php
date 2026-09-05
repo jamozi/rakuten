@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.5.1';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '1a3f2dbbd0feefc8e018d136dcf09fdc1e8822dcf5af02bcbb1d1003b9e7f989';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '1a3f2dbbd0feefc8e018d136dcf09fdc1e8822dcf5af02bcbb1d1003b9e7f989';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '57aed3a03bcf502143d8d44c1c23b606f09ad7ab705dfc456fcc76b3e288e669';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '57aed3a03bcf502143d8d44c1c23b606f09ad7ab705dfc456fcc76b3e288e669';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -45,7 +45,7 @@ const KURASHINOSHIRUBE_MEASUREMENT_ASSET_SHA256 = '181dff17451e52bb5bc548964e6c9
 const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_PATH = 'assets/analytics-consent-gate.js';
 const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_SHA256 = '09b2bff8deba45af068ad8566a8d4e237da7da21fd310aaa62fedc10aa24a38a';
 const KURASHINOSHIRUBE_NAVIGATION_ASSET_PATH = 'assets/editorial-navigation.js';
-const KURASHINOSHIRUBE_NAVIGATION_ASSET_SHA256 = '29fc68a8929aadfb49ef39740b4c7cbc5be66d6a8bd94f1fc5a8dcdc4345eac7';
+const KURASHINOSHIRUBE_NAVIGATION_ASSET_SHA256 = 'b0078de81ba4faadad8f8f2aa5ddd44b6196f01e513333e4bf0624c4abafc747';
 const KURASHINOSHIRUBE_HOMEPAGE_FEATURED_ARTICLE_ID = 'st1704-portable-power-station-guide';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ARTICLE_ID = 'st1703-first-suitcase-comparison';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ACTION = 'kurashinoshirube_apply_at003_review_v1';
@@ -53,7 +53,7 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1'
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = 'assets/editorial-navigation.v3.json';
-const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = 'a3d33284921461a18c0e0f8a879c708e07d2e5e63ee3f49f85c8441ffe980352';
+const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '0b317a5af429be6f8b9b6df9e663f71177cbf68033cbff4ffbb9519504ae0802';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_MAX_BYTES = 262144;
 const KURASHINOSHIRUBE_HOME_TITLE = '生活用品を公式仕様で比較｜暮らしのしるべ';
 const KURASHINOSHIRUBE_HOME_DESCRIPTION = '暮らしのしるべは、移動・家事・備えの生活用品を、公式情報と確認条件に基づいて比較し、選び方を分かりやすく案内します。';
@@ -1074,10 +1074,11 @@ function kurashinoshirube_reader_media_asset(string $asset_ref): ?array
     $navigation = kurashinoshirube_editorial_navigation();
     foreach ($navigation['media_assets'] ?? array() as $asset) {
         if (! is_array($asset) || ($asset['asset_ref'] ?? null) !== $asset_ref
-            || ($asset['approval'] ?? null) !== 'approved') {
+            || ($asset['approval'] ?? null) !== 'approved'
+            || ! in_array($asset['asset_type'] ?? null, array('photo', 'svg', 'html_diagram', 'illustration'), true)) {
             continue;
         }
-        foreach (array('source', 'usage_basis', 'checked_at', 'alt', 'caption', 'role', 'path', 'sha256') as $key) {
+        foreach (array('source', 'usage_basis', 'checked_at', 'alt', 'caption', 'role', 'asset_type', 'path', 'sha256') as $key) {
             if (! is_string($asset[$key] ?? null) || trim($asset[$key]) === '') {
                 return null;
             }
@@ -2740,6 +2741,18 @@ add_shortcode(
     'kurashinoshirube_render_article_category'
 );
 
+/** The reader lead in the tracked body replaces the duplicated title excerpt. */
+function kurashinoshirube_reader_excerpt_block(string $html, array $block): string
+{
+    if (is_singular('post') && ($block['attrs']['className'] ?? null) === 'raos-article-standfirst'
+        && kurashinoshirube_public_article_identity((int) get_queried_object_id()) !== null
+        && str_contains((string) get_post_field('post_content', get_queried_object_id(), 'raw'), 'data-raos-reader-components="true"')) {
+        return '';
+    }
+    return $html;
+}
+add_filter('render_block_core/post-excerpt', 'kurashinoshirube_reader_excerpt_block', 10, 2);
+
 /** Resolve one generated related target on production or the isolated preview. */
 function kurashinoshirube_resolve_related_target(string $target_id): ?array
 {
@@ -2878,7 +2891,9 @@ function kurashinoshirube_inject_article_toc($content)
     if (! is_string($with_back_links)) {
         return $content;
     }
-    $transformed = $with_back_links;
+    if (! str_contains($content, 'data-raos-reader-components="true"')) {
+        $transformed = $with_back_links;
+    }
     $toc = '<nav id="raos-article-toc" class="raos-article-toc" '
         . 'aria-label="記事内の目次" tabindex="-1">'
         . '<p class="raos-article-toc__title">この記事の目次</p>'
@@ -2890,6 +2905,9 @@ function kurashinoshirube_inject_article_toc($content)
         return $content;
     }
     $position = $root_end + 1;
+    if (str_contains($transformed, '<!-- raos-reader-toc -->')) {
+        return str_replace('<!-- raos-reader-toc -->', $toc, $transformed);
+    }
     return substr($transformed, 0, $position) . $toc
         . '<div class="raos-editorial-v2__main">'
         . substr($transformed, $position, $root_close - $position)
@@ -3142,7 +3160,12 @@ function kurashinoshirube_reader_guide_card(WP_Post $post): string
         return '';
     }
     $date = get_post_modified_time('Y年n月j日', false, $post->ID);
+    $asset = kurashinoshirube_article_visual_asset((int) $post->ID);
+    $media = is_array($asset) ? '<span class="raos-guide-card__media"><img src="' . esc_url($asset['uri'])
+        . '" alt="' . esc_attr($asset['alt']) . '" width="' . (int) $asset['width'] . '" height="' . (int) $asset['height']
+        . '" loading="lazy" decoding="async"><span class="raos-guide-card__caption">' . esc_html($asset['caption']) . '</span></span>' : '';
     return '<a class="raos-guide-card" href="' . esc_url($url) . '">'
+        . $media
         . '<span class="raos-article-category">' . esc_html(kurashinoshirube_stored_guide_role((int) $post->ID)) . '</span>'
         . '<span class="raos-guide-card__title" role="heading" aria-level="3">' . esc_html($title) . '</span>'
         . '<span class="raos-guide-card__excerpt">' . esc_html($excerpt) . '</span>'

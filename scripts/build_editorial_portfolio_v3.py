@@ -22,6 +22,7 @@ from scripts.raos_build_core import atomic_write, canonical_json_bytes  # noqa: 
 
 
 GENERATOR_PATH: Final = Path("scripts/build_editorial_portfolio_v3.py")
+INPUT_READER_EXPERIENCE_PATH: Final = Path("changes/editorial-portfolio-v3/reader-experience.v1.json")
 INPUT_PORTFOLIO_PATH: Final = Path(
     "changes/editorial-portfolio-v2/editorial-portfolio.v2.json"
 )
@@ -77,6 +78,10 @@ ARTICLE_CONTENT_PATHS: Final = (
     ),
 )
 RUNTIME_PATHS: Final = (
+    Path("python/raos/application/editorial/reader_experience_projection.py"),
+    Path("python/raos/application/editorial/reader_experience_v1.py"),
+    Path("python/raos/application/editorial/reader_html.py"),
+    Path("python/raos/application/editorial/reader_components.py"),
     Path("python/raos/application/editorial/editorial_portfolio_v2.py"),
     Path("python/raos/application/editorial/editorial_portfolio_v3.py"),
     Path("python/raos/application/editorial/rakuten_measurement_activation_v3.py"),
@@ -653,6 +658,9 @@ def _validate_market_candidate_audit(
 
 
 def build_documents() -> tuple[dict[str, object], dict[str, object]]:
+    sys.path.insert(0, str(REPOSITORY_ROOT / "python"))
+    from raos.application.editorial.reader_experience_projection import load_experiences
+    experiences = load_experiences(REPOSITORY_ROOT)
     v2 = _read_json(INPUT_PORTFOLIO_PATH)
     identities = _read_json(INPUT_IDENTITIES_PATH)
     _validate_parser_boundary()
@@ -984,6 +992,7 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
         v3_articles.append(
             {
                 **article,
+                **({"reader_experience": experiences[article_id]} if article_id in experiences else {}),
                 "v2_category": article.get("category"),
                 "article_code": article_code,
                 "cluster_id": cluster_id,

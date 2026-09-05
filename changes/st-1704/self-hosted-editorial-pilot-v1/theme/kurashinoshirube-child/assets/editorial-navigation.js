@@ -18,7 +18,8 @@
     const horizontallyScrollable = visible &&
       region.scrollWidth > region.clientWidth + 1 &&
       ['auto', 'scroll'].includes(style.overflowX);
-    if (horizontallyScrollable) {
+    const verticallyScrollable = visible && region.scrollHeight > region.clientHeight + 1 && ['auto', 'scroll'].includes(style.overflowY);
+    if (horizontallyScrollable || verticallyScrollable) {
       region.tabIndex = 0;
       region.dataset.raosHorizontalScroll = 'available';
       return;
@@ -43,6 +44,11 @@
   };
 
   const revealHashTarget = (target) => {
+    let ancestor = target.parentElement;
+    while (ancestor) {
+      if (ancestor instanceof HTMLDetailsElement) ancestor.open = true;
+      ancestor = ancestor.parentElement;
+    }
     window.requestAnimationFrame(() => {
       synchronizeScrollOffset();
       target.scrollIntoView({ behavior: 'auto', block: 'start' });
