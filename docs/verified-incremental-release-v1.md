@@ -119,8 +119,15 @@ six debug/minified variants of three WordPress core modules in
 `changes/wordpress-local-preview-v1/wordpress-runtime.lock.json`. The dependency
 hashes came from `/usr/src/wordpress` in the pinned, network-disabled, read-only
 WordPress image, not a mutable preview installation or a live response. Exact
-asset version queries remain intact; the ordinary HTTP page transport retains
-its no-query boundary. CSS dependencies must be literal references into the
+asset version queries remain intact. The audited 1.4.0 baseline enqueues its two
+stylesheets with the theme header version, while current theme assets use the
+runtime revision. Only the exact legacy enqueue shapes in tree-verified source
+may select the header version; it must agree with the theme version constant.
+No live response supplies an expected version or hash. Semantic-version queries
+are limited to these two exact CSS paths and the finite audited resource set;
+the ordinary HTTP page transport retains its no-query boundary. This CSS
+compatibility does not authorize legacy emoji, consent or other plugin scripts.
+CSS dependencies must be literal references into the
 same audited image tree. No whole plugin directory or provider-name denylist
 can confer an OFF result.
 
