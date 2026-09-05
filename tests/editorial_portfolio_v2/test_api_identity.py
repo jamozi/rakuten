@@ -75,6 +75,34 @@ def test_one_byte_query_token_is_omitted_only_from_search() -> None:
 
 
 @pytest.mark.parametrize(
+    ("model", "tokens", "expected"),
+    (
+        ("01541", ("PROTECA", "トライエアー", "01541"), "01541 PROTECA トライエアー"),
+        ("60570", ("BERMAS", "INTER CITY", "60570"), "60570 BERMAS INTER CITY"),
+    ),
+)
+def test_numeric_model_query_keeps_exact_model_and_required_name(
+    model: str, tokens: tuple[str, ...], expected: str
+) -> None:
+    product = replace(
+        binding(), representative_model=model, required_title_tokens=tokens
+    )
+    assert owner.rakuten_identity_query_v1(product) == expected
+    assert product.representative_model == model
+    assert product.required_title_tokens == tokens
+    assert owner.discover_rakuten_identity_v1(product, response(model)) is None
+
+
+def test_search_query_rejects_provider_byte_limit_overflow() -> None:
+    product = replace(binding(), representative_model="あ" * 43)
+    with pytest.raises(
+        owner.EditorialPortfolioV2Failure,
+        match="RAOS_EDITORIAL_PORTFOLIO_DISCOVERY_QUERY_INVALID",
+    ):
+        owner.rakuten_identity_query_v1(product)
+
+
+@pytest.mark.parametrize(
     "titles",
     [
         (),

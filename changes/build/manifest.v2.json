@@ -26446,7 +26446,7 @@
       "outputs": [
         {
           "bytes": 80081,
-          "sha256": "bbd24d6781c0de3fd856e53fe518f8a1c93bc9681a841ba7be50ff16ec5a8d62",
+          "sha256": "b485f6ae3a33bac4f250d96da59411db0e77ae81da4775cd749200bf25366eda",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29041,7 +29041,7 @@
         },
         {
           "bytes": 20093,
-          "sha256": "3ae3233acf8dbc7b2bb86e5a1c3eac620045ad8be0ec02526aac0108515d7661",
+          "sha256": "b52e3ffc0bdc8129f5e6ae22951d09d584ecb3126a2b0ce9d9f779f52fc5ecbc",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],

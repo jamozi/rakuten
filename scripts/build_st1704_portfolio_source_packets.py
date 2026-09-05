@@ -3102,7 +3102,7 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         '<td>ロボット掃除機本体：約2.5kg<br>ステーション：約1.8kg</td>',
         '<th>水拭き</th>\n            <td>\n              \n                -\n              \n            </td>',
         '<th>自動ゴミ収集システム</th>\n            <td>\n              \n                ◯\n              \n            </td>',
-        "最大4000Paの強力な吸引力",
+        "<h2>吸引は強力、角まで綺麗に</h2>\n<p>最大4000Paの強力な吸引力",
         "ステーションは左右0.5m、前方1.5mの範囲内にある障害物を取り除き設置してください。",
         "Eufy Robot Vacuum Auto-Empty C10、自動ゴミ収集ステーション、ステーションカバー、ダスト容器、ダストバッグ、クイックスタートガイド、安全マニュアル、18ヶ月保証 + 6ヶ月 (Ankerで会員登録後) 、カスタマーサポート",
         '<td>T2292511 (ブラック)',
@@ -3130,12 +3130,12 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         'data-variant-sku="A17535Z1"',
         '<div id="product-variant-stock" class="product-variant-stock">在庫わずか</div>',
         'aria-label="カートに入れる"',
-        "768Whの中容量帯ながら、1200Wを安定して出力できる",
-        "約37.1 x 20.5 x 25.0cm （ 幅 x 奥行 x 高さ )",
-        "約10.5kg",
-        "電池容量が初期容量の80%まで劣化するまでのサイクル回数は3,000回以上",
+        "<h2>業界最高水準の高出力<sup>※</sup>\n</h2>\n<p>768Whの中容量帯ながら、1200Wを安定して出力できる",
+        '<td class="product-specs-heading">サイズ</td>\n                  <td>約37.1 x 20.5 x 25.0cm （ 幅 x 奥行 x 高さ )</td>',
+        '<td class="product-specs-heading">重さ</td>\n                <td>約10.5kg</td>',
+        "<p><small>※電池容量が初期容量の80%まで劣化するまでのサイクル回数は3,000回以上",
         "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。",
-        "ご使用済みポータブル電源の回収サービス",
+        "<h3>購入後も安心のアフターサービス</h3>\n<p>専門スタッフのサポートや、ご使用済みポータブル電源の回収サービス",
     ),
     "SRC-JACKERY-1000-NEW-V3": (
         "Jackery ポータブル電源 1000 New V3",
@@ -5779,6 +5779,7 @@ def _documents() -> tuple[bytes, bytes]:
     # additive refresh. All specification and warranty fragments stay intact.
     for source_ref in (
         "SRC-ANKER-SOLIX-C300",
+        "SRC-ANKER-SOLIX-C800",
         "SRC-ANKER-SOLIX-C800-PLUS",
         "SRC-ANKER-SOLIX-C1000",
         "SRC-ANKER-SOLIX-C1000-GEN2",
@@ -5786,6 +5787,10 @@ def _documents() -> tuple[bytes, bytes]:
         replacements = {
             '<button type="submit" name="add" aria-label="カートに入れる" id="cafe-purchase-button"': ANKER_STOCK_BOUND_PURCHASE_FRAGMENT,
         }
+        if source_ref == "SRC-ANKER-SOLIX-C800":
+            replacements['aria-label="カートに入れる"'] = (
+                ANKER_STOCK_BOUND_PURCHASE_FRAGMENT
+            )
         if source_ref in {"SRC-ANKER-SOLIX-C800-PLUS", "SRC-ANKER-SOLIX-C1000"}:
             name = (
                 "Anker Solix C800 Plus Portable Power Station"
