@@ -51,7 +51,7 @@ status-v2:
 
 test-parallel:
 	PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp $(PYTHON) -m pytest -s -p xdist.plugin -n auto \
-		-m 'not serial and not live and not external and not raos_owner_private' tests
+		-m 'not serial and not database and not storage and not live and not external and not raos_owner_private' tests
 
 test-serial:
 	PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp $(PYTHON) -m pytest -s -p xdist.plugin \

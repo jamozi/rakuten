@@ -2,22 +2,57 @@ name: Final Integration CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  schedule:
+    - cron: '0 18 * * *' # Daily 03:00 JST
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: final-integration-${{ github.event.pull_request.number || github.ref }}
+  group: final-integration-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 defaults:
   run:
     shell: bash
 
+env:
+  RAOS_CI_EVENT: ${{ github.event_name }}
+  RAOS_CI_BASE: ${{ github.event.pull_request.base.sha }}
+  RAOS_CI_DRAFT: ${{ github.event.pull_request.draft || false }}
+
 jobs:
+  plan:
+    name: Select verification
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      static: ${{ steps.select.outputs.static }}
+      tests: ${{ steps.select.outputs.tests }}
+      contracts: ${{ steps.select.outputs.contracts }}
+      data: ${{ steps.select.outputs.data }}
+      storage: ${{ steps.select.outputs.storage }}
+      secrets: ${{ steps.select.outputs.secrets }}
+      required: ${{ steps.select.outputs.required }}
+      draft: ${{ steps.select.outputs.draft }}
+      full: ${{ steps.select.outputs.full }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+        with:
+          node: 'false'
+      - id: select
+        run: .venv/bin/python scripts/raos_ci.py plan
+
   lock:
     name: Lock and Reproducibility
+    needs: plan
+    if: needs.plan.outputs.draft != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -41,9 +76,11 @@ jobs:
       - run: .venv/bin/python scripts/verify_dev_toolchain.py
       - run: npm ls --all
 
+
   static:
     name: Static
-    needs: lock
+    needs: [plan, lock]
+    if: needs.plan.outputs.static == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -52,87 +89,74 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - uses: ./.github/actions/setup
-      - run: make final-static
-      - run: .venv/bin/python scripts/raos_build.py check --all
-      - run: .venv/bin/python scripts/status_v2.py --check
+      - run: .venv/bin/python scripts/raos_ci.py static
 
   tests:
     name: Tests
-    needs: lock
+    needs: [plan, lock]
+    if: needs.plan.outputs.tests == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           persist-credentials: false
       - uses: ./.github/actions/setup
-      - run: make test-parallel test-serial
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
-          php-version: "7.4"
+          php-version: '7.4'
           coverage: none
-      - name: Report PHP runtime
-        run: php --version
-      - name: Lint Phase 3 source and generated plugins
-        run: |
-          set -euo pipefail
-          raos_source_plugin="packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/raos-v2-decision-support.php"
-          raos_generated_plugin="changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/raos-v2-decision-support.php"
-          php -l "$raos_source_plugin"
-          php -l "$raos_generated_plugin"
-          php -l tests/raos_v2/phase3-wordpress-runtime.php
-      - name: Execute fail-closed WordPress stub contracts
-        run: |
-          set -euo pipefail
-          raos_harness="tests/raos_v2/phase3-wordpress-runtime.php"
-          raos_candidate="changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json"
-          raos_source_plugin="packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/raos-v2-decision-support.php"
-          raos_generated_plugin="changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/raos-v2-decision-support.php"
-          php "$raos_harness" source "$raos_source_plugin" "$raos_candidate"
-          php "$raos_harness" generated "$raos_generated_plugin" "$raos_candidate"
+      - run: .venv/bin/python scripts/raos_ci.py tests
 
   contracts:
     name: Contracts
-    needs: lock
+    needs: [plan, lock]
+    if: needs.plan.outputs.contracts == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: ./.github/actions/setup
-      - run: make contracts
+      - run: .venv/bin/python scripts/raos_ci.py contracts
 
   data:
     name: Data and Database
-    needs: lock
+    needs: [plan, lock]
+    if: needs.plan.outputs.data == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: ./.github/actions/setup
-      - run: make database
+      - run: .venv/bin/python scripts/raos_ci.py data
 
   storage:
     name: Storage
-    needs: lock
+    needs: [plan, lock]
+    if: needs.plan.outputs.storage == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: ./.github/actions/setup
-      - run: make storage
+      - run: .venv/bin/python scripts/raos_ci.py storage
 
   secrets:
     name: Secrets
-    needs: lock
+    needs: [plan, lock]
+    if: needs.plan.outputs.secrets == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -141,25 +165,25 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           node: 'false'
-      - run: make final-secrets
+      - run: .venv/bin/python scripts/raos_ci.py secrets
 
   final:
     name: Final Integration
-    if: always()
-    needs: [lock, static, tests, contracts, data, storage, secrets]
+    if: always() && needs.plan.outputs.draft != 'true'
+    needs: [plan, lock, static, tests, contracts, data, storage, secrets]
     runs-on: ubuntu-24.04
     steps:
-      - name: Aggregate required jobs
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+        with:
+          node: 'false'
+      - name: Aggregate selected checks
         env:
-          LOCK_RESULT: ${{ needs.lock.result }}
-          STATIC_RESULT: ${{ needs.static.result }}
-          TESTS_RESULT: ${{ needs.tests.result }}
-          CONTRACTS_RESULT: ${{ needs.contracts.result }}
-          DATA_RESULT: ${{ needs.data.result }}
-          STORAGE_RESULT: ${{ needs.storage.result }}
-          SECRETS_RESULT: ${{ needs.secrets.result }}
-        run: |
-          for result in "$LOCK_RESULT" "$STATIC_RESULT" "$TESTS_RESULT" \
-            "$CONTRACTS_RESULT" "$DATA_RESULT" "$STORAGE_RESULT" "$SECRETS_RESULT"; do
-            test "$result" = success
-          done
+          RAOS_REQUIRED_JOBS: ${{ needs.plan.outputs.required }}
+          RAOS_JOB_RESULTS: ${{ toJSON(needs) }}
+          RAOS_PLAN_RESULT: ${{ needs.plan.result }}
+          RAOS_LOCK_RESULT: ${{ needs.lock.result }}
+        run: .venv/bin/python scripts/raos_ci.py aggregate

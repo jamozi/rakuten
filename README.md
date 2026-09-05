@@ -4,21 +4,39 @@ RAOS の実装、生成、検証を1つの統合workflowで管理するmonorepo�
 
 ## 開発コマンド
 
+通常の確認は `make fast` だけです。変更箇所の静的検査、関連テスト、生成物のdriftを
+同じ差分計画から実行します。修正後は失敗した検査を先に確認してから影響範囲を確認します。
+
 ```bash
-make setup
-make generate
-make check
-make fast
-make final
+make setup       # 初回・依存変更時
+make generate    # 生成入力を変更した場合
+make fast        # 日常の確認
 ```
 
-- `make setup` はPython/Nodeのlock済み依存をローカルcacheを使って同期し、toolchainとlockの整合性を確認します。
-- `make generate` は変更された入力から影響ownerを求め、依存graph順に生成します。
-- `make check` は生成drift、lint、type、静的検査を実行します。
-- `make fast` はmerge-baseとの差分からaffected generatorとfocused testを選びます。必要なら `BASE=<ref>` を指定できます。
-- `make final` は全generator check、全local test、contract、DB、Storage、secret scanを集約します。`live`、`external`、`raos_owner_private` testはlocal finalでは実行せず、結果に未実行として表示します。
+`make check` は同じ選択による静的検査のみ、`make final` は任意の全体診断です。
+local全件検査は実装完了条件ではなく、`check → fast → final` の連続実行は不要です。
+Pythonの通常の型検査はmypyに集約し、Pyrightは定期・手動の全件検査で実行します。
 
-通常loopではStory固有Make target、absolute tool path、常時offline/no-cache、実行ごとのexact tool再検証を使いません。tool versionとdependency lockは `setup` と `final` の境界で検証します。
+```bash
+.venv/bin/python scripts/raos_build.py --base origin/main plan --json
+.venv/bin/python scripts/raos_build.py --base origin/main plan --critical --json
+make fast BASE=origin/main
+```
+
+計画には変更ファイル、選択した検査と理由、全件へ戻す理由を出力します。generatorの依存に加え、
+通常コードのimport利用側、設定・fixtureの対応、追加・削除・renameされたtestを選択します。
+未知のコード・設定、依存lock、共通検査基盤の変更は全件検査へ戻します。
+生成入力ではない文書のみの変更は文書・参照整合性を確認します。
+
+通常PRは影響範囲と重要な回帰・secret検査を実行します。Draftでは重い検査を省き、ready時に
+実行します。`Final Integration` は選択された検査の成功を集約し、未選択と失敗・cancel・
+必要な検査の未実行を区別します。自動mergeはDraft以外のPRのみが対象です。
+
+毎日03:00 JSTと手動CIでは、全generator、Python・Node・PHP、契約、DB／Storage、secret検査を
+実行します。`live`、`external`、`raos_owner_private` は実行対象外です。環境依存のskipは
+pytestの結果に表示し、未実行を成功した実環境検証とは扱いません。定期CIの失敗は修正対象です。
+CIには検査ごとの所要時間と遅いテストを出力します。通常PRの中央値10分以内は改善目標であり、
+新しい停止条件ではありません。
 
 ## Generator ownership
 
@@ -34,7 +52,9 @@ make final
 
 ## Test layout
 
-pytestは `--import-mode=importlib` で全suiteをcollectionします。parallel-safe testはxdist、DB・Storage・global filesystem testは `serial` markerで実行します。suite helperは各packageの `support.py` からrelative importします。
+pytestは `--import-mode=importlib` で全suiteをcollectionします。通常のtestはxdistで実行し、共有状態を使うtestは `serial` markerで実行します。
+DB／Storageは専用partitionに分け、localな全testがどれか1つのpartitionに入るようにします。
+ファイル名による自動分類は廃止し、既存の共有状態testは明示的なmodule一覧で移行管理します。suite helperは各packageの `support.py` からrelative importします。
 
 ## 外部作用の境界
 

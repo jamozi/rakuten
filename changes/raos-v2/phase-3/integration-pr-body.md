@@ -10,7 +10,7 @@
   hash-only WordPress diff adapter; no approval or cutover authority
 - Backup/export runbook, no-change SEO plan, privacy/legal review packet,
   rollback rehearsal and bounded Phase 3 public-capture command
-- Local preparation status: `PASSED_LOCAL_PREPARATION`
+- Local preparation status: `FAILED_LOCAL_PREPARATION`
 
 ## Safety boundary
 

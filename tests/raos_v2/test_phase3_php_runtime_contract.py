@@ -144,7 +144,7 @@ def test_phase3_php_harness_runtime_surface_denies_write_network_admin_rest() ->
         "raos_v2_runtime_plugin_source_violations($plugin_source) === array()" in source
     )
     assert (
-        "const RAOS_V2_RUNTIME_EXPECTED_PLUGIN_SHA256 = " f"'{EXPECTED_PLUGIN_SHA256}';"
+        f"const RAOS_V2_RUNTIME_EXPECTED_PLUGIN_SHA256 = '{EXPECTED_PLUGIN_SHA256}';"
     ) in source
     for plugin_path in (SOURCE_PLUGIN, GENERATED_PLUGIN):
         assert sha256(plugin_path.read_bytes()).hexdigest() == EXPECTED_PLUGIN_SHA256
@@ -170,27 +170,49 @@ def test_phase3_php_harness_runtime_surface_denies_write_network_admin_rest() ->
         assert byte_pin_mutation in source
 
 
-def test_phase3_ci_requires_php_lint_and_both_runtime_artifacts() -> None:
-    workflow = WORKFLOW.read_text(encoding="utf-8")
-    job = workflow.split("  tests:\n", 1)[1].split("\n  contracts:\n", 1)[0]
+def test_phase3_ci_executes_lint_and_both_artifacts_without_ignoring_failure(
+    monkeypatch,
+) -> None:
+    from types import SimpleNamespace
+    import pytest
+    import yaml
+    from scripts import raos_checks
 
-    assert "name: Tests" in job
-    assert "needs: lock" in job
-    assert "php --version" in job
-    assert "shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240" in job
-    assert 'php-version: "7.4"' in job
-    assert job.count("php -l ") == 3
-    assert "tests/raos_v2/phase3-wordpress-runtime.php" in job
-    assert "wordpress-update-candidate.v1.json" in job
-    assert 'php "$raos_harness" source ' in job
-    assert 'php "$raos_harness" generated ' in job
-    for prohibited in ("continue-on-error", "command -v php", "|| true"):
-        assert prohibited not in job
-
-    assert "needs: [lock, static, tests, contracts, data, storage, secrets]" in (
-        workflow
+    workflow = yaml.load(WORKFLOW.read_text(), Loader=yaml.BaseLoader)
+    job = workflow["jobs"]["tests"]
+    assert any(
+        step.get("with", {}).get("php-version") == "7.4" for step in job["steps"]
     )
-    assert "WORDPRESS_RUNTIME_RESULT" not in workflow
+    assert any(
+        step.get("run") == ".venv/bin/python scripts/raos_ci.py tests"
+        for step in job["steps"]
+    )
+    plan = SimpleNamespace(python_tests=(), node_tests=(), vitest_tests=(), php=True)
+    commands = []
+    failing = None
+
+    def run(_root, command, label):
+        commands.append(tuple(command))
+        return int(label == failing)
+
+    monkeypatch.setattr(raos_checks, "run", run)
+    assert raos_checks.execute(ROOT, {}, plan, stage="tests") == 0
+    assert ("php", "-l", str(HARNESS.relative_to(ROOT))) in commands
+    for kind, plugin in (("source", SOURCE_PLUGIN), ("generated", GENERATED_PLUGIN)):
+        assert ("php", "-l", str(plugin.relative_to(ROOT))) in commands
+        assert any(
+            command[:4]
+            == (
+                "php",
+                str(HARNESS.relative_to(ROOT)),
+                kind,
+                str(plugin.relative_to(ROOT)),
+            )
+            for command in commands
+        )
+    for failing in ("php-lint-harness", "php-runtime-source", "php-runtime-generated"):
+        with pytest.raises(RuntimeError, match="check failed"):
+            raos_checks.execute(ROOT, {}, plan, stage="tests")
 
 
 def test_phase3_source_and_generated_plugins_expose_only_public_render_hooks() -> None:

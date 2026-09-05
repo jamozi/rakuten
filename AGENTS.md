@@ -64,12 +64,23 @@ Pro 不在、formal/live evidence 未実行も停止条件ではなく、修正�
 
 ## 開発 workflow
 
-- `make setup`: lock 済み dependency を cache 利用で同期する。
-- `make generate`: 変更の affected owner を依存順に生成する。
-- `make check`: affected generator drift と静的検査を実行する。
-- `make fast`: merge-base との差分に対する focused check/test を実行する。
-- `make final`: 全 generator、全 local suite、DB/Storage、secret、aggregate check を実行する。
-- 開発中は専用 branch へ checkpoint push し、最後に integration PR を1本作る。
-  Final Integration が green なら人間承認なしで自動 merge する。
+- 通常の確認は `make fast` に集約する。変更箇所の静的検査、関連 test、affected generator
+  drift を確認し、`check → fast → final` を毎回連続実行しない。
+- `make setup` は環境作成・依存変更時、`make generate` は生成入力変更時に実行する。
+  `make check` は静的検査のみ、`make final` は任意の全体診断であり、local 完了条件ではない。
+- 差分選択は `scripts/raos_build.py --base <ref> plan --json` で確認できる。通常コードの
+  import consumer、generator owner、component route、変更 test 自身を選択する。
+  未対応のコード・設定、lock、共通検査基盤の変更は全件へ戻す。
+- 通常 PR は影響範囲と重要回帰・secret 検査、毎日03:00 JSTと手動 CI は全件検査を行う。
+  Pyright は定期・手動の全件 CI に集約し、通常の Python 型検査は mypy を使う。
+- Draft PR は重い検査を省き、ready 時に実行する。専用 branch へ checkpoint push し、
+  integration PR は1本にまとめる。選択された検査がすべて成功した `Final Integration`
+  を条件に自動 merge する。選択外と失敗・cancel・必要な検査の未実行は区別する。
+- 修正後は失敗した検査を先に実行し、次に影響範囲を確認する。失敗や変更がなければ同じ
+  検査を繰り返さない。test は振る舞い・不具合再現を検証し、文書行数や総件数を固定しない。
+- 新規 test は原則並列実行し、共有 checkout や外部 process state を使う場合だけ
+  `serial` を明示する。DB／Storage は専用 partition で実行する。
+- 通常 PR の CI 中央値10分以内を改善目標とし、新しい停止条件にはしない。定期 CI の失敗は
+  修正対象として結果を残す。独自の証跡台帳、自動 revert、一律の開発停止は追加しない。
 - Preflight、Story ごとの ExecPlan/worklog/debt log は必須ではない。最終 PR に関連 Story IDs、
   変更概要、検証結果、external/live 未実行事項を一度だけ記録する。

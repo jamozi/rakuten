@@ -19,8 +19,8 @@ import subprocess
 from scripts.raos_build_core import (
     BuildSpec,
     OWNER_PRIVATE_OWNER_IDS,
+    FINGERPRINT_INPUT_CATALOGS,
     affected_owners,
-    generation_relevant_paths,
 )
 
 
@@ -74,6 +74,7 @@ FULL_INPUTS = {
     "scripts/raos_test_plan.py",
     "scripts/raos_checks.py",
     "scripts/raos_ci.py",
+    "scripts/raos_pytest_summary.py",
     "vitest.config.ts",
     "tsconfig.json",
     "tsconfig.base.json",
@@ -152,6 +153,9 @@ def _consumer_graph(
                 modules[path.stem].add(path)
     reverse: dict[Path, set[Path]] = defaultdict(set)
     for path in sources:
+        # Shared verification catalogs contain path/owner inventories. These
+        # literals are metadata; real imports still contribute dependencies.
+        skip_literals = path.as_posix() in FULL_INPUTS
         absolute = root / path
         if not absolute.is_file() or absolute.is_symlink():
             continue
@@ -181,7 +185,11 @@ def _consumer_graph(
                         prefix,
                         *(f"{prefix}.{alias.name}" for alias in node.names),
                     ]
-                elif isinstance(node, ast.Constant) and isinstance(node.value, str):
+                elif (
+                    not skip_literals
+                    and isinstance(node, ast.Constant)
+                    and isinstance(node.value, str)
+                ):
                     literals.append(node.value)
                 for name in names:
                     pieces = name.split(".")
@@ -239,7 +247,15 @@ def create_plan(
     reasons: dict[str, set[str]] = defaultdict(set)
     full_reasons = {"explicit full run"} if full else set()
     owners = affected_owners(registry, changed)
-    generator_owners = affected_owners(registry, generation_relevant_paths(changed))
+    # Check edited generated manifests too. The narrower generation-input
+    # filter is appropriate for regeneration, not for detecting output drift.
+    generator_owners = affected_owners(
+        registry,
+        tuple(p for p in changed if p.parts[0] != "tests")
+        + tuple(
+            registry[o].generator for o in owners if o in FINGERPRINT_INPUT_CATALOGS
+        ),
+    )
     selected: set[Path] = set()
 
     def add_test(path: Path, reason: str) -> None:

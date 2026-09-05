@@ -22,7 +22,7 @@
     "local_browser_a11y_and_visual_evidence": true,
     "local_wordpress_assembly_fail_closed": true,
     "one_existing_route": true,
-    "php_runtime_stub_is_required_ci": true,
+    "php_runtime_stub_is_required_ci": false,
     "plugin_activation_is_fail_closed": true,
     "plugin_artifact_closed": true,
     "preaction_execution_operator_derives_and_reissues_locally": true,
@@ -84,7 +84,7 @@
   },
   "review_candidate_sha256": "c91cf5c2d6322bd33a1bfabfc4b5abfdf6b3bc7173185bd49e7e31c8fda12656",
   "schema": "RAOS_V2_PHASE3_VALIDATION_V1",
-  "status": "PASSED_LOCAL_PREPARATION",
+  "status": "FAILED_LOCAL_PREPARATION",
   "test_ids": [
     "T-V2-004",
     "T-V2-005",

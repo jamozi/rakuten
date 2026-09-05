@@ -10,8 +10,8 @@ provenance:
   contract_semantic_sha256: 3a5cd58608eedc0d5d1315f42089d8ac86f3a43c78feee75be9fc4b8bc1683e0
   authority_inputs:
   - uri: repo://AGENTS.md
-    bytes: 6243
-    sha256: 0ba3bb32077adb8cb18e758278739b541e6f6c5706f9b0ca03b94b99806f349a
+    bytes: 7605
+    sha256: a9aa90a2d08eab0b9b9175f2034984035bd32e9a7e2c91ac3a98cf6709762379
   - uri: repo://docs/canonical/00_master/RAOS_MASTER_README_v1.0.md
     bytes: 2275
     sha256: a0b27b491ee120767a59dd0c7822ab10e30cf17738960a919116623415ff8e40

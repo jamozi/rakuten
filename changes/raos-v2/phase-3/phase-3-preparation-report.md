@@ -13,7 +13,7 @@ or proof of production theme/KSES compatibility.
 
 ## Earned status
 
-- Local preparation validation: `PASSED_LOCAL_PREPARATION`
+- Local preparation validation: `FAILED_LOCAL_PREPARATION`
 - Recorded local test evidence: `AWAITING_GATE_STALE_BINDING`; the generator does
   not execute tests or claim required CI
 - B-V2-035 backup/export runbook: `COMPLETE_LOCAL`; production export `NOT_EXECUTED`

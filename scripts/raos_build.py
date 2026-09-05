@@ -14,11 +14,10 @@ from scripts.raos_build_core import (  # noqa: E402
     BuildRegistryError,
     OWNER_PRIVATE_OWNER_IDS,
     REPOSITORY_ROOT,
-    affected_owners,
+    affected_generation_owners,
     canonical_json_bytes,
     changed_paths,
     discover_registry,
-    generation_relevant_paths,
     registry_document,
     run_commands,
     topological_order,
@@ -80,7 +79,7 @@ def main(argv: list[str] | None = None) -> int:
             owners = (
                 topological_order(registry)
                 if arguments.all
-                else affected_owners(registry, generation_relevant_paths(changed))
+                else affected_generation_owners(registry, changed)
             )
             owners = tuple(o for o in owners if o not in OWNER_PRIVATE_OWNER_IDS)
             run_commands(registry[owner].command() for owner in owners)

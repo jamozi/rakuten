@@ -201,3 +201,60 @@ def test_planning_never_executes_generators_or_writes_outputs(tmp_path: Path) ->
     create_plan(root, {}, (Path("README.md"),))
     after = {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in before}
     assert before == after
+
+
+def test_verification_catalog_literals_do_not_select_unrelated_tests(
+    tmp_path: Path,
+) -> None:
+    root = repository(
+        tmp_path,
+        {
+            "scripts/service.py": "VALUE = 1\n",
+            "scripts/raos_build_core.py": 'OWNERS = ("scripts/service.py",)\n',
+            "tests/test_service.py": "from scripts.service import VALUE\n",
+            "tests/test_other.py": "from scripts.raos_build_core import OWNERS\n",
+            "tests/conftest.py": 'SERIAL_MODULES = frozenset({"tests/test_service.py"})\n',
+        },
+    )
+    plan = create_plan(root, {}, (Path("scripts/service.py"),))
+    assert not plan.full
+    assert plan.python_tests == ("tests/test_service.py",)
+
+
+def test_generation_input_document_is_not_mistaken_for_plain_docs(
+    tmp_path: Path,
+) -> None:
+    root = repository(tmp_path, {"docs/input.md": "text", "tests/test_owner.py": ""})
+    owner = BuildSpec(
+        "build_owner",
+        (),
+        Path("scripts/build_owner.py"),
+        (BuildInput("repo://docs/input.md", InputKind.TRACKED),),
+        (Path("generated/value.json"),),
+        (),
+        (Path("tests/test_owner.py"),),
+        True,
+        False,
+    )
+    plan = create_plan(root, {owner.owner_id: owner}, (Path("docs/input.md"),))
+    assert plan.generators == (owner.owner_id,)
+    assert plan.python_tests == ("tests/test_owner.py",)
+
+
+def test_edited_generated_manifest_still_runs_its_owner_check(tmp_path: Path) -> None:
+    root = repository(tmp_path, {"changes/example/manifest.yaml": "tampered: true"})
+    owner = BuildSpec(
+        "build_owner",
+        (),
+        Path("scripts/build_owner.py"),
+        (),
+        (Path("changes/example/manifest.yaml"),),
+        (),
+        (),
+        True,
+        False,
+    )
+    plan = create_plan(
+        root, {owner.owner_id: owner}, (Path("changes/example/manifest.yaml"),)
+    )
+    assert plan.generators == (owner.owner_id,)

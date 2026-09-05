@@ -29,6 +29,7 @@ def run(
 ) -> int:
     environment = os.environ.copy()
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    environment["RAOS_CHECK_LABEL"] = label
     environment["PYTHONPATH"] = os.pathsep.join((str(root), str(root / "python")))
     environment.setdefault(
         "PYTEST_XDIST_AUTO_NUM_WORKERS", str(min(4, os.cpu_count() or 1))
@@ -78,6 +79,8 @@ def _python_tests(root: Path, plan: TestPlan, group: str) -> int:
         "--durations=15",
         "-p",
         "xdist.plugin",
+        "-p",
+        "scripts.raos_pytest_summary",
         "-m",
         PYTEST_GROUPS[group],
     ]
@@ -152,6 +155,7 @@ def execute(
             candidate = (
                 "changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json"
             )
+            call(("php", "-l", harness), "php-lint-harness")
             for kind, plugin in (
                 (
                     "source",
