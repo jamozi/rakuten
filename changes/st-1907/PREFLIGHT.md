@@ -12,7 +12,7 @@
   design, roles, data classes, controls, threats, adjacent disabled Post-MVP
   seams, and owner-generator patterns.
 - Current dependency evidence: exact ST-1805 pack SHA-256
-  `cd1aec0ac8a87809389e681b8e1c67328b0120b244aa6fcc7725f11e4d15dff4`
+  `71921934b55163135c507835dbc341fe6b664b838a95a96c0a4688dd991baf42`
   is `BLOCKED`, `NO_DECISION`, unauthorized, contains zero actual
   observations, and is not locally integrated.
 - Safe implementation: additive provider-neutral domain/port/application and

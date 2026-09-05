@@ -53,9 +53,43 @@ function raos_local_preview_headers(): void
     if (! headers_sent()) {
         header('X-Robots-Tag: noindex, nofollow, noarchive, nosnippet', true);
         header('Cache-Control: no-store, max-age=0', true);
+        header('X-Content-Type-Options: nosniff', true);
+        header('Referrer-Policy: no-referrer', true);
+        header('X-Frame-Options: DENY', true);
+        header(
+            'Permissions-Policy: accelerometer=(), autoplay=(), camera=(), '
+            . 'geolocation=(), gyroscope=(), magnetometer=(), microphone=(), '
+            . 'payment=(), usb=()',
+            true
+        );
     }
 }
 add_action('send_headers', 'raos_local_preview_headers', PHP_INT_MAX);
+
+/**
+ * Keep the closed fourteen-page SEO contract observable while blog_public=0.
+ *
+ * Yoast intentionally omits canonical presenters when WordPress globally
+ * discourages indexing. This local-only plugin restores the exact validated
+ * URL for the home page, ten articles, and three policy pages without changing
+ * the production theme's metadata ownership.
+ */
+function raos_local_preview_canonical(): void
+{
+    if (! function_exists('kurashinoshirube_public_head_context')) {
+        return;
+    }
+    $context = kurashinoshirube_public_head_context();
+    $canonical = is_array($context) ? ($context['canonical_url'] ?? null) : null;
+    if (
+        ! is_string($canonical)
+        || ! preg_match('#^http://127\.0\.0\.1:[0-9]{4,5}/(?:[a-z0-9-]+/)?$#D', $canonical)
+    ) {
+        return;
+    }
+    echo '<link rel="canonical" href="' . esc_url($canonical) . '" />' . "\n";
+}
+add_action('wp_head', 'raos_local_preview_canonical', 20);
 
 /** Render a persistent visual warning before the public theme. */
 function raos_local_preview_banner(): void

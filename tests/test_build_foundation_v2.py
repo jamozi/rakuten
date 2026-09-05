@@ -3,18 +3,22 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 import subprocess
 import sys
 
 import yaml
+import pytest
 
 from scripts.raos_build_core import (
     ACTIVE_MANIFEST_PATH,
     EXPLICIT_OWNER_DEPENDENCIES,
     OWNER_PRIVATE_OWNER_IDS,
+    VALIDATION_ONLY_OWNER_IDS,
     REPOSITORY_ROOT,
     InputKind,
+    BuildRegistryError,
     active_manifest_document,
     affected_owners,
     changed_paths,
@@ -45,10 +49,66 @@ def test_all_generators_have_one_owner_and_an_acyclic_graph() -> None:
         assert set(dependencies) <= set(registry[owner].owner_dependencies)
 
 
+def test_validation_only_owners_cannot_hide_missing_generated_outputs() -> None:
+    registry = discover_registry()
+    assert VALIDATION_ONLY_OWNER_IDS == {
+        "build_st1704_portfolio_source_packets",
+        "build_st1704_reader_claim_coverage",
+    }
+    for owner_id in VALIDATION_ONLY_OWNER_IDS:
+        owner = registry[owner_id]
+        assert owner.output_scope == "validation_only"
+        assert owner.as_json()["output_scope"] == "validation_only"
+        assert owner.outputs == ()
+        with pytest.raises(BuildRegistryError, match="declares outputs"):
+            replace(owner, outputs=(Path("unexpected.json"),)).as_json()
+        with pytest.raises(BuildRegistryError, match="tracked owner has no outputs"):
+            replace(owner, owner_id="unregistered_empty_generator").as_json()
+    generated_owner = registry["build_st0105_generated_contracts"]
+    assert generated_owner.output_scope == "tracked"
+    with pytest.raises(BuildRegistryError, match="tracked owner has no outputs"):
+        replace(generated_owner, outputs=()).as_json()
+
+
 def test_build_infrastructure_change_selects_the_complete_graph() -> None:
     registry = discover_registry()
     selected = affected_owners(registry, {Path("scripts/raos_build_core.py")})
     assert set(selected) == set(registry)
+
+
+def test_only_historical_editorial_builds_opt_into_development_replay() -> None:
+    registry = discover_registry()
+    historical = {
+        "build_st1704_reader_claim_coverage",
+        "build_st1704_self_hosted_editorial_manifest",
+    }
+    for owner_id, spec in registry.items():
+        assert ("--development" in spec.command()) == (owner_id in historical)
+        assert "--for-source-refresh" not in spec.command()
+        if spec.supports_check:
+            assert ("--development" in spec.command(check=True)) == (
+                owner_id in historical
+            )
+
+
+def test_direct_offline_editorial_make_targets_replay_historical_evidence() -> None:
+    makefile = (
+        REPOSITORY_ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile"
+    ).read_text(encoding="utf-8")
+    commands = [
+        line.strip()
+        for line in makefile.splitlines()
+        if line.lstrip().startswith(
+            (
+                "scripts/build_st1704_reader_claim_coverage.py",
+                "scripts/build_st1704_self_hosted_editorial_manifest.py",
+            )
+        )
+        and "--skeleton" not in line
+    ]
+    assert len(commands) == 3
+    assert all("--development" in command for command in commands)
+    assert all("--for-source-refresh" not in command for command in commands)
 
 
 def test_changed_paths_falls_back_to_origin_main_without_origin_head(
@@ -112,7 +172,9 @@ def test_editorial_measurement_theme_and_manifest_inputs_are_discoverable() -> N
     } <= measurement_inputs
     assert {
         f"{theme_root}assets/editorial-navigation.v3.json",
+        f"{theme_root}assets/images/article-countertop-dishwasher-guide.webp",
         f"{theme_root}assets/images/article-portable-power-guide.webp",
+        f"{theme_root}assets/images/article-robot-vacuum-guide.webp",
         f"{theme_root}assets/measurement.js",
         f"{theme_root}functions.php",
         f"{theme_root}theme-contract.v1.json",
@@ -121,7 +183,9 @@ def test_editorial_measurement_theme_and_manifest_inputs_are_discoverable() -> N
         "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
         "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json",
         f"{theme_root}assets/editorial-navigation.v3.json",
+        f"{theme_root}assets/images/article-countertop-dishwasher-guide.webp",
         f"{theme_root}assets/images/article-portable-power-guide.webp",
+        f"{theme_root}assets/images/article-robot-vacuum-guide.webp",
         f"{theme_root}assets/measurement.js",
         f"{theme_root}functions.php",
         f"{theme_root}theme-contract.v1.json",
@@ -135,9 +199,10 @@ def test_wordpress_mcp_consumes_the_generated_audit_inventory() -> None:
 
     assert "build_editorial_v3_theme_navigation" in wordpress_mcp.owner_dependencies
     assert "build_editorial_measurement_v1" in wordpress_mcp.owner_dependencies
-    assert Path(
-        "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
-    ) in wordpress_mcp.outputs
+    assert (
+        Path("changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json")
+        in wordpress_mcp.outputs
+    )
     assert (
         "repo://changes/editorial-portfolio-v3/generated/"
         "wordpress-audit-inventory.v3.json"
@@ -189,15 +254,20 @@ def test_editorial_runtime_changes_propagate_in_owner_order() -> None:
             "build_st1704_self_hosted_editorial_manifest",
         ),
     )
-    assert_order(
-        "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+    for asset_name in (
+        "article-countertop-dishwasher-guide.png",
         "article-portable-power-guide.png",
-        (
-            "build_st1704_theme_assets",
-            "build_st1704_self_hosted_theme",
-            "build_st1704_self_hosted_editorial_manifest",
-        ),
-    )
+        "article-robot-vacuum-guide.png",
+    ):
+        assert_order(
+            "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/"
+            + asset_name,
+            (
+                "build_st1704_theme_assets",
+                "build_st1704_self_hosted_theme",
+                "build_st1704_self_hosted_editorial_manifest",
+            ),
+        )
     for relative in ("assets/measurement.js", "functions.php"):
         assert_order(
             "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
@@ -219,8 +289,7 @@ def test_migration_catalog_changes_propagate_through_upgrade_fixtures() -> None:
         "build_st0306_database_roles",
     }
     assert any(
-        item.uri
-        == "repo://changes/st-0301/generated/migration-catalog.v1.json"
+        item.uri == "repo://changes/st-0301/generated/migration-catalog.v1.json"
         for item in fixture_owner.inputs
     )
     selected = affected_owners(registry, {Path("python/raos/migrations/catalog.py")})
@@ -247,9 +316,7 @@ def test_st0005_git_attributes_source_selects_its_generator() -> None:
     owner = registry["build_st0005_status"]
 
     assert any(item.uri == "repo://.gitattributes" for item in owner.inputs)
-    assert "build_st0005_status" in affected_owners(
-        registry, {Path(".gitattributes")}
-    )
+    assert "build_st0005_status" in affected_owners(registry, {Path(".gitattributes")})
 
 
 def test_ci_workflow_source_selects_owners_that_hash_it() -> None:
@@ -286,9 +353,10 @@ def test_v2_generated_evidence_is_independent_of_ignored_raw_receipts() -> None:
     assert validation["browser_evidence"]["raw_verification"] == (
         "RECORDED_NOT_REVERIFIED"
     )
-    assert validation["visual_review_evidence"]["verification"][
-        "raw_verification"
-    ] == "RECORDED_NOT_REVERIFIED"
+    assert (
+        validation["visual_review_evidence"]["verification"]["raw_verification"]
+        == "RECORDED_NOT_REVERIFIED"
+    )
 
 
 def test_owner_commands_do_not_write_python_bytecode(tmp_path: Path) -> None:
@@ -321,9 +389,7 @@ def test_active_manifest_uses_hashes_only_for_integrity_inputs_and_outputs() -> 
 
 def test_status_v2_is_compact_and_contains_no_evidence_bodies() -> None:
     status = yaml.safe_load(
-        (REPOSITORY_ROOT / "changes/status/status.v2.yaml").read_text(
-            encoding="utf-8"
-        )
+        (REPOSITORY_ROOT / "changes/status/status.v2.yaml").read_text(encoding="utf-8")
     )
     assert status["document"] == {
         "id": "RAOS-STATUS-002",
@@ -333,7 +399,8 @@ def test_status_v2_is_compact_and_contains_no_evidence_bodies() -> None:
     }
     assert len(status["stories"]) > 100
     assert all(
-        set(story) == {
+        set(story)
+        == {
             "story_id",
             "implementation",
             "verification",

@@ -3,7 +3,7 @@
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
 The release is bound to runtime revision
-`24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55`;
+`f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082`;
 every loaded critical class must report that exact value before any ability or
 mutation is authorized.
 
@@ -49,6 +49,12 @@ it is single-use, expires with the proposal, and is removed after success or
 failure. Content, theme, and plugin applies therefore require no per-deployment
 `wp-config.php` edit.
 
+The read-only site status includes the exact Yoast SEO 28.3 installed/active
+state, selected option projection, and canonical settings fingerprint.
+Publication-batch claim and content/theme apply reject a missing or drifted
+Yoast state; plugin-change bootstrap deliberately remains available so the
+required fixed dependency can be installed first.
+
 Publication, theme replacement, and plugin changes need an unexpired proposal
 approved by a different cookie-authenticated administrator in **Tools → RAOS
 Codex proposals**. The editor first registers an immutable exact-ID publication
@@ -63,6 +69,17 @@ apply anything; the bounded operator still performs the
 apply, backup, readback, and rollback workflow. Content and theme proposals can
 only be approved through their exact registered batch; individual approval is
 available only for deliberate plugin-change handling.
+
+One bootstrap-only exception records, but never performs, a manual abilities
+1.3.1 installation. A different human administrator must first install and
+activate the exact proposal package in wp-admin. The attestation form is shown
+only when the staged package, host pin, package/file-manifest hashes, installed
+tree, plugin version, loaded runtime, and immutable `MANUAL_REQUIRED` proposal
+all match. Password reauthentication plus proposal/package/tree hash suffixes
+are required. The resulting proposal-bound
+`PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL` receipt is accepted as the
+abilities prerequisite for the fixed measurement proposal; it is not a generic
+migration approval and has no REST or MCP route.
 
 The plugin has no uninstall handler: users, bindings, proposals, receipts,
 packages, and backups are deliberately preserved for owner recovery/audit.

@@ -12,7 +12,7 @@ from calendar import monthrange
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
 import csv
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from html import escape
 import hashlib
 import io
@@ -109,6 +109,7 @@ PUBLIC_READBACK_RECEIPT_SCHEMA: Final = "RAOS_WORDPRESS_PUBLIC_READBACK_RECEIPT_
 PROVIDER_SLOT_COUNT: Final = 20
 INTERNAL_CTA_IDENTITY_COUNT: Final = 74
 LIVE_LINK_COUNT: Final = 74
+PRODUCT_COUNT: Final = 33
 PUBLICATION_DOCUMENT_COUNT: Final = 13
 
 
@@ -1321,6 +1322,7 @@ def _validate_rakuten_activation_dry_run(
         "portfolio_sha256",
         "admin_receipt_sha256",
         "money_link_mapping_sha256",
+        "activation_inputs",
         "v2_materialization",
         "overlays",
         "materialized_set_sha256",
@@ -1374,10 +1376,44 @@ def _validate_rakuten_activation_dry_run(
     ):
         _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
 
+    activation_inputs = _mapping(document["activation_inputs"])
+    if set(activation_inputs) != {
+        "admin_receipt_name",
+        "money_link_mapping_name",
+        "mapping_generated_at_utc",
+        "admin_verified_at_utc",
+        "activated_at_utc",
+    }:
+        _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+    admin_receipt_name = _text(activation_inputs["admin_receipt_name"], maximum=128)
+    money_link_mapping_name = _text(
+        activation_inputs["money_link_mapping_name"], maximum=128
+    )
+    mapping_generated_at = _iso_datetime(
+        activation_inputs["mapping_generated_at_utc"]
+    )
+    admin_verified_at = _iso_datetime(activation_inputs["admin_verified_at_utc"])
+    activated_at = _iso_datetime(activation_inputs["activated_at_utc"])
+    mapping_time = datetime.fromisoformat(mapping_generated_at.replace("Z", "+00:00"))
+    verified_time = datetime.fromisoformat(admin_verified_at.replace("Z", "+00:00"))
+    activation_time = datetime.fromisoformat(activated_at.replace("Z", "+00:00"))
+    if (
+        PRIVATE_NAME_RE.fullmatch(admin_receipt_name) is None
+        or PRIVATE_NAME_RE.fullmatch(money_link_mapping_name) is None
+        or admin_receipt_name == money_link_mapping_name
+        or mapping_time > verified_time
+        or verified_time > activation_time
+        or verified_time - mapping_time > timedelta(hours=24)
+        or activation_time - verified_time > timedelta(minutes=15)
+    ):
+        _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
+
     v2 = _mapping(document["v2_materialization"])
     if set(v2) != {
         "portfolio_sha256",
         "evidence_status_sha256",
+        "manufacturer_sales_state_sha256",
+        "manufacturer_sales_state_checked_at_utc",
         "local_generated_at",
         "production_generated_at",
         "local_receipt_sha256",
@@ -1386,6 +1422,12 @@ def _validate_rakuten_activation_dry_run(
         _fail("RAOS_EDITORIAL_V3_RAKUTEN_ACTIVATION_INVALID")
     v2_portfolio_sha256 = _sha256(v2["portfolio_sha256"])
     v2_evidence_status_sha256 = _sha256(v2["evidence_status_sha256"])
+    v2_manufacturer_sales_state_sha256 = _sha256(
+        v2["manufacturer_sales_state_sha256"]
+    )
+    v2_manufacturer_sales_state_checked_at_utc = _iso_datetime(
+        v2["manufacturer_sales_state_checked_at_utc"]
+    )
     v2_local_receipt_sha256 = _sha256(v2["local_receipt_sha256"])
     v2_production_receipt_sha256 = _sha256(v2["production_receipt_sha256"])
     _iso_datetime(v2["local_generated_at"])
@@ -1476,6 +1518,12 @@ def _validate_rakuten_activation_dry_run(
             "portfolio_sha256": portfolio_sha256,
             "v2_portfolio_sha256": v2_portfolio_sha256,
             "v2_evidence_status_sha256": v2_evidence_status_sha256,
+            "v2_manufacturer_sales_state_sha256": (
+                v2_manufacturer_sales_state_sha256
+            ),
+            "v2_manufacturer_sales_state_checked_at_utc": (
+                v2_manufacturer_sales_state_checked_at_utc
+            ),
             "v2_materialization_receipt_sha256": v2_receipt_sha256,
             "posts_sha256": posts_sha256,
             "article_set_sha256": article_set_sha256,
@@ -1522,6 +1570,10 @@ def _validate_rakuten_activation_dry_run(
         "provider_measurement_binding_sha256": (provider_measurement_binding_sha256),
         "v2_portfolio_sha256": v2_portfolio_sha256,
         "v2_evidence_status_sha256": v2_evidence_status_sha256,
+        "v2_manufacturer_sales_state_sha256": v2_manufacturer_sales_state_sha256,
+        "v2_manufacturer_sales_state_checked_at_utc": (
+            v2_manufacturer_sales_state_checked_at_utc
+        ),
         "v2_local_receipt_sha256": v2_local_receipt_sha256,
         "v2_production_receipt_sha256": v2_production_receipt_sha256,
         "production_posts_sha256": overlay_bindings["production"]["posts_sha256"],
@@ -1752,7 +1804,7 @@ def _validate_publication_materialization_binding(
     if type(products_value) is not dict:
         _fail(failure_code)
     products = cast(Mapping[object, object], products_value)
-    if len(products) != 32 or type(activation_value) is not dict:
+    if len(products) != PRODUCT_COUNT or type(activation_value) is not dict:
         _fail(failure_code)
     for product_id, raw_product in products.items():
         if type(product_id) is not str or type(raw_product) is not dict:
@@ -2605,6 +2657,8 @@ def validate_t0_receipt(
         "provider_measurement_binding_sha256",
         "v2_portfolio_sha256",
         "v2_evidence_status_sha256",
+        "v2_manufacturer_sales_state_sha256",
+        "v2_manufacturer_sales_state_checked_at_utc",
         "v2_local_receipt_sha256",
         "v2_production_receipt_sha256",
         "production_posts_sha256",
@@ -2622,6 +2676,7 @@ def validate_t0_receipt(
         "provider_measurement_binding_sha256",
         "v2_portfolio_sha256",
         "v2_evidence_status_sha256",
+        "v2_manufacturer_sales_state_sha256",
         "v2_local_receipt_sha256",
         "v2_production_receipt_sha256",
         "production_posts_sha256",
@@ -2631,6 +2686,7 @@ def validate_t0_receipt(
     }
     for field in digest_fields:
         _sha256(activation[field])
+    _iso_datetime(activation["v2_manufacturer_sales_state_checked_at_utc"])
     if (
         activation["portfolio_sha256"] != portfolio.source_sha256
         or activation["provider_slot_count"] != PROVIDER_SLOT_COUNT

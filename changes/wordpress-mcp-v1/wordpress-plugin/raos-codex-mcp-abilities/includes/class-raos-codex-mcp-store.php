@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Store
 {
-    const RUNTIME_REVISION = '24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55';
+    const RUNTIME_REVISION = 'f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082';
     const SCHEMA_VERSION = '4';
     const SCHEMA_OPTION = 'raos_codex_mcp_store_schema_v1';
     const PROPOSAL_REVIEW_TTL_SECONDS = 3600;
@@ -2487,6 +2487,301 @@ final class RAOS_Codex_MCP_Store
             RAOS_Codex_MCP_Deployment::remove_approval_lease($proposal_id);
         }
         return $receipt;
+    }
+
+    /**
+     * Record a human-observed, exact manual install of the abilities plugin.
+     *
+     * This is intentionally not a generic manual migration override. The
+     * deployment runtime has already matched the staged package and complete
+     * installed tree to one proposal; this transaction binds that evidence to
+     * a different wp-admin identity and produces the ordinary public receipt
+     * shape without issuing an apply lease.
+     */
+    public static function attest_manual_bootstrap(
+        $proposal_id,
+        $attester_id,
+        $reason,
+        $package_sha256,
+        $file_manifest_sha256
+    ) {
+        $runtime_gate = self::runtime_identity_gate();
+        if (is_wp_error($runtime_gate)) {
+            return $runtime_gate;
+        }
+        if (! self::is_sha256($proposal_id)
+            || (int) $attester_id < 1
+            || ! is_admin()
+            || wp_doing_ajax()
+            || wp_doing_cron()
+            || ! current_user_can('manage_options')
+            || get_current_user_id() !== (int) $attester_id
+            || ! defined('RAOS_OPERATOR_WRITES_ENABLED')
+            || true !== constant('RAOS_OPERATOR_WRITES_ENABLED')
+            || ! is_string($reason)
+            || strlen(trim($reason)) < 10
+            || strlen($reason) > 2000
+            || ! self::is_sha256($package_sha256)
+            || ! self::is_sha256($file_manifest_sha256)) {
+            return new WP_Error(
+                'raos_codex_bootstrap_attestation_invalid',
+                'Bootstrap attestation is invalid.',
+                array('status' => 400)
+            );
+        }
+        $transactional = self::require_transactional_tables(array(self::table_name()));
+        if (is_wp_error($transactional)) {
+            return $transactional;
+        }
+        global $wpdb;
+        if (false === $wpdb->query('START TRANSACTION')) {
+            return new WP_Error(
+                'raos_codex_bootstrap_attestation_transaction_failed',
+                'Bootstrap attestation failed closed.',
+                array('status' => 500)
+            );
+        }
+        $commit_attempted = false;
+        $receipt = null;
+        try {
+            $raw_row = $wpdb->get_row(
+                $wpdb->prepare(
+                    'SELECT * FROM ' . self::table_name()
+                    . ' WHERE proposal_id = %s FOR UPDATE',
+                    $proposal_id
+                ),
+                ARRAY_A
+            );
+            $row = self::hydrate_row($raw_row);
+            if (is_wp_error($row)) {
+                throw new RuntimeException($row->get_error_code());
+            }
+            if ('APPLIED' === $row['state']) {
+                if (self::manual_bootstrap_receipt_matches(
+                    $row,
+                    $attester_id,
+                    $reason,
+                    $package_sha256,
+                    $file_manifest_sha256
+                )) {
+                    $wpdb->query('ROLLBACK');
+                    return $row['receipt'];
+                }
+                throw new RuntimeException('raos_codex_bootstrap_attestation_conflict');
+            }
+            $descriptor = isset($row['payload']['code_package'])
+                && is_array($row['payload']['code_package'])
+                    ? $row['payload']['code_package']
+                    : null;
+            if ((int) $row['created_by'] === (int) $attester_id) {
+                throw new RuntimeException('raos_codex_self_approval_forbidden');
+            }
+            $evidence = RAOS_Codex_MCP_Deployment::validate_manual_bootstrap_attestation(
+                $row
+            );
+            if (is_wp_error($evidence)
+                || ! isset(
+                    $evidence['package_sha256'],
+                    $evidence['file_manifest_sha256'],
+                    $evidence['installed_tree_sha256']
+                )
+                || ! hash_equals(
+                    $package_sha256,
+                    (string) $evidence['package_sha256']
+                )
+                || ! hash_equals(
+                    $file_manifest_sha256,
+                    (string) $evidence['file_manifest_sha256']
+                )
+                || ! hash_equals(
+                    $file_manifest_sha256,
+                    (string) $evidence['installed_tree_sha256']
+                )) {
+                throw new RuntimeException(
+                    'raos_codex_bootstrap_attestation_precondition_failed'
+                );
+            }
+            if ('PLUGIN_CHANGE' !== $row['kind']
+                || 'MANUAL_REQUIRED' !== $row['state']
+                || 'MANUAL_REVIEW_REQUIRED' !== $row['result_code']
+                || strtotime($row['expires_at_gmt'] . ' UTC') <= time()
+                || ! is_null($row['approved_by'])
+                || ! is_array($descriptor)
+                || ! isset(
+                    $descriptor['schema'],
+                    $descriptor['kind'],
+                    $descriptor['source'],
+                    $descriptor['artifact_id'],
+                    $descriptor['slug'],
+                    $descriptor['new_version'],
+                    $descriptor['package_sha256'],
+                    $descriptor['file_manifest_sha256'],
+                    $descriptor['activation_intent'],
+                    $descriptor['migration_assessment'],
+                    $descriptor['automatic_apply_eligible']
+                )
+                || 'CodePackageV1' !== $descriptor['schema']
+                || 'plugin' !== $descriptor['kind']
+                || 'repo_artifact' !== $descriptor['source']
+                || RAOS_Codex_MCP_Deployment::BOOTSTRAP_ARTIFACT_ID
+                    !== $descriptor['artifact_id']
+                || RAOS_Codex_MCP_Deployment::BOOTSTRAP_SLUG
+                    !== $descriptor['slug']
+                || RAOS_Codex_MCP_Deployment::BOOTSTRAP_VERSION
+                    !== $descriptor['new_version']
+                || 'activate' !== $descriptor['activation_intent']
+                || 'MANUAL_REVIEW_REQUIRED'
+                    !== $descriptor['migration_assessment']
+                || false !== $descriptor['automatic_apply_eligible']
+                || ! hash_equals($package_sha256, (string) $descriptor['package_sha256'])
+                || ! hash_equals(
+                    $file_manifest_sha256,
+                    (string) $descriptor['file_manifest_sha256']
+                )
+                || ! hash_equals($file_manifest_sha256, (string) $row['after_sha256'])
+                || is_wp_error(self::validate_proposal_integrity($row))) {
+                throw new RuntimeException('raos_codex_bootstrap_attestation_precondition_failed');
+            }
+            if (! RAOS_Codex_MCP_Deployment::remove_approval_lease($proposal_id)) {
+                throw new RuntimeException('raos_codex_bootstrap_attestation_orphan_lease');
+            }
+            $approved_unix = time();
+            $approved_at = self::timestamp_mysql($approved_unix);
+            $expires_at = self::timestamp_mysql(
+                $approved_unix + self::APPLY_LEASE_TTL_SECONDS
+            );
+            $receipt = array(
+                'schema' => 'OperationReceiptV1',
+                'proposal_id' => $proposal_id,
+                'operation_id' => $row['operation_id'],
+                'state' => 'APPLIED',
+                'result_code' => 'PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL',
+                'before_sha256' => $row['before_sha256'],
+                'after_sha256' => $file_manifest_sha256,
+                'audit_id' => $row['audit_id'],
+            );
+            $encoded = self::canonical_json($receipt);
+            if (! is_string($encoded)) {
+                throw new RuntimeException('raos_codex_bootstrap_attestation_receipt_invalid');
+            }
+            $updated = $wpdb->query(
+                $wpdb->prepare(
+                    'UPDATE ' . self::table_name()
+                    . " SET state = 'APPLIED', result_code = %s, approved_by = %d,"
+                    . ' approved_at_gmt = %s, approval_reason = %s, expires_at_gmt = %s,'
+                    . ' completed_at_gmt = %s, receipt_json = %s'
+                    . " WHERE proposal_id = %s AND kind = 'PLUGIN_CHANGE'"
+                    . " AND state = 'MANUAL_REQUIRED'"
+                    . " AND result_code = 'MANUAL_REVIEW_REQUIRED'"
+                    . ' AND created_by <> %d AND expires_at_gmt > %s'
+                    . ' AND after_sha256 = %s AND payload_json = %s',
+                    $receipt['result_code'],
+                    (int) $attester_id,
+                    $approved_at,
+                    trim($reason),
+                    $expires_at,
+                    $approved_at,
+                    $encoded,
+                    $proposal_id,
+                    (int) $attester_id,
+                    self::now_mysql(),
+                    $file_manifest_sha256,
+                    $row['payload_json']
+                )
+            );
+            if (1 !== $updated) {
+                throw new RuntimeException('raos_codex_bootstrap_attestation_conflict');
+            }
+            $commit_attempted = true;
+            if (false === $wpdb->query('COMMIT')) {
+                throw new RuntimeException('raos_codex_bootstrap_attestation_commit_failed');
+            }
+        } catch (Throwable $error) {
+            $wpdb->query('ROLLBACK');
+            if ($commit_attempted) {
+                $stored = self::get($proposal_id);
+                if (! is_wp_error($stored)
+                    && self::manual_bootstrap_receipt_matches(
+                        $stored,
+                        $attester_id,
+                        $reason,
+                        $package_sha256,
+                        $file_manifest_sha256
+                    )) {
+                    return $stored['receipt'];
+                }
+            }
+            $code = $error->getMessage();
+            if (! preg_match('/\Araos_codex_[a-z0-9_]{3,96}\z/D', $code)) {
+                $code = 'raos_codex_bootstrap_attestation_failed';
+            }
+            $status = 'raos_codex_self_approval_forbidden' === $code ? 403 : 409;
+            return new WP_Error(
+                $code,
+                'Bootstrap attestation failed closed.',
+                array('status' => $status)
+            );
+        }
+        return $receipt;
+    }
+
+    private static function manual_bootstrap_receipt_matches(
+        $row,
+        $attester_id,
+        $reason,
+        $package_sha256,
+        $file_manifest_sha256
+    ) {
+        $descriptor = is_array($row)
+            && isset($row['payload']['code_package'])
+            && is_array($row['payload']['code_package'])
+                ? $row['payload']['code_package']
+                : null;
+        $receipt = is_array($row) && isset($row['receipt'])
+            ? $row['receipt']
+            : null;
+        return is_array($descriptor)
+            && is_array($receipt)
+            && isset(
+                $row['kind'],
+                $row['state'],
+                $row['result_code'],
+                $row['approved_by'],
+                $row['approval_reason'],
+                $row['after_sha256'],
+                $row['proposal_id'],
+                $row['operation_id'],
+                $row['audit_id'],
+                $descriptor['package_sha256'],
+                $descriptor['file_manifest_sha256'],
+                $receipt['schema'],
+                $receipt['proposal_id'],
+                $receipt['operation_id'],
+                $receipt['state'],
+                $receipt['result_code'],
+                $receipt['after_sha256'],
+                $receipt['audit_id']
+            )
+            && 'PLUGIN_CHANGE' === $row['kind']
+            && 'APPLIED' === $row['state']
+            && 'PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL' === $row['result_code']
+            && (int) $row['approved_by'] === (int) $attester_id
+            && is_string($row['approval_reason'])
+            && hash_equals(trim($reason), $row['approval_reason'])
+            && hash_equals($package_sha256, (string) $descriptor['package_sha256'])
+            && hash_equals(
+                $file_manifest_sha256,
+                (string) $descriptor['file_manifest_sha256']
+            )
+            && hash_equals($file_manifest_sha256, (string) $row['after_sha256'])
+            && 'OperationReceiptV1' === $receipt['schema']
+            && hash_equals($row['proposal_id'], (string) $receipt['proposal_id'])
+            && hash_equals($row['operation_id'], (string) $receipt['operation_id'])
+            && 'APPLIED' === $receipt['state']
+            && 'PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL' === $receipt['result_code']
+            && hash_equals($file_manifest_sha256, (string) $receipt['after_sha256'])
+            && hash_equals($row['audit_id'], (string) $receipt['audit_id'])
+            && ! is_wp_error(self::validate_proposal_integrity($row));
     }
 
     public static function mark_failed($proposal_id, $result_code)

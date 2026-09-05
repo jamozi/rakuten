@@ -124,12 +124,14 @@ def test_propose_stops_for_separate_admin_and_never_applies(
                     "package_sha256": digest,
                     "file_manifest_sha256": "1" * 64,
                     "activation_intent": "activate",
+                    "migration_assessment": "MANUAL_REVIEW_REQUIRED",
+                    "automatic_apply_eligible": False,
                 },
             },
             "operation": {
                 "proposal_id": "a" * 64,
                 "operation_id": "b" * 64,
-                "state": "PENDING",
+                "state": "MANUAL_REQUIRED",
             },
         }
 
@@ -146,7 +148,9 @@ def test_propose_stops_for_separate_admin_and_never_applies(
         deployment_call=deployment_call,
     ) == receipt_path
     assert events == ["preview", "--check", "--package", "plugin-propose-change"]
-    assert stored["state"] == "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
+    assert stored["state"] == (
+        "WAITING_FOR_SEPARATE_HUMAN_WP_ADMIN_BOOTSTRAP_ATTESTATION"
+    )
     assert stored["apply_command_exposed"] is False
     assert '"plugin-apply-change"' not in SCRIPT.read_text(encoding="utf-8")
 
@@ -159,7 +163,9 @@ def test_measurement_command_requires_exact_applied_receipt(
     proposal_path.write_text(
         json.dumps(
             {
-                "state": "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL",
+                "state": (
+                    "WAITING_FOR_SEPARATE_HUMAN_WP_ADMIN_BOOTSTRAP_ATTESTATION"
+                ),
                 "proposal": {
                     "proposal_id": "a" * 64,
                     "operation_id": "b" * 64,
@@ -187,7 +193,24 @@ def test_measurement_command_requires_exact_applied_receipt(
     assert "--abilities-plugin-apply-receipt" in command
     assert command.endswith(apply_path.resolve().as_posix())
 
+    value["result_code"] = "PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL"
+    apply_path.write_text(json.dumps(value), encoding="utf-8")
+    apply_path.chmod(0o600)
+    assert "measurement_plugin_proposal.py --propose" in bundle.measurement_command(
+        apply_path
+    )
+
+    value["result_code"] = "PLUGIN_MANUAL_OVERRIDE"
+    apply_path.write_text(json.dumps(value), encoding="utf-8")
+    apply_path.chmod(0o600)
+    with pytest.raises(
+        bundle.SequenceFailure,
+        match="RAOS_ABILITIES_PLUGIN_APPLY_RECEIPT_INVALID",
+    ):
+        bundle.measurement_command(apply_path)
+
     value["state"] = "APPROVED"
+    value["result_code"] = "PLUGIN_CHANGE_APPLIED"
     apply_path.write_text(json.dumps(value), encoding="utf-8")
     apply_path.chmod(0o600)
     with pytest.raises(

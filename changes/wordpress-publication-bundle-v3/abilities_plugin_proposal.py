@@ -210,17 +210,21 @@ def propose(
         or code_package.get("file_manifest_sha256")
         != receipt["file_manifest_sha256"]
         or code_package.get("activation_intent") != "activate"
+        or code_package.get("migration_assessment") != "MANUAL_REVIEW_REQUIRED"
+        or code_package.get("automatic_apply_eligible") is not False
         or proposal.get("after_tree_sha256") != receipt["file_manifest_sha256"]
         or type(proposal.get("proposal_id")) is not str
         or SHA256_RE.fullmatch(proposal["proposal_id"]) is None
         or type(operation) is not dict
         or operation.get("proposal_id") != proposal["proposal_id"]
-        or operation.get("state") not in {"PENDING", "MANUAL_REQUIRED"}
+        or operation.get("state") != "MANUAL_REQUIRED"
     ):
         fail("RAOS_ABILITIES_PLUGIN_PROPOSAL_INVALID")
     assert type(proposal) is dict
     assert type(operation) is dict
-    receipt["state"] = "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
+    receipt["state"] = (
+        "WAITING_FOR_SEPARATE_HUMAN_WP_ADMIN_BOOTSTRAP_ATTESTATION"
+    )
     receipt["proposal"] = {
         "proposal_id": proposal["proposal_id"],
         "operation_id": operation.get("operation_id"),
@@ -235,13 +239,17 @@ def measurement_command(apply_receipt_path: Path) -> str:
     proposal = proposal_receipt.get("proposal")
     if (
         proposal_receipt.get("state")
-        != "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL"
+        != "WAITING_FOR_SEPARATE_HUMAN_WP_ADMIN_BOOTSTRAP_ATTESTATION"
         or type(proposal) is not dict
         or apply_receipt.get("schema") != "OperationReceiptV1"
         or apply_receipt.get("proposal_id") != proposal.get("proposal_id")
         or apply_receipt.get("operation_id") != proposal.get("operation_id")
         or apply_receipt.get("state") != "APPLIED"
-        or apply_receipt.get("result_code") != "PLUGIN_CHANGE_APPLIED"
+        or apply_receipt.get("result_code")
+        not in {
+            "PLUGIN_CHANGE_APPLIED",
+            "PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL",
+        }
         or apply_receipt.get("after_sha256") != proposal.get("after_sha256")
     ):
         fail("RAOS_ABILITIES_PLUGIN_APPLY_RECEIPT_INVALID")

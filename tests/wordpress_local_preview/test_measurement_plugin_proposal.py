@@ -33,6 +33,16 @@ def _artifact_set(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> bytes:
     package_path.write_bytes(package)
     package_path.chmod(0o600)
     digest = __import__("hashlib").sha256(package).hexdigest()
+    plugin_files = [{"path": "plugin.php", "sha256": "1" * 64}]
+    file_manifest_sha256 = __import__("hashlib").sha256(
+        json.dumps(
+            plugin_files,
+            ensure_ascii=False,
+            allow_nan=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("utf-8")
+    ).hexdigest()
     manifest_path = tmp_path / "runtime-manifest.v1.json"
     manifest_path.write_text(
         json.dumps(
@@ -45,7 +55,7 @@ def _artifact_set(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> bytes:
                 "host_gate": "RAOS_MEASUREMENT_ENABLED",
                 "package_sha256": digest,
                 "package_size": len(package),
-                "plugin_files": [{"path": "plugin.php", "sha256": "1" * 64}],
+                "plugin_files": plugin_files,
             }
         ),
         encoding="utf-8",
@@ -61,6 +71,14 @@ def _artifact_set(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> bytes:
                         "slug": "raos-editorial-measurement",
                         "version": "1.0.0",
                         "package_sha256": digest,
+                        "migration_review": {
+                            "schema": "RAOS_WORDPRESS_PLUGIN_MIGRATION_REVIEW_V1",
+                            "assessment": (
+                                "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION"
+                            ),
+                            "package_sha256": digest,
+                            "file_manifest_sha256": file_manifest_sha256,
+                        },
                     }
                 ],
             }
@@ -81,7 +99,9 @@ def _abilities_apply_set(
     proposal_path.write_text(
         json.dumps(
             {
-                "state": "WAITING_FOR_SEPARATE_ADMIN_PLUGIN_APPROVAL",
+                "state": (
+                    "WAITING_FOR_SEPARATE_HUMAN_WP_ADMIN_BOOTSTRAP_ATTESTATION"
+                ),
                 "artifact_id": "raos-codex-mcp-abilities-v1",
                 "plugin_slug": "raos-codex-mcp-abilities",
                 "plugin_version": "1.3.1",
@@ -187,6 +207,10 @@ def test_proposal_stops_for_separate_admin_and_never_applies_or_enables_gate(
                     "package_sha256": digest,
                     "file_manifest_sha256": file_manifest_sha256,
                     "activation_intent": "activate",
+                    "migration_assessment": (
+                        "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION"
+                    ),
+                    "automatic_apply_eligible": True,
                 },
             },
             "operation": {
@@ -246,6 +270,23 @@ def test_proposal_requires_exact_applied_abilities_1_3_receipt(
     ):
         bundle.propose(abilities_apply_receipt=apply_path)
 
+    value["state"] = "APPLIED"
+    value["result_code"] = "PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL"
+    apply_path.write_text(json.dumps(value), encoding="utf-8")
+    apply_path.chmod(0o600)
+    assert bundle.validate_abilities_apply_receipt(apply_path)["proposal_id"] == (
+        "d" * 64
+    )
+
+    value["result_code"] = "PLUGIN_MANUAL_OVERRIDE"
+    apply_path.write_text(json.dumps(value), encoding="utf-8")
+    apply_path.chmod(0o600)
+    with pytest.raises(
+        bundle.SequenceFailure,
+        match="RAOS_MEASUREMENT_PLUGIN_ABILITIES_RECEIPT_INVALID",
+    ):
+        bundle.validate_abilities_apply_receipt(apply_path)
+
 
 def test_content_command_requires_exact_separate_plugin_apply_receipt(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
@@ -253,6 +294,8 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
     proposal_path = tmp_path / "proposal.json"
     apply_path = tmp_path / "apply.json"
     activation_path = tmp_path / "activation-dry-run.json"
+    attestation_path = tmp_path / "quality-audit-attestation.json"
+    signature_path = tmp_path / "quality-audit-attestation.sig"
     proposal_path.write_text(
         json.dumps(
             {
@@ -282,6 +325,10 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
     apply_path.chmod(0o600)
     activation_path.write_text("{}", encoding="utf-8")
     activation_path.chmod(0o600)
+    attestation_path.write_text("{}\n", encoding="utf-8")
+    attestation_path.chmod(0o600)
+    signature_path.write_bytes(b"signature")
+    signature_path.chmod(0o600)
     monkeypatch.setattr(bundle, "RECEIPT_PATH", proposal_path)
     observed_activation: list[Path | None] = []
 
@@ -293,6 +340,7 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
             article_count=10,
             provider_slot_count=20,
             provider_measurement_id_count=20,
+            internal_cta_identity_count=74,
             cta_count=74,
             live_link_count=74,
         )
@@ -302,16 +350,41 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
         "validate_rakuten_activation_dry_run",
         validate_activation,
     )
+    observed_quality: list[tuple[Path | None, Path | None]] = []
 
-    command = bundle.content_command(apply_path, activation_path)
+    def validate_quality(
+        attestation: Path | None,
+        signature: Path | None,
+    ) -> dict[str, object]:
+        observed_quality.append((attestation, signature))
+        if attestation is None or signature is None:
+            raise bundle.publication.PublicationFailure("required")
+        return {"status": "COMPLETE"}
+
+    monkeypatch.setattr(
+        bundle.publication,
+        "strict_local_quality_audit",
+        validate_quality,
+    )
+
+    command = bundle.content_command(
+        apply_path,
+        activation_path,
+        attestation_path,
+        signature_path,
+    )
     assert "--articles all --measurement-plugin-apply-receipt" in command
     assert "--rakuten-activation-dry-run" in command
-    assert command.endswith(activation_path.resolve().as_posix())
+    assert "--quality-audit-attestation" in command
+    assert "--quality-audit-signature" in command
+    assert command.endswith(signature_path.resolve().as_posix())
     assert observed_activation == [activation_path]
+    assert observed_quality == [(attestation_path, signature_path)]
 
     for field, value in (
         ("provider_slot_count", 19),
         ("provider_measurement_id_count", 19),
+        ("internal_cta_identity_count", 73),
         ("cta_count", 73),
         ("live_link_count", 73),
     ):
@@ -319,6 +392,7 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
             "article_count": 10,
             "provider_slot_count": 20,
             "provider_measurement_id_count": 20,
+            "internal_cta_identity_count": 74,
             "cta_count": 74,
             "live_link_count": 74,
         }
@@ -332,13 +406,41 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
             bundle.SequenceFailure,
             match="RAOS_MEASUREMENT_PLUGIN_RAKUTEN_ACTIVATION_INVALID",
         ):
-            bundle.content_command(apply_path, activation_path)
+            bundle.content_command(
+                apply_path,
+                activation_path,
+                attestation_path,
+                signature_path,
+            )
 
     with pytest.raises(
         bundle.SequenceFailure,
         match="RAOS_MEASUREMENT_PLUGIN_RAKUTEN_ACTIVATION_INVALID",
     ):
-        bundle.content_command(apply_path, None)
+        bundle.content_command(
+            apply_path,
+            None,
+            attestation_path,
+            signature_path,
+        )
+
+    monkeypatch.setattr(
+        bundle.publication,
+        "validate_rakuten_activation_dry_run",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            article_count=10,
+            provider_slot_count=20,
+            provider_measurement_id_count=20,
+            internal_cta_identity_count=74,
+            cta_count=74,
+            live_link_count=74,
+        ),
+    )
+    with pytest.raises(
+        bundle.SequenceFailure,
+        match="RAOS_MEASUREMENT_PLUGIN_QUALITY_AUDIT_INVALID",
+    ):
+        bundle.content_command(apply_path, activation_path, None, None)
 
     apply_receipt["state"] = "APPROVED"
     apply_path.write_text(json.dumps(apply_receipt), encoding="utf-8")
@@ -347,7 +449,12 @@ def test_content_command_requires_exact_separate_plugin_apply_receipt(
         bundle.SequenceFailure,
         match="RAOS_MEASUREMENT_PLUGIN_APPLY_RECEIPT_INVALID",
     ):
-        bundle.content_command(apply_path, activation_path)
+        bundle.content_command(
+            apply_path,
+            activation_path,
+            attestation_path,
+            signature_path,
+        )
 
 
 def test_sequence_contract_orders_plugin_before_content_and_caps_batch() -> None:
@@ -356,6 +463,9 @@ def test_sequence_contract_orders_plugin_before_content_and_caps_batch() -> None
     assert contract["order"].index("abilities_plugin_proposal") < contract[
         "order"
     ].index("measurement_plugin_proposal")
+    assert contract["order"].index(
+        "mcp_site_status_yoast_exact_options_and_fingerprint_readback"
+    ) < contract["order"].index("measurement_plugin_proposal")
     assert contract["order"].index("measurement_plugin_proposal") < contract[
         "order"
     ].index("content_theme_batch_proposal")
@@ -373,8 +483,37 @@ def test_sequence_contract_orders_plugin_before_content_and_caps_batch() -> None
     assert attribution["direct_attribution_granularity"] == "ARTICLE_PLACEMENT"
     assert attribution["product_or_cta_provider_attribution_allowed"] is False
     assert "--rakuten-activation-dry-run" in contract["content_batch"]["command"]
+    assert "--quality-audit-attestation" in contract["content_batch"]["command"]
+    assert "--quality-audit-signature" in contract["content_batch"]["command"]
     assert "rakuten_v3_activation_dry_run_and_overlay" in contract["order"]
     assert contract["measurement_plugin"]["apply_command_exposed"] is False
+    assert contract["yoast_seo"] == {
+        "activation_required": True,
+        "bounded_profile_apply_command": (
+            "scripts/st1506_wordpress_operator_python.sh apply-yoast-profile "
+            "--proposal-id <separately-approved-proposal-id>"
+        ),
+        "bounded_profile_proposal_command": (
+            "scripts/st1506_wordpress_operator_python.sh propose-yoast-profile"
+        ),
+        "checksum_verification_command": (
+            "scripts/st1506_wordpress_operator_python.sh verify-yoast-checksums"
+        ),
+        "exact_options_readback_required": True,
+        "materialization_command": (
+            ".venv/bin/python changes/wordpress-local-preview-v1/bin/"
+            "materialize_yoast.py --archive <wordpress-seo.28.3.zip> "
+            "--checksums <wordpress-seo.28.3.checksums.json> --lock "
+            "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+            "yoast-seo-28.3.lock.json --output-parent "
+            "<owner-private-materialization-directory>"
+        ),
+        "plugin_slug": "wordpress-seo",
+        "plugin_version": "28.3",
+        "separate_admin_approval_required": True,
+        "settings_fingerprint_readback_required": True,
+        "site_status_preflight_required": True,
+    }
     assert contract["measurement_gate"]["enable_command_exposed"] is False
     rollback = contract["incident_rollback"]
     assert rollback["automatic_execution"] is False

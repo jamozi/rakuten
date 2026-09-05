@@ -1,0 +1,33 @@
+{
+  "schema": "RAOS_PRODUCT_SAFETY_QUERY_RECEIPTS_V1",
+  "version": "1.0.0",
+  "hash_contract": {
+    "algorithm": "SHA-256",
+    "canonicalization": "UTF-8 JSON with recursively sorted object keys, no insignificant whitespace, and unescaped Unicode",
+    "fields": [
+      "product_id",
+      "authority_kind",
+      "model_tokens",
+      "query_terms",
+      "official_source_ref",
+      "official_source_url",
+      "checked_at_utc",
+      "result",
+      "matched_notice_ids",
+      "capture_sha256",
+      "coverage_caveat"
+    ]
+  },
+  "freshness_policy": {
+    "maximum_age_days": 30,
+    "maximum_future_skew_minutes": 5
+  },
+  "required_authority_kinds": [
+    "MANUFACTURER_OFFICIAL",
+    "JAPAN_ADMINISTRATIVE_OFFICIAL"
+  ],
+  "coverage_caveat_policy": {
+    "required_receipt_value": "この結果は、記録した公式source・型番token・query・確認日時の範囲だけを示し、安全情報が存在しないことを一般に証明しません。"
+  },
+  "receipts": []
+}

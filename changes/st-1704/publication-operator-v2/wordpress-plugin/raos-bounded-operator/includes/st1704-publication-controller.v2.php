@@ -2469,7 +2469,7 @@ final class RAOS_ST1704_Publication_Controller_V2
                 !== $payload['section']
             || $payload['canonical_url']
                 !== self::SITE_ORIGIN . '/' . $payload['slug'] . '/'
-            || $payload['author_name'] !== '暮らしのしるべ編集部'
+            || $payload['author_name'] !== '暮らしのしるべ編集者'
             || ! self::clean_snapshot_text($payload['title'], 8, 100)
             || ! self::clean_snapshot_text($payload['seo_title'], 8, 100)
             || ! self::clean_snapshot_text($payload['description'], 30, 180)

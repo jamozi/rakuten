@@ -75,7 +75,7 @@ dependency:
   current_readiness: BLOCKED_NO_DECISION
   current_pack:
     path: changes/st-1805/generated/portfolio-decision.local-blocked.v1.json
-    sha256: cd1aec0ac8a87809389e681b8e1c67328b0120b244aa6fcc7725f11e4d15dff4
+    sha256: 71921934b55163135c507835dbc341fe6b664b838a95a96c0a4688dd991baf42
     overall: BLOCKED
     outcome: NO_DECISION
     authorized: false
@@ -85,8 +85,8 @@ dependency:
     local_integration_complete: false
   exact_sources:
     changes/st-1805/contracts/portfolio-decision.v1.yaml: 7561b93bb25fbc7fd0424fe8cc81553c7d615f305c9b22b1b4e1f63207416826
-    changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json: 47adc5544779c1e697a4ca1dc3ada9a251cb40fdfa9dd8e593596b34a082c793
-    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: cd1aec0ac8a87809389e681b8e1c67328b0120b244aa6fcc7725f11e4d15dff4
+    changes/st-1805/fixtures/recorded-synthetic-portfolio-decision.v1.json: f4fb736da0f7810f2165bf839baaf15afbab1138f61a6c8335a27770668b9205
+    changes/st-1805/generated/portfolio-decision.local-blocked.v1.json: 71921934b55163135c507835dbc341fe6b664b838a95a96c0a4688dd991baf42
     scripts/build_st1805_portfolio_decision.py: cf8ea58a795c8b6dcc5db4137f045387be1689427b79e0a8355d60ffcdec295c
   blocked_or_no_decision_result: UNAVAILABLE
   blocked_or_no_decision_proposals: []
@@ -95,10 +95,10 @@ dependency:
 measurement_and_signal_policy:
   measurement_contract:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: e902d9a6f69d19ffab24b348f962e78bf8b1f57a159ad1e8798f1e7b81ec2e9e
+    sha256: aa60d03210ef0cc3917104fff3a8a5b2fef1502fe37649cc5255c785c9b39edd
   signal_policy:
     path: changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml
-    sha256: 0f74d348ac22cd0a5fd8a685fe1ccc96ad4b1ce5faf946b11f62fd0f41d9685c
+    sha256: 4a7ff35dd499f74828ee34b12ff33f43c5e190213f3f40b93da100070165ca9e
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
   same_program_required: true
@@ -142,7 +142,7 @@ proposal_contract:
 
 recorded_fixture:
   path: changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json
-  sha256: c06f3baf95f7bb5755d0df4b65ce6f87fbd59f1d49678358f4de563ca9ddc06e
+  sha256: 71cbdc3cfb14299402766b4a6a8d59c4b0316f5004fe6e31717597cae415de70
   bytes: 986
   synthetic: true
   current_availability: UNAVAILABLE

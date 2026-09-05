@@ -6,28 +6,47 @@
   "pages": [
     {
       "production_slug": "about-ad-policy",
-      "required_key_content": [
+      "local_required_key_content": [
         "情報源の選び方",
         "型番とリンクの照合",
         "更新・訂正の責任"
+      ],
+      "production_required_key_content": [
+        "運営者と編集責任",
+        "AI支援の範囲",
+        "更新・訂正とお問い合わせ"
       ]
     },
     {
       "production_slug": "comparison-policy",
-      "required_key_content": [
-        "Evidence階層",
+      "local_required_key_content": [
+        "根拠の扱い",
         "実機を使っていない場合の表現",
-        "掲載順と報酬の分離",
+        "AI支援の範囲と人による確認",
         "訂正履歴"
+      ],
+      "production_required_key_content": [
+        "根拠の扱い",
+        "AI支援と人による最終確認",
+        "掲載順、広告、変動する条件",
+        "更新・訂正"
       ]
     },
     {
       "production_slug": "privacy-policy",
-      "required_key_content": [
-        "同一オリジンの利用計測",
-        "個別の生イベントは7日間保持",
-        "日ごとの集計値は改善傾向を確認するため13か月保持",
-        "同意、拒否、撤回"
+      "local_required_key_content": [
+        "アクセス解析、広告計測、外部の解析サービスへの送信を有効にしていません",
+        "閲覧行動データを保存していません",
+        "利用情報の収集や保存は、現時点では実施していません",
+        "同意を根拠にした計測も行いません"
+      ],
+      "production_required_key_content": [
+        "任意の利用計測",
+        "個別の生イベントは7日",
+        "日ごとの集計値は13か月",
+        "Cookie、同意、拒否・撤回",
+        "最長2年で失効",
+        "実設定を読み取り、本ページへ反映するまで有効化しません"
       ]
     }
   ],

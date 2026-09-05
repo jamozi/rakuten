@@ -504,6 +504,12 @@ def test_deployment_status_exposes_loaded_theme_runtime_identity() -> None:
         'status["theme"]["runtime_revision"] == EXPECTED_THEME_RUNTIME_REVISION'
         in client
     )
+    assert 'evidence = document["runtime_evidence"]' in client
+    assert 'revision != fingerprint' in client
+    assert (
+        "3f32dcb6e971febfa1edc8d933c47136947e286e38e8c18d058b10a0e2e2de7a"
+        not in client
+    )
 
 
 def test_content_and_theme_apply_are_bound_to_the_exact_ready_batch() -> None:

@@ -1,0 +1,610 @@
+{
+  "schema": "RAOS_MANUFACTURER_SALES_STATE_AUDIT_V1",
+  "checked_at_utc": "2026-08-31T14:19:31Z",
+  "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+  "hash_contract": {
+    "algorithm": "SHA-256",
+    "canonicalization": "UTF-8 JSON with recursively sorted object keys, no insignificant whitespace, and unescaped Unicode",
+    "fields": [
+      "checked_at_utc",
+      "product_id",
+      "state",
+      "availability_scope",
+      "official_url",
+      "status_evidence_urls",
+      "locator",
+      "basis",
+      "variant_caveat",
+      "alternative"
+    ]
+  },
+  "availability_scope_policy": {
+    "MODEL": {
+      "establishes_exact_rakuten_variant": false,
+      "cta_requires_separate_exact_variant_evidence": true
+    },
+    "VARIANT": {
+      "establishes_exact_rakuten_variant": false,
+      "cta_requires_separate_exact_variant_evidence": true
+    }
+  },
+  "publication_policy": {
+    "AVAILABLE": {
+      "state_gate": "CONDITIONAL",
+      "known_state": true,
+      "recheck_required": true
+    },
+    "OUT_OF_STOCK": {
+      "state_gate": "INELIGIBLE",
+      "known_state": true,
+      "recheck_required": true
+    },
+    "UNKNOWN": {
+      "state_gate": "INELIGIBLE",
+      "known_state": false,
+      "recheck_required": true
+    },
+    "DISCONTINUED": {
+      "state_gate": "INELIGIBLE",
+      "known_state": true,
+      "recheck_required": true
+    }
+  },
+  "products": [
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-PROTECA-TRI-AIR-01541",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://store.ace.jp/shop/g/g01541-10/",
+      "status_evidence_urls": [
+        "https://store.ace.jp/shop/g/g01541-10/"
+      ],
+      "locator": "exact item 01541-10の『在庫あります』と有効な『カートに入れる』",
+      "basis": "読者向け在庫表示と購入UIが一致しているためAVAILABLE。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "b37857431a9b4994ff503e1f134828ab2f04293ab852863c358bee1de2c1f30a"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "state": "AVAILABLE",
+      "availability_scope": "VARIANT",
+      "official_url": "https://store.ace.jp/shop/g/g05721-06/",
+      "status_evidence_urls": [
+        "https://store.ace.jp/shop/g/g05721-06/"
+      ],
+      "locator": "exact item 05721-06、カラー『ホワイト』の『在庫あります』と有効な『カートに入れる』",
+      "basis": "収載variant 05721-06（ホワイト）の読者向け在庫表示と購入UIが一致しているため、VARIANT scopeでAVAILABLE。旧収載variant 05721-04の状態は流用しない。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "0e47a94cbc021b4c82fbe11f0f5f5d41feb1140a5806e237f84655ebb8eb31f8"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://store.ace.jp/shop/g/g01471-02",
+      "status_evidence_urls": [
+        "https://store.ace.jp/shop/g/g01471-02"
+      ],
+      "locator": "#spec_stock_msg='在庫あります'; input[value='カートに入れる']",
+      "basis": "収載SKUをメーカー公式ストアで購入できる。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "700438500c00d37e59c1119ec55f5fdedbcc395fcf997df1ecb51221de71ad9c"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-ANKER-SOLIX-C300",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.ankerjapan.com/products/a1722",
+      "status_evidence_urls": [
+        "https://www.ankerjapan.com/products/a1722"
+      ],
+      "locator": "商品ブロック『Anker Solix C300 Portable Power Station』; 色『ダークグレー』『ブラック』; 『在庫わずか』; 有効な『カートに入れる』; 製品型番 A17225Z1 / A1722511",
+      "basis": "メーカー公式の主商品ブロックで可視の在庫表示と購入UIを確認し、同ページの製品仕様で日本向け2型番を確認したためMODEL scopeでAVAILABLE。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "17e33cbaeb8e4fd48bc9ff6952e17b54f813583c757dcb25d844beab1ac528fa"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-JACKERY-500-NEW",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.jackery.jp/products/explorer-500-new",
+      "status_evidence_urls": [
+        "https://www.jackery.jp/products/explorer-500-new"
+      ],
+      "locator": "商品ブロック『Jackery ポータブル電源 500 New』の有効な『カートに追加する』『いますぐ購入』",
+      "basis": "メーカー公式ストアのexact商品に読者が操作できる購入UIを確認したためAVAILABLE。structured stateは補助確認に限る。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "ab19a802b56c529d3fdf184695ebff9de84f2f19c4f9e97219945e0c7664a8a3"
+    },
+    {
+      "checked_at_utc": "2026-08-31T21:46:41Z",
+      "product_id": "PRD-JACKERY-1000-NEW-V3",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.jackery.jp/products/explorer-1000-new-v3",
+      "status_evidence_urls": [
+        "https://www.jackery.jp/products/explorer-1000-new-v3"
+      ],
+      "locator": "日本向けJE-1000G / JE-1000G-WHの商品ブロックと有効な「カートに追加する」",
+      "basis": "メーカー公式ストアのexact model JE-1000G / JE-1000G-WHに読者が操作できる購入UIを確認したためAVAILABLE。楽天のexact variant確認は別証跡を必須とする。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "4efddba5b101c3ea7db9ee3d42ccfad7eefd1603778ec1dac6b42e70039adba6"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-ANKER-SOLIX-C800",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.ankerjapan.com/products/a1753",
+      "status_evidence_urls": [
+        "https://www.ankerjapan.com/products/a1753"
+      ],
+      "locator": "商品ブロック『Anker Solix C800 Portable Power Station』、型番A1753の『在庫わずか』と有効な『カートに入れる』",
+      "basis": "メーカー公式の主商品ブロックで読者向け在庫表示と購入UIを確認したためAVAILABLE。終売・売り切れのBLUETTI AC70はこの状態へ流用しない。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "6388ed753ca62a1a6a61aedcf8207fb070f6c6881eda8cde6492c513c9e56d42"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-DJI-POWER-1000-V2",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://store.dji.com/jp/product/dji-power-1000-v2",
+      "status_evidence_urls": [
+        "https://store.dji.com/jp/product/dji-power-1000-v2"
+      ],
+      "locator": "exact standard product『DJI Power 1000 V2』の発送予定日表示と有効な『カートに追加』『今すぐ購入』",
+      "basis": "メーカー公式ストアのexact標準商品に読者向け配送表示と購入UIを確認したためAVAILABLE。structured stateは補助確認に限る。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "9cd1206c4f2efda4aec82acaa4e855a49043ecae27d4eee09903a967a6557555"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.ankerjapan.com/products/a1754",
+      "status_evidence_urls": [
+        "https://www.ankerjapan.com/products/a1754"
+      ],
+      "locator": "商品ブロック『Anker Solix C800 Plus Portable Power Station』; 色『ダークグレー』『ブラック』; 『在庫わずか』; 有効な『カートに入れる』; 製品型番 A17545Z1 / A1754511",
+      "basis": "メーカー公式の主商品ブロックで可視の在庫表示と購入UIを確認し、同ページの製品仕様で日本向け2型番を確認したためMODEL scopeでAVAILABLE。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "62eaa70a949fd1f810144cfacfe700b6237c9b7436551ab423cec61f08f5efd7"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-ANKER-SOLIX-C1000",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.ankerjapan.com/products/a1761",
+      "status_evidence_urls": [
+        "https://www.ankerjapan.com/products/a1761"
+      ],
+      "locator": "商品ブロック『Anker Solix C1000 Portable Power Station』; 色『ダークグレー』『ブラック』『ベージュ』; 『在庫わずか』; 有効な『カートに入れる』; 製品型番 A17615Z1 / A1761511 / A1761521; 関連アクセサリーのSold Out表示は主商品ブロック外",
+      "basis": "メーカー公式の主商品ブロックで可視の在庫表示と購入UIを確認し、同ページの製品仕様で日本向け3型番を確認したためMODEL scopeでAVAILABLE。関連アクセサリーのSold Out断片は主商品の状態へ流用しない。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "941c9df6f73b65188ffdcf8a2b0a445a752fff32dbb2497d4edf0b1882025de0"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.ankerjapan.com/products/a1763",
+      "status_evidence_urls": [
+        "https://www.ankerjapan.com/products/a1763"
+      ],
+      "locator": "商品ブロック『Anker Solix C1000 Gen 2 Portable Power Station』; 色『ダークグレー』『オフホワイト』; 『在庫わずか』; 有効な『カートに入れる』; 製品型番 A17635Z1 / A1763521",
+      "basis": "メーカー公式の主商品ブロックで可視の在庫表示と購入UIを確認し、同ページの製品仕様で日本向け2型番を確認したためMODEL scopeでAVAILABLE。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "43c82b7ac2db967cab7732b3afd19e357c6abab2f2cbcfb09220ee48adbfc5c0"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.thanko.jp/view/item/000000003922?category_page_id=ct576",
+      "status_evidence_urls": [
+        "https://www.thanko.jp/view/item/000000003922?category_page_id=ct576"
+      ],
+      "locator": "単体variant『ラクアmini単体』に『カートに入れる』; JAN=4580060593095; 型番『単体:TK-MDW22W』",
+      "basis": "メーカー公式ストアで単体TK-MDW22Wのカート投入導線を確認。セット品の型番は単体と区別されている。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "4aa3bfa87ba58c0ee7d4fe73edf7d2cdd41fc8b7a4b3694102d557683a242087"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+      "status_evidence_urls": [
+        "https://www.siroca.co.jp/product/dishwasher_advance/",
+        "https://store.siroca.jp/products/ss-mu251?variant=41121812643976"
+      ],
+      "locator": "公式製品ページから遷移する公式ストアの通常商品『オートオープンタイプ／シルバー（SS-MA251）』に『出荷予定日 9/1』と有効な『購入する』",
+      "basis": "通常商品SS-MA251の読者向け配送表示と購入UIを確認したためMODEL scopeでAVAILABLE。セット商品の状態は通常商品へ流用しない。",
+      "variant_caveat": {
+        "code": "STANDARD_PRODUCT_ONLY",
+        "detail": "通常商品SS-MA251の販売状態のみを確認し、セット商品や楽天市場の別仕様・別型番を販売中とは証明しない。",
+        "establishes_exact_rakuten_variant": false
+      },
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "38c7038a2aad16e80f21738f7e665b6ddf8dd1b744cd42b7ecea9c85ad83f2a9"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-TOSHIBA-DWS-33B-W",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
+      "status_evidence_urls": [
+        "https://shop.toshiba-lifestyle.com/jp/shop/g/g92012630Z00245-ha/"
+      ],
+      "locator": "exact item DWS-33B(W); 有効な『買い物かごに入れる』",
+      "basis": "公式通販の対象型番に購入可能な画面上の表示があるためAVAILABLE。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "9598691b7b66a95a1bc00b529b7a0bfade54875287455d6b5388f3758385b00e"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.ankerjapan.com/products/t2292",
+      "status_evidence_urls": [
+        "https://www.ankerjapan.com/products/t2292"
+      ],
+      "locator": "選択中ブラック variant sku=T2292511; 読者向け『在庫わずか』『カートに入れる』; 商品JSON available=true",
+      "basis": "ブラックのexact variant T2292511について、メーカー公式ストアの読者向け在庫表示と有効な購入UIが一致するためAVAILABLE。",
+      "variant_caveat": {
+        "code": "OTHER_COLOR_NOT_ATTESTED",
+        "detail": "この証跡はブラックT2292511の販売状態です。ホワイトや楽天市場の別仕様・別型番を販売中とは証明しません。",
+        "establishes_exact_rakuten_variant": false
+      },
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "b363a923ec1381767ac3b3f2d2cca75823e5daf74a1cdfdacac09b3f1b72af41"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-SWITCHBOT-K11-PRO",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "status_evidence_urls": [
+        "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
+      ],
+      "locator": "選択中アイボリーvariantの有効な『割引適用してカートに追加』と発送予定『2026/09/01』",
+      "basis": "メーカー公式ストアのアイボリーvariantに読者向け配送表示と購入UIを確認したため、モデルはAVAILABLE。別色の状態は流用しない。",
+      "variant_caveat": {
+        "code": "IVORY_VARIANT_ONLY",
+        "detail": "アイボリーの販売状態のみを確認し、ブラックや楽天市場の別仕様・別型番を販売中とは証明しない。",
+        "establishes_exact_rakuten_variant": false
+      },
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "bf209113cfa45a2257ac9b1dee50a9f5c2dabd797b8d183390a4f0d9862c82ad"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2",
+      "status_evidence_urls": [
+        "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2"
+      ],
+      "locator": "exact model DEEBOT mini 2; store_num=68; 有効な『カートに追加』『今すぐ購入』",
+      "basis": "可視購入UIとstructured inventoryが同じexact modelで一致しているためAVAILABLE。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "22c6d41b1b7a1e115bd5afcf4ceddc3600990ddca3aae3da427e74fef026d655"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://store.irobot-jp.com/item/N285060.html",
+      "status_evidence_urls": [
+        "https://store.irobot-jp.com/item/N285060.html"
+      ],
+      "locator": "商品詳細の有効な『購入する』",
+      "basis": "メーカー公式ストアで対象商品を購入可能。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "375e39f5adeaaca47fe2518d9a0e07e59058372ed5ba3e9adc07b6204acdc62d"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://store.ace.jp/shop/g/g02350-12/",
+      "status_evidence_urls": [
+        "https://store.ace.jp/shop/g/g02350-12/"
+      ],
+      "locator": "#spec_stock_msg='在庫あります'; input[value='カートに入れる']",
+      "basis": "収載SKUをメーカー公式ストアで購入できる。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "b8b3fc4f95519546316da84231831a64e52f3a6ee4369a88173959e685d97320"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://store.ace.jp/shop/g/g01550-11/",
+      "status_evidence_urls": [
+        "https://store.ace.jp/shop/g/g01550-11/"
+      ],
+      "locator": "#spec_stock_msg='在庫あります'; input[value='カートに入れる']",
+      "basis": "収載SKUをメーカー公式ストアで購入できる。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "8f3f632d541782cda117f18a84acbc620e58ac170a36d26203ce31cb52e39ab9"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-ACE-PALISADES3-Z-06910",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://store.ace.jp/shop/g/g06910-03/",
+      "status_evidence_urls": [
+        "https://store.ace.jp/shop/g/g06910-03/"
+      ],
+      "locator": "#spec_stock_msg='在庫あります'; input[value='カートに入れる']",
+      "basis": "収載SKUをメーカー公式ストアで購入できる。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "9fcadae61f5c6ff0a2da1400c6d96252bb0a8b01b4e28f58e21bd0147a021f2a"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+      "status_evidence_urls": [
+        "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1"
+      ],
+      "locator": "対象variantに『残りわずか』と有効な『カートに入れる』",
+      "basis": "メーカー公式ストアで在庫少量ながら購入可能。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "3e3e84fd2f2bc59ccc577c960ce29c74b1eb11ded02ba1fdd5f3cb0ece436312"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.proteca.jp/product/aeroflexDX2/",
+      "status_evidence_urls": [
+        "https://www.proteca.jp/product/aeroflexDX2/",
+        "https://store.ace.jp/shop/g/g01521-02/"
+      ],
+      "locator": "公式製品ページのオンラインストア導線先、exact item 01521-02の『在庫あります』と有効な『カートに入れる』",
+      "basis": "製品紹介ページの存在だけで判定せず、メーカー公式ストアのexact item 01521-02で読者向け在庫表示と購入UIを確認したためAVAILABLE。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "daa97156755c7776087b804caf233229f95ab0f8eeec560c6531c0b1069f4987"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.rimowa.com/jp/ja/luggage/colour/grey/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3/82353171.html",
+      "status_evidence_urls": [
+        "https://www.rimowa.com/jp/ja/luggage/colour/grey/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3/82353171.html"
+      ],
+      "locator": "公式JP商品ページのexact item 82353171『Essential Lite Cabin／グロス グラファイト グレー』に『在庫あり』、配送予定、有効な『カートに入れる』",
+      "basis": "公式JPページの読者向け本文でexact itemの在庫表示、配送表示、購入UIを同時に確認したためAVAILABLE。自動取得環境の403は販売状態の反証として扱わない。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "4db5f05b9d1912a3fa8d2a91a10c59d7c81cfc9a751aff8f8ab169b0d573176d"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+      "status_evidence_urls": [
+        "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red"
+      ],
+      "locator": "公式商品ページのexact SKU QJ6-68002、価格表示と有効な『カートに入れる』",
+      "basis": "メーカー公式ストアのexact SKUに読者が操作できる購入UIを確認したためAVAILABLE。可視画面にない在庫文言は根拠にしない。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "b863e47c6145c699d03ffeadb14153c4b829dc9f67b14ff981dea1c2f01ebd3c"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/midnight_blue/ss-134679-1549.html",
+      "status_evidence_urls": [
+        "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/midnight_blue/ss-134679-1549.html"
+      ],
+      "locator": "exact item 134679-1549（SKU CS2*31007）; ¥83,600; 有効な『カートに入れる』; 店舗在庫表示あり",
+      "basis": "メーカー公式ストアのexact itemに価格と有効な購入UIが表示されるためAVAILABLE。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "fe2439d4a0a9ab35d290369c4f11888159f2b99c4efa39303adcef4ffeb87856"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-INNOVATOR-INV50",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+      "status_evidence_urls": [
+        "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue"
+      ],
+      "locator": "収載カラー『Pale Blue』のexact商品に有効な『カートに追加する』と『1〜3営業日以内に発送予定』",
+      "basis": "メーカー公式ストアの収載カラーに読者向け配送表示と購入UIを確認したためAVAILABLE。hidden metadataは補助確認に限る。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "1ea8286a1f3ac19eec8b29eb6c1d5d79d46ab0005185675baf203085667dc0b9"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-PROTECA-FRESTER-EX-01551",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://store.ace.jp/shop/g/g01551-01/",
+      "status_evidence_urls": [
+        "https://store.ace.jp/shop/g/g01551-01/"
+      ],
+      "locator": "#spec_stock_msg='在庫あります'; input[value='カートに入れる']",
+      "basis": "収載SKUをメーカー公式ストアで購入できる。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "d212ce533e0c6478a1ee977419e93124162c704b0f5860355e5869481d0fcbaa"
+    },
+    {
+      "checked_at_utc": "2026-08-31T15:13:23Z",
+      "product_id": "PRD-BERMAS-INTER-CITY-III-60570",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity3/60570",
+      "status_evidence_urls": [
+        "https://www.bermas.co.jp/c/series/businesstravel/intercity3/60570"
+      ],
+      "locator": "商品番号60570、ブルーグレー・シルバー・ブラックヘアライン各variantの有効な『カートに入れる』",
+      "basis": "メーカー公式ストアのexact model 60570で、3色それぞれの読者向け購入UIを確認したためMODEL scopeでAVAILABLE。メーカー側MODEL状態は楽天市場のexact shop・item・variant証拠へ流用しない。",
+      "variant_caveat": {
+        "code": "OFFICIAL_MODEL_VARIANTS_ONLY",
+        "detail": "公式ストアのブルーグレー・シルバー・ブラックヘアラインで購入UIを確認したが、楽天市場の収載shop・item・variantは未確認。",
+        "establishes_exact_rakuten_variant": false
+      },
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "3399ed8b20c3ddd5eaa64a7325cc5ace7a302cafb8ab1fd7d1f51d1bc51be821"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+      "status_evidence_urls": [
+        "https://store.irobot-jp.com/category/ROOMBA/F115060.html"
+      ],
+      "locator": "商品詳細の有効な『購入する』",
+      "basis": "メーカー公式ストアで対象商品を購入可能。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "1057ef493eb959cbdda39d6e79110440452b87c6bc5dba09f4c214d9cbc0cc6d"
+    },
+    {
+      "checked_at_utc": "2026-08-31T14:19:31Z",
+      "product_id": "PRD-SIROCA-SS-M171",
+      "state": "AVAILABLE",
+      "availability_scope": "MODEL",
+      "official_url": "https://www.siroca.co.jp/product/dishwasher_basic/",
+      "status_evidence_urls": [
+        "https://store.siroca.jp/products/ss-m171"
+      ],
+      "locator": "公式オンラインストアのexact model SS-M171、選択中『メタリックウォームグレー』に『出荷予定日 9/1』と有効な『購入する』",
+      "basis": "公式オンラインストアのexact型番に読者向け配送表示と購入UIを確認したためAVAILABLE。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "9eff285b2b844ca0418e2ff7efcb09e8716fca8b61298f75ba07ed866973328b"
+    },
+    {
+      "checked_at_utc": "2026-09-01T00:00:00Z",
+      "product_id": "PRD-BLUETTI-AORA30-V2",
+      "state": "AVAILABLE",
+      "availability_scope": "VARIANT",
+      "official_url": "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+      "status_evidence_urls": [
+        "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+        "https://www.bluetti.jp/collections/aora-series-portable-power-stations"
+      ],
+      "locator": "商品名「AORA 30 V2 | グレー」、AORAシリーズ一覧の「AORA 30 V2 グレー」「288Wh | 600W」と販売価格表示",
+      "basis": "メーカー公式のexact色商品ページとAORAシリーズ一覧で、対象variantと読者向け販売表示を確認したためVARIANT scopeでAVAILABLE。楽天のexact variant確認は別証跡を必須とする。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "00cc3cf2d54172908526647d70ffb67696dad75bef115874fb5ba49d63fc5d7a"
+    },
+    {
+      "checked_at_utc": "2026-09-01T00:00:00Z",
+      "product_id": "PRD-BLUETTI-AORA100-V2",
+      "state": "AVAILABLE",
+      "availability_scope": "VARIANT",
+      "official_url": "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+      "status_evidence_urls": [
+        "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+        "https://www.bluetti.jp/collections/aora-series-portable-power-stations"
+      ],
+      "locator": "商品名「AORA 100 V2 | インディゴ」、AORAシリーズ一覧の「AORA 100 V2（Bio-Based Plastics）」「1,024Wh | 1,800W」と販売価格表示",
+      "basis": "メーカー公式のexact色商品ページとAORAシリーズ一覧で、対象variantと読者向け販売表示を確認したためVARIANT scopeでAVAILABLE。楽天のexact variant確認は別証跡を必須とする。",
+      "variant_caveat": null,
+      "alternative": null,
+      "snapshot_kind": "STRUCTURED_OFFICIAL_SALES_STATE_SNAPSHOT_V1",
+      "structured_snapshot_sha256": "816fdd0da0c7de53de72afbbe3f9e6a831ff41a45bd28d630630628f025a5b5c"
+    }
+  ],
+  "evidence_resolution_policy": {
+    "exact_variant_reader_visible_purchase_ui_required": true,
+    "reader_visible_sold_out_discontinued_or_preorder_precedes_hidden_structured_availability": true,
+    "structured_data_alone_cannot_establish_available": true,
+    "conflict_resolution": "FAIL_CLOSED_TO_UNKNOWN_OR_OUT_OF_STOCK",
+    "preorder_resolution": "FAIL_CLOSED_TO_UNKNOWN"
+  }
+}

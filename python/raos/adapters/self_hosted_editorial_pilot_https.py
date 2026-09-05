@@ -139,6 +139,34 @@ _THEME_NAVIGATION_RELATIVE_PATH: Final = Path(
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
     "kurashinoshirube-child/assets/editorial-navigation.v3.json"
 )
+_CONTENT_ROLE_LABELS: Final = {
+    "brand_family_comparison": "ブランド内比較",
+    "category_guide": "選び方",
+    "constraint_shortlist": "条件別比較",
+    "feature_shortlist": "機能別比較",
+    "head_to_head_comparison": "2製品比較",
+    "head_to_head_with_reference": "2製品比較＋参考機種",
+    "lifecycle_status_route": "以前の比較対象の販売状態確認＋現行比較への案内",
+    "model_family_comparison": "ブランド内比較",
+}
+_CONTENT_ROLES_REQUIRING_BROADER_ARTICLE: Final = frozenset(
+    {
+        "brand_family_comparison",
+        "head_to_head_comparison",
+        "head_to_head_with_reference",
+        "lifecycle_status_route",
+        "model_family_comparison",
+    }
+)
+_CONTENT_ROLES_ALLOWING_BROADER_ARTICLE: Final = (
+    _CONTENT_ROLES_REQUIRING_BROADER_ARTICLE | {"constraint_shortlist"}
+)
+_RELATED_RELATIONSHIP_TYPES: Final = (
+    "broader_guide",
+    "narrower_comparison",
+    "lifecycle_reference",
+    "adjacent_condition",
+)
 _SITEMAP_NAMESPACE: Final = "http://www.sitemaps.org/schemas/sitemap/0.9"
 _PUBLISHED_ROBOTS: Final = (
     "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
@@ -397,12 +425,23 @@ def _load_theme_navigation_v3(
     related_contract = _mapping(contract.get("related_navigation"))
     homepage_contract = _mapping(contract.get("homepage_clusters"))
     if related_contract != {
+        "article_link_placements": {
+            "article_body": {"maximum": 1, "minimum": 1},
+            "related_navigation": {"maximum": 1, "minimum": 0},
+        },
         "availability_transition": "TARGET_HUMAN_PUBLICATION_ONLY",
+        "category_home_links_per_article": 1,
         "content_hash_scope": "THEME_CHROME_OUTSIDE_WORDPRESS_POST_CONTENT",
-        "minimum_targets_per_article": 2,
+        "duplicate_article_urls_allowed": False,
+        "intent_group_policy": "RELATED_TARGETS_MUST_SHARE_INTENT_GROUP",
+        "maximum_targets_per_article": 2,
+        "minimum_targets_per_article": 1,
         "owner": "EDITORIAL_V3_GENERATED_NAVIGATION",
-        "preparedness_two_article_policy": (
-            "ONE_SAME_CLUSTER_PLUS_ONE_ADJACENT_CONTEXT_WITHOUT_NEW_ARTICLE"
+        "reader_link_count_per_article": {"maximum": 3, "minimum": 2},
+        "relationship_types": list(_RELATED_RELATIONSHIP_TYPES),
+        "rendered_relationships": (
+            "FIRST_SEMANTIC_SAME_INTENT_IN_BODY_PLUS_OPTIONAL_SECOND_"
+            "SEMANTIC_SAME_INTENT_AND_CLUSTER_HOME_LINK"
         ),
         "source": "assets/editorial-navigation.v3.json#articles[].related_articles",
         "target_requirement": (
@@ -476,7 +515,13 @@ def _load_theme_navigation_v3(
             "article_id",
             "category_label",
             "cluster_id",
+            "comparison_scope",
+            "content_role",
+            "content_role_label",
+            "primary_query_intent",
+            "broader_article_id",
             "home_order",
+            "intent_group_id",
             "local_slug",
             "production_slug",
             "related_articles",
@@ -488,7 +533,13 @@ def _load_theme_navigation_v3(
         article_code = article.get("article_code")
         category_label = article.get("category_label")
         cluster_id = article.get("cluster_id")
+        comparison_scope = article.get("comparison_scope")
+        content_role = article.get("content_role")
+        content_role_label = article.get("content_role_label")
+        primary_query_intent = article.get("primary_query_intent")
+        broader_article_id = article.get("broader_article_id")
         home_order = article.get("home_order")
+        intent_group_id = article.get("intent_group_id")
         local_slug = article.get("local_slug")
         production_slug = article.get("production_slug")
         snapshot_id = article.get("snapshot_id")
@@ -504,8 +555,43 @@ def _load_theme_navigation_v3(
             or category_label != category_label.strip()
             or type(cluster_id) is not str
             or re.fullmatch(r"[a-z]+", cluster_id, re.ASCII) is None
+            or type(content_role) is not str
+            or _CONTENT_ROLE_LABELS.get(content_role) != content_role_label
+            or type(primary_query_intent) is not str
+            or not primary_query_intent
+            or primary_query_intent != primary_query_intent.strip()
+            or len(primary_query_intent) > 180
+            or (
+                content_role in _CONTENT_ROLES_REQUIRING_BROADER_ARTICLE
+                and broader_article_id is None
+            )
+            or (
+                broader_article_id is not None
+                and content_role not in _CONTENT_ROLES_ALLOWING_BROADER_ARTICLE
+            )
+            or type(comparison_scope) is not str
+            or not comparison_scope
+            or comparison_scope != comparison_scope.strip()
+            or len(comparison_scope) > 120
+            or (
+                broader_article_id is not None
+                and (
+                    type(broader_article_id) is not str
+                    or re.fullmatch(
+                        r"[a-z0-9]+(?:-[a-z0-9]+)*",
+                        broader_article_id,
+                        re.ASCII,
+                    )
+                    is None
+                )
+            )
             or type(home_order) is not int
             or not 1 <= home_order <= 10
+            or type(intent_group_id) is not str
+            or re.fullmatch(
+                r"[a-z0-9]+(?:-[a-z0-9]+)*", intent_group_id, re.ASCII
+            )
+            is None
             or type(local_slug) is not str
             or re.fullmatch(
                 r"local-preview-[a-z0-9]+(?:-[a-z0-9]+)*", local_slug, re.ASCII
@@ -521,7 +607,7 @@ def _load_theme_navigation_v3(
             or not title
             or title != title.strip()
             or type(relations) is not list
-            or len(cast(list[object], relations)) < 2
+            or not 1 <= len(cast(list[object], relations)) <= 2
             or article_id in articles
             or article_code in article_codes
             or production_slug in production_slugs
@@ -530,6 +616,31 @@ def _load_theme_navigation_v3(
         articles[article_id] = article
         article_codes.add(article_code)
         production_slugs.add(production_slug)
+    for intent_group_id in {
+        cast(str, article.get("intent_group_id"))
+        for article in articles.values()
+    }:
+        query_intents = [
+            cast(str, article.get("primary_query_intent"))
+            for article in articles.values()
+            if article.get("intent_group_id") == intent_group_id
+        ]
+        if len(query_intents) != len(set(query_intents)):
+            _fail(EditorialPilotFailureCode.PACKET_INVALID)
+    validated_related_by_id: dict[str, set[str]] = {}
+    for article_id, article in articles.items():
+        broader_article_id = article.get("broader_article_id")
+        if broader_article_id is None:
+            continue
+        broader = articles.get(cast(str, broader_article_id))
+        if (
+            broader is None
+            or broader_article_id == article_id
+            or broader.get("intent_group_id") != article.get("intent_group_id")
+            or broader.get("content_role")
+            not in {"category_guide", "constraint_shortlist"}
+        ):
+            _fail(EditorialPilotFailureCode.PACKET_INVALID)
     clusters: list[Mapping[str, object]] = []
     cluster_ids: set[str] = set()
     anchors: set[str] = set()
@@ -589,6 +700,7 @@ def _load_theme_navigation_v3(
         _fail(EditorialPilotFailureCode.PACKET_INVALID)
     for article_id, article in articles.items():
         related_ids: set[str] = set()
+        relationship_priorities: list[int] = []
         for raw_relation in cast(list[object], article["related_articles"]):
             relation = _mapping(raw_relation)
             target_id = relation.get("article_id")
@@ -596,23 +708,54 @@ def _load_theme_navigation_v3(
             if (
                 set(relation) != {"article_id", "relationship"}
                 or type(target_id) is not str
-                or target_id not in articles
+                or type(relationship) is not str
+            ):
+                _fail(EditorialPilotFailureCode.PACKET_INVALID)
+            target = articles.get(target_id)
+            expected_relationship = (
+                "broader_guide"
+                if article.get("broader_article_id") == target_id
+                else (
+                    "lifecycle_reference"
+                    if target is not None
+                    and target.get("broader_article_id") == article_id
+                    and target.get("content_role") == "lifecycle_status_route"
+                    else (
+                        "narrower_comparison"
+                        if target is not None
+                        and target.get("broader_article_id") == article_id
+                        else "adjacent_condition"
+                    )
+                )
+            )
+            if (
+                target is None
                 or target_id == article_id
                 or target_id in related_ids
-                or relationship not in {"same_cluster", "adjacent_context"}
-                or (
-                    relationship == "same_cluster"
-                    and articles[target_id].get("cluster_id")
-                    != article.get("cluster_id")
-                )
-                or (
-                    relationship == "adjacent_context"
-                    and articles[target_id].get("cluster_id")
-                    == article.get("cluster_id")
-                )
+                or relationship != expected_relationship
+                or target.get("intent_group_id") != article.get("intent_group_id")
             ):
                 _fail(EditorialPilotFailureCode.PACKET_INVALID)
             related_ids.add(target_id)
+            relationship_priorities.append(
+                {value: index for index, value in enumerate(_RELATED_RELATIONSHIP_TYPES)}[
+                    relationship
+                ]
+            )
+        if relationship_priorities != sorted(relationship_priorities):
+            _fail(EditorialPilotFailureCode.PACKET_INVALID)
+        validated_related_by_id[article_id] = related_ids
+    for article_id, article in articles.items():
+        broader_article_id = article.get("broader_article_id")
+        if broader_article_id is not None:
+            if type(broader_article_id) is not str:
+                _fail(EditorialPilotFailureCode.PACKET_INVALID)
+            if (
+                broader_article_id not in validated_related_by_id[article_id]
+                or article_id
+                not in validated_related_by_id.get(broader_article_id, set())
+            ):
+                _fail(EditorialPilotFailureCode.PACKET_INVALID)
     return articles, tuple(clusters)
 
 
@@ -641,7 +784,8 @@ def _load_theme_related_navigation(
         home_label = f"暮らしの道具「{cluster['label']}」の一覧へ"
         targets: list[_ThemeArticleIdentity] = []
         for raw_relation in cast(list[object], article["related_articles"]):
-            target_id = cast(str, _mapping(raw_relation)["article_id"])
+            relation = _mapping(raw_relation)
+            target_id = cast(str, relation["article_id"])
             target = articles[target_id]
             targets.append(
                 _ThemeArticleIdentity(
@@ -651,7 +795,7 @@ def _load_theme_related_navigation(
                     title=cast(str, target["title"]),
                 )
             )
-        if len(targets) < 2:
+        if not targets:
             _fail(EditorialPilotFailureCode.PACKET_INVALID)
         normalized[article_id] = {
             "home": (f"{PILOT_ORIGIN}/#{anchor}", home_label),
@@ -843,7 +987,7 @@ def _related_target_identities(
     if type(targets) is not tuple:
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
     identities = cast(tuple[object, ...], targets)
-    if len(identities) < 2 or any(
+    if not identities or any(
         type(identity) is not _ThemeArticleIdentity for identity in identities
     ):
         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
@@ -1234,7 +1378,7 @@ class _RenderedContentParser(HTMLParser):
             "raos-disclosure": 0,
             "raos-product-card": 0,
         }
-        self.product_images: list[tuple[str, str, str, str]] = []
+        self.product_images: list[tuple[str, str, str, str, str, str, str]] = []
         self.rakuten_hrefs: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -1339,6 +1483,9 @@ class _RenderedContentParser(HTMLParser):
                 if host == "thumbnail.image.rakuten.co.jp":
                     allowed = {
                         "alt",
+                        "data-raos-product-image-id",
+                        "data-raos-product-image-placement",
+                        "data-raos-product-image-state",
                         "decoding",
                         "height",
                         "loading",
@@ -1351,13 +1498,30 @@ class _RenderedContentParser(HTMLParser):
                         attributes.get("width"),
                         attributes.get("height"),
                     )
+                    expected_placement = (
+                        "comparison_table"
+                        if attributes.get("class")
+                        == "raos-comparison__product-image"
+                        else "product_card"
+                    )
+                    product_id = attributes.get("data-raos-product-image-id")
                     if (
                         set(attributes) != allowed
                         or image_size
                         not in {("64", "64"), ("96", "96"), ("128", "128")}
+                        or (expected_placement == "comparison_table")
+                        != (image_size in {("64", "64"), ("96", "96")})
                         or attributes.get("loading") != "lazy"
                         or attributes.get("decoding") != "async"
                         or type(attributes.get("alt")) is not str
+                        or type(product_id) is not str
+                        or re.fullmatch(
+                            r"PRD-[A-Z0-9]+(?:-[A-Z0-9]+)*", product_id, re.ASCII
+                        )
+                        is None
+                        or attributes.get("data-raos-product-image-placement")
+                        != expected_placement
+                        or attributes.get("data-raos-product-image-state") != "verified"
                     ):
                         _fail(EditorialPilotFailureCode.PUBLIC_OBSERVATION_MISMATCH)
                     self.product_images.append(
@@ -1366,6 +1530,9 @@ class _RenderedContentParser(HTMLParser):
                             cast(str, attributes["alt"]),
                             cast(str, attributes["width"]),
                             cast(str, attributes["height"]),
+                            product_id,
+                            expected_placement,
+                            "verified",
                         )
                     )
 
@@ -1909,7 +2076,7 @@ def _expected_json_ld(
             {
                 "@id": organization,
                 "@type": "Organization",
-                "name": "暮らしのしるべ編集部",
+                "name": "暮らしのしるべ編集者",
                 "url": f"{PILOT_ORIGIN}/",
             },
             {
@@ -2035,7 +2202,7 @@ def _validate_article_html(
     relation = related_navigation[request.article_id]
     home = cast(tuple[str, str], relation["home"])
     expected_related: list[tuple[str, str]] = []
-    if len(bound_related_targets) >= 2:
+    if bound_related_targets:
         expected_related.extend(
             (f"{PILOT_ORIGIN}/{identity.slug}/", identity.title)
             for identity in bound_related_targets
@@ -2831,7 +2998,7 @@ class OfficialSelfHostedEditorialPilotWordPressAdapter:
             if kind == "related-target"
             else ()
         )
-        if kind == "related-target" and len(related_identities) < 2:
+        if kind == "related-target" and not related_identities:
             _fail(EditorialPilotFailureCode.OPERATION_NOT_ALLOWED)
         homepage_identities = _homepage_article_identities(self._homepage_clusters)
         exchanges = {

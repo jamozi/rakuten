@@ -158,6 +158,36 @@ def test_fake_publication_snapshot_is_rejected_after_dependency_hash_rebind(
     assert error.value.code == "ST1704_ARTIFACT_SEMANTIC_DRIFT"
 
 
+def test_self_hosted_manifest_requires_the_exact_ten_article_portfolio(
+    repository_copy: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    relative = Path(
+        "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
+    )
+    target = repository_copy / relative
+    data = json.loads(target.read_text())
+    assert data["article_ids"] == list(builder.SELF_HOSTED_MANIFEST_ARTICLE_IDS)
+    data["article_ids"] = data["article_ids"][:-1]
+    target.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
+    digest = hashlib.sha256(target.read_bytes()).hexdigest()
+    hashes = dict(builder.EXPECTED_DEPENDENCY_HASHES)
+    hashes[relative.as_posix()] = digest
+    monkeypatch.setattr(builder, "EXPECTED_DEPENDENCY_HASHES", hashes)
+    raw = builder._load_yaml(repository_copy, builder.CONTRACT_PATH, "contract")  # noqa: SLF001
+    artifacts = raw["dependency_bindings"]["st_1704_self_hosted"]["artifacts"]
+    manifest_binding = next(
+        row
+        for row in artifacts
+        if row["uri"] == f"repo://{relative.as_posix()}"
+    )
+    manifest_binding["sha256"] = digest
+
+    with pytest.raises(builder.PilotSignoffError) as error:
+        builder.validate_contract(raw, repository_copy)
+
+    assert error.value.code == "ST1704_ARTIFACT_SEMANTIC_DRIFT"
+
+
 def test_symlink_hardlink_oversize_and_path_tricks_are_rejected(
     repository_copy: Path, tmp_path: Path
 ) -> None:

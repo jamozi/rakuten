@@ -1,0 +1,18 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+<!-- wp:group {"tagName":"main","anchor":"main-content","className":"raos-listing-shell","layout":{"type":"constrained"}} -->
+<main id="main-content" class="wp-block-group raos-listing-shell">
+<!-- wp:group {"align":"wide","className":"raos-listing-header","layout":{"type":"default"}} -->
+<div class="wp-block-group alignwide raos-listing-header"><!-- wp:paragraph {"className":"raos-home-eyebrow"} --><p class="raos-home-eyebrow">記事を探す</p><!-- /wp:paragraph --><!-- wp:heading {"level":1} --><h1 class="wp-block-heading">検索結果</h1><!-- /wp:heading --><!-- wp:shortcode -->[kurashinoshirube_search_summary]<!-- /wp:shortcode --></div>
+<!-- /wp:group -->
+<!-- wp:query {"query":{"inherit":true},"className":"raos-listing-query"} -->
+<div class="wp-block-query raos-listing-query">
+<!-- wp:post-template {"className":"raos-listing-grid"} -->
+<!-- wp:group {"tagName":"article","className":"raos-listing-card","layout":{"type":"default"}} -->
+<article class="wp-block-group raos-listing-card"><!-- wp:post-title {"isLink":true,"level":2} /--><!-- wp:post-excerpt {"moreText":"記事を読む","showMoreOnNewLine":true} /--><!-- wp:post-date {"format":"Y年n月j日","displayType":"modified","className":"raos-listing-date"} /--></article>
+<!-- /wp:group -->
+<!-- /wp:post-template -->
+<!-- wp:query-no-results --><!-- wp:group {"className":"raos-listing-empty","layout":{"type":"default"}} --><div class="wp-block-group raos-listing-empty"><!-- wp:shortcode -->[kurashinoshirube_search_empty_state]<!-- /wp:shortcode --><!-- wp:search {"label":"記事を検索","showLabel":true,"placeholder":"キーワードや商品名","buttonText":"検索"} /--><!-- wp:paragraph --><p><a href="/">ホームへ戻る</a></p><!-- /wp:paragraph --></div><!-- /wp:group --><!-- /wp:query-no-results -->
+<!-- wp:query-pagination {"layout":{"type":"flex","justifyContent":"space-between"}} --><!-- wp:query-pagination-previous {"label":"前のページ"} /--><!-- wp:query-pagination-numbers /--><!-- wp:query-pagination-next {"label":"次のページ"} /--><!-- /wp:query-pagination -->
+</div><!-- /wp:query -->
+</main><!-- /wp:group -->
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

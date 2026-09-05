@@ -46,8 +46,39 @@
     "Product",
     "Offer",
     "Review",
+    "AggregateRating",
     "FAQPage"
   ],
+  "head_profile": {
+    "canonical_count": 1,
+    "meta_description_count": 1,
+    "open_graph": [
+      "og:title",
+      "og:description",
+      "og:url",
+      "og:image",
+      "og:image:width",
+      "og:image:height",
+      "og:image:type",
+      "og:type",
+      "og:locale",
+      "og:site_name"
+    ],
+    "title_count": 1,
+    "twitter": [
+      "twitter:card",
+      "twitter:title",
+      "twitter:description",
+      "twitter:image"
+    ]
+  },
+  "json_ld_semantics": {
+    "article": "EXACT_ARTICLE_BREADCRUMB_ORGANIZATION_WEBSITE_RELATIONSHIPS",
+    "fixed_page": "EXACT_PAGE_BREADCRUMB_ORGANIZATION_WEBSITE_RELATIONSHIPS",
+    "home": "EXACT_ORGANIZATION_WEBSITE_RELATIONSHIPS",
+    "language": "ja-JP",
+    "publisher": "https://kurashinoshirube.com/#organization"
+  },
   "index_state_boundary": {
     "source": "OWNER_PRIVATE_RECORDED_URL_INSPECTION_V1",
     "missing_state": "UNAVAILABLE",

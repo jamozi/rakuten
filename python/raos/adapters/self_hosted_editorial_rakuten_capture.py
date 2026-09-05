@@ -53,6 +53,9 @@ MEDIA_REGISTRY_RELATIVE_PATH: Final = Path(
     "changes/st-1704/self-hosted-editorial-pilot-v1/media/"
     "product-media-registry.v1.json"
 )
+PORTFOLIO_RELATIVE_PATH: Final = Path(
+    "changes/editorial-portfolio-v2/editorial-portfolio.v2.json"
+)
 OWNER_DIRECTORY: Final = "st1704-self-hosted-editorial-pilot"
 RAKUTEN_DIRECTORY: Final = "rakuten"
 OWNER_CREDENTIAL_RELATIVE_PATH: Final = Path(
@@ -86,54 +89,70 @@ _JSON_CONTENT_TYPE = re.compile(
     r'application/json(?:\s*;\s*charset="?(?:utf-8|UTF-8)"?)?\Z', re.ASCII
 )
 _IMAGE_CONTENT_TYPE = re.compile(
-    r"image/(?:jpeg|png|gif)(?:\s*;\s*charset=binary)?\Z", re.ASCII | re.IGNORECASE
+    r"image/(?:jpeg|png|gif)(?:\s*;\s*charset=binary)?\Z",
+    re.ASCII | re.IGNORECASE,
 )
 _ARTICLE_IDS: Final = frozenset(
     identity.article_id for identity in PILOT_ARTICLE_IDENTITIES
 )
+_FINAL_PORTFOLIO_ARTICLE_IDS: Final = (
+    "st1703-first-suitcase-comparison",
+    "st1704-portable-power-station-guide",
+    "st1704-anker-solix-c300-c800-c1000-differences",
+    "st1704-countertop-dishwasher-for-small-households",
+    "st1704-compact-robot-vacuum-shortlist",
+    "carry-on-suitcase-under-100-seats",
+    "lightweight-carry-on-suitcase-under-3kg",
+    "front-open-carry-on-suitcase-with-stopper",
+    "roomba-mini-vs-switchbot-k11-pro",
+    "solota-vs-rakua-mini-plus",
+)
+_FINAL_PORTFOLIO_PRODUCT_COUNT: Final = 33
+_FINAL_PORTFOLIO_PRODUCT_PLACEMENT_COUNT: Final = 37
+_FINAL_PORTFOLIO_CTA_PLACEMENT_COUNT: Final = 74
 _PRODUCT_SHOP_CODES: Final = (
-    ("PRD-ACE-CRESTA-06316", "ace-store"),
+    ("PRD-PROTECA-TRI-AIR-01541", "ace-store"),
     ("PRD-ACE-DIFFERENCE-05721", "ace-store"),
     ("PRD-ACE-MAXPASS4-01471", "ace-store"),
     ("PRD-ANKER-SOLIX-C300", "anker"),
     ("PRD-JACKERY-500-NEW", "jackery-japan"),
-    ("PRD-BLUETTI-AC70", "bluettijapan"),
-    ("PRD-ECOFLOW-DELTA3-CLASSIC", "ecoflow"),
-    ("PRD-PANASONIC-NP-TMLK1", "panasonic-store"),
-    ("PRD-THANKO-RAKUA-MINI-COLOR", "thanko"),
+    ("PRD-ANKER-SOLIX-C800", "wich"),
+    ("PRD-JACKERY-1000-NEW-V3", "jackery-japan"),
+    ("PRD-DJI-POWER-1000-V2", "dji-shop"),
+    ("PRD-SIROCA-SS-M171", "siroca"),
+    ("PRD-THANKO-RAKUA-MINI-TK-MDW22W", "thanko"),
     ("PRD-SIROCA-SS-MA251", "siroca"),
-    ("PRD-PANASONIC-NP-TSP1", "jyupro"),
+    ("PRD-TOSHIBA-DWS-33B-W", "jyupro"),
     ("PRD-ANKER-SOLIX-C800-PLUS", "anker"),
     ("PRD-ANKER-SOLIX-C1000", "anker"),
     ("PRD-ANKER-SOLIX-C1000-GEN2", "anker"),
-    ("PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY", "edion"),
+    ("PRD-EUFY-AUTOEMPTY-C10-T2292", "anker"),
     ("PRD-SWITCHBOT-K11-PRO", "switchbot"),
-    ("PRD-SWITCHBOT-K10-PRO-COMBO", "switchbot"),
+    ("PRD-ECOVACS-DEEBOT-MINI2", "store-ecovacs-japan"),
     ("PRD-IROBOT-ROOMBA-PLUS-515-COMBO", "edion"),
 )
 _FIXED_PRODUCT_ITEM_CODES: Final = {
+    "PRD-PROTECA-TRI-AIR-01541": "ace-store:01541",
     "PRD-ANKER-SOLIX-C300": "anker:10002036",
     "PRD-JACKERY-500-NEW": "jackery-japan:10000000",
-    "PRD-BLUETTI-AC70": "bluettijapan:10000107",
-    "PRD-ECOFLOW-DELTA3-CLASSIC": "ecoflow:10000092",
+    "PRD-ANKER-SOLIX-C800": "wich:a-a17535z1",
+    "PRD-DJI-POWER-1000-V2": "dji-shop:6937224104761",
     "PRD-ANKER-SOLIX-C800-PLUS": "anker:10001890",
     "PRD-ANKER-SOLIX-C1000": "anker:10001654",
     "PRD-ANKER-SOLIX-C1000-GEN2": "anker:10002336",
-    "PRD-PANASONIC-NP-TMLK1": "panasonic-store:10000735",
-    "PRD-THANKO-RAKUA-MINI-COLOR": "thanko:10005443",
+    "PRD-THANKO-RAKUA-MINI-TK-MDW22W": "thanko:10005443",
     "PRD-SIROCA-SS-MA251": "siroca:10000024",
-    "PRD-PANASONIC-NP-TSP1": "jyupro:10136298",
-    "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY": "edion:10895202",
+    "PRD-TOSHIBA-DWS-33B-W": "jyupro:10136298",
     "PRD-SWITCHBOT-K11-PRO": "switchbot:10000327",
-    "PRD-SWITCHBOT-K10-PRO-COMBO": "switchbot:10000240",
+    "PRD-ECOVACS-DEEBOT-MINI2": "store-ecovacs-japan:djx28-01ee",
     "PRD-IROBOT-ROOMBA-PLUS-515-COMBO": "edion:10909675",
 }
 _PORTABLE_POWER_PRODUCT_IDS: Final = frozenset(
     {
         "PRD-ANKER-SOLIX-C300",
         "PRD-JACKERY-500-NEW",
-        "PRD-BLUETTI-AC70",
-        "PRD-ECOFLOW-DELTA3-CLASSIC",
+        "PRD-ANKER-SOLIX-C800",
+        "PRD-DJI-POWER-1000-V2",
         "PRD-ANKER-SOLIX-C800-PLUS",
         "PRD-ANKER-SOLIX-C1000",
         "PRD-ANKER-SOLIX-C1000-GEN2",
@@ -401,7 +420,12 @@ class ProductCaptureTarget:
 
 @dataclass(frozen=True, slots=True)
 class ProductCapturePlan:
+    """Exact final inventory plus the currently owner-bounded capture slice."""
+
     article_products: tuple[tuple[str, tuple[ProductCaptureTarget, ...]], ...]
+    portfolio_article_products: tuple[tuple[str, tuple[str, ...]], ...]
+    portfolio_product_ids: frozenset[str]
+    portfolio_cta_placement_count: int
 
     def for_article(self, article_id: str) -> tuple[ProductCaptureTarget, ...]:
         if article_id not in _ARTICLE_IDS:
@@ -415,6 +439,16 @@ class ProductCapturePlan:
             _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
         return matches[0]
 
+    @property
+    def portfolio_product_count(self) -> int:
+        return len(self.portfolio_product_ids)
+
+    @property
+    def portfolio_product_placement_count(self) -> int:
+        return sum(
+            len(products) for _article_id, products in self.portfolio_article_products
+        )
+
 
 def _tuple_text(value: object, *, maximum: int = 300) -> tuple[str, ...]:
     result = tuple(_text(item, maximum=maximum) for item in _list(value))
@@ -423,11 +457,138 @@ def _tuple_text(value: object, *, maximum: int = 300) -> tuple[str, ...]:
     return result
 
 
+def _load_final_portfolio_inventory(
+    repository_root: Path,
+) -> tuple[
+    tuple[tuple[str, tuple[str, ...]], ...],
+    frozenset[str],
+    int,
+]:
+    """Load the exact 10-article/33-product/37-card/74-CTA contract.
+
+    The owner-private capture adapter remains intentionally bounded to the five
+    article packets that have structured capture metadata.  Loading a bounded
+    slice must nevertheless prove that it belongs to the current final
+    portfolio; otherwise the legacy 18-row registry could be mistaken for
+    complete all-article coverage.
+    """
+
+    portfolio = _mapping(
+        _strict_json(
+            _read_tracked_file(
+                repository_root, PORTFOLIO_RELATIVE_PATH, MAX_REGISTRY_BYTES
+            ),
+            maximum=MAX_REGISTRY_BYTES,
+        )
+    )
+    policy = _mapping(portfolio.get("evidence_policy"))
+    completion_gate = _mapping(policy.get("completion_gate"))
+    cta_placements = _tuple_text(policy.get("verified_cta_placements"), maximum=80)
+    if (
+        portfolio.get("schema") != "RAOS_EDITORIAL_PORTFOLIO_V2"
+        or portfolio.get("version") != "2.0.0"
+        or portfolio.get("target_origin") != "https://kurashinoshirube.com"
+        or cta_placements != ("product_card", "final_summary")
+        or completion_gate
+        != {
+            "required_product_count": _FINAL_PORTFOLIO_PRODUCT_COUNT,
+            "required_product_card_count": (_FINAL_PORTFOLIO_PRODUCT_PLACEMENT_COUNT),
+            "required_affiliate_cta_count": _FINAL_PORTFOLIO_CTA_PLACEMENT_COUNT,
+            "required_product_state": "verified",
+            "required_product_image_state": "verified",
+            "maximum_neutral_product_images": 0,
+            "maximum_manufacturer_fallback_ctas": 0,
+        }
+    ):
+        _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
+
+    product_ids: set[str] = set()
+    for raw_product in _list(portfolio.get("products")):
+        product = _mapping(raw_product)
+        product_id = _text(product.get("product_id"), maximum=160)
+        if _PRODUCT_ID.fullmatch(product_id) is None or product_id in product_ids:
+            _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
+        product_ids.add(product_id)
+
+    article_products: list[tuple[str, tuple[str, ...]]] = []
+    observed_article_ids: set[str] = set()
+    for raw_article in _list(portfolio.get("articles")):
+        article = _mapping(raw_article)
+        article_id = _text(article.get("article_id"), maximum=160)
+        references = tuple(
+            _text(item, maximum=160) for item in _list(article.get("product_ids"))
+        )
+        if (
+            article_id in observed_article_ids
+            or len(references) != len(set(references))
+            or (article_id == "solota-vs-rakua-mini-plus") != (not references)
+            or any(
+                _PRODUCT_ID.fullmatch(product_id) is None for product_id in references
+            )
+            or not set(references) <= product_ids
+        ):
+            _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
+        observed_article_ids.add(article_id)
+        article_products.append((article_id, references))
+
+    placement_count = sum(len(products) for _article_id, products in article_products)
+    referenced_product_ids = {
+        product_id
+        for _article_id, products in article_products
+        for product_id in products
+    }
+    cta_placement_count = placement_count * len(cta_placements)
+    if (
+        tuple(article_id for article_id, _products in article_products)
+        != _FINAL_PORTFOLIO_ARTICLE_IDS
+        or len(product_ids) != _FINAL_PORTFOLIO_PRODUCT_COUNT
+        or placement_count != _FINAL_PORTFOLIO_PRODUCT_PLACEMENT_COUNT
+        or cta_placement_count != _FINAL_PORTFOLIO_CTA_PLACEMENT_COUNT
+        or product_ids != referenced_product_ids
+    ):
+        _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
+    return tuple(article_products), frozenset(product_ids), cta_placement_count
+
+
 def load_product_capture_plan(repository_root: Path) -> ProductCapturePlan:
-    """Cross-bind the five article packets, 18 affiliates, and 18 media targets."""
+    """Cross-bind the final portfolio and its owner-bounded first-five slice."""
 
     if not repository_root.is_absolute():
         _fail()
+    (
+        portfolio_article_products,
+        portfolio_product_ids,
+        portfolio_cta_placement_count,
+    ) = _load_final_portfolio_inventory(repository_root)
+    portfolio_products_by_article = dict(portfolio_article_products)
+    if len(portfolio_products_by_article) != len(portfolio_article_products):
+        _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
+    # This adapter is an owner-bounded read slice.  Keep the final portfolio
+    # contract at 33 products, but only include products whose Rakuten shop
+    # selector is already recorded here.  Products without that verified
+    # selector remain fail-closed until owner-private evidence is supplied.
+    shop_codes = dict(_PRODUCT_SHOP_CODES)
+    try:
+        expected_capture_products_by_article = {
+            article_id: tuple(
+                product_id
+                for product_id in portfolio_products_by_article[article_id]
+                if product_id in shop_codes
+            )
+            for article_id in _ARTICLE_IDS
+        }
+    except KeyError:
+        _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
+    expected_capture_product_ids = {
+        product_id
+        for product_ids in expected_capture_products_by_article.values()
+        for product_id in product_ids
+    }
+    expected_packet_product_ids = {
+        product_id
+        for article_id in _ARTICLE_IDS
+        for product_id in portfolio_products_by_article[article_id]
+    }
     articles = _mapping(
         _strict_json(
             _read_tracked_file(
@@ -479,19 +640,24 @@ def load_product_capture_plan(repository_root: Path) -> ProductCapturePlan:
         if product_id in assets:
             _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
         assets[product_id] = row
-    if len(affiliates) != 18 or len(assets) != 18 or set(affiliates) != set(assets):
+    # The packet registries cover every product in the five bounded article
+    # packets (including unresolved selectors).  Only the already-selectable
+    # subset is materialized into targets below.
+    if (
+        set(affiliates) != expected_packet_product_ids
+        or set(assets) != expected_packet_product_ids
+    ):
         _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
 
     targets: dict[str, ProductCaptureTarget] = {}
-    shop_codes = dict(_PRODUCT_SHOP_CODES)
     if (
-        len(shop_codes) != 18
-        or len(shop_codes) != len(_PRODUCT_SHOP_CODES)
-        or set(shop_codes) != set(assets)
-        or not set(_FIXED_PRODUCT_ITEM_CODES) <= set(assets)
+        len(shop_codes) != len(_PRODUCT_SHOP_CODES)
+        or set(shop_codes) != expected_capture_product_ids
+        or not set(_FIXED_PRODUCT_ITEM_CODES) <= expected_capture_product_ids
     ):
         _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
-    for product_id, asset in assets.items():
+    for product_id in expected_capture_product_ids:
+        asset = assets[product_id]
         affiliate = affiliates[product_id]
         identity = _mapping(asset.get("identity"))
         fixed_item_code = identity.get("item_code")
@@ -505,8 +671,7 @@ def load_product_capture_plan(repository_root: Path) -> ProductCapturePlan:
             affiliate.get("status") != "PENDING_OWNER_LOCAL_RAKUTEN_EVIDENCE"
             or destination is not None
             or affiliate.get("evidence") is not None
-            or affiliate.get("publication_blocker")
-            != "PENDING_AFFILIATE_EVIDENCE"
+            or affiliate.get("publication_blocker") != "PENDING_AFFILIATE_EVIDENCE"
         ):
             _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
         selected_item_code = _FIXED_PRODUCT_ITEM_CODES.get(
@@ -560,6 +725,10 @@ def load_product_capture_plan(repository_root: Path) -> ProductCapturePlan:
         for raw_card in _list(render.get("product_cards")):
             card = _mapping(raw_card)
             product_id = _text(card.get("product_id"), maximum=300)
+            # Unresolved products stay visible in the final editorial
+            # inventory, but are intentionally outside this capture slice.
+            if product_id not in expected_capture_product_ids:
+                continue
             article_target = targets.get(product_id)
             if article_target is None or product_id in observed_products:
                 _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
@@ -570,12 +739,21 @@ def load_product_capture_plan(repository_root: Path) -> ProductCapturePlan:
                 _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
             observed_products.add(product_id)
             product_rows.append(article_target)
-        if not product_rows:
+        if (
+            not product_rows
+            or tuple(target.product_id for target in product_rows)
+            != expected_capture_products_by_article[article_id]
+        ):
             _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
         article_rows.append((article_id, tuple(product_rows)))
     if observed_articles != set(_ARTICLE_IDS):
         _fail(RakutenProductCaptureFailureCode.CONTRACT_INVALID)
-    return ProductCapturePlan(tuple(article_rows))
+    return ProductCapturePlan(
+        article_products=tuple(article_rows),
+        portfolio_article_products=portfolio_article_products,
+        portfolio_product_ids=portfolio_product_ids,
+        portfolio_cta_placement_count=portfolio_cta_placement_count,
+    )
 
 
 @dataclass(frozen=True, slots=True, repr=False)
@@ -1235,10 +1413,7 @@ def _provider_title_has_token(title: str, token: str) -> bool:
         if re.fullmatch(r"[a-z0-9]", components[-1][-1], re.ASCII)
         else ""
     )
-    return (
-        re.search(prefix + token_pattern + suffix, normalized_title)
-        is not None
-    )
+    return re.search(prefix + token_pattern + suffix, normalized_title) is not None
 
 
 def _provider_variant(title: str, variants: tuple[str, ...]) -> str | None:
@@ -1271,6 +1446,23 @@ def _decode_provider_response(raw: bytes) -> Mapping[str, object]:
         raise
 
 
+def discovery_rows(raw: bytes) -> list[Mapping[str, object]]:
+    """Validate a first-page model discovery response without granting identity."""
+    rows = _item_rows(
+        raw, expected_fields=frozenset(_DISCOVERY_ELEMENTS), expected_hits=30
+    )
+    for row in rows:
+        _validate_provider_row_structure(row, affiliate=False)
+    return rows
+
+
+def matches_product_identity(
+    target: ProductCaptureTarget, row: Mapping[str, object]
+) -> bool:
+    """Apply the capture adapter's exact model, kind and exclusion checks."""
+    return _valid_identity(target, row)
+
+
 def _item_rows(
     raw: bytes, *, expected_fields: frozenset[str], expected_hits: int
 ) -> list[Mapping[str, object]]:
@@ -1282,6 +1474,18 @@ def _item_rows(
             return []
         rows: list[Mapping[str, object]] = []
         aliases = {"items", "Items"} & set(document)
+        # The API omits Items entirely when an elements-filtered search is empty.
+        if frozenset(document) == _RESPONSE_SUMMARY_FIELDS:
+            if document != {
+                "count": 0,
+                "page": 1,
+                "first": 0,
+                "last": 0,
+                "hits": 0,
+                "pageCount": 0,
+            } or any(type(value) is not int for value in document.values()):
+                _fail(RakutenProductCaptureFailureCode.RESPONSE_INVALID)
+            return []
         if set(document) == {"Items"}:
             raw_rows = document["Items"]
         elif len(aliases) == 1:
@@ -1314,7 +1518,9 @@ def _item_rows(
             returned = len(provider_rows)
             if (
                 page != 1
-                or hits != expected_hits
+                # Live responses report the actual row count on a short page;
+                # recorded responses may retain the requested page size.
+                or hits not in {expected_hits, returned}
                 or (returned == 0 and (count, first, last, page_count) != (0, 0, 0, 0))
                 or (
                     returned > 0
@@ -1322,7 +1528,8 @@ def _item_rows(
                         count < returned
                         or first != 1
                         or last != returned
-                        or page_count != min((count + hits - 1) // hits, 100)
+                        or page_count
+                        != min((count + expected_hits - 1) // expected_hits, 100)
                     )
                 )
             ):
@@ -1591,7 +1798,7 @@ def _validate_provider_row_structure(
             item_url=query["pc"][0],
             item_code=item_code,
         )
-    except (EditorialPilotFailure, ValueError):
+    except EditorialPilotFailure, ValueError:
         _fail(RakutenProductCaptureFailureCode.RESPONSE_INVALID)
 
 
@@ -1614,9 +1821,8 @@ def _one_exact_row(
     if len(matches) != 1:
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_AMBIGUOUS)
     row = matches[0]
-    if (
-        not item_code.startswith(f"{target.shop_code}:")
-        or (affiliate and "affiliateUrl" not in row)
+    if not item_code.startswith(f"{target.shop_code}:") or (
+        affiliate and "affiliateUrl" not in row
     ):
         _fail(RakutenProductCaptureFailureCode.PRODUCT_IDENTITY_INVALID)
     if not _valid_identity(target, row):
@@ -2073,7 +2279,10 @@ def _download_first_exact_image(
         try:
             return image_url, _download_image(image_url, connection_factory), attempted
         except RakutenProductCaptureFailure as exc:
-            if exc.code is not RakutenProductCaptureFailureCode.IMAGE_INVALID:
+            if exc.code not in {
+                RakutenProductCaptureFailureCode.IMAGE_INVALID,
+                RakutenProductCaptureFailureCode.MIME_INVALID,
+            }:
                 raise
     _fail(RakutenProductCaptureFailureCode.IMAGE_INVALID)
 

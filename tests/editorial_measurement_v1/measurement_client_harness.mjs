@@ -48,11 +48,13 @@ class FakeBlob {
   }
 }
 
-function createRuntime(initialConsent, delivery = {}) {
+function createRuntime(initialConsent, delivery = {}, configOverride = {}) {
   let granted = initialConsent;
   let randomCounter = 1;
   const fetchEvents = [];
+  const fetchEndpoints = [];
   const beaconEvents = [];
+  const beaconEndpoints = [];
   const ga4Events = [];
   const documentListeners = new Map();
   const storage = new Map();
@@ -144,8 +146,7 @@ function createRuntime(initialConsent, delivery = {}) {
       storage.set(key, String(value));
     }
   };
-  const window = {
-    RAOS_MEASUREMENT_CONFIG_V1: {
+  const measurementConfig = {
       schema: 'RAOSMeasurementClientConfigV1',
       enabled: true,
       endpoint: 'https://kurashinoshirube.com/wp-json/raos/v1/events',
@@ -163,7 +164,10 @@ function createRuntime(initialConsent, delivery = {}) {
         relatedArticleIds: ['article-002'],
         snapshotId: 'snp-a01-0123456789ab'
       }
-    },
+  };
+  Object.assign(measurementConfig, configOverride);
+  const window = {
+    RAOS_MEASUREMENT_CONFIG_V1: measurementConfig,
     _googlesitekitConsents: {
       analytics_storage: granted ? 'granted' : 'denied'
     },
@@ -176,10 +180,11 @@ function createRuntime(initialConsent, delivery = {}) {
         return bytes;
       }
     },
-    fetch(_endpoint, options) {
+    fetch(endpoint, options) {
       if (delivery.fetchThrows === true) {
         throw new Error('simulated collection failure');
       }
+      fetchEndpoints.push(endpoint);
       fetchEvents.push(JSON.parse(options.body));
       return Promise.resolve({ ok: true });
     },
@@ -192,13 +197,17 @@ function createRuntime(initialConsent, delivery = {}) {
     gtag(...arguments_) {
       ga4Events.push(arguments_);
     },
-    location: { origin: 'https://kurashinoshirube.com' },
+    location: {
+      href: 'https://kurashinoshirube.com/example/',
+      origin: 'https://kurashinoshirube.com'
+    },
     navigator: {
-      sendBeacon(_endpoint, blob) {
+      sendBeacon(endpoint, blob) {
         if (delivery.beaconThrows === true) {
           throw new Error('simulated beacon failure');
         }
         assert.equal(blob.type, 'application/json');
+        beaconEndpoints.push(endpoint);
         beaconEvents.push(JSON.parse(blob.parts.join('')));
         return true;
       }
@@ -229,6 +238,7 @@ function createRuntime(initialConsent, delivery = {}) {
   });
 
   return {
+    beaconEndpoints,
     beaconEvents,
     card,
     comparison,
@@ -240,6 +250,7 @@ function createRuntime(initialConsent, delivery = {}) {
       return fetchEvents.concat(beaconEvents);
     },
     fetchEvents,
+    fetchEndpoints,
     ga4Events,
     observers,
     run() {
@@ -260,6 +271,21 @@ assert.deepEqual(denied.events(), []);
 assert.deepEqual(denied.ga4Events, []);
 assert.equal(denied.storage.size, 0);
 assert.equal(denied.observers.length, 0);
+
+for (const endpoint of [
+  'http://kurashinoshirube.com/wp-json/raos/v1/events',
+  'https://kurashinoshirube.com.evil.example/wp-json/raos/v1/events',
+  'https://kurashinoshirube.com/wp-json/raos/v1/events?leak=1',
+  'https://user:pass@kurashinoshirube.com/wp-json/raos/v1/events',
+  'javascript:alert(1)'
+]) {
+  const invalidEndpoint = createRuntime(true, {}, { endpoint });
+  invalidEndpoint.run();
+  assert.deepEqual(invalidEndpoint.events(), []);
+  assert.deepEqual(invalidEndpoint.ga4Events, []);
+  assert.equal(invalidEndpoint.storage.size, 0);
+  assert.equal(invalidEndpoint.observers.length, 0);
+}
 
 const delayedGrant = createRuntime(false);
 delayedGrant.run();
@@ -298,6 +324,9 @@ runtime.document.dispatch('click', {
 assert.equal(defaultPrevented, false);
 assert.equal(runtime.events().filter((event) => event.event_name === 'affiliate_click').length, 1);
 assert.equal(runtime.beaconEvents.length, 1);
+assert.deepEqual(runtime.beaconEndpoints, [
+  'https://kurashinoshirube.com/wp-json/raos/v1/events'
+]);
 
 const failedDelivery = createRuntime(true, {
   beaconThrows: true,

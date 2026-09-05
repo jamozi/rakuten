@@ -9,6 +9,8 @@ readonly e2e_directory="$repository_root/tests/wordpress_mcp_v1/e2e"
 readonly compose_file="$e2e_directory/compose.yaml"
 readonly adapter_url=https://github.com/WordPress/mcp-adapter/releases/download/v0.6.1/mcp-adapter.zip
 readonly adapter_sha256=1c3cd47c32e99b4e7d8690a44a7890256e92a8b96f61776cbe1894e5483cf676
+readonly yoast_url=https://downloads.wordpress.org/plugin/wordpress-seo.28.3.zip
+readonly yoast_sha256=381edc1603147bd76af81341f21c9155ff3e9f6ce29ed20886d889fb9d6744fb
 readonly editor_user=raos-e2e-editor
 readonly operator_user=raos-e2e-operator
 readonly project_name="raoswpe2e$$"
@@ -30,6 +32,7 @@ case "$e2e_temporary_directory" in
 esac
 readonly e2e_temporary_directory
 readonly adapter_zip="$e2e_temporary_directory/mcp-adapter.zip"
+readonly yoast_zip="$e2e_temporary_directory/wordpress-seo.28.3.zip"
 readonly state_path="$e2e_temporary_directory/state.json"
 readonly code_artifact_directory="$e2e_temporary_directory/code-artifacts"
 RAOS_WORDPRESS_E2E_DATA_DIR="$e2e_temporary_directory/data"
@@ -134,6 +137,29 @@ actual_adapter_sha256="$(sha256sum "$adapter_zip" | awk '{print $1}')"
 [[ "$actual_adapter_sha256" == "$adapter_sha256" ]] \
   || fail RAOS_WORDPRESS_E2E_ADAPTER_DIGEST_MISMATCH
 
+if [[ -n "${RAOS_WORDPRESS_E2E_YOAST_ZIP:-}" ]]; then
+  [[ "$RAOS_WORDPRESS_E2E_YOAST_ZIP" == /* ]] \
+    || fail RAOS_WORDPRESS_E2E_YOAST_PATH_INVALID
+  [[ -f "$RAOS_WORDPRESS_E2E_YOAST_ZIP" && ! -L "$RAOS_WORDPRESS_E2E_YOAST_ZIP" ]] \
+    || fail RAOS_WORDPRESS_E2E_YOAST_PATH_INVALID
+  install -m 0600 -- "$RAOS_WORDPRESS_E2E_YOAST_ZIP" "$yoast_zip"
+else
+  curl \
+    --proto '=https' \
+    --tlsv1.2 \
+    --fail \
+    --location \
+    --silent \
+    --show-error \
+    --output "$yoast_zip" \
+    "$yoast_url"
+  chmod 0600 "$yoast_zip"
+fi
+
+actual_yoast_sha256="$(sha256sum "$yoast_zip" | awk '{print $1}')"
+[[ "$actual_yoast_sha256" == "$yoast_sha256" ]] \
+  || fail RAOS_WORDPRESS_E2E_YOAST_DIGEST_MISMATCH
+
 "$repository_root/.venv/bin/python" \
   "$repository_root/scripts/build_wordpress_mcp_v1.py" --package
 readonly raos_plugin_zip="$repository_root/.secrets/wordpress-mcp/plugin/raos-codex-mcp-abilities-1.3.1.zip"
@@ -184,6 +210,7 @@ done
 compose exec -T --user root wordpress sh -eu -c \
   'cp -a /usr/src/wordpress/wp-content/. /var/www/raos-code/wp-content/; chown -R www-data:www-data /var/www/raos-code; chmod 0700 /var/www/raos-code/private /var/www/raos-code/staging'
 compose cp "$adapter_zip" wordpress:/var/www/raos-code/staging/mcp-adapter.zip
+compose cp "$yoast_zip" wordpress:/var/www/raos-code/staging/wordpress-seo.28.3.zip
 compose cp "$raos_plugin_zip" wordpress:/var/www/raos-code/staging/raos-codex-mcp-abilities.zip
 compose cp "$measurement_plugin_zip" wordpress:/var/www/raos-code/staging/raos-editorial-measurement.zip
 compose cp "$e2e_directory/approve_harness.php" wordpress:/var/www/raos-code/staging/approve_harness.php
@@ -192,6 +219,7 @@ compose cp "$e2e_directory/idempotency_harness.php" wordpress:/var/www/raos-code
 compose cp "$e2e_directory/mutate_harness.php" wordpress:/var/www/raos-code/staging/mutate_harness.php
 compose cp "$e2e_directory/rollback_harness.php" wordpress:/var/www/raos-code/staging/rollback_harness.php
 compose cp "$e2e_directory/store_upgrade_harness.php" wordpress:/var/www/raos-code/staging/store_upgrade_harness.php
+compose cp "$e2e_directory/yoast_harness.php" wordpress:/var/www/raos-code/staging/yoast_harness.php
 compose cp "$code_artifact_directory/kurashinoshirube-child-baseline.zip" wordpress:/var/www/raos-code/staging/kurashinoshirube-child-baseline.zip
 compose exec -T --user root wordpress chown -R www-data:www-data /var/www/raos-code/staging
 
@@ -214,12 +242,17 @@ wordpress_cli config set WP_CONTENT_URL https://kurashinoshirube.com/wp-content 
 wordpress_cli plugin install /var/www/raos-code/staging/mcp-adapter.zip --activate
 wordpress_cli plugin install /var/www/raos-code/staging/raos-codex-mcp-abilities.zip --activate
 wordpress_cli plugin install /var/www/raos-code/staging/raos-editorial-measurement.zip --activate
+wordpress_cli plugin install /var/www/raos-code/staging/wordpress-seo.28.3.zip --activate
 wordpress_cli rewrite structure '/%postname%/' --hard >/dev/null 2>&1 \
   || fail RAOS_WORDPRESS_E2E_REWRITE_FAILED
 wordpress_cli theme is-installed twentytwentyfive \
   || fail RAOS_WORDPRESS_E2E_PARENT_THEME_MISSING
 wordpress_cli theme install \
   /var/www/raos-code/staging/kurashinoshirube-child-baseline.zip --activate
+wordpress_cli eval-file /var/www/raos-code/staging/yoast_harness.php seed \
+  || fail RAOS_WORDPRESS_E2E_YOAST_SEED_FAILED
+wordpress_cli eval-file /var/www/raos-code/staging/yoast_harness.php check-gates \
+  || fail RAOS_WORDPRESS_E2E_YOAST_GATE_CHECK_FAILED
 [[ "$(wordpress_cli core version)" == 7.1 ]] \
   || fail RAOS_WORDPRESS_E2E_WORDPRESS_VERSION_INVALID
 [[ "$(wordpress_cli eval 'echo WP_MCP_VERSION;')" == 0.6.1 ]] \
@@ -235,6 +268,10 @@ wordpress_cli plugin is-active raos-codex-mcp-abilities \
   || fail RAOS_WORDPRESS_E2E_PLUGIN_INACTIVE
 wordpress_cli plugin is-active raos-editorial-measurement \
   || fail RAOS_WORDPRESS_E2E_MEASUREMENT_PLUGIN_INACTIVE
+wordpress_cli plugin is-active wordpress-seo \
+  || fail RAOS_WORDPRESS_E2E_YOAST_INACTIVE
+[[ "$(wordpress_cli plugin get wordpress-seo --field=version)" == 28.3 ]] \
+  || fail RAOS_WORDPRESS_E2E_YOAST_VERSION_INVALID
 wordpress_cli eval-file /var/www/raos-code/staging/store_upgrade_harness.php degrade \
   || fail RAOS_WORDPRESS_E2E_STORE_DEGRADE_FAILED
 wordpress_cli eval-file /var/www/raos-code/staging/store_upgrade_harness.php check \

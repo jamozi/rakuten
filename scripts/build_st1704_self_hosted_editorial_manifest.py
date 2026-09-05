@@ -16,6 +16,10 @@ from typing import TYPE_CHECKING, Final, NoReturn, cast
 ROOT: Final = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+from scripts import (  # noqa: E402
+    build_st1704_reader_claim_coverage as reader_claim_owner,
+)
+
 if TYPE_CHECKING:
     # Static imports are owner edges for the affected-generator build graph.
     from scripts import build_editorial_measurement_v1 as measurement_owner  # noqa: F401
@@ -51,6 +55,11 @@ ARTICLE_IDS: Final = (
     "st1704-anker-solix-c300-c800-c1000-differences",
     "st1704-countertop-dishwasher-for-small-households",
     "st1704-compact-robot-vacuum-shortlist",
+    "carry-on-suitcase-under-100-seats",
+    "lightweight-carry-on-suitcase-under-3kg",
+    "front-open-carry-on-suitcase-with-stopper",
+    "roomba-mini-vs-switchbot-k11-pro",
+    "solota-vs-rakua-mini-plus",
 )
 
 _BASE_RUNTIME_INPUT_PATHS: Final[tuple[Path, ...]] = (
@@ -67,17 +76,60 @@ _BASE_RUNTIME_INPUT_PATHS: Final[tuple[Path, ...]] = (
     SLICE_PATH / "REVENUE_EXPERIMENT_RUNBOOK.md",
     SLICE_PATH / "REVENUE_UNBLOCK_WORKLOG.md",
     SLICE_PATH / "content/articles.v1.json",
+    Path("changes/editorial-portfolio-v2/editorial-portfolio.v2.json"),
+    Path("changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json"),
     Path("changes/editorial-portfolio-v3/editorial-portfolio.v3.json"),
     Path("changes/editorial-portfolio-v3/generated/navigation.v3.json"),
     SLICE_PATH / "media/product-media-registry.v1.json",
+    SLICE_PATH / "media/source-images/article-countertop-dishwasher-guide.png",
     SLICE_PATH / "media/source-images/article-portable-power-guide.png",
+    SLICE_PATH / "media/source-images/article-robot-vacuum-guide.png",
     SLICE_PATH / "operations/measurement-ledger.v1.json",
     SLICE_PATH / "operations/publication-plan.v1.json",
     SLICE_PATH / "sources/source-locator-contract.v1.json",
+    SLICE_PATH / "sources/product-safety-query-plan.v1.json",
+    SLICE_PATH / "sources/product-safety-query-receipts.v1.json",
+    SLICE_PATH / "sources/product-safety-manufacturer-query-plan.v1.json",
+    SLICE_PATH / "sources/product-safety-manufacturer-query-evidence.empty.v1.json",
+    SLICE_PATH / "sources/reader-claim-bindings.v1.json",
     SLICE_PATH / "sources/source-registry.v1.json",
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html"
+    ),
+    Path(
+        "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html"
+    ),
+    THEME_INPUT_ROOT / "assets/analytics-consent-gate.js",
     THEME_INPUT_ROOT / "assets/editorial-v2.css",
+    THEME_INPUT_ROOT / "assets/editorial-navigation.js",
     THEME_INPUT_ROOT / "assets/editorial-navigation.v3.json",
+    THEME_INPUT_ROOT / "assets/images/article-countertop-dishwasher-guide.webp",
     THEME_INPUT_ROOT / "assets/images/article-portable-power-guide.webp",
+    THEME_INPUT_ROOT / "assets/images/article-robot-vacuum-guide.webp",
     THEME_INPUT_ROOT / "assets/images/article-suitcase-guide.webp",
     THEME_INPUT_ROOT / "assets/images/brand-mark.svg",
     THEME_INPUT_ROOT / "assets/images/home-hero.webp",
@@ -88,7 +140,10 @@ _BASE_RUNTIME_INPUT_PATHS: Final[tuple[Path, ...]] = (
     THEME_INPUT_ROOT / "parts/header.html",
     THEME_INPUT_ROOT / "raos-assets.v1.json",
     THEME_INPUT_ROOT / "style.css",
+    THEME_INPUT_ROOT / "templates/404.html",
+    THEME_INPUT_ROOT / "templates/archive.html",
     THEME_INPUT_ROOT / "templates/front-page.html",
+    THEME_INPUT_ROOT / "templates/search.html",
     THEME_INPUT_ROOT / "templates/single.html",
     THEME_INPUT_ROOT / "theme-contract.v1.json",
     THEME_INPUT_ROOT / "theme.json",
@@ -102,16 +157,23 @@ _BASE_RUNTIME_INPUT_PATHS: Final[tuple[Path, ...]] = (
     Path("python/raos/adapters/self_hosted_wordpress_rest.py"),
     Path("python/raos/adapters/wordpress_rest.py"),
     Path("python/raos/application/editorial/self_hosted_editorial_pilot.py"),
+    Path("python/raos/application/editorial/product_safety_manufacturer_capture.py"),
+    Path("python/raos/application/editorial/product_safety_query_capture.py"),
+    Path("python/raos/application/editorial/product_safety_receipts.py"),
     Path("python/raos/domain/editorial/content_ast.py"),
     Path("python/raos/domain/editorial/market_learning_pilot.py"),
     Path("python/raos/domain/editorial/self_hosted_editorial_pilot.py"),
     Path("python/raos/domain/editorial/self_hosted_wordpress.py"),
     Path("python/raos/ports/self_hosted_editorial_pilot.py"),
     Path("scripts/build_st1704_self_hosted_editorial_manifest.py"),
+    Path("scripts/build_st1704_reader_claim_coverage.py"),
+    Path("scripts/build_st1704_portfolio_source_packets.py"),
     Path("scripts/build_editorial_v3_theme_navigation.py"),
     Path("scripts/build_st1704_theme_assets.py"),
     Path("scripts/build_st1704_self_hosted_theme.py"),
     Path("scripts/st1704_official_source_capture.py"),
+    Path("scripts/st1704_product_safety_manufacturer_capture.py"),
+    Path("scripts/st1704_product_safety_query_capture.py"),
     Path("scripts/st1704_self_hosted_editorial_pilot.py"),
 )
 _BASE_RUNTIME_PATHS: Final[tuple[str, ...]] = tuple(
@@ -218,7 +280,27 @@ def _validate_content_identity() -> None:
         identities.append(article_id)
         if article.get("publication_authority") != "NONE":
             _fail()
-    if tuple(identities) != ARTICLE_IDS or len(set(identities)) != 5:
+    if tuple(identities) != ARTICLE_IDS[:5] or len(set(identities)) != 5:
+        _fail()
+
+    portfolio = _load_json("changes/editorial-portfolio-v3/editorial-portfolio.v3.json")
+    if type(portfolio) is not dict:
+        _fail()
+    portfolio_articles_value = cast(dict[str, object], portfolio).get("articles")
+    if type(portfolio_articles_value) is not list:
+        _fail()
+    portfolio_articles = cast(list[object], portfolio_articles_value)
+    portfolio_identities: list[str] = []
+    for article_value in portfolio_articles:
+        if type(article_value) is not dict:
+            _fail()
+        article_id = cast(dict[str, object], article_value).get("article_id")
+        if type(article_id) is not str:
+            _fail()
+        portfolio_identities.append(article_id)
+    if tuple(portfolio_identities) != ARTICLE_IDS or len(
+        set(portfolio_identities)
+    ) != len(ARTICLE_IDS):
         _fail()
 
 
@@ -231,7 +313,17 @@ def _validate_required_paths() -> None:
         _read_regular_file(relative)
 
 
-def build_manifest() -> bytes:
+def build_manifest(
+    *, for_source_refresh: bool = False, development: bool = False
+) -> bytes:
+    if for_source_refresh and development:
+        _fail()
+    if for_source_refresh:
+        reader_claim_owner.validate_source_refresh_inputs(ROOT)
+    else:
+        reader_claim_owner.validate_repository(
+            ROOT, require_fresh_sales_state=not development
+        )
     _validate_required_paths()
     _validate_content_identity()
     _read_regular_file(
@@ -255,7 +347,10 @@ def build_manifest() -> bytes:
         "paths": paths,
         "generator_owner": "build_st1704_self_hosted_editorial_manifest",
         "generator_version": "2",
-        "predecessor": {"owner_id": "build_st1703_self_hosted_runtime_manifest", "version": "2"},
+        "predecessor": {
+            "owner_id": "build_st1703_self_hosted_runtime_manifest",
+            "version": "2",
+        },
         "publication_authority": "NONE",
         "schema": "SELF_HOSTED_EDITORIAL_PILOT_MANIFEST_V1",
         "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
@@ -292,10 +387,27 @@ def _write_atomic(payload: bytes) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--check", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--check", action="store_true")
+    mode.add_argument(
+        "--for-source-refresh",
+        action="store_true",
+        help=(
+            "Prepare the credential-free source capture runtime with expired "
+            "sales evidence; does not satisfy publication or normal checks."
+        ),
+    )
+    parser.add_argument(
+        "--development",
+        action="store_true",
+        help="Replay the full historical ledger; does not authorize publication.",
+    )
     arguments = parser.parse_args()
     try:
-        expected = build_manifest()
+        expected = build_manifest(
+            for_source_refresh=arguments.for_source_refresh,
+            development=arguments.development,
+        )
         if arguments.check:
             actual = _read_regular_file(
                 f"{SLICE}/runtime-manifest.v1.json", maximum=MAX_MANIFEST_BYTES
@@ -305,10 +417,14 @@ def main() -> int:
         else:
             OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
             _write_atomic(expected)
-    except ManifestFailure as error:
+    except (ManifestFailure, reader_claim_owner.CoverageFailure) as error:
         print(str(error), file=sys.stderr)
         return 1
-    print("SELF_HOSTED_EDITORIAL_MANIFEST_OK")
+    print(
+        "SELF_HOSTED_EDITORIAL_SOURCE_REFRESH_MANIFEST_ONLY"
+        if arguments.for_source_refresh
+        else "SELF_HOSTED_EDITORIAL_MANIFEST_OK"
+    )
     return 0
 
 

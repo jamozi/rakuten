@@ -1,0 +1,401 @@
+{
+  "schema": "RAOS_PRODUCT_SAFETY_MANUFACTURER_QUERY_PLAN_V1",
+  "version": "1.0.0",
+  "publication_authority": "NONE",
+  "portfolio_relative_path": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+  "portfolio_sha256": "5ef653b2444e77d912ddbcfc2c94e39bec1e37b4fee831be997546ec47cee6ba",
+  "owner_private_capture_relative_path": ".secrets/editorial-product-safety-manufacturer-capture-v1",
+  "coverage_caveat": "この結果は、審査済みのメーカー公式検索endpoint・型番・確認日時の範囲だけを示し、安全情報が存在しないことを一般に証明しません。",
+  "evidence_policy": {
+    "tracked_documents_are_evidence": false,
+    "raw_request_private_mode": "0600",
+    "raw_response_private_mode": "0600",
+    "private_directory_mode": "0700",
+    "none_found_rule": "REPLAYED_PARSEABLE_OFFICIAL_EXACT_QUERY_ZERO_ONLY",
+    "product_or_general_safety_page_none_found_allowed": false,
+    "unreviewed_endpoint_behavior": "MANUAL_REQUIRED",
+    "maximum_age_days": 30,
+    "maximum_future_skew_minutes": 5
+  },
+  "matrix": {
+    "mode": "EXACT_CURRENT_SELECTED_PRODUCTS",
+    "expected_product_count": 33,
+    "reviewed_exact_query_product_count": 0,
+    "manual_required_product_count": 33
+  },
+  "reviewed_endpoint_contracts": [],
+  "products": [
+    {
+      "product_id": "PRD-PROTECA-TRI-AIR-01541",
+      "exact_model_tokens": [
+        "01541"
+      ],
+      "query_model_token": "01541",
+      "manufacturer_code": "ACE",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "exact_model_tokens": [
+        "05721"
+      ],
+      "query_model_token": "05721",
+      "manufacturer_code": "ACE",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "exact_model_tokens": [
+        "01471"
+      ],
+      "query_model_token": "01471",
+      "manufacturer_code": "ACE",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C300",
+      "exact_model_tokens": [
+        "A17225Z1",
+        "A1722511"
+      ],
+      "query_model_token": "A17225Z1",
+      "manufacturer_code": "ANKER_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-JACKERY-500-NEW",
+      "exact_model_tokens": [
+        "500 New"
+      ],
+      "query_model_token": "500 New",
+      "manufacturer_code": "JACKERY_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C800",
+      "exact_model_tokens": [
+        "A17535Z1",
+        "A1753"
+      ],
+      "query_model_token": "A17535Z1",
+      "manufacturer_code": "ANKER_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-JACKERY-1000-NEW-V3",
+      "exact_model_tokens": [
+        "JE-1000G",
+        "JE-1000G-WH"
+      ],
+      "query_model_token": "JE-1000G",
+      "manufacturer_code": "JACKERY_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-DJI-POWER-1000-V2",
+      "exact_model_tokens": [
+        "DYM1000V2L",
+        "DYM1000V2H"
+      ],
+      "query_model_token": "DYM1000V2L",
+      "manufacturer_code": "DJI_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+      "exact_model_tokens": [
+        "A1754"
+      ],
+      "query_model_token": "A1754",
+      "manufacturer_code": "ANKER_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000",
+      "exact_model_tokens": [
+        "A17615Z1",
+        "A1761521",
+        "A1761511"
+      ],
+      "query_model_token": "A17615Z1",
+      "manufacturer_code": "ANKER_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+      "exact_model_tokens": [
+        "A17635Z1",
+        "A1763521"
+      ],
+      "query_model_token": "A17635Z1",
+      "manufacturer_code": "ANKER_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+      "exact_model_tokens": [
+        "TK-MDW22W"
+      ],
+      "query_model_token": "TK-MDW22W",
+      "manufacturer_code": "THANKO",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "exact_model_tokens": [
+        "SS-MA251"
+      ],
+      "query_model_token": "SS-MA251",
+      "manufacturer_code": "SIROCA",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-TOSHIBA-DWS-33B-W",
+      "exact_model_tokens": [
+        "DWS-33B(W)",
+        "DWS-33B"
+      ],
+      "query_model_token": "DWS-33B",
+      "manufacturer_code": "TOSHIBA_LIFESTYLE",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
+      "exact_model_tokens": [
+        "T2292511"
+      ],
+      "query_model_token": "T2292511",
+      "manufacturer_code": "ANKER_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K11-PRO",
+      "exact_model_tokens": [
+        "K11+ Pro"
+      ],
+      "query_model_token": "K11+ Pro",
+      "manufacturer_code": "SWITCHBOT",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
+      "exact_model_tokens": [
+        "DEEBOT mini 2",
+        "110-2519-0301"
+      ],
+      "query_model_token": "DEEBOT mini 2",
+      "manufacturer_code": "ECOVACS_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "exact_model_tokens": [
+        "N285060"
+      ],
+      "query_model_token": "N285060",
+      "manufacturer_code": "IROBOT_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+      "exact_model_tokens": [
+        "02350"
+      ],
+      "query_model_token": "02350",
+      "manufacturer_code": "ACE",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+      "exact_model_tokens": [
+        "01550"
+      ],
+      "query_model_token": "01550",
+      "manufacturer_code": "ACE",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-ACE-PALISADES3-Z-06910",
+      "exact_model_tokens": [
+        "06910"
+      ],
+      "query_model_token": "06910",
+      "manufacturer_code": "ACE",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "exact_model_tokens": [
+        "60524"
+      ],
+      "query_model_token": "60524",
+      "manufacturer_code": "BERMAS",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+      "exact_model_tokens": [
+        "01521"
+      ],
+      "query_model_token": "01521",
+      "manufacturer_code": "ACE",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
+      "exact_model_tokens": [
+        "82353171"
+      ],
+      "query_model_token": "82353171",
+      "manufacturer_code": "RIMOWA_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+      "exact_model_tokens": [
+        "QJ6-68002"
+      ],
+      "query_model_token": "QJ6-68002",
+      "manufacturer_code": "SAMSONITE_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549",
+      "exact_model_tokens": [
+        "134679-1549"
+      ],
+      "query_model_token": "134679-1549",
+      "manufacturer_code": "SAMSONITE_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-INNOVATOR-INV50",
+      "exact_model_tokens": [
+        "INV50"
+      ],
+      "query_model_token": "INV50",
+      "manufacturer_code": "TRIO",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01551",
+      "exact_model_tokens": [
+        "01551"
+      ],
+      "query_model_token": "01551",
+      "manufacturer_code": "ACE",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-III-60570",
+      "exact_model_tokens": [
+        "60570"
+      ],
+      "query_model_token": "60570",
+      "manufacturer_code": "BERMAS",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+      "exact_model_tokens": [
+        "F115060"
+      ],
+      "query_model_token": "F115060",
+      "manufacturer_code": "IROBOT_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-M171",
+      "exact_model_tokens": [
+        "SS-M171"
+      ],
+      "query_model_token": "SS-M171",
+      "manufacturer_code": "SIROCA",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-BLUETTI-AORA30-V2",
+      "exact_model_tokens": [
+        "AORA 30 V2"
+      ],
+      "query_model_token": "AORA 30 V2",
+      "manufacturer_code": "BLUETTI_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    },
+    {
+      "product_id": "PRD-BLUETTI-AORA100-V2",
+      "exact_model_tokens": [
+        "AORA 100 V2"
+      ],
+      "query_model_token": "AORA 100 V2",
+      "manufacturer_code": "BLUETTI_JAPAN",
+      "endpoint_review_status": "MANUAL_REQUIRED",
+      "endpoint_contract_id": null,
+      "manual_required_reason": "NO_REVIEWED_EXACT_MANUFACTURER_SAFETY_QUERY_ENDPOINT"
+    }
+  ]
+}

@@ -26,30 +26,50 @@ override MANAGED_PYTHON := $(REPOSITORY_ROOT)/.venv/bin/python
 override CLEAN_PYTHON := /usr/bin/env -i PATH=/usr/bin:/bin \
 	LANG=C LC_ALL=C TZ=UTC \
 	$(MANAGED_PYTHON) -B -I -S -X pycache_prefix=/dev/null
+override CLEAN_BUILD_PYTHON := /usr/bin/env -i PATH=/usr/bin:/bin \
+	LANG=C LC_ALL=C TZ=UTC \
+	$(MANAGED_PYTHON) -B -I -X pycache_prefix=/dev/null
 
-.PHONY: help check manifest-generate manifest-check theme-navigation-generate \
+.PHONY: help check source-packets-generate source-packets-check reader-claims-check reader-claims-skeleton manifest-generate manifest-check theme-navigation-generate \
 	theme-navigation-check theme-assets-generate theme-assets-check theme-source-check \
 	theme-check theme-package tests cli-help source-cli-help \
 	rakuten-capture-manifest-generate rakuten-capture-manifest-check \
 	rakuten-capture-cli-help
 
 help:
-	@echo 'Offline: check manifest-check rakuten-capture-manifest-check theme-navigation-check theme-assets-check theme-source-check theme-check tests cli-help source-cli-help rakuten-capture-cli-help'
+	@echo 'Offline: check reader-claims-check manifest-check rakuten-capture-manifest-check theme-navigation-check theme-assets-check theme-source-check theme-check tests cli-help source-cli-help rakuten-capture-cli-help'
 	@echo 'Local artifacts: manifest-generate rakuten-capture-manifest-generate theme-navigation-generate theme-assets-generate theme-package'
 	@echo 'Article operations: use the five closed subcommands shown by cli-help'
 	@echo 'Read-only source capture: use the two closed subcommands shown by source-cli-help'
 	@echo 'Owner-authorized Rakuten capture: use the one closed subcommand shown by rakuten-capture-cli-help'
 	@echo 'Operational process: repository-root CLEAN_PYTHON only (-B -I -S; ambient environment removed)'
+	@echo 'Build checks: repository-root CLEAN_BUILD_PYTHON (-B -I; locked venv dependencies only, ambient environment removed)'
 
-check: manifest-check rakuten-capture-manifest-check theme-navigation-check theme-assets-check theme-source-check theme-check tests
+check: source-packets-check reader-claims-check manifest-check rakuten-capture-manifest-check theme-navigation-check theme-assets-check theme-source-check theme-check tests
 
-manifest-generate:
+source-packets-generate:
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
-		scripts/build_st1704_self_hosted_editorial_manifest.py
+		scripts/build_st1704_portfolio_source_packets.py
 
-manifest-check:
+source-packets-check:
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
-		scripts/build_st1704_self_hosted_editorial_manifest.py --check
+		scripts/build_st1704_portfolio_source_packets.py --check
+
+reader-claims-check: source-packets-check
+	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
+		scripts/build_st1704_reader_claim_coverage.py --check --development
+
+reader-claims-skeleton: source-packets-check
+	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
+		scripts/build_st1704_reader_claim_coverage.py --skeleton
+
+manifest-generate: source-packets-generate reader-claims-check
+	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
+		scripts/build_st1704_self_hosted_editorial_manifest.py --development
+
+manifest-check: source-packets-check reader-claims-check
+	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
+		scripts/build_st1704_self_hosted_editorial_manifest.py --check --development
 
 rakuten-capture-manifest-generate:
 	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
@@ -76,15 +96,15 @@ theme-assets-check:
 		scripts/build_st1704_theme_assets.py --check
 
 theme-source-check:
-	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
+	cd "$(REPOSITORY_ROOT)" && $(CLEAN_BUILD_PYTHON) \
 		scripts/build_st1704_self_hosted_theme.py --source-check
 
 theme-check:
-	cd "$(REPOSITORY_ROOT)" && $(CLEAN_PYTHON) \
+	cd "$(REPOSITORY_ROOT)" && $(CLEAN_BUILD_PYTHON) \
 		scripts/build_st1704_self_hosted_theme.py --check
 
 theme-package:
-	cd "$(REPOSITORY_ROOT)" && umask 0077 && $(CLEAN_PYTHON) \
+	cd "$(REPOSITORY_ROOT)" && umask 0077 && $(CLEAN_BUILD_PYTHON) \
 		scripts/build_st1704_self_hosted_theme.py --package
 
 tests:

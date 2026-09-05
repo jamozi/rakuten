@@ -1,0 +1,24 @@
+{
+  "schema": "RAOS_WORDPRESS_PRODUCTION_POLICY_PAGES_V1",
+  "seed_version": "2026-09-01.1",
+  "pages": [
+    {
+      "content_file": "production-pages/about-ad-policy.html",
+      "excerpt": "暮らしのしるべの運営者、情報源と型番の照合、AI支援、広告との分離、更新・訂正の責任を説明します。",
+      "slug": "about-ad-policy",
+      "title": "運営・広告方針"
+    },
+    {
+      "content_file": "production-pages/comparison-policy.html",
+      "excerpt": "暮らしのしるべの比較対象、根拠の扱い、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。",
+      "slug": "comparison-policy",
+      "title": "比較・編集方針"
+    },
+    {
+      "content_file": "production-pages/privacy-policy.html",
+      "excerpt": "暮らしのしるべの取得情報、任意計測の初期状態、同意・撤回、保持期間、外部送信、問い合わせ先を説明します。",
+      "slug": "privacy-policy",
+      "title": "プライバシーポリシー"
+    }
+  ]
+}

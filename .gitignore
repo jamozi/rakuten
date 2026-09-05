@@ -51,6 +51,17 @@ Thumbs.db
 
 # Local-only browser and visual evidence; never generator or release input.
 output/playwright/
+output/lighthouse/
 
 # Local-only test execution evidence; tracked receipts contain only hashes.
 output/pytest/
+
+# Local reviewer aids and Codex environment state; never release inputs.
+/.codex/environments/
+/tmp/pdfs/
+/tmp/reader_ledger_review.py
+/tmp/update_manufacturer_sales_state.py
+
+# Refuse accidental Chrome/Lighthouse profiles created at repository root.
+/*lighthouse.*/
+/nul

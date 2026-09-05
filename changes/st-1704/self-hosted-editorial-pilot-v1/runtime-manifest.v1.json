@@ -4,7 +4,12 @@
     "st1704-portable-power-station-guide",
     "st1704-anker-solix-c300-c800-c1000-differences",
     "st1704-countertop-dishwasher-for-small-households",
-    "st1704-compact-robot-vacuum-shortlist"
+    "st1704-compact-robot-vacuum-shortlist",
+    "carry-on-suitcase-under-100-seats",
+    "lightweight-carry-on-suitcase-under-3kg",
+    "front-open-carry-on-suitcase-with-stopper",
+    "roomba-mini-vs-switchbot-k11-pro",
+    "solota-vs-rakua-mini-plus"
   ],
   "external_action_authority": "NONE",
   "generated_by": "scripts/build_st1704_self_hosted_editorial_manifest.py",
@@ -12,14 +17,24 @@
   "generator_version": "2",
   "paths": [
     {
-      "bytes": 84724,
-      "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
-      "sha256": "2d80ec0a170ff28a4a09e67426e9ed58d3a05864c9a493062436a58a6c7b9b52"
+      "bytes": 77072,
+      "path": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+      "sha256": "5ef653b2444e77d912ddbcfc2c94e39bec1e37b4fee831be997546ec47cee6ba"
     },
     {
-      "bytes": 10646,
+      "bytes": 32923,
+      "path": "changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
+      "sha256": "54a424b01070e0b6a362f799c5463c74a8a032469ece1e83b8729f81eab0c80f"
+    },
+    {
+      "bytes": 187765,
+      "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+      "sha256": "b04818d2c93fa4a4576b7fdb4580632e4e0a48f35eef667bfe0fdaa5e7bb0b1e"
+    },
+    {
+      "bytes": 13598,
       "path": "changes/editorial-portfolio-v3/generated/navigation.v3.json",
-      "sha256": "5fb0dc9ac677569151a41e25fe428c04a7a1ea259a67e1efff4915f0a235b566"
+      "sha256": "12ef041c11f4cddc7cb1924027f96c36ad7df475a4266a2bdae1b580e874fc7a"
     },
     {
       "bytes": 9864,
@@ -42,9 +57,9 @@
       "sha256": "8b6aa2491021618f02f6d9296874d4bfa75cdad1a7ae204d6b06949ad3de6e24"
     },
     {
-      "bytes": 8302,
+      "bytes": 8816,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "dd767215e8e552dc074b88f8a1bec0e532d212dca1b356871636b48f208bc8b3"
+      "sha256": "ce5bfb906432543df10418b08ef636f9f8a0d7d57ff511e46f2da138325861dd"
     },
     {
       "bytes": 2528,
@@ -52,14 +67,14 @@
       "sha256": "4c1fed7b4a4679ead75ca706d9064853325d06256858052a7321b13ed08daf1b"
     },
     {
-      "bytes": 4315,
+      "bytes": 5429,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
-      "sha256": "dbb21a5ea0ef61a184ce1835d8366799cdb3641923071bcf75a553d09cf01d0c"
+      "sha256": "36b76efd89a4554693095c2ea5781c81be2a78e6f2867655523c6f89bc8b7fc1"
     },
     {
-      "bytes": 29517,
+      "bytes": 32133,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "b318a69da111369d1cd69adfb540c84d11d864568247bebf074293d3c662541c"
+      "sha256": "3d92c31c2749d6a8aa88a657261bd056fa2a1d7dd2f971de9bfea85130c9b5bb"
     },
     {
       "bytes": 2486,
@@ -67,9 +82,9 @@
       "sha256": "a6bb1182c3c2013eda5d16b4ed3201700b2d525afc4654ae02c1ade399ca8aa6"
     },
     {
-      "bytes": 11648,
+      "bytes": 11702,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
-      "sha256": "5a118462f76a8cefc1d44a4b444e45ba4e9bc84793a0f5825f98d262b0b67bb8"
+      "sha256": "73c13dd6f321dfe4ec8386fb0dcf0ab8a42578d4fe9b5b3f45eefbb4b1cbb32f"
     },
     {
       "bytes": 4525,
@@ -82,19 +97,29 @@
       "sha256": "ccfff1f1c0eb2f7f328034514319cedcfbde777cbc4ecec1ee2076c79744436d"
     },
     {
-      "bytes": 138382,
+      "bytes": 252137,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-      "sha256": "6bff3318494241cf40c84961bfcbaa81142a6a1e2f1ceb4fce9e15cf5ef881f4"
+      "sha256": "29e4398f74404330c49a6ad769ac2b1e21b1852acee0a556ab2ccae1f3220472"
     },
     {
-      "bytes": 23745,
+      "bytes": 34324,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/product-media-registry.v1.json",
-      "sha256": "ccbe2d3fd6cac694b0007993bd8ef60dbeaad64150a9c301941f250baa5692f0"
+      "sha256": "5b2ac14d137016667e5647a38e6f35ab95d8ba441c50f531b99239a46baead7c"
+    },
+    {
+      "bytes": 2193188,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-countertop-dishwasher-guide.png",
+      "sha256": "26e50a383b313d79e65999e100fc82037a434550136fb293c3f20574965d090a"
     },
     {
       "bytes": 2354375,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-portable-power-guide.png",
       "sha256": "703444cdf29740bb72de42d09c7c7222a3ee46a09bcaf4f78875df9131cc56d6"
+    },
+    {
+      "bytes": 1989386,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/media/source-images/article-robot-vacuum-guide.png",
+      "sha256": "2ecd4dc8e55ea70a76287df30e44c874fea6292bf1be457934e049f1cfbcee4b"
     },
     {
       "bytes": 2735,
@@ -107,24 +132,64 @@
       "sha256": "53db8c8277da9dbd3b5b98a107327845307f58a9e3b767042ea9e64757f0e163"
     },
     {
-      "bytes": 34559,
+      "bytes": 582,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/product-safety-manufacturer-query-evidence.empty.v1.json",
+      "sha256": "e8ad9be83671fb6fab2c1f922ec456d924da23896bc01be8d821c5cbc1fbcfdd"
+    },
+    {
+      "bytes": 13789,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/product-safety-manufacturer-query-plan.v1.json",
+      "sha256": "316ddfa5abe2df7c554392fa6c104be32c7eba7cba9c46937b58bc094f47593a"
+    },
+    {
+      "bytes": 6397,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/product-safety-query-plan.v1.json",
+      "sha256": "982b3df72edc423efe6953ee01fc9a119eaf31137f25e8ad02e1f755ee398aa6"
+    },
+    {
+      "bytes": 998,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/product-safety-query-receipts.v1.json",
+      "sha256": "b24a53168fc831330431bbf7c94382e7741e72aa245fd2310dc592b902ae93a2"
+    },
+    {
+      "bytes": 3825787,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/reader-claim-bindings.v1.json",
+      "sha256": "5ad206db4f88f1e67abdf1bc23d31739506781ee3d97b9b7f90a23581a62c25b"
+    },
+    {
+      "bytes": 170931,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
-      "sha256": "3e295c7ada2cd2dc2bb0e4a147fbd31c78ae62ed93ca77033301b8544851c369"
+      "sha256": "695180712ba1cce00e1c058cfd56ec4a02799cfaa1ac382fec07b000b9da4772"
     },
     {
-      "bytes": 39908,
+      "bytes": 235225,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
-      "sha256": "ce155edeb91fc98b4bd225a5dc6315994e5bfd1403cd3a7fab47da8b97915a4f"
+      "sha256": "dec409494e6018fd89786ccbc02920e59a25f2aa548548e67e93e865be28aeee"
     },
     {
-      "bytes": 9339,
+      "bytes": 5717,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/analytics-consent-gate.js",
+      "sha256": "09b2bff8deba45af068ad8566a8d4e237da7da21fd310aaa62fedc10aa24a38a"
+    },
+    {
+      "bytes": 4534,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.js",
+      "sha256": "29fc68a8929aadfb49ef39740b4c7cbc5be66d6a8bd94f1fc5a8dcdc4345eac7"
+    },
+    {
+      "bytes": 13194,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json",
-      "sha256": "9dcb74c51d5fa0ca8417f4bde7568c3303d7242a9f02d620eac837b271f41373"
+      "sha256": "25a7cad3916a0658509664abe1a69f2d8f3abe0706cc90e2c979b5c6866c631d"
     },
     {
-      "bytes": 21476,
+      "bytes": 26629,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
-      "sha256": "ccd6e7a94a1b652fdf08d0372c17f6cf07fccb9f977b79e404f200f4b78638d3"
+      "sha256": "15b8e637be726d1488de4e1986605d4072c2b9392073f2ce4695e92267217c28"
+    },
+    {
+      "bytes": 94902,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-countertop-dishwasher-guide.webp",
+      "sha256": "c36e87682ce9be33f70bc5b1a55e20a63b19ab6155172d670d5c019a984bcf9f"
     },
     {
       "bytes": 121032,
@@ -132,9 +197,14 @@
       "sha256": "54b84689cff952f6a384982b89d2f56adfbdeff9ff03fe628fcaf5a949ab0f5a"
     },
     {
-      "bytes": 70148,
+      "bytes": 65446,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-robot-vacuum-guide.webp",
+      "sha256": "f589471aeed1064f2499ec5d32a8e9c4b6b14db8613d3b1743b37d245ecc2384"
+    },
+    {
+      "bytes": 154716,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-suitcase-guide.webp",
-      "sha256": "23c585a03598a8521fd797c036d2caad4350139ad709ca9b0cfc3ab18ad993ad"
+      "sha256": "dc8133377f21355ac0c187273d70904c305dd5687bf0e5e8ce3af76fab668046"
     },
     {
       "bytes": 331,
@@ -142,49 +212,64 @@
       "sha256": "bd9f84f40eca90fb88b7e8a3967f6d7ceb5d337c6023d1f2ff748936a0f3acf3"
     },
     {
-      "bytes": 133648,
+      "bytes": 77898,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/home-hero.webp",
-      "sha256": "df9fc09115e93708e858335e50e88534cc91114fb064642f9d904b5e52b83cea"
+      "sha256": "9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493"
     },
     {
-      "bytes": 12637,
+      "bytes": 13412,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
-      "sha256": "b2e6fa68a15729569ea45a97e9a5d8e79868ed97dee42238299bf95caa32f5e5"
+      "sha256": "181dff17451e52bb5bc548964e6c951573a4ddde42072ee0f1165bfc6faa1772"
     },
     {
-      "bytes": 71439,
+      "bytes": 81845,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
-      "sha256": "1d847d05e05d5a52f47fb2c6aaaa7aaf9fe9a1c7c37c0191f78c919831a62d22"
+      "sha256": "ef01b5ce4a451f8efa99cc0544e5765ccf2cc2bd17ca03ca81432543748e1105"
     },
     {
-      "bytes": 130005,
+      "bytes": 167944,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
-      "sha256": "ece2b4c0546703197dbf94775bd0a9ca2513cb6ea00fb2d1faf3d0dbd191e65e"
+      "sha256": "87c7b63c6d4d6fa8b4135b4a2f70b06400e7b562d2b4c772afe2b479ade8b0a2"
     },
     {
-      "bytes": 2260,
+      "bytes": 2244,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/footer.html",
-      "sha256": "c58a77ee6e410ec3b06d5d7040f95211a47383ced74467a3e6703d7fed513c75"
+      "sha256": "d58bf05dd2934a388d003a94b7b7843a4dee14378d03980bc9bcff5931ba8683"
     },
     {
-      "bytes": 1610,
+      "bytes": 1622,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/parts/header.html",
-      "sha256": "830a44b1c64029960a4494a9b3323c3c82b6d6111e0707fc207f77119eff510e"
+      "sha256": "b39c3f6b19bdb03ba6c57177d7070fcfcd188305daeb5fac9a73ef7ffa88a09f"
     },
     {
-      "bytes": 2346,
+      "bytes": 17939,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
-      "sha256": "98048a16051e2a9ce3210607e508d3e274c807ee4a29a7faa598c582a76e8118"
+      "sha256": "ec16d2087e99a4cb17dc9c0d558041f43132d7bda75b146e8b9f093c206cefed"
     },
     {
       "bytes": 274,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/style.css",
-      "sha256": "4112f119387edcfa680dfbac897570834666db0f903525b0086644e55c280f9e"
+      "sha256": "00a9d7593bfc7e772220333ca4c02a34af9c478cced5a8c5a5c73498bc26959f"
     },
     {
-      "bytes": 11046,
+      "bytes": 1352,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/404.html",
+      "sha256": "c1564c3eb3a7db1910a75b38b349f28b948d790471385d078cd7b250d5760a88"
+    },
+    {
+      "bytes": 2009,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/archive.html",
+      "sha256": "e9c4cb6a88e6efbc429e779b407d848dcc9687453eb567be5e5f1097ce6fcda7"
+    },
+    {
+      "bytes": 11483,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html",
-      "sha256": "d989de45af6c6409f12ce8ba3b12b7389ca5c98692c4b1f9a62200f330260179"
+      "sha256": "22c1f4a7d05c3d6b42227a7fbde1edca2234921b546e68150103e3261a4fea42"
+    },
+    {
+      "bytes": 2265,
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/search.html",
+      "sha256": "9964c9492b29e4be3df7979808d0f834bdb146a6277df080440e5224ccdf3f59"
     },
     {
       "bytes": 1523,
@@ -192,9 +277,9 @@
       "sha256": "9b7a05808714ab9b1ddcc911e415b78edb035c1268e5cb144b1fde55688e0603"
     },
     {
-      "bytes": 16489,
+      "bytes": 22308,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme-contract.v1.json",
-      "sha256": "df9a11daa8fe68274dbc8d21df1679a87b0e3479ba27dba1c147ce190d666927"
+      "sha256": "7debaed0b54c19110867980d9635df60c132149dc6c762bfa5ad52c09e1369a5"
     },
     {
       "bytes": 1996,
@@ -202,9 +287,59 @@
       "sha256": "0a00f50a4015b5c811e291280991e29aa1c2af51d4c10c52ce76a27639de5064"
     },
     {
-      "bytes": 2909,
+      "bytes": 3485,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/yoast-seo-28.3.lock.json",
-      "sha256": "b82f971ae003570ff6ab0d9fe0aa0eb84605a57fdd49a61fb5f847369fb7cf8b"
+      "sha256": "d89d711ba2d45d2134fc143417519bf67ac9790833b2e4b2978fe8712052fb87"
+    },
+    {
+      "bytes": 41834,
+      "path": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
+      "sha256": "43807ee851ba455427e82d8f3b9c580deb8f66f8b173937745c238904f258335"
+    },
+    {
+      "bytes": 33199,
+      "path": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
+      "sha256": "2d97cabb3a19f3e7cf5d1261acb94d64f3e6f2925c11ab4985939db7275f3d9f"
+    },
+    {
+      "bytes": 36573,
+      "path": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
+      "sha256": "7a812e0c7c66d69e696dd462712491e7f5d71c153249ca6120016b3ab3f4383d"
+    },
+    {
+      "bytes": 48066,
+      "path": "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
+      "sha256": "f7e50fc320be7959c0a66fd48be0991bf4b4f502085d0cf8cd5f0198c1ce83df"
+    },
+    {
+      "bytes": 42870,
+      "path": "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
+      "sha256": "585688f5db3f903d1f6ee1d2e84e70bc9753e68cb935912836471b810d7931eb"
+    },
+    {
+      "bytes": 44648,
+      "path": "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
+      "sha256": "68d2c95ef3a48604afa7361e9ab2ef7bd008127659b15a929d353ef5a4734acd"
+    },
+    {
+      "bytes": 43573,
+      "path": "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
+      "sha256": "94b83803889d2167c7c9c51132543277dfce81aa899992d8a0a7c3a59240989a"
+    },
+    {
+      "bytes": 63406,
+      "path": "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
+      "sha256": "b50b6e5a25079b6c53f404e90433584997a493ccec3cd5d0ecddff6ca1b216a0"
+    },
+    {
+      "bytes": 21131,
+      "path": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
+      "sha256": "64168dbf12d10f3c44fea6ab92e236de70db1d9d1c3cb268a9db2f27f0b884e0"
+    },
+    {
+      "bytes": 9802,
+      "path": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
+      "sha256": "da82f148e08dda90cffda8d50982c318561ed82b6b59f22b711cd3ee8ca25365"
     },
     {
       "bytes": 46209,
@@ -212,19 +347,19 @@
       "sha256": "a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac"
     },
     {
-      "bytes": 140457,
+      "bytes": 147844,
       "path": "python/raos/adapters/self_hosted_editorial_pilot_https.py",
-      "sha256": "19ca6eeaabde6aa9cab4df66d8be780c89aa30a73a9fa7b5ee1115a77c7f812e"
+      "sha256": "80c956f8f957be06902a7824859ce97549957c41ab1bdf00e3fc46d539901789"
     },
     {
-      "bytes": 133439,
+      "bytes": 133440,
       "path": "python/raos/adapters/self_hosted_editorial_pilot_json.py",
-      "sha256": "1d46cc75b1880eaa99004cfbc33a3ce3a8182de6e7b0ed60a57112a9c8ef155b"
+      "sha256": "0094095b9265297f9c7e3d2138b750f1dca9690e208b095f4ebf15b30a1a2051"
     },
     {
-      "bytes": 53919,
+      "bytes": 66586,
       "path": "python/raos/adapters/self_hosted_editorial_source_capture.py",
-      "sha256": "39f809647e581efbb248bf6088f90137527e193c1d83fd1f77071745ec4be66b"
+      "sha256": "8dc48839f971eca7bdce4ef363ec553711b6f5932c580710995ffc8906e65f21"
     },
     {
       "bytes": 14674,
@@ -247,9 +382,24 @@
       "sha256": "4103ce178e92e12a5357e2e9c35b05485b67e18889fc057a8f41b4e16d61e4f8"
     },
     {
-      "bytes": 86168,
+      "bytes": 58131,
+      "path": "python/raos/application/editorial/product_safety_manufacturer_capture.py",
+      "sha256": "9039b34a0caf2c367e26810406ac92574f2f7ba75b192c7689299c02c215d229"
+    },
+    {
+      "bytes": 86485,
+      "path": "python/raos/application/editorial/product_safety_query_capture.py",
+      "sha256": "3784e2e12a716d9eeabc4cfa442b815fe84dfcdfec668550990407591d24aed5"
+    },
+    {
+      "bytes": 31438,
+      "path": "python/raos/application/editorial/product_safety_receipts.py",
+      "sha256": "044c351bfa0e9ecc1a3de56bc590170582bd690905b534605d6fab3308a55eef"
+    },
+    {
+      "bytes": 114410,
       "path": "python/raos/application/editorial/self_hosted_editorial_pilot.py",
-      "sha256": "39d68e5f387d3528d8a7dc63914dbbe13af21d788b212fcfd9ba5396f2802a36"
+      "sha256": "6191819c61333944f42a3c5e9281d068b66182faa66bbcd5731d5b9e0989f484"
     },
     {
       "bytes": 14026,
@@ -264,7 +414,7 @@
     {
       "bytes": 69252,
       "path": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
-      "sha256": "ea8d49581921737a40457226babdcb946bc0b31c1972753e133a63d180de5d38"
+      "sha256": "924c69dad03fdadc4481222612193a1da177523355b0aa8c825d063d996c7421"
     },
     {
       "bytes": 11383,
@@ -1772,34 +1922,54 @@
       "sha256": "ee641f7b295de066bcc464630dc18823f1b1449579a1676fdf8e9ce6440e5e66"
     },
     {
-      "bytes": 14491,
+      "bytes": 27888,
       "path": "scripts/build_editorial_v3_theme_navigation.py",
-      "sha256": "1f3f7db593dd72b3aefc076414d6f89f869a69e2842d379af90c3f307ee4a6e8"
+      "sha256": "1ee7f6a109f35e0eb576af75c4e0221a8f0cce78b8dfdc61cdd77e5b063be954"
     },
     {
-      "bytes": 11818,
+      "bytes": 262467,
+      "path": "scripts/build_st1704_portfolio_source_packets.py",
+      "sha256": "d1be8fa73c4c36c97cb4079ffa9a427494a6249b18a95be6d8f04994dd4b4ce5"
+    },
+    {
+      "bytes": 320024,
+      "path": "scripts/build_st1704_reader_claim_coverage.py",
+      "sha256": "c30c6319dd6a1f78b8b4e941b903210b2ce7dc4c4fa3a231e0dc25d317044438"
+    },
+    {
+      "bytes": 16849,
       "path": "scripts/build_st1704_self_hosted_editorial_manifest.py",
-      "sha256": "497e1bca71d94d6fc73a91786b5c5599b7245b7a7c41792e081c2311a7d05d1d"
+      "sha256": "87567c987f58db8041e7dc422f914056ef3deb46c8318b3e4a63055fdb807d23"
     },
     {
-      "bytes": 21690,
+      "bytes": 47114,
       "path": "scripts/build_st1704_self_hosted_theme.py",
-      "sha256": "3f7427e7e3549594b897b6c608fa229954f3d005056f00f824432c492fc43f14"
+      "sha256": "f3a6e73fedf7e41f362dac58572aad6d75a18568f82902caed5e562e774dee7a"
     },
     {
-      "bytes": 5366,
+      "bytes": 17624,
       "path": "scripts/build_st1704_theme_assets.py",
-      "sha256": "6657afc0272deadf5c2aaaef06e08e0a84e9842b3cb9c274d147c4df9795b3fa"
+      "sha256": "ddf63c7b1e226a02d355c6a18ed58e69392eb3d14066d0222ac83cdd8f444603"
     },
     {
-      "bytes": 52968,
+      "bytes": 59280,
       "path": "scripts/st1704_official_source_capture.py",
-      "sha256": "275e3977af9d3e929657653368501376388dd33e716b31103a2000de66e4b9f1"
+      "sha256": "337f8a46d336c27eea50828f703e2585f9c690c1d0642b6df97702d5c9cf0e88"
     },
     {
-      "bytes": 44245,
+      "bytes": 6291,
+      "path": "scripts/st1704_product_safety_manufacturer_capture.py",
+      "sha256": "c10ce24c4f531f8567493342eadb7508780f32b40e97d4a502be5e0ca589b9b6"
+    },
+    {
+      "bytes": 5652,
+      "path": "scripts/st1704_product_safety_query_capture.py",
+      "sha256": "1e75dd02e40d8b1ab07c378234c011adfcbf2d5a12987e06dd8a8225cc5203da"
+    },
+    {
+      "bytes": 44575,
       "path": "scripts/st1704_self_hosted_editorial_pilot.py",
-      "sha256": "1c577599f450ba273bb1c42f83379f082892197a5163f0164b321ebf4619b869"
+      "sha256": "88867ce305d6b6cb37981253f9c4c57f4705fd722521497cfb6bcd304a59bd91"
     }
   ],
   "predecessor": {

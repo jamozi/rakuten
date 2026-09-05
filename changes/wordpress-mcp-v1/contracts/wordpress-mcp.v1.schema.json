@@ -349,7 +349,11 @@
         },
         "activation_intent": { "enum": ["preserve", "activate", "deactivate"] },
         "migration_assessment": {
-          "enum": ["NO_IRREVERSIBLE_MIGRATION_SIGNALS", "MANUAL_REVIEW_REQUIRED"]
+          "enum": [
+            "NO_IRREVERSIBLE_MIGRATION_SIGNALS",
+            "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION",
+            "MANUAL_REVIEW_REQUIRED"
+          ]
         },
         "automatic_apply_eligible": { "type": "boolean" }
       }

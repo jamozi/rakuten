@@ -7,6 +7,10 @@ import json
 from pathlib import Path
 import zipfile
 import io
+import shutil
+import subprocess
+
+import pytest
 
 from scripts import build_st1704_self_hosted_editorial_manifest as manifest_builder
 from scripts import build_st1704_self_hosted_theme as theme_builder
@@ -32,9 +36,33 @@ def _load(relative: str) -> dict[str, object]:
     return value
 
 
+def test_repository_make_theme_checks_load_only_locked_build_dependencies() -> None:
+    makefile = SLICE / "Makefile"
+    source = makefile.read_text(encoding="utf-8")
+    assert "override CLEAN_BUILD_PYTHON" in source
+    assert "$(MANAGED_PYTHON) -B -I -X pycache_prefix=/dev/null" in source
+    for target in ("theme-source-check", "theme-check"):
+        result = subprocess.run(
+            ["make", "-f", str(makefile), target],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, result.stderr
+
+
+def test_runtime_manifest_declares_the_analytics_consent_gate_source() -> None:
+    assert (
+        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+        "kurashinoshirube-child/assets/analytics-consent-gate.js"
+        in manifest_builder.REQUIRED_RUNTIME_PATHS
+    )
+
+
 def test_runtime_manifest_is_exact_and_keeps_st1703_as_predecessor() -> None:
     path = SLICE / "runtime-manifest.v1.json"
-    assert path.read_bytes() == manifest_builder.build_manifest()
+    assert path.read_bytes() == manifest_builder.build_manifest(development=True)
     manifest = json.loads(path.read_text(encoding="utf-8"))
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_PILOT_MANIFEST_V1"
     assert manifest["story_id"] == "ST-1704"
@@ -60,15 +88,43 @@ def test_runtime_manifest_is_exact_and_keeps_st1703_as_predecessor() -> None:
             "carry-on-single-url-evidence-loop.v1.json"
         ),
     } <= {record["path"] for record in records}
+    assert {
+        "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+        "changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
+        (
+            "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+            "kurashinoshirube-child/assets/analytics-consent-gate.js"
+        ),
+        (
+            "changes/st-1704/self-hosted-editorial-pilot-v1/sources/"
+            "reader-claim-bindings.v1.json"
+        ),
+        "scripts/build_st1704_reader_claim_coverage.py",
+        *{
+            f"changes/wordpress-local-preview-v1/fixtures/articles/{slug}.html"
+            for slug in (
+                "anker-solix-c300-c800-c1000-differences",
+                "carry-on-suitcase-comparison",
+                "carry-on-suitcase-under-100-seats",
+                "compact-robot-vacuum-shortlist",
+                "countertop-dishwasher-for-small-households",
+                "front-open-carry-on-suitcase-with-stopper",
+                "lightweight-carry-on-suitcase-under-3kg",
+                "portable-power-station-guide",
+                "roomba-mini-vs-switchbot-k11-pro",
+                "solota-vs-rakua-mini-plus",
+            )
+        },
+    } <= {record["path"] for record in records}
     for record in records:
         payload = (ROOT / record["path"]).read_bytes()
         assert record["bytes"] == len(payload)
         assert record["sha256"] == hashlib.sha256(payload).hexdigest()
 
 
-def test_theme_package_is_deterministic_closed_and_has_only_measurement_javascript() -> None:
-    assert theme_builder.THEME_VERSION == "1.4.0"
-    assert theme_builder.OUTPUT_PATH.name == "kurashinoshirube-child-1.4.0.zip"
+def test_theme_package_is_deterministic_closed_and_has_only_owned_javascript() -> None:
+    assert theme_builder.THEME_VERSION == "1.5.0"
+    assert theme_builder.OUTPUT_PATH.name == "kurashinoshirube-child-1.5.0.zip"
     assert "assets/theme.js" not in theme_builder.SOURCE_FILES
     first = theme_builder.build_package()
     second = theme_builder.build_package()
@@ -79,10 +135,33 @@ def test_theme_package_is_deterministic_closed_and_has_only_measurement_javascri
             for relative in theme_builder.SOURCE_FILES
         ]
         javascript = [name for name in archive.namelist() if name.endswith(".js")]
-        assert javascript == ["kurashinoshirube-child/assets/measurement.js"]
-        assert not any(
-            name.endswith((".php~", ".zip")) for name in archive.namelist()
-        )
+        assert javascript == [
+            "kurashinoshirube-child/assets/analytics-consent-gate.js",
+            "kurashinoshirube-child/assets/editorial-navigation.js",
+            "kurashinoshirube-child/assets/measurement.js",
+        ]
+        assert not any(name.endswith((".php~", ".zip")) for name in archive.namelist())
+
+
+def test_theme_source_change_without_revision_bump_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    candidate = tmp_path / "kurashinoshirube-child"
+    shutil.copytree(theme_builder.THEME_ROOT, candidate)
+    search_template = candidate / "templates/search.html"
+    search_template.write_text(
+        search_template.read_text(encoding="utf-8").replace(
+            "検索結果", "検索結果一覧", 1
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(theme_builder, "THEME_ROOT", candidate)
+
+    with pytest.raises(
+        theme_builder.ThemeBuildFailure,
+        match="SELF_HOSTED_EDITORIAL_THEME_INVALID",
+    ):
+        theme_builder.validate_sources()
 
 
 def test_publication_plan_is_closed_and_in_the_required_order() -> None:
@@ -90,7 +169,7 @@ def test_publication_plan_is_closed_and_in_the_required_order() -> None:
     assert plan["publication_authority"] == "NONE"
     rows = plan["articles"]
     assert isinstance(rows, list)
-    assert [row["article_id"] for row in rows] == list(manifest_builder.ARTICLE_IDS)
+    assert [row["article_id"] for row in rows] == list(manifest_builder.ARTICLE_IDS[:5])
     assert [row["day_number"] for row in rows] == [1, 4, 7, 10, 13]
     assert [row["action"] for row in rows] == [
         "UPDATE_EXISTING",
@@ -121,7 +200,7 @@ def test_measurement_ledger_adds_no_tracking_and_cannot_rank_products() -> None:
     )
     rows = ledger["articles"]
     assert isinstance(rows, list) and len(rows) == 5
-    assert [row["article_id"] for row in rows] == list(manifest_builder.ARTICLE_IDS)
+    assert [row["article_id"] for row in rows] == list(manifest_builder.ARTICLE_IDS[:5])
     for row in rows:
         assert row["record_at_day"] == 14
         assert row["status"] == "NOT_RECORDED"
@@ -161,7 +240,7 @@ def test_runbook_preserves_all_external_human_gates_and_reversible_rollback() ->
         "暮らしの道具",
         "The repository CLI has no publish or schedule command",
         "deactivate Yoast",
-        "child-theme 1.4.0",
+        "child-theme 1.5.0",
         "child-theme 1.1.1 package as the minimum containment floor",
         "do not roll back to 1.0.2",
         "temporary Review post Draft with no redirect",

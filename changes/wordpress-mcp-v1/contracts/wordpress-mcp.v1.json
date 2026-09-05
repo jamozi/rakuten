@@ -119,6 +119,20 @@
     "manual_zip": false,
     "uninstall": false,
     "delete_files": false,
+    "reviewed_migration": {
+      "artifact_id": "raos-editorial-measurement-v1",
+      "assessment": "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION",
+      "exact_package_and_file_manifest_hashes_required": true,
+      "slug": "raos-editorial-measurement",
+      "version": "1.0.0"
+    },
+    "manual_bootstrap": {
+      "artifact_id": "raos-codex-mcp-abilities-v1",
+      "attestation_channel": "wp-admin",
+      "exact_installed_tree_and_proposal_binding_required": true,
+      "result_code": "PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL",
+      "version": "1.3.1"
+    },
     "unknown_migration": "MANUAL_REVIEW_REQUIRED"
   }
 }

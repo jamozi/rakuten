@@ -16,7 +16,7 @@ There are exactly two project MCP servers:
 
 The WordPress plugin requires WordPress 7.1.x and exactly MCP Adapter 0.6.1.
 Abilities 1.3.1 is bound to runtime revision
-`24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55`;
+`f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082`;
 the entrypoint and every critical class must report that exact identity.
 It disables MCP Adapter's generic default server and exposes only the nine
 tools listed in `contracts/wordpress-mcp.v1.json`. The local bridge exposes only
@@ -83,9 +83,11 @@ It runs the mandatory local preview `up`, `sync`, and `check` sequence before
 contacting production, reconciles only the exact mapped drafts, creates
 idempotent proposals, prints the fixed wp-admin review URL, waits for the
 separate administrator approval, applies at most one theme first and then the
-selected content, and finally performs production readback. `ARTICLES` may be
-an exact comma-separated subset of the registered production slugs. The
-command neither approves proposals nor changes host gates. Its resumable
+selected content, and finally performs production readback. The Make wrapper
+accepts only `ARTICLES=all`, which invokes the current CLI interface as
+`--articles all`; partial or comma-separated selections fail closed before any
+publication proposal. The command neither approves proposals nor changes host
+gates. Its resumable
 owner-private receipts are stored under
 `.secrets/wordpress-mcp/publication-requests/`.
 
@@ -104,7 +106,22 @@ owner-private receipts are stored under
   WordPress.
 - Plugin packages with activation, database, option-schema, SQL DDL, or generic
   migration signals become `MANUAL_REQUIRED`; wp-admin cannot approve them for
-  this automatic path.
+  this automatic path. The only automatic exception is the reviewed
+  `raos-editorial-measurement` 1.0.0 repo artifact, whose artifact ID, slug,
+  version, package SHA-256, and complete file-manifest SHA-256 are fixed in the
+  owner-generated registry and independently rechecked by both the local
+  operator and installed plugin. Any changed or unknown package returns to
+  `MANUAL_REQUIRED`.
+- The abilities 1.3.1 upgrade itself remains `MANUAL_REQUIRED`. After a
+  different human administrator manually installs and activates the exact
+  proposal package in wp-admin, the new plugin may show one narrow attestation
+  form. It reauthenticates the administrator and requires visible proposal,
+  package, and installed-tree hash suffixes. The server rechecks the staged
+  package, host artifact pin, complete manifest, active installed tree,
+  version, runtime revision, and immutable proposal before storing
+  `PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL`. This is a proposal-bound
+  `APPLIED` receipt only; it cannot install code, issue an apply lease, approve
+  another migration, or be called through REST/MCP.
 - The editor registers the exact 1–20 content/theme proposal IDs as one
   immutable server-side publication batch; unrelated pending proposals and all
   plugin proposals are excluded. A different cookie-authenticated
@@ -134,6 +151,12 @@ owner-private receipts are stored under
   changed local request discard an old receipt only after the server confirms
   that every member expired without starting; individual content/theme apply
   tools are not exposed.
+- `site-status` reports the installed and loaded Yoast SEO state, the exact
+  28.3 version, the selected `wpseo` / `wpseo_social` option projection, and
+  its canonical settings fingerprint. Publication-batch claim and every
+  content/theme apply fail closed when any value is missing or drifted. The
+  `PLUGIN_CHANGE` path remains available so the fixed dependency bootstrap can
+  be completed before those release gates become satisfiable.
 - Content apply, theme apply, and recovery share one server-side publication
   lock. Each content mutation rechecks the reviewed active-theme tree after its
   write and rolls the content back if that binding changed. Administrators must

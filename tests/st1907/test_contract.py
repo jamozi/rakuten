@@ -94,7 +94,7 @@ def test_current_fixture_is_exact_blocked_no_decision_with_no_signals() -> None:
         "human_decision_present": False,
         "local_integration_complete": False,
         "pack_sha256": (
-            "cd1aec0ac8a87809389e681b8e1c67328b0120b244aa6fcc7725f11e4d15dff4"
+            "71921934b55163135c507835dbc341fe6b664b838a95a96c0a4688dd991baf42"
         ),
         "readiness": "BLOCKED_NO_DECISION",
         "source_authorized": False,

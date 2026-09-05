@@ -50,6 +50,15 @@ def test_repo_plugin_registry_has_one_deterministic_owner_for_both_packages() ->
     assert rows["raos-editorial-measurement-v1"]["package_sha256"] == (
         measurement["package_sha256"]
     )
+    review = rows["raos-editorial-measurement-v1"]["migration_review"]
+    assert review == {
+        "schema": "RAOS_WORDPRESS_PLUGIN_MIGRATION_REVIEW_V1",
+        "assessment": "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION",
+        "package_sha256": measurement["package_sha256"],
+        "file_manifest_sha256": (
+            build_wordpress_mcp_v1.REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256
+        ),
+    }
 
 
 def test_owner_plugin_version_is_bound_across_package_and_runtime() -> None:
@@ -106,7 +115,9 @@ def test_review_and_apply_ttls_are_distinct_and_exposed_without_ambiguity() -> N
     assert "const APPLY_LEASE_TTL_SECONDS = 900;" in store
     assert "const TTL_SECONDS" not in store
     assert "$created_unix + self::PROPOSAL_REVIEW_TTL_SECONDS" in store
-    assert store.count("$approved_unix + self::APPLY_LEASE_TTL_SECONDS") == 3
+    # Content/theme/plugin approvals plus the exact wp-admin bootstrap
+    # attestation each receive a fresh, internally consistent apply TTL.
+    assert store.count("$approved_unix + self::APPLY_LEASE_TTL_SECONDS") == 4
     assert (
         "'proposal_review_ttl_seconds' => "
         "RAOS_Codex_MCP_Store::PROPOSAL_REVIEW_TTL_SECONDS"
@@ -130,8 +141,18 @@ def test_publication_runtime_binds_portfolio_materializer_and_browser_audit() ->
         "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
         "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
         "changes/wordpress-local-preview-v1/browser/check.sh",
+        "changes/wordpress-local-preview-v1/browser/lighthouse_check.sh",
         "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
+        "changes/wordpress-local-preview-v1/bin/materialize_yoast.py",
+        "changes/wordpress-local-preview-v1/fixtures/production-pages.json",
+        "changes/wordpress-local-preview-v1/fixtures/production-pages/about-ad-policy.html",
+        "changes/wordpress-local-preview-v1/fixtures/production-pages/comparison-policy.html",
+        "changes/wordpress-local-preview-v1/fixtures/production-pages/privacy-policy.html",
+        "changes/wordpress-local-preview-v1/policy-profiles.v1.json",
+        "changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json",
+        "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
         "scripts/raos_editorial_portfolio_v2.py",
+        "scripts/wordpress_quality_audit_v1.py",
     }
     entrypoint = ROOT / "scripts/raos_editorial_portfolio_v2.py"
     for node in ast.walk(ast.parse(entrypoint.read_text(encoding="utf-8"))):
@@ -153,6 +174,36 @@ def test_publication_runtime_binds_portfolio_materializer_and_browser_audit() ->
         row["path"] for row in build_wordpress_mcp_v1.runtime_manifest()["runtime_files"]
     }
     assert required <= runtime_paths
+    assert not any(
+        path.startswith(("output/", "tmp/")) for path in runtime_paths
+    )
+
+
+def test_quality_audit_ledger_is_runtime_input_without_a_fingerprint_cycle() -> None:
+    contract = json.loads(
+        (
+            ROOT
+            / "changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json"
+        ).read_text(encoding="utf-8")
+    )
+    fingerprint_inputs = {
+        value
+        for group in contract["fingerprint_groups"]
+        for value in group["inputs"]
+    }
+    runtime_paths = set(build_wordpress_mcp_v1.RUNTIME_PATHS)
+
+    assert {
+        "changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json",
+        "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
+        "scripts/wordpress_quality_audit_v1.py",
+    } <= runtime_paths
+    assert "changes/wordpress-mcp-v1/runtime-manifest.v1.json" not in (
+        fingerprint_inputs
+    )
+    assert "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json" not in (
+        fingerprint_inputs
+    )
 
 
 @pytest.mark.parametrize(
@@ -204,6 +255,7 @@ def test_owner_build_rejects_stale_main_runtime_identity(remove_global: bool) ->
 def test_public_contract_and_schema_are_valid() -> None:
     contract = json.loads((SLICE / "contracts/wordpress-mcp.v1.json").read_text())
     schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
+    readme = (SLICE / "README.md").read_text(encoding="utf-8")
     Draft202012Validator.check_schema(schema)
     assert contract["version"] == "1.3.1"
     assert contract["wordpress_version"] == "7.1.x"
@@ -246,6 +298,9 @@ def test_public_contract_and_schema_are_valid() -> None:
         "anonymous_public_readback": True,
         "receipt_storage": ".secrets/wordpress-mcp/publication-requests",
     }
+    assert "`--articles all`" in readme
+    assert "partial or comma-separated selections fail closed" in readme
+    assert "may be an exact comma-separated subset" not in readme
     assert contract["host_gates"] == {
         "global_kill_switch": "RAOS_OPERATOR_WRITES_ENABLED",
         "draft": "RAOS_CODEX_DRAFT_WRITES_ENABLED",
@@ -374,6 +429,54 @@ def test_editor_status_exposes_loaded_theme_runtime_version_and_revision() -> No
     assert "constant('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION')" in status
     assert "'runtime_revision' => $theme_runtime_revision" in status
     assert "'plugin_runtime_revision' => $plugin_runtime_revision" in status
+
+
+def test_editor_status_and_publication_mutations_require_exact_yoast_28_3() -> None:
+    content = (
+        PLUGIN / "includes/class-raos-codex-mcp-content.php"
+    ).read_text(encoding="utf-8")
+    deployment = (
+        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
+    ).read_text(encoding="utf-8")
+    status = content.split("public function site_status", 1)[1].split(
+        "public function content_list", 1
+    )[0]
+    yoast = content.split("public static function yoast_status", 1)[1].split(
+        "public static function exact_yoast_gate", 1
+    )[0]
+    gate = content.split("public static function exact_yoast_gate", 1)[1].split(
+        "public function site_status", 1
+    )[0]
+    claim = deployment.split("public function claim_publication_batch", 1)[1].split(
+        "private static function publication_batch_status", 1
+    )[0]
+    apply_gate = deployment.split("private static function apply_gate", 1)[1].split(
+        "private static function gate", 1
+    )[0]
+
+    assert "'yoast' => $yoast" in status
+    assert "'wordpress-seo/wp-seo.php'" in yoast
+    assert "get_file_data($plugin_path" in yoast
+    assert "get_option('active_plugins'" in yoast
+    assert "get_site_option('active_sitewide_plugins'" in yoast
+    assert "defined('WPSEO_VERSION')" in yoast
+    assert "'version_exact' => $version_exact" in yoast
+    assert "'options' => $selected" in yoast
+    assert "RAOS_Codex_MCP_Store::hash($settings)" in yoast
+    assert "'settings_fingerprint'" in yoast
+    assert "'settings_exact' => $settings_exact" in yoast
+    for option_name in ("wpseo", "wpseo_social"):
+        assert f"'{option_name}'" in yoast
+    assert "'28.3' !== $status['version']" in gate
+    assert "raos_codex_yoast_configuration_drift" in gate
+    assert claim.index("RAOS_Codex_MCP_Content::exact_yoast_gate()") < claim.index(
+        "RAOS_Codex_MCP_Store::claim_publication_batch_apply("
+    )
+    assert "array('CONTENT_RELEASE', 'THEME_RELEASE')" in apply_gate
+    assert "RAOS_Codex_MCP_Content::exact_yoast_gate()" in apply_gate
+    assert "PLUGIN_CHANGE" not in apply_gate.split("exact_yoast_gate", 1)[0].split(
+        "array('CONTENT_RELEASE', 'THEME_RELEASE')", 1
+    )[1]
 
 
 def test_deployment_status_exposes_loaded_theme_runtime_version_and_revision() -> None:
@@ -607,6 +710,9 @@ def test_wordpress_plugin_hard_safety_boundaries_are_present() -> None:
         "raos_codex_self_approval_forbidden",
         "wp_check_password",
         "MANUAL_REVIEW_REQUIRED",
+        "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION",
+        "PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL",
+        "raos_codex_mcp_attest_bootstrap",
         "raos_codex_zip_symlink_refused",
         "raos_codex_zip_case_collision",
         "raos_codex_code_hash_drift",
@@ -635,6 +741,80 @@ def test_wordpress_plugin_hard_safety_boundaries_are_present() -> None:
     ):
         assert retired_gate not in sources
     assert not re.search(r"register_rest_route\([^)]*(?:wp/v2|xmlrpc)", sources)
+
+
+def test_manual_bootstrap_attestation_is_wp_admin_only_and_exactly_bound() -> None:
+    main = (PLUGIN / "raos-codex-mcp-abilities.php").read_text()
+    deployment = (
+        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
+    ).read_text()
+    store = (PLUGIN / "includes/class-raos-codex-mcp-store.php").read_text()
+    operator = (ROOT / "scripts/raos_wordpress_deployment_operator.py").read_text()
+
+    assert "admin_post_raos_codex_mcp_attest_bootstrap" in main
+    assert "check_admin_referer('raos_codex_mcp_attest_bootstrap_'" in main
+    assert "wp_check_password($current_password" in main
+    assert "proposal_suffix" in main
+    assert "package_suffix" in main
+    assert "validate_manual_bootstrap_attestation($row)" in main
+    assert "RAOS_Codex_MCP_Deployment::attest_manual_bootstrap(" in main
+    assert "/attest" not in deployment
+    assert "attest-manual-bootstrap" not in operator
+    assert "bootstrap-attest" not in operator
+
+    for marker in (
+        "BOOTSTRAP_ARTIFACT_ID = 'raos-codex-mcp-abilities-v1'",
+        "BOOTSTRAP_SLUG = 'raos-codex-mcp-abilities'",
+        "BOOTSTRAP_VERSION = '1.3.1'",
+        "secure_staged_file($row['package_path'])",
+        "validate_proposal_integrity($row)",
+        "hash_equals($row['after_sha256'], $target['tree_sha256'])",
+        "hash_equals($descriptor_json, $validated_json)",
+        "verify_package_provenance($validated, $package)",
+        "raos_codex_bootstrap_attestation_channel_refused",
+        "wp_doing_ajax()",
+        "wp_doing_cron()",
+    ):
+        assert marker in deployment
+    assert "WHERE proposal_id = %s AND kind = 'PLUGIN_CHANGE'" in store
+    assert "AND state = 'MANUAL_REQUIRED'" in store
+    assert "AND result_code = 'MANUAL_REVIEW_REQUIRED'" in store
+    assert "AND created_by <> %d" in store
+    assert "AND after_sha256 = %s AND payload_json = %s" in store
+    assert "PLUGIN_BOOTSTRAP_ATTESTED_AFTER_MANUAL_INSTALL" in store
+    assert "RAOS_Codex_MCP_Deployment::remove_approval_lease" in store
+    assert "RAOS_Codex_MCP_Deployment::BOOTSTRAP_ARTIFACT_ID" in store
+    assert "RAOS_Codex_MCP_Deployment::validate_manual_bootstrap_attestation(" in store
+    assert "true !== constant('RAOS_OPERATOR_WRITES_ENABLED')" in store
+    assert "raos_codex_self_approval_forbidden" in store
+
+
+def test_reviewed_measurement_migration_identity_agrees_in_both_validators() -> None:
+    registry = json.loads(build_wordpress_mcp_v1.REGISTRY.read_text())
+    measurement = next(
+        row
+        for row in registry["artifacts"]
+        if row["artifact_id"] == "raos-editorial-measurement-v1"
+    )
+    review = measurement["migration_review"]
+    deployment = (
+        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
+    ).read_text()
+    operator = (ROOT / "scripts/raos_wordpress_deployment_operator.py").read_text()
+    for value in (
+        measurement["artifact_id"],
+        measurement["slug"],
+        measurement["version"],
+        measurement["package_sha256"],
+        review["file_manifest_sha256"],
+        review["assessment"],
+    ):
+        assert value in deployment
+        assert value in operator
+    assert "reviewed_migration_eligible(" in deployment
+    assert "_reviewed_migration_eligible(" in operator
+    assert "verify_package_provenance($validated, $package)" in deployment
+    assert "raos_codex_code_validation_drift" in deployment
 
 
 def test_editor_and_operator_credentials_are_separate_and_route_bound() -> None:
@@ -730,6 +910,21 @@ def test_disposable_wordpress_71_e2e_is_pinned_and_separate_from_live() -> None:
 
 
 def test_disposable_code_artifacts_are_reproducible(tmp_path: Path) -> None:
+    # The deployment operator intentionally refuses to package a dirty theme.
+    # This integration worktree contains the candidate theme edits, so the
+    # clean-checkout reproducibility assertion is exercised in CI/release
+    # checkouts while local development remains fail-closed.
+    relative_theme = (
+        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+        "kurashinoshirube-child"
+    )
+    if subprocess.run(
+        ("git", "status", "--porcelain=v1", "--", relative_theme),
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+    ).stdout:
+        pytest.skip("candidate theme is intentionally dirty in the integration worktree")
     script = ROOT / "tests/wordpress_mcp_v1/e2e/prepare_packages.py"
     first = tmp_path / "first"
     second = tmp_path / "second"

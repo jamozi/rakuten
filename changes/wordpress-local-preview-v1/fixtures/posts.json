@@ -1,6 +1,6 @@
 {
   "schema": "RAOS_WORDPRESS_LOCAL_PREVIEW_FIXTURE_V1",
-  "seed_version": "2026-08-30.1",
+  "seed_version": "2026-08-31.1",
   "posts": [
     {
       "article_id": "local-preview-carry-on-suitcase-comparison",
@@ -16,7 +16,7 @@
       "category": "備え",
       "content_file": "articles/portable-power-station-guide.html",
       "date": "2026-08-23 00:00:00",
-      "excerpt": "停電対策のポータブル電源4モデルを、容量・定格出力・重量・大きさで比較。使いたい機器と持ち運び条件から候補を絞ります。",
+      "excerpt": "停電対策のポータブル電源7モデルを、容量・各社公表の出力・重量・寸法で比較。使いたい機器と持ち運び条件から候補を絞ります。",
       "slug": "local-preview-portable-power-station-guide",
       "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める"
     },
@@ -34,18 +34,18 @@
       "category": "家事",
       "content_file": "articles/countertop-dishwasher-for-small-households.html",
       "date": "2026-08-21 00:00:00",
-      "excerpt": "工事不要で使えるタンク式食洗機4モデルを、設置寸法・食器点数・使用水量・乾燥方法で比較。狭いキッチンで向く条件を整理します。",
+      "excerpt": "工事不要のタンク式食洗機4候補を公式仕様で比較。標準食器11〜18点の現行モデルを、設置寸法、使用水量、給水・乾燥方式で選び分けます。SOLOTA NP-TMLK1は販売状態未確認の仕様参考にとどめます。",
       "slug": "local-preview-countertop-dishwasher-for-small-households",
-      "title": "工事不要の食洗機を1〜2人暮らし向けに比較"
+      "title": "工事不要の食洗機4候補｜1〜2人暮らしの設置条件で選ぶ"
     },
     {
       "article_id": "local-preview-compact-robot-vacuum-shortlist",
       "category": "家事",
       "content_file": "articles/compact-robot-vacuum-shortlist.html",
       "date": "2026-08-20 00:00:00",
-      "excerpt": "省スペース候補のロボット掃除機4モデルを、本体の底面寸法・高さ・ステーション寸法・水拭き方式で比較。置ける条件から候補を絞ります。",
+      "excerpt": "ロボット掃除機4モデルを、本体・ステーションの設置寸法、帰還余白、水拭きと自動手入れの範囲で比較。置き場所優先の2モデルと、モップ自動手入れ優先の2モデルを条件別に整理します。",
       "slug": "local-preview-compact-robot-vacuum-shortlist",
-      "title": "省スペースのロボット掃除機を条件で絞る"
+      "title": "ロボット掃除機4モデル比較｜設置寸法・モップ自動手入れで選ぶ"
     },
     {
       "article_id": "local-preview-carry-on-suitcase-under-100-seats",
@@ -61,36 +61,36 @@
       "category": "移動",
       "content_file": "articles/lightweight-carry-on-suitcase-under-3kg.html",
       "date": "2026-08-28 00:00:00",
-      "excerpt": "30L以上・本体3kg以下の機内持ち込み候補4モデルを、容量、素材、ストッパー、拡張時寸法、交換可能車輪から公式情報で比較します。",
+      "excerpt": "100席以上の国内線で確認したい3辺115cm以内を前提に、30L以上・本体3kg以下の5モデルを、容量、素材、ストッパー、拡張時寸法、保証条件から公式情報で比較します。",
       "slug": "local-preview-lightweight-carry-on-suitcase-under-3kg",
-      "title": "30L以上・3kg以下の機内持ち込みスーツケース4モデルを比較"
+      "title": "100席以上便向け｜30L以上・3kg以下の機内持ち込みスーツケース5モデル比較"
     },
     {
       "article_id": "local-preview-front-open-carry-on-suitcase-with-stopper",
       "category": "移動",
       "content_file": "articles/front-open-carry-on-suitcase-with-stopper.html",
       "date": "2026-08-27 00:00:00",
-      "excerpt": "前開きとキャスターストッパーを備えた4モデルを、前面構造、容量、重量、PC収納、拡張時寸法から公式情報で比較します。",
+      "excerpt": "100席以上の国内線で確認したい幅40×奥行25×高さ55cm・3辺115cm以内を基準に、前開きとキャスターストッパーを備えた4モデルの通常時・拡張時を公式情報で比較します。",
       "slug": "local-preview-front-open-carry-on-suitcase-with-stopper",
-      "title": "フロントオープンとキャスターストッパーを備えた機内持ち込みスーツケース4モデル比較"
+      "title": "100席以上便向け｜前開き・ストッパー付き機内持ち込みスーツケース4モデル比較"
     },
     {
       "article_id": "local-preview-roomba-mini-vs-switchbot-k11-pro",
       "category": "家事",
       "content_file": "articles/roomba-mini-vs-switchbot-k11-pro.html",
       "date": "2026-08-26 00:00:00",
-      "excerpt": "Roomba MiniとSwitchBot K11+ Proを、本体・ステーション寸法、自動ゴミ収集、水拭き、Wi-Fi、消耗品から公式仕様で比べます。",
+      "excerpt": "Roomba Mini SlimとSwitchBot K11+ Proの2製品を、本体・充電台の寸法、自動ゴミ収集、水拭き、Wi-Fi条件で比較します。別条件の候補は4モデル比較へ案内します。",
       "slug": "local-preview-roomba-mini-vs-switchbot-k11-pro",
-      "title": "Roomba MiniとSwitchBot K11+ Proを公式仕様で比較"
+      "title": "Roomba Mini SlimとSwitchBot K11+ Proを設置寸法・水拭きで比較"
     },
     {
       "article_id": "local-preview-solota-vs-rakua-mini-plus",
       "category": "家事",
       "content_file": "articles/solota-vs-rakua-mini-plus.html",
       "date": "2026-08-25 00:00:00",
-      "excerpt": "SOLOTAとラクアmini Plusを、本体・開扉時奥行き、食器点数、使用水量、乾燥方式から公式仕様で比べます。",
+      "excerpt": "旧SOLOTAは正確な対象型番の販売状態を確認できず、ラクアmini Plusは再入荷通知のみ。両機種を仕様参考に限定し、現行品の詳しい比較は少人数向け卓上食洗機4候補の記事へ案内します。",
       "slug": "local-preview-solota-vs-rakua-mini-plus",
-      "title": "SOLOTAとラクアmini Plusを設置条件から比較"
+      "title": "SOLOTA・ラクアmini Plusの販売状況｜現行比較への案内"
     }
   ]
 }

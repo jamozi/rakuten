@@ -9,9 +9,7 @@ from .support import REPOSITORY_ROOT
 
 def test_codegen_owner_is_registered_once_in_manifest_v2() -> None:
     manifest = json.loads(
-        (REPOSITORY_ROOT / "changes/build/manifest.v2.json").read_text(
-            encoding="utf-8"
-        )
+        (REPOSITORY_ROOT / "changes/build/manifest.v2.json").read_text(encoding="utf-8")
     )
     owners = [
         owner
@@ -44,9 +42,9 @@ def test_codegen_is_reached_through_unified_commands_only() -> None:
 
 
 def test_manifest_v2_has_no_absolute_command_or_approval_authority() -> None:
-    manifest_text = (
-        REPOSITORY_ROOT / "changes/build/manifest.v2.json"
-    ).read_text(encoding="utf-8")
+    manifest_text = (REPOSITORY_ROOT / "changes/build/manifest.v2.json").read_text(
+        encoding="utf-8"
+    )
     lowered = manifest_text.lower()
     assert '"command"' not in lowered
     assert '"approval_authority"' not in lowered
@@ -57,13 +55,26 @@ def test_manifest_v2_has_no_absolute_command_or_approval_authority() -> None:
 
 def test_every_tracked_owner_has_outputs_and_output_ownership_is_unique() -> None:
     manifest = json.loads(
-        (REPOSITORY_ROOT / "changes/build/manifest.v2.json").read_text(
-            encoding="utf-8"
-        )
+        (REPOSITORY_ROOT / "changes/build/manifest.v2.json").read_text(encoding="utf-8")
     )
     # The baseline inventory may grow as new product owners are added. The
     # ownership and graph invariants below are the stable contract.
     assert len(manifest["owners"]) >= 134
+    assert {owner["output_scope"] for owner in manifest["owners"]} == {
+        "tracked",
+        "owner_private",
+        "validation_only",
+    }
+    validators = [
+        owner
+        for owner in manifest["owners"]
+        if owner["output_scope"] == "validation_only"
+    ]
+    assert {owner["owner_id"] for owner in validators} == {
+        "build_st1704_portfolio_source_packets",
+        "build_st1704_reader_claim_coverage",
+    }
+    assert all(owner["outputs"] == [] for owner in validators)
     tracked = [
         owner for owner in manifest["owners"] if owner["output_scope"] == "tracked"
     ]

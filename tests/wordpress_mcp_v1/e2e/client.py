@@ -23,11 +23,39 @@ ORIGIN = "https://kurashinoshirube.com"
 HOST = "kurashinoshirube.com"
 PROTOCOL_VERSION = "2025-11-25"
 EXPECTED_PLUGIN_RUNTIME_REVISION = (
-    "24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55"
+    "f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082"
 )
-EXPECTED_THEME_RUNTIME_REVISION = (
-    "44b8eb82ac770a93b7b25aef1353007b6da650fb49ef5a6d2567915940595684"
+EXPECTED_YOAST_SETTINGS_FINGERPRINT = (
+    "907f32107299b0fb8154cdedc87ed20d18ab0b92c2aa3704516c8f44085ca5b9"
 )
+THEME_CONTRACT_PATH = (
+    Path(__file__).resolve().parents[3]
+    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+    "kurashinoshirube-child/theme-contract.v1.json"
+)
+
+
+def expected_theme_runtime_revision() -> str:
+    try:
+        document = json.loads(THEME_CONTRACT_PATH.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise RuntimeError("theme contract is unavailable") from error
+    try:
+        evidence = document["runtime_evidence"]
+        revision = evidence["revision"]
+        fingerprint = evidence["source_fingerprint"]
+    except (KeyError, TypeError) as error:
+        raise RuntimeError("theme contract source fingerprint is unavailable") from error
+    if (
+        not isinstance(revision, str)
+        or revision != fingerprint
+        or re.fullmatch(r"[0-9a-f]{64}", revision) is None
+    ):
+        raise RuntimeError("theme contract source fingerprint is invalid")
+    return revision
+
+
+EXPECTED_THEME_RUNTIME_REVISION = expected_theme_runtime_revision()
 EXPECTED_TOOLS = {
     "raos-codex-site-status",
     "raos-codex-content-list",
@@ -379,6 +407,41 @@ def phase_propose(
         "raw_event_tool_exposed": False,
     }
     assert status["plugin_runtime_revision"] == EXPECTED_PLUGIN_RUNTIME_REVISION
+    assert status["yoast"] == {
+        "plugin_slug": "wordpress-seo",
+        "installed": True,
+        "active": True,
+        "version": "28.3",
+        "version_exact": True,
+        "options": {
+            "wpseo": {
+                "enable_ai_generator": False,
+                "enable_headless_rest_endpoints": False,
+                "enable_index_now": False,
+                "enable_schema": False,
+                "enable_schema_aggregation_endpoint": False,
+                "enable_xml_sitemap": True,
+                "google_site_kit_feature_enabled": False,
+                "googleverify": "",
+                "semrush_integration_active": False,
+                "tracking": False,
+                "wincher_integration_active": False,
+            },
+            "wpseo_social": {
+                "og_default_image": (
+                    ORIGIN
+                    + "/wp-content/themes/kurashinoshirube-child/"
+                    "assets/images/home-hero.webp"
+                ),
+                "og_default_image_id": "",
+                "opengraph": True,
+                "twitter": True,
+                "twitter_card_type": "summary_large_image",
+            },
+        },
+        "settings_fingerprint": EXPECTED_YOAST_SETTINGS_FINGERPRINT,
+        "settings_exact": True,
+    }
     assert status["writes_enabled"] == {
         "global": True,
         "draft": True,

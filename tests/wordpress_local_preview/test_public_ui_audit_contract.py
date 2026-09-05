@@ -43,22 +43,32 @@ def test_generated_audit_inventory_is_public_safe_exact_v3_projection() -> None:
     assert list(article_surfaces) == [
         row["article_id"] for row in navigation["articles"]
     ]
+    cluster_by_id = {
+        row["cluster_id"]: row for row in navigation["clusters"]
+    }
     for article in navigation["articles"]:
         surface = article_surfaces[article["article_id"]]
-        related_ids = [row["article_id"] for row in article["related_articles"]]
-        contextual_id = next(
+        contextual_id = article["related_articles"][0]["article_id"]
+        terminal_ids = [
             row["article_id"]
             for row in article["related_articles"]
-            if row["relationship"] == "same_cluster"
-        )
+            if row["article_id"] != contextual_id
+        ]
         assert surface == {
             "article_id": article["article_id"],
+            "cluster_anchor": cluster_by_id[article["cluster_id"]]["anchor"],
             "cluster_id": article["cluster_id"],
+            "intent_group_id": article["intent_group_id"],
+            "content_role": article["content_role"],
+            "content_role_label": article["content_role_label"],
+            "primary_query_intent": article["primary_query_intent"],
+            "comparison_scope": article["comparison_scope"],
+            "broader_article_id": article["broader_article_id"],
             "contextual_article_id": contextual_id,
             "kind": "article",
             "local_path": f"/{article['local_slug']}/",
             "production_path": f"/{article['production_slug']}/",
-            "related_article_ids": related_ids,
+            "related_article_ids": terminal_ids,
             "surface_id": f"article-{article['article_code']}",
         }
     assert inventory["clusters"] == [
@@ -109,7 +119,15 @@ def test_public_audit_covers_home_ten_articles_and_three_pages_at_four_widths() 
         "link.pathname !== expected.paths[linkIndex]",
         "audit.internalLinks.length !== expectedInternalLinks.length",
         "surface.contextual_article_id",
+        "surface.content_role",
+        "surface.content_role_label",
+        "surface.primary_query_intent",
+        "surface.comparison_scope",
+        "surface.broader_article_id",
         "surface.related_article_ids.map",
+        "surface.cluster_anchor",
+        "cluster_home",
+        "new Set(audit.internalLinks.map((link) => link.href)).size",
         "link.origin !== origin",
         "link.search !== ''",
         "link.hash !== ''",
@@ -117,6 +135,66 @@ def test_public_audit_covers_home_ten_articles_and_three_pages_at_four_widths() 
         "linkResponse.status() !== 200",
         "linkResponse.url() !== link.href",
         "results.length !== surfaces.length * widths.length",
+        "visibleFactValues('記事分類')",
+        "visibleFactValues('この記事で答えること')",
+        "audit.articleFacts.contentRoleLabels[0] !== surface.content_role_label",
+        "audit.articleFacts.primaryQueryIntents[0] !== surface.primary_query_intent",
+        "page.locator('.raos-disclosure')",
+        ".scrollIntoViewIfNeeded()",
+        "disclosure.compareDocumentPosition(firstCta)",
+        "disclosureRect.bottom <= innerHeight",
+        "disclosureEffectiveOpacity > 0",
+        "audit.disclosure.unobscured",
+        "audit.disclosure.standardPhraseCount !== 3",
+        "audit.disclosure.nonaffiliatePhraseCount !== 3",
+        "'以前の比較対象の販売状態を確認する案内記事'",
+        "audit.disclosure.ariaLabel !== '収益化の対象外'",
+        "audit.disclosure.strongText !== '購入リンクなし'",
+        "audit.disclosure.detailsCount !== 0",
+        "audit.disclosure.standardPhraseCount !== 0",
+        "audit.disclosure.nonaffiliatePhraseCount !== 0",
+        "disclosureSemanticsFailure",
+        "audit.disclosure.policyLinkCount !== 1",
+        "audit.disclosure.detailsValid",
+        "page.keyboard.press('Enter')",
+        "page.keyboard.press('Space')",
+        "affiliateRelInvalid",
+        "blankRelInvalid",
+        "rel.has('sponsored')",
+        "rel.has('nofollow')",
+        "rel.has('noopener')",
+        "rel.has('noreferrer')",
+        "target.href === 'mailto:contact@kurashinoshirube.com'",
+        "containsForbiddenType(JSON.parse(script.textContent || ''))",
+        "stack.push(...Object.values(value))",
+        "type.replace(/^.*[/#:]/, '')",
+        "audit.forbiddenJsonLdTypeCount !== 0",
+        "page.keyboard.press('Shift+Tab')",
+        "TAB_ORDER_NOT_REVERSIBLE",
+        "lifecycleStatusRouteArticleId = 'solota-vs-rakua-mini-plus'",
+        "['lifecycle_status_route', '以前の比較対象の販売状態確認＋現行比較への案内']",
+        "lifecycleStatusRouteRows.length !== 1",
+        "surface.content_role === 'lifecycle_status_route'",
+        "zeroProducts !== isLifecycleStatusRoute",
+        "zeroCtas !== isLifecycleStatusRoute",
+        "lifecycleProductCtaInvariantFailure",
+        "audit.productProfileCount !== audit.productIds.length",
+        "requiresAffiliateCta",
+        "document.elementFromPoint(sampleX, sampleY)",
+        "page.emulateMedia({ reducedMotion: 'reduce' })",
+        "audit.reducedMotion.animatedElementCount !== 0",
+        "audit.reducedMotion.smoothScrollElementCount !== 0",
+        "WORDPRESS_PUBLIC_UI_HOME_REAL_SCROLL_FAILED_",
+        "allSectionsIntersected",
+        "maximumObservedScrollY",
+        "reachedBottom",
+        "CAPTURE_ONLY_CONTENT_VISIBILITY_EXPANDED_AFTER_REAL_SCROLL",
+        "comparisonFocusabilityFailure",
+        "region.scrollWidth > region.clientWidth + 1",
+        "region.getAttribute('tabindex')",
+        "region.dataset.raosHorizontalScroll",
+        "raos-audit-capture-only-content-visibility",
+        "Capture-only: interaction and paint were already verified by real scrolling.",
     ):
         assert marker in source
     assert "process.cwd()" not in source
@@ -132,8 +210,64 @@ def test_public_audit_shell_requires_all_56_artifacts_and_is_portable() -> None:
     assert "for name in" not in source
     assert '[ "$#" -eq "$expected_count" ]' in source
     assert "/home/minami/rakuten" not in source
+    assert "/home/minami/.nvm" not in source
+    assert 'node_bin="${RAOS_NODE:-}"' in source
+    assert 'node_bin="$(command -v node 2>/dev/null || true)"' in source
+    assert 'readonly node_directory="$(dirname -- "$node_bin")"' in source
+    assert '[ "$($node_bin --version)" = v24.18.1 ]' in source
+    assert "PATH=$node_directory:/usr/bin:/bin" in source
     subprocess.run(
         ["/usr/bin/bash", "-n", str(SHELL)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def test_public_audit_rejects_a09_lifecycle_route_tamper_before_navigation() -> None:
+    inventory = json.loads(INVENTORY.read_text(encoding="utf-8"))
+    a10 = next(
+        surface
+        for surface in inventory["surfaces"]
+        if surface.get("article_id") == "solota-vs-rakua-mini-plus"
+    )
+    assert a10["content_role"] == "lifecycle_status_route"
+    assert (
+        a10["content_role_label"]
+        == "以前の比較対象の販売状態確認＋現行比較への案内"
+    )
+    script = r"""
+const fs = require('fs');
+const [auditPath, inventoryPath] = process.argv.slice(1);
+const factory = eval(fs.readFileSync(auditPath, 'utf8'));
+const inventory = JSON.parse(fs.readFileSync(inventoryPath, 'utf8'));
+const a09 = inventory.surfaces.find(
+  (surface) => surface.article_id === 'roomba-mini-vs-switchbot-k11-pro',
+);
+if (!a09) throw new Error('A09_MISSING');
+a09.content_role = 'lifecycle_status_route';
+a09.content_role_label = '以前の比較対象の販売状態確認＋現行比較への案内';
+(async () => {
+  try {
+    await factory({
+      artifactDirectory: '/tmp/raos-public-ui-a09-tamper',
+      inventory,
+    })({});
+  } catch (error) {
+    if (error instanceof Error && error.message === 'WORDPRESS_PUBLIC_UI_INVENTORY_INVALID') {
+      return;
+    }
+    throw error;
+  }
+  throw new Error('A09_LIFECYCLE_TAMPER_ACCEPTED');
+})().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+"""
+    subprocess.run(
+        [_node_executable(), "-e", script, str(AUDIT), str(INVENTORY)],
         cwd=ROOT,
         check=True,
         capture_output=True,

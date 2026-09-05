@@ -164,6 +164,14 @@ ARTICLE_IDS: Final = (
     "st1704-countertop-dishwasher-for-small-households",
     "st1704-compact-robot-vacuum-shortlist",
 )
+SELF_HOSTED_MANIFEST_ARTICLE_IDS: Final = (
+    *ARTICLE_IDS,
+    "carry-on-suitcase-under-100-seats",
+    "lightweight-carry-on-suitcase-under-3kg",
+    "front-open-carry-on-suitcase-with-stopper",
+    "roomba-mini-vs-switchbot-k11-pro",
+    "solota-vs-rakua-mini-plus",
+)
 ACTIVE_BLOCKER_IDS: Final = (
     "OD-001",
     "OD-002",
@@ -896,7 +904,7 @@ def _validate_st1704(root: Path) -> None:
         manifest.get("schema") != "SELF_HOSTED_EDITORIAL_PILOT_MANIFEST_V1"
         or manifest.get("story_id") != "ST-1704"
         or manifest.get("slice_id") != "SELF_HOSTED_EDITORIAL_PILOT_V1"
-        or manifest.get("article_ids") != list(ARTICLE_IDS)
+        or manifest.get("article_ids") != list(SELF_HOSTED_MANIFEST_ARTICLE_IDS)
         or manifest.get("publication_authority") != "NONE"
         or manifest.get("external_action_authority") != "NONE"
     ):

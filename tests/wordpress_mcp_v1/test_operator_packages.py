@@ -154,6 +154,14 @@ def test_irreversible_or_unknown_migration_signals_require_manual_review(
 
 
 def test_theme_package_is_reproducible_from_the_tracked_child_theme() -> None:
+    relative_theme = (
+        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
+        "kurashinoshirube-child"
+    )
+    if operator.git(
+        "status", "--porcelain=v1", "--", relative_theme
+    ):
+        pytest.skip("candidate theme is intentionally dirty in the integration worktree")
     first_payload, first_descriptor = operator.theme_package()
     second_payload, second_descriptor = operator.theme_package()
     assert first_payload == second_payload
@@ -215,3 +223,147 @@ def test_repo_artifact_digest_mismatch_is_refused(tmp_path, monkeypatch) -> None
         "WORDPRESS_MCP_ARTIFACT_DIGEST_MISMATCH",
         lambda: operator._repo_artifact("safe-artifact", "safe-plugin", "1.2.3"),
     )
+
+
+def _reviewed_migration_artifact(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    review_mutation: tuple[str, object] | None = None,
+) -> dict[str, object]:
+    payload = package(
+        [
+            (
+                "safe-plugin/safe-plugin.php",
+                plugin_php(body=b"register_activation_hook(__FILE__, 'install');"),
+                None,
+            )
+        ]
+    )
+    manifest, manifest_sha256, _, migration_safe = validate(payload)
+    assert migration_safe is False
+    package_sha256 = __import__("hashlib").sha256(payload).hexdigest()
+    artifacts = tmp_path / "artifacts"
+    artifacts.mkdir(mode=0o700)
+    os.chmod(artifacts, 0o700)
+    package_path = artifacts / "reviewed-artifact.zip"
+    package_path.write_bytes(payload)
+    os.chmod(package_path, 0o600)
+    review: dict[str, object] = {
+        "schema": "RAOS_WORDPRESS_PLUGIN_MIGRATION_REVIEW_V1",
+        "assessment": operator.REVIEWED_MIGRATION_ASSESSMENT,
+        "package_sha256": package_sha256,
+        "file_manifest_sha256": manifest_sha256,
+    }
+    if review_mutation is not None:
+        review[review_mutation[0]] = review_mutation[1]
+    binding = {
+        "artifact_id": "reviewed-artifact",
+        "slug": "safe-plugin",
+        "version": "1.2.3",
+        "package_sha256": package_sha256,
+        "migration_review": review,
+    }
+    registry = tmp_path / "registry.json"
+    registry.write_text(
+        json.dumps(
+            {
+                "schema": "RAOS_WORDPRESS_REPO_PLUGIN_ARTIFACTS_V1",
+                "artifacts": [binding],
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(operator, "ARTIFACT_REGISTRY", registry)
+    monkeypatch.setattr(operator, "REPO_ARTIFACT_DIRECTORY", artifacts)
+    monkeypatch.setattr(
+        operator,
+        "REVIEWED_MIGRATION_BINDINGS",
+        {
+            "reviewed-artifact": {
+                "slug": "safe-plugin",
+                "version": "1.2.3",
+                "package_sha256": package_sha256,
+                "file_manifest_sha256": manifest_sha256,
+            }
+        },
+    )
+    return {
+        "manifest": manifest,
+        "manifest_sha256": manifest_sha256,
+        "package_sha256": package_sha256,
+    }
+
+
+def test_only_exact_registered_reviewed_migration_becomes_eligible(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    expected = _reviewed_migration_artifact(tmp_path, monkeypatch)
+    _, descriptor = operator.plugin_package(
+        {
+            "source": "repo_artifact",
+            "artifact_id": "reviewed-artifact",
+            "slug": "safe-plugin",
+            "version": "1.2.3",
+            "activation_intent": "activate",
+        }
+    )
+    assert descriptor["migration_assessment"] == (
+        "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION"
+    )
+    assert descriptor["automatic_apply_eligible"] is True
+    assert descriptor["package_sha256"] == expected["package_sha256"]
+    assert descriptor["file_manifest_sha256"] == expected["manifest_sha256"]
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("assessment", "MANUAL_REVIEW_REQUIRED"),
+        ("package_sha256", "0" * 64),
+        ("file_manifest_sha256", "1" * 64),
+        ("unexpected_bypass", True),
+    ],
+)
+def test_reviewed_migration_tamper_remains_manual_required(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    field: str,
+    value: object,
+) -> None:
+    _reviewed_migration_artifact(
+        tmp_path,
+        monkeypatch,
+        review_mutation=(field, value),
+    )
+    _, descriptor = operator.plugin_package(
+        {
+            "source": "repo_artifact",
+            "artifact_id": "reviewed-artifact",
+            "slug": "safe-plugin",
+            "version": "1.2.3",
+            "activation_intent": "activate",
+        }
+    )
+    assert descriptor["migration_assessment"] == "MANUAL_REVIEW_REQUIRED"
+    assert descriptor["automatic_apply_eligible"] is False
+
+
+@pytest.mark.parametrize("activation_intent", ["preserve", "deactivate"])
+def test_reviewed_migration_requires_exact_activate_intent(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    activation_intent: str,
+) -> None:
+    _reviewed_migration_artifact(tmp_path, monkeypatch)
+    _, descriptor = operator.plugin_package(
+        {
+            "source": "repo_artifact",
+            "artifact_id": "reviewed-artifact",
+            "slug": "safe-plugin",
+            "version": "1.2.3",
+            "activation_intent": activation_intent,
+        }
+    )
+    assert descriptor["migration_assessment"] == "MANUAL_REVIEW_REQUIRED"
+    assert descriptor["automatic_apply_eligible"] is False

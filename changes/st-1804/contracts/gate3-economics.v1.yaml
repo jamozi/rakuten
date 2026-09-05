@@ -27,13 +27,13 @@ dependency_bindings:
     changes/st-1803/generated/gate2-observation.local-blocked.v1.json: c16c2e91a82c7f2134f4c58ed6719fd61bf03051c359be379f4001f9b9047440
     scripts/build_st1803_gate2_observation.py: fe7c178087d113e287e95a02d6bcd68e93bd2f2e82817442800cede768b79cd4
   ST-1305:
-    changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml: 0f74d348ac22cd0a5fd8a685fe1ccc96ad4b1ce5faf946b11f62fd0f41d9685c
-    changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json: c876f76b5214d8b74c600d84cb0a3d34d1391830400a6646533ba6628a2a0618
-    changes/st-1305/generated/finance-reconciliation-recorded.v2.json: 59aded0cec550ed10cb2078e85fa28627cb9bcb375ed99e863a21a22136a5b8a
-    changes/st-1305/manifest.yaml: 940dd108970b3e2a7e510d8d6603832ea328baf18cbb9b8a9145dc05b1e6bc06
-    scripts/build_st1305_finance_reconciliation.py: 215f8aac3529ce713a08af2195de8295fa62b884d3003245a89b818189df5502
+    changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml: 60152d185ac2f5da249c5d8fc0f75c19e73a62fa612107d524a7f01692d7c264
+    changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json: fd31087a3283ef8996cac4c4596c4ffe1b34ec7ff3130e7dde73ec10e9d6d9db
+    changes/st-1305/generated/finance-reconciliation-recorded.v2.json: 3ff4e1f327734da83f6a24bc3efcea14debf6980b53d3bb357fafdaf232dd422
+    changes/st-1305/manifest.yaml: 1d1f3bf61eb467e70aaadf09ca01ea238225d77253f30eccac3662bc1311f12b
+    scripts/build_st1305_finance_reconciliation.py: b343bd2c74b8ab2071ba80b9a8ba974104c4181d7d3af897d6c732f790e097f2
   AFFILIATE_LEARNING:
-    changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json: e902d9a6f69d19ffab24b348f962e78bf8b1f57a159ad1e8798f1e7b81ec2e9e
+    changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json: 7f1eb69d554b26f8e954f36e9a330ba19425062c98a157683c8126c39f336471
 
 gate_3_definition:
   objective: REVENUE_AND_UNIT_ECONOMICS_VALIDATION

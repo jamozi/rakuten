@@ -3,11 +3,15 @@
     {
       "article_code": "a01",
       "article_id": "st1703-first-suitcase-comparison",
+      "broader_article_id": "lightweight-carry-on-suitcase-under-3kg",
       "category": "mobility",
       "category_label": "移動",
       "cluster_id": "mobility",
+      "comparison_scope": "エース系3モデルの仕様比較（市場全体のランキングではありません）",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
-      "content_snapshot_sha256": "fe5903f372e183a20f863320e36075e0dc68e9320f90292eb63f25de810a7d00",
+      "content_role": "brand_family_comparison",
+      "content_role_label": "ブランド内比較",
+      "content_snapshot_sha256": "2d97cabb3a19f3e7cf5d1261acb94d64f3e6f2925c11ab4985939db7275f3d9f",
       "cta_bindings": [
         {
           "article_code": "a01",
@@ -17,10 +21,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p01",
-          "product_id": "PRD-ACE-CRESTA-06316",
+          "product_id": "PRD-PROTECA-TRI-AIR-01541",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-card",
-          "snapshot_id": "snp-a01-fe5903f372e1"
+          "snapshot_id": "snp-a01-2d97cabb3a19"
         },
         {
           "article_code": "a01",
@@ -30,10 +34,10 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p01",
-          "product_id": "PRD-ACE-CRESTA-06316",
+          "product_id": "PRD-PROTECA-TRI-AIR-01541",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-final",
-          "snapshot_id": "snp-a01-fe5903f372e1"
+          "snapshot_id": "snp-a01-2d97cabb3a19"
         },
         {
           "article_code": "a01",
@@ -46,7 +50,7 @@
           "product_id": "PRD-ACE-DIFFERENCE-05721",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-card",
-          "snapshot_id": "snp-a01-fe5903f372e1"
+          "snapshot_id": "snp-a01-2d97cabb3a19"
         },
         {
           "article_code": "a01",
@@ -59,7 +63,7 @@
           "product_id": "PRD-ACE-DIFFERENCE-05721",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-final",
-          "snapshot_id": "snp-a01-fe5903f372e1"
+          "snapshot_id": "snp-a01-2d97cabb3a19"
         },
         {
           "article_code": "a01",
@@ -72,7 +76,7 @@
           "product_id": "PRD-ACE-MAXPASS4-01471",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-card",
-          "snapshot_id": "snp-a01-fe5903f372e1"
+          "snapshot_id": "snp-a01-2d97cabb3a19"
         },
         {
           "article_code": "a01",
@@ -85,14 +89,16 @@
           "product_id": "PRD-ACE-MAXPASS4-01471",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-final",
-          "snapshot_id": "snp-a01-fe5903f372e1"
+          "snapshot_id": "snp-a01-2d97cabb3a19"
         }
       ],
       "excerpt": "型番と一次情報を照合できたエース系3モデルを、軽さ・容量・開き方で条件別に比較。市場全体の順位ではなく、向く人と注意点を整理します。",
       "home_order": 1,
+      "intent_group_id": "carry-on-suitcase",
       "local_slug": "local-preview-carry-on-suitcase-comparison",
+      "primary_query_intent": "エース系3モデルの仕様差を知り、優先条件に合う型番を選ぶ",
       "product_ids": [
-        "PRD-ACE-CRESTA-06316",
+        "PRD-PROTECA-TRI-AIR-01541",
         "PRD-ACE-DIFFERENCE-05721",
         "PRD-ACE-MAXPASS4-01471"
       ],
@@ -104,29 +110,33 @@
       "related_articles": [
         {
           "article_id": "lightweight-carry-on-suitcase-under-3kg",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "候補を広げて選び直す",
+          "relationship": "broader_guide"
         },
         {
           "article_id": "carry-on-suitcase-under-100-seats",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "近い条件を別の軸で比べる",
+          "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a01-fe5903f372e1",
+      "snapshot_id": "snp-a01-2d97cabb3a19",
       "source_kind": "st1704_renderer",
       "source_ref": "st1703-first-suitcase-comparison",
       "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ",
-      "v2_category": "暮らしの道具"
+      "v2_category": "移動"
     },
     {
       "article_code": "a02",
       "article_id": "st1704-portable-power-station-guide",
+      "broader_article_id": null,
       "category": "preparedness",
       "category_label": "備え",
       "cluster_id": "preparedness",
+      "comparison_scope": "容量・各社公表の出力・重量・寸法を公式情報で照合できる現行ポータブル電源7モデル。安全・保証・回収は全採用品の照合完了まで選定根拠から除外",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
-      "content_snapshot_sha256": "d37e9579edb45aeb56bdb7fbdd22f3e52c533d1776caf3019fa3374615479b02",
+      "content_role": "category_guide",
+      "content_role_label": "選び方",
+      "content_snapshot_sha256": "b50b6e5a25079b6c53f404e90433584997a493ccec3cd5d0ecddff6ca1b216a0",
       "cta_bindings": [
         {
           "article_code": "a02",
@@ -139,7 +149,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-d37e9579edb4"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -152,7 +162,33 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-d37e9579edb4"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
+        },
+        {
+          "article_code": "a02",
+          "article_id": "st1704-portable-power-station-guide",
+          "cta_id": "icta_a02_p32_card",
+          "offer_id": "off-a02-p32",
+          "placement": "product_card",
+          "placement_code": "card",
+          "product_code": "p32",
+          "product_id": "PRD-BLUETTI-AORA30-V2",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a02-card",
+          "snapshot_id": "snp-a02-b50b6e5a2507"
+        },
+        {
+          "article_code": "a02",
+          "article_id": "st1704-portable-power-station-guide",
+          "cta_id": "icta_a02_p32_final",
+          "offer_id": "off-a02-p32",
+          "placement": "final_summary",
+          "placement_code": "final",
+          "product_code": "p32",
+          "product_id": "PRD-BLUETTI-AORA30-V2",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a02-final",
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -165,7 +201,7 @@
           "product_id": "PRD-JACKERY-500-NEW",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-d37e9579edb4"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -178,7 +214,7 @@
           "product_id": "PRD-JACKERY-500-NEW",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-d37e9579edb4"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -188,10 +224,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p06",
-          "product_id": "PRD-BLUETTI-AC70",
+          "product_id": "PRD-ANKER-SOLIX-C800",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-d37e9579edb4"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -201,10 +237,10 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p06",
-          "product_id": "PRD-BLUETTI-AC70",
+          "product_id": "PRD-ANKER-SOLIX-C800",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-d37e9579edb4"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -214,10 +250,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p07",
-          "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+          "product_id": "PRD-JACKERY-1000-NEW-V3",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-d37e9579edb4"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         },
         {
           "article_code": "a02",
@@ -227,52 +263,107 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p07",
-          "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+          "product_id": "PRD-JACKERY-1000-NEW-V3",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-d37e9579edb4"
+          "snapshot_id": "snp-a02-b50b6e5a2507"
+        },
+        {
+          "article_code": "a02",
+          "article_id": "st1704-portable-power-station-guide",
+          "cta_id": "icta_a02_p33_card",
+          "offer_id": "off-a02-p33",
+          "placement": "product_card",
+          "placement_code": "card",
+          "product_code": "p33",
+          "product_id": "PRD-BLUETTI-AORA100-V2",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a02-card",
+          "snapshot_id": "snp-a02-b50b6e5a2507"
+        },
+        {
+          "article_code": "a02",
+          "article_id": "st1704-portable-power-station-guide",
+          "cta_id": "icta_a02_p33_final",
+          "offer_id": "off-a02-p33",
+          "placement": "final_summary",
+          "placement_code": "final",
+          "product_code": "p33",
+          "product_id": "PRD-BLUETTI-AORA100-V2",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a02-final",
+          "snapshot_id": "snp-a02-b50b6e5a2507"
+        },
+        {
+          "article_code": "a02",
+          "article_id": "st1704-portable-power-station-guide",
+          "cta_id": "icta_a02_p08_card",
+          "offer_id": "off-a02-p08",
+          "placement": "product_card",
+          "placement_code": "card",
+          "product_code": "p08",
+          "product_id": "PRD-DJI-POWER-1000-V2",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a02-card",
+          "snapshot_id": "snp-a02-b50b6e5a2507"
+        },
+        {
+          "article_code": "a02",
+          "article_id": "st1704-portable-power-station-guide",
+          "cta_id": "icta_a02_p08_final",
+          "offer_id": "off-a02-p08",
+          "placement": "final_summary",
+          "placement_code": "final",
+          "product_code": "p08",
+          "product_id": "PRD-DJI-POWER-1000-V2",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a02-final",
+          "snapshot_id": "snp-a02-b50b6e5a2507"
         }
       ],
-      "excerpt": "停電対策のポータブル電源4モデルを、容量・定格出力・重量・大きさで比較。使いたい機器と持ち運び条件から候補を絞ります。",
+      "excerpt": "停電対策のポータブル電源7モデルを、容量・各社公表の出力・重量・寸法で比較。使いたい機器と持ち運び条件から候補を絞ります。",
       "home_order": 1,
+      "intent_group_id": "portable-power",
       "local_slug": "local-preview-portable-power-station-guide",
+      "primary_query_intent": "停電時に使う機器から必要な容量・出力と持ち運べる候補を選ぶ",
       "product_ids": [
         "PRD-ANKER-SOLIX-C300",
+        "PRD-BLUETTI-AORA30-V2",
         "PRD-JACKERY-500-NEW",
-        "PRD-BLUETTI-AC70",
-        "PRD-ECOFLOW-DELTA3-CLASSIC"
+        "PRD-ANKER-SOLIX-C800",
+        "PRD-JACKERY-1000-NEW-V3",
+        "PRD-BLUETTI-AORA100-V2",
+        "PRD-DJI-POWER-1000-V2"
       ],
       "production_slug": "portable-power-station-guide",
       "related_article_ids": [
-        "st1704-anker-solix-c300-c800-c1000-differences",
-        "st1703-first-suitcase-comparison"
+        "st1704-anker-solix-c300-c800-c1000-differences"
       ],
       "related_articles": [
         {
           "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "st1703-first-suitcase-comparison",
-          "context": "持ち運び条件の隣接文脈",
-          "relationship": "adjacent_context"
+          "context": "条件を絞った比較へ進む",
+          "relationship": "narrower_comparison"
         }
       ],
-      "snapshot_id": "snp-a02-d37e9579edb4",
+      "snapshot_id": "snp-a02-b50b6e5a2507",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-portable-power-station-guide",
       "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める",
-      "v2_category": "暮らしの道具"
+      "v2_category": "備え"
     },
     {
       "article_code": "a03",
       "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "broader_article_id": "st1704-portable-power-station-guide",
       "category": "preparedness",
       "category_label": "備え",
       "cluster_id": "preparedness",
+      "comparison_scope": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の型番別比較",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
-      "content_snapshot_sha256": "f24fa4f702d0d7243f6d93918a7e8066f021dc9532ad158c1e36473fafed778a",
+      "content_role": "model_family_comparison",
+      "content_role_label": "ブランド内比較",
+      "content_snapshot_sha256": "43807ee851ba455427e82d8f3b9c580deb8f66f8b173937745c238904f258335",
       "cta_bindings": [
         {
           "article_code": "a03",
@@ -285,7 +376,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-f24fa4f702d0"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -298,33 +389,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-f24fa4f702d0"
-        },
-        {
-          "article_code": "a03",
-          "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
-          "cta_id": "icta_a03_p08_card",
-          "offer_id": "off-a03-p08",
-          "placement": "product_card",
-          "placement_code": "card",
-          "product_code": "p08",
-          "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-f24fa4f702d0"
-        },
-        {
-          "article_code": "a03",
-          "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
-          "cta_id": "icta_a03_p08_final",
-          "offer_id": "off-a03-p08",
-          "placement": "final_summary",
-          "placement_code": "final",
-          "product_code": "p08",
-          "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-f24fa4f702d0"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -334,10 +399,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p09",
-          "product_id": "PRD-ANKER-SOLIX-C1000",
+          "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-f24fa4f702d0"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -347,10 +412,10 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p09",
-          "product_id": "PRD-ANKER-SOLIX-C1000",
+          "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-f24fa4f702d0"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -360,10 +425,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p10",
-          "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "product_id": "PRD-ANKER-SOLIX-C1000",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-f24fa4f702d0"
+          "snapshot_id": "snp-a03-43807ee851ba"
         },
         {
           "article_code": "a03",
@@ -373,15 +438,43 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p10",
+          "product_id": "PRD-ANKER-SOLIX-C1000",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a03-final",
+          "snapshot_id": "snp-a03-43807ee851ba"
+        },
+        {
+          "article_code": "a03",
+          "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+          "cta_id": "icta_a03_p11_card",
+          "offer_id": "off-a03-p11",
+          "placement": "product_card",
+          "placement_code": "card",
+          "product_code": "p11",
+          "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a03-card",
+          "snapshot_id": "snp-a03-43807ee851ba"
+        },
+        {
+          "article_code": "a03",
+          "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+          "cta_id": "icta_a03_p11_final",
+          "offer_id": "off-a03-p11",
+          "placement": "final_summary",
+          "placement_code": "final",
+          "product_code": "p11",
           "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-f24fa4f702d0"
+          "snapshot_id": "snp-a03-43807ee851ba"
         }
       ],
       "excerpt": "Anker Solix 4モデルの容量・定格出力・重量・寸法を同じ表で比較。持ち運び、出力、C1000の世代差から条件別に選びます。",
       "home_order": 2,
+      "intent_group_id": "portable-power",
       "local_slug": "local-preview-anker-solix-c300-c800-c1000-differences",
+      "primary_query_intent": "Anker Solix 4型番の容量帯とC1000世代差を知り、用途に合う型番を選ぶ",
       "product_ids": [
         "PRD-ANKER-SOLIX-C300",
         "PRD-ANKER-SOLIX-C800-PLUS",
@@ -390,61 +483,59 @@
       ],
       "production_slug": "anker-solix-c300-c800-c1000-differences",
       "related_article_ids": [
-        "st1704-portable-power-station-guide",
-        "st1703-first-suitcase-comparison"
+        "st1704-portable-power-station-guide"
       ],
       "related_articles": [
         {
           "article_id": "st1704-portable-power-station-guide",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "st1703-first-suitcase-comparison",
-          "context": "持ち運び条件の隣接文脈",
-          "relationship": "adjacent_context"
+          "context": "候補を広げて選び直す",
+          "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a03-f24fa4f702d0",
+      "snapshot_id": "snp-a03-43807ee851ba",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-anker-solix-c300-c800-c1000-differences",
       "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い",
-      "v2_category": "暮らしの道具"
+      "v2_category": "備え"
     },
     {
       "article_code": "a04",
       "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "broader_article_id": null,
       "category": "household",
       "category_label": "家事",
       "cluster_id": "household",
+      "comparison_scope": "少人数世帯向け卓上食洗機を設置寸法・容量・給水方式で比較",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
-      "content_snapshot_sha256": "6f5edb5a0a0df923f78477efcaecc697e882f184554380d4e61be6550c7d2f1b",
+      "content_role": "category_guide",
+      "content_role_label": "選び方",
+      "content_snapshot_sha256": "585688f5db3f903d1f6ee1d2e84e70bc9753e68cb935912836471b810d7931eb",
       "cta_bindings": [
         {
           "article_code": "a04",
           "article_id": "st1704-countertop-dishwasher-for-small-households",
-          "cta_id": "icta_a04_p11_card",
-          "offer_id": "off-a04-p11",
+          "cta_id": "icta_a04_p31_card",
+          "offer_id": "off-a04-p31",
           "placement": "product_card",
           "placement_code": "card",
-          "product_code": "p11",
-          "product_id": "PRD-PANASONIC-NP-TMLK1",
+          "product_code": "p31",
+          "product_id": "PRD-SIROCA-SS-M171",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-6f5edb5a0a0d"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
           "article_id": "st1704-countertop-dishwasher-for-small-households",
-          "cta_id": "icta_a04_p11_final",
-          "offer_id": "off-a04-p11",
+          "cta_id": "icta_a04_p31_final",
+          "offer_id": "off-a04-p31",
           "placement": "final_summary",
           "placement_code": "final",
-          "product_code": "p11",
-          "product_id": "PRD-PANASONIC-NP-TMLK1",
+          "product_code": "p31",
+          "product_id": "PRD-SIROCA-SS-M171",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-6f5edb5a0a0d"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -454,10 +545,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p12",
-          "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+          "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-6f5edb5a0a0d"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -467,10 +558,10 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p12",
-          "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+          "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-6f5edb5a0a0d"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -483,7 +574,7 @@
           "product_id": "PRD-SIROCA-SS-MA251",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-6f5edb5a0a0d"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -496,7 +587,7 @@
           "product_id": "PRD-SIROCA-SS-MA251",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-6f5edb5a0a0d"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -506,10 +597,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p14",
-          "product_id": "PRD-PANASONIC-NP-TSP1",
+          "product_id": "PRD-TOSHIBA-DWS-33B-W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-6f5edb5a0a0d"
+          "snapshot_id": "snp-a04-585688f5db3f"
         },
         {
           "article_code": "a04",
@@ -519,52 +610,52 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p14",
-          "product_id": "PRD-PANASONIC-NP-TSP1",
+          "product_id": "PRD-TOSHIBA-DWS-33B-W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-6f5edb5a0a0d"
+          "snapshot_id": "snp-a04-585688f5db3f"
         }
       ],
-      "excerpt": "工事不要で使えるタンク式食洗機4モデルを、設置寸法・食器点数・使用水量・乾燥方法で比較。狭いキッチンで向く条件を整理します。",
+      "excerpt": "工事不要のタンク式食洗機4候補を公式仕様で比較。標準食器11〜18点の現行モデルを、設置寸法、使用水量、給水・乾燥方式で選び分けます。SOLOTA NP-TMLK1は販売状態未確認の仕様参考にとどめます。",
       "home_order": 1,
+      "intent_group_id": "countertop-dishwasher",
       "local_slug": "local-preview-countertop-dishwasher-for-small-households",
+      "primary_query_intent": "1〜2人分の食器量と設置条件から工事不要の卓上食洗機を選ぶ",
       "product_ids": [
-        "PRD-PANASONIC-NP-TMLK1",
-        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-M171",
+        "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
         "PRD-SIROCA-SS-MA251",
-        "PRD-PANASONIC-NP-TSP1"
+        "PRD-TOSHIBA-DWS-33B-W"
       ],
       "production_slug": "countertop-dishwasher-for-small-households",
       "related_article_ids": [
-        "solota-vs-rakua-mini-plus",
-        "st1704-compact-robot-vacuum-shortlist"
+        "solota-vs-rakua-mini-plus"
       ],
       "related_articles": [
         {
           "article_id": "solota-vs-rakua-mini-plus",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "st1704-compact-robot-vacuum-shortlist",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "以前の比較対象の販売状況を確認する",
+          "relationship": "lifecycle_reference"
         }
       ],
-      "snapshot_id": "snp-a04-6f5edb5a0a0d",
+      "snapshot_id": "snp-a04-585688f5db3f",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-countertop-dishwasher-for-small-households",
-      "title": "工事不要の食洗機を1〜2人暮らし向けに比較",
-      "v2_category": "暮らしの道具"
+      "title": "工事不要の食洗機4候補｜1〜2人暮らしの設置条件で選ぶ",
+      "v2_category": "家事"
     },
     {
       "article_code": "a05",
       "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "broader_article_id": null,
       "category": "household",
       "category_label": "家事",
       "cluster_id": "household",
+      "comparison_scope": "置き場所優先の2モデルとモップ自動手入れ優先の2モデル",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
-      "content_snapshot_sha256": "2a75738808da41b22ee78d04305ba9e960150ece341b95d6da00168b41370fa7",
+      "content_role": "category_guide",
+      "content_role_label": "選び方",
+      "content_snapshot_sha256": "f7e50fc320be7959c0a66fd48be0991bf4b4f502085d0cf8cd5f0198c1ce83df",
       "cta_bindings": [
         {
           "article_code": "a05",
@@ -574,10 +665,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p15",
-          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-card",
-          "snapshot_id": "snp-a05-2a75738808da"
+          "snapshot_id": "snp-a05-f7e50fc320be"
         },
         {
           "article_code": "a05",
@@ -587,10 +678,10 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p15",
-          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-final",
-          "snapshot_id": "snp-a05-2a75738808da"
+          "snapshot_id": "snp-a05-f7e50fc320be"
         },
         {
           "article_code": "a05",
@@ -603,7 +694,7 @@
           "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-card",
-          "snapshot_id": "snp-a05-2a75738808da"
+          "snapshot_id": "snp-a05-f7e50fc320be"
         },
         {
           "article_code": "a05",
@@ -616,7 +707,7 @@
           "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-final",
-          "snapshot_id": "snp-a05-2a75738808da"
+          "snapshot_id": "snp-a05-f7e50fc320be"
         },
         {
           "article_code": "a05",
@@ -626,10 +717,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p17",
-          "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+          "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-card",
-          "snapshot_id": "snp-a05-2a75738808da"
+          "snapshot_id": "snp-a05-f7e50fc320be"
         },
         {
           "article_code": "a05",
@@ -639,10 +730,10 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p17",
-          "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+          "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-final",
-          "snapshot_id": "snp-a05-2a75738808da"
+          "snapshot_id": "snp-a05-f7e50fc320be"
         },
         {
           "article_code": "a05",
@@ -655,7 +746,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-card",
-          "snapshot_id": "snp-a05-2a75738808da"
+          "snapshot_id": "snp-a05-f7e50fc320be"
         },
         {
           "article_code": "a05",
@@ -668,49 +759,49 @@
           "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-final",
-          "snapshot_id": "snp-a05-2a75738808da"
+          "snapshot_id": "snp-a05-f7e50fc320be"
         }
       ],
-      "excerpt": "省スペース候補のロボット掃除機4モデルを、本体の底面寸法・高さ・ステーション寸法・水拭き方式で比較。置ける条件から候補を絞ります。",
+      "excerpt": "ロボット掃除機4モデルを、本体・ステーションの設置寸法、帰還余白、水拭きと自動手入れの範囲で比較。置き場所優先の2モデルと、モップ自動手入れ優先の2モデルを条件別に整理します。",
       "home_order": 2,
+      "intent_group_id": "robot-vacuum",
       "local_slug": "local-preview-compact-robot-vacuum-shortlist",
+      "primary_query_intent": "ロボット掃除機4モデルを設置寸法とモップ自動手入れの範囲で選ぶ",
       "product_ids": [
-        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-EUFY-AUTOEMPTY-C10-T2292",
         "PRD-SWITCHBOT-K11-PRO",
-        "PRD-SWITCHBOT-K10-PRO-COMBO",
+        "PRD-ECOVACS-DEEBOT-MINI2",
         "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
       ],
       "production_slug": "compact-robot-vacuum-shortlist",
       "related_article_ids": [
-        "roomba-mini-vs-switchbot-k11-pro",
-        "st1704-countertop-dishwasher-for-small-households"
+        "roomba-mini-vs-switchbot-k11-pro"
       ],
       "related_articles": [
         {
           "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "st1704-countertop-dishwasher-for-small-households",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "条件を絞った比較へ進む",
+          "relationship": "narrower_comparison"
         }
       ],
-      "snapshot_id": "snp-a05-2a75738808da",
+      "snapshot_id": "snp-a05-f7e50fc320be",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-compact-robot-vacuum-shortlist",
-      "title": "省スペースのロボット掃除機を条件で絞る",
-      "v2_category": "暮らしの道具"
+      "title": "ロボット掃除機4モデル比較｜設置寸法・モップ自動手入れで選ぶ",
+      "v2_category": "家事"
     },
     {
       "article_code": "a06",
       "article_id": "carry-on-suitcase-under-100-seats",
+      "broader_article_id": null,
       "category": "mobility",
       "category_label": "移動",
       "cluster_id": "mobility",
+      "comparison_scope": "100席未満便の一般的な機内持ち込み外寸条件に収まる4モデル",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
-      "content_snapshot_sha256": "e21d9a5ed91824c7953a3260ff67d306bd1af1a8a7e01c51eb7ffd477ce4db38",
+      "content_role": "constraint_shortlist",
+      "content_role_label": "条件別比較",
+      "content_snapshot_sha256": "7a812e0c7c66d69e696dd462712491e7f5d71c153249ca6120016b3ab3f4383d",
       "cta_bindings": [
         {
           "article_code": "a06",
@@ -723,7 +814,7 @@
           "product_id": "PRD-PROTECA-STARIA-CXR-02350",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-card",
-          "snapshot_id": "snp-a06-e21d9a5ed918"
+          "snapshot_id": "snp-a06-7a812e0c7c66"
         },
         {
           "article_code": "a06",
@@ -736,7 +827,7 @@
           "product_id": "PRD-PROTECA-STARIA-CXR-02350",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-final",
-          "snapshot_id": "snp-a06-e21d9a5ed918"
+          "snapshot_id": "snp-a06-7a812e0c7c66"
         },
         {
           "article_code": "a06",
@@ -749,7 +840,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01550",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-card",
-          "snapshot_id": "snp-a06-e21d9a5ed918"
+          "snapshot_id": "snp-a06-7a812e0c7c66"
         },
         {
           "article_code": "a06",
@@ -762,7 +853,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01550",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-final",
-          "snapshot_id": "snp-a06-e21d9a5ed918"
+          "snapshot_id": "snp-a06-7a812e0c7c66"
         },
         {
           "article_code": "a06",
@@ -775,7 +866,7 @@
           "product_id": "PRD-ACE-PALISADES3-Z-06910",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-card",
-          "snapshot_id": "snp-a06-e21d9a5ed918"
+          "snapshot_id": "snp-a06-7a812e0c7c66"
         },
         {
           "article_code": "a06",
@@ -788,7 +879,7 @@
           "product_id": "PRD-ACE-PALISADES3-Z-06910",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-final",
-          "snapshot_id": "snp-a06-e21d9a5ed918"
+          "snapshot_id": "snp-a06-7a812e0c7c66"
         },
         {
           "article_code": "a06",
@@ -801,7 +892,7 @@
           "product_id": "PRD-BERMAS-INTER-CITY-60524",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-card",
-          "snapshot_id": "snp-a06-e21d9a5ed918"
+          "snapshot_id": "snp-a06-7a812e0c7c66"
         },
         {
           "article_code": "a06",
@@ -814,12 +905,14 @@
           "product_id": "PRD-BERMAS-INTER-CITY-60524",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-final",
-          "snapshot_id": "snp-a06-e21d9a5ed918"
+          "snapshot_id": "snp-a06-7a812e0c7c66"
         }
       ],
       "excerpt": "100席未満の国内線で確認したい幅35×奥行20×高さ45cm・3辺100cm以内を基準に、4モデルの外寸、重量、容量、開き方を公式情報から比較します。",
       "home_order": 2,
+      "intent_group_id": "carry-on-suitcase",
       "local_slug": "local-preview-carry-on-suitcase-under-100-seats",
+      "primary_query_intent": "100席未満便の寸法条件に合う候補と、購入前の確認手順を知る",
       "product_ids": [
         "PRD-PROTECA-STARIA-CXR-02350",
         "PRD-PROTECA-FRESTER-EX-01550",
@@ -834,16 +927,16 @@
       "related_articles": [
         {
           "article_id": "st1703-first-suitcase-comparison",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "近い条件を別の軸で比べる",
+          "relationship": "adjacent_condition"
         },
         {
           "article_id": "front-open-carry-on-suitcase-with-stopper",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "近い条件を別の軸で比べる",
+          "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a06-e21d9a5ed918",
+      "snapshot_id": "snp-a06-7a812e0c7c66",
       "source_kind": "html_fixture",
       "source_ref": "articles/carry-on-suitcase-under-100-seats.html",
       "title": "100席未満の国内線向けスーツケース4モデルを機内持ち込み規定で比較",
@@ -852,11 +945,15 @@
     {
       "article_code": "a07",
       "article_id": "lightweight-carry-on-suitcase-under-3kg",
+      "broader_article_id": null,
       "category": "mobility",
       "category_label": "移動",
       "cluster_id": "mobility",
+      "comparison_scope": "30L以上・本体3kg以下・機内持ち込み目安内の5モデル",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
-      "content_snapshot_sha256": "abc1202a749e824f9f7c621cfbb03184cfd4dfd082ee5863fb8919e8d5593d6c",
+      "content_role": "constraint_shortlist",
+      "content_role_label": "条件別比較",
+      "content_snapshot_sha256": "94b83803889d2167c7c9c51132543277dfce81aa899992d8a0a7c3a59240989a",
       "cta_bindings": [
         {
           "article_code": "a07",
@@ -869,7 +966,7 @@
           "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-card",
-          "snapshot_id": "snp-a07-abc1202a749e"
+          "snapshot_id": "snp-a07-94b83803889d"
         },
         {
           "article_code": "a07",
@@ -882,7 +979,7 @@
           "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-final",
-          "snapshot_id": "snp-a07-abc1202a749e"
+          "snapshot_id": "snp-a07-94b83803889d"
         },
         {
           "article_code": "a07",
@@ -892,10 +989,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p24",
-          "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+          "product_id": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-card",
-          "snapshot_id": "snp-a07-abc1202a749e"
+          "snapshot_id": "snp-a07-94b83803889d"
         },
         {
           "article_code": "a07",
@@ -905,10 +1002,10 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p24",
-          "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+          "product_id": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-final",
-          "snapshot_id": "snp-a07-abc1202a749e"
+          "snapshot_id": "snp-a07-94b83803889d"
         },
         {
           "article_code": "a07",
@@ -921,7 +1018,7 @@
           "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-card",
-          "snapshot_id": "snp-a07-abc1202a749e"
+          "snapshot_id": "snp-a07-94b83803889d"
         },
         {
           "article_code": "a07",
@@ -934,7 +1031,7 @@
           "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-final",
-          "snapshot_id": "snp-a07-abc1202a749e"
+          "snapshot_id": "snp-a07-94b83803889d"
         },
         {
           "article_code": "a07",
@@ -944,10 +1041,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p26",
-          "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+          "product_id": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-card",
-          "snapshot_id": "snp-a07-abc1202a749e"
+          "snapshot_id": "snp-a07-94b83803889d"
         },
         {
           "article_code": "a07",
@@ -957,20 +1054,49 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p26",
-          "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+          "product_id": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-final",
-          "snapshot_id": "snp-a07-abc1202a749e"
+          "snapshot_id": "snp-a07-94b83803889d"
+        },
+        {
+          "article_code": "a07",
+          "article_id": "lightweight-carry-on-suitcase-under-3kg",
+          "cta_id": "icta_a07_p01_card",
+          "offer_id": "off-a07-p01",
+          "placement": "product_card",
+          "placement_code": "card",
+          "product_code": "p01",
+          "product_id": "PRD-PROTECA-TRI-AIR-01541",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a07-card",
+          "snapshot_id": "snp-a07-94b83803889d"
+        },
+        {
+          "article_code": "a07",
+          "article_id": "lightweight-carry-on-suitcase-under-3kg",
+          "cta_id": "icta_a07_p01_final",
+          "offer_id": "off-a07-p01",
+          "placement": "final_summary",
+          "placement_code": "final",
+          "product_code": "p01",
+          "product_id": "PRD-PROTECA-TRI-AIR-01541",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a07-final",
+          "snapshot_id": "snp-a07-94b83803889d"
         }
       ],
-      "excerpt": "30L以上・本体3kg以下の機内持ち込み候補4モデルを、容量、素材、ストッパー、拡張時寸法、交換可能車輪から公式情報で比較します。",
+      "excerpt": "100席以上の国内線で確認したい3辺115cm以内を前提に、30L以上・本体3kg以下の5モデルを、容量、素材、ストッパー、拡張時寸法、保証条件から公式情報で比較します。",
       "home_order": 3,
+      "intent_group_id": "carry-on-suitcase",
       "local_slug": "local-preview-lightweight-carry-on-suitcase-under-3kg",
+      "primary_query_intent": "30L以上・3kg以下の機内持ち込み候補を、容量と軽さから選ぶ",
       "product_ids": [
         "PRD-PROTECA-AEROFLEX-DX2-01521",
-        "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
         "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
-        "PRD-FREQUENTER-LIEVE-1-250"
+        "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549",
+        "PRD-PROTECA-TRI-AIR-01541"
       ],
       "production_slug": "lightweight-carry-on-suitcase-under-3kg",
       "related_article_ids": [
@@ -980,29 +1106,33 @@
       "related_articles": [
         {
           "article_id": "st1703-first-suitcase-comparison",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "条件を絞った比較へ進む",
+          "relationship": "narrower_comparison"
         },
         {
           "article_id": "front-open-carry-on-suitcase-with-stopper",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "近い条件を別の軸で比べる",
+          "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a07-abc1202a749e",
+      "snapshot_id": "snp-a07-94b83803889d",
       "source_kind": "html_fixture",
       "source_ref": "articles/lightweight-carry-on-suitcase-under-3kg.html",
-      "title": "30L以上・3kg以下の機内持ち込みスーツケース4モデルを比較",
+      "title": "100席以上便向け｜30L以上・3kg以下の機内持ち込みスーツケース5モデル比較",
       "v2_category": "移動"
     },
     {
       "article_code": "a08",
       "article_id": "front-open-carry-on-suitcase-with-stopper",
+      "broader_article_id": null,
       "category": "mobility",
       "category_label": "移動",
       "cluster_id": "mobility",
+      "comparison_scope": "前開き機構とキャスターストッパーを公式情報で確認できる4モデル",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
-      "content_snapshot_sha256": "29e1fc0be1183cdce0c0644037935e83919eb388fb5a36db11352daf3ab2380f",
+      "content_role": "feature_shortlist",
+      "content_role_label": "機能別比較",
+      "content_snapshot_sha256": "68d2c95ef3a48604afa7361e9ab2ef7bd008127659b15a929d353ef5a4734acd",
       "cta_bindings": [
         {
           "article_code": "a08",
@@ -1015,7 +1145,7 @@
           "product_id": "PRD-INNOVATOR-INV50",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-card",
-          "snapshot_id": "snp-a08-29e1fc0be118"
+          "snapshot_id": "snp-a08-68d2c95ef3a4"
         },
         {
           "article_code": "a08",
@@ -1028,7 +1158,7 @@
           "product_id": "PRD-INNOVATOR-INV50",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-final",
-          "snapshot_id": "snp-a08-29e1fc0be118"
+          "snapshot_id": "snp-a08-68d2c95ef3a4"
         },
         {
           "article_code": "a08",
@@ -1041,7 +1171,7 @@
           "product_id": "PRD-ACE-DIFFERENCE-05721",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-card",
-          "snapshot_id": "snp-a08-29e1fc0be118"
+          "snapshot_id": "snp-a08-68d2c95ef3a4"
         },
         {
           "article_code": "a08",
@@ -1054,7 +1184,7 @@
           "product_id": "PRD-ACE-DIFFERENCE-05721",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-final",
-          "snapshot_id": "snp-a08-29e1fc0be118"
+          "snapshot_id": "snp-a08-68d2c95ef3a4"
         },
         {
           "article_code": "a08",
@@ -1067,7 +1197,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01551",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-card",
-          "snapshot_id": "snp-a08-29e1fc0be118"
+          "snapshot_id": "snp-a08-68d2c95ef3a4"
         },
         {
           "article_code": "a08",
@@ -1080,7 +1210,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01551",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-final",
-          "snapshot_id": "snp-a08-29e1fc0be118"
+          "snapshot_id": "snp-a08-68d2c95ef3a4"
         },
         {
           "article_code": "a08",
@@ -1090,10 +1220,10 @@
           "placement": "product_card",
           "placement_code": "card",
           "product_code": "p29",
-          "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+          "product_id": "PRD-BERMAS-INTER-CITY-III-60570",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-card",
-          "snapshot_id": "snp-a08-29e1fc0be118"
+          "snapshot_id": "snp-a08-68d2c95ef3a4"
         },
         {
           "article_code": "a08",
@@ -1103,20 +1233,22 @@
           "placement": "final_summary",
           "placement_code": "final",
           "product_code": "p29",
-          "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+          "product_id": "PRD-BERMAS-INTER-CITY-III-60570",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-final",
-          "snapshot_id": "snp-a08-29e1fc0be118"
+          "snapshot_id": "snp-a08-68d2c95ef3a4"
         }
       ],
-      "excerpt": "前開きとキャスターストッパーを備えた4モデルを、前面構造、容量、重量、PC収納、拡張時寸法から公式情報で比較します。",
+      "excerpt": "100席以上の国内線で確認したい幅40×奥行25×高さ55cm・3辺115cm以内を基準に、前開きとキャスターストッパーを備えた4モデルの通常時・拡張時を公式情報で比較します。",
       "home_order": 4,
+      "intent_group_id": "carry-on-suitcase",
       "local_slug": "local-preview-front-open-carry-on-suitcase-with-stopper",
+      "primary_query_intent": "前開きとストッパーを両方備える候補を、開き方の違いから選ぶ",
       "product_ids": [
         "PRD-INNOVATOR-INV50",
         "PRD-ACE-DIFFERENCE-05721",
         "PRD-PROTECA-FRESTER-EX-01551",
-        "PRD-BERMAS-INTER-CITY-II-60561"
+        "PRD-BERMAS-INTER-CITY-III-60570"
       ],
       "production_slug": "front-open-carry-on-suitcase-with-stopper",
       "related_article_ids": [
@@ -1126,82 +1258,34 @@
       "related_articles": [
         {
           "article_id": "st1703-first-suitcase-comparison",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "近い条件を別の軸で比べる",
+          "relationship": "adjacent_condition"
         },
         {
           "article_id": "carry-on-suitcase-under-100-seats",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "近い条件を別の軸で比べる",
+          "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a08-29e1fc0be118",
+      "snapshot_id": "snp-a08-68d2c95ef3a4",
       "source_kind": "html_fixture",
       "source_ref": "articles/front-open-carry-on-suitcase-with-stopper.html",
-      "title": "フロントオープンとキャスターストッパーを備えた機内持ち込みスーツケース4モデル比較",
+      "title": "100席以上便向け｜前開き・ストッパー付き機内持ち込みスーツケース4モデル比較",
       "v2_category": "移動"
     },
     {
       "article_code": "a09",
       "article_id": "roomba-mini-vs-switchbot-k11-pro",
+      "broader_article_id": "st1704-compact-robot-vacuum-shortlist",
       "category": "household",
       "category_label": "家事",
       "cluster_id": "household",
+      "comparison_scope": "Roomba Mini Slim F115060とSwitchBot K11+ Proの純2製品比較。薄型本体やモップ自動手入れを優先する別候補は4モデル比較へ案内",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
-      "content_snapshot_sha256": "186ea496f9e2ae2cac5d92a551f0dcd59e9206022d7de5d7c7cd92bbec258310",
+      "content_role": "head_to_head_comparison",
+      "content_role_label": "2製品比較",
+      "content_snapshot_sha256": "64168dbf12d10f3c44fea6ab92e236de70db1d9d1c3cb268a9db2f27f0b884e0",
       "cta_bindings": [
-        {
-          "article_code": "a09",
-          "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "cta_id": "icta_a09_p15_card",
-          "offer_id": "off-a09-p15",
-          "placement": "product_card",
-          "placement_code": "card",
-          "product_code": "p15",
-          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a09-card",
-          "snapshot_id": "snp-a09-186ea496f9e2"
-        },
-        {
-          "article_code": "a09",
-          "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "cta_id": "icta_a09_p15_final",
-          "offer_id": "off-a09-p15",
-          "placement": "final_summary",
-          "placement_code": "final",
-          "product_code": "p15",
-          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a09-final",
-          "snapshot_id": "snp-a09-186ea496f9e2"
-        },
-        {
-          "article_code": "a09",
-          "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "cta_id": "icta_a09_p16_card",
-          "offer_id": "off-a09-p16",
-          "placement": "product_card",
-          "placement_code": "card",
-          "product_code": "p16",
-          "product_id": "PRD-SWITCHBOT-K11-PRO",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a09-card",
-          "snapshot_id": "snp-a09-186ea496f9e2"
-        },
-        {
-          "article_code": "a09",
-          "article_id": "roomba-mini-vs-switchbot-k11-pro",
-          "cta_id": "icta_a09_p16_final",
-          "offer_id": "off-a09-p16",
-          "placement": "final_summary",
-          "placement_code": "final",
-          "product_code": "p16",
-          "product_id": "PRD-SWITCHBOT-K11-PRO",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a09-final",
-          "snapshot_id": "snp-a09-186ea496f9e2"
-        },
         {
           "article_code": "a09",
           "article_id": "roomba-mini-vs-switchbot-k11-pro",
@@ -1213,7 +1297,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a09-card",
-          "snapshot_id": "snp-a09-186ea496f9e2"
+          "snapshot_id": "snp-a09-64168dbf12d1"
         },
         {
           "article_code": "a09",
@@ -1226,157 +1310,95 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a09-final",
-          "snapshot_id": "snp-a09-186ea496f9e2"
+          "snapshot_id": "snp-a09-64168dbf12d1"
+        },
+        {
+          "article_code": "a09",
+          "article_id": "roomba-mini-vs-switchbot-k11-pro",
+          "cta_id": "icta_a09_p16_card",
+          "offer_id": "off-a09-p16",
+          "placement": "product_card",
+          "placement_code": "card",
+          "product_code": "p16",
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a09-card",
+          "snapshot_id": "snp-a09-64168dbf12d1"
+        },
+        {
+          "article_code": "a09",
+          "article_id": "roomba-mini-vs-switchbot-k11-pro",
+          "cta_id": "icta_a09_p16_final",
+          "offer_id": "off-a09-p16",
+          "placement": "final_summary",
+          "placement_code": "final",
+          "product_code": "p16",
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "provider_profile_state": "UNVERIFIED_DISABLED",
+          "provider_slot_id": "rps-a09-final",
+          "snapshot_id": "snp-a09-64168dbf12d1"
         }
       ],
-      "excerpt": "Roomba MiniとSwitchBot K11+ Proを、本体・ステーション寸法、自動ゴミ収集、水拭き、Wi-Fi、消耗品から公式仕様で比べます。",
+      "excerpt": "Roomba Mini SlimとSwitchBot K11+ Proの2製品を、本体・充電台の寸法、自動ゴミ収集、水拭き、Wi-Fi条件で比較します。別条件の候補は4モデル比較へ案内します。",
       "home_order": 3,
+      "intent_group_id": "robot-vacuum",
       "local_slug": "local-preview-roomba-mini-vs-switchbot-k11-pro",
+      "primary_query_intent": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を二者択一で比べる",
       "product_ids": [
-        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
-        "PRD-SWITCHBOT-K11-PRO",
-        "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
+        "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+        "PRD-SWITCHBOT-K11-PRO"
       ],
       "production_slug": "roomba-mini-vs-switchbot-k11-pro",
       "related_article_ids": [
-        "st1704-compact-robot-vacuum-shortlist",
-        "solota-vs-rakua-mini-plus"
+        "st1704-compact-robot-vacuum-shortlist"
       ],
       "related_articles": [
         {
           "article_id": "st1704-compact-robot-vacuum-shortlist",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "solota-vs-rakua-mini-plus",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "候補を広げて選び直す",
+          "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a09-186ea496f9e2",
+      "snapshot_id": "snp-a09-64168dbf12d1",
       "source_kind": "html_fixture",
       "source_ref": "articles/roomba-mini-vs-switchbot-k11-pro.html",
-      "title": "Roomba MiniとSwitchBot K11+ Proを公式仕様で比較",
+      "title": "Roomba Mini SlimとSwitchBot K11+ Proを設置寸法・水拭きで比較",
       "v2_category": "家事"
     },
     {
       "article_code": "a10",
       "article_id": "solota-vs-rakua-mini-plus",
+      "broader_article_id": "st1704-countertop-dishwasher-for-small-households",
       "category": "household",
       "category_label": "家事",
       "cluster_id": "household",
+      "comparison_scope": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
-      "content_snapshot_sha256": "01c4279c69ac689e36804a27d9840cf4d5d7406891ae96e7456eb9f391e1fd06",
-      "cta_bindings": [
-        {
-          "article_code": "a10",
-          "article_id": "solota-vs-rakua-mini-plus",
-          "cta_id": "icta_a10_p31_card",
-          "offer_id": "off-a10-p31",
-          "placement": "product_card",
-          "placement_code": "card",
-          "product_code": "p31",
-          "product_id": "PRD-PANASONIC-SOLOTA-NP-TML1-W",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a10-card",
-          "snapshot_id": "snp-a10-01c4279c69ac"
-        },
-        {
-          "article_code": "a10",
-          "article_id": "solota-vs-rakua-mini-plus",
-          "cta_id": "icta_a10_p31_final",
-          "offer_id": "off-a10-p31",
-          "placement": "final_summary",
-          "placement_code": "final",
-          "product_code": "p31",
-          "product_id": "PRD-PANASONIC-SOLOTA-NP-TML1-W",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a10-final",
-          "snapshot_id": "snp-a10-01c4279c69ac"
-        },
-        {
-          "article_code": "a10",
-          "article_id": "solota-vs-rakua-mini-plus",
-          "cta_id": "icta_a10_p32_card",
-          "offer_id": "off-a10-p32",
-          "placement": "product_card",
-          "placement_code": "card",
-          "product_code": "p32",
-          "product_id": "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a10-card",
-          "snapshot_id": "snp-a10-01c4279c69ac"
-        },
-        {
-          "article_code": "a10",
-          "article_id": "solota-vs-rakua-mini-plus",
-          "cta_id": "icta_a10_p32_final",
-          "offer_id": "off-a10-p32",
-          "placement": "final_summary",
-          "placement_code": "final",
-          "product_code": "p32",
-          "product_id": "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a10-final",
-          "snapshot_id": "snp-a10-01c4279c69ac"
-        },
-        {
-          "article_code": "a10",
-          "article_id": "solota-vs-rakua-mini-plus",
-          "cta_id": "icta_a10_p13_card",
-          "offer_id": "off-a10-p13",
-          "placement": "product_card",
-          "placement_code": "card",
-          "product_code": "p13",
-          "product_id": "PRD-SIROCA-SS-MA251",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a10-card",
-          "snapshot_id": "snp-a10-01c4279c69ac"
-        },
-        {
-          "article_code": "a10",
-          "article_id": "solota-vs-rakua-mini-plus",
-          "cta_id": "icta_a10_p13_final",
-          "offer_id": "off-a10-p13",
-          "placement": "final_summary",
-          "placement_code": "final",
-          "product_code": "p13",
-          "product_id": "PRD-SIROCA-SS-MA251",
-          "provider_profile_state": "UNVERIFIED_DISABLED",
-          "provider_slot_id": "rps-a10-final",
-          "snapshot_id": "snp-a10-01c4279c69ac"
-        }
-      ],
-      "excerpt": "SOLOTAとラクアmini Plusを、本体・開扉時奥行き、食器点数、使用水量、乾燥方式から公式仕様で比べます。",
+      "content_role": "lifecycle_status_route",
+      "content_role_label": "以前の比較対象の販売状態確認＋現行比較への案内",
+      "content_snapshot_sha256": "da82f148e08dda90cffda8d50982c318561ed82b6b59f22b711cd3ee8ca25365",
+      "cta_bindings": [],
+      "excerpt": "旧SOLOTAは正確な対象型番の販売状態を確認できず、ラクアmini Plusは再入荷通知のみ。両機種を仕様参考に限定し、現行品の詳しい比較は少人数向け卓上食洗機4候補の記事へ案内します。",
       "home_order": 4,
+      "intent_group_id": "countertop-dishwasher",
       "local_slug": "local-preview-solota-vs-rakua-mini-plus",
-      "product_ids": [
-        "PRD-PANASONIC-SOLOTA-NP-TML1-W",
-        "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B",
-        "PRD-SIROCA-SS-MA251"
-      ],
+      "primary_query_intent": "SOLOTA NP-TMLK1-Kとラクアmini Plusの販売状態を確認し、現行4候補の比較記事へ移る",
+      "product_ids": [],
       "production_slug": "solota-vs-rakua-mini-plus",
       "related_article_ids": [
-        "st1704-countertop-dishwasher-for-small-households",
-        "st1704-compact-robot-vacuum-shortlist"
+        "st1704-countertop-dishwasher-for-small-households"
       ],
       "related_articles": [
         {
           "article_id": "st1704-countertop-dishwasher-for-small-households",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
-        },
-        {
-          "article_id": "st1704-compact-robot-vacuum-shortlist",
-          "context": "同一クラスタの次の判断",
-          "relationship": "same_cluster"
+          "context": "候補を広げて選び直す",
+          "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a10-01c4279c69ac",
+      "snapshot_id": "snp-a10-da82f148e08d",
       "source_kind": "html_fixture",
       "source_ref": "articles/solota-vs-rakua-mini-plus.html",
-      "title": "SOLOTAとラクアmini Plusを設置条件から比較",
+      "title": "SOLOTA・ラクアmini Plusの販売状況｜現行比較への案内",
       "v2_category": "家事"
     }
   ],
@@ -1425,15 +1447,28 @@
       "h2",
       "th"
     ],
+    "nonaffiliate_article_ids": [
+      "solota-vs-rakua-mini-plus"
+    ],
     "primary_product_sources": "products[].official_url",
     "required_ad_disclosure": "広告を含みます。購入リンクから成果報酬を受け取る場合がありますが、選定・掲載順には使いません。",
-    "required_editorial_root": "raos-editorial-v2"
+    "required_editorial_root": "raos-editorial-v2",
+    "required_nonaffiliate_disclosure": "この記事には購入リンクがありません。以前の比較対象の販売状態を確認する案内記事のため、商品カードとアフィリエイトリンクは掲載していません。"
   },
   "evidence_policy": {
     "affiliate_rel": "sponsored nofollow",
     "allow_search_result_destination": false,
     "allow_short_url_destination": false,
     "allow_variant_substitution": false,
+    "completion_gate": {
+      "maximum_manufacturer_fallback_ctas": 0,
+      "maximum_neutral_product_images": 0,
+      "required_affiliate_cta_count": 74,
+      "required_product_card_count": 37,
+      "required_product_count": 33,
+      "required_product_image_state": "verified",
+      "required_product_state": "verified"
+    },
     "freshness_hours": 24,
     "identity_validation": {
       "jan": "required_exact_when_official_jan_registered",
@@ -1454,6 +1489,1701 @@
       "final_summary"
     ]
   },
+  "market_candidate_audit": {
+    "articles": [
+      {
+        "article_id": "st1703-first-suitcase-comparison",
+        "axis_assessments": {
+          "dimensions": {
+            "evidence_refs": [
+              "https://store.ace.jp/shop/g/g01541-10/"
+            ],
+            "rationale": "外寸は型番別のメーカー表示を比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "maintainability": {
+            "evidence_refs": [],
+            "rationale": "一部の手入れ情報はあるが、全採用品の修理・部品・消耗品・回収経路を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "performance": {
+            "evidence_refs": [
+              "https://store.ace.jp/shop/g/g01541-10/"
+            ],
+            "rationale": "容量・重量・開閉機構をメーカー表示の範囲で比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "primary_source_confidence": {
+            "evidence_refs": [
+              "https://store.ace.jp/shop/g/g01541-10/",
+              "https://www.ana.co.jp/ja/jp/notice/carry-on-baggage/20260601/"
+            ],
+            "rationale": "メーカー直販と航空会社の一次情報だけを判断根拠にした。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "safety": {
+            "evidence_refs": [],
+            "rationale": "記事全体の安全案内は商品別の重要情報・リコール照合を証明しない。全採用品の型番別確認が未完了のため推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "use_case_fit": {
+            "evidence_refs": [
+              "https://store.ace.jp/shop/g/g01541-10/"
+            ],
+            "rationale": "機内持ち込み用途と3モデルの開き方・容量差を公式情報で照合した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "warranty_and_support": {
+            "evidence_refs": [],
+            "rationale": "一部の保証情報はあるが、全採用品の日本向け保証地域・期間・窓口を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          }
+        },
+        "broader_article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "candidate_universe_method": "BRAND_BOUND_CURRENT_MODELS",
+        "comparison_scope": "エース系3モデルの仕様比較（市場全体のランキングではありません）",
+        "considered_external_candidates": [
+          {
+            "brand": "ACE",
+            "candidate_id": "EXT-ACE-CRESTA-06316",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "SOLD_OUT",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://store.ace.jp/shop/g/g06316-01/"
+            ],
+            "exact_model": "クレスタ",
+            "exact_variant_scope": "型番06316-01（ブラックカーボン）",
+            "exclusion_axis": "performance",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://store.ace.jp/shop/g/g06316-01/",
+            "reader_visible_lifecycle": "SOLD_OUT",
+            "reason": "メーカーの商品ページでは通常34L・拡張時39L・3.2kgの仕様を確認できますが、確認したブラックカーボン（06316-01）は在庫切れです。ほかのカラーの在庫はここでは判定しません。本記事では販売状態ではなく、軽さの差を比べやすい35L・1.8kgのTRI-AIR 01541を掲載し、クレスタは近接候補として記録します。",
+            "use_role": "FIXED_FAMILY_ADJACENT",
+            "variant_lifecycle": "SOLD_OUT"
+          }
+        ],
+        "considered_portfolio_candidates": [
+          {
+            "disposition": "REFERENCE_ONLY",
+            "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+            "reason": "ブランドをまたいで30L以上・3kg以下から選ぶ場合は、RIMOWA Essential LiteやSamsonite C-Liteも扱う市場横断の比較で確認できます。",
+            "route_article_id": "lightweight-carry-on-suitcase-under-3kg"
+          }
+        ],
+        "content_role": "brand_family_comparison",
+        "hard_filters": [
+          "エースまたはプロテカの日本向け現行機内持ち込みモデルであること",
+          "型番単位で外寸・容量・重量をメーカー公式情報から確認できること"
+        ],
+        "official_category_sources": [
+          "https://store.ace.jp/shop/g/g01541-10/",
+          "https://www.ana.co.jp/ja/jp/notice/carry-on-baggage/20260601/"
+        ],
+        "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
+        "primary_query_intent": "エース系3モデルの仕様差を知り、優先条件に合う型番を選ぶ",
+        "reader_visible_exclusions_heading": "エース系3モデルに加えなかった近接候補",
+        "reader_visible_required": true,
+        "scope_separation": "エース系の固定3モデル比較に限定し、市場横断の軽量条件はA07へ送る。",
+        "selected_product_ids": [
+          "PRD-PROTECA-TRI-AIR-01541",
+          "PRD-ACE-DIFFERENCE-05721",
+          "PRD-ACE-MAXPASS4-01471"
+        ]
+      },
+      {
+        "article_id": "st1704-portable-power-station-guide",
+        "axis_assessments": {
+          "dimensions": {
+            "evidence_refs": [
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.bluetti.jp/blogs/buying-guide/aora-30-v2-vs-eb3a",
+              "https://www.jackery.jp/products/explorer-500-new",
+              "https://www.ankerjapan.com/products/a1753",
+              "https://www.jackery.jp/products/explorer-1000-new-v3",
+              "https://www.bluetti.jp/collections/aora-series-portable-power-stations",
+              "https://www.dji.com/jp/power-1000-v2/specs"
+            ],
+            "rationale": "7モデルすべての本体の幅・奥行・高さと重量を、型番またはexact商品に結び付く公式値で比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "maintainability": {
+            "evidence_refs": [],
+            "rationale": "一部の手入れ情報はあるが、全採用品の修理・部品・消耗品・回収経路を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "performance": {
+            "evidence_refs": [
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.bluetti.jp/collections/aora-series-portable-power-stations",
+              "https://www.jackery.jp/products/explorer-500-new",
+              "https://www.ankerjapan.com/products/a1753",
+              "https://www.jackery.jp/products/explorer-1000-new-v3",
+              "https://www.dji.com/jp/power-1000-v2/specs"
+            ],
+            "rationale": "7モデルの容量とメーカー公表の連続出力を型番単位で比較し、呼称・試験条件が異なる数値は直接順位付けしない。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "primary_source_confidence": {
+            "evidence_refs": [
+              "https://www.meti.go.jp/product_safety/consumer/system/potaburu-denngenn-youkyuu.html",
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+              "https://www.jackery.jp/products/explorer-500-new",
+              "https://www.ankerjapan.com/products/a1753",
+              "https://www.jackery.jp/products/explorer-1000-new-v3",
+              "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+              "https://store.dji.com/jp/product/dji-power-1000-v2"
+            ],
+            "rationale": "7モデルのexact商品ページ、メーカー公式仕様、行政の安全要求事項を一次情報として使用し、販売状態と仕様を同じモデルへ結び付けた。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "safety": {
+            "evidence_refs": [],
+            "rationale": "記事全体の安全案内は商品別の重要情報・リコール照合を証明しない。全採用品の型番別確認が未完了のため推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "use_case_fit": {
+            "evidence_refs": [
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+              "https://www.jackery.jp/products/explorer-500-new",
+              "https://www.ankerjapan.com/products/a1753",
+              "https://www.jackery.jp/products/explorer-1000-new-v3",
+              "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+              "https://store.dji.com/jp/product/dji-power-1000-v2"
+            ],
+            "rationale": "停電時に使う機器と運べる重量から、288Wh・512Wh・768Wh・1024Wh帯の7モデルを条件別に選べるよう整理した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "warranty_and_support": {
+            "evidence_refs": [],
+            "rationale": "一部の保証情報はあるが、全採用品の日本向け保証地域・期間・窓口を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          }
+        },
+        "broader_article_id": null,
+        "candidate_universe_method": "CROSS_BRAND_CURRENT_CATEGORY",
+        "comparison_scope": "容量・各社公表の出力・重量・寸法を公式情報で照合できる現行ポータブル電源7モデル。安全・保証・回収は全採用品の照合完了まで選定根拠から除外",
+        "considered_external_candidates": [
+          {
+            "brand": "ELECOM",
+            "candidate_id": "EXT-ELECOM-NESTOUT-700N",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.elecom.co.jp/products/DE-NEPS700NBE.html",
+              "https://www.ankerjapan.com/products/a1753"
+            ],
+            "exact_model": "NESTOUT ポータブル電源 700N",
+            "exact_variant_scope": "DE-NEPS700NBE",
+            "exclusion_axis": "performance",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.elecom.co.jp/products/DE-NEPS700NBE.html",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "NESTOUT 700Nは712.25Wh・定格700W・約6.2kg、C800は768Wh・定格1200W・約10.5kgです。公表される充放電回数は、両社で残存容量などの判定条件がそろっていないため、直接比較せず選定根拠にも使いません。停電時に接続できる機器の定格出力幅を優先してC800を比較表に残しましたが、700W以内の機器を約4.3kg軽く運びたい場合はNESTOUT 700Nも有力です。性能全体の劣位を意味しません。",
+            "use_role": "DIRECT_CATEGORY_PEER",
+            "variant_lifecycle": "AVAILABLE"
+          },
+          {
+            "brand": "BLUETTI",
+            "candidate_id": "EXT-BLUETTI-AC70",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "SOLD_OUT",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.bluetti.jp/products/bluetti-ac70",
+              "https://www.bluetti.jp/pages/bluetti-discontinued-models"
+            ],
+            "exact_model": "AC70",
+            "exact_variant_scope": "日本向けAC70",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "PRODUCTION_ENDED",
+            "official_url": "https://www.bluetti.jp/products/bluetti-ac70",
+            "reader_visible_lifecycle": "SOLD_OUT",
+            "reason": "公式の商品画面で終売・売り切れを確認したため、現行の購入候補から除外した。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "SOLD_OUT"
+          },
+          {
+            "brand": "BLUETTI",
+            "candidate_id": "EXT-BLUETTI-AORA80",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "PRODUCTION_ENDED",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.bluetti.jp/pages/bluetti-discontinued-models"
+            ],
+            "exact_model": "AORA 80",
+            "exact_variant_scope": "日本向けAORA 80",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "PRODUCTION_ENDED",
+            "official_url": "https://www.bluetti.jp/pages/bluetti-discontinued-models",
+            "reader_visible_lifecycle": "PRODUCTION_ENDED",
+            "reason": "メーカーの生産終了一覧に掲載されるため現行候補へ戻さない。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "PRODUCTION_ENDED"
+          },
+          {
+            "brand": "EcoFlow",
+            "candidate_id": "EXT-ECOFLOW-RIVER3-PLUS",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "PRODUCTION_ENDED",
+            "embedded_structured_lifecycle": "SOLD_OUT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://jp.ecoflow.com/products/river-3-plus-portable-power-station"
+            ],
+            "exact_model": "RIVER 3 Plus",
+            "exact_variant_scope": "〖販売終了〗RIVER 3 Plus (290)",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "CONFLICT",
+            "model_lifecycle": "PRODUCTION_ENDED",
+            "official_url": "https://jp.ecoflow.com/products/river-3-plus-portable-power-station",
+            "reader_visible_lifecycle": "PRODUCTION_ENDED",
+            "reason": "286Wh・定格600W・約4.7kgで小容量帯の近接モデルですが、確認した構成は商品画面に「販売終了」と明記されています。埋め込み在庫状態は売り切れ相当で表現粒度が異なるため、読者に見える販売終了を優先して現行購入候補から除外しました。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "PRODUCTION_ENDED"
+          },
+          {
+            "brand": "EcoFlow",
+            "candidate_id": "EXT-ECOFLOW-DELTA3-PLUS",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "SOLD_OUT",
+            "embedded_structured_lifecycle": "AVAILABLE",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://jp.ecoflow.com/products/delta-3-plus-portable-power-station"
+            ],
+            "exact_model": "DELTA 3 Plus",
+            "exact_variant_scope": "DELTA 3 Plus | 防災に最適",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "CONFLICT",
+            "model_lifecycle": "SOLD_OUT",
+            "official_url": "https://jp.ecoflow.com/products/delta-3-plus-portable-power-station",
+            "reader_visible_lifecycle": "SOLD_OUT",
+            "reason": "1024Wh・定格1500W・約12.5kgで最大5kWhまでの容量拡張に対応する近接モデルですが、確認した本体構成は商品画面で売り切れでした。埋め込み構造化状態との衝突は可視状態を優先し、現行購入候補から除外しました。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "SOLD_OUT"
+          },
+          {
+            "brand": "EcoFlow",
+            "candidate_id": "EXT-ECOFLOW-DELTA3-CLASSIC",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "SOLD_OUT",
+            "embedded_structured_lifecycle": "AVAILABLE",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://jp.ecoflow.com/products/delta-3-classic"
+            ],
+            "exact_model": "DELTA 3 Classic",
+            "exact_variant_scope": "日本向けDELTA 3 Classic",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "CONFLICT",
+            "model_lifecycle": "SOLD_OUT",
+            "official_url": "https://jp.ecoflow.com/products/delta-3-classic",
+            "reader_visible_lifecycle": "SOLD_OUT",
+            "reason": "読者が見る商品画面は売り切れで、埋め込み構造化状態の在庫表示と衝突するため、可視状態を優先して現行候補から除外した。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "SOLD_OUT"
+          }
+        ],
+        "considered_portfolio_candidates": [
+          {
+            "disposition": "REFERENCE_ONLY",
+            "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+            "reason": "Anker Solix内の容量帯とC1000の世代差を詳しく確認する場合は、型番別比較で確認できます。",
+            "route_article_id": "st1704-anker-solix-c300-c800-c1000-differences"
+          }
+        ],
+        "content_role": "category_guide",
+        "hard_filters": [
+          "日本向け現行モデルで容量・メーカー公表の出力・重量・外寸を公式確認できること",
+          "7モデルを用途適合、安全性、寸法、性能、保証・サポート、保守性、一次情報の確度で同じ尺度にそろえ、未完了の安全・保証・保守は推奨根拠に使わず公開を停止すること"
+        ],
+        "official_category_sources": [
+          "https://www.meti.go.jp/product_safety/consumer/system/potaburu-denngenn-youkyuu.html",
+          "https://www.ankerjapan.com/products/a1753",
+          "https://www.jackery.jp/products/explorer-500-new",
+          "https://www.jackery.jp/products/explorer-1000-new-v3",
+          "https://www.jackery.jp/blogs/news/jackery-news20260724",
+          "https://store.dji.com/jp/product/dji-power-1000-v2",
+          "https://www.elecom.co.jp/products/DE-NEPS700NBE.html",
+          "https://jp.ecoflow.com/collections/portable-power-stations",
+          "https://www.bluetti.jp/collections/aora-series-portable-power-stations",
+          "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+          "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+          "https://www.bluetti.jp/blogs/buying-guide/aora-30-v2-vs-eb3a"
+        ],
+        "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
+        "primary_query_intent": "停電時に使う機器から必要な容量・出力と持ち運べる候補を選ぶ",
+        "reader_visible_exclusions_heading": "ポータブル電源の比較表から外した候補",
+        "reader_visible_required": true,
+        "scope_separation": "市場横断の用途別入口とし、Anker内の型番差はA03へ分離する。",
+        "selected_product_ids": [
+          "PRD-ANKER-SOLIX-C300",
+          "PRD-BLUETTI-AORA30-V2",
+          "PRD-JACKERY-500-NEW",
+          "PRD-ANKER-SOLIX-C800",
+          "PRD-JACKERY-1000-NEW-V3",
+          "PRD-BLUETTI-AORA100-V2",
+          "PRD-DJI-POWER-1000-V2"
+        ]
+      },
+      {
+        "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+        "axis_assessments": {
+          "dimensions": {
+            "evidence_refs": [
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.ankerjapan.com/products/a1765"
+            ],
+            "rationale": "重量と外寸を型番単位で比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "maintainability": {
+            "evidence_refs": [],
+            "rationale": "一部の手入れ情報はあるが、全採用品の修理・部品・消耗品・回収経路を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "performance": {
+            "evidence_refs": [
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.ankerjapan.com/products/a1765"
+            ],
+            "rationale": "容量・定格出力・拡張性・端子構成を公式値で比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "primary_source_confidence": {
+            "evidence_refs": [
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.ankerjapan.com/products/a1765"
+            ],
+            "rationale": "Anker公式の型番ページと行政情報を使用した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "safety": {
+            "evidence_refs": [],
+            "rationale": "記事全体の安全案内は商品別の重要情報・リコール照合を証明しない。全採用品の型番別確認が未完了のため推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "use_case_fit": {
+            "evidence_refs": [
+              "https://www.ankerjapan.com/products/a1722",
+              "https://www.ankerjapan.com/products/a1765"
+            ],
+            "rationale": "固定4型番の容量帯と世代差に検索意図を限定した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "warranty_and_support": {
+            "evidence_refs": [],
+            "rationale": "一部の保証情報はあるが、全採用品の日本向け保証地域・期間・窓口を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          }
+        },
+        "broader_article_id": "st1704-portable-power-station-guide",
+        "candidate_universe_method": "FIXED_MODEL_FAMILY",
+        "comparison_scope": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の型番別比較",
+        "considered_external_candidates": [
+          {
+            "brand": "Anker",
+            "candidate_id": "EXT-ANKER-SOLIX-C1000-PLUS",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.ankerjapan.com/products/a1765"
+            ],
+            "exact_model": "Solix C1000 Plus Portable Power Station",
+            "exact_variant_scope": "A1765",
+            "exclusion_axis": "comparison_scope",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.ankerjapan.com/products/a1765",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "1024Wh・約11.3kg・USB-C 3口はC1000 Gen 2と共通し、定格1700W・AC出力4口・SurgePad 2000Wという違いがあります。本記事ではC1000第1世代との拡張性・端子数の世代差を示すためGen 2を比較表に残しました。1700Wの定格出力を優先する場合は、C1000 Plusも同列に確認してください。掲載外であることは製品の優劣を意味しません。",
+            "use_role": "FIXED_FAMILY_ADJACENT",
+            "variant_lifecycle": "AVAILABLE"
+          }
+        ],
+        "considered_portfolio_candidates": [
+          {
+            "disposition": "REFERENCE_ONLY",
+            "product_id": "PRD-ANKER-SOLIX-C800",
+            "reason": "A1753はブランドをまたぐ用途別候補として、停電対策用ポータブル電源の選び方で確認できます。この記事の4型番表には加えていません。",
+            "route_article_id": "st1704-portable-power-station-guide"
+          }
+        ],
+        "content_role": "model_family_comparison",
+        "hard_filters": [
+          "C300・C800 Plus・C1000・C1000 Gen 2の固定4型番であること",
+          "容量・定格出力・重量・寸法をAnker公式情報で照合できること"
+        ],
+        "official_category_sources": [
+          "https://www.ankerjapan.com/products/a1722",
+          "https://www.ankerjapan.com/products/a1753",
+          "https://www.ankerjapan.com/products/a1765"
+        ],
+        "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
+        "primary_query_intent": "Anker Solix 4型番の容量帯とC1000世代差を知り、用途に合う型番を選ぶ",
+        "reader_visible_exclusions_heading": "比較表に加えなかったAnkerの現行候補",
+        "reader_visible_required": true,
+        "scope_separation": "Anker固定4型番だけを比較し、他ブランドを含む選び直しはA02へ送る。",
+        "selected_product_ids": [
+          "PRD-ANKER-SOLIX-C300",
+          "PRD-ANKER-SOLIX-C800-PLUS",
+          "PRD-ANKER-SOLIX-C1000",
+          "PRD-ANKER-SOLIX-C1000-GEN2"
+        ]
+      },
+      {
+        "article_id": "st1704-countertop-dishwasher-for-small-households",
+        "axis_assessments": {
+          "dimensions": {
+            "evidence_refs": [
+              "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
+              "https://aqua-has.com/product/m28b/"
+            ],
+            "rationale": "本体と扉開放時の設置条件を型番ごとに比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "maintainability": {
+            "evidence_refs": [],
+            "rationale": "一部の手入れ情報はあるが、全採用品の修理・部品・消耗品・回収経路を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "performance": {
+            "evidence_refs": [
+              "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
+              "https://aqua-has.com/product/m28b/"
+            ],
+            "rationale": "食器点数・使用水量・乾燥方式を公式仕様で比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "primary_source_confidence": {
+            "evidence_refs": [
+              "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
+              "https://shop.toshiba-lifestyle.com/jp/shop/g/g92012630Z00245-ha/"
+            ],
+            "rationale": "メーカー製品・サポート・販売画面を同じ型番で照合した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "safety": {
+            "evidence_refs": [],
+            "rationale": "記事全体の安全案内は商品別の重要情報・リコール照合を証明しない。全採用品の型番別確認が未完了のため推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "use_case_fit": {
+            "evidence_refs": [
+              "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
+              "https://panasonic.jp/dish/"
+            ],
+            "rationale": "1〜2人の食器量と工事不要の給水方式で候補を絞った。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "warranty_and_support": {
+            "evidence_refs": [],
+            "rationale": "一部の保証情報はあるが、全採用品の日本向け保証地域・期間・窓口を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          }
+        },
+        "broader_article_id": null,
+        "candidate_universe_method": "CROSS_BRAND_CURRENT_CATEGORY",
+        "comparison_scope": "少人数世帯向け卓上食洗機を設置寸法・容量・給水方式で比較",
+        "considered_external_candidates": [
+          {
+            "brand": "Panasonic",
+            "candidate_id": "EXT-PANASONIC-NP-TMLK1",
+            "decision_critical": false,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "UNKNOWN",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-09-01",
+            "evidence_refs": [
+              "https://panasonic.jp/dish/products/NP-TMLK1.html"
+            ],
+            "exact_model": "NP-TMLK1-K",
+            "exact_variant_scope": "日本向けブラック NP-TMLK1-K",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "UNKNOWN",
+            "official_url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
+            "reader_visible_lifecycle": "UNKNOWN",
+            "reason": "公式仕様は設置検討の参考に残しますが、正確な黒色型番NP-TMLK1-Kの販売状態を確認できないため、現行4候補・商品カード・購入導線から除外しました。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "UNKNOWN"
+          },
+          {
+            "brand": "Panasonic",
+            "candidate_id": "EXT-PANASONIC-NP-TSP2",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "PREORDER",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-09-01",
+            "evidence_refs": [
+              "https://panasonic.jp/dish/",
+              "https://panasonic.jp/subscription/products/dish/tsp2.html"
+            ],
+            "exact_model": "NP-TSP2",
+            "exact_variant_scope": "日本向けNP-TSP2",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "PREORDER",
+            "official_url": "https://panasonic.jp/subscription/products/dish/tsp2.html",
+            "reader_visible_lifecycle": "PREORDER",
+            "reason": "2026年9月1日時点でも公式申込み画面は予約受付中で、発送は9月中旬以降と案内されています。仕様ページの公開や申込み導線だけで販売中とは扱わず、現行比較表から外しました。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "PREORDER"
+          },
+          {
+            "brand": "THANKO",
+            "candidate_id": "EXT-THANKO-RAKUA-MINI-COLOR",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "RESTOCK_NOTIFICATION_ONLY",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-09-01",
+            "evidence_refs": [
+              "https://www.thanko.jp/view/item/000000004715?category_page_id=thanko-origin",
+              "https://www.thanko.jp/view/item/000000003922?category_page_id=ct576"
+            ],
+            "exact_model": "ラクアmini color",
+            "exact_variant_scope": "ミスティーブルー TDWS25SBL（JAN 4580060603756）／クラシックローズ TDWS25SRD（JAN 4580060603749）の単体2色",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.thanko.jp/view/item/000000004715?category_page_id=thanko-origin",
+            "reader_visible_lifecycle": "RESTOCK_NOTIFICATION_ONLY",
+            "reason": "2026年9月1日に公式画面を再取得すると、青TDWS25SBLと赤TDWS25SRDの各選択肢は、いずれも『再入荷(予約開始)通知』と表示されました。比較表にはTK-MDW22Wを残し、色展開、ダブルノズル、24か月保証、ポンプ対応を優先する場合は再入荷後に型番・JANを改めて照合します。乾燥方式が熱風から温風へ変わるため、後継・上位・性能向上とは扱いません。",
+            "use_role": "DIRECT_CATEGORY_PEER",
+            "variant_lifecycle": "RESTOCK_NOTIFICATION_ONLY"
+          },
+          {
+            "brand": "AQUA",
+            "candidate_id": "EXT-AQUA-ADW-M28B",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://aqua-has.com/product/m28b/"
+            ],
+            "exact_model": "ADW-M28B",
+            "exact_variant_scope": "日本向けADW-M28B",
+            "exclusion_axis": "use_case_fit",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://aqua-has.com/product/m28b/",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "公式仕様は標準28点（約4人分）・奥行51cmで、本記事が対象とする1〜2人分・省スペースの比較範囲より容量と奥行が大きいため外しました。28点をまとめ洗いしたい場合は、タンク式使用水量約4.5Lも含めて有力な別候補です。性能の劣位を意味しません。",
+            "use_role": "DIRECT_CATEGORY_PEER",
+            "variant_lifecycle": "AVAILABLE"
+          }
+        ],
+        "considered_portfolio_candidates": [],
+        "content_role": "category_guide",
+        "hard_filters": [
+          "少人数世帯向けで工事不要の給水方式を選べること",
+          "本体寸法・扉開放空間・食器点数・使用水量を公式確認できること"
+        ],
+        "official_category_sources": [
+          "https://panasonic.jp/dish/",
+          "https://www.thanko.jp/view/item/000000003922?category_page_id=ct576",
+          "https://www.thanko.jp/view/item/000000004715?category_page_id=thanko-origin",
+          "https://www.siroca.co.jp/product/dishwasher_basic/",
+          "https://www.siroca.co.jp/product/dishwasher_advance/",
+          "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
+          "https://aqua-has.com/product/m28b/"
+        ],
+        "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
+        "primary_query_intent": "1〜2人分の食器量と設置条件から工事不要の卓上食洗機を選ぶ",
+        "reader_visible_exclusions_heading": "少人数向け食洗機で見送った候補",
+        "reader_visible_required": true,
+        "scope_separation": "市場横断の現行4候補を設置・容量で選ぶガイドとし、SOLOTA・ラクアmini Plusから現行品へ選び直す検索意図はA10へ分ける。",
+        "selected_product_ids": [
+          "PRD-SIROCA-SS-M171",
+          "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+          "PRD-SIROCA-SS-MA251",
+          "PRD-TOSHIBA-DWS-33B-W"
+        ]
+      },
+      {
+        "article_id": "st1704-compact-robot-vacuum-shortlist",
+        "axis_assessments": {
+          "dimensions": {
+            "evidence_refs": [
+              "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2",
+              "https://www.ankerjapan.com/products/t2292"
+            ],
+            "rationale": "本体とステーションの幅・奥行・高さを意味付きで比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "maintainability": {
+            "evidence_refs": [],
+            "rationale": "一部の手入れ情報はあるが、全採用品の修理・部品・消耗品・回収経路を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "performance": {
+            "evidence_refs": [
+              "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2",
+              "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
+            ],
+            "rationale": "吸引値の単純順位ではなく、水拭きと自動手入れ範囲を比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "primary_source_confidence": {
+            "evidence_refs": [
+              "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2",
+              "https://www.ankerjapan.com/products/t2292"
+            ],
+            "rationale": "メーカー商品・サポート画面を同一型番で照合した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "safety": {
+            "evidence_refs": [],
+            "rationale": "記事全体の安全案内は商品別の重要情報・リコール照合を証明しない。全採用品の型番別確認が未完了のため推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "use_case_fit": {
+            "evidence_refs": [
+              "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2",
+              "https://www.ankerjapan.com/products/t2292"
+            ],
+            "rationale": "置き場所と手入れ範囲から小型構成を分けた。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "warranty_and_support": {
+            "evidence_refs": [],
+            "rationale": "一部の保証情報はあるが、全採用品の日本向け保証地域・期間・窓口を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          }
+        },
+        "broader_article_id": null,
+        "candidate_universe_method": "CROSS_BRAND_CURRENT_CATEGORY",
+        "comparison_scope": "置き場所優先の2モデルとモップ自動手入れ優先の2モデル",
+        "considered_external_candidates": [
+          {
+            "brand": "iRobot",
+            "candidate_id": "EXT-IROBOT-ROOMBA-MINI-AUTOEMPTY-F155260",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "SOLD_OUT",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://store.irobot-jp.com/item/F155260.html"
+            ],
+            "exact_model": "Roomba Mini + AutoEmpty",
+            "exact_variant_scope": "日本向けF155260",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "SOLD_OUT",
+            "official_url": "https://store.irobot-jp.com/item/F155260.html",
+            "reader_visible_lifecycle": "SOLD_OUT",
+            "reason": "メーカー公式ストアで在庫切れかつ購入UIを確認できないため、現行の購入候補から除外しました。製品性能の劣位を意味する判断ではありません。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "SOLD_OUT"
+          },
+          {
+            "brand": "Panasonic",
+            "candidate_id": "EXT-PANASONIC-RULO-MINI-MC-RSC10",
+            "decision_critical": false,
+            "decision_critical_unknowns": [],
+            "disposition": "DEFERRED",
+            "effective_lifecycle": "UNKNOWN",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://panasonic.jp/soji/products/MC-RSC10/spec.html"
+            ],
+            "exact_model": "RULO mini",
+            "exact_variant_scope": "MC-RSC10",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "UNKNOWN",
+            "official_url": "https://panasonic.jp/soji/products/MC-RSC10/spec.html",
+            "reader_visible_lifecycle": "UNKNOWN",
+            "reason": "公式仕様は確認できますが、販売状態は未確認（推奨根拠に使用しない）です。仕様情報だけを参照し、次回確認へ回します。",
+            "use_role": "DIRECT_CATEGORY_PEER",
+            "variant_lifecycle": "UNKNOWN"
+          },
+          {
+            "brand": "Eufy",
+            "candidate_id": "EXT-EUFY-E20-T2070",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "SOLD_OUT",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.ankerjapan.com/products/t2070"
+            ],
+            "exact_model": "Robot Vacuum 3-in-1 E20",
+            "exact_variant_scope": "T2070",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "SOLD_OUT",
+            "official_url": "https://www.ankerjapan.com/products/t2070",
+            "reader_visible_lifecycle": "SOLD_OUT",
+            "reason": "公式画面で売り切れのため現行購入候補から除外した。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "SOLD_OUT"
+          },
+          {
+            "brand": "SwitchBot",
+            "candidate_id": "EXT-SWITCHBOT-K10-PRO-COMBO",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "AVAILABLE",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo"
+            ],
+            "exact_model": "ロボット掃除機 K10+ Pro Combo",
+            "exact_variant_scope": "日本向けSKU 810150542080JP",
+            "exclusion_axis": "comparison_scope",
+            "lifecycle_evidence_state": "CONSISTENT",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "本体は直径24.8cmですが、ロボット掃除機とコードレス掃除機を共用ステーションへまとめる3in1構成です。公式ページのステーション3値には幅・奥行・高さの軸ラベルがなく、設置面積を同じ基準で比較できないため外しました。掃除道具を一つのステーションへ集約したい場合は有力な別候補で、機能の劣位を意味しません。",
+            "use_role": "SCOPE_EDGE_CASE",
+            "variant_lifecycle": "AVAILABLE"
+          },
+          {
+            "brand": "Roborock",
+            "candidate_id": "EXT-ROBOROCK-SAROS-10",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://jp.roborock.com/pages/roborock-saros-10"
+            ],
+            "exact_model": "Saros 10",
+            "exact_variant_scope": "日本向けSaros 10",
+            "exclusion_axis": "dimensions",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://jp.roborock.com/pages/roborock-saros-10",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "本体は幅35.0×奥行35.3×高さ7.98cm、ドックは幅40.9×奥行44.0×高さ47.0cmで、比較表4候補の本体最大底面辺32.5cm以下・ステーション最大底面辺40.0cm以下という範囲を超えるため外しました。高さ7.98cmの薄さや全自動ドックを優先する場合は有力な別候補です。性能の劣位を意味しません。",
+            "use_role": "SCOPE_EDGE_CASE",
+            "variant_lifecycle": "AVAILABLE"
+          },
+          {
+            "brand": "Eufy",
+            "candidate_id": "EXT-EUFY-OMNI-E25-T2353",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.ankerjapan.com/products/t2353"
+            ],
+            "exact_model": "Robot Vacuum Omni E25",
+            "exact_variant_scope": "T2353",
+            "exclusion_axis": "dimensions",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.ankerjapan.com/products/t2353",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "本体は約幅32.7×奥行34.6×高さ11.1cm、ステーションは約幅37.0×奥行46.2×高さ43.7cmで、比較表4候補の本体最大底面辺32.5cm以下・ステーション最大底面辺40.0cm以下という範囲を超えるため外しました。走行中のモップ洗浄や全自動手入れを優先する場合は有力な別候補です。性能の劣位を意味しません。",
+            "use_role": "SCOPE_EDGE_CASE",
+            "variant_lifecycle": "AVAILABLE"
+          },
+          {
+            "brand": "Dreame",
+            "candidate_id": "EXT-DREAME-X50-ULTRA",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.dreametech.jp/products/x50-ultra"
+            ],
+            "exact_model": "X50 Ultra",
+            "exact_variant_scope": "日本向けX50 Ultra",
+            "exclusion_axis": "dimensions",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.dreametech.jp/products/x50-ultra",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "本体は幅35.0×奥行35.0×高さ8.9cm（センサー格納時）、ステーションは幅45.7×奥行34.0×高さ59.0cmで、比較表4候補の本体最大底面辺32.5cm以下・ステーション最大底面辺40.0cm以下という範囲を超えるため外しました。段差対応や全自動手入れを優先する場合は有力な別候補です。性能の劣位を意味しません。",
+            "use_role": "SCOPE_EDGE_CASE",
+            "variant_lifecycle": "AVAILABLE"
+          },
+          {
+            "brand": "ECOVACS",
+            "candidate_id": "EXT-ECOVACS-DEEBOT-X8-PRO",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/deebot-x8-pro"
+            ],
+            "exact_model": "DEEBOT X8 PRO",
+            "exact_variant_scope": "日本向けDEEBOT X8 PRO",
+            "exclusion_axis": "dimensions",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/deebot-x8-pro",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "本体は幅35.3×奥行35.15×高さ9.8cm、ステーションは幅35.0×奥行47.7×高さ53.3cmで、比較表4候補の本体最大底面辺32.5cm以下・ステーション最大底面辺40.0cm以下という範囲を超えるため外しました。ローラーモップの自動洗浄・乾燥を優先する場合は有力な別候補です。性能の劣位を意味しません。",
+            "use_role": "SCOPE_EDGE_CASE",
+            "variant_lifecycle": "AVAILABLE"
+          }
+        ],
+        "considered_portfolio_candidates": [
+          {
+            "disposition": "REFERENCE_ONLY",
+            "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+            "reason": "Roomba Miniのステーションなし構成は、K11+ Proとの個別比較で詳しく確認できます。",
+            "route_article_id": "roomba-mini-vs-switchbot-k11-pro"
+          }
+        ],
+        "content_role": "category_guide",
+        "hard_filters": [
+          "日本向け現行モデルで本体の幅・奥行・高さを公式確認できること",
+          "ステーションを含む構成と自動手入れ範囲を型番単位で確認できること"
+        ],
+        "official_category_sources": [
+          "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2",
+          "https://www.ankerjapan.com/products/t2292",
+          "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "https://jp.roborock.com/pages/roborock-saros-10",
+          "https://www.ankerjapan.com/products/t2353",
+          "https://www.dreametech.jp/products/x50-ultra",
+          "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/deebot-x8-pro",
+          "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo"
+        ],
+        "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
+        "primary_query_intent": "ロボット掃除機4モデルを設置寸法とモップ自動手入れの範囲で選ぶ",
+        "reader_visible_exclusions_heading": "ロボット掃除機4モデルの比較から外した候補",
+        "reader_visible_required": true,
+        "scope_separation": "市場横断で設置寸法とモップ自動手入れを比べ、薄型・小径・水拭き・モップ自動手入れの4構成比較はA09へ分ける。",
+        "selected_product_ids": [
+          "PRD-EUFY-AUTOEMPTY-C10-T2292",
+          "PRD-SWITCHBOT-K11-PRO",
+          "PRD-ECOVACS-DEEBOT-MINI2",
+          "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+        ]
+      },
+      {
+        "article_id": "carry-on-suitcase-under-100-seats",
+        "axis_assessments": {
+          "dimensions": {
+            "evidence_refs": [
+              "https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/"
+            ],
+            "rationale": "幅・奥行・高さと3辺合計を意味付きで判定した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "maintainability": {
+            "evidence_refs": [],
+            "rationale": "一部の手入れ情報はあるが、全採用品の修理・部品・消耗品・回収経路を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "performance": {
+            "evidence_refs": [
+              "https://store.ace.jp/shop/g/g01550-11/",
+              "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1"
+            ],
+            "rationale": "条件適合後に容量・重量・ストッパーを比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "primary_source_confidence": {
+            "evidence_refs": [
+              "https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/",
+              "https://store.ace.jp/shop/g/g01550-11/"
+            ],
+            "rationale": "航空会社とメーカーの一次情報だけで適否を判定した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "safety": {
+            "evidence_refs": [],
+            "rationale": "記事全体の安全案内は商品別の重要情報・リコール照合を証明しない。全採用品の型番別確認が未完了のため推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "use_case_fit": {
+            "evidence_refs": [
+              "https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/",
+              "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/"
+            ],
+            "rationale": "100席未満便の外寸条件を絶対条件にした。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "warranty_and_support": {
+            "evidence_refs": [],
+            "rationale": "一部の保証情報はあるが、全採用品の日本向け保証地域・期間・窓口を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          }
+        },
+        "broader_article_id": null,
+        "candidate_universe_method": "CROSS_BRAND_CONSTRAINT_FILTER",
+        "comparison_scope": "100席未満便の一般的な機内持ち込み外寸条件に収まる4モデル",
+        "considered_external_candidates": [
+          {
+            "brand": "RIMOWA",
+            "candidate_id": "EXT-RIMOWA-CABIN-U",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.rimowa.com/jp/ja/luggage/colour/green/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-u/82350181.html"
+            ],
+            "exact_model": "Cabin U",
+            "exact_variant_scope": "82350181",
+            "exclusion_axis": "dimensions",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.rimowa.com/jp/ja/luggage/colour/green/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-u/82350181.html",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "外寸50×35×20cm・3辺合計105cmで、100席未満便の高さ45cm・合計100cm条件を超える。",
+            "use_role": "SCOPE_EDGE_CASE",
+            "variant_lifecycle": "AVAILABLE"
+          },
+          {
+            "brand": "Samsonite",
+            "candidate_id": "EXT-SAMSONITE-AUDRINA-SPINNER-45",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.samsonite.co.jp/luggage/audrina-spinner.html"
+            ],
+            "exact_model": "Audrina Spinner 45",
+            "exact_variant_scope": "公式掲載のSpinner 45",
+            "exclusion_axis": "dimensions",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.samsonite.co.jp/luggage/audrina-spinner.html",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "外寸47.5×37.5×24cm・3辺合計109cmで100席未満便の外寸条件を満たさない。",
+            "use_role": "SCOPE_EDGE_CASE",
+            "variant_lifecycle": "AVAILABLE"
+          },
+          {
+            "brand": "無印良品",
+            "candidate_id": "EXT-MUJI-HARD-CARRY-20L",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.muji.com/jp/ja/store/cmdty/detail/4550723184182"
+            ],
+            "exact_model": "バーを自由に調節できる ハードキャリーケース 20L",
+            "exact_variant_scope": "商品番号23184182（URL識別子4550723184182）",
+            "exclusion_axis": "dimensions",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.muji.com/jp/ja/store/cmdty/detail/4550723184182",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "公式外寸は高さ47×幅32×奥行20.5cmで、3辺合計は99.5cmですが、100席未満便の目安である高さ45cm・奥行20cmをそれぞれ2cm・0.5cm超えるため外しました。20Lの小容量やキャスターストッパーを優先する場合は有力でも、搭乗便の各辺条件を満たすとは扱いません。性能の劣位を意味しません。",
+            "use_role": "SCOPE_EDGE_CASE",
+            "variant_lifecycle": "AVAILABLE"
+          }
+        ],
+        "considered_portfolio_candidates": [
+          {
+            "disposition": "REFERENCE_ONLY",
+            "product_id": "PRD-ACE-MAXPASS4-01471",
+            "reason": "100席以上便を前提にエース系から選ぶ場合は、エース3モデル比較で確認できます。",
+            "route_article_id": "st1703-first-suitcase-comparison"
+          }
+        ],
+        "content_role": "constraint_shortlist",
+        "hard_filters": [
+          "幅35cm・奥行20cm・高さ45cm以内かつ3辺合計100cm以内であること",
+          "外寸をメーカー公式情報で型番単位に確認できること"
+        ],
+        "official_category_sources": [
+          "https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/",
+          "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/",
+          "https://www.rimowa.com/jp/ja/luggage/colour/green/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-u/82350181.html",
+          "https://www.samsonite.co.jp/luggage/audrina-spinner.html",
+          "https://www.muji.com/jp/ja/store/cmdty/detail/4550723184182"
+        ],
+        "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
+        "primary_query_intent": "100席未満便の寸法条件に合う候補と、購入前の確認手順を知る",
+        "reader_visible_exclusions_heading": "100席未満便の寸法条件から外れる候補",
+        "reader_visible_required": true,
+        "scope_separation": "100席未満便の寸法適合だけを扱い、ブランド比較や軽量条件と分離する。",
+        "selected_product_ids": [
+          "PRD-PROTECA-STARIA-CXR-02350",
+          "PRD-PROTECA-FRESTER-EX-01550",
+          "PRD-ACE-PALISADES3-Z-06910",
+          "PRD-BERMAS-INTER-CITY-60524"
+        ]
+      },
+      {
+        "article_id": "lightweight-carry-on-suitcase-under-3kg",
+        "axis_assessments": {
+          "dimensions": {
+            "evidence_refs": [
+              "https://www.rimowa.com/jp/ja/luggage/colour/grey/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3/82353171.html",
+              "https://www.proteca.jp/product/aeroflexDX2/",
+              "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/midnight_blue/ss-134679-1549.html",
+              "https://store.ace.jp/shop/g/g01541-10/"
+            ],
+            "rationale": "外寸・容量・重量を通常状態の公式値で判定した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "maintainability": {
+            "evidence_refs": [],
+            "rationale": "一部の手入れ情報はあるが、全採用品の修理・部品・消耗品・回収経路を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "performance": {
+            "evidence_refs": [
+              "https://www.rimowa.com/jp/ja/luggage/colour/grey/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3/82353171.html",
+              "https://www.proteca.jp/product/aeroflexDX2/",
+              "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/midnight_blue/ss-134679-1549.html",
+              "https://store.ace.jp/shop/g/g01541-10/"
+            ],
+            "rationale": "条件適合後に容量・軽さ・拡張有無を比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "primary_source_confidence": {
+            "evidence_refs": [
+              "https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/",
+              "https://www.rimowa.com/jp/ja/luggage/colour/grey/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3/82353171.html",
+              "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/midnight_blue/ss-134679-1549.html",
+              "https://store.ace.jp/shop/g/g01541-10/"
+            ],
+            "rationale": "航空会社とメーカーの商品・保証情報を使用した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "safety": {
+            "evidence_refs": [],
+            "rationale": "記事全体の安全案内は商品別の重要情報・リコール照合を証明しない。全採用品の型番別確認が未完了のため推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "use_case_fit": {
+            "evidence_refs": [
+              "https://www.rimowa.com/jp/ja/luggage/colour/grey/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3/82353171.html",
+              "https://store.ace.jp/shop/g/g01541-10/"
+            ],
+            "rationale": "30L以上・3kg以下を同時に満たすことを絶対条件にした。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "warranty_and_support": {
+            "evidence_refs": [],
+            "rationale": "一部の保証情報はあるが、全採用品の日本向け保証地域・期間・窓口を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          }
+        },
+        "broader_article_id": null,
+        "candidate_universe_method": "CROSS_BRAND_CONSTRAINT_FILTER",
+        "comparison_scope": "30L以上・本体3kg以下・機内持ち込み目安内の5モデル",
+        "considered_external_candidates": [
+          {
+            "brand": "FREQUENTER",
+            "candidate_id": "EXT-FREQUENTER-LIEVE-1-250-MAINTAINABILITY",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.bagworld.co.jp/c/brands/frequenter/1-250"
+            ],
+            "exact_model": "LIEVE 1-250",
+            "exact_variant_scope": "1-250",
+            "exclusion_axis": "performance",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "比較表で容量と本体重量を同じ軸にそろえると、33L・2.7kgは36L・2.1kgのC-Liteより容量が3L少なく600g重いため外しました。交換可能な車輪を優先する場合は有力な代替候補です。性能や耐久性の劣位を意味しません。",
+            "use_role": "FEATURE_SCOPE_EDGE_CASE",
+            "variant_lifecycle": "AVAILABLE"
+          },
+          {
+            "brand": "無印良品",
+            "candidate_id": "EXT-MUJI-HARD-CARRY-36L",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.muji.com/jp/ja/store/cmdty/section/S1000504"
+            ],
+            "exact_model": "バーを自由に調節できる ハードキャリーケース 36L",
+            "exact_variant_scope": "36L現行シリーズ",
+            "exclusion_axis": "performance",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.muji.com/jp/ja/store/cmdty/section/S1000504",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "36L・2.9kgで比較条件を満たし、キャスターストッパーも確認できる近接候補です。比較表で容量と本体重量を同じ軸にそろえると、同じ36LのC-Liteより800g重く、ストッパー役もエアロフレックスDX2と重なるため外しました。ストッパーを優先する場合は有力な代替候補です。性能や耐久性の劣位を意味しません。",
+            "use_role": "DIRECT_CATEGORY_PEER",
+            "variant_lifecycle": "AVAILABLE"
+          }
+        ],
+        "considered_portfolio_candidates": [],
+        "content_role": "constraint_shortlist",
+        "hard_filters": [
+          "通常状態で容量30L以上かつ本体重量3kg以下であること",
+          "100席以上便の一般的な機内持ち込み外寸目安に収まること"
+        ],
+        "official_category_sources": [
+          "https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/",
+          "https://www.rimowa.com/jp/ja/luggage/colour/grey/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3/82353171.html",
+          "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/midnight_blue/ss-134679-1549.html",
+          "https://store.ace.jp/shop/g/g01541-10/"
+        ],
+        "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
+        "primary_query_intent": "30L以上・3kg以下の機内持ち込み候補を、容量と軽さから選ぶ",
+        "reader_visible_exclusions_heading": "比較表に加えなかった近接候補",
+        "reader_visible_required": true,
+        "scope_separation": "30L以上・3kg以下に限定し、エース系の型番比較はA01へ送る。",
+        "selected_product_ids": [
+          "PRD-PROTECA-AEROFLEX-DX2-01521",
+          "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
+          "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+          "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549",
+          "PRD-PROTECA-TRI-AIR-01541"
+        ]
+      },
+      {
+        "article_id": "front-open-carry-on-suitcase-with-stopper",
+        "axis_assessments": {
+          "dimensions": {
+            "evidence_refs": [
+              "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+              "https://www.bermas.co.jp/c/series/businesstravel/intercity3/60570"
+            ],
+            "rationale": "通常時外寸と開口方式をメーカー値で比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "maintainability": {
+            "evidence_refs": [],
+            "rationale": "一部の手入れ情報はあるが、全採用品の修理・部品・消耗品・回収経路を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "performance": {
+            "evidence_refs": [
+              "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+              "https://store.ace.jp/shop/g/g01551-01/"
+            ],
+            "rationale": "容量・重量・前開き方式・ストッパー操作を比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "primary_source_confidence": {
+            "evidence_refs": [
+              "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+              "https://www.bermas.co.jp/c/series/businesstravel/intercity3/60570",
+              "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561"
+            ],
+            "rationale": "採用品と比較表外候補をメーカー公式商品ページへ結び付けた。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "safety": {
+            "evidence_refs": [],
+            "rationale": "記事全体の安全案内は商品別の重要情報・リコール照合を証明しない。全採用品の型番別確認が未完了のため推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "use_case_fit": {
+            "evidence_refs": [
+              "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+              "https://www.bermas.co.jp/c/series/businesstravel/intercity3/60570"
+            ],
+            "rationale": "前開きとストッパーを同時に備えることを絶対条件にした。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "warranty_and_support": {
+            "evidence_refs": [],
+            "rationale": "一部の保証情報はあるが、全採用品の日本向け保証地域・期間・窓口を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          }
+        },
+        "broader_article_id": null,
+        "candidate_universe_method": "CROSS_BRAND_FEATURE_FILTER",
+        "comparison_scope": "前開き機構とキャスターストッパーを公式情報で確認できる4モデル",
+        "considered_external_candidates": [
+          {
+            "brand": "BERMAS",
+            "candidate_id": "EXT-BERMAS-INTER-CITY-II-60561",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-09-01",
+            "evidence_refs": [
+              "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561"
+            ],
+            "exact_model": "INTER CITY II 60561",
+            "exact_variant_scope": "シルバー（公式ページで購入UIを確認）",
+            "exclusion_axis": "comparison_scope",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "INTER CITY II 60561は公式ページでシルバーの購入UIを確認できる現行候補です。幅35×奥行25×高さ55cm、約36L、約3.5kg（付属物を除く）で、13インチPC収納目安、前面からメイン収納へのアクセス、キャスターストッパーを備えます。比較表では同じ役割の現行シリーズINTER CITY III 60570を残しました。60570は幅36×奥行24×高さ54cm、約36L、約3.3kgであり、60561より幅は1cm大きい一方、奥行・高さは各1cm小さく、重量は0.2kg軽い公表値です。60561の60mm大径キャスターを優先する場合は同列に確認してください。掲載外であることは性能の劣位や終売を意味しません。",
+            "use_role": "DIRECT_CATEGORY_PEER",
+            "variant_lifecycle": "AVAILABLE"
+          },
+          {
+            "brand": "無印良品",
+            "candidate_id": "EXT-MUJI-FRONT-OPEN-32L",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.muji.com/jp/ja/store/cmdty/detail/4550584950087"
+            ],
+            "exact_model": "バーを自由に調節できる フロントオープンキャリーケース（32L）",
+            "exact_variant_scope": "黒・商品番号84950087（URL識別子4550584950087）",
+            "exclusion_axis": "comparison_scope",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.muji.com/jp/ja/store/cmdty/detail/4550584950087",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "前開きポケット、フルオープン可能なストラップ、キャスターストッパー、容量32L、外寸高さ54×幅37×奥行24cmを公式情報で確認でき、必須条件を満たす直接候補です。前面から全体へ開く役割はFREESTER EX、書類を取り出す役割はINTER CITY IIIと重なるため、比較表では異なる開口構造を残しました。メーカーは『走行音が静かな双輪キャスター』と表記していますが、当サイトは走行音を実測しておらず、静音性を選定根拠に使いません。キャリーバーの1cm刻み調節を確認したい場合は、この候補も同列に比較してください。掲載外であることは性能の劣位を意味しません。",
+            "use_role": "DIRECT_CATEGORY_PEER",
+            "variant_lifecycle": "AVAILABLE"
+          },
+          {
+            "brand": "Samsonite",
+            "candidate_id": "EXT-SAMSONITE-C-LITE-FEATURE",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "AVAILABLE",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html"
+            ],
+            "exact_model": "C-Lite Spinner 55 EXP",
+            "exact_variant_scope": "通常時36L構成",
+            "exclusion_axis": "primary_source_confidence",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+            "reader_visible_lifecycle": "AVAILABLE",
+            "reason": "C-Lite 134679-1041の公式商品情報には外寸・容量・重量が掲載されています。本記事の必須条件である前開きとキャスターストッパーは未確認（推奨根拠に使用しない）のため比較表へ入れておらず、非搭載とは断定しません。",
+            "use_role": "FEATURE_SCOPE_EDGE_CASE",
+            "variant_lifecycle": "AVAILABLE"
+          }
+        ],
+        "considered_portfolio_candidates": [
+          {
+            "disposition": "REFERENCE_ONLY",
+            "product_id": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
+            "reason": "前開き・ストッパーを必須にせず軽さを優先する場合は、3kg以下の機内持ち込み比較で確認できます。",
+            "route_article_id": "lightweight-carry-on-suitcase-under-3kg"
+          }
+        ],
+        "content_role": "feature_shortlist",
+        "hard_filters": [
+          "前開き機構とキャスターストッパーの両方を公式確認できること",
+          "機内持ち込み目安の外寸を通常状態で確認できること"
+        ],
+        "official_category_sources": [
+          "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+          "https://www.bermas.co.jp/c/series/businesstravel/intercity3/60570",
+          "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+          "https://www.muji.com/jp/ja/store/cmdty/detail/4550584950087",
+          "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html"
+        ],
+        "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
+        "primary_query_intent": "前開きとストッパーを両方備える候補を、開き方の違いから選ぶ",
+        "reader_visible_exclusions_heading": "比較表の外に置いた候補",
+        "reader_visible_required": true,
+        "scope_separation": "30L以上・3kg以下の市場横断条件だけを扱い、エース内の型番比較はA01へ分離する。",
+        "selected_product_ids": [
+          "PRD-INNOVATOR-INV50",
+          "PRD-ACE-DIFFERENCE-05721",
+          "PRD-PROTECA-FRESTER-EX-01551",
+          "PRD-BERMAS-INTER-CITY-III-60570"
+        ]
+      },
+      {
+        "article_id": "roomba-mini-vs-switchbot-k11-pro",
+        "axis_assessments": {
+          "dimensions": {
+            "evidence_refs": [
+              "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+              "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
+            ],
+            "rationale": "2製品の本体と充電台・ステーションについて、幅・奥行・高さを対象別に公式値で比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "maintainability": {
+            "evidence_refs": [],
+            "rationale": "一部の手入れ情報はあるが、全採用品の修理・部品・消耗品・回収経路を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "performance": {
+            "evidence_refs": [
+              "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+              "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+              "https://support.switch-bot.com/hc/en-us/articles/14490132658967-Can-I-Operate-SwitchBot-Mini-Robot-Vacuum-K10-K10-Pro-K11-K11-Pro-Without-a-Wi-Fi-Connection"
+            ],
+            "rationale": "自動ゴミ収集、水拭き方式、本体ボタンとWi-Fi接続時に使える機能の差を公式情報で比較した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "primary_source_confidence": {
+            "evidence_refs": [
+              "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+              "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+              "https://support.switch-bot.com/hc/en-us/articles/14490132658967-Can-I-Operate-SwitchBot-Mini-Robot-Vacuum-K10-K10-Pro-K11-K11-Pro-Without-a-Wi-Fi-Connection"
+            ],
+            "rationale": "両メーカーの商品・サポート情報でexact製品、寸法、水拭き、通信条件を照合した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "safety": {
+            "evidence_refs": [],
+            "rationale": "記事全体の安全案内は商品別の重要情報・リコール照合を証明しない。全採用品の型番別確認が未完了のため推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "use_case_fit": {
+            "evidence_refs": [
+              "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+              "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
+            ],
+            "rationale": "小さい縦置き充電台を優先するF115060と、自動ゴミ収集を優先するK11+ Proの二者択一に範囲を限定した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "warranty_and_support": {
+            "evidence_refs": [],
+            "rationale": "一部の保証情報はあるが、全採用品の日本向け保証地域・期間・窓口を商品別に結び付けていない。推奨根拠に使わず、公開を停止して再確認する。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          }
+        },
+        "broader_article_id": "st1704-compact-robot-vacuum-shortlist",
+        "candidate_universe_method": "FIXED_HEAD_TO_HEAD_WITH_BROADER_ROUTE",
+        "comparison_scope": "Roomba Mini Slim F115060とSwitchBot K11+ Proの純2製品比較。薄型本体やモップ自動手入れを優先する別候補は4モデル比較へ案内",
+        "considered_external_candidates": [
+          {
+            "brand": "iRobot",
+            "candidate_id": "EXT-IROBOT-ROOMBA-MINI-AUTOEMPTY-F155260",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "SOLD_OUT",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://store.irobot-jp.com/item/F155260.html"
+            ],
+            "exact_model": "Roomba Mini + AutoEmpty",
+            "exact_variant_scope": "日本向けF155260",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "SOLD_OUT",
+            "official_url": "https://store.irobot-jp.com/item/F155260.html",
+            "reader_visible_lifecycle": "SOLD_OUT",
+            "reason": "メーカー公式ストアで在庫切れかつ購入UIを確認できないため、現行F115060との2製品比較から除外しました。性能の劣位を意味しません。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "SOLD_OUT"
+          },
+          {
+            "brand": "Panasonic",
+            "candidate_id": "EXT-PANASONIC-RULO-MINI-MC-RSC10",
+            "decision_critical": false,
+            "decision_critical_unknowns": [],
+            "disposition": "DEFERRED",
+            "effective_lifecycle": "UNKNOWN",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://panasonic.jp/soji/products/MC-RSC10/spec.html"
+            ],
+            "exact_model": "RULO mini",
+            "exact_variant_scope": "MC-RSC10",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "UNKNOWN",
+            "official_url": "https://panasonic.jp/soji/products/MC-RSC10/spec.html",
+            "reader_visible_lifecycle": "UNKNOWN",
+            "reason": "RULO miniは次回確認へ回します。仕様は確認できますが、販売状態は未確認（推奨根拠に使用しない）です。指名された2製品の比較には加えません。",
+            "use_role": "DIRECT_CATEGORY_PEER",
+            "variant_lifecycle": "UNKNOWN"
+          }
+        ],
+        "considered_portfolio_candidates": [
+          {
+            "disposition": "REFERENCE_ONLY",
+            "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
+            "reason": "本体の薄さを最優先する場合は、設置条件の異なる4モデル比較で確認できます。",
+            "route_article_id": "st1704-compact-robot-vacuum-shortlist"
+          },
+          {
+            "disposition": "REFERENCE_ONLY",
+            "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
+            "reason": "モップの自動洗浄・乾燥を優先する場合は、設置条件の異なる4モデル比較で確認できます。",
+            "route_article_id": "st1704-compact-robot-vacuum-shortlist"
+          }
+        ],
+        "content_role": "head_to_head_comparison",
+        "hard_filters": [
+          "日本向けF115060とK11+ Proの本体・充電台寸法を公式確認できること",
+          "2製品の自動ゴミ収集、水拭き方式、Wi-Fi依存機能を公式情報で比べ、別用途の候補を商品カードへ混在させないこと"
+        ],
+        "official_category_sources": [
+          "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+          "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "https://support.switch-bot.com/hc/en-us/articles/14490132658967-Can-I-Operate-SwitchBot-Mini-Robot-Vacuum-K10-K10-Pro-K11-K11-Pro-Without-a-Wi-Fi-Connection"
+        ],
+        "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
+        "primary_query_intent": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を二者択一で比べる",
+        "reader_visible_exclusions_heading": "2製品比較から外した候補",
+        "reader_visible_required": true,
+        "scope_separation": "F115060とK11+ Proの指名比較だけを扱う。Eufy C10とDEEBOT mini 2は商品カードやCTAを置かず、別条件を検討する読者だけをA05の4モデル比較へ案内する。",
+        "selected_product_ids": [
+          "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+          "PRD-SWITCHBOT-K11-PRO"
+        ]
+      },
+      {
+        "article_id": "solota-vs-rakua-mini-plus",
+        "axis_assessments": {
+          "dimensions": {
+            "evidence_refs": [
+              "https://panasonic.jp/dish/products/NP-TMLK1.html"
+            ],
+            "rationale": "寸法比較は本記事の判断軸から外し、NP-TMLK1-Kを識別する公式製品ページだけを参照した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "maintainability": {
+            "evidence_refs": [],
+            "rationale": "本記事は購入候補を採用しない0商品記事です。旧型番の修理・部品・回収は商品別に完了とせず、推奨根拠に使いません。将来購入候補へ戻す場合も照合完了まで公開を停止します。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "performance": {
+            "evidence_refs": [
+              "https://panasonic.jp/dish/products/NP-TMLK1.html"
+            ],
+            "rationale": "性能比較は本記事の判断軸から外し、製品名とNP-TMLK1-Kの型番を区別する公式製品ページだけを参照した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "primary_source_confidence": {
+            "evidence_refs": [
+              "https://panasonic.jp/dish/products/NP-TMLK1.html",
+              "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
+            ],
+            "rationale": "メーカー製品ページでNP-TMLK1-KとTK-MDW22Bの販売表示を照合し、現行候補の詳細はA04へ分離した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "safety": {
+            "evidence_refs": [],
+            "rationale": "本記事は購入候補を採用しない0商品記事です。旧型番の安全情報は商品別に完了とせず、推奨根拠に使いません。将来購入候補へ戻す場合も照合完了まで公開を停止します。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          },
+          "use_case_fit": {
+            "evidence_refs": [
+              "https://panasonic.jp/dish/products/NP-TMLK1.html",
+              "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
+            ],
+            "rationale": "NP-TMLK1-Kとラクアmini Plusを購入候補にせず、型番別の販売状態確認と現行比較への案内だけに範囲を限定した。",
+            "state": "OFFICIAL_EVIDENCE_USED"
+          },
+          "warranty_and_support": {
+            "evidence_refs": [],
+            "rationale": "本記事は購入候補を採用しない0商品記事です。旧型番の保証・サポートは商品別に完了とせず、推奨根拠に使いません。将来購入候補へ戻す場合も照合完了まで公開を停止します。",
+            "recheck_by": "2026-09-30",
+            "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED"
+          }
+        },
+        "broader_article_id": "st1704-countertop-dishwasher-for-small-households",
+        "candidate_universe_method": "FIXED_HEAD_TO_HEAD_WITH_BROADER_ROUTE",
+        "comparison_scope": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
+        "considered_external_candidates": [
+          {
+            "brand": "Panasonic",
+            "candidate_id": "EXT-PANASONIC-SOLOTA-NP-TMLK1-K",
+            "decision_critical": false,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "UNKNOWN",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-09-01",
+            "evidence_refs": [
+              "https://panasonic.jp/dish/products/NP-TMLK1.html"
+            ],
+            "exact_model": "NP-TMLK1-K",
+            "exact_variant_scope": "日本向けブラック NP-TMLK1-K",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "UNKNOWN",
+            "official_url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
+            "reader_visible_lifecycle": "UNKNOWN",
+            "reason": "公式製品ページは仕様参考に残しますが、正確なブラック型番NP-TMLK1-Kの購入UIを確認できないため、商品カード・購入導線から除外しました。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "UNKNOWN"
+          },
+          {
+            "brand": "THANKO",
+            "candidate_id": "EXT-THANKO-RAKUA-MINI-PLUS",
+            "decision_critical": true,
+            "decision_critical_unknowns": [],
+            "disposition": "EXCLUDED",
+            "effective_lifecycle": "RESTOCK_NOTIFICATION_ONLY",
+            "embedded_structured_lifecycle": "NOT_PRESENT",
+            "evaluated_at": "2026-08-31",
+            "evidence_refs": [
+              "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
+            ],
+            "exact_model": "ラクアmini Plus",
+            "exact_variant_scope": "TK-MDW22B",
+            "exclusion_axis": "lifecycle",
+            "lifecycle_evidence_state": "READER_VISIBLE_ONLY",
+            "model_lifecycle": "AVAILABLE",
+            "official_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+            "reader_visible_lifecycle": "RESTOCK_NOTIFICATION_ONLY",
+            "reason": "公式ストアでは再入荷通知だけが表示され、カート導線を確認できません。購入候補から除外し、商品カードや購入導線を掲載していません。",
+            "use_role": "LIFECYCLE_REFERENCE",
+            "variant_lifecycle": "RESTOCK_NOTIFICATION_ONLY"
+          }
+        ],
+        "considered_portfolio_candidates": [],
+        "content_role": "lifecycle_status_route",
+        "hard_filters": [
+          "SOLOTA NP-TMLK1-Kは販売状態を確認できない仕様参考、ラクアmini Plus TK-MDW22Bは再入荷通知のみの仕様参考に限定し、購入候補へ含めないこと",
+          "本記事は0商品・0購入導線とし、現行候補の比較は本文前半からA04へ案内すること"
+        ],
+        "official_category_sources": [
+          "https://panasonic.jp/dish/products/NP-TMLK1.html",
+          "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
+        ],
+        "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
+        "primary_query_intent": "SOLOTA NP-TMLK1-Kとラクアmini Plusの販売状態を確認し、現行4候補の比較記事へ移る",
+        "reader_visible_exclusions_heading": "旧候補の販売状態と現行比較への案内",
+        "reader_visible_required": true,
+        "scope_separation": "NP-TMLK1-Kとラクアmini Plusの販売状態だけを示し、現行品の仕様・設置・選定比較は本文前半からA04へ一本化する。",
+        "selected_product_ids": []
+      }
+    ],
+    "evaluated_at": "2026-08-31",
+    "required_axes": [
+      "use_case_fit",
+      "safety",
+      "dimensions",
+      "performance",
+      "warranty_and_support",
+      "maintainability",
+      "primary_source_confidence"
+    ],
+    "rules": {
+      "affiliate_reward_rate_weight": 0,
+      "article_guidance_never_establishes_product_axis_completion": true,
+      "decision_critical_unknown_allowed": false,
+      "embedded_lifecycle_conflict_state": "CONFLICT",
+      "exact_model_variant_scope_required": true,
+      "external_disposition_states": [
+        "EXCLUDED",
+        "DEFERRED"
+      ],
+      "generic_unnamed_candidate_allowed": false,
+      "hard_filters_required": true,
+      "incomplete_selected_product_axes_block_publication": true,
+      "lifecycle_crosscheck_required": true,
+      "official_category_sources_required": true,
+      "portfolio_products_must_use_reference_bindings": true,
+      "portfolio_reference_disposition": "REFERENCE_ONLY",
+      "price_weight": 0,
+      "rakuten_availability_weight": 0,
+      "reader_visible_exclusions_required": true,
+      "reader_visible_lifecycle_precedence": true,
+      "selected_candidate_only_audit_allowed": false,
+      "selected_product_due_diligence_source": "RAOS_PRODUCT_SELECTION_AUDIT_V2"
+    },
+    "schema": "RAOS_EDITORIAL_MARKET_CANDIDATE_AUDIT_V1",
+    "version": "1.0.0"
+  },
   "predecessor": {
     "historical_contract_preserved": true,
     "schema": "RAOS_EDITORIAL_PORTFOLIO_V2",
@@ -1462,23 +3192,23 @@
   "products": [
     {
       "official_models": [
-        "06316"
+        "01541"
       ],
-      "official_name": "ACE クレスタ 06316",
-      "official_url": "https://store.ace.jp/shop/g/g06316-01/",
+      "official_name": "PROTECA Tri-Air 01541",
+      "official_url": "https://store.ace.jp/shop/g/g01541-10/",
       "product_code": "p01",
-      "product_id": "PRD-ACE-CRESTA-06316",
+      "product_id": "PRD-PROTECA-TRI-AIR-01541",
       "product_kind_tokens": [
         "スーツケース",
         "キャリーケース"
       ],
-      "rakuten_item_code": "ace-store:10007275",
-      "rakuten_shop_code": "ace-store",
-      "representative_model": "06316",
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "01541",
       "required_title_tokens": [
-        "ACE",
-        "クレスタ",
-        "06316"
+        "PROTECA",
+        "トライエアー",
+        "01541"
       ]
     },
     {
@@ -1486,7 +3216,7 @@
         "05721"
       ],
       "official_name": "ace.TOKYO LABEL ディフェレンス 05721",
-      "official_url": "https://store.ace.jp/shop/g/g05721-04",
+      "official_url": "https://store.ace.jp/shop/g/g05721-06/",
       "product_code": "p02",
       "product_id": "PRD-ACE-DIFFERENCE-05721",
       "product_kind_tokens": [
@@ -1566,42 +3296,63 @@
     },
     {
       "official_models": [
-        "AC70"
+        "A17535Z1",
+        "A1753"
       ],
-      "official_name": "BLUETTI AC70",
-      "official_url": "https://www.bluetti.jp/products/bluetti-ac70",
+      "official_name": "Anker Solix C800 Portable Power Station",
+      "official_url": "https://www.ankerjapan.com/products/a1753",
       "product_code": "p06",
-      "product_id": "PRD-BLUETTI-AC70",
+      "product_id": "PRD-ANKER-SOLIX-C800",
       "product_kind_tokens": [
-        "ポータブル電源",
-        "Portable Power Station"
+        "ポータブル電源"
       ],
-      "rakuten_item_code": "bluettijapan:10000107",
-      "rakuten_shop_code": "bluettijapan",
-      "representative_model": "AC70",
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "A17535Z1",
       "required_title_tokens": [
-        "BLUETTI",
-        "AC70"
+        "Anker",
+        "Solix C800",
+        "A1753"
       ]
     },
     {
       "official_models": [
-        "DELTA 3 Classic"
+        "JE-1000G",
+        "JE-1000G-WH"
       ],
-      "official_name": "EcoFlow DELTA 3 Classic",
-      "official_url": "https://jp.ecoflow.com/products/delta-3-classic",
+      "official_name": "Jackery ポータブル電源 1000 New V3",
+      "official_url": "https://www.jackery.jp/products/explorer-1000-new-v3",
       "product_code": "p07",
-      "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+      "product_id": "PRD-JACKERY-1000-NEW-V3",
       "product_kind_tokens": [
         "ポータブル電源",
         "Portable Power Station"
       ],
-      "rakuten_item_code": "ecoflow:10000092",
-      "rakuten_shop_code": "ecoflow",
-      "representative_model": "DELTA 3 Classic",
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "JE-1000G",
       "required_title_tokens": [
-        "EcoFlow",
-        "DELTA 3 Classic"
+        "Jackery",
+        "1000 New V3"
+      ]
+    },
+    {
+      "official_models": [
+        "DYM1000V2L",
+        "DYM1000V2H"
+      ],
+      "official_name": "DJI Power 1000 V2",
+      "official_url": "https://store.dji.com/jp/product/dji-power-1000-v2",
+      "product_code": "p08",
+      "product_id": "PRD-DJI-POWER-1000-V2",
+      "product_kind_tokens": [
+        "ポータブル電源"
+      ],
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "DYM1000V2L",
+      "required_title_tokens": [
+        "DJI Power 1000 V2"
       ]
     },
     {
@@ -1610,7 +3361,7 @@
       ],
       "official_name": "Anker Solix C800 Plus Portable Power Station",
       "official_url": "https://www.ankerjapan.com/products/a1754",
-      "product_code": "p08",
+      "product_code": "p09",
       "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
       "product_kind_tokens": [
         "ポータブル電源",
@@ -1637,7 +3388,7 @@
       ],
       "official_name": "Anker Solix C1000 Portable Power Station",
       "official_url": "https://www.ankerjapan.com/products/a1761",
-      "product_code": "p09",
+      "product_code": "p10",
       "product_id": "PRD-ANKER-SOLIX-C1000",
       "product_kind_tokens": [
         "ポータブル電源",
@@ -1659,7 +3410,7 @@
       ],
       "official_name": "Anker Solix C1000 Gen 2 Portable Power Station",
       "official_url": "https://www.ankerjapan.com/products/a1763",
-      "product_code": "p10",
+      "product_code": "p11",
       "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
       "product_kind_tokens": [
         "ポータブル電源",
@@ -1675,48 +3426,29 @@
       ]
     },
     {
-      "official_models": [
-        "NP-TMLK1-H"
+      "additional_forbidden_title_tokens": [
+        "ポンプセット",
+        "スチールラックセット",
+        "PSET",
+        "RSET"
       ],
-      "official_name": "Panasonic SOLOTA NP-TMLK1-H",
-      "official_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
-      "product_code": "p11",
-      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "official_models": [
+        "TK-MDW22W"
+      ],
+      "official_name": "THANKO ラクアmini TK-MDW22W",
+      "official_url": "https://www.thanko.jp/view/item/000000003922?category_page_id=ct576",
+      "product_code": "p12",
+      "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
       "product_kind_tokens": [
         "食器洗い乾燥機",
         "食洗機"
       ],
       "rakuten_item_code": null,
       "rakuten_shop_code": null,
-      "representative_model": "NP-TMLK1-H",
+      "representative_model": "TK-MDW22W",
       "required_title_tokens": [
-        "TMLK1"
-      ]
-    },
-    {
-      "additional_forbidden_title_tokens": [
-        "スチールラックセット",
-        "RSET"
-      ],
-      "official_models": [
-        "TDWS25SBL",
-        "TDWS25SRD"
-      ],
-      "official_name": "THANKO ラクアmini color",
-      "official_url": "https://www.thanko.jp/view/item/000000004715",
-      "product_code": "p12",
-      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
-      "product_kind_tokens": [
-        "食器洗い乾燥機",
-        "食洗機"
-      ],
-      "rakuten_item_code": "thanko:10005443",
-      "rakuten_shop_code": "thanko",
-      "representative_model": "TDWS25SBL",
-      "required_title_tokens": [
-        "ラクア",
-        "mini",
-        "color"
+        "ラクアmini",
+        "TK-MDW22W"
       ]
     },
     {
@@ -1740,43 +3472,44 @@
     },
     {
       "official_models": [
-        "NP-TSP1-W"
+        "DWS-33B(W)",
+        "DWS-33B"
       ],
-      "official_name": "Panasonic NP-TSP1-W",
-      "official_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+      "official_name": "東芝 食器洗い乾燥機 DWS-33B(W)",
+      "official_url": "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
       "product_code": "p14",
-      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "product_id": "PRD-TOSHIBA-DWS-33B-W",
       "product_kind_tokens": [
         "食器洗い乾燥機",
         "食洗機"
       ],
-      "rakuten_item_code": "jyupro:10136298",
-      "rakuten_shop_code": "jyupro",
-      "representative_model": "NP-TSP1-W",
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "DWS-33B",
       "required_title_tokens": [
-        "NP-TSP1"
+        "DWS-33B"
       ]
     },
     {
-      "official_jan": "0885155053053",
+      "official_jan": "4571411228995",
       "official_models": [
-        "F155260"
+        "T2292511"
       ],
-      "official_name": "Roomba Mini + AutoEmpty F155260",
-      "official_url": "https://store.irobot-jp.com/item/F155260.html",
+      "official_name": "Eufy Robot Vacuum Auto-Empty C10 (T2292511)",
+      "official_url": "https://www.ankerjapan.com/products/t2292",
       "product_code": "p15",
-      "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
       "product_kind_tokens": [
         "ロボット掃除機",
-        "掃除機&床拭きロボット"
+        "Robot Vacuum"
       ],
-      "rakuten_item_code": "edion:10895202",
-      "rakuten_shop_code": "edion",
-      "representative_model": "F155260",
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "T2292511",
       "required_title_tokens": [
-        "Roomba",
-        "Mini",
-        "AutoEmpty"
+        "Eufy",
+        "Auto-Empty C10",
+        "T2292511"
       ]
     },
     {
@@ -1800,24 +3533,22 @@
       ]
     },
     {
-      "official_jan": "8113238474927",
       "official_models": [
-        "K10+ Pro Combo"
+        "DEEBOT mini 2",
+        "110-2519-0301"
       ],
-      "official_name": "SwitchBot ロボット掃除機 K10+ Pro Combo",
-      "official_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+      "official_name": "ECOVACS DEEBOT mini 2",
+      "official_url": "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2",
       "product_code": "p17",
-      "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+      "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
       "product_kind_tokens": [
-        "ロボット掃除機",
-        "Robot Vacuum"
+        "ロボット掃除機"
       ],
-      "rakuten_item_code": "switchbot:10000240",
-      "rakuten_shop_code": "switchbot",
-      "representative_model": "K10+ Pro Combo",
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "DEEBOT mini 2",
       "required_title_tokens": [
-        "SwitchBot",
-        "K10+ProCombo"
+        "DEEBOT mini 2"
       ]
     },
     {
@@ -1948,23 +3679,23 @@
     },
     {
       "official_models": [
-        "CS2*09007"
+        "82353171"
       ],
-      "official_name": "Samsonite C-Lite Spinner 55 Expandable CS2*09007",
-      "official_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+      "official_name": "RIMOWA Essential Lite キャビン 82353171",
+      "official_url": "https://www.rimowa.com/jp/ja/luggage/colour/grey/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3/82353171.html",
       "product_code": "p24",
-      "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+      "product_id": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
       "product_kind_tokens": [
         "スーツケース",
         "キャリーケース"
       ],
       "rakuten_item_code": null,
       "rakuten_shop_code": null,
-      "representative_model": "CS2*09007",
+      "representative_model": "82353171",
       "required_title_tokens": [
-        "C-Lite",
-        "Spinner 55",
-        "CS2*09007"
+        "RIMOWA",
+        "Essential Lite",
+        "82353171"
       ]
     },
     {
@@ -1989,23 +3720,23 @@
     },
     {
       "official_models": [
-        "1-250"
+        "134679-1549"
       ],
-      "official_name": "FREQUENTER LIEVE 1-250",
-      "official_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+      "official_name": "Samsonite C-Lite Spinner 55 EXP 134679-1549",
+      "official_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/midnight_blue/ss-134679-1549.html",
       "product_code": "p26",
-      "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+      "product_id": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549",
       "product_kind_tokens": [
         "スーツケース",
         "キャリーケース"
       ],
-      "rakuten_item_code": "selection:10016302",
-      "rakuten_shop_code": "selection",
-      "representative_model": "1-250",
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "134679-1549",
       "required_title_tokens": [
-        "FREQUENTER",
-        "LIEVE",
-        "1-250"
+        "サムソナイト",
+        "シーライト",
+        "スピナー55"
       ]
     },
     {
@@ -2050,24 +3781,27 @@
       ]
     },
     {
-      "official_models": [
+      "additional_forbidden_title_tokens": [
         "60561"
       ],
-      "official_name": "BERMAS INTER CITY II 60561",
-      "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+      "official_models": [
+        "60570"
+      ],
+      "official_name": "BERMAS INTER CITY III 60570",
+      "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity3/60570",
       "product_code": "p29",
-      "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+      "product_id": "PRD-BERMAS-INTER-CITY-III-60570",
       "product_kind_tokens": [
         "スーツケース",
         "キャリーケース"
       ],
-      "rakuten_item_code": "e-bagshop:10001461",
-      "rakuten_shop_code": "e-bagshop",
-      "representative_model": "60561",
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "60570",
       "required_title_tokens": [
         "BERMAS",
-        "INTER CITY2",
-        "60561"
+        "INTER CITY",
+        "60570"
       ]
     },
     {
@@ -2093,48 +3827,68 @@
     },
     {
       "official_models": [
-        "NP-TML1-W"
+        "SS-M171"
       ],
-      "official_name": "Panasonic SOLOTA NP-TML1-W",
-      "official_url": "https://panasonic.jp/dish/products/NP-TML1.html",
+      "official_name": "siroca 食器洗い乾燥機 SS-M171",
+      "official_url": "https://www.siroca.co.jp/product/dishwasher_basic/",
       "product_code": "p31",
-      "product_id": "PRD-PANASONIC-SOLOTA-NP-TML1-W",
-      "product_kind_tokens": [
-        "食器洗い乾燥機",
-        "食洗機"
-      ],
-      "rakuten_item_code": "panasonic-store:10000735",
-      "rakuten_shop_code": "panasonic-store",
-      "representative_model": "NP-TML1-W",
-      "required_title_tokens": [
-        "SOLOTA",
-        "NP-TML1"
-      ]
-    },
-    {
-      "official_models": [
-        "TK-MDW22B",
-        "TK-STTDPSWH"
-      ],
-      "official_name": "THANKO ラクアmini Plus TK-MDW22B",
-      "official_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
-      "product_code": "p32",
-      "product_id": "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B",
+      "product_id": "PRD-SIROCA-SS-M171",
       "product_kind_tokens": [
         "食器洗い乾燥機",
         "食洗機"
       ],
       "rakuten_item_code": null,
       "rakuten_shop_code": null,
-      "representative_model": "TK-MDW22B",
+      "representative_model": "SS-M171",
       "required_title_tokens": [
-        "ラクアmini Plus",
-        "TK-MDW22B"
+        "SS-M171"
+      ]
+    },
+    {
+      "official_models": [
+        "AORA 30 V2"
+      ],
+      "official_name": "BLUETTI AORA 30 V2（グレー）",
+      "official_url": "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w",
+      "product_code": "p32",
+      "product_id": "PRD-BLUETTI-AORA30-V2",
+      "product_kind_tokens": [
+        "ポータブル電源",
+        "Portable Power Station"
+      ],
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "AORA 30 V2",
+      "required_title_tokens": [
+        "BLUETTI",
+        "AORA 30 V2"
+      ]
+    },
+    {
+      "official_models": [
+        "AORA 100 V2"
+      ],
+      "official_name": "BLUETTI AORA 100 V2（インディゴ）",
+      "official_url": "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue",
+      "product_code": "p33",
+      "product_id": "PRD-BLUETTI-AORA100-V2",
+      "product_kind_tokens": [
+        "ポータブル電源",
+        "Portable Power Station"
+      ],
+      "rakuten_item_code": null,
+      "rakuten_shop_code": null,
+      "representative_model": "AORA 100 V2",
+      "required_title_tokens": [
+        "BLUETTI",
+        "AORA 100 V2"
       ]
     }
   ],
   "rakuten_measurement_policy": {
     "activation_gate": "VERIFIED_SAMPLE_PROFILE_AND_PROVIDER_CONSOLE_RECONCILIATION",
+    "additional_tracking_default_enabled": false,
+    "client_measurement_default_enabled": false,
     "internal_cta_id_format": "icta_{article_code}_{product_code}_{card|final}",
     "internal_cta_identity_count": 74,
     "internal_cta_namespace": "RAOS_INTERNAL_CTA_V1",
@@ -2313,6 +4067,23 @@
     }
   ],
   "schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
+  "selection_policy": {
+    "ranking_factors": [
+      "use_case_fit",
+      "safety",
+      "dimensions",
+      "performance",
+      "warranty_and_support",
+      "maintainability",
+      "primary_source_confidence"
+    ],
+    "replacement_policy": "one_for_one_with_recorded_inclusion_and_exclusion_reasons",
+    "zero_weight_factors": {
+      "affiliate_reward_rate": 0,
+      "price": 0,
+      "rakuten_availability": 0
+    }
+  },
   "strategy": {
     "article_count": 10,
     "cluster_count": 3,
@@ -2325,6 +4096,6 @@
     }
   },
   "target_origin": "https://kurashinoshirube.com",
-  "theme_version": "1.4.0",
+  "theme_version": "1.5.0",
   "version": "3.0.0"
 }

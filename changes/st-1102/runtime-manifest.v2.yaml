@@ -9,8 +9,8 @@ contract_sha256: ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52
 hardened_writer_sha256: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
 source_sha256:
   changes/st-1102/contracts/article-workspace.v2.yaml: ed5d7725e764f2ff0da5342b0dde28d347ba53dfd5066d34b6ea8465526ce52f
-  scripts/build_st1102_article_workspace_v2.py: 06a4bb77cbbb4058f92718620c6554fe083265d870ea48a4fea8fe5eeddfd672
-  packages/web-ui/src/article-workspace-v2.ts: 269bca8158dd34086544df18f02c7397ae8f4ad8f117f0e04a3a28a610e895ab
+  scripts/build_st1102_article_workspace_v2.py: 4b807f5dd22f16ccec63ab12736e36503f25c96f1eb849c54db7607a9d8c8159
+  packages/web-ui/src/article-workspace-v2.ts: 289a51d6ab74f3ab9e4bfb1d38b1776df642547720ac2435ab3e60e56994cd2f
   packages/web-ui/src/index.ts: ff29621ce4fd87d9c9377522779d3d8fe94f3b9d91edc7093da63e4741988e2c
   changes/st-1102/README.md: 87fd7d5e8b7ccf0d9de46729e56af21ba6939bb5be14415376bc74b2d84a5912
   changes/st-1102/LOCAL-IMPLEMENTATION-COMPLETION-20260824-v2.yaml: 9db6e0565e762f72fdd78a896fd7cd4ca2b58aa1aa4a33b0dd4f11bf302665f8
@@ -52,8 +52,8 @@ source_sha256:
   packages/web-ui/src/dialog.ts: 494ac8b9e2a4087de2d003dd6c28bfcab7c85961f418a5892453c865058724bc
   packages/web-ui/src/article-workspace.ts: 01d2f680ddfb5a64fa9d84db1c10e1ae9cd3de490520e67f135f3be63260db89
   scripts/secure_generated_publication.py: 38412b6223f305b2fb7cd947f9eb2c2ce2e4e0b48773099c71c92a8c5e5cf56e
-  package.json: e1665573013d997af81a1b64717a8c176d3619d0e7f1f742c2630802dabc0992
-  package-lock.json: 8bd53f642b623e716ffe6d6ba9d1808b671504eabff03cb0dae19e3ba6e231ca
+  package.json: 730029961c3713d0b2cd6888ae3f04c25d0dbf0ee97b2ed562a43ea792f7e968
+  package-lock.json: 37394f25fe870c11cdbd4ba1b1173ed86bc677ca51a85e6fe0b999ec425efa4f
   pyproject.toml: 9c9dd49b7f08beebbc45febad001013e1151f1d4fb5d350e170d58a921436c87
   uv.lock: b0fcba7fe38a7448293c573872210116bfb7cce7d83f62a99b618a2dfb8c6fe1
 generated_sha256:

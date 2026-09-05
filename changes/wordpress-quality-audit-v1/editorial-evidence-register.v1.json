@@ -1,0 +1,18 @@
+{
+  "schema": "RAOS_EDITORIAL_EVIDENCE_REGISTER_V1",
+  "version": 1,
+  "reviewed_on": "2026-09-01",
+  "article_modes": [
+    {"article_slug": "anker-solix-c300-c800-c1000-differences", "evidence_mode": "OFFICIAL_SPEC_COMPARISON_NON_HANDS_ON"},
+    {"article_slug": "carry-on-suitcase-comparison", "evidence_mode": "OFFICIAL_SPEC_COMPARISON_NON_HANDS_ON"},
+    {"article_slug": "carry-on-suitcase-under-100-seats", "evidence_mode": "OFFICIAL_SPEC_COMPARISON_NON_HANDS_ON"},
+    {"article_slug": "compact-robot-vacuum-shortlist", "evidence_mode": "OFFICIAL_SPEC_COMPARISON_NON_HANDS_ON"},
+    {"article_slug": "countertop-dishwasher-for-small-households", "evidence_mode": "OFFICIAL_SPEC_COMPARISON_NON_HANDS_ON"},
+    {"article_slug": "front-open-carry-on-suitcase-with-stopper", "evidence_mode": "OFFICIAL_SPEC_COMPARISON_NON_HANDS_ON"},
+    {"article_slug": "lightweight-carry-on-suitcase-under-3kg", "evidence_mode": "OFFICIAL_SPEC_COMPARISON_NON_HANDS_ON"},
+    {"article_slug": "portable-power-station-guide", "evidence_mode": "OFFICIAL_SPEC_COMPARISON_NON_HANDS_ON"},
+    {"article_slug": "roomba-mini-vs-switchbot-k11-pro", "evidence_mode": "OFFICIAL_SPEC_COMPARISON_NON_HANDS_ON"},
+    {"article_slug": "solota-vs-rakua-mini-plus", "evidence_mode": "OFFICIAL_SPEC_COMPARISON_NON_HANDS_ON"}
+  ],
+  "records": []
+}

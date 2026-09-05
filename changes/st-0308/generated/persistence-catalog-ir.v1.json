@@ -50,7 +50,7 @@
   "provenance": {
     "matrix_sha256": {
       "concurrency": "66cb474d428703e83b7b84744c4f843463b0a040714b907e00137438f5ba08ab",
-      "domain_mapper": "8b2499f99faa223fbc5b6329bd0f0e441441e89b45d507b6bbb0ffbce470e872",
+      "domain_mapper": "c37ca853e49c09084c4174ad8a74dc8f6f8c43fee169601393b391413194ed3e",
       "event_emission": "3c4f8e429824849b9219faefb2867dd8444828562d0d0a1d9c79bfa2cc511ad0",
       "idempotency": "1645b6b67d8ab6ae01520094cbc7f14405f2545c41d019ecb98ea48412c39e1b",
       "identity": "aa009ab2423069f782621d6f7e4cb4c4fa57185d03ad3195ad5df29c75360d0b",
@@ -60,7 +60,7 @@
     },
     "owner_generator": {
       "path": "scripts/build_st0308_persistence.py",
-      "sha256": "44385f6dd15983b1f21544324a4dcb3341685ae730644cfdc683a67ca8161643"
+      "sha256": "b5a69704d49a67a5f9929b47229b83b97cf0773ab37df2be0bd8d136b449a098"
     },
     "source_sha256": {
       "changes/st-0105/README.md": "15adf4e461592453f78a363ccba411c861f476aeaf58444039c6eaff12ade8de",
@@ -80,7 +80,7 @@
       "changes/st-0304/contracts/physical/11-domain-physical.sql": "947e480157a52b0d926461a4d40a7409e92e6e50482c216d394953a462d8cd09",
       "changes/st-0304/generated/domain-catalog.v1.json": "41d0c9c4ba94aaf65587687a31bbab1caa05a8fed1d323d99991363013258208",
       "changes/st-0306/contracts/database-roles-grants.v1.yaml": "93f03ff2a762ff0d0b950b06a5b7416687ce20e44f7e7b7f6ea2a7ed2b873206",
-      "changes/st-0308/contracts/persistence-runtime.v2.yaml": "ef820fde78ac51202d9e3386a7a82f640e8727eb5c7c89205b8885d3abd29bef",
+      "changes/st-0308/contracts/persistence-runtime.v2.yaml": "2c2722385e0c2950bcbc834d809967a5e50b94adf849b7f57432cb8718a6236b",
       "changes/st-0308/contracts/persistence/ops-reference-slice.v1.yaml": "77b47ea2d3ef5a238e65132fd5c13053772eaf0c7bb6f53935aa9e7572753866",
       "contracts/raos-v0.4/contracts/schemas/events/jp-raos-ai-evaluation-completed-v2.schema.json": "49d495fd47a2638cd6c008fa04823617af784b7991dad65d27f2c724c0725f39",
       "contracts/raos-v0.4/contracts/schemas/events/jp-raos-ai-job-failed-v1.schema.json": "5cb07491fe735a9e1724b7539f50763928a32befb96627d642c1ad30e39fa2c7",

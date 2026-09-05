@@ -61,13 +61,13 @@ Review URL appears on the home page or in the Yoast post sitemap. Post ID 19 rem
 unchanged until its separate AT-003 snapshot update. Any mismatch stops later
 publication; it does not authorize an automated retry or a broader WordPress write.
 
-Child theme 1.4.0 independently excludes every temporary Review slug and every
+Child theme 1.5.0 independently excludes every temporary Review slug and every
 allowlisted final slug without an exact bound public snapshot from both the Yoast
 post sitemap and the front-page latest-guides Query block. This is defense in depth,
 not authority to perform the human containment action.
 
-For a 1.4.0 publication readback, both MCP status surfaces must report runtime
-revision `44b8eb82ac770a93b7b25aef1353007b6da650fb49ef5a6d2567915940595684`.
+For a 1.5.0 publication readback, both MCP status surfaces must report runtime
+revision `2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e`.
 The anonymous and authenticated page checks also fetch the two same-origin theme
 stylesheets without redirects and require distinct base/Editorial V2 sentinels,
 HTTP 200, `text/css`, bounded strict UTF-8, and an observed content hash and size.
@@ -82,7 +82,7 @@ it does not shift an independently ready article or authorize a bypass.
 | Offset | Article and WordPress identity | Required gate before the human public action |
 | --- | --- | --- |
 | Day 1 | Suitcase: Review post 26 remains Draft; existing final post 19 is the only update target | Uniquely reconcile the immutable AT-003 request and exact hashes in `REVENUE_UNBLOCK_WORKLOG.md`; use only the human Tools screen if its server-side validation accepts the one-off journal state |
-| Day 4 | Portable power: post 28 moves from Draft to its final slug only after a valid successor snapshot is confirmed | Resolve the Jackery 500 New source conflict from current official specifications; if the packet changes, use the closed revision path and do not reuse a stale snapshot or Rakuten capture |
+| Day 4 | Portable power: post 28 moves from Draft to its final slug only after a valid successor snapshot is confirmed | Recheck the resolved Jackery 500 New evidence under the conditions below; if the packet changes, use the closed revision path and do not reuse a stale snapshot or Rakuten capture |
 | Day 7 | Anker model comparison: post 29 moves from Draft to its final slug | Confirm the existing committed request, final slug, category, exact snapshot, and current product evidence |
 | Day 10 | Dishwasher: prepare and create one new Review Draft; no post ID is preassigned | Capture exact Rakuten link/image evidence for all four products, including one exact THANKO variant, no more than 24 hours before `prepare`; any missing identity or image stops this article |
 | Day 13 | Robot vacuum: post 30 moves from Draft to its final slug | Confirm the existing committed request, final slug, category, exact snapshot, and current product evidence |
@@ -90,6 +90,35 @@ it does not shift an independently ready article or authorize a bypass.
 Every status, slug, category, AT-003 update, and publication step in this table is a
 human WordPress operation. The repository only prepares, records, or verifies the
 closed artifacts allowed by the existing CLI.
+
+## Jackery 500 New source resolution and recheck
+
+The former Jackery 500 New conflict is resolved for the current comparison scope.
+The 2026-08-31 manufacturer product page is the bound primary source for 512Wh,
+500W rated output, and approximately 5.7kg. The earlier conflicting enclosure
+dimensions are not part of the source claim, comparison table, product card, or
+recommendation rationale. Do not restore those dimensions from an old snapshot,
+search result, retailer copy, or a similarly named Jackery generation.
+
+Before a fresh portable-power `prepare`, recapture the exact official URL and reopen
+the source review if any of these conditions is true:
+
+- the page redirects to another model or generation, or no longer identifies
+  `500 New`;
+- capacity, rated output, or weight differs from 512Wh, 500W, or approximately
+  5.7kg anywhere in the current official page or its current manual;
+- a newly published official dimension is proposed for use but conflicts with any
+  other current Jackery primary source;
+- a required locator no longer resolves, the immutable capture or statement hash
+  changes, or the official capture is older than the 14-day article-fact limit;
+- the manufacturer marks the model discontinued or changes the Japanese-market
+  configuration used by the article.
+
+Any triggered condition returns the article to blocked review. Update the source
+packet and locator contract from current primary evidence, remove unresolved facts
+from every decision path, generate a new prepared packet and snapshot, and obtain
+fresh product evidence within its 24-hour limit. A previous human confirmation,
+snapshot, source capture, or Rakuten capture must not be reused.
 
 ## Owner-private evidence and operation gates
 
@@ -125,6 +154,16 @@ Codex creates or refreshes these pairs through the separate closed source comman
 run from the exact repository root and isolated from ambient Python and environment
 configuration:
 
+If the capture runtime needs rebuilding while sales observations are expired, run
+`.venv/bin/python scripts/build_st1704_self_hosted_editorial_manifest.py --for-source-refresh`
+first. This acquisition-only mode validates source-input identities, origins,
+hashes and non-future timestamps without requiring fresh sales observations or
+an approved reader ledger before their sources can be acquired. It emits
+`SELF_HOSTED_EDITORIAL_SOURCE_REFRESH_MANIFEST_ONLY`, preserves the original
+observation timestamps and grants no publication authority. Normal generation,
+`--check`, reader coverage and publication validation retain their strict gates.
+`--for-source-refresh` and `--check` cannot be combined.
+
 ```sh
 /usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C TZ=UTC \
   "$PWD/.venv/bin/python" -B -I -S -X pycache_prefix=/dev/null \
@@ -135,12 +174,11 @@ configuration:
 Before importing any RAOS runtime module or reading either tracked source document,
 the command requires the exact `.venv/bin/python` 3.14.6 process, `-B -I -S`, safe
 path, ignored environment and user site, and repository-root working directory. It
-then byte-compares `runtime-manifest.v1.json` with the same path in the current
-`HEAD` commit, requires every listed runtime file and the ST-1703 predecessor to be
-byte-identical to their blobs in that same commit, and verifies the manifest's closed
-file inventory before loading runtime modules plus registry/locator documents only
-from those verified bytes. The Git anchor must report this exact repository root; terminal
-prompts and partial-clone lazy object retrieval are disabled. Any mismatch returns only
+then verifies the manifest's closed file inventory, byte lengths and SHA-256 hashes
+before loading runtime modules plus registry/locator documents only from those
+verified bytes. It also verifies the repository-directory identity before and
+after reading the inventory. These runtime checks do not require the working
+files to have been committed. Any mismatch returns only
 `OFFICIAL_SOURCE_CAPTURE_RUNTIME_INVALID` and performs no DNS or HTTP operation.
 
 The command accepts no URL, header, credential, output path, WordPress target, or
@@ -158,6 +196,12 @@ accepted mixed pair; rerunning the same allowlisted command repairs it. If a lat
 source fails, already committed sources remain safe current evidence, the remaining
 sources stay unchanged, and `prepare` still requires the complete exact source set.
 The command cannot publish or send a WordPress request.
+
+When current HTML no longer matches a reviewed locator, capture still returns
+`LOCATOR_MISMATCH`. The fetched response is retained only as
+`<source-ref>.capture.body` and `<source-ref>.capture.v1.json` with
+`LOCATORS_PENDING` for review. An existing accepted evidence pair is unchanged;
+these pending files do not count as refreshed or verified publication evidence.
 
 Each locator contains only `claim_id`, `claim_statement_sha256`, and a nonempty
 `exact_utf8_fragments` list. Each list item contains only `exact_utf8_fragment` and
@@ -284,7 +328,7 @@ recover and verify do not rebuild the confirmed request from current provider fi
    must be `summary_large_image`, and the default social image must be the verified
    1600×900 theme asset with an empty attachment ID. These are persisted human
    settings, not values written by the theme.
-3. A human WordPress administrator installs and activates the generated child-theme 1.4.0
+3. A human WordPress administrator installs and activates the generated child-theme 1.5.0
    package only after reviewing its exact hash. No repository command activates
    either component.
 4. Start a fresh WordPress request and require the Site Health test

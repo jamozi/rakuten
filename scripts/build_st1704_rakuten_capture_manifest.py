@@ -32,6 +32,7 @@ REQUIRED_RUNTIME_PATHS: Final = tuple(
             f"{SLICE}/content/articles.v1.json",
             f"{SLICE}/media/product-media-registry.v1.json",
             f"{SLICE}/sources/source-registry.v1.json",
+            "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
             "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
             "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
             "scripts/build_st1704_rakuten_capture_manifest.py",

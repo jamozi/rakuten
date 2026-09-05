@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
 define('RAOS_CODEX_MCP_VERSION', '1.3.1');
 define(
     'RAOS_CODEX_MCP_RUNTIME_REVISION',
-    '24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55'
+    'f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082'
 );
 define('RAOS_CODEX_MCP_FILE', __FILE__);
 
@@ -27,7 +27,7 @@ require_once __DIR__ . '/includes/class-raos-codex-mcp-deployment.php';
 
 final class RAOS_Codex_MCP_Abilities
 {
-    const RUNTIME_REVISION = '24338830f1c229cb5b74ed727f8087372f8aae9ff89dbff701dfbac5b4f51e55';
+    const RUNTIME_REVISION = 'f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082';
     const ORIGIN = 'https://kurashinoshirube.com';
     const EDITOR_ROLE = 'raos_codex_mcp_editor';
     const OPERATOR_ROLE = 'raos_codex_deployment_operator';
@@ -77,6 +77,10 @@ final class RAOS_Codex_MCP_Abilities
         add_action('admin_menu', array($this, 'register_admin_page'));
         add_action('admin_post_raos_codex_mcp_approve', array($this, 'handle_approval'));
         add_action('admin_post_raos_codex_mcp_approve_batch', array($this, 'handle_batch_approval'));
+        add_action(
+            'admin_post_raos_codex_mcp_attest_bootstrap',
+            array($this, 'handle_bootstrap_attestation')
+        );
         add_action('admin_notices', array($this, 'compatibility_notice'));
     }
 
@@ -926,6 +930,14 @@ final class RAOS_Codex_MCP_Abilities
                     . '</p></div>';
             }
         }
+        if (isset($_GET['bootstrap_attested'])
+            && '1' === sanitize_text_field(wp_unslash($_GET['bootstrap_attested']))) {
+            echo '<div class="notice notice-success inline"><p><strong>'
+                . esc_html__('Manual bootstrap attestation recorded.', 'raos-codex-mcp')
+                . '</strong> '
+                . esc_html__('The exact abilities 1.3.1 package was already installed manually by a human administrator. This form only recorded its proposal-bound readback receipt; it did not install or apply code.', 'raos-codex-mcp')
+                . '</p></div>';
+        }
         if (empty($rows) && empty($batches)) {
             echo '<p>' . esc_html__('No pending proposals.', 'raos-codex-mcp') . '</p></div>';
             return;
@@ -1012,7 +1024,52 @@ final class RAOS_Codex_MCP_Abilities
             echo '</p>';
             echo '<details><summary>' . esc_html__('Complete immutable payload', 'raos-codex-mcp') . '</summary><pre style="white-space:pre-wrap;max-height:40rem;overflow:auto">' . esc_html((string) $payload) . '</pre></details>';
             if ('MANUAL_REQUIRED' === $row['state']) {
-                echo '<p><strong>' . esc_html__('Automatic approval/apply is unavailable because migration safety could not be established.', 'raos-codex-mcp') . '</strong></p>';
+                $bootstrap = RAOS_Codex_MCP_Deployment::validate_manual_bootstrap_attestation($row);
+                if (is_wp_error($bootstrap)) {
+                    echo '<p><strong>' . esc_html__('Automatic approval/apply is unavailable because migration safety could not be established.', 'raos-codex-mcp') . '</strong> <code>'
+                        . esc_html($bootstrap->get_error_code()) . '</code></p>';
+                    continue;
+                }
+                if ((int) $row['created_by'] === get_current_user_id()) {
+                    echo '<p><strong>'
+                        . esc_html__('The proposal creator cannot attest the manual bootstrap. A different human administrator must perform the exact installation and attestation.', 'raos-codex-mcp')
+                        . '</strong></p>';
+                    continue;
+                }
+                $package_suffix = substr($bootstrap['package_sha256'], -8);
+                $proposal_suffix = substr($bootstrap['proposal_id'], -8);
+                echo '<div class="notice notice-warning inline"><p><strong>'
+                    . esc_html__('Narrow manual-bootstrap receipt only.', 'raos-codex-mcp')
+                    . '</strong> '
+                    . esc_html__('The installed and active abilities 1.3.1 tree, staged package, complete file manifest, host artifact pin, and immutable proposal currently match exactly. Confirm only if you personally installed that exact package in wp-admin. This does not create a reusable migration exception.', 'raos-codex-mcp')
+                    . '</p></div>';
+                echo '<table class="widefat striped" style="margin-bottom:1rem"><tbody>';
+                foreach (
+                    array(
+                        'proposal_id' => __('Proposal ID', 'raos-codex-mcp'),
+                        'artifact_id' => __('Artifact ID', 'raos-codex-mcp'),
+                        'slug' => __('Plugin slug', 'raos-codex-mcp'),
+                        'version' => __('Installed version', 'raos-codex-mcp'),
+                        'package_sha256' => __('Package SHA-256', 'raos-codex-mcp'),
+                        'file_manifest_sha256' => __('File manifest SHA-256', 'raos-codex-mcp'),
+                        'installed_tree_sha256' => __('Installed tree SHA-256', 'raos-codex-mcp'),
+                    ) as $key => $label
+                ) {
+                    echo '<tr><th scope="row">' . esc_html($label) . '</th><td><code>'
+                        . esc_html($bootstrap[$key]) . '</code></td></tr>';
+                }
+                echo '</tbody></table>';
+                echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
+                echo '<input type="hidden" name="action" value="raos_codex_mcp_attest_bootstrap">';
+                echo '<input type="hidden" name="proposal_id" value="' . esc_attr($row['proposal_id']) . '">';
+                wp_nonce_field('raos_codex_mcp_attest_bootstrap_' . $row['proposal_id']);
+                echo '<p><label>' . esc_html__('Current password (human reauthentication)', 'raos-codex-mcp') . '<br><input type="password" name="current_password" autocomplete="current-password" required></label></p>';
+                echo '<p><label>' . esc_html__('Manual installation attestation reason (10+ characters)', 'raos-codex-mcp') . '<br><textarea name="reason" rows="3" cols="80" minlength="10" maxlength="2000" required></textarea></label></p>';
+                echo '<p><label>' . esc_html__('Type the final 8 characters of the proposal ID', 'raos-codex-mcp') . '<br><input type="text" name="proposal_suffix" minlength="8" maxlength="8" pattern="[0-9a-f]{8}" required> <code>' . esc_html($proposal_suffix) . '</code></label></p>';
+                echo '<p><label>' . esc_html__('Type the final 8 characters of the package hash', 'raos-codex-mcp') . '<br><input type="text" name="package_suffix" minlength="8" maxlength="8" pattern="[0-9a-f]{8}" required> <code>' . esc_html($package_suffix) . '</code></label></p>';
+                echo '<p><label>' . esc_html__('Type the final 8 characters of the installed tree/file-manifest hash', 'raos-codex-mcp') . '<br><input type="text" name="hash_suffix" minlength="8" maxlength="8" pattern="[0-9a-f]{8}" required> <code>' . esc_html($after_suffix) . '</code></label></p>';
+                submit_button(__('Record exact manual bootstrap receipt', 'raos-codex-mcp'), 'primary', 'submit', false);
+                echo '</form>';
                 continue;
             }
             if ('PLUGIN_CHANGE' !== $row['kind']) {
@@ -1160,6 +1217,90 @@ final class RAOS_Codex_MCP_Abilities
             admin_url(
                 'tools.php?page=raos-codex-proposals&batch_approved=' . absint($approved['proposal_count'])
             )
+        );
+        exit;
+    }
+
+    public function handle_bootstrap_attestation()
+    {
+        if (! current_user_can('manage_options')
+            || ! isset($_SERVER['REQUEST_METHOD'])
+            || 'POST' !== $_SERVER['REQUEST_METHOD']) {
+            wp_die(
+                esc_html__('Bootstrap attestation refused.', 'raos-codex-mcp'),
+                '',
+                array('response' => 403)
+            );
+        }
+        if (! self::runtime_identity_is_exact()) {
+            wp_die(
+                esc_html__('Bootstrap attestation refused while the plugin runtime is mixed.', 'raos-codex-mcp'),
+                '',
+                array('response' => 503)
+            );
+        }
+        $proposal_id = isset($_POST['proposal_id'])
+            ? sanitize_text_field(wp_unslash($_POST['proposal_id']))
+            : '';
+        if (! RAOS_Codex_MCP_Store::is_sha256($proposal_id)) {
+            wp_die(
+                esc_html__('Bootstrap attestation refused.', 'raos-codex-mcp'),
+                '',
+                array('response' => 400)
+            );
+        }
+        check_admin_referer('raos_codex_mcp_attest_bootstrap_' . $proposal_id);
+        $row = RAOS_Codex_MCP_Store::get($proposal_id);
+        $bootstrap = is_wp_error($row)
+            ? $row
+            : RAOS_Codex_MCP_Deployment::validate_manual_bootstrap_attestation($row);
+        $current_password = isset($_POST['current_password'])
+            ? (string) wp_unslash($_POST['current_password'])
+            : '';
+        $reason = isset($_POST['reason'])
+            ? sanitize_textarea_field(wp_unslash($_POST['reason']))
+            : '';
+        $proposal_suffix = isset($_POST['proposal_suffix'])
+            ? sanitize_text_field(wp_unslash($_POST['proposal_suffix']))
+            : '';
+        $package_suffix = isset($_POST['package_suffix'])
+            ? sanitize_text_field(wp_unslash($_POST['package_suffix']))
+            : '';
+        $hash_suffix = isset($_POST['hash_suffix'])
+            ? sanitize_text_field(wp_unslash($_POST['hash_suffix']))
+            : '';
+        $user = wp_get_current_user();
+        if (is_wp_error($bootstrap)
+            || ! $user instanceof WP_User
+            || ! wp_check_password($current_password, $user->user_pass, $user->ID)
+            || (int) $row['created_by'] === (int) $user->ID
+            || ! hash_equals(substr($bootstrap['proposal_id'], -8), $proposal_suffix)
+            || ! hash_equals(substr($bootstrap['package_sha256'], -8), $package_suffix)
+            || ! hash_equals(substr($bootstrap['file_manifest_sha256'], -8), $hash_suffix)) {
+            wp_die(
+                esc_html__('Bootstrap attestation preconditions failed.', 'raos-codex-mcp'),
+                '',
+                array('response' => 403)
+            );
+        }
+        $attested = RAOS_Codex_MCP_Deployment::attest_manual_bootstrap(
+            $proposal_id,
+            $user->ID,
+            $reason
+        );
+        if (is_wp_error($attested)) {
+            $error_data = $attested->get_error_data();
+            $status = is_array($error_data) && isset($error_data['status'])
+                ? (int) $error_data['status']
+                : 409;
+            wp_die(
+                esc_html($attested->get_error_code()),
+                '',
+                array('response' => $status)
+            );
+        }
+        wp_safe_redirect(
+            admin_url('tools.php?page=raos-codex-proposals&bootstrap_attested=1')
         );
         exit;
     }

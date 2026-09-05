@@ -5,9 +5,29 @@
   if (!config || config.enabled !== true || config.schema !== 'RAOSMeasurementClientConfigV1') {
     return;
   }
-  if (typeof config.endpoint !== 'string' || typeof config.article !== 'object' || config.article === null) {
+  var configKeys = ['article', 'disclosureVersion', 'enabled', 'endpoint', 'schema'];
+  if (Object.keys(config).sort().join('|') !== configKeys.join('|') ||
+      typeof config.endpoint !== 'string' ||
+      typeof config.disclosureVersion !== 'string' ||
+      !/^privacy-[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(config.disclosureVersion) ||
+      typeof config.article !== 'object' || config.article === null) {
     return;
   }
+  var endpoint;
+  try {
+    endpoint = new URL(config.endpoint);
+  } catch (error) {
+    return;
+  }
+  if (endpoint.protocol !== 'https:' ||
+      endpoint.origin !== window.location.origin ||
+      endpoint.pathname !== '/wp-json/raos/v1/events' ||
+      endpoint.username !== '' || endpoint.password !== '' ||
+      endpoint.search !== '' || endpoint.hash !== '' ||
+      endpoint.href !== config.endpoint) {
+    return;
+  }
+  var measurementEndpoint = endpoint.href;
   var article = config.article;
   var allowedKeys = [
     'articleCode',
@@ -173,13 +193,13 @@
     if (event.event_name === 'affiliate_click' && event.dimensions.beacon_transport === 'sendBeacon') {
       try {
         var blob = new Blob([serialized], { type: 'application/json' });
-        window.navigator.sendBeacon(config.endpoint, blob);
+        window.navigator.sendBeacon(measurementEndpoint, blob);
       } catch (error) {
         // Native outbound navigation remains independent of measurement.
       }
     } else {
       try {
-        window.fetch(config.endpoint, {
+        window.fetch(measurementEndpoint, {
           body: serialized,
           cache: 'no-store',
           credentials: 'omit',

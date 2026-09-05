@@ -19,12 +19,12 @@
     "source_artifacts": [
       {
         "bytes": 5727,
-        "sha256": "6a7db734494532593611870be7e0b9743193a4a953f41ac35d83ee1083d40c4e",
+        "sha256": "02fe4d880640d78f1c58705a92a73b12b4aa42448ad751d6890f85971acbf9fa",
         "uri": "repo://changes/st-1303/contracts/attribution-engine-runtime.v2.yaml"
       },
       {
         "bytes": 15672,
-        "sha256": "196d9a7b9bbbe05d3b5e0a1862099afb6c067f1d869aae89303afa35b12cc0ec",
+        "sha256": "c8bd1e2f5dfa07874239c9510113aa1a3363cc62144057b27bde707cb25b20e3",
         "uri": "repo://changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json"
       },
       {
@@ -44,7 +44,7 @@
       },
       {
         "bytes": 24604,
-        "sha256": "384a1c026012ff2e75a314c61c767a0c2ac4a0631bd2f6b3b038b64ce173ee79",
+        "sha256": "fb7a04d9fc04bb4c24d0bdbc6b2fb73bda365f1e643a2ceb4efb2e155ebe9ab8",
         "uri": "repo://scripts/build_st1303_attribution_engine.py"
       },
       {
@@ -141,7 +141,7 @@
       },
       {
         "name": "five_slot_measurement",
-        "sha256": "e902d9a6f69d19ffab24b348f962e78bf8b1f57a159ad1e8798f1e7b81ec2e9e",
+        "sha256": "69bd518321cbd5327b920c6245a4cfa861f881234bd8ba93dc09bde5c85c7fb9",
         "uri": "repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json"
       }
     ]
@@ -154,7 +154,7 @@
     "resolved": false
   },
   "measurement_contract": {
-    "contract_sha256": "a4c1dcc0f111ddb7ab186d17016c7d90e1efffb557335f5dfb734dbd7a5eeb76",
+    "contract_sha256": "2a2f70198776b3d39be4f7e61c2b956fc96622cbd7b585c5c4a18ec2c22bb525",
     "period_duration_days": 14,
     "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
     "slot_count": 5,
@@ -162,35 +162,35 @@
       {
         "article_id": "st1703-first-suitcase-comparison",
         "intent_classification": "CONDITION_COMPARISON",
-        "packet_sha256": "6eac2b0cc7404072adf98bc3a9ee77e6c338ab378cef4a0dd8a9c74679b08ee9",
+        "packet_sha256": "53868ff59be25f1b4fb748b9a3a2fd3060872fd24288888d875a9b6490be48c2",
         "slot": 1,
         "slug": "carry-on-suitcase-comparison"
       },
       {
         "article_id": "st1704-portable-power-station-guide",
         "intent_classification": "SELECTION_GUIDE",
-        "packet_sha256": "588dafd3e9b43a87543c1b7858d9fc4710f5f8a670df67f43caa46c5c878a6a7",
+        "packet_sha256": "3c464302fecbfe2552db7ef3330d1c8a317dae30250d0bc2c11dfb3fb3fac87d",
         "slot": 2,
         "slug": "portable-power-station-guide"
       },
       {
         "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
         "intent_classification": "MODEL_DIFFERENCES",
-        "packet_sha256": "8eb85bb4253319362cdb650b61111d5608726b71c146bb2d252d1c43547229a8",
+        "packet_sha256": "5a6d223eb930fba97991ec872ffe3f539b1d090b5a04606349f941452f19dc5a",
         "slot": 3,
         "slug": "anker-solix-c300-c800-c1000-differences"
       },
       {
         "article_id": "st1704-countertop-dishwasher-for-small-households",
         "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
-        "packet_sha256": "bd99f9d6b762ac3da85f0e628a6fe71f6d484203b1e104303fe356803ec1596f",
+        "packet_sha256": "b42a3715a4da0e7beec5902e1c898d9d35b04d414dc4f1d68f2aa3f7f853eeaf",
         "slot": 4,
         "slug": "countertop-dishwasher-for-small-households"
       },
       {
         "article_id": "st1704-compact-robot-vacuum-shortlist",
         "intent_classification": "CONDITION_SHORTLIST",
-        "packet_sha256": "9cdce96cc3802a2ddf19424ce47952b6c2ab5b2a1006c5625e5e97f481da3798",
+        "packet_sha256": "4aae0a80274bdba88cd49eb25fdac3862911831d66ddd0b62267f9fa16f13320",
         "slot": 5,
         "slug": "compact-robot-vacuum-shortlist"
       }
@@ -214,11 +214,11 @@
   "recorded_result": {
     "allocations": [
       {
-        "allocation_sha256": "e42f2c01a42307f8110f4573bb733c3fcd328fc45167ed667c5c876d7f91a201",
+        "allocation_sha256": "0d45f0f00cec21787b1537b033bb257e24b5229e03d1d42ea17d9d37abdf2949",
         "article": {
           "article_id": "st1703-first-suitcase-comparison",
           "intent_classification": "CONDITION_COMPARISON",
-          "packet_sha256": "6eac2b0cc7404072adf98bc3a9ee77e6c338ab378cef4a0dd8a9c74679b08ee9",
+          "packet_sha256": "53868ff59be25f1b4fb748b9a3a2fd3060872fd24288888d875a9b6490be48c2",
           "slot": 1,
           "slug": "carry-on-suitcase-comparison"
         },
@@ -226,18 +226,18 @@
         "confidence_bps": 10000,
         "confirmed_reward_jpy": "120",
         "fact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "input_sha256": "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b",
+        "input_sha256": "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
         "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
         "reason": "DIRECT_PROVIDER_KEY_VERIFIED",
         "weight_denominator": 1,
         "weight_numerator": 1
       },
       {
-        "allocation_sha256": "18017186eb84af70f69e2233972121041da267315ed17bb1e7ebdcdb3edab9b2",
+        "allocation_sha256": "2a85aa5e798e08d19064d9844682e82825e556fc248ee99fc0651c3d6616246f",
         "article": {
           "article_id": "st1703-first-suitcase-comparison",
           "intent_classification": "CONDITION_COMPARISON",
-          "packet_sha256": "6eac2b0cc7404072adf98bc3a9ee77e6c338ab378cef4a0dd8a9c74679b08ee9",
+          "packet_sha256": "53868ff59be25f1b4fb748b9a3a2fd3060872fd24288888d875a9b6490be48c2",
           "slot": 1,
           "slug": "carry-on-suitcase-comparison"
         },
@@ -245,18 +245,18 @@
         "confidence_bps": 6000,
         "confirmed_reward_jpy": "20",
         "fact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "input_sha256": "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b",
+        "input_sha256": "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
         "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
         "reason": "ESTIMATED_PROPORTIONAL_ELIGIBLE_CLICKS",
         "weight_denominator": 50,
         "weight_numerator": 10
       },
       {
-        "allocation_sha256": "b71f36cf21b1aa3d7a5b5139f8f2099a837cfbe49da006765c3921d53192ce6e",
+        "allocation_sha256": "7697a0799cf755547f6699f17858357f48aa9be7402f0b97638f247cc814e871",
         "article": {
           "article_id": "st1704-portable-power-station-guide",
           "intent_classification": "SELECTION_GUIDE",
-          "packet_sha256": "588dafd3e9b43a87543c1b7858d9fc4710f5f8a670df67f43caa46c5c878a6a7",
+          "packet_sha256": "3c464302fecbfe2552db7ef3330d1c8a317dae30250d0bc2c11dfb3fb3fac87d",
           "slot": 2,
           "slug": "portable-power-station-guide"
         },
@@ -264,18 +264,18 @@
         "confidence_bps": 6000,
         "confirmed_reward_jpy": "41",
         "fact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "input_sha256": "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b",
+        "input_sha256": "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
         "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
         "reason": "ESTIMATED_PROPORTIONAL_ELIGIBLE_CLICKS",
         "weight_denominator": 50,
         "weight_numerator": 20
       },
       {
-        "allocation_sha256": "08f694789089e6cd6efce35a9f4cd22af9c72afa8377156df24efd0f732ebaf9",
+        "allocation_sha256": "abc13d42027e9ddbbe27f31f40f48136ac99006a3b287240e25756665e405b9a",
         "article": {
           "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
           "intent_classification": "MODEL_DIFFERENCES",
-          "packet_sha256": "8eb85bb4253319362cdb650b61111d5608726b71c146bb2d252d1c43547229a8",
+          "packet_sha256": "5a6d223eb930fba97991ec872ffe3f539b1d090b5a04606349f941452f19dc5a",
           "slot": 3,
           "slug": "anker-solix-c300-c800-c1000-differences"
         },
@@ -283,18 +283,18 @@
         "confidence_bps": 6000,
         "confirmed_reward_jpy": "10",
         "fact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "input_sha256": "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b",
+        "input_sha256": "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
         "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
         "reason": "ESTIMATED_PROPORTIONAL_ELIGIBLE_CLICKS",
         "weight_denominator": 50,
         "weight_numerator": 5
       },
       {
-        "allocation_sha256": "0b3344c46f24a24c24e0f33bb196c9cc83ae19a4ee4b6db389fa2915a6f54352",
+        "allocation_sha256": "39a5e0d679927e6d95e6dd6ccf7487532066e570bfd81b26a41d66058397545b",
         "article": {
           "article_id": "st1704-compact-robot-vacuum-shortlist",
           "intent_classification": "CONDITION_SHORTLIST",
-          "packet_sha256": "9cdce96cc3802a2ddf19424ce47952b6c2ab5b2a1006c5625e5e97f481da3798",
+          "packet_sha256": "4aae0a80274bdba88cd49eb25fdac3862911831d66ddd0b62267f9fa16f13320",
           "slot": 5,
           "slug": "compact-robot-vacuum-shortlist"
         },
@@ -302,20 +302,20 @@
         "confidence_bps": 6000,
         "confirmed_reward_jpy": "30",
         "fact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "input_sha256": "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b",
+        "input_sha256": "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
         "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
         "reason": "ESTIMATED_PROPORTIONAL_ELIGIBLE_CLICKS",
         "weight_denominator": 50,
         "weight_numerator": 15
       },
       {
-        "allocation_sha256": "100e2328cc140f8307fad10054a567e39aa9e47c7c3fde476598edf5e1a2c0c4",
+        "allocation_sha256": "4c438a3d7062590b6274894df1eef74a26b37f8a675259cd62a5f2fc48e697e3",
         "article": null,
         "attribution_class": "UNATTRIBUTED",
         "confidence_bps": 0,
         "confirmed_reward_jpy": "79",
         "fact_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-        "input_sha256": "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b",
+        "input_sha256": "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
         "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
         "reason": "UNATTRIBUTED_INSUFFICIENT_SIGNAL",
         "weight_denominator": null,
@@ -338,9 +338,9 @@
       "production": false
     },
     "availability": "AVAILABLE",
-    "fixture_sha256": "196d9a7b9bbbe05d3b5e0a1862099afb6c067f1d869aae89303afa35b12cc0ec",
+    "fixture_sha256": "c8bd1e2f5dfa07874239c9510113aa1a3363cc62144057b27bde707cb25b20e3",
     "idempotent_replay": true,
-    "input_sha256": "272d5824ef2fdf8fede7ead778542536d223d1bf4e142e710d9fed6b0c850f5b",
+    "input_sha256": "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
     "measurement_evaluation": {
       "metrics": {
         "search_ctr": {
@@ -419,7 +419,7 @@
     },
     "method_version": "RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1",
     "replay_count": 1,
-    "result_sha256": "b7fd687a2561722cd741805e3d3ba36c1d09d89de3d282de0578502e9a9882ec",
+    "result_sha256": "83468d41909fdd374bd87e5753775d95182b8eeb208f7270cfb57d1e45f25079",
     "run_count": 1,
     "scenario_id": "ST1303.RECORDED.SYNTHETIC.0001",
     "totals": {
