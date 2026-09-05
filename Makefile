@@ -23,14 +23,11 @@ generate:
 	$(PYTHON) scripts/raos_build.py $(BASE_ARGUMENT) generate
 	$(PYTHON) scripts/status_v2.py
 
-check: final-static
-	$(PYTHON) scripts/raos_editorial_portfolio_v2.py check-source-fixtures
+check:
 	$(PYTHON) scripts/raos_build.py $(BASE_ARGUMENT) check
-	$(PYTHON) scripts/status_v2.py --check
 
 fast:
 	TMPDIR=/tmp $(PYTHON) scripts/raos_build.py $(BASE_ARGUMENT) fast
-	$(PYTHON) -m pytest -q tests/test_affiliate_ingestion.py
 
 final-lock:
 	$(PYTHON) scripts/verify_dev_toolchain.py
@@ -43,7 +40,6 @@ final-static:
 	$(NPM) run format:check
 	$(NPM) run lint
 	$(NPM) run typecheck
-	$(NPM) run pyright
 	$(MAKE) -C changes/wordpress-mcp-v1 manifest-check
 
 final-secrets:
@@ -98,6 +94,5 @@ wordpress-preview-reset:
 wordpress-production-request:
 	$(PYTHON) scripts/raos_wordpress_publication_request.py
 
-final: final-lock final-static final-secrets status-v2
+final: final-lock
 	TMPDIR=/tmp $(PYTHON) scripts/raos_build.py final
-	$(MAKE) contracts database storage

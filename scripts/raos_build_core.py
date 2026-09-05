@@ -1067,23 +1067,30 @@ def changed_paths(
     )
     comparison = merge_base.stdout.strip() if merge_base.returncode == 0 else base
     result = subprocess.run(
-        ("git", "diff", "--name-only", comparison, "--"),
+        ("git", "diff", "--name-status", "-z", "--find-renames", comparison, "--"),
         cwd=root,
         check=True,
         capture_output=True,
         text=True,
     )
-    tracked = {Path(line) for line in result.stdout.splitlines() if line}
+    # NUL framing preserves spaces and quoting; both sides of a rename affect
+    # consumers, including consumers of a deleted module or fixture.
+    fields = iter(result.stdout.split("\0"))
+    tracked: set[Path] = set()
+    for status_code in fields:
+        if not status_code:
+            continue
+        tracked.add(Path(next(fields)))
+        if status_code.startswith(("R", "C")):
+            tracked.add(Path(next(fields)))
     status = subprocess.run(
-        ("git", "status", "--porcelain=v1"),
+        ("git", "ls-files", "--others", "--exclude-standard", "-z"),
         cwd=root,
         check=True,
         capture_output=True,
         text=True,
     )
-    for line in status.stdout.splitlines():
-        if len(line) > 3:
-            tracked.add(Path(line[3:]))
+    tracked.update(Path(value) for value in status.stdout.split("\0") if value)
     return tuple(sorted(tracked))
 
 
@@ -1102,9 +1109,11 @@ def affected_owners(
             if item.uri.startswith("repo://")
         )
         if any(
-            candidate in changed
-            or any(
-                candidate.is_relative_to(path) for path in changed if path.suffix == ""
+            any(
+                candidate == path
+                or path.is_relative_to(candidate)
+                or candidate.is_relative_to(path)
+                for path in changed
             )
             for candidate in owned
         ):

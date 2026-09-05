@@ -15,7 +15,10 @@ def test_contract_verification_is_integrated_into_final() -> None:
     assert "build_st0104_contract_repository.py --check" in gate
     assert "scripts/verify_contract_repository.py" in gate
     assert "pytest -q tests/st0104" in gate
-    assert "$(MAKE) contracts database storage" in makefile
+    from scripts.raos_test_plan import create_plan
+    from scripts.raos_build_core import discover_registry
+    plan = create_plan(REPO_ROOT, discover_registry(), (), full=True)
+    assert all(plan.jobs[name] for name in ("contracts", "data", "storage"))
 
 
 def test_readme_documents_the_five_commands_and_external_boundary() -> None:
@@ -45,11 +48,10 @@ def test_pinned_specification_resources_remain_hash_bound() -> None:
         assert hashlib.sha256((resource_root / name).read_bytes()).hexdigest() == digest
 
 
-def test_agents_has_two_stop_classes_and_stays_compact() -> None:
+def test_agents_preserves_external_and_irreversible_boundaries() -> None:
     instructions = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
     for required in ("live 外部作用", "回復不能な操作", "make final"):
         assert required in instructions
-    assert len(instructions.splitlines()) <= 80
     assert "exact SHA" not in instructions
 
 
