@@ -44,6 +44,7 @@ from raos.application.editorial.verified_incremental_v1 import (  # noqa: E402
     fail,
     omit_unverified_commerce,
     validate_manifest,
+    DNS_TRANSITION_MODE,
     verify_commerce_markup,
 )
 from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
@@ -63,9 +64,17 @@ def prepare_noncommercial_candidate(
     now: datetime,
     theme_projection: bytes | None = None,
     policy_articles: Sequence[publication.Article] = (),
+    runtime_transition_mode: str = "strict",
 ) -> tuple[dict[str, object], dict[str, bytes], dict[str, object]]:
     """All source evidence is replayed by the caller; no supplied PASS flags."""
     sources.require_complete()
+    if type(runtime_transition_mode) is not str or runtime_transition_mode not in {
+        "strict",
+        DNS_TRANSITION_MODE,
+    }:
+        fail("DNS_TRANSITION_INVALID")
+    if runtime_transition_mode != "strict" and theme_projection is None:
+        fail("DNS_TRANSITION_REQUIRES_THEME")
     if (
         snapshot.get("schema") != "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1"
         or snapshot.get("publication_profile") != PROFILE
@@ -322,6 +331,17 @@ def prepare_noncommercial_candidate(
         "shared_artifacts": shared,
         "rendered_document_slugs": sorted(documents if shared else selected),
     }
+    if runtime_transition_mode == DNS_TRANSITION_MODE:
+        import raos_wordpress_runtime_audit as runtime
+
+        manifest["runtime_transition"] = runtime.build_dns_transition(
+            baseline_tree=shared_baselines["theme"],
+            candidate_tree=expected_shared_readback["theme"],
+            page_urls=frozenset(
+                publication.ORIGIN + "/" + (slug + "/" if slug != "home" else "")
+                for slug in documents
+            ),
+        )
     validated = validate_manifest(
         manifest,
         inventory=inventory,
@@ -369,6 +389,8 @@ def prepare_noncommercial_candidate(
             "POST_APPLY_READBACK",
         ],
     }
+    if "runtime_transition" in manifest:
+        preparation["runtime_transition"] = manifest["runtime_transition"]
     return manifest, output, preparation
 
 
@@ -392,6 +414,11 @@ def main() -> int:
     parser.add_argument("--articles", required=True)
     parser.add_argument("--include-theme", action="store_true")
     parser.add_argument("--update-policies", choices=("none", "all"), default="none")
+    parser.add_argument(
+        "--runtime-transition",
+        choices=("strict", DNS_TRANSITION_MODE),
+        default="strict",
+    )
     args = parser.parse_args()
     try:
         owner = Path("/home/minami/rakuten")
@@ -435,6 +462,7 @@ def main() -> int:
                 if args.update_policies == "all"
                 else ()
             ),
+            runtime_transition_mode=args.runtime_transition,
         )
         target = (
             owner

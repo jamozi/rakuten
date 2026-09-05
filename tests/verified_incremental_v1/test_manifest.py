@@ -97,6 +97,78 @@ def test_editorial_products_do_not_require_unverified_commerce() -> None:
     assert result.manifest_sha256 == owner.digest(owner.canonical(document))
 
 
+def dns_manifest():
+    document, inputs = sample()
+    projection = owner.canonical(
+        [{"path": "functions.php", "size": 12, "sha256": "f" * 64}]
+    )
+    inputs["artifact_bytes"]["theme-tree"] = projection
+    candidate = owner.digest(projection)
+    document["shared_artifacts"]["theme"] = {
+        "key": "theme-tree",
+        "sha256": candidate,
+        "baseline_sha256": "d" * 64,
+        "post_id": None,
+    }
+    document["rendered_document_slugs"] = sorted(inputs["inventory"])
+    document["runtime_transition"] = {
+        "schema": "RAOS_WORDPRESS_SITEKIT_DNS_TRANSITION_V1",
+        "mode": owner.DNS_TRANSITION_MODE,
+        "baseline_theme_sha256": "d" * 64,
+        "candidate_theme_sha256": candidate,
+        "candidate_functions_sha256": "f" * 64,
+        "hint": dict(owner.DNS_HINT),
+        "expected_baseline_hints": {
+            "https://kurashinoshirube.com/" + (slug + "/" if slug != "home" else ""): 1
+            for slug in inputs["inventory"]
+        },
+        "post_apply_state": "CLOSED_DECLARED_RUNTIME_VERIFIED",
+    }
+    return document, inputs
+
+
+def test_optional_dns_manifest_is_a_different_audit_subject():
+    document, inputs = dns_manifest()
+    transition = owner.validate_manifest(document, **inputs)
+    del document["runtime_transition"]
+    strict = owner.validate_manifest(document, **inputs)
+    assert transition.manifest_sha256 != strict.manifest_sha256
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        None,
+        [],
+        {},
+        {"mode": "strict"},
+        {"expected_baseline_hints": {"https://kurashinoshirube.com/": 1}},
+        {"candidate_functions_sha256": "a" * 64},
+        {"candidate_theme_sha256": "a" * 64},
+        {"baseline_theme_sha256": "a" * 64},
+        {"post_apply_state": owner.DNS_TRANSITION_STATE},
+        {"unexpected": True},
+    ],
+)
+def test_dns_manifest_tamper_is_rejected(mutation):
+    document, inputs = dns_manifest()
+    if type(mutation) is dict and mutation:
+        document["runtime_transition"].update(mutation)
+    else:
+        document["runtime_transition"] = mutation
+    with pytest.raises(owner.IncrementalPublicationFailure):
+        owner.validate_manifest(document, **inputs)
+
+
+@pytest.mark.parametrize("count", [True, 1.0, 0, 2, "1"])
+def test_dns_manifest_counts_are_exact_integers(count):
+    document, inputs = dns_manifest()
+    hints = document["runtime_transition"]["expected_baseline_hints"]
+    hints.update(dict.fromkeys(hints, count))
+    with pytest.raises(owner.IncrementalPublicationFailure):
+        owner.validate_manifest(document, **inputs)
+
+
 @pytest.mark.parametrize(
     "field,value",
     [

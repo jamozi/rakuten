@@ -644,6 +644,10 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
     ):
         assert boundary in instructions
     tools = {tool["name"]: tool for tool in listed["result"]["tools"]}
+    # Exercise the real producer/consumer boundary, not only hand-built schemas.
+    raos_wordpress_publication_request._validate_deployment_tools(
+        listed["result"]["tools"]
+    )
     assert set(tools) == {
         "deployment-status",
         "operation-status",

@@ -3508,15 +3508,26 @@ def _validate_deployment_tools(tools: object) -> None:
     theme_schema = by_name["theme-propose-release"].get("inputSchema")
     wait_schema = by_name["release-wait-and-apply"].get("inputSchema")
     batch_status_schema = by_name["publication-batch-status"].get("inputSchema")
-    if "operation-status" in by_name and by_name["operation-status"].get(
-        "inputSchema"
-    ) != {
+    operation_status_schema = {
         "type": "object",
         "properties": {"operation_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
         "required": ["operation_id"],
         "additionalProperties": False,
-    }:
-        fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
+    }
+    # The pinned MCP SDK emits this dialect marker; older recorded adapters
+    # omit it. Accept exactly these equivalent closed schemas, not arbitrary
+    # extra fields or a different dialect with different validation semantics.
+    if "operation-status" in by_name:
+        actual_schema = by_name["operation-status"].get("inputSchema")
+        if (
+            type(actual_schema) is not dict
+            or actual_schema.get("additionalProperties") is not False
+            or actual_schema not in (
+                operation_status_schema,
+                {"$schema": "http://json-schema.org/draft-07/schema#", **operation_status_schema},
+            )
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
     theme_properties = (
         theme_schema.get("properties") if type(theme_schema) is dict else None
     )
