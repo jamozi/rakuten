@@ -734,3 +734,176 @@ def test_comment_declaration_and_processing_instruction_differentials_fail(
             "<p>仕様比較です。</p>",
             '<div class="entry-content"><p>仕様比較です。</p>' + markup + "</div>",
         )
+
+
+@pytest.mark.parametrize(
+    "addition",
+    [
+        '<table background="https://other.invalid/p.png" width="128" height="128"><tr><td></td></tr></table>',
+        '<table><tr><td background="https://other.invalid/p.png"></td></tr></table>',
+        '<div style="background-image:url(https://other.invalid/p.png)"></div>',
+        '<span style="content:url(https://other.invalid/p.png)"></span>',
+        r'<span style="content:\75rl(https://other.invalid/p.png)"></span>',
+        '<a href="https://example.com" ping="https://other.invalid/track">参考</a>',
+        '<div style=""></div>',
+    ],
+)
+def test_unknown_article_resource_attributes_cannot_disappear_from_public_comparison(
+    addition: str,
+) -> None:
+    stored = '<p>仕様比較です。</p><a href="https://example.com">公式情報</a>'
+    for authored in (stored, stored + addition):
+        with pytest.raises(audit.seo.AuditError, match="ARTICLE_MARKUP_UNSUPPORTED"):
+            audit.verify_rendered_body(
+                authored,
+                '<div class="entry-content">' + stored + addition + "</div>",
+            )
+    # The page-wide asset collector applies this grammar only inside the body.
+    assets = audit._PageAssets()
+    with pytest.raises(audit.seo.AuditError, match="ARTICLE_MARKUP_UNSUPPORTED"):
+        assets.feed('<div class="entry-content">' + addition + "</div>")
+    with pytest.raises(audit.seo.AuditError, match="ARTICLE_MARKUP_UNSUPPORTED"):
+        audit._project(
+            '<nav class="raos-article-toc">' + addition + "</nav>", rendered=True
+        )
+
+
+@pytest.mark.parametrize(
+    "markup",
+    [
+        '<table><article data-raos-product-id="A"><tr><td><img src="/a.jpg" alt="A"></td></tr></article></table>',
+        '<table><tr><td><article data-raos-product-id="A"><td><img src="/a.jpg" alt="A"></td></article></td></tr></table>',
+        "<table>&nbsp;<tr><td>条件</td></tr></table>",
+        "<table>&#160;<tr><td>条件</td></tr></table>",
+        "<table><tr><div>条件</div></tr></table>",
+        '<article data-raos-product-id="A"/><article data-raos-product-id="B">条件</article>',
+        '<p><article data-raos-product-id="A">条件</article></p>',
+        '<a href="#a"><span><a href="#b">条件</a></span></a>',
+        "<h2><h3>条件</h3></h2>",
+    ],
+)
+def test_browser_reparenting_cannot_pass_even_when_authored_and_public_bytes_match(
+    markup: str,
+) -> None:
+    with pytest.raises((IncrementalPublicationFailure, audit.seo.AuditError)):
+        audit.verify_rendered_body(
+            markup, '<div class="entry-content">' + markup + "</div>"
+        )
+
+
+def test_theme_layout_attributes_outside_entry_content_keep_separate_validation() -> (
+    None
+):
+    stored = "<p>仕様比較です。</p><table><tr><td>条件</td></tr></table>"
+    page = (
+        "<html><head><style>.site-header { display:block; }</style></head><body>"
+        '<header style="display:block"><span>サイト名</span></header>'
+        '<div class="entry-content" style="padding:1rem">' + stored + "</div>"
+        '<footer style="display:block">運営情報</footer></body></html>'
+    )
+    assert len(audit.verify_rendered_body(stored, page)) == 64
+    assets = audit._PageAssets()
+    assets.feed(page)
+    assets.close()
+    assert assets.images == set()
+
+
+@pytest.mark.parametrize("attribute", ["class", "rel"])
+@pytest.mark.parametrize(
+    "separator",
+    [
+        "\v",
+        "\xa0",
+        "\x85",
+        "\u2003",
+        "\u202f",
+        "\u3000",
+        "&nbsp;",
+        "&#160;",
+        "&#xA0;",
+        "&#11;",
+        "&ThinSpace;",
+    ],
+)
+def test_non_html_token_separator_in_readback_or_authored_body_is_rejected(
+    attribute: str,
+    separator: str,
+) -> None:
+    stored = (
+        '<article class="product-profile promo" data-raos-product-id="A">'
+        '<a href="https://hb.afl.rakuten.co.jp/hgc/recorded/" rel="sponsored nofollow" '
+        'data-raos-product-id="A" data-raos-cta-id="cta-1">購入</a></article>'
+    )
+    assert audit.verify_rendered_body(
+        stored, '<div class="entry-content">' + stored + "</div>"
+    )
+    changed = stored.replace(
+        "product-profile promo" if attribute == "class" else "sponsored nofollow",
+        "product-profile" + separator + "promo"
+        if attribute == "class"
+        else "sponsored" + separator + "nofollow",
+    )
+    for expected in (stored, changed):
+        with pytest.raises(audit.seo.AuditError, match="ARTICLE_MARKUP_UNSUPPORTED"):
+            audit.verify_rendered_body(
+                expected, '<div class="entry-content">' + changed + "</div>"
+            )
+    assets = audit._PageAssets()
+    with pytest.raises(audit.seo.AuditError, match="ARTICLE_MARKUP_UNSUPPORTED"):
+        assets.feed('<div class="entry-content">' + changed + "</div>")
+
+
+@pytest.mark.parametrize(
+    "separator", ["\v", "\xa0", "\u2003", "&nbsp;", "&#160;", "&#11;"]
+)
+def test_non_html_separator_cannot_select_body_or_hide_runtime_wrapper(
+    separator: str,
+) -> None:
+    stored = "<p>仕様比較です。</p>"
+    with pytest.raises(audit.seo.AuditError, match="PUBLIC_BODY_SCOPE_INVALID"):
+        audit.verify_rendered_body(
+            stored, f'<div class="entry-content{separator}extra">' + stored + "</div>"
+        )
+    with pytest.raises(audit.seo.AuditError, match="ARTICLE_MARKUP_UNSUPPORTED"):
+        audit.verify_rendered_body(
+            stored,
+            '<div class="entry-content">'
+            + stored
+            + f'<nav class="raos-article-toc{separator}extra">未検証の追記</nav></div>',
+        )
+
+
+@pytest.mark.parametrize(
+    "separator",
+    [
+        " ",
+        "\t",
+        "\n",
+        "\f",
+        "\r",
+        "&#32;",
+        "&#9;",
+        "&#10;",
+        "&#12;",
+        "&#13;",
+        "&Tab;",
+        "&NewLine;",
+    ],
+)
+def test_html_ascii_token_separators_preserve_public_projection(separator: str) -> None:
+    stored = '<article class="product-profile 比較カード"><p>条件\xa0を確認</p><a href="https://example.com" rel="sponsored nofollow">購入先</a></article>'
+    page = (
+        f'<div class="{separator}entry-content{separator}extra{separator}">'
+        + stored.replace(
+            "product-profile 比較カード", "product-profile" + separator + "比較カード"
+        ).replace("sponsored nofollow", "sponsored" + separator + "nofollow")
+        + f'<nav class="{separator}raos-article-toc{separator}extra{separator}">目次</nav></div>'
+    )
+    baseline = audit.verify_rendered_body(
+        stored, '<div class="entry-content">' + stored + "</div>"
+    )
+    assert audit.verify_rendered_body(stored, page) == baseline
+    assets = audit._PageAssets()
+    assets.feed(page)
+    assets.close()
+    assert assets.links == {"https://example.com"}

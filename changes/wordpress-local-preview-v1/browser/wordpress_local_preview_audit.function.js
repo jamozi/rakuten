@@ -232,7 +232,10 @@
         image.legacyResponsiveImage === true && image.hasProductImageId === false &&
         image.verifiedProductImage === false && image.hiddenAncestor === true &&
         image.zeroRect === true && image.invisible === true &&
-        image.loading === 'lazy' && image.complete === false && image.naturalWidth === 0;
+        image.loading === 'lazy' && image.complete === false &&
+        // Native pending lazy images can already expose the decoded dimensions
+        // of their shared resource. Dimensions do not mean loading is complete.
+        Number.isInteger(image.naturalWidth) && image.naturalWidth >= 0;
       if (deferred) hiddenLegacyLazySources.push(image.source);
       else if (!image.complete || image.naturalWidth === 0) unloadedImages += 1;
     }
@@ -243,10 +246,13 @@
     for (const source of new Set(sources)) {
       let resource = null;
       try {
-        // Never turn a DOM URL into an arbitrary or external HTTP request.
-        const target = new URL(source);
-        if (target.origin !== origin || target.username || target.password || target.search ||
-          target.hash || !/^\/wp-content\/themes\/[A-Za-z0-9_-]+\/(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_.-]+\.(?:webp|png|jpe?g|gif|svg)$/.test(target.pathname)) {
+        // The CLI execution sandbox has no global URL constructor. Require an
+        // exact local origin and a closed, unencoded static path instead; this
+        // also excludes credentials, query/fragment and traversal/redirect URLs.
+        const path = typeof source === 'string' && typeof origin === 'string' &&
+          /^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(origin) && source.startsWith(`${origin}/`)
+          ? source.slice(origin.length) : '';
+        if (!/^\/wp-content\/themes\/[A-Za-z0-9_-]+\/(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_.-]+\.(?:webp|png|jpe?g|gif|svg)$/.test(path)) {
           failures += 1;
           continue;
         }

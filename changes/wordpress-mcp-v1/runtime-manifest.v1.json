@@ -77,7 +77,7 @@
     },
     {
       "path": "changes/editorial-measurement-v1/runtime-manifest.v1.json",
-      "sha256": "f5ca703425421c766525fd482c4d5d921e56d5b63e1d1f5878ab3e647614939c",
+      "sha256": "0bf7dd53d9105e4642ce924aa496e089e649478f5a385ecc78a14823dbc955ae",
       "size": 2879
     },
     {
@@ -87,12 +87,12 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
-      "sha256": "2e9ebc2f6401709eef5645c99b27df95a6b421b6cc81264f0561bc209ae88b0e",
+      "sha256": "602ad43c46ec7e6493e029af807cf27133a348f2a193d58d0582a23688041c4d",
       "size": 3365
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "aa14f00af529f0a6a3ab2367985815dfbb977505ef24a4a3b6664862da7cc1b1",
+      "sha256": "8eb825100142804e36a8f7876cf81b46ea5cfad56eb0e4022dcb53783f273401",
       "size": 80080
     },
     {
@@ -132,8 +132,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
-      "sha256": "c0c891a5053a1f4f2dad2521989a310b70eb3e3b0ad96c1dbe701c3857fea9dd",
-      "size": 109524
+      "sha256": "be31ae2aed8cdb1e2e673bb3795160151808a38f436611f83d2b56d740882d3c",
+      "size": 109960
     },
     {
       "path": "changes/wordpress-local-preview-v1/compose.yaml",
@@ -312,7 +312,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "6388b91070ee0c9579df6e13224cd656118624cbc3125b70a0e207f449a5e11f",
+      "sha256": "89924f2b6db2ba948fcca241523c3610c9803095ba86a4e22de2a74e03feb1e8",
       "size": 54277
     },
     {
@@ -382,8 +382,8 @@
     },
     {
       "path": "python/raos/application/editorial/verified_incremental_v1.py",
-      "sha256": "f6b9c10feca6113f5c54ec7fbcfac76926efbe728d6faf0349410337f3f9a825",
-      "size": 32744
+      "sha256": "716c3dd1ce103439e086c5e7801e76bb0c5902e3eb776b760f585b51bc19021b",
+      "size": 39415
     },
     {
       "path": "python/raos/application/editorial/verified_incremental_audit_v1.py",
@@ -472,8 +472,8 @@
     },
     {
       "path": "scripts/raos_wordpress_incremental_seo_audit.py",
-      "sha256": "9a9dff3ede4beafc077ca2bdc1f00eb1656fcaf1af351b720cc566c69e7096e0",
-      "size": 29462
+      "sha256": "8be05165520075d570ab22abab85a2a5e3465a5f7a1f29cd020f8a3e9b9e9c4f",
+      "size": 30970
     },
     {
       "path": "scripts/raos_wordpress_incremental_snapshot.py",

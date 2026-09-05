@@ -40,6 +40,15 @@
 5. `make generate`、`make check`、focused tests、`make fast`、`make final` と
    テーマ／プラグイン検査を通します。バックアップは実際にローカル復元して照合します。
 
+記事変更で生成ナビゲーションが変わる場合は、最初の `make generate` の後に
+`scripts/build_st1704_self_hosted_theme.py --generate` で追跡テーマの刻印を更新し、
+再度 `make generate` とテーマの `--source-check` / `--check` を実行します。
+通常の生成グラフでは private package owner は実行されないため、この刻印更新を
+省略しません。ここで ZIP の本番送付やテーマ適用は行いません。
+最終テーマの全ファイルと候補 manifest を固定してから、混在プレビュー同期、
+復元試験、全画面監査を実行します。生成や刻印更新と表示監査を同時に進めず、
+変更前のテーマ tree に対する復元結果を新しい版の証跡として使いません。
+
 ## 監査対象と短命の公開証跡を分ける
 
 `scripts/raos_wordpress_incremental_candidate.py` の現在の準備経路は、商用要素を

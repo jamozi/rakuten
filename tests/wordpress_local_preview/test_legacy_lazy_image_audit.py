@@ -64,6 +64,7 @@ const input = JSON.parse(fs.readFileSync(0, 'utf8'));
   }
   const calls = [];
   let disposed = 0;
+  if (input.noURLConstructor) global.URL = undefined;
   const failures = await factory.inspectHiddenLegacyImageResources({
     origin: 'http://127.0.0.1:39330', sources: input.sources,
     page: {request: {get: async (url, options) => {
@@ -112,8 +113,14 @@ def _input() -> dict[str, object]:
     }
 
 
-def test_only_pending_hidden_legacy_image_is_counted_separately() -> None:
-    assert _node(_input()) == {
+@pytest.mark.parametrize("natural_width", [0, 128, 1600])
+def test_pending_hidden_legacy_image_can_already_have_intrinsic_dimensions(
+    natural_width: int,
+) -> None:
+    payload = _input()
+    images = cast(list[dict[str, object]], payload["images"])
+    images[0]["naturalWidth"] = natural_width
+    assert _node(payload) == {
         "unloadedImages": 0,
         "hiddenLegacyLazySources": [SOURCE],
     }
@@ -134,7 +141,9 @@ def test_only_pending_hidden_legacy_image_is_counted_separately() -> None:
         ("invisible", False),
         ("loading", "eager"),
         ("complete", True),
-        ("naturalWidth", 128),
+        ("naturalWidth", -1),
+        ("naturalWidth", 1.5),
+        ("naturalWidth", "1600"),
     ],
 )
 def test_all_narrow_conditions_required_and_broken_hidden_images_fail(
@@ -154,6 +163,29 @@ def test_loaded_visible_image_remains_successful() -> None:
         complete=True, naturalWidth=128, hiddenAncestor=False, zeroRect=False
     )
     assert _node(payload) == {"unloadedImages": 0, "hiddenLegacyLazySources": []}
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("commerceStatus", "EXPECTED_VERIFIED_SET_PRESENT"),
+        ("legacyResponsiveImage", False),
+        ("hasProductImageId", True),
+        ("verifiedProductImage", True),
+        ("hiddenAncestor", False),
+        ("zeroRect", False),
+        ("invisible", False),
+    ],
+)
+def test_known_dimensions_do_not_waive_visible_verified_or_unclassified_failure(
+    field: str, value: object
+) -> None:
+    payload = _input()
+    images = cast(list[dict[str, object]], payload["images"])
+    images[0]["naturalWidth"] = 1600
+    target = payload if field in payload else images[0]
+    target[field] = value
+    assert _node(payload) == {"unloadedImages": 1, "hiddenLegacyLazySources": []}
 
 
 @pytest.mark.parametrize("view", ["table", "cards"])
@@ -206,6 +238,15 @@ def test_deferred_resource_is_read_only_checked_once_without_redirects() -> None
     }
 
 
+def test_resource_guard_works_without_cli_global_url_constructor() -> None:
+    result = _node({"mode": "resources", "sources": [SOURCE], "noURLConstructor": True})
+    assert result == {
+        "failures": 0,
+        "disposed": 1,
+        "calls": [{"url": SOURCE, "options": {"maxRedirects": 0, "timeout": 5000}}],
+    }
+
+
 @pytest.mark.parametrize(
     "change",
     [
@@ -237,6 +278,9 @@ def test_hidden_lazy_resource_failures_are_not_ignored(
             "/wp-content/themes/example/assets/decoration.webp", "/wp-admin/"
         ),
         SOURCE.replace("decoration.webp", "arbitrary.php"),
+        SOURCE.replace("assets/decoration.webp", "assets/../outside.webp"),
+        SOURCE.replace("assets/decoration.webp", "assets/%2e%2e/outside.webp"),
+        SOURCE.replace("decoration.webp", "encoded%2fpath.webp"),
         SOURCE.replace("http://", "http://user:password@"),
         "data:image/webp;base64,AAAA",
         "not-a-url",

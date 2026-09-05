@@ -1,10 +1,262 @@
 """Materialized HTML must agree with the exact selected commerce evidence."""
 
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pytest
 
 from raos.application.editorial import verified_incremental_v1 as owner
+
+
+NON_HTML_WHITESPACE = (
+    "\v",
+    "\x1c",
+    "\x85",
+    "\xa0",
+    "\u1680",
+    "\u2000",
+    "\u2003",
+    "\u2007",
+    "\u2009",
+    "\u2028",
+    "\u2029",
+    "\u202f",
+    "\u205f",
+    "\u3000",
+)
+ASCII_TOKEN_SEPARATORS = (
+    " ",
+    "\t",
+    "\n",
+    "\f",
+    "\r",
+    " \t\n\f\r ",
+    "&#32;",
+    "&#9;",
+    "&#10;",
+    "&#12;",
+    "&#13;",
+    "&Tab;",
+    "&NewLine;",
+)
+
+
+@pytest.mark.parametrize("separator", NON_HTML_WHITESPACE)
+def test_html_attribute_token_helper_never_splits_unicode_whitespace(
+    separator: str,
+) -> None:
+    assert owner.html_attribute_tokens("first" + separator + "second") == {
+        "first" + separator + "second"
+    }
+    assert owner.html_attribute_tokens(separator + "first" + separator) == {
+        separator + "first" + separator
+    }
+    assert owner.html_attribute_tokens(" \tfirst\nsecond\ffirst\r ") == {
+        "first",
+        "second",
+    }
+    assert owner.html_attribute_tokens(None) == frozenset()
+    assert owner.html_attribute_tokens(" \t\n\r\f") == frozenset()
+
+
+@pytest.mark.parametrize("attribute", ["class", "rel"])
+@pytest.mark.parametrize(
+    "separator",
+    (
+        *NON_HTML_WHITESPACE,
+        "&nbsp;",
+        "&#160;",
+        "&#xA0;",
+        "&#11;",
+        "&ThinSpace;",
+        "&#x3000;",
+    ),
+)
+def test_non_html_class_and_rel_separators_cannot_verify_commerce(
+    attribute: str,
+    separator: str,
+) -> None:
+    url = "https://hb.afl.rakuten.co.jp/hgc/recorded/"
+    classes = "product-profile" + (separator if attribute == "class" else " ") + "promo"
+    rel = "sponsored" + (separator if attribute == "rel" else " ") + "nofollow"
+    markup = (
+        f'<article class="{classes}" data-raos-product-id="A">'
+        f'<a href="{url}" rel="{rel}" data-raos-product-id="A" '
+        'data-raos-article-id="article-1" data-raos-placement="product_card" '
+        'data-raos-cta-id="cta-1">購入</a></article>'
+    )
+    with pytest.raises(owner.IncrementalPublicationFailure, match="MARKUP_INVALID"):
+        owner.verify_commerce_markup(
+            markup,
+            article_id="article-1",
+            editorial_product_ids=frozenset({"A"}),
+            expected_ctas={"cta-1": ("A", "product_card", url)},
+            expected_images={},
+        )
+    with pytest.raises(owner.IncrementalPublicationFailure, match="MARKUP_INVALID"):
+        owner.omit_unverified_commerce(
+            markup,
+            image_product_ids=frozenset(),
+            cta_product_ids=frozenset(),
+        )
+
+
+@pytest.mark.parametrize("separator", ASCII_TOKEN_SEPARATORS)
+def test_html_ascii_token_separators_preserve_commerce_and_facts(
+    separator: str,
+) -> None:
+    url = "https://hb.afl.rakuten.co.jp/hgc/recorded/"
+    markup = (
+        f'<dl class="{separator}raos-article-facts{separator}補足{separator}">'
+        "<dt>比較</dt><dd>条件\xa0の確認</dd></dl>"
+        f'<article class="{separator}product-profile{separator}比較カード{separator}" data-raos-product-id="A">'
+        f'<a href="{url}" rel="{separator}sponsored{separator}nofollow{separator}" '
+        'data-raos-product-id="A" data-raos-article-id="article-1" '
+        'data-raos-placement="product_card" data-raos-cta-id="cta-1">購入</a></article>'
+    )
+    owner.verify_commerce_markup(
+        markup,
+        article_id="article-1",
+        editorial_product_ids=frozenset({"A"}),
+        expected_ctas={"cta-1": ("A", "product_card", url)},
+        expected_images={},
+    )
+    omitted = owner.omit_unverified_commerce(
+        markup,
+        image_product_ids=frozenset(),
+        cta_product_ids=frozenset(),
+        article_id="article-1",
+    )
+    assert "購入" not in omitted
+    assert "条件\xa0の確認" in omitted
+    assert 'data-raos-article-id="article-1"' in omitted
+
+
+@pytest.mark.parametrize(
+    "markup",
+    [
+        '<table background="https://other.invalid/p.png"><tr><td>条件</td></tr></table>',
+        '<table><tr><td BACKGROUND="https://other.invalid/p.png">条件</td></tr></table>',
+        '<div style="background-image:url(https://other.invalid/p.png)">条件</div>',
+        '<span style="content:url(https://other.invalid/p.png)">条件</span>',
+        r'<span style="content:\75rl(https://other.invalid/p.png)">条件</span>',
+        '<div style="">条件</div>',
+        '<a href="https://example.com" ping="https://other.invalid/track">購入</a>',
+        '<a href="https://example.com" ping="">購入</a>',
+        '<img src="/matched.jpg" lowsrc="https://other.invalid/p.png">',
+        '<img src="/matched.jpg" dynsrc="https://other.invalid/p.png">',
+        '<div data="https://other.invalid/p.png"></div>',
+        '<div src="https://other.invalid/p.png"></div>',
+    ],
+)
+def test_article_resource_attributes_require_a_closed_evidence_surface(
+    markup: str,
+) -> None:
+    with pytest.raises(owner.IncrementalPublicationFailure, match="MARKUP_INVALID"):
+        owner.parse_markup_elements(markup)
+    with pytest.raises(owner.IncrementalPublicationFailure, match="MARKUP_INVALID"):
+        owner.verify_commerce_markup(
+            markup,
+            article_id="article-1",
+            editorial_product_ids=frozenset(),
+            expected_ctas={},
+            expected_images={},
+        )
+
+
+@pytest.mark.parametrize(
+    "markup",
+    [
+        "<table><article><tr><td>商品</td></tr></article></table>",
+        "<table><tbody><article><tr><td>商品</td></tr></article></tbody></table>",
+        "<table><tr><article><td>商品</td></article></tr></table>",
+        "<table><tr><td><article><td>商品</td></article></td></tr></table>",
+        "<table><tr><div>商品</div></tr></table>",
+        "<table><td>商品</td></table>",
+        "<div><td>商品</td></div>",
+        "<table><colgroup><div>商品</div></colgroup></table>",
+        "<table>商品<tr><td>条件</td></tr></table>",
+        "<table>&nbsp;<tr><td>条件</td></tr></table>",
+        "<table>&#160;<tr><td>条件</td></tr></table>",
+        "<table><tbody>&#x41;<tr><td>条件</td></tr></tbody></table>",
+        "<table><caption><div><table><tr><td>商品</td></tr></table></div></caption></table>",
+        "<article/><article>商品</article>",
+        "<p/>商品",
+        "<div/>商品",
+        '<a href="#a"><span><a href="#b">商品</a></span></a>',
+        "<p><span><p>商品</p></span></p>",
+        "<p><article>商品</article></p>",
+        "<p><span><table><tr><td>商品</td></tr></table></span></p>",
+        "<h2><span><h3>商品</h3></span></h2>",
+        "<ul><li><article><li>商品</li></article></li></ul>",
+        "<dl><dd><div><dt>商品</dt></div></dd></dl>",
+        "<ruby><rt><rp>商品</rp></rt></ruby>",
+    ],
+)
+def test_browser_implicit_closure_and_table_fostering_are_rejected(markup: str) -> None:
+    with pytest.raises(owner.IncrementalPublicationFailure, match="MARKUP_INVALID"):
+        owner.parse_markup_elements(markup)
+
+
+def test_verified_card_cannot_be_fostered_outside_its_images_or_cta() -> None:
+    url = "https://hb.afl.rakuten.co.jp/hgc/recorded/"
+    contents = (
+        '<img src="/matched.jpg" data-raos-product-image-id="A" '
+        'data-raos-product-image-state="verified" width="128" height="128" alt="A" loading="lazy">'
+        '<a data-raos-product-id="A" data-raos-article-id="article-1" '
+        'data-raos-placement="product_card" data-raos-cta-id="cta-1" '
+        f'href="{url}" rel="sponsored nofollow">A購入</a>'
+    )
+    opening = '<article class="product-profile" data-raos-product-id="A">'
+    kwargs = {
+        "article_id": "article-1",
+        "editorial_product_ids": frozenset({"A"}),
+        "expected_images": {"A": "/matched.jpg"},
+        "expected_ctas": {"cta-1": ("A", "product_card", url)},
+    }
+    valid = "<table><tr><td>" + opening + contents + "</article></td></tr></table>"
+    owner.verify_commerce_markup(valid, **kwargs)
+    for invalid in (
+        "<table>" + opening + "<tr><td>" + contents + "</td></tr></article></table>",
+        "<table><tr><td>"
+        + opening
+        + "<td>"
+        + contents
+        + "</td></article></td></tr></table>",
+        opening[:-1] + "/><table><tr><td>" + contents + "</td></tr></table>",
+    ):
+        with pytest.raises(owner.IncrementalPublicationFailure):
+            owner.verify_commerce_markup(invalid, **kwargs)
+
+
+def test_normal_explicit_wordpress_tables_lists_and_ruby_remain_supported() -> None:
+    markup = (
+        "<!-- wp:html --><section><table>\n<caption>条件</caption>"
+        '<colgroup><col span="2"/></colgroup><thead><tr><th scope="col">型番</th>'
+        '<th scope="col">用途</th></tr></thead><tbody>\n<tr><td colspan="2">'
+        "<article><p>用途に合うか確認する。<br/>注意点も読む。</p></article>"
+        "</td></tr></tbody><tfoot><tr><td>補足</td><td>条件付き</td></tr></tfoot></table>"
+        "<table>&#32;<tr><td>tbody省略</td></tr></table>"
+        '<ul><li><p>条件</p><ol start="2"><li>次の条件</li></ol></li></ul>'
+        "<dl><div><dt>確認</dt><dd><dl><dt>型番</dt><dd>表記を照合</dd></dl></dd></div></dl>"
+        "<p><ruby>比較<rp>（</rp><rt>ひかく</rt><rp>）</rp></ruby></p></section><!-- /wp:html -->"
+    )
+    assert owner.parse_markup_elements(markup)
+
+
+def test_all_current_authored_articles_and_production_policies_use_supported_grammar() -> (
+    None
+):
+    fixtures = (
+        Path(__file__).resolve().parents[2]
+        / "changes/wordpress-local-preview-v1/fixtures"
+    )
+    paths = sorted((fixtures / "articles").glob("*.html")) + sorted(
+        (fixtures / "production-pages").glob("*.html")
+    )
+    assert len(paths) == 13
+    for path in paths:
+        assert owner.parse_markup_elements(path.read_text(encoding="utf-8")), path.name
 
 
 def test_public_value_validators_preserve_exact_identity_and_utc() -> None:

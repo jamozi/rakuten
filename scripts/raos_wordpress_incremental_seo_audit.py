@@ -42,7 +42,9 @@ from raos.application.editorial.verified_incremental_release_v1 import (  # noqa
 from raos.application.editorial.verified_incremental_v1 import (  # noqa: E402
     _Markup,
     digest,
+    html_attribute_tokens,
     supported_article_element,
+    supported_html_token_attributes,
 )
 
 PRIVATE = Path("/home/minami/rakuten/.secrets/wordpress-mcp/incremental-candidates")
@@ -116,7 +118,9 @@ class _EntryContent(HTMLParser):
             return
         values = dict(attrs)
         start = None
-        if "entry-content" in (values.get("class") or "").split():
+        if "entry-content" in html_attribute_tokens(values.get("class")):
+            if not supported_html_token_attributes(self.get_starttag_text() or ""):
+                fail("PUBLIC_BODY_SCOPE_INVALID")
             start = self.absolute_offset() + len(self.get_starttag_text() or "")
         self.stack.append((tag, start))
 
@@ -143,7 +147,11 @@ def _body(markup: str) -> str:
 
 
 def _require_supported_element(
-    tag: str, attrs: Mapping[str, str | None], *, article_body: bool = False
+    tag: str,
+    attrs: Mapping[str, str | None],
+    *,
+    article_body: bool = False,
+    raw_starttag: str | None = None,
 ) -> None:
     # There is no identity/byte contract for responsive image alternatives in
     # this release. Do not equate a safe fallback img with a different source.
@@ -163,10 +171,6 @@ def _require_supported_element(
         "meta",
     }:
         fail("PUBLIC_ACTIVE_CONTENT_FORBIDDEN")
-    # Scope this grammar to the extracted article only. The surrounding
-    # WordPress theme can legitimately use SVG menu/search icons and head tags.
-    if article_body and not supported_article_element(tag, attrs):
-        fail("PUBLIC_ARTICLE_MARKUP_UNSUPPORTED")
     url_attributes = {
         "href",
         "src",
@@ -192,12 +196,34 @@ def _require_supported_element(
             scheme = re.match(r"^([a-z][a-z0-9+.-]*):", normalized)
             if scheme and scheme[1] not in {"https", "http", "mailto", "tel"}:
                 fail("PUBLIC_EXECUTABLE_URL_FORBIDDEN")
+    # Scope both element and resource-attribute grammar to the article only.
+    # Theme icons, inline layout styles and head tags have separate contracts.
+    if article_body and (
+        not supported_article_element(tag, attrs)
+        or raw_starttag is not None
+        and not supported_html_token_attributes(raw_starttag)
+    ):
+        fail("PUBLIC_ARTICLE_MARKUP_UNSUPPORTED")
 
 
 class _SupportedBodyMarkup(_Markup):
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        _require_supported_element(tag, dict(attrs), article_body=True)
+        _require_supported_element(
+            tag,
+            dict(attrs),
+            article_body=True,
+            raw_starttag=self.get_starttag_text(),
+        )
         super().handle_starttag(tag, attrs)
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        _require_supported_element(
+            tag,
+            dict(attrs),
+            article_body=True,
+            raw_starttag=self.get_starttag_text(),
+        )
+        super().handle_startendtag(tag, attrs)
 
 
 def _project(markup: str, *, rendered: bool) -> dict[str, object]:
@@ -210,7 +236,7 @@ def _project(markup: str, *, rendered: bool) -> dict[str, object]:
     for element in parser.elements:
         # Audit before excluding known runtime wrappers: an injected handler
         # must not disappear merely because its class belongs to the TOC.
-        classes = set((element.attrs.get("class") or "").split())
+        classes = html_attribute_tokens(element.attrs.get("class"))
         if classes & INJECTED:
             if not rendered:
                 fail("AUTHORED_BODY_USES_RESERVED_RUNTIME_CLASS")
@@ -235,7 +261,9 @@ def _project(markup: str, *, rendered: bool) -> dict[str, object]:
                     "href": href
                     if href.startswith("#")
                     else urljoin(publication.ORIGIN, href),
-                    "rel": sorted(set((attrs.get("rel") or "").lower().split())),
+                    "rel": sorted(
+                        html_attribute_tokens((attrs.get("rel") or "").lower())
+                    ),
                     "bindings": {
                         key: value
                         for key, value in attrs.items()
@@ -292,12 +320,25 @@ class _PageAssets(HTMLParser):
         self.images: set[str] = set()
         self.links: set[str] = set()
         self.measurement_scripts = 0
+        self._content_depth = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = dict(attrs)
         if len(values) != len(attrs):
             fail("PUBLIC_ATTRIBUTES_DUPLICATE")
-        _require_supported_element(tag, values)
+        _require_supported_element(
+            tag,
+            values,
+            article_body=self._content_depth > 0,
+            raw_starttag=self.get_starttag_text(),
+        )
+        if tag not in VOID:
+            if self._content_depth:
+                self._content_depth += 1
+            elif "entry-content" in html_attribute_tokens(values.get("class")):
+                if not supported_html_token_attributes(self.get_starttag_text() or ""):
+                    fail("PUBLIC_BODY_SCOPE_INVALID")
+                self._content_depth = 1
         if tag == "img":
             if not values.get("src"):
                 fail("PUBLIC_IMAGE_SOURCE_MISSING")
@@ -310,6 +351,10 @@ class _PageAssets(HTMLParser):
             re.I,
         ):
             self.measurement_scripts += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag not in VOID and self._content_depth:
+            self._content_depth -= 1
 
 
 def _require_current_timestamp(value: object, now: datetime) -> None:

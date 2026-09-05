@@ -739,7 +739,12 @@ def test_all_ten_reader_facing_articles_use_one_metadata_vocabulary() -> None:
             == 1
         )
         assert markup.count("<dt>最終確認日</dt>") == 1
-        assert markup.count("<dt>実機確認</dt><dd>未実施（公式仕様比較）</dd>") == 1
+        first_hand_label = (
+            "未実施（型番・販売表示の確認案内）"
+            if slug == "solota-vs-rakua-mini-plus"
+            else "未実施（公式仕様比較）"
+        )
+        assert markup.count(f"<dt>実機確認</dt><dd>{first_hand_label}</dd>") == 1
         assert not any(label in markup for label in forbidden_ornamental_labels)
 
 

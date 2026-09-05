@@ -14,7 +14,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 import hashlib
-from html import escape
+from html import escape, unescape
 from html.parser import HTMLParser
 import json
 import re
@@ -26,6 +26,10 @@ PROFILE = "verified-incremental"
 SCHEMA = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_MANIFEST_V1"
 AUDIT_SUBJECT_MAX_AGE = timedelta(hours=24)
 HASH = re.compile(r"[0-9a-f]{64}\Z")
+HTML_ASCII_WHITESPACE = "\t\n\f\r "
+_RAW_HTML_ATTRIBUTES = re.compile(
+    r"""([^\t\n\f\r /=>]+)(?:[\t\n\f\r ]*=[\t\n\f\r ]*(?:"([^"]*)"|'([^']*)'|([^\t\n\f\r >]*)))?"""
+)
 VOID = frozenset(
     "area base br col embed hr img input link meta param source track wbr".split()
 )
@@ -40,6 +44,55 @@ ARTICLE_HTML_TAGS = frozenset(
     "picture pre q rp rt ruby s samp section small source span strong sub "
     "summary sup table tbody td tfoot th thead time tr u ul var wbr".split()
 )
+# Article attributes are a closed surface. CSS/background/ping and alternate
+# resource hooks have no evidence contract; do not try to sanitize CSS escapes.
+ARTICLE_GLOBAL_ATTRIBUTES = frozenset(
+    "class id title lang dir role hidden inert tabindex".split()
+)
+ARTICLE_TAG_ATTRIBUTES = {
+    "a": frozenset("href rel target hreflang type referrerpolicy".split()),
+    "img": frozenset(
+        "src alt width height loading decoding fetchpriority crossorigin "
+        "referrerpolicy srcset sizes".split()
+    ),
+    "source": frozenset("src srcset sizes media type width height".split()),
+    "table": frozenset("width height border cellpadding cellspacing".split()),
+    "col": frozenset("span width".split()),
+    "colgroup": frozenset("span width".split()),
+    "td": frozenset("colspan rowspan headers width height".split()),
+    "th": frozenset("colspan rowspan headers scope abbr width height".split()),
+    "ol": frozenset("start reversed type".split()),
+    "li": frozenset({"value"}),
+    "time": frozenset({"datetime"}),
+    "data": frozenset({"value"}),
+    "del": frozenset({"datetime"}),
+    "ins": frozenset({"datetime"}),
+    "details": frozenset("open name".split()),
+}
+TABLE_CHILDREN = {
+    "table": frozenset("caption colgroup col thead tbody tfoot tr".split()),
+    "thead": frozenset({"tr"}),
+    "tbody": frozenset({"tr"}),
+    "tfoot": frozenset({"tr"}),
+    "tr": frozenset({"td", "th"}),
+    "colgroup": frozenset({"col"}),
+}
+TABLE_PARENTS = {
+    "caption": frozenset({"table"}),
+    "colgroup": frozenset({"table"}),
+    "col": frozenset({"table", "colgroup"}),
+    "thead": frozenset({"table"}),
+    "tbody": frozenset({"table"}),
+    "tfoot": frozenset({"table"}),
+    "tr": frozenset("table thead tbody tfoot".split()),
+    "td": frozenset({"tr"}),
+    "th": frozenset({"tr"}),
+}
+PHRASING_TAGS = frozenset(
+    "a abbr b bdi bdo br cite code data del dfn em i img ins kbd mark picture "
+    "q rp rt ruby s samp small source span strong sub sup time u var wbr".split()
+)
+HEADING_TAGS = frozenset("h1 h2 h3 h4 h5 h6".split())
 PURCHASE_CLASSES = frozenset(
     {
         "final-summary-action",
@@ -479,6 +532,40 @@ class _Element:
     end: int = 0
 
 
+def html_attribute_tokens(value: str | None) -> frozenset[str]:
+    """Tokenize decoded class/rel using HTML ASCII whitespace only.
+
+    NBSP, vertical tab and other Unicode whitespace are token characters in
+    HTML, not separators. Article validation separately refuses those ambiguous
+    characters; theme lookup must still use the browser's exact token boundary.
+    """
+    return frozenset(re.findall(r"[^\t\n\f\r ]+", value or ""))
+
+
+def supported_html_token_attributes(starttag: str) -> bool:
+    """Refuse references HTMLParser erases from raw class/rel values.
+
+    Python's unescape drops numeric VT and some other control references while
+    browsers retain them as token characters. Inspect raw token attributes before
+    that information is lost. This is not a second decoding pass: ordinary
+    text/alt and escaped literal reference text remain unchanged.
+    """
+    opening = re.match(r"<[a-zA-Z][^\t\n\f\r />]*", starttag)
+    if opening is None:
+        return False
+    for attribute in _RAW_HTML_ATTRIBUTES.finditer(starttag, opening.end()):
+        if attribute[1].lower() not in {"class", "rel"}:
+            continue
+        value = next((part for part in attribute.groups()[1:] if part is not None), "")
+        for reference in re.findall(r"&#(?:[xX][0-9a-fA-F]+|[0-9]+);?", value):
+            try:
+                if not unescape(reference):
+                    return False
+            except ValueError:
+                return False
+    return True
+
+
 def supported_article_element(tag: str, attrs: Mapping[str, str | None]) -> bool:
     """Closed article grammar; never apply this to the surrounding theme/head.
 
@@ -486,8 +573,24 @@ def supported_article_element(tag: str, attrs: Mapping[str, str | None]) -> bool
     namespace transitions. Refuse those transitions, qualified names, namespace
     declarations, and custom-element upgrades instead of treating them as HTML.
     """
-    return tag in ARTICLE_HTML_TAGS and not any(
-        ":" in name or name in {"xmlns", "is"} for name in attrs
+    # A deliberately stricter article subset: do not let a visually ambiguous
+    # non-HTML separator disguise card/purchase/runtime classes or rel tokens.
+    # Unicode identifiers and ordinary reader text remain supported.
+    if any(
+        character.isspace() and character not in HTML_ASCII_WHITESPACE
+        for name in ("class", "rel")
+        for character in attrs.get(name) or ""
+    ):
+        return False
+    allowed = ARTICLE_GLOBAL_ATTRIBUTES | ARTICLE_TAG_ATTRIBUTES.get(tag, frozenset())
+    return tag in ARTICLE_HTML_TAGS and all(
+        ":" not in name
+        and name not in {"xmlns", "is"}
+        and (
+            name in allowed
+            or re.fullmatch(r"(?:aria-[a-z-]+|data-[a-z0-9_.-]+)", name) is not None
+        )
+        for name in attrs
     )
 
 
@@ -516,6 +619,7 @@ class _Markup(HTMLParser):
         values = dict(attrs)
         if (
             len(values) != len(attrs)
+            or not supported_html_token_attributes(self.get_starttag_text() or "")
             or not supported_article_element(tag, values)
             or any(name.startswith("on") or name == "srcdoc" for name in values)
             or any(
@@ -527,12 +631,13 @@ class _Markup(HTMLParser):
             )
         ):
             fail("MARKUP_INVALID")
+        self._require_browser_stable_parent(tag)
         start = self.absolute_offset()
         product = values.get("data-raos-product-id") or (
             self.stack[-1].product if self.stack else None
         )
         parent = self.stack[-1] if self.stack else None
-        classes = set((values.get("class") or "").split())
+        classes = html_attribute_tokens(values.get("class"))
         is_card = tag == "article" and "product-profile" in classes
         # Descendant attributes cannot change the identity of their actual card.
         card_product = (
@@ -565,11 +670,49 @@ class _Markup(HTMLParser):
             self.stack.append(element)
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        self.handle_starttag(tag, attrs)
+        # Browsers ignore the slash on ordinary HTML elements. Treating it as
+        # a close would manufacture a different product-card ancestry.
         if tag not in VOID:
-            self.stack.pop().end = self.absolute_offset() + len(
-                self.get_starttag_text() or ""
+            fail("MARKUP_INVALID")
+        self.handle_starttag(tag, attrs)
+
+    def _require_browser_stable_parent(self, tag: str) -> None:
+        """Accept a strict article subset, not a replacement HTML5 tree builder.
+
+        Refuse structures that need implicit closure or table foster parenting
+        before lexical ancestry is used to bind a product image or purchase link.
+        """
+        parent = self.stack[-1].tag if self.stack else None
+        ancestors = {element.tag for element in self.stack}
+        if (
+            (parent in TABLE_CHILDREN and tag not in TABLE_CHILDREN[parent])
+            or (tag in TABLE_PARENTS and parent not in TABLE_PARENTS[tag])
+            or ("p" in ancestors and tag not in PHRASING_TAGS)
+            or (tag == "a" and "a" in ancestors)
+            or (tag in HEADING_TAGS and ancestors & HEADING_TAGS)
+            or (tag == "table" and "caption" in ancestors)
+            or (parent in {"ul", "ol"} and tag != "li")
+            or (tag == "li" and parent not in {"ul", "ol"})
+            or (
+                tag in {"dt", "dd"}
+                and parent != "dl"
+                and not (
+                    parent == "div"
+                    and len(self.stack) >= 2
+                    and self.stack[-2].tag == "dl"
+                )
             )
+            or (tag in {"rt", "rp"} and parent != "ruby")
+        ):
+            fail("MARKUP_INVALID")
+
+    def _require_table_text(self, data: str) -> None:
+        if self.stack and self.stack[-1].tag in TABLE_CHILDREN:
+            # HTML table insertion mode fosters non-ASCII-whitespace text out
+            # of the table. NBSP is not HTML whitespace, even though str.strip
+            # treats it as whitespace. Decode references before this check.
+            if data.strip(HTML_ASCII_WHITESPACE):
+                fail("MARKUP_INVALID")
 
     def handle_endtag(self, tag: str) -> None:
         if not self.stack or self.stack[-1].tag != tag:
@@ -595,6 +738,13 @@ class _Markup(HTMLParser):
         # can represent a literal less-than sign with the normal &lt; reference.
         if "<" in data:
             fail("MARKUP_INVALID")
+        self._require_table_text(data)
+
+    def handle_entityref(self, name: str) -> None:
+        self._require_table_text(unescape("&" + name + ";"))
+
+    def handle_charref(self, name: str) -> None:
+        self._require_table_text(unescape("&#" + name + ";"))
 
     def handle_decl(self, decl: str) -> None:
         fail("MARKUP_INVALID")
@@ -662,7 +812,7 @@ def verify_commerce_markup(
     seen_images: set[str] = set()
     for element in parser.elements:
         attrs = element.attrs
-        classes = set((attrs.get("class") or "").split())
+        classes = html_attribute_tokens(attrs.get("class"))
         # Responsive alternatives need their own image evidence. Until that
         # contract exists, an otherwise verified src must not hide another image.
         if element.tag in {"picture", "source"} or "srcset" in attrs:
@@ -730,7 +880,8 @@ def verify_commerce_markup(
                 or href != expected[2]
                 or urlsplit(href).scheme != "https"
                 or urlsplit(href).hostname != "hb.afl.rakuten.co.jp"
-                or set((attrs.get("rel") or "").split()) != {"sponsored", "nofollow"}
+                or html_attribute_tokens(attrs.get("rel"))
+                != frozenset({"sponsored", "nofollow"})
                 or any(
                     key in attrs
                     for key in (
@@ -768,7 +919,7 @@ def omit_unverified_commerce(
     removals: list[tuple[int, int]] = []
     removed_ids: dict[str, str | None] = {}
     for element in parser.elements:
-        classes = set((element.attrs.get("class") or "").split())
+        classes = html_attribute_tokens(element.attrs.get("class"))
         product = element.product
         media = "raos-product-card__media" in classes
         action = "data-raos-purchase-action" in element.attrs or bool(
@@ -838,7 +989,7 @@ def omit_unverified_commerce(
         facts = [
             element
             for element in parser.elements
-            if "raos-article-facts" in (element.attrs.get("class") or "").split()
+            if "raos-article-facts" in html_attribute_tokens(element.attrs.get("class"))
         ]
         if existing_ids - {article_id} or len(facts) != 1:
             fail("ARTICLE_ID_INVALID")
