@@ -17,10 +17,18 @@ import re
 from typing import Any, NoReturn
 
 import raos_wordpress_seo_audit as seo
+from raos.application.editorial.verified_incremental_v1 import (
+    DNS_HINT,
+    DNS_TRANSITION_MODE,
+    DNS_TRANSITION_STATE,
+    canonical,
+    validate_dns_transition,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 ORIGIN = "https://kurashinoshirube.com"
 THEME_PREFIX = ORIGIN + "/wp-content/themes/kurashinoshirube-child/"
+BRAND_ICON_PATH = "assets/images/brand-mark.svg"
 LOCK = ROOT / "changes/wordpress-local-preview-v1/wordpress-runtime.lock.json"
 THEME_ASSETS = frozenset(
     {
@@ -30,6 +38,20 @@ THEME_ASSETS = frozenset(
         "assets/editorial-v2.css",
     }
 )
+DNS_REMOVAL_SOURCE = """function kurashinoshirube_remove_google_dns_prefetch(array $urls, string $relation_type): array
+{
+    if ($relation_type !== 'dns-prefetch') {
+        return $urls;
+    }
+    foreach ($urls as $key => $entry) {
+        if ($entry === '//www.googletagmanager.com') {
+            unset($urls[$key]);
+        }
+    }
+    return $urls;
+}
+add_filter('wp_resource_hints', 'kurashinoshirube_remove_google_dns_prefetch', PHP_INT_MAX, 2);
+""".encode()
 DIRECTIVES = {
     "nav": {"data-wp-interactive": {"core/navigation"}},
     "form": {
@@ -267,6 +289,14 @@ def resources_for_theme(files: Mapping[str, bytes]) -> dict[str, Resource]:
             "css" if path.endswith(".css") else "js",
             dependencies=tuple(sorted(set(dependencies))),
         )
+    # Register last: the same SVG may also be a CSS image dependency. Preserve
+    # its stricter MIME contract in either role instead of overwriting it with
+    # the generic image kind while collecting stylesheet dependencies.
+    if BRAND_ICON_PATH in files:
+        icon = files[BRAND_ICON_PATH]
+        resources[THEME_PREFIX + BRAND_ICON_PATH] = Resource(
+            seo._sha256(icon), len(icon), "icon"
+        )
     lock = unique_json(LOCK.read_text(encoding="utf-8"))
     if lock.get("schema") != "RAOS_WORDPRESS_PUBLIC_RUNTIME_DEPENDENCIES_V1":
         fail()
@@ -304,8 +334,14 @@ class RuntimeMarkup(HTMLParser):
         self,
         resources: Mapping[str, Resource],
         allowed_images: frozenset[str] | None = None,
+        *,
+        expected_dns_hints: int = 0,
     ) -> None:
         super().__init__(convert_charrefs=False)
+        if type(expected_dns_hints) is not int or expected_dns_hints not in {0, 1}:
+            fail()
+        self.expected_dns_hints = expected_dns_hints
+        self.dns_hints = 0
         self.markup: str | None = None
         self.offsets: list[int] = []
         self.doctype_seen = False
@@ -419,12 +455,17 @@ class RuntimeMarkup(HTMLParser):
             inert_css(values["style"] or "")
         if tag not in {"script", "img"} and "src" in values:
             fail()
-        if (
-            tag == "img"
-            and self.allowed_images is not None
-            and values.get("src") not in self.allowed_images
-        ):
-            fail()
+        if tag == "img" and self.allowed_images is not None:
+            source = values.get("src")
+            # The audited baseline front-page template uses root-relative theme
+            # images. Resolve only that exact namespace, never generic relative
+            # URLs, dot segments, queries, alternate origins or live-learned paths.
+            if type(source) is str and source.startswith(
+                "/wp-content/themes/kurashinoshirube-child/assets/images/"
+            ):
+                source = ORIGIN + source
+            if source not in self.allowed_images:
+                fail()
         if tag == "use" and not (
             values.get("href") or values.get("xlink:href") or ""
         ).startswith("#"):
@@ -435,7 +476,21 @@ class RuntimeMarkup(HTMLParser):
             self.current = (tag, values, [])
         if tag == "link":
             rel = values.get("rel") or ""
-            if rel in {"stylesheet", "modulepreload", "preload"}:
+            if rel == "dns-prefetch":
+                if values != DNS_HINT or self.expected_dns_hints != 1:
+                    fail()
+                self.dns_hints += 1
+                if self.dns_hints > 1:
+                    fail()
+            elif rel == "icon":
+                if values != {
+                    "rel": "icon",
+                    "href": THEME_PREFIX + BRAND_ICON_PATH,
+                    "type": "image/svg+xml",
+                }:
+                    fail()
+                self.require_resource(values["href"], {"icon"})
+            elif rel in {"stylesheet", "modulepreload", "preload"}:
                 if not set(values) <= {
                     "rel",
                     "href",
@@ -564,6 +619,8 @@ class RuntimeMarkup(HTMLParser):
         if self.rawdata or self.svg_depth:
             fail()
         super().close()
+        if self.dns_hints != self.expected_dns_hints:
+            fail()
         if self.current is not None or (self.modules and self.imports is None):
             fail()
         dependencies = {
@@ -583,6 +640,7 @@ def verify_page(
     transport: seo.HttpTransport,
     *,
     allowed_images: frozenset[str] | None = None,
+    expected_dns_hints: int = 0,
 ) -> dict[str, str]:
     if (
         page.status != 200
@@ -595,7 +653,9 @@ def verify_page(
         for value in page.header_values("link")
     ):
         fail()
-    parser = RuntimeMarkup(resources, allowed_images)
+    parser = RuntimeMarkup(
+        resources, allowed_images, expected_dns_hints=expected_dns_hints
+    )
     parser.feed(page.body.decode("utf-8", errors="strict"))
     parser.close()
     required = set(parser.required)
@@ -613,6 +673,7 @@ def verify_page(
             "module": {"application/javascript", "text/javascript"},
             "css": {"text/css"},
             "image": {"image/svg+xml", "image/webp", "image/png"},
+            "icon": {"image/svg+xml"},
         }[expected.kind]
         if (
             response.url != url
@@ -633,6 +694,60 @@ def verify_page(
     return observed
 
 
+def build_dns_transition(
+    *, baseline_tree: str, candidate_tree: str, page_urls: frozenset[str]
+) -> dict[str, object]:
+    """Declare the opt-in subject from audited source, never from live HTML."""
+    files = trusted_theme_files(candidate_tree)
+    functions = files.get("functions.php", b"")
+    if functions.count(DNS_REMOVAL_SOURCE) != 1:
+        fail()
+    policy = {
+        "schema": "RAOS_WORDPRESS_SITEKIT_DNS_TRANSITION_V1",
+        "mode": DNS_TRANSITION_MODE,
+        "baseline_theme_sha256": baseline_tree,
+        "candidate_theme_sha256": candidate_tree,
+        "candidate_functions_sha256": seo._sha256(functions),
+        "hint": dict(DNS_HINT),
+        "expected_baseline_hints": {url: 1 for url in sorted(page_urls)},
+        "post_apply_state": "CLOSED_DECLARED_RUNTIME_VERIFIED",
+    }
+    return validate_dns_transition(
+        policy,
+        baseline_tree=baseline_tree,
+        candidate_tree=candidate_tree,
+        candidate_functions_sha256=seo._sha256(functions),
+        page_urls=page_urls,
+    )
+
+
+def captured_theme_image_urls(markup: str) -> frozenset[str]:
+    """Identify exact stored baseline references, not image availability/rights.
+
+    Some captured old articles reference a missing PNG that the audited candidate
+    removes at render time. This prewrite runtime inventory does not promote that
+    image to verified or permit it in candidate/final image quality validation.
+    """
+    from raos.application.editorial.verified_incremental_v1 import _Markup
+
+    parser = _Markup(markup)
+    parser.feed(markup)
+    parser.close()
+    if parser.stack:
+        fail()
+    return frozenset(
+        ORIGIN + source
+        for element in parser.elements
+        if element.tag == "img"
+        and type(source := element.attrs.get("src")) is str
+        and re.fullmatch(
+            r"/wp-content/themes/kurashinoshirube-child/assets/images/[a-z0-9-]+\.(?:png|webp|svg)",
+            source,
+        )
+        is not None
+    )
+
+
 def verify_before_write(
     *,
     current_tree: str,
@@ -640,6 +755,7 @@ def verify_before_write(
     candidate_tree: str,
     now: datetime,
     snapshot: Mapping[str, Any],
+    runtime_transition: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     from raos_wordpress_incremental_seo_audit import _ObservedTransport
     import raos_wordpress_baseline_media as baseline_media
@@ -648,12 +764,32 @@ def verify_before_write(
         fail()
     files = trusted_theme_files(current_tree, baseline=current_tree != candidate_tree)
     resources = resources_for_theme(files)
-    allowed_images = {
+    theme_images = {
         THEME_PREFIX + path for path in files if path.startswith("assets/images/")
     }
+    document_images: dict[str, set[str]] = {}
     for document in snapshot["documents"]:
-        allowed_images.update(baseline_media.image_urls(document["block_markup"]))
+        url = (
+            ORIGIN
+            + "/"
+            + (document["slug"] + "/" if document["slug"] != "home" else "")
+        )
+        document_images[url] = baseline_media.image_urls(document["block_markup"])
+        if current_tree == baseline_tree and current_tree != candidate_tree:
+            document_images[url].update(
+                captured_theme_image_urls(document["block_markup"])
+            )
     contract = seo.load_contract()
+    transitional = False
+    if runtime_transition is not None:
+        expected = build_dns_transition(
+            baseline_tree=baseline_tree,
+            candidate_tree=candidate_tree,
+            page_urls=frozenset(item.url for item in contract.items),
+        )
+        if canonical(runtime_transition) != canonical(expected):
+            fail()
+        transitional = current_tree == baseline_tree
     transport = _ObservedTransport(
         seo.BoundedHttpsTransport(contract, allowed_resource_urls=frozenset(resources)),
         now,
@@ -662,11 +798,24 @@ def verify_before_write(
     for item in contract.items:
         response = transport.get(item.url)
         observed = verify_page(
-            response, resources, transport, allowed_images=frozenset(allowed_images)
+            response,
+            resources,
+            transport,
+            allowed_images=frozenset(
+                theme_images | document_images.get(item.url, set())
+            ),
+            expected_dns_hints=1 if transitional else 0,
         )
         pages[item.url] = {"html_sha256": response.body_sha256, "resources": observed}
-    return {
-        "state": "CLOSED_DECLARED_RUNTIME_VERIFIED",
+        if transitional:
+            pages[item.url]["dns_hints"] = 1
+    result = {
+        "state": DNS_TRANSITION_STATE
+        if transitional
+        else "CLOSED_DECLARED_RUNTIME_VERIFIED",
         "theme_tree_sha256": current_tree,
         "pages": pages,
     }
+    if transitional:
+        result["runtime_transition_sha256"] = seo._sha256(canonical(runtime_transition))
+    return result

@@ -2602,6 +2602,48 @@ def _deployment_tools() -> list[dict[str, object]]:
     return result
 
 
+def _tools_with_operation_status(dialect: str | None = None):
+    schema = {
+        "type": "object",
+        "properties": {"operation_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+        "required": ["operation_id"],
+        "additionalProperties": False,
+    }
+    if dialect is not None:
+        schema["$schema"] = dialect
+    return _deployment_tools() + [{
+        "name": "operation-status",
+        "inputSchema": schema,
+        "annotations": {
+            "readOnlyHint": True, "destructiveHint": False,
+            "idempotentHint": True, "openWorldHint": False,
+        },
+    }]
+
+
+@pytest.mark.parametrize("dialect", [None, "http://json-schema.org/draft-07/schema#"])
+def test_operation_status_accepts_exact_sdk_or_legacy_schema(dialect):
+    publication._validate_deployment_tools(_tools_with_operation_status(dialect))
+
+
+@pytest.mark.parametrize("change", [
+    {"$schema": "https://json-schema.org/draft/2020-12/schema"},
+    {"$schema": None},
+    {"additionalProperties": True},
+    {"additionalProperties": 0},
+    {"additionalProperties": 0.0},
+    {"required": []},
+    {"properties": {"operation_id": {"type": "string"}}},
+    {"properties": {"operation_id": {"type": "string", "pattern": ".*"}}},
+    {"extra": True},
+])
+def test_operation_status_rejects_schema_changes(change):
+    tools = _tools_with_operation_status("http://json-schema.org/draft-07/schema#")
+    tools[-1]["inputSchema"].update(change)
+    with pytest.raises(publication.PublicationFailure, match="DEPLOYMENT_TOOL_CONTRACT_INVALID"):
+        publication._validate_deployment_tools(tools)
+
+
 class WorkflowClient:
     def __init__(self, article: Any, events: list[str]) -> None:
         self.article = article

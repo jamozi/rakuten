@@ -69,6 +69,14 @@
 
 ## 提案、所有者承認、照合
 
+Site Kit を保持して既存 DNS 事前参照を除去する移行は、candidate 準備時だけ
+`--runtime-transition sitekit-dns-prefetch-removal-v1` と `--include-theme` を
+明示します。省略時は従来の strict 検査です。旧／新テーマ、除去関数を含むファイル、
+対象14 URLごとの既存1件が manifest と監査に拘束されます。提案・適用前に旧テーマの
+参照が残る状態と、適用後の0件必須を区別し、この移行条件も所有者へ提示します。
+他のスクリプト、Cookie、参照先、HTTP Link は許容しません。新テーマ適用済みの
+再開と最終照合に例外はなく、DNS通信ゼロの証拠とも扱いません。
+
 実行入口は `scripts/raos_wordpress_publication_request.py` です。
 `--publication-profile verified-incremental`、`--link-mode standard-api`、
 `--quality-audit-mode codex-owner`、正確な private candidate と preview fixture、
