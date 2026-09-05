@@ -96,6 +96,36 @@ def commerce_receipt_sha256(view: ProductEvidenceViewV2) -> str:
     return _digest(asdict(view))
 
 
+def _verify_audited_sources(
+    sources: SelectedOfficialSourcesV1,
+    raw: bytes | None,
+    *,
+    required: bool,
+    audit_evaluated_at: datetime,
+) -> None:
+    """Bind supporting captures too; only the replay evaluation clock may move."""
+    if raw is None:
+        if required:
+            _fail("SOURCE_AUDIT_REQUIRED")
+        return
+    try:
+        observed = json.loads(raw)
+        if type(observed) is not dict:
+            _fail("SOURCE_AUDIT_INVALID")
+        observed = cast(dict[str, object], observed)
+        evaluated = _time(observed.get("evaluated_at"))
+        expected = sources.to_document()
+        expected["evaluated_at"] = observed["evaluated_at"]
+        if raw != canonical_json_bytes(expected) or not (
+            max(_time(receipt.retrieved_at) for receipt in sources.sources.values())
+            <= evaluated
+            <= min(_time(sources.evaluated_at), audit_evaluated_at)
+        ):
+            _fail("SOURCE_AUDIT_INVALID")
+    except UnicodeError, ValueError, TypeError:
+        _fail("SOURCE_AUDIT_INVALID")
+
+
 def build_verified_incremental_release_v1(
     manifest_document: Mapping[str, object],
     *,
@@ -173,6 +203,7 @@ def build_verified_incremental_release_v1(
     ):
         _fail("SOURCE_SCOPE_INVALID")
     source_refs: set[str] = set()
+    claim_source_refs: set[str] = set()
     source_expiries: list[datetime] = []
     for ref, receipt in sources.sources.items():
         for value in (
@@ -222,10 +253,12 @@ def build_verified_incremental_release_v1(
             _fail("CLAIM_SCOPE_INVALID")
         claims_by_article[article_id] = claims
         refs = {ref for values in claim_sources.values() for ref in values}
+        capture_refs = set(sources.article_source_refs[source_article])
         if (
             not refs
             or any(not values for values in claim_sources.values())
-            or refs != set(sources.article_source_refs[source_article])
+            or not refs <= capture_refs
+            or len(capture_refs) != len(sources.article_source_refs[source_article])
             or row["source_receipts"]
             != {ref: sources.source_receipt_sha256.get(ref) for ref in refs}
             or not refs <= set(sources.sources)
@@ -236,7 +269,10 @@ def build_verified_incremental_release_v1(
             )
         ):
             _fail("SOURCE_RECEIPT_BINDING_INVALID")
-        source_refs.update(refs)
+        # The capture plan also includes policy/terms sources with no article
+        # claim. They remain mandatory receipts, not invented claim citations.
+        source_refs.update(capture_refs)
+        claim_source_refs.update(refs)
         expected_images: dict[str, str] = {}
         expected_ctas: dict[str, tuple[str, str, str]] = {}
         for image_id in article.image_ids:
@@ -417,6 +453,12 @@ def build_verified_incremental_release_v1(
         <= _time(audit_binding.evaluated_at) + timedelta(hours=24)
     ):
         _fail("AUDIT_BINDING_INVALID_OR_EXPIRED")
+    _verify_audited_sources(
+        sources,
+        audit_artifact_bytes.get("source-replay"),
+        required=bool(source_refs - claim_source_refs),
+        audit_evaluated_at=_time(audit_binding.evaluated_at),
+    )
     activation = activation_evaluated_at or now.replace(microsecond=0)
     if (
         activation.tzinfo is None

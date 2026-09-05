@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "audit_phase": "PRE_PUBLICATION",
   "contract_sha256": "ea6f446808e6b5d1b5f65d8795e10a9f263487d12e87f01120b95f24a5347438",
-  "evaluated_at": "2026-09-05T17:19:45Z",
+  "evaluated_at": "2026-09-05T18:38:11Z",
   "repository_fingerprints": {
     "source": "674d551b499824f3673b658b6de664658ffd2d0aca78d7d312832409a17af1cf",
     "theme": "a27cd10d3caf4befe85d9576445b5e7ee14b130af0de5b1de2222a9af25bd3e8",
@@ -37,8 +37,8 @@
     {
       "round_id": "baseline-not-executed-round-001",
       "reviewer_id": "baseline-not-executed-reviewer-001",
-      "started_at": "2026-09-05T17:19:45Z",
-      "completed_at": "2026-09-05T17:19:45Z",
+      "started_at": "2026-09-05T18:38:11Z",
+      "completed_at": "2026-09-05T18:38:11Z",
       "fingerprints": {
         "source": "674d551b499824f3673b658b6de664658ffd2d0aca78d7d312832409a17af1cf",
         "theme": "a27cd10d3caf4befe85d9576445b5e7ee14b130af0de5b1de2222a9af25bd3e8",
@@ -1092,7 +1092,7 @@
       ],
       "actionable_finding_count": 37,
       "status": "BLOCKED",
-      "round_sha256": "af10a074105ab3db2573108aebdf127177870cf0e98d819666622ccd128923d2"
+      "round_sha256": "0ba6fc488cbb9309cc778cc3b1f466da7bba48589612d6034e64f703656185f7"
     }
   ],
   "completion": {
@@ -1102,7 +1102,7 @@
     "production_parity_state": "REQUIRED_NOT_EVALUATED",
     "required_consecutive_clean_rounds": 2,
     "consecutive_clean_rounds": 0,
-    "latest_round_sha256": "af10a074105ab3db2573108aebdf127177870cf0e98d819666622ccd128923d2",
+    "latest_round_sha256": "0ba6fc488cbb9309cc778cc3b1f466da7bba48589612d6034e64f703656185f7",
     "fingerprint_bundle_sha256": "99b6b45196a0205583c790e711ce27ec75c59615b06b4a842bce7de65237e158",
     "reason_codes": [
       "LATEST_ROUND_NOT_CLEAN",
@@ -1110,5 +1110,5 @@
       "INDEPENDENT_REVIEWER_ATTESTATION_NOT_VERIFIED"
     ]
   },
-  "ledger_sha256": "7e82a64dddc346b4eb7ae208b5e7f5531db70f4d2f09318643bb2b3fb30a5d7f"
+  "ledger_sha256": "ed090c067250efdb5f8258bce9d6f56bdeeb720aa57a24215bc15a668e25506c"
 }
