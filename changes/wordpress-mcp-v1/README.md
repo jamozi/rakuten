@@ -16,11 +16,11 @@ There are exactly two project MCP servers:
 
 The WordPress plugin requires WordPress 7.1.x and exactly MCP Adapter 0.6.1.
 Abilities 1.3.1 is bound to runtime revision
-`f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082`;
+`c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472`;
 the entrypoint and every critical class must report that exact identity.
 It disables MCP Adapter's generic default server and exposes only the nine
 tools listed in `contracts/wordpress-mcp.v1.json`. The local bridge exposes only
-seven typed operations. Neither path includes a generic request, command, PHP,
+eight typed operations. Neither path includes a generic request, command, PHP,
 SQL, filesystem-path, URL, media-write, delete, unpublish, uninstall, or
 arbitrary ZIP tool.
 
@@ -158,6 +158,15 @@ owner-private receipts are stored under
   changed local request discard an old receipt only after the server confirms
   that every member expired without starting; individual content/theme apply
   tools are not exposed.
+- `operation-status` accepts only one lowercase 64-hex `operation_id` and
+  performs one status `GET /operations/{id}`. Its exact response contains
+  a content/theme/plugin kind and an ID-matched public `OperationReceiptV1`.
+  It neither lists operations nor accepts a caller URL, and never waits,
+  applies, recovers, or finalizes even an already applied operation. The
+  existing server may record `EXPIRED` for a time-expired pending/manual/
+  approved proposal and remove its expired approval lease. This existing
+  expiry reconciliation is preserved; status does not promise zero server
+  writes or start a new publication.
 - `site-status` reports the installed and loaded Yoast SEO state, the exact
   28.3 version, the selected `wpseo` / `wpseo_social` option projection, and
   its canonical settings fingerprint. Publication-batch claim and every

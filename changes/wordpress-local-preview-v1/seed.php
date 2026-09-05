@@ -27,11 +27,53 @@ if (! in_array($mode, array('initialize', 'sync'), true)) {
 $fixture_root = '/var/www/raos-local-preview/fixtures';
 $fixture_path = $fixture_root . '/posts.json';
 $page_fixture_path = $fixture_root . '/pages.json';
+$page_content_root = $fixture_root;
+$mixed_metadata = null;
+$mixed_binding = null;
+$publication_profile = getenv('RAOS_PREVIEW_PUBLICATION_PROFILE') ?: 'legacy-full';
+if (! in_array($publication_profile, array('legacy-full', 'verified-incremental'), true)) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PUBLICATION_PROFILE_INVALID');
+}
+if ($publication_profile === 'verified-incremental') {
+    $mixed_root = '/var/www/raos-mixed-preview';
+    $mixed_binding_path = $mixed_root . '/preparation-binding.v1.json';
+    $mixed_metadata_path = $mixed_root . '/seed-metadata.v1.json';
+    foreach (array($mixed_binding_path, $mixed_metadata_path) as $mixed_path) {
+        if (! is_file($mixed_path) || is_link($mixed_path) || ! is_readable($mixed_path)) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_METADATA_UNAVAILABLE');
+        }
+    }
+    $mixed_binding = json_decode(file_get_contents($mixed_binding_path), true, 32);
+    $mixed_metadata_bytes = file_get_contents($mixed_metadata_path);
+    $mixed_metadata = json_decode($mixed_metadata_bytes, true, 32);
+    if (
+        ! is_array($mixed_binding) || ! is_array($mixed_metadata)
+        || ($mixed_binding['schema'] ?? null) !== 'RAOS_WORDPRESS_MIXED_PREVIEW_PREPARATION_V1'
+        || ($mixed_metadata['schema'] ?? null) !== 'RAOS_WORDPRESS_MIXED_PREVIEW_SEED_METADATA_V1'
+        || ($mixed_metadata['publication_profile'] ?? null) !== 'verified-incremental'
+        || ($mixed_metadata['publication_authority'] ?? null) !== false
+        || ($mixed_metadata['status'] ?? null) !== 'VERIFIED_FIELDS_ONLY'
+        || ($mixed_binding['metadata_status'] ?? null) !== 'VERIFIED_FIELDS_ONLY'
+        || ($mixed_binding['metadata_blockers'] ?? null) !== array()
+        || ($mixed_binding['seed_metadata_sha256'] ?? null) !== hash('sha256', $mixed_metadata_bytes)
+        || ! is_array($mixed_metadata['documents'] ?? null)
+        || count($mixed_metadata['documents']) !== 14
+        || ! is_array($mixed_metadata['policy_states'] ?? null)
+        || count($mixed_metadata['policy_states']) !== 3
+    ) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_METADATA_INVALID');
+    }
+    $page_fixture_path = $mixed_root . '/pages.json';
+    $page_content_root = $mixed_root;
+}
 $policy_profile_path = '/var/www/raos-local-preview/policy-profiles.v1.json';
 if (! is_file($fixture_path) || is_link($fixture_path) || ! is_readable($fixture_path)) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_FIXTURE_UNAVAILABLE');
 }
 $fixture_bytes = file_get_contents($fixture_path);
+if ($mixed_binding !== null && hash('sha256', $fixture_bytes) !== ($mixed_binding['posts_sha256'] ?? null)) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_METADATA_INVALID');
+}
 $fixture = is_string($fixture_bytes)
     ? json_decode($fixture_bytes, true, 16, JSON_BIGINT_AS_STRING)
     : null;
@@ -55,6 +97,9 @@ if (
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_UNAVAILABLE');
 }
 $page_fixture_bytes = file_get_contents($page_fixture_path);
+if ($mixed_binding !== null && hash('sha256', $page_fixture_bytes) !== ($mixed_binding['pages_sha256'] ?? null)) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_METADATA_INVALID');
+}
 $page_fixture = is_string($page_fixture_bytes)
     ? json_decode($page_fixture_bytes, true, 12, JSON_BIGINT_AS_STRING)
     : null;
@@ -96,7 +141,7 @@ if (
     || $policy_profiles['version'] !== 1
     || $policy_profiles['operator'] !== '暮らしのしるべ編集者'
     || $policy_profiles['contact_email'] !== 'contact@kurashinoshirube.com'
-    || $policy_profiles['updated_at'] !== '2026-09-01'
+    || $policy_profiles['updated_at'] !== '2026-09-05'
     || ! is_array($policy_profiles['local'])
     || ! is_array($policy_profiles['production'])
     || array_keys($policy_profiles['local']) !== array(
@@ -129,7 +174,7 @@ if (
         'analytics_cookie_default_max_days' => 0,
         'ga4_user_event_retention_months' => 0,
     )
-    || ($policy_profiles['local']['updated_at'] ?? null) !== '2026-09-01'
+    || ($policy_profiles['local']['updated_at'] ?? null) !== '2026-09-05'
     || ! is_array($policy_profiles['local']['required_markers'] ?? null)
     || ! is_array($policy_profiles['local']['forbidden_markers'] ?? null)
     || array_keys($policy_profiles['production']) !== array(
@@ -154,28 +199,24 @@ if (
     || ($policy_profiles['production']['contact_email'] ?? null)
         !== 'contact@kurashinoshirube.com'
     || ($policy_profiles['production']['source'] ?? null)
-        !== 'READ_ONLY_WORDPRESS_EDITOR_BASELINE_2026_08_31'
+        !== 'PROPOSED_POLICY_PRESERVING_READ_ONLY_MCP_IDS_AND_CONTACT'
     || ($policy_profiles['production']['must_not_reuse_local_body'] ?? null)
         !== true
     || ($policy_profiles['production']['measurement'] ?? null)
-        !== 'CONSENT_GATED'
+        !== 'OFF'
     || ($policy_profiles['production']['cookie_storage'] ?? null)
-        !== 'CONSENT_PROVIDER_CONTROLLED'
+        !== 'NONE'
     || ($policy_profiles['production']['ga4_activation_gate'] ?? null)
         !== 'BLOCKED_UNTIL_LIVE_PROPERTY_RETENTION_READBACK'
     || ($policy_profiles['production']['retention'] ?? null) !== array(
-        'raw_event_days' => 7,
-        'daily_aggregate_months' => 13,
-        'consent_cookie_days' => 365,
-        'analytics_cookie_default_max_days' => 730,
-        'ga4_user_event_retention_months' => 'LIVE_READBACK_REQUIRED',
+        'raw_event_days' => 0,
+        'daily_aggregate_months' => 0,
+        'consent_cookie_days' => 0,
+        'analytics_cookie_default_max_days' => 0,
+        'ga4_user_event_retention_months' => 0,
     )
-    || ($policy_profiles['production']['updated_at'] ?? null) !== '2026-09-01'
-    || ($policy_profiles['production']['consent_providers'] ?? null) !== array(
-        'CookieYes',
-        'WP Consent API',
-        'Google Site Kit Consent Mode',
-    )
+    || ($policy_profiles['production']['updated_at'] ?? null) !== '2026-09-05'
+    || ($policy_profiles['production']['consent_providers'] ?? null) !== array()
     || ! is_array($policy_profiles['production']['required_markers'] ?? null)
     || ! is_array($policy_profiles['production']['pages'] ?? null)
     || count($policy_profiles['production']['pages']) !== 3
@@ -193,13 +234,13 @@ $expected_production_policy_pages = array(
         'id' => 120,
         'slug' => 'comparison-policy',
         'title' => '比較・編集方針',
-        'excerpt' => '暮らしのしるべのEvidence階層、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。',
+        'excerpt' => '公式情報の確かめ方、実機未使用の明示、Codexによる調査支援と運営者の公開承認、訂正手順を説明します。',
     ),
     array(
         'id' => 3,
         'slug' => 'privacy-policy',
         'title' => 'プライバシーポリシー',
-        'excerpt' => '暮らしのしるべの同一オリジン計測とGA4、保持期間、同意の拒否・撤回、アフィリエイトリンクの取扱いを説明します。',
+        'excerpt' => '追加のアクセス・クリック計測を行わない方針と、問い合わせ情報や外部アフィリエイトリンクの取扱いを説明します。',
     ),
 );
 if ($policy_profiles['production']['pages'] !== $expected_production_policy_pages) {
@@ -229,6 +270,7 @@ function raos_local_preview_has_only_reviewed_https_links(string $content): bool
         'jp.ecoflow.com',
         'jp.roborock.com',
         'panasonic.jp',
+        'privacy.rakuten.co.jp',
         'shop.innovator.co.jp',
         'shop.toshiba-lifestyle.com',
         'store.ace.jp',
@@ -268,6 +310,8 @@ function raos_local_preview_has_only_reviewed_https_links(string $content): bool
             || ($parts['scheme'] ?? null) !== 'https'
             || ! is_string($parts['host'] ?? null)
             || ! in_array(strtolower($parts['host']), $allowed_hosts, true)
+            || (strtolower($parts['host']) === 'privacy.rakuten.co.jp'
+                && $url !== 'https://privacy.rakuten.co.jp/')
             || isset($parts['user'])
             || isset($parts['pass'])
             || (
@@ -306,6 +350,61 @@ if (! ($preview_author instanceof WP_User) || (int) $preview_author->ID <= 0) {
 }
 $preview_author_id = (int) $preview_author->ID;
 
+/** Reproduce observed term slugs, never relabel an old article with a new fixture category. */
+function raos_local_preview_mixed_term_ids(array $rows, string $taxonomy): array
+{
+    $ids = array();
+    foreach ($rows as $row) {
+        if (
+            ! is_array($row) || ! is_int($row['id'] ?? null) || $row['id'] <= 0
+            || ! is_string($row['name'] ?? null) || $row['name'] === ''
+            || ! is_string($row['slug'] ?? null)
+            || preg_match('/\A(?:[a-z0-9_-]|%[0-9a-f]{2})+\z/D', $row['slug']) !== 1
+            || ($row['parent'] ?? null) !== 0
+        ) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_TERM_INVALID');
+        }
+        $existing = get_term_by('slug', $row['slug'], $taxonomy);
+        if ($existing instanceof WP_Term) {
+            if ($existing->name !== $row['name'] || (int) $existing->parent !== 0) {
+                WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_TERM_COLLISION');
+            }
+            $ids[] = (int) $existing->term_id;
+        } else {
+            $inserted = wp_insert_term($row['name'], $taxonomy, array('slug' => $row['slug']));
+            if (is_wp_error($inserted)) {
+                WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_TERM_INVALID');
+            }
+            $ids[] = (int) $inserted['term_id'];
+        }
+    }
+    return $ids;
+}
+
+if ($mixed_metadata !== null) {
+    // Core normally replaces modified dates on updates. This local-only filter
+    // faithfully reproduces the captured timestamps, not an invented fresh date.
+    add_filter('wp_insert_post_data', static function (array $data) use ($mixed_metadata): array {
+        $slug = $data['post_name'] ?? '';
+        if (str_starts_with($slug, 'local-preview-')) {
+            $slug = substr($slug, strlen('local-preview-'));
+        }
+        $observed = $mixed_metadata['documents'][$slug] ?? null;
+        if (! is_array($observed)) {
+            return $data;
+        }
+        foreach (array('date', 'date_gmt', 'modified', 'modified_gmt') as $field) {
+            $value = $observed['dates'][$field] ?? null;
+            if (! is_string($value) || preg_match('/\A[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\z/D', $value) !== 1) {
+                WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_DATE_INVALID');
+            }
+            $data['post_' . $field] = $value;
+        }
+        return $data;
+    });
+}
+
+$mixed_policy_heads = array();
 foreach ($page_fixture['pages'] as $page) {
     if (
         ! is_array($page)
@@ -323,9 +422,9 @@ foreach ($page_fixture['pages'] as $page) {
     ) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
     }
-    $page_path = $fixture_root . '/' . $page['content_file'];
+    $page_path = $page_content_root . '/' . $page['content_file'];
     $page_realpath = realpath($page_path);
-    $page_root_realpath = realpath($fixture_root . '/pages');
+    $page_root_realpath = realpath($page_content_root . '/pages');
     if (
         ! is_string($page_realpath)
         || ! is_string($page_root_realpath)
@@ -336,6 +435,9 @@ foreach ($page_fixture['pages'] as $page) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
     }
     $content = file_get_contents($page_path);
+    if ($mixed_binding !== null && hash('sha256', $content) !== ($mixed_binding['page_body_sha256'][$page['slug']] ?? null)) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_POLICY_HASH_INVALID');
+    }
     if (
         ! is_string($content)
         || $content === ''
@@ -346,13 +448,18 @@ foreach ($page_fixture['pages'] as $page) {
     ) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
     }
-    foreach ($policy_profiles['local']['forbidden_markers'] as $marker) {
+    // A preserved production policy is intentionally not rewritten into local
+    // copy. Browser audit must expose any mismatch with the actual OFF runtime.
+    foreach ($mixed_metadata === null ? $policy_profiles['local']['forbidden_markers'] : array() as $marker) {
         if (! is_string($marker) || $marker === '' || strpos($content, $marker) !== false) {
             WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POLICY_PROFILE_INVALID');
         }
     }
     $slug = $page['slug'];
     $existing = get_page_by_path($slug, OBJECT, 'page');
+    if ($mixed_metadata !== null && ! ($existing instanceof WP_Post)) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_EXISTING_PAGE_REQUIRED');
+    }
     $page_data = array(
         'comment_status' => 'closed',
         'ping_status' => 'closed',
@@ -370,6 +477,16 @@ foreach ($page_fixture['pages'] as $page) {
     $result = wp_insert_post($page_data, true);
     if (is_wp_error($result) || (int) $result <= 0) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_SEED_FAILED');
+    }
+    if ($mixed_metadata !== null) {
+        if (get_post_field('post_content', (int) $result, 'raw') !== $content) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_POLICY_READBACK_INVALID');
+        }
+        $mixed_policy_heads[$slug] = array(
+            'title' => $page['title'],
+            'description' => $page['excerpt'],
+            'content_sha256' => hash('sha256', $content),
+        );
     }
 }
 
@@ -430,10 +547,10 @@ foreach ($fixture['posts'] as $index => $post) {
     if (
         preg_match('/\Alocal-preview-[a-z0-9-]+\z/D', $post['article_id']) !== 1
         || preg_match('/\Alocal-preview-[a-z0-9-]+\z/D', $post['slug']) !== 1
-        || preg_match('/\A2026-08-(?:2[0-9]) 00:00:00\z/D', $post['date']) !== 1
+        || ($mixed_metadata === null && preg_match('/\A2026-08-(?:2[0-9]) 00:00:00\z/D', $post['date']) !== 1)
         || isset($seen_ids[$post['article_id']])
         || isset($seen_slugs[$post['slug']])
-        || ! in_array($post['category'], array('移動', '家事', '備え'), true)
+        || ($mixed_metadata === null && ! in_array($post['category'], array('移動', '家事', '備え'), true))
         || ! is_string($post['content_file'])
         || preg_match('/\Aarticles\/[a-z0-9-]+\.html\z/D', $post['content_file']) !== 1
         || $post['article_id'] !== $post['slug']
@@ -450,6 +567,21 @@ foreach ($fixture['posts'] as $index => $post) {
     $seen_ids[$post['article_id']] = true;
     $seen_slugs[$post['slug']] = true;
 
+    $mixed_observed = null;
+    if ($mixed_metadata !== null) {
+        $production_slug = substr($post['slug'], strlen('local-preview-'));
+        $mixed_observed = $mixed_metadata['documents'][$production_slug] ?? null;
+        if (! is_array($mixed_observed)
+            || ($mixed_observed['production_slug'] ?? null) !== $production_slug
+            || ($mixed_observed['dates']['date'] ?? null) !== $post['date']
+            || ($mixed_observed['taxonomies']['category'][0]['name'] ?? null) !== $post['category']
+        ) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_METADATA_INVALID');
+        }
+        $category_ids = raos_local_preview_mixed_term_ids($mixed_observed['taxonomies']['category'], 'category');
+        $tag_ids = raos_local_preview_mixed_term_ids($mixed_observed['taxonomies']['post_tag'], 'post_tag');
+        $category_id = $category_ids[0];
+    } else {
     $category_slugs = array(
         '移動' => 'mobility',
         '家事' => 'household',
@@ -484,6 +616,8 @@ foreach ($fixture['posts'] as $index => $post) {
             WP_CLI::error('RAOS_WORDPRESS_PREVIEW_CATEGORY_SEED_FAILED');
         }
     }
+    $category_ids = array($category_id);
+    }
 
     $content_path = $fixture_root . '/' . $post['content_file'];
     $fixture_real = realpath($fixture_root);
@@ -506,6 +640,9 @@ foreach ($fixture['posts'] as $index => $post) {
             'RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_INVALID_' . (string) $index
         );
     }
+    if ($mixed_binding !== null && hash('sha256', $content) !== ($mixed_binding['article_body_sha256'][$production_slug] ?? null)) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_ARTICLE_HASH_INVALID');
+    }
     $content = strtr($content, $article_path_replacements);
     if (
         wp_kses_post($content) !== $content
@@ -517,11 +654,14 @@ foreach ($fixture['posts'] as $index => $post) {
     }
 
     $existing = get_page_by_path($post['slug'], OBJECT, 'post');
+    if ($mixed_metadata !== null && ! ($existing instanceof WP_Post)) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_EXISTING_POST_REQUIRED');
+    }
     $post_data = array(
         'comment_status' => 'closed',
         'ping_status' => 'closed',
         'post_author' => $preview_author_id,
-        'post_category' => array($category_id),
+        'post_category' => $category_ids,
         'post_content' => $content,
         'post_date' => $post['date'],
         'post_date_gmt' => get_gmt_from_date($post['date']),
@@ -538,8 +678,15 @@ foreach ($fixture['posts'] as $index => $post) {
     if (is_wp_error($result) || (int) $result <= 0) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POST_SEED_FAILED_' . (string) $index);
     }
+    if ($mixed_metadata !== null) {
+        $tags_result = wp_set_object_terms((int) $result, $tag_ids, 'post_tag');
+        if (is_wp_error($tags_result)) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_TAG_SEED_FAILED');
+        }
+    }
 }
 
+if ($mixed_metadata === null) {
 foreach (
     array(
         'local-preview-carry-on-suitcase-comparison',
@@ -564,13 +711,14 @@ foreach (array('post', 'page') as $post_type) {
         wp_delete_post((int) $default->ID, true);
     }
 }
+}
 
-$required_local_markers = $policy_profiles['local']['required_markers'];
+$required_local_markers = $mixed_metadata === null ? $policy_profiles['local']['required_markers'] : array();
 $all_policy_content = implode(
     "\n",
     array_map(
-        static function (array $page) use ($fixture_root): string {
-            $bytes = file_get_contents($fixture_root . '/' . $page['content_file']);
+        static function (array $page) use ($page_content_root): string {
+            $bytes = file_get_contents($page_content_root . '/' . $page['content_file']);
             return is_string($bytes) ? $bytes : '';
         },
         $page_fixture['pages']
@@ -638,6 +786,18 @@ if (
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_YOAST_CONFIGURATION_INVALID');
 }
 
+if ($mixed_binding !== null) {
+    ksort($mixed_policy_heads);
+    update_option('raos_mixed_preview_policy_heads_v1', array(
+        'schema' => 'RAOS_WORDPRESS_MIXED_PREVIEW_POLICY_HEADS_V1',
+        'publication_profile' => 'verified-incremental',
+        'publication_authority' => false,
+        'preparation_binding_sha256' => hash('sha256', file_get_contents($mixed_binding_path)),
+        'pages' => $mixed_policy_heads,
+    ), false);
+} else {
+    delete_option('raos_mixed_preview_policy_heads_v1');
+}
 update_option($seed_option, $fixture['seed_version'], false);
 flush_rewrite_rules(false);
 WP_CLI::success('RAOS_WORDPRESS_PREVIEW_SEED_' . strtoupper($mode) . '_COMPLETE');

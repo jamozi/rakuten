@@ -38,6 +38,7 @@ from raos.adapters import self_hosted_editorial_rakuten_capture as capture_modul
 from raos.adapters import self_hosted_editorial_source_capture as source_capture_module
 from raos.application.editorial import self_hosted_editorial_pilot as pilot_module
 from raos.application.editorial import product_safety_receipts as safety_receipts_module
+from raos.application.editorial.verified_incremental_v1 import parse_markup_elements
 from scripts import raos_editorial_portfolio_v2 as portfolio_script
 
 
@@ -90,8 +91,8 @@ STANDARD_AD_DETAILS = (
     "リンク経由で商品を購入すると、運営者が成果報酬を受け取る場合があります。"
 )
 NONAFFILIATE_DISCLOSURE = (
-    "この記事には購入リンクがありません。以前の比較対象の販売状態を確認する案内記事のため、"
-    "商品カードとアフィリエイトリンクは掲載していません。"
+    "この記事では商品カードとアフィリエイトリンクは掲載していません。"
+    "購入先を案内しないことは、商品の性能が劣るという意味ではありません。"
 )
 
 RENDERER_ARTICLE_IDS = (
@@ -196,37 +197,49 @@ def _visible_text(markup: str) -> str:
     return unescape(re.sub(r"<[^>]+>", "", markup))
 
 
-FORMAL_PRODUCT_PREFIX_OVERRIDES = {
-    "PRD-IROBOT-ROOMBA-PLUS-515-COMBO": (
-        "iRobot「Roomba Plus 515 Combo ロボット + "
-        "AutoWash 充電ステーション」（型番：N285060",
-        "Roomba Plus 515 Combo ロボット + AutoWash 充電ステーション",
-    ),
-    "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060": (
-        "「Roomba Mini Slim 掃除機＆床拭きロボット + "
-        "SlimCharge 充電スタンド」（代表型番：F115060",
-        "Roomba Mini Slim 掃除機＆床拭きロボット + SlimCharge 充電スタンド",
-    ),
-    "PRD-SWITCHBOT-K11-PRO": (
-        "SwitchBot「ロボット掃除機 K11+ Pro」",
-        "ロボット掃除機 K11+ Pro",
-    ),
-    "PRD-SWITCHBOT-K10-PRO-COMBO": (
-        "SwitchBot「ロボット掃除機 K10+ Pro Combo」",
-        "ロボット掃除機 K10+ Pro Combo",
-    ),
-}
+def _opening_paragraphs(markup: str, intro_class: str) -> tuple[str, ...]:
+    """Measure the opening copy, not later methods or the separate disclosure."""
+    elements = parse_markup_elements(markup)
+    containers = [
+        element
+        for element in elements
+        if intro_class in (element.attrs.get("class") or "").split()
+    ]
+    assert len(containers) == 1
+    container = containers[0]
+    auxiliary = [
+        element
+        for element in elements
+        if element.tag in {"aside", "dl"}
+        and container.opening_end <= element.start < element.end <= container.end
+    ]
+    return tuple(
+        _visible_text(markup[element.opening_end : element.end])
+        for element in elements
+        if element.tag == "p"
+        and container.opening_end <= element.start < element.end <= container.end
+        and not any(
+            parent.opening_end <= element.start < element.end <= parent.end
+            for parent in auxiliary
+        )
+    )
 
 
-def _formal_product_prefix(
-    product_id: str, official_name: str, representative_model: str
-) -> tuple[str, str]:
-    override = FORMAL_PRODUCT_PREFIX_OVERRIDES.get(product_id)
-    if override is not None:
-        return override
-    if representative_model.casefold() in official_name.casefold():
-        return official_name, official_name
-    return f"{official_name}（型番：{representative_model}", official_name
+def test_intro_measurement_ends_at_its_own_container_even_when_facts_move_later() -> (
+    None
+):
+    markup = (
+        '<section class="lead-section"><div class="lead-copy"><p>'
+        + "あ" * 251
+        + "</p><aside><p>実機未使用の開示</p></aside></div></section>"
+        '<section class="method-section"><p>'
+        + "い" * 800
+        + '</p><dl class="raos-article-facts article-meta"></dl></section>'
+    )
+    paragraphs = _opening_paragraphs(markup, "lead-copy")
+    assert paragraphs == ("あ" * 251,)
+    # A genuinely long opening still fails the 250-character quality threshold.
+    assert len("".join(paragraphs)) > 250
 
 
 def test_portfolio_closes_ten_articles_owner_products_and_thirty_seven_cards() -> None:
@@ -336,7 +349,14 @@ def test_editorial_review_and_product_source_dates_remain_distinct() -> None:
     }
     contract = portfolio_script._source_fact_date_contract(portfolio)
     assert portfolio.editorial_reviewed_on == "2026-09-01"
-    assert set(contract.article_dates.values()) == {portfolio.editorial_reviewed_on}
+    assert contract.article_dates == {
+        article.article_id: (
+            "2026-09-05"
+            if article.article_id == "solota-vs-rakua-mini-plus"
+            else portfolio.editorial_reviewed_on
+        )
+        for article in portfolio.articles
+    }
     assert all(
         max(source_dates) <= contract.article_dates[article_id]
         for article_id, source_dates in source_dates_by_article.items()
@@ -1853,45 +1873,97 @@ def test_fixed_listing_fallback_rejects_credential_reflection(
     )
 
 
-def test_each_product_is_formally_introduced_before_its_first_shortened_reference() -> (
-    None
-):
+def test_each_product_is_identified_in_noncommercial_card_content() -> None:
+    """Short introductions must not move exact identity into removable CTAs."""
     portfolio = load_editorial_portfolio_v2(ROOT)
     audited_product_ids: set[str] = set()
     audited_article_cards = 0
 
     for article in portfolio.articles:
-        markup = (ARTICLE_ROOT / f"{article.production_slug}.html").read_text(
-            encoding="utf-8"
+        markup = (
+            portfolio_script._render_st1704_article(article.article_id, portfolio)
+            if article.article_id in RENDERER_ARTICLE_IDS
+            else (ARTICLE_ROOT / f"{article.production_slug}.html").read_text(
+                encoding="utf-8"
+            )
         )
         first_bound_product = markup.find("data-raos-product-id=")
         if not article.product_ids:
             assert first_bound_product == -1
             continue
         assert first_bound_product > 0
-        introduction = _visible_text(markup[:first_bound_product])
-        article_text = _visible_text(markup)
-
         for product_id in article.product_ids:
             product = portfolio.product_by_id[product_id]
-            formal_prefix, first_reference = _formal_product_prefix(
-                product_id, product.official_name, product.representative_model
+            cards = re.findall(
+                r'<article\b[^>]*\bdata-raos-product-id="'
+                + re.escape(product_id)
+                + r'"[^>]*>(.*?)</article>',
+                markup,
+                flags=re.DOTALL,
             )
-            formal_position = article_text.find(formal_prefix)
-            assert formal_position >= 0, (article.production_slug, product_id)
-            first_reference_position = article_text.find(first_reference)
-            assert first_reference_position == formal_position + formal_prefix.find(
-                first_reference
-            ), (
+            assert len(cards) == 1, (article.production_slug, product_id)
+            retained_body = re.split(
+                r'<div\b[^>]*\bclass="[^"]*'
+                r"(?:raos-product-card__actions|product-purchase-action)\b",
+                cards[0],
+                maxsplit=1,
+            )[0]
+            assert "data-raos-placement=" not in retained_body
+            retained_text = _visible_text(retained_body)
+            assert product.official_name in retained_text, (
                 article.production_slug,
                 product_id,
             )
-            assert formal_prefix in introduction, (article.production_slug, product_id)
+            assert product.representative_model in retained_text, (
+                article.production_slug,
+                product_id,
+            )
             audited_product_ids.add(product_id)
             audited_article_cards += 1
 
     assert audited_product_ids == set(portfolio.product_by_id)
     assert audited_article_cards == 37
+
+
+def test_reader_first_flow_preserves_details_after_comparison_and_product_cards() -> (
+    None
+):
+    portfolio = load_editorial_portfolio_v2(ROOT)
+    for article in portfolio.articles:
+        markup = (
+            portfolio_script._render_st1704_article(article.article_id, portfolio)
+            if article.article_id in RENDERER_ARTICLE_IDS
+            else (ARTICLE_ROOT / f"{article.production_slug}.html").read_text(
+                encoding="utf-8"
+            )
+        )
+        if article.article_id in RENDERER_ARTICLE_IDS:
+            intro_class = "raos-article-intro"
+        else:
+            intro_class = "lead-copy"
+            assert not re.search(r'class="section-number">\d+\s', markup)
+        opening_paragraphs = _opening_paragraphs(markup, intro_class)
+        assert opening_paragraphs
+        intro_text = "".join(opening_paragraphs)
+        assert len(intro_text) <= 250, article.article_id
+        if not article.product_ids:
+            assert article.article_id == "solota-vs-rakua-mini-plus"
+            assert 'class="comparison-section' not in markup
+            assert 'class="product-profile' not in markup
+            continue
+        comparison = re.search(r"<section\b[^>]*\bcomparison-section\b", markup)
+        products = re.search(r"<section\b[^>]*\bproducts-section\b", markup)
+        method = re.search(r"<section\b[^>]*\bmethod-section\b", markup)
+        assert comparison is not None and products is not None and method is not None
+        assert markup.index('class="raos-disclosure disclosure"') < comparison.start()
+        assert comparison.start() < products.start() < method.start()
+        if article.article_id in RENDERER_ARTICLE_IDS:
+            with_exclusions = portfolio_script._reader_visible_market_exclusions(
+                markup, article.article_id, portfolio
+            )
+            assert with_exclusions.index("raos-market-exclusions") > products.start()
+        else:
+            assert markup.index("raos-market-exclusions") > products.start()
 
 
 def test_all_source_articles_are_editorial_v2_and_have_two_cta_slots_per_card() -> None:
@@ -1944,12 +2016,14 @@ def test_all_source_articles_are_editorial_v2_and_have_two_cta_slots_per_card() 
             disclosure_at = markup.index('class="raos-disclosure disclosure"')
             decision_at = markup.index('class="decision-section"')
             assert 'class="hero-photo"' not in markup
-            assert lead_at < facts_at < lead_close_at < disclosure_at < decision_at
-            lead_paragraphs = re.findall(
-                r"<p(?:\s[^>]*)?>(.*?)</p>",
-                markup[lead_at:facts_at],
-                flags=re.DOTALL,
-            )
+            if article.article_id == "solota-vs-rakua-mini-plus":
+                # The short status guide answers the reader before the complete
+                # accountability/source block; no facts or disclosure disappear.
+                assert lead_at < lead_close_at < disclosure_at < decision_at < facts_at
+                assert markup.index('aria-labelledby="dish-method-title"') < facts_at
+            else:
+                assert lead_at < facts_at < lead_close_at < disclosure_at < decision_at
+            lead_paragraphs = _opening_paragraphs(markup, "lead-copy")
             assert lead_paragraphs
             assert all(
                 len(_visible_text(paragraph)) <= 300 for paragraph in lead_paragraphs
@@ -1971,7 +2045,12 @@ def test_all_source_articles_are_editorial_v2_and_have_two_cta_slots_per_card() 
             assert observed_units == {"cm"}
         elif article.article_id == "solota-vs-rakua-mini-plus":
             assert observed_units == set()
-            assert "以前の比較対象の販売状態を確認し" in markup
+            assert "型番・販売表示を確認し、購入前の確認項目を整理する" in markup
+            assert "2機種の性能や優劣を比べる記事ではありません" in markup
+            assert (
+                "購入先を案内しないことは、商品の性能が劣るという意味ではありません"
+                in markup
+            )
             assert "商品カードとアフィリエイトリンクは掲載していません" in markup
         elif article.article_id == "front-open-carry-on-suitcase-with-stopper":
             assert observed_units == {"cm", "mm"}
@@ -1994,6 +2073,19 @@ def test_all_source_articles_are_editorial_v2_and_have_two_cta_slots_per_card() 
             markup,
             flags=re.IGNORECASE | re.DOTALL,
         )
+        if article.article_id == "solota-vs-rakua-mini-plus":
+            assert not source_sections
+            source_sections = [
+                markup[element.start : element.end]
+                for element in parse_markup_elements(markup)
+                if element.tag == "section"
+                and element.attrs.get("aria-labelledby") == "dish-method-title"
+            ]
+            assert len(source_sections) == 1
+            assert 'class="source-list"' in source_sections[0]
+            assert (
+                "出典は上の確認結果にあるメーカー公式ページです" in source_sections[0]
+            )
         assert source_sections
         assert all("data-raos-placement=" not in section for section in source_sections)
         assert all("rakuten-cta" not in section for section in source_sections)

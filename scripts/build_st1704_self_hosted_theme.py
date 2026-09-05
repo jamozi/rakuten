@@ -29,9 +29,9 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 
 
 THEME_SLUG: Final = "kurashinoshirube-child"
-THEME_VERSION: Final = "1.5.0"
+THEME_VERSION: Final = "1.5.1"
 THEME_RUNTIME_REVISION: Final = (
-    "2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e"
+    "89303f68f00b45caacad62685fc6eab410265455abde15e5db2d503ca8dbcff5"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -112,6 +112,7 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     SUITCASE_UNDER_3KG_ASSET_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/images/brand-mark.svg",
     HOME_HERO_ASSET_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/legacy-media-display-projection.v1.json",
     MEASUREMENT_CLIENT_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/theme.css",
     THEME_FUNCTIONS_INPUT_PATH,
@@ -140,6 +141,9 @@ THEME_FINGERPRINT_SOURCE_FILES: Final = tuple(
     if relative not in THEME_FINGERPRINT_EXCLUDED_PATHS
 )
 PHP_INTEGRITY_BINDINGS: Final = {
+    "KURASHINOSHIRUBE_LEGACY_MEDIA_PROJECTION_SHA256": (
+        "assets/legacy-media-display-projection.v1.json"
+    ),
     "KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256": "assets/images/home-hero.webp",
     "KURASHINOSHIRUBE_ARTICLE_IMAGE_SHA256": (
         "assets/images/article-suitcase-guide.webp"
@@ -573,6 +577,7 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
         "source_navigation_sha256": source_navigation_sha256,
         "source_portfolio_sha256": source_portfolio_sha256,
     }
+    contract["theme_version"] = THEME_VERSION
     contract["runtime_evidence"] = {
         "revision": revision,
         "source_fingerprint": revision,
@@ -880,11 +885,12 @@ def validate_sources() -> dict[str, str]:
     home_hero_image = (
         '<img class="raos-home-hero__image" '
         'src="/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp" '
-        'alt="生成りと藍色の布が重なる、静かな暮らしの風景" '
+        'alt="鍋、マグカップ、照明とチェックリストを描いた暮らしの道具のイラスト" '
         'width="1600" height="900" fetchpriority="high" decoding="async">'
     )
     if (
-        "暮らしの選択に、<br>たしかな道しるべを。" not in front_page
+        '<h1 id="home-hero-title"><span>暮らしの選択に、</span>'
+        '<span>たしかな</span><span>道しるべを。</span></h1>' not in front_page
         or front_page.count(home_hero_image) != 1
         or '<span class="raos-home-hero__image"' in front_page
         or "loading=" in home_hero_image

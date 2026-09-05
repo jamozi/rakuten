@@ -17,7 +17,7 @@ import os
 from pathlib import Path
 import re
 import stat
-from typing import Final, Literal, Mapping, NoReturn, cast
+from typing import Final, Literal, Mapping, NoReturn, Sequence, cast
 import unicodedata
 from urllib.parse import parse_qs, urlsplit
 
@@ -81,6 +81,9 @@ MANUFACTURER_SALES_STATE_HASH_FIELDS: Final = (
     "alternative",
 )
 STATUS_SCHEMA: Final = "RAOS_EDITORIAL_PORTFOLIO_PRODUCT_EVIDENCE_STATUS_V2"
+INCREMENTAL_STATUS_SCHEMA: Final = (
+    "RAOS_EDITORIAL_PORTFOLIO_INCREMENTAL_PRODUCT_EVIDENCE_STATUS_V1"
+)
 JAN_EVIDENCE_SCHEMA: Final = "RAOS_EDITORIAL_PORTFOLIO_PRODUCT_JAN_EVIDENCE_V1"
 FIXTURE_SCHEMA: Final = "RAOS_WORDPRESS_LOCAL_PREVIEW_FIXTURE_V1"
 MAX_TRACKED_BYTES: Final = 4 * 1024 * 1024
@@ -96,14 +99,14 @@ REQUIRED_AD_DISCLOSURE: Final = (
 )
 NONAFFILIATE_ARTICLE_ID: Final = "solota-vs-rakua-mini-plus"
 REQUIRED_NONAFFILIATE_DISCLOSURE: Final = (
-    "この記事には購入リンクがありません。以前の比較対象の販売状態を確認する案内記事のため、"
-    "商品カードとアフィリエイトリンクは掲載していません。"
+    "この記事では商品カードとアフィリエイトリンクは掲載していません。"
+    "購入先を案内しないことは、商品の性能が劣るという意味ではありません。"
 )
 SHA256_RE: Final = re.compile(r"[0-9a-f]{64}\Z")
 PRODUCT_ID_RE: Final = re.compile(r"PRD-[A-Z0-9]+(?:-[A-Z0-9]+)*\Z")
 SLUG_RE: Final = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 ITEM_CODE_RE: Final = re.compile(r"[a-z0-9][a-z0-9_-]{1,63}:[0-9]{5,20}\Z")
-EvidenceState = Literal["verified", "not_found", "ambiguous", "expired"]
+EvidenceState = Literal["verified", "not_found", "ambiguous", "expired", "unresolved"]
 ProductImageExtension = Literal["jpg", "png", "gif"]
 ManufacturerSalesState = Literal["AVAILABLE", "OUT_OF_STOCK", "DISCONTINUED", "UNKNOWN"]
 ManufacturerAvailabilityScope = Literal["MODEL", "VARIANT"]
@@ -1265,14 +1268,15 @@ def rakuten_identity_query_v1(binding: ProductBindingV2) -> str:
     a short number alone brings back unrelated categories and incomplete pages.
     """
     terms = binding.representative_model.split()
-    if binding.representative_model.isascii() and binding.representative_model.isdigit():
+    if (
+        binding.representative_model.isascii()
+        and binding.representative_model.isdigit()
+    ):
         terms.extend(
             part for token in binding.required_title_tokens for part in token.split()
         )
     query = " ".join(
-        dict.fromkeys(
-            part for part in terms if not (len(part) == 1 and part.isascii())
-        )
+        dict.fromkeys(part for part in terms if not (len(part) == 1 and part.isascii()))
     )
     if not query or len(query.encode("utf-8")) > 128:
         _fail("RAOS_EDITORIAL_PORTFOLIO_DISCOVERY_QUERY_INVALID")
@@ -1328,16 +1332,50 @@ def discover_rakuten_identity_v1(
     return replace(binding, rakuten_item_code=code, rakuten_shop_code=shop)
 
 
+def _private_evidence_repository_root(
+    repository_root: Path, private_root: Path | None
+) -> Path:
+    """An explicit store cannot traverse a relative path or symlinked private tree."""
+    if private_root is None:
+        return repository_root
+    try:
+        if (
+            not private_root.is_absolute()
+            or not private_root.is_dir()
+            or private_root.resolve(strict=True) != private_root
+            or any(
+                (private_root / relative).resolve(strict=False)
+                != private_root / relative
+                for relative in (
+                    STATUS_RELATIVE_PATH.parent,
+                    STATUS_RELATIVE_PATH.parent / "provider",
+                    STATUS_RELATIVE_PATH.parent / "incremental",
+                    JAN_EVIDENCE_SNAPSHOT_RELATIVE_ROOT,
+                    RAKUTEN_PRIVATE_RELATIVE_PATH,
+                )
+            )
+        ):
+            _fail("RAOS_EDITORIAL_PORTFOLIO_PRIVATE_ROOT_INVALID")
+    except OSError, RuntimeError:
+        _fail("RAOS_EDITORIAL_PORTFOLIO_PRIVATE_ROOT_INVALID")
+    return private_root
+
+
 def resolve_rakuten_identity_v1(
     repository_root: Path,
     binding: ProductBindingV2,
     *,
     now: datetime | None = None,
+    private_root: Path | None = None,
 ) -> ProductBindingV2:
     """Replay private API identity evidence, separate from human attestation."""
     if binding.rakuten_item_code is not None:
         return binding
-    root = repository_root / STATUS_RELATIVE_PATH.parent / "provider"
+    root = (
+        _private_evidence_repository_root(repository_root, private_root)
+        / STATUS_RELATIVE_PATH.parent
+        / "provider"
+    )
     receipt = _mapping(
         _read_json(
             root / f"{binding.product_id}.identity.v1.json",
@@ -1392,12 +1430,84 @@ def resolve_rakuten_identity_v1(
     return resolved
 
 
-def _load_status_receipt(repository_root: Path) -> Mapping[str, object] | None:
-    path = repository_root / STATUS_RELATIVE_PATH
+def selected_product_ids_v1(
+    portfolio: EditorialPortfolioV2, product_ids: Sequence[str]
+) -> tuple[str, ...]:
+    """Require an explicit, duplicate-free subset of the current source contract."""
+    if (
+        type(product_ids) not in (list, tuple)
+        or any(type(value) is not str for value in product_ids)
+        or len(set(product_ids)) != len(product_ids)
+        or not set(product_ids).issubset(portfolio.product_by_id)
+    ):
+        _fail("RAOS_EDITORIAL_PORTFOLIO_PRODUCT_SELECTION_INVALID")
+    return tuple(sorted(product_ids))
+
+
+def incremental_product_evidence_scope_sha256(
+    repository_root: Path, product_ids: Sequence[str]
+) -> str:
+    selected = selected_product_ids_v1(
+        load_editorial_portfolio_v2(repository_root), product_ids
+    )
+    return hashlib.sha256(
+        json.dumps(
+            {
+                "portfolio_sha256": portfolio_sha256(repository_root),
+                "product_ids": selected,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+
+
+def incremental_product_evidence_status_relative_path(
+    repository_root: Path, product_ids: Sequence[str]
+) -> Path:
+    digest = incremental_product_evidence_scope_sha256(repository_root, product_ids)
+    return (
+        STATUS_RELATIVE_PATH.parent
+        / "incremental"
+        / f"product-evidence-status.{digest}.v1.json"
+    )
+
+
+def _load_status_receipt(
+    repository_root: Path,
+    *,
+    private_root: Path | None = None,
+    product_ids: Sequence[str] | None = None,
+) -> Mapping[str, object] | None:
+    relative = (
+        STATUS_RELATIVE_PATH
+        if product_ids is None
+        else incremental_product_evidence_status_relative_path(
+            repository_root, product_ids
+        )
+    )
+    path = _private_evidence_repository_root(repository_root, private_root) / relative
     if not path.exists() and not path.is_symlink():
         return None
     document = _mapping(_read_json(path, maximum=MAX_STATUS_BYTES, private=True))
-    if set(document) != {"schema", "captured_at", "portfolio_sha256", "products"}:
+    expected_keys = {"schema", "captured_at", "portfolio_sha256", "products"}
+    if product_ids is not None:
+        expected_keys |= {
+            "product_ids",
+            "scope_sha256",
+            "owner_attested",
+            "publication_authority",
+        }
+    if set(document) != expected_keys:
+        _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_INVALID")
+    if product_ids is not None and (
+        document.get("schema") != INCREMENTAL_STATUS_SCHEMA
+        or document.get("product_ids") != sorted(product_ids)
+        or document.get("scope_sha256")
+        != incremental_product_evidence_scope_sha256(repository_root, product_ids)
+        or document.get("owner_attested") is not False
+        or document.get("publication_authority") is not False
+    ):
         _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_INVALID")
     return document
 
@@ -1407,10 +1517,21 @@ def product_jan_evidence_bindings_v1(
     *,
     portfolio: EditorialPortfolioV2,
     now: datetime | None = None,
+    private_root: Path | None = None,
+    product_ids: Sequence[str] | None = None,
 ) -> dict[str, str]:
     """Validate owner-private official JAN snapshots for API rows without JAN."""
 
-    path = repository_root / JAN_EVIDENCE_RELATIVE_PATH
+    selected = (
+        None if product_ids is None else selected_product_ids_v1(portfolio, product_ids)
+    )
+    if selected == () or (
+        selected is not None
+        and not any(portfolio.product_by_id[value].official_jan for value in selected)
+    ):
+        return {}
+    evidence_root = _private_evidence_repository_root(repository_root, private_root)
+    path = evidence_root / JAN_EVIDENCE_RELATIVE_PATH
     if not path.exists() and not path.is_symlink():
         return {}
     document = _mapping(_read_json(path, maximum=MAX_STATUS_BYTES, private=True))
@@ -1467,7 +1588,7 @@ def product_jan_evidence_bindings_v1(
         ):
             _fail("RAOS_EDITORIAL_PORTFOLIO_JAN_EVIDENCE_INVALID")
         snapshot = _read_bytes(
-            repository_root / JAN_EVIDENCE_SNAPSHOT_RELATIVE_ROOT / snapshot_name,
+            evidence_root / JAN_EVIDENCE_SNAPSHOT_RELATIVE_ROOT / snapshot_name,
             maximum=MAX_STATUS_BYTES,
             private=True,
         )
@@ -1497,9 +1618,13 @@ def product_jan_evidence_bindings_v1(
                 separators=(",", ":"),
             ).encode("utf-8")
         ).hexdigest()
-    if set(bindings) != set(expected):
+    if selected is None and set(bindings) != set(expected):
         _fail("RAOS_EDITORIAL_PORTFOLIO_JAN_EVIDENCE_INCOMPLETE")
-    return bindings
+    return (
+        bindings
+        if selected is None
+        else {key: value for key, value in bindings.items() if key in selected}
+    )
 
 
 def _verified_product_image_extension(
@@ -1532,19 +1657,43 @@ def product_evidence_views_v2(
     now: datetime | None = None,
     require_fresh_set: bool = False,
     require_verified_set: bool = False,
+    private_root: Path | None = None,
+    product_ids: Sequence[str] | None = None,
 ) -> dict[str, ProductEvidenceViewV2]:
     portfolio = load_editorial_portfolio_v2(repository_root)
+    selected = (
+        None if product_ids is None else selected_product_ids_v1(portfolio, product_ids)
+    )
+    if selected == ():
+        return {}
+    evidence_root = _private_evidence_repository_root(repository_root, private_root)
+    products = (
+        portfolio.products
+        if selected is None
+        else tuple(portfolio.product_by_id[product_id] for product_id in selected)
+    )
     jan_evidence_bindings = product_jan_evidence_bindings_v1(
         repository_root,
         portfolio=portfolio,
         now=now,
+        private_root=private_root,
+        product_ids=selected,
     )
     active_now = (now or datetime.now(UTC)).astimezone(UTC)
-    receipt = _load_status_receipt(repository_root)
+    receipt = (
+        _load_status_receipt(repository_root)
+        if private_root is None and selected is None
+        else _load_status_receipt(
+            repository_root, private_root=private_root, product_ids=selected
+        )
+    )
     receipt_rows: dict[str, Mapping[str, object]] = {}
     receipt_captured_at: datetime | None = None
     if receipt is not None:
-        if receipt.get("schema") != STATUS_SCHEMA or receipt.get(
+        expected_schema = (
+            STATUS_SCHEMA if selected is None else INCREMENTAL_STATUS_SCHEMA
+        )
+        if receipt.get("schema") != expected_schema or receipt.get(
             "portfolio_sha256"
         ) != portfolio_sha256(repository_root):
             if require_fresh_set or require_verified_set:
@@ -1555,7 +1704,7 @@ def product_evidence_views_v2(
             rows = _list(receipt["products"])
             for raw in rows:
                 row = _mapping(raw)
-                if set(row) != {
+                expected_row_keys = {
                     "product_id",
                     "state",
                     "retrieved_at",
@@ -1563,23 +1712,36 @@ def product_evidence_views_v2(
                     "response_sha256",
                     "affiliate_response_sha256",
                     "image_sha256",
-                }:
+                }
+                if selected is not None:
+                    expected_row_keys.add("reason")
+                if set(row) != expected_row_keys or (
+                    selected is not None
+                    and row.get("reason")
+                    != (
+                        "OFFICIAL_JAN_EVIDENCE_MISSING"
+                        if row.get("state") == "unresolved"
+                        else None
+                    )
+                ):
                     _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_INVALID")
                 product_id = _text(row["product_id"], maximum=160)
                 if product_id in receipt_rows:
                     _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_INVALID")
                 receipt_rows[product_id] = row
+            if selected is not None and set(receipt_rows) != set(selected):
+                _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_INVALID")
     if (require_fresh_set or require_verified_set) and (
         receipt is None
         or receipt_captured_at is None
         or active_now - receipt_captured_at > portfolio.freshness
         or active_now < receipt_captured_at
-        or set(receipt_rows) != {product.product_id for product in portfolio.products}
+        or set(receipt_rows) != {product.product_id for product in products}
     ):
         _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_EXPIRED")
 
     views: dict[str, ProductEvidenceViewV2] = {}
-    for binding in portfolio.products:
+    for binding in products:
         status_row = receipt_rows.get(binding.product_id)
         if status_row is None:
             views[binding.product_id] = ProductEvidenceViewV2(
@@ -1588,11 +1750,15 @@ def product_evidence_views_v2(
             continue
         raw_state = status_row.get("state")
         if raw_state == "verified":
-            stored_state: Literal["verified", "not_found", "ambiguous"] = "verified"
+            stored_state: Literal[
+                "verified", "not_found", "ambiguous", "unresolved"
+            ] = "verified"
         elif raw_state == "not_found":
             stored_state = "not_found"
         elif raw_state == "ambiguous":
             stored_state = "ambiguous"
+        elif raw_state == "unresolved" and selected is not None:
+            stored_state = "unresolved"
         else:
             _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_INVALID")
         retrieved = _parse_timestamp(status_row.get("retrieved_at"))
@@ -1604,7 +1770,7 @@ def product_evidence_views_v2(
         jan_evidence_sha256 = jan_evidence_bindings.get(binding.product_id)
         if stored_state == "verified":
             binding = resolve_rakuten_identity_v1(
-                repository_root, binding, now=active_now
+                repository_root, binding, now=active_now, private_root=private_root
             )
             verified_hashes = (
                 status_row.get("response_sha256"),
@@ -1623,7 +1789,7 @@ def product_evidence_views_v2(
             if state == "verified":
                 try:
                     evidence = read_rakuten_product_evidence(
-                        repository_root, product_id=binding.product_id
+                        evidence_root, product_id=binding.product_id
                     )
                 except EditorialPilotFailure:
                     _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_INVALID")
@@ -1642,10 +1808,21 @@ def product_evidence_views_v2(
                 ):
                     _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_INVALID")
                 image_extension = _verified_product_image_extension(
-                    repository_root,
+                    evidence_root,
                     product_id=binding.product_id,
                     expected_sha256=evidence.image_sha256,
                 )
+        elif stored_state == "unresolved":
+            if binding.official_jan is None or any(
+                status_row.get(field) is not None
+                for field in (
+                    "item_code",
+                    "response_sha256",
+                    "affiliate_response_sha256",
+                    "image_sha256",
+                )
+            ):
+                _fail("RAOS_EDITORIAL_PORTFOLIO_EVIDENCE_INVALID")
         else:
             if (
                 status_row.get("item_code") is not None
@@ -2359,6 +2536,7 @@ __all__ = [
     "ArticleBindingV2",
     "EditorialPortfolioV2",
     "EditorialPortfolioV2Failure",
+    "INCREMENTAL_STATUS_SCHEMA",
     "LOCAL_FIXTURE_RELATIVE_PATH",
     "LOCAL_MEDIA_RELATIVE_PATH",
     "JAN_EVIDENCE_RELATIVE_PATH",
@@ -2374,6 +2552,8 @@ __all__ = [
     "ProductEvidenceReadinessV2",
     "ProductEvidenceViewV2",
     "STATUS_RELATIVE_PATH",
+    "incremental_product_evidence_scope_sha256",
+    "incremental_product_evidence_status_relative_path",
     "load_editorial_portfolio_v2",
     "load_manufacturer_sales_state_audit_v1",
     "materialize_article_v2",
@@ -2383,4 +2563,5 @@ __all__ = [
     "product_evidence_views_v2",
     "product_jan_evidence_bindings_v1",
     "require_manufacturer_sales_state_for_products_v1",
+    "selected_product_ids_v1",
 ]

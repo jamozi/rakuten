@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e;
+  --raos-theme-runtime-revision-base: 89303f68f00b45caacad62685fc6eab410265455abde15e5db2d503ca8dbcff5;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -74,6 +74,122 @@ a:hover {
   align-items: center;
   gap: 0.25rem;
   min-width: 0;
+}
+
+/* noscript children exist only when scripting is disabled. */
+.raos-header-nojs-shell {
+  display: none;
+}
+
+.raos-header-nojs-shell:has(.raos-header-nojs) {
+  display: block;
+  width: 100%;
+}
+
+.raos-site-header:has(.raos-header-nojs) .raos-masthead {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-block: 1rem;
+}
+
+.raos-site-header:has(.raos-header-nojs) .raos-masthead__actions {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  width: 100%;
+}
+
+.raos-site-header:has(.raos-header-nojs) .raos-header-search,
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container-open,
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container-close {
+  display: none;
+}
+
+.raos-site-header:has(.raos-header-nojs) .raos-primary-nav,
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container {
+  display: block;
+  position: static;
+  width: 100%;
+}
+
+.wp-site-blocks > header:has(.raos-site-header .raos-header-nojs) {
+  /* An expanded native menu must not cover the page as a sticky panel. */
+  position: static;
+}
+
+.raos-header-nojs {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  width: 100%;
+}
+
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation-item {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation-item__content {
+  align-items: center;
+  display: flex;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  min-height: 2.75rem;
+  text-decoration: underline;
+}
+
+.raos-header-nojs__search {
+  margin: 0;
+}
+
+.raos-header-nojs__search label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.raos-header-nojs__fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.raos-header-nojs__fields input,
+.raos-header-nojs__fields button {
+  border: 1px solid var(--raos-rule);
+  box-sizing: border-box;
+  font: inherit;
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+}
+
+.raos-header-nojs__fields input {
+  background: var(--raos-surface);
+  color: var(--raos-ink);
+  flex: 1 1 12rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.raos-header-nojs__fields button {
+  background: var(--raos-indigo);
+  color: var(--raos-paper);
+  cursor: pointer;
+  flex: 0 0 auto;
 }
 
 .raos-site-header .raos-header-search,
@@ -723,6 +839,57 @@ a:hover {
   text-align: right;
 }
 
+/* The guide's subject is a set of conditions, never an invented product photo. */
+.raos-article-hero-image--criteria .raos-article-hero-image__canvas {
+  border: 1px solid var(--raos-rule);
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.raos-article-hero-image--criteria .raos-article-hero-image__notice {
+  background: transparent;
+  color: var(--raos-muted);
+  max-width: none;
+  padding: 0;
+  position: static;
+}
+
+.raos-article-hero-image--criteria .raos-article-hero-image__overlay {
+  background: transparent;
+  color: var(--raos-ink);
+  margin-top: 1rem;
+  max-width: none;
+  padding: 0;
+  position: static;
+}
+
+.raos-article-hero-image--criteria ol {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.raos-article-hero-image--criteria li {
+  border: 0;
+  border-top: 2px solid var(--raos-ink);
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  font-weight: 700;
+  line-height: 1.6;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 0.6rem 0 0;
+}
+
+.raos-article-hero-image--criteria li > span {
+  color: var(--raos-muted);
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-bottom: 0.35rem;
+}
+
 .raos-article-category {
   color: var(--raos-warm);
   font-size: 0.82rem;
@@ -1360,8 +1527,7 @@ figure.raos-first-article-lead-image > img {
 .raos-not-found-page .raos-footer__grid {
   display: grid;
   gap: 3.5rem;
-  grid-template-columns: minmax(14rem, 1.2fr) minmax(12rem, 0.8fr)
-    minmax(16rem, 1fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1fr);
   margin-inline: auto;
   max-width: 76rem;
   width: min(100%, 76rem);
@@ -1856,7 +2022,7 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 
 .raos-home-v2 :where(.raos-home-section, .raos-featured,
   .raos-latest-guides, .raos-home-latest, .raos-cluster-nav, .raos-home-purpose,
-  .raos-home-problems, .raos-home-method, .raos-home-about) {
+  .raos-home-problems, .raos-home-method, .raos-home-about, .raos-cluster) {
   scroll-margin-top: 6rem;
 }
 
@@ -2096,6 +2262,15 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
   overflow-wrap: break-word;
 }
 
+.raos-home-v2 .raos-home-hero h1 > span {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.raos-home-v2 .raos-home-hero h1 > span:first-child {
+  display: block;
+}
+
 .raos-home-v2 .raos-home-hero__lead,
 .raos-home-v2 .raos-home-hero__copy > p:not(.raos-home-eyebrow):not(.raos-kicker) {
   color: var(--raos-home-muted);
@@ -2110,6 +2285,12 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
   display: flex;
   flex-wrap: wrap;
   gap: 1rem 1.75rem;
+}
+
+.raos-home-v2 .raos-home-hero__copy > p.raos-home-hero__disclosure {
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  margin: 1rem 0 0;
 }
 
 .raos-home-v2 :where(.raos-home-button, .raos-home-hero .wp-block-button__link) {
@@ -2256,6 +2437,32 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 .raos-home-v2 .raos-cluster-nav {
   margin-block: 0;
   padding-block: 7rem;
+}
+
+.raos-home-v2 .raos-home-purpose {
+  padding-block: 3.5rem 0;
+}
+
+.raos-home-v2 .raos-cluster-nav {
+  padding-block: 2.5rem 4.5rem;
+}
+
+.raos-home-v2 .raos-home-purpose__shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.raos-home-v2 .raos-home-purpose__shortcuts a {
+  align-items: center;
+  border: 1px solid var(--raos-home-line-strong);
+  color: var(--raos-home-action);
+  display: inline-flex;
+  font-size: 0.9375rem;
+  gap: 1rem;
+  justify-content: space-between;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
 }
 
 .raos-home-v2 .raos-home-purpose__grid,
@@ -2451,7 +2658,32 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 }
 
 .raos-home-v2 .raos-featured-guide__visual--power {
-  background-image: url("images/article-portable-power-guide.webp");
+  aspect-ratio: auto;
+  background: var(--raos-home-surface);
+  border: 1px solid var(--raos-home-line-strong);
+  padding: clamp(1.25rem, 4vw, 3rem);
+}
+
+.raos-home-v2 .raos-featured-guide__diagram {
+  display: grid;
+  gap: 0.75rem;
+  padding-block: 1rem;
+}
+
+.raos-home-v2 .raos-featured-guide__diagram > span {
+  border-bottom: 1px solid var(--raos-home-line-strong);
+  color: var(--raos-home-ink);
+  display: block;
+  font-family: var(--raos-font-serif);
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  padding: 0.75rem 0;
+}
+
+.raos-home-v2 .raos-featured-guide__visual--power figcaption {
+  color: var(--raos-home-muted);
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  margin-top: 1rem;
 }
 
 .raos-home-v2 .raos-featured-guide__visual > a {
@@ -2979,7 +3211,7 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 .raos-policy-v3-page .raos-footer__grid {
   display: grid;
   gap: 3.5rem;
-  grid-template-columns: minmax(14rem, 1.2fr) minmax(12rem, 0.8fr) minmax(16rem, 1fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1fr);
   margin-inline: auto;
   max-width: var(--raos-home-content, 76rem);
   width: min(100%, var(--raos-home-content, 76rem));
@@ -3273,9 +3505,8 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 
 @media (max-width: 37.5rem) {
   .raos-home-v2 > :not(.raos-home-hero):not(.raos-home-method) {
+    /* Native cross-page fragments need actual preceding section heights. */
     contain: layout paint style;
-    contain-intrinsic-size: auto 42rem;
-    content-visibility: auto;
   }
 
   .raos-home-v2 :where(.raos-home-shell, .raos-home-hero__inner,
@@ -3290,7 +3521,7 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 
   .raos-home-v2-page .raos-masthead {
     gap: 0.75rem;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto;
     min-height: 4rem;
   }
 
@@ -3306,9 +3537,9 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
   }
 
   .raos-home-v2-page .raos-masthead__actions {
-    justify-content: space-between;
-    justify-self: stretch;
-    width: 100%;
+    justify-content: flex-end;
+    justify-self: end;
+    width: auto;
   }
 
   .raos-home-v2-page .raos-masthead nav {
@@ -3329,12 +3560,12 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
   }
 
   .raos-home-v2 .raos-home-hero__inner {
-    gap: 2.25rem;
-    padding-block: 3.625rem 2.625rem;
+    gap: 1.75rem;
+    padding-block: 2.5rem;
   }
 
   .raos-home-v2 .raos-home-hero h1 {
-    font-size: clamp(2.25rem, 10vw, 2.55rem);
+    font-size: clamp(1.25rem, 8.4vw, 2.55rem);
     line-height: 1.38;
     margin-bottom: 1.375rem;
   }
@@ -3363,7 +3594,7 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 
   .raos-home-v2 .raos-home-hero__visual figcaption {
     display: flex;
-    font-size: 0.625rem;
+    font-size: 0.75rem;
   }
 
   .raos-home-v2 .raos-home-promise {
@@ -3378,7 +3609,19 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
   .raos-home-v2 .raos-home-latest,
   .raos-home-v2 .raos-home-method,
   .raos-home-v2 .raos-home-about {
-    padding-block: 4.5rem;
+    padding-block: 3rem;
+  }
+
+  .raos-home-v2 .raos-home-purpose {
+    padding-block: 2.5rem 0;
+  }
+
+  .raos-home-v2 .raos-cluster-nav {
+    padding-top: 2rem;
+  }
+
+  .raos-home-v2 .raos-home-purpose__shortcuts a {
+    width: 100%;
   }
 
   .raos-home-v2 :where(.raos-home-heading--split,
@@ -3528,11 +3771,68 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
   }
 
   .raos-home-v2 .raos-home-hero h1 {
-    font-size: clamp(2rem, 10vw, 2.35rem);
+    font-size: clamp(1.25rem, 8.4vw, 2.35rem);
   }
 
   .raos-home-v2 .raos-home-problems__links small {
     font-size: 0.8125rem;
+  }
+}
+
+/* Share the compact header with articles, policy pages, search and 404. */
+@media (max-width: 37.5rem) {
+  .raos-site-header .raos-masthead {
+    /* Let enlarged text move the controls to their own row. */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-height: 4rem;
+    padding-block: 0.5rem;
+  }
+
+  .raos-site-header .raos-wordmark {
+    flex: 0 1 auto;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .raos-site-header .raos-wordmark a {
+    min-width: 0;
+    text-wrap: balance;
+    white-space: normal;
+  }
+
+  .raos-site-header .raos-wordmark::before {
+    flex-basis: 1.75rem;
+    height: 1.75rem;
+    margin-right: 0.5rem;
+    width: 1.75rem;
+  }
+
+  .raos-site-header .raos-masthead__actions {
+    justify-content: flex-end;
+    margin-inline-start: auto;
+    width: auto;
+  }
+
+  .raos-site-header .wp-block-navigation__responsive-container-open {
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+}
+
+@media (max-width: 20rem) {
+  .raos-site-header .raos-wordmark::before {
+    display: none;
+  }
+
+  .raos-site-header .raos-wordmark a {
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 }
 

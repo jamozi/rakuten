@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: 2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e;
+  --raos-theme-runtime-revision-editorial-v2: 89303f68f00b45caacad62685fc6eab410265455abde15e5db2d503ca8dbcff5;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -439,6 +439,7 @@
 }
 
 .raos-editorial-v2 .decision-list {
+  container-type: inline-size;
   margin: 0;
   padding: 0;
   border-block: 1px solid var(--rev2-line);
@@ -1190,6 +1191,25 @@
 
   .raos-editorial-v2 .source-list li.source-list__history {
     padding-left: 0;
+  }
+}
+
+/* Reflow against the actual article column, including enlarged text. */
+@container (max-width: 60rem) {
+  .raos-editorial-v2 .decision-list li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .raos-editorial-v2 .decision-list li > * {
+    min-width: 0;
+  }
+
+  .raos-editorial-v2 .decision-list__number {
+    grid-row: auto;
+  }
+
+  .raos-editorial-v2 .decision-list :where(p, a) {
+    grid-column: auto;
   }
 }
 

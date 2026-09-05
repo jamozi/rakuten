@@ -4,7 +4,7 @@
     "article_type_code": "AT-003",
     "intent_classification": "CONDITION_COMPARISON",
     "intent_cluster": "移動",
-    "packet_sha256": "53868ff59be25f1b4fb748b9a3a2fd3060872fd24288888d875a9b6490be48c2",
+    "packet_sha256": "7ce24e23bb3390eb12aa0b8c70d834354d2cb774fec8b0297f1f321eac686b8d",
     "slot": 1,
     "slug": "carry-on-suitcase-comparison"
   },

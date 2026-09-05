@@ -104,7 +104,7 @@ PLACEMENTS: Final = (
 INTERNAL_CTA_NAMESPACE: Final = "RAOS_INTERNAL_CTA_V1"
 PROVIDER_SLOT_GRANULARITY: Final = "ARTICLE_PLACEMENT"
 PROVIDER_SLOT_LIMIT: Final = 20
-CURRENT_THEME_VERSION: Final = "1.5.0"
+CURRENT_THEME_VERSION: Final = "1.5.1"
 TARGET_ORIGIN: Final = "https://kurashinoshirube.com"
 INTENT_GROUP_CLUSTER: Final = {
     "carry-on-suitcase": "mobility",
@@ -119,7 +119,7 @@ CONTENT_ROLE_LABELS: Final = {
     "feature_shortlist": "機能別比較",
     "head_to_head_comparison": "2製品比較",
     "head_to_head_with_reference": "2製品比較＋参考機種",
-    "lifecycle_status_route": "以前の比較対象の販売状態確認＋現行比較への案内",
+    "lifecycle_status_route": "型番・販売表示の確認案内",
     "model_family_comparison": "ブランド内比較",
 }
 ROLES_REQUIRING_BROADER_ARTICLE: Final = {

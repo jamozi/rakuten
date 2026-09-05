@@ -3073,22 +3073,38 @@ NEW_PACKETS: Final = (
             ),
             _claim(
                 "CLM-PORTFOLIO-DISH-RAKUA-MINI-PLUS-EXCLUDED",
-                "以前の比較対象だったTHANKO ラクアmini Plusは、2026年8月31日の"
-                "メーカー公式ストア確認時に再入荷通知だけが表示され、購入・カート"
-                "導線を確認できなかったため、現行の購入候補と商品カードから除外した。",
+                "THANKO ラクアmini Plus TK-MDW22Bの公式ストア確認時は再入荷通知のみが"
+                "表示されていた。当サイトは購入リンクを掲載しないが、他の販売店の在庫や"
+                "今後の入荷、商品自体の性能の優劣までは判断しない。",
                 ["SRC-THANKO-RAKUA-MINI-PLUS"],
             ),
             _claim(
                 "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE",
-                "SOLOTA NP-TMLK1-Kは販売状態を確認できず、ラクアmini Plusは"
-                "再入荷通知のみのため、以前の比較対象2機種はいずれも仕様参考に限定する。現行品の"
-                "仕様表、設置条件、個別の選定理由、商品カード、購入導線は少人数向け"
-                "卓上食洗機4候補の記事へ集約する。候補名は公式な後継・同等品を意味しない。",
+                "本記事はSOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの2機種の型番・販売表示と、"
+                "購入前の確認項目を案内する。NP-TMLK1-Kの販売状態は未確認であり、"
+                "販売終了や購入不可とは判断しない。購入先の案内がないことは商品の劣位を意味しない。"
+                "性能の優劣や後継機・同等品は断定せず、設置条件の選び方は別記事へ案内する。"
+                "購入前に型番、色、本体のみかセットか、新品か中古品か、販売元の在庫・納期・保証を"
+                "確認し、自宅の幅・奥行・高さと取扱説明書の扉・給排水・電源・アース条件を"
+                "照合する。設置条件を満たせない場合は購入を見送る選択もある。",
                 DISH_PRODUCTS,
                 inference=True,
             ),
         ],
     ),
+)
+
+
+# This overview page is retained only for model identity/reference and an
+# explicitly UNKNOWN sales state. Its former specification-table locators no
+# longer occur here. The image's exact black-model identity and the description
+# must remain bound together; the model-family SKU is not stock evidence.
+PANASONIC_NP_TMLK1_IDENTITY_FRAGMENTS: Final = (
+    "<title>概要 食器洗い乾燥機 NP-TMLK1 | 食器洗い乾燥機（食洗機） | Panasonic</title>",
+    '"sku":"NP-TMLK1"',
+    "&#34;altText&#34;:&#34;NP-TMLK1-KserialNumber&#34;",
+    '<meta name="description" content="パナソニックの「パーソナルタイプの'
+    "食器洗い乾燥機（NP-TMLK1）SOLOTA」の商品サイトです。新登場のブラック色モデル。",
 )
 
 
@@ -3305,11 +3321,24 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         "6年",
     ),
     "SRC-PROTECA-SUITCASE-WARRANTY": (
-        "通常製品保証",
-        "10年",
-        "素材及び製造上の不具合",
-        "完全保証 / 購入後 3年間",
-        "航空会社による破損、またはその他の運送中に生じた損傷",
+        # The current page also lists J5's 10-year premium care and the bags'
+        # five-year normal warranty. Bind the general suitcase period and
+        # manufacturing coverage to its heading, not those repeated labels.
+        '<h3>プロテカ スーツケース製品</h3>\r\n'
+        '          <p class="card-subtitle">（ハードタイプ・ソフトタイプ）</p>\r\n'
+        '        </div>\r\n'
+        '        <div class="warranty-section">\r\n'
+        '          <div class="warranty-item">\r\n'
+        '            <div class="warranty-label">通常製品保証</div>\r\n'
+        '            <div class="period-value">10年</div>\r\n'
+        '            <div class="period-desc">\r\n'
+        '              素材及び製造上の不具合が認められた場合、無償修理\r\n'
+        '            </div>',
+        # Keep the three-year transport coverage and its exclusions together;
+        # the transport sentence alone also appears under the J5 guarantee.
+        '<span class="premium-care-period">購入後 3年間】</span><br />'
+        '航空会社による破損、またはその他の運送中に生じた損傷も無償修理<br>'
+        '※セール品やアウトレット品、並行輸入品は対象外',
     ),
     "SRC-RIMOWA-ESSENTIAL-LITE-CABIN-82353171": (
         "82353171",
@@ -3490,13 +3519,7 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         "We recommend a distance of 1 meter for left and right and 1.5 meters in front (no limit on top).",
         "Insufficient space may affect the vacuum body to return to the charging station.",
     ),
-    "SRC-PANASONIC-NP-TMLK1": (
-        "概要 食器洗い乾燥機 NP-TMLK1",
-        "新登場のブラック色モデル",
-        '"sku":"NP-TMLK1"',
-        "NP-TMLK1-K",
-        "一度に6点の食器が入ります",
-    ),
+    "SRC-PANASONIC-NP-TMLK1": PANASONIC_NP_TMLK1_IDENTITY_FRAGMENTS,
     "SRC-PANASONIC-NP-TML1": (
         "容量&#xff08;食器点数&#xff09;<sup>★1</sup>",
         '<td colspan="1" rowspan="1">6点',
@@ -3882,6 +3905,11 @@ DIFFERENCE_05721_06_FRAGMENTS: Final = (
     "● キャスターストッパー",
     "２通りの開閉が可能",
     '<dd id="spec_stock_msg">在庫あります</dd>',
+    # The same cart button appears in the main and sticky-footer forms.
+    # Bind this occurrence to the exact white variant instead of dropping the
+    # purchase control or allowing ambiguous matches.
+    '<input type="hidden" value=05721-06 name="goods">\r\n'
+    '\t\t\t\t\t<div class="block-add-cart">\r\n'
     '<button class="block-add-cart--btn btn btn-primary '
     'js-enhanced-ecommerce-add-cart-detail " type="submit" '
     'value="カートに入れる">カートに入れる</button>',
@@ -3901,6 +3929,15 @@ ANKER_C1000_FEATURE_DIFF_FRAGMENTS: Final = (
 )
 
 CLAIM_FRAGMENT_OVERRIDES: Final[dict[tuple[str, str], tuple[str, ...]]] = {
+    **{
+        ("SRC-PANASONIC-NP-TMLK1", claim_id): PANASONIC_NP_TMLK1_IDENTITY_FRAGMENTS
+        for claim_id in (
+            "CLM-ST1704-DISH-NP-TMLK1-EXCLUDED",
+            "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-IDENTITY-REFERENCE",
+            "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE",
+            "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-EXCLUDED",
+        )
+    },
     (
         "SRC-ANKER-SOLIX-C1000-GEN2",
         "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",

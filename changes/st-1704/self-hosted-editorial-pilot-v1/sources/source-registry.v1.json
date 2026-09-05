@@ -114,7 +114,7 @@
       "url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
       "retrieved_on": "2026-08-23",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "ba563aa6428e91eb93ba01697f6366c780659b976645a455015bf131cdd42116",
+      "immutable_capture_sha256": "00356e1d1ba8d9c17867b8cbdf7b73243eaa80229195b6bf669d509c6b080544",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -785,7 +785,7 @@
       "url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
       "retrieved_on": "2026-08-31",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "693ebd034fcbe786cd725b013ff9eae151caf372040645313e371836ee427136",
+      "immutable_capture_sha256": "a847193dc6882cfa2581b9d598412039a046e51b19a345e6d7861149b938fdd0",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -4248,7 +4248,7 @@
       "article_id": "solota-vs-rakua-mini-plus",
       "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "fact_packet_sha256": "417eece18d6b6174538373dedaf9253a46ee900e6efbc0780ac2f48c6d1d7013",
+      "fact_packet_sha256": "f1120c1c4d01cc9d803c7169b1b9bc60e07e13fc4756e89b7d9a18e8e28e26e4",
       "source_refs": [
         "SRC-PANASONIC-NP-TMLK1",
         "SRC-THANKO-RAKUA-MINI-PLUS"
@@ -4269,7 +4269,7 @@
           "claim_id": "CLM-PORTFOLIO-DISH-RAKUA-MINI-PLUS-EXCLUDED",
           "classification": "EDITORIAL_INFERENCE",
           "evidence_level": "D",
-          "statement": "公式ストアでは再入荷通知だけが表示され、カート導線を確認できません。購入候補から除外し、商品カードや購入導線を掲載していません。",
+          "statement": "公式ストアの確認時は再入荷通知のみが表示されていました。当サイトでは購入リンクを掲載せず、他の販売店の在庫や今後の入荷までは判断しません。",
           "evidence_refs": [
             "SRC-THANKO-RAKUA-MINI-PLUS"
           ],
@@ -4279,7 +4279,7 @@
           "official_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
           "exact_model": "ラクアmini Plus",
           "exact_variant_scope": "TK-MDW22B",
-          "evaluated_at": "2026-08-31",
+          "evaluated_at": "2026-09-05",
           "model_lifecycle": "AVAILABLE",
           "variant_lifecycle": "RESTOCK_NOTIFICATION_ONLY",
           "reader_visible_lifecycle": "RESTOCK_NOTIFICATION_ONLY",
@@ -4292,7 +4292,7 @@
           "claim_id": "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE",
           "classification": "EDITORIAL_INFERENCE",
           "evidence_level": "D",
-          "statement": "SOLOTA NP-TMLK1-Kは販売状態を確認できず、ラクアmini Plusは再入荷通知のみのため、以前の比較対象2機種はいずれも仕様参考に限定する。現行品の仕様表、設置条件、個別の選定理由、商品カード、購入導線は少人数向け卓上食洗機4候補の記事へ集約する。候補名は公式な後継・同等品を意味しない。",
+          "statement": "本記事はSOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの2機種の型番・販売表示と、購入前の確認項目を案内する。NP-TMLK1-Kの販売状態は未確認であり、販売終了や購入不可とは判断しない。購入先の案内がないことは商品の劣位を意味しない。性能の優劣や後継機・同等品は断定せず、設置条件の選び方は別記事へ案内する。購入前に型番、色、本体のみかセットか、新品か中古品か、販売元の在庫・納期・保証を確認し、自宅の幅・奥行・高さと取扱説明書の扉・給排水・電源・アース条件を照合する。設置条件を満たせない場合は購入を見送る選択もある。",
           "evidence_refs": [
             "SRC-PANASONIC-NP-TMLK1",
             "SRC-THANKO-RAKUA-MINI-PLUS"
@@ -4304,7 +4304,7 @@
           "claim_id": "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-EXCLUDED",
           "classification": "EDITORIAL_INFERENCE",
           "evidence_level": "D",
-          "statement": "公式製品ページは仕様参考に残しますが、正確なブラック型番NP-TMLK1-Kの購入UIを確認できないため、商品カード・購入導線から除外しました。",
+          "statement": "公式製品ページでブラックの型番NP-TMLK1-Kを確認しました。当サイトでは販売状態を確定していないため、購入リンクは掲載していません。販売終了や購入不可とは判断しません。",
           "evidence_refs": [
             "SRC-PANASONIC-NP-TMLK1"
           ],
@@ -4314,7 +4314,7 @@
           "official_url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
           "exact_model": "NP-TMLK1-K",
           "exact_variant_scope": "日本向けブラック NP-TMLK1-K",
-          "evaluated_at": "2026-09-01",
+          "evaluated_at": "2026-09-05",
           "model_lifecycle": "UNKNOWN",
           "variant_lifecycle": "UNKNOWN",
           "reader_visible_lifecycle": "UNKNOWN",

@@ -10,7 +10,6 @@ document:
   formal_validation: NOT_EXECUTED
   authority: NONE
   production_eligible: false
-
 authority:
   integration_precedence:
     path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -64,12 +63,32 @@ authority:
   security_controls:
     path: docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml
     sha256: c4217f169d43352451ba728f674c72f6df2c0be6e90f36a183b510fa38e7adb8
-    controls: [SEC-GOV-005, SEC-GOV-006, SEC-APP-001, SEC-DATA-003, SEC-DATA-004, SEC-DATA-005, SEC-DATA-006, SEC-DATA-007, SEC-SDLC-006, SEC-SDLC-009, SEC-SDLC-011, SEC-SDLC-012]
+    controls:
+    - SEC-GOV-005
+    - SEC-GOV-006
+    - SEC-APP-001
+    - SEC-DATA-003
+    - SEC-DATA-004
+    - SEC-DATA-005
+    - SEC-DATA-006
+    - SEC-DATA-007
+    - SEC-SDLC-006
+    - SEC-SDLC-009
+    - SEC-SDLC-011
+    - SEC-SDLC-012
   threat_register:
     path: docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
-    threats: [THR-010, THR-014, THR-015, THR-017, THR-018, THR-019, THR-020, THR-024, THR-025]
-
+    threats:
+    - THR-010
+    - THR-014
+    - THR-015
+    - THR-017
+    - THR-018
+    - THR-019
+    - THR-020
+    - THR-024
+    - THR-025
 dependency:
   story_id: ST-1805
   current_readiness: BLOCKED_NO_DECISION
@@ -91,14 +110,13 @@ dependency:
   blocked_or_no_decision_result: UNAVAILABLE
   blocked_or_no_decision_proposals: []
   dependency_status_changed_by_this_story: false
-
 measurement_and_signal_policy:
   measurement_contract:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: aa60d03210ef0cc3917104fff3a8a5b2fef1502fe37649cc5255c785c9b39edd
+    sha256: 28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0
   signal_policy:
     path: changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml
-    sha256: 4a7ff35dd499f74828ee34b12ff33f43c5e190213f3f40b93da100070165ca9e
+    sha256: 5e5ae0a0a90f3614d8fbb7070eaf280e2d6bb314c21df52243577a9c6c259c85
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
   same_program_required: true
@@ -107,14 +125,24 @@ measurement_and_signal_policy:
   mature_cohort_required: true
   positive_denominator_required: true
   missing_as_zero: false
-  unavailable_conditions: [MISSING_OBSERVATIONS, PROGRAM_MISMATCH, PERIOD_MISMATCH, UNVERIFIED_INPUT, COHORT_IMMATURE, DENOMINATOR_UNAVAILABLE, ZERO_DENOMINATOR]
+  unavailable_conditions:
+  - MISSING_OBSERVATIONS
+  - PROGRAM_MISMATCH
+  - PERIOD_MISMATCH
+  - UNVERIFIED_INPUT
+  - COHORT_IMMATURE
+  - DENOMINATOR_UNAVAILABLE
+  - ZERO_DENOMINATOR
   finance_signal_allowed: false
   personal_data_allowed: false
-
 feature_scope:
   default: DISABLED
-  closed_states: [DISABLED, RECORDED_SYNTHETIC_PROPOSAL_EVALUATION_ONLY]
-  executable_environments: [ENV-DEV, ENV-CI]
+  closed_states:
+  - DISABLED
+  - RECORDED_SYNTHETIC_PROPOSAL_EVALUATION_ONLY
+  executable_environments:
+  - ENV-DEV
+  - ENV-CI
   live_enabled_state_exists: false
   activation_interface_exists: false
   disabled_fails_before_port_call: true
@@ -122,10 +150,12 @@ feature_scope:
   caller_bytes_only: true
   one_shot: true
   recorded_synthetic_only: true
-
 proposal_contract:
   output_kind: HUMAN_REVIEW_METADATA_ONLY
-  actions: [STRENGTHEN, CONSOLIDATE, WITHDRAW]
+  actions:
+  - STRENGTHEN
+  - CONSOLIDATE
+  - WITHDRAW
   bases:
     STRENGTHEN: MEASURED_VALUE_GAP_REVIEW
     CONSOLIDATE: VERIFIED_DUPLICATE_INTENT_REVIEW
@@ -139,16 +169,14 @@ proposal_contract:
   automatic_apply: false
   status_APPLY_exists: false
   mutations_applied: []
-
 recorded_fixture:
   path: changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json
-  sha256: 71cbdc3cfb14299402766b4a6a8d59c4b0316f5004fe6e31717597cae415de70
+  sha256: f284f4575832a1beed6f22541b8543a904edbecadc67e8ea461a8d2e1a7ababc
   bytes: 986
   synthetic: true
   current_availability: UNAVAILABLE
   current_reason: DEPENDENCY_BLOCKED_NO_DECISION
   current_proposals: []
-
 mutation_boundary:
   authority: NONE
   activation: false
@@ -170,9 +198,18 @@ mutation_boundary:
   staging: false
   release: false
   production: false
-  recommendation_inputs_excluded: [AFFILIATE_COMMISSION_RATE, CONFIRMED_REWARD, UNATTRIBUTED_REWARD, ESTIMATED_REWARD, COMMISSION, INCREMENTAL_COST, LABOR_COST, EPC, RPM, PROFIT]
+  recommendation_inputs_excluded:
+  - AFFILIATE_COMMISSION_RATE
+  - CONFIRMED_REWARD
+  - UNATTRIBUTED_REWARD
+  - ESTIMATED_REWARD
+  - COMMISSION
+  - INCREMENTAL_COST
+  - LABOR_COST
+  - EPC
+  - RPM
+  - PROFIT
   finance_values_represented: false
-
 verification_boundary:
   focused_behavior_hostile_security: LOCAL_CANDIDATE
   owner_generator_check: LOCAL_CANDIDATE
@@ -185,11 +222,10 @@ verification_boundary:
   release: NOT_EXECUTED
   production: NOT_EXECUTED
   story_acceptance: false
-
 debt:
   introduced: []
   external_or_formal_remaining:
-    - verified same-period same-program mature real observations with positive denominators
-    - Product Owner portfolio decision and policy calibration
-    - formal TST-032 and separate release decision
-    - persistence, monitoring, rollback, staging, release, and Production evidence
+  - verified same-period same-program mature real observations with positive denominators
+  - Product Owner portfolio decision and policy calibration
+  - formal TST-032 and separate release decision
+  - persistence, monitoring, rollback, staging, release, and Production evidence

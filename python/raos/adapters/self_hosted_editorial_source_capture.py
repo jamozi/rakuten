@@ -295,6 +295,16 @@ def _reject_constant(value: str) -> NoReturn:
     _fail(OfficialSourceCaptureFailureCode.CONTRACT_INVALID)
 
 
+def decode_strict_source_json(raw: bytes, *, maximum: int) -> object:
+    """Public exact source-document decoder, with the existing bounded schema parser."""
+    return _strict_json(raw, maximum=maximum)
+
+
+def read_exact_tracked_source_file(repository_root: Path, relative: Path, maximum: int) -> bytes:
+    """Public replay port retaining the tracked-file and immutable-path checks."""
+    return _read_tracked_file(repository_root, relative, maximum)
+
+
 def _strict_json(raw: bytes, *, maximum: int) -> object:
     if (
         type(raw) is not bytes

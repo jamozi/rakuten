@@ -277,6 +277,55 @@ description, a complete self-bound Open Graph/Twitter record, and the
 role-specific RAOS JSON-LD graph without commercial review types. A local pass
 does not claim production sitemap or robots evidence.
 
+## Existing-row restoration rehearsal
+
+This is a separate `local-restore-rehearsal` workflow, not a successful
+`verified-incremental` preview or permission to publish. The pure preparer
+replays the captured MCP content hashes and public date/taxonomy evidence for
+exactly ten articles, three policy pages, and the saved `home` page. It does
+not substitute revised draft text, remove old commerce, or rewrite body URLs.
+An empty saved home body is represented explicitly without an empty private
+file. Raw inputs and generated bodies stay under the fixed owner checkout.
+
+```bash
+.venv/bin/python -B scripts/raos_wordpress_local_restore.py prepare \
+  --snapshot-name live-SNAPSHOT_SHA256.v1.json
+.venv/bin/python -B scripts/raos_wordpress_local_restore.py check-inputs \
+  --preparation-sha256 PREPARATION_SHA256
+```
+
+Preparation writes only
+`/home/minami/rakuten/.secrets/wordpress-mcp/local-restore-PREPARATION_SHA256/`:
+`restoration-seed.v1.json`, nonempty `content/*.html`, and finally the hash-bound
+`preparation-binding.v1.json`. It does not start Docker or change WordPress.
+
+Only an explicit local restoration run uses the dedicated script:
+
+```bash
+changes/wordpress-local-preview-v1/bin/wordpress_preview.sh restore PREPARATION_SHA256
+```
+
+This command does not initialize or activate themes/plugins. It requires the
+existing isolated local environment and all fourteen existing local rows,
+including `home`; missing rows are rejected, not created. Before any article
+update it validates every body, date, target, and hash. The original title,
+excerpt, body, publication/modified dates, and category/tag semantics are
+restored, then checked against a private stored-field readback. Local IDs and
+the complete post/page ID inventory must stay unchanged. Front-page settings,
+theme/plugin selection, and site options are not modified. Production IDs,
+revision history, authors, media metadata, post metadata, and visual design are
+not claimed as restored.
+
+The command writes `restoration-readback.v1.json` and runs the pure verifier to
+write `restoration-receipt.v1.json`. Both remain owner-private and explicitly
+carry `publication_authority: false`; the receipt also carries
+`incremental_preview_pass: false`. A failed or interrupted run has no success
+receipt for its new readback. The receipt certifies only exact stored fields,
+not a visual audit, source freshness, affiliate evidence, or production writes.
+After preflight and before a rerun changes stored fields, any previous readback
+and receipt are moved to content-addressed `previous-*` private filenames.
+They remain recoverable but cannot be mistaken for the current attempt.
+
 ## Reset and boundaries
 
 Ordinary shutdown preserves both named volumes. A full reset is deliberately

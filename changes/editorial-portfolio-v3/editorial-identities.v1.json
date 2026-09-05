@@ -164,9 +164,9 @@
       "cluster_id": "household",
       "intent_group_id": "countertop-dishwasher",
       "content_role": "lifecycle_status_route",
-      "content_role_label": "以前の比較対象の販売状態確認＋現行比較への案内",
-      "primary_query_intent": "SOLOTA NP-TMLK1-Kとラクアmini Plusの販売状態を確認し、現行4候補の比較記事へ移る",
-      "comparison_scope": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
+      "content_role_label": "型番・販売表示の確認案内",
+      "primary_query_intent": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの型番・販売表示を確認し、購入前の確認項目を整理する",
+      "comparison_scope": "NP-TMLK1-KとTK-MDW22Bの型番・販売表示、購入前の確認項目",
       "broader_article_id": "st1704-countertop-dishwasher-for-small-households",
       "home_order": 4,
       "related_article_ids": [

@@ -43,10 +43,16 @@ def test_all_existing_articles_explain_role_accountability_and_limits() -> None:
             "実機確認",
         ):
             assert markup.count(f"<dt>{label}</dt>") == 1, (slug, label)
-        assert "未実施（公式仕様比較）" in markup, slug
-        assert (
-            markup.count("<dt>最終確認日</dt><dd>2026年9月1日</dd>") == 1
-        ), slug
+        first_hand_label = (
+            "未実施（型番・販売表示の確認案内）"
+            if slug == "solota-vs-rakua-mini-plus"
+            else "未実施（公式仕様比較）"
+        )
+        assert first_hand_label in markup, slug
+        checked_on = (
+            "2026年9月5日" if slug == "solota-vs-rakua-mini-plus" else "2026年9月1日"
+        )
+        assert markup.count(f"<dt>最終確認日</dt><dd>{checked_on}</dd>") == 1, slug
         disclosure_heading = (
             "購入リンクなし"
             if slug == "solota-vs-rakua-mini-plus"
@@ -90,7 +96,7 @@ def test_third_party_blog_boundary_is_explicit_and_non_experiential() -> None:
     assert "編集部自身の使用感へ置き換えることもしません" in local
     assert "編集者自身の使用感へ置き換えることもしません" in production
     for policy in (local, production):
-        assert '<time datetime="2026-09-01">2026年9月1日</time>' in policy
+        assert '<time datetime="2026-09-05">2026年9月5日</time>' in policy
         for field in (
             "対象型番",
             "発行者・媒体",
@@ -137,7 +143,7 @@ def test_editorial_summaries_are_not_marked_up_as_third_party_quotations() -> No
         "front-open-carry-on-suitcase-with-stopper": "公称外寸で候補を絞ったあと",
         "lightweight-carry-on-suitcase-under-3kg": "同じ型番について、公称重量",
         "roomba-mini-vs-switchbot-k11-pro": "家具下の高さ、家具脚の間隔",
-        "solota-vs-rakua-mini-plus": "現行機の詳細はこのページで重複比較せず",
+        "solota-vs-rakua-mini-plus": "気になる商品の型番を控え",
     }
     documents = _documents()
     for slug, summary in expected_summaries.items():
@@ -241,7 +247,7 @@ def test_every_article_supports_a_no_purchase_or_keep_existing_decision() -> Non
         "lightweight-carry-on-suitcase-under-3kg": r"手持ちのケース.*(?:買い替えない|買い替え不要)",
         "front-open-carry-on-suitcase-with-stopper": r"手持ちのケース.*(?:買い替えない|買い替え不要)",
         "roomba-mini-vs-switchbot-k11-pro": r"(?:購入を見送る|買い足さない|今の掃除方法)",
-        "solota-vs-rakua-mini-plus": r"購入を見送",
+        "solota-vs-rakua-mini-plus": r"設置条件を満たせない場合は、購入を見送る選択",
     }
     assert set(documents) == set(expected)
     for slug, pattern in expected.items():
@@ -268,7 +274,7 @@ def test_market_scope_and_article_roles_are_explained_in_reader_language() -> No
         "DEEBOT mini 2・Roomba Plus 515 Combo"
     ) in robot_shortlist
     assert "/roomba-mini-vs-switchbot-k11-pro/" in robot_shortlist
-    assert robot_direct.index("06　設置") < robot_direct.index("09　アプリ・Wi-Fi")
+    assert robot_direct.index('id="robot-setup-title"') < robot_direct.index('id="robot-app-title"')
     assert "Panasonic RULO mini" in robot_direct
     assert "販売状態は未確認（推奨根拠に使用しない）" in robot_direct
     assert "RULO miniは次回確認へ回します" in robot_direct

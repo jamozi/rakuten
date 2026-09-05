@@ -12,9 +12,9 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.5.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.5.1';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '89303f68f00b45caacad62685fc6eab410265455abde15e5db2d503ca8dbcff5';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '89303f68f00b45caacad62685fc6eab410265455abde15e5db2d503ca8dbcff5';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -53,10 +53,191 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1'
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = 'assets/editorial-navigation.v3.json';
-const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '25a7cad3916a0658509664abe1a69f2d8f3abe0706cc90e2c979b5c6866c631d';
+const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = 'f7a2d9af7fc9405d49847eb5999d66496bf59e3b0a92f9f621bb13222c57e564';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_MAX_BYTES = 262144;
 const KURASHINOSHIRUBE_HOME_TITLE = '生活用品を公式仕様で比較｜暮らしのしるべ';
 const KURASHINOSHIRUBE_HOME_DESCRIPTION = '暮らしのしるべは、移動・家事・備えの生活用品を、公式情報と確認条件に基づいて比較し、選び方を分かりやすく案内します。';
+const KURASHINOSHIRUBE_LEGACY_MEDIA_PROJECTION_SHA256 = '9512b5cde2fe11857e662a745a372bdd5e2281a4b7c73671979c1ea8c56b0ac9';
+
+/** Hash/range-only contract: no copied article prose or remote image fetch. */
+function kurashinoshirube_legacy_media_projection_contract(): array
+{
+    $root = realpath(get_stylesheet_directory());
+    $path = get_stylesheet_directory() . '/assets/legacy-media-display-projection.v1.json';
+    $resolved = realpath($path);
+    if (! is_string($root) || ! is_string($resolved)
+        || dirname($resolved) !== $root . '/assets' || is_link($path)
+        || ! is_file($path) || ! is_readable($path)
+        || filesize($path) < 1 || filesize($path) > 65536) {
+        return array();
+    }
+    $bytes = file_get_contents($path);
+    if (! is_string($bytes) || ! hash_equals(
+        KURASHINOSHIRUBE_LEGACY_MEDIA_PROJECTION_SHA256, hash('sha256', $bytes)
+    )) {
+        return array();
+    }
+    $value = json_decode($bytes, true, 16, JSON_BIGINT_AS_STRING);
+    return json_last_error() === JSON_ERROR_NONE && is_array($value) ? $value : array();
+}
+
+/** Pure, byte-exact display projection. BLOCKED always retains the input. */
+function kurashinoshirube_project_legacy_media(
+    string $content,
+    string $article_id,
+    string $profile,
+    array $contract
+): array {
+    $input_hash = hash('sha256', $content);
+    $proof = array(
+        'state' => 'NOT_APPLICABLE',
+        'contract_sha256' => KURASHINOSHIRUBE_LEGACY_MEDIA_PROJECTION_SHA256,
+        'input_sha256' => $input_hash,
+        'output_sha256' => $input_hash,
+        'profile' => null,
+        'removed_decoration_count' => 0,
+        'removed_neutral_media_count' => 0,
+    );
+    $unchanged = static function (string $state) use ($content, $proof): array {
+        $proof['state'] = $state;
+        return array('markup' => $content, 'proof' => $proof);
+    };
+    $targets = array(
+        'st1704-portable-power-station-guide' => array('portable-power-station-guide', 28, 8, 2),
+        'st1704-anker-solix-c300-c800-c1000-differences' => array('anker-solix-c300-c800-c1000-differences', 29, 8, 4),
+    );
+    $broken = '/wp-content/themes/kurashinoshirube-child/assets/images/article-portable-power-guide.png';
+    if (! isset($targets[$article_id])) {
+        return $unchanged('NOT_APPLICABLE');
+    }
+    if (! str_contains($content, $broken)
+        && preg_match('/data-raos-product-image-state\s*=\s*["\']neutral["\']/', $content) !== 1) {
+        return $unchanged('NOT_APPLICABLE');
+    }
+    if (! in_array($profile, array('production', 'local-fixture', 'local-stored'), true)
+        || ! kurashinoshirube_has_exact_keys($contract, array('schema', 'version', 'broken_image_path', 'articles'))
+        || $contract['schema'] !== 'RAOS_LEGACY_MEDIA_DISPLAY_PROJECTION_V1'
+        || $contract['version'] !== '1.0.0' || $contract['broken_image_path'] !== $broken
+        || ! is_array($contract['articles'])
+        || ! kurashinoshirube_has_exact_keys($contract['articles'], array_keys($targets))) {
+        return $unchanged('BLOCKED_CONTRACT_INVALID');
+    }
+    $row = $contract['articles'][$article_id];
+    $target = $targets[$article_id];
+    if (! is_array($row)
+        || ! kurashinoshirube_has_exact_keys($row, array('slug', 'post_id', 'baseline_document_sha256', 'profiles'))
+        || $row['slug'] !== $target[0] || $row['post_id'] !== $target[1]
+        || ! is_string($row['baseline_document_sha256'])
+        || preg_match('/\A[a-f0-9]{64}\z/D', $row['baseline_document_sha256']) !== 1
+        || ! is_array($row['profiles'])
+        || ! kurashinoshirube_has_exact_keys($row['profiles'], array('production', 'local-fixture', 'local-stored'))) {
+        return $unchanged('BLOCKED_CONTRACT_INVALID');
+    }
+    $rule = $row['profiles'][$profile];
+    if (! is_array($rule)
+        || ! kurashinoshirube_has_exact_keys($rule, array('input_sha256', 'output_sha256', 'removals'))
+        || ! is_string($rule['input_sha256']) || ! is_string($rule['output_sha256'])
+        || preg_match('/\A[a-f0-9]{64}\z/D', $rule['output_sha256']) !== 1
+        || ! hash_equals($rule['input_sha256'], $input_hash)) {
+        return $unchanged('BLOCKED_INPUT_MISMATCH');
+    }
+    if (! is_array($rule['removals']) || count($rule['removals']) !== $target[2] + $target[3]) {
+        return $unchanged('BLOCKED_CONTRACT_INVALID');
+    }
+    $previous_end = 0;
+    $counts = array('decorative-image' => 0, 'neutral-media' => 0);
+    foreach ($rule['removals'] as $removal) {
+        if (! is_array($removal)
+            || ! kurashinoshirube_has_exact_keys($removal, array('offset', 'length', 'sha256', 'kind'))
+            || ! is_int($removal['offset']) || ! is_int($removal['length'])
+            || $removal['offset'] < $previous_end || $removal['length'] < 1 || $removal['length'] > 4096
+            || $removal['offset'] + $removal['length'] > strlen($content)
+            || ! is_string($removal['sha256']) || ! is_string($removal['kind'])
+            || ! isset($counts[$removal['kind']])) {
+            return $unchanged('BLOCKED_CONTRACT_INVALID');
+        }
+        $fragment = substr($content, $removal['offset'], $removal['length']);
+        if (! hash_equals($removal['sha256'], hash('sha256', $fragment))) {
+            return $unchanged('BLOCKED_FRAGMENT_MISMATCH');
+        }
+        $image = $fragment;
+        if ($removal['kind'] === 'neutral-media') {
+            $prefix = '<div class="raos-product-card__media">';
+            if (! str_starts_with($fragment, $prefix) || ! str_ends_with($fragment, '</div>')) {
+                return $unchanged('BLOCKED_FRAGMENT_INVALID');
+            }
+            $image = substr($fragment, strlen($prefix), -6);
+        }
+        if (preg_match('/\A<img\s+([^<>]+)>\z/D', $image, $match) !== 1
+            || preg_match_all('/([a-z][a-z0-9-]*)="([^"<>]*)"/', $match[1], $attributes, PREG_SET_ORDER) < 1) {
+            return $unchanged('BLOCKED_FRAGMENT_INVALID');
+        }
+        $attrs = array();
+        foreach ($attributes as $attribute) {
+            if (isset($attrs[$attribute[1]])) {
+                return $unchanged('BLOCKED_FRAGMENT_INVALID');
+            }
+            $attrs[$attribute[1]] = html_entity_decode($attribute[2], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        }
+        $rest = preg_replace('/[a-z][a-z0-9-]*="[^"<>]*"/', '', $match[1]);
+        if (! is_string($rest) || trim($rest) !== '' || ($attrs['src'] ?? null) !== $broken) {
+            return $unchanged('BLOCKED_FRAGMENT_INVALID');
+        }
+        if ($removal['kind'] === 'decorative-image') {
+            $expected = array('class' => 'raos-comparison__product-image', 'src' => $broken,
+                'alt' => '', 'width' => '64', 'height' => '64', 'loading' => 'lazy');
+            ksort($expected); ksort($attrs);
+            if ($attrs !== $expected) {
+                return $unchanged('BLOCKED_FRAGMENT_INVALID');
+            }
+        } elseif (! kurashinoshirube_has_exact_keys($attrs, array('src', 'alt', 'width', 'height', 'loading',
+            'data-raos-product-image-id', 'data-raos-product-image-state'))
+            || $attrs['width'] !== '128' || $attrs['height'] !== '128' || $attrs['loading'] !== 'lazy'
+            || $attrs['data-raos-product-image-state'] !== 'neutral'
+            || preg_match('/\APRD-[A-Z0-9-]+\z/D', $attrs['data-raos-product-image-id']) !== 1
+            || ! str_ends_with($attrs['alt'], 'を比較検討するための中立イメージ。商品写真ではありません')) {
+            return $unchanged('BLOCKED_FRAGMENT_INVALID');
+        }
+        ++$counts[$removal['kind']];
+        $previous_end = $removal['offset'] + $removal['length'];
+    }
+    if ($counts !== array('decorative-image' => $target[2], 'neutral-media' => $target[3])) {
+        return $unchanged('BLOCKED_CONTRACT_INVALID');
+    }
+    $output = $content;
+    foreach (array_reverse($rule['removals']) as $removal) {
+        $output = substr($output, 0, $removal['offset'])
+            . substr($output, $removal['offset'] + $removal['length']);
+    }
+    if (! hash_equals($rule['output_sha256'], hash('sha256', $output))) {
+        return $unchanged('BLOCKED_OUTPUT_MISMATCH');
+    }
+    $proof['state'] = 'APPLIED';
+    $proof['profile'] = $profile;
+    $proof['output_sha256'] = hash('sha256', $output);
+    $proof['removed_decoration_count'] = $target[2];
+    $proof['removed_neutral_media_count'] = $target[3];
+    return array('markup' => $output, 'proof' => $proof);
+}
+
+/** Render only; never wp_update_post, database writes, CSS hiding or image substitution. */
+function kurashinoshirube_filter_legacy_media_display($content)
+{
+    if (! is_string($content) || ! is_singular('post') || ! in_the_loop() || ! is_main_query()
+        || get_stylesheet() !== 'kurashinoshirube-child') {
+        return $content;
+    }
+    $identity = kurashinoshirube_public_article_identity((int) get_the_ID());
+    if (! is_array($identity) || get_post_field('post_content', get_the_ID(), 'raw') !== $content) {
+        return $content;
+    }
+    $profile = is_string(kurashinoshirube_local_preview_origin()) ? 'local-stored' : 'production';
+    $result = kurashinoshirube_project_legacy_media(
+        $content, $identity['article_id'], $profile, kurashinoshirube_legacy_media_projection_contract()
+    );
+    return $result['markup'];
+}
+add_filter('the_content', 'kurashinoshirube_filter_legacy_media_display', 1);
 
 /** Load the generated public-safe Editorial V3 navigation or fail closed. */
 function kurashinoshirube_editorial_navigation(): array
@@ -179,7 +360,7 @@ function kurashinoshirube_article_bindings(): array
                     'feature_shortlist' => '機能別比較',
                     'head_to_head_comparison' => '2製品比較',
                     'head_to_head_with_reference' => '2製品比較＋参考機種',
-                    'lifecycle_status_route' => '以前の比較対象の販売状態確認＋現行比較への案内',
+                    'lifecycle_status_route' => '型番・販売表示の確認案内',
                     'model_family_comparison' => 'ブランド内比較',
                 )[$article['content_role']]
             )
@@ -190,7 +371,7 @@ function kurashinoshirube_article_bindings(): array
                 'feature_shortlist' => '機能別比較',
                 'head_to_head_comparison' => '2製品比較',
                 'head_to_head_with_reference' => '2製品比較＋参考機種',
-                'lifecycle_status_route' => '以前の比較対象の販売状態確認＋現行比較への案内',
+                'lifecycle_status_route' => '型番・販売表示の確認案内',
                 'model_family_comparison' => 'ブランド内比較',
             )[$article['content_role']] !== $article['content_role_label']
             || ! kurashinoshirube_is_clean_text($article['primary_query_intent'], 1, 180)
@@ -954,8 +1135,8 @@ function kurashinoshirube_article_visual_asset(int $post_id): ?array
         ),
         'solota-vs-rakua-mini-plus' => array(
             'asset_key' => 'solota-rakua',
-            'caption' => '小型食洗機の販売状態・設置寸法・食器点数・給水方式を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
-            'points' => array('設置寸法', '食器点数', '給水方式'),
+            'caption' => '食洗機の型番・販売元・在庫と納期を順に確認する暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('対象の型番', '公式の販売表示', '在庫・納期'),
         ),
     );
     $assets = array(
@@ -1039,9 +1220,15 @@ function kurashinoshirube_article_visual_asset(int $post_id): ?array
         }
     }
     return array_merge(
-        $assets[$definition['asset_key']],
         array(
-            'caption' => $definition['caption'],
+            'height' => 900,
+            'path' => KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256,
+            'width' => 1600,
+        ),
+        array(
+            'caption' => '鍋、マグカップ、照明とチェックリストを描いた暮らしの道具のイラスト',
+            'diagram_caption' => $definition['caption'],
             'points' => $definition['points'],
         )
     );
@@ -2585,30 +2772,19 @@ function kurashinoshirube_render_article_hero($attributes, $content, $tag): stri
     if ($visual === null) {
         return '';
     }
-    $image_uri = kurashinoshirube_verified_asset_uri(
-        $visual['path'],
-        $visual['sha256'],
-        true
-    );
-    if ($image_uri === null) {
-        return '';
-    }
     $point_items = '';
-    foreach ($visual['points'] as $point) {
-        $point_items .= '<li>' . esc_html($point) . '</li>';
+    foreach ($visual['points'] as $index => $point) {
+        $point_items .= '<li><span aria-hidden="true">0'
+            . (string) ($index + 1) . '</span>' . esc_html($point) . '</li>';
     }
-    return '<figure class="wp-block-image size-full raos-article-hero-image">'
+    return '<figure class="raos-article-hero-image raos-article-hero-image--criteria">'
         . '<div class="raos-article-hero-image__canvas">'
         . '<p class="raos-article-hero-image__notice">'
         . '比較イメージ／商品写真ではありません</p>'
-        . '<div class="raos-article-hero-image__media"><img src="'
-        . esc_url($image_uri) . '" alt="" width="'
-        . esc_attr((string) $visual['width']) . '" height="'
-        . esc_attr((string) $visual['height']) . '"></div>'
         . '<div class="raos-article-hero-image__overlay">'
-        . '<p>この記事の比較軸</p>'
-        . '<ul aria-label="この記事で比べる3つの軸">' . $point_items . '</ul></div></div>'
-        . '<figcaption>' . esc_html($visual['caption']) . '</figcaption>'
+        . '<p>この記事で確認すること</p>'
+        . '<ol aria-label="この記事で確認する3つの項目">' . $point_items . '</ol></div></div>'
+        . '<figcaption>' . esc_html($visual['diagram_caption']) . '</figcaption>'
         . '</figure>';
 }
 add_shortcode(
@@ -3127,8 +3303,11 @@ function kurashinoshirube_render_featured_guide($attributes, $content, $tag): st
         . '<p>停電時に使う機器と持ち運び方から、必要な容量と出力を整理します。</p></div>'
         . '<article class="raos-featured-guide"><figure class="raos-featured-guide__visual '
         . 'raos-featured-guide__visual--power"><a href="' . esc_url($permalink)
-        . '"><span class="screen-reader-text">' . esc_html($read_label)
-        . '</span></a></figure>'
+        . '"><span class="raos-featured-guide__diagram" aria-hidden="true">'
+        . '<span>01　使いたい機器を決める</span><span>02　必要な出力を確かめる</span>'
+        . '<span>03　使う時間から容量を考える</span></span>'
+        . '<span class="screen-reader-text">' . esc_html($read_label)
+        . '</span></a><figcaption>選ぶ順番を示す比較図。商品写真ではありません。</figcaption></figure>'
         . '<div class="raos-featured-guide__body"><p class="raos-article-category">'
         . esc_html($section) . 'テーマ／選び方ガイド</p><h3><a href="'
         . esc_url($permalink) . '">' . esc_html($title) . '</a></h3><p>'
@@ -3142,6 +3321,25 @@ add_shortcode(
     'kurashinoshirube_featured_guide',
     'kurashinoshirube_render_featured_guide'
 );
+
+/** Label the content actually stored, including a mixed old/new publication. */
+function kurashinoshirube_stored_guide_role(int $post_id): string
+{
+    $identity = kurashinoshirube_public_article_identity($post_id);
+    $body = get_post_field('post_content', $post_id, 'raw');
+    if (
+        is_array($identity)
+        && $identity['article_id'] === 'solota-vs-rakua-mini-plus'
+        && is_string($body)
+        && substr_count(
+            $body,
+            '<dt>記事分類</dt><dd>型番・販売表示の確認案内</dd>'
+        ) === 1
+    ) {
+        return '型番・販売表示の確認案内';
+    }
+    return '比較・選び方ガイド';
+}
 
 /** Render synthetic local posts in the exact generated cluster order. */
 function kurashinoshirube_local_preview_cluster_items(
@@ -3181,9 +3379,9 @@ function kurashinoshirube_local_preview_cluster_items(
             return '';
         }
         $items .= '<li><a href="' . esc_url($permalink) . '">'
-            . esc_html($binding['title'])
+            . esc_html(get_post_field('post_title', (int) $post->ID, 'raw'))
             . '<small class="raos-guide-role">'
-            . esc_html($binding['content_role_label']) . '</small>'
+            . esc_html(kurashinoshirube_stored_guide_role((int) $post->ID)) . '</small>'
             . '<span aria-hidden="true">→</span></a></li>';
     }
     return $items;
@@ -3253,8 +3451,9 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
                 continue;
             }
             $items .= '<li><a href="' . esc_url($expected_permalink) . '">'
-                . esc_html($title) . '<small class="raos-guide-role">'
-                . esc_html($binding['content_role_label'])
+                . esc_html(get_post_field('post_title', (int) $post->ID, 'raw'))
+                . '<small class="raos-guide-role">'
+                . esc_html(kurashinoshirube_stored_guide_role((int) $post->ID))
                 . '</small><span aria-hidden="true">→</span></a></li>';
         }
         if ($items === '') {
@@ -3438,15 +3637,58 @@ function kurashinoshirube_policy_page_head_map(): array
             'title' => '運営・広告方針',
         ),
         'comparison-policy' => array(
-            'description' => '暮らしのしるべの比較対象、根拠の扱い、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。',
+            'description' => '公式情報の確かめ方、実機未使用の明示、Codexによる調査支援と運営者の公開承認、訂正手順を説明します。',
             'title' => '比較・編集方針',
         ),
         'privacy-policy' => array(
-            'description' => '暮らしのしるべの取得情報、任意計測の初期状態、同意・撤回、保持期間、外部送信、問い合わせ先を説明します。',
+            'description' => '追加のアクセス・クリック計測を行わない方針と、問い合わせ情報や外部アフィリエイトリンクの取扱いを説明します。',
             'title' => 'プライバシーポリシー',
         ),
     );
-    return kurashinoshirube_is_local_preview() ? $local : $production;
+    if (! kurashinoshirube_is_local_preview()) {
+        return $production;
+    }
+    // The isolated mixed preview contains real baseline or proposed production
+    // policy copy. It must not silently substitute local-only privacy wording.
+    // This option has no effect at all outside the strict loopback environment.
+    $mixed = get_option('raos_mixed_preview_policy_heads_v1', null);
+    if ($mixed === null) {
+        return $local;
+    }
+    if (
+        ! is_array($mixed)
+        || ($mixed['schema'] ?? null) !== 'RAOS_WORDPRESS_MIXED_PREVIEW_POLICY_HEADS_V1'
+        || ($mixed['publication_profile'] ?? null) !== 'verified-incremental'
+        || ($mixed['publication_authority'] ?? null) !== false
+        || ! is_string($mixed['preparation_binding_sha256'] ?? null)
+        || preg_match('/\A[a-f0-9]{64}\z/D', $mixed['preparation_binding_sha256']) !== 1
+        || ! is_array($mixed['pages'] ?? null)
+        || array_keys($mixed['pages']) !== array('about-ad-policy', 'comparison-policy', 'privacy-policy')
+    ) {
+        return array();
+    }
+    $heads = array();
+    foreach ($mixed['pages'] as $slug => $record) {
+        $post = get_page_by_path($slug, OBJECT, 'page');
+        if (
+            ! is_array($record)
+            || ! is_string($record['title'] ?? null)
+            || ! kurashinoshirube_is_clean_text($record['title'], 2, 100)
+            || ! is_string($record['description'] ?? null)
+            || ! kurashinoshirube_is_clean_text($record['description'], 30, 180)
+            || ! is_string($record['content_sha256'] ?? null)
+            || preg_match('/\A[a-f0-9]{64}\z/D', $record['content_sha256']) !== 1
+            || ! ($post instanceof WP_Post)
+            || get_post_status($post) !== 'publish'
+            || get_post_field('post_title', $post->ID, 'raw') !== $record['title']
+            || get_post_field('post_excerpt', $post->ID, 'raw') !== $record['description']
+            || hash('sha256', (string) get_post_field('post_content', $post->ID, 'raw')) !== $record['content_sha256']
+        ) {
+            return array();
+        }
+        $heads[$slug] = array('title' => $record['title'], 'description' => $record['description']);
+    }
+    return $heads;
 }
 
 /**

@@ -35,6 +35,7 @@
   ],
   "bridge_tools": [
     "deployment-status",
+    "operation-status",
     "publication-batch-status",
     "release-wait-and-apply",
     "theme-propose-release",
@@ -42,6 +43,26 @@
     "plugin-apply-change",
     "operation-recover"
   ],
+  "operation_status": {
+    "command": "operation-status",
+    "input_fields": ["operation_id"],
+    "operation_id_pattern": "^[0-9a-f]{64}$",
+    "method": "GET",
+    "path_template": "/operations/{operation_id}",
+    "response_fields": ["kind", "operation"],
+    "kinds": ["CONTENT_RELEASE", "THEME_RELEASE", "PLUGIN_CHANGE"],
+    "receipt_schema": "OperationReceiptV1",
+    "receipt_ids_match_request": true,
+    "existing_server_expiry_reconciliation": true,
+    "expired_approval_lease_cleanup": true,
+    "lists_operations": false,
+    "accepts_arbitrary_url": false,
+    "starts_publication": false,
+    "waits_for_approval": false,
+    "applies": false,
+    "recovers": false,
+    "finalizes": false
+  },
   "credential_stores": {
     "editor": ".secrets/wordpress-mcp/editor-application-password.v1.json",
     "operator": ".secrets/wordpress-mcp/operator-application-password.v1.json",

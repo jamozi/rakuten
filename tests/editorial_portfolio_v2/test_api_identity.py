@@ -155,12 +155,15 @@ def test_empty_page_with_zero_hits_is_not_a_provider_failure() -> None:
         owner.discover_rakuten_identity_v1(binding(), json.dumps(document).encode())
 
 
+@pytest.mark.parametrize("separate_private_root", [False, True])
 def test_identity_receipt_replays_snapshot_and_rejects_tampering(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
+    separate_private_root: bool,
 ) -> None:
     monkeypatch.setattr(owner, "portfolio_sha256", lambda _: "a" * 64)
-    root = tmp_path / owner.STATUS_RELATIVE_PATH.parent / "provider"
+    private_root = tmp_path / "private-store" if separate_private_root else None
+    root = (private_root or tmp_path) / owner.STATUS_RELATIVE_PATH.parent / "provider"
     root.mkdir(parents=True, mode=0o700)
     raw = response("MODEL-1 ホワイト 食洗機")
     snapshot = root / "PRD-TEST-API.search-response.v2.json"
@@ -189,7 +192,7 @@ def test_identity_receipt_replays_snapshot_and_rejects_tampering(
     now = datetime(2026, 9, 5, 1, tzinfo=UTC)
     assert (
         owner.resolve_rakuten_identity_v1(
-            tmp_path, binding(), now=now
+            tmp_path, binding(), now=now, private_root=private_root
         ).rakuten_item_code
         == "shop:10000000"
     )
@@ -203,8 +206,12 @@ def test_identity_receipt_replays_snapshot_and_rejects_tampering(
     ):
         save({**receipt, field: value})
         with pytest.raises(owner.EditorialPortfolioV2Failure):
-            owner.resolve_rakuten_identity_v1(tmp_path, binding(), now=now)
+            owner.resolve_rakuten_identity_v1(
+                tmp_path, binding(), now=now, private_root=private_root
+            )
     save(receipt)
     snapshot.write_bytes(response("MODEL-2 ホワイト 食洗機"))
     with pytest.raises(owner.EditorialPortfolioV2Failure):
-        owner.resolve_rakuten_identity_v1(tmp_path, binding(), now=now)
+        owner.resolve_rakuten_identity_v1(
+            tmp_path, binding(), now=now, private_root=private_root
+        )

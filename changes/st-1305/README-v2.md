@@ -43,3 +43,11 @@ Neither owner grants provider, network, credential, database, persistence,
 public projection, publication, approval, staging, release or Production
 authority. Formal TST-030, real provider/report input, live, staging, release
 and Production remain `NOT_EXECUTED`.
+
+Normal generation verifies the prior synthetic fixture's authored runtime
+hash, requires unchanged article IDs, slots, slugs and intent classifications,
+and replays current unit-economics inputs before refreshing only dependency and
+calculated input/result hashes. The request and its timestamp remain unchanged;
+no measurement, verification state or live evidence is created. `--check` and
+runtime loading stay strict and read-only. Inconsistent references fail closed,
+and ordinary binding-write failures roll back prior replacements.

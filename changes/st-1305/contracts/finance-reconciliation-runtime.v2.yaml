@@ -3,12 +3,13 @@ document:
   story_id: ST-1305
   classification: MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_FINANCE_RECONCILIATION
   status: LOCAL_CODE_COMPLETE
-  executable_environments: [ENV-DEV, ENV-CI]
+  executable_environments:
+  - ENV-DEV
+  - ENV-CI
   authority: RECORDED_SYNTHETIC_ONLY
   canonical_status: UNCHANGED
   formal_validation_claimed: false
   production_eligible: false
-
 source_bindings:
   canonical_story:
     path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
@@ -45,26 +46,25 @@ source_bindings:
     sha256: 6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd
   st1303_runtime:
     path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: 3ba471e700ae4a03a8e1c15b104c85ad645befa06863c5183a5110b5544b8d7d
+    sha256: 1671d1f6f4069e69ffd3557a1fa8943ac6ba9c5623acaf3443102a8c00e6d476
   st1303_projection:
     path: changes/st-1303/generated/attribution-engine-recorded.v2.json
-    sha256: 3c668f7dc69bcbb5a8be91966fcdde1710feffee32458f985f5fe77c73e1c62c
+    sha256: ebfae2f7cb6f49acae86fc37775bd84083952160ef3088a75a6ec7a9f66745b2
   st1303_fixture:
     path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
-    sha256: 3eb8f23ae8504312cff34330dcb112069fa50503fb0e3c8f00beff7185a436ad
+    sha256: b209b37b278ce64fd8c757250f3f103f937c24ae8abc636a58e7952333bf97b1
   st1304_runtime:
     path: changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
-    sha256: cbea905bf38d75a1f359ae5f225615e7ca1d17bf026201ded62c2972024fadfa
+    sha256: 601d0919b57d50745168ae90c3a4a8c49737af3ddf0dc14531efbabc4a183578
   st1304_projection:
     path: changes/st-1304/generated/cost-unit-economics-recorded.v2.json
-    sha256: c585189cd438eb4592a254fdea686e6cfb8e2c97541de168617686c71d1adb8f
+    sha256: 6855697006be52747528872969316ec6025af6b4a887b33caaa425b2351e7839
   st1304_fixture:
     path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
-    sha256: 15d6d058da46921b2288dd09c5b780b95fd67c3182d8316b2013283a6ad68f2c
+    sha256: b6d7a29b5490a3b0449a788578b6d68bdb2f5140078cc72ffd022c3840041da3
   five_slot_measurement:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 69bd518321cbd5327b920c6245a4cfa861f881234bd8ba93dc09bde5c85c7fb9
-
+    sha256: 28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0
 open_decision_boundary:
   report_sample:
     id: OD-003
@@ -86,13 +86,17 @@ open_decision_boundary:
     status: HUMAN_DECISION_REQUIRED
     resolved: false
     safe_default: AUTOMATIC_DELETION_DISABLED
-
 report_contract:
   profile: RAOS_ST1305_RECORDED_SYNTHETIC_V2
   method_version: RAOS_ST1305_FINANCE_RECONCILIATION_V2
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
-  article_slots: [1, 2, 3, 4, 5]
+  article_slots:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
   exact_dependency_recalculation_required: true
   same_program_required: true
   same_period_required: true
@@ -102,29 +106,28 @@ report_contract:
   missing_as_zero: false
   synthetic_provider_report_claimed: false
   canonical_dimensions:
-    - file_hash_uniqueness
-    - row_count
-    - generated_confirmed_cancelled_amount_totals
-    - currency
-    - period
-    - duplicate_provider_row
-    - dry_run_to_commit_hash_equality
+  - file_hash_uniqueness
+  - row_count
+  - generated_confirmed_cancelled_amount_totals
+  - currency
+  - period
+  - duplicate_provider_row
+  - dry_run_to_commit_hash_equality
   unavailable_without_real_report:
-    - file_hash_uniqueness
-    - row_count
-    - generated_confirmed_cancelled_amount_totals
-    - dry_run_to_commit_hash_equality
+  - file_hash_uniqueness
+  - row_count
+  - generated_confirmed_cancelled_amount_totals
+  - dry_run_to_commit_hash_equality
   batch_totals_required: true
   typed_exceptions_required: true
   raw_provider_rows_in_report: false
-
 metric_contract:
   metrics:
-    - search_ctr
-    - affiliate_click_rate
-    - confirmed_reward_per_click_jpy
-    - confirmation_rate
-    - confirmed_reward_per_content_hour_jpy
+  - search_ctr
+  - affiliate_click_rate
+  - confirmed_reward_per_click_jpy
+  - confirmation_rate
+  - confirmed_reward_per_content_hour_jpy
   source: EXACT_ST1303_RECALCULATION
   same_program_period_verified_mature_only: true
   explicit_observed_zero_is_zero: true
@@ -132,32 +135,31 @@ metric_contract:
   unavailable_value: null
   provider_direct_estimated_unattributed_separate: true
   unattributed_reward_article_allocation: false
-
 learning_contract:
   output_kind: REVIEW_CANDIDATES_ONLY
   allowed_signals:
-    - search_impressions
-    - search_clicks
-    - article_views
-    - affiliate_clicks
-    - broken_links
-    - intent_classification
+  - search_impressions
+  - search_clicks
+  - article_views
+  - affiliate_clicks
+  - broken_links
+  - intent_classification
   excluded_finance_signals:
-    - pending_outcomes
-    - confirmed_outcomes
-    - rejected_outcomes
-    - direct_confirmed_reward_jpy
-    - unattributed_confirmed_reward_jpy
-    - affiliate_commission_rate
-    - incremental_cost_jpy
-    - work_minutes
-    - epc
-    - rpm
-    - profit
+  - pending_outcomes
+  - confirmed_outcomes
+  - rejected_outcomes
+  - direct_confirmed_reward_jpy
+  - unattributed_confirmed_reward_jpy
+  - affiliate_commission_rate
+  - incremental_cost_jpy
+  - work_minutes
+  - epc
+  - rpm
+  - profit
   rules:
-    - BROKEN_LINK_REPAIR_REVIEW
-    - SEARCH_INTENT_ALIGNMENT_REVIEW
-    - PURCHASE_DECISION_BRIDGE_REVIEW
+  - BROKEN_LINK_REPAIR_REVIEW
+  - SEARCH_INTENT_ALIGNMENT_REVIEW
+  - PURCHASE_DECISION_BRIDGE_REVIEW
   rule_order_then_slot_order: true
   reward_or_profit_priority: false
   article_html_mutation: false
@@ -165,7 +167,6 @@ learning_contract:
   product_selection_mutation: false
   recommendation_order_mutation: false
   publication_snapshot_mutation: false
-
 authority_boundary:
   provider_call: false
   network: false
@@ -185,28 +186,26 @@ authority_boundary:
   release: false
   production: false
   recommendation_inputs_excluded:
-    - AFFILIATE_COMMISSION_RATE
-    - CONFIRMED_REWARD
-    - UNATTRIBUTED_REWARD
-    - ESTIMATED_REWARD
-    - COMMISSION
-    - INCREMENTAL_COST
-    - LABOR_COST
-    - EPC
-    - RPM
-    - PROFIT
-
+  - AFFILIATE_COMMISSION_RATE
+  - CONFIRMED_REWARD
+  - UNATTRIBUTED_REWARD
+  - ESTIMATED_REWARD
+  - COMMISSION
+  - INCREMENTAL_COST
+  - LABOR_COST
+  - EPC
+  - RPM
+  - PROFIT
 recorded_fixture:
   path: changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json
-  sha256: 685267fbd21e48ae5b0be3db2e7e01aa3e3a432e859f21c28bf38afc4275fddb
+  sha256: 2b332efac448db83bedf7b359b00728a0d003169189b974179158b9ac639a0c6
   synthetic: true
-  unit_economics_fixture_sha256: 15d6d058da46921b2288dd09c5b780b95fd67c3182d8316b2013283a6ad68f2c
-  unit_economics_input_sha256: b6c80bc4b12e81a9d126793475c5c9650a2be5c01d5d398ddb1ca96199edcb47
-  unit_economics_result_sha256: d69b2a6a40f3b79a294e9a3853936e7f6cbb733cb8986f93d09757422dade5b2
-  reconciliation_input_sha256: 5a45abb3840505ed2263410d91cc9e253a2451262d68d1eca4942f966f04d831
-  reconciliation_result_sha256: 212cdea72431bf214db284b7dc41a3d7d66ece4b01ded23a16d97ce07f64a4d5
+  unit_economics_fixture_sha256: b6d7a29b5490a3b0449a788578b6d68bdb2f5140078cc72ffd022c3840041da3
+  unit_economics_input_sha256: 3fdc5f40e5a4a3499a7aef0fa2a9fe6b97329ea8b291a6d8d26733b079678f34
+  unit_economics_result_sha256: 24047bc8cd0e1df1610deee64ee73925b40c0e2dadb0c12319c9169f662245c3
+  reconciliation_input_sha256: a029170def897a0d5a9b0352382b9b1679c647ea737363c12980d655ff784d17
+  reconciliation_result_sha256: 10bd56c82d65b39b499955a089ad1a995c7c3171664ade9d1d5efb224591282d
   provider_execution: NOT_EXECUTED
-
 verification_boundary:
   local_unit_property_adversarial: CANDIDATE
   dependency_regression: CANDIDATE

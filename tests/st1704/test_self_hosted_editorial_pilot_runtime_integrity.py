@@ -18,7 +18,9 @@ from typing import Any, Callable, cast
 import pytest
 
 import raos.adapters.self_hosted_editorial_pilot_json as json_adapter_module
+import raos.adapters.self_hosted_editorial_pilot_https as https_adapter_module
 import raos.adapters.self_hosted_wordpress_credentials as credential_module
+from raos.domain.editorial.self_hosted_editorial_pilot import EditorialPilotFailure
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -281,7 +283,9 @@ def test_regenerated_runtime_manifest_accepts_tracked_dependency_change(
     copied_root = _copy_committed_runtime(tmp_path)
     _rewrite_dependency_and_manifest(copied_root)
     sources, _identity = _load(copied_root)
-    assert sources[DEPENDENCY_RELATIVE] == (copied_root / DEPENDENCY_RELATIVE).read_bytes()
+    assert (
+        sources[DEPENDENCY_RELATIVE] == (copied_root / DEPENDENCY_RELATIVE).read_bytes()
+    )
 
 
 def test_git_commit_state_does_not_authorize_or_block_runtime_manifest(
@@ -291,7 +295,9 @@ def test_git_commit_state_does_not_authorize_or_block_runtime_manifest(
     _rewrite_dependency_and_manifest(copied_root)
     _commit(copied_root, "manifest only", MANIFEST_RELATIVE)
     sources, _identity = _load(copied_root)
-    assert sources[DEPENDENCY_RELATIVE] == (copied_root / DEPENDENCY_RELATIVE).read_bytes()
+    assert (
+        sources[DEPENDENCY_RELATIVE] == (copied_root / DEPENDENCY_RELATIVE).read_bytes()
+    )
 
 
 def test_unmanifested_transitive_live_dependency_drift_refuses_before_side_effects(
@@ -416,6 +422,39 @@ def test_verified_modules_and_tracked_documents_survive_post_verify_swap(
         for name, module in saved_stage_zero_modules.items():
             if module is not None:
                 sys.modules[name] = module
+
+
+def test_navigation_role_accepts_current_owner_label_and_rejects_rehashed_old_label(
+    tmp_path: Path,
+) -> None:
+    navigation_path = https_adapter_module._THEME_NAVIGATION_RELATIVE_PATH
+    contract_path = https_adapter_module._THEME_CONTRACT_RELATIVE_PATH
+    navigation = json.loads((ROOT / navigation_path).read_bytes())
+    contract = json.loads((ROOT / contract_path).read_bytes())
+    target = next(
+        row
+        for row in navigation["articles"]
+        if row["article_id"] == "solota-vs-rakua-mini-plus"
+    )
+    assert target["content_role_label"] == "型番・販売表示の確認案内"
+    # The unchanged owner projection must be valid before a negative fixture.
+    for relative in (navigation_path, contract_path):
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes((ROOT / relative).read_bytes())
+    articles, _clusters = https_adapter_module._load_theme_navigation_v3(tmp_path)
+    assert (
+        articles[target["article_id"]]["content_role_label"]
+        == target["content_role_label"]
+    )
+
+    target["content_role_label"] = "以前の比較対象の販売状態確認＋現行比較への案内"
+    raw = json.dumps(navigation, ensure_ascii=False, sort_keys=True).encode()
+    contract["editorial_navigation"]["sha256"] = hashlib.sha256(raw).hexdigest()
+    (tmp_path / navigation_path).write_bytes(raw)
+    (tmp_path / contract_path).write_text(json.dumps(contract), encoding="utf-8")
+    with pytest.raises(EditorialPilotFailure, match="PACKET_INVALID"):
+        https_adapter_module._load_theme_navigation_v3(tmp_path)
 
 
 def test_documented_direct_python_process_accepts_stage_zero(tmp_path: Path) -> None:

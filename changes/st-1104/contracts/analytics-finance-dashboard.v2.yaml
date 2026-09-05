@@ -3,12 +3,13 @@ document:
   story_id: ST-1104
   classification: MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_ANALYTICS_FINANCE_DASHBOARD_V2
   status: LOCAL_CODE_COMPLETE
-  executable_environments: [ENV-DEV, ENV-CI]
+  executable_environments:
+  - ENV-DEV
+  - ENV-CI
   canonical_status: UNCHANGED
   historical_v1_replaced: false
   formal_validation_claimed: false
   production_eligible: false
-
 source_bindings:
   integration_precedence:
     path: docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
@@ -93,13 +94,13 @@ source_bindings:
     sha256: 864e0f4f7d6925b3fe513ed329ad5b21a8fec32a193a18cd3aee91cbbac0b0f0
   st1304_runtime:
     path: changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
-    sha256: cbea905bf38d75a1f359ae5f225615e7ca1d17bf026201ded62c2972024fadfa
+    sha256: 601d0919b57d50745168ae90c3a4a8c49737af3ddf0dc14531efbabc4a183578
   st1304_projection:
     path: changes/st-1304/generated/cost-unit-economics-recorded.v2.json
-    sha256: c585189cd438eb4592a254fdea686e6cfb8e2c97541de168617686c71d1adb8f
+    sha256: 6855697006be52747528872969316ec6025af6b4a887b33caaa425b2351e7839
   st1304_fixture:
     path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
-    sha256: 15d6d058da46921b2288dd09c5b780b95fd67c3182d8316b2013283a6ad68f2c
+    sha256: b6d7a29b5490a3b0449a788578b6d68bdb2f5140078cc72ffd022c3840041da3
   st1304_domain:
     path: python/raos/domain/finance/unit_economics.py
     sha256: 5f21551473f0c3ac3a56d7b385c43b77f554ea45c1c55b28f1d0f3aee4e9a575
@@ -114,35 +115,40 @@ source_bindings:
     sha256: 0956071070accd9752cc0e404b685f9d4d2ceeb6da70fafd0b1bb187efde7841
   st1303_generator:
     path: scripts/build_st1303_attribution_engine.py
-    sha256: b8f3b8e14061a5385e338085ed91fc1155a63dd7fe850a037ac5ae66b00436fd
+    sha256: 10328301d42156b16ca87bfcea2ad7f25686b2388681ec4ae1231bb53d37b074
   st1303_contract:
     path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: 00feba86e4ca349d5348421679111c21e20fd13e898d8000491dd8d708afcbe3
+    sha256: 1671d1f6f4069e69ffd3557a1fa8943ac6ba9c5623acaf3443102a8c00e6d476
   st1303_fixture:
     path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
-    sha256: ec6e793680946b317ac97cd0ba9c067cfcf9f06841a3558e52949c950b3e2793
-
+    sha256: b209b37b278ce64fd8c757250f3f103f937c24ae8abc636a58e7952333bf97b1
 recorded_fixture:
   path: changes/st-1104/fixtures/analytics-finance-dashboard-recorded.synthetic.v2.json
-  sha256: c9c4fe65b7fa00c8b7d8e1230a72d1b98e9b1a4efe93b8e2ebf8aeb5dbdc720b
-  bytes: 1734
+  sha256: 2a892c10d4f2c3f43fc7278a9dcea38d183a818b5425e9a59cd0432d8b7253cb
+  bytes: 1818
   synthetic: true
   environment: ENV-CI
   st1205_input_sha256: 5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92
-  st1304_input_sha256: b6c80bc4b12e81a9d126793475c5c9650a2be5c01d5d398ddb1ca96199edcb47
-  st1304_result_sha256: d69b2a6a40f3b79a294e9a3853936e7f6cbb733cb8986f93d09757422dade5b2
+  st1304_input_sha256: 3fdc5f40e5a4a3499a7aef0fa2a9fe6b97329ea8b291a6d8d26733b079678f34
+  st1304_result_sha256: 24047bc8cd0e1df1610deee64ee73925b40c0e2dadb0c12319c9169f662245c3
   provider_execution: NOT_EXECUTED
-
 screen_contract:
-  order: [ANA-001, ANA-002, ANA-003, FIN-001, FIN-002, FIN-003]
+  order:
+  - ANA-001
+  - ANA-002
+  - ANA-003
+  - FIN-001
+  - FIN-002
+  - FIN-003
   exact_count: 6
   route_registration: DISABLED_ST1101_AUTH_TRANSPORT
   mapping_authority: LOCAL_HEADLESS_CANDIDATE_ONLY
-  canonical_dashboard_references: [DASH-002, DASH-003]
+  canonical_dashboard_references:
+  - DASH-002
+  - DASH-003
   source_period_merge_allowed: false
   unknown_as_zero_allowed: false
   unavailable_as_empty_success_allowed: false
-
 data_contract:
   classification: CONFIDENTIAL
   source_mode: RECORDED_SYNTHETIC_DEV_CI_ONLY
@@ -159,7 +165,6 @@ data_contract:
   unattributed_allocation_allowed: false
   recommendation_input_allowed: false
   public_projection_allowed: false
-
 unavailable_contract:
   missing: UNAVAILABLE
   unverified: UNAVAILABLE
@@ -168,7 +173,6 @@ unavailable_contract:
   period_mismatch: UNAVAILABLE_PERIOD_MISMATCH
   verified_zero: AVAILABLE_ZERO
   unavailable_value: null
-
 accessibility_contract:
   one_h1_required: true
   skip_link_required: true
@@ -181,16 +185,14 @@ accessibility_contract:
   zoom_target_percent: 200
   rendered: false
   browser_verified: false
-
 security_controls:
-  - SEC-IAM-002
-  - SEC-IAM-004
-  - SEC-IAM-005
-  - SEC-APP-008
-  - SEC-DATA-003
-  - SEC-DATA-005
-  - SEC-SDLC-006
-
+- SEC-IAM-002
+- SEC-IAM-004
+- SEC-IAM-005
+- SEC-APP-008
+- SEC-DATA-003
+- SEC-DATA-005
+- SEC-SDLC-006
 authority_boundary:
   authentication_established: false
   authorization_granted: false
@@ -213,7 +215,6 @@ authority_boundary:
   staging_authorized: false
   release_authorized: false
   production_authorized: false
-
 verification_boundary:
   local_model_and_negative_tests: CANDIDATE
   owner_generator_check: CANDIDATE

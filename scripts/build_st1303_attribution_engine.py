@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Mapping, Sequence
+import copy
+from dataclasses import replace
 import hashlib
 import json
 import os
@@ -130,7 +132,6 @@ SOURCE_BINDINGS: Final = {
     },
     "five_slot_measurement": {
         "path": ST1704_CONTRACT_PATH.as_posix(),
-        "sha256": "69bd518321cbd5327b920c6245a4cfa861f881234bd8ba93dc09bde5c85c7fb9",
     },
 }
 
@@ -240,10 +241,10 @@ def _fail(code: str, field: str) -> NoReturn:
     raise AttributionBuildError(f"ST-1303 build failed: {code} field={field}")
 
 
-def _mapping(value: object, field: str) -> Mapping[str, Any]:
+def _mapping(value: object, field: str) -> dict[str, Any]:
     if type(value) is not dict or any(type(key) is not str for key in value):
         _fail("TYPE_MISMATCH", field)
-    return cast(Mapping[str, Any], value)
+    return cast(dict[str, Any], value)
 
 
 def _sha256(payload: bytes) -> str:
@@ -316,10 +317,19 @@ def _load_json(root: Path, relative: Path, field: str) -> Mapping[str, Any]:
     return _mapping(value, field)
 
 
+def _current_source_bindings(root: Path) -> dict[str, dict[str, str]]:
+    bindings = copy.deepcopy(SOURCE_BINDINGS)
+    bindings["five_slot_measurement"]["sha256"] = _sha256(
+        _read(root, ST1704_CONTRACT_PATH, "five_slot_measurement")
+    )
+    return bindings
+
+
 def _validate_bindings(root: Path, source: object) -> None:
-    if source != SOURCE_BINDINGS:
+    expected = _current_source_bindings(root)
+    if source != expected:
         _fail("SOURCE_BINDING_SCHEMA_DRIFT", "source_bindings")
-    for name, binding in SOURCE_BINDINGS.items():
+    for name, binding in expected.items():
         path = Path(binding["path"])
         if (
             input_hash_required(path.as_posix())
@@ -480,10 +490,10 @@ def _measurement_contract(
         _fail("MEASUREMENT_CONTRACT_INVALID", "measurement_contract")
 
 
-def load_contract(
-    root: Path = REPO_ROOT,
+def _validated_contract(
+    contract: Mapping[str, Any],
+    root: Path,
 ) -> tuple[Mapping[str, Any], MeasurementAttributionContract]:
-    contract = _load_yaml(root)
     if tuple(contract) != CONTRACT_KEYS:
         _fail("CONTRACT_SCHEMA_DRIFT", "contract")
     if contract["document"] != EXPECTED_DOCUMENT:
@@ -502,6 +512,120 @@ def load_contract(
         _fail("VERIFICATION_BOUNDARY_DRIFT", "verification_boundary")
     _validate_canonical_semantics(root)
     return contract, measurement
+
+
+def load_contract(
+    root: Path = REPO_ROOT,
+) -> tuple[Mapping[str, Any], MeasurementAttributionContract]:
+    return _validated_contract(_load_yaml(root), root)
+
+
+def _upstream_binding_payloads(root: Path) -> dict[Path, bytes]:
+    """Rebind only unchanged article identities in the tracked synthetic case."""
+    contract = copy.deepcopy(dict(_load_yaml(root)))
+    measurement = _mapping(contract.get("measurement_contract"), "measurement_contract")
+    previous = copy.deepcopy(dict(measurement))
+    upstream = _load_json(root, ST1704_CONTRACT_PATH, "five_slot_measurement")
+    old_articles = previous.get("articles")
+    new_articles = upstream.get("articles")
+    identity_keys = ("slot", "article_id", "slug", "intent_classification")
+    if (
+        type(old_articles) is not list
+        or type(new_articles) is not list
+        or len(old_articles) != 5
+        or len(new_articles) != 5
+        or any(
+            not isinstance(old, dict)
+            or not isinstance(new, dict)
+            or any(old.get(key) != new.get(key) for key in identity_keys)
+            for old, new in zip(old_articles, new_articles, strict=True)
+        )
+    ):
+        _fail("UPSTREAM_ARTICLE_IDENTITY_DRIFT", "measurement_contract")
+    try:
+        old_measurement = MeasurementAttributionContract(
+            articles=tuple(
+                ContractArticle(
+                    slot=item["slot"],
+                    article_id=item["article_id"],
+                    slug=item["slug"],
+                    packet_sha256=Sha256Digest(item["packet_sha256"]),
+                    intent_classification=item["intent_classification"],
+                )
+                for item in old_articles
+            ),
+            source_contract_sha256=Sha256Digest(previous["source_contract_sha256"]),
+            program=previous["program"],
+            schema_version=previous["schema_version"],
+        )
+        scenario = load_recorded_attribution_fixture(
+            (root / FIXTURE_PATH).resolve(), contract=old_measurement
+        )
+    except Exception:
+        _fail("SYNTHETIC_REBIND_INPUT_INVALID", "fixture")
+    # Never normalize an altered article binding or measurement observation.
+    if tuple(item.article for item in scenario.request.article_measurements) != (
+        old_measurement.articles
+    ):
+        _fail("SYNTHETIC_REBIND_INPUT_INVALID", "fixture")
+    measurement["source_contract_sha256"] = _sha256(
+        _read(root, ST1704_CONTRACT_PATH, "five_slot_measurement")
+    )
+    for old, new in zip(measurement["articles"], new_articles, strict=True):
+        old["packet_sha256"] = new["packet_sha256"]
+    bindings = _mapping(contract.get("source_bindings"), "source_bindings")
+    if set(bindings) != set(SOURCE_BINDINGS):
+        _fail("SOURCE_BINDING_SCHEMA_DRIFT", "source_bindings")
+    binding = _mapping(bindings["five_slot_measurement"], "five_slot_measurement")
+    if set(binding) != {"path", "sha256"} or binding["path"] != (
+        ST1704_CONTRACT_PATH.as_posix()
+    ):
+        _fail("SOURCE_BINDING_SCHEMA_DRIFT", "source_bindings")
+    binding["sha256"] = measurement["source_contract_sha256"]
+    _, current = _validated_contract(contract, root)
+    request = replace(
+        scenario.request,
+        contract=current,
+        article_measurements=tuple(
+            replace(item, article=article)
+            for item, article in zip(
+                scenario.request.article_measurements, current.articles, strict=True
+            )
+        ),
+    )
+    fixture = copy.deepcopy(dict(_load_json(root, FIXTURE_PATH, "fixture")))
+    fixture["contract_sha256"] = current.sha256.value
+    fixture["expected_input_sha256"] = request.input_sha256.value
+    for item, article in zip(
+        fixture["request"]["article_measurements"], current.articles, strict=True
+    ):
+        item["article"]["packet_sha256"] = article.packet_sha256.value
+    original_contract = _load_yaml(root)
+    original_fixture = _load_json(root, FIXTURE_PATH, "fixture")
+    result: dict[Path, bytes] = {}
+    if contract != original_contract:
+        result[CONTRACT_PATH] = yaml.safe_dump(
+            contract, allow_unicode=True, sort_keys=False
+        ).encode("utf-8")
+    if fixture != original_fixture:
+        result[FIXTURE_PATH] = (
+            json.dumps(fixture, ensure_ascii=False, allow_nan=False, indent=2) + "\n"
+        ).encode("utf-8")
+    return result
+
+
+def refresh_upstream_bindings(root: Path = REPO_ROOT) -> None:
+    payloads = _upstream_binding_payloads(root)
+    previous = {path: _read(root, path, "binding_input") for path in payloads}
+    written: list[Path] = []
+    try:
+        for path, payload in payloads.items():
+            _atomic_write(root, payload, relative=path)
+            written.append(path)
+    except AttributionBuildError:
+        for path in reversed(written):
+            _atomic_write(root, previous[path], relative=path)
+        raise
 
 
 def _artifact(root: Path, relative: Path) -> dict[str, object]:
@@ -546,7 +670,7 @@ def projection(root: Path = REPO_ROOT) -> dict[str, object]:
                     "sha256": binding["sha256"],
                     "uri": f"repo://{binding['path']}",
                 }
-                for name, binding in SOURCE_BINDINGS.items()
+                for name, binding in contract["source_bindings"].items()
             ],
         },
         "open_decision_boundary": EXPECTED_OPEN_DECISION,
@@ -601,12 +725,14 @@ def render_output(root: Path = REPO_ROOT) -> bytes:
         _fail("OUTPUT_SERIALIZATION_FAILED", "output")
 
 
-def _output_path(root: Path) -> Path:
-    relative_parent = OUTPUT_PATH.parent
+def _output_path(root: Path, relative: Path = OUTPUT_PATH) -> Path:
+    if relative not in (OUTPUT_PATH, CONTRACT_PATH, FIXTURE_PATH):
+        _fail("PATH_INVALID", "output")
+    relative_parent = relative.parent
     parent = _physical_path(root, relative_parent, "output_parent")
     if not parent.is_dir():
         _fail("OUTPUT_PARENT_INVALID", "output")
-    output = parent / OUTPUT_PATH.name
+    output = parent / relative.name
     if output.exists() or output.is_symlink():
         try:
             metadata = os.lstat(output)
@@ -621,13 +747,13 @@ def _output_path(root: Path) -> Path:
     return output
 
 
-def _atomic_write(root: Path, payload: bytes) -> None:
-    output = _output_path(root)
+def _atomic_write(root: Path, payload: bytes, *, relative: Path = OUTPUT_PATH) -> None:
+    output = _output_path(root, relative)
     descriptor = -1
     stage: Path | None = None
     try:
         descriptor, raw_stage = tempfile.mkstemp(
-            prefix=f".{OUTPUT_PATH.name}.", suffix=".stage", dir=output.parent
+            prefix=f".{relative.name}.", suffix=".stage", dir=output.parent
         )
         stage = Path(raw_stage)
         os.fchmod(descriptor, 0o600)
@@ -659,6 +785,8 @@ def _atomic_write(root: Path, payload: bytes) -> None:
 
 
 def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
+    if not check:
+        refresh_upstream_bindings(root)
     expected = render_output(root)
     if check:
         output = _output_path(root)

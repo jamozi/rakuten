@@ -29,7 +29,7 @@ SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
 PLUGIN_VERSION: Final = "1.3.1"
 PLUGIN_RUNTIME_REVISION: Final = (
-    "f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082"
+    "c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472"
 )
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
 MANIFEST_PATH: Final = Path("changes/wordpress-mcp-v1/runtime-manifest.v1.json")
@@ -104,6 +104,8 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("changes/wordpress-local-preview-v1/bin/materialize_yoast.py"),
     Path("changes/wordpress-local-preview-v1/bin/wordpress_preview.sh"),
     Path("changes/wordpress-local-preview-v1/browser/check.sh"),
+    Path("changes/wordpress-local-preview-v1/browser/incremental_scope.py"),
+    Path("changes/wordpress-local-preview-v1/browser/mixed_audit_report.py"),
     Path("changes/wordpress-local-preview-v1/browser/lighthouse_check.sh"),
     Path(
         "changes/wordpress-local-preview-v1/browser/"
@@ -171,6 +173,10 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("changes/wordpress-local-preview-v1/policy-profiles.v1.json"),
     Path("changes/wordpress-local-preview-v1/production-mapping.v1.json"),
     Path("changes/wordpress-local-preview-v1/seed.php"),
+    Path("changes/wordpress-local-preview-v1/restore-seed.php"),
+    Path("changes/wordpress-local-preview-v1/scratch-restore.compose.yaml"),
+    Path("changes/wordpress-local-preview-v1/scratch-restore-seed.php"),
+    Path("changes/wordpress-local-preview-v1/scratch-theme-restore.php"),
     Path("changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.json"),
     Path("changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.schema.json"),
     Path("changes/wordpress-mcp-v1/Makefile"),
@@ -198,12 +204,29 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("python/raos/application/editorial/product_safety_query_capture.py"),
     Path("python/raos/application/editorial/product_safety_receipts.py"),
     Path("python/raos/application/editorial/self_hosted_editorial_pilot.py"),
+    Path("python/raos/application/editorial/verified_incremental_v1.py"),
+    Path("python/raos/application/editorial/verified_incremental_audit_v1.py"),
+    Path("python/raos/application/editorial/verified_incremental_preview_v1.py"),
+    Path("python/raos/application/editorial/verified_incremental_release_v1.py"),
+    Path("python/raos/application/editorial/verified_incremental_sources_v1.py"),
+    Path("python/raos/application/editorial/local_scratch_restore_v1.py"),
+    Path("python/raos/application/editorial/local_scratch_theme_restore_v1.py"),
+    Path("python/raos/application/editorial/legacy_media_display_projection_v1.py"),
     Path("python/raos/domain/editorial/content_ast.py"),
     Path("python/raos/domain/editorial/self_hosted_editorial_pilot.py"),
     Path("scripts/build_wordpress_mcp_v1.py"),
     Path("scripts/check_wordpress_public_ui_playwright.sh"),
     Path("scripts/raos_editorial_portfolio_v2.py"),
     Path("scripts/raos_wordpress_deployment_operator.py"),
+    Path("scripts/raos_wordpress_baseline_media.py"),
+    Path("scripts/raos_wordpress_incremental_candidate.py"),
+    Path("scripts/raos_wordpress_incremental_preview.py"),
+    Path("scripts/raos_wordpress_incremental_publication.py"),
+    Path("scripts/raos_wordpress_incremental_seo_audit.py"),
+    Path("scripts/raos_wordpress_incremental_snapshot.py"),
+    Path("scripts/raos_wordpress_local_restore.py"),
+    Path("scripts/raos_wordpress_scratch_restore.py"),
+    Path("scripts/raos_wordpress_scratch_theme_restore.py"),
     Path("scripts/raos_wordpress_publication_request.py"),
     Path("scripts/raos_wordpress_seo_audit.py"),
     Path("scripts/raos_wordpress_editor_mcp_launcher.mjs"),
@@ -224,6 +247,7 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("tests/wordpress_mcp_v1/e2e/yoast_harness.php"),
     Path("tests/wordpress_mcp_v1/test_batch_approval.py"),
     Path("tests/wordpress_mcp_v1/test_release_watcher.py"),
+    Path("tests/wordpress_mcp_v1/test_operation_status.py"),
     Path("tests/wordpress_local_preview/test_publication_request.py"),
     *PLUGIN_SOURCE_PATHS,
 )
@@ -234,6 +258,8 @@ TEST_PATHS: Final = (
     Path("tests/wordpress_local_preview"),
     Path("tests/wordpress_mcp_v1"),
     Path("tests/wordpress_seo_audit_v1"),
+    Path("tests/verified_incremental_v1"),
+    Path("tests/verified_incremental_audit_v1"),
 )
 EXTERNAL_PINS: Final = {
     "mcp_adapter": {
@@ -414,6 +440,23 @@ def runtime_manifest() -> dict[str, object]:
     }
 
 
+def measurement_migration_review(
+    package_sha256: str, file_manifest_sha256: str
+) -> dict[str, str] | None:
+    """A rebuilt candidate never inherits an older package's migration review."""
+    if (
+        package_sha256 != REVIEWED_MEASUREMENT_PACKAGE_SHA256
+        or file_manifest_sha256 != REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256
+    ):
+        return None
+    return {
+        "assessment": REVIEWED_MIGRATION_ASSESSMENT,
+        "file_manifest_sha256": file_manifest_sha256,
+        "package_sha256": package_sha256,
+        "schema": "RAOS_WORDPRESS_PLUGIN_MIGRATION_REVIEW_V1",
+    }
+
+
 def repo_artifact_registry() -> dict[str, object]:
     try:
         measurement = json.loads(
@@ -447,8 +490,6 @@ def repo_artifact_registry() -> dict[str, object]:
         or type(measurement.get("package_sha256")) is not str
         or re.fullmatch(r"[0-9a-f]{64}", measurement["package_sha256"]) is None
         or type(measurement_files) is not list
-        or measurement["package_sha256"] != REVIEWED_MEASUREMENT_PACKAGE_SHA256
-        or measurement_manifest_sha256 != REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256
     ):
         fail("WORDPRESS_MCP_V1_MEASUREMENT_MANIFEST_INVALID")
     abilities_sha256 = sha256(package_bytes(plugin_payloads()))
@@ -463,12 +504,9 @@ def repo_artifact_registry() -> dict[str, object]:
             },
             {
                 "artifact_id": measurement["artifact_id"],
-                "migration_review": {
-                    "assessment": REVIEWED_MIGRATION_ASSESSMENT,
-                    "file_manifest_sha256": measurement_manifest_sha256,
-                    "package_sha256": measurement["package_sha256"],
-                    "schema": "RAOS_WORDPRESS_PLUGIN_MIGRATION_REVIEW_V1",
-                },
+                "migration_review": measurement_migration_review(
+                    measurement["package_sha256"], measurement_manifest_sha256
+                ),
                 "package_sha256": measurement["package_sha256"],
                 "slug": measurement["plugin_slug"],
                 "version": measurement["plugin_version"],

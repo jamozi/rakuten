@@ -126,9 +126,7 @@ ALLOWED_SOURCE_HOSTS = {
     "www.toshiba-lifestyle.com",
 }
 
-WORDPRESS_ARTICLE_ROOT = (
-    ROOT / "changes/wordpress-local-preview-v1/fixtures/articles"
-)
+WORDPRESS_ARTICLE_ROOT = ROOT / "changes/wordpress-local-preview-v1/fixtures/articles"
 ALL_ARTICLE_SLUGS = (
     "carry-on-suitcase-comparison",
     "portable-power-station-guide",
@@ -267,16 +265,39 @@ def test_each_lead_opens_with_a_unique_reader_failure_then_names_the_models() ->
             ["text", "line_break", "text", "line_break", "text"],
         )
         hook = lead["content"][0]["text"]
-        scope = "".join(
-            node["text"] for node in lead["content"][2::2]
-        )
+        scope = "".join(node["text"] for node in lead["content"][2::2])
         assert hook not in hooks
         hooks.add(hook)
         assert hook.endswith("。")
         assert "比較するのは" not in hook
         assert scope.startswith("比較するのは")
+        assert len(hook + scope) <= 250, article["article_id"]
         for term in expected_decision_terms[article["article_id"]]:
             assert term in hook
+
+
+def test_power_recommendation_does_not_use_unresolved_support_as_a_benefit() -> None:
+    articles = _load(CONTENT_PATH)["articles"]
+    article = next(
+        row
+        for row in articles
+        if row["article_id"] == "st1704-portable-power-station-guide"
+    )
+    lead = "".join(
+        node.get("text", "") for node in article["content_ast"]["blocks"][1]["content"]
+    )
+    assert "安全・保管・保証・回収" in lead
+    assert "推奨根拠には使いません" in lead
+    card = next(
+        row
+        for row in article["render_model"]["product_cards"]
+        if row["product_id"] == "PRD-DJI-POWER-1000-V2"
+    )
+    reason = card["presentation_v2"]["recommendation_reason"]
+    assert "接続機器の条件" in reason
+    assert "14.2kg" in reason
+    assert not any(term in reason for term in ("保証", "サイクル", "寿命"))
+    assert card["caution"]
 
 
 def test_source_fact_packets_are_ready_hash_bound_and_cover_every_claim() -> None:
@@ -290,23 +311,25 @@ def test_source_fact_packets_are_ready_hash_bound_and_cover_every_claim() -> Non
         article["source_packet_ref"] for article in articles.values()
     }
     packets = {
-        packet_ref: registry_packets[packet_ref]
-        for packet_ref in selected_packet_refs
+        packet_ref: registry_packets[packet_ref] for packet_ref in selected_packet_refs
     }
     sources = {source["source_ref"]: source for source in registry["sources"]}
 
     assert len(registry_packets) == 10
     assert len(packets) == len(articles) == 5
     assert len(sources) == 101
-    assert _canonical_sha256(
-        sorted(
-            (
-                {"source_ref": source_ref, "url": source["url"]}
-                for source_ref, source in sources.items()
-            ),
-            key=lambda value: cast(str, value["source_ref"]),
+    assert (
+        _canonical_sha256(
+            sorted(
+                (
+                    {"source_ref": source_ref, "url": source["url"]}
+                    for source_ref, source in sources.items()
+                ),
+                key=lambda value: cast(str, value["source_ref"]),
+            )
         )
-    ) == "d6179333137f0faf66526a1eadc86c085ada3d12245b6f16955946996210a70b"
+        == "d6179333137f0faf66526a1eadc86c085ada3d12245b6f16955946996210a70b"
+    )
     assert sources["SRC-ACE-CRESTA-06316"]["url"] == (
         "https://store.ace.jp/shop/g/g06316-01/"
     )
@@ -370,8 +393,7 @@ def test_source_fact_packets_are_ready_hash_bound_and_cover_every_claim() -> Non
             assert render_claims <= defined_claims
             assert reader_projection_claims <= defined_claims
             assert (
-                ast_claims | render_claims | reader_projection_claims
-                == defined_claims
+                ast_claims | render_claims | reader_projection_claims == defined_claims
             )
 
 
@@ -421,9 +443,7 @@ def test_ten_packets_cover_all_37_existing_product_placements() -> None:
 
 
 def test_all_ten_articles_keep_37_products_and_exactly_74_primary_ctas() -> None:
-    article_slugs = {
-        row[0]: row[3] for row in ARTICLE_ROWS
-    } | {
+    article_slugs = {row[0]: row[3] for row in ARTICLE_ROWS} | {
         "carry-on-suitcase-under-100-seats": "carry-on-suitcase-under-100-seats",
         "lightweight-carry-on-suitcase-under-3kg": (
             "lightweight-carry-on-suitcase-under-3kg"
@@ -438,17 +458,16 @@ def test_all_ten_articles_keep_37_products_and_exactly_74_primary_ctas() -> None
     ctas: list[tuple[str, str, str]] = []
 
     for article_id, slug in article_slugs.items():
-        markup = (WORDPRESS_ARTICLE_ROOT / f"{slug}.html").read_text(
-            encoding="utf-8"
-        )
+        markup = (WORDPRESS_ARTICLE_ROOT / f"{slug}.html").read_text(encoding="utf-8")
         profiles = []
         for tag in re.findall(r"<article\b[^>]*>", markup):
             class_match = re.search(r'class="([^"]*)"', tag)
-            if class_match is None or "product-profile" not in class_match.group(1).split():
+            if (
+                class_match is None
+                or "product-profile" not in class_match.group(1).split()
+            ):
                 continue
-            product_match = re.search(
-                r'data-raos-product-id="(PRD-[A-Z0-9-]+)"', tag
-            )
+            product_match = re.search(r'data-raos-product-id="(PRD-[A-Z0-9-]+)"', tag)
             assert product_match is not None
             profiles.append(product_match.group(1))
         assert len(profiles) == len(set(profiles))
@@ -465,9 +484,7 @@ def test_all_ten_articles_keep_37_products_and_exactly_74_primary_ctas() -> None
             placement = placement_match.group(1)
             if placement not in placement_products:
                 continue
-            product_match = re.search(
-                r'data-raos-product-id="(PRD-[A-Z0-9-]+)"', tag
-            )
+            product_match = re.search(r'data-raos-product-id="(PRD-[A-Z0-9-]+)"', tag)
             assert product_match is not None
             product_id = product_match.group(1)
             placement_products[placement].append(product_id)
@@ -489,9 +506,7 @@ def test_all_ten_articles_keep_37_products_and_exactly_74_primary_ctas() -> None
     a07_markup = (
         WORDPRESS_ARTICLE_ROOT / "lightweight-carry-on-suitcase-under-3kg.html"
     ).read_text(encoding="utf-8")
-    assert (
-        'id="samsonite-c-lite-spinner55exp-134679-1549"' in a07_markup
-    )
+    assert 'id="samsonite-c-lite-spinner55exp-134679-1549"' in a07_markup
 
 
 def test_dimension_claims_are_semantic_and_frequenter_typo_is_not_promoted() -> None:
@@ -606,10 +621,7 @@ def test_source_hashes_are_bound_to_all_ten_packet_claims() -> None:
 def test_every_article_has_explicit_reader_led_product_presentation() -> None:
     collection = _load(CONTENT_PATH)
     source_document = _load(SOURCE_PATH)
-    sources = {
-        source["source_ref"]: source
-        for source in source_document["sources"]
-    }
+    sources = {source["source_ref"]: source for source in source_document["sources"]}
     packets = {
         packet["source_packet_ref"]: packet
         for packet in source_document["source_packets"]
@@ -627,8 +639,7 @@ def test_every_article_has_explicit_reader_led_product_presentation() -> None:
         assert facts_checked_on == expected_article_check_dates[article_id]
         packet = packets[article["source_packet_ref"]]
         assert facts_checked_on >= max(
-            sources[source_ref]["retrieved_on"]
-            for source_ref in packet["source_refs"]
+            sources[source_ref]["retrieved_on"] for source_ref in packet["source_refs"]
         )
         render = cast(dict[str, object], article["render_model"])
         presentation = cast(dict[str, object], render["presentation"])
@@ -661,9 +672,9 @@ def test_every_article_has_explicit_reader_led_product_presentation() -> None:
                 sources[source_ref]["retrieved_on"]
                 for source_ref in card["source_refs"]
             )
-            assert detail["facts_checked_on"] <= article["freshness"][
-                "facts_checked_on"
-            ]
+            assert (
+                detail["facts_checked_on"] <= article["freshness"]["facts_checked_on"]
+            )
             assert detail["official_source_ref"] in card["source_refs"]
             assert cast(list[object], detail["fits"])
             assert cast(list[object], detail["not_fits"])
@@ -674,12 +685,9 @@ def test_every_article_has_explicit_reader_led_product_presentation() -> None:
             anchors.add(anchor)
 
         recommendations = {
-            value["recommendation_ref"]: value
-            for value in render["recommendations"]
+            value["recommendation_ref"]: value for value in render["recommendations"]
         }
-        cards_by_ref = {
-            value["product_selection_ref"]: value for value in cards
-        }
+        cards_by_ref = {value["product_selection_ref"]: value for value in cards}
         decision = article["content_ast"]["blocks"][2]
         for item in decision["items"]:
             recommendation = recommendations[item["recommendation_ref"]]
@@ -720,19 +728,23 @@ def test_all_ten_reader_facing_articles_use_one_metadata_vocabulary() -> None:
         "NOTES &amp; SOURCES",
     )
     for slug in ALL_ARTICLE_SLUGS:
-        markup = (WORDPRESS_ARTICLE_ROOT / f"{slug}.html").read_text(
-            encoding="utf-8"
-        )
+        markup = (WORDPRESS_ARTICLE_ROOT / f"{slug}.html").read_text(encoding="utf-8")
         assert markup.count("<dt>対象読者</dt>") == 1
         assert markup.count("<dt>比較範囲</dt>") == 1
         assert markup.count("<dt>執筆担当</dt><dd>暮らしのしるべ編集者</dd>") == 1
-        assert markup.count(
-            "<dt>事実確認担当</dt><dd>暮らしのしるべ編集者（一次情報確認）</dd>"
-        ) == 1
+        assert (
+            markup.count(
+                "<dt>事実確認担当</dt><dd>暮らしのしるべ編集者（一次情報確認）</dd>"
+            )
+            == 1
+        )
         assert markup.count("<dt>最終確認日</dt>") == 1
-        assert markup.count(
-            "<dt>実機確認</dt><dd>未実施（公式仕様比較）</dd>"
-        ) == 1
+        first_hand_label = (
+            "未実施（型番・販売表示の確認案内）"
+            if slug == "solota-vs-rakua-mini-plus"
+            else "未実施（公式仕様比較）"
+        )
+        assert markup.count(f"<dt>実機確認</dt><dd>{first_hand_label}</dd>") == 1
         assert not any(label in markup for label in forbidden_ornamental_labels)
 
 
@@ -935,7 +947,9 @@ def test_reader_copy_and_dimension_notation_are_normalized() -> None:
         for forbidden in forbidden_copy:
             assert forbidden not in article_text
         assert "<br" not in article_text.casefold()
-        assert article["render_model"]["disclosure"]["paragraphs"] == expected_disclosure
+        assert (
+            article["render_model"]["disclosure"]["paragraphs"] == expected_disclosure
+        )
         for table in article["render_model"]["comparison_tables"]:
             for row in table["rows"]:
                 for cell in row["cells"]:
@@ -979,9 +993,7 @@ def test_reader_copy_and_dimension_notation_are_normalized() -> None:
     dishwasher = articles["st1704-countertop-dishwasher-for-small-households"]
     dishwasher_text = " ".join(_strings(dishwasher))
     assert "食洗機4候補を公式仕様で比較" in dishwasher["seo"]["meta_description"]
-    assert "SOLOTAは販売状態未確認の仕様参考" in dishwasher["seo"][
-        "meta_description"
-    ]
+    assert "SOLOTAは販売状態未確認の仕様参考" in dishwasher["seo"]["meta_description"]
     for formal_name in (
         "SOLOTA NP-TMLK1-K",
         "THANKO ラクアmini TK-MDW22W",
@@ -990,12 +1002,10 @@ def test_reader_copy_and_dimension_notation_are_normalized() -> None:
     ):
         assert formal_name in dishwasher_text
     assert (
-        "以降は順に「SS-M171」「ラクアmini」「SS-MA251」"
-        "「DWS-33B」と表記します。"
+        "以降は順に「SS-M171」「ラクアmini」「SS-MA251」「DWS-33B」と表記します。"
     ) in dishwasher_text
     assert [
-        card["product_name"]
-        for card in dishwasher["render_model"]["product_cards"]
+        card["product_name"] for card in dishwasher["render_model"]["product_cards"]
     ] == [
         "siroca SS-M171",
         "THANKO ラクアmini TK-MDW22W",
@@ -1010,8 +1020,7 @@ def test_reader_copy_and_dimension_notation_are_normalized() -> None:
     robot = articles["st1704-compact-robot-vacuum-shortlist"]
     robot_text = " ".join(_strings(robot))
     assert (
-        "Anker「Eufy Robot Vacuum Auto-Empty C10」"
-        "（ブラック・型番T2292511）"
+        "Anker「Eufy Robot Vacuum Auto-Empty C10」（ブラック・型番T2292511）"
     ) in robot_text
     assert (
         "iRobot「Roomba Plus 515 Combo ロボット + "
@@ -1020,18 +1029,14 @@ def test_reader_copy_and_dimension_notation_are_normalized() -> None:
     assert "ECOVACS DEEBOT mini 2" in robot_text
     assert "小径本体、薄型本体、モップ自動手入れ" in robot_text
     assert "幅条件" not in robot_text
-    power_text = " ".join(
-        _strings(articles["st1704-portable-power-station-guide"])
-    )
+    power_text = " ".join(_strings(articles["st1704-portable-power-station-guide"]))
     assert "約5.7kg" not in power_text
     assert power_text.count("5.7kg") >= 7
     assert "容量（Wh）÷消費電力（W）" in power_text
     assert "AC変換損失" in power_text
     assert "起動時電力" in power_text
 
-    suitcase_text = " ".join(
-        _strings(articles["st1703-first-suitcase-comparison"])
-    )
+    suitcase_text = " ".join(_strings(articles["st1703-first-suitcase-comparison"]))
     assert "メーカー公式通販では在庫切れ" not in suitcase_text
     assert "メーカー公式通販の販売再開" not in suitcase_text
     assert "現在の販売状況" in suitcase_text
@@ -1086,9 +1091,7 @@ def test_internal_routes_are_closed_without_forced_low_relevance_pairs() -> None
     assert links["st1704-countertop-dishwasher-for-small-households"] == {
         "ROUTE-HOME-GUIDES"
     }
-    assert links["st1704-compact-robot-vacuum-shortlist"] == {
-        "ROUTE-HOME-GUIDES"
-    }
+    assert links["st1704-compact-robot-vacuum-shortlist"] == {"ROUTE-HOME-GUIDES"}
 
 
 def test_relative_comparisons_bind_the_complete_comparison_evidence_set() -> None:
@@ -1147,7 +1150,9 @@ def test_relative_comparisons_bind_the_complete_comparison_evidence_set() -> Non
     assert observed_carry_on_records == 2
 
 
-def test_verified_jackery_dimensions_and_replacement_product_facts_remain_bound() -> None:
+def test_verified_jackery_dimensions_and_replacement_product_facts_remain_bound() -> (
+    None
+):
     articles = {
         article["article_id"]: article for article in _load(CONTENT_PATH)["articles"]
     }
@@ -1231,16 +1236,13 @@ def test_excluded_candidates_and_selected_robot_dimension_semantics() -> None:
     assert k11_warranty["evidence_level"] == "D"
     assert "1年または2年" in k11_warranty["statement"]
     assert "推奨根拠に使わず" in k11_warranty["statement"]
-    assert k11_warranty["evidence_refs"] == [
-        "SRC-SWITCHBOT-K11-PRO-EXTENDED-WARRANTY"
-    ]
-    assert source_by_ref["SRC-SWITCHBOT-K11-PRO-EXTENDED-WARRANTY"][
-        "retrieved_on"
-    ] == "2026-09-01"
-    deebot_claim = claims["CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS"]
-    assert source_by_ref["SRC-ECOVACS-DEEBOT-MINI2"]["retrieved_on"] == (
-        "2026-09-01"
+    assert k11_warranty["evidence_refs"] == ["SRC-SWITCHBOT-K11-PRO-EXTENDED-WARRANTY"]
+    assert (
+        source_by_ref["SRC-SWITCHBOT-K11-PRO-EXTENDED-WARRANTY"]["retrieved_on"]
+        == "2026-09-01"
     )
+    deebot_claim = claims["CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS"]
+    assert source_by_ref["SRC-ECOVACS-DEEBOT-MINI2"]["retrieved_on"] == ("2026-09-01")
     assert "ビデオマネージャー" in deebot_claim["statement"]
     assert "外出先からの見守り" in deebot_claim["statement"]
     assert "スクリーンショット" in deebot_claim["statement"]
@@ -1286,9 +1288,7 @@ def test_excluded_candidates_and_selected_robot_dimension_semantics() -> None:
     )
     robot_text = " ".join(_strings(robot))
     assert "ステーションは幅32.0×奥行40.0×高さ38.5cm" in robot_text
-    assert "AXIS-ROBOT-CONNECTED-PRIVACY" in json.dumps(
-        robot, ensure_ascii=False
-    )
+    assert "AXIS-ROBOT-CONNECTED-PRIVACY" in json.dumps(robot, ensure_ascii=False)
     assert "カメラ・音声・アプリ利用を許容するか" in robot_text
     assert "住居内の遠隔見守り・声かけ・スクリーンショット機能" in robot_text
     assert "無償保証が1年か2年かを特定できない" in robot_text

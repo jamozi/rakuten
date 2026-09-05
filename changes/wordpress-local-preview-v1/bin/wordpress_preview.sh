@@ -22,6 +22,7 @@ readonly private_root="${RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT:-$default_private_r
 readonly credentials_file="$private_root/credentials.env"
 readonly requested_fixture_root="${RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT:-}"
 readonly link_mode="${RAOS_WORDPRESS_LINK_MODE:-measured-admin}"
+readonly publication_profile="${RAOS_WORDPRESS_PUBLICATION_PROFILE:-legacy-full}"
 [[ "$link_mode" == standard-api || "$link_mode" == measured-admin ]] \
   || { printf '%s\n' RAOS_WORDPRESS_PREVIEW_LINK_MODE_INVALID >&2; exit 69; }
 if [[ -n "$requested_fixture_root" ]]; then
@@ -31,7 +32,17 @@ else
   readonly materialized_fixture_root="$private_root/materialized-fixtures-v2"
   readonly fixture_override_enabled=false
 fi
+[[ "$publication_profile" == legacy-full || \
+  ( "$publication_profile" == verified-incremental && "$link_mode" == standard-api \
+    && "$fixture_override_enabled" == true ) ]] \
+  || { printf '%s\n' RAOS_WORDPRESS_PREVIEW_PUBLICATION_PROFILE_INVALID >&2; exit 69; }
 readonly product_media_root="$private_root/product-media"
+if [[ "$publication_profile" == verified-incremental \
+  && -d /home/minami/rakuten/.secrets/wordpress-mcp/baseline-preview-media ]]; then
+  readonly baseline_media_root=/home/minami/rakuten/.secrets/wordpress-mcp/baseline-preview-media
+else
+  readonly baseline_media_root="$product_media_root"
+fi
 readonly plugin_cache_root="$private_root/plugins"
 readonly yoast_root="$plugin_cache_root/wordpress-seo"
 readonly download_cache_root="$private_root/downloads"
@@ -148,7 +159,9 @@ compose() {
   RAOS_WORDPRESS_PREVIEW_PORT="$preview_port" \
   RAOS_WORDPRESS_PREVIEW_ARTICLE_FIXTURE_ROOT="$materialized_fixture_root/articles" \
   RAOS_WORDPRESS_PREVIEW_POST_FIXTURE="$materialized_fixture_root/posts.json" \
+  RAOS_WORDPRESS_PREVIEW_MIXED_FIXTURE_ROOT="$materialized_fixture_root" \
   RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT="$product_media_root" \
+  RAOS_WORDPRESS_PREVIEW_BASELINE_MEDIA_ROOT="$baseline_media_root" \
   RAOS_WORDPRESS_PREVIEW_YOAST_ROOT="$yoast_root" \
   "$docker_bin" compose \
     --project-directory "$slice_directory" \
@@ -317,6 +330,11 @@ materialize_runtime() {
   if [[ "$fixture_override_enabled" == true ]]; then
     validate_owner_private_fixture_override
     validate_materialized_runtime
+    if [[ "$publication_profile" == verified-incremental ]]; then
+      PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$slice_directory/browser/incremental_scope.py" \
+        --fixture-root "$materialized_fixture_root" >/dev/null \
+        || fail RAOS_WORDPRESS_PREVIEW_INCREMENTAL_SCOPE_INVALID
+    fi
     return 0
   fi
   if [[ -n "$test_materializer_bin" ]]; then
@@ -404,7 +422,20 @@ activate_yoast_plugin() {
 
 seed() {
   local mode="$1"
+  local -a seed_user=()
+  if [[ "$fixture_override_enabled" == true ]]; then
+    local fixture_uid fixture_gid
+    fixture_uid="$(id -u)"
+    fixture_gid="$(id -g)"
+    [[ "$fixture_uid" =~ ^[1-9][0-9]*$ && "$fixture_gid" =~ ^[1-9][0-9]*$ ]] \
+      || fail RAOS_WORDPRESS_PREVIEW_FIXTURE_OWNER_INVALID
+    # Only the DB seed needs the owner's private, read-only article fixtures.
+    # Keep private permissions intact and all other CLI calls on the service UID.
+    seed_user=(--user "$fixture_uid:$fixture_gid")
+  fi
   compose run --rm --no-deps -T \
+    "${seed_user[@]}" \
+    --env "RAOS_PREVIEW_PUBLICATION_PROFILE=$publication_profile" \
     --env "RAOS_PREVIEW_SEED_MODE=$mode" \
     cli eval-file /var/www/raos-local-preview/seed.php
   wordpress_cli rewrite flush >/dev/null
@@ -470,6 +501,37 @@ do_sync() {
   seed sync
 }
 
+do_restore() {
+  [[ "$#" == 1 && "$1" =~ ^[0-9a-f]{64}$ ]] \
+    || fail RAOS_LOCAL_RESTORE_PREPARATION_INVALID
+  local preparation_hash="$1"
+  local restore_root="/home/minami/rakuten/.secrets/wordpress-mcp/local-restore-$preparation_hash"
+  local restore_uid restore_gid
+  [[ -f "$credentials_file" && ! -L "$credentials_file" ]] \
+    || fail RAOS_WORDPRESS_PREVIEW_NOT_INITIALIZED
+  # Rebuild only from the fixed private MCP snapshot; no network or sync.
+  PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$repository_root/scripts/raos_wordpress_local_restore.py" \
+    check-inputs --preparation-sha256 "$preparation_hash" >/dev/null \
+    || fail RAOS_LOCAL_RESTORE_PREPARATION_INVALID
+  require_docker
+  load_credentials
+  restore_uid="$(id -u)"
+  restore_gid="$(id -g)"
+  [[ "$restore_uid" =~ ^[1-9][0-9]*$ && "$restore_gid" =~ ^[1-9][0-9]*$ ]] \
+    || fail RAOS_LOCAL_RESTORE_OWNER_INVALID
+  wordpress_cli core is-installed >/dev/null \
+    || fail RAOS_WORDPRESS_PREVIEW_WORDPRESS_NOT_INSTALLED
+  # Only this one CLI process sees restoration input and writes its readback.
+  # No initialize, new content, plugin/theme activation, or front-page changes.
+  compose run --rm --no-deps -T --user "$restore_uid:$restore_gid" \
+    --volume "$restore_root:/var/www/raos-local-restore:rw" \
+    --env RAOS_PREVIEW_RESTORE_MODE=stored-fields \
+    --env "RAOS_PREVIEW_RESTORE_PREPARATION_SHA256=$preparation_hash" \
+    cli eval-file /var/www/raos-local-preview/restore-seed.php
+  PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$repository_root/scripts/raos_wordpress_local_restore.py" \
+    verify --preparation-sha256 "$preparation_hash"
+}
+
 do_password() {
   require_docker
   load_credentials
@@ -484,6 +546,9 @@ do_check() {
   [[ -f "$credentials_file" ]] || fail RAOS_WORDPRESS_PREVIEW_NOT_INITIALIZED
   do_status >/dev/null
   RAOS_WORDPRESS_PREVIEW_ORIGIN="$preview_origin" \
+  RAOS_WORDPRESS_PUBLICATION_PROFILE="$publication_profile" \
+  RAOS_WORDPRESS_LINK_MODE="$link_mode" \
+  RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT="$materialized_fixture_root" \
     "$slice_directory/browser/check.sh"
 }
 
@@ -510,12 +575,13 @@ case "${1:-}" in
   up) do_up ;;
   status) do_status ;;
   sync) do_sync ;;
+  restore) shift; do_restore "$@" ;;
   password) do_password ;;
   check) do_check ;;
   down) do_down ;;
   reset) do_reset ;;
   *)
-    printf '%s\n' 'usage: wordpress_preview.sh {up|status|sync|password|check|down|reset}' >&2
+    printf '%s\n' 'usage: wordpress_preview.sh {up|status|sync|password|check|down|reset|restore PREPARATION_SHA256}' >&2
     exit 64
     ;;
 esac

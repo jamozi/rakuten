@@ -69,7 +69,281 @@
     };
   };
 
-  const factory = ({ artifactDirectory, axeSource, inventory, origin }) => async (page) => {
+  const exactSet = (actual, expected) => Array.isArray(actual) && Array.isArray(expected) &&
+    actual.length === expected.length && new Set(actual).size === actual.length &&
+    [...actual].sort().every((value, index) => value === [...expected].sort()[index]);
+  const exactKeys = (value, keys) => value !== null && typeof value === 'object' &&
+    !Array.isArray(value) && exactSet(Object.keys(value), keys);
+  const exactMultiset = (actual, expected) => Array.isArray(actual) && Array.isArray(expected) &&
+    actual.length === expected.length && [...actual].sort().every(
+      (value, index) => value === [...expected].sort()[index]);
+  const ctaTuple = (row) => JSON.stringify([row.cta_id, row.product_id, row.placement]);
+  const validateIncrementalScope = ({ publicationProfile, linkMode, incrementalScope, articleIds,
+    categorySurfaces = [],
+  }) => {
+    if (publicationProfile === 'legacy-full') {
+      if (incrementalScope !== null || !['standard-api', 'measured-admin'].includes(linkMode)) {
+        throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
+      }
+      return null;
+    }
+    const scope = incrementalScope;
+    const identifier = (value) => typeof value === 'string' && value.length > 0 &&
+      value.length <= 180 && /^[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*$/.test(value);
+    if (publicationProfile !== 'verified-incremental' || linkMode !== 'standard-api' ||
+      !exactKeys(scope, ['schema', 'publication_profile', 'link_mode', 'selected_article_ids',
+        'articles', 'preparation_binding_sha256',
+        ...(categorySurfaces.length ? ['category_expectations'] : [])]) ||
+      scope.schema !== 'RAOS_WORDPRESS_INCREMENTAL_BROWSER_SCOPE_V1' ||
+      scope.publication_profile !== publicationProfile || scope.link_mode !== linkMode ||
+      !/^[a-f0-9]{64}$/.test(scope.preparation_binding_sha256 || '') ||
+      scope.preparation_binding_sha256 === '0'.repeat(64) ||
+      !Array.isArray(scope.selected_article_ids) || scope.selected_article_ids.length === 0 ||
+      !exactSet(scope.selected_article_ids, [...new Set(scope.selected_article_ids)]) ||
+      scope.selected_article_ids.some((id) => !articleIds.includes(id)) ||
+      !Array.isArray(scope.articles) ||
+      !exactSet(scope.articles.map((row) => row?.article_id), articleIds)) {
+      throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
+    }
+    if (categorySurfaces.length) {
+      const categories = scope.category_expectations;
+      const knownCategories = new Map(['mobility', 'household', 'preparedness'].map(
+        (slug) => [`archive-category-${slug}`, `/category/${slug}/`],
+      ));
+      if (!exactKeys(categories, ['seed_metadata_sha256', 'listings']) ||
+        !/^[a-f0-9]{64}$/.test(categories.seed_metadata_sha256 || '') ||
+        categories.seed_metadata_sha256 === '0'.repeat(64) ||
+        !Array.isArray(categories.listings) ||
+        !exactSet(categories.listings.map((row) => row?.surface_id),
+          categorySurfaces.map((row) => row.surface_id)) ||
+        categorySurfaces.some((row) => row.kind !== 'archive' ||
+          row.archive_type !== 'category' ||
+          knownCategories.get(row.surface_id) !== row.local_path) ||
+        categories.listings.some((row) =>
+          !exactKeys(row, ['surface_id', 'local_path', 'expected_article_ids', 'page_size']) ||
+          knownCategories.get(row.surface_id) !== row.local_path || row.page_size !== 3 ||
+          !Array.isArray(row.expected_article_ids) ||
+          !exactSet(row.expected_article_ids, [...new Set(row.expected_article_ids)]) ||
+          row.expected_article_ids.some((id) => !articleIds.includes(id)))) {
+        throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
+      }
+    }
+    for (const row of scope.articles) {
+      const selected = scope.selected_article_ids.includes(row.article_id);
+      if (!exactKeys(row, ['article_id', 'editorial_product_ids', 'expected_cta_ids',
+        'expected_ctas', 'expected_image_product_ids', 'expected_article_facts',
+        'expected_disclosure_policy_link_count', 'display_projection']) ||
+        !exactKeys(row.display_projection, ['state', 'contract_sha256', 'input_sha256',
+          'output_sha256', 'profile', 'removed_decoration_count', 'removed_neutral_media_count']) ||
+        ['contract_sha256', 'input_sha256', 'output_sha256'].some((key) =>
+          !/^[a-f0-9]{64}$/.test(row.display_projection[key] || '')) ||
+        (row.display_projection.state === 'NOT_APPLICABLE'
+          ? row.display_projection.profile !== null ||
+            row.display_projection.input_sha256 !== row.display_projection.output_sha256 ||
+            row.display_projection.removed_decoration_count !== 0 ||
+            row.display_projection.removed_neutral_media_count !== 0
+          : row.display_projection.state !== 'APPLIED' ||
+            !['production', 'local-fixture', 'local-stored'].includes(row.display_projection.profile) ||
+            row.display_projection.input_sha256 === row.display_projection.output_sha256 ||
+            row.display_projection.removed_decoration_count !== 8 ||
+            row.display_projection.removed_neutral_media_count !== ({
+              'st1704-portable-power-station-guide': 2,
+              'st1704-anker-solix-c300-c800-c1000-differences': 4,
+            })[row.article_id]) ||
+        !exactKeys(row.expected_article_facts, ['content_role_labels', 'primary_query_intents']) ||
+        Object.values(row.expected_article_facts).some((values) =>
+          !Array.isArray(values) || values.length > 8 || (selected && values.length !== 1) ||
+          values.some((value) => typeof value !== 'string' || !value.trim() || value.length > 2000)) ||
+        !Number.isInteger(row.expected_disclosure_policy_link_count) ||
+        row.expected_disclosure_policy_link_count < 0 || row.expected_disclosure_policy_link_count > 20 ||
+        (selected && row.expected_disclosure_policy_link_count !== 1) ||
+        !Array.isArray(row.editorial_product_ids) ||
+        !Array.isArray(row.expected_cta_ids) || !Array.isArray(row.expected_ctas) ||
+        !Array.isArray(row.expected_image_product_ids) ||
+        [row.editorial_product_ids, row.expected_cta_ids,
+          ...(selected ? [row.expected_image_product_ids] : [])]
+          .some((values) => values.some((value) => !identifier(value)) ||
+            !exactSet(values, [...new Set(values)])) ||
+        row.expected_image_product_ids.some((id) => !identifier(id)) ||
+        row.expected_image_product_ids.some((id) => !row.editorial_product_ids.includes(id)) ||
+        row.expected_ctas.some((cta) =>
+          !exactKeys(cta, ['cta_id', 'product_id', 'placement']) ||
+          !(identifier(cta.cta_id) || (!selected && cta.cta_id === null)) ||
+          !row.editorial_product_ids.includes(cta.product_id) ||
+          !['product_card', 'final_summary'].includes(cta.placement)) ||
+        !exactSet(row.expected_ctas.map(ctaTuple), [...new Set(row.expected_ctas.map(ctaTuple))]) ||
+        !exactSet(row.expected_cta_ids, row.expected_ctas.map((cta) => cta.cta_id)
+          .filter((id) => id !== null))) {
+        throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
+      }
+    }
+    return scope;
+  };
+
+  const validateListing = ({ scope, surface, audit, articleRows }) => {
+    if (!['search', 'archive'].includes(surface.kind)) return false;
+    if (!audit.listingBodyClass || audit.fullPostContentCount !== 0) return true;
+    if (scope !== null && surface.kind === 'archive' && surface.archive_type === 'category') {
+      const expected = scope.category_expectations?.listings.find(
+        (row) => row.surface_id === surface.surface_id && row.local_path === surface.local_path,
+      );
+      if (!expected) return true;
+      const paths = new Map(articleRows.map((row) => [row.local_path, row.article_id]));
+      const cards = audit.listingCards;
+      const total = expected.expected_article_ids.length;
+      const paged = total > expected.page_size;
+      const ids = Array.isArray(cards) ? cards.map((card) => paths.get(card.local_path)) : [];
+      return !Array.isArray(cards) ||
+        audit.listingCardCount !== Math.min(expected.page_size, total) ||
+        cards.length !== audit.listingCardCount ||
+        new Set(ids).size !== ids.length ||
+        cards.some((card) => card.title_link_count !== 1 || card.local_origin !== true ||
+          card.search !== '' || card.hash !== '') ||
+        ids.some((id) => !expected.expected_article_ids.includes(id)) ||
+        (!paged && !exactSet(ids, expected.expected_article_ids)) ||
+        (total === 0
+          ? audit.emptyStateCount !== 1 || !exactSet(audit.emptyStateTexts,
+            ['この条件で公開中の記事はありません。'])
+          : audit.emptyStateCount !== 0) ||
+        audit.pagination.originMismatchCount !== 0 ||
+        (paged
+          ? audit.pagination.categoryPageNumbers.length === 0 ||
+            !audit.pagination.categoryPageNumbers.includes(2) ||
+            audit.pagination.categoryPageNumbers.some((number) => !Number.isInteger(number) ||
+              number < 2 || number > Math.ceil(total / expected.page_size))
+          : audit.pagination.count !== 0);
+    }
+    const expectsEmpty = [
+      'EMPTY_QUERY', 'WHITESPACE_QUERY', 'NO_RESULTS', 'HOSTILE_QUERY_ESCAPED',
+    ].includes(surface.expected_state);
+    return expectsEmpty
+      ? audit.emptyStateCount !== 1 || audit.listingCardCount !== 0
+      : audit.emptyStateCount !== 0 || audit.listingCardCount < 1;
+  };
+
+  const validateIncrementalArticle = ({ scope, articleId, audit }) => {
+    if (scope === null) return { failed: false, selected: false, commerceStatus: 'LEGACY_PROFILE' };
+    const expected = scope.articles.find((row) => row.article_id === articleId);
+    if (!expected) return { failed: true, selected: false, commerceStatus: 'SCOPE_MISSING' };
+    const selected = scope.selected_article_ids.includes(articleId);
+    const ctas = audit.commerceCtas;
+    const images = audit.commerceImages;
+    const invalid = !exactSet(audit.productIds, expected.editorial_product_ids) ||
+      !exactSet(ctas.map(ctaTuple), expected.expected_ctas.map(ctaTuple)) ||
+      !exactMultiset(images.map((row) => row.product_id), expected.expected_image_product_ids) ||
+      !exactMultiset(audit.articleFacts?.contentRoleLabels,
+        expected.expected_article_facts.content_role_labels) ||
+      !exactMultiset(audit.articleFacts?.primaryQueryIntents,
+        expected.expected_article_facts.primary_query_intents) ||
+      audit.disclosure?.policyLinkCount !== expected.expected_disclosure_policy_link_count;
+    const unverified = selected && (
+      audit.commercePlaceholderCount !== 0 ||
+      ctas.some((row) => row.article_id !== articleId || !row.affiliate_host_valid ||
+        row.has_measured_identifier || !exactSet(row.rel_tokens, ['sponsored', 'nofollow'])) ||
+      images.some((row) => row.state !== 'verified' || !row.alt_valid ||
+        !row.dimensions_valid || !row.lazy)
+    );
+    return {
+      failed: invalid || unverified,
+      selected,
+      commerceStatus: !selected ? 'UNCHANGED_NOT_REVERIFIED' :
+        expected.expected_ctas.length === 0 ? 'NOT_INCLUDED' : 'EXPECTED_VERIFIED_SET_PRESENT',
+    };
+  };
+
+  // Native lazy images in the inactive legacy table/card view are not requested.
+  // Observe their actual DOM state; do not change loading, visibility, or page content.
+  const inspectImageLoading = () => [...document.images].map((image) => {
+    const rect = image.getBoundingClientRect();
+    const view = image.closest('.raos-comparison__table-view, .raos-comparison__cards');
+    const cardWrapper = view?.parentElement;
+    const comparison = view?.matches('.raos-comparison__cards') &&
+      cardWrapper?.matches('.comparison-cards')
+      ? cardWrapper.parentElement : view?.parentElement;
+    const table = comparison?.querySelector(':scope > .raos-comparison__table-view');
+    const cards = comparison?.querySelector(
+      ':scope > .comparison-cards > .raos-comparison__cards',
+    );
+    const counterpart = view === table ? cards : view === cards ? table : null;
+    let hiddenAncestor = false;
+    for (let ancestor = image.parentElement; ancestor; ancestor = ancestor.parentElement) {
+      if (getComputedStyle(ancestor).display === 'none') hiddenAncestor = true;
+    }
+    return {
+      complete: image.complete,
+      naturalWidth: image.naturalWidth,
+      loading: image.loading,
+      legacyResponsiveImage: image.matches('img.raos-comparison__product-image') &&
+        comparison?.matches('.raos-comparison') === true &&
+        view !== null && counterpart != null && getComputedStyle(view).display === 'none' &&
+        counterpart.checkVisibility() === true &&
+        counterpart.getBoundingClientRect().width > 0 &&
+        counterpart.getBoundingClientRect().height > 0,
+      hasProductImageId: image.hasAttribute('data-raos-product-image-id'),
+      verifiedProductImage: image.closest(
+        '.product-profile, .raos-product-card, [data-raos-product-image-id],'
+        + '[data-raos-product-image-state="verified"]',
+      ) !== null,
+      hiddenAncestor,
+      zeroRect: rect.width === 0 && rect.height === 0,
+      invisible: image.checkVisibility() === false,
+      source: image.currentSrc || image.src,
+    };
+  });
+  const classifyImageLoading = ({ publicationProfile, commerceStatus, images }) => {
+    let unloadedImages = 0;
+    const hiddenLegacyLazySources = [];
+    for (const image of images) {
+      const deferred = publicationProfile === 'verified-incremental' &&
+        commerceStatus === 'UNCHANGED_NOT_REVERIFIED' &&
+        image.legacyResponsiveImage === true && image.hasProductImageId === false &&
+        image.verifiedProductImage === false && image.hiddenAncestor === true &&
+        image.zeroRect === true && image.invisible === true &&
+        image.loading === 'lazy' && image.complete === false &&
+        // Native pending lazy images can already expose the decoded dimensions
+        // of their shared resource. Dimensions do not mean loading is complete.
+        Number.isInteger(image.naturalWidth) && image.naturalWidth >= 0;
+      if (deferred) hiddenLegacyLazySources.push(image.source);
+      else if (!image.complete || image.naturalWidth === 0) unloadedImages += 1;
+    }
+    return { unloadedImages, hiddenLegacyLazySources };
+  };
+  const inspectHiddenLegacyImageResources = async ({ page, origin, sources }) => {
+    let failures = 0;
+    for (const source of new Set(sources)) {
+      let resource = null;
+      try {
+        // The CLI execution sandbox has no global URL constructor. Require an
+        // exact local origin and a closed, unencoded static path instead; this
+        // also excludes credentials, query/fragment and traversal/redirect URLs.
+        const path = typeof source === 'string' && typeof origin === 'string' &&
+          /^http:\/\/127\.0\.0\.1:[0-9]{4,5}$/.test(origin) && source.startsWith(`${origin}/`)
+          ? source.slice(origin.length) : '';
+        if (!/^\/wp-content\/themes\/[A-Za-z0-9_-]+\/(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_.-]+\.(?:webp|png|jpe?g|gif|svg)$/.test(path)) {
+          failures += 1;
+          continue;
+        }
+        resource = await page.request.get(source, { maxRedirects: 0, timeout: 5000 });
+        const type = (resource.headers()['content-type'] || '').split(';', 1)[0].trim();
+        if (resource.status() !== 200 || resource.url() !== source ||
+          !/^image\/(?:webp|png|jpeg|gif|svg\+xml)$/.test(type)) {
+          failures += 1;
+          continue;
+        }
+        const bytes = (await resource.body()).length;
+        if (bytes === 0 || bytes > 2 * 1024 * 1024) failures += 1;
+      } catch (error) {
+        failures += 1;
+      } finally {
+        if (resource !== null) await resource.dispose();
+      }
+    }
+    return failures;
+  };
+
+  const factory = ({ artifactDirectory, axeSource, inventory, origin,
+    publicationProfile = 'legacy-full', linkMode = 'measured-admin', incrementalScope = null,
+  }) => async (page) => {
   const publicPath = (value) =>
     typeof value === 'string' && /^\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)?$/.test(value);
   const localPath = (value, kind) => {
@@ -115,7 +389,7 @@
     ['feature_shortlist', '機能別比較'],
     ['head_to_head_comparison', '2製品比較'],
     ['head_to_head_with_reference', '2製品比較＋参考機種'],
-    ['lifecycle_status_route', '以前の比較対象の販売状態確認＋現行比較への案内'],
+    ['lifecycle_status_route', '型番・販売表示の確認案内'],
     ['model_family_comparison', 'ブランド内比較'],
   ]);
   const intentGroupByArticleId = new Map(
@@ -317,6 +591,12 @@
   ) {
     throw new Error('RAOS_WORDPRESS_AUDIT_INVENTORY_INVALID');
   }
+  const checkedIncrementalScope = validateIncrementalScope({
+    publicationProfile, linkMode, incrementalScope, articleIds: [...articleIds],
+    categorySurfaces: localSurfaces.filter(
+      (surface) => surface.kind === 'archive' && surface.archive_type === 'category',
+    ),
+  });
 
   const surfaces = [...publicSurfaces, ...localSurfaces].map((surface) => ({
     ...surface,
@@ -653,6 +933,37 @@
         const productProfiles = [...document.querySelectorAll('.product-profile')];
         const productIds = productProfiles.map((profile) =>
           (profile.getAttribute('data-raos-product-id') || '').trim());
+        const commerceCtas = [...document.querySelectorAll('a[href]')].filter((anchor) =>
+          anchor.matches('.raos-cta,[data-raos-placement]') ||
+          (() => { try { return new URL(anchor.href).hostname === 'hb.afl.rakuten.co.jp'; }
+            catch { return false; } })()).map((anchor) => ({
+          cta_id: anchor.getAttribute('data-raos-cta-id'),
+          article_id: anchor.getAttribute('data-raos-article-id'),
+          product_id: anchor.getAttribute('data-raos-product-id') ||
+            anchor.closest('[data-raos-product-id]')?.getAttribute('data-raos-product-id') || null,
+          placement: anchor.getAttribute('data-raos-placement'),
+          affiliate_host_valid: (() => { try { const url = new URL(anchor.href);
+            return url.protocol === 'https:' && url.hostname === 'hb.afl.rakuten.co.jp';
+          } catch { return false; } })(),
+          rel_tokens: [...anchor.relList],
+          has_measured_identifier: anchor.hasAttribute('data-raos-provider-measurement-id') ||
+            anchor.hasAttribute('data-raos-provider-slot-id'),
+        }));
+        const commerceImages = [...document.querySelectorAll(
+          '.product-profile img,.raos-product-card img,img[data-raos-product-image-id]',
+        )].map((image) => ({
+          product_id: image.getAttribute('data-raos-product-image-id') ||
+            image.closest('[data-raos-product-id]')?.getAttribute('data-raos-product-id') || null,
+          state: image.getAttribute('data-raos-product-image-state'),
+          alt_valid: Boolean(image.getAttribute('alt')?.trim()),
+          dimensions_valid: image.width > 0 && image.height > 0,
+          lazy: image.loading === 'lazy',
+        }));
+        const commercePlaceholderCount = document.querySelectorAll(
+          '[data-raos-product-image-state="neutral"],[data-raos-product-image-state="unverified"],'
+          + '.raos-product-image-placeholder,.raos-product-card__media:empty,'
+          + '[data-raos-purchase-action][aria-disabled="true"]',
+        ).length;
         let sessionKeys = 0;
         try {
           for (let index = 0; index < sessionStorage.length; index += 1) {
@@ -800,6 +1111,12 @@
             (anchor) => (new URL(anchor.href).searchParams.get('s') || '').trim() !==
               expectedSearchQuery,
           ).length,
+          categoryPageNumbers: paginationAnchors.map((anchor) => {
+            const url = new URL(anchor.href);
+            const match = url.pathname.match(/^\/category\/([a-z0-9-]+)\/page\/([2-9][0-9]*)\/$/);
+            return match && url.origin === location.origin && url.search === '' && url.hash === '' &&
+              `/category/${match[1]}/` === location.pathname ? Number(match[2]) : null;
+          }),
         };
         const parseTimeMs = (value) => {
           const trimmed = value.trim();
@@ -857,6 +1174,9 @@
           comparisonFocusability,
           cookieSettingsCount: document.querySelectorAll('.raos-cookie-settings').length,
           ctaBoxes: boxes('.raos-cta[data-raos-placement]'),
+          commerceCtas,
+          commerceImages,
+          commercePlaceholderCount,
           productIds,
           productProfileCount: productProfiles.length,
           duplicateIds: [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))],
@@ -878,9 +1198,9 @@
             opacityVisible: disclosureStyle !== null && disclosureAncestorsVisible &&
               disclosureEffectiveOpacity > 0 && visible(disclosure),
             nonaffiliatePhraseCount: [
-              'この記事には購入リンクがありません',
-              '以前の比較対象の販売状態を確認する案内記事',
+              '購入リンクなし',
               '商品カードとアフィリエイトリンクは掲載していません',
+              '購入先を案内しないことは、商品の性能が劣るという意味ではありません',
             ].filter((phrase) => disclosureText.includes(phrase)).length,
             policyLinkCount: disclosurePolicyLinks.length,
             standardPhraseCount: [
@@ -896,6 +1216,8 @@
           editorialBodyClass: document.body.classList.contains('raos-editorial-v2-page'),
           editorialRootCount: document.querySelectorAll('.raos-editorial-v2').length,
           emptyStateCount: document.querySelectorAll('.raos-listing-empty').length,
+          emptyStateTexts: [...document.querySelectorAll('.raos-listing-empty')]
+            .map((element) => element.textContent.trim()),
           footerBackground: getComputedStyle(document.querySelector('.raos-footer')).backgroundColor,
           footerBoxes: boxes('.raos-footer__grid,.raos-footer__bottom'),
           footerColumnCount: footerStyle?.gridTemplateColumns === 'none' ? 0 :
@@ -954,6 +1276,15 @@
           lang: document.documentElement.lang,
           listingBodyClass: document.body.classList.contains('raos-listing-page'),
           listingCardCount: document.querySelectorAll('.raos-listing-card').length,
+          listingCards: [...document.querySelectorAll('.raos-listing-card')].map((card) => {
+            const links = card.querySelectorAll('.wp-block-post-title a[href]');
+            const url = links.length === 1 ? new URL(links[0].href) : null;
+            return {
+              title_link_count: links.length,
+              local_origin: url?.origin === location.origin,
+              local_path: url?.pathname || '', search: url?.search || '', hash: url?.hash || '',
+            };
+          }),
           mainCount: document.querySelectorAll('main').length,
           measurementConfigDefined: typeof window.RAOS_MEASUREMENT_CONFIG_V1 !== 'undefined',
           measurementScriptCount: document.querySelectorAll(
@@ -992,9 +1323,6 @@
             titleText: document.querySelector('.raos-article-toc__title')?.textContent?.trim() || '',
             titleVisible: visible(document.querySelector('.raos-article-toc__title')),
           },
-          unloadedImages: [...document.images].filter(
-            (image) => !image.complete || image.naturalWidth === 0,
-          ).length,
           unlabeledControls: controls.filter((element) => element.tagName !== 'BUTTON' &&
             !element.labels?.length && !element.getAttribute('aria-label') &&
             !element.getAttribute('aria-labelledby')).length,
@@ -1003,6 +1331,20 @@
         comparisonPolicyPath,
         expectedPageNumber: surface.expected_page_number ?? null,
         expectedSearchQuery: surface.kind === 'search' ? surface.expected_search_query : null,
+      });
+
+      const imageLoading = classifyImageLoading({
+        publicationProfile,
+        commerceStatus: surface.article && checkedIncrementalScope?.articles.some(
+          (row) => row.article_id === surface.article_id,
+        ) && !checkedIncrementalScope.selected_article_ids.includes(surface.article_id)
+          ? 'UNCHANGED_NOT_REVERIFIED' : 'STRICT',
+        images: await page.evaluate(inspectImageLoading),
+      });
+      audit.unloadedImages = imageLoading.unloadedImages;
+      audit.hiddenLegacyLazyImageCount = imageLoading.hiddenLegacyLazySources.length;
+      audit.hiddenLegacyImageResourceFailures = await inspectHiddenLegacyImageResources({
+        page, origin, sources: imageLoading.hiddenLegacyLazySources,
       });
 
       const browserCookieCount = (await page.context().cookies([expectedUrl])).length;
@@ -1520,15 +1862,9 @@
       let zoomFailure = null;
       let zoomScreenshot = null;
 
-      const expectsEmptyListing = [
-        'EMPTY_QUERY', 'WHITESPACE_QUERY', 'NO_RESULTS', 'HOSTILE_QUERY_ESCAPED',
-      ].includes(surface.expected_state);
-      const listingFailure = ['search', 'archive'].includes(surface.kind) && (
-        !audit.listingBodyClass || audit.fullPostContentCount !== 0 ||
-        (expectsEmptyListing
-          ? audit.emptyStateCount !== 1 || audit.listingCardCount !== 0
-          : audit.emptyStateCount !== 0 || audit.listingCardCount < 1)
-      );
+      const listingFailure = validateListing({
+        scope: checkedIncrementalScope, surface, audit, articleRows,
+      });
       const notFoundFailure = surface.kind === 'not_found' &&
         (!audit.notFoundBodyClass || !head.title.includes('ページが見つかりません'));
       const tocFailure = surface.article && (
@@ -1546,14 +1882,20 @@
       const expectedColumns = width === 1440 ? 3 : width === 768 ? 2 : 1;
       const isLifecycleStatusRoute = surface.article &&
         surface.article_id === lifecycleStatusRouteArticleId;
+      const incrementalArticle = surface.article ? validateIncrementalArticle({
+        scope: checkedIncrementalScope, articleId: surface.article_id, audit,
+      }) : { failed: false, selected: false, commerceStatus: 'NOT_AN_ARTICLE' };
+      const incrementalExpected = checkedIncrementalScope?.articles.find(
+        (row) => row.article_id === surface.article_id);
+      const isPreservedArticle = Boolean(incrementalExpected && !incrementalArticle.selected);
       const requiresAffiliateCta = surface.article &&
-        !isLifecycleStatusRoute;
+        (incrementalExpected ? incrementalExpected.expected_ctas.length > 0 : !isLifecycleStatusRoute);
       const zeroProducts = audit.productIds.length === 0;
       const zeroCtas = audit.ctaBoxes.length === 0;
       const lifecycleProductCtaInvariantFailure = surface.article && (
         (surface.content_role === 'lifecycle_status_route') !== isLifecycleStatusRoute ||
-        zeroProducts !== isLifecycleStatusRoute ||
-        zeroCtas !== isLifecycleStatusRoute ||
+        (incrementalExpected ? incrementalArticle.failed :
+          zeroProducts !== isLifecycleStatusRoute || zeroCtas !== isLifecycleStatusRoute) ||
         audit.productProfileCount !== audit.productIds.length ||
         audit.productIds.some((productId) => productId === '') ||
         new Set(audit.productIds).size !== audit.productIds.length
@@ -1561,9 +1903,10 @@
       const disclosureSemanticsFailure = surface.article && (
         audit.disclosure.count !== 1 ||
         !audit.disclosure.opacityVisible || !audit.disclosure.inViewport ||
-        !audit.disclosure.unobscured || audit.disclosure.policyLinkCount !== 1 ||
+        !audit.disclosure.unobscured || audit.disclosure.policyLinkCount !==
+          (isPreservedArticle ? incrementalExpected.expected_disclosure_policy_link_count : 1) ||
         (isLifecycleStatusRoute
-          ? audit.disclosure.ariaLabel !== '収益化の対象外' ||
+          ? audit.disclosure.ariaLabel !== '購入リンクについて' ||
             audit.disclosure.strongText !== '購入リンクなし' ||
             audit.disclosure.detailsCount !== 0 || audit.disclosure.detailsValid ||
             audit.disclosure.summaryVisible ||
@@ -1576,6 +1919,18 @@
             audit.disclosure.standardPhraseCount !== 3 ||
             audit.disclosure.nonaffiliatePhraseCount !== 0)
       );
+      const articleFactsFailure = surface.article
+        ? isPreservedArticle
+          ? !exactMultiset(audit.articleFacts.contentRoleLabels,
+              incrementalExpected.expected_article_facts.content_role_labels) ||
+            !exactMultiset(audit.articleFacts.primaryQueryIntents,
+              incrementalExpected.expected_article_facts.primary_query_intents)
+          : audit.articleFacts.contentRoleLabels.length !== 1 ||
+            audit.articleFacts.contentRoleLabels[0] !== surface.content_role_label ||
+            audit.articleFacts.primaryQueryIntents.length !== 1 ||
+            audit.articleFacts.primaryQueryIntents[0] !== surface.primary_query_intent
+        : audit.articleFacts.contentRoleLabels.length !== 0 ||
+          audit.articleFacts.primaryQueryIntents.length !== 0;
       const generalFailure =
         browserCookieCount !== 0 ||
         audit.lang !== 'ja' || audit.characterSet !== 'UTF-8' ||
@@ -1583,6 +1938,7 @@
         audit.h1Count !== 1 || audit.mainCount !== 1 || audit.scrollWidth > audit.clientWidth ||
         audit.h1LineCount > (width <= 390 ? 6 : 4) ||
         audit.missingAlt !== 0 || audit.unloadedImages !== 0 || audit.unlabeledControls !== 0 ||
+        audit.hiddenLegacyImageResourceFailures !== 0 ||
         comparisonFocusabilityFailure ||
         audit.duplicateIds.length !== 0 || audit.brokenAriaReferences !== 0 ||
         audit.consentElementCount !== 0 || audit.cookieSettingsCount !== 0 ||
@@ -1600,13 +1956,7 @@
         audit.footerLinkBoxes.length === 0 || audit.footerLinkBoxes.some(
           (box) => boxInvalid(box) || box.height < 44,
         ) ||
-        (surface.article
-          ? audit.articleFacts.contentRoleLabels.length !== 1 ||
-            audit.articleFacts.contentRoleLabels[0] !== surface.content_role_label ||
-            audit.articleFacts.primaryQueryIntents.length !== 1 ||
-            audit.articleFacts.primaryQueryIntents[0] !== surface.primary_query_intent
-          : audit.articleFacts.contentRoleLabels.length !== 0 ||
-            audit.articleFacts.primaryQueryIntents.length !== 0) ||
+        articleFactsFailure ||
         (surface.article && (
           audit.editorialRootCount !== 1 ||
           audit.heroNotice.count !== 1 || !audit.heroNotice.visible ||
@@ -1635,10 +1985,11 @@
         throw new Error(
           `RAOS_WORDPRESS_LOCAL_PREVIEW_AUDIT_FAILED_${surface.name}_${width}:` +
           JSON.stringify({ audit, browserCookieCount, desktopTocPositionFailure,
+            articleFactsFailure, disclosureSemanticsFailure,
             disclosureKeyboardFailure, focusFlowFailure, generalFailure, headFailure,
             homeLinkFailure, internalLinkFailure, listingFailure, localLinkFailure,
             missingUiText, navigationFailure, notFoundFailure, robotsFailure, routeFailure,
-            semanticGraphFailure, seoHeadAudit,
+            semanticGraphFailure, seoHeadAudit, incrementalArticle,
             securityHeaderFailure, skipLinkFailure, tocFailure }),
         );
       }
@@ -1813,10 +2164,33 @@
         }
       }
       results.push({
+        auditResultSchema: 'RAOS_WORDPRESS_LOCAL_BROWSER_RESULT_V1',
+        localPath: surface.local_path,
+        productionPath: surface.production_path || null,
+        mandatoryCounts: {
+          actionableAxeViolations: audit.axeViolations.length,
+          brokenImages: audit.unloadedImages,
+          missingAlt: audit.missingAlt,
+          unlabeledControls: audit.unlabeledControls,
+          brokenAriaReferences: audit.brokenAriaReferences,
+          horizontalOverflow: Math.max(0, audit.scrollWidth - audit.clientWidth),
+          browserCookies: browserCookieCount,
+          unhandledRuntimeErrors: runtimeErrors.length,
+          failedResources: resourceErrors.length,
+        },
         canonicalPolicy: surface.publicCore ? 'EXACT_LOCAL_PUBLIC_CORE' : surface.expected_canonical,
         captureOnlyEvidenceMode,
+        imageLoadingEvidence: {
+          hiddenLegacyLazyNotRequested: audit.hiddenLegacyLazyImageCount,
+          hiddenLegacyImageResourceFailures: audit.hiddenLegacyImageResourceFailures,
+        },
         httpStatus: response.status(),
         profileSemantics: {
+          publicationProfile,
+          linkMode,
+          incrementalCommerceStatus: incrementalArticle.commerceStatus,
+          legacyMediaDisplayProjection: incrementalExpected?.display_projection || null,
+          preparationBindingSha256: checkedIncrementalScope?.preparation_binding_sha256 || null,
           localProfileId: robotsProfile.local_profile_id,
           localObservedPolicy: robotsProfile.local_observed_policy,
           productionRobotsEvidence: robotsProfile.production_robots_evidence,
@@ -1857,5 +2231,11 @@
   };
 
   factory.validateSeoHead = validateSeoHead;
+  factory.validateIncrementalScope = validateIncrementalScope;
+  factory.validateIncrementalArticle = validateIncrementalArticle;
+  factory.validateListing = validateListing;
+  factory.inspectImageLoading = inspectImageLoading;
+  factory.classifyImageLoading = classifyImageLoading;
+  factory.inspectHiddenLegacyImageResources = inspectHiddenLegacyImageResources;
   return factory;
 })()

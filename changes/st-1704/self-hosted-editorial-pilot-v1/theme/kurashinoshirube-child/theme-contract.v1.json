@@ -123,9 +123,9 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "25a7cad3916a0658509664abe1a69f2d8f3abe0706cc90e2c979b5c6866c631d",
-    "source_navigation_sha256": "12ef041c11f4cddc7cb1924027f96c36ad7df475a4266a2bdae1b580e874fc7a",
-    "source_portfolio_sha256": "b04818d2c93fa4a4576b7fdb4580632e4e0a48f35eef667bfe0fdaa5e7bb0b1e"
+    "sha256": "f7a2d9af7fc9405d49847eb5999d66496bf59e3b0a92f9f621bb13222c57e564",
+    "source_navigation_sha256": "ae5c793515e8de38d67fa3ec25979b639a6ab4487511482bc65d564c66c6e077",
+    "source_portfolio_sha256": "ad6625783bef5c7dcef7aaea0cf25d60cd8e48e679f9a34c6abaff0ade99d01f"
   },
   "editorial_v2": {
     "asset": "assets/editorial-v2.css",
@@ -526,8 +526,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e",
-    "source_fingerprint": "2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e",
+    "revision": "89303f68f00b45caacad62685fc6eab410265455abde15e5db2d503ca8dbcff5",
+    "source_fingerprint": "89303f68f00b45caacad62685fc6eab410265455abde15e5db2d503ca8dbcff5",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",
@@ -545,6 +545,7 @@
       "assets/images/article-suitcase-under-3kg.webp",
       "assets/images/brand-mark.svg",
       "assets/images/home-hero.webp",
+      "assets/legacy-media-display-projection.v1.json",
       "assets/measurement.js",
       "assets/theme.css",
       "functions.php",
@@ -628,5 +629,5 @@
     ]
   },
   "theme_slug": "kurashinoshirube-child",
-  "theme_version": "1.5.0"
+  "theme_version": "1.5.1"
 }

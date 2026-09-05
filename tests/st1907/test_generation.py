@@ -154,3 +154,153 @@ def test_source_symlink_and_unsupported_arguments_fail_closed(
     with pytest.raises(SystemExit) as caught_exit:
         generator.parse_args(["--unknown"])
     assert caught_exit.value.code == 2
+
+
+def _copy_rebind_inputs(root: Path) -> Path:
+    contract = yaml.safe_load(
+        (generator.REPO_ROOT / generator.CONTRACT_PATH).read_bytes()
+    )
+    required = set(generator.SOURCE_ARTIFACT_PATHS)
+    required.update(Path(row["path"]) for row in contract["authority"].values())
+    required.update(Path(path) for path in contract["dependency"]["exact_sources"])
+    required.update(
+        Path(contract["measurement_and_signal_policy"][name]["path"])
+        for name in ("measurement_contract", "signal_policy")
+    )
+    for relative in required:
+        target = root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(generator.REPO_ROOT / relative, target)
+    generator.build(root)
+    return root
+
+
+def _rebind_state(root: Path) -> dict[Path, bytes]:
+    return {
+        path: (root / path).read_bytes()
+        for path in (
+            generator.CONTRACT_PATH,
+            generator.FIXTURE_PATH,
+            *generator.GENERATED_PATHS,
+        )
+    }
+
+
+@pytest.mark.parametrize("field", ("measurement_contract", "signal_policy"))
+def test_owner_refreshes_upstream_hash_only_and_keeps_blocked_recording_unchanged(
+    tmp_path: Path,
+    field: str,
+) -> None:
+    root = _copy_rebind_inputs(tmp_path)
+    contract_before = yaml.safe_load((root / generator.CONTRACT_PATH).read_bytes())
+    fixture_before = json.loads((root / generator.FIXTURE_PATH).read_bytes())
+    upstream = root / contract_before["measurement_and_signal_policy"][field]["path"]
+    upstream.write_bytes(upstream.read_bytes() + b"\n")
+    before = _rebind_state(root)
+    with pytest.raises(
+        generator.ContentPortfolioOptimizerBuildError, match="DIGEST_DRIFT"
+    ):
+        generator.build(root, check=True)
+    assert _rebind_state(root) == before
+    generator.build(root)
+    generator.build(root, check=True)
+    contract = yaml.safe_load((root / generator.CONTRACT_PATH).read_bytes())
+    fixture = json.loads((root / generator.FIXTURE_PATH).read_bytes())
+    expected_sha = generator.sha256_bytes(upstream.read_bytes())
+    assert contract["measurement_and_signal_policy"][field]["sha256"] == expected_sha
+    assert fixture["document"][f"{field}_sha256"] == expected_sha
+    for key in ("measurement_contract_sha256", "signal_policy_sha256"):
+        fixture["document"][key] = fixture_before["document"][key]
+    assert fixture == fixture_before
+    for key in contract_before:
+        if key not in {"measurement_and_signal_policy", "recorded_fixture"}:
+            assert contract[key] == contract_before[key]
+    for key, value in contract_before["recorded_fixture"].items():
+        if key not in {"sha256", "bytes"}:
+            assert contract["recorded_fixture"][key] == value
+    report = json.loads((root / generator.REPORT_PATH).read_bytes())
+    assert report["evaluation"]["availability"] == "UNAVAILABLE"
+    assert report["evaluation"]["proposal_count"] == 0
+    assert set(report["evaluation"]["authority"].values()) == {False}
+    before = _rebind_state(root)
+    timestamps = {
+        path: (root / path).stat().st_mtime_ns
+        for path in (generator.CONTRACT_PATH, generator.FIXTURE_PATH)
+    }
+    generator.build(root)
+    assert _rebind_state(root) == before
+    assert timestamps == {path: (root / path).stat().st_mtime_ns for path in timestamps}
+
+
+def test_rebinding_cannot_refresh_an_altered_recording_or_false_synthetic_profile(
+    tmp_path: Path,
+) -> None:
+    root = _copy_rebind_inputs(tmp_path)
+    path = root / generator.FIXTURE_PATH
+    fixture = json.loads(path.read_bytes())
+    fixture["document"]["synthetic"] = False
+    payload = (
+        json.dumps(
+            fixture, ensure_ascii=True, separators=(",", ":"), sort_keys=True
+        ).encode()
+        + b"\n"
+    )
+    path.write_bytes(payload)
+    before = _rebind_state(root)
+    with pytest.raises(
+        generator.ContentPortfolioOptimizerBuildError, match="FIXTURE_CONTRACT_DRIFT"
+    ):
+        generator.build(root)
+    assert _rebind_state(root) == before
+    contract_path = root / generator.CONTRACT_PATH
+    contract = yaml.safe_load(contract_path.read_bytes())
+    contract["recorded_fixture"].update(
+        sha256=generator.sha256_bytes(payload), bytes=len(payload)
+    )
+    contract_path.write_text(
+        yaml.safe_dump(contract, sort_keys=False), encoding="utf-8"
+    )
+    before = _rebind_state(root)
+    with pytest.raises(
+        generator.ContentPortfolioOptimizerBuildError, match="FIXTURE_SEMANTIC_DRIFT"
+    ):
+        generator.build(root)
+    assert _rebind_state(root) == before
+
+
+@pytest.mark.parametrize("source", ("measurement_contract", "signal_policy"))
+def test_rebinding_does_not_hide_changed_measurement_or_finance_authority(
+    tmp_path: Path, source: str
+) -> None:
+    root = _copy_rebind_inputs(tmp_path)
+    contract = yaml.safe_load((root / generator.CONTRACT_PATH).read_bytes())
+    path = root / contract["measurement_and_signal_policy"][source]["path"]
+    if source == "measurement_contract":
+        document = json.loads(path.read_bytes())
+        document["guardrails"]["network_requests"] = True
+        path.write_text(json.dumps(document), encoding="utf-8")
+    else:
+        document = yaml.safe_load(path.read_bytes())
+        document["learning_contract"]["reward_or_profit_priority"] = True
+        path.write_text(yaml.safe_dump(document, sort_keys=False), encoding="utf-8")
+    before = _rebind_state(root)
+    with pytest.raises(
+        generator.ContentPortfolioOptimizerBuildError, match="SEMANTIC_DRIFT"
+    ):
+        generator.build(root)
+    assert _rebind_state(root) == before
+
+
+def test_optimizer_generation_follows_both_semantic_policy_owners() -> None:
+    from scripts.raos_build_core import discover_registry, topological_order
+
+    order = topological_order(discover_registry())
+    current = order.index("build_st1907_content_portfolio_optimizer")
+    assert all(
+        order.index(dependency) < current
+        for dependency in (
+            "build_st1805_portfolio_decision",
+            "build_st1704_affiliate_learning",
+            "build_st1305_finance_reconciliation",
+        )
+    )

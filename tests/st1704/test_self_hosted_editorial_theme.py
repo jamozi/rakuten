@@ -192,11 +192,11 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
 def test_theme_is_an_isolated_1_5_0_successor_with_source_fingerprint() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.5.0\n") == 1
+    assert stylesheet.count("\nVersion: 1.5.1\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.5.0"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.5.0'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.5.1"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.5.1'") == 1
     runtime_revision = theme_builder.THEME_RUNTIME_REVISION
     assert (
         functions.count(
@@ -259,7 +259,13 @@ def test_theme_stamp_generator_converges_once_is_idempotent_and_rotates(
     monkeypatch.setattr(theme_builder, "DESIGN_HANDOFF_PATH", handoff_path)
     monkeypatch.setattr(theme_builder, "OPERATIONS_RUNBOOK_PATH", runbook_path)
 
+    contract_path = theme_root / "theme-contract.v1.json"
+    stale_contract = _load_json(contract_path)
+    stale_contract["theme_version"] = "1.5.0"
+    contract_path.write_text(json.dumps(stale_contract), encoding="utf-8")
+
     first_revision = theme_builder.generate_theme_stamps()
+    assert _load_json(contract_path)["theme_version"] == theme_builder.THEME_VERSION
     first_payloads, rendered_revision = theme_builder.render_theme_stamp_payloads()
     assert rendered_revision == first_revision == theme_builder.check_theme_stamps()
     first_bytes = {path: path.read_bytes() for path in first_payloads}
@@ -377,7 +383,27 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
     )
     assert families == {"editorial-serif": serif, "editorial-sans": sans}
     assert "--raos-font-serif: " + serif.replace("'", '"') + ";" in css
-    assert css.count("font-family: var(--raos-font-serif);") == 13
+    serif_selectors = {
+        re.sub(r"\s+", " ", selector.strip())
+        for selector, declarations in re.findall(r"([^{}]+)\{([^{}]*)\}", css)
+        if "font-family: var(--raos-font-serif);" in declarations
+    }
+    assert serif_selectors == {
+        ".raos-wordmark",
+        ".raos-cluster-nav__card strong",
+        ".raos-lead",
+        ".raos-decision-summary__product",
+        ".raos-product-card__lead",
+        ".raos-listing-header h1, .raos-not-found-card h1",
+        ".raos-listing-card h2",
+        ".raos-home-v2 :where(h1, h2, h3)",
+        ".raos-home-v2 .raos-home-promise__list > li > span, .raos-home-v2 .raos-home-method__list > li > span",
+        ".raos-home-v2 :where(.raos-home-purpose__item, .raos-home-purpose__card, .raos-cluster-nav__card) strong",
+        ".raos-home-v2 .raos-home-purpose__number",
+        ".raos-home-v2 .raos-featured-guide__diagram > span",
+        ".raos-home-v2 .raos-home-problems__links strong",
+        ".raos-home-v2 .raos-home-about__lead",
+    }
     assert "ui-serif" not in css
     assert "ui-serif" not in families["editorial-serif"]
 
@@ -385,7 +411,7 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V2"
-    assert manifest["theme_version"] == "1.5.0"
+    assert manifest["theme_version"] == "1.5.1"
     assert manifest["theme_source_fingerprint"] == (
         theme_builder.theme_source_fingerprint()
     )
@@ -567,18 +593,14 @@ def test_base_stylesheet_is_preloaded_through_wordpress_resource_api() -> None:
     assert "style_loader_tag" not in owner
 
 
-def test_mobile_home_defers_only_below_fold_sections_with_stable_intrinsic_size() -> (
-    None
-):
+def test_mobile_home_uses_real_section_sizes_for_fragment_navigation() -> None:
     css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
     mobile = css.split("@media (max-width: 37.5rem) {", 1)[1]
-    selector = (
-        ".raos-home-v2 > :not(.raos-home-hero):not(.raos-home-method) {"
-    )
+    selector = ".raos-home-v2 > :not(.raos-home-hero):not(.raos-home-method) {"
     rule = mobile.split(selector, 1)[1].split("}", 1)[0]
     assert "contain: layout paint style;" in rule
-    assert "content-visibility: auto;" in rule
-    assert "contain-intrinsic-size: auto 42rem;" in rule
+    assert "content-visibility:" not in rule
+    assert "contain-intrinsic-size:" not in rule
     assert ".raos-home-hero" not in rule
     assert ".raos-home-method" not in rule
 
@@ -635,6 +657,39 @@ def test_policy_v3_body_class_is_closed_to_exact_reviewed_pages() -> None:
     assert "$classes[] = 'raos-editorial-v2-page';" in body_class
 
 
+def test_mixed_policy_head_is_local_only_and_bound_to_all_three_stored_bodies() -> None:
+    functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    resolver = functions.split(
+        "function kurashinoshirube_policy_page_head_map(): array", 1
+    )[1].split("function kurashinoshirube_public_head_context", 1)[0]
+    production_return = resolver.index("if (! kurashinoshirube_is_local_preview())")
+    private_lookup = resolver.index(
+        "get_option('raos_mixed_preview_policy_heads_v1', null)"
+    )
+    assert production_return < private_lookup
+    assert "return $production;" in resolver[production_return:private_lookup]
+    for required in (
+        "RAOS_WORDPRESS_MIXED_PREVIEW_POLICY_HEADS_V1",
+        "($mixed['publication_profile'] ?? null) !== 'verified-incremental'",
+        "($mixed['publication_authority'] ?? null) !== false",
+        "array_keys($mixed['pages']) !== array('about-ad-policy', 'comparison-policy', 'privacy-policy')",
+        "get_post_field('post_title', $post->ID, 'raw') !== $record['title']",
+        "get_post_field('post_excerpt', $post->ID, 'raw') !== $record['description']",
+        "hash('sha256', (string) get_post_field('post_content', $post->ID, 'raw')) !== $record['content_sha256']",
+    ):
+        assert required in resolver
+    seed = (REPOSITORY_ROOT / "changes/wordpress-local-preview-v1/seed.php").read_text(
+        encoding="utf-8"
+    )
+    for required in (
+        "get_post_field('post_content', (int) $result, 'raw') !== $content",
+        "RAOS_WORDPRESS_PREVIEW_MIXED_POLICY_READBACK_INVALID",
+        "'preparation_binding_sha256' => hash('sha256', file_get_contents($mixed_binding_path))",
+        "delete_option('raos_mixed_preview_policy_heads_v1')",
+    ):
+        assert required in seed
+
+
 def test_editorial_v2_category_fallback_is_allowlisted() -> None:
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
     category = functions.split("function kurashinoshirube_render_article_category", 1)[
@@ -663,7 +718,7 @@ def test_editorial_v2_category_fallback_is_allowlisted() -> None:
         "2製品比較",
         "条件別比較",
         "機能別比較",
-        "以前の比較対象の販売状態確認＋現行比較への案内",
+        "型番・販売表示の確認案内",
     }
     assert all(article["comparison_scope"] for article in navigation["articles"])
     assert all(article["primary_query_intent"] for article in navigation["articles"])
@@ -703,13 +758,15 @@ def test_article_hero_allows_only_exact_local_preview_counterparts() -> None:
         assert article["article_id"] in renderer
     assert "kurashinoshirube_article_visual_asset($post_id)" in renderer
     assert "raos-article-hero-image__overlay" in renderer
-    assert "raos-article-hero-image__media" in renderer
+    assert "raos-article-hero-image--criteria" in renderer
+    assert "<img" not in renderer
+    assert "raos-article-hero-image__media" not in renderer
     assert "raos-article-hero-image__notice" in renderer
     assert "比較イメージ／商品写真ではありません" in renderer
-    assert "<p>この記事の比較軸</p>" in renderer
-    assert 'aria-label="この記事で比べる3つの軸"' in renderer
+    assert "<p>この記事で確認すること</p>" in renderer
+    assert 'aria-label="この記事で確認する3つの項目"' in renderer
     assert "preg_match(" not in renderer
-    assert "$visual['sha256'],\n        true" in renderer
+    assert "esc_html($visual['diagram_caption'])" in renderer
     assert "bool $allow_local_preview = false" in asset_resolver
     assert (
         "$local_origin = $allow_local_preview\n"
@@ -778,14 +835,14 @@ def test_article_visuals_and_toc_are_closed_to_the_reviewed_portfolio() -> None:
     assert len(asset_paths) == len(set(asset_paths)) == 10
     assert article_visuals.count("'points' => array(") == 10
     assert (
-            article_visuals.count("暮らしのしるべ編集者の比較イメージ（商品写真ではありません）")
+        article_visuals.count(
+            "暮らしのしるべ編集者の比較イメージ（商品写真ではありません）"
+        )
         == 10
     )
     assert "抽象図" not in article_visuals
     assert "小型ロボット掃除機3構成" not in article_visuals
-    assert "小型ロボット掃除機の本体幅・ステーション・販売状態" in (
-        article_visuals
-    )
+    assert "小型ロボット掃除機の本体幅・ステーション・販売状態" in (article_visuals)
     for selector in (
         ".raos-article-hero-image__canvas",
         ".raos-article-hero-image__notice",
@@ -799,8 +856,8 @@ def test_article_visuals_and_toc_are_closed_to_the_reviewed_portfolio() -> None:
     assert "<details open><summary>この記事の目次</summary><ol>" in toc
     assert "$root_end = strpos($transformed, '>');" in toc
     assert "$root_close = strrpos($transformed, '</div>');" in toc
-    assert "<div class=\"raos-editorial-v2__main\">" in toc
-    assert "<p class=\"raos-article-toc__title\">この記事の目次</p>" in toc
+    assert '<div class="raos-editorial-v2__main">' in toc
+    assert '<p class="raos-article-toc__title">この記事の目次</p>' in toc
     assert "$disclosure_end" not in toc
     assert (
         "add_filter('the_content', 'kurashinoshirube_inject_article_toc', 12);" in toc
@@ -1093,8 +1150,7 @@ def test_canonical_fallback_contract_prefers_snapshot_and_shares_robots_identity
         "PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK"
     )
     assert contract["head"]["raos_metadata_delivery"] == (
-        "PRODUCTION_YOAST_METADATA_FILTERS_WITH_LOCAL_PREVIEW_NO_YOAST_"
-        "FALLBACK"
+        "PRODUCTION_YOAST_METADATA_FILTERS_WITH_LOCAL_PREVIEW_NO_YOAST_FALLBACK"
     )
     assert contract["head"]["local_preview_metadata_fallback"] == {
         "active_when": (
@@ -1351,9 +1407,9 @@ def test_consent_defaults_are_opt_in_and_global() -> None:
 
 def test_public_theme_disables_core_emoji_session_storage_probe() -> None:
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    block = functions.split(
-        "function kurashinoshirube_disable_core_emoji_assets", 1
-    )[1].split("add_action('after_setup_theme', static function", 1)[0]
+    block = functions.split("function kurashinoshirube_disable_core_emoji_assets", 1)[
+        1
+    ].split("add_action('after_setup_theme', static function", 1)[0]
     for marker in (
         "remove_action('wp_head', 'print_emoji_detection_script', 7);",
         "remove_action('wp_enqueue_scripts', 'wp_enqueue_emoji_styles');",
@@ -1363,9 +1419,7 @@ def test_public_theme_disables_core_emoji_session_storage_probe() -> None:
     ):
         assert marker in block
     assert (
-        "'after_setup_theme',\n"
-        "    'kurashinoshirube_disable_core_emoji_assets',\n"
-        "    0"
+        "'after_setup_theme',\n    'kurashinoshirube_disable_core_emoji_assets',\n    0"
     ) in block
 
 
@@ -1381,7 +1435,7 @@ def test_brand_mark_is_bounded_accessible_svg() -> None:
     assert "<script" not in mark.read_text(encoding="utf-8").lower()
 
 
-def test_variant_a_homepage_has_one_h1_explicit_navigation_and_nine_sections() -> None:
+def test_homepage_has_one_h1_and_puts_article_navigation_before_methodology() -> None:
     header = (THEME_ROOT / "parts/header.html").read_text(encoding="utf-8")
     front = (THEME_ROOT / "templates/front-page.html").read_text(encoding="utf-8")
 
@@ -1390,7 +1444,7 @@ def test_variant_a_homepage_has_one_h1_explicit_navigation_and_nine_sections() -
     assert header.count("<!-- wp:navigation-link ") == 4
     for label, url in (
         ("目的から探す", "/#categories"),
-        ("選び方・比較記事", "/#featured"),
+        ("選び方・比較記事", "/#all-guides"),
         ("最近更新したガイド", "/#latest"),
         ("このサイトについて", "/#about"),
     ):
@@ -1425,31 +1479,31 @@ def test_variant_a_homepage_has_one_h1_explicit_navigation_and_nine_sections() -
     assert front.count("</h1>") == 1
     assert '"level":1' not in front
     assert (
-        '<h1 id="home-hero-title">暮らしの選択に、<br>たしかな道しるべを。</h1>'
+        '<h1 id="home-hero-title"><span>暮らしの選択に、</span>'
+        "<span>たしかな</span><span>道しるべを。</span></h1>"
     ) in front
     home_hero = (
         '<img class="raos-home-hero__image" '
         'src="/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp" '
-        'alt="生成りと藍色の布が重なる、静かな暮らしの風景" '
+        'alt="鍋、マグカップ、照明とチェックリストを描いた暮らしの道具のイラスト" '
         'width="1600" height="900" fetchpriority="high" decoding="async">'
     )
     assert front.count(home_hero) == 1
     assert '<span class="raos-home-hero__image"' not in front
     assert "loading=" not in home_hero
-    home_hero_rule = css.split(".raos-home-v2 .raos-home-hero__image {", 1)[
-        1
-    ].split("}", 1)[0]
+    home_hero_rule = css.split(".raos-home-v2 .raos-home-hero__image {", 1)[1].split(
+        "}", 1
+    )[0]
     assert "object-fit: cover;" in home_hero_rule
     assert 'url("images/home-hero.webp")' not in css
 
     section_markers = [
         '<section class="raos-home-hero"',
-        '<section class="raos-home-promise"',
         '<section class="raos-home-purpose',
-        "[kurashinoshirube_featured_guide]",
-        '<section class="raos-home-problems',
-        '<section id="latest"',
         "[kurashinoshirube_published_clusters]",
+        "[kurashinoshirube_featured_guide]",
+        '<section id="latest"',
+        '<section class="raos-home-promise"',
         '<section class="raos-home-method',
         '<section class="raos-home-about',
     ]
@@ -1463,14 +1517,10 @@ def test_homepage_copy_routes_reader_needs_without_internal_language() -> None:
     front = (THEME_ROOT / "templates/front-page.html").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
 
-    assert (
-        '<a href="#home-method"><span><strong>初めてなので失敗したくない</strong>'
-        in front
-    )
-    assert (
-        '<a href="#all-guides"><span><strong>似た商品同士の違いを知りたい</strong>'
-        in front
-    )
+    assert "初めてなので失敗したくない" not in front
+    assert 'class="raos-home-problems' not in front
+    assert 'class="raos-home-purpose__grid"' not in front
+    assert 'class="raos-home-purpose__shortcuts"' in front
     assert (
         '<section class="raos-home-method raos-home-section" id="home-method"' in front
     )
@@ -1491,6 +1541,7 @@ def test_homepage_copy_routes_reader_needs_without_internal_language() -> None:
         "WordPressの分類ではなく",
         "注目ガイドと重複しない",
         "新しい比較記事",
+        "全記事確認済み",
         ">LATEST<",
         ">PURPOSE<",
         ">ABOUT<",
@@ -1509,7 +1560,7 @@ def test_homepage_copy_routes_reader_needs_without_internal_language() -> None:
     promise = front.split('<section class="raos-home-promise"', 1)[1].split(
         "</section>", 1
     )[0]
-    assert "確認できること" in promise
+    assert "比較の方針" in promise
     assert "EDITORIAL PROMISE" not in promise
     assert promise.count("<li><span>") == 3
     for heading in (
@@ -1523,12 +1574,14 @@ def test_homepage_copy_routes_reader_needs_without_internal_language() -> None:
         "</section>", 1
     )[0]
     for heading, anchor in (
-        ("移動を軽やかに", "cluster-mobility"),
-        ("家事の手間を減らす", "cluster-home"),
-        ("もしもの時に備える", "cluster-ready"),
+        ("スーツケース", "cluster-mobility"),
+        ("食洗機・ロボット掃除機", "cluster-home"),
+        ("ポータブル電源", "cluster-ready"),
     ):
         assert purpose.count(f'href="#{anchor}"') == 1
-        assert f"<h3>{heading}</h3>" in purpose
+        assert (
+            f'href="#{anchor}">{heading} <span aria-hidden="true">↓</span>' in purpose
+        )
 
     assert front.count("[kurashinoshirube_featured_guide]") == 1
     assert front.count("[kurashinoshirube_published_clusters]") == 1
@@ -1547,6 +1600,13 @@ def test_homepage_copy_routes_reader_needs_without_internal_language() -> None:
         == 1
     )
     assert "商品選定・評価は報酬条件とは切り離して行います。" in front
+    assert front.index("当サイトには広告・アフィリエイトリンク") < front.index(
+        "[kurashinoshirube_published_clusters]"
+    )
+    assert "Codexを利用し" in front
+    assert (
+        "具体的な変更内容" not in front
+    )  # Details belong on the editorial policy page.
     assert "よく読まれている" not in front
     for unpublished_path in (
         "/portable-power-station-guide/",
@@ -1555,6 +1615,68 @@ def test_homepage_copy_routes_reader_needs_without_internal_language() -> None:
         "/compact-robot-vacuum-shortlist/",
     ):
         assert unpublished_path not in front
+
+
+def test_homepage_cluster_anchors_clear_the_sticky_header() -> None:
+    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    rules = re.findall(r"([^{}]+)\{([^{}]*)\}", css)
+    assert any(
+        ".raos-home-v2 :where(" in selector
+        and ".raos-cluster)" in selector
+        and "scroll-margin-top: 6rem;" in declarations
+        for selector, declarations in rules
+    )
+
+
+def test_homepage_guide_role_comes_from_the_stored_article_not_the_candidate() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    helper = source.split("function kurashinoshirube_stored_guide_role", 1)[1].split(
+        "/** Render synthetic local posts", 1
+    )[0]
+    for requirement in (
+        "kurashinoshirube_public_article_identity($post_id)",
+        "get_post_field('post_content', $post_id, 'raw')",
+        "$identity['article_id'] === 'solota-vs-rakua-mini-plus'",
+        "'<dt>記事分類</dt><dd>型番・販売表示の確認案内</dd>'",
+        ") === 1",
+        "return '型番・販売表示の確認案内';",
+        "return '比較・選び方ガイド';",
+    ):
+        assert requirement in helper
+    assert (
+        source.count("esc_html(kurashinoshirube_stored_guide_role((int) $post->ID))")
+        == 2
+    )
+
+
+def test_homepage_hero_wraps_complete_phrases_and_uses_a_non_photo_feature_diagram() -> (
+    None
+):
+    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    phrase_rule = css.split(".raos-home-v2 .raos-home-hero h1 > span {", 1)[1].split(
+        "}", 1
+    )[0]
+    assert "white-space: nowrap;" in phrase_rule
+    assert "display: inline-block;" in phrase_rule
+    assert "font-size: clamp(1.25rem, 8.4vw, 2.35rem);" in css
+    assert (
+        "Share the compact header with articles, policy pages, search and 404." in css
+    )
+    compact = css.split("Share the compact header", 1)[1]
+    assert "display: flex;" in compact
+    assert "flex-wrap: wrap;" in compact
+    assert "margin-inline-start: auto;" in compact
+    assert "text-wrap: balance;" in compact
+    assert "white-space: normal;" in compact
+    assert "@media (max-width: 20rem)" in compact
+    assert "white-space: normal;" in compact
+    featured_rule = css.split(".raos-home-v2 .raos-featured-guide__visual--power {", 1)[
+        1
+    ].split("}", 1)[0]
+    assert "background-image:" not in featured_rule
+    assert "使いたい機器を決める" in functions
+    assert "選ぶ順番を示す比較図。商品写真ではありません。" in functions
 
 
 def test_navigation_and_listing_labels_are_reader_facing_japanese() -> None:
@@ -1902,6 +2024,16 @@ def test_homepage_cluster_contract_is_hash_bound_and_covers_all_articles() -> No
     assert "このテーマの記事は、根拠と公開条件の確認後に掲載します。" in renderer
     assert ". esc_html($cluster['heading']) . '</h3>' . $cluster_body" in renderer
     assert "if ($items === '') {\n            continue;" not in renderer
+    assert "esc_html(get_post_field('post_title', (int) $post->ID, 'raw'))" in renderer
+    assert ". esc_html($title)" not in renderer
+    local_renderer = source.split(
+        "function kurashinoshirube_local_preview_cluster_items", 1
+    )[1].split("function kurashinoshirube_render_published_clusters", 1)[0]
+    assert (
+        "esc_html(get_post_field('post_title', (int) $post->ID, 'raw'))"
+        in local_renderer
+    )
+    assert ". esc_html($title)" not in local_renderer
 
 
 @pytest.mark.parametrize(
@@ -2198,7 +2330,32 @@ def test_content_is_visible_without_javascript() -> None:
     assert "raos-reveal" not in css
     assert "opacity: 0" not in css
     assert "visibility: hidden" not in css
-    assert css.count("display: none") == 2
+    hidden_selectors = {
+        selector.strip()
+        for selector, declarations in re.findall(
+            r"([^{}]+)\{([^{}]*)\}", re.sub(r"/\*[\s\S]*?\*/", "", css)
+        )
+        if re.search(r"\bdisplay\s*:\s*none\b", declarations)
+    }
+    assert hidden_selectors == {
+        ".raos-comparison__cards",
+        ".raos-comparison__table-view",
+        ".raos-site-header .raos-wordmark::before",
+        ".raos-header-nojs-shell",
+        ".raos-site-header:has(.raos-header-nojs) .raos-header-search,\n"
+        ".raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container-open,\n"
+        ".raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container-close",
+    }
+    # Only the decorative wordmark mark disappears at narrow widths; the actual
+    # site-name link and all article content remain present without JavaScript.
+    assert (
+        "@media (max-width: 20rem) {\n"
+        "  .raos-site-header .raos-wordmark::before {\n    display: none;"
+    ) in css
+    assert re.search(
+        r"\.raos-site-header \.raos-wordmark a\s*\{[^}]*white-space: normal;",
+        css,
+    )
     assert ".raos-comparison__cards {\n  display: none;" in css
     assert ".raos-comparison__table-view {\n    display: none;" in css
     assert "prefers-reduced-motion: reduce" in css
@@ -2408,9 +2565,9 @@ def test_article_type_density_ctas_and_cmp_are_responsive_without_home_scope() -
     assert editorial_root_match is not None
     editorial_root = editorial_root_match.group("body")
     assert "font-size: 1rem;" in editorial_root
-    disclosure = editorial_css.split(
-        ".raos-editorial-v2 .disclosure {", 1
-    )[1].split("}", 1)[0]
+    disclosure = editorial_css.split(".raos-editorial-v2 .disclosure {", 1)[1].split(
+        "}", 1
+    )[0]
     assert "font-size: 0.95rem;" in disclosure
     assert "color: var(--rev2-ink);" in disclosure
     assert "border-inline-start: 0.3rem solid var(--rev2-clay);" in disclosure
@@ -2452,9 +2609,9 @@ def test_article_type_density_ctas_and_cmp_are_responsive_without_home_scope() -
     )[1].split("}", 1)[0]
     assert "grid-column: 1 / -1;" in final_summary
     assert "width: min(100%, 26rem);" in final_summary
-    closing_cta = css.rsplit(
-        '.raos-cta[data-raos-placement="final_summary"] {', 1
-    )[1].split("}", 1)[0]
+    closing_cta = css.rsplit('.raos-cta[data-raos-placement="final_summary"] {', 1)[
+        1
+    ].split("}", 1)[0]
     assert "background: transparent;" in closing_cta
     assert "border-color: var(--raos-rule);" in closing_cta
     assert "color: var(--raos-ink) !important;" in closing_cta
@@ -2495,6 +2652,22 @@ def test_article_type_density_ctas_and_cmp_are_responsive_without_home_scope() -
     assert "order:" not in cmp
     assert "content:" not in cmp
     assert ".cky-" not in editorial_css
+
+
+def test_shared_footer_columns_can_shrink_when_text_is_enlarged() -> None:
+    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    # Fixed rem minima overflow desktop viewports when the root font is doubled.
+    for last_selector in (
+        ".raos-not-found-page .raos-footer__grid {",
+        ".raos-policy-v3-page .raos-footer__grid {",
+    ):
+        desktop_grid = css.split(last_selector, 1)[1].split("}", 1)[0]
+        assert (
+            "grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1fr);"
+            in desktop_grid
+        )
+        assert "overflow: hidden" not in desktop_grid
+        assert "overflow-x: hidden" not in desktop_grid
 
 
 def test_home_tablet_masthead_keeps_the_wordmark_on_its_own_row() -> None:
@@ -2693,9 +2866,9 @@ def test_yoast_is_the_production_owner_with_one_bounded_local_fallback() -> None
     assert "wpseo_add_opengraph_images" not in source
     assert "kurashinoshirube_filter_snapshot_value($value, 'seo_title')" in source
     assert "$payload['title'] !== $title" in source
-    author_filter = source.split(
-        "function kurashinoshirube_filter_meta_author", 1
-    )[1].split("function kurashinoshirube_filter_enhanced_slack_data", 1)[0]
+    author_filter = source.split("function kurashinoshirube_filter_meta_author", 1)[
+        1
+    ].split("function kurashinoshirube_filter_enhanced_slack_data", 1)[0]
     slack_filter = source.split(
         "function kurashinoshirube_filter_enhanced_slack_data", 1
     )[1].split("function kurashinoshirube_filter_og_type", 1)[0]
@@ -2728,9 +2901,9 @@ def test_yoast_is_the_production_owner_with_one_bounded_local_fallback() -> None
 
     fallback = source.split(
         "function kurashinoshirube_emit_local_fallback_head(): void", 1
-    )[1].split(
-        "add_action('wp_head', 'kurashinoshirube_emit_local_fallback_head'", 1
-    )[0]
+    )[1].split("add_action('wp_head', 'kurashinoshirube_emit_local_fallback_head'", 1)[
+        0
+    ]
     assert "defined('WPSEO_VERSION')" in fallback
     assert "! kurashinoshirube_is_local_preview()" in fallback
     assert "kurashinoshirube_public_head_context()" in fallback
@@ -2761,9 +2934,9 @@ def test_local_head_fallback_preserves_core_title_and_unrelated_routes() -> None
 
 def test_verified_asset_uri_accepts_only_the_exact_local_theme_base() -> None:
     source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    verifier = source.split(
-        "function kurashinoshirube_verified_asset_uri", 1
-    )[1].split("function kurashinoshirube_bound_post_snapshot", 1)[0]
+    verifier = source.split("function kurashinoshirube_verified_asset_uri", 1)[1].split(
+        "function kurashinoshirube_bound_post_snapshot", 1
+    )[0]
     local = "$local_origin = $allow_local_preview"
     assert verifier.count(local) == 1
     assert (

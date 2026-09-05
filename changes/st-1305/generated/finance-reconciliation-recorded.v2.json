@@ -24,40 +24,40 @@
       {
         "article_id": "st1703-first-suitcase-comparison",
         "intent_classification": "CONDITION_COMPARISON",
-        "packet_sha256": "53868ff59be25f1b4fb748b9a3a2fd3060872fd24288888d875a9b6490be48c2",
+        "packet_sha256": "7ce24e23bb3390eb12aa0b8c70d834354d2cb774fec8b0297f1f321eac686b8d",
         "slot": 1,
         "slug": "carry-on-suitcase-comparison"
       },
       {
         "article_id": "st1704-portable-power-station-guide",
         "intent_classification": "SELECTION_GUIDE",
-        "packet_sha256": "3c464302fecbfe2552db7ef3330d1c8a317dae30250d0bc2c11dfb3fb3fac87d",
+        "packet_sha256": "77f9a4f9bf1c94357212c94a17a132ac322b2f11c7016ce70a48d718fff7c69a",
         "slot": 2,
         "slug": "portable-power-station-guide"
       },
       {
         "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
         "intent_classification": "MODEL_DIFFERENCES",
-        "packet_sha256": "5a6d223eb930fba97991ec872ffe3f539b1d090b5a04606349f941452f19dc5a",
+        "packet_sha256": "e8db16ed45fc46e49db943f962b65e82039fe8379c8c1a6b87c1fa254eb2dc0b",
         "slot": 3,
         "slug": "anker-solix-c300-c800-c1000-differences"
       },
       {
         "article_id": "st1704-countertop-dishwasher-for-small-households",
         "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
-        "packet_sha256": "b42a3715a4da0e7beec5902e1c898d9d35b04d414dc4f1d68f2aa3f7f853eeaf",
+        "packet_sha256": "d0d00c9f9552a62250d6e2286ce86d9e07f77af5b652c2fe1585bb18bc63445b",
         "slot": 4,
         "slug": "countertop-dishwasher-for-small-households"
       },
       {
         "article_id": "st1704-compact-robot-vacuum-shortlist",
         "intent_classification": "CONDITION_SHORTLIST",
-        "packet_sha256": "4aae0a80274bdba88cd49eb25fdac3862911831d66ddd0b62267f9fa16f13320",
+        "packet_sha256": "7c551ba6a45fe1560ac70b565050781b23a2ddeea0cc305366d918e136ed9401",
         "slot": 5,
         "slug": "compact-robot-vacuum-shortlist"
       }
     ],
-    "contract_sha256": "2a2f70198776b3d39be4f7e61c2b956fc96622cbd7b585c5c4a18ec2c22bb525",
+    "contract_sha256": "741bf5c6ea90a3dfab9ef467d0c79328af3ace50b86f08c01245ee9c18afb4f7",
     "period": {
       "duration_days": 14,
       "end_exclusive_date": "2026-09-08",
@@ -92,18 +92,18 @@
     }
   },
   "provenance": {
-    "fixture_sha256": "685267fbd21e48ae5b0be3db2e7e01aa3e3a432e859f21c28bf38afc4275fddb",
+    "fixture_sha256": "2b332efac448db83bedf7b359b00728a0d003169189b974179158b9ac639a0c6",
     "generated_by": "repo://scripts/build_st1305_finance_reconciliation.py",
     "generation_command": ".venv/bin/python scripts/build_st1305_finance_reconciliation.py",
     "source_artifacts": [
       {
-        "bytes": 8041,
-        "sha256": "4a7ff35dd499f74828ee34b12ff33f43c5e190213f3f40b93da100070165ca9e",
+        "bytes": 7960,
+        "sha256": "5e5ae0a0a90f3614d8fbb7070eaf280e2d6bb314c21df52243577a9c6c259c85",
         "uri": "repo://changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
       },
       {
         "bytes": 786,
-        "sha256": "685267fbd21e48ae5b0be3db2e7e01aa3e3a432e859f21c28bf38afc4275fddb",
+        "sha256": "2b332efac448db83bedf7b359b00728a0d003169189b974179158b9ac639a0c6",
         "uri": "repo://changes/st-1305/fixtures/finance-reconciliation-recorded.synthetic.v2.json"
       },
       {
@@ -112,8 +112,8 @@
         "uri": "repo://changes/st-1305/PREFLIGHT-v2.md"
       },
       {
-        "bytes": 2456,
-        "sha256": "97e52d5c7a2120bb4c1bc862fa22f0661845375a050a548241ccfe6aa92b5cd8",
+        "bytes": 2994,
+        "sha256": "ba575883712d9443d71eb867364be65081ffd51bcbe41b870612c6b99050160c",
         "uri": "repo://changes/st-1305/README-v2.md"
       },
       {
@@ -137,8 +137,8 @@
         "uri": "repo://python/raos/adapters/recorded_finance_reconciliation.py"
       },
       {
-        "bytes": 25549,
-        "sha256": "b343bd2c74b8ab2071ba80b9a8ba974104c4181d7d3af897d6c732f790e097f2",
+        "bytes": 31704,
+        "sha256": "597149b823f8712b840b0f2749a95d4aab400003db28b0a95c651766916eeee6",
         "uri": "repo://scripts/build_st1305_finance_reconciliation.py"
       }
     ],
@@ -161,7 +161,7 @@
       },
       "five_slot_measurement": {
         "path": "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json",
-        "sha256": "69bd518321cbd5327b920c6245a4cfa861f881234bd8ba93dc09bde5c85c7fb9"
+        "sha256": "28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0"
       },
       "integration_precedence": {
         "path": "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
@@ -185,27 +185,27 @@
       },
       "st1303_fixture": {
         "path": "changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json",
-        "sha256": "3eb8f23ae8504312cff34330dcb112069fa50503fb0e3c8f00beff7185a436ad"
+        "sha256": "b209b37b278ce64fd8c757250f3f103f937c24ae8abc636a58e7952333bf97b1"
       },
       "st1303_projection": {
         "path": "changes/st-1303/generated/attribution-engine-recorded.v2.json",
-        "sha256": "3c668f7dc69bcbb5a8be91966fcdde1710feffee32458f985f5fe77c73e1c62c"
+        "sha256": "ebfae2f7cb6f49acae86fc37775bd84083952160ef3088a75a6ec7a9f66745b2"
       },
       "st1303_runtime": {
         "path": "changes/st-1303/contracts/attribution-engine-runtime.v2.yaml",
-        "sha256": "3ba471e700ae4a03a8e1c15b104c85ad645befa06863c5183a5110b5544b8d7d"
+        "sha256": "1671d1f6f4069e69ffd3557a1fa8943ac6ba9c5623acaf3443102a8c00e6d476"
       },
       "st1304_fixture": {
         "path": "changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json",
-        "sha256": "15d6d058da46921b2288dd09c5b780b95fd67c3182d8316b2013283a6ad68f2c"
+        "sha256": "b6d7a29b5490a3b0449a788578b6d68bdb2f5140078cc72ffd022c3840041da3"
       },
       "st1304_projection": {
         "path": "changes/st-1304/generated/cost-unit-economics-recorded.v2.json",
-        "sha256": "c585189cd438eb4592a254fdea686e6cfb8e2c97541de168617686c71d1adb8f"
+        "sha256": "6855697006be52747528872969316ec6025af6b4a887b33caaa425b2351e7839"
       },
       "st1304_runtime": {
         "path": "changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml",
-        "sha256": "cbea905bf38d75a1f359ae5f225615e7ca1d17bf026201ded62c2972024fadfa"
+        "sha256": "601d0919b57d50745168ae90c3a4a8c49737af3ddf0dc14531efbabc4a183578"
       },
       "test_catalog": {
         "path": "docs/canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
@@ -216,7 +216,7 @@
         "sha256": "6a1208fe0013c7a8211089b7b839544ec603a943c50597228db612bf935826dd"
       }
     },
-    "unit_economics_fixture_sha256": "15d6d058da46921b2288dd09c5b780b95fd67c3182d8316b2013283a6ad68f2c"
+    "unit_economics_fixture_sha256": "b6d7a29b5490a3b0449a788578b6d68bdb2f5140078cc72ffd022c3840041da3"
   },
   "recorded_report": {
     "authority": {
@@ -272,8 +272,8 @@
         "left_value": "JPY",
         "right_value": "JPY",
         "source_sha256s": [
-          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
-          "b6c80bc4b12e81a9d126793475c5c9650a2be5c01d5d398ddb1ca96199edcb47"
+          "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482",
+          "3fdc5f40e5a4a3499a7aef0fa2a9fe6b97329ea8b291a6d8d26733b079678f34"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -284,8 +284,8 @@
         "left_value": "{\"duration_days\": 14, \"end_exclusive_date\": \"2026-09-08\", \"start_date\": \"2026-08-25\"}",
         "right_value": "{\"duration_days\": 14, \"end_exclusive_date\": \"2026-09-08\", \"start_date\": \"2026-08-25\"}",
         "source_sha256s": [
-          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
-          "b6c80bc4b12e81a9d126793475c5c9650a2be5c01d5d398ddb1ca96199edcb47"
+          "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482",
+          "3fdc5f40e5a4a3499a7aef0fa2a9fe6b97329ea8b291a6d8d26733b079678f34"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -296,7 +296,7 @@
         "left_value": 3,
         "right_value": 3,
         "source_sha256s": [
-          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
+          "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -316,7 +316,7 @@
         "left_value": "300",
         "right_value": "300",
         "source_sha256s": [
-          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
+          "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -327,8 +327,8 @@
         "left_value": "300",
         "right_value": "300",
         "source_sha256s": [
-          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
-          "b6c80bc4b12e81a9d126793475c5c9650a2be5c01d5d398ddb1ca96199edcb47"
+          "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482",
+          "3fdc5f40e5a4a3499a7aef0fa2a9fe6b97329ea8b291a6d8d26733b079678f34"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -340,7 +340,7 @@
         "right_value": 120,
         "source_sha256s": [
           "1111111111111111111111111111111111111111111111111111111111111111",
-          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
+          "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -352,7 +352,7 @@
         "right_value": 79,
         "source_sha256s": [
           "4444444444444444444444444444444444444444444444444444444444444444",
-          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
+          "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -385,8 +385,8 @@
         "left_value": "VERIFIED_SAME_PROGRAM_PERIOD_MATURE_FIVE_SLOTS",
         "right_value": "VERIFIED_SAME_PROGRAM_PERIOD_MATURE_FIVE_SLOTS",
         "source_sha256s": [
-          "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
-          "b6c80bc4b12e81a9d126793475c5c9650a2be5c01d5d398ddb1ca96199edcb47"
+          "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482",
+          "3fdc5f40e5a4a3499a7aef0fa2a9fe6b97329ea8b291a6d8d26733b079678f34"
         ],
         "status": "MATCHED",
         "unavailable_reason": null,
@@ -416,7 +416,7 @@
         "severity": "EXTERNAL_BLOCKER"
       }
     ],
-    "input_sha256": "5a45abb3840505ed2263410d91cc9e253a2451262d68d1eca4942f966f04d831",
+    "input_sha256": "a029170def897a0d5a9b0352382b9b1679c647ea737363c12980d655ff784d17",
     "learning_report": {
       "availability": "AVAILABLE",
       "candidates": [
@@ -424,7 +424,7 @@
           "article": {
             "article_id": "st1704-countertop-dishwasher-for-small-households",
             "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
-            "packet_sha256": "b42a3715a4da0e7beec5902e1c898d9d35b04d414dc4f1d68f2aa3f7f853eeaf",
+            "packet_sha256": "d0d00c9f9552a62250d6e2286ce86d9e07f77af5b652c2fe1585bb18bc63445b",
             "slot": 4,
             "slug": "countertop-dishwasher-for-small-households"
           },
@@ -535,7 +535,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
+            "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482"
           ],
           "unavailable_reason": null,
           "unit": "JPY",
@@ -555,7 +555,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
+            "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482"
           ],
           "unavailable_reason": null,
           "unit": "JPY",
@@ -575,7 +575,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
+            "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482",
             "1111111111111111111111111111111111111111111111111111111111111111",
             "6666666666666666666666666666666666666666666666666666666666666666",
             "7777777777777777777777777777777777777777777777777777777777777777",
@@ -601,7 +601,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
+            "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482",
             "1111111111111111111111111111111111111111111111111111111111111111"
           ],
           "unavailable_reason": null,
@@ -622,7 +622,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
+            "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482",
             "6666666666666666666666666666666666666666666666666666666666666666",
             "7777777777777777777777777777777777777777777777777777777777777777",
             "8888888888888888888888888888888888888888888888888888888888888888",
@@ -652,7 +652,7 @@
             "8888888888888888888888888888888888888888888888888888888888888888",
             "9999999999999999999999999999999999999999999999999999999999999999",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
+            "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482"
           ],
           "unavailable_reason": null,
           "unit": "RATIO",
@@ -720,7 +720,7 @@
           },
           "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
           "source_sha256s": [
-            "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
+            "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482",
             "1111111111111111111111111111111111111111111111111111111111111111"
           ],
           "unavailable_reason": null,
@@ -750,7 +750,7 @@
       "finance_may_change_publication_snapshot": false,
       "finance_may_change_recommendation_order": false
     },
-    "result_sha256": "212cdea72431bf214db284b7dc41a3d7d66ece4b01ded23a16d97ce07f64a4d5",
+    "result_sha256": "10bd56c82d65b39b499955a089ad1a995c7c3171664ade9d1d5efb224591282d",
     "run_id": "018f3e90-7b00-7000-8000-000000001305",
     "totals": {
       "amount_totals": {

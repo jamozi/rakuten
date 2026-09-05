@@ -43,6 +43,10 @@ from raos.application.editorial.editorial_portfolio_v2 import (  # noqa: E402
     PORTFOLIO_RELATIVE_PATH,
     PRODUCTION_FIXTURE_RELATIVE_PATH,
     STATUS_RELATIVE_PATH,
+    INCREMENTAL_STATUS_SCHEMA,
+    incremental_product_evidence_scope_sha256,
+    incremental_product_evidence_status_relative_path,
+    selected_product_ids_v1,
     _validate_rakuten_identity,
     discover_rakuten_identity_v1,
     rakuten_identity_query_v1,
@@ -568,37 +572,115 @@ def _is_product_listing_fallback(error: object) -> bool:
     )
 
 
-def capture() -> dict[str, int]:
+def _capture_private_root(owner_checkout: Path | None) -> Path:
+    """Keep an explicit live owner checkout separate from current source inputs."""
+    if owner_checkout is None:
+        return ROOT
+    allowed = Path("/home/minami/rakuten")
+    try:
+        if (
+            owner_checkout != allowed
+            or owner_checkout.is_symlink()
+            or not owner_checkout.is_dir()
+            or owner_checkout.resolve(strict=True) != allowed
+        ):
+            fail("RAOS_EDITORIAL_PORTFOLIO_OWNER_CHECKOUT_INVALID")
+        for relative in (
+            STATUS_RELATIVE_PATH.parent,
+            STATUS_RELATIVE_PATH.parent / "provider",
+            STATUS_RELATIVE_PATH.parent / "incremental",
+            STATUS_RELATIVE_PATH.parent / "jan-evidence",
+            Path(".secrets/st1704-self-hosted-editorial-pilot/rakuten"),
+        ):
+            path = owner_checkout / relative
+            if path.resolve(strict=False) != path:
+                fail("RAOS_EDITORIAL_PORTFOLIO_OWNER_CHECKOUT_INVALID")
+    except OSError, RuntimeError:
+        fail("RAOS_EDITORIAL_PORTFOLIO_OWNER_CHECKOUT_INVALID")
+    return owner_checkout
+
+
+def capture(
+    *,
+    owner_checkout: Path | None = None,
+    product_ids: Sequence[str] | None = None,
+) -> dict[str, int]:
+    """Capture exact selected commerce privately; omitted selection stays legacy full."""
     portfolio = load_editorial_portfolio_v2(ROOT)
+    source_hash = portfolio_sha256(ROOT)
+    selected = (
+        None if product_ids is None else selected_product_ids_v1(portfolio, product_ids)
+    )
+    private_root = _capture_private_root(owner_checkout)
+    products = (
+        portfolio.products
+        if selected is None
+        else tuple(portfolio.product_by_id[product_id] for product_id in selected)
+    )
+    counts = {"verified": 0, "not_found": 0, "ambiguous": 0}
+    if selected is not None:
+        counts["unresolved"] = 0
+    if not products and selected is not None:
+        return (
+            counts  # Informational scope: no API, JAN, credential, or evidence access.
+        )
     jan_evidence_bindings = product_jan_evidence_bindings_v1(
         ROOT,
         portfolio=portfolio,
+        private_root=private_root,
+        product_ids=selected,
     )
-    if any(
+    if selected is None and any(
         product.official_jan is not None
         and product.product_id not in jan_evidence_bindings
         for product in portfolio.products
     ):
         fail("RAOS_EDITORIAL_PORTFOLIO_JAN_EVIDENCE_INCOMPLETE")
     rakuten_capture.require_clean_capture_environment()
-    credentials = rakuten_capture.read_owner_credentials(ROOT)
-    factory = rakuten_capture.SystemRakutenHttpsConnectionFactory(ROOT)
-    status_root = ROOT / STATUS_RELATIVE_PATH.parent
+    needs_api = any(
+        binding.official_jan is None or binding.product_id in jan_evidence_bindings
+        for binding in products
+    )
+    credentials = (
+        rakuten_capture.read_owner_credentials(private_root) if needs_api else None
+    )
+    factory = (
+        rakuten_capture.SystemRakutenHttpsConnectionFactory(private_root)
+        if needs_api
+        else None
+    )
+    status_root = private_root / STATUS_RELATIVE_PATH.parent
     provider_root = status_root / "provider"
     _ensure_directory(status_root, mode=0o700)
     _ensure_directory(provider_root, mode=0o700)
     records: list[dict[str, object]] = []
-    counts = {"verified": 0, "not_found": 0, "ambiguous": 0}
 
     def now() -> datetime:
         return datetime.now(UTC)
 
-    for index, binding in enumerate(portfolio.products, start=1):
+    for index, binding in enumerate(products, start=1):
         print(
-            f"Capturing product evidence {index}/{len(portfolio.products)}: "
-            f"{binding.product_id}",
+            f"Capturing product evidence {index}/{len(products)}: {binding.product_id}",
             flush=True,
         )
+        if (
+            binding.official_jan is not None
+            and binding.product_id not in jan_evidence_bindings
+        ):
+            records.append(
+                {
+                    "product_id": binding.product_id,
+                    "state": "unresolved",
+                    "reason": "OFFICIAL_JAN_EVIDENCE_MISSING",
+                    "retrieved_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "item_code": None,
+                    "response_sha256": None,
+                    "affiliate_response_sha256": None,
+                    "image_sha256": None,
+                }
+            )
+            counts["unresolved"] += 1
+            continue
         if binding.rakuten_item_code is None:
             state, response_sha256, _match_count = _missing_listing_status(
                 binding,
@@ -607,7 +689,9 @@ def capture() -> dict[str, int]:
                 output_directory=provider_root,
             )
             if state == "resolved":
-                binding = resolve_rakuten_identity_v1(ROOT, binding)
+                binding = resolve_rakuten_identity_v1(
+                    ROOT, binding, private_root=private_root
+                )
             else:
                 records.append(
                     {
@@ -627,7 +711,7 @@ def capture() -> dict[str, int]:
         if binding.rakuten_item_code is not None:
             try:
                 existing = read_rakuten_product_evidence(
-                    ROOT, product_id=binding.product_id
+                    private_root, product_id=binding.product_id
                 )
                 _validate_rakuten_identity(
                     binding,
@@ -659,7 +743,7 @@ def capture() -> dict[str, int]:
                 continue
             try:
                 result = rakuten_capture._capture_product(
-                    ROOT,
+                    private_root,
                     _target(binding),
                     credentials,
                     connection_factory=factory,
@@ -701,18 +785,39 @@ def capture() -> dict[str, int]:
             )
             counts["verified"] += 1
             continue
-    receipt = {
+    if portfolio_sha256(ROOT) != source_hash:
+        fail("RAOS_EDITORIAL_PORTFOLIO_SOURCE_CHANGED")
+    receipt: dict[str, object] = {
         "schema": "RAOS_EDITORIAL_PORTFOLIO_PRODUCT_EVIDENCE_STATUS_V2",
         "captured_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "portfolio_sha256": portfolio_sha256(ROOT),
+        "portfolio_sha256": source_hash,
         "products": records,
     }
+    relative = STATUS_RELATIVE_PATH
+    if selected is not None:
+        for row in records:
+            row.setdefault("reason", None)
+        receipt.update(
+            {
+                "schema": INCREMENTAL_STATUS_SCHEMA,
+                "product_ids": list(selected),
+                "scope_sha256": incremental_product_evidence_scope_sha256(
+                    ROOT, selected
+                ),
+                "owner_attested": False,
+                "publication_authority": False,
+            }
+        )
+        relative = incremental_product_evidence_status_relative_path(ROOT, selected)
+        _ensure_directory((private_root / relative).parent, mode=0o700)
     _atomic_write(
-        ROOT / STATUS_RELATIVE_PATH,
+        private_root / relative,
         _canonical_bytes(receipt) + b"\n",
         mode=0o600,
     )
-    product_evidence_views_v2(ROOT, require_fresh_set=True)
+    product_evidence_views_v2(
+        ROOT, require_fresh_set=True, private_root=private_root, product_ids=selected
+    )
     return counts
 
 
@@ -1117,7 +1222,14 @@ def _source_fact_date_contract(portfolio: EditorialPortfolioV2) -> FactDateContr
             fail("RAOS_EDITORIAL_PORTFOLIO_ARTICLE_INVALID")
         if not source_dates or max(source_dates) > portfolio.editorial_reviewed_on:
             fail("RAOS_EDITORIAL_PORTFOLIO_SOURCE_DATE_INVALID")
-        article_dates[article.article_id] = portfolio.editorial_reviewed_on
+        # A scoped copy review must not silently redate the other nine posts
+        # or any manufacturer observation. This is editorial review, not a
+        # new capture or independent publication attestation.
+        article_dates[article.article_id] = (
+            "2026-09-05"
+            if article.article_id == "solota-vs-rakua-mini-plus"
+            else portfolio.editorial_reviewed_on
+        )
         product_dates[article.article_id] = {}
         product_source_refs[article.article_id] = {}
         for product_id in article.product_ids:
@@ -1273,6 +1385,14 @@ def _ensure_visible_intent_metadata(markup: str, article_id: str) -> str:
     if expected is None:
         fail("RAOS_EDITORIAL_PORTFOLIO_IDENTITY_INVALID")
     role, intent = expected
+    if article_id == "solota-vs-rakua-mini-plus":
+        markup, first_hand_count = re.subn(
+            r"<dt>実機確認</dt><dd>未実施（(?:公式仕様比較|型番・販売表示の確認案内)）</dd>",
+            "<dt>実機確認</dt><dd>未実施（型番・販売表示の確認案内）</dd>",
+            markup,
+        )
+        if first_hand_count != 1:
+            fail("RAOS_EDITORIAL_PORTFOLIO_ARTICLE_INVALID")
     role_fragment = f"<div><dt>記事分類</dt><dd>{role}</dd></div>"
     intent_fragment = f"<div><dt>この記事で答えること</dt><dd>{intent}</dd></div>"
     role_count = markup.count("<dt>記事分類</dt>")
@@ -1472,6 +1592,7 @@ def _reader_visible_market_exclusions(
         fail("RAOS_EDITORIAL_PORTFOLIO_MARKET_AUDIT_INVALID")
 
     entries: list[str] = []
+    identity_route = article_id == "solota-vs-rakua-mini-plus"
     for raw_candidate in raw_candidates:
         if not isinstance(raw_candidate, dict):
             fail("RAOS_EDITORIAL_PORTFOLIO_MARKET_AUDIT_INVALID")
@@ -1526,7 +1647,7 @@ def _reader_visible_market_exclusions(
             + escape(checked_on)
             + "。型番・対象範囲："
             + escape(cast(str, exact_variant_scope))
-            + "。</p><p>比較表に含めなかった理由："
+            + ("。</p><p>" if identity_route else "。</p><p>比較表に含めなかった理由：")
             + escape(cast(str, reason))
             + "</p></section>"
         )
@@ -1585,7 +1706,11 @@ def _reader_visible_market_exclusions(
         + '">'
         + escape(section_heading)
         + "</h2>"
-        + "<p>市場全体の順位ではありません。比較表の外に置いた候補も、販売状態と理由を公式情報へたどれる形で示します。</p>"
+        + (
+            ""
+            if identity_route
+            else "<p>市場全体の順位ではありません。比較表の外に置いた候補も、販売状態と理由を公式情報へたどれる形で示します。</p>"
+        )
         + '</header><div class="raos-market-exclusions__list">'
         + "".join(entries)
         + "</div></section>"
@@ -3577,7 +3702,14 @@ def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(allow_abbrev=False)
     subcommands = result.add_subparsers(dest="command", required=True)
     subcommands.add_parser("validate")
-    subcommands.add_parser("capture")
+    capture_command = subcommands.add_parser("capture", allow_abbrev=False)
+    capture_command.add_argument("--owner-checkout", type=Path)
+    capture_command.add_argument(
+        "--product-ids",
+        nargs="*",
+        default=None,
+        help="explicit exact commerce subset; omitted keeps the legacy full-product receipt",
+    )
     discovery = subcommands.add_parser("discover-identities")
     discovery.add_argument("--owner-checkout", type=Path, required=True)
     subcommands.add_parser("validate-readiness")
@@ -3627,7 +3759,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             result = discover_identities(arguments.owner_checkout)
             print(json.dumps(result, sort_keys=True))
         elif arguments.command == "capture":
-            counts = capture()
+            counts = capture(
+                owner_checkout=arguments.owner_checkout,
+                product_ids=arguments.product_ids,
+            )
             print(
                 "Rakuten evidence: "
                 + " / ".join(f"{key}={counts[key]}" for key in sorted(counts))

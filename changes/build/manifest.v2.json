@@ -2,7 +2,7 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 147,
+    "owner_count": 148,
     "version": "2.0.0"
   },
   "owners": [
@@ -11,12 +11,12 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "917a244bc235079753493c6d08d1b5aaf5c2d4d7c7f269a33e9035ab43e68f6c",
+          "sha256": "4c04ceff3d9835942a857831b0447878310ff9ef75391609c2b9f245ff2a586d",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 18040,
-          "sha256": "a2bcf0b06e65c69bf4b1165e3d404e5d79ffb34943e18a12dc477093910999ce",
+          "sha256": "e732374ba37d30b4c6e9a264e091109df2bd93ace2a58aa0e9505d536ace14af",
           "uri": "repo://changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement/config/measurement-allowlist.v1.json"
         }
       ],
@@ -93,13 +93,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 187765,
-          "sha256": "b04818d2c93fa4a4576b7fdb4580632e4e0a48f35eef667bfe0fdaa5e7bb0b1e",
+          "bytes": 188074,
+          "sha256": "ad6625783bef5c7dcef7aaea0cf25d60cd8e48e679f9a34c6abaff0ade99d01f",
           "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
         },
         {
-          "bytes": 13598,
-          "sha256": "12ef041c11f4cddc7cb1924027f96c36ad7df475a4266a2bdae1b580e874fc7a",
+          "bytes": 13584,
+          "sha256": "ae5c793515e8de38d67fa3ec25979b639a6ab4487511482bc65d564c66c6e077",
           "uri": "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json"
         }
       ],
@@ -264,13 +264,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 18281,
-          "sha256": "eaeaa38424ea9aa84a547115c4470e58a64824249a159f5d8f69b71b6eb86bed",
+          "bytes": 18264,
+          "sha256": "4f3475d4747024bd0f997632727824a876e46e4469451087d0d342c6a3e761e1",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
-          "bytes": 13194,
-          "sha256": "25a7cad3916a0658509664abe1a69f2d8f3abe0706cc90e2c979b5c6866c631d",
+          "bytes": 13180,
+          "sha256": "f7a2d9af7fc9405d49847eb5999d66496bf59e3b0a92f9f621bb13222c57e564",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
         }
       ],
@@ -21270,17 +21270,18 @@
       "outputs": [
         {
           "bytes": 30334,
-          "sha256": "d41582e1282349d8f5c8483e33eea1ad79855c17b6136248bd7337d0b7e49bdf",
+          "sha256": "530ee9cae72ca2c64e59f9d6588a6008c424bcc4bf6df52cb7146cdfee3542b5",
           "uri": "repo://changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json"
         },
         {
           "bytes": 11818,
-          "sha256": "674d82d0253964fcabd21ae3d61bb3ce7347af1e2fce23c5d3b2d3251d8f02de",
+          "sha256": "5da2e1f4279dfe336ca666b8776d8a3afc613553cac326cefd84c4477d9cf00a",
           "uri": "repo://changes/st-1104/runtime-manifest.v2.yaml"
         }
       ],
       "owner_dependencies": [
-        "build_st1303_attribution_engine"
+        "build_st1303_attribution_engine",
+        "build_st1305_finance_reconciliation"
       ],
       "owner_id": "build_st1104_analytics_finance_dashboard",
       "owner_version": 2,
@@ -22806,12 +22807,14 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 18895,
-          "sha256": "9733ac5bfc0b1c2e56e05e78236e566081e1d15721d30285d1ee8faddde6736b",
+          "bytes": 18896,
+          "sha256": "ebfae2f7cb6f49acae86fc37775bd84083952160ef3088a75a6ec7a9f66745b2",
           "uri": "repo://changes/st-1303/generated/attribution-engine-recorded.v2.json"
         }
       ],
-      "owner_dependencies": [],
+      "owner_dependencies": [
+        "build_st1704_affiliate_learning"
+      ],
       "owner_id": "build_st1303_attribution_engine",
       "owner_version": 2,
       "semantic_inputs": [
@@ -23069,11 +23072,13 @@
       "outputs": [
         {
           "bytes": 39444,
-          "sha256": "6c53c6bf121d272c4fa2e9cc7e2d361abb2f55762a5478eaaaf8aca6d40a2644",
+          "sha256": "6855697006be52747528872969316ec6025af6b4a887b33caaa425b2351e7839",
           "uri": "repo://changes/st-1304/generated/cost-unit-economics-recorded.v2.json"
         }
       ],
-      "owner_dependencies": [],
+      "owner_dependencies": [
+        "build_st1303_attribution_engine"
+      ],
       "owner_id": "build_st1304_cost_unit_economics",
       "owner_version": 2,
       "semantic_inputs": [
@@ -23310,11 +23315,13 @@
       "outputs": [
         {
           "bytes": 31267,
-          "sha256": "06dfb4853ff5e782b4f52b1e3b1a21fb79455ca8673a745d8108bc22d289e487",
+          "sha256": "a9daa80372661ee819efc34dc6d536af654504dad5c77f20ecde406cd05435f8",
           "uri": "repo://changes/st-1305/generated/finance-reconciliation-recorded.v2.json"
         }
       ],
-      "owner_dependencies": [],
+      "owner_dependencies": [
+        "build_st1304_cost_unit_economics"
+      ],
       "owner_id": "build_st1305_finance_reconciliation",
       "owner_version": 2,
       "semantic_inputs": [
@@ -26043,7 +26050,7 @@
       "outputs": [
         {
           "bytes": 2428,
-          "sha256": "9883519feddb0f9b293c7a8a537d2ab754ece9b04bf53ac439cd30d9f5fde287",
+          "sha256": "687478b45b80f370ce692e9a3d40ae61156eecca22369b920a2064765903b236",
           "uri": "repo://changes/st-1704/affiliate-learning-v2/runtime-manifest.v2.json"
         }
       ],
@@ -26216,8 +26223,61 @@
       "output_scope": "tracked",
       "outputs": [
         {
+          "bytes": 582,
+          "sha256": "a9d68ccf467926509adf3b9051ba0e3b418047bb38e5a16a6f2e752ec679802b",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/product-safety-manufacturer-query-evidence.empty.v1.json"
+        },
+        {
+          "bytes": 13789,
+          "sha256": "1c09e609cccd3b455fe39441d0fb10c8016933230bd5dc604efa89fb6cb951ce",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources/product-safety-manufacturer-query-plan.v1.json"
+        }
+      ],
+      "owner_dependencies": [],
+      "owner_id": "build_st1704_product_safety_manufacturer_plan",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "uri": "repo://changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/product_safety_manufacturer_capture.py",
+          "uri": "repo://python/raos/application/editorial/product_safety_manufacturer_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_product_safety_manufacturer_plan.py",
+          "uri": "repo://scripts/build_st1704_product_safety_manufacturer_plan.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_product_safety_manufacturer_capture",
+          "uri": "repo://tests/editorial_product_safety_manufacturer_capture",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_product_safety_receipts",
+          "uri": "repo://tests/editorial_product_safety_receipts",
+          "version": 2
+        }
+      ],
+      "story_ids": [
+        "ST-1704"
+      ]
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
           "bytes": 3365,
-          "sha256": "2bc8157feb74196d00044423109983a1e3214f29888000e39072c2258bae98a1",
+          "sha256": "56ebafd71287804c3ca55fd340d9a29b7ebec9ff1f720278368b4934f48007cd",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26245,7 +26305,9 @@
     {
       "output_scope": "validation_only",
       "outputs": [],
-      "owner_dependencies": [],
+      "owner_dependencies": [
+        "build_st1704_product_safety_manufacturer_plan"
+      ],
       "owner_id": "build_st1704_reader_claim_coverage",
       "owner_version": 2,
       "semantic_inputs": [
@@ -26445,8 +26507,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 80081,
-          "sha256": "b485f6ae3a33bac4f250d96da59411db0e77ae81da4775cd749200bf25366eda",
+          "bytes": 80080,
+          "sha256": "03c3f3dba742d4db5f7bbab9413dbba5e7f258d76c56de122a38fe3ded4a8a74",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -26457,6 +26519,7 @@
         "build_st0104_contract_repository",
         "build_st0105_generated_contracts",
         "build_st1703_self_hosted_runtime_manifest",
+        "build_st1704_product_safety_manufacturer_plan",
         "build_st1704_reader_claim_coverage",
         "build_st1704_self_hosted_theme",
         "build_st1704_theme_assets"
@@ -27158,6 +27221,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/legacy-media-display-projection.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/legacy-media-display-projection.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/measurement.js",
           "version": 2
@@ -27834,7 +27903,7 @@
       "outputs": [
         {
           "bytes": 29183,
-          "sha256": "5aa3540352c9d64aef08e7a3762b0079e23e5792fb8cb174c2030a17ecfb6b5b",
+          "sha256": "228b5b2adbb6ab54f955cb2423b6f09e237aa0ae552894a69722680b35273051",
           "uri": "repo://changes/st-1804/generated/gate3-economics.local-blocked.v1.json"
         }
       ],
@@ -28730,16 +28799,18 @@
       "outputs": [
         {
           "bytes": 3342,
-          "sha256": "ebc1ff5276479cc9d90cde720ae7c968ecf54543b92f0ead0a2eb1b321d73c8a",
+          "sha256": "4cec758c42044c6d0f1b0da3157709af85262908571dfee43990cedd601eeaaa",
           "uri": "repo://changes/st-1907/generated/content-portfolio-optimizer-report.v1.json"
         },
         {
-          "bytes": 8474,
-          "sha256": "5754ee5d99fdaa94a61af08c22517e168b6eb2dba1c1d272710e6f9ed23f135b",
+          "bytes": 8475,
+          "sha256": "3d2abe2ff654c2f28dcd512b8cc500b22297dd1007f5c282f8f75b1ee6ad0ca1",
           "uri": "repo://changes/st-1907/manifest.yaml"
         }
       ],
       "owner_dependencies": [
+        "build_st1305_finance_reconciliation",
+        "build_st1704_affiliate_learning",
         "build_st1805_portfolio_decision"
       ],
       "owner_id": "build_st1907_content_portfolio_optimizer",
@@ -29035,19 +29106,20 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 892,
-          "sha256": "adb0b1b466a9d0e2950c28d365ec2320429d3a0a25524de594b87d167dc367b0",
+          "bytes": 563,
+          "sha256": "75b09a5dff7fa35119ac89c30303e678c5b7298b7aba1f26cff51b5fec7b64b6",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
-          "bytes": 20093,
-          "sha256": "b52e3ffc0bdc8129f5e6ae22951d09d584ecb3126a2b0ce9d9f779f52fc5ecbc",
+          "bytes": 24666,
+          "sha256": "08af62f7595ee809305e76392f83bdf85a17e8c0750a9d0ab1211e9d51f911ed",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
       "owner_dependencies": [
         "build_editorial_measurement_v1",
         "build_editorial_v3_theme_navigation",
+        "build_st1704_product_safety_manufacturer_plan",
         "build_st1704_self_hosted_editorial_manifest"
       ],
       "owner_id": "build_wordpress_mcp_v1",
@@ -29115,8 +29187,20 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/browser/incremental_scope.py",
+          "uri": "repo://changes/wordpress-local-preview-v1/browser/incremental_scope.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/wordpress-local-preview-v1/browser/lighthouse_check.sh",
           "uri": "repo://changes/wordpress-local-preview-v1/browser/lighthouse_check.sh",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/browser/mixed_audit_report.py",
+          "uri": "repo://changes/wordpress-local-preview-v1/browser/mixed_audit_report.py",
           "version": 2
         },
         {
@@ -29255,6 +29339,30 @@
           "kind": "tracked",
           "semantic_id": "changes/wordpress-local-preview-v1/production-mapping.v1.json",
           "uri": "repo://changes/wordpress-local-preview-v1/production-mapping.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/restore-seed.php",
+          "uri": "repo://changes/wordpress-local-preview-v1/restore-seed.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/scratch-restore-seed.php",
+          "uri": "repo://changes/wordpress-local-preview-v1/scratch-restore-seed.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/scratch-restore.compose.yaml",
+          "uri": "repo://changes/wordpress-local-preview-v1/scratch-restore.compose.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/scratch-theme-restore.php",
+          "uri": "repo://changes/wordpress-local-preview-v1/scratch-theme-restore.php",
           "version": 2
         },
         {
@@ -29409,6 +29517,24 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/legacy_media_display_projection_v1.py",
+          "uri": "repo://python/raos/application/editorial/legacy_media_display_projection_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/local_scratch_restore_v1.py",
+          "uri": "repo://python/raos/application/editorial/local_scratch_restore_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/local_scratch_theme_restore_v1.py",
+          "uri": "repo://python/raos/application/editorial/local_scratch_theme_restore_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "python/raos/application/editorial/product_safety_manufacturer_capture.py",
           "uri": "repo://python/raos/application/editorial/product_safety_manufacturer_capture.py",
           "version": 2
@@ -29429,6 +29555,36 @@
           "kind": "tracked",
           "semantic_id": "python/raos/application/editorial/self_hosted_editorial_pilot.py",
           "uri": "repo://python/raos/application/editorial/self_hosted_editorial_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/verified_incremental_audit_v1.py",
+          "uri": "repo://python/raos/application/editorial/verified_incremental_audit_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/verified_incremental_preview_v1.py",
+          "uri": "repo://python/raos/application/editorial/verified_incremental_preview_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/verified_incremental_release_v1.py",
+          "uri": "repo://python/raos/application/editorial/verified_incremental_release_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/verified_incremental_sources_v1.py",
+          "uri": "repo://python/raos/application/editorial/verified_incremental_sources_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/verified_incremental_v1.py",
+          "uri": "repo://python/raos/application/editorial/verified_incremental_v1.py",
           "version": 2
         },
         {
@@ -29463,6 +29619,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_baseline_media.py",
+          "uri": "repo://scripts/raos_wordpress_baseline_media.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/raos_wordpress_deployment_operator.py",
           "uri": "repo://scripts/raos_wordpress_deployment_operator.py",
           "version": 2
@@ -29475,8 +29637,56 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_incremental_candidate.py",
+          "uri": "repo://scripts/raos_wordpress_incremental_candidate.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_incremental_preview.py",
+          "uri": "repo://scripts/raos_wordpress_incremental_preview.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_incremental_publication.py",
+          "uri": "repo://scripts/raos_wordpress_incremental_publication.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_incremental_seo_audit.py",
+          "uri": "repo://scripts/raos_wordpress_incremental_seo_audit.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_incremental_snapshot.py",
+          "uri": "repo://scripts/raos_wordpress_incremental_snapshot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_local_restore.py",
+          "uri": "repo://scripts/raos_wordpress_local_restore.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/raos_wordpress_publication_request.py",
           "uri": "repo://scripts/raos_wordpress_publication_request.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_scratch_restore.py",
+          "uri": "repo://scripts/raos_wordpress_scratch_restore.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_scratch_theme_restore.py",
+          "uri": "repo://scripts/raos_wordpress_scratch_theme_restore.py",
           "version": 2
         },
         {
@@ -29507,6 +29717,18 @@
           "kind": "tracked",
           "semantic_id": "tests/test_build_foundation_v2.py",
           "uri": "repo://tests/test_build_foundation_v2.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/verified_incremental_audit_v1",
+          "uri": "repo://tests/verified_incremental_audit_v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/verified_incremental_v1",
+          "uri": "repo://tests/verified_incremental_v1",
           "version": 2
         },
         {
@@ -29603,6 +29825,12 @@
           "kind": "tracked",
           "semantic_id": "tests/wordpress_mcp_v1/test_batch_approval.py",
           "uri": "repo://tests/wordpress_mcp_v1/test_batch_approval.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/test_operation_status.py",
+          "uri": "repo://tests/wordpress_mcp_v1/test_operation_status.py",
           "version": 2
         },
         {

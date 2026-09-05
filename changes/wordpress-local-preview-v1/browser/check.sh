@@ -13,6 +13,12 @@ readonly cli_js=$repository_root/node_modules/@playwright/cli/playwright-cli.js
 readonly audit_function=$repository_root/changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js
 readonly lighthouse_check=$repository_root/changes/wordpress-local-preview-v1/browser/lighthouse_check.sh
 readonly audit_inventory=$repository_root/changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json
+readonly incremental_scope_loader=$script_directory/incremental_scope.py
+readonly mixed_report_adapter=$script_directory/mixed_audit_report.py
+readonly python_bin="${RAOS_WORDPRESS_PREVIEW_PYTHON_BIN:-$repository_root/.venv/bin/python}"
+readonly publication_profile="${RAOS_WORDPRESS_PUBLICATION_PROFILE:-legacy-full}"
+readonly link_mode="${RAOS_WORDPRESS_LINK_MODE:-measured-admin}"
+readonly fixture_root="${RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT:-}"
 readonly axe_source=$repository_root/node_modules/axe-core/axe.min.js
 readonly artifact_parent=$repository_root/output/playwright
 readonly published_artifact_directory=$artifact_parent/local-preview
@@ -21,6 +27,9 @@ readonly preview_origin="${RAOS_WORDPRESS_PREVIEW_ORIGIN:-}"
 audit_runtime=''
 artifact_directory=''
 previous_artifact_directory=''
+incremental_scope_file=''
+mixed_report_binding=''
+mixed_raw_result=''
 
 refuse() {
   /usr/bin/busybox printf '%s\n' RAOS_WORDPRESS_LOCAL_PREVIEW_PLAYWRIGHT_REFUSED >&2
@@ -50,10 +59,24 @@ remove_ephemeral_directory() {
 [ -x "$lighthouse_check" ] && [ ! -L "$lighthouse_check" ] || refuse
 [ -f "$audit_inventory" ] && [ ! -L "$audit_inventory" ] || refuse
 [ -f "$axe_source" ] && [ ! -L "$axe_source" ] || refuse
+[ "$link_mode" = standard-api ] || [ "$link_mode" = measured-admin ] || refuse
+case "$publication_profile" in
+  legacy-full) ;;
+  verified-incremental)
+    [ "$link_mode" = standard-api ] && [ -n "$fixture_root" ] || refuse
+    [ -x "$python_bin" ] && [ -f "$incremental_scope_loader" ] \
+      && [ ! -L "$incremental_scope_loader" ] || refuse
+    [ -f "$mixed_report_adapter" ] && [ ! -L "$mixed_report_adapter" ] || refuse
+    ;;
+  *) refuse ;;
+esac
 
 cleanup() {
   "$node_bin" "$cli_js" -s="$session" close >/dev/null 2>&1 || true
   [ -z "$audit_runtime" ] || /usr/bin/busybox rm -f -- "$audit_runtime"
+  [ -z "$incremental_scope_file" ] || /usr/bin/busybox rm -f -- "$incremental_scope_file"
+  [ -z "$mixed_report_binding" ] || /usr/bin/busybox rm -f -- "$mixed_report_binding"
+  [ -z "$mixed_raw_result" ] || /usr/bin/busybox rm -f -- "$mixed_raw_result"
   if [ -n "$artifact_directory" ] && [ -d "$artifact_directory" ]; then
     remove_ephemeral_directory "$artifact_directory"
   fi
@@ -75,19 +98,33 @@ artifact_directory="$(
 /usr/bin/busybox chmod 700 -- "$artifact_directory" || refuse
 audit_runtime="$(/usr/bin/busybox mktemp /tmp/raos-wordpress-local-audit.XXXXXX)" || refuse
 /usr/bin/busybox chmod 600 -- "$audit_runtime" || refuse
+if [ "$publication_profile" = verified-incremental ]; then
+  incremental_scope_file="$(/usr/bin/busybox mktemp /tmp/raos-wordpress-incremental-scope.XXXXXX)" || refuse
+  /usr/bin/busybox chmod 600 -- "$incremental_scope_file" || refuse
+  PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$incremental_scope_loader" \
+    --fixture-root "$fixture_root" >"$incremental_scope_file" || refuse
+  mixed_report_binding="$(/usr/bin/busybox mktemp /tmp/raos-wordpress-browser-binding.XXXXXX)" || refuse
+  mixed_raw_result="$(/usr/bin/busybox mktemp /tmp/raos-wordpress-browser-result.XXXXXX)" || refuse
+  PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$mixed_report_adapter" begin \
+    --fixture-root "$fixture_root" --origin "$preview_origin" \
+    --binding-file "$mixed_report_binding" || refuse
+fi
 "$node_bin" -e '
 const fs = require("fs");
-const [factoryPath, inventoryPath, axePath, outputPath, artifactDirectory, origin] = process.argv.slice(1);
+const [factoryPath, inventoryPath, axePath, outputPath, artifactDirectory, origin,
+  publicationProfile, linkMode, scopePath] = process.argv.slice(1);
 const factory = fs.readFileSync(factoryPath, "utf8");
 const inventory = JSON.parse(fs.readFileSync(inventoryPath, "utf8"));
 const axeSource = fs.readFileSync(axePath, "utf8");
+const incrementalScope = scopePath ? JSON.parse(fs.readFileSync(scopePath, "utf8")) : null;
 fs.writeFileSync(
   outputPath,
-  `(${factory})(${JSON.stringify({ artifactDirectory, axeSource, inventory, origin })})`,
+  `(${factory})(${JSON.stringify({ artifactDirectory, axeSource, inventory, origin,
+    publicationProfile, linkMode, incrementalScope })})`,
   { encoding: "utf8", mode: 0o600 },
 );
 ' "$audit_function" "$audit_inventory" "$axe_source" "$audit_runtime" "$artifact_directory" \
-  "$preview_origin" \
+  "$preview_origin" "$publication_profile" "$link_mode" "$incremental_scope_file" \
   2>/dev/null || refuse
 TMPDIR=/tmp
 TEMP=/tmp
@@ -100,7 +137,12 @@ export TMPDIR TEMP TMP PATH LANG LC_ALL TZ
 
 "$node_bin" "$cli_js" -s="$session" open \
   "$preview_origin" --browser chrome >/dev/null
-"$node_bin" "$cli_js" -s="$session" run-code --filename="$audit_runtime"
+if [ "$publication_profile" = verified-incremental ]; then
+  "$node_bin" "$cli_js" -s="$session" run-code --filename="$audit_runtime" \
+    | /usr/bin/busybox tee "$mixed_raw_result"
+else
+  "$node_bin" "$cli_js" -s="$session" run-code --filename="$audit_runtime"
+fi
 
 artifact_names="$("$node_bin" -e '
 const fs = require("fs");
@@ -144,6 +186,11 @@ if (
 RAOS_WORDPRESS_PREVIEW_NODE_BIN="$node_bin" \
 RAOS_WORDPRESS_PREVIEW_ORIGIN="$preview_origin" \
   "$lighthouse_check"
+if [ "$publication_profile" = verified-incremental ]; then
+  PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$incremental_scope_loader" \
+    --fixture-root "$fixture_root" | /usr/bin/busybox cmp -s "$incremental_scope_file" - \
+    || refuse
+fi
 
 previous_artifact_directory=$artifact_parent/.local-preview.previous.$$
 [ ! -e "$previous_artifact_directory" ] || refuse
@@ -164,6 +211,13 @@ if [ -d "$previous_artifact_directory" ]; then
   remove_ephemeral_directory "$previous_artifact_directory"
 fi
 previous_artifact_directory=''
+
+if [ "$publication_profile" = verified-incremental ]; then
+  PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$mixed_report_adapter" finish \
+    --fixture-root "$fixture_root" --origin "$preview_origin" \
+    --binding-file "$mixed_report_binding" --raw-result "$mixed_raw_result" \
+    --artifact-directory "$published_artifact_directory" || refuse
+fi
 
 screenshots=''
 for artifact_name in $artifact_names; do

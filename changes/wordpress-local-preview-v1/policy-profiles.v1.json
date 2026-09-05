@@ -3,7 +3,7 @@
   "version": 1,
   "operator": "暮らしのしるべ編集者",
   "contact_email": "contact@kurashinoshirube.com",
-  "updated_at": "2026-09-01",
+  "updated_at": "2026-09-05",
   "local": {
     "environment": "LOCAL_WORDPRESS_PREVIEW",
     "operator": "暮らしのしるべ編集者",
@@ -19,7 +19,7 @@
       "analytics_cookie_default_max_days": 0,
       "ga4_user_event_retention_months": 0
     },
-    "updated_at": "2026-09-01",
+    "updated_at": "2026-09-05",
     "required_markers": [
       "ローカルWordPressプレビュー",
       "記事閲覧時のアクセス解析、広告計測、外部の解析サービスへの送信を有効にしていません",
@@ -35,7 +35,7 @@
     "environment": "KURASHINOSHIRUBE_PRODUCTION",
     "operator": "暮らしのしるべ編集者",
     "contact_email": "contact@kurashinoshirube.com",
-    "source": "READ_ONLY_WORDPRESS_EDITOR_BASELINE_2026_08_31",
+    "source": "PROPOSED_POLICY_PRESERVING_READ_ONLY_MCP_IDS_AND_CONTACT",
     "pages": [
       {
         "id": 10,
@@ -47,36 +47,31 @@
         "id": 120,
         "slug": "comparison-policy",
         "title": "比較・編集方針",
-        "excerpt": "暮らしのしるべのEvidence階層、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。"
+        "excerpt": "公式情報の確かめ方、実機未使用の明示、Codexによる調査支援と運営者の公開承認、訂正手順を説明します。"
       },
       {
         "id": 3,
         "slug": "privacy-policy",
         "title": "プライバシーポリシー",
-        "excerpt": "暮らしのしるべの同一オリジン計測とGA4、保持期間、同意の拒否・撤回、アフィリエイトリンクの取扱いを説明します。"
+        "excerpt": "追加のアクセス・クリック計測を行わない方針と、問い合わせ情報や外部アフィリエイトリンクの取扱いを説明します。"
       }
     ],
-    "measurement": "CONSENT_GATED",
-    "cookie_storage": "CONSENT_PROVIDER_CONTROLLED",
+    "measurement": "OFF",
+    "cookie_storage": "NONE",
     "ga4_activation_gate": "BLOCKED_UNTIL_LIVE_PROPERTY_RETENTION_READBACK",
     "retention": {
-      "raw_event_days": 7,
-      "daily_aggregate_months": 13,
-      "consent_cookie_days": 365,
-      "analytics_cookie_default_max_days": 730,
-      "ga4_user_event_retention_months": "LIVE_READBACK_REQUIRED"
+      "raw_event_days": 0,
+      "daily_aggregate_months": 0,
+      "consent_cookie_days": 0,
+      "analytics_cookie_default_max_days": 0,
+      "ga4_user_event_retention_months": 0
     },
-    "updated_at": "2026-09-01",
-    "consent_providers": [
-      "CookieYes",
-      "WP Consent API",
-      "Google Site Kit Consent Mode"
-    ],
+    "updated_at": "2026-09-05",
+    "consent_providers": [],
     "required_markers": [
       "contact@kurashinoshirube.com",
-      "Google Analytics 4",
-      "CookieYes",
-      "WP Consent API"
+      "Google Analytics 4を読み込まず",
+      "任意の統計・マーケティング目的の計測は無効です"
     ],
     "must_not_reuse_local_body": true
   }

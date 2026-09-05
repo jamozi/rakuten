@@ -155,14 +155,8 @@ _ST1805_REPORT_PATH: Final = Path(
 _MEASUREMENT_PATH: Final = Path(
     "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json"
 )
-_MEASUREMENT_SHA256: Final = (
-    "aa60d03210ef0cc3917104fff3a8a5b2fef1502fe37649cc5255c785c9b39edd"
-)
 _SIGNAL_POLICY_PATH: Final = Path(
     "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml"
-)
-_SIGNAL_POLICY_SHA256: Final = (
-    "4a7ff35dd499f74828ee34b12ff33f43c5e190213f3f40b93da100070165ca9e"
 )
 
 
@@ -521,17 +515,15 @@ def _validate_measurement_and_signal_policy(
     root: Path, contract: dict[str, Any]
 ) -> None:
     policy = _mapping(contract.get("measurement_and_signal_policy"))
-    measurement_path, measurement_sha = _validate_binding(
+    measurement_path, _measurement_sha = _validate_binding(
         root, policy.get("measurement_contract"), code="MEASUREMENT_DIGEST_DRIFT"
     )
-    signal_path, signal_sha = _validate_binding(
+    signal_path, _signal_sha = _validate_binding(
         root, policy.get("signal_policy"), code="SIGNAL_POLICY_DIGEST_DRIFT"
     )
     if (
         measurement_path != _MEASUREMENT_PATH
-        or measurement_sha != _MEASUREMENT_SHA256
         or signal_path != _SIGNAL_POLICY_PATH
-        or signal_sha != _SIGNAL_POLICY_SHA256
         or policy.get("program") != "WORDPRESS_BLOG_RAKUTEN_AFFILIATE"
         or policy.get("period_duration_days") != 14
         or any(
@@ -770,11 +762,12 @@ def _command(
         or document.get("fixture_profile") != FIXTURE_PROFILE
         or document.get("method_version") != METHOD_VERSION
         or document.get("parser_version") != PARSER_VERSION
-        or command.measurement_contract_sha256.value != _MEASUREMENT_SHA256
-        or command.signal_policy_sha256.value != _SIGNAL_POLICY_SHA256
+        or command.measurement_contract_sha256.value
+        != contract["measurement_and_signal_policy"]["measurement_contract"]["sha256"]
+        or command.signal_policy_sha256.value
+        != contract["measurement_and_signal_policy"]["signal_policy"]["sha256"]
     ):
         _fail("FIXTURE_SEMANTIC_DRIFT")
-    del contract
     return command
 
 
@@ -875,11 +868,11 @@ def _manifest_bytes(
             ],
             "measurement_input": {
                 "uri": f"repo://{_MEASUREMENT_PATH.as_posix()}",
-                "sha256": _MEASUREMENT_SHA256,
+                "sha256": sha256_bytes(_read(root, _MEASUREMENT_PATH)),
             },
             "signal_policy_input": {
                 "uri": f"repo://{_SIGNAL_POLICY_PATH.as_posix()}",
-                "sha256": _SIGNAL_POLICY_SHA256,
+                "sha256": sha256_bytes(_read(root, _SIGNAL_POLICY_PATH)),
             },
         },
         "source_artifact_count": len(SOURCE_ARTIFACT_PATHS),
@@ -972,7 +965,71 @@ def _ensure_output_parents(root: Path) -> None:
             _fail("OUTPUT_WRITE_FAILED")
 
 
+def refresh_upstream_bindings(root: Path = REPO_ROOT) -> None:
+    """Rebind only two hashes in the unchanged, blocked synthetic recording."""
+    contract = _parse_yaml(_read(root, CONTRACT_PATH))
+    _validate_authority(root, contract)
+    _validate_dependency(root, contract)
+    _validate_safe_boundary(contract)
+    # The old payload must still match the authored integrity binding and pass
+    # the strict typed parser/evaluator. No observations or approvals are made.
+    _build_report(root, contract)
+    previous, parsed = _validate_fixture(root, contract)
+    if parsed.get("signals") != []:
+        _fail("SYNTHETIC_REBIND_INPUT_INVALID")
+    policy = _mapping(contract.get("measurement_and_signal_policy"))
+    for field, relative in (
+        ("measurement_contract", _MEASUREMENT_PATH),
+        ("signal_policy", _SIGNAL_POLICY_PATH),
+    ):
+        binding = _mapping(policy.get(field))
+        if binding.get("path") != relative.as_posix():
+            _fail("SYNTHETIC_REBIND_INPUT_INVALID")
+        binding["sha256"] = sha256_bytes(_read(root, relative))
+    _validate_measurement_and_signal_policy(root, contract)
+    parsed["document"]["measurement_contract_sha256"] = policy["measurement_contract"][
+        "sha256"
+    ]
+    parsed["document"]["signal_policy_sha256"] = policy["signal_policy"]["sha256"]
+    payload = (
+        json.dumps(
+            parsed,
+            allow_nan=False,
+            ensure_ascii=True,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("ascii")
+        + b"\n"
+    )
+    contract["recorded_fixture"].update(
+        sha256=sha256_bytes(payload), bytes=len(payload)
+    )
+    artifacts: list[tuple[Path, bytes]] = []
+    if payload != previous:
+        artifacts.append((_repository_path(root, FIXTURE_PATH), payload))
+    if contract != _parse_yaml(_read(root, CONTRACT_PATH)):
+        artifacts.append(
+            (
+                _repository_path(root, CONTRACT_PATH),
+                yaml.safe_dump(contract, allow_unicode=True, sort_keys=False).encode(
+                    "utf-8"
+                ),
+            )
+        )
+    if artifacts:
+        try:
+            _publication.publish_generated(
+                tuple(artifacts),
+                namespace="st1907-bindings",
+                maximum_payload_bytes=MAX_ARTIFACT_BYTES,
+            )
+        except _publication.SecurePublicationError:
+            _fail("OUTPUT_WRITE_FAILED")
+
+
 def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
+    if not check:
+        refresh_upstream_bindings(root)
     outputs = render_outputs(root)
     if check:
         check_outputs(root, outputs)

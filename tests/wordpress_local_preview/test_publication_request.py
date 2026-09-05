@@ -386,7 +386,7 @@ def no_live_public_readback(monkeypatch: pytest.MonkeyPatch) -> None:
         },
     )
     # The shared integration worktree intentionally contains the candidate
-    # 1.5.0 theme. Workflow unit tests use a stable reviewed tree while the
+    # 1.5.1 theme. Workflow unit tests use a stable reviewed tree while the
     # production function continues to refuse dirty theme sources.
     monkeypatch.setattr(
         publication,
@@ -772,31 +772,17 @@ def test_public_readback_rejects_nested_heading_bypasses(
         )
 
 
-def test_public_head_uses_one_closed_unique_image_for_every_article() -> None:
+def test_public_head_uses_verified_brand_art_not_invented_product_photos() -> None:
     articles = publication.load_articles("all")
-    assert publication.EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG == {
-        "anker-solix-c300-c800-c1000-differences": (
-            "article-anker-solix-generations.webp"
-        ),
-        "carry-on-suitcase-comparison": "article-suitcase-guide.webp",
-        "carry-on-suitcase-under-100-seats": ("article-suitcase-under-100-seats.webp"),
-        "compact-robot-vacuum-shortlist": "article-robot-vacuum-guide.webp",
-        "countertop-dishwasher-for-small-households": (
-            "article-countertop-dishwasher-guide.webp"
-        ),
-        "front-open-carry-on-suitcase-with-stopper": (
-            "article-suitcase-front-open-stopper.webp"
-        ),
-        "lightweight-carry-on-suitcase-under-3kg": ("article-suitcase-under-3kg.webp"),
-        "portable-power-station-guide": "article-portable-power-guide.webp",
-        "roomba-mini-vs-switchbot-k11-pro": ("article-roomba-mini-k11-comparison.webp"),
-        "solota-vs-rakua-mini-plus": "article-solota-rakua-replacement.webp",
+    assert len(publication.EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG) == 10
+    assert set(publication.EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG.values()) == {
+        "home-hero.webp"
     }
     assert {article.production_slug for article in articles} == set(
         publication.EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG
     )
     urls = {publication.expected_social_image_url(article) for article in articles}
-    assert len(urls) == 10
+    assert urls == {publication.EXPECTED_SOCIAL_IMAGE_URL}
     assert urls == {
         f"{publication.ORIGIN}/wp-content/themes/kurashinoshirube-child/"
         f"assets/images/{name}"
@@ -857,7 +843,7 @@ def test_public_readback_accepts_exact_theme_stylesheet_materializations(
     )
 
     page = evidence[article.production_slug]
-    assert page["theme_version"] == "1.5.0"
+    assert page["theme_version"] == "1.5.1"
     assert page["theme_runtime_revision"] == (
         publication.EXPECTED_THEME_RUNTIME_REVISION
     )

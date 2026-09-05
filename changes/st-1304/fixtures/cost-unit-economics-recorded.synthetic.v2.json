@@ -3,10 +3,10 @@
   "profile": "RAOS_ST1304_RECORDED_SYNTHETIC_V2",
   "scenario_id": "ST1304.RECORDED.SYNTHETIC.0001",
   "synthetic": true,
-  "attribution_fixture_sha256": "c8bd1e2f5dfa07874239c9510113aa1a3363cc62144057b27bde707cb25b20e3",
-  "attribution_contract_sha256": "2a2f70198776b3d39be4f7e61c2b956fc96622cbd7b585c5c4a18ec2c22bb525",
-  "expected_attribution_input_sha256": "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a",
-  "expected_attribution_result_sha256": "83468d41909fdd374bd87e5753775d95182b8eeb208f7270cfb57d1e45f25079",
+  "attribution_fixture_sha256": "b209b37b278ce64fd8c757250f3f103f937c24ae8abc636a58e7952333bf97b1",
+  "attribution_contract_sha256": "741bf5c6ea90a3dfab9ef467d0c79328af3ace50b86f08c01245ee9c18afb4f7",
+  "expected_attribution_input_sha256": "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482",
+  "expected_attribution_result_sha256": "23a81242734fac6a275c9ad1e6adce7fecac1ccdc00590d60f455874d9c5505e",
   "request": {
     "run_id": "018f3e90-7b00-7000-8000-000000001304",
     "requested_at": "2026-09-08T00:00:00Z",
@@ -14,125 +14,475 @@
       {
         "slot": 1,
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
-        "verification": {"state": "VERIFIED", "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"},
-        "cohort": {"state": "MATURE", "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+        },
+        "cohort": {
+          "state": "MATURE",
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+        },
         "metrics": {
-          "ai_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "api_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "hosting_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "observability_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "analytics_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "content_tool_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "other_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "work_minutes": {"state": "OBSERVED_VALUE", "value": 60, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "incremental_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "qualified_sessions": {"state": "OBSERVED_VALUE", "value": 300, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "article_update_cost_jpy": {"state": "OBSERVED_VALUE", "value": 20, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "initial_content_cost_jpy": {"state": "OBSERVED_VALUE", "value": 100, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "approved_article_versions": {"state": "OBSERVED_VALUE", "value": 1, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "trailing_monthly_confirmed_contribution_jpy": {"state": "OBSERVED_VALUE", "value": 20, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"},
-          "labor_hourly_cost_jpy": {"state": "OBSERVED_VALUE", "value": 1200, "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"}
+          "ai_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "api_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "hosting_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "observability_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "analytics_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "content_tool_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "other_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "work_minutes": {
+            "state": "OBSERVED_VALUE",
+            "value": 60,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "incremental_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "qualified_sessions": {
+            "state": "OBSERVED_VALUE",
+            "value": 300,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "article_update_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 20,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "initial_content_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 100,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "approved_article_versions": {
+            "state": "OBSERVED_VALUE",
+            "value": 1,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "trailing_monthly_confirmed_contribution_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 20,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "labor_hourly_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 1200,
+            "input_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          }
         }
       },
       {
         "slot": 2,
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
-        "verification": {"state": "VERIFIED", "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"},
-        "cohort": {"state": "MATURE", "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+        },
+        "cohort": {
+          "state": "MATURE",
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+        },
         "metrics": {
-          "ai_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "api_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "hosting_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "observability_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "analytics_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "content_tool_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "other_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "work_minutes": {"state": "OBSERVED_VALUE", "value": 90, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "incremental_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "qualified_sessions": {"state": "OBSERVED_VALUE", "value": 400, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "article_update_cost_jpy": {"state": "OBSERVED_VALUE", "value": 30, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "initial_content_cost_jpy": {"state": "OBSERVED_VALUE", "value": 150, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "approved_article_versions": {"state": "OBSERVED_VALUE", "value": 1, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "trailing_monthly_confirmed_contribution_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"},
-          "labor_hourly_cost_jpy": {"state": "OBSERVED_VALUE", "value": 1200, "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"}
+          "ai_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "api_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "hosting_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "observability_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "analytics_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "content_tool_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "other_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "work_minutes": {
+            "state": "OBSERVED_VALUE",
+            "value": 90,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "incremental_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "qualified_sessions": {
+            "state": "OBSERVED_VALUE",
+            "value": 400,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "article_update_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 30,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "initial_content_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 150,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "approved_article_versions": {
+            "state": "OBSERVED_VALUE",
+            "value": 1,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "trailing_monthly_confirmed_contribution_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "labor_hourly_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 1200,
+            "input_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          }
         }
       },
       {
         "slot": 3,
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
-        "verification": {"state": "VERIFIED", "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"},
-        "cohort": {"state": "MATURE", "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+        },
+        "cohort": {
+          "state": "MATURE",
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+        },
         "metrics": {
-          "ai_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "api_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "hosting_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "observability_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "analytics_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "content_tool_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "other_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "work_minutes": {"state": "OBSERVED_VALUE", "value": 30, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "incremental_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "qualified_sessions": {"state": "OBSERVED_VALUE", "value": 200, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "article_update_cost_jpy": {"state": "OBSERVED_VALUE", "value": 10, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "initial_content_cost_jpy": {"state": "OBSERVED_VALUE", "value": 75, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "approved_article_versions": {"state": "OBSERVED_VALUE", "value": 1, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "trailing_monthly_confirmed_contribution_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
-          "labor_hourly_cost_jpy": {"state": "OBSERVED_VALUE", "value": 1200, "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"}
+          "ai_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "api_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "hosting_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "observability_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "analytics_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "content_tool_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "other_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "work_minutes": {
+            "state": "OBSERVED_VALUE",
+            "value": 30,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "incremental_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "qualified_sessions": {
+            "state": "OBSERVED_VALUE",
+            "value": 200,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "article_update_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 10,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "initial_content_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 75,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "approved_article_versions": {
+            "state": "OBSERVED_VALUE",
+            "value": 1,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "trailing_monthly_confirmed_contribution_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "labor_hourly_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 1200,
+            "input_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          }
         }
       },
       {
         "slot": 4,
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
-        "verification": {"state": "VERIFIED", "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"},
-        "cohort": {"state": "MATURE", "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+        },
+        "cohort": {
+          "state": "MATURE",
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+        },
         "metrics": {
-          "ai_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "api_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "hosting_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "observability_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "analytics_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "content_tool_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "other_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "work_minutes": {"state": "OBSERVED_VALUE", "value": 60, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "incremental_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "qualified_sessions": {"state": "OBSERVED_VALUE", "value": 300, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "article_update_cost_jpy": {"state": "OBSERVED_VALUE", "value": 20, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "initial_content_cost_jpy": {"state": "OBSERVED_VALUE", "value": 100, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "approved_article_versions": {"state": "OBSERVED_VALUE", "value": 1, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "trailing_monthly_confirmed_contribution_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"},
-          "labor_hourly_cost_jpy": {"state": "OBSERVED_VALUE", "value": 1200, "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"}
+          "ai_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "api_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "hosting_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "observability_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "analytics_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "content_tool_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "other_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "work_minutes": {
+            "state": "OBSERVED_VALUE",
+            "value": 60,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "incremental_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "qualified_sessions": {
+            "state": "OBSERVED_VALUE",
+            "value": 300,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "article_update_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 20,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "initial_content_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 100,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "approved_article_versions": {
+            "state": "OBSERVED_VALUE",
+            "value": 1,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "trailing_monthly_confirmed_contribution_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "labor_hourly_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 1200,
+            "input_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          }
         }
       },
       {
         "slot": 5,
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
-        "verification": {"state": "VERIFIED", "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"},
-        "cohort": {"state": "MATURE", "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+        },
+        "cohort": {
+          "state": "MATURE",
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+        },
         "metrics": {
-          "ai_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "api_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "hosting_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "observability_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "analytics_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "content_tool_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "other_actual_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "work_minutes": {"state": "OBSERVED_VALUE", "value": 60, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "incremental_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "qualified_sessions": {"state": "OBSERVED_VALUE", "value": 300, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "article_update_cost_jpy": {"state": "OBSERVED_VALUE", "value": 20, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "initial_content_cost_jpy": {"state": "OBSERVED_VALUE", "value": 100, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "approved_article_versions": {"state": "OBSERVED_VALUE", "value": 1, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "trailing_monthly_confirmed_contribution_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-          "labor_hourly_cost_jpy": {"state": "OBSERVED_VALUE", "value": 1200, "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+          "ai_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "api_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "hosting_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "observability_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "analytics_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "content_tool_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "other_actual_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "work_minutes": {
+            "state": "OBSERVED_VALUE",
+            "value": 60,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "incremental_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "qualified_sessions": {
+            "state": "OBSERVED_VALUE",
+            "value": 300,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "article_update_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 20,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "initial_content_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 100,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "approved_article_versions": {
+            "state": "OBSERVED_VALUE",
+            "value": 1,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "trailing_monthly_confirmed_contribution_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "labor_hourly_cost_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 1200,
+            "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
         }
       }
     ]
   },
-  "expected_input_sha256": "b6c80bc4b12e81a9d126793475c5c9650a2be5c01d5d398ddb1ca96199edcb47",
-  "expected_result_sha256": "d69b2a6a40f3b79a294e9a3853936e7f6cbb733cb8986f93d09757422dade5b2"
+  "expected_input_sha256": "3fdc5f40e5a4a3499a7aef0fa2a9fe6b97329ea8b291a6d8d26733b079678f34",
+  "expected_result_sha256": "24047bc8cd0e1df1610deee64ee73925b40c0e2dadb0c12319c9169f662245c3"
 }

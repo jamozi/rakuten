@@ -147,12 +147,12 @@ def test_theme_and_local_material_are_read_only_bind_mounts() -> None:
     for service_name in ("wordpress", "cli"):
         service = services[service_name]
         mounts = [item for item in service["volumes"] if isinstance(item, dict)]
-        assert len(mounts) == 7
+        assert len(mounts) == (8 if service_name == "cli" else 7)
         assert all(
             item["type"] == "bind" and item["read_only"] is True for item in mounts
         )
         targets = {item["target"] for item in mounts}
-        assert targets == {
+        expected_targets = {
             "/var/www/html/wp-content/themes/kurashinoshirube-child",
             "/var/www/html/wp-content/mu-plugins",
             "/var/www/html/wp-content/plugins/raos-editorial-measurement",
@@ -161,6 +161,9 @@ def test_theme_and_local_material_are_read_only_bind_mounts() -> None:
             "/var/www/raos-local-preview/fixtures/articles",
             "/var/www/raos-local-preview/fixtures/posts.json",
         }
+        if service_name == "cli":
+            expected_targets.add("/var/www/raos-mixed-preview")
+        assert targets == expected_targets
         theme_mount = next(
             item for item in mounts if item["target"].endswith("kurashinoshirube-child")
         )
@@ -285,7 +288,8 @@ def test_synthetic_fixture_has_ten_closed_local_articles() -> None:
         assert 'class="hero-photo"' not in article
         if is_lifecycle_route:
             assert '<table class="comparison-table">' not in article
-            assert "現行品の仕様比較も重複掲載しません" in article
+            assert "data-raos-placement=" not in article
+            assert 'href="/countertop-dishwasher-for-small-households/"' in article
         else:
             assert '<table class="comparison-table">' in article
         for image_tag in re.findall(r"<img\b[^>]*>", article, re.IGNORECASE):
@@ -377,10 +381,12 @@ def test_synthetic_fixture_has_ten_closed_local_articles() -> None:
             assert len(comparison_regions) == 1
             assert comparison_regions[0].get("role") == "region"
             assert "tabindex" not in comparison_regions[0]
-            assert comparison_regions[0].get("aria-label") or comparison_regions[
-                0
-            ].get("aria-labelledby")
-        assert re.search(r"2026年8月(?:2[0-9]|3[01])日", article)
+            assert comparison_regions[0].get("aria-label") or comparison_regions[0].get(
+                "aria-labelledby"
+            )
+        assert re.search(
+            r"2026年(?:[1-9]|1[0-2])月(?:[1-9]|[12][0-9]|3[01])日", article
+        )
 
 
 def test_production_mapping_matches_all_ten_local_articles() -> None:
@@ -454,10 +460,16 @@ def test_first_five_comparison_sections_do_not_duplicate_the_table_landmark_name
 def test_dishwasher_lifecycle_route_has_distinct_navigation_landmarks() -> None:
     article = (ARTICLES / "solota-vs-rakua-mini-plus.html").read_text(encoding="utf-8")
     assert "dish-capacity-reference" not in article
-    assert article.count('aria-labelledby="dish-faq-title"') == 1
+    assert article.count('aria-labelledby="dish-purchase-check-title"') == 1
     assert article.count('aria-labelledby="dish-summary-title"') == 1
-    assert article.count('id="dish-faq-title"') == 1
+    assert article.count('id="dish-purchase-check-title"') == 1
     assert article.count('id="dish-summary-title"') == 1
+
+
+def test_baseline_image_gateway_quotes_braced_nginx_regex() -> None:
+    gateway = GATEWAY.read_text(encoding="utf-8")
+    assert 'location ~ "^/raos-baseline-media/(?<baseline_file>[a-f0-9]{64})' in gateway
+    assert "alias /srv/raos-baseline-media/$baseline_file.$baseline_extension;" in gateway
 
 
 def test_robot_article_station_dimensions_keep_width_depth_order() -> None:
@@ -475,7 +487,16 @@ def test_robot_article_separates_two_current_products_and_installation_space() -
         encoding="utf-8"
     )
 
-    assert "2製品だけ" in article
+    product_cards = [
+        _html_attributes(tag)
+        for tag in re.findall(r"<article\b[^>]*>", article, re.IGNORECASE)
+        if "product-profile" in _html_attributes(tag).get("class", "").split()
+    ]
+    assert len(product_cards) == 2
+    assert {card["data-raos-product-id"] for card in product_cards} == {
+        "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+        "PRD-SWITCHBOT-K11-PRO",
+    }
     assert "Roomba Mini Slim" in article
     assert "SwitchBot" in article
     assert "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY" not in article
@@ -491,27 +512,32 @@ def test_robot_article_separates_two_current_products_and_installation_space() -
     assert article.count("商品画像未確認・購入導線停止") == 2
 
 
-def test_dishwasher_lifecycle_article_keeps_old_status_and_current_comparison_separate() -> (
+def test_dishwasher_lifecycle_article_separates_unknown_sale_and_product_quality() -> (
     None
 ):
     article = (ARTICLES / "solota-vs-rakua-mini-plus.html").read_text(encoding="utf-8")
     assert '<table class="comparison-table">' not in article
     assert 'class="product-profile ' not in article
     assert 'class="official-product-link raos-cta"' not in article
-    assert "いま購入できる工事不要食洗機" in article
-    assert "少人数向け卓上食洗機4候補の比較" in article
+    assert "2機種の性能や優劣を比べる記事ではありません" in article
+    assert "販売終了や購入不可とは判断しません" in article
+    assert "商品を候補から外す必要はありません" in article
+    assert "設置条件から考える卓上食洗機の選び方" in article
+    assert "現行4候補" not in article
+    assert "購入候補には戻しません" not in article
     assert article.count('href="/countertop-dishwasher-for-small-households/"') == 1
     assert "NP-TML1-W" not in article
     assert "NP-TMLK1-K" in article
     assert "ラクアmini Plus TK-MDW22B" in article
     assert "再入荷通知のみ" in article
-    assert "商品カード・購入導線から除外しました" in article
+    assert "他の販売店の在庫や今後の入荷までは判断しません" in article
     assert "SS-M171は奥行43.5cm" not in article
     assert "420×435×435mm" not in article
     assert "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B" not in article
     assert "後継機です" not in article
     assert "後継機・同等品とは断定しません" in article
-    assert "2026年8月31日" in article
+    assert "2026年9月5日" in article
+    assert "過去の更新　2026.09.01" in article
     assert "2026年8月29日" not in article
     assert "assets/images/home-hero.webp" not in article
     assert "assets/images/article-countertop-dishwasher-guide.webp" not in article
@@ -766,10 +792,7 @@ def test_browser_audit_covers_core_and_local_templates_at_four_widths() -> None:
     assert "const rawClusters = inventory?.clusters;" in audit
     assert "const widths = inventory?.viewports;" in audit
     assert "path: surface.local_path" in audit
-    assert (
-        "['lifecycle_status_route', "
-        "'以前の比較対象の販売状態確認＋現行比較への案内']"
-    ) in audit
+    assert ("['lifecycle_status_route', '型番・販売表示の確認案内']") in audit
     for marker in (
         "audit.h1Count !== 1",
         "audit.mainCount !== 1",
@@ -947,14 +970,15 @@ def test_browser_audit_fails_closed_on_cross_cutting_security_and_a11y_tamper() 
         "audit.disclosure.unobscured",
         "audit.disclosure.standardPhraseCount !== 3",
         "audit.disclosure.nonaffiliatePhraseCount !== 3",
-        "'以前の比較対象の販売状態を確認する案内記事'",
-        "audit.disclosure.ariaLabel !== '収益化の対象外'",
+        "'購入先を案内しないことは、商品の性能が劣るという意味ではありません'",
+        "audit.disclosure.ariaLabel !== '購入リンクについて'",
         "audit.disclosure.strongText !== '購入リンクなし'",
         "audit.disclosure.detailsCount !== 0",
         "audit.disclosure.standardPhraseCount !== 0",
         "audit.disclosure.nonaffiliatePhraseCount !== 0",
         "disclosureSemanticsFailure",
-        "audit.disclosure.policyLinkCount !== 1",
+        "audit.disclosure.policyLinkCount !==",
+        "isPreservedArticle ? incrementalExpected.expected_disclosure_policy_link_count : 1",
         "audit.disclosure.detailsValid",
         "page.keyboard.press('Enter')",
         "page.keyboard.press('Space')",
@@ -1003,7 +1027,9 @@ def test_browser_audit_fails_closed_on_cross_cutting_security_and_a11y_tamper() 
 
     assert "method, resource type, and origin class as counts" in readme
     assert "A Content Security Policy is deliberately not claimed" in readme
-    assert "Nine affiliate articles require the standard advertising disclosure" in readme
+    assert (
+        "Nine affiliate articles require the standard advertising disclosure" in readme
+    )
     assert "lifecycle-status route instead requires" in readme
 
 
@@ -1051,7 +1077,7 @@ def test_browser_route_inventory_tamper_is_rejected_before_navigation() -> None:
         if row.get("article_id") == "roomba-mini-vs-switchbot-k11-pro"
     )
     a09["content_role"] = "lifecycle_status_route"
-    a09["content_role_label"] = "以前の比較対象の販売状態確認＋現行比較への案内"
+    a09["content_role_label"] = "型番・販売表示の確認案内"
     cases.append(a09_lifecycle_tamper)
 
     canonical_tamper = json.loads(json.dumps(inventory))
@@ -1199,12 +1225,10 @@ def test_fixed_policy_pages_are_tracked_and_match_the_implemented_boundaries() -
     }
     assert "実在しない個人名" in contents["about-ad-policy"]
     assert "型番" in contents["about-ad-policy"]
-    assert "メーカー公式ページへ案内" in contents["about-ad-policy"]
+    assert "購入リンクの有無にかかわらず比較の対象" in contents["about-ad-policy"]
     assert contents["about-ad-policy"].count("contact@kurashinoshirube.com") == 2
     assert "AI支援の範囲" in contents["about-ad-policy"]
-    assert (
-        "AIの出力をそのまま事実や推薦理由として採用せず" in contents["about-ad-policy"]
-    )
+    assert "AIの出力自体を仕様や推薦理由の根拠にせず" in contents["about-ad-policy"]
     assert "暮らしのしるべ編集部" not in contents["about-ad-policy"]
     assert "暮らしのしるべ編集者が内容を確認し" in contents["about-ad-policy"]
     assert "利害関係は、記事の公開前に有無を確認します" in contents["about-ad-policy"]
@@ -1229,11 +1253,11 @@ def test_fixed_policy_pages_are_tracked_and_match_the_implemented_boundaries() -
     assert "確認が完了していない記事は公開しません" in contents["comparison-policy"]
     assert "暮らしのしるべ編集部" not in contents["comparison-policy"]
     assert "法令適合" not in contents["comparison-policy"]
-    assert "AI支援の範囲と人による確認" in contents["comparison-policy"]
+    assert "Codexの支援と運営者の公開承認" in contents["comparison-policy"]
     assert "確認できない情報を生成内容で補いません" in contents["comparison-policy"]
     privacy = contents["privacy-policy"]
     assert privacy.count("最終更新日") == 1
-    assert '<time datetime="2026-09-01">2026年9月1日</time>' in privacy
+    assert '<time datetime="2026-09-05">2026年9月5日</time>' in privacy
     assert "閲覧行動データを保存していません" in privacy
     assert "利用情報の収集や保存は、現時点では実施していません" in privacy
     assert "取得項目、利用目的、送信・保存先、保持期間" in privacy
@@ -1269,7 +1293,7 @@ def test_local_and_production_policy_profiles_are_separate_and_closed() -> None:
     assert profiles["schema"] == "RAOS_WORDPRESS_POLICY_PROFILES_V1"
     assert profiles["operator"] == "暮らしのしるべ編集者"
     assert profiles["contact_email"] == "contact@kurashinoshirube.com"
-    assert profiles["updated_at"] == "2026-09-01"
+    assert profiles["updated_at"] == "2026-09-05"
     local = profiles["local"]
     assert local["operator"] == profiles["operator"]
     assert local["contact_email"] == profiles["contact_email"]
@@ -1291,21 +1315,24 @@ def test_local_and_production_policy_profiles_are_separate_and_closed() -> None:
     production = profiles["production"]
     assert production["operator"] == profiles["operator"]
     assert production["contact_email"] == profiles["contact_email"]
-    assert production["measurement"] == "CONSENT_GATED"
-    assert production["cookie_storage"] == "CONSENT_PROVIDER_CONTROLLED"
+    assert production["measurement"] == "OFF"
+    assert production["cookie_storage"] == "NONE"
     assert production["ga4_activation_gate"] == (
         "BLOCKED_UNTIL_LIVE_PROPERTY_RETENTION_READBACK"
     )
     assert production["retention"] == {
-        "raw_event_days": 7,
-        "daily_aggregate_months": 13,
-        "consent_cookie_days": 365,
-        "analytics_cookie_default_max_days": 730,
-        "ga4_user_event_retention_months": "LIVE_READBACK_REQUIRED",
+        "raw_event_days": 0,
+        "daily_aggregate_months": 0,
+        "consent_cookie_days": 0,
+        "analytics_cookie_default_max_days": 0,
+        "ga4_user_event_retention_months": 0,
     }
     assert production["updated_at"] == profiles["updated_at"]
     assert production["must_not_reuse_local_body"] is True
-    assert production["source"] == ("READ_ONLY_WORDPRESS_EDITOR_BASELINE_2026_08_31")
+    assert production["source"] == (
+        "PROPOSED_POLICY_PRESERVING_READ_ONLY_MCP_IDS_AND_CONTACT"
+    )
+    assert production["consent_providers"] == []
     assert [(row["id"], row["slug"]) for row in production["pages"]] == [
         (10, "about-ad-policy"),
         (120, "comparison-policy"),
@@ -1314,7 +1341,7 @@ def test_local_and_production_policy_profiles_are_separate_and_closed() -> None:
     seed = SEED.read_text(encoding="utf-8")
     assert "policy-profiles.v1.json" in seed
     assert "must_not_reuse_local_body" in seed
-    assert seed.count("!== '2026-09-01'") == 3
+    assert seed.count("!== '2026-09-05'") == 3
     assert "!== '2026-08-31'" not in seed
 
 
@@ -1340,23 +1367,48 @@ def test_production_policy_documents_are_separate_from_local_preview_copy() -> N
         assert "このローカルプレビュー" not in content
         assert "法令適合の最終判断" not in content
         if slug == "privacy-policy":
-            assert '<time datetime="2026-09-01">2026年9月1日</time>' in content
+            assert '<time datetime="2026-09-05">2026年9月5日</time>' in content
         assert "本番投入前" not in content
         assert "contact@kurashinoshirube.com" in content
     comparison = (FIXTURES / "production-pages/comparison-policy.html").read_text(
         encoding="utf-8"
     )
-    assert "AI支援と人による最終確認" in comparison
+    assert "Codexの支援と運営者の公開承認" in comparison
     assert "報酬率、広告主からの依頼、価格、ポイント、在庫" in comparison
     assert "UNKNOWN" not in comparison
     privacy = (FIXTURES / "production-pages/privacy-policy.html").read_text(
         encoding="utf-8"
     )
-    assert "利用計測は初期状態で無効" in privacy
-    assert "存在しない設定画面を案内しません" in privacy
-    assert "_ga" in privacy
-    assert "最長2年で失効" in privacy
-    assert "実設定を読み取り、本ページへ反映するまで有効化しません" in privacy
+    assert "利用計測は無効です" in privacy
+    assert "存在しないCookie設定へのリンクは設けません" in privacy
+    assert "Google Analytics 4を読み込まず" in privacy
+    assert "将来、計測を導入する場合" in privacy
+    assert "本ページへ記載してから有効化します" in privacy
+    assert "_ga" not in privacy
+    assert "最長2年で失効" not in privacy
+
+
+def test_policy_copy_distinguishes_codex_owner_and_deferred_real_world_checks() -> None:
+    for profile in ("pages", "production-pages"):
+        about = (FIXTURES / profile / "about-ad-policy.html").read_text(
+            encoding="utf-8"
+        )
+        comparison = (FIXTURES / profile / "comparison-policy.html").read_text(
+            encoding="utf-8"
+        )
+        assert "Codexは、公式情報の調査と型番照合" in about
+        assert "実装・執筆を担当した作業とは別のCodex作業で点検" in about
+        assert "具体的な変更内容を確認して公開を承認" in about
+        assert "運営者が利用可能と確認した窓口" in about
+        assert "実際の送受信試験" in about
+        assert "実読者による理解度調査は未実施" in comparison
+        assert "架空の購入者、使用体験、時短の実績は作りません" in comparison
+        assert "比較する商品と、購入先を案内する商品は別に管理" in comparison
+        assert (
+            "購入リンクがないことは、その商品が劣るという意味ではありません"
+            in comparison
+        )
+        assert "contact@kurashinoshirube.com" in about + comparison
 
 
 def test_shell_entrypoints_parse() -> None:
