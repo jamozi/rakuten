@@ -23,6 +23,7 @@ for directory in (ROOT / "python", ROOT / "scripts"):
 import raos_wordpress_publication_request as publication  # noqa: E402
 import raos_wordpress_seo_audit as seo  # noqa: E402
 import raos_wordpress_baseline_media as baseline_media  # noqa: E402
+import raos_wordpress_runtime_audit as runtime  # noqa: E402
 from raos_wordpress_incremental_snapshot import (  # noqa: E402
     PublicMetadataReader,
     capture_public_metadata,
@@ -381,7 +382,9 @@ class _ObservedTransport:
         return self.responses[url]
 
 
-def _theme_expectations(expected_tree: str) -> tuple[dict[str, str], dict[str, str]]:
+def _theme_expectations(
+    expected_tree: str,
+) -> tuple[dict[str, str], dict[str, str], dict[str, runtime.Resource]]:
     """Use the exact audited source tree, never a changed local title lookup."""
     import raos_wordpress_deployment_operator as deployment
 
@@ -404,7 +407,11 @@ def _theme_expectations(expected_tree: str) -> tuple[dict[str, str], dict[str, s
         for row in cast(list[dict[str, Any]], descriptor["file_manifest"])
         if row["path"].startswith("assets/images/")
     }
-    return values, image_hashes
+    return (
+        values,
+        image_hashes,
+        runtime.resources_for_theme(runtime.trusted_theme_files(expected_tree)),
+    )
 
 
 def _baseline_image_expectations(
@@ -603,7 +610,7 @@ def run_verified_incremental_public_audit(
         or theme.get("tree_sha256") != expected_tree
     ):
         fail("DEPLOYMENT_THEME_MISMATCH")
-    home_head, theme_images = _theme_expectations(expected_tree)
+    home_head, theme_images, runtime_resources = _theme_expectations(expected_tree)
     metadata = capture_public_metadata(
         public_metadata_reader or PublicMetadataReader(), list(current.values())
     )
@@ -630,7 +637,11 @@ def run_verified_incremental_public_audit(
         if slug not in prepared and replayed[slug] != baseline_metadata[slug]:
             fail("UNTOUCHED_METADATA_CHANGED")
     observed_http = _ObservedTransport(
-        transport or seo.BoundedHttpsTransport(contract), now
+        transport
+        or seo.BoundedHttpsTransport(
+            contract, allowed_resource_urls=frozenset(runtime_resources)
+        ),
+        now,
     )
     report = seo.run_audit(observed_http, contract)
     if report["status"] != "PASS":
@@ -716,6 +727,7 @@ def run_verified_incremental_public_audit(
         assets.close()
         if assets.measurement_scripts or page.header_values("set-cookie"):
             fail("PUBLIC_MEASUREMENT_OFF_MISMATCH")
+        runtime_evidence = runtime.verify_page(page, runtime_resources, observed_http)
         if (
             item.role == "home"
             and not {entry.url for entry in contract.items if entry.role == "article"}
@@ -732,15 +744,22 @@ def run_verified_incremental_public_audit(
             "legacy_media_display_projection": display_proof,
             "public_response_sha256": page.body_sha256,
             "public_headers_sha256": page.headers_sha256,
-            "measurement_state": "NO_MEASUREMENT_SCRIPT_OR_SET_COOKIE",
+            "measurement_state": "CLOSED_DECLARED_RUNTIME_VERIFIED",
+            "runtime_resources": runtime_evidence,
         }
     image_bindings = {}
-    external_urls = {
-        url for url in image_urls if urlsplit(url).netloc != "kurashinoshirube.com"
-    }
+    non_theme_urls = image_urls - set(theme_images)
+    baseline_urls = set()
+    for document in original_snapshot["documents"]:
+        if document["post_type"] == "post" and document["slug"] not in prepared:
+            baseline_urls.update(baseline_media.image_urls(document["block_markup"]))
+    if non_theme_urls - baseline_urls:
+        # Same-origin pixels outside entry-content are not trusted simply because
+        # they return 200 image/*; reject before requesting an unapproved URL.
+        fail("PUBLIC_IMAGE_IDENTITY_UNVERIFIED")
     baseline_images = (
         _baseline_image_expectations(envelope, candidate_path, original_snapshot)
-        if external_urls
+        if non_theme_urls
         else {}
     )
     for url in sorted(image_urls):
@@ -783,6 +802,7 @@ def run_verified_incremental_public_audit(
         "publication_profile": "verified-incremental",
         "link_mode": "standard-api",
         "measurement_collection_enabled": False,
+        "measurement_assessment": "CLOSED_DECLARED_RUNTIME_VERIFIED",
         "publication_authority": False,
         "status": "PUBLIC_READBACK_PASSED",
         "release_sha256": context.sha256,
@@ -801,6 +821,7 @@ def run_verified_incremental_public_audit(
         "not_verified_by_this_report": [
             "real_reader_tests",
             "live_browser_interaction",
+            "conditional_or_service_worker_network_activity",
             "external_checkout",
             "search_ranking",
             "revenue",

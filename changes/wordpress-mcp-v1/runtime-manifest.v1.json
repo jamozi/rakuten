@@ -312,7 +312,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "3587b43ec120808ace2ab6a9716b31bbf76cd830ea491055891c2f36421c0fbc",
+      "sha256": "074ac73b36e343b47705999927114fdd893bc143f94f21b4a0d1c4e775d7bcb8",
       "size": 54277
     },
     {
@@ -432,8 +432,8 @@
     },
     {
       "path": "scripts/build_wordpress_mcp_v1.py",
-      "sha256": "55f5371dda92fc183e3a7642a8a5642d9766afd7ca64ca4aebbd7390c759fcb3",
-      "size": 23725
+      "sha256": "be596220ecafe647314bb834437e9d113f4137b0f18c818585b24fe81411bece",
+      "size": 23854
     },
     {
       "path": "scripts/check_wordpress_public_ui_playwright.sh",
@@ -467,13 +467,23 @@
     },
     {
       "path": "scripts/raos_wordpress_incremental_publication.py",
-      "sha256": "5f4ea03141f2466160208113f15078ac23d0c776fd3fdd58ed63aacf17764446",
-      "size": 52826
+      "sha256": "1169d29bd01cbf7ef1304d0b39e7e920050cc22c184283fdec07e7617fd370cb",
+      "size": 54320
     },
     {
       "path": "scripts/raos_wordpress_incremental_seo_audit.py",
-      "sha256": "8be05165520075d570ab22abab85a2a5e3465a5f7a1f29cd020f8a3e9b9e9c4f",
-      "size": 30970
+      "sha256": "a0e3199b74b1545e93810101c58df1694febd20cf5dba206187bc6a3b876b768",
+      "size": 31985
+    },
+    {
+      "path": "scripts/raos_wordpress_runtime_audit.py",
+      "sha256": "a6770efcd65834341a111b3f5e01ac443a2501add953623fb61a650d9a47d666",
+      "size": 22530
+    },
+    {
+      "path": "changes/wordpress-local-preview-v1/wordpress-runtime.lock.json",
+      "sha256": "ac5f0e60d715259d5f92d1ece0e97f92875b6f7c3388d26c9acc023c4a13bc8c",
+      "size": 2806
     },
     {
       "path": "scripts/raos_wordpress_incremental_snapshot.py",
@@ -502,8 +512,8 @@
     },
     {
       "path": "scripts/raos_wordpress_seo_audit.py",
-      "sha256": "b1115aed4ddfea82803bb49e1a5ee6643125e7536cd7567633cbbb2cc5bb6579",
-      "size": 43817
+      "sha256": "c3de843b21413600eadabfb995b120d73c4fb6685dc90f61ad3844cad9e6af2d",
+      "size": 45006
     },
     {
       "path": "scripts/raos_wordpress_editor_mcp_launcher.mjs",

@@ -102,5 +102,35 @@ Generic PASS dictionaries cannot mark a request complete. An applied batch whose
 public readback fails remains applied-but-unverified; it is not reported as
 successful publication.
 
+## Measurement OFF: independent public-runtime gate
+
+The MCP `measurement` object describes only the RAOS measurement plugin. It is
+not evidence that Jetpack Stats, Site Kit or another plugin is inactive.
+`raos_wordpress_runtime_audit.py` performs a separate anonymous public read before
+proposal creation and again on every apply/resume attempt. It checks the actual
+currently installed theme against the captured baseline or bound candidate;
+the candidate's not-yet-installed files are not assumed to be live. Unknown
+scripts, executable inline code, unbound import maps, unexpected resource links,
+active embedded content, CSS fetches and response cookies fail closed. Existing
+image identities are bounded to the captured documents and audited theme.
+
+Executable bytes are restricted to the two named audited theme scripts and the
+six debug/minified variants of three WordPress core modules in
+`changes/wordpress-local-preview-v1/wordpress-runtime.lock.json`. The dependency
+hashes came from `/usr/src/wordpress` in the pinned, network-disabled, read-only
+WordPress image, not a mutable preview installation or a live response. Exact
+asset version queries remain intact; the ordinary HTTP page transport retains
+its no-query boundary. CSS dependencies must be literal references into the
+same audited image tree. No whole plugin directory or provider-name denylist
+can confer an OFF result.
+
+The same gate runs during full mixed public readback. Its report explicitly
+means **closed declared runtime verified**, not a browser/service-worker or
+conditional network observation. Actual browser checks remain separate required
+release evidence. A client precheck cannot atomically lock third-party plugin
+configuration; post-apply readback is still required. Failure never turns an
+already applied batch into a reason to resend it. Source hashes, owner approval,
+the single-use server lease and measurement OFF are independent requirements.
+
 The focused tests use synthetic transports only. They are not actual independent
 reviews, live publication evidence, or proof of owner approval.
