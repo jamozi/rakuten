@@ -5004,6 +5004,7 @@ def test_noneligible_marker_or_ref_conflict_keeps_embedded_lines_out_of_stabilit
         ),
         ("A" * (workflow.MAX_TEXT_BYTES + 1), "B" * (workflow.MAX_TEXT_BYTES + 1)),
     ],
+    ids=["sensitive-values", "oversized-responses"],
 )
 def test_embedded_fallback_stability_precedes_size_and_sensitivity_policy(
     first_response: str,
