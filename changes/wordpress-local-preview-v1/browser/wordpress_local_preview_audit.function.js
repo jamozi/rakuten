@@ -363,7 +363,7 @@
   const robotsProfile = routeCoverage?.robots_profile;
   const rawClusters = inventory?.clusters;
   const widths = inventory?.viewports;
-  const requiredWidths = [360, 390, 768, 1440];
+  const requiredWidths = [360, 390, 768, 1024, 1440];
   const articleRows = Array.isArray(publicSurfaces)
     ? publicSurfaces.filter((surface) => surface.kind === 'article')
     : [];

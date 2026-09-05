@@ -1,0 +1,48 @@
+{
+  "schema": "RAOS_READER_EXPERIENCE_V1",
+  "articles": {
+    "st1704-countertop-dishwasher-for-small-households": {
+      "article_type": "shortlist",
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "decision_summary": {
+        "key_difference": "設置幅と扉を開く奥行、一度に洗う食器量、給水・乾燥方式が違います。",
+        "no_purchase_condition": "扉の開閉、給排水、アース、蒸気の逃げ道を確保できない場合は見送ります。",
+        "options": [
+          {
+            "product_ref": "PRD-SIROCA-SS-M171",
+            "reason": "給水方法を設置環境に合わせて選びたい人の候補です。",
+            "tradeoff": "本体を置く面に加え、扉を開く前方空間が必要です。"
+          },
+          {
+            "product_ref": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+            "reason": "設置幅を抑え、少量ずつ洗いたい人の候補です。",
+            "tradeoff": "普段一度に洗う食器が収まるかを先に確かめます。"
+          },
+          {
+            "product_ref": "PRD-SIROCA-SS-MA251",
+            "reason": "洗浄後に扉が開くオートオープンを条件にする人の候補です。",
+            "tradeoff": "扉が開く空間が必要。確認対象は通常商品のシルバーです。"
+          },
+          {
+            "product_ref": "PRD-TOSHIBA-DWS-33B-W",
+            "reason": "標準食器点数と強制排気乾燥を条件にする人の候補です。",
+            "tradeoff": "本体重量を支える設置面と、蒸気の逃げ道を確認します。"
+          }
+        ]
+      },
+      "evidence": []
+    },
+    "solota-vs-rakua-mini-plus": {
+      "article_type": "status_check",
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "evidence": []
+    }
+  },
+  "media": []
+}

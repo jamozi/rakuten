@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import re
 import stat
+import sys
 from typing import TYPE_CHECKING, Final, NoReturn
 
 ROOT: Final = Path(__file__).resolve().parents[1]
@@ -47,7 +48,8 @@ CONTENT_ROLE_LABELS: Final = {
     "lifecycle_status_route": "型番・販売表示の確認案内",
     "model_family_comparison": "ブランド内比較",
 }
-AUDIT_VIEWPORTS: Final = (360, 390, 768, 1440)
+READER_INPUT_PATH: Final = Path("changes/editorial-portfolio-v3/reader-experience.v1.json")
+AUDIT_VIEWPORTS: Final = (360, 390, 768, 1024, 1440)
 AUDIT_POLICY_SLUGS: Final = (
     "about-ad-policy",
     "comparison-policy",
@@ -581,8 +583,17 @@ def build_documents() -> tuple[bytes, bytes]:
         _fail()
     projected_articles.sort(key=lambda row: str(row["article_code"]))
     clusters.sort(key=lambda row: int(row["home_order"]))
+    sys.path.insert(0, str(ROOT / "python"))
+    from raos.application.editorial.reader_experience_v1 import MediaAsset
+    registry = json.loads((ROOT / READER_INPUT_PATH).read_text(encoding="utf-8"))
+    approved_media = []
+    for raw in registry.get("media", []):
+        asset = MediaAsset(**{key: raw[key] for key in MediaAsset.__dataclass_fields__})
+        if asset.displayable:
+            approved_media.append(raw)
     output: dict[str, object] = {
         "articles": projected_articles,
+        "media_assets": approved_media,
         "clusters": clusters,
         "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
         "source_navigation_sha256": hashlib.sha256(navigation_bytes).hexdigest(),

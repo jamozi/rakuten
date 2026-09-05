@@ -9,6 +9,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date
+import re
 from typing import Literal
 from urllib.parse import urlsplit
 
@@ -127,7 +128,7 @@ def validate_experience(
     """Validate the additive view model without making missing legacy data up."""
     issues: list[str] = []
     article_type = experience.get("article_type")
-    if article_type not in ARTICLE_TYPES:
+    if not isinstance(article_type, str) or article_type not in ARTICLE_TYPES:
         issues.append("article_type.invalid")
     status = experience.get("research_status")
     if isinstance(status, Mapping):
@@ -137,6 +138,20 @@ def validate_experience(
             issues.append("research_status.real_world_tested_required")
     else:
         issues.append("research_status.required")
+    def prose(value: object) -> list[str]:
+        if isinstance(value, str):
+            return [value]
+        if isinstance(value, Mapping):
+            return [text for child in value.values() for text in prose(child)]
+        if isinstance(value, list):
+            return [text for child in value for text in prose(child)]
+        return []
+
+    if isinstance(status, Mapping) and status.get("real_world_tested") is False:
+        for text in prose(experience):
+            for sentence in re.split(r"[。！？\n]", text):
+                if re.search(r"実際に使|使ってみ|使用したところ|実測した|試してみた", sentence) and not re.search(r"未確認|未実施|いません|いない|していない|ではありません", sentence):
+                    issues.append("research_status.unverified_experience_claim")
     summary = experience.get("decision_summary", {})
     if isinstance(summary, Mapping):
         options = summary.get("options", [])
@@ -146,11 +161,15 @@ def validate_experience(
                     issues.append("decision_summary.option_invalid")
                     continue
                 product = option.get("product_ref")
-                if product is not None and product not in product_refs:
+                if product is not None and (not isinstance(product, str) or product not in product_refs):
                     issues.append("decision_summary.unknown_product")
                 if article_type == "status_check" and product is not None:
                     issues.append("status_check.recommendation_forbidden")
+        else:
+            issues.append("decision_summary.options_invalid")
+    else:
+        issues.append("decision_summary.invalid")
     facts = experience.get("evidence", [])
-    if not isinstance(facts, list) or any(ref not in evidence_refs for ref in facts):
+    if not isinstance(facts, list) or any(not isinstance(ref, str) or ref not in evidence_refs for ref in facts):
         issues.append("evidence.unresolved_reference")
     return tuple(issues)

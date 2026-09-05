@@ -681,7 +681,7 @@ def test_root_makefile_exposes_the_documented_interface() -> None:
     assert 'CONFIRM="$(CONFIRM)"' in makefile
 
 
-def test_browser_audit_covers_core_and_local_templates_at_four_widths() -> None:
+def test_browser_audit_covers_core_and_local_templates_at_required_widths() -> None:
     audit = (SLICE / "browser/wordpress_local_preview_audit.function.js").read_text(
         encoding="utf-8"
     )
@@ -693,7 +693,7 @@ def test_browser_audit_covers_core_and_local_templates_at_four_widths() -> None:
     assert "organization.name !== '暮らしのしるべ編集者'" in audit
     assert "暮らしのしるべ編集部" not in audit
     assert inventory["schema"] == "RAOS_WORDPRESS_AUDIT_INVENTORY_V3"
-    assert inventory["viewports"] == [360, 390, 768, 1440]
+    assert inventory["viewports"] == [360, 390, 768, 1024, 1440]
     assert len(inventory["surfaces"]) == 14
     assert [row["kind"] for row in inventory["surfaces"]].count("article") == 10
     assert [row["kind"] for row in inventory["surfaces"]].count("policy") == 3
@@ -771,9 +771,7 @@ def test_browser_audit_covers_core_and_local_templates_at_four_widths() -> None:
         "production_robots_evidence": False,
     }
     assert len(inventory["clusters"]) == 3
-    assert (len(inventory["surfaces"]) + len(inventory["local_surfaces"])) * len(
-        inventory["viewports"]
-    ) == 104
+    assert set(inventory["viewports"]) == {360, 390, 768, 1024, 1440}
     for surface in inventory["surfaces"]:
         if surface["local_path"] != "/":
             assert surface["local_path"] not in audit

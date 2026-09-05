@@ -95,12 +95,11 @@ def test_generated_audit_inventory_is_public_safe_exact_v3_projection() -> None:
         assert prohibited not in serialized
 
 
-def test_public_audit_covers_home_ten_articles_and_three_pages_at_four_widths() -> None:
+def test_public_audit_covers_home_ten_articles_and_three_pages_at_required_widths() -> None:
     source = AUDIT.read_text(encoding="utf-8")
     inventory = json.loads(INVENTORY.read_text(encoding="utf-8"))
     assert len(inventory["surfaces"]) == 14
-    assert len(inventory["viewports"]) == 4
-    assert len(inventory["surfaces"]) * len(inventory["viewports"]) == 56
+    assert set(inventory["viewports"]) == {360, 390, 768, 1024, 1440}
     for surface in inventory["surfaces"]:
         if surface["production_path"] != "/":
             assert surface["production_path"] not in source
@@ -197,7 +196,7 @@ def test_public_audit_covers_home_ten_articles_and_three_pages_at_four_widths() 
     assert "process.cwd()" not in source
 
 
-def test_public_audit_shell_requires_all_56_artifacts_and_is_portable() -> None:
+def test_public_audit_shell_requires_all_inventory_artifacts_and_is_portable() -> None:
     source = SHELL.read_text(encoding="utf-8")
     assert 'readonly repository_root="$(CDPATH= cd -- "$script_directory/.."' in source
     assert "wordpress-audit-inventory.v3.json" in source
@@ -276,11 +275,10 @@ def test_local_preview_audit_fail_closes_every_surface_seo_head() -> None:
     assert len(inventory["surfaces"]) == 14
     assert len({row["local_path"] for row in inventory["surfaces"]}) == 14
     assert len({row["production_path"] for row in inventory["surfaces"]}) == 14
-    assert len(inventory["surfaces"]) * len(inventory["viewports"]) == 56
     for marker in (
         "new Set(rawSurfaces.map((surface) => surface.local_path)).size !== 14",
         "new Set(rawSurfaces.map((surface) => surface.production_path)).size !== 14",
-        "const requiredWidths = [360, 390, 768, 1440]",
+        "const requiredWidths = [360, 390, 768, 1024, 1440]",
         "width !== requiredWidths[index]",
         "response.status() !== 200",
         "response.url() !== expectedUrl",
@@ -465,10 +463,10 @@ async function requireRejection(name, mutate) {
     inventory.surfaces[1].production_path = inventory.surfaces[0].production_path;
   });
   await requireRejection('WRONG_VIEWPORT_ORDER', (inventory) => {
-    inventory.viewports = [390, 360, 768, 1440];
+    inventory.viewports = [390, 360, 768, 1024, 1440];
   });
   await requireRejection('WRONG_VIEWPORT_VALUE', (inventory) => {
-    inventory.viewports = [360, 390, 768, 1280];
+    inventory.viewports = [360, 390, 768, 1024, 1280];
   });
 })().catch((error) => {
   console.error(error);

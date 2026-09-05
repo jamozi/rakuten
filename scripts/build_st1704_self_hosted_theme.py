@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.5.1"
 THEME_RUNTIME_REVISION: Final = (
-    "3eb4cf1edff8c42d99029e9d820390b66cb9e54e93de164c759314f672da8e20"
+    "1a3f2dbbd0feefc8e018d136dcf09fdc1e8822dcf5af02bcbb1d1003b9e7f989"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -882,18 +882,11 @@ def validate_sources() -> dict[str, str]:
     search = _text("templates/search.html")
     archive = _text("templates/archive.html")
     not_found = _text("templates/404.html")
-    home_hero_image = (
-        '<img class="raos-home-hero__image" '
-        'src="/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp" '
-        'alt="鍋、マグカップ、照明とチェックリストを描いた暮らしの道具のイラスト" '
-        'width="1600" height="900" fetchpriority="high" decoding="async">'
-    )
     if (
-        '<h1 id="home-hero-title"><span>暮らしの選択に、</span>'
-        '<span>たしかな</span><span>道しるべを。</span></h1>' not in front_page
-        or front_page.count(home_hero_image) != 1
-        or '<span class="raos-home-hero__image"' in front_page
-        or "loading=" in home_hero_image
+        front_page.count('<h1 ') != 1
+        or front_page.count('[kurashinoshirube_latest_guides]') != 1
+        or 'raos-home-hero__image' in front_page
+        or '[kurashinoshirube_article_hero]' in single
     ):
         _fail()
     if single.count("wp:post-title") != 1:
@@ -933,16 +926,7 @@ def validate_sources() -> dict[str, str]:
         _fail()
 
     php = _text("functions.php")
-    article_visuals = php.split("$article_visuals = array(", 1)[1].split(
-        "$assets = array(", 1
-    )[0]
-    if (
-        article_visuals.count(
-            "暮らしのしるべ編集者の比較イメージ（商品写真ではありません）"
-        )
-        != 10
-        or "抽象図" in article_visuals
-    ):
+    if "kurashinoshirube_reader_media_asset" not in php or "'media_assets'" not in php:
         _fail()
     required_php = (
         "_raos_publication_snapshot_v1",

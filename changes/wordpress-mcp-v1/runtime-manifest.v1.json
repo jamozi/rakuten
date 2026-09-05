@@ -87,12 +87,12 @@
     },
     {
       "path": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
-      "sha256": "4f3475d4747024bd0f997632727824a876e46e4469451087d0d342c6a3e761e1",
-      "size": 18264
+      "sha256": "1127899b83875ee96f01fb703ef5b6bf87aaf5bacba099bdb83dd1731f399d00",
+      "size": 18274
     },
     {
       "path": "changes/editorial-measurement-v1/runtime-manifest.v1.json",
-      "sha256": "d02d5e3e0221958bfe10e19a810020556118c55296f499391be79f63a5eba14c",
+      "sha256": "d0fbdb7613ea89797cf2fb3a30d53840eb023294a28ef6dfed9fae52219cf577",
       "size": 2879
     },
     {
@@ -102,13 +102,13 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
-      "sha256": "653945293bac862939160b664edb9feedc91585fdcd0a29169f7b8c040707269",
+      "sha256": "93a3066ae64b4e5e6b031bb63156e8cb2254318c2187d448f5f8173796a70d9e",
       "size": 3365
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "c5e15d7137cdeff2c60a100cb553af443702be0fdfb368c2ccc4512a601e98b2",
-      "size": 80080
+      "sha256": "2e33aaa13dbdb7af274dbb612e27ed5f3cbd4354b6c65e3888d06573e5a443ab",
+      "size": 80664
     },
     {
       "path": "changes/wordpress-local-preview-v1/README.md",
@@ -137,8 +137,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/mixed_audit_report.py",
-      "sha256": "9fbd44d7c385ff7c60b03825d7000993b4822203bc99ac3592462c63b567b681",
-      "size": 25297
+      "sha256": "a704c686f53f78997ea19c9223b1755630f7234449001f554d4c308eb1190398",
+      "size": 25303
     },
     {
       "path": "changes/wordpress-local-preview-v1/runtime-fingerprint.php",
@@ -162,8 +162,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
-      "sha256": "ab0bcf454d73aa23745d913541124491289fc4f78c7bd8bdb98d4524a2a19a7e",
-      "size": 116183
+      "sha256": "bce3c46eb45e8f32ac7b4aee72a9157a62341726d8125d38478f64c144d7af05",
+      "size": 116189
     },
     {
       "path": "changes/wordpress-local-preview-v1/compose.yaml",
@@ -342,7 +342,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "a667a6188ceffc626cb4a1b9239d33f4e939145e8f7d04201a6a217d904a9b9d",
+      "sha256": "94d32ccc4b735db57e5667c3f4984614d0236bd48152bc2a1ca064a7fe98fa9b",
       "size": 54277
     },
     {
@@ -389,6 +389,26 @@
       "path": "python/raos/application/editorial/editorial_portfolio_v2.py",
       "sha256": "9bcaaf9a15a8b34fd9da004ac69b5f454c472292b453f4dff9d70cef27372b94",
       "size": 99511
+    },
+    {
+      "path": "python/raos/application/editorial/reader_experience_v1.py",
+      "sha256": "4d68d06cb5daaa6fbe16ac22b271da79eedea9b2d7bc0ec01a0dfa2251e29507",
+      "size": 7001
+    },
+    {
+      "path": "python/raos/application/editorial/reader_experience_projection.py",
+      "sha256": "64dec09f439fe8311b268800003df4ebceccf0db4af4b4b0bf992c281f78aa93",
+      "size": 13109
+    },
+    {
+      "path": "changes/editorial-portfolio-v3/reader-experience.v1.json",
+      "sha256": "8f7de87f80c12ee0ad65ee5e75f53fe203b8217ca63896941accb2a79a857bfd",
+      "size": 1994
+    },
+    {
+      "path": "changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs",
+      "sha256": "5e415b530a46bfa43100c05fccecb737f1c6722fee60a0864efea5d4d4499e1e",
+      "size": 5900
     },
     {
       "path": "python/raos/application/editorial/product_safety_manufacturer_capture.py",
@@ -462,8 +482,8 @@
     },
     {
       "path": "scripts/build_wordpress_mcp_v1.py",
-      "sha256": "36cdf760d97fc7dffddcfce7bdf61a2a9a0b85a9b596523c6f4065d37225773a",
-      "size": 24209
+      "sha256": "e1772683ac08bc06240df8719812d53bc2fbbaf93b93e38f9532526688299c2a",
+      "size": 24513
     },
     {
       "path": "scripts/check_wordpress_public_ui_playwright.sh",
@@ -472,8 +492,8 @@
     },
     {
       "path": "scripts/raos_editorial_portfolio_v2.py",
-      "sha256": "685ce5227541d9f97df5448b3064833818edcb183731c438238b20825ac73c2e",
-      "size": 153738
+      "sha256": "208ba4b951833e0796a50df10c15bccb2c68dc2387940d7e848478e266ed9e87",
+      "size": 154879
     },
     {
       "path": "scripts/raos_wordpress_deployment_operator.py",
@@ -487,8 +507,8 @@
     },
     {
       "path": "scripts/raos_wordpress_incremental_candidate.py",
-      "sha256": "d5ddcd7e87d1ebd531895fcd3d83ff09fcf57fe3c82c4d4f1b5ea9a4df7a51a3",
-      "size": 20007
+      "sha256": "53cc03e6bf70fdec962939c6a9275b101e6a2a168e6120752f634f351ff56b96",
+      "size": 20205
     },
     {
       "path": "scripts/raos_wordpress_incremental_preview.py",

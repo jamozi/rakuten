@@ -80,7 +80,7 @@ def inputs_and_results() -> tuple[dict, list[dict], dict]:
     return inputs, results, inventory
 
 
-def test_exact_raw_browser_results_cover_130_images_without_anonymous_pass() -> None:
+def test_exact_raw_browser_results_cover_inventory_without_anonymous_pass() -> None:
     inputs, results, inventory = inputs_and_results()
     raw = (
         b"### Result\n"
@@ -89,7 +89,11 @@ def test_exact_raw_browser_results_cover_130_images_without_anonymous_pass() -> 
     )
     parsed = owner.parse_results(raw)
     assert parsed == results
-    assert len(owner.validate_results(parsed, inventory, inputs)) == 130
+    names = owner.validate_results(parsed, inventory, inputs)
+    surfaces = inventory["surfaces"] + inventory["local_surfaces"]
+    assert len(names) == len(surfaces) * (len(inventory["viewports"]) + 1)
+    assert any("-1024.png" in name for name in names)
+    assert any("-zoom200.png" in name for name in names)
 
 
 @pytest.mark.parametrize(
@@ -245,7 +249,8 @@ def test_report_is_derived_from_browser_screenshots_and_lighthouse_originals(
     assert report["schema"] == "RAOS_WORDPRESS_MIXED_BROWSER_AUDIT_V1"
     assert report["publication_authority"] is False
     assert len(report["core_document_slugs"]) == 14
-    assert len(report["screenshots"]) == 130
+    _, _, inventory = inputs_and_results()
+    assert len(report["screenshots"]) == (len(inventory["surfaces"]) + len(inventory["local_surfaces"])) * (len(inventory["viewports"]) + 1)
     assert len(report["lighthouse_reports"]) == 6
     assert report["actionable_findings"] == 0
     assert report["browser_result_original_sha256"] == owner.sha(raw)
