@@ -81,6 +81,9 @@ FINGERPRINT_INPUT_CATALOGS: Final = {
     "build_wordpress_quality_baseline": Path(
         "changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json"
     ),
+    "build_wordpresscom_mvp_runtime_manifest": Path(
+        "changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json"
+    ),
 }
 EXPLICIT_OWNER_DEPENDENCIES: Final[dict[str, tuple[str, ...]]] = {
     # Some predecessor paths are declared by YAML contracts rather than Python
@@ -893,17 +896,31 @@ def discover_registry(*, root: Path = REPOSITORY_ROOT) -> dict[str, BuildSpec]:
         catalog_path = FINGERPRINT_INPUT_CATALOGS.get(owner_id)
         if catalog_path is not None:
             catalog = _mapping(load_json(root / catalog_path), "fingerprint catalog")
-            for group in _list(catalog["fingerprint_groups"], "fingerprint groups"):
-                row = _mapping(group, "fingerprint group")
-                for value in _list(row["inputs"], "fingerprint inputs"):
-                    if not isinstance(value, str):
-                        raise BuildRegistryError("fingerprint input must be a path")
-                    path = Path(value)
-                    if path.is_absolute() or ".." in path.parts:
-                        raise BuildRegistryError(
-                            "fingerprint input must remain in the repository"
-                        )
-                    paths.add(path)
+            if "fingerprint_groups" in catalog:
+                values = [
+                    value
+                    for group in _list(
+                        catalog["fingerprint_groups"], "fingerprint groups"
+                    )
+                    for value in _list(
+                        _mapping(group, "fingerprint group")["inputs"],
+                        "fingerprint inputs",
+                    )
+                ]
+            else:
+                values = [
+                    _mapping(row, "fingerprint entry")["path"]
+                    for row in _list(catalog["paths"], "fingerprint paths")
+                ]
+            for value in values:
+                if not isinstance(value, str):
+                    raise BuildRegistryError("fingerprint input must be a path")
+                path = Path(value)
+                if path.is_absolute() or ".." in path.parts:
+                    raise BuildRegistryError(
+                        "fingerprint input must remain in the repository"
+                    )
+                paths.add(path)
         story_ids = _story_ids(generator, source)
         provisional[owner_id] = {
             "generator": generator,

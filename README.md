@@ -41,6 +41,9 @@ CIには検査ごとの所要時間と遅いテストを出力します。通常
 ## WordPress公開準備
 
 `make wordpress-production-request` は読み取り専用の計画を表示します。
+記事はローカルのtracked sourceで作成・確認し、確定候補を本番へ適用・照合します。
+`make wordpress-preview-environment`とprepareの既存レポートで実環境の差分を確認できます。
+通常のローカル表示は通常APIリンク・計測OFF・圧縮JavaScriptを使います。
 `ARGS='plan --articles <slug> --snapshot-name <name> --json'` で対象と選択検査を確認し、
 `prepare` で事前検証・必要な生成・関連検査・並列表示確認を実行します。
 同じ入力と期限内の結果は元の日時のまま再利用します。独立レビュー2巡とRequired CIの後、

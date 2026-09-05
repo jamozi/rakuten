@@ -21,7 +21,7 @@ local copy of its 128px product image; missing, ambiguous, or expired evidence
 shows the visible non-image state `商品画像未確認・購入導線停止` and may retain a
 clearly labelled manufacturer page link only as an incomplete development
 fallback. It never reuses a neutral or article-level visual as a product image,
-and this fallback is never a production candidate. Production still requires
+and this fallback is never a production candidate. The explicit legacy full-portfolio mode requires
 37/37 verified product-card images and 74/74 verified affiliate CTAs, with zero
 neutral images and zero manufacturer-link fallbacks. The browser never loads a
 product image or script from an external origin. No live post, production
@@ -65,7 +65,20 @@ publication proposal. The required sequence is:
    proposal, precondition, and kill-switch requirements. A local pass is not
    production approval.
 
-First propose the fixed MCP abilities plugin 1.3.1 package and stop for its
+The normal release path is `make wordpress-production-request ARGS='prepare --articles <slug> --snapshot-name <name>'`.
+It validates and displays the same frozen article artifacts that will be proposed and applied;
+edit tracked sources locally, rather than rewriting approved content in production.
+Bare preview commands now use `standard-api` (measurement OFF) and minified WordPress JavaScript.
+Use `make wordpress-preview-environment` for read-only identity from the serving PHP container.
+The existing preparation report records observed matches, differences, selected theme changes,
+and unavailable production fields. Local URL aliases, noindex, the banner, and blocked outbound
+HTTP/email remain deliberate differences. `RAOS_WORDPRESS_LINK_MODE=measured-admin` explicitly
+selects the legacy measurement preview.
+
+### Legacy full-portfolio compatibility only
+
+The following plugin bootstrap and full-batch sequence applies only when explicitly selecting
+`--publication-profile full-portfolio --link-mode measured-admin`. First propose the fixed MCP abilities plugin 1.3.1 package and stop for its
 separate-admin approval/apply receipt. That exact receipt is required before the
 measurement plugin can be proposed. Before either measurement or content
 publication, materialize the checksum-pinned Yoast SEO 28.3 package, have a
@@ -83,7 +96,7 @@ before a lock, credential read, preview mutation, or remote call:
 
 ```sh
 MEASUREMENT_PLUGIN_APPLY_RECEIPT="$PWD/.secrets/wordpress-mcp/publication-requests/plugin-applied.json" \
-  make wordpress-production-request
+  make wordpress-production-request ARGS='--publication-profile full-portfolio --link-mode measured-admin'
 ```
 
 `ARTICLES` must be `all`; any other value fails closed. Full mode fails before preview or remote access

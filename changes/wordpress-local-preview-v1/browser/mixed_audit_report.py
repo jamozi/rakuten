@@ -264,6 +264,28 @@ def current_inputs(
         if not include_runtime:
             return inputs
         inputs["tool_versions"] = tool_versions()
+        from raos_wordpress_environment import capture_local
+
+        runtime_environment = {
+            **os.environ,
+            "RAOS_WORDPRESS_PUBLICATION_PROFILE": "verified-incremental",
+            "RAOS_WORDPRESS_LINK_MODE": "standard-api",
+            "RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT": str(fixture_root),
+        }
+        # Bind the serving PHP/configuration, not just the separate WP-CLI image.
+        serving = capture_local(ROOT, runtime_environment)
+        inputs["serving_environment_sha256"] = sha(canonical(serving["local"]))
+        inputs["serving_environment_reader_sha256"] = sha(
+            canonical(
+                {
+                    name: sha(read_regular(ROOT / name))
+                    for name in (
+                        "scripts/raos_wordpress_environment.py",
+                        "changes/wordpress-local-preview-v1/runtime-environment.php",
+                    )
+                }
+            )
+        )
         runtime = subprocess.run(
             [
                 str(
@@ -275,12 +297,7 @@ def current_inputs(
             check=True,
             capture_output=True,
             text=True,
-            env={
-                **os.environ,
-                "RAOS_WORDPRESS_PUBLICATION_PROFILE": "verified-incremental",
-                "RAOS_WORDPRESS_LINK_MODE": "standard-api",
-                "RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT": str(fixture_root),
-            },
+            env=runtime_environment,
         ).stdout.strip()
         if re.fullmatch(r"[a-f0-9]{64}", runtime) is None:
             reject()

@@ -318,10 +318,20 @@ def test_unchanged_prepare_runs_no_tests_generation_sync_or_capture(
         )
 
     monkeypatch.setattr(workflow.subprocess, "run", run)
+    monkeypatch.setattr(
+        workflow.environment_owner,
+        "capture_local",
+        lambda *args: {
+            "captured_at": "actual read time",
+            "local": {"script_debug": False},
+        },
+    )
     report = {"captured_at": "original time", "screenshots": ["original.png"]}
     modules = {
         "raos_wordpress_incremental_publication": SimpleNamespace(
-            prepare_candidate=lambda *args, **kwargs: object()
+            prepare_candidate=lambda *args, **kwargs: SimpleNamespace(
+                snapshot={}, manifest={}
+            )
         ),
         "mixed_audit_report": SimpleNamespace(
             REPORT=tmp_path / "browser.json",
@@ -424,3 +434,18 @@ def test_browser_tool_upgrade_changes_reuse_inputs(monkeypatch):
     original = owner.tool_versions()
     versions["chrome"] = "Google Chrome 150.0.0.2"
     assert owner.tool_versions() != original
+
+
+def test_owner_execution_receives_the_common_python_import_roots(monkeypatch):
+    from scripts import raos_wordpress_release_workflow as workflow
+
+    called = []
+    monkeypatch.setattr(
+        workflow.subprocess, "run", lambda command, **kwargs: called.append(kwargs)
+    )
+    workflow._run(["synthetic-owner"], {"PYTHONPATH": "/existing-extra"})
+    assert called[0]["env"]["PYTHONPATH"].split(":") == [
+        str(workflow.ROOT),
+        str(workflow.ROOT / "python"),
+        "/existing-extra",
+    ]

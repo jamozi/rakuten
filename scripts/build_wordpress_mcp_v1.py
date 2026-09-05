@@ -110,6 +110,8 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("changes/wordpress-local-preview-v1/browser/incremental_scope.py"),
     Path("changes/wordpress-local-preview-v1/browser/mixed_audit_report.py"),
     Path("changes/wordpress-local-preview-v1/runtime-fingerprint.php"),
+    Path("changes/wordpress-local-preview-v1/runtime-environment.php"),
+    Path("scripts/raos_wordpress_environment.py"),
     Path("changes/wordpress-local-preview-v1/browser/lighthouse_check.sh"),
     Path(
         "changes/wordpress-local-preview-v1/browser/"

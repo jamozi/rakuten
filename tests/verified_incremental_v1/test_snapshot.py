@@ -243,6 +243,17 @@ def test_deployment_theme_baseline_uses_readonly_callback_twice_and_minimal_fiel
     assert "https://" not in json.dumps(baseline)
 
 
+def test_new_snapshot_preserves_observed_public_runtime_versions():
+    status = {
+        **deployment_status(),
+        "wordpress_version": "7.1",
+        "php_version": "8.3.32",
+    }
+    baseline = owner.capture_deployment_baseline(lambda: status)
+    assert baseline["runtime"] == {"wordpress_version": "7.1", "php_version": "8.3.32"}
+    assert "gates" not in baseline
+
+
 def test_deployment_theme_change_during_snapshot_is_rejected() -> None:
     calls = 0
 

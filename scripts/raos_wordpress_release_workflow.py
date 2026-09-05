@@ -29,6 +29,7 @@ from scripts.raos_build_core import (  # noqa: E402
 from scripts.raos_test_plan import create_plan  # noqa: E402
 from scripts.raos_wordpress_browser_plan import browser_plan  # noqa: E402
 from scripts import raos_wordpress_verification as verification  # noqa: E402
+from scripts import raos_wordpress_environment as environment_owner  # noqa: E402
 
 REPORT = ROOT / "output/publication/release-preparation.v2.json"
 STAGES = ("plan", "prepare", "propose", "apply", "readback")
@@ -158,9 +159,13 @@ def plan(arguments: argparse.Namespace) -> tuple[dict[str, Any], Any, Any]:
     targets: list[str] = []
     browser = None
     browser_reuse = False
+    environment_plan = environment_owner.compare({}, {})
     if arguments.candidate is not None:
         port = importlib.import_module("raos_wordpress_incremental_publication")
         prepared = port.prepare_candidate(arguments.candidate, now=datetime.now(UTC))
+        environment_plan = environment_owner.compare(
+            prepared.snapshot, prepared.manifest
+        )
         targets = [row["slug"] for row in prepared.manifest["articles"]]
         if (
             arguments.articles
@@ -243,6 +248,7 @@ def plan(arguments: argparse.Namespace) -> tuple[dict[str, Any], Any, Any]:
             "targets": targets,
             "verification": selected.as_json(),
             "browser": browser,
+            "environment": environment_plan,
             "reuse": {
                 "fast": reuse,
                 "browser": browser_reuse,
@@ -262,6 +268,15 @@ def plan(arguments: argparse.Namespace) -> tuple[dict[str, Any], Any, Any]:
 
 
 def _run(command: list[str], environment: dict[str, str]) -> None:
+    # Match the shared build runner so every selected owner can import raos.
+    environment = {
+        **environment,
+        "PYTHONPATH": os.pathsep.join(
+            str(path)
+            for path in (ROOT, ROOT / "python", environment.get("PYTHONPATH", ""))
+            if path
+        ),
+    }
     subprocess.run(command, cwd=ROOT, env=environment, check=True)
 
 
@@ -417,6 +432,19 @@ def prepare(arguments: argparse.Namespace) -> dict[str, Any]:
     )
     if status.returncode or b"RAOS_WORDPRESS_PREVIEW_READY" not in status.stdout:
         _run(["make", "wordpress-preview-up"], environment)
+    observed_environment = environment_owner.capture_local(ROOT, environment)
+    if observed_environment["local"].get("script_debug") is not False:
+        # Existing containers can still use the previous Compose configuration.
+        _run(["make", "wordpress-preview-up"], environment)
+        observed_environment = environment_owner.capture_local(ROOT, environment)
+        if observed_environment["local"].get("script_debug") is not False:
+            raise WorkflowFailure("local serving configuration was not refreshed")
+    state["environment"] = {
+        **environment_owner.compare(
+            prepared.snapshot, prepared.manifest, observed_environment["local"]
+        ),
+        "local_observed_at": observed_environment["captured_at"],
+    }
     browser_dir = str(ROOT / "changes/wordpress-local-preview-v1/browser")
     if browser_dir not in sys.path:
         sys.path.insert(0, browser_dir)

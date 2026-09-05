@@ -213,7 +213,9 @@ def capture_snapshot(
         publication.fail("RAOS_INCREMENTAL_SNAPSHOT_CHANGED_DURING_READ")
     if deployment_status_reader is not None:
         repeated_deployment = capture_deployment_baseline(deployment_status_reader)
-        if deployment["theme"] != repeated_deployment["theme"]:
+        if deployment["theme"] != repeated_deployment["theme"] or deployment.get(
+            "runtime"
+        ) != repeated_deployment.get("runtime"):
             publication.fail("RAOS_INCREMENTAL_SNAPSHOT_THEME_CHANGED_DURING_READ")
     return {
         "schema": "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
@@ -248,11 +250,18 @@ def capture_deployment_baseline(
         or not re.fullmatch(r"[a-f0-9]{64}", str(theme.get("tree_sha256", "")))
     ):
         publication.fail("RAOS_INCREMENTAL_SNAPSHOT_DEPLOYMENT_STATUS_INVALID")
+    runtime = {
+        name: observed[name]
+        for name in ("wordpress_version", "php_version")
+        if isinstance(observed.get(name), str)
+        and re.fullmatch(r"[0-9]+\.[0-9]+(?:\.[0-9]+)?", observed[name])
+    }
     return {
         "schema": "RAOS_WORDPRESS_DEPLOYMENT_BASELINE_SNAPSHOT_V1",
         "source": "BOUNDED_WORDPRESS_DEPLOYMENT_MCP",
         "status": "CAPTURED_READ_ONLY",
         "captured_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        **({"runtime": runtime} if runtime else {}),
         "theme": {
             "slug": theme["slug"],
             "active": True,

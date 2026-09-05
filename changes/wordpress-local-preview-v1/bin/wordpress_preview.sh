@@ -21,7 +21,7 @@ readonly default_private_root="$repository_root/.secrets/wordpress-local-preview
 readonly private_root="${RAOS_WORDPRESS_PREVIEW_PRIVATE_ROOT:-$default_private_root}"
 readonly credentials_file="$private_root/credentials.env"
 readonly requested_fixture_root="${RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT:-}"
-readonly link_mode="${RAOS_WORDPRESS_LINK_MODE:-measured-admin}"
+readonly link_mode="${RAOS_WORDPRESS_LINK_MODE:-standard-api}"
 readonly publication_profile="${RAOS_WORDPRESS_PUBLICATION_PROFILE:-legacy-full}"
 [[ "$link_mode" == standard-api || "$link_mode" == measured-admin ]] \
   || { printf '%s\n' RAOS_WORDPRESS_PREVIEW_LINK_MODE_INVALID >&2; exit 69; }
@@ -560,6 +560,15 @@ do_fingerprint() {
   wordpress_cli eval-file /var/www/raos-local-preview/runtime-fingerprint.php
 }
 
+do_environment() {
+  [[ -f "$credentials_file" ]] || fail RAOS_WORDPRESS_PREVIEW_NOT_INITIALIZED
+  require_docker
+  load_credentials
+  validate_materialized_runtime
+  # Use the serving container's PHP, not the separate WP-CLI image's version.
+  compose exec -T wordpress php /var/www/raos-local-preview/runtime-environment.php
+}
+
 do_down() {
   require_docker
   if [[ ! -f "$credentials_file" ]]; then
@@ -587,10 +596,11 @@ case "${1:-}" in
   password) do_password ;;
   check) do_check ;;
   fingerprint) do_fingerprint ;;
+  environment) do_environment ;;
   down) do_down ;;
   reset) do_reset ;;
   *)
-    printf '%s\n' 'usage: wordpress_preview.sh {up|status|fingerprint|sync|password|check|down|reset|restore PREPARATION_SHA256}' >&2
+    printf '%s\n' 'usage: wordpress_preview.sh {up|status|environment|fingerprint|sync|password|check|down|reset|restore PREPARATION_SHA256}' >&2
     exit 64
     ;;
 esac

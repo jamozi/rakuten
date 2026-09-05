@@ -52,6 +52,7 @@ Pro 不在、formal/live evidence 未実行も停止条件ではなく、修正�
 
 - 記事・固定ページ、ホームページ、子テーマ、テンプレート、CSS、表示系プラグインの変更は、最初に `changes/wordpress-local-preview-v1/` の非本番データとローカル WordPress へ反映し、本番を試作・初回確認の場にしない。
 - 公開入口は `make wordpress-production-request ARGS="plan|prepare|propose|apply|readback ..."`。引数なしは読み取り専用計画。対象を明示し、通常は段階公開・通常APIリンク・Codex監査を使う。
+- 記事の編集元はtracked sourceとし、ローカルで確認した不変候補を本番へ適用・照合する。本番での文章再編集を通常手順にしない。環境の実値は `make wordpress-preview-environment`、本番との差分はprepareの既存レポートで確認する。
 - `prepare` は出典・投稿ID・対象範囲を先に検証し、必要な生成・`fast --critical`・ローカル表示検査を実行する。URLと選択されたviewportのスクリーンショットを確認する。有効な同一入力の検査結果は原本の日時のまま再利用する。
 - 独立したCodexレビュー2巡は同じ自動検査原本を参照できる。各担当が自分の観察を記録し、修正後は影響項目と差分を確認して最終候補へ結び付ける。Required CI、wp-admin承認、対象ハッシュ、kill switch、適用後照合を維持する。
 - 対象確定後の任意の文章・デザイン改善は次回へ回す。進捗・引き継ぎは既存の準備レポートと監査記録から取得し、全履歴調査や監査担当の作り直しを標準にしない。既存の承認待ち候補と旧形式は書き換えない。

@@ -23,6 +23,19 @@
 
 ## 準備とローカル確認
 
+記事本文・テーマはローカルのtracked sourceで作成・確認し、確定した候補の本文・ファイルを
+そのまま本番へ適用します。本番用に文章を書き直す工程は設けません。ローカル管理画面だけに
+保存した編集は公開元にならないため、残す変更はtracked sourceへ反映してprepareします。
+未選択記事はMCP snapshotの内容を保持し、選択記事も確認後に変われば候補の照合で検出します。
+
+通常のローカル起動は本番と同じ通常APIリンク・計測OFF・圧縮JavaScriptを使います。
+`make wordpress-preview-environment`は稼働中WebコンテナのWordPress/PHP、テーマ、Yoastの実値を
+読み取ります。prepareの既存レポートの`environment`には本番snapshotとの一致・相違・
+明示したテーマ変更・未取得を分けて記録します。旧snapshotにPHP情報がなければ未取得とし、
+承認待ちsnapshotを書き換えません。親テーマの本番版、全plugin一覧、CDNや一般表示設定など
+MCP未取得の値まで一致したとは扱いません。ローカルURL、noindex、メール・外部通信の停止、
+ローカル専用アカウントとデータは意図的な差分として維持します。
+
 1. bounded WordPress MCP から実際の公開内容を取得します。
    `scripts/raos_wordpress_incremental_snapshot.py` は固定の既存14ページを対象とし、
    公開日時・分類は公開 REST 応答との照合結果も区別して保存します。

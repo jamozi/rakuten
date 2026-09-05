@@ -62,8 +62,8 @@
   "runtime_files": [
     {
       "path": "scripts/raos_wordpress_release_workflow.py",
-      "sha256": "ab7719d220f2b03eca5f7460f1e229f82af87441974a51c1b14346dbd4770632",
-      "size": 22733
+      "sha256": "1fc005a252e595e84bdf639e46362c66678fd5dddb120e30c84a95277feda0d0",
+      "size": 24089
     },
     {
       "path": "scripts/raos_wordpress_verification.py",
@@ -82,8 +82,8 @@
     },
     {
       "path": "Makefile",
-      "sha256": "41dcd8e226ba00ded0516aa52587d65335e8baa7c6af41efc5c62f10cf1db4da",
-      "size": 3284
+      "sha256": "4eb39cb5aefdda22eba5abfa74a6539d36444453aebb8a70b41510d4f6cf56c8",
+      "size": 3427
     },
     {
       "path": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
@@ -112,8 +112,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/README.md",
-      "sha256": "050c6f6744a2d0cde9685507fd2ec71132824636288df3e3fb3080d2049fcb2f",
-      "size": 20167
+      "sha256": "f3991aada8e131ae5878a160cd0dca5cd03c91495ad0f14d44922e966a61a8aa",
+      "size": 21288
     },
     {
       "path": "changes/wordpress-local-preview-v1/bin/materialize_yoast.py",
@@ -122,13 +122,13 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
-      "sha256": "58582a515bfd8c720f445ba6f24c411e7ddf42fcddcf687b5be7c60dedff4b92",
-      "size": 24963
+      "sha256": "ecbe48b459ea3ed0b07c0fd8e8c2a526740128308e0129f5ebc2e72e2e0c6e6b",
+      "size": 25336
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/check.sh",
-      "sha256": "f7b7245e80a4d3b8e93024ab0ac8c27709cd8200924023c1373612077a67aa4f",
-      "size": 12643
+      "sha256": "e75e802b4dbfcefa72fef35e1c5e26d92f72a2da2c4f57b5feca41376208bb5b",
+      "size": 12641
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/incremental_scope.py",
@@ -137,13 +137,23 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/mixed_audit_report.py",
-      "sha256": "f49ea37e4ca00eefcc7add346d4db3be87e601893480834016114850763cd76e",
-      "size": 24578
+      "sha256": "9fbd44d7c385ff7c60b03825d7000993b4822203bc99ac3592462c63b567b681",
+      "size": 25297
     },
     {
       "path": "changes/wordpress-local-preview-v1/runtime-fingerprint.php",
       "sha256": "80488dc9254c87528bd08f106a5bbe2572053040879ff9d56bd121a0d284fc02",
       "size": 2558
+    },
+    {
+      "path": "changes/wordpress-local-preview-v1/runtime-environment.php",
+      "sha256": "ceae622dab3df32c81bd45b02534389f09081205a0cf04c3c8a22f4eb65684f4",
+      "size": 2180
+    },
+    {
+      "path": "scripts/raos_wordpress_environment.py",
+      "sha256": "d9f42044b99f013eb4e271810819708c3ac9616db8d86f1a6ee0b6cc4a08768d",
+      "size": 4462
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/lighthouse_check.sh",
@@ -157,8 +167,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/compose.yaml",
-      "sha256": "095e6f975ac5943392f7239530935b6dc3705697e24de6c4bde28b3d94c8bb77",
-      "size": 8074
+      "sha256": "83e22af6fd4f7c178e8c652fd446359205390ab96a6a1018c9d1eaaea825e3ff",
+      "size": 8076
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
@@ -332,7 +342,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "464ed9e6068c5d0f9977af8abf1c6166c1d4115c3ee1d01ba245d0d166dd62c5",
+      "sha256": "a667a6188ceffc626cb4a1b9239d33f4e939145e8f7d04201a6a217d904a9b9d",
       "size": 54277
     },
     {
@@ -452,8 +462,8 @@
     },
     {
       "path": "scripts/build_wordpress_mcp_v1.py",
-      "sha256": "2e3420ca64867167b1a8fd6494d2a55345aad7cf0ecbbc57dda4168d24a9549b",
-      "size": 24086
+      "sha256": "36cdf760d97fc7dffddcfce7bdf61a2a9a0b85a9b596523c6f4065d37225773a",
+      "size": 24209
     },
     {
       "path": "scripts/check_wordpress_public_ui_playwright.sh",
@@ -507,8 +517,8 @@
     },
     {
       "path": "scripts/raos_wordpress_incremental_snapshot.py",
-      "sha256": "2c67d69b654f5d609a1833c08005d73b765deaaa0ce849ac7be6e9fba9109f09",
-      "size": 14209
+      "sha256": "34445a0678dca20639574d54fb75c6ea7325f8f8e8269cd31b67f8b24addc902",
+      "size": 14579
     },
     {
       "path": "scripts/raos_wordpress_local_restore.py",
