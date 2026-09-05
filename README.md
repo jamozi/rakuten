@@ -53,10 +53,11 @@ CIには検査ごとの所要時間と遅いテストを出力します。通常
 ## Test layout
 
 pytestは `--import-mode=importlib` で全suiteをcollectionします。通常のtestはxdistで実行し、共有状態を使うtestは `serial` markerで実行します。
-全件CIのPython・Node・PHPテストは独立した20ジョブへ分割します。Pythonはテストケース単位で
+全件CIのPython・Nodeテストは独立した20ジョブへ分割します。Pythonはテストケース単位で
 重複なく振り分け、`serial` は各ジョブ内で直列実行します。通常PRもPythonテストファイル25個ごとに
 1ジョブを目安に分割します。リポジトリ変数 `RAOS_CI_TEST_SHARDS` で上限を1〜256に変更できます。
 標準の同時実行枠に合わせた既定値は20です。枠を超える分割は起動待ちと環境準備を増やします。
+通常のPHPテストはPHP 8.3、Phase 3のPHP 7.4互換性検査は専用ジョブで実行します。
 DB／Storageは専用partitionに分け、localな全testがどれか1つのpartitionに入るようにします。
 ファイル名による自動分類は廃止し、既存の共有状態testは明示的なmodule一覧で移行管理します。suite helperは各packageの `support.py` からrelative importします。
 

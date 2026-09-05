@@ -84,7 +84,7 @@ FULL_INPUTS = {
     "prettier.config.mjs",
 }
 DOC_SUFFIXES = {".md", ".rst", ".txt"}
-JOBS = ("static", "tests", "contracts", "data", "storage", "secrets")
+JOBS = ("static", "tests", "php", "contracts", "data", "storage", "secrets")
 
 
 @dataclass(frozen=True)
@@ -383,6 +383,7 @@ def create_plan(
         {
             "static": True,
             "tests": has_tests,
+            "php": php,
             "contracts": full or "build_st0104_contract_repository" in selected_owners,
             # DB/storage markers are routed at collection, not guessed from names.
             "data": has_tests,

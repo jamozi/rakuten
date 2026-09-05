@@ -8934,6 +8934,22 @@ def validated_phase3_public_observation(
     }
 
 
+def phase3_php_ci_wired(source: str) -> bool:
+    """Check the required PHP entrypoint, independent of job layout or shell text."""
+    workflow = yaml.load(source, Loader=yaml.BaseLoader)
+    jobs = workflow.get("jobs", {})
+    job = jobs.get("php", {})
+    return (
+        "php" in jobs.get("final", {}).get("needs", ())
+        and job.get("continue-on-error", "false") == "false"
+        and any(
+            step.get("run") == ".venv/bin/python scripts/raos_ci.py php"
+            and step.get("continue-on-error", "false") == "false"
+            for step in job.get("steps", ())
+        )
+    )
+
+
 def phase3_validation_document(
     *,
     projection: Mapping[str, object],
@@ -9065,9 +9081,7 @@ def phase3_validation_document(
         "php_runtime_stub_is_required_ci": (
             "RAOS_V2_PHASE3_WORDPRESS_RUNTIME_RECEIPT_V1" in php_runtime_harness
             and "PASSED_LOCAL_CI_STUB" in php_runtime_harness
-            and 'php -l "$raos_source_plugin"' in required_ci
-            and 'php "$raos_harness" source ' in required_ci
-            and 'php "$raos_harness" generated ' in required_ci
+            and phase3_php_ci_wired(required_ci)
         ),
         "public_browser_raw_recorder_is_non_authoritative": (
             "RAOS_V2_PHASE3_PUBLIC_BROWSER_RAW_RECEIPT_V1" in public_browser_recorder

@@ -177,14 +177,22 @@ def test_phase3_ci_executes_lint_and_both_artifacts_without_ignoring_failure(
     import pytest
     import yaml
     from scripts import raos_checks
+    from scripts.build_raos_v2_successor import phase3_php_ci_wired
 
     workflow = yaml.load(WORKFLOW.read_text(), Loader=yaml.BaseLoader)
-    job = workflow["jobs"]["tests"]
+    assert phase3_php_ci_wired(WORKFLOW.read_text())
+    without_php = yaml.load(WORKFLOW.read_text(), Loader=yaml.BaseLoader)
+    del without_php["jobs"]["php"]
+    assert not phase3_php_ci_wired(yaml.safe_dump(without_php))
+    ignoring_failure = yaml.load(WORKFLOW.read_text(), Loader=yaml.BaseLoader)
+    ignoring_failure["jobs"]["php"]["continue-on-error"] = "true"
+    assert not phase3_php_ci_wired(yaml.safe_dump(ignoring_failure))
+    job = workflow["jobs"]["php"]
     assert any(
         step.get("with", {}).get("php-version") == "7.4" for step in job["steps"]
     )
     assert any(
-        step.get("run") == ".venv/bin/python scripts/raos_ci.py tests"
+        step.get("run") == ".venv/bin/python scripts/raos_ci.py php"
         for step in job["steps"]
     )
     plan = SimpleNamespace(python_tests=(), node_tests=(), vitest_tests=(), php=True)
@@ -196,7 +204,7 @@ def test_phase3_ci_executes_lint_and_both_artifacts_without_ignoring_failure(
         return int(label == failing)
 
     monkeypatch.setattr(raos_checks, "run", run)
-    assert raos_checks.execute(ROOT, {}, plan, stage="tests") == 0
+    assert raos_checks.execute(ROOT, {}, plan, stage="php") == 0
     assert ("php", "-l", str(HARNESS.relative_to(ROOT))) in commands
     for kind, plugin in (("source", SOURCE_PLUGIN), ("generated", GENERATED_PLUGIN)):
         assert ("php", "-l", str(plugin.relative_to(ROOT))) in commands
@@ -212,7 +220,7 @@ def test_phase3_ci_executes_lint_and_both_artifacts_without_ignoring_failure(
         )
     for failing in ("php-lint-harness", "php-runtime-source", "php-runtime-generated"):
         with pytest.raises(RuntimeError, match="check failed"):
-            raos_checks.execute(ROOT, {}, plan, stage="tests")
+            raos_checks.execute(ROOT, {}, plan, stage="php")
 
 
 def test_phase3_source_and_generated_plugins_expose_only_public_render_hooks() -> None:

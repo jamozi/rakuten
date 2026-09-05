@@ -349,14 +349,14 @@ source_artifacts:
   bytes: 4693
   sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
 - uri: repo://.github/workflows/ci.yml
-  bytes: 6245
-  sha256: 2ad48df1940ea292788fca8c202f418eb0f350aa1025066aa4c54957cb2b4bf2
+  bytes: 6908
+  sha256: 184b85fd1aaec4bb05fd2fc2f40bbfb575aa1933c7625d0d24a008e2e7c42906
 - uri: repo://Makefile
   bytes: 3276
   sha256: 3a644435fae4104c0baa09453cc7867543a448aa748c3d74c4acbb756e455407
 - uri: repo://README.md
-  bytes: 6259
-  sha256: e7b7c3bb1290ed1c275d65d48591448f6cf9acd128ec1e04c5b54e1c53b2c978
+  bytes: 6359
+  sha256: 9b1f870ad25bb8d968731f17a0597d34282fff5b4ed99c14534069219b522b1e
 - uri: repo://changes/st-0105/manifest.json
   bytes: 250888
   sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7

@@ -52,6 +52,7 @@ def _parser() -> argparse.ArgumentParser:
                     "fast",
                     "static",
                     "tests",
+                    "php",
                     "contracts",
                     "data",
                     "storage",
@@ -102,7 +103,15 @@ def main(argv: list[str] | None = None) -> int:
             flush=True,
         )
         if arguments.command == "final":
-            for stage in ("static", "tests", "contracts", "data", "storage", "secrets"):
+            for stage in (
+                "static",
+                "tests",
+                "php",
+                "contracts",
+                "data",
+                "storage",
+                "secrets",
+            ):
                 result = execute(
                     REPOSITORY_ROOT, registry, plan, stage=stage, extended=True
                 )

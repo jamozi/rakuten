@@ -85,6 +85,8 @@ def _python_tests(
         "-q",
         "--tb=short",
         "--durations=15",
+        "-o",
+        "faulthandler_timeout=120",
         "-p",
         "xdist.plugin",
         "-p",
@@ -174,26 +176,24 @@ def execute(
             )
         if vitest_tests:
             call(("npm", "run", "test:unit", "--", *vitest_tests), "vitest")
-        if plan.php and belongs_to_shard(
-            "phase3-php-runtime", shard_index, shard_total
+    if stage in {"fast", "php"} and plan.php:
+        harness = "tests/raos_v2/phase3-wordpress-runtime.php"
+        candidate = (
+            "changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json"
+        )
+        call(("php", "-l", harness), "php-lint-harness")
+        for kind, plugin in (
+            (
+                "source",
+                "packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/raos-v2-decision-support.php",
+            ),
+            (
+                "generated",
+                "changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/raos-v2-decision-support.php",
+            ),
         ):
-            harness = "tests/raos_v2/phase3-wordpress-runtime.php"
-            candidate = (
-                "changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json"
-            )
-            call(("php", "-l", harness), "php-lint-harness")
-            for kind, plugin in (
-                (
-                    "source",
-                    "packages/web-ui/src/decision-support-v2/wordpress/plugin/raos-v2-decision-support/raos-v2-decision-support.php",
-                ),
-                (
-                    "generated",
-                    "changes/raos-v2/phase-3/wordpress/artifact/raos-v2-decision-support/raos-v2-decision-support.php",
-                ),
-            ):
-                call(("php", "-l", plugin), f"php-lint-{kind}")
-                call(("php", harness, kind, plugin, candidate), f"php-runtime-{kind}")
+            call(("php", "-l", plugin), f"php-lint-{kind}")
+            call(("php", harness, kind, plugin, candidate), f"php-runtime-{kind}")
     for group, service in (("data", "database"), ("storage", "storage")):
         if stage == group or (stage == "fast" and plan.jobs[group]):
             # Service smoke tests are CI/full diagnostics. Focused local tests

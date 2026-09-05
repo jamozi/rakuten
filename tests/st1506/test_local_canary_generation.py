@@ -39,6 +39,19 @@ def test_owner_no_write_check_preserves_output_metadata() -> None:
     assert after == before
 
 
+def test_development_document_bytes_do_not_change_inert_outputs(monkeypatch) -> None:
+    expected = generator.render_outputs(REPOSITORY_ROOT)
+    original = Path.read_bytes
+
+    def changed_document(path):
+        if path == REPOSITORY_ROOT / "AGENTS.md":
+            return b"Reworded development instructions\n"
+        return original(path)
+
+    monkeypatch.setattr(Path, "read_bytes", changed_document)
+    assert generator.render_outputs(REPOSITORY_ROOT) == expected
+
+
 def test_generated_pipeline_is_disabled_and_has_no_commands() -> None:
     document = yaml.safe_load(
         (REPOSITORY_ROOT / generator.PIPELINE_PATH).read_text(encoding="utf-8")

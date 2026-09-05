@@ -47,7 +47,8 @@ Full test runs use twenty isolated CI runners; affected runs scale at one runner
 per 25 Python test files, capped at the same limit. The repository variable
 `RAOS_CI_TEST_SHARDS` can set capacity from 1 to 256 (default 20). Python
 cases are deterministically partitioned, with serial cases executed sequentially
-inside each runner. Node files and the PHP harness run once across the shards.
+inside each runner. Node files run once across the shards. Python-invoked PHP
+tests use PHP 8.3; the Phase 3 PHP 7.4 compatibility harness has its own job.
 Database and Storage retain their separate, unsharded service partitions.
 
 The blocked WordPress quality template also has a generator owner. Its existing

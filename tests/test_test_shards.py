@@ -119,6 +119,7 @@ def test_native_tests_and_php_execute_once_across_shards(
         for path in command
         if path.endswith(".test.ts")
     ) == Counter((*plan.node_tests, *plan.vitest_tests))
+    execute(ROOT, {}, plan, stage="php")
     for label in (
         "php-lint-harness",
         "php-lint-source",

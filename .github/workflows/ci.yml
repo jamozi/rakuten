@@ -32,6 +32,7 @@ jobs:
     outputs:
       static: ${{ steps.select.outputs.static }}
       tests: ${{ steps.select.outputs.tests }}
+      php: ${{ steps.select.outputs.php }}
       contracts: ${{ steps.select.outputs.contracts }}
       data: ${{ steps.select.outputs.data }}
       storage: ${{ steps.select.outputs.storage }}
@@ -114,9 +115,29 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
-          php-version: '7.4'
+          php-version: '8.3'
           coverage: none
       - run: .venv/bin/python scripts/raos_ci.py tests
+
+  php:
+    name: PHP 7.4 runtime compatibility
+    needs: [plan, lock]
+    if: needs.plan.outputs.php == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+        with:
+          node: 'false'
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '7.4'
+          coverage: none
+      - run: .venv/bin/python scripts/raos_ci.py php
 
   contracts:
     name: Contracts
@@ -179,7 +200,7 @@ jobs:
   final:
     name: Final Integration
     if: always() && needs.plan.outputs.draft != 'true'
-    needs: [plan, lock, static, tests, contracts, data, storage, secrets]
+    needs: [plan, lock, static, tests, php, contracts, data, storage, secrets]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
