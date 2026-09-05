@@ -408,8 +408,11 @@ def test_unified_marker_registration_and_make_selectors_are_narrow() -> None:
     assert MARKER_REGISTRATION in markers
 
     makefile = MAKEFILE_PATH.read_text(encoding="utf-8")
-    assert "not serial and not live and not external and not raos_owner_private" in makefile
-    assert "serial and not database and not storage" in makefile
+    from scripts.raos_checks import PYTEST_GROUPS
+
+    for expression in PYTEST_GROUPS.values():
+        for excluded in ("live", "external", "raos_owner_private"):
+            assert f"not {excluded}" in expression
     assert "pro-owner-private-test" not in makefile
 
 

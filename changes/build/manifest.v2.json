@@ -2,7 +2,7 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 148,
+    "owner_count": 149,
     "version": "2.0.0"
   },
   "owners": [
@@ -8806,13 +8806,13 @@
           "uri": "repo://.github/CODEOWNERS"
         },
         {
-          "bytes": 350,
-          "sha256": "5bdd3bee188409588f336037c89ba00f7e4d8197e606eae5672d5e4faeeea6ce",
+          "bytes": 396,
+          "sha256": "44b36e3be456a3debdbb270bd365a4bd308297ed42cba161bd1963aaad53b77d",
           "uri": "repo://.github/PULL_REQUEST_TEMPLATE.md"
         },
         {
           "bytes": 1875,
-          "sha256": "3c07dea2e0eee5391518966ade7d8aeca2c0859bfcc19de147838fd5b482eec0",
+          "sha256": "e3ee7d55ad0dc1228fb204f0f1227c11d0b88d4fe4334d8dc00dee9d302410b2",
           "uri": "repo://changes/st-0107/manifest.yaml"
         },
         {
@@ -8991,7 +8991,7 @@
       "outputs": [
         {
           "bytes": 5784,
-          "sha256": "8ee11123a6898ced95f0c29197336fb32f2e92cb04b9c30ee298e79fa9fb956d",
+          "sha256": "2783e5041088572802936423ed8e96a32d941af4e7283b13e29cda51381e3b96",
           "uri": "repo://changes/st-0203/manifest.yaml"
         }
       ],
@@ -9142,7 +9142,7 @@
       "outputs": [
         {
           "bytes": 5972,
-          "sha256": "f80d80f185652b6d54d2f6eb4fbd967e25de3cbdd0ef6d80830b364244733668",
+          "sha256": "348315b2b76c668278fb7705d0ed18d6e683ca00afc271666a54be5f527cbecd",
           "uri": "repo://changes/st-0204/manifest.yaml"
         }
       ],
@@ -9311,7 +9311,7 @@
         },
         {
           "bytes": 5351,
-          "sha256": "5f19b9f7c3b7e99cc2a1d6d9cf9c952019a6dba3b8214be553978410595f6656",
+          "sha256": "cc42213a946c427f2620e2dec275da0b274e5c5ce2933ae91537aecbc8b927a3",
           "uri": "repo://changes/st-0205/manifest.yaml"
         }
       ],
@@ -9640,7 +9640,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "154c3203bebfe5cf996dda78efe47660e9817ee3c86006b7377203085c490e1c",
+          "sha256": "8c247c74c9678208e119ccaba22fc0cff288af6de363de0b9076f4c0966a4218",
           "uri": "repo://changes/st-0302/manifest.yaml"
         },
         {
@@ -9931,7 +9931,7 @@
         },
         {
           "bytes": 11451,
-          "sha256": "1289b12894401ed6b6abb1979d4189b31e14b56e0b3d5346c4f1b88980d54887",
+          "sha256": "afae026bf0c6a46957e441eeed6eba0a57c148dcf1e947d14c97803756d01de5",
           "uri": "repo://changes/st-0303/manifest.yaml"
         },
         {
@@ -10288,7 +10288,7 @@
         },
         {
           "bytes": 11664,
-          "sha256": "fd7188293c5c6ec86c1edeee14d877dc009f7410d7fc9b0acc6bb381888f8872",
+          "sha256": "b5cda566359761f28f7d6c428fda7726a6d213d1d962c4fbc25d3218dfca92e7",
           "uri": "repo://changes/st-0304/manifest.yaml"
         },
         {
@@ -10508,7 +10508,7 @@
         },
         {
           "bytes": 14860,
-          "sha256": "94f574ae30309baf1802ed998649c57f1d320dbb4b8ec9e8f06796aa36f5e790",
+          "sha256": "e0ef7fdc3c1f01e1c6b273edea867f5f79f12e7285f076edcabd1b46b3da42be",
           "uri": "repo://changes/st-0305/manifest.yaml"
         },
         {
@@ -10739,7 +10739,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "3340633125831dfe46689a1b372c8215bf386fb1d5b7b559d8280227cea9fbbd",
+          "sha256": "4e76c5c31cf53f3c66b1a2786fbaac1abf24bffb3aa867a2e601604ce6fd2a9f",
           "uri": "repo://changes/st-0306/manifest.yaml"
         },
         {
@@ -10991,7 +10991,7 @@
         },
         {
           "bytes": 15544,
-          "sha256": "8bf25ddb4556fc1738e0082f359b98e34b1139fb7a3c2024908c996cd39ec272",
+          "sha256": "751eec2f03ca1b57650213c8c26e4ca001745a88cb8089f890a48ff9faaddbfe",
           "uri": "repo://changes/st-0307/manifest.yaml"
         },
         {
@@ -14601,7 +14601,7 @@
         },
         {
           "bytes": 15112,
-          "sha256": "408372266bc13479783b5ba17bff4b3e7991d2fa6d72ba203563ff8b61b82875",
+          "sha256": "d25dd3a339332cf171db349a66ba15f44cdca8ab5b448c120e7db7062dc1a56a",
           "uri": "repo://changes/st-0701/manifest.yaml"
         }
       ],
@@ -15635,7 +15635,7 @@
       "outputs": [
         {
           "bytes": 7913,
-          "sha256": "50ec59e5c182ab1d7e5d6f26cb28c062579202b5418a2304b9a6f43ca2405c3b",
+          "sha256": "6c88a125bc4521ca021445470b4b3eed53e535526654e2acbf450bbc4266bfa5",
           "uri": "repo://changes/st-0709/runtime-manifest.v2.json"
         }
       ],
@@ -15860,7 +15860,7 @@
       "outputs": [
         {
           "bytes": 32582,
-          "sha256": "e952c0decb4e9beea553002c091988817ee67a8cea358f5f11a6dc3584951fd3",
+          "sha256": "40ca90a1eff9a26fa4228bdf9ecfff7573dfb3507e65c33964acaa892f254b3a",
           "uri": "repo://changes/st-0801/manifest.yaml"
         }
       ],
@@ -17504,7 +17504,7 @@
       "outputs": [
         {
           "bytes": 9290,
-          "sha256": "60dfc2f1d66d47bed3136dbbb7eb612bf6936106366c903e12ca4a8f7f8d0042",
+          "sha256": "e642010947ef97650673c7b7722e43c59b860b883b5d4974117bb56164eaca41",
           "uri": "repo://changes/st-0901/runtime-manifest.v2.yaml"
         }
       ],
@@ -17896,7 +17896,7 @@
       "outputs": [
         {
           "bytes": 11786,
-          "sha256": "21acb8f253c8b29377cc0c5d55de02f24e6e5a3a49ab33892ab9b843d0ed1b9e",
+          "sha256": "bf6840f05617cd5f4ee79455f46dcc4cb6dd1d7def54408a071fe5a8ba26856b",
           "uri": "repo://changes/st-0902/runtime-manifest.v2.yaml"
         }
       ],
@@ -18350,7 +18350,7 @@
       "outputs": [
         {
           "bytes": 13324,
-          "sha256": "305c5b1449a8eb6c06a4912c9c8c598e1e2ef30e303d9ab5be2330b042d76a4a",
+          "sha256": "f24c04ebb901e2c872b5cecefe2bc20bdf31214e53401de4eb42734bae65edaf",
           "uri": "repo://changes/st-0903/runtime-manifest.v2.yaml"
         }
       ],
@@ -18857,7 +18857,7 @@
       "outputs": [
         {
           "bytes": 12197,
-          "sha256": "1e0197cdddc6a1a1470e4b89d6a7d21c7138a825253c536dae5fa6ebc95fe321",
+          "sha256": "98d5f0e562cb8adf2abea28e4d584758b649d0c54af1d45a1d60b7116a430e19",
           "uri": "repo://changes/st-0904/runtime-manifest.v2.yaml"
         }
       ],
@@ -19357,7 +19357,7 @@
         },
         {
           "bytes": 12185,
-          "sha256": "437a2d52e4825a7458b46a8a39ee5cbe177e87ae5df1c0cfdde35ff344c9d563",
+          "sha256": "4aa99c8269dbb8bfabdf400e9e62395195fab8253fddc234629d5a4b6284da7d",
           "uri": "repo://changes/st-0905/runtime-manifest.v2.yaml"
         }
       ],
@@ -20205,7 +20205,7 @@
         },
         {
           "bytes": 8759,
-          "sha256": "c94d7d362b87f1e900e453b83b108b588b3cb21fd0c2e6e55de563c7e8653b87",
+          "sha256": "474a8a51416f2dbc23b4380f8891fcd75a0bb668b9d06651007e2aa05e8167c2",
           "uri": "repo://changes/st-1002/runtime-manifest.v2.yaml"
         },
         {
@@ -20462,7 +20462,7 @@
         },
         {
           "bytes": 7245,
-          "sha256": "39e400a4247ffb2ca6ed182f9cd63e579d6adfb20865a2374274d293dcf2ee24",
+          "sha256": "dbe7e93a94bc4c4c065c5234d5ba749bdc3b9cfc2d4d7f445db65fecd4a10869",
           "uri": "repo://changes/st-1004/runtime-manifest.v2.yaml"
         }
       ],
@@ -20561,7 +20561,7 @@
         },
         {
           "bytes": 4108,
-          "sha256": "7b6605d9172f6182a69bcdcba200db4ccd174ed57eea46aa88b2af20ee2cd966",
+          "sha256": "5d42ab0f2be412e26cf4236039ae2498f69bff95c692381b0001cb79163a8f31",
           "uri": "repo://changes/st-1006/runtime-manifest.v2.yaml"
         }
       ],
@@ -21791,7 +21791,7 @@
         },
         {
           "bytes": 9166,
-          "sha256": "dac0a05f6c29b7bd6288af4f8fe77a28bf9305ff7d162fff5487cae8ac8bfa01",
+          "sha256": "66120e6860f1cd7837e4bbff25956fa95620496da6771396a25c776e8edf6027",
           "uri": "repo://changes/st-1202/runtime-manifest.v2.yaml"
         }
       ],
@@ -24678,8 +24678,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 13004,
-          "sha256": "cc7dae47311a759633d5fa7385c24352aace6d6885e6134ce2284c5cfbebf83d",
+          "bytes": 12984,
+          "sha256": "196d30ba216c2240076ee2d88ac09630bf1401657c3454c07ca1106a3a47c7c3",
           "uri": "repo://changes/st-1506/manifest.v2.yaml"
         },
         {
@@ -25091,7 +25091,7 @@
         },
         {
           "bytes": 6264,
-          "sha256": "16d2bf301f5f2fed8bf5edffe25b0927d2e6d27cbdadcbbb827cc8c3c7482adf",
+          "sha256": "7418da88709609c6be9e9fbd64ae3bc03cf8fdf68a4fa3e2e152ea2c2ca03cde",
           "uri": "repo://changes/st-1602/manifest.v2.yaml"
         }
       ],
@@ -29112,7 +29112,7 @@
         },
         {
           "bytes": 25036,
-          "sha256": "d6e3d155a0ab4c3775bd5ba686cf3db740695fa0ca688423bdde5c0e235de6a7",
+          "sha256": "dce334794064f095aec9fd951bec756ce185985929238b2436a01f7aa058ac3c",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29120,7 +29120,8 @@
         "build_editorial_measurement_v1",
         "build_editorial_v3_theme_navigation",
         "build_st1704_product_safety_manufacturer_plan",
-        "build_st1704_self_hosted_editorial_manifest"
+        "build_st1704_self_hosted_editorial_manifest",
+        "build_wordpress_quality_baseline"
       ],
       "owner_id": "build_wordpress_mcp_v1",
       "owner_version": 2,
@@ -29864,8 +29865,707 @@
       "output_scope": "tracked",
       "outputs": [
         {
+          "bytes": 54277,
+          "sha256": "9ab8a0888a762e9d58b802eabdf5b7dd45eaa0210be65a99fab69107de96942b",
+          "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
+        }
+      ],
+      "owner_dependencies": [
+        "build_editorial_measurement_v1",
+        "build_editorial_portfolio_v3",
+        "build_editorial_v3_theme_navigation",
+        "build_google_live_runtime_v1",
+        "build_st0104_contract_repository",
+        "build_st0105_generated_contracts",
+        "build_st1703_self_hosted_runtime_manifest",
+        "build_st1704_product_safety_manufacturer_plan",
+        "build_st1704_rakuten_capture_manifest",
+        "build_st1704_self_hosted_editorial_manifest",
+        "build_st1704_theme_assets"
+      ],
+      "owner_id": "build_wordpress_quality_baseline",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "Makefile",
+          "uri": "repo://Makefile",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/analytics-google-live-v1/runtime-manifest.v1.json",
+          "uri": "repo://changes/analytics-google-live-v1/runtime-manifest.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-measurement-v1",
+          "uri": "repo://changes/editorial-measurement-v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "uri": "repo://changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v2/manufacturer-sales-state.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/README.md",
+          "uri": "repo://changes/editorial-portfolio-v3/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/editorial-identities.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/editorial-identities.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+          "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/generated/navigation.v3.json",
+          "uri": "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
+          "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/market-candidate-audit.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/market-candidate-audit.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/rakuten-parser-boundary.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/rakuten-parser-boundary.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json",
+          "uri": "repo://changes/st-1703/self-hosted-minimum-start-v1/runtime-manifest.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/carry-on-single-url-evidence-loop-v1",
+          "uri": "repo://changes/st-1704/carry-on-single-url-evidence-loop-v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/BRAND_VOICE.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/BRAND_VOICE.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_SYSTEM.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_SYSTEM.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/EDITORIAL_RESEARCH_NOTES.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/EDITORIAL_RESEARCH_NOTES.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/Makefile",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/PREFLIGHT.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/PREFLIGHT.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/RAKUTEN_CAPTURE_WORKLOG.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/RAKUTEN_CAPTURE_WORKLOG.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_EXPERIMENT_RUNBOOK.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_EXPERIMENT_RUNBOOK.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_UNBLOCK_WORKLOG.md",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/REVENUE_UNBLOCK_WORKLOG.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/content",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/content",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/media",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/media",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/operations",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/operations",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/sources",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/sources",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/yoast-seo-28.3.lock.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/yoast-seo-28.3.lock.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/bin",
+          "uri": "repo://changes/wordpress-local-preview-v1/bin",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/browser",
+          "uri": "repo://changes/wordpress-local-preview-v1/browser",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/compose.yaml",
+          "uri": "repo://changes/wordpress-local-preview-v1/compose.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/gateway/nginx.conf",
+          "uri": "repo://changes/wordpress-local-preview-v1/gateway/nginx.conf",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/mu-plugins/raos-local-preview.php",
+          "uri": "repo://changes/wordpress-local-preview-v1/mu-plugins/raos-local-preview.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/policy-profiles.v1.json",
+          "uri": "repo://changes/wordpress-local-preview-v1/policy-profiles.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/production-mapping.v1.json",
+          "uri": "repo://changes/wordpress-local-preview-v1/production-mapping.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/seed.php",
+          "uri": "repo://changes/wordpress-local-preview-v1/seed.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-quality-audit-v1/README.md",
+          "uri": "repo://changes/wordpress-quality-audit-v1/README.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-quality-audit-v1/editorial-evidence-register.v1.json",
+          "uri": "repo://changes/wordpress-quality-audit-v1/editorial-evidence-register.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-quality-audit-v1/editorial-evidence.schema.json",
+          "uri": "repo://changes/wordpress-quality-audit-v1/editorial-evidence.schema.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json",
+          "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-seo-audit-v1/seo-audit-contract.v1.json",
+          "uri": "repo://changes/wordpress-seo-audit-v1/seo-audit-contract.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json",
+          "uri": "repo://contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json",
+          "version": 2
+        },
+        {
+          "kind": "dependency",
+          "sha256": "37394f25fe870c11cdbd4ba1b1173ed86bc677ca51a85e6fe0b999ec425efa4f",
+          "uri": "repo://package-lock.json"
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "package.json",
+          "uri": "repo://package.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "packages/wordpress-mcp-bridge/src/index.ts",
+          "uri": "repo://packages/wordpress-mcp-bridge/src/index.ts",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_editorial_pilot_https.py",
+          "uri": "repo://python/raos/adapters/self_hosted_editorial_pilot_https.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_editorial_pilot_json.py",
+          "uri": "repo://python/raos/adapters/self_hosted_editorial_pilot_json.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
+          "uri": "repo://python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_editorial_source_capture.py",
+          "uri": "repo://python/raos/adapters/self_hosted_editorial_source_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_wordpress_credentials.py",
+          "uri": "repo://python/raos/adapters/self_hosted_wordpress_credentials.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_wordpress_https.py",
+          "uri": "repo://python/raos/adapters/self_hosted_wordpress_https.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/self_hosted_wordpress_rest.py",
+          "uri": "repo://python/raos/adapters/self_hosted_wordpress_rest.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/wordpress_rest.py",
+          "uri": "repo://python/raos/adapters/wordpress_rest.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/editorial_portfolio_v2.py",
+          "uri": "repo://python/raos/application/editorial/editorial_portfolio_v2.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/editorial_portfolio_v3.py",
+          "uri": "repo://python/raos/application/editorial/editorial_portfolio_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/product_safety_manufacturer_capture.py",
+          "uri": "repo://python/raos/application/editorial/product_safety_manufacturer_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/product_safety_query_capture.py",
+          "uri": "repo://python/raos/application/editorial/product_safety_query_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/product_safety_receipts.py",
+          "uri": "repo://python/raos/application/editorial/product_safety_receipts.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/rakuten_measurement_activation_v3.py",
+          "uri": "repo://python/raos/application/editorial/rakuten_measurement_activation_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/rakuten_standard_api_v1.py",
+          "uri": "repo://python/raos/application/editorial/rakuten_standard_api_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/self_hosted_editorial_pilot.py",
+          "uri": "repo://python/raos/application/editorial/self_hosted_editorial_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/finance/editorial_economics_v3.py",
+          "uri": "repo://python/raos/application/finance/editorial_economics_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/content_ast.py",
+          "uri": "repo://python/raos/domain/editorial/content_ast.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/market_learning_pilot.py",
+          "uri": "repo://python/raos/domain/editorial/market_learning_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
+          "uri": "repo://python/raos/domain/editorial/self_hosted_editorial_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/self_hosted_wordpress.py",
+          "uri": "repo://python/raos/domain/editorial/self_hosted_wordpress.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/generated/contracts",
+          "uri": "repo://python/raos/generated/contracts",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/ports/self_hosted_editorial_pilot.py",
+          "uri": "repo://python/raos/ports/self_hosted_editorial_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_editorial_measurement_v1.py",
+          "uri": "repo://scripts/build_editorial_measurement_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_editorial_portfolio_v3.py",
+          "uri": "repo://scripts/build_editorial_portfolio_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_editorial_v3_theme_navigation.py",
+          "uri": "repo://scripts/build_editorial_v3_theme_navigation.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_portfolio_source_packets.py",
+          "uri": "repo://scripts/build_st1704_portfolio_source_packets.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_rakuten_capture_manifest.py",
+          "uri": "repo://scripts/build_st1704_rakuten_capture_manifest.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_reader_claim_coverage.py",
+          "uri": "repo://scripts/build_st1704_reader_claim_coverage.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_self_hosted_editorial_manifest.py",
+          "uri": "repo://scripts/build_st1704_self_hosted_editorial_manifest.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_self_hosted_theme.py",
+          "uri": "repo://scripts/build_st1704_self_hosted_theme.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_theme_assets.py",
+          "uri": "repo://scripts/build_st1704_theme_assets.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_wordpress_quality_baseline.py",
+          "uri": "repo://scripts/build_wordpress_quality_baseline.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/check_wordpress_public_ui_playwright.sh",
+          "uri": "repo://scripts/check_wordpress_public_ui_playwright.sh",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_build_core.py",
+          "uri": "repo://scripts/raos_build_core.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_editorial_economics_v3.py",
+          "uri": "repo://scripts/raos_editorial_economics_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_editorial_portfolio_v2.py",
+          "uri": "repo://scripts/raos_editorial_portfolio_v2.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_rakuten_measurement_activation_v3.py",
+          "uri": "repo://scripts/raos_rakuten_measurement_activation_v3.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_deployment_operator.py",
+          "uri": "repo://scripts/raos_wordpress_deployment_operator.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_publication_request.py",
+          "uri": "repo://scripts/raos_wordpress_publication_request.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_seo_audit.py",
+          "uri": "repo://scripts/raos_wordpress_seo_audit.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/st1704_official_source_capture.py",
+          "uri": "repo://scripts/st1704_official_source_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/st1704_product_safety_manufacturer_capture.py",
+          "uri": "repo://scripts/st1704_product_safety_manufacturer_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/st1704_product_safety_query_capture.py",
+          "uri": "repo://scripts/st1704_product_safety_query_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/st1704_rakuten_product_capture.py",
+          "uri": "repo://scripts/st1704_rakuten_product_capture.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/st1704_self_hosted_editorial_pilot.py",
+          "uri": "repo://scripts/st1704_self_hosted_editorial_pilot.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/wordpress_public_ui_audit.function.js",
+          "uri": "repo://scripts/wordpress_public_ui_audit.function.js",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/wordpress_quality_audit_v1.py",
+          "uri": "repo://scripts/wordpress_quality_audit_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_measurement_v1",
+          "uri": "repo://tests/editorial_measurement_v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_portfolio_v2",
+          "uri": "repo://tests/editorial_portfolio_v2",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_portfolio_v3",
+          "uri": "repo://tests/editorial_portfolio_v3",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_product_safety_manufacturer_capture",
+          "uri": "repo://tests/editorial_product_safety_manufacturer_capture",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_product_safety_query_capture",
+          "uri": "repo://tests/editorial_product_safety_query_capture",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/editorial_product_safety_receipts",
+          "uri": "repo://tests/editorial_product_safety_receipts",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/st1704",
+          "uri": "repo://tests/st1704",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_local_preview",
+          "uri": "repo://tests/wordpress_local_preview",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/test_contract.py",
+          "uri": "repo://tests/wordpress_mcp_v1/test_contract.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_mcp_v1/test_release_watcher.py",
+          "uri": "repo://tests/wordpress_mcp_v1/test_release_watcher.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_quality_audit_v1",
+          "uri": "repo://tests/wordpress_quality_audit_v1",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_seo_audit_v1",
+          "uri": "repo://tests/wordpress_seo_audit_v1",
+          "version": 2
+        }
+      ],
+      "story_ids": []
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
           "bytes": 5708,
-          "sha256": "fb2a869536b698fd7fc90331701cc93a8a1abc213522ad503609dc4925a1e8a8",
+          "sha256": "2c0c801b513df97f42bce5ee848ea26edc888b6624c66e924d7405cf659f583a",
           "uri": "repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json"
         }
       ],

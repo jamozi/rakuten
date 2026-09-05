@@ -9,8 +9,8 @@
 ## Verification
 
 - `make fast`:
-- `make final`:
-- Final Integration CI:
+- Optional full diagnostics (only if run):
+- Final Integration CI (affected or full):
 
 ## External operations not run
 

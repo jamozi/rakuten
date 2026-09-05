@@ -209,17 +209,17 @@ source_artifacts:
   bytes: 7902
   sha256: 960ae6b2b9b242e2bdb2d2d4c8e331fa60b6c4b861de5784b449f79c5f3c4502
 - uri: repo://tests/st0102/test_commands_and_docs.py
-  bytes: 2643
-  sha256: 244d720d0c4fdc9f0bc20b0a20313cc35e6a5f6e5913f0c345438aa22c66d39d
+  bytes: 2488
+  sha256: cd4a281673065742c8eefa542694a92b46af452c3b3fb30f87dbc4f0b5ac7b72
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 3362
-  sha256: 2ff9163b43b7c445190d5a01a31485ab9e2c4474c5bade65041f541ea90dc333
+  bytes: 4693
+  sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
 - uri: repo://Makefile
-  bytes: 3519
-  sha256: 767d48f0d0a5ad7eff621c022734a05cafbc7f92dc2d7f5ac809ab0034b97fe5
+  bytes: 3276
+  sha256: 3a644435fae4104c0baa09453cc7867543a448aa748c3d74c4acbb756e455407
 - uri: repo://README.md
-  bytes: 4256
-  sha256: fb10da4d7ac97c258d561629ba37e51851c9de0cc9148605a6f4baa386c48ba7
+  bytes: 6359
+  sha256: 9b1f870ad25bb8d968731f17a0597d34282fff5b4ed99c14534069219b522b1e
 - uri: repo://.python-version
   bytes: 7
   sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab

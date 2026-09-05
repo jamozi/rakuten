@@ -67,8 +67,8 @@
     },
     {
       "path": "Makefile",
-      "sha256": "767d48f0d0a5ad7eff621c022734a05cafbc7f92dc2d7f5ac809ab0034b97fe5",
-      "size": 3519
+      "sha256": "3a644435fae4104c0baa09453cc7867543a448aa748c3d74c4acbb756e455407",
+      "size": 3276
     },
     {
       "path": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
@@ -312,7 +312,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "f599e105705d5da74eee1b67329996f07dd5aaad64f4ec0785cda3a00f985cb8",
+      "sha256": "9ab8a0888a762e9d58b802eabdf5b7dd45eaa0210be65a99fab69107de96942b",
       "size": 54277
     },
     {
