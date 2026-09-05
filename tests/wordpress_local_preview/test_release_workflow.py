@@ -406,3 +406,21 @@ def test_candidate_fixture_mismatch_is_checked_before_browser_work(mutation):
             port.validate_browser_inputs(
                 inputs, manifest=manifest, artifact_bytes=artifacts, snapshot=snapshot
             )
+
+
+def test_browser_tool_upgrade_changes_reuse_inputs(monkeypatch):
+    versions = {"chrome": "Google Chrome 150.0.0.1"}
+
+    def run(command, **kwargs):
+        assert command[-1] == "--version"
+        return subprocess.CompletedProcess(
+            command,
+            0,
+            stdout=versions["chrome"] if "chrome" in command[0] else "v24.18.1",
+        )
+
+    monkeypatch.setattr(owner.subprocess, "run", run)
+    monkeypatch.setattr(owner.shutil, "which", lambda command: "/usr/bin/node")
+    original = owner.tool_versions()
+    versions["chrome"] = "Google Chrome 150.0.0.2"
+    assert owner.tool_versions() != original

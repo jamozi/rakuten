@@ -15,6 +15,7 @@ import math
 import os
 from pathlib import Path
 import re
+import shutil
 import stat
 import subprocess
 import sys
@@ -99,6 +100,39 @@ def write_result(path: Path, raw: bytes) -> None:
     finally:
         if temporary.exists():
             temporary.unlink()
+
+
+def tool_versions() -> dict[str, object]:
+    """Compare the browser binaries actually used, as well as dependency locks."""
+    commands = {
+        "node": os.environ.get("RAOS_WORDPRESS_PREVIEW_NODE_BIN")
+        or os.environ.get("RAOS_NODE")
+        or shutil.which("node"),
+        "browser_chrome": "/usr/bin/google-chrome",
+        "lighthouse_chrome": os.environ.get(
+            "RAOS_WORDPRESS_PREVIEW_CHROME_BIN", "/usr/bin/google-chrome"
+        ),
+    }
+    versions: dict[str, object] = {"python": list(sys.version_info[:3])}
+    for key, command in commands.items():
+        if not command:
+            reject()
+        result = subprocess.run(
+            [command, "--version"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=15,
+        ).stdout.strip()
+        if (
+            not result
+            or len(result) > 256
+            or not re.fullmatch(r"[A-Za-z0-9 .()_-]+", result)
+        ):
+            reject()
+        versions[key] = result
+    return versions
 
 
 def current_inputs(
@@ -224,8 +258,12 @@ def current_inputs(
             read_regular(ROOT / "scripts/raos_wordpress_browser_plan.py")
         )
         inputs["toolchain_sha256"] = sha(read_regular(ROOT / "package-lock.json"))
+        inputs["lighthouse_runner_sha256"] = sha(
+            read_regular(BROWSER / "lighthouse_check.sh")
+        )
         if not include_runtime:
             return inputs
+        inputs["tool_versions"] = tool_versions()
         runtime = subprocess.run(
             [
                 str(
