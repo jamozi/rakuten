@@ -203,3 +203,12 @@ def test_tracked_product_profiles_retain_identity_and_sources_when_migrated() ->
     assert '2026年8月31日' in output.text()
     assert output.find(cls='raos-reader-meaning')
     assert not any(a.attrs.get('data-raos-cta-type') == 'offer' for a in output.find(tag='a'))
+
+
+def test_model_differences_derive_like_units_and_preserve_unknowns() -> None:
+    from raos.application.editorial.reader_components import numerical_difference
+    assert numerical_difference('1056Wh', '1024Wh') == '-32Wh（-3.0%）'
+    assert numerical_difference('約12.9kg', '約11.3kg') == '約-1.6kg（-12.4%）'
+    assert numerical_difference('1500W', '1550W') == '+50W（+3.3%）'
+    for left,right in [('UNKNOWN','10W'),('0W','1W'),('300W','300Wh'),('1〜2kg','2kg')]:
+        assert numerical_difference(left,right) is None

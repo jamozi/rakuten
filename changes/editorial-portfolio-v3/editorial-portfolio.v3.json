@@ -103,6 +103,99 @@
         "PRD-ACE-MAXPASS4-01471"
       ],
       "production_slug": "carry-on-suitcase-comparison",
+      "reader_experience": {
+        "article_type": "model_difference",
+        "components_enabled": true,
+        "consolidate_sections": [
+          "reader-section",
+          "editors-note",
+          "purchase-caution"
+        ],
+        "contextual_links": [
+          {
+            "journey_stage": "compare",
+            "placement": "axes",
+            "question": "30L以上・3kg以下の機内持ち込み候補を、容量と軽さから選ぶためのガイドを見る",
+            "target_ref": "lightweight-carry-on-suitcase-under-3kg"
+          },
+          {
+            "journey_stage": "compare",
+            "placement": "purchase_checks",
+            "question": "100席未満便の寸法条件に合う候補と、購入前の確認手順を知るためのガイドを見る",
+            "target_ref": "carry-on-suitcase-under-100-seats"
+          }
+        ],
+        "decision_axes": [
+          {
+            "how_to_check": "航空会社の最新案内で搭乗する便・機材・運賃の条件を確認します。",
+            "label": "便・機材の規定を確認する",
+            "why_it_matters": "機内持ち込みは各辺と総重量で判断されます。"
+          },
+          {
+            "how_to_check": "機内手荷物と身の回り品を含めた重量枠から、本体重量を引いて考えます。",
+            "label": "本体を引いた残り重量を考える",
+            "why_it_matters": "軽いケースほど荷物に配分する余地が変わります。"
+          },
+          {
+            "how_to_check": "移動中に取り出す物と開く場所、拡張しない状態の容量を確認します。",
+            "label": "開き方と非拡張容量を決める",
+            "why_it_matters": "前開きと容量は使う場面に合わせます。"
+          }
+        ],
+        "decision_summary": {
+          "key_difference": "本体の軽さ、開き方、非拡張時の容量が選択を分けます。容量を優先すると、荷物を入れる前の本体重量も引き受ける必要があります。",
+          "no_purchase_condition": "利用する便・機材の外寸や総重量の条件を確認できない場合。必要なストッパーの有無が未確認なら、確定するまで選定条件にしません。",
+          "options": []
+        },
+        "evidence": [
+          "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS",
+          "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS",
+          "CLM-ST1704-SUITCASE-MAXPASS-SPECS",
+          "CLM-ST1704-SUITCASE-CARRYON-LIMITS",
+          "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
+          "CLM-ST1704-SUITCASE-CRESTA-06316-EXCLUDED",
+          "CLM-ST1704-SUITCASE-AEROFLEX-DX2-REFERENCE"
+        ],
+        "media": [],
+        "practical_notes": [],
+        "products": [
+          {
+            "evidence_facts": [
+              "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS"
+            ],
+            "product_ref": "PRD-PROTECA-TRI-AIR-01541"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"
+            ],
+            "product_ref": "PRD-ACE-DIFFERENCE-05721"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-SUITCASE-MAXPASS-SPECS"
+            ],
+            "product_ref": "PRD-ACE-MAXPASS4-01471"
+          }
+        ],
+        "purchase_checks": [
+          "搭乗便の各辺・3辺合計・総重量",
+          "非拡張状態、型番、希望色、付属品",
+          "ストッパーなど必要機能、販売元と保証"
+        ],
+        "research_status": {
+          "ranking_uses_commission": false,
+          "real_world_tested": false
+        },
+        "unknowns": [
+          {
+            "decision_effect": "公称重量が軽いことだけで使いやすさを断定しないでください。",
+            "how_to_verify": "実物確認ができる場合は取っ手や取り回しを確認します。",
+            "topic": "走行感・持ち上げやすさ・耐久性",
+            "why_unknown": "実機で走行・持ち上げ・耐久を比較していません。"
+          }
+        ]
+      },
       "related_article_ids": [
         "lightweight-carry-on-suitcase-under-3kg",
         "carry-on-suitcase-under-100-seats"
@@ -608,6 +701,114 @@
         "PRD-ANKER-SOLIX-C1000-GEN2"
       ],
       "production_slug": "anker-solix-c300-c800-c1000-differences",
+      "reader_experience": {
+        "article_type": "model_difference",
+        "components_enabled": true,
+        "consolidate_sections": [
+          "reader-section",
+          "editors-note",
+          "purchase-caution"
+        ],
+        "contextual_links": [
+          {
+            "journey_stage": "compare",
+            "placement": "axes",
+            "question": "停電時に使う機器から必要な容量・出力と持ち運べる候補を選ぶためのガイドを見る",
+            "target_ref": "st1704-portable-power-station-guide"
+          }
+        ],
+        "decision_axes": [
+          {
+            "how_to_check": "通常時・起動時電力と説明書を確認します。",
+            "label": "接続する機器を先に決める",
+            "why_it_matters": "容量Whと出力Wは役割が異なります。"
+          },
+          {
+            "how_to_check": "必要なAC・USB端子数、公式の拡張対応型番を照合します。",
+            "label": "拡張と端子を決める",
+            "why_it_matters": "同じシリーズでも世代で構成が変わります。"
+          },
+          {
+            "how_to_check": "保管場所から実際に運ぶ経路と寸法を照合します。",
+            "label": "運搬する重さを決める",
+            "why_it_matters": "容量と本体重量の妥協点を確認します。"
+          }
+        ],
+        "decision_summary": {
+          "key_difference": "C1000の世代差では容量・出力・重量に加え、拡張対応と端子構成が選択を分けます。世代が新しいことだけでは用途との適合を決めません。",
+          "no_purchase_condition": "予定する機器の接続条件や拡張バッテリーの型番一致を確認できない場合。互換性未確認の構成を選ばないでください。",
+          "options": []
+        },
+        "difference_label": "C1000の第1世代を基準に、Gen 2の差を見る",
+        "difference_pair": {
+          "baseline_product_ref": "PRD-ANKER-SOLIX-C1000",
+          "meaning_by_label": {
+            "定格出力": "接続機器の通常時・起動時電力は別に確認します。",
+            "容量": "必要な使用時間から電力量を考え、容量差だけで用途を決めません。",
+            "重量": "保管場所から持ち出す回数と経路に照らして考えます。"
+          },
+          "product_ref": "PRD-ANKER-SOLIX-C1000-GEN2"
+        },
+        "evidence": [
+          "CLM-ST1704-ANKER-C300-SPECS",
+          "CLM-ST1704-ANKER-C800-SPECS",
+          "CLM-ST1704-ANKER-C1000-SPECS",
+          "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
+          "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
+          "CLM-ST1704-ANKER-C1000-GENERATION-DIFF",
+          "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
+          "CLM-ST1704-ANKER-SAFETY-PRACTICE",
+          "CLM-ST1704-ANKER-C1000-PLUS-EXCLUDED",
+          "CLM-ST1704-ANKER-C800-A1753-REFERENCE"
+        ],
+        "media": [],
+        "practical_notes": [],
+        "products": [
+          {
+            "evidence_facts": [
+              "CLM-ST1704-ANKER-C300-SPECS"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C300"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-ANKER-C800-SPECS"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C800-PLUS"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-ANKER-C1000-SPECS",
+              "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C1000"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
+              "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C1000-GEN2"
+          }
+        ],
+        "purchase_checks": [
+          "正確な型番・世代・セット構成",
+          "接続機器と拡張バッテリーの互換性",
+          "持ち運ぶ重さ、保証、販売元、現在の価格と在庫"
+        ],
+        "research_status": {
+          "ranking_uses_commission": false,
+          "real_world_tested": false
+        },
+        "unknowns": [
+          {
+            "decision_effect": "互換性が重要な機器は、未確認のまま購入しないでください。",
+            "how_to_verify": "対象世代と接続機器の説明書で条件を確認します。",
+            "topic": "接続互換性と実際の運転時間",
+            "why_unknown": "公表値だけでは機器の起動や実使用時間を保証できません。"
+          }
+        ]
+      },
       "related_article_ids": [
         "st1704-portable-power-station-guide"
       ],

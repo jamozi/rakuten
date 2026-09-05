@@ -7,7 +7,7 @@ from html import escape
 import json
 import re
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 from raos.application.editorial.reader_experience_v1 import CtaEvidence, ROLE_TYPES, cta_visible, validate_experience
 
@@ -326,6 +326,14 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
     if final_offers.children:
         evidence.insert_before(final_offers) if evidence is not None else article.append(final_offers)
     components.enhance_specification_tables(root)
+    differences = settings.get('_resolved_differences', [])
+    if isinstance(differences, list) and differences:
+        label = str(settings.get('difference_label', '公表値の差を、用途へ置き換える'))
+        difference_rows_html = ''.join('<tr><th scope="row">' + escape(r['label']) + '</th><td>' + escape(r['delta']) + '</td><td>' + escape(r['meaning']) + '</td></tr>' for r in differences)
+        difference = components.section('reader-model-difference', label, '<p>差は公表値から計算しています。実使用の時間や適合を示す実測値ではありません。</p><div class="comparison-table-wrap" tabindex="0" role="region" aria-label="世代差と用途の表"><table><caption>' + escape(label) + '</caption><thead><tr><th scope="col">項目</th><th scope="col">公表値の差</th><th scope="col">用途で見る意味</th></tr></thead><tbody>' + difference_rows_html + '</tbody></table></div>', 'raos-reader-model-difference')
+        specifications = root.find(cls='comparison-section')
+        if specifications:
+            specifications[0].insert_before(difference)
     media = settings.get('_resolved_dimensions', [])
     if isinstance(media, list):
         diagrams = block('<section class="raos-reader-dimensions" aria-labelledby="reader-dimensions"><h2 id="reader-dimensions">本体と、扉を開く空間を分けて測る</h2></section>')
@@ -369,4 +377,16 @@ def project_registered_article(root: Path, markup: str, *, article_id: str, evid
                 if source is not None:
                     resolved.append(dict(asset=asset, claim=claim, source=source))
         experience['_resolved_dimensions'] = resolved
+        difference = experience.get('difference_pair')
+        if isinstance(difference, dict):
+            inputs = json.loads((root / 'changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json').read_text())
+            model: dict[str, Any] = next((a['render_model'] for a in inputs['articles'] if a['article_id'] == article_id), {})
+            product_facts = {c['product_id']: {f['label']: f['value'] for f in c['confirmed_facts']} for c in model.get('product_cards', [])}
+            left, right = product_facts.get(difference.get('baseline_product_ref'), {}), product_facts.get(difference.get('product_ref'), {})
+            rows = []
+            for label, meaning in difference.get('meaning_by_label', {}).items():
+                delta = components.numerical_difference(left.get(label, ''), right.get(label, ''))
+                if delta is not None:
+                    rows.append(dict(label=label, meaning=meaning, delta=delta))
+            experience['_resolved_differences'] = rows
     return project_article(markup, article_id=article_id, experience=experience if isinstance(experience, dict) else None, evidence=evidence, approved_product_images=approved_product_images)

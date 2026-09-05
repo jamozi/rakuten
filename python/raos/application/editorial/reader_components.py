@@ -13,6 +13,7 @@ from typing import cast
 from raos.application.editorial.reader_html import Element, block
 from raos.application.editorial.reader_experience_v1 import ArticleType, CtaType, CtaEvidence, cta_visible
 from raos.application.editorial.reader_experience_v1 import approved_media_record
+import re
 
 
 def section(identifier: str, heading: str, content: str, cls: str) -> Element:
@@ -153,3 +154,17 @@ def dimension_diagram(claim: Mapping[str, object], source: Mapping[str, object],
     door = f'扉を開いたときの奥行：{opened["depth_cm"]:g}cm（本体を含む）。' if opened else '扉開放時の寸法：この記事で確認できた資料では未確認。取扱説明書で確認してください。'
     identifier = escape(str(asset['asset_ref']), quote=True)
     return block(f'<figure class="raos-dimension-diagram" id="{identifier}" data-raos-media-state="approved" data-source-ref="{escape(str(source["source_ref"]), quote=True)}" data-claim-id="{escape(str(claim["claim_id"]), quote=True)}"><figcaption><strong>{escape(str(body.get("subject", "本体寸法")))}</strong></figcaption><div class="raos-dimension-diagram__plan" role="img" aria-label="{escape(label)}" style="aspect-ratio:{width:g}/{depth:g}"><span>上から見た本体</span><span>幅 {width:g}cm × 奥行 {depth:g}cm</span></div><p>高さ：{height:g}cm。{escape(door)}</p><p>上方・左右の余白、給水・排水ホース、電源への経路は別に確かめます。</p><figcaption>{escape(str(asset["caption"]))} <a data-raos-cta-type="verify" href="{escape(str(source["url"]), quote=True)}">メーカー公式で設置条件を確認する</a>。公式情報確認：{escape(str(source["retrieved_on"]))}</figcaption></figure>')
+
+
+def numerical_difference(left: str, right: str) -> str | None:
+    """A derived difference between like official units, never a runtime guarantee."""
+    pattern = r'^(約)?([0-9]+(?:\.[0-9]+)?)(Wh|W|kg)$'
+    first, second = re.fullmatch(pattern, left), re.fullmatch(pattern, right)
+    if not first or not second or first[3] != second[3]:
+        return None
+    base, target = float(first[2]), float(second[2])
+    if base <= 0 or not math.isfinite(base) or not math.isfinite(target):
+        return None
+    delta = target - base
+    approximation = '約' if first[1] or second[1] else ''
+    return f'{approximation}{delta:+g}{first[3]}（{delta / base * 100:+.1f}%）'
