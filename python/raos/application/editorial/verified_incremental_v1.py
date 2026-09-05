@@ -24,6 +24,9 @@ from urllib.parse import urlsplit
 
 PROFILE = "verified-incremental"
 SCHEMA = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_MANIFEST_V1"
+DNS_TRANSITION_MODE = "sitekit-dns-prefetch-removal-v1"
+DNS_TRANSITION_STATE = "BASELINE_DNS_HINT_REMOVAL_TRANSITION_VERIFIED"
+DNS_HINT = {"rel": "dns-prefetch", "href": "//www.googletagmanager.com"}
 AUDIT_SUBJECT_MAX_AGE = timedelta(hours=24)
 HASH = re.compile(r"[0-9a-f]{64}\Z")
 HTML_ASCII_WHITESPACE = "\t\n\f\r "
@@ -199,6 +202,49 @@ def parse_instant(value: object) -> datetime:
     return _instant(value)
 
 
+def validate_dns_transition(
+    value: object,
+    *,
+    baseline_tree: str,
+    candidate_tree: str,
+    candidate_functions_sha256: str,
+    page_urls: frozenset[str],
+) -> dict[str, object]:
+    """A declared, audited migration scope; not an observation or OFF result."""
+    policy = _object(
+        value,
+        {
+            "schema",
+            "mode",
+            "baseline_theme_sha256",
+            "candidate_theme_sha256",
+            "candidate_functions_sha256",
+            "expected_baseline_hints",
+            "hint",
+            "post_apply_state",
+        },
+    )
+    if (
+        policy["schema"] != "RAOS_WORDPRESS_SITEKIT_DNS_TRANSITION_V1"
+        or policy["mode"] != DNS_TRANSITION_MODE
+        or policy["baseline_theme_sha256"] != _hash(baseline_tree)
+        or policy["candidate_theme_sha256"] != _hash(candidate_tree)
+        or baseline_tree == candidate_tree
+        or policy["candidate_functions_sha256"] != _hash(candidate_functions_sha256)
+        or policy["hint"] != DNS_HINT
+        or policy["post_apply_state"] != "CLOSED_DECLARED_RUNTIME_VERIFIED"
+    ):
+        fail("DNS_TRANSITION_INVALID")
+    hints = _mapping(policy["expected_baseline_hints"])
+    if (
+        not page_urls
+        or set(hints) != set(page_urls)
+        or any(type(count) is not int or count != 1 for count in hints.values())
+    ):
+        fail("DNS_TRANSITION_INVALID")
+    return policy
+
+
 @dataclass(frozen=True)
 class ExistingDocument:
     """Identity obtained from bounded MCP readback, never a draft-to-create ID."""
@@ -272,8 +318,12 @@ def validate_manifest(
     `now` (including 24-hour freshness, identity, safety and media rights). A
     manifest cannot promote an unverified row by calling it `verified`.
     """
+    raw_document = _mapping(document)
+    optional_fields: set[str] = (
+        {"runtime_transition"} if "runtime_transition" in raw_document else set()
+    )
     value = _object(
-        document,
+        raw_document,
         {
             "schema",
             "publication_profile",
@@ -286,7 +336,8 @@ def validate_manifest(
             "unchanged_documents",
             "shared_artifacts",
             "rendered_document_slugs",
-        },
+        }
+        | optional_fields,
     )
     if (
         value["schema"] != SCHEMA
@@ -487,6 +538,28 @@ def validate_manifest(
         fail("MIXED_PREVIEW_REQUIRED")
     if used_artifacts != set(artifact_bytes):
         fail("ARTIFACT_SET_MISMATCH")
+    if "runtime_transition" in value:
+        if "theme" not in shared:
+            fail("DNS_TRANSITION_REQUIRES_THEME")
+        theme = _mapping(shared["theme"])
+        try:
+            projection = json.loads(artifact_bytes[_text(theme["key"])])
+            functions = [row for row in projection if row["path"] == "functions.php"]
+            if len(functions) != 1:
+                fail("DNS_TRANSITION_INVALID")
+            functions_sha = functions[0]["sha256"]
+        except ValueError, TypeError, KeyError:
+            fail("DNS_TRANSITION_INVALID")
+        validate_dns_transition(
+            value["runtime_transition"],
+            baseline_tree=_hash(theme["baseline_sha256"]),
+            candidate_tree=_hash(theme["sha256"]),
+            candidate_functions_sha256=functions_sha,
+            page_urls=frozenset(
+                "https://kurashinoshirube.com/" + (slug + "/" if slug != "home" else "")
+                for slug in inventory
+            ),
+        )
     return VerifiedIncrementalManifest(
         digest(canonical(value)),
         tuple(articles),

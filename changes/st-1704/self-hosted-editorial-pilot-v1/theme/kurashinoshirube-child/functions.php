@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.5.1';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '89303f68f00b45caacad62685fc6eab410265455abde15e5db2d503ca8dbcff5';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '89303f68f00b45caacad62685fc6eab410265455abde15e5db2d503ca8dbcff5';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '3eb4cf1edff8c42d99029e9d820390b66cb9e54e93de164c759314f672da8e20';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '3eb4cf1edff8c42d99029e9d820390b66cb9e54e93de164c759314f672da8e20';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -2409,6 +2409,21 @@ add_action(
     'kurashinoshirube_disable_core_emoji_assets',
     0
 );
+
+/** Remove Site Kit's unconditional DNS hint without changing its connections. */
+function kurashinoshirube_remove_google_dns_prefetch(array $urls, string $relation_type): array
+{
+    if ($relation_type !== 'dns-prefetch') {
+        return $urls;
+    }
+    foreach ($urls as $key => $entry) {
+        if ($entry === '//www.googletagmanager.com') {
+            unset($urls[$key]);
+        }
+    }
+    return $urls;
+}
+add_filter('wp_resource_hints', 'kurashinoshirube_remove_google_dns_prefetch', PHP_INT_MAX, 2);
 
 add_action('after_setup_theme', static function (): void {
     add_theme_support('title-tag');

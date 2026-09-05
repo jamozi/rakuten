@@ -51,6 +51,8 @@ from raos.application.editorial.verified_incremental_v1 import (  # noqa: E402
     canonical,
     digest,
     validate_manifest,
+    DNS_TRANSITION_STATE,
+    DNS_TRANSITION_MODE,
 )
 from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
     read_private_bytes,
@@ -262,6 +264,15 @@ def load_candidate(
         )
         if article.production_slug in shared
     ]
+    transition_mode = "strict"
+    if "runtime_transition" in manifest:
+        transition = manifest["runtime_transition"]
+        if (
+            type(transition) is not dict
+            or transition.get("mode") != DNS_TRANSITION_MODE
+        ):
+            fail("DNS_TRANSITION_INVALID")
+        transition_mode = DNS_TRANSITION_MODE
     reconstructed, artifacts, current_preparation = (
         candidate_owner.prepare_noncommercial_candidate(
             portfolio=portfolio,
@@ -273,6 +284,7 @@ def load_candidate(
             if "theme" in shared
             else None,
             policy_articles=policies,
+            runtime_transition_mode=transition_mode,
         )
     )
     if canonical(reconstructed) != manifest_raw:
@@ -876,6 +888,33 @@ def _validate_public_binding(
         fail("PUBLIC_READBACK_BINDING_INVALID")
 
 
+def runtime_precondition_matches(
+    observed: Mapping[str, Any], manifest: Mapping[str, Any], current_tree: str
+) -> bool:
+    """Never promote a transitional observation into the strict OFF state."""
+    if observed.get("theme_tree_sha256") != current_tree:
+        return False
+    policy = manifest.get("runtime_transition")
+    if policy is None or current_tree != policy["baseline_theme_sha256"]:
+        return (
+            observed.get("state") == "CLOSED_DECLARED_RUNTIME_VERIFIED"
+            and "runtime_transition_sha256" not in observed
+        )
+    pages = observed.get("pages")
+    return (
+        observed.get("state") == DNS_TRANSITION_STATE
+        and observed.get("runtime_transition_sha256") == digest(canonical(policy))
+        and type(pages) is dict
+        and set(pages) == set(policy["expected_baseline_hints"])
+        and all(
+            type(page) is dict
+            and type(page.get("dns_hints")) is int
+            and page["dns_hints"] == 1
+            for page in pages.values()
+        )
+    )
+
+
 def execute_incremental(
     candidate_path: Path,
     *,
@@ -990,11 +1029,10 @@ def execute_incremental(
                 ),
                 now=clock(),
                 snapshot=replayed.snapshot,
+                runtime_transition=replayed.manifest.get("runtime_transition"),
             )
-            if (
-                runtime_before.get("state") != "CLOSED_DECLARED_RUNTIME_VERIFIED"
-                or runtime_before.get("theme_tree_sha256")
-                != deployment["theme"]["tree_sha256"]
+            if not runtime_precondition_matches(
+                runtime_before, replayed.manifest, deployment["theme"]["tree_sha256"]
             ):
                 fail("PUBLIC_RUNTIME_PRECONDITION_FAILED")
         if stage == "propose":
@@ -1133,6 +1171,11 @@ def execute_incremental(
                 "公開提案を登録しました。まだ公開していません。WordPress管理画面で対象の差分とハッシュを確認して承認してください。"
             )
             print(publication.REVIEW_URL)
+            if "runtime_transition" in replayed.manifest:
+                print(
+                    "移行条件: 公開前は拘束済み旧テーマのGoogle DNS事前参照1件/対象URLを許容。"
+                    "新テーマ適用後は0件必須。Site Kitは保持、計測はOFF。他のruntime検査は維持。"
+                )
             print(
                 f"承認対象の識別末尾: {registration['batch_token'][-12:]} / {registration['batch_manifest_sha256'][-8:]}"
             )

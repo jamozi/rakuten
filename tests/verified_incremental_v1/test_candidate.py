@@ -424,6 +424,61 @@ def _theme_projection() -> bytes:
     )
 
 
+@pytest.mark.parametrize("mode", [None, [], {}, True, "automatic", "measured-admin"])
+def test_runtime_transition_mode_is_explicit_and_typed(mode):
+    with pytest.raises(ValueError, match="DNS_TRANSITION_INVALID"):
+        owner.prepare_noncommercial_candidate(**sample(), runtime_transition_mode=mode)
+
+
+def test_transition_requires_shared_theme():
+    with pytest.raises(ValueError, match="DNS_TRANSITION_REQUIRES_THEME"):
+        owner.prepare_noncommercial_candidate(
+            **sample(), runtime_transition_mode=owner.DNS_TRANSITION_MODE
+        )
+
+
+def test_transition_changes_manifest_identity_and_binds_whole_candidate_functions(
+    monkeypatch,
+):
+    import raos_wordpress_runtime_audit as runtime
+
+    inputs = sample()
+    inputs["snapshot"]["deployment_status"] = _deployment_baseline()
+    functions = runtime.DNS_REMOVAL_SOURCE
+    files = {"functions.php": functions, "style.css": b"synthetic style"}
+    projection = owner.publication.canonical_json_bytes(
+        [
+            {"path": path, "size": len(raw), "sha256": owner.digest(raw)}
+            for path, raw in sorted(files.items())
+        ]
+    )
+    inputs["theme_projection"] = projection
+    monkeypatch.setattr(runtime, "trusted_theme_files", lambda *a, **kw: files)
+    strict, artifacts, strict_preparation = owner.prepare_noncommercial_candidate(
+        **inputs
+    )
+    transition, transition_artifacts, preparation = (
+        owner.prepare_noncommercial_candidate(
+            **inputs, runtime_transition_mode=owner.DNS_TRANSITION_MODE
+        )
+    )
+    assert artifacts == transition_artifacts
+    assert owner.digest(owner.canonical(strict)) != owner.digest(
+        owner.canonical(transition)
+    )
+    assert (
+        "runtime_transition" not in strict
+        and "runtime_transition" not in strict_preparation
+    )
+    policy = transition["runtime_transition"]
+    assert preparation["runtime_transition"] == policy
+    assert policy["candidate_functions_sha256"] == owner.digest(functions)
+    assert policy["candidate_theme_sha256"] == owner.digest(projection)
+    assert policy["baseline_theme_sha256"] == "d" * 64
+    assert len(policy["expected_baseline_hints"]) == 14
+    assert policy["expected_baseline_hints"]["https://kurashinoshirube.com/"] == 1
+
+
 def _deployment_baseline() -> dict[str, object]:
     return {
         "schema": "RAOS_WORDPRESS_DEPLOYMENT_BASELINE_SNAPSHOT_V1",

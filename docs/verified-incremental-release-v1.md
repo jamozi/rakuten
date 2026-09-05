@@ -141,3 +141,37 @@ the single-use server lease and measurement OFF are independent requirements.
 
 The focused tests use synthetic transports only. They are not actual independent
 reviews, live publication evidence, or proof of owner approval.
+
+## Explicit baseline DNS-hint removal transition
+
+Candidate preparation defaults to `--runtime-transition strict`. The opt-in
+`--runtime-transition sitekit-dns-prefetch-removal-v1` is only permitted with a
+changed shared theme. It adds a `runtime_transition` object to the manifest and
+candidate preparation, changing the immutable audit subject. Its exact baseline
+tree, candidate tree, complete candidate `functions.php` hash, 14 page URLs and
+one expected `rel="dns-prefetch" href="//www.googletagmanager.com"` declaration
+per page are covered by both independent audits and the release envelope.
+This is a declared migration policy, not a fabricated observation of the baseline.
+
+Before propose/apply, the runtime verifier reopens the trusted candidate package
+and checks its exact removal function/hook. Only the bound baseline may retain
+the exact one hint per bound URL. Its successful state is the distinct
+`BASELINE_DNS_HINT_REMOVAL_TRANSITION_VERIFIED`, with a policy hash and observed
+counts, never `CLOSED_DECLARED_RUNTIME_VERIFIED`. Missing/duplicate hints, extra
+attributes, other hosts/relations and HTTP Link headers are not exempt. All
+script, importmap, CSS, image, response Cookie and other runtime checks remain.
+No strict-check failure automatically opts into this mode.
+
+Once the candidate theme is installed, even resume with that same policy runs
+strict zero-hint verification. Final public readback has no migration exception.
+The current server applies the theme before content and public readback follows
+the complete batch; this is not a new per-member atomic runtime checkpoint.
+Existing approval, preconditions, single-use lease, expiry and uncertain-outcome
+recovery remain unchanged. A generic transition result or a policy from another
+candidate cannot satisfy the publication port.
+
+The theme filter changes neither Site Kit activation nor Google connections or
+options. It removes only the exact literal DNS hint; it does not disable a tag
+that another plugin might inject. Such a tag remains a hard failure. DNS hints
+may cause DNS resolution even if ordinary browser HTTP logs show no request, so
+the transition must never be described as zero external network traffic.
