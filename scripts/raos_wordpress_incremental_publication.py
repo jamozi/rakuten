@@ -608,14 +608,28 @@ def _batch_status(
     return response
 
 
+def _stored_document_sha256(document: Mapping[str, Any]) -> str:
+    """Hash the observed state, not the intended status of a release proposal."""
+    if document.get("status") not in {"draft", "publish"}:
+        fail("LIVE_DOCUMENT_STATUS_INVALID")
+    return publication.sha256_json(
+        {
+            "schema": "ContentDocumentV1",
+            "id": document["id"],
+            "status": document["status"],
+            **publication.document_projection(document),
+        }
+    )
+
+
 def _live_documents(client: Any) -> dict[str, dict[str, Any]]:
     listed = publication.list_all_documents(client, post_types=("post", "page"))
     result = {}
     for row in listed:
         document = client.call("raos-codex-content-get", {"id": row["id"]})
-        if document != row or publication._content_after_sha256(
-            document, document["id"]
-        ) != document.get("content_sha256"):
+        if document != row or _stored_document_sha256(document) != document.get(
+            "content_sha256"
+        ):
             fail("LIVE_DOCUMENT_CHANGED_DURING_READ")
         if document["slug"] in result:
             fail("LIVE_DUPLICATE_SLUG")
