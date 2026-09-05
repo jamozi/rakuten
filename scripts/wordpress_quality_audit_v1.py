@@ -1261,9 +1261,14 @@ def validate_editorial_article_surfaces(
             markup = raw.decode("utf-8")
         except UnicodeDecodeError:
             _fail("EDITORIAL_EVIDENCE_ARTICLE_SURFACE_INVALID")
+        first_hand_label = (
+            "未実施（型番・販売表示の確認案内）"
+            if path.stem == "solota-vs-rakua-mini-plus"
+            else "未実施（公式仕様比較）"
+        )
         if (
             markup.count("<dt>実機確認</dt>") != 1
-            or markup.count("未実施（公式仕様比較）") != 1
+            or markup.count(first_hand_label) != 1
             or "<blockquote" in markup
             or "AggregateRating" in markup
             or re.search(r'"@type"\s*:\s*"(?:Product|Offer|Review)"', markup)

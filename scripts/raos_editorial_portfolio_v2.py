@@ -1385,6 +1385,14 @@ def _ensure_visible_intent_metadata(markup: str, article_id: str) -> str:
     if expected is None:
         fail("RAOS_EDITORIAL_PORTFOLIO_IDENTITY_INVALID")
     role, intent = expected
+    if article_id == "solota-vs-rakua-mini-plus":
+        markup, first_hand_count = re.subn(
+            r"<dt>実機確認</dt><dd>未実施（(?:公式仕様比較|型番・販売表示の確認案内)）</dd>",
+            "<dt>実機確認</dt><dd>未実施（型番・販売表示の確認案内）</dd>",
+            markup,
+        )
+        if first_hand_count != 1:
+            fail("RAOS_EDITORIAL_PORTFOLIO_ARTICLE_INVALID")
     role_fragment = f"<div><dt>記事分類</dt><dd>{role}</dd></div>"
     intent_fragment = f"<div><dt>この記事で答えること</dt><dd>{intent}</dd></div>"
     role_count = markup.count("<dt>記事分類</dt>")

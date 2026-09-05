@@ -43,7 +43,12 @@ def test_all_existing_articles_explain_role_accountability_and_limits() -> None:
             "実機確認",
         ):
             assert markup.count(f"<dt>{label}</dt>") == 1, (slug, label)
-        assert "未実施（公式仕様比較）" in markup, slug
+        first_hand_label = (
+            "未実施（型番・販売表示の確認案内）"
+            if slug == "solota-vs-rakua-mini-plus"
+            else "未実施（公式仕様比較）"
+        )
+        assert first_hand_label in markup, slug
         checked_on = (
             "2026年9月5日" if slug == "solota-vs-rakua-mini-plus" else "2026年9月1日"
         )

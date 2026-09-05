@@ -1619,6 +1619,35 @@ def test_homepage_copy_routes_reader_needs_without_internal_language() -> None:
         assert unpublished_path not in front
 
 
+def test_homepage_cluster_anchors_clear_the_sticky_header() -> None:
+    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    rules = re.findall(r"([^{}]+)\{([^{}]*)\}", css)
+    assert any(
+        ".raos-home-v2 :where(" in selector
+        and ".raos-cluster)" in selector
+        and "scroll-margin-top: 6rem;" in declarations
+        for selector, declarations in rules
+    )
+
+
+def test_homepage_guide_role_comes_from_the_stored_article_not_the_candidate() -> None:
+    source = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
+    helper = source.split("function kurashinoshirube_stored_guide_role", 1)[1].split(
+        "/** Render synthetic local posts", 1
+    )[0]
+    for requirement in (
+        "kurashinoshirube_public_article_identity($post_id)",
+        "get_post_field('post_content', $post_id, 'raw')",
+        "$identity['article_id'] === 'solota-vs-rakua-mini-plus'",
+        "'<dt>記事分類</dt><dd>型番・販売表示の確認案内</dd>'",
+        ") === 1",
+        "return '型番・販売表示の確認案内';",
+        "return '比較・選び方ガイド';",
+    ):
+        assert requirement in helper
+    assert source.count("esc_html(kurashinoshirube_stored_guide_role((int) $post->ID))") == 2
+
+
 def test_homepage_hero_wraps_complete_phrases_and_uses_a_non_photo_feature_diagram() -> (
     None
 ):

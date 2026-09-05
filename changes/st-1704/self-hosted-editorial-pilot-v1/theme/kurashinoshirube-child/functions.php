@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.5.1';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '9e6e2623a5a5c68ae381f3a9fb6a87b5ec4ff0b660c74cc02c9100f386a09448';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '9e6e2623a5a5c68ae381f3a9fb6a87b5ec4ff0b660c74cc02c9100f386a09448';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'b5bd9b8add7d062ccf6322e12196cd87c7e1c9ea3978a4e440bdc99a82d28513';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'b5bd9b8add7d062ccf6322e12196cd87c7e1c9ea3978a4e440bdc99a82d28513';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -3322,6 +3322,25 @@ add_shortcode(
     'kurashinoshirube_render_featured_guide'
 );
 
+/** Label the content actually stored, including a mixed old/new publication. */
+function kurashinoshirube_stored_guide_role(int $post_id): string
+{
+    $identity = kurashinoshirube_public_article_identity($post_id);
+    $body = get_post_field('post_content', $post_id, 'raw');
+    if (
+        is_array($identity)
+        && $identity['article_id'] === 'solota-vs-rakua-mini-plus'
+        && is_string($body)
+        && substr_count(
+            $body,
+            '<dt>記事分類</dt><dd>型番・販売表示の確認案内</dd>'
+        ) === 1
+    ) {
+        return '型番・販売表示の確認案内';
+    }
+    return '比較・選び方ガイド';
+}
+
 /** Render synthetic local posts in the exact generated cluster order. */
 function kurashinoshirube_local_preview_cluster_items(
     string $label,
@@ -3362,7 +3381,7 @@ function kurashinoshirube_local_preview_cluster_items(
         $items .= '<li><a href="' . esc_url($permalink) . '">'
             . esc_html(get_post_field('post_title', (int) $post->ID, 'raw'))
             . '<small class="raos-guide-role">'
-            . '比較・選び方ガイド</small>'
+            . esc_html(kurashinoshirube_stored_guide_role((int) $post->ID)) . '</small>'
             . '<span aria-hidden="true">→</span></a></li>';
     }
     return $items;
@@ -3433,7 +3452,8 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
             }
             $items .= '<li><a href="' . esc_url($expected_permalink) . '">'
                 . esc_html(get_post_field('post_title', (int) $post->ID, 'raw'))
-                . '<small class="raos-guide-role">比較・選び方ガイド'
+                . '<small class="raos-guide-role">'
+                . esc_html(kurashinoshirube_stored_guide_role((int) $post->ID))
                 . '</small><span aria-hidden="true">→</span></a></li>';
         }
         if ($items === '') {
