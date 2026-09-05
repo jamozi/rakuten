@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "0bf7dd53d9105e4642ce924aa496e089e649478f5a385ecc78a14823dbc955ae",
+          "sha256": "7059607fd83565735c9ea2511aaaf6fd917591d23d8b11f3c74084cf24c14658",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -26277,7 +26277,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "602ad43c46ec7e6493e029af807cf27133a348f2a193d58d0582a23688041c4d",
+          "sha256": "d5650a9f33b37866f3e3ad5952f23efe8045d07f8db68b651f3dbfbb61248cbf",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26508,7 +26508,7 @@
       "outputs": [
         {
           "bytes": 80080,
-          "sha256": "8eb825100142804e36a8f7876cf81b46ea5cfad56eb0e4022dcb53783f273401",
+          "sha256": "edf1de0a8453a35274bdceabdc413e7e8992a443a7942cd5d31c9ac5c7b93b06",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29112,7 +29112,7 @@
         },
         {
           "bytes": 24666,
-          "sha256": "018b00e360d6efcf694ad9929052a60856518ca6e005629dbf1c5d729ed82920",
+          "sha256": "28ce50822c3eb2e77a5036535c408e446b1c24868f32a3cee8dec9c0b4c54dd3",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],

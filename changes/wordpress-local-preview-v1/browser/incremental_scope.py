@@ -71,6 +71,85 @@ def digest(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
+def category_surfaces(inventory: dict[str, object]) -> list[dict[str, object]]:
+    rows = [
+        row
+        for row in inventory.get("local_surfaces", [])
+        if row.get("kind") == "archive" and row.get("archive_type") == "category"
+    ]
+    known = {
+        f"archive-category-{slug}": f"/category/{slug}/"
+        for slug in ("mobility", "household", "preparedness")
+    }
+    if len({row.get("surface_id") for row in rows}) != len(rows) or any(
+        row.get("surface_id") not in known
+        or row.get("local_path") != known[row["surface_id"]]
+        for row in rows
+    ):
+        reject()
+    return rows
+
+
+def derive_categories(
+    rows: list[dict[str, object]],
+    metadata: dict[str, object],
+    article_ids: dict[str, str],
+    metadata_hash: str,
+) -> dict[str, object]:
+    """Bind listing membership to captured taxonomy, never to observed emptiness.
+
+    The local seed uses three posts per page. Ordering tied timestamps is not a
+    stable WordPress identity contract, so a paged listing must contain exactly
+    three distinct members; an unpaged listing must contain the entire set.
+    """
+    memberships: dict[str, list[str]] = {}
+    terms_by_id, terms_by_slug = {}, {}
+    for slug, article_id in article_ids.items():
+        document = metadata["documents"][slug]
+        if document.get("production_slug") != slug:
+            reject()
+        categories = document.get("taxonomies", {}).get("category")
+        if type(categories) is not list or not categories:
+            reject()
+        seen = set()
+        for term in categories:
+            if (
+                type(term) is not dict
+                or set(term) != {"id", "name", "slug", "parent"}
+                or type(term["id"]) is not int
+                or term["id"] <= 0
+                or term["id"] in seen
+                or type(term["parent"]) is not int
+                or term["parent"] != 0
+                or type(term["name"]) is not str
+                or not term["name"]
+                or re.search(r"[<>\x00-\x1f]", term["name"])
+                or type(term["slug"]) is not str
+                or not re.fullmatch(r"(?:[a-z0-9_-]|%[0-9a-f]{2})+", term["slug"])
+                or terms_by_id.get(term["id"], term) != term
+                or terms_by_slug.get(term["slug"], term) != term
+            ):
+                reject()
+            seen.add(term["id"])
+            terms_by_id[term["id"]] = term
+            terms_by_slug[term["slug"]] = term
+            memberships.setdefault(term["slug"], []).append(article_id)
+    return {
+        "seed_metadata_sha256": metadata_hash,
+        "listings": [
+            {
+                "surface_id": row["surface_id"],
+                "local_path": row["local_path"],
+                "expected_article_ids": sorted(
+                    memberships.get(row["local_path"].split("/")[2], [])
+                ),
+                "page_size": 3,
+            }
+            for row in rows
+        ],
+    }
+
+
 def derive_article(markup: str, article_id: str) -> dict[str, object]:
     display = project_legacy_media(markup, article_id)
     markup = display.markup
@@ -204,6 +283,9 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
     }
     if scope != binding.get("incremental_scope"):
         reject()
+    categories = category_surfaces(inventory)
+    if categories and "seed_metadata_sha256" not in binding:
+        reject()
     if "seed_metadata_sha256" in binding:
         metadata_raw = read_private(fixture_root / "seed-metadata.v1.json")
         metadata = json.loads(metadata_raw)
@@ -258,6 +340,10 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
                 != binding["baseline_page_sha256"][slug]
             ):
                 reject()
+        if categories:
+            scope["category_expectations"] = derive_categories(
+                categories, metadata, article_ids, digest(metadata_raw)
+            )
     scope["preparation_binding_sha256"] = binding_hash
     return scope
 

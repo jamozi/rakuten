@@ -28,6 +28,7 @@ for directory in (ROOT / "python", ROOT / "scripts"):
 
 import raos_wordpress_incremental_candidate as candidate_owner  # noqa: E402
 import raos_wordpress_publication_request as publication  # noqa: E402
+import raos_wordpress_deployment_operator as wordpress_deployment  # noqa: E402
 from raos.application.editorial.editorial_portfolio_v3 import (  # noqa: E402
     load_editorial_portfolio_v3,
 )
@@ -630,6 +631,104 @@ def _require_before(
         fail("LIVE_THEME_BASELINE_CHANGED")
 
 
+def _require_before_or_bound_progress(
+    replayed: ReplayedCandidate,
+    current: Mapping[str, Any],
+    deployment: Mapping[str, Any],
+    receipt: Mapping[str, Any],
+    batch: Mapping[str, Any],
+    client: Any,
+    deploy: Callable[..., dict[str, Any]],
+) -> None:
+    """Permit selected partial progress only through immutable server evidence.
+
+    This is a read-only gate into the existing lease-bound recovery adapter,
+    not an inference that an after hash authorizes applying or resending a member.
+    Unselected documents retain their complete original baseline, including
+    revision and modification time; a selected before state does too.
+    """
+    expected_all = replayed.snapshot["all_document_baselines"]
+    current_all = {
+        str(row["id"]): publication._baseline_record(row) for row in current.values()
+    }
+    selected_ids = {
+        str(row["post_id"])
+        for row in replayed.preparation["production_documents"].values()
+    }
+    if (
+        len(current) != len(expected_all)
+        or set(current_all) != set(expected_all)
+        or any(
+            current_all[key] != baseline
+            for key, baseline in expected_all.items()
+            if key not in selected_ids
+        )
+    ):
+        fail("LIVE_BASELINE_CHANGED")
+    baseline_theme = replayed.snapshot["deployment_status"]["theme"]["tree_sha256"]
+    selected_theme = "theme" in replayed.manifest["shared_artifacts"]
+    if not selected_theme and deployment["theme"]["tree_sha256"] != baseline_theme:
+        fail("LIVE_THEME_BASELINE_CHANGED")
+
+    operations = publication.read_content_operations(client, receipt)
+    for proposal in receipt["proposals"]:
+        identifier = proposal["proposal_id"]
+        if proposal["kind"] == "THEME_RELEASE":
+            response = deploy("operation-status", {"operation_id": identifier})
+            if (
+                set(response) != {"kind", "operation"}
+                or response["kind"] != "THEME_RELEASE"
+            ):
+                fail("APPLY_OPERATION_READBACK_INVALID")
+            operations[identifier] = response["operation"]
+        try:
+            operation = wordpress_deployment._validated_release_operation(
+                operations.get(identifier), identifier
+            )
+        except wordpress_deployment.OperatorFailure:
+            fail("APPLY_OPERATION_READBACK_INVALID")
+        binding = batch["proposal_bindings"][identifier]
+        if any(
+            operation[key] != binding[key] for key in ("before_sha256", "after_sha256")
+        ):
+            fail("APPLY_OPERATION_BINDING_INVALID")
+
+        if proposal["kind"] == "THEME_RELEASE":
+            if not selected_theme or binding["before_sha256"] != baseline_theme:
+                fail("SERVER_PROPOSAL_BINDING_INVALID")
+            live_hash = deployment["theme"]["tree_sha256"]
+            at_before = live_hash == binding["before_sha256"]
+            at_after = live_hash == binding["after_sha256"]
+        else:
+            slug = proposal["slug"]
+            post_id = str(binding["post_id"])
+            live = current.get(slug)
+            if (
+                post_id not in selected_ids
+                or live is None
+                or live["id"] != binding["post_id"]
+                or live["post_type"] != binding["post_type"]
+                or live["status"] != expected_all[post_id]["status"]
+            ):
+                fail("LIVE_SELECTED_IDENTITY_CHANGED")
+            at_before = current_all[post_id] == expected_all[post_id]
+            at_after = live["content_sha256"] == binding["after_sha256"]
+        state, code = operation["state"], operation["result_code"]
+        before_allowed = (state, code) in {
+            ("APPROVED", "PROPOSAL_APPROVED"),
+            ("APPLYING", "BATCH_CLAIMED"),
+            ("APPLYING", "OPERATION_APPLYING"),
+        }
+        after_allowed = state == "APPLIED" or (state, code) == (
+            "APPLYING",
+            "OPERATION_APPLYING",
+        )
+        if not ((at_before and before_allowed) or (at_after and after_allowed)):
+            fail("LIVE_SELECTED_OPERATION_STATE_MISMATCH")
+    if set(operations) != set(_ids(receipt)):
+        fail("APPLY_OPERATION_READBACK_INVALID")
+
+
 def _validate_deployment_status(
     response: Mapping[str, Any], *, require_apply_ready: bool
 ) -> None:
@@ -1013,9 +1112,15 @@ def execute_incremental(
         batch = _batch_status(receipt, deploy)
         if stage == "apply" and batch["state"] != "APPLIED":
             assert replayed is not None
-            _require_before(replayed, current, deployment)
             if batch["state"] != "APPROVED" or batch["preconditions_ready"] is not True:
                 fail("OWNER_APPROVAL_REQUIRED_OR_BATCH_TERMINAL")
+            if clock() >= instant(batch["expires_at_gmt"]):
+                fail("BATCH_APPROVAL_EXPIRED")
+            _require_before_or_bound_progress(
+                replayed, current, deployment, receipt, batch, client, deploy
+            )
+            if clock() >= instant(batch["expires_at_gmt"]):
+                fail("BATCH_APPROVAL_EXPIRED")
             validate_release_envelope(
                 original_context.to_document(),
                 current_context=replayed.context,

@@ -78,7 +78,9 @@
     actual.length === expected.length && [...actual].sort().every(
       (value, index) => value === [...expected].sort()[index]);
   const ctaTuple = (row) => JSON.stringify([row.cta_id, row.product_id, row.placement]);
-  const validateIncrementalScope = ({ publicationProfile, linkMode, incrementalScope, articleIds }) => {
+  const validateIncrementalScope = ({ publicationProfile, linkMode, incrementalScope, articleIds,
+    categorySurfaces = [],
+  }) => {
     if (publicationProfile === 'legacy-full') {
       if (incrementalScope !== null || !['standard-api', 'measured-admin'].includes(linkMode)) {
         throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
@@ -90,7 +92,8 @@
       value.length <= 180 && /^[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*$/.test(value);
     if (publicationProfile !== 'verified-incremental' || linkMode !== 'standard-api' ||
       !exactKeys(scope, ['schema', 'publication_profile', 'link_mode', 'selected_article_ids',
-        'articles', 'preparation_binding_sha256']) ||
+        'articles', 'preparation_binding_sha256',
+        ...(categorySurfaces.length ? ['category_expectations'] : [])]) ||
       scope.schema !== 'RAOS_WORDPRESS_INCREMENTAL_BROWSER_SCOPE_V1' ||
       scope.publication_profile !== publicationProfile || scope.link_mode !== linkMode ||
       !/^[a-f0-9]{64}$/.test(scope.preparation_binding_sha256 || '') ||
@@ -101,6 +104,29 @@
       !Array.isArray(scope.articles) ||
       !exactSet(scope.articles.map((row) => row?.article_id), articleIds)) {
       throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
+    }
+    if (categorySurfaces.length) {
+      const categories = scope.category_expectations;
+      const knownCategories = new Map(['mobility', 'household', 'preparedness'].map(
+        (slug) => [`archive-category-${slug}`, `/category/${slug}/`],
+      ));
+      if (!exactKeys(categories, ['seed_metadata_sha256', 'listings']) ||
+        !/^[a-f0-9]{64}$/.test(categories.seed_metadata_sha256 || '') ||
+        categories.seed_metadata_sha256 === '0'.repeat(64) ||
+        !Array.isArray(categories.listings) ||
+        !exactSet(categories.listings.map((row) => row?.surface_id),
+          categorySurfaces.map((row) => row.surface_id)) ||
+        categorySurfaces.some((row) => row.kind !== 'archive' ||
+          row.archive_type !== 'category' ||
+          knownCategories.get(row.surface_id) !== row.local_path) ||
+        categories.listings.some((row) =>
+          !exactKeys(row, ['surface_id', 'local_path', 'expected_article_ids', 'page_size']) ||
+          knownCategories.get(row.surface_id) !== row.local_path || row.page_size !== 3 ||
+          !Array.isArray(row.expected_article_ids) ||
+          !exactSet(row.expected_article_ids, [...new Set(row.expected_article_ids)]) ||
+          row.expected_article_ids.some((id) => !articleIds.includes(id)))) {
+        throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
+      }
     }
     for (const row of scope.articles) {
       const selected = scope.selected_article_ids.includes(row.article_id);
@@ -152,6 +178,47 @@
       }
     }
     return scope;
+  };
+
+  const validateListing = ({ scope, surface, audit, articleRows }) => {
+    if (!['search', 'archive'].includes(surface.kind)) return false;
+    if (!audit.listingBodyClass || audit.fullPostContentCount !== 0) return true;
+    if (scope !== null && surface.kind === 'archive' && surface.archive_type === 'category') {
+      const expected = scope.category_expectations?.listings.find(
+        (row) => row.surface_id === surface.surface_id && row.local_path === surface.local_path,
+      );
+      if (!expected) return true;
+      const paths = new Map(articleRows.map((row) => [row.local_path, row.article_id]));
+      const cards = audit.listingCards;
+      const total = expected.expected_article_ids.length;
+      const paged = total > expected.page_size;
+      const ids = Array.isArray(cards) ? cards.map((card) => paths.get(card.local_path)) : [];
+      return !Array.isArray(cards) ||
+        audit.listingCardCount !== Math.min(expected.page_size, total) ||
+        cards.length !== audit.listingCardCount ||
+        new Set(ids).size !== ids.length ||
+        cards.some((card) => card.title_link_count !== 1 || card.local_origin !== true ||
+          card.search !== '' || card.hash !== '') ||
+        ids.some((id) => !expected.expected_article_ids.includes(id)) ||
+        (!paged && !exactSet(ids, expected.expected_article_ids)) ||
+        (total === 0
+          ? audit.emptyStateCount !== 1 || !exactSet(audit.emptyStateTexts,
+            ['この条件で公開中の記事はありません。'])
+          : audit.emptyStateCount !== 0) ||
+        audit.pagination.originMismatchCount !== 0 ||
+        (paged
+          ? audit.pagination.categoryPageNumbers.length === 0 ||
+            !audit.pagination.categoryPageNumbers.includes(2) ||
+            audit.pagination.categoryPageNumbers.some((number) => !Number.isInteger(number) ||
+              number < 2 || number > Math.ceil(total / expected.page_size))
+          : audit.pagination.count !== 0);
+    }
+    const expectsEmpty = [
+      'EMPTY_QUERY', 'WHITESPACE_QUERY', 'NO_RESULTS', 'HOSTILE_QUERY_ESCAPED',
+    ].includes(surface.expected_state);
+    return expectsEmpty
+      ? audit.emptyStateCount !== 1 || audit.listingCardCount !== 0
+      : audit.emptyStateCount !== 0 || audit.listingCardCount < 1;
   };
 
   const validateIncrementalArticle = ({ scope, articleId, audit }) => {
@@ -526,6 +593,9 @@
   }
   const checkedIncrementalScope = validateIncrementalScope({
     publicationProfile, linkMode, incrementalScope, articleIds: [...articleIds],
+    categorySurfaces: localSurfaces.filter(
+      (surface) => surface.kind === 'archive' && surface.archive_type === 'category',
+    ),
   });
 
   const surfaces = [...publicSurfaces, ...localSurfaces].map((surface) => ({
@@ -1041,6 +1111,12 @@
             (anchor) => (new URL(anchor.href).searchParams.get('s') || '').trim() !==
               expectedSearchQuery,
           ).length,
+          categoryPageNumbers: paginationAnchors.map((anchor) => {
+            const url = new URL(anchor.href);
+            const match = url.pathname.match(/^\/category\/([a-z0-9-]+)\/page\/([2-9][0-9]*)\/$/);
+            return match && url.origin === location.origin && url.search === '' && url.hash === '' &&
+              `/category/${match[1]}/` === location.pathname ? Number(match[2]) : null;
+          }),
         };
         const parseTimeMs = (value) => {
           const trimmed = value.trim();
@@ -1140,6 +1216,8 @@
           editorialBodyClass: document.body.classList.contains('raos-editorial-v2-page'),
           editorialRootCount: document.querySelectorAll('.raos-editorial-v2').length,
           emptyStateCount: document.querySelectorAll('.raos-listing-empty').length,
+          emptyStateTexts: [...document.querySelectorAll('.raos-listing-empty')]
+            .map((element) => element.textContent.trim()),
           footerBackground: getComputedStyle(document.querySelector('.raos-footer')).backgroundColor,
           footerBoxes: boxes('.raos-footer__grid,.raos-footer__bottom'),
           footerColumnCount: footerStyle?.gridTemplateColumns === 'none' ? 0 :
@@ -1198,6 +1276,15 @@
           lang: document.documentElement.lang,
           listingBodyClass: document.body.classList.contains('raos-listing-page'),
           listingCardCount: document.querySelectorAll('.raos-listing-card').length,
+          listingCards: [...document.querySelectorAll('.raos-listing-card')].map((card) => {
+            const links = card.querySelectorAll('.wp-block-post-title a[href]');
+            const url = links.length === 1 ? new URL(links[0].href) : null;
+            return {
+              title_link_count: links.length,
+              local_origin: url?.origin === location.origin,
+              local_path: url?.pathname || '', search: url?.search || '', hash: url?.hash || '',
+            };
+          }),
           mainCount: document.querySelectorAll('main').length,
           measurementConfigDefined: typeof window.RAOS_MEASUREMENT_CONFIG_V1 !== 'undefined',
           measurementScriptCount: document.querySelectorAll(
@@ -1775,15 +1862,9 @@
       let zoomFailure = null;
       let zoomScreenshot = null;
 
-      const expectsEmptyListing = [
-        'EMPTY_QUERY', 'WHITESPACE_QUERY', 'NO_RESULTS', 'HOSTILE_QUERY_ESCAPED',
-      ].includes(surface.expected_state);
-      const listingFailure = ['search', 'archive'].includes(surface.kind) && (
-        !audit.listingBodyClass || audit.fullPostContentCount !== 0 ||
-        (expectsEmptyListing
-          ? audit.emptyStateCount !== 1 || audit.listingCardCount !== 0
-          : audit.emptyStateCount !== 0 || audit.listingCardCount < 1)
-      );
+      const listingFailure = validateListing({
+        scope: checkedIncrementalScope, surface, audit, articleRows,
+      });
       const notFoundFailure = surface.kind === 'not_found' &&
         (!audit.notFoundBodyClass || !head.title.includes('ページが見つかりません'));
       const tocFailure = surface.article && (
@@ -2152,6 +2233,7 @@
   factory.validateSeoHead = validateSeoHead;
   factory.validateIncrementalScope = validateIncrementalScope;
   factory.validateIncrementalArticle = validateIncrementalArticle;
+  factory.validateListing = validateListing;
   factory.inspectImageLoading = inspectImageLoading;
   factory.classifyImageLoading = classifyImageLoading;
   factory.inspectHiddenLegacyImageResources = inspectHiddenLegacyImageResources;

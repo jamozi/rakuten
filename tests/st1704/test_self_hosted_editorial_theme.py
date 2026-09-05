@@ -593,16 +593,14 @@ def test_base_stylesheet_is_preloaded_through_wordpress_resource_api() -> None:
     assert "style_loader_tag" not in owner
 
 
-def test_mobile_home_defers_only_below_fold_sections_with_stable_intrinsic_size() -> (
-    None
-):
+def test_mobile_home_uses_real_section_sizes_for_fragment_navigation() -> None:
     css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
     mobile = css.split("@media (max-width: 37.5rem) {", 1)[1]
     selector = ".raos-home-v2 > :not(.raos-home-hero):not(.raos-home-method) {"
     rule = mobile.split(selector, 1)[1].split("}", 1)[0]
     assert "contain: layout paint style;" in rule
-    assert "content-visibility: auto;" in rule
-    assert "contain-intrinsic-size: auto 42rem;" in rule
+    assert "content-visibility:" not in rule
+    assert "contain-intrinsic-size:" not in rule
     assert ".raos-home-hero" not in rule
     assert ".raos-home-method" not in rule
 
@@ -1645,7 +1643,10 @@ def test_homepage_guide_role_comes_from_the_stored_article_not_the_candidate() -
         "return '比較・選び方ガイド';",
     ):
         assert requirement in helper
-    assert source.count("esc_html(kurashinoshirube_stored_guide_role((int) $post->ID))") == 2
+    assert (
+        source.count("esc_html(kurashinoshirube_stored_guide_role((int) $post->ID))")
+        == 2
+    )
 
 
 def test_homepage_hero_wraps_complete_phrases_and_uses_a_non_photo_feature_diagram() -> (
@@ -1663,7 +1664,11 @@ def test_homepage_hero_wraps_complete_phrases_and_uses_a_non_photo_feature_diagr
         "Share the compact header with articles, policy pages, search and 404." in css
     )
     compact = css.split("Share the compact header", 1)[1]
-    assert "grid-template-columns: minmax(0, 1fr) auto;" in compact
+    assert "display: flex;" in compact
+    assert "flex-wrap: wrap;" in compact
+    assert "margin-inline-start: auto;" in compact
+    assert "text-wrap: balance;" in compact
+    assert "white-space: normal;" in compact
     assert "@media (max-width: 20rem)" in compact
     assert "white-space: normal;" in compact
     featured_rule = css.split(".raos-home-v2 .raos-featured-guide__visual--power {", 1)[
@@ -2641,6 +2646,22 @@ def test_article_type_density_ctas_and_cmp_are_responsive_without_home_scope() -
     assert "order:" not in cmp
     assert "content:" not in cmp
     assert ".cky-" not in editorial_css
+
+
+def test_shared_footer_columns_can_shrink_when_text_is_enlarged() -> None:
+    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    # Fixed rem minima overflow desktop viewports when the root font is doubled.
+    for last_selector in (
+        ".raos-not-found-page .raos-footer__grid {",
+        ".raos-policy-v3-page .raos-footer__grid {",
+    ):
+        desktop_grid = css.split(last_selector, 1)[1].split("}", 1)[0]
+        assert (
+            "grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1fr);"
+            in desktop_grid
+        )
+        assert "overflow: hidden" not in desktop_grid
+        assert "overflow-x: hidden" not in desktop_grid
 
 
 def test_home_tablet_masthead_keeps_the_wordmark_on_its_own_row() -> None:

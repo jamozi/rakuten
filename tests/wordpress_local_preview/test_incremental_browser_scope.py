@@ -150,12 +150,17 @@ try {
   const scope = factory.validateIncrementalScope({
     publicationProfile: input.profile || 'verified-incremental',
     linkMode: input.mode || 'standard-api', incrementalScope: input.scope,
-    articleIds: ['article-new', 'article-old'],
+    articleIds: input.article_ids || ['article-new', 'article-old'],
+    categorySurfaces: input.category_surfaces || [],
   });
   const article = input.audit ? factory.validateIncrementalArticle({
     scope, articleId: input.article_id || 'article-new', audit: input.audit,
   }) : null;
-  process.stdout.write(JSON.stringify({ valid: true, article }));
+  const listingFailed = input.listing ? factory.validateListing({
+    scope, surface: input.category_surfaces[0], audit: input.listing,
+    articleRows: input.article_rows,
+  }) : null;
+  process.stdout.write(JSON.stringify({ valid: true, article, listingFailed }));
 } catch (error) {
   process.stdout.write(JSON.stringify({ valid: false, error: error.message }));
 }
@@ -599,3 +604,302 @@ def test_incremental_runner_preserves_full_audit_and_rechecks_prepared_bytes() -
     assert "!audit.disclosure.opacityVisible || !audit.disclosure.inViewport" in audit
     assert "audit.disclosure.beforeFirstCtaDom" in audit
     assert "disclosureKeyboardFailure || focusFlowFailure" in audit
+
+
+def _category_surface(slug: str = "mobility") -> dict:
+    return {
+        "surface_id": f"archive-category-{slug}",
+        "local_path": f"/category/{slug}/",
+        "kind": "archive",
+        "archive_type": "category",
+        "expected_state": "EXCERPT_LIST",
+    }
+
+
+def _category_metadata(root: Path, inventory: dict, binding: dict) -> tuple[Path, dict]:
+    inventory["local_surfaces"] = [_category_surface()]
+    policies = ["policy-one", "policy-two", "policy-three"]
+    inventory["surfaces"].extend(
+        {"kind": "policy", "production_path": f"/{slug}/"} for slug in policies
+    )
+    (root / "pages").mkdir(mode=0o700)
+    (root / "baseline-pages").mkdir(mode=0o700)
+    page_hash = hashlib.sha256(b"<p>Recorded policy</p>").hexdigest()
+    for slug in policies + ["home"]:
+        _private_write(
+            root / "baseline-pages" / f"{slug}.html", b"<p>Recorded policy</p>"
+        )
+        if slug != "home":
+            _private_write(root / "pages" / f"{slug}.html", b"<p>Recorded policy</p>")
+    pages = {
+        "schema": "RAOS_WORDPRESS_LOCAL_PREVIEW_PAGES_V1",
+        "pages": [
+            {"slug": slug, "content_file": f"pages/{slug}.html"} for slug in policies
+        ],
+    }
+    pages_raw = json.dumps(pages).encode()
+    _private_write(root / "pages.json", pages_raw)
+    binding.update(
+        {
+            "metadata_status": "VERIFIED_FIELDS_ONLY",
+            "metadata_blockers": [],
+            "policy_states": {slug: "UNCHANGED_LIVE_CONTENT" for slug in policies},
+            "home_state": "UNCHANGED_LIVE_CONTENT",
+            "pages_sha256": hashlib.sha256(pages_raw).hexdigest(),
+            "page_body_sha256": {slug: page_hash for slug in policies},
+            "baseline_page_sha256": {slug: page_hash for slug in policies + ["home"]},
+        }
+    )
+    metadata = {
+        "schema": "RAOS_WORDPRESS_MIXED_PREVIEW_SEED_METADATA_V1",
+        "publication_profile": "verified-incremental",
+        "publication_authority": False,
+        "status": "VERIFIED_FIELDS_ONLY",
+        "policy_states": binding["policy_states"],
+        "home_state": binding["home_state"],
+        "documents": {
+            slug: {
+                "production_slug": slug,
+                "taxonomies": {
+                    "category": [
+                        {"id": 5, "name": "暮らしの道具", "slug": "tools", "parent": 0}
+                    ]
+                },
+            }
+            for slug in list(binding["article_states"]) + policies + ["home"]
+        },
+    }
+    return _write_metadata(root, binding, metadata), metadata
+
+
+def _write_metadata(root: Path, binding: dict, metadata: dict) -> Path:
+    raw = json.dumps(metadata, ensure_ascii=False).encode()
+    _private_write(root / "seed-metadata.v1.json", raw)
+    binding["seed_metadata_sha256"] = hashlib.sha256(raw).hexdigest()
+    return _rebind(root, binding)
+
+
+@pytest.mark.parametrize("populated", [False, True])
+def test_category_membership_comes_from_bound_saved_taxonomy(
+    tmp_path: Path, populated: bool
+) -> None:
+    root, inventory, binding = _overlay(tmp_path)
+    root, metadata = _category_metadata(root, inventory, binding)
+    if populated:
+        metadata["documents"]["guide-0"]["taxonomies"]["category"] = [
+            {"id": 8, "name": "移動", "slug": "mobility", "parent": 0}
+        ]
+        root = _write_metadata(root, binding, metadata)
+    result = loader.load_scope(root, inventory)
+    assert result["category_expectations"] == {
+        "seed_metadata_sha256": binding["seed_metadata_sha256"],
+        "listings": [
+            {
+                "surface_id": "archive-category-mobility",
+                "local_path": "/category/mobility/",
+                "page_size": 3,
+                "expected_article_ids": ["article-0"] if populated else [],
+            }
+        ],
+    }
+    assert "category_expectations" not in binding["incremental_scope"]
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "missing_metadata",
+        "metadata_hash",
+        "forged_binding_scope",
+        "unknown_surface",
+        "wrong_surface_path",
+        "missing_category",
+        "hierarchical",
+        "unknown_term_fields",
+        "conflicting_term",
+        "duplicate_term",
+        "wrong_document_slug",
+    ],
+)
+def test_category_scope_refuses_missing_or_tampered_metadata(
+    tmp_path: Path, mutation: str
+) -> None:
+    root, inventory, binding = _overlay(tmp_path)
+    root, metadata = _category_metadata(root, inventory, binding)
+    category = metadata["documents"]["guide-0"]["taxonomies"]["category"]
+    if mutation == "missing_metadata":
+        del binding["seed_metadata_sha256"]
+    elif mutation == "metadata_hash":
+        binding["seed_metadata_sha256"] = "f" * 64
+    elif mutation == "forged_binding_scope":
+        binding["incremental_scope"]["category_expectations"] = {"listings": []}
+    elif mutation == "unknown_surface":
+        inventory["local_surfaces"] = [_category_surface("invented")]
+    elif mutation == "wrong_surface_path":
+        inventory["local_surfaces"][0]["local_path"] = "/category/household/"
+    elif mutation == "missing_category":
+        del metadata["documents"]["guide-0"]["taxonomies"]["category"]
+    elif mutation == "hierarchical":
+        category[0]["parent"] = 1
+    elif mutation == "unknown_term_fields":
+        category[0]["invented"] = True
+    elif mutation == "conflicting_term":
+        category[0]["slug"] = "mobility"
+    elif mutation == "duplicate_term":
+        category.append(copy.deepcopy(category[0]))
+    else:
+        metadata["documents"]["guide-0"]["production_slug"] = "guide-1"
+    if mutation not in {"missing_metadata", "metadata_hash", "forged_binding_scope"}:
+        root = _write_metadata(root, binding, metadata)
+    else:
+        root = _rebind(root, binding)
+    with pytest.raises(loader.ScopeFailure):
+        loader.load_scope(root, inventory)
+
+
+def _category_payload(total: int = 0) -> dict:
+    scope = _scope()
+    for index in range(2, 6):
+        row = copy.deepcopy(scope["articles"][1])
+        row["article_id"] = f"article-{index}"
+        scope["articles"].append(row)
+    article_ids = [row["article_id"] for row in scope["articles"]]
+    scope["category_expectations"] = {
+        "seed_metadata_sha256": "d" * 64,
+        "listings": [
+            {
+                "surface_id": "archive-category-mobility",
+                "local_path": "/category/mobility/",
+                "page_size": 3,
+                "expected_article_ids": article_ids[:total],
+            }
+        ],
+    }
+    return {
+        "scope": scope,
+        "article_ids": article_ids,
+        "category_surfaces": [_category_surface()],
+        "article_rows": [
+            {"article_id": id_, "local_path": f"/{id_}/"} for id_ in article_ids
+        ],
+        "listing": {
+            "listingBodyClass": True,
+            "fullPostContentCount": 0,
+            "listingCardCount": min(3, total),
+            "listingCards": [
+                {
+                    "title_link_count": 1,
+                    "local_origin": True,
+                    "local_path": f"/{id_}/",
+                    "search": "",
+                    "hash": "",
+                }
+                for id_ in article_ids[: min(3, total)]
+            ],
+            "emptyStateCount": 0 if total else 1,
+            "emptyStateTexts": []
+            if total
+            else ["この条件で公開中の記事はありません。"],
+            "pagination": {
+                "count": 2 if total > 3 else 0,
+                "originMismatchCount": 0,
+                "categoryPageNumbers": [2, 2] if total > 3 else [],
+            },
+        },
+    }
+
+
+@pytest.mark.parametrize("total", [0, 1, 2, 3, 4, 6])
+def test_category_browser_requires_bound_set_and_correct_pagination(total: int) -> None:
+    result = _node(_category_payload(total))
+    assert result["valid"] is True
+    assert result["listingFailed"] is False
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "omitted",
+        "unknown_id",
+        "duplicate",
+        "wrong_path",
+        "page_size",
+        "extra",
+        "no_hash",
+    ],
+)
+def test_browser_rejects_forged_category_expectation(mutation: str) -> None:
+    payload = _category_payload(2)
+    expected = payload["scope"]["category_expectations"]
+    row = expected["listings"][0]
+    if mutation == "omitted":
+        del payload["scope"]["category_expectations"]
+    elif mutation == "unknown_id":
+        row["expected_article_ids"] = ["unknown-article"]
+    elif mutation == "duplicate":
+        row["expected_article_ids"] = ["article-new", "article-new"]
+    elif mutation == "wrong_path":
+        row["local_path"] = "/category/household/"
+    elif mutation == "page_size":
+        row["page_size"] = 5
+    elif mutation == "extra":
+        expected["listings"].append(copy.deepcopy(row))
+    else:
+        del expected["seed_metadata_sha256"]
+    assert _node(payload)["valid"] is False
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "empty_nonempty",
+        "missing_card",
+        "wrong_link",
+        "duplicate_card",
+        "external",
+        "wrong_empty_text",
+        "missing_next",
+        "wrong_next",
+        "extra_next",
+        "full_body",
+    ],
+)
+def test_category_browser_rejects_false_empty_wrong_members_and_broken_paging(
+    mutation: str,
+) -> None:
+    payload = _category_payload(0 if mutation == "wrong_empty_text" else 4)
+    listing = payload["listing"]
+    if mutation == "empty_nonempty":
+        listing.update(listingCardCount=0, listingCards=[], emptyStateCount=1)
+    elif mutation == "missing_card":
+        listing["listingCards"].pop()
+        listing["listingCardCount"] -= 1
+    elif mutation == "wrong_link":
+        listing["listingCards"][0]["local_path"] = "/article-5/"
+    elif mutation == "duplicate_card":
+        listing["listingCards"][0] = copy.deepcopy(listing["listingCards"][1])
+    elif mutation == "external":
+        listing["listingCards"][0]["local_origin"] = False
+    elif mutation == "wrong_empty_text":
+        listing["emptyStateTexts"] = ["Nothing found"]
+    elif mutation == "missing_next":
+        listing["pagination"]["categoryPageNumbers"] = []
+    elif mutation == "wrong_next":
+        listing["pagination"]["categoryPageNumbers"] = [None]
+    elif mutation == "extra_next":
+        listing["pagination"]["categoryPageNumbers"] = [2, 3]
+    else:
+        listing["fullPostContentCount"] = 1
+    assert _node(payload)["listingFailed"] is True
+
+
+def test_legacy_category_empty_still_fails_and_seed_page_size_is_explicit() -> None:
+    payload = _category_payload()
+    payload.update(profile="legacy-full", scope=None)
+    assert _node(payload)["listingFailed"] is True
+    payload = _category_payload(2)
+    payload.update(profile="legacy-full", scope=None)
+    assert _node(payload)["listingFailed"] is False
+    seed = (ROOT / "changes/wordpress-local-preview-v1/seed.php").read_text()
+    assert "update_option('posts_per_page', 3);" in seed
+    assert "categorySurfaces: localSurfaces.filter(" in AUDIT.read_text()

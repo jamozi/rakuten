@@ -41,7 +41,42 @@ class SyntheticServer:
         self.theme_proposals = {}
         self.desired_theme_tree = "9" * 64
         self.theme_operation_gets = 0
+        self.content_operation_gets = 0
+        self.member_apply_calls = []
+        self.member_recovery_calls = []
         self.proposal_bindings = {}
+
+    def operation(self, identifier):
+        if identifier in self.operations:
+            return deepcopy(self.operations[identifier])
+        binding = self.proposal_bindings[identifier]
+        return {
+            "schema": "OperationReceiptV1",
+            "proposal_id": identifier,
+            "operation_id": identifier,
+            "state": "APPROVED" if self.state == "APPROVED" else "PENDING",
+            "result_code": "PROPOSAL_APPROVED"
+            if self.state == "APPROVED"
+            else "PROPOSAL_CREATED",
+            "before_sha256": binding["before_sha256"],
+            "after_sha256": binding["after_sha256"],
+            "audit_id": "f" * 64,
+        }
+
+    def materialize_member(self, identifier):
+        if identifier in self.theme_proposals:
+            self.theme_tree = self.theme_proposals[identifier]
+        else:
+            post_id, target, after = self.proposals[identifier]
+            previous = self.documents[target["slug"]]
+            self.documents[target["slug"]] = {
+                **target,
+                "id": post_id,
+                "status": "publish",
+                "content_sha256": after,
+                "revision_id": previous["revision_id"] + 1,
+                "modified_gmt": examples.stamp(NOW + timedelta(seconds=1)),
+            }
 
     def initialize(self):
         pass
@@ -98,7 +133,8 @@ class SyntheticServer:
             }
             return deepcopy(self.batch)
         if name == "raos-codex-operation-get":
-            return deepcopy(self.operations[arguments["operation_id"]])
+            self.content_operation_gets += 1
+            return self.operation(arguments["operation_id"])
         raise AssertionError(name)
 
     def deploy(self, command, value):
@@ -124,7 +160,7 @@ class SyntheticServer:
             self.theme_operation_gets += 1
             return {
                 "kind": "THEME_RELEASE",
-                "operation": deepcopy(self.operations[value["operation_id"]]),
+                "operation": self.operation(value["operation_id"]),
             }
         if command == "deployment-status":
             return {
@@ -163,38 +199,29 @@ class SyntheticServer:
             )
             self.apply_count += 1
             for identifier in value["proposal_ids"]:
-                if identifier in self.theme_proposals:
-                    self.operations[identifier] = {
-                        "schema": "OperationReceiptV1",
-                        "proposal_id": identifier,
-                        "operation_id": identifier,
-                        "state": "APPLIED",
-                        "result_code": "THEME_APPLIED",
-                        "before_sha256": self.theme_tree,
-                        "after_sha256": self.theme_proposals[identifier],
-                        "audit_id": "f" * 64,
-                    }
-                    self.theme_tree = self.theme_proposals[identifier]
+                operation = self.operation(identifier)
+                if operation["state"] == "APPLIED":
                     continue
-                post_id, target, after = self.proposals[identifier]
-                previous = self.documents[target["slug"]]
-                self.documents[target["slug"]] = {
-                    **target,
-                    "id": post_id,
-                    "status": "publish",
-                    "content_sha256": after,
-                    "revision_id": previous["revision_id"] + 1,
-                    "modified_gmt": examples.stamp(NOW + timedelta(seconds=1)),
-                }
+                if operation["result_code"] == "OPERATION_APPLYING":
+                    self.member_recovery_calls.append(identifier)
+                    actual_hash = (
+                        self.theme_tree
+                        if identifier in self.theme_proposals
+                        else self.documents[self.proposals[identifier][1]["slug"]][
+                            "content_sha256"
+                        ]
+                    )
+                    if actual_hash != operation["after_sha256"]:
+                        publication.fail("SYNTHETIC_RECOVERED_AT_BEFORE_STATE")
+                else:
+                    self.member_apply_calls.append(identifier)
+                    self.materialize_member(identifier)
                 self.operations[identifier] = {
-                    "schema": "OperationReceiptV1",
-                    "proposal_id": identifier,
-                    "operation_id": identifier,
+                    **operation,
                     "state": "APPLIED",
-                    "result_code": "CONTENT_APPLIED",
-                    "before_sha256": previous["content_sha256"],
-                    "after_sha256": after,
-                    "audit_id": "f" * 64,
+                    "result_code": "THEME_APPLIED"
+                    if identifier in self.theme_proposals
+                    else "CONTENT_APPLIED",
                 }
             self.state = "APPLIED"
             if self.lose_apply_response:
@@ -748,7 +775,7 @@ def test_shared_theme_is_one_approved_batch_and_recovered_by_read_only_get(world
     assert receipt["apply_receipt"] is None
     assert receipt["operation_readback"]["apply_response_received"] is False
     assert len(receipt["operation_readback"]["operations"]) == 2
-    assert server.apply_count == 1 and server.theme_operation_gets == 1
+    assert server.apply_count == 1 and server.theme_operation_gets == 2
 
 
 @pytest.mark.parametrize("world", [True], indirect=True)
@@ -760,3 +787,255 @@ def test_theme_operation_receipt_must_be_applied_and_exact(world):
     world["server"].operations[key]["after_sha256"] = "e" * 64
     with pytest.raises(publication.PublicationFailure, match="APPLY_RECEIPT_INVALID"):
         world["execute"]("readback")
+
+
+def _partial_batch(world, *, completed="theme", state="APPLIED", materialize=True):
+    world["execute"]("propose")
+    server = world["server"]
+    server.state = "APPROVED"
+    for identifier in server.batch["proposal_ids"]:
+        operation = server.operation(identifier)
+        operation.update(state="APPLYING", result_code="BATCH_CLAIMED")
+        server.operations[identifier] = operation
+    selected = next(
+        iter(server.theme_proposals if completed == "theme" else server.proposals)
+    )
+    if materialize:
+        server.materialize_member(selected)
+    server.operations[selected].update(
+        state=state,
+        result_code="OPERATION_APPLYING"
+        if state == "APPLYING"
+        else "THEME_APPLIED"
+        if completed == "theme"
+        else "CONTENT_APPLIED",
+    )
+    return selected
+
+
+@pytest.mark.parametrize("world", [True], indirect=True)
+@pytest.mark.parametrize("completed", ["theme", "content"])
+@pytest.mark.parametrize("state", ["APPLIED", "APPLYING"])
+def test_partial_batch_resumes_only_bound_unfinished_members(world, completed, state):
+    identifier = _partial_batch(world, completed=completed, state=state)
+    server = world["server"]
+    untouched = {slug: deepcopy(server.documents[slug]) for slug in ("older", "home")}
+    result = world["execute"]("apply")
+    receipt, _raw = port.read_json(result.parent, result.name)
+    assert receipt["state"] == "PUBLISHED_AND_READBACK_VERIFIED"
+    assert server.theme_tree == server.desired_theme_tree
+    assert server.member_apply_calls == [
+        key for key in server.batch["proposal_ids"] if key != identifier
+    ]
+    assert server.member_recovery_calls == ([identifier] if state == "APPLYING" else [])
+    assert server.content_operation_gets >= 2 and server.theme_operation_gets >= 2
+    assert {slug: server.documents[slug] for slug in untouched} == untouched
+    assert server.apply_count == 1
+    world["execute"]("apply")
+    assert server.apply_count == 1
+
+
+@pytest.mark.parametrize("world", [True], indirect=True)
+def test_applied_members_with_unfinalized_batch_are_not_resent(world):
+    _partial_batch(world)
+    server = world["server"]
+    identifier = next(iter(server.proposals))
+    server.materialize_member(identifier)
+    server.operations[identifier].update(state="APPLIED", result_code="CONTENT_APPLIED")
+    world["execute"]("apply")
+    assert server.state == "APPLIED"
+    assert server.member_apply_calls == server.member_recovery_calls == []
+
+
+@pytest.mark.parametrize("world", [True], indirect=True)
+@pytest.mark.parametrize("completed", ["theme", "content"])
+def test_applying_before_state_enters_recovery_without_blind_reapply(world, completed):
+    identifier = _partial_batch(
+        world, completed=completed, state="APPLYING", materialize=False
+    )
+    server = world["server"]
+    # Mark the other member as already applied so only recovery remains.
+    for other in server.batch["proposal_ids"]:
+        if other != identifier:
+            server.materialize_member(other)
+            server.operations[other].update(
+                state="APPLIED", result_code="MEMBER_APPLIED"
+            )
+    with pytest.raises(
+        publication.PublicationFailure, match="SYNTHETIC_RECOVERED_AT_BEFORE_STATE"
+    ):
+        world["execute"]("apply")
+    assert server.member_recovery_calls == [identifier]
+    assert server.member_apply_calls == []
+
+
+@pytest.mark.parametrize("world", [True], indirect=True)
+@pytest.mark.parametrize("completed", ["theme", "content"])
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "fake_applied",
+        "unknown_hash",
+        "claimed_after",
+        "approved_after",
+        "failed",
+        "expired",
+        "wrong_before",
+        "wrong_after",
+        "wrong_id",
+        "invalid_audit",
+        "unknown_result",
+    ],
+)
+def test_partial_batch_unknown_state_or_forged_member_never_enters_apply(
+    world, completed, mutation
+):
+    identifier = _partial_batch(
+        world, completed=completed, materialize=mutation != "fake_applied"
+    )
+    server = world["server"]
+    operation = server.operations[identifier]
+    if mutation == "unknown_hash":
+        if completed == "theme":
+            server.theme_tree = "e" * 64
+        else:
+            row = server.documents["guide"]
+            row["block_markup"] += "<p>Unapproved edit</p>"
+            row["content_sha256"] = publication._content_after_sha256(row, row["id"])
+    elif mutation == "claimed_after":
+        operation.update(state="APPLYING", result_code="BATCH_CLAIMED")
+    elif mutation == "approved_after":
+        operation.update(state="APPROVED", result_code="PROPOSAL_APPROVED")
+    elif mutation in {"failed", "expired"}:
+        operation["state"] = mutation.upper()
+    elif mutation == "wrong_before":
+        operation["before_sha256"] = "e" * 64
+    elif mutation == "wrong_after":
+        operation["after_sha256"] = "e" * 64
+    elif mutation == "wrong_id":
+        operation["operation_id"] = "e" * 64
+    elif mutation == "invalid_audit":
+        operation["audit_id"] = None
+    elif mutation == "unknown_result":
+        operation.update(state="APPLYING", result_code="UNRECOGNIZED_PROGRESS")
+    with pytest.raises((publication.PublicationFailure, ValueError)):
+        world["execute"]("apply")
+    assert server.apply_count == 0
+    assert server.member_apply_calls == server.member_recovery_calls == []
+
+
+@pytest.mark.parametrize("world", [True], indirect=True)
+@pytest.mark.parametrize("slug", ["older", "home"])
+@pytest.mark.parametrize("mutation", ["revision", "content", "missing"])
+def test_partial_batch_keeps_unselected_post_and_page_baselines_strict(
+    world, slug, mutation
+):
+    _partial_batch(world)
+    server = world["server"]
+    if mutation == "revision":
+        server.documents[slug]["revision_id"] += 1
+    elif mutation == "content":
+        row = server.documents[slug]
+        row["block_markup"] += "<p>Unselected change</p>"
+        row["content_sha256"] = publication._content_after_sha256(row, row["id"])
+    else:
+        del server.documents[slug]
+    with pytest.raises(publication.PublicationFailure, match="LIVE_BASELINE_CHANGED"):
+        world["execute"]("apply")
+    assert server.apply_count == 0
+
+
+@pytest.mark.parametrize("world", [True], indirect=True)
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "theme_before",
+        "content_before_revision",
+        "selected_status",
+        "missing_binding",
+        "wrong_kind",
+    ],
+)
+def test_partial_batch_requires_exact_server_baseline_and_target_identity(
+    world, monkeypatch, mutation
+):
+    identifier = _partial_batch(world)
+    server = world["server"]
+    if mutation == "theme_before":
+        server.proposal_bindings[identifier]["before_sha256"] = "e" * 64
+        server.operations[identifier]["before_sha256"] = "e" * 64
+    elif mutation == "content_before_revision":
+        server.documents["guide"]["revision_id"] += 1
+    elif mutation == "selected_status":
+        server.documents["guide"]["status"] = "draft"
+    elif mutation == "missing_binding":
+        del server.proposal_bindings[identifier]
+    else:
+        original = server.deploy
+
+        def wrong_kind(command, value):
+            response = original(command, value)
+            if command == "operation-status":
+                response["kind"] = "PLUGIN_CHANGE"
+            return response
+
+        monkeypatch.setattr(server, "deploy", wrong_kind)
+    with pytest.raises((publication.PublicationFailure, ValueError)):
+        world["execute"]("apply")
+    assert server.apply_count == 0
+
+
+@pytest.mark.parametrize("world", [True], indirect=True)
+@pytest.mark.parametrize(
+    "failure",
+    [
+        "activation_expired",
+        "batch_expired",
+        "owner_approval",
+        "precondition",
+        "closed_gate",
+        "expired_during_get",
+        "batch_expired_during_get",
+    ],
+)
+def test_partial_batch_does_not_renew_authority_or_evidence(
+    world, monkeypatch, failure
+):
+    _partial_batch(world)
+    server = world["server"]
+    if failure == "activation_expired":
+        world["now"] = NOW + timedelta(minutes=10)
+    elif failure == "owner_approval":
+        server.state = "REGISTERED"
+    elif failure == "closed_gate":
+        server.gates["content_apply"] = False
+    original_deploy = server.deploy
+
+    def altered_status(command, value):
+        response = original_deploy(command, value)
+        if command == "publication-batch-status":
+            if failure == "batch_expired":
+                response["expires_at_gmt"] = examples.stamp(NOW)
+            elif failure == "batch_expired_during_get":
+                response["expires_at_gmt"] = examples.stamp(NOW + timedelta(seconds=1))
+            elif failure == "precondition":
+                response["preconditions_ready"] = False
+        return response
+
+    monkeypatch.setattr(server, "deploy", altered_status)
+    original_call = server.call
+
+    def slow_operation(name, args):
+        response = original_call(name, args)
+        if name == "raos-codex-operation-get":
+            if failure == "expired_during_get":
+                world["now"] = NOW + timedelta(minutes=10)
+            elif failure == "batch_expired_during_get":
+                world["now"] = NOW + timedelta(seconds=2)
+        return response
+
+    monkeypatch.setattr(server, "call", slow_operation)
+    with pytest.raises((publication.PublicationFailure, ValueError)):
+        world["execute"]("apply")
+    assert server.apply_count == 0
+    assert server.member_apply_calls == server.member_recovery_calls == []
