@@ -35,6 +35,15 @@ reproducible. Neither owner grants provider, network, credential, database,
 persistence, public projection, publication, editorial, CTA, product,
 recommendation, snapshot, staging, release or Production authority.
 
+Normal generation verifies the prior synthetic fixture against its authored
+runtime integrity hash, requires the same five article/slot identities, and
+replays the current attribution input before refreshing dependency and
+calculated input/result hashes. The complete cost request, amounts, timestamps
+and verification states remain unchanged. This is synthetic fixture upkeep,
+not new measured or live evidence. `--check` and the runtime adapter remain
+strict and read-only; stale or inconsistent references fail closed. Ordinary
+binding-write failures roll back prior replacements.
+
 All finance values—including commission, cost, labor, EPC, RPM and profit—are
 structurally excluded from article HTML, CTA, product selection,
 recommendation-order and publication-snapshot mutation. Formal TST-030, real

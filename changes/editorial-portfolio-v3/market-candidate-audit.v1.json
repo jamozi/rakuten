@@ -721,13 +721,13 @@
     {
       "article_id": "solota-vs-rakua-mini-plus",
       "content_role": "lifecycle_status_route",
-      "primary_query_intent": "SOLOTA NP-TMLK1-Kとラクアmini Plusの販売状態を確認し、現行4候補の比較記事へ移る",
-      "comparison_scope": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの販売状態・型番境界",
+      "primary_query_intent": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの型番・販売表示を確認し、購入前の確認項目を整理する",
+      "comparison_scope": "NP-TMLK1-KとTK-MDW22Bの型番・販売表示、購入前の確認項目",
       "broader_article_id": "st1704-countertop-dishwasher-for-small-households",
       "candidate_universe_method": "FIXED_HEAD_TO_HEAD_WITH_BROADER_ROUTE",
       "hard_filters": [
-        "SOLOTA NP-TMLK1-Kは販売状態を確認できない仕様参考、ラクアmini Plus TK-MDW22Bは再入荷通知のみの仕様参考に限定し、購入候補へ含めないこと",
-        "本記事は0商品・0購入導線とし、現行候補の比較は本文前半からA04へ案内すること"
+        "NP-TMLK1-Kの販売状態は未確認のまま保持し、購入導線が未確認であることから販売終了や商品自体の劣位を推論しないこと",
+        "本記事は型番・販売表示の確認案内とし、商品カード・購入導線を置かない。A04は設置条件の選び方として案内し、候補数や現行販売を保証しないこと"
       ],
       "official_category_sources": [
         "https://panasonic.jp/dish/products/NP-TMLK1.html",
@@ -736,7 +736,7 @@
       "axis_assessments": {
         "use_case_fit": {
           "state": "OFFICIAL_EVIDENCE_USED",
-          "rationale": "NP-TMLK1-Kとラクアmini Plusを購入候補にせず、型番別の販売状態確認と現行比較への案内だけに範囲を限定した。",
+          "rationale": "NP-TMLK1-KとTK-MDW22Bを識別し、購入前の確認項目を案内する。商品自体の適否や性能の優劣は、この案内では判断しない。",
           "evidence_refs": [
             "https://panasonic.jp/dish/products/NP-TMLK1.html",
             "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
@@ -744,7 +744,7 @@
         },
         "safety": {
           "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED",
-          "rationale": "本記事は購入候補を採用しない0商品記事です。旧型番の安全情報は商品別に完了とせず、推奨根拠に使いません。将来購入候補へ戻す場合も照合完了まで公開を停止します。",
+          "rationale": "本記事は商品を推奨する性能比較ではありません。各型番の安全情報を確認完了とはせず、商品別の推奨根拠に使いません。購入導線や性能比較を追加する場合は、必要な照合が完了するまで公開しません。",
           "evidence_refs": [],
           "recheck_by": "2026-09-30"
         },
@@ -764,19 +764,19 @@
         },
         "warranty_and_support": {
           "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED",
-          "rationale": "本記事は購入候補を採用しない0商品記事です。旧型番の保証・サポートは商品別に完了とせず、推奨根拠に使いません。将来購入候補へ戻す場合も照合完了まで公開を停止します。",
+          "rationale": "各型番の保証・サポートを確認完了とはせず、商品別の推奨根拠に使いません。購入前に販売元の保証条件を確認するよう案内し、追加の推奨は照合が完了するまで公開しません。",
           "evidence_refs": [],
           "recheck_by": "2026-09-30"
         },
         "maintainability": {
           "state": "SELECTED_PRODUCT_DUE_DILIGENCE_RECHECK_REQUIRED",
-          "rationale": "本記事は購入候補を採用しない0商品記事です。旧型番の修理・部品・回収は商品別に完了とせず、推奨根拠に使いません。将来購入候補へ戻す場合も照合完了まで公開を停止します。",
+          "rationale": "各型番の修理・部品・回収を確認完了とはせず、商品別の推奨根拠に使いません。購入導線や性能比較を追加する場合は、必要な照合が完了するまで公開しません。",
           "evidence_refs": [],
           "recheck_by": "2026-09-30"
         },
         "primary_source_confidence": {
           "state": "OFFICIAL_EVIDENCE_USED",
-          "rationale": "メーカー製品ページでNP-TMLK1-KとTK-MDW22Bの販売表示を照合し、現行候補の詳細はA04へ分離した。",
+          "rationale": "Panasonic公式ページの型番とTHANKO公式ストアの再入荷通知表示を確認した。Panasonicの在庫・注文可否は確認済みにせず、A04の未更新稿についても現行販売を保証しない。",
           "evidence_refs": [
             "https://panasonic.jp/dish/products/NP-TMLK1.html",
             "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
@@ -806,8 +806,8 @@
             "https://panasonic.jp/dish/products/NP-TMLK1.html"
           ],
           "exclusion_axis": "lifecycle",
-          "reason": "公式製品ページは仕様参考に残しますが、正確なブラック型番NP-TMLK1-Kの購入UIを確認できないため、商品カード・購入導線から除外しました。",
-          "evaluated_at": "2026-09-01"
+          "reason": "公式製品ページでブラックの型番NP-TMLK1-Kを確認しました。当サイトでは販売状態を確定していないため、購入リンクは掲載していません。販売終了や購入不可とは判断しません。",
+          "evaluated_at": "2026-09-05"
         },
         {
           "candidate_id": "EXT-THANKO-RAKUA-MINI-PLUS",
@@ -829,14 +829,14 @@
             "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
           ],
           "exclusion_axis": "lifecycle",
-          "reason": "公式ストアでは再入荷通知だけが表示され、カート導線を確認できません。購入候補から除外し、商品カードや購入導線を掲載していません。",
-          "evaluated_at": "2026-08-31"
+          "reason": "公式ストアの確認時は再入荷通知のみが表示されていました。当サイトでは購入リンクを掲載せず、他の販売店の在庫や今後の入荷までは判断しません。",
+          "evaluated_at": "2026-09-05"
         }
       ],
-      "reader_visible_exclusions_heading": "旧候補の販売状態と現行比較への案内",
+      "reader_visible_exclusions_heading": "型番ごとに確認できたこと",
       "reader_visible_required": true,
       "overlap_risk": "CONTROLLED_BY_EXPLICIT_SCOPE",
-      "scope_separation": "NP-TMLK1-Kとラクアmini Plusの販売状態だけを示し、現行品の仕様・設置・選定比較は本文前半からA04へ一本化する。"
+      "scope_separation": "NP-TMLK1-KとTK-MDW22Bの型番・販売表示と購入前の確認項目を案内する。A04は設置条件の選び方としてリンクし、未更新の掲載商品を現行候補と断定しない。"
     }
   ]
 }

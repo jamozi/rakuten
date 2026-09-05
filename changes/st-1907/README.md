@@ -10,6 +10,15 @@ application service in ENV-DEV or CI. Disabled evaluation fails before the
 inward port is called. There is no live/activation/provider/persistence/release
 state or interface.
 
+Normal owner generation may refresh the measurement/signal-policy hashes in
+the same blocked synthetic recording after verifying its prior fixture hash,
+closed schema and disabled evaluation. It revalidates both current policies'
+semantics before writing; finance/publication authority cannot change through a
+hash refresh. The recording identity, period, empty signals, dependency decision
+and all authority states remain unchanged. No observation, human approval or
+proposal is created. `--check` never writes and rejects stale input references.
+Binding files use the existing secure multi-file transaction helper.
+
 The adapter consumes one exact caller-owned canonical JSON byte string once.
 It accepts a closed schema containing non-personal, non-finance, preclassified
 proposal signals only. It has no filesystem path, URL, provider SDK,

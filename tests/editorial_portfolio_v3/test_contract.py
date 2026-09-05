@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from datetime import date
+from collections.abc import Sequence
+from datetime import date, datetime
 import json
 from pathlib import Path
 import re
@@ -12,6 +13,7 @@ from raos.application.editorial.editorial_portfolio_v3 import (
     PORTFOLIO_RELATIVE_PATH,
     load_editorial_portfolio_v3,
 )
+from raos.application.editorial import product_safety_receipts as safety_receipts
 from scripts import build_editorial_portfolio_v3 as builder
 from scripts import raos_editorial_portfolio_v2 as selection_builder
 
@@ -33,7 +35,7 @@ def test_generated_successor_covers_all_v2_identities_without_rewriting_v2() -> 
     portfolio = load_editorial_portfolio_v3(ROOT)
 
     assert portfolio.version == "3.0.0"
-    assert v3["theme_version"] == "1.5.0"
+    assert v3["theme_version"] == "1.5.1"
     assert len(portfolio.articles) == len(v2["articles"]) == 10
     assert len(portfolio.products) == len(v2["products"]) == 33
     assert {article.article_id for article in portfolio.articles} == {
@@ -319,7 +321,7 @@ def test_loader_rejects_a09_lifecycle_status_route_tamper(
     )
     if tamper == "lifecycle_role":
         a09["content_role"] = "lifecycle_status_route"
-        a09["content_role_label"] = "以前の比較対象の販売状態確認＋現行比較への案内"
+        a09["content_role_label"] = "型番・販売表示の確認案内"
     else:
         a09["product_ids"] = []
         a09["cta_bindings"] = []
@@ -476,7 +478,46 @@ def test_generator_enforces_required_and_allowed_broader_routes(
         builder.build_documents()
 
 
-def test_market_candidate_audit_is_concrete_complete_and_not_self_referential() -> None:
+def test_market_candidate_audit_is_concrete_complete_and_not_self_referential(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    synthetic_audits: list[safety_receipts.ProductSafetyReceiptAudit] = []
+
+    def evaluate_without_private_captures(
+        repository_root: Path,
+        *,
+        requirements: Sequence[safety_receipts.ProductSafetyRequirement],
+        registry_context: safety_receipts.ProductSafetySourceRegistryContext,
+        now: datetime | None = None,
+    ) -> safety_receipts.ProductSafetyReceiptAudit:
+        # This development test validates the real tracked declarations against
+        # the selected identities, but supplies no provider evidence. A local
+        # owner's captures (including stale ones) must not affect its outcome.
+        # Publication keeps the unmodified strict private-evidence loader.
+        assert repository_root == ROOT
+        declarations = json.loads(
+            (ROOT / safety_receipts.PRODUCT_SAFETY_RECEIPTS_RELATIVE_PATH).read_text(
+                encoding="utf-8"
+            )
+        )
+        result = safety_receipts.evaluate_product_safety_receipts(
+            declarations,
+            requirements=requirements,
+            registry_context=registry_context,
+            now=now,
+        )
+        assert result.complete is False
+        assert result.administrative_capture_count == 0
+        assert result.manufacturer_capture_count == 0
+        assert all(not row.verified_authority_kinds for row in result.products)
+        synthetic_audits.append(result)
+        return result
+
+    monkeypatch.setattr(
+        selection_builder,
+        "load_product_safety_receipt_audit",
+        evaluate_without_private_captures,
+    )
     audit = json.loads(
         (ROOT / builder.MARKET_CANDIDATE_AUDIT_PATH).read_text(encoding="utf-8")
     )
@@ -509,6 +550,10 @@ def test_market_candidate_audit_is_concrete_complete_and_not_self_referential() 
     selection_report = selection_builder._selection_audit_report(
         selection_builder.load_editorial_portfolio_v2(ROOT)
     )
+    assert len(synthetic_audits) == 1
+    assert {
+        row.product_id for row in synthetic_audits[0].products
+    } == portfolio_product_ids
     selection_by_id = {row["product_id"]: row for row in selection_report["products"]}
     observed_candidates: set[str] = set()
     lifecycle_conflicts = []
@@ -606,7 +651,7 @@ def test_market_candidate_audit_is_concrete_complete_and_not_self_referential() 
     assert thanko["variant_lifecycle"] == "RESTOCK_NOTIFICATION_ONLY"
     assert thanko["reader_visible_lifecycle"] == "RESTOCK_NOTIFICATION_ONLY"
     assert thanko["effective_lifecycle"] == "RESTOCK_NOTIFICATION_ONLY"
-    assert "再入荷通知だけ" in thanko["reason"]
+    assert re.search(r"再入荷通知(?:だけ|のみ)", thanko["reason"])
     assert "売り切れ" not in thanko["reason"]
 
     thanko_color = next(

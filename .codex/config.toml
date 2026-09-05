@@ -45,6 +45,7 @@ enabled = true
 default_tools_approval_mode = "prompt"
 enabled_tools = [
   "deployment-status",
+  "operation-status",
   "publication-batch-status",
   "release-wait-and-apply",
   "theme-propose-release",

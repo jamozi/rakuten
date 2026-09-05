@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 import json
+import re
 
 import pytest
 
@@ -13,6 +14,59 @@ from scripts import build_st1704_portfolio_source_packets as owner
 def _documents() -> tuple[dict[str, object], dict[str, object]]:
     registry_raw, locator_raw = owner._documents()
     return json.loads(registry_raw), json.loads(locator_raw)
+
+
+def test_difference_cart_locator_is_bound_to_exact_variant_despite_repeated_buttons():
+    fragment = owner.DIFFERENCE_05721_06_FRAGMENTS[-1]
+    button = fragment[fragment.index("<button"):]
+    assert 'value=05721-06 name="goods"' in fragment
+    assert 'value="カートに入れる"' in button
+    # Synthetic layout reflecting distinct main/sticky controls. No live
+    # capture, availability attestation or refreshed timestamp is created.
+    body = '<div class="main">' + button + "</div>" + fragment
+    assert body.count(button) == 2
+    assert body.count(fragment) == 1
+    assert fragment.replace("05721-06", "05721-01") not in body
+
+
+def test_proteca_warranty_locators_do_not_select_j5_or_bags_guarantees() -> None:
+    normal, premium = owner.NEW_SOURCE_FRAGMENTS["SRC-PROTECA-SUITCASE-WARRANTY"]
+    assert '<h3>プロテカ スーツケース製品</h3>' in normal
+    assert '<div class="warranty-label">通常製品保証</div>' in normal
+    assert '<div class="period-value">10年</div>' in normal
+    assert "素材及び製造上の不具合が認められた場合、無償修理" in normal
+    # The owner matches raw UTF-8 bytes; newline normalization is not evidence.
+    assert "\r\n" in normal
+    assert "\n" not in normal.replace("\r\n", "")
+    assert '<span class="premium-care-period">購入後 3年間】</span>' in premium
+    assert "航空会社による破損、またはその他の運送中に生じた損傷も無償修理" in premium
+    assert "※セール品やアウトレット品、並行輸入品は対象外" in premium
+
+    # Synthetic competing sections model the repeated warranty vocabulary.
+    # They are not real source captures or freshness/publication evidence.
+    j5 = normal.replace("プロテカ スーツケース製品", "J5コレクション 製品")
+    j5 += premium.replace("購入後 3年間", "購入後 10年間")
+    bags = normal.replace("プロテカ スーツケース製品", "プロテカ バッグ製品")
+    bags = bags.replace(
+        '<div class="period-value">10年</div>',
+        '<div class="period-value">5年</div>',
+    )
+    decoys = j5 + bags
+    assert all(fragment not in decoys for fragment in (normal, premium))
+    body = decoys + normal + premium
+    assert body.count("通常製品保証") == 3
+    assert body.count("航空会社による破損") == 2
+    assert all(body.count(fragment) == 1 for fragment in (normal, premium))
+
+    _registry, locator = _documents()
+    source = next(
+        row
+        for row in locator["sources"]
+        if row["source_ref"] == "SRC-PROTECA-SUITCASE-WARRANTY"
+    )
+    assert len(source["locators"]) == 4
+    for item in source["locators"]:
+        assert item["exact_utf8_fragments"] == [normal, premium]
 
 
 def _packets(registry: dict[str, object]) -> dict[str, dict[str, object]]:
@@ -25,6 +79,114 @@ def _claims(registry: dict[str, object]) -> dict[str, dict[str, object]]:
         for packet in registry["source_packets"]
         for claim in packet["claims"]
     }
+
+
+def test_np_tmlk1_reference_locators_match_unique_current_official_excerpts() -> None:
+    # Minimal separate excerpts observed on the official NP-TMLK1 overview on
+    # 2026-09-05. This is a regression fixture, never a capture/freshness receipt.
+    # The repeated bare model/title/colour strings require contextual locators.
+    excerpts = (
+        '<title>概要 食器洗い乾燥機 NP-TMLK1 | 食器洗い乾燥機（食洗機） | Panasonic</title>\n'
+        '<meta property="og:title" content="概要 食器洗い乾燥機 NP-TMLK1 | '
+        '食器洗い乾燥機（食洗機） | Panasonic"/>\n'
+        '"sku":"NP-TMLK1"\n'
+        '&#34;altText&#34;:&#34;NP-TMLK1-KserialNumber&#34;\n'
+        '<meta name="description" content="パナソニックの「パーソナルタイプの'
+        '食器洗い乾燥機（NP-TMLK1）SOLOTA」の商品サイトです。新登場のブラック色モデル。"/>\n'
+        '<meta property="og:description" content="新登場のブラック色モデル。"/>'
+    )
+    _registry, locator = _documents()
+    source = next(
+        row for row in locator["sources"] if row["source_ref"] == "SRC-PANASONIC-NP-TMLK1"
+    )
+    assert len(source["locators"]) == 4
+    for item in source["locators"]:
+        fragments = item["exact_utf8_fragments"]
+        assert tuple(fragments) == owner.PANASONIC_NP_TMLK1_IDENTITY_FRAGMENTS
+        assert len(fragments) == 4
+        assert all(excerpts.count(fragment) == 1 for fragment in fragments)
+        assert all(
+            not any(token in fragment for token in ("6点", "2.5L", "310", "7.5", "InStock"))
+            for fragment in fragments
+        )
+    assert excerpts.count("概要 食器洗い乾燥機 NP-TMLK1") == 2
+    assert excerpts.count("新登場のブラック色モデル") == 2
+
+
+def test_np_tmlk1_has_only_identity_reference_and_unknown_sale_exclusion_claims() -> None:
+    registry, _locator = _documents()
+    source_ref = "SRC-PANASONIC-NP-TMLK1"
+    claims = {
+        claim_id: claim
+        for claim_id, claim in _claims(registry).items()
+        if source_ref in claim["evidence_refs"]
+    }
+    expected = {
+        "CLM-ST1704-DISH-NP-TMLK1-EXCLUDED": (
+            "EDITORIAL_INFERENCE",
+            "正確な黒色型番NP-TMLK1-Kの販売状態を確認できないため、現行4候補・商品カード・購入導線から除外",
+        ),
+        "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-IDENTITY-REFERENCE": (
+            "MAJOR_VERIFIABLE",
+            "SOLOTAのブラックモデルをNP-TMLK1-Kとして案内する",
+        ),
+        "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE": (
+            "EDITORIAL_INFERENCE",
+            "NP-TMLK1-Kの販売状態は未確認であり、販売終了や購入不可とは判断しない",
+        ),
+        "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-EXCLUDED": (
+            "EDITORIAL_INFERENCE",
+            "当サイトでは販売状態を確定していないため、購入リンクは掲載していません",
+        ),
+    }
+    assert claims.keys() == expected.keys()
+    for claim_id, (classification, statement_fragment) in expected.items():
+        claim = claims[claim_id]
+        assert claim["classification"] == classification
+        assert statement_fragment in claim["statement"]
+        assert claim["subject_product_ids"] == []
+        # Specifications would require independent numeric proof, not this
+        # overview's model identity. Model numbers and "4候補" are not units.
+        assert not re.search(
+            r"\d\s*(?:点|[LlＬℓ]|[kｋ]?[gｇ㎏]|[cｍm]+|㎜|Ｗ|W)", claim["statement"]
+        )
+        if claim_id.endswith("EXCLUDED"):
+            assert claim["market_disposition"] == "EXCLUDED"
+            for key in (
+                "model_lifecycle",
+                "variant_lifecycle",
+                "reader_visible_lifecycle",
+                "effective_lifecycle",
+            ):
+                assert claim[key] == "UNKNOWN"
+    assert claims["CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE"]["evidence_refs"] == [
+        source_ref,
+        "SRC-THANKO-RAKUA-MINI-PLUS",
+    ]
+
+
+def test_a10_purchase_unknown_does_not_establish_unavailability_or_inferiority() -> (
+    None
+):
+    registry, _locator = _documents()
+    packet = _packets(registry)["solota-vs-rakua-mini-plus"]
+    claims = {claim["claim_id"]: claim for claim in packet["claims"]}
+    panasonic = claims["CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-EXCLUDED"]
+    thanko = claims["CLM-PORTFOLIO-DISH-RAKUA-MINI-PLUS-EXCLUDED"]
+    route = claims["CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE"]
+    assert panasonic["effective_lifecycle"] == "UNKNOWN"
+    assert "販売終了や購入不可とは判断しません" in panasonic["statement"]
+    assert "他の販売店の在庫や今後の入荷までは判断しません" in thanko["statement"]
+    assert "購入先の案内がないことは商品の劣位を意味しない" in route["statement"]
+    assert "設置条件を満たせない場合は購入を見送る選択もある" in route["statement"]
+    for claim in claims.values():
+        for misleading in (
+            "購入UI",
+            "現行4候補",
+            "現行比較への案内",
+            "どちらも購入を見送",
+        ):
+            assert misleading not in claim["statement"]
 
 
 def test_toshiba_locators_bind_values_to_their_specification_rows() -> None:
@@ -468,13 +630,13 @@ def test_later_article_selection_facts_are_bound_or_explicitly_unconfirmed() -> 
         ),
         "CLM-PORTFOLIO-DISH-RAKUA-MINI-PLUS-EXCLUDED": (
             "再入荷通知",
-            "商品カードや購入導線",
+            "当サイトでは購入リンクを掲載せず",
         ),
         "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE": (
-            "以前の比較対象2機種はいずれも仕様参考に限定",
-            "現行品の仕様表",
-            "商品カード、購入導線",
-            "少人数向け卓上食洗機4候補の記事へ集約",
+            "2機種の型番・販売表示",
+            "NP-TMLK1-Kの販売状態は未確認",
+            "購入先の案内がないことは商品の劣位を意味しない",
+            "設置条件の選び方は別記事へ案内",
         ),
     }
     for claim_id, tokens in expected_claim_tokens.items():
@@ -1029,10 +1191,10 @@ def test_reader_semantic_p0_boundaries_are_explicit() -> None:
     assert "正確な型番" in solota
     dish_decision = claims["CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE"]["statement"]
     for token in (
-        "以前の比較対象2機種はいずれも仕様参考",
-        "現行品の仕様表",
-        "少人数向け卓上食洗機4候補の記事へ集約",
-        "公式な後継・同等品を意味しない",
+        "2機種の型番・販売表示",
+        "販売終了や購入不可とは判断しない",
+        "設置条件の選び方は別記事へ案内",
+        "性能の優劣や後継機・同等品は断定せず",
     ):
         assert token in dish_decision
     assert claims["CLM-PORTFOLIO-DISH-RAKUA-MINI-PLUS-EXCLUDED"][
@@ -1165,7 +1327,7 @@ def test_rakua_mini_plus_restocks_without_claiming_sold_out() -> None:
     assert claim["effective_lifecycle"] == "RESTOCK_NOTIFICATION_ONLY"
     assert "売り切れ" not in claim["statement"]
     assert "再入荷通知" in claim["statement"]
-    assert "カート導線を確認できません" in claim["statement"]
+    assert "他の販売店の在庫や今後の入荷までは判断しません" in claim["statement"]
 
 
 def test_nestout_numeric_exclusion_is_bound_to_both_official_products() -> None:

@@ -10,13 +10,13 @@
     },
     {
       "content_file": "production-pages/comparison-policy.html",
-      "excerpt": "暮らしのしるべの比較対象、根拠の扱い、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。",
+      "excerpt": "公式情報の確かめ方、実機未使用の明示、Codexによる調査支援と運営者の公開承認、訂正手順を説明します。",
       "slug": "comparison-policy",
       "title": "比較・編集方針"
     },
     {
       "content_file": "production-pages/privacy-policy.html",
-      "excerpt": "暮らしのしるべの取得情報、任意計測の初期状態、同意・撤回、保持期間、外部送信、問い合わせ先を説明します。",
+      "excerpt": "追加のアクセス・クリック計測を行わない方針と、問い合わせ情報や外部アフィリエイトリンクの取扱いを説明します。",
       "slug": "privacy-policy",
       "title": "プライバシーポリシー"
     }

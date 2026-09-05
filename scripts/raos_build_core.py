@@ -118,10 +118,23 @@ EXPLICIT_OWNER_DEPENDENCIES: Final[dict[str, tuple[str, ...]]] = {
         "build_st1103_freshness_operations_workspace",
         "build_st1104_analytics_finance_dashboard",
     ),
+    "build_st1104_analytics_finance_dashboard": (
+        "build_st1305_finance_reconciliation",
+    ),
     "build_st1202_public_event_instrumentation": (
         "build_st1002_public_article_renderer",
         "build_st1004_disclosure_affiliate_runtime",
     ),
+    "build_st1303_attribution_engine": ("build_st1704_affiliate_learning",),
+    "build_st1304_cost_unit_economics": ("build_st1303_attribution_engine",),
+    "build_st1305_finance_reconciliation": ("build_st1304_cost_unit_economics",),
+    "build_st1704_self_hosted_editorial_manifest": (
+        "build_st1704_product_safety_manufacturer_plan",
+    ),
+    "build_st1704_reader_claim_coverage": (
+        "build_st1704_product_safety_manufacturer_plan",
+    ),
+    "build_wordpress_mcp_v1": ("build_st1704_product_safety_manufacturer_plan",),
     "build_st1502_data_services": ("build_st1501_terraform_foundation",),
     "build_st1503_compute_edge": ("build_st1501_terraform_foundation",),
     "build_st1504_github_oidc": (
@@ -156,6 +169,11 @@ EXPLICIT_OWNER_DEPENDENCIES: Final[dict[str, tuple[str, ...]]] = {
     "build_st1904_multi_category": ("build_st1805_portfolio_decision",),
     "build_st1905_advanced_rank_provider": ("build_st1206_keyword_rank_import",),
     "build_st1906_advanced_causal_attribution": ("build_st1303_attribution_engine",),
+    "build_st1907_content_portfolio_optimizer": (
+        "build_st1805_portfolio_decision",
+        "build_st1704_affiliate_learning",
+        "build_st1305_finance_reconciliation",
+    ),
     "build_st1908_fine_tuning_evaluation": ("build_st0707_evaluation_harness_runtime",),
 }
 

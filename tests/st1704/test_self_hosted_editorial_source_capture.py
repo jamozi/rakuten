@@ -201,11 +201,9 @@ NEW_SOURCE_REQUIRED_LOCATOR_TOKENS: Final[dict[str, tuple[str, ...]]] = {
         "充電スタンドでの自動ゴミ収集なし",
     ),
     "SRC-PANASONIC-NP-TMLK1": (
-        "6点",
-        "送風乾燥",
-        "約2.5L",
-        "幅310×高さ435×奥行225",
-        "約7.5㎏",
+        "概要 食器洗い乾燥機 NP-TMLK1",
+        "NP-TMLK1-KserialNumber",
+        "新登場のブラック色モデル",
     ),
     "SRC-THANKO-RAKUA-MINI-PLUS": (
         "tk-mdw22b",

@@ -12,9 +12,9 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.5.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.5.1';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '5be03f20b87080e0ed6c8108035bfb369af2237dba283e4a52c436e258c5ca79';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '5be03f20b87080e0ed6c8108035bfb369af2237dba283e4a52c436e258c5ca79';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -53,7 +53,7 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1'
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = 'assets/editorial-navigation.v3.json';
-const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '25a7cad3916a0658509664abe1a69f2d8f3abe0706cc90e2c979b5c6866c631d';
+const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '81cc4258a9fac31b659321d3172b303c925ede9b1c72194143cb81af68ca071c';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_MAX_BYTES = 262144;
 const KURASHINOSHIRUBE_HOME_TITLE = '生活用品を公式仕様で比較｜暮らしのしるべ';
 const KURASHINOSHIRUBE_HOME_DESCRIPTION = '暮らしのしるべは、移動・家事・備えの生活用品を、公式情報と確認条件に基づいて比較し、選び方を分かりやすく案内します。';
@@ -179,7 +179,7 @@ function kurashinoshirube_article_bindings(): array
                     'feature_shortlist' => '機能別比較',
                     'head_to_head_comparison' => '2製品比較',
                     'head_to_head_with_reference' => '2製品比較＋参考機種',
-                    'lifecycle_status_route' => '以前の比較対象の販売状態確認＋現行比較への案内',
+                    'lifecycle_status_route' => '型番・販売表示の確認案内',
                     'model_family_comparison' => 'ブランド内比較',
                 )[$article['content_role']]
             )
@@ -190,7 +190,7 @@ function kurashinoshirube_article_bindings(): array
                 'feature_shortlist' => '機能別比較',
                 'head_to_head_comparison' => '2製品比較',
                 'head_to_head_with_reference' => '2製品比較＋参考機種',
-                'lifecycle_status_route' => '以前の比較対象の販売状態確認＋現行比較への案内',
+                'lifecycle_status_route' => '型番・販売表示の確認案内',
                 'model_family_comparison' => 'ブランド内比較',
             )[$article['content_role']] !== $article['content_role_label']
             || ! kurashinoshirube_is_clean_text($article['primary_query_intent'], 1, 180)
@@ -954,8 +954,8 @@ function kurashinoshirube_article_visual_asset(int $post_id): ?array
         ),
         'solota-vs-rakua-mini-plus' => array(
             'asset_key' => 'solota-rakua',
-            'caption' => '小型食洗機の販売状態・設置寸法・食器点数・給水方式を整理した暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
-            'points' => array('設置寸法', '食器点数', '給水方式'),
+            'caption' => '食洗機の型番・販売元・在庫と納期を順に確認する暮らしのしるべ編集者の比較イメージ（商品写真ではありません）',
+            'points' => array('対象の型番', '公式の販売表示', '在庫・納期'),
         ),
     );
     $assets = array(
@@ -1039,9 +1039,15 @@ function kurashinoshirube_article_visual_asset(int $post_id): ?array
         }
     }
     return array_merge(
-        $assets[$definition['asset_key']],
         array(
-            'caption' => $definition['caption'],
+            'height' => 900,
+            'path' => KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH,
+            'sha256' => KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256,
+            'width' => 1600,
+        ),
+        array(
+            'caption' => '鍋、マグカップ、照明とチェックリストを描いた暮らしの道具のイラスト',
+            'diagram_caption' => $definition['caption'],
             'points' => $definition['points'],
         )
     );
@@ -2585,30 +2591,19 @@ function kurashinoshirube_render_article_hero($attributes, $content, $tag): stri
     if ($visual === null) {
         return '';
     }
-    $image_uri = kurashinoshirube_verified_asset_uri(
-        $visual['path'],
-        $visual['sha256'],
-        true
-    );
-    if ($image_uri === null) {
-        return '';
-    }
     $point_items = '';
-    foreach ($visual['points'] as $point) {
-        $point_items .= '<li>' . esc_html($point) . '</li>';
+    foreach ($visual['points'] as $index => $point) {
+        $point_items .= '<li><span aria-hidden="true">0'
+            . (string) ($index + 1) . '</span>' . esc_html($point) . '</li>';
     }
-    return '<figure class="wp-block-image size-full raos-article-hero-image">'
+    return '<figure class="raos-article-hero-image raos-article-hero-image--criteria">'
         . '<div class="raos-article-hero-image__canvas">'
         . '<p class="raos-article-hero-image__notice">'
         . '比較イメージ／商品写真ではありません</p>'
-        . '<div class="raos-article-hero-image__media"><img src="'
-        . esc_url($image_uri) . '" alt="" width="'
-        . esc_attr((string) $visual['width']) . '" height="'
-        . esc_attr((string) $visual['height']) . '"></div>'
         . '<div class="raos-article-hero-image__overlay">'
-        . '<p>この記事の比較軸</p>'
-        . '<ul aria-label="この記事で比べる3つの軸">' . $point_items . '</ul></div></div>'
-        . '<figcaption>' . esc_html($visual['caption']) . '</figcaption>'
+        . '<p>この記事で確認すること</p>'
+        . '<ol aria-label="この記事で確認する3つの項目">' . $point_items . '</ol></div></div>'
+        . '<figcaption>' . esc_html($visual['diagram_caption']) . '</figcaption>'
         . '</figure>';
 }
 add_shortcode(
@@ -3127,8 +3122,11 @@ function kurashinoshirube_render_featured_guide($attributes, $content, $tag): st
         . '<p>停電時に使う機器と持ち運び方から、必要な容量と出力を整理します。</p></div>'
         . '<article class="raos-featured-guide"><figure class="raos-featured-guide__visual '
         . 'raos-featured-guide__visual--power"><a href="' . esc_url($permalink)
-        . '"><span class="screen-reader-text">' . esc_html($read_label)
-        . '</span></a></figure>'
+        . '"><span class="raos-featured-guide__diagram" aria-hidden="true">'
+        . '<span>01　使いたい機器を決める</span><span>02　必要な出力を確かめる</span>'
+        . '<span>03　使う時間から容量を考える</span></span>'
+        . '<span class="screen-reader-text">' . esc_html($read_label)
+        . '</span></a><figcaption>選ぶ順番を示す比較図。商品写真ではありません。</figcaption></figure>'
         . '<div class="raos-featured-guide__body"><p class="raos-article-category">'
         . esc_html($section) . 'テーマ／選び方ガイド</p><h3><a href="'
         . esc_url($permalink) . '">' . esc_html($title) . '</a></h3><p>'
@@ -3181,9 +3179,9 @@ function kurashinoshirube_local_preview_cluster_items(
             return '';
         }
         $items .= '<li><a href="' . esc_url($permalink) . '">'
-            . esc_html($binding['title'])
+            . esc_html(get_post_field('post_title', (int) $post->ID, 'raw'))
             . '<small class="raos-guide-role">'
-            . esc_html($binding['content_role_label']) . '</small>'
+            . '比較・選び方ガイド</small>'
             . '<span aria-hidden="true">→</span></a></li>';
     }
     return $items;
@@ -3253,8 +3251,8 @@ function kurashinoshirube_render_published_clusters($attributes, $content, $tag)
                 continue;
             }
             $items .= '<li><a href="' . esc_url($expected_permalink) . '">'
-                . esc_html($title) . '<small class="raos-guide-role">'
-                . esc_html($binding['content_role_label'])
+                . esc_html(get_post_field('post_title', (int) $post->ID, 'raw'))
+                . '<small class="raos-guide-role">比較・選び方ガイド'
                 . '</small><span aria-hidden="true">→</span></a></li>';
         }
         if ($items === '') {
@@ -3438,15 +3436,58 @@ function kurashinoshirube_policy_page_head_map(): array
             'title' => '運営・広告方針',
         ),
         'comparison-policy' => array(
-            'description' => '暮らしのしるべの比較対象、根拠の扱い、実機未使用時の表現、掲載順と報酬の分離、訂正手順を説明します。',
+            'description' => '公式情報の確かめ方、実機未使用の明示、Codexによる調査支援と運営者の公開承認、訂正手順を説明します。',
             'title' => '比較・編集方針',
         ),
         'privacy-policy' => array(
-            'description' => '暮らしのしるべの取得情報、任意計測の初期状態、同意・撤回、保持期間、外部送信、問い合わせ先を説明します。',
+            'description' => '追加のアクセス・クリック計測を行わない方針と、問い合わせ情報や外部アフィリエイトリンクの取扱いを説明します。',
             'title' => 'プライバシーポリシー',
         ),
     );
-    return kurashinoshirube_is_local_preview() ? $local : $production;
+    if (! kurashinoshirube_is_local_preview()) {
+        return $production;
+    }
+    // The isolated mixed preview contains real baseline or proposed production
+    // policy copy. It must not silently substitute local-only privacy wording.
+    // This option has no effect at all outside the strict loopback environment.
+    $mixed = get_option('raos_mixed_preview_policy_heads_v1', null);
+    if ($mixed === null) {
+        return $local;
+    }
+    if (
+        ! is_array($mixed)
+        || ($mixed['schema'] ?? null) !== 'RAOS_WORDPRESS_MIXED_PREVIEW_POLICY_HEADS_V1'
+        || ($mixed['publication_profile'] ?? null) !== 'verified-incremental'
+        || ($mixed['publication_authority'] ?? null) !== false
+        || ! is_string($mixed['preparation_binding_sha256'] ?? null)
+        || preg_match('/\A[a-f0-9]{64}\z/D', $mixed['preparation_binding_sha256']) !== 1
+        || ! is_array($mixed['pages'] ?? null)
+        || array_keys($mixed['pages']) !== array('about-ad-policy', 'comparison-policy', 'privacy-policy')
+    ) {
+        return array();
+    }
+    $heads = array();
+    foreach ($mixed['pages'] as $slug => $record) {
+        $post = get_page_by_path($slug, OBJECT, 'page');
+        if (
+            ! is_array($record)
+            || ! is_string($record['title'] ?? null)
+            || ! kurashinoshirube_is_clean_text($record['title'], 2, 100)
+            || ! is_string($record['description'] ?? null)
+            || ! kurashinoshirube_is_clean_text($record['description'], 30, 180)
+            || ! is_string($record['content_sha256'] ?? null)
+            || preg_match('/\A[a-f0-9]{64}\z/D', $record['content_sha256']) !== 1
+            || ! ($post instanceof WP_Post)
+            || get_post_status($post) !== 'publish'
+            || get_post_field('post_title', $post->ID, 'raw') !== $record['title']
+            || get_post_field('post_excerpt', $post->ID, 'raw') !== $record['description']
+            || hash('sha256', (string) get_post_field('post_content', $post->ID, 'raw')) !== $record['content_sha256']
+        ) {
+            return array();
+        }
+        $heads[$slug] = array('title' => $record['title'], 'description' => $record['description']);
+    }
+    return $heads;
 }
 
 /**

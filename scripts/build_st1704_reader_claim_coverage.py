@@ -680,7 +680,7 @@ REVIEWED_READER_LEDGER_SHA256: Final = (
 # Reconciled development ledger, not an independent review attestation. Keep
 # the reviewed anchor above unchanged until the separate review is completed.
 DEVELOPMENT_READER_LEDGER_SHA256: Final = (
-    "50f8f855496f9ed17462bec0fd66116f8956e3831da727c2ccff18e65426ebde"
+    "7581aedcbeae7c4aa3500a7ff5193869140851c2d35775b09d8f97f2f5ac60ab"
 )
 ADDITIONAL_OFFICIAL_SALES_HOSTS: Final = {
     # siroca separates product information and its first-party store across
@@ -1164,6 +1164,8 @@ NAVIGATION_EXEMPTION_RE: Final = re.compile(
     r"合いやすい条件|合いにくい条件|"
     r"別の候補も検討したい条件|容量の参考|"
     r"商品画像未確認・購入導線停止|"
+    r"^(?:はじめに|結論|比較方法|こんな人向け|1泊の確認項目|"
+    r"4つの使用場面|設置|手入れ|アプリ・Wi-Fi|まとめ|確認結果|確認方法)$|"
     r"注記・出典|^候補\d+$|^\d{1,2}$|^\d{2}\s|^[A-D](?:\s.*)?$)"
 )
 SOURCE_LABEL_EXEMPTION_RE: Final = re.compile(
@@ -1195,6 +1197,9 @@ METADATA_FIXED_TEXTS: Final = frozenset(
 )
 METHOD_FIXED_TEXTS: Final = frozenset(
     {
+        "清掃力・段差・障害物回避は実機で比べていません。",
+        "軽さ、前開き、PC収納のどれが必要かを考える前に、利用便と機材を確認してください。"
+        "公称寸法だけでは持ち込み可否を確定できません。",
         "容量、定格出力、重量をメーカー公式情報で確認できるモデルに限定",
         "販売状態は変わるため、購入前にメーカー公式ページで同じ型番を再確認します。",
         "A. いいえ。正確な型番の購入画面または再入荷通知を確認します。"

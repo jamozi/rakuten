@@ -1,0 +1,73 @@
+services:
+  database:
+    image: mariadb:11.8.3@sha256:ae6119716edac6998ae85508431b3d2e666530ddf4e94c61a10710caec9b0f71
+    restart: 'no'
+    environment:
+      MARIADB_DATABASE: scratch_wordpress
+      MARIADB_USER: scratch_wordpress
+      MARIADB_PASSWORD: ${RAOS_SCRATCH_DB_PASSWORD:?private password required}
+      MARIADB_ROOT_PASSWORD: ${RAOS_SCRATCH_ROOT_PASSWORD:?private password required}
+    healthcheck:
+      test: [CMD-SHELL, 'mariadb-admin ping --host=127.0.0.1 --user=root --password=$${MARIADB_ROOT_PASSWORD} --silent']
+      interval: 2s
+      timeout: 2s
+      retries: 60
+    volumes:
+      - scratch_database:/var/lib/mysql
+    networks: [scratch_internal]
+
+  wordpress:
+    image: wordpress:7.1.0-php8.3-apache@sha256:8801a1239d7ba9fb340a5fc5ba0bf7f8d3652adbd64893e3fba7992ba618108e
+    restart: 'no'
+    depends_on:
+      database:
+        condition: service_healthy
+    environment: &wordpress_environment
+      WORDPRESS_DB_HOST: database
+      WORDPRESS_DB_NAME: scratch_wordpress
+      WORDPRESS_DB_USER: scratch_wordpress
+      WORDPRESS_DB_PASSWORD: ${RAOS_SCRATCH_DB_PASSWORD:?private password required}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'http://scratch.wordpress.invalid');
+        define('WP_SITEURL', 'http://scratch.wordpress.invalid');
+        define('WP_ENVIRONMENT_TYPE', 'local');
+        define('RAOS_LOCAL_RESTORE_SCRATCH', true);
+        define('WP_HTTP_BLOCK_EXTERNAL', true);
+        define('WP_POST_REVISIONS', false);
+        define('DISALLOW_FILE_EDIT', true);
+        define('DISALLOW_FILE_MODS', true);
+        define('AUTOMATIC_UPDATER_DISABLED', true);
+        define('WP_AUTO_UPDATE_CORE', false);
+    volumes:
+      - scratch_wordpress:/var/www/html
+    networks: [scratch_internal]
+
+  cli:
+    image: wordpress:cli-2.12.0-php8.3@sha256:2b5e9d4d3e51909dca1aaa4732e9f5e5bf0377c2114dbd8ff39f060bff202586
+    profiles: [cli]
+    entrypoint: [wp]
+    environment:
+      <<: *wordpress_environment
+      RAOS_SCRATCH_RESTORE_ENVIRONMENT: ${RAOS_SCRATCH_ENVIRONMENT:?scratch identity required}
+      RAOS_SCRATCH_SEED_SHA256: ${RAOS_SCRATCH_SEED_SHA256:?seed hash required}
+    user: '${RAOS_SCRATCH_UID:?owner uid required}:${RAOS_SCRATCH_GID:?owner gid required}'
+    working_dir: /var/www/html
+    volumes:
+      - scratch_wordpress:/var/www/html
+      - type: bind
+        source: ${RAOS_SCRATCH_SOURCE_ROOT:?tracked scripts required}/changes/wordpress-local-preview-v1/scratch-restore-seed.php
+        target: /var/www/raos-scratch-restore-seed.php
+        read_only: true
+      - type: bind
+        source: ${RAOS_SCRATCH_PRIVATE_ROOT:?private backup required}
+        target: /var/www/raos-scratch-backup
+    networks: [scratch_internal]
+
+volumes:
+  scratch_database:
+  scratch_wordpress:
+
+networks:
+  scratch_internal:
+    driver: bridge
+    internal: true

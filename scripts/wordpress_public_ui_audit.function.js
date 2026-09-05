@@ -31,7 +31,7 @@
     ['feature_shortlist', '機能別比較'],
     ['head_to_head_comparison', '2製品比較'],
     ['head_to_head_with_reference', '2製品比較＋参考機種'],
-    ['lifecycle_status_route', '以前の比較対象の販売状態確認＋現行比較への案内'],
+    ['lifecycle_status_route', '型番・販売表示の確認案内'],
     ['model_family_comparison', 'ブランド内比較'],
   ]);
   const intentGroupByArticleId = new Map(
@@ -427,9 +427,9 @@
             opacityVisible: disclosureAncestorsVisible &&
               disclosureEffectiveOpacity > 0 && visible(disclosure),
             nonaffiliatePhraseCount: [
-              'この記事には購入リンクがありません',
-              '以前の比較対象の販売状態を確認する案内記事',
+              '購入リンクなし',
               '商品カードとアフィリエイトリンクは掲載していません',
+              '購入先を案内しないことは、商品の性能が劣るという意味ではありません',
             ].filter((phrase) => disclosureText.includes(phrase)).length,
             policyLinkCount: disclosurePolicyLinks.length,
             standardPhraseCount: [
@@ -677,7 +677,7 @@
         !audit.disclosure.opacityVisible || !audit.disclosure.inViewport ||
         !audit.disclosure.unobscured || audit.disclosure.policyLinkCount !== 1 ||
         (isLifecycleStatusRoute
-          ? audit.disclosure.ariaLabel !== '収益化の対象外' ||
+          ? audit.disclosure.ariaLabel !== '購入リンクについて' ||
             audit.disclosure.strongText !== '購入リンクなし' ||
             audit.disclosure.detailsCount !== 0 || audit.disclosure.detailsValid ||
             audit.disclosure.summaryVisible ||

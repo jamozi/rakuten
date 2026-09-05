@@ -9,6 +9,15 @@ its exact source Story, source digest, period boundary, attribution basis,
 freshness state, verification state, and explicit availability. The V2 projection
 is process-local, synthetic, confidential, and non-attesting.
 
+Normal owner generation replays the existing dashboard fixture before refreshing
+only its ST-1304 dependency hashes and matching runtime metadata. It preserves
+the six-screen mapping, evaluated timestamp, values and disabled-authority flags;
+it does not create a new observation or attestation. The runtime compares these
+references to the typed upstream result rather than a hardcoded development
+digest. `--check` never refreshes files and rejects stale dependency references.
+The existing secure multi-file writer publishes binding updates as one local
+transaction.
+
 The predecessor closure is semantically rebound to ST-1101
 `bae6de32505705d78e07d2d1b31ff67aaefa69dc`, ST-1205
 `9d504b5bafaa3e07b6214b44bc64f11d302335ff`, and ST-1304

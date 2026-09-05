@@ -43,9 +43,7 @@ def test_generated_audit_inventory_is_public_safe_exact_v3_projection() -> None:
     assert list(article_surfaces) == [
         row["article_id"] for row in navigation["articles"]
     ]
-    cluster_by_id = {
-        row["cluster_id"]: row for row in navigation["clusters"]
-    }
+    cluster_by_id = {row["cluster_id"]: row for row in navigation["clusters"]}
     for article in navigation["articles"]:
         surface = article_surfaces[article["article_id"]]
         contextual_id = article["related_articles"][0]["article_id"]
@@ -147,8 +145,8 @@ def test_public_audit_covers_home_ten_articles_and_three_pages_at_four_widths() 
         "audit.disclosure.unobscured",
         "audit.disclosure.standardPhraseCount !== 3",
         "audit.disclosure.nonaffiliatePhraseCount !== 3",
-        "'以前の比較対象の販売状態を確認する案内記事'",
-        "audit.disclosure.ariaLabel !== '収益化の対象外'",
+        "'購入先を案内しないことは、商品の性能が劣るという意味ではありません'",
+        "audit.disclosure.ariaLabel !== '購入リンクについて'",
         "audit.disclosure.strongText !== '購入リンクなし'",
         "audit.disclosure.detailsCount !== 0",
         "audit.disclosure.standardPhraseCount !== 0",
@@ -172,7 +170,7 @@ def test_public_audit_covers_home_ten_articles_and_three_pages_at_four_widths() 
         "page.keyboard.press('Shift+Tab')",
         "TAB_ORDER_NOT_REVERSIBLE",
         "lifecycleStatusRouteArticleId = 'solota-vs-rakua-mini-plus'",
-        "['lifecycle_status_route', '以前の比較対象の販売状態確認＋現行比較への案内']",
+        "['lifecycle_status_route', '型番・販売表示の確認案内']",
         "lifecycleStatusRouteRows.length !== 1",
         "surface.content_role === 'lifecycle_status_route'",
         "zeroProducts !== isLifecycleStatusRoute",
@@ -233,10 +231,7 @@ def test_public_audit_rejects_a09_lifecycle_route_tamper_before_navigation() -> 
         if surface.get("article_id") == "solota-vs-rakua-mini-plus"
     )
     assert a10["content_role"] == "lifecycle_status_route"
-    assert (
-        a10["content_role_label"]
-        == "以前の比較対象の販売状態確認＋現行比較への案内"
-    )
+    assert a10["content_role_label"] == "型番・販売表示の確認案内"
     script = r"""
 const fs = require('fs');
 const [auditPath, inventoryPath] = process.argv.slice(1);
@@ -247,7 +242,7 @@ const a09 = inventory.surfaces.find(
 );
 if (!a09) throw new Error('A09_MISSING');
 a09.content_role = 'lifecycle_status_route';
-a09.content_role_label = '以前の比較対象の販売状態確認＋現行比較への案内';
+a09.content_role_label = '型番・販売表示の確認案内';
 (async () => {
   try {
     await factory({

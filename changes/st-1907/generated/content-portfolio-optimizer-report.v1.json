@@ -37,8 +37,8 @@
       "RECORDED_SYNTHETIC_ONLY",
       "SEPARATE_RELEASE_DECISION_REQUIRED"
     ],
-    "command_sha256": "6e67299b5777f107f89f9f757668c4a31cbea8afc4ca1856ec5275d80da19da4",
-    "contract_sha256": "59c08734d6e626f32f9d07464ad7817301b19e39e7d401c9f729c6e34ab2e0a5",
+    "command_sha256": "6006d07c9c48c5b611f106d9ac660ce9f03d5f4153c8c7149045c46d06685da5",
+    "contract_sha256": "33462edb7f1de9aff5ad3c9cdc9cbedcd174671493077e502f1b7e44a35aaf9a",
     "dependency": {
       "acceptance_criteria_satisfied": false,
       "actual_observation_count": 0,
@@ -51,7 +51,7 @@
       "source_overall": "BLOCKED",
       "story_id": "ST-1805"
     },
-    "measurement_contract_sha256": "aa60d03210ef0cc3917104fff3a8a5b2fef1502fe37649cc5255c785c9b39edd",
+    "measurement_contract_sha256": "28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0",
     "method_version": "RAOS_ST1907_HUMAN_PROPOSAL_PORTFOLIO_OPTIMIZER_V1",
     "policy": {
       "action_vocabulary": [
@@ -80,16 +80,16 @@
     "proposal_count": 0,
     "proposal_state": "NO_PROPOSALS",
     "proposals": [],
-    "report_sha256": "16255814c680be942c7749a05e92474e5fbb2c4a2e793a14644d05fa2c3a5fca",
-    "signal_policy_sha256": "4a7ff35dd499f74828ee34b12ff33f43c5e190213f3f40b93da100070165ca9e",
-    "source_sha256": "71cbdc3cfb14299402766b4a6a8d59c4b0316f5004fe6e31717597cae415de70",
+    "report_sha256": "dc4a8641b1011ae97966a6f94841ed31f16cc4a9c35e648cc7920b6c4dcb69d6",
+    "signal_policy_sha256": "5e5ae0a0a90f3614d8fbb7070eaf280e2d6bb314c21df52243577a9c6c259c85",
+    "source_sha256": "f284f4575832a1beed6f22541b8543a904edbecadc67e8ea461a8d2e1a7ababc",
     "unavailable_reason": "DEPENDENCY_BLOCKED_NO_DECISION"
   },
   "source": {
     "bytes": 986,
     "fixture_profile": "RAOS_ST1907_RECORDED_SYNTHETIC_V1",
     "path": "changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json",
-    "sha256": "71cbdc3cfb14299402766b4a6a8d59c4b0316f5004fe6e31717597cae415de70",
+    "sha256": "f284f4575832a1beed6f22541b8543a904edbecadc67e8ea461a8d2e1a7ababc",
     "synthetic": true
   }
 }

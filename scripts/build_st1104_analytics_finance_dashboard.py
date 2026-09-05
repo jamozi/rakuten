@@ -260,14 +260,17 @@ def _load_contract(root: Path = REPO_ROOT) -> dict[str, object]:
         "synthetic": True,
         "environment": "ENV-CI",
         "st1205_input_sha256": COMPLETE_RECORDED_INPUT_SHA256,
-        "st1304_input_sha256": (
-            "b6c80bc4b12e81a9d126793475c5c9650a2be5c01d5d398ddb1ca96199edcb47"
-        ),
-        "st1304_result_sha256": (
-            "d69b2a6a40f3b79a294e9a3853936e7f6cbb733cb8986f93d09757422dade5b2"
-        ),
+        "st1304_input_sha256": fixture.get("st1304_input_sha256"),
+        "st1304_result_sha256": fixture.get("st1304_result_sha256"),
         "provider_execution": "NOT_EXECUTED",
     }:
+        _fail("CONTRACT_VALUE_INVALID", "recorded_fixture")
+    # Runtime integrity is checked against the typed upstream replay, not a
+    # fixed development-content digest that becomes stale after article edits.
+    try:
+        DashboardDigest(cast(str, fixture["st1304_input_sha256"]))
+        DashboardDigest(cast(str, fixture["st1304_result_sha256"]))
+    except Exception:
         _fail("CONTRACT_VALUE_INVALID", "recorded_fixture")
     screen = _mapping(contract["screen_contract"], "screen_contract")
     order = screen.get("order")
@@ -506,7 +509,88 @@ def expected_artifacts(root: Path = REPO_ROOT) -> tuple[tuple[Path, bytes], ...]
     )
 
 
+def refresh_upstream_bindings(root: Path = REPO_ROOT) -> None:
+    """Refresh only dependency hashes in the unchanged synthetic dashboard."""
+    from raos.adapters.recorded_analytics_finance_dashboard import _parse_fixture
+
+    contract = _load_contract(root)
+    previous = _read_regular(_safe_path(root, FIXTURE_PATH))
+    binding = cast(dict[str, object], contract["recorded_fixture"])
+    command = RecordedDashboardCommand(
+        fixture_sha256=DashboardDigest(cast(str, binding["sha256"])),
+        fixture_bytes=cast(int, binding["bytes"]),
+        expected_kpi_input_sha256=DashboardDigest(
+            cast(str, binding["st1205_input_sha256"])
+        ),
+        expected_unit_input_sha256=DashboardDigest(
+            cast(str, binding["st1304_input_sha256"])
+        ),
+        expected_unit_result_sha256=DashboardDigest(
+            cast(str, binding["st1304_result_sha256"])
+        ),
+    )
+    try:
+        # Parse against the existing bound fixture before replacing references.
+        # Screen mapping, evaluated_at, flags and all values are retained.
+        _parse_fixture(previous, command)
+        fixture = json.loads(previous)
+        measurement = st1303.load_contract(root)[1]
+        scenario = load_recorded_unit_economics_fixture(
+            _safe_path(root, ST1304_FIXTURE_PATH).resolve(),
+            attribution_fixture_path=_safe_path(root, ST1303_FIXTURE_PATH).resolve(),
+            contract=measurement,
+        )
+        result = UnitEconomicsService(
+            environment=RuntimeEnvironment.CI, runner=RecordedUnitEconomicsAdapter()
+        ).execute(scenario.request)
+        fixture["source_bindings"].update(
+            st1304_fixture_sha256=scenario.fixture_sha256.value,
+            st1304_input_sha256=scenario.request.input_sha256.value,
+            st1304_result_sha256=result.result_sha256.value,
+        )
+        payload = (
+            previous
+            if fixture == json.loads(previous)
+            else (json.dumps(fixture, ensure_ascii=False, indent=2) + "\n").encode()
+        )
+        binding.update(
+            sha256=_sha256(payload),
+            bytes=len(payload),
+            st1304_input_sha256=scenario.request.input_sha256.value,
+            st1304_result_sha256=result.result_sha256.value,
+        )
+        for name, row in cast(
+            dict[str, dict[str, str]], contract["source_bindings"]
+        ).items():
+            if name.startswith(("st1303_", "st1304_")):
+                row["sha256"] = _sha256(
+                    _read_regular(_safe_path(root, Path(row["path"])))
+                )
+        artifacts: list[tuple[Path, bytes]] = []
+        if payload != previous:
+            artifacts.append((_safe_path(root, FIXTURE_PATH), payload))
+        if contract != _load_contract(root):
+            artifacts.append(
+                (
+                    _safe_path(root, CONTRACT_PATH),
+                    yaml.safe_dump(
+                        contract, sort_keys=False, allow_unicode=True
+                    ).encode(),
+                )
+            )
+        if artifacts:
+            secure_generated_publication.publish_generated(
+                tuple(artifacts),
+                namespace="st1104-bindings",
+                maximum_payload_bytes=MAX_GENERATED_BYTES,
+            )
+    except Exception:
+        _fail("SYNTHETIC_REBIND_INPUT_INVALID", "fixture")
+
+
 def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
+    if not check:
+        refresh_upstream_bindings(root)
     artifacts = expected_artifacts(root)
     if check:
         for relative, expected in artifacts:

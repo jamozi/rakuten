@@ -10,14 +10,14 @@
   "generated_by": "scripts/build_st1704_rakuten_capture_manifest.py",
   "paths": [
     {
-      "bytes": 77072,
+      "bytes": 77077,
       "path": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
-      "sha256": "5ef653b2444e77d912ddbcfc2c94e39bec1e37b4fee831be997546ec47cee6ba"
+      "sha256": "f97c305223f18e7cd493a6a32d576c75098b4b5206d1a93531b8c5339aa65d2d"
     },
     {
       "bytes": 8816,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "ce5bfb906432543df10418b08ef636f9f8a0d7d57ff511e46f2da138325861dd"
+      "sha256": "cd7fd4e37358bbc78a962a89143130bc80afe05abdad133c58354672bf429cb8"
     },
     {
       "bytes": 5429,
@@ -27,7 +27,7 @@
     {
       "bytes": 32133,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "3d92c31c2749d6a8aa88a657261bd056fa2a1d7dd2f971de9bfea85130c9b5bb"
+      "sha256": "56e2638d1f4769227d9b36e4cb45bc13d023d3b8bf8eade05f2ce2ede664ce9c"
     },
     {
       "bytes": 2486,
@@ -45,9 +45,9 @@
       "sha256": "73c13dd6f321dfe4ec8386fb0dcf0ab8a42578d4fe9b5b3f45eefbb4b1cbb32f"
     },
     {
-      "bytes": 252137,
+      "bytes": 254959,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-      "sha256": "29e4398f74404330c49a6ad769ac2b1e21b1852acee0a556ab2ccae1f3220472"
+      "sha256": "592565d632d2dc7e3c5ef72ae58a9023c16ca7de2b4eb0403499e89961e39c07"
     },
     {
       "bytes": 34324,
@@ -55,9 +55,9 @@
       "sha256": "5b2ac14d137016667e5647a38e6f35ab95d8ba441c50f531b99239a46baead7c"
     },
     {
-      "bytes": 235225,
+      "bytes": 235632,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
-      "sha256": "dec409494e6018fd89786ccbc02920e59a25f2aa548548e67e93e865be28aeee"
+      "sha256": "30bddd832b717a2521dfe4d679312ed98934a62a4414a73a0e5d8c154fa99605"
     },
     {
       "bytes": 99644,

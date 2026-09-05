@@ -62,8 +62,8 @@
   "runtime_files": [
     {
       "path": ".codex/config.toml",
-      "sha256": "4ec6806fe1e0eabdd3627073b7291522424ae420d0f5c1c2ad16c22f6e81cdfc",
-      "size": 6116
+      "sha256": "e58f4dacfcf504cd1ae4ad7e4221ccd5e980c1813358fbbf90454b7be82ba454",
+      "size": 6138
     },
     {
       "path": "Makefile",
@@ -72,33 +72,33 @@
     },
     {
       "path": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
-      "sha256": "eaeaa38424ea9aa84a547115c4470e58a64824249a159f5d8f69b71b6eb86bed",
-      "size": 18281
+      "sha256": "a3c11405b2042890aa4dd014490623482f34a1c15e784fd0335ab04c12401c4b",
+      "size": 18264
     },
     {
       "path": "changes/editorial-measurement-v1/runtime-manifest.v1.json",
-      "sha256": "917a244bc235079753493c6d08d1b5aaf5c2d4d7c7f269a33e9035ab43e68f6c",
+      "sha256": "2937e6b5582ea02759d087596fac60de31d34ab37d2cf502d566087600b6429e",
       "size": 2879
     },
     {
       "path": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
-      "sha256": "5ef653b2444e77d912ddbcfc2c94e39bec1e37b4fee831be997546ec47cee6ba",
-      "size": 77072
+      "sha256": "f97c305223f18e7cd493a6a32d576c75098b4b5206d1a93531b8c5339aa65d2d",
+      "size": 77077
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
-      "sha256": "2bc8157feb74196d00044423109983a1e3214f29888000e39072c2258bae98a1",
+      "sha256": "a9c531b30d5026c8575e5cd67fe0e9078501d47a0bb47be73af24e9ae512ea75",
       "size": 3365
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "b485f6ae3a33bac4f250d96da59411db0e77ae81da4775cd749200bf25366eda",
-      "size": 80081
+      "sha256": "001e74863beee56bf58f94c34173e11939edcc7f70a656c7bc1c5f3399883eb0",
+      "size": 80080
     },
     {
       "path": "changes/wordpress-local-preview-v1/README.md",
-      "sha256": "a51520fc912699a89c749b87586b1567b5be46d9361aedcc9669f9f9c2f90a54",
-      "size": 16582
+      "sha256": "05d838b2fac10ea6743dbda048dad8db1b5cada7bd14c7940df85262afb1638e",
+      "size": 19232
     },
     {
       "path": "changes/wordpress-local-preview-v1/bin/materialize_yoast.py",
@@ -107,13 +107,23 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/bin/wordpress_preview.sh",
-      "sha256": "ab00ecc23d9460be957587b58c8c48a53b318538bd8424e78485e5b5fc2d82e5",
-      "size": 21099
+      "sha256": "62e82cb0e6cde095c9d67e3ea5919d28c6808ed53d7791c6c2dd1baf81c6acf0",
+      "size": 24672
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/check.sh",
-      "sha256": "452a02b18344ff1a2ce4cee4d292e82a1570f45b3b48a69843730b35730fd464",
-      "size": 7066
+      "sha256": "d2545799e6aacb7436fa0bed6d8070c2a29462757aaf461bb9c31580409d8863",
+      "size": 10099
+    },
+    {
+      "path": "changes/wordpress-local-preview-v1/browser/incremental_scope.py",
+      "sha256": "17cdbf124f1b509957d714ac94e17e628a26322279bef29776410b2c30ca087a",
+      "size": 10533
+    },
+    {
+      "path": "changes/wordpress-local-preview-v1/browser/mixed_audit_report.py",
+      "sha256": "c1bdfd3d27a13432ea9aa172a3242c3082b280858691517f080748c0fba76514",
+      "size": 18227
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/lighthouse_check.sh",
@@ -122,78 +132,78 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
-      "sha256": "ac4fc9735a2c5dfe64fb478db8539f3aed6cbcff3769f881771232058b635ded",
-      "size": 92225
+      "sha256": "2be07083458b2f4a02fd5cb9444b588e998d3fb21f8b62334dfe41f09e25fd88",
+      "size": 102962
     },
     {
       "path": "changes/wordpress-local-preview-v1/compose.yaml",
-      "sha256": "e1afb56cfe52936d189948d5d3468d74873b40d03190c2248f1bc936142767e5",
-      "size": 7708
+      "sha256": "095e6f975ac5943392f7239530935b6dc3705697e24de6c4bde28b3d94c8bb77",
+      "size": 8074
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
-      "sha256": "43807ee851ba455427e82d8f3b9c580deb8f66f8b173937745c238904f258335",
-      "size": 41834
+      "sha256": "86b1a5f939c8bea35ec2b05d8cecc10f32189141b42cd1a431d45383ac659064",
+      "size": 42506
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
-      "sha256": "2d97cabb3a19f3e7cf5d1261acb94d64f3e6f2925c11ab4985939db7275f3d9f",
-      "size": 33199
+      "sha256": "10f134215496a2eaad731bc7844465725911eb2247e6c8365c8669f3928f0ece",
+      "size": 33610
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
-      "sha256": "7a812e0c7c66d69e696dd462712491e7f5d71c153249ca6120016b3ab3f4383d",
-      "size": 36573
+      "sha256": "296875d0c6f55b8b35152412876835d545cc3e875c9d46f116d704543ae35a3d",
+      "size": 36319
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
-      "sha256": "f7e50fc320be7959c0a66fd48be0991bf4b4f502085d0cf8cd5f0198c1ce83df",
-      "size": 48066
+      "sha256": "17bf19b4440f062fa25b2a99f561edb165f1767614f685fdc38c7c73670267ff",
+      "size": 48481
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
-      "sha256": "585688f5db3f903d1f6ee1d2e84e70bc9753e68cb935912836471b810d7931eb",
-      "size": 42870
+      "sha256": "793ffc90a38848510e743147615a2b798c8fa2f02cd4601310c6f3c0a27e34e9",
+      "size": 43106
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
-      "sha256": "68d2c95ef3a48604afa7361e9ab2ef7bd008127659b15a929d353ef5a4734acd",
-      "size": 44648
+      "sha256": "7338f4af601849c3cb34bc07791316c04d337e1d192de156fc43e867e4c17127",
+      "size": 44019
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
-      "sha256": "94b83803889d2167c7c9c51132543277dfce81aa899992d8a0a7c3a59240989a",
-      "size": 43573
+      "sha256": "2d8f31b7f6fc3f92853f29e84e66cc3699c38059dbc20a41a08c8fe9e9ea61bc",
+      "size": 43223
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
-      "sha256": "b50b6e5a25079b6c53f404e90433584997a493ccec3cd5d0ecddff6ca1b216a0",
-      "size": 63406
+      "sha256": "4e96536bef639e4d4722e0b6f8c8c272aee480e36e539d8e774a7095ccd50d85",
+      "size": 64494
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
-      "sha256": "64168dbf12d10f3c44fea6ab92e236de70db1d9d1c3cb268a9db2f27f0b884e0",
-      "size": 21131
+      "sha256": "a0c7708335bda300cd6449ea4fd7d41563dd01f564e3a527d37e1e31c0f4545c",
+      "size": 20881
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
-      "sha256": "da82f148e08dda90cffda8d50982c318561ed82b6b59f22b711cd3ee8ca25365",
-      "size": 9802
+      "sha256": "7c6079e06277000d608d87f6e4712e4ea76762bb90dfa4669e1264181c491872",
+      "size": 6905
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/pages/about-ad-policy.html",
-      "sha256": "bec190d203ce3a4cfc72dda2c6958dfa2465a135fdfe5b3a1eb2e0d1dc49df21",
-      "size": 5842
+      "sha256": "7aa9ef39ec8c56d07396ff29115445cd59347c066dd60bb284bb1c6e8c712c30",
+      "size": 6869
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/pages/comparison-policy.html",
-      "sha256": "40d353dbadb361a359daaa3ca255e1c42be616809b39d28c3731a83729919aea",
-      "size": 8875
+      "sha256": "39a1e1d6ffe3d0190f7718862f1225cf4b0d56a823b33a62afda6aa10e13ae0f",
+      "size": 9873
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/pages/privacy-policy.html",
-      "sha256": "b8133081edd113c8618afed8a14dcb88293ce798237a7d538c3131806b6b666d",
-      "size": 5663
+      "sha256": "6e50475e9dcae06b12b04dde3f60f3fba409c85ad65f58d292aba44bf1a71668",
+      "size": 6085
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/pages.json",
@@ -202,48 +212,63 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/posts.json",
-      "sha256": "e47b8a8142d838a95f509bac88f4e2e45c6bd591a44ca926f095a0a6716e0c91",
-      "size": 6417
+      "sha256": "39e36ccfdf914b65f560e8d00513e035ff0b715f5300280a8c49448e1101af02",
+      "size": 6431
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/production-pages.json",
-      "sha256": "996e3443247bc931896a24717742882c8bd53c1d5b7c343e0755c41812e51587",
-      "size": 1078
+      "sha256": "4390cdeda72d671cc26930f6a15d3ba18d13d2951663c29ffbc026ac308358c0",
+      "size": 1080
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/production-pages/about-ad-policy.html",
-      "sha256": "71d0e1a9cc8c72933083ebafffc6c792921a4e4515e195807e8f13088cd99f84",
-      "size": 4601
+      "sha256": "0c4ff0e6618e19c7a3e44faffab9c74ef9de24bfbc12f90d6332f6d12a526564",
+      "size": 5652
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/production-pages/comparison-policy.html",
-      "sha256": "26133829e120a12864b86cc0550bba38b9e90a84bfbc81cfa6ab6f852d94ded0",
-      "size": 6259
+      "sha256": "d3b72fb87e12e2bda05464b81848c374a08e24f40b46d97bf43742e34bb2c914",
+      "size": 7029
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/production-pages/privacy-policy.html",
-      "sha256": "9ef1dfbb198ae07bc8b256052a845f806f96874a7c859e63da8a438940afffea",
-      "size": 5124
+      "sha256": "b59922a3498fecf9aae7bdd44fbf66bc576b8f3fe454ac0776c041d0d23a7cd9",
+      "size": 4536
     },
     {
       "path": "changes/wordpress-local-preview-v1/policy-profiles.v1.json",
-      "sha256": "7c0e632d84f8570abd28a5e104af90ef130fc40525a6e042034811fc259fa4ab",
-      "size": 2938
+      "sha256": "08ec7a05d281228da14b5afa5294012b62253aef98da869626732b0ebfc60083",
+      "size": 2868
     },
     {
       "path": "changes/wordpress-local-preview-v1/production-mapping.v1.json",
-      "sha256": "8170df944be3adfa62ec573577c05f1736a83af8e3431e3adec0626eedf09ec4",
-      "size": 4980
+      "sha256": "0fdf50a666ea9c42a679c0350a5cbd2225db41ea1a08ea4821a9bc0ab85a5237",
+      "size": 5063
     },
     {
       "path": "changes/wordpress-local-preview-v1/seed.php",
-      "sha256": "ce46f41cb1b7e49fbb5297e271e1214156978562be65fc1a595f65b39f44b06c",
-      "size": 23997
+      "sha256": "5248a339976bd2bc4090e554363fab0f52e090da503756131aade5c7692eb799",
+      "size": 32242
+    },
+    {
+      "path": "changes/wordpress-local-preview-v1/restore-seed.php",
+      "sha256": "e0de038b0cf44b182f622cc184d8fd52b2d469feff4c5b2ae1c0153a987f1215",
+      "size": 14399
+    },
+    {
+      "path": "changes/wordpress-local-preview-v1/scratch-restore.compose.yaml",
+      "sha256": "e7f59704866fb0fd0b27a58350ac9812accfbbda6dc8eba7267e00e3a347dd01",
+      "size": 2836
+    },
+    {
+      "path": "changes/wordpress-local-preview-v1/scratch-restore-seed.php",
+      "sha256": "1ba241b51a32f4977e31e20081298ca871f947042d3d229d848036e71e70b597",
+      "size": 12169
     },
     {
       "path": "changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.json",
-      "sha256": "5a61e9ab098becfd756f44b7582d9a43a562922494d5903d7bda2b0ecb3d26a1",
-      "size": 4637
+      "sha256": "1917cc4e2d8bf1b2466f28cda4ea71e2d9ebe44bff6409cf4b6f45b987479e86",
+      "size": 5374
     },
     {
       "path": "changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.schema.json",
@@ -257,8 +282,8 @@
     },
     {
       "path": "changes/wordpress-mcp-v1/README.md",
-      "sha256": "64633a2699c1325c1fe46abaeff228a949487fda7433f81c4ccd942444db1e9c",
-      "size": 13499
+      "sha256": "9f50f9d09d786f316612708b8042c59f606f911a65d653f91a9ade94588493e8",
+      "size": 14128
     },
     {
       "path": "changes/wordpress-publication-bundle-v3/abilities_plugin_proposal.py",
@@ -302,8 +327,8 @@
     },
     {
       "path": "packages/wordpress-mcp-bridge/src/index.ts",
-      "sha256": "ca6abb8d95c35b87c1501ffbf28fc9ba2f02b8f46ab1d1b86923fbd4cd854892",
-      "size": 11060
+      "sha256": "d5fef8fef38e70306ba31f1c73caf148e10fea28d06dd5ca9201f5613e8788c4",
+      "size": 12561
     },
     {
       "path": "packages/wordpress-mcp-bridge/tsconfig.json",
@@ -312,8 +337,8 @@
     },
     {
       "path": "python/raos/adapters/self_hosted_editorial_pilot_json.py",
-      "sha256": "0094095b9265297f9c7e3d2138b750f1dca9690e208b095f4ebf15b30a1a2051",
-      "size": 133440
+      "sha256": "c3d5285da3a8496bf390b9508809cf63bc66307603fe74a6a5f035a999bed3f6",
+      "size": 133746
     },
     {
       "path": "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
@@ -322,13 +347,13 @@
     },
     {
       "path": "python/raos/adapters/self_hosted_editorial_source_capture.py",
-      "sha256": "8dc48839f971eca7bdce4ef363ec553711b6f5932c580710995ffc8906e65f21",
-      "size": 66586
+      "sha256": "4953478aef7d5674698d81472125944d8915c8a1c3a9115e4671fa5ed28177a4",
+      "size": 67042
     },
     {
       "path": "python/raos/application/editorial/editorial_portfolio_v2.py",
-      "sha256": "3304b8d4d83fedea2ca7441de440333e458d0916ebf8d636bb0dd2ae60b6f649",
-      "size": 92936
+      "sha256": "9bcaaf9a15a8b34fd9da004ac69b5f454c472292b453f4dff9d70cef27372b94",
+      "size": 99511
     },
     {
       "path": "python/raos/application/editorial/product_safety_manufacturer_capture.py",
@@ -347,8 +372,38 @@
     },
     {
       "path": "python/raos/application/editorial/self_hosted_editorial_pilot.py",
-      "sha256": "6191819c61333944f42a3c5e9281d068b66182faa66bbcd5731d5b9e0989f484",
-      "size": 114410
+      "sha256": "1b17f64ab4ee4010704d26cdc10027ae0b7599cd7d4b8212a6d07f021776fd2e",
+      "size": 115210
+    },
+    {
+      "path": "python/raos/application/editorial/verified_incremental_v1.py",
+      "sha256": "4422163eb59c46721d6d599d6fd0e1d3caad983fe41d131aa778c5c1e0594525",
+      "size": 29535
+    },
+    {
+      "path": "python/raos/application/editorial/verified_incremental_audit_v1.py",
+      "sha256": "25e0975b5c93c27297c05c77d0760827c4a2dc3d629fef8db5a7d2d60d2bf080",
+      "size": 35983
+    },
+    {
+      "path": "python/raos/application/editorial/verified_incremental_preview_v1.py",
+      "sha256": "d915ca92a73c9fcecc9d8c0b288c92f429e5d3a5907820747adfd9da57620008",
+      "size": 35238
+    },
+    {
+      "path": "python/raos/application/editorial/verified_incremental_release_v1.py",
+      "sha256": "ca78ee77521f82b765200d71e42f5525c4cc6c697c46360ee0ee80cd78313663",
+      "size": 23276
+    },
+    {
+      "path": "python/raos/application/editorial/verified_incremental_sources_v1.py",
+      "sha256": "bae63511f8cc226a57655601d937ea93ad460866309577e8d016f453974501f3",
+      "size": 13567
+    },
+    {
+      "path": "python/raos/application/editorial/local_scratch_restore_v1.py",
+      "sha256": "d37307e59935a7bb4b80b5869cc3682d7aaa4ebc7049a34ea0e735c98dc32125",
+      "size": 6971
     },
     {
       "path": "python/raos/domain/editorial/content_ast.py",
@@ -362,8 +417,8 @@
     },
     {
       "path": "scripts/build_wordpress_mcp_v1.py",
-      "sha256": "5020d872731b83400be82dc85980719ffa061eb6e42522efe9bb289cd5e4aeaf",
-      "size": 21696
+      "sha256": "d28a060614706c3a389ab7e85a113cda7dfa6e614371af8b75067a22533bc576",
+      "size": 23424
     },
     {
       "path": "scripts/check_wordpress_public_ui_playwright.sh",
@@ -372,18 +427,58 @@
     },
     {
       "path": "scripts/raos_editorial_portfolio_v2.py",
-      "sha256": "e252c5aec2628d290214c47af24dc3ddfb575263d7c8851d2c92edecdaa5d3d4",
-      "size": 148356
+      "sha256": "e2d7e91237499290997121cb17819e3e5344a8bebe9a15e304544eab7056755f",
+      "size": 153301
     },
     {
       "path": "scripts/raos_wordpress_deployment_operator.py",
-      "sha256": "8a73cec883ed4df9b4260efc34385be4a9f8d71e918d12504f38ec302b642ef3",
-      "size": 52222
+      "sha256": "d57ad1e36afed4d37f867dff2cac34820162c4e06e0a129f340fccbc5d3c3e35",
+      "size": 53930
+    },
+    {
+      "path": "scripts/raos_wordpress_baseline_media.py",
+      "sha256": "3191448d433891fdb1244e202e882b6e6dab8862e8e0762823d059f4fcdaa263",
+      "size": 13289
+    },
+    {
+      "path": "scripts/raos_wordpress_incremental_candidate.py",
+      "sha256": "ba99edd09ebae7a1eecc6b4a31baccf15fc90372c6d23d410a74ad482b9fb9ca",
+      "size": 18684
+    },
+    {
+      "path": "scripts/raos_wordpress_incremental_preview.py",
+      "sha256": "7ceebd0c452fc8580373cbaf4b8471b50738638fd24b13d313a1aabf280a4af4",
+      "size": 5979
+    },
+    {
+      "path": "scripts/raos_wordpress_incremental_publication.py",
+      "sha256": "bb8048d1d146d580c213dbbd64e0d5592c7c54df084df3301a0349b12f87070a",
+      "size": 46292
+    },
+    {
+      "path": "scripts/raos_wordpress_incremental_seo_audit.py",
+      "sha256": "fdf889dc48d0ff3d48f347a7fae1371bc4ff8f879070f49241de5dc4f74d0be6",
+      "size": 26330
+    },
+    {
+      "path": "scripts/raos_wordpress_incremental_snapshot.py",
+      "sha256": "2c67d69b654f5d609a1833c08005d73b765deaaa0ce849ac7be6e9fba9109f09",
+      "size": 14209
+    },
+    {
+      "path": "scripts/raos_wordpress_local_restore.py",
+      "sha256": "46d640289d01c467b449fa9684d29e26a2089b229b0b70af37269b8403d67fbb",
+      "size": 6044
+    },
+    {
+      "path": "scripts/raos_wordpress_scratch_restore.py",
+      "sha256": "9a9903cbc41407026c0ab68418cbaca009d2e67a52abe0aa8ae9cba9c9c45ecb",
+      "size": 8765
     },
     {
       "path": "scripts/raos_wordpress_publication_request.py",
-      "sha256": "d2e202fa58226971d2294fc9f3bcba91dc448f9cdf644ab8b134db915e48039c",
-      "size": 267466
+      "sha256": "46d8e41f9d16e1fd3ac685a3842511a659a408049bce008a8d6804a3ce2eb160",
+      "size": 270442
     },
     {
       "path": "scripts/raos_wordpress_seo_audit.py",
@@ -402,8 +497,8 @@
     },
     {
       "path": "scripts/wordpress_public_ui_audit.function.js",
-      "sha256": "e84c7299d7e820834209dc02d979ead7ea878785a49538f2597d10e03cc49678",
-      "size": 38448
+      "sha256": "efe6adc64181a4552f61a21a3b7f69569ed9f9d0b9be37047bc7f4936e2be33f",
+      "size": 38421
     },
     {
       "path": "scripts/wordpress_quality_audit_v1.py",
@@ -481,9 +576,14 @@
       "size": 46933
     },
     {
+      "path": "tests/wordpress_mcp_v1/test_operation_status.py",
+      "sha256": "e9ba9ac7af90bd7bbdc1fd06cbb292f2e42a7fd73de561daf10927c16fef0ebb",
+      "size": 10500
+    },
+    {
       "path": "tests/wordpress_local_preview/test_publication_request.py",
-      "sha256": "7fa6852f42bee9da7c2d8bfe7337e54b6df774e423b02d10c19e99a7d04c8d7d",
-      "size": 206924
+      "sha256": "d3b9d303f2be4e6151ae86967aa76ed45bfbb3ba75048a9bc59a139b51e466d7",
+      "size": 206146
     },
     {
       "path": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/README.md",

@@ -599,9 +599,9 @@ def _validate_extended_claim_fields(
                     "effective_lifecycle",
                 )
             )
-            or lifecycle_values["embedded_structured_lifecycle"]
-            not in embedded_states
-            or evidence_state not in {
+            or lifecycle_values["embedded_structured_lifecycle"] not in embedded_states
+            or evidence_state
+            not in {
                 "CONFLICT",
                 "CONSISTENT",
                 "READER_VISIBLE_ONLY",
@@ -623,22 +623,22 @@ def _validate_extended_claim_fields(
             or (
                 evidence_state == "CONSISTENT"
                 and (
-                    lifecycle_values["embedded_structured_lifecycle"]
-                    == "NOT_PRESENT"
+                    lifecycle_values["embedded_structured_lifecycle"] == "NOT_PRESENT"
                     or lifecycle_values["embedded_structured_lifecycle"]
                     != lifecycle_values["reader_visible_lifecycle"]
                 )
             )
             or subject_product_ids
             or official_url
-            not in {cast(str, sources[source_ref]["url"]) for source_ref in evidence_refs}
+            not in {
+                cast(str, sources[source_ref]["url"]) for source_ref in evidence_refs
+            }
         ):
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
 
     portfolio_reference_keys = set(claim) & _PORTFOLIO_REFERENCE_CLAIM_KEYS
-    if (
-        portfolio_reference_keys
-        and portfolio_reference_keys != set(_PORTFOLIO_REFERENCE_CLAIM_KEYS)
+    if portfolio_reference_keys and portfolio_reference_keys != set(
+        _PORTFOLIO_REFERENCE_CLAIM_KEYS
     ):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     if portfolio_reference_keys:
@@ -697,8 +697,7 @@ def _validate_extended_claim_fields(
             },
         )
         required_product_ids = [
-            _text(value, maximum=300)
-            for value in _list(gate["required_product_ids"])
+            _text(value, maximum=300) for value in _list(gate["required_product_ids"])
         ]
         if (
             gate["schema"] != "PRODUCT_SPECIFIC_RECALL_QUERY_REQUIREMENT_V2"
@@ -744,7 +743,7 @@ def _validate_extended_claim_fields(
             parsed_checked_at = datetime.fromisoformat(
                 checked_at.removesuffix("Z") + "+00:00"
             )
-        except (OverflowError, ValueError):
+        except OverflowError, ValueError:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         source_ref = _text(sales["source_ref"], maximum=300)
         variant_caveat = sales.get("variant_caveat")
@@ -882,8 +881,7 @@ def _validate_sources(
     )
     if (
         _source_inventory_sha256(sources) != _PRODUCT_SOURCE_INVENTORY_SHA256
-        or _source_inventory_sha256(policy_sources)
-        != _POLICY_SOURCE_INVENTORY_SHA256
+        or _source_inventory_sha256(policy_sources) != _POLICY_SOURCE_INVENTORY_SHA256
     ):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     packets = _index(
@@ -975,13 +973,10 @@ def _validate_sources(
                     dimensions,
                     {"depth_cm", "height_cm", "subject", "width_cm"},
                 )
-                if (
-                    not _text(dimensions["subject"], maximum=300)
-                    or any(
-                        type(dimensions[axis]) not in {int, float}
-                        or cast(float, dimensions[axis]) <= 0
-                        for axis in ("width_cm", "depth_cm", "height_cm")
-                    )
+                if not _text(dimensions["subject"], maximum=300) or any(
+                    type(dimensions[axis]) not in {int, float}
+                    or cast(float, dimensions[axis]) <= 0
+                    for axis in ("width_cm", "depth_cm", "height_cm")
                 ):
                     _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
             claim_id = _text(claim["claim_id"], maximum=300)
@@ -1012,10 +1007,7 @@ def _validate_sources(
             status = claim["status"]
             if classification == "MAJOR_VERIFIABLE":
                 verifiable_count += 1
-                if (
-                    evidence_level != "A"
-                    or status != "BOUND_TO_OFFICIAL_SOURCE"
-                ):
+                if evidence_level != "A" or status != "BOUND_TO_OFFICIAL_SOURCE":
                     _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
             elif classification == "EDITORIAL_INFERENCE":
                 if (
@@ -1537,17 +1529,17 @@ def _bind_product_evidence(
     for paragraph in _list(disclosure["paragraphs"]):
         _text(paragraph)
     base_card_keys = {
-            "affiliate_ref",
-            "caution",
-            "condition_label",
-            "confirmed_facts",
-            "cta",
-            "editorial_fit",
-            "media_asset_ref",
-            "product_id",
-            "product_name",
-            "product_selection_ref",
-            "source_refs",
+        "affiliate_ref",
+        "caution",
+        "condition_label",
+        "confirmed_facts",
+        "cta",
+        "editorial_fit",
+        "media_asset_ref",
+        "product_id",
+        "product_name",
+        "product_selection_ref",
+        "source_refs",
     }
     cards: dict[str, Mapping[str, object]] = {}
     for raw_card in _list(render["product_cards"]):
@@ -1605,9 +1597,7 @@ def _bind_product_evidence(
             values = _list(card_presentation[key])
             if not values:
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-            presentation_lists[key] = [
-                _text(value, maximum=1000) for value in values
-            ]
+            presentation_lists[key] = [_text(value, maximum=1000) for value in values]
         if _text(card["caution"], maximum=2000) in presentation_lists["not_fits"]:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         _date(card_presentation["facts_checked_on"])
@@ -2017,8 +2007,7 @@ class _Renderer:
         reason_label = (
             "仕様上の比較ポイント："
             if any(
-                marker in condition_label
-                for marker in ("在庫切れ", "販売状態未確認")
+                marker in condition_label for marker in ("在庫切れ", "販売状態未確認")
             )
             else "おすすめする理由："
         )
@@ -2051,18 +2040,18 @@ class _Renderer:
             f'<p class="raos-condition-label">{escape(cast(str, card["condition_label"]))}</p>'
             f'<p class="raos-product-card__lead">{escape(cast(str, presentation["benefit"]))}</p>'
             f"<p><strong>{reason_label}</strong>"
-            f'{escape(cast(str, presentation["recommendation_reason"]))}</p>'
+            f"{escape(cast(str, presentation['recommendation_reason']))}</p>"
             f'<dl class="raos-product-card__facts">{facts}</dl>'
             f'<div class="raos-product-card__fit"><strong>合いやすい条件</strong><ul>{fits}</ul>'
-            f'<strong>別の候補も検討したい条件</strong><ul>{not_fits}</ul></div>'
+            f"<strong>別の候補も検討したい条件</strong><ul>{not_fits}</ul></div>"
             f'<p id="{escape(detail_anchor, quote=True)}-caution" class="raos-product-card__caution">'
-            f'<strong>注意点：</strong>{escape(cast(str, card["caution"]))}</p>'
+            f"<strong>注意点：</strong>{escape(cast(str, card['caution']))}</p>"
             '<p class="raos-source-link">情報確認日 '
-            f'{escape(_display_date(card_checked_on))}・'
+            f"{escape(_display_date(card_checked_on))}・"
             f'<a href="{escape(cast(str, source["url"]), quote=True)}">公式サイトで仕様を確認する</a></p>'
             '<div class="raos-product-card__actions">'
             f'<p id="{escape(cta_context_id, quote=True)}" class="raos-cta-context cta-note">'
-            f'{escape(cast(str, presentation["cta_context"]))}</p>'
+            f"{escape(cast(str, presentation['cta_context']))}</p>"
             '<p class="summary-action">'
             f'<a class="raos-cta rakuten-cta" href="{escape(evidence.destination_url, quote=True)}" '
             'rel="sponsored nofollow" '
@@ -2153,11 +2142,11 @@ class _Renderer:
             rows.append(
                 '<tr class="has-difference"><th scope="row">'
                 f"{comparison_media}<span>"
-                f'{escape(cast(str, card["product_name"]))}</span></th>'
+                f"{escape(cast(str, card['product_name']))}</span></th>"
                 f"{rendered_cells}</tr>"
             )
             mobile_pairs = [
-                '<div><dt>商品</dt><dd>'
+                "<div><dt>商品</dt><dd>"
                 + comparison_media
                 + "<span>"
                 + escape(cast(str, card["product_name"]))
@@ -2187,9 +2176,7 @@ class _Renderer:
         title_id = f"{cast(str, block['block_id']).lower()}-title"
         row_checked_dates = [
             _date(
-                _mapping(self.cards[product_ref]["presentation_v2"])[
-                    "facts_checked_on"
-                ]
+                _mapping(self.cards[product_ref]["presentation_v2"])["facts_checked_on"]
             )
             for product_ref in observed_products
         ]
@@ -2221,7 +2208,9 @@ class _Renderer:
 
     def recommendation_group(self, block: Mapping[str, object]) -> str:
         items: list[str] = []
-        for position, raw_ref in enumerate(_list(block["recommendation_refs"]), start=1):
+        for position, raw_ref in enumerate(
+            _list(block["recommendation_refs"]), start=1
+        ):
             recommendation_ref = _text(raw_ref, maximum=300)
             recommendation = self.recommendations.get(recommendation_ref)
             if recommendation is None:
@@ -2263,6 +2252,26 @@ class _Renderer:
         blocks = _require_public_blocks(ast)
         if blocks[0].get("type") != "disclosure_slot":
             _fail(EditorialPilotFailureCode.CONTENT_AST_INVALID)
+        # Keep the source AST and all claim/block identities intact. Readers see
+        # the comparison and product-specific trade-offs before the longer
+        # audience/method sections; those sections remain fully available before
+        # the closing purchase decision. Product safety cautions stay beside the
+        # opening summary and each product card.
+        detail_types = {"intended_reader", "methodology", "selection_criteria"}
+        reading_details = [
+            block for block in blocks if block.get("type") in detail_types
+        ]
+        blocks = [block for block in blocks if block.get("type") not in detail_types]
+        closing_index = next(
+            (
+                position
+                for position, block in enumerate(blocks)
+                if block.get("type")
+                in {"recommendation_group", "caution", "source_summary"}
+            ),
+            len(blocks),
+        )
+        blocks[closing_index:closing_index] = reading_details
         output: list[str] = []
         index = 0
         while index < len(blocks):
@@ -2299,7 +2308,7 @@ class _Renderer:
                     "<p>広告を含みます。購入リンクから成果報酬を受け取る場合がありますが、"
                     "選定・掲載順には使いません。</p>"
                     f"<details><summary>{escape(cast(str, disclosure['label']))}の詳細</summary>"
-                    f"{paragraphs}<p><a href=\"/comparison-policy/\">"
+                    f'{paragraphs}<p><a href="/comparison-policy/">'
                     "編集・比較方針（AI支援範囲を含む）を確認する"
                     "</a></p></details></div></aside>"
                 )
@@ -2333,7 +2342,7 @@ class _Renderer:
                         + "</strong></div><p>"
                         + self.rich(item["summary"])
                         + self.evidence_badges(item["claim_ids"])
-                        + '<br><strong>注意点：</strong>'
+                        + "<br><strong>注意点：</strong>"
                         + escape(cast(str, card["caution"]))
                         + '</p><a class="raos-decision-summary__link" href="#'
                         + escape(detail_anchor, quote=True)
@@ -2354,9 +2363,9 @@ class _Renderer:
                     f'<h2 id="{title_id}">{escape(_article_section_heading(self.article, "intended_reader", "この記事でわかること"))}</h2></header>'
                     '<div class="reader-columns"><section><h3>この比較が役立つ人</h3>'
                     f"<ul>{_list_html(block['fits'], routes=self.routes, sources=self.sources)}</ul></section>"
-                    '<section><h3>この比較だけでは決めにくい人</h3>'
+                    "<section><h3>この比較だけでは決めにくい人</h3>"
                     f"<ul>{_list_html(block['not_fits'], routes=self.routes, sources=self.sources)}</ul></section>"
-                    '<section><h3>購入前の前提</h3>'
+                    "<section><h3>購入前の前提</h3>"
                     f"<ul>{_list_html(block['assumptions'], routes=self.routes, sources=self.sources)}</ul>"
                     "</section></div></section>"
                 )
@@ -2443,12 +2452,16 @@ class _Renderer:
                 if len(caution_content) == 1:
                     caution_body = f"<p>{self.rich(caution_content)}</p>"
                 else:
-                    caution_body = "<ul>" + "".join(
-                        f"<li>{self.rich([node])}</li>" for node in caution_content
-                    ) + "</ul>"
+                    caution_body = (
+                        "<ul>"
+                        + "".join(
+                            f"<li>{self.rich([node])}</li>" for node in caution_content
+                        )
+                        + "</ul>"
+                    )
                 output.append(
                     '<aside class="raos-caution purchase-caution"><h2>'
-                    f'{escape(_article_section_heading(self.article, "caution", "購入前に確認したいこと"))}</h2>'
+                    f"{escape(_article_section_heading(self.article, 'caution', '購入前に確認したいこと'))}</h2>"
                     f"{caution_body}</aside>"
                 )
             elif kind == "source_summary":
@@ -2623,15 +2636,13 @@ def prepare_editorial_article(
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     try:
         selected_sources = [
-            sources[_text(value, maximum=300)]
-            for value in _list(packet["source_refs"])
+            sources[_text(value, maximum=300)] for value in _list(packet["source_refs"])
         ]
     except KeyError:
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     facts_checked_on = _date(freshness["facts_checked_on"])
     if any(
-        _date(source["retrieved_on"]) > facts_checked_on
-        for source in selected_sources
+        _date(source["retrieved_on"]) > facts_checked_on for source in selected_sources
     ):
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     _require_observed_date_not_future(facts_checked_on, now=now)
@@ -2691,12 +2702,11 @@ def prepare_editorial_article(
     for raw_claim in _list(packet["claims"]):
         claim = _mapping(raw_claim)
         subject_product_ids = {
-            _text(value, maximum=300)
-            for value in _list(claim["subject_product_ids"])
+            _text(value, maximum=300) for value in _list(claim["subject_product_ids"])
         }
-        is_portfolio_reference = (
-            set(claim) & _PORTFOLIO_REFERENCE_CLAIM_KEYS
-        ) == set(_PORTFOLIO_REFERENCE_CLAIM_KEYS)
+        is_portfolio_reference = (set(claim) & _PORTFOLIO_REFERENCE_CLAIM_KEYS) == set(
+            _PORTFOLIO_REFERENCE_CLAIM_KEYS
+        )
         if (
             not subject_product_ids <= article_product_ids
             and not is_portfolio_reference

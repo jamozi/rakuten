@@ -29,9 +29,9 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 
 
 THEME_SLUG: Final = "kurashinoshirube-child"
-THEME_VERSION: Final = "1.5.0"
+THEME_VERSION: Final = "1.5.1"
 THEME_RUNTIME_REVISION: Final = (
-    "2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e"
+    "5be03f20b87080e0ed6c8108035bfb369af2237dba283e4a52c436e258c5ca79"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -573,6 +573,7 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
         "source_navigation_sha256": source_navigation_sha256,
         "source_portfolio_sha256": source_portfolio_sha256,
     }
+    contract["theme_version"] = THEME_VERSION
     contract["runtime_evidence"] = {
         "revision": revision,
         "source_fingerprint": revision,
@@ -880,11 +881,12 @@ def validate_sources() -> dict[str, str]:
     home_hero_image = (
         '<img class="raos-home-hero__image" '
         'src="/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp" '
-        'alt="生成りと藍色の布が重なる、静かな暮らしの風景" '
+        'alt="鍋、マグカップ、照明とチェックリストを描いた暮らしの道具のイラスト" '
         'width="1600" height="900" fetchpriority="high" decoding="async">'
     )
     if (
-        "暮らしの選択に、<br>たしかな道しるべを。" not in front_page
+        '<h1 id="home-hero-title"><span>暮らしの選択に、</span>'
+        '<span>たしかな</span><span>道しるべを。</span></h1>' not in front_page
         or front_page.count(home_hero_image) != 1
         or '<span class="raos-home-hero__image"' in front_page
         or "loading=" in home_hero_image

@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { lstatSync, readFileSync, realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -9,6 +9,27 @@ import { z } from 'zod';
 const repositoryRoot = fileURLToPath(new URL('../../..', import.meta.url));
 const operator = `${repositoryRoot}/scripts/raos_wordpress_deployment_operator.py`;
 const python = `${repositoryRoot}/.venv/bin/python`;
+const ownerCheckoutArgs = process.argv.slice(2);
+if (ownerCheckoutArgs.length !== 0) {
+  if (
+    ownerCheckoutArgs.length !== 2 ||
+    ownerCheckoutArgs[0] !== '--owner-checkout' ||
+    ownerCheckoutArgs[1] !== '/home/minami/rakuten'
+  ) {
+    throw new Error('WORDPRESS_MCP_OWNER_CHECKOUT_INVALID');
+  }
+  try {
+    const owner = lstatSync(ownerCheckoutArgs[1]);
+    if (
+      !owner.isDirectory() ||
+      owner.isSymbolicLink() ||
+      realpathSync(ownerCheckoutArgs[1]) !== ownerCheckoutArgs[1]
+    )
+      throw new Error('invalid owner checkout');
+  } catch {
+    throw new Error('WORDPRESS_MCP_OWNER_CHECKOUT_INVALID');
+  }
+}
 const sha256 = z.string().regex(/^[0-9a-f]{64}$/);
 const releaseProposalIds = z
   .array(sha256)
@@ -42,6 +63,7 @@ assertPinnedRuntimePackage('node_modules/zod/package.json', '4.4.3');
 
 type OperatorCommand =
   | 'deployment-status'
+  | 'operation-status'
   | 'publication-batch-status'
   | 'release-wait-and-apply'
   | 'theme-propose-release'
@@ -65,7 +87,7 @@ function runOperator(
   input: Record<string, unknown>,
 ): Promise<OperatorResult> {
   return new Promise((resolve, reject) => {
-    const child = spawn(python, [operator, command], {
+    const child = spawn(python, ['-B', operator, ...ownerCheckoutArgs, command], {
       cwd: repositoryRoot,
       env: {
         PATH: '/usr/bin:/bin',
@@ -176,6 +198,29 @@ server.registerTool(
   async () => {
     try {
       return toolResult(await runOperator('deployment-status', {}));
+    } catch (error) {
+      return toolError(error);
+    }
+  },
+);
+
+server.registerTool(
+  'operation-status',
+  {
+    title: 'Read one WordPress operation status',
+    description:
+      'Read only the kind and public receipt of one exact operation ID. The existing server may record expiry and remove an expired approval lease. It never lists operations, waits for approval, applies, recovers, or finalizes an operation, including one already marked applied.',
+    inputSchema: z.strictObject({ operation_id: sha256 }),
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  async ({ operation_id }) => {
+    try {
+      return toolResult(await runOperator('operation-status', { operation_id }));
     } catch (error) {
       return toolError(error);
     }

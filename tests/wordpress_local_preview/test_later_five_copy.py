@@ -206,7 +206,10 @@ def test_robot_copy_uses_two_named_products_without_repeating_caveats() -> None:
     assert "本体単品" not in post["excerpt"]
     assert "Eufy Auto-Empty C10" not in post["excerpt"]
     assert "Roomba Mini Slim" in post["excerpt"]
-    assert "2製品だけ" in markup
+    assert (
+        "Roomba Mini Slim + SlimCharge F115060とSwitchBot K11+ Proの2製品"
+        in markup
+    )
     assert "現行4構成" not in markup
     assert "2製品3構成" not in markup
     assert "販売終了状況" not in markup
@@ -227,7 +230,7 @@ def test_robot_copy_uses_two_named_products_without_repeating_caveats() -> None:
     assert "左右各1m・前方1.5m" not in copy_outside_allowed
 
 
-def test_legacy_dishwasher_copy_is_lifecycle_only_and_routes_to_current_guide() -> None:
+def test_dishwasher_identity_guide_separates_purchase_evidence_from_product_merit() -> None:
     markup = _markup("solota-vs-rakua-mini-plus")
     assert (
         'class="lead-section" '
@@ -240,33 +243,40 @@ def test_legacy_dishwasher_copy_is_lifecycle_only_and_routes_to_current_guide() 
         ]
         if row["article_id"] == "local-preview-solota-vs-rakua-mini-plus"
     )
-    assert post["title"] == "SOLOTA・ラクアmini Plusの販売状況｜現行比較への案内"
+    assert post["title"] == "SOLOTA・ラクアmini Plus｜型番・販売表示と購入前の確認"
     assert post["category"] == "家事"
-    assert "ラクアmini Plusは再入荷通知のみ" in post["excerpt"]
-    assert "旧SOLOTAは正確な対象型番の販売状態を確認できず" in post["excerpt"]
-    assert "両機種を仕様参考に限定" in post["excerpt"]
-    assert "少人数向け卓上食洗機4候補の記事へ案内" in post["excerpt"]
+    assert "NP-TMLK1-K" in post["excerpt"]
+    assert "TK-MDW22B" in post["excerpt"]
+    assert "購入リンクの有無と商品の評価を分け" in post["excerpt"]
     assert "記事分類" in markup
     assert "この記事で答えること" in markup
     assert "THANKO ラクアmini Plus" in markup
-    assert "再入荷通知だけが表示" in markup
+    assert "再入荷通知のみが表示" in markup
     assert "メーカー公式で売り切れを確認" not in markup
     assert "メーカー公式で再入荷通知のみを確認" in markup
-    assert "購入候補・商品カード・購入導線から外しました" in markup
+    assert "商品カードとアフィリエイトリンクは掲載していません" in markup
     assert "アイリスオーヤマ ISHT-5000-W" not in markup
-    assert "旧候補の販売状態と現行比較への案内" in markup
-    assert "市場全体の順位ではありません" in markup
+    assert "型番ごとに確認できたこと" in markup
+    assert "市場全体の順位ではありません" not in markup
     assert "/countertop-dishwasher-for-small-households/" in markup
     assert (
         markup.count(
             '<a href="/countertop-dishwasher-for-small-households/">'
-            "現行比較へ迷わず移る（少人数向け卓上食洗機4候補の比較）</a>"
+            "設置条件から考える卓上食洗機の選び方</a>"
         )
         == 1
     )
     assert "同じ比較記事で確認できます。" not in markup
     assert "A04" not in markup
-    assert "現行4候補の比較" in markup
+    for text in (markup, post["title"], post["excerpt"]):
+        for unsupported in (
+            "現行4候補", "現行比較", "旧SOLOTA", "旧型", "購入UI",
+            "購入候補には戻しません", "どちらも購入を見送", "比較表に含めなかった理由",
+        ):
+            assert unsupported not in text
+    assert "販売終了や購入不可とは判断しません" in markup
+    assert "商品を候補から外す必要はありません" in markup
+    assert "他の販売店の在庫や今後の入荷までは判断しません" in markup
     assert "PRD-THANKO-RAKUA-MINI-PLUS-TK-MDW22B" not in markup
     assert "PRD-PANASONIC-SOLOTA-NP-TML1-W" not in markup
     assert "通常商品SS-MA251（シルバー）" not in markup
@@ -280,7 +290,7 @@ def test_legacy_dishwasher_copy_is_lifecycle_only_and_routes_to_current_guide() 
     assert "drop-in" not in markup
 
 
-def test_legacy_dishwasher_intent_is_resolved_in_the_opening() -> None:
+def test_dishwasher_identity_guide_opens_briefly_and_moves_details_after_the_answer() -> None:
     markup = _markup("solota-vs-rakua-mini-plus")
     lead_start = markup.index('<div class="lead-copy">')
     first_paragraph = re.search(r"<p>(.*?)</p>", markup[lead_start:], re.DOTALL)
@@ -293,17 +303,24 @@ def test_legacy_dishwasher_intent_is_resolved_in_the_opening() -> None:
     )
 
     assert first_paragraph is not None
-    assert "このURLで以前比較していたTHANKO ラクアmini Plus" in first_paragraph.group(1)
-    assert "公式ストアで再入荷通知のみ" in first_paragraph.group(1)
-    assert "SOLOTA NP-TMLK1-Kは正確な型番の購入UIを確認できません" in first_paragraph.group(1)
-    assert "両機種は仕様参考に限定し、購入候補・商品カード・購入導線から外しました" in first_paragraph.group(1)
-    assert "現行比較へ迷わず移る" in markup
+    assert "SOLOTAやラクアmini Plusを探していて" in first_paragraph.group(1)
+    assert "NP-TMLK1-KとTK-MDW22B" in first_paragraph.group(1)
+    assert "購入前の確認項目" in first_paragraph.group(1)
+    intro_end = markup.index('<aside class="disclosure"', lead_start)
+    intro = re.sub(r"<[^>]+>", "", markup[lead_start:intro_end])
+    assert len(re.sub(r"\s+", "", intro)) <= 250
+    assert '<a href="/countertop-dishwasher-for-small-households/">' in markup
     assert "THANKO ラクアmini TK-MDW22W" not in markup
     assert "siroca SS-M171" not in markup
     assert "公式ストア通常商品SS-MA251（シルバー）" not in markup
-    assert post["excerpt"].startswith(
-        "旧SOLOTAは正確な対象型番の販売状態を確認できず"
-    )
+    assert post["excerpt"].startswith("SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22B")
+    assert markup.index("decision-section") < markup.index("raos-article-facts")
+    assert markup.count('class="raos-market-exclusions__list"') == 1
+    assert "dish-faq-title" not in markup
+    assert "2026.09.05" in markup
+    assert "2026.09.01" in markup
+    assert "在庫を保証しません" in markup
+    assert "実読者による理解度調査は行っていません" in markup
 
 
 def test_later_five_show_proof_before_external_final_summary_actions() -> None:

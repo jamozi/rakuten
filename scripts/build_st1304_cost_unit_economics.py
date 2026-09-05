@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Mapping, Sequence
+import copy
 import hashlib
 import json
 import os
@@ -12,7 +13,8 @@ from pathlib import Path
 import stat
 import sys
 import tempfile
-from typing import Final, NoReturn, cast
+from typing import Any, Final, NoReturn, cast
+from uuid import UUID
 
 import yaml
 
@@ -572,8 +574,138 @@ def _validate_bindings(root: Path, bindings: Mapping[str, object]) -> None:
     for name in SOURCE_BINDING_KEYS:
         row = cast(dict[str, str], bindings[name])
         content = _regular_bytes(root, Path(row["path"]), name)
-        if input_hash_required(row["path"]) and _sha256(content) != row["sha256"]:
+        if (
+            input_hash_required(row["path"])
+            or name.startswith("st1303_")
+            or name == "five_slot_measurement"
+        ) and _sha256(content) != row["sha256"]:
             _fail("INPUT_HASH_DRIFT", name)
+
+
+def refresh_upstream_bindings(root: Path = REPO_ROOT) -> None:
+    """Refresh hash-only references after verifying the closed synthetic input."""
+    from raos.adapters import recorded_unit_economics as recorded
+    from raos.adapters.recorded_attribution import load_recorded_attribution_fixture
+    from raos.domain.finance.attribution import build_attribution_run
+    from raos.domain.finance.unit_economics import (
+        UnitEconomicsRunRequest,
+        build_unit_economics,
+    )
+    from scripts import build_st1303_attribution_engine as st1303
+
+    contract = cast(dict[str, Any], copy.deepcopy(load_contract(root)))
+    previous = _regular_bytes(root, FIXTURE_PATH, "fixture")
+    binding = contract["recorded_fixture"]
+    if _sha256(previous) != binding["sha256"]:
+        _fail("SYNTHETIC_REBIND_INPUT_INVALID", "fixture")
+    try:
+        fixture = dict(
+            recorded._mapping(
+                recorded._unique_json(previous),
+                (
+                    "schema_version",
+                    "profile",
+                    "scenario_id",
+                    "synthetic",
+                    "attribution_fixture_sha256",
+                    "attribution_contract_sha256",
+                    "expected_attribution_input_sha256",
+                    "expected_attribution_result_sha256",
+                    "request",
+                    "expected_input_sha256",
+                    "expected_result_sha256",
+                ),
+            )
+        )
+        if (
+            fixture["schema_version"] != "2.0.0"
+            or fixture["profile"] != recorded.PROFILE
+            or fixture["synthetic"] is not True
+            or fixture["expected_input_sha256"]
+            != binding["unit_economics_input_sha256"]
+            or fixture["expected_result_sha256"]
+            != binding["unit_economics_result_sha256"]
+            or fixture["expected_attribution_input_sha256"]
+            != binding["attribution_input_sha256"]
+            or fixture["expected_attribution_result_sha256"]
+            != binding["attribution_result_sha256"]
+        ):
+            _fail("SYNTHETIC_REBIND_INPUT_INVALID", "fixture")
+        measurement = st1303.load_contract(root)[1]
+        prior = json.loads(_regular_bytes(root, OUTPUT_PATH, "previous_projection"))
+        if [
+            (row["slot"], row["article_id"])
+            for row in prior["measurement_boundary"]["article_slots"]
+        ] != [(article.slot, article.article_id) for article in measurement.articles]:
+            _fail("UPSTREAM_ARTICLE_IDENTITY_DRIFT", "fixture")
+        attribution = load_recorded_attribution_fixture(
+            (root / ATTRIBUTION_FIXTURE_PATH).resolve(), contract=measurement
+        )
+        attribution_result = build_attribution_run(attribution.request)
+        source = recorded._mapping(
+            fixture["request"], ("run_id", "requested_at", "cost_observations")
+        )
+        request = UnitEconomicsRunRequest(
+            run_id=UUID(recorded._string(source["run_id"], maximum=36)),
+            requested_at=recorded._timestamp(source["requested_at"]),
+            attribution_request=attribution.request,
+            attribution_result=attribution_result,
+            cost_observations=tuple(
+                recorded._cost_observation(item, measurement)
+                for item in recorded._sequence(
+                    source["cost_observations"], minimum=5, maximum=5
+                )
+            ),
+        )
+        result = build_unit_economics(request)
+        fixture.update(
+            attribution_fixture_sha256=attribution.fixture_sha256.value,
+            attribution_contract_sha256=measurement.sha256.value,
+            expected_attribution_input_sha256=attribution.request.input_sha256.value,
+            expected_attribution_result_sha256=attribution_result.result_sha256.value,
+            expected_input_sha256=request.input_sha256.value,
+            expected_result_sha256=result.result_sha256.value,
+        )
+        # Retain the fixture bytes exactly when no upstream reference changed.
+        payload = (
+            previous
+            if fixture == recorded._unique_json(previous)
+            else (json.dumps(fixture, ensure_ascii=False, indent=2) + "\n").encode()
+        )
+        binding.update(
+            sha256=_sha256(payload),
+            attribution_input_sha256=attribution.request.input_sha256.value,
+            attribution_result_sha256=attribution_result.result_sha256.value,
+            unit_economics_input_sha256=request.input_sha256.value,
+            unit_economics_result_sha256=result.result_sha256.value,
+        )
+        for name, row in contract["source_bindings"].items():
+            if name.startswith("st1303_") or name == "five_slot_measurement":
+                row["sha256"] = _sha256(_regular_bytes(root, Path(row["path"]), name))
+        validate_contract(contract)
+        _validate_bindings(root, contract["source_bindings"])
+    except UnitEconomicsBuildError:
+        raise
+    except Exception:
+        _fail("SYNTHETIC_REBIND_INPUT_INVALID", "fixture")
+    replacements = {FIXTURE_PATH: payload}
+    if contract != load_contract(root):
+        replacements[CONTRACT_PATH] = yaml.safe_dump(
+            contract, allow_unicode=True, sort_keys=False
+        ).encode()
+    originals = {
+        path: _regular_bytes(root, path, "binding_input") for path in replacements
+    }
+    written: list[Path] = []
+    try:
+        for path, value in replacements.items():
+            if value != originals[path]:
+                _atomic_write(root, value, relative=path)
+                written.append(path)
+    except UnitEconomicsBuildError:
+        for path in reversed(written):
+            _atomic_write(root, originals[path], relative=path)
+        raise
 
 
 def _source_artifacts(root: Path) -> list[dict[str, object]]:
@@ -662,10 +794,12 @@ def render_output(root: Path = REPO_ROOT) -> bytes:
     return _json_bytes(projection)
 
 
-def _validate_output_target(root: Path) -> Path:
-    target = root / OUTPUT_PATH
+def _validate_output_target(root: Path, relative: Path = OUTPUT_PATH) -> Path:
+    if relative not in (OUTPUT_PATH, CONTRACT_PATH, FIXTURE_PATH):
+        _fail("OUTPUT_INVALID", "output")
+    target = root / relative
     current = root
-    for part in OUTPUT_PATH.parent.parts:
+    for part in relative.parent.parts:
         current /= part
         try:
             metadata = os.lstat(current)
@@ -684,8 +818,8 @@ def _validate_output_target(root: Path) -> Path:
     return target
 
 
-def _atomic_write(root: Path, content: bytes) -> None:
-    target = _validate_output_target(root)
+def _atomic_write(root: Path, content: bytes, *, relative: Path = OUTPUT_PATH) -> None:
+    target = _validate_output_target(root, relative)
     descriptor = -1
     stage_name = ""
     try:
@@ -718,6 +852,8 @@ def _atomic_write(root: Path, content: bytes) -> None:
 
 
 def build(root: Path = REPO_ROOT, *, check: bool = False) -> None:
+    if not check:
+        refresh_upstream_bindings(root)
     expected = render_output(root)
     target = _validate_output_target(root)
     if check:

@@ -51,14 +51,13 @@ def test_repo_plugin_registry_has_one_deterministic_owner_for_both_packages() ->
         measurement["package_sha256"]
     )
     review = rows["raos-editorial-measurement-v1"]["migration_review"]
-    assert review == {
-        "schema": "RAOS_WORDPRESS_PLUGIN_MIGRATION_REVIEW_V1",
-        "assessment": "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION",
-        "package_sha256": measurement["package_sha256"],
-        "file_manifest_sha256": (
-            build_wordpress_mcp_v1.REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256
-        ),
-    }
+    file_hash = hashlib.sha256(json.dumps(
+        measurement["plugin_files"], ensure_ascii=True, sort_keys=True,
+        separators=(",", ":"),
+    ).encode("ascii")).hexdigest()
+    assert review == build_wordpress_mcp_v1.measurement_migration_review(
+        measurement["package_sha256"], file_hash
+    )
 
 
 def test_owner_plugin_version_is_bound_across_package_and_runtime() -> None:
@@ -395,6 +394,7 @@ def test_codex_project_enables_only_two_mcp_servers_without_secrets() -> None:
     ]
     assert deployment["enabled_tools"] == [
         "deployment-status",
+        "operation-status",
         "publication-batch-status",
         "release-wait-and-apply",
         "theme-propose-release",
@@ -646,6 +646,7 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
     tools = {tool["name"]: tool for tool in listed["result"]["tools"]}
     assert set(tools) == {
         "deployment-status",
+        "operation-status",
         "publication-batch-status",
         "release-wait-and-apply",
         "theme-propose-release",
@@ -655,6 +656,16 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
     }
     for tool in tools.values():
         assert tool["inputSchema"]["additionalProperties"] is False
+    assert tools["operation-status"]["inputSchema"]["properties"] == {
+        "operation_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    }
+    assert tools["operation-status"]["inputSchema"]["required"] == ["operation_id"]
+    assert tools["operation-status"]["annotations"] == {
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False,
+    }
     assert tools["publication-batch-status"]["inputSchema"]["properties"] == {
         "batch_token": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
         "batch_manifest_sha256": {
@@ -800,7 +811,6 @@ def test_reviewed_measurement_migration_identity_agrees_in_both_validators() -> 
         for row in registry["artifacts"]
         if row["artifact_id"] == "raos-editorial-measurement-v1"
     )
-    review = measurement["migration_review"]
     deployment = (
         PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
     ).read_text()
@@ -809,9 +819,9 @@ def test_reviewed_measurement_migration_identity_agrees_in_both_validators() -> 
         measurement["artifact_id"],
         measurement["slug"],
         measurement["version"],
-        measurement["package_sha256"],
-        review["file_manifest_sha256"],
-        review["assessment"],
+        build_wordpress_mcp_v1.REVIEWED_MEASUREMENT_PACKAGE_SHA256,
+        build_wordpress_mcp_v1.REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256,
+        build_wordpress_mcp_v1.REVIEWED_MIGRATION_ASSESSMENT,
     ):
         assert value in deployment
         assert value in operator

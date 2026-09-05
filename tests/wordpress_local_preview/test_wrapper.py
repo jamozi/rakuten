@@ -208,6 +208,7 @@ def test_up_generates_private_credentials_and_runs_initial_seed(
     assert "plugin activate raos-editorial-measurement" in docker_log
     assert "plugin activate wordpress-seo" in docker_log
     assert "RAOS_PREVIEW_SEED_MODE=initialize" in docker_log
+    assert "--user" not in docker_log
     assert f"article_fixture_root={fixture_root / 'articles'}" in docker_log
     assert f"post_fixture={fixture_root / 'posts.json'}" in docker_log
     assert f"product_media_root={media_root}" in docker_log
@@ -265,6 +266,15 @@ def test_owner_private_fixture_override_skips_v2_materialization(
     docker_log = Path(environment["RAOS_FAKE_DOCKER_LOG"]).read_text()
     assert f"article_fixture_root={activated / 'articles'}" in docker_log
     assert f"post_fixture={activated / 'posts.json'}" in docker_log
+    user_override = f"--user {os.geteuid()}:{os.getegid()}"
+    seed_calls = [line for line in docker_log.splitlines() if " eval-file " in line]
+    assert len(seed_calls) == 1
+    assert user_override in seed_calls[0]
+    assert user_override not in "\n".join(
+        line for line in docker_log.splitlines() if " eval-file " not in line
+    )
+    assert stat.S_IMODE(activated.stat().st_mode) == 0o700
+    assert stat.S_IMODE((activated / "posts.json").stat().st_mode) == 0o600
 
 
 def test_fixture_override_rejects_insecure_directory_mode_before_compose_up(

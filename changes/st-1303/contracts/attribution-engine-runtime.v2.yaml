@@ -3,12 +3,13 @@ document:
   story_id: ST-1303
   classification: MAXIMUM_SAFE_LOCAL_RECORDED_SYNTHETIC_ATTRIBUTION_ENGINE
   status: LOCAL_CODE_COMPLETE
-  executable_environments: [ENV-DEV, ENV-CI]
+  executable_environments:
+  - ENV-DEV
+  - ENV-CI
   authority: RECORDED_SYNTHETIC_ONLY
   canonical_status: UNCHANGED
   formal_validation_claimed: false
   production_eligible: false
-
 source_bindings:
   canonical_story:
     path: docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml
@@ -39,67 +40,65 @@ source_bindings:
     sha256: cd49fd67e860a52670799bfaa8ec60711341ddc3fbbf37ceff89b76c85609dd9
   five_slot_measurement:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 69bd518321cbd5327b920c6245a4cfa861f881234bd8ba93dc09bde5c85c7fb9
-
+    sha256: 28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0
 open_decision_boundary:
   id: OD-003
   status: EXTERNAL_EVIDENCE_REQUIRED
   blocking: true
   safe_default: SYNTHETIC_FIXTURE_ONLY_REAL_ATTRIBUTION_UNVERIFIED
   resolved: false
-
 measurement_contract:
   schema_version: RAOS_ST1303_MEASUREMENT_ATTRIBUTION_CONTRACT_V2
-  source_contract_sha256: aa60d03210ef0cc3917104fff3a8a5b2fef1502fe37649cc5255c785c9b39edd
+  source_contract_sha256: 28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
   articles:
-    - slot: 1
-      article_id: st1703-first-suitcase-comparison
-      slug: carry-on-suitcase-comparison
-      packet_sha256: 53868ff59be25f1b4fb748b9a3a2fd3060872fd24288888d875a9b6490be48c2
-      intent_classification: CONDITION_COMPARISON
-    - slot: 2
-      article_id: st1704-portable-power-station-guide
-      slug: portable-power-station-guide
-      packet_sha256: 3c464302fecbfe2552db7ef3330d1c8a317dae30250d0bc2c11dfb3fb3fac87d
-      intent_classification: SELECTION_GUIDE
-    - slot: 3
-      article_id: st1704-anker-solix-c300-c800-c1000-differences
-      slug: anker-solix-c300-c800-c1000-differences
-      packet_sha256: 5a6d223eb930fba97991ec872ffe3f539b1d090b5a04606349f941452f19dc5a
-      intent_classification: MODEL_DIFFERENCES
-    - slot: 4
-      article_id: st1704-countertop-dishwasher-for-small-households
-      slug: countertop-dishwasher-for-small-households
-      packet_sha256: b42a3715a4da0e7beec5902e1c898d9d35b04d414dc4f1d68f2aa3f7f853eeaf
-      intent_classification: HOUSEHOLD_FIT_COMPARISON
-    - slot: 5
-      article_id: st1704-compact-robot-vacuum-shortlist
-      slug: compact-robot-vacuum-shortlist
-      packet_sha256: 4aae0a80274bdba88cd49eb25fdac3862911831d66ddd0b62267f9fa16f13320
-      intent_classification: CONDITION_SHORTLIST
+  - slot: 1
+    article_id: st1703-first-suitcase-comparison
+    slug: carry-on-suitcase-comparison
+    packet_sha256: 7ce24e23bb3390eb12aa0b8c70d834354d2cb774fec8b0297f1f321eac686b8d
+    intent_classification: CONDITION_COMPARISON
+  - slot: 2
+    article_id: st1704-portable-power-station-guide
+    slug: portable-power-station-guide
+    packet_sha256: 77f9a4f9bf1c94357212c94a17a132ac322b2f11c7016ce70a48d718fff7c69a
+    intent_classification: SELECTION_GUIDE
+  - slot: 3
+    article_id: st1704-anker-solix-c300-c800-c1000-differences
+    slug: anker-solix-c300-c800-c1000-differences
+    packet_sha256: e8db16ed45fc46e49db943f962b65e82039fe8379c8c1a6b87c1fa254eb2dc0b
+    intent_classification: MODEL_DIFFERENCES
+  - slot: 4
+    article_id: st1704-countertop-dishwasher-for-small-households
+    slug: countertop-dishwasher-for-small-households
+    packet_sha256: d0d00c9f9552a62250d6e2286ce86d9e07f77af5b652c2fe1585bb18bc63445b
+    intent_classification: HOUSEHOLD_FIT_COMPARISON
+  - slot: 5
+    article_id: st1704-compact-robot-vacuum-shortlist
+    slug: compact-robot-vacuum-shortlist
+    packet_sha256: 7c551ba6a45fe1560ac70b565050781b23a2ddeea0cc305366d918e136ed9401
+    intent_classification: CONDITION_SHORTLIST
   article_metrics:
-    - search_impressions
-    - search_clicks
-    - article_views
-    - affiliate_clicks
-    - pending_outcomes
-    - confirmed_outcomes
-    - rejected_outcomes
-    - direct_confirmed_reward_jpy
-    - work_minutes
-    - incremental_cost_jpy
-    - broken_links
-  program_metrics: [unattributed_confirmed_reward_jpy]
+  - search_impressions
+  - search_clicks
+  - article_views
+  - affiliate_clicks
+  - pending_outcomes
+  - confirmed_outcomes
+  - rejected_outcomes
+  - direct_confirmed_reward_jpy
+  - work_minutes
+  - incremental_cost_jpy
+  - broken_links
+  program_metrics:
+  - unattributed_confirmed_reward_jpy
   value_states:
-    - NOT_OBSERVED
-    - UNAVAILABLE
-    - UNVERIFIED
-    - OBSERVED_ZERO
-    - OBSERVED_VALUE
+  - NOT_OBSERVED
+  - UNAVAILABLE
+  - UNVERIFIED
+  - OBSERVED_ZERO
+  - OBSERVED_VALUE
   zero_is_observed_only_when_explicit: true
-
 method_boundary:
   method_version: RAOS_ST1303_DIRECT_WEIGHTED_CLICKS_V1
   direct: VERIFIED_HASHED_PROVIDER_KEY_AND_EXACT_ARTICLE_BINDING_ONLY
@@ -114,7 +113,6 @@ method_boundary:
   arbitrary_provider_total_allocation: false
   unattributed_reward_article_allocation: false
   measurement_fact_consistency_required: true
-
 authority_boundary:
   provider_call: false
   network: false
@@ -130,16 +128,15 @@ authority_boundary:
   release: false
   production: false
   recommendation_inputs_excluded:
-    - AFFILIATE_COMMISSION_RATE
-    - CONFIRMED_REWARD
-    - UNATTRIBUTED_REWARD
-    - COMMISSION
-    - INCREMENTAL_COST
-    - EPC
-    - RPM
-    - PROFIT
+  - AFFILIATE_COMMISSION_RATE
+  - CONFIRMED_REWARD
+  - UNATTRIBUTED_REWARD
+  - COMMISSION
+  - INCREMENTAL_COST
+  - EPC
+  - RPM
+  - PROFIT
   all_finance_values_excluded_from_improvement_candidates: true
-
 verification_boundary:
   local_unit_property_adversarial: CANDIDATE
   owner_generator_check: CANDIDATE

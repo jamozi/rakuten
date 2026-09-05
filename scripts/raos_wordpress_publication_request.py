@@ -111,20 +111,16 @@ EXPECTED_SOCIAL_IMAGE_URL: Final = (
     f"{ORIGIN}/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp"
 )
 EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG: Final = {
-    "carry-on-suitcase-comparison": "article-suitcase-guide.webp",
-    "portable-power-station-guide": "article-portable-power-guide.webp",
-    "anker-solix-c300-c800-c1000-differences": ("article-anker-solix-generations.webp"),
-    "countertop-dishwasher-for-small-households": (
-        "article-countertop-dishwasher-guide.webp"
-    ),
-    "compact-robot-vacuum-shortlist": "article-robot-vacuum-guide.webp",
-    "carry-on-suitcase-under-100-seats": "article-suitcase-under-100-seats.webp",
-    "lightweight-carry-on-suitcase-under-3kg": "article-suitcase-under-3kg.webp",
-    "front-open-carry-on-suitcase-with-stopper": (
-        "article-suitcase-front-open-stopper.webp"
-    ),
-    "roomba-mini-vs-switchbot-k11-pro": "article-roomba-mini-k11-comparison.webp",
-    "solota-vs-rakua-mini-plus": "article-solota-rakua-replacement.webp",
+    "carry-on-suitcase-comparison": "home-hero.webp",
+    "portable-power-station-guide": "home-hero.webp",
+    "anker-solix-c300-c800-c1000-differences": "home-hero.webp",
+    "countertop-dishwasher-for-small-households": "home-hero.webp",
+    "compact-robot-vacuum-shortlist": "home-hero.webp",
+    "carry-on-suitcase-under-100-seats": "home-hero.webp",
+    "lightweight-carry-on-suitcase-under-3kg": "home-hero.webp",
+    "front-open-carry-on-suitcase-with-stopper": "home-hero.webp",
+    "roomba-mini-vs-switchbot-k11-pro": "home-hero.webp",
+    "solota-vs-rakua-mini-plus": "home-hero.webp",
 }
 EDITOR_ENDPOINT: Final = f"{ORIGIN}/wp-json/raos-codex-mcp/v1/editor"
 REVIEW_URL: Final = f"{ORIGIN}/wp-admin/tools.php?page=raos-codex-proposals"
@@ -2029,21 +2025,34 @@ def _docker_group_membership_is_stale() -> bool:
     )
 
 
-def _secure_credential() -> tuple[str, str]:
+def _secure_credential(*, owner_checkout: Path | None = None) -> tuple[str, str]:
+    credential_path = EDITOR_CREDENTIAL_PATH
+    if owner_checkout is not None:
+        allowed = Path("/home/minami/rakuten")
+        if (
+            owner_checkout != allowed
+            or owner_checkout.is_symlink()
+            or owner_checkout.resolve(strict=True) != allowed
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_OWNER_CHECKOUT_INVALID")
+        credential_path = (
+            owner_checkout
+            / ".secrets/wordpress-mcp/editor-application-password.v1.json"
+        )
     try:
-        metadata = EDITOR_CREDENTIAL_PATH.lstat()
-        payload = EDITOR_CREDENTIAL_PATH.read_bytes()
-        parent_metadata = EDITOR_CREDENTIAL_PATH.parent.lstat()
+        metadata = credential_path.lstat()
+        payload = credential_path.read_bytes()
+        parent_metadata = credential_path.parent.lstat()
     except OSError:
         fail("RAOS_WORDPRESS_REQUEST_EDITOR_CREDENTIAL_UNAVAILABLE")
     if (
-        EDITOR_CREDENTIAL_PATH.is_symlink()
+        credential_path.is_symlink()
         or not stat.S_ISREG(metadata.st_mode)
         or metadata.st_uid != os.geteuid()
         or metadata.st_nlink != 1
         or stat.S_IMODE(metadata.st_mode) != 0o600
         or not 1 <= len(payload) <= 16 * 1024
-        or EDITOR_CREDENTIAL_PATH.parent.is_symlink()
+        or credential_path.parent.is_symlink()
         or not stat.S_ISDIR(parent_metadata.st_mode)
         or parent_metadata.st_uid != os.geteuid()
         or stat.S_IMODE(parent_metadata.st_mode) != 0o700
@@ -2073,9 +2082,13 @@ def _secure_credential() -> tuple[str, str]:
 class EditorMcpClient:
     """Small fixed-endpoint Streamable HTTP MCP client."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, owner_checkout: Path | None = None) -> None:
         self.endpoint = EDITOR_ENDPOINT
-        self.username, self._basic_auth_value = _secure_credential()
+        self.username, self._basic_auth_value = (
+            _secure_credential()
+            if owner_checkout is None
+            else _secure_credential(owner_checkout=owner_checkout)
+        )
         self.session_id: str | None = None
         self.next_id = 1
 
@@ -3463,11 +3476,14 @@ def _validate_deployment_tools(tools: object) -> None:
         if type(tool) is not dict or type(tool.get("name")) is not str:
             fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
         by_name[tool["name"]] = tool
-    if set(by_name) != EXPECTED_DEPLOYMENT_TOOLS:
+    if set(by_name) not in (
+        EXPECTED_DEPLOYMENT_TOOLS,
+        EXPECTED_DEPLOYMENT_TOOLS | {"operation-status"},
+    ):
         fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
     for name, tool in by_name.items():
         annotations = tool.get("annotations")
-        read_only = name in {"deployment-status", "publication-batch-status"}
+        read_only = name in {"deployment-status", "publication-batch-status", "operation-status"}
         destructive = name in {
             "release-wait-and-apply",
             "plugin-apply-change",
@@ -3487,6 +3503,13 @@ def _validate_deployment_tools(tools: object) -> None:
     theme_schema = by_name["theme-propose-release"].get("inputSchema")
     wait_schema = by_name["release-wait-and-apply"].get("inputSchema")
     batch_status_schema = by_name["publication-batch-status"].get("inputSchema")
+    if "operation-status" in by_name and by_name["operation-status"].get("inputSchema") != {
+        "type": "object",
+        "properties": {"operation_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+        "required": ["operation_id"],
+        "additionalProperties": False,
+    }:
+        fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
     theme_properties = (
         theme_schema.get("properties") if type(theme_schema) is dict else None
     )
@@ -3581,15 +3604,22 @@ def _deployment_mcp_call(
     *,
     timeout: int,
     runner: Callable[..., subprocess.CompletedProcess[bytes]] = subprocess.run,
+    owner_checkout: Path | None = None,
 ) -> dict[str, object]:
     if command not in {
         "deployment-status",
+        "operation-status",
         "publication-batch-status",
         "theme-propose-release",
         "plugin-propose-change",
         "release-wait-and-apply",
     }:
         fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_COMMAND_INVALID")
+    bridge_arguments: tuple[str, ...] = ()
+    if owner_checkout is not None:
+        if owner_checkout != Path("/home/minami/rakuten"):
+            fail("RAOS_WORDPRESS_REQUEST_OWNER_CHECKOUT_INVALID")
+        bridge_arguments = ("--owner-checkout", owner_checkout.as_posix())
     messages = (
         {
             "jsonrpc": "2.0",
@@ -3623,6 +3653,7 @@ def _deployment_mcp_call(
                 NODE_BIN.as_posix(),
                 "--experimental-strip-types",
                 DEPLOYMENT_BRIDGE.as_posix(),
+                *bridge_arguments,
             ),
             cwd=ROOT,
             input=stdin,
@@ -6778,6 +6809,16 @@ def execute(
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(allow_abbrev=False)
     result.add_argument(
+        "--publication-profile",
+        choices=("full-portfolio", "verified-incremental"),
+        default="full-portfolio",
+        help="explicit publication contract; the legacy full route remains the default",
+    )
+    result.add_argument("--incremental-candidate", type=Path)
+    result.add_argument("--incremental-stage", choices=("propose", "apply", "readback"))
+    result.add_argument("--incremental-preview-fixture", type=Path)
+    result.add_argument("--incremental-implementation-execution-id", action="append", default=[])
+    result.add_argument(
         "--quality-audit-mode",
         choices=("signed-independent", "codex-owner"),
         default="signed-independent",
@@ -6853,6 +6894,28 @@ def parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     try:
         arguments = parser().parse_args(argv)
+        if arguments.publication_profile == "verified-incremental":
+            import raos_wordpress_incremental_publication as incremental
+
+            try:
+                path = incremental.execute_cli(arguments)
+            except incremental.publication.PublicationFailure as error:
+                # Direct script execution uses __main__; the adapter imports
+                # this module by name. Keep both error identities fail-closed.
+                fail(str(error))
+            if arguments.incremental_stage == "propose":
+                print("公開提案の登録まで完了しました。公開はまだ行っていません。")
+            else:
+                print("段階公開の対象について、本番適用と本番read-backを確認しました。")
+            print(f"受領書: {path}")
+            return 0
+        if any((
+            arguments.incremental_candidate,
+            arguments.incremental_stage,
+            arguments.incremental_preview_fixture,
+            arguments.incremental_implementation_execution_id,
+        )):
+            fail("RAOS_WORDPRESS_REQUEST_PUBLICATION_PROFILE_INVALID")
         path = execute(
             arguments.articles,
             measurement_plugin_apply_receipt=(

@@ -2,7 +2,7 @@
   "schema_version": "2.0.0",
   "profile": "RAOS_ST1303_RECORDED_SYNTHETIC_V2",
   "scenario_id": "ST1303.RECORDED.SYNTHETIC.0001",
-  "contract_sha256": "2a2f70198776b3d39be4f7e61c2b956fc96622cbd7b585c5c4a18ec2c22bb525",
+  "contract_sha256": "741bf5c6ea90a3dfab9ef467d0c79328af3ace50b86f08c01245ee9c18afb4f7",
   "request": {
     "run_id": "018f3e90-7b00-7000-8000-000000001303",
     "requested_at": "2026-09-08T00:00:00Z",
@@ -18,7 +18,7 @@
           "slot": 1,
           "article_id": "st1703-first-suitcase-comparison",
           "slug": "carry-on-suitcase-comparison",
-          "packet_sha256": "53868ff59be25f1b4fb748b9a3a2fd3060872fd24288888d875a9b6490be48c2",
+          "packet_sha256": "7ce24e23bb3390eb12aa0b8c70d834354d2cb774fec8b0297f1f321eac686b8d",
           "intent_classification": "CONDITION_COMPARISON"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
@@ -36,17 +36,61 @@
           "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
         },
         "metrics": {
-          "search_impressions": {"state": "OBSERVED_VALUE", "value": 1000, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "search_clicks": {"state": "OBSERVED_VALUE", "value": 100, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "article_views": {"state": "OBSERVED_VALUE", "value": 500, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "affiliate_clicks": {"state": "OBSERVED_VALUE", "value": 10, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "pending_outcomes": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "confirmed_outcomes": {"state": "OBSERVED_VALUE", "value": 2, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "rejected_outcomes": {"state": "OBSERVED_VALUE", "value": 1, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "direct_confirmed_reward_jpy": {"state": "OBSERVED_VALUE", "value": 120, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "work_minutes": {"state": "OBSERVED_VALUE", "value": 60, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "incremental_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "broken_links": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"}
+          "search_impressions": {
+            "state": "OBSERVED_VALUE",
+            "value": 1000,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "search_clicks": {
+            "state": "OBSERVED_VALUE",
+            "value": 100,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "article_views": {
+            "state": "OBSERVED_VALUE",
+            "value": 500,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "affiliate_clicks": {
+            "state": "OBSERVED_VALUE",
+            "value": 10,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "pending_outcomes": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "confirmed_outcomes": {
+            "state": "OBSERVED_VALUE",
+            "value": 2,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "rejected_outcomes": {
+            "state": "OBSERVED_VALUE",
+            "value": 1,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "direct_confirmed_reward_jpy": {
+            "state": "OBSERVED_VALUE",
+            "value": 120,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "work_minutes": {
+            "state": "OBSERVED_VALUE",
+            "value": 60,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "incremental_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "broken_links": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          }
         }
       },
       {
@@ -54,25 +98,79 @@
           "slot": 2,
           "article_id": "st1704-portable-power-station-guide",
           "slug": "portable-power-station-guide",
-          "packet_sha256": "3c464302fecbfe2552db7ef3330d1c8a317dae30250d0bc2c11dfb3fb3fac87d",
+          "packet_sha256": "77f9a4f9bf1c94357212c94a17a132ac322b2f11c7016ce70a48d718fff7c69a",
           "intent_classification": "SELECTION_GUIDE"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
-        "verification": {"state": "VERIFIED", "input_sha256": "2222222222222222222222222222222222222222222222222222222222222222"},
-        "cohort": {"state": "MATURE", "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333"},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "cohort": {
+          "state": "MATURE",
+          "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
         "metrics": {
-          "search_impressions": {"state": "OBSERVED_VALUE", "value": 800, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "search_clicks": {"state": "OBSERVED_VALUE", "value": 80, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "article_views": {"state": "OBSERVED_VALUE", "value": 400, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "affiliate_clicks": {"state": "OBSERVED_VALUE", "value": 20, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "pending_outcomes": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "confirmed_outcomes": {"state": "OBSERVED_VALUE", "value": 1, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "rejected_outcomes": {"state": "OBSERVED_VALUE", "value": 1, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "direct_confirmed_reward_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "work_minutes": {"state": "OBSERVED_VALUE", "value": 90, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "incremental_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "broken_links": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"}
+          "search_impressions": {
+            "state": "OBSERVED_VALUE",
+            "value": 800,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "search_clicks": {
+            "state": "OBSERVED_VALUE",
+            "value": 80,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "article_views": {
+            "state": "OBSERVED_VALUE",
+            "value": 400,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "affiliate_clicks": {
+            "state": "OBSERVED_VALUE",
+            "value": 20,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "pending_outcomes": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "confirmed_outcomes": {
+            "state": "OBSERVED_VALUE",
+            "value": 1,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "rejected_outcomes": {
+            "state": "OBSERVED_VALUE",
+            "value": 1,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "direct_confirmed_reward_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "work_minutes": {
+            "state": "OBSERVED_VALUE",
+            "value": 90,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "incremental_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "broken_links": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          }
         }
       },
       {
@@ -80,25 +178,79 @@
           "slot": 3,
           "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
           "slug": "anker-solix-c300-c800-c1000-differences",
-          "packet_sha256": "5a6d223eb930fba97991ec872ffe3f539b1d090b5a04606349f941452f19dc5a",
+          "packet_sha256": "e8db16ed45fc46e49db943f962b65e82039fe8379c8c1a6b87c1fa254eb2dc0b",
           "intent_classification": "MODEL_DIFFERENCES"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
-        "verification": {"state": "VERIFIED", "input_sha256": "2222222222222222222222222222222222222222222222222222222222222222"},
-        "cohort": {"state": "MATURE", "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333"},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "cohort": {
+          "state": "MATURE",
+          "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
         "metrics": {
-          "search_impressions": {"state": "OBSERVED_VALUE", "value": 600, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "search_clicks": {"state": "OBSERVED_VALUE", "value": 60, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "article_views": {"state": "OBSERVED_VALUE", "value": 300, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "affiliate_clicks": {"state": "OBSERVED_VALUE", "value": 5, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "pending_outcomes": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "confirmed_outcomes": {"state": "OBSERVED_VALUE", "value": 1, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "rejected_outcomes": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "direct_confirmed_reward_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "work_minutes": {"state": "OBSERVED_VALUE", "value": 30, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "incremental_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "broken_links": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"}
+          "search_impressions": {
+            "state": "OBSERVED_VALUE",
+            "value": 600,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "search_clicks": {
+            "state": "OBSERVED_VALUE",
+            "value": 60,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "article_views": {
+            "state": "OBSERVED_VALUE",
+            "value": 300,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "affiliate_clicks": {
+            "state": "OBSERVED_VALUE",
+            "value": 5,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "pending_outcomes": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "confirmed_outcomes": {
+            "state": "OBSERVED_VALUE",
+            "value": 1,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "rejected_outcomes": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "direct_confirmed_reward_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "work_minutes": {
+            "state": "OBSERVED_VALUE",
+            "value": 30,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "incremental_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "broken_links": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          }
         }
       },
       {
@@ -106,25 +258,79 @@
           "slot": 4,
           "article_id": "st1704-countertop-dishwasher-for-small-households",
           "slug": "countertop-dishwasher-for-small-households",
-          "packet_sha256": "b42a3715a4da0e7beec5902e1c898d9d35b04d414dc4f1d68f2aa3f7f853eeaf",
+          "packet_sha256": "d0d00c9f9552a62250d6e2286ce86d9e07f77af5b652c2fe1585bb18bc63445b",
           "intent_classification": "HOUSEHOLD_FIT_COMPARISON"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
-        "verification": {"state": "VERIFIED", "input_sha256": "2222222222222222222222222222222222222222222222222222222222222222"},
-        "cohort": {"state": "MATURE", "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333"},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "cohort": {
+          "state": "MATURE",
+          "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
         "metrics": {
-          "search_impressions": {"state": "OBSERVED_VALUE", "value": 400, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "search_clicks": {"state": "OBSERVED_VALUE", "value": 40, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "article_views": {"state": "OBSERVED_VALUE", "value": 200, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "affiliate_clicks": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "pending_outcomes": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "confirmed_outcomes": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "rejected_outcomes": {"state": "OBSERVED_VALUE", "value": 1, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "direct_confirmed_reward_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "work_minutes": {"state": "OBSERVED_VALUE", "value": 60, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "incremental_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "broken_links": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"}
+          "search_impressions": {
+            "state": "OBSERVED_VALUE",
+            "value": 400,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "search_clicks": {
+            "state": "OBSERVED_VALUE",
+            "value": 40,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "article_views": {
+            "state": "OBSERVED_VALUE",
+            "value": 200,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "affiliate_clicks": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "pending_outcomes": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "confirmed_outcomes": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "rejected_outcomes": {
+            "state": "OBSERVED_VALUE",
+            "value": 1,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "direct_confirmed_reward_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "work_minutes": {
+            "state": "OBSERVED_VALUE",
+            "value": 60,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "incremental_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "broken_links": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          }
         }
       },
       {
@@ -132,42 +338,117 @@
           "slot": 5,
           "article_id": "st1704-compact-robot-vacuum-shortlist",
           "slug": "compact-robot-vacuum-shortlist",
-          "packet_sha256": "4aae0a80274bdba88cd49eb25fdac3862911831d66ddd0b62267f9fa16f13320",
+          "packet_sha256": "7c551ba6a45fe1560ac70b565050781b23a2ddeea0cc305366d918e136ed9401",
           "intent_classification": "CONDITION_SHORTLIST"
         },
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
-        "verification": {"state": "VERIFIED", "input_sha256": "2222222222222222222222222222222222222222222222222222222222222222"},
-        "cohort": {"state": "MATURE", "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333"},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "cohort": {
+          "state": "MATURE",
+          "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
         "metrics": {
-          "search_impressions": {"state": "OBSERVED_VALUE", "value": 200, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "search_clicks": {"state": "OBSERVED_VALUE", "value": 20, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "article_views": {"state": "OBSERVED_VALUE", "value": 100, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "affiliate_clicks": {"state": "OBSERVED_VALUE", "value": 15, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "pending_outcomes": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "confirmed_outcomes": {"state": "OBSERVED_VALUE", "value": 1, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "rejected_outcomes": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "direct_confirmed_reward_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "work_minutes": {"state": "OBSERVED_VALUE", "value": 60, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "incremental_cost_jpy": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-          "broken_links": {"state": "OBSERVED_ZERO", "value": 0, "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"}
+          "search_impressions": {
+            "state": "OBSERVED_VALUE",
+            "value": 200,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "search_clicks": {
+            "state": "OBSERVED_VALUE",
+            "value": 20,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "article_views": {
+            "state": "OBSERVED_VALUE",
+            "value": 100,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "affiliate_clicks": {
+            "state": "OBSERVED_VALUE",
+            "value": 15,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "pending_outcomes": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "confirmed_outcomes": {
+            "state": "OBSERVED_VALUE",
+            "value": 1,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "rejected_outcomes": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "direct_confirmed_reward_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "work_minutes": {
+            "state": "OBSERVED_VALUE",
+            "value": 60,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "incremental_cost_jpy": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "broken_links": {
+            "state": "OBSERVED_ZERO",
+            "value": 0,
+            "input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          }
         }
       }
     ],
     "program_measurement": {
       "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-      "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
-      "verification": {"state": "VERIFIED", "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"},
-      "cohort": {"state": "MATURE", "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333"},
-      "unattributed_confirmed_reward_jpy": {"state": "OBSERVED_VALUE", "value": 79, "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"}
+      "period": {
+        "start_date": "2026-08-25",
+        "end_exclusive_date": "2026-09-08",
+        "duration_days": 14
+      },
+      "verification": {
+        "state": "VERIFIED",
+        "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+      },
+      "cohort": {
+        "state": "MATURE",
+        "input_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+      },
+      "unattributed_confirmed_reward_jpy": {
+        "state": "OBSERVED_VALUE",
+        "value": 79,
+        "input_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+      }
     },
     "provider_facts": [
       {
         "fact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
         "confirmed_reward_jpy": "120",
-        "verification": {"state": "VERIFIED", "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"},
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+        },
         "direct_article_id": "st1703-first-suitcase-comparison",
         "direct_key_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
         "estimation_signal": "DIRECT_PROVIDER_KEY"
@@ -175,9 +456,16 @@
       {
         "fact_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
         "confirmed_reward_jpy": "101",
-        "verification": {"state": "VERIFIED", "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"},
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+        },
         "direct_article_id": null,
         "direct_key_sha256": null,
         "estimation_signal": "ELIGIBLE_CLICK_WEIGHTS"
@@ -185,14 +473,21 @@
       {
         "fact_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
         "program": "WORDPRESS_BLOG_RAKUTEN_AFFILIATE",
-        "period": {"start_date": "2026-08-25", "end_exclusive_date": "2026-09-08", "duration_days": 14},
+        "period": {
+          "start_date": "2026-08-25",
+          "end_exclusive_date": "2026-09-08",
+          "duration_days": 14
+        },
         "confirmed_reward_jpy": "79",
-        "verification": {"state": "VERIFIED", "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"},
+        "verification": {
+          "state": "VERIFIED",
+          "input_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+        },
         "direct_article_id": null,
         "direct_key_sha256": null,
         "estimation_signal": "INSUFFICIENT_SIGNAL"
       }
     ]
   },
-  "expected_input_sha256": "41dfb1e641b4bbee99a2e19af789e68086162a34795e17a0c7cf81eac688ef7a"
+  "expected_input_sha256": "c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482"
 }

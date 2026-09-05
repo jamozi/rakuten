@@ -103,6 +103,10 @@ services:
         source: ${RAOS_WORDPRESS_PREVIEW_PRODUCT_MEDIA_ROOT:?product media root is required}
         target: /srv/raos-product-media
         read_only: true
+      - type: bind
+        source: ${RAOS_WORDPRESS_PREVIEW_BASELINE_MEDIA_ROOT:?baseline media root is required}
+        target: /srv/raos-baseline-media
+        read_only: true
     networks:
       - preview_internal
       - preview_loopback
@@ -169,6 +173,10 @@ services:
       - type: bind
         source: ${RAOS_WORDPRESS_PREVIEW_POST_FIXTURE:?materialized post fixture is required}
         target: /var/www/raos-local-preview/fixtures/posts.json
+        read_only: true
+      - type: bind
+        source: ${RAOS_WORDPRESS_PREVIEW_MIXED_FIXTURE_ROOT:?materialized fixture root is required}
+        target: /var/www/raos-mixed-preview
         read_only: true
     networks:
       - preview_internal

@@ -4,7 +4,7 @@
   "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
   "publication_authority": "NONE",
   "generated_on": "2026-08-31",
-  "source_registry_sha256": "49fc5f5eddb49f2803149a001f29e742ab535e8752a5eae2991244b02e9c761d",
+  "source_registry_sha256": "3145e34af7daaff59180d62a3e6615aa1c0d80e439e2a50cc70d7cd940c84338",
   "locator_policy": {
     "claim_statement_source": "TRACKED_SOURCE_PACKET_EXACT",
     "fragment_source": "TRACKED_REVIEWED_EXACT_UTF8_FRAGMENT",
@@ -49,7 +49,7 @@
             "● キャスターストッパー",
             "２通りの開閉が可能",
             "<dd id=\"spec_stock_msg\">在庫あります</dd>",
-            "<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
+            "<input type=\"hidden\" value=05721-06 name=\"goods\">\r\n\t\t\t\t\t<div class=\"block-add-cart\">\r\n<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         },
         {
@@ -64,7 +64,7 @@
             "● キャスターストッパー",
             "２通りの開閉が可能",
             "<dd id=\"spec_stock_msg\">在庫あります</dd>",
-            "<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
+            "<input type=\"hidden\" value=05721-06 name=\"goods\">\r\n\t\t\t\t\t<div class=\"block-add-cart\">\r\n<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         },
         {
@@ -79,7 +79,7 @@
             "● キャスターストッパー",
             "２通りの開閉が可能",
             "<dd id=\"spec_stock_msg\">在庫あります</dd>",
-            "<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
+            "<input type=\"hidden\" value=05721-06 name=\"goods\">\r\n\t\t\t\t\t<div class=\"block-add-cart\">\r\n<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         },
         {
@@ -94,7 +94,7 @@
             "● キャスターストッパー",
             "２通りの開閉が可能",
             "<dd id=\"spec_stock_msg\">在庫あります</dd>",
-            "<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
+            "<input type=\"hidden\" value=05721-06 name=\"goods\">\r\n\t\t\t\t\t<div class=\"block-add-cart\">\r\n<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         },
         {
@@ -109,7 +109,7 @@
             "● キャスターストッパー",
             "２通りの開閉が可能",
             "<dd id=\"spec_stock_msg\">在庫あります</dd>",
-            "<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
+            "<input type=\"hidden\" value=05721-06 name=\"goods\">\r\n\t\t\t\t\t<div class=\"block-add-cart\">\r\n<button class=\"block-add-cart--btn btn btn-primary js-enhanced-ecommerce-add-cart-detail \" type=\"submit\" value=\"カートに入れる\">カートに入れる</button>"
           ]
         }
       ]
@@ -301,41 +301,37 @@
         {
           "claim_id": "CLM-ST1704-DISH-NP-TMLK1-EXCLUDED",
           "exact_utf8_fragments": [
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">6点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約2.5L&#xff08;着脱タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★5</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">製品質量\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約7.5㎏\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○&#xff08;送風乾燥&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>"
+            "<title>概要 食器洗い乾燥機 NP-TMLK1 | 食器洗い乾燥機（食洗機） | Panasonic</title>",
+            "\"sku\":\"NP-TMLK1\"",
+            "&#34;altText&#34;:&#34;NP-TMLK1-KserialNumber&#34;",
+            "<meta name=\"description\" content=\"パナソニックの「パーソナルタイプの食器洗い乾燥機（NP-TMLK1）SOLOTA」の商品サイトです。新登場のブラック色モデル。"
           ]
         },
         {
           "claim_id": "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-IDENTITY-REFERENCE",
           "exact_utf8_fragments": [
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">6点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約2.5L&#xff08;着脱タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★5</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">製品質量\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約7.5㎏\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○&#xff08;送風乾燥&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>"
+            "<title>概要 食器洗い乾燥機 NP-TMLK1 | 食器洗い乾燥機（食洗機） | Panasonic</title>",
+            "\"sku\":\"NP-TMLK1\"",
+            "&#34;altText&#34;:&#34;NP-TMLK1-KserialNumber&#34;",
+            "<meta name=\"description\" content=\"パナソニックの「パーソナルタイプの食器洗い乾燥機（NP-TMLK1）SOLOTA」の商品サイトです。新登場のブラック色モデル。"
           ]
         },
         {
           "claim_id": "CLM-PORTFOLIO-DISH-LIFECYCLE-REFERENCE",
           "exact_utf8_fragments": [
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">6点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約2.5L&#xff08;着脱タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★5</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">製品質量\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約7.5㎏\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○&#xff08;送風乾燥&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>"
+            "<title>概要 食器洗い乾燥機 NP-TMLK1 | 食器洗い乾燥機（食洗機） | Panasonic</title>",
+            "\"sku\":\"NP-TMLK1\"",
+            "&#34;altText&#34;:&#34;NP-TMLK1-KserialNumber&#34;",
+            "<meta name=\"description\" content=\"パナソニックの「パーソナルタイプの食器洗い乾燥機（NP-TMLK1）SOLOTA」の商品サイトです。新登場のブラック色モデル。"
           ]
         },
         {
           "claim_id": "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-EXCLUDED",
           "exact_utf8_fragments": [
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">容量&#xff08;食器点数&#xff09;<sup>★1</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">6点\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">標準使用水量<sup>★3</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約2.5L&#xff08;着脱タンク式&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">本体外形寸法<sup>★5</sup>\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約 幅310×高さ435×奥行225&#xff1c;485&#xff1e;mm\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">製品質量\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">約7.5㎏\n\t\t</td>\n\t\n\t\n\n\t</tr>",
-            "<tr>\n\t\t\n\t\n\t\t<th scope=\"row\" colspan=\"3\" rowspan=\"1\">乾燥機能\n\t\t</th>\n\t\n\t\n\n\t\n\t\t\n\t\n\t\t<td colspan=\"1\" rowspan=\"1\">○&#xff08;送風乾燥&#xff09;\n\t\t</td>\n\t\n\t\n\n\t</tr>"
+            "<title>概要 食器洗い乾燥機 NP-TMLK1 | 食器洗い乾燥機（食洗機） | Panasonic</title>",
+            "\"sku\":\"NP-TMLK1\"",
+            "&#34;altText&#34;:&#34;NP-TMLK1-KserialNumber&#34;",
+            "<meta name=\"description\" content=\"パナソニックの「パーソナルタイプの食器洗い乾燥機（NP-TMLK1）SOLOTA」の商品サイトです。新登場のブラック色モデル。"
           ]
         }
       ]
@@ -1688,41 +1684,29 @@
         {
           "claim_id": "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS",
           "exact_utf8_fragments": [
-            "通常製品保証",
-            "10年",
-            "素材及び製造上の不具合",
-            "完全保証 / 購入後 3年間",
-            "航空会社による破損、またはその他の運送中に生じた損傷"
+            "<h3>プロテカ スーツケース製品</h3>\r\n          <p class=\"card-subtitle\">（ハードタイプ・ソフトタイプ）</p>\r\n        </div>\r\n        <div class=\"warranty-section\">\r\n          <div class=\"warranty-item\">\r\n            <div class=\"warranty-label\">通常製品保証</div>\r\n            <div class=\"period-value\">10年</div>\r\n            <div class=\"period-desc\">\r\n              素材及び製造上の不具合が認められた場合、無償修理\r\n            </div>",
+            "<span class=\"premium-care-period\">購入後 3年間】</span><br />航空会社による破損、またはその他の運送中に生じた損傷も無償修理<br>※セール品やアウトレット品、並行輸入品は対象外"
           ]
         },
         {
           "claim_id": "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "通常製品保証",
-            "10年",
-            "素材及び製造上の不具合",
-            "完全保証 / 購入後 3年間",
-            "航空会社による破損、またはその他の運送中に生じた損傷"
+            "<h3>プロテカ スーツケース製品</h3>\r\n          <p class=\"card-subtitle\">（ハードタイプ・ソフトタイプ）</p>\r\n        </div>\r\n        <div class=\"warranty-section\">\r\n          <div class=\"warranty-item\">\r\n            <div class=\"warranty-label\">通常製品保証</div>\r\n            <div class=\"period-value\">10年</div>\r\n            <div class=\"period-desc\">\r\n              素材及び製造上の不具合が認められた場合、無償修理\r\n            </div>",
+            "<span class=\"premium-care-period\">購入後 3年間】</span><br />航空会社による破損、またはその他の運送中に生じた損傷も無償修理<br>※セール品やアウトレット品、並行輸入品は対象外"
           ]
         },
         {
           "claim_id": "CLM-PORTFOLIO-LIGHT-AEROFLEX-01521",
           "exact_utf8_fragments": [
-            "通常製品保証",
-            "10年",
-            "素材及び製造上の不具合",
-            "完全保証 / 購入後 3年間",
-            "航空会社による破損、またはその他の運送中に生じた損傷"
+            "<h3>プロテカ スーツケース製品</h3>\r\n          <p class=\"card-subtitle\">（ハードタイプ・ソフトタイプ）</p>\r\n        </div>\r\n        <div class=\"warranty-section\">\r\n          <div class=\"warranty-item\">\r\n            <div class=\"warranty-label\">通常製品保証</div>\r\n            <div class=\"period-value\">10年</div>\r\n            <div class=\"period-desc\">\r\n              素材及び製造上の不具合が認められた場合、無償修理\r\n            </div>",
+            "<span class=\"premium-care-period\">購入後 3年間】</span><br />航空会社による破損、またはその他の運送中に生じた損傷も無償修理<br>※セール品やアウトレット品、並行輸入品は対象外"
           ]
         },
         {
           "claim_id": "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "通常製品保証",
-            "10年",
-            "素材及び製造上の不具合",
-            "完全保証 / 購入後 3年間",
-            "航空会社による破損、またはその他の運送中に生じた損傷"
+            "<h3>プロテカ スーツケース製品</h3>\r\n          <p class=\"card-subtitle\">（ハードタイプ・ソフトタイプ）</p>\r\n        </div>\r\n        <div class=\"warranty-section\">\r\n          <div class=\"warranty-item\">\r\n            <div class=\"warranty-label\">通常製品保証</div>\r\n            <div class=\"period-value\">10年</div>\r\n            <div class=\"period-desc\">\r\n              素材及び製造上の不具合が認められた場合、無償修理\r\n            </div>",
+            "<span class=\"premium-care-period\">購入後 3年間】</span><br />航空会社による破損、またはその他の運送中に生じた損傷も無償修理<br>※セール品やアウトレット品、並行輸入品は対象外"
           ]
         }
       ]

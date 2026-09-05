@@ -21,8 +21,7 @@ or program-mismatched inputs produce `UNAVAILABLE`, never an invented zero.
 Program-level unattributed reward is kept separate and cannot be allocated to an
 article.
 
-Generate or check the single deterministic projection (single-output atomic
-publication needs no multi-output recovery journal):
+Generate or check the deterministic local projection:
 
 ```text
 .venv/bin/python scripts/build_st1303_attribution_engine.py
@@ -32,6 +31,19 @@ publication needs no multi-output recovery journal):
 This command is the V2 executable-local owner. The older
 `build_st1303_attribution_engine_reference_plan.py` remains a frozen,
 non-executable historical reference and is not a V2 runtime dependency.
+
+Normal generation first refreshes only the upstream source/packet hash fields
+in the runtime YAML and their matching references in the recorded/synthetic
+fixture. The existing five article IDs, slugs, slots and intent classifications
+must remain unchanged. The old fixture must pass its complete input-hash and
+synthetic-profile validation before any rebind. Measurement values, dates,
+verification states, authority and canonical bindings are never rewritten.
+The fixture contract/input hashes are then recomputed from the typed request;
+this is synthetic test-data maintenance, not new measurement or live evidence.
+Each changed file is replaced atomically; an ordinary write failure rolls back
+prior binding replacements. An interrupted or inconsistent pair remains
+fail-closed. `--check` and the runtime loader never refresh or write these
+references: they continue to reject stale bindings and generated-output drift.
 
 Confirmed/unattributed reward, commission, incremental cost, commission rate,
 EPC, RPM, profit and every other finance value are excluded from improvement,

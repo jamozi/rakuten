@@ -253,6 +253,67 @@ def test_tracked_ledger_covers_exactly_the_ten_final_article_fixtures() -> None:
     )
 
 
+def test_editorial_rewrite_keeps_product_claims_and_unresolved_warranty_bound() -> None:
+    document = _ledger()
+    dji = _unit_containing(
+        document,
+        "st1704-portable-power-station-guide",
+        "おすすめする理由: メーカー公表の最大連続出力が接続機器の条件に合い",
+    )
+    assert dji["kind"] == "EDITORIAL_INFERENCE"
+    dji_claims = cast(list[str], dji["claim_ids"])
+    assert "CLM-ST1704-POWER-DJI-1000-V2-SPECS" in dji_claims
+    assert "CLM-ST1704-POWER-CONDITIONAL-CHOICES" in dji_claims
+    assert "保証" not in cast(str, dji["text"])
+    assert (
+        cast(dict[str, object], dji["decision_gate"])["publication_gate"] == "BLOCKED"
+    )
+    k11 = _unit_containing(
+        document,
+        "st1704-compact-robot-vacuum-shortlist",
+        "無償保証期間は未確定のため、推奨根拠には使いません。",
+    )
+    assert k11["kind"] == "EDITORIAL_INFERENCE"
+    assert "CLM-ST1704-ROBOT-K11-PRO-WARRANTY-UNRESOLVED" in cast(
+        list[str], k11["claim_ids"]
+    )
+    assert (
+        cast(dict[str, object], k11["decision_gate"])["publication_gate"] == "BLOCKED"
+    )
+
+
+def test_short_intro_scope_limit_is_not_a_product_fact_or_permission() -> None:
+    unit = _unit_containing(
+        _ledger(),
+        "carry-on-suitcase-under-100-seats",
+        "軽さ、前開き、PC収納のどれが必要かを考える前に",
+    )
+    assert unit["kind"] == "NON_CLAIM"
+    assert unit["exemption_code"] == "EDITORIAL_METHOD"
+    assert unit["claim_ids"] == []
+    assert unit["decision_gate"] is None
+    assert unit["text"] in owner.METHOD_FIXED_TEXTS
+    unsafe = cast(str, unit["text"]).replace("確定できません", "確定できます")
+    assert unsafe not in owner.METHOD_FIXED_TEXTS
+    assert (
+        "清掃力・段差・障害物回避は実機で比べていません。" in owner.METHOD_FIXED_TEXTS
+    )
+    assert (
+        "清掃力・段差・障害物回避は実機で比べました。" not in owner.METHOD_FIXED_TEXTS
+    )
+
+
+@pytest.mark.parametrize(
+    "label", ("はじめに", "結論", "比較方法", "設置", "手入れ", "確認結果")
+)
+def test_unnumbered_section_labels_do_not_exempt_appended_assertions(
+    label: str,
+) -> None:
+    assert owner.NAVIGATION_EXEMPTION_RE.fullmatch(label)
+    assert not owner.NAVIGATION_EXEMPTION_RE.fullmatch(label + "なら購入可能です")
+    assert not owner.NAVIGATION_EXEMPTION_RE.fullmatch(label + "は自動ゴミ収集に対応")
+
+
 def test_source_refresh_can_acquire_after_expiry_but_normal_checks_still_fail(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -2094,6 +2155,41 @@ def test_wordpress_metadata_is_closed_and_external_exclusion_does_not_borrow_sal
     _write_json(posts_path, posts)
     with pytest.raises(owner.CoverageFailure, match="title/excerpt fixture drift"):
         owner.validate_repository(root)
+
+
+def test_a10_model_identity_is_not_purchase_availability_evidence() -> None:
+    document = _ledger()
+    article = _article(document, "solota-vs-rakua-mini-plus")
+    excerpt = next(
+        unit for unit in _units(article) if unit["channel"] == "WORDPRESS_EXCERPT"
+    )
+    assertions = {
+        assertion["assertion_text"]: assertion
+        for assertion in cast(list[dict[str, object]], excerpt["assertion_tokens"])
+    }
+    assert assertions["NP-TMLK1-K"]["claim_ids"] == [
+        "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-IDENTITY-REFERENCE"
+    ]
+    assert assertions["TK-MDW22B"]["claim_ids"] == [
+        "CLM-PORTFOLIO-DISH-RAKUA-MINI-PLUS-EXCLUDED"
+    ]
+    assert excerpt["decision_gate"] is None
+    panasonic_boundary = _unit_containing(
+        document,
+        "solota-vs-rakua-mini-plus",
+        "販売終了や購入不可とは判断しません",
+    )
+    assert panasonic_boundary["claim_ids"] == [
+        "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-IDENTITY-REFERENCE",
+        "CLM-PORTFOLIO-DISH-SOLOTA-NP-TMLK1-EXCLUDED",
+    ]
+    assert panasonic_boundary["decision_gate"] is None
+    assert all(unit["evidence_bindings"] == [] for unit in _units(article))
+    assert all(
+        "購入UI" not in cast(str, unit["text"])
+        and "現行4候補" not in cast(str, unit["text"])
+        for unit in _units(article)
+    )
 
 
 def test_conflicting_anker_switch_times_keep_explicit_two_product_scope() -> None:

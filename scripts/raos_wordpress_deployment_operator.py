@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import base64
 from collections.abc import Mapping, Sequence
+from contextvars import ContextVar
 from datetime import UTC, datetime
 import hashlib
 import io
@@ -45,6 +46,10 @@ ARTIFACT_REGISTRY: Final = (
     ROOT / "changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
 )
 REPO_ARTIFACT_DIRECTORY: Final = ROOT / ".secrets/wordpress-mcp/repo-plugin-artifacts"
+OWNER_CHECKOUT: Final = Path("/home/minami/rakuten")
+_private_owner: ContextVar[Path | None] = ContextVar(
+    "wordpress_private_owner", default=None
+)
 MAX_STDIN_BYTES: Final = 64 * 1024
 MAX_RESPONSE_BYTES: Final = 4 * 1024 * 1024
 MAX_PACKAGE_BYTES: Final = 32 * 1024 * 1024
@@ -102,6 +107,31 @@ class _RefuseRedirectHandler(urllib.request.HTTPRedirectHandler):
 
 def fail(code: str = "WORDPRESS_MCP_OPERATOR_REFUSED") -> NoReturn:
     raise OperatorFailure(code) from None
+
+
+def validated_owner_checkout(value: Path | None) -> Path | None:
+    if value is None:
+        return None
+    try:
+        valid = (
+            value == OWNER_CHECKOUT
+            and value.is_absolute()
+            and value.is_dir()
+            and not value.is_symlink()
+            and value.resolve(strict=True) == value
+            and (value / ".secrets/wordpress-mcp").resolve(strict=True)
+            == value / ".secrets/wordpress-mcp"
+        )
+    except OSError:
+        valid = False
+    if not valid:
+        fail("WORDPRESS_MCP_OWNER_CHECKOUT_INVALID")
+    return value
+
+
+def private_location(default: Path, relative: str) -> Path:
+    owner = validated_owner_checkout(_private_owner.get())
+    return default if owner is None else owner / ".secrets/wordpress-mcp" / relative
 
 
 def sha256(payload: bytes) -> str:
@@ -198,7 +228,10 @@ def _secure_regular_file(path: Path, maximum: int) -> bytes:
 
 
 def credentials() -> tuple[str, str]:
-    payload = _secure_regular_file(CREDENTIAL_PATH, 16 * 1024)
+    payload = _secure_regular_file(
+        private_location(CREDENTIAL_PATH, "operator-application-password.v1.json"),
+        16 * 1024,
+    )
     try:
         value = json.loads(payload.decode("utf-8", errors="strict"))
     except UnicodeError, json.JSONDecodeError:
@@ -1204,7 +1237,10 @@ def _repo_artifact(
     expected = require_sha256(
         match["package_sha256"], "WORDPRESS_MCP_ARTIFACT_REGISTRY_INVALID"
     )
-    path = REPO_ARTIFACT_DIRECTORY / f"{artifact_id}.zip"
+    path = (
+        private_location(REPO_ARTIFACT_DIRECTORY, "repo-plugin-artifacts")
+        / f"{artifact_id}.zip"
+    )
     payload = _secure_regular_file(path, MAX_PACKAGE_BYTES)
     if sha256(payload) != expected:
         fail("WORDPRESS_MCP_ARTIFACT_DIGEST_MISMATCH")
@@ -1332,6 +1368,11 @@ def run(command: str, inputs: dict[str, object]) -> dict[str, object]:
     if command == "deployment-status":
         exact_object(inputs, set())
         return request_json("GET", "/status")
+    if command == "operation-status":
+        record = exact_object(inputs, {"operation_id"})
+        operation_id = require_sha256(record["operation_id"])
+        kind, operation = _release_operation(operation_id)
+        return {"kind": kind, "operation": operation}
     if command == "publication-batch-status":
         record = exact_object(
             inputs,
@@ -1394,10 +1435,12 @@ def run(command: str, inputs: dict[str, object]) -> dict[str, object]:
 
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(allow_abbrev=False)
+    result.add_argument("--owner-checkout", type=Path)
     result.add_argument(
         "command",
         choices=(
             "deployment-status",
+            "operation-status",
             "publication-batch-status",
             "release-wait-and-apply",
             "theme-propose-release",
@@ -1412,8 +1455,13 @@ def parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     try:
         arguments = parser().parse_args(argv)
-        inputs = read_stdin()
-        output = run(arguments.command, inputs)
+        owner = validated_owner_checkout(arguments.owner_checkout)
+        private_context_reset = _private_owner.set(owner)
+        try:
+            inputs = read_stdin()
+            output = run(arguments.command, inputs)
+        finally:
+            _private_owner.reset(private_context_reset)
         sys.stdout.buffer.write(canonical_json(output) + b"\n")
         return 0
     except OperatorFailure as error:

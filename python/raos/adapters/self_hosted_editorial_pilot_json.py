@@ -421,6 +421,13 @@ def _request_layout(
     )
 
 
+def read_exact_private_evidence_file(
+    path: Path, *, maximum_bytes: int, missing_code: EditorialPilotFailureCode
+) -> bytes:
+    """Public replay port; preserve the exact existing private-file safeguards."""
+    return _read_private_file(path, maximum_bytes=maximum_bytes, missing_code=missing_code)
+
+
 def _read_private_file(
     path: Path, *, maximum_bytes: int, missing_code: EditorialPilotFailureCode
 ) -> bytes:

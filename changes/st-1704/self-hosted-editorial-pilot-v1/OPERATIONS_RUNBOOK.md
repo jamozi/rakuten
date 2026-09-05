@@ -67,7 +67,7 @@ post sitemap and the front-page latest-guides Query block. This is defense in de
 not authority to perform the human containment action.
 
 For a 1.5.0 publication readback, both MCP status surfaces must report runtime
-revision `2f092822b327f45a838df7788c983dc46970c90f3a5efe4d62346bfa1d7fc64e`.
+revision `5be03f20b87080e0ed6c8108035bfb369af2237dba283e4a52c436e258c5ca79`.
 The anonymous and authenticated page checks also fetch the two same-origin theme
 stylesheets without redirects and require distinct base/Editorial V2 sentinels,
 HTTP 200, `text/css`, bounded strict UTF-8, and an observed content hash and size.
@@ -328,7 +328,7 @@ recover and verify do not rebuild the confirmed request from current provider fi
    must be `summary_large_image`, and the default social image must be the verified
    1600×900 theme asset with an empty attachment ID. These are persisted human
    settings, not values written by the theme.
-3. A human WordPress administrator installs and activates the generated child-theme 1.5.0
+3. A human WordPress administrator installs and activates the generated child-theme 1.5.1
    package only after reviewing its exact hash. No repository command activates
    either component.
 4. Start a fresh WordPress request and require the Site Health test
