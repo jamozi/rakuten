@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import base64
 from collections.abc import Mapping, Sequence
+from datetime import UTC, datetime
 import hashlib
 import io
 import json
@@ -61,9 +62,7 @@ SHA256_RE: Final = re.compile(r"^[0-9a-f]{64}$")
 SLUG_RE: Final = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 VERSION_RE: Final = re.compile(r"^[0-9]+(?:\.[0-9]+){1,3}(?:[-+][0-9A-Za-z.-]+)?$")
 ARTIFACT_ID_RE: Final = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
-REVIEWED_MIGRATION_ASSESSMENT: Final = (
-    "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION"
-)
+REVIEWED_MIGRATION_ASSESSMENT: Final = "REVIEWED_PLUGIN_OWNED_ACTIVATION_MIGRATION"
 # This is deliberately a single, immutable exception rather than a migration
 # bypass.  Any package, manifest, slug, version, or artifact change requires a
 # new code review and an explicit source update before it can become eligible.
@@ -666,6 +665,7 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
     record = exact_object(
         inputs,
         {"batch_token", "batch_manifest_sha256", "proposal_ids"},
+        {"evidence_expires_at_gmt"},
     )
     batch_token = require_sha256(record["batch_token"])
     batch_manifest_sha256 = require_sha256(record["batch_manifest_sha256"])
@@ -678,7 +678,29 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
     ):
         fail("WORDPRESS_MCP_RELEASE_PROPOSALS_INVALID")
 
+    evidence_deadline: float | None = None
+    if "evidence_expires_at_gmt" in record:
+        expires = record["evidence_expires_at_gmt"]
+        if (
+            type(expires) is not str
+            or re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", expires) is None
+        ):
+            fail("WORDPRESS_MCP_EVIDENCE_DEADLINE_INVALID")
+        try:
+            expiry = datetime.strptime(expires, "%Y-%m-%dT%H:%M:%SZ").replace(
+                tzinfo=UTC
+            )
+        except ValueError:
+            fail("WORDPRESS_MCP_EVIDENCE_DEADLINE_INVALID")
+        remaining = expiry.timestamp() - time.time()
+        if not 0 < remaining <= RELEASE_APPLY_RECOVERY_TIMEOUT_SECONDS:
+            fail("WORDPRESS_MCP_EVIDENCE_DEADLINE_INVALID")
+        # A caller may only shorten the bounded operation. A late approval does
+        # not renew source/audit evidence or buy a fresh publication budget.
+        evidence_deadline = time.monotonic() + remaining
     approval_deadline = time.monotonic() + RELEASE_APPROVAL_WAIT_TIMEOUT_SECONDS
+    if evidence_deadline is not None:
+        approval_deadline = min(approval_deadline, evidence_deadline)
     batch_already_applied = False
     while True:
         batch_state, preconditions_ready = _release_batch_status(
@@ -708,6 +730,9 @@ def release_wait_and_apply(inputs: dict[str, object]) -> dict[str, object]:
     # apply/recovery deadline only after observing that approved authority so a
     # late approval retains the complete lease budget.
     apply_deadline = time.monotonic() + RELEASE_APPLY_RECOVERY_TIMEOUT_SECONDS
+    if evidence_deadline is not None:
+        apply_deadline = min(apply_deadline, evidence_deadline)
+    _ensure_request_deadline(apply_deadline)
 
     if not batch_already_applied:
         while True:

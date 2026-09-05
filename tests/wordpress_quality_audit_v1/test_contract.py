@@ -309,6 +309,213 @@ def _contract_with_trusted_reviewer(
     return value, hashlib.sha256(audit.canonical_json(value)).hexdigest()
 
 
+def _codex_owner_inputs(
+    tmp_path: Path,
+    contract_hash: str,
+    fingerprints: dict[str, str],
+    rounds: list[dict[str, object]] | None = None,
+) -> tuple[Path, Path, dict[str, object]]:
+    rounds = rounds if rounds is not None else _two_clean_rounds(fingerprints)
+    ledger = _ledger(
+        contract_hash=contract_hash, fingerprints=fingerprints, rounds=rounds
+    )
+    ledger_raw = (json.dumps(ledger, ensure_ascii=False) + "\n").encode()
+    ledger_path = tmp_path / "unsigned-ledger.json"
+    ledger_path.write_bytes(ledger_raw)
+    report: dict[str, object] = {
+        "schema": audit.CODEX_OWNER_REPORT_SCHEMA,
+        "audit_mode": "codex-owner",
+        "review_kind": "CODEX_TECHNICAL_REVIEW",
+        "publication_authority": False,
+        "owner_approval_required": True,
+        "execution_identity_authentication": "OWNER_REVIEW_REQUIRED",
+        "reviewer_attestation_verified": False,
+        "contract_file_sha256": contract_hash,
+        "ledger_file_sha256": hashlib.sha256(ledger_raw).hexdigest(),
+        "ledger_sha256": ledger["ledger_sha256"],
+        "fingerprint_bundle_sha256": audit.fingerprint_bundle_sha256(fingerprints),
+        "evaluated_at": audit.timestamp_text(EVALUATED_AT),
+        "expires_at": audit.timestamp_text(EVALUATED_AT + timedelta(seconds=600)),
+        "implementation_execution_ids": ["synthetic-author-execution"],
+        "review_runs": [
+            {
+                **{
+                    key: row[key] for key in ("round_id", "reviewer_id", "round_sha256")
+                },
+                "execution_id": f"synthetic-codex-review-{index}",
+            }
+            for index, row in enumerate(rounds)
+        ],
+    }
+    report_path = tmp_path / "synthetic-codex-owner-report.json"
+    report_path.write_bytes(audit.canonical_json(report) + b"\n")
+    return report_path, ledger_path, report
+
+
+def test_codex_owner_checks_do_not_become_signed_or_publication_authority(
+    tmp_path: Path,
+    contract: tuple[dict[str, object], str],
+    fingerprints: dict[str, str],
+) -> None:
+    report_path, ledger_path, _ = _codex_owner_inputs(
+        tmp_path, contract[1], fingerprints
+    )
+    binding = audit.validate_codex_owner_report(
+        report_path,
+        ledger_path=ledger_path,
+        now=EVALUATED_AT,
+    )
+    assert binding["completion_state"] == "READY_FOR_OWNER_REVIEW"
+    assert binding["reviewer_attestation_verified"] is False
+    assert binding["publication_authority"] is False
+    assert binding["owner_approval_required"] is True
+    assert binding["execution_identity_authentication"] == "OWNER_REVIEW_REQUIRED"
+    ledger, _raw = audit.read_json(ledger_path)
+    legacy = audit.validate_document(ledger, contract[0], contract[1], now=EVALUATED_AT)
+    assert legacy.status == "BLOCKED"
+    assert legacy.reviewer_attestation_verified is False
+
+
+def test_codex_owner_binding_shortens_expiry_to_earliest_gate(
+    tmp_path: Path,
+    contract: tuple[dict[str, object], str],
+    fingerprints: dict[str, str],
+) -> None:
+    first_end = EVALUATED_AT - timedelta(
+        seconds=min(age for _, _, age in audit.EXPECTED_SURFACES) - 100
+    )
+    first = _clean_round(
+        round_id="codex-round-early",
+        reviewer_id="codex-reviewer-early",
+        fingerprints=fingerprints,
+        started_at=first_end - timedelta(seconds=100),
+        completed_at=first_end,
+        previous_round_sha256=None,
+    )
+    second = _clean_round(
+        round_id="codex-round-late",
+        reviewer_id="codex-reviewer-late",
+        fingerprints=fingerprints,
+        started_at=EVALUATED_AT - timedelta(seconds=600),
+        completed_at=EVALUATED_AT - timedelta(seconds=500),
+        previous_round_sha256=str(first["round_sha256"]),
+    )
+    report_path, ledger_path, _ = _codex_owner_inputs(
+        tmp_path,
+        contract[1],
+        fingerprints,
+        [first, second],
+    )
+    result = audit.validate_codex_owner_report(
+        report_path, ledger_path=ledger_path, now=EVALUATED_AT
+    )
+    assert result["expires_at"] == audit.timestamp_text(
+        EVALUATED_AT + timedelta(seconds=100)
+    )
+    with pytest.raises(audit.QualityAuditFailure, match="CODEX_REPORT_EXPIRED"):
+        audit.validate_codex_owner_report(
+            report_path,
+            ledger_path=ledger_path,
+            now=EVALUATED_AT + timedelta(seconds=100),
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("audit_mode", "signed-independent"),
+        ("reviewer_attestation_verified", True),
+        ("reviewer_attestation_verified", 0),
+        ("publication_authority", True),
+        ("owner_approval_required", False),
+        ("execution_identity_authentication", "VERIFIED"),
+        ("ledger_file_sha256", "f" * 64),
+        ("fingerprint_bundle_sha256", "f" * 64),
+        ("implementation_execution_ids", []),
+        ("implementation_execution_ids", ["synthetic-codex-review-0"]),
+        ("review_runs", []),
+        ("expires_at", "2026-08-31T11:30:00Z"),
+    ],
+)
+def test_codex_owner_report_rejects_tampering(
+    tmp_path: Path,
+    contract: tuple[dict[str, object], str],
+    fingerprints: dict[str, str],
+    field: str,
+    value: object,
+) -> None:
+    report_path, ledger_path, report = _codex_owner_inputs(
+        tmp_path, contract[1], fingerprints
+    )
+    report[field] = value
+    report_path.write_bytes(audit.canonical_json(report) + b"\n")
+    with pytest.raises(audit.QualityAuditFailure):
+        audit.validate_codex_owner_report(
+            report_path, ledger_path=ledger_path, now=EVALUATED_AT
+        )
+
+
+def test_codex_owner_rejects_same_execution_for_both_reviews(
+    tmp_path: Path,
+    contract: tuple[dict[str, object], str],
+    fingerprints: dict[str, str],
+) -> None:
+    report_path, ledger_path, report = _codex_owner_inputs(
+        tmp_path, contract[1], fingerprints
+    )
+    report["review_runs"][1]["execution_id"] = report["review_runs"][0]["execution_id"]
+    report_path.write_bytes(audit.canonical_json(report) + b"\n")
+    with pytest.raises(audit.QualityAuditFailure, match="CODEX_EXECUTION_INVALID"):
+        audit.validate_codex_owner_report(
+            report_path, ledger_path=ledger_path, now=EVALUATED_AT
+        )
+
+
+def test_codex_owner_rejects_expiry_and_missing_evidence(
+    tmp_path: Path,
+    contract: tuple[dict[str, object], str],
+    fingerprints: dict[str, str],
+) -> None:
+    report_path, ledger_path, _ = _codex_owner_inputs(
+        tmp_path, contract[1], fingerprints
+    )
+    with pytest.raises(audit.QualityAuditFailure, match="CODEX_REPORT_EXPIRED"):
+        audit.validate_codex_owner_report(
+            report_path,
+            ledger_path=ledger_path,
+            now=EVALUATED_AT + timedelta(seconds=600),
+        )
+    assert _TEST_EVIDENCE_ROOT is not None
+    artifact = next((_TEST_EVIDENCE_ROOT / "artifacts").rglob("test-report.txt"))
+    artifact.write_text("tampered evidence\n")
+    with pytest.raises(audit.QualityAuditFailure):
+        audit.validate_codex_owner_report(
+            report_path, ledger_path=ledger_path, now=EVALUATED_AT
+        )
+
+
+def test_codex_owner_rejects_blocked_baseline(
+    tmp_path: Path,
+    contract: tuple[dict[str, object], str],
+    fingerprints: dict[str, str],
+) -> None:
+    report_path, ledger_path, report = _codex_owner_inputs(
+        tmp_path, contract[1], fingerprints
+    )
+    baseline = audit.build_blocked_baseline(
+        contract[0], contract[1], fingerprints, evaluated_at=EVALUATED_AT
+    )
+    raw = (json.dumps(baseline, ensure_ascii=False) + "\n").encode()
+    ledger_path.write_bytes(raw)
+    report["ledger_file_sha256"] = hashlib.sha256(raw).hexdigest()
+    report["ledger_sha256"] = baseline["ledger_sha256"]
+    report_path.write_bytes(audit.canonical_json(report) + b"\n")
+    with pytest.raises(audit.QualityAuditFailure, match="CODEX_EVIDENCE_INCOMPLETE"):
+        audit.validate_codex_owner_report(
+            report_path, ledger_path=ledger_path, now=EVALUATED_AT
+        )
+
+
 def _attestation_payload(
     rounds: list[dict[str, object]],
     fingerprints: dict[str, str],

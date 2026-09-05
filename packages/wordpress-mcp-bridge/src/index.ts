@@ -220,11 +220,15 @@ server.registerTool(
   {
     title: 'Wait for approval and apply one release set',
     description:
-      'Wait up to 60 minutes for one server-registered exact content/theme batch approval, then reserve a separate 15-minute apply/recovery budget for only that approved batch. At most one theme is accepted and it is always converged before content. Plugin proposals and terminal failure states are refused.',
+      'Wait up to 60 minutes for one server-registered exact content/theme batch approval, then reserve a separate 15-minute apply/recovery budget for only that approved batch. An optional evidence expiry only shortens both budgets and is never renewed by approval. At most one theme is accepted and it is always converged before content. Plugin proposals and terminal failure states are refused.',
     inputSchema: z.strictObject({
       batch_token: sha256,
       batch_manifest_sha256: sha256,
       proposal_ids: releaseProposalIds,
+      evidence_expires_at_gmt: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)
+        .optional(),
     }),
     annotations: {
       readOnlyHint: false,
@@ -233,13 +237,14 @@ server.registerTool(
       openWorldHint: false,
     },
   },
-  async ({ batch_token, batch_manifest_sha256, proposal_ids }) => {
+  async ({ batch_token, batch_manifest_sha256, proposal_ids, evidence_expires_at_gmt }) => {
     try {
       return toolResult(
         await runOperator('release-wait-and-apply', {
           batch_token,
           batch_manifest_sha256,
           proposal_ids,
+          ...(evidence_expires_at_gmt === undefined ? {} : { evidence_expires_at_gmt }),
         }),
       );
     } catch (error) {

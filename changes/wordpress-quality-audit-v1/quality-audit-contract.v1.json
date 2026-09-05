@@ -70,6 +70,7 @@
         "contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json",
         "package-lock.json",
         "package.json",
+        "packages/wordpress-mcp-bridge/src/index.ts",
         "python/raos/adapters/self_hosted_editorial_pilot_https.py",
         "python/raos/adapters/self_hosted_editorial_pilot_json.py",
         "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
@@ -107,6 +108,7 @@
         "scripts/raos_editorial_economics_v3.py",
         "scripts/raos_editorial_portfolio_v2.py",
         "scripts/raos_rakuten_measurement_activation_v3.py",
+        "scripts/raos_wordpress_deployment_operator.py",
         "scripts/raos_wordpress_publication_request.py",
         "scripts/raos_wordpress_seo_audit.py",
         "scripts/st1704_official_source_capture.py",
@@ -124,6 +126,8 @@
         "tests/editorial_product_safety_receipts",
         "tests/st1704",
         "tests/wordpress_local_preview",
+        "tests/wordpress_mcp_v1/test_contract.py",
+        "tests/wordpress_mcp_v1/test_release_watcher.py",
         "tests/wordpress_quality_audit_v1",
         "tests/wordpress_seo_audit_v1"
       ]

@@ -669,6 +669,10 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
         },
     }
     assert tools["release-wait-and-apply"]["inputSchema"]["properties"] == {
+        "evidence_expires_at_gmt": {
+            "type": "string",
+            "pattern": r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$",
+        },
         "batch_token": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
         "batch_manifest_sha256": {
             "type": "string",

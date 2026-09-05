@@ -142,7 +142,14 @@ owner-private receipts are stored under
   approval, then starts a separate 15-minute apply/recovery budget. It refuses
   plugin proposals and malformed or terminal batches, and binds the server's
   exact batch token, canonical manifest hash, and sorted proposal IDs through
-  the final aggregate receipt. Before its first mutation, WordPress verifies
+  the final aggregate receipt. Optional `evidence_expires_at_gmt` is an exact UTC
+  timestamp at most 900 seconds ahead; it only shortens both budgets and approval
+  never renews it. The Codex-owner publication path supplies the earliest bound
+  audit, 15-minute materialization, or 24-hour product/sales-state expiry. Expiry
+  stops new requests; ambiguous/partially applied state must be inspected and
+  recovered through the existing bounded protocol, never blindly resubmitted.
+  Omitting this field preserves the existing signed-review operator behavior.
+  Before its first mutation, WordPress verifies
   every member is still at its immutable before/after state and atomically
   claims the whole exact batch in one transaction. It then converges at most
   one theme first, followed by the content proposals (up to 20

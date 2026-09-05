@@ -96,10 +96,17 @@ After API capture and complete V2 local/production materialization:
   --quality-audit-signature <absolute-private-signature>
 ```
 
+For the explicitly owner-selected Codex technical review policy, replace the two
+signed-audit arguments with `--quality-audit-mode codex-owner` and
+`--codex-audit-report <absolute-owner-private-codex-report>`. This does not waive
+the two clean review rounds, any product/source/runtime evidence, or the owner's
+separate wp-admin approval. It is not a signed human-independent audit; see
+`changes/wordpress-quality-audit-v1/README.md` for the exact report contract.
+
 The API receipt replays product/safety evidence and both materializations. It is
 not a measurement activation or publication approval. The publication command
-still requires local audit, a trusted independent signature, separate wp-admin
-approval and verified readback. Measurement remains OFF; the measurement plugin
+still requires local audit, the explicitly selected audit policy, separate
+wp-admin approval and verified readback. Measurement remains OFF; the measurement plugin
 apply receipt is not required in this mode. Local preview uses
 `RAOS_WORDPRESS_LINK_MODE=standard-api` and does not install/activate a measurement
 plugin. Existing inactive/default-OFF installations are not removed.

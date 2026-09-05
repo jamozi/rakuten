@@ -3510,6 +3510,11 @@ def _validate_deployment_tools(tools: object) -> None:
         else None
     )
     wait_items = wait_ids.get("items") if type(wait_ids) is dict else None
+    wait_evidence_expiry = (
+        wait_properties.get("evidence_expires_at_gmt")
+        if type(wait_properties) is dict
+        else None
+    )
     batch_status_properties = (
         batch_status_schema.get("properties")
         if type(batch_status_schema) is dict
@@ -3527,6 +3532,7 @@ def _validate_deployment_tools(tools: object) -> None:
         or type(wait_schema) is not dict
         or type(wait_ids) is not dict
         or wait_schema.get("type") != "object"
+        or wait_schema.get("additionalProperties") is not False
         or wait_schema.get("required")
         != ["batch_token", "batch_manifest_sha256", "proposal_ids"]
         or type(wait_batch_token) is not dict
@@ -3546,7 +3552,25 @@ def _validate_deployment_tools(tools: object) -> None:
         or batch_status_schema.get("additionalProperties") is not False
         or batch_status_schema.get("required")
         != ["batch_token", "batch_manifest_sha256", "proposal_ids"]
-        or batch_status_properties != wait_properties
+        or type(wait_properties) is not dict
+        or set(wait_properties)
+        - {
+            "batch_token",
+            "batch_manifest_sha256",
+            "proposal_ids",
+            "evidence_expires_at_gmt",
+        }
+        or (
+            "evidence_expires_at_gmt" in wait_properties
+            and wait_evidence_expiry
+            != {"type": "string", "pattern": r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$"}
+        )
+        or batch_status_properties
+        != {
+            key: value
+            for key, value in wait_properties.items()
+            if key != "evidence_expires_at_gmt"
+        }
     ):
         fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
 
@@ -4243,6 +4267,70 @@ def publication_batch_status(
     return response
 
 
+def _codex_publication_evidence_expiry(receipt: Mapping[str, object]) -> str:
+    """Only shorten the audit window using the exact bound provider receipts."""
+
+    quality = receipt.get("quality_audit_binding")
+    materialization = receipt.get("materialization_binding")
+    _validate_quality_audit_binding(quality)
+    if type(quality) is not dict or type(materialization) is not dict:
+        fail("RAOS_WORDPRESS_REQUEST_CODEX_EVIDENCE_DEADLINE_INVALID")
+
+    def timestamp(value: object) -> datetime:
+        if type(value) is not str or TIMESTAMP_RE.fullmatch(value) is None:
+            fail("RAOS_WORDPRESS_REQUEST_CODEX_EVIDENCE_DEADLINE_INVALID")
+        try:
+            return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
+        except ValueError:
+            fail("RAOS_WORDPRESS_REQUEST_CODEX_EVIDENCE_DEADLINE_INVALID")
+
+    deadlines = [timestamp(quality["expires_at"])]
+    for path, hash_field in (
+        (LOCAL_MATERIALIZATION_RECEIPT, "local_receipt_sha256"),
+        (PRODUCTION_MATERIALIZATION_RECEIPT, "production_receipt_sha256"),
+        (ROOT / V2_STATUS_RELATIVE_PATH, "evidence_status_sha256"),
+    ):
+        document, raw = _load_owner_private_json_snapshot(
+            path,
+            MAX_RECEIPT_BYTES,
+            "RAOS_WORDPRESS_REQUEST_CODEX_EVIDENCE_DEADLINE_INVALID",
+        )
+        if hashlib.sha256(raw).hexdigest() != materialization.get(hash_field):
+            fail("RAOS_WORDPRESS_REQUEST_CODEX_EVIDENCE_DEADLINE_INVALID")
+        if hash_field != "evidence_status_sha256":
+            deadlines.append(
+                timestamp(document.get("generated_at")) + timedelta(minutes=15)
+            )
+            continue
+        products = document.get("products")
+        expected_products = materialization.get("products")
+        if (
+            type(products) is not list
+            or len(products) != 33
+            or type(expected_products) is not dict
+            or len(expected_products) != 33
+            or any(
+                type(row) is not dict
+                or row.get("state") != "verified"
+                or type(row.get("product_id")) is not str
+                for row in products
+            )
+            or {row.get("product_id") for row in products} != set(expected_products)
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_CODEX_EVIDENCE_DEADLINE_INVALID")
+        deadlines.extend(
+            timestamp(row.get("retrieved_at")) + timedelta(hours=24) for row in products
+        )
+    deadlines.append(
+        timestamp(materialization.get("manufacturer_sales_state_checked_at_utc"))
+        + timedelta(hours=24)
+    )
+    deadline = min(deadlines)
+    if deadline <= datetime.now(UTC):
+        fail("RAOS_WORDPRESS_REQUEST_CODEX_EVIDENCE_EXPIRED")
+    return deadline.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
 def wait_and_apply(
     receipt: dict[str, object],
     path: Path,
@@ -4262,6 +4350,16 @@ def wait_and_apply(
     proposals = receipt.get("proposals")
     if type(proposals) is not list:
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+    bounded_evidence: dict[str, object] = {}
+    quality = receipt.get("quality_audit_binding")
+    if (
+        not finalize_applied
+        and type(quality) is dict
+        and quality.get("schema") == wordpress_quality_audit.CODEX_OWNER_BINDING_SCHEMA
+    ):
+        bounded_evidence["evidence_expires_at_gmt"] = (
+            _codex_publication_evidence_expiry(receipt)
+        )
     if finalize_applied:
         print(
             "\n適用済みバッチのdeferred cleanupとruntime反映を確認中です。",
@@ -4269,13 +4367,30 @@ def wait_and_apply(
         )
         _touch_receipt(path, receipt, "FINALIZING_APPLIED")
     else:
+        quality = receipt.get("quality_audit_binding")
+        if (
+            type(quality) is dict
+            and quality.get("schema")
+            == wordpress_quality_audit.CODEX_OWNER_BINDING_SCHEMA
+        ):
+            _validate_quality_audit_binding(quality)
+            print(
+                "監査方式: Codex技術監査。人間による第三者署名ではありません。"
+                "監査実行の出所・結果と、このバッチの変更内容を確認してください。"
+            )
+            print(f"Codex監査報告SHA-256: {quality['codex_report_sha256']}")
         print("\nWordPress管理画面で内容を確認し、「一括承認」を押してください。")
         print(f"承認対象バッチtoken末尾12文字: {batch_token[-12:]}")
         print(f"入力するbatch manifest hash末尾8文字: {manifest_hash[-8:]}")
         print(REVIEW_URL)
-        print(
-            "承認期限は提案作成から60分です。承認後は15分の適用・復旧枠へ切り替わります。"
-        )
+        if bounded_evidence:
+            print(
+                f"証跡の有効期限（UTC）: {bounded_evidence['evidence_expires_at_gmt']}。承認後も延長されません。"
+            )
+        else:
+            print(
+                "承認期限は提案作成から60分です。承認後は15分の適用・復旧枠へ切り替わります。"
+            )
         print("承認待機中です。このコマンドは閉じないでください。", flush=True)
         _touch_receipt(path, receipt, "WAITING_FOR_APPROVAL")
     aggregate = _deployment_mcp_call(
@@ -4284,6 +4399,7 @@ def wait_and_apply(
             "batch_token": batch_token,
             "batch_manifest_sha256": manifest_hash,
             "proposal_ids": proposal_ids,
+            **bounded_evidence,
         },
         timeout=RELEASE_FOREGROUND_TIMEOUT_SECONDS,
         runner=runner,
@@ -5140,6 +5256,15 @@ def _require_quality_audit_attestation_inputs(
 def _validate_quality_audit_binding(value: object) -> None:
     if value is None:
         return
+    if (
+        type(value) is dict
+        and value.get("schema") == wordpress_quality_audit.CODEX_OWNER_BINDING_SCHEMA
+    ):
+        try:
+            wordpress_quality_audit.validate_codex_owner_binding(value)
+        except wordpress_quality_audit.QualityAuditFailure:
+            fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+        return
     if type(value) is not dict or set(value) != {
         "schema",
         "audit_phase",
@@ -5211,6 +5336,50 @@ def _validate_quality_audit_binding(value: object) -> None:
         or value["consecutive_clean_rounds"] < 2
     ):
         fail("RAOS_WORDPRESS_REQUEST_RECEIPT_INVALID")
+
+
+def _require_quality_audit_inputs(
+    attestation_path: Path | None,
+    signature_path: Path | None,
+    *,
+    audit_mode: str = "signed-independent",
+    codex_report_path: Path | None = None,
+) -> None:
+    if audit_mode == "signed-independent":
+        if codex_report_path is not None:
+            fail("RAOS_WORDPRESS_REQUEST_QUALITY_AUDIT_MODE_INVALID")
+        _require_quality_audit_attestation_inputs(attestation_path, signature_path)
+    elif audit_mode == "codex-owner":
+        if attestation_path is not None or signature_path is not None:
+            fail("RAOS_WORDPRESS_REQUEST_QUALITY_AUDIT_MODE_INVALID")
+        if codex_report_path is None or not codex_report_path.is_absolute():
+            fail("RAOS_WORDPRESS_REQUEST_CODEX_AUDIT_REPORT_REQUIRED")
+    else:
+        fail("RAOS_WORDPRESS_REQUEST_QUALITY_AUDIT_MODE_INVALID")
+
+
+def publication_quality_audit(
+    attestation_path: Path | None,
+    signature_path: Path | None,
+    *,
+    audit_mode: str = "signed-independent",
+    codex_report_path: Path | None = None,
+) -> dict[str, object]:
+    _require_quality_audit_inputs(
+        attestation_path,
+        signature_path,
+        audit_mode=audit_mode,
+        codex_report_path=codex_report_path,
+    )
+    if audit_mode == "signed-independent":
+        return strict_local_quality_audit(attestation_path, signature_path)
+    assert codex_report_path is not None
+    try:
+        binding = wordpress_quality_audit.validate_codex_owner_report(codex_report_path)
+    except wordpress_quality_audit.QualityAuditFailure:
+        fail("RAOS_WORDPRESS_REQUEST_CODEX_AUDIT_INCOMPLETE")
+    _validate_quality_audit_binding(binding)
+    return binding
 
 
 def strict_local_quality_audit(
@@ -5798,6 +5967,8 @@ def _revalidate_apply_inputs(
     expected_activation: PublicationOverlay | None,
     quality_audit_attestation: Path | None,
     quality_audit_signature: Path | None,
+    quality_audit_mode: str = "signed-independent",
+    codex_audit_report: Path | None = None,
 ) -> tuple[
     PublicationOverlay,
     list[Article],
@@ -5832,9 +6003,11 @@ def _revalidate_apply_inputs(
         or theme_runtime_revision() != EXPECTED_THEME_RUNTIME_REVISION
     ):
         fail("RAOS_WORDPRESS_REQUEST_PENDING_THEME_DRIFT")
-    current_quality = strict_local_quality_audit(
+    current_quality = publication_quality_audit(
         quality_audit_attestation,
         quality_audit_signature,
+        audit_mode=quality_audit_mode,
+        codex_report_path=codex_audit_report,
     )
     if not _same_desired(
         receipt,
@@ -6057,6 +6230,8 @@ def _resume_existing_all_attempt(
     rakuten_activation_dry_run: Path | None = None,
     quality_audit_attestation: Path | None = None,
     quality_audit_signature: Path | None = None,
+    quality_audit_mode: str = "signed-independent",
+    codex_audit_report: Path | None = None,
     client_factory: Callable[[], Any],
     deployment_runner: Callable[..., subprocess.CompletedProcess[bytes]],
 ) -> bool:
@@ -6104,6 +6279,8 @@ def _resume_existing_all_attempt(
             expected_activation=activation,
             quality_audit_attestation=quality_audit_attestation,
             quality_audit_signature=quality_audit_signature,
+            quality_audit_mode=quality_audit_mode,
+            codex_audit_report=codex_audit_report,
         )
 
     client = client_factory()
@@ -6161,6 +6338,8 @@ def execute(
     standard_api_receipt: Path | None = None,
     quality_audit_attestation: Path | None = None,
     quality_audit_signature: Path | None = None,
+    quality_audit_mode: str = "signed-independent",
+    codex_audit_report: Path | None = None,
     portfolio_refresh: Callable[[], None] = run_editorial_portfolio_refresh,
     preview: Callable[[], None] = run_preview_checks,
     preview_fixture: Callable[[Path], None] | None = None,
@@ -6201,9 +6380,11 @@ def execute(
         )
         if require_measurement:
             validate_measurement_plugin_apply_receipt(measurement_plugin_apply_receipt)
-        _require_quality_audit_attestation_inputs(
+        _require_quality_audit_inputs(
             quality_audit_attestation,
             quality_audit_signature,
+            audit_mode=quality_audit_mode,
+            codex_report_path=codex_audit_report,
         )
     with request_lock():
         initial_fixture_root = (
@@ -6225,6 +6406,8 @@ def execute(
             rakuten_activation_dry_run=rakuten_activation_dry_run,
             quality_audit_attestation=quality_audit_attestation,
             quality_audit_signature=quality_audit_signature,
+            quality_audit_mode=quality_audit_mode,
+            codex_audit_report=codex_audit_report,
             client_factory=client_factory,
             deployment_runner=deployment_runner,
         ):
@@ -6308,9 +6491,11 @@ def execute(
         if local_theme_tree_sha256 != theme_tree_before_preview:
             fail("RAOS_WORDPRESS_REQUEST_THEME_CHANGED_DURING_PREVIEW")
         quality_audit_binding = (
-            strict_local_quality_audit(
+            publication_quality_audit(
                 quality_audit_attestation,
                 quality_audit_signature,
+                audit_mode=quality_audit_mode,
+                codex_report_path=codex_audit_report,
             )
             if selection == "all"
             else None
@@ -6504,6 +6689,8 @@ def execute(
                 expected_activation=activation,
                 quality_audit_attestation=quality_audit_attestation,
                 quality_audit_signature=quality_audit_signature,
+                quality_audit_mode=quality_audit_mode,
+                codex_audit_report=codex_audit_report,
             )
             try:
                 wait_and_apply(receipt, path, deployment_runner)
@@ -6570,6 +6757,8 @@ def execute(
             expected_activation=activation,
             quality_audit_attestation=quality_audit_attestation,
             quality_audit_signature=quality_audit_signature,
+            quality_audit_mode=quality_audit_mode,
+            codex_audit_report=codex_audit_report,
         )
         wait_and_apply(receipt, path, deployment_runner)
         verify_published(
@@ -6588,6 +6777,13 @@ def execute(
 
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(allow_abbrev=False)
+    result.add_argument(
+        "--quality-audit-mode",
+        choices=("signed-independent", "codex-owner"),
+        default="signed-independent",
+        help="explicit audit policy; neither mode replaces wp-admin approval",
+    )
+    result.add_argument("--codex-audit-report", type=Path)
     result.add_argument(
         "--link-mode",
         choices=("standard-api", "measured-admin"),
@@ -6667,6 +6863,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             standard_api_receipt=arguments.standard_api_receipt,
             quality_audit_attestation=arguments.quality_audit_attestation,
             quality_audit_signature=arguments.quality_audit_signature,
+            quality_audit_mode=arguments.quality_audit_mode,
+            codex_audit_report=arguments.codex_audit_report,
         )
         print("公開と本番read-backが完了しました。")
         print(f"受領書: {path}")
