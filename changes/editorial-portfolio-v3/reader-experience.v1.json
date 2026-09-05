@@ -621,6 +621,97 @@
         }
       ],
       "media": []
+    },
+    "roomba-mini-vs-switchbot-k11-pro": {
+      "article_type": "comparison",
+      "components_enabled": true,
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "decision_summary": {
+        "key_difference": "充電台の奥行きと、ごみ捨てを自動化できるかが主な分かれ目です。比較対象はRoomba Mini Slim＋SlimCharge F115060とK11+ Proの2製品です。",
+        "options": [],
+        "no_purchase_condition": "帰還経路と手入れの空間を確保できない場合。モップの自動洗浄・乾燥を必須にする場合は、別の比較で候補を確認してください。"
+      },
+      "decision_axes": [
+        {
+          "label": "充電設備を置く場所を測る",
+          "why_it_matters": "本体が近い大きさでも台の構成は異なります。",
+          "how_to_check": "台の幅・奥行・高さと、前方・左右の帰還余白を測ります。"
+        },
+        {
+          "label": "ごみ捨てを自動化するか決める",
+          "why_it_matters": "薄い充電台と自動収集のどちらが生活に合うかを考えます。",
+          "how_to_check": "ダスト容器を手動で空にするか、紙パックを交換するかを選びます。"
+        },
+        {
+          "label": "水拭きと接続条件を確認する",
+          "why_it_matters": "シートの交換作業は残ります。",
+          "how_to_check": "使い捨てシートの交換、通信条件、消耗品の型番を確認します。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "自宅での清掃力・帰還・音",
+          "why_unknown": "家具と床の条件が異なり、実機で試していません。",
+          "how_to_verify": "設置案内と自宅の家具・通路を照合します。",
+          "decision_effect": "筐体が収まるだけで、清掃や帰還ができるとは判断しません。"
+        }
+      ],
+      "purchase_checks": [
+        "F115060とK11+ Proの型番・構成",
+        "充電設備と帰還余白、家具下・通路の寸法",
+        "ごみ捨てとシート交換、消耗品、通信条件、保証"
+      ],
+      "practical_notes": [],
+      "consolidate_sections": [
+        "reader-section",
+        "editors-note",
+        "purchase-caution"
+      ],
+      "products": [
+        {
+          "product_ref": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-ROBOT-ROOMBA-SLIM-F115060"
+          ],
+          "not_for": [
+            "自動ゴミ収集を必須にする場合"
+          ]
+        },
+        {
+          "product_ref": "PRD-SWITCHBOT-K11-PRO",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-ROBOT-K11-PRO",
+            "CLM-PORTFOLIO-ROBOT-K11-INSTALLATION-SPACE"
+          ],
+          "not_for": [
+            "ステーションと公式の帰還余白を確保できない場合"
+          ]
+        }
+      ],
+      "evidence": [
+        "CLM-PORTFOLIO-ROBOT-K11-PRO",
+        "CLM-PORTFOLIO-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+        "CLM-PORTFOLIO-ROBOT-ROOMBA-SLIM-F115060",
+        "CLM-PORTFOLIO-ROBOT-K11-INSTALLATION-SPACE",
+        "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+        "CLM-PORTFOLIO-ROBOT-ROOMBA-MINI-F155260-EXCLUDED",
+        "CLM-PORTFOLIO-ROBOT-RULO-MINI-REFERENCE",
+        "CLM-PORTFOLIO-ROBOT-EUFY-C10-BOUNDARY-REFERENCE",
+        "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE"
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "compare",
+          "question": "ロボット掃除機4モデルを設置寸法とモップ自動手入れの範囲で選ぶためのガイドを見る",
+          "target_ref": "st1704-compact-robot-vacuum-shortlist",
+          "placement": "axes"
+        }
+      ],
+      "media": [],
+      "preserve_story": true
     }
   },
   "media": [
