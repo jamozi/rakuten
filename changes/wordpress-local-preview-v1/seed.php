@@ -798,6 +798,25 @@ if ($mixed_binding !== null) {
 } else {
     delete_option('raos_mixed_preview_policy_heads_v1');
 }
+// Reader hubs are local fixtures only. Existing mixed/publication candidates are unchanged.
+if ($mixed_metadata === null && function_exists('kurashinoshirube_reader_hubs')) {
+    foreach (kurashinoshirube_reader_hubs() as $hub) {
+        $slug = $hub['slug'];
+        if (! is_string($slug) || preg_match('/\A[a-z]+(?:-[a-z]+)*\z/D', $slug) !== 1) {
+            WP_CLI::error('RAOS_READER_HUB_SLUG_INVALID');
+        }
+        $existing = get_page_by_path($slug, OBJECT, 'page');
+        $body = kurashinoshirube_reader_hub_content($slug);
+        if ($existing instanceof WP_Post && $existing->post_content !== $body) {
+            WP_CLI::error('RAOS_READER_HUB_EXISTING_PAGE_CONFLICT');
+        }
+        $data = array('post_type' => 'page', 'post_status' => 'publish', 'post_name' => $slug,
+            'post_title' => $hub['label'], 'post_excerpt' => $hub['description'], 'post_content' => $body);
+        if ($existing instanceof WP_Post) { $data['ID'] = (int) $existing->ID; }
+        $result = wp_insert_post($data, true);
+        if (is_wp_error($result) || (int) $result <= 0) { WP_CLI::error('RAOS_READER_HUB_SEED_FAILED'); }
+    }
+}
 update_option($seed_option, $fixture['seed_version'], false);
 flush_rewrite_rules(false);
 WP_CLI::success('RAOS_WORDPRESS_PREVIEW_SEED_' . strtoupper($mode) . '_COMPLETE');

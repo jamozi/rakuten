@@ -465,7 +465,7 @@ def _load_theme_navigation_v3(
     source_navigation_sha256 = navigation.get("source_navigation_sha256")
     source_portfolio_sha256 = navigation.get("source_portfolio_sha256")
     if (
-        set(navigation) - {"media_assets"}
+        set(navigation) - {"media_assets", "reader_navigation"}
         != {
             "articles",
             "clusters",

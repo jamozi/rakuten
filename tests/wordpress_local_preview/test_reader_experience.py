@@ -159,3 +159,18 @@ def test_common_specs_do_not_equate_unknowns_or_duplicate_identity_ids() -> None
     assert 'UNKNOWN' not in root.find(cls='raos-common-specifications')[0].text()
     ids = [n.attrs['id'] for n in root.walk() if n.attrs.get('id')]
     assert len(ids) == len(set(ids))
+
+
+def test_reader_taxonomy_has_one_primary_category_and_preserves_empty_groups() -> None:
+    from raos.application.editorial.reader_experience_v1 import reader_navigation
+    import pytest
+    articles = [{'article_id': 'a', 'content_role': 'category_guide'}, {'article_id': 'b', 'content_role': 'lifecycle_status_route'}]
+    raw = {'groups': [{'slug': 'kitchen', 'label': 'キッチン・家事', 'description': '置ける条件を測る', 'kind': 'category', 'article_ids': ['a','b']}, {'slug': 'empty', 'label': '未制作', 'description': '記事なし', 'kind': 'purpose', 'article_ids': []}]}
+    result = reader_navigation(raw, articles)
+    assert result['primary_categories'] == {'a': 'kitchen', 'b': 'kitchen'}
+    hubs = {h['slug']:h for h in result['hubs']}
+    assert hubs['comparisons']['article_ids'] == ['a']
+    assert hubs['empty']['article_ids'] == []
+    raw['groups'][0]['article_ids'] = ['a']
+    with pytest.raises(ValueError, match='PRIMARY_CATEGORY'):
+        reader_navigation(raw, articles)

@@ -152,5 +152,117 @@
       ]
     }
   },
-  "media": []
+  "media": [],
+  "navigation": {
+    "groups": [
+      {
+        "slug": "travel",
+        "label": "旅行・外出",
+        "description": "荷物量、持ち上げる重さ、開き方から旅行の道具を選びます。",
+        "kind": "category",
+        "article_ids": [
+          "st1703-first-suitcase-comparison",
+          "carry-on-suitcase-under-100-seats",
+          "lightweight-carry-on-suitcase-under-3kg",
+          "front-open-carry-on-suitcase-with-stopper"
+        ]
+      },
+      {
+        "slug": "kitchen",
+        "label": "キッチン・家事",
+        "description": "設置スペース、食器量、給排水から食洗機を絞ります。",
+        "kind": "category",
+        "article_ids": [
+          "st1704-countertop-dishwasher-for-small-households",
+          "solota-vs-rakua-mini-plus"
+        ]
+      },
+      {
+        "slug": "cleaning",
+        "label": "掃除・時短",
+        "description": "本体とステーションを置く場所、片づけと手入れの条件を確認します。",
+        "kind": "category",
+        "article_ids": [
+          "st1704-compact-robot-vacuum-shortlist",
+          "roomba-mini-vs-switchbot-k11-pro"
+        ]
+      },
+      {
+        "slug": "preparedness",
+        "label": "防災・電源",
+        "description": "使いたい機器と時間、持ち運ぶ重さから電源を選びます。",
+        "kind": "category",
+        "article_ids": [
+          "st1704-portable-power-station-guide",
+          "st1704-anker-solix-c300-c800-c1000-differences"
+        ]
+      },
+      {
+        "slug": "small-space",
+        "label": "一人暮らし・省スペース",
+        "description": "本体だけでなく、扉やステーションの余白まで測って候補を絞ります。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1704-countertop-dishwasher-for-small-households",
+          "st1704-compact-robot-vacuum-shortlist",
+          "roomba-mini-vs-switchbot-k11-pro",
+          "solota-vs-rakua-mini-plus"
+        ]
+      },
+      {
+        "slug": "save-housework",
+        "label": "家事を短くしたい",
+        "description": "任せたい家事と、毎回自分に残る作業を比べます。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1704-countertop-dishwasher-for-small-households",
+          "st1704-compact-robot-vacuum-shortlist",
+          "roomba-mini-vs-switchbot-k11-pro"
+        ]
+      },
+      {
+        "slug": "without-installation",
+        "label": "設置工事を避けたい",
+        "description": "給水方式と排水経路を先に確認し、自宅で使える条件を整理します。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1704-countertop-dishwasher-for-small-households",
+          "solota-vs-rakua-mini-plus"
+        ]
+      },
+      {
+        "slug": "easy-maintenance",
+        "label": "手入れを続けやすいものを選びたい",
+        "description": "消耗品の交換や給排水など、購入後の作業を確認します。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1704-countertop-dishwasher-for-small-households",
+          "st1704-compact-robot-vacuum-shortlist",
+          "roomba-mini-vs-switchbot-k11-pro"
+        ]
+      },
+      {
+        "slug": "comfortable-travel",
+        "label": "旅行を快適にしたい",
+        "description": "便の規定、荷物の量、開ける場所に合うスーツケースを選びます。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1703-first-suitcase-comparison",
+          "carry-on-suitcase-under-100-seats",
+          "lightweight-carry-on-suitcase-under-3kg",
+          "front-open-carry-on-suitcase-with-stopper"
+        ]
+      },
+      {
+        "slug": "prepare-outage",
+        "label": "防災に備えたい",
+        "description": "何を何時間使いたいかを決め、容量と出力を別々に確認します。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1704-portable-power-station-guide",
+          "st1704-anker-solix-c300-c800-c1000-differences"
+        ]
+      }
+    ]
+  }
 }

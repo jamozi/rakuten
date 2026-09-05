@@ -404,6 +404,7 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
         ".raos-home-v2 .raos-home-problems__links strong",
         ".raos-home-v2 .raos-home-about__lead",
         ".raos-home-v2 .raos-guide-card__title",
+        ".raos-guide-grid .raos-guide-card__title",
     }
     assert "ui-serif" not in css
     assert "ui-serif" not in families["editorial-serif"]
@@ -1395,162 +1396,28 @@ def test_brand_mark_is_bounded_accessible_svg() -> None:
     assert "<script" not in mark.read_text(encoding="utf-8").lower()
 
 
-def test_homepage_has_one_h1_and_puts_article_navigation_before_methodology() -> None:
+def test_homepage_routes_needs_before_policy_and_gates_independent_pages() -> None:
     header = (THEME_ROOT / "parts/header.html").read_text(encoding="utf-8")
     front = (THEME_ROOT / "templates/front-page.html").read_text(encoding="utf-8")
-
-    assert header.count('"level":0') == 1
-    assert "raos-skip-link" not in header
-    assert header.count("<!-- wp:navigation-link ") == 4
-    for label, url in (
-        ("目的から探す", "/#categories"),
-        ("選び方・比較記事", "/#all-guides"),
-        ("最近更新したガイド", "/#latest"),
-        ("このサイトについて", "/#about"),
-    ):
-        assert f'<!-- wp:navigation-link {{"label":"{label}","url":"{url}",' in header
-    assert header.count("<!-- wp:search ") == 1
-    for search_setting in (
-        '"label":"記事を検索"',
-        '"showLabel":false',
-        '"buttonPosition":"button-only"',
-        '"buttonUseIcon":true',
-        '"isSearchFieldHidden":true',
-    ):
-        assert search_setting in header
-
-    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
-    expanded_search = (
-        ".raos-site-header .raos-header-search:not("
-        ".wp-block-search__searchfield-hidden)"
-    )
-    assert css.count(expanded_search) == 4
-    assert f"{expanded_search} {{" in css
-    assert (
-        "position: absolute;"
-        in css.split(f"{expanded_search} {{", 1)[1].split("}", 1)[0]
-    )
-    assert "width: 100%;" in css.split(f"{expanded_search} {{", 1)[1].split("}", 1)[0]
-    assert "padding: 0.5rem clamp(1rem, 4vw, 2rem);" in css
-    assert "):last-child:nth-child(odd) {" in css
-
-    assert front.count('<main id="main-content"') == 1
-    assert front.count("<h1") == 1
-    assert front.count("</h1>") == 1
-    assert '"level":1' not in front
-    assert (
-        '<h1 id="home-hero-title"><span>暮らしの選択に、</span>'
-        "<span>たしかな</span><span>道しるべを。</span></h1>"
-    ) in front
-    assert 'raos-home-hero__image' not in front
-    assert 'url("images/home-hero.webp")' not in css
-
-    section_markers = [
-        '<section class="raos-home-hero"',
-        '<section class="raos-home-purpose',
-        "[kurashinoshirube_published_clusters]",
-        "[kurashinoshirube_featured_guide]",
-        '<section id="latest"',
-        '<section class="raos-home-promise"',
-        '<section class="raos-home-method',
-        '<section class="raos-home-about',
-    ]
-    assert all(front.count(marker) == 1 for marker in section_markers)
-    assert [front.index(marker) for marker in section_markers] == sorted(
-        front.index(marker) for marker in section_markers
-    )
-
-
-def test_homepage_copy_routes_reader_needs_without_internal_language() -> None:
-    front = (THEME_ROOT / "templates/front-page.html").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-
-    assert "初めてなので失敗したくない" not in front
-    assert 'class="raos-home-problems' not in front
-    assert 'class="raos-home-purpose__grid"' not in front
-    assert 'class="raos-home-purpose__shortcuts"' in front
-    assert (
-        '<section class="raos-home-method raos-home-section" id="home-method"' in front
-    )
-    assert 'return \'<section id="all-guides" class="raos-cluster-nav' in functions
-    for required in (
-        "比較記事の3つの約束",
-        "買わない判断も結論にする",
-        "向かない条件と見送る選択",
-        "買い替え不要",
-        "詳しい比較・編集方針を見る",
-        "運営と責任",
-        "暮らしのしるべ編集者が報酬を受け取る場合があります",
-        "訂正と更新に責任を持って対応します",
-        "最近更新したガイド",
-    ):
-        assert required in front
-    for prohibited in (
-        "WordPressの分類ではなく",
-        "注目ガイドと重複しない",
-        "新しい比較記事",
-        "全記事確認済み",
-        ">LATEST<",
-        ">PURPOSE<",
-        ">ABOUT<",
-        "OUR POINT OF VIEW",
-    ):
-        assert prohibited not in front
-    assert "条件を整理する比較ガイド" in functions
-    assert "注目の比較ガイド" not in functions
-    for prohibited in (
-        "FEATURED GUIDE",
-        "PURPOSE GUIDES",
-        "今、読んでほしい選び方",
-    ):
-        assert prohibited not in functions
-
-    promise = front.split('<section class="raos-home-promise"', 1)[1].split(
-        "</section>", 1
-    )[0]
-    assert "比較の方針" in promise
-    assert "EDITORIAL PROMISE" not in promise
-    assert promise.count("<li><span>") == 3
-    for heading in (
-        "根拠をたどれる形にする",
-        "分からないことを断定しない",
-        "買わない判断も結論にする",
-    ):
-        assert f"<h3>{heading}</h3>" in promise
-
-    purpose = front.split('<section class="raos-home-purpose', 1)[1].split(
-        "</section>", 1
-    )[0]
-    for heading, anchor in (
-        ("スーツケース", "cluster-mobility"),
-        ("食洗機・ロボット掃除機", "cluster-home"),
-        ("ポータブル電源", "cluster-ready"),
-    ):
-        assert purpose.count(f'href="#{anchor}"') == 1
-        assert (
-            f'href="#{anchor}">{heading} <span aria-hidden="true">↓</span>' in purpose
-        )
-
-    assert front.count("[kurashinoshirube_featured_guide]") == 1
-    assert front.count("[kurashinoshirube_published_clusters]") == 1
-    assert front.count("[kurashinoshirube_latest_guides]") == 1
-    assert '"perPage":3' not in front
-    assert "商品選定・評価は報酬条件とは切り離して行います。" in front
-    assert front.index("当サイトには広告・アフィリエイトリンク") < front.index(
-        "[kurashinoshirube_published_clusters]"
-    )
-    assert "Codexを利用し" in front
-    assert (
-        "具体的な変更内容" not in front
-    )  # Details belong on the editorial policy page.
-    assert "よく読まれている" not in front
-    for unpublished_path in (
-        "/portable-power-station-guide/",
-        "/countertop-dishwasher-for-small-households/",
-        "/anker-solix-c300-c800-c1000-differences/",
-        "/compact-robot-vacuum-shortlist/",
-    ):
-        assert unpublished_path not in front
+    assert front.count("<h1") == front.count("</h1>") == 1
+    assert "暮らしに合うものを、迷わず選ぶ。" in re.sub(r"<[^>]+>", "", front)
+    assert "サイズ、使い方、手入れのしやすさまで。" in front
+    assert 'raos-home-hero__image' not in front
+    for slug in ('categories', 'purposes', 'guides', 'comparisons', 'updates'):
+        assert f'"url":"/{slug}/"' in header
+    assert '"url":"/#' not in header
+    assert "kurashinoshirube_reader_hub_url" in functions
+    assert "$page->post_status !== 'publish'" in functions
+    assert "$page->post_content !== kurashinoshirube_reader_hub_content($slug)" in functions
+    markers = ['id="home-hero-title"', 'section="purposes"', 'section="categories"', 'section="guides"', '<section id="latest"', 'id="home-promise-title"']
+    assert [front.index(m) for m in markers] == sorted(front.index(m) for m in markers)
+    for text in ('公式仕様を確認', '向かない条件も掲載', '未確認は未確認と表示', '商品選定・評価は報酬条件とは切り離して行います。'):
+        assert text in front
+    assert "[kurashinoshirube_published_clusters]" not in front
+    assert "Codex" not in front
+    assert "人気" not in front
+    assert front.count('[kurashinoshirube_latest_guides]') == 1
 
 
 def test_homepage_cluster_anchors_clear_the_sticky_header() -> None:
@@ -1622,8 +1489,8 @@ def test_navigation_and_listing_labels_are_reader_facing_japanese() -> None:
     archive = (THEME_ROOT / "templates/archive.html").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
 
-    assert header.count('"label":"最近更新したガイド","url":"/#latest"') == 1
-    assert footer.count('"label":"最近更新したガイド","url":"/#latest"') == 1
+    assert header.count('"label":"最近更新したガイド","url":"/updates/"') == 1
+    assert footer.count('"label":"最近更新したガイド","url":"/updates/"') == 1
     assert "新しい記事" not in header + footer
     assert '<p class="raos-home-eyebrow">記事を探す</p>' in search
     assert '<p class="raos-home-eyebrow">比較ガイド一覧</p>' in archive
@@ -2215,7 +2082,7 @@ def test_footer_removes_the_broken_subscription_link() -> None:
     footer = (THEME_ROOT / "parts/footer.html").read_text(encoding="utf-8")
     assert "/subscribe/" not in footer
     assert "新着案内を受け取る" not in footer
-    assert footer.count('"url":"/#about"') == 1
+    assert '"url":"/#about"' not in footer
     assert "/about-ad-policy/" in footer
 
 

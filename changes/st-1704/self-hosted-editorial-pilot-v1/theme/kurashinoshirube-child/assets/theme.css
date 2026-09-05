@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 57aed3a03bcf502143d8d44c1c23b606f09ad7ab705dfc456fcc76b3e288e669;
+  --raos-theme-runtime-revision-base: a489330c68412b7345504b66251af949389e52814be1f52eb26a0fe9edd3bdf6;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -3840,3 +3840,38 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 .raos-guide-card__media { display: block; }
 .raos-guide-card__media img { display: block; width: 100%; height: auto; object-fit: contain; }
 .raos-guide-card__caption { display: block; font-size: .8rem; line-height: 1.6; margin-top: .5rem; }
+
+/* Reader homepage and the shared, reachable taxonomy hubs. */
+.raos-home-v2 .raos-home-hero__copy { max-width: 920px; }
+.raos-home-v2 #home-hero-title { max-width: 18em; font-size: clamp(2rem, 4.1vw, 3.6rem); line-height: 1.65; text-wrap: balance; }
+.raos-home-v2 .raos-home-hero__actions { flex-wrap: wrap; gap: 1rem; }
+.raos-home-v2 .raos-home-hero__actions a + a { color: var(--raos-ink); background: white; border: 1px solid currentColor; }
+.raos-home-v2 .raos-home-trust { display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; padding: 0; list-style: none; font-size: .875rem; }
+.raos-home-trust li::before { content: '✓ '; }
+.raos-home-v2 .raos-reader-entry { padding-block: clamp(2rem, 5vw, 4rem); }
+.raos-reader-entry h2 { margin-block: 0 1.5rem; }
+.raos-reader-entry:nth-child(even) { background: #f6f7f9; }
+.raos-guide-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; padding: 0; list-style: none; align-items: stretch; }
+.raos-guide-grid > li { display: flex; min-width: 0; margin: 0; }
+.raos-guide-grid .raos-guide-card { display: flex; flex: 1; flex-direction: column; gap: 1rem; padding: 1.5rem; border: 1px solid #dce1e7; background: white; text-decoration: none; color: #15283f; min-width: 0; }
+.raos-guide-grid .raos-guide-card__title { font-family: var(--raos-font-serif); font-size: 1.25rem; line-height: 1.8; }
+.raos-guide-grid .raos-guide-card__excerpt { font-size: .9375rem; line-height: 1.9; }
+.raos-guide-grid .raos-guide-card__date { margin-top: auto; font-size: .8125rem; color: #47566b; padding-top: 1rem; }
+.raos-reader-hub { max-width: 1200px; margin-inline: auto; }
+.raos-reader-hub > p { max-width: 800px; }
+.raos-reader-hub .raos-guide-grid { margin-block: 2rem; }
+.raos-home-v2 .raos-taxonomy-grid, .raos-reader-hub .raos-taxonomy-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 768px) {
+  .raos-guide-grid { grid-template-columns: 1fr; }
+  .raos-home-v2 .raos-home-hero { padding-block: 2.5rem; }
+  .raos-home-v2 .raos-home-hero__actions { align-items: stretch; flex-direction: column; }
+  .raos-home-v2 .raos-home-hero__actions a { text-align: center; }
+  .raos-home-trust { flex-direction: column; }
+}
+
+.raos-home-v2 .raos-home-hero__inner { display: block; }
+.raos-home-v2 .raos-home-hero__lead { max-width: 48em; }
+@media (max-width: 768px) { .raos-home-v2 .raos-taxonomy-grid, .raos-reader-hub .raos-taxonomy-grid { grid-template-columns: 1fr; } }
+
+.raos-home-v2 #home-hero-title { text-wrap: wrap; }
+@media (max-width: 768px) { .raos-home-v2 #home-hero-title { font-size: clamp(1.75rem, 5.5vw, 2.5rem); } .raos-home-v2 #home-hero-title > span { white-space: normal; } }

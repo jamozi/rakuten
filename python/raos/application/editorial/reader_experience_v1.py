@@ -225,3 +225,40 @@ def validate_experience(
     if not isinstance(facts, list) or any(not isinstance(ref, str) or ref not in evidence_refs for ref in facts):
         issues.append("evidence.unresolved_reference")
     return tuple(issues)
+def reader_navigation(raw: object, articles: list[dict[str, object]]) -> dict[str, object]:
+    """Validate taxonomy and derive hub memberships; counts remain runtime eligible counts."""
+    if raw is None:
+        return {}
+    if not isinstance(raw, dict) or not isinstance(raw.get('groups'), list):
+        raise ValueError('READER_NAVIGATION_INVALID')
+    known = {str(a['article_id']): a for a in articles}
+    groups = raw['groups']
+    categories: list[str] = []
+    slugs: set[str] = set()
+    for group in groups:
+        if not isinstance(group, dict) or set(group) != {'slug', 'label', 'description', 'kind', 'article_ids'}:
+            raise ValueError('READER_GROUP_INVALID')
+        if (group['kind'] not in {'category', 'purpose'}
+            or not isinstance(group['slug'], str) or not re.fullmatch(r'[a-z]+(?:-[a-z]+)*', group['slug'])
+            or group['slug'] in slugs or not isinstance(group['article_ids'], list)
+            or not all(isinstance(x, str) and x in known for x in group['article_ids'])
+            or len(set(group['article_ids'])) != len(group['article_ids'])
+            or not all(isinstance(group[k], str) and group[k].strip() for k in ('label', 'description'))):
+            raise ValueError('READER_GROUP_INVALID')
+        slugs.add(group['slug'])
+        if group['kind'] == 'category':
+            categories.extend(group['article_ids'])
+    if sorted(categories) != sorted(known):
+        raise ValueError('READER_PRIMARY_CATEGORY_MUST_BE_UNIQUE')
+    core = [
+        ('categories', '商品カテゴリから探す', '道具の種類から、暮らしに合う条件を確認します。', 'categories', list(known)),
+        ('purposes', '悩み・目的から探す', '困っていることから、次に確認する条件を見つけます。', 'purposes', list(known)),
+        ('guides', '選び方ガイド', '商品名を決める前に、測る・数える・確認する条件を整理します。', 'collection', [k for k,a in known.items() if a['content_role'] == 'category_guide']),
+        ('comparisons', '比較・条件別の候補', '違いと妥協点を確認し、自分の条件に合う候補を絞ります。', 'collection', [k for k,a in known.items() if a['content_role'] != 'lifecycle_status_route']),
+        ('updates', '最近更新したガイド', '内容を更新した順に、比較と購入前確認のガイドを案内します。', 'updates', list(known)),
+    ]
+    hubs = [dict(slug=slug, label=label, description=description, kind=kind, article_ids=ids) for slug,label,description,kind,ids in core]
+    if slugs.intersection(h['slug'] for h in hubs):
+        raise ValueError('READER_HUB_SLUG_COLLISION')
+    hubs.extend(groups)
+    return {'hubs': hubs, 'primary_categories': {article: g['slug'] for g in groups if g['kind'] == 'category' for article in g['article_ids']}}

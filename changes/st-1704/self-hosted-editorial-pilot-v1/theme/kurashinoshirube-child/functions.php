@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.5.1';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '57aed3a03bcf502143d8d44c1c23b606f09ad7ab705dfc456fcc76b3e288e669';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '57aed3a03bcf502143d8d44c1c23b606f09ad7ab705dfc456fcc76b3e288e669';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'a489330c68412b7345504b66251af949389e52814be1f52eb26a0fe9edd3bdf6';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'a489330c68412b7345504b66251af949389e52814be1f52eb26a0fe9edd3bdf6';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -53,7 +53,7 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1'
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = 'assets/editorial-navigation.v3.json';
-const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '0b317a5af429be6f8b9b6df9e663f71177cbf68033cbff4ffbb9519504ae0802';
+const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '5a83af2e4366f407ddbbb9c998dfae5c35ffa1fea649fb6b9085ff73741d6cb2';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_MAX_BYTES = 262144;
 const KURASHINOSHIRUBE_HOME_TITLE = '生活用品を公式仕様で比較｜暮らしのしるべ';
 const KURASHINOSHIRUBE_HOME_DESCRIPTION = '暮らしのしるべは、移動・家事・備えの生活用品を、公式情報と確認条件に基づいて比較し、選び方を分かりやすく案内します。';
@@ -284,6 +284,7 @@ function kurashinoshirube_editorial_navigation(): array
                 'articles',
                 'clusters',
                 'media_assets',
+                'reader_navigation',
                 'schema',
                 'source_navigation_sha256',
                 'source_portfolio_sha256',
@@ -405,7 +406,7 @@ function kurashinoshirube_article_bindings(): array
             'primary_query_intent' => $article['primary_query_intent'],
             'intent_group_id' => $article['intent_group_id'],
             'local_slug' => $article['local_slug'],
-            'section' => $article['category_label'],
+            'section' => kurashinoshirube_reader_category_label($article['article_id']) ?? $article['category_label'],
             'slug' => $article['production_slug'],
             'snapshot_id' => $article['snapshot_id'],
             'title' => $article['title'],
@@ -2670,11 +2671,13 @@ function kurashinoshirube_render_breadcrumb($attributes, $content, $tag): string
         return '';
     }
     $title = get_post_field('post_title', get_the_ID(), 'raw');
-    if (! kurashinoshirube_is_clean_text($title, 1, 100)) {
+    if (! kurashinoshirube_is_clean_text($title, 1, 500)) {
         return '';
     }
+    $category = kurashinoshirube_reader_article_category((int) get_the_ID());
     return '<nav class="raos-breadcrumb" aria-label="パンくずリスト"><ol>'
         . '<li><a href="' . esc_url(home_url('/')) . '">ホーム</a></li>'
+        . ($category === null ? '' : '<li><a href="' . esc_url($category['url']) . '">' . esc_html($category['label']) . '</a></li>')
         . '<li aria-current="page">' . esc_html($title) . '</li>'
         . '</ol></nav>';
 }
@@ -3160,13 +3163,15 @@ function kurashinoshirube_reader_guide_card(WP_Post $post): string
         return '';
     }
     $date = get_post_modified_time('Y年n月j日', false, $post->ID);
+    $binding = kurashinoshirube_article_bindings()[$identity['article_id']] ?? array();
+    $category = ($binding['section'] ?? '') . ' / ' . ($binding['content_role_label'] ?? kurashinoshirube_stored_guide_role((int) $post->ID));
     $asset = kurashinoshirube_article_visual_asset((int) $post->ID);
     $media = is_array($asset) ? '<span class="raos-guide-card__media"><img src="' . esc_url($asset['uri'])
         . '" alt="' . esc_attr($asset['alt']) . '" width="' . (int) $asset['width'] . '" height="' . (int) $asset['height']
         . '" loading="lazy" decoding="async"><span class="raos-guide-card__caption">' . esc_html($asset['caption']) . '</span></span>' : '';
     return '<a class="raos-guide-card" href="' . esc_url($url) . '">'
         . $media
-        . '<span class="raos-article-category">' . esc_html(kurashinoshirube_stored_guide_role((int) $post->ID)) . '</span>'
+        . '<span class="raos-article-category">' . esc_html($category) . '</span>'
         . '<span class="raos-guide-card__title" role="heading" aria-level="3">' . esc_html($title) . '</span>'
         . '<span class="raos-guide-card__excerpt">' . esc_html($excerpt) . '</span>'
         . '<span class="raos-guide-card__date">更新 ' . esc_html((string) $date) . '</span></a>';
@@ -3191,6 +3196,158 @@ function kurashinoshirube_render_latest_guides($attributes, $content, $tag): str
     return $items === array() ? '' : '<ul class="raos-guide-grid">' . implode('', $items) . '</ul>';
 }
 add_shortcode('kurashinoshirube_latest_guides', 'kurashinoshirube_render_latest_guides');
+
+/** Shared public taxonomy; source memberships never imply a published page. */
+function kurashinoshirube_reader_hubs(): array
+{
+    return kurashinoshirube_editorial_navigation()['reader_navigation']['hubs'] ?? array();
+}
+
+function kurashinoshirube_reader_category_label(string $article_id): ?string
+{
+    foreach (kurashinoshirube_reader_hubs() as $hub) {
+        if ($hub['kind'] === 'category' && in_array($article_id, $hub['article_ids'], true)) {
+            return $hub['label'];
+        }
+    }
+    return null;
+}
+
+function kurashinoshirube_reader_article_category(int $post_id): ?array
+{
+    $identity = kurashinoshirube_public_article_identity($post_id);
+    if ($identity === null) { return null; }
+    foreach (kurashinoshirube_reader_hubs() as $hub) {
+        if ($hub['kind'] === 'category' && in_array($identity['article_id'], $hub['article_ids'], true)) {
+            $url = kurashinoshirube_reader_hub_url($hub['slug']);
+            return $url === null ? null : array('label' => $hub['label'], 'url' => $url);
+        }
+    }
+    return null;
+}
+
+function kurashinoshirube_reader_hub_content(string $slug): string
+{
+    return '<!-- wp:shortcode -->[kurashinoshirube_reader_hub slug="' . $slug . '"]<!-- /wp:shortcode -->';
+}
+
+/** Enable a hub only after the exact tracked page is locally/publicly reachable. */
+function kurashinoshirube_reader_hub_url(string $slug): ?string
+{
+    $known = array_column(kurashinoshirube_reader_hubs(), 'slug');
+    if (! in_array($slug, $known, true)) { return null; }
+    $page = get_page_by_path($slug, OBJECT, 'page');
+    if (! ($page instanceof WP_Post) || $page->post_status !== 'publish'
+        || $page->post_password !== '' || $page->post_content !== kurashinoshirube_reader_hub_content($slug)) {
+        return null;
+    }
+    $url = get_permalink($page);
+    return is_string($url) ? $url : null;
+}
+
+function kurashinoshirube_reader_eligible_posts(array $article_ids): array
+{
+    $posts = array();
+    foreach (kurashinoshirube_article_bindings() as $id => $binding) {
+        if (! in_array($id, $article_ids, true)) { continue; }
+        $slug = kurashinoshirube_is_local_preview() ? $binding['local_slug'] : $binding['slug'];
+        $post = get_page_by_path($slug, OBJECT, 'post');
+        if ($post instanceof WP_Post && $post->post_status === 'publish' && $post->post_password === ''
+            && kurashinoshirube_public_article_identity((int) $post->ID) !== null) {
+            $posts[] = $post;
+        }
+    }
+    return $posts;
+}
+
+function kurashinoshirube_reader_group_cards(string $kind): string
+{
+    $items = array();
+    foreach (kurashinoshirube_reader_hubs() as $hub) {
+        if ($hub['kind'] !== $kind) { continue; }
+        $url = kurashinoshirube_reader_hub_url($hub['slug']);
+        $count = count(kurashinoshirube_reader_eligible_posts($hub['article_ids']));
+        if ($url === null || $count === 0) { continue; }
+        $items[] = '<li><a class="raos-guide-card raos-taxonomy-card" href="' . esc_url($url) . '">'
+            . '<span class="raos-guide-card__title" role="heading" aria-level="3">' . esc_html($hub['label']) . '</span>'
+            . '<span class="raos-guide-card__excerpt">' . esc_html($hub['description']) . '</span>'
+            . '<span class="raos-guide-card__date">' . (int) $count . '記事を読む <span aria-hidden="true">→</span></span></a></li>';
+    }
+    return $items === array() ? '' : '<ul class="raos-guide-grid raos-taxonomy-grid">' . implode('', $items) . '</ul>';
+}
+
+function kurashinoshirube_render_reader_home($attributes, $content, $tag): string
+{
+    if (! is_front_page() || $tag !== 'kurashinoshirube_reader_home' || ! is_array($attributes)
+        || array_keys($attributes) !== array('section') || ! in_array($content, array(null, ''), true)) { return ''; }
+    $section = $attributes['section'];
+    if ($section === 'actions') {
+        $links = array();
+        foreach (array('purposes' => '悩みから探す', 'categories' => '商品カテゴリから探す') as $slug => $label) {
+            if (kurashinoshirube_reader_hub_url($slug) !== null) {
+                $links[] = '<a class="raos-home-button" href="#' . $slug . '">' . $label . '</a>';
+            }
+        }
+        if ($links === array()) { $links[] = '<a class="raos-home-button" href="#latest">最近更新したガイドを見る</a>'; }
+        return '<div class="raos-home-hero__actions">' . implode('', $links) . '</div>';
+    }
+    if (in_array($section, array('purposes', 'categories'), true)) {
+        $kind = $section === 'purposes' ? 'purpose' : 'category';
+        $cards = kurashinoshirube_reader_group_cards($kind);
+        if ($cards === '' || kurashinoshirube_reader_hub_url($section) === null) { return ''; }
+        $label = $section === 'purposes' ? '悩み・目的から探す' : '商品カテゴリから探す';
+        return '<section class="raos-home-section raos-reader-entry" id="' . $section . '" aria-labelledby="home-' . $section . '">'
+            . '<div class="raos-home-shell"><h2 id="home-' . $section . '">' . $label . '</h2>' . $cards . '</div></section>';
+    }
+    if ($section === 'guides') {
+        $hub = array_values(array_filter(kurashinoshirube_reader_hubs(), static fn(array $h): bool => $h['slug'] === 'guides'));
+        if ($hub === array()) { return ''; }
+        $items = array();
+        foreach (kurashinoshirube_reader_eligible_posts($hub[0]['article_ids']) as $post) {
+            $items[] = '<li>' . kurashinoshirube_reader_guide_card($post) . '</li>';
+        }
+        return $items === array() ? '' : '<section class="raos-home-section raos-reader-entry" id="first-guides" aria-labelledby="home-first-guides"><div class="raos-home-shell"><h2 id="home-first-guides">まず読むガイド</h2><p>何を測り、何を確かめるか。候補を絞る前の入口です。</p><ul class="raos-guide-grid">' . implode('', $items) . '</ul></div></section>';
+    }
+    return '';
+}
+add_shortcode('kurashinoshirube_reader_home', 'kurashinoshirube_render_reader_home');
+
+function kurashinoshirube_render_reader_hub($attributes, $content, $tag): string
+{
+    if ($tag !== 'kurashinoshirube_reader_hub' || ! is_array($attributes)
+        || array_keys($attributes) !== array('slug') || ! in_array($content, array(null, ''), true)) { return ''; }
+    $slug = $attributes['slug'];
+    if (! is_string($slug) || ! is_page($slug) || kurashinoshirube_reader_hub_url($slug) === null) { return ''; }
+    foreach (kurashinoshirube_reader_hubs() as $hub) {
+        if ($hub['slug'] !== $slug) { continue; }
+        $body = '';
+        if (in_array($hub['kind'], array('categories', 'purposes'), true)) {
+            $body = kurashinoshirube_reader_group_cards($hub['kind'] === 'categories' ? 'category' : 'purpose');
+        } else {
+            $posts = kurashinoshirube_reader_eligible_posts($hub['article_ids']);
+            if ($hub['kind'] === 'updates') { usort($posts, static fn(WP_Post $a, WP_Post $b): int => strcmp($b->post_modified, $a->post_modified)); }
+            $items = array_map(static fn(WP_Post $p): string => '<li>' . kurashinoshirube_reader_guide_card($p) . '</li>', $posts);
+            if ($items !== array()) { $body = '<ul class="raos-guide-grid">' . implode('', $items) . '</ul>'; }
+        }
+        return '<div class="raos-reader-hub"><p>' . esc_html($hub['description']) . '</p>'
+            . ($body === '' ? '<p>現在、条件に合う公開記事はありません。</p>' : '<h2>条件から読み始める</h2>' . $body) . '</div>';
+    }
+    return '';
+}
+add_shortcode('kurashinoshirube_reader_hub', 'kurashinoshirube_render_reader_hub');
+
+/** Core navigation also observes the same reachability gate. */
+function kurashinoshirube_reader_nav_block(string $html, array $block): string
+{
+    $url = $block['attrs']['url'] ?? '';
+    foreach (kurashinoshirube_reader_hubs() as $hub) {
+        if ($url === '/' . $hub['slug'] . '/') {
+            return kurashinoshirube_reader_hub_url($hub['slug']) === null ? '' : $html;
+        }
+    }
+    return $html;
+}
+add_filter('render_block_core/navigation-link', 'kurashinoshirube_reader_nav_block', 10, 2);
 
 /** Render the fixed, public portable-power guide without implying popularity. */
 function kurashinoshirube_render_featured_guide($attributes, $content, $tag): string
@@ -4443,23 +4600,16 @@ function kurashinoshirube_emit_json_ld(): void
         );
     }
     if (in_array($context['kind'], array('article', 'fixed_page'), true)) {
+        $category = $context['kind'] === 'article' ? kurashinoshirube_reader_article_category((int) get_queried_object_id()) : null;
+        $breadcrumbs = array(array('@type' => 'ListItem', 'item' => $schema_origin . '/', 'name' => 'ホーム', 'position' => 1));
+        if ($category !== null) {
+            $breadcrumbs[] = array('@type' => 'ListItem', 'item' => $category['url'], 'name' => $category['label'], 'position' => 2);
+        }
+        $breadcrumbs[] = array('@type' => 'ListItem', 'item' => $canonical, 'name' => $context['title'], 'position' => count($breadcrumbs) + 1);
         $nodes[] = array(
             '@id' => $canonical . '#breadcrumb',
             '@type' => 'BreadcrumbList',
-            'itemListElement' => array(
-                array(
-                    '@type' => 'ListItem',
-                    'item' => $schema_origin . '/',
-                    'name' => 'ホーム',
-                    'position' => 1,
-                ),
-                array(
-                    '@type' => 'ListItem',
-                    'item' => $canonical,
-                    'name' => $context['title'],
-                    'position' => 2,
-                ),
-            ),
+            'itemListElement' => $breadcrumbs,
         );
     }
     $nodes[] = array(

@@ -208,6 +208,83 @@
       "surface_id": "not-found"
     }
   ],
+  "reader_hubs": [
+    {
+      "kind": "reader_hub",
+      "local_path": "/categories/",
+      "surface_id": "hub-categories"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/purposes/",
+      "surface_id": "hub-purposes"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/guides/",
+      "surface_id": "hub-guides"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/comparisons/",
+      "surface_id": "hub-comparisons"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/updates/",
+      "surface_id": "hub-updates"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/travel/",
+      "surface_id": "hub-travel"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/kitchen/",
+      "surface_id": "hub-kitchen"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/cleaning/",
+      "surface_id": "hub-cleaning"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/preparedness/",
+      "surface_id": "hub-preparedness"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/small-space/",
+      "surface_id": "hub-small-space"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/save-housework/",
+      "surface_id": "hub-save-housework"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/without-installation/",
+      "surface_id": "hub-without-installation"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/easy-maintenance/",
+      "surface_id": "hub-easy-maintenance"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/comfortable-travel/",
+      "surface_id": "hub-comfortable-travel"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/prepare-outage/",
+      "surface_id": "hub-prepare-outage"
+    }
+  ],
   "route_coverage": {
     "archive_types": [
       {

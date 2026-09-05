@@ -123,7 +123,7 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "0b317a5af429be6f8b9b6df9e663f71177cbf68033cbff4ffbb9519504ae0802",
+    "sha256": "5a83af2e4366f407ddbbb9c998dfae5c35ffa1fea649fb6b9085ff73741d6cb2",
     "source_navigation_sha256": "ae5c793515e8de38d67fa3ec25979b639a6ab4487511482bc65d564c66c6e077",
     "source_portfolio_sha256": "9f9421506620acd11704aabd8048dd2000182a1fe5ab4018feaa2a9693ea254c"
   },
@@ -526,8 +526,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "57aed3a03bcf502143d8d44c1c23b606f09ad7ab705dfc456fcc76b3e288e669",
-    "source_fingerprint": "57aed3a03bcf502143d8d44c1c23b606f09ad7ab705dfc456fcc76b3e288e669",
+    "revision": "a489330c68412b7345504b66251af949389e52814be1f52eb26a0fe9edd3bdf6",
+    "source_fingerprint": "a489330c68412b7345504b66251af949389e52814be1f52eb26a0fe9edd3bdf6",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",
