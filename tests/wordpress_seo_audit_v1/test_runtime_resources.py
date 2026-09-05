@@ -63,6 +63,50 @@ def verify(example, markup):
     )
 
 
+@pytest.mark.parametrize("relative", [False, True])
+def test_bound_theme_image_has_exact_absolute_or_root_relative_spelling(
+    example, relative
+):
+    url = runtime.THEME_PREFIX + "assets/images/home-hero.webp"
+    source = url.removeprefix(runtime.ORIGIN) if relative else url
+    result = runtime.verify_page(
+        response(runtime.ORIGIN + "/", f'<img src="{source}" alt="図版">'.encode()),
+        example[0],
+        example[2],
+        allowed_images=frozenset({url}),
+    )
+    assert result == {}
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "//kurashinoshirube.com/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp",
+        "assets/images/home-hero.webp",
+        "/wp-content/themes/kurashinoshirube-child/assets/images/../home-hero.webp",
+        "/wp-content/themes/kurashinoshirube-child/assets/images/%68ome-hero.webp",
+        "/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp?tracking=1",
+        "/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp#x",
+        "/wp-content/themes/kurashinoshirube-child/assets/images/other.webp",
+        "/wp-content/themes/kurashinoshirube-child/assets/images//home-hero.webp",
+        "/wp-content/uploads/home-hero.webp",
+        "https://example.com/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp",
+    ],
+)
+def test_root_relative_image_resolution_does_not_expand_bound_image_set(
+    example, source
+):
+    with pytest.raises(runtime.seo.AuditError, match="MEASUREMENT_OFF_MISMATCH"):
+        runtime.verify_page(
+            response(runtime.ORIGIN + "/", f'<img src="{source}">'.encode()),
+            example[0],
+            example[2],
+            allowed_images=frozenset(
+                {runtime.THEME_PREFIX + "assets/images/home-hero.webp"}
+            ),
+        )
+
+
 def test_exact_classic_css_core_importmap_and_speculation_pass(example):
     imports = json.dumps({"imports": {"@wordpress/interactivity": IMPORT_URL}})
     markup = SCRIPT + f'<link rel="stylesheet" href="{CSS_URL}">'
@@ -151,28 +195,41 @@ def icon_example(example):
 
 def test_exact_audited_brand_icon_is_fetched_and_hashed(icon_example):
     url = runtime.THEME_PREFIX + runtime.BRAND_ICON_PATH
-    observed = verify(icon_example, f'<link rel="icon" href="{url}" type="image/svg+xml">')
+    observed = verify(
+        icon_example, f'<link rel="icon" href="{url}" type="image/svg+xml">'
+    )
     assert observed == {url: icon_example[0][url].sha256}
     icon_example[2].get.assert_called_once_with(url)
 
 
-@pytest.mark.parametrize("change", [
-    {"href": "https://example.com/icon.svg"},
-    {"href": runtime.THEME_PREFIX + "assets/images/other.svg"},
-    {"href": runtime.THEME_PREFIX + runtime.BRAND_ICON_PATH + "?v=1"},
-    {"type": "image/png"},
-    {"rel": "icon preload"},
-    {"crossorigin": "anonymous"},
-])
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"href": "https://example.com/icon.svg"},
+        {"href": runtime.THEME_PREFIX + "assets/images/other.svg"},
+        {"href": runtime.THEME_PREFIX + runtime.BRAND_ICON_PATH + "?v=1"},
+        {"type": "image/png"},
+        {"rel": "icon preload"},
+        {"crossorigin": "anonymous"},
+    ],
+)
 def test_brand_icon_rejects_unbound_url_or_attributes(icon_example, change):
-    attrs = {"rel": "icon", "href": runtime.THEME_PREFIX + runtime.BRAND_ICON_PATH,
-             "type": "image/svg+xml"} | change
-    markup = "<link " + " ".join(f'{key}="{value}"' for key, value in attrs.items()) + ">"
+    attrs = {
+        "rel": "icon",
+        "href": runtime.THEME_PREFIX + runtime.BRAND_ICON_PATH,
+        "type": "image/svg+xml",
+    } | change
+    markup = (
+        "<link " + " ".join(f'{key}="{value}"' for key, value in attrs.items()) + ">"
+    )
     with pytest.raises(audit.seo.AuditError, match="MEASUREMENT_OFF_MISMATCH"):
         verify(icon_example, markup)
 
 
-@pytest.mark.parametrize("change", ["body", "text/javascript", "image/png", "image/webp", "cookie", "missing"])
+@pytest.mark.parametrize(
+    "change",
+    ["body", "text/javascript", "image/png", "image/webp", "cookie", "missing"],
+)
 def test_brand_icon_requires_exact_response_and_no_cookie(icon_example, change):
     url = runtime.THEME_PREFIX + runtime.BRAND_ICON_PATH
     resources, responses, _transport = icon_example
@@ -181,8 +238,10 @@ def test_brand_icon_requires_exact_response_and_no_cookie(icon_example, change):
     elif change in {"text/javascript", "image/png", "image/webp"}:
         responses[url] = response(url, responses[url].body, change)
     elif change == "cookie":
-        responses[url] = replace(responses[url], headers=(("Content-Type", "image/svg+xml"),
-                                                       ("Set-Cookie", "fixture=1")))
+        responses[url] = replace(
+            responses[url],
+            headers=(("Content-Type", "image/svg+xml"), ("Set-Cookie", "fixture=1")),
+        )
     else:
         del resources[url]
     with pytest.raises(audit.seo.AuditError, match="MEASUREMENT_OFF_MISMATCH"):
@@ -190,7 +249,9 @@ def test_brand_icon_requires_exact_response_and_no_cookie(icon_example, change):
 
 
 @pytest.mark.parametrize("css_dependency", [False, True])
-def test_icon_is_registered_only_from_actual_audited_theme_bytes(legacy_theme_files, css_dependency):
+def test_icon_is_registered_only_from_actual_audited_theme_bytes(
+    legacy_theme_files, css_dependency
+):
     url = runtime.THEME_PREFIX + runtime.BRAND_ICON_PATH
     assert url not in runtime.resources_for_theme(legacy_theme_files)
     payload = b"synthetic audited icon fixture"

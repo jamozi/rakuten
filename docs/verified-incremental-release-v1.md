@@ -131,6 +131,15 @@ CSS dependencies must be literal references into the
 same audited image tree. No whole plugin directory or provider-name denylist
 can confer an OFF result.
 
+Exact root-relative theme image paths resolve to the same bound absolute URL;
+generic URL normalization is not used. Prewrite inspection of the captured
+baseline additionally inventories literal same-theme image references from that
+page's stored snapshot only. This includes the already-known missing legacy PNG
+which the candidate's audited render projection removes. It does not certify
+availability/rights, allow the reference on another page, or permit it in the
+installed-candidate/final image check. This runtime identity check and the
+mandatory candidate image-quality/readback checks remain separate.
+
 The same gate runs during full mixed public readback. Its report explicitly
 means **closed declared runtime verified**, not a browser/service-worker or
 conditional network observation. Actual browser checks remain separate required

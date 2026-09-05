@@ -219,3 +219,47 @@ def test_strict_page_readback_has_no_implicit_transition_switch(world):
 def test_parser_rejects_open_ended_or_ambiguous_exception_counts(count):
     with pytest.raises(runtime.seo.AuditError):
         runtime.RuntimeMarkup({}, expected_dns_hints=count)
+
+
+def test_captured_relative_reference_is_baseline_only_and_page_bound(world):
+    path = "/wp-content/themes/kurashinoshirube-child/assets/images/old-missing.png"
+    markup = f'<img src="{path}" alt="">'
+    document = {"slug": "guide", "block_markup": markup}
+    url = runtime.ORIGIN + "/guide/"
+    world.responses[url] = replace(world.responses[url], body=(HINT + markup).encode())
+    args = dict(
+        baseline_tree=BASELINE,
+        candidate_tree=CANDIDATE,
+        now=NOW,
+        snapshot={"documents": [document]},
+        runtime_transition=world.policy,
+    )
+    result = runtime.verify_before_write(current_tree=BASELINE, **args)
+    assert result["state"] == runtime.DNS_TRANSITION_STATE
+    # It was never granted to a different page, nor learned from a live response.
+    home = runtime.ORIGIN + "/"
+    world.responses[home] = replace(
+        world.responses[home], body=(HINT + markup).encode()
+    )
+    with pytest.raises(runtime.seo.AuditError):
+        runtime.verify_before_write(current_tree=BASELINE, **args)
+    for url, response in list(world.responses.items()):
+        world.responses[url] = replace(
+            response, body=response.body.replace(HINT.encode(), b"")
+        )
+    world.responses[home] = replace(world.responses[home], body=b"<p>Clean home</p>")
+    with pytest.raises(runtime.seo.AuditError):
+        runtime.verify_before_write(current_tree=CANDIDATE, **args)
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        "//example.com/pixel.png",
+        "/wp-content/uploads/image.png",
+        "/wp-content/themes/kurashinoshirube-child/assets/images/a.png?track=1",
+        "/wp-content/themes/kurashinoshirube-child/assets/images/../a.png",
+    ],
+)
+def test_captured_inventory_does_not_expand_into_generic_root_relative_requests(path):
+    assert runtime.captured_theme_image_urls(f'<img src="{path}">') == frozenset()

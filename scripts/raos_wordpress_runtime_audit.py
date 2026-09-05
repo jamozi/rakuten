@@ -455,12 +455,17 @@ class RuntimeMarkup(HTMLParser):
             inert_css(values["style"] or "")
         if tag not in {"script", "img"} and "src" in values:
             fail()
-        if (
-            tag == "img"
-            and self.allowed_images is not None
-            and values.get("src") not in self.allowed_images
-        ):
-            fail()
+        if tag == "img" and self.allowed_images is not None:
+            source = values.get("src")
+            # The audited baseline front-page template uses root-relative theme
+            # images. Resolve only that exact namespace, never generic relative
+            # URLs, dot segments, queries, alternate origins or live-learned paths.
+            if type(source) is str and source.startswith(
+                "/wp-content/themes/kurashinoshirube-child/assets/images/"
+            ):
+                source = ORIGIN + source
+            if source not in self.allowed_images:
+                fail()
         if tag == "use" and not (
             values.get("href") or values.get("xlink:href") or ""
         ).startswith("#"):
@@ -716,6 +721,33 @@ def build_dns_transition(
     )
 
 
+def captured_theme_image_urls(markup: str) -> frozenset[str]:
+    """Identify exact stored baseline references, not image availability/rights.
+
+    Some captured old articles reference a missing PNG that the audited candidate
+    removes at render time. This prewrite runtime inventory does not promote that
+    image to verified or permit it in candidate/final image quality validation.
+    """
+    from raos.application.editorial.verified_incremental_v1 import _Markup
+
+    parser = _Markup(markup)
+    parser.feed(markup)
+    parser.close()
+    if parser.stack:
+        fail()
+    return frozenset(
+        ORIGIN + source
+        for element in parser.elements
+        if element.tag == "img"
+        and type(source := element.attrs.get("src")) is str
+        and re.fullmatch(
+            r"/wp-content/themes/kurashinoshirube-child/assets/images/[a-z0-9-]+\.(?:png|webp|svg)",
+            source,
+        )
+        is not None
+    )
+
+
 def verify_before_write(
     *,
     current_tree: str,
@@ -732,11 +764,21 @@ def verify_before_write(
         fail()
     files = trusted_theme_files(current_tree, baseline=current_tree != candidate_tree)
     resources = resources_for_theme(files)
-    allowed_images = {
+    theme_images = {
         THEME_PREFIX + path for path in files if path.startswith("assets/images/")
     }
+    document_images: dict[str, set[str]] = {}
     for document in snapshot["documents"]:
-        allowed_images.update(baseline_media.image_urls(document["block_markup"]))
+        url = (
+            ORIGIN
+            + "/"
+            + (document["slug"] + "/" if document["slug"] != "home" else "")
+        )
+        document_images[url] = baseline_media.image_urls(document["block_markup"])
+        if current_tree == baseline_tree and current_tree != candidate_tree:
+            document_images[url].update(
+                captured_theme_image_urls(document["block_markup"])
+            )
     contract = seo.load_contract()
     transitional = False
     if runtime_transition is not None:
@@ -759,7 +801,9 @@ def verify_before_write(
             response,
             resources,
             transport,
-            allowed_images=frozenset(allowed_images),
+            allowed_images=frozenset(
+                theme_images | document_images.get(item.url, set())
+            ),
             expected_dns_hints=1 if transitional else 0,
         )
         pages[item.url] = {"html_sha256": response.body_sha256, "resources": observed}
