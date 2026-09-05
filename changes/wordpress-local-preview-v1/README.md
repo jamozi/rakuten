@@ -196,7 +196,7 @@ fixture or theme source.
 
 ## Browser evidence
 
-`make wordpress-preview-check` audits the home page, all ten editorial
+The legacy full diagnostic `make wordpress-preview-check` audits the home page, all ten editorial
 drafts, the three fixed policy pages, true-empty and whitespace-only search,
 populated and zero-result search, an encoded hostile query, a second result
 page with its query preserved, all three category archives, the date and local
@@ -210,10 +210,21 @@ metadata, incorrect H1/main counts, out-of-bounds H1, Cookie-settings, or CTA
 boxes, or a missing Editorial V2 article module. It also fails if the anonymous
 browser acquires any Cookie (including HttpOnly), local/session storage entry,
 IndexedDB database, Cache Storage, or Service Worker registration. In addition
-to the 104 viewport screenshots, it captures 26 text-resize screenshots after
+to one screenshot per selected surface and viewport, it captures a text-resize screenshot per surface after
 raising the root font size to 200% and rejects horizontal overflow, clipped
-text, or off-screen controls. These 130 files are ignored build artifacts under
+text, or off-screen controls. These files are ignored build artifacts under
 `output/playwright/local-preview/`.
+
+New publication preparation selects article and related/listing/link consumers from the
+validated candidate. Shared presentation changes select the full inventory. Coverage is
+an exact surface/viewport set, never a fixed total. `RAOS_WORDPRESS_BROWSER_WORKERS`
+defaults to the smaller of CPU count and four; contexts are isolated. Lighthouse runs
+three serial samples per selected performance target after the worker pool finishes.
+Valid originals can be reused for two hours, checking source inputs, tooling, local
+WordPress state and every original screenshot/report hash. Timestamps are not refreshed.
+`output/playwright/local-preview.run-summary.v2.json` records URL, screenshots and duration.
+For local diagnostics only, `RAOS_WORDPRESS_BROWSER_SURFACES=home,article-a04` narrows
+the legacy check; it is rejected for publication candidates and grants no publication evidence.
 
 Search and archive checks bind the expected Japanese text, response status,
 absence of a canonical on these intentionally non-canonical routes, escaped

@@ -762,8 +762,13 @@ def test_request_tamper_rejected_before_apply(world, mutation):
     assert world["server"].apply_count == 0
 
 
-def test_cli_explicit_dispatch_preserves_legacy_default(monkeypatch, tmp_path):
+def test_cli_requires_explicit_legacy_profile_and_defaults_to_read_only_plan(
+    monkeypatch, tmp_path
+):
+    import raos_wordpress_release_workflow as workflow
+
     seen = []
+    monkeypatch.setattr(workflow, "main", lambda argv: seen.append("plan") or 0)
     monkeypatch.setattr(
         publication,
         "execute",
@@ -775,6 +780,9 @@ def test_cli_explicit_dispatch_preserves_legacy_default(monkeypatch, tmp_path):
         lambda args: seen.append(args.publication_profile) or tmp_path / "receipt",
     )
     assert publication.main([]) == 0
+    assert seen == ["plan"]
+    seen.clear()
+    assert publication.main(["--publication-profile", "full-portfolio"]) == 0
     assert seen == ["legacy"]
     assert publication.main(["--incremental-stage", "propose"]) == 69
     assert seen == ["legacy"]

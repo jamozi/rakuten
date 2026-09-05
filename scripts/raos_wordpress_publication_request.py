@@ -1918,10 +1918,23 @@ def _git(*arguments: str) -> bytes:
 
 def tracked_theme_tree_sha256() -> str:
     """Hash the exact clean tracked tree using the deployment manifest contract."""
+    return sha256_json(theme_file_manifest(require_clean=True))
+
+
+def theme_file_manifest(*, require_clean: bool) -> list[dict[str, object]]:
+    """Inspect source bytes without packaging; preparation permits local edits."""
     relative_root = THEME_ROOT.relative_to(ROOT).as_posix()
-    if _git("status", "--porcelain=v1", "--", relative_root):
+    if require_clean and _git("status", "--porcelain=v1", "--", relative_root):
         fail("RAOS_WORDPRESS_REQUEST_THEME_SOURCE_DIRTY")
-    raw_files = _git("ls-files", "-z", "--", relative_root)
+    raw_files = _git(
+        "ls-files",
+        "-z",
+        "--cached",
+        "--others",
+        "--exclude-standard",
+        "--",
+        relative_root,
+    )
     try:
         tracked = [
             value.decode("utf-8", errors="strict")
@@ -1967,7 +1980,7 @@ def tracked_theme_tree_sha256() -> str:
             }
         )
     manifest.sort(key=lambda entry: str(entry["path"]))
-    return sha256_json(manifest)
+    return manifest
 
 
 def run_preview_checks(
@@ -3522,9 +3535,13 @@ def _validate_deployment_tools(tools: object) -> None:
         if (
             type(actual_schema) is not dict
             or actual_schema.get("additionalProperties") is not False
-            or actual_schema not in (
+            or actual_schema
+            not in (
                 operation_status_schema,
-                {"$schema": "http://json-schema.org/draft-07/schema#", **operation_status_schema},
+                {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    **operation_status_schema,
+                },
             )
         ):
             fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
@@ -6806,7 +6823,7 @@ def parser() -> argparse.ArgumentParser:
         "--publication-profile",
         choices=("full-portfolio", "verified-incremental"),
         default="full-portfolio",
-        help="explicit publication contract; the legacy full route remains the default",
+        help="compatibility contract; explicitly select full-portfolio for the legacy route",
     )
     result.add_argument("--incremental-candidate", type=Path)
     result.add_argument("--incremental-stage", choices=("propose", "apply", "readback"))
@@ -6888,8 +6905,25 @@ def parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    supplied = list(sys.argv[1:] if argv is None else argv)
+    if not supplied or supplied[0] in {
+        "plan",
+        "prepare",
+        "propose",
+        "apply",
+        "readback",
+    }:
+        from raos_wordpress_release_workflow import main as workflow_main
+
+        return workflow_main(supplied)
     try:
-        arguments = parser().parse_args(argv)
+        arguments = parser().parse_args(supplied)
+        if not any(
+            value == "--publication-profile"
+            or value.startswith("--publication-profile=")
+            for value in supplied
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_EXPLICIT_PROFILE_REQUIRED")
         if arguments.publication_profile == "verified-incremental":
             import raos_wordpress_incremental_publication as incremental
 

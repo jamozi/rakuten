@@ -92,7 +92,7 @@ wordpress-preview-reset:
 		$(WORDPRESS_PREVIEW) reset
 
 wordpress-production-request:
-	$(PYTHON) scripts/raos_wordpress_publication_request.py
+	$(PYTHON) scripts/raos_wordpress_publication_request.py $(ARGS)
 
 final: final-lock
 	TMPDIR=/tmp $(PYTHON) scripts/raos_build.py final

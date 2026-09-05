@@ -38,6 +38,15 @@ pytestの結果に表示し、未実行を成功した実環境検証とは扱�
 CIには検査ごとの所要時間と遅いテストを出力します。通常PRの中央値10分以内は改善目標であり、
 新しい停止条件ではありません。
 
+## WordPress公開準備
+
+`make wordpress-production-request` は読み取り専用の計画を表示します。
+`ARGS='plan --articles <slug> --snapshot-name <name> --json'` で対象と選択検査を確認し、
+`prepare` で事前検証・必要な生成・関連検査・並列表示確認を実行します。
+同じ入力と期限内の結果は元の日時のまま再利用します。独立レビュー2巡とRequired CIの後、
+`propose → wp-admin所有者承認 → apply → readback` と進みます。
+詳細は[公開runbook](docs/runbooks/wordpress-verified-incremental.md)を参照してください。
+
 ## Generator ownership
 
 `scripts/raos_build_core.py` の `BuildSpec` registryがgenerator owner、関連Story IDs、semantic input、output、owner依存、test pathを管理します。active inventoryは `changes/build/manifest.v2.json` です。

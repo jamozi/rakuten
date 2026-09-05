@@ -81,6 +81,7 @@ def _run(
         cwd=ROOT,
         capture_output=True,
         text=True,
+        umask=0o077,
     )
 
 
@@ -95,6 +96,10 @@ def test_materializer_is_reproducible_and_validates_every_file(tmp_path: Path) -
     assert first.stdout == second.stdout == "RAOS_WORDPRESS_PREVIEW_YOAST_28_3_READY\n"
     materialized = output_parent / "wordpress-seo"
     assert (materialized / "wp-seo.php").is_file()
+    assert output_parent.stat().st_mode & 0o777 == 0o700
+    assert materialized.stat().st_mode & 0o777 == 0o755
+    assert (materialized / "vendor").stat().st_mode & 0o777 == 0o755
+    assert (materialized / "wp-seo.php").stat().st_mode & 0o777 == 0o644
     assert len([path for path in materialized.rglob("*") if path.is_file()]) == 1952
 
 

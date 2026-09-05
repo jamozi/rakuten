@@ -126,15 +126,30 @@ def _verify_audited_sources(
         _fail("SOURCE_AUDIT_INVALID")
 
 
-def build_verified_incremental_release_v1(
+@dataclass(frozen=True)
+class PreparedReleaseInputsV1:
+    """Validated inputs without an audit, activation, or publication authority."""
+
+    sources: SelectedOfficialSourcesV1
+    scope: dict[str, object]
+    source_expiries: list[datetime]
+    product_expiries: list[datetime]
+    source_refs: set[str]
+    claim_source_refs: set[str]
+    commercial_products: set[str]
+    selected_ctas: set[str]
+    article_documents: dict[str, object]
+    expected_content: dict[str, str]
+    expected_shared: dict[str, str]
+
+
+def validate_release_inputs_v1(
     manifest_document: Mapping[str, object],
     *,
     validated_manifest: manifest_contract.VerifiedIncrementalManifest,
-    audit_binding: VerifiedIncrementalAuditBindingV1,
     audit_scope: IncrementalAuditScopeV1,
     official_sources: SelectedOfficialSourcesV1,
     artifact_bytes: Mapping[str, bytes],
-    audit_artifact_bytes: Mapping[str, bytes],
     inventory: Mapping[str, manifest_contract.ExistingDocument],
     article_targets: Mapping[str, tuple[str, int]],
     commerce_views: Mapping[str, ProductEvidenceViewV2],
@@ -144,17 +159,8 @@ def build_verified_incremental_release_v1(
     expected_shared_readback_sha256: Mapping[str, str],
     source_article_id_by_article_id: Mapping[str, str],
     now: datetime,
-    activation_evaluated_at: datetime | None = None,
-) -> VerifiedIncrementalReleaseV1:
-    """Bind already-replayed contracts and actual local/production HTML bytes.
-
-    article_targets is the complete authoritative existing-article identity map.
-    source_article_id_by_article_id is its explicit selected source-contract
-    projection; no prefix guessing occurs. CTA values are article/product/slot.
-    audit_artifact_bytes contains actual audited inputs (including all release
-    artifacts); extra audit inputs are also rehashed, not accepted as hash maps.
-    No commerce means no provider receipt is required or accepted.
-    """
+) -> PreparedReleaseInputsV1:
+    """Replay all source, identity, content and scope checks before expensive reviews."""
     if now.tzinfo is None or now.utcoffset() is None:
         _fail("TIME_INVALID")
     doc = dict(manifest_document)
@@ -428,6 +434,79 @@ def build_verified_incremental_release_v1(
         or set(audit_scope.product_image_ids) != selected_images
     ):
         _fail("AUDIT_SCOPE_INVALID")
+    return PreparedReleaseInputsV1(
+        sources=sources,
+        scope=scope,
+        source_expiries=source_expiries,
+        product_expiries=product_expiries,
+        source_refs=source_refs,
+        claim_source_refs=claim_source_refs,
+        commercial_products=commercial_products,
+        selected_ctas=selected_ctas,
+        article_documents=article_documents,
+        expected_content=expected_content,
+        expected_shared=expected_shared,
+    )
+
+
+def build_verified_incremental_release_v1(
+    manifest_document: Mapping[str, object],
+    *,
+    validated_manifest: manifest_contract.VerifiedIncrementalManifest,
+    audit_binding: VerifiedIncrementalAuditBindingV1,
+    audit_scope: IncrementalAuditScopeV1,
+    official_sources: SelectedOfficialSourcesV1,
+    artifact_bytes: Mapping[str, bytes],
+    audit_artifact_bytes: Mapping[str, bytes],
+    inventory: Mapping[str, manifest_contract.ExistingDocument],
+    article_targets: Mapping[str, tuple[str, int]],
+    commerce_views: Mapping[str, ProductEvidenceViewV2],
+    image_article_products: Mapping[str, tuple[str, str]],
+    cta_bindings: Mapping[str, tuple[str, str, str]],
+    expected_production_content_sha256: Mapping[str, str],
+    expected_shared_readback_sha256: Mapping[str, str],
+    source_article_id_by_article_id: Mapping[str, str],
+    now: datetime,
+    activation_evaluated_at: datetime | None = None,
+) -> VerifiedIncrementalReleaseV1:
+    """Bind already-replayed contracts and actual local/production HTML bytes.
+
+    article_targets is the complete authoritative existing-article identity map.
+    source_article_id_by_article_id is its explicit selected source-contract
+    projection; no prefix guessing occurs. CTA values are article/product/slot.
+    audit_artifact_bytes contains actual audited inputs (including all release
+    artifacts); extra audit inputs are also rehashed, not accepted as hash maps.
+    No commerce means no provider receipt is required or accepted.
+    """
+    prepared = validate_release_inputs_v1(
+        manifest_document,
+        validated_manifest=validated_manifest,
+        audit_scope=audit_scope,
+        official_sources=official_sources,
+        artifact_bytes=artifact_bytes,
+        inventory=inventory,
+        article_targets=article_targets,
+        commerce_views=commerce_views,
+        image_article_products=image_article_products,
+        cta_bindings=cta_bindings,
+        expected_production_content_sha256=expected_production_content_sha256,
+        expected_shared_readback_sha256=expected_shared_readback_sha256,
+        source_article_id_by_article_id=source_article_id_by_article_id,
+        now=now,
+    )
+    manifest = validated_manifest
+    sources = prepared.sources
+    scope = prepared.scope
+    source_expiries = prepared.source_expiries
+    product_expiries = prepared.product_expiries
+    source_refs = prepared.source_refs
+    claim_source_refs = prepared.claim_source_refs
+    commercial_products = prepared.commercial_products
+    selected_ctas = prepared.selected_ctas
+    article_documents = prepared.article_documents
+    expected_content = prepared.expected_content
+    expected_shared = prepared.expected_shared
+
     if any(type(raw) is not bytes for raw in audit_artifact_bytes.values()):
         _fail("AUDIT_ARTIFACT_INVALID")
     for value in (

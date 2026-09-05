@@ -215,11 +215,11 @@ source_artifacts:
   bytes: 4693
   sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
 - uri: repo://Makefile
-  bytes: 3276
-  sha256: 3a644435fae4104c0baa09453cc7867543a448aa748c3d74c4acbb756e455407
+  bytes: 3284
+  sha256: 41dcd8e226ba00ded0516aa52587d65335e8baa7c6af41efc5c62f10cf1db4da
 - uri: repo://README.md
-  bytes: 6359
-  sha256: 9b1f870ad25bb8d968731f17a0597d34282fff5b4ed99c14534069219b522b1e
+  bytes: 6985
+  sha256: 56ffa027dd55c4cdeaa25d2f486ac44a0b679e3459d1560d05b31f50a5e9058e
 - uri: repo://.python-version
   bytes: 7
   sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab

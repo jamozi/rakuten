@@ -132,7 +132,6 @@ def test_public_audit_covers_home_ten_articles_and_three_pages_at_four_widths() 
         "page.request.get(link.href, { maxRedirects: 0 })",
         "linkResponse.status() !== 200",
         "linkResponse.url() !== link.href",
-        "results.length !== surfaces.length * widths.length",
         "visibleFactValues('記事分類')",
         "visibleFactValues('この記事で答えること')",
         "audit.articleFacts.contentRoleLabels[0] !== surface.content_role_label",
@@ -318,7 +317,6 @@ def test_local_preview_audit_fail_closes_every_surface_seo_head() -> None:
         "metaRobotsDirectives.includes('nofollow')",
         "localNoindexMetaValid",
         "seoHeadAuditFailed",
-        "results.length !== surfaces.length * widths.length",
         "await page.screenshot({ path: screenshot, fullPage: true })",
     ):
         assert marker in source

@@ -22,6 +22,7 @@ import sys
 from incremental_scope import ROOT, ScopeFailure, load_scope, read_private
 
 SCHEMA = "RAOS_WORDPRESS_MIXED_BROWSER_AUDIT_V1"
+SCHEMA_V2 = "RAOS_WORDPRESS_MIXED_BROWSER_AUDIT_V2"
 BROWSER = ROOT / "changes/wordpress-local-preview-v1/browser"
 INVENTORY = (
     ROOT / "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
@@ -100,7 +101,13 @@ def write_result(path: Path, raw: bytes) -> None:
             temporary.unlink()
 
 
-def current_inputs(fixture_root: Path, origin: str) -> dict[str, object]:
+def current_inputs(
+    fixture_root: Path,
+    origin: str,
+    *,
+    candidate_path: Path | None = None,
+    include_runtime: bool = True,
+) -> dict[str, object]:
     if not re.fullmatch(r"http://127\.0\.0\.1:[0-9]{4,5}", origin):
         reject()
     inventory_raw = read_regular(INVENTORY)
@@ -142,7 +149,7 @@ def current_inputs(fixture_root: Path, origin: str) -> dict[str, object]:
         "runtime_evidence", {}
     ).get("source_fingerprint"):
         reject()
-    return {
+    inputs = {
         "origin": origin,
         "preparation_binding_sha256": scope["preparation_binding_sha256"],
         "scope": scope,
@@ -171,6 +178,81 @@ def current_inputs(fixture_root: Path, origin: str) -> dict[str, object]:
             read_regular(THEME / "assets/editorial-navigation.v3.json")
         ),
     }
+    if candidate_path is not None:
+        from raos_wordpress_incremental_publication import (
+            prepare_candidate,
+            validate_browser_inputs,
+        )
+        from raos_wordpress_browser_plan import browser_plan, SHARED_PRESENTATION_INPUTS
+        from raos_build_core import changed_paths
+
+        candidate = prepare_candidate(candidate_path, now=datetime.now(UTC))
+        if sha(canonical(candidate.snapshot)) != binding["source_snapshot_sha256"] or {
+            row["article_id"] for row in candidate.manifest["articles"]
+        } != set(scope["selected_article_ids"]):
+            reject()
+        markup = {
+            row["article_id"]: read_private(
+                fixture_root / "articles" / f"{row['production_path'].strip('/')}.html"
+            ).decode()
+            for row in inventory["surfaces"]
+            if row["kind"] == "article"
+        }
+        inputs["browser_plan"] = browser_plan(
+            inventory,
+            candidate.manifest,
+            article_markup=markup,
+            changed_files=[p.as_posix() for p in changed_paths(base="origin/main")],
+        )
+        validate_browser_inputs(
+            inputs,
+            manifest=candidate.manifest,
+            artifact_bytes=candidate.artifacts,
+            snapshot=candidate.snapshot,
+        )
+        runtime_inputs = {}
+        for prefix in SHARED_PRESENTATION_INPUTS:
+            source = ROOT / prefix
+            paths = sorted(source.rglob("*")) if source.is_dir() else [source]
+            for path in paths:
+                if path.is_file():
+                    runtime_inputs[path.relative_to(ROOT).as_posix()] = sha(
+                        read_regular(path)
+                    )
+        inputs["presentation_runtime_sha256"] = sha(canonical(runtime_inputs))
+        inputs["browser_planner_sha256"] = sha(
+            read_regular(ROOT / "scripts/raos_wordpress_browser_plan.py")
+        )
+        inputs["toolchain_sha256"] = sha(read_regular(ROOT / "package-lock.json"))
+        if not include_runtime:
+            return inputs
+        runtime = subprocess.run(
+            [
+                str(
+                    ROOT / "changes/wordpress-local-preview-v1/bin/wordpress_preview.sh"
+                ),
+                "fingerprint",
+            ],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+            env={
+                **os.environ,
+                "RAOS_WORDPRESS_PUBLICATION_PROFILE": "verified-incremental",
+                "RAOS_WORDPRESS_LINK_MODE": "standard-api",
+                "RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT": str(fixture_root),
+            },
+        ).stdout.strip()
+        if re.fullmatch(r"[a-f0-9]{64}", runtime) is None:
+            reject()
+        inputs["wordpress_state_sha256"] = runtime
+        inputs["wordpress_state_reader_sha256"] = sha(
+            read_regular(
+                ROOT / "changes/wordpress-local-preview-v1/runtime-fingerprint.php"
+            )
+        )
+    return inputs
 
 
 def parse_results(raw: bytes) -> list[dict[str, object]]:
@@ -194,12 +276,20 @@ def validate_results(
         row["surface_id"]: row
         for row in [*inventory["surfaces"], *inventory["local_surfaces"]]
     }
+    plan = inputs.get("browser_plan")
+    if plan is not None:
+        from raos_wordpress_browser_plan import validate_selection
+
+        validate_selection(plan, inventory)
+        surfaces = {
+            key: row for key, row in surfaces.items() if key in plan["surface_ids"]
+        }
     widths = inventory["viewports"]
     expected = {(key, width) for key in surfaces for width in widths}
     if (
-        len(surfaces) != 26
+        not surfaces
         or widths != [360, 390, 768, 1440]
-        or len(results) != 104
+        or len(results) != len(expected)
         or {(row.get("surface"), row.get("width")) for row in results} != expected
     ):
         reject()
@@ -268,7 +358,8 @@ def validate_results(
             screenshots.append(zoom)
         elif row.get("zoomScreenshot") is not None:
             reject()
-    if len(screenshots) != 130 or len(set(screenshots)) != 130:
+    count = len(surfaces) * (len(widths) + 1)
+    if len(screenshots) != count or len(set(screenshots)) != count:
         reject()
     return sorted(screenshots)
 
@@ -301,10 +392,21 @@ def assemble_report(
         screenshots[name] = sha(raw)
     lighthouse_raw = read_regular(LIGHTHOUSE / "summary.json")
     lighthouse = json.loads(lighthouse_raw)
+    performance_targets = inputs.get("browser_plan", {}).get(
+        "performance_targets",
+        [
+            {"name": "home", "path": "/"},
+            {
+                "name": "article-a04",
+                "path": "/local-preview-countertop-dishwasher-for-small-households/",
+            },
+        ],
+    )
+    performance_paths = {row["name"]: row["path"] for row in performance_targets}
     if (
         lighthouse.get("schema") != "RAOS_WORDPRESS_LIGHTHOUSE_MEDIAN_V2"
         or lighthouse.get("passed") is not True
-        or lighthouse.get("sample_count") != 6
+        or lighthouse.get("sample_count") != len(performance_targets) * 3
         or lighthouse.get("repetitions") != 3
         or not start
         <= datetime.fromisoformat(lighthouse["started_at"])
@@ -323,12 +425,9 @@ def assemble_report(
         if lighthouse.get("inputs", {}).get(key) != inputs[key]:
             reject()
     reports = {}
-    if len(lighthouse.get("results", [])) != 2 or {
+    if len(lighthouse.get("results", [])) != len(performance_targets) or {
         row.get("target") for row in lighthouse.get("results", [])
-    } != {
-        "home",
-        "article-a04",
-    }:
+    } != set(performance_paths):
         reject()
     for target in lighthouse["results"]:
         if (
@@ -348,11 +447,7 @@ def assemble_report(
             if sha(raw) != report.get("report_sha256"):
                 reject()
             document = json.loads(raw)
-            expected_url = inputs["origin"] + (
-                "/"
-                if target["target"] == "home"
-                else "/local-preview-countertop-dishwasher-for-small-households/"
-            )
+            expected_url = inputs["origin"] + performance_paths[target["target"]]
             if (
                 document.get("lighthouseVersion") != "12.8.2"
                 or document.get("requestedUrl") != expected_url
@@ -384,7 +479,7 @@ def assemble_report(
         if samples != target.get("samples") or medians != target.get("medians"):
             reject()
     return {
-        "schema": SCHEMA,
+        "schema": SCHEMA_V2 if "browser_plan" in inputs else SCHEMA,
         "publication_profile": "verified-incremental",
         "link_mode": "standard-api",
         "status": "LOCAL_MIXED_BROWSER_AUDIT_PASSED",
@@ -415,7 +510,12 @@ def assemble_report(
 
 
 def validate_report(
-    report_path: Path, *, fixture_root: Path, origin: str, now: datetime | None = None
+    report_path: Path,
+    *,
+    fixture_root: Path,
+    origin: str,
+    now: datetime | None = None,
+    candidate_path: Path | None = None,
 ) -> dict[str, object]:
     """Replay originals and current inputs; return a report only after exact equality."""
     if report_path != REPORT:
@@ -425,7 +525,22 @@ def validate_report(
     now = now or datetime.now(UTC)
     if now.tzinfo is None or not captured <= now <= captured + timedelta(hours=2):
         reject()
-    inputs = current_inputs(fixture_root, origin)
+    inputs = current_inputs(fixture_root, origin, candidate_path=candidate_path)
+    if "browser_plan" in inputs and isinstance(report.get("inputs"), dict):
+        recorded_plan = report["inputs"].get("browser_plan", {})
+        required_plan = inputs["browser_plan"]
+        from raos_wordpress_browser_plan import validate_selection
+
+        validate_selection(recorded_plan, json.loads(read_regular(INVENTORY)))
+        if set(required_plan["surface_ids"]) <= set(
+            recorded_plan["surface_ids"]
+        ) and all(
+            target in recorded_plan.get("performance_targets", [])
+            for target in required_plan["performance_targets"]
+        ):
+            # A broader original capture remains valid after merging removes the
+            # Git diff. Rebuild its original set and hashes; never restamp it.
+            inputs["browser_plan"] = recorded_plan
     if inputs != report.get("inputs"):
         reject()
     expected = assemble_report(
@@ -448,17 +563,23 @@ def main() -> int:
     parser.add_argument("--binding-file", type=Path)
     parser.add_argument("--raw-result", type=Path)
     parser.add_argument("--artifact-directory", type=Path)
+    parser.add_argument("--candidate", type=Path)
     arguments = parser.parse_args()
     try:
         if arguments.action == "verify":
             report = validate_report(
-                REPORT, fixture_root=arguments.fixture_root, origin=arguments.origin
+                REPORT,
+                fixture_root=arguments.fixture_root,
+                origin=arguments.origin,
+                candidate_path=arguments.candidate,
             )
             print(f"Mixed browser report verified: {sha(canonical(report))}")
             return 0
         if arguments.binding_file is None:
             reject()
-        inputs = current_inputs(arguments.fixture_root, arguments.origin)
+        inputs = current_inputs(
+            arguments.fixture_root, arguments.origin, candidate_path=arguments.candidate
+        )
         if arguments.action == "begin":
             started = datetime.now(UTC).isoformat()
             write_result(

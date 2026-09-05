@@ -87,8 +87,8 @@ source_artifacts:
 - uri: repo://AGENTS.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
-  bytes: 7758
-  sha256: fb07f1bed17de1f2bac5aa144659f94402d52a42dbc236f40074e3ce2f135544
+  bytes: 8658
+  sha256: 48ff8b77fb29cab244f18bdfa406336e8e42c38a8149d577ae5bca9647fea4af
 - uri: repo://docs/canonical/08_codex/AGENTS.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
@@ -178,7 +178,7 @@ source_artifacts:
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: application/yaml
   bytes: 11786
-  sha256: bf6840f05617cd5f4ee79455f46dcc4cb6dd1d7def54408a071fe5a8ba26856b
+  sha256: 4522af24164b13e04f48ff6f5d1e0615313b7ae886a274276e56a4ce745daca6
 - uri: repo://python/raos/domain/publishing/final_approval.py
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/x-python

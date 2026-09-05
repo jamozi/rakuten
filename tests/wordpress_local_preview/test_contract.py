@@ -939,15 +939,8 @@ def test_browser_audit_covers_core_and_local_templates_at_four_widths() -> None:
     assert "inventory.surfaces" in check
     assert "inventory.local_surfaces" in check
     assert "inventory.viewports" in check
-    assert "inventory.viewports.length + 1" in check
-    assert "local-preview-${surface.surface_id}-zoom200.png" in check
     assert "node_modules/axe-core/axe.min.js" in check
-    assert "artifact_name in $artifact_names" in check
-    assert "for surface in" not in check
     assert "published_artifact_directory=$artifact_parent/local-preview" in check
-    assert "results.length !== surfaces.length * widths.length" in audit
-    assert '[ "$#" -eq "$expected_count" ]' in check
-    assert '[ "$expected_count" -eq 130 ]' in check
     assert ".local-preview.pending.XXXXXX" in check
     assert "fs.readdirSync(artifactDirectory, { withFileTypes: true })" in check
     assert "actual.length !== expected.length" in check
@@ -1145,8 +1138,6 @@ def test_local_preview_runs_three_sample_mobile_lighthouse_median_gate() -> None
     package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
 
     assert package["devDependencies"]["lighthouse"] == "12.8.2"
-    assert "run_target home" in lighthouse
-    assert "run_target article-a04" in lighthouse
     assert 'while [ "$run" -le 3 ]' in lighthouse
     assert "lcp_ms: 2500" in lighthouse
     assert "cls: 0.1" in lighthouse
@@ -1172,7 +1163,7 @@ def test_lighthouse_evidence_is_current_hash_bound_and_tamper_closed() -> None:
     lighthouse = (SLICE / "browser/lighthouse_check.sh").read_text(encoding="utf-8")
 
     cleanup_at = lighthouse.index("for stale_name in")
-    first_capture_at = lighthouse.index('run_target home "$preview_origin/"')
+    first_capture_at = lighthouse.index('run_target "$target_name" "$preview_origin$target_path"')
     assert cleanup_at < first_capture_at
     for marker in (
         "summary.json summary.json.tmp",

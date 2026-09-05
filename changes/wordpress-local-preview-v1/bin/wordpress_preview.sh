@@ -552,6 +552,14 @@ do_check() {
     "$slice_directory/browser/check.sh"
 }
 
+do_fingerprint() {
+  [[ -f "$credentials_file" ]] || fail RAOS_WORDPRESS_PREVIEW_NOT_INITIALIZED
+  require_docker
+  load_credentials
+  validate_materialized_runtime
+  wordpress_cli eval-file /var/www/raos-local-preview/runtime-fingerprint.php
+}
+
 do_down() {
   require_docker
   if [[ ! -f "$credentials_file" ]]; then
@@ -578,10 +586,11 @@ case "${1:-}" in
   restore) shift; do_restore "$@" ;;
   password) do_password ;;
   check) do_check ;;
+  fingerprint) do_fingerprint ;;
   down) do_down ;;
   reset) do_reset ;;
   *)
-    printf '%s\n' 'usage: wordpress_preview.sh {up|status|sync|password|check|down|reset|restore PREPARATION_SHA256}' >&2
+    printf '%s\n' 'usage: wordpress_preview.sh {up|status|fingerprint|sync|password|check|down|reset|restore PREPARATION_SHA256}' >&2
     exit 64
     ;;
 esac
