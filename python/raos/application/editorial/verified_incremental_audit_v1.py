@@ -32,7 +32,9 @@ from raos.application.editorial.local_scratch_theme_restore_v1 import (
 
 PROFILE = "verified-incremental"
 SCHEMA = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_AUDIT_V1"
+SCHEMA_V2 = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_AUDIT_V2"
 EVIDENCE_SCHEMA = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_AUDIT_EVIDENCE_V1"
+EVIDENCE_SCHEMA_V2 = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_AUDIT_EVIDENCE_V2"
 BINDING_SCHEMA = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_AUDIT_BINDING_V1"
 CONTACT_ADDRESS = "contact@kurashinoshirube.com"
 MAX_AGE_SECONDS = 24 * 60 * 60
@@ -664,7 +666,9 @@ def _backup_checks(
         )
 
 
-def _checks(surface: str, value: object, attachments: set[str]) -> str | None:
+def _checks(
+    surface: str, value: object, attachments: set[str], *, version: int = 1
+) -> str | None:
     checks = _mapping(value)
     if surface == "code":
         _mapping(checks, {"commands"})
@@ -684,7 +688,12 @@ def _checks(surface: str, value: object, attachments: set[str]) -> str | None:
             ):
                 _fail("TEST_FAILED_OR_UNBOUND")
             seen.add(command_id)
-        if not {"generate", "check", "focused", "fast", "final"} <= seen:
+        required = (
+            {"fast", "required-ci"}
+            if version == 2
+            else {"generate", "check", "focused", "fast", "final"}
+        )
+        if not required <= seen:
             _fail("REQUIRED_COMMAND_MISSING")
     elif surface == CONTACT_SURFACE:
         _mapping(
@@ -735,6 +744,59 @@ def _checks(surface: str, value: object, attachments: set[str]) -> str | None:
     return None
 
 
+def _verification_results(
+    checks: Mapping[str, object],
+    attachments: set[str],
+    artifacts: Mapping[str, bytes],
+    expected: Mapping[str, str] | None,
+    now: datetime,
+) -> None:
+    """Reviewers may inspect the same originals; successful labels alone are insufficient."""
+    if expected is None or set(expected) != {
+        "source_tree_sha256",
+        "selection_sha256",
+        "head_sha",
+    }:
+        _fail("VERIFICATION_INPUTS_REQUIRED")
+    output_hashes = {_digest(artifacts[key]) for key in attachments}
+    for raw in _list(checks["commands"]):
+        row = _mapping(raw, {"command_id", "exit_code", "output_artifact_id"})
+        if row["command_id"] not in {"fast", "required-ci"}:
+            continue
+        result = _json_evidence(artifacts[_identifier(row["output_artifact_id"])])
+        if row["command_id"] == "fast":
+            try:
+                start = datetime.fromisoformat(str(result["started_at"]))
+                end = datetime.fromisoformat(str(result["captured_at"]))
+                result_inputs = _mapping(result.get("inputs"))
+                if (
+                    result.get("schema") != "RAOS_WORDPRESS_CHECK_RESULT_V2"
+                    or result.get("check_id") != "fast"
+                    or type(result.get("exit_code")) is not int
+                    or result["exit_code"] != 0
+                    or result_inputs.get("source_tree_sha256")
+                    != expected["source_tree_sha256"]
+                    or result_inputs.get("selection_sha256")
+                    != expected["selection_sha256"]
+                    or result.get("output_sha256") not in output_hashes
+                    or start.tzinfo is None
+                    or end.tzinfo is None
+                    or not start <= end <= now < end + timedelta(hours=24)
+                ):
+                    _fail("VERIFICATION_RESULT_INVALID")
+            except KeyError, TypeError, ValueError:
+                _fail("VERIFICATION_RESULT_INVALID")
+        elif (
+            result.get("schema") != "RAOS_WORDPRESS_REQUIRED_CI_V2"
+            or result.get("repository") != "jamozi/rakuten"
+            or result.get("workflow") != ".github/workflows/ci.yml"
+            or result.get("head_sha") != expected["head_sha"]
+            or result.get("conclusion") != "success"
+            or result.get("final_integration") != "success"
+        ):
+            _fail("REQUIRED_CI_INVALID")
+
+
 def validate_verified_incremental_audit_v1(
     report: Mapping[str, object],
     *,
@@ -746,6 +808,7 @@ def validate_verified_incremental_audit_v1(
     implementation_execution_ids: Sequence[str],
     scope: IncrementalAuditScopeV1,
     now: datetime,
+    verification_inputs: Mapping[str, str] | None = None,
 ) -> VerifiedIncrementalAuditBindingV1:
     """Rehash actual evidence bytes; caller must compute expected inputs afresh.
 
@@ -765,9 +828,11 @@ def validate_verified_incremental_audit_v1(
         "deferred_checks",
     }
     document = _mapping(report, fields)
+    version = 2 if document.get("schema") == SCHEMA_V2 else 1
+    fixed = {**FIXED, "schema": SCHEMA_V2} if version == 2 else FIXED
     if any(
         type(document[key]) is not type(value) or document[key] != value
-        for key, value in FIXED.items()
+        for key, value in fixed.items()
     ):
         _fail("PROFILE_OR_AUTHORITY_INVALID")
     expected_manifest = _hash(manifest_sha256)
@@ -924,7 +989,8 @@ def validate_verified_incremental_audit_v1(
                 },
             )
             if (
-                proof["schema"] != EVIDENCE_SCHEMA
+                proof["schema"]
+                != (EVIDENCE_SCHEMA_V2 if version == 2 else EVIDENCE_SCHEMA)
                 or proof["surface_id"] != expected_surface
                 or proof["result"] != "PASS"
                 or proof["findings"] != []
@@ -964,7 +1030,17 @@ def validate_verified_incremental_audit_v1(
                     expected_artifact_hashes=expected_hashes,
                 )
             else:
-                contact_state = _checks(expected_surface, proof["checks"], attachments)
+                contact_state = _checks(
+                    expected_surface, proof["checks"], attachments, version=version
+                )
+                if version == 2 and expected_surface == "code":
+                    _verification_results(
+                        _mapping(proof["checks"]),
+                        attachments,
+                        evidence_artifacts,
+                        verification_inputs,
+                        active_now,
+                    )
             if contact_state is not None:
                 contact_states.add(contact_state)
     if used != set(hashes) or len(contact_states) != 1:
@@ -1002,10 +1078,14 @@ def incomplete_audit_template_v1(
     expected_artifact_hashes: Mapping[str, str],
     implementation_execution_ids: Sequence[str],
     scope: IncrementalAuditScopeV1,
+    version: int = 1,
 ) -> dict[str, object]:
     """An intentionally unpublishable skeleton; never invent review executions."""
+    if version not in {1, 2}:
+        _fail("VERSION_INVALID")
     return {
         **FIXED,
+        "schema": SCHEMA_V2 if version == 2 else SCHEMA,
         "manifest_sha256": _hash(manifest_sha256),
         "scope_sha256": _digest(canonical_json_bytes(scope.to_document())),
         "artifact_hashes": _hashes(expected_artifact_hashes),
@@ -1031,12 +1111,17 @@ def incomplete_evidence_template_v1(
     manifest_sha256: str,
     expected_artifact_hashes: Mapping[str, str],
     scope: IncrementalAuditScopeV1,
+    version: int = 1,
 ) -> dict[str, object]:
     """An unexecuted evidence skeleton, not an audit finding or command result."""
-    if surface_id not in SURFACES or surface_id == READER_SURFACE:
+    if (
+        version not in {1, 2}
+        or surface_id not in SURFACES
+        or surface_id == READER_SURFACE
+    ):
         _fail("SURFACE_INVALID")
     return {
-        "schema": EVIDENCE_SCHEMA,
+        "schema": EVIDENCE_SCHEMA_V2 if version == 2 else EVIDENCE_SCHEMA,
         "surface_id": surface_id,
         "result": "NOT_EXECUTED",
         "manifest_sha256": _hash(manifest_sha256),

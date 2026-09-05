@@ -598,7 +598,6 @@ def test_incremental_runner_preserves_full_audit_and_rechecks_prepared_bytes() -
     assert "audit.missingAlt !== 0 || audit.unloadedImages !== 0" in audit
     assert "browserCookieCount !== 0" in audit
     assert "lifecycleProductCtaInvariantFailure" in audit
-    assert "results.length !== surfaces.length * widths.length" in audit
     assert "audit.axeViolations.length !== 0" in audit
     assert "Object.values(audit.anchorSecurity).some((count) => count !== 0)" in audit
     assert "!audit.disclosure.opacityVisible || !audit.disclosure.inViewport" in audit

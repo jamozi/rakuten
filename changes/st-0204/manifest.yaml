@@ -104,14 +104,14 @@ source_artifacts:
   bytes: 4693
   sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
 - uri: repo://Makefile
-  bytes: 3276
-  sha256: 3a644435fae4104c0baa09453cc7867543a448aa748c3d74c4acbb756e455407
+  bytes: 3427
+  sha256: 4eb39cb5aefdda22eba5abfa74a6539d36444453aebb8a70b41510d4f6cf56c8
 - uri: repo://README.md
-  bytes: 6359
-  sha256: 9b1f870ad25bb8d968731f17a0597d34282fff5b4ed99c14534069219b522b1e
+  bytes: 7310
+  sha256: dc504844e40b802f5105efa60330a3b8d4c1e161d7bf44213b25ceb64e69fd9a
 - uri: repo://changes/st-0203/manifest.yaml
   bytes: 5784
-  sha256: 2783e5041088572802936423ed8e96a32d941af4e7283b13e29cda51381e3b96
+  sha256: 273f2e032900286e9502c4bcc9469a01b19095582276c479b77c681e534c3749
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0204/generated/runtime-config.v1.schema.json

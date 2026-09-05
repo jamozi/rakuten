@@ -181,6 +181,7 @@ def validate_materialized(root: Path, checksums: dict[str, str]) -> bool:
 def materialize(output_parent: Path, files: dict[str, bytes], checksums: dict[str, str]) -> None:
     destination = output_parent / EXPECTED_PLUGIN
     if validate_materialized(destination, checksums):
+        make_public_plugin_readable(destination)
         return
     try:
         output_parent.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -211,6 +212,15 @@ def materialize(output_parent: Path, files: dict[str, bytes], checksums: dict[st
     except OSError:
         fail("RAOS_WORDPRESS_PREVIEW_YOAST_OUTPUT_INVALID")
     validate_materialized(destination, checksums)
+    make_public_plugin_readable(destination)
+
+
+def make_public_plugin_readable(root: Path) -> None:
+    # The preview owner uses umask 077 for credentials. Only the validated public
+    # distribution is mounted into WordPress; its parent remains owner-private.
+    root.chmod(0o755)
+    for path in root.rglob("*"):
+        path.chmod(0o755 if path.is_dir() else 0o644)
 
 
 def main() -> int:

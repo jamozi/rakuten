@@ -90,6 +90,9 @@ PLUGIN_SOURCE_PATHS: Final = (
     ),
 )
 RUNTIME_INPUT_PATHS: Final = (
+    Path("scripts/raos_wordpress_release_workflow.py"),
+    Path("scripts/raos_wordpress_verification.py"),
+    Path("scripts/raos_wordpress_browser_plan.py"),
     Path(".codex/config.toml"),
     Path("Makefile"),
     AUDIT_INVENTORY_PATH,
@@ -106,6 +109,9 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("changes/wordpress-local-preview-v1/browser/check.sh"),
     Path("changes/wordpress-local-preview-v1/browser/incremental_scope.py"),
     Path("changes/wordpress-local-preview-v1/browser/mixed_audit_report.py"),
+    Path("changes/wordpress-local-preview-v1/runtime-fingerprint.php"),
+    Path("changes/wordpress-local-preview-v1/runtime-environment.php"),
+    Path("scripts/raos_wordpress_environment.py"),
     Path("changes/wordpress-local-preview-v1/browser/lighthouse_check.sh"),
     Path(
         "changes/wordpress-local-preview-v1/browser/"

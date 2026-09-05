@@ -110,11 +110,11 @@ source_artifacts:
   bytes: 2099
   sha256: b45c333996c723ab1978c8b474420de86c563277a3c4a0d2e2a7d76cdbaed4bb
 - uri: repo://README.md
-  bytes: 6359
-  sha256: 9b1f870ad25bb8d968731f17a0597d34282fff5b4ed99c14534069219b522b1e
+  bytes: 7310
+  sha256: dc504844e40b802f5105efa60330a3b8d4c1e161d7bf44213b25ceb64e69fd9a
 - uri: repo://Makefile
-  bytes: 3276
-  sha256: 3a644435fae4104c0baa09453cc7867543a448aa748c3d74c4acbb756e455407
+  bytes: 3427
+  sha256: 4eb39cb5aefdda22eba5abfa74a6539d36444453aebb8a70b41510d4f6cf56c8
 - uri: repo://docs/execplans/ST-0305.md
   bytes: 2267
   sha256: 3839312aac427b34024d16493a98e79ff2d45764bbd74863cacf89bc2bba9b1f
@@ -129,7 +129,7 @@ source_artifacts:
   sha256: 9ddf4b26bdaa5fef22b14703937e0d010ea0690123b18eb77bd53651d800c72e
 - uri: repo://changes/st-0304/manifest.yaml
   bytes: 11664
-  sha256: b5cda566359761f28f7d6c428fda7726a6d213d1d962c4fbc25d3218dfca92e7
+  sha256: f458d6c3b4ec177034981de790776eeb4049396ad40b36c6877c92a5bad74795
 - uri: repo://migrations/versions/202608030004_domain_schemas.py
   bytes: 106632
   sha256: 632fc5146a57e2c7768745e3ed665aba0f91f229afc174c17fca8e9e2d88c407

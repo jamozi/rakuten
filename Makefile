@@ -7,7 +7,7 @@ BASE_ARGUMENT := $(if $(strip $(BASE)),--base $(BASE),)
 
 .PHONY: setup generate check fast final final-lock final-static final-secrets \
 	status-v2 test-parallel test-serial contracts database storage \
-	wordpress-preview-up wordpress-preview-status wordpress-preview-sync \
+	wordpress-preview-up wordpress-preview-status wordpress-preview-environment wordpress-preview-sync \
 	wordpress-preview-password wordpress-preview-check wordpress-preview-down \
 	wordpress-preview-reset wordpress-production-request
 
@@ -75,6 +75,9 @@ wordpress-preview-up:
 wordpress-preview-status:
 	RAOS_WORDPRESS_PREVIEW_DOCKER_BIN="$(DOCKER)" $(WORDPRESS_PREVIEW) status
 
+wordpress-preview-environment:
+	@RAOS_WORDPRESS_PREVIEW_DOCKER_BIN="$(DOCKER)" $(WORDPRESS_PREVIEW) environment
+
 wordpress-preview-sync:
 	RAOS_WORDPRESS_PREVIEW_DOCKER_BIN="$(DOCKER)" $(WORDPRESS_PREVIEW) sync
 
@@ -92,7 +95,7 @@ wordpress-preview-reset:
 		$(WORDPRESS_PREVIEW) reset
 
 wordpress-production-request:
-	$(PYTHON) scripts/raos_wordpress_publication_request.py
+	$(PYTHON) scripts/raos_wordpress_publication_request.py $(ARGS)
 
 final: final-lock
 	TMPDIR=/tmp $(PYTHON) scripts/raos_build.py final

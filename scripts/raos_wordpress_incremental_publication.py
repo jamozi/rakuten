@@ -39,6 +39,7 @@ from raos.application.editorial.verified_incremental_audit_v1 import (  # noqa: 
 from raos.application.editorial.verified_incremental_release_v1 import (  # noqa: E402
     VerifiedIncrementalReleaseV1,
     build_verified_incremental_release_v1,
+    validate_release_inputs_v1,
     validate_release_envelope,
     verify_release_readback,
 )
@@ -162,30 +163,57 @@ def validate_candidate_browser(
     fixture_root: Path,
 ) -> Mapping[str, object]:
     """Replay the authoritative measured report, then bind its mixed scope."""
-    del candidate_path
     private_directory(fixture_root)
     browser = ROOT / "changes/wordpress-local-preview-v1/browser"
     if str(browser) not in sys.path:
         sys.path.insert(0, str(browser))
     mixed_audit_report = importlib.import_module("mixed_audit_report")
 
+    recorded = json.loads(mixed_audit_report.read_regular(mixed_audit_report.REPORT))
+    modern = recorded.get("schema") == mixed_audit_report.SCHEMA_V2
+    from raos_wordpress_release_workflow import preview_origin
+
     report = mixed_audit_report.validate_report(
         mixed_audit_report.REPORT,
         fixture_root=fixture_root,
-        origin="http://127.0.0.1:39330",
+        origin=preview_origin(dict(os.environ)) if modern else "http://127.0.0.1:39330",
         now=now,
+        **({"candidate_path": candidate_path} if modern else {}),
     )
     raw = mixed_audit_report.read_regular(mixed_audit_report.REPORT)
     if json.loads(raw) != report:
         fail("BROWSER_REPORT_CHANGED")
     inputs = cast(dict[str, Any], report["inputs"])
+    validate_browser_inputs(
+        inputs, manifest=manifest, artifact_bytes=artifact_bytes, snapshot=snapshot
+    )
+    if set(report["core_document_slugs"]) != {
+        row["slug"] for row in snapshot["documents"]
+    }:
+        fail("BROWSER_SCOPE_MISMATCH")
+    return {
+        "schema": "RAOS_WORDPRESS_INCREMENTAL_BROWSER_BINDING_V1",
+        "status": "LOCAL_MIXED_BROWSER_AUDIT_PASSED",
+        "report_sha256": digest(raw),
+        "manifest_sha256": digest(canonical(manifest)),
+        "preparation_binding_sha256": inputs["preparation_binding_sha256"],
+        "publication_authority": False,
+    }
+
+
+def validate_browser_inputs(
+    inputs: Mapping[str, Any],
+    *,
+    manifest: Mapping[str, Any],
+    artifact_bytes: Mapping[str, bytes],
+    snapshot: Mapping[str, Any],
+) -> None:
+    """Bind fixture bytes before expensive checks and again before publication."""
     selected = {row["article_id"] for row in manifest["articles"]}
     if (
         inputs["source_snapshot_sha256"]
         != digest(publication.canonical_json_bytes(snapshot))
         or set(inputs["scope"]["selected_article_ids"]) != selected
-        or set(report["core_document_slugs"])
-        != {row["slug"] for row in snapshot["documents"]}
     ):
         fail("BROWSER_SCOPE_MISMATCH")
     for row in manifest["articles"]:
@@ -214,25 +242,26 @@ def validate_candidate_browser(
             != row["content_sha256"]
         ):
             fail("BROWSER_BASELINE_MISMATCH")
-    return {
-        "schema": "RAOS_WORDPRESS_INCREMENTAL_BROWSER_BINDING_V1",
-        "status": "LOCAL_MIXED_BROWSER_AUDIT_PASSED",
-        "report_sha256": digest(raw),
-        "manifest_sha256": digest(canonical(manifest)),
-        "preparation_binding_sha256": inputs["preparation_binding_sha256"],
-        "publication_authority": False,
-    }
 
 
-def load_candidate(
-    path: Path,
-    *,
-    implementation_execution_ids: tuple[str, ...],
-    now: datetime,
-    browser_validator: Callable[..., Mapping[str, object]],
-    activation_evaluated_at: datetime | None = None,
-) -> ReplayedCandidate:
-    """No WordPress credential read or mutation until this function succeeds."""
+@dataclass(frozen=True)
+class PreparedCandidate:
+    """Read-only reconstruction; no audit receipt or activation is manufactured."""
+
+    manifest: Mapping[str, Any]
+    manifest_raw: bytes
+    preparation: Mapping[str, Any]
+    preparation_raw: bytes
+    snapshot: Mapping[str, Any]
+    snapshot_raw: bytes
+    artifacts: Mapping[str, bytes]
+    scope: IncrementalAuditScopeV1
+    validated: Any
+    release_arguments: Mapping[str, Any]
+
+
+def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
+    """Reject invalid inputs before tests, browser work, reviews or credentials."""
     _candidate_directory(path)
     manifest, manifest_raw = read_json(path, "manifest.v1.json")
     preparation, preparation_raw = read_json(path, "candidate-preparation.v1.json")
@@ -379,7 +408,66 @@ def load_candidate(
             sorted(set(shared) & {"theme", "seo", "plugins"})
         ),
     )
-    report, _raw = read_json(path / "audit", "report.v1.json")
+    release_arguments = dict(
+        validated_manifest=validated,
+        audit_scope=scope,
+        official_sources=sources,
+        artifact_bytes=artifacts,
+        inventory=inventory,
+        article_targets=targets,
+        commerce_views={},
+        image_article_products=images,
+        cta_bindings={},
+        expected_production_content_sha256={
+            slug: row["after_sha256"]
+            for slug, row in preparation["production_documents"].items()
+        },
+        expected_shared_readback_sha256=preparation["expected_shared_readback_sha256"],
+        source_article_id_by_article_id={article: article for article in selected_ids},
+        now=now,
+    )
+    validate_release_inputs_v1(manifest, **release_arguments)
+    return PreparedCandidate(
+        manifest=manifest,
+        manifest_raw=manifest_raw,
+        preparation=preparation,
+        preparation_raw=preparation_raw,
+        snapshot=snapshot,
+        snapshot_raw=snapshot_raw,
+        artifacts=artifacts,
+        scope=scope,
+        validated=validated,
+        release_arguments=release_arguments,
+    )
+
+
+def load_candidate(
+    path: Path,
+    *,
+    implementation_execution_ids: tuple[str, ...],
+    now: datetime,
+    browser_validator: Callable[..., Mapping[str, object]],
+    activation_evaluated_at: datetime | None = None,
+    verification_base: str = "origin/main",
+) -> ReplayedCandidate:
+    """No WordPress credential read or mutation until this function succeeds."""
+    prepared = prepare_candidate(path, now=now)
+    manifest = prepared.manifest
+    manifest_raw = prepared.manifest_raw
+    preparation = prepared.preparation
+    preparation_raw = prepared.preparation_raw
+    snapshot = prepared.snapshot
+    snapshot_raw = prepared.snapshot_raw
+    artifacts = prepared.artifacts
+    scope = prepared.scope
+    validated = prepared.validated
+
+    report_name = (
+        "report.v2.json"
+        if (path / "audit/report.v2.json").exists()
+        else "report.v1.json"
+    )
+    report, _raw = read_json(path / "audit", report_name)
     inputs = {
         **artifacts,
         "manifest": manifest_raw,
@@ -404,6 +492,18 @@ def load_candidate(
         if type(expected) is not str or re.fullmatch(r"[0-9a-f]{64}", expected) is None:
             fail("AUDIT_EVIDENCE_INVALID")
         evidence[key] = read_bytes(path / "audit/evidence", f"{expected}.bin")
+    modern_audit = (
+        report.get("schema") == "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_AUDIT_V2"
+    )
+    verification_context = {}
+    if modern_audit:
+        from raos_wordpress_release_workflow import verification_inputs
+        from raos_wordpress_verification import required_ci
+
+        required_ci(ROOT)
+        verification_context["verification_inputs"] = verification_inputs(
+            verification_base
+        )
     audit = validate_verified_incremental_audit_v1(
         report,
         manifest_sha256=validated.manifest_sha256,
@@ -411,11 +511,13 @@ def load_candidate(
         evidence_artifacts=evidence,
         expected_backup_snapshot=snapshot,
         expected_backup_article_slugs=frozenset(
-            binding.production_slug for binding in portfolio.articles
+            slug
+            for slug, _post_id in prepared.release_arguments["article_targets"].values()
         ),
         implementation_execution_ids=implementation_execution_ids,
         scope=scope,
         now=now,
+        **verification_context,
     )
     preview_binding = browser_validator(
         candidate_path=path,
@@ -433,25 +535,10 @@ def load_candidate(
         fail("AUDITED_BROWSER_REPORT_MISMATCH")
     context = build_verified_incremental_release_v1(
         manifest,
-        validated_manifest=validated,
         audit_binding=audit,
-        audit_scope=scope,
-        official_sources=sources,
-        artifact_bytes=artifacts,
         audit_artifact_bytes=inputs,
-        inventory=inventory,
-        article_targets=targets,
-        commerce_views={},
-        image_article_products=images,
-        cta_bindings={},
-        expected_production_content_sha256={
-            slug: row["after_sha256"]
-            for slug, row in preparation["production_documents"].items()
-        },
-        expected_shared_readback_sha256=preparation["expected_shared_readback_sha256"],
-        source_article_id_by_article_id={article: article for article in selected_ids},
-        now=now,
         activation_evaluated_at=activation_evaluated_at,
+        **prepared.release_arguments,
     )
     return ReplayedCandidate(context, manifest, preparation, snapshot, preview_binding)
 
@@ -942,6 +1029,7 @@ def execute_incremental(
     deploy: Callable[..., dict[str, Any]] = deployment_call,
     clock: Callable[[], datetime] = lambda: datetime.now(UTC),
     runtime_precondition: Callable[..., Mapping[str, Any]] | None = None,
+    verification_base: str = "origin/main",
 ) -> Path:
     """Explicit stages. Proposal only registers; apply uses the server's lease."""
     if stage not in {"propose", "apply", "readback"}:
@@ -989,6 +1077,7 @@ def execute_incremental(
                 implementation_execution_ids=implementation_execution_ids,
                 now=clock(),
                 browser_validator=browser_validator,
+                verification_base=verification_base,
                 activation_evaluated_at=(
                     instant(original_context.to_document()["evaluated_at"])
                     if original_context is not None
@@ -1388,6 +1477,7 @@ def execute_cli(arguments: Any) -> Path:
             ),
             browser_validator=browser,
             public_readback_validator=public,
+            verification_base=getattr(arguments, "incremental_base", "origin/main"),
         )
     except publication.PublicationFailure:
         raise

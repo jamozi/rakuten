@@ -395,17 +395,82 @@ def prepare_noncommercial_candidate(
 
 
 def current_theme_projection() -> bytes:
-    # Reuse the fixed tracked-package owner; no caller-selected package paths.
-    import raos_wordpress_deployment_operator as deployment
+    return publication.canonical_json_bytes(
+        publication.theme_file_manifest(require_clean=False)
+    )
 
-    _archive, descriptor = deployment.theme_package()
-    raw = publication.canonical_json_bytes(descriptor["file_manifest"])
+
+def inspect_candidate(
+    args: argparse.Namespace,
+) -> tuple[dict[str, object], dict[str, bytes], dict[str, object]]:
+    """Reconstruct and validate all release inputs without writing or packaging."""
+    owner = Path("/home/minami/rakuten")
+    snapshot = read_private_json(
+        owner / ".secrets/wordpress-mcp/incremental-snapshots", args.snapshot_name
+    )
     if (
-        digest(raw) != descriptor["file_manifest_sha256"]
-        or digest(raw) != publication.tracked_theme_tree_sha256()
+        args.snapshot_name
+        != f"live-{digest(publication.canonical_json_bytes(snapshot))}.v1.json"
     ):
-        fail("THEME_ARTIFACT_INVALID")
-    return raw
+        fail("SNAPSHOT_NAME_INVALID")
+    portfolio = load_editorial_portfolio_v3(ROOT)
+    articles = publication.load_articles(args.articles)
+    selected_ids = tuple(
+        portfolio.article_by_slug[a.production_slug].article_id for a in articles
+    )
+    now = datetime.now(UTC).replace(microsecond=0)
+    sources = validate_selected_official_sources(
+        repository_root=ROOT, evidence_root=ROOT, article_ids=selected_ids, now=now
+    )
+    if sources.issues:
+        print(
+            json.dumps(
+                {
+                    "status": "BLOCKED",
+                    "issues": [issue.to_document() for issue in sources.issues],
+                },
+                ensure_ascii=False,
+            )
+        )
+        fail("SOURCES_INCOMPLETE")
+    manifest, artifacts, preparation = prepare_noncommercial_candidate(
+        portfolio=portfolio,
+        snapshot=snapshot,
+        sources=sources,
+        articles=articles,
+        now=now,
+        theme_projection=current_theme_projection() if args.include_theme else None,
+        policy_articles=(
+            publication.load_policy_pages(profile="production")
+            if args.update_policies == "all"
+            else ()
+        ),
+        runtime_transition_mode=args.runtime_transition,
+    )
+    return manifest, artifacts, preparation
+
+
+def create_candidate(args: argparse.Namespace) -> Path:
+    """Materialize a validated candidate without changing an existing candidate."""
+    owner = Path("/home/minami/rakuten")
+    manifest, artifacts, preparation = inspect_candidate(args)
+    target = (
+        owner
+        / ".secrets/wordpress-mcp/incremental-candidates"
+        / digest(canonical(manifest))
+    )
+    if (target / "manifest.v1.json").exists():
+        if (target / "manifest.v1.json").read_bytes() != canonical(manifest):
+            fail("CANDIDATE_CHANGED")
+        return target
+    ensure_private_root(target.parent)
+    ensure_private_root(target)
+    for key, raw in artifacts.items():
+        name = f"{key}.v1.json" if key == "theme-tree" else f"{key}.html"
+        write_private_bytes(target / "artifacts", name, raw)
+    write_private_bytes(target, "manifest.v1.json", canonical(manifest))
+    write_private_bytes(target, "candidate-preparation.v1.json", canonical(preparation))
+    return target
 
 
 def main() -> int:
@@ -421,63 +486,7 @@ def main() -> int:
     )
     args = parser.parse_args()
     try:
-        owner = Path("/home/minami/rakuten")
-        snapshot = read_private_json(
-            owner / ".secrets/wordpress-mcp/incremental-snapshots", args.snapshot_name
-        )
-        if (
-            args.snapshot_name
-            != f"live-{digest(publication.canonical_json_bytes(snapshot))}.v1.json"
-        ):
-            fail("SNAPSHOT_NAME_INVALID")
-        portfolio = load_editorial_portfolio_v3(ROOT)
-        articles = publication.load_articles(args.articles)
-        selected_ids = tuple(
-            portfolio.article_by_slug[a.production_slug].article_id for a in articles
-        )
-        now = datetime.now(UTC).replace(microsecond=0)
-        sources = validate_selected_official_sources(
-            repository_root=ROOT, evidence_root=ROOT, article_ids=selected_ids, now=now
-        )
-        if sources.issues:
-            print(
-                json.dumps(
-                    {
-                        "status": "BLOCKED",
-                        "issues": [issue.to_document() for issue in sources.issues],
-                    },
-                    ensure_ascii=False,
-                )
-            )
-            return 69
-        manifest, artifacts, preparation = prepare_noncommercial_candidate(
-            portfolio=portfolio,
-            snapshot=snapshot,
-            sources=sources,
-            articles=articles,
-            now=now,
-            theme_projection=current_theme_projection() if args.include_theme else None,
-            policy_articles=(
-                publication.load_policy_pages(profile="production")
-                if args.update_policies == "all"
-                else ()
-            ),
-            runtime_transition_mode=args.runtime_transition,
-        )
-        target = (
-            owner
-            / ".secrets/wordpress-mcp/incremental-candidates"
-            / digest(canonical(manifest))
-        )
-        ensure_private_root(target.parent)
-        ensure_private_root(target)
-        for key, raw in artifacts.items():
-            name = f"{key}.v1.json" if key == "theme-tree" else f"{key}.html"
-            write_private_bytes(target / "artifacts", name, raw)
-        write_private_bytes(target, "manifest.v1.json", canonical(manifest))
-        write_private_bytes(
-            target, "candidate-preparation.v1.json", canonical(preparation)
-        )
+        target = create_candidate(args)
         print(f"Source-verified candidate: {target}")
         print(
             "Audit: NOT_EXECUTED; monetization: NOT_INCLUDED; production writes: NOT_EXECUTED"

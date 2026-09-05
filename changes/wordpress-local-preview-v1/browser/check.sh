@@ -17,8 +17,11 @@ readonly incremental_scope_loader=$script_directory/incremental_scope.py
 readonly mixed_report_adapter=$script_directory/mixed_audit_report.py
 readonly python_bin="${RAOS_WORDPRESS_PREVIEW_PYTHON_BIN:-$repository_root/.venv/bin/python}"
 readonly publication_profile="${RAOS_WORDPRESS_PUBLICATION_PROFILE:-legacy-full}"
-readonly link_mode="${RAOS_WORDPRESS_LINK_MODE:-measured-admin}"
+readonly link_mode="${RAOS_WORDPRESS_LINK_MODE:-standard-api}"
 readonly fixture_root="${RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT:-}"
+readonly release_candidate="${RAOS_WORDPRESS_RELEASE_CANDIDATE:-}"
+readonly diagnostic_surfaces="${RAOS_WORDPRESS_BROWSER_SURFACES:-}"
+readonly started_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 readonly axe_source=$repository_root/node_modules/axe-core/axe.min.js
 readonly artifact_parent=$repository_root/output/playwright
 readonly published_artifact_directory=$artifact_parent/local-preview
@@ -63,6 +66,7 @@ remove_ephemeral_directory() {
 case "$publication_profile" in
   legacy-full) ;;
   verified-incremental)
+    [ -z "$diagnostic_surfaces" ] || refuse
     [ "$link_mode" = standard-api ] && [ -n "$fixture_root" ] || refuse
     [ -x "$python_bin" ] && [ -f "$incremental_scope_loader" ] \
       && [ ! -L "$incremental_scope_loader" ] || refuse
@@ -76,6 +80,10 @@ cleanup() {
   [ -z "$audit_runtime" ] || /usr/bin/busybox rm -f -- "$audit_runtime"
   [ -z "$incremental_scope_file" ] || /usr/bin/busybox rm -f -- "$incremental_scope_file"
   [ -z "$mixed_report_binding" ] || /usr/bin/busybox rm -f -- "$mixed_report_binding"
+  if [ -n "$mixed_raw_result" ] && [ -s "$mixed_raw_result" ]; then
+    /usr/bin/busybox cp -- "$mixed_raw_result" "$artifact_parent/local-preview.last-attempt.$$.cli.txt"
+    /usr/bin/busybox printf 'Browser attempt output: %s/local-preview.last-attempt.%s.cli.txt\n' "$artifact_parent" "$$"
+  fi
   [ -z "$mixed_raw_result" ] || /usr/bin/busybox rm -f -- "$mixed_raw_result"
   if [ -n "$artifact_directory" ] && [ -d "$artifact_directory" ]; then
     remove_ephemeral_directory "$artifact_directory"
@@ -91,6 +99,19 @@ cleanup() {
 }
 trap cleanup EXIT HUP INT TERM
 
+set --
+if [ -n "$release_candidate" ]; then
+  [ "$publication_profile" = verified-incremental ] || refuse
+  set -- --candidate "$release_candidate"
+  if [ "${RAOS_WORDPRESS_BROWSER_FORCE:-0}" != 1 ] &&
+    PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$mixed_report_adapter" verify \
+      --fixture-root "$fixture_root" --origin "$preview_origin" "$@" >/dev/null 2>&1
+  then
+    /usr/bin/busybox printf '%s\n' 'WordPress browser results reused; original timestamps retained.'
+    exit 0
+  fi
+fi
+
 /usr/bin/busybox mkdir -p -- "$artifact_parent"
 artifact_directory="$(
   /usr/bin/busybox mktemp -d "$artifact_parent/.local-preview.pending.XXXXXX"
@@ -98,33 +119,38 @@ artifact_directory="$(
 /usr/bin/busybox chmod 700 -- "$artifact_directory" || refuse
 audit_runtime="$(/usr/bin/busybox mktemp /tmp/raos-wordpress-local-audit.XXXXXX)" || refuse
 /usr/bin/busybox chmod 600 -- "$audit_runtime" || refuse
+mixed_raw_result="$(/usr/bin/busybox mktemp /tmp/raos-wordpress-browser-result.XXXXXX)" || refuse
 if [ "$publication_profile" = verified-incremental ]; then
   incremental_scope_file="$(/usr/bin/busybox mktemp /tmp/raos-wordpress-incremental-scope.XXXXXX)" || refuse
   /usr/bin/busybox chmod 600 -- "$incremental_scope_file" || refuse
   PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$incremental_scope_loader" \
     --fixture-root "$fixture_root" >"$incremental_scope_file" || refuse
   mixed_report_binding="$(/usr/bin/busybox mktemp /tmp/raos-wordpress-browser-binding.XXXXXX)" || refuse
-  mixed_raw_result="$(/usr/bin/busybox mktemp /tmp/raos-wordpress-browser-result.XXXXXX)" || refuse
   PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$mixed_report_adapter" begin \
     --fixture-root "$fixture_root" --origin "$preview_origin" \
-    --binding-file "$mixed_report_binding" || refuse
+    --binding-file "$mixed_report_binding" "$@" || refuse
 fi
 "$node_bin" -e '
 const fs = require("fs");
 const [factoryPath, inventoryPath, axePath, outputPath, artifactDirectory, origin,
-  publicationProfile, linkMode, scopePath] = process.argv.slice(1);
+  publicationProfile, linkMode, scopePath, bindingPath] = process.argv.slice(1);
 const factory = fs.readFileSync(factoryPath, "utf8");
 const inventory = JSON.parse(fs.readFileSync(inventoryPath, "utf8"));
 const axeSource = fs.readFileSync(axePath, "utf8");
 const incrementalScope = scopePath ? JSON.parse(fs.readFileSync(scopePath, "utf8")) : null;
+const binding = bindingPath ? JSON.parse(fs.readFileSync(bindingPath, "utf8")) : null;
+const selectedSurfaceIds = binding?.inputs?.browser_plan?.surface_ids ||
+  (process.env.RAOS_WORDPRESS_BROWSER_SURFACES ? process.env.RAOS_WORDPRESS_BROWSER_SURFACES.split(",") : null);
+const workers = Number(process.env.RAOS_WORDPRESS_BROWSER_WORKERS ||
+  Math.min(4, require("os").availableParallelism()));
 fs.writeFileSync(
   outputPath,
   `(${factory})(${JSON.stringify({ artifactDirectory, axeSource, inventory, origin,
-    publicationProfile, linkMode, incrementalScope })})`,
+    publicationProfile, linkMode, incrementalScope, selectedSurfaceIds, workers })})`,
   { encoding: "utf8", mode: 0o600 },
 );
 ' "$audit_function" "$audit_inventory" "$axe_source" "$audit_runtime" "$artifact_directory" \
-  "$preview_origin" "$publication_profile" "$link_mode" "$incremental_scope_file" \
+  "$preview_origin" "$publication_profile" "$link_mode" "$incremental_scope_file" "$mixed_report_binding" \
   2>/dev/null || refuse
 TMPDIR=/tmp
 TEMP=/tmp
@@ -137,54 +163,47 @@ export TMPDIR TEMP TMP PATH LANG LC_ALL TZ
 
 "$node_bin" "$cli_js" -s="$session" open \
   "$preview_origin" --browser chrome >/dev/null
-if [ "$publication_profile" = verified-incremental ]; then
-  "$node_bin" "$cli_js" -s="$session" run-code --filename="$audit_runtime" \
-    | /usr/bin/busybox tee "$mixed_raw_result"
-else
-  "$node_bin" "$cli_js" -s="$session" run-code --filename="$audit_runtime"
-fi
+"$node_bin" "$cli_js" -s="$session" run-code --filename="$audit_runtime" >"$mixed_raw_result"
+# Keep the full runner output as an artifact, not hundreds of KB of copied code
+# in a task transcript. CLI errors can have exit status zero, so inspect results.
+"$python_bin" - "$mixed_raw_result" <<'PYRESULT'
+import json, re, sys
+from pathlib import Path
+raw = Path(sys.argv[1]).read_text()
+if "### Error" in raw:
+    codes = re.findall(r"RAOS_[A-Z0-9_]+", raw.split("### Error", 1)[1].split("### Ran", 1)[0])
+    print("Browser failed: " + (codes[0] if codes else "inspect original browser output"), file=sys.stderr)
+    raise SystemExit(69)
+match = re.search(r"(?m)^### Result\n", raw)
+if match is None:
+    raise SystemExit(69)
+results, _ = json.JSONDecoder().raw_decode(raw[match.end():].lstrip())
+if not isinstance(results, list) or not results:
+    raise SystemExit(69)
+print(f"Browser assertions passed: {len(results)} surface/viewport results")
+PYRESULT
 
-artifact_names="$("$node_bin" -e '
-const fs = require("fs");
-const inventory = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
-for (const surface of [...inventory.surfaces, ...inventory.local_surfaces]) {
-  for (const width of inventory.viewports) {
-    process.stdout.write(`local-preview-${surface.surface_id}-${width}.png\n`);
-  }
-  process.stdout.write(`local-preview-${surface.surface_id}-zoom200.png\n`);
-}
-' "$audit_inventory")" || refuse
-expected_count="$("$node_bin" -e '
-const fs = require("fs");
-const inventory = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
-process.stdout.write(String(
-  (inventory.surfaces.length + inventory.local_surfaces.length) *
-    (inventory.viewports.length + 1),
-));
-' "$audit_inventory")" || refuse
-[ "$expected_count" -eq 130 ] || refuse
 "$node_bin" -e '
 const fs = require("fs");
-const [inventoryPath, artifactDirectory] = process.argv.slice(1);
+const [inventoryPath, artifactDirectory, bindingPath] = process.argv.slice(1);
 const inventory = JSON.parse(fs.readFileSync(inventoryPath, "utf8"));
-const expected = [];
-for (const surface of [...inventory.surfaces, ...inventory.local_surfaces]) {
-  for (const width of inventory.viewports) {
-    expected.push(`local-preview-${surface.surface_id}-${width}.png`);
-  }
-  expected.push(`local-preview-${surface.surface_id}-zoom200.png`);
-}
-expected.sort();
+const binding = bindingPath ? JSON.parse(fs.readFileSync(bindingPath, "utf8")) : null;
+const selected = binding?.inputs?.browser_plan?.surface_ids ||
+  (process.env.RAOS_WORDPRESS_BROWSER_SURFACES ? process.env.RAOS_WORDPRESS_BROWSER_SURFACES.split(",") :
+    [...inventory.surfaces, ...inventory.local_surfaces].map((row) => row.surface_id));
+const expected = selected.flatMap((id) => [
+  ...inventory.viewports.map((width) => `local-preview-${id}-${width}.png`),
+  `local-preview-${id}-zoom200.png`,
+]).sort();
 const entries = fs.readdirSync(artifactDirectory, { withFileTypes: true });
 const actual = entries.map((entry) => entry.name).sort();
-if (
-  expected.length !== 130 || actual.length !== expected.length ||
-  actual.some((name, index) => name !== expected[index]) ||
-  entries.some((entry) => !entry.isFile() || entry.isSymbolicLink())
-) process.exit(69);
-' "$audit_inventory" "$artifact_directory" || refuse
+if (!expected.length || new Set(expected).size !== expected.length ||
+    actual.length !== expected.length || actual.some((name, i) => name !== expected[i]) ||
+    entries.some((entry) => !entry.isFile() || entry.isSymbolicLink())) process.exit(69);
+' "$audit_inventory" "$artifact_directory" "$mixed_report_binding" || refuse
 RAOS_WORDPRESS_PREVIEW_NODE_BIN="$node_bin" \
 RAOS_WORDPRESS_PREVIEW_ORIGIN="$preview_origin" \
+RAOS_WORDPRESS_BROWSER_BINDING="$mixed_report_binding" \
   "$lighthouse_check"
 if [ "$publication_profile" = verified-incremental ]; then
   PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$incremental_scope_loader" \
@@ -216,15 +235,24 @@ if [ "$publication_profile" = verified-incremental ]; then
   PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$mixed_report_adapter" finish \
     --fixture-root "$fixture_root" --origin "$preview_origin" \
     --binding-file "$mixed_report_binding" --raw-result "$mixed_raw_result" \
-    --artifact-directory "$published_artifact_directory" || refuse
+    --artifact-directory "$published_artifact_directory" "$@" || refuse
 fi
 
-screenshots=''
-for artifact_name in $artifact_names; do
-  screenshot="$published_artifact_directory/$artifact_name"
-  [ -f "$screenshot" ] && [ ! -L "$screenshot" ] || refuse
-  screenshots="$screenshots $screenshot"
-done
-set -- $screenshots
-[ "$#" -eq "$expected_count" ] || refuse
-/usr/bin/busybox sha256sum "$@"
+if [ "$publication_profile" = legacy-full ]; then
+  /usr/bin/busybox cp -- "$mixed_raw_result" "$artifact_parent/local-preview.audit.cli.txt"
+fi
+"$python_bin" - "$published_artifact_directory" "$preview_origin" "$started_at" <<'PYSUMMARY'
+from datetime import UTC, datetime
+import hashlib, json, os, sys
+from pathlib import Path
+root = Path(sys.argv[1])
+shots = [{"path": str(p), "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(root.glob("*.png"))]
+end = datetime.now(UTC)
+summary = {"schema": "RAOS_WORDPRESS_LOCAL_RUN_SUMMARY_V2", "publication_authority": False,
+    "origin": sys.argv[2], "started_at": sys.argv[3], "completed_at": end.isoformat(),
+    "duration_seconds": round((end - datetime.fromisoformat(sys.argv[3])).total_seconds(), 2),
+    "screenshots": shots, "workers": int(os.environ.get("RAOS_WORDPRESS_BROWSER_WORKERS", min(4, os.cpu_count() or 1)))}
+path = root.parent / "local-preview.run-summary.v2.json"
+path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n")
+print(f"Browser and Lighthouse passed: {len(shots)} screenshots; {summary['duration_seconds']}s; {path}")
+PYSUMMARY

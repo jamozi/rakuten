@@ -11,7 +11,8 @@ Call `validate_verified_incremental_audit_v1` in
 `python/raos/application/editorial/verified_incremental_audit_v1.py` with:
 
 - `report`: the audit JSON object, schema
-  `RAOS_WORDPRESS_VERIFIED_INCREMENTAL_AUDIT_V1`.
+  `RAOS_WORDPRESS_VERIFIED_INCREMENTAL_AUDIT_V1` for existing candidates or
+  `RAOS_WORDPRESS_VERIFIED_INCREMENTAL_AUDIT_V2` for new candidates.
 - `manifest_sha256`: current hash of the independently validated
   `RAOS_WORDPRESS_VERIFIED_INCREMENTAL_MANIFEST_V1` release manifest.
 - `expected_artifact_hashes`: opaque artifact ID → SHA-256, recomputed from the
@@ -26,6 +27,8 @@ Call `validate_verified_incremental_audit_v1` in
   executions. These are not taken from the report itself.
 - `scope`: `IncrementalAuditScopeV1`, derived from the validated manifest.
 - `now`: timezone-aware current time.
+- V2 `verification_inputs`: independently computed `source_tree_sha256`,
+  `selection_sha256` from the common planner, and `head_sha`. Never copy these from evidence.
 
 The scope binds selected, existing and rendered article IDs; whether shared
 surfaces change; nonempty retained claim IDs for **each selected article**;
@@ -50,6 +53,8 @@ report and its real artifacts before proposal/resume/apply.
 no rounds and null times. `incomplete_evidence_template_v1(...)` returns the exact
 evidence structure with `result: NOT_EXECUTED`. Both are intentionally invalid for
 publication. Neither synthesizes a completed audit or an owner confirmation.
+For new reports, pass `version=2` to both template functions; evidence schema is
+`RAOS_WORDPRESS_VERIFIED_INCREMENTAL_AUDIT_EVIDENCE_V2`. Keep existing V1 files immutable.
 
 The report uses `publication_profile: verified-incremental`, `link_mode:
 standard-api`, `review_kind: CODEX_TECHNICAL_REVIEW` and
@@ -76,7 +81,17 @@ General `checks` contain `status: PASS` and `completed_checks` matching the exac
 `REQUIRED_CHECKS[surface_id]` set. Specialized checks are:
 
 - `code`: commands containing `command_id`, integer `exit_code: 0`, and bound
-  `output_artifact_id`. `generate`, `check`, `focused`, `fast`, `final` are required.
+  `output_artifact_id`. V1 retains `generate`, `check`, `focused`, `fast`, `final`
+  for unchanged legacy candidates. V2 requires `fast` and `required-ci`: original
+  `RAOS_WORDPRESS_CHECK_RESULT_V2` with successful exit, matching source tree and
+  selected checks, original output hash and timestamps (within 24 hours), and
+  `RAOS_WORDPRESS_REQUIRED_CI_V2` for the target commit. The adapter also reads
+  GitHub to verify the latest required workflow and `Final Integration` success.
+  A merged PR may supply CI only when its tested head and merge commit have
+  identical complete Git trees. Dirty/untracked source cannot inherit that CI.
+  Both reviewers may attach the same original outputs. Their observations,
+  execution identities, review times and final-candidate bindings remain distinct.
+  A cancellation, missing original output or stale input cannot pass.
 - Contact: `state`, `address`, `owner_id`, `confirmation_artifact_id`,
   `delivery_artifact_id`. Address is `contact@kurashinoshirube.com`.
   `OWNER_CONFIRMED` requires a real owner-confirmation attachment and null delivery

@@ -21,7 +21,7 @@ local copy of its 128px product image; missing, ambiguous, or expired evidence
 shows the visible non-image state `商品画像未確認・購入導線停止` and may retain a
 clearly labelled manufacturer page link only as an incomplete development
 fallback. It never reuses a neutral or article-level visual as a product image,
-and this fallback is never a production candidate. Production still requires
+and this fallback is never a production candidate. The explicit legacy full-portfolio mode requires
 37/37 verified product-card images and 74/74 verified affiliate CTAs, with zero
 neutral images and zero manufacturer-link fallbacks. The browser never loads a
 product image or script from an external origin. No live post, production
@@ -65,7 +65,20 @@ publication proposal. The required sequence is:
    proposal, precondition, and kill-switch requirements. A local pass is not
    production approval.
 
-First propose the fixed MCP abilities plugin 1.3.1 package and stop for its
+The normal release path is `make wordpress-production-request ARGS='prepare --articles <slug> --snapshot-name <name>'`.
+It validates and displays the same frozen article artifacts that will be proposed and applied;
+edit tracked sources locally, rather than rewriting approved content in production.
+Bare preview commands now use `standard-api` (measurement OFF) and minified WordPress JavaScript.
+Use `make wordpress-preview-environment` for read-only identity from the serving PHP container.
+The existing preparation report records observed matches, differences, selected theme changes,
+and unavailable production fields. Local URL aliases, noindex, the banner, and blocked outbound
+HTTP/email remain deliberate differences. `RAOS_WORDPRESS_LINK_MODE=measured-admin` explicitly
+selects the legacy measurement preview.
+
+### Legacy full-portfolio compatibility only
+
+The following plugin bootstrap and full-batch sequence applies only when explicitly selecting
+`--publication-profile full-portfolio --link-mode measured-admin`. First propose the fixed MCP abilities plugin 1.3.1 package and stop for its
 separate-admin approval/apply receipt. That exact receipt is required before the
 measurement plugin can be proposed. Before either measurement or content
 publication, materialize the checksum-pinned Yoast SEO 28.3 package, have a
@@ -83,7 +96,7 @@ before a lock, credential read, preview mutation, or remote call:
 
 ```sh
 MEASUREMENT_PLUGIN_APPLY_RECEIPT="$PWD/.secrets/wordpress-mcp/publication-requests/plugin-applied.json" \
-  make wordpress-production-request
+  make wordpress-production-request ARGS='--publication-profile full-portfolio --link-mode measured-admin'
 ```
 
 `ARTICLES` must be `all`; any other value fails closed. Full mode fails before preview or remote access
@@ -196,7 +209,7 @@ fixture or theme source.
 
 ## Browser evidence
 
-`make wordpress-preview-check` audits the home page, all ten editorial
+The legacy full diagnostic `make wordpress-preview-check` audits the home page, all ten editorial
 drafts, the three fixed policy pages, true-empty and whitespace-only search,
 populated and zero-result search, an encoded hostile query, a second result
 page with its query preserved, all three category archives, the date and local
@@ -210,10 +223,21 @@ metadata, incorrect H1/main counts, out-of-bounds H1, Cookie-settings, or CTA
 boxes, or a missing Editorial V2 article module. It also fails if the anonymous
 browser acquires any Cookie (including HttpOnly), local/session storage entry,
 IndexedDB database, Cache Storage, or Service Worker registration. In addition
-to the 104 viewport screenshots, it captures 26 text-resize screenshots after
+to one screenshot per selected surface and viewport, it captures a text-resize screenshot per surface after
 raising the root font size to 200% and rejects horizontal overflow, clipped
-text, or off-screen controls. These 130 files are ignored build artifacts under
+text, or off-screen controls. These files are ignored build artifacts under
 `output/playwright/local-preview/`.
+
+New publication preparation selects article and related/listing/link consumers from the
+validated candidate. Shared presentation changes select the full inventory. Coverage is
+an exact surface/viewport set, never a fixed total. `RAOS_WORDPRESS_BROWSER_WORKERS`
+defaults to the smaller of CPU count and four; contexts are isolated. Lighthouse runs
+three serial samples per selected performance target after the worker pool finishes.
+Valid originals can be reused for two hours, checking source inputs, tooling, local
+WordPress state and every original screenshot/report hash. Timestamps are not refreshed.
+`output/playwright/local-preview.run-summary.v2.json` records URL, screenshots and duration.
+For local diagnostics only, `RAOS_WORDPRESS_BROWSER_SURFACES=home,article-a04` narrows
+the legacy check; it is rejected for publication candidates and grants no publication evidence.
 
 Search and archive checks bind the expected Japanese text, response status,
 absence of a canonical on these intentionally non-canonical routes, escaped

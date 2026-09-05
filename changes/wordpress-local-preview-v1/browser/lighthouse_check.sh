@@ -141,8 +141,28 @@ run_target() {
   done
 }
 
-run_target home "$preview_origin/"
-run_target article-a04 "$preview_origin/local-preview-countertop-dishwasher-for-small-households/"
+targets="$("$node_bin" -e '
+const fs = require("fs");
+const file = process.env.RAOS_WORDPRESS_BROWSER_BINDING;
+const binding = file ? JSON.parse(fs.readFileSync(file, "utf8")) : null;
+const targets = binding?.inputs?.browser_plan?.performance_targets || [
+  {name: "home", path: "/"},
+  {name: "article-a04", path: "/local-preview-countertop-dishwasher-for-small-households/"},
+];
+if (!targets.length || targets.some((row) => !/^[a-z0-9-]+$/.test(row.name) ||
+    !/^\/(?:[a-z0-9-]+\/)*$/.test(row.path))) process.exit(69);
+for (const row of targets) process.stdout.write(`${row.name} ${row.path}\n`);
+')" || refuse
+while IFS=' ' read -r target_name target_path; do
+  # One Chrome/Lighthouse process at a time, after browser workers finish.
+  for run in 1 2 3; do
+    [ ! -L "$artifact_directory/$target_name-$run.json" ] || refuse
+    /usr/bin/busybox rm -f -- "$artifact_directory/$target_name-$run.json"
+  done
+  run_target "$target_name" "$preview_origin$target_path"
+done <<EOF
+$targets
+EOF
 
 "$node_bin" -e '
 const crypto = require("crypto");
@@ -203,13 +223,12 @@ if (
 ) {
   throw new Error("RAOS_WORDPRESS_LIGHTHOUSE_EVIDENCE_STALE");
 }
-const targets = [
-  { name: "home", url: `${origin}/` },
-  {
-    name: "article-a04",
-    url: `${origin}/local-preview-countertop-dishwasher-for-small-households/`,
-  },
-];
+const browserBindingPath = process.env.RAOS_WORDPRESS_BROWSER_BINDING;
+const browserBinding = browserBindingPath ? JSON.parse(readRegular(browserBindingPath, 4 * 1024 * 1024)) : null;
+const targets = (browserBinding?.inputs?.browser_plan?.performance_targets || [
+  {name: "home", path: "/"},
+  {name: "article-a04", path: "/local-preview-countertop-dishwasher-for-small-households/"},
+]).map((row) => ({name: row.name, url: `${origin}${row.path}`}));
 const metricIds = {
   lcp_ms: "largest-contentful-paint",
   cls: "cumulative-layout-shift",

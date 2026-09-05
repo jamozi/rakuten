@@ -8991,7 +8991,7 @@
       "outputs": [
         {
           "bytes": 5784,
-          "sha256": "2783e5041088572802936423ed8e96a32d941af4e7283b13e29cda51381e3b96",
+          "sha256": "273f2e032900286e9502c4bcc9469a01b19095582276c479b77c681e534c3749",
           "uri": "repo://changes/st-0203/manifest.yaml"
         }
       ],
@@ -9142,7 +9142,7 @@
       "outputs": [
         {
           "bytes": 5972,
-          "sha256": "348315b2b76c668278fb7705d0ed18d6e683ca00afc271666a54be5f527cbecd",
+          "sha256": "23dd774199391379d259955654ac7b23f37a3305a7cdd39564a7c5a3bed73df4",
           "uri": "repo://changes/st-0204/manifest.yaml"
         }
       ],
@@ -9311,7 +9311,7 @@
         },
         {
           "bytes": 5351,
-          "sha256": "cc42213a946c427f2620e2dec275da0b274e5c5ce2933ae91537aecbc8b927a3",
+          "sha256": "b7d29bee614453415cd05a868fb8d472b7bf31445e513d8f6e1fa40aa886e576",
           "uri": "repo://changes/st-0205/manifest.yaml"
         }
       ],
@@ -9640,7 +9640,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "8c247c74c9678208e119ccaba22fc0cff288af6de363de0b9076f4c0966a4218",
+          "sha256": "7a23b541e3e93b39933e467cfdbf46cfdd18182ab321b95662f679d2619ee8e5",
           "uri": "repo://changes/st-0302/manifest.yaml"
         },
         {
@@ -9931,7 +9931,7 @@
         },
         {
           "bytes": 11451,
-          "sha256": "afae026bf0c6a46957e441eeed6eba0a57c148dcf1e947d14c97803756d01de5",
+          "sha256": "32df4f3c9c0eb4058177b7f264a9840304ca18f3310aae9bf8eea56df760f49f",
           "uri": "repo://changes/st-0303/manifest.yaml"
         },
         {
@@ -10288,7 +10288,7 @@
         },
         {
           "bytes": 11664,
-          "sha256": "b5cda566359761f28f7d6c428fda7726a6d213d1d962c4fbc25d3218dfca92e7",
+          "sha256": "f458d6c3b4ec177034981de790776eeb4049396ad40b36c6877c92a5bad74795",
           "uri": "repo://changes/st-0304/manifest.yaml"
         },
         {
@@ -10508,7 +10508,7 @@
         },
         {
           "bytes": 14860,
-          "sha256": "e0ef7fdc3c1f01e1c6b273edea867f5f79f12e7285f076edcabd1b46b3da42be",
+          "sha256": "3ec4365153ea06710b1329c9416aee70ce221a3106402c4ff2b51005fc6e99b7",
           "uri": "repo://changes/st-0305/manifest.yaml"
         },
         {
@@ -10739,7 +10739,7 @@
         },
         {
           "bytes": 8657,
-          "sha256": "4e76c5c31cf53f3c66b1a2786fbaac1abf24bffb3aa867a2e601604ce6fd2a9f",
+          "sha256": "ac34a591dce9fa5a6d7c60c479a197a88d1f0d10542807be9852c3e2788ba52c",
           "uri": "repo://changes/st-0306/manifest.yaml"
         },
         {
@@ -10991,7 +10991,7 @@
         },
         {
           "bytes": 15544,
-          "sha256": "751eec2f03ca1b57650213c8c26e4ca001745a88cb8089f890a48ff9faaddbfe",
+          "sha256": "2b34e34bdd0bce6d08abb7b0f1e1b2abf8fb0151a3faaaf1e09bafbf4e81718f",
           "uri": "repo://changes/st-0307/manifest.yaml"
         },
         {
@@ -14601,7 +14601,7 @@
         },
         {
           "bytes": 15112,
-          "sha256": "d25dd3a339332cf171db349a66ba15f44cdca8ab5b448c120e7db7062dc1a56a",
+          "sha256": "50972b357f136ebf3e89eeae942259994f85e1b569e7d57c0d10588e02ae3b55",
           "uri": "repo://changes/st-0701/manifest.yaml"
         }
       ],
@@ -15635,7 +15635,7 @@
       "outputs": [
         {
           "bytes": 7913,
-          "sha256": "6c88a125bc4521ca021445470b4b3eed53e535526654e2acbf450bbc4266bfa5",
+          "sha256": "b4908df79c66b709b6c9d5863fb9d2dc62c19d9d611a7f23807dc1b44c2254df",
           "uri": "repo://changes/st-0709/runtime-manifest.v2.json"
         }
       ],
@@ -15860,7 +15860,7 @@
       "outputs": [
         {
           "bytes": 32582,
-          "sha256": "40ca90a1eff9a26fa4228bdf9ecfff7573dfb3507e65c33964acaa892f254b3a",
+          "sha256": "01f3c6255437ad10ec1938a2a351d301c1842a0fc18fc15a815d64da366d26ec",
           "uri": "repo://changes/st-0801/manifest.yaml"
         }
       ],
@@ -17504,7 +17504,7 @@
       "outputs": [
         {
           "bytes": 9290,
-          "sha256": "e642010947ef97650673c7b7722e43c59b860b883b5d4974117bb56164eaca41",
+          "sha256": "e816ac41ed5e1aa8d557935616efd6b69233bd40378073bc32098fa30e626988",
           "uri": "repo://changes/st-0901/runtime-manifest.v2.yaml"
         }
       ],
@@ -17896,7 +17896,7 @@
       "outputs": [
         {
           "bytes": 11786,
-          "sha256": "bf6840f05617cd5f4ee79455f46dcc4cb6dd1d7def54408a071fe5a8ba26856b",
+          "sha256": "cd5bcb53bbdba077f41caad2ddc325bf6d7e8f56cd3fde8a6e9c3e8a88b91fa4",
           "uri": "repo://changes/st-0902/runtime-manifest.v2.yaml"
         }
       ],
@@ -18350,7 +18350,7 @@
       "outputs": [
         {
           "bytes": 13324,
-          "sha256": "f24c04ebb901e2c872b5cecefe2bc20bdf31214e53401de4eb42734bae65edaf",
+          "sha256": "21c73ef49a16770f685e2bdb21e69ea9918059d314cc6f58db0dae551f672142",
           "uri": "repo://changes/st-0903/runtime-manifest.v2.yaml"
         }
       ],
@@ -18857,7 +18857,7 @@
       "outputs": [
         {
           "bytes": 12197,
-          "sha256": "98d5f0e562cb8adf2abea28e4d584758b649d0c54af1d45a1d60b7116a430e19",
+          "sha256": "c9f6eaa8b124273a44011a68f2a314bc3849a63e90a5366ed18012c4dc4cc62c",
           "uri": "repo://changes/st-0904/runtime-manifest.v2.yaml"
         }
       ],
@@ -19357,7 +19357,7 @@
         },
         {
           "bytes": 12185,
-          "sha256": "4aa99c8269dbb8bfabdf400e9e62395195fab8253fddc234629d5a4b6284da7d",
+          "sha256": "737293cda19c2bbd77e6fdccc06afacd2288178e97f90202325c4782091a5569",
           "uri": "repo://changes/st-0905/runtime-manifest.v2.yaml"
         }
       ],
@@ -20205,7 +20205,7 @@
         },
         {
           "bytes": 8759,
-          "sha256": "474a8a51416f2dbc23b4380f8891fcd75a0bb668b9d06651007e2aa05e8167c2",
+          "sha256": "30b618cf1cd5a2c804833b460f7b3922509c2cb5e772aac3ea129712944fad24",
           "uri": "repo://changes/st-1002/runtime-manifest.v2.yaml"
         },
         {
@@ -20462,7 +20462,7 @@
         },
         {
           "bytes": 7245,
-          "sha256": "dbe7e93a94bc4c4c065c5234d5ba749bdc3b9cfc2d4d7f445db65fecd4a10869",
+          "sha256": "c65e03e5b43f0ff2549280faa38ec1607d98f02d5b3f2531aaa7d838eebc1b3c",
           "uri": "repo://changes/st-1004/runtime-manifest.v2.yaml"
         }
       ],
@@ -20561,7 +20561,7 @@
         },
         {
           "bytes": 4108,
-          "sha256": "5d42ab0f2be412e26cf4236039ae2498f69bff95c692381b0001cb79163a8f31",
+          "sha256": "85003f57a9f7a247d02b8113c24b0dcce4e43e45577f45559526aa0d3860a067",
           "uri": "repo://changes/st-1006/runtime-manifest.v2.yaml"
         }
       ],
@@ -21791,7 +21791,7 @@
         },
         {
           "bytes": 9166,
-          "sha256": "66120e6860f1cd7837e4bbff25956fa95620496da6771396a25c776e8edf6027",
+          "sha256": "48c3827f7c35c0c6017bc68eb39f6305f488ed6b8fb92993f4456fba77527423",
           "uri": "repo://changes/st-1202/runtime-manifest.v2.yaml"
         }
       ],
@@ -29111,8 +29111,8 @@
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
-          "bytes": 25036,
-          "sha256": "35ec693aa53c047fc74d5cfd072b99b4c19abce27dd10e8e1a695e32271cc4c3",
+          "bytes": 26112,
+          "sha256": "cbb32f99e9de7a3ff6901e83ece7b16bdd564d0b05422b6d46fcc972645e457d",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29346,6 +29346,18 @@
           "kind": "tracked",
           "semantic_id": "changes/wordpress-local-preview-v1/restore-seed.php",
           "uri": "repo://changes/wordpress-local-preview-v1/restore-seed.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/runtime-environment.php",
+          "uri": "repo://changes/wordpress-local-preview-v1/runtime-environment.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/runtime-fingerprint.php",
+          "uri": "repo://changes/wordpress-local-preview-v1/runtime-fingerprint.php",
           "version": 2
         },
         {
@@ -29632,6 +29644,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_browser_plan.py",
+          "uri": "repo://scripts/raos_wordpress_browser_plan.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/raos_wordpress_deployment_operator.py",
           "uri": "repo://scripts/raos_wordpress_deployment_operator.py",
           "version": 2
@@ -29640,6 +29658,12 @@
           "kind": "tracked",
           "semantic_id": "scripts/raos_wordpress_editor_mcp_launcher.mjs",
           "uri": "repo://scripts/raos_wordpress_editor_mcp_launcher.mjs",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_environment.py",
+          "uri": "repo://scripts/raos_wordpress_environment.py",
           "version": 2
         },
         {
@@ -29686,6 +29710,12 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_release_workflow.py",
+          "uri": "repo://scripts/raos_wordpress_release_workflow.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "scripts/raos_wordpress_runtime_audit.py",
           "uri": "repo://scripts/raos_wordpress_runtime_audit.py",
           "version": 2
@@ -29706,6 +29736,12 @@
           "kind": "tracked",
           "semantic_id": "scripts/raos_wordpress_seo_audit.py",
           "uri": "repo://scripts/raos_wordpress_seo_audit.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/raos_wordpress_verification.py",
+          "uri": "repo://scripts/raos_wordpress_verification.py",
           "version": 2
         },
         {
@@ -29866,7 +29902,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "9ab8a0888a762e9d58b802eabdf5b7dd45eaa0210be65a99fab69107de96942b",
+          "sha256": "a667a6188ceffc626cb4a1b9239d33f4e939145e8f7d04201a6a217d904a9b9d",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
@@ -30565,7 +30601,7 @@
       "outputs": [
         {
           "bytes": 5708,
-          "sha256": "2c0c801b513df97f42bce5ee848ea26edc888b6624c66e924d7405cf659f583a",
+          "sha256": "fb351088c7bb32d2b404e1beb939cf274c6015a277f251b826e0652f90bac91e",
           "uri": "repo://changes/st-1703/wordpresscom-mvp-draft-preparation.wave3.runtime-manifest.v1.json"
         }
       ],
@@ -30573,6 +30609,156 @@
       "owner_id": "build_wordpresscom_mvp_runtime_manifest",
       "owner_version": 2,
       "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "Makefile",
+          "uri": "repo://Makefile",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml",
+          "uri": "repo://changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3-v1.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3A-OPAQUE-DISCUSSION-EXTENSIONS-v1.yaml",
+          "uri": "repo://changes/st-1703/DESIGN-HANDOFF-APPROVAL-WORDPRESSCOM-MVP-DRAFT-PREPARATION-WAVE-3A-OPAQUE-DISCUSSION-EXTENSIONS-v1.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml",
+          "uri": "repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_OPAQUE_DISCUSSION_EXTENSIONS.yaml",
+          "uri": "repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_MVP_DRAFT_PREPARATION_WAVE_3A_OPAQUE_DISCUSSION_EXTENSIONS.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2.yaml",
+          "uri": "repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2A_NUMERIC_PROXY_ACTIVATION.yaml",
+          "uri": "repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2A_NUMERIC_PROXY_ACTIVATION.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2B_V1_1_ACTIVATION.yaml",
+          "uri": "repo://changes/st-1703/DESIGN_HANDOFF_V1_WORDPRESSCOM_REVIEW_DRAFT_WAVE_2B_V1_1_ACTIVATION.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1703/first-article-review-draft.v1.md",
+          "uri": "repo://changes/st-1703/first-article-review-draft.v1.md",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1703/source-packet-candidate.first-article.v1.yaml",
+          "uri": "repo://changes/st-1703/source-packet-candidate.first-article.v1.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml",
+          "uri": "repo://changes/st-1703/wordpresscom-mvp-draft-content.wave3.v1.yaml",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/wordpresscom_mvp_draft_https.py",
+          "uri": "repo://python/raos/adapters/wordpresscom_mvp_draft_https.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/wordpresscom_mvp_draft_journal.py",
+          "uri": "repo://python/raos/adapters/wordpresscom_mvp_draft_journal.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/wordpresscom_oauth.py",
+          "uri": "repo://python/raos/adapters/wordpresscom_oauth.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/wordpresscom_review_draft_https.py",
+          "uri": "repo://python/raos/adapters/wordpresscom_review_draft_https.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/adapters/wordpresscom_review_draft_journal.py",
+          "uri": "repo://python/raos/adapters/wordpresscom_review_draft_journal.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/wordpresscom_mvp_affiliate.py",
+          "uri": "repo://python/raos/application/editorial/wordpresscom_mvp_affiliate.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/wordpresscom_mvp_drafts.py",
+          "uri": "repo://python/raos/application/editorial/wordpresscom_mvp_drafts.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/wordpresscom_mvp_preparation.py",
+          "uri": "repo://python/raos/application/editorial/wordpresscom_mvp_preparation.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/wordpresscom_review_draft.py",
+          "uri": "repo://python/raos/application/editorial/wordpresscom_review_draft.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/wordpresscom_mvp_drafts.py",
+          "uri": "repo://python/raos/domain/editorial/wordpresscom_mvp_drafts.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/domain/editorial/wordpresscom_review_draft.py",
+          "uri": "repo://python/raos/domain/editorial/wordpresscom_review_draft.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/ports/wordpresscom_mvp_draft_journal.py",
+          "uri": "repo://python/raos/ports/wordpresscom_mvp_draft_journal.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/ports/wordpresscom_mvp_drafts.py",
+          "uri": "repo://python/raos/ports/wordpresscom_mvp_drafts.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/ports/wordpresscom_review_draft_journal.py",
+          "uri": "repo://python/raos/ports/wordpresscom_review_draft_journal.py",
+          "version": 2
+        },
         {
           "kind": "tracked",
           "semantic_id": "scripts/build_wordpresscom_mvp_runtime_manifest.py",
@@ -30583,6 +30769,12 @@
           "kind": "tracked",
           "semantic_id": "scripts/wordpresscom_review_draft.py",
           "uri": "repo://scripts/wordpresscom_review_draft.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/wordpresscom_review_draft_python.sh",
+          "uri": "repo://scripts/wordpresscom_review_draft_python.sh",
           "version": 2
         }
       ],

@@ -144,6 +144,13 @@ def test_actual_candidate_owner_accepts_claims_plus_supporting_captures(owner_in
     assert current["audit_calls"] == current["browser_calls"] == 1
 
 
+def test_source_and_release_inputs_validate_before_any_audit_or_browser(owner_inputs):
+    path, current, _browser = owner_inputs
+    prepared = port.prepare_candidate(path, now=examples.NOW)
+    assert prepared.manifest["articles"]
+    assert current["audit_calls"] == current["browser_calls"] == 0
+
+
 @pytest.mark.parametrize(
     "field", ["body_file_sha256", "response_sha256", "locator_binding_sha256"]
 )

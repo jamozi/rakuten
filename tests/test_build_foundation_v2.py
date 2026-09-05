@@ -21,6 +21,7 @@ from scripts.raos_build_core import (
     BuildRegistryError,
     active_manifest_document,
     affected_owners,
+    affected_generation_owners,
     changed_paths,
     discover_registry,
     generation_relevant_paths,
@@ -319,6 +320,13 @@ def test_st0005_git_attributes_source_selects_its_generator() -> None:
     assert "build_st0005_status" in affected_owners(registry, {Path(".gitattributes")})
 
 
+def test_legacy_release_inventory_is_regenerated_when_makefile_changes() -> None:
+    registry = discover_registry()
+    owner = "build_wordpresscom_mvp_runtime_manifest"
+    assert any(item.uri == "repo://Makefile" for item in registry[owner].inputs)
+    assert owner in affected_generation_owners(registry, {Path("Makefile")})
+
+
 def test_ci_workflow_source_selects_owners_that_hash_it() -> None:
     registry = discover_registry()
     changed = {Path(".github/workflows/ci.yml")}
@@ -411,7 +419,9 @@ def test_status_v2_is_compact_and_contains_no_evidence_bodies() -> None:
     assert "evidence" not in json.dumps(status).lower()
 
 
-def test_root_development_policy_preserves_external_and_irreversible_boundaries() -> None:
+def test_root_development_policy_preserves_external_and_irreversible_boundaries() -> (
+    None
+):
     policy = (REPOSITORY_ROOT / "AGENTS.md").read_text(encoding="utf-8")
     assert "## 唯一の停止条件" in policy
     assert "1. GitHub 開発操作を除く live 外部作用" in policy

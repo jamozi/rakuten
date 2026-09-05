@@ -343,6 +343,7 @@
 
   const factory = ({ artifactDirectory, axeSource, inventory, origin,
     publicationProfile = 'legacy-full', linkMode = 'measured-admin', incrementalScope = null,
+    selectedSurfaceIds = null, workers = 1,
   }) => async (page) => {
   const publicPath = (value) =>
     typeof value === 'string' && /^\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)?$/.test(value);
@@ -606,6 +607,38 @@
     path: surface.local_path,
     publicCore: ['home', 'article', 'policy'].includes(surface.kind),
   }));
+  if (selectedSurfaceIds !== null && (
+    !Array.isArray(selectedSurfaceIds) || selectedSurfaceIds.length === 0 ||
+    new Set(selectedSurfaceIds).size !== selectedSurfaceIds.length ||
+    selectedSurfaceIds.some((id) => !surfaces.some((surface) => surface.name === id))
+  )) throw new Error('RAOS_WORDPRESS_BROWSER_SELECTION_INVALID');
+  if (!Number.isInteger(workers) || workers < 1 || workers > 32) {
+    throw new Error('RAOS_WORDPRESS_BROWSER_WORKERS_INVALID');
+  }
+  const selectedSurfaces = surfaces.filter((surface) =>
+    selectedSurfaceIds === null || selectedSurfaceIds.includes(surface.name));
+  if (workers > 1 && selectedSurfaces.length > 1) {
+    const browser = page.context().browser();
+    if (!browser) throw new Error('RAOS_WORDPRESS_BROWSER_CONTEXT_REQUIRED');
+    const completed = new Array(selectedSurfaces.length);
+    let next = 0;
+    await Promise.all(Array.from({ length: Math.min(workers, selectedSurfaces.length) }, async () => {
+      while (next < selectedSurfaces.length) {
+        const index = next++;
+        const context = await browser.newContext({ locale: 'ja-JP' });
+        try {
+          const isolated = await context.newPage();
+          completed[index] = await factory({ artifactDirectory, axeSource, inventory, origin,
+            publicationProfile, linkMode, incrementalScope,
+            selectedSurfaceIds: [selectedSurfaces[index].name], workers: 1,
+          })(isolated);
+        } finally {
+          await context.close();
+        }
+      }
+    }));
+    return completed.flat();
+  }
   const requiredJsonLdTypesByKind = {
     home: ['Organization', 'WebSite'],
     article: ['Article', 'BreadcrumbList', 'Organization', 'WebSite'],
@@ -793,7 +826,7 @@
   };
 
   const results = [];
-  for (const surface of surfaces) {
+  for (const surface of selectedSurfaces) {
     for (const width of widths) {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -2224,7 +2257,7 @@
   if (measurementRequestCount !== 0) {
     throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_MEASUREMENT_DEFAULT_OFF_FAILED');
   }
-  if (results.length !== surfaces.length * widths.length) {
+  if (results.length !== selectedSurfaces.length * widths.length) {
     throw new Error('RAOS_WORDPRESS_LOCAL_PREVIEW_SCREEN_COUNT_INVALID');
   }
   return results;

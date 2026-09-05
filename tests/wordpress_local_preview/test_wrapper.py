@@ -205,7 +205,8 @@ def test_up_generates_private_credentials_and_runs_initial_seed(
     assert "--project-name raos-wordpress-preview-" in docker_log
     assert "core install" in docker_log
     assert "theme activate kurashinoshirube-child" in docker_log
-    assert "plugin activate raos-editorial-measurement" in docker_log
+    assert "plugin deactivate raos-editorial-measurement" in docker_log
+    assert "plugin activate raos-editorial-measurement" not in docker_log
     assert "plugin activate wordpress-seo" in docker_log
     assert "RAOS_PREVIEW_SEED_MODE=initialize" in docker_log
     assert "--user" not in docker_log
@@ -231,6 +232,27 @@ def test_standard_api_deactivates_persisted_measurement_plugin(
     result = _run("status", environment)
     assert result.returncode != 0
     assert "RAOS_WORDPRESS_PREVIEW_MEASUREMENT_PLUGIN_ACTIVE" in result.stderr
+
+
+def test_legacy_measurement_requires_explicit_selection(fake_runtime):
+    environment = {**fake_runtime, "RAOS_WORDPRESS_LINK_MODE": "measured-admin"}
+    _run("up", environment, check=True)
+    log = Path(environment["RAOS_FAKE_DOCKER_LOG"]).read_text()
+    assert "plugin activate raos-editorial-measurement" in log
+
+
+def test_environment_reads_serving_container_without_sync(fake_runtime):
+    _run("up", fake_runtime, check=True)
+    log = Path(fake_runtime["RAOS_FAKE_DOCKER_LOG"])
+    log.write_text("")
+    _run("environment", fake_runtime, check=True)
+    observed = log.read_text()
+    assert (
+        "exec -T wordpress php /var/www/raos-local-preview/runtime-environment.php"
+        in observed
+    )
+    assert "seed.php" not in observed and " up --detach" not in observed
+    assert "activate" not in observed
 
 
 def _activated_fixture(root: Path, *, mode: int = 0o700) -> Path:

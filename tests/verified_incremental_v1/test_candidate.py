@@ -6,8 +6,8 @@ from copy import deepcopy
 from dataclasses import replace
 from datetime import UTC, datetime
 import json
-from pathlib import Path, PurePosixPath
 import sys
+from pathlib import Path, PurePosixPath
 from types import SimpleNamespace
 from typing import Any
 
@@ -788,39 +788,39 @@ def test_cli_refuses_noncanonical_snapshot_name_before_writing_candidate(
     assert writes == []
 
 
-@pytest.mark.parametrize("mutation", ("none", "package_descriptor", "tracked_tree"))
-def test_current_theme_projection_is_bound_to_fixed_package_and_tracked_tree(
-    monkeypatch: pytest.MonkeyPatch,
-    mutation: str,
-) -> None:
-    raw = _theme_projection()
-    expected = owner.digest(raw)
-    calls: list[str] = []
+@pytest.mark.parametrize("mutation", ("none", "symlink"))
+def test_preparation_inspects_dirty_theme_without_creating_a_package(
+    monkeypatch, tmp_path, mutation
+):
+    theme = tmp_path / "theme"
+    theme.mkdir()
+    style = theme / "style.css"
+    style.write_bytes(b"/* Version: 1.0.0 */")
+    monkeypatch.setattr(owner.publication, "ROOT", tmp_path)
+    monkeypatch.setattr(owner.publication, "THEME_ROOT", theme)
 
-    def package() -> tuple[bytes, dict[str, object]]:
-        calls.append("fixed-theme-package")
-        return b"synthetic-package-only", {
-            "file_manifest": json.loads(raw),
-            "file_manifest_sha256": "f" * 64
-            if mutation == "package_descriptor"
-            else expected,
-        }
+    def git(*args):
+        if args[0] == "status":
+            return b" M theme/style.css"
+        assert args[0] == "ls-files"
+        return b"theme/style.css\0"
 
-    monkeypatch.setitem(
-        sys.modules,
-        "raos_wordpress_deployment_operator",
-        SimpleNamespace(theme_package=package),
-    )
-    monkeypatch.setattr(
-        owner.publication,
-        "tracked_theme_tree_sha256",
-        lambda: "e" * 64 if mutation == "tracked_tree" else expected,
-    )
-    if mutation == "none":
-        assert owner.current_theme_projection() == raw
-    else:
-        with pytest.raises(
-            owner.IncrementalPublicationFailure, match="THEME_ARTIFACT_INVALID"
-        ):
+    monkeypatch.setattr(owner.publication, "_git", git)
+    if mutation == "symlink":
+        actual = tmp_path / "actual.css"
+        style.rename(actual)
+        style.symlink_to(actual)
+        with pytest.raises(owner.publication.PublicationFailure):
             owner.current_theme_projection()
-    assert calls == ["fixed-theme-package"]
+    else:
+        assert json.loads(owner.current_theme_projection()) == [
+            {
+                "path": "style.css",
+                "size": style.stat().st_size,
+                "sha256": owner.digest(style.read_bytes()),
+            }
+        ]
+    with pytest.raises(
+        owner.publication.PublicationFailure, match="THEME_SOURCE_DIRTY"
+    ):
+        owner.publication.tracked_theme_tree_sha256()
