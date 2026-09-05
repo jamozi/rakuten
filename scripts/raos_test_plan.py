@@ -75,6 +75,7 @@ FULL_INPUTS = {
     "scripts/raos_checks.py",
     "scripts/raos_ci.py",
     "scripts/raos_pytest_summary.py",
+    "scripts/raos_test_shards.py",
     "vitest.config.ts",
     "tsconfig.json",
     "tsconfig.base.json",

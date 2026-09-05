@@ -22,6 +22,7 @@ env:
   RAOS_CI_EVENT: ${{ github.event_name }}
   RAOS_CI_BASE: ${{ github.event.pull_request.base.sha }}
   RAOS_CI_DRAFT: ${{ github.event.pull_request.draft || false }}
+  RAOS_CI_TEST_SHARDS: ${{ vars.RAOS_CI_TEST_SHARDS || '20' }}
 
 jobs:
   plan:
@@ -38,6 +39,7 @@ jobs:
       required: ${{ steps.select.outputs.required }}
       draft: ${{ steps.select.outputs.draft }}
       full: ${{ steps.select.outputs.full }}
+      shards: ${{ steps.select.outputs.shards }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -92,11 +94,18 @@ jobs:
       - run: .venv/bin/python scripts/raos_ci.py static
 
   tests:
-    name: Tests
+    name: Tests (shard ${{ matrix.shard }})
     needs: [plan, lock]
     if: needs.plan.outputs.tests == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.plan.outputs.shards) }}
+    env:
+      RAOS_TEST_SHARD_INDEX: ${{ matrix.shard }}
+      RAOS_TEST_SHARD_TOTAL: ${{ strategy.job-total }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:

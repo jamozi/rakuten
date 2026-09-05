@@ -15,6 +15,14 @@ from scripts.raos_checks import execute  # noqa: E402
 from scripts.raos_test_plan import JOBS, create_plan  # noqa: E402
 
 
+def test_shards(*, full: bool, python_files: int, limit: int = 20) -> list[int]:
+    """Fill the standard runner capacity without tiny affected-test jobs."""
+    if not 1 <= limit <= 256:
+        raise ValueError("RAOS_CI_TEST_SHARDS must be within 1..256")
+    count = limit if full else min(limit, max(1, (python_files + 24) // 25))
+    return list(range(1, count + 1))
+
+
 def aggregate(
     required: object, results: object, *, plan_result: str, lock_result: str
 ) -> None:
@@ -64,6 +72,11 @@ def main(argv: list[str] | None = None) -> int:
             critical=True,
         )
         if arguments.command == "plan":
+            shards = test_shards(
+                full=plan.full,
+                python_files=len(plan.python_tests),
+                limit=int(os.environ.get("RAOS_CI_TEST_SHARDS", "20")),
+            )
             values = {
                 job: str(selected and not draft).lower()
                 for job, selected in plan.jobs.items()
@@ -72,6 +85,7 @@ def main(argv: list[str] | None = None) -> int:
                 required=json.dumps(plan.jobs, separators=(",", ":")),
                 draft=str(draft).lower(),
                 full=str(plan.full).lower(),
+                shards=json.dumps(shards),
             )
             output = os.environ.get("GITHUB_OUTPUT")
             if output:
@@ -82,6 +96,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"Verification: {'draft (checks deferred)' if draft else 'full' if plan.full else 'affected + critical'}\n\n"
                 f"Python test files: {len(plan.python_tests)}; Node test files: "
                 f"{len(plan.node_tests) + len(plan.vitest_tests)}; generators: {len(plan.generators)}.\n\n"
+                f"Isolated test runners: {len(shards)}.\n\n"
                 + "\n".join(f"- {reason}" for reason in plan.full_reasons)
                 + "\n\nSelection detail: `scripts/raos_build.py --base <base> plan --critical --json`.\n"
             )
@@ -95,8 +110,20 @@ def main(argv: list[str] | None = None) -> int:
             raise ValueError(
                 f"attempted to execute unselected job: {arguments.command}"
             )
+        shard_index = shard_total = 1
+        if arguments.command == "tests":
+            shard_index = int(os.environ.get("RAOS_TEST_SHARD_INDEX", "1"))
+            shard_total = int(os.environ.get("RAOS_TEST_SHARD_TOTAL", "1"))
+            if not 1 <= shard_index <= shard_total:
+                raise ValueError("test shard index must be within 1..total")
         return execute(
-            REPOSITORY_ROOT, registry, plan, stage=arguments.command, extended=full
+            REPOSITORY_ROOT,
+            registry,
+            plan,
+            stage=arguments.command,
+            extended=full,
+            shard_index=shard_index,
+            shard_total=shard_total,
         )
     except (KeyError, RuntimeError, ValueError) as exc:
         print(f"RAOS_CI_ERROR {exc}", file=sys.stderr)

@@ -41,7 +41,7 @@ dependency_bindings:
   - path: changes/st-1002/generated/public-article-renderer-recorded.v2.json
     sha256: b19b67f6530b66004d50754f015f394cd033d07451106d5b3a6db9a5a648bc3b
   - path: changes/st-1002/runtime-manifest.v2.yaml
-    sha256: 8c396277eb7f763787ee5b78ccef4f1b91b4132ad95332de67984dc7b5ea3b4d
+    sha256: 474a8a51416f2dbc23b4380f8891fcd75a0bb668b9d06651007e2aa05e8167c2
 document:
   authority: LOCAL_REVERSIBLE_DEVELOPMENT_ONLY
   id: RAOS-ST1006-PUBLIC-PERFORMANCE-RUNTIME-MANIFEST-002

@@ -80,6 +80,7 @@ Pro 不在、formal/live evidence 未実行も停止条件ではなく、修正�
   検査を繰り返さない。test は振る舞い・不具合再現を検証し、文書行数や総件数を固定しない。
 - 新規 test は原則並列実行し、共有 checkout や外部 process state を使う場合だけ
   `serial` を明示する。DB／Storage は専用 partition で実行する。
+  CI は独立した最大20ジョブへ分割し、`serial` は各ジョブ内で直列実行する。差分 CI は対象数に応じて分割する。
 - 通常 PR の CI 中央値10分以内を改善目標とし、新しい停止条件にはしない。定期 CI の失敗は
   修正対象として結果を残す。独自の証跡台帳、自動 revert、一律の開発停止は追加しない。
 - Preflight、Story ごとの ExecPlan/worklog/debt log は必須ではない。最終 PR に関連 Story IDs、

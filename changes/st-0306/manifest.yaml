@@ -57,8 +57,8 @@ source_artifacts:
   bytes: 2385
   sha256: dd0cc0a6e99483d1975feae553736e142db54440fa5ff42d34d0d50d15c9b488
 - uri: repo://README.md
-  bytes: 5739
-  sha256: b9c32480e8bec10b65bdb71e8775aef0fd6324637f9278b577b4ee89200497a4
+  bytes: 6259
+  sha256: e7b7c3bb1290ed1c275d65d48591448f6cf9acd128ec1e04c5b54e1c53b2c978
 - uri: repo://Makefile
   bytes: 3276
   sha256: 3a644435fae4104c0baa09453cc7867543a448aa748c3d74c4acbb756e455407
@@ -82,7 +82,7 @@ source_artifacts:
   sha256: 0525da397e16e535792364f6dd9ed1128218c1a080c07b6cb25f471f8e9cb78d
 - uri: repo://changes/st-0305/manifest.yaml
   bytes: 14860
-  sha256: 26b8363963e64928d610baaa15c1cc9beb940ea6295f6a8033b0c68b2e792444
+  sha256: 488eb7b11115f84fffbf8355be7a778edfd2ac5e35549227cf6463d5caca3d51
 - uri: repo://migrations/versions/202608030005_publication_analytics_finance.py
   bytes: 41097
   sha256: 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
@@ -96,8 +96,8 @@ source_artifacts:
   bytes: 8178
   sha256: 14d81fbbb7b35fd2672a11ccd162d8683905fe7216be6fb45b46d73d2b4d6085
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 3593
-  sha256: 1126e588ff98b637b49fc66ec47603253cc8d39a580f1a52da49c865d0a30c95
+  bytes: 4693
+  sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
 - uri: repo://tests/st0301/test_catalog.py
   bytes: 11938
   sha256: b8d917d9c0ea46a347787c37e6221ca023a5fc9d7c5422c877f9f2c5dbbba74e

@@ -101,17 +101,17 @@ source_artifacts:
   bytes: 1898
   sha256: 8ac3af3d74527b9a283801964091a668b6bc3dabed3c529b13f2f01cf23a1de6
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 3593
-  sha256: 1126e588ff98b637b49fc66ec47603253cc8d39a580f1a52da49c865d0a30c95
+  bytes: 4693
+  sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
 - uri: repo://Makefile
   bytes: 3276
   sha256: 3a644435fae4104c0baa09453cc7867543a448aa748c3d74c4acbb756e455407
 - uri: repo://README.md
-  bytes: 5739
-  sha256: b9c32480e8bec10b65bdb71e8775aef0fd6324637f9278b577b4ee89200497a4
+  bytes: 6259
+  sha256: e7b7c3bb1290ed1c275d65d48591448f6cf9acd128ec1e04c5b54e1c53b2c978
 - uri: repo://changes/st-0203/manifest.yaml
   bytes: 5784
-  sha256: 7f04e600867accfc84b83f46c395b09757bce3a8b3a016670c790bdbf90011ef
+  sha256: 8c2dd6c4e49d39e2664adc071547050cef56cb0d44f13a8496f27500af42d26b
 generated_artifact_count: 1
 generated_artifacts:
 - uri: repo://changes/st-0204/generated/runtime-config.v1.schema.json

@@ -13,6 +13,7 @@ from urllib.parse import unquote, urlsplit
 
 from scripts.raos_build_core import BuildSpec, check_active_manifest
 from scripts.raos_test_plan import TestPlan
+from scripts.raos_test_shards import belongs_to_shard
 
 
 LOCAL_MARKERS = "not live and not external and not raos_owner_private"
@@ -67,7 +68,14 @@ def check_documents(root: Path, documents: Sequence[str]) -> None:
                 raise ValueError(f"broken document reference: {document}: {target}")
 
 
-def _python_tests(root: Path, plan: TestPlan, group: str) -> int:
+def _python_tests(
+    root: Path,
+    plan: TestPlan,
+    group: str,
+    *,
+    shard_index: int = 1,
+    shard_total: int = 1,
+) -> int:
     if not plan.python_tests:
         return 0
     command = [
@@ -81,6 +89,10 @@ def _python_tests(root: Path, plan: TestPlan, group: str) -> int:
         "xdist.plugin",
         "-p",
         "scripts.raos_pytest_summary",
+        "-p",
+        "scripts.raos_test_shards",
+        f"--raos-shard-index={shard_index}",
+        f"--raos-shard-total={shard_total}",
         "-m",
         PYTEST_GROUPS[group],
     ]
@@ -99,6 +111,8 @@ def execute(
     *,
     stage: str = "fast",
     extended: bool = False,
+    shard_index: int = 1,
+    shard_total: int = 1,
 ) -> int:
     def call(command: Sequence[str], label: str) -> None:
         if run(root, command, label):
@@ -140,17 +154,29 @@ def execute(
             call((sys.executable, "scripts/status_v2.py", "--check"), "status")
     if stage in {"fast", "tests"}:
         for group in ("parallel", "serial"):
-            result = _python_tests(root, plan, group)
+            result = _python_tests(
+                root, plan, group, shard_index=shard_index, shard_total=shard_total
+            )
             if result:
                 return result
-        if plan.node_tests:
+        node_tests = tuple(
+            p for p in plan.node_tests if belongs_to_shard(p, shard_index, shard_total)
+        )
+        vitest_tests = tuple(
+            p
+            for p in plan.vitest_tests
+            if belongs_to_shard(p, shard_index, shard_total)
+        )
+        if node_tests:
             call(
-                ("node", "--experimental-strip-types", "--test", *plan.node_tests),
+                ("node", "--experimental-strip-types", "--test", *node_tests),
                 "node-tests",
             )
-        if plan.vitest_tests:
-            call(("npm", "run", "test:unit", "--", *plan.vitest_tests), "vitest")
-        if plan.php:
+        if vitest_tests:
+            call(("npm", "run", "test:unit", "--", *vitest_tests), "vitest")
+        if plan.php and belongs_to_shard(
+            "phase3-php-runtime", shard_index, shard_total
+        ):
             harness = "tests/raos_v2/phase3-wordpress-runtime.php"
             candidate = (
                 "changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json"

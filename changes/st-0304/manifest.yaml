@@ -142,8 +142,8 @@ source_artifacts:
   bytes: 3276
   sha256: 3a644435fae4104c0baa09453cc7867543a448aa748c3d74c4acbb756e455407
 - uri: repo://README.md
-  bytes: 5739
-  sha256: b9c32480e8bec10b65bdb71e8775aef0fd6324637f9278b577b4ee89200497a4
+  bytes: 6259
+  sha256: e7b7c3bb1290ed1c275d65d48591448f6cf9acd128ec1e04c5b54e1c53b2c978
 - uri: repo://docs/execplans/ST-0304.md
   bytes: 2125
   sha256: 1c63270463dfa4afd6eb329d265ed18dd94dc9c9c6bace96796f4863be9772b8
@@ -158,7 +158,7 @@ source_artifacts:
   sha256: afaf1fcd180593faac3404a4f978aa9f44452657a74b5f301924e78f1a9a1e39
 - uri: repo://changes/st-0303/manifest.yaml
   bytes: 11451
-  sha256: 54e7f2fd0de0c86613bdcbf532e33e7cd46e825458c849457f8d70105a5009db
+  sha256: b21f9bc77a252679f2692c3a3f9f66b1cf39d8852e766fef57bae08a487aa833
 - uri: repo://migrations/versions/202608030003_iam_ops_tables.py
   bytes: 62827
   sha256: a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
@@ -175,8 +175,8 @@ source_artifacts:
   bytes: 8178
   sha256: 14d81fbbb7b35fd2672a11ccd162d8683905fe7216be6fb45b46d73d2b4d6085
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 3593
-  sha256: 1126e588ff98b637b49fc66ec47603253cc8d39a580f1a52da49c865d0a30c95
+  bytes: 4693
+  sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
 - uri: repo://tests/st0304/conftest.py
   bytes: 234
   sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528

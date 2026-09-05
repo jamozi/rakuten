@@ -346,17 +346,17 @@ source_artifacts:
   bytes: 5797
   sha256: 939349aa478d6e5b0b33b0290b4ee0f85d3679e4b785e9e561d8d5dc85476ccc
 - uri: repo://tests/st0106/test_workflow_contract.py
-  bytes: 3593
-  sha256: 1126e588ff98b637b49fc66ec47603253cc8d39a580f1a52da49c865d0a30c95
+  bytes: 4693
+  sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
 - uri: repo://.github/workflows/ci.yml
-  bytes: 5883
-  sha256: 3a5d21a98463899331482ab37020a8e41d94bbbb5e2ae3472c4a14db1a45a03a
+  bytes: 6245
+  sha256: 2ad48df1940ea292788fca8c202f418eb0f350aa1025066aa4c54957cb2b4bf2
 - uri: repo://Makefile
   bytes: 3276
   sha256: 3a644435fae4104c0baa09453cc7867543a448aa748c3d74c4acbb756e455407
 - uri: repo://README.md
-  bytes: 5739
-  sha256: b9c32480e8bec10b65bdb71e8775aef0fd6324637f9278b577b4ee89200497a4
+  bytes: 6259
+  sha256: e7b7c3bb1290ed1c275d65d48591448f6cf9acd128ec1e04c5b54e1c53b2c978
 - uri: repo://changes/st-0105/manifest.json
   bytes: 250888
   sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7

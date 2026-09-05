@@ -43,6 +43,12 @@ inputs and shared infrastructure changes fall back to full verification.
 for jobs explicitly omitted from that plan. Draft checks wait until ready.
 Daily full CI runs at 03:00 JST. Results and timings stay in Actions rather
 than becoming additional tracked evidence or approval artifacts.
+Full test runs use twenty isolated CI runners; affected runs scale at one runner
+per 25 Python test files, capped at the same limit. The repository variable
+`RAOS_CI_TEST_SHARDS` can set capacity from 1 to 256 (default 20). Python
+cases are deterministically partitioned, with serial cases executed sequentially
+inside each runner. Node files and the PHP harness run once across the shards.
+Database and Storage retain their separate, unsharded service partitions.
 
 The blocked WordPress quality template also has a generator owner. Its existing
 contract supplies fingerprint inputs and predecessor ordering, including Make
