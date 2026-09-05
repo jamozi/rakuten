@@ -370,6 +370,184 @@ def test_official_source_expiry_can_be_shorter_than_audit_or_manifest() -> None:
     assert build(document, inputs).expires_at == NOW + timedelta(seconds=25)
 
 
+def supporting_source_sample():
+    """Synthetic capture-plan terms source, deliberately not an article claim."""
+    document, inputs = sample()
+    sources = inputs["official_sources"]
+    policy = replace(
+        sources.sources["source-1"],
+        source_ref="policy-source",
+        claim_statement_sha256={},
+    )
+    inputs["official_sources"] = replace(
+        sources,
+        sources={**sources.sources, "policy-source": policy},
+        article_source_refs={"source-article-1": ("policy-source", "source-1")},
+    )
+    bind_source_replay(inputs)
+    return document, inputs
+
+
+def bind_source_replay(inputs, raw=None):
+    """Synthetic audit of the exact source document, never live audit evidence."""
+    inputs["audit_artifact_bytes"]["source-replay"] = (
+        release.canonical_json_bytes(inputs["official_sources"].to_document())
+        if raw is None
+        else raw
+    )
+    inputs["audit_binding"] = replace(
+        inputs["audit_binding"],
+        artifact_bundle_sha256=release._digest(
+            {
+                key: manifest.digest(value)
+                for key, value in inputs["audit_artifact_bytes"].items()
+            }
+        ),
+    )
+
+
+def test_supporting_capture_is_bound_without_fabricating_an_article_claim() -> None:
+    document, inputs = supporting_source_sample()
+    context = build(document, inputs).to_document()
+    assert set(document["articles"][0]["source_receipts"]) == {"source-1"}
+    assert set(context["source_receipts"]) == {"source-1", "policy-source"}
+    assert (
+        context["source_receipts"] == inputs["official_sources"].source_receipt_sha256
+    )
+
+
+def test_supporting_capture_requires_a_hash_bound_source_audit() -> None:
+    document, inputs = supporting_source_sample()
+    inputs["audit_artifact_bytes"].pop("source-replay")
+    inputs["audit_binding"] = sample()[1]["audit_binding"]
+    with pytest.raises(
+        manifest.IncrementalPublicationFailure, match="SOURCE_AUDIT_REQUIRED"
+    ):
+        build(document, inputs)
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("body_file_sha256", "a" * 64),
+        ("response_sha256", "a" * 64),
+        ("evidence_file_sha256", "a" * 64),
+        ("locator_binding_sha256", "a" * 64),
+        ("claim_statement_sha256", {"unclaimed": "a" * 64}),
+        (
+            "contract_file_sha256",
+            {"source_registry": "a" * 64, "locator_contract": "e" * 64},
+        ),
+        ("retrieved_at", stamp(NOW - timedelta(hours=2))),
+        ("expires_at", stamp(NOW + timedelta(hours=22))),
+    ],
+)
+def test_supporting_receipt_cannot_change_after_audit(field, value) -> None:
+    document, inputs = supporting_source_sample()
+    sources = inputs["official_sources"]
+    inputs["official_sources"] = replace(
+        sources,
+        sources={
+            **sources.sources,
+            "policy-source": replace(
+                sources.sources["policy-source"], **{field: value}
+            ),
+        },
+    )
+    with pytest.raises(manifest.IncrementalPublicationFailure):
+        build(document, inputs)
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        "drop-both",
+        "missing-receipt",
+        "unassigned-receipt",
+        "claim-outside-capture",
+        "duplicate-ref",
+    ],
+)
+def test_capture_scope_tamper_is_rejected(change) -> None:
+    document, inputs = supporting_source_sample()
+    sources = inputs["official_sources"]
+    records = dict(sources.sources)
+    refs = dict(sources.article_source_refs)
+    if change in {"drop-both", "missing-receipt"}:
+        records.pop("policy-source")
+    if change in {"drop-both", "unassigned-receipt"}:
+        refs["source-article-1"] = ("source-1",)
+    if change == "claim-outside-capture":
+        refs["source-article-1"] = ("policy-source",)
+    if change == "duplicate-ref":
+        refs["source-article-1"] += ("policy-source",)
+    inputs["official_sources"] = replace(
+        sources, sources=records, article_source_refs=refs
+    )
+    with pytest.raises(manifest.IncrementalPublicationFailure):
+        build(document, inputs)
+
+
+@pytest.mark.parametrize(
+    "variant",
+    [
+        "invalid-json",
+        "noncanonical",
+        "extra-field",
+        "future-evaluation",
+        "predates-capture",
+    ],
+)
+def test_supporting_source_audit_format_and_clock_are_closed(variant) -> None:
+    document, inputs = supporting_source_sample()
+    observed = inputs["official_sources"].to_document()
+    raw = release.canonical_json_bytes(observed)
+    if variant == "invalid-json":
+        raw = b"not json"
+    elif variant == "noncanonical":
+        raw += b"\n"
+    else:
+        if variant == "extra-field":
+            observed["unknown"] = True
+        else:
+            observed["evaluated_at"] = (
+                stamp(NOW + timedelta(seconds=1))
+                if variant == "future-evaluation"
+                else stamp(NOW - timedelta(hours=2))
+            )
+        raw = release.canonical_json_bytes(observed)
+    bind_source_replay(inputs, raw)
+    with pytest.raises(
+        manifest.IncrementalPublicationFailure, match="SOURCE_AUDIT_INVALID"
+    ):
+        build(document, inputs)
+
+
+def test_supporting_source_expiry_and_replay_do_not_extend_activation() -> None:
+    document, inputs = supporting_source_sample()
+    sources = inputs["official_sources"]
+    policy = replace(
+        sources.sources["policy-source"],
+        retrieved_at=stamp(NOW - timedelta(hours=24) + timedelta(seconds=25)),
+        expires_at=stamp(NOW + timedelta(seconds=25)),
+    )
+    inputs["official_sources"] = replace(
+        sources, sources={**sources.sources, "policy-source": policy}
+    )
+    bind_source_replay(inputs)
+    original = build(document, inputs)
+    assert original.expires_at == NOW + timedelta(seconds=25)
+    inputs["now"] = NOW + timedelta(seconds=10)
+    inputs["official_sources"] = replace(
+        inputs["official_sources"], evaluated_at=stamp(inputs["now"])
+    )
+    inputs["activation_evaluated_at"] = NOW
+    assert build(document, inputs).sha256 == original.sha256
+    inputs["now"] = NOW + timedelta(seconds=25)
+    with pytest.raises(manifest.IncrementalPublicationFailure, match="SOURCE_EXPIRED"):
+        build(document, inputs)
+
+
 def test_shared_theme_requires_full_article_audit_and_exact_shared_readback() -> None:
     document, inputs = sample()
     raw = b"synthetic-theme-package"
