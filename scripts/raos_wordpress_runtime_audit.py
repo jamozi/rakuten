@@ -21,6 +21,7 @@ import raos_wordpress_seo_audit as seo
 ROOT = Path(__file__).resolve().parents[1]
 ORIGIN = "https://kurashinoshirube.com"
 THEME_PREFIX = ORIGIN + "/wp-content/themes/kurashinoshirube-child/"
+BRAND_ICON_PATH = "assets/images/brand-mark.svg"
 LOCK = ROOT / "changes/wordpress-local-preview-v1/wordpress-runtime.lock.json"
 THEME_ASSETS = frozenset(
     {
@@ -267,6 +268,14 @@ def resources_for_theme(files: Mapping[str, bytes]) -> dict[str, Resource]:
             "css" if path.endswith(".css") else "js",
             dependencies=tuple(sorted(set(dependencies))),
         )
+    # Register last: the same SVG may also be a CSS image dependency. Preserve
+    # its stricter MIME contract in either role instead of overwriting it with
+    # the generic image kind while collecting stylesheet dependencies.
+    if BRAND_ICON_PATH in files:
+        icon = files[BRAND_ICON_PATH]
+        resources[THEME_PREFIX + BRAND_ICON_PATH] = Resource(
+            seo._sha256(icon), len(icon), "icon"
+        )
     lock = unique_json(LOCK.read_text(encoding="utf-8"))
     if lock.get("schema") != "RAOS_WORDPRESS_PUBLIC_RUNTIME_DEPENDENCIES_V1":
         fail()
@@ -435,7 +444,15 @@ class RuntimeMarkup(HTMLParser):
             self.current = (tag, values, [])
         if tag == "link":
             rel = values.get("rel") or ""
-            if rel in {"stylesheet", "modulepreload", "preload"}:
+            if rel == "icon":
+                if values != {
+                    "rel": "icon",
+                    "href": THEME_PREFIX + BRAND_ICON_PATH,
+                    "type": "image/svg+xml",
+                }:
+                    fail()
+                self.require_resource(values["href"], {"icon"})
+            elif rel in {"stylesheet", "modulepreload", "preload"}:
                 if not set(values) <= {
                     "rel",
                     "href",
@@ -613,6 +630,7 @@ def verify_page(
             "module": {"application/javascript", "text/javascript"},
             "css": {"text/css"},
             "image": {"image/svg+xml", "image/webp", "image/png"},
+            "icon": {"image/svg+xml"},
         }[expected.kind]
         if (
             response.url != url
