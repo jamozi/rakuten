@@ -308,7 +308,8 @@ class RuntimeMarkup(HTMLParser):
     def require_resource(self, url: str | None, kinds: set[str]) -> str:
         # Exact absolute URLs, including their original version query.
         if (
-            not url
+            type(url) is not str
+            or not url
             or url not in self.resources
             or self.resources[url].kind not in kinds
         ):

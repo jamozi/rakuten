@@ -228,6 +228,13 @@ def test_import_map_tampering_is_rejected(example, edit):
         verify(example, markup)
 
 
+@pytest.mark.parametrize("target", [[], {}, 1, True, None])
+def test_non_string_import_target_fails_with_bounded_audit_error(example, target):
+    text = json.dumps({"imports": {"@wordpress/interactivity": target}})
+    with pytest.raises(audit.seo.AuditError, match="MEASUREMENT_OFF_MISMATCH"):
+        verify(example, f'<script type="importmap" id="wp-importmap">{text}</script>')
+
+
 @pytest.mark.parametrize(
     "edit", ["bytes", "redirect", "mime", "cookie", "url", "status"]
 )
