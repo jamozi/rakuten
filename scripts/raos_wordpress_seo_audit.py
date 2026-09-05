@@ -344,6 +344,10 @@ class BoundedHttpsTransport:
         # retain the original no-query boundary, including on the same origin.
         for url in allowed_resource_urls:
             parts = urlsplit(url)
+            legacy_theme_css = parts.path in {
+                "/wp-content/themes/kurashinoshirube-child/assets/theme.css",
+                "/wp-content/themes/kurashinoshirube-child/assets/editorial-v2.css",
+            }
             if (
                 parts.scheme != "https"
                 or parts.netloc != self._origin_parts.netloc
@@ -357,6 +361,11 @@ class BoundedHttpsTransport:
                     parts.query
                     and re.fullmatch(r"ver=(?:[a-f0-9]{20}|[a-f0-9]{64})", parts.query)
                     is None
+                    and not (
+                        legacy_theme_css
+                        and re.fullmatch(r"ver=[0-9]+\.[0-9]+\.[0-9]+", parts.query)
+                        is not None
+                    )
                 )
             ):
                 _fail("HTTP_URL_OUT_OF_BOUNDARY")

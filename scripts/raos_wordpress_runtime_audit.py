@@ -190,6 +190,49 @@ class Resource:
     dependencies: tuple[str, ...] = ()
 
 
+def theme_asset_version(files: Mapping[str, bytes], path: str, revision: str) -> str:
+    """Recognize the two legacy enqueues in already tree-verified theme bytes.
+
+    This is not a general PHP evaluator or permission to accept a live version.
+    The baseline uses the theme header for CSS only; current assets use the
+    runtime revision. Unknown enqueue shapes do not gain a version alternative.
+    """
+    legacy_styles = {
+        "assets/theme.css": ("kurashinoshirube-editorial", ""),
+        "assets/editorial-v2.css": (
+            "kurashinoshirube-editorial-v2",
+            "'kurashinoshirube-editorial'",
+        ),
+    }
+    if path not in legacy_styles:
+        return revision
+    handle, dependencies = legacy_styles[path]
+    functions = files.get("functions.php", b"").decode("utf-8", errors="strict")
+    enqueue = (
+        r"wp_enqueue_style\(\s*'" + re.escape(handle) + r"',\s*"
+        r"get_stylesheet_directory_uri\(\)\s*\.\s*'/" + re.escape(path) + r"',\s*"
+        r"array\(" + re.escape(dependencies) + r"\),\s*"
+        r"\$theme->get\('Version'\)\s*\);"
+    )
+    matches = re.findall(enqueue, functions)
+    if not matches:
+        return revision
+    if len(matches) != 1:
+        fail()
+    header = files.get("style.css", b"").decode("utf-8", errors="strict")
+    headers = re.findall(r"^Version:\s*([^\r\n]+)$", header, re.M)
+    constants = re.findall(
+        r"^const KURASHINOSHIRUBE_THEME_VERSION = '([^']+)';$", functions, re.M
+    )
+    if (
+        len(headers) != 1
+        or headers != constants
+        or re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", headers[0]) is None
+    ):
+        fail()
+    return headers[0]
+
+
 def resources_for_theme(files: Mapping[str, bytes]) -> dict[str, Resource]:
     functions = files.get("functions.php", b"").decode("utf-8", errors="strict")
     versions = re.findall(
@@ -217,7 +260,8 @@ def resources_for_theme(files: Mapping[str, bytes]) -> dict[str, Resource]:
                 payload = files[image_path]
                 resources[url] = Resource(seo._sha256(payload), len(payload), "image")
             inert_css(re.sub(pattern, "", raw.decode("utf-8")))
-        resources[THEME_PREFIX + path + "?ver=" + versions[0]] = Resource(
+        version = theme_asset_version(files, path, versions[0])
+        resources[THEME_PREFIX + path + "?ver=" + version] = Resource(
             seo._sha256(raw),
             len(raw),
             "css" if path.endswith(".css") else "js",

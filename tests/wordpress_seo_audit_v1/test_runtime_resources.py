@@ -13,6 +13,7 @@ STAMP = "2026-09-05T02:00:00Z"
 VERSION = "a" * 64
 JS_URL = runtime.THEME_PREFIX + "assets/editorial-navigation.js?ver=" + VERSION
 CSS_URL = runtime.THEME_PREFIX + "assets/theme.css?ver=" + VERSION
+LEGACY_CSS_URL = runtime.THEME_PREFIX + "assets/theme.css?ver=1.4.0"
 MODULE_URL = (
     runtime.ORIGIN
     + "/wp-includes/js/dist/script-modules/block-library/navigation/view.js?ver="
@@ -305,6 +306,14 @@ def test_approved_image_without_responsive_alternative_passes(example):
         JS_URL.replace("kurashinoshirube.com", "user@kurashinoshirube.com"),
         JS_URL.replace("kurashinoshirube.com", "kurashinoshirube.com:444"),
         runtime.ORIGIN + "/wp-json/collect?ver=" + VERSION,
+        JS_URL.replace(VERSION, "1.4.0"),
+        MODULE_URL.replace("b" * 20, "1.4.0"),
+        LEGACY_CSS_URL.replace("theme.css", "other.css"),
+        LEGACY_CSS_URL + "&extra=1",
+        LEGACY_CSS_URL + "&ver=1.4.0",
+        LEGACY_CSS_URL.replace("1.4.0", "1.4"),
+        LEGACY_CSS_URL.replace("1.4.0", "1%2E4%2E0"),
+        LEGACY_CSS_URL + "#fragment",
     ],
 )
 def test_resource_transport_does_not_expand_page_url_boundary(url):
@@ -314,10 +323,14 @@ def test_resource_transport_does_not_expand_page_url_boundary(url):
         )
 
 
-def test_query_is_opt_in_and_sent_without_modification(monkeypatch):
+@pytest.mark.parametrize(
+    "url",
+    [JS_URL, LEGACY_CSS_URL, LEGACY_CSS_URL.replace("theme.css", "editorial-v2.css")],
+)
+def test_query_is_opt_in_and_sent_without_modification(monkeypatch, url):
     contract = audit.seo.load_contract()
     with pytest.raises(audit.seo.AuditError, match="HTTP_URL_OUT_OF_BOUNDARY"):
-        audit.seo.BoundedHttpsTransport(contract).get(JS_URL)
+        audit.seo.BoundedHttpsTransport(contract).get(url)
     connection = Mock()
     reply = connection.getresponse.return_value
     reply.status = 200
@@ -327,12 +340,116 @@ def test_query_is_opt_in_and_sent_without_modification(monkeypatch):
         audit.seo.http.client, "HTTPSConnection", lambda *a, **kw: connection
     )
     transport = audit.seo.BoundedHttpsTransport(
-        contract, allowed_resource_urls=frozenset({JS_URL})
+        contract, allowed_resource_urls=frozenset({url})
     )
-    assert transport.get(JS_URL).url == JS_URL
-    assert connection.request.call_args.args[1] == JS_URL.removeprefix(runtime.ORIGIN)
+    assert transport.get(url).url == url
+    assert connection.request.call_args.args[1] == url.removeprefix(runtime.ORIGIN)
     with pytest.raises(audit.seo.AuditError, match="HTTP_URL_OUT_OF_BOUNDARY"):
-        transport.get(JS_URL.replace(VERSION, "f" * 64))
+        transport.get(url.replace(VERSION, "f" * 64).replace("1.4.0", "1.4.1"))
+
+
+@pytest.fixture
+def legacy_theme_files():
+    # Exact enqueue shapes from the audited 1.4.0 baseline, not live HTML.
+    functions = f"const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '{VERSION}';\n"
+    functions += "const KURASHINOSHIRUBE_THEME_VERSION = '1.4.0';\n"
+    functions += """
+    $theme = wp_get_theme();
+    wp_enqueue_style(
+        'kurashinoshirube-editorial',
+        get_stylesheet_directory_uri() . '/assets/theme.css',
+        array(),
+        $theme->get('Version')
+    );
+    wp_enqueue_style(
+        'kurashinoshirube-editorial-v2',
+        get_stylesheet_directory_uri() . '/assets/editorial-v2.css',
+        array('kurashinoshirube-editorial'),
+        $theme->get('Version')
+    );
+    """
+    return {
+        "functions.php": functions.encode(),
+        "style.css": b"/*\nVersion: 1.4.0\n*/\n",
+        "assets/theme.css": b"p{color:navy}",
+        "assets/editorial-v2.css": b"p{color:blue}",
+        "assets/editorial-navigation.js": b"approved fixture JS",
+    }
+
+
+@pytest.mark.parametrize("legacy", [True, False])
+def test_css_uses_only_the_audited_enqueue_version(legacy_theme_files, legacy):
+    files = legacy_theme_files
+    if not legacy:
+        files["functions.php"] = files["functions.php"].replace(
+            b"$theme->get('Version')", b"KURASHINOSHIRUBE_THEME_RUNTIME_REVISION"
+        )
+    resources = runtime.resources_for_theme(files)
+    version = "1.4.0" if legacy else VERSION
+    other_version = VERSION if legacy else "1.4.0"
+    for path in ("assets/theme.css", "assets/editorial-v2.css"):
+        url = runtime.THEME_PREFIX + path + "?ver=" + version
+        assert resources[url].sha256 == audit.digest(files[path])
+        assert resources[url].size == len(files[path])
+        assert runtime.THEME_PREFIX + path + "?ver=" + other_version not in resources
+        markup = f'<link rel="stylesheet" href="{url}">'
+        transport = Mock()
+        transport.get.return_value = response(url, files[path], "text/css")
+        assert set(
+            runtime.verify_page(
+                response(runtime.ORIGIN + "/", markup.encode()), resources, transport
+            )
+        ) == {url}
+        with pytest.raises(audit.seo.AuditError, match="MEASUREMENT_OFF_MISMATCH"):
+            runtime.verify_page(
+                response(
+                    runtime.ORIGIN + "/",
+                    markup.replace(version, other_version).encode(),
+                ),
+                resources,
+                transport,
+            )
+    assert JS_URL in resources
+    assert JS_URL.replace(VERSION, "1.4.0") not in resources
+
+
+@pytest.mark.parametrize(
+    "edit",
+    [
+        "missing-header",
+        "duplicate-header",
+        "mismatched-header",
+        "query-header",
+        "missing-constant",
+        "duplicate-constant",
+        "duplicate-enqueue",
+    ],
+)
+def test_legacy_css_version_metadata_must_be_unambiguous(legacy_theme_files, edit):
+    files = legacy_theme_files
+    if edit == "missing-header":
+        del files["style.css"]
+    elif edit == "duplicate-header":
+        files["style.css"] += b"Version: 1.4.0\n"
+    elif edit == "mismatched-header":
+        files["style.css"] = b"Version: 1.4.1\n"
+    elif edit == "query-header":
+        files["style.css"] = b"Version: 1.4.0&extra=1\n"
+        files["functions.php"] = files["functions.php"].replace(
+            b"1.4.0", b"1.4.0&extra=1"
+        )
+    elif edit == "missing-constant":
+        files["functions.php"] = files["functions.php"].replace(
+            b"const KURASHINOSHIRUBE_THEME_VERSION = '1.4.0';\n", b""
+        )
+    elif edit == "duplicate-constant":
+        files["functions.php"] += b"\nconst KURASHINOSHIRUBE_THEME_VERSION = '1.4.0';\n"
+    elif edit == "duplicate-enqueue":
+        files["functions.php"] += files["functions.php"].split(
+            b"$theme = wp_get_theme();"
+        )[1]
+    with pytest.raises(audit.seo.AuditError, match="MEASUREMENT_OFF_MISMATCH"):
+        runtime.resources_for_theme(files)
 
 
 def test_current_dependency_lock_has_both_exact_variants_and_no_dynamic_imports():
