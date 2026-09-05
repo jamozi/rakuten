@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.5.1"
 THEME_RUNTIME_REVISION: Final = (
-    "5be03f20b87080e0ed6c8108035bfb369af2237dba283e4a52c436e258c5ca79"
+    "9e6e2623a5a5c68ae381f3a9fb6a87b5ec4ff0b660c74cc02c9100f386a09448"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -112,6 +112,7 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     SUITCASE_UNDER_3KG_ASSET_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/images/brand-mark.svg",
     HOME_HERO_ASSET_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/legacy-media-display-projection.v1.json",
     MEASUREMENT_CLIENT_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/theme.css",
     THEME_FUNCTIONS_INPUT_PATH,
@@ -140,6 +141,9 @@ THEME_FINGERPRINT_SOURCE_FILES: Final = tuple(
     if relative not in THEME_FINGERPRINT_EXCLUDED_PATHS
 )
 PHP_INTEGRITY_BINDINGS: Final = {
+    "KURASHINOSHIRUBE_LEGACY_MEDIA_PROJECTION_SHA256": (
+        "assets/legacy-media-display-projection.v1.json"
+    ),
     "KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256": "assets/images/home-hero.webp",
     "KURASHINOSHIRUBE_ARTICLE_IMAGE_SHA256": (
         "assets/images/article-suitcase-guide.webp"

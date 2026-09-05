@@ -391,6 +391,7 @@
     "assets/images/article-suitcase-under-3kg.webp",
     "assets/images/brand-mark.svg",
     "assets/images/home-hero.webp",
+    "assets/legacy-media-display-projection.v1.json",
     "assets/measurement.js",
     "assets/theme.css",
     "functions.php",
@@ -406,8 +407,8 @@
     "theme-contract.v1.json",
     "theme.json"
   ],
-  "theme_runtime_revision": "5be03f20b87080e0ed6c8108035bfb369af2237dba283e4a52c436e258c5ca79",
+  "theme_runtime_revision": "9e6e2623a5a5c68ae381f3a9fb6a87b5ec4ff0b660c74cc02c9100f386a09448",
   "theme_slug": "kurashinoshirube-child",
-  "theme_source_fingerprint": "5be03f20b87080e0ed6c8108035bfb369af2237dba283e4a52c436e258c5ca79",
+  "theme_source_fingerprint": "9e6e2623a5a5c68ae381f3a9fb6a87b5ec4ff0b660c74cc02c9100f386a09448",
   "theme_version": "1.5.1"
 }
