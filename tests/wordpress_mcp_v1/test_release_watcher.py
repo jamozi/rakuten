@@ -213,9 +213,7 @@ def test_release_waits_for_exact_batch_approval_before_reading_operations(
         state = next(states)
         return state, state == "APPROVED"
 
-    def request_json(
-        method, path, body=None, request_proposal_id=None, **_kwargs
-    ):
+    def request_json(method, path, body=None, request_proposal_id=None, **_kwargs):
         events.append(f"{method}:{path}")
         return public_operation(proposal_id, "CONTENT_RELEASE", "APPLIED")
 
@@ -314,6 +312,104 @@ def test_request_json_never_opens_with_a_zero_deadline_timeout(
         lambda: operator.request_json("GET", "/status", deadline=10.0),
     )
     assert open_timeouts == []
+
+
+@pytest.mark.parametrize(
+    "expiry",
+    [
+        None,
+        0,
+        "invalid",
+        "2026-02-30T00:00:00Z",
+        "2026-09-05T00:00:00Z",
+        "2026-09-05T00:15:01Z",
+    ],
+)
+def test_invalid_evidence_deadline_is_rejected_before_live_status(
+    monkeypatch: pytest.MonkeyPatch,
+    expiry: object,
+) -> None:
+    epoch = operator.datetime(2026, 9, 5, tzinfo=operator.UTC).timestamp()
+    monkeypatch.setattr(operator.time, "time", lambda: epoch)
+    monkeypatch.setattr(
+        operator, "_release_batch_status", lambda *_a, **_k: pytest.fail("no live call")
+    )
+    assert_failure(
+        "WORDPRESS_MCP_EVIDENCE_DEADLINE_INVALID",
+        lambda: operator.release_wait_and_apply(
+            {
+                **release_input(["a" * 64]),
+                "evidence_expires_at_gmt": expiry,
+            }
+        ),
+    )
+
+
+def test_approval_cannot_extend_evidence_deadline(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    proposal_id = "a" * 64
+    clock = [0.0]
+    epoch = operator.datetime(2026, 9, 5, tzinfo=operator.UTC).timestamp()
+    states = iter(("REGISTERED", "APPROVED"))
+    operations = iter(("APPLYING", "APPLIED"))
+    sleeps = iter((550.0, 49.0))
+    deadlines: list[float] = []
+
+    def status(*_a, **kwargs):
+        deadlines.append(kwargs["deadline"])
+        state = next(states)
+        return state, state == "APPROVED"
+
+    def request(method, _path, *_a, **kwargs):
+        deadlines.append(kwargs["deadline"])
+        if method == "POST":
+            raise operator.OperatorFailure("WORDPRESS_MCP_TRANSPORT_FAILED")
+        return public_operation(proposal_id, "CONTENT_RELEASE", next(operations))
+
+    monkeypatch.setattr(operator.time, "time", lambda: epoch + clock[0])
+    monkeypatch.setattr(operator.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(
+        operator.time, "sleep", lambda _s: clock.__setitem__(0, clock[0] + next(sleeps))
+    )
+    monkeypatch.setattr(operator, "_release_batch_status", status)
+    monkeypatch.setattr(operator, "request_json", request)
+    result = operator.release_wait_and_apply(
+        {
+            **release_input([proposal_id]),
+            "evidence_expires_at_gmt": "2026-09-05T00:10:00Z",
+        }
+    )
+    assert result["state"] == "APPLIED"
+    assert clock[0] == 599.0
+    assert deadlines == [600.0] * 5
+
+
+def test_evidence_expiry_after_status_prevents_batch_claim(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    clock = [0.0]
+    epoch = operator.datetime(2026, 9, 5, tzinfo=operator.UTC).timestamp()
+
+    def status(*_a, **_k):
+        clock[0] = 600.0
+        return "APPROVED", True
+
+    monkeypatch.setattr(operator.time, "time", lambda: epoch + clock[0])
+    monkeypatch.setattr(operator.time, "monotonic", lambda: clock[0])
+    monkeypatch.setattr(operator, "_release_batch_status", status)
+    monkeypatch.setattr(
+        operator, "_release_batch_claim", lambda *_a, **_k: pytest.fail("expired claim")
+    )
+    assert_failure(
+        "WORDPRESS_MCP_RELEASE_WAIT_TIMEOUT",
+        lambda: operator.release_wait_and_apply(
+            {
+                **release_input(["a" * 64]),
+                "evidence_expires_at_gmt": "2026-09-05T00:10:00Z",
+            }
+        ),
+    )
 
 
 def test_request_json_bounds_transport_and_rechecks_after_response(
@@ -569,9 +665,7 @@ def test_applied_member_recovery_failure_aborts_before_aggregate(
     def request_json(method, path, *args, **kwargs):
         events.append(f"{method}:{path}")
         if method == "POST":
-            raise operator.OperatorFailure(
-                "RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE"
-            )
+            raise operator.OperatorFailure("RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE")
         return response
 
     monkeypatch.setattr(operator, "request_json", request_json)
@@ -764,9 +858,7 @@ def test_failed_batch_cleanup_error_is_not_discarded(
     def request_json(method, path, *args, **kwargs):
         events.append(f"{method}:{path}")
         if method == "POST":
-            raise operator.OperatorFailure(
-                "RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE"
-            )
+            raise operator.OperatorFailure("RAOS_CODEX_RECOVERY_CLEANUP_INDETERMINATE")
         return response
 
     monkeypatch.setattr(operator, "request_json", request_json)
@@ -966,7 +1058,9 @@ def test_terminal_states_fail_closed_before_apply(monkeypatch, state, code) -> N
     assert calls == ["GET"]
 
 
-def test_failed_member_state_finalizes_cleanup_before_release_failure(monkeypatch) -> None:
+def test_failed_member_state_finalizes_cleanup_before_release_failure(
+    monkeypatch,
+) -> None:
     proposal_id = "e" * 64
     response = public_operation(proposal_id, "CONTENT_RELEASE", "FAILED")
     events: list[str] = []
@@ -1124,9 +1218,7 @@ def test_apply_and_recovery_share_the_authoritative_nonblocking_lock() -> None:
 
 
 def test_docs_bound_strict_linearization_to_cooperating_raos_writers() -> None:
-    readme = (
-        ROOT / "changes/wordpress-mcp-v1/README.md"
-    ).read_text(encoding="utf-8")
+    readme = (ROOT / "changes/wordpress-mcp-v1/README.md").read_text(encoding="utf-8")
     for external_writer in (
         "Native WordPress core, plugin, and theme",
         "Theme/Plugin File Editor",
@@ -1141,9 +1233,9 @@ def test_docs_bound_strict_linearization_to_cooperating_raos_writers() -> None:
 
 
 def test_bridge_advertises_bounds_and_rejects_duplicate_ids() -> None:
-    bridge_source = (
-        ROOT / "packages/wordpress-mcp-bridge/src/index.ts"
-    ).read_text(encoding="utf-8")
+    bridge_source = (ROOT / "packages/wordpress-mcp-bridge/src/index.ts").read_text(
+        encoding="utf-8"
+    )
     assert "? 4_620_000 : 90_000" in bridge_source
     assert "Wait up to 60 minutes" in bridge_source
     assert "separate 15-minute apply/recovery budget" in bridge_source

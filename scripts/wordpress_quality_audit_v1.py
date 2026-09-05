@@ -138,6 +138,7 @@ EXPECTED_FINGERPRINT_INPUTS: Final = {
         "contracts/raos-v0.4/contracts/content/schemas/content-ast.schema.json",
         "package-lock.json",
         "package.json",
+        "packages/wordpress-mcp-bridge/src/index.ts",
         "python/raos/adapters/self_hosted_editorial_pilot_https.py",
         "python/raos/adapters/self_hosted_editorial_pilot_json.py",
         "python/raos/adapters/self_hosted_editorial_rakuten_capture.py",
@@ -175,6 +176,7 @@ EXPECTED_FINGERPRINT_INPUTS: Final = {
         "scripts/raos_editorial_economics_v3.py",
         "scripts/raos_editorial_portfolio_v2.py",
         "scripts/raos_rakuten_measurement_activation_v3.py",
+        "scripts/raos_wordpress_deployment_operator.py",
         "scripts/raos_wordpress_publication_request.py",
         "scripts/raos_wordpress_seo_audit.py",
         "scripts/st1704_official_source_capture.py",
@@ -192,6 +194,8 @@ EXPECTED_FINGERPRINT_INPUTS: Final = {
         "tests/editorial_product_safety_receipts",
         "tests/st1704",
         "tests/wordpress_local_preview",
+        "tests/wordpress_mcp_v1/test_contract.py",
+        "tests/wordpress_mcp_v1/test_release_watcher.py",
         "tests/wordpress_quality_audit_v1",
         "tests/wordpress_seo_audit_v1",
     ),
@@ -2860,6 +2864,238 @@ def validate_path(
     )
 
 
+CODEX_OWNER_REPORT_SCHEMA: Final = "RAOS_WORDPRESS_CODEX_OWNER_REVIEW_V1"
+CODEX_OWNER_BINDING_SCHEMA: Final = "RAOS_WORDPRESS_CODEX_OWNER_AUDIT_BINDING_V1"
+CODEX_OWNER_MODE: Final = "codex-owner"
+SIGNED_INDEPENDENT_MODE: Final = "signed-independent"
+CODEX_OWNER_BINDING_FIXED: Final = {
+    "schema": CODEX_OWNER_BINDING_SCHEMA,
+    "audit_mode": CODEX_OWNER_MODE,
+    "audit_phase": PRE_PUBLICATION_PHASE_ID,
+    "status": "CHECKS_PASSED",
+    "completion_state": "READY_FOR_OWNER_REVIEW",
+    "production_parity_state": POST_APPLY_PENDING_STATE,
+    "review_kind": "CODEX_TECHNICAL_REVIEW",
+    "reviewer_attestation_verified": False,
+    "execution_identity_authentication": "OWNER_REVIEW_REQUIRED",
+    "owner_approval_required": True,
+    "publication_authority": False,
+}
+CODEX_OWNER_HASH_FIELDS: Final = {
+    "contract_file_sha256",
+    "ledger_file_sha256",
+    "ledger_sha256",
+    "fingerprint_bundle_sha256",
+    "latest_round_sha256",
+    "codex_report_sha256",
+}
+
+
+def validate_codex_owner_binding(value: object) -> None:
+    """Validate receipt shape, not reviewer identity or publication authority."""
+
+    row = _mapping(value, "QUALITY_AUDIT_CODEX_BINDING_INVALID")
+    _exact_keys(
+        row,
+        set(CODEX_OWNER_BINDING_FIXED)
+        | CODEX_OWNER_HASH_FIELDS
+        | {"evaluated_at", "expires_at", "round_count", "consecutive_clean_rounds"},
+        "QUALITY_AUDIT_CODEX_BINDING_INVALID",
+    )
+    if any(
+        type(row[key]) is not type(expected) or row[key] != expected
+        for key, expected in CODEX_OWNER_BINDING_FIXED.items()
+    ):
+        _fail("QUALITY_AUDIT_CODEX_BINDING_INVALID")
+    for key in CODEX_OWNER_HASH_FIELDS:
+        _sha256(row[key], "QUALITY_AUDIT_CODEX_BINDING_INVALID")
+    for key in ("round_count", "consecutive_clean_rounds"):
+        if type(row[key]) is not int or row[key] < 2:
+            _fail("QUALITY_AUDIT_CODEX_BINDING_INVALID")
+    if row["consecutive_clean_rounds"] > row["round_count"]:
+        _fail("QUALITY_AUDIT_CODEX_BINDING_INVALID")
+    evaluated = _timestamp(row["evaluated_at"], "QUALITY_AUDIT_CODEX_TIME_INVALID")
+    expires = _timestamp(row["expires_at"], "QUALITY_AUDIT_CODEX_TIME_INVALID")
+    if (
+        not timedelta(0)
+        < expires - evaluated
+        <= timedelta(
+            seconds=EXPECTED_PRE_PUBLICATION_POLICY["max_evaluation_age_seconds"]
+        )
+    ):
+        _fail("QUALITY_AUDIT_CODEX_TIME_INVALID")
+
+
+def validate_codex_owner_report(
+    report_path: Path,
+    *,
+    repository_root: Path = REPOSITORY_ROOT,
+    ledger_path: Path = DEFAULT_LEDGER_PATH,
+    contract_path: Path = DEFAULT_CONTRACT_PATH,
+    evidence_root: Path | None = None,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    """Replay all evidence under the explicitly owner-approved AI review mode.
+
+    This never promotes the unsigned V1 ledger to signed COMPLETE, creates a
+    trusted key, or proves that execution identifiers belong to independent
+    people. The owner must inspect the Codex run/report provenance and approve
+    the exact WordPress batch separately. Recorded IDs are not authentication.
+    """
+
+    raw_before = _read_secure_exact_path(report_path, maximum=MAX_ATTESTATION_BYTES)
+    report = _read_canonical_attestation(report_path)
+    _exact_keys(
+        report,
+        {
+            "schema",
+            "audit_mode",
+            "review_kind",
+            "publication_authority",
+            "owner_approval_required",
+            "execution_identity_authentication",
+            "reviewer_attestation_verified",
+            "contract_file_sha256",
+            "ledger_file_sha256",
+            "ledger_sha256",
+            "fingerprint_bundle_sha256",
+            "evaluated_at",
+            "expires_at",
+            "implementation_execution_ids",
+            "review_runs",
+        },
+        "QUALITY_AUDIT_CODEX_REPORT_INVALID",
+    )
+    if report["schema"] != CODEX_OWNER_REPORT_SCHEMA:
+        _fail("QUALITY_AUDIT_CODEX_REPORT_INVALID")
+    for key in (
+        "audit_mode",
+        "review_kind",
+        "publication_authority",
+        "owner_approval_required",
+        "execution_identity_authentication",
+        "reviewer_attestation_verified",
+    ):
+        expected = CODEX_OWNER_BINDING_FIXED[key]
+        if type(report[key]) is not type(expected) or report[key] != expected:
+            _fail("QUALITY_AUDIT_CODEX_REPORT_INVALID")
+    contract, contract_hash = load_contract(contract_path)
+    ledger, ledger_raw = read_json(ledger_path)
+    active_now = now or datetime.now(UTC)
+    result = validate_document(
+        ledger,
+        contract,
+        contract_hash,
+        repository_root=repository_root,
+        evidence_root=evidence_root,
+        now=active_now,
+    )
+    # Only the intentionally different signer policy may differ. Every surface,
+    # artifact, source binding, finding, round and fingerprint is still checked
+    # by the legacy validator; no missing evidence can pass this branch.
+    if (
+        result.status != "BLOCKED"
+        or result.reviewer_attestation_verified
+        or result.consecutive_clean_rounds < 2
+        or ledger["completion"]["reason_codes"]
+        != ["INDEPENDENT_REVIEWER_ATTESTATION_NOT_VERIFIED"]
+    ):
+        _fail("QUALITY_AUDIT_CODEX_EVIDENCE_INCOMPLETE")
+    bundle = fingerprint_bundle_sha256(ledger["repository_fingerprints"])
+    expected_bindings = {
+        "contract_file_sha256": contract_hash,
+        "ledger_file_sha256": hashlib.sha256(ledger_raw).hexdigest(),
+        "ledger_sha256": result.ledger_sha256,
+        "fingerprint_bundle_sha256": bundle,
+        "evaluated_at": ledger["evaluated_at"],
+    }
+    if any(report[key] != value for key, value in expected_bindings.items()):
+        _fail("QUALITY_AUDIT_CODEX_REPORT_BINDING_DRIFTED")
+    authors = _list(
+        report["implementation_execution_ids"], "QUALITY_AUDIT_CODEX_EXECUTION_INVALID"
+    )
+    if not 1 <= len(authors) <= 100:
+        _fail("QUALITY_AUDIT_CODEX_EXECUTION_INVALID")
+    author_ids = {
+        _identifier(item, "QUALITY_AUDIT_CODEX_EXECUTION_INVALID") for item in authors
+    }
+    if len(author_ids) != len(authors):
+        _fail("QUALITY_AUDIT_CODEX_EXECUTION_INVALID")
+    runs = _list(report["review_runs"], "QUALITY_AUDIT_CODEX_EXECUTION_INVALID")
+    if len(runs) != 2:
+        _fail("QUALITY_AUDIT_CODEX_EXECUTION_INVALID")
+    execution_ids: set[str] = set()
+    for raw_run, round_row in zip(runs, ledger["rounds"][-2:], strict=True):
+        run = _mapping(raw_run, "QUALITY_AUDIT_CODEX_EXECUTION_INVALID")
+        _exact_keys(
+            run,
+            {"round_id", "reviewer_id", "round_sha256", "execution_id"},
+            "QUALITY_AUDIT_CODEX_EXECUTION_INVALID",
+        )
+        execution_id = _identifier(
+            run["execution_id"], "QUALITY_AUDIT_CODEX_EXECUTION_INVALID"
+        )
+        if (
+            execution_id in execution_ids
+            or execution_id in author_ids
+            or any(
+                run[key] != round_row[key]
+                for key in ("round_id", "reviewer_id", "round_sha256")
+            )
+        ):
+            _fail("QUALITY_AUDIT_CODEX_EXECUTION_INVALID")
+        execution_ids.add(execution_id)
+    binding = {
+        **CODEX_OWNER_BINDING_FIXED,
+        **expected_bindings,
+        "latest_round_sha256": ledger["rounds"][-1]["round_sha256"],
+        "codex_report_sha256": hashlib.sha256(raw_before).hexdigest(),
+        "expires_at": report["expires_at"],
+        "round_count": result.round_count,
+        "consecutive_clean_rounds": result.consecutive_clean_rounds,
+    }
+    validate_codex_owner_binding(binding)
+    evaluated = _timestamp(binding["evaluated_at"], "QUALITY_AUDIT_CODEX_TIME_INVALID")
+    expires = _timestamp(binding["expires_at"], "QUALITY_AUDIT_CODEX_TIME_INVALID")
+    if active_now >= expires or active_now - evaluated > timedelta(
+        seconds=EXPECTED_PRE_PUBLICATION_POLICY["max_evaluation_age_seconds"]
+    ):
+        _fail("QUALITY_AUDIT_CODEX_REPORT_EXPIRED")
+    # Validate at current time too: V1 checks per-gate freshness at evaluation;
+    # an unsigned ledger deliberately does not take its signed COMPLETE branch.
+    max_ages = {
+        item["gate_id"]: item["max_age_seconds"]
+        for item in contract["audit_phases"]["pre_publication"]["required_surfaces"]
+    }
+    evidence_expiries = [expires]
+    for round_row in ledger["rounds"][-2:]:
+        for receipt in round_row["gate_receipts"]:
+            captured = _timestamp(
+                receipt["captured_at"], "QUALITY_AUDIT_CODEX_TIME_INVALID"
+            )
+            if active_now - captured > timedelta(seconds=max_ages[receipt["gate_id"]]):
+                _fail("QUALITY_AUDIT_CODEX_REPORT_EXPIRED")
+            evidence_expiries.append(
+                captured + timedelta(seconds=max_ages[receipt["gate_id"]])
+            )
+    effective_expiry = min(evidence_expiries)
+    if active_now >= effective_expiry:
+        _fail("QUALITY_AUDIT_CODEX_REPORT_EXPIRED")
+    binding["expires_at"] = timestamp_text(effective_expiry)
+    validate_codex_owner_binding(binding)
+    if (
+        raw_before != canonical_json(report) + b"\n"
+        or raw_before
+        != _read_secure_exact_path(report_path, maximum=MAX_ATTESTATION_BYTES)
+        or read_json(ledger_path)[1] != ledger_raw
+        or load_contract(contract_path)[1] != contract_hash
+        or repository_fingerprints(contract, repository_root)
+        != ledger["repository_fingerprints"]
+    ):
+        _fail("QUALITY_AUDIT_CODEX_INPUT_CHANGED")
+    return binding
+
+
 def build_blocked_baseline(
     contract: dict[str, Any],
     contract_hash: str,
@@ -2955,6 +3191,8 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     validate_parser.add_argument("--ledger", type=Path, default=DEFAULT_LEDGER_PATH)
     validate_parser.add_argument("--attestation", type=Path)
     validate_parser.add_argument("--signature", type=Path)
+    codex_parser = subcommands.add_parser("validate-codex-owner")
+    codex_parser.add_argument("--report", type=Path, required=True)
     post_apply_parser = subcommands.add_parser("validate-post-apply")
     post_apply_parser.add_argument("--result", type=Path, required=True)
     subcommands.add_parser("fingerprints")
@@ -2966,6 +3204,10 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     arguments = _parse_args(list(sys.argv[1:] if argv is None else argv))
     try:
+        if arguments.command == "validate-codex-owner":
+            binding = validate_codex_owner_report(arguments.report)
+            print(json.dumps(binding, ensure_ascii=False, sort_keys=True))
+            return 0
         if arguments.command == "validate-post-apply":
             post_apply = validate_post_apply_path(arguments.result)
             print(

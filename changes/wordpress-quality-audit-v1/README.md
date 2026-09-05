@@ -8,6 +8,67 @@ validator does not run WordPress, approve a review, or create clean evidence.
 The tracked pre-publication ledger is deliberately `BLOCKED`; every tracked
 external/live boundary remains `NOT_EXECUTED`.
 
+## Explicit Codex review with owner publication approval
+
+The owner selected Codex to perform the technical audit and will personally
+approve the concrete release in wp-admin. This is the separate `codex-owner`
+policy, not a human third-party audit, a trusted-reviewer signature, or advance
+permission to publish. `signed-independent` remains the default and its
+Ed25519 validation is unchanged. Modes never fall back to one another.
+
+In `codex-owner`, the complete V1 ledger is replayed with all 37 required
+surfaces, artifact/manifest hashes, current fingerprints, distinct sequential
+review rounds, source bindings, findings, and per-gate freshness checks. The
+only permitted V1 blocking reason is the missing independent-reviewer
+attestation; two consecutive clean rounds are still required. The V1 ledger
+stays unsigned and `BLOCKED`. A separate binding may say `CHECKS_PASSED` and
+`READY_FOR_OWNER_REVIEW`, never signed `COMPLETE` or publication-authorized.
+The evaluation and report remain limited to 900 seconds, with per-gate freshness
+also checked at validation time. The effective binding expires no later than
+the earliest gate receipt, even if the report requested a later expiry. The
+deployment operator additionally caps the wait/apply budget at the earliest
+bound audit, product and local/production materialization deadline. Approval
+does not renew evidence. Unexecuted delivery tests, user research,
+source/safety checks or other runtime evidence cannot be replaced by AI opinion.
+
+The explicit `--codex-audit-report` input is an absolute, owner-controlled,
+canonical sorted-UTF-8 JSON file with schema
+`RAOS_WORDPRESS_CODEX_OWNER_REVIEW_V1`. It binds the raw contract/ledger hashes,
+ledger hash, repository fingerprint bundle, evaluation/expiry, and the last two
+round IDs, reviewer IDs and round hashes. It lists all implementation execution
+IDs and one distinct Codex execution ID per review. A known author execution or
+repeated review execution is refused. These identifiers are provenance metadata,
+not authenticated identities: the required fixed value is
+`execution_identity_authentication: OWNER_REVIEW_REQUIRED`. The owner must
+inspect the actual Codex runs and their bounded review reports. Do not store raw
+prompts, credentials or private production material in review artifacts.
+
+Required fixed report values are `audit_mode: codex-owner`,
+`review_kind: CODEX_TECHNICAL_REVIEW`, `reviewer_attestation_verified: false`,
+`publication_authority: false`, and `owner_approval_required: true`. Each
+`review_runs` entry contains exactly `round_id`, `reviewer_id`, `round_sha256`
+and `execution_id`; `implementation_execution_ids` is nonempty. The remaining
+fields are `contract_file_sha256`, `ledger_file_sha256`, `ledger_sha256`,
+`fingerprint_bundle_sha256`, `evaluated_at`, and `expires_at`. This interface
+does not generate successful evidence or turn the blocked baseline into a pass.
+
+```sh
+.venv/bin/python scripts/wordpress_quality_audit_v1.py validate-codex-owner \
+  --report <absolute-owner-private-codex-report>
+.venv/bin/python scripts/raos_wordpress_publication_request.py --articles all \
+  --link-mode standard-api --standard-api-receipt <absolute-private-api-receipt> \
+  --quality-audit-mode codex-owner --codex-audit-report <absolute-private-codex-report>
+```
+
+Signed-attestation arguments are rejected in this mode. The complete product,
+image, CTA, local WordPress, policy, plugin, separate wp-admin user approval,
+single-use lease, kill-switch and production readback requirements remain.
+New requests and interrupted apply/recovery revalidate the selected mode and
+exact report hash. The approval prompt identifies the AI review policy and its
+report hash. Chat approval or the report itself cannot claim or apply a batch.
+Changing a pending report or switching modes requires a new concrete approval
+after the prior attempt has reached a safely reconcilable terminal state.
+
 The exact repository state is bound through five fingerprints: editorial and
 WordPress source, the child-theme tree, local WordPress fixtures, navigation,
 and the browser-audit inventory. The source group deliberately includes the

@@ -96,6 +96,271 @@ def _quality_input_paths(tmp_path: Path) -> tuple[Path, Path]:
     )
 
 
+def _test_codex_quality_binding() -> dict[str, object]:
+    audit = publication.wordpress_quality_audit
+    return {
+        **audit.CODEX_OWNER_BINDING_FIXED,
+        **{key: "a" * 64 for key in audit.CODEX_OWNER_HASH_FIELDS},
+        "evaluated_at": "2026-09-05T00:00:00Z",
+        "expires_at": "2026-09-05T00:10:00Z",
+        "round_count": 2,
+        "consecutive_clean_rounds": 2,
+    }
+
+
+def test_audit_mode_is_explicit_and_does_not_default_to_codex() -> None:
+    assert (
+        publication.parser().parse_args([]).quality_audit_mode == "signed-independent"
+    )
+    arguments = publication.parser().parse_args(
+        [
+            "--quality-audit-mode",
+            "codex-owner",
+            "--codex-audit-report",
+            "/tmp/report.json",
+        ]
+    )
+    assert arguments.quality_audit_mode == "codex-owner"
+    assert arguments.codex_audit_report == Path("/tmp/report.json")
+
+
+@pytest.mark.parametrize(
+    "earliest", ["audit", "local", "production", "product", "sales"]
+)
+def test_codex_wait_deadline_uses_earliest_bound_evidence(
+    monkeypatch: pytest.MonkeyPatch,
+    earliest: str,
+) -> None:
+    real_datetime = publication.datetime
+
+    class FixedDateTime(real_datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return cls(2026, 9, 5, tzinfo=publication.UTC)
+
+    monkeypatch.setattr(publication, "datetime", FixedDateTime)
+    products = [
+        {
+            "product_id": f"PRD-SYNTHETIC-{index}",
+            "state": "verified",
+            "retrieved_at": "2026-09-04T00:20:00Z",
+        }
+        for index in range(33)
+    ]
+    if earliest == "product":
+        products[-1]["retrieved_at"] = "2026-09-04T00:05:00Z"
+    inputs = {
+        publication.LOCAL_MATERIALIZATION_RECEIPT: {
+            "generated_at": "2026-09-04T23:50:00Z"
+            if earliest == "local"
+            else "2026-09-05T00:00:00Z",
+        },
+        publication.PRODUCTION_MATERIALIZATION_RECEIPT: {
+            "generated_at": "2026-09-04T23:50:00Z"
+            if earliest == "production"
+            else "2026-09-05T00:00:00Z",
+        },
+        publication.ROOT / publication.V2_STATUS_RELATIVE_PATH: {"products": products},
+    }
+    snapshots = {path: (row, json.dumps(row).encode()) for path, row in inputs.items()}
+    materialization = {
+        "products": {row["product_id"]: {} for row in products},
+        "manufacturer_sales_state_checked_at_utc": "2026-09-04T00:05:00Z"
+        if earliest == "sales"
+        else "2026-09-04T00:20:00Z",
+    }
+    for path, key in (
+        (publication.LOCAL_MATERIALIZATION_RECEIPT, "local_receipt_sha256"),
+        (publication.PRODUCTION_MATERIALIZATION_RECEIPT, "production_receipt_sha256"),
+        (
+            publication.ROOT / publication.V2_STATUS_RELATIVE_PATH,
+            "evidence_status_sha256",
+        ),
+    ):
+        materialization[key] = hashlib.sha256(snapshots[path][1]).hexdigest()
+    quality = _test_codex_quality_binding()
+    if earliest == "audit":
+        quality["expires_at"] = "2026-09-05T00:05:00Z"
+    receipt = {
+        "quality_audit_binding": quality,
+        "materialization_binding": materialization,
+    }
+    monkeypatch.setattr(
+        publication,
+        "_load_owner_private_json_snapshot",
+        lambda path, *_a: snapshots[path],
+    )
+    assert (
+        publication._codex_publication_evidence_expiry(receipt)
+        == "2026-09-05T00:05:00Z"
+    )
+    materialization["local_receipt_sha256"] = "0" * 64
+    with pytest.raises(
+        publication.PublicationFailure, match="CODEX_EVIDENCE_DEADLINE_INVALID"
+    ):
+        publication._codex_publication_evidence_expiry(receipt)
+
+
+def test_codex_deadline_is_forwarded_to_bounded_apply(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    receipt = {
+        "batch_registration": {
+            "batch_token": "a" * 64,
+            "batch_manifest_sha256": "b" * 64,
+        },
+        "proposals": [],
+        "quality_audit_binding": _test_codex_quality_binding(),
+    }
+    monkeypatch.setattr(publication, "_registered_proposal_ids", lambda _r: ["c" * 64])
+    monkeypatch.setattr(publication, "_operation_ids", lambda _r: {})
+    monkeypatch.setattr(publication, "_touch_receipt", lambda *_a: None)
+    monkeypatch.setattr(
+        publication,
+        "_codex_publication_evidence_expiry",
+        lambda _r: "2026-09-05T00:05:00Z",
+    )
+
+    def inspect_call(command, payload, **_kwargs):
+        assert command == "release-wait-and-apply"
+        assert payload["evidence_expires_at_gmt"] == "2026-09-05T00:05:00Z"
+        raise publication.PublicationFailure("TEST_STOP_NO_LIVE_CALL")
+
+    monkeypatch.setattr(publication, "_deployment_mcp_call", inspect_call)
+    with pytest.raises(publication.PublicationFailure, match="TEST_STOP_NO_LIVE_CALL"):
+        publication.wait_and_apply(receipt, tmp_path / "receipt.json")
+    output = capsys.readouterr().out
+    assert "人間による第三者署名ではありません" in output
+    assert "承認後も延長されません" in output
+
+
+@pytest.mark.parametrize(
+    ("mode", "attestation", "signature", "report"),
+    [
+        ("signed-independent", None, None, "/tmp/codex.json"),
+        ("codex-owner", "/tmp/attestation.json", None, "/tmp/codex.json"),
+        ("codex-owner", None, "/tmp/signature.txt", "/tmp/codex.json"),
+        ("codex-owner", None, None, None),
+        ("codex-owner", None, None, "relative.json"),
+        ("automatic", None, None, "/tmp/codex.json"),
+    ],
+)
+def test_audit_modes_reject_mixed_or_missing_inputs(
+    mode: str,
+    attestation: str | None,
+    signature: str | None,
+    report: str | None,
+) -> None:
+    with pytest.raises(publication.PublicationFailure):
+        publication._require_quality_audit_inputs(
+            Path(attestation) if attestation else None,
+            Path(signature) if signature else None,
+            audit_mode=mode,
+            codex_report_path=Path(report) if report else None,
+        )
+
+
+def test_codex_mode_requires_report_before_lock_or_wordpress(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        publication, "validate_publication_link_evidence", lambda *_a, **_k: object()
+    )
+    monkeypatch.setattr(
+        publication, "request_lock", lambda: pytest.fail("must not acquire lock")
+    )
+    with pytest.raises(
+        publication.PublicationFailure, match="CODEX_AUDIT_REPORT_REQUIRED"
+    ):
+        publication.execute(
+            "all",
+            link_mode="standard-api",
+            standard_api_receipt=Path("/tmp/api.json"),
+            quality_audit_mode="codex-owner",
+            client_factory=lambda: pytest.fail("no live call"),
+        )
+
+
+def test_codex_dispatch_never_calls_signed_verifier(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = Path("/tmp/codex-owner.json")
+    calls: list[Path] = []
+    monkeypatch.setattr(
+        publication, "strict_local_quality_audit", lambda *_a: pytest.fail("not signed")
+    )
+    monkeypatch.setattr(
+        publication.wordpress_quality_audit,
+        "validate_codex_owner_report",
+        lambda value: calls.append(value) or _test_codex_quality_binding(),
+    )
+    binding = publication.publication_quality_audit(
+        None,
+        None,
+        audit_mode="codex-owner",
+        codex_report_path=path,
+    )
+    assert calls == [path]
+    assert binding["publication_authority"] is False
+    publication._validate_quality_audit_binding(binding)
+    binding["reviewer_attestation_verified"] = True
+    with pytest.raises(publication.PublicationFailure, match="RECEIPT_INVALID"):
+        publication._validate_quality_audit_binding(binding)
+
+
+@pytest.mark.parametrize("drift", [False, True])
+def test_apply_revalidation_preserves_codex_mode_and_exact_review_hash(
+    monkeypatch: pytest.MonkeyPatch,
+    drift: bool,
+) -> None:
+    activation = SimpleNamespace(production_fixture_root=Path("/tmp/fixture"))
+    current = _test_codex_quality_binding()
+    stored = dict(current)
+    if drift:
+        stored["codex_report_sha256"] = "b" * 64
+    receipt = {
+        "desired_sha256": {},
+        "desired_theme_tree_sha256": TEST_THEME_TREE_SHA256,
+        "desired_theme_runtime_revision": THEME_REVISION,
+        "materialization_binding": {},
+        "quality_audit_binding": stored,
+    }
+    monkeypatch.setattr(
+        publication, "validate_publication_link_evidence", lambda *_a, **_k: activation
+    )
+    monkeypatch.setattr(publication, "load_publication_items", lambda *_a, **_k: [])
+    monkeypatch.setattr(
+        publication, "activation_materialization_binding", lambda *_a, **_k: {}
+    )
+    monkeypatch.setattr(
+        publication,
+        "strict_local_quality_audit",
+        lambda *_a: pytest.fail("no mode switch"),
+    )
+    monkeypatch.setattr(
+        publication.wordpress_quality_audit,
+        "validate_codex_owner_report",
+        lambda _p: current,
+    )
+    kwargs = {
+        "rakuten_activation_dry_run": Path("/tmp/api.json"),
+        "expected_activation": activation,
+        "quality_audit_attestation": None,
+        "quality_audit_signature": None,
+        "quality_audit_mode": "codex-owner",
+        "codex_audit_report": Path("/tmp/codex.json"),
+    }
+    if drift:
+        with pytest.raises(
+            publication.PublicationFailure, match="PENDING_REQUEST_CONFLICT"
+        ):
+            publication._revalidate_apply_inputs(receipt, **kwargs)
+    else:
+        assert publication._revalidate_apply_inputs(receipt, **kwargs)[3] == current
+
+
 def _resume_gate_kwargs(tmp_path: Path) -> dict[str, Path]:
     attestation_path, signature_path = _quality_input_paths(tmp_path)
     return {
