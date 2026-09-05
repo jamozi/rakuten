@@ -1563,6 +1563,89 @@ def test_package_write_rejects_stale_preparing_entry(
     assert not theme.OUTPUT_PATH.exists()
 
 
+@pytest.mark.parametrize("change", ["sibling-file", "sibling-directory"])
+def test_absolute_descent_tolerates_unrelated_ancestor_child_writes(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, change: str
+) -> None:
+    ancestor = tmp_path / "shared-ancestor"
+    selected = ancestor / "selected-root"
+    selected.mkdir(parents=True)
+    original_stat = os.stat
+    changed = False
+
+    def changing_stat(path, *, dir_fd=None, follow_symlinks=True):
+        nonlocal changed
+        if path == ancestor.name and dir_fd is not None and not changed:
+            changed = True
+            sibling = ancestor / "another-job-output"
+            if change == "sibling-file":
+                sibling.write_bytes(b"unrelated")
+            else:
+                sibling.mkdir()
+        return original_stat(path, dir_fd=dir_fd, follow_symlinks=follow_symlinks)
+
+    monkeypatch.setattr(theme.os, "stat", changing_stat)
+    with theme._open_absolute_directory(selected) as descriptor:
+        assert os.fstat(descriptor).st_ino == selected.stat().st_ino
+    assert changed is True
+
+
+@pytest.mark.parametrize("change", ["replacement", "symlink", "mode"])
+def test_absolute_descent_still_rejects_ancestor_binding_changes(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, change: str
+) -> None:
+    ancestor = tmp_path / "shared-ancestor"
+    selected = ancestor / "selected-root"
+    selected.mkdir(parents=True)
+    ancestor.chmod(0o700)
+    original_stat = os.stat
+    changed = False
+
+    def changing_stat(path, *, dir_fd=None, follow_symlinks=True):
+        nonlocal changed
+        if path == ancestor.name and dir_fd is not None and not changed:
+            changed = True
+            if change == "mode":
+                ancestor.chmod(0o755)
+            else:
+                moved = ancestor.with_name("held-ancestor")
+                ancestor.rename(moved)
+                if change == "symlink":
+                    ancestor.symlink_to(moved, target_is_directory=True)
+                else:
+                    selected.mkdir(parents=True)
+                    ancestor.chmod(0o700)
+        return original_stat(path, dir_fd=dir_fd, follow_symlinks=follow_symlinks)
+
+    monkeypatch.setattr(theme.os, "stat", changing_stat)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_ROOT_INVALID"):
+        with theme._open_absolute_directory(selected):
+            pytest.fail("changed ancestor must not be accepted")
+    assert changed is True
+
+
+def test_absolute_descent_keeps_full_selected_root_mutation_check(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    selected = tmp_path / "selected-root"
+    selected.mkdir()
+    original_stat = os.stat
+    changed = False
+
+    def changing_stat(path, *, dir_fd=None, follow_symlinks=True):
+        nonlocal changed
+        if path == selected.name and dir_fd is not None and not changed:
+            changed = True
+            (selected / "unexpected-child").mkdir()
+        return original_stat(path, dir_fd=dir_fd, follow_symlinks=follow_symlinks)
+
+    monkeypatch.setattr(theme.os, "stat", changing_stat)
+    with pytest.raises(theme.ThemeBuildFailure, match="THEME_ROOT_INVALID"):
+        with theme._open_absolute_directory(selected):
+            pytest.fail("selected root mutation must not be accepted")
+    assert changed is True
+
+
 def test_package_write_rejects_output_path_contract_drift(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:

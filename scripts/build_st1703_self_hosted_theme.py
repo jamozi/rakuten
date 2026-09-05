@@ -483,6 +483,27 @@ def _same_named_object(
         _fail(error_code)
 
 
+def _same_named_ancestor_directory(
+    details: os.stat_result, *, parent_fd: int, name: str
+) -> None:
+    """Bind traversal ancestors without treating unrelated child writes as swaps.
+
+    Shared ancestors such as /tmp legitimately change size, link count and
+    timestamps during parallel builds. Device/inode, type/mode and ownership
+    must still match. The selected root and its inventory retain full checks.
+    """
+    try:
+        named = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+    except OSError:
+        _fail("THEME_ROOT_INVALID")
+    if (
+        not stat.S_ISDIR(details.st_mode)
+        or not stat.S_ISDIR(named.st_mode)
+        or _identity(named)[:5] != _identity(details)[:5]
+    ):
+        _fail("THEME_ROOT_INVALID")
+
+
 @contextmanager
 def _open_absolute_directory(
     path: Path, *, create: bool = False
@@ -496,7 +517,7 @@ def _open_absolute_directory(
     except OSError:
         _fail("THEME_ROOT_INVALID")
     try:
-        for part in path.parts[1:]:
+        for index, part in enumerate(path.parts[1:], start=1):
             try:
                 child = os.open(part, _DIRECTORY_FLAGS, dir_fd=descriptor)
             except FileNotFoundError:
@@ -514,12 +535,17 @@ def _open_absolute_directory(
                 opened = os.fstat(child)
                 if not stat.S_ISDIR(opened.st_mode):
                     _fail("THEME_ROOT_INVALID")
-                _same_named_object(
-                    opened,
-                    parent_fd=descriptor,
-                    name=part,
-                    error_code="THEME_ROOT_INVALID",
-                )
+                if index < len(path.parts) - 1:
+                    _same_named_ancestor_directory(
+                        opened, parent_fd=descriptor, name=part
+                    )
+                else:
+                    _same_named_object(
+                        opened,
+                        parent_fd=descriptor,
+                        name=part,
+                        error_code="THEME_ROOT_INVALID",
+                    )
             except BaseException:
                 os.close(child)
                 raise
