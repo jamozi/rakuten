@@ -92,7 +92,7 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "bbd24d6781c0de3fd856e53fe518f8a1c93bc9681a841ba7be50ff16ec5a8d62",
+      "sha256": "b485f6ae3a33bac4f250d96da59411db0e77ae81da4775cd749200bf25366eda",
       "size": 80081
     },
     {
@@ -282,7 +282,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "baa5466cd017e099aa6b635c44588983ac2d76abf2d33c5f9aabe0c7de74ae73",
+      "sha256": "e9be888a03755881c4fe98cab90a2b46eec9f91687e41bfc4be5668e55f60a5a",
       "size": 54277
     },
     {
@@ -327,8 +327,8 @@
     },
     {
       "path": "python/raos/application/editorial/editorial_portfolio_v2.py",
-      "sha256": "252fe59d132349e7e53c7233cea60bea8a1e9e654e2ee50120a670892104b15d",
-      "size": 92501
+      "sha256": "3304b8d4d83fedea2ca7441de440333e458d0916ebf8d636bb0dd2ae60b6f649",
+      "size": 92936
     },
     {
       "path": "python/raos/application/editorial/product_safety_manufacturer_capture.py",

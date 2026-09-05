@@ -1257,17 +1257,24 @@ def _validate_rakuten_identity(
 
 
 def rakuten_identity_query_v1(binding: ProductBindingV2) -> str:
-    """Widen only the search syntax; exact identity matching remains unchanged.
+    """Build a bounded search without changing exact identity matching.
 
     Rakuten rejects one-byte search terms (for example the '2' in 'mini 2').
     Such terms are omitted from retrieval, not from product identity checks.
+    A digits-only model also uses the required brand/name tokens: searching for
+    a short number alone brings back unrelated categories and incomplete pages.
     """
+    terms = binding.representative_model.split()
+    if binding.representative_model.isascii() and binding.representative_model.isdigit():
+        terms.extend(
+            part for token in binding.required_title_tokens for part in token.split()
+        )
     query = " ".join(
-        part
-        for part in binding.representative_model.split()
-        if not (len(part) == 1 and part.isascii())
+        dict.fromkeys(
+            part for part in terms if not (len(part) == 1 and part.isascii())
+        )
     )
-    if not query:
+    if not query or len(query.encode("utf-8")) > 128:
         _fail("RAOS_EDITORIAL_PORTFOLIO_DISCOVERY_QUERY_INVALID")
     return query
 

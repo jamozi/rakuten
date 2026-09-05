@@ -50,6 +50,47 @@ def test_toshiba_locators_bind_values_to_their_specification_rows() -> None:
             assert not fragments & obsolete
 
 
+@pytest.mark.parametrize(
+    ("source_ref", "required", "ambiguous"),
+    (
+        (
+            "SRC-ANKER-SOLIX-C800",
+            {
+                owner.ANKER_STOCK_BOUND_PURCHASE_FRAGMENT,
+                "<h2>業界最高水準の高出力<sup>※</sup>\n</h2>\n<p>768Whの中容量帯ながら、1200Wを安定して出力できる",
+                '<td class="product-specs-heading">サイズ</td>\n                  <td>約37.1 x 20.5 x 25.0cm （ 幅 x 奥行 x 高さ )</td>',
+                '<td class="product-specs-heading">重さ</td>\n                <td>約10.5kg</td>',
+                "<p><small>※電池容量が初期容量の80%まで劣化するまでのサイクル回数は3,000回以上",
+                "<h3>購入後も安心のアフターサービス</h3>\n<p>専門スタッフのサポートや、ご使用済みポータブル電源の回収サービス",
+            },
+            {
+                'aria-label="カートに入れる"',
+                "768Whの中容量帯ながら、1200Wを安定して出力できる",
+                "約37.1 x 20.5 x 25.0cm （ 幅 x 奥行 x 高さ )",
+                "約10.5kg",
+                "電池容量が初期容量の80%まで劣化するまでのサイクル回数は3,000回以上",
+                "ご使用済みポータブル電源の回収サービス",
+            },
+        ),
+        (
+            "SRC-EUFY-AUTOEMPTY-C10-T2292",
+            {"<h2>吸引は強力、角まで綺麗に</h2>\n<p>最大4000Paの強力な吸引力"},
+            {"最大4000Paの強力な吸引力"},
+        ),
+    ),
+)
+def test_anker_repeated_claims_are_bound_to_visible_sections(
+    source_ref: str, required: set[str], ambiguous: set[str]
+) -> None:
+    """A repeated spec, metadata description, or footer is not a unique locator."""
+    _registry, locator = _documents()
+    source = next(row for row in locator["sources"] if row["source_ref"] == source_ref)
+    for item in source["locators"]:
+        fragments = set(item["exact_utf8_fragments"])
+        assert required <= fragments
+        assert not fragments & ambiguous
+
+
 def test_locator_text_fragments_reject_embedded_meta_markup() -> None:
     _registry, locator = _documents()
     owner._validate_locator_text_fragments(locator)
