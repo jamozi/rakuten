@@ -263,6 +263,7 @@ def mixed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
                 "description": current["home"]["excerpt"],
             },
             images,
+            {},
         ),
     )
     return {
@@ -299,6 +300,30 @@ def test_mixed_one_new_nine_old_passes_without_new_content_global_expectations(
     assert binding["snapshot_sha256"] == audit.digest(
         audit.canonical(mixed["original_snapshot"])
     )
+
+
+@pytest.mark.parametrize(
+    "injected",
+    [
+        '<script src="https://stats.wp.com/e-202636.js" id="jetpack-stats-js"></script>',
+        '<script id="jetpack-stats-js-before">new Image().src="https://pixel.wp.com/g.gif"</script>',
+        '<script src="https://kurashinoshirube.com/wp-content/cache/innocent.js"></script>',
+        '<script>window["fet"+"ch"]("/collect")</script>',
+        '<style>@import "https://example.com/collect.css";</style>',
+        '<!--><script>fetch("/collect")</script>-->',
+        '<![CDATA[><script>fetch("/collect")</script>]]>',
+        '<div data-wp-interactive="core/search" data-wp-context=\'{"url":"https://pixel.wp.com/probe.gif"}\'></div>',
+    ],
+)
+def test_full_mixed_readback_rejects_non_raos_measurement(mixed, injected):
+    transport = mixed["transport"]
+    url = audit.publication.ORIGIN + "/"
+    row = transport.responses[url]
+    transport.responses[url] = replace(
+        row, body=row.body.replace(b"</body>", injected.encode() + b"</body>")
+    )
+    with pytest.raises(audit.seo.AuditError, match="MEASUREMENT_OFF_MISMATCH"):
+        audit.run_verified_incremental_public_audit(**mixed)
 
 
 def test_expired_release_can_be_read_back_but_not_renewed(
@@ -425,13 +450,39 @@ def test_image_same_url_changed_bytes_rejected(mixed: dict[str, Any]) -> None:
         audit.run_verified_incremental_public_audit(**mixed)
 
 
+def test_known_image_404_is_rejected(mixed):
+    url = audit.publication.EXPECTED_SOCIAL_IMAGE_URL
+    mixed["transport"].responses[url] = replace(
+        mixed["transport"].responses[url], status=404
+    )
+    with pytest.raises(audit.seo.AuditError, match="PUBLIC_IMAGE_BROKEN"):
+        audit.run_verified_incremental_public_audit(**mixed)
+
+
+def test_same_origin_pixel_outside_article_is_not_inferred_safe(mixed):
+    url = audit.publication.ORIGIN + "/"
+    pixel = audit.publication.ORIGIN + "/anonymous.gif"
+    row = mixed["transport"].responses[url]
+    mixed["transport"].responses[url] = replace(
+        row,
+        body=row.body.replace(
+            b"</body>", f'<img src="{pixel}" alt=""></body>'.encode()
+        ),
+    )
+    mixed["transport"].responses[pixel] = audit.seo.HttpResponse(
+        pixel, 200, (("Content-Type", "image/gif"),), b"synthetic pixel", STAMP
+    )
+    with pytest.raises(audit.seo.AuditError, match="PUBLIC_IMAGE_IDENTITY_UNVERIFIED"):
+        audit.run_verified_incremental_public_audit(**mixed)
+
+
 @pytest.mark.parametrize(
     "change, code",
     [
         ("set-cookie", "PUBLIC_MEASUREMENT_OFF_MISMATCH"),
         ("measurement-script", "PUBLIC_MEASUREMENT_OFF_MISMATCH"),
         ("home-route", "HOME_ARTICLE_ROUTES_MISSING"),
-        ("single-quoted-image", "PUBLIC_IMAGE_BROKEN"),
+        ("single-quoted-image", "PUBLIC_IMAGE_IDENTITY_UNVERIFIED"),
     ],
 )
 def test_shared_home_public_runtime_is_checked(

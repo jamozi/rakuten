@@ -888,6 +888,7 @@ def execute_incremental(
     ),
     deploy: Callable[..., dict[str, Any]] = deployment_call,
     clock: Callable[[], datetime] = lambda: datetime.now(UTC),
+    runtime_precondition: Callable[..., Mapping[str, Any]] | None = None,
 ) -> Path:
     """Explicit stages. Proposal only registers; apply uses the server's lease."""
     if stage not in {"propose", "apply", "readback"}:
@@ -969,6 +970,33 @@ def execute_incremental(
         deployment = deploy("deployment-status", {})
         _validate_deployment_status(deployment, require_apply_ready=stage != "readback")
         current = _live_documents(client)
+        if stage != "readback":
+            # MCP's measurement field only covers the RAOS plugin. Independently
+            # inspect the currently installed (baseline or bound candidate) public
+            # runtime before creating proposals or attempting any new writes.
+            import raos_wordpress_runtime_audit as runtime
+
+            assert replayed is not None
+            runtime_before = (runtime_precondition or runtime.verify_before_write)(
+                current_tree=deployment["theme"]["tree_sha256"],
+                baseline_tree=replayed.snapshot["deployment_status"]["theme"][
+                    "tree_sha256"
+                ],
+                candidate_tree=replayed.context.to_document()[
+                    "expected_shared_readback_sha256"
+                ].get(
+                    "theme",
+                    replayed.snapshot["deployment_status"]["theme"]["tree_sha256"],
+                ),
+                now=clock(),
+                snapshot=replayed.snapshot,
+            )
+            if (
+                runtime_before.get("state") != "CLOSED_DECLARED_RUNTIME_VERIFIED"
+                or runtime_before.get("theme_tree_sha256")
+                != deployment["theme"]["tree_sha256"]
+            ):
+                fail("PUBLIC_RUNTIME_PRECONDITION_FAILED")
         if stage == "propose":
             assert replayed is not None
             _require_before(replayed, current, deployment)
@@ -1007,6 +1035,7 @@ def execute_incremental(
                 "operation_ids": {},
                 "batch_registration": None,
                 "apply_receipt": None,
+                "runtime_before_proposal": runtime_before,
             }
             _save(candidate_path, receipt, "PROPOSALS_IN_PROGRESS")
             if "theme" in replayed.manifest["shared_artifacts"]:
@@ -1130,6 +1159,7 @@ def execute_incremental(
                 now=clock(),
             )
             registration = receipt["batch_registration"]
+            receipt["runtime_before_apply"] = runtime_before
             _save(candidate_path, receipt, "APPLY_IN_FLIGHT")
             applied = deploy(
                 "release-wait-and-apply",

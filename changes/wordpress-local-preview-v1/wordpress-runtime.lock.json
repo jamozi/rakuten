@@ -1,0 +1,66 @@
+{
+  "schema": "RAOS_WORDPRESS_PUBLIC_RUNTIME_DEPENDENCIES_V1",
+  "image": "wordpress:7.1.0-php8.3-apache@sha256:8801a1239d7ba9fb340a5fc5ba0bf7f8d3652adbd64893e3fba7992ba618108e",
+  "pristine_root": "/usr/src/wordpress",
+  "core_version": "7.1",
+  "provenance_sha256": {
+    "wp-includes/version.php": "b143b4dd99c0ba65067604d5030b8ccb016e5d0f1fcde880c4e086fb1b6f9316",
+    "wp-includes/assets/script-modules-packages.php": "0ca4a632f24ab5fd18a746664b66adbb8e0eca0e3dffe87948e55b13faa39a5f"
+  },
+  "modules": [
+    {
+      "module_id": "@wordpress/interactivity",
+      "path": "wp-includes/js/dist/script-modules/interactivity/index.js",
+      "variant": "debug",
+      "byte_length": 104409,
+      "sha256": "811b56f9ae96835ed23fa1e0a574919ddaf909fa88798c05054ae109867a1243",
+      "version_query": "efaa5193bbad9c60ffd1",
+      "static_imports": []
+    },
+    {
+      "module_id": "@wordpress/interactivity",
+      "path": "wp-includes/js/dist/script-modules/interactivity/index.min.js",
+      "variant": "minified",
+      "byte_length": 40106,
+      "sha256": "726ac59577c8aeeec94c61bfb7791a709e401b5d871d35c39a65cd948f6124e3",
+      "version_query": "efaa5193bbad9c60ffd1",
+      "static_imports": []
+    },
+    {
+      "module_id": "@wordpress/block-library/navigation/view",
+      "path": "wp-includes/js/dist/script-modules/block-library/navigation/view.js",
+      "variant": "debug",
+      "byte_length": 5847,
+      "sha256": "3c4e7462460fb6f2619dd14352e308c01877754801bce78edac7cef94ef49ecf",
+      "version_query": "1bf28ded04f9f188bdcb",
+      "static_imports": ["@wordpress/interactivity"]
+    },
+    {
+      "module_id": "@wordpress/block-library/navigation/view",
+      "path": "wp-includes/js/dist/script-modules/block-library/navigation/view.min.js",
+      "variant": "minified",
+      "byte_length": 3033,
+      "sha256": "fbe11af6f29f55ae480e2058aad3ac400315d2792c3b14346f016b70cebf3bb3",
+      "version_query": "1bf28ded04f9f188bdcb",
+      "static_imports": ["@wordpress/interactivity"]
+    },
+    {
+      "module_id": "@wordpress/block-library/search/view",
+      "path": "wp-includes/js/dist/script-modules/block-library/search/view.js",
+      "variant": "debug",
+      "byte_length": 1857,
+      "sha256": "3c68e873452f842a0c7e32fbd23052eb5a17fc109052793b30336c0f43afe9ac",
+      "version_query": "38bd0e230eaffa354d2a",
+      "static_imports": ["@wordpress/interactivity"]
+    },
+    {
+      "module_id": "@wordpress/block-library/search/view",
+      "path": "wp-includes/js/dist/script-modules/block-library/search/view.min.js",
+      "variant": "minified",
+      "byte_length": 957,
+      "sha256": "03f9888c8ad61c6571d33bb0e9b4505c5e191cc4612b98e79dd5af4caf3cef53",
+      "version_query": "38bd0e230eaffa354d2a",
+      "static_imports": ["@wordpress/interactivity"]
+    }
+  ]
+}

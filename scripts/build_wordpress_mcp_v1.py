@@ -223,6 +223,8 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("scripts/raos_wordpress_incremental_preview.py"),
     Path("scripts/raos_wordpress_incremental_publication.py"),
     Path("scripts/raos_wordpress_incremental_seo_audit.py"),
+    Path("scripts/raos_wordpress_runtime_audit.py"),
+    Path("changes/wordpress-local-preview-v1/wordpress-runtime.lock.json"),
     Path("scripts/raos_wordpress_incremental_snapshot.py"),
     Path("scripts/raos_wordpress_local_restore.py"),
     Path("scripts/raos_wordpress_scratch_restore.py"),

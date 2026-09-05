@@ -407,6 +407,14 @@ def world(tmp_path, monkeypatch, request):
             client_factory=lambda: server,
             deploy=server.deploy,
             clock=lambda: data["now"],
+            runtime_precondition=data.get(
+                "runtime_precondition",
+                lambda **kw: {
+                    "state": "CLOSED_DECLARED_RUNTIME_VERIFIED",
+                    "theme_tree_sha256": kw["current_tree"],
+                    "pages": {"synthetic": True},
+                },
+            ),
         )
 
     data["execute"] = execute
@@ -425,6 +433,92 @@ def test_proposal_is_not_apply_and_requires_separate_owner_approval(world):
     receipt, _raw = port.read_json(result.parent, result.name)
     assert receipt["state"] == "PUBLISHED_AND_READBACK_VERIFIED"
     assert server.apply_count == 1
+
+
+def reject_observed_stats(**kwargs):
+    # Exercise the real independent HTML gate, not the fixture's MCP-status stub.
+    import raos_wordpress_runtime_audit as runtime
+
+    parser = runtime.RuntimeMarkup({})
+    parser.feed(
+        '<script src="https://stats.wp.com/e-202636.js" id="jetpack-stats-js"></script>'
+    )
+    parser.close()
+    pytest.fail("Stats must not be accepted")
+
+
+def test_runtime_failure_prevents_every_proposal_write(world):
+    import raos_wordpress_seo_audit as seo
+
+    world["runtime_precondition"] = reject_observed_stats
+    server = world["server"]
+    before = deepcopy(server.documents)
+    with pytest.raises(seo.AuditError, match="MEASUREMENT_OFF_MISMATCH"):
+        world["execute"]("propose")
+    assert server.proposal_count == server.apply_count == 0
+    assert server.theme_proposals == {} and server.batch is None
+    assert server.documents == before
+
+
+def test_measurement_enabled_after_proposal_prevents_apply_and_recovery(world):
+    import raos_wordpress_seo_audit as seo
+
+    world["execute"]("propose")
+    server = world["server"]
+    server.state = "APPROVED"
+    before = deepcopy(server.documents)
+    world["runtime_precondition"] = reject_observed_stats
+    with pytest.raises(seo.AuditError, match="MEASUREMENT_OFF_MISMATCH"):
+        world["execute"]("apply")
+    assert server.apply_count == 0
+    assert server.member_apply_calls == server.member_recovery_calls == []
+    assert server.documents == before
+
+
+def test_reused_proposal_requires_fresh_runtime_check(world):
+    calls = []
+
+    def observed(**kwargs):
+        calls.append(kwargs["now"])
+        return {
+            "state": "CLOSED_DECLARED_RUNTIME_VERIFIED",
+            "theme_tree_sha256": kwargs["current_tree"],
+        }
+
+    world["runtime_precondition"] = observed
+    world["execute"]("propose")
+    world["now"] = NOW + timedelta(seconds=10)
+    world["execute"]("propose")
+    assert calls == [NOW, NOW + timedelta(seconds=10)]
+    assert world["server"].proposal_count == 1
+
+
+def test_already_applied_is_readback_only_not_new_prewrite_or_resend(world):
+    world["execute"]("propose")
+    world["server"].state = "APPROVED"
+    world["execute"]("apply")
+    world["runtime_precondition"] = lambda **kw: pytest.fail(
+        "No prewrite gate for already applied"
+    )
+    world["execute"]("apply")
+    assert world["server"].apply_count == 1
+
+
+@pytest.mark.parametrize(
+    "invalid",
+    [
+        {},
+        {"state": "PASS"},
+        {"state": "CLOSED_DECLARED_RUNTIME_VERIFIED", "theme_tree_sha256": "0" * 64},
+    ],
+)
+def test_incomplete_runtime_precondition_cannot_authorize_mutation(world, invalid):
+    world["runtime_precondition"] = lambda **kw: invalid
+    with pytest.raises(
+        publication.PublicationFailure, match="PUBLIC_RUNTIME_PRECONDITION_FAILED"
+    ):
+        world["execute"]("propose")
+    assert world["server"].proposal_count == world["server"].apply_count == 0
 
 
 @pytest.mark.parametrize("state", ["REGISTERED", "APPROVED"])

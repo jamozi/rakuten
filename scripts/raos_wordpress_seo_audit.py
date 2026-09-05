@@ -331,10 +331,36 @@ class HttpTransport(Protocol):
 class BoundedHttpsTransport:
     """Exact-origin HTTPS GET transport; it never follows redirects."""
 
-    def __init__(self, contract: AuditContract) -> None:
+    def __init__(
+        self,
+        contract: AuditContract,
+        *,
+        allowed_resource_urls: frozenset[str] = frozenset(),
+    ) -> None:
         self._contract = contract
         self._origin_parts = urlsplit(contract.origin)
         self._ssl_context = ssl.create_default_context()
+        # Opt-in, finite dependency URLs only. Ordinary page/image/XML callers
+        # retain the original no-query boundary, including on the same origin.
+        for url in allowed_resource_urls:
+            parts = urlsplit(url)
+            if (
+                parts.scheme != "https"
+                or parts.netloc != self._origin_parts.netloc
+                or parts.fragment
+                or not parts.path.startswith(
+                    ("/wp-includes/", "/wp-content/themes/kurashinoshirube-child/")
+                )
+                or re.fullmatch(r"/[a-zA-Z0-9_./-]+", parts.path) is None
+                or any(segment in {".", ".."} for segment in parts.path.split("/"))
+                or (
+                    parts.query
+                    and re.fullmatch(r"ver=(?:[a-f0-9]{20}|[a-f0-9]{64})", parts.query)
+                    is None
+                )
+            ):
+                _fail("HTTP_URL_OUT_OF_BOUNDARY")
+        self._allowed_resource_urls = allowed_resource_urls
 
     def get(self, url: str) -> HttpResponse:
         parts = urlsplit(url)
@@ -342,7 +368,7 @@ class BoundedHttpsTransport:
             parts.scheme != "https"
             or parts.netloc != self._origin_parts.netloc
             or parts.hostname is None
-            or parts.query
+            or (parts.query and url not in self._allowed_resource_urls)
             or parts.fragment
             or not parts.path.startswith("/")
         ):
@@ -356,7 +382,7 @@ class BoundedHttpsTransport:
         try:
             connection.request(
                 "GET",
-                parts.path,
+                parts.path + ("?" + parts.query if parts.query else ""),
                 headers={
                     "Accept": "text/html,application/xml,text/plain;q=0.9,*/*;q=0.1",
                     "User-Agent": self._contract.user_agent,
