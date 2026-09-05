@@ -811,7 +811,7 @@ def test_article_visuals_and_toc_are_closed_to_the_reviewed_portfolio() -> None:
     media = functions.split("function kurashinoshirube_reader_media_asset", 1)[1].split("function kurashinoshirube_article_visual_asset", 1)[0]
     for requirement in ("'approved'", "'usage_basis'", "'checked_at'", "'alt'", "'caption'", "kurashinoshirube_verified_asset_uri"):
         assert requirement in media
-    assert _load_json(EDITORIAL_NAVIGATION_PATH)["media_assets"] == []
+    assert all(asset["approval"] == "approved" and asset["usage_basis"] and asset["checked_at"] for asset in _load_json(EDITORIAL_NAVIGATION_PATH)["media_assets"])
     assert "kurashinoshirube_public_article_identity((int) get_the_ID())" in toc
     assert "count($items) < 3 || count($items) > 24" in toc
     assert "<details open><summary>この記事の目次</summary><ol>" in toc

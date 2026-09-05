@@ -174,3 +174,19 @@ def test_reader_taxonomy_has_one_primary_category_and_preserves_empty_groups() -
     raw['groups'][0]['article_ids'] = ['a']
     with pytest.raises(ValueError, match='PRIMARY_CATEGORY'):
         reader_navigation(raw, articles)
+
+
+def test_dimension_diagram_requires_approved_official_facts_and_does_not_invent_clearance() -> None:
+    from raos.application.editorial.reader_components import dimension_diagram
+    asset = dict(asset_ref='diagram', asset_type='html_diagram', source='https://maker.test/spec', usage_basis='original diagram', checked_at='2026-08-31', approval='approved', alt='body dimensions', caption='本体寸法', aspect_ratio=[42,44], role='dimension')
+    source = dict(source_ref='source', url=asset['source'], retrieved_on='2026-08-31', authority='MANUFACTURER_OFFICIAL')
+    claim = dict(claim_id='claim', classification='MAJOR_VERIFIABLE', status='BOUND_TO_OFFICIAL_SOURCE', evidence_refs=['source'], dimensions=[dict(subject='EXACT-MODEL本体', width_cm=42, depth_cm=44, height_cm=47)])
+    figure = dimension_diagram(claim, source, asset)
+    assert figure is not None
+    assert '幅 42cm × 奥行 44cm' in figure.text()
+    assert '扉開放時の寸法：この記事で確認できた資料では未確認' in figure.text()
+    assert '公式情報確認：2026-08-31' in figure.text()
+    assert dimension_diagram(claim, source, {**asset,'approval':'pending'}) is None
+    assert dimension_diagram({**claim,'classification':'EDITORIAL_INFERENCE'}, source, asset) is None
+    assert dimension_diagram(claim, {**source,'retrieved_on':None}, asset) is None
+    assert dimension_diagram(claim, {**source,'source_ref':'unbound'}, asset) is None

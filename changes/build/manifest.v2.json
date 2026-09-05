@@ -11,12 +11,12 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "2cca6bd0a486c3feb5b59a9ac5228379eccb2b23f8977f00b07dcec0afeb321a",
+          "sha256": "f0e03e10f9bc480685f6b1b4e12472d94559eb84cb68f65124ba83933b7da19c",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 18040,
-          "sha256": "3c5f353b710c98c4bcaf803e7b8b9346ca7bf83694f452411e1b80a2a4365dd2",
+          "sha256": "bc14fd8503414704ecee7f1a6e44d95412913ca730897640befb959989cf3cce",
           "uri": "repo://changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement/config/measurement-allowlist.v1.json"
         }
       ],
@@ -93,8 +93,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 195951,
-          "sha256": "9f9421506620acd11704aabd8048dd2000182a1fe5ab4018feaa2a9693ea254c",
+          "bytes": 198129,
+          "sha256": "8dc96a7cc2051b25d161e772adb477c3b717a369a712b19374e0ee5dbfd89b52",
           "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
         },
         {
@@ -295,12 +295,12 @@
       "outputs": [
         {
           "bytes": 20043,
-          "sha256": "345196ede84f2f90379b58521c3abbe4d904fd6a9077171c175d1e0511e4ecc1",
+          "sha256": "3aac20240a47009ee8bf1ff0b63b7769a303a42c5b58245f2ee5e0b2873e0b6b",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
-          "bytes": 21467,
-          "sha256": "5a83af2e4366f407ddbbb9c998dfae5c35ffa1fea649fb6b9085ff73741d6cb2",
+          "bytes": 24338,
+          "sha256": "35b883ab68bf71168809ab77f2e7701d2ec8f724d938c9ff58b9a158ee442f02",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
         }
       ],
@@ -26313,7 +26313,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "650afa7946ebbe81f1350a3ef39b22d3111980265cdf73490b3b4664c4264611",
+          "sha256": "092b95b5ed7ebb8800bbf8d823fa22f1193cd7c22a9bddc2982fefc6d6704f60",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26543,8 +26543,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 81038,
-          "sha256": "91d648578fbc516b6ff4e4250d85e314522b81f601655d57d9c928a0918d53b3",
+          "bytes": 81039,
+          "sha256": "35c42d293038a28ff49e554d65e4b468e6b993a1431b0f82b86dee018e3e2f24",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29173,12 +29173,12 @@
       "outputs": [
         {
           "bytes": 563,
-          "sha256": "4684ade3051e6235b74938b2911f4b249aeb4d90df091e35e74c65463a7dc52d",
+          "sha256": "1821df021002fe85185377e52e609892b310d8bcc94a2a77b0d4831c491e1dfb",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
-          "bytes": 27269,
-          "sha256": "605bf6ce2e56f8379712b9e5ca1548f74a41ca006a37f2c974aca5229e4a4c0c",
+          "bytes": 27270,
+          "sha256": "03215c64c116b2636bf6b8cbab1f574f04d00b5922ce05ca56ad372c3824575a",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30004,7 +30004,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "468864e938aacafbac9d84b031ea04b603ab2d966abf7b15c2685261bf6c63b6",
+          "sha256": "25d0ab4f7ca290a040c471602431f07c913408e6e5bf40d1e2e781cbe25e6c8c",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

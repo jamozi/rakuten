@@ -636,6 +636,14 @@
           "editors-note",
           "purchase-caution"
         ],
+        "contextual_links": [
+          {
+            "journey_stage": "verify",
+            "placement": "purchase_checks",
+            "question": "SOLOTAとラクアmini Plusの型番・販売状態を確かめる",
+            "target_ref": "solota-vs-rakua-mini-plus"
+          }
+        ],
         "decision_axes": [
           {
             "how_to_check": "設置面の幅・奥行・高さに加え、取扱説明書で扉前方と上部・左右・背面の指定空間を確認します。",
@@ -685,6 +693,33 @@
           "CLM-ST1704-DISH-SS-MA251-SPECS",
           "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
           "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SUPPORT"
+        ],
+        "media": [
+          {
+            "asset_ref": "dimension-prd-thanko-rakua-mini-tk-mdw22w",
+            "evidence_ref": "CLM-ST1704-DISH-RAKUA-SPECS",
+            "role": "dimension"
+          },
+          {
+            "asset_ref": "dimension-prd-siroca-ss-ma251",
+            "evidence_ref": "CLM-ST1704-DISH-SS-MA251-SPECS",
+            "role": "dimension"
+          },
+          {
+            "asset_ref": "dimension-prd-toshiba-dws-33b-w",
+            "evidence_ref": "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
+            "role": "dimension"
+          },
+          {
+            "asset_ref": "dimension-prd-siroca-ss-m171",
+            "evidence_ref": "CLM-ST1704-DISH-SS-M171-SPECS",
+            "role": "dimension"
+          }
+        ],
+        "practical_notes": [
+          "食器量の確認例（仮定）：1食に皿2枚・茶碗1点・コップ1点を使うなら、まず4点の食器リストを作ります。メーカーの標準食器と自宅の食器では大きさや形が違うため、公表点数から何食分入るかは断定できません。",
+          "給水・排水、残さい処理、フィルター・庫内の手入れについて、機種ごとの取扱説明書で毎回残る作業と頻度を確認します。記録された公式情報にない頻度は未確認として扱います。",
+          "本体の価格と、必要な別売品・工事・洗剤などの継続費用は分けて確認します。価格や在庫、工事費の未確認値は固定金額として掲載しません。"
         ],
         "products": [
           {
@@ -1504,6 +1539,14 @@
       "reader_experience": {
         "article_type": "status_check",
         "components_enabled": true,
+        "contextual_links": [
+          {
+            "journey_stage": "compare",
+            "placement": "axes",
+            "question": "設置・食器量・給水方式から小型食洗機4候補を比べる",
+            "target_ref": "st1704-countertop-dishwasher-for-small-households"
+          }
+        ],
         "decision_axes": [
           {
             "how_to_check": "NP-TMLK1-KとTK-MDW22Bのどちらか、色、本体のみかセットかを販売表示と照合します。",

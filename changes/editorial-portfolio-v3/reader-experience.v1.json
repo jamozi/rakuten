@@ -115,6 +115,41 @@
         "reader-section",
         "editors-note",
         "purchase-caution"
+      ],
+      "media": [
+        {
+          "asset_ref": "dimension-prd-thanko-rakua-mini-tk-mdw22w",
+          "role": "dimension",
+          "evidence_ref": "CLM-ST1704-DISH-RAKUA-SPECS"
+        },
+        {
+          "asset_ref": "dimension-prd-siroca-ss-ma251",
+          "role": "dimension",
+          "evidence_ref": "CLM-ST1704-DISH-SS-MA251-SPECS"
+        },
+        {
+          "asset_ref": "dimension-prd-toshiba-dws-33b-w",
+          "role": "dimension",
+          "evidence_ref": "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS"
+        },
+        {
+          "asset_ref": "dimension-prd-siroca-ss-m171",
+          "role": "dimension",
+          "evidence_ref": "CLM-ST1704-DISH-SS-M171-SPECS"
+        }
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "verify",
+          "question": "SOLOTAとラクアmini Plusの型番・販売状態を確かめる",
+          "target_ref": "solota-vs-rakua-mini-plus",
+          "placement": "purchase_checks"
+        }
+      ],
+      "practical_notes": [
+        "食器量の確認例（仮定）：1食に皿2枚・茶碗1点・コップ1点を使うなら、まず4点の食器リストを作ります。メーカーの標準食器と自宅の食器では大きさや形が違うため、公表点数から何食分入るかは断定できません。",
+        "給水・排水、残さい処理、フィルター・庫内の手入れについて、機種ごとの取扱説明書で毎回残る作業と頻度を確認します。記録された公式情報にない頻度は未確認として扱います。",
+        "本体の価格と、必要な別売品・工事・洗剤などの継続費用は分けて確認します。価格や在庫、工事費の未確認値は固定金額として掲載しません。"
       ]
     },
     "solota-vs-rakua-mini-plus": {
@@ -149,10 +184,79 @@
           "how_to_verify": "メーカーと検討中の販売元で、正確な型番の現在の表示を確認してください。",
           "decision_effect": "購入リンクがないことを、性能が低い、販売終了、購入不可という判断に使わないでください。"
         }
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "compare",
+          "question": "設置・食器量・給水方式から小型食洗機4候補を比べる",
+          "target_ref": "st1704-countertop-dishwasher-for-small-households",
+          "placement": "axes"
+        }
       ]
     }
   },
-  "media": [],
+  "media": [
+    {
+      "asset_ref": "dimension-prd-thanko-rakua-mini-tk-mdw22w",
+      "asset_type": "html_diagram",
+      "source": "https://www.thanko.jp/view/item/000000003922?category_page_id=ct576",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。",
+      "checked_at": "2026-08-31",
+      "approval": "approved",
+      "alt": "THANKO ラクアmini TK-MDW22W本体の本体寸法。設置余白は別途確認。",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "aspect_ratio": [
+        308,
+        315
+      ],
+      "role": "dimension"
+    },
+    {
+      "asset_ref": "dimension-prd-siroca-ss-ma251",
+      "asset_type": "html_diagram",
+      "source": "https://www.siroca.co.jp/product/dishwasher_advance/",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。",
+      "checked_at": "2026-08-23",
+      "approval": "approved",
+      "alt": "siroca SS-MA251本体の本体寸法。設置余白は別途確認。",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "aspect_ratio": [
+        420,
+        440
+      ],
+      "role": "dimension"
+    },
+    {
+      "asset_ref": "dimension-prd-toshiba-dws-33b-w",
+      "asset_type": "html_diagram",
+      "source": "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。",
+      "checked_at": "2026-08-31",
+      "approval": "approved",
+      "alt": "東芝 DWS-33B(W)本体の本体寸法。設置余白は別途確認。",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "aspect_ratio": [
+        420,
+        435
+      ],
+      "role": "dimension"
+    },
+    {
+      "asset_ref": "dimension-prd-siroca-ss-m171",
+      "asset_type": "html_diagram",
+      "source": "https://www.siroca.co.jp/product/dishwasher_basic/",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。",
+      "checked_at": "2026-08-31",
+      "approval": "approved",
+      "alt": "siroca SS-M171本体の本体寸法。設置余白は別途確認。",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "aspect_ratio": [
+        420,
+        435
+      ],
+      "role": "dimension"
+    }
+  ],
   "navigation": {
     "groups": [
       {

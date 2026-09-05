@@ -194,6 +194,13 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
             else:
                 article.append(axis_block)
             insertion = axis_block
+            notes = settings.get('practical_notes', [])
+            if isinstance(notes, list) and notes:
+                note = block('<div class="raos-practical-notes"><h3>暮らしで確かめること</h3></div>')
+                for paragraph in notes:
+                    if isinstance(paragraph, str):
+                        note.append(block('<p>' + escape(paragraph) + '</p>'))
+                axis_block.append(note)
     # The decision table resolves identity, fit, and caution from existing cards.
     cards = root.find(cls="raos-product-card")
     rows = []
@@ -274,10 +281,47 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
     if final_offers.children:
         evidence.insert_before(final_offers) if evidence is not None else article.append(final_offers)
     components.enhance_specification_tables(root)
+    media = settings.get('_resolved_dimensions', [])
+    if isinstance(media, list):
+        diagrams = block('<section class="raos-reader-dimensions" aria-labelledby="reader-dimensions"><h2 id="reader-dimensions">本体と、扉を開く空間を分けて測る</h2></section>')
+        for row in media:
+            figure = components.dimension_diagram(row['claim'], row['source'], row['asset'])
+            if figure is not None:
+                diagrams.append(figure)
+        if diagrams.find(tag='figure'):
+            specifications = root.find(cls='comparison-section')
+            if specifications:
+                specifications[0].insert_before(diagrams)
+    links = settings.get('_resolved_contextual_links', [])
+    if isinstance(links, list):
+        for link in links:
+            related_node = components.contextual_link(link['question'], link['url'], link['journey_stage'], existing_targets=frozenset(item['url'] for item in links))
+            if related_node is not None:
+                targets = root.find(cls='raos-decision-axes' if link.get('placement') == 'axes' else 'raos-reader-purchase-checklist')
+                if targets:
+                    targets[0].append(related_node)
     if summary is not None and summary.parent is not None:
         summary.parent.children.insert(summary.parent.children.index(summary) + 1, '<!-- raos-reader-toc -->')
 
 
 def project_registered_article(root: Path, markup: str, *, article_id: str, evidence: CtaEvidence = CtaEvidence(), approved_product_images: frozenset[str] = frozenset()) -> str:
     experience = load_experiences(root).get(article_id)
+    if isinstance(experience, dict):
+        experience = dict(experience)
+        portfolio = json.loads((root / 'changes/editorial-portfolio-v2/editorial-portfolio.v2.json').read_text())
+        routes = {a['article_id']: '/' + a['production_slug'] + '/' for a in portfolio['articles']}
+        experience['_resolved_contextual_links'] = [{**link, 'url': routes[link['target_ref']]} for link in experience.get('contextual_links', []) if link['target_ref'] in routes and link['target_ref'] != article_id]
+        sources = json.loads((root / 'changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json').read_text())
+        claims = {c['claim_id']: c for p in sources['source_packets'] if p['article_id'] == article_id for c in p['claims']}
+        source_refs = {s['source_ref']: s for s in sources['sources']}
+        registry = json.loads((root / REGISTRY_PATH).read_text())
+        assets = {a['asset_ref']: a for a in registry.get('media', [])}
+        resolved = []
+        for media in experience.get('media', []):
+            asset, claim = assets.get(media['asset_ref']), claims.get(media.get('evidence_ref'))
+            if asset is not None and claim is not None:
+                source = next((source_refs.get(ref) for ref in claim['evidence_refs'] if source_refs.get(ref, {}).get('url') == asset.get('source')), None)
+                if source is not None:
+                    resolved.append(dict(asset=asset, claim=claim, source=source))
+        experience['_resolved_dimensions'] = resolved
     return project_article(markup, article_id=article_id, experience=experience if isinstance(experience, dict) else None, evidence=evidence, approved_product_images=approved_product_images)

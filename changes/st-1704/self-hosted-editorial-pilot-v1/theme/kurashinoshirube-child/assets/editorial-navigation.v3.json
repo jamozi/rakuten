@@ -289,7 +289,68 @@
       "label": "備え"
     }
   ],
-  "media_assets": [],
+  "media_assets": [
+    {
+      "alt": "THANKO ラクアmini TK-MDW22W本体の本体寸法。設置余白は別途確認。",
+      "approval": "approved",
+      "aspect_ratio": [
+        308,
+        315
+      ],
+      "asset_ref": "dimension-prd-thanko-rakua-mini-tk-mdw22w",
+      "asset_type": "html_diagram",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "checked_at": "2026-08-31",
+      "role": "dimension",
+      "source": "https://www.thanko.jp/view/item/000000003922?category_page_id=ct576",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。"
+    },
+    {
+      "alt": "siroca SS-MA251本体の本体寸法。設置余白は別途確認。",
+      "approval": "approved",
+      "aspect_ratio": [
+        420,
+        440
+      ],
+      "asset_ref": "dimension-prd-siroca-ss-ma251",
+      "asset_type": "html_diagram",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "checked_at": "2026-08-23",
+      "role": "dimension",
+      "source": "https://www.siroca.co.jp/product/dishwasher_advance/",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。"
+    },
+    {
+      "alt": "東芝 DWS-33B(W)本体の本体寸法。設置余白は別途確認。",
+      "approval": "approved",
+      "aspect_ratio": [
+        420,
+        435
+      ],
+      "asset_ref": "dimension-prd-toshiba-dws-33b-w",
+      "asset_type": "html_diagram",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "checked_at": "2026-08-31",
+      "role": "dimension",
+      "source": "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。"
+    },
+    {
+      "alt": "siroca SS-M171本体の本体寸法。設置余白は別途確認。",
+      "approval": "approved",
+      "aspect_ratio": [
+        420,
+        435
+      ],
+      "asset_ref": "dimension-prd-siroca-ss-m171",
+      "asset_type": "html_diagram",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "checked_at": "2026-08-31",
+      "role": "dimension",
+      "source": "https://www.siroca.co.jp/product/dishwasher_basic/",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。"
+    }
+  ],
   "reader_navigation": {
     "hubs": [
       {
@@ -498,7 +559,7 @@
   },
   "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
   "source_navigation_sha256": "ae5c793515e8de38d67fa3ec25979b639a6ab4487511482bc65d564c66c6e077",
-  "source_portfolio_sha256": "9f9421506620acd11704aabd8048dd2000182a1fe5ab4018feaa2a9693ea254c",
+  "source_portfolio_sha256": "8dc96a7cc2051b25d161e772adb477c3b717a369a712b19374e0ee5dbfd89b52",
   "target_origin": "https://kurashinoshirube.com",
   "version": "3.0.0"
 }

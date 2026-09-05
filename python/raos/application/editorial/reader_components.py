@@ -7,10 +7,12 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from html import escape
+import math
 from typing import cast
 
 from raos.application.editorial.reader_html import Element, block
 from raos.application.editorial.reader_experience_v1 import ArticleType, CtaType, CtaEvidence, cta_visible
+from raos.application.editorial.reader_experience_v1 import approved_media_record
 
 
 def section(identifier: str, heading: str, content: str, cls: str) -> Element:
@@ -127,3 +129,27 @@ def enhance_specification_tables(root: Element) -> None:
             wrapper = wrapper.parent
         if wrapper and wrapper.parent:
             wrapper.parent.append(shared)
+
+
+def dimension_diagram(claim: Mapping[str, object], source: Mapping[str, object], asset: Mapping[str, object]) -> Element | None:
+    """Draw only recorded official dimensions; a footprint is not installation approval."""
+    references = claim.get('evidence_refs')
+    if not isinstance(references, list):
+        return None
+    if (not approved_media_record(asset) or asset.get('asset_type') != 'html_diagram'
+        or claim.get('classification') != 'MAJOR_VERIFIABLE' or claim.get('status') != 'BOUND_TO_OFFICIAL_SOURCE'
+        or source.get('authority') != 'MANUFACTURER_OFFICIAL' or not source.get('retrieved_on')
+        or source.get('url') != asset.get('source') or source.get('source_ref') not in references):
+        return None
+    dimensions = claim.get('dimensions')
+    if not isinstance(dimensions, list) or not dimensions:
+        return None
+    body = dimensions[0]
+    if not isinstance(body, dict) or any(type(body.get(k)) not in (int, float) or not math.isfinite(body[k]) or body[k] <= 0 for k in ('width_cm', 'depth_cm', 'height_cm')):
+        return None
+    width, depth, height = (body[k] for k in ('width_cm', 'depth_cm', 'height_cm'))
+    label = f'本体を上から見た幅{width:g}cm、奥行{depth:g}cm。高さ{height:g}cm。'
+    opened = next((d for d in dimensions[1:] if isinstance(d, dict) and type(d.get('depth_cm')) in (int,float) and math.isfinite(d['depth_cm']) and d['depth_cm'] > 0 and any(t in str(d.get('subject')) for t in ('扉', 'ドア'))), None)
+    door = f'扉を開いたときの奥行：{opened["depth_cm"]:g}cm（本体を含む）。' if opened else '扉開放時の寸法：この記事で確認できた資料では未確認。取扱説明書で確認してください。'
+    identifier = escape(str(asset['asset_ref']), quote=True)
+    return block(f'<figure class="raos-dimension-diagram" id="{identifier}" data-raos-media-state="approved" data-source-ref="{escape(str(source["source_ref"]), quote=True)}" data-claim-id="{escape(str(claim["claim_id"]), quote=True)}"><figcaption><strong>{escape(str(body.get("subject", "本体寸法")))}</strong></figcaption><div class="raos-dimension-diagram__plan" role="img" aria-label="{escape(label)}" style="aspect-ratio:{width:g}/{depth:g}"><span>上から見た本体</span><span>幅 {width:g}cm × 奥行 {depth:g}cm</span></div><p>高さ：{height:g}cm。{escape(door)}</p><p>上方・左右の余白、給水・排水ホース、電源への経路は別に確かめます。</p><figcaption>{escape(str(asset["caption"]))} <a data-raos-cta-type="verify" href="{escape(str(source["url"]), quote=True)}">メーカー公式で設置条件を確認する</a>。公式情報確認：{escape(str(source["retrieved_on"]))}</figcaption></figure>')
