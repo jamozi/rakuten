@@ -2332,13 +2332,19 @@ def test_content_is_visible_without_javascript() -> None:
     assert "visibility: hidden" not in css
     hidden_selectors = {
         selector.strip()
-        for selector, declarations in re.findall(r"([^{}]+)\{([^{}]*)\}", css)
+        for selector, declarations in re.findall(
+            r"([^{}]+)\{([^{}]*)\}", re.sub(r"/\*[\s\S]*?\*/", "", css)
+        )
         if re.search(r"\bdisplay\s*:\s*none\b", declarations)
     }
     assert hidden_selectors == {
         ".raos-comparison__cards",
         ".raos-comparison__table-view",
         ".raos-site-header .raos-wordmark::before",
+        ".raos-header-nojs-shell",
+        ".raos-site-header:has(.raos-header-nojs) .raos-header-search,\n"
+        ".raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container-open,\n"
+        ".raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container-close",
     }
     # Only the decorative wordmark mark disappears at narrow widths; the actual
     # site-name link and all article content remain present without JavaScript.

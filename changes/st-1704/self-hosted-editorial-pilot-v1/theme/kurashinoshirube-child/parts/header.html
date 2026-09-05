@@ -13,5 +13,18 @@
 <!-- /wp:navigation -->
 <!-- wp:search {"label":"記事を検索","showLabel":false,"placeholder":"キーワードや商品名","buttonText":"検索","buttonPosition":"button-only","buttonUseIcon":true,"isSearchFieldHidden":true,"className":"raos-header-search"} /-->
 </div><!-- /wp:group -->
+<!-- wp:html -->
+<noscript class="raos-header-nojs-shell">
+<div class="raos-header-nojs">
+<form role="search" method="get" action="/" class="raos-header-nojs__search">
+<label for="raos-header-nojs-query">記事を検索</label>
+<div class="raos-header-nojs__fields">
+<input id="raos-header-nojs-query" type="search" name="s" placeholder="キーワードや商品名" required>
+<button type="submit">検索</button>
+</div>
+</form>
+</div>
+</noscript>
+<!-- /wp:html -->
 </div><!-- /wp:group -->
 </div><!-- /wp:group -->

@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 78af0ca39c752410c56c8480c275d5807e6821b06aae266501e2eb74ee78099e;
+  --raos-theme-runtime-revision-base: 89303f68f00b45caacad62685fc6eab410265455abde15e5db2d503ca8dbcff5;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -74,6 +74,122 @@ a:hover {
   align-items: center;
   gap: 0.25rem;
   min-width: 0;
+}
+
+/* noscript children exist only when scripting is disabled. */
+.raos-header-nojs-shell {
+  display: none;
+}
+
+.raos-header-nojs-shell:has(.raos-header-nojs) {
+  display: block;
+  width: 100%;
+}
+
+.raos-site-header:has(.raos-header-nojs) .raos-masthead {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-block: 1rem;
+}
+
+.raos-site-header:has(.raos-header-nojs) .raos-masthead__actions {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  width: 100%;
+}
+
+.raos-site-header:has(.raos-header-nojs) .raos-header-search,
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container-open,
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container-close {
+  display: none;
+}
+
+.raos-site-header:has(.raos-header-nojs) .raos-primary-nav,
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container {
+  display: block;
+  position: static;
+  width: 100%;
+}
+
+.wp-site-blocks > header:has(.raos-site-header .raos-header-nojs) {
+  /* An expanded native menu must not cover the page as a sticky panel. */
+  position: static;
+}
+
+.raos-header-nojs {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  width: 100%;
+}
+
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation-item {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.raos-site-header:has(.raos-header-nojs) .wp-block-navigation-item__content {
+  align-items: center;
+  display: flex;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  min-height: 2.75rem;
+  text-decoration: underline;
+}
+
+.raos-header-nojs__search {
+  margin: 0;
+}
+
+.raos-header-nojs__search label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.raos-header-nojs__fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.raos-header-nojs__fields input,
+.raos-header-nojs__fields button {
+  border: 1px solid var(--raos-rule);
+  box-sizing: border-box;
+  font: inherit;
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+}
+
+.raos-header-nojs__fields input {
+  background: var(--raos-surface);
+  color: var(--raos-ink);
+  flex: 1 1 12rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.raos-header-nojs__fields button {
+  background: var(--raos-indigo);
+  color: var(--raos-paper);
+  cursor: pointer;
+  flex: 0 0 auto;
 }
 
 .raos-site-header .raos-header-search,

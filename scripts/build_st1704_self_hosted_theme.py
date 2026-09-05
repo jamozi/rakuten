@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.5.1"
 THEME_RUNTIME_REVISION: Final = (
-    "78af0ca39c752410c56c8480c275d5807e6821b06aae266501e2eb74ee78099e"
+    "89303f68f00b45caacad62685fc6eab410265455abde15e5db2d503ca8dbcff5"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
