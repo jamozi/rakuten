@@ -12,6 +12,9 @@ import re
 from typing import TypedDict, cast
 from urllib.parse import urlsplit
 
+from raos.application.editorial.legacy_media_display_projection_v1 import (
+    project_legacy_media,
+)
 from raos.application.editorial.verified_incremental_v1 import (
     canonical,
     digest,
@@ -774,10 +777,11 @@ def build_mixed_preview(
     posts_raw = (json.dumps(fixture, ensure_ascii=False, indent=2) + "\n").encode()
     scope_rows: list[dict[str, object]] = []
     for slug, article_raw in sorted(articles.items()):
+        display = project_legacy_media(article_raw.decode(), article_ids_by_slug[slug])
         products: list[str | None] = []
         images: list[str | None] = []
         ctas: list[_PreviewCTA] = []
-        for element in parse_markup_elements(article_raw.decode()):
+        for element in parse_markup_elements(display.markup):
             attrs = element.attrs
             classes = set((attrs.get("class") or "").split())
             if element.tag == "article" and "product-profile" in classes:
@@ -812,7 +816,8 @@ def build_mixed_preview(
                 ),
                 "expected_ctas": ctas,
                 "expected_image_product_ids": sorted(cast(list[str], images)),
-                **derive_editorial_browser_expectations(article_raw.decode()),
+                "display_projection": dict(display.proof),
+                **derive_editorial_browser_expectations(display.markup),
             }
         )
     return MixedPreview(

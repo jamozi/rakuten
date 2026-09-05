@@ -29,7 +29,7 @@
     {
       "bytes": 188074,
       "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
-      "sha256": "342eb613d0af5e2f0c7495deb50a766ee69f4e0116e64624b3d9ac3befc0a916"
+      "sha256": "ad6625783bef5c7dcef7aaea0cf25d60cd8e48e679f9a34c6abaff0ade99d01f"
     },
     {
       "bytes": 13584,
@@ -59,7 +59,7 @@
     {
       "bytes": 8816,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "cd7fd4e37358bbc78a962a89143130bc80afe05abdad133c58354672bf429cb8"
+      "sha256": "7a31045a2637c38768014756a469bc304836d4edc047e9467ecfb2c1084d576d"
     },
     {
       "bytes": 2528,
@@ -74,7 +74,7 @@
     {
       "bytes": 32133,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "56e2638d1f4769227d9b36e4cb45bc13d023d3b8bf8eade05f2ce2ede664ce9c"
+      "sha256": "f31a364fb4a3cca070f306ce7f97ca736e819e8f7217e9c6a704aa2bdf8cec5c"
     },
     {
       "bytes": 2486,
@@ -152,9 +152,9 @@
       "sha256": "b24a53168fc831330431bbf7c94382e7741e72aa245fd2310dc592b902ae93a2"
     },
     {
-      "bytes": 3772941,
+      "bytes": 3772959,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/reader-claim-bindings.v1.json",
-      "sha256": "da02409cb499dfd382d0a789809bb6e92e6202c62974e55728ad60255bae954d"
+      "sha256": "b148ea542144d31a83cb3da349813c1dc31f5f3d7912fd52cc9727dc19bd5c56"
     },
     {
       "bytes": 174634,
@@ -179,12 +179,12 @@
     {
       "bytes": 13180,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json",
-      "sha256": "81cc4258a9fac31b659321d3172b303c925ede9b1c72194143cb81af68ca071c"
+      "sha256": "f7a2d9af7fc9405d49847eb5999d66496bf59e3b0a92f9f621bb13222c57e564"
     },
     {
       "bytes": 26629,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
-      "sha256": "77c805e736b4e7b82d3760c4244c52fbf74a361d6696ea42afc2068683880650"
+      "sha256": "0e2251be9a4f82c8f616d5a408d98cdb83f20faf3da31bbdaa1bc848a951eac2"
     },
     {
       "bytes": 94902,
@@ -222,14 +222,14 @@
       "sha256": "181dff17451e52bb5bc548964e6c951573a4ddde42072ee0f1165bfc6faa1772"
     },
     {
-      "bytes": 85696,
+      "bytes": 85711,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
-      "sha256": "2d619ec433d581fcd89a187f212c6d056dd147953a400f9533834ae187d20e9b"
+      "sha256": "11b204ad613b3a66601ae421af2172dda8bb64fdb1be5e89583c83f4f0ca4062"
     },
     {
-      "bytes": 170413,
+      "bytes": 180557,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
-      "sha256": "eded47fbc46699c13dca033d79a73d31ec32437db423cd04c7a04ebbfa3cdc60"
+      "sha256": "cbae2e78d679ca34c6c96a88d43a3d13eabc665c5c28e6f3ededbad3105b0ede"
     },
     {
       "bytes": 2244,
@@ -242,9 +242,9 @@
       "sha256": "0c292728dfa980273477ca78621108827fad2f4eb110096cf0893e7c01cde1a7"
     },
     {
-      "bytes": 17939,
+      "bytes": 17993,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/raos-assets.v1.json",
-      "sha256": "9ed05fdfaf8d8967c979ae47b92aecdec2b58991db84c38d4c165ce4a1bfb5b5"
+      "sha256": "93be06299830c9f871f22c6745004adabe4d3be5118d69d1165ae2df7f8dbf16"
     },
     {
       "bytes": 274,
@@ -277,9 +277,9 @@
       "sha256": "9b7a05808714ab9b1ddcc911e415b78edb035c1268e5cb144b1fde55688e0603"
     },
     {
-      "bytes": 22308,
+      "bytes": 22364,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/theme-contract.v1.json",
-      "sha256": "9d1c47076baf4a1ee44d5a2c76626fa5dcc39912208bf0fe7f76283434067f24"
+      "sha256": "970096ef5fdacb705f46fda6ed1861a183276a9a2d6d9d653c1cd3fc9d8fa555"
     },
     {
       "bytes": 1996,
@@ -337,9 +337,9 @@
       "sha256": "a0c7708335bda300cd6449ea4fd7d41563dd01f564e3a527d37e1e31c0f4545c"
     },
     {
-      "bytes": 6905,
+      "bytes": 6923,
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
-      "sha256": "7c6079e06277000d608d87f6e4712e4ea76762bb90dfa4669e1264181c491872"
+      "sha256": "1d75438033fc279ab5e3794f1aeb820f34d4be82c0650ce8a5bf1a4deb5a4765"
     },
     {
       "bytes": 46209,
@@ -347,9 +347,9 @@
       "sha256": "a9e9f927d1646bb56f5124c70e5cc8a34e5e3b0de57d4fd1ac6633da1cfb2bac"
     },
     {
-      "bytes": 147844,
+      "bytes": 147811,
       "path": "python/raos/adapters/self_hosted_editorial_pilot_https.py",
-      "sha256": "80c956f8f957be06902a7824859ce97549957c41ab1bdf00e3fc46d539901789"
+      "sha256": "9a0534fce81593f6e17ce0a4986d0845515d4eb96dde719d597e1550cba880ee"
     },
     {
       "bytes": 133746,
@@ -1932,9 +1932,9 @@
       "sha256": "c0949e44a47ed9c07b41df3abdc1458dbab7e3f9777adec25538a2797d762c96"
     },
     {
-      "bytes": 320504,
+      "bytes": 320664,
       "path": "scripts/build_st1704_reader_claim_coverage.py",
-      "sha256": "8d2443bd58e4c8dbe5f019d5ae138ffe2d921197257a67d889a56d9e45fda5c9"
+      "sha256": "44249a4741078aca097ebfffcf062f9a8ff51783c4d568b68105f044eb886311"
     },
     {
       "bytes": 16849,
@@ -1942,9 +1942,9 @@
       "sha256": "87567c987f58db8041e7dc422f914056ef3deb46c8318b3e4a63055fdb807d23"
     },
     {
-      "bytes": 47269,
+      "bytes": 47468,
       "path": "scripts/build_st1704_self_hosted_theme.py",
-      "sha256": "242449b93afd27614c747646df6c716aae4628a4928bca8da162e5f005d800e4"
+      "sha256": "238ece2d1e3f19b86da71250b44f683fd1954af09865515d7a8d27710e337872"
     },
     {
       "bytes": 17624,

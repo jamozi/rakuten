@@ -247,6 +247,10 @@ def validate_results(
             )
             if semantics.get("incrementalCommerceStatus") != commerce_status:
                 reject()
+            if semantics.get("legacyMediaDisplayProjection") != expected_article.get(
+                "display_projection"
+            ):
+                reject()
         name = f"local-preview-{row['surface']}-{row['width']}.png"
         if (
             not isinstance(row.get("screenshot"), str)

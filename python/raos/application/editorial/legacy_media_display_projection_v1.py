@@ -13,9 +13,9 @@ from hashlib import sha256
 import json
 from pathlib import Path
 import re
-from typing import Any
+from typing import Any, NoReturn, cast
 
-from raos.application.editorial.verified_incremental_v1 import _Markup
+from raos.application.editorial.verified_incremental_v1 import _Markup  # pyright: ignore[reportPrivateUsage]
 
 SCHEMA = "RAOS_LEGACY_MEDIA_DISPLAY_PROJECTION_V1"
 CONTRACT_PATH = Path(
@@ -42,7 +42,7 @@ class LegacyMediaProjectionFailure(ValueError):
     pass
 
 
-def reject(reason: str) -> None:
+def reject(reason: str) -> NoReturn:
     raise LegacyMediaProjectionFailure("LEGACY_MEDIA_PROJECTION_" + reason)
 
 
@@ -54,47 +54,56 @@ def _hash(value: object) -> bool:
     return isinstance(value, str) and HASH.fullmatch(value) is not None
 
 
+def _object(value: object) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        reject("CONTRACT_INVALID")
+    return cast(dict[str, Any], value)
+
+
 def validate_contract(contract: Mapping[str, Any]) -> None:
     if (
         set(contract) != {"schema", "version", "broken_image_path", "articles"}
         or contract["schema"] != SCHEMA
         or contract["version"] != "1.0.0"
         or contract["broken_image_path"] != BROKEN_PATH
-        or not isinstance(contract["articles"], dict)
-        or set(contract["articles"]) != set(TARGETS)
     ):
         reject("CONTRACT_INVALID")
+    articles = _object(contract["articles"])
+    if set(articles) != set(TARGETS):
+        reject("CONTRACT_INVALID")
     for article_id, expected in TARGETS.items():
-        row = contract["articles"][article_id]
+        row = _object(articles[article_id])
         slug, post_id, decorations, neutral = expected
         if (
-            not isinstance(row, dict)
-            or set(row) != {"slug", "post_id", "baseline_document_sha256", "profiles"}
+            set(row) != {"slug", "post_id", "baseline_document_sha256", "profiles"}
             or row["slug"] != slug
             or type(row["post_id"]) is not int
             or row["post_id"] != post_id
             or not _hash(row["baseline_document_sha256"])
-            or not isinstance(row["profiles"], dict)
-            or set(row["profiles"]) != PROFILES
         ):
             reject("CONTRACT_INVALID")
-        for profile in row["profiles"].values():
+        profiles = _object(row["profiles"])
+        if frozenset(profiles) != PROFILES:
+            reject("CONTRACT_INVALID")
+        for raw_profile in profiles.values():
+            profile = _object(raw_profile)
             if (
-                not isinstance(profile, dict)
-                or set(profile) != {"input_sha256", "output_sha256", "removals"}
+                set(profile) != {"input_sha256", "output_sha256", "removals"}
                 or not _hash(profile["input_sha256"])
                 or not _hash(profile["output_sha256"])
                 or profile["input_sha256"] == profile["output_sha256"]
                 or not isinstance(profile["removals"], list)
-                or len(profile["removals"]) != decorations + neutral
             ):
+                reject("CONTRACT_INVALID")
+            removals = cast(list[Any], profile.get("removals"))
+            if len(removals) != decorations + neutral:
                 reject("CONTRACT_INVALID")
             previous_end = 0
             kinds: Counter[str] = Counter()
-            for removal in profile["removals"]:
+            for raw_removal in removals:
+                removal = _object(raw_removal)
                 if (
-                    not isinstance(removal, dict)
-                    or set(removal) != {"offset", "length", "sha256", "kind"}
+                    set(removal) != {"offset", "length", "sha256", "kind"}
                     or type(removal["offset"]) is not int
                     or type(removal["length"]) is not int
                     or not previous_end <= removal["offset"] <= 1048576

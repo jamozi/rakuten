@@ -243,7 +243,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a10-7c6079e06277",
+      "snapshot_id": "snp-a10-1d75438033fc",
       "title": "SOLOTA・ラクアmini Plus｜型番・販売表示と購入前の確認"
     }
   ],
@@ -291,7 +291,7 @@
   ],
   "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
   "source_navigation_sha256": "ae5c793515e8de38d67fa3ec25979b639a6ab4487511482bc65d564c66c6e077",
-  "source_portfolio_sha256": "342eb613d0af5e2f0c7495deb50a766ee69f4e0116e64624b3d9ac3befc0a916",
+  "source_portfolio_sha256": "ad6625783bef5c7dcef7aaea0cf25d60cd8e48e679f9a34c6abaff0ade99d01f",
   "target_origin": "https://kurashinoshirube.com",
   "version": "3.0.0"
 }

@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Deployment
 {
-    const RUNTIME_REVISION = 'f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082';
+    const RUNTIME_REVISION = 'c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472';
     const MAX_PACKAGE_BYTES = 33554432;
     const MAX_FILE_BYTES = 8388608;
     const MAX_FILE_COUNT = 2048;
@@ -451,7 +451,46 @@ final class RAOS_Codex_MCP_Deployment
         if (is_wp_error($batch)) {
             return $batch;
         }
-        return self::publication_batch_status($batch);
+        $status = self::publication_batch_status($batch);
+        if (is_wp_error($status)) {
+            return $status;
+        }
+        // Read-only immutable identities let clients bind this approval to the
+        // exact activation, not merely trust locally saved proposal identifiers.
+        $bindings = array();
+        foreach ($status['proposal_ids'] as $proposal_id) {
+            $row = RAOS_Codex_MCP_Store::get($proposal_id);
+            if (is_wp_error($row)) {
+                return $row;
+            }
+            $integrity = RAOS_Codex_MCP_Store::validate_proposal_integrity($row);
+            if (is_wp_error($integrity)) {
+                return $integrity;
+            }
+            $content = 'CONTENT_RELEASE' === $row['kind'];
+            if (! in_array($row['kind'], array('CONTENT_RELEASE', 'THEME_RELEASE'), true)
+                || ! array_key_exists('idempotency_key', $row)
+                || (! is_null($row['idempotency_key'])
+                    && ! RAOS_Codex_MCP_Store::is_sha256($row['idempotency_key']))
+                || ($content && (
+                    ! isset($row['payload']['after']['id'], $row['payload']['after']['post_type'])
+                    || ! is_int($row['payload']['after']['id'])
+                    || $row['payload']['after']['id'] < 1
+                    || ! in_array($row['payload']['after']['post_type'], array('post', 'page'), true)
+                ))) {
+                return self::error('raos_codex_publication_batch_binding_invalid', 409);
+            }
+            $bindings[$proposal_id] = array(
+                'kind' => $row['kind'],
+                'idempotency_key' => $row['idempotency_key'],
+                'before_sha256' => $row['before_sha256'],
+                'after_sha256' => $row['after_sha256'],
+                'post_id' => $content ? $row['payload']['after']['id'] : null,
+                'post_type' => $content ? $row['payload']['after']['post_type'] : null,
+            );
+        }
+        $status['proposal_bindings'] = $bindings;
+        return $status;
     }
 
     public function claim_publication_batch(WP_REST_Request $request)

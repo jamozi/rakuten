@@ -29,6 +29,17 @@ HASH = re.compile(r"[0-9a-f]{64}\Z")
 VOID = frozenset(
     "area base br col embed hr img input link meta param source track wbr".split()
 )
+# The article is an HTML fragment, not a foreign-content/XML or executable
+# document. HTML diagrams use figure/div/table/text; no inline SVG is needed.
+# picture/source remain parseable so commerce validation can reject responsive
+# alternatives with its existing, specific evidence error.
+ARTICLE_HTML_TAGS = frozenset(
+    "a abbr address article aside b bdi bdo blockquote br caption cite code col "
+    "colgroup data dd del details dfn div dl dt em figcaption figure footer "
+    "h1 h2 h3 h4 h5 h6 header hgroup hr i img ins kbd li main mark nav ol p "
+    "picture pre q rp rt ruby s samp section small source span strong sub "
+    "summary sup table tbody td tfoot th thead time tr u ul var wbr".split()
+)
 PURCHASE_CLASSES = frozenset(
     {
         "final-summary-action",
@@ -468,6 +479,18 @@ class _Element:
     end: int = 0
 
 
+def supported_article_element(tag: str, attrs: Mapping[str, str | None]) -> bool:
+    """Closed article grammar; never apply this to the surrounding theme/head.
+
+    HTMLParser lowercases names but does not implement browser SVG/MathML
+    namespace transitions. Refuse those transitions, qualified names, namespace
+    declarations, and custom-element upgrades instead of treating them as HTML.
+    """
+    return tag in ARTICLE_HTML_TAGS and not any(
+        ":" in name or name in {"xmlns", "is"} for name in attrs
+    )
+
+
 class _Markup(HTMLParser):
     def __init__(self, markup: str) -> None:
         super().__init__(convert_charrefs=False)
@@ -482,9 +505,27 @@ class _Markup(HTMLParser):
         line, column = self.getpos()
         return self.offsets[line - 1] + column
 
+    def close(self) -> None:
+        # The whole fragment is fed at once. A remaining tokenizer buffer is an
+        # incomplete tag/comment/entity, not validated text to silently discard.
+        if self.rawdata:
+            fail("MARKUP_INVALID")
+        super().close()
+
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         values = dict(attrs)
-        if len(values) != len(attrs) or tag in {"script", "iframe", "object"}:
+        if (
+            len(values) != len(attrs)
+            or not supported_article_element(tag, values)
+            or any(name.startswith("on") or name == "srcdoc" for name in values)
+            or any(
+                re.sub(r"[\x00-\x20\x7f]+", "", value or "")
+                .casefold()
+                .startswith(("javascript:", "vbscript:", "data:text/html"))
+                for name, value in values.items()
+                if name in {"href", "src", "action", "formaction", "xlink:href"}
+            )
+        ):
             fail("MARKUP_INVALID")
         start = self.absolute_offset()
         product = values.get("data-raos-product-id") or (
@@ -535,6 +576,34 @@ class _Markup(HTMLParser):
             fail("MARKUP_INVALID")
         element = self.stack.pop()
         element.end = self.markup.index(">", self.absolute_offset()) + 1
+
+    def handle_comment(self, data: str) -> None:
+        # HTMLParser accepts some abrupt/loose comment endings differently from
+        # browsers. Never let active tags hide in that disagreement. Ordinary
+        # WordPress block comments retain their exact spelling and byte offsets.
+        if (
+            not self.markup.startswith("<!--" + data + "-->", self.absolute_offset())
+            or data.startswith((">", "->"))
+            or "--" in data
+            or data.endswith("<!-")
+        ):
+            fail("MARKUP_INVALID")
+
+    def handle_data(self, data: str) -> None:
+        # Incomplete declarations/comments/tags can otherwise be returned as
+        # text by HTMLParser but interpreted as markup in the browser. Authors
+        # can represent a literal less-than sign with the normal &lt; reference.
+        if "<" in data:
+            fail("MARKUP_INVALID")
+
+    def handle_decl(self, decl: str) -> None:
+        fail("MARKUP_INVALID")
+
+    def handle_pi(self, data: str) -> None:
+        fail("MARKUP_INVALID")
+
+    def unknown_decl(self, data: str) -> None:
+        fail("MARKUP_INVALID")
 
 
 @dataclass(frozen=True)
@@ -598,10 +667,7 @@ def verify_commerce_markup(
         # contract exists, an otherwise verified src must not hide another image.
         if element.tag in {"picture", "source"} or "srcset" in attrs:
             fail("HTML_IMAGE_UNVERIFIED")
-        if (
-            element.tag == "img"
-            and "data-raos-product-image-id" not in attrs
-        ):
+        if element.tag == "img" and "data-raos-product-image-id" not in attrs:
             fail("HTML_IMAGE_UNVERIFIED")
         if element.tag == "article" and "product-profile" in classes:
             product = attrs.get("data-raos-product-id")

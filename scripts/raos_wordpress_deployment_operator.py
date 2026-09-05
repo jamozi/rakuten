@@ -25,7 +25,7 @@ import stat
 import subprocess
 import sys
 import time
-from typing import Final, NoReturn
+from typing import Final, NoReturn, cast
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -564,7 +564,7 @@ def _release_batch_status(
         proposal_ids,
         deadline=deadline,
     )
-    return response["state"], response["preconditions_ready"]
+    return cast(str, response["state"]), cast(bool, response["preconditions_ready"])
 
 
 def _release_batch_status_response(
@@ -579,8 +579,22 @@ def _release_batch_status_response(
         f"/publication-batches/{batch_token}",
         deadline=deadline,
     )
+    result = validate_release_batch_status_response(
+        response, batch_token, batch_manifest_sha256, proposal_ids
+    )
+    _ensure_request_deadline(deadline)
+    return result
+
+
+def validate_release_batch_status_response(
+    response: dict[str, object],
+    batch_token: str,
+    batch_manifest_sha256: str,
+    proposal_ids: list[str],
+) -> dict[str, object]:
+    """Validate one already-read response without network, clock or mutation."""
     if (
-        set(response)
+        set(response) - {"proposal_bindings"}
         != {
             "schema",
             "batch_token",
@@ -597,17 +611,53 @@ def _release_batch_status_response(
         or response.get("batch_manifest_sha256") != batch_manifest_sha256
         or response.get("proposal_count") != len(proposal_ids)
         or response.get("proposal_ids") != proposal_ids
+        or type(response.get("state")) is not str
         or response.get("state")
         not in {"REGISTERED", "APPROVED", "APPLIED", "EXPIRED", "FAILED"}
         or type(response.get("expires_at_gmt")) is not str
         or re.fullmatch(
             r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
-            response["expires_at_gmt"],
+            cast(str, response["expires_at_gmt"]),
         )
         is None
     ):
         fail("WORDPRESS_MCP_RELEASE_BATCH_IDENTITY_INVALID")
-    _ensure_request_deadline(deadline)
+    # Older full-publication callers remain compatible. Incremental publication
+    # requires this exact server-side identity map before any approved apply.
+    if "proposal_bindings" in response:
+        bindings = response["proposal_bindings"]
+        if type(bindings) is not dict or set(bindings) != set(proposal_ids):
+            fail("WORDPRESS_MCP_RELEASE_BATCH_IDENTITY_INVALID")
+        for binding in bindings.values():
+            row = exact_object(
+                binding,
+                {
+                    "kind",
+                    "idempotency_key",
+                    "before_sha256",
+                    "after_sha256",
+                    "post_id",
+                    "post_type",
+                },
+            )
+            if type(row["kind"]) is not str or row["kind"] not in {
+                "CONTENT_RELEASE",
+                "THEME_RELEASE",
+            }:
+                fail("WORDPRESS_MCP_RELEASE_BATCH_IDENTITY_INVALID")
+            for key in ("idempotency_key", "before_sha256", "after_sha256"):
+                if row[key] is not None:
+                    require_sha256(row[key])
+            if row["kind"] == "CONTENT_RELEASE":
+                if (
+                    type(row["post_id"]) is not int
+                    or row["post_id"] < 1
+                    or type(row["post_type"]) is not str
+                    or row["post_type"] not in {"post", "page"}
+                ):
+                    fail("WORDPRESS_MCP_RELEASE_BATCH_IDENTITY_INVALID")
+            elif row["post_id"] is not None or row["post_type"] is not None:
+                fail("WORDPRESS_MCP_RELEASE_BATCH_IDENTITY_INVALID")
     return response
 
 

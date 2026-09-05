@@ -679,8 +679,10 @@ REVIEWED_READER_LEDGER_SHA256: Final = (
 )
 # Reconciled development ledger, not an independent review attestation. Keep
 # the reviewed anchor above unchanged until the separate review is completed.
+# Latest reconciliation changes only A10's hands-on disclosure label to match
+# its model/sales-display guidance scope; claim and evidence mappings are intact.
 DEVELOPMENT_READER_LEDGER_SHA256: Final = (
-    "7581aedcbeae7c4aa3500a7ff5193869140851c2d35775b09d8f97f2f5ac60ab"
+    "370512485efc639814c73124bf4d82651ae391e13e2fbbd106df93be46fdcdfe"
 )
 ADDITIONAL_OFFICIAL_SALES_HOSTS: Final = {
     # siroca separates product information and its first-party store across

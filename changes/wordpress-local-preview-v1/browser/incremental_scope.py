@@ -22,6 +22,9 @@ from raos_wordpress_baseline_media import validate_replay  # noqa: E402
 from raos.application.editorial.verified_incremental_preview_v1 import (  # noqa: E402
     derive_editorial_browser_expectations,
 )
+from raos.application.editorial.legacy_media_display_projection_v1 import (  # noqa: E402
+    project_legacy_media,
+)
 from raos.application.editorial.verified_incremental_v1 import (  # noqa: E402
     IncrementalPublicationFailure,
     _Markup,
@@ -69,6 +72,8 @@ def digest(raw: bytes) -> str:
 
 
 def derive_article(markup: str, article_id: str) -> dict[str, object]:
+    display = project_legacy_media(markup, article_id)
+    markup = display.markup
     parser = _Markup(markup)
     parser.feed(markup)
     parser.close()
@@ -106,6 +111,7 @@ def derive_article(markup: str, article_id: str) -> dict[str, object]:
         ),
         "expected_ctas": ctas,
         "expected_image_product_ids": sorted(images),
+        "display_projection": dict(display.proof),
         **derive_editorial_browser_expectations(markup),
     }
 

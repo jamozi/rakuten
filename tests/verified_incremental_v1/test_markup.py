@@ -57,6 +57,11 @@ def test_public_markup_projection_is_immutable_and_keeps_product_context() -> No
         '<div id="first" id="second"></div>',
         "<script></script>",
         "<iframe></iframe>",
+        '<a href="https://example.invalid" onclick="this.href=\'https://other.invalid\'">購入</a>',
+        '<div onpointerover="redirect()"></div>',
+        '<a href="java&#x09;script:redirect()">購入</a>',
+        '<embed src="https://example.invalid">',
+        '<div srcdoc="untrusted"></div>',
     ],
 )
 def test_public_markup_projection_keeps_strict_parser_rejection(markup: str) -> None:
@@ -120,6 +125,7 @@ def test_final_html_matches_exact_commerce_placements_with_same_url_reuse() -> N
         markup.replace("icta_a01_p01_card", "icta_a02_p01_card", 1),
         markup.replace("article-1", "article-2", 1),
         markup + f'<a href="{url}">Undeclared affiliate</a>',
+        markup.replace("<a ", "<a onclick=\"this.href='https://other.invalid'\" ", 1),
     ):
         with pytest.raises(owner.IncrementalPublicationFailure):
             verify(modified)
@@ -293,3 +299,98 @@ def test_unmarked_body_photo_cannot_be_published_as_zero_verified_images() -> No
             expected_ctas={},
             expected_images={},
         )
+
+
+@pytest.mark.parametrize(
+    "foreign_markup",
+    [
+        '<svg><image href="https://other.invalid/p.png" width="128" height="128"/></svg>',
+        '<SVG><IMAGE HREF="https://other.invalid/p.png"/></SVG>',
+        '<svg:svg><svg:image href="https://other.invalid/p.png"/></svg:svg>',
+        '<s:svg xmlns:s="http://www.w3.org/2000/svg"><s:image href="/p.png"/></s:svg>',
+        '<image href="https://other.invalid/p.png"/>',
+        '<svg><foreignObject><a href="https://other.invalid/">別の購入先</a></foreignObject></svg>',
+        '<foreignObject><img src="https://other.invalid/p.png"></foreignObject>',
+        '<svg><set href="#verified-cta" attributeName="href" to="https://other.invalid/" begin="0s"/></svg>',
+        '<set href="#verified-cta" attributeName="href" to="https://other.invalid/"/>',
+        '<animate href="#verified-cta" attributeName="href" values="https://other.invalid/"/>',
+        '<math><mtext><img src="https://other.invalid/p.png"></mtext></math>',
+        '<MATH><annotation-xml encoding="text/html"><a href="https://other.invalid/">別商品</a></annotation-xml></MATH>',
+        "<math:math><math:mi>比較</math:mi></math:math>",
+        '<div xmlns="http://www.w3.org/2000/svg"></div>',
+        '<div XMLNS:x="http://www.w3.org/1999/xlink"></div>',
+        '<a xlink:href="https://other.invalid/">別の購入先</a>',
+        '<a xml:base="https://other.invalid/" href="/product">別の購入先</a>',
+        '<a is="unverified-link" href="#verified-cta">比較</a>',
+        '<unverified-image src="https://other.invalid/p.png"></unverified-image>',
+        '<template><img src="https://other.invalid/p.png"></template>',
+        '<noscript><img src="https://other.invalid/p.png"></noscript>',
+        "<canvas>未照合の描画領域</canvas>",
+        '<video poster="https://other.invalid/p.png"></video>',
+        '<audio src="https://other.invalid/p.mp3"></audio>',
+        '<?xml-stylesheet href="https://other.invalid/style.xsl"?>',
+        "<!DOCTYPE svg>",
+        '<![CDATA[<svg><image href="https://other.invalid/p.png"/></svg>]]>',
+        '<!--><svg><image href="/unverified.png"/></svg>-->',
+        '<!---><svg><image href="/unverified.png"/></svg>-->',
+        '<!-- safe --!><svg><image href="/unverified.png"/></svg>-->',
+        '<!-- loose -- ><svg><image href="/unverified.png"/></svg>-->',
+        '<![CDATA[><svg><image href="/unverified.png"/></svg>',
+        "<!-- unclosed",
+        "<svg",
+        "<?xml",
+    ],
+)
+def test_foreign_grammar_cannot_hide_beside_valid_product_image_and_cta(
+    foreign_markup: str,
+) -> None:
+    url = "https://hb.afl.rakuten.co.jp/hgc/recorded/"
+    valid = (
+        '<article class="product-profile" data-raos-product-id="PRD-FIRST">'
+        '<img src="/matched.jpg" data-raos-product-image-id="PRD-FIRST" '
+        'data-raos-product-image-state="verified" width="128" height="128" '
+        'alt="正しい商品" loading="lazy">'
+        '<a id="verified-cta" data-raos-article-id="article-1" '
+        'data-raos-product-id="PRD-FIRST" data-raos-placement="product_card" '
+        f'data-raos-cta-id="cta-1" href="{url}" rel="sponsored nofollow">購入</a>'
+        "</article>"
+    )
+
+    def verify(markup: str) -> None:
+        owner.verify_commerce_markup(
+            markup,
+            article_id="article-1",
+            editorial_product_ids=frozenset({"PRD-FIRST"}),
+            expected_ctas={"cta-1": ("PRD-FIRST", "product_card", url)},
+            expected_images={"PRD-FIRST": "/matched.jpg"},
+        )
+
+    verify(valid)
+    with pytest.raises(owner.IncrementalPublicationFailure, match="MARKUP_INVALID"):
+        verify(valid + foreign_markup)
+    with pytest.raises(owner.IncrementalPublicationFailure, match="MARKUP_INVALID"):
+        owner.parse_markup_elements(foreign_markup)
+
+
+def test_nonimage_html_comparison_diagram_and_block_comments_remain_supported() -> None:
+    markup = (
+        "<!-- wp:html --><section><h2>設置場所から比較する</h2>"
+        '<figure role="group" aria-label="設置条件の比較図">'
+        '<div class="comparison-visual"><span>置き場所</span><strong>幅を確認</strong></div>'
+        "<figcaption>商品写真ではないHTMLの比較図です。</figcaption></figure>"
+        '<table><caption>設置条件</caption><thead><tr><th scope="col">項目</th>'
+        '<th scope="col">確認点</th></tr></thead><tbody><tr><th scope="row">幅</th>'
+        "<td>設置場所を測る</td></tr></tbody></table><details><summary>補足</summary>"
+        "<p>公式仕様と実測値を分けます。2 &lt; 3。</p></details></section><!-- /wp:html -->"
+        "<!-- Correctly delimited <svg> text is an inert comment. -->"
+    )
+    owner.verify_commerce_markup(
+        markup,
+        article_id="article-1",
+        editorial_product_ids=frozenset(),
+        expected_ctas={},
+        expected_images={},
+    )
+    assert {
+        row.tag for row in owner.parse_markup_elements(markup)
+    } <= owner.ARTICLE_HTML_TAGS

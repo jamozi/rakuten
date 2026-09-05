@@ -52,6 +52,15 @@ def _scope() -> dict:
                     "primary_query_intents": ["設置条件を確認する"],
                 },
                 "expected_disclosure_policy_link_count": 1,
+                "display_projection": {
+                    "state": "NOT_APPLICABLE",
+                    "contract_sha256": "a" * 64,
+                    "input_sha256": "b" * 64,
+                    "output_sha256": "b" * 64,
+                    "profile": None,
+                    "removed_decoration_count": 0,
+                    "removed_neutral_media_count": 0,
+                },
             },
             {
                 "article_id": "article-old",
@@ -75,6 +84,15 @@ def _scope() -> dict:
                     "primary_query_intents": [],
                 },
                 "expected_disclosure_policy_link_count": 0,
+                "display_projection": {
+                    "state": "NOT_APPLICABLE",
+                    "contract_sha256": "a" * 64,
+                    "input_sha256": "c" * 64,
+                    "output_sha256": "c" * 64,
+                    "profile": None,
+                    "removed_decoration_count": 0,
+                    "removed_neutral_media_count": 0,
+                },
             },
         ],
     }

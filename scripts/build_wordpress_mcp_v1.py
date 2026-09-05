@@ -29,7 +29,7 @@ SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
 PLUGIN_VERSION: Final = "1.3.1"
 PLUGIN_RUNTIME_REVISION: Final = (
-    "f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082"
+    "c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472"
 )
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
 MANIFEST_PATH: Final = Path("changes/wordpress-mcp-v1/runtime-manifest.v1.json")
@@ -176,6 +176,7 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("changes/wordpress-local-preview-v1/restore-seed.php"),
     Path("changes/wordpress-local-preview-v1/scratch-restore.compose.yaml"),
     Path("changes/wordpress-local-preview-v1/scratch-restore-seed.php"),
+    Path("changes/wordpress-local-preview-v1/scratch-theme-restore.php"),
     Path("changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.json"),
     Path("changes/wordpress-mcp-v1/contracts/wordpress-mcp.v1.schema.json"),
     Path("changes/wordpress-mcp-v1/Makefile"),
@@ -209,6 +210,8 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("python/raos/application/editorial/verified_incremental_release_v1.py"),
     Path("python/raos/application/editorial/verified_incremental_sources_v1.py"),
     Path("python/raos/application/editorial/local_scratch_restore_v1.py"),
+    Path("python/raos/application/editorial/local_scratch_theme_restore_v1.py"),
+    Path("python/raos/application/editorial/legacy_media_display_projection_v1.py"),
     Path("python/raos/domain/editorial/content_ast.py"),
     Path("python/raos/domain/editorial/self_hosted_editorial_pilot.py"),
     Path("scripts/build_wordpress_mcp_v1.py"),
@@ -223,6 +226,7 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("scripts/raos_wordpress_incremental_snapshot.py"),
     Path("scripts/raos_wordpress_local_restore.py"),
     Path("scripts/raos_wordpress_scratch_restore.py"),
+    Path("scripts/raos_wordpress_scratch_theme_restore.py"),
     Path("scripts/raos_wordpress_publication_request.py"),
     Path("scripts/raos_wordpress_seo_audit.py"),
     Path("scripts/raos_wordpress_editor_mcp_launcher.mjs"),

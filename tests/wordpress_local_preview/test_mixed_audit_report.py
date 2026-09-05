@@ -29,7 +29,11 @@ def inputs_and_results() -> tuple[dict, list[dict], dict]:
         "scope": {
             "selected_article_ids": [row["article_id"] for row in articles],
             "articles": [
-                {"article_id": row["article_id"], "expected_ctas": []}
+                {
+                    "article_id": row["article_id"],
+                    "expected_ctas": [],
+                    "display_projection": {"state": "NOT_APPLICABLE"},
+                }
                 for row in articles
             ],
         },
@@ -63,6 +67,9 @@ def inputs_and_results() -> tuple[dict, list[dict], dict]:
                         "incrementalCommerceStatus": "NOT_INCLUDED"
                         if surface["kind"] == "article"
                         else "NOT_AN_ARTICLE",
+                        "legacyMediaDisplayProjection": {"state": "NOT_APPLICABLE"}
+                        if surface["kind"] == "article"
+                        else None,
                     },
                     "screenshot": f"/tmp/recorded-fixture/local-preview-{name}-{width}.png",
                     "zoomScreenshot": f"/tmp/recorded-fixture/local-preview-{name}-zoom200.png"

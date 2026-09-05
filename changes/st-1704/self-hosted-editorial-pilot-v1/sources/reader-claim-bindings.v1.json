@@ -93557,11 +93557,11 @@
       "authoring_input": {
         "kind": "STATIC_HTML_FIXTURE",
         "ref": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
-        "sha256": "7c6079e06277000d608d87f6e4712e4ea76762bb90dfa4669e1264181c491872"
+        "sha256": "1d75438033fc279ab5e3794f1aeb820f34d4be82c0650ce8a5bf1a4deb5a4765"
       },
       "source_packet_ref": "SPV-PORTFOLIO-SOLOTA-RAKUA-PLUS-V1",
       "fact_packet_sha256": "f1120c1c4d01cc9d803c7169b1b9bc60e07e13fc4756e89b7d9a18e8e28e26e4",
-      "reader_units_sha256": "e31a3ba27360170cc5eb2ac2a425d16f929ecbb7ede6500acc0e06299a7d3a2a",
+      "reader_units_sha256": "818f45ad7315eec8fc40918fa53d2a4e812be1d1d2a398db5a40aaaa921124d9",
       "units": [
         {
           "kind": "NON_CLAIM",
@@ -94730,8 +94730,8 @@
           "unit_id": "RU-683950ede558c033af19",
           "locator": "section[4]/dl[1]/div[8]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "未実施(公式仕様比較)",
-          "text_sha256": "dc98d5d49fc0f2d94a8dfdb0dd447b8d0e6bce2c0da34292e288a322ea20c7af",
+          "text": "未実施(型番・販売表示の確認案内)",
+          "text_sha256": "351b0e1eb7f38d689cdff83bc5042f6d4a40960a12746b61b4b4fbac472665b4",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": null,

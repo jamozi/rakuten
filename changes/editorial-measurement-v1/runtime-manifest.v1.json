@@ -2,8 +2,8 @@
   "artifact_id": "raos-editorial-measurement-v1",
   "default_enabled": false,
   "host_gate": "RAOS_MEASUREMENT_ENABLED",
-  "package_sha256": "8aa7ac04c75299059b4dc50895adbdfeceac3e32f625c224d06b711a36976d6b",
-  "package_size": 16211,
+  "package_sha256": "24b66e0484d6641303ce3eb6b2035bddf071ec8f156efc6e32e369e6c70945e8",
+  "package_size": 16210,
   "plugin_files": [
     {
       "path": "README.md",
@@ -12,7 +12,7 @@
     },
     {
       "path": "config/measurement-allowlist.v1.json",
-      "sha256": "5fa15985db54b32f213a59783573b9e574fb94fd2376dcf3ebd9463acc459e22",
+      "sha256": "e732374ba37d30b4c6e9a264e091109df2bd93ace2a58aa0e9505d536ace14af",
       "size": 18040
     },
     {
@@ -36,7 +36,7 @@
   "runtime_files": [
     {
       "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
-      "sha256": "342eb613d0af5e2f0c7495deb50a766ee69f4e0116e64624b3d9ac3befc0a916",
+      "sha256": "ad6625783bef5c7dcef7aaea0cf25d60cd8e48e679f9a34c6abaff0ade99d01f",
       "size": 188074
     },
     {
@@ -51,8 +51,8 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
-      "sha256": "eded47fbc46699c13dca033d79a73d31ec32437db423cd04c7a04ebbfa3cdc60",
-      "size": 170413
+      "sha256": "cbae2e78d679ca34c6c96a88d43a3d13eabc665c5c28e6f3ededbad3105b0ede",
+      "size": 180557
     },
     {
       "path": "scripts/build_editorial_measurement_v1.py",

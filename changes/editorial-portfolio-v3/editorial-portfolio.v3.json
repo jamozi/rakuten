@@ -1376,7 +1376,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
       "content_role": "lifecycle_status_route",
       "content_role_label": "型番・販売表示の確認案内",
-      "content_snapshot_sha256": "7c6079e06277000d608d87f6e4712e4ea76762bb90dfa4669e1264181c491872",
+      "content_snapshot_sha256": "1d75438033fc279ab5e3794f1aeb820f34d4be82c0650ce8a5bf1a4deb5a4765",
       "cta_bindings": [],
       "excerpt": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの型番と公式ページの表示を整理します。購入リンクの有無と商品の評価を分け、在庫・納期・保証や設置条件など、購入前に確認したい項目を案内します。",
       "home_order": 4,
@@ -1395,7 +1395,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a10-7c6079e06277",
+      "snapshot_id": "snp-a10-1d75438033fc",
       "source_kind": "html_fixture",
       "source_ref": "articles/solota-vs-rakua-mini-plus.html",
       "title": "SOLOTA・ラクアmini Plus｜型番・販売表示と購入前の確認",

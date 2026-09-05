@@ -8,6 +8,7 @@ only identical public-image bytes are exposed by the isolated loopback gateway.
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping
+from copy import deepcopy
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime, timedelta
 import html
@@ -28,6 +29,9 @@ if str(ROOT / "python") not in sys.path:
 from raos.application.editorial.verified_incremental_preview_v1 import (  # noqa: E402
     MixedPreview,
     _snapshot_documents,
+)
+from raos.application.editorial.legacy_media_display_projection_v1 import (  # noqa: E402
+    project_legacy_media,
 )
 from raos.application.editorial.verified_incremental_v1 import (  # noqa: E402
     _Markup,
@@ -234,6 +238,22 @@ def prepare_replay(
     binding["article_body_sha256"] = {
         slug: digest(raw) for slug, raw in articles.items()
     }
+    scope = deepcopy(cast(dict[str, Any], binding["incremental_scope"]))
+    for row in scope["articles"]:
+        inputs = [
+            slug
+            for slug, raw in mixed.articles.items()
+            if row["display_projection"]["input_sha256"]
+            in {digest(raw), digest(articles[slug])}
+        ]
+        proofs = [
+            dict(project_legacy_media(articles[slug].decode(), row["article_id"]).proof)
+            for slug in inputs
+        ]
+        if not proofs or any(proof != proofs[0] for proof in proofs):
+            fail("BASELINE_DISPLAY_PROJECTION_SCOPE_INVALID")
+        row["display_projection"] = proofs[0]
+    binding["incremental_scope"] = scope
     return replace(mixed, articles=articles, binding=binding), assets
 
 
@@ -355,7 +375,10 @@ def validate_replay(fixture: Path, binding: Mapping[str, Any]) -> None:
         now=min(captured_times) if captured_times else datetime.now(UTC),
         fetch=captured_only,
     )
-    if replayed.binding["baseline_media"] != receipt or any(
+    if (
+        replayed.binding["baseline_media"] != receipt
+        or replayed.binding["incremental_scope"] != binding["incremental_scope"]
+    ) or any(
         replayed.articles[slug] != (fixture / "articles" / f"{slug}.html").read_bytes()
         for slug in raw_articles
     ):

@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
 define('RAOS_CODEX_MCP_VERSION', '1.3.1');
 define(
     'RAOS_CODEX_MCP_RUNTIME_REVISION',
-    'f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082'
+    'c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472'
 );
 define('RAOS_CODEX_MCP_FILE', __FILE__);
 
@@ -27,7 +27,7 @@ require_once __DIR__ . '/includes/class-raos-codex-mcp-deployment.php';
 
 final class RAOS_Codex_MCP_Abilities
 {
-    const RUNTIME_REVISION = 'f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082';
+    const RUNTIME_REVISION = 'c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472';
     const ORIGIN = 'https://kurashinoshirube.com';
     const EDITOR_ROLE = 'raos_codex_mcp_editor';
     const OPERATOR_ROLE = 'raos_codex_deployment_operator';

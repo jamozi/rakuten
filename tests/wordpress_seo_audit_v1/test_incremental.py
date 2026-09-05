@@ -16,6 +16,9 @@ from raos.application.editorial.verified_incremental_release_v1 import (
     VerifiedIncrementalReleaseV1,
     canonical_json_bytes,
 )
+from raos.application.editorial.verified_incremental_v1 import (
+    IncrementalPublicationFailure,
+)
 
 NOW = datetime(2026, 9, 5, 2, tzinfo=UTC)
 STAMP = "2026-09-05T02:00:00Z"
@@ -564,3 +567,170 @@ def test_arbitrary_same_count_product_and_cta_are_not_equivalent() -> None:
     )
     with pytest.raises(audit.seo.AuditError, match="PUBLIC_BODY_OR_COMMERCE_MISMATCH"):
         audit.verify_rendered_body(stored, live)
+
+
+@pytest.mark.parametrize(
+    "alternative",
+    [
+        '<picture><source srcset="https://example.com/other-product.jpg 1x">{img}</picture>',
+        '<source src="https://example.com/other-product.jpg">{img}',
+        '{img}<img src="https://example.com/product.jpg" srcset="https://example.com/other-product.jpg 2x">',
+        "<picture>{img}</picture>",
+        '{img}<img src="https://example.com/product.jpg" srcset="">',
+    ],
+)
+def test_responsive_product_alternatives_are_rejected_not_ignored(
+    alternative: str,
+) -> None:
+    stored = '<img src="https://example.com/product.jpg" alt="Correct product" width="300" height="300">'
+    changed = alternative.format(img=stored)
+    with pytest.raises(audit.seo.AuditError, match="RESPONSIVE_MEDIA_UNSUPPORTED"):
+        audit.verify_rendered_body(
+            stored, '<div class="entry-content">' + changed + "</div>"
+        )
+    # Neither an authored alternative nor a page-wide asset may escape the gate.
+    with pytest.raises(audit.seo.AuditError, match="RESPONSIVE_MEDIA_UNSUPPORTED"):
+        audit._project(changed, rendered=False)
+    with pytest.raises(audit.seo.AuditError, match="RESPONSIVE_MEDIA_UNSUPPORTED"):
+        audit._PageAssets().feed(changed)
+
+
+@pytest.mark.parametrize(
+    "markup",
+    [
+        '<p onclick="alert(1)">Answer.</p>',
+        '<p ONPOINTERENTER="alert(1)">Answer.</p>',
+        '<img src="https://example.com/product.jpg" onerror="alert(1)">',
+        '<a href="java&#x09;script:alert(1)">Answer.</a>',
+        '<a href="&#106;avascript:alert(1)">Answer.</a>',
+        '<a href="vbscript:alert(1)">Answer.</a>',
+        '<a href="data:text/html,unsafe">Answer.</a>',
+        '<div srcdoc="unsafe">Answer.</div>',
+        '<div class="raos-article-toc" onfocus="alert(1)">Answer.</div>',
+    ],
+)
+def test_public_executable_attributes_fail_even_inside_runtime_wrappers(
+    markup: str,
+) -> None:
+    for rendered in (False, True):
+        with pytest.raises(audit.seo.AuditError, match="PUBLIC_EXECUTABLE"):
+            audit._project(markup, rendered=rendered)
+    with pytest.raises(audit.seo.AuditError, match="PUBLIC_EXECUTABLE"):
+        audit._PageAssets().feed(markup)
+
+
+@pytest.mark.parametrize(
+    "markup",
+    [
+        "<script>alert(1)</script>",
+        '<iframe src="https://example.com"></iframe>',
+        '<object data="https://example.com"></object>',
+        '<embed src="https://example.com">',
+    ],
+)
+def test_public_body_active_elements_cannot_hide_in_text_projection(
+    markup: str,
+) -> None:
+    with pytest.raises(audit.seo.AuditError, match="PUBLIC_ACTIVE_CONTENT_FORBIDDEN"):
+        audit.verify_rendered_body(
+            "<p>Answer.</p>",
+            '<div class="entry-content"><p>Answer.</p>' + markup + "</div>",
+        )
+
+
+@pytest.mark.parametrize(
+    "markup",
+    [
+        '<svg><image href="https://other.invalid/p.png" width="128" height="128"/></svg>',
+        '<SVG><IMAGE HREF="https://other.invalid/p.png"/></SVG>',
+        '<s:svg xmlns:s="http://www.w3.org/2000/svg"><s:image href="/p.png"/></s:svg>',
+        '<svg><foreignObject><a href="https://other.invalid/">購入</a></foreignObject></svg>',
+        '<foreignObject><img src="https://other.invalid/p.png"></foreignObject>',
+        '<svg><set href="#cta" attributeName="href" to="https://other.invalid/" begin="0s"/></svg>',
+        '<set href="#cta" attributeName="href" to="https://other.invalid/"/>',
+        '<animate href="#cta" attributeName="href" values="https://other.invalid/"/>',
+        '<math><mtext><img src="https://other.invalid/p.png"></mtext></math>',
+        '<MATH><annotation-xml encoding="text/html"><a href="https://other.invalid/">購入</a></annotation-xml></MATH>',
+        "<math:math><math:mi>比較</math:mi></math:math>",
+        '<image href="https://other.invalid/p.png"/>',
+        '<div xmlns="http://www.w3.org/2000/svg"></div>',
+        '<div XMLNS:x="http://www.w3.org/1999/xlink"></div>',
+        '<a xlink:href="https://other.invalid/">購入</a>',
+        '<a xml:base="https://other.invalid/" href="/product">購入</a>',
+        '<a is="unverified-link" href="#cta">購入</a>',
+        '<unverified-image src="https://other.invalid/p.png"></unverified-image>',
+        '<template><img src="https://other.invalid/p.png"></template>',
+        '<noscript><img src="https://other.invalid/p.png"></noscript>',
+        "<canvas>未照合の描画領域</canvas>",
+        '<video poster="https://other.invalid/p.png"></video>',
+    ],
+)
+def test_foreign_article_content_is_rejected_before_equivalence_or_runtime_removal(
+    markup: str,
+) -> None:
+    expected = (
+        '<p>仕様比較です。</p><a id="cta" href="https://example.com/product">購入</a>'
+        '<img src="https://example.com/product.jpg" alt="正しい商品" width="128" height="128">'
+    )
+    for rendered in (False, True):
+        with pytest.raises(audit.seo.AuditError, match="ARTICLE_MARKUP_UNSUPPORTED"):
+            audit._project(expected + markup, rendered=rendered)
+    for addition in (markup, '<nav class="raos-article-toc">' + markup + "</nav>"):
+        with pytest.raises(audit.seo.AuditError, match="ARTICLE_MARKUP_UNSUPPORTED"):
+            audit.verify_rendered_body(
+                expected, '<div class="entry-content">' + expected + addition + "</div>"
+            )
+
+
+def test_theme_svg_icons_outside_article_do_not_inherit_article_grammar() -> None:
+    stored = "<p>仕様比較です。</p>"
+    icon = (
+        '<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="検索">'
+        '<path d="M0 0 L1 1"/></svg>'
+    )
+    page = (
+        "<!DOCTYPE html><html><head><title>比較</title></head><body><header>"
+        + icon
+        + '</header><div class="entry-content">'
+        + stored
+        + "</div><footer>"
+        + icon
+        + "</footer></body></html>"
+    )
+    assert len(audit.verify_rendered_body(stored, page)) == 64
+    assets = audit._PageAssets()
+    assets.feed(page)
+    assets.close()
+    assert assets.images == set()
+    with pytest.raises(audit.seo.AuditError, match="ARTICLE_MARKUP_UNSUPPORTED"):
+        audit.verify_rendered_body(
+            stored, '<div class="entry-content">' + stored + icon + "</div>"
+        )
+
+
+@pytest.mark.parametrize(
+    "markup",
+    [
+        '<!--><svg><image href="/unverified.png"/></svg>-->',
+        '<!---><svg><image href="/unverified.png"/></svg>-->',
+        '<!-- safe --!><svg><image href="/unverified.png"/></svg>-->',
+        '<!-- loose -- ><svg><image href="/unverified.png"/></svg>-->',
+        '<![CDATA[<svg><image href="/unverified.png"/></svg>]]>',
+        '<![CDATA[><svg><image href="/unverified.png"/></svg>',
+        '<?xml-stylesheet href="https://other.invalid/style.xsl"?>',
+        "<!DOCTYPE svg>",
+        "<!-- unclosed",
+        "<?xml",
+    ],
+)
+def test_comment_declaration_and_processing_instruction_differentials_fail(
+    markup: str,
+) -> None:
+    for rendered in (False, True):
+        with pytest.raises((IncrementalPublicationFailure, audit.seo.AuditError)):
+            audit._project("<p>仕様比較です。</p>" + markup, rendered=rendered)
+    with pytest.raises((IncrementalPublicationFailure, audit.seo.AuditError)):
+        audit.verify_rendered_body(
+            "<p>仕様比較です。</p>",
+            '<div class="entry-content"><p>仕様比較です。</p>' + markup + "</div>",
+        )

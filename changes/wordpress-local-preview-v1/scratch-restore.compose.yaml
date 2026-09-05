@@ -61,6 +61,10 @@ services:
       - type: bind
         source: ${RAOS_SCRATCH_PRIVATE_ROOT:?private backup required}
         target: /var/www/raos-scratch-backup
+      - type: bind
+        source: ${RAOS_SCRATCH_SOURCE_ROOT:?tracked scripts required}/changes/wordpress-local-preview-v1/scratch-theme-restore.php
+        target: /var/www/raos-scratch-theme-restore.php
+        read_only: true
     networks: [scratch_internal]
 
 volumes:

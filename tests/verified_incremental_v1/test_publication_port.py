@@ -41,6 +41,7 @@ class SyntheticServer:
         self.theme_proposals = {}
         self.desired_theme_tree = "9" * 64
         self.theme_operation_gets = 0
+        self.proposal_bindings = {}
 
     def initialize(self):
         pass
@@ -68,6 +69,16 @@ class SyntheticServer:
                 deepcopy(arguments["document"]),
                 after,
             )
+            self.proposal_bindings[identifier] = {
+                "kind": "CONTENT_RELEASE",
+                "idempotency_key": arguments["idempotency_key"],
+                "before_sha256": self.documents[arguments["document"]["slug"]][
+                    "content_sha256"
+                ],
+                "after_sha256": after,
+                "post_id": arguments["id"],
+                "post_type": arguments["document"]["post_type"],
+            }
             return {
                 "proposal_id": identifier,
                 "after_sha256": after,
@@ -94,6 +105,14 @@ class SyntheticServer:
         if command == "theme-propose-release":
             identifier = value["idempotency_key"]
             self.theme_proposals[identifier] = self.desired_theme_tree
+            self.proposal_bindings[identifier] = {
+                "kind": "THEME_RELEASE",
+                "idempotency_key": value["idempotency_key"],
+                "before_sha256": self.theme_tree,
+                "after_sha256": self.desired_theme_tree,
+                "post_id": None,
+                "post_type": None,
+            }
             return {
                 "proposal": {
                     "proposal_id": identifier,
@@ -135,6 +154,7 @@ class SyntheticServer:
                 "state": self.state,
                 "expires_at_gmt": examples.stamp(NOW + timedelta(minutes=15)),
                 "preconditions_ready": True,
+                "proposal_bindings": deepcopy(self.proposal_bindings),
             }
         if command == "release-wait-and-apply":
             assert self.state == "APPROVED"
@@ -467,6 +487,62 @@ def test_expired_new_apply_is_rejected_before_mutation(world):
     with pytest.raises(ValueError, match="EXPIRED"):
         world["execute"]("apply")
     assert world["server"].apply_count == 0
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("idempotency_key", "e" * 64),
+        ("after_sha256", "e" * 64),
+        ("before_sha256", "e" * 64),
+        ("post_id", 999),
+        ("post_type", "page"),
+        ("kind", "THEME_RELEASE"),
+    ],
+)
+def test_server_proposal_identity_mismatch_blocks_before_apply(world, field, value):
+    world["execute"]("propose")
+    server = world["server"]
+    server.state = "APPROVED"
+    next(iter(server.proposal_bindings.values()))[field] = value
+    with pytest.raises(publication.PublicationFailure, match="SERVER_PROPOSAL_BINDING"):
+        world["execute"]("apply")
+    assert server.apply_count == 0
+
+
+def test_missing_server_identity_is_not_inferred_from_local_receipt(world):
+    world["execute"]("propose")
+    server = world["server"]
+    server.state = "APPROVED"
+    server.proposal_bindings.clear()
+    with pytest.raises(
+        publication.PublicationFailure, match="SERVER_PROPOSAL_BINDING_REQUIRED"
+    ):
+        world["execute"]("apply")
+    assert server.apply_count == 0
+
+
+def test_rehashed_expired_activation_cannot_replace_server_registered_identity(world):
+    result = world["execute"]("propose")
+    server = world["server"]
+    server.state = "APPROVED"
+    world["execute"]("apply")
+    receipt, _raw = port.read_json(result.parent, result.name)
+    world["now"] = NOW + timedelta(hours=4)
+    envelope = receipt["release_envelope"]
+    envelope["evaluated_at"] = examples.stamp(world["now"])
+    envelope["expires_at"] = examples.stamp(world["now"] + timedelta(minutes=10))
+    receipt["release_sha256"] = port.digest(port.canonical(envelope))
+    for proposal in receipt["proposals"]:
+        proposal["idempotency_key"] = publication.sha256_json(
+            {"release_sha256": receipt["release_sha256"], "target": proposal["slug"]}
+        )
+    port.write_private_bytes(result.parent, result.name, port.canonical(receipt))
+    with pytest.raises(
+        publication.PublicationFailure, match="SERVER_PROPOSAL_BINDING_INVALID"
+    ):
+        world["execute"]("readback")
+    assert server.apply_count == 1
 
 
 def test_unknown_proposal_outcome_not_unconditionally_resent(world, monkeypatch):

@@ -555,7 +555,7 @@
       "related_article_ids": [
         "st1704-countertop-dishwasher-for-small-households"
       ],
-      "snapshot_id": "snp-a10-7c6079e06277"
+      "snapshot_id": "snp-a10-1d75438033fc"
     }
   ],
   "events": [
@@ -573,7 +573,7 @@
   "source": {
     "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
     "schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
-    "sha256": "342eb613d0af5e2f0c7495deb50a766ee69f4e0116e64624b3d9ac3befc0a916",
+    "sha256": "ad6625783bef5c7dcef7aaea0cf25d60cd8e48e679f9a34c6abaff0ade99d01f",
     "version": "3.0.0"
   },
   "target_origin": "https://kurashinoshirube.com",

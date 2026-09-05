@@ -25,6 +25,10 @@ from raos.application.editorial.local_scratch_restore_v1 import (
 from raos.application.editorial.verified_incremental_v1 import (
     IncrementalPublicationFailure,
 )
+from raos.application.editorial.local_scratch_theme_restore_v1 import (
+    build_scratch_theme_restoration,
+    verify_scratch_theme_restoration,
+)
 
 PROFILE = "verified-incremental"
 SCHEMA = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_AUDIT_V1"
@@ -430,6 +434,26 @@ def _json_evidence(raw: bytes, *, require_canonical: bool = True) -> dict[str, o
     return value
 
 
+def _restoration_time(value: object, observed_at: datetime) -> datetime:
+    if observed_at.tzinfo is None or observed_at.utcoffset() is None:
+        _fail("TIME_INVALID")
+    if (
+        type(value) is not str
+        or re.fullmatch(
+            r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|\+00:00)", value
+        )
+        is None
+    ):
+        _fail("RESTORATION_TIME_INVALID")
+    try:
+        verified = datetime.fromisoformat(value)
+    except ValueError:
+        _fail("RESTORATION_TIME_INVALID")
+    if verified > observed_at:
+        _fail("RESTORATION_TIME_INVALID")
+    return verified
+
+
 def validate_scratch_backup_evidence_v1(
     *,
     backup_raw: bytes,
@@ -457,24 +481,8 @@ def validate_scratch_backup_evidence_v1(
     readback = _json_evidence(readback_raw, require_canonical=False)
     if canonical_json_bytes(backup) != canonical_json_bytes(expected_snapshot):
         _fail("BACKUP_SNAPSHOT_MISMATCH")
-    if observed_at.tzinfo is None or observed_at.utcoffset() is None:
-        _fail("TIME_INVALID")
     verified_at = receipt.get("verified_at")
-    if (
-        type(verified_at) is not str
-        or re.fullmatch(
-            r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|\+00:00)",
-            verified_at,
-        )
-        is None
-    ):
-        _fail("RESTORATION_TIME_INVALID")
-    try:
-        verified = datetime.fromisoformat(verified_at)
-    except ValueError:
-        _fail("RESTORATION_TIME_INVALID")
-    if verified > observed_at:
-        _fail("RESTORATION_TIME_INVALID")
+    _restoration_time(verified_at, observed_at)
     try:
         expected = build_scratch_restoration(
             backup,
@@ -509,6 +517,59 @@ def validate_scratch_backup_evidence_v1(
     }
 
 
+def validate_scratch_theme_backup_evidence_v1(
+    *,
+    snapshot: Mapping[str, object],
+    article_slugs: frozenset[str],
+    content_receipt_raw: bytes,
+    content_readback_raw: bytes,
+    baseline_package_raw: bytes,
+    candidate_package_raw: bytes,
+    theme_readback_raw: bytes,
+    theme_receipt_raw: bytes,
+    expected_candidate_tree_sha256: str,
+    observed_at: datetime,
+) -> dict[str, object]:
+    """Rehash actual theme bytes and replay all three states, never a Git-only PASS."""
+    for raw in (
+        baseline_package_raw,
+        candidate_package_raw,
+        theme_readback_raw,
+        theme_receipt_raw,
+    ):
+        if type(raw) is not bytes or not 0 < len(raw) <= MAX_ARTIFACT_BYTES:
+            _fail("RESTORATION_ARTIFACT_INVALID")
+    receipt = _json_evidence(theme_receipt_raw, require_canonical=False)
+    content_receipt = _json_evidence(content_receipt_raw, require_canonical=False)
+    verified = _restoration_time(receipt.get("verified_at"), observed_at)
+    if verified < _restoration_time(content_receipt.get("verified_at"), observed_at):
+        _fail("RESTORATION_TIME_INVALID")
+    try:
+        expected = build_scratch_theme_restoration(
+            snapshot,
+            article_slugs=article_slugs,
+            content_receipt_raw=content_receipt_raw,
+            content_readback_raw=content_readback_raw,
+            baseline_package_raw=baseline_package_raw,
+            candidate_package_raw=candidate_package_raw,
+        )
+        replayed = verify_scratch_theme_restoration(
+            expected, _json_evidence(theme_readback_raw, require_canonical=False)
+        )
+    except IncrementalPublicationFailure, KeyError, TypeError:
+        _fail("THEME_RESTORATION_REPLAY_FAILED")
+    if canonical_json_bytes(receipt) != canonical_json_bytes(
+        {**replayed, "verified_at": receipt["verified_at"]}
+    ) or replayed["candidate_tree_sha256"] != _hash(expected_candidate_tree_sha256):
+        _fail("THEME_RESTORATION_BINDING_INVALID")
+    return {
+        **replayed,
+        "verified_at": receipt["verified_at"],
+        "theme_receipt_artifact_sha256": _digest(theme_receipt_raw),
+        "theme_readback_artifact_sha256": _digest(theme_readback_raw),
+    }
+
+
 def _backup_checks(
     value: object,
     attachments: set[str],
@@ -519,7 +580,18 @@ def _backup_checks(
     expected_backup_sha256: str,
     observed_at: datetime,
     required_noncontent_rollback_targets: tuple[str, ...],
+    expected_artifact_hashes: Mapping[str, str],
 ) -> None:
+    theme_fields: set[str] = (
+        {
+            "theme_backup_artifact_id",
+            "theme_candidate_artifact_id",
+            "theme_readback_artifact_id",
+            "theme_restoration_artifact_id",
+        }
+        if required_noncontent_rollback_targets == ("theme",)
+        else set()
+    )
     checks = _mapping(
         value,
         {
@@ -530,7 +602,8 @@ def _backup_checks(
             "backup_artifact_id",
             "restoration_artifact_id",
             "restoration_readback_artifact_id",
-        },
+        }
+        | theme_fields,
     )
     _identifier(checks["rollback_owner_id"])
     keys = tuple(
@@ -563,10 +636,32 @@ def _backup_checks(
         expected_backup_sha256=expected_backup_sha256,
         observed_at=observed_at,
     )
-    # A content-only scratch rehearsal does not restore theme/plugin/options.
-    # There is deliberately no self-asserted shared rollback exception.
-    if required_noncontent_rollback_targets:
+    if (
+        required_noncontent_rollback_targets
+        and required_noncontent_rollback_targets != ("theme",)
+    ):
         _fail("SHARED_ROLLBACK_NOT_VERIFIED")
+    if theme_fields:
+        theme_keys = {name: _identifier(checks[name]) for name in theme_fields}
+        if (
+            len(set(theme_keys.values()) | set(keys)) != 7
+            or not set(theme_keys.values()) <= attachments
+        ):
+            _fail("RESTORATION_UNVERIFIED")
+        validate_scratch_theme_backup_evidence_v1(
+            snapshot=expected_snapshot,
+            article_slugs=expected_article_slugs,
+            content_receipt_raw=artifacts[keys[1]],
+            content_readback_raw=artifacts[keys[2]],
+            baseline_package_raw=artifacts[theme_keys["theme_backup_artifact_id"]],
+            candidate_package_raw=artifacts[theme_keys["theme_candidate_artifact_id"]],
+            theme_readback_raw=artifacts[theme_keys["theme_readback_artifact_id"]],
+            theme_receipt_raw=artifacts[theme_keys["theme_restoration_artifact_id"]],
+            expected_candidate_tree_sha256=_hash(
+                expected_artifact_hashes.get("theme-tree")
+            ),
+            observed_at=observed_at,
+        )
 
 
 def _checks(surface: str, value: object, attachments: set[str]) -> str | None:
@@ -866,6 +961,7 @@ def validate_verified_incremental_audit_v1(
                     expected_backup_sha256=_hash(expected_hashes.get("live-snapshot")),
                     observed_at=_time(proof["captured_at"]),
                     required_noncontent_rollback_targets=scope.required_noncontent_rollback_targets,
+                    expected_artifact_hashes=expected_hashes,
                 )
             else:
                 contact_state = _checks(expected_surface, proof["checks"], attachments)

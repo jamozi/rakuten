@@ -556,6 +556,42 @@ def _batch_status(
     ):
         fail("BATCH_STATUS_INVALID")
     instant(response.get("expires_at_gmt"))
+    bindings = response.get("proposal_bindings")
+    if type(bindings) is not dict or set(bindings) != set(ids):
+        fail("SERVER_PROPOSAL_BINDING_REQUIRED")
+    envelope = receipt["release_envelope"]
+    for proposal in receipt["proposals"]:
+        target = "theme" if proposal["kind"] == "THEME_RELEASE" else proposal["slug"]
+        binding = bindings[proposal["proposal_id"]]
+        if type(binding) is not dict or set(binding) != {
+            "kind",
+            "idempotency_key",
+            "before_sha256",
+            "after_sha256",
+            "post_id",
+            "post_type",
+        }:
+            fail("SERVER_PROPOSAL_BINDING_INVALID")
+        if (
+            binding["kind"] != proposal["kind"]
+            or binding["idempotency_key"]
+            != publication.sha256_json(
+                {"release_sha256": receipt["release_sha256"], "target": target}
+            )
+            or binding["after_sha256"] != proposal["after_sha256"]
+        ):
+            fail("SERVER_PROPOSAL_BINDING_INVALID")
+        if target == "theme":
+            if binding["post_id"] is not None or binding["post_type"] is not None:
+                fail("SERVER_PROPOSAL_BINDING_INVALID")
+        else:
+            expected = envelope["inventory"][target]
+            if (
+                binding["post_id"] != expected["post_id"]
+                or binding["post_type"] != expected["post_type"]
+                or binding["before_sha256"] != expected["content_sha256"]
+            ):
+                fail("SERVER_PROPOSAL_BINDING_INVALID")
     return response
 
 
@@ -957,6 +993,13 @@ def execute_incremental(
             )
             receipt["batch_registration"] = registration
             _ids(receipt)
+            registered_status = _batch_status(receipt, deploy)
+            if registered_status["state"] not in {
+                "REGISTERED",
+                "APPROVED",
+            } or clock() >= instant(registered_status["expires_at_gmt"]):
+                _save(candidate_path, receipt, "REGISTRATION_REQUIRES_RECONCILIATION")
+                fail("EXISTING_BATCH_TERMINAL_REQUIRES_RECONCILIATION")
             _save(candidate_path, receipt, "AWAITING_OWNER_APPROVAL")
             print(
                 "公開提案を登録しました。まだ公開していません。WordPress管理画面で対象の差分とハッシュを確認して承認してください。"

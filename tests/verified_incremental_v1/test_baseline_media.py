@@ -62,6 +62,17 @@ def inputs() -> tuple[dict[str, Any], media.MixedPreview]:
             "article_body_sha256": {
                 slug: media.digest(raw) for slug, raw in articles.items()
             },
+            "incremental_scope": {
+                "articles": [
+                    {
+                        "article_id": slug,
+                        "display_projection": dict(
+                            media.project_legacy_media(raw.decode(), slug).proof
+                        ),
+                    }
+                    for slug, raw in sorted(articles.items())
+                ],
+            },
         },
     )
     return snapshot, mixed

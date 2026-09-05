@@ -702,9 +702,7 @@ def test_shared_theme_or_configuration_cannot_pass_with_content_only_rehearsal()
         scope(), shared_changes=True, required_noncontent_rollback_targets=("theme",)
     )
     report, artifacts = synthetic_pair(shared)
-    with pytest.raises(
-        audit.IncrementalAuditFailure, match="SHARED_ROLLBACK_NOT_VERIFIED"
-    ):
+    with pytest.raises(audit.IncrementalAuditFailure, match="FIELDS_INVALID"):
         validate(report, artifacts, shared)
 
 
@@ -747,3 +745,125 @@ def test_backup_json_duplicate_keys_are_rejected(key):
             expected_backup_sha256=digest(artifacts["synthetic-backup"]),
             observed_at=NOW,
         )
+
+
+def theme_pair(monkeypatch):
+    from tests.verified_incremental_v1.test_theme_restore import sample, readback
+    from raos.application.editorial.local_scratch_theme_restore_v1 import (
+        verify_scratch_theme_restoration,
+    )
+
+    snapshot_value, arguments, expected = sample()
+    theme_readback = readback(expected)
+    receipt = {
+        **verify_scratch_theme_restoration(expected, theme_readback),
+        "verified_at": "2026-09-05T09:05:00+00:00",
+    }
+    raw_snapshot = audit.canonical_json_bytes(snapshot_value).rstrip(b"\n")
+    evidence = {
+        "synthetic-backup": raw_snapshot,
+        "synthetic-restoration": arguments["content_receipt_raw"],
+        "synthetic-readback": arguments["content_readback_raw"],
+        "synthetic-theme-backup": expected.baseline_package,
+        "synthetic-theme-candidate": expected.candidate_package,
+        "synthetic-theme-readback": audit.canonical_json_bytes(theme_readback),
+        "synthetic-theme-restoration": audit.canonical_json_bytes(receipt),
+    }
+    monkeypatch.setitem(globals(), "BACKUP_SNAPSHOT", snapshot_value)
+    monkeypatch.setitem(globals(), "BACKUP_SLUGS", arguments["article_slugs"])
+    monkeypatch.setitem(
+        globals(),
+        "INPUTS",
+        {
+            "source": "b" * 64,
+            "live-snapshot": digest(raw_snapshot),
+            "theme-tree": receipt["candidate_tree_sha256"],
+        },
+    )
+    monkeypatch.setitem(globals(), "restoration_artifacts", lambda: dict(evidence))
+    current_scope = replace(
+        scope(), shared_changes=True, required_noncontent_rollback_targets=("theme",)
+    )
+    report, artifacts = synthetic_pair(current_scope)
+    for index in (0, 1):
+        mutate_proof(
+            report,
+            artifacts,
+            audit.BACKUP_SURFACE,
+            lambda proof: proof["checks"].update(
+                theme_backup_artifact_id="synthetic-theme-backup",
+                theme_candidate_artifact_id="synthetic-theme-candidate",
+                theme_readback_artifact_id="synthetic-theme-readback",
+                theme_restoration_artifact_id="synthetic-theme-restoration",
+            ),
+            round_index=index,
+        )
+    return report, artifacts, current_scope
+
+
+def test_theme_gate_replays_actual_packages_and_three_states_not_git_or_flags(
+    monkeypatch,
+):
+    report, artifacts, current_scope = theme_pair(monkeypatch)
+    result = validate(report, artifacts, current_scope).to_document()
+    assert result["publication_authority"] is False
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("candidate_tree_sha256", "f" * 64),
+        ("source_snapshot_sha256", "f" * 64),
+        ("content_restore_receipt_sha256", "f" * 64),
+        ("wordpress_options_unchanged", False),
+        ("activation_changed", True),
+        ("production_authority", True),
+        ("verified_at", "2026-09-05T08:00:00+00:00"),
+    ],
+)
+def test_rehashing_a_false_theme_receipt_does_not_prove_restoration(
+    monkeypatch, field, value
+):
+    report, artifacts, current_scope = theme_pair(monkeypatch)
+    replace_attachment(
+        report,
+        artifacts,
+        "synthetic-theme-restoration",
+        lambda receipt: receipt.update({field: value}),
+    )
+    with pytest.raises(audit.IncrementalAuditFailure):
+        validate(report, artifacts, current_scope)
+
+
+def test_theme_receipt_cannot_be_reused_for_another_current_candidate(monkeypatch):
+    report, artifacts, current_scope = theme_pair(monkeypatch)
+    changed = dict(INPUTS, **{"theme-tree": "f" * 64})
+    monkeypatch.setitem(globals(), "INPUTS", changed)
+    report["artifact_hashes"] = changed
+    for index, row in enumerate(report["rounds"]):
+        row["artifact_hashes"] = changed
+        for surface in row["surfaces"]:
+            if surface["evidence_id"] is not None:
+                mutate_proof(
+                    report,
+                    artifacts,
+                    surface["surface_id"],
+                    lambda proof: proof.update(artifact_hashes=changed),
+                    round_index=index,
+                )
+    with pytest.raises(
+        audit.IncrementalAuditFailure, match="THEME_RESTORATION_BINDING_INVALID"
+    ):
+        validate(report, artifacts, current_scope)
+
+
+@pytest.mark.parametrize("target", ["seo", "plugins"])
+def test_unrehearsed_seo_and_plugins_remain_blocking(target):
+    current_scope = replace(
+        scope(), shared_changes=True, required_noncontent_rollback_targets=(target,)
+    )
+    report, artifacts = synthetic_pair(current_scope)
+    with pytest.raises(
+        audit.IncrementalAuditFailure, match="SHARED_ROLLBACK_NOT_VERIFIED"
+    ):
+        validate(report, artifacts, current_scope)

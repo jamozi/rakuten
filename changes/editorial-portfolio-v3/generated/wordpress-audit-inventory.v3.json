@@ -264,7 +264,7 @@
   },
   "schema": "RAOS_WORDPRESS_AUDIT_INVENTORY_V3",
   "source_navigation_sha256": "ae5c793515e8de38d67fa3ec25979b639a6ab4487511482bc65d564c66c6e077",
-  "source_portfolio_sha256": "342eb613d0af5e2f0c7495deb50a766ee69f4e0116e64624b3d9ac3befc0a916",
+  "source_portfolio_sha256": "ad6625783bef5c7dcef7aaea0cf25d60cd8e48e679f9a34c6abaff0ade99d01f",
   "surfaces": [
     {
       "kind": "home",

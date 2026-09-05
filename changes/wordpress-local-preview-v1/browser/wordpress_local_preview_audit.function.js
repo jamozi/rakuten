@@ -106,7 +106,24 @@
       const selected = scope.selected_article_ids.includes(row.article_id);
       if (!exactKeys(row, ['article_id', 'editorial_product_ids', 'expected_cta_ids',
         'expected_ctas', 'expected_image_product_ids', 'expected_article_facts',
-        'expected_disclosure_policy_link_count']) ||
+        'expected_disclosure_policy_link_count', 'display_projection']) ||
+        !exactKeys(row.display_projection, ['state', 'contract_sha256', 'input_sha256',
+          'output_sha256', 'profile', 'removed_decoration_count', 'removed_neutral_media_count']) ||
+        ['contract_sha256', 'input_sha256', 'output_sha256'].some((key) =>
+          !/^[a-f0-9]{64}$/.test(row.display_projection[key] || '')) ||
+        (row.display_projection.state === 'NOT_APPLICABLE'
+          ? row.display_projection.profile !== null ||
+            row.display_projection.input_sha256 !== row.display_projection.output_sha256 ||
+            row.display_projection.removed_decoration_count !== 0 ||
+            row.display_projection.removed_neutral_media_count !== 0
+          : row.display_projection.state !== 'APPLIED' ||
+            !['production', 'local-fixture', 'local-stored'].includes(row.display_projection.profile) ||
+            row.display_projection.input_sha256 === row.display_projection.output_sha256 ||
+            row.display_projection.removed_decoration_count !== 8 ||
+            row.display_projection.removed_neutral_media_count !== ({
+              'st1704-portable-power-station-guide': 2,
+              'st1704-anker-solix-c300-c800-c1000-differences': 4,
+            })[row.article_id]) ||
         !exactKeys(row.expected_article_facts, ['content_role_labels', 'primary_query_intents']) ||
         Object.values(row.expected_article_facts).some((values) =>
           !Array.isArray(values) || values.length > 8 || (selected && values.length !== 1) ||
@@ -165,6 +182,90 @@
       commerceStatus: !selected ? 'UNCHANGED_NOT_REVERIFIED' :
         expected.expected_ctas.length === 0 ? 'NOT_INCLUDED' : 'EXPECTED_VERIFIED_SET_PRESENT',
     };
+  };
+
+  // Native lazy images in the inactive legacy table/card view are not requested.
+  // Observe their actual DOM state; do not change loading, visibility, or page content.
+  const inspectImageLoading = () => [...document.images].map((image) => {
+    const rect = image.getBoundingClientRect();
+    const view = image.closest('.raos-comparison__table-view, .raos-comparison__cards');
+    const cardWrapper = view?.parentElement;
+    const comparison = view?.matches('.raos-comparison__cards') &&
+      cardWrapper?.matches('.comparison-cards')
+      ? cardWrapper.parentElement : view?.parentElement;
+    const table = comparison?.querySelector(':scope > .raos-comparison__table-view');
+    const cards = comparison?.querySelector(
+      ':scope > .comparison-cards > .raos-comparison__cards',
+    );
+    const counterpart = view === table ? cards : view === cards ? table : null;
+    let hiddenAncestor = false;
+    for (let ancestor = image.parentElement; ancestor; ancestor = ancestor.parentElement) {
+      if (getComputedStyle(ancestor).display === 'none') hiddenAncestor = true;
+    }
+    return {
+      complete: image.complete,
+      naturalWidth: image.naturalWidth,
+      loading: image.loading,
+      legacyResponsiveImage: image.matches('img.raos-comparison__product-image') &&
+        comparison?.matches('.raos-comparison') === true &&
+        view !== null && counterpart != null && getComputedStyle(view).display === 'none' &&
+        counterpart.checkVisibility() === true &&
+        counterpart.getBoundingClientRect().width > 0 &&
+        counterpart.getBoundingClientRect().height > 0,
+      hasProductImageId: image.hasAttribute('data-raos-product-image-id'),
+      verifiedProductImage: image.closest(
+        '.product-profile, .raos-product-card, [data-raos-product-image-id],'
+        + '[data-raos-product-image-state="verified"]',
+      ) !== null,
+      hiddenAncestor,
+      zeroRect: rect.width === 0 && rect.height === 0,
+      invisible: image.checkVisibility() === false,
+      source: image.currentSrc || image.src,
+    };
+  });
+  const classifyImageLoading = ({ publicationProfile, commerceStatus, images }) => {
+    let unloadedImages = 0;
+    const hiddenLegacyLazySources = [];
+    for (const image of images) {
+      const deferred = publicationProfile === 'verified-incremental' &&
+        commerceStatus === 'UNCHANGED_NOT_REVERIFIED' &&
+        image.legacyResponsiveImage === true && image.hasProductImageId === false &&
+        image.verifiedProductImage === false && image.hiddenAncestor === true &&
+        image.zeroRect === true && image.invisible === true &&
+        image.loading === 'lazy' && image.complete === false && image.naturalWidth === 0;
+      if (deferred) hiddenLegacyLazySources.push(image.source);
+      else if (!image.complete || image.naturalWidth === 0) unloadedImages += 1;
+    }
+    return { unloadedImages, hiddenLegacyLazySources };
+  };
+  const inspectHiddenLegacyImageResources = async ({ page, origin, sources }) => {
+    let failures = 0;
+    for (const source of new Set(sources)) {
+      let resource = null;
+      try {
+        // Never turn a DOM URL into an arbitrary or external HTTP request.
+        const target = new URL(source);
+        if (target.origin !== origin || target.username || target.password || target.search ||
+          target.hash || !/^\/wp-content\/themes\/[A-Za-z0-9_-]+\/(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_.-]+\.(?:webp|png|jpe?g|gif|svg)$/.test(target.pathname)) {
+          failures += 1;
+          continue;
+        }
+        resource = await page.request.get(source, { maxRedirects: 0, timeout: 5000 });
+        const type = (resource.headers()['content-type'] || '').split(';', 1)[0].trim();
+        if (resource.status() !== 200 || resource.url() !== source ||
+          !/^image\/(?:webp|png|jpeg|gif|svg\+xml)$/.test(type)) {
+          failures += 1;
+          continue;
+        }
+        const bytes = (await resource.body()).length;
+        if (bytes === 0 || bytes > 2 * 1024 * 1024) failures += 1;
+      } catch (error) {
+        failures += 1;
+      } finally {
+        if (resource !== null) await resource.dispose();
+      }
+    }
+    return failures;
   };
 
   const factory = ({ artifactDirectory, axeSource, inventory, origin,
@@ -1129,9 +1230,6 @@
             titleText: document.querySelector('.raos-article-toc__title')?.textContent?.trim() || '',
             titleVisible: visible(document.querySelector('.raos-article-toc__title')),
           },
-          unloadedImages: [...document.images].filter(
-            (image) => !image.complete || image.naturalWidth === 0,
-          ).length,
           unlabeledControls: controls.filter((element) => element.tagName !== 'BUTTON' &&
             !element.labels?.length && !element.getAttribute('aria-label') &&
             !element.getAttribute('aria-labelledby')).length,
@@ -1140,6 +1238,20 @@
         comparisonPolicyPath,
         expectedPageNumber: surface.expected_page_number ?? null,
         expectedSearchQuery: surface.kind === 'search' ? surface.expected_search_query : null,
+      });
+
+      const imageLoading = classifyImageLoading({
+        publicationProfile,
+        commerceStatus: surface.article && checkedIncrementalScope?.articles.some(
+          (row) => row.article_id === surface.article_id,
+        ) && !checkedIncrementalScope.selected_article_ids.includes(surface.article_id)
+          ? 'UNCHANGED_NOT_REVERIFIED' : 'STRICT',
+        images: await page.evaluate(inspectImageLoading),
+      });
+      audit.unloadedImages = imageLoading.unloadedImages;
+      audit.hiddenLegacyLazyImageCount = imageLoading.hiddenLegacyLazySources.length;
+      audit.hiddenLegacyImageResourceFailures = await inspectHiddenLegacyImageResources({
+        page, origin, sources: imageLoading.hiddenLegacyLazySources,
       });
 
       const browserCookieCount = (await page.context().cookies([expectedUrl])).length;
@@ -1739,6 +1851,7 @@
         audit.h1Count !== 1 || audit.mainCount !== 1 || audit.scrollWidth > audit.clientWidth ||
         audit.h1LineCount > (width <= 390 ? 6 : 4) ||
         audit.missingAlt !== 0 || audit.unloadedImages !== 0 || audit.unlabeledControls !== 0 ||
+        audit.hiddenLegacyImageResourceFailures !== 0 ||
         comparisonFocusabilityFailure ||
         audit.duplicateIds.length !== 0 || audit.brokenAriaReferences !== 0 ||
         audit.consentElementCount !== 0 || audit.cookieSettingsCount !== 0 ||
@@ -1980,11 +2093,16 @@
         },
         canonicalPolicy: surface.publicCore ? 'EXACT_LOCAL_PUBLIC_CORE' : surface.expected_canonical,
         captureOnlyEvidenceMode,
+        imageLoadingEvidence: {
+          hiddenLegacyLazyNotRequested: audit.hiddenLegacyLazyImageCount,
+          hiddenLegacyImageResourceFailures: audit.hiddenLegacyImageResourceFailures,
+        },
         httpStatus: response.status(),
         profileSemantics: {
           publicationProfile,
           linkMode,
           incrementalCommerceStatus: incrementalArticle.commerceStatus,
+          legacyMediaDisplayProjection: incrementalExpected?.display_projection || null,
           preparationBindingSha256: checkedIncrementalScope?.preparation_binding_sha256 || null,
           localProfileId: robotsProfile.local_profile_id,
           localObservedPolicy: robotsProfile.local_observed_policy,
@@ -2028,5 +2146,8 @@
   factory.validateSeoHead = validateSeoHead;
   factory.validateIncrementalScope = validateIncrementalScope;
   factory.validateIncrementalArticle = validateIncrementalArticle;
+  factory.inspectImageLoading = inspectImageLoading;
+  factory.classifyImageLoading = classifyImageLoading;
+  factory.inspectHiddenLegacyImageResources = inspectHiddenLegacyImageResources;
   return factory;
 })()

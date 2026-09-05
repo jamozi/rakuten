@@ -16,7 +16,7 @@ There are exactly two project MCP servers:
 
 The WordPress plugin requires WordPress 7.1.x and exactly MCP Adapter 0.6.1.
 Abilities 1.3.1 is bound to runtime revision
-`f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082`;
+`c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472`;
 the entrypoint and every critical class must report that exact identity.
 It disables MCP Adapter's generic default server and exposes only the nine
 tools listed in `contracts/wordpress-mcp.v1.json`. The local bridge exposes only

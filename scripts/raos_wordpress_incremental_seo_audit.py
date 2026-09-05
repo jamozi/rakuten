@@ -30,6 +30,11 @@ from raos_wordpress_incremental_snapshot import (  # noqa: E402
 from raos.application.editorial.verified_incremental_preview_v1 import (  # noqa: E402
     _public_metadata,
 )
+from raos.application.editorial.legacy_media_display_projection_v1 import (  # noqa: E402
+    LegacyMediaProjectionFailure,
+    TARGETS as LEGACY_MEDIA_TARGETS,
+    project_legacy_media,
+)
 from raos.application.editorial.verified_incremental_release_v1 import (  # noqa: E402
     VerifiedIncrementalReleaseV1,
     validate_release_envelope,
@@ -37,6 +42,7 @@ from raos.application.editorial.verified_incremental_release_v1 import (  # noqa
 from raos.application.editorial.verified_incremental_v1 import (  # noqa: E402
     _Markup,
     digest,
+    supported_article_element,
 )
 
 PRIVATE = Path("/home/minami/rakuten/.secrets/wordpress-mcp/incremental-candidates")
@@ -136,14 +142,74 @@ def _body(markup: str) -> str:
     return parser.bodies[0]
 
 
+def _require_supported_element(
+    tag: str, attrs: Mapping[str, str | None], *, article_body: bool = False
+) -> None:
+    # There is no identity/byte contract for responsive image alternatives in
+    # this release. Do not equate a safe fallback img with a different source.
+    if tag in {"picture", "source"} or "srcset" in attrs or "imagesrcset" in attrs:
+        fail("PUBLIC_RESPONSIVE_MEDIA_UNSUPPORTED")
+    if article_body and tag in {
+        "script",
+        "style",
+        "iframe",
+        "frame",
+        "frameset",
+        "object",
+        "embed",
+        "applet",
+        "base",
+        "link",
+        "meta",
+    }:
+        fail("PUBLIC_ACTIVE_CONTENT_FORBIDDEN")
+    # Scope this grammar to the extracted article only. The surrounding
+    # WordPress theme can legitimately use SVG menu/search icons and head tags.
+    if article_body and not supported_article_element(tag, attrs):
+        fail("PUBLIC_ARTICLE_MARKUP_UNSUPPORTED")
+    url_attributes = {
+        "href",
+        "src",
+        "xlink:href",
+        "action",
+        "formaction",
+        "poster",
+        "data",
+        "background",
+        "cite",
+        "codebase",
+        "manifest",
+        "longdesc",
+        "profile",
+    }
+    for key, value in attrs.items():
+        if key.startswith("on") or key == "srcdoc":
+            fail("PUBLIC_EXECUTABLE_ATTRIBUTE_FORBIDDEN")
+        if key in url_attributes:
+            # HTMLParser has decoded character references; URL parsers ignore
+            # ASCII controls/whitespace in executable schemes as well.
+            normalized = re.sub(r"[\x00-\x20\x7f]", "", value or "").lower()
+            scheme = re.match(r"^([a-z][a-z0-9+.-]*):", normalized)
+            if scheme and scheme[1] not in {"https", "http", "mailto", "tel"}:
+                fail("PUBLIC_EXECUTABLE_URL_FORBIDDEN")
+
+
+class _SupportedBodyMarkup(_Markup):
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        _require_supported_element(tag, dict(attrs), article_body=True)
+        super().handle_starttag(tag, attrs)
+
+
 def _project(markup: str, *, rendered: bool) -> dict[str, object]:
-    parser = _Markup(markup)
+    parser = _SupportedBodyMarkup(markup)
     parser.feed(markup)
     parser.close()
     if parser.stack:
         fail("CONTENT_HTML_INVALID")
     removed: list[tuple[int, int]] = []
     for element in parser.elements:
+        # Audit before excluding known runtime wrappers: an injected handler
+        # must not disappear merely because its class belongs to the TOC.
         classes = set((element.attrs.get("class") or "").split())
         if classes & INJECTED:
             if not rendered:
@@ -203,7 +269,16 @@ def _project(markup: str, *, rendered: bool) -> dict[str, object]:
     }
 
 
-def verify_rendered_body(expected: str, actual_page: str) -> str:
+def verify_rendered_body(
+    expected: str, actual_page: str, *, article_id: str | None = None
+) -> str:
+    if article_id is not None:
+        try:
+            expected = project_legacy_media(
+                expected, article_id, profile="production"
+            ).markup
+        except LegacyMediaProjectionFailure:
+            fail("DISPLAY_PROJECTION_MISMATCH")
     expected_projection = _project(expected, rendered=False)
     actual_projection = _project(_body(actual_page), rendered=True)
     if expected_projection != actual_projection:
@@ -222,20 +297,11 @@ class _PageAssets(HTMLParser):
         values = dict(attrs)
         if len(values) != len(attrs):
             fail("PUBLIC_ATTRIBUTES_DUPLICATE")
+        _require_supported_element(tag, values)
         if tag == "img":
             if not values.get("src"):
                 fail("PUBLIC_IMAGE_SOURCE_MISSING")
             self.images.add(str(values["src"]))
-            if values.get("srcset"):
-                # Every alternate image is checked too, not just the fallback src.
-                for entry in str(values["srcset"]).split(","):
-                    fields = entry.strip().split()
-                    if (
-                        len(fields) != 2
-                        or re.fullmatch(r"[0-9.]+[wx]", fields[1]) is None
-                    ):
-                        fail("PUBLIC_IMAGE_SRCSET_INVALID")
-                    self.images.add(fields[0])
         if tag == "a" and values.get("href"):
             self.links.add(urljoin(publication.ORIGIN, str(values["href"])))
         if tag == "script" and re.search(
@@ -569,10 +635,32 @@ def run_verified_incremental_public_audit(
                 != str(dates["modified_gmt"]).replace(" ", "T") + "Z"
             ):
                 fail("JSONLD_DATES_MISMATCH")
+        display_article_id = next(
+            (
+                article_id
+                for article_id, target in LEGACY_MEDIA_TARGETS.items()
+                if target[0] == slug
+            ),
+            slug,
+        )
+        display_proof = None
+        if item.role == "article":
+            try:
+                display_proof = dict(
+                    project_legacy_media(
+                        target["block_markup"], display_article_id, profile="production"
+                    ).proof
+                )
+            except LegacyMediaProjectionFailure:
+                fail("DISPLAY_PROJECTION_MISMATCH")
         projection_sha = (
             None
             if item.role == "home"
-            else verify_rendered_body(target["block_markup"], markup)
+            else verify_rendered_body(
+                target["block_markup"],
+                markup,
+                article_id=display_article_id if item.role == "article" else None,
+            )
         )
         evidence = publication._PublicPageEvidenceParser()
         evidence.feed(markup)
@@ -596,6 +684,7 @@ def run_verified_incremental_public_audit(
             "state": "UPDATED" if slug in prepared else "PRESERVED",
             "content_sha256": current[slug]["content_sha256"],
             "rendered_body_projection_sha256": projection_sha,
+            "legacy_media_display_projection": display_proof,
             "public_response_sha256": page.body_sha256,
             "public_headers_sha256": page.headers_sha256,
             "measurement_state": "NO_MEASUREMENT_SCRIPT_OR_SET_COOKIE",

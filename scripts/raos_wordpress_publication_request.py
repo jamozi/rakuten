@@ -65,6 +65,7 @@ from raos.application.editorial.rakuten_standard_api_v1 import (  # noqa: E402
 )
 from raos.application.finance.editorial_economics_v3 import EditorialEconomicsV3Failure  # noqa: E402
 import raos_wordpress_seo_audit as wordpress_seo_audit  # noqa: E402
+import raos_wordpress_deployment_operator as wordpress_deployment  # noqa: E402
 import wordpress_quality_audit_v1 as wordpress_quality_audit  # noqa: E402
 import build_st1704_self_hosted_theme as theme_owner  # noqa: E402
 
@@ -142,7 +143,7 @@ DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
 EXPECTED_PLUGIN_VERSION: Final = "1.3.1"
 EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
-    "f3e9e302b9a40bf6b312b2457f981272246f4fdd6f3e047d92bec5fda61d8082"
+    "c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472"
 )
 EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS: Final = 3600
 EXPECTED_APPLY_LEASE_TTL_SECONDS: Final = 900
@@ -3483,7 +3484,11 @@ def _validate_deployment_tools(tools: object) -> None:
         fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
     for name, tool in by_name.items():
         annotations = tool.get("annotations")
-        read_only = name in {"deployment-status", "publication-batch-status", "operation-status"}
+        read_only = name in {
+            "deployment-status",
+            "publication-batch-status",
+            "operation-status",
+        }
         destructive = name in {
             "release-wait-and-apply",
             "plugin-apply-change",
@@ -3503,7 +3508,9 @@ def _validate_deployment_tools(tools: object) -> None:
     theme_schema = by_name["theme-propose-release"].get("inputSchema")
     wait_schema = by_name["release-wait-and-apply"].get("inputSchema")
     batch_status_schema = by_name["publication-batch-status"].get("inputSchema")
-    if "operation-status" in by_name and by_name["operation-status"].get("inputSchema") != {
+    if "operation-status" in by_name and by_name["operation-status"].get(
+        "inputSchema"
+    ) != {
         "type": "object",
         "properties": {"operation_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
         "required": ["operation_id"],
@@ -4266,36 +4273,12 @@ def publication_batch_status(
         timeout=120,
         runner=runner,
     )
-    expires_at_gmt = response.get("expires_at_gmt")
-    if (
-        set(response)
-        != {
-            "schema",
-            "batch_token",
-            "batch_manifest_sha256",
-            "proposal_count",
-            "proposal_ids",
-            "state",
-            "expires_at_gmt",
-            "preconditions_ready",
-        }
-        or response.get("schema") != "RAOSWordPressPublicationBatchStatusV1"
-        or response.get("batch_token") != batch_token
-        or response.get("batch_manifest_sha256") != manifest_hash
-        or response.get("proposal_count") != len(proposal_ids)
-        or response.get("proposal_ids") != proposal_ids
-        or response.get("state")
-        not in {"REGISTERED", "APPROVED", "APPLIED", "EXPIRED", "FAILED"}
-        or type(expires_at_gmt) is not str
-        or re.fullmatch(
-            r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",
-            expires_at_gmt,
+    try:
+        return wordpress_deployment.validate_release_batch_status_response(
+            response, batch_token, manifest_hash, proposal_ids
         )
-        is None
-        or type(response.get("preconditions_ready")) is not bool
-    ):
+    except wordpress_deployment.OperatorFailure:
         fail("RAOS_WORDPRESS_REQUEST_BATCH_STATUS_INVALID")
-    return response
 
 
 def _codex_publication_evidence_expiry(receipt: Mapping[str, object]) -> str:
@@ -6817,7 +6800,9 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--incremental-candidate", type=Path)
     result.add_argument("--incremental-stage", choices=("propose", "apply", "readback"))
     result.add_argument("--incremental-preview-fixture", type=Path)
-    result.add_argument("--incremental-implementation-execution-id", action="append", default=[])
+    result.add_argument(
+        "--incremental-implementation-execution-id", action="append", default=[]
+    )
     result.add_argument(
         "--quality-audit-mode",
         choices=("signed-independent", "codex-owner"),
@@ -6909,12 +6894,14 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print("段階公開の対象について、本番適用と本番read-backを確認しました。")
             print(f"受領書: {path}")
             return 0
-        if any((
-            arguments.incremental_candidate,
-            arguments.incremental_stage,
-            arguments.incremental_preview_fixture,
-            arguments.incremental_implementation_execution_id,
-        )):
+        if any(
+            (
+                arguments.incremental_candidate,
+                arguments.incremental_stage,
+                arguments.incremental_preview_fixture,
+                arguments.incremental_implementation_execution_id,
+            )
+        ):
             fail("RAOS_WORDPRESS_REQUEST_PUBLICATION_PROFILE_INVALID")
         path = execute(
             arguments.articles,

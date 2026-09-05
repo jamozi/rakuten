@@ -107,18 +107,38 @@ different agents, or that an owner really confirmed a fact. Evidence must come
 from actual executions. The owner must review that provenance and the exact
 release proposal; no cryptographic independent-review claim is made.
 
-The supported scratch rehearsal restores saved content fields only. It does not
-restore theme, plugins, production site options, revision history, author identity
-or post metadata. Its replay binding remains non-authorizing. A release containing
-`required_noncontent_rollback_targets` is therefore rejected with
-`SHARED_ROLLBACK_NOT_VERIFIED` even after a successful stored-field replay.
 Existing article/home/policy saved-content changes can use the fourteen-document
-rehearsal. The release contract separately checks that the scope's noncontent
-target set exactly matches the manifest, so omitting a theme/SEO target cannot
-substitute a content-only rehearsal for configuration rollback.
-There is no self-asserted exception. A real shared-configuration backup/rollback
-adapter and rehearsal must be implemented and verified before this gate can pass
-for shared changes. This does not alter the existing full-profile workflow.
+rehearsal. A content-only receipt cannot establish a theme rollback. When the
+scope's `required_noncontent_rollback_targets` is exactly `["theme"]`, the backup
+checks additionally require four distinct attachments: `theme_backup_artifact_id`,
+`theme_candidate_artifact_id`, `theme_readback_artifact_id` and
+`theme_restoration_artifact_id`. All seven backup attachments must be distinct.
+The first two carry the actual, closed baseline/candidate file bytes. Their tree
+hash is the deployment operator's sorted path/size/content-hash canonical JSON
+projection, not a ZIP hash. The baseline must match the captured MCP deployment
+baseline in the original snapshot; the candidate must match the audited
+`theme-tree` input. Git history can provide matching backup bytes but cannot prove
+that a restoration actually ran.
+
+The separate portless scratch executor performs same-basename file replacement,
+without activating themes or changing WordPress options: baseline → candidate →
+baseline. Its readback must capture the exact tree, all fourteen restored content
+documents and all stored WordPress option hashes at **each** stage. The validator
+replays the actual package/readback/receipt bytes, exact source snapshot and
+content-restoration receipt binding, and unchanged settings; booleans or a typed
+receipt alone do not establish execution provenance. The real owner-private
+outputs must originate from an executed scratch rehearsal and be inspected in
+both review rounds. Preparing a package, passing synthetic tests, or writing this
+interface does **not** constitute a completed rehearsal; until the frozen candidate
+has actually been exercised, the theme restoration remains `NOT_EXECUTED`.
+
+SEO/plugin/settings rollback is not implemented by this files-only test. Any
+required `seo` or `plugins` rollback target remains rejected with
+`SHARED_ROLLBACK_NOT_VERIFIED`. Revision history, author identity and post metadata
+are not restored. The release contract checks the scope's noncontent target set
+against the manifest, so omitting a theme/SEO target cannot bypass these gates.
+Every binding remains non-authorizing; the existing full-profile workflow is
+unchanged.
 
 ## Required, deferred and not applicable
 
