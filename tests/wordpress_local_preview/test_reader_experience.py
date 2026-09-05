@@ -104,7 +104,7 @@ def test_unverified_experience_rejects_positive_claims_but_accepts_limits() -> N
     base = {'article_type':'shortlist', 'research_status':{'real_world_tested':False,'ranking_uses_commission':False}}
     for statement in ('実際に使って洗浄力を確認しました。', '使ってみると音が静かでした。'):
         assert 'research_status.unverified_experience_claim' in validate_experience({**base,'dek':statement},product_refs=frozenset(),evidence_refs=frozenset())
-    for statement in ('実際に使ってはいません。', '使ってみたときの洗浄力は未確認です。'):
+    for statement in ('実際に使ってはいません。', '使ってみたときの洗浄力は未確認です。', '実際に使える時間は条件で変わります。', '実際に使う機器を先に決めます。'):
         assert not validate_experience({**base,'dek':statement},product_refs=frozenset(),evidence_refs=frozenset())
 
 
@@ -190,3 +190,16 @@ def test_dimension_diagram_requires_approved_official_facts_and_does_not_invent_
     assert dimension_diagram({**claim,'classification':'EDITORIAL_INFERENCE'}, source, asset) is None
     assert dimension_diagram(claim, {**source,'retrieved_on':None}, asset) is None
     assert dimension_diagram(claim, {**source,'source_ref':'unbound'}, asset) is None
+
+
+def test_tracked_product_profiles_retain_identity_and_sources_when_migrated() -> None:
+    source = (Path(__file__).resolve().parents[2] / 'changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html').read_text()
+    profile = {'article_type':'comparison','components_enabled':True,'preserve_story':True,'decision_axes':[{'label':'台の設置','why_it_matters':'帰還余白が必要','how_to_check':'説明書を確認'}],'consolidate_sections':['reader-section','editors-note']}
+    output = fragment(project_article(source,article_id='roomba-mini-vs-switchbot-k11-pro',experience=profile))
+    cards = output.find(cls='raos-product-card')
+    assert {card.attrs['data-raos-product-id'] for card in cards} == {'PRD-IROBOT-ROOMBA-MINI-SLIM-F115060','PRD-SWITCHBOT-K11-PRO'}
+    assert len(output.find(cls='raos-decision-table')[0].find(tag='tbody')[0].find(tag='tr')) == 2
+    assert 'F115060' in output.find(cls='raos-evidence-panel')[0].text()
+    assert '2026年8月31日' in output.text()
+    assert output.find(cls='raos-reader-meaning')
+    assert not any(a.attrs.get('data-raos-cta-type') == 'offer' for a in output.find(tag='a'))

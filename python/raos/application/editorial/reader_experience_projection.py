@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from html import escape
 import json
+import re
 from pathlib import Path
 from typing import cast
 
@@ -82,6 +83,18 @@ def _paragraphs(root: Element) -> None:
             if node.parent is not None:
                 position = node.parent.children.index(node)
                 node.parent.children[position] = " "
+
+
+def _normalize_product_profiles(root: Element) -> None:
+    """Adapt the later tracked HTML drafts without replacing their editing source."""
+    for card in root.find(cls='product-profile'):
+        card.attrs['class'] = (card.attrs.get('class') or '') + ' raos-product-card'
+        body = next(iter(card.find(cls='product-profile__body')), card)
+        for paragraph in list(body.children):
+            if (isinstance(paragraph, Element) and paragraph.tag == 'p'
+                and re.search(r'\d', paragraph.text()) and not paragraph.has('raos-source-link')
+                and not paragraph.has('section-number')):
+                paragraph.attrs['class'] = (paragraph.attrs.get('class') or '') + ' raos-product-card__facts'
 
 
 def _research(root: Element, article: Element, article_id: str) -> None:
@@ -168,6 +181,7 @@ def project_article(
         markers[0].attrs["data-raos-article-id"] = article_id
         return root.html()
     if settings:
+        _normalize_product_profiles(root)
         _research(root, article, article_id)
         _summary(root, settings)
         if settings.get("components_enabled") is True:
@@ -203,6 +217,8 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
                 axis_block.append(note)
     # The decision table resolves identity, fit, and caution from existing cards.
     cards = root.find(cls="raos-product-card")
+    product_entries = settings.get('products', [])
+    product_settings = {p['product_ref']: p for p in product_entries} if isinstance(product_entries, list) else {}
     rows = []
     for card in cards:
         headings = card.find(tag="h3")
@@ -214,13 +230,25 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
         fit_lists = fit[0].find(tag="ul") if fit else []
         fit_items = fit_lists[0].find(tag="li") if fit_lists else []
         exclusions = fit_lists[1].find(tag="li") if len(fit_lists) > 1 else []
+        pairs = {pair.find(tag='dt')[0].text(): pair.find(tag='dd')[0].text() for dl in card.find(tag='dl') for pair in dl.children if isinstance(pair, Element) and pair.find(tag='dt') and pair.find(tag='dd')}
+        product = product_settings.get(card.attrs.get('data-raos-product-id'), {})
+        not_for = product.get('not_for', [])
+        if not_for and not pairs.get('別の候補が向く条件') and not exclusions:
+            card.append(block('<p class="raos-product-card__caution"><strong>向かない条件：</strong>' + escape('。'.join(not_for)) + '</p>'))
         rows.append({
-            "condition": labels[0].text() if labels else (fit_items[0].text() if fit_items else "条件を確認して候補にする"),
+            "condition": labels[0].text() if labels else (fit_items[0].text() if fit_items else pairs.get('向く条件', "条件を確認して候補にする")),
             "product_name": headings[0].text(), "anchor": str(card.attrs["id"]),
-            "reason": fit_items[0].text() if fit_items else "商品の選択条件を確認してください。",
-            "tradeoff": exclusions[0].text() if exclusions else (caution[0].text() if caution else "未確認"),
-            "purchase_check": caution[0].text() if caution else "型番・同梱品・保証・販売元を確認してください。",
+            "reason": fit_items[0].text() if fit_items else pairs.get('向く条件', "商品の選択条件を確認してください。"),
+            "tradeoff": exclusions[0].text() if exclusions else pairs.get('別の候補が向く条件', not_for[0] if not_for else (caution[0].text() if caution else "未確認")),
+            "purchase_check": caution[0].text() if caution else pairs.get('購入前の確認', "型番・同梱品・保証・販売元を確認してください。"),
         })
+    if summary is not None:
+        by_anchor = {'#' + row['anchor']: row for row in rows}
+        for item in summary.find(tag='li'):
+            choice = next((by_anchor[str(a.attrs['href'])] for a in item.find(tag='a') if a.attrs.get('href') in by_anchor), None)
+            paragraphs = item.find(tag='p')
+            if choice is not None and paragraphs and not item.find(cls='raos-summary-tradeoff'):
+                paragraphs[0].append(block('<span class="raos-summary-tradeoff"><strong>妥協点：</strong>' + escape(choice['tradeoff']) + '</span>'))
     if settings.get("article_type") != "status_check":
         table = components.decision_table(rows)
         if table is not None and insertion is not None and insertion.parent is not None:
@@ -228,6 +256,13 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
             table.parent.children.insert(table.parent.children.index(insertion) + 1, table)
     evidence = next(iter(root.find(cls="raos-evidence-panel")), None)
     if evidence is not None:
+        for lead in root.find(cls='lead-section'):
+            for heading in lead.find(tag='h2'):
+                heading.tag = 'p'
+                heading.attrs['class'] = 'raos-reader-lead-heading'
+            for copy in lead.find(cls='lead-copy'):
+                for extra in copy.find(tag='p')[2:]:
+                    evidence.append(extra)
         for redundant in root.find(cls="raos-decision-summary")[1:]:
             redundant.attrs["class"] = "raos-evidence-decision-basis"
             for heading in redundant.find(tag="h2"):
@@ -255,11 +290,21 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
         # Preserve source headings/IDs, methods, and update history at the end.
         additional = settings.get("consolidate_sections", [])
         consolidation = ("sources-section", "method-section", *(additional if isinstance(additional, list) else []))
+        story = block('<section class="raos-reader-meaning" aria-labelledby="reader-meaning"><h2 id="reader-meaning">暮らしの場面に置き換えて考える</h2></section>')
         for child in list(article.children):
             if isinstance(child, Element) and child is not evidence and any(child.has(cls) for cls in consolidation) and not child.has("raos-market-exclusions"):
                 for heading in child.find(tag="h2"):
                     heading.tag = "h3"
-                evidence.append(child)
+                if settings.get('preserve_story') is True and (child.has('reader-section') or child.has('method-section')):
+                    story.append(child)
+                else:
+                    evidence.append(child)
+        if story.find(tag='h3'):
+            products = root.find(cls='products-section')
+            if products:
+                products[0].insert_before(story)
+            else:
+                evidence.insert_before(story)
     unknowns = settings.get("unknowns", [])
     if isinstance(unknowns, list):
         unknown_panel = components.unknowns_panel(unknowns)

@@ -164,7 +164,7 @@ def validate_experience(
     if isinstance(status, Mapping) and status.get("real_world_tested") is False:
         for text in prose(experience):
             for sentence in re.split(r"[。！？\n]", text):
-                if re.search(r"実際に使|使ってみ|使用したところ|実測した|試してみた|音が静か(?:です|でした)|使い心地[はが](?:良|快適)|よく落ちました|使いやすかった", sentence) and not re.search(r"未確認|未実施|いません|いない|していない|ではありません", sentence):
+                if re.search(r"実際に使(?:って|った|いました)|使ってみ|使用したところ|実測した|試してみた|音が静か(?:です|でした)|使い心地[はが](?:良|快適)|よく落ちました|使いやすかった", sentence) and not re.search(r"未確認|未実施|いません|いない|していない|ではありません", sentence):
                     issues.append("research_status.unverified_experience_claim")
     summary = experience.get("decision_summary", {})
     if isinstance(summary, Mapping):

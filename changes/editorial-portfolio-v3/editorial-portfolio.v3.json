@@ -336,6 +336,132 @@
         "PRD-DJI-POWER-1000-V2"
       ],
       "production_slug": "portable-power-station-guide",
+      "reader_experience": {
+        "article_type": "shortlist",
+        "components_enabled": true,
+        "consolidate_sections": [
+          "reader-section",
+          "editors-note",
+          "purchase-caution"
+        ],
+        "contextual_links": [
+          {
+            "journey_stage": "compare",
+            "placement": "axes",
+            "question": "Anker Solix 4型番の容量帯とC1000世代差を知り、用途に合う型番を選ぶためのガイドを見る",
+            "target_ref": "st1704-anker-solix-c300-c800-c1000-differences"
+          }
+        ],
+        "decision_axes": [
+          {
+            "how_to_check": "機器の銘板と取扱説明書で通常時・起動時の電力を確認し、同時に使う機器を合計します。",
+            "label": "使う機器と消費電力を調べる",
+            "why_it_matters": "Wは接続する機器の出力条件を見る値です。"
+          },
+          {
+            "how_to_check": "消費電力W×使用時間hを機器ごとに合計します。変換ロスと待機電力があるため、公表容量だけで使用時間を保証できません。",
+            "label": "何時間使うかを決める",
+            "why_it_matters": "Whは必要な電力量の目安です。"
+          },
+          {
+            "how_to_check": "重量と寸法を確認し、段差や階段を含めた持ち出し方を決めます。",
+            "label": "保管場所から運べるかを考える",
+            "why_it_matters": "容量を増やすと、運ぶ条件も変わります。"
+          }
+        ],
+        "decision_summary": {
+          "key_difference": "蓄えられる電力量、接続できる出力、持ち運ぶ重さは別の条件です。容量の大きさだけでは接続できる機器を決められません。",
+          "no_purchase_condition": "接続機器の通常時・起動時の電力と説明書の条件を確認できない場合。医療機器や住宅配線への接続は、この記事の候補選びとは別に専門の確認が必要です。",
+          "options": []
+        },
+        "evidence": [
+          "CLM-ST1704-POWER-C300-SPECS",
+          "CLM-ST1704-POWER-JACKERY-SPECS",
+          "CLM-ST1704-POWER-ANKER-C800-SPECS",
+          "CLM-ST1704-POWER-DJI-1000-V2-SPECS",
+          "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "CLM-ST1704-POWER-AC70-EXCLUDED",
+          "CLM-ST1704-POWER-DELTA3-CLASSIC-EXCLUDED",
+          "CLM-ST1704-POWER-JACKERY-STORAGE",
+          "CLM-ST1704-POWER-JACKERY-WARRANTY",
+          "CLM-ST1704-POWER-SAFETY-PRACTICE",
+          "CLM-ST1704-POWER-NESTOUT-700N-EXCLUDED",
+          "CLM-ST1704-POWER-AORA80-EXCLUDED",
+          "CLM-ST1704-POWER-RIVER3-PLUS-EXCLUDED",
+          "CLM-ST1704-POWER-DELTA3-PLUS-EXCLUDED",
+          "CLM-ST1704-POWER-C1000-GEN2-REFERENCE",
+          "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+          "CLM-ST1704-POWER-AORA30-V2-SPECS",
+          "CLM-ST1704-POWER-AORA100-V2-SPECS"
+        ],
+        "media": [],
+        "practical_notes": [
+          "計算例（仮定）：10Wの照明を5時間使うなら、機器が使う電力量は10×5＝50Whです。これは電源から実際に取り出せる量や運転時間の保証ではありません。変換ロス、待機電力、負荷の変動は別に確認します。"
+        ],
+        "products": [
+          {
+            "evidence_facts": [
+              "CLM-ST1704-POWER-C300-SPECS"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C300"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-POWER-AORA30-V2-SPECS"
+            ],
+            "product_ref": "PRD-BLUETTI-AORA30-V2"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-POWER-JACKERY-SPECS",
+              "CLM-ST1704-POWER-JACKERY-STORAGE",
+              "CLM-ST1704-POWER-JACKERY-WARRANTY"
+            ],
+            "product_ref": "PRD-JACKERY-500-NEW"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-POWER-ANKER-C800-SPECS"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C800"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-POWER-DJI-1000-V2-SPECS"
+            ],
+            "product_ref": "PRD-DJI-POWER-1000-V2"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS"
+            ],
+            "product_ref": "PRD-JACKERY-1000-NEW-V3"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-POWER-AORA100-V2-SPECS"
+            ],
+            "product_ref": "PRD-BLUETTI-AORA100-V2"
+          }
+        ],
+        "purchase_checks": [
+          "機器ごとの通常時・起動時W、使用時間、同時使用の組み合わせ",
+          "保管・充電・換気と、運搬する経路",
+          "型番、周辺機器との互換性、販売元、保証、回収情報"
+        ],
+        "research_status": {
+          "ranking_uses_commission": false,
+          "real_world_tested": false
+        },
+        "unknowns": [
+          {
+            "decision_effect": "必要な機器の稼働を確かめられなければ、容量だけで購入を決めないでください。",
+            "how_to_verify": "本体と接続機器の説明書を照合し、メーカーへ起動時電力を含めて確認します。",
+            "topic": "実際に使える時間と機器との適合",
+            "why_unknown": "変換ロス・気温・負荷・電池の状態で変わり、実測していません。"
+          }
+        ]
+      },
       "related_article_ids": [
         "st1704-anker-solix-c300-c800-c1000-differences"
       ],
@@ -925,6 +1051,107 @@
         "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
       ],
       "production_slug": "compact-robot-vacuum-shortlist",
+      "reader_experience": {
+        "article_type": "shortlist",
+        "components_enabled": true,
+        "consolidate_sections": [
+          "reader-section",
+          "editors-note",
+          "purchase-caution"
+        ],
+        "contextual_links": [
+          {
+            "journey_stage": "compare",
+            "placement": "axes",
+            "question": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を二者択一で比べるためのガイドを見る",
+            "target_ref": "roomba-mini-vs-switchbot-k11-pro"
+          }
+        ],
+        "decision_axes": [
+          {
+            "how_to_check": "幅・奥行・高さに加え、前方と左右の帰還余白を説明書で照合します。",
+            "label": "ステーションを置く場所を測る",
+            "why_it_matters": "充電台は置き家具として考えます。"
+          },
+          {
+            "how_to_check": "本体の幅・奥行・高さと、段差やケーブルの位置を照合します。",
+            "label": "家具下と通路を測る",
+            "why_it_matters": "高さだけでは家具の脚の間を通れるか分かりません。"
+          },
+          {
+            "how_to_check": "紙パック、シート、モップを交換する動線と、上部を開ける空間を確認します。",
+            "label": "残る手入れを決める",
+            "why_it_matters": "自動収集とモップの自動洗浄・乾燥は別の機能です。"
+          }
+        ],
+        "decision_summary": {
+          "key_difference": "本体の薄さ、小ささ、モップの自動手入れは同じ条件ではありません。ステーションと帰還・交換作業の空間まで測ると、候補が変わります。",
+          "no_purchase_condition": "ステーションの前方・左右の余白や、手入れに必要な空間を確保できない場合。筐体寸法だけでは設置できると判断しません。",
+          "options": []
+        },
+        "evidence": [
+          "CLM-ST1704-ROBOT-EUFY-C10-SPECS",
+          "CLM-ST1704-ROBOT-K11-PRO-SPECS",
+          "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "CLM-ST1704-ROBOT-ROOMBA-515-SPECS",
+          "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "CLM-ST1704-ROBOT-K10-COMBO-EXCLUDED",
+          "CLM-ST1704-ROBOT-RULO-MINI-REFERENCE",
+          "CLM-ST1704-ROBOT-E20-EXCLUDED",
+          "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "CLM-ST1704-ROBOT-ROOMBA-MINI-F155260-EXCLUDED",
+          "CLM-ST1704-ROBOT-F115060-REFERENCE",
+          "CLM-ST1704-ROBOT-K11-PRO-WARRANTY-UNRESOLVED"
+        ],
+        "media": [],
+        "practical_notes": [],
+        "products": [
+          {
+            "evidence_facts": [
+              "CLM-ST1704-ROBOT-EUFY-C10-SPECS"
+            ],
+            "product_ref": "PRD-EUFY-AUTOEMPTY-C10-T2292"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-ROBOT-K11-PRO-SPECS"
+            ],
+            "product_ref": "PRD-SWITCHBOT-K11-PRO"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS"
+            ],
+            "product_ref": "PRD-ECOVACS-DEEBOT-MINI2"
+          },
+          {
+            "evidence_facts": [
+              "CLM-ST1704-ROBOT-ROOMBA-515-SPECS"
+            ],
+            "product_ref": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+          }
+        ],
+        "purchase_checks": [
+          "本体寸法と台の寸法を別々に測る",
+          "上方・前方・左右の余白、紙パックとモップの交換動線",
+          "段差、アプリ・通信条件、カメラ機能、保証・消耗品"
+        ],
+        "research_status": {
+          "ranking_uses_commission": false,
+          "real_world_tested": false
+        },
+        "unknowns": [
+          {
+            "decision_effect": "狭い余白で戻れることや、汚れの落ち方を仕様だけで期待しないでください。",
+            "how_to_verify": "公式設置案内と自宅の配置を照合し、試用や返品条件が必要なら購入前に確認します。",
+            "topic": "帰還の安定性・清掃力・音",
+            "why_unknown": "床や家具の配置で変わり、実機で比較していません。"
+          }
+        ]
+      },
       "related_article_ids": [
         "roomba-mini-vs-switchbot-k11-pro"
       ],

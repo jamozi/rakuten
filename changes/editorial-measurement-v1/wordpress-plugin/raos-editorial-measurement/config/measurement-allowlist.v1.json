@@ -573,7 +573,7 @@
   "source": {
     "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
     "schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
-    "sha256": "8dc96a7cc2051b25d161e772adb477c3b717a369a712b19374e0ee5dbfd89b52",
+    "sha256": "6a84165bf3c545d675c7f32d22a2846c36ed6ff4d6394a972907cc09d53351f4",
     "version": "3.0.0"
   },
   "target_origin": "https://kurashinoshirube.com",
