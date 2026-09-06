@@ -193,6 +193,7 @@ def line_queue(stream):
 
 def skills_loaded(root, scoped=False, capabilities=False):
     """Read-only app-server probe; never starts a model turn or reads memory."""
+    started = time.monotonic()
     process = subprocess.Popen(
         [
             "codex",
@@ -271,6 +272,28 @@ def skills_loaded(root, scoped=False, capabilities=False):
             }
         )
         servers = receive(4)
+        expected = {
+            name
+            for name, setting in read_config(root / ".codex/config.toml")
+            .get("mcp_servers", {})
+            .items()
+            if setting.get("enabled", True)
+        }
+        # The catalog endpoint can answer before MCP initialization completes.
+        # Empty tools on an enabled server are unavailable/starting, not savings.
+        for identifier in (5, 6):
+            ready = {row["name"] for row in servers.get("data", []) if row.get("tools")}
+            if expected <= ready:
+                break
+            time.sleep(5)
+            send(
+                {
+                    "id": identifier,
+                    "method": "mcpServerStatus/list",
+                    "params": {"detail": "full", "limit": 100},
+                }
+            )
+            servers = receive(identifier)
         home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
         effective = merge(
             read_config(home / "config.toml"), read_config(root / ".codex/config.toml")
@@ -330,11 +353,17 @@ def skills_loaded(root, scoped=False, capabilities=False):
                     "tools": sorted(row.get("tools", {})),
                     "resource_count": len(row.get("resources", [])),
                     "resource_template_count": len(row.get("resourceTemplates", [])),
+                    "availability": "READY"
+                    if row.get("tools")
+                    else "NOT_READY_OR_UNAVAILABLE"
+                    if row["name"] in expected
+                    else "DISABLED_OR_ABSENT",
                 }
                 for row in servers.get("data", [])
             ],
             "runtime_catalog_complete": not servers.get("nextCursor"),
             "runtime_policy_costs": costs,
+            "runtime_probe_seconds": round(time.monotonic() - started, 2),
         }
     finally:
         process.terminate()
@@ -636,16 +665,101 @@ def isolation(root, executable):
 
 
 def sandbox_command(root, executable, policy, command):
-    return [
-        str(executable),
-        "sandbox",
-        "-C",
-        str(root),
-        "-P",
-        "raos_eval",
-        *overrides(policy),
-        *command,
+    settings = {**policy, "features.plugins": False, "features.apps": False}
+    for name, transport in (
+        read_config(root / ".codex/config.toml").get("mcp_servers", {}).items()
+    ):
+        disabled = {**transport, "enabled": False}
+        if "command" not in disabled and "url" not in disabled:
+            disabled["command"] = "/usr/bin/false"
+        settings[f"mcp_servers.{name}"] = disabled
+    return controller_command(
+        root,
+        [
+            str(executable),
+            "sandbox",
+            "-C",
+            str(root),
+            "-P",
+            "raos_eval",
+            *overrides(settings),
+            *command,
+        ],
+    )
+
+
+def controller_command(root, command, *, user_home=None):
+    """Keep even Codex's own config/cache writes inside a disposable mount.
+
+    --ignore-user-config is not write isolation: CLI trust persistence can
+    replace the real config. Authentication is referenced by a read-only mount;
+    credential bytes are neither copied nor read by this runner.
+    """
+    home = user_home or Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
+    private = root.parent / "codex-home"
+    private.mkdir(mode=0o700, exist_ok=True)
+    config_file = private / "config.toml"
+    if not config_file.exists():
+        transports = {
+            name: {"command": "/usr/bin/false", "enabled": False}
+            for name, setting in read_config(root / ".codex/config.toml")
+            .get("mcp_servers", {})
+            .items()
+            if "command" not in setting and "url" not in setting
+        }
+        config_file.write_text("mcp_servers=" + toml(transports) + "\n")
+    args = [
+        "bwrap",
+        "--clearenv",
+        "--die-with-parent",
+        "--unshare-pid",
+        "--ro-bind",
+        "/",
+        "/",
+        "--proc",
+        "/proc",
+        "--dev",
+        "/dev",
+        "--tmpfs",
+        "/tmp",
+        "--bind",
+        str(root.parent),
+        str(root.parent),
     ]
+    for name in ("auth.json", "skills"):
+        source = home / name
+        if source.exists():
+            target = private / name
+            if source.is_dir():
+                target.mkdir(exist_ok=True)
+            else:
+                target.touch(exist_ok=True)
+            args += ["--ro-bind", str(source), str(target)]
+    args += [
+        "--setenv",
+        "CODEX_HOME",
+        str(private),
+        "--setenv",
+        "HOME",
+        str(Path.home()),
+        "--setenv",
+        "PATH",
+        "/usr/bin:/bin",
+        "--setenv",
+        "LANG",
+        "C.UTF-8",
+    ]
+    for variable, name in (
+        ("TMPDIR", "tmp"),
+        ("XDG_CACHE_HOME", "cache"),
+        ("XDG_STATE_HOME", "state"),
+        ("XDG_DATA_HOME", "data"),
+    ):
+        directory = private / name
+        directory.mkdir(exist_ok=True)
+        args += ["--setenv", variable, str(directory)]
+    args += ["--", *command]
+    return args
 
 
 def probe_isolation(root, executable, policy):
@@ -822,7 +936,6 @@ def evaluate_one(root, case, repetition, args):
         command = [
             str(executable),
             "exec",
-            "--ignore-user-config",
             "--ignore-rules",
             "--ephemeral",
             "--json",
@@ -833,14 +946,15 @@ def evaluate_one(root, case, repetition, args):
             case["task"],
         ]
         process = subprocess.Popen(
-            command,
+            controller_command(workspace, command),
             stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
             cwd=workspace,
             text=True,
             start_new_session=True,
         )
         lines = line_queue(process.stdout)
+        diagnostics = line_queue(process.stderr)
         reads = set()
         try:
             while time.monotonic() - started < args.timeout:
@@ -903,6 +1017,37 @@ def evaluate_one(root, case, repetition, args):
                 os.killpg(process.pid, signal.SIGKILL)
                 process.wait()
         record["process_exit_code"] = process.returncode
+        if process.returncode and record["commands"] == 0:
+            errors = []
+            while not diagnostics.empty():
+                line = diagnostics.get_nowait()
+                if line:
+                    errors.append(line)
+            content = "".join(errors)
+            record["startup_config_error"] = [
+                line[:400]
+                for line in content.splitlines()
+                if ("config" in line.lower() or "Read-only file system" in line)
+                and not re.search(r"token|password|secret|bearer|api.?key", line, re.I)
+            ]
+            record["startup_diagnostics"] = [
+                name
+                for name in (
+                    "Read-only file system",
+                    "Permission denied",
+                    "system skills",
+                    "auth",
+                    "token",
+                    "config",
+                    "missing field",
+                    "strict",
+                    "Network",
+                    "device",
+                    "namespace",
+                    "trust",
+                )
+                if name in content
+            ]
         record["read_paths"] = sorted(reads)
         if trace.exists():
             calls = [json.loads(x)["tool"] for x in trace.read_text().splitlines()]
@@ -1112,6 +1257,7 @@ def evaluate(root, args):
     tasks = [(case, n) for case in selected for n in range(1, args.repetitions + 1)]
     result = {
         "version": 1,
+        "isolation_version": 3,
         "ref": args.ref,
         "working_tree": args.working_tree,
         "protocol_sha256": protocol_digest(),
@@ -1138,9 +1284,11 @@ def evaluate(root, args):
 
 def compare(before, after):
     errors = []
-    for key in ("protocol_sha256", "model", "reasoning"):
+    for key in ("protocol_sha256", "isolation_version", "model", "reasoning"):
         if before.get(key) != after.get(key):
             errors.append(f"incomparable {key}")
+    if before.get("isolation_version") != 3:
+        errors.append("comparison requires isolated controller state")
     rows = []
     for case in "ABCDE":
         b = [r for r in before.get("runs", []) if r["case"] == case]

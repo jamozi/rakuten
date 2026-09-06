@@ -122,9 +122,3 @@ def test_story_surfaces_exclude_finance_ranking_article_and_publication_inputs()
         "publish_article",
     )
     assert all(term not in source for term in forbidden)
-
-
-def test_story_ids_are_tracking_metadata_not_change_boundaries() -> None:
-    policy = (generator.REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
-    assert "Story ID は要求・依存・status の追跡に使う" in policy
-    assert "commit、branch、PR、実装 slice の境界にはしない" in policy

@@ -81,6 +81,7 @@ def test_skills_have_unique_metadata_and_real_reference_routes():
 def complete_evaluation():
     return {
         "protocol_sha256": "synthetic-protocol",
+        "isolation_version": 3,
         "model": "same-model",
         "reasoning": "same-effort",
         "runs": [
@@ -175,9 +176,47 @@ def test_regrading_passing_behavior_does_not_complete_a_timed_out_turn():
     assert record["acceptance"] is False
 
 
+def test_controller_config_and_auth_are_write_isolated(tmp_path):
+    if shutil.which("bwrap") is None:
+        pytest.skip("bubblewrap is required for the native eval controller")
+    home = tmp_path / "original"
+    home.mkdir()
+    config = home / "config.toml"
+    config.write_text('model="synthetic-original"\n')
+    auth = home / "auth.json"
+    auth.write_text("synthetic sentinel, never a credential")
+    evaluation = tmp_path / "evaluation"
+    evaluation.mkdir()
+    root = evaluation / "repo"
+    root.mkdir()
+    code = (
+        "import os,pathlib; p=pathlib.Path(os.environ['CODEX_HOME']); "
+        "(p/'config.toml').write_text('isolated trust settings')\n"
+        f"for target in [pathlib.Path({str(config)!r}), p/'auth.json']:\n"
+        " try: target.write_text('must be denied'); raise AssertionError('global write allowed')\n"
+        " except OSError: pass\n"
+    )
+    result = subprocess.run(
+        harness.controller_command(root, [sys.executable, "-c", code], user_home=home),
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode and "Operation not permitted" in result.stderr:
+        pytest.skip(
+            "host cannot create the required mount namespace; native eval must fail closed"
+        )
+    assert result.returncode == 0, result.stderr
+    assert config.read_text() == 'model="synthetic-original"\n'
+    assert auth.read_text() == "synthetic sentinel, never a credential"
+    assert (
+        evaluation / "codex-home/config.toml"
+    ).read_text() == "isolated trust settings"
+
+
 def test_hidden_normalizer_grader_detects_the_injected_bug(tmp_path):
     package = tmp_path / "tools/affiliate_ingestion"
     package.mkdir(parents=True)
+    (package / "__init__.py").write_text("")
     shutil.copyfile(
         harness.ROOT / "tools/affiliate_ingestion/normalize.py",
         package / "normalize.py",

@@ -107,6 +107,10 @@ DesktopでのGSD非表示はこのCLI入口の効果に含めません。設定�
 各ケースは3回、新規checkoutと会話で実行します。Before/Afterとも`run`と同じSkill設定解決を
 使います。評価はlocal sourceとrecorded WordPressだけに限定し、shellのネットワーク・home・
 保存済みcheckoutへのアクセスを遮断します。既存Codex認証はcontrollerだけが利用します。
+controllerにも読み取り専用のホストmountを適用し、Home・PID・`/tmp`・cacheを分離します。
+既存認証ファイルは読み取り専用mountで参照し、値のコピー・表示はしません。
+`--ignore-user-config`は書込み隔離にはならないため使いません。無効な継承MCP transportの
+補完はBefore/After共通のoffline fixtureです。隔離できないホストでは実評価を実行しません。
 採点コードと問題注入は評価対象へ渡しません。生の推論・prompt・event列は保存しません。
 差分、syntheticな設計/レビュー結果、参照path、操作名、検査と利用量を保存します。
 

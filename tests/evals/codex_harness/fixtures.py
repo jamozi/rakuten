@@ -9,9 +9,25 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import sys
+import tomllib
 
 
 def prepare(root: Path, case: str) -> None:
+    # Offline capability fixture, applied identically to both revisions.
+    # Codex validates a project transport before session overrides; a disabled
+    # inherited declaration still needs a concrete, inert transport here.
+    settings = root / ".codex/config.toml"
+    if settings.is_file():
+        text = settings.read_text()
+        for name, transport in tomllib.loads(text).get("mcp_servers", {}).items():
+            if not transport.get("enabled", True) and not (
+                {"command", "url"} & transport.keys()
+            ):
+                header = f"[mcp_servers.{name}]"
+                if header not in text:
+                    raise ValueError("review the offline transport fixture")
+                text = text.replace(header, header + '\ncommand = "/usr/bin/false"', 1)
+        settings.write_text(text)
     task = root / ".harness-task"
     task.mkdir()
     if case == "A":
