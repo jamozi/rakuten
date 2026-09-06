@@ -1,0 +1,27 @@
+#raos-reader-consent-settings {
+  max-width: 72rem;
+  margin: 1.5rem auto;
+  padding: 1rem;
+  border: 1px solid #6b7280;
+  border-radius: .5rem;
+  background: #fff;
+  color: #1f2937;
+}
+#raos-reader-consent-settings h2 { font-size: 1.15rem; }
+#raos-reader-consent-settings p { margin-block: .75rem; }
+#raos-reader-consent-settings button {
+  min-height: 44px;
+  margin: .35rem;
+  padding: .6rem 1rem;
+  font: inherit;
+  border: 2px solid #374151;
+  border-radius: .3rem;
+  background: #fff;
+  color: #111827;
+  cursor: pointer;
+}
+#raos-reader-consent-choices { display: flex; flex-wrap: wrap; gap: .5rem; }
+#raos-reader-consent-choices button { flex: 1 1 10rem; }
+#raos-reader-consent-settings [hidden] { display: none; }
+#raos-reader-consent-settings :focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
+#raos-reader-consent-error { border-left: 4px solid #b91c1c; padding-left: .75rem; }

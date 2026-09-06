@@ -276,8 +276,9 @@ def test_local_preview_audit_fail_closes_every_surface_seo_head() -> None:
     assert len({row["local_path"] for row in inventory["surfaces"]}) == 14
     assert len({row["production_path"] for row in inventory["surfaces"]}) == 14
     for marker in (
-        "new Set(rawSurfaces.map((surface) => surface.local_path)).size !== 14",
-        "new Set(rawSurfaces.map((surface) => surface.production_path)).size !== 14",
+        "new Set(rawSurfaces.map((surface) => surface.local_path)).size !== publicSurfaces.length",
+        "new Set(rawSurfaces.map((surface) => surface.kind === 'reader_hub'",
+        "? surface.local_path : surface.production_path)).size !== publicSurfaces.length",
         "const requiredWidths = [360, 390, 768, 1024, 1440]",
         "width !== requiredWidths[index]",
         "response.status() !== 200",

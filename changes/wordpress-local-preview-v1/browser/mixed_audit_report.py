@@ -20,7 +20,14 @@ import stat
 import subprocess
 import sys
 
-from incremental_scope import ROOT, ScopeFailure, load_scope, read_private
+from incremental_scope import (
+    ROOT,
+    ScopeFailure,
+    load_scope,
+    read_private,
+    READER_BINDING_FIELDS,
+    READER_HUB_SLUGS,
+)
 
 SCHEMA = "RAOS_WORDPRESS_MIXED_BROWSER_AUDIT_V1"
 SCHEMA_V2 = "RAOS_WORDPRESS_MIXED_BROWSER_AUDIT_V2"
@@ -135,6 +142,158 @@ def tool_versions() -> dict[str, object]:
     return versions
 
 
+def reader_inventory_rows(inventory: dict, inputs: dict) -> list[dict]:
+    """Add bound hubs from the generated catalog, keeping the source hash unchanged."""
+    slugs = inputs.get("core_document_slugs")
+    if (
+        not isinstance(slugs, list)
+        or any(not isinstance(slug, str) for slug in slugs)
+        or slugs != sorted(set(slugs))
+    ):
+        reject()
+    rows = [*inventory["surfaces"], *inventory.get("local_surfaces", [])]
+    catalog = inventory.get("reader_hubs")
+    if catalog is None:
+        return rows
+    expected = {
+        f"/{slug}/": {
+            "kind": "reader_hub",
+            "surface_id": f"hub-{slug}",
+            "local_path": f"/{slug}/",
+        }
+        for slug in READER_HUB_SLUGS
+    }
+    if (
+        not isinstance(catalog, list)
+        or len(catalog) != len(expected)
+        or any(
+            not isinstance(row, dict) or row != expected.get(row.get("local_path"))
+            for row in catalog
+        )
+        or {row["local_path"] for row in catalog} != set(expected)
+    ):
+        reject()
+    for registered in catalog:
+        matching = [
+            row
+            for row in rows
+            if row.get("local_path") == registered["local_path"]
+            or row.get("surface_id") == registered["surface_id"]
+        ]
+        if matching and matching != [registered]:
+            reject()
+        if registered["local_path"].strip("/") in slugs and not matching:
+            rows.append(registered)
+    return rows
+
+
+def reader_core_surfaces(inventory: dict, inputs: dict) -> dict[str, dict]:
+    """Elevate only captured selected/published hubs, retaining actual UI rows."""
+    rows = reader_inventory_rows(inventory, inputs)
+    slugs = inputs["core_document_slugs"]
+    matches = {}
+    for slug in slugs:
+        path = "/" if slug == "home" else f"/{slug}/"
+        if slug == "home":
+            candidates = [
+                row
+                for row in rows
+                if row.get("kind") == "home"
+                and row.get("local_path") == row.get("production_path") == "/"
+            ]
+        elif slug in READER_HUB_SLUGS:
+            candidates = [
+                row
+                for row in rows
+                if row.get("kind") == "reader_hub" and row.get("local_path") == path
+            ]
+        else:
+            kind = (
+                "policy"
+                if slug in {"privacy-policy", "comparison-policy", "about-ad-policy"}
+                else "article"
+            )
+            candidates = [
+                row
+                for row in rows
+                if row.get("kind") == kind and row.get("production_path") == path
+            ]
+        if len(candidates) != 1:
+            reject()
+        matches[slug] = candidates[0]
+    if len({row["surface_id"] for row in matches.values()}) != len(slugs):
+        reject()
+    return matches
+
+
+def bind_reader_inventory(inventory: dict, inputs: dict) -> dict:
+    """Derive the runner's exact core set from bound pages and the registered catalog."""
+    if "reader_page_slugs" not in inputs:
+        return inventory
+    core = reader_core_surfaces(inventory, inputs)
+    ids = {row["surface_id"] for row in core.values()}
+    rows = reader_inventory_rows(inventory, inputs)
+    return {
+        **inventory,
+        "surfaces": [row for row in rows if row["surface_id"] in ids],
+        "local_surfaces": [row for row in rows if row["surface_id"] not in ids],
+    }
+
+
+def validate_reader_candidate(inputs: dict, candidate: object) -> None:
+    """Compare actual source fields, artifacts and captured identities to the candidate."""
+    manifest, snapshot = candidate.manifest, candidate.snapshot
+    shared, targets = manifest["shared_artifacts"], manifest.get("reader_pages", {})
+    selected = set(targets) | ({"home"} & set(shared))
+    if (
+        not set(targets) <= READER_HUB_SLUGS | {"privacy-policy"}
+        or inputs.get("reader_page_slugs") != sorted(selected)
+        or inputs.get("snapshot_reader_page_slugs")
+        != snapshot.get("reader_page_slugs", [])
+        or inputs.get("snapshot_document_sha256")
+        != {row["slug"]: row["content_sha256"] for row in snapshot["documents"]}
+        or inputs.get("all_document_baselines")
+        != snapshot.get("all_document_baselines", {})
+    ):
+        reject()
+    documents = {row["slug"]: row for row in snapshot["documents"]}
+    for slug in selected:
+        original = documents[slug]
+        page = inputs["reader_page_documents"][slug]
+        expected = {
+            **page,
+            "taxonomies": original["taxonomies"],
+            "media_ids": original["media_ids"],
+        }
+        production = candidate.preparation["production_documents"][slug]
+        artifact = shared[slug]
+        raw = candidate.artifacts[artifact["key"]]
+        body_hash = sha(raw)
+        if (
+            raw != page["block_markup"].encode()
+            or artifact["sha256"] != body_hash
+            or inputs["page_body_sha256"].get(slug) != body_hash
+            or artifact["post_id"] != original["id"]
+            or artifact["baseline_sha256"] != original["content_sha256"]
+            or production["post_id"] != original["id"]
+            or production["document"] != expected
+        ):
+            reject()
+        if slug in targets:
+            target = targets[slug]
+            if (
+                target.get("post_id") != original["id"]
+                or target.get("baseline_status") != original["status"]
+                or target.get("template_sha256") != body_hash
+                or target.get("kind")
+                != ("reader_privacy" if slug == "privacy-policy" else "hub")
+                or not re.fullmatch(
+                    "[a-f0-9]{64}", str(target.get("registry_sha256", ""))
+                )
+            ):
+                reject()
+
+
 def current_inputs(
     fixture_root: Path,
     origin: str,
@@ -212,6 +371,13 @@ def current_inputs(
             read_regular(THEME / "assets/editorial-navigation.v3.json")
         ),
     }
+    if "reader_page_slugs" in binding:
+        inputs.update({key: binding[key] for key in READER_BINDING_FIELDS})
+        inventory = bind_reader_inventory(inventory, inputs)
+        # Retained extra UI checks are explicitly outside the publication set.
+        inputs["outside_candidate_surface_ids"] = sorted(
+            row["surface_id"] for row in inventory["local_surfaces"]
+        )
     if candidate_path is not None:
         from raos_wordpress_incremental_publication import (
             prepare_candidate,
@@ -224,6 +390,13 @@ def current_inputs(
         if sha(canonical(candidate.snapshot)) != binding["source_snapshot_sha256"] or {
             row["article_id"] for row in candidate.manifest["articles"]
         } != set(scope["selected_article_ids"]):
+            reject()
+        if "reader_page_slugs" in inputs:
+            validate_reader_candidate(inputs, candidate)
+        elif (
+            candidate.manifest.get("reader_pages")
+            or "home" in candidate.manifest["shared_artifacts"]
+        ):
             reject()
         markup = {
             row["article_id"]: read_private(
@@ -327,6 +500,7 @@ def parse_results(raw: bytes) -> list[dict[str, object]]:
 def validate_results(
     results: list[dict[str, object]], inventory: dict, inputs: dict
 ) -> list[str]:
+    inventory = bind_reader_inventory(inventory, inputs)
     surfaces = {
         row["surface_id"]: row
         for row in [*inventory["surfaces"], *inventory["local_surfaces"]]
@@ -339,6 +513,10 @@ def validate_results(
         surfaces = {
             key: row for key, row in surfaces.items() if key in plan["surface_ids"]
         }
+    if "reader_page_slugs" in inputs:
+        required_core = reader_core_surfaces(inventory, inputs)
+        if not {row["surface_id"] for row in required_core.values()} <= set(surfaces):
+            reject()
     widths = inventory["viewports"]
     expected = {(key, width) for key in surfaces for width in widths}
     if (
@@ -542,9 +720,26 @@ def assemble_report(
         "started_at": started_at,
         "captured_at": captured_at,
         "inputs": inputs,
-        "core_document_slugs": sorted(
-            "home" if row["kind"] == "home" else row["production_path"].strip("/")
-            for row in inventory["surfaces"]
+        "core_document_slugs": (
+            sorted(reader_core_surfaces(inventory, inputs))
+            if "reader_page_slugs" in inputs
+            else sorted(
+                "home" if row["kind"] == "home" else row["production_path"].strip("/")
+                for row in inventory["surfaces"]
+            )
+        ),
+        **(
+            {
+                "outside_candidate_surface_ids": sorted(
+                    {row["surface"] for row in results}
+                    - {
+                        row["surface_id"]
+                        for row in reader_core_surfaces(inventory, inputs).values()
+                    }
+                ),
+            }
+            if "reader_page_slugs" in inputs
+            else {}
         ),
         "viewports": inventory["viewports"],
         "zoom_percent": 200,
@@ -586,7 +781,10 @@ def validate_report(
         required_plan = inputs["browser_plan"]
         from raos_wordpress_browser_plan import validate_selection
 
-        validate_selection(recorded_plan, json.loads(read_regular(INVENTORY)))
+        validate_selection(
+            recorded_plan,
+            bind_reader_inventory(json.loads(read_regular(INVENTORY)), inputs),
+        )
         if set(required_plan["surface_ids"]) <= set(
             recorded_plan["surface_ids"]
         ) and all(

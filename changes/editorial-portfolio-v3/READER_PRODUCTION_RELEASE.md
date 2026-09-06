@@ -1,0 +1,151 @@
+# 読者体験の本番公開と任意計測
+
+基点: PR #192 / 49d66a7ff1565eaa3954efbb877ece3243975ce0。
+ユーザー承認対象: 既存10記事、home、共通テーマ、登録済み15ハブ、読者行動3項目とポリシー・同意設定。
+除外: ローカル5ガイド・料金フォーム、新規SOLOTA比較、未承認写真、旧8イベント・GA4、商品provider取得。
+
+## 実装と反映の記録
+
+| 単位 | 担当・成果物 | 状態 |
+| --- | --- | --- |
+| 公開候補・ホーム・15ハブ | controller / 既存候補の互換性、固定集合、投稿IDと承認拘束 | 実装・対象検査済み |
+| 独立読者計測 | Parfit / reader-measurement-v1、生成元、PHP/JS振る舞い検査 | 実装・対象検査済み |
+| 計測runtime監査・MCP状態 | Gibbs / explicit reader-minimal-v1、独立read-only状態 | 実装・対象検査済み |
+| 統合検査・独立レビュー・CI | controller | 統合検査・独立レビュー実行中、CI未実施 |
+| 本番候補送付・所有者承認・反映・照合 | controller / owner | 未実施 |
+
+## インターフェースと判断
+
+- 既存のverified-incremental V1候補を変更しない。ホームを明示共有対象に追加し、15ハブは別の固定集合・候補として扱う。新規ページのIDは本番下書き作成後の実値へ拘束する。
+- 20提案上限は維持する。記事10 + home + theme、ハブ15、計測用policy/themeを別batchにする。
+- 旧計測とは独立したplugin/endpoint/approvalを使う。default OFF、閲覧者の明示許可後だけ送信。保存は本番WP専用DB、イベント30日・日別90日、管理・削除責任者は運営者。
+- 新pluginのDB初期化とMCP連携plugin更新は既存の手動経路。会話上の依頼やAIレビューはwp-adminの候補別・別人承認を代替しない。
+- 計測pluginは3イベントのstrict fields、公開記事同一性、出典/panel/関連記事の許可集合を検証する。原記録・閲覧者識別は管理画面/MCPへ出さない。
+
+## 依存・競合確認
+
+| 単位 | 依存・接点 | 処理 |
+| --- | --- | --- |
+| 公開候補 / runtime監査 | collector OFF/ON・hash固定アセット | 新profileのみ追加。既存OFF検査は保持 |
+| 計測 / MCP状態 | raos_reader_measurement_status() | schemaと固定公開fieldsを共有 |
+| 計測 / policy | 公開policy本文sha256 | final source生成後に固定し、変更時承認無効 |
+| ハブ / home | hubの公開実値・本文照合 | 未公開・不一致時リンクなし |
+
+実読者参加者0、成功率未測定を維持する。実行・再利用・未実施の検査を分けて追記する。
+
+## 検証記録（2026-09-07 JST）
+
+- 本番変更、ハブの本番下書き作成、公開提案、適用、plugin有効化、計測有効化は未実施。
+- bounded MCPから既存14文書を取得。private snapshot:
+  `live-38869c8c557b7fb973e0fa39f3085c07cc4dd6f61f6fd9fbbc1c1e40327e51ec.v1.json`。
+- 同snapshotを専用の一時WordPressへ実際に復元。14件の原ID・保存フィールドを照合した。
+  private原本: `scratch-restore-9e09b4eb-bd1707a575d8`。
+  本番・通常previewは変更せず、scratchコンテナは停止した。本文復元の検証であり、
+  theme・日時・分類名称・plugin・本番設定の復元成功は表さない。
+- ローカル29ページ×360/390/768/1024/1440pxと200%文字拡大、34内部リンクの診断は
+  errors/failuresなし。原本 `output/playwright/reader-production/local-public-scope-20260907/manifest.json`。
+  この診断は通常の開発previewであり、local5ガイドを表示し得る。公開候補と完全に同じ
+  mixed preview・Lighthouse・本番表示の合格には代用しない。
+- 計測の隔離Firefox検査は実PHP出力のasset URL・fullhash・SRI・crossoriginと
+  実JS/CSSを照合。5幅と各200%拡大で、フォーカス、許可／拒否の同等表示、横崩れを確認。
+  OFF・未選択・拒否・撤回はPOST0件、許可時だけ登録3イベントを送信。
+  全通信はブラウザ起動前のrouteと閉じたloopback proxyに閉じ、本番通信はない。
+  画像: `output/playwright/reader-measurement-v1/browser-views/`。
+- 実WordPress 7.1とMariaDBの専用環境で、nonceを持つ試験管理者によるWordPress標準の
+  plugin有効化を実行。実dbDeltaで3テーブルがInnoDBとして作成され、承認null・収集OFFを確認。
+  期限切れの原記録と日別行の削除、期限内行の保持、削除状態の更新を照合した。
+  固定digestの既存imageだけを使用し、外向き通信・公開portなし。終了後の専用コンテナ、
+  network、volume、一時directoryの撤去を照合。本番承認は行っていない。
+  原本: `output/playwright/reader-measurement-v1/wordpress-integration/latest.json`。
+- 登録済み15ハブの下書き作成前の表示検査は5幅・200%拡大でエラーなし。
+  原本: `output/playwright/reader-production/hub-drafts-20260906T161616646490Z/manifest.json`。
+  作成・公開の承認証跡ではない。
+- 実MariaDBの隔離テストは同時1600操作中1200受付・400上限制限、原記録と集計と上限行の
+  同一トランザクション、失敗時rollback、期限内削除を確認。これらは合成人工操作である。
+- `make generate`成功。初回の全体Python検査は21,129件合格・20件失敗・10件skip。
+  生成物の更新漏れ、旧固定ページ数・旧plugin版を前提にした検査、および分断した引用の
+  検査方法を修正。該当箇所と関連52件を再実行し合格。全体`make fast`を再実行中。
+  テーマ内の計測metadataを改変すると実runtime指紋が変わること、生成元から再構成すると
+  正しいコピーへ戻ること、正本の変更で新revisionになることを区別して検査した。
+- 最初の読者体験改修前のローカル基準は `output/playwright/reader-experience/before/manifest.json`。
+  現在の診断画像と本番反映後の画像は別物であり、本番変更後の画像はまだ存在しない。
+
+## 公式根拠の保留
+
+2026-09-06 15:41:02 UTCの再照合は105件中66件が鮮度条件を満たし、39件をUNKNOWNとして保持した。
+最も早い有効期限は2026-09-07 23:53 JST。期限を延長したり、記事の確認日を実装日に変えたりしない。
+
+| 記事 | 確認済み／必要数 | 全件充足 |
+| --- | --- | --- |
+| エース3モデル | 9/10 | 未達 |
+| 停電用ポータブル電源 | 22/33 | 未達 |
+| Anker Solix | 14/16 | 未達 |
+| 省スペースロボット掃除機 | 12/18 | 未達 |
+| 工事不要食洗機 | 11/19 | 未達 |
+| 100席未満スーツケース | 8/13 | 未達 |
+| 30L・3kg以下5モデル | 10/17 | 未達 |
+| 前開き＋ストッパー | 8/13 | 未達 |
+| Roomba／K11 | 10/13 | 未達 |
+| SOLOTA状態確認 | 5/5 | 充足 |
+
+複数記事で同じ出典を参照するため、表の分母は重複する。
+
+| 保留理由 | 出典数 | 再開条件 |
+| --- | --- | --- |
+| 既存の引用断片が公式本文に存在しない | 19 | 同じ型番・主張を裏付ける読者が確認可能な公式箇所を特定し、locatorと主張を独立照合 |
+| 販売状態を支える読者向け表示が不足 | 2 | 当該構成の可視の公式販売表示を確認。非表示のsoldoutや解析用データだけで判定しない |
+| 重複本文から一意の参照箇所が未確定 | 2 | 元断片と意味を保った公式の一意な文脈を特定し、再取得して照合 |
+| 通信結果不明 | 5 | 同じ登録済み公式URLを再取得し、成功した本文を検証 |
+| 応答が要件外 | 7 | 利用可能な当該型番の公式資料と適用範囲を確認 |
+| MIMEが要件外 | 2 | 正式な応答種別と公式資料を確認。種別チェックを緩めない |
+| HTMLが要件外 | 2 | 読者向け公式本文を取得し直し、安全な解析条件を満たす |
+
+詳細はowner-private `reader-production-release-source-status-20260906T154102Z.v1.json`
+（SHA256 `bbcef6df4964449e035a518ff9d09e84352a6d2635f77a926a6c4d9a64039182`）と同名Markdownに保存。
+採用した11出典の一意な文脈拡張は `reader-release-locator-expansions.v1.json` を生成元とする。
+元の引用断片、主張・根拠ID・確認日・13必須条件は保持し、通常生成で拡張が失われないよう検査する。
+10記事の文章・レイアウト改善とローカル表示検証は完了している。この表は改稿漏れや
+39項目の仕様欠損を示すものではなく、公開直前の出典再取得・引用照合の状態である。
+出典集合が未達の9記事を、公開可能な候補として生成・送付しない。
+
+## AIレビューの処理
+
+| 指摘 | 対応・検査 |
+| --- | --- |
+| ハブのjournal名が選択集合に依存し、再開で曖昧な作成結果を見失う | 固定journalに全登録対象の処理記録を保持。選択変更・応答欠落の再送禁止を検査 |
+| 検証後の入力変化が送信直前に照合されない | lock内と送信直前に指紋を再照合 |
+| 送信前の停止が「送信結果不明」として残る | 呼び出し開始前と証明できる場合だけintentを取り消し、再検証後に再開 |
+| privacy単独V2候補で旧14文書の復元証跡を利用できない | privacy単独の場合だけ、元V1 snapshotを変更せず実V2復元で照合 |
+| 候補を指定すると明示ページ選択の不一致を見逃す | plan/prepareだけでなくpropose/apply/readbackの入口で不変manifestと比較 |
+| 正常なV2 SEO結果を公開後の受信処理が拒否する | 実SEO結果を受信処理へ接続してOFF/ONを検査。固定themeからmetadataを独立再構築し、型とschemaの不正も拒否 |
+| 計測manifest artifactがrelease検証の使用集合へ入らない | 検証済みprofileが存在する場合のみ集合へ追加。実候補からreleaseまで接続し、余分なartifactを拒否 |
+| privacy単独のV1 snapshotをSEO工程だけが拒否する | privacyのみ・14文書・ハブ宣言なしの原bytesに限定して互換を維持 |
+| 読み込み済み計測providerが未導入を名乗れる | active=falseをloaded/unknownとして返し、既定OFF・旧runtime例外が拒否することを実PHPからPythonへ接続して検査 |
+
+独立した2モデルによる早期・最終コードレビューと、指摘箇所の再レビューを実施。
+接続の回帰検査は修正前に5件失敗、修正後13件成功。boolean型を追加確認した2件も
+修正前の失敗を再現して修正し、接続17件と隣接検査を含む262件が成功。
+MCP状態の4件は修正前に失敗し、修正後は関連40件が成功。
+これは実行時の全監査面を満たす候補別の正式2巡監査でも、wp-adminの所有者承認でもない。
+実読者参加者数0、理解成功率未測定を維持する。
+
+## 残る実行条件
+
+1. 全体検査の再実行、必要CI、最終差分レビューとマージ。実WordPressでのplugin初期化検査は完了。
+2. 不足する公式根拠39件の解決。実値・モデルの対象範囲を確認できない場合はUNKNOWNを維持。
+3. 本番IDを持つ15ハブの下書きと正確なmixed preview、候補ごとの実バックアップとtheme復元、独立2巡監査。
+4. 完成候補の差分・ハッシュを提示し、別の管理者がwp-adminで具体的に承認する。
+5. 計測OFFで順次反映・照合。pluginのDB作成は手動経路。運営者の確定版承認、
+   信頼できる定期cronと削除責任を確認してから計測有効化・本番3操作を検証。
+
+
+## Publication preparation update — 2026-09-06 17:15 UTC
+
+- Reconciled the uncertain first hub create through actual MCP readback: categories draft ID 130 existed once. Its sole projection difference was WordPress's empty taxonomy array `[]` versus authored `{}`.
+- Fixed comparison of empty page taxonomies without changing server content hashes. The initial regression produced two expected failures; the fix and related page/preview tests passed (103), with final locator/hub checks passing (16).
+- Created and independently read back all 15 registered hub drafts, IDs 130–144. Receipt: owner-private `wordpress-mcp/reader-hub-drafts/reader-hub-drafts.v1.json`. None is published.
+- The actual first PR #193 CI run failed only two reader-browser tests because the harness contained an absolute local Firefox path. The harness now uses the browser revision selected by locked Playwright and CI explicitly installs it. Both unchanged browser scenarios passed locally using Firefox 1539 (18.71 seconds). Independent code review found no remaining issue in this delta; replacement CI is pending.
+- Independently reviewed and applied batch 1–2 source-locator corrections for five references. Their exact-model facts, claim statements, source registry and editorial confirmation dates did not change. All proposed fragments occurred exactly once in retained official bodies. Fresh capture/replay remains separate; this edit is not a new source-verification success.
+- To reduce approval round trips while respecting the 20-proposal cap, prepared one local candidate for SOLOTA status-check + home + 15 hubs + theme (18 proposals), preserving the other nine article bodies. Candidate: `be4d98708f5cdaecd545701fc9bfdac9a735f4cf9bfa1ce5eeec8a764e24b9c4`. Source eligibility passed for this selected article. It is not publication approval.
+- Actual 29-document snapshot: `live-7898c2cdda8a2d647e898ff50ce806de453e301b58bfe7ca6f59fa97fc55fa57.v1.json`. Five-width hub checks: `output/playwright/reader-production/hub-drafts-20260906T170037685106Z/manifest.json`.
+- Remaining article source acquisition/locator issues stay local and explicit. No new article rewrite, local-guide promotion, invented product fact or unapproved photo was added. Formal candidate audits, owner wp-admin approval, publication, plugin installation and measurement activation are not completed at this checkpoint.

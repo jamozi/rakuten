@@ -1,0 +1,628 @@
+{
+  "articles": [
+    {
+      "article_id": "carry-on-suitcase-under-100-seats",
+      "navigation": [
+        {
+          "journey_stage": "compare",
+          "path": "/front-open-carry-on-suitcase-with-stopper/",
+          "target_article_id": "front-open-carry-on-suitcase-with-stopper"
+        },
+        {
+          "journey_stage": "compare",
+          "path": "/carry-on-suitcase-comparison/",
+          "target_article_id": "st1703-first-suitcase-comparison"
+        }
+      ],
+      "panels": [
+        {
+          "kind": "details",
+          "panel_id": "reader-evidence"
+        }
+      ],
+      "references": [
+        {
+          "source_ref": "SRC-ACE-PALISADES3-Z-06910",
+          "url": "https://store.ace.jp/shop/g/g06910-03/"
+        },
+        {
+          "source_ref": "SRC-ANA-DOMESTIC-CARRY-ON",
+          "url": "https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/"
+        },
+        {
+          "source_ref": "SRC-BERMAS-INTER-CITY-60524",
+          "url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1"
+        },
+        {
+          "source_ref": "SRC-JAL-DOMESTIC-CARRY-ON",
+          "url": "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/"
+        },
+        {
+          "source_ref": "SRC-MUJI-HARD-CARRY-20L",
+          "url": "https://www.muji.com/jp/ja/store/cmdty/detail/4550723184182"
+        },
+        {
+          "source_ref": "SRC-PROTECA-FRESTER-EX-01550",
+          "url": "https://store.ace.jp/shop/g/g01550-11/"
+        },
+        {
+          "source_ref": "SRC-PROTECA-STARIA-CXR-02350",
+          "url": "https://store.ace.jp/shop/g/g02350-12/"
+        },
+        {
+          "source_ref": "SRC-RIMOWA-CABIN-U-82350181",
+          "url": "https://www.rimowa.com/jp/ja/luggage/colour/green/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3-u/82350181.html"
+        },
+        {
+          "source_ref": "SRC-SAMSONITE-AUDRINA-SPINNER45",
+          "url": "https://www.samsonite.co.jp/luggage/audrina-spinner.html"
+        }
+      ],
+      "slug": "carry-on-suitcase-under-100-seats"
+    },
+    {
+      "article_id": "front-open-carry-on-suitcase-with-stopper",
+      "navigation": [
+        {
+          "journey_stage": "compare",
+          "path": "/carry-on-suitcase-under-100-seats/",
+          "target_article_id": "carry-on-suitcase-under-100-seats"
+        },
+        {
+          "journey_stage": "compare",
+          "path": "/carry-on-suitcase-comparison/",
+          "target_article_id": "st1703-first-suitcase-comparison"
+        }
+      ],
+      "panels": [
+        {
+          "kind": "details",
+          "panel_id": "reader-evidence"
+        }
+      ],
+      "references": [
+        {
+          "source_ref": "SRC-ACE-DIFFERENCE-05721",
+          "url": "https://store.ace.jp/shop/g/g05721-06/"
+        },
+        {
+          "source_ref": "SRC-ANA-DOMESTIC-CARRY-ON",
+          "url": "https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/"
+        },
+        {
+          "source_ref": "SRC-BERMAS-INTER-CITY-II-60561",
+          "url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561"
+        },
+        {
+          "source_ref": "SRC-BERMAS-INTER-CITY-III-60570",
+          "url": "https://www.bermas.co.jp/c/series/businesstravel/intercity3/60570"
+        },
+        {
+          "source_ref": "SRC-JAL-DOMESTIC-CARRY-ON",
+          "url": "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/"
+        },
+        {
+          "source_ref": "SRC-MUJI-FRONT-OPEN-32L",
+          "url": "https://www.muji.com/jp/ja/store/cmdty/detail/4550584950087"
+        },
+        {
+          "source_ref": "SRC-PROTECA-FRESTER-EX-01551",
+          "url": "https://store.ace.jp/shop/g/g01551-01/"
+        },
+        {
+          "source_ref": "SRC-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
+          "url": "https://www.rimowa.com/jp/ja/luggage/colour/grey/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3/82353171.html"
+        },
+        {
+          "source_ref": "SRC-SAMSONITE-C-LITE-SPINNER55EXP-BLACK",
+          "url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html"
+        }
+      ],
+      "slug": "front-open-carry-on-suitcase-with-stopper"
+    },
+    {
+      "article_id": "lightweight-carry-on-suitcase-under-3kg",
+      "navigation": [
+        {
+          "journey_stage": "compare",
+          "path": "/front-open-carry-on-suitcase-with-stopper/",
+          "target_article_id": "front-open-carry-on-suitcase-with-stopper"
+        },
+        {
+          "journey_stage": "compare",
+          "path": "/carry-on-suitcase-comparison/",
+          "target_article_id": "st1703-first-suitcase-comparison"
+        }
+      ],
+      "panels": [
+        {
+          "kind": "details",
+          "panel_id": "reader-evidence"
+        }
+      ],
+      "references": [
+        {
+          "source_ref": "SRC-AMERICAN-TOURISTER-APPLITE4-QJ6-68002",
+          "url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red"
+        },
+        {
+          "source_ref": "SRC-ANA-DOMESTIC-CARRY-ON",
+          "url": "https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/"
+        },
+        {
+          "source_ref": "SRC-FREQUENTER-LIEVE-1-250",
+          "url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250"
+        },
+        {
+          "source_ref": "SRC-JAL-DOMESTIC-CARRY-ON",
+          "url": "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/"
+        },
+        {
+          "source_ref": "SRC-MUJI-HARD-CARRY-36L-SECTION",
+          "url": "https://www.muji.com/jp/ja/store/cmdty/section/S1000504"
+        },
+        {
+          "source_ref": "SRC-PROTECA-AEROFLEX-DX2-01521",
+          "url": "https://store.ace.jp/shop/g/g01521-09/"
+        },
+        {
+          "source_ref": "SRC-PROTECA-TRI-AIR-01541",
+          "url": "https://store.ace.jp/shop/g/g01541-10/"
+        },
+        {
+          "source_ref": "SRC-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
+          "url": "https://www.rimowa.com/jp/ja/luggage/colour/grey/%E3%82%AD%E3%83%A3%E3%83%93%E3%83%B3/82353171.html"
+        },
+        {
+          "source_ref": "SRC-RIMOWA-LIFETIME-GUARANTEE",
+          "url": "https://www.rimowa.com/jp/ja/lifetime-guarantee"
+        },
+        {
+          "source_ref": "SRC-SAMSONITE-C-LITE-SPINNER55EXP-MIDNIGHT",
+          "url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/midnight_blue/ss-134679-1549.html"
+        }
+      ],
+      "slug": "lightweight-carry-on-suitcase-under-3kg"
+    },
+    {
+      "article_id": "roomba-mini-vs-switchbot-k11-pro",
+      "navigation": [
+        {
+          "journey_stage": "compare",
+          "path": "/compact-robot-vacuum-shortlist/",
+          "target_article_id": "st1704-compact-robot-vacuum-shortlist"
+        }
+      ],
+      "panels": [
+        {
+          "kind": "details",
+          "panel_id": "reader-evidence"
+        }
+      ],
+      "references": [
+        {
+          "source_ref": "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "url": "https://store.irobot-jp.com/item/F155260.html"
+        },
+        {
+          "source_ref": "SRC-IROBOT-ROOMBA-MINI-SLIM-F115060",
+          "url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html"
+        },
+        {
+          "source_ref": "SRC-PANASONIC-RULO-MINI-MC-RSC10",
+          "url": "https://panasonic.jp/soji/products/MC-RSC10/spec.html"
+        },
+        {
+          "source_ref": "SRC-SWITCHBOT-K11-PRO",
+          "url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
+        }
+      ],
+      "slug": "roomba-mini-vs-switchbot-k11-pro"
+    },
+    {
+      "article_id": "solota-vs-rakua-mini-plus",
+      "navigation": [
+        {
+          "journey_stage": "compare",
+          "path": "/countertop-dishwasher-for-small-households/",
+          "target_article_id": "st1704-countertop-dishwasher-for-small-households"
+        }
+      ],
+      "panels": [
+        {
+          "kind": "details",
+          "panel_id": "reader-evidence"
+        }
+      ],
+      "references": [
+        {
+          "source_ref": "SRC-PANASONIC-NP-TMLK1",
+          "url": "https://panasonic.jp/dish/products/NP-TMLK1.html"
+        },
+        {
+          "source_ref": "SRC-THANKO-RAKUA-MINI-PLUS",
+          "url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
+        }
+      ],
+      "slug": "solota-vs-rakua-mini-plus"
+    },
+    {
+      "article_id": "st1703-first-suitcase-comparison",
+      "navigation": [
+        {
+          "journey_stage": "compare",
+          "path": "/carry-on-suitcase-under-100-seats/",
+          "target_article_id": "carry-on-suitcase-under-100-seats"
+        },
+        {
+          "journey_stage": "compare",
+          "path": "/lightweight-carry-on-suitcase-under-3kg/",
+          "target_article_id": "lightweight-carry-on-suitcase-under-3kg"
+        }
+      ],
+      "panels": [
+        {
+          "kind": "details",
+          "panel_id": "reader-evidence"
+        }
+      ],
+      "references": [
+        {
+          "source_ref": "SRC-ACE-CRESTA-06316",
+          "url": "https://store.ace.jp/shop/g/g06316-01/"
+        },
+        {
+          "source_ref": "SRC-ACE-DIFFERENCE-05721",
+          "url": "https://store.ace.jp/shop/g/g05721-06/"
+        },
+        {
+          "source_ref": "SRC-ACE-MAXPASS4-01471",
+          "url": "https://store.ace.jp/shop/g/g01471-02"
+        },
+        {
+          "source_ref": "SRC-PROTECA-SUITCASE-WARRANTY",
+          "url": "https://store.ace.jp/shop/pages/new_proteca_warranty.aspx?ismodesmartphone=off"
+        },
+        {
+          "source_ref": "SRC-PROTECA-TRI-AIR-01541",
+          "url": "https://store.ace.jp/shop/g/g01541-10/"
+        }
+      ],
+      "slug": "carry-on-suitcase-comparison"
+    },
+    {
+      "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
+      "navigation": [
+        {
+          "journey_stage": "compare",
+          "path": "/portable-power-station-guide/",
+          "target_article_id": "st1704-portable-power-station-guide"
+        }
+      ],
+      "panels": [
+        {
+          "kind": "details",
+          "panel_id": "reader-evidence"
+        }
+      ],
+      "references": [
+        {
+          "source_ref": "SRC-ANKER-SOLIX-C1000",
+          "url": "https://www.ankerjapan.com/products/a1761"
+        },
+        {
+          "source_ref": "SRC-ANKER-SOLIX-C1000-GEN2",
+          "url": "https://www.ankerjapan.com/products/a1763"
+        },
+        {
+          "source_ref": "SRC-ANKER-SOLIX-C1000-PLUS",
+          "url": "https://www.ankerjapan.com/products/a1765"
+        },
+        {
+          "source_ref": "SRC-ANKER-SOLIX-C300",
+          "url": "https://www.ankerjapan.com/products/a1722"
+        },
+        {
+          "source_ref": "SRC-ANKER-SOLIX-C800-PLUS",
+          "url": "https://www.ankerjapan.com/products/a1754"
+        },
+        {
+          "source_ref": "SRC-METI-ELECTRICAL-RECALLS",
+          "url": "https://www.meti.go.jp/product_safety/recall/denki.html"
+        },
+        {
+          "source_ref": "SRC-METI-PORTABLE-POWER-SAFETY",
+          "url": "https://www.meti.go.jp/product_safety/consumer/system/potaburu-denngenn-youkyuu.html"
+        }
+      ],
+      "slug": "anker-solix-c300-c800-c1000-differences"
+    },
+    {
+      "article_id": "st1704-compact-robot-vacuum-shortlist",
+      "navigation": [
+        {
+          "journey_stage": "compare",
+          "path": "/roomba-mini-vs-switchbot-k11-pro/",
+          "target_article_id": "roomba-mini-vs-switchbot-k11-pro"
+        }
+      ],
+      "panels": [
+        {
+          "kind": "details",
+          "panel_id": "reader-evidence"
+        }
+      ],
+      "references": [
+        {
+          "source_ref": "SRC-DREAME-X50-ULTRA",
+          "url": "https://www.dreametech.jp/products/x50-ultra"
+        },
+        {
+          "source_ref": "SRC-ECOVACS-DEEBOT-MINI2",
+          "url": "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2"
+        },
+        {
+          "source_ref": "SRC-ECOVACS-DEEBOT-X8-PRO",
+          "url": "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/deebot-x8-pro"
+        },
+        {
+          "source_ref": "SRC-ECOVACS-WARRANTY",
+          "url": "https://help.ecovacs.com/jp/support/warranty"
+        },
+        {
+          "source_ref": "SRC-EUFY-AUTOEMPTY-C10-T2292",
+          "url": "https://www.ankerjapan.com/products/t2292"
+        },
+        {
+          "source_ref": "SRC-EUFY-E20-T2070",
+          "url": "https://www.ankerjapan.com/products/t2070"
+        },
+        {
+          "source_ref": "SRC-EUFY-OMNI-E25-T2353",
+          "url": "https://www.ankerjapan.com/products/t2353"
+        },
+        {
+          "source_ref": "SRC-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "url": "https://store.irobot-jp.com/item/F155260.html"
+        },
+        {
+          "source_ref": "SRC-IROBOT-ROOMBA-PLUS-515-COMBO",
+          "url": "https://store.irobot-jp.com/item/N285060.html"
+        },
+        {
+          "source_ref": "SRC-PANASONIC-RULO-MINI-MC-RSC10",
+          "url": "https://panasonic.jp/soji/products/MC-RSC10/spec.html"
+        },
+        {
+          "source_ref": "SRC-ROBOROCK-SAROS-10",
+          "url": "https://jp.roborock.com/pages/roborock-saros-10"
+        },
+        {
+          "source_ref": "SRC-SWITCHBOT-K10-PRO-COMBO",
+          "url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo"
+        },
+        {
+          "source_ref": "SRC-SWITCHBOT-K11-PRO",
+          "url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
+        }
+      ],
+      "slug": "compact-robot-vacuum-shortlist"
+    },
+    {
+      "article_id": "st1704-countertop-dishwasher-for-small-households",
+      "navigation": [
+        {
+          "journey_stage": "verify",
+          "path": "/solota-vs-rakua-mini-plus/",
+          "target_article_id": "solota-vs-rakua-mini-plus"
+        }
+      ],
+      "panels": [
+        {
+          "kind": "details",
+          "panel_id": "reader-evidence"
+        }
+      ],
+      "references": [
+        {
+          "source_ref": "SRC-AQUA-ADW-M28B",
+          "url": "https://aqua-has.com/product/m28b/"
+        },
+        {
+          "source_ref": "SRC-PANASONIC-NP-TMLK1",
+          "url": "https://panasonic.jp/dish/products/NP-TMLK1.html"
+        },
+        {
+          "source_ref": "SRC-PANASONIC-NP-TSP2-LAUNCH",
+          "url": "https://panasonic.jp/dish/"
+        },
+        {
+          "source_ref": "SRC-PANASONIC-NP-TSP2-SUBSCRIPTION",
+          "url": "https://panasonic.jp/subscription/products/dish/tsp2.html"
+        },
+        {
+          "source_ref": "SRC-SIROCA-DISHWASHER-INSTALLATION",
+          "url": "https://www.siroca.co.jp/support/%E9%A3%9F%E5%99%A8%E6%B4%97%E3%81%84%E4%B9%BE%E7%87%A5%E6%A9%9F%EF%BC%9A%E6%8D%AE%E3%81%88%E4%BB%98%E3%81%91%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6-6267995f924c65001d340936"
+        },
+        {
+          "source_ref": "SRC-SIROCA-SS-M171",
+          "url": "https://www.siroca.co.jp/product/dishwasher_basic/"
+        },
+        {
+          "source_ref": "SRC-SIROCA-SS-M171-MANUAL",
+          "url": "https://www.siroca.co.jp/im/ss-m171.pdf"
+        },
+        {
+          "source_ref": "SRC-SIROCA-SS-M171-STORE",
+          "url": "https://store.siroca.jp/products/ss-m171"
+        },
+        {
+          "source_ref": "SRC-SIROCA-SS-MA251",
+          "url": "https://www.siroca.co.jp/product/dishwasher_advance/"
+        },
+        {
+          "source_ref": "SRC-SIROCA-SS-MA251-MANUAL-20260906",
+          "url": "https://www.siroca.co.jp/im/ss-ma251.pdf"
+        },
+        {
+          "source_ref": "SRC-SIROCA-SS-MA251-STORE",
+          "url": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976"
+        },
+        {
+          "source_ref": "SRC-THANKO-RAKUA-MINI-COLOR",
+          "url": "https://www.thanko.jp/view/item/000000004715?category_page_id=thanko-origin"
+        },
+        {
+          "source_ref": "SRC-THANKO-RAKUA-MINI-TK-MDW22W",
+          "url": "https://www.thanko.jp/view/item/000000003922?category_page_id=ct576"
+        },
+        {
+          "source_ref": "SRC-TOSHIBA-DWS-33B",
+          "url": "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/"
+        },
+        {
+          "source_ref": "SRC-TOSHIBA-DWS-33B-STORE",
+          "url": "https://shop.toshiba-lifestyle.com/jp/shop/g/g92012630Z00245-ha/"
+        },
+        {
+          "source_ref": "SRC-TOSHIBA-PARTS-RETENTION",
+          "url": "https://www.toshiba-lifestyle.com/jp/support/partslimit/"
+        }
+      ],
+      "slug": "countertop-dishwasher-for-small-households"
+    },
+    {
+      "article_id": "st1704-portable-power-station-guide",
+      "navigation": [
+        {
+          "journey_stage": "compare",
+          "path": "/anker-solix-c300-c800-c1000-differences/",
+          "target_article_id": "st1704-anker-solix-c300-c800-c1000-differences"
+        }
+      ],
+      "panels": [
+        {
+          "kind": "details",
+          "panel_id": "reader-evidence"
+        }
+      ],
+      "references": [
+        {
+          "source_ref": "SRC-ANKER-SOLIX-C300",
+          "url": "https://www.ankerjapan.com/products/a1722"
+        },
+        {
+          "source_ref": "SRC-ANKER-SOLIX-C800",
+          "url": "https://www.ankerjapan.com/products/a1753"
+        },
+        {
+          "source_ref": "SRC-BLUETTI-AC70",
+          "url": "https://www.bluetti.jp/products/bluetti-ac70"
+        },
+        {
+          "source_ref": "SRC-BLUETTI-AORA-SERIES-COLLECTION",
+          "url": "https://www.bluetti.jp/collections/aora-series-portable-power-stations"
+        },
+        {
+          "source_ref": "SRC-BLUETTI-AORA100-V2",
+          "url": "https://www.bluetti.jp/products/bluetti-aora-100-v2-portable-power-station-blue"
+        },
+        {
+          "source_ref": "SRC-BLUETTI-AORA30-V2",
+          "url": "https://www.bluetti.jp/products/bluetti-aora-30-v2-288wh-600w"
+        },
+        {
+          "source_ref": "SRC-BLUETTI-AORA30-V2-DIMENSIONS",
+          "url": "https://www.bluetti.jp/blogs/buying-guide/aora-30-v2-vs-eb3a"
+        },
+        {
+          "source_ref": "SRC-BLUETTI-DISCONTINUED-MODELS",
+          "url": "https://www.bluetti.jp/pages/bluetti-discontinued-models"
+        },
+        {
+          "source_ref": "SRC-DJI-POWER-1000-V2-SPECS",
+          "url": "https://www.dji.com/jp/power-1000-v2/specs"
+        },
+        {
+          "source_ref": "SRC-DJI-POWER-1000-V2-STORE",
+          "url": "https://store.dji.com/jp/product/dji-power-1000-v2"
+        },
+        {
+          "source_ref": "SRC-ECOFLOW-DELTA3-CLASSIC",
+          "url": "https://jp.ecoflow.com/products/delta-3-classic"
+        },
+        {
+          "source_ref": "SRC-ECOFLOW-DELTA3-PLUS",
+          "url": "https://jp.ecoflow.com/products/delta-3-plus-portable-power-station"
+        },
+        {
+          "source_ref": "SRC-ECOFLOW-RIVER3-PLUS",
+          "url": "https://jp.ecoflow.com/products/river-3-plus-portable-power-station"
+        },
+        {
+          "source_ref": "SRC-ELECOM-NESTOUT-700N",
+          "url": "https://www.elecom.co.jp/products/DE-NEPS700NBE.html"
+        },
+        {
+          "source_ref": "SRC-JACKERY-1000-NEW-V3",
+          "url": "https://www.jackery.jp/products/explorer-1000-new-v3"
+        },
+        {
+          "source_ref": "SRC-JACKERY-1000-NEW-V3-LAUNCH",
+          "url": "https://www.jackery.jp/blogs/news/jackery-news20260724"
+        },
+        {
+          "source_ref": "SRC-JACKERY-500-NEW",
+          "url": "https://www.jackery.jp/products/explorer-500-new"
+        },
+        {
+          "source_ref": "SRC-JACKERY-500-NEW-DIMENSION-AXES",
+          "url": "https://www.jackery.jp/blogs/daily-use/jackery-portable-power-station-in-living-room"
+        },
+        {
+          "source_ref": "SRC-JACKERY-500-NEW-MANUAL",
+          "url": "https://cdn.shopify.com/s/files/1/0100/1537/5438/files/Jackery_500_New_20250617.pdf?v=1750410730"
+        },
+        {
+          "source_ref": "SRC-METI-ELECTRICAL-RECALLS",
+          "url": "https://www.meti.go.jp/product_safety/recall/denki.html"
+        },
+        {
+          "source_ref": "SRC-METI-PORTABLE-POWER-SAFETY",
+          "url": "https://www.meti.go.jp/product_safety/consumer/system/potaburu-denngenn-youkyuu.html"
+        }
+      ],
+      "slug": "portable-power-station-guide"
+    }
+  ],
+  "events": [
+    "guide_navigation",
+    "decision_check_open",
+    "official_reference_open"
+  ],
+  "schema": "RAOS_READER_MEASUREMENT_ALLOWLIST_V1",
+  "source_hashes": {
+    "changes/editorial-portfolio-v2/editorial-portfolio.v2.json": "f97c305223f18e7cd493a6a32d576c75098b4b5206d1a93531b8c5339aa65d2d",
+    "changes/editorial-portfolio-v3/editorial-identities.v1.json": "b807ec8dcc55b3994ebaf78b6e3d4350b8b3b403093efed308b7007267250430",
+    "changes/editorial-portfolio-v3/editorial-portfolio.v3.json": "64fc483c072ea4a540aa0d0687992653711567c83210344e32599b000e6c0e00",
+    "changes/editorial-portfolio-v3/reader-experience.v1.json": "356748babb2ac8758a0328439113056638111dce6a6b0273210243529f9269ba",
+    "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json": "7b87b1b8f12fcc193c7e8bdff6f2f1215f89143d8f5aeb4fcfba98bcd5249109",
+    "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json": "482e6d19690b5488323c5d0a4e079fefcbbe5a2dda51c2fb5e53a63283a30850",
+    "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html": "9e4571bfaa521c71321fffbd57470138226acec206ad43d7a35e357f364ab19e",
+    "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html": "06e12fd3df4a47436d47ea46467399151228c6d7b307fae34b9309e028466cae",
+    "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html": "0371d01b5d919ecdadad44b915098352fd4957c068fc84ca3ccef52f4a8be5d5",
+    "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html": "3314f7a87a756e0ebb868d5d6c1ae941289631164a36b2da75d6adc36b104f93",
+    "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html": "22092aa2f1bc43a5b9cac52b3c52353fc3f7fc8cfcf039f75754d45c22d96b9a",
+    "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html": "811dd997c4080aec0a40aa0ec458cf735b44906db8a29cf37bb2e56e60ebcd7b",
+    "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html": "2001f5ebb6b0cb7c840ec3d39d0c3ede37de85c60a7f246c2c72e3f3284efeaa",
+    "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html": "0f2d8e7bd02859b94f29a0c3628ae813908101545eefd3b62e378dcfd59bdce0",
+    "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html": "9f729547cbcfba2751cf042db41bde0e52874ac863521c87712f40e01a13696f",
+    "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html": "6ce5b81a1cef0bcddc2bb7d154d7e07ae55faedfbec7a1083caa2f1afc3001dc",
+    "python/raos/application/editorial/reader_components.py": "6c4dc4d3ff06ac13a2ab2484a83839556fb6c4b4bc159fcfe79cf32dfbcc3542",
+    "python/raos/application/editorial/reader_experience_projection.py": "3b6a3dde7469a31094619d14d5117fa43021b3f9d074fdcf4a7e83c5466cdae7",
+    "python/raos/application/editorial/reader_experience_v1.py": "e55527eabac0f278544c5ab59c7284d8dfd2868e4eacd2c2fdda67eac10c5b92",
+    "python/raos/application/editorial/reader_html.py": "7c0c495d5b2be06095808339b44d600c4081953c4f68304dd999da4326759690"
+  },
+  "target_origin": "https://kurashinoshirube.com",
+  "version": "1.0.0"
+}

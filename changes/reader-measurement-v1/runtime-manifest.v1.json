@@ -1,0 +1,127 @@
+{
+  "approval_required": true,
+  "artifact_id": "raos-reader-measurement-v1",
+  "contract_sha256": "7504b64477d3e365574d60b33e0f9cf2e30a1a00a14e80412e888ff65a2a7f2c",
+  "default_enabled": false,
+  "maintenance_file": "includes/reader-measurement-maintenance.php",
+  "migration_assessment": "MANUAL_REVIEW_REQUIRED",
+  "package_sha256": "7e1f80b62795e7bb34d5ceb60f61ca72fcdead32d0b98c403ad34827bddbdc0a",
+  "package_size": 28770,
+  "plugin_files": [
+    {
+      "path": "README.md",
+      "sha256": "3a7b788b61996d7e01303c2d1e4547d1d7d1f82f3cadec32c9da55c3b982baf6",
+      "size": 9258
+    },
+    {
+      "path": "assets/reader-measurement.css",
+      "sha256": "11b2d24a67d8c350cbad567e5835f256246a6532a004b400939c8114b22abc8e",
+      "size": 904
+    },
+    {
+      "path": "assets/reader-measurement.js",
+      "sha256": "7a55675553ffeb94e1e23ef45bb4fbdd8652f39a99acd05ebf2f8511586260b8",
+      "size": 8484
+    },
+    {
+      "path": "config/reader-allowlist.v1.json",
+      "sha256": "7504b64477d3e365574d60b33e0f9cf2e30a1a00a14e80412e888ff65a2a7f2c",
+      "size": 23683
+    },
+    {
+      "path": "config/reader-runtime.v1.json",
+      "sha256": "27a80442cf63321ad17b949de89282d36c3c97863ee049bedfefb91661b8873f",
+      "size": 1232
+    },
+    {
+      "path": "includes/class-reader-contract.php",
+      "sha256": "ec61bad6a0f30d4d9dd8c4d7c596636680d19cf8796e7f52fc453c478874fa31",
+      "size": 9282
+    },
+    {
+      "path": "includes/class-reader-store.php",
+      "sha256": "2a776136fc5f8c1f3e1eca96df2be3ce7a02fec5161cb3948f48a2e0053465e1",
+      "size": 8164
+    },
+    {
+      "path": "includes/reader-measurement-maintenance.php",
+      "sha256": "3f6a19c3b1f326545f685e7bd97edb2c1549b1192afee76d2d5ec8474c932beb",
+      "size": 7048
+    },
+    {
+      "path": "raos-reader-measurement.php",
+      "sha256": "fa67f22e316b38adcbe8d58a5db85469815e32bd1437315f307f33421200fab0",
+      "size": 25610
+    }
+  ],
+  "plugin_root": "changes/reader-measurement-v1/wordpress-plugin/raos-reader-measurement",
+  "plugin_slug": "raos-reader-measurement",
+  "plugin_version": "1.0.0",
+  "policy_sha256": "fdf60e8d0b53666369963d25e17706ff80f2b179e91ba881708ccb5680d094a6",
+  "privacy_source": "changes/editorial-portfolio-v3/reader-measurement-privacy.html",
+  "revision": "1bf3ef30bb38a474e93e1265f5aeb9dea68375c9d059594349fdfa00631b78db",
+  "runtime_files": [
+    {
+      "path": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+      "sha256": "f97c305223f18e7cd493a6a32d576c75098b4b5206d1a93531b8c5339aa65d2d",
+      "size": 77077
+    },
+    {
+      "path": "changes/editorial-portfolio-v3/editorial-identities.v1.json",
+      "sha256": "b807ec8dcc55b3994ebaf78b6e3d4350b8b3b403093efed308b7007267250430",
+      "size": 9941
+    },
+    {
+      "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+      "sha256": "64fc483c072ea4a540aa0d0687992653711567c83210344e32599b000e6c0e00",
+      "size": 257146
+    },
+    {
+      "path": "changes/editorial-portfolio-v3/reader-experience.v1.json",
+      "sha256": "356748babb2ac8758a0328439113056638111dce6a6b0273210243529f9269ba",
+      "size": 80547
+    },
+    {
+      "path": "changes/editorial-portfolio-v3/reader-measurement-privacy.html",
+      "sha256": "fdf60e8d0b53666369963d25e17706ff80f2b179e91ba881708ccb5680d094a6",
+      "size": 4440
+    },
+    {
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
+      "sha256": "7b87b1b8f12fcc193c7e8bdff6f2f1215f89143d8f5aeb4fcfba98bcd5249109",
+      "size": 268544
+    },
+    {
+      "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
+      "sha256": "482e6d19690b5488323c5d0a4e079fefcbbe5a2dda51c2fb5e53a63283a30850",
+      "size": 242537
+    },
+    {
+      "path": "python/raos/application/editorial/reader_components.py",
+      "sha256": "6c4dc4d3ff06ac13a2ab2484a83839556fb6c4b4bc159fcfe79cf32dfbcc3542",
+      "size": 18522
+    },
+    {
+      "path": "python/raos/application/editorial/reader_experience_projection.py",
+      "sha256": "3b6a3dde7469a31094619d14d5117fa43021b3f9d074fdcf4a7e83c5466cdae7",
+      "size": 35835
+    },
+    {
+      "path": "python/raos/application/editorial/reader_experience_v1.py",
+      "sha256": "e55527eabac0f278544c5ab59c7284d8dfd2868e4eacd2c2fdda67eac10c5b92",
+      "size": 16250
+    },
+    {
+      "path": "python/raos/application/editorial/reader_html.py",
+      "sha256": "7c0c495d5b2be06095808339b44d600c4081953c4f68304dd999da4326759690",
+      "size": 3839
+    },
+    {
+      "path": "scripts/build_reader_measurement_v1.py",
+      "sha256": "c62f42a554c4433a1d93f521328bcd3e4fdc96beb497981b384ba3904fa46d9b",
+      "size": 15994
+    }
+  ],
+  "schema": "RAOS_READER_MEASUREMENT_RUNTIME_MANIFEST_V1",
+  "version": "1.0.0"
+}

@@ -19,6 +19,134 @@ if (
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_BOUNDARY_INVALID');
 }
 
+/** Closed page declarations are local preview inputs, never publication facts. */
+function raos_local_preview_reader_hub_slugs(): array
+{
+    return array('categories', 'purposes', 'guides', 'comparisons', 'updates', 'travel',
+        'kitchen', 'cleaning', 'preparedness', 'small-space', 'save-housework',
+        'without-installation', 'easy-maintenance', 'comfortable-travel', 'prepare-outage');
+}
+
+function raos_local_preview_sorted_keys(array $value): array
+{
+    $keys = array_keys($value);
+    sort($keys, SORT_STRING);
+    return $keys;
+}
+
+function raos_local_preview_reader_scope(array $binding, array $metadata): array
+{
+    $fields = array('reader_page_slugs', 'reader_page_documents', 'snapshot_reader_page_slugs',
+        'reader_page_baselines', 'snapshot_document_sha256', 'all_document_baselines',
+        'unpublished_reader_pages', 'core_document_slugs');
+    foreach ($fields as $field) {
+        if (! is_array($binding[$field] ?? null) || ($metadata[$field] ?? null) !== $binding[$field]) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_BINDING_INVALID');
+        }
+    }
+    $selected = $binding['reader_page_slugs'];
+    $declared = $binding['snapshot_reader_page_slugs'];
+    $allowed = raos_local_preview_reader_hub_slugs();
+    foreach (array($selected, $declared) as $index => $values) {
+        $sorted = $values;
+        sort($sorted, SORT_STRING);
+        if ($values !== array_values(array_unique($sorted))
+            || array_diff($values, $index === 0 ? array_merge($allowed, array('home', 'privacy-policy')) : $allowed)) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_BINDING_INVALID');
+        }
+    }
+    if (array_diff(array_intersect($selected, $allowed), $declared)
+        || raos_local_preview_sorted_keys($binding['reader_page_documents']) !== $selected) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_BINDING_INVALID');
+    }
+    $policies = array('about-ad-policy', 'comparison-policy', 'privacy-policy');
+    $baseline_pages = array_merge($policies, array('home'), $declared);
+    sort($baseline_pages, SORT_STRING);
+    if (raos_local_preview_sorted_keys($binding['reader_page_baselines']) !== $baseline_pages) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_BINDING_INVALID');
+    }
+    $drafts = array();
+    $managed = $policies;
+    $ids = array();
+    foreach ($binding['reader_page_baselines'] as $slug => $row) {
+        if (! is_array($row)
+            || raos_local_preview_sorted_keys($row) !== array('production_id', 'source_content_sha256', 'status')
+            || ! is_int($row['production_id']) || $row['production_id'] <= 0
+            || in_array($row['production_id'], $ids, true)
+            || ! in_array($row['status'], in_array($slug, $declared, true) ? array('draft', 'publish') : array('publish'), true)
+            || ! is_string($row['source_content_sha256'])
+            || preg_match('/\A[a-f0-9]{64}\z/D', $row['source_content_sha256']) !== 1
+            || ($binding['snapshot_document_sha256'][$slug] ?? null) !== $row['source_content_sha256']) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_BINDING_INVALID');
+        }
+        $ids[] = $row['production_id'];
+        if ($row['status'] === 'draft') {
+            $drafts[$slug] = array('production_id' => $row['production_id'], 'production_slug' => $slug,
+                'status' => 'draft', 'publication_date' => 'NOT_VERIFIED', 'public_taxonomies' => 'NOT_APPLICABLE');
+            ksort($drafts[$slug]);
+        }
+        if ((in_array($slug, $declared, true) && ($row['status'] === 'publish' || in_array($slug, $selected, true)))
+            || ($slug === 'home' && in_array($slug, $selected, true))) {
+            $managed[] = $slug;
+        }
+    }
+    ksort($drafts);
+    if ($binding['unpublished_reader_pages'] !== $drafts) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_BINDING_INVALID');
+    }
+    $articles = raos_local_preview_sorted_keys($binding['article_states'] ?? array());
+    $all_slugs = array_merge($articles, $baseline_pages);
+    sort($all_slugs, SORT_STRING);
+    $public_slugs = array_values(array_diff($all_slugs, array_keys($drafts)));
+    $core = array_values(array_unique(array_merge($articles, $managed, array('home'))));
+    sort($core, SORT_STRING);
+    sort($managed, SORT_STRING);
+    if (count($articles) !== 10
+        || raos_local_preview_sorted_keys($binding['snapshot_document_sha256']) !== $all_slugs
+        || raos_local_preview_sorted_keys($metadata['documents']) !== $public_slugs
+        || $binding['core_document_slugs'] !== $core
+        || raos_local_preview_sorted_keys($binding['page_body_sha256']) !== $managed
+        || raos_local_preview_sorted_keys($binding['baseline_page_sha256']) !== $baseline_pages) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_BINDING_INVALID');
+    }
+    return $managed;
+}
+
+/** H1 permission is limited to the exact selected front-page template fragment. */
+function raos_local_preview_reader_page_content(array $page, string $content, ?array $binding, string $home_template): bool
+{
+    $slug = $page['slug'];
+    $selected = $binding['reader_page_slugs'] ?? array();
+    $target = $binding['reader_page_documents'][$slug] ?? null;
+    if (in_array($slug, $selected, true)) {
+        if (! is_array($target)
+            || raos_local_preview_sorted_keys($target) !== array('block_markup', 'excerpt', 'media_ids', 'post_type', 'slug', 'taxonomies', 'title')
+            || ($target['post_type'] ?? null) !== 'page' || ($target['slug'] ?? null) !== $slug
+            || ($target['title'] ?? null) !== $page['title'] || ($target['excerpt'] ?? null) !== $page['excerpt']
+            || ($target['block_markup'] ?? null) !== $content
+            || ! is_array($target['taxonomies']) || ! is_array($target['media_ids'])) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_PAGE_INVALID');
+        }
+    }
+    $home = $slug === 'home' && in_array('home', $selected, true);
+    if ($home) {
+        if (substr_count($home_template, '<main') !== 1
+            || preg_match('/<main\b[^>]*>\s*(.*?)\s*<\/main>/s', $home_template, $parts) !== 1
+            || trim($parts[1]) . "\n" !== $content
+            || substr_count($content, '<h1') !== 1) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_HOME_INVALID');
+        }
+    } elseif (in_array($slug, raos_local_preview_reader_hub_slugs(), true)) {
+        if (! in_array($slug, $binding['snapshot_reader_page_slugs'] ?? array(), true)
+            || $content !== '<!-- wp:shortcode -->[kurashinoshirube_reader_hub slug="' . $slug . '"]<!-- /wp:shortcode -->') {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_HUB_INVALID');
+        }
+    } elseif (preg_match('/\[\/?[A-Za-z_][A-Za-z0-9_-]*(?:\s[^\]]*)?\]/', $content) === 1) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_SHORTCODE_INVALID');
+    }
+    return $home;
+}
+
 $mode = getenv('RAOS_PREVIEW_SEED_MODE');
 if (! in_array($mode, array('initialize', 'sync'), true)) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_SEED_MODE_INVALID');
@@ -30,6 +158,8 @@ $page_fixture_path = $fixture_root . '/pages.json';
 $page_content_root = $fixture_root;
 $mixed_metadata = null;
 $mixed_binding = null;
+$reader_page_mode = false;
+$managed_reader_pages = array();
 $publication_profile = getenv('RAOS_PREVIEW_PUBLICATION_PROFILE') ?: 'legacy-full';
 if (! in_array($publication_profile, array('legacy-full', 'verified-incremental'), true)) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PUBLICATION_PROFILE_INVALID');
@@ -46,6 +176,7 @@ if ($publication_profile === 'verified-incremental') {
     $mixed_binding = json_decode(file_get_contents($mixed_binding_path), true, 32);
     $mixed_metadata_bytes = file_get_contents($mixed_metadata_path);
     $mixed_metadata = json_decode($mixed_metadata_bytes, true, 32);
+    $reader_page_mode = is_array($mixed_binding) && array_key_exists('reader_page_slugs', $mixed_binding);
     if (
         ! is_array($mixed_binding) || ! is_array($mixed_metadata)
         || ($mixed_binding['schema'] ?? null) !== 'RAOS_WORDPRESS_MIXED_PREVIEW_PREPARATION_V1'
@@ -57,11 +188,14 @@ if ($publication_profile === 'verified-incremental') {
         || ($mixed_binding['metadata_blockers'] ?? null) !== array()
         || ($mixed_binding['seed_metadata_sha256'] ?? null) !== hash('sha256', $mixed_metadata_bytes)
         || ! is_array($mixed_metadata['documents'] ?? null)
-        || count($mixed_metadata['documents']) !== 14
+        || (! $reader_page_mode && count($mixed_metadata['documents']) !== 14)
         || ! is_array($mixed_metadata['policy_states'] ?? null)
         || count($mixed_metadata['policy_states']) !== 3
     ) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_METADATA_INVALID');
+    }
+    if ($reader_page_mode) {
+        $managed_reader_pages = raos_local_preview_reader_scope($mixed_binding, $mixed_metadata);
     }
     $page_fixture_path = $mixed_root . '/pages.json';
     $page_content_root = $mixed_root;
@@ -110,7 +244,7 @@ if (
     || ! is_string($page_fixture['seed_version'])
     || preg_match('/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\.[1-9][0-9]*\z/D', $page_fixture['seed_version']) !== 1
     || ! is_array($page_fixture['pages'])
-    || count($page_fixture['pages']) !== 3
+    || count($page_fixture['pages']) !== ($reader_page_mode ? count($managed_reader_pages) : 3)
 ) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
 }
@@ -418,6 +552,7 @@ if ($mixed_metadata !== null) {
 }
 
 $mixed_policy_heads = array();
+$seen_page_slugs = array();
 foreach ($page_fixture['pages'] as $page) {
     if (
         ! is_array($page)
@@ -435,6 +570,12 @@ foreach ($page_fixture['pages'] as $page) {
     ) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
     }
+    if ($page['content_file'] !== 'pages/' . $page['slug'] . '.html'
+        || in_array($page['slug'], $seen_page_slugs, true)
+        || ($reader_page_mode && ! in_array($page['slug'], $managed_reader_pages, true))) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
+    }
+    $seen_page_slugs[] = $page['slug'];
     $page_path = $page_content_root . '/' . $page['content_file'];
     $page_realpath = realpath($page_path);
     $page_root_realpath = realpath($page_content_root . '/pages');
@@ -451,13 +592,25 @@ foreach ($page_fixture['pages'] as $page) {
     if ($mixed_binding !== null && hash('sha256', $content) !== ($mixed_binding['page_body_sha256'][$page['slug']] ?? null)) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_POLICY_HASH_INVALID');
     }
+    $home_template = '';
+    if ($reader_page_mode && $page['slug'] === 'home') {
+        $template_path = get_stylesheet_directory() . '/templates/front-page.html';
+        if (! is_file($template_path) || is_link($template_path) || ! is_readable($template_path)) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_HOME_INVALID');
+        }
+        $home_template = file_get_contents($template_path);
+    }
+    $reader_home = is_string($content) && raos_local_preview_reader_page_content(
+        $page, $content, $mixed_binding, $home_template
+    );
     if (
         ! is_string($content)
         || $content === ''
         || strlen($content) > 131072
         || wp_kses_post($content) !== $content
         || ! raos_local_preview_has_only_reviewed_https_links($content)
-        || preg_match('/<\s*(?:h1|script|style)\b/i', $content) === 1
+        || preg_match('/<\s*(?:script|style|iframe|form|input|object|embed)\b/i', $content) === 1
+        || (! $reader_home && preg_match('/<\s*h1\b/i', $content) === 1)
     ) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
     }
@@ -470,7 +623,8 @@ foreach ($page_fixture['pages'] as $page) {
     }
     $slug = $page['slug'];
     $existing = get_page_by_path($slug, OBJECT, 'page');
-    if ($mixed_metadata !== null && ! ($existing instanceof WP_Post)) {
+    if ($mixed_metadata !== null && ! ($existing instanceof WP_Post)
+        && ! ($reader_page_mode && in_array($slug, $mixed_binding['snapshot_reader_page_slugs'], true))) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_EXISTING_PAGE_REQUIRED');
     }
     $page_data = array(
@@ -487,19 +641,29 @@ foreach ($page_fixture['pages'] as $page) {
     if ($existing instanceof WP_Post) {
         $page_data['ID'] = (int) $existing->ID;
     }
-    $result = wp_insert_post($page_data, true);
+    // Draft hubs become visible only in this isolated preview. No production
+    // publication date is synthesized; their metadata remains NOT_VERIFIED.
+    $result = wp_insert_post($reader_page_mode ? wp_slash($page_data) : $page_data, true);
     if (is_wp_error($result) || (int) $result <= 0) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_SEED_FAILED');
     }
     if ($mixed_metadata !== null) {
-        if (get_post_field('post_content', (int) $result, 'raw') !== $content) {
+        if (get_post_field('post_content', (int) $result, 'raw') !== $content
+            || ($reader_page_mode && (
+                get_post_field('post_name', (int) $result, 'raw') !== $slug
+                || get_post_field('post_title', (int) $result, 'raw') !== $page['title']
+                || get_post_field('post_excerpt', (int) $result, 'raw') !== $page['excerpt']
+            ))) {
             WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_POLICY_READBACK_INVALID');
         }
-        $mixed_policy_heads[$slug] = array(
-            'title' => $page['title'],
-            'description' => $page['excerpt'],
-            'content_sha256' => hash('sha256', $content),
-        );
+        // The theme's existing policy-head option remains exactly three pages.
+        if (in_array($slug, array('about-ad-policy', 'comparison-policy', 'privacy-policy'), true)) {
+            $mixed_policy_heads[$slug] = array(
+                'title' => $page['title'],
+                'description' => $page['excerpt'],
+                'content_sha256' => hash('sha256', $content),
+            );
+        }
     }
 }
 

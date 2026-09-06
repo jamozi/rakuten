@@ -36,6 +36,43 @@ from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
 )
 
 
+def page_overrides_for_preview(
+    arguments: argparse.Namespace, *, root: Path = ROOT
+) -> dict[str, dict[str, object]]:
+    """Resolve explicit source pages; a supplied candidate owns the exact set."""
+    import raos_reader_release_pages as reader
+
+    include_home = getattr(arguments, "include_home", False) or getattr(
+        arguments, "home_page", False
+    )
+    reader_privacy = getattr(arguments, "reader_privacy", False)
+    selected = getattr(arguments, "reader_pages", None)
+    hubs = [] if selected is None else selected.split(",")
+    candidate_path = getattr(arguments, "candidate", None)
+    if candidate_path is not None:
+        manifest = read_private_json(Path(candidate_path), "manifest.v1.json")
+        shared = manifest.get("shared_artifacts", {})
+        targets = manifest.get("reader_pages", {})
+        if (
+            not isinstance(shared, dict)
+            or not isinstance(targets, dict)
+            or not set(targets) <= reader.HUB_SLUGS | {"privacy-policy"}
+            or not set(targets) <= set(shared)
+        ):
+            fail("PREVIEW_READER_PAGE_SELECTION_INVALID")
+        include_home = "home" in shared
+        reader_privacy = "privacy-policy" in targets
+        hubs = sorted(set(targets) & reader.HUB_SLUGS)
+    pages = []
+    if include_home:
+        pages.append(reader.load_home_page(root))
+    if reader_privacy:
+        pages.append(reader.load_reader_privacy_page(root))
+    if hubs:
+        pages.extend(reader.select_hub_pages(root, hubs))
+    return {page.production_slug: page.document() for page in pages}
+
+
 def create_preview(arguments: argparse.Namespace) -> Path:
     """Materialize a new mixed preview, preserving already-bound fixture directories."""
     owner = Path("/home/minami/rakuten")
@@ -47,9 +84,15 @@ def create_preview(arguments: argparse.Namespace) -> Path:
     )
     portfolio = load_editorial_portfolio_v3(ROOT)
     article_ids = {a.production_slug: a.article_id for a in portfolio.articles}
+    article_selection = getattr(arguments, "articles", None)
     selected = frozenset(
-        article_ids if arguments.articles == "all" else arguments.articles.split(",")
+        article_ids
+        if article_selection == "all"
+        else ()
+        if article_selection in (None, "", "none")
+        else article_selection.split(",")
     )
+    page_overrides = page_overrides_for_preview(arguments)
     fixture = ROOT / "changes/wordpress-local-preview-v1/fixtures"
     posts = json.loads((fixture / "posts.json").read_text())
     pages = json.loads((fixture / "production-pages.json").read_text())
@@ -77,6 +120,7 @@ def create_preview(arguments: argparse.Namespace) -> Path:
         },
         updated_policy_slugs=updated_policies,
         home_mode=arguments.home_mode,
+        page_overrides=page_overrides,
     )
     if arguments.materialize_baseline_images:
         from datetime import UTC, datetime
@@ -120,6 +164,8 @@ def create_preview(arguments: argparse.Namespace) -> Path:
         cast(dict[str, str], result.binding["policy_states"]).items()
     ):
         print(f"{slug}: {state}")
+    if page_overrides:
+        print("Explicit reader pages: " + ", ".join(sorted(page_overrides)))
     print("Front-page setting, author and featured-media metadata: NOT_VERIFIED")
     print(
         "Publication status: NOT_VERIFIED_FOR_PUBLICATION; production writes: NOT_EXECUTED"
@@ -130,7 +176,22 @@ def create_preview(arguments: argparse.Namespace) -> Path:
 def main() -> int:
     parser = argparse.ArgumentParser(allow_abbrev=False)
     parser.add_argument("--snapshot-name", required=True)
-    parser.add_argument("--articles", required=True)
+    parser.add_argument(
+        "--articles",
+        help="all or exact comma-separated article slugs; omit for page-only",
+    )
+    parser.add_argument(
+        "--include-home", "--home-page", action="store_true", dest="include_home"
+    )
+    parser.add_argument(
+        "--reader-pages", help="exact comma-separated registered hub slugs"
+    )
+    parser.add_argument("--reader-privacy", action="store_true")
+    parser.add_argument(
+        "--candidate",
+        type=Path,
+        help="use the existing candidate's exact page selection",
+    )
     parser.add_argument("--materialize-baseline-images", action="store_true")
     parser.add_argument(
         "--update-policies",
@@ -146,7 +207,11 @@ def main() -> int:
     try:
         create_preview(arguments)
         return 0
-    except (IncrementalPublicationFailure, EditorialEconomicsV3Failure) as error:
+    except (
+        IncrementalPublicationFailure,
+        EditorialEconomicsV3Failure,
+        ValueError,
+    ) as error:
         sys.stderr.write(f"{error}\n")
         return 69
 

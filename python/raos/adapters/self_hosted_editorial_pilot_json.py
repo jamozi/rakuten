@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 import re
 import stat
-from typing import Final, NoReturn, cast, final
+from typing import TYPE_CHECKING, Final, NoReturn, cast, final
 import zlib
 
 from raos.domain.editorial.self_hosted_editorial_pilot import (
@@ -47,6 +47,10 @@ from raos.ports.self_hosted_editorial_pilot import (
     ReviewDraftRevisionDisposition,
     ReviewDraftRevisionObservation,
 )
+
+
+if TYPE_CHECKING:
+    from raos.adapters.self_hosted_editorial_source_capture import SourceCaptureTarget
 
 
 OWNER_DIRECTORY: Final = "st1704-self-hosted-editorial-pilot"
@@ -979,10 +983,33 @@ def _image_dimensions(raw: bytes) -> tuple[int, int]:
 
 
 def _validate_source_capture_body(raw: bytes, *, content_type: str) -> None:
-    """Reject metadata-only captures and obviously corrupt HTML/PDF bodies."""
+    """Validate bounded bodies without executing or relabelling JSON documents."""
 
-    if type(raw) is not bytes or not raw:
+    if type(raw) is not bytes or not 1 <= len(raw) <= MAX_SOURCE_BODY_BYTES:
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    if content_type in {
+        "application/json",
+        "application/javascript",
+        "text/javascript",
+    }:
+        try:
+            json.loads(
+                raw.decode("utf-8", errors="strict"),
+                object_pairs_hook=_pairs,
+                parse_float=_finite_decimal,
+                parse_constant=_reject_number,
+            )
+        except EditorialPilotFailure:
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        except (
+            UnicodeError,
+            json.JSONDecodeError,
+            ValueError,
+            TypeError,
+            RecursionError,
+        ):
+            _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+        return
     stripped = raw.lstrip(b"\t\n\r ")
     if content_type == "application/pdf":
         if (
@@ -1113,10 +1140,57 @@ def _validate_rakuten_response(
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
 
 
+def _validate_reviewed_pdf_capture(
+    evidence: OfficialSourceCaptureEvidence, target: SourceCaptureTarget
+) -> None:
+    # The current, independently loaded contract supplies the PDF pin and page
+    # bindings; no caller boolean can exempt a body from locator verification.
+    from raos.adapters.self_hosted_editorial_source_capture import SourceCaptureTarget
+
+    if (
+        type(target) is not SourceCaptureTarget
+        or target.locator_mode != "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT"
+        or target.locator_status != "READY"
+        or target.media_type != "application/pdf"
+        or evidence.content_type != "application/pdf"
+        or target.source_ref != evidence.source_ref
+        or target.url != evidence.final_url
+        or target.expected_body_sha256 != evidence.body_sha256
+        or not target.locators
+        or any(
+            type(locator.reviewed_page_number) is not int
+            or locator.reviewed_page_number < 1
+            for locator in target.locators
+        )
+    ):
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    expected = tuple(
+        (
+            locator.claim_id,
+            locator.claim_statement_sha256,
+            tuple(
+                (fragment, bytes_sha256(fragment.encode("utf-8")))
+                for fragment in locator.exact_utf8_fragments
+            ),
+        )
+        for locator in target.locators
+    )
+    if evidence.locators != expected:
+        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+
+
 def read_official_source_capture_evidence(
-    repository_root: Path, *, source_ref: str
+    repository_root: Path,
+    *,
+    source_ref: str,
+    reviewed_pdf_target: SourceCaptureTarget | None = None,
 ) -> OfficialSourceCaptureEvidence:
-    """Read one current owner capture and prove every locator exists in its raw body."""
+    """Read a current capture, proving raw locators or exact pinned PDF review.
+
+    PDF reviewed text need not occur as UTF-8 in the binary body. That mode
+    requires the current contract target, exact body hash, page numbers and all
+    locator records. Without that target the existing raw-body proof is required.
+    """
 
     relative = source_evidence_relative_path(source_ref)
     owner, _secrets = _owner_base_layout(
@@ -1215,14 +1289,17 @@ def read_official_source_capture_evidence(
     if bytes_sha256(body) != evidence.body_sha256:
         _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     _validate_source_capture_body(body, content_type=evidence.content_type)
-    for _claim_id, _statement_sha256, locator_fragments in evidence.locators:
-        for exact_fragment, _fragment_sha256 in locator_fragments:
-            try:
-                fragment_bytes = exact_fragment.encode("utf-8", errors="strict")
-            except UnicodeError:
-                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
-            if body.count(fragment_bytes) != 1:
-                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+    if reviewed_pdf_target is not None:
+        _validate_reviewed_pdf_capture(evidence, reviewed_pdf_target)
+    else:
+        for _claim_id, _statement_sha256, locator_fragments in evidence.locators:
+            for exact_fragment, _fragment_sha256 in locator_fragments:
+                try:
+                    fragment_bytes = exact_fragment.encode("utf-8", errors="strict")
+                except UnicodeError:
+                    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+                if body.count(fragment_bytes) != 1:
+                    _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
     if (
         _read_private_file(
             sources / relative.name,

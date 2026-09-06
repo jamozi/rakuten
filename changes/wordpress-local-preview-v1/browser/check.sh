@@ -31,6 +31,7 @@ audit_runtime=''
 artifact_directory=''
 previous_artifact_directory=''
 incremental_scope_file=''
+runtime_inventory_file=''
 mixed_report_binding=''
 mixed_raw_result=''
 
@@ -79,6 +80,7 @@ cleanup() {
   "$node_bin" "$cli_js" -s="$session" close >/dev/null 2>&1 || true
   [ -z "$audit_runtime" ] || /usr/bin/busybox rm -f -- "$audit_runtime"
   [ -z "$incremental_scope_file" ] || /usr/bin/busybox rm -f -- "$incremental_scope_file"
+  [ -z "$runtime_inventory_file" ] || /usr/bin/busybox rm -f -- "$runtime_inventory_file"
   [ -z "$mixed_report_binding" ] || /usr/bin/busybox rm -f -- "$mixed_report_binding"
   if [ -n "$mixed_raw_result" ] && [ -s "$mixed_raw_result" ]; then
     /usr/bin/busybox cp -- "$mixed_raw_result" "$artifact_parent/local-preview.last-attempt.$$.cli.txt"
@@ -129,6 +131,24 @@ if [ "$publication_profile" = verified-incremental ]; then
   PYTHONDONTWRITEBYTECODE=1 "$python_bin" "$mixed_report_adapter" begin \
     --fixture-root "$fixture_root" --origin "$preview_origin" \
     --binding-file "$mixed_report_binding" "$@" || refuse
+  runtime_inventory_file="$(/usr/bin/busybox mktemp /tmp/raos-wordpress-reader-inventory.XXXXXX)" || refuse
+  /usr/bin/busybox chmod 600 -- "$runtime_inventory_file" || refuse
+  PYTHONDONTWRITEBYTECODE=1 "$python_bin" - "$script_directory" "$audit_inventory" \
+    "$mixed_report_binding" "$incremental_scope_file" >"$runtime_inventory_file" <<'PYREADERINVENTORY' || refuse
+import json
+from pathlib import Path
+import sys
+
+sys.path.insert(0, sys.argv[1])
+from mixed_audit_report import bind_reader_inventory, canonical, read_regular, reject, sha
+
+inventory_raw = read_regular(Path(sys.argv[2]))
+inputs = json.loads(read_regular(Path(sys.argv[3])))["inputs"]
+scope = json.loads(read_regular(Path(sys.argv[4])))
+if sha(inventory_raw) != inputs["audit_inventory_sha256"] or scope != inputs["scope"]:
+    reject()
+sys.stdout.buffer.write(canonical(bind_reader_inventory(json.loads(inventory_raw), inputs)))
+PYREADERINVENTORY
 fi
 "$node_bin" -e '
 const fs = require("fs");
@@ -149,7 +169,7 @@ fs.writeFileSync(
     publicationProfile, linkMode, incrementalScope, selectedSurfaceIds, workers })})`,
   { encoding: "utf8", mode: 0o600 },
 );
-' "$audit_function" "$audit_inventory" "$axe_source" "$audit_runtime" "$artifact_directory" \
+' "$audit_function" "${runtime_inventory_file:-$audit_inventory}" "$axe_source" "$audit_runtime" "$artifact_directory" \
   "$preview_origin" "$publication_profile" "$link_mode" "$incremental_scope_file" "$mixed_report_binding" \
   2>/dev/null || refuse
 TMPDIR=/tmp
@@ -200,7 +220,7 @@ const actual = entries.map((entry) => entry.name).sort();
 if (!expected.length || new Set(expected).size !== expected.length ||
     actual.length !== expected.length || actual.some((name, i) => name !== expected[i]) ||
     entries.some((entry) => !entry.isFile() || entry.isSymbolicLink())) process.exit(69);
-' "$audit_inventory" "$artifact_directory" "$mixed_report_binding" || refuse
+' "${runtime_inventory_file:-$audit_inventory}" "$artifact_directory" "$mixed_report_binding" || refuse
 RAOS_WORDPRESS_PREVIEW_NODE_BIN="$node_bin" \
 RAOS_WORDPRESS_PREVIEW_ORIGIN="$preview_origin" \
 RAOS_WORDPRESS_BROWSER_BINDING="$mixed_report_binding" \

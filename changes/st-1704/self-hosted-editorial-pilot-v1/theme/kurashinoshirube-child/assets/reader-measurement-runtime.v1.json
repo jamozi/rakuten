@@ -1,0 +1,58 @@
+{
+  "contract_sha256": "7504b64477d3e365574d60b33e0f9cf2e30a1a00a14e80412e888ff65a2a7f2c",
+  "maintenance_file": "includes/reader-measurement-maintenance.php",
+  "maintenance_sha256": "3f6a19c3b1f326545f685e7bd97edb2c1549b1192afee76d2d5ec8474c932beb",
+  "manifest_sha256": "e4f085e786953aacfad14b1e9686a9b6f6cb0cab588882cebd3c85999823be45",
+  "plugin_files": [
+    {
+      "path": "README.md",
+      "sha256": "3a7b788b61996d7e01303c2d1e4547d1d7d1f82f3cadec32c9da55c3b982baf6",
+      "size": 9258
+    },
+    {
+      "path": "assets/reader-measurement.css",
+      "sha256": "11b2d24a67d8c350cbad567e5835f256246a6532a004b400939c8114b22abc8e",
+      "size": 904
+    },
+    {
+      "path": "assets/reader-measurement.js",
+      "sha256": "7a55675553ffeb94e1e23ef45bb4fbdd8652f39a99acd05ebf2f8511586260b8",
+      "size": 8484
+    },
+    {
+      "path": "config/reader-allowlist.v1.json",
+      "sha256": "7504b64477d3e365574d60b33e0f9cf2e30a1a00a14e80412e888ff65a2a7f2c",
+      "size": 23683
+    },
+    {
+      "path": "config/reader-runtime.v1.json",
+      "sha256": "27a80442cf63321ad17b949de89282d36c3c97863ee049bedfefb91661b8873f",
+      "size": 1232
+    },
+    {
+      "path": "includes/class-reader-contract.php",
+      "sha256": "ec61bad6a0f30d4d9dd8c4d7c596636680d19cf8796e7f52fc453c478874fa31",
+      "size": 9282
+    },
+    {
+      "path": "includes/class-reader-store.php",
+      "sha256": "2a776136fc5f8c1f3e1eca96df2be3ce7a02fec5161cb3948f48a2e0053465e1",
+      "size": 8164
+    },
+    {
+      "path": "includes/reader-measurement-maintenance.php",
+      "sha256": "3f6a19c3b1f326545f685e7bd97edb2c1549b1192afee76d2d5ec8474c932beb",
+      "size": 7048
+    },
+    {
+      "path": "raos-reader-measurement.php",
+      "sha256": "fa67f22e316b38adcbe8d58a5db85469815e32bd1437315f307f33421200fab0",
+      "size": 25610
+    }
+  ],
+  "plugin_slug": "raos-reader-measurement",
+  "plugin_version": "1.0.0",
+  "policy_sha256": "fdf60e8d0b53666369963d25e17706ff80f2b179e91ba881708ccb5680d094a6",
+  "revision": "1bf3ef30bb38a474e93e1265f5aeb9dea68375c9d059594349fdfa00631b78db",
+  "schema": "RAOS_READER_MEASUREMENT_THEME_BINDING_V1"
+}

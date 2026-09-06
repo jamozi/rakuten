@@ -24,10 +24,16 @@ from raos.application.editorial.local_scratch_restore_v1 import (
 )
 from raos.application.editorial.verified_incremental_v1 import (
     IncrementalPublicationFailure,
+    READER_PAGE_SLUGS,
+    READER_HUB_SLUGS,
 )
 from raos.application.editorial.local_scratch_theme_restore_v1 import (
     build_scratch_theme_restoration,
     verify_scratch_theme_restoration,
+    parse_theme_package,
+    theme_tree_sha256,
+    theme_manifest,
+    THEME_SLUG,
 )
 
 PROFILE = "verified-incremental"
@@ -337,9 +343,11 @@ class IncrementalAuditScopeV1:
     affiliate_cta_ids: tuple[str, ...] = ()
     product_image_ids: tuple[str, ...] = ()
     required_noncontent_rollback_targets: tuple[str, ...] = ()
+    selected_page_slugs: tuple[str, ...] = ()
 
     def to_document(self) -> dict[str, object]:
-        selected = set(_ids(self.selected_article_ids))
+        pages = set(_ids(self.selected_page_slugs, empty=True))
+        selected = set(_ids(self.selected_article_ids, empty=bool(pages)))
         existing = set(_ids(self.existing_article_ids))
         rendered = set(_ids(self.rendered_article_ids))
         products = set(_ids(self.retained_product_ids, empty=True))
@@ -351,6 +359,9 @@ class IncrementalAuditScopeV1:
         claims = _mapping(self.claim_ids_by_article)
         if (
             type(self.shared_changes) is not bool
+            or not pages <= READER_PAGE_SLUGS
+            or (pages and (not self.shared_changes or len(existing) != 10))
+            or (not selected and (products or ctas or images))
             or not selected <= existing
             or not selected <= rendered <= existing
             or (self.shared_changes and rendered != existing)
@@ -362,7 +373,7 @@ class IncrementalAuditScopeV1:
             or (noncontent and not self.shared_changes)
         ):
             _fail("SCOPE_INVALID")
-        return {
+        document: dict[str, object] = {
             "selected_article_ids": sorted(selected),
             "existing_article_ids": sorted(existing),
             "rendered_article_ids": sorted(rendered),
@@ -377,6 +388,9 @@ class IncrementalAuditScopeV1:
             "product_image_ids": sorted(images),
             "required_noncontent_rollback_targets": sorted(noncontent),
         }
+        if pages:
+            document["selected_page_slugs"] = sorted(pages)
+        return document
 
 
 @dataclass(frozen=True)
@@ -456,6 +470,145 @@ def _restoration_time(value: object, observed_at: datetime) -> datetime:
     return verified
 
 
+def _reader_page_backup_evidence(
+    backup: Mapping[str, object],
+    receipt: Mapping[str, object],
+    readback: Mapping[str, object],
+    *,
+    article_slugs: frozenset[str],
+    page_slugs: frozenset[str],
+    observed_at: datetime,
+) -> dict[str, object]:
+    """Replay V2 scratch ContentDocument fields, including actual draft objects.
+
+    This protocol does not certify dates, revision history or shared configuration.
+    Its distinct receipt makes that limit explicit; legacy restoration is unchanged.
+    Callers must supply actual scratch readback, never a seed presented as readback.
+    """
+    policies = {"home", "about-ad-policy", "comparison-policy", "privacy-policy"}
+    if (
+        not page_slugs
+        or not page_slugs <= READER_PAGE_SLUGS
+        or len(article_slugs) != 10
+        or article_slugs & (policies | READER_HUB_SLUGS)
+        or (backup.get("schema") != "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2" and not (
+            page_slugs == {"privacy-policy"}
+            and backup.get("schema") == "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1"
+            and "reader_page_slugs" not in backup
+        ))
+        or backup.get("publication_profile") != PROFILE
+        or backup.get("source") != "BOUNDED_WORDPRESS_EDITOR_MCP"
+        or backup.get("origin") != "https://kurashinoshirube.com"
+        or backup.get("publication_authority") is not False
+    ):
+        _fail("READER_BACKUP_SCOPE_INVALID")
+    fields = {
+        "schema",
+        "post_type",
+        "id",
+        "status",
+        "title",
+        "slug",
+        "excerpt",
+        "block_markup",
+        "taxonomies",
+        "media_ids",
+    }
+    documents: dict[str, object] = {}
+    ids: set[int] = set()
+    for raw in _list(backup.get("documents")):
+        row = _mapping(raw)
+        slug = _identifier(row.get("slug"))
+        post_id = row.get("id")
+        if (
+            not fields <= set(row)
+            or slug in documents
+            or type(post_id) is not int
+            or post_id < 1
+            or post_id in ids
+            or row.get("schema") != "ContentDocumentV1"
+            or row.get("post_type") != ("post" if slug in article_slugs else "page")
+            or row.get("media_ids") != []
+            or type(row.get("taxonomies")) not in (dict, list)
+            or any(
+                type(row.get(key)) is not str
+                for key in ("title", "excerpt", "block_markup")
+            )
+            or row.get("status")
+            not in (
+                {"draft", "publish"}
+                if slug in page_slugs & READER_HUB_SLUGS
+                else {"publish"}
+            )
+        ):
+            _fail("READER_BACKUP_DOCUMENT_INVALID")
+        projection = {key: row[key] for key in fields}
+        expected_hash = _digest(canonical_json_bytes(projection).rstrip(b"\n"))
+        if expected_hash != _hash(row.get("content_sha256")):
+            _fail("READER_BACKUP_DOCUMENT_HASH_INVALID")
+        documents[slug] = {**projection, "content_sha256": expected_hash}
+        ids.add(post_id)
+    if (
+        not article_slugs | policies | page_slugs <= set(documents)
+        or not set(documents) <= article_slugs | policies | READER_HUB_SLUGS
+    ):
+        _fail("READER_BACKUP_DOCUMENT_SET_INVALID")
+    if backup.get("schema") == "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1" and set(documents) != article_slugs | policies:
+        _fail("READER_BACKUP_DOCUMENT_SET_INVALID")
+    snapshot_hash = _digest(canonical_json_bytes(backup).rstrip(b"\n"))
+    environment = _identifier(readback.get("environment_id"))
+    if re.fullmatch(r"[a-f0-9]{8}-[a-f0-9]{12}", environment) is None:
+        _fail("RESTORATION_ENVIRONMENT_INVALID")
+    expected_readback = {
+        "schema": "RAOS_WORDPRESS_READER_PAGE_RESTORE_READBACK_V2",
+        "publication_profile": "local-scratch-restore-rehearsal",
+        "publication_authority": False,
+        "production_authority": False,
+        "scratch_only": True,
+        "temporary_environment": True,
+        "environment_id": environment,
+        "site_url": "http://scratch.wordpress.invalid",
+        "source_snapshot_sha256": snapshot_hash,
+        "original_id_set": sorted(ids),
+        "documents": documents,
+    }
+    if canonical_json_bytes(readback) != canonical_json_bytes(expected_readback):
+        _fail("READER_RESTORATION_READBACK_MISMATCH")
+    verified_at = receipt.get("verified_at")
+    _restoration_time(verified_at, observed_at)
+    expected_receipt = {
+        "schema": "RAOS_WORDPRESS_READER_PAGE_RESTORE_RECEIPT_V2",
+        "publication_profile": "local-scratch-restore-rehearsal",
+        "publication_authority": False,
+        "production_authority": False,
+        "scratch_only": True,
+        "temporary_environment": True,
+        "environment_id": environment,
+        "status": "SCRATCH_CONTENT_DOCUMENT_FIELDS_RESTORED",
+        "source_snapshot_sha256": snapshot_hash,
+        "readback_sha256": _digest(canonical_json_bytes(readback)),
+        "verified_document_count": len(documents),
+        "original_id_set": sorted(ids),
+        "selected_page_slugs": sorted(page_slugs),
+        "current_preview_modified": False,
+        "production_writes": False,
+        "incremental_preview_pass": False,
+        "not_restored": [
+            "revision_history",
+            "author_identity",
+            "dates",
+            "post_meta",
+            "theme",
+            "plugins",
+            "production_site_options",
+        ],
+        "verified_at": verified_at,
+    }
+    if canonical_json_bytes(receipt) != canonical_json_bytes(expected_receipt):
+        _fail("RESTORATION_RECEIPT_MISMATCH")
+    return expected_receipt
+
+
 def validate_scratch_backup_evidence_v1(
     *,
     backup_raw: bytes,
@@ -465,6 +618,7 @@ def validate_scratch_backup_evidence_v1(
     expected_article_slugs: frozenset[str],
     expected_backup_sha256: str,
     observed_at: datetime,
+    expected_page_slugs: frozenset[str] = frozenset(),
 ) -> dict[str, object]:
     """Replay private backup/readback bytes; certify stored fields only.
 
@@ -483,6 +637,15 @@ def validate_scratch_backup_evidence_v1(
     readback = _json_evidence(readback_raw, require_canonical=False)
     if canonical_json_bytes(backup) != canonical_json_bytes(expected_snapshot):
         _fail("BACKUP_SNAPSHOT_MISMATCH")
+    if expected_page_slugs:
+        return _reader_page_backup_evidence(
+            backup,
+            receipt,
+            readback,
+            article_slugs=expected_article_slugs,
+            page_slugs=expected_page_slugs,
+            observed_at=observed_at,
+        )
     verified_at = receipt.get("verified_at")
     _restoration_time(verified_at, observed_at)
     try:
@@ -519,6 +682,129 @@ def validate_scratch_backup_evidence_v1(
     }
 
 
+def _reader_page_theme_backup_evidence(
+    *,
+    snapshot: Mapping[str, object],
+    article_slugs: frozenset[str],
+    page_slugs: frozenset[str],
+    content_receipt_raw: bytes,
+    content_readback_raw: bytes,
+    baseline_package_raw: bytes,
+    candidate_package_raw: bytes,
+    theme_readback_raw: bytes,
+    receipt: Mapping[str, object],
+    observed_at: datetime,
+    expected_candidate_tree_sha256: str,
+) -> dict[str, object]:
+    """Three actual theme states, preserving every V2 baseline content document."""
+    content_receipt = _json_evidence(content_receipt_raw, require_canonical=False)
+    content = _reader_page_backup_evidence(
+        snapshot,
+        content_receipt,
+        _json_evidence(content_readback_raw, require_canonical=False),
+        article_slugs=article_slugs,
+        page_slugs=page_slugs,
+        observed_at=observed_at,
+    )
+    baseline = parse_theme_package(baseline_package_raw)
+    candidate = parse_theme_package(candidate_package_raw)
+    before, after = theme_tree_sha256(baseline), theme_tree_sha256(candidate)
+    deployment = _mapping(snapshot.get("deployment_status"))
+    theme = _mapping(deployment.get("theme"))
+    if (
+        deployment.get("schema") != "RAOS_WORDPRESS_DEPLOYMENT_BASELINE_SNAPSHOT_V1"
+        or deployment.get("source") != "BOUNDED_WORDPRESS_DEPLOYMENT_MCP"
+        or deployment.get("status") != "CAPTURED_READ_ONLY"
+        or theme.get("slug") != THEME_SLUG
+        or theme.get("active") is not True
+        or theme.get("tree_sha256") != before
+        or before == after
+        or after != _hash(expected_candidate_tree_sha256)
+    ):
+        _fail("THEME_RESTORATION_BINDING_INVALID")
+    fixed = {
+        "publication_profile": "local-scratch-theme-restore-rehearsal",
+        "publication_authority": False,
+        "production_authority": False,
+        "scratch_only": True,
+        "temporary_environment": True,
+        "environment_id": content["environment_id"],
+        "theme_slug": THEME_SLUG,
+        "site_url": "http://scratch.wordpress.invalid",
+        "operation": "SAME_BASENAME_FILES_ONLY_NO_ACTIVATION",
+        "source_snapshot_sha256": content["source_snapshot_sha256"],
+        "content_restore_receipt_sha256": _digest(content_receipt_raw),
+        "baseline_package_sha256": _digest(baseline_package_raw),
+        "candidate_package_sha256": _digest(candidate_package_raw),
+    }
+    readback = _json_evidence(theme_readback_raw, require_canonical=False)
+    fields = {**fixed, "schema": "RAOS_WORDPRESS_READER_PAGE_THEME_RESTORE_READBACK_V2"}
+    _mapping(readback, set(fields) | {"stages"})
+    if canonical_json_bytes(
+        {key: readback[key] for key in fields}
+    ) != canonical_json_bytes(fields):
+        _fail("THEME_RESTORATION_BINDING_INVALID")
+    stages = _list(readback["stages"])
+    if len(stages) != 3:
+        _fail("THEME_RESTORATION_STAGES_INVALID")
+    options: set[str] = set()
+    for raw, name, files in zip(
+        stages,
+        ("baseline_before", "candidate_installed", "baseline_restored"),
+        (baseline, candidate, baseline),
+        strict=True,
+    ):
+        stage = _mapping(
+            raw,
+            {
+                "stage",
+                "theme_tree_sha256",
+                "file_manifest",
+                "content_readback",
+                "wordpress_options_sha256",
+            },
+        )
+        if (
+            stage["stage"] != name
+            or stage["theme_tree_sha256"] != theme_tree_sha256(files)
+            or canonical_json_bytes(stage["file_manifest"])
+            != canonical_json_bytes(theme_manifest(files))
+        ):
+            _fail("THEME_RESTORATION_TREE_MISMATCH")
+        _reader_page_backup_evidence(
+            snapshot,
+            content_receipt,
+            _mapping(stage["content_readback"]),
+            article_slugs=article_slugs,
+            page_slugs=page_slugs,
+            observed_at=observed_at,
+        )
+        options.add(_hash(stage["wordpress_options_sha256"]))
+    if len(options) != 1:
+        _fail("THEME_RESTORATION_OPTIONS_CHANGED")
+    expected = {
+        **fixed,
+        "schema": "RAOS_WORDPRESS_READER_PAGE_THEME_RESTORE_RECEIPT_V2",
+        "status": "THEME_ROLLBACK_STORED_FIELDS_VERIFIED",
+        "readback_sha256": _digest(canonical_json_bytes(readback)),
+        "baseline_tree_sha256": before,
+        "candidate_tree_sha256": after,
+        "restored_tree_sha256": before,
+        "verified_document_count": content["verified_document_count"],
+        "selected_page_slugs": sorted(page_slugs),
+        "wordpress_options_unchanged": True,
+        "wordpress_options_sha256": next(iter(options)),
+        "activation_changed": False,
+        "current_preview_modified": False,
+        "production_writes": False,
+        "verified_noncontent_rollback_targets": ["theme"],
+        "verified_at": receipt["verified_at"],
+    }
+    if canonical_json_bytes(receipt) != canonical_json_bytes(expected):
+        _fail("THEME_RESTORATION_BINDING_INVALID")
+    return expected
+
+
 def validate_scratch_theme_backup_evidence_v1(
     *,
     snapshot: Mapping[str, object],
@@ -531,6 +817,7 @@ def validate_scratch_theme_backup_evidence_v1(
     theme_receipt_raw: bytes,
     expected_candidate_tree_sha256: str,
     observed_at: datetime,
+    expected_page_slugs: frozenset[str] = frozenset(),
 ) -> dict[str, object]:
     """Rehash actual theme bytes and replay all three states, never a Git-only PASS."""
     for raw in (
@@ -538,6 +825,8 @@ def validate_scratch_theme_backup_evidence_v1(
         candidate_package_raw,
         theme_readback_raw,
         theme_receipt_raw,
+        content_receipt_raw,
+        content_readback_raw,
     ):
         if type(raw) is not bytes or not 0 < len(raw) <= MAX_ARTIFACT_BYTES:
             _fail("RESTORATION_ARTIFACT_INVALID")
@@ -547,6 +836,20 @@ def validate_scratch_theme_backup_evidence_v1(
     if verified < _restoration_time(content_receipt.get("verified_at"), observed_at):
         _fail("RESTORATION_TIME_INVALID")
     try:
+        if expected_page_slugs:
+            return _reader_page_theme_backup_evidence(
+                snapshot=snapshot,
+                article_slugs=article_slugs,
+                page_slugs=expected_page_slugs,
+                content_receipt_raw=content_receipt_raw,
+                content_readback_raw=content_readback_raw,
+                baseline_package_raw=baseline_package_raw,
+                candidate_package_raw=candidate_package_raw,
+                theme_readback_raw=theme_readback_raw,
+                receipt=receipt,
+                observed_at=observed_at,
+                expected_candidate_tree_sha256=expected_candidate_tree_sha256,
+            )
         expected = build_scratch_theme_restoration(
             snapshot,
             article_slugs=article_slugs,
@@ -583,6 +886,7 @@ def _backup_checks(
     observed_at: datetime,
     required_noncontent_rollback_targets: tuple[str, ...],
     expected_artifact_hashes: Mapping[str, str],
+    expected_page_slugs: frozenset[str] = frozenset(),
 ) -> None:
     theme_fields: set[str] = (
         {
@@ -637,6 +941,7 @@ def _backup_checks(
         expected_article_slugs=expected_article_slugs,
         expected_backup_sha256=expected_backup_sha256,
         observed_at=observed_at,
+        expected_page_slugs=expected_page_slugs,
     )
     if (
         required_noncontent_rollback_targets
@@ -663,6 +968,7 @@ def _backup_checks(
                 expected_artifact_hashes.get("theme-tree")
             ),
             observed_at=observed_at,
+            expected_page_slugs=expected_page_slugs,
         )
 
 
@@ -1028,6 +1334,7 @@ def validate_verified_incremental_audit_v1(
                     observed_at=_time(proof["captured_at"]),
                     required_noncontent_rollback_targets=scope.required_noncontent_rollback_targets,
                     expected_artifact_hashes=expected_hashes,
+                    expected_page_slugs=frozenset(scope.selected_page_slugs),
                 )
             else:
                 contact_state = _checks(

@@ -19,6 +19,7 @@ from typing import Callable, Final, NoReturn, Protocol, TextIO, cast
 
 SOURCE_CLI_PATH: Final = Path(os.path.abspath(__file__))
 REPOSITORY_ROOT: Final = SOURCE_CLI_PATH.parent.parent
+OWNER_CHECKOUT: Final = Path("/home/minami/rakuten")
 OWNER_PYTHON: Final = (REPOSITORY_ROOT / ".venv/bin/python").as_posix()
 MANIFEST_RELATIVE: Final = (
     "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
@@ -1059,7 +1060,26 @@ def _bind_verified_source_documents(
     module: types.ModuleType,
     sources: dict[str, bytes],
     root_identity: RootIdentity,
+    *,
+    owner_checkout: Path | None = None,
 ) -> None:
+    # Contracts/code remain bound to the current worktree. Only this verified
+    # persistence capability may select the separately fixed evidence checkout.
+    if owner_checkout is not None and (
+        not isinstance(owner_checkout, Path) or owner_checkout != OWNER_CHECKOUT
+    ):
+        _fail_runtime()
+    _rebind_root(REPOSITORY_ROOT, root_identity)
+    evidence_root = REPOSITORY_ROOT if owner_checkout is None else OWNER_CHECKOUT
+    if owner_checkout is None:
+        evidence_identity = root_identity
+    else:
+        descriptor = _open_absolute_directory(evidence_root)
+        try:
+            observed = _safe_directory(descriptor)
+            evidence_identity = (observed.st_dev, observed.st_ino)
+        finally:
+            os.close(descriptor)
     verified = {relative: sources[relative] for relative in _TRACKED_SOURCE_PATHS}
     source_directory_value = getattr(module, "_source_directory", None)
     if not callable(source_directory_value):
@@ -1088,7 +1108,9 @@ def _bind_verified_source_documents(
         if not isinstance(repository_root, Path) or repository_root != REPOSITORY_ROOT:
             _fail_runtime()
         _rebind_root(REPOSITORY_ROOT, root_identity)
-        result = source_directory(repository_root)
+        _rebind_root(evidence_root, evidence_identity)
+        result = source_directory(evidence_root)
+        _rebind_root(evidence_root, evidence_identity)
         if not isinstance(result, Path):
             _fail_runtime()
         return result
@@ -1117,9 +1139,9 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="st1704_official_source_capture.py",
         description=(
-            "Capture exact allowlisted official HTML sources with read-only HTTPS. "
-            "There is no caller URL, credential, WordPress, Rakuten API, product "
-            "retrieval, publication, plugin, theme, or generic HTTP capability."
+            "Capture exact allowlisted official HTML, PDF and JSON documents "
+            "with read-only HTTPS. There is no caller URL, credential, WordPress, "
+            "Rakuten API, publication, plugin, theme, or generic HTTP capability."
         ),
         allow_abbrev=False,
     )
@@ -1128,6 +1150,12 @@ def _parser() -> argparse.ArgumentParser:
     source.add_argument("--source-ref", choices=SOURCE_REFS, required=True)
     article = commands.add_parser("capture-article", allow_abbrev=False)
     article.add_argument("--article-id", choices=ARTICLE_IDS, required=True)
+    for command in (source, article):
+        command.add_argument(
+            "--owner-checkout",
+            choices=(OWNER_CHECKOUT.as_posix(),),
+            help="Write evidence only to this fixed owner checkout; contracts stay in the current worktree.",
+        )
     return parser
 
 
@@ -1138,6 +1166,7 @@ def _execute(
     article_id: str | None,
     sources: dict[str, bytes],
     root_identity: RootIdentity,
+    owner_checkout: Path | None = None,
 ) -> dict[str, object]:
     if (
         type(root_identity) is not tuple
@@ -1148,20 +1177,27 @@ def _execute(
     _rebind_root(REPOSITORY_ROOT, root_identity)
     modules = _load_verified_modules(sources)
     capture = modules["raos.adapters.self_hosted_editorial_source_capture"]
-    _bind_verified_source_documents(capture, sources, root_identity)
+    _bind_verified_source_documents(
+        capture, sources, root_identity, owner_checkout=owner_checkout
+    )
     capture_source_ref = getattr(capture, "capture_source_ref", None)
     capture_article_sources = getattr(capture, "capture_article_sources", None)
     failure_type = getattr(capture, "OfficialSourceCaptureFailure", None)
     result_type = getattr(capture, "SourceCaptureResult", None)
+    source_directory = getattr(capture, "_source_directory", None)
     if (
         not callable(capture_source_ref)
         or not callable(capture_article_sources)
+        or not callable(source_directory)
         or not isinstance(failure_type, type)
         or not isinstance(result_type, type)
     ):
         _fail_runtime()
     results_value: object
     try:
+        if owner_checkout is not None:
+            # Preserve STORE_UNSAFE reporting and refuse before the first GET.
+            source_directory(REPOSITORY_ROOT)
         if (
             command == "capture-source"
             and source_ref in SOURCE_REFS
@@ -1276,6 +1312,11 @@ def main(argv: list[str] | None = None) -> int:
             article_id=getattr(arguments, "article_id", None),
             sources=sources,
             root_identity=root_identity,
+            owner_checkout=(
+                Path(arguments.owner_checkout)
+                if arguments.owner_checkout is not None
+                else None
+            ),
         )
     except _RuntimeFailure:
         _refusal(arguments, "OFFICIAL_SOURCE_CAPTURE_RUNTIME_INVALID")

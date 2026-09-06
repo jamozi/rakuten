@@ -15,6 +15,7 @@ from raos.application.editorial.local_scratch_restore_v1 import (
     ScratchRestoration,
     build_scratch_restoration,
     record,
+    reader_page_preparation,
     verify_scratch_restoration,
 )
 from raos.application.editorial.verified_incremental_v1 import (
@@ -149,15 +150,30 @@ def build_scratch_theme_restoration(
     content_readback_raw: bytes,
     baseline_package_raw: bytes,
     candidate_package_raw: bytes,
+    selected_page_slugs: frozenset[str] = frozenset(),
 ) -> ScratchThemeRestoration:
     receipt = json_document(content_receipt_raw)
     environment_id = receipt.get("environment_id")
     if type(environment_id) is not str:
         fail("SCRATCH_THEME_RESTORE_INVALID")
+    preparation_hash = (
+        digest(
+            canonical(
+                reader_page_preparation(
+                    snapshot,
+                    article_slugs=article_slugs,
+                    selected_page_slugs=selected_page_slugs,
+                )
+            )
+        )
+        if selected_page_slugs
+        else validate_hash(receipt.get("source_preparation_sha256"))
+    )
     content = build_scratch_restoration(
         snapshot,
         article_slugs=article_slugs,
-        preparation_sha256=validate_hash(receipt.get("source_preparation_sha256")),
+        preparation_sha256=preparation_hash,
+        selected_page_slugs=selected_page_slugs,
         environment_id=environment_id,
     )
     expected_receipt = verify_scratch_restoration(
@@ -202,6 +218,16 @@ def build_scratch_theme_restoration(
             "operation": "SAME_BASENAME_FILES_ONLY_NO_ACTIVATION",
         }
     )
+    if selected_page_slugs:
+        reader_preparation = json_document(preparation)
+        reader_preparation["schema"] = (
+            "RAOS_WORDPRESS_READER_PAGE_THEME_RESTORE_PREPARATION_V2"
+        )
+        reader_preparation["selected_page_slugs"] = sorted(selected_page_slugs)
+        reader_preparation["verified_document_count"] = expected_receipt[
+            "verified_document_count"
+        ]
+        preparation = canonical(reader_preparation)
     return ScratchThemeRestoration(
         preparation,
         content,
@@ -229,6 +255,23 @@ def verify_scratch_theme_restoration(
         "site_url": "http://scratch.wordpress.invalid",
         "operation": "SAME_BASENAME_FILES_ONLY_NO_ACTIVATION",
     }
+    reader_mode = (
+        preparation["schema"]
+        == "RAOS_WORDPRESS_READER_PAGE_THEME_RESTORE_PREPARATION_V2"
+    )
+    if reader_mode:
+        fixed.pop("preparation_sha256")
+        fixed.update(
+            {
+                "schema": "RAOS_WORDPRESS_READER_PAGE_THEME_RESTORE_READBACK_V2",
+                "source_snapshot_sha256": preparation["source_snapshot_sha256"],
+                "content_restore_receipt_sha256": preparation[
+                    "content_restore_receipt_sha256"
+                ],
+                "baseline_package_sha256": preparation["baseline_package_sha256"],
+                "candidate_package_sha256": preparation["candidate_package_sha256"],
+            }
+        )
     if set(readback) != set(fixed) | {"stages"} or canonical(
         {key: readback[key] for key in fixed}
     ) != canonical(fixed):
@@ -266,6 +309,24 @@ def verify_scratch_theme_restoration(
         option_hashes.add(validate_hash(stage["wordpress_options_sha256"]))
     if len(option_hashes) != 1:
         fail("SCRATCH_THEME_OPTIONS_CHANGED")
+    if reader_mode:
+        return {
+            **fixed,
+            "schema": "RAOS_WORDPRESS_READER_PAGE_THEME_RESTORE_RECEIPT_V2",
+            "status": "THEME_ROLLBACK_STORED_FIELDS_VERIFIED",
+            "readback_sha256": digest(canonical(readback)),
+            "baseline_tree_sha256": preparation["baseline_tree_sha256"],
+            "candidate_tree_sha256": preparation["candidate_tree_sha256"],
+            "restored_tree_sha256": preparation["baseline_tree_sha256"],
+            "verified_document_count": preparation["verified_document_count"],
+            "selected_page_slugs": preparation["selected_page_slugs"],
+            "wordpress_options_unchanged": True,
+            "wordpress_options_sha256": next(iter(option_hashes)),
+            "activation_changed": False,
+            "current_preview_modified": False,
+            "production_writes": False,
+            "verified_noncontent_rollback_targets": ["theme"],
+        }
     return {
         "schema": "RAOS_WORDPRESS_SCRATCH_THEME_RESTORE_RECEIPT_V1",
         "publication_profile": PROFILE,

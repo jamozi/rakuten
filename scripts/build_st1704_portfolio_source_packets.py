@@ -22,6 +22,7 @@ ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1"
 REGISTRY_PATH: Final = SLICE / "sources/source-registry.v1.json"
 LOCATOR_PATH: Final = SLICE / "sources/source-locator-contract.v1.json"
+READER_EXPANSIONS_PATH: Final = SLICE / "sources/reader-release-locator-expansions.v1.json"
 PORTFOLIO_PATH: Final = (
     ROOT / "changes/editorial-portfolio-v2/editorial-portfolio.v2.json"
 )
@@ -3231,11 +3232,33 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         "約6000回の充放電サイクル",
     ),
     "SRC-JACKERY-1000-NEW-V3-LAUNCH": (
-        "2026年7月24日（金）より、Jackery人気モデルの「1000 New」より進化した「Jackery ポータブル電源 1000 New V3」を発売いたします。",
-        "AC定格出力1500W（瞬間最大3000W）・容量1024Wh",
-        "重さ  | 10.6kg  | 10.8kg",
-        "サイズ  | 314x201x234mm  | 327x224x247mm",
-        "発売日：2026年7月24日（金）11時～",
+        '<strong>ポータブル電源・ソーラーパネルの世界的リーディングカンパニー・Jackery（ジャクリ）の日本法人である株式会社Jackery Japan（本社：東'
+        '京都中央区）は、2026年7月24日（金）より、Jackery人気モデルの「1000 New」より進化した「Jackery ポータブル電源 1000 New V3」'
+        'を発売いたします。',
+        '<p>AC定格出力1500W（瞬間最大3000W）・容量1024Wh',
+        '<tr style="height: 35.5938px;">\n'
+        '<td colspan="1" rowspan="1" style="height: 35.5938px;">\n'
+        '<p>重さ</p>\n'
+        '</td>\n'
+        '<td colspan="1" rowspan="1" style="height: 35.5938px;">\n'
+        '<p>10.6kg</p>\n'
+        '</td>\n'
+        '<td colspan="1" rowspan="1" style="height: 35.5938px;">\n'
+        '<p>10.8kg</p>\n'
+        '</td>\n'
+        '</tr>',
+        '<tr style="height: 35.5938px;">\n'
+        '<td colspan="1" rowspan="1" style="height: 35.5938px;">\n'
+        '<p>サイズ</p>\n'
+        '</td>\n'
+        '<td colspan="1" rowspan="1" style="height: 35.5938px;">\n'
+        '<p>314x201x234mm</p>\n'
+        '</td>\n'
+        '<td colspan="1" rowspan="1" style="height: 35.5938px;">\n'
+        '<p>327x224x247mm</p>\n'
+        '</td>\n'
+        '</tr>',
+        '<p>発売日：2026年7月24日（金）11時～',
     ),
     "SRC-DJI-POWER-1000-V2-STORE": (
         "DJI Power 1000 V2",
@@ -3245,11 +3268,11 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         "最大2600Wの連続出力",
     ),
     "SRC-DJI-POWER-1000-V2-SPECS": (
-        "DYM1000V2L/DYM1000V2H",
+        '<div class="detailed-parameter-value">DYM1000V2L<br>DYM1000V2H</div>',
         "1024 Wh",
         "約14.2 kg",
         "448×225×230 mm（長さ×幅×高さ）",
-        "4000サイクル以降は、80%以上の電池容量を維持",
+        '<div class="detailed-parameter-value">4000サイクル以降は、80%以上のバッテリー容量を維持します。',
     ),
     "SRC-JACKERY-500-NEW-MANUAL": (
         "JE-500A",
@@ -3705,11 +3728,25 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         "8way全自動ドック搭載。",
     ),
     "SRC-EUFY-OMNI-E25-T2353": (
-        "Eufy Robot Vacuum Omni E25",
-        "約32.7 x 34.6 x 11.1cm",
-        "約37.0 x 46.2 x 43.7cm",
-        "水拭きしながらモップ洗浄するHydroJet システムを搭載で常にモップを清潔に保ちます。",
-        "全自動クリーニングステーションで、ゴミ収集、モップ洗浄、温風乾燥、洗剤の自動投入まで全て自動で完結。",
+        '<h1 id="product-title" class="product-content-title">Eufy Robot Vacuum Omni E25',
+        '<tr>\n'
+        '                  <!-- prettier-ignore -->\n'
+        '                  <td class="product-specs-heading">\n'
+        '                    ロボット掃除機<br>本体サイズ\n'
+        '                  </td>\n'
+        '                  <td>約32.7 × 34.6 × 11.1cm</td>\n'
+        '                </tr>',
+        '<tr>\n'
+        '                  <!-- prettier-ignore -->\n'
+        '                  <td class="product-specs-heading">\n'
+        '                    ステーション<br>サイズ\n'
+        '                  </td>\n'
+        '                  <td>約37.0 x 46.2 x 43.7cm</td>\n'
+        '                </tr>',
+        '<span class="a-list-item">約29cmの幅広のローラーモップで、約1.5kgの圧力で「押して拭く」ことでこびりついたしつこい汚れも徹底的に綺'
+        '麗に。水拭きしながらモップ洗浄するHydroJet システムを搭載で常にモップを清潔に保ちます。',
+        '<span class="a-list-item">ブラシに絡まった毛を自動で除去するDuoSpiralブラシを搭載。ブラシを逆回転させ毛を中央に集め、分割されたブ'
+        'ラシの隙間から毛を吸い込むことで、メンテナンスの負担を軽減。全自動クリーニングステーションで、ゴミ収集、モップ洗浄、温風乾燥、洗剤の自動投入まで全て自動で完結。',
     ),
     "SRC-DREAME-X50-ULTRA": (
         "Dreame X50 Ultra",
@@ -3732,11 +3769,15 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         "容量 28 L",
     ),
     "SRC-SAMSONITE-AUDRINA-SPINNER45": (
-        "オードリナ スピナー45",
+        '<h2 class="product-collection">オードリナ</h2>\n'
+        '\n'
+        '                                    <h2 class="product-name">スピナー45</h2>',
         '<span class="product-dimension-value">47.5 x 37.5 x 24.0</span>',
         '<span class="product-volume-value">25.5</span>',
-        '<span class="product-weight-value"> 2.29</span>',
-        "UB8*09001",
+        '<span class="product-weight-value">2.29</span>',
+        '<div class="information-table-value product-sku">\n'
+        '                    <span class="value">UB8*09001</span>\n'
+        '                </div>',
     ),
     "SRC-MUJI-HARD-CARRY-20L": (
         "バーを自由に調節できる　ハードキャリーケース　（２０Ｌ）",
@@ -3819,10 +3860,30 @@ NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
         '"available":true',
     ),
     "SRC-BLUETTI-AORA30-V2-DIMENSIONS": (
-        "BLUETTI AORA 30 V2：重量4.3kg、サイズ250×178×167.5mm。",
-        "AORA 30 V2：3,000回以上の充放電に対応。8～10年の長寿命を実現。保証期間も5年",
-        "容量  | 288Wh",
-        "定格出力  | 600W",
+        '<li>BLUETTI AORA 30 V2：重量4.3kg、サイズ250×178×167.5mm。',
+        '<li>AORA 30 V2：3,000回以上の充放電に対応。8～10年の長寿命を実現。保証期間も5年',
+        '<tr>\n'
+        '<td>\n'
+        '<p>容量</p>\n'
+        '</td>\n'
+        '<td>\n'
+        '<p>288Wh</p>\n'
+        '</td>\n'
+        '<td>\n'
+        '<p>268Wh</p>\n'
+        '</td>\n'
+        '</tr>',
+        '<tr>\n'
+        '<td>\n'
+        '<p>定格出力</p>\n'
+        '</td>\n'
+        '<td>\n'
+        '<p>600W</p>\n'
+        '</td>\n'
+        '<td>\n'
+        '<p>600W</p>\n'
+        '</td>\n'
+        '</tr>',
     ),
     "SRC-BLUETTI-AORA100-V2": (
         "<title>\n      AORA 100 V2 | インディゴ\n      \n      \n      "
@@ -5663,6 +5724,51 @@ def _normalize_generated_claim_field_order(registry: dict[str, object]) -> None:
                     claim[field] = values[field]
 
 
+def _apply_reviewed_locator_expansions(registry: dict[str, object], locator: dict[str, object]) -> None:
+    # Generator authoring, never a fresh source verification receipt. Capture
+    # still requires an actual retained official body and exactly one match.
+    authored = json.loads(READER_EXPANSIONS_PATH.read_text(encoding="utf-8"))
+    if (authored.get("schema") != "RAOS_READER_RELEASE_LOCATOR_EXPANSIONS_V1"
+        or authored.get("publication_authority") is not False
+        or type(authored.get("expansions")) is not list):
+        raise ValueError("reader locator expansion document invalid")
+    claims = {
+        claim["claim_id"]: claim
+        for packet in registry["source_packets"] for claim in packet["claims"]
+    }
+    sources = {row["source_ref"]: row for row in locator["sources"]}
+    seen = set()
+    for entry in authored["expansions"]:
+        ref, before, after = entry["source_ref"], entry["before"], entry["after"]
+        key = (ref, before)
+        if (key in seen or ref not in sources or not isinstance(before, str)
+            or not isinstance(after, str) or not before or before not in after
+            or len(after) <= len(before) or len(after.encode()) > 131072
+            or re.fullmatch(r"[a-f0-9]{64}", entry["body_sha256"]) is None):
+            raise ValueError("reader locator expansion is not a strict contextual extension")
+        seen.add(key)
+        bindings = entry["claim_bindings"]
+        expected = {row["claim_id"] for row in bindings}
+        if not expected or len(expected) != len(bindings):
+            raise ValueError("reader locator claim bindings invalid")
+        observed = set()
+        for item in sources[ref]["locators"]:
+            fragments = item["exact_utf8_fragments"]
+            if before not in fragments and after not in fragments:
+                continue
+            claim_id = item["claim_id"]
+            if claim_id not in expected:
+                raise ValueError("reader locator expansion scope changed")
+            item["exact_utf8_fragments"] = [after if fragment == before else fragment for fragment in fragments]
+            observed.add(claim_id)
+        if observed != expected:
+            raise ValueError("reader locator expansion fragment absent")
+        for binding in bindings:
+            claim = claims.get(binding["claim_id"])
+            if claim is None or hashlib.sha256(claim["statement"].encode()).hexdigest() != binding["claim_statement_sha256"]:
+                raise ValueError("reader locator claim statement changed")
+
+
 def _documents() -> tuple[bytes, bytes]:
     registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
     locator = json.loads(LOCATOR_PATH.read_text(encoding="utf-8"))
@@ -6000,6 +6106,7 @@ def _documents() -> tuple[bytes, bytes]:
         **locator["locator_policy"],
         "pdf_fragment_match": "PINNED_BODY_SHA256_PLUS_REVIEWED_EXTRACTED_PAGE_TEXT",
     }
+    _apply_reviewed_locator_expansions(registry, locator)
     _validate_locator_text_fragments(locator)
     locator["source_registry_sha256"] = _canonical_sha256(registry)
 

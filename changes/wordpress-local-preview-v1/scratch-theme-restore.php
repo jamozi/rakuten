@@ -76,6 +76,7 @@ function theme_restore_manifest(string $directory): array {
     ksort($files, SORT_STRING); return array_values($files);
 }
 function theme_restore_content(array $seed, string $seed_hash, string $environment): array {
+    $reader_mode = ($seed['schema'] ?? null) === 'RAOS_WORDPRESS_READER_PAGE_RESTORE_SEED_V2';
     $documents = array(); $ids = array();
     foreach ($seed['documents'] as $slug => $row) {
         clean_post_cache($row['production_id']); $post = get_post($row['production_id']);
@@ -83,7 +84,12 @@ function theme_restore_content(array $seed, string $seed_hash, string $environme
         $ids[] = (int) $post->ID; $dates = array();
         foreach (array('date', 'date_gmt', 'modified', 'modified_gmt') as $field) { $dates[$field] = $post->{'post_' . $field}; }
         $taxonomy_ids = array();
-        foreach ($row['taxonomy_ids'] as $taxonomy => $_expected) {
+        $read_taxonomies = $row['taxonomy_ids'];
+        if ($reader_mode) {
+            $read_taxonomies = array_fill_keys(get_object_taxonomies($post->post_type, 'names'), array());
+            if (array_diff(array_keys($read_taxonomies), array_keys($row['taxonomy_ids'])) || array_diff(array_keys($row['taxonomy_ids']), array_keys($read_taxonomies))) { theme_restore_abort('RAOS_SCRATCH_THEME_TAXONOMY_MISMATCH'); }
+        }
+        foreach ($read_taxonomies as $taxonomy => $_expected) {
             $found = wp_get_object_terms($post->ID, $taxonomy, array('fields' => 'ids'));
             if (is_wp_error($found)) { theme_restore_abort('RAOS_SCRATCH_THEME_CONTENT_INVALID'); }
             $taxonomy_ids[$taxonomy] = array_map('intval', $found); sort($taxonomy_ids[$taxonomy]);
@@ -97,13 +103,22 @@ function theme_restore_content(array $seed, string $seed_hash, string $environme
             usort($terms[$taxonomy], static function (array $a, array $b): int { return $a['id'] <=> $b['id']; });
         }
         $projection = array('schema' => 'ContentDocumentV1', 'id' => (int) $post->ID, 'slug' => $post->post_name, 'post_type' => $post->post_type, 'status' => $post->post_status, 'title' => $post->post_title, 'excerpt' => $post->post_excerpt, 'block_markup' => $post->post_content, 'taxonomies' => $taxonomy_ids, 'media_ids' => array());
+        if ($reader_mode) {
+            if (get_post_thumbnail_id($post->ID) > 0 || count(get_posts(array('post_type' => 'attachment', 'post_status' => 'any', 'numberposts' => 1)))) { theme_restore_abort('RAOS_SCRATCH_THEME_MEDIA_UNEXPECTED'); }
+            $projection['content_sha256'] = hash('sha256', theme_restore_json($projection));
+            $documents[$slug] = $projection;
+            continue;
+        }
         $documents[$slug] = array('id' => (int) $post->ID, 'slug' => $post->post_name, 'post_type' => $post->post_type, 'status' => $post->post_status,
             'title_sha256' => hash('sha256', $post->post_title), 'excerpt_sha256' => hash('sha256', $post->post_excerpt), 'body_sha256' => hash('sha256', $post->post_content), 'dates' => $dates,
             'taxonomy_ids' => $taxonomy_ids, 'taxonomies' => $terms, 'media_ids' => array(), 'content_sha256' => hash('sha256', theme_restore_json($projection)));
     }
     sort($ids);
     $actual = array_map('intval', get_posts(array('post_type' => array('post', 'page'), 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids'))); sort($actual);
-    if ($actual !== $ids || count($ids) !== 14) { theme_restore_abort('RAOS_SCRATCH_THEME_CONTENT_SET_INVALID'); }
+    if ($actual !== $ids || ($reader_mode ? count($ids) !== count($seed['documents']) : count($ids) !== 14)) { theme_restore_abort('RAOS_SCRATCH_THEME_CONTENT_SET_INVALID'); }
+    if ($reader_mode) {
+        return array('schema' => 'RAOS_WORDPRESS_READER_PAGE_RESTORE_READBACK_V2', 'publication_profile' => 'local-scratch-restore-rehearsal', 'publication_authority' => false, 'production_authority' => false, 'scratch_only' => true, 'temporary_environment' => true, 'environment_id' => $environment, 'site_url' => 'http://scratch.wordpress.invalid', 'source_snapshot_sha256' => $seed['source_snapshot_sha256'], 'original_id_set' => $actual, 'documents' => $documents);
+    }
     return array('schema' => 'RAOS_WORDPRESS_SCRATCH_RESTORE_READBACK_V1', 'publication_profile' => 'local-scratch-restore-rehearsal', 'publication_authority' => false, 'production_authority' => false, 'scratch_only' => true, 'temporary_environment' => true, 'environment_id' => $environment, 'seed_sha256' => $seed_hash, 'site_url' => 'http://scratch.wordpress.invalid', 'original_id_set' => $actual, 'documents' => $documents);
 }
 function theme_restore_stage(string $name, string $directory, array $seed, string $seed_hash, string $environment): array {
@@ -123,14 +138,23 @@ if (is_link($private) || realpath($private) !== $private || is_link($root) || re
 $raw = theme_restore_read($root . '/preparation.v1.json'); $preparation = json_decode($raw, true, 32);
 $environment = getenv('RAOS_SCRATCH_RESTORE_ENVIRONMENT'); $seed_raw = theme_restore_read($private . '/scratch-seed.v1.json');
 $seed_hash = hash('sha256', $seed_raw); $seed = json_decode($seed_raw, true, 32);
+$reader_mode = is_array($seed) && ($seed['schema'] ?? null) === 'RAOS_WORDPRESS_READER_PAGE_RESTORE_SEED_V2';
+if ($reader_mode) {
+    $snapshot = json_decode(theme_restore_read($private . '/source-snapshot.v1.json'));
+    if (! is_array($seed['documents'] ?? null) || count($seed['documents']) < 14 || count($seed['documents']) > 29
+        || ($preparation['selected_page_slugs'] ?? null) !== ($seed['selected_page_slugs'] ?? null)
+        || ($preparation['verified_document_count'] ?? null) !== count($seed['documents'])
+        || ! is_object($snapshot) || hash('sha256', theme_restore_json($snapshot)) !== ($seed['source_snapshot_sha256'] ?? null)
+        || ($preparation['source_snapshot_sha256'] ?? null) !== $seed['source_snapshot_sha256']) { theme_restore_abort('RAOS_SCRATCH_THEME_READER_SCOPE_INVALID'); }
+}
 if (! is_array($preparation) || ! is_array($seed) || ! is_string($environment) || preg_match('/\A[a-f0-9]{8}-[a-f0-9]{12}\z/D', $environment) !== 1
     || getenv('RAOS_SCRATCH_THEME_PREPARATION_SHA256') !== hash('sha256', $raw)
-    || ($preparation['schema'] ?? null) !== 'RAOS_WORDPRESS_SCRATCH_THEME_RESTORE_PREPARATION_V1'
+    || ($preparation['schema'] ?? null) !== ($reader_mode ? 'RAOS_WORDPRESS_READER_PAGE_THEME_RESTORE_PREPARATION_V2' : 'RAOS_WORDPRESS_SCRATCH_THEME_RESTORE_PREPARATION_V1')
     || ($preparation['publication_profile'] ?? null) !== 'local-scratch-theme-restore-rehearsal' || ($preparation['publication_authority'] ?? null) !== false
     || ($preparation['production_authority'] ?? null) !== false || ($preparation['scratch_only'] ?? null) !== true
     || ($preparation['environment_id'] ?? null) !== $environment || ($seed['environment_id'] ?? null) !== $environment
     || ($preparation['content_seed_sha256'] ?? null) !== $seed_hash || get_option('raos_scratch_restore_seed_hash') !== $seed_hash
-    || getenv('RAOS_SCRATCH_SEED_SHA256') !== $seed_hash || count($seed['documents'] ?? array()) !== 14
+    || getenv('RAOS_SCRATCH_SEED_SHA256') !== $seed_hash || (! $reader_mode && count($seed['documents'] ?? array()) !== 14)
     || ($preparation['operation'] ?? null) !== 'SAME_BASENAME_FILES_ONLY_NO_ACTIVATION'
     || ($preparation['theme_slug'] ?? null) !== 'kurashinoshirube-child'
     || hash('sha256', theme_restore_read($private . '/scratch-restoration-receipt.v1.json')) !== ($preparation['content_restore_receipt_sha256'] ?? null)) { theme_restore_abort('RAOS_SCRATCH_THEME_PREPARATION_INVALID'); }
@@ -163,6 +187,13 @@ $readback = array('schema' => 'RAOS_WORDPRESS_SCRATCH_THEME_RESTORE_READBACK_V1'
     'publication_authority' => false, 'production_authority' => false, 'scratch_only' => true, 'temporary_environment' => true, 'environment_id' => $environment,
     'preparation_sha256' => hash('sha256', $raw), 'theme_slug' => 'kurashinoshirube-child', 'site_url' => 'http://scratch.wordpress.invalid',
     'operation' => 'SAME_BASENAME_FILES_ONLY_NO_ACTIVATION', 'stages' => $stages);
+if ($reader_mode) {
+    $readback['schema'] = 'RAOS_WORDPRESS_READER_PAGE_THEME_RESTORE_READBACK_V2';
+    unset($readback['preparation_sha256']);
+    foreach (array('source_snapshot_sha256', 'content_restore_receipt_sha256', 'baseline_package_sha256', 'candidate_package_sha256') as $field) {
+        $readback[$field] = $preparation[$field];
+    }
+}
 $handle = fopen($destination, 'x'); $output = theme_restore_json($readback) . "\n";
 if (! is_resource($handle) || ! chmod($destination, 0600) || fwrite($handle, $output) !== strlen($output)) { theme_restore_abort('RAOS_SCRATCH_THEME_READBACK_WRITE_FAILED'); }
 fclose($handle); WP_CLI::success('RAOS_SCRATCH_THEME_BASELINE_RESTORED_READBACK_CAPTURED');

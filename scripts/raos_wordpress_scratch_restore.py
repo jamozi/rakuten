@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 import os
 from pathlib import Path
@@ -21,10 +22,12 @@ for path in (ROOT, ROOT / "python"):
 from scripts import raos_wordpress_local_restore as local_restore  # noqa: E402
 from raos.application.editorial.local_scratch_restore_v1 import (  # noqa: E402
     build_scratch_restoration,
+    reader_page_preparation,
     verify_scratch_restoration,
 )
 from raos.application.editorial.verified_incremental_v1 import (  # noqa: E402
     IncrementalPublicationFailure,
+    READER_PAGE_SLUGS,
     canonical,
     digest,
     fail,
@@ -63,14 +66,87 @@ def run_command(
     return result
 
 
-def execute(preparation_sha256: str) -> Path:
-    validate_hash(preparation_sha256)
-    _, baseline = local_restore.prepared_restoration(preparation_sha256)
-    snapshot_name = baseline.preparation["snapshot_name"]
-    if type(snapshot_name) is not str:
-        fail("SCRATCH_SNAPSHOT_INVALID")
+def parse_reader_pages(value: str) -> frozenset[str]:
+    rows = value.split(",")
+    if (
+        not rows
+        or any(slug not in READER_PAGE_SLUGS for slug in rows)
+        or len(rows) != len(set(rows))
+    ):
+        fail("SCRATCH_READER_SCOPE_INVALID")
+    return frozenset(rows)
+
+
+def prepare_reader(snapshot_name: str, pages: frozenset[str]) -> Path:
     snapshot_root = local_restore.owner_root() / "incremental-snapshots"
     snapshot = read_private_json(snapshot_root, snapshot_name)
+    preparation = reader_page_preparation(
+        snapshot,
+        article_slugs=local_restore.production_article_slugs(),
+        selected_page_slugs=pages,
+    )
+    if preparation["snapshot_name"] != snapshot_name:
+        fail("SCRATCH_READER_SNAPSHOT_NAME_INVALID")
+    binding = canonical(preparation)
+    target = local_restore.owner_root() / (
+        "reader-scratch-preparation-" + digest(binding)
+    )
+    write_private_bytes(
+        target,
+        "source-snapshot.v1.json",
+        read_private_bytes(snapshot_root, snapshot_name),
+    )
+    write_private_bytes(target, "preparation-binding.v2.json", binding)
+    return target
+
+
+def prepared_reader_restoration(
+    preparation_hash: str, pages: frozenset[str]
+) -> tuple[Mapping[str, object], bytes]:
+    target = local_restore.owner_root() / (
+        "reader-scratch-preparation-" + validate_hash(preparation_hash)
+    )
+    binding = read_private_json(target, "preparation-binding.v2.json")
+    snapshot = read_private_json(target, "source-snapshot.v1.json")
+    expected = reader_page_preparation(
+        snapshot,
+        article_slugs=local_restore.production_article_slugs(),
+        selected_page_slugs=pages,
+    )
+    if (
+        canonical(binding) != canonical(expected)
+        or digest(canonical(binding)) != preparation_hash
+    ):
+        fail("SCRATCH_READER_PREPARATION_CHANGED")
+    raw = read_private_bytes(target, "source-snapshot.v1.json")
+    source_name = expected["snapshot_name"]
+    if (
+        type(source_name) is not str
+        or read_private_bytes(
+            local_restore.owner_root() / "incremental-snapshots", source_name
+        )
+        != raw
+    ):
+        fail("SCRATCH_READER_SNAPSHOT_CHANGED")
+    return snapshot, raw
+
+
+def execute(
+    preparation_sha256: str, *, selected_page_slugs: frozenset[str] = frozenset()
+) -> Path:
+    validate_hash(preparation_sha256)
+    if selected_page_slugs:
+        snapshot, snapshot_raw = prepared_reader_restoration(
+            preparation_sha256, selected_page_slugs
+        )
+    else:
+        _, baseline = local_restore.prepared_restoration(preparation_sha256)
+        snapshot_name = baseline.preparation["snapshot_name"]
+        if type(snapshot_name) is not str:
+            fail("SCRATCH_SNAPSHOT_INVALID")
+        snapshot_root = local_restore.owner_root() / "incremental-snapshots"
+        snapshot = read_private_json(snapshot_root, snapshot_name)
+        snapshot_raw = read_private_bytes(snapshot_root, snapshot_name)
     environment_id = preparation_sha256[:8] + "-" + secrets.token_hex(6)
     project = "raos-wp-scratch-" + environment_id
     private = local_restore.owner_root() / ("scratch-restore-" + environment_id)
@@ -81,6 +157,7 @@ def execute(preparation_sha256: str) -> Path:
         article_slugs=local_restore.production_article_slugs(),
         preparation_sha256=preparation_sha256,
         environment_id=environment_id,
+        selected_page_slugs=selected_page_slugs,
     )
     admin_password = secrets.token_hex(32)
     credentials = {
@@ -107,7 +184,7 @@ def execute(preparation_sha256: str) -> Path:
     write_private_bytes(
         private,
         "source-snapshot.v1.json",
-        read_private_bytes(snapshot_root, snapshot_name),
+        snapshot_raw,
     )
     write_private_bytes(private, "scratch-seed.v1.json", expected.seed)
     for slug, body in expected.bodies.items():
@@ -188,7 +265,7 @@ def execute(preparation_sha256: str) -> Path:
             input_bytes=(admin_password + "\n").encode(),
         )
         print(
-            "Scratch restore: importing the fourteen backed-up original documents",
+            f"Scratch restore: importing {len(snapshot['documents'])} backed-up original documents",
             flush=True,
         )
         run_command(
@@ -203,7 +280,8 @@ def execute(preparation_sha256: str) -> Path:
         )
         verified = True
         print(
-            "Scratch restore: 14/14 original IDs and stored fields verified", flush=True
+            f"Scratch restore: {receipt['verified_document_count']} original IDs and stored fields verified",
+            flush=True,
         )
     finally:
         if started:
@@ -237,12 +315,51 @@ def execute(preparation_sha256: str) -> Path:
     return private
 
 
-def main() -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(allow_abbrev=False)
-    parser.add_argument("--preparation-sha256", required=True)
-    arguments = parser.parse_args()
+    parser.add_argument("--preparation-sha256")
+    parser.add_argument("--snapshot-name")
+    parser.add_argument(
+        "--reader-pages",
+        help="Explicit comma-separated V2 candidate pages; no local guides",
+    )
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument(
+        "--prepare-only",
+        action="store_true",
+        help="Save V2 inputs only; no Docker or receipt",
+    )
+    modes.add_argument(
+        "--check-inputs",
+        action="store_true",
+        help="Recheck frozen inputs only; no Docker or receipt",
+    )
+    arguments = parser.parse_args(argv)
     try:
-        private = execute(arguments.preparation_sha256)
+        pages = (
+            parse_reader_pages(arguments.reader_pages)
+            if arguments.reader_pages is not None
+            else frozenset()
+        )
+        if arguments.prepare_only:
+            if not pages or not arguments.snapshot_name or arguments.preparation_sha256:
+                fail("SCRATCH_READER_ARGUMENTS_INVALID")
+            private = prepare_reader(arguments.snapshot_name, pages)
+            print(
+                "V2 scratch inputs prepared; restoration NOT_EXECUTED; authority false"
+            )
+            print("Private preparation: " + str(private))
+            return 0
+        if not arguments.preparation_sha256 or arguments.snapshot_name:
+            fail("SCRATCH_ARGUMENTS_INVALID")
+        if arguments.check_inputs:
+            if pages:
+                prepared_reader_restoration(arguments.preparation_sha256, pages)
+            else:
+                local_restore.prepared_restoration(arguments.preparation_sha256)
+            print("Scratch inputs VERIFIED; restoration NOT_EXECUTED; authority false")
+            return 0
+        private = execute(arguments.preparation_sha256, selected_page_slugs=pages)
         print(f"Private scratch receipt and backup: {private}")
         print(
             "Scratch containers stopped; dedicated volumes retained. Existing preview and production unchanged."

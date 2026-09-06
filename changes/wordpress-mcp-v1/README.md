@@ -15,8 +15,8 @@ There are exactly two project MCP servers:
    `@modelcontextprotocol/sdk@1.30.0`, over stdio.
 
 The WordPress plugin requires WordPress 7.1.x and exactly MCP Adapter 0.6.1.
-Abilities 1.3.1 is bound to runtime revision
-`c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472`;
+Abilities 1.3.2 is bound to runtime revision
+`b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc`;
 the entrypoint and every critical class must report that exact identity.
 It disables MCP Adapter's generic default server and exposes only the nine
 tools listed in `contracts/wordpress-mcp.v1.json`. The local bridge exposes only
@@ -37,7 +37,7 @@ the build or tests:
    `23cb53e0b82f39238eec1c38cb055e28aa30fa7c`).
 2. Run `make -C changes/wordpress-mcp-v1 plugin-package`, verify the hash in
    `runtime-manifest.v1.json`, and install/activate the resulting owner-private
-   `raos-codex-mcp-abilities-1.3.1.zip` in wp-admin.
+   `raos-codex-mcp-abilities-1.3.2.zip` in wp-admin.
 3. Create one non-administrator user for each activation-created role, with no
    second role or direct capabilities:
    `raos_codex_mcp_editor` and `raos_codex_deployment_operator`.
@@ -112,7 +112,7 @@ owner-private receipts are stored under
   owner-generated registry and independently rechecked by both the local
   operator and installed plugin. Any changed or unknown package returns to
   `MANUAL_REQUIRED`.
-- The abilities 1.3.1 upgrade itself remains `MANUAL_REQUIRED`. After a
+- The abilities 1.3.2 upgrade itself remains `MANUAL_REQUIRED`. After a
   different human administrator manually installs and activates the exact
   proposal package in wp-admin, the new plugin may show one narrow attestation
   form. It reauthenticates the administrator and requires visible proposal,

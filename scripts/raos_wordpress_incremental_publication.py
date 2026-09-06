@@ -277,11 +277,17 @@ def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
         fail("SNAPSHOT_HASH_INVALID")
     portfolio = load_editorial_portfolio_v3(ROOT)
     selected_slugs = sorted(row["slug"] for row in manifest.get("articles", []))
-    articles = publication.load_articles(",".join(selected_slugs))
+    articles = publication.load_articles(",".join(selected_slugs)) if selected_slugs else []
     selected_ids = tuple(
         sorted(portfolio.article_by_slug[slug].article_id for slug in selected_slugs)
     )
-    sources = validate_selected_official_sources(ROOT, ROOT, selected_ids, now)
+    reader_bindings = manifest.get("reader_pages", {})
+    page_articles = candidate_owner.reader_pages.select_hub_pages(ROOT, sorted(slug for slug, row in reader_bindings.items() if row["kind"] == "hub")) if any(row["kind"] == "hub" for row in reader_bindings.values()) else []
+    if "privacy-policy" in reader_bindings:
+        page_articles.append(candidate_owner.reader_pages.load_reader_privacy_page(ROOT))
+    page_targets = candidate_owner.reader_pages.reader_page_targets(ROOT, page_articles, snapshot)
+    sources = (validate_selected_official_sources(ROOT, OWNER, selected_ids, now, allow_empty=True)
+               if page_targets and not selected_ids else validate_selected_official_sources(ROOT, OWNER, selected_ids, now))
     sources.require_complete()
     shared = manifest.get("shared_artifacts", {})
     policies = [
@@ -291,7 +297,7 @@ def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
             if set(shared) - {"theme", "seo"}
             else ()
         )
-        if article.production_slug in shared
+        if article.production_slug in shared and article.production_slug not in reader_bindings
     ]
     transition_mode = "strict"
     if "runtime_transition" in manifest:
@@ -302,6 +308,7 @@ def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
         ):
             fail("DNS_TRANSITION_INVALID")
         transition_mode = DNS_TRANSITION_MODE
+    measurement_profile, measurement_manifest = candidate_owner.reader_pages.reader_measurement_projection(ROOT) if "reader_measurement" in manifest else (None, None)
     reconstructed, artifacts, current_preparation = (
         candidate_owner.prepare_noncommercial_candidate(
             portfolio=portfolio,
@@ -313,6 +320,11 @@ def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
             if "theme" in shared
             else None,
             policy_articles=policies,
+            home_article=candidate_owner.reader_pages.load_home_page(ROOT) if "home" in shared else None,
+            reader_page_articles=page_articles,
+            reader_page_targets=page_targets,
+            reader_measurement=measurement_profile,
+            reader_measurement_manifest=measurement_manifest,
             runtime_transition_mode=transition_mode,
         )
     )
@@ -346,11 +358,9 @@ def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
     }
     bindings = [portfolio.article_by_slug[slug] for slug in selected_slugs]
     products = {product for binding in bindings for product in binding.product_ids}
-    if products:
-        # This first executable slice cannot invent applicability exceptions for
-        # smart-device/disposal audit surfaces. Its pure release context already
-        # supports products; a trusted applicability adapter is still required.
-        fail("PRODUCT_AUDIT_APPLICABILITY_NOT_MATERIALIZED")
+    from raos.application.editorial.reader_release_applicability_v1 import classify_product_audit_scope
+
+    applicability = classify_product_audit_scope(ROOT, tuple(sorted(products)))
     images = {
         f"image:{binding.article_id}:{product}": (binding.article_id, product)
         for binding in bindings
@@ -365,6 +375,8 @@ def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
         manifest,
         inventory=inventory,
         article_targets=targets,
+        reader_page_targets=page_targets,
+        reader_measurement=measurement_profile,
         shared_baseline_sha256={
             key: row["baseline_sha256"]
             for key, row in shared.items()
@@ -404,6 +416,10 @@ def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
             article: tuple(sorted(sources.article_claim_sources[article]))
             for article in selected_ids
         },
+        selected_page_slugs=tuple(sorted(page_targets)),
+        retained_product_ids=applicability.retained_product_ids,
+        smart_device_product_ids=applicability.smart_device_product_ids,
+        disposal_product_ids=applicability.disposal_product_ids,
         required_noncontent_rollback_targets=tuple(
             sorted(set(shared) & {"theme", "seo", "plugins"})
         ),
@@ -415,6 +431,8 @@ def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
         artifact_bytes=artifacts,
         inventory=inventory,
         article_targets=targets,
+        reader_page_targets=page_targets,
+        reader_measurement=measurement_profile,
         commerce_views={},
         image_article_products=images,
         cta_bindings={},
@@ -474,6 +492,10 @@ def load_candidate(
         "live-snapshot": snapshot_raw,
         "candidate-preparation": preparation_raw,
     }
+    from raos.application.editorial.reader_release_applicability_v1 import classify_product_audit_scope
+
+    if scope.retained_product_ids:
+        inputs["product-audit-applicability"] = canonical(classify_product_audit_scope(ROOT, scope.retained_product_ids).to_document())
     hashes = report.get("artifact_hashes")
     if type(hashes) is not dict or not set(inputs) <= set(hashes):
         fail("AUDIT_INPUT_BINDING_INVALID")
@@ -821,11 +843,14 @@ def _require_before_or_bound_progress(
                 or live is None
                 or live["id"] != binding["post_id"]
                 or live["post_type"] != binding["post_type"]
-                or live["status"] != expected_all[post_id]["status"]
+                or (live["status"] != expected_all[post_id]["status"] and not (
+                    replayed.manifest.get("reader_pages", {}).get(slug, {}).get("kind") == "hub"
+                    and expected_all[post_id]["status"] == "draft" and live["status"] == "publish"
+                ))
             ):
                 fail("LIVE_SELECTED_IDENTITY_CHANGED")
             at_before = current_all[post_id] == expected_all[post_id]
-            at_after = live["content_sha256"] == binding["after_sha256"]
+            at_after = live["status"] == "publish" and live["content_sha256"] == binding["after_sha256"]
         state, code = operation["state"], operation["result_code"]
         before_allowed = (state, code) in {
             ("APPROVED", "PROPOSAL_APPROVED"),
@@ -843,15 +868,15 @@ def _require_before_or_bound_progress(
 
 
 def _validate_deployment_status(
-    response: Mapping[str, Any], *, require_apply_ready: bool
+    response: Mapping[str, Any], *, require_apply_ready: bool, allow_legacy_runtime: bool = False
 ) -> None:
     """Preserve the legacy closed gates without requiring the new theme yet."""
     theme, gates = response.get("theme"), response.get("gates")
     if (
         response.get("schema") != "RAOSWordPressDeploymentStatusV1"
         or response.get("origin") != publication.ORIGIN
-        or response.get("plugin_runtime_revision")
-        != publication.EXPECTED_PLUGIN_RUNTIME_REVISION
+        or (response.get("plugin_runtime_revision") != publication.EXPECTED_PLUGIN_RUNTIME_REVISION
+            and not (allow_legacy_runtime is True and response.get("plugin_runtime_revision") == "c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472"))
         or response.get("private_directory_ready") is not True
         or type(theme) is not dict
         or theme.get("slug") != "kurashinoshirube-child"
@@ -963,13 +988,53 @@ def _validate_public_binding(
     preparation_raw: bytes,
     expected_theme: str,
     site_status: Mapping[str, object],
+    *, post_activation: bool = False,
 ) -> None:
     envelope = context.to_document()
+    binding = envelope.get("reader_measurement")
+    schema = visible.get("schema")
+    if type(post_activation) is not bool:
+        fail("PUBLIC_READBACK_BINDING_INVALID")
+    if schema == "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_PUBLIC_READBACK_V2":
+        # Reconstruct metadata from the fixed, hash-checked theme independently
+        # of the report. A self-consistent V2 report is not its own authority.
+        seo_owner = importlib.import_module("raos_wordpress_incremental_seo_audit")
+        expected_metadata = seo_owner.build_reader_seo_metadata(expected_theme)
+        if visible.get("reader_metadata_sha256") != digest(
+            publication.canonical_json_bytes(expected_metadata.to_document())
+        ):
+            fail("PUBLIC_READER_METADATA_BINDING_INVALID")
+        if binding is None and visible.get("reader_measurement") != {
+            "state": "NOT_INCLUDED"
+        }:
+            fail("PUBLIC_READER_READBACK_BINDING_INVALID")
+    elif (
+        schema != "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_PUBLIC_READBACK_V1"
+        or envelope.get("schema") == "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_RELEASE_V2"
+        or binding is not None
+        or "reader_metadata_sha256" in visible
+        or "reader_measurement" in visible
+    ):
+        fail("PUBLIC_READBACK_BINDING_INVALID")
+    if binding is not None:
+        expected_reader = {
+            **{key: value for key, value in binding.items() if key != "schema"},
+            "expected_collection_enabled": post_activation,
+            "mode": "post-activation-readback" if post_activation else "release",
+            "state": "DECLARED_RUNTIME_AND_MCP_STATUS_VERIFIED",
+        }
+        observed_reader = visible.get("reader_measurement")
+        if (
+            type(observed_reader) is not dict
+            or type(observed_reader.get("expected_collection_enabled")) is not bool
+            or observed_reader != expected_reader
+        ):
+            fail("PUBLIC_READER_READBACK_BINDING_INVALID")
+    elif post_activation:
+        fail("READER_RUNTIME_BINDING_INVALID")
     unsigned = {key: value for key, value in visible.items() if key != "binding_sha256"}
     if (
-        visible.get("schema")
-        != "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_PUBLIC_READBACK_V1"
-        or visible.get("status") != "PUBLIC_READBACK_PASSED"
+        visible.get("status") != "PUBLIC_READBACK_PASSED"
         or visible.get("publication_profile") != PROFILE
         or visible.get("link_mode") != "standard-api"
         or visible.get("publication_authority") is not False
@@ -995,6 +1060,14 @@ def runtime_precondition_matches(
     """Never promote a transitional observation into the strict OFF state."""
     if observed.get("theme_tree_sha256") != current_tree:
         return False
+    binding = manifest.get("reader_measurement")
+    reader = observed.get("reader_measurement")
+    if binding is None:
+        if reader is not None:
+            return False
+    elif (type(reader) is not dict or any(reader.get(key) != binding[key] for key in ("profile", "manifest_sha256", "policy_sha256", "contract_sha256", "revision", "expected_collection_enabled"))
+        or reader.get("collection_state") != "OFF"):
+        return False
     policy = manifest.get("runtime_transition")
     if policy is None or current_tree != policy["baseline_theme_sha256"]:
         return (
@@ -1016,6 +1089,25 @@ def runtime_precondition_matches(
     )
 
 
+def reader_runtime_for(document: Mapping[str, Any], *, post_activation: bool = False) -> Any:
+    binding = document.get("reader_measurement")
+    if type(post_activation) is not bool or (post_activation and binding is None):
+        fail("READER_RUNTIME_BINDING_INVALID")
+    if binding is None:
+        return None
+    import raos_wordpress_runtime_audit as runtime
+    result = runtime.build_reader_measurement_runtime(
+        expected_manifest_sha256=binding["manifest_sha256"],
+        expected_policy_sha256=binding["policy_sha256"],
+        expected_collection_enabled=post_activation,
+    )
+    if (binding.get("expected_collection_enabled") is not False
+        or result.contract_sha256 != binding["contract_sha256"]
+        or result.revision != binding["revision"]):
+        fail("READER_RUNTIME_BINDING_INVALID")
+    return result
+
+
 def execute_incremental(
     candidate_path: Path,
     *,
@@ -1030,8 +1122,11 @@ def execute_incremental(
     clock: Callable[[], datetime] = lambda: datetime.now(UTC),
     runtime_precondition: Callable[..., Mapping[str, Any]] | None = None,
     verification_base: str = "origin/main",
+    reader_measurement_readback: bool = False,
 ) -> Path:
     """Explicit stages. Proposal only registers; apply uses the server's lease."""
+    if type(reader_measurement_readback) is not bool or (reader_measurement_readback and stage != "readback"):
+        fail("READER_READBACK_STAGE_INVALID")
     if stage not in {"propose", "apply", "readback"}:
         fail("STAGE_INVALID")
     _candidate_directory(candidate_path)
@@ -1108,9 +1203,15 @@ def execute_incremental(
             client = client_factory()
             client.initialize()
         status = client.call("raos-codex-site-status", {})
-        publication.validate_site_status(status, require_measurement_off=True)
+        bound_document = replayed.manifest if replayed is not None else original_context.to_document()
+        legacy_runtime = "reader_measurement" not in bound_document and "privacy-policy" not in bound_document.get("reader_pages", bound_document.get("selected_pages", {}))
+        if reader_measurement_readback:
+            reader_runtime_for(bound_document, post_activation=True)
+            if status.get("measurement", {}).get("collection_enabled") is not False:
+                fail("LEGACY_MEASUREMENT_NOT_OFF")
+        publication.validate_site_status(status, require_measurement_off=not reader_measurement_readback, allow_legacy_runtime=legacy_runtime)
         deployment = deploy("deployment-status", {})
-        _validate_deployment_status(deployment, require_apply_ready=stage != "readback")
+        _validate_deployment_status(deployment, require_apply_ready=stage != "readback", allow_legacy_runtime=legacy_runtime)
         current = _live_documents(client)
         if stage != "readback":
             # MCP's measurement field only covers the RAOS plugin. Independently
@@ -1133,6 +1234,7 @@ def execute_incremental(
                 now=clock(),
                 snapshot=replayed.snapshot,
                 runtime_transition=replayed.manifest.get("runtime_transition"),
+                **({"reader_measurement": reader_runtime_for(replayed.manifest)} if "reader_measurement" in replayed.manifest else {}),
             )
             if not runtime_precondition_matches(
                 runtime_before, replayed.manifest, deployment["theme"]["tree_sha256"]
@@ -1372,7 +1474,7 @@ def execute_incremental(
             if slug in envelope["inventory"]
         }
         deployment = deploy("deployment-status", {})
-        _validate_deployment_status(deployment, require_apply_ready=False)
+        _validate_deployment_status(deployment, require_apply_ready=False, allow_legacy_runtime=legacy_runtime)
         expected_theme = envelope["expected_shared_readback_sha256"].get(
             "theme", snapshot["deployment_status"]["theme"]["tree_sha256"]
         )
@@ -1393,7 +1495,9 @@ def execute_incremental(
             now=clock(),
         )
         site_status = client.call("raos-codex-site-status", {})
-        publication.validate_site_status(site_status, require_measurement_off=True)
+        if reader_measurement_readback and site_status.get("measurement", {}).get("collection_enabled") is not False:
+            fail("LEGACY_MEASUREMENT_NOT_OFF")
+        publication.validate_site_status(site_status, require_measurement_off=not reader_measurement_readback, allow_legacy_runtime=legacy_runtime)
         visible = public_readback_validator(
             context=original_context,
             candidate_path=candidate_path,
@@ -1410,9 +1514,14 @@ def execute_incremental(
             preparation_raw,
             expected_theme,
             site_status,
+            post_activation=reader_measurement_readback,
         )
-        receipt["readback"] = {"content": parity, "public": dict(visible)}
-        _save(candidate_path, receipt, "PUBLISHED_AND_READBACK_VERIFIED")
+        if reader_measurement_readback:
+            receipt["reader_measurement_readback"] = {"content": parity, "public": dict(visible)}
+            _save(candidate_path, receipt, "READER_MEASUREMENT_READBACK_VERIFIED")
+        else:
+            receipt["readback"] = {"content": parity, "public": dict(visible)}
+            _save(candidate_path, receipt, "PUBLISHED_AND_READBACK_VERIFIED")
         return receipt_file
     except BlockingIOError:
         fail("REQUEST_ALREADY_RUNNING")
@@ -1449,6 +1558,10 @@ def execute_cli(arguments: Any) -> Path:
     ):
         fail("EXPLICIT_PROFILE_INPUTS_REQUIRED")
 
+    post_activation = getattr(arguments, "incremental_reader_measurement_readback", False)
+    if type(post_activation) is not bool or (post_activation and arguments.incremental_stage != "readback"):
+        fail("READER_READBACK_STAGE_INVALID")
+
     def browser(**kwargs: Any) -> Mapping[str, object]:
         fixture = arguments.incremental_preview_fixture
         if fixture is None:
@@ -1458,6 +1571,12 @@ def execute_cli(arguments: Any) -> Path:
     def public(**kwargs: Any) -> Mapping[str, object]:
         module = importlib.import_module("raos_wordpress_incremental_seo_audit")
         try:
+            envelope = kwargs["context"].to_document()
+            kwargs["reader_metadata"] = module.build_reader_seo_metadata(kwargs["deployment_readback"]["theme"]["tree_sha256"])
+            if "reader_measurement" in envelope:
+                kwargs["reader_measurement"] = reader_runtime_for(envelope, post_activation=post_activation)
+                if post_activation:
+                    kwargs["reader_measurement_mode"] = "post-activation-readback"
             return cast(
                 Mapping[str, object],
                 module.run_verified_incremental_public_audit(**kwargs),
@@ -1478,6 +1597,7 @@ def execute_cli(arguments: Any) -> Path:
             browser_validator=browser,
             public_readback_validator=public,
             verification_base=getattr(arguments, "incremental_base", "origin/main"),
+            **({"reader_measurement_readback": True} if post_activation else {}),
         )
     except publication.PublicationFailure:
         raise

@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Store
 {
-    const RUNTIME_REVISION = 'c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472';
+    const RUNTIME_REVISION = 'b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc';
     const SCHEMA_VERSION = '4';
     const SCHEMA_OPTION = 'raos_codex_mcp_store_schema_v1';
     const PROPOSAL_REVIEW_TTL_SECONDS = 3600;

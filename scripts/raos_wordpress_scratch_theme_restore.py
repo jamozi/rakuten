@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Sequence
 from datetime import UTC, datetime
 from importlib import import_module
 import io
@@ -20,7 +21,12 @@ for path in (ROOT, ROOT / "python", ROOT / "scripts"):
         sys.path.insert(0, str(path))
 
 from scripts import raos_wordpress_local_restore as local_restore  # noqa: E402
-from scripts.raos_wordpress_scratch_restore import DOCKER, COMPOSE, run_command  # noqa: E402
+from scripts.raos_wordpress_scratch_restore import (  # noqa: E402
+    DOCKER,
+    COMPOSE,
+    run_command,
+    parse_reader_pages,
+)
 from raos.application.editorial.local_scratch_theme_restore_v1 import (  # noqa: E402
     ScratchThemeRestoration,
     THEME_SLUG,
@@ -141,7 +147,11 @@ def candidate_package(expected_tree: str) -> bytes:
 
 
 def expected_restoration(
-    root: Path, baseline: bytes, candidate: bytes
+    root: Path,
+    baseline: bytes,
+    candidate: bytes,
+    *,
+    selected_page_slugs: frozenset[str] = frozenset(),
 ) -> ScratchThemeRestoration:
     return build_scratch_theme_restoration(
         json_document(read_private_bytes(root, "source-snapshot.v1.json")),
@@ -152,16 +162,43 @@ def expected_restoration(
         content_readback_raw=read_private_bytes(root, "scratch-readback.v1.json"),
         baseline_package_raw=baseline,
         candidate_package_raw=candidate,
+        selected_page_slugs=selected_page_slugs,
     )
 
 
-def prepare(environment_id: str, candidate_tree: str) -> Path:
+def prepare(
+    environment_id: str,
+    candidate_tree: str,
+    *,
+    selected_page_slugs: frozenset[str] = frozenset(),
+    baseline_package_name: str | None = None,
+) -> Path:
     root = private_root(environment_id)
     target = root / "theme-restore"
     if (target / "readback.v1.json").exists() or (target / "receipt.v1.json").exists():
         fail("SCRATCH_THEME_ALREADY_EXECUTED")
+    if selected_page_slugs:
+        # V2 baselines come from retained actual backup bytes, never the V1 Git pin.
+        if (
+            baseline_package_name is None
+            or re.fullmatch(
+                r"reader-theme-baseline-[a-f0-9]{64}\.v1\.json", baseline_package_name
+            )
+            is None
+        ):
+            fail("SCRATCH_THEME_READER_BASELINE_REQUIRED")
+        baseline = read_private_bytes(root, baseline_package_name)
+        if baseline_package_name != f"reader-theme-baseline-{digest(baseline)}.v1.json":
+            fail("SCRATCH_THEME_BASELINE_CHANGED")
+    else:
+        if baseline_package_name is not None:
+            fail("SCRATCH_THEME_ARGUMENTS_INVALID")
+        baseline = baseline_package()
     expected = expected_restoration(
-        root, baseline_package(), candidate_package(candidate_tree)
+        root,
+        baseline,
+        candidate_package(candidate_tree),
+        selected_page_slugs=selected_page_slugs,
     )
     write_private_bytes(target, "baseline-package.v1.json", expected.baseline_package)
     write_private_bytes(target, "candidate-package.v1.json", expected.candidate_package)
@@ -169,7 +206,12 @@ def prepare(environment_id: str, candidate_tree: str) -> Path:
     return target
 
 
-def execute(environment_id: str, preparation_sha256: str) -> Path:
+def execute(
+    environment_id: str,
+    preparation_sha256: str,
+    *,
+    selected_page_slugs: frozenset[str] = frozenset(),
+) -> Path:
     root = private_root(environment_id)
     target = root / "theme-restore"
     preparation = read_private_bytes(target, "preparation.v1.json")
@@ -179,6 +221,7 @@ def execute(environment_id: str, preparation_sha256: str) -> Path:
         root,
         read_private_bytes(target, "baseline-package.v1.json"),
         read_private_bytes(target, "candidate-package.v1.json"),
+        selected_page_slugs=selected_page_slugs,
     )
     if (
         expected.preparation != preparation
@@ -302,7 +345,7 @@ def execute(environment_id: str, preparation_sha256: str) -> Path:
     return target
 
 
-def main() -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(allow_abbrev=False)
     commands = parser.add_subparsers(dest="command", required=True)
     prepare_command = commands.add_parser("prepare", allow_abbrev=False)
@@ -311,17 +354,36 @@ def main() -> int:
     execute_command = commands.add_parser("execute", allow_abbrev=False)
     execute_command.add_argument("--environment-id", required=True)
     execute_command.add_argument("--preparation-sha256", required=True)
-    arguments = parser.parse_args()
+    prepare_command.add_argument("--baseline-package-name")
+    for command in (prepare_command, execute_command):
+        command.add_argument(
+            "--reader-pages", help="Explicit comma-separated candidate page scope"
+        )
+    arguments = parser.parse_args(argv)
     try:
+        pages = (
+            parse_reader_pages(arguments.reader_pages)
+            if arguments.reader_pages is not None
+            else frozenset()
+        )
         if arguments.command == "prepare":
-            path = prepare(arguments.environment_id, arguments.candidate_tree_sha256)
+            path = prepare(
+                arguments.environment_id,
+                arguments.candidate_tree_sha256,
+                selected_page_slugs=pages,
+                baseline_package_name=arguments.baseline_package_name,
+            )
             print(
                 "Scratch theme backup prepared; restoration NOT_EXECUTED; authority false"
             )
         else:
-            path = execute(arguments.environment_id, arguments.preparation_sha256)
+            path = execute(
+                arguments.environment_id,
+                arguments.preparation_sha256,
+                selected_page_slugs=pages,
+            )
             print(
-                "Scratch theme rollback verified; 14 saved documents and options unchanged; authority false"
+                "Scratch theme rollback verified; snapshot-bound documents and options unchanged; authority false"
             )
         print("Private artifacts: " + str(path))
         return 0

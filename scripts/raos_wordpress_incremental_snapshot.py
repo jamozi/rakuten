@@ -182,8 +182,13 @@ def capture_snapshot(
     expected_slugs: frozenset[str],
     public_metadata_reader: Any | None = None,
     deployment_status_reader: Callable[[], dict[str, object]] | None = None,
+    reader_page_slugs: frozenset[str] = frozenset(),
 ) -> dict[str, object]:
     """Authenticate with MCP, compare list/get, then make a second inventory read."""
+    from raos_reader_release_pages import HUB_SLUGS
+
+    if not reader_page_slugs <= HUB_SLUGS or not reader_page_slugs <= expected_slugs:
+        publication.fail("RAOS_INCREMENTAL_SNAPSHOT_READER_SCOPE_INVALID")
     client.initialize()
     status = client.call("raos-codex-site-status", {})
     deployment = capture_deployment_baseline(deployment_status_reader)
@@ -195,17 +200,18 @@ def capture_snapshot(
         publication.fail("RAOS_INCREMENTAL_SNAPSHOT_EXISTING_TARGET_MISSING")
     captured = []
     for row in sorted(chosen, key=lambda item: str(item["slug"])):
-        if row.get("status") != "publish":
+        if row.get("status") != "publish" and not (
+            row.get("slug") in reader_page_slugs
+            and row.get("post_type") == "page" and row.get("status") == "draft"
+        ):
             publication.fail("RAOS_INCREMENTAL_SNAPSHOT_NOT_PUBLISHED")
         document = client.call("raos-codex-content-get", {"id": row["id"]})
         if document != row:
             publication.fail("RAOS_INCREMENTAL_SNAPSHOT_CHANGED_DURING_READ")
-        if publication._content_after_sha256(document, document["id"]) != document.get(
-            "content_sha256"
-        ):
+        if publication.sha256_json({"schema": "ContentDocumentV1", "id": document["id"], "status": document["status"], **publication.document_projection(document)}) != document.get("content_sha256"):
             publication.fail("RAOS_INCREMENTAL_SNAPSHOT_HASH_INVALID")
         captured.append(document)
-    public_metadata = capture_public_metadata(public_metadata_reader, captured)
+    public_metadata = capture_public_metadata(public_metadata_reader, [row for row in captured if row["status"] == "publish"])
     after = publication.list_all_documents(client, post_types=("post", "page"))
     before_map = {row["id"]: publication._baseline_record(row) for row in listed}
     after_map = {row["id"]: publication._baseline_record(row) for row in after}
@@ -217,8 +223,8 @@ def capture_snapshot(
             "runtime"
         ) != repeated_deployment.get("runtime"):
             publication.fail("RAOS_INCREMENTAL_SNAPSHOT_THEME_CHANGED_DURING_READ")
-    return {
-        "schema": "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
+    result = {
+        "schema": "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2" if reader_page_slugs else "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
         "publication_profile": "verified-incremental",
         "origin": publication.ORIGIN,
         "captured_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -232,6 +238,10 @@ def capture_snapshot(
             str(key): value for key, value in before_map.items()
         },
     }
+
+    if reader_page_slugs:
+        result["reader_page_slugs"] = sorted(reader_page_slugs)
+    return result
 
 
 def capture_deployment_baseline(
@@ -292,13 +302,18 @@ def expected_core_slugs() -> frozenset[str]:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(allow_abbrev=False)
     parser.add_argument("--owner-checkout", type=Path, required=True)
+    parser.add_argument("--reader-pages", help="registered hub slugs, comma separated")
     arguments = parser.parse_args(argv)
     try:
+        from raos_reader_release_pages import select_hub_pages
+
+        hubs = frozenset(page.production_slug for page in select_hub_pages(ROOT, arguments.reader_pages.split(","))) if arguments.reader_pages else frozenset()
         # Fixed-path credential validation occurs before constructing any output.
         client = publication.EditorMcpClient(owner_checkout=arguments.owner_checkout)
         document = capture_snapshot(
             client,
-            expected_slugs=expected_core_slugs(),
+            expected_slugs=expected_core_slugs() | hubs,
+            reader_page_slugs=hubs,
             public_metadata_reader=PublicMetadataReader(),
             deployment_status_reader=lambda: publication._deployment_mcp_call(
                 "deployment-status",
@@ -317,7 +332,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if read_private_bytes(directory, name) != raw:
             publication.fail("RAOS_INCREMENTAL_SNAPSHOT_STORAGE_MISMATCH")
         # Never display authenticated document bodies or provider link values.
-        print(f"MCP snapshot: {len(expected_core_slugs())} existing core documents")
+        print(f"MCP snapshot: {len(expected_core_slugs() | hubs)} existing core documents")
         print(f"SHA-256: {digest}")
         print(f"Private backup: {directory / name}")
         metadata = cast(dict[str, object], document["public_metadata"])

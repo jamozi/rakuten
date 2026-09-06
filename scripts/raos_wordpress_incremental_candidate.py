@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Mapping, Sequence
+from dataclasses import asdict
 from datetime import UTC, datetime
 import json
 from pathlib import Path, PurePosixPath
@@ -23,6 +24,7 @@ for directory in (ROOT / "python", ROOT / "scripts"):
         sys.path.insert(0, str(directory))
 
 import raos_wordpress_publication_request as publication  # noqa: E402
+import raos_reader_release_pages as reader_pages  # noqa: E402
 from raos.application.editorial.editorial_portfolio_v3 import (  # noqa: E402
     EditorialPortfolioV3,
     load_editorial_portfolio_v3,
@@ -39,6 +41,8 @@ from raos.application.editorial.verified_incremental_v1 import (  # noqa: E402
     IncrementalPublicationFailure,
     PROFILE,
     SCHEMA,
+    SCHEMA_V2,
+    ReaderPageTarget,
     HASH,
     canonical,
     digest,
@@ -65,10 +69,24 @@ def prepare_noncommercial_candidate(
     now: datetime,
     theme_projection: bytes | None = None,
     policy_articles: Sequence[publication.Article] = (),
+    home_article: publication.Article | None = None,
+    reader_page_articles: Sequence[publication.Article] = (),
+    reader_page_targets: Mapping[str, ReaderPageTarget] | None = None,
+    reader_measurement: Mapping[str, object] | None = None,
+    reader_measurement_manifest: bytes | None = None,
     runtime_transition_mode: str = "strict",
 ) -> tuple[dict[str, object], dict[str, bytes], dict[str, object]]:
     """All source evidence is replayed by the caller; no supplied PASS flags."""
     sources.require_complete()
+    page_targets = dict(reader_page_targets or {})
+    page_slugs = {page.production_slug for page in reader_page_articles}
+    if page_slugs != set(page_targets) or len(page_slugs) != len(reader_page_articles):
+        fail("READER_PAGE_TARGETS_INVALID")
+    declared_hubs = snapshot.get("reader_page_slugs", [])
+    if (type(declared_hubs) is not list or len(declared_hubs) != len(set(declared_hubs))
+        or not set(declared_hubs) <= reader_pages.HUB_SLUGS
+        or bool(declared_hubs) != (snapshot.get("schema") == "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2")):
+        fail("SNAPSHOT_READER_SCOPE_INVALID")
     if type(runtime_transition_mode) is not str or runtime_transition_mode not in {
         "strict",
         DNS_TRANSITION_MODE,
@@ -77,7 +95,7 @@ def prepare_noncommercial_candidate(
     if runtime_transition_mode != "strict" and theme_projection is None:
         fail("DNS_TRANSITION_REQUIRES_THEME")
     if (
-        snapshot.get("schema") != "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1"
+        snapshot.get("schema") not in {"RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1", "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2"}
         or snapshot.get("publication_profile") != PROFILE
         or snapshot.get("origin") != publication.ORIGIN
         or snapshot.get("publication_authority") is not False
@@ -91,37 +109,51 @@ def prepare_noncommercial_candidate(
         if (
             type(document) is not dict
             or document.get("slug") in documents
-            or document.get("status") != "publish"
+            or (document.get("status") != "publish" and not (document.get("slug") in declared_hubs and document.get("post_type") == "page" and document.get("status") == "draft"))
             or type(document.get("id")) is not int
-            or publication._content_after_sha256(document, document["id"])
+            or publication.sha256_json({"schema": "ContentDocumentV1", "id": document["id"], "status": document.get("status"), **publication.document_projection(document)})
             != document.get("content_sha256")
         ):
             fail("SNAPSHOT_INVALID")
         slug = document["slug"]
         documents[slug] = document
         inventory[slug] = ExistingDocument(
-            document["id"], slug, document["post_type"], document["content_sha256"]
+            document["id"], slug, document["post_type"], document["content_sha256"], document["status"]
         )
     existing_slugs = {a.production_slug for a in portfolio.articles}
-    if set(documents) != existing_slugs | {
+    if set(documents) != existing_slugs | set(declared_hubs) | {
         "home",
         "about-ad-policy",
         "comparison-policy",
         "privacy-policy",
     }:
         fail("SNAPSHOT_INVALID")
+    if theme_projection is not None or home_article is not None or policy_articles or page_targets:
+        all_baselines = snapshot.get("all_document_baselines", {})
+        if not isinstance(all_baselines, Mapping):
+            fail("SNAPSHOT_INVALID")
+        published_hubs = {
+            row.get("slug")
+            for row in all_baselines.values()
+            if isinstance(row, Mapping)
+            and row.get("status") == "publish"
+            and row.get("slug") in reader_pages.HUB_SLUGS
+        }
+        if not published_hubs <= set(declared_hubs):
+            fail("PUBLISHED_HUB_SNAPSHOT_REQUIRED")
     selected = {article.production_slug for article in articles}
-    if not selected or len(selected) != len(articles) or not selected <= existing_slugs:
+    if (not selected and not page_targets) or len(selected) != len(articles) or not selected <= existing_slugs:
         fail("ARTICLE_SET_INVALID")
     bindings = [portfolio.article_by_slug[slug] for slug in sorted(selected)]
     if set(sources.article_ids) != {binding.article_id for binding in bindings}:
         fail("SOURCE_SET_MISMATCH")
-    if sources.expires_at is None:
-        fail("SOURCE_UNVERIFIED")
-    expiry = min(
-        now + AUDIT_SUBJECT_MAX_AGE,
-        datetime.strptime(sources.expires_at, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC),
-    )
+    expiry = now + AUDIT_SUBJECT_MAX_AGE
+    if selected:
+        if sources.expires_at is None:
+            fail("SOURCE_UNVERIFIED")
+        expiry = min(expiry, datetime.strptime(sources.expires_at, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC))
+    elif sources.status != "NOT_REQUIRED":
+        fail("SOURCE_SET_MISMATCH")
     output: dict[str, bytes] = {}
     rows: list[dict[str, object]] = []
     production_documents: dict[str, object] = {}
@@ -277,11 +309,15 @@ def prepare_noncommercial_candidate(
             "post_id": None,
         }
     selected_policy_slugs: set[str] = set()
-    for article in policy_articles:
+    if home_article is not None and (home_article.production_slug != "home" or home_article.post_type != "page"):
+        fail("HOME_TARGET_INVALID")
+    shared_pages = [*policy_articles, *([home_article] if home_article is not None else []), *reader_page_articles]
+    for article in shared_pages:
         slug = article.production_slug
         if (
             article.post_type != "page"
-            or slug not in {"about-ad-policy", "comparison-policy", "privacy-policy"}
+            or (slug not in {"about-ad-policy", "comparison-policy", "privacy-policy"}
+                and not (slug == "home" and article is home_article) and slug not in page_targets)
             or slug in selected_policy_slugs
         ):
             fail("SHARED_TARGET_INVALID")
@@ -317,7 +353,7 @@ def prepare_noncommercial_candidate(
             "post_id": original["id"],
         }
     manifest = {
-        "schema": SCHEMA,
+        "schema": SCHEMA_V2 if page_targets else SCHEMA,
         "publication_profile": PROFILE,
         "link_mode": "standard-api",
         "measurement_collection_enabled": False,
@@ -333,6 +369,15 @@ def prepare_noncommercial_candidate(
         "shared_artifacts": shared,
         "rendered_document_slugs": sorted(documents if shared else selected),
     }
+    if reader_measurement is not None:
+        if reader_measurement_manifest is None:
+            fail("READER_RUNTIME_ARTIFACT_MISSING")
+        manifest["reader_measurement"] = dict(reader_measurement)
+        output["reader-measurement-manifest"] = reader_measurement_manifest
+    elif reader_measurement_manifest is not None:
+        fail("READER_RUNTIME_BINDING_MISSING")
+    if page_targets:
+        manifest["reader_pages"] = {slug: asdict(target) for slug, target in sorted(page_targets.items())}
     if runtime_transition_mode == DNS_TRANSITION_MODE:
         import raos_wordpress_runtime_audit as runtime
 
@@ -349,8 +394,10 @@ def prepare_noncommercial_candidate(
         inventory=inventory,
         article_targets={
             b.article_id: (b.production_slug, inventory[b.production_slug].post_id)
-            for b in bindings
+            for b in portfolio.articles
         },
+        reader_page_targets=page_targets,
+        reader_measurement=reader_measurement,
         shared_baseline_sha256=shared_baselines,
         article_products={b.article_id: b.product_ids for b in bindings},
         article_claims={a: tuple(c) for a, c in sources.article_claim_sources.items()},
@@ -378,7 +425,7 @@ def prepare_noncommercial_candidate(
         "production_documents": production_documents,
         "expected_shared_readback_sha256": expected_shared_readback,
         "artifact_files": {
-            key: f"{key}.v1.json" if key == "theme-tree" else f"{key}.html"
+            key: f"{key}.v1.json" if key in {"theme-tree", "reader-measurement-manifest"} else f"{key}.html"
             for key in output
         },
         "required_next_gates": [
@@ -416,13 +463,17 @@ def inspect_candidate(
     ):
         fail("SNAPSHOT_NAME_INVALID")
     portfolio = load_editorial_portfolio_v3(ROOT)
-    articles = publication.load_articles(args.articles)
+    reader_pages.selected_page_slugs(ROOT, args)
+    page_articles = reader_pages.select_hub_pages(ROOT, args.reader_pages.split(",")) if getattr(args, "reader_pages", None) else []
+    if getattr(args, "reader_privacy", False):
+        page_articles.append(reader_pages.load_reader_privacy_page(ROOT))
+    articles = publication.load_articles(args.articles) if args.articles else []
     selected_ids = tuple(
         portfolio.article_by_slug[a.production_slug].article_id for a in articles
     )
     now = datetime.now(UTC).replace(microsecond=0)
     sources = validate_selected_official_sources(
-        repository_root=ROOT, evidence_root=ROOT, article_ids=selected_ids, now=now
+        repository_root=ROOT, evidence_root=owner, article_ids=selected_ids, now=now, allow_empty=bool(page_articles)
     )
     if sources.issues:
         print(
@@ -435,6 +486,7 @@ def inspect_candidate(
             )
         )
         fail("SOURCES_INCOMPLETE")
+    measurement_profile, measurement_manifest = reader_pages.reader_measurement_projection(ROOT) if getattr(args, "reader_privacy", False) else (None, None)
     manifest, artifacts, preparation = prepare_noncommercial_candidate(
         portfolio=portfolio,
         snapshot=snapshot,
@@ -447,6 +499,11 @@ def inspect_candidate(
             if args.update_policies == "all"
             else ()
         ),
+        home_article=reader_pages.load_home_page(ROOT) if getattr(args, "include_home", False) else None,
+        reader_page_articles=page_articles,
+        reader_page_targets=reader_pages.reader_page_targets(ROOT, page_articles, snapshot),
+        reader_measurement=measurement_profile,
+        reader_measurement_manifest=measurement_manifest,
         runtime_transition_mode=args.runtime_transition,
     )
     return manifest, artifacts, preparation
@@ -468,7 +525,7 @@ def create_candidate(args: argparse.Namespace) -> Path:
     ensure_private_root(target.parent)
     ensure_private_root(target)
     for key, raw in artifacts.items():
-        name = f"{key}.v1.json" if key == "theme-tree" else f"{key}.html"
+        name = f"{key}.v1.json" if key in {"theme-tree", "reader-measurement-manifest"} else f"{key}.html"
         write_private_bytes(target / "artifacts", name, raw)
     write_private_bytes(target, "manifest.v1.json", canonical(manifest))
     write_private_bytes(target, "candidate-preparation.v1.json", canonical(preparation))
@@ -478,8 +535,11 @@ def create_candidate(args: argparse.Namespace) -> Path:
 def main() -> int:
     parser = argparse.ArgumentParser(allow_abbrev=False)
     parser.add_argument("--snapshot-name", required=True)
-    parser.add_argument("--articles", required=True)
+    parser.add_argument("--articles")
     parser.add_argument("--include-theme", action="store_true")
+    parser.add_argument("--include-home", action="store_true")
+    parser.add_argument("--reader-pages")
+    parser.add_argument("--reader-privacy", action="store_true")
     parser.add_argument("--update-policies", choices=("none", "all"), default="none")
     parser.add_argument(
         "--runtime-transition",

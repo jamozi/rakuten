@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Content
 {
-    const RUNTIME_REVISION = 'c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472';
+    const RUNTIME_REVISION = 'b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc';
     const MAX_CONTENT_BYTES = 1048576;
 
     private $plugin;
@@ -357,6 +357,84 @@ final class RAOS_Codex_MCP_Content
         return true;
     }
 
+    /** Fixed public status projection; unavailable is unknown, never a measured zero. */
+    private static function reader_measurement_status()
+    {
+        $unknown = array(
+            'schema' => 'RAOSReaderMeasurementStatusV1',
+            'plugin_active' => false,
+            'plugin_version' => null,
+            'collection_enabled' => null,
+            'contract_sha256' => null,
+            'policy_sha256' => null,
+            'approved_revision' => null,
+            'cleanup' => array(
+                'healthy' => null,
+                'last_success_date' => null,
+                'last_error_code' => null,
+            ),
+        );
+        if (! function_exists('raos_reader_measurement_status')) {
+            return $unknown;
+        }
+        // A loaded but unavailable provider must not masquerade as an absent plugin.
+        $unknown['plugin_active'] = true;
+        try {
+            $raw = raos_reader_measurement_status();
+        } catch (Throwable $error) {
+            // An exception may contain private option/database/approval details.
+            return $unknown;
+        }
+        if (! is_array($raw)
+            || count(array_diff(array_keys($unknown), array_keys($raw))) !== 0
+            || $raw['schema'] !== $unknown['schema']
+            || true !== $raw['plugin_active']
+            || ! is_bool($raw['collection_enabled'])
+            || ! is_array($raw['cleanup'])
+            || count(array_diff(array_keys($unknown['cleanup']), array_keys($raw['cleanup']))) !== 0) {
+            return $unknown;
+        }
+        $version = $raw['plugin_version'];
+        if ($version !== null
+            && (! is_string($version) || preg_match('/\A[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}\z/D', $version) !== 1)) {
+            return $unknown;
+        }
+        foreach (array('contract_sha256', 'policy_sha256', 'approved_revision') as $field) {
+            if ($raw[$field] !== null
+                && (! is_string($raw[$field]) || preg_match('/\A[0-9a-f]{64}\z/D', $raw[$field]) !== 1)) {
+                return $unknown;
+            }
+        }
+        $cleanup = $raw['cleanup'];
+        if ($cleanup['healthy'] !== null && ! is_bool($cleanup['healthy'])) {
+            return $unknown;
+        }
+        $date = $cleanup['last_success_date'];
+        if ($date !== null
+            && (! is_string($date)
+                || preg_match('/\A([0-9]{4})-([0-9]{2})-([0-9]{2})\z/D', $date, $parts) !== 1
+                || ! checkdate((int) $parts[2], (int) $parts[3], (int) $parts[1]))) {
+            return $unknown;
+        }
+        $code = $cleanup['last_error_code'];
+        if (! in_array($code, array(
+            null, 'MAINTENANCE_UNAVAILABLE', 'CLEANUP_STALE', 'STORAGE_UNAVAILABLE',
+            'CLEANUP_FAILED', 'CLEANUP_STATUS_UNAVAILABLE',
+        ), true)) {
+            return $unknown;
+        }
+        if (($raw['plugin_active'] && $version === null)
+            || ($raw['collection_enabled']
+                && (! $raw['plugin_active'] || $raw['contract_sha256'] === null
+                    || $raw['policy_sha256'] === null || $raw['approved_revision'] === null))) {
+            return $unknown;
+        }
+        // Never forward new plugin fields implicitly, including nested cleanup data.
+        $result = array_intersect_key($raw, $unknown);
+        $result['cleanup'] = array_intersect_key($cleanup, $unknown['cleanup']);
+        return $result;
+    }
+
     public function site_status($input = array())
     {
         unset($input);
@@ -420,6 +498,7 @@ final class RAOS_Codex_MCP_Content
                 'active' => $theme_active,
             ),
             'yoast' => $yoast,
+            'reader_measurement' => self::reader_measurement_status(),
             'measurement' => array(
                 'plugin_active' => defined('RAOS_EDITORIAL_MEASUREMENT_VERSION'),
                 'plugin_version' => defined('RAOS_EDITORIAL_MEASUREMENT_VERSION')

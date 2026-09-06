@@ -21,6 +21,9 @@ from raos_wordpress_baseline_media import validate_replay  # noqa: E402
 
 from raos.application.editorial.verified_incremental_preview_v1 import (  # noqa: E402
     derive_editorial_browser_expectations,
+    READER_HUB_SLUGS,
+    POLICY_SLUGS,
+    validate_reader_page,
 )
 from raos.application.editorial.legacy_media_display_projection_v1 import (  # noqa: E402
     project_legacy_media,
@@ -195,6 +198,89 @@ def derive_article(markup: str, article_id: str) -> dict[str, object]:
     }
 
 
+READER_BINDING_FIELDS = (
+    "reader_page_slugs",
+    "reader_page_documents",
+    "snapshot_reader_page_slugs",
+    "reader_page_baselines",
+    "snapshot_document_sha256",
+    "all_document_baselines",
+    "unpublished_reader_pages",
+    "core_document_slugs",
+)
+
+
+def reader_binding_scope(binding: dict, article_ids: dict) -> tuple[set, set, set]:
+    """Replay the closed target and baseline sets before reading page files."""
+    selected = binding.get("reader_page_slugs")
+    declared = binding.get("snapshot_reader_page_slugs")
+    for values, allowed in (
+        (selected, READER_HUB_SLUGS | {"home", "privacy-policy"}),
+        (declared, READER_HUB_SLUGS),
+    ):
+        if (
+            not isinstance(values, list)
+            or any(not isinstance(slug, str) for slug in values)
+            or values != sorted(set(values))
+            or not set(values) <= allowed
+        ):
+            reject()
+    if not set(selected) & READER_HUB_SLUGS <= set(declared):
+        reject()
+    baseline_slugs = set(POLICY_SLUGS) | {"home"} | set(declared)
+    baselines = binding.get("reader_page_baselines")
+    all_baselines = binding.get("snapshot_document_sha256")
+    overrides = binding.get("reader_page_documents")
+    if (
+        not isinstance(baselines, dict)
+        or set(baselines) != baseline_slugs
+        or not isinstance(all_baselines, dict)
+        or set(all_baselines) != set(article_ids) | baseline_slugs
+        or not isinstance(overrides, dict)
+        or set(overrides) != set(selected)
+        or any(
+            not isinstance(value, str) or re.fullmatch("[a-f0-9]{64}", value) is None
+            for value in all_baselines.values()
+        )
+        or any(
+            all_baselines[slug] != binding["baseline_document_sha256"][slug]
+            for slug in article_ids
+        )
+    ):
+        reject()
+    ids, drafts = set(), {}
+    for slug, row in baselines.items():
+        if (
+            not isinstance(row, dict)
+            or set(row) != {"production_id", "status", "source_content_sha256"}
+            or type(row["production_id"]) is not int
+            or row["production_id"] <= 0
+            or row["production_id"] in ids
+            or row["status"]
+            not in ({"draft", "publish"} if slug in declared else {"publish"})
+            or row["source_content_sha256"] != all_baselines[slug]
+        ):
+            reject()
+        ids.add(row["production_id"])
+        if row["status"] == "draft":
+            drafts[slug] = {
+                "production_id": row["production_id"],
+                "production_slug": slug,
+                "status": "draft",
+                "publication_date": "NOT_VERIFIED",
+                "public_taxonomies": "NOT_APPLICABLE",
+            }
+    for slug, row in overrides.items():
+        validate_reader_page(slug, row)
+    managed_hubs = set(declared) & (set(selected) | (set(declared) - set(drafts)))
+    if binding.get("unpublished_reader_pages") != drafts or binding.get(
+        "core_document_slugs"
+    ) != sorted(set(article_ids) | set(POLICY_SLUGS) | {"home"} | managed_hubs):
+        reject()
+    pages = set(POLICY_SLUGS) | managed_hubs | ({"home"} & set(selected))
+    return pages, baseline_slugs, set(article_ids) | baseline_slugs - set(drafts)
+
+
 def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, object]:
     if (
         not fixture_root.is_absolute()
@@ -224,11 +310,14 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
         for row in inventory["surfaces"]
         if row.get("kind") == "article"
     }
+    reader_mode = "reader_page_slugs" in binding
+    if any(key in binding for key in READER_BINDING_FIELDS) and not reader_mode:
+        reject()
     selected = binding.get("selected_slugs")
     if (
         len(article_ids) != 10
         or type(selected) is not list
-        or not selected
+        or (not selected and not (reader_mode and binding.get("reader_page_slugs")))
         or len(set(selected)) != len(selected)
         or not set(selected) <= set(article_ids)
         or set(binding.get("article_body_sha256", {})) != set(article_ids)
@@ -236,6 +325,10 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
         or set(binding.get("article_states", {})) != set(article_ids)
     ):
         reject()
+    if reader_mode:
+        reader_pages, baseline_pages, public_documents = reader_binding_scope(
+            binding, article_ids
+        )
     posts_raw = read_private(fixture_root / "posts.json")
     if digest(posts_raw) != binding.get("posts_sha256"):
         reject()
@@ -280,11 +373,19 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
         "link_mode": "standard-api",
         "selected_article_ids": sorted(article_ids[slug] for slug in selected),
         "articles": scope_rows,
+        **(
+            {
+                "reader_page_slugs": binding["reader_page_slugs"],
+                "core_document_slugs": binding["core_document_slugs"],
+            }
+            if reader_mode
+            else {}
+        ),
     }
     if scope != binding.get("incremental_scope"):
         reject()
     categories = category_surfaces(inventory)
-    if categories and "seed_metadata_sha256" not in binding:
+    if (categories or reader_mode) and "seed_metadata_sha256" not in binding:
         reject()
     if "seed_metadata_sha256" in binding:
         metadata_raw = read_private(fixture_root / "seed-metadata.v1.json")
@@ -301,17 +402,28 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
             or metadata.get("home_state") != binding.get("home_state")
         ):
             reject()
+        if reader_mode and any(
+            metadata.get(key) != binding.get(key) for key in READER_BINDING_FIELDS
+        ):
+            reject()
         policy_slugs = {
             row["production_path"].strip("/")
             for row in inventory["surfaces"]
             if row.get("kind") == "policy"
         }
+        expected_pages = reader_pages if reader_mode else policy_slugs
+        expected_baselines = baseline_pages if reader_mode else policy_slugs | {"home"}
+        expected_public = (
+            public_documents
+            if reader_mode
+            else set(article_ids) | policy_slugs | {"home"}
+        )
         if (
             len(policy_slugs) != 3
-            or set(binding.get("page_body_sha256", {})) != policy_slugs
-            or set(binding.get("baseline_page_sha256", {})) != policy_slugs | {"home"}
-            or set(metadata.get("documents", {}))
-            != set(article_ids) | policy_slugs | {"home"}
+            or (reader_mode and policy_slugs != POLICY_SLUGS)
+            or set(binding.get("page_body_sha256", {})) != expected_pages
+            or set(binding.get("baseline_page_sha256", {})) != expected_baselines
+            or set(metadata.get("documents", {})) != expected_public
         ):
             reject()
         page_raw = read_private(fixture_root / "pages.json")
@@ -320,21 +432,31 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
         pages = json.loads(page_raw)
         if (
             pages.get("schema") != "RAOS_WORDPRESS_LOCAL_PREVIEW_PAGES_V1"
-            or len(pages.get("pages", [])) != 3
-            or {row.get("slug") for row in pages["pages"]} != policy_slugs
+            or len(pages.get("pages", [])) != len(expected_pages)
+            or {row.get("slug") for row in pages["pages"]} != expected_pages
             or any(
                 row.get("content_file") != f"pages/{row['slug']}.html"
                 for row in pages["pages"]
             )
         ):
             reject()
-        for slug in policy_slugs:
+        if reader_mode:
+            for row in pages["pages"]:
+                target = binding["reader_page_documents"].get(row["slug"])
+                if target is not None and (
+                    row.get("title") != target["title"]
+                    or row.get("excerpt") != target["excerpt"]
+                    or binding["page_body_sha256"][row["slug"]]
+                    != digest(target["block_markup"].encode())
+                ):
+                    reject()
+        for slug in expected_pages:
             if (
                 digest(read_private(fixture_root / "pages" / f"{slug}.html"))
                 != binding["page_body_sha256"][slug]
             ):
                 reject()
-        for slug in policy_slugs | {"home"}:
+        for slug in expected_baselines:
             if (
                 digest(read_private(fixture_root / "baseline-pages" / f"{slug}.html"))
                 != binding["baseline_page_sha256"][slug]

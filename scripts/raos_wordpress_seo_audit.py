@@ -336,10 +336,57 @@ class BoundedHttpsTransport:
         contract: AuditContract,
         *,
         allowed_resource_urls: frozenset[str] = frozenset(),
+        reader_measurement: object | None = None,
     ) -> None:
         self._contract = contract
         self._origin_parts = urlsplit(contract.origin)
         self._ssl_context = ssl.create_default_context()
+        reader_urls: frozenset[str] = frozenset()
+        if reader_measurement is not None:
+            # Local imports keep the optional runtime parser dependency acyclic.
+            from collections.abc import Mapping
+            from raos_wordpress_runtime_audit import (
+                ORIGIN as READER_ORIGIN,
+                READER_PREFIX,
+                READER_PROFILE,
+                ReaderMeasurementRuntime,
+                Resource,
+            )
+
+            if (
+                type(reader_measurement) is not ReaderMeasurementRuntime
+                or reader_measurement.profile != READER_PROFILE
+                or contract.origin != READER_ORIGIN
+                or type(reader_measurement.expected_collection_enabled) is not bool
+                or not isinstance(reader_measurement.resources, Mapping)
+                or len(reader_measurement.resources) != 2
+            ):
+                _fail("HTTP_URL_OUT_OF_BOUNDARY")
+            kinds = set()
+            for url, resource in reader_measurement.resources.items():
+                if (
+                    type(resource) is not Resource
+                    or type(resource.sha256) is not str
+                    or _SHA256_RE.fullmatch(resource.sha256) is None
+                    or type(resource.size) is not int
+                    or not 0 < resource.size <= 4 * 1024 * 1024
+                    or resource.kind not in ("js", "css")
+                    or resource.module_id is not None
+                    or resource.dependencies
+                    or url
+                    != (
+                        READER_PREFIX
+                        + "assets/reader-measurement."
+                        + resource.kind
+                        + "?ver="
+                        + resource.sha256
+                    )
+                ):
+                    _fail("HTTP_URL_OUT_OF_BOUNDARY")
+                kinds.add(resource.kind)
+            if kinds != {"js", "css"}:
+                _fail("HTTP_URL_OUT_OF_BOUNDARY")
+            reader_urls = frozenset(reader_measurement.resources)
         # Opt-in, finite dependency URLs only. Ordinary page/image/XML callers
         # retain the original no-query boundary, including on the same origin.
         for url in allowed_resource_urls:
@@ -352,8 +399,11 @@ class BoundedHttpsTransport:
                 parts.scheme != "https"
                 or parts.netloc != self._origin_parts.netloc
                 or parts.fragment
-                or not parts.path.startswith(
-                    ("/wp-includes/", "/wp-content/themes/kurashinoshirube-child/")
+                or (
+                    not parts.path.startswith(
+                        ("/wp-includes/", "/wp-content/themes/kurashinoshirube-child/")
+                    )
+                    and url not in reader_urls
                 )
                 or re.fullmatch(r"/[a-zA-Z0-9_./-]+", parts.path) is None
                 or any(segment in {".", ".."} for segment in parts.path.split("/"))
