@@ -382,6 +382,11 @@
     return failures;
   };
 
+  const hasResearchStatusLabels = (text) => typeof text === 'string' &&
+    (text.includes('公式情報確認：') ||
+      (text.includes('出典の取得日：') && text.includes('記事確認：'))) &&
+    text.includes('実機確認：');
+
   const buildAudit = ({ artifactDirectory, axeSource, inventory, origin,
     publicationProfile = 'legacy-full', linkMode = 'measured-admin', incrementalScope = null,
     selectedSurfaceIds = null, workers = 1,
@@ -410,6 +415,8 @@
   const widths = inventory?.viewports;
   const readerDisplay = inventory?.reader_display;
   const readerArticles = new Set(readerDisplay?.article_ids ?? []);
+  const componentArticles = new Set(
+    readerDisplay?.component_article_ids ?? readerDisplay?.article_ids ?? []);
   const requiredWidths = [360, 390, 768, 1024, 1440];
   const articleRows = Array.isArray(publicSurfaces)
     ? publicSurfaces.filter((surface) => surface.kind === 'article')
@@ -660,7 +667,7 @@
   const surfaces = [...publicSurfaces, ...localSurfaces].map((surface) => ({
     ...surface,
     article: surface.kind === 'article',
-    readerComponents: readerArticles.has(surface.article_id),
+    readerComponents: componentArticles.has(surface.article_id),
     imageRequired: !readerDisplay || Boolean(readerDisplay.social_images?.[surface.article_id || 'home']),
     expectedStatus: surface.expected_http_status || 200,
     name: surface.surface_id,
@@ -856,7 +863,7 @@
     if (
       byType('BreadcrumbList').length !== 1 ||
       breadcrumb['@id'] !== `${expectedUrl}#breadcrumb` ||
-      !Array.isArray(items) || ![2, ...(surface.readerComponents ? [3] : [])].includes(items.length) ||
+      !Array.isArray(items) || ![2, ...(readerArticles.has(surface.article_id) ? [3] : [])].includes(items.length) ||
       items[0]?.position !== 1 || items[0]?.item !== `${origin}/` ||
       items.at(-1)?.position !== items.length || items.at(-1)?.item !== expectedUrl ||
       items.at(-1)?.name !== audit.head.title ||
@@ -2027,7 +2034,7 @@
       );
       const disclosureSemanticsFailure = surface.article && (surface.readerComponents ? (
         audit.reader.components !== 1 || audit.reader.statusCount !== 1 || !audit.reader.statusVisible ||
-        !audit.reader.statusText.includes('公式情報確認：') || !audit.reader.statusText.includes('実機確認：') ||
+        !hasResearchStatusLabels(audit.reader.statusText) ||
         !audit.reader.statusText.includes(requiresAffiliateCta ? '広告リンクを含みます' : '販売リンクは掲載していません') ||
         audit.reader.evidenceCount !== 1 || !audit.reader.evidenceValid || audit.reader.sourceLink !== '#reader-evidence'
       ) : (
@@ -2364,6 +2371,7 @@
 
   const factory = (options) => buildAudit(options);
   factory.validateSeoHead = validateSeoHead;
+  factory.hasResearchStatusLabels = hasResearchStatusLabels;
   factory.validateIncrementalScope = validateIncrementalScope;
   factory.validateIncrementalArticle = validateIncrementalArticle;
   factory.validateListing = validateListing;
