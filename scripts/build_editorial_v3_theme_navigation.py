@@ -471,7 +471,7 @@ def build_documents() -> tuple[bytes, bytes]:
             expected_context = {
                 "adjacent_condition": "近い条件を別の軸で比べる",
                 "broader_guide": "候補を広げて選び直す",
-                "lifecycle_reference": "以前の比較対象の販売状況を確認する",
+                "lifecycle_reference": "別機種・旧候補の型番と販売表示を確認する",
                 "narrower_comparison": "条件を絞った比較へ進む",
             }[expected_relationship]
             if (

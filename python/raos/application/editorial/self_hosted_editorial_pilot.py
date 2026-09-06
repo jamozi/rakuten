@@ -126,7 +126,7 @@ _SOURCE_HOSTS: Final = frozenset(
 # source-ref/URL pairs keeps the application boundary closed while allowing
 # the generator to expand the reviewed inventory deliberately.
 _PRODUCT_SOURCE_INVENTORY_SHA256: Final = (
-    "d6179333137f0faf66526a1eadc86c085ada3d12245b6f16955946996210a70b"
+    "5d2dc5863df2ee06c86f603733b2e8a79380172025ea63db3eab5c4e44894112"
 )
 _POLICY_SOURCE_INVENTORY_SHA256: Final = (
     "5509d907252fe67cbb7aea1fa37ced915cf02d50f5a4a6b2b08341292ddd55c8"
@@ -1383,7 +1383,11 @@ def _bind_source_capture_evidence(
         }
         expected_content_type = (
             "application/pdf"
-            if source["source_type"] == "PRODUCT_MANUAL"
+            if source["source_type"] in {
+                "PRODUCT_MANUAL",
+                "OFFICIAL_PRODUCT_MANUAL_PDF",
+                "OFFICIAL_PRODUCT_CATALOG_PDF",
+            }
             else "text/html"
         )
         try:
@@ -1803,7 +1807,7 @@ _ARTICLE_SECTION_HEADINGS: Final[Mapping[str, Mapping[str, str]]] = {
         "selection_criteria": "置き場所と食器量から絞る",
         "comparison_table": "4モデルの設置寸法・容量・給水方式",
         "product_cards": "4モデルの設置条件と注意点",
-        "caution": "給排水・扉・耐熱条件を最後に確認する",
+        "caution": "給排水・扉・耐熱条件を先に確認する",
     },
     "st1704-compact-robot-vacuum-shortlist": {
         "decision_summary": "設置寸法と手入れ範囲で分ける",

@@ -317,7 +317,8 @@ def test_source_fact_packets_are_ready_hash_bound_and_cover_every_claim() -> Non
 
     assert len(registry_packets) == 10
     assert len(packets) == len(articles) == 5
-    assert len(sources) == 101
+    assert len(sources) == 102
+    assert sources["SRC-SIROCA-SS-MA251-MANUAL-20260906"]["retrieved_on"] == "2026-09-06"
     assert (
         _canonical_sha256(
             sorted(
@@ -328,8 +329,14 @@ def test_source_fact_packets_are_ready_hash_bound_and_cover_every_claim() -> Non
                 key=lambda value: cast(str, value["source_ref"]),
             )
         )
-        == "d6179333137f0faf66526a1eadc86c085ada3d12245b6f16955946996210a70b"
+        == "5d2dc5863df2ee06c86f603733b2e8a79380172025ea63db3eab5c4e44894112"
     )
+    # The one newly reviewed manual does not broaden or replace older sources.
+    assert _canonical_sha256(sorted(
+        ({"source_ref": ref, "url": source["url"]} for ref, source in sources.items()
+         if ref != "SRC-SIROCA-SS-MA251-MANUAL-20260906"),
+        key=lambda value: cast(str, value["source_ref"]),
+    )) == "d6179333137f0faf66526a1eadc86c085ada3d12245b6f16955946996210a70b"
     assert sources["SRC-ACE-CRESTA-06316"]["url"] == (
         "https://store.ace.jp/shop/g/g06316-01/"
     )
@@ -630,7 +637,7 @@ def test_every_article_has_explicit_reader_led_product_presentation() -> None:
         "st1703-first-suitcase-comparison": "2026-09-01",
         "st1704-portable-power-station-guide": "2026-09-01",
         "st1704-anker-solix-c300-c800-c1000-differences": "2026-09-01",
-        "st1704-countertop-dishwasher-for-small-households": "2026-09-01",
+        "st1704-countertop-dishwasher-for-small-households": "2026-09-06",
         "st1704-compact-robot-vacuum-shortlist": "2026-09-01",
     }
     for article in collection["articles"]:

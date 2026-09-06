@@ -7,11 +7,11 @@ source_artifacts:
 - uri: repo://changes/st-1104/contracts/analytics-finance-dashboard.v2.yaml
   role: OWNER_SOURCE
   bytes: 9628
-  sha256: aa3fdec354d71b35c522598d93c474e7d68c9ff521f4b423632d0eb64c14df10
+  sha256: 3a3185d403f6debcb47ab3bb81b07141360acda8262ed5e607bdc0f6654c1405
 - uri: repo://changes/st-1104/fixtures/analytics-finance-dashboard-recorded.synthetic.v2.json
   role: OWNER_SOURCE
   bytes: 1818
-  sha256: 2a892c10d4f2c3f43fc7278a9dcea38d183a818b5425e9a59cd0432d8b7253cb
+  sha256: be8b637008556887cd9914a45529ea39bf459b753e28bca3045b7d787106b0e3
 - uri: repo://changes/st-1104/PREFLIGHT-v2.md
   role: OWNER_SOURCE
   bytes: 3193
@@ -207,15 +207,15 @@ source_artifacts:
 - uri: repo://changes/st-1304/contracts/cost-unit-economics-runtime.v2.yaml
   role: BOUND_INPUT
   bytes: 8079
-  sha256: 601d0919b57d50745168ae90c3a4a8c49737af3ddf0dc14531efbabc4a183578
+  sha256: d985ec047c529c763ba66d974099cd094f2ffb651d58023d553947b658527847
 - uri: repo://changes/st-1304/generated/cost-unit-economics-recorded.v2.json
   role: BOUND_INPUT
   bytes: 39444
-  sha256: 6855697006be52747528872969316ec6025af6b4a887b33caaa425b2351e7839
+  sha256: 400a1c2137044d09f2bc1e6f11f3101012db55e97b9068ffd96526d6992a0dc3
 - uri: repo://changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
   role: BOUND_INPUT
   bytes: 19582
-  sha256: b6d7a29b5490a3b0449a788578b6d68bdb2f5140078cc72ffd022c3840041da3
+  sha256: ed9f1c99e9b0cf5cd36b38bc48ce85d410ba24adfe42e051ce268f1ef5f8bea9
 - uri: repo://python/raos/domain/finance/unit_economics.py
   role: BOUND_INPUT
   bytes: 47437
@@ -239,20 +239,20 @@ source_artifacts:
 - uri: repo://changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
   role: BOUND_INPUT
   bytes: 5630
-  sha256: 1671d1f6f4069e69ffd3557a1fa8943ac6ba9c5623acaf3443102a8c00e6d476
+  sha256: 43b9abe54450701d50cc618cab63eeacbe95e500eef982453d8d09f90e06af57
 - uri: repo://changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
   role: BOUND_INPUT
   bytes: 19034
-  sha256: b209b37b278ce64fd8c757250f3f103f937c24ae8abc636a58e7952333bf97b1
+  sha256: 521df6e5fe4632d75a546d8c720423e6442b4d33884df769d38a0923b9ff4d85
 generated_artifacts:
 - uri: repo://changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json
   role: HEADLESS_RECORDED_READ_MODEL
   bytes: 30334
-  sha256: 530ee9cae72ca2c64e59f9d6588a6008c424bcc4bf6df52cb7146cdfee3542b5
+  sha256: fe30cea9d21a36ab1e4254edb8be8469163c04b95304842e6e56e8920de5c6e7
 - uri: repo://packages/web-ui/src/analytics-finance-recorded.v2.ts
   role: IMMUTABLE_TYPESCRIPT_FIXTURE_WRAPPER
   bytes: 31473
-  sha256: d3f4b45c4b106e2b26f7ddf3ff644176598c35a64d299335734c824ca985ef03
+  sha256: badab93c3960670ddd1395c9813f4734b113bff9c72034bbd3b476a44a8280d9
 generation:
   owner: repo://scripts/build_st1104_analytics_finance_dashboard.py
   command: .venv/bin/python scripts/build_st1104_analytics_finance_dashboard.py

@@ -44,7 +44,7 @@ from scripts import raos_editorial_portfolio_v2 as portfolio_script
 
 ROOT = Path(__file__).resolve().parents[2]
 ARTICLE_ROOT = ROOT / "changes/wordpress-local-preview-v1/fixtures/articles"
-SELECTION_NOW = datetime(2026, 9, 1, 12, 0, tzinfo=UTC)
+SELECTION_NOW = datetime(2026, 9, 6, 12, 0, tzinfo=UTC)
 
 
 @pytest.fixture(autouse=True)
@@ -353,10 +353,12 @@ def test_editorial_review_and_product_source_dates_remain_distinct() -> None:
         article.article_id: (
             "2026-09-05"
             if article.article_id == "solota-vs-rakua-mini-plus"
-            else portfolio.editorial_reviewed_on
+            else ("2026-09-06" if article.article_id == "st1704-countertop-dishwasher-for-small-households" else portfolio.editorial_reviewed_on)
         )
         for article in portfolio.articles
     }
+    assert sources["SRC-SIROCA-SS-MA251"]["retrieved_on"] == "2026-08-23"
+    assert sources["SRC-SIROCA-SS-MA251-MANUAL-20260906"]["retrieved_on"] == "2026-09-06"
     assert all(
         max(source_dates) <= contract.article_dates[article_id]
         for article_id, source_dates in source_dates_by_article.items()
@@ -2128,7 +2130,8 @@ def test_renderer_market_exclusions_are_source_bound_and_idempotent() -> None:
             article_id,
         )
         assert rendered.count(f">{heading}</h2>") == 1
-        assert "メーカー公式情報を確認する" in rendered
+        assert "の型番・販売表示を確認する</a>" in rendered
+        assert "メーカー公式情報を確認する" not in rendered
         assert "型番・対象範囲：" in rendered
         assert "比較表に含めなかった理由：" in rendered
         assert "EVALUATED_NOT_DIFFERENTIATING" not in rendered

@@ -1109,7 +1109,7 @@ def test_each_of_ten_article_plans_has_exact_sources_plus_fixed_policy() -> None
         "st1703-first-suitcase-comparison": 7,
         "st1704-portable-power-station-guide": 30,
         "st1704-anker-solix-c300-c800-c1000-differences": 13,
-        "st1704-countertop-dishwasher-for-small-households": 15,
+        "st1704-countertop-dishwasher-for-small-households": 16,
         "st1704-compact-robot-vacuum-shortlist": 15,
         "carry-on-suitcase-under-100-seats": 10,
         "lightweight-carry-on-suitcase-under-3kg": 14,

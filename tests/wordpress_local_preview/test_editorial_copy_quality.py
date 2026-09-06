@@ -50,7 +50,9 @@ def test_all_existing_articles_explain_role_accountability_and_limits() -> None:
         )
         assert first_hand_label in markup, slug
         checked_on = (
-            "2026年9月5日" if slug == "solota-vs-rakua-mini-plus" else "2026年9月1日"
+            "2026年9月5日" if slug == "solota-vs-rakua-mini-plus"
+            else "2026年9月6日" if slug == "countertop-dishwasher-for-small-households"
+            else "2026年9月1日"
         )
         assert markup.count(f"<dt>最終確認日</dt><dd>{checked_on}</dd>") == 1, slug
         disclosure_heading = (

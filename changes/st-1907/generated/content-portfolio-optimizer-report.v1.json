@@ -37,8 +37,8 @@
       "RECORDED_SYNTHETIC_ONLY",
       "SEPARATE_RELEASE_DECISION_REQUIRED"
     ],
-    "command_sha256": "6006d07c9c48c5b611f106d9ac660ce9f03d5f4153c8c7149045c46d06685da5",
-    "contract_sha256": "33462edb7f1de9aff5ad3c9cdc9cbedcd174671493077e502f1b7e44a35aaf9a",
+    "command_sha256": "f2a82d9de1a2b3f51601ea6f068e3efa1c05bea3e913fffdeff28d5fec0b6004",
+    "contract_sha256": "2e89ee0ec7453ce6166b856f2abd71dc6f219311b1ac7bd565e3e3c4e5b3393b",
     "dependency": {
       "acceptance_criteria_satisfied": false,
       "actual_observation_count": 0,
@@ -51,7 +51,7 @@
       "source_overall": "BLOCKED",
       "story_id": "ST-1805"
     },
-    "measurement_contract_sha256": "28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0",
+    "measurement_contract_sha256": "98ecaadc336feb5282f61884ce7f247590c843ac2f141127169a7200dd42dbe4",
     "method_version": "RAOS_ST1907_HUMAN_PROPOSAL_PORTFOLIO_OPTIMIZER_V1",
     "policy": {
       "action_vocabulary": [
@@ -80,16 +80,16 @@
     "proposal_count": 0,
     "proposal_state": "NO_PROPOSALS",
     "proposals": [],
-    "report_sha256": "dc4a8641b1011ae97966a6f94841ed31f16cc4a9c35e648cc7920b6c4dcb69d6",
-    "signal_policy_sha256": "5e5ae0a0a90f3614d8fbb7070eaf280e2d6bb314c21df52243577a9c6c259c85",
-    "source_sha256": "f284f4575832a1beed6f22541b8543a904edbecadc67e8ea461a8d2e1a7ababc",
+    "report_sha256": "e8aef99471719497fe7c3e1f6eba0d025d8410067d8c2c70ba98cfb9872f304c",
+    "signal_policy_sha256": "047101a75291004c64b6721ef14c7437c9cfe2af60d3a6f47ae9b35266761088",
+    "source_sha256": "b7510ecfc14f4848aa78feb017a354c93588b1af2dab7602dd5e4cf2a5c65f2d",
     "unavailable_reason": "DEPENDENCY_BLOCKED_NO_DECISION"
   },
   "source": {
     "bytes": 986,
     "fixture_profile": "RAOS_ST1907_RECORDED_SYNTHETIC_V1",
     "path": "changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json",
-    "sha256": "f284f4575832a1beed6f22541b8543a904edbecadc67e8ea461a8d2e1a7ababc",
+    "sha256": "b7510ecfc14f4848aa78feb017a354c93588b1af2dab7602dd5e4cf2a5c65f2d",
     "synthetic": true
   }
 }

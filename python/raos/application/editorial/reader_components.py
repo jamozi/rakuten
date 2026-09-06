@@ -32,7 +32,7 @@ def decision_axes(axes: Sequence[Mapping[str, str]]) -> Element | None:
 def decision_table(rows: Sequence[Mapping[str, str]]) -> Element | None:
     if not rows:
         return None
-    headings = ('条件', '候補', '選ぶ理由', '妥協点', '購入前の確認')
+    headings = ('条件', '候補', '選ぶ理由', '妥協点・選ばない条件', '購入前の確認')
     keys = ('condition', 'product_name', 'reason', 'tradeoff', 'purchase_check')
     body: list[str] = []
     for row in rows:
@@ -41,6 +41,11 @@ def decision_table(rows: Sequence[Mapping[str, str]]) -> Element | None:
             value = escape(row[key])
             if key == 'product_name':
                 value = f'<a href="#{escape(row["anchor"], quote=True)}">{value}</a>'
+            if key == 'tradeoff':
+                value = ('<p><strong>妥協点：</strong>' + value + '</p>') if value else (
+                    '<p><strong>妥協点：</strong><a href="#' + escape(row['anchor'], quote=True) + '">商品の詳細で確認</a></p>')
+                if row.get('not_for'):
+                    value += '<p><strong>選ばない条件：</strong>' + escape(row['not_for']) + '</p>'
             tag = 'th' if index == 0 else 'td'
             scope = ' scope="row"' if index == 0 else ''
             cells.append(f'<{tag}{scope} data-label="{label}">{value}</{tag}>')
@@ -144,33 +149,199 @@ def enhance_specification_tables(root: Element) -> None:
             wrapper.parent.append(shared)
 
 
-def dimension_diagram(claim: Mapping[str, object], source: Mapping[str, object], asset: Mapping[str, object]) -> Element | None:
-    """Draw only recorded official dimensions; a footprint is not installation approval."""
+def _dimension_row(raw: object) -> tuple[str, float, float, float] | None:
+    if not isinstance(raw, Mapping):
+        return None
+    raw = cast(Mapping[str, object], raw)
+    values: list[float] = []
+    for key in ('width_cm', 'depth_cm', 'height_cm'):
+        value = raw.get(key)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            return None
+        if not math.isfinite(value) or value <= 0:
+            return None
+        values.append(float(value))
+    return (str(raw.get('subject', '')).strip(), values[0], values[1], values[2])
+
+
+def _axis_label(row: tuple[str, float, float, float]) -> str:
+    return (
+        f'W（幅）{row[1]:g}cm / D（奥行）{row[2]:g}cm / '
+        f'H（高さ）{row[3]:g}cm'
+    )
+
+
+def _comparison_plan(
+    rows: Sequence[tuple[str, float, float, float]],
+    roles: Sequence[str],
+    *,
+    overlay: bool,
+    alt: str,
+) -> str:
+    # HTML/CSS keeps the existing WordPress post allow-list unchanged.
+    max_width = max(row[1] for row in rows)
+    max_depth = max(row[2] for row in rows)
+    available_width = 260 if overlay else 120
+    scale = min(available_width / max_width, 150 / max_depth)
+    shapes: list[str] = []
+    for index, (row, role) in enumerate(zip(rows, roles, strict=True)):
+        width = row[1] * scale
+        depth = row[2] * scale
+        x = (320 - width) / 2 if overlay else 20 + index * 160 + (120 - width) / 2
+        y = 15 + (150 - depth) / 2
+        shapes.append(
+            '<span class="raos-dimension-diagram__shape" '
+            f'data-raos-dimension-role="{escape(role, quote=True)}" '
+            f'style="left:{x / 320 * 100:g}%;top:{y / 180 * 100:g}%;'
+            f'width:{width / 320 * 100:g}%;height:{depth / 180 * 100:g}%"></span>'
+        )
+    return (
+        '<div class="raos-dimension-diagram__comparison-plan" '
+        f'role="img" aria-label="{escape(alt, quote=True)}">'
+        + ''.join(reversed(shapes) if overlay else shapes)
+        + '</div>'
+    )
+
+
+def _comparison_diagram(
+    dimensions: Sequence[tuple[str, float, float, float]],
+    asset: Mapping[str, object],
+) -> tuple[str, str] | None:
+    body = next((row for row in dimensions if '本体' in row[0]), None)
+    station = next(
+        (row for row in dimensions if any(token in row[0] for token in ('ステーション', '充電台', 'ドック', 'スタンド'))),
+        None,
+    )
+    if station is not None:
+        if body is None:
+            return None
+        rows = (body, station)
+        labels = (('body', '本体'), ('station', 'ステーション'))
+        unknown = (
+            'この図には、設置に必要な前方・左右・上方の余白を含めていません。'
+            '帰還経路と手入れの動線はメーカー公式で別に確認してください。'
+        )
+        plan = _comparison_plan(
+            rows,
+            tuple(role for role, _ in labels),
+            overlay=False,
+            alt=str(asset['alt']),
+        )
+    else:
+        normal = next((row for row in dimensions if '通常' in row[0] or '非拡張' in row[0]), None)
+        expanded = next((row for row in dimensions if '拡張' in row[0] and '非拡張' not in row[0]), None)
+        if normal is None and expanded is None:
+            return None
+        if normal is None or expanded is None:
+            return None
+        rows = (normal, expanded)
+        labels = (('normal', '通常時'), ('expanded', '拡張時'))
+        unknown = (
+            'この図には、ケースを開くための床面と左右の余白を含めていません。'
+            '利用場所と持ち込み条件は別に確認してください。'
+        )
+        plan = _comparison_plan(
+            rows,
+            tuple(role for role, _ in labels),
+            overlay=True,
+            alt=str(asset['alt']),
+        )
+    live_labels = ''.join(
+        '<div data-raos-dimension-label="' + escape(role, quote=True) + '"><dt>'
+        + escape(label) + '</dt><dd>' + escape(_axis_label(row)) + '</dd></div>'
+        for row, (role, label) in zip(rows, labels, strict=True)
+    )
+    return (
+        plan + '<dl class="raos-dimension-diagram__labels">' + live_labels + '</dl>',
+        unknown,
+    )
+
+
+def dimension_diagram(
+    claim: Mapping[str, object],
+    source: Mapping[str, object],
+    asset: Mapping[str, object],
+    *,
+    product_ref: str | None = None,
+    claim_refs: frozenset[str] | None = None,
+) -> Element | None:
+    """Draw only product-bound official dimensions; never infer clearance."""
     references = claim.get('evidence_refs')
     if not isinstance(references, list):
         return None
     if (not approved_media_record(asset) or asset.get('asset_type') != 'html_diagram'
+        or asset.get('role') != 'dimension'
         or claim.get('classification') != 'MAJOR_VERIFIABLE' or claim.get('status') != 'BOUND_TO_OFFICIAL_SOURCE'
         or source.get('authority') != 'MANUFACTURER_OFFICIAL'
         or not CheckedFact(str(claim.get('claim_id', '')), str(source.get('source_ref', '')), cast(str | None, source.get('retrieved_on')), 'KNOWN').usable
         or source.get('url') != asset.get('source') or source.get('source_ref') not in references):
         return None
+    if product_ref is not None:
+        products = claim.get('subject_product_ids')
+        if (
+            claim_refs is None
+            or claim.get('claim_id') not in claim_refs
+            or not isinstance(products, list)
+            or product_ref not in products
+        ):
+            return None
     dimensions = claim.get('dimensions')
     if not isinstance(dimensions, list) or not dimensions:
         return None
     dimensions = cast(list[object], dimensions)
-    body = dimensions[0]
-    if not isinstance(body, dict):
+    typed_dimensions = [_dimension_row(row) for row in dimensions]
+    if any(row is None for row in typed_dimensions):
         return None
-    body = cast(dict[str, object], body)
-    if any(type(body.get(k)) not in (int, float) or not math.isfinite(cast(float, body[k])) or cast(float, body[k]) <= 0 for k in ('width_cm', 'depth_cm', 'height_cm')):
+    rows = cast(list[tuple[str, float, float, float]], typed_dimensions)
+    comparison = _comparison_diagram(rows, asset)
+    comparison_tokens = ('ステーション', '充電台', 'ドック', 'スタンド', '通常', '非拡張', '拡張')
+    if comparison is None and any(
+        token in row[0] for row in rows for token in comparison_tokens
+    ):
         return None
-    width, depth, height = (cast(int | float, body[k]) for k in ('width_cm', 'depth_cm', 'height_cm'))
-    label = f'本体を上から見た幅{width:g}cm、奥行{depth:g}cm。高さ{height:g}cm。'
-    opened = next((d for candidate in dimensions[1:] if isinstance(candidate, dict) for d in (cast(dict[str, object], candidate),) if type(d.get('depth_cm')) in (int,float) and math.isfinite(cast(float, d['depth_cm'])) and cast(float, d['depth_cm']) > 0 and any(t in str(d.get('subject')) for t in ('扉', 'ドア'))), None)
-    door = f'扉を開いたときの奥行：{cast(int | float, opened["depth_cm"]):g}cm（本体を含む）。' if opened else '扉開放時の寸法：この記事で確認できた資料では未確認。取扱説明書で確認してください。'
     identifier = escape(str(asset['asset_ref']), quote=True)
-    return block(f'<figure class="raos-dimension-diagram" id="{identifier}" data-raos-media-state="approved" data-source-ref="{escape(str(source["source_ref"]), quote=True)}" data-claim-id="{escape(str(claim["claim_id"]), quote=True)}"><figcaption><strong>{escape(str(body.get("subject", "本体寸法")))}</strong></figcaption><div class="raos-dimension-diagram__plan" role="img" aria-label="{escape(label)}" style="aspect-ratio:{width:g}/{depth:g}"><span>上から見た本体</span><span>幅 {width:g}cm × 奥行 {depth:g}cm</span></div><p>高さ：{height:g}cm。{escape(door)}</p><p>上方・左右の余白、給水・排水ホース、電源への経路は別に確かめます。</p><p class="raos-dimension-source">{escape(str(asset["caption"]))} <a data-raos-cta-type="verify" href="{escape(str(source["url"]), quote=True)}">メーカー公式で設置条件を確認する</a>。公式情報確認：{escape(str(source["retrieved_on"]))}</p></figure>')
+    metadata = (
+        f'id="{identifier}" data-raos-media-state="approved" '
+        f'data-raos-media-checked-at="{escape(str(asset["checked_at"]), quote=True)}" '
+        f'data-source-ref="{escape(str(source["source_ref"]), quote=True)}" '
+        f'data-claim-id="{escape(str(claim["claim_id"]), quote=True)}"'
+    )
+    if product_ref is not None:
+        metadata += f' data-raos-product-id="{escape(product_ref, quote=True)}"'
+    source_note = (
+        '<p class="raos-dimension-source">'
+        + (escape(str(asset['caption'])) if comparison is None else '')
+        + ' <a data-raos-cta-type="verify" href="'
+        + escape(str(asset['source']), quote=True)
+        + '">メーカー公式で寸法条件を確認する</a>。公式情報確認：'
+        + escape(str(source['retrieved_on']))
+        + '</p>'
+    )
+    if comparison is not None:
+        visual, unknown = comparison
+        return block(
+            f'<figure class="raos-dimension-diagram raos-dimension-diagram--comparison" {metadata}>'
+            f'<figcaption><strong>{escape(str(asset["caption"]))}</strong></figcaption>'
+            + visual
+            + '<p class="raos-dimension-unknown" data-raos-value-state="UNKNOWN">'
+            + escape(unknown)
+            + '</p>'
+            + source_note
+            + '</figure>'
+        )
+    body = rows[0]
+    width, depth, height = body[1:]
+    opened = next((row for row in rows[1:] if any(token in row[0] for token in ('扉', 'ドア'))), None)
+    door = f'扉を開いたときの奥行：{opened[2]:g}cm（本体を含む）。' if opened else '扉開放時の寸法：この記事で確認できた資料では未確認。取扱説明書で確認してください。'
+    return block(
+        f'<figure class="raos-dimension-diagram" {metadata}>'
+        f'<figcaption><strong>{escape(body[0] or "本体寸法")}</strong></figcaption>'
+        f'<div class="raos-dimension-diagram__plan" role="img" aria-label="{escape(str(asset["alt"]), quote=True)}" style="aspect-ratio:{width:g}/{depth:g}"><span>上から見た本体</span><span>幅 {width:g}cm × 奥行 {depth:g}cm</span></div>'
+        f'<p>高さ：{height:g}cm。{escape(door)}</p>'
+        '<p>上方・左右の余白、給水・排水ホース、電源への経路は別に確かめます。</p>'
+        + source_note
+        + '</figure>'
+    )
 
 
 def numerical_difference(left: str, right: str) -> str | None:

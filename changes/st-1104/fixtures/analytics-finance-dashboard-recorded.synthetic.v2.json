@@ -16,9 +16,9 @@
   "source_bindings": {
     "st1205_fixture_sha256": "da6d51ccd7ba56411ec81e316994659849e4ea7fa11e5458982a99a6f2317676",
     "st1205_input_sha256": "5dbaa406b8a94854a8666d777887c8afd8666236bf315be23ae526d92274bd92",
-    "st1304_fixture_sha256": "b6d7a29b5490a3b0449a788578b6d68bdb2f5140078cc72ffd022c3840041da3",
-    "st1304_input_sha256": "3fdc5f40e5a4a3499a7aef0fa2a9fe6b97329ea8b291a6d8d26733b079678f34",
-    "st1304_result_sha256": "24047bc8cd0e1df1610deee64ee73925b40c0e2dadb0c12319c9169f662245c3"
+    "st1304_fixture_sha256": "ed9f1c99e9b0cf5cd36b38bc48ce85d410ba24adfe42e051ce268f1ef5f8bea9",
+    "st1304_input_sha256": "7baf03f7042a5be3f5e66c2e444158f5d01994728db067bf80e9653ca44de2a5",
+    "st1304_result_sha256": "a4ce6776a5c1111cd5e8f1d874d6257ed896f676dd6f61723f38a0d6c7efc003"
   },
   "view_mapping": {
     "ANA-001": [
