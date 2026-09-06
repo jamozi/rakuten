@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.5.1';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '1282d77e528638af2c25df8715a20735fda32db3e8096b95cfd25a0c4cdeef20';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '1282d77e528638af2c25df8715a20735fda32db3e8096b95cfd25a0c4cdeef20';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'f2606fff14f1114ef8bd172e2ea890d187f3ba6a79ae2517b582aabf36e5ac88';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'f2606fff14f1114ef8bd172e2ea890d187f3ba6a79ae2517b582aabf36e5ac88';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -53,7 +53,7 @@ const KURASHINOSHIRUBE_EXISTING_UPDATE_PAGE = 'kurashinoshirube-at003-update-v1'
 const KURASHINOSHIRUBE_EXISTING_UPDATE_LOCK_PREFIX = '_raos_at003_update_lock_v1_';
 const KURASHINOSHIRUBE_REVIEW_REQUEST_PATH = '/wp-json/wp/v2/posts?_fields=id%2Ctype%2Cslug%2Cstatus%2Ctitle.raw%2Cexcerpt.raw%2Ccontent.raw%2Cmeta._raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_PATH = 'assets/editorial-navigation.v3.json';
-const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = 'd5b0aca74cb40f664b1fa65011e2fbe53bf6e8d1a16bd324db0d988f00085042';
+const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '94357bc363787c580ec72a56a598699b122e7e3c93f4afe26451129948c761b4';
 const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_MAX_BYTES = 262144;
 const KURASHINOSHIRUBE_HOME_TITLE = '生活用品を公式仕様で比較｜暮らしのしるべ';
 const KURASHINOSHIRUBE_HOME_DESCRIPTION = '暮らしのしるべは、移動・家事・備えの生活用品を、公式情報と確認条件に基づいて比較し、選び方を分かりやすく案内します。';
@@ -1276,6 +1276,10 @@ function kurashinoshirube_local_preview_article_identity(
     $content = get_post_field('post_content', $post_id, 'raw');
     if (! is_string($slug) || ! is_string($content)) {
         return null;
+    }
+    if (function_exists('raos_local_reader_guide_identity')) {
+        $local_guide = raos_local_reader_guide_identity($post_id);
+        if ($local_guide !== null) { return $local_guide; }
     }
     foreach (kurashinoshirube_article_bindings() as $article_id => $binding) {
         if (($binding['local_slug'] ?? null) !== $slug) {
@@ -3168,6 +3172,10 @@ function kurashinoshirube_reader_guide_card(WP_Post $post): string
     }
     $date = get_post_modified_time('Y年n月j日', false, $post->ID);
     $binding = kurashinoshirube_article_bindings()[$identity['article_id']] ?? array();
+    if (kurashinoshirube_is_local_preview() && function_exists('raos_local_reader_guide_identity')
+        && raos_local_reader_guide_identity((int) $post->ID) !== null) {
+        $binding = array('section' => $identity['section'], 'content_role_label' => '選び方ガイド');
+    }
     $category = ($binding['section'] ?? '') . ' / ' . ($binding['content_role_label'] ?? kurashinoshirube_stored_guide_role((int) $post->ID));
     $asset = kurashinoshirube_article_visual_asset((int) $post->ID);
     $media = is_array($asset) ? '<span class="raos-guide-card__media"><img src="' . esc_url($asset['uri'])
@@ -3204,7 +3212,9 @@ add_shortcode('kurashinoshirube_latest_guides', 'kurashinoshirube_render_latest_
 /** Shared public taxonomy; source memberships never imply a published page. */
 function kurashinoshirube_reader_hubs(): array
 {
-    return kurashinoshirube_editorial_navigation()['reader_navigation']['hubs'] ?? array();
+    $hubs = kurashinoshirube_editorial_navigation()['reader_navigation']['hubs'] ?? array();
+    return kurashinoshirube_is_local_preview() && function_exists('raos_local_reader_guide_hubs')
+        ? raos_local_reader_guide_hubs($hubs) : $hubs;
 }
 
 function kurashinoshirube_reader_category_label(string $article_id): ?string
@@ -3260,6 +3270,9 @@ function kurashinoshirube_reader_eligible_posts(array $article_ids): array
             && kurashinoshirube_public_article_identity((int) $post->ID) !== null) {
             $posts[] = $post;
         }
+    }
+    if (kurashinoshirube_is_local_preview() && function_exists('raos_local_reader_guide_posts')) {
+        $posts = array_merge($posts, raos_local_reader_guide_posts($article_ids));
     }
     return $posts;
 }
@@ -4244,6 +4257,10 @@ function kurashinoshirube_public_listing_post_is_eligible(
     if ($post_id <= 0 || strpos($slug, 'raos-review-') === 0) {
         return false;
     }
+    if (kurashinoshirube_is_local_preview() && function_exists('raos_local_reader_guide_listing_eligibility')) {
+        $local_eligible = raos_local_reader_guide_listing_eligibility($post_id, $slug);
+        if ($local_eligible !== null) { return $local_eligible; }
+    }
     foreach (
         kurashinoshirube_editorial_v2_publication_bindings()
         as $article_id => $binding
@@ -4313,15 +4330,22 @@ function kurashinoshirube_public_listing_excluded_post_ids(): ?array
     $editorial_root_like = $wpdb->esc_like(
         KURASHINOSHIRUBE_EDITORIAL_V2_ROOT
     ) . '%';
+    $local_guide_ids = kurashinoshirube_is_local_preview() && function_exists('raos_local_reader_guide_listing_ids')
+        ? raos_local_reader_guide_listing_ids() : array();
+    $local_guide_clause = $local_guide_ids === array() ? '' : 'AND ID NOT IN ('
+        . implode(', ', array_fill(0, count($local_guide_ids), '%d')) . ') ';
     $query = $wpdb->prepare(
         "SELECT ID, post_name FROM {$wpdb->posts} "
             . "WHERE post_type = %s AND (post_name LIKE %s "
             . "OR post_name IN ({$placeholders}) OR post_content LIKE %s) "
+            . $local_guide_clause
             . "ORDER BY ID ASC LIMIT %d",
         array_merge(
             array('post', $wpdb->esc_like('raos-review-') . '%'),
             $final_slugs,
-            array($editorial_root_like, $query_row_limit)
+            array($editorial_root_like),
+            $local_guide_ids,
+            array($query_row_limit)
         )
     );
     if (! is_string($query)) {
@@ -4339,6 +4363,9 @@ function kurashinoshirube_public_listing_excluded_post_ids(): ?array
     }
 
     $excluded = array();
+    foreach ($local_guide_ids as $local_id) {
+        if (raos_local_reader_guide_identity($local_id) === null) { $excluded[$local_id] = $local_id; }
+    }
     foreach ($rows as $row) {
         $raw_id = is_object($row) && isset($row->ID) ? $row->ID : null;
         $slug = is_object($row) && isset($row->post_name)

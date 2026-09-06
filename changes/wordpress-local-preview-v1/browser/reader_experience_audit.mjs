@@ -6,7 +6,9 @@ const [origin, output] = process.argv.slice(2);
 const target = new URL(origin);
 if (!['127.0.0.1', 'localhost'].includes(target.hostname) || target.protocol !== 'http:' || !output) throw Error('LOCAL_READER_AUDIT_ARGUMENTS_REQUIRED');
 const inventory = JSON.parse(await readFile('changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json','utf8'));
-const available = [...inventory.surfaces, ...inventory.local_surfaces, ...(inventory.reader_hubs ?? [])];
+const guides = JSON.parse(await readFile("changes/wordpress-local-preview-v1/fixtures/reader-guides.v1.json", "utf8"));
+if (guides.publication_authority !== false) throw Error("LOCAL_GUIDE_AUDIT_BOUNDARY");
+const available = [...inventory.surfaces, ...inventory.local_surfaces, ...(inventory.reader_hubs ?? []), ...guides.articles.map(a => ({surface_id: a.article_id, local_path: "/" + a.local_slug + "/"}))];
 const selection = process.env.READER_AUDIT_SURFACES?.split(',');
 if (selection?.some(id=>!available.some(s=>s.surface_id===id))) throw Error('UNKNOWN_READER_SURFACE');
 const surfaces = selection ? available.filter(s=>selection.includes(s.surface_id)) : available;
@@ -51,7 +53,13 @@ try {
         const localLinks = [...document.querySelectorAll('a[href]')].map(a=>new URL(a.href)).filter(u=>u.origin===location.origin&&!(u.hash&&u.pathname===location.pathname&&u.search===location.search)).map(u=>u.href);
         const cards = [...document.querySelectorAll('.raos-home-latest .raos-guide-card')].map(e=>{const r=e.getBoundingClientRect();return{top:r.top,bottom:r.bottom,height:r.height,date:e.querySelector('.raos-guide-card__date')?.getBoundingClientRect().bottom};});
         const allSpecifications = [...main.querySelectorAll('.comparison-table-wrap table')].filter(t=>!t.closest('details:not([open])'));
-        return {h1:headings.filter(e=>e.level===1),headings,links,localLinks,cards,
+        const summary = main.querySelector('.decision-section');
+        const boundary = {};
+        for (const [key, selector] of Object.entries({difference:'.raos-key-difference', hold:'.raos-no-purchase', candidate:'.decision-list > li'})) {
+          const node = summary?.querySelector(selector);
+          if (node) { const rect = node.getBoundingClientRect(); boundary[key] = {top:rect.top+scrollY,bottom:rect.bottom+scrollY}; }
+        }
+        return {h1:headings.filter(e=>e.level===1),headings,links,localLinks,cards,boundary,
           headingJumps:headings.filter((h,i)=>i>0&&h.level>headings[i-1].level+1),
           hiddenSpecifications:allSpecifications.filter(t=>!visible(t)).length,
           regions:[...main.querySelectorAll('.comparison-table-wrap')].filter(visible).map(e=>({
@@ -60,7 +68,8 @@ try {
           })),
           overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
           placeholders: ['イメージイラスト','商品写真ではありません','商品画像未確認'].filter(p=>text.includes(p)),
-          decorativeBreaks:main.querySelectorAll('.raos-editorial-v2 br').length,
+          decorativeBreaks:[...main.querySelectorAll('.raos-editorial-v2 br')].filter(e=>!e.closest('.raos-rakuten-credit')).length,
+          requiredCreditBreaks:main.querySelectorAll('.raos-rakuten-credit br').length,
           duplicateIds:ids.filter((id,i)=>ids.indexOf(id)!==i),
           nestedLinks:main.querySelectorAll('a a').length,
           unnamedLinks:links.filter(a=>!a.text),
@@ -106,7 +115,9 @@ try {
 } finally { await browser.close(); }
 const failures = results.flatMap(r=>r.widths.flatMap(a=>{
   const aligned = a.cards.every((card,i)=>a.cards.every((other,j)=>i===j||Math.abs(card.top-other.top)>1||(Math.abs(card.bottom-other.bottom)<=1&&Math.abs(card.date-other.date)<=1)));
-  const rules = {cardAlignment:aligned,accessibility:!a.accessibility.length,headingOrder:!a.headingJumps.length,specificationsVisible:!a.hiddenSpecifications,tableHeaders:a.tables.every(t=>t.caption&&t.headers>0&&!t.unscoped),scrollRegions:a.regions.every(r=>r.named&&(!r.scrolls||r.tabIndex==='0')),focus:a.keyboardFocus.outline!=='none'&&parseFloat(a.keyboardFocus.outlineWidth)>0,cardLinks:a.cardLinkCounts.every(n=>n===1),unapprovedOg:!a.ogImage.length,status:a.status===a.expectedStatus,h1:a.h1.length===1,overflow:a.overflow<=1,enlargedOverflow:a.enlargedOverflow<=1,placeholders:!a.placeholders.length,breaks:!a.decorativeBreaks,ids:!a.duplicateIds.length,nested:!a.nestedLinks,linkNames:!a.unnamedLinks.length,anchors:!a.brokenAnchors.length};
+  const boundaryOrder = !a.boundary.candidate || ['difference','hold'].every(k=>!a.boundary[k]||a.boundary[k].bottom<=a.boundary.candidate.top);
+  const pilotBoundary = !r.url.includes('countertop-dishwasher-for-small-households') || a.width>390 || ['difference','hold'].every(k=>a.boundary[k]&&a.boundary[k].bottom<=1800);
+  const rules = {boundaryOrder,pilotBoundary,cardAlignment:aligned,accessibility:!a.accessibility.length,headingOrder:!a.headingJumps.length,specificationsVisible:!a.hiddenSpecifications,tableHeaders:a.tables.every(t=>t.caption&&t.headers>0&&!t.unscoped),scrollRegions:a.regions.every(r=>r.named&&(!r.scrolls||r.tabIndex==='0')),focus:a.keyboardFocus.outline!=='none'&&parseFloat(a.keyboardFocus.outlineWidth)>0,cardLinks:a.cardLinkCounts.every(n=>n===1),unapprovedOg:!a.ogImage.length,status:a.status===a.expectedStatus,h1:a.h1.length===1,overflow:a.overflow<=1,enlargedOverflow:a.enlargedOverflow<=1,placeholders:!a.placeholders.length,breaks:!a.decorativeBreaks,ids:!a.duplicateIds.length,nested:!a.nestedLinks,linkNames:!a.unnamedLinks.length,anchors:!a.brokenAnchors.length};
   return Object.entries(rules).filter(([,ok])=>!ok).map(([rule])=>({surface:r.surface,width:a.width,rule}));
 }));
 results.sort((a,b)=>a.surface.localeCompare(b.surface));
