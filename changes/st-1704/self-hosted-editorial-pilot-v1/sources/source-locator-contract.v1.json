@@ -4,7 +4,7 @@
   "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
   "publication_authority": "NONE",
   "generated_on": "2026-08-31",
-  "source_registry_sha256": "3145e34af7daaff59180d62a3e6615aa1c0d80e439e2a50cc70d7cd940c84338",
+  "source_registry_sha256": "da13f63905809c677f876a16ebf70e26dc87eead27400b5629ea3196043a318e",
   "locator_policy": {
     "claim_statement_source": "TRACKED_SOURCE_PACKET_EXACT",
     "fragment_source": "TRACKED_REVIEWED_EXACT_UTF8_FRAGMENT",
@@ -679,6 +679,22 @@
           ]
         }
       ]
+    },
+    {
+      "source_ref": "SRC-SIROCA-SS-MA251-MANUAL-20260906",
+      "charset": null,
+      "locator_status": "READY",
+      "locators": [
+        {
+          "claim_id": "CLM-ST1704-DISH-SS-MA251-SUPPLY-20260906",
+          "exact_utf8_fragments": [
+            "付属品の給水カップで内部のタンクに水を入れる方法と、 分岐水栓から給水する方法があります。"
+          ],
+          "reviewed_page_number": 12
+        }
+      ],
+      "locator_mode": "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT",
+      "expected_body_sha256": "83f9eb602f6d629bc1b2ca10ae523638facf3ba91e84ba5e8a60663351e0cbc0"
     },
     {
       "source_ref": "SRC-PROTECA-TRI-AIR-01541",

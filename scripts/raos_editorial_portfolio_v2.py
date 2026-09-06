@@ -987,8 +987,14 @@ def _render_st1704_article(
     except KeyError:
         fail("RAOS_EDITORIAL_PORTFOLIO_ARTICLE_INVALID")
     freshness = cast(Mapping[str, object], article["freshness"])
-    facts_checked_on = portfolio.editorial_reviewed_on
-    if freshness.get("facts_checked_on") != facts_checked_on or any(
+    facts_checked_on = cast(str, freshness.get("facts_checked_on"))
+    if (
+        not isinstance(facts_checked_on, str)
+        or facts_checked_on < portfolio.editorial_reviewed_on
+        or facts_checked_on > datetime.now(UTC).date().isoformat()
+    ):
+        fail("RAOS_EDITORIAL_PORTFOLIO_SOURCE_DATE_INVALID")
+    if any(
         _source_display_date(source) > facts_checked_on for source in selected_sources
     ):
         fail("RAOS_EDITORIAL_PORTFOLIO_SOURCE_DATE_INVALID")
@@ -1224,16 +1230,18 @@ def _source_fact_date_contract(portfolio: EditorialPortfolioV2) -> FactDateContr
             )
         except KeyError, ValueError:
             fail("RAOS_EDITORIAL_PORTFOLIO_ARTICLE_INVALID")
-        if not source_dates or max(source_dates) > portfolio.editorial_reviewed_on:
-            fail("RAOS_EDITORIAL_PORTFOLIO_SOURCE_DATE_INVALID")
-        # A scoped copy review must not silently redate the other nine posts
-        # or any manufacturer observation. This is editorial review, not a
-        # new capture or independent publication attestation.
-        article_dates[article.article_id] = (
-            "2026-09-05"
-            if article.article_id == "solota-vs-rakua-mini-plus"
-            else portfolio.editorial_reviewed_on
+        # The authored per-article review may advance after a scoped source
+        # addition. Manufacturer dates below retain their individual observations.
+        reviewed = (
+            cast(str, cast(Mapping[str, object], rendered_articles[article.article_id]["freshness"])["facts_checked_on"])
+            if article.article_id in rendered_articles
+            else ("2026-09-05" if article.article_id == "solota-vs-rakua-mini-plus" else portfolio.editorial_reviewed_on)
         )
+        if (not source_dates or reviewed < portfolio.editorial_reviewed_on
+            or reviewed > datetime.now(UTC).date().isoformat()
+            or max(source_dates) > reviewed):
+            fail("RAOS_EDITORIAL_PORTFOLIO_SOURCE_DATE_INVALID")
+        article_dates[article.article_id] = reviewed
         product_dates[article.article_id] = {}
         product_source_refs[article.article_id] = {}
         for product_id in article.product_ids:
@@ -1640,12 +1648,15 @@ def _reader_visible_market_exclusions(
         except ValueError:
             fail("RAOS_EDITORIAL_PORTFOLIO_MARKET_AUDIT_INVALID")
         heading = f"{brand} {exact_model}"
+        from raos.application.editorial.reader_experience_v1 import official_reference_identity
+        identity = official_reference_identity(str(exact_model), str(exact_variant_scope))
+        verification_label = f"{brand}公式で{identity}の型番・販売表示を確認する"
         entries.append(
             "<section><h3>"
             + escape(heading)
             + '</h3><p><a href="'
             + escape(cast(str, official_url), quote=True)
-            + '" rel="noopener noreferrer">メーカー公式情報を確認する</a>。'
+            + '" rel="noopener noreferrer">' + escape(verification_label) + '</a>。'
             + escape(_READER_LIFECYCLE_LABELS[cast(str, lifecycle)])
             + "。確認日："
             + escape(checked_on)

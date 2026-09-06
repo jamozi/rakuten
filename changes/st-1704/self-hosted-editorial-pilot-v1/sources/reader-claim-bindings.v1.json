@@ -41,7 +41,7 @@
       },
       "source_packet_ref": "SPV-ST1704-SUITCASE-V1",
       "fact_packet_sha256": "9122c0a927eb67d0c9fc423bc4c26ec2b325ad7102ffc2f42e0aae8079855fee",
-      "reader_units_sha256": "0f65bc3376ed3779f2000239b63bb1615c354a2d0047b0ef6208fba24f054351",
+      "reader_units_sha256": "1e1960796beeb9029d89947d2ab9b43b07b5125fa4e1595910c2d1454dc79fd9",
       "units": [
         {
           "unit_id": "RU-b15acb0c51e711596299",
@@ -6011,20 +6011,18 @@
           "unit_id": "RU-7d0857c0c96c2c56c53e",
           "locator": "section[7]/div[1]/section[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "ACE公式でクレスタ(06316-01)の型番・販売表示を確認する",
+          "text_sha256": "7f0aeceb96f9dae996e619f5e3b8c01133854e5ad5a04285f3a9f797eae2744e",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-ACE-CRESTA-06316",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-SUITCASE-CRESTA-06316-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -6918,7 +6916,7 @@
       },
       "source_packet_ref": "SPV-ST1704-PORTABLE-POWER-V1",
       "fact_packet_sha256": "670aa0f39ffda1f5721a8cf2309165181a50937c3c52e44590a0f8c6399fe4f3",
-      "reader_units_sha256": "f0196d9326df691cd8dcc6d5b8ed3648a8ab29f9c39bb2d1bf7f1e1535937124",
+      "reader_units_sha256": "878527d7bc745a5bafd27a3141d3e58eb42b46192dced5ea82bad02c559c6d0b",
       "units": [
         {
           "kind": "EDITORIAL_INFERENCE",
@@ -19625,20 +19623,18 @@
           "unit_id": "RU-2e1e73e556e414f7b71e",
           "locator": "section[7]/div[1]/section[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "ELECOM公式でNESTOUT ポータブル電源 700N(DE-NEPS700NBE)の型番・販売表示を確認する",
+          "text_sha256": "2353defaba5e6a7bac02fa97fe318c6df657dd2d1430f02ec32949f9ffc1187a",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-ELECOM-NESTOUT-700N",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-POWER-NESTOUT-700N-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -19843,20 +19839,18 @@
           "unit_id": "RU-685b0cfb58b577044c34",
           "locator": "section[7]/div[1]/section[2]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "BLUETTI公式でAC70の型番・販売表示を確認する",
+          "text_sha256": "808fd5fcd9055400a8136db389d68bd58ec6d8ac5bf5ea3d71f740093291cf61",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-BLUETTI-AC70",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-POWER-AC70-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -20252,20 +20246,18 @@
           "unit_id": "RU-df0ef7bc9576e930b646",
           "locator": "section[7]/div[1]/section[3]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "BLUETTI公式でAORA 80の型番・販売表示を確認する",
+          "text_sha256": "dc9f7db52565b30978b1688d98b42945c138b220ca08a36d7e82079eb3427e7b",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-BLUETTI-AORA80",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-POWER-AORA80-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -20356,20 +20348,18 @@
           "unit_id": "RU-d62c30852bea62064a58",
           "locator": "section[7]/div[1]/section[4]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "EcoFlow公式でRIVER 3 Plusの型番・販売表示を確認する",
+          "text_sha256": "1dd0d3a957c057e73589c0234cb281e3234a6f6dc4b2684694e10be7b9ad9b64",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-ECOFLOW-RIVER3-PLUS",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-POWER-RIVER3-PLUS-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -20797,20 +20787,18 @@
           "unit_id": "RU-d2fb7417e35326db7c22",
           "locator": "section[7]/div[1]/section[5]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "EcoFlow公式でDELTA 3 Plusの型番・販売表示を確認する",
+          "text_sha256": "a352a09234c0531b6227f543308c4419fcaebd1aee271860ddc49e235bb12766",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-ECOFLOW-DELTA3-PLUS",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-POWER-DELTA3-PLUS-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -21222,20 +21210,18 @@
           "unit_id": "RU-db2eb3b352b92f145da7",
           "locator": "section[7]/div[1]/section[6]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "EcoFlow公式でDELTA 3 Classicの型番・販売表示を確認する",
+          "text_sha256": "eafec430713ce526f7101ff69dd08dfd56e12ee17d966245de076cf8afac1165",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-ECOFLOW-DELTA3-CLASSIC",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-POWER-DELTA3-CLASSIC-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -23343,7 +23329,7 @@
       },
       "source_packet_ref": "SPV-ST1704-ANKER-DIFFERENCES-V1",
       "fact_packet_sha256": "55e5d6cfc90df9bb9828925196ea1623b72db8d021a0ed2d5bee6cd53205ae5e",
-      "reader_units_sha256": "53dc964aa68eebadebe063a977183e4bf13e38446b0c3a05aac4dafd6b683609",
+      "reader_units_sha256": "6d8ffd31fee2bafda6aa41c96ca4f650bd5fd6e63c1a5e2b99a23785b37a6292",
       "units": [
         {
           "unit_id": "RU-a6bb520347081c9a60d3",
@@ -31998,20 +31984,18 @@
           "unit_id": "RU-09ec0139c2af4a347de0",
           "locator": "section[7]/div[1]/section[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Anker公式でSolix C1000 Plus Portable Power Station(A1765)の型番・販売表示を確認する",
+          "text_sha256": "74cf8460439c5d3d61b1bbae00835a4fdd5b130564e5287f842d66101aabb8a5",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-ANKER-SOLIX-C1000-PLUS",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-ANKER-C1000-PLUS-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -33734,11 +33718,11 @@
       "authoring_input": {
         "kind": "LEGACY_AST_ARTICLE",
         "ref": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json#article_id=st1704-countertop-dishwasher-for-small-households",
-        "sha256": "0992cfa0fcc147ffc0eb1fdb592c4ee16e8ab8fe3a63846cd3f65d33d23e74d9"
+        "sha256": "3254164f6befd1a99b767f83a92d64a6aef90327e837769b8837b93f0cde80c8"
       },
       "source_packet_ref": "SPV-ST1704-DISHWASHER-V1",
-      "fact_packet_sha256": "9e49de45bfd3f6ec1aa26a2876eb7790331cb2bfaa85bfdc4b66098da8001366",
-      "reader_units_sha256": "57835720dbef4c9840e7b9635f73b58287b5753072e9eee650bae99472ed7454",
+      "fact_packet_sha256": "3c3116c470ccd3326fe8efc60c88c07253d1a0be9bc3d57879ba0f21b1e78dff",
+      "reader_units_sha256": "0bad59746f92fa0f8e36f54b3eacd61c83e43d47b105ce7b976fe57eebd387cf",
       "units": [
         {
           "unit_id": "RU-9e8bf509ae3698a35208",
@@ -34799,8 +34783,8 @@
           "unit_id": "RU-5b02f217bfa196f2868e",
           "locator": "dl[1]/div[7]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "2026年9月1日",
-          "text_sha256": "d04d8e2ffd81ffd9be6c209e6122199238b7b85b51a8e8b8f59c03fc2805fd78",
+          "text": "2026年9月6日",
+          "text_sha256": "5ca07974bd439d9ef59bae670f19186ccc5d171cabc9dee9bd4d0927199eb1a3",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": null,
@@ -35995,6 +35979,29 @@
           "unit_id": "RU-dbe8492d6a32a083a91c",
           "locator": "section[3]/div[1]/div[1]/table[1]/thead[1]/tr[1]/th[4]::text",
           "channel": "VISIBLE_TEXT",
+          "text": "給水方式",
+          "text_sha256": "a953b665e52da03aaacbf3b2c1aa6fe6f439065eee559d030837626b42e5ceca",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-SIROCA-SS-M171",
+            "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+            "PRD-SIROCA-SS-MA251",
+            "PRD-TOSHIBA-DWS-33B-W"
+          ],
+          "owner_product_id": null,
+          "dimension_role": "BODY",
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-20c81d326db1a91fe0cb",
+          "locator": "section[3]/div[1]/div[1]/table[1]/thead[1]/tr[1]/th[5]::text",
+          "channel": "VISIBLE_TEXT",
           "text": "標準使用水量",
           "text_sha256": "a81967de9b663333deebe02f8d5faf66c297b4ceb790d5308c3a445c4808167d",
           "context": "COMPARISON",
@@ -36020,8 +36027,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-20c81d326db1a91fe0cb",
-          "locator": "section[3]/div[1]/div[1]/table[1]/thead[1]/tr[1]/th[5]::text",
+          "unit_id": "RU-5814e47fcfb7d214bfd4",
+          "locator": "section[3]/div[1]/div[1]/table[1]/thead[1]/tr[1]/th[6]::text",
           "channel": "VISIBLE_TEXT",
           "text": "乾燥・扉",
           "text_sha256": "14130972e2c685207a29084e1fb06b2c35c6bc834c5c386cd338532465d29904",
@@ -36150,6 +36157,37 @@
           "unit_id": "RU-5e3fa1ea19fb030f2baa",
           "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[1]/td[3]::text",
           "channel": "VISIBLE_TEXT",
+          "text": "タンク式/分岐水栓式(2WAY) 公式確認済み",
+          "text_sha256": "d5a7aa08f50b0aeae710c09e43a9f39bfa40be761cdb1ebaec69dd7685e9c017",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-SIROCA-SS-M171"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-DISH-SS-M171-SPECS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "2WAY",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-DISH-SS-M171-SPECS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-2256c8925c59614742a3",
+          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[1]/td[4]::text",
+          "channel": "VISIBLE_TEXT",
           "text": "約5L 公式確認済み",
           "text_sha256": "1ed72a90e7da87bdcd5360f608dbb4feee49b10e40d26f430777d4b7134779fa",
           "context": "COMPARISON",
@@ -36180,8 +36218,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-2256c8925c59614742a3",
-          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[1]/td[4]::text",
+          "unit_id": "RU-9d35039a5858685f742c",
+          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[1]/td[5]::text",
           "channel": "VISIBLE_TEXT",
           "text": "送風乾燥 公式確認済み",
           "text_sha256": "f80eedcef6fe5a898edb9053e77b92d11f619cba4211872bde4e9d4533bd94e1",
@@ -36313,6 +36351,28 @@
           "unit_id": "RU-15ed22b1abbe28ea47fd",
           "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[2]/td[3]::text",
           "channel": "VISIBLE_TEXT",
+          "text": "タンク式 公式確認済み",
+          "text_sha256": "a21498cd6ad3e81d3ed33c5829213dba268f26a08c0f686314fa8b6545c2e6ae",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-THANKO-RAKUA-MINI-TK-MDW22W"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-DISH-RAKUA-SPECS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-bf4395f50229b6a67185",
+          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[2]/td[4]::text",
+          "channel": "VISIBLE_TEXT",
           "text": "3.2L 公式確認済み",
           "text_sha256": "320ad06eab96c75c3157c8cdf6f4c7c2a151b7a8053a9911b1bd24bbec4f2615",
           "context": "COMPARISON",
@@ -36343,8 +36403,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-bf4395f50229b6a67185",
-          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[2]/td[4]::text",
+          "unit_id": "RU-79a4ef8e54ceb8a170e4",
+          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[2]/td[5]::text",
           "channel": "VISIBLE_TEXT",
           "text": "熱風乾燥 公式確認済み",
           "text_sha256": "bd52a73d3c9941b75a0d37dec850871a598be1be785e16486b7346cbaf5d34b4",
@@ -36476,6 +36536,37 @@
           "unit_id": "RU-60e6e7197af618e924ec",
           "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[3]/td[3]::text",
           "channel": "VISIBLE_TEXT",
+          "text": "タンク式/分岐水栓式(2WAY) 公式確認済み",
+          "text_sha256": "d5a7aa08f50b0aeae710c09e43a9f39bfa40be761cdb1ebaec69dd7685e9c017",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-SIROCA-SS-MA251"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-DISH-SS-MA251-SUPPLY-20260906"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "2WAY",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-DISH-SS-MA251-SUPPLY-20260906"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-3d35a7971d7e9b4d328f",
+          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[3]/td[4]::text",
+          "channel": "VISIBLE_TEXT",
           "text": "約6L 公式確認済み",
           "text_sha256": "492f08760b169946b4db5030aef1af68c7bfb7959e96f126ed6c88fd1802effb",
           "context": "COMPARISON",
@@ -36506,8 +36597,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-3d35a7971d7e9b4d328f",
-          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[3]/td[4]::text",
+          "unit_id": "RU-1bb38316abf8943ff67a",
+          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[3]/td[5]::text",
           "channel": "VISIBLE_TEXT",
           "text": "送風・オートオープン 公式確認済み",
           "text_sha256": "a3a714cc450b5624d9389700ac424707bc427ecbf061c68ba0d9ed06e695891d",
@@ -36643,6 +36734,28 @@
           "unit_id": "RU-0ba190c7039568b36166",
           "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/td[3]::text",
           "channel": "VISIBLE_TEXT",
+          "text": "タンク式 公式確認済み",
+          "text_sha256": "a21498cd6ad3e81d3ed33c5829213dba268f26a08c0f686314fa8b6545c2e6ae",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-TOSHIBA-DWS-33B-W"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-f7aedb3afc9bdd2b2df5",
+          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/td[4]::text",
+          "channel": "VISIBLE_TEXT",
           "text": "約6L 公式確認済み",
           "text_sha256": "492f08760b169946b4db5030aef1af68c7bfb7959e96f126ed6c88fd1802effb",
           "context": "COMPARISON",
@@ -36673,8 +36786,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-f7aedb3afc9bdd2b2df5",
-          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/td[4]::text",
+          "unit_id": "RU-713e5204f690fbe1c5bc",
+          "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/td[5]::text",
           "channel": "VISIBLE_TEXT",
           "text": "ヒーター+ファン強制排気乾燥 公式確認済み",
           "text_sha256": "7dc939759822216a77942356e5c82225fc5f206db910cc82bbdbb1d7b2bdf69c",
@@ -36863,6 +36976,57 @@
           "unit_id": "RU-beb451e9788ba9c756bd",
           "locator": "section[3]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[4]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
+          "text": "給水方式",
+          "text_sha256": "a953b665e52da03aaacbf3b2c1aa6fe6f439065eee559d030837626b42e5ceca",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-SIROCA-SS-M171"
+          ],
+          "owner_product_id": "PRD-SIROCA-SS-M171",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-d515ee97a2db5da3ce12",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[4]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "タンク式/分岐水栓式(2WAY) 公式確認済み",
+          "text_sha256": "d5a7aa08f50b0aeae710c09e43a9f39bfa40be761cdb1ebaec69dd7685e9c017",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-SIROCA-SS-M171"
+          ],
+          "owner_product_id": "PRD-SIROCA-SS-M171",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-DISH-SS-M171-SPECS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "2WAY",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-DISH-SS-M171-SPECS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-daa661a3452378a8d211",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[5]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
           "text": "標準使用水量",
           "text_sha256": "a81967de9b663333deebe02f8d5faf66c297b4ceb790d5308c3a445c4808167d",
           "context": "COMPARISON",
@@ -36882,8 +37046,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-d515ee97a2db5da3ce12",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[4]/dd[1]::text",
+          "unit_id": "RU-c752f043058661baea46",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[5]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "約5L 公式確認済み",
           "text_sha256": "1ed72a90e7da87bdcd5360f608dbb4feee49b10e40d26f430777d4b7134779fa",
@@ -36915,8 +37079,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-daa661a3452378a8d211",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[5]/dt[1]::text",
+          "unit_id": "RU-95ae3d313a8990a910eb",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[6]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "乾燥・扉",
           "text_sha256": "14130972e2c685207a29084e1fb06b2c35c6bc834c5c386cd338532465d29904",
@@ -36937,8 +37101,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c752f043058661baea46",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[5]/dd[1]::text",
+          "unit_id": "RU-67766eece54f70c11f09",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[6]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "送風乾燥 公式確認済み",
           "text_sha256": "f80eedcef6fe5a898edb9053e77b92d11f619cba4211872bde4e9d4533bd94e1",
@@ -37136,6 +37300,48 @@
           "unit_id": "RU-bf9e9e086c1ac8836f6f",
           "locator": "section[3]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[4]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
+          "text": "給水方式",
+          "text_sha256": "a953b665e52da03aaacbf3b2c1aa6fe6f439065eee559d030837626b42e5ceca",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-THANKO-RAKUA-MINI-TK-MDW22W"
+          ],
+          "owner_product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-53beab639856801b9eb4",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[4]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "タンク式 公式確認済み",
+          "text_sha256": "a21498cd6ad3e81d3ed33c5829213dba268f26a08c0f686314fa8b6545c2e6ae",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-THANKO-RAKUA-MINI-TK-MDW22W"
+          ],
+          "owner_product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-DISH-RAKUA-SPECS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-36863c6d71289c80f54c",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[5]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
           "text": "標準使用水量",
           "text_sha256": "a81967de9b663333deebe02f8d5faf66c297b4ceb790d5308c3a445c4808167d",
           "context": "COMPARISON",
@@ -37155,8 +37361,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-53beab639856801b9eb4",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[4]/dd[1]::text",
+          "unit_id": "RU-757d78125f9606e9f262",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[5]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "3.2L 公式確認済み",
           "text_sha256": "320ad06eab96c75c3157c8cdf6f4c7c2a151b7a8053a9911b1bd24bbec4f2615",
@@ -37188,8 +37394,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-36863c6d71289c80f54c",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[5]/dt[1]::text",
+          "unit_id": "RU-9adde47fe34e5d398f0a",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[6]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "乾燥・扉",
           "text_sha256": "14130972e2c685207a29084e1fb06b2c35c6bc834c5c386cd338532465d29904",
@@ -37210,8 +37416,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-757d78125f9606e9f262",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[5]/dd[1]::text",
+          "unit_id": "RU-7eb5dc14c73961d4ff3b",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[6]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "熱風乾燥 公式確認済み",
           "text_sha256": "bd52a73d3c9941b75a0d37dec850871a598be1be785e16486b7346cbaf5d34b4",
@@ -37409,6 +37615,57 @@
           "unit_id": "RU-a32af19c607253cace5b",
           "locator": "section[3]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[4]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
+          "text": "給水方式",
+          "text_sha256": "a953b665e52da03aaacbf3b2c1aa6fe6f439065eee559d030837626b42e5ceca",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-SIROCA-SS-MA251"
+          ],
+          "owner_product_id": "PRD-SIROCA-SS-MA251",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-ed8418df05eaa7475268",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[4]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "タンク式/分岐水栓式(2WAY) 公式確認済み",
+          "text_sha256": "d5a7aa08f50b0aeae710c09e43a9f39bfa40be761cdb1ebaec69dd7685e9c017",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-SIROCA-SS-MA251"
+          ],
+          "owner_product_id": "PRD-SIROCA-SS-MA251",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-DISH-SS-MA251-SUPPLY-20260906"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "2WAY",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-DISH-SS-MA251-SUPPLY-20260906"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-b0e35e5238a513deaab6",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[5]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
           "text": "標準使用水量",
           "text_sha256": "a81967de9b663333deebe02f8d5faf66c297b4ceb790d5308c3a445c4808167d",
           "context": "COMPARISON",
@@ -37428,8 +37685,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-ed8418df05eaa7475268",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[4]/dd[1]::text",
+          "unit_id": "RU-72c2861eaa3c0247999b",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[5]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "約6L 公式確認済み",
           "text_sha256": "492f08760b169946b4db5030aef1af68c7bfb7959e96f126ed6c88fd1802effb",
@@ -37461,8 +37718,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-b0e35e5238a513deaab6",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[5]/dt[1]::text",
+          "unit_id": "RU-2cb0fc3186663b2d9d8f",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[6]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "乾燥・扉",
           "text_sha256": "14130972e2c685207a29084e1fb06b2c35c6bc834c5c386cd338532465d29904",
@@ -37483,8 +37740,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-72c2861eaa3c0247999b",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[5]/dd[1]::text",
+          "unit_id": "RU-1a30b22b137a9fd462ad",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[6]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "送風・オートオープン 公式確認済み",
           "text_sha256": "a3a714cc450b5624d9389700ac424707bc427ecbf061c68ba0d9ed06e695891d",
@@ -37686,6 +37943,48 @@
           "unit_id": "RU-98c1dd966fbfb6c386bb",
           "locator": "section[3]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[4]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
+          "text": "給水方式",
+          "text_sha256": "a953b665e52da03aaacbf3b2c1aa6fe6f439065eee559d030837626b42e5ceca",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-TOSHIBA-DWS-33B-W"
+          ],
+          "owner_product_id": "PRD-TOSHIBA-DWS-33B-W",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-e416ddbcf2d8d011217b",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[4]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "タンク式 公式確認済み",
+          "text_sha256": "a21498cd6ad3e81d3ed33c5829213dba268f26a08c0f686314fa8b6545c2e6ae",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-TOSHIBA-DWS-33B-W"
+          ],
+          "owner_product_id": "PRD-TOSHIBA-DWS-33B-W",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-b87c7d823e987aec3cca",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[5]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
           "text": "標準使用水量",
           "text_sha256": "a81967de9b663333deebe02f8d5faf66c297b4ceb790d5308c3a445c4808167d",
           "context": "COMPARISON",
@@ -37705,8 +38004,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-e416ddbcf2d8d011217b",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[4]/dd[1]::text",
+          "unit_id": "RU-e1769d35c3afa72a367f",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[5]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "約6L 公式確認済み",
           "text_sha256": "492f08760b169946b4db5030aef1af68c7bfb7959e96f126ed6c88fd1802effb",
@@ -37738,8 +38037,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-b87c7d823e987aec3cca",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[5]/dt[1]::text",
+          "unit_id": "RU-ffc5f3f379adef204909",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[6]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "乾燥・扉",
           "text_sha256": "14130972e2c685207a29084e1fb06b2c35c6bc834c5c386cd338532465d29904",
@@ -37760,8 +38059,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-e1769d35c3afa72a367f",
-          "locator": "section[3]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[5]/dd[1]::text",
+          "unit_id": "RU-e56b7108d550c419e5de",
+          "locator": "section[3]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[6]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "ヒーター+ファン強制排気乾燥 公式確認済み",
           "text_sha256": "7dc939759822216a77942356e5c82225fc5f206db910cc82bbdbb1d7b2bdf69c",
@@ -41551,8 +41850,8 @@
           "unit_id": "RU-2b4b7d9154393e37a826",
           "locator": "section[6]/div[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "編集内容の最終確認日:2026年9月1日",
-          "text_sha256": "89f2a23f5c78943c66ab8e14eb78dfd441ee1dfd2e43cc98794a2ae87a64407d",
+          "text": "編集内容の最終確認日:2026年9月6日",
+          "text_sha256": "bc0fffe6044bc23086d2f07566e7b1f144924419672246c130bf81ab793c497b",
           "context": "GENERAL",
           "subject_product_ids": [
             "PRD-SIROCA-SS-M171",
@@ -41655,20 +41954,18 @@
           "unit_id": "RU-6b2e61cc44e148902d61",
           "locator": "section[7]/div[1]/section[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Panasonic公式でNP-TMLK1-Kの型番・販売表示を確認する",
+          "text_sha256": "53aa7d050af1d03f1086fe35b0e8a5ae926f1b1c8ad41c5e9a05f79d378e29d5",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-PANASONIC-NP-TMLK1",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-DISH-NP-TMLK1-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -41796,20 +42093,18 @@
           "unit_id": "RU-1c4faffc77285454ca22",
           "locator": "section[7]/div[1]/section[2]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Panasonic公式でNP-TSP2の型番・販売表示を確認する",
+          "text_sha256": "e05791dc20ffe6211359fd86cb969a9a91c1b56c930bc00de88a56f5a098dd57",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-PANASONIC-NP-TSP2",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-DISH-NP-TSP2-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -41922,20 +42217,18 @@
           "unit_id": "RU-b35287f64c3632ffa389",
           "locator": "section[7]/div[1]/section[3]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "THANKO公式でラクアmini color(TDWS25SBL/TDWS25SRD)の型番・販売表示を確認する",
+          "text_sha256": "05dbf2b7b097a7ee24b1b4ec06c7accf859bcdb01c40cb3ae1b1ccab43e5e7d9",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-THANKO-RAKUA-MINI-COLOR",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-DISH-THANKO-RAKUA-MINI-COLOR-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -42091,20 +42384,18 @@
           "unit_id": "RU-f9692cc04f48443439f1",
           "locator": "section[7]/div[1]/section[4]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "AQUA公式でADW-M28Bの型番・販売表示を確認する",
+          "text_sha256": "7eabe1333bf6d3a52fea7d13593423f3628fd6eae7a19d72f13e2a83000736fc",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-AQUA-ADW-M28B",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-DISH-AQUA-M28B-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -42445,8 +42736,8 @@
           "unit_id": "RU-f6879d9fc901feb78728",
           "locator": "section[8]/ul[1]/li[3]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "標準使用水量: 各社の標準条件で公表された値として比較します。",
-          "text_sha256": "e27000fbcc7a06ea2876dc7ea807120a2d4df8e9e6731c8042b3e6bd088b0b78",
+          "text": "給水方式: タンクへの補給を続けられるか、分岐水栓を使う場合は水栓が適合するかを確かめます。",
+          "text_sha256": "0208265806764939dbbababa1e97d64a942cb241f31a5aa59c7d774d1496fde7",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": null,
@@ -42462,6 +42753,24 @@
         {
           "unit_id": "RU-ce46eac86bc02ee6322f",
           "locator": "section[8]/ul[1]/li[4]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "標準使用水量: 各社の標準条件で公表された値として比較します。",
+          "text_sha256": "e27000fbcc7a06ea2876dc7ea807120a2d4df8e9e6731c8042b3e6bd088b0b78",
+          "context": "GENERAL",
+          "subject_product_ids": [],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "READER_SCOPE_OR_GUIDANCE",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-c631c1aa0987d0b3fb1b",
+          "locator": "section[8]/ul[1]/li[5]::text",
           "channel": "VISIBLE_TEXT",
           "text": "乾燥・扉: 送風、熱風、オートオープンの違いを比べます。",
           "text_sha256": "0358ee3ffe6b25f80f3894c3f5783154ac24d9f76b6d59c3782062e3c53372e8",
@@ -42504,8 +42813,8 @@
           "unit_id": "RU-e74e0ec2ce1b8f488733",
           "locator": "section[9]/header[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "まず普段の食器を並べ、皿の大きさと点数を確かめます。次に本体・扉・給排水の空間を測り、両方の条件を満たす候補を選んでください。",
-          "text_sha256": "c91cb71b2e3d6c5e89e83b894604038663fe30079abd405807799c8e9df5a47e",
+          "text": "本体・扉の空間と給排水・アースの経路を先に確認し、設置できる候補を残します。そのうえで普段の食器を並べ、大きさと点数が合うかを照合してください。",
+          "text_sha256": "6b05df917189259701337ecd913d2832dd154712c71d888415703bd58b91a5d8",
           "context": "DECISION",
           "subject_product_ids": [
             "PRD-SIROCA-SS-M171",
@@ -42984,8 +43293,8 @@
           "unit_id": "RU-1384f7f12555261b00a6",
           "locator": "aside[2]/h2[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "給排水・扉・耐熱条件を最後に確認する",
-          "text_sha256": "592fcbfe342a61e51c66c1ffefa2d802ffa6b38cd6d742c9bc5f6f7c79e5d072",
+          "text": "給排水・扉・耐熱条件を先に確認する",
+          "text_sha256": "658d5bed63d8b6707d363f95d839bc649ebe9b15364790b48f30ff9f17d70dcd",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": null,
@@ -43759,6 +44068,57 @@
           "decision_gate": null
         },
         {
+          "unit_id": "RU-080340d22464181987f3",
+          "locator": "section[10]/div[1]/ol[1]/li[14]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "14",
+          "text_sha256": "8527a891e224136950ff32ca212b45bc93f69fbb801c3b1ebedac52775f99e61",
+          "context": "GENERAL",
+          "subject_product_ids": [
+            "PRD-SIROCA-SS-MA251"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "NAVIGATION_OR_UI",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-7383cabf8484b7d2d5d7",
+          "locator": "section[10]/div[1]/ol[1]/li[14]/p[1]/a[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "siroca SS-MA251 取扱説明書(給水方式、2026-09-06確認)",
+          "text_sha256": "00e9c51838408471fb73d20c80f4ebcb60443f14ebb65e9278a6addcedfd5654",
+          "context": "GENERAL",
+          "subject_product_ids": [
+            "PRD-SIROCA-SS-MA251"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-DISH-SS-MA251-SUPPLY-20260906"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "SS-MA251",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-DISH-SS-MA251-SUPPLY-20260906"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
           "unit_id": "RU-49db765c50406d153669",
           "locator": "section[10]/div[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
@@ -43825,7 +44185,7 @@
       },
       "source_packet_ref": "SPV-ST1704-ROBOT-VACUUM-V1",
       "fact_packet_sha256": "479feae70cd4591879175cfa90c90df5fa1fe592c3f2e2d3814b6b16146a5009",
-      "reader_units_sha256": "e7dcbb23c6698353cf4358e3044c99caeba43abfb845734e2884c22c8fde5cf0",
+      "reader_units_sha256": "c3e8e137092a9e48aa6cc14bc4440d5452ff34ada5ade55bc64f74c04d38b40f",
       "units": [
         {
           "unit_id": "RU-5ffd5631a44e01a9b31f",
@@ -51363,20 +51723,18 @@
           "unit_id": "RU-8c4344891325fbbd26b0",
           "locator": "section[7]/div[1]/section[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "iRobot公式でRoomba Mini + AutoEmpty(F155260)の型番・販売表示を確認する",
+          "text_sha256": "2a5697ce4c79e75e197a474fdfe84c17b71f7df81efa9492881169c18cdf045b",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-IROBOT-ROOMBA-MINI-AUTOEMPTY-F155260",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-ROBOT-ROOMBA-MINI-F155260-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -51691,8 +52049,8 @@
           "unit_id": "RU-8e2c4293bf7c0d993c8f",
           "locator": "section[7]/div[1]/section[2]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Panasonic公式でRULO mini(MC-RSC10)の型番・販売表示を確認する",
+          "text_sha256": "ae85c0e7406194bf8ab7f4ddd71921ec33aa6b69b1e3f6278a94e7233fca487c",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-PANASONIC-RULO-MINI-MC-RSC10",
@@ -51702,7 +52060,7 @@
           "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": "SOURCE_CITATION_LABEL",
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -51823,20 +52181,20 @@
           "unit_id": "RU-f54ca2dfe5c598162349",
           "locator": "section[7]/div[1]/section[3]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Eufy公式でRobot Vacuum 3-in-1 E20(T2070)の型番・販売表示を確認する",
+          "text_sha256": "7bf8ef1d31dc8eb10e5af88f9b6da500ce862105a9beae810a8a1b852477235f",
           "context": "GENERAL",
-          "subject_product_ids": [],
+          "subject_product_ids": [
+            "PRD-EUFY-AUTOEMPTY-C10-T2292"
+          ],
           "owner_product_id": "EXT-EUFY-E20-T2070",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-ROBOT-E20-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -52157,20 +52515,20 @@
           "unit_id": "RU-e518b8418d0697bc51d6",
           "locator": "section[7]/div[1]/section[4]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "SwitchBot公式でロボット掃除機 K10+ Pro Comboの型番・販売表示を確認する",
+          "text_sha256": "c41918cc0644555d32c326362ec0d9d5029183dc3afebade764230bfe8b993fb",
           "context": "GENERAL",
-          "subject_product_ids": [],
+          "subject_product_ids": [
+            "PRD-SWITCHBOT-K11-PRO"
+          ],
           "owner_product_id": "EXT-SWITCHBOT-K10-PRO-COMBO",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-ROBOT-K10-COMBO-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -52261,20 +52619,18 @@
           "unit_id": "RU-3038dffaa1b8a9211ddf",
           "locator": "section[7]/div[1]/section[5]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Roborock公式でSaros 10の型番・販売表示を確認する",
+          "text_sha256": "aeec7064aa2a5ee51a122fbde49dffd244e43f8e1e538bedba76351cd079a5ad",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-ROBOROCK-SAROS-10",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-ROBOT-SAROS10-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -52627,20 +52983,20 @@
           "unit_id": "RU-6a405ca95182d5e00952",
           "locator": "section[7]/div[1]/section[6]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Eufy公式でRobot Vacuum Omni E25(T2353)の型番・販売表示を確認する",
+          "text_sha256": "5b07f14d687871f7481643086df3a8f2d770c4a1e0fb13a87c8a77cb72941f9a",
           "context": "GENERAL",
-          "subject_product_ids": [],
+          "subject_product_ids": [
+            "PRD-EUFY-AUTOEMPTY-C10-T2292"
+          ],
           "owner_product_id": "EXT-EUFY-OMNI-E25-T2353",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-ROBOT-E25-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -52990,20 +53346,18 @@
           "unit_id": "RU-0e7a6e9a72749901bebd",
           "locator": "section[7]/div[1]/section[7]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Dreame公式でX50 Ultraの型番・販売表示を確認する",
+          "text_sha256": "41ee26370c7b3054e7853b7844ff3c081fe57a8c6fc297e23eaa0f8f1ed541b8",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-DREAME-X50-ULTRA",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-ROBOT-X50-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -53353,20 +53707,18 @@
           "unit_id": "RU-38893205bd164787e031",
           "locator": "section[7]/div[1]/section[8]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "ECOVACS公式でDEEBOT X8 PROの型番・販売表示を確認する",
+          "text_sha256": "95c438d0a1b0dc2621ad06569105778bfeaf7c5087280a80b48415b80741e580",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-ECOVACS-DEEBOT-X8-PRO",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-ST1704-ROBOT-X8-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -55059,11 +55411,11 @@
       "authoring_input": {
         "kind": "STATIC_HTML_FIXTURE",
         "ref": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
-        "sha256": "296875d0c6f55b8b35152412876835d545cc3e875c9d46f116d704543ae35a3d"
+        "sha256": "0371d01b5d919ecdadad44b915098352fd4957c068fc84ca3ccef52f4a8be5d5"
       },
       "source_packet_ref": "SPV-PORTFOLIO-UNDER100-SUITCASE-V1",
       "fact_packet_sha256": "d5415fa5f35ae1461f3028159a486480aa288b5a889f85a250eddb315dc2a5e6",
-      "reader_units_sha256": "1014f3527b0d61c0e2c993db634cca33ab0d716ed640142456e1b63915e64859",
+      "reader_units_sha256": "cbfcbbe09fd047a79e627d5eab2ce97683e2090d275a0251e5604650d0742cb9",
       "units": [
         {
           "unit_id": "RU-c420dcadef2aae05c4ad",
@@ -61865,20 +62217,18 @@
           "unit_id": "RU-6543f7a5752862772eae",
           "locator": "section[7]/div[1]/section[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "RIMOWA公式でCabin U(82350181)の型番・販売表示を確認する",
+          "text_sha256": "0ec70287987c980dce9b4654967ed8ac9812eee6ee36ca311073bac28c00ba73",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-RIMOWA-CABIN-U",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-PORTFOLIO-UNDER100-RIMOWA-CABIN-U-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -62009,20 +62359,18 @@
           "unit_id": "RU-9bd0c151ea2385749505",
           "locator": "section[7]/div[1]/section[2]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Samsonite公式でAudrina Spinner 45の型番・販売表示を確認する",
+          "text_sha256": "c194d9c5743d9683ac8e2172bcc94f7c038817aa9a90102c6619c7a7fb772780",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-SAMSONITE-AUDRINA-SPINNER-45",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-PORTFOLIO-UNDER100-AUDRINA-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -62152,20 +62500,18 @@
           "unit_id": "RU-2dd7de2c2218693e30dd",
           "locator": "section[7]/div[1]/section[3]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "無印良品公式でバーを自由に調節できる ハードキャリーケース 20L(23184182)の型番・販売表示を確認する",
+          "text_sha256": "2c91273afd5e27b79d94af0a5f1fc98fdf4be8d93fb3635b9a1a3ae8c451b8f2",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-MUJI-HARD-CARRY-20L",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-PORTFOLIO-UNDER100-MUJI20-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -64612,11 +64958,11 @@
       "authoring_input": {
         "kind": "STATIC_HTML_FIXTURE",
         "ref": "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
-        "sha256": "2d8f31b7f6fc3f92853f29e84e66cc3699c38059dbc20a41a08c8fe9e9ea61bc"
+        "sha256": "2001f5ebb6b0cb7c840ec3d39d0c3ede37de85c60a7f246c2c72e3f3284efeaa"
       },
       "source_packet_ref": "SPV-PORTFOLIO-LIGHTWEIGHT-SUITCASE-V1",
       "fact_packet_sha256": "7cdda85e860bd5f292aad5ab04d7154106672ffe9aa2412127ed470baa341da4",
-      "reader_units_sha256": "308df71646fc3631776d73083c3e341d07f868443245a7eab8a8505a1ee56d1f",
+      "reader_units_sha256": "5e4a3f9820fa24129fc0d435808eea9ead836383e889e7db21c9a9711c6fc283",
       "units": [
         {
           "unit_id": "RU-0d32a8bab68ef931276c",
@@ -73591,20 +73937,18 @@
           "unit_id": "RU-cf9dd33ba383d8f844b3",
           "locator": "section[7]/div[1]/section[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "FREQUENTER公式でLIEVE 1-250の型番・販売表示を確認する",
+          "text_sha256": "97f41113801ff3743d280094e1d6d8dfb5769df193a4205eeb65e2dcb0c7ffe6",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-FREQUENTER-LIEVE-1-250-MAINTAINABILITY",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-PORTFOLIO-LIGHT-FREQUENTER-REFERENCE"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -73812,20 +74156,18 @@
           "unit_id": "RU-39c75315a0f214214dee",
           "locator": "section[7]/div[1]/section[2]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "無印良品公式でバーを自由に調節できる ハードキャリーケース 36Lの型番・販売表示を確認する",
+          "text_sha256": "9215c8f3392f95de84ed26b969e4b172dabf2f4e888764f414972c56ed0e8a6a",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-MUJI-HARD-CARRY-36L",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-PORTFOLIO-LIGHT-MUJI36-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -77260,11 +77602,11 @@
       "authoring_input": {
         "kind": "STATIC_HTML_FIXTURE",
         "ref": "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
-        "sha256": "7338f4af601849c3cb34bc07791316c04d337e1d192de156fc43e867e4c17127"
+        "sha256": "811dd997c4080aec0a40aa0ec458cf735b44906db8a29cf37bb2e56e60ebcd7b"
       },
       "source_packet_ref": "SPV-PORTFOLIO-FRONT-OPEN-SUITCASE-V1",
       "fact_packet_sha256": "90787ed762232e6cfc73bb6a9489b92544e7a27e060ebcf0ea251cf937d82ee9",
-      "reader_units_sha256": "3931cde77e778dacb1c90b029599e7fc68466ecc00e6bfecc7373de7d74117bc",
+      "reader_units_sha256": "a15c333679040f34321905a80f45b46f54e96e9188a43244bf55abe2a6c6d681",
       "units": [
         {
           "unit_id": "RU-b863c7746b04bbbb8580",
@@ -85713,20 +86055,20 @@
           "unit_id": "RU-3c57287c2075fd4421e4",
           "locator": "section[7]/div[1]/section[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "BERMAS公式でINTER CITY II 60561の型番・販売表示を確認する",
+          "text_sha256": "94b832728d55f17deb3c4b7ebe03bd27ca6f2f54b97145e272333ca101d00fe5",
           "context": "GENERAL",
-          "subject_product_ids": [],
+          "subject_product_ids": [
+            "PRD-BERMAS-INTER-CITY-III-60570"
+          ],
           "owner_product_id": "EXT-BERMAS-INTER-CITY-II-60561",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-PORTFOLIO-FRONT-BERMAS-60561-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -86010,20 +86352,18 @@
           "unit_id": "RU-85f0d495229778728877",
           "locator": "section[7]/div[1]/section[2]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "無印良品公式でバーを自由に調節できる フロントオープンキャリーケース(32L)(84950087)の型番・販売表示を確認する",
+          "text_sha256": "2b448477626f201994e90f1e30a5d4186ba54e5e4640e651cc32931f49510262",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-MUJI-FRONT-OPEN-32L",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
-          "claim_ids": [
-            "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -86203,20 +86543,18 @@
           "unit_id": "RU-058c4cd32782104403cc",
           "locator": "section[7]/div[1]/section[3]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Samsonite公式でC-Lite Spinner 55 EXPの型番・販売表示を確認する",
+          "text_sha256": "f17d53c1f15a7de23e17cfd41432682ed297d5c921cf45b41830d3428eb276e3",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-SAMSONITE-C-LITE-FEATURE",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "VERIFIABLE",
-          "claim_ids": [
-            "CLM-PORTFOLIO-FRONT-C-LITE-KNOWN-SPECS-REFERENCE"
-          ],
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": null,
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -88775,11 +89113,11 @@
       "authoring_input": {
         "kind": "STATIC_HTML_FIXTURE",
         "ref": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
-        "sha256": "a0c7708335bda300cd6449ea4fd7d41563dd01f564e3a527d37e1e31c0f4545c"
+        "sha256": "9f729547cbcfba2751cf042db41bde0e52874ac863521c87712f40e01a13696f"
       },
       "source_packet_ref": "SPV-PORTFOLIO-ROOMBA-MINI-K11-V1",
       "fact_packet_sha256": "c90468cbb5f83615f9bb077195a7673aa8ea88ec7a6a3bab9c3abca821d02356",
-      "reader_units_sha256": "65ca8ca24f84e407dc48027d0f5dd63d15b280df0aee26fc4c460593da260962",
+      "reader_units_sha256": "4df25bfba14dc618ca5d1737be76081a052e1bb274cd6f21df026db067fa4c06",
       "units": [
         {
           "unit_id": "RU-7344c437a03ee5cea31b",
@@ -92164,8 +92502,8 @@
           "unit_id": "RU-cd6aee46cf482a811923",
           "locator": "section[6]/div[1]/section[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "iRobot公式でRoomba Mini + AutoEmpty(F155260)の型番・販売表示を確認する",
+          "text_sha256": "2a5697ce4c79e75e197a474fdfe84c17b71f7df81efa9492881169c18cdf045b",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-IROBOT-ROOMBA-MINI-AUTOEMPTY-F155260",
@@ -92175,7 +92513,7 @@
           "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": "EDITORIAL_METHOD",
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -92301,8 +92639,8 @@
           "unit_id": "RU-86b2c4f1e7e6536afb17",
           "locator": "section[6]/div[1]/section[2]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Panasonic公式でRULO mini(MC-RSC10)の型番・販売表示を確認する",
+          "text_sha256": "ae85c0e7406194bf8ab7f4ddd71921ec33aa6b69b1e3f6278a94e7233fca487c",
           "context": "GENERAL",
           "subject_product_ids": [],
           "owner_product_id": "EXT-PANASONIC-RULO-MINI-MC-RSC10",
@@ -92312,7 +92650,7 @@
           "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": "EDITORIAL_METHOD",
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -93557,11 +93895,11 @@
       "authoring_input": {
         "kind": "STATIC_HTML_FIXTURE",
         "ref": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
-        "sha256": "1d75438033fc279ab5e3794f1aeb820f34d4be82c0650ce8a5bf1a4deb5a4765"
+        "sha256": "6ce5b81a1cef0bcddc2bb7d154d7e07ae55faedfbec7a1083caa2f1afc3001dc"
       },
       "source_packet_ref": "SPV-PORTFOLIO-SOLOTA-RAKUA-PLUS-V1",
       "fact_packet_sha256": "f1120c1c4d01cc9d803c7169b1b9bc60e07e13fc4756e89b7d9a18e8e28e26e4",
-      "reader_units_sha256": "818f45ad7315eec8fc40918fa53d2a4e812be1d1d2a398db5a40aaaa921124d9",
+      "reader_units_sha256": "5a30561cb47a2a75831ab6d0786fe41387c940a48183a072009bdb21173adb13",
       "units": [
         {
           "kind": "NON_CLAIM",
@@ -93956,8 +94294,8 @@
           "unit_id": "RU-5b4fd1818c41494deac6",
           "locator": "div[1]/section[1]/div[1]/section[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "Panasonic公式でNP-TMLK1-Kの型番・販売表示を確認する",
+          "text_sha256": "53aa7d050af1d03f1086fe35b0e8a5ae926f1b1c8ad41c5e9a05f79d378e29d5",
           "context": "DECISION",
           "subject_product_ids": [],
           "owner_product_id": "EXT-PANASONIC-SOLOTA-NP-TMLK1-K",
@@ -93967,7 +94305,7 @@
           "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": "EDITORIAL_METHOD",
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {
@@ -94079,8 +94417,8 @@
           "unit_id": "RU-bcb831e200deba192ae0",
           "locator": "div[1]/section[1]/div[1]/section[2]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "メーカー公式情報を確認する",
-          "text_sha256": "f5013f393507e9496c2310da1011b9bf5683cde189774dc24c31b00447831a93",
+          "text": "THANKO公式でラクアmini Plus(TK-MDW22B)の型番・販売表示を確認する",
+          "text_sha256": "6910671183bcee5d03357b8bdba3d1c40fd7b17abc923319f27a30c99fdb58ed",
           "context": "DECISION",
           "subject_product_ids": [],
           "owner_product_id": "EXT-THANKO-RAKUA-MINI-PLUS",
@@ -94090,7 +94428,7 @@
           "claim_ids": [],
           "evidence_bindings": [],
           "assertion_tokens": [],
-          "exemption_code": "EDITORIAL_METHOD",
+          "exemption_code": "NAVIGATION_OR_UI",
           "decision_gate": null
         },
         {

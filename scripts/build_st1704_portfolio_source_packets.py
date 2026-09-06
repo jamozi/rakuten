@@ -38,6 +38,7 @@ RETRIEVED_ON: Final = "2026-08-31"
 # source is advanced only when a new, source-specific observation was actually
 # made and is bound below to a checked-at claim.
 SOURCE_RETRIEVED_ON_OVERRIDES: Final[dict[str, str]] = {
+    "SRC-SIROCA-SS-MA251-MANUAL-20260906": "2026-09-06",
     # The originally recorded 05721-04 colour is now sold out.  The selected
     # owner record was deliberately moved to the exact, reader-visible
     # 05721-06 white variant on 2026-08-31 instead of treating availability of
@@ -157,6 +158,7 @@ POLICY_SOURCE_LOCATORS: Final[dict[str, dict[str, object]]] = {
 # values and prefixes (for example C1000/C1000 Gen 2), so lexical matching is
 # not a safe authorization boundary for reader-facing claim bindings.
 CLAIM_SUBJECT_PRODUCT_IDS: Final[dict[str, tuple[str, ...]]] = {
+    "CLM-ST1704-DISH-SS-MA251-SUPPLY-20260906": ("PRD-SIROCA-SS-MA251",),
     "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS": ("PRD-PROTECA-TRI-AIR-01541",),
     "CLM-ST1704-SUITCASE-CRESTA-06316-EXCLUDED": (),
     "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS": ("PRD-ACE-DIFFERENCE-05721",),
@@ -422,6 +424,9 @@ def _source(
 
 
 NEW_SOURCES: Final = (
+    _source("SRC-SIROCA-SS-MA251-MANUAL-20260906", "MANUFACTURER_OFFICIAL", "OFFICIAL_PRODUCT_MANUAL_PDF",
+            "siroca SS-MA251 取扱説明書（給水方式、2026-09-06確認）",
+            "https://www.siroca.co.jp/im/ss-ma251.pdf"),
     _source(
         "SRC-PROTECA-TRI-AIR-01541",
         "MANUFACTURER_OFFICIAL",
@@ -1961,6 +1966,9 @@ FIRST_FIVE_ADDITIONAL_CLAIMS: Final[dict[str, tuple[dict[str, object], ...]]] = 
         ),
     ),
     "SPV-ST1704-DISHWASHER-V1": (
+        _claim("CLM-ST1704-DISH-SS-MA251-SUPPLY-20260906",
+            "SS-MA251は内部のタンクへ給水する方式と、分岐水栓から給水する方式（2WAY）に対応する。2026-09-06に当該型番の取扱説明書12ページを確認。",
+            ["SRC-SIROCA-SS-MA251-MANUAL-20260906"]),
         _claim(
             "CLM-ST1704-DISH-SS-M171-SPECS",
             "siroca SS-M171は幅42×奥行43.5×高さ43.5cm、約13kg、標準収納16点、"
@@ -3109,6 +3117,7 @@ PANASONIC_NP_TMLK1_IDENTITY_FRAGMENTS: Final = (
 
 
 NEW_SOURCE_FRAGMENTS: Final[dict[str, tuple[str, ...]]] = {
+    "SRC-SIROCA-SS-MA251-MANUAL-20260906": ("付属品の給水カップで内部のタンクに水を入れる方法と、 分岐水栓から給水する方法があります。",),
     "SRC-EUFY-AUTOEMPTY-C10-T2292": (
         '<meta property="og:title" content="Eufy Robot Vacuum Auto-Empty C10 | ロボット掃除機の製品情報">',
         'data-variant-sku="T2292511"',
@@ -3841,6 +3850,7 @@ LATER_CLAIM_FRAGMENT_ADDITIONS: Final[dict[tuple[str, str], tuple[str, ...]]] = 
 
 
 PDF_SOURCE_METADATA: Final[dict[str, tuple[str, int]]] = {
+    "SRC-SIROCA-SS-MA251-MANUAL-20260906": ("83f9eb602f6d629bc1b2ca10ae523638facf3ba91e84ba5e8a60663351e0cbc0", 12),
     "SRC-ANKER-SOLIX-C300-SAFETY-MANUAL": (
         "0cb763561ebcc4eaf230bf5a16a850023b36302ea008fb3cabd8becc0e2853a6",
         7,
