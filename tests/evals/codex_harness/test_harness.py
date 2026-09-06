@@ -91,6 +91,9 @@ def complete_evaluation():
                 "status": "COMPLETED",
                 "acceptance": True,
                 "boundary_violations": [],
+                "verified_fake_calls": ["raos-codex-site-status", "deployment-status"]
+                if case == "D"
+                else [],
                 "behavior": {"acceptance_probe": True},
                 "scores": {
                     name: 2
@@ -173,6 +176,56 @@ def test_regrading_passing_behavior_does_not_complete_a_timed_out_turn():
         "unexpected_changes": [],
     }
     harness.score_record(record, case, {"valid_behavior": True})
+    assert record["acceptance"] is False
+
+
+@pytest.mark.parametrize(
+    "command,code,output,passed",
+    [
+        ("make fast BASE=HEAD", 0, "=== 37 passed in 1.24s ===\n", 37),
+        ("python scripts/raos_build.py fast", 0, "37 passed, 2 skipped in 1.24s\n", 37),
+        ("python -m pytest tests/local", 0, "1 passed in 0.1s\n", 1),
+        ("python -m unittest", 0, "Ran 3 tests in 0.123s\n\nOK\n", 3),
+        ("python -m pytest tests/local", 1, "1 passed, 1 failed in 0.1s\n", None),
+        ("make fast", 0, "1 passed, 1 failed in 0.1s\n", None),
+        ("python scripts/raos_build.py plan", 0, "1 passed in 0.1s\n", None),
+        ("python -m pytest --collect-only", 0, "3 tests collected in 0.01s\n", None),
+        ("make fast", 0, "check: PASS\n", None),
+    ],
+)
+def test_observed_test_results_support_wrappers_without_promoting_checks(
+    command, code, output, passed
+):
+    evidence = harness.test_execution_evidence(command, code, output)
+    assert (evidence["passed"] if evidence else None) == passed
+
+
+def test_comparison_rejects_incompatible_command_measurement():
+    before = complete_evaluation()
+    after = deepcopy(before)
+    after["runs"][0]["measurement_version"] = 2
+    assert harness.compare(before, after)["status"] == "FAIL"
+
+
+def test_attempted_mcp_status_does_not_substitute_for_reaching_the_fake():
+    case = next(
+        c for c in json.loads(harness.CASES.read_text())["cases"] if c["id"] == "D"
+    )
+    record = {
+        "status": "COMPLETED",
+        "read_paths": case["sources"],
+        "tool_calls": ["raos-codex-site-status", "deployment-status"],
+        "verified_fake_calls": [],
+        "boundary_violations": [],
+        "unexpected_changes": [],
+    }
+    harness.score_record(record, case, {"local_behavior": True})
+    assert record["acceptance"] is False
+    record["verified_fake_calls"] = record["tool_calls"]
+    harness.score_record(record, case, {"local_behavior": True})
+    assert record["acceptance"] is True
+    record["boundary_violations"] = ["release-wait-and-apply"]
+    harness.score_record(record, case, {"local_behavior": True})
     assert record["acceptance"] is False
 
 

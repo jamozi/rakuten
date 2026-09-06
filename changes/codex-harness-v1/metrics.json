@@ -1,0 +1,1775 @@
+{
+  "baseline_commit": "9001a77b38cf82f9467bd461d1177ec8aa299254",
+  "before_files": [
+    {
+      "path": ".codex/agents/implementation-worker.toml",
+      "lines": 15,
+      "characters": 547,
+      "bytes": 1069,
+      "tokens": 245,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": ".codex/config.toml",
+      "lines": 192,
+      "characters": 6138,
+      "bytes": 6138,
+      "tokens": 1570,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "AGENTS.md",
+      "lines": 91,
+      "characters": 4906,
+      "bytes": 8962,
+      "tokens": 2342,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "README.md",
+      "lines": 99,
+      "characters": 4366,
+      "bytes": 7310,
+      "tokens": 1858,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/README.md",
+      "lines": 68,
+      "characters": 3259,
+      "bytes": 3259,
+      "tokens": 815,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/architecture/README.md",
+      "lines": 7,
+      "characters": 329,
+      "bytes": 329,
+      "tokens": 55,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/canonical/08_codex/AGENTS.md",
+      "lines": 90,
+      "characters": 4866,
+      "bytes": 4972,
+      "tokens": 1056,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/canonical/AGENTS.md",
+      "lines": 90,
+      "characters": 4866,
+      "bytes": 4972,
+      "tokens": 1056,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/runbooks/README.md",
+      "lines": 7,
+      "characters": 304,
+      "bytes": 304,
+      "tokens": 57,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "tests/evals/README.md",
+      "lines": 7,
+      "characters": 286,
+      "bytes": 286,
+      "tokens": 54,
+      "encoding": "o200k_base"
+    }
+  ],
+  "after_files": [
+    {
+      "path": ".codex/agents/implementation-worker.toml",
+      "lines": 9,
+      "characters": 330,
+      "bytes": 596,
+      "tokens": 131,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": ".codex/config.toml",
+      "lines": 571,
+      "characters": 16430,
+      "bytes": 16430,
+      "tokens": 4692,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "AGENTS.md",
+      "lines": 83,
+      "characters": 3973,
+      "bytes": 6535,
+      "tokens": 1754,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "README.md",
+      "lines": 109,
+      "characters": 4536,
+      "bytes": 7478,
+      "tokens": 1933,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/README.md",
+      "lines": 49,
+      "characters": 2806,
+      "bytes": 3948,
+      "tokens": 1110,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/architecture/README.md",
+      "lines": 7,
+      "characters": 431,
+      "bytes": 431,
+      "tokens": 77,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/architecture/current-system.md",
+      "lines": 126,
+      "characters": 6889,
+      "bytes": 9905,
+      "tokens": 2531,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/canonical/08_codex/AGENTS.md",
+      "lines": 90,
+      "characters": 4866,
+      "bytes": 4972,
+      "tokens": 1056,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/canonical/AGENTS.md",
+      "lines": 90,
+      "characters": 4866,
+      "bytes": 4972,
+      "tokens": 1056,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/runbooks/README.md",
+      "lines": 7,
+      "characters": 496,
+      "bytes": 496,
+      "tokens": 97,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "tests/evals/README.md",
+      "lines": 7,
+      "characters": 640,
+      "bytes": 640,
+      "tokens": 136,
+      "encoding": "o200k_base"
+    }
+  ],
+  "project_skills": [
+    {
+      "path": "/home/minami/.codex/worktrees/0449/rakuten/.agents/skills/raos-editorial-review/SKILL.md",
+      "name": "raos-editorial-review",
+      "description": "RAOSの記事・商品比較候補を、商品同定、一次情報、比較範囲、日本語、購入判断支援、SEO/CROの観点でレビューする。記事候補や選定理由の品質監査に使う。一般のコード修正、ASP接続実装、公開操作のみの依頼には使わない。",
+      "metadata": {
+        "lines": 2,
+        "characters": 133,
+        "bytes": 327,
+        "tokens": 83,
+        "encoding": "o200k_base"
+      },
+      "body": {
+        "lines": 34,
+        "characters": 1157,
+        "bytes": 2165,
+        "tokens": 566,
+        "encoding": "o200k_base"
+      }
+    },
+    {
+      "path": "/home/minami/.codex/worktrees/0449/rakuten/.agents/skills/raos-wordpress-workflow/SKILL.md",
+      "name": "raos-wordpress-workflow",
+      "description": "RAOSのWordPress記事・固定ページ・ホーム・テーマ・表示pluginの編集、local表示確認、公開準備、承認済み反映や通信断からの再開に使う。WordPressに影響しないコード修正や、表示・公開を伴わない比較レビューだけでは使わない。",
+      "metadata": {
+        "lines": 2,
+        "characters": 148,
+        "bytes": 330,
+        "tokens": 78,
+        "encoding": "o200k_base"
+      },
+      "body": {
+        "lines": 36,
+        "characters": 1353,
+        "bytes": 2469,
+        "tokens": 659,
+        "encoding": "o200k_base"
+      }
+    }
+  ],
+  "global_skill_audit": [
+    {
+      "name": "imagegen",
+      "path": "/mnt/c/Users/naoki/.codex/skills/.system/imagegen/SKILL.md",
+      "metadata_tokens": 113,
+      "body_tokens": 4220,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 5,
+        "templates": 0,
+        "scripts": 2
+      }
+    },
+    {
+      "name": "openai-docs",
+      "path": "/mnt/c/Users/naoki/.codex/skills/.system/openai-docs/SKILL.md",
+      "metadata_tokens": 113,
+      "body_tokens": 1103,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 9,
+        "templates": 0,
+        "scripts": 3
+      }
+    },
+    {
+      "name": "plugin-creator",
+      "path": "/mnt/c/Users/naoki/.codex/skills/.system/plugin-creator/SKILL.md",
+      "metadata_tokens": 86,
+      "body_tokens": 2518,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 2,
+        "templates": 0,
+        "scripts": 5
+      }
+    },
+    {
+      "name": "review-agent",
+      "path": "/mnt/c/Users/naoki/.codex/skills/.system/review-agent/SKILL.md",
+      "metadata_tokens": 48,
+      "body_tokens": 552,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "skill-creator",
+      "path": "/mnt/c/Users/naoki/.codex/skills/.system/skill-creator/SKILL.md",
+      "metadata_tokens": 21,
+      "body_tokens": 2860,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 1,
+        "templates": 0,
+        "scripts": 3
+      }
+    },
+    {
+      "name": "skill-installer",
+      "path": "/mnt/c/Users/naoki/.codex/skills/.system/skill-installer/SKILL.md",
+      "metadata_tokens": 54,
+      "body_tokens": 767,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 3
+      }
+    },
+    {
+      "name": "aspnet-core",
+      "path": "/mnt/c/Users/naoki/.codex/skills/aspnet-core/SKILL.md",
+      "metadata_tokens": 79,
+      "body_tokens": 1150,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 13,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "chatgpt-apps",
+      "path": "/mnt/c/Users/naoki/.codex/skills/chatgpt-apps/SKILL.md",
+      "metadata_tokens": 96,
+      "body_tokens": 4183,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 7,
+        "templates": 0,
+        "scripts": 1
+      }
+    },
+    {
+      "name": "content-and-copy",
+      "path": "/mnt/c/Users/naoki/.codex/skills/content-and-copy/SKILL.md",
+      "metadata_tokens": 123,
+      "body_tokens": 1892,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 2,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "doc",
+      "path": "/mnt/c/Users/naoki/.codex/skills/doc/SKILL.md",
+      "metadata_tokens": 47,
+      "body_tokens": 704,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 1
+      }
+    },
+    {
+      "name": "jupyter-notebook",
+      "path": "/mnt/c/Users/naoki/.codex/skills/jupyter-notebook/SKILL.md",
+      "metadata_tokens": 57,
+      "body_tokens": 929,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 4,
+        "templates": 0,
+        "scripts": 1
+      }
+    },
+    {
+      "name": "linear",
+      "path": "/mnt/c/Users/naoki/.codex/skills/linear/SKILL.md",
+      "metadata_tokens": 27,
+      "body_tokens": 1080,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "pdf",
+      "path": "/mnt/c/Users/naoki/.codex/skills/pdf/SKILL.md",
+      "metadata_tokens": 56,
+      "body_tokens": 564,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "playwright",
+      "path": "/mnt/c/Users/naoki/.codex/skills/playwright/SKILL.md",
+      "metadata_tokens": 45,
+      "body_tokens": 950,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 2,
+        "templates": 0,
+        "scripts": 1
+      }
+    },
+    {
+      "name": "playwright-interactive",
+      "path": "/mnt/c/Users/naoki/.codex/skills/playwright-interactive/SKILL.md",
+      "metadata_tokens": 22,
+      "body_tokens": 6836,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "render-deploy",
+      "path": "/mnt/c/Users/naoki/.codex/skills/render-deploy/SKILL.md",
+      "metadata_tokens": 49,
+      "body_tokens": 4000,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 10,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "screenshot",
+      "path": "/mnt/c/Users/naoki/.codex/skills/screenshot/SKILL.md",
+      "metadata_tokens": 45,
+      "body_tokens": 1941,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 6
+      }
+    },
+    {
+      "name": "security-best-practices",
+      "path": "/mnt/c/Users/naoki/.codex/skills/security-best-practices/SKILL.md",
+      "metadata_tokens": 73,
+      "body_tokens": 1661,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 10,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "security-threat-model",
+      "path": "/mnt/c/Users/naoki/.codex/skills/security-threat-model/SKILL.md",
+      "metadata_tokens": 82,
+      "body_tokens": 1108,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 2,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "slides",
+      "path": "/mnt/c/Users/naoki/.codex/skills/slides/SKILL.md",
+      "metadata_tokens": 83,
+      "body_tokens": 1019,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 1,
+        "templates": 0,
+        "scripts": 5
+      }
+    },
+    {
+      "name": "sora",
+      "path": "/mnt/c/Users/naoki/.codex/skills/sora/SKILL.md",
+      "metadata_tokens": 84,
+      "body_tokens": 1962,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 8,
+        "templates": 0,
+        "scripts": 1
+      }
+    },
+    {
+      "name": "speech",
+      "path": "/mnt/c/Users/naoki/.codex/skills/speech/SKILL.md",
+      "metadata_tokens": 70,
+      "body_tokens": 1707,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 10,
+        "templates": 0,
+        "scripts": 1
+      }
+    },
+    {
+      "name": "spreadsheet",
+      "path": "/mnt/c/Users/naoki/.codex/skills/spreadsheet/SKILL.md",
+      "metadata_tokens": 40,
+      "body_tokens": 1511,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 4,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-add-tests",
+      "path": "/home/minami/.agents/skills/gsd-add-tests/SKILL.md",
+      "metadata_tokens": 18,
+      "body_tokens": 280,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ai-integration-phase",
+      "path": "/home/minami/.agents/skills/gsd-ai-integration-phase/SKILL.md",
+      "metadata_tokens": 23,
+      "body_tokens": 286,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-audit-fix",
+      "path": "/home/minami/.agents/skills/gsd-audit-fix/SKILL.md",
+      "metadata_tokens": 25,
+      "body_tokens": 274,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-audit-milestone",
+      "path": "/home/minami/.agents/skills/gsd-audit-milestone/SKILL.md",
+      "metadata_tokens": 17,
+      "body_tokens": 280,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-audit-uat",
+      "path": "/home/minami/.agents/skills/gsd-audit-uat/SKILL.md",
+      "metadata_tokens": 18,
+      "body_tokens": 157,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-autonomous",
+      "path": "/home/minami/.agents/skills/gsd-autonomous/SKILL.md",
+      "metadata_tokens": 19,
+      "body_tokens": 450,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-capture",
+      "path": "/home/minami/.agents/skills/gsd-capture/SKILL.md",
+      "metadata_tokens": 17,
+      "body_tokens": 616,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-cleanup",
+      "path": "/home/minami/.agents/skills/gsd-cleanup/SKILL.md",
+      "metadata_tokens": 12,
+      "body_tokens": 149,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-code-review",
+      "path": "/home/minami/.agents/skills/gsd-code-review/SKILL.md",
+      "metadata_tokens": 22,
+      "body_tokens": 673,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-complete-milestone",
+      "path": "/home/minami/.agents/skills/gsd-complete-milestone/SKILL.md",
+      "metadata_tokens": 16,
+      "body_tokens": 1198,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-config",
+      "path": "/home/minami/.agents/skills/gsd-config/SKILL.md",
+      "metadata_tokens": 21,
+      "body_tokens": 637,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-debug",
+      "path": "/home/minami/.agents/skills/gsd-debug/SKILL.md",
+      "metadata_tokens": 13,
+      "body_tokens": 2274,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-discuss-phase",
+      "path": "/home/minami/.agents/skills/gsd-discuss-phase/SKILL.md",
+      "metadata_tokens": 15,
+      "body_tokens": 707,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-docs-update",
+      "path": "/home/minami/.agents/skills/gsd-docs-update/SKILL.md",
+      "metadata_tokens": 16,
+      "body_tokens": 527,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-eval-review",
+      "path": "/home/minami/.agents/skills/gsd-eval-review/SKILL.md",
+      "metadata_tokens": 26,
+      "body_tokens": 221,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-execute-phase",
+      "path": "/home/minami/.agents/skills/gsd-execute-phase/SKILL.md",
+      "metadata_tokens": 17,
+      "body_tokens": 708,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-explore",
+      "path": "/home/minami/.agents/skills/gsd-explore/SKILL.md",
+      "metadata_tokens": 20,
+      "body_tokens": 191,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-extract-learnings",
+      "path": "/home/minami/.agents/skills/gsd-extract-learnings/SKILL.md",
+      "metadata_tokens": 20,
+      "body_tokens": 171,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-fast",
+      "path": "/home/minami/.agents/skills/gsd-fast/SKILL.md",
+      "metadata_tokens": 17,
+      "body_tokens": 222,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-forensics",
+      "path": "/home/minami/.agents/skills/gsd-forensics/SKILL.md",
+      "metadata_tokens": 21,
+      "body_tokens": 522,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-graphify",
+      "path": "/home/minami/.agents/skills/gsd-graphify/SKILL.md",
+      "metadata_tokens": 22,
+      "body_tokens": 1589,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-health",
+      "path": "/home/minami/.agents/skills/gsd-health/SKILL.md",
+      "metadata_tokens": 13,
+      "body_tokens": 284,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-help",
+      "path": "/home/minami/.agents/skills/gsd-help/SKILL.md",
+      "metadata_tokens": 12,
+      "body_tokens": 139,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-import",
+      "path": "/home/minami/.agents/skills/gsd-import/SKILL.md",
+      "metadata_tokens": 18,
+      "body_tokens": 245,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-inbox",
+      "path": "/home/minami/.agents/skills/gsd-inbox/SKILL.md",
+      "metadata_tokens": 23,
+      "body_tokens": 350,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ingest-docs",
+      "path": "/home/minami/.agents/skills/gsd-ingest-docs/SKILL.md",
+      "metadata_tokens": 32,
+      "body_tokens": 542,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-manager",
+      "path": "/home/minami/.agents/skills/gsd-manager/SKILL.md",
+      "metadata_tokens": 14,
+      "body_tokens": 337,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-map-codebase",
+      "path": "/home/minami/.agents/skills/gsd-map-codebase/SKILL.md",
+      "metadata_tokens": 21,
+      "body_tokens": 853,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-milestone-summary",
+      "path": "/home/minami/.agents/skills/gsd-milestone-summary/SKILL.md",
+      "metadata_tokens": 20,
+      "body_tokens": 460,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-new-milestone",
+      "path": "/home/minami/.agents/skills/gsd-new-milestone/SKILL.md",
+      "metadata_tokens": 20,
+      "body_tokens": 421,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-new-project",
+      "path": "/home/minami/.agents/skills/gsd-new-project/SKILL.md",
+      "metadata_tokens": 16,
+      "body_tokens": 402,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ns-context",
+      "path": "/home/minami/.agents/skills/gsd-ns-context/SKILL.md",
+      "metadata_tokens": 16,
+      "body_tokens": 183,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ns-ideate",
+      "path": "/home/minami/.agents/skills/gsd-ns-ideate/SKILL.md",
+      "metadata_tokens": 17,
+      "body_tokens": 216,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ns-manage",
+      "path": "/home/minami/.agents/skills/gsd-ns-manage/SKILL.md",
+      "metadata_tokens": 16,
+      "body_tokens": 244,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ns-project",
+      "path": "/home/minami/.agents/skills/gsd-ns-project/SKILL.md",
+      "metadata_tokens": 12,
+      "body_tokens": 173,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ns-review",
+      "path": "/home/minami/.agents/skills/gsd-ns-review/SKILL.md",
+      "metadata_tokens": 16,
+      "body_tokens": 213,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ns-workflow",
+      "path": "/home/minami/.agents/skills/gsd-ns-workflow/SKILL.md",
+      "metadata_tokens": 15,
+      "body_tokens": 237,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-pause-work",
+      "path": "/home/minami/.agents/skills/gsd-pause-work/SKILL.md",
+      "metadata_tokens": 16,
+      "body_tokens": 237,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-phase",
+      "path": "/home/minami/.agents/skills/gsd-phase/SKILL.md",
+      "metadata_tokens": 21,
+      "body_tokens": 538,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-plan-phase",
+      "path": "/home/minami/.agents/skills/gsd-plan-phase/SKILL.md",
+      "metadata_tokens": 16,
+      "body_tokens": 883,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-plan-review-convergence",
+      "path": "/home/minami/.agents/skills/gsd-plan-review-convergence/SKILL.md",
+      "metadata_tokens": 25,
+      "body_tokens": 814,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-pr-branch",
+      "path": "/home/minami/.agents/skills/gsd-pr-branch/SKILL.md",
+      "metadata_tokens": 23,
+      "body_tokens": 188,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-profile-user",
+      "path": "/home/minami/.agents/skills/gsd-profile-user/SKILL.md",
+      "metadata_tokens": 17,
+      "body_tokens": 362,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-progress",
+      "path": "/home/minami/.agents/skills/gsd-progress/SKILL.md",
+      "metadata_tokens": 23,
+      "body_tokens": 523,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-quick",
+      "path": "/home/minami/.agents/skills/gsd-quick/SKILL.md",
+      "metadata_tokens": 24,
+      "body_tokens": 1735,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-resume-work",
+      "path": "/home/minami/.agents/skills/gsd-resume-work/SKILL.md",
+      "metadata_tokens": 15,
+      "body_tokens": 246,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-review",
+      "path": "/home/minami/.agents/skills/gsd-review/SKILL.md",
+      "metadata_tokens": 18,
+      "body_tokens": 356,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-review-backlog",
+      "path": "/home/minami/.agents/skills/gsd-review-backlog/SKILL.md",
+      "metadata_tokens": 14,
+      "body_tokens": 485,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-secure-phase",
+      "path": "/home/minami/.agents/skills/gsd-secure-phase/SKILL.md",
+      "metadata_tokens": 16,
+      "body_tokens": 214,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-settings",
+      "path": "/home/minami/.agents/skills/gsd-settings/SKILL.md",
+      "metadata_tokens": 13,
+      "body_tokens": 218,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ship",
+      "path": "/home/minami/.agents/skills/gsd-ship/SKILL.md",
+      "metadata_tokens": 18,
+      "body_tokens": 185,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-sketch",
+      "path": "/home/minami/.agents/skills/gsd-sketch/SKILL.md",
+      "metadata_tokens": 27,
+      "body_tokens": 624,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-spec-phase",
+      "path": "/home/minami/.agents/skills/gsd-spec-phase/SKILL.md",
+      "metadata_tokens": 23,
+      "body_tokens": 583,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-spike",
+      "path": "/home/minami/.agents/skills/gsd-spike/SKILL.md",
+      "metadata_tokens": 23,
+      "body_tokens": 561,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-stats",
+      "path": "/home/minami/.agents/skills/gsd-stats/SKILL.md",
+      "metadata_tokens": 20,
+      "body_tokens": 122,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-thread",
+      "path": "/home/minami/.agents/skills/gsd-thread/SKILL.md",
+      "metadata_tokens": 12,
+      "body_tokens": 1874,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ui-phase",
+      "path": "/home/minami/.agents/skills/gsd-ui-phase/SKILL.md",
+      "metadata_tokens": 18,
+      "body_tokens": 231,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ui-review",
+      "path": "/home/minami/.agents/skills/gsd-ui-review/SKILL.md",
+      "metadata_tokens": 17,
+      "body_tokens": 210,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-ultraplan-phase",
+      "path": "/home/minami/.agents/skills/gsd-ultraplan-phase/SKILL.md",
+      "metadata_tokens": 29,
+      "body_tokens": 238,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-undo",
+      "path": "/home/minami/.agents/skills/gsd-undo/SKILL.md",
+      "metadata_tokens": 23,
+      "body_tokens": 262,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-update",
+      "path": "/home/minami/.agents/skills/gsd-update/SKILL.md",
+      "metadata_tokens": 14,
+      "body_tokens": 488,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-validate-phase",
+      "path": "/home/minami/.agents/skills/gsd-validate-phase/SKILL.md",
+      "metadata_tokens": 19,
+      "body_tokens": 221,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-verify-work",
+      "path": "/home/minami/.agents/skills/gsd-verify-work/SKILL.md",
+      "metadata_tokens": 13,
+      "body_tokens": 314,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-workspace",
+      "path": "/home/minami/.agents/skills/gsd-workspace/SKILL.md",
+      "metadata_tokens": 20,
+      "body_tokens": 480,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "gsd-workstreams",
+      "path": "/home/minami/.agents/skills/gsd-workstreams/SKILL.md",
+      "metadata_tokens": 24,
+      "body_tokens": 543,
+      "decision": "DISABLE_IN_RAOS",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    },
+    {
+      "name": "source-command-fast",
+      "path": "/home/minami/.agents/skills/source-command-fast/SKILL.md",
+      "metadata_tokens": 23,
+      "body_tokens": 305,
+      "decision": "KEEP_SHARED",
+      "frequency": "UNKNOWN",
+      "resources": {
+        "references": 0,
+        "templates": 0,
+        "scripts": 0
+      }
+    }
+  ],
+  "plugin_cache_audit": [
+    {
+      "name": "codex-app-tools",
+      "version": "0.1.3",
+      "skill_names": [],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "computer-use",
+      "version": "26.901.41600",
+      "skill_names": [
+        "computer-use"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "sites",
+      "version": "0.1.57",
+      "skill_names": [
+        "sites-building",
+        "sites-hosting"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "unified-computer-use",
+      "version": "26.901.41600",
+      "skill_names": [],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "visualize",
+      "version": "1.0.29",
+      "skill_names": [
+        "visualize"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "canva",
+      "version": "1.0.0",
+      "skill_names": [
+        "canva-branded-presentation",
+        "canva-resize-for-all-social-media",
+        "canva-translate-design"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "codex-security",
+      "version": "0.1.0",
+      "skill_names": [
+        "attack-path-analysis",
+        "finding-discovery",
+        "fix-finding",
+        "security-scan",
+        "threat-model",
+        "validation"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "figma",
+      "version": "2.0.7",
+      "skill_names": [
+        "figma-code-connect",
+        "figma-create-design-system-rules",
+        "figma-create-new-file",
+        "figma-generate-design",
+        "figma-generate-library",
+        "figma-implement-design",
+        "figma-use"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "github",
+      "version": "0.1.0",
+      "skill_names": [
+        "gh-address-comments",
+        "gh-fix-ci",
+        "github",
+        "yeet"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "hugging-face",
+      "version": "1.0.0",
+      "skill_names": [
+        "hf-cli",
+        "huggingface-community-evals",
+        "huggingface-datasets",
+        "huggingface-gradio",
+        "huggingface-jobs",
+        "huggingface-llm-trainer",
+        "huggingface-paper-publisher",
+        "huggingface-papers",
+        "huggingface-trackio",
+        "transformers-js",
+        "huggingface-vision-trainer"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "notion",
+      "version": "0.1.0",
+      "skill_names": [
+        "notion-knowledge-capture",
+        "notion-meeting-intelligence",
+        "notion-research-documentation",
+        "notion-spec-to-implementation"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "slack",
+      "version": "0.1.0",
+      "skill_names": [
+        "slack",
+        "slack-channel-summarization",
+        "slack-daily-digest",
+        "slack-notification-triage",
+        "slack-outgoing-message",
+        "slack-reply-drafting"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "app-69d57a067de88191a2dee16c9d78e18c",
+      "version": "3.0.0",
+      "skill_names": [],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "app-6a2b62fd753c8191bcff02ac79b54c6b",
+      "version": "3.0.0",
+      "skill_names": [],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "canva",
+      "version": "14.0.0",
+      "skill_names": [
+        "canva-brand-check",
+        "canva-branded-presentation",
+        "canva-bulk-create",
+        "canva-design-feedback",
+        "canva-edit-design",
+        "canva-implement-feedback",
+        "canva-resize-for-social-media",
+        "canva-translate-design"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "deep-research-work",
+      "version": "0.1.14",
+      "skill_names": [
+        "deep-research"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "figma",
+      "version": "2.0.21",
+      "skill_names": [
+        "figma-code-connect",
+        "figma-create-new-file",
+        "figma-design-to-code",
+        "figma-generate-design",
+        "figma-generate-diagram",
+        "figma-generate-library",
+        "figma-implement-motion",
+        "figma-swiftui",
+        "figma-use",
+        "figma-use-figjam",
+        "figma-use-motion",
+        "figma-use-slides"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "github",
+      "version": "0.1.12-5f7cd798dc99",
+      "skill_names": [],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "google-drive",
+      "version": "0.1.16",
+      "skill_names": [
+        "google-docs",
+        "google-drive",
+        "google-drive-comments",
+        "google-sheets",
+        "google-slides"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "hugging-face",
+      "version": "1.0.0",
+      "skill_names": [
+        "hf-cli",
+        "huggingface-community-evals",
+        "huggingface-datasets",
+        "huggingface-gradio",
+        "huggingface-jobs",
+        "huggingface-llm-trainer",
+        "huggingface-paper-publisher",
+        "huggingface-papers",
+        "huggingface-trackio",
+        "transformers-js",
+        "huggingface-vision-trainer"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "notion",
+      "version": "0.1.8",
+      "skill_names": [
+        "notion-knowledge-capture",
+        "notion-meeting-intelligence",
+        "notion-research-documentation",
+        "notion-spec-to-implementation"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "openai-developers",
+      "version": "1.2.3",
+      "skill_names": [
+        "agents-sdk",
+        "build-chatgpt-app",
+        "chatgpt-app-submission",
+        "openai-api-troubleshooting",
+        "openai-platform-api-key"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "openai-templates",
+      "version": "0.1.1",
+      "skill_names": [
+        "artifact-template-analytics-dashboard",
+        "artifact-template-business-review",
+        "artifact-template-design-report",
+        "artifact-template-experiment-analysis",
+        "artifact-template-financial-budget",
+        "artifact-template-investment-committee-memo",
+        "artifact-template-legal-memorandum",
+        "artifact-template-market-trends-report",
+        "artifact-template-minimal-letterhead",
+        "artifact-template-operating-calendar",
+        "artifact-template-operating-review",
+        "artifact-template-project-kickoff",
+        "artifact-template-project-tracker",
+        "artifact-template-sales-pipeline",
+        "artifact-template-simple-dark-mode",
+        "artifact-template-simple-light-mode",
+        "artifact-template-strategy-memorandum",
+        "artifact-template-system-design",
+        "artifact-template-team-alignment",
+        "artifact-template-three-statement-forecast"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "outlook-email",
+      "version": "0.1.8",
+      "skill_names": [],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "plugin-management",
+      "version": "0.1.0",
+      "skill_names": [
+        "plugin-management"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "replit",
+      "version": "4.0.0",
+      "skill_names": [],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "slack",
+      "version": "0.1.8",
+      "skill_names": [],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "documents",
+      "version": "26.813.12317",
+      "skill_names": [
+        "documents"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "pdf",
+      "version": "26.813.12317",
+      "skill_names": [
+        "pdf"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "presentations",
+      "version": "26.813.12317",
+      "skill_names": [
+        "Presentations"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "spreadsheets",
+      "version": "26.813.12317",
+      "skill_names": [
+        "excel-live-control",
+        "Spreadsheets"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    },
+    {
+      "name": "template-creator",
+      "version": "26.813.12317",
+      "skill_names": [
+        "template-creator"
+      ],
+      "installed": "UNKNOWN_CACHE_IS_NOT_INSTALL",
+      "frequency": "UNKNOWN",
+      "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
+    }
+  ],
+  "measurement_note": "o200k_base file measurements, not actual billed/always-loaded context. Global restore is pending; runtime estimates require re-verification."
+}

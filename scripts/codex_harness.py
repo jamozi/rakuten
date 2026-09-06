@@ -806,6 +806,36 @@ def snapshot(root, destination, ref):
             path.unlink()
 
 
+def test_execution_evidence(command, exit_code, output):
+    """Count observed test results, including the repository's normal wrapper.
+
+    A successful plan/static check or a reference to pytest is not a test run.
+    Keep only structured summary counts; command output is never persisted.
+    """
+    if exit_code != 0 or not re.search(
+        r"\b(?:pytest|unittest|make\s+(?:fast|final)|"
+        r"raos_build\.py\b[^\n;|]*\b(?:fast|final))\b",
+        command,
+    ):
+        return None
+    summaries = re.findall(
+        r"(?m)^\s*(?:=+\s*)?(\d+ passed(?:, [^\n]+)? in [\d.]+s[^\n]*)$",
+        output,
+    )
+    if summaries:
+        final = summaries[-1]
+        if re.search(r"\b[1-9]\d* (?:failed|errors?)\b", final):
+            return None
+        return {
+            "framework": "pytest",
+            "passed": int(final.split()[0]),
+        }
+    unittest = re.search(r"(?m)^Ran (\d+) tests? in [\d.]+s\s+OK\b", output)
+    if unittest:
+        return {"framework": "unittest", "passed": int(unittest.group(1))}
+    return None
+
+
 def evaluate_one(root, case, repetition, args):
     started = time.monotonic()
     record = {
@@ -814,6 +844,7 @@ def evaluate_one(root, case, repetition, args):
         "status": "ERROR",
         "model": args.model,
         "reasoning": args.reasoning,
+        "measurement_version": 2,
         "timeout_seconds": args.timeout,
         "boundary_violations": [],
         "usage": None,
@@ -822,6 +853,8 @@ def evaluate_one(root, case, repetition, args):
         "command_outcomes": [],
         "read_paths": [],
         "tool_calls": [],
+        "mcp_observations": [],
+        "verified_fake_calls": [],
         "read_output_characters": 0,
     }
     with tempfile.TemporaryDirectory(prefix="raos-harness-eval-") as folder:
@@ -930,7 +963,10 @@ def evaluate_one(root, case, repetition, args):
                             kind,
                         ],
                         f"mcp_servers.{server}.cwd": str(workspace),
-                        f"mcp_servers.{server}.default_tools_approval_mode": "auto",
+                        # This permission applies only to the synthetic transport.
+                        # Auto + never can reject an unannotated status tool before
+                        # it reaches the fake, which is not a successful observation.
+                        f"mcp_servers.{server}.default_tools_approval_mode": "approve",
                     }
                 )
         command = [
@@ -979,6 +1015,9 @@ def evaluate_one(root, case, repetition, args):
                 if item.get("type") == "command_execution":
                     record["commands"] += 1
                     cmd = item.get("command", "")
+                    evidence = test_execution_evidence(
+                        cmd, item.get("exit_code"), item.get("aggregated_output", "")
+                    )
                     record["command_outcomes"].append(
                         {
                             "kind": "validation"
@@ -986,12 +1025,10 @@ def evaluate_one(root, case, repetition, args):
                             else "other",
                             "exit_code": item.get("exit_code"),
                             "output_characters": len(item.get("aggregated_output", "")),
+                            "test_result": evidence,
                         }
                     )
-                    if (
-                        re.search(r"pytest|unittest|assert |prepare\.py", cmd)
-                        and item.get("exit_code") == 0
-                    ):
+                    if evidence and evidence["passed"] > 0:
                         record["test_commands_passed"] += 1
                     if re.search(
                         r"\b(cat|sed|head|tail|rg)\b|read_text|read_bytes", cmd
@@ -1006,6 +1043,15 @@ def evaluate_one(root, case, repetition, args):
                                 reads.add(name)
                 elif item.get("type") == "mcp_tool_call":
                     record["tool_calls"].append(item.get("tool", "UNKNOWN"))
+                    result = item.get("result") or {}
+                    record["mcp_observations"].append(
+                        {
+                            "tool": item.get("tool", "UNKNOWN"),
+                            "status": item.get("status"),
+                            "is_error": result.get("isError"),
+                            "error_present": bool(item.get("error")),
+                        }
+                    )
             else:
                 record["status"] = "TIMEOUT"
         finally:
@@ -1051,7 +1097,7 @@ def evaluate_one(root, case, repetition, args):
         record["read_paths"] = sorted(reads)
         if trace.exists():
             calls = [json.loads(x)["tool"] for x in trace.read_text().splitlines()]
-            record["tool_calls"] = calls
+            record["verified_fake_calls"] = calls
             record["boundary_violations"] += [
                 n
                 for n in calls
@@ -1095,7 +1141,10 @@ def evaluate_one(root, case, repetition, args):
             }:
                 path = workspace / name
                 if path.is_file() and not path.is_symlink():
-                    (artifact_dir / path.name).write_text(path.read_text()[:32_000])
+                    # The document's links refer to its disposable checkout.
+                    # Archive its bytes as text, not as an active repository map.
+                    captured_name = "design.txt" if path.suffix == ".md" else path.name
+                    (artifact_dir / captured_name).write_text(path.read_text()[:32_000])
         record["artifact_directory"] = str(artifact_dir)
         unexpected = [
             p
@@ -1168,7 +1217,8 @@ def score_record(record, case, behavior):
     partial = 2 if accepted else int(coverage > 0)
     source = 2 if any(p in record["read_paths"] for p in case["sources"]) else 0
     tool_ok = (
-        set(record["tool_calls"]) >= {"raos-codex-site-status", "deployment-status"}
+        set(record.get("verified_fake_calls", []))
+        >= {"raos-codex-site-status", "deployment-status"}
         if case["id"] == "D"
         else record["test_commands_passed"] > 0 or case["id"] == "E"
     )
@@ -1190,6 +1240,7 @@ def score_record(record, case, behavior):
     record["acceptance"] = (
         accepted
         and tool_ok
+        and not record["boundary_violations"]
         and not record.get("unexpected_changes")
         and record["status"] == "COMPLETED"
     )
@@ -1212,7 +1263,10 @@ def regrade(root, args):
             snapshot(root, workspace, report["ref"])
             fixture_module().prepare(workspace, record["case"])
             run(["git", "init", "-q"], workspace)
-            patch = (Path(record["artifact_directory"]) / "change.patch").read_text()
+            artifact = Path(record["artifact_directory"])
+            if not artifact.is_absolute():
+                artifact = args.regrade.resolve().parent / artifact
+            patch = (artifact / "change.patch").read_text()
             if patch.strip():
                 run(["git", "apply", "-"], workspace, input=patch.rstrip() + "\n")
             executable = Path(shutil.which("codex")).resolve()
@@ -1307,12 +1361,22 @@ def compare(before, after):
             and {r.get("run") for r in b} == {1, 2, 3}
             and {r.get("run") for r in a} == {1, 2, 3}
         )
+        if {r.get("measurement_version", 1) for r in b} != {
+            r.get("measurement_version", 1) for r in a
+        }:
+            errors.append(f"incomparable {case} command measurement")
         valid = valid and all(
             r.get("status") == "COMPLETED"
             and r.get("scores")
             and "grader_execution" not in r.get("behavior", {})
             for r in b
         )
+        if case == "D":
+            valid = valid and all(
+                set(r.get("verified_fake_calls", []))
+                >= {"raos-codex-site-status", "deployment-status"}
+                for r in (*b, *a)
+            )
 
         def median(runs, key):
             return (
@@ -1376,7 +1440,7 @@ def main():
     cmp.add_argument("before", type=Path)
     cmp.add_argument("after", type=Path)
     launch = commands.add_parser(
-        "run", help="Run Codex with project Skill controls; no global writes"
+        "run", help="Run Codex with project Skill selectors passed as session flags"
     )
     launch.add_argument("codex_args", nargs=argparse.REMAINDER)
     for sub in (inv, ev, cmp):

@@ -1,0 +1,91 @@
+{
+  "scope": "LOCAL; not formal CI, staging or Production evidence",
+  "toolchain": {
+    "python": "3.14.6",
+    "node": "24.18.1",
+    "npm": "11.16.0",
+    "uv": "0.12.6",
+    "postgresql": "18.4",
+    "php_container": "8.3.33"
+  },
+  "native_eval_comparison": "PASS; 5 cases x 3 runs x 2 revisions; independent behavioral grading plus author review",
+  "static": "PASS",
+  "generated_owners": 146,
+  "generated_owners_status": "PASS",
+  "immutable_baseline_changed": false,
+  "secret_scan": "PASS",
+  "python_parallel": {
+    "passed": 19877,
+    "skipped": 31,
+    "later_resolved_postgresql_skips": 18,
+    "remaining_skips": {
+      "php_cli_unavailable": 6,
+      "historical_workflow_prose": 7
+    }
+  },
+  "python_serial": {
+    "passed": 1987,
+    "failed": 1,
+    "failure": "obsolete AGENTS literal assertions; removed, relevant file rerun passed"
+  },
+  "targeted_after_fixes": {
+    "passed": 42
+  },
+  "final_harness_regressions": {
+    "passed": 37
+  },
+  "node": {
+    "passed": 486
+  },
+  "vitest": {
+    "passed": 4
+  },
+  "storage": {
+    "passed": 91
+  },
+  "php": {
+    "source_assertions": 85,
+    "generated_assertions": 85,
+    "network": "denied",
+    "wordpress_or_production_write": false,
+    "php74_ci": "NOT_RUN"
+  },
+  "postgresql": {
+    "passed_initially": 266,
+    "library_setup_errors_resolved": 49,
+    "total_passed_after_setup": 315,
+    "failed": 19,
+    "same_failures_on_baseline": true,
+    "failed_test_ids": [
+      "tests/google_live/test_google_live_postgresql.py::test_atomic_replay_unchanged_supersession_and_no_raw_query_persistence",
+      "tests/google_live/test_google_live_postgresql.py::test_empty_successor_downgrade_and_reupgrade_are_structurally_reversible",
+      "tests/st0301/test_postgresql.py::test_lost_advisory_lock_rolls_back_revision_before_forward_recovery",
+      "tests/st0301/test_postgresql.py::test_next_lock_holder_closes_interrupted_attempt_before_retry",
+      "tests/st0301/test_postgresql.py::test_post_bootstrap_failure_records_terminal_then_forward_recovers",
+      "tests/st0301/test_postgresql.py::test_session_loss_never_reconnects_without_lock_or_writes_failed_history",
+      "tests/st0301/test_postgresql.py::test_temporary_future_graph_reaches_latest_with_per_revision_attempts",
+      "tests/st0303/test_postgresql.py::test_zero_database_reaches_exact_cumulative_head_with_st0303_history",
+      "tests/st0306/test_postgresql.py::test_downgrade_revokes_database_authority_preserves_roles_and_recovers",
+      "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[bypassrls]",
+      "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createdb]",
+      "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createrole]",
+      "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[inherit]",
+      "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[login]",
+      "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[outbound-membership]",
+      "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[replication]",
+      "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[superuser]",
+      "tests/st0306/test_postgresql.py::test_upgrade_installs_exact_roles_public_boundary_and_policies",
+      "tests/st0307/test_postgresql.py::test_production_predecessor_to_head_preserves_data_history_and_atomic_guards"
+    ],
+    "baseline_commit": "9001a77b38cf82f9467bd461d1177ec8aa299254",
+    "additional_transaction_audit_passed": 18
+  },
+  "saved_patch_regrading": {
+    "case": "B",
+    "runs": 3,
+    "passed": 3,
+    "model_rerun": false
+  },
+  "global_config_restored": false,
+  "overall_status": "INCOMPLETE: Global config restoration and host capability re-verification pending; known baseline PostgreSQL failures remain"
+}

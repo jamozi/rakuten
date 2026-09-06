@@ -1,0 +1,426 @@
+{
+  "version": 1,
+  "revision": "f8f324442e2aac9f2f34f0eef2b83c6c0906ae8c",
+  "files": [
+    {
+      "path": ".codex/agents/implementation-worker.toml",
+      "lines": 9,
+      "characters": 330,
+      "bytes": 596,
+      "tokens": 131,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": ".codex/config.toml",
+      "lines": 571,
+      "characters": 16430,
+      "bytes": 16430,
+      "tokens": 4692,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "AGENTS.md",
+      "lines": 83,
+      "characters": 3973,
+      "bytes": 6535,
+      "tokens": 1754,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "README.md",
+      "lines": 109,
+      "characters": 4536,
+      "bytes": 7478,
+      "tokens": 1933,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/README.md",
+      "lines": 49,
+      "characters": 2806,
+      "bytes": 3948,
+      "tokens": 1110,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/architecture/README.md",
+      "lines": 7,
+      "characters": 431,
+      "bytes": 431,
+      "tokens": 77,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/architecture/current-system.md",
+      "lines": 126,
+      "characters": 6889,
+      "bytes": 9905,
+      "tokens": 2531,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/canonical/08_codex/AGENTS.md",
+      "lines": 90,
+      "characters": 4866,
+      "bytes": 4972,
+      "tokens": 1056,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/canonical/AGENTS.md",
+      "lines": 90,
+      "characters": 4866,
+      "bytes": 4972,
+      "tokens": 1056,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "docs/runbooks/README.md",
+      "lines": 7,
+      "characters": 496,
+      "bytes": 496,
+      "tokens": 97,
+      "encoding": "o200k_base"
+    },
+    {
+      "path": "tests/evals/README.md",
+      "lines": 7,
+      "characters": 640,
+      "bytes": 640,
+      "tokens": 136,
+      "encoding": "o200k_base"
+    }
+  ],
+  "skills": [
+    {
+      "path": "/home/minami/.codex/worktrees/0449/rakuten/.agents/skills/raos-editorial-review/SKILL.md",
+      "name": "raos-editorial-review",
+      "description": "RAOSの記事・商品比較候補を、商品同定、一次情報、比較範囲、日本語、購入判断支援、SEO/CROの観点でレビューする。記事候補や選定理由の品質監査に使う。一般のコード修正、ASP接続実装、公開操作のみの依頼には使わない。",
+      "metadata": {
+        "lines": 2,
+        "characters": 133,
+        "bytes": 327,
+        "tokens": 83,
+        "encoding": "o200k_base"
+      },
+      "body": {
+        "lines": 34,
+        "characters": 1157,
+        "bytes": 2165,
+        "tokens": 566,
+        "encoding": "o200k_base"
+      }
+    },
+    {
+      "path": "/home/minami/.codex/worktrees/0449/rakuten/.agents/skills/raos-wordpress-workflow/SKILL.md",
+      "name": "raos-wordpress-workflow",
+      "description": "RAOSのWordPress記事・固定ページ・ホーム・テーマ・表示pluginの編集、local表示確認、公開準備、承認済み反映や通信断からの再開に使う。WordPressに影響しないコード修正や、表示・公開を伴わない比較レビューだけでは使わない。",
+      "metadata": {
+        "lines": 2,
+        "characters": 148,
+        "bytes": 330,
+        "tokens": 78,
+        "encoding": "o200k_base"
+      },
+      "body": {
+        "lines": 36,
+        "characters": 1353,
+        "bytes": 2469,
+        "tokens": 659,
+        "encoding": "o200k_base"
+      }
+    }
+  ],
+  "mcp": [
+    {
+      "server": "openaiDeveloperDocs",
+      "enabled": false,
+      "enabled_tools": [],
+      "disabled_tools": [],
+      "approval": "approve",
+      "cwd": null,
+      "startup_ms": null
+    },
+    {
+      "server": "wordpressEditor",
+      "enabled": true,
+      "enabled_tools": [
+        "raos-codex-site-status",
+        "raos-codex-content-list",
+        "raos-codex-content-get",
+        "raos-codex-content-create-draft",
+        "raos-codex-content-update-draft",
+        "raos-codex-content-propose-release",
+        "raos-codex-publication-batch-register",
+        "raos-codex-operation-get",
+        "raos-measurement-aggregate-report"
+      ],
+      "disabled_tools": [],
+      "approval": "approve",
+      "cwd": "/home/minami/rakuten",
+      "startup_ms": null
+    },
+    {
+      "server": "wordpressDeployment",
+      "enabled": true,
+      "enabled_tools": [
+        "deployment-status",
+        "operation-status",
+        "publication-batch-status",
+        "release-wait-and-apply",
+        "theme-propose-release",
+        "plugin-propose-change",
+        "plugin-apply-change",
+        "operation-recover"
+      ],
+      "disabled_tools": [],
+      "approval": "prompt",
+      "cwd": "/home/minami/rakuten",
+      "startup_ms": null
+    },
+    {
+      "server": "github",
+      "enabled": false,
+      "enabled_tools": [],
+      "disabled_tools": [],
+      "approval": "UNKNOWN",
+      "cwd": null,
+      "startup_ms": null
+    },
+    {
+      "server": "playwright",
+      "enabled": false,
+      "enabled_tools": [
+        "browser_navigate",
+        "browser_snapshot",
+        "browser_click",
+        "browser_type",
+        "browser_wait_for",
+        "browser_close"
+      ],
+      "disabled_tools": [
+        "browser_drop",
+        "browser_evaluate",
+        "browser_file_upload",
+        "browser_run_code_unsafe",
+        "browser_storage_state",
+        "browser_cookie_list",
+        "browser_localstorage_list",
+        "browser_sessionstorage_list",
+        "browser_tabs"
+      ],
+      "approval": "prompt",
+      "cwd": "/home/minami/rakuten",
+      "startup_ms": null
+    },
+    {
+      "server": "fetch",
+      "enabled": false,
+      "enabled_tools": [],
+      "disabled_tools": [],
+      "approval": "UNKNOWN",
+      "cwd": null,
+      "startup_ms": null
+    },
+    {
+      "server": "filesystem",
+      "enabled": false,
+      "enabled_tools": [],
+      "disabled_tools": [],
+      "approval": "UNKNOWN",
+      "cwd": null,
+      "startup_ms": null
+    },
+    {
+      "server": "memory",
+      "enabled": false,
+      "enabled_tools": [],
+      "disabled_tools": [],
+      "approval": "UNKNOWN",
+      "cwd": null,
+      "startup_ms": null
+    },
+    {
+      "server": "sequential-thinking",
+      "enabled": false,
+      "enabled_tools": [],
+      "disabled_tools": [],
+      "approval": "UNKNOWN",
+      "cwd": null,
+      "startup_ms": null
+    },
+    {
+      "server": "node_repl",
+      "enabled": false,
+      "enabled_tools": [],
+      "disabled_tools": [],
+      "approval": "UNKNOWN",
+      "cwd": null,
+      "startup_ms": null
+    },
+    {
+      "server": "figma",
+      "enabled": false,
+      "enabled_tools": [],
+      "disabled_tools": [],
+      "approval": "UNKNOWN",
+      "cwd": null,
+      "startup_ms": null
+    },
+    {
+      "server": "linear",
+      "enabled": false,
+      "enabled_tools": [],
+      "disabled_tools": [],
+      "approval": "UNKNOWN",
+      "cwd": null,
+      "startup_ms": null
+    },
+    {
+      "server": "notion",
+      "enabled": false,
+      "enabled_tools": [],
+      "disabled_tools": [],
+      "approval": "UNKNOWN",
+      "cwd": null,
+      "startup_ms": null
+    },
+    {
+      "server": "openai-api-key-local-confirmation",
+      "enabled": false,
+      "enabled_tools": [],
+      "disabled_tools": [],
+      "approval": "UNKNOWN",
+      "cwd": null,
+      "startup_ms": null
+    }
+  ],
+  "apps": {
+    "_default": {
+      "enabled": false
+    },
+    "connector_76869538009648d5b282a4bb21c3d157": {
+      "enabled": true,
+      "default_tools_approval_mode": "auto",
+      "default_tools_enabled": false,
+      "tools": {
+        "github.fetch_issue": {
+          "enabled": true
+        },
+        "github.fetch_issue_comments": {
+          "enabled": true
+        },
+        "github.search_issues": {
+          "enabled": true
+        },
+        "github.search_prs": {
+          "enabled": true
+        },
+        "github.list_recent_issues": {
+          "enabled": true
+        },
+        "github.fetch_pr": {
+          "enabled": true
+        },
+        "github.get_pr_info": {
+          "enabled": true
+        },
+        "github.get_pr_diff": {
+          "enabled": true
+        },
+        "github.fetch_pr_file_patch": {
+          "enabled": true
+        },
+        "github.list_pr_changed_filenames": {
+          "enabled": true
+        },
+        "github.list_pull_request_reviews": {
+          "enabled": true
+        },
+        "github.list_pull_request_review_threads": {
+          "enabled": true
+        },
+        "github.fetch_pr_comments": {
+          "enabled": true
+        },
+        "github.get_commit_combined_status": {
+          "enabled": true
+        },
+        "github.fetch_commit_workflow_runs": {
+          "enabled": true
+        },
+        "github.fetch_workflow_run_jobs": {
+          "enabled": true
+        },
+        "github.fetch_workflow_job_steps": {
+          "enabled": true
+        },
+        "github.fetch_workflow_job_logs": {
+          "enabled": true
+        },
+        "github.fetch_workflow_run_artifacts": {
+          "enabled": true
+        },
+        "github.download_workflow_artifact": {
+          "enabled": true
+        },
+        "github.compare_commits": {
+          "enabled": true
+        },
+        "github.create_pull_request": {
+          "enabled": true
+        },
+        "github.update_pull_request": {
+          "enabled": true
+        },
+        "github.convert_pull_request_to_draft": {
+          "enabled": true
+        },
+        "github.mark_pull_request_ready_for_review": {
+          "enabled": true
+        },
+        "github.merge_pull_request": {
+          "enabled": true
+        },
+        "github.enable_auto_merge": {
+          "enabled": true
+        },
+        "github.rerun_failed_workflow_run_jobs": {
+          "enabled": true
+        }
+      }
+    },
+    "asdk_app_69a1d78e929881919bba0dbda1f6436d": {
+      "enabled": false
+    },
+    "connector_5f3c8c41a1e54ad7a76272c89e2554fa": {
+      "enabled": false
+    },
+    "connector_68df33b1a2d081918778431a9cfca8ba": {
+      "enabled": false
+    },
+    "asdk_app_6939e86417648191b7bda087d872685b": {
+      "enabled": false
+    },
+    "asdk_app_69d57a067de88191a2dee16c9d78e18c": {
+      "enabled": false
+    },
+    "asdk_app_6a2b62fd753c8191bcff02ac79b54c6b": {
+      "enabled": false
+    },
+    "connector_4aaab2856305417b993eca9a216aaf6e": {
+      "enabled": false
+    },
+    "connector_68df038e0ba48191908c8434991bbac2": {
+      "enabled": false
+    }
+  },
+  "instruction_configuration": {
+    "project_fallback_filenames": [],
+    "project_doc_max_bytes": "CODEX_DEFAULT",
+    "model_instruction_file_configured": false,
+    "rules": [],
+    "hooks": []
+  },
+  "note": "File token counts are not actual billed or always-loaded context."
+}

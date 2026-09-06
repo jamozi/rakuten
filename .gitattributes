@@ -8,3 +8,6 @@
 
 # Deterministic preview bytes are hash-bound browser/visual evidence inputs.
 /changes/raos-v2/phase-2/preview/** -whitespace
+
+# Unified diffs require a space on blank context lines for faithful replay.
+/changes/codex-harness-v1/evals/artifacts/**/change.patch -whitespace

@@ -1,0 +1,72 @@
+# 公開記事の更新情報表示
+
+## 採用したデータ経路と理由
+
+既存の ST-0903 Publication Snapshot → ST-0904 public projection →
+`render_public_update_notice(projection)` → HTML escape 済み表示文字列、の経路を使う。
+新しい関数が受け取るのは `PublicProjectionResultV2.projection()` と同じ辞書形式であり、
+参照する値は `article.updated_public_at` と `article.freshness_status` の2項目だけである。
+関数自身は snapshot、内部サービス、DB、ネットワークへアクセスしない。
+
+根拠は `python/raos/domain/publishing/public_projection_v2.py` の
+`PUBLIC_ARTICLE_FIELDS` と
+`contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml` の
+`PublicArticleDocument`。両項目は既存の公開項目なので、公開 schema、allowlist、DTO、
+projection の生成処理に項目を追加する必要はない。
+
+Evidence の検証情報や Finance のデータを直接参照・結合する案は採用しない。
+ST-0904 は内部 Evidence / Finance を公開 projection から排除し、ST-0306 の公開読取権限も
+readmodel の SELECT に限定している。表示側から内部情報へ戻ると、この公開／内部境界を
+迂回し、不要な権限・依存を増やす。内部の検証日時や財務情報は記事の公開更新日時そのものでは
+なく、要求された2項目の代替にもならない。更新表示は既存の公開値に従う。
+
+## 関数の振る舞い
+
+- 戻り値は `更新: <article.updated_public_at> / 状態: <article.freshness_status>`。
+  日時や状態の解釈・再計算・翻訳・整形は行わず、`UNKNOWN` もそのまま表示する。
+- 両値に標準ライブラリの `html.escape(..., quote=True)` を適用する。
+  `& < > " '` を escape し、HTML 要素を追加しない。
+- projection / article が mapping でない場合、article がない場合、またはどちらかの値が
+  欠落・`None`・空文字・空白のみ・文字列以外の場合は `ValueError`。
+  エラーメッセージは固定文と項目名のみで、入力内容は含めない。
+- 入力を変更せず、`published_at`、トップレベルの同名項目、内部情報、現在時刻への
+  fallback はしない。公開 projection 全体の許可項目検証は既存の生成境界が担当する。
+
+## 隣接影響
+
+公開契約上 `updated_public_at` は nullable / optional であり、その契約を維持する。
+表示関数の必須条件を、公開 API 全体の必須条件へ広げない。
+現行 recorded projection は `updated_public_at=None`、`freshness_status="UNKNOWN"` なので、
+そのまま渡した場合は `ValueError` になる。日時を捏造して fixture を更新しない。
+正常系テストだけが独立した projection のコピーへ合成日時を設定する。
+
+既存 projector、publication snapshot、生成物と整合性 hash、公開 readmodel と DB 権限は
+変更しない。SEO / sitemap / structured data の更新日時の意味、広告 disclosure、
+Evidence / Finance の処理や editorial / finance 分離にも変更はない。
+既存のネットワーク・DB・CMS import 禁止テストには新関数のモジュールを追加する。
+
+今回は独立した表示関数の追加で、ページ・WordPress テーマ・公開ルートへの接続は行わない。
+publication / auth / kill-switch / default-off gate や公開承認の権限を変更しない。
+ブラウザ確認 URL・スクリーンショットは対象外。本番送付・公開・deployment は未実施。
+
+## 検証範囲
+
+追加した `tests/st0904_v2/test_public_update_notice.py` で表示の一致、両値の HTML escape、
+入力の非変更、日時と状態の保持、欠落・不正値の `ValueError`、現行 recorded projection の
+未設定日時、内部情報等への fallback 不在を検証する。
+併せて指定の `tests/st0904_v2/test_domain.py` と
+`tests/st0904_v2/test_static_boundary.py` を実行する。
+今回の明示された範囲に合わせ、`make fast` による検査拡張、ネットワーク・保存済み checkout を
+必要とする検査、全件 CI は実行しない。結果は local 回帰検証として記録する。
+
+実行結果: **40 passed in 1.85s**（追加回帰28件、既存 domain 8件・static boundary 4件）。
+2 worker の並列実行で全件成功。ネットワーク・DB・CMS・保存済み checkout のテスト入力は
+使用していない。既存 `.venv` とこの隔離 checkout 内の recorded fixture を使用した。
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 TMPDIR="$PWD/.harness-task/tmp" .venv/bin/python -m pytest -q \
+  -p xdist.plugin -n 2 --basetemp=.harness-task/pytest-tmp \
+  -o cache_dir=.harness-task/pytest-cache \
+  tests/st0904_v2/test_public_update_notice.py \
+  tests/st0904_v2/test_domain.py tests/st0904_v2/test_static_boundary.py
+```

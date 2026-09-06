@@ -1,0 +1,90 @@
+diff --git a/tests/test_affiliate_ingestion.py b/tests/test_affiliate_ingestion.py
+index 07a888e..ec0a5f5 100644
+--- a/tests/test_affiliate_ingestion.py
++++ b/tests/test_affiliate_ingestion.py
+@@ -29,6 +29,7 @@ import socket
+ import urllib.error
+ import urllib.request
+ from contextlib import redirect_stderr
++from decimal import Decimal
+ from email.message import Message
+ from unittest.mock import Mock, patch
+ 
+@@ -153,6 +154,63 @@ class NormalizationAndStorageTests(unittest.TestCase):
+             self.assertTrue(normalized_path.is_file())
+ 
+ 
++@pytest.mark.parametrize("zero", [0, 0.0, Decimal("0.00"), "0"])
++@pytest.mark.parametrize(
++    "aliases",
++    [("id", "price", "commission"), ("product_id", "product_price", "reward")],
++)
++def test_normalization_preserves_zero_and_alias_priority(zero, aliases):
++    source = {
++        "id": None,
++        "price": "",
++        "commission": False,
++        "code": "fallback-id",
++        "amount": 100,
++        "fee": 10,
++    }
++    source.update(dict.fromkeys(aliases, zero))
++
++    normalized = normalize_record("a8net", "products", source)
++
++    assert normalized["source_id"] == zero
++    assert normalized["price"] == str(zero)
++    assert normalized["commission"] == str(zero)
++    assert normalized["raw"] == source
++
++
++@pytest.mark.parametrize("empty", [None, "", False, [], {}, ()])
++def test_normalization_still_skips_empty_aliases(empty):
++    source = {"id": empty, "price": empty, "commission": empty}
++    missing = normalize_record("a8net", "products", source)
++    assert missing["source_id"] is None
++    assert missing["price"] is None
++    assert missing["commission"] is None
++
++    source.update(product_id="P-1", unit_price="¥1,200", reward="30")
++    fallback = normalize_record("a8net", "products", source)
++    assert fallback["source_id"] == "P-1"
++    assert fallback["price"] == "1200"
++    assert fallback["commission"] == "30"
++
++
++@pytest.mark.parametrize("first", [12, " "])
++def test_normalization_keeps_earlier_alias_over_later_zero(first):
++    source = {
++        "product_id": 0,
++        "unit_price": 0,
++        "reward": 0,
++        "id": first,
++        "price": first,
++        "commission": first,
++    }
++
++    normalized = normalize_record("a8net", "products", source)
++
++    assert normalized["source_id"] == first
++    assert normalized["price"] == str(first)
++    assert normalized["commission"] == str(first)
++
++
+ @pytest.fixture(autouse=True)
+ def no_provider_network(monkeypatch):
+     def forbidden(*args, **kwargs):
+diff --git a/tools/affiliate_ingestion/normalize.py b/tools/affiliate_ingestion/normalize.py
+index a0863dc..2fe381d 100644
+--- a/tools/affiliate_ingestion/normalize.py
++++ b/tools/affiliate_ingestion/normalize.py
+@@ -68,7 +68,9 @@ def _flatten_keys(record: Mapping[str, Any]) -> dict[str, Any]:
+ def _first(record: Mapping[str, Any], aliases: Iterable[str]) -> Any:
+     for alias in aliases:
+         value = record.get(alias)
+-        if value:
++        if value or (
++            isinstance(value, (int, float, Decimal)) and not isinstance(value, bool)
++        ):
+             return value
+     return None

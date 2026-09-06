@@ -1,0 +1,79 @@
+# 公開記事の更新情報表示
+
+## 採用したデータ経路と理由
+
+既存の `PublicationSnapshot`（ST-0903）→
+`build_public_projection_v2`（ST-0904）→
+`PublicProjectionResultV2.projection()` の公開用mappingを入力とし、
+`render_public_update_notice(projection)` が `article.updated_public_at` と
+`article.freshness_status` だけを読んで表示文字列を返す。
+今回追加するのは最後の表示関数であり、取得・投影・永続化は既存の責務に置く。
+
+根拠は次の既存契約・実装である。
+
+- `docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml` の ST-0904
+  はSnapshotのreadmodelへの投影と、public roleに必要な項目だけを渡すことを要求する。
+- `contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml` の
+  `PublicArticleDocument` は `additionalProperties: false`。
+  `freshness_status` は既存の文字列、`updated_public_at` は既存の省略・null許容日時である。
+- `python/raos/domain/publishing/public_projection_v2.py` の
+  `PUBLIC_ARTICLE_FIELDS` に両項目があり、既存projectorが公開項目のallowlistと
+  内部データ混入禁止を検査している。
+- `changes/st-0904/contracts/public-projection-runtime.v2.yaml` は
+  `raos_public_ro` のreadmodelへのSELECTだけを認め、Evidence・Finance・AI rawの
+  公開混入を禁止する（SEC-DATA-004 / SEC-DATA-006）。
+
+Evidenceへの直接参照案は採用しない。表示時に内部の根拠や評価値から鮮度・更新日時を
+再計算すると、公開projectionの境界とSnapshot由来の表示の一貫性を崩し、内部取得への
+依存を増やす。Financeへの直接参照案も採用しない。公開済みの更新情報表示に財務値は
+不要であり、公開／内部と編集／財務の分離を損なう。将来これらの情報が上流の正規処理に
+関係しても、表示関数への入力は既存の公開項目に限定する。
+
+## 表示と欠損時の振る舞い
+
+出力は `更新: <article.updated_public_at> / 状態: <article.freshness_status>`。
+両値に標準ライブラリの `html.escape(..., quote=True)` を適用し、タグや属性を生成せず
+HTMLのテキスト部分として使える `str` を返す。日時の整形・時差変換や状態名の置換はしない。
+
+projectionとarticleはmappingであることを確認し、両値は空白だけではない文字列を要求する。
+articleまたは必須項目の欠落、null、空文字列、空白のみ、型不正は `ValueError`。
+例外には入力値を含めない。`published_at`、現在時刻、内部Evidence・Financeなどへの
+フォールバックは設けない。`UNKNOWN` は有効な公開値としてそのまま表示する。
+
+これは表示関数を呼ぶ際の前提であり、公開APIの必須項目やnullable契約の変更ではない。
+現行のローカルprojectorは `updated_public_at=None`、`freshness_status="UNKNOWN"` を
+出力するため、そのまま渡した場合は更新日時不足で `ValueError` になる。
+正常系テストの日時はテスト内だけで与える合成値であり、生成fixtureや実際の更新事実を
+変更・捏造しない。
+
+## 隣接影響
+
+- 上流のSnapshot、projector、Freshnessの算出、公開allowlist、OpenAPI、DB role、
+  generator、生成fixture、canonical packageとchecksumは変更しない。
+- 下流で利用する際は公開更新日時の有無を考慮して呼び出す必要がある。
+  この変更では既存の画面、公開route、CMSへの接続は追加しない。
+- 関数は入力を変更せず、標準ライブラリだけに依存する純粋な表示処理とする。
+  DB・ネットワーク・Evidence・Financeのportやadapterを追加しない。
+  公開承認、disclosure、kill switch、default-offの権限や動作への影響はない。
+- 既存の静的境界テストの対象に新モジュールを加え、ネットワーク・DB・CMSの
+  禁止import検査を適用する。
+
+## 検証
+
+追加した `tests/st0904_v2/test_public_update_notice.py` で表示内容、入力非破壊、
+read-only mapping、両値のHTML escape、欠損・null・空文字・型不正、内部値や
+公開日時からの補完禁止、既存recorded projectionの更新日時欠損を検証する。
+
+依頼された隔離評価の範囲として、この回帰テストと
+`tests/st0904_v2/test_domain.py`・`tests/st0904_v2/test_static_boundary.py` を実行する。
+ネットワーク・保存済みcheckoutに依存する検査、`make fast` による範囲拡大、全件CI、
+WordPress表示確認、本番送付・公開は実行しない。ローカル結果をformal CIや公開証跡とは扱わない。
+
+実行コマンド:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -p xdist.plugin -n 2 --basetemp=.harness-task/pytest-public-update-notice -q tests/st0904_v2/test_public_update_notice.py tests/st0904_v2/test_domain.py tests/st0904_v2/test_static_boundary.py
+```
+
+実行結果: `43 passed in 1.85s`（追加回帰31件、既存domain 8件・static boundary 4件）。
+2 workerで並列実行し、すべて成功した。`git diff --check` も成功。

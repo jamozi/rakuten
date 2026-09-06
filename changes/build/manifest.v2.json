@@ -25127,7 +25127,7 @@
         },
         {
           "bytes": 6264,
-          "sha256": "7418da88709609c6be9e9fbd64ae3bc03cf8fdf68a4fa3e2e152ea2c2ca03cde",
+          "sha256": "96da003410644bc0560d608e192e43418cbc8edb840c410cc51775dafe4accac",
           "uri": "repo://changes/st-1602/manifest.v2.yaml"
         }
       ],
@@ -29178,7 +29178,7 @@
         },
         {
           "bytes": 27271,
-          "sha256": "abdeef96c357a00783e8ca1a45574dc9d09908fd056dae3491ca41acb02c079e",
+          "sha256": "dd19f1904184ae446fd6697775dfedf69d7ad9cf66502dc21cbadaa7c573bbd3",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
