@@ -137,8 +137,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/mixed_audit_report.py",
-      "sha256": "e255fcfb861ca0ef8ff3351024f5f2f146b455897b1f2a10966d44a7702c74b4",
-      "size": 32749
+      "sha256": "48330c12bf43f204f99ccd5ce7e54cec1a96c8c61a7f0eeec0e27369a6fa058d",
+      "size": 34636
     },
     {
       "path": "changes/wordpress-local-preview-v1/runtime-fingerprint.php",
@@ -162,8 +162,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
-      "sha256": "247aa8da9537bf7ce6dd15c35b72100222e50b3cc141da3d1a2412572b0e5187",
-      "size": 123773
+      "sha256": "dbd09b6c1098e511e90ec3a07f0b1ea6ea65c4c9e160824998dc3cdc81fac115",
+      "size": 124147
     },
     {
       "path": "changes/wordpress-local-preview-v1/compose.yaml",
@@ -342,7 +342,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "ffd94c62792151c0620c21d8f0c2f3c89c924074fa8c7e0ff9a50634ba3b5b36",
+      "sha256": "ac7029a00f0118fef62836efed6750237cadbdf5089918a53e7e72530f9da106",
       "size": 54277
     },
     {

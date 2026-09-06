@@ -226,8 +226,48 @@ def reader_core_surfaces(inventory: dict, inputs: dict) -> dict[str, dict]:
     return matches
 
 
+def derive_reader_component_article_ids(
+    markup: dict[str, str], *, required_article_ids: set[str] | frozenset[str] = frozenset()
+) -> list[str]:
+    """Read expected UI from verified input bytes, never the observed browser DOM."""
+    from raos.application.editorial.reader_experience_projection import fragment
+
+    if not required_article_ids <= set(markup):
+        reject()
+    result = []
+    for article_id, body in markup.items():
+        markers = [
+            node for node in fragment(body).find(cls="raos-reader-view")
+            if node.attrs.get("data-raos-reader-components") == "true"
+        ]
+        if markers and (
+            len(markers) != 1
+            or markers[0].attrs.get("data-raos-article-id") != article_id
+        ):
+            reject()
+        if article_id in required_article_ids and not markers:
+            reject()
+        if markers:
+            result.append(article_id)
+    return sorted(result)
+
+
 def bind_reader_inventory(inventory: dict, inputs: dict) -> dict:
     """Derive the runner's exact core set from bound pages and the registered catalog."""
+    if "reader_components_article_ids" in inputs:
+        ids = inputs["reader_components_article_ids"]
+        display = inventory.get("reader_display", {})
+        if (
+            type(ids) is not list
+            or any(type(value) is not str for value in ids)
+            or ids != sorted(set(ids))
+            or not set(ids) <= set(display.get("article_ids", []))
+        ):
+            reject()
+        inventory = {
+            **inventory,
+            "reader_display": {**display, "component_article_ids": ids},
+        }
     if "reader_page_slugs" not in inputs:
         return inventory
     core = reader_core_surfaces(inventory, inputs)
@@ -342,6 +382,15 @@ def current_inputs(
         "runtime_evidence", {}
     ).get("source_fingerprint"):
         reject()
+    markup = {}
+    for row in inventory["surfaces"]:
+        if row["kind"] != "article":
+            continue
+        slug = row["production_path"].strip("/")
+        body = read_private(fixture_root / "articles" / f"{slug}.html")
+        if sha(body) != binding["article_body_sha256"][slug]:
+            reject()
+        markup[row["article_id"]] = body.decode("utf-8", errors="strict")
     inputs = {
         "origin": origin,
         "preparation_binding_sha256": scope["preparation_binding_sha256"],
@@ -371,6 +420,12 @@ def current_inputs(
             read_regular(THEME / "assets/editorial-navigation.v3.json")
         ),
     }
+    if "reader_display" in inventory:
+        inputs["reader_components_article_ids"] = derive_reader_component_article_ids(
+            markup,
+            required_article_ids=set(scope["selected_article_ids"])
+            & set(inventory["reader_display"]["article_ids"]),
+        )
     if "reader_page_slugs" in binding:
         inputs.update({key: binding[key] for key in READER_BINDING_FIELDS})
         inventory = bind_reader_inventory(inventory, inputs)
@@ -398,13 +453,6 @@ def current_inputs(
             or "home" in candidate.manifest["shared_artifacts"]
         ):
             reject()
-        markup = {
-            row["article_id"]: read_private(
-                fixture_root / "articles" / f"{row['production_path'].strip('/')}.html"
-            ).decode()
-            for row in inventory["surfaces"]
-            if row["kind"] == "article"
-        }
         inputs["browser_plan"] = browser_plan(
             inventory,
             candidate.manifest,
