@@ -55,16 +55,16 @@ source_bindings:
     sha256: 295ebe70efb63e67dba0e8e0c7026120c6d3577078d3991fdc7f7ddff99bceeb
   st1303_runtime:
     path: changes/st-1303/contracts/attribution-engine-runtime.v2.yaml
-    sha256: 1671d1f6f4069e69ffd3557a1fa8943ac6ba9c5623acaf3443102a8c00e6d476
+    sha256: 43b9abe54450701d50cc618cab63eeacbe95e500eef982453d8d09f90e06af57
   st1303_projection:
     path: changes/st-1303/generated/attribution-engine-recorded.v2.json
-    sha256: ebfae2f7cb6f49acae86fc37775bd84083952160ef3088a75a6ec7a9f66745b2
+    sha256: 81ee8ceb9b7d75d9d4c24e5e1c23df1873b66ae6069743be464287d41f1aacbb
   st1303_fixture:
     path: changes/st-1303/fixtures/attribution-engine-recorded.synthetic.v2.json
-    sha256: b209b37b278ce64fd8c757250f3f103f937c24ae8abc636a58e7952333bf97b1
+    sha256: 521df6e5fe4632d75a546d8c720423e6442b4d33884df769d38a0923b9ff4d85
   five_slot_measurement:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0
+    sha256: 98ecaadc336feb5282f61884ce7f247590c843ac2f141127169a7200dd42dbe4
 open_decision_boundary:
   labor:
     id: OD-005
@@ -198,12 +198,12 @@ authority_boundary:
   - PROFIT
 recorded_fixture:
   path: changes/st-1304/fixtures/cost-unit-economics-recorded.synthetic.v2.json
-  sha256: b6d7a29b5490a3b0449a788578b6d68bdb2f5140078cc72ffd022c3840041da3
+  sha256: ed9f1c99e9b0cf5cd36b38bc48ce85d410ba24adfe42e051ce268f1ef5f8bea9
   synthetic: true
-  attribution_input_sha256: c7ed9c2a04556259c0e16f91d9ad20fc48a76097958093769b3f8e8a2478c482
-  attribution_result_sha256: 23a81242734fac6a275c9ad1e6adce7fecac1ccdc00590d60f455874d9c5505e
-  unit_economics_input_sha256: 3fdc5f40e5a4a3499a7aef0fa2a9fe6b97329ea8b291a6d8d26733b079678f34
-  unit_economics_result_sha256: 24047bc8cd0e1df1610deee64ee73925b40c0e2dadb0c12319c9169f662245c3
+  attribution_input_sha256: 8ef6b9ef56b660e0720531b9a06e2396bffd049181db4891a630effa0c68942a
+  attribution_result_sha256: c859be58a5ec9da3ae4c24ec80867d05f406a7e152d7be9e958a18f5d5c9f055
+  unit_economics_input_sha256: 7baf03f7042a5be3f5e66c2e444158f5d01994728db067bf80e9653ca44de2a5
+  unit_economics_result_sha256: a4ce6776a5c1111cd5e8f1d874d6257ed896f676dd6f61723f38a0d6c7efc003
   provider_execution: NOT_EXECUTED
 verification_boundary:
   local_unit_property_adversarial: CANDIDATE

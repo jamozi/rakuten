@@ -17,7 +17,7 @@
     {
       "bytes": 8816,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "fcddd8ff0f1e7a2550be173ca68ffae88676429408fc50196a29cdf464d0f4be"
+      "sha256": "0db8b0921eb887023a27bfa41b149aed3936d7f0034ad92517811ccebdb25829"
     },
     {
       "bytes": 5429,
@@ -27,7 +27,7 @@
     {
       "bytes": 32133,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "fd0562318b39030f3aa51b37c359631a09bade89ae66fe3c2aac10aec91a066a"
+      "sha256": "4a808fd6e5cf1423fc62a8ad0b97f16cc19547767bae95c3081f569c7a67b8f9"
     },
     {
       "bytes": 2486,
@@ -45,9 +45,9 @@
       "sha256": "73c13dd6f321dfe4ec8386fb0dcf0ab8a42578d4fe9b5b3f45eefbb4b1cbb32f"
     },
     {
-      "bytes": 254959,
+      "bytes": 257057,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-      "sha256": "592565d632d2dc7e3c5ef72ae58a9023c16ca7de2b4eb0403499e89961e39c07"
+      "sha256": "3b6350279bcd188e29e14996cedb928fb9ef511c9c3dd620ce3f96dd45a335f9"
     },
     {
       "bytes": 34324,
@@ -55,9 +55,9 @@
       "sha256": "5b2ac14d137016667e5647a38e6f35ab95d8ba441c50f531b99239a46baead7c"
     },
     {
-      "bytes": 235632,
+      "bytes": 236847,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json",
-      "sha256": "30bddd832b717a2521dfe4d679312ed98934a62a4414a73a0e5d8c154fa99605"
+      "sha256": "0f4a52680a646ae5ae23bd5acebc89c8c0224b492d09a464afe46d748e0346e8"
     },
     {
       "bytes": 99644,

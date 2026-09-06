@@ -2,7 +2,7 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 149,
+    "owner_count": 150,
     "version": "2.0.0"
   },
   "owners": [
@@ -11,12 +11,12 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "ddcf5d239931f99a1012d9b23b58ea2aec6386ba37de1622aa8a86445c4f3209",
+          "sha256": "0f079d170cbff648bb88980eb9b47c0e8a526d7413bb3a2b9285857782dd9386",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 18040,
-          "sha256": "3f7a54c0994829237d686426dd94d6c3700af0d6312c406673b86d6bdb182bd0",
+          "sha256": "1c745f8e31072d0b1fed9ad296d8a159a1da9366e2d6f10bcea647a92336f61b",
           "uri": "repo://changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement/config/measurement-allowlist.v1.json"
         }
       ],
@@ -93,13 +93,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 235354,
-          "sha256": "f444f9854c4520649ec4977419ece445ff3240c6bcdc8ab9f913a5d931525790",
+          "bytes": 257157,
+          "sha256": "40d634de63b03af9fce4007f7ae21350627cceda0983a86474ab4ac81fc8145f",
           "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
         },
         {
-          "bytes": 13584,
-          "sha256": "ae5c793515e8de38d67fa3ec25979b639a6ab4487511482bc65d564c66c6e077",
+          "bytes": 13593,
+          "sha256": "e1bf6e02440bd86d9e6cf6808ed5e909376cc0e29c6ce0a29fd2324c89eea403",
           "uri": "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json"
         }
       ],
@@ -295,12 +295,12 @@
       "outputs": [
         {
           "bytes": 21211,
-          "sha256": "87b0f166a598484c9f2949642d2863b54083145f8ea7531a93ebde21c5a20108",
+          "sha256": "84a57e6e188bd22a851b7d59e72bce512409c50f3c82dc03326c675cf0740229",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
-          "bytes": 24338,
-          "sha256": "d5b0aca74cb40f664b1fa65011e2fbe53bf6e8d1a16bd324db0d988f00085042",
+          "bytes": 31333,
+          "sha256": "94357bc363787c580ec72a56a598699b122e7e3c93f4afe26451129948c761b4",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
         }
       ],
@@ -647,6 +647,70 @@
         "ST-0201",
         "ST-0202"
       ]
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 69530,
+          "sha256": "663835711e4168cf3c3f0c0c94c927abc9a2d9bd1963d55a51ea4b7fd38dc0da",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/reader-guides.v1.json"
+        }
+      ],
+      "owner_dependencies": [],
+      "owner_id": "build_local_reader_guides",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "uri": "repo://changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/local-reader-guides.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/local-reader-guides.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/fixtures/posts.json",
+          "uri": "repo://changes/wordpress-local-preview-v1/fixtures/posts.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/local_reader_guides.py",
+          "uri": "repo://python/raos/application/editorial/local_reader_guides.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_components.py",
+          "uri": "repo://python/raos/application/editorial/reader_components.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_experience_v1.py",
+          "uri": "repo://python/raos/application/editorial/reader_experience_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_local_reader_guides.py",
+          "uri": "repo://scripts/build_local_reader_guides.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "tests/wordpress_local_preview",
+          "uri": "repo://tests/wordpress_local_preview",
+          "version": 2
+        }
+      ],
+      "story_ids": []
     },
     {
       "output_scope": "tracked",
@@ -21306,12 +21370,12 @@
       "outputs": [
         {
           "bytes": 30334,
-          "sha256": "530ee9cae72ca2c64e59f9d6588a6008c424bcc4bf6df52cb7146cdfee3542b5",
+          "sha256": "fe30cea9d21a36ab1e4254edb8be8469163c04b95304842e6e56e8920de5c6e7",
           "uri": "repo://changes/st-1104/generated/analytics-finance-dashboard-recorded.v2.json"
         },
         {
           "bytes": 11818,
-          "sha256": "5da2e1f4279dfe336ca666b8776d8a3afc613553cac326cefd84c4477d9cf00a",
+          "sha256": "8de55c6c152f0c633872022473151856cb97be60d83c213369fc014399b07ed0",
           "uri": "repo://changes/st-1104/runtime-manifest.v2.yaml"
         }
       ],
@@ -22844,7 +22908,7 @@
       "outputs": [
         {
           "bytes": 18896,
-          "sha256": "ebfae2f7cb6f49acae86fc37775bd84083952160ef3088a75a6ec7a9f66745b2",
+          "sha256": "81ee8ceb9b7d75d9d4c24e5e1c23df1873b66ae6069743be464287d41f1aacbb",
           "uri": "repo://changes/st-1303/generated/attribution-engine-recorded.v2.json"
         }
       ],
@@ -23108,7 +23172,7 @@
       "outputs": [
         {
           "bytes": 39444,
-          "sha256": "6855697006be52747528872969316ec6025af6b4a887b33caaa425b2351e7839",
+          "sha256": "400a1c2137044d09f2bc1e6f11f3101012db55e97b9068ffd96526d6992a0dc3",
           "uri": "repo://changes/st-1304/generated/cost-unit-economics-recorded.v2.json"
         }
       ],
@@ -23351,7 +23415,7 @@
       "outputs": [
         {
           "bytes": 31267,
-          "sha256": "a9daa80372661ee819efc34dc6d536af654504dad5c77f20ecde406cd05435f8",
+          "sha256": "0014060081b8c4f2745e18fb0a6e0ce7618acd0a28321bd0ede981d4a1d4cf4e",
           "uri": "repo://changes/st-1305/generated/finance-reconciliation-recorded.v2.json"
         }
       ],
@@ -26086,7 +26150,7 @@
       "outputs": [
         {
           "bytes": 2428,
-          "sha256": "687478b45b80f370ce692e9a3d40ae61156eecca22369b920a2064765903b236",
+          "sha256": "f80e5118a2e185ee2be3da0221a0f81fed13f32886bd1b411ab41b11d40313fd",
           "uri": "repo://changes/st-1704/affiliate-learning-v2/runtime-manifest.v2.json"
         }
       ],
@@ -26313,7 +26377,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "4890612c1b3f75eefbec9f252d1d497a49b5a7a53872e877e34899b9933e5b96",
+          "sha256": "2df427e79f1bc62413b06e8a3378e9f5ff834095793afe1130976a4cdf0e677a",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26544,7 +26608,7 @@
       "outputs": [
         {
           "bytes": 81039,
-          "sha256": "2ddfedeb8c9065eacacdbad90b83bb1f510150028fe8a177e8b33c5ed33f4618",
+          "sha256": "22c9b6030bc7594e7e44e6b5f155df7b14788b1d78a82b8232da684c43ee25ef",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27969,7 +28033,7 @@
       "outputs": [
         {
           "bytes": 29183,
-          "sha256": "228b5b2adbb6ab54f955cb2423b6f09e237aa0ae552894a69722680b35273051",
+          "sha256": "72b48de4994730876258f8d6dcd2b387b0802b39195391fcb676f80d81c3794f",
           "uri": "repo://changes/st-1804/generated/gate3-economics.local-blocked.v1.json"
         }
       ],
@@ -28865,12 +28929,12 @@
       "outputs": [
         {
           "bytes": 3342,
-          "sha256": "4cec758c42044c6d0f1b0da3157709af85262908571dfee43990cedd601eeaaa",
+          "sha256": "debf1fcc5555aab841db63658f9c2fa9299e7a201465c34e53ca018859c763c0",
           "uri": "repo://changes/st-1907/generated/content-portfolio-optimizer-report.v1.json"
         },
         {
           "bytes": 8475,
-          "sha256": "3d2abe2ff654c2f28dcd512b8cc500b22297dd1007f5c282f8f75b1ee6ad0ca1",
+          "sha256": "9a3ec30af65c0cbef31a021faeac0c51164a085fa4f5a41621bd0d8b1db25466",
           "uri": "repo://changes/st-1907/manifest.yaml"
         }
       ],
@@ -29173,12 +29237,12 @@
       "outputs": [
         {
           "bytes": 563,
-          "sha256": "004f1e5baa57d45cc826f4ecddf5c12caa78ed63fed2fa33605671e38148094f",
+          "sha256": "5fbe1d654b25799a9f2dd9f5893e0fe612390d8f2ed25653a214158d08630576",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
-          "bytes": 27270,
-          "sha256": "4a16acb8b9f006cfb2cb6e0af79188366e395074f4408f2cfc7d549eedcc598a",
+          "bytes": 27271,
+          "sha256": "d3badc9ef29f04af824185c036d167bd81a248b233a03c812911ca688e479aac",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30004,7 +30068,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "445ea63f18e915be9bfc5f638067aba8e5af6220af6a7a9c73f03c4e38370c78",
+          "sha256": "538d9a0fec2d935e1db70eaaad42b39ee52b431b5505312481fe4409b9b2bb1e",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
@@ -30013,6 +30077,7 @@
         "build_editorial_portfolio_v3",
         "build_editorial_v3_theme_navigation",
         "build_google_live_runtime_v1",
+        "build_local_reader_guides",
         "build_st0104_contract_repository",
         "build_st0105_generated_contracts",
         "build_st1703_self_hosted_runtime_manifest",

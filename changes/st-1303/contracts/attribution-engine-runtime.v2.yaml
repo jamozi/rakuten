@@ -40,7 +40,7 @@ source_bindings:
     sha256: cd49fd67e860a52670799bfaa8ec60711341ddc3fbbf37ceff89b76c85609dd9
   five_slot_measurement:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0
+    sha256: 98ecaadc336feb5282f61884ce7f247590c843ac2f141127169a7200dd42dbe4
 open_decision_boundary:
   id: OD-003
   status: EXTERNAL_EVIDENCE_REQUIRED
@@ -49,7 +49,7 @@ open_decision_boundary:
   resolved: false
 measurement_contract:
   schema_version: RAOS_ST1303_MEASUREMENT_ATTRIBUTION_CONTRACT_V2
-  source_contract_sha256: 28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0
+  source_contract_sha256: 98ecaadc336feb5282f61884ce7f247590c843ac2f141127169a7200dd42dbe4
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
   articles:
@@ -71,7 +71,7 @@ measurement_contract:
   - slot: 4
     article_id: st1704-countertop-dishwasher-for-small-households
     slug: countertop-dishwasher-for-small-households
-    packet_sha256: d0d00c9f9552a62250d6e2286ce86d9e07f77af5b652c2fe1585bb18bc63445b
+    packet_sha256: cfe434ddc81a089cedefb04362ba2928238d2c5cf4402814ca0738968db763c4
     intent_classification: HOUSEHOLD_FIT_COMPARISON
   - slot: 5
     article_id: st1704-compact-robot-vacuum-shortlist

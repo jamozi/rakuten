@@ -8,7 +8,7 @@ document:
   production_eligible: false
 provenance:
   contract_uri: repo://changes/st-1907/contracts/content-portfolio-optimizer.v1.yaml
-  contract_sha256: 33462edb7f1de9aff5ad3c9cdc9cbedcd174671493077e502f1b7e44a35aaf9a
+  contract_sha256: 2e89ee0ec7453ce6166b856f2abd71dc6f219311b1ac7bd565e3e3c4e5b3393b
   authority_inputs:
   - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
     sha256: 540d2775ab16fd3f456673bca25f00eb3f8d58c7bb4adb30f5625551b5529e7a
@@ -53,18 +53,18 @@ provenance:
     sha256: cf8ea58a795c8b6dcc5db4137f045387be1689427b79e0a8355d60ffcdec295c
   measurement_input:
     uri: repo://changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0
+    sha256: 98ecaadc336feb5282f61884ce7f247590c843ac2f141127169a7200dd42dbe4
   signal_policy_input:
     uri: repo://changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml
-    sha256: 5e5ae0a0a90f3614d8fbb7070eaf280e2d6bb314c21df52243577a9c6c259c85
+    sha256: 047101a75291004c64b6721ef14c7437c9cfe2af60d3a6f47ae9b35266761088
 source_artifact_count: 22
 source_artifacts:
 - uri: repo://changes/st-1907/contracts/content-portfolio-optimizer.v1.yaml
   bytes: 8500
-  sha256: 33462edb7f1de9aff5ad3c9cdc9cbedcd174671493077e502f1b7e44a35aaf9a
+  sha256: 2e89ee0ec7453ce6166b856f2abd71dc6f219311b1ac7bd565e3e3c4e5b3393b
 - uri: repo://changes/st-1907/fixtures/recorded/content-portfolio-optimizer.blocked.synthetic.v1.json
   bytes: 986
-  sha256: f284f4575832a1beed6f22541b8543a904edbecadc67e8ea461a8d2e1a7ababc
+  sha256: b7510ecfc14f4848aa78feb017a354c93588b1af2dab7602dd5e4cf2a5c65f2d
 - uri: repo://changes/st-1907/PREFLIGHT.md
   bytes: 2244
   sha256: a9d5b00c0f1c58869c30290fcd0dc3fd838a05842122d87f549b4ced5f2f1364
@@ -128,7 +128,7 @@ source_artifacts:
 generated_artifacts:
 - uri: repo://changes/st-1907/generated/content-portfolio-optimizer-report.v1.json
   bytes: 3342
-  sha256: 4cec758c42044c6d0f1b0da3157709af85262908571dfee43990cedd601eeaaa
+  sha256: debf1fcc5555aab841db63658f9c2fa9299e7a201465c34e53ca018859c763c0
 boundary:
   default_scope: DISABLED
   executable_environments:
