@@ -22,6 +22,7 @@ ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1"
 REGISTRY_PATH: Final = SLICE / "sources/source-registry.v1.json"
 LOCATOR_PATH: Final = SLICE / "sources/source-locator-contract.v1.json"
+READER_EXPANSIONS_PATH: Final = SLICE / "sources/reader-release-locator-expansions.v1.json"
 PORTFOLIO_PATH: Final = (
     ROOT / "changes/editorial-portfolio-v2/editorial-portfolio.v2.json"
 )
@@ -5663,6 +5664,51 @@ def _normalize_generated_claim_field_order(registry: dict[str, object]) -> None:
                     claim[field] = values[field]
 
 
+def _apply_reviewed_locator_expansions(registry: dict[str, object], locator: dict[str, object]) -> None:
+    # Generator authoring, never a fresh source verification receipt. Capture
+    # still requires an actual retained official body and exactly one match.
+    authored = json.loads(READER_EXPANSIONS_PATH.read_text(encoding="utf-8"))
+    if (authored.get("schema") != "RAOS_READER_RELEASE_LOCATOR_EXPANSIONS_V1"
+        or authored.get("publication_authority") is not False
+        or type(authored.get("expansions")) is not list):
+        raise ValueError("reader locator expansion document invalid")
+    claims = {
+        claim["claim_id"]: claim
+        for packet in registry["source_packets"] for claim in packet["claims"]
+    }
+    sources = {row["source_ref"]: row for row in locator["sources"]}
+    seen = set()
+    for entry in authored["expansions"]:
+        ref, before, after = entry["source_ref"], entry["before"], entry["after"]
+        key = (ref, before)
+        if (key in seen or ref not in sources or not isinstance(before, str)
+            or not isinstance(after, str) or not before or before not in after
+            or len(after) <= len(before) or len(after.encode()) > 131072
+            or re.fullmatch(r"[a-f0-9]{64}", entry["body_sha256"]) is None):
+            raise ValueError("reader locator expansion is not a strict contextual extension")
+        seen.add(key)
+        bindings = entry["claim_bindings"]
+        expected = {row["claim_id"] for row in bindings}
+        if not expected or len(expected) != len(bindings):
+            raise ValueError("reader locator claim bindings invalid")
+        observed = set()
+        for item in sources[ref]["locators"]:
+            fragments = item["exact_utf8_fragments"]
+            if before not in fragments and after not in fragments:
+                continue
+            claim_id = item["claim_id"]
+            if claim_id not in expected:
+                raise ValueError("reader locator expansion scope changed")
+            item["exact_utf8_fragments"] = [after if fragment == before else fragment for fragment in fragments]
+            observed.add(claim_id)
+        if observed != expected:
+            raise ValueError("reader locator expansion fragment absent")
+        for binding in bindings:
+            claim = claims.get(binding["claim_id"])
+            if claim is None or hashlib.sha256(claim["statement"].encode()).hexdigest() != binding["claim_statement_sha256"]:
+                raise ValueError("reader locator claim statement changed")
+
+
 def _documents() -> tuple[bytes, bytes]:
     registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
     locator = json.loads(LOCATOR_PATH.read_text(encoding="utf-8"))
@@ -6000,6 +6046,7 @@ def _documents() -> tuple[bytes, bytes]:
         **locator["locator_policy"],
         "pdf_fragment_match": "PINNED_BODY_SHA256_PLUS_REVIEWED_EXTRACTED_PAGE_TEXT",
     }
+    _apply_reviewed_locator_expansions(registry, locator)
     _validate_locator_text_fragments(locator)
     locator["source_registry_sha256"] = _canonical_sha256(registry)
 

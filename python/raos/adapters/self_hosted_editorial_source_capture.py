@@ -1243,14 +1243,17 @@ def _mime(
         charset = match.group(1)
     elif expected_media_type == "text/javascript":
         match = re.fullmatch(
-            r"(?:application/json|application/javascript|text/javascript)"
-            r'(?:\s*;\s*charset="?([A-Za-z0-9._-]+)"?)?',
+            r"(?P<media_type>application/json|application/javascript|text/javascript)"
+            r'(?:\s*;\s*charset="?(?P<charset>[A-Za-z0-9._-]+)"?)?',
             value,
             flags=re.ASCII | re.IGNORECASE,
         )
         if match is None:
             _fail(OfficialSourceCaptureFailureCode.MIME_INVALID)
-        charset = match.group(1)
+        charset = match.group("charset")
+        # The contract names a JSON-document family; provenance retains the
+        # actual response MIME instead of relabelling JSON as JavaScript.
+        expected_media_type = match.group("media_type").casefold()
     elif expected_media_type == "application/pdf":
         if value.casefold().strip() != "application/pdf":
             _fail(OfficialSourceCaptureFailureCode.MIME_INVALID)

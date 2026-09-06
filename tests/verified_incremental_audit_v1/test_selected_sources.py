@@ -203,7 +203,7 @@ def test_media_type_is_compared_to_current_plan(recorded, monkeypatch):
     assert replay(recorded).issues[0].code == "TARGET_MISMATCH"
 
 
-def test_javascript_is_not_relabelled_to_make_old_reader_accept_it(
+def test_html_capture_cannot_satisfy_a_machine_readable_json_target(
     recorded, monkeypatch
 ):
     plan = recorded[2]
@@ -211,7 +211,7 @@ def test_javascript_is_not_relabelled_to_make_old_reader_accept_it(
     monkeypatch.setattr(
         sources, "load_source_capture_plan", lambda _: replace(plan, targets=(target,))
     )
-    assert replay(recorded).issues[0].code == "MEDIA_TYPE_UNSUPPORTED_BY_READER"
+    assert replay(recorded).issues[0].code == "TARGET_MISMATCH"
 
 
 def test_pending_locators_do_not_open_raw_captures(recorded, monkeypatch):

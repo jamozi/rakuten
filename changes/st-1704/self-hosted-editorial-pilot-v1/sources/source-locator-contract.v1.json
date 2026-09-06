@@ -945,23 +945,23 @@
         {
           "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "Jackery ポータブル電源 1000 New V3",
-            "ポータブル電源 1000 New V3 白（JE-1000G-WH）",
-            "ポータブル電源 1000 New V3（JE-1000G）",
-            "カートに追加する",
-            "前モデル比19%小型化・約10.6kgの軽量ボディ",
-            "約6000回の充放電サイクル"
+            "e>Jackery ポータブル電源 1000 New V3",
+            "\">ポータブル電源 1000 New V3 白（JE-1000G-WH）",
+            "\">ポータブル電源 1000 New V3（JE-1000G）",
+            ">カートに追加する",
+            "p>前モデル比19%小型化・約10.6kgの軽量ボディ",
+            "<p>長寿命のリン酸鉄リチウムイオン電池を搭載。約6000回の充放電サイクル"
           ]
         },
         {
           "claim_id": "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
           "exact_utf8_fragments": [
-            "Jackery ポータブル電源 1000 New V3",
-            "ポータブル電源 1000 New V3 白（JE-1000G-WH）",
-            "ポータブル電源 1000 New V3（JE-1000G）",
-            "カートに追加する",
-            "前モデル比19%小型化・約10.6kgの軽量ボディ",
-            "約6000回の充放電サイクル"
+            "e>Jackery ポータブル電源 1000 New V3",
+            "\">ポータブル電源 1000 New V3 白（JE-1000G-WH）",
+            "\">ポータブル電源 1000 New V3（JE-1000G）",
+            ">カートに追加する",
+            "p>前モデル比19%小型化・約10.6kgの軽量ボディ",
+            "<p>長寿命のリン酸鉄リチウムイオン電池を搭載。約6000回の充放電サイクル"
           ]
         }
       ]
@@ -2024,10 +2024,10 @@
         {
           "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60570",
           "exact_utf8_fragments": [
-            "W34×H47×D24cm(本体サイズ)",
-            "W36×H54×D24cm(全体サイズ)",
-            "約36L / 約3.3kg（付属物含まず）",
-            "フロントポケット＋メインルーム直結",
+            "W34×H47×D24cm(本体サイズ)<",
+            "W36×H54×D24cm(全体サイズ)<",
+            ">約36L / 約3.3kg（付属物含まず）",
+            "<p>実用新案取得中「フロントポケット＋メインルーム直結",
             "～13インチPC対応可能",
             "HINOMOTO製ストッパー付き55mm静音キャスター"
           ]
@@ -2035,10 +2035,10 @@
         {
           "claim_id": "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "W34×H47×D24cm(本体サイズ)",
-            "W36×H54×D24cm(全体サイズ)",
-            "約36L / 約3.3kg（付属物含まず）",
-            "フロントポケット＋メインルーム直結",
+            "W34×H47×D24cm(本体サイズ)<",
+            "W36×H54×D24cm(全体サイズ)<",
+            ">約36L / 約3.3kg（付属物含まず）",
+            "<p>実用新案取得中「フロントポケット＋メインルーム直結",
             "～13インチPC対応可能",
             "HINOMOTO製ストッパー付き55mm静音キャスター"
           ]
@@ -2046,10 +2046,10 @@
         {
           "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60561-EXCLUDED",
           "exact_utf8_fragments": [
-            "W34×H47×D24cm(本体サイズ)",
-            "W36×H54×D24cm(全体サイズ)",
-            "約36L / 約3.3kg（付属物含まず）",
-            "フロントポケット＋メインルーム直結",
+            "W34×H47×D24cm(本体サイズ)<",
+            "W36×H54×D24cm(全体サイズ)<",
+            ">約36L / 約3.3kg（付属物含まず）",
+            "<p>実用新案取得中「フロントポケット＋メインルーム直結",
             "～13インチPC対応可能",
             "HINOMOTO製ストッパー付き55mm静音キャスター"
           ]
@@ -2057,10 +2057,10 @@
         {
           "claim_id": "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
           "exact_utf8_fragments": [
-            "W34×H47×D24cm(本体サイズ)",
-            "W36×H54×D24cm(全体サイズ)",
-            "約36L / 約3.3kg（付属物含まず）",
-            "フロントポケット＋メインルーム直結",
+            "W34×H47×D24cm(本体サイズ)<",
+            "W36×H54×D24cm(全体サイズ)<",
+            ">約36L / 約3.3kg（付属物含まず）",
+            "<p>実用新案取得中「フロントポケット＋メインルーム直結",
             "～13インチPC対応可能",
             "HINOMOTO製ストッパー付き55mm静音キャスター"
           ]
@@ -2096,7 +2096,7 @@
             "（縦置き時）8.6（奥行き）×22.2（幅）×12.3（高さ）",
             "ロボット本体：約2kg",
             "専用使い捨てお掃除シート",
-            "市販の床拭きシートも使用可能",
+            ">市販の床拭きシートも使用可能",
             "充電スタンドでの自動ゴミ収集なし"
           ]
         },
@@ -2109,7 +2109,7 @@
             "（縦置き時）8.6（奥行き）×22.2（幅）×12.3（高さ）",
             "ロボット本体：約2kg",
             "専用使い捨てお掃除シート",
-            "市販の床拭きシートも使用可能",
+            ">市販の床拭きシートも使用可能",
             "充電スタンドでの自動ゴミ収集なし"
           ]
         },
@@ -2122,7 +2122,7 @@
             "（縦置き時）8.6（奥行き）×22.2（幅）×12.3（高さ）",
             "ロボット本体：約2kg",
             "専用使い捨てお掃除シート",
-            "市販の床拭きシートも使用可能",
+            ">市販の床拭きシートも使用可能",
             "充電スタンドでの自動ゴミ収集なし"
           ]
         }
@@ -2136,15 +2136,15 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
           "exact_utf8_fragments": [
-            "DEEBOT mini 2",
-            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
-            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
-            "6mmの自動リフトモップ",
-            "ビデオマネージャー（ペット見守り機能）",
-            "外出先からでも様子を見守り、声をかけ",
-            "スクリーンショット機能",
-            "DEEBOT mini2用アクセサリキット",
-            "aria-label=\"add to cart\"",
+            "el=\"DEEBOT mini 2",
+            ">本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            ">：自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            ">DEEBOT mini 2は、6mmの自動リフトモップ",
+            ">ビデオマネージャー（ペット見守り機能）",
+            "v class=\"desc\">ビデオマネージャーを使えば、いつでもどこでもペットとつながれます。外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能で、ふとした仕草やかわいい瞬間を撮影して大切に残せます。</di",
+            ">DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"><span class=\"MuiButton-",
             "カートに追加",
             "今すぐ購入"
           ]
@@ -2152,15 +2152,15 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "DEEBOT mini 2",
-            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
-            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
-            "6mmの自動リフトモップ",
-            "ビデオマネージャー（ペット見守り機能）",
-            "外出先からでも様子を見守り、声をかけ",
-            "スクリーンショット機能",
-            "DEEBOT mini2用アクセサリキット",
-            "aria-label=\"add to cart\"",
+            "el=\"DEEBOT mini 2",
+            ">本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            ">：自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            ">DEEBOT mini 2は、6mmの自動リフトモップ",
+            ">ビデオマネージャー（ペット見守り機能）",
+            "v class=\"desc\">ビデオマネージャーを使えば、いつでもどこでもペットとつながれます。外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能で、ふとした仕草やかわいい瞬間を撮影して大切に残せます。</di",
+            ">DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"><span class=\"MuiButton-",
             "カートに追加",
             "今すぐ購入"
           ]
@@ -2168,15 +2168,15 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
           "exact_utf8_fragments": [
-            "DEEBOT mini 2",
-            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
-            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
-            "6mmの自動リフトモップ",
-            "ビデオマネージャー（ペット見守り機能）",
-            "外出先からでも様子を見守り、声をかけ",
-            "スクリーンショット機能",
-            "DEEBOT mini2用アクセサリキット",
-            "aria-label=\"add to cart\"",
+            "el=\"DEEBOT mini 2",
+            ">本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            ">：自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            ">DEEBOT mini 2は、6mmの自動リフトモップ",
+            ">ビデオマネージャー（ペット見守り機能）",
+            "v class=\"desc\">ビデオマネージャーを使えば、いつでもどこでもペットとつながれます。外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能で、ふとした仕草やかわいい瞬間を撮影して大切に残せます。</di",
+            ">DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"><span class=\"MuiButton-",
             "カートに追加",
             "今すぐ購入"
           ]
@@ -2184,15 +2184,15 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
           "exact_utf8_fragments": [
-            "DEEBOT mini 2",
-            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
-            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
-            "6mmの自動リフトモップ",
-            "ビデオマネージャー（ペット見守り機能）",
-            "外出先からでも様子を見守り、声をかけ",
-            "スクリーンショット機能",
-            "DEEBOT mini2用アクセサリキット",
-            "aria-label=\"add to cart\"",
+            "el=\"DEEBOT mini 2",
+            ">本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            ">：自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            ">DEEBOT mini 2は、6mmの自動リフトモップ",
+            ">ビデオマネージャー（ペット見守り機能）",
+            "v class=\"desc\">ビデオマネージャーを使えば、いつでもどこでもペットとつながれます。外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能で、ふとした仕草やかわいい瞬間を撮影して大切に残せます。</di",
+            ">DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"><span class=\"MuiButton-",
             "カートに追加",
             "今すぐ購入"
           ]
@@ -2200,15 +2200,15 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
           "exact_utf8_fragments": [
-            "DEEBOT mini 2",
-            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
-            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
-            "6mmの自動リフトモップ",
-            "ビデオマネージャー（ペット見守り機能）",
-            "外出先からでも様子を見守り、声をかけ",
-            "スクリーンショット機能",
-            "DEEBOT mini2用アクセサリキット",
-            "aria-label=\"add to cart\"",
+            "el=\"DEEBOT mini 2",
+            ">本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            ">：自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            ">DEEBOT mini 2は、6mmの自動リフトモップ",
+            ">ビデオマネージャー（ペット見守り機能）",
+            "v class=\"desc\">ビデオマネージャーを使えば、いつでもどこでもペットとつながれます。外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能で、ふとした仕草やかわいい瞬間を撮影して大切に残せます。</di",
+            ">DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"><span class=\"MuiButton-",
             "カートに追加",
             "今すぐ購入"
           ]
@@ -2216,15 +2216,15 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
           "exact_utf8_fragments": [
-            "DEEBOT mini 2",
-            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
-            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
-            "6mmの自動リフトモップ",
-            "ビデオマネージャー（ペット見守り機能）",
-            "外出先からでも様子を見守り、声をかけ",
-            "スクリーンショット機能",
-            "DEEBOT mini2用アクセサリキット",
-            "aria-label=\"add to cart\"",
+            "el=\"DEEBOT mini 2",
+            ">本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            ">：自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            ">DEEBOT mini 2は、6mmの自動リフトモップ",
+            ">ビデオマネージャー（ペット見守り機能）",
+            "v class=\"desc\">ビデオマネージャーを使えば、いつでもどこでもペットとつながれます。外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能で、ふとした仕草やかわいい瞬間を撮影して大切に残せます。</di",
+            ">DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"><span class=\"MuiButton-",
             "カートに追加",
             "今すぐ購入"
           ]
@@ -2232,15 +2232,15 @@
         {
           "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
           "exact_utf8_fragments": [
-            "DEEBOT mini 2",
-            "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
-            "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
-            "6mmの自動リフトモップ",
-            "ビデオマネージャー（ペット見守り機能）",
-            "外出先からでも様子を見守り、声をかけ",
-            "スクリーンショット機能",
-            "DEEBOT mini2用アクセサリキット",
-            "aria-label=\"add to cart\"",
+            "el=\"DEEBOT mini 2",
+            ">本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+            ">：自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+            ">DEEBOT mini 2は、6mmの自動リフトモップ",
+            ">ビデオマネージャー（ペット見守り機能）",
+            "v class=\"desc\">ビデオマネージャーを使えば、いつでもどこでもペットとつながれます。外出先からでも様子を見守り、声をかけ",
+            "スクリーンショット機能で、ふとした仕草やかわいい瞬間を撮影して大切に残せます。</di",
+            ">DEEBOT mini2用アクセサリキット",
+            "aria-label=\"add to cart\"><span class=\"MuiButton-",
             "カートに追加",
             "今すぐ購入"
           ]
@@ -2255,21 +2255,21 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
           "exact_utf8_fragments": [
-            "全商品1年間保証",
-            "2026年2月20日以降",
-            "ECOVACS HOMEアプリにてご登録",
-            "製品の保証期間は2年",
-            "正規取扱店舗"
+            ">3. 全商品1年間保証",
+            ">\r\n・2026年2月20日以降",
+            ">\r\n・2026年2月20日以降に、弊社の正規取扱店舗にて床掃除ロボットもしくは窓掃除ロボットをお買い上げいただき、ご購入製品をECOVACS HOMEアプリにてご登録",
+            "製品の保証期間は2年となります（Xシリーズについて、メーカー保証が2年のため、特に変更はございません）<br />",
+            "r />\r\n・2026年2月20日以降に、弊社の正規取扱店舗"
           ]
         },
         {
           "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "全商品1年間保証",
-            "2026年2月20日以降",
-            "ECOVACS HOMEアプリにてご登録",
-            "製品の保証期間は2年",
-            "正規取扱店舗"
+            ">3. 全商品1年間保証",
+            ">\r\n・2026年2月20日以降",
+            ">\r\n・2026年2月20日以降に、弊社の正規取扱店舗にて床掃除ロボットもしくは窓掃除ロボットをお買い上げいただき、ご購入製品をECOVACS HOMEアプリにてご登録",
+            "製品の保証期間は2年となります（Xシリーズについて、メーカー保証が2年のため、特に変更はございません）<br />",
+            "r />\r\n・2026年2月20日以降に、弊社の正規取扱店舗"
           ]
         }
       ]
@@ -2282,28 +2282,28 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
           "exact_utf8_fragments": [
-            "SwitchBot公式有料5年延長保証サービス",
-            "製品のメーカー保証期間（1年または2年）の終了後も",
-            "保証期間は、購入日から最長5年間となります",
-            "ロボット掃除機K11+ Pro"
+            "e>SwitchBot公式有料5年延長保証サービス",
+            "cwrap\">\n                製品のメーカー保証期間（1年または2年）の終了後も",
+            "保証期間は、購入日から最長5年間となります。詳細は、<a href",
+            ">ロボット掃除機K11+ Pro"
           ]
         },
         {
           "claim_id": "CLM-PORTFOLIO-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
           "exact_utf8_fragments": [
-            "SwitchBot公式有料5年延長保証サービス",
-            "製品のメーカー保証期間（1年または2年）の終了後も",
-            "保証期間は、購入日から最長5年間となります",
-            "ロボット掃除機K11+ Pro"
+            "e>SwitchBot公式有料5年延長保証サービス",
+            "cwrap\">\n                製品のメーカー保証期間（1年または2年）の終了後も",
+            "保証期間は、購入日から最長5年間となります。詳細は、<a href",
+            ">ロボット掃除機K11+ Pro"
           ]
         },
         {
           "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "SwitchBot公式有料5年延長保証サービス",
-            "製品のメーカー保証期間（1年または2年）の終了後も",
-            "保証期間は、購入日から最長5年間となります",
-            "ロボット掃除機K11+ Pro"
+            "e>SwitchBot公式有料5年延長保証サービス",
+            "cwrap\">\n                製品のメーカー保証期間（1年または2年）の終了後も",
+            "保証期間は、購入日から最長5年間となります。詳細は、<a href",
+            ">ロボット掃除機K11+ Pro"
           ]
         }
       ]
@@ -2316,7 +2316,7 @@
         {
           "claim_id": "CLM-PORTFOLIO-ROBOT-K11-INSTALLATION-SPACE",
           "exact_utf8_fragments": [
-            "Related Products: SwitchBot Mini Robot Vacuum K10+/K10+ Pro/K11+/K11+ Pro",
+            ">Related Products: SwitchBot Mini Robot Vacuum K10+/K10+ Pro/K11+/K11+ Pro",
             "We recommend a distance of 1 meter for left and right and 1.5 meters in front (no limit on top).",
             "Insufficient space may affect the vacuum body to return to the charging station."
           ]
@@ -2324,7 +2324,7 @@
         {
           "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
           "exact_utf8_fragments": [
-            "Related Products: SwitchBot Mini Robot Vacuum K10+/K10+ Pro/K11+/K11+ Pro",
+            ">Related Products: SwitchBot Mini Robot Vacuum K10+/K10+ Pro/K11+/K11+ Pro",
             "We recommend a distance of 1 meter for left and right and 1.5 meters in front (no limit on top).",
             "Insufficient space may affect the vacuum body to return to the charging station."
           ]
@@ -2577,21 +2577,21 @@
         {
           "claim_id": "CLM-ST1704-POWER-AC70-EXCLUDED",
           "exact_utf8_fragments": [
-            "生産終了製品一覧",
-            "alt=\"BLUETTI AORA 80\"",
-            "BLUETTI AORA 80",
-            "2026年4月20日に販売終了",
-            "<span>終売</span>"
+            "=\"生産終了製品一覧",
+            "alt=\"BLUETTI AORA 80\"\n                    class=\"h-full w-full transition-all duration-300  ease-in-out group-hover:scale-106 \"\n                    w",
+            "BLUETTI AORA 80\n              <",
+            "2026年4月20日に販売終了\n              <",
+            "<span>終売</span>\n                </p>\n                <h3 class=\"mt-1.5 text-lg font-semibold text-neutral-900\">\n                  BLUETTI AORA 80"
           ]
         },
         {
           "claim_id": "CLM-ST1704-POWER-AORA80-EXCLUDED",
           "exact_utf8_fragments": [
-            "生産終了製品一覧",
-            "alt=\"BLUETTI AORA 80\"",
-            "BLUETTI AORA 80",
-            "2026年4月20日に販売終了",
-            "<span>終売</span>"
+            "=\"生産終了製品一覧",
+            "alt=\"BLUETTI AORA 80\"\n                    class=\"h-full w-full transition-all duration-300  ease-in-out group-hover:scale-106 \"\n                    w",
+            "BLUETTI AORA 80\n              <",
+            "2026年4月20日に販売終了\n              <",
+            "<span>終売</span>\n                </p>\n                <h3 class=\"mt-1.5 text-lg font-semibold text-neutral-900\">\n                  BLUETTI AORA 80"
           ]
         }
       ]
@@ -2604,9 +2604,9 @@
         {
           "claim_id": "CLM-ST1704-ANKER-C1000-PLUS-EXCLUDED",
           "exact_utf8_fragments": [
-            "Anker Solix C1000 Plus Portable Power Station",
-            "定格は家庭用コンセントを上回る1700Wの高出力を実現",
-            "SurgePad™により消費電力2000Wまでの家電に複数同時給電に対応",
+            "e>Anker Solix C1000 Plus Portable Power Station",
+            ">定格は家庭用コンセントを上回る1700Wの高出力を実現",
+            "SurgePad™により消費電力2000Wまでの家電に複数同時給電に対応<",
             "約38.4 x 20.8 x 24.4cm",
             "約11.3kg",
             "1024Wh"
@@ -2638,7 +2638,7 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-RULO-MINI-REFERENCE",
           "exact_utf8_fragments": [
-            "MC-RSC10",
+            "\"MC-RSC10",
             "幅249mm×奥行249mm×高さ92mm",
             "幅134mm×奥行100mm×高さ99mm",
             "繰り返し充放電 約1100回"
@@ -2647,7 +2647,7 @@
         {
           "claim_id": "CLM-PORTFOLIO-ROBOT-RULO-MINI-REFERENCE",
           "exact_utf8_fragments": [
-            "MC-RSC10",
+            "\"MC-RSC10",
             "幅249mm×奥行249mm×高さ92mm",
             "幅134mm×奥行100mm×高さ99mm",
             "繰り返し充放電 約1100回"
@@ -2663,10 +2663,10 @@
         {
           "claim_id": "CLM-ST1704-ROBOT-E20-EXCLUDED",
           "exact_utf8_fragments": [
-            "\"sku\":\"T2070511\"",
-            "\"title\":\"ブラック\"",
-            "soldOut: \"Sold Out\"",
-            "在庫切れ"
+            "productVariants = [{\"id\":44817992777889,\"title\":\"ブラック\",\"option1\":\"ブラック\",\"option2\":null,\"option3\":null,\"sku\":\"T2070511\"",
+            "productVariants = [{\"id\":44817992777889,\"title\":\"ブラック\"",
+            "soldOut: \"Sold Out\",\n    un",
+            "在庫切れ</p>\n      \n    </div>\n\n    \n    \n  </div>\n\n\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-"
           ]
         }
       ]

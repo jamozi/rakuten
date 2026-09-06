@@ -1,0 +1,943 @@
+{
+  "schema": "RAOS_READER_RELEASE_LOCATOR_EXPANSIONS_V1",
+  "publication_authority": false,
+  "reviewed_at": "2026-09-06T15:29:39.003808+00:00",
+  "purpose": "Preserve the exact previously verified fragment inside unique surrounding official text. This authored mapping is not capture evidence.",
+  "expansions": [
+    {
+      "after": ">DEEBOT mini 2は、6mmの自動リフトモップ",
+      "before": "6mmの自動リフトモップ",
+      "body_sha256": "857f3a330f8fadc81df850bc9bbc081b3011155d52b071e47b686e04831fb16c",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "claim_statement_sha256": "4e602a829eade6d163ae7a8efcb40c86932ddc2c05c51ca88604a543cabe65a3"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "claim_statement_sha256": "9480824eebc2e13c17664cf71b4fc42d089c1de2ca7864a7ceca4db05564ccdb"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "claim_statement_sha256": "e43efc3850a01eb326f65fc73488110fe34a40b9ac668ea6302dc651d79de783"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "claim_statement_sha256": "79cb4df872ee235411f9c71f499592a99f88039432eb1ced21cdb08535167086"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
+          "claim_statement_sha256": "3673c0ccf7b0036d657c88f7ace2c2990b9e3e49ed23c59a32ba368762a45d36"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:03Z",
+      "source_ref": "SRC-ECOVACS-DEEBOT-MINI2"
+    },
+    {
+      "after": "el=\"DEEBOT mini 2",
+      "before": "DEEBOT mini 2",
+      "body_sha256": "857f3a330f8fadc81df850bc9bbc081b3011155d52b071e47b686e04831fb16c",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "claim_statement_sha256": "4e602a829eade6d163ae7a8efcb40c86932ddc2c05c51ca88604a543cabe65a3"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "claim_statement_sha256": "9480824eebc2e13c17664cf71b4fc42d089c1de2ca7864a7ceca4db05564ccdb"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "claim_statement_sha256": "e43efc3850a01eb326f65fc73488110fe34a40b9ac668ea6302dc651d79de783"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "claim_statement_sha256": "79cb4df872ee235411f9c71f499592a99f88039432eb1ced21cdb08535167086"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
+          "claim_statement_sha256": "3673c0ccf7b0036d657c88f7ace2c2990b9e3e49ed23c59a32ba368762a45d36"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:03Z",
+      "source_ref": "SRC-ECOVACS-DEEBOT-MINI2"
+    },
+    {
+      "after": ">DEEBOT mini2用アクセサリキット",
+      "before": "DEEBOT mini2用アクセサリキット",
+      "body_sha256": "857f3a330f8fadc81df850bc9bbc081b3011155d52b071e47b686e04831fb16c",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "claim_statement_sha256": "4e602a829eade6d163ae7a8efcb40c86932ddc2c05c51ca88604a543cabe65a3"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "claim_statement_sha256": "9480824eebc2e13c17664cf71b4fc42d089c1de2ca7864a7ceca4db05564ccdb"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "claim_statement_sha256": "e43efc3850a01eb326f65fc73488110fe34a40b9ac668ea6302dc651d79de783"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "claim_statement_sha256": "79cb4df872ee235411f9c71f499592a99f88039432eb1ced21cdb08535167086"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
+          "claim_statement_sha256": "3673c0ccf7b0036d657c88f7ace2c2990b9e3e49ed23c59a32ba368762a45d36"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:03Z",
+      "source_ref": "SRC-ECOVACS-DEEBOT-MINI2"
+    },
+    {
+      "after": "aria-label=\"add to cart\"><span class=\"MuiButton-",
+      "before": "aria-label=\"add to cart\"",
+      "body_sha256": "857f3a330f8fadc81df850bc9bbc081b3011155d52b071e47b686e04831fb16c",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "claim_statement_sha256": "4e602a829eade6d163ae7a8efcb40c86932ddc2c05c51ca88604a543cabe65a3"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "claim_statement_sha256": "9480824eebc2e13c17664cf71b4fc42d089c1de2ca7864a7ceca4db05564ccdb"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "claim_statement_sha256": "e43efc3850a01eb326f65fc73488110fe34a40b9ac668ea6302dc651d79de783"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "claim_statement_sha256": "79cb4df872ee235411f9c71f499592a99f88039432eb1ced21cdb08535167086"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
+          "claim_statement_sha256": "3673c0ccf7b0036d657c88f7ace2c2990b9e3e49ed23c59a32ba368762a45d36"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:03Z",
+      "source_ref": "SRC-ECOVACS-DEEBOT-MINI2"
+    },
+    {
+      "after": "スクリーンショット機能で、ふとした仕草やかわいい瞬間を撮影して大切に残せます。</di",
+      "before": "スクリーンショット機能",
+      "body_sha256": "857f3a330f8fadc81df850bc9bbc081b3011155d52b071e47b686e04831fb16c",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "claim_statement_sha256": "4e602a829eade6d163ae7a8efcb40c86932ddc2c05c51ca88604a543cabe65a3"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "claim_statement_sha256": "9480824eebc2e13c17664cf71b4fc42d089c1de2ca7864a7ceca4db05564ccdb"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "claim_statement_sha256": "e43efc3850a01eb326f65fc73488110fe34a40b9ac668ea6302dc651d79de783"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "claim_statement_sha256": "79cb4df872ee235411f9c71f499592a99f88039432eb1ced21cdb08535167086"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
+          "claim_statement_sha256": "3673c0ccf7b0036d657c88f7ace2c2990b9e3e49ed23c59a32ba368762a45d36"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:03Z",
+      "source_ref": "SRC-ECOVACS-DEEBOT-MINI2"
+    },
+    {
+      "after": ">ビデオマネージャー（ペット見守り機能）",
+      "before": "ビデオマネージャー（ペット見守り機能）",
+      "body_sha256": "857f3a330f8fadc81df850bc9bbc081b3011155d52b071e47b686e04831fb16c",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "claim_statement_sha256": "4e602a829eade6d163ae7a8efcb40c86932ddc2c05c51ca88604a543cabe65a3"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "claim_statement_sha256": "9480824eebc2e13c17664cf71b4fc42d089c1de2ca7864a7ceca4db05564ccdb"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "claim_statement_sha256": "e43efc3850a01eb326f65fc73488110fe34a40b9ac668ea6302dc651d79de783"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "claim_statement_sha256": "79cb4df872ee235411f9c71f499592a99f88039432eb1ced21cdb08535167086"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
+          "claim_statement_sha256": "3673c0ccf7b0036d657c88f7ace2c2990b9e3e49ed23c59a32ba368762a45d36"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:03Z",
+      "source_ref": "SRC-ECOVACS-DEEBOT-MINI2"
+    },
+    {
+      "after": "v class=\"desc\">ビデオマネージャーを使えば、いつでもどこでもペットとつながれます。外出先からでも様子を見守り、声をかけ",
+      "before": "外出先からでも様子を見守り、声をかけ",
+      "body_sha256": "857f3a330f8fadc81df850bc9bbc081b3011155d52b071e47b686e04831fb16c",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "claim_statement_sha256": "4e602a829eade6d163ae7a8efcb40c86932ddc2c05c51ca88604a543cabe65a3"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "claim_statement_sha256": "9480824eebc2e13c17664cf71b4fc42d089c1de2ca7864a7ceca4db05564ccdb"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "claim_statement_sha256": "e43efc3850a01eb326f65fc73488110fe34a40b9ac668ea6302dc651d79de783"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "claim_statement_sha256": "79cb4df872ee235411f9c71f499592a99f88039432eb1ced21cdb08535167086"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
+          "claim_statement_sha256": "3673c0ccf7b0036d657c88f7ace2c2990b9e3e49ed23c59a32ba368762a45d36"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:03Z",
+      "source_ref": "SRC-ECOVACS-DEEBOT-MINI2"
+    },
+    {
+      "after": ">本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+      "before": "本体：286mm*286mm*99.8mm ステーション：320mm*400mm*385mm",
+      "body_sha256": "857f3a330f8fadc81df850bc9bbc081b3011155d52b071e47b686e04831fb16c",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "claim_statement_sha256": "4e602a829eade6d163ae7a8efcb40c86932ddc2c05c51ca88604a543cabe65a3"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "claim_statement_sha256": "9480824eebc2e13c17664cf71b4fc42d089c1de2ca7864a7ceca4db05564ccdb"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "claim_statement_sha256": "e43efc3850a01eb326f65fc73488110fe34a40b9ac668ea6302dc651d79de783"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "claim_statement_sha256": "79cb4df872ee235411f9c71f499592a99f88039432eb1ced21cdb08535167086"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
+          "claim_statement_sha256": "3673c0ccf7b0036d657c88f7ace2c2990b9e3e49ed23c59a32ba368762a45d36"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:03Z",
+      "source_ref": "SRC-ECOVACS-DEEBOT-MINI2"
+    },
+    {
+      "after": ">：自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+      "before": "自動ゴミ収集、モップ自動洗浄、63℃熱風乾燥",
+      "body_sha256": "857f3a330f8fadc81df850bc9bbc081b3011155d52b071e47b686e04831fb16c",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+          "claim_statement_sha256": "4e602a829eade6d163ae7a8efcb40c86932ddc2c05c51ca88604a543cabe65a3"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E25-EXCLUDED",
+          "claim_statement_sha256": "9480824eebc2e13c17664cf71b4fc42d089c1de2ca7864a7ceca4db05564ccdb"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X50-EXCLUDED",
+          "claim_statement_sha256": "e43efc3850a01eb326f65fc73488110fe34a40b9ac668ea6302dc651d79de783"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-X8-EXCLUDED",
+          "claim_statement_sha256": "79cb4df872ee235411f9c71f499592a99f88039432eb1ced21cdb08535167086"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE",
+          "claim_statement_sha256": "3673c0ccf7b0036d657c88f7ace2c2990b9e3e49ed23c59a32ba368762a45d36"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:03Z",
+      "source_ref": "SRC-ECOVACS-DEEBOT-MINI2"
+    },
+    {
+      "after": ">市販の床拭きシートも使用可能",
+      "before": "市販の床拭きシートも使用可能",
+      "body_sha256": "a73f9afdca7c682f9c7614da7a4ba32fe2781bdbf7c344e36ed8e410d2cd31a9",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-F115060-REFERENCE",
+          "claim_statement_sha256": "15f3b256b62352dfacedc46ee3d296bc3dbbb451fae46094506cb8f06ba56e2d"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-ROOMBA-SLIM-F115060",
+          "claim_statement_sha256": "502ae6d7f2b2f0b8d40e0f130193692149d79dad80254e5a96c0e1c1fbc842da"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "d507073aad97b7a28fdd7ed5614da3c5b690d09975707dc8160960bbdb2e3920"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:04Z",
+      "source_ref": "SRC-IROBOT-ROOMBA-MINI-SLIM-F115060"
+    },
+    {
+      "after": "\"MC-RSC10",
+      "before": "MC-RSC10",
+      "body_sha256": "3446a0120b92bc9efbebba1bc4c54454624226cf5c9f4347d21b63065326dcaf",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-RULO-MINI-REFERENCE",
+          "claim_statement_sha256": "e5b9d1512386350270420834513977ee25e2981c6fa725b49edca2b09a692da9"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-RULO-MINI-REFERENCE",
+          "claim_statement_sha256": "e5b2753f5c5b0a3a4c99e125f09744ad07192120cc0562c3f5e0cb1f652147d6"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:04Z",
+      "source_ref": "SRC-PANASONIC-RULO-MINI-MC-RSC10"
+    },
+    {
+      "after": "e>SwitchBot公式有料5年延長保証サービス",
+      "before": "SwitchBot公式有料5年延長保証サービス",
+      "body_sha256": "ff4ef63d01a478641da35f3fd4e4120bb4185e296eb03b36413f264af950ed32",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+          "claim_statement_sha256": "dc23ef64c3dd758629b097b78a12c29d12e31b6571dbd4a6c301d1d2ad578797"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+          "claim_statement_sha256": "dc23ef64c3dd758629b097b78a12c29d12e31b6571dbd4a6c301d1d2ad578797"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "d507073aad97b7a28fdd7ed5614da3c5b690d09975707dc8160960bbdb2e3920"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:09Z",
+      "source_ref": "SRC-SWITCHBOT-K11-PRO-EXTENDED-WARRANTY"
+    },
+    {
+      "after": ">ロボット掃除機K11+ Pro",
+      "before": "ロボット掃除機K11+ Pro",
+      "body_sha256": "ff4ef63d01a478641da35f3fd4e4120bb4185e296eb03b36413f264af950ed32",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+          "claim_statement_sha256": "dc23ef64c3dd758629b097b78a12c29d12e31b6571dbd4a6c301d1d2ad578797"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+          "claim_statement_sha256": "dc23ef64c3dd758629b097b78a12c29d12e31b6571dbd4a6c301d1d2ad578797"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "d507073aad97b7a28fdd7ed5614da3c5b690d09975707dc8160960bbdb2e3920"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:09Z",
+      "source_ref": "SRC-SWITCHBOT-K11-PRO-EXTENDED-WARRANTY"
+    },
+    {
+      "after": "保証期間は、購入日から最長5年間となります。詳細は、<a href",
+      "before": "保証期間は、購入日から最長5年間となります",
+      "body_sha256": "ff4ef63d01a478641da35f3fd4e4120bb4185e296eb03b36413f264af950ed32",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+          "claim_statement_sha256": "dc23ef64c3dd758629b097b78a12c29d12e31b6571dbd4a6c301d1d2ad578797"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+          "claim_statement_sha256": "dc23ef64c3dd758629b097b78a12c29d12e31b6571dbd4a6c301d1d2ad578797"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "d507073aad97b7a28fdd7ed5614da3c5b690d09975707dc8160960bbdb2e3920"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:09Z",
+      "source_ref": "SRC-SWITCHBOT-K11-PRO-EXTENDED-WARRANTY"
+    },
+    {
+      "after": "cwrap\">\n                製品のメーカー保証期間（1年または2年）の終了後も",
+      "before": "製品のメーカー保証期間（1年または2年）の終了後も",
+      "body_sha256": "ff4ef63d01a478641da35f3fd4e4120bb4185e296eb03b36413f264af950ed32",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+          "claim_statement_sha256": "dc23ef64c3dd758629b097b78a12c29d12e31b6571dbd4a6c301d1d2ad578797"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+          "claim_statement_sha256": "dc23ef64c3dd758629b097b78a12c29d12e31b6571dbd4a6c301d1d2ad578797"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "d507073aad97b7a28fdd7ed5614da3c5b690d09975707dc8160960bbdb2e3920"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:09Z",
+      "source_ref": "SRC-SWITCHBOT-K11-PRO-EXTENDED-WARRANTY"
+    },
+    {
+      "after": "e>Anker Solix C1000 Plus Portable Power Station",
+      "before": "Anker Solix C1000 Plus Portable Power Station",
+      "body_sha256": "3d47bb8f95752df3c0122e0feb8a81c47eac07206ebc2368742cf424105fdd5d",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-PLUS-EXCLUDED",
+          "claim_statement_sha256": "c1fb2f54fde48280f020fdde0fada6d242b7e5dc03ba73c547002a84da0c310d"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:18Z",
+      "source_ref": "SRC-ANKER-SOLIX-C1000-PLUS"
+    },
+    {
+      "after": "SurgePad™により消費電力2000Wまでの家電に複数同時給電に対応<",
+      "before": "SurgePad™により消費電力2000Wまでの家電に複数同時給電に対応",
+      "body_sha256": "3d47bb8f95752df3c0122e0feb8a81c47eac07206ebc2368742cf424105fdd5d",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-PLUS-EXCLUDED",
+          "claim_statement_sha256": "c1fb2f54fde48280f020fdde0fada6d242b7e5dc03ba73c547002a84da0c310d"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:18Z",
+      "source_ref": "SRC-ANKER-SOLIX-C1000-PLUS"
+    },
+    {
+      "after": ">定格は家庭用コンセントを上回る1700Wの高出力を実現",
+      "before": "定格は家庭用コンセントを上回る1700Wの高出力を実現",
+      "body_sha256": "3d47bb8f95752df3c0122e0feb8a81c47eac07206ebc2368742cf424105fdd5d",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-PLUS-EXCLUDED",
+          "claim_statement_sha256": "c1fb2f54fde48280f020fdde0fada6d242b7e5dc03ba73c547002a84da0c310d"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:18Z",
+      "source_ref": "SRC-ANKER-SOLIX-C1000-PLUS"
+    },
+    {
+      "after": "W34×H47×D24cm(本体サイズ)<",
+      "before": "W34×H47×D24cm(本体サイズ)",
+      "body_sha256": "ca8d376f0e0cde72cd3d3c878b09742025c7d1a28cc5984e67901a2520f4c219",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60570",
+          "claim_statement_sha256": "f7b644e66e5186fea19abd811f8bfd4ae424016830ce241d498d48f626282770"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "fc89ef918051060697d7c14f3ed059c2e720976666f433107fdb948f7fd3f195"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60561-EXCLUDED",
+          "claim_statement_sha256": "5383b1b6ee9a328216e994aba60ce4b6fce8a9c6e1439aad21421a23f604be6c"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+          "claim_statement_sha256": "860dbe48758b5dfee867589cf02fbfd360339ea218e6d858bab1ed46839c7af6"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:21Z",
+      "source_ref": "SRC-BERMAS-INTER-CITY-III-60570"
+    },
+    {
+      "after": "W36×H54×D24cm(全体サイズ)<",
+      "before": "W36×H54×D24cm(全体サイズ)",
+      "body_sha256": "ca8d376f0e0cde72cd3d3c878b09742025c7d1a28cc5984e67901a2520f4c219",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60570",
+          "claim_statement_sha256": "f7b644e66e5186fea19abd811f8bfd4ae424016830ce241d498d48f626282770"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "fc89ef918051060697d7c14f3ed059c2e720976666f433107fdb948f7fd3f195"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60561-EXCLUDED",
+          "claim_statement_sha256": "5383b1b6ee9a328216e994aba60ce4b6fce8a9c6e1439aad21421a23f604be6c"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+          "claim_statement_sha256": "860dbe48758b5dfee867589cf02fbfd360339ea218e6d858bab1ed46839c7af6"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:21Z",
+      "source_ref": "SRC-BERMAS-INTER-CITY-III-60570"
+    },
+    {
+      "after": "<p>実用新案取得中「フロントポケット＋メインルーム直結",
+      "before": "フロントポケット＋メインルーム直結",
+      "body_sha256": "ca8d376f0e0cde72cd3d3c878b09742025c7d1a28cc5984e67901a2520f4c219",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60570",
+          "claim_statement_sha256": "f7b644e66e5186fea19abd811f8bfd4ae424016830ce241d498d48f626282770"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "fc89ef918051060697d7c14f3ed059c2e720976666f433107fdb948f7fd3f195"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60561-EXCLUDED",
+          "claim_statement_sha256": "5383b1b6ee9a328216e994aba60ce4b6fce8a9c6e1439aad21421a23f604be6c"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+          "claim_statement_sha256": "860dbe48758b5dfee867589cf02fbfd360339ea218e6d858bab1ed46839c7af6"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:21Z",
+      "source_ref": "SRC-BERMAS-INTER-CITY-III-60570"
+    },
+    {
+      "after": ">約36L / 約3.3kg（付属物含まず）",
+      "before": "約36L / 約3.3kg（付属物含まず）",
+      "body_sha256": "ca8d376f0e0cde72cd3d3c878b09742025c7d1a28cc5984e67901a2520f4c219",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60570",
+          "claim_statement_sha256": "f7b644e66e5186fea19abd811f8bfd4ae424016830ce241d498d48f626282770"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "fc89ef918051060697d7c14f3ed059c2e720976666f433107fdb948f7fd3f195"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-BERMAS-60561-EXCLUDED",
+          "claim_statement_sha256": "5383b1b6ee9a328216e994aba60ce4b6fce8a9c6e1439aad21421a23f604be6c"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+          "claim_statement_sha256": "860dbe48758b5dfee867589cf02fbfd360339ea218e6d858bab1ed46839c7af6"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:21Z",
+      "source_ref": "SRC-BERMAS-INTER-CITY-III-60570"
+    },
+    {
+      "after": "2026年4月20日に販売終了\n              <",
+      "before": "2026年4月20日に販売終了",
+      "body_sha256": "e52b5f1949cbed1de505551920c393e35a493a8a19791508bc7eba1c38f511f8",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-POWER-AC70-EXCLUDED",
+          "claim_statement_sha256": "8e38d6ab68a58db59bb1ac7b144622d7a921cd3f1e56652265e6c872a44fc1bb"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA80-EXCLUDED",
+          "claim_statement_sha256": "134230af90289ccd0e7ccc24bda2630ed958780ebfe24c06e9473cd74170ba42"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:23Z",
+      "source_ref": "SRC-BLUETTI-DISCONTINUED-MODELS"
+    },
+    {
+      "after": "<span>終売</span>\n                </p>\n                <h3 class=\"mt-1.5 text-lg font-semibold text-neutral-900\">\n                  BLUETTI AORA 80",
+      "before": "<span>終売</span>",
+      "body_sha256": "e52b5f1949cbed1de505551920c393e35a493a8a19791508bc7eba1c38f511f8",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-POWER-AC70-EXCLUDED",
+          "claim_statement_sha256": "8e38d6ab68a58db59bb1ac7b144622d7a921cd3f1e56652265e6c872a44fc1bb"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA80-EXCLUDED",
+          "claim_statement_sha256": "134230af90289ccd0e7ccc24bda2630ed958780ebfe24c06e9473cd74170ba42"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:23Z",
+      "source_ref": "SRC-BLUETTI-DISCONTINUED-MODELS"
+    },
+    {
+      "after": "BLUETTI AORA 80\n              <",
+      "before": "BLUETTI AORA 80",
+      "body_sha256": "e52b5f1949cbed1de505551920c393e35a493a8a19791508bc7eba1c38f511f8",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-POWER-AC70-EXCLUDED",
+          "claim_statement_sha256": "8e38d6ab68a58db59bb1ac7b144622d7a921cd3f1e56652265e6c872a44fc1bb"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA80-EXCLUDED",
+          "claim_statement_sha256": "134230af90289ccd0e7ccc24bda2630ed958780ebfe24c06e9473cd74170ba42"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:23Z",
+      "source_ref": "SRC-BLUETTI-DISCONTINUED-MODELS"
+    },
+    {
+      "after": "alt=\"BLUETTI AORA 80\"\n                    class=\"h-full w-full transition-all duration-300  ease-in-out group-hover:scale-106 \"\n                    w",
+      "before": "alt=\"BLUETTI AORA 80\"",
+      "body_sha256": "e52b5f1949cbed1de505551920c393e35a493a8a19791508bc7eba1c38f511f8",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-POWER-AC70-EXCLUDED",
+          "claim_statement_sha256": "8e38d6ab68a58db59bb1ac7b144622d7a921cd3f1e56652265e6c872a44fc1bb"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA80-EXCLUDED",
+          "claim_statement_sha256": "134230af90289ccd0e7ccc24bda2630ed958780ebfe24c06e9473cd74170ba42"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:23Z",
+      "source_ref": "SRC-BLUETTI-DISCONTINUED-MODELS"
+    },
+    {
+      "after": "=\"生産終了製品一覧",
+      "before": "生産終了製品一覧",
+      "body_sha256": "e52b5f1949cbed1de505551920c393e35a493a8a19791508bc7eba1c38f511f8",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-POWER-AC70-EXCLUDED",
+          "claim_statement_sha256": "8e38d6ab68a58db59bb1ac7b144622d7a921cd3f1e56652265e6c872a44fc1bb"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-AORA80-EXCLUDED",
+          "claim_statement_sha256": "134230af90289ccd0e7ccc24bda2630ed958780ebfe24c06e9473cd74170ba42"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:23Z",
+      "source_ref": "SRC-BLUETTI-DISCONTINUED-MODELS"
+    },
+    {
+      "after": ">\r\n・2026年2月20日以降",
+      "before": "2026年2月20日以降",
+      "body_sha256": "5fe6966ffe168d32cd82a950656ba5294ed62df0ecfc81a36f09d50f59ebb490",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:28Z",
+      "source_ref": "SRC-ECOVACS-WARRANTY"
+    },
+    {
+      "after": ">\r\n・2026年2月20日以降に、弊社の正規取扱店舗にて床掃除ロボットもしくは窓掃除ロボットをお買い上げいただき、ご購入製品をECOVACS HOMEアプリにてご登録",
+      "before": "ECOVACS HOMEアプリにてご登録",
+      "body_sha256": "5fe6966ffe168d32cd82a950656ba5294ed62df0ecfc81a36f09d50f59ebb490",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:28Z",
+      "source_ref": "SRC-ECOVACS-WARRANTY"
+    },
+    {
+      "after": ">3. 全商品1年間保証",
+      "before": "全商品1年間保証",
+      "body_sha256": "5fe6966ffe168d32cd82a950656ba5294ed62df0ecfc81a36f09d50f59ebb490",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:28Z",
+      "source_ref": "SRC-ECOVACS-WARRANTY"
+    },
+    {
+      "after": "r />\r\n・2026年2月20日以降に、弊社の正規取扱店舗",
+      "before": "正規取扱店舗",
+      "body_sha256": "5fe6966ffe168d32cd82a950656ba5294ed62df0ecfc81a36f09d50f59ebb490",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:28Z",
+      "source_ref": "SRC-ECOVACS-WARRANTY"
+    },
+    {
+      "after": "製品の保証期間は2年となります（Xシリーズについて、メーカー保証が2年のため、特に変更はございません）<br />",
+      "before": "製品の保証期間は2年",
+      "body_sha256": "5fe6966ffe168d32cd82a950656ba5294ed62df0ecfc81a36f09d50f59ebb490",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+          "claim_statement_sha256": "934bd074d5d0b6779f5fe2871fc3685f49c2e5a8da2c7f399bc56e2f8b2db18e"
+        },
+        {
+          "claim_id": "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "40f032cee498d7c6b0fc87dc30bcd7bf2055af2f2ce0aab3184f284e3c30afbc"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:28Z",
+      "source_ref": "SRC-ECOVACS-WARRANTY"
+    },
+    {
+      "after": "productVariants = [{\"id\":44817992777889,\"title\":\"ブラック\",\"option1\":\"ブラック\",\"option2\":null,\"option3\":null,\"sku\":\"T2070511\"",
+      "before": "\"sku\":\"T2070511\"",
+      "body_sha256": "b8f5b8b4c2194d9b6d7cee76c0fe5c4afab2beb46c354526d7f19727d6b82ad7",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E20-EXCLUDED",
+          "claim_statement_sha256": "dcc23770f0938bb6ba4df0fddc3d52004e4745abcc60d713a63f58a30498ca07"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:29Z",
+      "source_ref": "SRC-EUFY-E20-T2070"
+    },
+    {
+      "after": "productVariants = [{\"id\":44817992777889,\"title\":\"ブラック\"",
+      "before": "\"title\":\"ブラック\"",
+      "body_sha256": "b8f5b8b4c2194d9b6d7cee76c0fe5c4afab2beb46c354526d7f19727d6b82ad7",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E20-EXCLUDED",
+          "claim_statement_sha256": "dcc23770f0938bb6ba4df0fddc3d52004e4745abcc60d713a63f58a30498ca07"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:29Z",
+      "source_ref": "SRC-EUFY-E20-T2070"
+    },
+    {
+      "after": "soldOut: \"Sold Out\",\n    un",
+      "before": "soldOut: \"Sold Out\"",
+      "body_sha256": "b8f5b8b4c2194d9b6d7cee76c0fe5c4afab2beb46c354526d7f19727d6b82ad7",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E20-EXCLUDED",
+          "claim_statement_sha256": "dcc23770f0938bb6ba4df0fddc3d52004e4745abcc60d713a63f58a30498ca07"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:29Z",
+      "source_ref": "SRC-EUFY-E20-T2070"
+    },
+    {
+      "after": "在庫切れ</p>\n      \n    </div>\n\n    \n    \n  </div>\n\n\n      \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"product-",
+      "before": "在庫切れ",
+      "body_sha256": "b8f5b8b4c2194d9b6d7cee76c0fe5c4afab2beb46c354526d7f19727d6b82ad7",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-ROBOT-E20-EXCLUDED",
+          "claim_statement_sha256": "dcc23770f0938bb6ba4df0fddc3d52004e4745abcc60d713a63f58a30498ca07"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:29Z",
+      "source_ref": "SRC-EUFY-E20-T2070"
+    },
+    {
+      "after": "e>Jackery ポータブル電源 1000 New V3",
+      "before": "Jackery ポータブル電源 1000 New V3",
+      "body_sha256": "45a98a9cc7fe3bfb3d85ebfb4e72c55f809e766035ebf08bdb18747004111355",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "cb5c1737ea65279a0f586a975c343efa65171429d7006abc6a43a17e853d4293"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+          "claim_statement_sha256": "386c2b478750295a6e864ff2d186943c221c17f13105817111f67f877945043b"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:30Z",
+      "source_ref": "SRC-JACKERY-1000-NEW-V3"
+    },
+    {
+      "after": ">カートに追加する",
+      "before": "カートに追加する",
+      "body_sha256": "45a98a9cc7fe3bfb3d85ebfb4e72c55f809e766035ebf08bdb18747004111355",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "cb5c1737ea65279a0f586a975c343efa65171429d7006abc6a43a17e853d4293"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+          "claim_statement_sha256": "386c2b478750295a6e864ff2d186943c221c17f13105817111f67f877945043b"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:30Z",
+      "source_ref": "SRC-JACKERY-1000-NEW-V3"
+    },
+    {
+      "after": "\">ポータブル電源 1000 New V3 白（JE-1000G-WH）",
+      "before": "ポータブル電源 1000 New V3 白（JE-1000G-WH）",
+      "body_sha256": "45a98a9cc7fe3bfb3d85ebfb4e72c55f809e766035ebf08bdb18747004111355",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "cb5c1737ea65279a0f586a975c343efa65171429d7006abc6a43a17e853d4293"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+          "claim_statement_sha256": "386c2b478750295a6e864ff2d186943c221c17f13105817111f67f877945043b"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:30Z",
+      "source_ref": "SRC-JACKERY-1000-NEW-V3"
+    },
+    {
+      "after": "\">ポータブル電源 1000 New V3（JE-1000G）",
+      "before": "ポータブル電源 1000 New V3（JE-1000G）",
+      "body_sha256": "45a98a9cc7fe3bfb3d85ebfb4e72c55f809e766035ebf08bdb18747004111355",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "cb5c1737ea65279a0f586a975c343efa65171429d7006abc6a43a17e853d4293"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+          "claim_statement_sha256": "386c2b478750295a6e864ff2d186943c221c17f13105817111f67f877945043b"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:30Z",
+      "source_ref": "SRC-JACKERY-1000-NEW-V3"
+    },
+    {
+      "after": "p>前モデル比19%小型化・約10.6kgの軽量ボディ",
+      "before": "前モデル比19%小型化・約10.6kgの軽量ボディ",
+      "body_sha256": "45a98a9cc7fe3bfb3d85ebfb4e72c55f809e766035ebf08bdb18747004111355",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "cb5c1737ea65279a0f586a975c343efa65171429d7006abc6a43a17e853d4293"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+          "claim_statement_sha256": "386c2b478750295a6e864ff2d186943c221c17f13105817111f67f877945043b"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:30Z",
+      "source_ref": "SRC-JACKERY-1000-NEW-V3"
+    },
+    {
+      "after": "<p>長寿命のリン酸鉄リチウムイオン電池を搭載。約6000回の充放電サイクル",
+      "before": "約6000回の充放電サイクル",
+      "body_sha256": "45a98a9cc7fe3bfb3d85ebfb4e72c55f809e766035ebf08bdb18747004111355",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "cb5c1737ea65279a0f586a975c343efa65171429d7006abc6a43a17e853d4293"
+        },
+        {
+          "claim_id": "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+          "claim_statement_sha256": "386c2b478750295a6e864ff2d186943c221c17f13105817111f67f877945043b"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:30Z",
+      "source_ref": "SRC-JACKERY-1000-NEW-V3"
+    },
+    {
+      "after": ">Related Products: SwitchBot Mini Robot Vacuum K10+/K10+ Pro/K11+/K11+ Pro",
+      "before": "Related Products: SwitchBot Mini Robot Vacuum K10+/K10+ Pro/K11+/K11+ Pro",
+      "body_sha256": "ba344e3102b40ddd29350144c0b12553f5d12202b6ddbd0624831453280e86a3",
+      "claim_bindings": [
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-K11-INSTALLATION-SPACE",
+          "claim_statement_sha256": "b3cdd4b5e9ec8ad95d13bd6d6fdd4213052c9e7b23cf9129291e293634c64dfd"
+        },
+        {
+          "claim_id": "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+          "claim_statement_sha256": "d507073aad97b7a28fdd7ed5614da3c5b690d09975707dc8160960bbdb2e3920"
+        }
+      ],
+      "retrieved_at": "2026-09-06T14:53:58Z",
+      "source_ref": "SRC-SWITCHBOT-AUTOEMPTY-INSTALLATION-SPACE"
+    }
+  ]
+}

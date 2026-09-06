@@ -1081,12 +1081,12 @@ def test_new_primary_source_locators_cover_reviewed_atomic_facts() -> None:
     observed: set[str] = set()
     for source_ref, expected_tokens in NEW_SOURCE_REQUIRED_LOCATOR_TOKENS.items():
         target = plan.target(source_ref)
-        material = _semantic_text(
-            "\n".join(
-                fragment
-                for locator in target.locators
-                for fragment in locator.exact_utf8_fragments
-            )
+        # Locators can start/end inside tags. Parse each literal separately;
+        # joining unfinished tags would swallow text from an unrelated locator.
+        material = "".join(
+            _semantic_text(fragment)
+            for locator in target.locators
+            for fragment in locator.exact_utf8_fragments
         )
         assert all(_semantic_text(token) in material for token in expected_tokens), (
             source_ref
@@ -2106,11 +2106,13 @@ def test_capture_cli_exposes_only_two_closed_commands_and_fixed_selectors() -> N
         "-h",
         "--help",
         "--source-ref",
+        "--owner-checkout",
     }
     assert _option_strings(choices["capture-article"]) == {
         "-h",
         "--help",
         "--article-id",
+        "--owner-checkout",
     }
     registry = json.loads(
         (SOURCES_ROOT / "source-registry.v1.json").read_text(encoding="utf-8")
