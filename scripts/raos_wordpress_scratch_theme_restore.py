@@ -51,6 +51,13 @@ from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
 
 BASELINE_COMMIT = "5bd4a8d06be87494961012d38336879ad1e123cb"
 BASELINE_TREE = "086ce67f586701de2be1da5386f6c21f007a758c42245f42961f5cf00be933dc"
+# Closed, reviewed historical packages. The second entry's 31 files match
+# the bounded deployment snapshot and the independently retained live archive.
+BASELINE_COMMITS_BY_TREE = {
+    BASELINE_TREE: BASELINE_COMMIT,
+    "c4dbbe41851a661208645cf5cb81112ced23e886e7f8dd8856760e1e61116ff4":
+        "6b54cc98e18f895c2871de39ae36a0d32f8376f7",
+}
 THEME_RELATIVE = (
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
 )
@@ -89,8 +96,12 @@ def git_bytes(*arguments: str) -> bytes:
     return result.stdout
 
 
-def baseline_package() -> bytes:
-    entries = git_bytes("ls-tree", "-rz", BASELINE_COMMIT, "--", THEME_RELATIVE)
+def baseline_package(expected_tree: str = BASELINE_TREE) -> bytes:
+    if type(expected_tree) is not str or expected_tree not in BASELINE_COMMITS_BY_TREE:
+        fail("SCRATCH_THEME_BASELINE_UNREVIEWED")
+    entries = git_bytes(
+        "ls-tree", "-rz", BASELINE_COMMITS_BY_TREE[expected_tree], "--", THEME_RELATIVE
+    )
     files: dict[str, bytes] = {}
     for entry in entries.split(b"\0"):
         if not entry:
@@ -114,7 +125,7 @@ def baseline_package() -> bytes:
         if relative in files:
             fail("SCRATCH_THEME_GIT_INVALID")
         files[relative] = git_bytes("cat-file", "blob", blob)
-    if theme_tree_sha256(files) != BASELINE_TREE:
+    if theme_tree_sha256(files) != expected_tree:
         fail("SCRATCH_THEME_BASELINE_GIT_MISMATCH")
     return build_theme_package(files)
 

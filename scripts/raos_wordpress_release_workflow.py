@@ -389,6 +389,7 @@ def prepare(arguments: argparse.Namespace) -> dict[str, Any]:
         preview_owner = importlib.import_module("raos_wordpress_incremental_preview")
         arguments.preview_fixture = preview_owner.create_preview(
             argparse.Namespace(
+                candidate=arguments.candidate,
                 snapshot_name=prepared.preparation["snapshot_name"],
                 articles=",".join(row["slug"] for row in prepared.manifest["articles"]),
                 update_policies=",".join(

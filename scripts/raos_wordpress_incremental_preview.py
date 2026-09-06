@@ -7,6 +7,8 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from datetime import UTC, datetime
+from collections.abc import Mapping
 import sys
 from typing import cast
 
@@ -73,6 +75,31 @@ def page_overrides_for_preview(
     return {page.production_slug: page.document() for page in pages}
 
 
+def article_bodies_for_preview(
+    arguments: argparse.Namespace,
+    *,
+    snapshot: Mapping[str, object],
+    selected: frozenset[str],
+    source_articles: Mapping[str, bytes],
+) -> dict[str, bytes]:
+    """Seed the final reviewed markup, including rendered reader components."""
+    result = dict(source_articles)
+    candidate_path = getattr(arguments, "candidate", None)
+    if candidate_path is None:
+        return result
+    from raos_wordpress_incremental_publication import prepare_candidate
+
+    prepared = prepare_candidate(candidate_path, now=datetime.now(UTC))
+    if (
+        prepared.snapshot != snapshot
+        or {row["slug"] for row in prepared.manifest["articles"]} != selected
+    ):
+        fail("PREVIEW_CANDIDATE_BINDING")
+    for row in prepared.manifest["articles"]:
+        result[row["slug"]] = prepared.artifacts[row["local_artifact"]["key"]]
+    return result
+
+
 def create_preview(arguments: argparse.Namespace) -> Path:
     """Materialize a new mixed preview, preserving already-bound fixture directories."""
     owner = Path("/home/minami/rakuten")
@@ -107,10 +134,15 @@ def create_preview(arguments: argparse.Namespace) -> Path:
     result = build_mixed_preview(
         snapshot=snapshot,
         source_posts=posts,
-        source_articles={
-            slug: (fixture / "articles" / f"{slug}.html").read_bytes()
-            for slug in article_ids
-        },
+        source_articles=article_bodies_for_preview(
+            arguments,
+            snapshot=snapshot,
+            selected=selected,
+            source_articles={
+                slug: (fixture / "articles" / f"{slug}.html").read_bytes()
+                for slug in article_ids
+            },
+        ),
         selected_slugs=selected,
         article_ids_by_slug=article_ids,
         source_pages=pages,
