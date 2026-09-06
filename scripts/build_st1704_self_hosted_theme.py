@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.5.1"
 THEME_RUNTIME_REVISION: Final = (
-    "f2606fff14f1114ef8bd172e2ea890d187f3ba6a79ae2517b582aabf36e5ac88"
+    "9e0c66f72040a6b36df62aa61623c1f749a387ae0bccbb0a650f1d2998f5f8ea"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -113,6 +113,7 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/brand-mark.svg",
     HOME_HERO_ASSET_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/legacy-media-display-projection.v1.json",
+    THEME_REPOSITORY_ROOT / "assets/local-running-cost.js",
     MEASUREMENT_CLIENT_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/theme.css",
     THEME_FUNCTIONS_INPUT_PATH,
@@ -181,6 +182,7 @@ PHP_INTEGRITY_BINDINGS: Final = {
         "assets/analytics-consent-gate.js"
     ),
     "KURASHINOSHIRUBE_NAVIGATION_ASSET_SHA256": ("assets/editorial-navigation.js"),
+    "KURASHINOSHIRUBE_LOCAL_COST_ASSET_SHA256": ("assets/local-running-cost.js"),
     "KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256": (
         "assets/editorial-navigation.v3.json"
     ),

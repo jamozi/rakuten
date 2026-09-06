@@ -15,6 +15,7 @@ from typing import TypeAlias, TypeGuard
 from urllib.parse import urlsplit
 
 from raos.application.editorial import reader_components as components
+from raos.application.editorial.reader_running_cost import render_cost_profiles
 from raos.application.editorial.reader_experience_v1 import (
     COMPARISON_REQUIREMENTS,
     CheckedFact,
@@ -384,6 +385,7 @@ def _render(
     )
     if axes is not None:
         body.append(axes.html())
+    body.append(render_cost_profiles(article, facts))
     for section in _records(article.get("sections")):
         paragraphs: list[str] = []
         for paragraph in _records(section.get("paragraphs")):

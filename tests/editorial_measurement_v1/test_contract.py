@@ -277,7 +277,7 @@ def test_theme_enqueues_only_verified_asset_and_plugin_context() -> None:
         "function kurashinoshirube_verified_asset_uri", 1
     )[1].split("function kurashinoshirube_bound_post_snapshot", 1)[0]
     assert (
-        "assets/(?:analytics-consent-gate|measurement|editorial-navigation)\\.js"
+        "assets/(?:analytics-consent-gate|measurement|editorial-navigation|local-running-cost)\\.js"
         in verifier
     )
     assert "'/wp-json/raos/v1/events'" in block

@@ -2140,16 +2140,17 @@ def test_content_is_visible_without_javascript() -> None:
     css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
     assert not (THEME_ROOT / "assets/theme.js").exists()
-    assert functions.count("wp_enqueue_script(") == 3
+    assert functions.count("wp_enqueue_script(") == 4
     assert "assets/analytics-consent-gate.js" in functions
     assert "assets/editorial-navigation.js" in functions
+    assert "assets/local-running-cost.js" in functions
     assert "kurashinoshirube-measurement-v1" in functions
     assert "raos_editorial_measurement_enabled()" in functions
     verifier = functions.split("function kurashinoshirube_verified_asset_uri", 1)[
         1
     ].split("function kurashinoshirube_bound_post_snapshot", 1)[0]
     assert (
-        "assets/(?:analytics-consent-gate|measurement|editorial-navigation)\\.js"
+        "assets/(?:analytics-consent-gate|measurement|editorial-navigation|local-running-cost)\\.js"
         in verifier
     )
     measurement = (THEME_ROOT / "assets/measurement.js").read_text(encoding="utf-8")

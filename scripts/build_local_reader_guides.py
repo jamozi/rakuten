@@ -23,6 +23,7 @@ INPUT_PATHS: Final = (
     Path("changes/wordpress-local-preview-v1/fixtures/posts.json"),
     Path("changes/editorial-portfolio-v2/editorial-portfolio.v2.json"),
     Path("python/raos/application/editorial/local_reader_guides.py"),
+    Path("python/raos/application/editorial/reader_running_cost.py"),
     Path("python/raos/application/editorial/reader_components.py"),
     Path("python/raos/application/editorial/reader_experience_v1.py"),
 )

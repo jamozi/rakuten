@@ -67,7 +67,7 @@ function esc_html($value) { return htmlspecialchars($value, ENT_QUOTES); }
 function esc_attr($value) { return esc_html($value); }
 function esc_url($value) { return esc_html($value); }
 function get_post_modified_time(...$args) { return '2026年9月5日'; }
-function is_singular(...$args) { return true; }
+function is_singular(...$args) { return $GLOBALS['singular'] ?? true; }
 function in_the_loop() { return true; }
 function is_main_query() { return true; }
 function get_the_ID() { return $GLOBALS['current_post_id'] ?? 0; }
@@ -88,10 +88,20 @@ foreach (['kurashinoshirube_has_exact_keys', 'kurashinoshirube_article_bindings'
     'kurashinoshirube_reader_hubs', 'kurashinoshirube_reader_eligible_posts', 'kurashinoshirube_reader_category_label',
     'kurashinoshirube_reader_article_category', 'kurashinoshirube_reader_hub_content', 'kurashinoshirube_reader_hub_url',
     'kurashinoshirube_reader_guide_card', 'kurashinoshirube_reader_group_cards',
+    'kurashinoshirube_enqueue_local_running_cost', 'kurashinoshirube_verified_asset_uri',
     'kurashinoshirube_public_listing_post_is_eligible', 'kurashinoshirube_public_listing_excluded_post_ids'] as $name) {
     load_theme_function($name);
 }
 define('KURASHINOSHIRUBE_EDITORIAL_V2_ROOT', '<div class="raos-editorial-v2">');
+define('KURASHINOSHIRUBE_LOCAL_COST_ASSET_PATH', 'assets/local-running-cost.js');
+preg_match("/const KURASHINOSHIRUBE_LOCAL_COST_ASSET_SHA256 = '([a-f0-9]{64})';/", $theme, $cost_digest);
+define('KURASHINOSHIRUBE_LOCAL_COST_ASSET_SHA256', $cost_digest[1]);
+define('KURASHINOSHIRUBE_THEME_RUNTIME_REVISION', 'test-revision');
+function wp_enqueue_script($handle, ...$args) { $GLOBALS['enqueued_scripts'][$handle] = $args; }
+function untrailingslashit($value) { return rtrim($value, '/'); }
+function get_stylesheet_directory() { return ($GLOBALS['asset_valid'] ?? true) ? dirname($GLOBALS['theme_path']) : '/missing-theme'; }
+function get_stylesheet_directory_uri() { return home_url('/wp-content/themes/kurashinoshirube-child'); }
+function wp_parse_url($value) { return parse_url($value); }
 function kurashinoshirube_editorial_navigation() {
     return json_decode(file_get_contents(dirname($GLOBALS['theme_path']) . '/assets/editorial-navigation.v3.json'), true);
 }
@@ -104,6 +114,8 @@ function kurashinoshirube_article_visual_asset(...$args) { return null; }
 function kurashinoshirube_stored_guide_role(...$args) { return '比較・選び方ガイド'; }
 
 if ($without_plugin) {
+    kurashinoshirube_enqueue_local_running_cost();
+    check(empty($GLOBALS['enqueued_scripts']), 'no calculator asset without local plugin');
     check(!function_exists('raos_local_reader_guide_identity'), 'plugin absent');
     check(count(kurashinoshirube_article_bindings()) === 10, 'plugin absent fixed ten');
     check(kurashinoshirube_reader_hubs() === kurashinoshirube_editorial_navigation()['reader_navigation']['hubs'], 'plugin absent hubs identical');
@@ -234,6 +246,32 @@ if (is_file($ready_path)) {
     file_put_contents($fixture_path, file_get_contents($ready_path));
     $GLOBALS['posts'] = []; $GLOBALS['options'] = []; $GLOBALS['meta'] = [];
     raos_local_reader_guides_seed($ready, 1);
+    $cost_id = raos_local_reader_guides_bindings()['dishwasher-running-cost']['post_id'];
+    $GLOBALS['current_post_id'] = $cost_id;
+    kurashinoshirube_enqueue_local_running_cost();
+    check(isset($GLOBALS['enqueued_scripts']['kurashinoshirube-local-running-cost']), 'bound local cost guide enqueues enhancement');
+    $GLOBALS['enqueued_scripts'] = [];
+    $GLOBALS['singular'] = false;
+    kurashinoshirube_enqueue_local_running_cost();
+    check(empty($GLOBALS['enqueued_scripts']), 'archive ID collision cannot enqueue calculator');
+    $GLOBALS['singular'] = true;
+    check(kurashinoshirube_verified_asset_uri(KURASHINOSHIRUBE_LOCAL_COST_ASSET_PATH, str_repeat('0', 64), true) === null, 'real verifier rejects incorrect digest');
+    $GLOBALS['asset_valid'] = false;
+    kurashinoshirube_enqueue_local_running_cost();
+    check(empty($GLOBALS['enqueued_scripts']), 'invalid asset integrity stops enhancement');
+    $GLOBALS['asset_valid'] = true;
+    $original_cost = get_post($cost_id)->post_content;
+    get_post($cost_id)->post_content .= 'changed';
+    kurashinoshirube_enqueue_local_running_cost();
+    check(empty($GLOBALS['enqueued_scripts']), 'changed guide content cannot enqueue calculator');
+    get_post($cost_id)->post_content = $original_cost;
+    $GLOBALS['environment'] = 'production';
+    kurashinoshirube_enqueue_local_running_cost();
+    check(empty($GLOBALS['enqueued_scripts']), 'production cannot enqueue calculator');
+    $GLOBALS['environment'] = 'local';
+    $GLOBALS['current_post_id'] = raos_local_reader_guides_bindings()['dishwasher-cleaning-guide']['post_id'];
+    kurashinoshirube_enqueue_local_running_cost();
+    check(empty($GLOBALS['enqueued_scripts']), 'another guide cannot enqueue calculator');
     foreach (['st1704-countertop-dishwasher-for-small-households', 'solota-vs-rakua-mini-plus'] as $source_id) {
         $binding = $original_bindings[$source_id];
         $body = file_get_contents(dirname($ready_path) . '/articles/' . $binding['slug'] . '.html');
