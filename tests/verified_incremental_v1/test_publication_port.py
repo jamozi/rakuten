@@ -1141,3 +1141,81 @@ def test_partial_batch_does_not_renew_authority_or_evidence(
         world["execute"]("apply")
     assert server.apply_count == 0
     assert server.member_apply_calls == server.member_recovery_calls == []
+
+
+@pytest.mark.parametrize("count", [14, 18, 20])
+def test_receipt_accepts_the_server_twenty_proposal_boundary(count):
+    proposals = []
+    for index in range(count):
+        slug = f"hub-{index}"
+        proposals.append({
+            "kind": "CONTENT_RELEASE", "slug": slug, "post_type": "page",
+            "proposal_id": f"{index + 1:064x}", "after_sha256": "d" * 64,
+            "expires_at_gmt": examples.stamp(NOW + timedelta(minutes=15)),
+            "idempotency_key": f"{index + 101:064x}",
+        })
+    receipt = {
+        "proposals": proposals,
+        "selected_slugs": sorted(row["slug"] for row in proposals),
+        "selected_documents": {row["slug"]: "page" for row in proposals},
+        "desired_theme_tree_sha256": "9" * 64,
+    }
+    assert len(publication._proposal_ids(receipt)) == count
+    if count == 20:
+        extra = {**proposals[-1], "proposal_id": "e" * 64, "slug": "extra"}
+        receipt["proposals"].append(extra)
+        receipt["selected_slugs"] = sorted(receipt["selected_slugs"] + ["extra"])
+        receipt["selected_documents"]["extra"] = "page"
+        with pytest.raises(publication.PublicationFailure, match="REQUEST_RECEIPT_INVALID"):
+            publication._proposal_ids(receipt)
+
+
+def pending_complete_receipt(world):
+    path = world["execute"]("propose")
+    receipt, _ = port.read_json(path.parent, path.name)
+    receipt["batch_registration"] = None
+    receipt["state"] = "PROPOSALS_IN_PROGRESS"
+    receipt["operation_ids"] = {}
+    port.write_private_bytes(path.parent, path.name, port.canonical(receipt))
+    world["server"].batch = None
+    return path
+
+
+@pytest.mark.parametrize("world", [False, True], indirect=True)
+def test_complete_saved_proposals_resume_registration_without_reproposing(world):
+    path = pending_complete_receipt(world)
+    server = world["server"]
+    prior = server.proposal_count
+    assert world["execute"]("propose") == path
+    receipt, _ = port.read_json(path.parent, path.name)
+    assert receipt["state"] == "AWAITING_OWNER_APPROVAL"
+    assert server.proposal_count == prior and server.apply_count == 0
+    assert server.content_operation_gets >= 1
+    if server.theme_proposals:
+        assert server.theme_operation_gets >= 1
+
+
+@pytest.mark.parametrize("corruption", ["inflight", "missing", "expired", "after", "applied"])
+def test_saved_proposal_recovery_rejects_uncertain_or_changed_members(world, corruption):
+    path = pending_complete_receipt(world)
+    server = world["server"]
+    receipt, _ = port.read_json(path.parent, path.name)
+    identifier = receipt["proposals"][0]["proposal_id"]
+    if corruption == "inflight":
+        receipt["inflight_proposal"] = {"target": "guide"}
+    elif corruption == "missing":
+        receipt["proposals"] = []
+    elif corruption == "expired":
+        receipt["proposals"][0]["expires_at_gmt"] = examples.stamp(NOW)
+    else:
+        operation = server.operation(identifier)
+        if corruption == "after":
+            operation["after_sha256"] = "0" * 64
+        else:
+            operation["state"] = "APPLIED"
+            operation["result_code"] = "CONTENT_APPLIED"
+        server.operations[identifier] = operation
+    port.write_private_bytes(path.parent, path.name, port.canonical(receipt))
+    with pytest.raises(publication.PublicationFailure):
+        world["execute"]("propose")
+    assert server.batch is None and server.proposal_count == 1 and server.apply_count == 0
