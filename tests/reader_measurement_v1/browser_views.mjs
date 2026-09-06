@@ -12,8 +12,6 @@ import { firefox } from 'playwright';
 const root = new URL('../../', import.meta.url).pathname;
 const plugin = root + 'changes/reader-measurement-v1/wordpress-plugin/raos-reader-measurement/';
 const php = process.env.RAOS_READER_TEST_PHP || 'php';
-const firefoxPath = process.env.RAOS_READER_FIREFOX
-  || '/home/minami/.cache/ms-playwright/firefox-1542/firefox/firefox';
 const origin = 'https://kurashinoshirube.com';
 const pageURL = origin + '/carry-on-suitcase-comparison/';
 const articleID = 'st1703-first-suitcase-comparison';
@@ -86,7 +84,10 @@ const documentFor = off => '<!doctype html><html lang="ja"><head><meta charset="
   + '<title>Reader measurement isolated view</title>' + baseStyle + cssTag + '</head><body>'
   + article + footer(off) + jsTag + '</body></html>';
 
-const browser = await firefox.launch({ headless: true, executablePath: firefoxPath });
+const browser = await firefox.launch({
+  headless: true,
+  ...(process.env.RAOS_READER_FIREFOX ? { executablePath: process.env.RAOS_READER_FIREFOX } : {}),
+});
 const screenshots = [];
 const unexpectedRequests = [];
 let networkPassthroughs = 0;

@@ -30,7 +30,10 @@ const html = off => '<!doctype html><html lang="ja"><head><meta charset="utf-8">
   + '<link rel="stylesheet" href="/reader-simulation.css"></head><body>' + article + footer(off)
   + '<script src="/reader-simulation.js"></script></body></html>';
 
-const browser = await firefox.launch({ headless: true, executablePath: process.env.RAOS_READER_FIREFOX || '/home/minami/.cache/ms-playwright/firefox-1542/firefox/firefox' });
+const browser = await firefox.launch({
+  headless: true,
+  ...(process.env.RAOS_READER_FIREFOX ? { executablePath: process.env.RAOS_READER_FIREFOX } : {}),
+});
 try {
   const create = async off => {
     const context = await browser.newContext({ proxy: { server: 'http://127.0.0.1:9' }, serviceWorkers: 'block', viewport: { width: 1000, height: 900 } });
@@ -42,7 +45,7 @@ try {
       const request = route.request();
       const url = new URL(request.url());
       if (url.origin === origin && url.pathname === '/wp-json/raos-reader/v1/events') {
-        received.push({ body: JSON.parse(request.postData()), headers: request.headers(), method: request.method() });
+        received.push({ body: JSON.parse(request.postData()), headers: await request.allHeaders(), method: request.method() });
         await route.fulfill({ status, contentType: 'application/json', body: JSON.stringify({ accepted: status === 202 }) });
       } else if (url.origin === origin && url.pathname === '/reader-simulation.js') {
         await route.fulfill({ status: 200, contentType: 'text/javascript', body: script });
@@ -149,5 +152,5 @@ try {
   assert.equal(stale.received.length, 0, 'stale policy cannot authorize');
   assert.match(await stale.page.locator('#raos-reader-user-status').textContent(), /未選択/);
   await stale.context.close();
-  console.log('browser behavior OK (offline Firefox; no production/provider requests)');
+  console.log('browser behavior OK (isolated browser; no production/provider requests)');
 } finally { await browser.close(); }

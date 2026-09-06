@@ -46,6 +46,20 @@ def require_validated_source(root: Path, evidence: Mapping[str, Any]) -> None:
         fail("LOCAL_VALIDATION_CHANGED")
 
 
+def matches_hub_document(
+    document: Mapping[str, Any], desired: Mapping[str, Any]
+) -> bool:
+    """Compare page fields without rewriting the server's content hash."""
+    projected = publication.document_projection(document)
+    if (
+        projected.get("post_type") == "page"
+        and projected.get("taxonomies") == []
+        and desired.get("taxonomies") == {}
+    ):
+        projected["taxonomies"] = {}
+    return projected == desired
+
+
 def reconcile_hub_drafts(
     client: Any,
     *,
@@ -111,7 +125,7 @@ def reconcile_hub_drafts(
             if (
                 document.get("post_type") != "page"
                 or document.get("status") not in {"draft", "publish"}
-                or publication.document_projection(document) != desired
+                or not matches_hub_document(document, desired)
             ):
                 fail("SLUG_CONFLICT")
             if known and known.get("id") != document.get("id"):
@@ -119,7 +133,7 @@ def reconcile_hub_drafts(
         if (
             type(document.get("id")) is not int
             or document["id"] < 1
-            or publication.document_projection(document) != desired
+            or not matches_hub_document(document, desired)
         ):
             fail("DRAFT_RESULT_INVALID")
         readback = client.call("raos-codex-content-get", {"id": document["id"]})

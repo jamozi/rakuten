@@ -162,9 +162,9 @@
       "sha256": "b8a90031f1289671b7647231c2c3b7a2203cd9b9bcef4471ee78af8f85f87d25"
     },
     {
-      "bytes": 182043,
+      "bytes": 185330,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-locator-contract.v1.json",
-      "sha256": "7dbd0ab0d5764760bd4774afca9b34eaeea5b34da9b68f56a089924699131fae"
+      "sha256": "be7eb0a30c44e3dd0d6165e9678ad5e1a5c7df740e2fab85a30c8dfc56accfcf"
     },
     {
       "bytes": 242537,
@@ -1957,9 +1957,9 @@
       "sha256": "3ad154e93977dfd744ec4ce8e903e3090627bc8c7052e264c9170f9d5bb55115"
     },
     {
-      "bytes": 277970,
+      "bytes": 280822,
       "path": "scripts/build_st1704_portfolio_source_packets.py",
-      "sha256": "1bd5ca3443bce1335f0e60243ceefbee7079b2b4101ecf94fbffcb1c9eac5e27"
+      "sha256": "e757bf2c7bacd86709fd9191e364830e84e08240542dad30c067c9c299772541"
     },
     {
       "bytes": 323540,

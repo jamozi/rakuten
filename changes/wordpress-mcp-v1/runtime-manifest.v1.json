@@ -107,7 +107,7 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "1ea0e1ab547751684219bce333e6c4b65966d1598eb2478c7f345331406961aa",
+      "sha256": "8159e1d9f67d80a60739501f36b35e745da4627a8aa61d97112cf6b2e0ee5e7c",
       "size": 81279
     },
     {
@@ -342,7 +342,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "df8983e369e5982e3779311c5a9e56f55029e8e542b235466318eda1719f2107",
+      "sha256": "eaac8b65b5031dd213b2fcc6be86df0e9229aa7d87105323a29ff9f3ed2e695b",
       "size": 54277
     },
     {
@@ -522,8 +522,8 @@
     },
     {
       "path": "scripts/raos_wordpress_reader_hubs.py",
-      "sha256": "86b9f022c504e4bf6c1e353d17bede9c7baec1e8c64569b1c0c36f4bcfa736a5",
-      "size": 10119
+      "sha256": "7fc35dfa2d0d7eabf1258b201666e6bd75483aa61fdb2f95833e55aae585ff20",
+      "size": 10553
     },
     {
       "path": "python/raos/application/editorial/reader_release_applicability_v1.py",

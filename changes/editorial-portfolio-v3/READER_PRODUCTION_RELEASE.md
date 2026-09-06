@@ -137,3 +137,15 @@ MCP状態の4件は修正前に失敗し、修正後は関連40件が成功。
 4. 完成候補の差分・ハッシュを提示し、別の管理者がwp-adminで具体的に承認する。
 5. 計測OFFで順次反映・照合。pluginのDB作成は手動経路。運営者の確定版承認、
    信頼できる定期cronと削除責任を確認してから計測有効化・本番3操作を検証。
+
+
+## Publication preparation update — 2026-09-06 17:15 UTC
+
+- Reconciled the uncertain first hub create through actual MCP readback: categories draft ID 130 existed once. Its sole projection difference was WordPress's empty taxonomy array `[]` versus authored `{}`.
+- Fixed comparison of empty page taxonomies without changing server content hashes. The initial regression produced two expected failures; the fix and related page/preview tests passed (103), with final locator/hub checks passing (16).
+- Created and independently read back all 15 registered hub drafts, IDs 130–144. Receipt: owner-private `wordpress-mcp/reader-hub-drafts/reader-hub-drafts.v1.json`. None is published.
+- The actual first PR #193 CI run failed only two reader-browser tests because the harness contained an absolute local Firefox path. The harness now uses the browser revision selected by locked Playwright and CI explicitly installs it. Both unchanged browser scenarios passed locally using Firefox 1539 (18.71 seconds). Independent code review found no remaining issue in this delta; replacement CI is pending.
+- Independently reviewed and applied batch 1–2 source-locator corrections for five references. Their exact-model facts, claim statements, source registry and editorial confirmation dates did not change. All proposed fragments occurred exactly once in retained official bodies. Fresh capture/replay remains separate; this edit is not a new source-verification success.
+- To reduce approval round trips while respecting the 20-proposal cap, prepared one local candidate for SOLOTA status-check + home + 15 hubs + theme (18 proposals), preserving the other nine article bodies. Candidate: `be4d98708f5cdaecd545701fc9bfdac9a735f4cf9bfa1ce5eeec8a764e24b9c4`. Source eligibility passed for this selected article. It is not publication approval.
+- Actual 29-document snapshot: `live-7898c2cdda8a2d647e898ff50ce806de453e301b58bfe7ca6f59fa97fc55fa57.v1.json`. Five-width hub checks: `output/playwright/reader-production/hub-drafts-20260906T170037685106Z/manifest.json`.
+- Remaining article source acquisition/locator issues stay local and explicit. No new article rewrite, local-guide promotion, invented product fact or unapproved photo was added. Formal candidate audits, owner wp-admin approval, publication, plugin installation and measurement activation are not completed at this checkpoint.

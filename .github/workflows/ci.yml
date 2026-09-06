@@ -121,6 +121,8 @@ jobs:
         with:
           php-version: '8.3'
           coverage: none
+      - name: Install pinned browser for reader behavior checks
+        run: ./node_modules/.bin/playwright install --with-deps firefox
       - run: .venv/bin/python scripts/raos_ci.py tests
 
   php:

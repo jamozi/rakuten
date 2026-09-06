@@ -182,3 +182,42 @@ def test_known_unsent_source_change_can_resume_after_revalidation(monkeypatch):
     monkeypatch.setattr(owner, "source_fingerprint", lambda root: original)
     run(monkeypatch, client, receipt, persisted)
     assert client.creates == 1
+
+
+class PhpEmptyTaxonomyClient(Client):
+    """WordPress encodes an empty PHP taxonomy array as JSON []."""
+
+    def call(self, name, args):
+        if name == "raos-codex-content-create-draft":
+            args = {**args, "taxonomies": []}
+        return super().call(name, args)
+
+
+@pytest.mark.parametrize("lost_response", [False, True])
+def test_php_empty_taxonomies_reconcile_without_resend_or_hash_rewrite(
+    monkeypatch, lost_response
+):
+    client, receipt, persisted = PhpEmptyTaxonomyClient(), fresh(), []
+    client.lose_response = lost_response
+    if lost_response:
+        with pytest.raises(TimeoutError):
+            run(monkeypatch, client, receipt, persisted)
+    run(monkeypatch, client, receipt, persisted)
+    run(monkeypatch, client, receipt, persisted)
+    actual = client.documents[-1]
+    assert actual["taxonomies"] == []
+    assert receipt["drafts"]["categories"]["content_sha256"] == actual["content_sha256"]
+    assert client.creates == 1
+    assert receipt["inflight"] == {}
+
+
+def test_nonempty_taxonomy_array_is_not_normalized(monkeypatch):
+    client, receipt = PhpEmptyTaxonomyClient(), fresh()
+    client.lose_response = True
+    with pytest.raises(TimeoutError):
+        run(monkeypatch, client, receipt, [])
+    client.documents[-1]["taxonomies"] = ["unexpected"]
+    with pytest.raises(ValueError, match="SLUG_CONFLICT"):
+        run(monkeypatch, client, receipt, [])
+    assert client.creates == 1
+    assert receipt["inflight"]
