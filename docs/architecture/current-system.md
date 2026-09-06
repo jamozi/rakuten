@@ -24,6 +24,7 @@ confirmed rewards → private finance / reconciliation → portfolio economics
 | Snapshot / public read | [snapshot](../../python/raos/domain/publishing/publication_snapshot_v2.py), [projection](../../python/raos/domain/publishing/public_projection_v2.py) | `tests/st0902_v2/`, `tests/st0905/`, `tests/st1001/` |
 | Identity / evidence | `domain/catalog`, `domain/evidence`, `domain/decision_support_v2` | `tests/raos_v2/`, `tests/editorial_portfolio_v3/` |
 | Reader UI / WordPress | `packages/web-ui/`, `changes/wordpress-local-preview-v1/` | `tests/wordpress_local_preview/`, `tests/wordpress_seo_audit_v1/` |
+| Local reader guides | [renderer](../../python/raos/application/editorial/local_reader_guides.py)、`scripts/build_local_reader_guides.py` | [採用範囲・境界](../../changes/editorial-portfolio-v3/READER_REMAINING_IMPLEMENTATION.md#ローカル専用ガイドの境界)、`tests/wordpress_local_preview/test_local_reader_guides.py` |
 | Publication bridge | `packages/wordpress-mcp-bridge/`, `changes/wordpress-mcp-v1/` | `tests/wordpress_mcp_v1/`、[runbook](../runbooks/wordpress-verified-incremental.md) |
 | ASP ingestion | `tools/affiliate_ingestion/` | `tests/test_affiliate_ingestion.py`、[guide](../affiliate-network-ingestion.md) |
 | Generated artifacts | `scripts/raos_build_core.py` registry | `changes/build/manifest.v2.json`、owner drift tests |
@@ -60,6 +61,8 @@ ownerは`scripts/build_editorial_portfolio_v3.py`です。
 確定貢献利益の式、欠損時のUNAVAILABLE、新規記事を増やす条件はstrategyを参照します。
 公開用情報とowner-private economicsを分離し、未帰属報酬を記事へ推測配賦しません。
 記事単位の一般的出典を、型番・variant別の安全性や保証確認の完了へ昇格させません。
+ローカル読者ガイドは`local-reader-guides.v1.json`を入力とする別経路で、`publication_authority=false`です。
+既存の本番記事レジストリへ自動昇格させず、比較に必要な根拠の欠損は生成停止条件として保持します。
 
 v2 decision supportのルールは`changes/raos-v2/`と`domain/decision_support_v2`が所有します。
 旧v2の単一wedgeを現行portfolio全体の範囲として解釈しません。

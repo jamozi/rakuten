@@ -1,0 +1,71 @@
+# 公開記事の更新情報表示
+
+## 目的と採用経路
+
+読者が記事の更新日時と鮮度状態を確認できるよう、
+`render_public_update_notice(projection)` を追加する。
+設計上の経路は、承認済みの immutable publication snapshot → 既存 public
+projection → この renderer → 公開表示の呼び出し元、とする。
+renderer が読むのは `projection.article.updated_public_at` と
+`projection.article.freshness_status` のみ。内部 repository、adapter、DB、
+ネットワークへの接続を持たない、副作用のない文字列整形関数とする。
+
+根拠は `docs/architecture/current-system.md` の Data flow and ownership と、
+`python/raos/domain/publishing/public_projection_v2.py` の `PUBLIC_ARTICLE_FIELDS`。
+両項目は既存の公開フィールドなので、新しい公開フィールドや block type は不要。
+snapshot の承認・整合性検証と projection の allowlist は既存の生成・読出し境界が担い、
+この関数の必須値検査を公開承認や projection 全体の検証として扱わない。
+
+## 内部参照案の判断
+
+Evidence の取得日時から更新日・鮮度を算出する案は、承認済み snapshot と表示内容の
+対応を崩し、Evidence の確認日時を公開記事の更新日時と取り違えるため採用しない。
+Finance の直接参照も、更新表示に必要な値を持つ公開契約の責務ではなく、内部財務と
+公開・編集判断の分離を損なうため採用しない。内部情報の追加公開や、欠損値を内部値で
+補う fallback は設けない。新たな公開情報が将来必要になれば、その時点で snapshot と
+projection の契約を検討する。
+
+## 表示と失敗時の動作
+
+- 表示は `更新: <article.updated_public_at> / 状態: <article.freshness_status>`。
+  2つの文字列に標準ライブラリ `html.escape(..., quote=True)` を適用する。
+- projection と article は mapping、2項目は空白だけではない文字列を要求する。
+  article・キーの欠落、`None`、空文字・空白のみ、文字列以外は `ValueError`。
+  エラーには入力値を含めない。
+- 日時の再解釈やタイムゾーン変換、状態の再判定は行わず、公開値をそのまま表示する。
+  `UNKNOWN` は既存の値として表示できる。鮮度を確認済みに昇格させない。
+- ST-0904 V2 のローカル projection は `updated_public_at=None` を生成するため、
+  現状のままこの関数に渡すと `ValueError` になる。`published_at` や現在時刻で補完しない。
+  公開契約での更新日時の nullable / optional 性は維持し、この表示の前提条件と区別する。
+
+## 隣接影響と対象範囲
+
+入力 projection を変更しないため、snapshot の hash、生成物、世代番号、redaction、
+公開 allowlist、API / Web の生成済み契約に変更はない。既存の projector や fixture に
+更新日時を捏造して追加しない。Content AST の `update_notice` block への変換も不要。
+認証・認可、CTA、広告表示、publication、kill switch の経路には変更を加えない。
+今回の実装は関数の追加までで、Web / WordPress への組み込みや公開操作は含まない。
+呼び出し元は必要な公開値がある場合に利用し、`ValueError` を内部参照で回避しない。
+
+## 検証
+
+追加回帰テストでは既存のローカル projection を使い、正確な表示、`UNKNOWN` の保持、
+両項目の HTML escape、欠落・不正値の拒否、入力不変、公開日時での代替禁止を確認する。
+既存 static boundary の対象にこの renderer を追加し、通信・DB・CMS import 禁止も検査する。
+依頼された検査範囲は追加回帰テストと `tests/st0904_v2/test_domain.py`、
+`tests/st0904_v2/test_static_boundary.py`。ネットワーク・保存済み checkout に依存する検査や
+全件 CI は対象外とし、準備済み Python 環境で指定ファイルだけ実行する。
+
+実行コマンド:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 TMPDIR="$PWD/.harness-task/tmp" .venv/bin/python -m pytest -q \
+  -p xdist.plugin -n 2 \
+  -m "not live and not external and not raos_owner_private and not database and not storage" \
+  tests/st0904_v2/test_public_update_notice.py \
+  tests/st0904_v2/test_domain.py \
+  tests/st0904_v2/test_static_boundary.py
+```
+
+実行結果: **39 passed in 2.23s**（追加回帰27件、既存domain 8件、static boundary 4件）。
+指定範囲外の検査・全件 CI・live 公開操作は実行していない。

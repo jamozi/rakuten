@@ -378,7 +378,12 @@ def test_synthetic_fixture_has_ten_closed_local_articles() -> None:
         if is_lifecycle_route:
             assert not comparison_regions
         else:
-            expected_regions = 2 if "blk-anker-lifecycle-001-title" in article else 1
+            expected_regions = (
+                2
+                if row["article_id"]
+                == "local-preview-anker-solix-c300-c800-c1000-differences"
+                else 1
+            )
             assert len(comparison_regions) == expected_regions
             names = []
             for region in comparison_regions:

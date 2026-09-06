@@ -61,8 +61,8 @@
     },
     {
       "path": "tests/editorial_measurement_v1/test_contract.py",
-      "sha256": "76d5cc8095401df1125ff5376dd2ef7d3f680dd194f528199c6ed789aa425685",
-      "size": 14435
+      "sha256": "80fd58fd99cce02d32b7e017ff6bb01ddb076f2dc1d35786c89d423c98c0a0ee",
+      "size": 14454
     },
     {
       "path": "tests/editorial_measurement_v1/measurement_client_harness.mjs",

@@ -77,8 +77,15 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
  const browser=await chromium.launch({executablePath:process.argv[2],headless:true});
  const observations=[];
  try {
+  const cases=[];
   for(const width of [320,360,390,768,1024,1440]) for(const textSize of [100,200])
-   for(const javaScriptEnabled of [false,true]) for(const home of [false,true]) {
+   for(const javaScriptEnabled of [false,true]) for(const home of [false,true])
+    cases.push({width,textSize,javaScriptEnabled,home});
+  // Overlap actionability/frame waits with at most two independent contexts.
+  // Keep real clicks, scroll stability checks, and the shared 60-second deadline.
+  await Promise.all([0,1].map(async worker=>{
+   for(let index=worker;index<cases.length;index+=2) {
+    const {width,textSize,javaScriptEnabled,home}=cases[index];
     const context=await browser.newContext({viewport:{width,height:900},javaScriptEnabled,
       serviceWorkers:'block',reducedMotion:'reduce'});
     const origin='http://127.0.0.1:48998';let blocked=0;
@@ -161,9 +168,10 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
       if(await banner.getByRole('button',{name:'検索',exact:true}).count()) throw Error('Fallback visible with JS');
       if(!(await banner.getByRole('button',{name:'検索欄を開く'}).isVisible())) throw Error('Normal search missing');
     }
-    observations.push({width,textSize,javaScriptEnabled,home,...original,blocked});
+    observations[index]={width,textSize,javaScriptEnabled,home,...original,blocked};
     await context.close();
    }
+  }));
  } finally {await browser.close();}
  process.stdout.write(JSON.stringify(observations));
 })().catch(error=>{console.error(error);process.exit(1);});

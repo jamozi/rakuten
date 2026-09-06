@@ -7,7 +7,7 @@
       "before_median": 16,
       "after_median": 16,
       "before_read_characters": 62101,
-      "after_read_characters": 38688,
+      "after_read_characters": 68381,
       "pass": true
     },
     {
@@ -15,7 +15,7 @@
       "before_median": 16,
       "after_median": 16,
       "before_read_characters": 157328,
-      "after_read_characters": 142106,
+      "after_read_characters": 156096,
       "pass": true
     },
     {
@@ -23,7 +23,7 @@
       "before_median": 16,
       "after_median": 16,
       "before_read_characters": 93384,
-      "after_read_characters": 115256,
+      "after_read_characters": 120208,
       "pass": true
     },
     {
@@ -31,7 +31,7 @@
       "before_median": 14,
       "after_median": 16,
       "before_read_characters": 5662,
-      "after_read_characters": 10566,
+      "after_read_characters": 9377,
       "pass": true
     },
     {
@@ -39,7 +39,7 @@
       "before_median": 14,
       "after_median": 16,
       "before_read_characters": 66126,
-      "after_read_characters": 52455,
+      "after_read_characters": 44771,
       "pass": true
     }
   ]

@@ -1,0 +1,219 @@
+diff --git a/.harness-task/design.md b/.harness-task/design.md
+new file mode 100644
+index 0000000..36fa085
+--- /dev/null
++++ b/.harness-task/design.md
+@@ -0,0 +1,73 @@
++# 公開記事の更新情報表示
++
++## 要求と目的
++
++読者が公開記事の更新日時と鮮度状態を確認できるよう、
++`render_public_update_notice(projection)` を application/publishing に追加する。
++成功条件は `更新: <article.updated_public_at> / 状態: <article.freshness_status>`
++の出力、HTMLエスケープ、必須値欠損時の `ValueError`、既存の公開・内部境界の維持。
++
++## 採用したデータ経路と理由
++
++承認済み Article Version → 不変 publication snapshot → 既存 public projection
++→ `render_public_update_notice` → 表示用文字列、という経路を採用する。
++この関数は渡された projection の `article.updated_public_at` と
++`article.freshness_status` のみを読み、入力を変更しない純粋な表示関数とする。
++承認済み projection の選択・認可と契約全体の検証は既存の上流境界が担い、
++この関数の呼出し自体には承認・公開権限を持たせない。
++
++内部 Evidence や Finance の repository を直接読む案は採用しない。
++snapshot の承認対象と表示内容がずれ、内部情報の漏洩や公開処理と内部状態の結合を
++招くためである。Evidence の観測日時・確認日時は公開更新日時の代替にならず、
++Finance は編集・鮮度表示の根拠にしない。raw AI にも接続しない。
++
++根拠は [現行architecture](../docs/architecture/current-system.md) の
++「Data flow and ownership」と、[integration baseline](../docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md)
++の §5.1・§5.2。
++[既存projection](../python/raos/domain/publishing/public_projection_v2.py) の
++`PUBLIC_ARTICLE_FIELDS` と [公開OpenAPI](../contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml)
++の `PublicArticle` に両項目が既に存在するため、公開フィールド・schema・snapshot契約を増やさない。
++
++## 値の扱いと隣接影響
++
++- projection と article は mapping、両必須値は空白だけではない文字列とする。
++  欠損・`None`・空文字・空白のみ・型違いは `ValueError`。
++  エラーには入力値を含めない。
++- `html.escape` の既定の引用符エスケープを両方の値へ適用する。
++  日時・状態の再計算、日時形式の変換、状態の翻訳・独自enum追加は行わず、
++  `UNKNOWN` / `UNAVAILABLE` も渡された値として表示する。
++- 公開契約上 `updated_public_at` は省略・nullを許容する。この表示関数だけが
++  更新日時を必要とするので、公開契約の必須条件は強めない。
++  ST-0904 のローカル生成値は `updated_public_at=None`、`freshness_status=UNKNOWN` のため、
++  そのままの入力では指定どおり `ValueError` となる。
++  `published_at`・現在時刻・内部値で補完せず、既存generatorとfixtureを維持する。
++- projection producer、public API、Web/WordPressの呼出し箇所、キャッシュ・世代、
++  snapshotのbinding/hash、認証・認可、CTA、広告表示、kill switch、公開処理に変更はない。
++  将来表示箇所へ接続するときは、呼出し側が更新日時のない記事の扱いを決める必要がある。
++  今回は関数の追加までで、live write・公開・migration・外部通信は行わない。
++
++## 検証
++
++新規回帰テストは既存の synthetic projection から得た辞書にテスト用公開日時を設定し、
++指定の表示、UNKNOWN等の保持、入力の不変性、両値のHTMLエスケープ、欠損・不正値、
++ローカルprojectionのnull日時を補完しないことを確認する。
++既存の静的境界テストの対象へ新規関数のファイルも追加する。
++
++実行範囲は新規 `tests/st0904_v2/test_public_update_notice.py` と指定された
++`tests/st0904_v2/test_domain.py`・`tests/st0904_v2/test_static_boundary.py`。
++評価の指定に従い、ネットワーク・保存済みcheckoutに依存する検査、`make fast`、
++全件CIは実行しない。既存の利用可能なPython依存環境を使用する。
++
++実行コマンド:
++
++```sh
++PYTHONDONTWRITEBYTECODE=1 TMPDIR="$PWD/.harness-task/tmp" .venv/bin/python -m pytest -q \
++  -p xdist.plugin -n 2 \
++  -m "not live and not external and not raos_owner_private and not database and not storage" \
++  tests/st0904_v2/test_public_update_notice.py \
++  tests/st0904_v2/test_domain.py \
++  tests/st0904_v2/test_static_boundary.py
++```
++
++結果: **41 passed in 2.33s**（新規29件、既存domain 8件、既存static boundary 4件）。
++ローカル検証の結果であり、未実行の全件CI・live公開の成功を表すものではない。
+diff --git a/python/raos/application/publishing/public_update_notice.py b/python/raos/application/publishing/public_update_notice.py
+new file mode 100644
+index 0000000..b858b45
+--- /dev/null
++++ b/python/raos/application/publishing/public_update_notice.py
+@@ -0,0 +1,24 @@
++"""Render update information from an already selected public projection."""
++
++from __future__ import annotations
++
++from collections.abc import Mapping
++from html import escape
++
++
++def render_public_update_notice(projection: Mapping[str, object]) -> str:
++    """Return escaped public update text, raising ValueError for missing values."""
++    if not isinstance(projection, Mapping):
++        raise ValueError("public projection must be a mapping")
++    article = projection.get("article")
++    if not isinstance(article, Mapping):
++        raise ValueError("public projection must contain an article mapping")
++
++    updated_public_at = article.get("updated_public_at")
++    if not isinstance(updated_public_at, str) or not updated_public_at.strip():
++        raise ValueError("article.updated_public_at must be a non-blank string")
++    freshness_status = article.get("freshness_status")
++    if not isinstance(freshness_status, str) or not freshness_status.strip():
++        raise ValueError("article.freshness_status must be a non-blank string")
++
++    return f"更新: {escape(updated_public_at)} / 状態: {escape(freshness_status)}"
+diff --git a/tests/st0904_v2/test_public_update_notice.py b/tests/st0904_v2/test_public_update_notice.py
+new file mode 100644
+index 0000000..0afb6e1
+--- /dev/null
++++ b/tests/st0904_v2/test_public_update_notice.py
+@@ -0,0 +1,92 @@
++from __future__ import annotations
++
++from collections.abc import Mapping
++from copy import deepcopy
++from typing import cast
++
++import pytest
++
++from raos.adapters.recorded_public_projection_v2 import RecordedPublicProjectionStep
++from raos.application.publishing.public_update_notice import render_public_update_notice
++
++
++@pytest.fixture
++def projection(step: RecordedPublicProjectionStep) -> dict[str, object]:
++    value = step.result.projection()
++    article = cast(dict[str, object], value["article"])
++    # Supply a synthetic public update time without changing the recorded fixture.
++    article["updated_public_at"] = "2026-09-06T12:00:00+09:00"
++    return value
++
++
++@pytest.mark.parametrize("status", ["FRESH", "STALE", "UNKNOWN", "UNAVAILABLE"])
++def test_renders_existing_public_fields_without_changing_projection(
++    projection: dict[str, object], status: str
++) -> None:
++    article = cast(dict[str, object], projection["article"])
++    article["freshness_status"] = status
++    before = deepcopy(projection)
++
++    assert render_public_update_notice(projection) == (
++        f"更新: 2026-09-06T12:00:00+09:00 / 状態: {status}"
++    )
++    assert projection == before
++
++
++def test_escapes_html_characters_in_both_public_values(
++    projection: dict[str, object],
++) -> None:
++    article = cast(dict[str, object], projection["article"])
++    article["updated_public_at"] = '2026-09-06 <time title="x">&\'</time>'
++    article["freshness_status"] = '<script>alert("x" & \'y\')</script>'
++
++    assert render_public_update_notice(projection) == (
++        "更新: 2026-09-06 &lt;time title=&quot;x&quot;&gt;&amp;&#x27;&lt;/time&gt;"
++        " / 状態: &lt;script&gt;alert(&quot;x&quot; &amp; &#x27;y&#x27;)&lt;/script&gt;"
++    )
++
++
++@pytest.mark.parametrize("field", ["updated_public_at", "freshness_status"])
++def test_missing_public_value_raises_value_error(
++    projection: dict[str, object], field: str
++) -> None:
++    article = cast(dict[str, object], projection["article"])
++    del article[field]
++
++    with pytest.raises(ValueError, match=rf"article\.{field}"):
++        render_public_update_notice(projection)
++
++
++@pytest.mark.parametrize("field", ["updated_public_at", "freshness_status"])
++@pytest.mark.parametrize("value", [None, "", " \t\n", 0, False, [], {}])
++def test_unavailable_or_non_text_public_value_raises_value_error(
++    projection: dict[str, object], field: str, value: object
++) -> None:
++    article = cast(dict[str, object], projection["article"])
++    article[field] = value
++
++    with pytest.raises(ValueError, match=rf"article\.{field}"):
++        render_public_update_notice(projection)
++
++
++@pytest.mark.parametrize(
++    "projection",
++    [None, [], "", {}, {"article": None}, {"article": []}, {"article": "text"}],
++)
++def test_missing_or_invalid_article_container_raises_value_error(
++    projection: object,
++) -> None:
++    with pytest.raises(ValueError):
++        render_public_update_notice(cast(Mapping[str, object], projection))
++
++
++def test_recorded_projection_without_update_time_does_not_fall_back_to_published_at(
++    step: RecordedPublicProjectionStep,
++) -> None:
++    projection = step.result.projection()
++    article = cast(dict[str, object], projection["article"])
++    assert article["published_at"] is not None
++    assert article["updated_public_at"] is None
++
++    with pytest.raises(ValueError, match=r"article\.updated_public_at"):
++        render_public_update_notice(projection)
+diff --git a/tests/st0904_v2/test_static_boundary.py b/tests/st0904_v2/test_static_boundary.py
+index d727af8..a4aa723 100644
+--- a/tests/st0904_v2/test_static_boundary.py
++++ b/tests/st0904_v2/test_static_boundary.py
+@@ -12,6 +12,7 @@ _RUNTIME_PATHS = (
+     Path("python/raos/domain/publishing/public_projection_v2.py"),
+     Path("python/raos/ports/public_projection_v2.py"),
+     Path("python/raos/application/publishing/public_projection_v2.py"),
++    Path("python/raos/application/publishing/public_update_notice.py"),
+     Path("python/raos/adapters/recorded_public_projection_v2.py"),
+ )
+ _FORBIDDEN_IMPORT_ROOTS = {

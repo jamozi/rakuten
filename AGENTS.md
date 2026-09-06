@@ -58,8 +58,10 @@
 
 ## Validation and development
 
-- 通常は`make fast`。初回・依存変更は`make setup`、生成入力変更は`make generate`。
-  差分選択は`.venv/bin/python scripts/raos_build.py --base <ref> plan --json`。
+- SのPython修正は[局所検証](README.md#局所検証)で対象testから開始し、利用側・影響範囲も確認する。
+  M以上、生成入力・contract・境界・共通基盤の変更は`make fast`で差分検証する。
+- 初回・依存変更は`make setup`、生成入力変更は`make generate`。
+  検証経路と実結果で判断できればbuild実装やmanifestを追加閲覧せず、不足・失敗時は必要な範囲へ広げる。
 - `make check`は静的検査、`make final`は任意診断。連続実行やlocal全件合格を一律条件にしない。
 - 失敗した検査から修正・再実行し、変更がなければ同じ検査を繰り返さない。
   通常testは並列、共有stateは`serial`、DB/Storageは専用partition。未実行をPASSと呼ばない。

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": "49bb7c83ab27d5f6c1e46563ba6d3f6f001fed6b",
+  "revision": "f746e0a1c43141e5d6d27e14ec72cb403f841014",
   "files": [
     {
       "path": ".codex/agents/implementation-worker.toml",
@@ -20,18 +20,18 @@
     },
     {
       "path": "AGENTS.md",
-      "lines": 83,
-      "characters": 3973,
-      "bytes": 6535,
-      "tokens": 1754,
+      "lines": 85,
+      "characters": 4057,
+      "bytes": 6811,
+      "tokens": 1830,
       "encoding": "o200k_base"
     },
     {
       "path": "README.md",
-      "lines": 111,
-      "characters": 4646,
-      "bytes": 7650,
-      "tokens": 1970,
+      "lines": 128,
+      "characters": 5139,
+      "bytes": 8511,
+      "tokens": 2212,
       "encoding": "o200k_base"
     },
     {
@@ -52,10 +52,10 @@
     },
     {
       "path": "docs/architecture/current-system.md",
-      "lines": 211,
-      "characters": 10582,
-      "bytes": 15474,
-      "tokens": 4034,
+      "lines": 214,
+      "characters": 11012,
+      "bytes": 16090,
+      "tokens": 4192,
       "encoding": "o200k_base"
     },
     {
@@ -4985,35 +4985,35 @@
     },
     {
       "name": "aspnet-core",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/aspnet-core/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/aspnet-core/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "chatgpt-apps",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/chatgpt-apps/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/chatgpt-apps/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "content-and-copy",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/content-and-copy/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/content-and-copy/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "doc",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/doc/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/doc/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "documents:documents",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/plugins/cache/openai-primary-runtime/documents/26.813.12317/skills/documents/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/plugins/cache/openai-primary-runtime/documents/26.813.12317/skills/documents/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "documents@openai-primary-runtime"
@@ -5475,91 +5475,91 @@
     },
     {
       "name": "jupyter-notebook",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/jupyter-notebook/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/jupyter-notebook/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "linear",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/linear/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/linear/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "pdf",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/pdf/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/pdf/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "pdf:pdf",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/plugins/cache/openai-primary-runtime/pdf/26.813.12317/skills/pdf/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/plugins/cache/openai-primary-runtime/pdf/26.813.12317/skills/pdf/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "pdf@openai-primary-runtime"
     },
     {
       "name": "playwright",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/playwright/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/playwright/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "playwright-interactive",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/playwright-interactive/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/playwright-interactive/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "presentations:Presentations",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/plugins/cache/openai-primary-runtime/presentations/26.813.12317/skills/presentations/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/plugins/cache/openai-primary-runtime/presentations/26.813.12317/skills/presentations/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "presentations@openai-primary-runtime"
     },
     {
       "name": "render-deploy",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/render-deploy/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/render-deploy/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "screenshot",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/screenshot/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/screenshot/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "security-best-practices",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/security-best-practices/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/security-best-practices/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "security-threat-model",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/security-threat-model/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/security-threat-model/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "slides",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/slides/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/slides/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "sora",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/sora/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/sora/SKILL.md",
       "scope": "user",
       "enabled": false,
       "pluginId": null
@@ -5573,77 +5573,77 @@
     },
     {
       "name": "speech",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/speech/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/speech/SKILL.md",
       "scope": "user",
       "enabled": false,
       "pluginId": null
     },
     {
       "name": "spreadsheet",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/spreadsheet/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/spreadsheet/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "spreadsheets:Spreadsheets",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/plugins/cache/openai-primary-runtime/spreadsheets/26.813.12317/skills/spreadsheets/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/plugins/cache/openai-primary-runtime/spreadsheets/26.813.12317/skills/spreadsheets/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "spreadsheets@openai-primary-runtime"
     },
     {
       "name": "spreadsheets:excel-live-control",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/plugins/cache/openai-primary-runtime/spreadsheets/26.813.12317/skills/excel-live-control/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/plugins/cache/openai-primary-runtime/spreadsheets/26.813.12317/skills/excel-live-control/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "spreadsheets@openai-primary-runtime"
     },
     {
       "name": "template-creator:template-creator",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/plugins/cache/openai-primary-runtime/template-creator/26.813.12317/skills/template-creator/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/plugins/cache/openai-primary-runtime/template-creator/26.813.12317/skills/template-creator/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "template-creator@openai-primary-runtime"
     },
     {
       "name": "imagegen",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/.system/imagegen/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/.system/imagegen/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "openai-docs",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/.system/openai-docs/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/.system/openai-docs/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "plugin-creator",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/.system/plugin-creator/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/.system/plugin-creator/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "review-agent",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/.system/review-agent/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/.system/review-agent/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "skill-creator",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/.system/skill-creator/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/.system/skill-creator/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "skill-installer",
-      "path": "/tmp/raos-harness-inventory-uv4w4bvp/codex-home/skills/.system/skill-installer/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-a3g0c23z/codex-home/skills/.system/skill-installer/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
@@ -6533,7 +6533,7 @@
       "encoding": "o200k_base"
     }
   ],
-  "runtime_probe_seconds": 13.59,
+  "runtime_probe_seconds": 17.03,
   "runtime_wordpress_status": [
     {
       "server": "wordpressEditor",
@@ -6601,35 +6601,35 @@
     },
     {
       "name": "aspnet-core",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/aspnet-core/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/aspnet-core/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "chatgpt-apps",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/chatgpt-apps/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/chatgpt-apps/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "content-and-copy",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/content-and-copy/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/content-and-copy/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "doc",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/doc/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/doc/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "documents:documents",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/plugins/cache/openai-primary-runtime/documents/26.813.12317/skills/documents/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/plugins/cache/openai-primary-runtime/documents/26.813.12317/skills/documents/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "documents@openai-primary-runtime"
@@ -7091,91 +7091,91 @@
     },
     {
       "name": "jupyter-notebook",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/jupyter-notebook/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/jupyter-notebook/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "linear",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/linear/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/linear/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "pdf",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/pdf/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/pdf/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "pdf:pdf",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/plugins/cache/openai-primary-runtime/pdf/26.813.12317/skills/pdf/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/plugins/cache/openai-primary-runtime/pdf/26.813.12317/skills/pdf/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "pdf@openai-primary-runtime"
     },
     {
       "name": "playwright",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/playwright/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/playwright/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "playwright-interactive",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/playwright-interactive/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/playwright-interactive/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "presentations:Presentations",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/plugins/cache/openai-primary-runtime/presentations/26.813.12317/skills/presentations/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/plugins/cache/openai-primary-runtime/presentations/26.813.12317/skills/presentations/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "presentations@openai-primary-runtime"
     },
     {
       "name": "render-deploy",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/render-deploy/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/render-deploy/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "screenshot",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/screenshot/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/screenshot/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "security-best-practices",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/security-best-practices/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/security-best-practices/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "security-threat-model",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/security-threat-model/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/security-threat-model/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "slides",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/slides/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/slides/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "sora",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/sora/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/sora/SKILL.md",
       "scope": "user",
       "enabled": false,
       "pluginId": null
@@ -7189,82 +7189,80 @@
     },
     {
       "name": "speech",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/speech/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/speech/SKILL.md",
       "scope": "user",
       "enabled": false,
       "pluginId": null
     },
     {
       "name": "spreadsheet",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/spreadsheet/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/spreadsheet/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "spreadsheets:Spreadsheets",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/plugins/cache/openai-primary-runtime/spreadsheets/26.813.12317/skills/spreadsheets/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/plugins/cache/openai-primary-runtime/spreadsheets/26.813.12317/skills/spreadsheets/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "spreadsheets@openai-primary-runtime"
     },
     {
       "name": "spreadsheets:excel-live-control",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/plugins/cache/openai-primary-runtime/spreadsheets/26.813.12317/skills/excel-live-control/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/plugins/cache/openai-primary-runtime/spreadsheets/26.813.12317/skills/excel-live-control/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "spreadsheets@openai-primary-runtime"
     },
     {
       "name": "template-creator:template-creator",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/plugins/cache/openai-primary-runtime/template-creator/26.813.12317/skills/template-creator/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/plugins/cache/openai-primary-runtime/template-creator/26.813.12317/skills/template-creator/SKILL.md",
       "scope": "user",
       "enabled": true,
       "pluginId": "template-creator@openai-primary-runtime"
     },
     {
       "name": "imagegen",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/.system/imagegen/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/.system/imagegen/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "openai-docs",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/.system/openai-docs/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/.system/openai-docs/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "plugin-creator",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/.system/plugin-creator/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/.system/plugin-creator/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "review-agent",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/.system/review-agent/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/.system/review-agent/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "skill-creator",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/.system/skill-creator/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/.system/skill-creator/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
     },
     {
       "name": "skill-installer",
-      "path": "/tmp/raos-harness-inventory-p0lzjzd9/codex-home/skills/.system/skill-installer/SKILL.md",
+      "path": "/tmp/raos-harness-inventory-qi5dvpv7/codex-home/skills/.system/skill-installer/SKILL.md",
       "scope": "system",
       "enabled": true,
       "pluginId": null
     }
-  ],
-  "measurement_phase": "Read-only final working-tree probe; fixes subsequently committed as 0d1a5eccb9a3125641734135a04de3ac97c60223. MCP startup retains recorded earlier checkout SHA; post-merge synchronization/re-probe is recorded in PR #189.",
-  "measurement_harness_sha256": "da97f2fe93a3aa34e8bc5cadaf6b0c9ae2bf2d7245a3910be468af17a01a35d8"
+  ]
 }
