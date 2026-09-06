@@ -67,6 +67,11 @@ DECLARED_OUTPUT_MANIFESTS: Final = {
     "build_st0105_generated_contracts": Path("changes/st-0105/manifest.json"),
 }
 EXPLICIT_OWNER_OUTPUTS: Final = {
+    "build_reader_measurement_v1": tuple(Path("changes/reader-measurement-v1") / p for p in (
+        "runtime-manifest.v1.json", "theme-runtime-binding.v1.json",
+        "wordpress-plugin/raos-reader-measurement/config/reader-allowlist.v1.json",
+        "wordpress-plugin/raos-reader-measurement/config/reader-runtime.v1.json",
+    )),
     "build_st0106_reviewed_findings_rebind": (
         Path("changes/st-0106/contracts/reviewed-secret-findings.v3.yaml"),
         Path("changes/st-0106/generated/reviewed-findings-rebind.v3.manifest.json"),
@@ -86,6 +91,7 @@ FINGERPRINT_INPUT_CATALOGS: Final = {
     ),
 }
 EXPLICIT_OWNER_DEPENDENCIES: Final[dict[str, tuple[str, ...]]] = {
+    "build_st1704_self_hosted_theme": ("build_reader_measurement_v1",),
     # Some predecessor paths are declared by YAML contracts rather than Python
     # constants. Keep those semantic edges explicit so affected generation never
     # relies on a legacy digest to discover ordering.
@@ -244,6 +250,8 @@ class BuildSpec:
             "build_st1704_self_hosted_editorial_manifest",
         }:
             command.append("--development")
+        if not check and self.owner_id == "build_reader_measurement_v1":
+            command.append("--generate")
         if check:
             if not self.supports_check:
                 raise ValueError(f"{self.owner_id} has no check mode")

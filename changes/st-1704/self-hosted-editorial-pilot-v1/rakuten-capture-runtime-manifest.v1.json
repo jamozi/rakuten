@@ -17,7 +17,7 @@
     {
       "bytes": 8816,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/DESIGN_HANDOFF_V1.yaml",
-      "sha256": "4803e679cdbfc9ac9797bb8b04c14e6a0d9740bdfe94873d8c5683fffdd99caf"
+      "sha256": "db7d54e2676bad9fcb23afafce19c4b069fb5f8d3a97c9dcda18e914c2a0cef1"
     },
     {
       "bytes": 5429,
@@ -27,7 +27,7 @@
     {
       "bytes": 32133,
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/OPERATIONS_RUNBOOK.md",
-      "sha256": "85abd24556a1f2b56ac9d6ef8b20c6fc0253747f76a48fae499382c18459fd7f"
+      "sha256": "aefcdde4acfd7e56e7e953740de58ac3bf2dd172bc587bb270c287f58b79f356"
     },
     {
       "bytes": 2486,
@@ -65,9 +65,9 @@
       "sha256": "8aba217c6cb9a780f5736b9ba205700759fb292a4e6eda4d68c2b822a72edb25"
     },
     {
-      "bytes": 69252,
+      "bytes": 69424,
       "path": "python/raos/domain/editorial/self_hosted_editorial_pilot.py",
-      "sha256": "924c69dad03fdadc4481222612193a1da177523355b0aa8c825d063d996c7421"
+      "sha256": "735b6c2243202ba2ead835acf4d550c2317d6e843de756a1f6d76c8ae2ea2f36"
     },
     {
       "bytes": 3202,
