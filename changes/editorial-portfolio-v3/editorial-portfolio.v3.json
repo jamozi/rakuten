@@ -2045,6 +2045,111 @@
         "PRD-BERMAS-INTER-CITY-III-60570"
       ],
       "production_slug": "front-open-carry-on-suitcase-with-stopper",
+      "reader_experience": {
+        "article_type": "shortlist",
+        "components_enabled": true,
+        "consolidate_sections": [
+          "reader-section",
+          "editors-note",
+          "purchase-caution"
+        ],
+        "contextual_links": [
+          {
+            "journey_stage": "compare",
+            "placement": "axes",
+            "question": "エース系3モデルの仕様差を知り、優先条件に合う型番を選ぶためのガイドを見る",
+            "target_ref": "st1703-first-suitcase-comparison"
+          },
+          {
+            "journey_stage": "compare",
+            "placement": "purchase_checks",
+            "question": "100席未満便の寸法条件に合う候補と、購入前の確認手順を知るためのガイドを見る",
+            "target_ref": "carry-on-suitcase-under-100-seats"
+          }
+        ],
+        "decision_axes": [
+          {
+            "how_to_check": "PC・小物・主収納のどれにアクセスする構造かを公式説明で確認します。",
+            "label": "何を前から取り出すか決める",
+            "why_it_matters": "前開きという名称だけでは収納へのアクセス方法が分かりません。"
+          },
+          {
+            "how_to_check": "宿泊先や移動中に使う場面で、周囲の空間を確保できるか考えます。",
+            "label": "開ける場所を考える",
+            "why_it_matters": "前面を開くための空間が必要です。"
+          },
+          {
+            "how_to_check": "非拡張状態の外寸と手荷物の合計重量を、便の規定へ照合します。",
+            "label": "搭乗時の外寸と重量を確かめる",
+            "why_it_matters": "容量やストッパーの有無とは別の条件です。"
+          }
+        ],
+        "decision_summary": {
+          "key_difference": "前開きには、取り出し口として使う構造と、主収納へ開く構造があります。PCや小物を出す場面と、荷物全体を出す場面を分けて候補を選びます。",
+          "no_purchase_condition": "入れる物の寸法と開く空間を確認できない場合。拡張しないと荷物が入らず、搭乗便の規定も未確認なら購入を見送ります。",
+          "options": []
+        },
+        "evidence": [
+          "CLM-PORTFOLIO-FRONT-INNOVATOR-INV50",
+          "CLM-PORTFOLIO-FRONT-DIFFERENCE-05721",
+          "CLM-PORTFOLIO-FRONT-FRESTER-01551",
+          "CLM-PORTFOLIO-FRONT-BERMAS-60570",
+          "CLM-PORTFOLIO-FRONT-ANA-RULE",
+          "CLM-PORTFOLIO-FRONT-JAL-RULE",
+          "CLM-PORTFOLIO-FRONT-C-LITE-KNOWN-SPECS-REFERENCE",
+          "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
+          "CLM-PORTFOLIO-FRONT-BERMAS-60561-EXCLUDED",
+          "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+          "CLM-PORTFOLIO-FRONT-C-LITE-REFERENCE",
+          "CLM-PORTFOLIO-FRONT-RIMOWA-REFERENCE"
+        ],
+        "media": [],
+        "practical_notes": [],
+        "preserve_story": true,
+        "products": [
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-FRONT-INNOVATOR-INV50"
+            ],
+            "product_ref": "PRD-INNOVATOR-INV50"
+          },
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-FRONT-DIFFERENCE-05721"
+            ],
+            "product_ref": "PRD-ACE-DIFFERENCE-05721"
+          },
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-FRONT-FRESTER-01551"
+            ],
+            "product_ref": "PRD-PROTECA-FRESTER-EX-01551"
+          },
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-FRONT-BERMAS-60570"
+            ],
+            "product_ref": "PRD-BERMAS-INTER-CITY-III-60570"
+          }
+        ],
+        "purchase_checks": [
+          "前面からアクセスする収納の種類と寸法",
+          "非拡張外寸、手荷物の総重量、搭乗便の規定",
+          "正確な型番、ストッパーの操作、同梱品、保証"
+        ],
+        "research_status": {
+          "ranking_uses_commission": false,
+          "real_world_tested": false
+        },
+        "unknowns": [
+          {
+            "decision_effect": "前開きだけを理由に、狭い場所でも使いやすいと断定しません。",
+            "how_to_verify": "公式構造図、収納対応寸法、実物で確認できる範囲を照合します。",
+            "topic": "開閉の操作感と収納の自由度",
+            "why_unknown": "実物での荷物の出し入れを検証していません。"
+          }
+        ]
+      },
       "related_article_ids": [
         "st1703-first-suitcase-comparison",
         "carry-on-suitcase-under-100-seats"
