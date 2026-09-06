@@ -11,12 +11,12 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "d02d5e3e0221958bfe10e19a810020556118c55296f499391be79f63a5eba14c",
+          "sha256": "ddcf5d239931f99a1012d9b23b58ea2aec6386ba37de1622aa8a86445c4f3209",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 18040,
-          "sha256": "e732374ba37d30b4c6e9a264e091109df2bd93ace2a58aa0e9505d536ace14af",
+          "sha256": "3f7a54c0994829237d686426dd94d6c3700af0d6312c406673b86d6bdb182bd0",
           "uri": "repo://changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement/config/measurement-allowlist.v1.json"
         }
       ],
@@ -93,8 +93,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 188074,
-          "sha256": "ad6625783bef5c7dcef7aaea0cf25d60cd8e48e679f9a34c6abaff0ade99d01f",
+          "bytes": 235354,
+          "sha256": "f444f9854c4520649ec4977419ece445ff3240c6bcdc8ab9f913a5d931525790",
           "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
         },
         {
@@ -135,6 +135,12 @@
           "kind": "tracked",
           "semantic_id": "changes/editorial-portfolio-v3/rakuten-parser-boundary.v1.json",
           "uri": "repo://changes/editorial-portfolio-v3/rakuten-parser-boundary.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/reader-experience.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/reader-experience.v1.json",
           "version": 2
         },
         {
@@ -223,6 +229,30 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_components.py",
+          "uri": "repo://python/raos/application/editorial/reader_components.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_experience_projection.py",
+          "uri": "repo://python/raos/application/editorial/reader_experience_projection.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_experience_v1.py",
+          "uri": "repo://python/raos/application/editorial/reader_experience_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_html.py",
+          "uri": "repo://python/raos/application/editorial/reader_html.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "python/raos/application/finance/editorial_economics_v3.py",
           "uri": "repo://python/raos/application/finance/editorial_economics_v3.py",
           "version": 2
@@ -264,13 +294,13 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 18264,
-          "sha256": "4f3475d4747024bd0f997632727824a876e46e4469451087d0d342c6a3e761e1",
+          "bytes": 21211,
+          "sha256": "87b0f166a598484c9f2949642d2863b54083145f8ea7531a93ebde21c5a20108",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
-          "bytes": 13180,
-          "sha256": "f7a2d9af7fc9405d49847eb5999d66496bf59e3b0a92f9f621bb13222c57e564",
+          "bytes": 24338,
+          "sha256": "d5b0aca74cb40f664b1fa65011e2fbe53bf6e8d1a16bd324db0d988f00085042",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
         }
       ],
@@ -290,6 +320,12 @@
           "kind": "tracked",
           "semantic_id": "changes/editorial-portfolio-v3/generated/navigation.v3.json",
           "uri": "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/reader-experience.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/reader-experience.v1.json",
           "version": 2
         },
         {
@@ -26277,7 +26313,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "653945293bac862939160b664edb9feedc91585fdcd0a29169f7b8c040707269",
+          "sha256": "4890612c1b3f75eefbec9f252d1d497a49b5a7a53872e877e34899b9933e5b96",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26507,8 +26543,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 80080,
-          "sha256": "c5e15d7137cdeff2c60a100cb553af443702be0fdfb368c2ccc4512a601e98b2",
+          "bytes": 81039,
+          "sha256": "2ddfedeb8c9065eacacdbad90b83bb1f510150028fe8a177e8b33c5ed33f4618",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -26549,6 +26585,12 @@
           "kind": "tracked",
           "semantic_id": "changes/editorial-portfolio-v3/generated/navigation.v3.json",
           "uri": "repo://changes/editorial-portfolio-v3/generated/navigation.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/reader-experience.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/reader-experience.v1.json",
           "version": 2
         },
         {
@@ -26985,6 +27027,30 @@
           "kind": "tracked",
           "semantic_id": "python/raos/application/editorial/product_safety_receipts.py",
           "uri": "repo://python/raos/application/editorial/product_safety_receipts.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_components.py",
+          "uri": "repo://python/raos/application/editorial/reader_components.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_experience_projection.py",
+          "uri": "repo://python/raos/application/editorial/reader_experience_projection.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_experience_v1.py",
+          "uri": "repo://python/raos/application/editorial/reader_experience_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_html.py",
+          "uri": "repo://python/raos/application/editorial/reader_html.py",
           "version": 2
         },
         {
@@ -29107,12 +29173,12 @@
       "outputs": [
         {
           "bytes": 563,
-          "sha256": "75b09a5dff7fa35119ac89c30303e678c5b7298b7aba1f26cff51b5fec7b64b6",
+          "sha256": "004f1e5baa57d45cc826f4ecddf5c12caa78ed63fed2fa33605671e38148094f",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
-          "bytes": 26112,
-          "sha256": "f91552090142e2bb6da8f0b9e3a1f022e59ae7fc8bdde6852df58b5f9b70350c",
+          "bytes": 27270,
+          "sha256": "4a16acb8b9f006cfb2cb6e0af79188366e395074f4408f2cfc7d549eedcc598a",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29148,6 +29214,12 @@
           "kind": "tracked",
           "semantic_id": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/editorial-portfolio-v3/reader-experience.v1.json",
+          "uri": "repo://changes/editorial-portfolio-v3/reader-experience.v1.json",
           "version": 2
         },
         {
@@ -29202,6 +29274,12 @@
           "kind": "tracked",
           "semantic_id": "changes/wordpress-local-preview-v1/browser/mixed_audit_report.py",
           "uri": "repo://changes/wordpress-local-preview-v1/browser/mixed_audit_report.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs",
+          "uri": "repo://changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs",
           "version": 2
         },
         {
@@ -29572,6 +29650,30 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_components.py",
+          "uri": "repo://python/raos/application/editorial/reader_components.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_experience_projection.py",
+          "uri": "repo://python/raos/application/editorial/reader_experience_projection.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_experience_v1.py",
+          "uri": "repo://python/raos/application/editorial/reader_experience_v1.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/reader_html.py",
+          "uri": "repo://python/raos/application/editorial/reader_html.py",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "python/raos/application/editorial/self_hosted_editorial_pilot.py",
           "uri": "repo://python/raos/application/editorial/self_hosted_editorial_pilot.py",
           "version": 2
@@ -29902,7 +30004,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "243151e6664a4b81c3ab3c7c4240a5b7202d07d5840b6c27246dce91d31faf41",
+          "sha256": "445ea63f18e915be9bfc5f638067aba8e5af6220af6a7a9c73f03c4e38370c78",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

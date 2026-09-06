@@ -1,0 +1,1210 @@
+{
+  "schema": "RAOS_READER_EXPERIENCE_V1",
+  "articles": {
+    "st1704-countertop-dishwasher-for-small-households": {
+      "article_type": "shortlist",
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "decision_summary": {
+        "key_difference": "設置幅と扉を開く奥行、一度に洗う食器量、給水・乾燥方式が違います。",
+        "no_purchase_condition": "扉の開閉、給排水、アース、蒸気の逃げ道を確保できない場合は見送ります。",
+        "options": [
+          {
+            "product_ref": "PRD-SIROCA-SS-M171",
+            "reason": "給水方法を設置環境に合わせて選びたい人の候補です。",
+            "tradeoff": "本体を置く面に加え、扉を開く前方空間が必要です。"
+          },
+          {
+            "product_ref": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+            "reason": "設置幅を抑え、少量ずつ洗いたい人の候補です。",
+            "tradeoff": "普段一度に洗う食器が収まるかを先に確かめます。"
+          },
+          {
+            "product_ref": "PRD-SIROCA-SS-MA251",
+            "reason": "洗浄後に扉が開くオートオープンを条件にする人の候補です。",
+            "tradeoff": "扉が開く空間が必要。確認対象は通常商品のシルバーです。"
+          },
+          {
+            "product_ref": "PRD-TOSHIBA-DWS-33B-W",
+            "reason": "標準食器点数と強制排気乾燥を条件にする人の候補です。",
+            "tradeoff": "本体重量を支える設置面と、蒸気の逃げ道を確認します。"
+          }
+        ]
+      },
+      "evidence": [
+        "CLM-ST1704-DISH-SS-M171-SPECS",
+        "CLM-ST1704-DISH-RAKUA-SPECS",
+        "CLM-ST1704-DISH-SS-MA251-SPECS",
+        "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
+        "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SUPPORT"
+      ],
+      "components_enabled": true,
+      "reader_job": {
+        "situation": "少人数の食器を洗い、キッチンの置き場所を確かめたい。",
+        "motivation": "毎日の洗い物を減らしたい。",
+        "anxiety": "扉が開かない、食器が収まらないという不一致を避けたい。",
+        "desired_outcome": "設置と一回の食器量から候補を絞る。"
+      },
+      "decision_axes": [
+        {
+          "label": "扉を開ける空間を測る",
+          "why_it_matters": "本体が載っても、扉を開けて食器を出し入れする空間が必要です。",
+          "how_to_check": "設置面の幅・奥行・高さに加え、取扱説明書で扉前方と上部・左右・背面の指定空間を確認します。"
+        },
+        {
+          "label": "普段の一回分を並べる",
+          "why_it_matters": "標準食器点数は参考値で、皿の形や大きさによって収まり方が変わります。",
+          "how_to_check": "普段同時に洗う皿・茶わん・コップを並べ、大きさと点数を公式の収納例に照らします。"
+        },
+        {
+          "label": "給排水と電源の経路を確認する",
+          "why_it_matters": "毎回の給水、排水経路、電源・アースも設置条件に含まれます。",
+          "how_to_check": "水を入れる位置、排水先、コンセントとアース、蒸気の逃げ道を説明書で確認します。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "洗浄・乾燥・運転音",
+          "why_unknown": "公式の方式説明と実際の洗い上がり・感じる音は同じ指標ではありません。実機比較は未実施です。",
+          "how_to_verify": "メーカーの試験条件と説明書を確認し、必要なら自宅と条件が近い第三者試験の測定条件も確かめます。",
+          "decision_effect": "方式の名前だけで性能の優劣を決めません。重視する項目が確認できない場合は判断を保留します。"
+        },
+        {
+          "topic": "食器配置の自由度と毎回の作業",
+          "why_unknown": "自宅の食器を使った収納試験や、給水・フィルター清掃の負担の実測はしていません。",
+          "how_to_verify": "取扱説明書の収納例、使用可能洗剤、フィルターと庫内の手入れ手順を確認します。",
+          "decision_effect": "普段の皿が入り、給水と手入れを続けられるかが不明なら、候補を確定する前に確認します。"
+        }
+      ],
+      "purchase_checks": [
+        "本体寸法だけでなく、扉・指定空間・耐荷重を満たす。",
+        "給排水、電源・アース、蒸気の逃げ道を説明書で確認する。",
+        "普段の食器、使用可能洗剤、給水と手入れの作業を確認する。",
+        "販売先で型番、色、通常商品かセットか、同梱品、販売元、保証、現在価格と在庫を確認する。"
+      ],
+      "products": [
+        {
+          "product_ref": "PRD-SIROCA-SS-M171",
+          "evidence_facts": [
+            "CLM-ST1704-DISH-SS-M171-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+          "evidence_facts": [
+            "CLM-ST1704-DISH-RAKUA-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-SIROCA-SS-MA251",
+          "evidence_facts": [
+            "CLM-ST1704-DISH-SS-MA251-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-TOSHIBA-DWS-33B-W",
+          "evidence_facts": [
+            "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
+            "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SUPPORT"
+          ]
+        }
+      ],
+      "consolidate_sections": [
+        "reader-section",
+        "editors-note",
+        "purchase-caution"
+      ],
+      "media": [
+        {
+          "asset_ref": "dimension-prd-thanko-rakua-mini-tk-mdw22w",
+          "role": "dimension",
+          "evidence_ref": "CLM-ST1704-DISH-RAKUA-SPECS"
+        },
+        {
+          "asset_ref": "dimension-prd-siroca-ss-ma251",
+          "role": "dimension",
+          "evidence_ref": "CLM-ST1704-DISH-SS-MA251-SPECS"
+        },
+        {
+          "asset_ref": "dimension-prd-toshiba-dws-33b-w",
+          "role": "dimension",
+          "evidence_ref": "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS"
+        },
+        {
+          "asset_ref": "dimension-prd-siroca-ss-m171",
+          "role": "dimension",
+          "evidence_ref": "CLM-ST1704-DISH-SS-M171-SPECS"
+        }
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "verify",
+          "question": "SOLOTAとラクアmini Plusの型番・販売状態を確かめる",
+          "target_ref": "solota-vs-rakua-mini-plus",
+          "placement": "purchase_checks"
+        }
+      ],
+      "practical_notes": [
+        "仮定の食事場面（収納の実測ではありません）：夕食後に皿・茶わん・汁わん・コップを洗うなら、普段の食器を一度並べて数えます。公式の標準食器点数だけで、大皿・深皿・鍋まで同じように収まるとは判断せず、食器の寸法と配置を取扱説明書で照合します。",
+        "日々の作業は、給水の準備、排水先の確保、対応する洗剤、残さいフィルターなどの手入れまでを一続きで確かめます。手入れの頻度や継続費用について、公式資料から確定できない値は追加していません。"
+      ]
+    },
+    "solota-vs-rakua-mini-plus": {
+      "article_type": "status_check",
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "evidence": [],
+      "components_enabled": true,
+      "decision_axes": [
+        {
+          "label": "型番と構成",
+          "why_it_matters": "似た商品名でも、色・型番・セット内容が違う場合があります。",
+          "how_to_check": "NP-TMLK1-KとTK-MDW22Bのどちらか、色、本体のみかセットかを販売表示と照合します。"
+        },
+        {
+          "label": "販売元・在庫・保証",
+          "why_it_matters": "製品ページがあることと、注文できることは別です。",
+          "how_to_check": "新品・中古、販売元、在庫・納期、保証の適用条件を確認します。"
+        },
+        {
+          "label": "家に置ける条件",
+          "why_it_matters": "販売条件が分かっても、設置できるかは別に確かめる必要があります。",
+          "how_to_check": "説明書で本体・扉・給排水・電源・アースの条件を確認します。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "現在の販売状態と他店の在庫",
+          "why_unknown": "ページに示した確認日以後の販売表示や、他店の在庫は確定していません。",
+          "how_to_verify": "メーカーと検討中の販売元で、正確な型番の現在の表示を確認してください。",
+          "decision_effect": "購入リンクがないことを、性能が低い、販売終了、購入不可という判断に使わないでください。"
+        }
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "compare",
+          "question": "設置・食器量・給水方式から小型食洗機4候補を比べる",
+          "target_ref": "st1704-countertop-dishwasher-for-small-households",
+          "placement": "axes"
+        }
+      ]
+    },
+    "st1704-portable-power-station-guide": {
+      "article_type": "shortlist",
+      "components_enabled": true,
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "decision_summary": {
+        "key_difference": "蓄えられる電力量、接続できる出力、持ち運ぶ重さは別の条件です。容量の大きさだけでは接続できる機器を決められません。",
+        "options": [],
+        "no_purchase_condition": "接続機器の通常時・起動時の電力と説明書の条件を確認できない場合。医療機器や住宅配線への接続は、この記事の候補選びとは別に専門の確認が必要です。"
+      },
+      "decision_axes": [
+        {
+          "label": "使う機器と消費電力を調べる",
+          "why_it_matters": "Wは接続する機器の出力条件を見る値です。",
+          "how_to_check": "機器の銘板と取扱説明書で通常時・起動時の電力を確認し、同時に使う機器を合計します。"
+        },
+        {
+          "label": "何時間使うかを決める",
+          "why_it_matters": "Whは必要な電力量の目安です。",
+          "how_to_check": "消費電力W×使用時間hを機器ごとに合計します。変換ロスと待機電力があるため、公表容量だけで使用時間を保証できません。"
+        },
+        {
+          "label": "保管場所から運べるかを考える",
+          "why_it_matters": "容量を増やすと、運ぶ条件も変わります。",
+          "how_to_check": "重量と寸法を確認し、段差や階段を含めた持ち出し方を決めます。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "実際に使える時間と機器との適合",
+          "why_unknown": "変換ロス・気温・負荷・電池の状態で変わり、実測していません。",
+          "how_to_verify": "本体と接続機器の説明書を照合し、メーカーへ起動時電力を含めて確認します。",
+          "decision_effect": "必要な機器の稼働を確かめられなければ、容量だけで購入を決めないでください。"
+        }
+      ],
+      "purchase_checks": [
+        "機器ごとの通常時・起動時W、使用時間、同時使用の組み合わせ",
+        "保管・充電・換気と、運搬する経路",
+        "型番、周辺機器との互換性、販売元、保証、回収情報"
+      ],
+      "practical_notes": [
+        "計算例（仮定）：10Wの照明を5時間使うなら、機器が使う電力量は10×5＝50Whです。これは電源から実際に取り出せる量や運転時間の保証ではありません。変換ロス、待機電力、負荷の変動は別に確認します。"
+      ],
+      "consolidate_sections": [
+        "reader-section",
+        "editors-note",
+        "purchase-caution"
+      ],
+      "products": [
+        {
+          "product_ref": "PRD-ANKER-SOLIX-C300",
+          "evidence_facts": [
+            "CLM-ST1704-POWER-C300-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-BLUETTI-AORA30-V2",
+          "evidence_facts": [
+            "CLM-ST1704-POWER-AORA30-V2-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-JACKERY-500-NEW",
+          "evidence_facts": [
+            "CLM-ST1704-POWER-JACKERY-SPECS",
+            "CLM-ST1704-POWER-JACKERY-STORAGE",
+            "CLM-ST1704-POWER-JACKERY-WARRANTY"
+          ]
+        },
+        {
+          "product_ref": "PRD-ANKER-SOLIX-C800",
+          "evidence_facts": [
+            "CLM-ST1704-POWER-ANKER-C800-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-DJI-POWER-1000-V2",
+          "evidence_facts": [
+            "CLM-ST1704-POWER-DJI-1000-V2-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-JACKERY-1000-NEW-V3",
+          "evidence_facts": [
+            "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-BLUETTI-AORA100-V2",
+          "evidence_facts": [
+            "CLM-ST1704-POWER-AORA100-V2-SPECS"
+          ]
+        }
+      ],
+      "evidence": [
+        "CLM-ST1704-POWER-C300-SPECS",
+        "CLM-ST1704-POWER-JACKERY-SPECS",
+        "CLM-ST1704-POWER-ANKER-C800-SPECS",
+        "CLM-ST1704-POWER-DJI-1000-V2-SPECS",
+        "CLM-ST1704-POWER-CONDITIONAL-CHOICES",
+        "CLM-ST1704-POWER-AC70-EXCLUDED",
+        "CLM-ST1704-POWER-DELTA3-CLASSIC-EXCLUDED",
+        "CLM-ST1704-POWER-JACKERY-STORAGE",
+        "CLM-ST1704-POWER-JACKERY-WARRANTY",
+        "CLM-ST1704-POWER-SAFETY-PRACTICE",
+        "CLM-ST1704-POWER-NESTOUT-700N-EXCLUDED",
+        "CLM-ST1704-POWER-AORA80-EXCLUDED",
+        "CLM-ST1704-POWER-RIVER3-PLUS-EXCLUDED",
+        "CLM-ST1704-POWER-DELTA3-PLUS-EXCLUDED",
+        "CLM-ST1704-POWER-C1000-GEN2-REFERENCE",
+        "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS",
+        "CLM-ST1704-POWER-AORA30-V2-SPECS",
+        "CLM-ST1704-POWER-AORA100-V2-SPECS"
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "compare",
+          "question": "Anker Solix 4型番の容量帯とC1000世代差を知り、用途に合う型番を選ぶためのガイドを見る",
+          "target_ref": "st1704-anker-solix-c300-c800-c1000-differences",
+          "placement": "axes"
+        }
+      ],
+      "media": []
+    },
+    "st1704-compact-robot-vacuum-shortlist": {
+      "article_type": "shortlist",
+      "components_enabled": true,
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "decision_summary": {
+        "key_difference": "本体の薄さ、小ささ、モップの自動手入れは同じ条件ではありません。ステーションと帰還・交換作業の空間まで測ると、候補が変わります。",
+        "options": [],
+        "no_purchase_condition": "ステーションの前方・左右の余白や、手入れに必要な空間を確保できない場合。筐体寸法だけでは設置できると判断しません。"
+      },
+      "decision_axes": [
+        {
+          "label": "ステーションを置く場所を測る",
+          "why_it_matters": "充電台は置き家具として考えます。",
+          "how_to_check": "幅・奥行・高さに加え、前方と左右の帰還余白を説明書で照合します。"
+        },
+        {
+          "label": "家具下と通路を測る",
+          "why_it_matters": "高さだけでは家具の脚の間を通れるか分かりません。",
+          "how_to_check": "本体の幅・奥行・高さと、段差やケーブルの位置を照合します。"
+        },
+        {
+          "label": "残る手入れを決める",
+          "why_it_matters": "自動収集とモップの自動洗浄・乾燥は別の機能です。",
+          "how_to_check": "紙パック、シート、モップを交換する動線と、上部を開ける空間を確認します。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "帰還の安定性・清掃力・音",
+          "why_unknown": "床や家具の配置で変わり、実機で比較していません。",
+          "how_to_verify": "公式設置案内と自宅の配置を照合し、試用や返品条件が必要なら購入前に確認します。",
+          "decision_effect": "狭い余白で戻れることや、汚れの落ち方を仕様だけで期待しないでください。"
+        }
+      ],
+      "purchase_checks": [
+        "本体寸法と台の寸法を別々に測る",
+        "上方・前方・左右の余白、紙パックとモップの交換動線",
+        "段差、アプリ・通信条件、カメラ機能、保証・消耗品"
+      ],
+      "practical_notes": [],
+      "consolidate_sections": [
+        "reader-section",
+        "editors-note",
+        "purchase-caution"
+      ],
+      "products": [
+        {
+          "product_ref": "PRD-EUFY-AUTOEMPTY-C10-T2292",
+          "evidence_facts": [
+            "CLM-ST1704-ROBOT-EUFY-C10-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-SWITCHBOT-K11-PRO",
+          "evidence_facts": [
+            "CLM-ST1704-ROBOT-K11-PRO-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-ECOVACS-DEEBOT-MINI2",
+          "evidence_facts": [
+            "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+          "evidence_facts": [
+            "CLM-ST1704-ROBOT-ROOMBA-515-SPECS"
+          ]
+        }
+      ],
+      "evidence": [
+        "CLM-ST1704-ROBOT-EUFY-C10-SPECS",
+        "CLM-ST1704-ROBOT-K11-PRO-SPECS",
+        "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+        "CLM-ST1704-ROBOT-ROOMBA-515-SPECS",
+        "CLM-ST1704-ROBOT-CONDITIONAL-CHOICES",
+        "CLM-ST1704-ROBOT-K10-COMBO-EXCLUDED",
+        "CLM-ST1704-ROBOT-RULO-MINI-REFERENCE",
+        "CLM-ST1704-ROBOT-E20-EXCLUDED",
+        "CLM-ST1704-ROBOT-SAROS10-EXCLUDED",
+        "CLM-ST1704-ROBOT-E25-EXCLUDED",
+        "CLM-ST1704-ROBOT-X50-EXCLUDED",
+        "CLM-ST1704-ROBOT-X8-EXCLUDED",
+        "CLM-ST1704-ROBOT-ROOMBA-MINI-F155260-EXCLUDED",
+        "CLM-ST1704-ROBOT-F115060-REFERENCE",
+        "CLM-ST1704-ROBOT-K11-PRO-WARRANTY-UNRESOLVED"
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "compare",
+          "question": "Roomba Mini SlimとSwitchBot K11+ Proの設置寸法・水拭き・自動ゴミ収集を二者択一で比べるためのガイドを見る",
+          "target_ref": "roomba-mini-vs-switchbot-k11-pro",
+          "placement": "axes"
+        }
+      ],
+      "media": []
+    },
+    "st1704-anker-solix-c300-c800-c1000-differences": {
+      "article_type": "model_difference",
+      "components_enabled": true,
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "decision_summary": {
+        "key_difference": "C1000の世代差では容量・出力・重量に加え、拡張対応と端子構成が選択を分けます。世代が新しいことだけでは用途との適合を決めません。",
+        "options": [],
+        "no_purchase_condition": "予定する機器の接続条件や拡張バッテリーの型番一致を確認できない場合。互換性未確認の構成を選ばないでください。"
+      },
+      "decision_axes": [
+        {
+          "label": "接続する機器を先に決める",
+          "why_it_matters": "容量Whと出力Wは役割が異なります。",
+          "how_to_check": "通常時・起動時電力と説明書を確認します。"
+        },
+        {
+          "label": "拡張と端子を決める",
+          "why_it_matters": "同じシリーズでも世代で構成が変わります。",
+          "how_to_check": "必要なAC・USB端子数、公式の拡張対応型番を照合します。"
+        },
+        {
+          "label": "運搬する重さを決める",
+          "why_it_matters": "容量と本体重量の妥協点を確認します。",
+          "how_to_check": "保管場所から実際に運ぶ経路と寸法を照合します。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "接続互換性と実際の運転時間",
+          "why_unknown": "公表値だけでは機器の起動や実使用時間を保証できません。",
+          "how_to_verify": "対象世代と接続機器の説明書で条件を確認します。",
+          "decision_effect": "互換性が重要な機器は、未確認のまま購入しないでください。"
+        }
+      ],
+      "purchase_checks": [
+        "正確な型番・世代・セット構成",
+        "接続機器と拡張バッテリーの互換性",
+        "持ち運ぶ重さ、保証、販売元、現在の価格と在庫"
+      ],
+      "practical_notes": [],
+      "consolidate_sections": [
+        "reader-section",
+        "editors-note",
+        "purchase-caution"
+      ],
+      "products": [
+        {
+          "product_ref": "PRD-ANKER-SOLIX-C300",
+          "evidence_facts": [
+            "CLM-ST1704-ANKER-C300-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-ANKER-SOLIX-C800-PLUS",
+          "evidence_facts": [
+            "CLM-ST1704-ANKER-C800-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-ANKER-SOLIX-C1000",
+          "evidence_facts": [
+            "CLM-ST1704-ANKER-C1000-SPECS",
+            "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
+          ]
+        },
+        {
+          "product_ref": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "evidence_facts": [
+            "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
+            "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
+          ]
+        }
+      ],
+      "evidence": [
+        "CLM-ST1704-ANKER-C300-SPECS",
+        "CLM-ST1704-ANKER-C800-SPECS",
+        "CLM-ST1704-ANKER-C1000-SPECS",
+        "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
+        "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
+        "CLM-ST1704-ANKER-C1000-GENERATION-DIFF",
+        "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
+        "CLM-ST1704-ANKER-SAFETY-PRACTICE",
+        "CLM-ST1704-ANKER-C1000-PLUS-EXCLUDED",
+        "CLM-ST1704-ANKER-C800-A1753-REFERENCE"
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "compare",
+          "question": "停電時に使う機器から必要な容量・出力と持ち運べる候補を選ぶためのガイドを見る",
+          "target_ref": "st1704-portable-power-station-guide",
+          "placement": "axes"
+        }
+      ],
+      "media": [],
+      "difference_label": "C1000の第1世代を基準に、Gen 2の差を見る",
+      "difference_pair": {
+        "baseline_product_ref": "PRD-ANKER-SOLIX-C1000",
+        "product_ref": "PRD-ANKER-SOLIX-C1000-GEN2",
+        "meaning_by_label": {
+          "容量": "必要な使用時間から電力量を考え、容量差だけで用途を決めません。",
+          "定格出力": "接続機器の通常時・起動時電力は別に確認します。",
+          "重量": "保管場所から持ち出す回数と経路に照らして考えます。"
+        }
+      }
+    },
+    "st1703-first-suitcase-comparison": {
+      "article_type": "model_difference",
+      "components_enabled": true,
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "decision_summary": {
+        "key_difference": "本体の軽さ、開き方、非拡張時の容量が選択を分けます。容量を優先すると、荷物を入れる前の本体重量も引き受ける必要があります。",
+        "options": [],
+        "no_purchase_condition": "利用する便・機材の外寸や総重量の条件を確認できない場合。必要なストッパーの有無が未確認なら、確定するまで選定条件にしません。"
+      },
+      "decision_axes": [
+        {
+          "label": "便・機材の規定を確認する",
+          "why_it_matters": "機内持ち込みは各辺と総重量で判断されます。",
+          "how_to_check": "航空会社の最新案内で搭乗する便・機材・運賃の条件を確認します。"
+        },
+        {
+          "label": "本体を引いた残り重量を考える",
+          "why_it_matters": "軽いケースほど荷物に配分する余地が変わります。",
+          "how_to_check": "機内手荷物と身の回り品を含めた重量枠から、本体重量を引いて考えます。"
+        },
+        {
+          "label": "開き方と非拡張容量を決める",
+          "why_it_matters": "前開きと容量は使う場面に合わせます。",
+          "how_to_check": "移動中に取り出す物と開く場所、拡張しない状態の容量を確認します。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "走行感・持ち上げやすさ・耐久性",
+          "why_unknown": "実機で走行・持ち上げ・耐久を比較していません。",
+          "how_to_verify": "実物確認ができる場合は取っ手や取り回しを確認します。",
+          "decision_effect": "公称重量が軽いことだけで使いやすさを断定しないでください。"
+        }
+      ],
+      "purchase_checks": [
+        "搭乗便の各辺・3辺合計・総重量",
+        "非拡張状態、型番、希望色、付属品",
+        "ストッパーなど必要機能、販売元と保証"
+      ],
+      "practical_notes": [],
+      "consolidate_sections": [
+        "reader-section",
+        "editors-note",
+        "purchase-caution"
+      ],
+      "products": [
+        {
+          "product_ref": "PRD-PROTECA-TRI-AIR-01541",
+          "evidence_facts": [
+            "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-ACE-DIFFERENCE-05721",
+          "evidence_facts": [
+            "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"
+          ]
+        },
+        {
+          "product_ref": "PRD-ACE-MAXPASS4-01471",
+          "evidence_facts": [
+            "CLM-ST1704-SUITCASE-MAXPASS-SPECS"
+          ]
+        }
+      ],
+      "evidence": [
+        "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS",
+        "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS",
+        "CLM-ST1704-SUITCASE-MAXPASS-SPECS",
+        "CLM-ST1704-SUITCASE-CARRYON-LIMITS",
+        "CLM-ST1704-SUITCASE-CONDITIONAL-CHOICES",
+        "CLM-ST1704-SUITCASE-CRESTA-06316-EXCLUDED",
+        "CLM-ST1704-SUITCASE-AEROFLEX-DX2-REFERENCE"
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "compare",
+          "question": "30L以上・3kg以下の機内持ち込み候補を、容量と軽さから選ぶためのガイドを見る",
+          "target_ref": "lightweight-carry-on-suitcase-under-3kg",
+          "placement": "axes"
+        },
+        {
+          "journey_stage": "compare",
+          "question": "100席未満便の寸法条件に合う候補と、購入前の確認手順を知るためのガイドを見る",
+          "target_ref": "carry-on-suitcase-under-100-seats",
+          "placement": "purchase_checks"
+        }
+      ],
+      "media": []
+    },
+    "roomba-mini-vs-switchbot-k11-pro": {
+      "article_type": "comparison",
+      "components_enabled": true,
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "decision_summary": {
+        "key_difference": "充電台の奥行きと、ごみ捨てを自動化できるかが主な分かれ目です。比較対象はRoomba Mini Slim＋SlimCharge F115060とK11+ Proの2製品です。",
+        "options": [],
+        "no_purchase_condition": "帰還経路と手入れの空間を確保できない場合。モップの自動洗浄・乾燥を必須にする場合は、別の比較で候補を確認してください。"
+      },
+      "decision_axes": [
+        {
+          "label": "充電設備を置く場所を測る",
+          "why_it_matters": "本体が近い大きさでも台の構成は異なります。",
+          "how_to_check": "台の幅・奥行・高さと、前方・左右の帰還余白を測ります。"
+        },
+        {
+          "label": "ごみ捨てを自動化するか決める",
+          "why_it_matters": "薄い充電台と自動収集のどちらが生活に合うかを考えます。",
+          "how_to_check": "ダスト容器を手動で空にするか、紙パックを交換するかを選びます。"
+        },
+        {
+          "label": "水拭きと接続条件を確認する",
+          "why_it_matters": "シートの交換作業は残ります。",
+          "how_to_check": "使い捨てシートの交換、通信条件、消耗品の型番を確認します。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "自宅での清掃力・帰還・音",
+          "why_unknown": "家具と床の条件が異なり、実機で試していません。",
+          "how_to_verify": "設置案内と自宅の家具・通路を照合します。",
+          "decision_effect": "筐体が収まるだけで、清掃や帰還ができるとは判断しません。"
+        }
+      ],
+      "purchase_checks": [
+        "F115060とK11+ Proの型番・構成",
+        "充電設備と帰還余白、家具下・通路の寸法",
+        "ごみ捨てとシート交換、消耗品、通信条件、保証"
+      ],
+      "practical_notes": [],
+      "consolidate_sections": [
+        "reader-section",
+        "editors-note",
+        "purchase-caution"
+      ],
+      "products": [
+        {
+          "product_ref": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-ROBOT-ROOMBA-SLIM-F115060"
+          ],
+          "not_for": [
+            "自動ゴミ収集を必須にする場合"
+          ]
+        },
+        {
+          "product_ref": "PRD-SWITCHBOT-K11-PRO",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-ROBOT-K11-PRO",
+            "CLM-PORTFOLIO-ROBOT-K11-INSTALLATION-SPACE"
+          ],
+          "not_for": [
+            "ステーションと公式の帰還余白を確保できない場合"
+          ]
+        }
+      ],
+      "evidence": [
+        "CLM-PORTFOLIO-ROBOT-K11-PRO",
+        "CLM-PORTFOLIO-ROBOT-K11-PRO-WARRANTY-UNRESOLVED",
+        "CLM-PORTFOLIO-ROBOT-ROOMBA-SLIM-F115060",
+        "CLM-PORTFOLIO-ROBOT-K11-INSTALLATION-SPACE",
+        "CLM-PORTFOLIO-ROBOT-CONDITIONAL-CHOICES",
+        "CLM-PORTFOLIO-ROBOT-ROOMBA-MINI-F155260-EXCLUDED",
+        "CLM-PORTFOLIO-ROBOT-RULO-MINI-REFERENCE",
+        "CLM-PORTFOLIO-ROBOT-EUFY-C10-BOUNDARY-REFERENCE",
+        "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE"
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "compare",
+          "question": "ロボット掃除機4モデルを設置寸法とモップ自動手入れの範囲で選ぶためのガイドを見る",
+          "target_ref": "st1704-compact-robot-vacuum-shortlist",
+          "placement": "axes"
+        }
+      ],
+      "media": [],
+      "preserve_story": true
+    },
+    "carry-on-suitcase-under-100-seats": {
+      "article_type": "shortlist",
+      "components_enabled": true,
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "decision_summary": {
+        "key_difference": "小型機向けの外寸を満たす範囲で、本体重量・通常時の容量・開き方が違います。拡張後の容量と、搭乗時の外寸は分けて考えます。",
+        "options": [],
+        "no_purchase_condition": "便・機材の各辺と総重量を確認できない場合。拡張しないと荷物が入らない場合は、この候補だけで機内持ち込みを決めません。"
+      },
+      "decision_axes": [
+        {
+          "label": "便と機材を確かめる",
+          "why_it_matters": "座席数の区分と運賃によって条件が変わります。",
+          "how_to_check": "利用する航空会社の最新の持ち込み条件を確認します。"
+        },
+        {
+          "label": "非拡張時の各辺を照合する",
+          "why_it_matters": "3辺合計だけでは判定できません。",
+          "how_to_check": "取っ手・キャスターを含む外寸と各辺の上限を照合します。"
+        },
+        {
+          "label": "荷物を入れた総重量を量る",
+          "why_it_matters": "本体が軽くても、荷物と身の回り品の重量が加わります。",
+          "how_to_check": "出発時と帰路の荷物量を考え、搭乗前に量ります。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "実際の収納量と取り回し",
+          "why_unknown": "衣類やPCの形状で変わり、実機収納を検証していません。",
+          "how_to_verify": "普段の荷物構成と公式収納寸法を照合します。",
+          "decision_effect": "公称容量だけで必要な荷物が入るとは判断しません。"
+        }
+      ],
+      "purchase_checks": [
+        "便・機材・運賃ごとの最新規定",
+        "非拡張外寸の各辺と、手荷物の合計重量",
+        "正確な型番・新旧仕様・色・同梱品と保証"
+      ],
+      "practical_notes": [],
+      "consolidate_sections": [
+        "reader-section",
+        "editors-note",
+        "purchase-caution"
+      ],
+      "products": [
+        {
+          "product_ref": "PRD-PROTECA-STARIA-CXR-02350",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-UNDER100-STARIA-02350"
+          ]
+        },
+        {
+          "product_ref": "PRD-PROTECA-FRESTER-EX-01550",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-UNDER100-FRESTER-01550"
+          ]
+        },
+        {
+          "product_ref": "PRD-ACE-PALISADES3-Z-06910",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-UNDER100-PALISADES-06910"
+          ]
+        },
+        {
+          "product_ref": "PRD-BERMAS-INTER-CITY-60524",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-UNDER100-BERMAS-60524"
+          ]
+        }
+      ],
+      "evidence": [
+        "CLM-PORTFOLIO-UNDER100-STARIA-02350",
+        "CLM-PORTFOLIO-UNDER100-FRESTER-01550",
+        "CLM-PORTFOLIO-UNDER100-PALISADES-06910",
+        "CLM-PORTFOLIO-UNDER100-BERMAS-60524",
+        "CLM-PORTFOLIO-UNDER100-ANA-RULE",
+        "CLM-PORTFOLIO-UNDER100-JAL-RULE",
+        "CLM-PORTFOLIO-UNDER100-CONDITIONAL-CHOICES",
+        "CLM-PORTFOLIO-UNDER100-RIMOWA-CABIN-U-EXCLUDED",
+        "CLM-PORTFOLIO-UNDER100-AUDRINA-EXCLUDED",
+        "CLM-PORTFOLIO-UNDER100-MUJI20-EXCLUDED",
+        "CLM-PORTFOLIO-UNDER100-MAXPASS4-REFERENCE"
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "compare",
+          "question": "エース系3モデルの仕様差を知り、優先条件に合う型番を選ぶためのガイドを見る",
+          "target_ref": "st1703-first-suitcase-comparison",
+          "placement": "axes"
+        },
+        {
+          "journey_stage": "compare",
+          "question": "前開きとストッパーを両方備える候補を、開き方の違いから選ぶためのガイドを見る",
+          "target_ref": "front-open-carry-on-suitcase-with-stopper",
+          "placement": "purchase_checks"
+        }
+      ],
+      "media": [],
+      "preserve_story": true
+    },
+    "lightweight-carry-on-suitcase-under-3kg": {
+      "article_type": "shortlist",
+      "components_enabled": true,
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "decision_summary": {
+        "key_difference": "本体の軽さに加え、容量・開き方・ストッパーの条件で5モデルを分けます。公称容量の大きさは実際の収納を保証する値ではありません。",
+        "options": [],
+        "no_purchase_condition": "荷物を含めた総重量と搭乗便の外寸条件を満たせない場合。拡張状態で持ち込めると決めつけないでください。"
+      },
+      "decision_axes": [
+        {
+          "label": "搭乗便の規定を確認する",
+          "why_it_matters": "記事の候補条件と航空会社の許容量は別です。",
+          "how_to_check": "100席以上という区分だけで決めず、便・機材・運賃を確認します。"
+        },
+        {
+          "label": "本体を引いた残り重量を計算する",
+          "why_it_matters": "軽さは荷物に使える重量へ翻訳します。",
+          "how_to_check": "総重量枠からケース本体と身の回り品の重さを引きます。"
+        },
+        {
+          "label": "荷物量と構造を選ぶ",
+          "why_it_matters": "容量と開き方には使う場面ごとの違いがあります。",
+          "how_to_check": "荷物の構成、前開きの要否、非拡張容量を照合します。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "収納量・持ち上げやすさ・走行感",
+          "why_unknown": "実機の収納と走行を比較していません。",
+          "how_to_verify": "取っ手や収納の形状を実物で確認できる場合に確かめます。",
+          "decision_effect": "公称重量と容量だけで使い心地の優劣を決めません。"
+        }
+      ],
+      "purchase_checks": [
+        "搭乗便の最新規定と非拡張外寸",
+        "ケース・荷物・身の回り品を合わせた実際の重量",
+        "型番、必要機能、新旧仕様、付属品、保証"
+      ],
+      "practical_notes": [
+        "総重量の計算例（仮定）：許容量が7kg、本体が3kg、身の回り品が1kgなら、ケースへ入れる荷物の目安は7−3−1＝3kgです。7kgは全便共通の規定ではありません。実際の便の条件を確認してください。"
+      ],
+      "consolidate_sections": [
+        "reader-section",
+        "editors-note",
+        "purchase-caution"
+      ],
+      "products": [
+        {
+          "product_ref": "PRD-PROTECA-AEROFLEX-DX2-01521",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-LIGHT-AEROFLEX-01521"
+          ]
+        },
+        {
+          "product_ref": "PRD-PROTECA-TRI-AIR-01541",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-LIGHT-TRIAIR-01541"
+          ]
+        },
+        {
+          "product_ref": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-LIGHT-RIMOWA-82353171"
+          ]
+        },
+        {
+          "product_ref": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-LIGHT-APPLITE-QJ6-68002"
+          ]
+        },
+        {
+          "product_ref": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-LIGHT-SAMSONITE-C-LITE-134679-1549"
+          ]
+        }
+      ],
+      "evidence": [
+        "CLM-PORTFOLIO-LIGHT-TRIAIR-01541",
+        "CLM-PORTFOLIO-LIGHT-RIMOWA-82353171",
+        "CLM-PORTFOLIO-LIGHT-AEROFLEX-01521",
+        "CLM-PORTFOLIO-LIGHT-SAMSONITE-C-LITE-134679-1549",
+        "CLM-PORTFOLIO-LIGHT-APPLITE-QJ6-68002",
+        "CLM-PORTFOLIO-LIGHT-ANA-RULE",
+        "CLM-PORTFOLIO-LIGHT-JAL-RULE",
+        "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
+        "CLM-PORTFOLIO-LIGHT-FREQUENTER-REFERENCE",
+        "CLM-PORTFOLIO-LIGHT-MUJI36-EXCLUDED"
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "compare",
+          "question": "エース系3モデルの仕様差を知り、優先条件に合う型番を選ぶためのガイドを見る",
+          "target_ref": "st1703-first-suitcase-comparison",
+          "placement": "axes"
+        },
+        {
+          "journey_stage": "compare",
+          "question": "前開きとストッパーを両方備える候補を、開き方の違いから選ぶためのガイドを見る",
+          "target_ref": "front-open-carry-on-suitcase-with-stopper",
+          "placement": "purchase_checks"
+        }
+      ],
+      "media": [],
+      "preserve_story": true
+    },
+    "front-open-carry-on-suitcase-with-stopper": {
+      "article_type": "shortlist",
+      "components_enabled": true,
+      "research_status": {
+        "real_world_tested": false,
+        "ranking_uses_commission": false
+      },
+      "decision_summary": {
+        "key_difference": "前開きには、取り出し口として使う構造と、主収納へ開く構造があります。PCや小物を出す場面と、荷物全体を出す場面を分けて候補を選びます。",
+        "options": [],
+        "no_purchase_condition": "入れる物の寸法と開く空間を確認できない場合。拡張しないと荷物が入らず、搭乗便の規定も未確認なら購入を見送ります。"
+      },
+      "decision_axes": [
+        {
+          "label": "何を前から取り出すか決める",
+          "why_it_matters": "前開きという名称だけでは収納へのアクセス方法が分かりません。",
+          "how_to_check": "PC・小物・主収納のどれにアクセスする構造かを公式説明で確認します。"
+        },
+        {
+          "label": "開ける場所を考える",
+          "why_it_matters": "前面を開くための空間が必要です。",
+          "how_to_check": "宿泊先や移動中に使う場面で、周囲の空間を確保できるか考えます。"
+        },
+        {
+          "label": "搭乗時の外寸と重量を確かめる",
+          "why_it_matters": "容量やストッパーの有無とは別の条件です。",
+          "how_to_check": "非拡張状態の外寸と手荷物の合計重量を、便の規定へ照合します。"
+        }
+      ],
+      "unknowns": [
+        {
+          "topic": "開閉の操作感と収納の自由度",
+          "why_unknown": "実物での荷物の出し入れを検証していません。",
+          "how_to_verify": "公式構造図、収納対応寸法、実物で確認できる範囲を照合します。",
+          "decision_effect": "前開きだけを理由に、狭い場所でも使いやすいと断定しません。"
+        }
+      ],
+      "purchase_checks": [
+        "前面からアクセスする収納の種類と寸法",
+        "非拡張外寸、手荷物の総重量、搭乗便の規定",
+        "正確な型番、ストッパーの操作、同梱品、保証"
+      ],
+      "practical_notes": [],
+      "consolidate_sections": [
+        "reader-section",
+        "editors-note",
+        "purchase-caution"
+      ],
+      "products": [
+        {
+          "product_ref": "PRD-INNOVATOR-INV50",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-FRONT-INNOVATOR-INV50"
+          ]
+        },
+        {
+          "product_ref": "PRD-ACE-DIFFERENCE-05721",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-FRONT-DIFFERENCE-05721"
+          ]
+        },
+        {
+          "product_ref": "PRD-PROTECA-FRESTER-EX-01551",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-FRONT-FRESTER-01551"
+          ]
+        },
+        {
+          "product_ref": "PRD-BERMAS-INTER-CITY-III-60570",
+          "evidence_facts": [
+            "CLM-PORTFOLIO-FRONT-BERMAS-60570"
+          ]
+        }
+      ],
+      "evidence": [
+        "CLM-PORTFOLIO-FRONT-INNOVATOR-INV50",
+        "CLM-PORTFOLIO-FRONT-DIFFERENCE-05721",
+        "CLM-PORTFOLIO-FRONT-FRESTER-01551",
+        "CLM-PORTFOLIO-FRONT-BERMAS-60570",
+        "CLM-PORTFOLIO-FRONT-ANA-RULE",
+        "CLM-PORTFOLIO-FRONT-JAL-RULE",
+        "CLM-PORTFOLIO-FRONT-C-LITE-KNOWN-SPECS-REFERENCE",
+        "CLM-PORTFOLIO-FRONT-CONDITIONAL-CHOICES",
+        "CLM-PORTFOLIO-FRONT-BERMAS-60561-EXCLUDED",
+        "CLM-PORTFOLIO-FRONT-MUJI32-EXCLUDED",
+        "CLM-PORTFOLIO-FRONT-C-LITE-REFERENCE",
+        "CLM-PORTFOLIO-FRONT-RIMOWA-REFERENCE"
+      ],
+      "contextual_links": [
+        {
+          "journey_stage": "compare",
+          "question": "エース系3モデルの仕様差を知り、優先条件に合う型番を選ぶためのガイドを見る",
+          "target_ref": "st1703-first-suitcase-comparison",
+          "placement": "axes"
+        },
+        {
+          "journey_stage": "compare",
+          "question": "100席未満便の寸法条件に合う候補と、購入前の確認手順を知るためのガイドを見る",
+          "target_ref": "carry-on-suitcase-under-100-seats",
+          "placement": "purchase_checks"
+        }
+      ],
+      "media": [],
+      "preserve_story": true
+    }
+  },
+  "media": [
+    {
+      "asset_ref": "dimension-prd-thanko-rakua-mini-tk-mdw22w",
+      "asset_type": "html_diagram",
+      "source": "https://www.thanko.jp/view/item/000000003922?category_page_id=ct576",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。",
+      "checked_at": "2026-08-31",
+      "approval": "approved",
+      "alt": "THANKO ラクアmini TK-MDW22W本体の本体寸法。設置余白は別途確認。",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "aspect_ratio": [
+        308,
+        315
+      ],
+      "role": "dimension"
+    },
+    {
+      "asset_ref": "dimension-prd-siroca-ss-ma251",
+      "asset_type": "html_diagram",
+      "source": "https://www.siroca.co.jp/product/dishwasher_advance/",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。",
+      "checked_at": "2026-08-23",
+      "approval": "approved",
+      "alt": "siroca SS-MA251本体の本体寸法。設置余白は別途確認。",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "aspect_ratio": [
+        420,
+        440
+      ],
+      "role": "dimension"
+    },
+    {
+      "asset_ref": "dimension-prd-toshiba-dws-33b-w",
+      "asset_type": "html_diagram",
+      "source": "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。",
+      "checked_at": "2026-08-31",
+      "approval": "approved",
+      "alt": "東芝 DWS-33B(W)本体の本体寸法。設置余白は別途確認。",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "aspect_ratio": [
+        420,
+        435
+      ],
+      "role": "dimension"
+    },
+    {
+      "asset_ref": "dimension-prd-siroca-ss-m171",
+      "asset_type": "html_diagram",
+      "source": "https://www.siroca.co.jp/product/dishwasher_basic/",
+      "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。",
+      "checked_at": "2026-08-31",
+      "approval": "approved",
+      "alt": "siroca SS-M171本体の本体寸法。設置余白は別途確認。",
+      "caption": "本体の設置面です。図の縮尺は商品間で一定ではなく、必要な設置余白は含みません。寸法の数値で比較してください。",
+      "aspect_ratio": [
+        420,
+        435
+      ],
+      "role": "dimension"
+    }
+  ],
+  "navigation": {
+    "groups": [
+      {
+        "slug": "travel",
+        "label": "旅行・外出",
+        "description": "荷物量、持ち上げる重さ、開き方から旅行の道具を選びます。",
+        "kind": "category",
+        "article_ids": [
+          "st1703-first-suitcase-comparison",
+          "carry-on-suitcase-under-100-seats",
+          "lightweight-carry-on-suitcase-under-3kg",
+          "front-open-carry-on-suitcase-with-stopper"
+        ]
+      },
+      {
+        "slug": "kitchen",
+        "label": "キッチン・家事",
+        "description": "設置スペース、食器量、給排水から食洗機を絞ります。",
+        "kind": "category",
+        "article_ids": [
+          "st1704-countertop-dishwasher-for-small-households",
+          "solota-vs-rakua-mini-plus"
+        ]
+      },
+      {
+        "slug": "cleaning",
+        "label": "掃除・時短",
+        "description": "本体とステーションを置く場所、片づけと手入れの条件を確認します。",
+        "kind": "category",
+        "article_ids": [
+          "st1704-compact-robot-vacuum-shortlist",
+          "roomba-mini-vs-switchbot-k11-pro"
+        ]
+      },
+      {
+        "slug": "preparedness",
+        "label": "防災・電源",
+        "description": "使いたい機器と時間、持ち運ぶ重さから電源を選びます。",
+        "kind": "category",
+        "article_ids": [
+          "st1704-portable-power-station-guide",
+          "st1704-anker-solix-c300-c800-c1000-differences"
+        ]
+      },
+      {
+        "slug": "small-space",
+        "label": "一人暮らし・省スペース",
+        "description": "本体だけでなく、扉やステーションの余白まで測って候補を絞ります。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1704-countertop-dishwasher-for-small-households",
+          "st1704-compact-robot-vacuum-shortlist",
+          "roomba-mini-vs-switchbot-k11-pro",
+          "solota-vs-rakua-mini-plus"
+        ]
+      },
+      {
+        "slug": "save-housework",
+        "label": "家事を短くしたい",
+        "description": "任せたい家事と、毎回自分に残る作業を比べます。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1704-countertop-dishwasher-for-small-households",
+          "st1704-compact-robot-vacuum-shortlist",
+          "roomba-mini-vs-switchbot-k11-pro"
+        ]
+      },
+      {
+        "slug": "without-installation",
+        "label": "設置工事を避けたい",
+        "description": "給水方式と排水経路を先に確認し、自宅で使える条件を整理します。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1704-countertop-dishwasher-for-small-households",
+          "solota-vs-rakua-mini-plus"
+        ]
+      },
+      {
+        "slug": "easy-maintenance",
+        "label": "手入れを続けやすいものを選びたい",
+        "description": "消耗品の交換や給排水など、購入後の作業を確認します。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1704-countertop-dishwasher-for-small-households",
+          "st1704-compact-robot-vacuum-shortlist",
+          "roomba-mini-vs-switchbot-k11-pro"
+        ]
+      },
+      {
+        "slug": "comfortable-travel",
+        "label": "旅行を快適にしたい",
+        "description": "便の規定、荷物の量、開ける場所に合うスーツケースを選びます。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1703-first-suitcase-comparison",
+          "carry-on-suitcase-under-100-seats",
+          "lightweight-carry-on-suitcase-under-3kg",
+          "front-open-carry-on-suitcase-with-stopper"
+        ]
+      },
+      {
+        "slug": "prepare-outage",
+        "label": "防災に備えたい",
+        "description": "何を何時間使いたいかを決め、容量と出力を別々に確認します。",
+        "kind": "purpose",
+        "article_ids": [
+          "st1704-portable-power-station-guide",
+          "st1704-anker-solix-c300-c800-c1000-differences"
+        ]
+      }
+    ]
+  }
+}

@@ -343,7 +343,7 @@ def validate_results(
     expected = {(key, width) for key in surfaces for width in widths}
     if (
         not surfaces
-        or widths != [360, 390, 768, 1440]
+        or widths != [360, 390, 768, 1024, 1440]
         or len(results) != len(expected)
         or {(row.get("surface"), row.get("width")) for row in results} != expected
     ):

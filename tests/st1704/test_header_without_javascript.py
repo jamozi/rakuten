@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from itertools import product
 from pathlib import Path
 import re
 import shutil
@@ -26,7 +27,10 @@ def test_nojs_header_uses_existing_navigation_and_a_native_search_form() -> None
     assert 'id="raos-header-nojs-query" type="search" name="s"' in markup
     assert '<button type="submit">検索</button>' in markup
     assert not re.search(r"<(?:script|style|nav)\b|aria-hidden|onclick", markup)
-    assert header.count("<!-- wp:navigation-link ") == 4
+    links = [json.loads(match) for match in re.findall(r'<!-- wp:navigation-link (\{.*?\}) /-->', header)]
+    registry = json.loads((THEME / 'assets/editorial-navigation.v3.json').read_text())
+    hub_paths = {'/' + hub['slug'] + '/' for hub in registry['reader_navigation']['hubs']}
+    assert links and all(link['url'] in hub_paths for link in links)
     assert header.count("<!-- wp:search ") == 1
     css = (THEME / "assets/theme.css").read_text(encoding="utf-8")
     assert ".raos-header-nojs-shell {\n  display: none;\n}" in css
@@ -73,7 +77,7 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
  const browser=await chromium.launch({executablePath:process.argv[2],headless:true});
  const observations=[];
  try {
-  for(const width of [320,360,390,768,1440]) for(const textSize of [100,200])
+  for(const width of [320,360,390,768,1024,1440]) for(const textSize of [100,200])
    for(const javaScriptEnabled of [false,true]) for(const home of [false,true]) {
     const context=await browser.newContext({viewport:{width,height:900},javaScriptEnabled,
       serviceWorkers:'block',reducedMotion:'reduce'});
@@ -110,8 +114,8 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
         <input type="search" aria-hidden="true"><button type="button"
         class="wp-block-search__button" aria-label="検索欄を開く">⌕</button></form>
         </div>${fallback}</div></div></header>
-        <main>${links.map(link=>`<section id="${link.url.slice(2)}" style="min-height:1100px">
-          <h2>${link.label}</h2><a href="/policy/">方針</a></section>`).join('')}</main>
+        <main><h1>${links.find(link=>link.url===url.pathname)?.label||'記事'}</h1>
+          <a href="/policy/">方針</a></main>
         </div></body></html>`});
     });
     const page=await context.newPage();await page.goto(origin+'/article/');
@@ -125,7 +129,7 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
     }));
     if(!javaScriptEnabled){
       const names=[];
-      for(let index=0;index<7;index++){
+      for(let index=0;index<links.length+3;index++){
         await page.keyboard.press('Tab');names.push(await page.evaluate(()=>{
           const active=document.activeElement;return active.tagName==='INPUT'?active.id:active.textContent.trim();
         }));
@@ -141,8 +145,10 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
       for(const link of links){
         await banner.getByRole('link',{name:link.label,exact:true}).click();
         await page.waitForURL(origin+link.url);
-        const top=await page.locator(link.url.slice(1)+' h2').evaluate(e=>e.getBoundingClientRect().top);
-        if(top < -0.5||top>=900) throw Error('Native fragment heading is not visible: '+
+        const heading=page.getByRole('heading',{name:link.label,level:1,exact:true});
+        await heading.scrollIntoViewIfNeeded();
+        const top=await heading.evaluate(e=>e.getBoundingClientRect().top);
+        if(top < -0.5||top>=900) throw Error('Native destination heading is not visible: '+
           JSON.stringify({width,textSize,home,link,top}));
       }
       await banner.getByRole('searchbox',{name:'記事を検索'}).fill('比較');
@@ -172,7 +178,7 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
         timeout=60,
     )
     observations = json.loads(result.stdout)
-    assert len(observations) == 40
+    assert {(row['width'], row['textSize'], row['javaScriptEnabled'], row['home']) for row in observations} == set(product((320, 360, 390, 768, 1024, 1440), (100, 200), (False, True), (False, True)))
     for row in observations:
         assert row["overflow"] is False, row
         assert row["blocked"] == 0, row

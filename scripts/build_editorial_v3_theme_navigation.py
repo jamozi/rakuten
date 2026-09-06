@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import re
 import stat
+import sys
 from typing import TYPE_CHECKING, Final, NoReturn
 
 ROOT: Final = Path(__file__).resolve().parents[1]
@@ -47,7 +48,8 @@ CONTENT_ROLE_LABELS: Final = {
     "lifecycle_status_route": "型番・販売表示の確認案内",
     "model_family_comparison": "ブランド内比較",
 }
-AUDIT_VIEWPORTS: Final = (360, 390, 768, 1440)
+READER_INPUT_PATH: Final = Path("changes/editorial-portfolio-v3/reader-experience.v1.json")
+AUDIT_VIEWPORTS: Final = (360, 390, 768, 1024, 1440)
 AUDIT_POLICY_SLUGS: Final = (
     "about-ad-policy",
     "comparison-policy",
@@ -581,8 +583,22 @@ def build_documents() -> tuple[bytes, bytes]:
         _fail()
     projected_articles.sort(key=lambda row: str(row["article_code"]))
     clusters.sort(key=lambda row: int(row["home_order"]))
+    sys.path.insert(0, str(ROOT / "python"))
+    from raos.application.editorial.reader_experience_v1 import approved_media_record, reader_navigation
+    reader_path = ROOT / READER_INPUT_PATH
+    registry = json.loads(reader_path.read_text(encoding="utf-8")) if reader_path.exists() else {}
+    approved_media = []
+    for raw in registry.get("media", []):
+        if isinstance(raw, dict) and approved_media_record(raw):
+            approved_media.append(raw)
+    projected_reader = reader_navigation(registry.get("navigation"), projected_articles)
+    reader_hubs = projected_reader.get("hubs", [])
+    if not isinstance(reader_hubs, list):
+        _fail()
     output: dict[str, object] = {
         "articles": projected_articles,
+        "media_assets": approved_media,
+        "reader_navigation": projected_reader,
         "clusters": clusters,
         "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
         "source_navigation_sha256": hashlib.sha256(navigation_bytes).hexdigest(),
@@ -670,6 +686,15 @@ def build_documents() -> tuple[bytes, bytes]:
         "source_navigation_sha256": hashlib.sha256(navigation_bytes).hexdigest(),
         "source_portfolio_sha256": hashlib.sha256(portfolio_bytes).hexdigest(),
         "surfaces": audit_surfaces,
+        "reader_hubs": [
+            {'kind': 'reader_hub', 'surface_id': 'hub-' + hub['slug'], 'local_path': '/' + hub['slug'] + '/'}
+            for hub in reader_hubs
+        ],
+        "reader_display": {
+            "article_ids": sorted(key for key, profile in registry.get("articles", {}).items() if profile.get("components_enabled") is True),
+            "social_images": {raw["asset_ref"]: raw["path"] for raw in approved_media if isinstance(raw.get("path"), str)},
+            "primary_categories": projected_reader.get("primary_categories", {}),
+        },
         "target_origin": "https://kurashinoshirube.com",
         "version": "3.0.0",
         "viewports": list(AUDIT_VIEWPORTS),

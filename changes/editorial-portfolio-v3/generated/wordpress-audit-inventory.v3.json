@@ -208,6 +208,110 @@
       "surface_id": "not-found"
     }
   ],
+  "reader_display": {
+    "article_ids": [
+      "carry-on-suitcase-under-100-seats",
+      "front-open-carry-on-suitcase-with-stopper",
+      "lightweight-carry-on-suitcase-under-3kg",
+      "roomba-mini-vs-switchbot-k11-pro",
+      "solota-vs-rakua-mini-plus",
+      "st1703-first-suitcase-comparison",
+      "st1704-anker-solix-c300-c800-c1000-differences",
+      "st1704-compact-robot-vacuum-shortlist",
+      "st1704-countertop-dishwasher-for-small-households",
+      "st1704-portable-power-station-guide"
+    ],
+    "primary_categories": {
+      "carry-on-suitcase-under-100-seats": "travel",
+      "front-open-carry-on-suitcase-with-stopper": "travel",
+      "lightweight-carry-on-suitcase-under-3kg": "travel",
+      "roomba-mini-vs-switchbot-k11-pro": "cleaning",
+      "solota-vs-rakua-mini-plus": "kitchen",
+      "st1703-first-suitcase-comparison": "travel",
+      "st1704-anker-solix-c300-c800-c1000-differences": "preparedness",
+      "st1704-compact-robot-vacuum-shortlist": "cleaning",
+      "st1704-countertop-dishwasher-for-small-households": "kitchen",
+      "st1704-portable-power-station-guide": "preparedness"
+    },
+    "social_images": {}
+  },
+  "reader_hubs": [
+    {
+      "kind": "reader_hub",
+      "local_path": "/categories/",
+      "surface_id": "hub-categories"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/purposes/",
+      "surface_id": "hub-purposes"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/guides/",
+      "surface_id": "hub-guides"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/comparisons/",
+      "surface_id": "hub-comparisons"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/updates/",
+      "surface_id": "hub-updates"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/travel/",
+      "surface_id": "hub-travel"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/kitchen/",
+      "surface_id": "hub-kitchen"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/cleaning/",
+      "surface_id": "hub-cleaning"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/preparedness/",
+      "surface_id": "hub-preparedness"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/small-space/",
+      "surface_id": "hub-small-space"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/save-housework/",
+      "surface_id": "hub-save-housework"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/without-installation/",
+      "surface_id": "hub-without-installation"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/easy-maintenance/",
+      "surface_id": "hub-easy-maintenance"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/comfortable-travel/",
+      "surface_id": "hub-comfortable-travel"
+    },
+    {
+      "kind": "reader_hub",
+      "local_path": "/prepare-outage/",
+      "surface_id": "hub-prepare-outage"
+    }
+  ],
   "route_coverage": {
     "archive_types": [
       {
@@ -264,7 +368,7 @@
   },
   "schema": "RAOS_WORDPRESS_AUDIT_INVENTORY_V3",
   "source_navigation_sha256": "ae5c793515e8de38d67fa3ec25979b639a6ab4487511482bc65d564c66c6e077",
-  "source_portfolio_sha256": "ad6625783bef5c7dcef7aaea0cf25d60cd8e48e679f9a34c6abaff0ade99d01f",
+  "source_portfolio_sha256": "f444f9854c4520649ec4977419ece445ff3240c6bcdc8ab9f913a5d931525790",
   "surfaces": [
     {
       "kind": "home",
@@ -475,6 +579,7 @@
     360,
     390,
     768,
+    1024,
     1440
   ]
 }

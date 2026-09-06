@@ -207,6 +207,7 @@ class ArticleBindingV3:
     related_article_ids: tuple[str, ...]
     product_ids: tuple[str, ...]
     cta_bindings: tuple[CtaBindingV3, ...]
+    reader_experience: Mapping[str, object] | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -867,6 +868,7 @@ def load_editorial_portfolio_v3(repository_root: Path) -> EditorialPortfolioV3:
                 related_article_ids=related,
                 product_ids=product_refs,
                 cta_bindings=tuple(bindings),
+                reader_experience=_mapping(row["reader_experience"]) if "reader_experience" in row else None,
             )
         )
     article_by_id = {article.article_id: article for article in articles}

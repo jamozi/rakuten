@@ -1,85 +1,36 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 <!-- wp:group {"tagName":"main","className":"raos-home-v2","anchor":"main-content","layout":{"type":"default"}} -->
 <main id="main-content" class="wp-block-group raos-home-v2">
-
 <!-- wp:html -->
-<section class="raos-home-hero" id="top" aria-labelledby="home-hero-title">
-  <div class="raos-home-hero__inner">
-    <div class="raos-home-hero__copy">
-      <p class="raos-home-eyebrow">暮らしの道具を、条件と根拠から</p>
-      <h1 id="home-hero-title"><span>暮らしの選択に、</span><span>たしかな</span><span>道しるべを。</span></h1>
-      <p class="raos-home-hero__lead">置けるか、持ち運べるか、手入れを続けられるか。暮らしの条件から道具を絞れるよう、公式仕様と選ぶときの注意点を整理します。</p>
-      <div class="raos-home-hero__actions"><a class="raos-home-button" href="#categories">目的から探す</a><a class="raos-home-text-link" href="#latest">最近更新したガイドを見る <span aria-hidden="true">→</span></a></div>
-      <p class="raos-home-hero__disclosure">当サイトには広告・アフィリエイトリンクが含まれます。<a href="/about-ad-policy/">運営・広告方針</a></p>
-    </div>
-    <figure class="raos-home-hero__visual"><img class="raos-home-hero__image" src="/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp" alt="鍋、マグカップ、照明とチェックリストを描いた暮らしの道具のイラスト" width="1600" height="900" fetchpriority="high" decoding="async"><figcaption><span>道具を選ぶ、その前に暮らしの条件を。</span><span>イメージイラスト</span></figcaption></figure>
-  </div>
-</section>
-
-<section class="raos-home-purpose raos-home-section" id="categories" aria-labelledby="home-purpose-title">
-  <div class="raos-home-shell">
-    <header class="raos-home-heading raos-home-heading--split"><div><p class="raos-home-eyebrow">選び方の入口</p><h2 id="home-purpose-title">いま選びたい道具は？</h2></div><p>まずは道具の種類へ。各記事で、置き場所や使い方に合う条件を確認できます。</p></header>
-    <nav class="raos-home-purpose__shortcuts" aria-label="道具の種類から記事を探す">
-      <a href="#cluster-mobility">スーツケース <span aria-hidden="true">↓</span></a>
-      <a href="#cluster-home">食洗機・ロボット掃除機 <span aria-hidden="true">↓</span></a>
-      <a href="#cluster-ready">ポータブル電源 <span aria-hidden="true">↓</span></a>
-    </nav>
-  </div>
-</section>
+<section class="raos-home-hero" id="top" aria-labelledby="home-hero-title"><div class="raos-home-hero__inner"><div class="raos-home-hero__copy">
+<p class="raos-home-eyebrow">暮らしの道具の比較・購入前ガイド</p>
+<h1 id="home-hero-title"><span>暮らしに合うものを、</span><span>迷わず選ぶ。</span></h1>
+<p class="raos-home-hero__lead">サイズ、使い方、手入れのしやすさまで。買う前に知っておきたい違いを、分かりやすく整理します。</p>
 <!-- /wp:html -->
-
-<!-- wp:shortcode -->[kurashinoshirube_published_clusters]<!-- /wp:shortcode -->
-
-<!-- wp:shortcode -->[kurashinoshirube_featured_guide]<!-- /wp:shortcode -->
-
-<!-- wp:group {"align":"wide","className":"raos-home-latest raos-home-section","anchor":"latest","layout":{"type":"default"}} -->
+<!-- wp:shortcode -->[kurashinoshirube_reader_home section="actions"]<!-- /wp:shortcode -->
+<!-- wp:html -->
+<ul class="raos-home-trust"><li>公式仕様を確認</li><li>向かない条件も掲載</li><li>未確認は未確認と表示</li></ul>
+<p class="raos-home-hero__disclosure">当サイトには広告・アフィリエイトリンクが含まれます。<a href="/about-ad-policy/">運営・広告方針</a></p>
+</div></div></section>
+<!-- /wp:html -->
+<!-- wp:shortcode -->[kurashinoshirube_reader_home section="purposes"]<!-- /wp:shortcode -->
+<!-- wp:shortcode -->[kurashinoshirube_reader_home section="categories"]<!-- /wp:shortcode -->
+<!-- wp:shortcode -->[kurashinoshirube_reader_home section="guides"]<!-- /wp:shortcode -->
+<!-- wp:group {"tagName":"section","align":"wide","className":"raos-home-latest raos-home-section","anchor":"latest","layout":{"type":"default"}} -->
 <section id="latest" class="wp-block-group alignwide raos-home-latest raos-home-section">
-<!-- wp:group {"className":"raos-home-heading raos-home-heading--split","layout":{"type":"default"}} --><div class="wp-block-group raos-home-heading raos-home-heading--split"><!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group"><!-- wp:paragraph {"className":"raos-home-eyebrow"} --><p class="raos-home-eyebrow">更新情報</p><!-- /wp:paragraph --><!-- wp:heading {"level":2} --><h2 class="wp-block-heading">最近更新したガイド</h2><!-- /wp:heading --></div><!-- /wp:group --><!-- wp:paragraph --><p>公開中の比較・選び方ガイドを、内容の更新が新しい順に案内します。</p><!-- /wp:paragraph --></div><!-- /wp:group -->
-<!-- wp:query {"query":{"inherit":false,"perPage":3,"postType":"post","order":"desc","orderBy":"modified"}} -->
-<div class="wp-block-query">
-<!-- wp:post-template {"className":"raos-guide-grid"} -->
-<!-- wp:group {"tagName":"article","className":"raos-guide-card","layout":{"type":"default"}} -->
-<article class="wp-block-group raos-guide-card">
-<!-- wp:group {"className":"raos-guide-card__visual","layout":{"type":"default"}} --><div class="wp-block-group raos-guide-card__visual" aria-hidden="true"></div><!-- /wp:group -->
-<!-- wp:group {"className":"raos-guide-card__body","layout":{"type":"default"}} --><div class="wp-block-group raos-guide-card__body">
-<!-- wp:group {"className":"raos-guide-card__meta","layout":{"type":"flex","flexWrap":"wrap"}} --><div class="wp-block-group raos-guide-card__meta"><!-- wp:paragraph {"className":"raos-article-category"} --><p class="raos-article-category">比較ガイド</p><!-- /wp:paragraph --></div><!-- /wp:group -->
-<!-- wp:post-title {"isLink":true,"level":3} /-->
-<!-- wp:post-excerpt {"moreText":"この記事を読む"} /-->
-<!-- wp:post-date {"format":"Y年n月j日","displayType":"modified","className":"raos-guide-card__date"} /-->
-</div><!-- /wp:group -->
-</article><!-- /wp:group -->
-<!-- /wp:post-template -->
-<!-- wp:query-no-results --><!-- wp:paragraph {"className":"raos-empty-state"} --><p class="raos-empty-state">公開条件を満たすガイドは、現在準備中です。</p><!-- /wp:paragraph --><!-- /wp:query-no-results -->
-</div><!-- /wp:query -->
+<!-- wp:heading {"level":2} --><h2 class="wp-block-heading">最近更新したガイド</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>内容の更新が新しい順に案内します。</p><!-- /wp:paragraph -->
+<!-- wp:shortcode -->[kurashinoshirube_latest_guides]<!-- /wp:shortcode -->
 </section><!-- /wp:group -->
-
 <!-- wp:html -->
-<section class="raos-home-promise" aria-labelledby="home-promise-title">
-  <div class="raos-home-shell">
-    <header class="raos-home-heading raos-home-heading--compact"><p class="raos-home-eyebrow">比較の方針</p><h2 id="home-promise-title">比較記事の3つの約束</h2></header>
-    <ol class="raos-home-promise__list">
-      <li><span>01</span><div><h3>根拠をたどれる形にする</h3><p>確認した公式情報と対象型番を記事に示します。</p></div></li>
-      <li><span>02</span><div><h3>分からないことを断定しない</h3><p>実機を使っていない記事は、その旨を明記します。</p></div></li>
-      <li><span>03</span><div><h3>買わない判断も結論にする</h3><p>向かない条件と見送る選択を示し、いまの道具で足りるなら「買い替え不要」と伝えます。</p></div></li>
-    </ol>
-  </div>
-</section>
-
-<section class="raos-home-method raos-home-section" id="home-method" aria-labelledby="home-method-title">
-  <div class="raos-home-shell">
-    <header class="raos-home-method__heading"><p class="raos-home-eyebrow">比較の進め方</p><h2 id="home-method-title">比較記事ができるまで</h2><p>暮らしの条件を整理し、メーカー公式情報と照らしてから、違いと制約を記事にまとめます。</p></header>
-    <ol class="raos-home-method__list"><li><span>01</span><h3>条件を整理</h3><p>利用場面や置き場所など、選ぶ前提を先に決めます。</p></li><li><span>02</span><h3>型番と一次情報を照合</h3><p>メーカー公式の仕様を型番単位で確認し、参照日を残します。</p></li><li><span>03</span><h3>違いと制約を比較</h3><p>メリットだけでなく、設置条件や合わないケースも並べます。</p></li><li><span>04</span><h3>未確認を分けて記事化</h3><p>実機未使用の感想を作らず、確認できた仕様と編集判断を分けます。</p></li></ol>
-    <a class="raos-home-text-link raos-home-text-link--inverse" href="/comparison-policy/">詳しい比較・編集方針を見る <span aria-hidden="true">→</span></a>
-  </div>
-</section>
-
-<section class="raos-home-about raos-home-section" id="about" aria-labelledby="home-about-title">
-  <div class="raos-home-shell">
-    <div class="raos-home-about__grid"><header><p class="raos-home-eyebrow">運営と責任</p><h2 id="home-about-title">「暮らしのしるべ」について</h2></header><div><p class="raos-home-about__lead">暮らしの条件から、納得して道具を選ぶために。</p><p>記事の調査・執筆・技術点検にはCodexを利用し、「暮らしのしるべ編集者」が公開内容を承認します。内容に誤りが見つかった場合は、公式情報を再確認し、訂正と更新に責任を持って対応します。</p><a class="raos-home-text-link" href="/about-ad-policy/">運営・広告・訂正方針を見る <span aria-hidden="true">→</span></a></div></div>
-    <aside class="raos-home-disclosure" aria-labelledby="home-disclosure-title"><h3 id="home-disclosure-title">広告・アフィリエイトについて</h3><p>当サイトではアフィリエイトプログラムを利用しています。リンクを経由した購入により暮らしのしるべ編集者が報酬を受け取る場合がありますが、商品選定・評価は報酬条件とは切り離して行います。</p><a href="/about-ad-policy/">詳しく読む</a></aside>
-  </div>
-</section>
+<section class="raos-home-promise" aria-labelledby="home-promise-title"><div class="raos-home-shell">
+<header class="raos-home-heading raos-home-heading--compact"><p class="raos-home-eyebrow">比較の方針</p><h2 id="home-promise-title">比較記事の3つの約束</h2></header>
+<ol class="raos-home-promise__list">
+<li><span>01</span><div><h3>根拠をたどれる形にする</h3><p>確認した公式情報と対象型番を記事に示します。</p></div></li>
+<li><span>02</span><div><h3>分からないことを断定しない</h3><p>実機を使っていない記事は、その旨を明記します。</p></div></li>
+<li><span>03</span><div><h3>買わない判断も結論にする</h3><p>向かない条件と見送る選択を示します。商品選定・評価は報酬条件とは切り離して行います。</p></div></li>
+</ol><p><a href="/comparison-policy/">詳しい比較・編集方針を見る</a></p>
+</div></section>
 <!-- /wp:html -->
-
 </main><!-- /wp:group -->
 <!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

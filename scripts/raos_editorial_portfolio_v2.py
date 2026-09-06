@@ -36,6 +36,10 @@ from raos.adapters.self_hosted_editorial_pilot_json import (  # noqa: E402
     read_rakuten_product_evidence,
 )
 from raos.application.editorial import self_hosted_editorial_pilot as st1704  # noqa: E402
+from raos.application.editorial.reader_experience_projection import (  # noqa: E402
+    project_registered_article,
+)
+from raos.application.editorial.reader_experience_v1 import CtaEvidence  # noqa: E402
 from raos.application.editorial.editorial_portfolio_v2 import (  # noqa: E402
     ArticleBindingV2,
     LOCAL_FIXTURE_RELATIVE_PATH,
@@ -3394,6 +3398,7 @@ def _materialized_cta_kind_counts(
     markup: str,
     *,
     article: ArticleBindingV2,
+    allow_omitted: bool = False,
 ) -> tuple[int, int]:
     """Count the CTA kinds actually emitted for every required placement."""
 
@@ -3431,7 +3436,7 @@ def _materialized_cta_kind_counts(
             affiliate_count += 1
         else:
             manufacturer_count += 1
-    if seen != expected:
+    if not allow_omitted and seen != expected:
         fail("RAOS_EDITORIAL_PORTFOLIO_CTA_STRUCTURE_INVALID")
     return affiliate_count, manufacturer_count
 
@@ -3509,6 +3514,7 @@ def materialize(
     article_receipts: list[dict[str, str]] = []
     actual_affiliate_cta_count = 0
     actual_manufacturer_cta_count = 0
+    display_eligible_product_ids: set[str] = set()
     for article in portfolio.articles:
         if article.local_slug not in by_local_slug:
             fail("RAOS_EDITORIAL_PORTFOLIO_FIXTURE_INVALID")
@@ -3524,8 +3530,29 @@ def materialize(
             evidence_views=views,
             mode=mode,
         )
+        eligible = set()
+        for product_id in article.product_ids:
+            try:
+                require_manufacturer_sales_state_for_products_v1(portfolio, (product_id,), now=generated_at)
+            except EditorialPortfolioV2Failure:
+                continue
+            eligible.add(product_id)
+        display_eligible_product_ids.update(eligible)
+        offers = frozenset(
+            (product_id, view.evidence.destination_url)
+            for product_id, view in views.items()
+            if view.state == "verified" and view.evidence is not None and product_id in eligible
+        )
+        materialized = project_registered_article(
+            ROOT, materialized, article_id=article.article_id,
+            evidence=CtaEvidence(verified_offers=offers, eligible_products=frozenset(eligible)),
+            approved_product_images=frozenset(
+                product_id for product_id, view in views.items()
+                if view.state == "verified" and view.evidence is not None
+            ),
+        )
         article_affiliate_ctas, article_manufacturer_ctas = (
-            _materialized_cta_kind_counts(materialized, article=article)
+            _materialized_cta_kind_counts(materialized, article=article, allow_omitted=True)
         )
         actual_affiliate_cta_count += article_affiliate_ctas
         actual_manufacturer_cta_count += article_manufacturer_ctas
@@ -3598,23 +3625,19 @@ def materialize(
         if product_id in verified_product_ids
     )
     affiliate_cta_count = product_card_count * 2
-    sales_available_product_ids = {
-        row.product_id for row in sales_audit.products if row.state == "AVAILABLE"
-    }
     verified_affiliate_cta_count = (
         sum(
             1
             for article in portfolio.articles
             for product_id in article.product_ids
             if product_id in verified_product_ids
-            and product_id in sales_available_product_ids
+            and product_id in display_eligible_product_ids
         )
         * 2
     )
     if (
         actual_affiliate_cta_count != verified_affiliate_cta_count
-        or actual_affiliate_cta_count + actual_manufacturer_cta_count
-        != affiliate_cta_count
+        or actual_manufacturer_cta_count != 0
     ):
         fail("RAOS_EDITORIAL_PORTFOLIO_CTA_STRUCTURE_INVALID")
     completion = {
@@ -3631,8 +3654,8 @@ def materialize(
         "verified_product_card_count": verified_product_card_count,
         "affiliate_cta_count": affiliate_cta_count,
         "verified_affiliate_cta_count": actual_affiliate_cta_count,
-        # Missing evidence is represented by visible non-image status, never by
-        # a neutral or article-level image masquerading as product media.
+        # Missing commerce is omitted; the reader sees no placeholder or
+        # manufacturer sales-link substitute.
         "neutral_product_image_count": 0,
         "manufacturer_fallback_cta_count": actual_manufacturer_cta_count,
         "measurement_collection_enabled": False,

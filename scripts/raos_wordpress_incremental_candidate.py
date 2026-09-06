@@ -32,6 +32,7 @@ from raos.application.editorial.verified_incremental_sources_v1 import (  # noqa
     SelectedOfficialSourcesV1,
     validate_selected_official_sources,
 )
+from raos.application.editorial.reader_experience_projection import project_registered_article  # noqa: E402
 from raos.application.editorial.verified_incremental_v1 import (  # noqa: E402
     ExistingDocument,
     AUDIT_SUBJECT_MAX_AGE,
@@ -151,6 +152,7 @@ def prepare_noncommercial_candidate(
             cta_product_ids=frozenset(),
             article_id=binding.article_id,
         )
+        markup = project_registered_article(ROOT, markup, article_id=binding.article_id)
         verify_commerce_markup(
             markup,
             article_id=binding.article_id,
