@@ -94,7 +94,7 @@ const pageClasses=['raos-home-v2-page','raos-editorial-v2-page',
             <div class="raos-masthead is-layout-flex is-nowrap">
               <p class="raos-wordmark"><a href="#main">暮らしのしるべ</a></p>
               <div class="raos-masthead__actions is-layout-flex is-nowrap">
-                <nav class="raos-primary-nav wp-block-navigation">
+                <nav class="raos-primary-nav wp-block-navigation" data-raos-nav-ready="false">
                   <button class="wp-block-navigation__responsive-container-open" aria-label="メニューを開く">☰</button>
                   <div class="wp-block-navigation__responsive-container"><ul class="wp-block-navigation__container">
                     <li><a href="#main">目的から探す</a></li>
@@ -103,7 +103,7 @@ const pageClasses=['raos-home-v2-page','raos-editorial-v2-page',
                     <li><a href="#main">このサイトについて</a></li>
                   </ul></div>
                 </nav>
-                <form class="raos-header-search wp-block-search wp-block-search__searchfield-hidden">
+                <form class="raos-header-search wp-block-search wp-block-search__searchfield-hidden" data-raos-search-ready="button">
                   <label class="screen-reader-text">記事を検索</label>
                   <div class="wp-block-search__inside-wrapper"><button type="button"
                     class="wp-block-search__button" aria-label="検索欄を開く">⌕</button></div>
