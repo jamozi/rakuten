@@ -2196,14 +2196,13 @@ def test_content_is_visible_without_javascript() -> None:
         ".raos-comparison__cards",
         ".raos-comparison__table-view",
         ".raos-site-header .raos-wordmark::before",
+        ".raos-header-nojs-shell > summary::-webkit-details-marker",
         ".raos-site-header:has(.raos-primary-nav[data-raos-nav-ready])"
-        ":has(.raos-header-search[data-raos-search-ready]) .raos-header-nojs-shell",
+        ":has(.raos-header-search[data-raos-search-ready]) .raos-header-nojs-shell:not([open]):not(:focus-within),\n"
         ".raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready])"
-        ":has(.raos-header-search[data-raos-search-ready])) .raos-header-search,\n"
-        ".raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready])"
-        ":has(.raos-header-search[data-raos-search-ready])) .wp-block-navigation__responsive-container-open,\n"
-        ".raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready])"
-        ":has(.raos-header-search[data-raos-search-ready])) .wp-block-navigation__responsive-container-close",
+        ":has(.raos-header-search[data-raos-search-ready])) .raos-masthead__actions,\n"
+        ".raos-site-header:has(.raos-header-nojs-shell[open]) .raos-masthead__actions,\n"
+        ".raos-site-header:has(.raos-header-nojs-shell:focus-within) .raos-masthead__actions",
     }
     # Only the decorative wordmark mark disappears at narrow widths; the actual
     # site-name link and all article content remain present without JavaScript.
