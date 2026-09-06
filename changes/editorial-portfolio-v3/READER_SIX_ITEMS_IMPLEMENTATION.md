@@ -1,6 +1,6 @@
 # 残課題6項目の実装報告
 
-PR #190（main 4aa7739e）を基点に、公式根拠、費用フォーム、寿命条件、AIレビュー、計測停止の6項目を扱う。ローカル実装とGitHub開発操作の範囲で実施した。
+PR #190（main 4aa7739e）を基点に、公式根拠、費用フォーム、寿命条件、AIレビュー、計測停止の6項目を扱う。ローカル実装とGitHub開発操作の範囲で実施した。統合前にmainへ入ったPR #191（a1ead042）の検証基盤変更も取り込んだ。
 
 **本番送付・公開・本番下書き更新・provider request・資格情報操作・計測有効化は未実施。** 公開10記事のURL、型番、構成、5ガイドの公開権限なしを維持する。人間の参加者は0人、成功率・5秒/30秒の実測は未測定。
 
@@ -55,7 +55,9 @@ R12・R13は修正版の同一全文と実ブラウザーのnormal/unknown/priva
 
 | 検証 | 結果・範囲 |
 | --- | --- |
-| 所有者による生成 | make generate BASE=origin/main：81 owner、PASS。テーマの専用--generate/--source-checkもPASS。品質台帳のNOT_EXECUTED基準は専用ownerでhashだけを再計算し、BLOCKED・別人承認なしを保持 |
+| make fast（最終差分） | make fast BASE=0597c2c1：exit 0。最後の旧期待値修正を含む93 Pythonファイルを選択し、通常3,282件・serial 214件合格。data/storageはこの差分に対象なし。全体の再確認はPRのFinal Integration CIへ渡す |
+| make fast（統合変更全体の先行検査） | BASE=origin/mainで通常13,446件合格・既存7件skip。serialは1,667件合格・旧表数の期待値1件失敗。失敗箇所を更新し、単独検査と上記差分検査で合格。全体コマンド自体が合格したという記録にはしない |
+| 所有者による生成 | make generate BASE=origin/main：初回81 owner、main統合時147 owner、PASS。テーマの専用--generate/--source-checkもPASS。品質台帳のNOT_EXECUTED基準、それを参照するMCP manifest、全出力のactive manifestの順にownerでhashを再計算し、各checkがPASS。BLOCKED・別人承認なしを保持 |
 | 表示・内部リンク | 46ページ×360/390/768/1024/1440px、230表示、失敗0。ホーム、公開10記事、ローカル5ガイド、関連一覧・検索を含む |
 | 費用フォーム | 28項目PASS。初期空欄、0、正常値、欠損、UNKNOWN、不正値、小数回数、単位、丸め、キーボード、reset、JavaScript無効、5幅の通常/200%文字拡大 |
 | 通信・保存 | 入力・計算・resetのrequest 0、storage event 0、保存状態の変化なし。意図したページ再読み込みは別チェックに分離 |
@@ -63,6 +65,10 @@ R12・R13は修正版の同一全文と実ブラウザーのnormal/unknown/priva
 | 人の理解度・本番品質承認 | 人0人、成功率未測定。本番用品質台帳はNOT_EXECUTED/BLOCKEDを維持 |
 
 計算の正常例は検査用入力30.7円/kWh・262円/m³・2.1円/回・30回/月で、一回9.816円、月294.48円。市場料金や推奨単価ではなく、フォーム初期値には設定しない。DWSの同入力は電気・水を未計算と表示し、洗剤2.1円/回・63円/月だけの小計になる。
+
+初回の全体Python検査は13,434件合格・6件失敗・10件skipだった。6失敗は閉じたJS許可一覧への追加、Ankerの補助表2件目、除去した寿命推薦文に対応する旧期待値で、対象テストを更新後に6件を再実行して合格した。表の追加許可はAnkerの正確な記事IDに限り、各表の領域名が一意であることも検査する。任意のruff format --checkで見つかった既存4ファイルの整形差は変更前HEADでも再現するため、今回の変更に無関係な整形を加えていない。通常ゲートのruff checkは合格した。
+
+続くserialで見つかった旧期待値1件も、正確なAnker記事IDに限って補助表とモバイルカード数を2表分へ更新した。本文・実装の追加変更はなく、合格済み全範囲を繰り返す代わりに差分選択のmake fastで再確認した。検査ログはsix-items/validation/へ保存する。最終PRのCI結果はPRのVerification欄とGitHub checksで確認できる。
 
 - [費用フォーム](http://127.0.0.1:21924/local-preview-dishwasher-running-cost/)
 - [洗剤ガイド](http://127.0.0.1:21924/local-preview-dishwasher-detergent-guide/)
@@ -82,6 +88,7 @@ R12・R13は修正版の同一全文と実ブラウザーのnormal/unknown/priva
 | six-items/calculator-final/ | 修正後の28項目PASS。操作・通信・保存・JavaScript無効・5幅・200%文字拡大。normal-result.png、unknown-result.png、calculator-360-text-200.png等 |
 | six-items/search-final/ | 検索結果と2ページ目を5幅で再確認したPASS記録 |
 | six-items/final-verified/ | 整合性修正後の46ページ×5幅の最終HTML・画像・manifest。失敗0 |
+| six-items/validation/ | 統合変更全体の先行検査ログ、旧期待値を修正した後のmake fast差分検査ログと範囲・結果のJSON |
 
 検索結果の404は、新規JSがテーマの完全一致ファイル一覧へ正しい順で登録されておらず、専用の整合性stampも未更新だったことが原因。許可範囲や検索条件を緩めず、登録順とownerによるstamp更新を修正し、最終版で再検査した。
 
@@ -98,7 +105,7 @@ R12・R13は修正版の同一全文と実ブラウザーのnormal/unknown/priva
 | Anker原稿・選択境界 | content/articles.v1.json、reader-experience.v1.json |
 | claim・capture locator・開発照合 | build_st1704_portfolio_source_packets.py、build_st1704_reader_claim_coverage.py、source-registry.v1.json、reader-claim-bindings.v1.json |
 | 生成元の依存関係 | build_local_reader_guides.py、build_st1704_self_hosted_theme.py、build_st1704_self_hosted_editorial_manifest.py、st1704_official_source_capture.py |
-| 検査 | tests/wordpress_local_preview/の費用・補助表・既存表示/PHP integration、tests/st1704/test_anker_lifecycle_conditions.py、browser/local_running_cost_audit.mjs |
+| 検査 | tests/wordpress_local_preview/の費用・補助表・既存表示/PHP integration、tests/st1704/の寿命・テーマ・release contract、tests/editorial_measurement_v1/test_contract.py、tests/editorial_portfolio_v2/test_contract.py、browser/local_running_cost_audit.mjs |
 | 設計・調査報告 | READER_DATA_GAPS.md、READER_MEASUREMENT_DESIGN.md、NP_TMLK1_OFFICIAL_RECHECK.md、ANKER_LIFECYCLE_REVIEW.md、本書 |
 
 派生HTML・fixture・manifest・statusはowner generatorで更新する。生成物を手編集しない。最終の全ファイル一覧はPR差分で確認できる。計測・会計関連の派生差分は変更したAnker原稿・パッケージのhash連鎖であり、機能の有効化や新しい計測項目の追加ではない。

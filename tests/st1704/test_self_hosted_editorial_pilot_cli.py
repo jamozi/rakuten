@@ -860,10 +860,18 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
             first.product_count
         )
         assert content.count('class="raos-product-card__media"') == first.product_count
-        assert content.count('class="raos-comparison__table-view"') == 1
-        assert content.count('data-raos-placement="comparison_table"') == 1
-        assert content.count('class="raos-comparison__cards"') == 1
-        assert content.count('class="raos-comparison-card"') == first.product_count
+        table_count = (
+            2
+            if identity.article_id
+            == "st1704-anker-solix-c300-c800-c1000-differences"
+            else 1
+        )
+        assert content.count('class="raos-comparison__table-view"') == table_count
+        assert content.count('data-raos-placement="comparison_table"') == table_count
+        assert content.count('class="raos-comparison__cards"') == table_count
+        assert content.count('class="raos-comparison-card"') == (
+            first.product_count * table_count
+        )
         assert "<dl><div><dt>商品</dt><dd>" in content
         assert content.count('width="128" height="128"') == first.product_count
         assert content.count('class="raos-cta rakuten-cta"') == (
