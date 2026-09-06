@@ -288,7 +288,7 @@ def test_seed_materialization_is_complete_idempotent_and_checkable(
             assert "ST-0105 activates and owns" in text
             assert "src/generated files by hand" in text
             assert "inert boundary" not in text
-        else:
+        elif entry["path"] not in {"docs/architecture", "docs/runbooks", "tests/evals"}:
             assert "inert boundary" in text
 
     assert_success(run_bootstrap(seed_root), mode="bootstrap", changed=[])

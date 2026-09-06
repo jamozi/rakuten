@@ -70,11 +70,11 @@ source_artifacts:
   bytes: 2399
   sha256: 59f289a184e6859dfd969e21f20feab8971d5bb84a9a32f953a8d59aa64a66d3
 - uri: repo://README.md
-  bytes: 7310
-  sha256: dc504844e40b802f5105efa60330a3b8d4c1e161d7bf44213b25ceb64e69fd9a
+  bytes: 7650
+  sha256: 5e70e32980ac73e3939041429ff83e0d2a7184b4f3a8f331bb8639813386076f
 - uri: repo://Makefile
-  bytes: 3427
-  sha256: 4eb39cb5aefdda22eba5abfa74a6539d36444453aebb8a70b41510d4f6cf56c8
+  bytes: 3490
+  sha256: 9df01ce453622e0a2c3c624589a8de654efb721d484e412e525b650028e1dcee
 - uri: repo://docs/execplans/ST-0307.md
   bytes: 2270
   sha256: 237d9c6369926402c8afe12de8f5a58c8bda76af36e735dbda0475ba336e0fb8
@@ -115,20 +115,20 @@ source_artifacts:
   bytes: 10295
   sha256: 7abb84a9e9560daaed49bd3127d69ea05f9bf9d5ba49ebf1d39776dee37ee8f6
 - uri: repo://changes/st-0302/manifest.yaml
-  bytes: 8657
-  sha256: 7a23b541e3e93b39933e467cfdbf46cfdd18182ab321b95662f679d2619ee8e5
+  bytes: 8658
+  sha256: 95a8b7b6c1468deae7c59c5ca83dbc38e4cc2053936f128192c93147e4d3a4ee
 - uri: repo://changes/st-0303/manifest.yaml
-  bytes: 11451
-  sha256: 32df4f3c9c0eb4058177b7f264a9840304ca18f3310aae9bf8eea56df760f49f
+  bytes: 11452
+  sha256: 2d01fe153425f317741d43438a852700e7d4456ae19676d87034270519ef575a
 - uri: repo://changes/st-0304/manifest.yaml
   bytes: 11664
-  sha256: f458d6c3b4ec177034981de790776eeb4049396ad40b36c6877c92a5bad74795
+  sha256: 66816919da7484b003a84a768e17f94cde5029d61e5d33a26a08c6540ba57357
 - uri: repo://changes/st-0305/manifest.yaml
   bytes: 14860
-  sha256: 3ec4365153ea06710b1329c9416aee70ce221a3106402c4ff2b51005fc6e99b7
+  sha256: f31a168d88daa8e172b9833a6b75a981b0ac43743229332550e162955cfb9ea8
 - uri: repo://changes/st-0306/manifest.yaml
   bytes: 8657
-  sha256: ac34a591dce9fa5a6d7c60c479a197a88d1f0d10542807be9852c3e2788ba52c
+  sha256: fd100ea7740ae628086b49840c5c1825b9986779429f15f4de72d5bf3035970c
 - uri: repo://changes/st-0301/generated/migration-catalog.v1.json
   bytes: 10776
   sha256: d15068d6c7e637896919f266ee06b96563b5869810a82a1f7c9b97868baab92f
@@ -136,8 +136,8 @@ source_artifacts:
   bytes: 20865
   sha256: a4181b2d1de4a01a898b60b3e57a1640d7aa539be61f35b9e84c984df80b4839
 - uri: repo://python/raos/migrations/runner.py
-  bytes: 222535
-  sha256: 2e83bac7ca61ea44c08b95d8f13778e0b60de95ee7c43b6f04fe0886cc96145d
+  bytes: 222761
+  sha256: ace7997804a1f30b13ca4c5a5914396fa29eafd75b5a611d95cff9c5792c5d41
 - uri: repo://changes/st-0002/database/202607300001_job_state_expand.sql
   bytes: 3445
   sha256: 6171d33b0ac8a15d48a7ccfdff5ff6872ba8de5c919ca836effea3523d39ff31

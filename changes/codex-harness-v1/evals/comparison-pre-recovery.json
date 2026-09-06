@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "errors": [],
+  "cases": [
+    {
+      "case": "A",
+      "before_median": 16,
+      "after_median": 16,
+      "before_read_characters": 63366,
+      "after_read_characters": 57972,
+      "pass": true
+    },
+    {
+      "case": "B",
+      "before_median": 16,
+      "after_median": 16,
+      "before_read_characters": 150023,
+      "after_read_characters": 143722,
+      "pass": true
+    },
+    {
+      "case": "C",
+      "before_median": 16,
+      "after_median": 16,
+      "before_read_characters": 93320,
+      "after_read_characters": 83658,
+      "pass": true
+    },
+    {
+      "case": "D",
+      "before_median": 14,
+      "after_median": 16,
+      "before_read_characters": 5645,
+      "after_read_characters": 10488,
+      "pass": true
+    },
+    {
+      "case": "E",
+      "before_median": 14,
+      "after_median": 16,
+      "before_read_characters": 74653,
+      "after_read_characters": 44365,
+      "pass": true
+    }
+  ]
+}

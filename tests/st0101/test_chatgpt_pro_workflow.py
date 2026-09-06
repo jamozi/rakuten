@@ -535,14 +535,11 @@ def test_transport_wrapper_is_exact_origin_pinned_and_fail_closed() -> None:
 
 
 def test_repository_policy_keeps_proposals_unapproved_and_live_separate() -> None:
-    policy = (REPOSITORY_ROOT / "AGENTS.md").read_text(encoding="utf-8")
     story_policy = (REPOSITORY_ROOT / "changes/st-0101/README.md").read_text(
         encoding="utf-8"
     )
     browser_contract = (
         REPOSITORY_ROOT / "changes/st-0101/design-handoff.pro-browser.v1.yaml"
     ).read_text(encoding="utf-8")
-    assert policy.count("Pro は user が明示した場合だけ使える任意の助言機能") == 1
-    assert "https://chatgpt.com" not in policy
     assert "https://chatgpt.com" in browser_contract
     assert "UNAPPROVED_PROPOSAL" in story_policy

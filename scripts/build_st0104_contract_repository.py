@@ -30,6 +30,10 @@ from yaml.nodes import MappingNode
 
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+from scripts.bootstrap_workspace import expected_marker_bytes  # noqa: E402
+
 CONTRACTS_ROOT: Final = REPO_ROOT / "contracts"
 INSTALL_NAME: Final = "raos-v0.4"
 INSTALL_ROOT: Final = CONTRACTS_ROOT / INSTALL_NAME
@@ -60,9 +64,6 @@ SOURCE_STORY_ID: Final = "ST-0004"
 SOURCE_GENERATOR_PATH: Final = "scripts/build_st0004_revision.py"
 SOURCE_MANIFEST_SHA256: Final = (
     "5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458"
-)
-ROOT_README_SHA256: Final = (
-    "6ea0bb1d89007cf3a8cae6109d50963859ce764e05198a5b05c2a014733e5951"
 )
 EXPECTED_ARTIFACT_COUNT: Final = 306
 MAX_MANIFEST_BYTES: Final = 2 * 1024 * 1024
@@ -813,8 +814,8 @@ def assert_owned_destination() -> tuple[tuple[int, int], dict[str, bytes] | None
         maximum=MAX_MANIFEST_BYTES,
         kind="ST-0101 contracts README",
     )
-    if _sha256(readme_content) != ROOT_README_SHA256:
-        raise RuntimeError("ST-0101 contracts README drifted from its pinned bytes")
+    if readme_content != expected_marker_bytes(REPO_ROOT, "contracts"):
+        raise RuntimeError("ST-0101 contracts README drifted from its owner generator")
     if INSTALL_NAME not in names:
         _assert_directory_identity(CONTRACTS_ROOT, root_identity)
         return root_identity, None

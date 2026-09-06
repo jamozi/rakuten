@@ -47,11 +47,11 @@
     },
     {
       "path": "docs/architecture",
-      "purpose": "Implementation-facing architecture documentation derived without modifying canonical inputs."
+      "purpose": "Implementation map: [current system](current-system.md). Versioned decisions and applicability: [documentation map](../README.md). Historical ST documents remain reference snapshots."
     },
     {
       "path": "docs/runbooks",
-      "purpose": "Operational runbooks added with the services and controls they operate."
+      "purpose": "Operational workflows: [verified WordPress publication](wordpress-verified-incremental.md), [local/private editorial capture](editorial-incremental-private-capture.md), [minimum start](minimum-start-no-aws.md). Use the section for the requested stage."
     },
     {
       "path": "infra/docker",
@@ -183,7 +183,7 @@
     },
     {
       "path": "tests/evals",
-      "purpose": "AI and content evaluation tests and sanitized datasets."
+      "purpose": "Product output quality: [recorded evaluation harness](../../python/raos/application/ai/evaluation_harness.py) and [runtime tests](../st0707_runtime/test_harness.py). Codex cold-start behavior: [cases](codex_harness/cases.json) and [runner](../../scripts/codex_harness.py); methodology and commands are in [current system](../../docs/architecture/current-system.md). These are separate evaluations."
     },
     {
       "path": "tests/fixtures",

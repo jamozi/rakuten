@@ -77,13 +77,13 @@
     },
     {
       "path": ".codex/config.toml",
-      "sha256": "e58f4dacfcf504cd1ae4ad7e4221ccd5e980c1813358fbbf90454b7be82ba454",
-      "size": 6138
+      "sha256": "61529ede00fd373fb4cfb0698f97d2d4cb26fcaae4cb71fef8c4cb40f9593c55",
+      "size": 16430
     },
     {
       "path": "Makefile",
-      "sha256": "4eb39cb5aefdda22eba5abfa74a6539d36444453aebb8a70b41510d4f6cf56c8",
-      "size": 3427
+      "sha256": "9df01ce453622e0a2c3c624589a8de654efb721d484e412e525b650028e1dcee",
+      "size": 3490
     },
     {
       "path": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
@@ -107,7 +107,7 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "2ddfedeb8c9065eacacdbad90b83bb1f510150028fe8a177e8b33c5ed33f4618",
+      "sha256": "7e73cedc31f5255e86cb1aee20e649856b121891c34ea7dcb04aa2f572fa0cc8",
       "size": 81039
     },
     {
@@ -342,7 +342,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "445ea63f18e915be9bfc5f638067aba8e5af6220af6a7a9c73f03c4e38370c78",
+      "sha256": "97f23e0536def802b2d64bed37828f10d7576c0c4201f5472cb9972f9121b098",
       "size": 54277
     },
     {
@@ -392,23 +392,23 @@
     },
     {
       "path": "python/raos/application/editorial/reader_experience_v1.py",
-      "sha256": "5c98019288cd20229bcb49716c21737107fcb0abd7c3323b16318ff927c32ca9",
-      "size": 13999
+      "sha256": "2cbc5efd5fb4740e187ca0e625c42e6c95bcc89a1f230ace5725c75b2dc81f99",
+      "size": 15171
     },
     {
       "path": "python/raos/application/editorial/reader_experience_projection.py",
-      "sha256": "f1b16b297303ff1281b7c828140ce9af7ce2815ffde43b3f6e9d6137dbe5fad8",
-      "size": 27699
+      "sha256": "20f4e288e390c8ef73e762f1c0929a46f8fc742f85c01faf964c2bd20562b9be",
+      "size": 29426
     },
     {
       "path": "python/raos/application/editorial/reader_html.py",
-      "sha256": "7cf1b8fee50d603081aff474bd41cc7ee69273686a751245a5e569dc92b11855",
-      "size": 3797
+      "sha256": "7c0c495d5b2be06095808339b44d600c4081953c4f68304dd999da4326759690",
+      "size": 3839
     },
     {
       "path": "python/raos/application/editorial/reader_components.py",
-      "sha256": "a883c80c63ca5a113de0a534cb5b5f65335e0941bc87e45bc21fe11da5d48baf",
-      "size": 12287
+      "sha256": "b883cbbdc11bef259ef66582247395ac565c7803e241498fdd8b345d2935bb1b",
+      "size": 12575
     },
     {
       "path": "changes/editorial-portfolio-v3/reader-experience.v1.json",

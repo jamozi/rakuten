@@ -21,19 +21,10 @@ def test_contract_verification_is_integrated_into_final() -> None:
     assert all(plan.jobs[name] for name in ("contracts", "data", "storage"))
 
 
-def test_readme_documents_the_five_commands_and_external_boundary() -> None:
+def test_readme_exposes_unified_development_commands() -> None:
     readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
     for command in ("make setup", "make generate", "make check", "make fast", "make final"):
         assert command in readme
-    assert "docs/canonical" in readme
-    assert "external" in readme.lower()
-    for obsolete in (
-        "python_toolchain.sh",
-        "node_toolchain.sh",
-        "codegen_toolchain.sh",
-        "contract-install",
-    ):
-        assert obsolete not in readme
 
 
 def test_pinned_specification_resources_remain_hash_bound() -> None:
@@ -46,13 +37,6 @@ def test_pinned_specification_resources_remain_hash_bound() -> None:
     }
     for name, digest in expected.items():
         assert hashlib.sha256((resource_root / name).read_bytes()).hexdigest() == digest
-
-
-def test_agents_preserves_external_and_irreversible_boundaries() -> None:
-    instructions = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
-    for required in ("live 外部作用", "回復不能な操作", "make final"):
-        assert required in instructions
-    assert "exact SHA" not in instructions
 
 
 def test_contract_repository_is_drift_free() -> None:

@@ -14,6 +14,20 @@ from scripts import build_st0306_database_roles as generator
 from tests.postgresql18 import PostgreSQLCluster
 
 
+@pytest.fixture
+def historical_roles_graph(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Freeze only tests of the ST-0306 revision and its immediate predecessor."""
+    roles_index = next(
+        index
+        for index, spec in enumerate(catalog.REVISION_SPECS)
+        if spec.revision == catalog.DATABASE_ROLES_REVISION
+    )
+    specs = catalog.REVISION_SPECS[: roles_index + 1]
+    for module in (catalog, runner):
+        monkeypatch.setattr(module, "REVISION_SPECS", specs)
+        monkeypatch.setattr(module, "HEAD_REVISION", catalog.DATABASE_ROLES_REVISION)
+
+
 def _runner(cluster: PostgreSQLCluster, database: str) -> runner.MigrationRunner:
     return runner.MigrationRunner(REPOSITORY_ROOT, cluster.target(database))
 
@@ -130,19 +144,27 @@ def _insert_immutable_fact_fixtures(
     connection.execute("SET session_replication_role = origin")
 
 
+@pytest.mark.parametrize("graph", ("historical", "current"))
 def test_upgrade_installs_exact_roles_public_boundary_and_policies(
-    postgresql_cluster: PostgreSQLCluster, empty_database: str
+    graph: str,
+    request: pytest.FixtureRequest,
+    postgresql_cluster: PostgreSQLCluster,
+    empty_database: str,
 ) -> None:
+    if graph == "historical":
+        request.getfixturevalue("historical_roles_graph")
     instance = _runner(postgresql_cluster, empty_database)
-    assert instance.upgrade().current_revision == generator.REVISION
+    assert instance.upgrade().current_revision == catalog.HEAD_REVISION
+    assert instance.status().current_revision == catalog.HEAD_REVISION
 
     with postgresql_cluster.connect(empty_database) as connection:
         revision_sha256 = hashlib.sha256(
             (REPOSITORY_ROOT / generator.REVISION_PATH).read_bytes()
         ).hexdigest()
-        assert _execute_generated_validation(
-            connection, postgresql_cluster.migration_user
-        ) == [(generator.REVISION, revision_sha256, 8, 22)]
+        if graph == "historical":
+            assert _execute_generated_validation(
+                connection, postgresql_cluster.migration_user
+            ) == [(generator.REVISION, revision_sha256, 8, 22)]
         roles = connection.execute(
             """
             SELECT rolname, rolcanlogin, rolsuper, rolinherit, rolcreatedb,
@@ -354,6 +376,7 @@ def test_workload_grants_rls_and_immutable_guards_fail_closed(
     ),
 )
 def test_role_attribute_drift_fails_without_advancing_revision(
+    historical_roles_graph: None,
     drift_statement: str,
     repair_statement: str,
     postgresql_cluster: PostgreSQLCluster,
@@ -382,7 +405,9 @@ def test_role_attribute_drift_fails_without_advancing_revision(
 
 
 def test_downgrade_revokes_database_authority_preserves_roles_and_recovers(
-    postgresql_cluster: PostgreSQLCluster, empty_database: str
+    historical_roles_graph: None,
+    postgresql_cluster: PostgreSQLCluster,
+    empty_database: str,
 ) -> None:
     instance = _runner(postgresql_cluster, empty_database)
     instance.upgrade()

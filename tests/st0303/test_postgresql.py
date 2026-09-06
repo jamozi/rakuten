@@ -107,7 +107,46 @@ def test_zero_database_reaches_exact_cumulative_head_with_st0303_history(
     _use_cumulative_graph(monkeypatch)
     instance = _migration_runner(postgresql_cluster, empty_database)
 
-    assert catalog.HEAD_REVISION == DATABASE_ROLES_REVISION
+    assert catalog.HEAD_REVISION == _CUMULATIVE_HEAD_REVISION
+    assert instance.status().current_revision == "base"
+    result = instance.upgrade()
+    assert result.current_revision == _CUMULATIVE_HEAD_REVISION
+    assert result.changed is True
+    assert instance.upgrade().changed is False
+    assert instance.status().current_revision == _CUMULATIVE_HEAD_REVISION
+
+    with postgresql_cluster.connect(empty_database) as connection:
+        assert connection.execute(
+            "SELECT version_num FROM public.raos_migration_version"
+        ).fetchone() == (_CUMULATIVE_HEAD_REVISION,)
+        assert connection.execute(
+            """
+            SELECT revision_id, story_id, direction, status, runner_version
+            FROM public.raos_migration_history
+            ORDER BY event_id
+            """
+        ).fetchall() == [
+            (spec.revision, spec.story_id, "UPGRADE", status, spec.runner_version)
+            for index, spec in enumerate(_CUMULATIVE_REVISION_SPECS)
+            for status in (("SUCCEEDED",) if index == 0 else ("STARTED", "SUCCEEDED"))
+        ]
+
+
+def test_historical_database_roles_head_preserves_exact_six_revision_history(
+    postgresql_cluster: PostgreSQLCluster,
+    empty_database: str,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    roles_index = next(
+        index
+        for index, spec in enumerate(_CUMULATIVE_REVISION_SPECS)
+        if spec.revision == DATABASE_ROLES_REVISION
+    )
+    specs = _CUMULATIVE_REVISION_SPECS[: roles_index + 1]
+    for module in (catalog, runner):
+        monkeypatch.setattr(module, "REVISION_SPECS", specs)
+        monkeypatch.setattr(module, "HEAD_REVISION", DATABASE_ROLES_REVISION)
+    instance = _migration_runner(postgresql_cluster, empty_database)
     assert instance.status().current_revision == "base"
     result = instance.upgrade()
     assert result.current_revision == DATABASE_ROLES_REVISION

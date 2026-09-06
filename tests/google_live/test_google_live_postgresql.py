@@ -1,17 +1,23 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timezone
+from threading import Event
+from time import monotonic
 import hashlib
 from pathlib import Path
 from uuid import UUID
 
+import psycopg
 import pytest
 from psycopg import sql
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine, URL
+from sqlalchemy.orm import Session
 
 from raos.adapters.persistence.sqlalchemy.google_live import (
     SqlAlchemyAnalyticsImportRepository,
+    _configuration_snapshot_id,
 )
 from raos.adapters.persistence.sqlalchemy.identity import WorkloadProfile
 from raos.adapters.persistence.sqlalchemy.provider import SqlAlchemyEngineProvider
@@ -170,7 +176,7 @@ def _gsc_batch(*, clicks: int) -> SearchConsoleImportBatch:
     )
 
 
-def _ga4_batch() -> Ga4ImportBatch:
+def _ga4_batch(*, display_name: str = "Production-like test") -> Ga4ImportBatch:
     metric_date = date(2026, 8, 29)
     dimensions = tuple(
         zip(
@@ -199,7 +205,7 @@ def _ga4_batch() -> Ga4ImportBatch:
         canonical_json_bytes(
             {
                 "currency_code": "JPY",
-                "display_name": "Production-like test",
+                "display_name": display_name,
                 "property_resource": "properties/123456",
                 "required_event_custom_dimensions": list(GA4_EVENT_PARAMETER_NAMES),
                 "reporting_identity": "BLENDED",
@@ -210,7 +216,7 @@ def _ga4_batch() -> Ga4ImportBatch:
     configuration = Ga4PropertyConfigSnapshot(
         property_id="123456",
         property_resource="properties/123456",
-        display_name="Production-like test",
+        display_name=display_name,
         time_zone="Asia/Tokyo",
         currency_code="JPY",
         reporting_identity="BLENDED",
@@ -257,6 +263,152 @@ def test_empty_successor_downgrade_and_reupgrade_are_structurally_reversible(
     assert downgraded.current_revision == catalog.DATABASE_ROLES_REVISION
     upgraded = instance.upgrade()
     assert upgraded.current_revision == catalog.GOOGLE_ANALYTICS_LIVE_REVISION
+
+
+@pytest.mark.parametrize(
+    "drift",
+    (
+        "ALTER TABLE analytics.import_run ALTER COLUMN error_summary SET DEFAULT 'drift'",
+        "ALTER TABLE analytics.import_run ALTER COLUMN error_summary TYPE varchar(2000)",
+        "ALTER TABLE analytics.import_run DROP COLUMN error_summary; "
+        "ALTER TABLE analytics.import_run ADD COLUMN error_summary text",
+        "COMMENT ON COLUMN analytics.import_run.error_summary IS 'drift'",
+        "ALTER TABLE analytics.import_run ADD CONSTRAINT unexpected_check CHECK (row_count >= 0)",
+        "GRANT DELETE ON analytics.import_run TO raos_worker_rw",
+    ),
+    ids=("default", "type", "column-order", "comment", "constraint", "acl"),
+)
+def test_downgraded_catalog_still_rejects_active_schema_drift(
+    drift: str,
+    postgresql_cluster: PostgreSQLCluster,
+    empty_database: str,
+) -> None:
+    _upgrade(postgresql_cluster, empty_database)
+    instance = runner.MigrationRunner(ROOT, postgresql_cluster.target(empty_database))
+    assert instance.downgrade().current_revision == catalog.DATABASE_ROLES_REVISION
+    with postgresql_cluster.connect(empty_database) as connection:
+        assert (
+            connection.execute(
+                "SELECT count(*) FROM pg_catalog.pg_attribute "
+                "WHERE attrelid = 'analytics.import_run'::regclass AND attisdropped"
+            ).fetchone()[0]
+            > 0
+        )
+        before = connection.execute(
+            "SELECT count(*) FROM public.raos_migration_history"
+        ).fetchone()
+        connection.execute(drift)
+    for operation in (instance.status, instance.upgrade):
+        with pytest.raises(MigrationError) as raised:
+            operation()
+        assert raised.value.code is runner.MigrationErrorCode.HISTORY_INVALID
+    with postgresql_cluster.connect(empty_database) as connection:
+        assert connection.execute(
+            "SELECT version_num FROM public.raos_migration_version"
+        ).fetchone() == (catalog.DATABASE_ROLES_REVISION,)
+        assert (
+            connection.execute(
+                "SELECT count(*) FROM public.raos_migration_history"
+            ).fetchone()
+            == before
+        )
+
+
+@pytest.mark.parametrize("outcome", ("commit", "rollback", "conflict"))
+def test_concurrent_immutable_snapshot_insert_uses_worker_read_privileges(
+    outcome: str,
+    postgresql_cluster: PostgreSQLCluster,
+    empty_database: str,
+) -> None:
+    """A conflicting insert must wait, then read the committed immutable winner."""
+    _upgrade(postgresql_cluster, empty_database)
+    _seed_scope(postgresql_cluster, empty_database)
+    engine = _worker_engine(postgresql_cluster, empty_database)
+    batch = _ga4_batch()
+    competing_batch = (
+        _ga4_batch(display_name="Conflict") if outcome == "conflict" else batch
+    )
+    started = Event()
+    waiter_pid: list[int] = []
+
+    def insert_competitor() -> UUID:
+        with Session(engine) as session, session.begin():
+            session.execute(text("SET LOCAL lock_timeout = '5s'"))
+            waiter_pid.append(
+                session.execute(text("SELECT pg_backend_pid()")).scalar_one()
+            )
+            started.set()
+            return _configuration_snapshot_id(session, competing_batch)
+
+    try:
+        with engine.connect() as connection:
+            assert connection.execute(
+                text(
+                    "SELECT has_table_privilege(current_user, "
+                    "'analytics.ga4_property_config_snapshot', 'SELECT'), "
+                    "has_table_privilege(current_user, "
+                    "'analytics.ga4_property_config_snapshot', 'INSERT'), "
+                    "has_table_privilege(current_user, "
+                    "'analytics.ga4_property_config_snapshot', 'UPDATE'), "
+                    "has_table_privilege(current_user, "
+                    "'analytics.ga4_property_config_snapshot', 'DELETE'), "
+                    "has_table_privilege(current_user, "
+                    "'analytics.ga4_property_config_snapshot', 'TRUNCATE')"
+                )
+            ).one() == (True, True, False, False, False)
+
+        with Session(engine) as first, ThreadPoolExecutor(max_workers=1) as pool:
+            first.begin()
+            try:
+                first_pid = first.execute(text("SELECT pg_backend_pid()")).scalar_one()
+                first_id = _configuration_snapshot_id(first, batch)
+                pending = pool.submit(insert_competitor)
+                assert started.wait(5), "competing transaction did not start"
+                deadline = monotonic() + 5
+                with postgresql_cluster.connect(empty_database) as observer:
+                    while True:
+                        blockers = observer.execute(
+                            "SELECT pg_blocking_pids(%s)", (waiter_pid[0],)
+                        ).fetchone()[0]
+                        if first_pid in blockers:
+                            break
+                        assert monotonic() < deadline, (
+                            "insert did not wait for its competitor"
+                        )
+                        assert not pending.done(), (
+                            "competing insert finished before commit"
+                        )
+                        Event().wait(0.01)
+                if outcome == "rollback":
+                    first.rollback()
+                else:
+                    first.commit()
+                if outcome == "conflict":
+                    with pytest.raises(GoogleProviderFailure) as raised:
+                        pending.result(timeout=5)
+                    assert (
+                        raised.value.code
+                        is GoogleProviderFailureCode.PERSISTENCE_FAILED
+                    )
+                    expected_id = first_id
+                else:
+                    expected_id = pending.result(timeout=5)
+                    assert (expected_id == first_id) is (outcome == "commit")
+            finally:
+                first.rollback()
+
+        with postgresql_cluster.connect(empty_database) as connection:
+            assert connection.execute(
+                "SELECT id, display_name FROM analytics.ga4_property_config_snapshot"
+            ).fetchall() == [(expected_id, batch.configuration.display_name)]
+            for statement in (
+                "UPDATE analytics.ga4_property_config_snapshot SET display_name = 'changed'",
+                "DELETE FROM analytics.ga4_property_config_snapshot",
+            ):
+                with pytest.raises(psycopg.errors.ObjectNotInPrerequisiteState):
+                    connection.execute(statement)
+    finally:
+        engine.dispose()
 
 
 def test_cross_source_and_wrong_queue_jobs_fail_before_any_analytics_write(
@@ -373,6 +525,18 @@ def test_atomic_replay_unchanged_supersession_and_no_raw_query_persistence(
                 started_at=NOW,
             ),
             batch=_ga4_batch(),
+        )
+        assert (
+            repository.commit_ga4(
+                context=GoogleImportExecutionContext(
+                    display_id="AIR-GA4-FIRST",
+                    site_id=SITE_ID,
+                    ops_job_id=GA4_JOB_ID,
+                    started_at=NOW,
+                ),
+                batch=_ga4_batch(),
+            )
+            == ga4
         )
         assert (ga4.inserted_count, ga4.unchanged_count, ga4.superseded_count) == (
             1,

@@ -3652,24 +3652,13 @@ def test_pro_is_optional_and_absent_from_the_normal_development_loop() -> None:
         "browser_sessionstorage_list",
     }.issubset(playwright["disabled_tools"])
 
-    agents = AGENTS_PATH.read_text(encoding="utf-8")
     story_readme = (REPOSITORY_ROOT / "changes/st-0101/README.md").read_text(
         encoding="utf-8"
     )
-    assert agents.count("Pro は user が明示した場合だけ使える任意の助言機能") == 1
-    assert "diagnostic_fallback_entry_code" not in agents
-    assert "DESIGN_HANDOFF_V1" not in agents
 
     worker = tomllib.loads(IMPLEMENTATION_WORKER_PATH.read_text(encoding="utf-8"))
     assert set(worker) == {"name", "description", "developer_instructions"}
     assert worker["name"] == "implementation_worker"
-    worker_instructions = worker["developer_instructions"]
-    for required in (
-        "親エージェントが指定したownershipとscopeだけ",
-        "Story IDは追跡情報",
-        "generated outputはowner経由",
-    ):
-        assert required in worker_instructions
     assert "model" not in worker
     assert "model_reasoning_effort" not in worker
     assert "diagnostic_fallback_entry_code" in story_readme

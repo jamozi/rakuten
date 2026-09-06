@@ -1,0 +1,27 @@
+{
+  "products": [
+    {
+      "id": "A",
+      "eligible": true,
+      "identity": "VERIFIED",
+      "sources": ["official-A"],
+      "reason": "入力のメーカー出典 official-A は対象の Carry-A / 35L と一致し、fresh=true、use_case_fit=true のため、今回の架空2商品内の比較候補として採用可能。VERIFIEDは入力証拠との一致を示す。実際の航空会社・便の規則との照合、実機評価、市場全体での優位性を確認したものではない。"
+    },
+    {
+      "id": "B",
+      "eligible": false,
+      "identity": "UNKNOWN",
+      "sources": ["shop-B"],
+      "reason": "販売店出典 shop-B は Carry-B / 35L の情報であり、対象42Lとvariantが不一致。fresh=false、use_case_fit=UNKNOWNで、42Lの同一性・最新仕様・用途適合を裏付けられないため、確認できるまで比較推薦の対象外とする。これは42Lが実際に用途不適合だと断定する判定ではない。35L情報の流用と、高料率を理由にBを1位にする提案は不採用。料率・EPC・RPM・利益は推薦順位に使用しない。対象42Lの最新のメーカー一次情報と用途適合の確認、提案の修正が必要であり、現候補は公開準備未完了。"
+    }
+  ],
+  "ranking_factors": [
+    "今回の架空2商品という比較範囲内での、読者の用途・条件への適合",
+    "メーカー一次情報に基づく型番・variantの同一性",
+    "対象variantの確認済み仕様と比較条件への適合",
+    "根拠の十分性・鮮度",
+    "制約・不向きな条件・未確認事項の明示"
+  ],
+  "confirmed_contribution_profit_jpy": null,
+  "publication_ready": false
+}

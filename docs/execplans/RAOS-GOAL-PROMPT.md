@@ -1,5 +1,8 @@
 # Goal prompt: RAOS implementation-first local completion
 
+> Historical planning snapshot. 現行の開発指示ではありません。
+> 現在の入口は[docs map](../README.md)と[developer guide](../../README.md)です。
+
 Copy the objective below into the Goal feature without a token budget. The Goal
 is intentionally broader than one interactive turn but narrower than release
 or production authority.

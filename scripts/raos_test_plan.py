@@ -39,7 +39,31 @@ CRITICAL_TESTS = (
 
 # Routes intentionally use executable boundaries, not Story IDs. Story-derived
 # generator routes remain available for compatibility with existing artifacts.
+HARNESS_TESTS = (
+    "tests/evals/codex_harness/",
+    "tests/editorial_portfolio_v3/test_contract.py",
+    "tests/raos_v2/test_decision_engine.py",
+    "tests/wordpress_mcp_v1/",
+    *CRITICAL_TESTS,
+)
+
 COMPONENT_ROUTES = (
+    (
+        (
+            "AGENTS.md",
+            "README.md",
+            ".codex/",
+            ".agents/skills/",
+            "docs/README.md",
+            "docs/architecture/current-system.md",
+            "docs/architecture/README.md",
+            "docs/runbooks/README.md",
+            "tests/evals/README.md",
+            "scripts/codex_harness.py",
+            "tests/evals/codex_harness/",
+        ),
+        HARNESS_TESTS,
+    ),
     (("tools/affiliate_ingestion/",), ("tests/test_affiliate_ingestion.py",)),
     (
         ("packages/wordpress-mcp-bridge/", "changes/wordpress-mcp-v1/"),
@@ -289,7 +313,10 @@ def create_plan(
             or path.name == "package.json"
         ):
             full_reasons.add(f"shared infrastructure: {value}")
-        routed = False
+        routed = path.name in {"AGENTS.md", "AGENTS.override.md"}
+        if routed:
+            for test in HARNESS_TESTS:
+                add_test(Path(test), f"instruction input: {value}")
         for inputs, tests in COMPONENT_ROUTES:
             if any(_under(value, prefix) for prefix in inputs):
                 routed = True
@@ -305,8 +332,6 @@ def create_plan(
             continue
         owned = bool(affected_owners(registry, (path,)))
         if path.suffix in DOC_SUFFIXES and not owned and not routed:
-            continue
-        if value.startswith(".codex/") or path.name == "AGENTS.md":
             continue
         # Import selection must find tests, not merely another production file.
         connected = (
@@ -351,7 +376,11 @@ def create_plan(
         sorted(
             p.as_posix()
             for p in changed
-            if p.suffix in DOC_SUFFIXES and (root / p).is_file()
+            if p.suffix in DOC_SUFFIXES
+            and (root / p).is_file()
+            # Saved eval output retains links relative to its disposable checkout.
+            # The surrounding audit report remains a current repository document.
+            and not p.is_relative_to("changes/codex-harness-v1/evals/artifacts")
         )
     )
     static_python = tuple(

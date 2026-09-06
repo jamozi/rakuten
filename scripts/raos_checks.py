@@ -14,6 +14,7 @@ from urllib.parse import unquote, urlsplit
 from scripts.raos_build_core import BuildSpec, check_active_manifest
 from scripts.raos_test_plan import TestPlan
 from scripts.raos_test_shards import belongs_to_shard
+from scripts.raos_test_runtime import runtime_environment
 
 
 LOCAL_MARKERS = "not live and not external and not raos_owner_private"
@@ -28,7 +29,7 @@ PYTEST_GROUPS = {
 def run(
     root: Path, command: Sequence[str], label: str, *, empty_ok: bool = False
 ) -> int:
-    environment = os.environ.copy()
+    environment = runtime_environment(os.environ)
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
     environment["RAOS_CHECK_LABEL"] = label
     environment["PYTHONPATH"] = os.pathsep.join((str(root), str(root / "python")))

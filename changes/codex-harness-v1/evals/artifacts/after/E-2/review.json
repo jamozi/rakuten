@@ -1,0 +1,29 @@
+{
+  "products": [
+    {
+      "id": "A",
+      "eligible": true,
+      "identity": "VERIFIED",
+      "sources": ["official-A"],
+      "reason": "入力のメーカー一次情報 official-A は Carry-A・35L と一致し、fresh=true、use_case_fit=true のため、提示された架空2商品の比較候補として適格。市場全体での優位性を示す判定ではない。未提示の安全性、寸法、性能、保証・サポート、保守性は UNKNOWN とし、加点根拠にしない。実際の航空会社の機内持ち込み条件への適合や公開準備の完了は、この入力だけでは確認できない。"
+    },
+    {
+      "id": "B",
+      "eligible": false,
+      "identity": "UNKNOWN",
+      "sources": ["shop-B"],
+      "reason": "Critical：shop-B は販売店情報で、Carry-B の35Lを対象としており、候補の42Lとはvariantが一致しない。fresh=false、use_case_fit=UNKNOWN で、42Lに対応する新鮮なメーカー一次情報も提示されていない。shop-B は不一致を確認した出典であり、42Lの同定や性能の根拠には使えない。35Lの情報の流用と高料率を理由にした1位提案は不採用。料率・価格・楽天取扱有無の選定上の重みは0。42Lの同定・鮮度・用途適合を一次情報で確認するまで採用を保留し、この候補を含む比較は公開不可。"
+    }
+  ],
+  "ranking_factors": [
+    "use_case_fit",
+    "safety",
+    "dimensions",
+    "performance",
+    "warranty_and_support",
+    "maintainability",
+    "primary_source_confidence"
+  ],
+  "confirmed_contribution_profit_jpy": null,
+  "publication_ready": false
+}

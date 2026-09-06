@@ -1,0 +1,62 @@
+# 公開記事の更新情報表示
+
+読者が公開記事の更新日時と鮮度を判断できるよう、既存の公開値から
+`更新: <article.updated_public_at> / 状態: <article.freshness_status>` を返す
+`render_public_update_notice(projection)` を application/publishing に追加する。
+成功条件は指定形式、HTML escape、必須値欠損時の ValueError、公開／内部境界の維持である。
+
+## 採用するデータ経路と理由
+
+```text
+編集・レビュー → 承認済み immutable publication snapshot
+             → public projection → render_public_update_notice → 表示用文字列
+```
+
+根拠は [現行 architecture](../docs/architecture/current-system.md) の公開データ経路と、
+[既存 projector](../python/raos/domain/publishing/public_projection_v2.py) の
+`PUBLIC_ARTICLE_FIELDS`、[PublicArticleDocument 契約](../contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml)。
+必要な2項目は既に公開済みのフィールド定義に含まれる。renderer は受け取った
+`article` の2値だけを読み、入力を変更せず、I/O や内部 repository への依存を持たない。
+snapshot の承認・整合性検証は既存の上流境界が所有し、この関数は公開権限を付与しない。
+
+内部 Evidence／Finance を直接参照する案は採用しない。承認された公開状態と異なる値や
+内部情報の流出につながり、公開／内部分離と編集判断／財務分離を崩すためである。
+既存 projection で目的を満たせるので、直接参照による依存・障害経路を増やす必要もない。
+
+## 入力と欠損の扱い
+
+- projection と article は mapping、2値は空白だけではない文字列を必要とする。
+  欠落、null、空文字・空白のみ、型不正は ValueError。例外文に入力値を含めない。
+- `html.escape(..., quote=True)` で両方の値の `& < > " '` を escape する。
+  日時の再計算・整形や鮮度の判定は行わず、`UNKNOWN` もそのまま表示する。
+- 公開契約の `updated_public_at` は optional／nullable のまま維持する。
+  表示関数の必須条件を API 全体の必須条件へ拡張しない。
+  現行 recorded projector はこの値を null にするため、その出力では ValueError が正しい。
+  `published_at`、現在時刻、内部 Evidence／Finance から値を補完しない。
+
+## 隣接影響と範囲
+
+- snapshot、projection のフィールド集合・生成・hash・承認処理は変更不要。
+  generated output、OpenAPI、schema、生成 client、DB migration も変更しない。
+- renderer は純粋な消費側であり、公開 API／Web／WordPress の接続、cache 更新、
+  route の有効化や公開操作は追加しない。将来の呼出し側は未更新記事の ValueError を扱う必要がある。
+- auth/authz、CTA、広告表示、publication、kill switch の既存経路と test は維持する。
+  Finance の確定報酬・推計・商品選定にも影響しない。
+- 回帰テストは非本番の既存 projection fixture のコピーを使う。表示成功ケースの日時だけを
+  synthetic な値にし、元の生成物を更新しない。欠損、HTML 注入、入力不変、内部値からの補完禁止を検証する。
+
+## 検証
+
+依頼された隔離評価の範囲に従い、以下のみを実行する。ネットワーク・保存済み checkout を
+必要とする検査、全件 CI、`make fast` による全件選択は対象外。
+
+```sh
+.venv/bin/python -m pytest -q -p xdist.plugin -n 2 \
+  --basetemp=.harness-task/tmp/pytest-public-update-notice \
+  tests/st0904_v2/test_public_update_notice.py \
+  tests/st0904_v2/test_domain.py \
+  tests/st0904_v2/test_static_boundary.py
+```
+
+結果: 41 passed（追加回帰テスト29件、指定の既存テスト12件）、2.53秒。skip なし。
+指定範囲外の検査や live 公開の検証は実行していない。

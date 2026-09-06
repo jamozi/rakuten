@@ -1,0 +1,145 @@
+diff --git a/tests/test_affiliate_ingestion.py b/tests/test_affiliate_ingestion.py
+index 07a888e..155c1ea 100644
+--- a/tests/test_affiliate_ingestion.py
++++ b/tests/test_affiliate_ingestion.py
+@@ -6,6 +6,7 @@ import stat
+ import tempfile
+ import unittest
+ import zipfile
++from decimal import Decimal
+ from pathlib import Path
+ 
+ from tools.affiliate_ingestion.client import FetchBatch, RawPage, parse_records
+@@ -153,6 +154,99 @@ class NormalizationAndStorageTests(unittest.TestCase):
+             self.assertTrue(normalized_path.is_file())
+ 
+ 
++@pytest.mark.parametrize(
++    "value, expected_amount",
++    [(0, "0"), (0.0, "0.0"), (Decimal("0.00"), "0.00"), ("0", "0")],
++)
++@pytest.mark.parametrize(
++    "aliases",
++    [("id", "price", "commission"), ("product_id", "unit_price", "reward")],
++)
++def test_normalization_preserves_zero_values(value, expected_amount, aliases):
++    source = dict.fromkeys(aliases, value)
++    normalized = normalize_record("a8net", "products", source)
++
++    assert normalized["source_id"] == value
++    assert type(normalized["source_id"]) is type(value)
++    assert normalized["price"] == expected_amount
++    assert normalized["commission"] == expected_amount
++    assert normalized["raw"] == source
++
++
++@pytest.mark.parametrize("empty_value", [None, "", False, [], {}, (), b""])
++def test_normalization_skips_empty_aliases_before_zero(empty_value):
++    normalized = normalize_record(
++        "a8net",
++        "products",
++        {
++            "id": empty_value,
++            "product_id": 0,
++            "price": empty_value,
++            "unit_price": 0,
++            "commission": empty_value,
++            "reward": 0,
++        },
++    )
++
++    assert normalized["source_id"] == 0
++    assert normalized["price"] == "0"
++    assert normalized["commission"] == "0"
++
++
++@pytest.mark.parametrize("empty_value", [None, "", False, [], {}, (), b""])
++def test_normalization_keeps_empty_values_missing(empty_value):
++    normalized = normalize_record(
++        "a8net", "products", dict.fromkeys(("id", "price", "commission"), empty_value)
++    )
++
++    assert normalized["source_id"] is None
++    assert normalized["price"] is None
++    assert normalized["commission"] is None
++
++
++@pytest.mark.parametrize(
++    "first_value, later_value",
++    [(0, 100), (100, 0), (100, 200), ("0", "100"), (" ", "100")],
++)
++def test_normalization_preserves_alias_priority(first_value, later_value):
++    # Input order must not override the established alias order.
++    normalized = normalize_record(
++        "a8net",
++        "products",
++        {
++            "product_id": later_value,
++            "id": first_value,
++            "unit_price": later_value,
++            "price": first_value,
++            "reward": later_value,
++            "commission": first_value,
++        },
++    )
++
++    assert normalized["source_id"] == first_value
++    assert normalized["price"] == str(first_value)
++    assert normalized["commission"] == str(first_value)
++
++
++@pytest.mark.parametrize(
++    "source, expected_fingerprint",
++    [
++        ({"id": 0}, "c9f03aa8eea5d256d54819df16fe0e633018ee674c93f1e8e335e6df1c6b7854"),
++        (
++            {"id": "P-1"},
++            "e01a10b4a62c4c12a6ba9a12fbfe4842faf81e313594cc584cd4e875fcd4eabd",
++        ),
++        ({}, "d9be640685e7c7113bb77273dabb92b1f1222d59214364a06124eb5348d0633d"),
++    ],
++)
++def test_normalization_fingerprint_includes_present_source_id(
++    source, expected_fingerprint
++):
++    normalized = normalize_record("a8net", "products", source)
++
++    assert normalized["fingerprint_sha256"] == expected_fingerprint
++
++
+ @pytest.fixture(autouse=True)
+ def no_provider_network(monkeypatch):
+     def forbidden(*args, **kwargs):
+diff --git a/tools/affiliate_ingestion/normalize.py b/tools/affiliate_ingestion/normalize.py
+index a0863dc..50f2736 100644
+--- a/tools/affiliate_ingestion/normalize.py
++++ b/tools/affiliate_ingestion/normalize.py
+@@ -4,6 +4,7 @@ import hashlib
+ import json
+ from datetime import UTC, datetime
+ from decimal import Decimal, InvalidOperation
++from numbers import Number
+ from typing import Any, Iterable, Mapping
+ 
+ ALIASES: dict[str, tuple[str, ...]] = {
+@@ -68,7 +69,8 @@ def _flatten_keys(record: Mapping[str, Any]) -> dict[str, Any]:
+ def _first(record: Mapping[str, Any], aliases: Iterable[str]) -> Any:
+     for alias in aliases:
+         value = record.get(alias)
+-        if value:
++        # bool is a Number subclass, but False must still be treated as missing.
++        if value or (isinstance(value, Number) and not isinstance(value, bool)):
+             return value
+     return None
+ 
+@@ -102,8 +104,8 @@ def normalize_record(
+         [
+             provider,
+             resource,
+-            str(canonical.get("source_id") or ""),
+-            str(canonical.get("url") or ""),
++            str(canonical["source_id"]) if canonical["source_id"] is not None else "",
++            str(canonical["url"]) if canonical["url"] is not None else "",
+             raw_json,
+         ]
+     )

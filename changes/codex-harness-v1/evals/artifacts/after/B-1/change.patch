@@ -1,0 +1,368 @@
+diff --git a/docs/affiliate-network-ingestion.md b/docs/affiliate-network-ingestion.md
+index 4cde97f..02680d2 100644
+--- a/docs/affiliate-network-ingestion.md
++++ b/docs/affiliate-network-ingestion.md
+@@ -87,6 +87,14 @@ dry-runも無効なリソースや不正な接続先を成功と報告しない
+   JSONの明示的なrecord_pathが存在しない場合はエラーとする。
+ - ページ番号、offset、cursor、next URLを扱い、ページ数、応答サイズ、展開サイズを制限する。
+   HTTP 429/5xx等への上限付き再試行、待機時間を持つ。
++- `pagination.type=next_link` はJSONの `links.next.href` を参照し、`null` で終了する。
++  `pagination.next_url_path` で別のドット区切りpathを指定できる。
++  相対リンクは応答URLを基準に解決し、既存のHTTPS・同一origin・DNS検証と上限を適用する。
++  `next_url` の既定pathは従来どおり `next`。リソースのpagination設定はプロバイダー設定へ
++  項目単位で上書きし、その実効設定を検証する。
++- `reward_jpy` は `commission` の別名として金額文字列へ正規化する。
++  既存の報酬フィールドを優先し、欠損値は `null`、元レコードは `raw` に保持する。
++  報酬の存在から承認状態や確定日時を補完しない。
+ - 取得ページ、SHA-256、取得情報、正規化NDJSON、最新stateを保存する。
+   同じ取得時刻でもrun IDを分け、過去の取得を上書きしない。
+   元レコードは正規化出力の `raw` に保持するため、保存許可の確認を取得前に行う。
+diff --git a/tests/test_affiliate_ingestion.py b/tests/test_affiliate_ingestion.py
+index 07a888e..7e73319 100644
+--- a/tests/test_affiliate_ingestion.py
++++ b/tests/test_affiliate_ingestion.py
+@@ -172,14 +172,14 @@ def ready_config(provider="a8net"):
+     return config
+ 
+ 
+-def response(payload):
++def response(payload, url="https://example.invalid/products"):
+     headers = Message()
+     headers["Content-Type"] = "application/json"
+     return (
+         200,
+         headers,
+         json.dumps(payload).encode(),
+-        "https://example.invalid/products",
++        url,
+     )
+ 
+ 
+@@ -195,13 +195,16 @@ def test_each_provider_fetches_synthetic_payload(provider):
+     request.assert_called_once()
+ 
+ 
+-def test_disabled_resource_and_default_config_cannot_fetch():
+-    with pytest.raises(ConfigError):
+-        fetch_resource(initial_config(), "a8net", "products")
+-    config = ready_config()
+-    config["providers"]["a8net"]["resources"]["products"]["enabled"] = False
+-    with pytest.raises(ConfigError):
+-        fetch_resource(config, "a8net", "products")
++@pytest.mark.parametrize("provider", list(PROVIDERS))
++def test_disabled_resource_and_default_config_cannot_fetch(provider):
++    with patch.object(AffiliateHttpClient, "request") as request:
++        with pytest.raises(ConfigError):
++            fetch_resource(initial_config(), provider, "products")
++        config = ready_config(provider)
++        config["providers"][provider]["resources"]["products"]["enabled"] = False
++        with pytest.raises(ConfigError):
++            fetch_resource(config, provider, "products")
++    request.assert_not_called()
+ 
+ 
+ @pytest.mark.parametrize("value", ["false", 1, None])
+@@ -217,6 +220,9 @@ def test_invalid_limits_modes_and_write_methods_are_rejected():
+         ("mode", "unknown"),
+         ("method", "POST"),
+         ("pagination", {"max_pages": -1}),
++        ("pagination", {"type": "unknown"}),
++        ("pagination", {"type": "next_link", "max_pages": 0}),
++        ("pagination", {"type": "next_link", "page_size": False}),
+     ]:
+         config = ready_config()
+         config["providers"]["a8net"]["resources"]["products"][field] = value
+@@ -228,6 +234,22 @@ def test_invalid_limits_modes_and_write_methods_are_rejected():
+         validate_config(config)
+ 
+ 
++@pytest.mark.parametrize(
++    "field,value", [("type", "unknown"), ("max_pages", 0), ("page_size", False)]
++)
++def test_resource_pagination_override_validates_inherited_settings(field, value):
++    config = ready_config()
++    provider = config["providers"]["a8net"]
++    provider["pagination"] = {"type": "next_link", "max_pages": 3, field: value}
++    provider["resources"]["products"]["pagination"] = {
++        "next_url_path": "paging.follow.href"
++    }
++    with patch.object(AffiliateHttpClient, "request") as request:
++        with pytest.raises(ConfigError):
++            fetch_resource(config, "a8net", "products")
++    request.assert_not_called()
++
++
+ @pytest.mark.parametrize(
+     "url",
+     [
+@@ -291,7 +313,7 @@ def test_same_origin_redirect_is_validated_and_preserves_headers():
+     validator.validate.assert_called_once_with("https://example.invalid/next")
+ 
+ 
+-@pytest.mark.parametrize("kind", ["page", "offset", "cursor", "next_url"])
++@pytest.mark.parametrize("kind", ["page", "offset", "cursor", "next_url", "next_link"])
+ def test_pagination_reads_second_page_and_stops(kind):
+     config = ready_config()
+     config["providers"]["a8net"]["resources"]["products"]["pagination"] = {
+@@ -303,8 +325,9 @@ def test_pagination_reads_second_page_and_stops(kind):
+         "items": [{"id": "1"}],
+         "next_cursor": "second",
+         "next": "/products?page=2",
++        "links": {"next": {"href": "/products?page=2"}},
+     }
+-    second = {"items": []}
++    second = {"items": [], "links": {"next": None}}
+     with (
+         patch.object(
+             AffiliateHttpClient,
+@@ -318,22 +341,193 @@ def test_pagination_reads_second_page_and_stops(kind):
+     assert request.call_count == 2
+ 
+ 
+-def test_next_url_cannot_forward_credentials_to_another_origin():
++@pytest.mark.parametrize("kind", ["next_url", "next_link"])
++@pytest.mark.parametrize(
++    "destination,error",
++    [
++        ("https://other.invalid/feed", "Cross-origin"),
++        ("//other.invalid/feed", "Cross-origin"),
++        ("https://example.invalid:444/feed", "Cross-origin"),
++        ("http://example.invalid/feed", "Only HTTPS"),
++        ("https://user:password@example.invalid/feed", "Credentials"),
++    ],
++)
++def test_link_pagination_rejects_unsafe_destinations(kind, destination, error):
+     config = ready_config()
++    config["providers"]["a8net"]["auth"] = {"type": "bearer", "token": "synthetic"}
+     config["providers"]["a8net"]["resources"]["products"]["pagination"] = {
+-        "type": "next_url",
++        "type": kind,
+         "max_pages": 2,
+     }
+     with patch.object(
+         AffiliateHttpClient,
+         "request",
+         return_value=response(
+-            {"items": [{"id": "1"}], "next": "https://other.invalid/feed"}
++            {
++                "items": [{"id": "1"}],
++                "next": destination,
++                "links": {"next": {"href": destination}},
++            }
+         ),
+     ) as request:
+-        with pytest.raises(EndpointSecurityError, match="Cross-origin"):
++        with pytest.raises(EndpointSecurityError, match=error):
+             fetch_resource(config, "a8net", "products")
+     request.assert_called_once()
++    assert request.call_args.kwargs["headers"]["Authorization"] == "Bearer synthetic"
++
++
++@pytest.mark.parametrize("next_url_path", [None, "paging.follow.href"])
++def test_next_link_fetches_and_normalizes_recorded_pages(tmp_path, next_url_path):
++    config = ready_config()
++    provider = config["providers"]["a8net"]
++    pagination = {"type": "next_link", "max_pages": 3}
++    resource = provider["resources"]["products"]
++    if next_url_path is None:
++        resource["pagination"] = pagination
++    else:
++        provider["pagination"] = pagination
++        resource["pagination"] = {"next_url_path": next_url_path}
++    resource["query"] = {"site": "synthetic"}
++    first_record = {"id": "1", "reward_jpy": "¥1,200.50", "status": "pending"}
++    second_record = {"id": "2", "reward_jpy": 0}
++    relative_url = "second.json?page=2"
++    first = {
++        "items": [first_record],
++        "links": {
++            "next": {
++                "href": relative_url
++                if next_url_path is None
++                else "https://other.invalid/unused"
++            }
++        },
++        "paging": {"follow": {"href": relative_url}},
++    }
++    second = {
++        "items": [second_record],
++        "links": {"next": {"href": None}},
++        "paging": {"follow": {"href": None}},
++    }
++    final_url = "https://example.invalid/exports/pages/first.json"
++    next_url = "https://example.invalid/exports/pages/second.json?page=2"
++    with (
++        patch.object(
++            AffiliateHttpClient,
++            "request",
++            side_effect=[response(first, final_url), response(second, next_url)],
++        ) as request,
++        patch.object(EndpointValidator, "validate") as validate,
++    ):
++        batch = fetch_resource(config, "a8net", "products")
++    assert [call.args[0] for call in request.call_args_list] == [
++        "https://example.invalid/products?site=synthetic",
++        next_url + "&site=synthetic",
++    ]
++    validate.assert_called_once_with(next_url)
++    assert batch.records == [first_record, second_record]
++    assert batch.warnings == []
++    manifest = persist_batch(batch, {"root": str(tmp_path)})
++    assert manifest["page_count"] == 2
++    normalized = [
++        json.loads(line)
++        for line in (tmp_path / manifest["normalized_path"]).read_text().splitlines()
++    ]
++    assert [record["commission"] for record in normalized] == ["1200.50", "0"]
++    assert [record["raw"] for record in normalized] == [first_record, second_record]
++    assert [record["status"] for record in normalized] == ["pending", None]
++    assert all(record["approved_at"] is None for record in normalized)
++
++
++@pytest.mark.parametrize("kind", ["next_url", "next_link"])
++def test_link_pagination_stops_at_page_limit(kind):
++    config = ready_config()
++    config["providers"]["a8net"]["resources"]["products"]["pagination"] = {
++        "type": kind,
++        "max_pages": 2,
++    }
++    payload = {
++        "items": [{"id": "1"}],
++        "next": "?page=2",
++        "links": {"next": {"href": "?page=2"}},
++    }
++    with (
++        patch.object(
++            AffiliateHttpClient, "request", return_value=response(payload)
++        ) as request,
++        patch.object(EndpointValidator, "validate"),
++    ):
++        batch = fetch_resource(config, "a8net", "products")
++    assert request.call_count == 2
++    assert len(batch.pages) == 2
++    assert batch.warnings == ["Stopped at configured max_pages=2"]
++
++
++def test_next_link_checks_dns_before_requesting_next_page():
++    config = ready_config()
++    config["providers"]["a8net"]["resources"]["products"]["pagination"] = {
++        "type": "next_link",
++        "max_pages": 2,
++    }
++    payload = {"items": [], "links": {"next": {"href": "?page=2"}}}
++    with (
++        patch.object(
++            AffiliateHttpClient, "request", return_value=response(payload)
++        ) as request,
++        patch.object(
++            socket,
++            "getaddrinfo",
++            return_value=[(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("10.0.0.1", 443))],
++        ),
++    ):
++        with pytest.raises(EndpointSecurityError, match="non-public"):
++            fetch_resource(config, "a8net", "products")
++    request.assert_called_once()
++
++
++@pytest.mark.parametrize("kind", ["next_url", "next_link"])
++def test_link_pagination_keeps_aggregate_size_limit(kind):
++    config = ready_config()
++    config["providers"]["a8net"]["resources"]["products"]["pagination"] = {
++        "type": kind,
++        "max_pages": 3,
++    }
++    first = response(
++        {
++            "items": [{"id": "1"}],
++            "next": "?page=2",
++            "links": {"next": {"href": "?page=2"}},
++        }
++    )
++    second = response({"items": [{"id": "2"}], "links": {"next": None}})
++    config["storage"]["max_uncompressed_bytes"] = max(len(first[2]), len(second[2]))
++    with (
++        patch.object(
++            AffiliateHttpClient, "request", side_effect=[first, second]
++        ) as request,
++        patch.object(EndpointValidator, "validate"),
++    ):
++        with pytest.raises(FetchError, match="batch exceeds max_uncompressed_bytes"):
++            fetch_resource(config, "a8net", "products")
++    assert request.call_count == 2
++
++
++@pytest.mark.parametrize(
++    "record,commission",
++    [
++        ({"reward_jpy": "1,234.50"}, "1234.50"),
++        ({"reward_jpy": 0}, "0"),
++        ({"reward_jpy": None}, None),
++        ({"reward_jpy": ""}, None),
++        ({}, None),
++        ({"commission": "8.50", "reward_jpy": "1,234.50"}, "8.50"),
++        ({"reward": "9.50", "reward_jpy": "1,234.50"}, "9.50"),
++    ],
++)
++def test_reward_jpy_normalization_preserves_precedence_and_missing_values(
++    record, commission
++):
++    normalized = normalize_record("a8net", "reports", record)
++    assert normalized["commission"] == commission
++    assert normalized["raw"] == record
+ 
+ 
+ @pytest.mark.parametrize(
+diff --git a/tools/affiliate_ingestion/client.py b/tools/affiliate_ingestion/client.py
+index 6b8282c..ca6a3fb 100644
+--- a/tools/affiliate_ingestion/client.py
++++ b/tools/affiliate_ingestion/client.py
+@@ -748,8 +748,11 @@ def fetch_resource(
+             offset += page_size
+             if len(records) < page_size:
+                 break
+-        elif pagination_type == "next_url":
+-            path = str(pagination.get("next_url_path", "next"))
++        elif pagination_type in {"next_url", "next_link"}:
++            default_path = (
++                "links.next.href" if pagination_type == "next_link" else "next"
++            )
++            path = str(pagination.get("next_url_path", default_path))
+             value = _nested_get(parsed_payload, path)
+             if not value:
+                 break
+diff --git a/tools/affiliate_ingestion/config.py b/tools/affiliate_ingestion/config.py
+index a6c7083..da73e74 100644
+--- a/tools/affiliate_ingestion/config.py
++++ b/tools/affiliate_ingestion/config.py
+@@ -222,13 +222,17 @@ def validate_config(config: Mapping[str, Any]) -> None:
+                 raise ConfigError("Unsupported resource mode")
+             if str(resource.get("method", raw.get("method", "GET"))).upper() != "GET":
+                 raise ConfigError("Provider ingestion supports only GET requests")
+-            pagination = resource.get("pagination", raw.get("pagination", {}))
++            pagination = {
++                **raw.get("pagination", {}),
++                **resource.get("pagination", {}),
++            }
+             if pagination.get("type", "none") not in {
+                 "none",
+                 "page",
+                 "offset",
+                 "cursor",
+                 "next_url",
++                "next_link",
+             }:
+                 raise ConfigError("Unsupported pagination type")
+             for field in ("max_pages", "page_size"):
+diff --git a/tools/affiliate_ingestion/normalize.py b/tools/affiliate_ingestion/normalize.py
+index 92cf7ee..f58d093 100644
+--- a/tools/affiliate_ingestion/normalize.py
++++ b/tools/affiliate_ingestion/normalize.py
+@@ -44,6 +44,7 @@ ALIASES: dict[str, tuple[str, ...]] = {
+         "reward",
+         "payout",
+         "fee",
++        "reward_jpy",
+     ),
+     "occurred_at": (
+         "occurred_at",
