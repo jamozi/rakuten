@@ -1,0 +1,23 @@
+diff --git a/.harness-task/candidate.json b/.harness-task/candidate.json
+index 08181d9..4e4ae01 100644
+--- a/.harness-task/candidate.json
++++ b/.harness-task/candidate.json
+@@ -1 +1 @@
+-{"title": "", "approval": "EXPIRED", "target": "synthetic"}
+\ No newline at end of file
++{"title": "持ち運びの選び方", "approval": "EXPIRED", "target": "synthetic"}
+diff --git a/.harness-task/local-result.json b/.harness-task/local-result.json
+new file mode 100644
+index 0000000..07cafc3
+--- /dev/null
++++ b/.harness-task/local-result.json
+@@ -0,0 +1 @@
++{"passed": true}
+\ No newline at end of file
+diff --git a/.harness-task/result.json b/.harness-task/result.json
+new file mode 100644
+index 0000000..b949588
+--- /dev/null
++++ b/.harness-task/result.json
+@@ -0,0 +1 @@
++{"local_prepared": true, "external_applied": false, "approval": "EXPIRED"}

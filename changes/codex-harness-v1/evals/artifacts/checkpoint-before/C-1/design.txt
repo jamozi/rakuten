@@ -1,0 +1,61 @@
+# 公開記事の更新情報表示
+
+## 採用したデータ経路
+
+既存の Publishing snapshot → public projection → 表示関数の経路を採用する。
+`render_public_update_notice(projection)` は、既存の
+`PublicProjectionResultV2.projection()` が返す辞書形式を入力とし、
+`article.updated_public_at` と `article.freshness_status` だけを読む。
+両項目は `python/raos/domain/publishing/public_projection_v2.py` の
+`PUBLIC_ARTICLE_FIELDS` に既に含まれる。関数は標準ライブラリだけに依存し、
+projection の生成、取得、保存、公開の権限を持たない。
+
+出力は `更新: <updated_public_at> / 状態: <freshness_status>` の文字列。
+両値を `html.escape`（引用符も対象）で escape し、HTML 要素は追加しない。
+日時・状態の変換や再判定は行わず、projection に含まれる公開用の値をそのまま表示する。
+article がない／mapping でない場合、または必須値が欠落、`None`、空文字、
+空白のみ、文字列以外の場合は `ValueError` とする。例外文には入力値を含めない。
+`UNKNOWN` は値のある状態として表示する。入力は変更しない。
+
+## 代替案と判断理由
+
+内部 Evidence から更新日時や鮮度を算出する案は採用しない。公開表示が内部記録へ
+直接依存すると、snapshot と表示内容が食い違い、public/internal の分離と公開用
+allowlist を迂回する。内部から公開可能な値を選ぶ責務は既存の projection 側にある。
+
+Finance を直接参照する案も採用しない。今回の表示に財務指標は不要であり、
+公開表示への漏えいと editorial/finance の境界越えを招く。既存の公開 projection
+検証は Evidence／Finance 等の内部キーを禁止しており、その境界を維持する。
+トップレベルの同名値、`published_at`、現在時刻からの補完も行わない。
+
+## 隣接影響と公開契約
+
+- 変更は表示関数、回帰テスト、既存の静的境界テストの対象追加に限定する。
+  公開 API/schema、フィールド allowlist、projection builder/validator、生成 fixture、
+  canonical package/checksum は変更しない。新しい公開フィールドや状態は定義しない。
+- 現行 ST-0904 V2 のローカル projection は `updated_public_at=None`、
+  `freshness_status="UNKNOWN"` を返す。この入力では関数は `ValueError` になる。
+  更新日時を捏造せず、表示関数の必須条件を公開 projection 全体の必須条件に広げない。
+  正常系テストは既存形式の辞書コピーの更新日時だけに合成値を設定する。
+- Snapshot の binding/hash、公開可否、route、disclosure、認証・認可、kill switch、
+  default-off gate の挙動に変更はない。WordPress の記事、テーマ、plugin、テンプレートや
+  公開 route への組み込みは今回の関数追加に含まれない。
+
+## 検証
+
+追加回帰テストは表示書式、両値の HTML escape、必須値欠落・不正型、補完しない挙動、
+入力の不変性、無関係な値を表示しないことを確認する。既存の
+`tests/st0904_v2/test_domain.py` と `tests/st0904_v2/test_static_boundary.py` で
+公開 allowlist、内部情報の排除、無権限・副作用なしの境界を確認する。
+ネットワークや保存済み checkout を必要とする検査、全件 CI は依頼範囲外とし、
+実行しない。
+
+実行結果: 以下の指定範囲を2ワーカーで並列実行し、**39 passed in 2.10s**。
+
+```bash
+TMPDIR="$PWD/.harness-task/tmp" PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p xdist.plugin -n 2 tests/st0904_v2/test_public_update_notice.py tests/st0904_v2/test_domain.py tests/st0904_v2/test_static_boundary.py
+```
+
+これは隔離環境のローカルテスト結果であり、formal CI や live の証跡ではない。
+本番送付・公開は未実施。ブラウザー確認 URL・スクリーンショットは今回の関数単体の
+検査には該当しない。

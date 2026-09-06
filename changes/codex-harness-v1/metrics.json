@@ -1774,7 +1774,7 @@
   "measurement_note": "File counts and o200k_base sizes are not actual model billing/context. After runtime is measured after known Global reconstruction; current inventory records declared, resolved catalog and actual fixed status calls separately. Global usage frequency and original missing preferences remain UNKNOWN. Native Desktop GSD is outside accepted scoped CLI operation.",
   "runtime_after": {
     "skill_catalog": 97,
-    "scoped_enabled_skills": 32,
+    "scoped_enabled_skills": 30,
     "scoped_enabled_gsd": 0,
     "selected_external_tools": 43,
     "selected_schema_tokens": 10472,
@@ -1792,6 +1792,123 @@
         "called_tool": "deployment-status",
         "status": "PASS"
       }
+    ],
+    "unscoped_enabled_skills": 95,
+    "user_disabled_skills_preserved": [
+      "sora",
+      "speech"
     ]
+  },
+  "native_evaluation_comparison": {
+    "status": "PASS",
+    "errors": [],
+    "cases": [
+      {
+        "case": "A",
+        "before_median": 16,
+        "after_median": 16,
+        "before_read_characters": 62101,
+        "after_read_characters": 38688,
+        "pass": true
+      },
+      {
+        "case": "B",
+        "before_median": 16,
+        "after_median": 16,
+        "before_read_characters": 157328,
+        "after_read_characters": 142106,
+        "pass": true
+      },
+      {
+        "case": "C",
+        "before_median": 16,
+        "after_median": 16,
+        "before_read_characters": 93384,
+        "after_read_characters": 115256,
+        "pass": true
+      },
+      {
+        "case": "D",
+        "before_median": 14,
+        "after_median": 16,
+        "before_read_characters": 5662,
+        "after_read_characters": 10566,
+        "pass": true
+      },
+      {
+        "case": "E",
+        "before_median": 14,
+        "after_median": 16,
+        "before_read_characters": 66126,
+        "after_read_characters": 52455,
+        "pass": true
+      }
+    ]
+  },
+  "native_usage_medians": {
+    "before": {
+      "A": {
+        "input_tokens": 536509,
+        "cached_input_tokens": 459776,
+        "output_tokens": 5776,
+        "seconds": 266.9
+      },
+      "B": {
+        "input_tokens": 1049775,
+        "cached_input_tokens": 975488,
+        "output_tokens": 10620,
+        "seconds": 454.39
+      },
+      "C": {
+        "input_tokens": 387127,
+        "cached_input_tokens": 331776,
+        "output_tokens": 8594,
+        "seconds": 364.89
+      },
+      "D": {
+        "input_tokens": 99250,
+        "cached_input_tokens": 76672,
+        "output_tokens": 1548,
+        "seconds": 80.37
+      },
+      "E": {
+        "input_tokens": 199386,
+        "cached_input_tokens": 145792,
+        "output_tokens": 3707,
+        "seconds": 160.11
+      }
+    },
+    "after": {
+      "A": {
+        "input_tokens": 408659,
+        "cached_input_tokens": 366720,
+        "output_tokens": 5192,
+        "seconds": 218.14
+      },
+      "B": {
+        "input_tokens": 1156804,
+        "cached_input_tokens": 1086848,
+        "output_tokens": 11977,
+        "seconds": 501.39
+      },
+      "C": {
+        "input_tokens": 311235,
+        "cached_input_tokens": 259456,
+        "output_tokens": 7791,
+        "seconds": 278.77
+      },
+      "D": {
+        "input_tokens": 138001,
+        "cached_input_tokens": 119680,
+        "output_tokens": 1662,
+        "seconds": 121.39
+      },
+      "E": {
+        "input_tokens": 285906,
+        "cached_input_tokens": 246400,
+        "output_tokens": 4218,
+        "seconds": 182.55
+      }
+    }
   }
 }

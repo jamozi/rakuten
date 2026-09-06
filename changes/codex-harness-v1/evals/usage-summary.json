@@ -1,0 +1,66 @@
+{
+  "before": {
+    "A": {
+      "input_tokens": 536509,
+      "cached_input_tokens": 459776,
+      "output_tokens": 5776,
+      "seconds": 266.9
+    },
+    "B": {
+      "input_tokens": 1049775,
+      "cached_input_tokens": 975488,
+      "output_tokens": 10620,
+      "seconds": 454.39
+    },
+    "C": {
+      "input_tokens": 387127,
+      "cached_input_tokens": 331776,
+      "output_tokens": 8594,
+      "seconds": 364.89
+    },
+    "D": {
+      "input_tokens": 99250,
+      "cached_input_tokens": 76672,
+      "output_tokens": 1548,
+      "seconds": 80.37
+    },
+    "E": {
+      "input_tokens": 199386,
+      "cached_input_tokens": 145792,
+      "output_tokens": 3707,
+      "seconds": 160.11
+    }
+  },
+  "after": {
+    "A": {
+      "input_tokens": 408659,
+      "cached_input_tokens": 366720,
+      "output_tokens": 5192,
+      "seconds": 218.14
+    },
+    "B": {
+      "input_tokens": 1156804,
+      "cached_input_tokens": 1086848,
+      "output_tokens": 11977,
+      "seconds": 501.39
+    },
+    "C": {
+      "input_tokens": 311235,
+      "cached_input_tokens": 259456,
+      "output_tokens": 7791,
+      "seconds": 278.77
+    },
+    "D": {
+      "input_tokens": 138001,
+      "cached_input_tokens": 119680,
+      "output_tokens": 1662,
+      "seconds": 121.39
+    },
+    "E": {
+      "input_tokens": 285906,
+      "cached_input_tokens": 246400,
+      "output_tokens": 4218,
+      "seconds": 182.55
+    }
+  }
+}

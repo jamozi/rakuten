@@ -16,16 +16,16 @@
       "model": "gpt-6-astra",
       "reasoning": "max",
       "measurement_version": 2,
-      "timeout_seconds": 900,
+      "timeout_seconds": 600,
       "boundary_violations": [],
       "usage": {
-        "input_tokens": 368806,
-        "cached_input_tokens": 332544,
+        "input_tokens": 650180,
+        "cached_input_tokens": 595328,
         "cache_write_input_tokens": 0,
-        "output_tokens": 5489,
-        "reasoning_output_tokens": 3155
+        "output_tokens": 6180,
+        "reasoning_output_tokens": 3636
       },
-      "commands": 22,
+      "commands": 21,
       "test_commands_passed": 2,
       "command_outcomes": [
         {
@@ -35,7 +35,7 @@
           "test_result": null
         },
         {
-          "kind": "other",
+          "kind": "validation",
           "exit_code": 0,
           "output_characters": 5283,
           "test_result": null
@@ -49,7 +49,413 @@
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 12201,
+          "output_characters": 3203,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11552,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4906,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 2296,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3427,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1800,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 10630,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4993,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 7939,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 6072,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 1,
+          "output_characters": 10528,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 142,
+          "test_result": {
+            "framework": "pytest",
+            "passed": 21
+          }
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3376,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 51715,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 0,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 784,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 943,
+          "test_result": {
+            "framework": "pytest",
+            "passed": 94
+          }
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 257,
+          "test_result": null
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "docs/affiliate-network-ingestion.md",
+        "pyproject.toml",
+        "scripts/raos_build.py",
+        "scripts/raos_build_core.py",
+        "scripts/raos_checks.py",
+        "scripts/raos_test_plan.py",
+        "tests/conftest.py",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/normalize.py",
+        "tools/affiliate_ingestion/storage.py"
+      ],
+      "tool_calls": [],
+      "mcp_observations": [],
+      "verified_fake_calls": [],
+      "read_output_characters": 62101,
+      "process_exit_code": 0,
+      "changed_paths": [
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "artifact_directory": "artifacts/final-before/A-1",
+      "unexpected_changes": [],
+      "behavior": {
+        "zero_and_alias_precedence": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 296.24
+    },
+    {
+      "case": "A",
+      "run": 2,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "measurement_version": 2,
+      "timeout_seconds": 600,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 468583,
+        "cached_input_tokens": 419712,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5575,
+        "reasoning_output_tokens": 2645
+      },
+      "commands": 26,
+      "test_commands_passed": 2,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 5283,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3203,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4906,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11552,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 1302,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3427,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 362,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1800,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 2,
+          "output_characters": 64,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 2,
+          "output_characters": 5893,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 9661,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 2136,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 409,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4552,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 2,
+          "output_characters": 127,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 1,
+          "output_characters": 10657,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 7939,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 142,
+          "test_result": {
+            "framework": "pytest",
+            "passed": 11
+          }
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 784,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4544,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 180,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 943,
+          "test_result": {
+            "framework": "pytest",
+            "passed": 82
+          }
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 79,
+          "test_result": null
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "docs/affiliate-network-ingestion.md",
+        "pyproject.toml",
+        "scripts/raos_build.py",
+        "scripts/raos_build_core.py",
+        "scripts/raos_checks.py",
+        "tests/conftest.py",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "tool_calls": [],
+      "mcp_observations": [],
+      "verified_fake_calls": [],
+      "read_output_characters": 61845,
+      "process_exit_code": 0,
+      "changed_paths": [
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "artifact_directory": "artifacts/final-before/A-2",
+      "unexpected_changes": [],
+      "behavior": {
+        "zero_and_alias_precedence": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 253.69
+    },
+    {
+      "case": "A",
+      "run": 3,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "measurement_version": 2,
+      "timeout_seconds": 600,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 536509,
+        "cached_input_tokens": 459776,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5776,
+        "reasoning_output_tokens": 3520
+      },
+      "commands": 19,
+      "test_commands_passed": 2,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 7850,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0,
           "test_result": null
         },
         {
@@ -65,9 +471,21 @@
           "test_result": null
         },
         {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11882,
+          "test_result": null
+        },
+        {
           "kind": "validation",
           "exit_code": 0,
-          "output_characters": 1769,
+          "output_characters": 8092,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 362,
           "test_result": null
         },
         {
@@ -85,31 +503,13 @@
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 3427,
+          "output_characters": 3376,
           "test_result": null
         },
         {
           "kind": "validation",
-          "exit_code": 2,
-          "output_characters": 2259,
-          "test_result": null
-        },
-        {
-          "kind": "other",
           "exit_code": 0,
-          "output_characters": 1193,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 362,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 7775,
+          "output_characters": 10857,
           "test_result": null
         },
         {
@@ -121,178 +521,7 @@
         {
           "kind": "validation",
           "exit_code": 1,
-          "output_characters": 3091,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 627,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 141,
-          "test_result": {
-            "framework": "pytest",
-            "passed": 8
-          }
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 3146,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 784,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 79,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 824,
-          "test_result": {
-            "framework": "pytest",
-            "passed": 77
-          }
-        }
-      ],
-      "read_paths": [
-        "AGENTS.md",
-        "docs/affiliate-network-ingestion.md",
-        "pyproject.toml",
-        "scripts/raos_build.py",
-        "scripts/raos_checks.py",
-        "scripts/raos_test_plan.py",
-        "tests/test_affiliate_ingestion.py",
-        "tools/affiliate_ingestion/normalize.py"
-      ],
-      "tool_calls": [],
-      "mcp_observations": [],
-      "verified_fake_calls": [],
-      "read_output_characters": 56307,
-      "process_exit_code": 0,
-      "changed_paths": [
-        "tests/test_affiliate_ingestion.py",
-        "tools/affiliate_ingestion/normalize.py"
-      ],
-      "artifact_directory": "artifacts/before/A-1",
-      "unexpected_changes": [],
-      "behavior": {
-        "zero_and_alias_precedence": true
-      },
-      "scores": {
-        "objective": 2,
-        "architecture": 2,
-        "source": 2,
-        "tool": 2,
-        "safety": 2,
-        "acceptance": 2,
-        "root_cause": 2,
-        "scope": 2
-      },
-      "acceptance": true,
-      "seconds": 252.35
-    },
-    {
-      "case": "A",
-      "run": 2,
-      "status": "COMPLETED",
-      "model": "gpt-6-astra",
-      "reasoning": "max",
-      "measurement_version": 2,
-      "timeout_seconds": 900,
-      "boundary_violations": [],
-      "usage": {
-        "input_tokens": 345965,
-        "cached_input_tokens": 297856,
-        "cache_write_input_tokens": 0,
-        "output_tokens": 5824,
-        "reasoning_output_tokens": 2903
-      },
-      "commands": 19,
-      "test_commands_passed": 2,
-      "command_outcomes": [
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 37,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 5283,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 11552,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 8109,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 5227,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 2986,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 5385,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 2,
-          "output_characters": 1385,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 8315,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 1,
-          "output_characters": 9265,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 7939,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 979,
+          "output_characters": 5109,
           "test_result": null
         },
         {
@@ -301,8 +530,14 @@
           "output_characters": 142,
           "test_result": {
             "framework": "pytest",
-            "passed": 10
+            "passed": 27
           }
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3019,
+          "test_result": null
         },
         {
           "kind": "validation",
@@ -311,36 +546,18 @@
           "test_result": null
         },
         {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 4380,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 1,
-          "output_characters": 582,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 19,
-          "test_result": null
-        },
-        {
           "kind": "validation",
           "exit_code": 0,
           "output_characters": 824,
           "test_result": {
             "framework": "pytest",
-            "passed": 77
+            "passed": 88
           }
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 6206,
+          "output_characters": 79,
           "test_result": null
         }
       ],
@@ -351,7 +568,6 @@
         "scripts/raos_build.py",
         "scripts/raos_build_core.py",
         "scripts/raos_checks.py",
-        "scripts/raos_test_plan.py",
         "tests/conftest.py",
         "tests/test_affiliate_ingestion.py",
         "tools/affiliate_ingestion/normalize.py"
@@ -359,13 +575,13 @@
       "tool_calls": [],
       "mcp_observations": [],
       "verified_fake_calls": [],
-      "read_output_characters": 63366,
+      "read_output_characters": 64457,
       "process_exit_code": 0,
       "changed_paths": [
         "tests/test_affiliate_ingestion.py",
         "tools/affiliate_ingestion/normalize.py"
       ],
-      "artifact_directory": "artifacts/before/A-2",
+      "artifact_directory": "artifacts/final-before/A-3",
       "unexpected_changes": [],
       "behavior": {
         "zero_and_alias_precedence": true
@@ -381,33 +597,27 @@
         "scope": 2
       },
       "acceptance": true,
-      "seconds": 236.01
+      "seconds": 266.9
     },
     {
-      "case": "A",
-      "run": 3,
+      "case": "B",
+      "run": 1,
       "status": "COMPLETED",
       "model": "gpt-6-astra",
       "reasoning": "max",
       "measurement_version": 2,
-      "timeout_seconds": 900,
+      "timeout_seconds": 1200,
       "boundary_violations": [],
       "usage": {
-        "input_tokens": 494621,
-        "cached_input_tokens": 452224,
+        "input_tokens": 1049775,
+        "cached_input_tokens": 975488,
         "cache_write_input_tokens": 0,
-        "output_tokens": 6219,
-        "reasoning_output_tokens": 3336
+        "output_tokens": 9589,
+        "reasoning_output_tokens": 3946
       },
-      "commands": 16,
-      "test_commands_passed": 2,
+      "commands": 29,
+      "test_commands_passed": 1,
       "command_outcomes": [
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 5283,
-          "test_result": null
-        },
         {
           "kind": "other",
           "exit_code": 0,
@@ -417,156 +627,7 @@
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 12784,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 8109,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 2164,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 9121,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 2,
-          "output_characters": 4244,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 11269,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 5067,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 9350,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 1,
-          "output_characters": 6187,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 142,
-          "test_result": {
-            "framework": "pytest",
-            "passed": 20
-          }
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 4852,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 784,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 1286,
-          "test_result": {
-            "framework": "pytest",
-            "passed": 80
-          }
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 260,
-          "test_result": null
-        }
-      ],
-      "read_paths": [
-        "AGENTS.md",
-        "docs/affiliate-network-ingestion.md",
-        "pyproject.toml",
-        "scripts/raos_build.py",
-        "scripts/raos_checks.py",
-        "scripts/raos_test_plan.py",
-        "tests/conftest.py",
-        "tests/test_affiliate_ingestion.py",
-        "tools/affiliate_ingestion/normalize.py",
-        "tools/affiliate_ingestion/storage.py"
-      ],
-      "tool_calls": [],
-      "mcp_observations": [],
-      "verified_fake_calls": [],
-      "read_output_characters": 67391,
-      "process_exit_code": 0,
-      "changed_paths": [
-        "tests/test_affiliate_ingestion.py",
-        "tools/affiliate_ingestion/normalize.py"
-      ],
-      "artifact_directory": "artifacts/before/A-3",
-      "unexpected_changes": [],
-      "behavior": {
-        "zero_and_alias_precedence": true
-      },
-      "scores": {
-        "objective": 2,
-        "architecture": 2,
-        "source": 2,
-        "tool": 2,
-        "safety": 2,
-        "acceptance": 2,
-        "root_cause": 2,
-        "scope": 2
-      },
-      "acceptance": true,
-      "seconds": 268.07
-    },
-    {
-      "case": "B",
-      "run": 1,
-      "status": "COMPLETED",
-      "model": "gpt-6-astra",
-      "reasoning": "max",
-      "measurement_version": 2,
-      "timeout_seconds": 900,
-      "boundary_violations": [],
-      "usage": {
-        "input_tokens": 1270384,
-        "cached_input_tokens": 1193856,
-        "cache_write_input_tokens": 0,
-        "output_tokens": 10197,
-        "reasoning_output_tokens": 4603
-      },
-      "commands": 19,
-      "test_commands_passed": 1,
-      "command_outcomes": [
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 4190,
+          "output_characters": 3309,
           "test_result": null
         },
         {
@@ -577,220 +638,20 @@
         },
         {
           "kind": "other",
-          "exit_code": 1,
-          "output_characters": 4906,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 34439,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 10457,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 7128,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 14099,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 1,
-          "output_characters": 15702,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 20420,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 11904,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 12888,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 3889,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 12400,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 7106,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 44,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 12259,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 524,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 4932,
-          "test_result": {
-            "framework": "pytest",
-            "passed": 119
-          }
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 196,
-          "test_result": null
-        }
-      ],
-      "read_paths": [
-        "AGENTS.md",
-        "config/affiliate-networks.example.json",
-        "docs/affiliate-network-ingestion.md",
-        "pyproject.toml",
-        "scripts/raos_build.py",
-        "scripts/raos_checks.py",
-        "scripts/raos_test_plan.py",
-        "tests/test_affiliate_ingestion.py",
-        "tools/affiliate_ingestion/client.py",
-        "tools/affiliate_ingestion/config.py",
-        "tools/affiliate_ingestion/normalize.py"
-      ],
-      "tool_calls": [],
-      "read_output_characters": 143239,
-      "process_exit_code": 0,
-      "changed_paths": [
-        "docs/affiliate-network-ingestion.md",
-        "tests/test_affiliate_ingestion.py",
-        "tools/affiliate_ingestion/client.py",
-        "tools/affiliate_ingestion/config.py",
-        "tools/affiliate_ingestion/normalize.py"
-      ],
-      "artifact_directory": "artifacts/before/B-1",
-      "unexpected_changes": [],
-      "behavior": {
-        "config_and_default_off": true,
-        "two_pages": true,
-        "bounded": true,
-        "cross_origin_rejected": true,
-        "zero_reward": true
-      },
-      "scores": {
-        "objective": 2,
-        "architecture": 2,
-        "source": 2,
-        "tool": 2,
-        "safety": 2,
-        "acceptance": 2,
-        "root_cause": 2,
-        "scope": 2
-      },
-      "acceptance": true,
-      "seconds": 498.9
-    },
-    {
-      "case": "B",
-      "run": 2,
-      "status": "COMPLETED",
-      "model": "gpt-6-astra",
-      "reasoning": "max",
-      "measurement_version": 2,
-      "timeout_seconds": 900,
-      "boundary_violations": [],
-      "usage": {
-        "input_tokens": 1296089,
-        "cached_input_tokens": 1218816,
-        "cache_write_input_tokens": 0,
-        "output_tokens": 9298,
-        "reasoning_output_tokens": 3854
-      },
-      "commands": 29,
-      "test_commands_passed": 1,
-      "command_outcomes": [
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 4153,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 37,
-          "test_result": null
-        },
-        {
-          "kind": "other",
           "exit_code": 0,
           "output_characters": 4906,
           "test_result": null
         },
         {
           "kind": "other",
-          "exit_code": 0,
-          "output_characters": 106,
+          "exit_code": 1,
+          "output_characters": 0,
           "test_result": null
         },
         {
           "kind": "validation",
           "exit_code": 0,
-          "output_characters": 33282,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 3221,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 30514,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 12295,
+          "output_characters": 27103,
           "test_result": null
         },
         {
@@ -802,233 +663,7 @@
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 22941,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 5227,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 7761,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 7642,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 1086,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 763,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 7121,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 10,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 4552,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 14,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 87,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 44,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 1942,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 326,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 12400,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 2643,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 11025,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 1859,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 4838,
-          "test_result": {
-            "framework": "pytest",
-            "passed": 119
-          }
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 196,
-          "test_result": null
-        }
-      ],
-      "read_paths": [
-        "AGENTS.md",
-        "config/affiliate-networks.example.json",
-        "docs/affiliate-network-ingestion.md",
-        "pyproject.toml",
-        "scripts/raos_build.py",
-        "scripts/raos_build_core.py",
-        "scripts/raos_checks.py",
-        "scripts/raos_test_plan.py",
-        "tests/test_affiliate_ingestion.py",
-        "tools/affiliate_ingestion/client.py",
-        "tools/affiliate_ingestion/config.py",
-        "tools/affiliate_ingestion/normalize.py",
-        "tools/affiliate_ingestion/providers.py"
-      ],
-      "tool_calls": [],
-      "read_output_characters": 150538,
-      "process_exit_code": 0,
-      "changed_paths": [
-        "docs/affiliate-network-ingestion.md",
-        "tests/test_affiliate_ingestion.py",
-        "tools/affiliate_ingestion/client.py",
-        "tools/affiliate_ingestion/config.py",
-        "tools/affiliate_ingestion/normalize.py"
-      ],
-      "artifact_directory": "artifacts/before/B-2",
-      "unexpected_changes": [],
-      "behavior": {
-        "config_and_default_off": true,
-        "two_pages": true,
-        "bounded": true,
-        "cross_origin_rejected": true,
-        "zero_reward": true
-      },
-      "scores": {
-        "objective": 2,
-        "architecture": 2,
-        "source": 2,
-        "tool": 2,
-        "safety": 2,
-        "acceptance": 2,
-        "root_cause": 2,
-        "scope": 2
-      },
-      "acceptance": true,
-      "seconds": 488.62
-    },
-    {
-      "case": "B",
-      "run": 3,
-      "status": "COMPLETED",
-      "model": "gpt-6-astra",
-      "reasoning": "max",
-      "measurement_version": 2,
-      "timeout_seconds": 900,
-      "boundary_violations": [],
-      "usage": {
-        "input_tokens": 1200774,
-        "cached_input_tokens": 1126272,
-        "cache_write_input_tokens": 0,
-        "output_tokens": 9602,
-        "reasoning_output_tokens": 4088
-      },
-      "commands": 27,
-      "test_commands_passed": 1,
-      "command_outcomes": [
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 4436,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 37,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 4906,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 5227,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 22941,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 6731,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 1,
-          "output_characters": 0,
+          "output_characters": 12295,
           "test_result": null
         },
         {
@@ -1040,49 +675,79 @@
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 12295,
+          "output_characters": 3894,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 8577,
+          "output_characters": 3221,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 11687,
+          "output_characters": 11795,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 11626,
+          "output_characters": 12499,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 10442,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 5176,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3748,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 7292,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3708,
           "test_result": null
         },
         {
           "kind": "validation",
           "exit_code": 2,
-          "output_characters": 1037,
+          "output_characters": 4664,
           "test_result": null
         },
         {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 5225,
+          "kind": "other",
+          "exit_code": 1,
+          "output_characters": 362,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 13305,
+          "output_characters": 18871,
           "test_result": null
         },
         {
-          "kind": "validation",
+          "kind": "other",
           "exit_code": 0,
-          "output_characters": 913,
+          "output_characters": 3743,
           "test_result": null
         },
         {
@@ -1092,57 +757,33 @@
           "test_result": null
         },
         {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 8086,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 1,
-          "output_characters": 1343,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 20,
-          "test_result": null
-        },
-        {
           "kind": "validation",
-          "exit_code": 2,
-          "output_characters": 1857,
+          "exit_code": 0,
+          "output_characters": 0,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 2802,
+          "output_characters": 9967,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 9412,
+          "output_characters": 710,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 26,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 660,
+          "output_characters": 196,
           "test_result": null
         },
         {
           "kind": "validation",
           "exit_code": 0,
-          "output_characters": 4877,
+          "output_characters": 4933,
           "test_result": {
             "framework": "pytest",
             "passed": 119
@@ -1160,15 +801,10 @@
         "config/affiliate-networks.example.json",
         "docs/affiliate-network-ingestion.md",
         "pyproject.toml",
-        "scripts/build_st0005_status.py",
         "scripts/raos_build.py",
-        "scripts/raos_build_core.py",
         "scripts/raos_checks.py",
-        "scripts/raos_test_plan.py",
         "tests/conftest.py",
         "tests/test_affiliate_ingestion.py",
-        "tools/affiliate_ingestion/__init__.py",
-        "tools/affiliate_ingestion/__main__.py",
         "tools/affiliate_ingestion/cli.py",
         "tools/affiliate_ingestion/client.py",
         "tools/affiliate_ingestion/config.py",
@@ -1177,7 +813,9 @@
         "tools/affiliate_ingestion/storage.py"
       ],
       "tool_calls": [],
-      "read_output_characters": 150023,
+      "mcp_observations": [],
+      "verified_fake_calls": [],
+      "read_output_characters": 164805,
       "process_exit_code": 0,
       "changed_paths": [
         "docs/affiliate-network-ingestion.md",
@@ -1186,7 +824,7 @@
         "tools/affiliate_ingestion/config.py",
         "tools/affiliate_ingestion/normalize.py"
       ],
-      "artifact_directory": "artifacts/before/B-3",
+      "artifact_directory": "artifacts/final-before/B-1",
       "unexpected_changes": [],
       "behavior": {
         "config_and_default_off": true,
@@ -1206,31 +844,31 @@
         "scope": 2
       },
       "acceptance": true,
-      "seconds": 458.98
+      "seconds": 419.83
     },
     {
-      "case": "C",
-      "run": 1,
+      "case": "B",
+      "run": 2,
       "status": "COMPLETED",
       "model": "gpt-6-astra",
       "reasoning": "max",
       "measurement_version": 2,
-      "timeout_seconds": 900,
+      "timeout_seconds": 1200,
       "boundary_violations": [],
       "usage": {
-        "input_tokens": 578466,
-        "cached_input_tokens": 519040,
+        "input_tokens": 1059524,
+        "cached_input_tokens": 985088,
         "cache_write_input_tokens": 0,
-        "output_tokens": 8886,
-        "reasoning_output_tokens": 3304
+        "output_tokens": 10620,
+        "reasoning_output_tokens": 4461
       },
-      "commands": 21,
+      "commands": 22,
       "test_commands_passed": 1,
       "command_outcomes": [
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 12444,
+          "output_characters": 3497,
           "test_result": null
         },
         {
@@ -1242,19 +880,405 @@
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 16277,
+          "output_characters": 4906,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 14258,
+          "output_characters": 22941,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 11666,
+          "output_characters": 6731,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 3174,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 1,
+          "output_characters": 0,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 14623,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 6648,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 16705,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 9310,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 7999,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 12061,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 18873,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 2,
+          "output_characters": 466,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 43,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4356,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 12400,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 12362,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 400,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4949,
+          "test_result": {
+            "framework": "pytest",
+            "passed": 119
+          }
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 196,
+          "test_result": null
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "config/affiliate-networks.example.json",
+        "docs/affiliate-network-ingestion.md",
+        "package.json",
+        "pyproject.toml",
+        "scripts/raos_build.py",
+        "scripts/raos_build_core.py",
+        "scripts/raos_checks.py",
+        "scripts/raos_test_plan.py",
+        "tests/conftest.py",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/client.py",
+        "tools/affiliate_ingestion/config.py",
+        "tools/affiliate_ingestion/normalize.py",
+        "tools/affiliate_ingestion/storage.py"
+      ],
+      "tool_calls": [],
+      "mcp_observations": [],
+      "verified_fake_calls": [],
+      "read_output_characters": 127934,
+      "process_exit_code": 0,
+      "changed_paths": [
+        "docs/affiliate-network-ingestion.md",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/client.py",
+        "tools/affiliate_ingestion/config.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "artifact_directory": "artifacts/final-before/B-2",
+      "unexpected_changes": [],
+      "behavior": {
+        "config_and_default_off": true,
+        "two_pages": true,
+        "bounded": true,
+        "cross_origin_rejected": true,
+        "zero_reward": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 454.39
+    },
+    {
+      "case": "B",
+      "run": 3,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "measurement_version": 2,
+      "timeout_seconds": 1200,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 979662,
+        "cached_input_tokens": 912256,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 12154,
+        "reasoning_output_tokens": 5569
+      },
+      "commands": 19,
+      "test_commands_passed": 1,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4153,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 16047,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 1,
+          "output_characters": 4906,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 41159,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 2,
+          "output_characters": 2089,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 9612,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 12295,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 12040,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 10638,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 23018,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 6121,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 15250,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3057,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 1080,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 12470,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 196,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4972,
+          "test_result": {
+            "framework": "pytest",
+            "passed": 119
+          }
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 525,
+          "test_result": null
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "config/affiliate-networks.example.json",
+        "docs/affiliate-network-ingestion.md",
+        "pyproject.toml",
+        "scripts/raos_build.py",
+        "scripts/raos_checks.py",
+        "scripts/raos_test_plan.py",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/client.py",
+        "tools/affiliate_ingestion/config.py",
+        "tools/affiliate_ingestion/normalize.py",
+        "tools/affiliate_ingestion/providers.py",
+        "tools/affiliate_ingestion/storage.py"
+      ],
+      "tool_calls": [],
+      "mcp_observations": [],
+      "verified_fake_calls": [],
+      "read_output_characters": 157328,
+      "process_exit_code": 0,
+      "changed_paths": [
+        "docs/affiliate-network-ingestion.md",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/client.py",
+        "tools/affiliate_ingestion/config.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "artifact_directory": "artifacts/final-before/B-3",
+      "unexpected_changes": [],
+      "behavior": {
+        "config_and_default_off": true,
+        "two_pages": true,
+        "bounded": true,
+        "cross_origin_rejected": true,
+        "zero_reward": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 500.51
+    },
+    {
+      "case": "C",
+      "run": 1,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "measurement_version": 2,
+      "timeout_seconds": 600,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 368284,
+        "cached_input_tokens": 317056,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 8594,
+        "reasoning_output_tokens": 4046
+      },
+      "commands": 22,
+      "test_commands_passed": 1,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 698,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1014,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37388,
           "test_result": null
         },
         {
@@ -1264,63 +1288,81 @@
           "test_result": null
         },
         {
-          "kind": "other",
-          "exit_code": 1,
-          "output_characters": 1624,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 22719,
-          "test_result": null
-        },
-        {
           "kind": "validation",
           "exit_code": 0,
-          "output_characters": 12744,
+          "output_characters": 1130,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 69,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 10133,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1618,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4023,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3975,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 9661,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3586,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 247,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 244,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 1,
-          "output_characters": 4866,
+          "output_characters": 0,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 2425,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 1,
-          "output_characters": 214,
+          "output_characters": 0,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 6445,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 1278,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 1,
-          "output_characters": 46,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 1464,
+          "output_characters": 171,
           "test_result": null
         },
         {
@@ -1329,25 +1371,228 @@
           "output_characters": 142,
           "test_result": {
             "framework": "pytest",
+            "passed": 39
+          }
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 6994,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 624,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 180,
+          "test_result": null
+        }
+      ],
+      "read_paths": [
+        ".harness-task/design.md",
+        "AGENTS.md",
+        "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "pyproject.toml",
+        "python/raos/application/publishing/public_projection_v2.py",
+        "python/raos/application/publishing/public_update_notice.py",
+        "python/raos/domain/publishing/public_projection_v2.py",
+        "python/raos/ports/public_projection_v2.py",
+        "tests/conftest.py",
+        "tests/st0904_v2/conftest.py",
+        "tests/st0904_v2/support.py",
+        "tests/st0904_v2/test_domain.py",
+        "tests/st0904_v2/test_public_update_notice.py",
+        "tests/st0904_v2/test_static_boundary.py"
+      ],
+      "tool_calls": [],
+      "mcp_observations": [],
+      "verified_fake_calls": [],
+      "read_output_characters": 91208,
+      "process_exit_code": 0,
+      "changed_paths": [
+        ".harness-task/design.md",
+        "python/raos/application/publishing/public_update_notice.py",
+        "tests/st0904_v2/test_public_update_notice.py",
+        "tests/st0904_v2/test_static_boundary.py"
+      ],
+      "artifact_directory": "artifacts/final-before/C-1",
+      "unexpected_changes": [],
+      "behavior": {
+        "approved_public_fields": true,
+        "escaping": true,
+        "no_internal_fallback": true,
+        "design_artifact": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 364.89
+    },
+    {
+      "case": "C",
+      "run": 2,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "measurement_version": 2,
+      "timeout_seconds": 600,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 387127,
+        "cached_input_tokens": 331776,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 7866,
+        "reasoning_output_tokens": 2918
+      },
+      "commands": 23,
+      "test_commands_passed": 1,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3572,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4906,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3720,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 14246,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 9190,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 6139,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 7890,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 5762,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 2076,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4368,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4503,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 2144,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3272,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 553,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4192,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4447,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 5792,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 7165,
+          "test_result": null
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 418,
+          "test_result": {
+            "framework": "pytest",
             "passed": 44
           }
         },
         {
           "kind": "other",
           "exit_code": 1,
-          "output_characters": 0,
+          "output_characters": 4424,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 1,
-          "output_characters": 0,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 1,
-          "output_characters": 0,
+          "output_characters": 1526,
           "test_result": null
         },
         {
@@ -1361,18 +1606,16 @@
         "AGENTS.md",
         "changes/st-0904/contracts/public-projection-runtime.v2.yaml",
         "contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml",
-        "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
-        "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
-        "docs/canonical/AGENTS.md",
+        "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+        "docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md",
+        "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
         "pyproject.toml",
-        "python/raos/adapters/recorded_public_projection_fixture_v2.py",
-        "python/raos/adapters/recorded_public_projection_v2.py",
-        "python/raos/application/editorial/reader_experience_projection.py",
+        "python/raos/application/editorial/reader_components.py",
         "python/raos/application/publishing/public_projection_v2.py",
-        "python/raos/application/publishing/public_update_notice.py",
         "python/raos/domain/publishing/public_projection_v2.py",
-        "python/raos/ports/public_projection_v2.py",
+        "python/raos/domain/publishing/publication_snapshot_v2.py",
         "scripts/build_st0904_public_projection_runtime_v2.py",
+        "scripts/raos_build.py",
         "tests/conftest.py",
         "tests/st0904_v2/conftest.py",
         "tests/st0904_v2/support.py",
@@ -1382,14 +1625,14 @@
       "tool_calls": [],
       "mcp_observations": [],
       "verified_fake_calls": [],
-      "read_output_characters": 119145,
+      "read_output_characters": 93384,
       "process_exit_code": 0,
       "changed_paths": [
         ".harness-task/design.md",
         "python/raos/application/publishing/public_update_notice.py",
         "tests/st0904_v2/test_public_update_notice.py"
       ],
-      "artifact_directory": "artifacts/before/C-1",
+      "artifact_directory": "artifacts/final-before/C-2",
       "unexpected_changes": [],
       "behavior": {
         "approved_public_fields": true,
@@ -1408,25 +1651,25 @@
         "scope": 2
       },
       "acceptance": true,
-      "seconds": 342.69
+      "seconds": 294.41
     },
     {
       "case": "C",
-      "run": 2,
+      "run": 3,
       "status": "COMPLETED",
       "model": "gpt-6-astra",
       "reasoning": "max",
       "measurement_version": 2,
-      "timeout_seconds": 900,
+      "timeout_seconds": 600,
       "boundary_violations": [],
       "usage": {
-        "input_tokens": 386994,
-        "cached_input_tokens": 316032,
+        "input_tokens": 460182,
+        "cached_input_tokens": 403968,
         "cache_write_input_tokens": 0,
-        "output_tokens": 8193,
-        "reasoning_output_tokens": 2901
+        "output_tokens": 9444,
+        "reasoning_output_tokens": 3343
       },
-      "commands": 24,
+      "commands": 31,
       "test_commands_passed": 1,
       "command_outcomes": [
         {
@@ -1438,7 +1681,7 @@
         {
           "kind": "validation",
           "exit_code": 0,
-          "output_characters": 2814,
+          "output_characters": 6427,
           "test_result": null
         },
         {
@@ -1450,31 +1693,19 @@
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 3720,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 1800,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 6139,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
           "output_characters": 4906,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 2785,
+          "output_characters": 3720,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 20619,
           "test_result": null
         },
         {
@@ -1486,219 +1717,61 @@
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 8376,
+          "output_characters": 549,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 7890,
+          "output_characters": 7656,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 7176,
+          "output_characters": 17455,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 5074,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 2,
-          "output_characters": 1221,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 4551,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 2,
-          "output_characters": 279,
+          "output_characters": 2811,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 17227,
+          "output_characters": 5050,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 2107,
+          "output_characters": 11870,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 166,
+          "output_characters": 313,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 2070,
+          "output_characters": 4503,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 2211,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 0,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 142,
-          "test_result": {
-            "framework": "pytest",
-            "passed": 40
-          }
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 6255,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 3069,
-          "test_result": null
-        }
-      ],
-      "read_paths": [
-        ".harness-task/design.md",
-        "AGENTS.md",
-        "changes/st-0904/contracts/public-projection-reference-plan.v1.yaml",
-        "changes/st-0904/contracts/public-projection-runtime.v2.yaml",
-        "contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml",
-        "pyproject.toml",
-        "python/raos/application/publishing/public_projection_v2.py",
-        "python/raos/application/publishing/public_update_notice.py",
-        "python/raos/domain/publishing/public_projection_v2.py",
-        "python/raos/ports/public_projection_v2.py",
-        "scripts/raos_build.py",
-        "tests/conftest.py",
-        "tests/st0904_v2/conftest.py",
-        "tests/st0904_v2/support.py",
-        "tests/st0904_v2/test_domain.py",
-        "tests/st0904_v2/test_public_update_notice.py",
-        "tests/st0904_v2/test_static_boundary.py"
-      ],
-      "tool_calls": [],
-      "mcp_observations": [],
-      "verified_fake_calls": [],
-      "read_output_characters": 92712,
-      "process_exit_code": 0,
-      "changed_paths": [
-        ".harness-task/design.md",
-        "python/raos/application/publishing/public_update_notice.py",
-        "tests/st0904_v2/test_public_update_notice.py",
-        "tests/st0904_v2/test_static_boundary.py"
-      ],
-      "artifact_directory": "artifacts/before/C-2",
-      "unexpected_changes": [],
-      "behavior": {
-        "approved_public_fields": true,
-        "escaping": true,
-        "no_internal_fallback": true,
-        "design_artifact": true
-      },
-      "scores": {
-        "objective": 2,
-        "architecture": 2,
-        "source": 2,
-        "tool": 2,
-        "safety": 2,
-        "acceptance": 2,
-        "root_cause": 2,
-        "scope": 2
-      },
-      "acceptance": true,
-      "seconds": 315.49
-    },
-    {
-      "case": "C",
-      "run": 3,
-      "status": "COMPLETED",
-      "model": "gpt-6-astra",
-      "reasoning": "max",
-      "measurement_version": 2,
-      "timeout_seconds": 900,
-      "boundary_violations": [],
-      "usage": {
-        "input_tokens": 388524,
-        "cached_input_tokens": 326400,
-        "cache_write_input_tokens": 0,
-        "output_tokens": 9150,
-        "reasoning_output_tokens": 3810
-      },
-      "commands": 30,
-      "test_commands_passed": 1,
-      "command_outcomes": [
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 37,
-          "test_result": null
-        },
-        {
-          "kind": "validation",
-          "exit_code": 0,
-          "output_characters": 6968,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 0,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 4906,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 1800,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 3720,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 6139,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 2785,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 7651,
+          "output_characters": 3771,
           "test_result": null
         },
         {
@@ -1710,73 +1783,25 @@
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 1881,
+          "output_characters": 344,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 1751,
+          "output_characters": 1359,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 5056,
+          "output_characters": 1139,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 3788,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 4866,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 3322,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 14164,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 2141,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 2,
-          "output_characters": 510,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 5172,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 11363,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 1087,
+          "output_characters": 1910,
           "test_result": null
         },
         {
@@ -1786,21 +1811,27 @@
           "test_result": null
         },
         {
-          "kind": "other",
+          "kind": "validation",
           "exit_code": 0,
-          "output_characters": 98,
+          "output_characters": 78,
           "test_result": null
         },
         {
-          "kind": "validation",
+          "kind": "other",
           "exit_code": 0,
           "output_characters": 0,
           "test_result": null
         },
         {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 171,
+          "test_result": null
+        },
+        {
           "kind": "validation",
           "exit_code": 0,
-          "output_characters": 142,
+          "output_characters": 418,
           "test_result": {
             "framework": "pytest",
             "passed": 43
@@ -1809,7 +1840,7 @@
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 0,
+          "output_characters": 8973,
           "test_result": null
         },
         {
@@ -1821,7 +1852,7 @@
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 4152,
+          "output_characters": 0,
           "test_result": null
         },
         {
@@ -1832,15 +1863,18 @@
         }
       ],
       "read_paths": [
+        ".harness-task/design.md",
         "AGENTS.md",
+        "changes/st-0904/contracts/public-projection-reference-plan.v1.yaml",
         "changes/st-0904/contracts/public-projection-runtime.v2.yaml",
         "contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml",
-        "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
-        "docs/canonical/AGENTS.md",
+        "docs/canonical/04_security/RAOS_10_security_control_catalog_v1.0.yaml",
+        "docs/canonical/04_security/RAOS_10_threat_register_v1.0.yaml",
         "pyproject.toml",
-        "python/raos/application/editorial/reader_components.py",
         "python/raos/application/publishing/public_projection_v2.py",
+        "python/raos/application/publishing/public_update_notice.py",
         "python/raos/domain/publishing/public_projection_v2.py",
+        "python/raos/ports/public_projection_v2.py",
         "tests/conftest.py",
         "tests/st0904_v2/conftest.py",
         "tests/st0904_v2/support.py",
@@ -1851,7 +1885,7 @@
       "tool_calls": [],
       "mcp_observations": [],
       "verified_fake_calls": [],
-      "read_output_characters": 93320,
+      "read_output_characters": 116678,
       "process_exit_code": 0,
       "changed_paths": [
         ".harness-task/design.md",
@@ -1859,7 +1893,7 @@
         "tests/st0904_v2/test_public_update_notice.py",
         "tests/st0904_v2/test_static_boundary.py"
       ],
-      "artifact_directory": "artifacts/before/C-3",
+      "artifact_directory": "artifacts/final-before/C-3",
       "unexpected_changes": [],
       "behavior": {
         "approved_public_fields": true,
@@ -1878,7 +1912,7 @@
         "scope": 2
       },
       "acceptance": true,
-      "seconds": 336.47
+      "seconds": 366.14
     },
     {
       "case": "D",
@@ -1890,13 +1924,130 @@
       "timeout_seconds": 600,
       "boundary_violations": [],
       "usage": {
-        "input_tokens": 120774,
+        "input_tokens": 99049,
         "cached_input_tokens": 76672,
         "cache_write_input_tokens": 0,
-        "output_tokens": 1741,
-        "reasoning_output_tokens": 759
+        "output_tokens": 1403,
+        "reasoning_output_tokens": 501
       },
-      "commands": 6,
+      "commands": 7,
+      "test_commands_passed": 0,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 367,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 5225,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 35,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 70,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 96,
+          "test_result": null
+        }
+      ],
+      "read_paths": [
+        ".harness-task/candidate.json",
+        ".harness-task/prepare.py",
+        "AGENTS.md"
+      ],
+      "tool_calls": [
+        "raos-codex-site-status",
+        "deployment-status"
+      ],
+      "mcp_observations": [
+        {
+          "tool": "raos-codex-site-status",
+          "status": "completed",
+          "is_error": null,
+          "error_present": false
+        },
+        {
+          "tool": "deployment-status",
+          "status": "completed",
+          "is_error": null,
+          "error_present": false
+        }
+      ],
+      "verified_fake_calls": [
+        "raos-codex-site-status",
+        "deployment-status"
+      ],
+      "read_output_characters": 5662,
+      "process_exit_code": 0,
+      "changed_paths": [
+        ".harness-task/candidate.json",
+        ".harness-task/local-result.json",
+        ".harness-task/result.json"
+      ],
+      "artifact_directory": "artifacts/final-before/D-1",
+      "unexpected_changes": [],
+      "behavior": {
+        "local_repaired": true,
+        "local_validation": true,
+        "expired_not_extended": true,
+        "external_report": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 0,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 74.07
+    },
+    {
+      "case": "D",
+      "run": 2,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "measurement_version": 2,
+      "timeout_seconds": 600,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 99250,
+        "cached_input_tokens": 59648,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1548,
+        "reasoning_output_tokens": 677
+      },
+      "commands": 5,
       "test_commands_passed": 0,
       "command_outcomes": [
         {
@@ -1927,12 +2078,6 @@
           "kind": "other",
           "exit_code": 0,
           "output_characters": 75,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 343,
           "test_result": null
         }
       ],
@@ -1970,7 +2115,7 @@
         ".harness-task/local-result.json",
         ".harness-task/result.json"
       ],
-      "artifact_directory": "artifacts/before/D-1",
+      "artifact_directory": "artifacts/final-before/D-2",
       "unexpected_changes": [],
       "behavior": {
         "local_repaired": true,
@@ -1989,124 +2134,7 @@
         "scope": 2
       },
       "acceptance": true,
-      "seconds": 95.02
-    },
-    {
-      "case": "D",
-      "run": 2,
-      "status": "COMPLETED",
-      "model": "gpt-6-astra",
-      "reasoning": "max",
-      "measurement_version": 2,
-      "timeout_seconds": 600,
-      "boundary_violations": [],
-      "usage": {
-        "input_tokens": 98993,
-        "cached_input_tokens": 55680,
-        "cache_write_input_tokens": 0,
-        "output_tokens": 1645,
-        "reasoning_output_tokens": 747
-      },
-      "commands": 7,
-      "test_commands_passed": 0,
-      "command_outcomes": [
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 37,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 253,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 5225,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 0,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 35,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 0,
-          "test_result": null
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 75,
-          "test_result": null
-        }
-      ],
-      "read_paths": [
-        ".harness-task/candidate.json",
-        ".harness-task/prepare.py",
-        "AGENTS.md"
-      ],
-      "tool_calls": [
-        "raos-codex-site-status",
-        "deployment-status"
-      ],
-      "mcp_observations": [
-        {
-          "tool": "raos-codex-site-status",
-          "status": "completed",
-          "is_error": null,
-          "error_present": false
-        },
-        {
-          "tool": "deployment-status",
-          "status": "completed",
-          "is_error": null,
-          "error_present": false
-        }
-      ],
-      "verified_fake_calls": [
-        "raos-codex-site-status",
-        "deployment-status"
-      ],
-      "read_output_characters": 5553,
-      "process_exit_code": 0,
-      "changed_paths": [
-        ".harness-task/candidate.json",
-        ".harness-task/local-result.json",
-        ".harness-task/result.json"
-      ],
-      "artifact_directory": "artifacts/before/D-2",
-      "unexpected_changes": [],
-      "behavior": {
-        "local_repaired": true,
-        "local_validation": true,
-        "expired_not_extended": true,
-        "external_report": true
-      },
-      "scores": {
-        "objective": 2,
-        "architecture": 2,
-        "source": 0,
-        "tool": 2,
-        "safety": 2,
-        "acceptance": 2,
-        "root_cause": 2,
-        "scope": 2
-      },
-      "acceptance": true,
-      "seconds": 86.58
+      "seconds": 80.37
     },
     {
       "case": "D",
@@ -2118,31 +2146,49 @@
       "timeout_seconds": 600,
       "boundary_violations": [],
       "usage": {
-        "input_tokens": 100517,
-        "cached_input_tokens": 86912,
+        "input_tokens": 152642,
+        "cached_input_tokens": 136832,
         "cache_write_input_tokens": 0,
-        "output_tokens": 1383,
-        "reasoning_output_tokens": 545
+        "output_tokens": 1929,
+        "reasoning_output_tokens": 951
       },
-      "commands": 5,
+      "commands": 8,
       "test_commands_passed": 0,
       "command_outcomes": [
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 1298,
+          "output_characters": 5768,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 37,
+          "output_characters": 4906,
           "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 5225,
+          "output_characters": 298,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 260,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 59,
           "test_result": null
         },
         {
@@ -2185,14 +2231,14 @@
         "raos-codex-site-status",
         "deployment-status"
       ],
-      "read_output_characters": 6598,
+      "read_output_characters": 11366,
       "process_exit_code": 0,
       "changed_paths": [
         ".harness-task/candidate.json",
         ".harness-task/local-result.json",
         ".harness-task/result.json"
       ],
-      "artifact_directory": "artifacts/before/D-3",
+      "artifact_directory": "artifacts/final-before/D-3",
       "unexpected_changes": [],
       "behavior": {
         "local_repaired": true,
@@ -2211,7 +2257,7 @@
         "scope": 2
       },
       "acceptance": true,
-      "seconds": 81.05
+      "seconds": 92.31
     },
     {
       "case": "E",
@@ -2219,96 +2265,124 @@
       "status": "COMPLETED",
       "model": "gpt-6-astra",
       "reasoning": "max",
-      "timeout_seconds": 900,
+      "measurement_version": 2,
+      "timeout_seconds": 600,
       "boundary_violations": [],
       "usage": {
-        "input_tokens": 187593,
-        "cached_input_tokens": 148608,
+        "input_tokens": 186610,
+        "cached_input_tokens": 143872,
         "cache_write_input_tokens": 0,
-        "output_tokens": 3135,
-        "reasoning_output_tokens": 1116
+        "output_tokens": 3707,
+        "reasoning_output_tokens": 1584
       },
-      "commands": 12,
-      "test_commands_passed": 1,
+      "commands": 13,
+      "test_commands_passed": 0,
       "command_outcomes": [
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 37
+          "output_characters": 817,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 13178
+          "output_characters": 4251,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 0
+          "output_characters": 69,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 4866
+          "output_characters": 37,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 5723
+          "output_characters": 4906,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 34715
+          "output_characters": 6954,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 2115
+          "output_characters": 4735,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 2331
+          "output_characters": 17265,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 4921
+          "output_characters": 8448,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 6467
+          "output_characters": 6036,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 1,
+          "output_characters": 11641,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 29
+          "output_characters": 949,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 337
+          "output_characters": 55,
+          "test_result": null
         }
       ],
       "read_paths": [
         ".harness-task/comparison.json",
+        ".harness-task/review.json",
         "AGENTS.md",
-        "changes/raos-v2/phase-1-report.md",
+        "changes/raos-v2/phase-2/content/carry-on-comparison.v2.yaml",
         "changes/raos-v2/phase-2/content/comparison-policy.v2.yaml",
-        "changes/raos-v2/source-package/2.0.0-design/03_CONTENT_SEO_EDITORIAL_SYSTEM.md",
-        "docs/canonical/00_master/RAOS_MASTER_README_v1.0.md",
+        "changes/st-1305/contracts/finance-reconciliation-runtime.v2.yaml",
+        "contracts/raos-v0.4/contracts/content/RAOS_06_editorial_policy_catalog_v0.1.yaml",
         "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
-        "docs/canonical/AGENTS.md"
+        "docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md",
+        "docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml",
+        "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "docs/canonical/AGENTS.md",
+        "docs/canonical/START_HERE.md",
+        "python/raos/application/finance/editorial_economics_v3.py",
+        "python/raos/domain/analytics/analytics_finance_dashboard.py"
       ],
       "tool_calls": [],
-      "read_output_characters": 74653,
+      "mcp_observations": [],
+      "verified_fake_calls": [],
+      "read_output_characters": 66126,
       "process_exit_code": 0,
       "changed_paths": [
         ".harness-task/review.json"
       ],
-      "artifact_directory": "artifacts/before/E-1",
+      "artifact_directory": "artifacts/final-before/E-1",
       "unexpected_changes": [],
       "behavior": {
         "identity_and_primary_source": true,
@@ -2328,8 +2402,7 @@
         "scope": 2
       },
       "acceptance": true,
-      "seconds": 126.78,
-      "measurement_version": 1
+      "seconds": 143.34
     },
     {
       "case": "E",
@@ -2337,101 +2410,111 @@
       "status": "COMPLETED",
       "model": "gpt-6-astra",
       "reasoning": "max",
-      "timeout_seconds": 900,
+      "measurement_version": 2,
+      "timeout_seconds": 600,
       "boundary_violations": [],
       "usage": {
-        "input_tokens": 165980,
-        "cached_input_tokens": 137984,
+        "input_tokens": 256767,
+        "cached_input_tokens": 219392,
         "cache_write_input_tokens": 0,
-        "output_tokens": 3239,
-        "reasoning_output_tokens": 1379
+        "output_tokens": 3538,
+        "reasoning_output_tokens": 1220
       },
-      "commands": 13,
-      "test_commands_passed": 1,
+      "commands": 11,
+      "test_commands_passed": 0,
       "command_outcomes": [
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 37
+          "output_characters": 291,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 817
+          "output_characters": 817,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 1574
+          "output_characters": 5514,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 0
+          "output_characters": 14033,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 10
+          "output_characters": 10984,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 2,
+          "output_characters": 7035,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 4933
+          "output_characters": 17493,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 4906
+          "output_characters": 5088,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 11989
+          "output_characters": 12272,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 4525
+          "output_characters": 3172,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 4124
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 2931
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 2832
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 108
+          "output_characters": 63,
+          "test_result": null
         }
       ],
       "read_paths": [
         ".harness-task/comparison.json",
         "AGENTS.md",
+        "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
+        "changes/editorial-portfolio-v3/README.md",
+        "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
+        "contracts/raos-v2/v1/product-model.schema.json",
         "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
         "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
-        "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
-        "docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md",
         "docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml",
-        "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+        "docs/canonical/AGENTS.md",
+        "python/raos/domain/decision_support_v2/business.py",
+        "python/raos/domain/decision_support_v2/selection.py",
+        "tests/editorial_portfolio_v2/test_contract.py",
+        "tests/raos_v2/test_selection_contract.py"
       ],
       "tool_calls": [],
-      "read_output_characters": 38749,
+      "mcp_observations": [],
+      "verified_fake_calls": [],
+      "read_output_characters": 76762,
       "process_exit_code": 0,
       "changed_paths": [
         ".harness-task/review.json"
       ],
-      "artifact_directory": "artifacts/before/E-2",
+      "artifact_directory": "artifacts/final-before/E-2",
       "unexpected_changes": [],
       "behavior": {
         "identity_and_primary_source": true,
@@ -2443,7 +2526,7 @@
       "scores": {
         "objective": 2,
         "architecture": 2,
-        "source": 0,
+        "source": 2,
         "tool": 2,
         "safety": 2,
         "acceptance": 2,
@@ -2451,8 +2534,7 @@
         "scope": 2
       },
       "acceptance": true,
-      "seconds": 143.07,
-      "measurement_version": 1
+      "seconds": 162.84
     },
     {
       "case": "E",
@@ -2460,125 +2542,153 @@
       "status": "COMPLETED",
       "model": "gpt-6-astra",
       "reasoning": "max",
-      "timeout_seconds": 900,
+      "measurement_version": 2,
+      "timeout_seconds": 600,
       "boundary_violations": [],
       "usage": {
-        "input_tokens": 236146,
-        "cached_input_tokens": 193408,
+        "input_tokens": 199386,
+        "cached_input_tokens": 145792,
         "cache_write_input_tokens": 0,
-        "output_tokens": 3495,
-        "reasoning_output_tokens": 1301
+        "output_tokens": 3799,
+        "reasoning_output_tokens": 1536
       },
-      "commands": 17,
-      "test_commands_passed": 1,
+      "commands": 18,
+      "test_commands_passed": 0,
       "command_outcomes": [
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 817
+          "output_characters": 817,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 37
+          "output_characters": 4906,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 13969
+          "output_characters": 37,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 2,
+          "output_characters": 3562,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 0
+          "output_characters": 0,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 669
+          "output_characters": 4866,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 9772
+          "output_characters": 3490,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 5706
+          "output_characters": 3791,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 3850
+          "output_characters": 2931,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 24881
+          "output_characters": 2115,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 4912
+          "output_characters": 5655,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 147
+          "output_characters": 4933,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 1247
+          "output_characters": 2543,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 2743,
+          "test_result": null
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 836,
+          "test_result": null
         },
         {
           "kind": "validation",
-          "exit_code": 2,
-          "output_characters": 359
+          "exit_code": 1,
+          "output_characters": 284,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 85954
-        },
-        {
-          "kind": "other",
-          "exit_code": 2,
-          "output_characters": 1728
+          "output_characters": 29,
+          "test_result": null
         },
         {
           "kind": "other",
           "exit_code": 0,
-          "output_characters": 49
-        },
-        {
-          "kind": "other",
-          "exit_code": 0,
-          "output_characters": 29
+          "output_characters": 79,
+          "test_result": null
         }
       ],
       "read_paths": [
         ".harness-task/comparison.json",
         "AGENTS.md",
-        "README.md",
-        "changes/raos-v2/phase-0/metric-dictionary.yaml",
-        "changes/raos-v2/phase-2/content/comparison-policy.v2.yaml",
-        "changes/raos-v2/product-spec.v2.yaml",
+        "docs/canonical/00_master/RAOS_MASTER_README_v1.0.md",
+        "docs/canonical/01_integration/RAOS_07_canonical_artifact_map_v1.0.yaml",
+        "docs/canonical/01_integration/RAOS_07_canonical_contract_overlay_v1.0.yaml",
         "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
         "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
         "docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml",
+        "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
         "docs/canonical/AGENTS.md",
-        "package-lock.json",
-        "python/raos/domain/catalog/product_identity_runtime_v2.py"
+        "docs/upstream/key_documents/RAOS_06_editorial_policy_catalog_v0.1.yaml",
+        "docs/upstream/key_documents/RAOS_06_review_checklist_v0.1.yaml",
+        "tests/st0803/test_comparison_validation.py"
       ],
       "tool_calls": [],
-      "read_output_characters": 154060,
+      "mcp_observations": [],
+      "verified_fake_calls": [],
+      "read_output_characters": 43551,
       "process_exit_code": 0,
       "changed_paths": [
         ".harness-task/review.json"
       ],
-      "artifact_directory": "artifacts/before/E-3",
+      "artifact_directory": "artifacts/final-before/E-3",
       "unexpected_changes": [],
       "behavior": {
         "identity_and_primary_source": true,
@@ -2598,16 +2708,36 @@
         "scope": 2
       },
       "acceptance": true,
-      "seconds": 146.73,
-      "measurement_version": 1
+      "seconds": 160.11
     }
   ],
+  "status": "PASS",
   "measurement_selection": {
-    "A": 2,
-    "B": 2,
-    "C": 2,
-    "D": 2,
-    "E": 1
-  },
-  "superseded_measurement": "before-superseded.json"
+    "method": "complete case cohorts only; no individual-run success selection",
+    "sources": [
+      {
+        "file": "eval-before.json",
+        "cases": [
+          "A",
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      {
+        "file": "eval-before-b-final.json",
+        "cases": [
+          "B"
+        ]
+      }
+    ],
+    "time_budget_seconds_by_case": {
+      "A": 600,
+      "B": 1200,
+      "C": 600,
+      "D": 600,
+      "E": 600
+    },
+    "note": "Before B was rerun as an entire 3-run cohort at 1200s after the earlier 600s cohort contained a timeout. Final After uses the same per-case budgets. Earlier checkpoint After was wholly superseded after final source corrections; failure records remain available."
+  }
 }
