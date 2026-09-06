@@ -9,7 +9,7 @@
     {
       "artifact_id": "raos-editorial-measurement-v1",
       "migration_review": null,
-      "package_sha256": "ac5eeb64b5de5885709e6d850212dbbcb3b91cd24bb5ebe8b13367e993e11e1f",
+      "package_sha256": "e2b341ff7e11be7f68e8ca2043ace521b3d20e8f51ce0c4a8707d8a26f6c1a31",
       "slug": "raos-editorial-measurement",
       "version": "1.0.0"
     }

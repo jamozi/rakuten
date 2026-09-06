@@ -1499,6 +1499,110 @@
         "PRD-BERMAS-INTER-CITY-60524"
       ],
       "production_slug": "carry-on-suitcase-under-100-seats",
+      "reader_experience": {
+        "article_type": "shortlist",
+        "components_enabled": true,
+        "consolidate_sections": [
+          "reader-section",
+          "editors-note",
+          "purchase-caution"
+        ],
+        "contextual_links": [
+          {
+            "journey_stage": "compare",
+            "placement": "axes",
+            "question": "エース系3モデルの仕様差を知り、優先条件に合う型番を選ぶためのガイドを見る",
+            "target_ref": "st1703-first-suitcase-comparison"
+          },
+          {
+            "journey_stage": "compare",
+            "placement": "purchase_checks",
+            "question": "前開きとストッパーを両方備える候補を、開き方の違いから選ぶためのガイドを見る",
+            "target_ref": "front-open-carry-on-suitcase-with-stopper"
+          }
+        ],
+        "decision_axes": [
+          {
+            "how_to_check": "利用する航空会社の最新の持ち込み条件を確認します。",
+            "label": "便と機材を確かめる",
+            "why_it_matters": "座席数の区分と運賃によって条件が変わります。"
+          },
+          {
+            "how_to_check": "取っ手・キャスターを含む外寸と各辺の上限を照合します。",
+            "label": "非拡張時の各辺を照合する",
+            "why_it_matters": "3辺合計だけでは判定できません。"
+          },
+          {
+            "how_to_check": "出発時と帰路の荷物量を考え、搭乗前に量ります。",
+            "label": "荷物を入れた総重量を量る",
+            "why_it_matters": "本体が軽くても、荷物と身の回り品の重量が加わります。"
+          }
+        ],
+        "decision_summary": {
+          "key_difference": "小型機向けの外寸を満たす範囲で、本体重量・通常時の容量・開き方が違います。拡張後の容量と、搭乗時の外寸は分けて考えます。",
+          "no_purchase_condition": "便・機材の各辺と総重量を確認できない場合。拡張しないと荷物が入らない場合は、この候補だけで機内持ち込みを決めません。",
+          "options": []
+        },
+        "evidence": [
+          "CLM-PORTFOLIO-UNDER100-STARIA-02350",
+          "CLM-PORTFOLIO-UNDER100-FRESTER-01550",
+          "CLM-PORTFOLIO-UNDER100-PALISADES-06910",
+          "CLM-PORTFOLIO-UNDER100-BERMAS-60524",
+          "CLM-PORTFOLIO-UNDER100-ANA-RULE",
+          "CLM-PORTFOLIO-UNDER100-JAL-RULE",
+          "CLM-PORTFOLIO-UNDER100-CONDITIONAL-CHOICES",
+          "CLM-PORTFOLIO-UNDER100-RIMOWA-CABIN-U-EXCLUDED",
+          "CLM-PORTFOLIO-UNDER100-AUDRINA-EXCLUDED",
+          "CLM-PORTFOLIO-UNDER100-MUJI20-EXCLUDED",
+          "CLM-PORTFOLIO-UNDER100-MAXPASS4-REFERENCE"
+        ],
+        "media": [],
+        "practical_notes": [],
+        "preserve_story": true,
+        "products": [
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-UNDER100-STARIA-02350"
+            ],
+            "product_ref": "PRD-PROTECA-STARIA-CXR-02350"
+          },
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-UNDER100-FRESTER-01550"
+            ],
+            "product_ref": "PRD-PROTECA-FRESTER-EX-01550"
+          },
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-UNDER100-PALISADES-06910"
+            ],
+            "product_ref": "PRD-ACE-PALISADES3-Z-06910"
+          },
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-UNDER100-BERMAS-60524"
+            ],
+            "product_ref": "PRD-BERMAS-INTER-CITY-60524"
+          }
+        ],
+        "purchase_checks": [
+          "便・機材・運賃ごとの最新規定",
+          "非拡張外寸の各辺と、手荷物の合計重量",
+          "正確な型番・新旧仕様・色・同梱品と保証"
+        ],
+        "research_status": {
+          "ranking_uses_commission": false,
+          "real_world_tested": false
+        },
+        "unknowns": [
+          {
+            "decision_effect": "公称容量だけで必要な荷物が入るとは判断しません。",
+            "how_to_verify": "普段の荷物構成と公式収納寸法を照合します。",
+            "topic": "実際の収納量と取り回し",
+            "why_unknown": "衣類やPCの形状で変わり、実機収納を検証していません。"
+          }
+        ]
+      },
       "related_article_ids": [
         "st1703-first-suitcase-comparison",
         "front-open-carry-on-suitcase-with-stopper"
@@ -1678,6 +1782,117 @@
         "PRD-PROTECA-TRI-AIR-01541"
       ],
       "production_slug": "lightweight-carry-on-suitcase-under-3kg",
+      "reader_experience": {
+        "article_type": "shortlist",
+        "components_enabled": true,
+        "consolidate_sections": [
+          "reader-section",
+          "editors-note",
+          "purchase-caution"
+        ],
+        "contextual_links": [
+          {
+            "journey_stage": "compare",
+            "placement": "axes",
+            "question": "エース系3モデルの仕様差を知り、優先条件に合う型番を選ぶためのガイドを見る",
+            "target_ref": "st1703-first-suitcase-comparison"
+          },
+          {
+            "journey_stage": "compare",
+            "placement": "purchase_checks",
+            "question": "前開きとストッパーを両方備える候補を、開き方の違いから選ぶためのガイドを見る",
+            "target_ref": "front-open-carry-on-suitcase-with-stopper"
+          }
+        ],
+        "decision_axes": [
+          {
+            "how_to_check": "100席以上という区分だけで決めず、便・機材・運賃を確認します。",
+            "label": "搭乗便の規定を確認する",
+            "why_it_matters": "記事の候補条件と航空会社の許容量は別です。"
+          },
+          {
+            "how_to_check": "総重量枠からケース本体と身の回り品の重さを引きます。",
+            "label": "本体を引いた残り重量を計算する",
+            "why_it_matters": "軽さは荷物に使える重量へ翻訳します。"
+          },
+          {
+            "how_to_check": "荷物の構成、前開きの要否、非拡張容量を照合します。",
+            "label": "荷物量と構造を選ぶ",
+            "why_it_matters": "容量と開き方には使う場面ごとの違いがあります。"
+          }
+        ],
+        "decision_summary": {
+          "key_difference": "本体の軽さに加え、容量・開き方・ストッパーの条件で5モデルを分けます。公称容量の大きさは実際の収納を保証する値ではありません。",
+          "no_purchase_condition": "荷物を含めた総重量と搭乗便の外寸条件を満たせない場合。拡張状態で持ち込めると決めつけないでください。",
+          "options": []
+        },
+        "evidence": [
+          "CLM-PORTFOLIO-LIGHT-TRIAIR-01541",
+          "CLM-PORTFOLIO-LIGHT-RIMOWA-82353171",
+          "CLM-PORTFOLIO-LIGHT-AEROFLEX-01521",
+          "CLM-PORTFOLIO-LIGHT-SAMSONITE-C-LITE-134679-1549",
+          "CLM-PORTFOLIO-LIGHT-APPLITE-QJ6-68002",
+          "CLM-PORTFOLIO-LIGHT-ANA-RULE",
+          "CLM-PORTFOLIO-LIGHT-JAL-RULE",
+          "CLM-PORTFOLIO-LIGHT-CONDITIONAL-CHOICES",
+          "CLM-PORTFOLIO-LIGHT-FREQUENTER-REFERENCE",
+          "CLM-PORTFOLIO-LIGHT-MUJI36-EXCLUDED"
+        ],
+        "media": [],
+        "practical_notes": [
+          "総重量の計算例（仮定）：許容量が7kg、本体が3kg、身の回り品が1kgなら、ケースへ入れる荷物の目安は7−3−1＝3kgです。7kgは全便共通の規定ではありません。実際の便の条件を確認してください。"
+        ],
+        "preserve_story": true,
+        "products": [
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-LIGHT-AEROFLEX-01521"
+            ],
+            "product_ref": "PRD-PROTECA-AEROFLEX-DX2-01521"
+          },
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-LIGHT-TRIAIR-01541"
+            ],
+            "product_ref": "PRD-PROTECA-TRI-AIR-01541"
+          },
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-LIGHT-RIMOWA-82353171"
+            ],
+            "product_ref": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171"
+          },
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-LIGHT-APPLITE-QJ6-68002"
+            ],
+            "product_ref": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002"
+          },
+          {
+            "evidence_facts": [
+              "CLM-PORTFOLIO-LIGHT-SAMSONITE-C-LITE-134679-1549"
+            ],
+            "product_ref": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549"
+          }
+        ],
+        "purchase_checks": [
+          "搭乗便の最新規定と非拡張外寸",
+          "ケース・荷物・身の回り品を合わせた実際の重量",
+          "型番、必要機能、新旧仕様、付属品、保証"
+        ],
+        "research_status": {
+          "ranking_uses_commission": false,
+          "real_world_tested": false
+        },
+        "unknowns": [
+          {
+            "decision_effect": "公称重量と容量だけで使い心地の優劣を決めません。",
+            "how_to_verify": "取っ手や収納の形状を実物で確認できる場合に確かめます。",
+            "topic": "収納量・持ち上げやすさ・走行感",
+            "why_unknown": "実機の収納と走行を比較していません。"
+          }
+        ]
+      },
       "related_article_ids": [
         "st1703-first-suitcase-comparison",
         "front-open-carry-on-suitcase-with-stopper"
