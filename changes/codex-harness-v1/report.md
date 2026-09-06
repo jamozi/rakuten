@@ -1,19 +1,18 @@
-# RAOS Codex Harness audit — 2026-09-06
+# RAOS Codex Harness audit — integrated source review
 
 ## 1. Executive Summary
 
-- Global設定上書き事故は、合意された回収済み項目からの再構成で解消した。Desktop・通知・Memoryを保持し、一時trust19件だけを除去した。不明な元値は現在値または既定値を使い、完全な原状復元とは区別する。
-- 評価とruntime inventoryを読み取り専用host mount・独立Home/cacheで隔離し、Global設定・認証への書込み拒否を検証した。CIでも隔離ツールの導入・起動確認を必須にした。
-- AGENTSはMissionと不変条件から始まる83行のBootloaderへ変更。2,342→1,754 o200k tokens（25.1%減）。
-- 現行V3・対象限定の後継設計・実装・検証先を目的別の地図へ接続した。immutable baselineと履歴は維持する。
-- Skillは編集レビューとWordPress workflowの2件。詳細は既存contract/runbookが所有する。
-- 専用CLIは有効95→30件、GSD0件。既存Sora/Speech無効化もWindows・WSL・隔離mount間で維持する。Global GSDやPlugin本体は変更していない。
-- 不要App4件とAPI-key MCPをProjectで無効化。GitHub28＋WordPress15の実観測toolを選択し、WordPress承認境界と保存済みcheckout起動を維持した。
-- PostgreSQLの既存19失敗を原因別に修正。権限を増やさず、並行保存・rollback・再upgrade・有効構造digest・履歴graphを検証した。
-- 未実行PHP6件を8.3で実行し、PHP7.4互換CIも合格。履歴7skipには現行behavior7件を対応付けた。
-- 拡張CIで判明したreaderの185型エラーを修正。記事10件と境界753件の結果は同一で、Pyrightは0件。
-- 最終Before/After各15実行は比較PASS。品質中央値はA/B/C16点を維持、D/E14→16点。失敗・時間切れ・大きな出力の外れ値も履歴へ残した。
-- 最終コードのローカル標準検証と拡張CIは合格。報告を含むRequired CI、merge SHA、ローカル同期の証拠は[統合PR #189](https://github.com/jamozi/rakuten/pull/189)へ集約する。
+- 本報告のコード検証対象は `f746e0a1c43141e5d6d27e14ec72cb403f841014`。後続の報告commitとGit統合の実績は[PR #191本文](https://github.com/jamozi/rakuten/pull/191)の最終receiptが所有する。
+- Missionは読者の信頼できる購入判断と、品質制約下の持続的な確定貢献利益の改善。目的・正本・編集/財務分離・public投影・承認境界を保持した。
+- root AGENTSは91→85行、2,342→1,830 o200k tokens（21.9%減）。目的別地図、既存runbook、2件のProject Skillへ案内し、局所Python検証とM以上・生成・contract・境界のmake fastを分けた。
+- f746 runtime inventoryはPASS。catalog97、通常CLI有効95、専用CLI30、GSD0、Project Skill2、選択tool43、schema10,472 tokens。既存disable2件を保持し、総context・課金量と区別する。
+- Globalは承認された既知項目から再構成し、その再構成済みconfigとの一致と一時trust0を確認した。事故前の未知の原本へのexact restoreではない。専用CLI標準運用とDesktop上流制約は合意済みの適用範囲である。
+- DB・PHP・型検査・隔離・bytecode生成・browser検証の問題を修正した。PR190の読者表示とpublication_authority=falseのlocal guide5本を保持して統合し、147 owner生成/CI検査が合格した。旧0dの出力同一証拠を意図した製品変更へ拡張しない。
+- f746の実PR CIは29/29 SUCCESS、Final Integrationも実行成功。Python22,858 PASS / 8skip、Node486、Vitest4、PHP7.4.33 source/generated各85 assertions、mypy628ファイル、147 owner checksが合格。別途明示したlocal Pyrightも0 errors / 0 warnings / 0 informations、26.73秒で合格した。
+- f746 native Afterは全15件が品質16、受入達成、比較PASS。A/B/C中央値16を維持しD/E14→16。A独立品質/境界reviewはPASS、最終A/C/E意味レビューと全30 record/48 artifactの独立cohort監査もPASS。
+- Aのraw read中央値は62,101→68,381 chars（10.1%増）で削減はNOT_DEMONSTRATED。保存パス上の範囲限定とinput-token減少は別の観測で、主指標を代替しない。SC-08は部分達成であり、全12条件の無条件PASSとはしない。
+- f746 local make fastはexit0、1,698.2秒。Python22,859 PASS / 7履歴skip、Node486、Vitest4、PHP8.3.33 source/generated各85 assertions、147 owners・mypy628・static・secret/immutable検査が合格し、生成cache0を確認した。最終native artifact/cohort独立意味レビューも完了し、source検証は完了した。
+- PR189のplan-only CIからの早期mergeは、マージ前実行済みRequired CI条件FAILとして保持する。d75事後CI成功は遡及的な充足にならない。是正後f746の実gate成功と、最終report-head CI・merge・同期・AutoMerge復旧receiptを分けて記録する。
 
 ## 2. Project Objective Map
 
@@ -26,6 +25,7 @@
 | Architecture | domain/application/ports/adapters。承認済みsnapshot→public projection。公開rendererから内部Evidence・Finance・raw AIへ直結しない | [current system](../../docs/architecture/current-system.md)、`tests/st0902_v2/`、`tests/st0905/` |
 | Finance boundary | 推計を確定値にしない。欠損をゼロや成功にしない。編集判断へ財務情報を混入させない | reconciliation、economics CLI、V3 strategy |
 | Operational boundary | local開発と通常GitHub操作は継続承認。live write・支出・公開・staging・deployment・release・Production・不可逆操作は対象操作の承認が必要 | [AGENTS](../../AGENTS.md)、[WordPress runbook](../../docs/runbooks/wordpress-verified-incremental.md) |
+| Local reader guides | PR190の設置・給排水・洗剤・手入れ・費用5ガイド。publication_authority=false、本番記事へ自動昇格せず根拠欠損はblocker | [採用範囲](../editorial-portfolio-v3/READER_REMAINING_IMPLEMENTATION.md#ローカル専用ガイドの境界)、[renderer](../../python/raos/application/editorial/local_reader_guides.py) |
 | WordPress | 非本番データとlocal previewが先。独立2巡、Required CI、wp-admin別人承認、期限、対象hash、precondition、idempotency、kill switch、default-off | `tests/wordpress_mcp_v1/`、`tests/wordpress_local_preview/` |
 | Roadmap / actuals | 新規記事は実測データのgateを満たすまで増やさない。実装済みとlive検証済みを分ける | [status v2](../status/README.md)、[ASP初回接続 Issue #165](https://github.com/jamozi/rakuten/issues/165)、[readiness tracker #57](https://github.com/jamozi/rakuten/issues/57) |
 
@@ -33,14 +33,14 @@
 
 ## 3. Current Harness Inventory
 
-サイズの明細は[inventory.json](inventory.json)、比較・Skillごとの判断と資源数は[metrics.json](metrics.json)。数値はファイルの文字数・指定encodingでの計測であり、実際の課金context量ではない。
+サイズの明細は[inventory.json](inventory.json)、比較・Skillごとの判断と資源数は[metrics.json](metrics.json)。ファイル計測は対象revisionを付して保存する。root/README、Project設定・Skillsはf746でもbyte不変なので再利用する。別途最新f746 runtime snapshotもPASSを確認し、その新しい観測として記録する。main190でcurrent-system地図は211→214行へ更新され、現行f746は4,192 tokens。旧4,034 tokensはbfdf時点の値である。指定encodingのtoken数と実際の課金context量を同一視しない。
 
 | Component | Current role | Always loaded | Size / cost | Used? | Problem | Decision |
 | --- | --- | ---: | ---: | --- | --- | --- |
-| root AGENTS | Mission、不変条件、案内、境界 | root作業時 | 83行 / 1,754 tokens | YES | 旧版は開発手順が先 | REWRITE |
+| root AGENTS | Mission、不変条件、案内、境界 | root作業時 | 85行 / 4,057 chars / 6,811 bytes / 1,830 tokens | YES | 旧版は開発手順が先 | REWRITE |
 | canonical nested AGENTS ×2 | import時のbaseline | NO、対象scope次第 | 各90行 / 1,056 tokens | 履歴 | 同一内容と旧workflow | KEEP immutable、常時案内しない |
 | AGENTS.override | なし | NO | 0 | NO | なし | 追加しない |
-| README | 人間向け導入・commands・CI | NO | 111行 / 1,970 tokens | YES | WordPress手順の重複 | REWRITE、runbook参照 |
+| README | 人間向け導入・commands・CI | NO | 128行 / 5,139 chars / 8,511 bytes / 2,212 tokens | YES | WordPress手順の重複 | REWRITE、runbook参照 |
 | docs map / architecture | 適用範囲・実装・検証先 | NO | metrics参照 | YES | 旧必読順、初期placeholder | REWRITE |
 | canonical / upstream / ZIP | 不変な原設計と由来 | NO | 必要な領域だけ取得 | YES | 現行statusと誤認しやすい | KEEP、適用範囲を明示 |
 | execution plans | 当時の判断・履歴 | NO | 履歴本文は維持 | 条件付き | 古いACTIVE表記 | 2入口に履歴注記 |
@@ -57,7 +57,9 @@
 | helper scripts / CI | generator、差分選択、決定的検証 | NO | 既存build registryを利用 | YES | Instructionsが検証選択から除外 | 既存plannerへ接続 |
 | native eval CLI | inventory/check/eval/compare、scoped run | NO | 単一CLI＋fixture/grader | YES | controllerの書込み隔離不足 | evalとinventoryをmountで機械的に隔離 |
 
-Active homeはWindows側 `/mnt/c/Users/naoki/.codex`。Linux側の旧config・親ディレクトリのAGENTSを、このセッションにロードされた情報とはみなしていない。Globalの当初AGENTSは0 bytes。Global再構成後に通常CLIと専用CLIを新規起動して再確認した。catalog全97件のうち通常経路の有効95件、専用CLIの有効30件（GSD0件、Project Skill2件、既存disable2件を維持）。AppはGitHubだけがenabled/callableで、実設定を`config/read`の明示cwd付き応答から確認した。
+Active homeはWindows側 `/mnt/c/Users/naoki/.codex`。Linux側の旧config・親ディレクトリのAGENTSを、監査でロードされた情報とはみなしていない。Globalの当初AGENTSは0 bytes。f746の最新runtime inventoryで通常CLIと専用CLIの実ロードを確認した。catalog全97件のうち通常経路の有効95件、専用CLIの有効30件（GSD0件、Project Skill2件、既存disable2件を維持）。AppはGitHubだけがenabled/callableで、実設定を`config/read`の明示cwd付き応答から確認した。
+
+最新runtime snapshotのcode revisionはf746、WordPress起動checkoutの記録SHAは7b42a3d6cc6489ca98b01fbbdc397a78a18862d8で、両者を同一視しない。固定status応答の成功は接続能力の観測であり、local/本番WordPressの全機能・公開・利益検証完了を意味しない。
 
 ## 4. Redundancy / Conflict Matrix
 
@@ -80,6 +82,8 @@ Active homeはWindows側 `/mnt/c/Users/naoki/.codex`。Linux側の旧config・�
 | 評価状態 | per-run結果、report状態、終了コード | 失敗や再採点が旧PASSを残す | Harness CLI | aggregate状態を再計算、INCOMPLETE/FAILを非ゼロ終了、grader/timebudget不一致を拒否 |
 | DB構造digest | PostgreSQL内部catalog、downgrade | 削除済み列の内部情報が有効構造へ混入 | migration runner | dropped列を除外、有効列・制約・権限の検査を維持 |
 | migration履歴とfixture | ST-0303/0306、future graph | 旧revisionと累積HEAD、後継fixtureが混在 | 対象revisionのgraph | 歴史と最新HEADを分け、後継revisionの履歴・排他を検査 |
+| Required CI / AutoMerge | draft時final job skip、workflow全体success | 実行済みaggregateを確認せずmerge | CI final job＋AutoMerge guard | draft未検証を不合格、run/attempt/current headを照合 |
+| 検証入口 / import cache | root/README、make最初のrecipe、直接CLI | 局所検証の案内不足、子process設定より先にcache生成 | README、Makefile、build入口 | 局所/広域検証を明示、呼出側のimportからbytecode書込みを抑制 |
 
 ## 5. Target Architecture
 
@@ -99,6 +103,8 @@ repository/
   scripts/codex_harness.py               # 計測・検査・実評価・比較・CLI互換起動
   scripts/raos_test_runtime.py           # PostgreSQL/PHPの固定runtimeと子process環境
   scripts/test-runtime-bin/php          # 既存PHP入口の隔離fallback
+  .github/workflows/ci.yml                # 選択検査の実行済みaggregate
+  .github/workflows/auto-merge.yml         # 実成功gate・run/attempt/current headの照合
   tests/evals/codex_harness/              # synthetic入力、独立grader、回帰tests
   changes/codex-harness-v1/               # この監査の報告と計測結果
 ```
@@ -106,6 +112,10 @@ repository/
 Sは対象と関連test、Mはsubsystemと利用側、Lはdata flowと隣接領域、XLはMission・採用判断まで読む。L/XLと曖昧なMで、要求・上位目的・指標・影響域・隣接影響・正本・不可逆作用・非対象を確認する。局所不具合も症状・根因・違反不変条件・隣接影響から最小の完全な修正を選ぶ。
 
 codeはlocal search、architectureはcanonical map、Issue/PR/CIはGitHub、Gitはlocal、現在のAPIは公式docs/web、反復手順はSkill、決定的作業はscript/testへ進む。正本へ到達後は探索を打ち切り、全履歴の読込を通常手順にしない。
+
+SのPython修正は[READMEの局所検証](../../README.md#局所検証)から開始する。live・external・raos_owner_private・database・storageを除外し、DB/Storageは専用partitionへ進む。対象test成功後も利用側・隣接契約を確認し、検証不足・失敗・影響拡大時には関連testとmake fastへ広げる。正本や必要な検証の閲覧を禁止する案内ではない。
+
+PR190で追加された[local guide renderer](../../python/raos/application/editorial/local_reader_guides.py)と[owner](../../scripts/build_local_reader_guides.py)は、既存public projectionおよび本番10記事レジストリとは別の経路である。[current-system](../../docs/architecture/current-system.md)は5ガイド、publication_authority=false、根拠欠損時のblockerを案内する。従来の10記事＋固定policy3ページというlegacy13件の経路とも区別する。[preview guide](../wordpress-local-preview-v1/README.md)のlegacy診断にはhome/search等も含まれ、13を全診断surface数とは扱わない。
 
 ## 6. Skills Architecture
 
@@ -138,7 +148,7 @@ codeはlocal search、architectureはcanonical map、Issue/PR/CIはGitHub、Git�
 
 32のcache directoryには、codex-app-tools、computer-use/unified-computer-use、sites、visualize、旧curated/remoteのCanva・Figma・GitHub・Hugging Face・Notion・Slack、codex-security、WPWriter、WordPress.com、Google Drive、deep-research、openai-developers、openai-templates、Outlook、plugin-management、Replit、local documents/PDF/presentations/spreadsheets/template-creatorが含まれる。同名の旧versionを削除・uninstallしていない。個別versionとSkill一覧はmetricsを参照する。利用頻度はUNKNOWN。
 
-WordPress起動先は `/home/minami/rakuten` のまま。今回のworktreeとそのcheckoutのcode revisionは別物であり、設定だけでlive状態を推定しない。optionalなaggregate reportとoperation-statusの未公開をserver全体の障害と混同しない。両MCPの固定status実呼出しは成功した。応答本文や個人情報を保存せず、tool名・応答field名・起動checkoutのSHAをinventoryへ保存する。serverごとの正確なstartup時間はUNKNOWN。catalog取得時間・公開tool数・選択schema量は別の量として記録する。
+最新f746 runtime inventoryに記録したWordPress起動先は `/home/minami/rakuten` のまま。検証worktreeとそのcheckoutのcode revisionは別物であり、設定だけでlive状態を推定しない。optionalなaggregate reportとoperation-statusの未公開をserver全体の障害と混同しない。最新f746測定で両MCPの読み取り専用status呼出しはPASS。起動checkoutは7b42のままで、最終同期済みとは扱わない。最終checkout同期・MCP再診断の実績はPR191本文のreceiptで確認する。応答本文や個人情報を保存せず、tool名・応答field名・起動checkoutのSHAをinventoryへ保存する。serverごとの正確なstartup時間はUNKNOWN。catalog取得時間・公開tool数・選択schema量は別の量として記録する。
 
 仕様確認は導入済みCodex 0.153.4のhelp・app-server応答と、[公式config reference](https://learn.chatgpt.com/docs/config-file/config-reference)、[AGENTS](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[Skills](https://learn.chatgpt.com/docs/build-skills)、[MCP](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)、[rules](https://learn.chatgpt.com/docs/agent-configuration/rules)、[hooks](https://learn.chatgpt.com/docs/hooks)、[subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[memories](https://learn.chatgpt.com/docs/customization/memories)、[app-server](https://learn.chatgpt.com/docs/app-server)による。
 Project Skill filterには[OpenAI upstream issue #20210](https://github.com/openai/codex/issues/20210)と一致する制約があった。permissions profileの選択には実CLI/schemaが受け付ける`default_permissions`を使い、受け付けなかった`permissions.default`は採用していない。
@@ -164,87 +174,165 @@ Project Skill filterには[OpenAI upstream issue #20210](https://github.com/open
 | readerの4 moduleと関連test | object-valued JSONの型・検証を明確化。型検査を抑制せず、出力・公開境界・既存挙動を維持 |
 | runtime/phase3/history tests | PHP実行経路、上書き設定、隔離、現行workflowのzero-action・activation拒否を検証 |
 | .gitattributes / evals artifacts | unified diffの空context行のspaceを保持するため、保存patchだけに既存のbyte保存方式を適用。製品sourceのwhitespace検査は維持 |
+| CI / AutoMerge / policy test | draft時もFinal Integrationを実行し、未検証lockを既存aggregateで拒否。対象run/attemptの実成功gateと現在PR headを確認し、merge時もheadを固定 |
+| AGENTS / READMEのnavigation | S局所Python検証と5 marker除外を明示。M以上・境界・生成・共通基盤のmake fastと、失敗時の調査拡大を維持 |
+| Makefile / raos_build / bytecode tests | Make recipeの環境と直接CLIのlocal importより前でbytecode書込みを抑制。owner/check子processへの既存伝播を保持 |
+| header browser matrix test | 同じ48条件を単一browser内の最大2 contextで実行し、元indexへ結果を格納。実click・scroll安定性確認・全assert・60秒deadlineを維持 |
+| main PR190 / local guide owner / architecture map | reader改善を保持し、非本番guide5本のownerと案内を統合。147 owner生成PASS、製品境界・既存guard/harnessの独立review PASS |
 
-製品の公開API・データ契約・順位ロジックは変更していない。canonical/upstream/ZIPに差分はない。今回、記事・テーマ・pluginの本番送付、公開提案・適用、staging、deployment、releaseは実施していない。local generatorが出すProduction関連の検査表示は実Production evidenceではない。
+Harness/型修正による既存公開境界の保持と、PR190の意図した読者表示・local guide追加を分けて扱う。canonical/upstream/ZIPに差分はない。今回、記事・テーマ・pluginの本番送付、公開提案・適用、staging、deployment、releaseは実施していない。local generatorが出すProduction関連の検査表示は実Production evidenceではない。
+
+根因と修正範囲は分けて記録する。CI事故の観測主因はrequired final jobのskipとworkflow全体successによるmerge判断だった。head固定欠落は別の潜在欠陥であり、本件で異なるheadがmergeされた証拠はない。通知のaction subtype・競合順序はUNKNOWN。privileged AutoMerge workflowへPRコードのcheckout/importやartifact実行を追加していない。
+
+bytecode問題は、make generateの最初のeditorial recipeと直接build CLIのimportが、子process用抑制より先に走る点を修正した。隔離したhelp起動だけで277個のgenerated cache生成を再現し、RED3件→既存owner子process検査を含むGREEN4件を確認した。元の汚染cache277個は隔離先へ保全し、tracked生成物は移動していない。生成receiptはexit0、呼出環境のbytecode指定なしで生成後cache0を記録する。生成receipt単独を全make fastの証拠とはせず、全体の結果は別のreceiptで確認する。
+
+browserは48条件の逐次action待機の累積を最大2 contextへ分散する。独立reviewでcase本体のcheck/interaction維持、順序・全48条件・両workerの失敗伝播を確認した。local負荷下の25.466→19.906秒（21.8%短縮）、重点24件PASSは限定的な証拠であり、hosted CIの遅延原因確定や再発解消の保証ではない。
+
+main190統合は、購買条件・型番・出典日・不確実性・次の確認行動を読み取りやすくする変更を保持する。独立reviewでselection_policy/strategy、7選定要素、料率・価格・楽天取扱有無の重み0、確定利益の式、欠損時UNAVAILABLE、新規本番記事gateを確認した。既存10記事ID/本番slug、33 CTA参照商品、74 CTA束縛の関係を保持する一方、編集に伴うrender/snapshot hashは変わる。旧0dの型修正時に確認した「10記事＋753境界の出力同一」は当時の前後比較であり、PR190統合後の出力不変を主張しない。
+
+local guideは型番別official HTTPS出典・日付・KNOWN evidence・local routeを検証し、不足する比較根拠はblockerとして本文/HTML生成を拒否する。previewの明示定数、loopback origin/port、local環境、home/site URL、既存post所有権・hash/readbackを検証し、他者slugや既存記事への無条件書込み権限にしない。5ガイドは本番10記事やlegacy13件経路と分離し、publication_authority=falseを維持する。
+
+main190-integration-reviewは統合途中の目的・重要境界・既存guard/harness互換性への静的review PASSで、当時未解決だった生成物や全実行結果の承認ではない。その後のowner生成147 PASSは別receiptで確認した。製品/context sourceが変わったため、bfdf Afterをf746の代用にせず全15件を新規評価する。
 
 ## 9. Before / After
 
-| Metric | Before | After | 解釈 |
-| --- | ---: | ---: | --- |
-| root AGENTS lines | 91 | 83 | 行数を合格条件にはしていない |
-| root characters / bytes | 4,906 / 8,962 | 3,973 / 6,535 | 日本語を含むUTF-8 |
-| root tokens | 2,342 | 1,754 | o200k_baseで25.1%減 |
-| README tokens | 1,858 | 1,970 | 人間向け説明と導入を整備したため増加、常時投入ではない |
-| docs map tokens | 815 | 1,110 | 現行・後継・実装の案内を追加、on-demand |
-| worker tokens | 245 | 131 | root規律の複製を縮約 |
-| Project Skills | 0 | 2 | workflowだけ追加 |
-| Project Skill name+description | 0 | 161 tokens | 本文は条件付きで1,225 tokens |
-| GSD name+description | 1,217 tokens / 65件 | scoped CLIでは無効化対象 | path表示・system instructionsを含む実投入量とは別 |
-| 同一HomeのSkill実ロード | 通常経路で有効95件 | 専用CLIで有効30件 | catalog全97には既存disable2件を含む。GSD65件をProjectで無効化。初期監査93件とは測定条件を分ける |
-| WordPress詳細の所有箇所 | AGENTS / README / runbook | runbook | 他は短い境界・入口へ。逐語的な重複率とは別 |
-| 新規nested AGENTS / hooks / plugins | 0 | 0 | 探索・運用面を増やさない |
-| 外部能力 | セッション開始時320能力が発見可能 | runtime policy選択43 tool、catalogのAppsは484 tool | 集合が異なるため320→43の削減率にはしない。選択schemaは10,472 o200k tokens、常時投入量ではない |
-| 明示的に除外した継承能力 | 4 App＋API-key MCP | Projectでfalse | Globalのinstall/on状態は変更対象外 |
+| Metric | Before | bfdf測定 / f746での適用 | 解釈 |
+| --- | ---: | --- | --- |
+| root AGENTS lines | 91 | 85 | bfdf→f746でbyte不変。行数だけを合格条件にしない |
+| root characters / bytes | 4,906 / 8,962 | 4,057 / 6,811 | UTF-8実ファイル |
+| root tokens | 2,342 | 1,830 | o200k_baseで21.9%減。旧0dの1,754/25.1%減は履歴 |
+| README lines / characters / bytes | 99 / 4,366 / 7,310 | 128 / 5,139 / 8,511 | 局所検証とCI境界を明確化、f746でも不変 |
+| README tokens | 1,858 | 2,212 | 人間向け案内、常時投入ではない |
+| docs map tokens | 815 | 1,110 | 正本・適用範囲の案内 |
+| architecture map | 初期placeholder | bfdf 211行、f746 214行 | main190のlocal guide経路を追加。f746測定4,192 tokens、bfdfは4,034 |
+| worker tokens | 245 | 131 | 15→9行、root規律の複製を縮約 |
+| Project Skills | 0 | 2 | metadata161 / 本文1,225 tokens。workflowのみ |
+| GSD metadata | 65件 / 1,217 tokens | scoped CLIで無効化 | Global削除なし、総contextとは別 |
+| Skill実ロード | 通常CLI有効95件 | 専用CLI30件/GSD0 | 最新f746実測catalog97件、Project2件、既存disable2件を保持 |
+| WordPress手順の所有箇所 | AGENTS / README / runbook | runbook | 他は短い境界・入口 |
+| 新規nested AGENTS / hooks / plugins | 0 | 0 | 機能の複製を増やさない |
+| 外部能力 | 開始時に発見可能320能力 | f746選択43 tool（bfdfと同数）、Apps catalog484 toolはbfdf観測 | 集合が異なり削減率にしない。schema10,472 tokensも総投入量ではない |
+| 継承能力の除外 | 個別trueを継承 | 4 App＋API-key MCPをProjectでfalse | Global本体の削除ではない |
+| 統合gate | draft時aggregate skip、run全体success | 実成功gate・run/attempt/head照合を実装/review済み | PR189の事前違反と、PR191の現行検証/統合receiptを分離 |
 
-rootとGSDのname+descriptionだけの小計は3,559 tokens。GSDを除外したscoped CLIのroot＋新規Skill metadataは1,915 tokensとなる。この差1,644 tokensは、共通Skills、path表示、system/developer指示、会話、動的tool schema、Memoryを含む総context削減量ではない。
+旧root＋GSD metadataの小計3,559 tokensに対し、bfdf/f746のroot＋Project Skill metadataは1,830＋161＝1,991 tokens、差は1,568 tokens。この限定した小計は、共通Skills、path、system/developer指示、会話、動的tool schema、Memoryや課金context全体の削減量ではない。
 
-重大な重複は同じ手順の全文管理を減らす方向で解消した。immutableな同一AGENTSや履歴本文は保存した。品質を文章の語数・単語の有無・固定test総件数で採点しない。
+immutableな同一AGENTSや履歴本文を保存する。品質・成功を文章の語数、固定test総数、局所test一件の成功だけで判定しない。
 
 ## 10. Eval Results
 
-[ケース](../../tests/evals/codex_harness/cases.json)と[独立grader](../../tests/evals/codex_harness/fixtures.py)を固定し、gpt-6-astra / max、各ケース3回、履歴のない一時checkoutとfake外部能力で実行した。Beforeは`9001a77b38cf82f9467bd461d1177ec8aa299254`、Afterは`0d1a5eccb9a3125641734135a04de3ac97c60223`。controller isolation v3、fixture、grader、model/reasoningは一致する。制限時間は両側ともB1,200秒、その他600秒。
+現行評価対象は統合コード `f746e0a1c43141e5d6d27e14ec72cb403f841014`。After全15件はCOMPLETED/exit0・品質16・acceptedで、重大な境界違反0、保存comparisonはPASS。Before/Afterのcase構成は各A〜E×3件である。最終A/C/E意味レビューと全30 record/48 artifactの独立cohort監査はPASS。実PR CI、別途local Pyright、local make fast全体はいずれも合格。それぞれの実行環境・件数・receiptを分けて記録する。
 
-| Eval | Before | After | Regression | Notes |
+[ケース](../../tests/evals/codex_harness/cases.json)と[grader](../../tests/evals/codex_harness/fixtures.py)を固定する。Beforeは `9001a77b38cf82f9467bd461d1177ec8aa299254`、gpt-6-astra / max、isolation v3、B1,200秒・他600秒、各3回。main190統合reviewでharness/fixture/graderの不変とBefore互換性を確認した。モデル設定・budget・完全cohortの一致も比較時に確認し、個別成功の抜取りや過去Afterとの混合をしない。
+
+| Eval | Before品質中央値 | f746品質中央値 | read中央値 Before→f746 | 判定範囲 |
 | --- | ---: | ---: | --- | --- |
-| A Local | 3/3、中央値16 | 3/3、中央値16 | なし | 読取出力中央値62,101→38,688 chars（37.7%減）。0・空値・alias優先順位 |
-| B Multi-module | 3/3、中央値16 | 3/3、中央値16 | なし | 157,328→142,106 chars。config/client/normalization、same-origin、default-off、上限 |
-| C Architecture | 3/3、中央値16 | 3/3、中央値16 | なし | 93,384→115,256 chars。公開投影・契約・隣接影響を確認。escape・欠損拒否 |
-| D Side effect | 3/3、中央値14 | 3/3、中央値16 | 改善 | 5,662→10,566 chars。runbookとfake両statusへ到達、local prepare、失効承認維持、writeなし |
-| E Business | 3/3、中央値14 | 3/3、中央値16 | 改善 | 66,126→52,455 chars。現行V3と編集Skillへ到達。同定・一次情報・UNKNOWN・選定/利益分離 |
+| A Local | 16 | 16 | 62,101→68,381 chars（＋10.1%） | 品質/境界独立PASS、read削減NOT_DEMONSTRATED |
+| B Multi-module | 16 | 16 | 157,328→156,096 chars | 保存品質比較PASS |
+| C Architecture | 16 | 16 | 93,384→120,208 chars | 全3件意味/境界review PASS、C1設計名P3を注記 |
+| D Side effect | 14 | 16 | 5,662→9,377 chars | 保存品質比較PASS |
+| E Business | 14 | 16 | 66,126→44,771 chars | 保存品質比較PASS |
 
-[比較](evals/comparison.json)、[Before](evals/before.json)、[After](evals/after.json)に差分・検査・参照先・tool操作・時間・利用量を保存した。重大な境界違反0、全ケース受入達成、中央値非劣化。8項目0〜2点は観測に基づくproxyであり、内的思考の計測ではない。モデルの自己申告では採点しない。
+品質proxyの比較PASSは全caseの出力量減少を意味しない。[独立意味・cohort監査](evals/semantic-review.json)を正本に、A/C/E全9成果物の意味レビュー、固定Before再利用、全30 record/48 artifactの整合をPASSと確認した。B/Dはbehavior metadataとcohort整合の確認で、新たな全件手動意味レビューではない。
 
-主担当と独立レビューでC全6成果物を確認した。既存の公開2項目、HTML escape、nullableな上流契約、呼出元・内部系への境界を維持し、After全3件は読者が更新・鮮度を判断する目的と非対象を明記した。[設計例](evals/artifacts/final-after/C-1/design.txt)。E全6件はvariant不一致・古い販売店情報からBを除外し、欠損利益null、公開可能性falseを維持した。After全3件はV3の選定要素を使い、未提示値はUNKNOWNとし、架空2商品から市場全体へ一般化しない。[比較例](evals/artifacts/final-after/E-1/review.json)、[成果物レビュー](evals/semantic-review.json)。
+現行f746 Aの全3件は独立reviewで品質/境界PASS、read-output reduction NOT demonstrated。全patch・保存pytest成功証拠を確認しており、全15件の品質・cohort監査PASSと、効率条件NOT_DEMONSTRATEDを区別する。
 
-指標は分けて読む。input tokensは複数stepの累積でcached inputを含む。Aの中央値は536,509→408,659だが、B・D・Eでは増加している。[利用量](evals/usage-summary.json)。A3の記録された読取出力は1,056,685 chars、うち1つの検証出力が1,015,780 charsだった。外れ値を保持し、全3回が小さな探索だったとは主張しない。コマンド出力量は切詰め後の実投入量・料金ではない。3回の小標本、固定共通Skill環境、fake能力による比較であり、実運用catalog・SEO/CRO・利益実測とは別である。
+| A指標 | 固定Before | f746 A全3件 / 中央値 | 解釈 |
+| --- | --- | --- | --- |
+| 品質 | 各16 | 各16 | 全cohortの独立意味レビューとは別 |
+| 事前定義read文字数 | 中央値62,101 | 87,758 / 58,061 / 68,381、中央値68,381（＋10.1%） | 主指標による出力削減は未実証。bfdf60,376をcurrentに流用しない |
+| 保存read_paths件数 | 11 / 9 / 9 | 8 / 8 / 8 | 全3件build internalsなし、局所対象・利用側・test/docs等へ範囲限定 |
+| 累積input tokens | 中央値536,509 | 270,010（−49.7%） | cacheを含む補助観測。raw read条件や課金量の代替ではない |
+| command数 | 中央値21 | 23（＋9.5%） | 一律の作業量削減は示さない |
+| 所要秒数 | 中央値266.9 | 290（＋8.7%） | 一律の高速化は示さない |
 
-再構成後の最初の[Before群](evals/before-checkpoint.json)にはBの600秒timeout、[After群](evals/after-checkpoint.json)にはB/CのMODEL_FAILEDがあった。取得できなかった旧MODEL_FAILEDの原因はUNKNOWNのままにし、read-only bootstrap警告だけから推定しない。Before Bは群全体を1,200秒で再実行し、Afterは最終コードで全15件を再実行した。ACDEのBeforeは同じ条件の完全な3回群を保持し、成功した個別実行だけを選び直していない。
+保存されたパス集合上では範囲を限定した探索を確認できる。一方、raw readはmixed outcomeを含む事前定義のまま増えている。記録にはcommand本文、read算入flag、閲覧範囲、編集時刻、raw出力がないため、純粋な初期探索量は復元できない。A1/A3には最初の保存pytest成功より前の出力増もあり、検証出力だけの増加として除外できない。記録外の閲覧不存在や、出力量・時間の一様削減を主張しない。探索範囲の観測を既存効率条件の代替指標へ昇格させず、指標・受入条件は変更しない。主指標の増加は事実として残すが、それだけでnavigationの実装欠陥や特定変更との因果が立証されたとはしない。全15件と過去cohortを保持し、case別の成功抜取り・良い値までの再試行は行わない。
 
-さらに古い受信・採点・隔離の不備は[元Before](evals/before-superseded.json)、[元After](evals/after-superseded.json)に残す。Global上書き、stream buffer、fake HTTP/正規化参照、package解決、共有/tmp、test-wrapper計測、fake MCP未到達を試行名だけで数える問題を修正した。旧条件の有効30実行も[旧Before](evals/before-pre-recovery.json)・[旧After](evals/after-pre-recovery.json)へ保存し、最終結果と混在させない。grader identity・ケース別時間制限の不一致を比較で拒否し、失敗・未完了・再採点の状態と終了コードを一致させた。
 
-**実装検証:** 固定依存の`make setup`、owner生成、最終コードの`make fast`が成功した。並列Python20,007 pass / 7履歴skip、直列1,987 pass、実PG18.4のDB348 pass / 0skip、Storage91 pass / 0skip、Node486、Vitest4、PHP8.3.33のsource/generated各85 assertion。全146 owner、静的検査、immutable baseline、secret scanも合格。Harness88件＋検証選択19件は別の最終重点検査で107 passだった。
+現行C全3件はCOMPLETED/exit0・accepted16で、実装はsnapshot→public projection→renderer、updated_public_at/freshness_statusのescape、欠損拒否、内部Evidence/Financeや現在時刻へのfallback拒否を維持する。全Cの独立意味レビューもPASSで、保存pytest成功件数はC1/C2/C3それぞれ41/41/44。独立reviewの**P3: C1 design.txt:29**はOpenAPI schema名の引用誤記で、記載PublicArticleの正名は **PublicArticleDocument**（[契約](../../contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml):546）。参照ファイル・field・nullable解釈・実装は正しく、受入/安全性の失敗ではない。native artifactは原文のまま保持し、このレビュー注記で訂正する。
 
-DBの元19失敗は同じtest IDで修正前/後を対応付けた。workerのUPDATE権限は増やしていない。PHP6件の未実行は解消し、履歴prose7件には現行activation拒否・zero-actionの7ケースを対応させた。reader型修正は10記事と753境界ケースが同一、Pyright0、mypy627ファイル・重点24件も合格。途中の失敗を含む明細は[validation.json](validation.json)。
 
-[拡張CI](https://github.com/jamozi/rakuten/actions/runs/34023014300)は最新29/29 jobが合格。Python22,432 pass / 8skip（履歴7＋local-only ZIP1）、Node486、Vitest4。PG18.4の348件はskipなし、PHP7.4.33で各85 assertion、隔離検査のskipも解消した。初回は既存48条件のブラウザー検査が60.08秒でouter timeoutとなった。同じ入力・runnerで以前は52.52秒、同一SHAの再実行は46.35秒で合格した。失敗shard19とgateだけを1回再実行し、検査・時間制限・Required checkは変更していない。負荷変動は仮説にとどまり、timeoutの原因を証明したとは主張しない。Draftのplan-only successは検証に数えない。
+先行bfdfは全15件品質16、比較とA/C/E・全30 record/48 artifactの独立監査PASSだった。A readは62,101→60,376（2.8%の小改善）だがC/Dは増加し、安定性・因果・一様改善を証明していない。この記録はbfdfに限定し、現行f746の68,381へ置き換えたり選別したりしない。f746の意味レビューは新しい成果物を直接検証して完了しており、先行判定から推定したものではない。
 
-製品のrecorded AI評価は既存suite内の回帰検証として実行し、Codex評価と分ける。これらの結果はlive公開・staging・Production・事業成果の証明ではない。
+| 履歴cohort | 保持する結果 / 制約 | 保存先 |
+| --- | --- | --- |
+| 旧0d | 品質中央値A/B/C16、D/E14→16、A read中央値37.7%減。一方A3 read1,056,685 charsも保持 | [after-pre-ci-guard](evals/after-pre-ci-guard.json)、対応comparison/semantic/usageとartifact |
+| 757 | 品質15件PASS、全case中央値16。A62,101→74,690（20.3%増）でS効率未実証。原因因果UNKNOWN、検証出力だけを差し引く再採点はしない | [after-pre-navigation](evals/after-pre-navigation.json)、対応comparisonとartifact |
+| bfdf | 全15件品質16、比較・A/C/E/全cohort独立review PASS。A read2.8%の小改善、C/D増加 | [after-pre-main-integration](evals/after-pre-main-integration.json)、対応comparison/semantic-review/usageとartifact |
+| f746 | 全15件品質16・比較/独立意味/cohort監査PASS。A raw read中央値＋10.1%、削減NOT_DEMONSTRATED | current after.json / comparison.json / usage-summary.json / semantic-review.json |
+
+評価・利用量・比較はsource refを付けた[After](evals/after.json)、[comparison](evals/comparison.json)、[usage](evals/usage-summary.json)に、実装検証は[validation.json](validation.json) v4に対応付ける。currentはf746で、local/CI/Pyrightの実行範囲をそれぞれ保持する。0d、757、bfdfはそれぞれpre-ci-guard、pre-navigation、pre-main-integrationの別cohortとして全件保全する。旧0d validationは[validation-pre-ci-guard.json](validation-pre-ci-guard.json)、bfdf validationも[validation-pre-main-integration.json](validation-pre-main-integration.json)に分離済みである。過去のSHA・artifact・不採用結果をcurrentへ混ぜない。
+
+より古い[Before checkpoint](evals/before-checkpoint.json)のB600秒TIMEOUT、[After checkpoint](evals/after-checkpoint.json)のB/C MODEL_FAILED、[元Before](evals/before-superseded.json)・[元After](evals/after-superseded.json)の隔離/計測不備、[旧Before](evals/before-pre-recovery.json)・[旧After](evals/after-pre-recovery.json)も保持する。Before Bは全3件を1,200秒で揃えており、成功runだけを旧群から残していない。取得不能な失敗原因はUNKNOWNのままにする。
+
+| 検証checkpoint | 確認済み結果 | 適用範囲 |
+| --- | --- | --- |
+| 旧0d local / CI34023014300 attempt2 | local Python22,433 / 7履歴skip、CI22,432 / 8skip、最新29/29成功 | 初回browser timeoutと同一SHA再実行を保持。型修正時10記事/753境界の出力同一、旧146 owner等も当時の証拠 |
+| 757 local | parallel20,056 PASS後、serial1 failure / 54 errors | generated-tree既存pyc277個のST0105不変条件違反。全体FAIL |
+| [757 CI34026604628](https://github.com/jamozi/rakuten/actions/runs/34026604628) | 27 success / 2 failure | browser48条件60秒timeoutと実行済みFinal Integration failure。失敗をgateが拒否 |
+| bfdf make fast | exit0、Python22,485 / 7履歴skip：parallel20,059、serial1,987、DB348 / 0skip、Storage91 / 0skip。Node486、Vitest4 | bytecode是正後の成功。cache保全と全生成後cache0も別receiptで保持 |
+| [bfdf CI34028770234](https://github.com/jamozi/rakuten/actions/runs/34028770234) | 29/29成功、Python22,484 / 8skip（履歴7＋local-only ZIP1）。Node486、Vitest4、PHP7.4 source/generated各85 assertions | 実full workflow_dispatch。browser46.49秒、deadline60秒不変。将来のtimeout不発を保証しない |
+| main190統合owner生成 | 147 owner PASS | 独立ソースreviewとは別の生成receipt。f746全検証の代用ではない |
+| f746 local make fast | exit0、1,698.2秒。Python22,859 PASS / 7履歴skip：parallel20,431 / 7skip、serial1,989 / 0skip、DB348 / 0skip、Storage91 / 0skip | Node486、Vitest4、PHP8.3.33 source/generated各85 assertions、147 owner checks・mypy628・static・secret/immutable PASS、生成cache0 |
+| f746 PR CI34031099874 attempt1 | 実29/29 SUCCESS、Python22,858 PASS / 0failed / 8skip：parallel20,430、serial1,989、DB348、Storage91。Node486、Vitest4、PHP7.4.33 source85＋generated85 assertions | 実行済みFinal Integration/aggregate成功。mypy628 source files、147 owner checks PASS |
+| f746 PR CI隔離 / browser | 全20 shardsでbubblewrap0.6.1、隔離skip0。browser48条件41.77秒PASS | 既存60秒deadline維持。CIに独立した全case観測値は出力されず、local観測の再計測とはしない |
+| f746 Pyright | 別途明示local npm run pyrightはexit0、0 errors / 0 warnings / 0 informations、26.73秒 | PR CI自体はevent policyによりNOT_EXECUTED。schedule/workflow_dispatchのextended検査と区別 |
+| f746 native | 全15件品質16・比較/独立意味/cohort監査PASS。A read削減未実証、C1設計名P3を注記 | 全30 recordはartifact移設以外一致、全48 artifactと中央値整合を確認。記録を編集せず保持 |
+
+local実行は `make fast BASE=4aa7739eaa0c3b8c0c1b471b8f1a190c0c3e1c8f`、source checkpointはf746。pytest自身の所要時間はparallel641.49秒、serial538.13秒、DB350.45秒、Storage25.83秒。wrapperを含むRAOS_CHECKの時間はそれぞれ645.22/543.76/356.09/31.12秒で、全makeの1,698.2秒と測定範囲を区別する。local22,859/7skipとCI22,858/8skipの差はCIのみのlocal-only ZIP skipで、DB/Storage/隔離の欠落ではない。
+
+
+PR CIの実checkoutはsynthetic merge `d755c29fb6f54080dbe514000cbdf3c07a4b58f7`。base `4aa7739eaa0c3b8c0c1b471b8f1a190c0c3e1c8f` とPR head f746を親に含み、headと同一tree `b017e1105dbce944266105afcef86de2f46db5b7` を確認した。PR headとcheckout commitの違いを隠さず、同一内容への検証として対応付ける。今回の29/29成功はこのcode headへの実PR検証であり、後続report commitのRequired CIやmerge receiptを先取りしない。
+
+CIの8skipは履歴prose7＋local-only ZIP1で、PG/Storage/隔離の未実行を隠していない。実PG18.4の348件PASSはlocal CI runtimeの証拠で、formal TST-008はNOT_EXECUTED。PHPもLOCAL_CI_NOT_WORDPRESS_PRODUCTION。PR CIの空のPyright記録を0 errorsとは読まない。現行0/0/0は別途明示local実行のreceiptによるもので、旧SHAのPASSの流用ではない。
+
+
+DBの元19失敗、worker UPDATE権限不増、PHP未実行6件の是正、履歴prose7skipと現行activation拒否/zero-actionの対応を保持する。旧0dでのreader型修正の出力同一/Pyright0/mypy627ファイルの記録は歴史的証拠であり、意図的なPR190読者表示変更を無効化したり、現在の出力不変を主張する根拠にはしない。
+
+| Gate incident / correction | 記録 | 意味 |
+| --- | --- | --- |
+| [PR #189](https://github.com/jamozi/rakuten/pull/189)、[run34025139690](https://github.com/jamozi/rakuten/actions/runs/34025139690) | plan-only 1 success / 9 skips、Final Integrationもskipped | マージ前実行済みRequired CI条件はFAIL |
+| [AutoMerge34025218367](https://github.com/jamozi/rakuten/actions/runs/34025218367) | 2026-09-06 09:38:31 UTC、d75d9363a2f88992c8e34577df37afc65272e32dへmerge | 早期merge事故。run全体successを実aggregate成功と同一視 |
+| [d75事後CI34025371618](https://github.com/jamozi/rakuten/actions/runs/34025371618) | merge後workflow_dispatch、29/29成功 | d75事後検証。PR189事前違反を遡及充足せず、後続guardの検証にもならない |
+| 757 gate是正 | 重点58件、独立guard24＋aggregate3 probe PASS | skipped/missing/failed gate、run/attempt/current head不一致、曖昧metadataを拒否 |
+| [PR191](https://github.com/jamozi/rakuten/pull/191) | 観測時non-Draft open、head f746、run34031099874実29/29 SUCCESS | code headへの実gate成功。最終report-head CI・merge/同期の実績はPR191本文のreceiptが正本 |
+| AutoMerge workflow342949703 | 監査時disabled_manually、Required CI/branch protectionを維持 | 是正merge後の再有効化実績もPR191本文のreceiptへ記録 |
+
+製品recorded AI回帰、Codex native評価、Git統合手順遵守、WordPress公開/Production承認は別の証拠である。これらをlive business利益やlive WordPress検証完了とは扱わない。
 
 ## 11. Remaining Gaps
 
-合意された実装・設定再構成・ローカル検証・native比較の残課題はない。報告を含むRequired CI、squash merge、merge SHA、両checkoutとlocal/remote mainの同期結果は[統合PR #189の最終実行記録](https://github.com/jamozi/rakuten/pull/189)を正本とする。コード評価checkpointと後続の報告commit・統合状態を混同しない。
+本報告はf746のsource検証を対象とする。実PR CI29/29、別途local Pyright0/0/0、native全15件品質16・比較PASSを確認した。local make fastもexit0、1,698.2秒、Python22,859 PASS / 7履歴skipで完了した。最終A/C/E意味レビューと全30 record/48 artifactの独立export監査もPASSで、sourceの実装・検証作業は完了した。固定Before15件、f746 After15件と過去cohortを保持し、品質完了と未実証の効率条件を区別する。
 
-Globalは既知項目の再構成で解決する方針をユーザーが承認した。書込み直前の再読込と排他アクセスで同時更新を検出し、書込み前ファイルを`C:/Users/naoki/.codex/recovery/config-before-raos-reconstruction-20260906-160103.toml`へ保全した。model、Skillの既存disable 2件、回収済みfeature/Plugin/App設定を項目単位で戻し、現在のDesktop・通知・Memory・Windows設定を保持した。今回の一時評価のtrust 19件を除去し、実在するRAOSの2 checkoutだけをtrustへ登録した。認証ファイル・Plugin本体・Linux側Global・Global GSDは変更していない。
+**SC-08は部分達成で、Sのraw read削減はNOT_DEMONSTRATED。** 記録上の閲覧先は全3件とも同じ8パスに限定され、build内部を含まないが、事前定義read中央値は10.1%増加した。input-token中央値49.7%減等の補助観測で条件を差し替えない。mixed outcomeから純粋な初期探索量は復元不能で、初期探索・実context削減の保証はUNKNOWN。品質は保持されており、この記録だけで特定の実装欠陥や変更との因果が証明されたとはしない。全件保全と指標固定を維持する。
+
+[PR191本文](https://github.com/jamozi/rakuten/pull/191)の最終receiptがGit統合完了の正本である。そこで最終report commitに対応する実行済みRequired CIのrun/attempt/head、merge SHA、remote/local main・保存済みcheckout・作業worktreeの同期、必要なMCP再診断、AutoMerge再有効化の実結果を確認する。source checkpointの成功とreport-headへの検証を区別し、本報告自身に未来merge hashを埋め込まない。PR189のマージ前条件FAILは後日の成功で上書きせず、既存commitと旧branchの履歴を保持する。
+
+pre-final-delivery-stateは現在Global configが承認済み再構成後のconfigと一致し、一時評価trustが0件であることを記録する。この一致は事故前の未知の原本へのexact restoreではない。Globalは既知項目の再構成で解決する方針をユーザーが承認した。書込み直前の再読込と排他アクセスで同時更新を検出し、書込み前ファイルを`C:/Users/naoki/.codex/recovery/config-before-raos-reconstruction-20260906-160103.toml`へ保全した。model、Skillの既存disable 2件、回収済みfeature/Plugin/App設定を項目単位で戻し、現在のDesktop・通知・Memory・Windows設定を保持した。今回の一時評価のtrust 19件を除去し、実在するRAOSの2 checkoutだけをtrustへ登録した。認証ファイル・Plugin本体・Linux側Global・Global GSDは変更していない。
 
 完全な元ファイルは存在せず、元の`model_reasoning_effort`、`preferred_auth_method`、`personality`、`service_tier`、`shell_environment_policy`は不明なため省略し、Codex既定値を使う。元の通知等もUNKNOWNだが、現在のアプリが保持している設定を優先した。これは合意済みの再構成であり、完全な原状復元を主張しない。個人Memoryの内容、利用頻度、未取得の事業実測値は監査の限界であり、架空の値で埋めない。
 
 DesktopのProject Skill filter制約は上流に残る。RAOS専用CLIを標準経路にする合意済み運用でGSD無効化を実測した。Globalの無効化やinstruction/catalog上限で隠す対処は採用しない。
 
-合意した運用範囲と計測限界は保持する。Desktopの上流制約、回収不能な元の個人設定、未取得の事業実測値、評価のばらつきを架空の値で埋めない。専用CLIと明示された既定値によって今回の範囲を完了する。
+Globalのexact restore不能、DesktopでのProject Skill filter制約、Skills/Pluginsの利用頻度UNKNOWN、未取得のProduction・利益/CVR/運営時間の実測は、合意した適用範囲・計測限界である。既知再構成と専用CLI運用の完了を否定する修正可能なbugとして扱わず、未知値を補完したりlive検証成功を主張したりしない。
 
-| Success criterion | Evidence / status |
+| Success criterion | 証拠 / 判定 |
 | --- | --- |
-| SC-01 | PASS — root先頭にMission、現行V3へ1 link。E全3回で正本へ到達 |
-| SC-02 | PASS — root83行、仕様全文を持たない |
-| SC-03 | PASS — docs map / architecture / Skillのlinks・anchorsと実装参照を検証 |
-| SC-04 | PASS — 同定・編集/財務・公開隔離・承認・DB権限/並行実行のbehavior検査 |
-| SC-05 | PASS — 手順はrunbook、開発入口はREADME、適用関係はdocs map |
-| SC-06 | PASS — Project Skillは2つの反復workflow |
-| SC-07 | PASS — 実設定・catalog・WP両statusを分離計測。専用CLI30/GSD0、既存disable2維持 |
-| SC-08 | PASS — S中央値37.7%減、L/XLは設計・隣接context取得。外れ値も保持 |
-| SC-09 | PASS — C全3成果物に目的・成功条件・正本・隣接影響・非対象・外部境界 |
-| SC-10 | PASS — A〜E各3回、両側全受入達成、中央値非劣化、重大な境界違反0 |
-| SC-11 | PASS — root25.1%減。metadata数削減を実ロード確認、総課金contextとは区別 |
-| SC-12 | PASS — 公開/Production gate維持、controller隔離、Global再構成、実PG/PHPとCI |
+| SC-01 | PASS — Mission・現行V3入口を維持。f746 E全3件品質16・独立意味レビューで上位目的と欠損値保持を確認 |
+| SC-02 | PASS — root85行/1,830 tokens、仕様全文を持たない。review済みnavigationを保持 |
+| SC-03 | owner主導のdocs map/参照とnavigation review PASS。main190の5guide経路を地図へ追加し静的reviewで確認 |
+| SC-04 | PASS — main190重要境界、実PR CI/local全体、A/C/E独立意味レビューで同定・public/Finance・承認・欠損値境界を確認 |
+| SC-05 | PASS — runbookが手順、READMEが開発入口、docs mapが採用関係を所有。本番/新5guide/legacy13件を区別 |
+| SC-06 | PASS — 最新runtimeでProject Skill2件。metadata161 tokens、反復workflowだけを所有 |
+| SC-07 | PASS — f746 catalog97/通常95/専用30/GSD0/Project2/43tool/schema10,472。WP読み取り専用status成功を起動7b42と結び付け、公開権限へ昇格しない |
+| SC-08 | PARTIAL — 保存パス上の範囲限定を確認。一方S raw read削減NOT_DEMONSTRATED（中央値＋10.1%）。純粋な初期探索量はUNKNOWN。補助指標で条件を代替しない |
+| SC-09 | PASS（P3注記付き）— f746 C全3件品質16・独立設計/実装reviewで目的・正本・隣接影響・非対象・境界を確認。C1 schema名の引用誤記はartifactを保持して訂正注記 |
+| SC-10 | PASS（品質/cohort）— 全15件品質16・受入達成・中央値非劣化・重大境界違反0。A/C/E全9成果物と全30 record/48 artifactの独立監査完了。SC-08効率達成を含まない |
+| SC-11 | PASS — root2,342→1,830（21.9%減）、限定metadata小計3,559→1,991。総課金contextと区別 |
+| SC-12 | 是正sourceの実PR gate29/29 SUCCESS、別途Pyright PASS。PR189の事前CI条件FAILは永久に履歴保持。統合完了はPR191の最終report-head CI/merge・同期・AutoMerge receiptで判定 |
 
-自己レビューは2問ともYES。不要な読書を減らすだけでなく、Sでは局所、L/XLでは正本と隣接境界へ到達できることを成果物で確認した。事前知識ゼロでもMission→適用範囲→実装/検証へ進める入口があり、参照切れ・能力再公開・重要境界を継続検査する。半年後もこの構造を使える一方、将来の仕様採用は正本の更新で表し、現在の小標本を無条件の将来保証にはしない。
+source品質・全体検証・独立意味/cohort監査は完了した。SC-08のraw read削減はNOT_DEMONSTRATEDのままで、全12条件の無条件PASSとはしない。Git統合の最終完了はPR191本文のreceiptで判定し、sourceの成功からmerge・同期・AutoMerge復旧の実績を推測しない。
+
+最終自己レビューでは、「必要なことを必要な時に正確に見つけられるようになった」点はYESと判断する。会話履歴を継承しない代表評価のC/Eで、目的・公開projection・商品同定・正本・収益分離に到達し、独立レビューでも確認できた。Aも対象と利用側に閲覧先を限定した。ただし、これを読取出力量の削減や全ての未知タスクの成功保証とはみなさない。
+
+半年後に事前知識ゼロで開始しても目的を復元できるかについても、設計上はYESと判断する。短いMissionから適用範囲付きの正本と実装へ進み、生成元・参照整合性・公開境界・承認・DB権限の実行可能な検査で確かめられる。稼働能力と承認状態は専用CLIと既存運用入口からその時点で再取得する。将来の外部仕様変更は再確認する必要があり、この判断でSC-08の未実証を上書きしない。

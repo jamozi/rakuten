@@ -1,0 +1,133 @@
+diff --git a/tests/test_affiliate_ingestion.py b/tests/test_affiliate_ingestion.py
+index 07a888e..0ecb754 100644
+--- a/tests/test_affiliate_ingestion.py
++++ b/tests/test_affiliate_ingestion.py
+@@ -6,6 +6,7 @@ import stat
+ import tempfile
+ import unittest
+ import zipfile
++from decimal import Decimal
+ from pathlib import Path
+ 
+ from tools.affiliate_ingestion.client import FetchBatch, RawPage, parse_records
+@@ -134,13 +135,13 @@ class NormalizationAndStorageTests(unittest.TestCase):
+                 provider="afb",
+                 resource="programs",
+                 fetched_at="2026-09-05T00:00:00+00:00",
+-                records=[{"id": "1", "name": "Example"}],
++                records=[{"id": 0, "price": 0, "commission": 0}],
+                 pages=[
+                     RawPage(
+                         index=1,
+                         request_url="https://example.invalid/feed",
+                         content_type="application/json",
+-                        body=b'{"items": [{"id": "1"}]}',
++                        body=b'{"items": [{"id": 0, "price": 0, "commission": 0}]}',
+                         status=200,
+                     )
+                 ],
+@@ -151,6 +152,79 @@ class NormalizationAndStorageTests(unittest.TestCase):
+             self.assertTrue(Path(manifest["state_path"]).is_file())
+             normalized_path = Path(directory) / manifest["normalized_path"]
+             self.assertTrue(normalized_path.is_file())
++            normalized = json.loads(normalized_path.read_text(encoding="utf-8"))
++            self.assertEqual(normalized["source_id"], 0)
++            self.assertEqual(normalized["price"], "0")
++            self.assertEqual(normalized["commission"], "0")
++            self.assertEqual(normalized["raw"], batch.records[0])
++
++
++@pytest.mark.parametrize(
++    ("zero", "expected_decimal"),
++    [(0, "0"), (0.0, "0.0"), (Decimal("0.00"), "0.00"), ("0", "0")],
++)
++@pytest.mark.parametrize(
++    "fallbacks", [{}, {"program_id": "P-1", "unit_price": 1200, "reward": 100}]
++)
++def test_normalization_preserves_zero_values(zero, expected_decimal, fallbacks):
++    source = {**fallbacks, "id": zero, "price": zero, "commission": zero}
++    normalized = normalize_record("a8net", "products", source)
++    assert normalized["source_id"] == zero
++    assert type(normalized["source_id"]) is type(zero)
++    assert normalized["price"] == expected_decimal
++    assert normalized["commission"] == expected_decimal
++    assert normalized["raw"] == source
++
++
++@pytest.mark.parametrize("empty", [None, "", False, [], {}, ()])
++@pytest.mark.parametrize("fallback", [None, 0, 1200])
++def test_normalization_skips_empty_values(empty, fallback):
++    source = {"id": empty, "price": empty, "commission": empty}
++    if fallback is not None:
++        source.update(program_id=fallback, unit_price=fallback, reward=fallback)
++    normalized = normalize_record("a8net", "products", source)
++    assert normalized["source_id"] == fallback
++    expected_decimal = None if fallback is None else str(fallback)
++    assert normalized["price"] == expected_decimal
++    assert normalized["commission"] == expected_decimal
++
++
++@pytest.mark.parametrize("value", [1200, " \t"])
++def test_normalization_keeps_alias_priority_and_whitespace(value):
++    normalized = normalize_record(
++        "a8net",
++        "products",
++        {
++            "program_id": 0,
++            "unit_price": 0,
++            "reward": 0,
++            " ID ": value,
++            "Price": value,
++            "Commission": value,
++        },
++    )
++    assert normalized["source_id"] == value
++    assert normalized["price"] == str(value)
++    assert normalized["commission"] == str(value)
++
++
++@pytest.mark.parametrize(
++    ("source", "expected_fingerprint"),
++    [
++        ({}, "d9be640685e7c7113bb77273dabb92b1f1222d59214364a06124eb5348d0633d"),
++        (
++            {"id": 0},
++            "c9f03aa8eea5d256d54819df16fe0e633018ee674c93f1e8e335e6df1c6b7854",
++        ),
++        (
++            {"id": "P-1"},
++            "e01a10b4a62c4c12a6ba9a12fbfe4842faf81e313594cc584cd4e875fcd4eabd",
++        ),
++    ],
++)
++def test_normalization_fingerprint_preserves_source_id(source, expected_fingerprint):
++    normalized = normalize_record("a8net", "products", source)
++    assert normalized["fingerprint_sha256"] == expected_fingerprint
+ 
+ 
+ @pytest.fixture(autouse=True)
+diff --git a/tools/affiliate_ingestion/normalize.py b/tools/affiliate_ingestion/normalize.py
+index a0863dc..9d5feae 100644
+--- a/tools/affiliate_ingestion/normalize.py
++++ b/tools/affiliate_ingestion/normalize.py
+@@ -68,7 +68,8 @@ def _flatten_keys(record: Mapping[str, Any]) -> dict[str, Any]:
+ def _first(record: Mapping[str, Any], aliases: Iterable[str]) -> Any:
+     for alias in aliases:
+         value = record.get(alias)
+-        if value:
++        # Numeric zero is present; False and empty values still fall through.
++        if value or (value == 0 and value is not False):
+             return value
+     return None
+ 
+@@ -102,8 +103,8 @@ def normalize_record(
+         [
+             provider,
+             resource,
+-            str(canonical.get("source_id") or ""),
+-            str(canonical.get("url") or ""),
++            str(canonical["source_id"] if canonical["source_id"] is not None else ""),
++            str(canonical["url"] if canonical["url"] is not None else ""),
+             raw_json,
+         ]
+     )

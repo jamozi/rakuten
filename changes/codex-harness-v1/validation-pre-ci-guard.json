@@ -1,0 +1,2227 @@
+{
+  "version": 2,
+  "overall_status": "CODE_LOCAL_MODEL_AND_EXTENDED_CI_VALIDATED",
+  "source_checkpoint": "0d1a5eccb9a3125641734135a04de3ac97c60223",
+  "scope": "Local/GitHub development verification; no live publication, staging, Production, credential or product actuals changes",
+  "toolchain": {
+    "python": "3.14.6",
+    "node": "24.18.1",
+    "npm": "11.16.0",
+    "uv_local": "0.12.1",
+    "postgresql": "18.4",
+    "php_local": "8.3.33",
+    "php_ci_compatibility": "7.4.33"
+  },
+  "make_fast": {
+    "command": [
+      "make",
+      "fast"
+    ],
+    "source_checkpoint": "0d1a5eccb9a3125641734135a04de3ac97c60223",
+    "exit_code": 0,
+    "seconds": 1741.9,
+    "log": "/tmp/raos-harness-followup/make-fast-final.log"
+  },
+  "python_partitions": {
+    "parallel": {
+      "passed": 20007,
+      "skipped": 7,
+      "seconds": 661.83,
+      "status": "PASS"
+    },
+    "serial": {
+      "passed": 1987,
+      "skipped": 0,
+      "seconds": 550.07,
+      "status": "PASS"
+    },
+    "data": {
+      "passed": 348,
+      "skipped": 0,
+      "seconds": 346.56,
+      "status": "PASS"
+    },
+    "storage": {
+      "passed": 91,
+      "skipped": 0,
+      "seconds": 34.83,
+      "status": "PASS"
+    }
+  },
+  "node_passed": 486,
+  "vitest_passed": 4,
+  "php_assertions": {
+    "source": 85,
+    "generated": 85
+  },
+  "static": "PASS",
+  "generated_owners": 146,
+  "generated_owners_status": "PASS",
+  "secret_scan": "PASS",
+  "immutable_baseline_changed": false,
+  "native_eval": {
+    "comparison": {
+      "status": "PASS",
+      "errors": [],
+      "cases": [
+        {
+          "case": "A",
+          "before_median": 16,
+          "after_median": 16,
+          "before_read_characters": 62101,
+          "after_read_characters": 38688,
+          "pass": true
+        },
+        {
+          "case": "B",
+          "before_median": 16,
+          "after_median": 16,
+          "before_read_characters": 157328,
+          "after_read_characters": 142106,
+          "pass": true
+        },
+        {
+          "case": "C",
+          "before_median": 16,
+          "after_median": 16,
+          "before_read_characters": 93384,
+          "after_read_characters": 115256,
+          "pass": true
+        },
+        {
+          "case": "D",
+          "before_median": 14,
+          "after_median": 16,
+          "before_read_characters": 5662,
+          "after_read_characters": 10566,
+          "pass": true
+        },
+        {
+          "case": "E",
+          "before_median": 14,
+          "after_median": 16,
+          "before_read_characters": 66126,
+          "after_read_characters": 52455,
+          "pass": true
+        }
+      ]
+    },
+    "semantic_review": {
+      "status": "PASS",
+      "reviewer": "primary agent inspection plus independent artifact/cohort review",
+      "scope": "Saved synthetic design/review artifacts; not raw internal reasoning or live publication evidence",
+      "architecture": {
+        "before_runs_reviewed": 3,
+        "after_runs_reviewed": 3,
+        "findings": [],
+        "observations": [
+          "Existing public projection fields and HTML escaping preserved",
+          "Nullable upstream contract not changed by the renderer missing-value rule",
+          "No direct Evidence/Finance/raw AI dependency",
+          "After all3 state reader value, source documents, adjacent effects and excluded external operations"
+        ]
+      },
+      "business": {
+        "before_runs_reviewed": 3,
+        "after_runs_reviewed": 3,
+        "findings": [],
+        "observations": [
+          "Correct35L/42L identity distinction and freshness/sourcequality",
+          "Commission/price/Rakuten availability excluded from ranking",
+          "Unobserved profit remains null; publication_ready stays false",
+          "After all3 load currentV3 and projecteditorialSkill; no marketwide claims from2syntheticproducts"
+        ]
+      },
+      "efficiency_limit": {
+        "case": "A",
+        "run": 3,
+        "recorded_read_output_characters": 1056685,
+        "single_validation_output_characters": 1015780,
+        "note": "Retained outlier. Process output volume is a proxy and is not necessarily untruncated modelcontext. Exactcommand body deliberately not retained."
+      },
+      "independent_review": "PASS"
+    },
+    "before_ref": "9001a77b38cf82f9467bd461d1177ec8aa299254",
+    "after_ref": "0d1a5eccb9a3125641734135a04de3ac97c60223",
+    "runs_per_side": 15,
+    "repetitions": 3,
+    "time_budgets": {
+      "A": 600,
+      "B": 1200,
+      "C": 600,
+      "D": 600,
+      "E": 600
+    },
+    "isolation_version": 3,
+    "note": "Complete case cohorts only; failures, timeout and process-output outlier retained separately. Controlled common skills and fake capabilities are distinct from real scoped-runtime inventory."
+  },
+  "global_recovery": {
+    "source_config_sha256": "27379e91d47b31b07e4f8a862ecbda7b3ad7a43d3543eb76067e01d7f91d3a02",
+    "candidate_sha256": "2acb34dc79dd680904540bbe3d4dd2fa304f8ebd123c8c77358e3251414e9771",
+    "restored_entries": [
+      "model",
+      "skills.config",
+      "skills.config",
+      "features.multi_agent",
+      "features.js_repl",
+      "plugins.slack@openai-curated",
+      "plugins.canva@openai-curated",
+      "plugins.github@openai-curated",
+      "plugins.hugging-face@openai-curated",
+      "plugins.notion@openai-curated",
+      "plugins.codex-security@openai-curated",
+      "plugins.figma@openai-curated",
+      "plugins.documents@openai-primary-runtime",
+      "plugins.pdf@openai-primary-runtime",
+      "plugins.spreadsheets@openai-primary-runtime",
+      "plugins.presentations@openai-primary-runtime",
+      "plugins.template-creator@openai-primary-runtime",
+      "apps.asdk_app_69d57a067de88191a2dee16c9d78e18c",
+      "apps.asdk_app_6a2b62fd753c8191bcff02ac79b54c6b",
+      "apps.connector_4aaab2856305417b993eca9a216aaf6e",
+      "apps.connector_68df038e0ba48191908c8434991bbac2",
+      "RAOS project trust",
+      "RAOS project trust"
+    ],
+    "removed_eval_trust_count": 19,
+    "unknown_original_fields": [
+      "model_reasoning_effort",
+      "preferred_auth_method",
+      "personality",
+      "service_tier",
+      "notify",
+      "windows",
+      "marketplaces",
+      "projects",
+      "desktop",
+      "shell_environment_policy"
+    ],
+    "preserved_current_keys": [
+      "desktop",
+      "features",
+      "marketplaces",
+      "mcp_servers",
+      "memories",
+      "notify",
+      "plugins",
+      "projects",
+      "windows"
+    ],
+    "mode": "RECONSTRUCTED_KNOWN_SETTINGS; not complete original recovery",
+    "applied": true,
+    "backup": "C:/Users/naoki/.codex/recovery/config-before-raos-reconstruction-20260906-160103.toml",
+    "verified_same_as_applied": true,
+    "remaining_eval_trust_entries": 0,
+    "original_unknown_using_current": [
+      "notify",
+      "windows",
+      "marketplaces",
+      "projects",
+      "desktop"
+    ],
+    "original_unknown_using_default": [
+      "model_reasoning_effort",
+      "preferred_auth_method",
+      "personality",
+      "service_tier",
+      "shell_environment_policy"
+    ],
+    "global_gsd_modified": false,
+    "authentication_files_modified": false,
+    "linux_global_modified": false,
+    "note": "Known entries reconstructed with current Desktop/notification/memory settings preserved; unknown missing originals use Codex defaults. Authentication is referenced read-only by sandbox; contents are not inspected."
+  },
+  "followup": {
+    "database_red_reproduced": 19,
+    "database_targeted_passed": 119,
+    "database_unit_passed": 183,
+    "database_independent_review": "PASS",
+    "harness_regressions_passed": 88,
+    "runtime_review": "PASS",
+    "php_previously_missing_passed": 6,
+    "historical_skips": 7,
+    "historical_replacement_behavior_cases": 7,
+    "runtime_inventory": "PASS; scoped30/GSD0/userdisables2",
+    "wordpress_readonly_status": "PASS",
+    "final_eval": "PASS",
+    "required_ci": "PASS at code checkpoint; final report integration receipt is PR #189",
+    "database_failure_resolution": [
+      {
+        "before_test_id": "tests/google_live/test_google_live_postgresql.py::test_atomic_replay_unchanged_supersession_and_no_raw_query_persistence",
+        "before": "FAIL",
+        "root_cause": "snapshot_read_lock_requires_update",
+        "after": "PASS",
+        "after_suite": "tests/google_live/test_google_live_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/google_live/test_google_live_postgresql.py::test_atomic_replay_unchanged_supersession_and_no_raw_query_persistence"
+      },
+      {
+        "before_test_id": "tests/google_live/test_google_live_postgresql.py::test_empty_successor_downgrade_and_reupgrade_are_structurally_reversible",
+        "before": "FAIL",
+        "root_cause": "dropped_attribute_in_digest",
+        "after": "PASS",
+        "after_suite": "tests/google_live/test_google_live_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/google_live/test_google_live_postgresql.py::test_empty_successor_downgrade_and_reupgrade_are_structurally_reversible"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_lost_advisory_lock_rolls_back_revision_before_forward_recovery",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0301/test_postgresql.py::test_lost_advisory_lock_rolls_back_revision_before_forward_recovery"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_next_lock_holder_closes_interrupted_attempt_before_retry",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0301/test_postgresql.py::test_next_lock_holder_closes_interrupted_attempt_before_retry"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_post_bootstrap_failure_records_terminal_then_forward_recovers",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0301/test_postgresql.py::test_post_bootstrap_failure_records_terminal_then_forward_recovers"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_session_loss_never_reconnects_without_lock_or_writes_failed_history",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0301/test_postgresql.py::test_session_loss_never_reconnects_without_lock_or_writes_failed_history"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_temporary_future_graph_reaches_latest_with_per_revision_attempts",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0301/test_postgresql.py::test_temporary_future_graph_reaches_latest_with_per_revision_attempts"
+      },
+      {
+        "before_test_id": "tests/st0303/test_postgresql.py::test_zero_database_reaches_exact_cumulative_head_with_st0303_history",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0303/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0303/test_postgresql.py::test_zero_database_reaches_exact_cumulative_head_with_st0303_history"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_downgrade_revokes_database_authority_preserves_roles_and_recovers",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_downgrade_revokes_database_authority_preserves_roles_and_recovers"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[bypassrls]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[bypassrls]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createdb]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createdb]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createrole]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createrole]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[inherit]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[inherit]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[login]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[login]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[outbound-membership]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[outbound-membership]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[replication]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[replication]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[superuser]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[superuser]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_upgrade_installs_exact_roles_public_boundary_and_policies",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "historical and current parameters",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_upgrade_installs_exact_roles_public_boundary_and_policies"
+      },
+      {
+        "before_test_id": "tests/st0307/test_postgresql.py::test_production_predecessor_to_head_preserves_data_history_and_atomic_guards",
+        "before": "FAIL",
+        "root_cause": "dropped_attribute_in_digest",
+        "after": "PASS",
+        "after_suite": "tests/st0307/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0307/test_postgresql.py::test_production_predecessor_to_head_preserves_data_history_and_atomic_guards"
+      }
+    ],
+    "harness_review": "PASS",
+    "harness_additional_reply_shape_cases_passed": 6,
+    "selection_regressions_passed": 19,
+    "php_runtime_review_tests_passed": 36,
+    "php_source_assertions": 85,
+    "php_generated_assertions": 85,
+    "generated_owners": "REFRESHING_FINAL_CI_INPUTS",
+    "harness_and_selection_passed": 107,
+    "reader_pyright_errors_before": 185,
+    "reader_pyright_errors_after": 0,
+    "reader_semantic_cases": 753,
+    "reader_article_outputs_identical": 10,
+    "reader_focused_tests_passed": 24,
+    "historical_workflow_mapping": [
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[approved_scope]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[approved_scope]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[rationale]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[rationale]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[rejected_alternatives]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[rejected_alternatives]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[constraints]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[constraints]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[security_and_approval_gates]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[security_and_approval_gates]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[acceptance_criteria]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[acceptance_criteria]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[required_test_evidence]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[required_test_evidence]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      }
+    ]
+  },
+  "ci": {
+    "captured_at_utc": "2026-09-06T09:22:40.057008+00:00",
+    "run": {
+      "databaseId": 34023014300,
+      "attempt": 2,
+      "event": "workflow_dispatch",
+      "headSha": "0d1a5eccb9a3125641734135a04de3ac97c60223",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/jamozi/rakuten/actions/runs/34023014300",
+      "createdAt": "2026-09-06T08:51:13Z",
+      "updatedAt": "2026-09-06T09:16:26Z"
+    },
+    "aggregate": {
+      "latest_jobs": 29,
+      "success": 29,
+      "failure": 0,
+      "skipped": 0,
+      "execution_attempt1_carried_jobs": 27,
+      "execution_attempt2_rerun_jobs": 2,
+      "rerun_names": [
+        "Tests (shard 19)",
+        "Final Integration"
+      ],
+      "method": "Merge latest successful execution per exact job name. Attempt 2 metadata exposes 29 successes, including 27 copied entries with unchanged attempt-1 timestamps. Attempt-2 log contains only shard 19 and the gate. Reuse attempt-1 successful execution logs for the carried entries; count each job/partition once."
+    },
+    "jobs": [
+      {
+        "name": "Select verification",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101458934910,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101458934910",
+        "latest_view_job_id": 101461120220,
+        "started_at": "2026-09-06T08:51:18Z",
+        "completed_at": "2026-09-06T08:52:14Z"
+      },
+      {
+        "name": "Lock and Reproducibility",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459053875,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459053875",
+        "latest_view_job_id": 101461120395,
+        "started_at": "2026-09-06T08:52:17Z",
+        "completed_at": "2026-09-06T08:52:57Z"
+      },
+      {
+        "name": "Static",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140634,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140634",
+        "latest_view_job_id": 101461120453,
+        "started_at": "2026-09-06T08:59:02Z",
+        "completed_at": "2026-09-06T09:05:10Z"
+      },
+      {
+        "name": "PHP 7.4 runtime compatibility",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140532,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140532",
+        "latest_view_job_id": 101461120487,
+        "started_at": "2026-09-06T08:58:28Z",
+        "completed_at": "2026-09-06T08:59:41Z"
+      },
+      {
+        "name": "Tests (shard 3)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140619,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140619",
+        "latest_view_job_id": 101461120491,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:59:02Z"
+      },
+      {
+        "name": "Storage",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140519,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140519",
+        "latest_view_job_id": 101461120531,
+        "started_at": "2026-09-06T08:58:14Z",
+        "completed_at": "2026-09-06T09:01:18Z"
+      },
+      {
+        "name": "Tests (shard 1)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140565,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140565",
+        "latest_view_job_id": 101461120538,
+        "started_at": "2026-09-06T08:53:01Z",
+        "completed_at": "2026-09-06T08:59:25Z"
+      },
+      {
+        "name": "Secrets",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140512,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140512",
+        "latest_view_job_id": 101461120549,
+        "started_at": "2026-09-06T08:58:20Z",
+        "completed_at": "2026-09-06T08:59:58Z"
+      },
+      {
+        "name": "Tests (shard 2)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140665,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140665",
+        "latest_view_job_id": 101461120558,
+        "started_at": "2026-09-06T08:59:02Z",
+        "completed_at": "2026-09-06T09:04:48Z"
+      },
+      {
+        "name": "Data and Database",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140503,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140503",
+        "latest_view_job_id": 101461120587,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T09:04:09Z"
+      },
+      {
+        "name": "Tests (shard 4)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140573,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140573",
+        "latest_view_job_id": 101461120667,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:59:29Z"
+      },
+      {
+        "name": "Contracts",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140527,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140527",
+        "latest_view_job_id": 101461120691,
+        "started_at": "2026-09-06T08:58:16Z",
+        "completed_at": "2026-09-06T09:00:17Z"
+      },
+      {
+        "name": "Tests (shard 8)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140568,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140568",
+        "latest_view_job_id": 101461120855,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:59:35Z"
+      },
+      {
+        "name": "Tests (shard 7)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140653,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140653",
+        "latest_view_job_id": 101461120872,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:58:11Z"
+      },
+      {
+        "name": "Tests (shard 5)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140580,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140580",
+        "latest_view_job_id": 101461120928,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:58:59Z"
+      },
+      {
+        "name": "Tests (shard 10)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140606,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140606",
+        "latest_view_job_id": 101461120932,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:58:25Z"
+      },
+      {
+        "name": "Tests (shard 6)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140621,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140621",
+        "latest_view_job_id": 101461120948,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:59:49Z"
+      },
+      {
+        "name": "Tests (shard 19)",
+        "conclusion": "success",
+        "execution_attempt": 2,
+        "execution_job_id": 101461120966,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101461120966",
+        "latest_view_job_id": 101461120966,
+        "started_at": "2026-09-06T09:08:49Z",
+        "completed_at": "2026-09-06T09:16:09Z"
+      },
+      {
+        "name": "Tests (shard 9)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140694,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140694",
+        "latest_view_job_id": 101461121024,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:58:14Z"
+      },
+      {
+        "name": "Tests (shard 11)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140610,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140610",
+        "latest_view_job_id": 101461121093,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:59:14Z"
+      },
+      {
+        "name": "Tests (shard 15)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140642,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140642",
+        "latest_view_job_id": 101461121098,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T09:00:34Z"
+      },
+      {
+        "name": "Tests (shard 12)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140601,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140601",
+        "latest_view_job_id": 101461121200,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:59:21Z"
+      },
+      {
+        "name": "Tests (shard 16)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140753,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140753",
+        "latest_view_job_id": 101461121269,
+        "started_at": "2026-09-06T08:53:01Z",
+        "completed_at": "2026-09-06T08:59:26Z"
+      },
+      {
+        "name": "Tests (shard 14)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140611,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140611",
+        "latest_view_job_id": 101461121303,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:58:40Z"
+      },
+      {
+        "name": "Tests (shard 13)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140647,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140647",
+        "latest_view_job_id": 101461121414,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:59:45Z"
+      },
+      {
+        "name": "Tests (shard 17)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140612,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140612",
+        "latest_view_job_id": 101461121416,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:59:00Z"
+      },
+      {
+        "name": "Tests (shard 18)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140617,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140617",
+        "latest_view_job_id": 101461121716,
+        "started_at": "2026-09-06T08:53:00Z",
+        "completed_at": "2026-09-06T08:59:36Z"
+      },
+      {
+        "name": "Tests (shard 20)",
+        "conclusion": "success",
+        "execution_attempt": 1,
+        "execution_job_id": 101459140626,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101459140626",
+        "latest_view_job_id": 101461121765,
+        "started_at": "2026-09-06T08:53:01Z",
+        "completed_at": "2026-09-06T08:59:43Z"
+      },
+      {
+        "name": "Final Integration",
+        "conclusion": "success",
+        "execution_attempt": 2,
+        "execution_job_id": 101462064275,
+        "execution_url": "https://github.com/jamozi/rakuten/actions/runs/34023014300/job/101462064275",
+        "latest_view_job_id": 101462064275,
+        "started_at": "2026-09-06T09:16:12Z",
+        "completed_at": "2026-09-06T09:16:25Z"
+      }
+    ],
+    "test_totals": {
+      "python_parallel_passed": 20006,
+      "python_serial_passed": 1987,
+      "python_data_passed": 348,
+      "python_storage_passed": 91,
+      "python_skipped": 8,
+      "node_passed": 486,
+      "vitest_passed": 4,
+      "python_total_passed": 22432
+    },
+    "test_counting_note": "Counts are successful executions in the selected latest job per name; discarded failed shard-19 attempt and duplicated carried metadata are not counted. Deselected collection counts and PHP assertion counts are not added to Python test counts.",
+    "shards": [
+      {
+        "shard": 1,
+        "execution_attempt": 1,
+        "parallel_passed": 1043,
+        "python_skipped": 1,
+        "serial_passed": 95,
+        "node_passed": 23,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 6110,
+          "pytest-serial": 6130,
+          "node-tests": 6173
+        }
+      },
+      {
+        "shard": 2,
+        "execution_attempt": 1,
+        "parallel_passed": 925,
+        "python_skipped": 0,
+        "serial_passed": 90,
+        "node_passed": 24,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 21426,
+          "pytest-serial": 21446,
+          "node-tests": 21496
+        }
+      },
+      {
+        "shard": 3,
+        "execution_attempt": 1,
+        "parallel_passed": 1082,
+        "python_skipped": 0,
+        "serial_passed": 103,
+        "node_passed": 23,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 15248,
+          "pytest-serial": 15268,
+          "node-tests": 15313
+        }
+      },
+      {
+        "shard": 4,
+        "execution_attempt": 1,
+        "parallel_passed": 1039,
+        "python_skipped": 0,
+        "serial_passed": 110,
+        "node_passed": 21,
+        "vitest_passed": 4,
+        "log_lines": {
+          "pytest-parallel": 7943,
+          "pytest-serial": 7963,
+          "node-tests": 8008,
+          "vitest": 8023
+        }
+      },
+      {
+        "shard": 5,
+        "execution_attempt": 1,
+        "parallel_passed": 979,
+        "python_skipped": 0,
+        "serial_passed": 82,
+        "node_passed": 26,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 8858,
+          "pytest-serial": 8878,
+          "node-tests": 8926
+        }
+      },
+      {
+        "shard": 6,
+        "execution_attempt": 1,
+        "parallel_passed": 977,
+        "python_skipped": 0,
+        "serial_passed": 92,
+        "node_passed": 23,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 16149,
+          "pytest-serial": 16169,
+          "node-tests": 16214
+        }
+      },
+      {
+        "shard": 7,
+        "execution_attempt": 1,
+        "parallel_passed": 1039,
+        "python_skipped": 0,
+        "serial_passed": 105,
+        "node_passed": 26,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 20530,
+          "pytest-serial": 20550,
+          "node-tests": 20600
+        }
+      },
+      {
+        "shard": 8,
+        "execution_attempt": 1,
+        "parallel_passed": 1035,
+        "python_skipped": 0,
+        "serial_passed": 89,
+        "node_passed": 20,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 7050,
+          "pytest-serial": 7070,
+          "node-tests": 7110
+        }
+      },
+      {
+        "shard": 9,
+        "execution_attempt": 1,
+        "parallel_passed": 978,
+        "python_skipped": 0,
+        "serial_passed": 86,
+        "node_passed": 13,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 22323,
+          "pytest-serial": 22343,
+          "node-tests": 22374
+        }
+      },
+      {
+        "shard": 10,
+        "execution_attempt": 1,
+        "parallel_passed": 1006,
+        "python_skipped": 2,
+        "serial_passed": 101,
+        "node_passed": 32,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 10683,
+          "pytest-serial": 10703,
+          "node-tests": 10763
+        }
+      },
+      {
+        "shard": 11,
+        "execution_attempt": 1,
+        "parallel_passed": 992,
+        "python_skipped": 0,
+        "serial_passed": 111,
+        "node_passed": 41,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 11662,
+          "pytest-serial": 11682,
+          "node-tests": 11753
+        }
+      },
+      {
+        "shard": 12,
+        "execution_attempt": 1,
+        "parallel_passed": 946,
+        "python_skipped": 0,
+        "serial_passed": 101,
+        "node_passed": 44,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 9754,
+          "pytest-serial": 9774,
+          "node-tests": 9852
+        }
+      },
+      {
+        "shard": 13,
+        "execution_attempt": 1,
+        "parallel_passed": 992,
+        "python_skipped": 0,
+        "serial_passed": 100,
+        "node_passed": 29,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 19633,
+          "pytest-serial": 19653,
+          "node-tests": 19706
+        }
+      },
+      {
+        "shard": 14,
+        "execution_attempt": 1,
+        "parallel_passed": 1024,
+        "python_skipped": 2,
+        "serial_passed": 97,
+        "node_passed": 31,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 12582,
+          "pytest-serial": 12602,
+          "node-tests": 12659
+        }
+      },
+      {
+        "shard": 15,
+        "execution_attempt": 1,
+        "parallel_passed": 987,
+        "python_skipped": 0,
+        "serial_passed": 109,
+        "node_passed": 33,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 18715,
+          "pytest-serial": 18735,
+          "node-tests": 18796
+        }
+      },
+      {
+        "shard": 16,
+        "execution_attempt": 1,
+        "parallel_passed": 970,
+        "python_skipped": 0,
+        "serial_passed": 91,
+        "node_passed": 18,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 24125,
+          "pytest-serial": 24145,
+          "node-tests": 24183
+        }
+      },
+      {
+        "shard": 17,
+        "execution_attempt": 1,
+        "parallel_passed": 1021,
+        "python_skipped": 1,
+        "serial_passed": 112,
+        "node_passed": 27,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 13487,
+          "pytest-serial": 13507,
+          "node-tests": 13558
+        }
+      },
+      {
+        "shard": 18,
+        "execution_attempt": 1,
+        "parallel_passed": 1023,
+        "python_skipped": 0,
+        "serial_passed": 116,
+        "node_passed": 3,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 14382,
+          "pytest-serial": 14402,
+          "node-tests": 14417
+        }
+      },
+      {
+        "shard": 19,
+        "execution_attempt": 2,
+        "parallel_passed": 951,
+        "python_skipped": 0,
+        "serial_passed": 95,
+        "node_passed": 15,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 802,
+          "pytest-serial": 822,
+          "node-tests": 855
+        }
+      },
+      {
+        "shard": 20,
+        "execution_attempt": 1,
+        "parallel_passed": 997,
+        "python_skipped": 2,
+        "serial_passed": 102,
+        "node_passed": 14,
+        "vitest_passed": 0,
+        "log_lines": {
+          "pytest-parallel": 17043,
+          "pytest-serial": 17063,
+          "node-tests": 17093
+        }
+      }
+    ],
+    "skips": {
+      "total": 8,
+      "by_reason": {
+        "workflow prose is not an active implementation authority": 7,
+        "attached ZIP is local-only; committed source-layer integrity remains mandatory": 1
+      },
+      "exact_entries": [
+        {
+          "job": "Tests (shard 1)",
+          "attempt": 1,
+          "log_line": 6109,
+          "count": 1,
+          "file": "tests/st1503/test_negative_cases.py",
+          "file_line": 585,
+          "reason": "workflow prose is not an active implementation authority"
+        },
+        {
+          "job": "Tests (shard 10)",
+          "attempt": 1,
+          "log_line": 10682,
+          "count": 2,
+          "file": "tests/st1503/test_negative_cases.py",
+          "file_line": 585,
+          "reason": "workflow prose is not an active implementation authority"
+        },
+        {
+          "job": "Tests (shard 14)",
+          "attempt": 1,
+          "log_line": 12580,
+          "count": 1,
+          "file": "tests/raos_v2/test_source_import.py",
+          "file_line": 42,
+          "reason": "attached ZIP is local-only; committed source-layer integrity remains mandatory"
+        },
+        {
+          "job": "Tests (shard 14)",
+          "attempt": 1,
+          "log_line": 12581,
+          "count": 1,
+          "file": "tests/st1503/test_negative_cases.py",
+          "file_line": 585,
+          "reason": "workflow prose is not an active implementation authority"
+        },
+        {
+          "job": "Tests (shard 17)",
+          "attempt": 1,
+          "log_line": 13486,
+          "count": 1,
+          "file": "tests/st1503/test_negative_cases.py",
+          "file_line": 585,
+          "reason": "workflow prose is not an active implementation authority"
+        },
+        {
+          "job": "Tests (shard 20)",
+          "attempt": 1,
+          "log_line": 17042,
+          "count": 2,
+          "file": "tests/st1503/test_negative_cases.py",
+          "file_line": 585,
+          "reason": "workflow prose is not an active implementation authority"
+        }
+      ],
+      "bubblewrap_skips": 0
+    },
+    "postgresql": {
+      "status": "PASS",
+      "runtime": "LOCAL_PASS",
+      "mode": "test",
+      "server_version_num": "180004",
+      "formal_tst_008": "NOT_EXECUTED",
+      "story_id": "ST-0201",
+      "actual_version": "18.4",
+      "execution_attempt": 1,
+      "receipt_log_line": 3225,
+      "data_passed": 348,
+      "data_skipped": 0,
+      "data_summary_log_line": 3255,
+      "scope": "Actual test-mode CI runtime, not production or formal TST-008."
+    },
+    "php": {
+      "runtime_version": "7.4.33",
+      "source_generated_plugin_bytes_match": true,
+      "receipts": [
+        {
+          "artifact_kind": "source",
+          "status": "PASSED_LOCAL_CI_STUB",
+          "evidence_scope": "LOCAL_CI_NOT_WORDPRESS_PRODUCTION",
+          "php_version": "7.4.33",
+          "php_sapi": "cli",
+          "assertion_count": 85,
+          "plugin_sha256": "b7ebed3ffabd6a5067707ec898e15901382e1782459f5087a3798b27fdc970b1",
+          "execution_attempt": 1,
+          "log_line": 5269
+        },
+        {
+          "artifact_kind": "generated",
+          "status": "PASSED_LOCAL_CI_STUB",
+          "evidence_scope": "LOCAL_CI_NOT_WORDPRESS_PRODUCTION",
+          "php_version": "7.4.33",
+          "php_sapi": "cli",
+          "assertion_count": 85,
+          "plugin_sha256": "b7ebed3ffabd6a5067707ec898e15901382e1782459f5087a3798b27fdc970b1",
+          "execution_attempt": 1,
+          "log_line": 5273
+        }
+      ],
+      "assertions_total_across_executions": 170,
+      "scope": "Actual CLI source/generated harness assertions; LOCAL_CI_NOT_WORDPRESS_PRODUCTION."
+    },
+    "static": {
+      "conclusion": "success",
+      "pyright": {
+        "errors": 0,
+        "warnings": 0,
+        "information": 0,
+        "execution_attempt": 1,
+        "log_line": 17622
+      },
+      "full_static_result": 0,
+      "owner_checks_passed": 146,
+      "owner_checks_failed": 0,
+      "owners": [
+        {
+          "name": "build_editorial_measurement_v1",
+          "result": 0,
+          "log_line": 17624
+        },
+        {
+          "name": "build_editorial_portfolio_v3",
+          "result": 0,
+          "log_line": 17626
+        },
+        {
+          "name": "build_editorial_v3_theme_navigation",
+          "result": 0,
+          "log_line": 17628
+        },
+        {
+          "name": "build_google_live_runtime_v1",
+          "result": 0,
+          "log_line": 17629
+        },
+        {
+          "name": "build_local_compose",
+          "result": 0,
+          "log_line": 17631
+        },
+        {
+          "name": "build_raos_v2_successor",
+          "result": 0,
+          "log_line": 17633
+        },
+        {
+          "name": "build_st0002_revision",
+          "result": 0,
+          "log_line": 17635
+        },
+        {
+          "name": "build_st0003_revision",
+          "result": 0,
+          "log_line": 17637
+        },
+        {
+          "name": "build_st0004_revision",
+          "result": 0,
+          "log_line": 17639
+        },
+        {
+          "name": "build_st0005_status",
+          "result": 0,
+          "log_line": 17641
+        },
+        {
+          "name": "build_st0006_decision_gates",
+          "result": 0,
+          "log_line": 17643
+        },
+        {
+          "name": "build_st0104_contract_repository",
+          "result": 0,
+          "log_line": 17645
+        },
+        {
+          "name": "build_st0105_generated_contracts",
+          "result": 0,
+          "log_line": 17647
+        },
+        {
+          "name": "build_st0106_reviewed_findings_rebind",
+          "result": 0,
+          "log_line": 17649
+        },
+        {
+          "name": "build_st0107_pr_governance",
+          "result": 0,
+          "log_line": 17651
+        },
+        {
+          "name": "build_st0201_postgres_service",
+          "result": 0,
+          "log_line": 17653
+        },
+        {
+          "name": "build_st0203_queue_fake",
+          "result": 0,
+          "log_line": 17655
+        },
+        {
+          "name": "build_st0204_config_loader",
+          "result": 0,
+          "log_line": 17657
+        },
+        {
+          "name": "build_st0205_synthetic_data",
+          "result": 0,
+          "log_line": 17659
+        },
+        {
+          "name": "build_st0301_migration_framework",
+          "result": 0,
+          "log_line": 17661
+        },
+        {
+          "name": "build_st0302_foundation",
+          "result": 0,
+          "log_line": 17663
+        },
+        {
+          "name": "build_st0303_iam_ops",
+          "result": 0,
+          "log_line": 17665
+        },
+        {
+          "name": "build_st0304_domain_schemas",
+          "result": 0,
+          "log_line": 17667
+        },
+        {
+          "name": "build_st0305_publication_analytics_finance",
+          "result": 0,
+          "log_line": 17669
+        },
+        {
+          "name": "build_st0306_database_roles",
+          "result": 0,
+          "log_line": 17671
+        },
+        {
+          "name": "build_st0307_migration_fixtures",
+          "result": 0,
+          "log_line": 17673
+        },
+        {
+          "name": "build_st0308_persistence",
+          "result": 0,
+          "log_line": 17675
+        },
+        {
+          "name": "build_st0308_persistence_boundary_reference",
+          "result": 0,
+          "log_line": 17677
+        },
+        {
+          "name": "build_st0401_local_auth_runtime",
+          "result": 0,
+          "log_line": 17679
+        },
+        {
+          "name": "build_st0402_local_step_up_runtime",
+          "result": 0,
+          "log_line": 17681
+        },
+        {
+          "name": "build_st0403_authorization_runtime",
+          "result": 0,
+          "log_line": 17682
+        },
+        {
+          "name": "build_st0406_secure_object_intake_runtime",
+          "result": 0,
+          "log_line": 17683
+        },
+        {
+          "name": "build_st0502_item_search_runtime",
+          "result": 0,
+          "log_line": 17684
+        },
+        {
+          "name": "build_st0503_catalog_normalization_runtime",
+          "result": 0,
+          "log_line": 17685
+        },
+        {
+          "name": "build_st0504_product_identity_human_review_reference_plan",
+          "result": 0,
+          "log_line": 17687
+        },
+        {
+          "name": "build_st0504_product_identity_runtime",
+          "result": 0,
+          "log_line": 17688
+        },
+        {
+          "name": "build_st0505_rakuten_live_smoke_reference_plan",
+          "result": 0,
+          "log_line": 17690
+        },
+        {
+          "name": "build_st0601_artifact_registry_runtime",
+          "result": 0,
+          "log_line": 17691
+        },
+        {
+          "name": "build_st0602_fact_extraction_runtime",
+          "result": 0,
+          "log_line": 17692
+        },
+        {
+          "name": "build_st0602_fact_extraction_validation_reference_plan",
+          "result": 0,
+          "log_line": 17694
+        },
+        {
+          "name": "build_st0603_fact_conflict_review_reference_plan",
+          "result": 0,
+          "log_line": 17696
+        },
+        {
+          "name": "build_st0603_fact_conflict_runtime",
+          "result": 0,
+          "log_line": 17697
+        },
+        {
+          "name": "build_st0604_source_packet_lifecycle_reference_plan",
+          "result": 0,
+          "log_line": 17699
+        },
+        {
+          "name": "build_st0604_source_packet_lifecycle_runtime",
+          "result": 0,
+          "log_line": 17700
+        },
+        {
+          "name": "build_st0605_claim_evidence_coverage_reference_plan",
+          "result": 0,
+          "log_line": 17702
+        },
+        {
+          "name": "build_st0605_claim_evidence_runtime",
+          "result": 0,
+          "log_line": 17704
+        },
+        {
+          "name": "build_st0606_evidence_workspace_v2",
+          "result": 0,
+          "log_line": 17705
+        },
+        {
+          "name": "build_st0701_ai_registry",
+          "result": 0,
+          "log_line": 17707
+        },
+        {
+          "name": "build_st0702_context_pack_reference_plan",
+          "result": 0,
+          "log_line": 17709
+        },
+        {
+          "name": "build_st0703_recorded_adapter",
+          "result": 0,
+          "log_line": 17711
+        },
+        {
+          "name": "build_st0705_ai_output_validation_reference_plan",
+          "result": 0,
+          "log_line": 17713
+        },
+        {
+          "name": "build_st0705_ai_output_validation_runtime",
+          "result": 0,
+          "log_line": 17714
+        },
+        {
+          "name": "build_st0706_durable_ai_job_queue",
+          "result": 0,
+          "log_line": 17716
+        },
+        {
+          "name": "build_st0707_evaluation_harness_runtime",
+          "result": 0,
+          "log_line": 17717
+        },
+        {
+          "name": "build_st0708_openai_live_bounded_evaluation_reference_plan",
+          "result": 0,
+          "log_line": 17719
+        },
+        {
+          "name": "build_st0709_ai_governance_workspace",
+          "result": 0,
+          "log_line": 17720
+        },
+        {
+          "name": "build_st0801_content_ast",
+          "result": 0,
+          "log_line": 17722
+        },
+        {
+          "name": "build_st0803_comparison_validation_runtime",
+          "result": 0,
+          "log_line": 17724
+        },
+        {
+          "name": "build_st0804_recommendation_runtime",
+          "result": 0,
+          "log_line": 17726
+        },
+        {
+          "name": "build_st0805_policy_runtime",
+          "result": 0,
+          "log_line": 17728
+        },
+        {
+          "name": "build_st0806_ai_draft_integration_v2",
+          "result": 0,
+          "log_line": 17730
+        },
+        {
+          "name": "build_st0807_seo_render_runtime",
+          "result": 0,
+          "log_line": 17731
+        },
+        {
+          "name": "build_st0901_review_completion_v2",
+          "result": 0,
+          "log_line": 17733
+        },
+        {
+          "name": "build_st0902_final_approval_reference_plan",
+          "result": 0,
+          "log_line": 17735
+        },
+        {
+          "name": "build_st0902_final_approval_runtime_v2",
+          "result": 0,
+          "log_line": 17737
+        },
+        {
+          "name": "build_st0903_publication_snapshot_reference_plan",
+          "result": 0,
+          "log_line": 17739
+        },
+        {
+          "name": "build_st0903_publication_snapshot_runtime_v2",
+          "result": 0,
+          "log_line": 17741
+        },
+        {
+          "name": "build_st0904_public_projection_reference_plan",
+          "result": 0,
+          "log_line": 17743
+        },
+        {
+          "name": "build_st0904_public_projection_runtime_v2",
+          "result": 0,
+          "log_line": 17745
+        },
+        {
+          "name": "build_st0905_publication_commands_reference_plan",
+          "result": 0,
+          "log_line": 17747
+        },
+        {
+          "name": "build_st0905_publication_commands_runtime_v2",
+          "result": 0,
+          "log_line": 17749
+        },
+        {
+          "name": "build_st0906_publication_review_workspace_v2",
+          "result": 0,
+          "log_line": 17750
+        },
+        {
+          "name": "build_st1001_public_app_shell",
+          "result": 0,
+          "log_line": 17752
+        },
+        {
+          "name": "build_st1002_public_article_renderer",
+          "result": 0,
+          "log_line": 17754
+        },
+        {
+          "name": "build_st1004_disclosure_affiliate_runtime",
+          "result": 0,
+          "log_line": 17755
+        },
+        {
+          "name": "build_st1006_public_performance_runtime",
+          "result": 0,
+          "log_line": 17756
+        },
+        {
+          "name": "build_st1102_article_workspace_v2",
+          "result": 0,
+          "log_line": 17758
+        },
+        {
+          "name": "build_st1103_freshness_operations_workspace",
+          "result": 0,
+          "log_line": 17760
+        },
+        {
+          "name": "build_st1104_analytics_finance_dashboard",
+          "result": 0,
+          "log_line": 17762
+        },
+        {
+          "name": "build_st1105_admin_visual_accessibility",
+          "result": 0,
+          "log_line": 17764
+        },
+        {
+          "name": "build_st1201_durable_event_store",
+          "result": 0,
+          "log_line": 17765
+        },
+        {
+          "name": "build_st1202_public_event_instrumentation",
+          "result": 0,
+          "log_line": 17766
+        },
+        {
+          "name": "build_st1203_search_console_recorded_adapter",
+          "result": 0,
+          "log_line": 17768
+        },
+        {
+          "name": "build_st1204_ga4_recorded_adapter",
+          "result": 0,
+          "log_line": 17770
+        },
+        {
+          "name": "build_st1205_kpi_read_model_reference_plan",
+          "result": 0,
+          "log_line": 17772
+        },
+        {
+          "name": "build_st1206_keyword_rank_import",
+          "result": 0,
+          "log_line": 17774
+        },
+        {
+          "name": "build_st1302_provider_fact_commit_recorded",
+          "result": 0,
+          "log_line": 17776
+        },
+        {
+          "name": "build_st1302_provider_fact_commit_reference_plan",
+          "result": 0,
+          "log_line": 17778
+        },
+        {
+          "name": "build_st1303_attribution_engine",
+          "result": 0,
+          "log_line": 17780
+        },
+        {
+          "name": "build_st1303_attribution_engine_reference_plan",
+          "result": 0,
+          "log_line": 17782
+        },
+        {
+          "name": "build_st1304_cost_unit_economics",
+          "result": 0,
+          "log_line": 17784
+        },
+        {
+          "name": "build_st1304_cost_unit_economics_reference_plan",
+          "result": 0,
+          "log_line": 17786
+        },
+        {
+          "name": "build_st1305_finance_reconciliation",
+          "result": 0,
+          "log_line": 17788
+        },
+        {
+          "name": "build_st1305_finance_reconciliation_reference_plan",
+          "result": 0,
+          "log_line": 17790
+        },
+        {
+          "name": "build_st1403_refresh_proposal_runtime",
+          "result": 0,
+          "log_line": 17791
+        },
+        {
+          "name": "build_st1404_durable_job_runtime",
+          "result": 0,
+          "log_line": 17792
+        },
+        {
+          "name": "build_st1407_external_policy_registry_reference_plan",
+          "result": 0,
+          "log_line": 17794
+        },
+        {
+          "name": "build_st1407_external_policy_registry_runtime",
+          "result": 0,
+          "log_line": 17796
+        },
+        {
+          "name": "build_st1501_terraform_foundation",
+          "result": 0,
+          "log_line": 17798
+        },
+        {
+          "name": "build_st1502_data_services",
+          "result": 0,
+          "log_line": 17800
+        },
+        {
+          "name": "build_st1503_compute_edge",
+          "result": 0,
+          "log_line": 17802
+        },
+        {
+          "name": "build_st1504_github_oidc",
+          "result": 0,
+          "log_line": 17804
+        },
+        {
+          "name": "build_st1505_staging_deployment",
+          "result": 0,
+          "log_line": 17806
+        },
+        {
+          "name": "build_st1506_production_canary_runtime",
+          "result": 0,
+          "log_line": 17808
+        },
+        {
+          "name": "build_st1506_production_deployment",
+          "result": 0,
+          "log_line": 17810
+        },
+        {
+          "name": "build_st1506_wordpress_operator",
+          "result": 0,
+          "log_line": 17812
+        },
+        {
+          "name": "build_st1602_slo_alert_reference_plan",
+          "result": 0,
+          "log_line": 17814
+        },
+        {
+          "name": "build_st1602_slo_alert_runtime",
+          "result": 0,
+          "log_line": 17816
+        },
+        {
+          "name": "build_st1603_security_verification_pack",
+          "result": 0,
+          "log_line": 17818
+        },
+        {
+          "name": "build_st1604_local_performance_load",
+          "result": 0,
+          "log_line": 17820
+        },
+        {
+          "name": "build_st1604_performance_load_reference_plan",
+          "result": 0,
+          "log_line": 17822
+        },
+        {
+          "name": "build_st1605_failure_injection_drill",
+          "result": 0,
+          "log_line": 17824
+        },
+        {
+          "name": "build_st1606_backup_restore_drill",
+          "result": 0,
+          "log_line": 17826
+        },
+        {
+          "name": "build_st1607_gate_evidence_pack",
+          "result": 0,
+          "log_line": 17827
+        },
+        {
+          "name": "build_st1701_business_inputs",
+          "result": 0,
+          "log_line": 17829
+        },
+        {
+          "name": "build_st1702_category_fixture_runtime",
+          "result": 0,
+          "log_line": 17831
+        },
+        {
+          "name": "build_st1702_category_fixtures_rules_reference_plan",
+          "result": 0,
+          "log_line": 17833
+        },
+        {
+          "name": "build_st1703_low_cost_publication_pilot",
+          "result": 0,
+          "log_line": 17835
+        },
+        {
+          "name": "build_st1704_affiliate_learning",
+          "result": 0,
+          "log_line": 17837
+        },
+        {
+          "name": "build_st1704_at003_recovery_operator",
+          "result": 0,
+          "log_line": 17839
+        },
+        {
+          "name": "build_st1704_owner_local_pilot",
+          "result": 0,
+          "log_line": 17841
+        },
+        {
+          "name": "build_st1704_portfolio_source_packets",
+          "result": 0,
+          "log_line": 17842
+        },
+        {
+          "name": "build_st1704_product_safety_manufacturer_plan",
+          "result": 0,
+          "log_line": 17844
+        },
+        {
+          "name": "build_st1704_rakuten_capture_manifest",
+          "result": 0,
+          "log_line": 17846
+        },
+        {
+          "name": "build_st1704_reader_claim_coverage",
+          "result": 0,
+          "log_line": 17848
+        },
+        {
+          "name": "build_st1704_reliability_product_selection_v1",
+          "result": 0,
+          "log_line": 17850
+        },
+        {
+          "name": "build_st1704_self_hosted_editorial_manifest",
+          "result": 0,
+          "log_line": 17852
+        },
+        {
+          "name": "build_st1704_theme_assets",
+          "result": 0,
+          "log_line": 17854
+        },
+        {
+          "name": "build_st1704_wordpress_publication_operator_v2",
+          "result": 0,
+          "log_line": 17856
+        },
+        {
+          "name": "build_st1705_pilot_signoff",
+          "result": 0,
+          "log_line": 17857
+        },
+        {
+          "name": "build_st1801_portfolio_expansion",
+          "result": 0,
+          "log_line": 17858
+        },
+        {
+          "name": "build_st1802_gate1_decision",
+          "result": 0,
+          "log_line": 17859
+        },
+        {
+          "name": "build_st1803_gate2_observation",
+          "result": 0,
+          "log_line": 17861
+        },
+        {
+          "name": "build_st1804_gate3_economics",
+          "result": 0,
+          "log_line": 17863
+        },
+        {
+          "name": "build_st1805_portfolio_decision",
+          "result": 0,
+          "log_line": 17865
+        },
+        {
+          "name": "build_st1901_model_judge_calibration",
+          "result": 0,
+          "log_line": 17866
+        },
+        {
+          "name": "build_st1902_champion_challenger",
+          "result": 0,
+          "log_line": 17868
+        },
+        {
+          "name": "build_st1903_partial_auto_publication",
+          "result": 0,
+          "log_line": 17870
+        },
+        {
+          "name": "build_st1904_multi_category",
+          "result": 0,
+          "log_line": 17872
+        },
+        {
+          "name": "build_st1905_advanced_rank_provider",
+          "result": 0,
+          "log_line": 17874
+        },
+        {
+          "name": "build_st1906_advanced_causal_attribution",
+          "result": 0,
+          "log_line": 17876
+        },
+        {
+          "name": "build_st1907_content_portfolio_optimizer",
+          "result": 0,
+          "log_line": 17878
+        },
+        {
+          "name": "build_st1908_fine_tuning_evaluation",
+          "result": 0,
+          "log_line": 17880
+        },
+        {
+          "name": "build_wordpress_mcp_v1",
+          "result": 0,
+          "log_line": 17881
+        },
+        {
+          "name": "build_wordpress_quality_baseline",
+          "result": 0,
+          "log_line": 17882
+        },
+        {
+          "name": "build_wordpresscom_mvp_runtime_manifest",
+          "result": 0,
+          "log_line": 17883
+        }
+      ],
+      "post_owner_status_check": {
+        "result": 0,
+        "log_line": 17885
+      }
+    },
+    "bubblewrap_setup": {
+      "successful_shard_executions": 20,
+      "versions": [
+        {
+          "job": "Tests (shard 1)",
+          "attempt": 1,
+          "log_line": 5840,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 8)",
+          "attempt": 1,
+          "log_line": 6739,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 4)",
+          "attempt": 1,
+          "log_line": 7676,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 5)",
+          "attempt": 1,
+          "log_line": 8590,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 12)",
+          "attempt": 1,
+          "log_line": 9497,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 10)",
+          "attempt": 1,
+          "log_line": 10420,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 11)",
+          "attempt": 1,
+          "log_line": 11329,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 14)",
+          "attempt": 1,
+          "log_line": 12319,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 17)",
+          "attempt": 1,
+          "log_line": 13226,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 18)",
+          "attempt": 1,
+          "log_line": 14124,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 3)",
+          "attempt": 1,
+          "log_line": 14983,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 6)",
+          "attempt": 1,
+          "log_line": 15881,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 20)",
+          "attempt": 1,
+          "log_line": 16783,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 15)",
+          "attempt": 1,
+          "log_line": 18453,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 13)",
+          "attempt": 1,
+          "log_line": 19364,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 7)",
+          "attempt": 1,
+          "log_line": 20272,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 2)",
+          "attempt": 1,
+          "log_line": 21167,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 9)",
+          "attempt": 1,
+          "log_line": 22065,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 16)",
+          "attempt": 1,
+          "log_line": 23861,
+          "version": "0.6.1"
+        },
+        {
+          "job": "Tests (shard 19)",
+          "attempt": 2,
+          "log_line": 543,
+          "version": "0.6.1"
+        }
+      ],
+      "note": "No bubblewrap-dependent safety regression skips remain in the selected successful test logs."
+    },
+    "browser_matrix_history": {
+      "test": "tests/st1704/test_header_without_javascript.py::test_native_nojs_navigation_search_accessibility_and_scripted_isolation",
+      "cases": 48,
+      "timeout_seconds_unchanged": 60,
+      "prior_run_pass": {
+        "run_id": 34020413367,
+        "seconds": 52.52,
+        "log": "ci-checkpoint-dispatch.log",
+        "line": 23139
+      },
+      "attempt1_timeout": {
+        "seconds": 60.08,
+        "log": "ci-code-final-attempt1.log",
+        "line": 23279,
+        "failure_kind": "subprocess.TimeoutExpired; no recorded browser assertion failure"
+      },
+      "attempt2_pass": {
+        "seconds": 46.35,
+        "log": "ci-code-final-attempt2.log",
+        "line": 787,
+        "same_sha": true
+      },
+      "interpretation": "Exact-SHA rerun passed with the unchanged 60-second budget. Timing variability/contention remains a hypothesis; the root cause is not proven. The earlier failure remains recorded; no test-runtime fix is claimed."
+    },
+    "final_gate": {
+      "conclusion": "success",
+      "execution_attempt": 2,
+      "log_line": 1334,
+      "message": "Final Integration: all selected checks passed"
+    },
+    "scope": "Completed workflow_dispatch code CI at the exact recorded SHA. Not evidence of production publication, model-eval completion, or separate uncommitted worktree validation. Draft PR planning is separate; these are actual dispatched check executions.",
+    "capture": {
+      "method": "Read-only gh run view --attempt 1/2 --log and latest run JSON; supplied attempt metadata cross-checked. Only /tmp evidence files written. No CI reruns or source edits.",
+      "logs": [
+        {
+          "file": "ci-code-final-attempt1.log",
+          "sha256": "7abb3474337f206573d088967fea20987728bdd6a6a7e9dac34a6ce35a2d8d6b"
+        },
+        {
+          "file": "ci-code-final-attempt2.log",
+          "sha256": "a6286b93fb3c7aa302e63ac4ad47432d95954679eb90725d649aaa4470bcece0"
+        }
+      ],
+      "metadata": [
+        "ci-code-final-attempt1.json",
+        "ci-code-final-attempt2.json",
+        "ci-code-final-verified-run.json"
+      ],
+      "logs_file_mode": "0600"
+    }
+  },
+  "delivery_receipt": {
+    "pull_request": "https://github.com/jamozi/rakuten/pull/189",
+    "required_check": "Final Integration",
+    "merge_method": "squash",
+    "admin_bypass": false,
+    "policy": "Report commit must pass required CI before merge. Merged SHA and local synchronization are recorded in the PR final execution receipt."
+  },
+  "previous_validation": {
+    "scope": "LOCAL; not formal CI, staging or Production evidence",
+    "toolchain": {
+      "python": "3.14.6",
+      "node": "24.18.1",
+      "npm": "11.16.0",
+      "uv": "0.12.6",
+      "postgresql": "18.4",
+      "php_container": "8.3.33"
+    },
+    "native_eval_comparison": "PASS; 5 cases x 3 runs x 2 revisions; independent behavioral grading plus author review",
+    "static": "PASS",
+    "generated_owners": 146,
+    "generated_owners_status": "PASS",
+    "immutable_baseline_changed": false,
+    "secret_scan": "PASS",
+    "python_parallel": {
+      "passed": 19877,
+      "skipped": 31,
+      "later_resolved_postgresql_skips": 18,
+      "remaining_skips": {
+        "php_cli_unavailable": 6,
+        "historical_workflow_prose": 7
+      }
+    },
+    "python_serial": {
+      "passed": 1987,
+      "failed": 1,
+      "failure": "obsolete AGENTS literal assertions; removed, relevant file rerun passed"
+    },
+    "targeted_after_fixes": {
+      "passed": 42
+    },
+    "final_harness_regressions": {
+      "passed": 37
+    },
+    "node": {
+      "passed": 486
+    },
+    "vitest": {
+      "passed": 4
+    },
+    "storage": {
+      "passed": 91
+    },
+    "php": {
+      "source_assertions": 85,
+      "generated_assertions": 85,
+      "network": "denied",
+      "wordpress_or_production_write": false,
+      "php74_ci": "NOT_RUN"
+    },
+    "postgresql": {
+      "passed_initially": 266,
+      "library_setup_errors_resolved": 49,
+      "total_passed_after_setup": 315,
+      "failed": 19,
+      "same_failures_on_baseline": true,
+      "failed_test_ids": [
+        "tests/google_live/test_google_live_postgresql.py::test_atomic_replay_unchanged_supersession_and_no_raw_query_persistence",
+        "tests/google_live/test_google_live_postgresql.py::test_empty_successor_downgrade_and_reupgrade_are_structurally_reversible",
+        "tests/st0301/test_postgresql.py::test_lost_advisory_lock_rolls_back_revision_before_forward_recovery",
+        "tests/st0301/test_postgresql.py::test_next_lock_holder_closes_interrupted_attempt_before_retry",
+        "tests/st0301/test_postgresql.py::test_post_bootstrap_failure_records_terminal_then_forward_recovers",
+        "tests/st0301/test_postgresql.py::test_session_loss_never_reconnects_without_lock_or_writes_failed_history",
+        "tests/st0301/test_postgresql.py::test_temporary_future_graph_reaches_latest_with_per_revision_attempts",
+        "tests/st0303/test_postgresql.py::test_zero_database_reaches_exact_cumulative_head_with_st0303_history",
+        "tests/st0306/test_postgresql.py::test_downgrade_revokes_database_authority_preserves_roles_and_recovers",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[bypassrls]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createdb]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createrole]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[inherit]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[login]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[outbound-membership]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[replication]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[superuser]",
+        "tests/st0306/test_postgresql.py::test_upgrade_installs_exact_roles_public_boundary_and_policies",
+        "tests/st0307/test_postgresql.py::test_production_predecessor_to_head_preserves_data_history_and_atomic_guards"
+      ],
+      "baseline_commit": "9001a77b38cf82f9467bd461d1177ec8aa299254",
+      "additional_transaction_audit_passed": 18
+    },
+    "saved_patch_regrading": {
+      "case": "B",
+      "runs": 3,
+      "passed": 3,
+      "model_rerun": false
+    },
+    "global_config_restored": false,
+    "overall_status": "VALIDATING",
+    "measurement_phase": "Previous validation retained below; final follow-up pending",
+    "global_config_reconstructed": true,
+    "global_original_restore_required": false
+  }
+}

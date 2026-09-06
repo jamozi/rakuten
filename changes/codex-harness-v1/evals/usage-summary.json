@@ -33,34 +33,34 @@
   },
   "after": {
     "A": {
-      "input_tokens": 408659,
-      "cached_input_tokens": 366720,
-      "output_tokens": 5192,
-      "seconds": 218.14
+      "input_tokens": 270010,
+      "cached_input_tokens": 222592,
+      "output_tokens": 7470,
+      "seconds": 290.0
     },
     "B": {
-      "input_tokens": 1156804,
-      "cached_input_tokens": 1086848,
-      "output_tokens": 11977,
-      "seconds": 501.39
+      "input_tokens": 945636,
+      "cached_input_tokens": 869504,
+      "output_tokens": 10516,
+      "seconds": 482.57
     },
     "C": {
-      "input_tokens": 311235,
-      "cached_input_tokens": 259456,
-      "output_tokens": 7791,
-      "seconds": 278.77
+      "input_tokens": 376207,
+      "cached_input_tokens": 320512,
+      "output_tokens": 9039,
+      "seconds": 335.01
     },
     "D": {
-      "input_tokens": 138001,
-      "cached_input_tokens": 119680,
-      "output_tokens": 1662,
-      "seconds": 121.39
+      "input_tokens": 156885,
+      "cached_input_tokens": 133120,
+      "output_tokens": 1858,
+      "seconds": 100.35
     },
     "E": {
-      "input_tokens": 285906,
-      "cached_input_tokens": 246400,
-      "output_tokens": 4218,
-      "seconds": 182.55
+      "input_tokens": 223561,
+      "cached_input_tokens": 183424,
+      "output_tokens": 3977,
+      "seconds": 195.51
     }
   }
 }

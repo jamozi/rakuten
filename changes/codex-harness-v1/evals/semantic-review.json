@@ -1,35 +1,189 @@
 {
+  "version": 1,
   "status": "PASS",
-  "reviewer": "primary agent inspection plus independent artifact/cohort review",
-  "scope": "Saved synthetic design/review artifacts; not raw internal reasoning or live publication evidence",
-  "architecture": {
-    "before_runs_reviewed": 3,
-    "after_runs_reviewed": 3,
-    "findings": [],
-    "observations": [
-      "Existing public projection fields and HTML escaping preserved",
-      "Nullable upstream contract not changed by the renderer missing-value rule",
-      "No direct Evidence/Finance/raw AI dependency",
-      "After all3 state reader value, source documents, adjacent effects and excluded external operations"
+  "status_scope": "Native quality and cohort integrity only; excludes efficiency/SC08 attainment, shipping, and Production readiness.",
+  "after_ref": "f746e0a1c43141e5d6d27e14ec72cb403f841014",
+  "before_ref": "9001a77b38cf82f9467bd461d1177ec8aa299254",
+  "export_directory": "/tmp/raos-harness-followup/integrated-final-eval-export",
+  "scope": {
+    "manually_reviewed_after_cases": [
+      "A-1",
+      "A-2",
+      "A-3",
+      "C-1",
+      "C-2",
+      "C-3",
+      "E-1",
+      "E-2",
+      "E-3"
+    ],
+    "manual_evidence": "Full saved patches and C designs/E reviews, checked against frozen source contracts and policy plus recorded execution evidence.",
+    "before_review": "All 15 records and artifacts hash-reused from the previously reviewed fixed Before export.",
+    "B_D_review": "Behavioral grading and metadata/cohort integrity; D required fake status-call records checked. No new full manual B/D artifact semantic review.",
+    "prohibited_actions_not_performed": [
+      "tracked edits",
+      "raw artifact edits",
+      "raw prompt/reasoning retrieval",
+      "test or model runs",
+      "regrading",
+      "CI or remote operations"
     ]
+  },
+  "findings": [
+    {
+      "severity": "P3",
+      "blocking": false,
+      "case": "C-1",
+      "title": "OpenAPI schema name is misstated in the design",
+      "file": "/tmp/raos-harness-followup/integrated-final-eval-export/artifacts/f746e0a1-after/C-1/design.txt",
+      "line": 29,
+      "observed": "PublicArticle",
+      "expected": "PublicArticleDocument",
+      "source": "contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml:546 at the frozen After ref",
+      "impact": "Citation-name error only; linked file, public fields, nullable interpretation, renderer behavior, and acceptance are correct.",
+      "disposition": "Retain the native artifact unchanged and record the corrected schema name in review notes."
+    }
+  ],
+  "quality": {
+    "status": "PASS",
+    "after_completed": 15,
+    "after_accepted": 15,
+    "after_score_total_each": 16,
+    "boundary_violation_count": 0,
+    "unexpected_change_count": 0,
+    "recorded_pytest_pass_counts": {
+      "A": [
+        92,
+        79,
+        85
+      ],
+      "C": [
+        41,
+        41,
+        44
+      ]
+    },
+    "limitations": "Execution records preserve counts and outcomes, not raw commands/stdout. Manual semantics and frozen-source checks supplement the behavioral scores."
+  },
+  "architecture": {
+    "status": "PASS",
+    "A": "All patches stay in normalization and its regression tests; zero, empty values and alias priority are covered without boundary expansion.",
+    "C": "Public snapshot/projection ownership, only two public fields, escaping including quotes, nullable API contract, required renderer inputs, no mutation/internal fallback or publication authority are preserved.",
+    "objective_checks": [
+      "request",
+      "reader purpose",
+      "success criteria",
+      "scope",
+      "neighbor effects",
+      "canonical sources",
+      "irreversible effects excluded",
+      "non-goals"
+    ],
+    "limitation": "Synthetic renderer validation is not approval of a projection or evidence of live integration."
   },
   "business": {
-    "before_runs_reviewed": 3,
-    "after_runs_reviewed": 3,
-    "findings": [],
-    "observations": [
-      "Correct35L/42L identity distinction and freshness/sourcequality",
-      "Commission/price/Rakuten availability excluded from ranking",
-      "Unobserved profit remains null; publication_ready stays false",
-      "After all3 load currentV3 and projecteditorialSkill; no marketwide claims from2syntheticproducts"
+    "status": "PASS",
+    "E": "All three bind A to matching manufacturer evidence and keep wrong-variant/stale B UNKNOWN and ineligible; no high-commission ranking or cross-variant evidence reuse.",
+    "ranking_policy_matches_frozen_ref": true,
+    "missing_metrics": "Confirmed contribution profit remains null; missing safety, dimensions, performance, warranty and other evidence is not invented.",
+    "publication_ready_all_E": false,
+    "limitation": "VERIFIED is synthetic-input identity matching, not external product verification or market superiority."
+  },
+  "cohort": {
+    "status": "PASS",
+    "before_runs": 15,
+    "after_runs": 15,
+    "source_record_matches": 30,
+    "allowed_record_difference": "artifact_directory only",
+    "artifact_files_verified": 48,
+    "extra_artifact_files": 0,
+    "after_artifact_prefix": "artifacts/f746e0a1-after",
+    "before_sources": [
+      {
+        "file": "eval-before.json",
+        "cases": [
+          "A",
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      {
+        "file": "eval-before-b-final.json",
+        "cases": [
+          "B"
+        ]
+      }
+    ],
+    "after_sources": [
+      {
+        "file": "eval-after-acde-integrated.json",
+        "cases": [
+          "A",
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      {
+        "file": "eval-after-b-integrated.json",
+        "cases": [
+          "B"
+        ]
+      }
+    ],
+    "budget_seconds_by_case": {
+      "A": 600,
+      "B": 1200,
+      "C": 600,
+      "D": 600,
+      "E": 600
+    },
+    "model_reasoning_protocol_grader_isolation_match": true,
+    "full_case_cohorts_only": true,
+    "history": "Before B600 timeout and all its runs retained; entire B1200 cohort reused. Earlier 49bb, 0d, 757 and bfdf After cohorts remain separate and are not mixed into f746.",
+    "comparison_medians_recomputed": true,
+    "usage_medians_recomputed": true
+  },
+  "efficiency": {
+    "status": "NOT_DEMONSTRATED",
+    "criterion": "A recorded read-output median reduction",
+    "A_before_read_median": 62101,
+    "A_after_read_values": [
+      87758,
+      58061,
+      68381
+    ],
+    "A_after_read_median": 68381,
+    "A_change_percent": 10.112558573936003,
+    "unconditional_SC08_PASS": false,
+    "metric_unchanged": true,
+    "all_runs_retained": true,
+    "validation_output_subtracted": false,
+    "supplemental_metrics": {
+      "input_tokens_median_before": 536509,
+      "input_tokens_median_after": 270010,
+      "read_paths_median_before": 9,
+      "read_paths_median_after": 8,
+      "commands_median_before": 21,
+      "commands_median_after": 23,
+      "validation_kind_count_median_before": 10,
+      "validation_kind_count_median_after": 6
+    },
+    "observations": "All integrated A records list the same eight paths, byte-identical between bfdf and f746. A1/A3 show necessarily counted large early aggregate outputs; no recorded build/planner/manifest path expansion.",
+    "limits": [
+      "Read metric includes entire matching-command aggregate output, including validation-classified output.",
+      "No raw command text, per-command read flag, read ranges or edit timestamps retained; pure initial exploration cannot be reconstructed.",
+      "Unnecessary scope, repeated reads, randomness as sole cause, and direct PR190 causation remain UNKNOWN.",
+      "Input-token reduction and bounded path records do not substitute for the A read criterion; C/D read medians also increase."
     ]
   },
-  "efficiency_limit": {
-    "case": "A",
-    "run": 3,
-    "recorded_read_output_characters": 1056685,
-    "single_validation_output_characters": 1015780,
-    "note": "Retained outlier. Process output volume is a proxy and is not necessarily untruncated modelcontext. Exactcommand body deliberately not retained."
+  "export_sha256": {
+    "before.json": "d3050a0994c82f96903eca3b1c328c5a7aa6709a5e9b99c2acc2b32d657d419b",
+    "after.json": "5d3bfd0e30a84c3841f749b28bd6c6ccadbbb943f5eccda2612d974f0c047ce8",
+    "comparison.json": "984bc7c75078e2431d74b3a3c014488bd3064e505018e3e0faad872b9d567a4b",
+    "usage-summary.json": "a17dcae799a8b9827ad9d7bed1d00af2e67b4cfaee72c1a72cdc7dca34332bec"
   },
-  "independent_review": "PASS"
+  "artifact_inventory_sha256": "9e14fad818d629bce9d519a8b2fb4f8f69e344b5c461580e8ead52aff7df57ac",
+  "artifact_inventory_encoding": "SHA256 of UTF-8 JSON mapping export-relative file paths to SHA256 values, sort_keys=True, separators=(',',':')."
 }

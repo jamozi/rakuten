@@ -1,4 +1,6 @@
 PYTHON ?= .venv/bin/python
+# Keep imports in every build recipe out of generated artifact inventories.
+export PYTHONDONTWRITEBYTECODE := 1
 UV ?= uv
 NPM ?= npm
 DOCKER ?= docker

@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 import sys
 
+# Direct CLI use must protect imports before child-command policy applies.
+sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.raos_build_core import (  # noqa: E402

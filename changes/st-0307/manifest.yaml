@@ -70,11 +70,11 @@ source_artifacts:
   bytes: 2399
   sha256: 59f289a184e6859dfd969e21f20feab8971d5bb84a9a32f953a8d59aa64a66d3
 - uri: repo://README.md
-  bytes: 7650
-  sha256: 5e70e32980ac73e3939041429ff83e0d2a7184b4f3a8f331bb8639813386076f
+  bytes: 8511
+  sha256: 4723656cc642de2eddc311be0eb20ba360dc84fb19c5d64e11b0d2958578ab5a
 - uri: repo://Makefile
-  bytes: 3490
-  sha256: 9df01ce453622e0a2c3c624589a8de654efb721d484e412e525b650028e1dcee
+  bytes: 3602
+  sha256: 383e20a86b294a6d2ac758aa0ce70d972fd46c58cbfc3295c7e511a1d35b13bc
 - uri: repo://docs/execplans/ST-0307.md
   bytes: 2270
   sha256: 237d9c6369926402c8afe12de8f5a58c8bda76af36e735dbda0475ba336e0fb8
@@ -115,20 +115,20 @@ source_artifacts:
   bytes: 10295
   sha256: 7abb84a9e9560daaed49bd3127d69ea05f9bf9d5ba49ebf1d39776dee37ee8f6
 - uri: repo://changes/st-0302/manifest.yaml
-  bytes: 8658
-  sha256: 95a8b7b6c1468deae7c59c5ca83dbc38e4cc2053936f128192c93147e4d3a4ee
+  bytes: 8659
+  sha256: 029c68fad3e8afa55fa93aa1f14c8836eebcf341be806cc4309cba6ada642668
 - uri: repo://changes/st-0303/manifest.yaml
-  bytes: 11452
-  sha256: 2d01fe153425f317741d43438a852700e7d4456ae19676d87034270519ef575a
+  bytes: 11453
+  sha256: bd60821ab563d19a19bb66e008d112e3debd95ddd6349c306990b15e29326f8d
 - uri: repo://changes/st-0304/manifest.yaml
-  bytes: 11664
-  sha256: 66816919da7484b003a84a768e17f94cde5029d61e5d33a26a08c6540ba57357
+  bytes: 11665
+  sha256: 72c17f3cc0bc4728b450058351408689c1d6ff5a148cb72f5c239617b8e42b02
 - uri: repo://changes/st-0305/manifest.yaml
-  bytes: 14860
-  sha256: f31a168d88daa8e172b9833a6b75a981b0ac43743229332550e162955cfb9ea8
+  bytes: 14861
+  sha256: 370c52bdc79dc334c1afcd45babb758c79bdb9d624a4b0e479e6774881478583
 - uri: repo://changes/st-0306/manifest.yaml
-  bytes: 8657
-  sha256: fd100ea7740ae628086b49840c5c1825b9986779429f15f4de72d5bf3035970c
+  bytes: 8658
+  sha256: de2155bd81e020dfd6f800975831272a7d51423aee147bf07c16593fbc60a44b
 - uri: repo://changes/st-0301/generated/migration-catalog.v1.json
   bytes: 10776
   sha256: d15068d6c7e637896919f266ee06b96563b5869810a82a1f7c9b97868baab92f

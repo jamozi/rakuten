@@ -1,0 +1,3797 @@
+{
+  "version": 3,
+  "overall_status": "CODE_LOCAL_MODEL_AND_EXTENDED_CI_VALIDATED",
+  "source_checkpoint": "bfdfbea9509764cc6778c2eb1e5050da0c8865f0",
+  "scope": "Frozen source validation. Report-head PR CI, exact squash merge, local synchronization and AutoMerge restoration are separate delivery receipts.",
+  "toolchain": {
+    "python": "3.14.6",
+    "node": "24.18.1",
+    "npm": "11.16.0",
+    "uv_local": "0.12.1",
+    "postgresql": "18.4",
+    "php_local": "8.3.33",
+    "php_ci_compatibility": "7.4.33"
+  },
+  "make_fast": {
+    "command": [
+      "make",
+      "fast"
+    ],
+    "source_checkpoint": "bfdfbea9509764cc6778c2eb1e5050da0c8865f0",
+    "exit_code": 0,
+    "seconds": 1601.2,
+    "log": "/tmp/raos-harness-followup/make-fast-navigation-final.log"
+  },
+  "python_partitions": {
+    "parallel": {
+      "passed": 20059,
+      "skipped": 7,
+      "seconds": 595.19,
+      "status": "PASS"
+    },
+    "serial": {
+      "passed": 1987,
+      "skipped": 0,
+      "seconds": 514.5,
+      "status": "PASS"
+    },
+    "data": {
+      "passed": 348,
+      "skipped": 0,
+      "seconds": 333.82,
+      "status": "PASS"
+    },
+    "storage": {
+      "passed": 91,
+      "skipped": 0,
+      "seconds": 23.97,
+      "status": "PASS"
+    }
+  },
+  "node_passed": 486,
+  "vitest_passed": 4,
+  "php_assertions": {
+    "source": 85,
+    "generated": 85
+  },
+  "static": "PASS",
+  "generated_owners": 146,
+  "generated_owners_status": "PASS",
+  "secret_scan": "PASS",
+  "immutable_baseline_changed": false,
+  "native_eval": {
+    "comparison": {
+      "status": "PASS",
+      "errors": [],
+      "cases": [
+        {
+          "case": "A",
+          "before_median": 16,
+          "after_median": 16,
+          "before_read_characters": 62101,
+          "after_read_characters": 60376,
+          "pass": true
+        },
+        {
+          "case": "B",
+          "before_median": 16,
+          "after_median": 16,
+          "before_read_characters": 157328,
+          "after_read_characters": 128000,
+          "pass": true
+        },
+        {
+          "case": "C",
+          "before_median": 16,
+          "after_median": 16,
+          "before_read_characters": 93384,
+          "after_read_characters": 97287,
+          "pass": true
+        },
+        {
+          "case": "D",
+          "before_median": 14,
+          "after_median": 16,
+          "before_read_characters": 5662,
+          "after_read_characters": 9838,
+          "pass": true
+        },
+        {
+          "case": "E",
+          "before_median": 14,
+          "after_median": 16,
+          "before_read_characters": 66126,
+          "after_read_characters": 45322,
+          "pass": true
+        }
+      ]
+    },
+    "semantic_review": {
+      "status": "PASS",
+      "after_ref": "bfdfbea9509764cc6778c2eb1e5050da0c8865f0",
+      "reviewer": "independent artifact and cohort review",
+      "scope": "New A/C/E meaning plus all30 records and48 artifact copies; fixed Before content verified unchanged. B/D acceptance uses recorded hidden behavior checks and metadata, not a new complete manual B patch review.",
+      "architecture": {
+        "before_runs_reviewed": 3,
+        "after_runs_reviewed": 3,
+        "findings": [],
+        "observations": [
+          "Public projection and nullable upstream contracts preserved",
+          "Escaping and missing-value rejection verified against patches/tests",
+          "No internal Evidence/Finance/raw AI dependency",
+          "Objective, success criteria, canonical sources, adjacent effects, external boundaries and excluded work stated"
+        ]
+      },
+      "business": {
+        "before_runs_reviewed": 3,
+        "after_runs_reviewed": 3,
+        "findings": [],
+        "observations": [
+          "A35L identity limited to synthetic official source; B42L vs35L stale shop mismatch excluded",
+          "Exactly7 canonical V3 ranking factors; no commission/price/Rakuten-availability boost",
+          "Missing profit remains null and publication_ready false",
+          "No marketwide/best-product/boarding/publication claim from2 synthetic products"
+        ]
+      },
+      "cohort": {
+        "before_records": 15,
+        "after_records": 15,
+        "record_values_unchanged_except_artifact_path": true,
+        "artifact_copies_verified": 48,
+        "protocol_grader_model_reasoning_isolation_and_case_budgets_match": true,
+        "complete_case_cohorts_only": true
+      },
+      "efficiency": {
+        "metric": "existing read_output_characters proxy unchanged",
+        "before_A_median": 62101,
+        "after_A_median": 60376,
+        "change_percent": -2.78,
+        "limitation": "Small3-run improvement; complex command output is not pure initial exploration or actual charged context; no causal/general stability claim. C/D output grew. Historical0d outlier and757 efficiency shortfall retained."
+      },
+      "independent_review": "PASS"
+    },
+    "before_ref": "9001a77b38cf82f9467bd461d1177ec8aa299254",
+    "after_ref": "bfdfbea9509764cc6778c2eb1e5050da0c8865f0",
+    "runs_per_side": 15,
+    "repetitions": 3,
+    "time_budgets": {
+      "A": 600,
+      "B": 1200,
+      "C": 600,
+      "D": 600,
+      "E": 600
+    },
+    "isolation_version": 3,
+    "note": "Before retained as complete ACDE600/B1200 cohorts; final After is exclusively bfdf complete15. Prior0d and757 results, earlier failures/timeouts and large outlier are separate historical artifacts. Scoped-runtime inventory and controlled fake-native evaluation are distinct."
+  },
+  "global_recovery": {
+    "source_config_sha256": "27379e91d47b31b07e4f8a862ecbda7b3ad7a43d3543eb76067e01d7f91d3a02",
+    "candidate_sha256": "2acb34dc79dd680904540bbe3d4dd2fa304f8ebd123c8c77358e3251414e9771",
+    "restored_entries": [
+      "model",
+      "skills.config",
+      "skills.config",
+      "features.multi_agent",
+      "features.js_repl",
+      "plugins.slack@openai-curated",
+      "plugins.canva@openai-curated",
+      "plugins.github@openai-curated",
+      "plugins.hugging-face@openai-curated",
+      "plugins.notion@openai-curated",
+      "plugins.codex-security@openai-curated",
+      "plugins.figma@openai-curated",
+      "plugins.documents@openai-primary-runtime",
+      "plugins.pdf@openai-primary-runtime",
+      "plugins.spreadsheets@openai-primary-runtime",
+      "plugins.presentations@openai-primary-runtime",
+      "plugins.template-creator@openai-primary-runtime",
+      "apps.asdk_app_69d57a067de88191a2dee16c9d78e18c",
+      "apps.asdk_app_6a2b62fd753c8191bcff02ac79b54c6b",
+      "apps.connector_4aaab2856305417b993eca9a216aaf6e",
+      "apps.connector_68df038e0ba48191908c8434991bbac2",
+      "RAOS project trust",
+      "RAOS project trust"
+    ],
+    "removed_eval_trust_count": 19,
+    "unknown_original_fields": [
+      "model_reasoning_effort",
+      "preferred_auth_method",
+      "personality",
+      "service_tier",
+      "notify",
+      "windows",
+      "marketplaces",
+      "projects",
+      "desktop",
+      "shell_environment_policy"
+    ],
+    "preserved_current_keys": [
+      "desktop",
+      "features",
+      "marketplaces",
+      "mcp_servers",
+      "memories",
+      "notify",
+      "plugins",
+      "projects",
+      "windows"
+    ],
+    "mode": "RECONSTRUCTED_KNOWN_SETTINGS; not complete original recovery",
+    "applied": true,
+    "backup": "C:/Users/naoki/.codex/recovery/config-before-raos-reconstruction-20260906-160103.toml",
+    "verified_same_as_applied": true,
+    "remaining_eval_trust_entries": 0,
+    "original_unknown_using_current": [
+      "notify",
+      "windows",
+      "marketplaces",
+      "projects",
+      "desktop"
+    ],
+    "original_unknown_using_default": [
+      "model_reasoning_effort",
+      "preferred_auth_method",
+      "personality",
+      "service_tier",
+      "shell_environment_policy"
+    ],
+    "global_gsd_modified": false,
+    "authentication_files_modified": false,
+    "linux_global_modified": false,
+    "note": "Known entries reconstructed with current Desktop/notification/memory settings preserved; unknown missing originals use Codex defaults. Authentication is referenced read-only by sandbox; contents are not inspected."
+  },
+  "followup": {
+    "database_red_reproduced": 19,
+    "database_targeted_passed": 119,
+    "database_unit_passed": 183,
+    "database_independent_review": "PASS",
+    "harness_regressions_passed": 88,
+    "runtime_review": "PASS",
+    "php_previously_missing_passed": 6,
+    "historical_skips": 7,
+    "historical_replacement_behavior_cases": 7,
+    "runtime_inventory": "PASS; scoped30/GSD0/userdisables2",
+    "wordpress_readonly_status": "PASS",
+    "final_eval": "PASS at bfdf; all15 accepted, medians non-inferior, zero boundary violations, independent A/C/E and cohort review PASS",
+    "required_ci": "PASS at frozen code checkpoint (workflow_dispatch34028770234); current report-head PR checks and delivery are recorded separately",
+    "database_failure_resolution": [
+      {
+        "before_test_id": "tests/google_live/test_google_live_postgresql.py::test_atomic_replay_unchanged_supersession_and_no_raw_query_persistence",
+        "before": "FAIL",
+        "root_cause": "snapshot_read_lock_requires_update",
+        "after": "PASS",
+        "after_suite": "tests/google_live/test_google_live_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/google_live/test_google_live_postgresql.py::test_atomic_replay_unchanged_supersession_and_no_raw_query_persistence"
+      },
+      {
+        "before_test_id": "tests/google_live/test_google_live_postgresql.py::test_empty_successor_downgrade_and_reupgrade_are_structurally_reversible",
+        "before": "FAIL",
+        "root_cause": "dropped_attribute_in_digest",
+        "after": "PASS",
+        "after_suite": "tests/google_live/test_google_live_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/google_live/test_google_live_postgresql.py::test_empty_successor_downgrade_and_reupgrade_are_structurally_reversible"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_lost_advisory_lock_rolls_back_revision_before_forward_recovery",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0301/test_postgresql.py::test_lost_advisory_lock_rolls_back_revision_before_forward_recovery"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_next_lock_holder_closes_interrupted_attempt_before_retry",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0301/test_postgresql.py::test_next_lock_holder_closes_interrupted_attempt_before_retry"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_post_bootstrap_failure_records_terminal_then_forward_recovers",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0301/test_postgresql.py::test_post_bootstrap_failure_records_terminal_then_forward_recovers"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_session_loss_never_reconnects_without_lock_or_writes_failed_history",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0301/test_postgresql.py::test_session_loss_never_reconnects_without_lock_or_writes_failed_history"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_temporary_future_graph_reaches_latest_with_per_revision_attempts",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0301/test_postgresql.py::test_temporary_future_graph_reaches_latest_with_per_revision_attempts"
+      },
+      {
+        "before_test_id": "tests/st0303/test_postgresql.py::test_zero_database_reaches_exact_cumulative_head_with_st0303_history",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0303/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0303/test_postgresql.py::test_zero_database_reaches_exact_cumulative_head_with_st0303_history"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_downgrade_revokes_database_authority_preserves_roles_and_recovers",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_downgrade_revokes_database_authority_preserves_roles_and_recovers"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[bypassrls]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[bypassrls]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createdb]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createdb]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createrole]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createrole]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[inherit]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[inherit]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[login]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[login]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[outbound-membership]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[outbound-membership]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[replication]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[replication]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[superuser]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[superuser]"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_upgrade_installs_exact_roles_public_boundary_and_policies",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "historical and current parameters",
+        "after_test_id": "tests/st0306/test_postgresql.py::test_upgrade_installs_exact_roles_public_boundary_and_policies"
+      },
+      {
+        "before_test_id": "tests/st0307/test_postgresql.py::test_production_predecessor_to_head_preserves_data_history_and_atomic_guards",
+        "before": "FAIL",
+        "root_cause": "dropped_attribute_in_digest",
+        "after": "PASS",
+        "after_suite": "tests/st0307/test_postgresql.py",
+        "after_variant_note": "same behavior retained",
+        "after_test_id": "tests/st0307/test_postgresql.py::test_production_predecessor_to_head_preserves_data_history_and_atomic_guards"
+      }
+    ],
+    "harness_review": "PASS",
+    "harness_additional_reply_shape_cases_passed": 6,
+    "selection_regressions_passed": 19,
+    "php_runtime_review_tests_passed": 36,
+    "php_source_assertions": 85,
+    "php_generated_assertions": 85,
+    "generated_owners": "REFRESHING_FINAL_CI_INPUTS",
+    "harness_and_selection_passed": 107,
+    "reader_pyright_errors_before": 185,
+    "reader_pyright_errors_after": 0,
+    "reader_semantic_cases": 753,
+    "reader_article_outputs_identical": 10,
+    "reader_focused_tests_passed": 24,
+    "historical_workflow_mapping": [
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[approved_scope]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[approved_scope]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[rationale]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[rationale]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[rejected_alternatives]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[rejected_alternatives]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[constraints]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[constraints]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[security_and_approval_gates]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[security_and_approval_gates]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[acceptance_criteria]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[acceptance_criteria]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      },
+      {
+        "retained_skip": "tests/st1503/test_negative_cases.py::test_product_handoff_sections_are_semantically_validated_without_digest_authority[required_test_evidence]",
+        "executed_replacement": "tests/st1503/test_workflow_prose_boundary.py::test_workflow_prose_changes_cannot_activate_current_execution[required_test_evidence]",
+        "status": "PASS",
+        "assertions": "activation disabled; eight zero-action counters; activation_enabled=true rejected"
+      }
+    ]
+  },
+  "ci": {
+    "captured_at_utc": "2026-09-06T11:09:04.501803+00:00",
+    "run": {
+      "attempt": 1,
+      "conclusion": "success",
+      "createdAt": "2026-09-06T10:55:40Z",
+      "databaseId": 34028770234,
+      "event": "workflow_dispatch",
+      "headSha": "bfdfbea9509764cc6778c2eb1e5050da0c8865f0",
+      "status": "completed",
+      "updatedAt": "2026-09-06T11:07:48Z",
+      "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234"
+    },
+    "job_totals": {
+      "latest_jobs": 29,
+      "success": 29
+    },
+    "jobs": [
+      {
+        "name": "Select verification",
+        "databaseId": 101474372946,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474372946",
+        "startedAt": "2026-09-06T10:55:44Z",
+        "completedAt": "2026-09-06T10:56:14Z"
+      },
+      {
+        "name": "Lock and Reproducibility",
+        "databaseId": 101474439487,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474439487",
+        "startedAt": "2026-09-06T10:56:18Z",
+        "completedAt": "2026-09-06T10:56:57Z"
+      },
+      {
+        "name": "PHP 7.4 runtime compatibility",
+        "databaseId": 101474524131,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524131",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T10:57:46Z"
+      },
+      {
+        "name": "Static",
+        "databaseId": 101474524140,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524140",
+        "startedAt": "2026-09-06T10:57:00Z",
+        "completedAt": "2026-09-06T11:01:08Z"
+      },
+      {
+        "name": "Data and Database",
+        "databaseId": 101474524144,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524144",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:06:12Z"
+      },
+      {
+        "name": "Storage",
+        "databaseId": 101474524158,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524158",
+        "startedAt": "2026-09-06T10:57:00Z",
+        "completedAt": "2026-09-06T10:59:35Z"
+      },
+      {
+        "name": "Contracts",
+        "databaseId": 101474524160,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524160",
+        "startedAt": "2026-09-06T10:57:36Z",
+        "completedAt": "2026-09-06T10:58:57Z"
+      },
+      {
+        "name": "Secrets",
+        "databaseId": 101474524173,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524173",
+        "startedAt": "2026-09-06T10:57:00Z",
+        "completedAt": "2026-09-06T10:57:57Z"
+      },
+      {
+        "name": "Tests (shard 5)",
+        "databaseId": 101474524293,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524293",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:01:46Z"
+      },
+      {
+        "name": "Tests (shard 4)",
+        "databaseId": 101474524323,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524323",
+        "startedAt": "2026-09-06T10:57:00Z",
+        "completedAt": "2026-09-06T11:03:01Z"
+      },
+      {
+        "name": "Tests (shard 3)",
+        "databaseId": 101474524334,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524334",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:02:40Z"
+      },
+      {
+        "name": "Tests (shard 19)",
+        "databaseId": 101474524356,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524356",
+        "startedAt": "2026-09-06T10:57:00Z",
+        "completedAt": "2026-09-06T11:03:25Z"
+      },
+      {
+        "name": "Tests (shard 10)",
+        "databaseId": 101474524391,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524391",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:01:53Z"
+      },
+      {
+        "name": "Tests (shard 2)",
+        "databaseId": 101474524393,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524393",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:02:14Z"
+      },
+      {
+        "name": "Tests (shard 11)",
+        "databaseId": 101474524395,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524395",
+        "startedAt": "2026-09-06T10:57:00Z",
+        "completedAt": "2026-09-06T11:02:43Z"
+      },
+      {
+        "name": "Tests (shard 18)",
+        "databaseId": 101474524399,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524399",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:02:43Z"
+      },
+      {
+        "name": "Tests (shard 6)",
+        "databaseId": 101474524407,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524407",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:02:54Z"
+      },
+      {
+        "name": "Tests (shard 7)",
+        "databaseId": 101474524409,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524409",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:02:53Z"
+      },
+      {
+        "name": "Tests (shard 15)",
+        "databaseId": 101474524418,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524418",
+        "startedAt": "2026-09-06T10:57:49Z",
+        "completedAt": "2026-09-06T11:04:14Z"
+      },
+      {
+        "name": "Tests (shard 17)",
+        "databaseId": 101474524425,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524425",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:02:35Z"
+      },
+      {
+        "name": "Tests (shard 16)",
+        "databaseId": 101474524431,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524431",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:02:31Z"
+      },
+      {
+        "name": "Tests (shard 8)",
+        "databaseId": 101474524435,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524435",
+        "startedAt": "2026-09-06T10:59:37Z",
+        "completedAt": "2026-09-06T11:05:25Z"
+      },
+      {
+        "name": "Tests (shard 1)",
+        "databaseId": 101474524440,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524440",
+        "startedAt": "2026-09-06T10:59:00Z",
+        "completedAt": "2026-09-06T11:04:24Z"
+      },
+      {
+        "name": "Tests (shard 20)",
+        "databaseId": 101474524441,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524441",
+        "startedAt": "2026-09-06T11:01:11Z",
+        "completedAt": "2026-09-06T11:07:07Z"
+      },
+      {
+        "name": "Tests (shard 9)",
+        "databaseId": 101474524442,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524442",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:01:42Z"
+      },
+      {
+        "name": "Tests (shard 14)",
+        "databaseId": 101474524455,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524455",
+        "startedAt": "2026-09-06T10:58:00Z",
+        "completedAt": "2026-09-06T11:03:06Z"
+      },
+      {
+        "name": "Tests (shard 13)",
+        "databaseId": 101474524458,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524458",
+        "startedAt": "2026-09-06T10:57:01Z",
+        "completedAt": "2026-09-06T11:03:28Z"
+      },
+      {
+        "name": "Tests (shard 12)",
+        "databaseId": 101474524485,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101474524485",
+        "startedAt": "2026-09-06T11:01:45Z",
+        "completedAt": "2026-09-06T11:07:27Z"
+      },
+      {
+        "name": "Final Integration",
+        "databaseId": 101475854386,
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/jamozi/rakuten/actions/runs/34028770234/job/101475854386",
+        "startedAt": "2026-09-06T11:07:31Z",
+        "completedAt": "2026-09-06T11:07:48Z"
+      }
+    ],
+    "selection": {
+      "full": true,
+      "draft": false,
+      "full_log_line": 24601,
+      "draft_log_line": 24600,
+      "scope": "Actual workflow_dispatch full checks; not draft PR plan-only evidence."
+    },
+    "execution_counts": {
+      "python_parallel_passed": 20058,
+      "python_serial_passed": 1987,
+      "python_data_passed": 348,
+      "python_storage_passed": 91,
+      "node_passed": 486,
+      "vitest_passed": 4,
+      "python_total_passed": 22484,
+      "python_total_failed": 0,
+      "python_skipped": 8,
+      "php_assertions_across_two_executions": 170,
+      "parallel_partitions_observed": 20,
+      "serial_partitions_observed": 20,
+      "node_partitions_observed": 20,
+      "php_assertions_per_artifact": 85
+    },
+    "shards": [
+      {
+        "shard": 1,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 1045,
+              "skipped": 1,
+              "warning": 1
+            },
+            "result": 0,
+            "seconds": 153.88,
+            "log_line": 19582
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 95,
+              "deselected": 22618
+            },
+            "result": 0,
+            "seconds": 78.28,
+            "log_line": 19602
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 23
+            },
+            "result": 0,
+            "seconds": 0.58,
+            "log_line": 19644
+          }
+        }
+      },
+      {
+        "shard": 2,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 928
+            },
+            "result": 0,
+            "seconds": 136.59,
+            "log_line": 11394
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 90,
+              "deselected": 22623
+            },
+            "result": 0,
+            "seconds": 75.98,
+            "log_line": 11414
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 24
+            },
+            "result": 0,
+            "seconds": 0.98,
+            "log_line": 11463
+          }
+        }
+      },
+      {
+        "shard": 3,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 1084
+            },
+            "result": 0,
+            "seconds": 161.34,
+            "log_line": 8665
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 103,
+              "deselected": 22610
+            },
+            "result": 0,
+            "seconds": 70.97,
+            "log_line": 8685
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 23
+            },
+            "result": 0,
+            "seconds": 0.83,
+            "log_line": 8729
+          }
+        }
+      },
+      {
+        "shard": 4,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 1040,
+              "warning": 1
+            },
+            "result": 0,
+            "seconds": 182.57,
+            "log_line": 7751
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 110,
+              "deselected": 22603
+            },
+            "result": 0,
+            "seconds": 80.33,
+            "log_line": 7771
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 21
+            },
+            "result": 0,
+            "seconds": 0.68,
+            "log_line": 7815
+          },
+          "vitest": {
+            "counts": {
+              "passed": 4
+            },
+            "result": 0,
+            "seconds": 0.71,
+            "log_line": 7830
+          }
+        }
+      },
+      {
+        "shard": 5,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 980,
+              "warnings": 2
+            },
+            "result": 0,
+            "seconds": 118.66,
+            "log_line": 6849
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 82,
+              "deselected": 22631
+            },
+            "result": 0,
+            "seconds": 57.12,
+            "log_line": 6869
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 26
+            },
+            "result": 0,
+            "seconds": 0.51,
+            "log_line": 6916
+          }
+        }
+      },
+      {
+        "shard": 6,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 983,
+              "warning": 1
+            },
+            "result": 0,
+            "seconds": 164.02,
+            "log_line": 14091
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 92,
+              "deselected": 22621
+            },
+            "result": 0,
+            "seconds": 90.7,
+            "log_line": 14111
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 23
+            },
+            "result": 0,
+            "seconds": 0.88,
+            "log_line": 14155
+          }
+        }
+      },
+      {
+        "shard": 7,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 1044
+            },
+            "result": 0,
+            "seconds": 157.53,
+            "log_line": 14988
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 105,
+              "deselected": 22608
+            },
+            "result": 0,
+            "seconds": 86.96,
+            "log_line": 15008
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 26
+            },
+            "result": 0,
+            "seconds": 0.9,
+            "log_line": 15057
+          }
+        }
+      },
+      {
+        "shard": 8,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 1039,
+              "warnings": 5
+            },
+            "result": 0,
+            "seconds": 157.79,
+            "log_line": 18683
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 89,
+              "deselected": 22624
+            },
+            "result": 0,
+            "seconds": 94.13,
+            "log_line": 18703
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 20
+            },
+            "result": 0,
+            "seconds": 0.76,
+            "log_line": 18742
+          }
+        }
+      },
+      {
+        "shard": 9,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 980
+            },
+            "result": 0,
+            "seconds": 122.24,
+            "log_line": 21359
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 86,
+              "deselected": 22627
+            },
+            "result": 0,
+            "seconds": 59.54,
+            "log_line": 21379
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 13
+            },
+            "result": 0,
+            "seconds": 0.5,
+            "log_line": 21409
+          }
+        }
+      },
+      {
+        "shard": 10,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 1007,
+              "skipped": 2
+            },
+            "result": 0,
+            "seconds": 122.21,
+            "log_line": 10485
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 101,
+              "deselected": 22612
+            },
+            "result": 0,
+            "seconds": 73.49,
+            "log_line": 10505
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 32
+            },
+            "result": 0,
+            "seconds": 0.76,
+            "log_line": 10564
+          }
+        }
+      },
+      {
+        "shard": 11,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 994
+            },
+            "result": 0,
+            "seconds": 143.04,
+            "log_line": 12295
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 111,
+              "deselected": 22602
+            },
+            "result": 0,
+            "seconds": 98.64,
+            "log_line": 12315
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 41
+            },
+            "result": 0,
+            "seconds": 0.88,
+            "log_line": 12385
+          }
+        }
+      },
+      {
+        "shard": 12,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 949
+            },
+            "result": 0,
+            "seconds": 141.45,
+            "log_line": 24067
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 101,
+              "deselected": 22612
+            },
+            "result": 0,
+            "seconds": 91.47,
+            "log_line": 24087
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 44
+            },
+            "result": 0,
+            "seconds": 1.19,
+            "log_line": 24164
+          }
+        }
+      },
+      {
+        "shard": 13,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 996,
+              "warnings": 2
+            },
+            "result": 0,
+            "seconds": 155.18,
+            "log_line": 23165
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 100,
+              "deselected": 22613
+            },
+            "result": 0,
+            "seconds": 118.37,
+            "log_line": 23185
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 29
+            },
+            "result": 0,
+            "seconds": 0.95,
+            "log_line": 23237
+          }
+        }
+      },
+      {
+        "shard": 14,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 1026,
+              "skipped": 2
+            },
+            "result": 0,
+            "seconds": 142.83,
+            "log_line": 22245
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 97,
+              "deselected": 22616
+            },
+            "result": 0,
+            "seconds": 69.34,
+            "log_line": 22265
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 31
+            },
+            "result": 0,
+            "seconds": 0.85,
+            "log_line": 22321
+          }
+        }
+      },
+      {
+        "shard": 15,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 989
+            },
+            "result": 0,
+            "seconds": 166.44,
+            "log_line": 15890
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 109,
+              "deselected": 22604
+            },
+            "result": 0,
+            "seconds": 127.84,
+            "log_line": 15910
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 33
+            },
+            "result": 0,
+            "seconds": 0.77,
+            "log_line": 15970
+          }
+        }
+      },
+      {
+        "shard": 16,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 974,
+              "warning": 1
+            },
+            "result": 0,
+            "seconds": 157.03,
+            "log_line": 17710
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 91,
+              "deselected": 22622
+            },
+            "result": 0,
+            "seconds": 77.07,
+            "log_line": 17730
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 18
+            },
+            "result": 0,
+            "seconds": 0.65,
+            "log_line": 17767
+          }
+        }
+      },
+      {
+        "shard": 17,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 1022,
+              "skipped": 1
+            },
+            "result": 0,
+            "seconds": 123.11,
+            "log_line": 16802
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 112,
+              "deselected": 22601
+            },
+            "result": 0,
+            "seconds": 106.54,
+            "log_line": 16822
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 27
+            },
+            "result": 0,
+            "seconds": 0.92,
+            "log_line": 16872
+          }
+        }
+      },
+      {
+        "shard": 18,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 1024
+            },
+            "result": 0,
+            "seconds": 153.13,
+            "log_line": 13218
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 116,
+              "deselected": 22597
+            },
+            "result": 0,
+            "seconds": 91.74,
+            "log_line": 13238
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 3
+            },
+            "result": 0,
+            "seconds": 0.29,
+            "log_line": 13252
+          }
+        }
+      },
+      {
+        "shard": 19,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 954,
+              "warning": 1
+            },
+            "result": 0,
+            "seconds": 170.27,
+            "log_line": 9599
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 95,
+              "deselected": 22618
+            },
+            "result": 0,
+            "seconds": 118.31,
+            "log_line": 9619
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 15
+            },
+            "result": 0,
+            "seconds": 0.58,
+            "log_line": 9651
+          }
+        }
+      },
+      {
+        "shard": 20,
+        "conclusion": "success",
+        "partitions": {
+          "pytest-parallel": {
+            "counts": {
+              "passed": 1000,
+              "skipped": 2
+            },
+            "result": 0,
+            "seconds": 180.81,
+            "log_line": 20476
+          },
+          "pytest-serial": {
+            "counts": {
+              "passed": 102,
+              "deselected": 22611
+            },
+            "result": 0,
+            "seconds": 73.58,
+            "log_line": 20496
+          },
+          "node-tests": {
+            "counts": {
+              "passed": 14
+            },
+            "result": 0,
+            "seconds": 0.45,
+            "log_line": 20525
+          }
+        }
+      }
+    ],
+    "partitions": [
+      {
+        "job": "Data and Database",
+        "name": "pytest-data",
+        "seconds": 460.19,
+        "result": 0,
+        "log_line": 4457,
+        "counts": {
+          "passed": 348,
+          "deselected": 22365,
+          "warnings": 2
+        },
+        "summary_line": 4456,
+        "summary": "348 passed, 22365 deselected, 2 warnings in 453.75s (0:07:33)"
+      },
+      {
+        "job": "Storage",
+        "name": "pytest-storage",
+        "seconds": 48.84,
+        "result": 0,
+        "log_line": 5081,
+        "counts": {
+          "passed": 91,
+          "deselected": 22622
+        },
+        "summary_line": 5080,
+        "summary": "91 passed, 22622 deselected in 40.66s"
+      },
+      {
+        "job": "Tests (shard 5)",
+        "name": "pytest-parallel",
+        "seconds": 118.66,
+        "result": 0,
+        "log_line": 6849,
+        "counts": {
+          "passed": 980,
+          "warnings": 2
+        },
+        "summary_line": 6848,
+        "summary": "980 passed, 2 warnings in 113.97s (0:01:53)"
+      },
+      {
+        "job": "Tests (shard 5)",
+        "name": "pytest-serial",
+        "seconds": 57.12,
+        "result": 0,
+        "log_line": 6869,
+        "counts": {
+          "passed": 82,
+          "deselected": 22631
+        },
+        "summary_line": 6868,
+        "summary": "82 passed, 22631 deselected in 49.73s"
+      },
+      {
+        "job": "Tests (shard 5)",
+        "name": "node-tests",
+        "seconds": 0.51,
+        "result": 0,
+        "log_line": 6916,
+        "counts": {
+          "passed": 26
+        },
+        "summary_line": 6910
+      },
+      {
+        "job": "Tests (shard 4)",
+        "name": "pytest-parallel",
+        "seconds": 182.57,
+        "result": 0,
+        "log_line": 7751,
+        "counts": {
+          "passed": 1040,
+          "warning": 1
+        },
+        "summary_line": 7750,
+        "summary": "1040 passed, 1 warning in 176.79s (0:02:56)"
+      },
+      {
+        "job": "Tests (shard 4)",
+        "name": "pytest-serial",
+        "seconds": 80.33,
+        "result": 0,
+        "log_line": 7771,
+        "counts": {
+          "passed": 110,
+          "deselected": 22603
+        },
+        "summary_line": 7770,
+        "summary": "110 passed, 22603 deselected in 72.07s (0:01:12)"
+      },
+      {
+        "job": "Tests (shard 4)",
+        "name": "node-tests",
+        "seconds": 0.68,
+        "result": 0,
+        "log_line": 7815,
+        "counts": {
+          "passed": 21
+        },
+        "summary_line": 7809
+      },
+      {
+        "job": "Tests (shard 4)",
+        "name": "vitest",
+        "seconds": 0.71,
+        "result": 0,
+        "log_line": 7830,
+        "counts": {
+          "passed": 4
+        },
+        "summary_line": 7826
+      },
+      {
+        "job": "Tests (shard 3)",
+        "name": "pytest-parallel",
+        "seconds": 161.34,
+        "result": 0,
+        "log_line": 8665,
+        "counts": {
+          "passed": 1084
+        },
+        "summary_line": 8664,
+        "summary": "1084 passed in 155.18s (0:02:35)"
+      },
+      {
+        "job": "Tests (shard 3)",
+        "name": "pytest-serial",
+        "seconds": 70.97,
+        "result": 0,
+        "log_line": 8685,
+        "counts": {
+          "passed": 103,
+          "deselected": 22610
+        },
+        "summary_line": 8684,
+        "summary": "103 passed, 22610 deselected in 62.39s (0:01:02)"
+      },
+      {
+        "job": "Tests (shard 3)",
+        "name": "node-tests",
+        "seconds": 0.83,
+        "result": 0,
+        "log_line": 8729,
+        "counts": {
+          "passed": 23
+        },
+        "summary_line": 8723
+      },
+      {
+        "job": "Tests (shard 19)",
+        "name": "pytest-parallel",
+        "seconds": 170.27,
+        "result": 0,
+        "log_line": 9599,
+        "counts": {
+          "passed": 954,
+          "warning": 1
+        },
+        "summary_line": 9598,
+        "summary": "954 passed, 1 warning in 164.30s (0:02:44)"
+      },
+      {
+        "job": "Tests (shard 19)",
+        "name": "pytest-serial",
+        "seconds": 118.31,
+        "result": 0,
+        "log_line": 9619,
+        "counts": {
+          "passed": 95,
+          "deselected": 22618
+        },
+        "summary_line": 9618,
+        "summary": "95 passed, 22618 deselected in 110.19s (0:01:50)"
+      },
+      {
+        "job": "Tests (shard 19)",
+        "name": "node-tests",
+        "seconds": 0.58,
+        "result": 0,
+        "log_line": 9651,
+        "counts": {
+          "passed": 15
+        },
+        "summary_line": 9645
+      },
+      {
+        "job": "Tests (shard 10)",
+        "name": "pytest-parallel",
+        "seconds": 122.21,
+        "result": 0,
+        "log_line": 10485,
+        "counts": {
+          "passed": 1007,
+          "skipped": 2
+        },
+        "summary_line": 10484,
+        "summary": "1007 passed, 2 skipped in 117.84s (0:01:57)"
+      },
+      {
+        "job": "Tests (shard 10)",
+        "name": "pytest-serial",
+        "seconds": 73.49,
+        "result": 0,
+        "log_line": 10505,
+        "counts": {
+          "passed": 101,
+          "deselected": 22612
+        },
+        "summary_line": 10504,
+        "summary": "101 passed, 22612 deselected in 66.67s (0:01:06)"
+      },
+      {
+        "job": "Tests (shard 10)",
+        "name": "node-tests",
+        "seconds": 0.76,
+        "result": 0,
+        "log_line": 10564,
+        "counts": {
+          "passed": 32
+        },
+        "summary_line": 10558
+      },
+      {
+        "job": "Tests (shard 2)",
+        "name": "pytest-parallel",
+        "seconds": 136.59,
+        "result": 0,
+        "log_line": 11394,
+        "counts": {
+          "passed": 928
+        },
+        "summary_line": 11393,
+        "summary": "928 passed in 130.64s (0:02:10)"
+      },
+      {
+        "job": "Tests (shard 2)",
+        "name": "pytest-serial",
+        "seconds": 75.98,
+        "result": 0,
+        "log_line": 11414,
+        "counts": {
+          "passed": 90,
+          "deselected": 22623
+        },
+        "summary_line": 11413,
+        "summary": "90 passed, 22623 deselected in 67.10s (0:01:07)"
+      },
+      {
+        "job": "Tests (shard 2)",
+        "name": "node-tests",
+        "seconds": 0.98,
+        "result": 0,
+        "log_line": 11463,
+        "counts": {
+          "passed": 24
+        },
+        "summary_line": 11457
+      },
+      {
+        "job": "Tests (shard 11)",
+        "name": "pytest-parallel",
+        "seconds": 143.04,
+        "result": 0,
+        "log_line": 12295,
+        "counts": {
+          "passed": 994
+        },
+        "summary_line": 12294,
+        "summary": "994 passed in 137.00s (0:02:17)"
+      },
+      {
+        "job": "Tests (shard 11)",
+        "name": "pytest-serial",
+        "seconds": 98.64,
+        "result": 0,
+        "log_line": 12315,
+        "counts": {
+          "passed": 111,
+          "deselected": 22602
+        },
+        "summary_line": 12314,
+        "summary": "111 passed, 22602 deselected in 90.30s (0:01:30)"
+      },
+      {
+        "job": "Tests (shard 11)",
+        "name": "node-tests",
+        "seconds": 0.88,
+        "result": 0,
+        "log_line": 12385,
+        "counts": {
+          "passed": 41
+        },
+        "summary_line": 12379
+      },
+      {
+        "job": "Tests (shard 18)",
+        "name": "pytest-parallel",
+        "seconds": 153.13,
+        "result": 0,
+        "log_line": 13218,
+        "counts": {
+          "passed": 1024
+        },
+        "summary_line": 13217,
+        "summary": "1024 passed in 147.59s (0:02:27)"
+      },
+      {
+        "job": "Tests (shard 18)",
+        "name": "pytest-serial",
+        "seconds": 91.74,
+        "result": 0,
+        "log_line": 13238,
+        "counts": {
+          "passed": 116,
+          "deselected": 22597
+        },
+        "summary_line": 13237,
+        "summary": "116 passed, 22597 deselected in 83.52s (0:01:23)"
+      },
+      {
+        "job": "Tests (shard 18)",
+        "name": "node-tests",
+        "seconds": 0.29,
+        "result": 0,
+        "log_line": 13252,
+        "counts": {
+          "passed": 3
+        },
+        "summary_line": 13246
+      },
+      {
+        "job": "Tests (shard 6)",
+        "name": "pytest-parallel",
+        "seconds": 164.02,
+        "result": 0,
+        "log_line": 14091,
+        "counts": {
+          "passed": 983,
+          "warning": 1
+        },
+        "summary_line": 14090,
+        "summary": "983 passed, 1 warning in 158.62s (0:02:38)"
+      },
+      {
+        "job": "Tests (shard 6)",
+        "name": "pytest-serial",
+        "seconds": 90.7,
+        "result": 0,
+        "log_line": 14111,
+        "counts": {
+          "passed": 92,
+          "deselected": 22621
+        },
+        "summary_line": 14110,
+        "summary": "92 passed, 22621 deselected in 83.09s (0:01:23)"
+      },
+      {
+        "job": "Tests (shard 6)",
+        "name": "node-tests",
+        "seconds": 0.88,
+        "result": 0,
+        "log_line": 14155,
+        "counts": {
+          "passed": 23
+        },
+        "summary_line": 14149
+      },
+      {
+        "job": "Tests (shard 7)",
+        "name": "pytest-parallel",
+        "seconds": 157.53,
+        "result": 0,
+        "log_line": 14988,
+        "counts": {
+          "passed": 1044
+        },
+        "summary_line": 14987,
+        "summary": "1044 passed in 151.98s (0:02:31)"
+      },
+      {
+        "job": "Tests (shard 7)",
+        "name": "pytest-serial",
+        "seconds": 86.96,
+        "result": 0,
+        "log_line": 15008,
+        "counts": {
+          "passed": 105,
+          "deselected": 22608
+        },
+        "summary_line": 15007,
+        "summary": "105 passed, 22608 deselected in 79.30s (0:01:19)"
+      },
+      {
+        "job": "Tests (shard 7)",
+        "name": "node-tests",
+        "seconds": 0.9,
+        "result": 0,
+        "log_line": 15057,
+        "counts": {
+          "passed": 26
+        },
+        "summary_line": 15051
+      },
+      {
+        "job": "Tests (shard 15)",
+        "name": "pytest-parallel",
+        "seconds": 166.44,
+        "result": 0,
+        "log_line": 15890,
+        "counts": {
+          "passed": 989
+        },
+        "summary_line": 15889,
+        "summary": "989 passed in 160.95s (0:02:40)"
+      },
+      {
+        "job": "Tests (shard 15)",
+        "name": "pytest-serial",
+        "seconds": 127.84,
+        "result": 0,
+        "log_line": 15910,
+        "counts": {
+          "passed": 109,
+          "deselected": 22604
+        },
+        "summary_line": 15909,
+        "summary": "109 passed, 22604 deselected in 120.21s (0:02:00)"
+      },
+      {
+        "job": "Tests (shard 15)",
+        "name": "node-tests",
+        "seconds": 0.77,
+        "result": 0,
+        "log_line": 15970,
+        "counts": {
+          "passed": 33
+        },
+        "summary_line": 15964
+      },
+      {
+        "job": "Tests (shard 17)",
+        "name": "pytest-parallel",
+        "seconds": 123.11,
+        "result": 0,
+        "log_line": 16802,
+        "counts": {
+          "passed": 1022,
+          "skipped": 1
+        },
+        "summary_line": 16801,
+        "summary": "1022 passed, 1 skipped in 117.40s (0:01:57)"
+      },
+      {
+        "job": "Tests (shard 17)",
+        "name": "pytest-serial",
+        "seconds": 106.54,
+        "result": 0,
+        "log_line": 16822,
+        "counts": {
+          "passed": 112,
+          "deselected": 22601
+        },
+        "summary_line": 16821,
+        "summary": "112 passed, 22601 deselected in 98.21s (0:01:38)"
+      },
+      {
+        "job": "Tests (shard 17)",
+        "name": "node-tests",
+        "seconds": 0.92,
+        "result": 0,
+        "log_line": 16872,
+        "counts": {
+          "passed": 27
+        },
+        "summary_line": 16866
+      },
+      {
+        "job": "Tests (shard 16)",
+        "name": "pytest-parallel",
+        "seconds": 157.03,
+        "result": 0,
+        "log_line": 17710,
+        "counts": {
+          "passed": 974,
+          "warning": 1
+        },
+        "summary_line": 17709,
+        "summary": "974 passed, 1 warning in 151.34s (0:02:31)"
+      },
+      {
+        "job": "Tests (shard 16)",
+        "name": "pytest-serial",
+        "seconds": 77.07,
+        "result": 0,
+        "log_line": 17730,
+        "counts": {
+          "passed": 91,
+          "deselected": 22622
+        },
+        "summary_line": 17729,
+        "summary": "91 passed, 22622 deselected in 68.67s (0:01:08)"
+      },
+      {
+        "job": "Tests (shard 16)",
+        "name": "node-tests",
+        "seconds": 0.65,
+        "result": 0,
+        "log_line": 17767,
+        "counts": {
+          "passed": 18
+        },
+        "summary_line": 17761
+      },
+      {
+        "job": "Tests (shard 8)",
+        "name": "pytest-parallel",
+        "seconds": 157.79,
+        "result": 0,
+        "log_line": 18683,
+        "counts": {
+          "passed": 1039,
+          "warnings": 5
+        },
+        "summary_line": 18682,
+        "summary": "1039 passed, 5 warnings in 152.05s (0:02:32)"
+      },
+      {
+        "job": "Tests (shard 8)",
+        "name": "pytest-serial",
+        "seconds": 94.13,
+        "result": 0,
+        "log_line": 18703,
+        "counts": {
+          "passed": 89,
+          "deselected": 22624
+        },
+        "summary_line": 18702,
+        "summary": "89 passed, 22624 deselected in 86.17s (0:01:26)"
+      },
+      {
+        "job": "Tests (shard 8)",
+        "name": "node-tests",
+        "seconds": 0.76,
+        "result": 0,
+        "log_line": 18742,
+        "counts": {
+          "passed": 20
+        },
+        "summary_line": 18736
+      },
+      {
+        "job": "Tests (shard 1)",
+        "name": "pytest-parallel",
+        "seconds": 153.88,
+        "result": 0,
+        "log_line": 19582,
+        "counts": {
+          "passed": 1045,
+          "skipped": 1,
+          "warning": 1
+        },
+        "summary_line": 19581,
+        "summary": "1045 passed, 1 skipped, 1 warning in 148.44s (0:02:28)"
+      },
+      {
+        "job": "Tests (shard 1)",
+        "name": "pytest-serial",
+        "seconds": 78.28,
+        "result": 0,
+        "log_line": 19602,
+        "counts": {
+          "passed": 95,
+          "deselected": 22618
+        },
+        "summary_line": 19601,
+        "summary": "95 passed, 22618 deselected in 70.51s (0:01:10)"
+      },
+      {
+        "job": "Tests (shard 1)",
+        "name": "node-tests",
+        "seconds": 0.58,
+        "result": 0,
+        "log_line": 19644,
+        "counts": {
+          "passed": 23
+        },
+        "summary_line": 19638
+      },
+      {
+        "job": "Tests (shard 20)",
+        "name": "pytest-parallel",
+        "seconds": 180.81,
+        "result": 0,
+        "log_line": 20476,
+        "counts": {
+          "passed": 1000,
+          "skipped": 2
+        },
+        "summary_line": 20475,
+        "summary": "1000 passed, 2 skipped in 175.17s (0:02:55)"
+      },
+      {
+        "job": "Tests (shard 20)",
+        "name": "pytest-serial",
+        "seconds": 73.58,
+        "result": 0,
+        "log_line": 20496,
+        "counts": {
+          "passed": 102,
+          "deselected": 22611
+        },
+        "summary_line": 20495,
+        "summary": "102 passed, 22611 deselected in 65.70s (0:01:05)"
+      },
+      {
+        "job": "Tests (shard 20)",
+        "name": "node-tests",
+        "seconds": 0.45,
+        "result": 0,
+        "log_line": 20525,
+        "counts": {
+          "passed": 14
+        },
+        "summary_line": 20519
+      },
+      {
+        "job": "Tests (shard 9)",
+        "name": "pytest-parallel",
+        "seconds": 122.24,
+        "result": 0,
+        "log_line": 21359,
+        "counts": {
+          "passed": 980
+        },
+        "summary_line": 21358,
+        "summary": "980 passed in 117.55s (0:01:57)"
+      },
+      {
+        "job": "Tests (shard 9)",
+        "name": "pytest-serial",
+        "seconds": 59.54,
+        "result": 0,
+        "log_line": 21379,
+        "counts": {
+          "passed": 86,
+          "deselected": 22627
+        },
+        "summary_line": 21378,
+        "summary": "86 passed, 22627 deselected in 53.11s"
+      },
+      {
+        "job": "Tests (shard 9)",
+        "name": "node-tests",
+        "seconds": 0.5,
+        "result": 0,
+        "log_line": 21409,
+        "counts": {
+          "passed": 13
+        },
+        "summary_line": 21403
+      },
+      {
+        "job": "Tests (shard 14)",
+        "name": "pytest-parallel",
+        "seconds": 142.83,
+        "result": 0,
+        "log_line": 22245,
+        "counts": {
+          "passed": 1026,
+          "skipped": 2
+        },
+        "summary_line": 22244,
+        "summary": "1026 passed, 2 skipped in 137.01s (0:02:17)"
+      },
+      {
+        "job": "Tests (shard 14)",
+        "name": "pytest-serial",
+        "seconds": 69.34,
+        "result": 0,
+        "log_line": 22265,
+        "counts": {
+          "passed": 97,
+          "deselected": 22616
+        },
+        "summary_line": 22264,
+        "summary": "97 passed, 22616 deselected in 61.29s (0:01:01)"
+      },
+      {
+        "job": "Tests (shard 14)",
+        "name": "node-tests",
+        "seconds": 0.85,
+        "result": 0,
+        "log_line": 22321,
+        "counts": {
+          "passed": 31
+        },
+        "summary_line": 22315
+      },
+      {
+        "job": "Tests (shard 13)",
+        "name": "pytest-parallel",
+        "seconds": 155.18,
+        "result": 0,
+        "log_line": 23165,
+        "counts": {
+          "passed": 996,
+          "warnings": 2
+        },
+        "summary_line": 23164,
+        "summary": "996 passed, 2 warnings in 149.53s (0:02:29)"
+      },
+      {
+        "job": "Tests (shard 13)",
+        "name": "pytest-serial",
+        "seconds": 118.37,
+        "result": 0,
+        "log_line": 23185,
+        "counts": {
+          "passed": 100,
+          "deselected": 22613
+        },
+        "summary_line": 23184,
+        "summary": "100 passed, 22613 deselected in 109.95s (0:01:49)"
+      },
+      {
+        "job": "Tests (shard 13)",
+        "name": "node-tests",
+        "seconds": 0.95,
+        "result": 0,
+        "log_line": 23237,
+        "counts": {
+          "passed": 29
+        },
+        "summary_line": 23231
+      },
+      {
+        "job": "Tests (shard 12)",
+        "name": "pytest-parallel",
+        "seconds": 141.45,
+        "result": 0,
+        "log_line": 24067,
+        "counts": {
+          "passed": 949
+        },
+        "summary_line": 24066,
+        "summary": "949 passed in 135.93s (0:02:15)"
+      },
+      {
+        "job": "Tests (shard 12)",
+        "name": "pytest-serial",
+        "seconds": 91.47,
+        "result": 0,
+        "log_line": 24087,
+        "counts": {
+          "passed": 101,
+          "deselected": 22612
+        },
+        "summary_line": 24086,
+        "summary": "101 passed, 22612 deselected in 83.49s (0:01:23)"
+      },
+      {
+        "job": "Tests (shard 12)",
+        "name": "node-tests",
+        "seconds": 1.19,
+        "result": 0,
+        "log_line": 24164,
+        "counts": {
+          "passed": 44
+        },
+        "summary_line": 24158
+      }
+    ],
+    "skips": {
+      "total": 8,
+      "by_reason": {
+        "workflow prose is not an active implementation authority": 7,
+        "attached ZIP is local-only; committed source-layer integrity remains mandatory": 1
+      },
+      "exact_entries": [
+        {
+          "job": "Tests (shard 10)",
+          "log_line": 10483,
+          "count": 2,
+          "file": "tests/st1503/test_negative_cases.py",
+          "file_line": 585,
+          "reason": "workflow prose is not an active implementation authority"
+        },
+        {
+          "job": "Tests (shard 17)",
+          "log_line": 16800,
+          "count": 1,
+          "file": "tests/st1503/test_negative_cases.py",
+          "file_line": 585,
+          "reason": "workflow prose is not an active implementation authority"
+        },
+        {
+          "job": "Tests (shard 1)",
+          "log_line": 19580,
+          "count": 1,
+          "file": "tests/st1503/test_negative_cases.py",
+          "file_line": 585,
+          "reason": "workflow prose is not an active implementation authority"
+        },
+        {
+          "job": "Tests (shard 20)",
+          "log_line": 20474,
+          "count": 2,
+          "file": "tests/st1503/test_negative_cases.py",
+          "file_line": 585,
+          "reason": "workflow prose is not an active implementation authority"
+        },
+        {
+          "job": "Tests (shard 14)",
+          "log_line": 22242,
+          "count": 1,
+          "file": "tests/raos_v2/test_source_import.py",
+          "file_line": 42,
+          "reason": "attached ZIP is local-only; committed source-layer integrity remains mandatory"
+        },
+        {
+          "job": "Tests (shard 14)",
+          "log_line": 22243,
+          "count": 1,
+          "file": "tests/st1503/test_negative_cases.py",
+          "file_line": 585,
+          "reason": "workflow prose is not an active implementation authority"
+        }
+      ],
+      "bubblewrap_skips": 0
+    },
+    "postgresql": {
+      "formal_tst_008": "NOT_EXECUTED",
+      "mode": "test",
+      "runtime": "LOCAL_PASS",
+      "server_version_num": "180004",
+      "status": "PASS",
+      "story_id": "ST-0201",
+      "log_line": 4426,
+      "actual_version": "18.4",
+      "data_passed": 348,
+      "data_skipped": 0,
+      "summary_log_line": 4456,
+      "scope": "Actual CI test-mode runtime. Formal TST-008 explicitly NOT_EXECUTED."
+    },
+    "php": {
+      "receipts": [
+        {
+          "artifact_kind": "source",
+          "status": "PASSED_LOCAL_CI_STUB",
+          "evidence_scope": "LOCAL_CI_NOT_WORDPRESS_PRODUCTION",
+          "php_version": "7.4.33",
+          "php_sapi": "cli",
+          "assertion_count": 85,
+          "plugin_sha256": "b7ebed3ffabd6a5067707ec898e15901382e1782459f5087a3798b27fdc970b1",
+          "log_line": 2947
+        },
+        {
+          "artifact_kind": "generated",
+          "status": "PASSED_LOCAL_CI_STUB",
+          "evidence_scope": "LOCAL_CI_NOT_WORDPRESS_PRODUCTION",
+          "php_version": "7.4.33",
+          "php_sapi": "cli",
+          "assertion_count": 85,
+          "plugin_sha256": "b7ebed3ffabd6a5067707ec898e15901382e1782459f5087a3798b27fdc970b1",
+          "log_line": 2951
+        }
+      ],
+      "source_generated_bytes_match": true,
+      "scope": "Actual CLI assertions, LOCAL_CI_NOT_WORDPRESS_PRODUCTION"
+    },
+    "isolation": {
+      "bubblewrap_setup_shards": 20,
+      "versions": [
+        {
+          "job": "Tests (shard 5)",
+          "version": "0.6.1",
+          "log_line": 6580
+        },
+        {
+          "job": "Tests (shard 4)",
+          "version": "0.6.1",
+          "log_line": 7485
+        },
+        {
+          "job": "Tests (shard 3)",
+          "version": "0.6.1",
+          "log_line": 8401
+        },
+        {
+          "job": "Tests (shard 19)",
+          "version": "0.6.1",
+          "log_line": 9297
+        },
+        {
+          "job": "Tests (shard 10)",
+          "version": "0.6.1",
+          "log_line": 10222
+        },
+        {
+          "job": "Tests (shard 2)",
+          "version": "0.6.1",
+          "log_line": 11133
+        },
+        {
+          "job": "Tests (shard 11)",
+          "version": "0.6.1",
+          "log_line": 12031
+        },
+        {
+          "job": "Tests (shard 18)",
+          "version": "0.6.1",
+          "log_line": 12954
+        },
+        {
+          "job": "Tests (shard 6)",
+          "version": "0.6.1",
+          "log_line": 13826
+        },
+        {
+          "job": "Tests (shard 7)",
+          "version": "0.6.1",
+          "log_line": 14726
+        },
+        {
+          "job": "Tests (shard 15)",
+          "version": "0.6.1",
+          "log_line": 15625
+        },
+        {
+          "job": "Tests (shard 17)",
+          "version": "0.6.1",
+          "log_line": 16538
+        },
+        {
+          "job": "Tests (shard 16)",
+          "version": "0.6.1",
+          "log_line": 17440
+        },
+        {
+          "job": "Tests (shard 8)",
+          "version": "0.6.1",
+          "log_line": 18335
+        },
+        {
+          "job": "Tests (shard 1)",
+          "version": "0.6.1",
+          "log_line": 19310
+        },
+        {
+          "job": "Tests (shard 20)",
+          "version": "0.6.1",
+          "log_line": 20215
+        },
+        {
+          "job": "Tests (shard 9)",
+          "version": "0.6.1",
+          "log_line": 21096
+        },
+        {
+          "job": "Tests (shard 14)",
+          "version": "0.6.1",
+          "log_line": 21977
+        },
+        {
+          "job": "Tests (shard 13)",
+          "version": "0.6.1",
+          "log_line": 22892
+        },
+        {
+          "job": "Tests (shard 12)",
+          "version": "0.6.1",
+          "log_line": 23806
+        }
+      ],
+      "bubblewrap_skips": 0,
+      "scope": "bubblewrap 0.6.1 installed and version verified on all 20 shard runners. All planned test partitions completed; no isolation-related skip in complete pytest skip summaries. Log output is aggregate, not a separate per-test isolation certificate."
+    },
+    "static": {
+      "pyright": [
+        {
+          "errors": 0,
+          "warnings": 0,
+          "information": 0,
+          "log_line": 3478
+        }
+      ],
+      "source_counts": [
+        {
+          "message": "Success: no issues found in 627 source files",
+          "log_line": 3451
+        }
+      ],
+      "owner_checks_passed": 146,
+      "owners": [
+        {
+          "job": "Static",
+          "name": "build_editorial_measurement_v1",
+          "seconds": 0.07,
+          "result": 0,
+          "log_line": 3480
+        },
+        {
+          "job": "Static",
+          "name": "build_editorial_portfolio_v3",
+          "seconds": 0.1,
+          "result": 0,
+          "log_line": 3482
+        },
+        {
+          "job": "Static",
+          "name": "build_editorial_v3_theme_navigation",
+          "seconds": 0.05,
+          "result": 0,
+          "log_line": 3484
+        },
+        {
+          "job": "Static",
+          "name": "build_google_live_runtime_v1",
+          "seconds": 0.06,
+          "result": 0,
+          "log_line": 3485
+        },
+        {
+          "job": "Static",
+          "name": "build_local_compose",
+          "seconds": 0.8,
+          "result": 0,
+          "log_line": 3487
+        },
+        {
+          "job": "Static",
+          "name": "build_raos_v2_successor",
+          "seconds": 1.26,
+          "result": 0,
+          "log_line": 3489
+        },
+        {
+          "job": "Static",
+          "name": "build_st0002_revision",
+          "seconds": 1.6,
+          "result": 0,
+          "log_line": 3491
+        },
+        {
+          "job": "Static",
+          "name": "build_st0003_revision",
+          "seconds": 3.88,
+          "result": 0,
+          "log_line": 3493
+        },
+        {
+          "job": "Static",
+          "name": "build_st0004_revision",
+          "seconds": 5.92,
+          "result": 0,
+          "log_line": 3495
+        },
+        {
+          "job": "Static",
+          "name": "build_st0005_status",
+          "seconds": 4.89,
+          "result": 0,
+          "log_line": 3497
+        },
+        {
+          "job": "Static",
+          "name": "build_st0006_decision_gates",
+          "seconds": 0.12,
+          "result": 0,
+          "log_line": 3499
+        },
+        {
+          "job": "Static",
+          "name": "build_st0104_contract_repository",
+          "seconds": 5.3,
+          "result": 0,
+          "log_line": 3501
+        },
+        {
+          "job": "Static",
+          "name": "build_st0105_generated_contracts",
+          "seconds": 9.09,
+          "result": 0,
+          "log_line": 3503
+        },
+        {
+          "job": "Static",
+          "name": "build_st0106_reviewed_findings_rebind",
+          "seconds": 0.11,
+          "result": 0,
+          "log_line": 3505
+        },
+        {
+          "job": "Static",
+          "name": "build_st0107_pr_governance",
+          "seconds": 0.23,
+          "result": 0,
+          "log_line": 3507
+        },
+        {
+          "job": "Static",
+          "name": "build_st0201_postgres_service",
+          "seconds": 0.8,
+          "result": 0,
+          "log_line": 3509
+        },
+        {
+          "job": "Static",
+          "name": "build_st0203_queue_fake",
+          "seconds": 0.07,
+          "result": 0,
+          "log_line": 3511
+        },
+        {
+          "job": "Static",
+          "name": "build_st0204_config_loader",
+          "seconds": 0.26,
+          "result": 0,
+          "log_line": 3513
+        },
+        {
+          "job": "Static",
+          "name": "build_st0205_synthetic_data",
+          "seconds": 0.1,
+          "result": 0,
+          "log_line": 3515
+        },
+        {
+          "job": "Static",
+          "name": "build_st0301_migration_framework",
+          "seconds": 1.11,
+          "result": 0,
+          "log_line": 3517
+        },
+        {
+          "job": "Static",
+          "name": "build_st0302_foundation",
+          "seconds": 1.0,
+          "result": 0,
+          "log_line": 3519
+        },
+        {
+          "job": "Static",
+          "name": "build_st0303_iam_ops",
+          "seconds": 2.52,
+          "result": 0,
+          "log_line": 3521
+        },
+        {
+          "job": "Static",
+          "name": "build_st0304_domain_schemas",
+          "seconds": 2.82,
+          "result": 0,
+          "log_line": 3523
+        },
+        {
+          "job": "Static",
+          "name": "build_st0305_publication_analytics_finance",
+          "seconds": 7.88,
+          "result": 0,
+          "log_line": 3525
+        },
+        {
+          "job": "Static",
+          "name": "build_st0306_database_roles",
+          "seconds": 0.12,
+          "result": 0,
+          "log_line": 3527
+        },
+        {
+          "job": "Static",
+          "name": "build_st0307_migration_fixtures",
+          "seconds": 1.05,
+          "result": 0,
+          "log_line": 3529
+        },
+        {
+          "job": "Static",
+          "name": "build_st0308_persistence",
+          "seconds": 1.9,
+          "result": 0,
+          "log_line": 3531
+        },
+        {
+          "job": "Static",
+          "name": "build_st0308_persistence_boundary_reference",
+          "seconds": 0.12,
+          "result": 0,
+          "log_line": 3533
+        },
+        {
+          "job": "Static",
+          "name": "build_st0401_local_auth_runtime",
+          "seconds": 0.06,
+          "result": 0,
+          "log_line": 3535
+        },
+        {
+          "job": "Static",
+          "name": "build_st0402_local_step_up_runtime",
+          "seconds": 0.06,
+          "result": 0,
+          "log_line": 3537
+        },
+        {
+          "job": "Static",
+          "name": "build_st0403_authorization_runtime",
+          "seconds": 1.13,
+          "result": 0,
+          "log_line": 3538
+        },
+        {
+          "job": "Static",
+          "name": "build_st0406_secure_object_intake_runtime",
+          "seconds": 0.17,
+          "result": 0,
+          "log_line": 3539
+        },
+        {
+          "job": "Static",
+          "name": "build_st0502_item_search_runtime",
+          "seconds": 0.27,
+          "result": 0,
+          "log_line": 3540
+        },
+        {
+          "job": "Static",
+          "name": "build_st0503_catalog_normalization_runtime",
+          "seconds": 0.28,
+          "result": 0,
+          "log_line": 3541
+        },
+        {
+          "job": "Static",
+          "name": "build_st0504_product_identity_human_review_reference_plan",
+          "seconds": 0.24,
+          "result": 0,
+          "log_line": 3543
+        },
+        {
+          "job": "Static",
+          "name": "build_st0504_product_identity_runtime",
+          "seconds": 0.3,
+          "result": 0,
+          "log_line": 3544
+        },
+        {
+          "job": "Static",
+          "name": "build_st0505_rakuten_live_smoke_reference_plan",
+          "seconds": 0.32,
+          "result": 0,
+          "log_line": 3546
+        },
+        {
+          "job": "Static",
+          "name": "build_st0601_artifact_registry_runtime",
+          "seconds": 0.06,
+          "result": 0,
+          "log_line": 3547
+        },
+        {
+          "job": "Static",
+          "name": "build_st0602_fact_extraction_runtime",
+          "seconds": 0.34,
+          "result": 0,
+          "log_line": 3548
+        },
+        {
+          "job": "Static",
+          "name": "build_st0602_fact_extraction_validation_reference_plan",
+          "seconds": 0.21,
+          "result": 0,
+          "log_line": 3550
+        },
+        {
+          "job": "Static",
+          "name": "build_st0603_fact_conflict_review_reference_plan",
+          "seconds": 0.22,
+          "result": 0,
+          "log_line": 3552
+        },
+        {
+          "job": "Static",
+          "name": "build_st0603_fact_conflict_runtime",
+          "seconds": 0.36,
+          "result": 0,
+          "log_line": 3553
+        },
+        {
+          "job": "Static",
+          "name": "build_st0604_source_packet_lifecycle_reference_plan",
+          "seconds": 0.23,
+          "result": 0,
+          "log_line": 3555
+        },
+        {
+          "job": "Static",
+          "name": "build_st0604_source_packet_lifecycle_runtime",
+          "seconds": 0.05,
+          "result": 0,
+          "log_line": 3556
+        },
+        {
+          "job": "Static",
+          "name": "build_st0605_claim_evidence_coverage_reference_plan",
+          "seconds": 0.27,
+          "result": 0,
+          "log_line": 3558
+        },
+        {
+          "job": "Static",
+          "name": "build_st0605_claim_evidence_runtime",
+          "seconds": 0.33,
+          "result": 0,
+          "log_line": 3560
+        },
+        {
+          "job": "Static",
+          "name": "build_st0606_evidence_workspace_v2",
+          "seconds": 0.31,
+          "result": 0,
+          "log_line": 3561
+        },
+        {
+          "job": "Static",
+          "name": "build_st0701_ai_registry",
+          "seconds": 0.42,
+          "result": 0,
+          "log_line": 3563
+        },
+        {
+          "job": "Static",
+          "name": "build_st0702_context_pack_reference_plan",
+          "seconds": 0.27,
+          "result": 0,
+          "log_line": 3565
+        },
+        {
+          "job": "Static",
+          "name": "build_st0703_recorded_adapter",
+          "seconds": 0.14,
+          "result": 0,
+          "log_line": 3567
+        },
+        {
+          "job": "Static",
+          "name": "build_st0705_ai_output_validation_reference_plan",
+          "seconds": 0.35,
+          "result": 0,
+          "log_line": 3569
+        },
+        {
+          "job": "Static",
+          "name": "build_st0705_ai_output_validation_runtime",
+          "seconds": 0.46,
+          "result": 0,
+          "log_line": 3570
+        },
+        {
+          "job": "Static",
+          "name": "build_st0706_durable_ai_job_queue",
+          "seconds": 0.07,
+          "result": 0,
+          "log_line": 3572
+        },
+        {
+          "job": "Static",
+          "name": "build_st0707_evaluation_harness_runtime",
+          "seconds": 0.21,
+          "result": 0,
+          "log_line": 3573
+        },
+        {
+          "job": "Static",
+          "name": "build_st0708_openai_live_bounded_evaluation_reference_plan",
+          "seconds": 0.8,
+          "result": 0,
+          "log_line": 3575
+        },
+        {
+          "job": "Static",
+          "name": "build_st0709_ai_governance_workspace",
+          "seconds": 0.57,
+          "result": 0,
+          "log_line": 3576
+        },
+        {
+          "job": "Static",
+          "name": "build_st0801_content_ast",
+          "seconds": 0.38,
+          "result": 0,
+          "log_line": 3578
+        },
+        {
+          "job": "Static",
+          "name": "build_st0803_comparison_validation_runtime",
+          "seconds": 0.35,
+          "result": 0,
+          "log_line": 3580
+        },
+        {
+          "job": "Static",
+          "name": "build_st0804_recommendation_runtime",
+          "seconds": 0.38,
+          "result": 0,
+          "log_line": 3582
+        },
+        {
+          "job": "Static",
+          "name": "build_st0805_policy_runtime",
+          "seconds": 1.66,
+          "result": 0,
+          "log_line": 3584
+        },
+        {
+          "job": "Static",
+          "name": "build_st0806_ai_draft_integration_v2",
+          "seconds": 1.49,
+          "result": 0,
+          "log_line": 3586
+        },
+        {
+          "job": "Static",
+          "name": "build_st0807_seo_render_runtime",
+          "seconds": 1.58,
+          "result": 0,
+          "log_line": 3587
+        },
+        {
+          "job": "Static",
+          "name": "build_st0901_review_completion_v2",
+          "seconds": 1.71,
+          "result": 0,
+          "log_line": 3589
+        },
+        {
+          "job": "Static",
+          "name": "build_st0902_final_approval_reference_plan",
+          "seconds": 1.81,
+          "result": 0,
+          "log_line": 3591
+        },
+        {
+          "job": "Static",
+          "name": "build_st0902_final_approval_runtime_v2",
+          "seconds": 1.97,
+          "result": 0,
+          "log_line": 3593
+        },
+        {
+          "job": "Static",
+          "name": "build_st0903_publication_snapshot_reference_plan",
+          "seconds": 0.48,
+          "result": 0,
+          "log_line": 3595
+        },
+        {
+          "job": "Static",
+          "name": "build_st0903_publication_snapshot_runtime_v2",
+          "seconds": 2.44,
+          "result": 0,
+          "log_line": 3597
+        },
+        {
+          "job": "Static",
+          "name": "build_st0904_public_projection_reference_plan",
+          "seconds": 1.75,
+          "result": 0,
+          "log_line": 3599
+        },
+        {
+          "job": "Static",
+          "name": "build_st0904_public_projection_runtime_v2",
+          "seconds": 2.6,
+          "result": 0,
+          "log_line": 3601
+        },
+        {
+          "job": "Static",
+          "name": "build_st0905_publication_commands_reference_plan",
+          "seconds": 2.14,
+          "result": 0,
+          "log_line": 3603
+        },
+        {
+          "job": "Static",
+          "name": "build_st0905_publication_commands_runtime_v2",
+          "seconds": 5.28,
+          "result": 0,
+          "log_line": 3605
+        },
+        {
+          "job": "Static",
+          "name": "build_st0906_publication_review_workspace_v2",
+          "seconds": 0.09,
+          "result": 0,
+          "log_line": 3606
+        },
+        {
+          "job": "Static",
+          "name": "build_st1001_public_app_shell",
+          "seconds": 0.24,
+          "result": 0,
+          "log_line": 3608
+        },
+        {
+          "job": "Static",
+          "name": "build_st1002_public_article_renderer",
+          "seconds": 0.21,
+          "result": 0,
+          "log_line": 3610
+        },
+        {
+          "job": "Static",
+          "name": "build_st1004_disclosure_affiliate_runtime",
+          "seconds": 0.21,
+          "result": 0,
+          "log_line": 3611
+        },
+        {
+          "job": "Static",
+          "name": "build_st1006_public_performance_runtime",
+          "seconds": 0.24,
+          "result": 0,
+          "log_line": 3612
+        },
+        {
+          "job": "Static",
+          "name": "build_st1102_article_workspace_v2",
+          "seconds": 1.46,
+          "result": 0,
+          "log_line": 3614
+        },
+        {
+          "job": "Static",
+          "name": "build_st1103_freshness_operations_workspace",
+          "seconds": 0.13,
+          "result": 0,
+          "log_line": 3616
+        },
+        {
+          "job": "Static",
+          "name": "build_st1104_analytics_finance_dashboard",
+          "seconds": 0.53,
+          "result": 0,
+          "log_line": 3618
+        },
+        {
+          "job": "Static",
+          "name": "build_st1105_admin_visual_accessibility",
+          "seconds": 0.12,
+          "result": 0,
+          "log_line": 3620
+        },
+        {
+          "job": "Static",
+          "name": "build_st1201_durable_event_store",
+          "seconds": 0.07,
+          "result": 0,
+          "log_line": 3621
+        },
+        {
+          "job": "Static",
+          "name": "build_st1202_public_event_instrumentation",
+          "seconds": 0.25,
+          "result": 0,
+          "log_line": 3622
+        },
+        {
+          "job": "Static",
+          "name": "build_st1203_search_console_recorded_adapter",
+          "seconds": 0.19,
+          "result": 0,
+          "log_line": 3624
+        },
+        {
+          "job": "Static",
+          "name": "build_st1204_ga4_recorded_adapter",
+          "seconds": 0.26,
+          "result": 0,
+          "log_line": 3626
+        },
+        {
+          "job": "Static",
+          "name": "build_st1205_kpi_read_model_reference_plan",
+          "seconds": 0.46,
+          "result": 0,
+          "log_line": 3628
+        },
+        {
+          "job": "Static",
+          "name": "build_st1206_keyword_rank_import",
+          "seconds": 0.45,
+          "result": 0,
+          "log_line": 3630
+        },
+        {
+          "job": "Static",
+          "name": "build_st1302_provider_fact_commit_recorded",
+          "seconds": 0.46,
+          "result": 0,
+          "log_line": 3632
+        },
+        {
+          "job": "Static",
+          "name": "build_st1302_provider_fact_commit_reference_plan",
+          "seconds": 0.48,
+          "result": 0,
+          "log_line": 3634
+        },
+        {
+          "job": "Static",
+          "name": "build_st1303_attribution_engine",
+          "seconds": 0.44,
+          "result": 0,
+          "log_line": 3636
+        },
+        {
+          "job": "Static",
+          "name": "build_st1303_attribution_engine_reference_plan",
+          "seconds": 0.39,
+          "result": 0,
+          "log_line": 3638
+        },
+        {
+          "job": "Static",
+          "name": "build_st1304_cost_unit_economics",
+          "seconds": 0.47,
+          "result": 0,
+          "log_line": 3640
+        },
+        {
+          "job": "Static",
+          "name": "build_st1304_cost_unit_economics_reference_plan",
+          "seconds": 0.4,
+          "result": 0,
+          "log_line": 3642
+        },
+        {
+          "job": "Static",
+          "name": "build_st1305_finance_reconciliation",
+          "seconds": 0.49,
+          "result": 0,
+          "log_line": 3644
+        },
+        {
+          "job": "Static",
+          "name": "build_st1305_finance_reconciliation_reference_plan",
+          "seconds": 0.37,
+          "result": 0,
+          "log_line": 3646
+        },
+        {
+          "job": "Static",
+          "name": "build_st1403_refresh_proposal_runtime",
+          "seconds": 1.57,
+          "result": 0,
+          "log_line": 3647
+        },
+        {
+          "job": "Static",
+          "name": "build_st1404_durable_job_runtime",
+          "seconds": 0.09,
+          "result": 0,
+          "log_line": 3648
+        },
+        {
+          "job": "Static",
+          "name": "build_st1407_external_policy_registry_reference_plan",
+          "seconds": 0.36,
+          "result": 0,
+          "log_line": 3650
+        },
+        {
+          "job": "Static",
+          "name": "build_st1407_external_policy_registry_runtime",
+          "seconds": 0.36,
+          "result": 0,
+          "log_line": 3652
+        },
+        {
+          "job": "Static",
+          "name": "build_st1501_terraform_foundation",
+          "seconds": 0.37,
+          "result": 0,
+          "log_line": 3654
+        },
+        {
+          "job": "Static",
+          "name": "build_st1502_data_services",
+          "seconds": 0.42,
+          "result": 0,
+          "log_line": 3656
+        },
+        {
+          "job": "Static",
+          "name": "build_st1503_compute_edge",
+          "seconds": 0.43,
+          "result": 0,
+          "log_line": 3658
+        },
+        {
+          "job": "Static",
+          "name": "build_st1504_github_oidc",
+          "seconds": 0.43,
+          "result": 0,
+          "log_line": 3660
+        },
+        {
+          "job": "Static",
+          "name": "build_st1505_staging_deployment",
+          "seconds": 1.96,
+          "result": 0,
+          "log_line": 3662
+        },
+        {
+          "job": "Static",
+          "name": "build_st1506_production_canary_runtime",
+          "seconds": 0.54,
+          "result": 0,
+          "log_line": 3664
+        },
+        {
+          "job": "Static",
+          "name": "build_st1506_production_deployment",
+          "seconds": 3.59,
+          "result": 0,
+          "log_line": 3666
+        },
+        {
+          "job": "Static",
+          "name": "build_st1506_wordpress_operator",
+          "seconds": 0.12,
+          "result": 0,
+          "log_line": 3668
+        },
+        {
+          "job": "Static",
+          "name": "build_st1602_slo_alert_reference_plan",
+          "seconds": 0.26,
+          "result": 0,
+          "log_line": 3670
+        },
+        {
+          "job": "Static",
+          "name": "build_st1602_slo_alert_runtime",
+          "seconds": 0.27,
+          "result": 0,
+          "log_line": 3672
+        },
+        {
+          "job": "Static",
+          "name": "build_st1603_security_verification_pack",
+          "seconds": 0.26,
+          "result": 0,
+          "log_line": 3674
+        },
+        {
+          "job": "Static",
+          "name": "build_st1604_local_performance_load",
+          "seconds": 0.4,
+          "result": 0,
+          "log_line": 3676
+        },
+        {
+          "job": "Static",
+          "name": "build_st1604_performance_load_reference_plan",
+          "seconds": 0.4,
+          "result": 0,
+          "log_line": 3678
+        },
+        {
+          "job": "Static",
+          "name": "build_st1605_failure_injection_drill",
+          "seconds": 0.56,
+          "result": 0,
+          "log_line": 3680
+        },
+        {
+          "job": "Static",
+          "name": "build_st1606_backup_restore_drill",
+          "seconds": 0.77,
+          "result": 0,
+          "log_line": 3682
+        },
+        {
+          "job": "Static",
+          "name": "build_st1607_gate_evidence_pack",
+          "seconds": 0.07,
+          "result": 0,
+          "log_line": 3683
+        },
+        {
+          "job": "Static",
+          "name": "build_st1701_business_inputs",
+          "seconds": 0.08,
+          "result": 0,
+          "log_line": 3685
+        },
+        {
+          "job": "Static",
+          "name": "build_st1702_category_fixture_runtime",
+          "seconds": 0.08,
+          "result": 0,
+          "log_line": 3687
+        },
+        {
+          "job": "Static",
+          "name": "build_st1702_category_fixtures_rules_reference_plan",
+          "seconds": 0.07,
+          "result": 0,
+          "log_line": 3689
+        },
+        {
+          "job": "Static",
+          "name": "build_st1703_low_cost_publication_pilot",
+          "seconds": 0.06,
+          "result": 0,
+          "log_line": 3691
+        },
+        {
+          "job": "Static",
+          "name": "build_st1704_affiliate_learning",
+          "seconds": 0.05,
+          "result": 0,
+          "log_line": 3693
+        },
+        {
+          "job": "Static",
+          "name": "build_st1704_at003_recovery_operator",
+          "seconds": 0.05,
+          "result": 0,
+          "log_line": 3695
+        },
+        {
+          "job": "Static",
+          "name": "build_st1704_owner_local_pilot",
+          "seconds": 0.05,
+          "result": 0,
+          "log_line": 3697
+        },
+        {
+          "job": "Static",
+          "name": "build_st1704_portfolio_source_packets",
+          "seconds": 0.08,
+          "result": 0,
+          "log_line": 3698
+        },
+        {
+          "job": "Static",
+          "name": "build_st1704_product_safety_manufacturer_plan",
+          "seconds": 0.08,
+          "result": 0,
+          "log_line": 3700
+        },
+        {
+          "job": "Static",
+          "name": "build_st1704_rakuten_capture_manifest",
+          "seconds": 0.04,
+          "result": 0,
+          "log_line": 3702
+        },
+        {
+          "job": "Static",
+          "name": "build_st1704_reader_claim_coverage",
+          "seconds": 4.8,
+          "result": 0,
+          "log_line": 3704
+        },
+        {
+          "job": "Static",
+          "name": "build_st1704_reliability_product_selection_v1",
+          "seconds": 0.45,
+          "result": 0,
+          "log_line": 3706
+        },
+        {
+          "job": "Static",
+          "name": "build_st1704_self_hosted_editorial_manifest",
+          "seconds": 4.9,
+          "result": 0,
+          "log_line": 3708
+        },
+        {
+          "job": "Static",
+          "name": "build_st1704_theme_assets",
+          "seconds": 0.07,
+          "result": 0,
+          "log_line": 3710
+        },
+        {
+          "job": "Static",
+          "name": "build_st1704_wordpress_publication_operator_v2",
+          "seconds": 0.07,
+          "result": 0,
+          "log_line": 3712
+        },
+        {
+          "job": "Static",
+          "name": "build_st1705_pilot_signoff",
+          "seconds": 0.29,
+          "result": 0,
+          "log_line": 3713
+        },
+        {
+          "job": "Static",
+          "name": "build_st1801_portfolio_expansion",
+          "seconds": 0.27,
+          "result": 0,
+          "log_line": 3714
+        },
+        {
+          "job": "Static",
+          "name": "build_st1802_gate1_decision",
+          "seconds": 0.27,
+          "result": 0,
+          "log_line": 3715
+        },
+        {
+          "job": "Static",
+          "name": "build_st1803_gate2_observation",
+          "seconds": 0.1,
+          "result": 0,
+          "log_line": 3717
+        },
+        {
+          "job": "Static",
+          "name": "build_st1804_gate3_economics",
+          "seconds": 0.25,
+          "result": 0,
+          "log_line": 3719
+        },
+        {
+          "job": "Static",
+          "name": "build_st1805_portfolio_decision",
+          "seconds": 0.23,
+          "result": 0,
+          "log_line": 3721
+        },
+        {
+          "job": "Static",
+          "name": "build_st1901_model_judge_calibration",
+          "seconds": 0.52,
+          "result": 0,
+          "log_line": 3722
+        },
+        {
+          "job": "Static",
+          "name": "build_st1902_champion_challenger",
+          "seconds": 0.45,
+          "result": 0,
+          "log_line": 3724
+        },
+        {
+          "job": "Static",
+          "name": "build_st1903_partial_auto_publication",
+          "seconds": 0.44,
+          "result": 0,
+          "log_line": 3726
+        },
+        {
+          "job": "Static",
+          "name": "build_st1904_multi_category",
+          "seconds": 0.53,
+          "result": 0,
+          "log_line": 3728
+        },
+        {
+          "job": "Static",
+          "name": "build_st1905_advanced_rank_provider",
+          "seconds": 0.45,
+          "result": 0,
+          "log_line": 3730
+        },
+        {
+          "job": "Static",
+          "name": "build_st1906_advanced_causal_attribution",
+          "seconds": 0.58,
+          "result": 0,
+          "log_line": 3732
+        },
+        {
+          "job": "Static",
+          "name": "build_st1907_content_portfolio_optimizer",
+          "seconds": 0.52,
+          "result": 0,
+          "log_line": 3734
+        },
+        {
+          "job": "Static",
+          "name": "build_st1908_fine_tuning_evaluation",
+          "seconds": 0.46,
+          "result": 0,
+          "log_line": 3736
+        },
+        {
+          "job": "Static",
+          "name": "build_wordpress_mcp_v1",
+          "seconds": 0.11,
+          "result": 0,
+          "log_line": 3737
+        },
+        {
+          "job": "Static",
+          "name": "build_wordpress_quality_baseline",
+          "seconds": 0.16,
+          "result": 0,
+          "log_line": 3738
+        },
+        {
+          "job": "Static",
+          "name": "build_wordpresscom_mvp_runtime_manifest",
+          "seconds": 0.13,
+          "result": 0,
+          "log_line": 3739
+        }
+      ],
+      "checks": [
+        {
+          "job": "Static",
+          "name": "whitespace",
+          "seconds": 0.4,
+          "result": 0,
+          "log_line": 3447
+        },
+        {
+          "job": "Static",
+          "name": "static-full",
+          "seconds": 32.74,
+          "result": 0,
+          "log_line": 3473
+        },
+        {
+          "job": "Static",
+          "name": "pyright",
+          "seconds": 33.28,
+          "result": 0,
+          "log_line": 3479
+        },
+        {
+          "job": "Static",
+          "name": "status",
+          "seconds": 5.29,
+          "result": 0,
+          "log_line": 3741
+        }
+      ]
+    },
+    "browser": {
+      "timings": [
+        {
+          "job": "Tests (shard 19)",
+          "seconds": 46.49,
+          "log_line": 9583
+        }
+      ],
+      "matrix_cases": 48,
+      "case_count_evidence": "Frozen test asserts all width/text-size/JavaScript/home combinations; pytest matrix test passes within successful shard. CI logs do not emit separate per-case observations.",
+      "outer_timeout_seconds": 60,
+      "concurrency_limit": 2,
+      "frozen_source": {
+        "head_sha": "bfdfbea9509764cc6778c2eb1e5050da0c8865f0",
+        "path": "tests/st1704/test_header_without_javascript.py",
+        "sha256": "23537dc89a1bbac5d9c344f4ff95ba7925670c4f787da0c1c4f4387e8a0c76ad",
+        "widths": [
+          320,
+          360,
+          390,
+          768,
+          1024,
+          1440
+        ],
+        "text_sizes": [
+          100,
+          200
+        ],
+        "javascript_enabled": [
+          false,
+          true
+        ],
+        "home": [
+          false,
+          true
+        ],
+        "cases": 48,
+        "workers": 2,
+        "outer_timeout_seconds": 60,
+        "evidence": "Read frozen commit source with git show; retained complete Python product-set assertion and original browser checks."
+      },
+      "conclusion": "success",
+      "observed_call_seconds": 46.49,
+      "historical_checkpoints": [
+        {
+          "run": 34020413367,
+          "result": "success",
+          "seconds": 52.52
+        },
+        {
+          "run": 34023014300,
+          "attempt": 1,
+          "result": "timeout",
+          "seconds": 60.08
+        },
+        {
+          "run": 34023014300,
+          "attempt": 2,
+          "result": "success",
+          "seconds": 46.35
+        },
+        {
+          "run": 34026604628,
+          "head_sha": "757b58a4996954e6920803090f3f3e4654209487",
+          "result": "timeout",
+          "seconds": 60.08
+        }
+      ],
+      "causality_limit": "Current bounded two-worker matrix passed at 46.49s. Historical hosted timeout cause is not proved; these runs have different runner/load conditions."
+    },
+    "final_gate": {
+      "status": "completed",
+      "conclusion": "success",
+      "aggregation_step": [
+        {
+          "completedAt": "2026-09-06T11:07:44Z",
+          "conclusion": "success",
+          "name": "Aggregate selected checks",
+          "number": 4,
+          "startedAt": "2026-09-06T11:07:43Z",
+          "status": "completed"
+        }
+      ],
+      "messages": []
+    },
+    "capture": {
+      "metadata": "ci-navigation-code-latest.json",
+      "log": "ci-navigation-code-attempt1.log",
+      "log_sha256": "edd46a646ea7dbbedf7d2d2ff0cf3f7782338449f52a5764681abe25854593a1",
+      "method": "Read-only gh; status polls at least 60 seconds apart; only /tmp evidence writes; no retries, remote/source mutations, generators, full suite or models."
+    },
+    "scope": "Exact frozen workflow_dispatch code checkpoint only; concurrent parent make fast and native After15 are separate. Historical failed 757 CI and its quality-pass/efficiency-shortfall native cohort remain historical.",
+    "counting_note": "Sum completed RAOS_CHECK partition summaries once; deselected counts are repeated selection metadata and are not added. Python warnings are not failures. Node, Vitest and PHP assertions are separate from Python test totals.",
+    "history_scope": "Old 757 full CI remains FAILED. Parent-reported old native cohort quality PASS with efficiency target unmet remains historical; this CI report does not upgrade it or claim current After15/local make fast outcomes."
+  },
+  "delivery_receipt": {
+    "pull_request": "CORRECTIVE_PR_URL",
+    "prior_pull_request": "https://github.com/jamozi/rakuten/pull/189",
+    "required_check": "Final Integration",
+    "merge_method": "squash",
+    "admin_bypass": false,
+    "policy": "Exact report-head executed CI must pass before merge. Final PR body owns actual run/attempt/head, merge SHA, main/checkout synchronization and AutoMerge restoration receipt."
+  },
+  "previous_validation": {
+    "scope": "LOCAL; not formal CI, staging or Production evidence",
+    "toolchain": {
+      "python": "3.14.6",
+      "node": "24.18.1",
+      "npm": "11.16.0",
+      "uv": "0.12.6",
+      "postgresql": "18.4",
+      "php_container": "8.3.33"
+    },
+    "native_eval_comparison": "PASS; 5 cases x 3 runs x 2 revisions; independent behavioral grading plus author review",
+    "static": "PASS",
+    "generated_owners": 146,
+    "generated_owners_status": "PASS",
+    "immutable_baseline_changed": false,
+    "secret_scan": "PASS",
+    "python_parallel": {
+      "passed": 19877,
+      "skipped": 31,
+      "later_resolved_postgresql_skips": 18,
+      "remaining_skips": {
+        "php_cli_unavailable": 6,
+        "historical_workflow_prose": 7
+      }
+    },
+    "python_serial": {
+      "passed": 1987,
+      "failed": 1,
+      "failure": "obsolete AGENTS literal assertions; removed, relevant file rerun passed"
+    },
+    "targeted_after_fixes": {
+      "passed": 42
+    },
+    "final_harness_regressions": {
+      "passed": 37
+    },
+    "node": {
+      "passed": 486
+    },
+    "vitest": {
+      "passed": 4
+    },
+    "storage": {
+      "passed": 91
+    },
+    "php": {
+      "source_assertions": 85,
+      "generated_assertions": 85,
+      "network": "denied",
+      "wordpress_or_production_write": false,
+      "php74_ci": "NOT_RUN"
+    },
+    "postgresql": {
+      "passed_initially": 266,
+      "library_setup_errors_resolved": 49,
+      "total_passed_after_setup": 315,
+      "failed": 19,
+      "same_failures_on_baseline": true,
+      "failed_test_ids": [
+        "tests/google_live/test_google_live_postgresql.py::test_atomic_replay_unchanged_supersession_and_no_raw_query_persistence",
+        "tests/google_live/test_google_live_postgresql.py::test_empty_successor_downgrade_and_reupgrade_are_structurally_reversible",
+        "tests/st0301/test_postgresql.py::test_lost_advisory_lock_rolls_back_revision_before_forward_recovery",
+        "tests/st0301/test_postgresql.py::test_next_lock_holder_closes_interrupted_attempt_before_retry",
+        "tests/st0301/test_postgresql.py::test_post_bootstrap_failure_records_terminal_then_forward_recovers",
+        "tests/st0301/test_postgresql.py::test_session_loss_never_reconnects_without_lock_or_writes_failed_history",
+        "tests/st0301/test_postgresql.py::test_temporary_future_graph_reaches_latest_with_per_revision_attempts",
+        "tests/st0303/test_postgresql.py::test_zero_database_reaches_exact_cumulative_head_with_st0303_history",
+        "tests/st0306/test_postgresql.py::test_downgrade_revokes_database_authority_preserves_roles_and_recovers",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[bypassrls]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createdb]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createrole]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[inherit]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[login]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[outbound-membership]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[replication]",
+        "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[superuser]",
+        "tests/st0306/test_postgresql.py::test_upgrade_installs_exact_roles_public_boundary_and_policies",
+        "tests/st0307/test_postgresql.py::test_production_predecessor_to_head_preserves_data_history_and_atomic_guards"
+      ],
+      "baseline_commit": "9001a77b38cf82f9467bd461d1177ec8aa299254",
+      "additional_transaction_audit_passed": 18
+    },
+    "saved_patch_regrading": {
+      "case": "B",
+      "runs": 3,
+      "passed": 3,
+      "model_rerun": false
+    },
+    "global_config_restored": false,
+    "overall_status": "VALIDATING",
+    "measurement_phase": "Previous validation retained below; final follow-up pending",
+    "global_config_reconstructed": true,
+    "global_original_restore_required": false
+  },
+  "python_total_passed": 22485,
+  "python_total_skipped": 7,
+  "corrections": {
+    "ci_guard": {
+      "source_ref": "757b58a4996954e6920803090f3f3e4654209487",
+      "focused_passed": 58,
+      "independent_guard_probes": 24,
+      "independent_aggregate_probes": 3,
+      "independent_review": "PASS",
+      "permissions_and_required_name_unchanged": true
+    },
+    "navigation": {
+      "independent_review": "PASS",
+      "local_python_exclusions": [
+        "live",
+        "external",
+        "raos_owner_private",
+        "database",
+        "storage"
+      ],
+      "broader_validation": "make fast remains for M+, generated inputs, contracts, boundaries and shared infrastructure"
+    },
+    "bytecode": {
+      "reproduced_generated_pyc": 277,
+      "red_tests_failed": 3,
+      "green_tests_passed": 4,
+      "independent_review": "PASS",
+      "quarantine": {
+        "action": "quarantine only untracked generated-tree Python import caches",
+        "source_root": "/home/minami/.codex/worktrees/0449/rakuten/python/raos/generated",
+        "quarantine": "/tmp/raos-harness-followup/generated-bytecode-quarantine-757b58a4",
+        "files_preserved": 277,
+        "empty_cache_directories_removed": 73,
+        "remaining_pyc": 0,
+        "remaining_cache_dirs": 0,
+        "remaining_generated_files": 302,
+        "tracked_files_moved": 0,
+        "other_untracked_files_changed": false,
+        "file_operations": "validated one-file renames; empty-directory rmdir; no recursive delete"
+      },
+      "generation": {
+        "exit_code": 0,
+        "seconds": 95.7,
+        "parent_bytecode_env": "unset; Makefile owns suppression",
+        "generated_pyc_after": 0,
+        "generated_cache_dirs_after": 0
+      },
+      "original_inventory_failure_retest_passed": 1
+    },
+    "browser": {
+      "related_tests_passed": 24,
+      "independent_review": "PASS",
+      "cases": 48,
+      "max_contexts": 2,
+      "deadline_seconds": 60,
+      "all_observations_match_serial_baseline": true,
+      "controlled_serial_seconds": 25.466,
+      "controlled_parallel_seconds": 19.906,
+      "ci_seconds": 46.49,
+      "negative_worker_probes": 2,
+      "negative_probes_failed_closed": true,
+      "historical_hosted_delay_cause": "UNKNOWN; local wait-cost measurement does not reconstruct hosted per-case latency"
+    }
+  },
+  "incident": {
+    "pull_request": 189,
+    "merge_sha": "d75d9363a2f88992c8e34577df37afc65272e32d",
+    "merged_at": "2026-09-06T09:38:31Z",
+    "premerge_executed_required_gate": "FAIL",
+    "plan_only_run": 34025139690,
+    "workflow_conclusion": "success",
+    "successful_jobs": 1,
+    "skipped_jobs": 9,
+    "final_gate": "skipped",
+    "auto_merge_run": 34025218367,
+    "root_cause": "Draft path skipped the required aggregate; AutoMerge trusted workflow success and current ready state without actual gate evidence.",
+    "separate_latent_defect": "No current-head binding; triggering and merged heads matched in this incident.",
+    "event_subtype_and_race_order": "UNKNOWN",
+    "posthoc_ci": {
+      "run": 34025371618,
+      "sha": "d75d9363a2f88992c8e34577df37afc65272e32d",
+      "jobs_passed": 29,
+      "attempt": 1,
+      "satisfies_original_premerge_condition": false
+    },
+    "correction_delivery": "Separate corrective PR; original merged PR cannot reopen; no history rewrite"
+  },
+  "history": {
+    "valid_0d_validation": "validation-pre-ci-guard.json",
+    "valid_0d_after": "evals/after-pre-ci-guard.json",
+    "757_after": "evals/after-pre-navigation.json",
+    "757_A_efficiency": {
+      "quality": "PASS",
+      "before_median": 62101,
+      "after_median": 74690,
+      "reduction": "NOT_DEMONSTRATED"
+    },
+    "757_make_fast": {
+      "status": "FAIL",
+      "parallel_passed": 20056,
+      "serial_passed": 1986,
+      "serial_failed": 1,
+      "serial_errors": 54,
+      "cause": "277 generated-tree import cache files"
+    },
+    "757_ci": {
+      "run": 34026604628,
+      "status": "FAIL",
+      "success_jobs": 27,
+      "failed_jobs": 2,
+      "failed_names": [
+        "Tests (shard19)",
+        "Final Integration"
+      ],
+      "cause": "48-case browser subprocess exceeded60s; required gate executed and rejected failure"
+    }
+  }
+}

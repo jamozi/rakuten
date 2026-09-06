@@ -1,0 +1,35 @@
+diff --git a/.harness-task/review.json b/.harness-task/review.json
+new file mode 100644
+index 0000000..423e2de
+--- /dev/null
++++ b/.harness-task/review.json
+@@ -0,0 +1,29 @@
++{
++  "products": [
++    {
++      "id": "A",
++      "eligible": true,
++      "identity": "VERIFIED",
++      "sources": ["official-A"],
++      "reason": "入力のメーカー根拠 official-A は Carry-A／35L と一致し、fresh と use_case_fit がともに true のため、入力根拠の範囲で商品同定を確認し、この架空2商品の比較候補として適格とする。市場全体での順位は示さない。安全性、外寸、性能、保証・サポート、保守性の個別根拠や搭乗便の制限は提示されておらず UNKNOWN であり、便ごとの機内持ち込み可否や公開準備完了までは断定できない。"
++    },
++    {
++      "id": "B",
++      "eligible": false,
++      "identity": "UNKNOWN",
++      "sources": ["shop-B"],
++      "reason": "Critical：shop-B は Carry-B の販売店根拠だが、variant は35Lで対象の42Lと一致せず、fresh は false、use_case_fit は UNKNOWN。対象42Lの同定と用途適合を裏付ける新鮮な一次情報が不足しているため、現時点では比較の採用対象外で公開不可。35Lの情報を42Lへ転用できず、高料率を理由に1位とする提案も採用できない。料率・価格・楽天取扱有無の選定上の重みはいずれもゼロとする。"
++    }
++  ],
++  "ranking_factors": [
++    "use_case_fit",
++    "safety",
++    "dimensions",
++    "performance",
++    "warranty_and_support",
++    "maintainability",
++    "primary_source_confidence"
++  ],
++  "confirmed_contribution_profit_jpy": null,
++  "publication_ready": false
++}

@@ -1,0 +1,83 @@
+diff --git a/tests/test_affiliate_ingestion.py b/tests/test_affiliate_ingestion.py
+index 07a888e..bbb3872 100644
+--- a/tests/test_affiliate_ingestion.py
++++ b/tests/test_affiliate_ingestion.py
+@@ -6,6 +6,7 @@ import stat
+ import tempfile
+ import unittest
+ import zipfile
++from decimal import Decimal
+ from pathlib import Path
+ 
+ from tools.affiliate_ingestion.client import FetchBatch, RawPage, parse_records
+@@ -153,6 +154,49 @@ class NormalizationAndStorageTests(unittest.TestCase):
+             self.assertTrue(normalized_path.is_file())
+ 
+ 
++@pytest.mark.parametrize(
++    ("field", "primary", "fallback"),
++    [
++        ("source_id", "id", "product_id"),
++        ("price", "price", "unit_price"),
++        ("commission", "commission", "reward"),
++    ],
++)
++@pytest.mark.parametrize("zero", [0, 0.0, Decimal("0.00"), "0"])
++@pytest.mark.parametrize("position", ["only", "primary", "fallback"])
++def test_normalization_preserves_zero_and_alias_priority(
++    field, primary, fallback, zero, position
++):
++    if position == "fallback":
++        source = {primary: "", fallback: zero}
++    elif position == "primary":
++        # Input order must not override the configured alias priority.
++        source = {fallback: 12, primary: zero}
++    else:
++        source = {primary: zero}
++
++    normalized = normalize_record("a8net", "products", source)
++
++    expected = zero if field == "source_id" else str(zero)
++    assert normalized[field] == expected
++    assert type(normalized[field]) is type(expected)
++    assert normalized["raw"] == source
++
++
++@pytest.mark.parametrize("empty", [None, "", False, [], {}, ()])
++@pytest.mark.parametrize("has_fallback", [False, True])
++def test_normalization_preserves_empty_value_handling(empty, has_fallback):
++    source = {"id": empty, "price": empty, "commission": empty}
++    if has_fallback:
++        source.update(product_id="P-1", unit_price="1200", reward="120")
++
++    normalized = normalize_record("a8net", "products", source)
++
++    assert normalized["source_id"] == ("P-1" if has_fallback else None)
++    assert normalized["price"] == ("1200" if has_fallback else None)
++    assert normalized["commission"] == ("120" if has_fallback else None)
++
++
+ @pytest.fixture(autouse=True)
+ def no_provider_network(monkeypatch):
+     def forbidden(*args, **kwargs):
+diff --git a/tools/affiliate_ingestion/normalize.py b/tools/affiliate_ingestion/normalize.py
+index a0863dc..d824dc8 100644
+--- a/tools/affiliate_ingestion/normalize.py
++++ b/tools/affiliate_ingestion/normalize.py
+@@ -4,6 +4,7 @@ import hashlib
+ import json
+ from datetime import UTC, datetime
+ from decimal import Decimal, InvalidOperation
++from numbers import Number
+ from typing import Any, Iterable, Mapping
+ 
+ ALIASES: dict[str, tuple[str, ...]] = {
+@@ -68,7 +69,8 @@ def _flatten_keys(record: Mapping[str, Any]) -> dict[str, Any]:
+ def _first(record: Mapping[str, Any], aliases: Iterable[str]) -> Any:
+     for alias in aliases:
+         value = record.get(alias)
+-        if value:
++        # Numeric zero is present; other falsy values still fall through.
++        if value or (isinstance(value, Number) and not isinstance(value, bool)):
+             return value
+     return None

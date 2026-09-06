@@ -1,0 +1,74 @@
+# 公開記事の更新情報表示
+
+## 目的と採用したデータ経路
+
+読者が記事の更新日時と鮮度状態を確認できるよう、
+`render_public_update_notice(projection)` を追加する。
+成功条件は指定文言の一致、両値の HTML escape、必須値欠損時の `ValueError`、
+既存の公開契約・公開/内部境界の維持である。
+
+採用経路は「承認済み immutable publication snapshot → public projection →
+`article.updated_public_at` / `article.freshness_status` → 表示文字列」。
+関数は既存 projection の mapping を受け取る純粋な読み取り処理とし、
+snapshot の承認検証や projection の構築は既存の上流境界が引き続き担う。
+関数自身に公開承認・永続化・経路有効化の権限はない。
+
+根拠は [現行 architecture](../docs/architecture/current-system.md) の公開データ経路と
+公開/内部分離、および [既存 projector](../python/raos/domain/publishing/public_projection_v2.py)
+の `PUBLIC_ARTICLE_FIELDS`。
+[PublicArticleDocument](../contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml)
+にも両項目が定義済みであり、新しい公開フィールドは必要ない。
+
+内部 Evidence や Finance の repository を直接参照する案は採用しない。
+直接参照では承認済み snapshot と異なる最新内部値が表示され得るほか、
+内部情報の公開経路と実行時依存を増やし、公開/内部分離を崩す。
+既存の公開値だけで要求を満たせるため、内部 Evidence locator、財務値、raw AI を
+renderer へ接続する理由がない。編集判断と財務の分離も維持する。
+
+## 表示と欠損の扱い
+
+返り値は `更新: <article.updated_public_at> / 状態: <article.freshness_status>`。
+両方の文字列に標準ライブラリの `html.escape` を適用し、`& < > " '` を escape する。
+日付の再解釈・時刻変換・状態の再評価や翻訳はせず、`UNKNOWN` もそのまま表示する。
+
+projection / article が mapping でない場合、および必須項目が欠落・`None`・空文字・
+空白のみ・文字列以外の場合は `ValueError` とする。例外には入力値を埋め込まない。
+公開契約上、`updated_public_at` は省略・null が許容されるが、この表示関数では値が必要。
+そのため null を持つ既存の recorded local projection は表示エラーとなる。
+公開日時、現在時刻、内部値による補完や、欠損状態の `UNKNOWN` への置換は行わない。
+
+## 隣接影響と範囲
+
+- snapshot / projector / public API: フィールド集合、allowlist、nullable の契約、承認と
+  source binding を維持する。schema・generator 入力・生成物の変更は不要。
+- 公開利用側: HTML テキストとして使える文字列を返す。入力 projection を変更せず、
+  disclosure、CTA、route、projection generation に影響しない。呼出し側で組み込む際は
+  `ValueError` を扱う必要がある。今回の追加は関数までで、既存表示への接続は含まない。
+- Freshness / Evidence / Finance: 公開値の鮮度評価や再計算は各 owner が担当し続ける。
+  renderer は標準ライブラリのみを使用し、内部 repository・DB・ネットワークに依存しない。
+- publication / WordPress: 公開・配信、認証認可、kill switch、承認フローの変更や
+  live write はない。recorded fixture の検証を本番公開の証拠として扱わない。
+
+## 検証
+
+回帰テストは既存 recorded projection のコピーに合成の表示値を設定し、正常表示、
+`UNKNOWN` の維持、両値の HTML escape、欠損・不正型、補完の禁止、入力の非変更を確認する。
+新しい renderer を既存 static boundary の依存検査対象にも追加する。
+
+実行対象は `tests/st0904_v2/test_public_update_notice.py`、
+`tests/st0904_v2/test_domain.py`、`tests/st0904_v2/test_static_boundary.py` に限定する。
+ネットワーク・保存済み checkout の内容に依存する検査、`make fast`、全件 CI は実行しない。
+実行コマンド:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 TMPDIR="$PWD/.harness-task/tmp" \
+  .venv/bin/python -m pytest -q -p xdist.plugin -n 2 \
+  -m "not live and not external and not raos_owner_private and not database and not storage" \
+  --basetemp=.harness-task/tmp/public-update-notice-pytest \
+  tests/st0904_v2/test_public_update_notice.py \
+  tests/st0904_v2/test_domain.py \
+  tests/st0904_v2/test_static_boundary.py
+```
+
+実行結果: **44 passed in 1.99s**。追加回帰 32 件、既存 domain 8 件、既存 static boundary
+4 件が成功し、失敗・skip はない。この結果は上記のローカル検査範囲に限る。
