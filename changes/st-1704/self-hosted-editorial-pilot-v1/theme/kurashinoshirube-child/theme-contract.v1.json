@@ -123,9 +123,9 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "d5b0aca74cb40f664b1fa65011e2fbe53bf6e8d1a16bd324db0d988f00085042",
-    "source_navigation_sha256": "ae5c793515e8de38d67fa3ec25979b639a6ab4487511482bc65d564c66c6e077",
-    "source_portfolio_sha256": "f444f9854c4520649ec4977419ece445ff3240c6bcdc8ab9f913a5d931525790"
+    "sha256": "94357bc363787c580ec72a56a598699b122e7e3c93f4afe26451129948c761b4",
+    "source_navigation_sha256": "e1bf6e02440bd86d9e6cf6808ed5e909376cc0e29c6ce0a29fd2324c89eea403",
+    "source_portfolio_sha256": "40d634de63b03af9fce4007f7ae21350627cceda0983a86474ab4ac81fc8145f"
   },
   "editorial_v2": {
     "asset": "assets/editorial-v2.css",
@@ -526,8 +526,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "1282d77e528638af2c25df8715a20735fda32db3e8096b95cfd25a0c4cdeef20",
-    "source_fingerprint": "1282d77e528638af2c25df8715a20735fda32db3e8096b95cfd25a0c4cdeef20",
+    "revision": "f2606fff14f1114ef8bd172e2ea890d187f3ba6a79ae2517b582aabf36e5ac88",
+    "source_fingerprint": "f2606fff14f1114ef8bd172e2ea890d187f3ba6a79ae2517b582aabf36e5ac88",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",

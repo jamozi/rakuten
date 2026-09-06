@@ -24,7 +24,7 @@
           "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a01-10f134215496",
+      "snapshot_id": "snp-a01-06e12fd3df4a",
       "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ"
     },
     {
@@ -47,7 +47,7 @@
           "relationship": "narrower_comparison"
         }
       ],
-      "snapshot_id": "snp-a02-4e96536bef63",
+      "snapshot_id": "snp-a02-0f2d8e7bd028",
       "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める"
     },
     {
@@ -70,7 +70,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a03-86b1a5f939c8",
+      "snapshot_id": "snp-a03-8e2f02149462",
       "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い"
     },
     {
@@ -93,7 +93,7 @@
           "relationship": "lifecycle_reference"
         }
       ],
-      "snapshot_id": "snp-a04-793ffc90a388",
+      "snapshot_id": "snp-a04-22092aa2f1bc",
       "title": "工事不要の食洗機4候補｜1〜2人暮らしの設置条件で選ぶ"
     },
     {
@@ -116,7 +116,7 @@
           "relationship": "narrower_comparison"
         }
       ],
-      "snapshot_id": "snp-a05-17bf19b4440f",
+      "snapshot_id": "snp-a05-3314f7a87a75",
       "title": "ロボット掃除機4モデル比較｜設置寸法・モップ自動手入れで選ぶ"
     },
     {
@@ -143,7 +143,7 @@
           "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a06-296875d0c6f5",
+      "snapshot_id": "snp-a06-0371d01b5d91",
       "title": "100席未満の国内線向けスーツケース4モデルを機内持ち込み規定で比較"
     },
     {
@@ -170,7 +170,7 @@
           "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a07-2d8f31b7f6fc",
+      "snapshot_id": "snp-a07-2001f5ebb6b0",
       "title": "100席以上便向け｜30L以上・3kg以下の機内持ち込みスーツケース5モデル比較"
     },
     {
@@ -197,7 +197,7 @@
           "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a08-7338f4af6018",
+      "snapshot_id": "snp-a08-811dd997c408",
       "title": "100席以上便向け｜前開き・ストッパー付き機内持ち込みスーツケース4モデル比較"
     },
     {
@@ -220,7 +220,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a09-a0c7708335bd",
+      "snapshot_id": "snp-a09-9f729547cbcf",
       "title": "Roomba Mini SlimとSwitchBot K11+ Proを設置寸法・水拭きで比較"
     },
     {
@@ -243,7 +243,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a10-1d75438033fc",
+      "snapshot_id": "snp-a10-6ce5b81a1cef",
       "title": "SOLOTA・ラクアmini Plus｜型番・販売表示と購入前の確認"
     }
   ],
@@ -349,6 +349,156 @@
       "role": "dimension",
       "source": "https://www.siroca.co.jp/product/dishwasher_basic/",
       "usage_basis": "公式仕様値から編集部が作成するHTML寸法図。商品画像の転載なし。"
+    },
+    {
+      "alt": "Eufy Auto-Empty C10本体 T2292511とEufy Auto-Empty C10ステーションの幅・奥行・高さの比較",
+      "approval": "approved",
+      "aspect_ratio": [
+        16,
+        9
+      ],
+      "asset_ref": "dimension-prd-eufy-autoempty-c10-t2292",
+      "asset_type": "html_diagram",
+      "caption": "本体と充電設備の設置面を同じ縮尺で比べます。",
+      "checked_at": "2026-08-31",
+      "role": "dimension",
+      "source": "https://www.ankerjapan.com/products/t2292",
+      "usage_basis": "型番に紐付いた公式仕様値から編集部が作成するHTML寸法図。写真の転載なし。"
+    },
+    {
+      "alt": "SwitchBot K11+ Pro本体とSwitchBot K11+ Proステーションの幅・奥行・高さの比較",
+      "approval": "approved",
+      "aspect_ratio": [
+        16,
+        9
+      ],
+      "asset_ref": "dimension-prd-switchbot-k11-pro",
+      "asset_type": "html_diagram",
+      "caption": "本体と充電設備の設置面を同じ縮尺で比べます。",
+      "checked_at": "2026-08-23",
+      "role": "dimension",
+      "source": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "usage_basis": "型番に紐付いた公式仕様値から編集部が作成するHTML寸法図。写真の転載なし。"
+    },
+    {
+      "alt": "ECOVACS DEEBOT mini 2本体とECOVACS DEEBOT mini 2ステーションの幅・奥行・高さの比較",
+      "approval": "approved",
+      "aspect_ratio": [
+        16,
+        9
+      ],
+      "asset_ref": "dimension-prd-ecovacs-deebot-mini2",
+      "asset_type": "html_diagram",
+      "caption": "本体と充電設備の設置面を同じ縮尺で比べます。",
+      "checked_at": "2026-09-01",
+      "role": "dimension",
+      "source": "https://www.ecovacs.com/jp/shop/deebot-robotic-vacuum-cleaner/bundle-deebot-mini2",
+      "usage_basis": "型番に紐付いた公式仕様値から編集部が作成するHTML寸法図。写真の転載なし。"
+    },
+    {
+      "alt": "ルンバ本体とAutoWash充電ステーションの幅・奥行・高さの比較",
+      "approval": "approved",
+      "aspect_ratio": [
+        16,
+        9
+      ],
+      "asset_ref": "dimension-prd-irobot-roomba-plus-515-combo",
+      "asset_type": "html_diagram",
+      "caption": "本体と充電設備の設置面を同じ縮尺で比べます。",
+      "checked_at": "2026-08-23",
+      "role": "dimension",
+      "source": "https://store.irobot-jp.com/item/N285060.html",
+      "usage_basis": "型番に紐付いた公式仕様値から編集部が作成するHTML寸法図。写真の転載なし。"
+    },
+    {
+      "alt": "ディフェレンス 05721（通常時）とディフェレンス 05721（拡張時）の幅・奥行・高さの比較",
+      "approval": "approved",
+      "aspect_ratio": [
+        16,
+        9
+      ],
+      "asset_ref": "dimension-prd-ace-difference-05721",
+      "asset_type": "html_diagram",
+      "caption": "通常時と拡張時の設置面を重ねて比べます。実線が通常時、破線が拡張時です。",
+      "checked_at": "2026-08-31",
+      "role": "dimension",
+      "source": "https://store.ace.jp/shop/g/g05721-06/",
+      "usage_basis": "型番に紐付いた公式仕様値から編集部が作成するHTML寸法図。写真の転載なし。"
+    },
+    {
+      "alt": "Roomba Mini Slim本体 F115060とSlimCharge充電スタンド（縦置き時）の幅・奥行・高さの比較",
+      "approval": "approved",
+      "aspect_ratio": [
+        16,
+        9
+      ],
+      "asset_ref": "dimension-prd-irobot-roomba-mini-slim-f115060",
+      "asset_type": "html_diagram",
+      "caption": "本体と充電設備の設置面を同じ縮尺で比べます。",
+      "checked_at": "2026-08-31",
+      "role": "dimension",
+      "source": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+      "usage_basis": "型番に紐付いた公式仕様値から編集部が作成するHTML寸法図。写真の転載なし。"
+    },
+    {
+      "alt": "フレスターEX 01550（通常時）とフレスターEX 01550（拡張時）の幅・奥行・高さの比較",
+      "approval": "approved",
+      "aspect_ratio": [
+        16,
+        9
+      ],
+      "asset_ref": "dimension-prd-proteca-frester-ex-01550",
+      "asset_type": "html_diagram",
+      "caption": "通常時と拡張時の設置面を重ねて比べます。実線が通常時、破線が拡張時です。",
+      "checked_at": "2026-08-31",
+      "role": "dimension",
+      "source": "https://store.ace.jp/shop/g/g01550-11/",
+      "usage_basis": "型番に紐付いた公式仕様値から編集部が作成するHTML寸法図。写真の転載なし。"
+    },
+    {
+      "alt": "APPLITE 4.0 QJ6-68002（通常時）とAPPLITE 4.0 QJ6-68002（拡張時）の幅・奥行・高さの比較",
+      "approval": "approved",
+      "aspect_ratio": [
+        16,
+        9
+      ],
+      "asset_ref": "dimension-prd-american-tourister-applite-4-qj6-68002",
+      "asset_type": "html_diagram",
+      "caption": "通常時と拡張時の設置面を重ねて比べます。実線が通常時、破線が拡張時です。",
+      "checked_at": "2026-08-31",
+      "role": "dimension",
+      "source": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+      "usage_basis": "型番に紐付いた公式仕様値から編集部が作成するHTML寸法図。写真の転載なし。"
+    },
+    {
+      "alt": "Samsonite C-Lite 134679-1549（通常時）とSamsonite C-Lite 134679-1549（拡張時）の幅・奥行・高さの比較",
+      "approval": "approved",
+      "aspect_ratio": [
+        16,
+        9
+      ],
+      "asset_ref": "dimension-prd-samsonite-c-lite-spinner55exp-134679-1549",
+      "asset_type": "html_diagram",
+      "caption": "通常時と拡張時の設置面を重ねて比べます。実線が通常時、破線が拡張時です。",
+      "checked_at": "2026-08-31",
+      "role": "dimension",
+      "source": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/midnight_blue/ss-134679-1549.html",
+      "usage_basis": "型番に紐付いた公式仕様値から編集部が作成するHTML寸法図。写真の転載なし。"
+    },
+    {
+      "alt": "フレスターEX 01551（通常時）とフレスターEX 01551（拡張時）の幅・奥行・高さの比較",
+      "approval": "approved",
+      "aspect_ratio": [
+        16,
+        9
+      ],
+      "asset_ref": "dimension-prd-proteca-frester-ex-01551",
+      "asset_type": "html_diagram",
+      "caption": "通常時と拡張時の設置面を重ねて比べます。実線が通常時、破線が拡張時です。",
+      "checked_at": "2026-08-31",
+      "role": "dimension",
+      "source": "https://store.ace.jp/shop/g/g01551-01/",
+      "usage_basis": "型番に紐付いた公式仕様値から編集部が作成するHTML寸法図。写真の転載なし。"
     }
   ],
   "reader_navigation": {
@@ -558,8 +708,8 @@
     }
   },
   "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-  "source_navigation_sha256": "ae5c793515e8de38d67fa3ec25979b639a6ab4487511482bc65d564c66c6e077",
-  "source_portfolio_sha256": "f444f9854c4520649ec4977419ece445ff3240c6bcdc8ab9f913a5d931525790",
+  "source_navigation_sha256": "e1bf6e02440bd86d9e6cf6808ed5e909376cc0e29c6ce0a29fd2324c89eea403",
+  "source_portfolio_sha256": "40d634de63b03af9fce4007f7ae21350627cceda0983a86474ab4ac81fc8145f",
   "target_origin": "https://kurashinoshirube.com",
   "version": "3.0.0"
 }

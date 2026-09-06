@@ -486,6 +486,8 @@ do_status() {
   wordpress_cli eval \
     'exit(function_exists("kurashinoshirube_yoast_configuration_is_exact") && kurashinoshirube_yoast_configuration_is_exact() ? 0 : 1);' \
     >/dev/null || fail RAOS_WORDPRESS_PREVIEW_YOAST_CONFIGURATION_INVALID
+  wordpress_cli eval \
+    'printf("RAOS_WORDPRESS_PREVIEW_LOCAL_GUIDE_COUNT=%d\n", function_exists("raos_local_reader_guide_count") ? raos_local_reader_guide_count() : 0);'
   printf '%s\n' RAOS_WORDPRESS_PREVIEW_READY
 }
 

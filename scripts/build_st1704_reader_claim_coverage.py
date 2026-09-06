@@ -679,10 +679,10 @@ REVIEWED_READER_LEDGER_SHA256: Final = (
 )
 # Reconciled development ledger, not an independent review attestation. Keep
 # the reviewed anchor above unchanged until the separate review is completed.
-# Latest reconciliation changes only A10's hands-on disclosure label to match
-# its model/sales-display guidance scope; claim and evidence mappings are intact.
+# Latest development reconciliation covers exact official reference navigation
+# labels and the dishwasher supply axis; existing evidence remains unchanged.
 DEVELOPMENT_READER_LEDGER_SHA256: Final = (
-    "370512485efc639814c73124bf4d82651ae391e13e2fbbd106df93be46fdcdfe"
+    "351b8ccbe8c4617513ec58f1a80ccc50dbb0cac0899f8f99c2b3d155c820167e"
 )
 ADDITIONAL_OFFICIAL_SALES_HOSTS: Final = {
     # siroca separates product information and its first-party store across
@@ -1251,6 +1251,7 @@ TABLE_OR_DEFINITION_LABELS: Final = frozenset(
         "標準食器点数",
         "標準使用水量",
         "使用水量",
+        "給水方式",
         "重量",
         "本体重量",
         "質量",
@@ -6640,6 +6641,55 @@ def _source_citation_label_matches(unit: ReaderUnit) -> bool:
     )
 
 
+def _official_reference_navigation_matches(
+    unit: ReaderUnit, packet_claims: dict[str, dict[str, object]]
+) -> bool:
+    """Recognize only a candidate's exact manufacturer/model lookup link.
+
+    Model names can contain numeric/feature tokens (20L, 3-in-1, front-open).
+    They are navigation here only when the entire anchor is the closed lookup
+    label for its own packet candidate. Added specifications, lifecycle claims,
+    sibling models, and non-anchor prose still require ordinary claim review.
+    """
+    owner = unit.owner_product_id
+    if (
+        unit.channel != "VISIBLE_TEXT"
+        or owner is None
+        or not owner.startswith("EXT-")
+        or re.search(r"/a\[\d+\]::text\Z", unit.locator) is None
+        or _is_structural_fact_value(unit)
+    ):
+        return False
+    match = re.fullmatch(
+        r"(?P<manufacturer>[A-Za-z]+|無印良品)公式で"
+        r"(?P<model>.+)の型番・販売表示を確認する",
+        unit.text,
+    )
+    if match is None:
+        return False
+    manufacturer = match["manufacturer"]
+    manufacturer_id = "MUJI" if manufacturer == "無印良品" else manufacturer.upper()
+    if not owner.startswith(f"EXT-{manufacturer_id}-"):
+        return False
+    from raos.application.editorial.reader_experience_v1 import (
+        official_reference_identity,
+    )
+
+    for claim in packet_claims.values():
+        if claim.get("market_candidate_id") != owner:
+            continue
+        model = claim.get("exact_model")
+        variant = claim.get("exact_variant_scope")
+        if not isinstance(model, str) or not isinstance(variant, str):
+            continue
+        if match["model"] in {
+            _normalize_text(model),
+            _normalize_text(official_reference_identity(model, variant)),
+        }:
+            return True
+    return False
+
+
 def _unit_requires_claim_review(unit: ReaderUnit) -> bool:
     """Detect factual/recommendation content before considering exemptions."""
 
@@ -7012,6 +7062,10 @@ def _validate_unit_binding(
         if exemption not in EXEMPTION_CODES:
             _fail(f"NON_CLAIM unit requires a closed exemption: {unit.unit_id}")
         affiliate_fallback = bool(AFFILIATE_FALLBACK_STATUS_RE.search(unit.text))
+        official_reference = bool(
+            exemption == "NAVIGATION_OR_UI"
+            and _official_reference_navigation_matches(unit, packet_claims)
+        )
         structural_method = bool(
             exemption == "EDITORIAL_METHOD" and unit.text in METHOD_FIXED_TEXTS
         )
@@ -7029,6 +7083,7 @@ def _validate_unit_binding(
             _unit_requires_claim_review(unit)
             and not accessibility_match
             and not affiliate_fallback
+            and not official_reference
         ):
             _fail(f"fact-like NON_CLAIM unit has no eligible exemption: {unit.unit_id}")
         exemption_matches = {
@@ -7056,6 +7111,7 @@ def _validate_unit_binding(
                 and (
                     _all_nonempty_clauses_match(NAVIGATION_EXEMPTION_RE, unit.text)
                     or affiliate_fallback
+                    or official_reference
                     or (
                         re.search(r"/h[1-6]\[\d+\]::text\Z", unit.locator) and not risky
                     )
@@ -7082,6 +7138,7 @@ def _validate_unit_binding(
         if risky and not (
             (exemption == "ACCESSIBILITY_OR_DECORATION" and accessibility_match)
             or (exemption == "NAVIGATION_OR_UI" and affiliate_fallback)
+            or official_reference
         ):
             _fail(f"fact-like NON_CLAIM unit has no eligible exemption: {unit.unit_id}")
         if _has_reader_decision_unknown(unit.text):
@@ -7430,10 +7487,14 @@ def validate_repository(
         _fail("reader ledger is not the independently reviewed semantic allow-list")
 
 
-def build_skeleton(root: Path = ROOT) -> bytes:
+def build_skeleton(
+    root: Path = ROOT, *, require_fresh_sales_state: bool = True
+) -> bytes:
     """Print-only proposal; every unit remains deliberately unclassified."""
 
-    model = _load_repository_model(root)
+    model = _load_repository_model(
+        root, require_fresh_sales_state=require_fresh_sales_state
+    )
     articles: list[dict[str, object]] = []
     for article_id in ARTICLE_IDS:
         content_ref = _strict_string(
@@ -7535,7 +7596,9 @@ def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
         if args.skeleton:
-            sys.stdout.buffer.write(build_skeleton())
+            sys.stdout.buffer.write(
+                build_skeleton(require_fresh_sales_state=not args.development)
+            )
             return 0
         validate_repository(require_fresh_sales_state=not args.development)
     except CoverageFailure as exc:

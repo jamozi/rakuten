@@ -11,7 +11,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
       "content_role": "brand_family_comparison",
       "content_role_label": "ブランド内比較",
-      "content_snapshot_sha256": "10f134215496a2eaad731bc7844465725911eb2247e6c8365c8669f3928f0ece",
+      "content_snapshot_sha256": "06e12fd3df4a47436d47ea46467399151228c6d7b307fae34b9309e028466cae",
       "cta_bindings": [
         {
           "article_code": "a01",
@@ -24,7 +24,7 @@
           "product_id": "PRD-PROTECA-TRI-AIR-01541",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-card",
-          "snapshot_id": "snp-a01-10f134215496"
+          "snapshot_id": "snp-a01-06e12fd3df4a"
         },
         {
           "article_code": "a01",
@@ -37,7 +37,7 @@
           "product_id": "PRD-PROTECA-TRI-AIR-01541",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-final",
-          "snapshot_id": "snp-a01-10f134215496"
+          "snapshot_id": "snp-a01-06e12fd3df4a"
         },
         {
           "article_code": "a01",
@@ -50,7 +50,7 @@
           "product_id": "PRD-ACE-DIFFERENCE-05721",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-card",
-          "snapshot_id": "snp-a01-10f134215496"
+          "snapshot_id": "snp-a01-06e12fd3df4a"
         },
         {
           "article_code": "a01",
@@ -63,7 +63,7 @@
           "product_id": "PRD-ACE-DIFFERENCE-05721",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-final",
-          "snapshot_id": "snp-a01-10f134215496"
+          "snapshot_id": "snp-a01-06e12fd3df4a"
         },
         {
           "article_code": "a01",
@@ -76,7 +76,7 @@
           "product_id": "PRD-ACE-MAXPASS4-01471",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-card",
-          "snapshot_id": "snp-a01-10f134215496"
+          "snapshot_id": "snp-a01-06e12fd3df4a"
         },
         {
           "article_code": "a01",
@@ -89,7 +89,7 @@
           "product_id": "PRD-ACE-MAXPASS4-01471",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a01-final",
-          "snapshot_id": "snp-a01-10f134215496"
+          "snapshot_id": "snp-a01-06e12fd3df4a"
         }
       ],
       "excerpt": "型番と一次情報を照合できたエース系3モデルを、軽さ・容量・開き方で条件別に比較。市場全体の順位ではなく、向く人と注意点を整理します。",
@@ -156,26 +156,57 @@
           "CLM-ST1704-SUITCASE-CRESTA-06316-EXCLUDED",
           "CLM-ST1704-SUITCASE-AEROFLEX-DX2-REFERENCE"
         ],
-        "media": [],
+        "media": [
+          {
+            "asset_ref": "dimension-prd-ace-difference-05721",
+            "evidence_ref": "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS",
+            "role": "dimension"
+          }
+        ],
         "practical_notes": [],
         "products": [
           {
             "evidence_facts": [
               "CLM-ST1704-SUITCASE-TRIAIR-01541-SPECS"
             ],
-            "product_ref": "PRD-PROTECA-TRI-AIR-01541"
+            "not_for": [
+              "前面から荷物を出したい、またはストッパーを必須条件にする場合。"
+            ],
+            "product_ref": "PRD-PROTECA-TRI-AIR-01541",
+            "purchase_checks": [
+              "購入時に代表型番、希望色、外寸・容量・重量とストッパーの有無を公式情報で照合する。"
+            ],
+            "tradeoffs": []
           },
           {
             "evidence_facts": [
               "CLM-ST1704-SUITCASE-DIFFERENCE-SPECS"
             ],
-            "product_ref": "PRD-ACE-DIFFERENCE-05721"
+            "not_for": [
+              "通常時から大容量を必須にする、または拡張したまま機内へ持ち込みたい場合。"
+            ],
+            "product_ref": "PRD-ACE-DIFFERENCE-05721",
+            "purchase_checks": [
+              "購入時に対象型番・希望色の販売状況、拡張時の外寸と利用便の手荷物条件を照合する。"
+            ],
+            "tradeoffs": [
+              "拡張すると外寸も増えるため、機内持ち込みでは非拡張の容量に収める必要があります。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-SUITCASE-MAXPASS-SPECS"
             ],
-            "product_ref": "PRD-ACE-MAXPASS4-01471"
+            "not_for": [
+              "ケース本体の軽さを最優先する、または小型機向けの寸法を探している場合。"
+            ],
+            "product_ref": "PRD-ACE-MAXPASS4-01471",
+            "purchase_checks": [
+              "購入時に代表型番と前面収納の対応機器を確認し、利用便の寸法・総重量条件を照合する。"
+            ],
+            "tradeoffs": [
+              "非拡張の容量と前面収納を優先する代わりに、本体の重さを受け入れます。"
+            ]
           }
         ],
         "purchase_checks": [
@@ -212,7 +243,7 @@
           "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a01-10f134215496",
+      "snapshot_id": "snp-a01-06e12fd3df4a",
       "source_kind": "st1704_renderer",
       "source_ref": "st1703-first-suitcase-comparison",
       "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ",
@@ -229,7 +260,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/portable-power-station-guide.html",
       "content_role": "category_guide",
       "content_role_label": "選び方",
-      "content_snapshot_sha256": "4e96536bef639e4d4722e0b6f8c8c272aee480e36e539d8e774a7095ccd50d85",
+      "content_snapshot_sha256": "0f2d8e7bd02859b94f29a0c3628ae813908101545eefd3b62e378dcfd59bdce0",
       "cta_bindings": [
         {
           "article_code": "a02",
@@ -242,7 +273,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -255,7 +286,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -268,7 +299,7 @@
           "product_id": "PRD-BLUETTI-AORA30-V2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -281,7 +312,7 @@
           "product_id": "PRD-BLUETTI-AORA30-V2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -294,7 +325,7 @@
           "product_id": "PRD-JACKERY-500-NEW",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -307,7 +338,7 @@
           "product_id": "PRD-JACKERY-500-NEW",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -320,7 +351,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -333,7 +364,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -346,7 +377,7 @@
           "product_id": "PRD-JACKERY-1000-NEW-V3",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -359,7 +390,7 @@
           "product_id": "PRD-JACKERY-1000-NEW-V3",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -372,7 +403,7 @@
           "product_id": "PRD-BLUETTI-AORA100-V2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -385,7 +416,7 @@
           "product_id": "PRD-BLUETTI-AORA100-V2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -398,7 +429,7 @@
           "product_id": "PRD-DJI-POWER-1000-V2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-card",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         },
         {
           "article_code": "a02",
@@ -411,7 +442,7 @@
           "product_id": "PRD-DJI-POWER-1000-V2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a02-final",
-          "snapshot_id": "snp-a02-4e96536bef63"
+          "snapshot_id": "snp-a02-0f2d8e7bd028"
         }
       ],
       "excerpt": "停電対策のポータブル電源7モデルを、容量・各社公表の出力・重量・寸法で比較。使いたい機器と持ち運び条件から候補を絞ります。",
@@ -496,13 +527,31 @@
             "evidence_facts": [
               "CLM-ST1704-POWER-C300-SPECS"
             ],
-            "product_ref": "PRD-ANKER-SOLIX-C300"
+            "not_for": [
+              "定格出力を超える機器をつなぐ、またはより大きい容量が必要な場合。"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C300",
+            "purchase_checks": [
+              "購入時に代表型番と接続機器の通常時・起動時電力を説明書で照合する。"
+            ],
+            "tradeoffs": [
+              "運びやすさを優先する代わりに、容量と定格出力の範囲を小型機器向けに絞ります。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-POWER-AORA30-V2-SPECS"
             ],
-            "product_ref": "PRD-BLUETTI-AORA30-V2"
+            "not_for": [
+              "設置面積を最小にしたい、または定格出力を超える機器を使う場合。"
+            ],
+            "product_ref": "PRD-BLUETTI-AORA30-V2",
+            "purchase_checks": [
+              "購入時に代表型番と接続機器の通常時・起動時電力が定格内に収まるかを確認する。"
+            ],
+            "tradeoffs": [
+              "出力を重視しても、蓄えられる電力量の制約は残ります。長時間使う場合は容量を優先して比べます。"
+            ]
           },
           {
             "evidence_facts": [
@@ -510,31 +559,72 @@
               "CLM-ST1704-POWER-JACKERY-STORAGE",
               "CLM-ST1704-POWER-JACKERY-WARRANTY"
             ],
-            "product_ref": "PRD-JACKERY-500-NEW"
+            "not_for": [
+              "定格出力を超える機器をつなぐ、または保管時の定期充電を避けたい場合。"
+            ],
+            "product_ref": "PRD-JACKERY-500-NEW",
+            "purchase_checks": [
+              "購入時に代表型番、保管時の充電条件、接続機器の起動時電力と説明書の条件を確認する。"
+            ],
+            "tradeoffs": [
+              "小容量帯より使用時間の余地を得る代わりに、持ち出す重さと保管時の充電を受け入れます。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-POWER-ANKER-C800-SPECS"
             ],
-            "product_ref": "PRD-ANKER-SOLIX-C800"
+            "not_for": [
+              "頻繁に長距離を持ち運ぶ、または定格出力を超える機器を使う場合。"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C800",
+            "purchase_checks": [
+              "購入時に対象型番、保証延長の条件、接続機器の通常時・起動時電力を確認する。"
+            ],
+            "tradeoffs": [
+              "中容量帯と出力を選ぶ代わりに、保管場所から運ぶ重さを受け入れます。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-POWER-DJI-1000-V2-SPECS"
             ],
-            "product_ref": "PRD-DJI-POWER-1000-V2"
+            "not_for": [
+              "軽さを最優先する、または小型機器だけに使う場合。"
+            ],
+            "product_ref": "PRD-DJI-POWER-1000-V2",
+            "purchase_checks": [
+              "購入時に代表型番、接続機器の起動時電力、取扱説明書の条件と運搬経路を確認する。"
+            ],
+            "tradeoffs": [
+              "大きい出力帯を候補にする場合、本体を運ぶ重さを引き受けます。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-POWER-JACKERY-1000-NEW-V3-SPECS"
             ],
-            "product_ref": "PRD-JACKERY-1000-NEW-V3"
+            "not_for": [
+              "定格出力を超える機器をつなぐ、または各社の出力値を同一条件で比べる必要がある場合。"
+            ],
+            "product_ref": "PRD-JACKERY-1000-NEW-V3",
+            "purchase_checks": [
+              "購入時に代表型番と、接続機器の通常時・起動時電力を説明書で個別に照合する。"
+            ],
+            "tradeoffs": []
           },
           {
             "evidence_facts": [
               "CLM-ST1704-POWER-AORA100-V2-SPECS"
             ],
-            "product_ref": "PRD-BLUETTI-AORA100-V2"
+            "not_for": [
+              "その重さを運べない、または各社出力値の実機比較が必要な場合。"
+            ],
+            "product_ref": "PRD-BLUETTI-AORA100-V2",
+            "purchase_checks": [
+              "購入時に代表型番と接続機器の通常時・起動時電力を確認し、運搬経路も測る。"
+            ],
+            "tradeoffs": []
           }
         ],
         "purchase_checks": [
@@ -565,7 +655,7 @@
           "relationship": "narrower_comparison"
         }
       ],
-      "snapshot_id": "snp-a02-4e96536bef63",
+      "snapshot_id": "snp-a02-0f2d8e7bd028",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-portable-power-station-guide",
       "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める",
@@ -582,7 +672,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
       "content_role": "model_family_comparison",
       "content_role_label": "ブランド内比較",
-      "content_snapshot_sha256": "86b1a5f939c8bea35ec2b05d8cecc10f32189141b42cd1a431d45383ac659064",
+      "content_snapshot_sha256": "8e2f021494622205f60c5e564570f3a992367b56e9d5b3a2be854f2b97073d16",
       "cta_bindings": [
         {
           "article_code": "a03",
@@ -595,7 +685,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-86b1a5f939c8"
+          "snapshot_id": "snp-a03-8e2f02149462"
         },
         {
           "article_code": "a03",
@@ -608,7 +698,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-86b1a5f939c8"
+          "snapshot_id": "snp-a03-8e2f02149462"
         },
         {
           "article_code": "a03",
@@ -621,7 +711,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-86b1a5f939c8"
+          "snapshot_id": "snp-a03-8e2f02149462"
         },
         {
           "article_code": "a03",
@@ -634,7 +724,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-86b1a5f939c8"
+          "snapshot_id": "snp-a03-8e2f02149462"
         },
         {
           "article_code": "a03",
@@ -647,7 +737,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-86b1a5f939c8"
+          "snapshot_id": "snp-a03-8e2f02149462"
         },
         {
           "article_code": "a03",
@@ -660,7 +750,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-86b1a5f939c8"
+          "snapshot_id": "snp-a03-8e2f02149462"
         },
         {
           "article_code": "a03",
@@ -673,7 +763,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-86b1a5f939c8"
+          "snapshot_id": "snp-a03-8e2f02149462"
         },
         {
           "article_code": "a03",
@@ -686,7 +776,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-86b1a5f939c8"
+          "snapshot_id": "snp-a03-8e2f02149462"
         }
       ],
       "excerpt": "Anker Solix 4モデルの容量・定格出力・重量・寸法を同じ表で比較。持ち運び、出力、C1000の世代差から条件別に選びます。",
@@ -768,27 +858,63 @@
             "evidence_facts": [
               "CLM-ST1704-ANKER-C300-SPECS"
             ],
-            "product_ref": "PRD-ANKER-SOLIX-C300"
+            "not_for": [
+              "定格出力を超える機器をつなぐ、または中容量以上が必要な場合。"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C300",
+            "purchase_checks": [
+              "購入時に代表型番と接続機器の通常時・起動時電力を説明書で照合する。"
+            ],
+            "tradeoffs": [
+              "本体の軽さを優先する代わりに、容量と定格出力の範囲を小型機器向けに絞ります。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-ANKER-C800-SPECS"
             ],
-            "product_ref": "PRD-ANKER-SOLIX-C800-PLUS"
+            "not_for": [
+              "より大きい容量帯が必要、または本体を運べない場合。"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C800-PLUS",
+            "purchase_checks": [
+              "購入時に代表型番、設置寸法、運搬経路と接続機器の通常時・起動時電力を確認する。"
+            ],
+            "tradeoffs": [
+              "中容量帯を選ぶ代わりに、保管場所から運ぶ重さと設置場所を受け入れます。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-ANKER-C1000-SPECS",
               "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
             ],
-            "product_ref": "PRD-ANKER-SOLIX-C1000"
+            "not_for": [
+              "C1000系で軽さを優先する、またはUSB-Cの口数や公表サイクル数を優先する場合。"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C1000",
+            "purchase_checks": [
+              "購入時に代表型番、拡張バッテリーの公式対応、SurgePadの対象外機器を確認する。"
+            ],
+            "tradeoffs": [
+              "後から容量を増やせる構成を選ぶ代わりに、次世代モデルより重い本体を受け入れます。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
               "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
             ],
-            "product_ref": "PRD-ANKER-SOLIX-C1000-GEN2"
+            "not_for": [
+              "拡張バッテリーで容量を増やしたい、またはAC出力口数やSurgePad対応を優先する場合。"
+            ],
+            "product_ref": "PRD-ANKER-SOLIX-C1000-GEN2",
+            "purchase_checks": [
+              "購入時に代表型番、最新の取扱説明書、接続機器の条件と停電時の切替条件を確認する。"
+            ],
+            "tradeoffs": [
+              "本体重量とUSB-Cの口数を優先する代わりに、後から容量を増やす構成は選べません。"
+            ]
           }
         ],
         "purchase_checks": [
@@ -819,7 +945,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a03-86b1a5f939c8",
+      "snapshot_id": "snp-a03-8e2f02149462",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-anker-solix-c300-c800-c1000-differences",
       "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い",
@@ -836,7 +962,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/countertop-dishwasher-for-small-households.html",
       "content_role": "category_guide",
       "content_role_label": "選び方",
-      "content_snapshot_sha256": "793ffc90a38848510e743147615a2b798c8fa2f02cd4601310c6f3c0a27e34e9",
+      "content_snapshot_sha256": "22092aa2f1bc43a5b9cac52b3c52353fc3f7fc8cfcf039f75754d45c22d96b9a",
       "cta_bindings": [
         {
           "article_code": "a04",
@@ -849,7 +975,7 @@
           "product_id": "PRD-SIROCA-SS-M171",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-793ffc90a388"
+          "snapshot_id": "snp-a04-22092aa2f1bc"
         },
         {
           "article_code": "a04",
@@ -862,7 +988,7 @@
           "product_id": "PRD-SIROCA-SS-M171",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-793ffc90a388"
+          "snapshot_id": "snp-a04-22092aa2f1bc"
         },
         {
           "article_code": "a04",
@@ -875,7 +1001,7 @@
           "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-793ffc90a388"
+          "snapshot_id": "snp-a04-22092aa2f1bc"
         },
         {
           "article_code": "a04",
@@ -888,7 +1014,7 @@
           "product_id": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-793ffc90a388"
+          "snapshot_id": "snp-a04-22092aa2f1bc"
         },
         {
           "article_code": "a04",
@@ -901,7 +1027,7 @@
           "product_id": "PRD-SIROCA-SS-MA251",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-793ffc90a388"
+          "snapshot_id": "snp-a04-22092aa2f1bc"
         },
         {
           "article_code": "a04",
@@ -914,7 +1040,7 @@
           "product_id": "PRD-SIROCA-SS-MA251",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-793ffc90a388"
+          "snapshot_id": "snp-a04-22092aa2f1bc"
         },
         {
           "article_code": "a04",
@@ -927,7 +1053,7 @@
           "product_id": "PRD-TOSHIBA-DWS-33B-W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-card",
-          "snapshot_id": "snp-a04-793ffc90a388"
+          "snapshot_id": "snp-a04-22092aa2f1bc"
         },
         {
           "article_code": "a04",
@@ -940,7 +1066,7 @@
           "product_id": "PRD-TOSHIBA-DWS-33B-W",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a04-final",
-          "snapshot_id": "snp-a04-793ffc90a388"
+          "snapshot_id": "snp-a04-22092aa2f1bc"
         }
       ],
       "excerpt": "工事不要のタンク式食洗機4候補を公式仕様で比較。標準食器11〜18点の現行モデルを、設置寸法、使用水量、給水・乾燥方式で選び分けます。SOLOTA NP-TMLK1は販売状態未確認の仕様参考にとどめます。",
@@ -967,7 +1093,7 @@
           {
             "journey_stage": "verify",
             "placement": "purchase_checks",
-            "question": "SOLOTAとラクアmini Plusの型番・販売状態を確かめる",
+            "question": "ラクアmini（TK-MDW22W）とは別型番のmini Plus（TK-MDW22B）とSOLOTAの販売表示を確かめる",
             "target_ref": "solota-vs-rakua-mini-plus"
           }
         ],
@@ -990,27 +1116,24 @@
         ],
         "decision_summary": {
           "key_difference": "設置幅と扉を開く奥行、一度に洗う食器量、給水・乾燥方式が違います。",
+          "limits_note": "標準食器点数は、普段の皿が全部入る保証ではありません。食器の大きさと収納例を照合してください。",
           "no_purchase_condition": "扉の開閉、給排水、アース、蒸気の逃げ道を確保できない場合は見送ります。",
           "options": [
             {
               "product_ref": "PRD-SIROCA-SS-M171",
-              "reason": "給水方法を設置環境に合わせて選びたい人の候補です。",
-              "tradeoff": "本体を置く面に加え、扉を開く前方空間が必要です。"
+              "reason": "給水方法を設置環境に合わせて選びたい人の候補です。"
             },
             {
               "product_ref": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
-              "reason": "設置幅を抑え、少量ずつ洗いたい人の候補です。",
-              "tradeoff": "普段一度に洗う食器が収まるかを先に確かめます。"
+              "reason": "設置幅を抑え、少量ずつ洗いたい人の候補です。"
             },
             {
               "product_ref": "PRD-SIROCA-SS-MA251",
-              "reason": "洗浄後に扉が開くオートオープンを条件にする人の候補です。",
-              "tradeoff": "扉が開く空間が必要。確認対象は通常商品のシルバーです。"
+              "reason": "洗浄後に扉が開くオートオープンを条件にする人の候補です。"
             },
             {
               "product_ref": "PRD-TOSHIBA-DWS-33B-W",
-              "reason": "標準食器点数と強制排気乾燥を条件にする人の候補です。",
-              "tradeoff": "本体重量を支える設置面と、蒸気の逃げ道を確認します。"
+              "reason": "標準食器点数と強制排気乾燥を条件にする人の候補です。"
             }
           ]
         },
@@ -1044,6 +1167,8 @@
           }
         ],
         "practical_notes": [
+          "タンク式は水を自分で補給する方式、分岐水栓式は対応する水栓から給水する方式です。2WAYはこの2方式を選べるという意味です。タンク給水のたびに水を運べるか、分岐水栓を使う場合は水栓の適合と設置工事を先に確かめます。",
+          "アースは漏電時に電気を逃がすための接続です。設置予定場所の設備を確認し、接続先や工事の要否が分からない場合はメーカーまたは専門業者に確認してください。",
           "仮定の食事場面（収納の実測ではありません）：夕食後に皿・茶わん・汁わん・コップを洗うなら、普段の食器を一度並べて数えます。公式の標準食器点数だけで、大皿・深皿・鍋まで同じように収まるとは判断せず、食器の寸法と配置を取扱説明書で照合します。",
           "日々の作業は、給水の準備、排水先の確保、対応する洗剤、残さいフィルターなどの手入れまでを一続きで確かめます。手入れの頻度や継続費用について、公式資料から確定できない値は追加していません。"
         ],
@@ -1052,26 +1177,64 @@
             "evidence_facts": [
               "CLM-ST1704-DISH-SS-M171-SPECS"
             ],
-            "product_ref": "PRD-SIROCA-SS-M171"
+            "not_for": [
+              "本体幅または扉開放時の奥行を確保しにくい場合。"
+            ],
+            "product_ref": "PRD-SIROCA-SS-M171",
+            "purchase_checks": [
+              "購入時に代表型番、扉の開放空間、指定空間、排水・アースの経路を説明書で照合する。"
+            ],
+            "tradeoffs": [
+              "本体を置く面に加えて、扉を開く前方空間を使います。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-DISH-RAKUA-SPECS"
             ],
-            "product_ref": "PRD-THANKO-RAKUA-MINI-TK-MDW22W"
+            "not_for": [
+              "扉前方を含む設置奥行を確保しにくい、または別方式の洗浄構造を必須にする場合。"
+            ],
+            "product_ref": "PRD-THANKO-RAKUA-MINI-TK-MDW22W",
+            "purchase_checks": [
+              "購入時に代表型番、扉の開放空間、普段の食器量、排水・アースと蒸気の逃げ道を確認する。"
+            ],
+            "tradeoffs": [
+              "設置幅を抑える代わりに、一度に洗う食器量を小さめの構成に合わせます。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-DISH-SS-MA251-SPECS"
             ],
-            "product_ref": "PRD-SIROCA-SS-MA251"
+            "not_for": [
+              "本体と扉の開閉空間を確保しにくい、または使用水量をより少なくしたい場合。"
+            ],
+            "product_ref": "PRD-SIROCA-SS-MA251",
+            "purchase_checks": [
+              "購入時に代表型番、設置寸法、扉の開閉空間、給排水・アースと蒸気の逃げ道を説明書で確認する。"
+            ],
+            "selection_note": "扉開放時の寸法はこの記事の根拠資料では未確認です。本体寸法だけで設置を決めず、説明書で確かめてください。",
+            "tradeoffs": [
+              "洗浄後に扉が開く仕組みを選ぶ代わりに、扉と蒸気のための空間が必要です。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SPECS",
               "CLM-ST1704-DISH-TOSHIBA-DWS-33B-SUPPORT"
             ],
-            "product_ref": "PRD-TOSHIBA-DWS-33B-W"
+            "not_for": [
+              "設置幅を小さくしたい、または設置面の耐荷重を確保できない場合。"
+            ],
+            "product_ref": "PRD-TOSHIBA-DWS-33B-W",
+            "purchase_checks": [
+              "購入時に代表型番、耐荷重、扉開閉、給排水、排気とアースの条件を寸法図・説明書で確認する。"
+            ],
+            "selection_note": "扉開放時の寸法はこの記事の根拠資料では未確認です。本体寸法だけで設置を決めず、説明書で確かめてください。",
+            "tradeoffs": [
+              "一度に洗う食器量を優先する代わりに、本体を支える設置面と乾燥時の排気条件が必要です。"
+            ]
           }
         ],
         "purchase_checks": [
@@ -1111,11 +1274,11 @@
       "related_articles": [
         {
           "article_id": "solota-vs-rakua-mini-plus",
-          "context": "以前の比較対象の販売状況を確認する",
+          "context": "別機種・旧候補の型番と販売表示を確認する",
           "relationship": "lifecycle_reference"
         }
       ],
-      "snapshot_id": "snp-a04-793ffc90a388",
+      "snapshot_id": "snp-a04-22092aa2f1bc",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-countertop-dishwasher-for-small-households",
       "title": "工事不要の食洗機4候補｜1〜2人暮らしの設置条件で選ぶ",
@@ -1132,7 +1295,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/compact-robot-vacuum-shortlist.html",
       "content_role": "category_guide",
       "content_role_label": "選び方",
-      "content_snapshot_sha256": "17bf19b4440f062fa25b2a99f561edb165f1767614f685fdc38c7c73670267ff",
+      "content_snapshot_sha256": "3314f7a87a756e0ebb868d5d6c1ae941289631164a36b2da75d6adc36b104f93",
       "cta_bindings": [
         {
           "article_code": "a05",
@@ -1145,7 +1308,7 @@
           "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-card",
-          "snapshot_id": "snp-a05-17bf19b4440f"
+          "snapshot_id": "snp-a05-3314f7a87a75"
         },
         {
           "article_code": "a05",
@@ -1158,7 +1321,7 @@
           "product_id": "PRD-EUFY-AUTOEMPTY-C10-T2292",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-final",
-          "snapshot_id": "snp-a05-17bf19b4440f"
+          "snapshot_id": "snp-a05-3314f7a87a75"
         },
         {
           "article_code": "a05",
@@ -1171,7 +1334,7 @@
           "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-card",
-          "snapshot_id": "snp-a05-17bf19b4440f"
+          "snapshot_id": "snp-a05-3314f7a87a75"
         },
         {
           "article_code": "a05",
@@ -1184,7 +1347,7 @@
           "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-final",
-          "snapshot_id": "snp-a05-17bf19b4440f"
+          "snapshot_id": "snp-a05-3314f7a87a75"
         },
         {
           "article_code": "a05",
@@ -1197,7 +1360,7 @@
           "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-card",
-          "snapshot_id": "snp-a05-17bf19b4440f"
+          "snapshot_id": "snp-a05-3314f7a87a75"
         },
         {
           "article_code": "a05",
@@ -1210,7 +1373,7 @@
           "product_id": "PRD-ECOVACS-DEEBOT-MINI2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-final",
-          "snapshot_id": "snp-a05-17bf19b4440f"
+          "snapshot_id": "snp-a05-3314f7a87a75"
         },
         {
           "article_code": "a05",
@@ -1223,7 +1386,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-card",
-          "snapshot_id": "snp-a05-17bf19b4440f"
+          "snapshot_id": "snp-a05-3314f7a87a75"
         },
         {
           "article_code": "a05",
@@ -1236,7 +1399,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a05-final",
-          "snapshot_id": "snp-a05-17bf19b4440f"
+          "snapshot_id": "snp-a05-3314f7a87a75"
         }
       ],
       "excerpt": "ロボット掃除機4モデルを、本体・ステーションの設置寸法、帰還余白、水拭きと自動手入れの範囲で比較。置き場所優先の2モデルと、モップ自動手入れ優先の2モデルを条件別に整理します。",
@@ -1306,32 +1469,93 @@
           "CLM-ST1704-ROBOT-F115060-REFERENCE",
           "CLM-ST1704-ROBOT-K11-PRO-WARRANTY-UNRESOLVED"
         ],
-        "media": [],
+        "media": [
+          {
+            "asset_ref": "dimension-prd-eufy-autoempty-c10-t2292",
+            "evidence_ref": "CLM-ST1704-ROBOT-EUFY-C10-SPECS",
+            "role": "dimension"
+          },
+          {
+            "asset_ref": "dimension-prd-switchbot-k11-pro",
+            "evidence_ref": "CLM-ST1704-ROBOT-K11-PRO-SPECS",
+            "role": "dimension"
+          },
+          {
+            "asset_ref": "dimension-prd-ecovacs-deebot-mini2",
+            "evidence_ref": "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS",
+            "role": "dimension"
+          },
+          {
+            "asset_ref": "dimension-prd-irobot-roomba-plus-515-combo",
+            "evidence_ref": "CLM-ST1704-ROBOT-ROOMBA-515-SPECS",
+            "role": "dimension"
+          }
+        ],
         "practical_notes": [],
         "products": [
           {
             "evidence_facts": [
               "CLM-ST1704-ROBOT-EUFY-C10-SPECS"
             ],
-            "product_ref": "PRD-EUFY-AUTOEMPTY-C10-T2292"
+            "not_for": [
+              "小径本体を最優先する、水拭きも必要、または筐体寸法だけで設置を決めたい場合。"
+            ],
+            "product_ref": "PRD-EUFY-AUTOEMPTY-C10-T2292",
+            "purchase_checks": [
+              "購入時に代表型番、家具下の高さ・幅・奥行、段差、ステーションと帰還経路を確認する。"
+            ],
+            "selection_note": "本体と台が置けるだけでは設置可と決められません。型番に合う帰還余白と手入れの動線を公式の設置案内で確認してから候補に残してください。",
+            "tradeoffs": [
+              "薄型本体と自動ゴミ収集を選ぶ代わりに、水拭き機能は持たない構成です。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-ROBOT-K11-PRO-SPECS"
             ],
-            "product_ref": "PRD-SWITCHBOT-K11-PRO"
+            "not_for": [
+              "モップの自動洗浄・乾燥を求める、または筐体寸法だけで置き場所を決めたい場合。"
+            ],
+            "product_ref": "PRD-SWITCHBOT-K11-PRO",
+            "purchase_checks": [
+              "購入時に代表型番、帰還余白、Wi-Fi条件、紙パック・シートの型番と保証期間を確認する。"
+            ],
+            "selection_note": "本体と台が置けるだけでは設置可と決められません。型番に合う帰還余白と手入れの動線を公式の設置案内で確認してから候補に残してください。",
+            "tradeoffs": [
+              "小型本体と自動ゴミ収集を選ぶ代わりに、帰還余白の確保と水拭きシートの交換が必要です。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-ROBOT-DEEBOT-MINI2-SPECS"
             ],
-            "product_ref": "PRD-ECOVACS-DEEBOT-MINI2"
+            "not_for": [
+              "本体とステーションをともに小さくしたい、使い捨てシート式を優先する、または遠隔見守り機能を避けたい場合。"
+            ],
+            "product_ref": "PRD-ECOVACS-DEEBOT-MINI2",
+            "purchase_checks": [
+              "購入時に代表型番、ステーション・帰還経路、カメラ・音声・アプリ機能の設定条件を確認する。"
+            ],
+            "selection_note": "本体と台が置けるだけでは設置可と決められません。型番に合う帰還余白と手入れの動線を公式の設置案内で確認してから候補に残してください。",
+            "tradeoffs": [
+              "小さめの本体に加えて、モップを手入れするステーションの床面を確保します。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-ST1704-ROBOT-ROOMBA-515-SPECS"
             ],
-            "product_ref": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+            "not_for": [
+              "本体またはステーションの設置面積を小さくしたい場合。"
+            ],
+            "product_ref": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+            "purchase_checks": [
+              "購入時に代表型番、ステーションの設置面、水タンクを扱う上方空間と帰還経路を確認する。"
+            ],
+            "selection_note": "本体と台が置けるだけでは設置可と決められません。型番に合う帰還余白と手入れの動線を公式の設置案内で確認してから候補に残してください。",
+            "tradeoffs": [
+              "モップの給水・洗浄・乾燥を自動化する代わりに、ステーションと水タンクを扱う空間が必要です。"
+            ]
           }
         ],
         "purchase_checks": [
@@ -1362,7 +1586,7 @@
           "relationship": "narrower_comparison"
         }
       ],
-      "snapshot_id": "snp-a05-17bf19b4440f",
+      "snapshot_id": "snp-a05-3314f7a87a75",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-compact-robot-vacuum-shortlist",
       "title": "ロボット掃除機4モデル比較｜設置寸法・モップ自動手入れで選ぶ",
@@ -1379,7 +1603,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-under-100-seats.html",
       "content_role": "constraint_shortlist",
       "content_role_label": "条件別比較",
-      "content_snapshot_sha256": "296875d0c6f55b8b35152412876835d545cc3e875c9d46f116d704543ae35a3d",
+      "content_snapshot_sha256": "0371d01b5d919ecdadad44b915098352fd4957c068fc84ca3ccef52f4a8be5d5",
       "cta_bindings": [
         {
           "article_code": "a06",
@@ -1392,7 +1616,7 @@
           "product_id": "PRD-PROTECA-STARIA-CXR-02350",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-card",
-          "snapshot_id": "snp-a06-296875d0c6f5"
+          "snapshot_id": "snp-a06-0371d01b5d91"
         },
         {
           "article_code": "a06",
@@ -1405,7 +1629,7 @@
           "product_id": "PRD-PROTECA-STARIA-CXR-02350",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-final",
-          "snapshot_id": "snp-a06-296875d0c6f5"
+          "snapshot_id": "snp-a06-0371d01b5d91"
         },
         {
           "article_code": "a06",
@@ -1418,7 +1642,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01550",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-card",
-          "snapshot_id": "snp-a06-296875d0c6f5"
+          "snapshot_id": "snp-a06-0371d01b5d91"
         },
         {
           "article_code": "a06",
@@ -1431,7 +1655,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01550",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-final",
-          "snapshot_id": "snp-a06-296875d0c6f5"
+          "snapshot_id": "snp-a06-0371d01b5d91"
         },
         {
           "article_code": "a06",
@@ -1444,7 +1668,7 @@
           "product_id": "PRD-ACE-PALISADES3-Z-06910",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-card",
-          "snapshot_id": "snp-a06-296875d0c6f5"
+          "snapshot_id": "snp-a06-0371d01b5d91"
         },
         {
           "article_code": "a06",
@@ -1457,7 +1681,7 @@
           "product_id": "PRD-ACE-PALISADES3-Z-06910",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-final",
-          "snapshot_id": "snp-a06-296875d0c6f5"
+          "snapshot_id": "snp-a06-0371d01b5d91"
         },
         {
           "article_code": "a06",
@@ -1470,7 +1694,7 @@
           "product_id": "PRD-BERMAS-INTER-CITY-60524",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-card",
-          "snapshot_id": "snp-a06-296875d0c6f5"
+          "snapshot_id": "snp-a06-0371d01b5d91"
         },
         {
           "article_code": "a06",
@@ -1483,7 +1707,7 @@
           "product_id": "PRD-BERMAS-INTER-CITY-60524",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a06-final",
-          "snapshot_id": "snp-a06-296875d0c6f5"
+          "snapshot_id": "snp-a06-0371d01b5d91"
         }
       ],
       "excerpt": "100席未満の国内線で確認したい幅35×奥行20×高さ45cm・3辺100cm以内を基準に、4モデルの外寸、重量、容量、開き方を公式情報から比較します。",
@@ -1555,7 +1779,13 @@
           "CLM-PORTFOLIO-UNDER100-MUJI20-EXCLUDED",
           "CLM-PORTFOLIO-UNDER100-MAXPASS4-REFERENCE"
         ],
-        "media": [],
+        "media": [
+          {
+            "asset_ref": "dimension-prd-proteca-frester-ex-01550",
+            "evidence_ref": "CLM-PORTFOLIO-UNDER100-FRESTER-01550",
+            "role": "dimension"
+          }
+        ],
         "practical_notes": [],
         "preserve_story": true,
         "products": [
@@ -1563,25 +1793,60 @@
             "evidence_facts": [
               "CLM-PORTFOLIO-UNDER100-STARIA-02350"
             ],
-            "product_ref": "PRD-PROTECA-STARIA-CXR-02350"
+            "not_for": [
+              "容量を優先し、帰路の荷物も多めに見込みたい場合。"
+            ],
+            "product_ref": "PRD-PROTECA-STARIA-CXR-02350",
+            "purchase_checks": [
+              "購入時に代表型番、色ごとの在庫、ストッパーの操作条件と保証範囲を確認する。"
+            ],
+            "tradeoffs": [
+              "本体重量を抑える代わりに、厚手の衣類や予備の靴まで持つ旅では荷物を絞ります。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-PORTFOLIO-UNDER100-FRESTER-01550"
             ],
-            "product_ref": "PRD-PROTECA-FRESTER-EX-01550"
+            "not_for": [
+              "拡張した状態の容量を保ったまま小型機を利用したい場合。"
+            ],
+            "product_ref": "PRD-PROTECA-FRESTER-EX-01550",
+            "purchase_checks": [
+              "購入時に代表型番、拡張部を含む外寸、前開き内部の仕切り、ストッパー仕様を確認する。"
+            ],
+            "tradeoffs": [
+              "前開きと通常時の容量を選ぶ代わりに、対象便では拡張ファスナーを閉じた状態で使います。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-PORTFOLIO-UNDER100-PALISADES-06910"
             ],
-            "product_ref": "PRD-ACE-PALISADES3-Z-06910"
+            "not_for": [
+              "その容量では足りず、旅先で荷物が増える予定がある場合。"
+            ],
+            "product_ref": "PRD-ACE-PALISADES3-Z-06910",
+            "purchase_checks": [
+              "購入時に代表型番、前開き部の収納寸法、色ごとの在庫とストッパー仕様を確認する。"
+            ],
+            "tradeoffs": [
+              "小ぶりな前開きとストッパーを選ぶ代わりに、荷物量を小さい容量に収めます。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-PORTFOLIO-UNDER100-BERMAS-60524"
             ],
-            "product_ref": "PRD-BERMAS-INTER-CITY-60524"
+            "not_for": [
+              "PC収納を使わず、衣類の有効空間を優先したい場合。"
+            ],
+            "product_ref": "PRD-BERMAS-INTER-CITY-60524",
+            "purchase_checks": [
+              "購入時に新仕様か、PC収納の対応寸法、付属品と保証範囲を確認する。"
+            ],
+            "selection_note": "PC収納は13インチまでが目安です。インチ数だけで決めず、ご自身のPC外寸を収納条件と照合してください。",
+            "tradeoffs": []
           }
         ],
         "purchase_checks": [
@@ -1618,7 +1883,7 @@
           "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a06-296875d0c6f5",
+      "snapshot_id": "snp-a06-0371d01b5d91",
       "source_kind": "html_fixture",
       "source_ref": "articles/carry-on-suitcase-under-100-seats.html",
       "title": "100席未満の国内線向けスーツケース4モデルを機内持ち込み規定で比較",
@@ -1635,7 +1900,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/lightweight-carry-on-suitcase-under-3kg.html",
       "content_role": "constraint_shortlist",
       "content_role_label": "条件別比較",
-      "content_snapshot_sha256": "2d8f31b7f6fc3f92853f29e84e66cc3699c38059dbc20a41a08c8fe9e9ea61bc",
+      "content_snapshot_sha256": "2001f5ebb6b0cb7c840ec3d39d0c3ede37de85c60a7f246c2c72e3f3284efeaa",
       "cta_bindings": [
         {
           "article_code": "a07",
@@ -1648,7 +1913,7 @@
           "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-card",
-          "snapshot_id": "snp-a07-2d8f31b7f6fc"
+          "snapshot_id": "snp-a07-2001f5ebb6b0"
         },
         {
           "article_code": "a07",
@@ -1661,7 +1926,7 @@
           "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-final",
-          "snapshot_id": "snp-a07-2d8f31b7f6fc"
+          "snapshot_id": "snp-a07-2001f5ebb6b0"
         },
         {
           "article_code": "a07",
@@ -1674,7 +1939,7 @@
           "product_id": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-card",
-          "snapshot_id": "snp-a07-2d8f31b7f6fc"
+          "snapshot_id": "snp-a07-2001f5ebb6b0"
         },
         {
           "article_code": "a07",
@@ -1687,7 +1952,7 @@
           "product_id": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-final",
-          "snapshot_id": "snp-a07-2d8f31b7f6fc"
+          "snapshot_id": "snp-a07-2001f5ebb6b0"
         },
         {
           "article_code": "a07",
@@ -1700,7 +1965,7 @@
           "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-card",
-          "snapshot_id": "snp-a07-2d8f31b7f6fc"
+          "snapshot_id": "snp-a07-2001f5ebb6b0"
         },
         {
           "article_code": "a07",
@@ -1713,7 +1978,7 @@
           "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-final",
-          "snapshot_id": "snp-a07-2d8f31b7f6fc"
+          "snapshot_id": "snp-a07-2001f5ebb6b0"
         },
         {
           "article_code": "a07",
@@ -1726,7 +1991,7 @@
           "product_id": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-card",
-          "snapshot_id": "snp-a07-2d8f31b7f6fc"
+          "snapshot_id": "snp-a07-2001f5ebb6b0"
         },
         {
           "article_code": "a07",
@@ -1739,7 +2004,7 @@
           "product_id": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-final",
-          "snapshot_id": "snp-a07-2d8f31b7f6fc"
+          "snapshot_id": "snp-a07-2001f5ebb6b0"
         },
         {
           "article_code": "a07",
@@ -1752,7 +2017,7 @@
           "product_id": "PRD-PROTECA-TRI-AIR-01541",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-card",
-          "snapshot_id": "snp-a07-2d8f31b7f6fc"
+          "snapshot_id": "snp-a07-2001f5ebb6b0"
         },
         {
           "article_code": "a07",
@@ -1765,7 +2030,7 @@
           "product_id": "PRD-PROTECA-TRI-AIR-01541",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a07-final",
-          "snapshot_id": "snp-a07-2d8f31b7f6fc"
+          "snapshot_id": "snp-a07-2001f5ebb6b0"
         }
       ],
       "excerpt": "100席以上の国内線で確認したい3辺115cm以内を前提に、30L以上・本体3kg以下の5モデルを、容量、素材、ストッパー、拡張時寸法、保証条件から公式情報で比較します。",
@@ -1837,7 +2102,18 @@
           "CLM-PORTFOLIO-LIGHT-FREQUENTER-REFERENCE",
           "CLM-PORTFOLIO-LIGHT-MUJI36-EXCLUDED"
         ],
-        "media": [],
+        "media": [
+          {
+            "asset_ref": "dimension-prd-american-tourister-applite-4-qj6-68002",
+            "evidence_ref": "CLM-PORTFOLIO-LIGHT-APPLITE-QJ6-68002",
+            "role": "dimension"
+          },
+          {
+            "asset_ref": "dimension-prd-samsonite-c-lite-spinner55exp-134679-1549",
+            "evidence_ref": "CLM-PORTFOLIO-LIGHT-SAMSONITE-C-LITE-134679-1549",
+            "role": "dimension"
+          }
+        ],
         "practical_notes": [
           "総重量の計算例（仮定）：許容量が7kg、本体が3kg、身の回り品が1kgなら、ケースへ入れる荷物の目安は7−3−1＝3kgです。7kgは全便共通の規定ではありません。実際の便の条件を確認してください。"
         ],
@@ -1847,31 +2123,71 @@
             "evidence_facts": [
               "CLM-PORTFOLIO-LIGHT-AEROFLEX-01521"
             ],
-            "product_ref": "PRD-PROTECA-AEROFLEX-DX2-01521"
+            "not_for": [
+              "拡張機能、または大きい容量を優先したい場合。"
+            ],
+            "product_ref": "PRD-PROTECA-AEROFLEX-DX2-01521",
+            "purchase_checks": [
+              "購入時に代表型番、外寸の測定範囲、ストッパーの使用条件、日本製表記と保証を確認する。"
+            ],
+            "tradeoffs": []
           },
           {
             "evidence_facts": [
               "CLM-PORTFOLIO-LIGHT-TRIAIR-01541"
             ],
-            "product_ref": "PRD-PROTECA-TRI-AIR-01541"
+            "not_for": [
+              "キャスターストッパー、または拡張機能を必須条件にしたい場合。"
+            ],
+            "product_ref": "PRD-PROTECA-TRI-AIR-01541",
+            "purchase_checks": [
+              "購入時に代表型番、外寸・容量・重量、希望色の販売状況とストッパーの有無を確認する。"
+            ],
+            "tradeoffs": []
           },
           {
             "evidence_facts": [
               "CLM-PORTFOLIO-LIGHT-RIMOWA-82353171"
             ],
-            "product_ref": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171"
+            "not_for": [
+              "キャスターストッパー、または拡張機能を優先したい場合。"
+            ],
+            "product_ref": "PRD-RIMOWA-ESSENTIAL-LITE-CABIN-82353171",
+            "purchase_checks": [
+              "購入時に商品番号、購入日、保証対象の機能上の損傷と対象外の条件を確認する。"
+            ],
+            "tradeoffs": []
           },
           {
             "evidence_facts": [
               "CLM-PORTFOLIO-LIGHT-APPLITE-QJ6-68002"
             ],
-            "product_ref": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002"
+            "not_for": [
+              "拡張状態を前提に機内へ持ち込みたい場合。"
+            ],
+            "product_ref": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+            "purchase_checks": [
+              "購入時に代表型番、通常時・拡張時の公称値、外装ポケットを含む寸法と保証を確認する。"
+            ],
+            "selection_note": "通常時の3辺合計は115cmで上限と同じです。荷物を詰めた状態の外寸を、利用便の条件と照合してください。",
+            "tradeoffs": [
+              "通常時の容量を選ぶ代わりに、拡張した状態での機内持ち込みは前提にしません。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-PORTFOLIO-LIGHT-SAMSONITE-C-LITE-134679-1549"
             ],
-            "product_ref": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549"
+            "not_for": [
+              "拡張した状態のまま一般的な機内持ち込み寸法で使いたい場合。"
+            ],
+            "product_ref": "PRD-SAMSONITE-C-LITE-SPINNER55EXP-134679-1549",
+            "purchase_checks": [
+              "購入時に商品番号・SKU、通常時と拡張時の外寸、保証対象と電子部品の保証期間を確認する。"
+            ],
+            "tradeoffs": [
+              "軽量ハードケースと拡張機能を選ぶ代わりに、拡張時は一般的な機内持ち込みの寸法条件から外れます。"
+            ]
           }
         ],
         "purchase_checks": [
@@ -1908,7 +2224,7 @@
           "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a07-2d8f31b7f6fc",
+      "snapshot_id": "snp-a07-2001f5ebb6b0",
       "source_kind": "html_fixture",
       "source_ref": "articles/lightweight-carry-on-suitcase-under-3kg.html",
       "title": "100席以上便向け｜30L以上・3kg以下の機内持ち込みスーツケース5モデル比較",
@@ -1925,7 +2241,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/front-open-carry-on-suitcase-with-stopper.html",
       "content_role": "feature_shortlist",
       "content_role_label": "機能別比較",
-      "content_snapshot_sha256": "7338f4af601849c3cb34bc07791316c04d337e1d192de156fc43e867e4c17127",
+      "content_snapshot_sha256": "811dd997c4080aec0a40aa0ec458cf735b44906db8a29cf37bb2e56e60ebcd7b",
       "cta_bindings": [
         {
           "article_code": "a08",
@@ -1938,7 +2254,7 @@
           "product_id": "PRD-INNOVATOR-INV50",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-card",
-          "snapshot_id": "snp-a08-7338f4af6018"
+          "snapshot_id": "snp-a08-811dd997c408"
         },
         {
           "article_code": "a08",
@@ -1951,7 +2267,7 @@
           "product_id": "PRD-INNOVATOR-INV50",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-final",
-          "snapshot_id": "snp-a08-7338f4af6018"
+          "snapshot_id": "snp-a08-811dd997c408"
         },
         {
           "article_code": "a08",
@@ -1964,7 +2280,7 @@
           "product_id": "PRD-ACE-DIFFERENCE-05721",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-card",
-          "snapshot_id": "snp-a08-7338f4af6018"
+          "snapshot_id": "snp-a08-811dd997c408"
         },
         {
           "article_code": "a08",
@@ -1977,7 +2293,7 @@
           "product_id": "PRD-ACE-DIFFERENCE-05721",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-final",
-          "snapshot_id": "snp-a08-7338f4af6018"
+          "snapshot_id": "snp-a08-811dd997c408"
         },
         {
           "article_code": "a08",
@@ -1990,7 +2306,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01551",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-card",
-          "snapshot_id": "snp-a08-7338f4af6018"
+          "snapshot_id": "snp-a08-811dd997c408"
         },
         {
           "article_code": "a08",
@@ -2003,7 +2319,7 @@
           "product_id": "PRD-PROTECA-FRESTER-EX-01551",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-final",
-          "snapshot_id": "snp-a08-7338f4af6018"
+          "snapshot_id": "snp-a08-811dd997c408"
         },
         {
           "article_code": "a08",
@@ -2016,7 +2332,7 @@
           "product_id": "PRD-BERMAS-INTER-CITY-III-60570",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-card",
-          "snapshot_id": "snp-a08-7338f4af6018"
+          "snapshot_id": "snp-a08-811dd997c408"
         },
         {
           "article_code": "a08",
@@ -2029,7 +2345,7 @@
           "product_id": "PRD-BERMAS-INTER-CITY-III-60570",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a08-final",
-          "snapshot_id": "snp-a08-7338f4af6018"
+          "snapshot_id": "snp-a08-811dd997c408"
         }
       ],
       "excerpt": "100席以上の国内線で確認したい幅40×奥行25×高さ55cm・3辺115cm以内を基準に、前開きとキャスターストッパーを備えた4モデルの通常時・拡張時を公式情報で比較します。",
@@ -2102,7 +2418,18 @@
           "CLM-PORTFOLIO-FRONT-C-LITE-REFERENCE",
           "CLM-PORTFOLIO-FRONT-RIMOWA-REFERENCE"
         ],
-        "media": [],
+        "media": [
+          {
+            "asset_ref": "dimension-prd-ace-difference-05721",
+            "evidence_ref": "CLM-PORTFOLIO-FRONT-DIFFERENCE-05721",
+            "role": "dimension"
+          },
+          {
+            "asset_ref": "dimension-prd-proteca-frester-ex-01551",
+            "evidence_ref": "CLM-PORTFOLIO-FRONT-FRESTER-01551",
+            "role": "dimension"
+          }
+        ],
         "practical_notes": [],
         "preserve_story": true,
         "products": [
@@ -2110,25 +2437,55 @@
             "evidence_facts": [
               "CLM-PORTFOLIO-FRONT-INNOVATOR-INV50"
             ],
-            "product_ref": "PRD-INNOVATOR-INV50"
+            "not_for": [
+              "中央開きとの2WAY、または独立したPC収納を必須にする場合。"
+            ],
+            "product_ref": "PRD-INNOVATOR-INV50",
+            "purchase_checks": [
+              "購入時に代表型番、3ROOMの使い分け、ワイドオープン、ブレーキの仕様を確認する。"
+            ],
+            "tradeoffs": []
           },
           {
             "evidence_facts": [
               "CLM-PORTFOLIO-FRONT-DIFFERENCE-05721"
             ],
-            "product_ref": "PRD-ACE-DIFFERENCE-05721"
+            "not_for": [
+              "通常時から大容量を必須にする場合。"
+            ],
+            "product_ref": "PRD-ACE-DIFFERENCE-05721",
+            "purchase_checks": [
+              "購入時に代表型番、通常時・拡張時の外寸、前・中央の開き方とストッパー仕様を確認する。"
+            ],
+            "tradeoffs": []
           },
           {
             "evidence_facts": [
               "CLM-PORTFOLIO-FRONT-FRESTER-01551"
             ],
-            "product_ref": "PRD-PROTECA-FRESTER-EX-01551"
+            "not_for": [
+              "前面の独立したPCポケットを必須にする場合。"
+            ],
+            "product_ref": "PRD-PROTECA-FRESTER-EX-01551",
+            "purchase_checks": [
+              "購入時に代表型番、通常時・拡張時の外寸、ふたの可動域、前開きとストッパー仕様を確認する。"
+            ],
+            "tradeoffs": [
+              "片側で荷造りする構造を選ぶ代わりに、中央開きはできません。"
+            ]
           },
           {
             "evidence_facts": [
               "CLM-PORTFOLIO-FRONT-BERMAS-60570"
             ],
-            "product_ref": "PRD-BERMAS-INTER-CITY-III-60570"
+            "not_for": [
+              "PC収納より、収納全体を片面から大きく開けることを優先したい場合。"
+            ],
+            "product_ref": "PRD-BERMAS-INTER-CITY-III-60570",
+            "purchase_checks": [
+              "購入時に代表型番、PC収納の対応寸法、仕切りの使い方とストッパー仕様を確認する。"
+            ],
+            "tradeoffs": []
           }
         ],
         "purchase_checks": [
@@ -2165,7 +2522,7 @@
           "relationship": "adjacent_condition"
         }
       ],
-      "snapshot_id": "snp-a08-7338f4af6018",
+      "snapshot_id": "snp-a08-811dd997c408",
       "source_kind": "html_fixture",
       "source_ref": "articles/front-open-carry-on-suitcase-with-stopper.html",
       "title": "100席以上便向け｜前開き・ストッパー付き機内持ち込みスーツケース4モデル比較",
@@ -2182,7 +2539,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/roomba-mini-vs-switchbot-k11-pro.html",
       "content_role": "head_to_head_comparison",
       "content_role_label": "2製品比較",
-      "content_snapshot_sha256": "a0c7708335bda300cd6449ea4fd7d41563dd01f564e3a527d37e1e31c0f4545c",
+      "content_snapshot_sha256": "9f729547cbcfba2751cf042db41bde0e52874ac863521c87712f40e01a13696f",
       "cta_bindings": [
         {
           "article_code": "a09",
@@ -2195,7 +2552,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a09-card",
-          "snapshot_id": "snp-a09-a0c7708335bd"
+          "snapshot_id": "snp-a09-9f729547cbcf"
         },
         {
           "article_code": "a09",
@@ -2208,7 +2565,7 @@
           "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a09-final",
-          "snapshot_id": "snp-a09-a0c7708335bd"
+          "snapshot_id": "snp-a09-9f729547cbcf"
         },
         {
           "article_code": "a09",
@@ -2221,7 +2578,7 @@
           "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a09-card",
-          "snapshot_id": "snp-a09-a0c7708335bd"
+          "snapshot_id": "snp-a09-9f729547cbcf"
         },
         {
           "article_code": "a09",
@@ -2234,7 +2591,7 @@
           "product_id": "PRD-SWITCHBOT-K11-PRO",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a09-final",
-          "snapshot_id": "snp-a09-a0c7708335bd"
+          "snapshot_id": "snp-a09-9f729547cbcf"
         }
       ],
       "excerpt": "Roomba Mini SlimとSwitchBot K11+ Proの2製品を、本体・充電台の寸法、自動ゴミ収集、水拭き、Wi-Fi条件で比較します。別条件の候補は4モデル比較へ案内します。",
@@ -2296,7 +2653,18 @@
           "CLM-PORTFOLIO-ROBOT-EUFY-C10-BOUNDARY-REFERENCE",
           "CLM-PORTFOLIO-ROBOT-DEEBOT-MINI2-BOUNDARY-REFERENCE"
         ],
-        "media": [],
+        "media": [
+          {
+            "asset_ref": "dimension-prd-irobot-roomba-mini-slim-f115060",
+            "evidence_ref": "CLM-PORTFOLIO-ROBOT-ROOMBA-SLIM-F115060",
+            "role": "dimension"
+          },
+          {
+            "asset_ref": "dimension-prd-switchbot-k11-pro",
+            "evidence_ref": "CLM-PORTFOLIO-ROBOT-K11-PRO",
+            "role": "dimension"
+          }
+        ],
         "practical_notes": [],
         "preserve_story": true,
         "products": [
@@ -2305,9 +2673,16 @@
               "CLM-PORTFOLIO-ROBOT-ROOMBA-SLIM-F115060"
             ],
             "not_for": [
-              "自動ゴミ収集を必須にする場合"
+              "自動ゴミ収集を必要とする場合。"
             ],
-            "product_ref": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
+            "product_ref": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+            "purchase_checks": [
+              "購入時に代表型番、家具下の高さ、充電台への帰還経路、交換用シートと消耗品の型番を確認する。"
+            ],
+            "selection_note": "本体と台が置けるだけでは設置可と決められません。型番に合う帰還余白と手入れの動線を公式の設置案内で確認してから候補に残してください。",
+            "tradeoffs": [
+              "充電台の奥行を抑える代わりに、ダスト容器は手動で空にします。"
+            ]
           },
           {
             "evidence_facts": [
@@ -2315,9 +2690,16 @@
               "CLM-PORTFOLIO-ROBOT-K11-INSTALLATION-SPACE"
             ],
             "not_for": [
-              "ステーションと公式の帰還余白を確保できない場合"
+              "モップの自動洗浄・乾燥を求める、または筐体寸法だけで置き場所を決めたい場合。"
             ],
-            "product_ref": "PRD-SWITCHBOT-K11-PRO"
+            "product_ref": "PRD-SWITCHBOT-K11-PRO",
+            "purchase_checks": [
+              "購入時に代表型番、帰還余白、Wi-Fi条件、紙パック・シートの型番と保証期間を確認する。"
+            ],
+            "selection_note": "本体と台が置けるだけでは設置可と決められません。型番に合う帰還余白と手入れの動線を公式の設置案内で確認してから候補に残してください。",
+            "tradeoffs": [
+              "小型ステーションと自動ゴミ収集を選ぶ代わりに、帰還余白と水拭きシートの交換が必要です。"
+            ]
           }
         ],
         "purchase_checks": [
@@ -2348,7 +2730,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a09-a0c7708335bd",
+      "snapshot_id": "snp-a09-9f729547cbcf",
       "source_kind": "html_fixture",
       "source_ref": "articles/roomba-mini-vs-switchbot-k11-pro.html",
       "title": "Roomba Mini SlimとSwitchBot K11+ Proを設置寸法・水拭きで比較",
@@ -2365,7 +2747,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
       "content_role": "lifecycle_status_route",
       "content_role_label": "型番・販売表示の確認案内",
-      "content_snapshot_sha256": "1d75438033fc279ab5e3794f1aeb820f34d4be82c0650ce8a5bf1a4deb5a4765",
+      "content_snapshot_sha256": "6ce5b81a1cef0bcddc2bb7d154d7e07ae55faedfbec7a1083caa2f1afc3001dc",
       "cta_bindings": [],
       "excerpt": "SOLOTA NP-TMLK1-Kとラクアmini Plus TK-MDW22Bの型番と公式ページの表示を整理します。購入リンクの有無と商品の評価を分け、在庫・納期・保証や設置条件など、購入前に確認したい項目を案内します。",
       "home_order": 4,
@@ -2426,7 +2808,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a10-1d75438033fc",
+      "snapshot_id": "snp-a10-6ce5b81a1cef",
       "source_kind": "html_fixture",
       "source_ref": "articles/solota-vs-rakua-mini-plus.html",
       "title": "SOLOTA・ラクアmini Plus｜型番・販売表示と購入前の確認",

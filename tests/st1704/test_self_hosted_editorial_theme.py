@@ -1956,7 +1956,30 @@ def test_sitemap_and_front_page_share_one_public_listing_exclusion_policy() -> N
         in resolver
     )
     assert "$query_row_limit = $max_candidate_rows + 1;" in resolver
-    assert "array($editorial_root_like, $query_row_limit)" in resolver
+    # Local guide IDs have their own placeholders; they never enlarge the ten
+    # production slots or the twenty-row query's one-row overflow sentinel.
+    assert "count($final_slugs) !== 10" in resolver
+    assert "count(array_unique($final_slugs)) !== 10" in resolver
+    assert re.search(
+        r"\$local_guide_ids = kurashinoshirube_is_local_preview\(\)"
+        r"\s*&& function_exists\('raos_local_reader_guide_listing_ids'\)"
+        r"\s*\? raos_local_reader_guide_listing_ids\(\) : array\(\);",
+        resolver,
+    )
+    assert "$local_guide_ids === array() ? '' : 'AND ID NOT IN ('" in resolver
+    assert "array_fill(0, count($local_guide_ids), '%d')" in resolver
+    assert re.search(
+        r"\$final_slugs,\s*array\(\$editorial_root_like\),"
+        r"\s*\$local_guide_ids,\s*array\(\$query_row_limit\)",
+        resolver,
+    )
+    assert re.search(
+        r"\. \$local_guide_clause\s*\. \"ORDER BY ID ASC LIMIT %d\"",
+        resolver,
+    )
+    assert "foreach ($local_guide_ids as $local_id)" in resolver
+    assert "raos_local_reader_guide_identity($local_id) === null" in resolver
+    assert "$excluded[$local_id] = $local_id;" in resolver
     assert resolver.count("$wpdb->get_results($query)") == 1
     assert "! isset($wpdb->last_error)" in resolver
     assert "! is_string($wpdb->last_error)" in resolver

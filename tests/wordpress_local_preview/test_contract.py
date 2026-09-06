@@ -548,7 +548,24 @@ def test_dishwasher_lifecycle_article_separates_unknown_sale_and_product_quality
 
 def test_editorial_stylesheet_is_owned_by_the_production_theme() -> None:
     plugin = MU_PLUGIN.read_text(encoding="utf-8")
-    assert "raos-editorial-v2" not in plugin
+    # HTML identity validation may mention the article root. Editorial CSS and
+    # its stylesheet loader still belong exclusively to the production theme.
+    plugin_styles = re.findall(
+        r"<style\b[^>]*>(.*?)</style>", plugin, flags=re.DOTALL | re.IGNORECASE
+    )
+    assert plugin_styles, "The local warning banner must retain its own styles"
+    assert all("raos-editorial-v2" not in styles for styles in plugin_styles)
+    assert not re.search(r"\.raos-editorial-v2(?:-page)?\b", plugin)
+    assert "editorial-v2.css" not in plugin
+    assert "kurashinoshirube-editorial-v2" not in plugin
+    theme_functions = (EDITORIAL_CSS.parent.parent / "functions.php").read_text(
+        encoding="utf-8"
+    )
+    assert re.search(
+        r"wp_enqueue_style\(\s*'kurashinoshirube-editorial-v2',"
+        r"\s*get_stylesheet_directory_uri\(\) \. '/assets/editorial-v2\.css'",
+        theme_functions,
+    )
 
     stylesheet = EDITORIAL_CSS.read_text(encoding="utf-8")
     for marker in (

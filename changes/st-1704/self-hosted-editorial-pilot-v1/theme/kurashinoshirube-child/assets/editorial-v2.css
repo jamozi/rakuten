@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: 1282d77e528638af2c25df8715a20735fda32db3e8096b95cfd25a0c4cdeef20;
+  --raos-theme-runtime-revision-editorial-v2: f2606fff14f1114ef8bd172e2ea890d187f3ba6a79ae2517b582aabf36e5ac88;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -1320,3 +1320,58 @@
 .raos-dimension-diagram__plan { border: 2px solid #253a53; background: #f3f6f8; width: min(100%, 14rem); margin: 1rem auto; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 1rem; box-sizing: border-box; }
 .raos-dimension-diagram :is(p,figcaption) { font-size: .875rem; line-height: 1.9; }
 @media (max-width: 768px) { .raos-reader-dimensions { grid-template-columns: 1fr; } }
+
+/* Decision boundaries stay ahead of candidates at every text size. */
+.raos-editorial-v2 .decision-section :where(.raos-key-difference, .raos-no-purchase) { margin-block: .75rem; padding: 1rem; }
+.raos-editorial-v2 .decision-section .decision-list { margin-top: 1.5rem; }
+.raos-editorial-v2 .decision-section .decision-list li { gap: .5rem; }
+.raos-editorial-v2 .decision-section .decision-list p { margin-bottom: .5rem; }
+.raos-editorial-v2 .raos-selection-limit { display: block; margin-block: .75rem; border-left: 3px solid var(--rev2-line-soft); padding-left: .75rem; }
+.raos-editorial-v2 .raos-decision-table td p { margin: 0 0 .75rem; font-size: inherit; }
+.raos-editorial-v2 .raos-decision-table td p:last-child { margin-bottom: 0; }
+
+
+/* Approved diagrams participate in prose flow; photo-frame rules do not apply. */
+.raos-editorial-v2 .raos-product-card figure.raos-dimension-diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto;
+  overflow: visible;
+  background: #fff;
+  box-sizing: border-box;
+}
+.raos-editorial-v2 .raos-product-card figure.raos-dimension-diagram figcaption {
+  position: static;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-size: .875rem;
+  line-height: 1.9;
+}
+.raos-dimension-diagram__comparison-plan {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  margin-block: 1rem;
+}
+.raos-dimension-diagram__shape {
+  position: absolute;
+  border: 2px solid #253a53;
+  background: #dce9f5;
+  box-sizing: border-box;
+}
+.raos-dimension-diagram__shape[data-raos-dimension-role="station"],
+.raos-dimension-diagram__shape[data-raos-dimension-role="expanded"] {
+  background: #f5e7c8;
+  border-style: dashed;
+}
+.raos-dimension-diagram__labels { margin-block: 1rem; }
+.raos-dimension-diagram__labels dt { font-weight: 700; }
+.raos-dimension-diagram__labels dd { margin: 0 0 .75rem; overflow-wrap: anywhere; }
+
+/* Long Japanese guide headings must wrap even at 200% text size. */
+.raos-editorial-v2 .raos-guide-section h2 {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}

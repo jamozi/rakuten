@@ -7,7 +7,7 @@
     "recommendation_mutation": false,
     "tracking": false
   },
-  "contract_sha256": "9b87fb08a6c2d228ec295b43e4db37555d04679bb496f8bfe345625a83b0be29",
+  "contract_sha256": "52aef5989b1b7b6c41e5efd995466f7cbb72561876d2f541ab3968bedaf014f2",
   "fixtures": [
     {
       "path": "changes/st-1704/affiliate-learning-v2/examples/article-observation.v2.json",
@@ -23,7 +23,7 @@
   "runtime_sources": [
     {
       "path": "changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json",
-      "sha256": "28e5e6012f5b56bd31e3e5f9f2035c9f637082cb3c9ad3eed0ad4088b60a4ab0",
+      "sha256": "98ecaadc336feb5282f61884ce7f247590c843ac2f141127169a7200dd42dbe4",
       "size": 4785
     },
     {

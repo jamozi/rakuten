@@ -325,6 +325,19 @@ function raos_local_preview_has_only_reviewed_https_links(string $content): bool
     return true;
 }
 
+// A separate ready set never changes the ten-post publication fixture contract.
+$local_reader_guides = array();
+if ($mixed_metadata === null && is_file($fixture_root . '/reader-guides.v1.json')) {
+    if (! function_exists('raos_local_reader_guides_fixture')) {
+        WP_CLI::error('RAOS_LOCAL_READER_GUIDES_PLUGIN_REQUIRED');
+    }
+    // A previous mixed seed must be cleared only by the ordinary local seed below.
+    if (get_option('raos_mixed_preview_policy_heads_v1', null) === null) {
+        $local_reader_guides = raos_local_reader_guides_fixture();
+        if ($local_reader_guides === null) { WP_CLI::error('RAOS_LOCAL_READER_GUIDES_FIXTURE_INVALID'); }
+    }
+}
+
 $seed_option = 'raos_local_preview_seed_version';
 $previous_seed = get_option($seed_option, null);
 if ($mode === 'initialize' && is_string($previous_seed) && $previous_seed !== '') {
@@ -798,6 +811,22 @@ if ($mixed_binding !== null) {
 } else {
     delete_option('raos_mixed_preview_policy_heads_v1');
 }
+if ($mixed_metadata === null && function_exists('raos_local_reader_guides_seed')) {
+    // Reload after clearing an earlier mixed profile, before exposing any guides.
+    if (is_file($fixture_root . '/reader-guides.v1.json')) {
+        $local_reader_guides = raos_local_reader_guides_fixture();
+        if ($local_reader_guides === null) { WP_CLI::error('RAOS_LOCAL_READER_GUIDES_FIXTURE_INVALID'); }
+        $local_reader_guide_count = raos_local_reader_guides_seed($local_reader_guides, $preview_author_id);
+    } else {
+        update_option('raos_local_reader_guides_enabled_v1', '0', false);
+        $local_reader_guide_count = 0;
+    }
+} else {
+    update_option('raos_local_reader_guides_enabled_v1', '0', false);
+    $local_reader_guide_count = 0;
+}
+WP_CLI::log('RAOS_WORDPRESS_PREVIEW_FIXED_POST_COUNT=' . count($fixture['posts']));
+WP_CLI::log('RAOS_WORDPRESS_PREVIEW_LOCAL_GUIDE_COUNT=' . $local_reader_guide_count);
 // Reader hubs are local fixtures only. Existing mixed/publication candidates are unchanged.
 if ($mixed_metadata === null && function_exists('kurashinoshirube_reader_hubs')) {
     foreach (kurashinoshirube_reader_hubs() as $hub) {

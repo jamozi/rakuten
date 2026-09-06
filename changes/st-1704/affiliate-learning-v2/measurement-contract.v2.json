@@ -32,7 +32,7 @@
       "article_type_code": "AT-002",
       "intent_classification": "HOUSEHOLD_FIT_COMPARISON",
       "intent_cluster": "家事",
-      "packet_sha256": "d0d00c9f9552a62250d6e2286ce86d9e07f77af5b652c2fe1585bb18bc63445b",
+      "packet_sha256": "cfe434ddc81a089cedefb04362ba2928238d2c5cf4402814ca0738968db763c4",
       "slot": 4,
       "slug": "countertop-dishwasher-for-small-households"
     },
@@ -123,7 +123,7 @@
   "slice_id": "AFFILIATE_LEARNING_MEASUREMENT_V2",
   "source_bindings": {
     "article_collection_path": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json",
-    "article_collection_sha256": "592565d632d2dc7e3c5ef72ae58a9023c16ca7de2b4eb0403499e89961e39c07",
+    "article_collection_sha256": "3b6350279bcd188e29e14996cedb928fb9ef511c9c3dd620ce3f96dd45a335f9",
     "compatibility_template_path": "changes/st-1704/self-hosted-editorial-pilot-v1/operations/measurement-ledger.v1.json",
     "compatibility_template_sha256": "885735bdf2df835c6725d92a7792328d292e56555e76cc0f3ac7df1eda08fc3b"
   },

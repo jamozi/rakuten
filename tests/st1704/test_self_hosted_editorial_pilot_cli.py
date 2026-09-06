@@ -499,7 +499,11 @@ def _source_reader(
     )
     retrieved_at = f"{cast(str, source['retrieved_on'])}T00:00:00Z"
     content_type = (
-        "application/pdf" if source["source_type"] == "PRODUCT_MANUAL" else "text/html"
+        "application/pdf"
+        if source["source_type"] in {
+            "PRODUCT_MANUAL", "OFFICIAL_PRODUCT_MANUAL_PDF", "OFFICIAL_PRODUCT_CATALOG_PDF"
+        }
+        else "text/html"
     )
     body = _source_body_bytes(content_type, locators)
     body_sha256 = bytes_sha256(body)
@@ -781,21 +785,40 @@ def test_all_five_packets_render_deterministically_with_closed_draft_payload() -
         for article in cast(list[dict[str, object]], article_document["articles"])
     }
     assert source_document["source_packets"]
+    # This positive rendering case includes the manual reviewed on September 6.
+    # Keep the old clock in the time-boundary tests elsewhere in this module.
+    def clock() -> datetime:
+        return datetime(2026, 9, 6, 10, 30, tzinfo=timezone.utc)
+
+    def evidence_reader(repository_root: Path, *, product_id: str) -> RakutenProductEvidence:
+        return replace(
+            _reader(repository_root, product_id=product_id),
+            retrieved_at="2026-09-06T10:00:00Z",
+        )
+
+    def source_reader(repository_root: Path, *, source_ref: str) -> OfficialSourceCaptureEvidence:
+        original = _source_reader(repository_root, source_ref=source_ref)
+        material = original.response_material()
+        material["retrieved_at"] = "2026-09-06T10:00:00Z"
+        return replace(
+            original,
+            retrieved_at="2026-09-06T10:00:00Z",
+            response_sha256=canonical_sha256(material),
+        )
+
     for identity in PILOT_ARTICLE_IDENTITIES:
-        clock = _fixed_clock
-        evidence_reader = _reader
         first = prepare_editorial_article(
             REPOSITORY_ROOT,
             identity.article_id,
             evidence_reader=evidence_reader,
-            source_evidence_reader=_source_reader,
+            source_evidence_reader=source_reader,
             clock=clock,
         )
         second = prepare_editorial_article(
             REPOSITORY_ROOT,
             identity.article_id,
             evidence_reader=evidence_reader,
-            source_evidence_reader=_source_reader,
+            source_evidence_reader=source_reader,
             clock=clock,
         )
         assert first.packet_sha256 == second.packet_sha256
@@ -3607,3 +3630,40 @@ def test_at003_artifact_preserves_target_and_owner_apply_hashes(
     assert query["request_sha256"] == [original.request.request_sha256]
     assert query["review_draft_id"] == [str(receipt.draft_id)]
     assert query["target_public_post_id"] == ["42"]
+
+
+@pytest.mark.parametrize("source_type", [
+    "OFFICIAL_PRODUCT_MANUAL_PDF", "OFFICIAL_PRODUCT_CATALOG_PDF",
+])
+def test_registered_pdf_source_rejects_html_even_with_consistent_capture_hashes(source_type):
+    _articles, registry, _media = _documents()
+    source = next(row for row in registry["sources"] if row["source_type"] == source_type)
+    claims = {
+        claim["claim_id"]: claim
+        for packet in registry["source_packets"] for claim in packet["claims"]
+    }
+    now = datetime.fromisoformat(source["retrieved_on"] + "T10:30:00+00:00")
+    arguments = dict(
+        packet={}, all_registry_claims=claims, selected_sources=[source],
+        policy_sources=[], editorial_facts_checked_on=source["retrieved_on"], now=now,
+    )
+    bound = application_module._bind_source_capture_evidence(
+        REPOSITORY_ROOT, reader=_source_reader, **arguments
+    )
+    assert len(bound) == 1 and bound[0].content_type == "application/pdf"
+
+    def html_reader(root, *, source_ref):
+        original = _source_reader(root, source_ref=source_ref)
+        material = original.response_material()
+        material["content_type"] = "text/html"
+        material["body_sha256"] = bytes_sha256(_source_body_bytes("text/html", original.locators))
+        return replace(
+            original, content_type="text/html", body_sha256=material["body_sha256"],
+            response_sha256=canonical_sha256(material),
+        )
+
+    with pytest.raises(EditorialPilotFailure) as rejected:
+        application_module._bind_source_capture_evidence(
+            REPOSITORY_ROOT, reader=html_reader, **arguments
+        )
+    assert rejected.value.code is EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID

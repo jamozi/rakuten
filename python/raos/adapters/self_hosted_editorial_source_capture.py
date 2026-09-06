@@ -94,7 +94,7 @@ _ARTICLE_IDS: Final = frozenset(
 # accidental bulk edit) from replacing both documents with a different set of
 # capture targets while preserving their internal consistency.
 _PRODUCT_SOURCE_INVENTORY_SHA256: Final = (
-    "d6179333137f0faf66526a1eadc86c085ada3d12245b6f16955946996210a70b"
+    "5d2dc5863df2ee06c86f603733b2e8a79380172025ea63db3eab5c4e44894112"
 )
 _POLICY_SOURCE_INVENTORY_SHA256: Final = (
     "5509d907252fe67cbb7aea1fa37ced915cf02d50f5a4a6b2b08341292ddd55c8"
