@@ -90,12 +90,12 @@ R03は指定と違う幅を先に閲覧し、全文を読んだ後に初見回�
 
 ## 検査と表示記録
 
-最終の通常検査・ブラウザー検査の結果は、この節を実行結果で更新する。未実施を合格と扱わない。
+ブラウザーの最終結果は以下のとおり。通常検査・CIの最終実行結果とskip理由は[統合PR #190](https://github.com/jamozi/rakuten/pull/190)の説明とチェックに記録する。未実施を合格と扱わない。
 
 - 生成: `make generate BASE=origin/main`、81 owner PASS（実装入力を変更したため実行）。
 - 修正対象: 175テスト PASS、source-capture 70テスト PASS、WordPress統合の関連9テスト PASS。
-- 最終 `make fast`: 実行予定。ローカル専用PostgreSQL等のskipは別記する。
-- 最終ブラウザー: 実行予定。46ページ×5幅を選択し、通常と200%文字を確認する。
+- 通常検査: `make fast BASE=origin/main`。最終結果は上記PRに記録する。ローカル専用PostgreSQL等のskipは別記する。
+- 最終ブラウザー: **46ページ×5幅、230条件で失敗0件・エラー0件**。通常と200%文字、見出し、内部リンク、表、フォーカス、画像なし、UNKNOWN、CTA非表示を確認。画像原本は `remaining/final-remediated/manifest.json` に結び付く。
 
 ローカルURL:
 
@@ -119,7 +119,7 @@ R03は指定と違う幅を先に閲覧し、全文を読んだ後に初見回�
 | `remaining/ai-reviews/r01/`〜`r09/` | 段階回答と全文レビュー。R03の初見は上記理由で除外 |
 | `remaining/research/` | 公開公式資料の観測・PDF原本と照合 |
 | `remaining/final-verified/` | 修正前最終検査。230条件中、給水ガイド360px・文字200%の横はみ出し1件を記録 |
-| `remaining/final-remediated/` | 上記指摘を反映した最終表示・検査の保存先 |
+| `remaining/final-remediated/` | 上記指摘を反映した最終表示・検査。46ページ×5幅、失敗0件 |
 
 表示差は、共通の最大差・見送り条件を先に読めること、型番を識別できる公式リンク、
 本体と設備・拡張の差を数値と対応させた図、追加5ガイドへ続く導線である。
