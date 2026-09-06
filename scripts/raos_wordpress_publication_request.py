@@ -200,6 +200,7 @@ EXPECTED_YOAST_SETTINGS_FINGERPRINT: Final = (
 EXPECTED_POLICY_PAGE_COUNT: Final = 3
 CREATE_IF_MISSING_POLICY_PAGE_SLUGS: Final = frozenset({"comparison-policy"})
 MAX_PUBLICATION_PROPOSALS: Final = 14
+MAX_INCREMENTAL_PUBLICATION_PROPOSALS: Final = 20
 MAX_CONTENT_BYTES: Final = 1024 * 1024
 MAX_RESPONSE_BYTES: Final = 16 * 1024 * 1024
 MAX_PUBLIC_PAGE_BYTES: Final = 4 * 1024 * 1024
@@ -4179,9 +4180,14 @@ def _proposal_ids(receipt: Mapping[str, object]) -> list[str]:
     selected_slugs = receipt.get("selected_slugs")
     selected_documents = receipt.get("selected_documents")
     desired_tree = receipt.get("desired_theme_tree_sha256")
+    maximum = (
+        MAX_INCREMENTAL_PUBLICATION_PROPOSALS
+        if receipt.get("publication_profile") == "verified-incremental"
+        else MAX_PUBLICATION_PROPOSALS
+    )
     if (
         type(proposals) is not list
-        or not 1 <= len(proposals) <= MAX_PUBLICATION_PROPOSALS
+        or not 1 <= len(proposals) <= maximum
         or type(selected_slugs) is not list
         or any(type(slug) is not str for slug in selected_slugs)
         or type(selected_documents) is not dict

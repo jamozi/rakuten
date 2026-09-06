@@ -1108,6 +1108,85 @@ def reader_runtime_for(document: Mapping[str, Any], *, post_activation: bool = F
     return result
 
 
+
+def _resume_completed_proposal_registration(
+    candidate_path: Path,
+    receipt: dict[str, Any],
+    replayed: ReplayedCandidate,
+    *,
+    client: Any,
+    deploy: Callable[..., dict[str, Any]],
+    clock: Callable[[], datetime],
+) -> Path:
+    """Reconcile every saved member; never resend a proposal or approve it."""
+    if (
+        receipt.get("state") != "PROPOSALS_IN_PROGRESS"
+        or receipt.get("inflight_proposal") is not None
+        or receipt.get("batch_registration") is not None
+    ):
+        fail("PROPOSAL_OUTCOME_REQUIRES_RECONCILIATION")
+    ids = publication._proposal_ids(receipt)
+    selected_theme = "theme" in replayed.manifest["shared_artifacts"]
+    if sum(row["kind"] == "THEME_RELEASE" for row in receipt["proposals"]) != int(selected_theme):
+        fail("REQUEST_THEME_BINDING_INVALID")
+    receipt["operation_ids"] = {identifier: identifier for identifier in ids}
+    operations = publication.read_content_operations(client, receipt)
+    for proposal in receipt["proposals"]:
+        identifier = proposal["proposal_id"]
+        theme = proposal["kind"] == "THEME_RELEASE"
+        if theme:
+            response = deploy("operation-status", {"operation_id": identifier})
+            if set(response) != {"kind", "operation"} or response["kind"] != "THEME_RELEASE":
+                fail("PROPOSAL_OPERATION_READBACK_INVALID")
+            operations[identifier] = response["operation"]
+        try:
+            operation = wordpress_deployment._validated_release_operation(
+                operations.get(identifier), identifier
+            )
+        except wordpress_deployment.OperatorFailure:
+            fail("PROPOSAL_OPERATION_READBACK_INVALID")
+        before = (
+            replayed.snapshot["deployment_status"]["theme"]["tree_sha256"]
+            if theme
+            else receipt["release_envelope"]["inventory"][proposal["slug"]]["content_sha256"]
+        )
+        if (
+            operation["state"] != "PENDING"
+            or operation["result_code"] != "PROPOSAL_CREATED"
+            or operation["before_sha256"] != before
+            or operation["after_sha256"] != proposal["after_sha256"]
+            or clock() >= instant(proposal["expires_at_gmt"])
+        ):
+            fail("PROPOSAL_OPERATION_NOT_PENDING_OR_CHANGED")
+    validate_release_envelope(
+        receipt["release_envelope"], current_context=replayed.context,
+        publication_profile=PROFILE, link_mode="standard-api",
+        stage="proposal", now=clock(),
+    )
+    _save(candidate_path, receipt, "REGISTRATION_IN_FLIGHT")
+    registration = client.call(
+        "raos-codex-publication-batch-register",
+        {
+            "proposal_ids": sorted(ids),
+            "expected_theme_tree_sha256": receipt["desired_theme_tree_sha256"],
+        },
+    )
+    receipt["batch_registration"] = registration
+    _ids(receipt)
+    status = _batch_status(receipt, deploy)
+    if (
+        status["state"] not in {"REGISTERED", "APPROVED"}
+        or status["preconditions_ready"] is not True
+        or clock() >= instant(status["expires_at_gmt"])
+    ):
+        _save(candidate_path, receipt, "REGISTRATION_REQUIRES_RECONCILIATION")
+        fail("EXISTING_BATCH_NOT_READY_OR_EXPIRED")
+    _save(candidate_path, receipt, "AWAITING_OWNER_APPROVAL")
+    print("保存済み提案の状態を照合し、承認対象を登録しました。まだ公開していません。")
+    print(publication.REVIEW_URL)
+    print(f"承認対象の識別末尾: {registration['batch_token'][-12:]} / {registration['batch_manifest_sha256'][-8:]}")
+    return candidate_path / "publication-request.v1.json"
+
 def execute_incremental(
     candidate_path: Path,
     *,
@@ -1253,7 +1332,10 @@ def execute_incremental(
                     ):
                         fail("EXISTING_BATCH_NOT_READY_OR_EXPIRED")
                     return receipt_file
-                fail("PROPOSAL_OUTCOME_REQUIRES_RECONCILIATION")
+                return _resume_completed_proposal_registration(
+                    candidate_path, receipt, replayed,
+                    client=client, deploy=deploy, clock=clock,
+                )
             context = replayed.context
             envelope = cast(dict[str, Any], context.to_document())
             desired_theme = envelope["expected_shared_readback_sha256"].get(
