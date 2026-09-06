@@ -37,6 +37,9 @@ SS-MA251の給水方式は、[当該型番の公式説明書](https://www.siroca
 新しい出典 `SRC-SIROCA-SS-MA251-MANUAL-20260906` と商品に限定したclaimを追加した。
 PDFの保存内容をSHA-256で結び、閉じた出典許可リストにはこの1件だけを追加した。
 旧101出典のURL集合が不変であることも検査する。
+準備処理でも登録済みの公式説明書PDF・カタログPDFをPDFとして照合するよう、取得側との種別の不整合を修正した。
+URL・hash・根拠位置・日付の条件は保持し、整合したhashを付けたHTMLでもPDF出典の代用として拒否する。
+成功を確認するテストだけを新しい出典以後の模擬取得時刻へ更新し、未来日付や鮮度期限の拒否テストは維持した。
 
 食洗機4候補の記事編集確認日はこの確認により2026-09-06となる。SS-MA251の既存販売情報等は旧観測日のままで、
 ほかの記事や商品の確認日を一括更新していない。開発用reader ledgerは更新したが、
@@ -93,7 +96,7 @@ R03は指定と違う幅を先に閲覧し、全文を読んだ後に初見回�
 ブラウザーの最終結果は以下のとおり。通常検査・CIの最終実行結果とskip理由は[統合PR #190](https://github.com/jamozi/rakuten/pull/190)の説明とチェックに記録する。未実施を合格と扱わない。
 
 - 生成: `make generate BASE=origin/main`、81 owner PASS（実装入力を変更したため実行）。
-- 修正対象: 175テスト PASS、source-capture 70テスト PASS、WordPress統合の関連9テスト PASS。
+- 修正対象: 175テスト PASS、source-capture 70テスト PASS、WordPress統合の関連9テスト PASS。PDF種別・確認時刻を含む準備CLIの107テストもPASS。
 - 通常検査: `make fast BASE=origin/main`。最終結果は上記PRに記録する。ローカル専用PostgreSQL等のskipは別記する。
 - 最終ブラウザー: **46ページ×5幅、230条件で失敗0件・エラー0件**。通常と200%文字、見出し、内部リンク、表、フォーカス、画像なし、UNKNOWN、CTA非表示を確認。画像原本は `remaining/final-remediated/manifest.json` に結び付く。
 

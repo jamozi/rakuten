@@ -107,7 +107,7 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "22c9b6030bc7594e7e44e6b5f155df7b14788b1d78a82b8232da684c43ee25ef",
+      "sha256": "1cc7af56bbc90009a393e35570af90f8dd4832183636358869fc825fb4376378",
       "size": 81039
     },
     {
@@ -342,7 +342,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "5fb06c8c4300e563adca07900aa38babb9900ac131837d4579581c8f5969dea5",
+      "sha256": "d866ee93710b70711a448cf0fe9dd4f5a7c5b9a166e985d708753123eb805df6",
       "size": 54277
     },
     {
@@ -437,8 +437,8 @@
     },
     {
       "path": "python/raos/application/editorial/self_hosted_editorial_pilot.py",
-      "sha256": "e6195e1935bc9afede6b9aa55785a2b9285e66fe39fdd90d6930b8bce34d508d",
-      "size": 115207
+      "sha256": "6e4e5d3c8ccc97a3df7307f8e599f040413738a74bf86ea24c5534e1216d2c9a",
+      "size": 115335
     },
     {
       "path": "python/raos/application/editorial/verified_incremental_v1.py",

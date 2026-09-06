@@ -1383,7 +1383,11 @@ def _bind_source_capture_evidence(
         }
         expected_content_type = (
             "application/pdf"
-            if source["source_type"] == "PRODUCT_MANUAL"
+            if source["source_type"] in {
+                "PRODUCT_MANUAL",
+                "OFFICIAL_PRODUCT_MANUAL_PDF",
+                "OFFICIAL_PRODUCT_CATALOG_PDF",
+            }
             else "text/html"
         )
         try:
