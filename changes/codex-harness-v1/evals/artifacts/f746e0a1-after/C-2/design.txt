@@ -1,0 +1,79 @@
+# 公開記事の更新情報表示
+
+読者が記事の更新日時と鮮度状態を確認できるよう、
+`python/raos/application/publishing/public_update_notice.py` に
+`render_public_update_notice(projection) -> str` を追加する。
+
+## 採用したデータ経路と理由
+
+承認済み immutable publication snapshot → 既存 public projection → 表示関数、
+という公開境界を維持する。関数は渡された mapping の
+`article.updated_public_at` と `article.freshness_status` だけを読み、
+`更新: <日時> / 状態: <状態>` を返す。
+
+この2項目は既に `PUBLIC_ARTICLE_FIELDS` と公開 OpenAPI の
+`PublicArticleDocument` に存在する。新しい公開項目、内部 repository への参照、
+snapshot／projection の schema 変更は必要ない。
+
+内部 Evidence・Finance を renderer から直接読む案は採用しない。
+承認済み snapshot の外で変化する値を混ぜると、公開内容の再現性と public/internal
+分離を損なう。Evidence の内部参照や財務値を露出する経路も生まれ、Finance を
+編集・鮮度判断から分離する不変条件にも反する。必要な表示値は既存の公開項目で足りる。
+
+## 入出力と欠損の扱い
+
+- mapping／article がない、または不正な構造の場合は `ValueError`。
+- どちらかの値が欠損、`None`、空文字、空白のみ、文字列以外なら `ValueError`。
+- 値は日時変換や鮮度再判定をせずに表示する。`UNKNOWN`／`UNAVAILABLE` は
+  欠損と区別し、その文字列を維持する。
+- 両方の値を標準ライブラリの `html.escape(..., quote=True)` で escape する。
+  HTML タグを追加しない。入力を変更せず、I/O、時刻取得、永続化を行わない。
+- エラー文には問題の構造・項目名だけを含め、入力値を記録しない。
+
+公開契約上の `updated_public_at` は optional／nullable のまま維持する。
+表示関数の必須値検査を、公開 API 全体の必須条件へ広げない。
+既存 ST-0904 V2 の記録済み候補は `updated_public_at=None`、
+`freshness_status=UNKNOWN` なので、このままの入力では `ValueError` となる。
+`published_at`、現在時刻、内部値による補完は行わない。
+
+## 隣接影響
+
+| 対象 | 影響・責務 |
+| --- | --- |
+| snapshot／projection | 既存の承認・allowlist・生成処理・hash を維持。生成物変更はない。 |
+| Freshness／Evidence／Finance | 参照や再判定を追加しない。更新値の供給は既存の公開経路の責務。 |
+| 公開 API／Web／WordPress | 今回は呼び出し可能な純粋関数の追加。配信・CMS 接続は追加しない。利用側は欠損時の `ValueError` を扱い、契約検証済み projection を渡す必要がある。 |
+| auth/authz・CTA・disclosure・publication・kill switch | 既存処理と test を維持。関数は公開可否を判断せず、公開権限も付与しない。 |
+| テスト | 合成 projection で表示・escape・欠損・入力不変・内部値からの補完禁止を検証。静的な network／DB／CMS import 禁止対象にも関数を追加。 |
+
+renderer は公開契約全体を再検証する入口ではない。回帰テストの内部値混入は
+防御動作を確認する合成入力であり、公開 allowlist の拡張を意味しない。
+記録済み fixture は本番公開の事実を表さず、テスト用の日時変更もメモリ内だけに限定する。
+
+## 根拠
+
+- [現在の構造・公開境界](../docs/architecture/current-system.md)
+- [既存 public projection](../python/raos/domain/publishing/public_projection_v2.py)
+- [公開 OpenAPI](../contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml)
+- [ST-0904 V2 の実行・公開境界](../changes/st-0904/contracts/public-projection-runtime.v2.yaml)
+
+## 検証
+
+依頼で指定された、新規回帰テストと `tests/st0904_v2/test_domain.py`、
+`tests/st0904_v2/test_static_boundary.py` に限定して実行する。
+ネットワーク・保存済み checkout を必要とする検査、`make fast` による全件選択、
+全件 CI、live／公開操作は今回の検証範囲に含めない。
+
+実行コマンド:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 TMPDIR="$PWD/.harness-task" .venv/bin/python -m pytest -q \
+  -p xdist.plugin -n 2 \
+  -m "not live and not external and not raos_owner_private and not database and not storage" \
+  tests/st0904_v2/test_public_update_notice.py \
+  tests/st0904_v2/test_domain.py \
+  tests/st0904_v2/test_static_boundary.py
+```
+
+実行結果: **41 passed in 2.00s**（新規回帰29件、既存 domain 8件、static boundary 4件）。
+skip・失敗はない。この結果は指定した local 検査だけを示し、全件 CI や公開の成功を示さない。

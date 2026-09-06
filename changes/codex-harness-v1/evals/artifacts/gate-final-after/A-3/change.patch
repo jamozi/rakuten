@@ -1,0 +1,103 @@
+diff --git a/tests/test_affiliate_ingestion.py b/tests/test_affiliate_ingestion.py
+index 07a888e..75672ca 100644
+--- a/tests/test_affiliate_ingestion.py
++++ b/tests/test_affiliate_ingestion.py
+@@ -6,6 +6,7 @@ import stat
+ import tempfile
+ import unittest
+ import zipfile
++from decimal import Decimal
+ from pathlib import Path
+ 
+ from tools.affiliate_ingestion.client import FetchBatch, RawPage, parse_records
+@@ -153,6 +154,65 @@ class NormalizationAndStorageTests(unittest.TestCase):
+             self.assertTrue(normalized_path.is_file())
+ 
+ 
++@pytest.mark.parametrize(
++    ("zero", "amount"),
++    [(0, "0"), (0.0, "0.0"), (Decimal("0.00"), "0.00"), ("0", "0")],
++)
++def test_normalization_preserves_zero_values(zero, amount):
++    source = {"id": zero, "price": zero, "commission": zero}
++    normalized = normalize_record("a8net", "products", source)
++    assert normalized["source_id"] is zero
++    assert normalized["price"] == amount
++    assert normalized["commission"] == amount
++    assert normalized["raw"] == source
++
++
++@pytest.mark.parametrize("preferred", [0, 25, "0", " "])
++def test_normalization_preserves_alias_priority(preferred):
++    # Record order must not override the existing alias order.
++    source = {
++        "item_id": "fallback-id",
++        "unit_price": 1200,
++        "commission_amount": 12,
++        "id": preferred,
++        "price": preferred,
++        "commission": preferred,
++    }
++    normalized = normalize_record("a8net", "products", source)
++    assert normalized["source_id"] == preferred
++    assert normalized["price"] == str(preferred)
++    assert normalized["commission"] == str(preferred)
++
++
++@pytest.mark.parametrize("empty", [None, "", False, [], {}, (), set(), b""])
++def test_normalization_preserves_empty_value_handling(empty):
++    source = {"id": empty, "price": empty, "commission": empty}
++    for record in ({}, source):
++        normalized = normalize_record("a8net", "products", record)
++        assert normalized["source_id"] is None
++        assert normalized["price"] is None
++        assert normalized["commission"] is None
++
++    source.update(order_id=0, amount=0, fee=0)
++    normalized = normalize_record("a8net", "products", source)
++    assert normalized["source_id"] == 0
++    assert normalized["price"] == "0"
++    assert normalized["commission"] == "0"
++
++
++@pytest.mark.parametrize(
++    ("source", "fingerprint"),
++    [
++        ({"id": 0}, "c9f03aa8eea5d256d54819df16fe0e633018ee674c93f1e8e335e6df1c6b7854"),
++        ({"id": 1}, "ba5d72dfce37f929807ef8c47b2aa121c2f2b448195e72fd6f60e302b6d53baf"),
++        ({}, "d9be640685e7c7113bb77273dabb92b1f1222d59214364a06124eb5348d0633d"),
++    ],
++)
++def test_normalization_fingerprint_preserves_source_id(source, fingerprint):
++    normalized = normalize_record("a8net", "products", source)
++    assert normalized["fingerprint_sha256"] == fingerprint
++
++
+ @pytest.fixture(autouse=True)
+ def no_provider_network(monkeypatch):
+     def forbidden(*args, **kwargs):
+diff --git a/tools/affiliate_ingestion/normalize.py b/tools/affiliate_ingestion/normalize.py
+index a0863dc..48b4d9b 100644
+--- a/tools/affiliate_ingestion/normalize.py
++++ b/tools/affiliate_ingestion/normalize.py
+@@ -68,7 +68,8 @@ def _flatten_keys(record: Mapping[str, Any]) -> dict[str, Any]:
+ def _first(record: Mapping[str, Any], aliases: Iterable[str]) -> Any:
+     for alias in aliases:
+         value = record.get(alias)
+-        if value:
++        # Keep numeric zero while still skipping other falsy values, including False.
++        if value or (value == 0 and not isinstance(value, bool)):
+             return value
+     return None
+ 
+@@ -102,8 +103,8 @@ def normalize_record(
+         [
+             provider,
+             resource,
+-            str(canonical.get("source_id") or ""),
+-            str(canonical.get("url") or ""),
++            "" if canonical["source_id"] is None else str(canonical["source_id"]),
++            "" if canonical["url"] is None else str(canonical["url"]),
+             raw_json,
+         ]
+     )

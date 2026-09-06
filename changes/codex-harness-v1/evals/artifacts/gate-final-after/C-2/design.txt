@@ -1,0 +1,63 @@
+# 公開記事の更新情報表示
+
+読者が記事の更新日時と鮮度を判断できるよう、既存public projectionを入力とする
+`render_public_update_notice(projection)`をapplication/publishingに追加する。
+成功条件は指定文言、HTML escape、必須値の欠損時のValueError、公開・内部境界の維持である。
+
+## 採用したデータ経路と理由
+
+承認済みの不変publication snapshot → 既存public projection →
+`article.updated_public_at` / `article.freshness_status` → 描画関数 → 表示文字列、
+という既存の公開経路を使う。関数の依存は標準ライブラリだけで、入力を変更せず、
+repositoryへの問い合わせや外部I/Oを行わない。承認と投影の検証は既存の上流境界が所有する。
+
+内部EvidenceやFinanceをrendererから直接読む案は採用しない。直接参照すると、
+承認snapshotと異なる時点の値を表示する恐れがあり、公開read modelと内部領域の分離を
+崩す。Evidenceの内部情報や財務情報の露出にもつながる。必要な2項目は既に公開側にあるため、
+内部repository、raw AI、公開日、現在時刻などからの補完は不要である。
+
+根拠は[current architecture](../docs/architecture/current-system.md)の公開経路と境界、
+[既存projection](../python/raos/domain/publishing/public_projection_v2.py)の
+`PUBLIC_ARTICLE_FIELDS`、[public API契約](../contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml)の
+`PublicArticleDocument`である。
+
+## 表示と入力の扱い
+
+- 出力は`更新: <article.updated_public_at> / 状態: <article.freshness_status>`。
+  日時の再解釈や鮮度の再判定をせず、`UNKNOWN`も入力どおり表示する。
+- 両方の値を`html.escape`で処理し、`&`、`<`、`>`、二重引用符、単一引用符をescapeする。
+- projection/articleがmappingでない、キーがない、値が`None`、空文字、空白のみ、
+  または文字列以外なら`ValueError`。エラーには入力値を含めない。
+- 既存の`updated_public_at`はnullableであり、ST-0904 V2のrecorded projectionも`None`を返す。
+  その入力は指定どおり描画時に失敗する。公開契約のnullableは維持し、実在しない更新日時を作らない。
+
+## 隣接影響と範囲
+
+- snapshot、projectionの生成・allowlist、OpenAPI、schema、generated outputは変更しない。
+  既存のキーを消費する表示関数の追加であり、新しい公開フィールドやblock typeは不要。
+- 更新日時の生成・鮮度判定・キャッシュ無効化は既存ownerに残す。入力が欠ける記事を扱う
+  将来の呼出元は、この関数の`ValueError`を扱う必要がある。
+- 既存renderer、API route、WordPress materializationへの組込みは今回の変更範囲に含めない。
+  CTA、広告表示、auth/authz、publication承認、idempotency、kill switch、default-offの挙動を維持する。
+- ローカル関数の実装とsynthetic fixtureでの検査までを扱い、外部作用はない。
+  WordPress workflowの実サイト確認・公開準備は今回の段階に該当せず、ネットワーク、
+  保存済みcheckout、MCP status、ブラウザ、本番反映の検査は実行しない。
+
+## 検証
+
+追加回帰テストで、既存投影形状からの表示、`UNKNOWN`維持、入力の不変性、両値のescape、
+必須値の欠損・不正型、内部値を表示・補完に使わないこと、既存nullable fixtureの拒否を確認する。
+既存static boundaryの検査対象にも新しい関数のファイルを加える。
+
+依頼された隔離評価の範囲で次を実行する。通常の全件選択を伴う`make fast`や全件CI、
+ネットワーク・保存済みcheckoutを必要とする検査には広げない。
+
+```sh
+.venv/bin/python -m pytest -q -p xdist.plugin -n 2 \
+  tests/st0904_v2/test_public_update_notice.py \
+  tests/st0904_v2/test_domain.py \
+  tests/st0904_v2/test_static_boundary.py
+```
+
+実行結果: **40 passed in 2.01s**（追加回帰28件、既存domain 8件、既存static boundary 4件）。
+指定範囲の全件が成功し、skipはなかった。全件CIや実サイト表示・公開の検証を示すものではない。
