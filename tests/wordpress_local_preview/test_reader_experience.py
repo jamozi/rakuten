@@ -1,4 +1,4 @@
-from dataclasses import replace
+from dataclasses import asdict, replace
 from pathlib import Path
 
 from raos.application.editorial.reader_experience_projection import fragment, project_article
@@ -8,6 +8,7 @@ from raos.application.editorial.reader_experience_v1 import (
     CheckedFact,
     CtaEvidence,
     MediaAsset,
+    approved_media_record,
     comparison_issues,
     cta_visible,
     validate_experience,
@@ -45,6 +46,25 @@ def test_media_needs_approval_and_complete_usage_metadata() -> None:
     assert asset.displayable
     for change in ({"approval": "pending"}, {"checked_at": None}, {"usage_basis": ""}, {"alt": ""}, {"aspect_ratio": (0, 3)}):
         assert not replace(asset, **change).displayable
+
+
+def test_media_records_preserve_raw_json_eligibility_rules() -> None:
+    asset = MediaAsset("diagram", "https://manufacturer.test/manual", "original diagram", "2026-09-01", "approved", "Dimensions", "Official dimensions", (4, 3), "dimension", "svg")
+    raw = asdict(asset)
+    assert approved_media_record(raw)
+    assert approved_media_record({**raw, "aspect_ratio": [4, 3], "extra": "ignored"})
+    for key in raw:
+        assert not approved_media_record({k: v for k, v in raw.items() if k != key})
+    for change in (
+        {"approval": "pending"}, {"approval": []}, {"asset_type": ""},
+        {"asset_type": []}, {"checked_at": None}, {"checked_at": "2026-02-30"},
+        {"checked_at": 20260901}, {"source": "http://manufacturer.test/manual"},
+        {"source": 42}, {"alt": " "}, {"caption": None}, {"usage_basis": []},
+        {"aspect_ratio": [True, 3]}, {"aspect_ratio": [4.0, 3]},
+        {"aspect_ratio": [0, 3]}, {"aspect_ratio": [4]},
+        {"aspect_ratio": [4, 3, 2]}, {"aspect_ratio": "4:3"},
+    ):
+        assert not approved_media_record({**raw, **change}), change
 
 
 def test_status_article_cannot_become_a_recommendation_via_the_view_model() -> None:

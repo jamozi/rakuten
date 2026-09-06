@@ -10,7 +10,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date
 import re
-from typing import Literal
+from typing import Literal, TypeGuard, cast
 from urllib.parse import urlsplit
 
 
@@ -34,6 +34,22 @@ COMPARISON_REQUIREMENTS = (
 )
 
 
+def _is_mapping(value: object) -> TypeGuard[Mapping[str, object]]:
+    return isinstance(value, Mapping)
+
+
+def _is_list(value: object) -> TypeGuard[list[object]]:
+    return isinstance(value, list)
+
+
+def _is_sequence(value: object) -> TypeGuard[Sequence[object]]:
+    return isinstance(value, Sequence)
+
+
+def _nonempty_text(value: object) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
 @dataclass(frozen=True)
 class CheckedFact:
     evidence_ref: str
@@ -49,12 +65,14 @@ class CheckedFact:
             date.fromisoformat(self.checked_at)
         except ValueError:
             return False
-        return bool(isinstance(self.evidence_ref, str) and self.evidence_ref and isinstance(self.source_ref, str) and self.source_ref and self.state == "KNOWN")
+        evidence_ref = cast(object, self.evidence_ref)
+        source_ref = cast(object, self.source_ref)
+        return bool(isinstance(evidence_ref, str) and evidence_ref and isinstance(source_ref, str) and source_ref and self.state == "KNOWN")
 
 
 def comparison_issues(products: Mapping[str, Mapping[str, CheckedFact]]) -> tuple[str, ...]:
     """Report missing evidence without manufacturing another comparison article."""
-    issues = []
+    issues: list[str] = []
     if len(products) != 2:
         issues.append("comparison.requires_two_exact_configurations")
     for product, facts in products.items():
@@ -108,21 +126,37 @@ class MediaAsset:
 
     @property
     def displayable(self) -> bool:
-        if self.approval != "approved" or not all(
-            isinstance(value, str) and bool(value.strip()) for value in (self.asset_ref, self.source, self.usage_basis, self.alt, self.caption, self.role)
-        ):
-            return False
-        if self.asset_type not in {"photo", "svg", "html_diagram", "illustration"}:
-            return False
-        if not isinstance(self.aspect_ratio, (tuple, list)) or not all(type(value) is int and value > 0 for value in self.aspect_ratio):
-            return False
-        if len(self.aspect_ratio) != 2 or not isinstance(self.checked_at, str):
-            return False
-        try:
-            date.fromisoformat(self.checked_at)
-        except ValueError:
-            return False
-        return urlsplit(self.source).scheme in {"", "https"}
+        return _media_displayable({
+            "asset_ref": self.asset_ref, "source": self.source,
+            "usage_basis": self.usage_basis, "checked_at": self.checked_at,
+            "approval": self.approval, "alt": self.alt, "caption": self.caption,
+            "aspect_ratio": self.aspect_ratio, "role": self.role,
+            "asset_type": self.asset_type,
+        })
+
+
+def _media_displayable(raw: Mapping[str, object]) -> bool:
+    # Dataclass annotations do not validate callers or decoded JSON records.
+    if raw["approval"] != "approved" or not all(
+        _nonempty_text(raw[key]) for key in ("asset_ref", "source", "usage_basis", "alt", "caption", "role")
+    ):
+        return False
+    if raw["asset_type"] not in {"photo", "svg", "html_diagram", "illustration"}:
+        return False
+    ratio = raw["aspect_ratio"]
+    if not isinstance(ratio, (tuple, list)):
+        return False
+    ratio = cast(Sequence[object], ratio)
+    if not all(type(value) is int and value > 0 for value in ratio):
+        return False
+    checked_at = raw["checked_at"]
+    if len(ratio) != 2 or not isinstance(checked_at, str):
+        return False
+    try:
+        date.fromisoformat(checked_at)
+    except ValueError:
+        return False
+    return urlsplit(cast(str, raw["source"])).scheme in {"", "https"}
 
 
 def approved_media_record(raw: Mapping[str, object]) -> bool:
@@ -130,8 +164,7 @@ def approved_media_record(raw: Mapping[str, object]) -> bool:
     if not all(key in raw for key in MediaAsset.__dataclass_fields__):
         return False
     try:
-        asset = MediaAsset(**{key: raw[key] for key in MediaAsset.__dataclass_fields__})  # type: ignore[arg-type]
-        return asset.displayable
+        return _media_displayable({key: raw[key] for key in MediaAsset.__dataclass_fields__})
     except (TypeError, ValueError):
         return False
 
@@ -146,7 +179,7 @@ def validate_experience(
     if not isinstance(article_type, str) or article_type not in ARTICLE_TYPES:
         issues.append("article_type.invalid")
     status = experience.get("research_status")
-    if isinstance(status, Mapping):
+    if _is_mapping(status):
         if status.get("ranking_uses_commission") is not False:
             issues.append("research_status.commission_ranking_forbidden")
         if not isinstance(status.get("real_world_tested"), bool):
@@ -156,26 +189,26 @@ def validate_experience(
     def prose(value: object) -> list[str]:
         if isinstance(value, str):
             return [value]
-        if isinstance(value, Mapping):
+        if _is_mapping(value):
             return [text for child in value.values() for text in prose(child)]
-        if isinstance(value, list):
+        if _is_list(value):
             return [text for child in value for text in prose(child)]
         return []
 
-    if isinstance(status, Mapping) and status.get("real_world_tested") is False:
+    if _is_mapping(status) and status.get("real_world_tested") is False:
         for text in prose(experience):
             for sentence in re.split(r"[。、！？\n]|(?<=です)が|(?<=でした)が|(?<=た)が|だが|ものの|けれど", text):
                 if re.search(r"実際に使(?:って|った|いました)|使ってみ|使用したところ|実測した|試してみた|音が静か(?:です|でした)|使い心地[はが](?:良|快適)|よく落ちました|使いやすかった", sentence) and not re.search(r"未確認|未実施|いません|いない|していない|ではありません", sentence):
                     issues.append("research_status.unverified_experience_claim")
     summary = experience.get("decision_summary", {})
-    if isinstance(summary, Mapping):
+    if _is_mapping(summary):
         options = summary.get("options", [])
-        if isinstance(options, Sequence) and not isinstance(options, str):
+        if _is_sequence(options) and not isinstance(options, str):
             for option in options:
-                if not isinstance(option, Mapping):
+                if not _is_mapping(option):
                     issues.append("decision_summary.option_invalid")
                     continue
-                if any(not isinstance(option.get(key), str) or not option[key].strip() for key in ('reason', 'tradeoff')):
+                if any(not _nonempty_text(option.get(key)) for key in ('reason', 'tradeoff')):
                     issues.append('decision_summary.option_incomplete')
                 product = option.get("product_ref")
                 if product is not None and (not isinstance(product, str) or product not in product_refs):
@@ -192,17 +225,17 @@ def validate_experience(
         ("contextual_links", ("journey_stage", "question", "target_ref")),
     ):
         rows = experience.get(name, [])
-        if not isinstance(rows, list) or any(not isinstance(row, Mapping) or any(not isinstance(row.get(key), str) or not row[key].strip() for key in required) for row in rows):
+        if not _is_list(rows) or any(not _is_mapping(row) or any(not _nonempty_text(row.get(key)) for key in required) for row in rows):
             issues.append(name + ".invalid")
-        if name == "decision_axes" and isinstance(rows, list) and len(rows) > 5:
+        if name == "decision_axes" and _is_list(rows) and len(rows) > 5:
             issues.append("decision_axes.max_five")
     products = experience.get("products", [])
-    if not isinstance(products, list):
+    if not _is_list(products):
         issues.append("products.invalid")
     else:
-        seen = set()
+        seen: set[str] = set()
         for product in products:
-            if not isinstance(product, Mapping):
+            if not _is_mapping(product):
                 issues.append("products.invalid")
                 continue
             ref = product.get("product_ref")
@@ -211,54 +244,60 @@ def validate_experience(
             else:
                 seen.add(ref)
             facts = product.get("evidence_facts", [])
-            if not isinstance(facts, list) or any(not isinstance(ref, str) or ref not in evidence_refs for ref in facts):
+            if not _is_list(facts) or any(not isinstance(ref, str) or ref not in evidence_refs for ref in facts):
                 issues.append("products.evidence_must_reference_facts")
             elif checked_fact_refs is not None and any(ref not in checked_fact_refs for ref in facts):
                 issues.append("products.official_checked_facts_required")
     if article_type == 'safety_rule':
         rule = experience.get('rule_status')
-        if not isinstance(rule, Mapping) or any(not isinstance(rule.get(k), str) or not rule[k].strip() for k in ('authority', 'final_decision_by', 'exceptions', 'scope_limit', 'evidence_ref')):
+        if not _is_mapping(rule) or any(not _nonempty_text(rule.get(k)) for k in ('authority', 'final_decision_by', 'exceptions', 'scope_limit', 'evidence_ref')):
             issues.append('rule_status.required')
         elif rule['evidence_ref'] not in (checked_fact_refs if checked_fact_refs is not None else evidence_refs):
             issues.append('rule_status.official_checked_fact_required')
     if any(re.search(r"[0-9][0-9,]*\s*円", text) for text in prose(experience)):
         price = experience.get("price_snapshot")
         valid_price = False
-        if isinstance(price, Mapping) and isinstance(price.get("evidence_ref"), str) and price["evidence_ref"] in evidence_refs and isinstance(price.get("checked_at"), str):
+        if _is_mapping(price) and isinstance(price.get("evidence_ref"), str) and price["evidence_ref"] in evidence_refs and isinstance(price.get("checked_at"), str):
             try:
-                date.fromisoformat(price["checked_at"])
+                date.fromisoformat(cast(str, price["checked_at"]))
                 valid_price = True
             except ValueError:
                 pass
         if not valid_price:
             issues.append("price.checked_date_and_evidence_required")
     facts = experience.get("evidence", [])
-    if not isinstance(facts, list) or any(not isinstance(ref, str) or ref not in evidence_refs for ref in facts):
+    if not _is_list(facts) or any(not isinstance(ref, str) or ref not in evidence_refs for ref in facts):
         issues.append("evidence.unresolved_reference")
     return tuple(issues)
 def reader_navigation(raw: object, articles: list[dict[str, object]]) -> dict[str, object]:
     """Validate taxonomy and derive hub memberships; counts remain runtime eligible counts."""
     if raw is None:
         return {}
-    if not isinstance(raw, dict) or not isinstance(raw.get('groups'), list):
+    if not isinstance(raw, dict):
+        raise ValueError('READER_NAVIGATION_INVALID')
+    navigation = cast(dict[str, object], raw)
+    if not _is_list(navigation.get('groups')):
         raise ValueError('READER_NAVIGATION_INVALID')
     known = {str(a['article_id']): a for a in articles}
-    groups = raw['groups']
+    groups = cast(list[object], navigation['groups'])
+    validated_groups: list[dict[str, object]] = []
     categories: list[str] = []
     slugs: set[str] = set()
-    for group in groups:
-        if not isinstance(group, dict) or set(group) != {'slug', 'label', 'description', 'kind', 'article_ids'}:
+    for candidate in groups:
+        if not isinstance(candidate, dict) or set(cast(dict[str, object], candidate)) != {'slug', 'label', 'description', 'kind', 'article_ids'}:
             raise ValueError('READER_GROUP_INVALID')
+        group = cast(dict[str, object], candidate)
         if (group['kind'] not in {'category', 'purpose'}
             or not isinstance(group['slug'], str) or not re.fullmatch(r'[a-z]+(?:-[a-z]+)*', group['slug'])
-            or group['slug'] in slugs or not isinstance(group['article_ids'], list)
+            or group['slug'] in slugs or not _is_list(group['article_ids'])
             or not all(isinstance(x, str) and x in known for x in group['article_ids'])
             or len(set(group['article_ids'])) != len(group['article_ids'])
-            or not all(isinstance(group[k], str) and group[k].strip() for k in ('label', 'description'))):
+            or not all(_nonempty_text(group[k]) for k in ('label', 'description'))):
             raise ValueError('READER_GROUP_INVALID')
         slugs.add(group['slug'])
+        validated_groups.append(group)
         if group['kind'] == 'category':
-            categories.extend(group['article_ids'])
+            categories.extend(cast(list[str], group['article_ids']))
     if sorted(categories) != sorted(known):
         raise ValueError('READER_PRIMARY_CATEGORY_MUST_BE_UNIQUE')
     core = [
@@ -268,8 +307,8 @@ def reader_navigation(raw: object, articles: list[dict[str, object]]) -> dict[st
         ('comparisons', '比較・条件別の候補', '違いと妥協点を確認し、自分の条件に合う候補を絞ります。', 'collection', [k for k,a in known.items() if a['content_role'] != 'lifecycle_status_route']),
         ('updates', '最近更新したガイド', '内容を更新した順に、比較と購入前確認のガイドを案内します。', 'updates', list(known)),
     ]
-    hubs = [dict(slug=slug, label=label, description=description, kind=kind, article_ids=ids) for slug,label,description,kind,ids in core]
-    if slugs.intersection(h['slug'] for h in hubs):
+    hubs: list[dict[str, object]] = [dict(slug=slug, label=label, description=description, kind=kind, article_ids=ids) for slug,label,description,kind,ids in core]
+    if slugs.intersection(cast(str, h['slug']) for h in hubs):
         raise ValueError('READER_HUB_SLUG_COLLISION')
-    hubs.extend(groups)
-    return {'hubs': hubs, 'primary_categories': {article: g['slug'] for g in groups if g['kind'] == 'category' for article in g['article_ids']}}
+    hubs.extend(validated_groups)
+    return {'hubs': hubs, 'primary_categories': {article: g['slug'] for g in validated_groups if g['kind'] == 'category' for article in cast(list[str], g['article_ids'])}}

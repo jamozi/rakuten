@@ -17,7 +17,7 @@ import hashlib
 import importlib.util
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 import re
 from queue import Empty, Queue
 from threading import Thread
@@ -152,22 +152,59 @@ def skill_metadata(path):
     }
 
 
-def project_skill_overrides(root):
+def _runtime_skill_path(selector, home, runtime_home):
+    """Translate only known CODEX_HOME aliases and relocated skill mounts."""
+    native = Path(selector)
+    try:
+        relative = native.relative_to(home)
+    except ValueError:
+        # A Windows selector can refer to this same home through WSL's drive
+        # mount. Do not reinterpret other drives, users, UNC or relative paths.
+        if (
+            home.parts[:2] != ("/", "mnt")
+            or len(home.parts) < 3
+            or not re.fullmatch("[a-zA-Z]", home.parts[2])
+        ):
+            return selector
+        windows = PureWindowsPath(selector)
+        windows_home = PureWindowsPath(home.parts[2] + ":/", *home.parts[3:])
+        if not windows.is_absolute():
+            return selector
+        try:
+            relative = Path(*windows.relative_to(windows_home).parts)
+        except ValueError:
+            return selector
+        native = home / relative
+    if ".." in relative.parts:
+        return selector
+    # These directories, unlike arbitrary home subdirectories, are mounted
+    # under the private CODEX_HOME used by runtime skill discovery.
+    if relative.parts and relative.parts[0] in {"skills", "plugins"}:
+        return str(runtime_home / relative)
+    return str(native)
+
+
+def project_skill_overrides(root, *, runtime_home=None, include_project=True):
     """Compatibility for openai/codex#20210; no user/global mutation.
 
     Preserve user selectors while applying this project's selectors last.
     Only skill controls are promoted; permissions and approval are untouched.
+    Runtime callers opt into path translation; native eval keeps raw selectors.
     """
     home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
-    configs = [
-        read_config(home / "config.toml"),
-        read_config(root / ".codex/config.toml"),
-    ]
+    configs = [read_config(home / "config.toml")]
+    if include_project:
+        configs.append(read_config(root / ".codex/config.toml"))
     entries = {}
     for config in configs:
         for row in config.get("skills", {}).get("config", []):
             if row.get("path"):
-                selector = ("path", row["path"])
+                path = (
+                    _runtime_skill_path(row["path"], home, runtime_home)
+                    if runtime_home is not None
+                    else row["path"]
+                )
+                selector = ("path", path)
             elif row.get("name"):
                 selector = ("name", row["name"])
             else:
@@ -217,7 +254,13 @@ def skills_loaded(root, scoped=False, capabilities=False, wordpress=False):
                 str(codex_executable()),
                 "-C",
                 str(root),
-                *overrides(project_skill_overrides(root) if scoped else {}),
+                *overrides(
+                    project_skill_overrides(
+                        root,
+                        runtime_home=disposable.parent / "codex-home",
+                        include_project=scoped,
+                    )
+                ),
                 "app-server",
                 "--listen",
                 "stdio://",
@@ -1092,6 +1135,28 @@ def test_execution_evidence(command, exit_code, output):
     return None
 
 
+def classify_model_failure(error):
+    """Heuristic category only; never persist API error messages or raw events."""
+    message = error.get("message", "") if isinstance(error, dict) else ""
+    if not isinstance(message, str):
+        return "UNKNOWN"
+    for needle, category in (
+        ("usage limit", "usage_limit"),
+        ("quota", "usage_limit"),
+        ("rate limit", "rate_limit"),
+        ("unauthorized", "authentication"),
+        ("authentication", "authentication"),
+        ("context window", "context_window"),
+        ("read-only file", "filesystem"),
+        ("stream", "stream"),
+        ("connection", "connection"),
+        ("internal server", "server"),
+    ):
+        if needle in message.lower():
+            return category
+    return "UNKNOWN"
+
+
 def evaluate_one(root, case, repetition, args):
     started = time.monotonic()
     record = {
@@ -1265,6 +1330,9 @@ def evaluate_one(root, case, repetition, args):
                     record["status"] = "COMPLETED"
                 if event.get("type") == "turn.failed":
                     record["status"] = "MODEL_FAILED"
+                    record["model_failure_category"] = classify_model_failure(
+                        event.get("error")
+                    )
                 if event.get("type") != "item.completed":
                     continue
                 item = event.get("item", {})
@@ -1509,6 +1577,13 @@ def regrade(root, args):
         raise ValueError(
             "regrade requires an immutable commit and identical task inputs"
         )
+    current_grader = hashlib.sha256(FIXTURES.read_bytes()).hexdigest()
+    if (
+        report.get("grader_sha256") != current_grader
+        and args.case
+        and any(record["case"] not in args.case for record in report["runs"])
+    ):
+        raise ValueError("changed grader requires all retained cases to be regraded")
     cases = {c["id"]: c for c in json.loads(CASES.read_text())["cases"]}
     for record in report["runs"]:
         if args.case and record["case"] not in args.case:
@@ -1557,7 +1632,18 @@ def regrade(root, args):
             score_record(record, cases[record["case"]], behavior)
             record["regraded_saved_output"] = True
     report["prior_grader_sha256"] = report.get("grader_sha256")
-    report["grader_sha256"] = hashlib.sha256(FIXTURES.read_bytes()).hexdigest()
+    report["grader_sha256"] = current_grader
+    # Regrading cannot fill missing model executions in a partial report.
+    report["status"] = (
+        "INCOMPLETE"
+        if report.get("status") == "INCOMPLETE" or not report["runs"]
+        else "PASS"
+        if all(
+            record.get("acceptance") is True and record.get("status") == "COMPLETED"
+            for record in report["runs"]
+        )
+        else "FAIL"
+    )
     return report
 
 
@@ -1565,7 +1651,10 @@ def evaluate(root, args):
     manifest = json.loads(CASES.read_text())
     selected = [c for c in manifest["cases"] if not args.case or c["id"] in args.case]
     tasks = [(case, n) for case in selected for n in range(1, args.repetitions + 1)]
+    if not tasks:
+        raise ValueError("native evaluation requires at least one case and repetition")
     result = {
+        "status": "INCOMPLETE",
         "version": 1,
         "isolation_version": 3,
         "ref": args.ref,
@@ -1580,6 +1669,12 @@ def evaluate(root, args):
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         for record in pool.map(lambda pair: evaluate_one(root, *pair, args), tasks):
             result["runs"].append(record)
+            if len(result["runs"]) == len(tasks):
+                result["status"] = (
+                    "PASS"
+                    if all(r.get("acceptance") for r in result["runs"])
+                    else "FAIL"
+                )
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(
                 json.dumps(result, ensure_ascii=False, indent=2) + "\n"
@@ -1594,9 +1689,21 @@ def evaluate(root, args):
 
 def compare(before, after):
     errors = []
-    for key in ("protocol_sha256", "isolation_version", "model", "reasoning"):
+    for key in (
+        "protocol_sha256",
+        "grader_sha256",
+        "isolation_version",
+        "model",
+        "reasoning",
+    ):
         if before.get(key) != after.get(key):
             errors.append(f"incomparable {key}")
+    if any(
+        not isinstance(report.get("grader_sha256"), str)
+        or not re.fullmatch(r"[0-9a-f]{64}", report["grader_sha256"])
+        for report in (before, after)
+    ):
+        errors.append("comparison requires identified grading evidence")
     if before.get("isolation_version") != 3:
         errors.append("comparison requires isolated controller state")
     rows = []
@@ -1617,6 +1724,10 @@ def compare(before, after):
             and {r.get("run") for r in b} == {1, 2, 3}
             and {r.get("run") for r in a} == {1, 2, 3}
         )
+        if {r.get("timeout_seconds") for r in b} != {
+            r.get("timeout_seconds") for r in a
+        }:
+            errors.append(f"incomparable {case} time budget")
         if {r.get("measurement_version", 1) for r in b} != {
             r.get("measurement_version", 1) for r in a
         }:
@@ -1716,7 +1827,14 @@ def main():
                 str(codex_executable()),
                 "-C",
                 str(args.root),
-                *overrides(project_skill_overrides(args.root)),
+                *overrides(
+                    project_skill_overrides(
+                        args.root,
+                        runtime_home=Path(
+                            os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))
+                        ),
+                    )
+                ),
                 *codex_args,
             ],
             cwd=args.root,
@@ -1765,7 +1883,7 @@ def main():
         args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     else:
         print(json.dumps(result, ensure_ascii=False, indent=2))
-    return int(result.get("status") == "FAIL")
+    return int(result.get("status") in {"FAIL", "INCOMPLETE"})
 
 
 if __name__ == "__main__":

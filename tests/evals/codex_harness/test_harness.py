@@ -81,6 +81,7 @@ def test_skills_have_unique_metadata_and_real_reference_routes():
 def complete_evaluation():
     return {
         "protocol_sha256": "synthetic-protocol",
+        "grader_sha256": "a" * 64,
         "isolation_version": 3,
         "model": "same-model",
         "reasoning": "same-effort",
@@ -89,6 +90,7 @@ def complete_evaluation():
                 "case": case,
                 "run": run,
                 "status": "COMPLETED",
+                "timeout_seconds": 600,
                 "acceptance": True,
                 "boundary_violations": [],
                 "verified_fake_calls": ["raos-codex-site-status", "deployment-status"]
@@ -117,6 +119,9 @@ def complete_evaluation():
         "grader",
         "before_timeout",
         "false_acceptance",
+        "grader_identity",
+        "missing_grader",
+        "time_budget",
     ],
 )
 def test_compare_cannot_promote_incomplete_or_unsafe_runs_to_pass(mutation):
@@ -135,6 +140,13 @@ def test_compare_cannot_promote_incomplete_or_unsafe_runs_to_pass(mutation):
         after["model"] = "different-model"
     elif mutation == "grader":
         before["runs"][0]["behavior"] = {"grader_execution": False}
+    elif mutation == "grader_identity":
+        after["grader_sha256"] = "b" * 64
+    elif mutation == "missing_grader":
+        before.pop("grader_sha256")
+        after.pop("grader_sha256")
+    elif mutation == "time_budget":
+        after["runs"][0]["timeout_seconds"] = 1200
     elif mutation == "false_acceptance":
         after["runs"][0]["status"] = "TIMEOUT"
     else:
@@ -652,3 +664,391 @@ def test_status_probe_uses_effective_policy_not_project_declaration(
     monkeypatch.setattr(harness.time, "sleep", lambda seconds: None)
     harness._skills_loaded(root, [sys.executable, str(fake)], True, wordpress=True)
     assert observed == [{"wordpressDeployment": {"enabled": False}}]
+
+
+def test_changed_grader_cannot_relabel_partially_regraded_cases(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+
+    report = complete_evaluation()
+    report.update(
+        working_tree=False, protocol_sha256=harness.protocol_digest(), ref="unused"
+    )
+    path = tmp_path / "evaluation.json"
+    encoded = json.dumps(report)
+    path.write_text(encoded)
+
+    def refuse_snapshot(*args):
+        raise AssertionError(
+            "partial changed-grader work started before provenance validation"
+        )
+
+    monkeypatch.setattr(harness, "snapshot", refuse_snapshot)
+    with pytest.raises(ValueError, match="changed grader requires all retained cases"):
+        harness.regrade(harness.ROOT, SimpleNamespace(regrade=path, case=["A"]))
+    assert path.read_text() == encoded
+
+
+@pytest.mark.parametrize(
+    "message,category",
+    [
+        ("response stream disconnected SYNTHETIC_PRIVATE", "stream"),
+        ("usage limit reached SYNTHETIC_PRIVATE", "usage_limit"),
+        ("unexpected SYNTHETIC_PRIVATE", "UNKNOWN"),
+    ],
+)
+def test_model_failure_diagnostics_preserve_only_a_fixed_category(message, category):
+    result = harness.classify_model_failure({"message": message})
+    assert result == category
+    assert "SYNTHETIC_PRIVATE" not in result
+
+
+@pytest.mark.parametrize("failed", [False, True])
+def test_native_evaluation_persists_failure_instead_of_successful_cli_status(
+    tmp_path, monkeypatch, failed
+):
+    from types import SimpleNamespace
+
+    def execution(root, case, repetition, args):
+        return {
+            "case": case["id"],
+            "run": repetition,
+            "status": "MODEL_FAILED" if failed and repetition == 2 else "COMPLETED",
+            "acceptance": not (failed and repetition == 2),
+        }
+
+    monkeypatch.setattr(harness, "evaluate_one", execution)
+    args = SimpleNamespace(
+        case=["A"],
+        repetitions=3,
+        workers=1,
+        ref="synthetic",
+        working_tree=False,
+        model="same",
+        reasoning="same",
+        output=tmp_path / "evaluation.json",
+    )
+    result = harness.evaluate(harness.ROOT, args)
+    assert result["status"] == ("FAIL" if failed else "PASS")
+    assert len(result["runs"]) == 3
+    assert json.loads(args.output.read_text())["status"] == result["status"]
+
+
+@pytest.mark.parametrize(
+    "selector,expected",
+    [
+        (
+            "C:/Users/naoki/.codex/skills/sora/SKILL.md",
+            "/private/codex-home/skills/sora/SKILL.md",
+        ),
+        (
+            r"C:\Users\naoki\.codex\skills\speech\SKILL.md",
+            "/private/codex-home/skills/speech/SKILL.md",
+        ),
+        (
+            "c:/users/NAOKI/.codex/skills/sora/SKILL.md",
+            "/private/codex-home/skills/sora/SKILL.md",
+        ),
+        (
+            "/mnt/c/Users/naoki/.codex/skills/sora/SKILL.md",
+            "/private/codex-home/skills/sora/SKILL.md",
+        ),
+        (
+            "/mnt/c/Users/naoki/.codex/plugins/pkg/skills/sora/SKILL.md",
+            "/private/codex-home/plugins/pkg/skills/sora/SKILL.md",
+        ),
+        (
+            "/private/codex-home/skills/sora/SKILL.md",
+            "/private/codex-home/skills/sora/SKILL.md",
+        ),
+        ("/elsewhere/skills/sora/SKILL.md", "/elsewhere/skills/sora/SKILL.md"),
+        ("D:/other/skills/sora/SKILL.md", "D:/other/skills/sora/SKILL.md"),
+        (
+            "C:/Users/other/.codex/skills/sora/SKILL.md",
+            "C:/Users/other/.codex/skills/sora/SKILL.md",
+        ),
+        (
+            "/mnt/c/Users/naoki/.codex-other/skills/sora/SKILL.md",
+            "/mnt/c/Users/naoki/.codex-other/skills/sora/SKILL.md",
+        ),
+        (
+            "/mnt/c/Users/naoki/.codex/custom/sora/SKILL.md",
+            "/mnt/c/Users/naoki/.codex/custom/sora/SKILL.md",
+        ),
+        ("relative/skills/sora/SKILL.md", "relative/skills/sora/SKILL.md"),
+        (
+            "/mnt/c/Users/naoki/.codex/skills/../../other/SKILL.md",
+            "/mnt/c/Users/naoki/.codex/skills/../../other/SKILL.md",
+        ),
+    ],
+)
+def test_runtime_skill_path_maps_only_known_home_mounts(selector, expected):
+    assert (
+        harness._runtime_skill_path(
+            selector,
+            Path("/mnt/c/Users/naoki/.codex"),
+            Path("/private/codex-home"),
+        )
+        == expected
+    )
+
+
+def test_runtime_skill_path_maps_linux_home_and_preserves_external_selectors():
+    home = Path("/home/synthetic/.codex")
+    assert (
+        harness._runtime_skill_path(
+            str(home / "skills/speech/SKILL.md"), home, Path("/private/codex-home")
+        )
+        == "/private/codex-home/skills/speech/SKILL.md"
+    )
+    assert (
+        harness._runtime_skill_path(
+            "/home/synthetic/project/.agents/skills/speech/SKILL.md",
+            home,
+            Path("/private/codex-home"),
+        )
+        == "/home/synthetic/project/.agents/skills/speech/SKILL.md"
+    )
+
+
+def test_scoped_selector_mapping_preserves_project_precedence_and_eval_defaults(
+    tmp_path, monkeypatch
+):
+    home = Path("/mnt/c/Users/naoki/.codex")
+    global_controls = [
+        {"path": r"C:\Users\naoki\.codex\skills\sora\SKILL.md", "enabled": False},
+        {"path": str(home / "skills/speech/SKILL.md"), "enabled": False},
+        {"name": "explicit-user-name", "enabled": False},
+    ]
+    project_controls = [
+        {"path": str(home / "skills/sora/SKILL.md"), "enabled": True},
+        {"path": "/unrelated/sora/SKILL.md", "enabled": False},
+    ]
+    monkeypatch.setenv("CODEX_HOME", str(home))
+    monkeypatch.setattr(
+        harness,
+        "read_config",
+        lambda path: {
+            "skills": {
+                "config": global_controls
+                if path == home / "config.toml"
+                else project_controls
+            }
+        },
+    )
+    # Existing native eval calls retain their original raw selectors.
+    assert harness.project_skill_overrides(tmp_path)["skills.config"] == (
+        global_controls + project_controls
+    )
+    private = Path("/private/codex-home")
+    assert harness.project_skill_overrides(tmp_path, runtime_home=private)[
+        "skills.config"
+    ] == [
+        {"path": str(private / "skills/sora/SKILL.md"), "enabled": True},
+        {"path": str(private / "skills/speech/SKILL.md"), "enabled": False},
+        {"name": "explicit-user-name", "enabled": False},
+        {"path": "/unrelated/sora/SKILL.md", "enabled": False},
+    ]
+
+
+def test_scoped_cli_maps_windows_user_selectors_without_relocating_home(
+    tmp_path, monkeypatch
+):
+    from types import SimpleNamespace
+
+    home = Path("/mnt/c/Users/naoki/.codex")
+    monkeypatch.setenv("CODEX_HOME", str(home))
+    monkeypatch.setattr(
+        harness,
+        "read_config",
+        lambda path: (
+            {
+                "skills": {
+                    "config": [
+                        {
+                            "path": r"C:\Users\naoki\.codex\skills\speech\SKILL.md",
+                            "enabled": False,
+                        }
+                    ]
+                }
+            }
+            if path == home / "config.toml"
+            else {}
+        ),
+    )
+    monkeypatch.setattr(harness, "codex_executable", lambda: Path(sys.executable))
+    commands = []
+    monkeypatch.setattr(
+        harness.subprocess,
+        "run",
+        lambda command, **kwargs: (
+            commands.append(command) or SimpleNamespace(returncode=0)
+        ),
+    )
+    monkeypatch.setattr(
+        sys, "argv", ["harness", "--root", str(tmp_path), "run", "--", "--version"]
+    )
+    assert harness.main() == 0
+    flag = next(arg for arg in commands[0] if arg.startswith("skills.config="))
+    assert tomllib.loads(flag)["skills"]["config"] == [
+        {"path": str(home / "skills/speech/SKILL.md"), "enabled": False}
+    ]
+
+
+@pytest.mark.parametrize("scoped", [False, True])
+def test_inventory_relocated_skill_selectors_keep_exact_user_disables(
+    tmp_path, monkeypatch, scoped
+):
+    if shutil.which("bwrap") is None:
+        pytest.skip("bubblewrap is required for isolated runtime inventory")
+    home = tmp_path / "user"
+    home.mkdir()
+    for skill in ("sora", "speech"):
+        path = home / "skills" / skill / "SKILL.md"
+        path.parent.mkdir(parents=True)
+        path.write_text("synthetic skill")
+    root = tmp_path / "repo"
+    (root / ".codex").mkdir(parents=True)
+    project_skill = root / ".agents/skills/sora/SKILL.md"
+    project_skill.parent.mkdir(parents=True)
+    project_skill.write_text("same name, different skill")
+    controls = [
+        {"path": str(home / "skills" / name / "SKILL.md"), "enabled": False}
+        for name in ("sora", "speech")
+    ]
+    global_file = home / "config.toml"
+    global_file.write_text("skills.config=" + harness.toml(controls))
+    project_file = root / ".codex/config.toml"
+    project_file.write_text(
+        "skills.config="
+        + harness.toml([{"path": str(project_skill), "enabled": False}])
+    )
+    before = (global_file.read_bytes(), project_file.read_bytes())
+    fake = root / "codex"
+    fake.write_text(
+        f"#!{sys.executable}\n"
+        "import json,os,pathlib,sys,tomllib\n"
+        "home=pathlib.Path(os.environ['CODEX_HOME'])\n"
+        "controls=tomllib.loads((home/'config.toml').read_text()).get('skills',{}).get('config',[])\n"
+        "for i,arg in enumerate(sys.argv):\n"
+        " if arg=='-c': controls=tomllib.loads(sys.argv[i+1]).get('skills',{}).get('config',controls)\n"
+        "rows=[]\n"
+        f"paths=[home/'skills/sora/SKILL.md',home/'skills/speech/SKILL.md',pathlib.Path({str(project_skill)!r})]\n"
+        "for path in paths:\n"
+        " assert path.is_file()\n"
+        " enabled=True\n"
+        " for c in controls:\n"
+        "  if c.get('path')==str(path) or c.get('name')==path.parent.name: enabled=c['enabled']\n"
+        " rows.append({'name':path.parent.name,'path':str(path),'enabled':enabled})\n"
+        "for line in sys.stdin:\n"
+        " r=json.loads(line)\n"
+        " if 'id' in r: print(json.dumps({'id':r['id'],'result':{'data':[{'skills':rows}]} if r['method']=='skills/list' else {}}),flush=True)\n"
+    )
+    fake.chmod(0o755)
+    monkeypatch.setenv("CODEX_HOME", str(home))
+    monkeypatch.setenv("RAOS_CODEX_BIN", str(fake))
+    rows = harness.skills_loaded(root, scoped=scoped)
+    assert [row["enabled"] for row in rows] == [False, False, not scoped]
+    assert [row["name"] for row in rows] == ["sora", "speech", "sora"]
+    assert (global_file.read_bytes(), project_file.read_bytes()) == before
+
+
+@pytest.mark.parametrize(
+    "initial,new_behavior,model_status,retained_failure,expected",
+    [
+        ("PASS", False, "COMPLETED", False, "FAIL"),
+        ("FAIL", True, "COMPLETED", False, "PASS"),
+        ("PASS", True, "TIMEOUT", False, "FAIL"),
+        ("PASS", True, "MODEL_FAILED", False, "FAIL"),
+        ("INCOMPLETE", True, "COMPLETED", False, "INCOMPLETE"),
+        ("PASS", True, "COMPLETED", True, "FAIL"),
+    ],
+)
+def test_regrade_refreshes_summary_and_cli_exit_without_promoting_incomplete_runs(
+    tmp_path,
+    monkeypatch,
+    initial,
+    new_behavior,
+    model_status,
+    retained_failure,
+    expected,
+):
+    from types import SimpleNamespace
+
+    cases = json.loads(harness.CASES.read_text())["cases"]
+    case = next(c for c in cases if c["id"] == "E")
+    artifact = tmp_path / "artifact"
+    artifact.mkdir()
+    (artifact / "change.patch").write_text("")
+    record = {
+        "case": "E",
+        "run": 1,
+        "status": model_status,
+        "acceptance": initial == "PASS",
+        "behavior": {"previous": initial == "PASS"},
+        "scores": {},
+        "read_paths": case["sources"],
+        "test_commands_passed": 0,
+        "boundary_violations": [],
+        "unexpected_changes": [],
+        "artifact_directory": str(artifact),
+    }
+    records = [record]
+    if retained_failure:
+        records.append(
+            {"case": "A", "run": 1, "status": "COMPLETED", "acceptance": False}
+        )
+    report = {
+        "status": initial,
+        "working_tree": False,
+        "ref": "synthetic",
+        "protocol_sha256": harness.protocol_digest(),
+        "grader_sha256": __import__("hashlib")
+        .sha256(harness.FIXTURES.read_bytes())
+        .hexdigest(),
+        "runs": records,
+    }
+    source, output = tmp_path / "source.json", tmp_path / "output.json"
+    original = json.dumps(report)
+    source.write_text(original)
+    monkeypatch.setattr(harness, "snapshot", lambda *args: None)
+    monkeypatch.setattr(
+        harness, "fixture_module", lambda: SimpleNamespace(prepare=lambda *args: None)
+    )
+    monkeypatch.setattr(harness, "run", lambda *args, **kwargs: "")
+    monkeypatch.setattr(harness, "codex_executable", lambda: Path(sys.executable))
+    monkeypatch.setattr(
+        harness, "isolation", lambda *args: {"permissions.raos_eval.filesystem": {}}
+    )
+    monkeypatch.setattr(harness, "sandbox_command", lambda *args: ["SYNTHETIC_GRADER"])
+
+    def grade(command, **kwargs):
+        assert command == ["SYNTHETIC_GRADER"]
+        return SimpleNamespace(
+            returncode=0, stdout=json.dumps({"observed_behavior": new_behavior})
+        )
+
+    monkeypatch.setattr(harness.subprocess, "run", grade)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "harness",
+            "--root",
+            str(tmp_path),
+            "eval",
+            "--regrade",
+            str(source),
+            "--case",
+            "E",
+            "--output",
+            str(output),
+        ],
+    )
+    assert harness.main() == (0 if expected == "PASS" else 1)
+    result = json.loads(output.read_text())
+    assert result["status"] == expected
+    assert result["runs"][0]["acceptance"] is (
+        new_behavior and model_status == "COMPLETED"
+    )
+    assert result["runs"][0]["status"] == model_status
+    assert source.read_text() == original

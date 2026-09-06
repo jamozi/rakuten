@@ -7,7 +7,7 @@ from html import escape
 import json
 import re
 from pathlib import Path
-from typing import Any, cast
+from typing import cast
 
 from raos.application.editorial.reader_experience_v1 import CheckedFact, CtaEvidence, ROLE_TYPES, approved_media_record, cta_visible, validate_experience
 
@@ -22,36 +22,39 @@ def load_experiences(root: Path) -> dict[str, object]:
     path = root / REGISTRY_PATH
     if not path.exists():
         return {}
-    value = json.loads(path.read_text(encoding="utf-8"))
+    value: dict[str, object] = json.loads(path.read_text(encoding="utf-8"))
     if value.get("schema") != "RAOS_READER_EXPERIENCE_V1" or not isinstance(value.get("articles"), dict):
         raise ValueError("READER_EXPERIENCE_REGISTRY_INVALID")
-    portfolio = json.loads((root / "changes/editorial-portfolio-v2/editorial-portfolio.v2.json").read_text())
-    identities = json.loads((root / "changes/editorial-portfolio-v3/editorial-identities.v1.json").read_text())
-    sources = json.loads((root / "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json").read_text())
-    bindings = {row["article_id"]: row for row in portfolio["articles"]}
+    portfolio: dict[str, list[dict[str, object]]] = json.loads((root / "changes/editorial-portfolio-v2/editorial-portfolio.v2.json").read_text())
+    identities: dict[str, list[dict[str, str]]] = json.loads((root / "changes/editorial-portfolio-v3/editorial-identities.v1.json").read_text())
+    sources: dict[str, list[dict[str, object]]] = json.loads((root / "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json").read_text())
+    bindings = {cast(str, row["article_id"]): row for row in portfolio["articles"]}
     roles = {row["article_id"]: ROLE_TYPES[row["content_role"]] for row in identities["articles"]}
-    for article_id, experience in value["articles"].items():
+    articles = cast(dict[str, object], value["articles"])
+    for article_id, raw_experience in articles.items():
+        experience = raw_experience
         if article_id not in bindings or not isinstance(experience, dict):
             raise ValueError("READER_EXPERIENCE_UNKNOWN_ARTICLE")
+        experience = cast(dict[str, object], experience)
         if experience.get("article_type") != roles[article_id]:
             raise ValueError("READER_EXPERIENCE_INTENT_MISMATCH:" + article_id)
         references = frozenset(
-            claim["claim_id"] for packet in sources["source_packets"] if packet["article_id"] == article_id
-            for claim in packet["claims"]
+            cast(str, claim["claim_id"]) for packet in sources["source_packets"] if packet["article_id"] == article_id
+            for claim in cast(list[dict[str, object]], packet["claims"])
         )
         checked_refs = frozenset(
-            claim['claim_id'] for packet in sources['source_packets'] if packet['article_id'] == article_id
-            for claim in packet['claims']
+            cast(str, claim['claim_id']) for packet in sources['source_packets'] if packet['article_id'] == article_id
+            for claim in cast(list[dict[str, object]], packet['claims'])
             if claim['classification'] == 'MAJOR_VERIFIABLE' and claim['status'] == 'BOUND_TO_OFFICIAL_SOURCE'
-            and any(source['source_ref'] in claim['evidence_refs']
+            and any(source_ref in cast(list[str], claim['evidence_refs'])
                     and source.get('authority') in {'MANUFACTURER_OFFICIAL', 'CARRIER_OFFICIAL', 'GOVERNMENT_OFFICIAL'}
-                    and CheckedFact(claim['claim_id'], source['source_ref'], source.get('retrieved_on'), 'KNOWN').usable
-                    for source in sources['sources'])
+                    and CheckedFact(cast(str, claim['claim_id']), source_ref, cast(str | None, source.get('retrieved_on')), 'KNOWN').usable
+                    for source in sources['sources'] for source_ref in (cast(str, source['source_ref']),))
         )
-        issues = validate_experience(experience, product_refs=frozenset(bindings[article_id]["product_ids"]), evidence_refs=references, checked_fact_refs=checked_refs)
+        issues = validate_experience(experience, product_refs=frozenset(cast(list[str], bindings[article_id]["product_ids"])), evidence_refs=references, checked_fact_refs=checked_refs)
         if issues:
             raise ValueError("READER_EXPERIENCE_INVALID:" + article_id + ":" + ",".join(issues))
-    return cast(dict[str, object], value["articles"])
+    return articles
 
 
 def _clean_media_and_actions(root: Element, evidence: CtaEvidence, article_type: str, images: frozenset[str]) -> None:
@@ -146,10 +149,11 @@ def _summary(root: Element, settings: Mapping[str, object]) -> None:
     summary = settings.get("decision_summary")
     if not isinstance(summary, Mapping):
         return
+    summary = cast(Mapping[str, object], summary)
     options = summary.get("options")
     items = section.find(tag="li")
     if isinstance(options, list):
-        by_product = {option["product_ref"]: option for option in options if isinstance(option, Mapping)}
+        by_product = {option["product_ref"]: option for candidate in cast(list[object], options) if isinstance(candidate, Mapping) for option in (cast(Mapping[str, object], candidate),)}
         targets = {"#" + str(card.attrs.get("id")): card.attrs.get("data-raos-product-id") for card in root.find(cls="raos-product-card")}
         for item in items:
             product = next((targets.get(link.attrs.get("href") or "") for link in item.find(tag="a") if link.attrs.get("href") in targets), None)
@@ -209,12 +213,12 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
     insertion = summary
     rule = settings.get('_resolved_rule_status')
     if settings.get('article_type') == 'safety_rule' and isinstance(rule, dict):
-        rule_panel = components.safety_rule_panel(rule)
+        rule_panel = components.safety_rule_panel(cast(dict[str, str], rule))
         if rule_panel is not None:
             summary.insert_before(rule_panel) if summary is not None else article.append(rule_panel)
     axes = settings.get("decision_axes", [])
     if isinstance(axes, list):
-        axis_block = components.decision_axes(axes)
+        axis_block = components.decision_axes(cast(list[Mapping[str, str]], axes))
         if axis_block is not None:
             if insertion is not None and insertion.parent is not None:
                 parent = insertion.parent
@@ -226,15 +230,15 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
             notes = settings.get('practical_notes', [])
             if isinstance(notes, list) and notes:
                 note = block('<div class="raos-practical-notes"><h3>暮らしで確かめること</h3></div>')
-                for paragraph in notes:
+                for paragraph in cast(list[object], notes):
                     if isinstance(paragraph, str):
                         note.append(block('<p>' + escape(paragraph) + '</p>'))
                 axis_block.append(note)
     # The decision table resolves identity, fit, and caution from existing cards.
     cards = root.find(cls="raos-product-card")
     product_entries = settings.get('products', [])
-    product_settings = {p['product_ref']: p for p in product_entries} if isinstance(product_entries, list) else {}
-    summary_reasons = {}
+    product_settings = {p['product_ref']: p for p in cast(list[Mapping[str, object]], product_entries)} if isinstance(product_entries, list) else {}
+    summary_reasons: dict[str | None, str] = {}
     if summary is not None:
         for item in summary.find(tag='li'):
             paragraphs = item.find(tag='p')
@@ -246,7 +250,7 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
             for link in item.find(tag='a'):
                 if str(link.attrs.get('href', '')).startswith('#'):
                     summary_reasons[link.attrs['href']] = copy.text()
-    rows = []
+    rows: list[dict[str, str]] = []
     for card in cards:
         headings = card.find(tag="h3")
         labels = card.find(cls="raos-condition-label")
@@ -259,7 +263,7 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
         exclusions = fit_lists[1].find(tag="li") if len(fit_lists) > 1 else []
         pairs = {pair.find(tag='dt')[0].text(): pair.find(tag='dd')[0].text() for dl in card.find(tag='dl') for pair in dl.children if isinstance(pair, Element) and pair.find(tag='dt') and pair.find(tag='dd')}
         product = product_settings.get(card.attrs.get('data-raos-product-id'), {})
-        not_for = product.get('not_for', [])
+        not_for = cast(list[str], product.get('not_for', []))
         if not_for and not pairs.get('別の候補が向く条件') and not exclusions:
             card.append(block('<p class="raos-product-card__caution"><strong>向かない条件：</strong>' + escape('。'.join(not_for)) + '</p>'))
         rows.append({
@@ -316,7 +320,7 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
             card.append(block(f'<p><a href="#{anchor}">型番と仕様の根拠を見る</a></p>'))
         # Preserve source headings/IDs, methods, and update history at the end.
         additional = settings.get("consolidate_sections", [])
-        consolidation = ("sources-section", "method-section", *(additional if isinstance(additional, list) else []))
+        consolidation = ("sources-section", "method-section", *(cast(list[str], additional) if isinstance(additional, list) else []))
         story = block('<section class="raos-reader-meaning" aria-labelledby="reader-meaning"><h2 id="reader-meaning">暮らしの場面に置き換えて考える</h2></section>')
         for child in list(article.children):
             if isinstance(child, Element) and child is not evidence and any(child.has(cls) for cls in consolidation):
@@ -334,19 +338,19 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
                 evidence.insert_before(story)
     unknowns = settings.get("unknowns", [])
     if isinstance(unknowns, list):
-        unknown_panel = components.unknowns_panel(unknowns)
+        unknown_panel = components.unknowns_panel(cast(list[Mapping[str, str]], unknowns))
         if unknown_panel is not None:
             evidence.insert_before(unknown_panel) if evidence is not None else article.append(unknown_panel)
     checks = settings.get("purchase_checks", [])
     if isinstance(checks, list):
-        checklist = components.purchase_checklist(checks)
+        checklist = components.purchase_checklist(cast(list[str], checks))
         if checklist is not None:
             evidence.insert_before(checklist) if evidence is not None else article.append(checklist)
     final_offers = block('<div class="raos-final-offers"></div>')
     for link in list(root.find(tag="a")):
         if link.attrs.get("data-raos-cta-type") == "offer" and link.attrs.get("data-raos-placement") == "final_summary":
-            product = link.attrs.get("data-raos-product-id")
-            offer_card = next((card for card in cards if card.attrs.get("data-raos-product-id") == product), None)
+            product_ref = link.attrs.get("data-raos-product-id")
+            offer_card = next((card for card in cards if card.attrs.get("data-raos-product-id") == product_ref), None)
             if offer_card is not None and offer_card.find(tag="h3"):
                 link.children = [escape(offer_card.find(tag="h3")[0].text() + "：型番・同梱品・保証・現在の販売条件を確認する")]
             final_offers.append(link)
@@ -356,7 +360,7 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
     differences = settings.get('_resolved_differences', [])
     if isinstance(differences, list) and differences:
         label = str(settings.get('difference_label', '公表値の差を、用途へ置き換える'))
-        difference_rows_html = ''.join('<tr><th scope="row">' + escape(r['label']) + '</th><td>' + escape(r['delta']) + '</td><td>' + escape(r['meaning']) + '</td></tr>' for r in differences)
+        difference_rows_html = ''.join('<tr><th scope="row">' + escape(r['label']) + '</th><td>' + escape(r['delta']) + '</td><td>' + escape(r['meaning']) + '</td></tr>' for r in cast(list[Mapping[str, str]], differences))
         difference = components.section('reader-model-difference', label, '<p>差は公表値から計算しています。実使用の時間や適合を示す実測値ではありません。</p><div class="comparison-table-wrap" tabindex="0" role="region" aria-label="世代差と用途の表"><table><caption>' + escape(label) + '</caption><thead><tr><th scope="col">項目</th><th scope="col">公表値の差</th><th scope="col">用途で見る意味</th></tr></thead><tbody>' + difference_rows_html + '</tbody></table></div>', 'raos-reader-model-difference')
         specifications = root.find(cls='comparison-section')
         if specifications:
@@ -364,7 +368,7 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
     media = settings.get('_resolved_dimensions', [])
     if isinstance(media, list):
         diagrams = block('<section class="raos-reader-dimensions" aria-labelledby="reader-dimensions"><h2 id="reader-dimensions">本体と、扉を開く空間を分けて測る</h2></section>')
-        for row in media:
+        for row in cast(list[Mapping[str, Mapping[str, object]]], media):
             figure = components.dimension_diagram(row['claim'], row['source'], row['asset'])
             if figure is not None:
                 diagrams.append(figure)
@@ -374,10 +378,11 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
                 specifications[0].insert_before(diagrams)
     links = settings.get('_resolved_contextual_links', [])
     if isinstance(links, list):
-        for link in links:
-            related_node = components.contextual_link(link['question'], link['url'], link['journey_stage'], existing_targets=frozenset(item['url'] for item in links))
+        links = cast(list[Mapping[str, str]], links)
+        for contextual in links:
+            related_node = components.contextual_link(contextual['question'], contextual['url'], contextual['journey_stage'], existing_targets=frozenset(item['url'] for item in links))
             if related_node is not None:
-                targets = root.find(cls='raos-decision-axes' if link.get('placement') == 'axes' else 'raos-reader-purchase-checklist')
+                targets = root.find(cls='raos-decision-axes' if contextual.get('placement') == 'axes' else 'raos-reader-purchase-checklist')
                 if targets:
                     targets[0].append(related_node)
     if summary is not None and summary.parent is not None:
@@ -387,59 +392,61 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
 def project_registered_article(root: Path, markup: str, *, article_id: str, evidence: CtaEvidence = CtaEvidence(), approved_product_images: frozenset[str] = frozenset()) -> str:
     experience = load_experiences(root).get(article_id)
     registry_path = root / REGISTRY_PATH
-    registry = json.loads(registry_path.read_text()) if registry_path.exists() else {}
+    registry: dict[str, list[dict[str, object]]] = json.loads(registry_path.read_text()) if registry_path.exists() else {}
     product_assets = {
-        asset['asset_ref']: asset for asset in registry.get('media', [])
-        if isinstance(asset, dict) and approved_media_record(asset)
+        cast(str, asset['asset_ref']): asset for asset in registry.get('media', [])
+        if isinstance(cast(object, asset), dict) and approved_media_record(asset)
         and asset.get('role') == 'product_identity' and asset.get('asset_type') != 'html_diagram'
     }
     # API image evidence and editorial usage approval are independent gates.
     approved_product_images = approved_product_images & product_assets.keys()
     if isinstance(experience, dict):
-        experience = dict(experience)
-        portfolio = json.loads((root / 'changes/editorial-portfolio-v2/editorial-portfolio.v2.json').read_text())
+        experience = dict(cast(dict[str, object], experience))
+        portfolio: dict[str, list[dict[str, str]]] = json.loads((root / 'changes/editorial-portfolio-v2/editorial-portfolio.v2.json').read_text())
         routes = {a['article_id']: '/' + a['production_slug'] + '/' for a in portfolio['articles']}
-        experience['_resolved_contextual_links'] = [{**link, 'url': routes[link['target_ref']]} for link in experience.get('contextual_links', []) if link['target_ref'] in routes and link['target_ref'] != article_id]
-        sources = json.loads((root / 'changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json').read_text())
-        claims = {c['claim_id']: c for p in sources['source_packets'] if p['article_id'] == article_id for c in p['claims']}
-        source_refs = {s['source_ref']: s for s in sources['sources']}
+        experience['_resolved_contextual_links'] = [{**link, 'url': routes[link['target_ref']]} for link in cast(list[dict[str, str]], experience.get('contextual_links', [])) if link['target_ref'] in routes and link['target_ref'] != article_id]
+        sources: dict[str, list[dict[str, object]]] = json.loads((root / 'changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json').read_text())
+        claims = {cast(str, c['claim_id']): c for p in sources['source_packets'] if p['article_id'] == article_id for c in cast(list[dict[str, object]], p['claims'])}
+        source_refs = {cast(str, s['source_ref']): s for s in sources['sources']}
         rule = experience.get('rule_status')
         if isinstance(rule, dict):
-            claim = claims.get(rule.get('evidence_ref'), {})
-            source = next((source_refs[ref] for ref in claim.get('evidence_refs', []) if ref in source_refs), None)
+            rule = cast(dict[str, object], rule)
+            claim = claims.get(cast(str, rule.get('evidence_ref')), {})
+            source = next((source_refs[ref] for ref in cast(list[str], claim.get('evidence_refs', [])) if ref in source_refs), None)
             if source is not None:
                 experience['_resolved_rule_status'] = {**rule, 'checked_at': source.get('retrieved_on'), 'url': source['url']}
-        assets = {a['asset_ref']: a for a in registry.get('media', [])}
-        resolved = []
-        for media in experience.get('media', []):
-            asset, claim = assets.get(media['asset_ref']), claims.get(media.get('evidence_ref'))
-            if asset is not None and claim is not None:
-                source = next((source_refs.get(ref) for ref in claim['evidence_refs'] if source_refs.get(ref, {}).get('url') == asset.get('source')), None)
+        assets = {cast(str, a['asset_ref']): a for a in registry.get('media', [])}
+        resolved: list[dict[str, dict[str, object]]] = []
+        for media in cast(list[dict[str, str]], experience.get('media', [])):
+            asset, dimension_claim = assets.get(media['asset_ref']), claims.get(cast(str, media.get('evidence_ref')))
+            if asset is not None and dimension_claim is not None:
+                source = next((source_refs.get(ref) for ref in cast(list[str], dimension_claim['evidence_refs']) if source_refs.get(ref, {}).get('url') == asset.get('source')), None)
                 if source is not None:
-                    resolved.append(dict(asset=asset, claim=claim, source=source))
+                    resolved.append(dict(asset=asset, claim=dimension_claim, source=source))
         experience['_resolved_dimensions'] = resolved
         difference = experience.get('difference_pair')
         if isinstance(difference, dict):
-            inputs = json.loads((root / 'changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json').read_text())
-            model: dict[str, Any] = next((a['render_model'] for a in inputs['articles'] if a['article_id'] == article_id), {})
-            product_facts = {c['product_id']: {f['label']: f['value'] for f in c['confirmed_facts']} for c in model.get('product_cards', [])}
-            left, right = product_facts.get(difference.get('baseline_product_ref'), {}), product_facts.get(difference.get('product_ref'), {})
-            rows = []
-            for label, meaning in difference.get('meaning_by_label', {}).items():
+            inputs: dict[str, list[dict[str, object]]] = json.loads((root / 'changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json').read_text())
+            model = cast(dict[str, list[dict[str, object]]], next((a['render_model'] for a in inputs['articles'] if a['article_id'] == article_id), dict[str, object]()))
+            product_facts = {cast(str, c['product_id']): {f['label']: f['value'] for f in cast(list[dict[str, str]], c['confirmed_facts'])} for c in model.get('product_cards', [])}
+            difference = cast(dict[str, object], difference)
+            left, right = product_facts.get(cast(str, difference.get('baseline_product_ref')), {}), product_facts.get(cast(str, difference.get('product_ref')), {})
+            rows: list[dict[str, str]] = []
+            for label, meaning in cast(dict[str, str], difference.get('meaning_by_label', {})).items():
                 delta = components.numerical_difference(left.get(label, ''), right.get(label, ''))
                 if delta is not None:
                     rows.append(dict(label=label, meaning=meaning, delta=delta))
             experience['_resolved_differences'] = rows
-    rendered = project_article(markup, article_id=article_id, experience=experience if isinstance(experience, dict) else None, evidence=evidence, approved_product_images=approved_product_images)
+    rendered = project_article(markup, article_id=article_id, experience=cast(dict[str, object], experience) if isinstance(experience, dict) else None, evidence=evidence, approved_product_images=approved_product_images)
     if approved_product_images:
         document = fragment(rendered)
         for image in document.find(tag='img'):
-            asset = product_assets.get(image.attrs.get('data-raos-product-image-id'))
+            asset = product_assets.get(cast(str, image.attrs.get('data-raos-product-image-id')))
             if asset is not None:
-                image.attrs['alt'] = asset['alt']
+                image.attrs['alt'] = cast(str, asset['alt'])
                 image.attrs['data-raos-media-state'] = 'approved'
-                image.attrs['data-raos-media-checked-at'] = asset['checked_at']
+                image.attrs['data-raos-media-checked-at'] = cast(str, asset['checked_at'])
                 if image.attrs.get('data-raos-product-image-placement') == 'product_card' and image.parent is not None and not image.parent.find(cls='raos-product-image-caption'):
-                    image.parent.append(block('<p class="raos-product-image-caption">' + escape(asset['caption']) + '</p>'))
+                    image.parent.append(block('<p class="raos-product-image-caption">' + escape(cast(str, asset['caption'])) + '</p>'))
         return document.html()
     return rendered

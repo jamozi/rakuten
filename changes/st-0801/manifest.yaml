@@ -349,8 +349,8 @@ source_artifacts:
   bytes: 4693
   sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
 - uri: repo://.github/workflows/ci.yml
-  bytes: 7021
-  sha256: befaf52cb40d16ddeec2ed1dc44975b00d2fcf5734247d4430fa8492737f0286
+  bytes: 7050
+  sha256: febdc60bfab310a56c11b1d7ca98e22dfbb94583ea345e0c34107f5ea168e8ab
 - uri: repo://Makefile
   bytes: 3490
   sha256: 9df01ce453622e0a2c3c624589a8de654efb721d484e412e525b650028e1dcee
