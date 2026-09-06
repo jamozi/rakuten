@@ -1164,9 +1164,15 @@ def _resume_completed_proposal_registration(
         stage="proposal", now=clock(),
     )
     _save(candidate_path, receipt, "REGISTRATION_IN_FLIGHT")
-    registration = publication.register_publication_batch(
-        client, receipt, candidate_path / "publication-request.v1.json"
+    registration = client.call(
+        "raos-codex-publication-batch-register",
+        {
+            "proposal_ids": sorted(ids),
+            "expected_theme_tree_sha256": receipt["desired_theme_tree_sha256"],
+        },
     )
+    receipt["batch_registration"] = registration
+    _ids(receipt)
     status = _batch_status(receipt, deploy)
     if (
         status["state"] not in {"REGISTERED", "APPROVED"}

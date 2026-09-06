@@ -542,8 +542,8 @@
     },
     {
       "path": "scripts/raos_wordpress_incremental_publication.py",
-      "sha256": "b863f03fd359c49518288fdf6705d096c0aac04f1c90e9faa3a9662f8dbd8e8e",
-      "size": 71162
+      "sha256": "04b465572fbe0b6d0b8bc77de795d89af544aa5f0ef76fc4d1eddd9d0eda8a2b",
+      "size": 71321
     },
     {
       "path": "scripts/raos_wordpress_incremental_seo_audit.py",

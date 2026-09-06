@@ -1187,8 +1187,9 @@ def pending_complete_receipt(world):
 
 
 @pytest.mark.parametrize("world", [False, True], indirect=True)
-def test_complete_saved_proposals_resume_registration_without_reproposing(world):
+def test_complete_saved_proposals_resume_registration_without_reproposing(world, monkeypatch):
     path = pending_complete_receipt(world)
+    monkeypatch.setattr(publication, "_touch_receipt", lambda *a, **kw: pytest.fail("Incremental recovery must use its own private receipt writer"))
     server = world["server"]
     prior = server.proposal_count
     assert world["execute"]("propose") == path
