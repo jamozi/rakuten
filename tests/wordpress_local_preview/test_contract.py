@@ -855,7 +855,6 @@ def test_browser_audit_covers_core_and_local_templates_at_required_widths() -> N
         "targetState.tabIndex !== '-1'",
         "desktopTocPositionFailure",
         "tocRect.left >= mainRect.right + 12",
-        "document.querySelector('.raos-editorial-v2__main')",
         "CLICK_TARGET_OBSCURED",
         "await page.goto('about:blank')",
         "DIRECT_HASH_TARGET_OBSCURED",

@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "234b709dcd67ab2a24caace1914ab39164c07d28b0a849a55a3bfa9751796f17",
+          "sha256": "352858351e3f35bebe74aa2c5e90d78bbbace6c8aec962d2edb9140cb233536a",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -294,8 +294,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 20043,
-          "sha256": "07b7cc39dc1c1d40f01329d7bafe69c0e126d0dce01617ac64d75eb7968372e5",
+          "bytes": 21211,
+          "sha256": "4092189710b2e63abb9650719622723102688864d8d0a048fa8485054d9504bb",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
@@ -26313,7 +26313,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "72ef15b2d8425fbbfbc4f72dfce2956ecc06b25e24a4cab57ee6ae9758c3e576",
+          "sha256": "a3bcdfd4f4ef5f1626c8b79bc5bd5e9756b9beb0d47fb2d5b6b359ecbbf7a474",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26544,7 +26544,7 @@
       "outputs": [
         {
           "bytes": 81039,
-          "sha256": "01b9540531f7ba2d264b35c5ddaf4d11230b09176176673795070c90f76e5ec8",
+          "sha256": "9064c533f6f359dfe8e24ef899ec1f2b144b3e2b088c4971bb4e7cf8b1af52fb",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29178,7 +29178,7 @@
         },
         {
           "bytes": 27270,
-          "sha256": "f4faccad83bb1bf1b61a29027ffff06ad243da8759ccfc79f642e23e732beac0",
+          "sha256": "418e9f5dd36e6fb79db3ac28f9c7be860912e2da7b7f3c369fc9e9f70bee2c6b",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30004,7 +30004,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "3acd8a58db289106d2d26f93aea21f39fa40d849c66d659e37186772638c8160",
+          "sha256": "5ba8ed34f2335e55762c4e7481dbbb61fb84cab8e8ebb8b8e0dd0f65b12806c4",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

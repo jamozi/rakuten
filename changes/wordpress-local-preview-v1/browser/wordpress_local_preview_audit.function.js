@@ -1613,6 +1613,8 @@
             if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
             scrollTo(0, 0);
           });
+          // Reset the browser's sequential focus origin after disclosure checks.
+          await page.locator('#wp-skip-link').focus();
           const captureFocusedControl = () => page.evaluate(() => {
             const active = document.activeElement;
             if (!(active instanceof HTMLElement) || active === document.body) return null;

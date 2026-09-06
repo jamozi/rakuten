@@ -80,11 +80,12 @@ def cta_visible(
     *, article_type: ArticleType,
 ) -> bool:
     if kind == "learn":
-        return url in evidence.existing_targets
+        return urlsplit(url).scheme in {'', 'https'} and not url.startswith('//') and url in evidence.existing_targets
     if kind == "verify":
         return url.startswith("https://") and url in evidence.official_urls
     return (
         kind == "offer"
+        and url.startswith("https://")
         and article_type != "status_check"
         and product_ref is not None
         and product_ref in evidence.eligible_products
