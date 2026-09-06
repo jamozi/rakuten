@@ -14,9 +14,18 @@
 <!-- /wp:navigation -->
 <!-- wp:search {"label":"記事を検索","showLabel":false,"placeholder":"キーワードや商品名","buttonText":"検索","buttonPosition":"button-only","buttonUseIcon":true,"isSearchFieldHidden":true,"className":"raos-header-search"} /-->
 </div><!-- /wp:group -->
+<!-- wp:details {"className":"raos-header-nojs-shell"} -->
+<details class="wp-block-details raos-header-nojs-shell"><summary><span class="screen-reader-text">メニューと検索</span><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg></summary>
+<!-- wp:group {"className":"raos-header-nojs","layout":{"type":"default"}} -->
+<div class="wp-block-group raos-header-nojs">
+<!-- wp:navigation {"overlayMenu":"never","ariaLabel":"サイト内ナビゲーション","className":"raos-native-links","layout":{"type":"flex","orientation":"vertical"}} -->
+<!-- wp:navigation-link {"label":"商品カテゴリ","url":"/categories/","kind":"custom","isTopLevelLink":true} /-->
+<!-- wp:navigation-link {"label":"悩み・目的","url":"/purposes/","kind":"custom","isTopLevelLink":true} /-->
+<!-- wp:navigation-link {"label":"選び方ガイド","url":"/guides/","kind":"custom","isTopLevelLink":true} /-->
+<!-- wp:navigation-link {"label":"比較・条件別の候補","url":"/comparisons/","kind":"custom","isTopLevelLink":true} /-->
+<!-- wp:navigation-link {"label":"最近更新したガイド","url":"/updates/","kind":"custom","isTopLevelLink":true} /-->
+<!-- /wp:navigation -->
 <!-- wp:html -->
-<div class="raos-header-nojs-shell">
-<div class="raos-header-nojs">
 <form role="search" method="get" action="/" class="raos-header-nojs__search">
 <label for="raos-header-nojs-query">記事を検索</label>
 <div class="raos-header-nojs__fields">
@@ -24,8 +33,8 @@
 <button type="submit">検索</button>
 </div>
 </form>
-</div>
-</div>
 <!-- /wp:html -->
+</div><!-- /wp:group -->
+</details><!-- /wp:details -->
 </div><!-- /wp:group -->
 </div><!-- /wp:group -->
