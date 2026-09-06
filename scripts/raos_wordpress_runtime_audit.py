@@ -759,7 +759,7 @@ def trusted_theme_files(
     # Both factories rehash actual reviewed repository bytes; no live download
     # or caller-controlled checkout/archive path becomes a trust anchor.
     raw = (
-        scratch.baseline_package()
+        scratch.baseline_package(expected_tree)
         if baseline
         else scratch.candidate_package(expected_tree)
     )

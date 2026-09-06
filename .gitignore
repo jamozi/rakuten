@@ -65,3 +65,6 @@ output/pytest/
 # Refuse accidental Chrome/Lighthouse profiles created at repository root.
 /*lighthouse.*/
 /nul
+
+# Local publication checks are attached by hash, not committed as source.
+/output/publication/

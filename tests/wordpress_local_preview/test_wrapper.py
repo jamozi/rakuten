@@ -130,7 +130,12 @@ def _run(
     return subprocess.run(
         [str(WRAPPER), command],
         cwd=ROOT,
-        env={**os.environ, **environment},
+        # Synthetic Docker/materializer tests never inherit the real candidate.
+        env={
+            **{key: value for key, value in os.environ.items()
+               if not key.startswith("RAOS_WORDPRESS_")},
+            **environment,
+        },
         check=check,
         capture_output=True,
         text=True,
@@ -392,3 +397,12 @@ def test_confirmed_reset_removes_only_compose_volumes_and_reseeds(
     assert "down --volumes --remove-orphans" in docker_log
     assert "up --detach database wordpress gateway" in docker_log
     assert "RAOS_PREVIEW_SEED_MODE=initialize" in docker_log
+
+
+def test_fake_runtime_does_not_inherit_a_publication_fixture(monkeypatch, fake_runtime):
+    monkeypatch.setenv("RAOS_WORDPRESS_PREVIEW_FIXTURE_ROOT", "/synthetic/real-release-not-a-test-fixture")
+    monkeypatch.setenv("RAOS_WORDPRESS_RELEASE_CANDIDATE", "/synthetic/real-candidate")
+    _run("up", fake_runtime, check=True)
+    log = Path(fake_runtime["RAOS_FAKE_DOCKER_LOG"]).read_text()
+    assert "/synthetic/real-release-not-a-test-fixture" not in log
+    assert "/synthetic/real-candidate" not in log
