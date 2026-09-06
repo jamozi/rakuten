@@ -40,7 +40,7 @@ source_bindings:
     sha256: cd49fd67e860a52670799bfaa8ec60711341ddc3fbbf37ceff89b76c85609dd9
   five_slot_measurement:
     path: changes/st-1704/affiliate-learning-v2/measurement-contract.v2.json
-    sha256: 98ecaadc336feb5282f61884ce7f247590c843ac2f141127169a7200dd42dbe4
+    sha256: 5cbc31976e22d26f1593f38ebfde1ba45892affbc2f96e54239b2e310691fd3b
 open_decision_boundary:
   id: OD-003
   status: EXTERNAL_EVIDENCE_REQUIRED
@@ -49,7 +49,7 @@ open_decision_boundary:
   resolved: false
 measurement_contract:
   schema_version: RAOS_ST1303_MEASUREMENT_ATTRIBUTION_CONTRACT_V2
-  source_contract_sha256: 98ecaadc336feb5282f61884ce7f247590c843ac2f141127169a7200dd42dbe4
+  source_contract_sha256: 5cbc31976e22d26f1593f38ebfde1ba45892affbc2f96e54239b2e310691fd3b
   program: WORDPRESS_BLOG_RAKUTEN_AFFILIATE
   period_duration_days: 14
   articles:
@@ -66,7 +66,7 @@ measurement_contract:
   - slot: 3
     article_id: st1704-anker-solix-c300-c800-c1000-differences
     slug: anker-solix-c300-c800-c1000-differences
-    packet_sha256: e8db16ed45fc46e49db943f962b65e82039fe8379c8c1a6b87c1fa254eb2dc0b
+    packet_sha256: 074c4498e80007cb80bd6ab4057cd11ad88c4f506a1965829cf0849f4f693090
     intent_classification: MODEL_DIFFERENCES
   - slot: 4
     article_id: st1704-countertop-dishwasher-for-small-households

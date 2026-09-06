@@ -70,7 +70,7 @@
       "url": "https://www.ankerjapan.com/products/a1722",
       "retrieved_on": "2026-08-31",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "7cfdf14d8d779df8a979f6cc0c0f082fc6e8a0309d4f0ade2061e1fa46f2c5b7",
+      "immutable_capture_sha256": "dda55b6f934c443649db99559e6631716bc1ff1d1c8effc31011da2eea914275",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -136,7 +136,7 @@
       "url": "https://www.ankerjapan.com/products/a1754",
       "retrieved_on": "2026-08-31",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "1597d7f141999e08265fed01d72d2bc155d4147f26aecaf5cb179dab47895a25",
+      "immutable_capture_sha256": "647a6eb5213d3de41a63803374d38cca2fa3c18a34317a3a99bd9c28cc72bb56",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -147,7 +147,7 @@
       "url": "https://www.ankerjapan.com/products/a1761",
       "retrieved_on": "2026-08-31",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "73e2e6002ac9ccb4cfbbc416e65df6862ebcc98028f027eb029824cb0a9c76ec",
+      "immutable_capture_sha256": "53b04837bdd0378d85aa3a42a3cf9ec5213e11f2ff3005757a3c0bd2c1f6a49f",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -158,7 +158,7 @@
       "url": "https://www.ankerjapan.com/products/a1763",
       "retrieved_on": "2026-08-31",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "immutable_capture_sha256": "3b1e9127c8c2d4b28f8009eade57ec4966f96bce50c1cfebda5aaf85464d5f85",
+      "immutable_capture_sha256": "4cdcce48f15ec8db4b0b95e019083554bf4c3d6884a75f76bef9aa5d0966a6a7",
       "review_body_excluded_from_claim_evidence": true
     },
     {
@@ -2230,7 +2230,7 @@
       "article_id": "st1704-anker-solix-c300-c800-c1000-differences",
       "approval_status": "READY_FOR_HUMAN_PUBLICATION_REVIEW",
       "capture_status": "STRUCTURED_FACT_SNAPSHOT_CAPTURED",
-      "fact_packet_sha256": "55e5d6cfc90df9bb9828925196ea1623b72db8d021a0ed2d5bee6cd53205ae5e",
+      "fact_packet_sha256": "28089d94d53809c9d9c861d81e3d7150141c1d9267cf0f43c0bf6668a23c5b63",
       "source_refs": [
         "SRC-ANKER-SOLIX-C300",
         "SRC-ANKER-SOLIX-C300-SAFETY-MANUAL",
@@ -2436,7 +2436,7 @@
           "claim_id": "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
           "classification": "EDITORIAL_INFERENCE",
           "evidence_level": "D",
-          "statement": "公表値ではC300が288Wh・定格300W・約4.1kgで4モデル中最小かつ最軽量、C800 Plusが768Wh・定格1200W・約10.9kgでC300より容量と出力が大きく、C1000系2モデルより軽い。C1000は1056Whを2112Whへ拡張でき、C1000 Gen 2はC1000より約1.6kg軽く定格出力が50W高い一方、容量が32Wh小さい。必要出力、運べる重量、容量拡張、端子数で候補が変わる。C300は300W以内、C800 Plusは1200W以内の機器を条件とし、300Wを超える機器はC800 Plus以上の出力帯を検討する。C1000 Gen 2は4,000回以上の公表サイクル数を条件にする場合の候補である。 C800 Plusの容量帯はC300より大きく、C1000系より小さい。必要出力と持ち運べる重さを満たす最小の容量帯から選ぶ。C300とC800 Plusのアクセサリ互換性、および4モデルの実効容量は公式情報で確認できないため、推奨根拠に使わない。",
+          "statement": "公表値ではC300が288Wh・定格300W・約4.1kgで4モデル中最小かつ最軽量、C800 Plusが768Wh・定格1200W・約10.9kgでC300より容量と出力が大きく、C1000系2モデルより軽い。C1000は1056Whを2112Whへ拡張でき、C1000 Gen 2はC1000より約1.6kg軽く定格出力が50W高い一方、容量が32Wh小さい。必要出力、運べる重量、容量拡張、端子数で候補が変わる。C300は300W以内、C800 Plusは1200W以内の機器を条件とし、300Wを超える機器はC800 Plus以上の出力帯を検討する。残存容量の基準や試験条件が揃っていないため、充放電サイクル数は世代間の寿命の優劣や推薦条件に使わない。 C800 Plusの容量帯はC300より大きく、C1000系より小さい。必要出力と持ち運べる重さを満たす最小の容量帯から選ぶ。C300とC800 Plusのアクセサリ互換性、および4モデルの実効容量は公式情報で確認できないため、推奨根拠に使わない。",
           "evidence_refs": [
             "SRC-ANKER-SOLIX-C300",
             "SRC-ANKER-SOLIX-C800-PLUS",
@@ -2510,13 +2510,65 @@
           "subject_product_ids": [
             "PRD-ANKER-SOLIX-C800"
           ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS",
+          "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
+          "statement": "寿命条件の限定確認日：2026-09-06。Anker Solix C300 Portable Power Station（代表型番：A17225Z1）の公式商品ページの比較表「寿命」は電池3,000回と記載する。確認した商品ページの本文と比較表では、この型番の公表回数に対応する残存容量の基準を確認できていない。サイクル試験の温度・充放電レート・放電深度は未確認。充電時間の測定条件、動作温度、一般的な使用環境の説明をサイクル試験の条件へ転用しない。同じ型番の商品ページの保証欄は、通常18か月の製品保証と、Anker Japan公式オンラインストア会員を対象に5年へ延長する条件を案内する。購入先ごとの適用可否、購入証明・登録手続き、容量低下の扱いを含む除外条件はこの限定確認では未確認。既存のsource取得日・他仕様の確認日・販売状態の観測日時を更新する確認ではない。",
+          "evidence_refs": [
+            "SRC-ANKER-SOLIX-C300"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS",
+          "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
+          "statement": "寿命条件の限定確認日：2026-09-06。Anker Solix C800 Plus Portable Power Station（代表型番：A1754）の公式商品ページの比較表「寿命」は電池3,000回と記載する。確認した商品ページの本文と比較表では、この型番の公表回数に対応する残存容量の基準を確認できていない。サイクル試験の温度・充放電レート・放電深度は未確認。充電時間の測定条件、動作温度、一般的な使用環境の説明をサイクル試験の条件へ転用しない。同じ型番の商品ページの保証欄は、通常18か月の製品保証と、Anker Japan公式オンラインストア会員を対象に5年へ延長する条件を案内する。購入先ごとの適用可否、購入証明・登録手続き、容量低下の扱いを含む除外条件はこの限定確認では未確認。既存のsource取得日・他仕様の確認日・販売状態の観測日時を更新する確認ではない。",
+          "evidence_refs": [
+            "SRC-ANKER-SOLIX-C800-PLUS"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS",
+          "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
+          "statement": "寿命条件の限定確認日：2026-09-06。Anker Solix C1000 Portable Power Station（代表型番：A17615Z1）の公式商品ページの比較表「寿命」は電池3,000回と記載する。同じC1000の商品本文の注記は、初期容量の80%まで低下するまでの回数として3,000回以上を案内する。サイクル試験の温度・充放電レート・放電深度は未確認。充電時間の測定条件、動作温度、一般的な使用環境の説明をサイクル試験の条件へ転用しない。同じ型番の商品ページの保証欄は、通常18か月の製品保証と、Anker Japan公式オンラインストア会員を対象に5年へ延長する条件を案内する。購入先ごとの適用可否、購入証明・登録手続き、容量低下の扱いを含む除外条件はこの限定確認では未確認。既存のsource取得日・他仕様の確認日・販売状態の観測日時を更新する確認ではない。",
+          "evidence_refs": [
+            "SRC-ANKER-SOLIX-C1000"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS",
+          "classification": "MAJOR_VERIFIABLE",
+          "evidence_level": "A",
+          "statement": "寿命条件の限定確認日：2026-09-06。Anker Solix C1000 Gen 2 Portable Power Station（代表型番：A17635Z1）の公式商品ページの比較表「寿命」は電池4,000回と記載する。同ページのサイクル数の注記は、初期容量の80%まで低下するまでの回数として4,000回以上を案内する。サイクル試験の温度・充放電レート・放電深度は未確認。充電時間の測定条件、動作温度、一般的な使用環境の説明をサイクル試験の条件へ転用しない。同じ型番の商品ページの保証欄は、通常18か月の製品保証と、Anker Japan公式オンラインストア会員を対象に5年へ延長する条件を案内する。購入先ごとの適用可否、購入証明・登録手続き、容量低下の扱いを含む除外条件はこの限定確認では未確認。既存のsource取得日・他仕様の確認日・販売状態の観測日時を更新する確認ではない。",
+          "evidence_refs": [
+            "SRC-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "status": "BOUND_TO_OFFICIAL_SOURCE",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ]
         }
       ],
       "draft_claim_coverage": {
-        "major_claim_count": 10,
-        "official_source_bound_major_claim_count": 10,
-        "verifiable_claim_count": 6,
-        "official_source_bound_verifiable_claim_count": 6
+        "major_claim_count": 14,
+        "official_source_bound_major_claim_count": 14,
+        "verifiable_claim_count": 10,
+        "official_source_bound_verifiable_claim_count": 10
       }
     },
     {

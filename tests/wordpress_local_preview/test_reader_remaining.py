@@ -121,7 +121,9 @@ def test_research_summary_uses_source_observations_without_redating_metadata():
     from raos.application.editorial.reader_experience_projection import project_article
     html = '<div class="raos-editorial-v2"><dl class="raos-article-facts"><div><dt>最終確認日</dt><dd>2026年9月6日</dd></div><div><dt>実機確認</dt><dd>未実施</dd></div></dl></div>'
     result = project_article(html, article_id="scoped-update", experience={"article_type": "shortlist", "_resolved_source_dates": ["2026-08-23", "2026-09-06"]})
-    assert "公式情報確認：2026-08-23〜2026-09-06（出典別）" in result
+    assert "出典の取得日：2026-08-23〜2026-09-06（出典別）" in result
+    assert "記事確認：2026年9月6日" in result
+    assert "各項目に記した確認日と範囲" in result
     assert "<dd>2026年9月6日</dd>" in result
 
 

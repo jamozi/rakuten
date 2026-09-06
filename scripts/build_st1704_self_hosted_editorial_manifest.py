@@ -131,6 +131,7 @@ _BASE_RUNTIME_INPUT_PATHS: Final[tuple[Path, ...]] = (
     THEME_INPUT_ROOT / "assets/analytics-consent-gate.js",
     THEME_INPUT_ROOT / "assets/editorial-v2.css",
     THEME_INPUT_ROOT / "assets/editorial-navigation.js",
+    THEME_INPUT_ROOT / "assets/local-running-cost.js",
     THEME_INPUT_ROOT / "assets/editorial-navigation.v3.json",
     THEME_INPUT_ROOT / "assets/images/article-countertop-dishwasher-guide.webp",
     THEME_INPUT_ROOT / "assets/images/article-portable-power-guide.webp",

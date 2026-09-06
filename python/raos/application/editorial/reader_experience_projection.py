@@ -120,21 +120,28 @@ def _research(root: Element, article: Element, article_id: str, settings: Mappin
         for node in fact.children if isinstance(node, Element) and node.find(tag="dt") and node.find(tag="dd")
     }
     checked = pairs.get("最終確認日", "確認日未確認")
+    article_checked = checked
     date_label = "記事確認"
     source_dates = settings.get("_resolved_source_dates")
     if isinstance(source_dates, list) and source_dates and all(isinstance(value, str) for value in cast(list[object], source_dates)):
         checked_dates = cast(list[str], source_dates)
         checked = min(checked_dates) + ("〜" + max(checked_dates) if len(set(checked_dates)) > 1 else "") + "（出典別）"
-        date_label = "公式情報確認"
+        date_label = "出典の取得日"
     real_world = pairs.get("実機確認", "未確認")
     affiliate = any(n.attrs.get("data-raos-cta-type") == "offer" for n in root.walk())
     label = "広告リンクを含みます" if affiliate else "この記事の販売リンクは掲載していません"
-    status = block(f'<p class="raos-research-status" data-raos-article-id="{escape(article_id, quote=True)}"><span>{date_label}：{escape(checked)} ／ 実機確認：{escape(real_world)}</span><span>{label}。<a href="#reader-evidence">出典・調査範囲</a></span></p>')
+    article_date = f" ／ 記事確認：{escape(article_checked)}" if date_label == "出典の取得日" else ""
+    status = block(f'<p class="raos-research-status" data-raos-article-id="{escape(article_id, quote=True)}"><span>{date_label}：{escape(checked)}{article_date} ／ 実機確認：{escape(real_world)}</span><span>{label}。<a href="#reader-evidence">出典・調査範囲</a></span></p>')
     article.children.insert(0, status)
     status.parent = article
     panel = block('<details class="raos-evidence-panel" id="reader-evidence" tabindex="-1"><summary>調査範囲・型番・確認日を詳しく見る</summary></details>')
     panel.append(fact)
+    panel.append(block('<p>出典の取得日と記事の確認日は別の記録です。販売表示や追加で確認した条件は、各項目に記した確認日と範囲をご覧ください。</p>'))
     for disclosure in list(article.find(cls="raos-disclosure")):
+        if not affiliate and "購入リンクを掲載します" in disclosure.text():
+            notice = block('<p>この記事には現在、販売リンクがありません。以下は販売リンクを掲載する場合の広告方針です。</p>')
+            disclosure.children.insert(0, notice)
+            notice.parent = disclosure
         panel.append(disclosure)
     article.append(panel)
 

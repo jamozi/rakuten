@@ -252,8 +252,8 @@ def test_authored_guides_return_to_existing_comparison_and_block_incomplete_new_
     assert result["blocked"] == [{
         "article_id": "solota-rakua-mini-plus-comparison",
         "issues": [
-            "NP-TMLK1-K.water_supply_and_drainage", "NP-TMLK1-K.detergent",
-            "NP-TMLK1-K.maintenance", "NP-TMLK1-K.sales_state", "NP-TMLK1-K.warranty",
+            "NP-TMLK1-K.water_supply_and_drainage",
+            "NP-TMLK1-K.maintenance", "NP-TMLK1-K.warranty",
         ],
     }]
     assert all("data-raos-cta-type=\"offer\"" not in a["html"] for a in articles.values())

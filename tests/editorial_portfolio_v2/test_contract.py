@@ -535,10 +535,11 @@ def test_anker_generation_table_uses_bound_expansion_facts() -> None:
     )
 
     c1000 = "拡張バッテリー対応・AC出力6口・USB-C 2口・SurgePad 2000W"
-    gen2 = "拡張バッテリー非対応・AC出力5口・USB-C 3口・電池4,000回サイクル"
+    gen2 = "拡張バッテリー非対応・AC出力5口・USB-C 3口"
     assert portfolio_script._anker_feature_claim_is_bound() is True
     assert normalized.count(c1000) == 2
     assert normalized.count(gen2) == 2
+    assert gen2 + "・電池4,000回サイクル" not in normalized
     assert "C1000 Gen 2との互換性は未確認" not in normalized
     assert "C1000（第1世代）との互換性は未確認" not in normalized
     assert "アクセサリ互換性は未確認（推奨根拠外）" in normalized

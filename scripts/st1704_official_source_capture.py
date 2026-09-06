@@ -201,6 +201,7 @@ _BASE_RUNTIME_PATHS: Final[tuple[str, ...]] = (
     "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html",
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/analytics-consent-gate.js",
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.js",
+    "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/local-running-cost.js",
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json",
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/article-countertop-dishwasher-guide.webp",

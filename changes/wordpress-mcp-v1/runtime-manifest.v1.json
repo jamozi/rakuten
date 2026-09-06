@@ -87,12 +87,12 @@
     },
     {
       "path": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
-      "sha256": "84a57e6e188bd22a851b7d59e72bce512409c50f3c82dc03326c675cf0740229",
+      "sha256": "1819c883c606843c59579dec8b605d888ae48b2675f34307ba7cc430ca564d29",
       "size": 21211
     },
     {
       "path": "changes/editorial-measurement-v1/runtime-manifest.v1.json",
-      "sha256": "0f079d170cbff648bb88980eb9b47c0e8a526d7413bb3a2b9285857782dd9386",
+      "sha256": "0825f3a0cd562d5665d97b33ee72bed400e9c4b069b699e94984d15f6b923974",
       "size": 2879
     },
     {
@@ -102,13 +102,13 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
-      "sha256": "2df427e79f1bc62413b06e8a3378e9f5ff834095793afe1130976a4cdf0e677a",
+      "sha256": "4a25b51aa749725b5d62c1d7716a2ffd47dd8a5c26e435d795a1d73679b73abe",
       "size": 3365
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "fda1272c2eb27e579656af6a73df0e18c5c028ddef1bd64238771e2504fc739e",
-      "size": 81039
+      "sha256": "8d67c3647f66d1c6580997b8d6bf69e360216c8b3a8a17e16c694a72000f8910",
+      "size": 81279
     },
     {
       "path": "changes/wordpress-local-preview-v1/README.md",
@@ -172,8 +172,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
-      "sha256": "8e2f021494622205f60c5e564570f3a992367b56e9d5b3a2be854f2b97073d16",
-      "size": 42570
+      "sha256": "9e4571bfaa521c71321fffbd57470138226acec206ad43d7a35e357f364ab19e",
+      "size": 51130
     },
     {
       "path": "changes/wordpress-local-preview-v1/fixtures/articles/carry-on-suitcase-comparison.html",
@@ -342,7 +342,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "25461b4b9c92d5135a9d894e94fa3de5bb2ae7bfa20a4bf808088b69950515b6",
+      "sha256": "05cd8fa3153628044f512f051ff88e0b0d2bdfd53073df4754346450b53a6d13",
       "size": 54277
     },
     {
@@ -397,8 +397,8 @@
     },
     {
       "path": "python/raos/application/editorial/reader_experience_projection.py",
-      "sha256": "cf069b2e27edc3d8b505c69e8b1fd89838658641a8ccab8a548e3ab320c36e0b",
-      "size": 35122
+      "sha256": "3b6a3dde7469a31094619d14d5117fa43021b3f9d074fdcf4a7e83c5466cdae7",
+      "size": 35835
     },
     {
       "path": "python/raos/application/editorial/reader_html.py",
@@ -412,8 +412,8 @@
     },
     {
       "path": "changes/editorial-portfolio-v3/reader-experience.v1.json",
-      "sha256": "31d3b86a7b6e4887212ecf9bd40eaae22156533e9447c68c00f4e36278734dfd",
-      "size": 80558
+      "sha256": "356748babb2ac8758a0328439113056638111dce6a6b0273210243529f9269ba",
+      "size": 80547
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs",
@@ -437,8 +437,8 @@
     },
     {
       "path": "python/raos/application/editorial/self_hosted_editorial_pilot.py",
-      "sha256": "6e4e5d3c8ccc97a3df7307f8e599f040413738a74bf86ea24c5534e1216d2c9a",
-      "size": 115335
+      "sha256": "1a4d005893819fee515eb88d08e88391fbb26881711a7c6307f406fbac26c8a0",
+      "size": 118074
     },
     {
       "path": "python/raos/application/editorial/verified_incremental_v1.py",
@@ -502,8 +502,8 @@
     },
     {
       "path": "scripts/raos_editorial_portfolio_v2.py",
-      "sha256": "f6c572f3524db0fa876e3cefdd56f06c5b8f4dc4718be479949fe39fd62f70e3",
-      "size": 155600
+      "sha256": "f20602be04e85b8fd76c5fe82f8f6066262b58e2adbc166dabd941cd28ff4015",
+      "size": 155829
     },
     {
       "path": "scripts/raos_wordpress_deployment_operator.py",

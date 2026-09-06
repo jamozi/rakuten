@@ -23325,11 +23325,11 @@
       "authoring_input": {
         "kind": "LEGACY_AST_ARTICLE",
         "ref": "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json#article_id=st1704-anker-solix-c300-c800-c1000-differences",
-        "sha256": "cc250c8c70f0360641aa45d8e474a6409ba6c403ec96936a31ce5db29ccb6b27"
+        "sha256": "7f376d4c9cf0e9eb21ddd7607677e1c8a9d1b641fdddcaabe84862d2fe12e0c5"
       },
       "source_packet_ref": "SPV-ST1704-ANKER-DIFFERENCES-V1",
-      "fact_packet_sha256": "55e5d6cfc90df9bb9828925196ea1623b72db8d021a0ed2d5bee6cd53205ae5e",
-      "reader_units_sha256": "6d8ffd31fee2bafda6aa41c96ca4f650bd5fd6e63c1a5e2b99a23785b37a6292",
+      "fact_packet_sha256": "28089d94d53809c9d9c861d81e3d7150141c1d9267cf0f43c0bf6668a23c5b63",
+      "reader_units_sha256": "e77ee921241f8e1f521ec90dc7592517e9868ecf0b8b504e3beb932a90c29948",
       "units": [
         {
           "unit_id": "RU-a6bb520347081c9a60d3",
@@ -25299,8 +25299,8 @@
           "unit_id": "RU-26049dadddfc2da9c8f3",
           "locator": "section[2]/ol[1]/li[4]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "軽さ、4,000回以上の公表サイクル数、USB-C 3口を優先 Anker Solix C1000 Gen 2 Portable Power Station",
-          "text_sha256": "a6b4912da97f1002b9a373a084d6c3ccfd6a0e494d434d554b53a71162dab4e3",
+          "text": "軽さとUSB-C 3口を優先 Anker Solix C1000 Gen 2 Portable Power Station",
+          "text_sha256": "dbbae8862d8bfddf25cccd08c9f49b17af4f28f90531ae4af6447f60ede02a5f",
           "context": "DECISION",
           "subject_product_ids": [
             "PRD-ANKER-SOLIX-C1000-GEN2"
@@ -25317,23 +25317,6 @@
           ],
           "evidence_bindings": [],
           "assertion_tokens": [
-            {
-              "assertion_text": "4,000回以上",
-              "occurrence_index": 0,
-              "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-                "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
-              ],
-              "evidence_binding_ids": []
-            },
-            {
-              "assertion_text": "USB-C",
-              "occurrence_index": 0,
-              "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
-              ],
-              "evidence_binding_ids": []
-            },
             {
               "assertion_text": "3口",
               "occurrence_index": 0,
@@ -25361,8 +25344,8 @@
           "unit_id": "RU-47bff51c65185baf12fd",
           "locator": "section[2]/ol[1]/li[4]/p[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "約11.3kg・定格1550Wで、4,000回以上の充放電サイクルとUSB-C 3口を公表しています。拡張バッテリーには対応しません。 公式確認済み 編集者による条件整理 注意点: 公表容量はC1000(第1世代)より32Wh小さく、拡張バッテリーには対応しません。停電時の切り替え時間は公式ページ内で記載が一致しないため、正確な値を選定条件にせず、購入時に最新の取扱説明書と接続機器の条件を確認してください。",
-          "text_sha256": "82c9ecca9042e2668000bc3e715fa4c044d7841fe38b162f999a842ee26f8ef4",
+          "text": "約11.3kg・定格1550Wで、USB-C 3口を備えます。拡張バッテリーには対応しません。 公式確認済み 編集者による条件整理 注意点: 公表容量はC1000(第1世代)より32Wh小さく、拡張バッテリーには対応しません。停電時の切り替え時間は公式ページ内で記載が一致しないため、正確な値を選定条件にせず、購入時に最新の取扱説明書と接続機器の条件を確認してください。",
+          "text_sha256": "971cf49451af6aceca20b2280e8d3aa0885f53733464b5e0a4f336dc7fc44e2a",
           "context": "DECISION",
           "subject_product_ids": [
             "PRD-ANKER-SOLIX-C1000-GEN2",
@@ -25394,15 +25377,6 @@
               "occurrence_index": 0,
               "claim_ids": [
                 "CLM-ST1704-ANKER-C1000-GEN2-SPECS"
-              ],
-              "evidence_binding_ids": []
-            },
-            {
-              "assertion_text": "4,000回以上",
-              "occurrence_index": 0,
-              "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-                "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
               ],
               "evidence_binding_ids": []
             },
@@ -26530,8 +26504,8 @@
           "unit_id": "RU-dfcf82512a221ed98833",
           "locator": "section[3]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/td[5]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "拡張バッテリー非対応・AC出力5口・USB-C 3口・電池4,000回サイクル 公式確認済み",
-          "text_sha256": "b371c4209cb02177d01f7f9d96f1a3792afab502bb8cc1b3a6ffa127f7742918",
+          "text": "拡張バッテリー非対応・AC出力5口・USB-C 3口 公式確認済み",
+          "text_sha256": "56c8ecc21a97e90d36a8226f2a39ecca798c881af7e13ceab9117cd23c90aaf8",
           "context": "COMPARISON",
           "subject_product_ids": [
             "PRD-ANKER-SOLIX-C1000-GEN2"
@@ -26539,10 +26513,9 @@
           "owner_product_id": null,
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
+          "kind": "VERIFIABLE",
           "claim_ids": [
-            "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-            "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
+            "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
           ],
           "evidence_bindings": [],
           "assertion_tokens": [
@@ -26575,15 +26548,6 @@
               "occurrence_index": 0,
               "claim_ids": [
                 "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
-              ],
-              "evidence_binding_ids": []
-            },
-            {
-              "assertion_text": "4,000回",
-              "occurrence_index": 0,
-              "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-                "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
               ],
               "evidence_binding_ids": []
             }
@@ -27879,8 +27843,8 @@
           "unit_id": "RU-7ac5ec076bc404254bc8",
           "locator": "section[3]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[6]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "拡張バッテリー非対応・AC出力5口・USB-C 3口・電池4,000回サイクル 公式確認済み",
-          "text_sha256": "b371c4209cb02177d01f7f9d96f1a3792afab502bb8cc1b3a6ffa127f7742918",
+          "text": "拡張バッテリー非対応・AC出力5口・USB-C 3口 公式確認済み",
+          "text_sha256": "56c8ecc21a97e90d36a8226f2a39ecca798c881af7e13ceab9117cd23c90aaf8",
           "context": "COMPARISON",
           "subject_product_ids": [
             "PRD-ANKER-SOLIX-C1000-GEN2"
@@ -27888,10 +27852,9 @@
           "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "EDITORIAL_INFERENCE",
+          "kind": "VERIFIABLE",
           "claim_ids": [
-            "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-            "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
+            "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
           ],
           "evidence_bindings": [],
           "assertion_tokens": [
@@ -27926,13 +27889,271 @@
                 "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
               ],
               "evidence_binding_ids": []
-            },
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-b89ab597c40ac394e3e4",
+          "locator": "section[4]/header[1]/div[1]/h2[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "充放電サイクルの条件と製品保証",
+          "text_sha256": "ec7bd60f51161d41fb13474795a8d8f686c9ac31244b1075b58d21819478016a",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C800-PLUS",
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "NAVIGATION_OR_UI",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-9a890834744e678a9d2b",
+          "locator": "section[4]/header[1]/p[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "この表の条件確認日:2026年9月6日。",
+          "text_sha256": "59adbd2eaa20554c78bd444423943340ef71776c33d622c36681434b3651d912",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C800-PLUS",
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "EDITORIAL_METADATA",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-c494321132773a90a111",
+          "locator": "section[4]/p[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "残存容量の基準や試験条件が揃っていないため、充放電サイクル数を使用年数に換算したり、世代の寿命を順位付けしたりしません。製品保証の期間とも別の条件です。",
+          "text_sha256": "bb06eb9f884256bdda23c6994803218830b9378086e94965b161f49ca5e89edd",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C800-PLUS",
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "EDITORIAL_INFERENCE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS",
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS",
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS",
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-5e41727f89f63a307c99",
+          "locator": "section[4]/div[1]/div[1]/table[1]/caption[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "充放電サイクルの条件と製品保証",
+          "text_sha256": "ec7bd60f51161d41fb13474795a8d8f686c9ac31244b1075b58d21819478016a",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C800-PLUS",
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-ef3062bb6fd47f702141",
+          "locator": "section[4]/div[1]/div[1]/table[1]/thead[1]/tr[1]/th[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "商品",
+          "text_sha256": "58fdb0941f368f2b6f95d66bae4b511c60942396e92303a195eabc5cf5278a96",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C800-PLUS",
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-cca7e9d90aa52c46a2b0",
+          "locator": "section[4]/div[1]/div[1]/table[1]/thead[1]/tr[1]/th[2]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公表サイクル数",
+          "text_sha256": "e2a5969b08af3fe4b36ab4ddb457c3be21d03c02ad6158e33997116d8be8b65a",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C800-PLUS",
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-e2bf3218656596609bf5",
+          "locator": "section[4]/div[1]/div[1]/table[1]/thead[1]/tr[1]/th[3]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "残存容量の基準",
+          "text_sha256": "8836760a6180a56c09f4b23259f5257e881d5dd53eebc2c5041bd5b8311577c6",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C800-PLUS",
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-cd20324c55dfb5322bf2",
+          "locator": "section[4]/div[1]/div[1]/table[1]/thead[1]/tr[1]/th[4]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "サイクル試験の条件",
+          "text_sha256": "029d079a533d34cdc97febc98195545647a0b3582d5366bbb9a73a4e7f5d56cc",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C800-PLUS",
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-10016d1a625cc0fab7e0",
+          "locator": "section[4]/div[1]/div[1]/table[1]/thead[1]/tr[1]/th[5]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証の案内と条件",
+          "text_sha256": "2254d1aaf15cc4c55e29e415559ec8be1e26101e9053931e02cd5a2e1479baea",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C800-PLUS",
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-f139730acb7427961a2b",
+          "locator": "section[4]/div[1]/div[1]/table[1]/thead[1]/tr[1]/th[6]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式出典・寿命条件の確認日",
+          "text_sha256": "1c0732f540a695bd1dff72074e04b4eac6074f9b5966aa448e9c01dcf7d56d01",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C800-PLUS",
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-ca20fd9aa793582520db",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[1]/th[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C300 Portable Power Station",
+          "text_sha256": "6011ec377ea9a677414f071ee20a8b64605bfed494315f8abce515b88ac3cb03",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
             {
-              "assertion_text": "4,000回",
+              "assertion_text": "C300",
               "occurrence_index": 0,
               "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-                "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
+                "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
               ],
               "evidence_binding_ids": []
             }
@@ -27941,8 +28162,2025 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-7b6bc4879335f08b5b88",
-          "locator": "section[4]/header[1]/h2[1]::text",
+          "unit_id": "RU-d64cfd66c152fff2b3cb",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[1]/td[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "3,000回",
+          "text_sha256": "5ce42b676b425707d8046164dd01588396d79497ecf728afb9ea3ef70f59b8d7",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "3,000回",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-d910bcc4db7f9353a398",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[1]/td[2]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(この型番の公表回数に対応する基準)",
+          "text_sha256": "f92f36f51cf92528d30acf15fbedc36ee5f80b00b51fc18ac76291f513a15c8d",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-a61f7140788090f02ebe",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[1]/td[3]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(試験温度・充放電レート・放電深度)。充電時間の測定条件や動作温度は流用しない",
+          "text_sha256": "0da89b631d401d5e915662b6838c79a549b29520102997f9d050860c31e08928",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-e133a26af5ae63e9406a",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[1]/td[4]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証:通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+          "text_sha256": "06780e77219f7d747c41d1c39411d29b51f305fdd69a8d2a89b32433a4af0a4e",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "5年",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-fad9ebd0cee84ee5f661",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[1]/td[5]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式製品ページ(A17225Z1)。寿命条件確認:2026-09-06",
+          "text_sha256": "62b9a09363234f75864d63421f2104fdc1ff80d57d3c2c3c6d3f3ba5c610fe25",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "A17225Z1",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-9b8ba3a701f097e5f04a",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[1]/td[5]/span[1]/a[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C300 Portable Power Stationの公式根拠",
+          "text_sha256": "33f6e6ddcfdb5e65de54f25e59427add8ed9fd36fb94431954f8e1f59aed8c58",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C300",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-836137c51fa84bfd7a39",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[2]/th[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C800 Plus Portable Power Station",
+          "text_sha256": "fb1b75bd98240157cb61558882eaa649c10f79763641395159f84f454ca6b1c6",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C800",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-7ca67be4e54b04e92738",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[2]/td[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "3,000回",
+          "text_sha256": "5ce42b676b425707d8046164dd01588396d79497ecf728afb9ea3ef70f59b8d7",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "3,000回",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-b553af44a4631334efe1",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[2]/td[2]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(この型番の公表回数に対応する基準)",
+          "text_sha256": "f92f36f51cf92528d30acf15fbedc36ee5f80b00b51fc18ac76291f513a15c8d",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-74555efc32827aad2a7a",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[2]/td[3]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(試験温度・充放電レート・放電深度)。充電時間の測定条件や動作温度は流用しない",
+          "text_sha256": "0da89b631d401d5e915662b6838c79a549b29520102997f9d050860c31e08928",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-ba61169b36b12912a073",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[2]/td[4]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証:通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+          "text_sha256": "06780e77219f7d747c41d1c39411d29b51f305fdd69a8d2a89b32433a4af0a4e",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "5年",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-950e584de08eae191e74",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[2]/td[5]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式製品ページ(A1754)。寿命条件確認:2026-09-06",
+          "text_sha256": "7a2ef711e950edfd4533675969c5aa327ce1bfd5c61732440ddbcb947a454eae",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "A1754",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-ebd15cd1c75173dc1246",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[2]/td[5]/span[1]/a[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C800 Plus Portable Power Stationの公式根拠",
+          "text_sha256": "9470794657ed5dee1ea96a5d7765fae2055e80b32a2702aa2be6f3897bdde198",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C800",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-8b75a626e2a3d4bc4208",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[3]/th[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C1000 Portable Power Station",
+          "text_sha256": "3c9bf1dec69096edd308be9c05b05012242bd94cc95d6b171636a06ee5e39eee",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C1000",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-a117162e34baa7c37265",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[3]/td[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "3,000回以上",
+          "text_sha256": "bc7e5928072b952b34160d0919156f6b354b532aa3b6a6b93c5da2d025ea4410",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "3,000回以上",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-62a12e009ee68e06ca50",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[3]/td[2]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "初期容量の80%まで低下するまで",
+          "text_sha256": "d7b5570c4f753466cc4fd78cf0695879319898094292ec486754236795e12dfc",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-c805d77312c13f5b66e8",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[3]/td[3]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(試験温度・充放電レート・放電深度)。充電時間の測定条件や動作温度は流用しない",
+          "text_sha256": "0da89b631d401d5e915662b6838c79a549b29520102997f9d050860c31e08928",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-76f182e6f6a032a2ea34",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[3]/td[4]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証:通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+          "text_sha256": "06780e77219f7d747c41d1c39411d29b51f305fdd69a8d2a89b32433a4af0a4e",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "5年",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-2342183760964326a15c",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[3]/td[5]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式製品ページ(A17615Z1)。寿命条件確認:2026-09-06",
+          "text_sha256": "53079cf1e905e0204981bfe63df41d50c886574570370d90d5f510b15fd36df5",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "A17615Z1",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-8cc7147036f7e26d617d",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[3]/td[5]/span[1]/a[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C1000 Portable Power Stationの公式根拠",
+          "text_sha256": "8ddb8612443ec4eae69be7636372a223322669928b4a29c9fdcd6d0c97372147",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C1000",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-63777c54f82cf3bf8686",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/th[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C1000 Gen 2 Portable Power Station",
+          "text_sha256": "9f7ac1cae393b12e8af484982c2279abbcd8e0514a9331f70206efbd71181d88",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C1000",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-e74158f07f77a4dc9597",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/td[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "4,000回以上の充放電サイクル",
+          "text_sha256": "fb606724311c9155fb784db48a2783b4d768f1f0cd1cd2435764619a3e3985dc",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "4,000回以上",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-4c7ac19b9f4e06ab9a1c",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/td[2]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "初期容量の80%まで低下するまで",
+          "text_sha256": "d7b5570c4f753466cc4fd78cf0695879319898094292ec486754236795e12dfc",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-8e881ec147013a87fb94",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/td[3]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(試験温度・充放電レート・放電深度)。充電時間の測定条件や動作温度は流用しない",
+          "text_sha256": "0da89b631d401d5e915662b6838c79a549b29520102997f9d050860c31e08928",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-af18700e68db78a4152a",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/td[4]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証:通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+          "text_sha256": "06780e77219f7d747c41d1c39411d29b51f305fdd69a8d2a89b32433a4af0a4e",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "5年",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-ef6bc869d82dd9d0beb7",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/td[5]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式製品ページ(A17635Z1)。寿命条件確認:2026-09-06",
+          "text_sha256": "6f4202b6ea912b80b09b3a3860d8ea35e0ae29c38f26b16a37b1f59c67113f81",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "A17635Z1",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-b34cf9b0ae900744917e",
+          "locator": "section[4]/div[1]/div[1]/table[1]/tbody[1]/tr[4]/td[5]/span[1]/a[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C1000 Gen 2 Portable Power Stationの公式根拠",
+          "text_sha256": "3fca0767f2e8da01bbfb94607e973d907e23b0e59b58a6f42e86a28d89c71725",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C1000",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-150b50047b12d803031f",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[1]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "商品",
+          "text_sha256": "58fdb0941f368f2b6f95d66bae4b511c60942396e92303a195eabc5cf5278a96",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-f9b6077ffa6cbf17b628",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[1]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C300 Portable Power Station",
+          "text_sha256": "6011ec377ea9a677414f071ee20a8b64605bfed494315f8abce515b88ac3cb03",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C300",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-3d726964157d731145a6",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[2]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公表サイクル数",
+          "text_sha256": "e2a5969b08af3fe4b36ab4ddb457c3be21d03c02ad6158e33997116d8be8b65a",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C300",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-5149dcdfc82186a1be87",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[2]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "3,000回",
+          "text_sha256": "5ce42b676b425707d8046164dd01588396d79497ecf728afb9ea3ef70f59b8d7",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C300",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "3,000回",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-2b22efd5a09935d75024",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[3]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "残存容量の基準",
+          "text_sha256": "8836760a6180a56c09f4b23259f5257e881d5dd53eebc2c5041bd5b8311577c6",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C300",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-d36c11cba8e8cd9c2cac",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[3]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(この型番の公表回数に対応する基準)",
+          "text_sha256": "f92f36f51cf92528d30acf15fbedc36ee5f80b00b51fc18ac76291f513a15c8d",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C300",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-44542d27faf261e0b17a",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[4]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "サイクル試験の条件",
+          "text_sha256": "029d079a533d34cdc97febc98195545647a0b3582d5366bbb9a73a4e7f5d56cc",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C300",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-1bc8e614d7ca3e4ce088",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[4]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(試験温度・充放電レート・放電深度)。充電時間の測定条件や動作温度は流用しない",
+          "text_sha256": "0da89b631d401d5e915662b6838c79a549b29520102997f9d050860c31e08928",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C300",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-5e1967f169fcc8eabc7f",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[5]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証の案内と条件",
+          "text_sha256": "2254d1aaf15cc4c55e29e415559ec8be1e26101e9053931e02cd5a2e1479baea",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C300",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-1ccea55de4b626f29b32",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[5]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証:通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+          "text_sha256": "06780e77219f7d747c41d1c39411d29b51f305fdd69a8d2a89b32433a4af0a4e",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C300",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "5年",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-aff2d02160b94b18e0a3",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[6]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式出典・寿命条件の確認日",
+          "text_sha256": "1c0732f540a695bd1dff72074e04b4eac6074f9b5966aa448e9c01dcf7d56d01",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C300",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-c8457581fb1be2e76110",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[6]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式製品ページ(A17225Z1)。寿命条件確認:2026-09-06",
+          "text_sha256": "62b9a09363234f75864d63421f2104fdc1ff80d57d3c2c3c6d3f3ba5c610fe25",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C300",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "A17225Z1",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-33e46aee37f055684eb3",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[1]/dl[1]/div[6]/dd[1]/a[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C300 Portable Power Stationの公式根拠",
+          "text_sha256": "33f6e6ddcfdb5e65de54f25e59427add8ed9fd36fb94431954f8e1f59aed8c58",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C300",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C300",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-ed8c15c06e52786006d3",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[1]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "商品",
+          "text_sha256": "58fdb0941f368f2b6f95d66bae4b511c60942396e92303a195eabc5cf5278a96",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-fc28ca9a130efb5b9efc",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[1]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C800 Plus Portable Power Station",
+          "text_sha256": "fb1b75bd98240157cb61558882eaa649c10f79763641395159f84f454ca6b1c6",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C800",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-d03ae5375bfcb75c6ca5",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[2]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公表サイクル数",
+          "text_sha256": "e2a5969b08af3fe4b36ab4ddb457c3be21d03c02ad6158e33997116d8be8b65a",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-593e2e45448e05e3cef2",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[2]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "3,000回",
+          "text_sha256": "5ce42b676b425707d8046164dd01588396d79497ecf728afb9ea3ef70f59b8d7",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "3,000回",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-4fed209b782228ad6bb5",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[3]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "残存容量の基準",
+          "text_sha256": "8836760a6180a56c09f4b23259f5257e881d5dd53eebc2c5041bd5b8311577c6",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-446b698ab68b12e573cd",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[3]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(この型番の公表回数に対応する基準)",
+          "text_sha256": "f92f36f51cf92528d30acf15fbedc36ee5f80b00b51fc18ac76291f513a15c8d",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-ce827e16a9fdd07ea67f",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[4]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "サイクル試験の条件",
+          "text_sha256": "029d079a533d34cdc97febc98195545647a0b3582d5366bbb9a73a4e7f5d56cc",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-b2a9b92f1e2864d32633",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[4]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(試験温度・充放電レート・放電深度)。充電時間の測定条件や動作温度は流用しない",
+          "text_sha256": "0da89b631d401d5e915662b6838c79a549b29520102997f9d050860c31e08928",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-cacc02d865ae690a2c50",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[5]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証の案内と条件",
+          "text_sha256": "2254d1aaf15cc4c55e29e415559ec8be1e26101e9053931e02cd5a2e1479baea",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-548c174e21531b8a2b4d",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[5]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証:通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+          "text_sha256": "06780e77219f7d747c41d1c39411d29b51f305fdd69a8d2a89b32433a4af0a4e",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "5年",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-78d826d689e9f9c716ba",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[6]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式出典・寿命条件の確認日",
+          "text_sha256": "1c0732f540a695bd1dff72074e04b4eac6074f9b5966aa448e9c01dcf7d56d01",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-f1774e0e7eb1c977a1a1",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[6]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式製品ページ(A1754)。寿命条件確認:2026-09-06",
+          "text_sha256": "7a2ef711e950edfd4533675969c5aa327ce1bfd5c61732440ddbcb947a454eae",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "A1754",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-69f90d7835c8990496b6",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[2]/dl[1]/div[6]/dd[1]/a[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C800 Plus Portable Power Stationの公式根拠",
+          "text_sha256": "9470794657ed5dee1ea96a5d7765fae2055e80b32a2702aa2be6f3897bdde198",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C800",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-1262c462e8eb94644b8d",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[1]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "商品",
+          "text_sha256": "58fdb0941f368f2b6f95d66bae4b511c60942396e92303a195eabc5cf5278a96",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-81c68136e5b0e0965db1",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[1]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C1000 Portable Power Station",
+          "text_sha256": "3c9bf1dec69096edd308be9c05b05012242bd94cc95d6b171636a06ee5e39eee",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C1000",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-895772652d0e25daf8bd",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[2]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公表サイクル数",
+          "text_sha256": "e2a5969b08af3fe4b36ab4ddb457c3be21d03c02ad6158e33997116d8be8b65a",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-d6cc1ba6580ce98b3f7a",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[2]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "3,000回以上",
+          "text_sha256": "bc7e5928072b952b34160d0919156f6b354b532aa3b6a6b93c5da2d025ea4410",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "3,000回以上",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-b30baa68e7b41a1877a3",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[3]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "残存容量の基準",
+          "text_sha256": "8836760a6180a56c09f4b23259f5257e881d5dd53eebc2c5041bd5b8311577c6",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-7051764bdbe7c2674e2a",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[3]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "初期容量の80%まで低下するまで",
+          "text_sha256": "d7b5570c4f753466cc4fd78cf0695879319898094292ec486754236795e12dfc",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-ca0e2a9e7ddc78e39f4a",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[4]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "サイクル試験の条件",
+          "text_sha256": "029d079a533d34cdc97febc98195545647a0b3582d5366bbb9a73a4e7f5d56cc",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-47293ea29f01a42b3fce",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[4]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(試験温度・充放電レート・放電深度)。充電時間の測定条件や動作温度は流用しない",
+          "text_sha256": "0da89b631d401d5e915662b6838c79a549b29520102997f9d050860c31e08928",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-611259c49d3df881a380",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[5]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証の案内と条件",
+          "text_sha256": "2254d1aaf15cc4c55e29e415559ec8be1e26101e9053931e02cd5a2e1479baea",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-ec2b42fc76fd149c24cb",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[5]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証:通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+          "text_sha256": "06780e77219f7d747c41d1c39411d29b51f305fdd69a8d2a89b32433a4af0a4e",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "5年",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-a79ac3a16af7601305c9",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[6]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式出典・寿命条件の確認日",
+          "text_sha256": "1c0732f540a695bd1dff72074e04b4eac6074f9b5966aa448e9c01dcf7d56d01",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-1885b0b62e7d5cd9ae5b",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[6]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式製品ページ(A17615Z1)。寿命条件確認:2026-09-06",
+          "text_sha256": "53079cf1e905e0204981bfe63df41d50c886574570370d90d5f510b15fd36df5",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "A17615Z1",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-d7cf8eec19c6c61f52ec",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[3]/dl[1]/div[6]/dd[1]/a[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C1000 Portable Power Stationの公式根拠",
+          "text_sha256": "8ddb8612443ec4eae69be7636372a223322669928b4a29c9fdcd6d0c97372147",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C1000",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-1f292509fa25532020e0",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[1]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "商品",
+          "text_sha256": "58fdb0941f368f2b6f95d66bae4b511c60942396e92303a195eabc5cf5278a96",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-20205d0c7144abff146f",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[1]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C1000 Gen 2 Portable Power Station",
+          "text_sha256": "9f7ac1cae393b12e8af484982c2279abbcd8e0514a9331f70206efbd71181d88",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C1000",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-fa0b9065d58f4d33d7e1",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[2]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公表サイクル数",
+          "text_sha256": "e2a5969b08af3fe4b36ab4ddb457c3be21d03c02ad6158e33997116d8be8b65a",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-572781c62c9ddbe24309",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[2]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "4,000回以上の充放電サイクル",
+          "text_sha256": "fb606724311c9155fb784db48a2783b4d768f1f0cd1cd2435764619a3e3985dc",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "4,000回以上",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-6075c9507dfbde537413",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[3]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "残存容量の基準",
+          "text_sha256": "8836760a6180a56c09f4b23259f5257e881d5dd53eebc2c5041bd5b8311577c6",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-cf7e8e74377c53ecac1c",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[3]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "初期容量の80%まで低下するまで",
+          "text_sha256": "d7b5570c4f753466cc4fd78cf0695879319898094292ec486754236795e12dfc",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-f98fff25a6eac49e6d6c",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[4]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "サイクル試験の条件",
+          "text_sha256": "029d079a533d34cdc97febc98195545647a0b3582d5366bbb9a73a4e7f5d56cc",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-da7b0debb504adb7fd80",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[4]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "未確認(試験温度・充放電レート・放電深度)。充電時間の測定条件や動作温度は流用しない",
+          "text_sha256": "0da89b631d401d5e915662b6838c79a549b29520102997f9d050860c31e08928",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "UNKNOWN",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-e213b22f2e74cc14b20d",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[5]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証の案内と条件",
+          "text_sha256": "2254d1aaf15cc4c55e29e415559ec8be1e26101e9053931e02cd5a2e1479baea",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-7688a9860a6f8c4e9e7f",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[5]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "製品保証:通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+          "text_sha256": "06780e77219f7d747c41d1c39411d29b51f305fdd69a8d2a89b32433a4af0a4e",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "5年",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-eec06e4072cddfa025f5",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[6]/dt[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式出典・寿命条件の確認日",
+          "text_sha256": "1c0732f540a695bd1dff72074e04b4eac6074f9b5966aa448e9c01dcf7d56d01",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "NON_CLAIM",
+          "claim_ids": [],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": "TABLE_OR_DEFINITION_LABEL",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-6026aad771f62d09566a",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[6]/dd[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "公式製品ページ(A17635Z1)。寿命条件確認:2026-09-06",
+          "text_sha256": "6f4202b6ea912b80b09b3a3860d8ea35e0ae29c38f26b16a37b1f59c67113f81",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "A17635Z1",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-4f69a90d38cd1bbc2749",
+          "locator": "section[4]/div[1]/div[2]/div[1]/article[4]/dl[1]/div[6]/dd[1]/a[1]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "Anker Solix C1000 Gen 2 Portable Power Stationの公式根拠",
+          "text_sha256": "3fca0767f2e8da01bbfb94607e973d907e23b0e59b58a6f42e86a28d89c71725",
+          "context": "COMPARISON",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C1000",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
+          "exemption_code": null,
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-2891ecdd64d960fdc01b",
+          "locator": "section[5]/header[1]/h2[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "4モデルの向き・互換性・注意点",
           "text_sha256": "009be82585e6f85b8531c5948d05a19e1c1c75992b54dfbb96e9890af1807001",
@@ -27975,8 +30213,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c76b5e1840e928872c90",
-          "locator": "section[4]/div[1]/article[1]/div[1]/p[1]::text",
+          "unit_id": "RU-a60173a77ed220528529",
+          "locator": "section[5]/div[1]/article[1]/div[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "商品画像未確認・購入導線停止",
           "text_sha256": "62dc632df8fd99b146501f15eb84fc982ea7b72111d24248626bb67120b55b2e",
@@ -27995,8 +30233,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-e062a71c78540a215c9e",
-          "locator": "section[4]/div[1]/article[1]/div[2]/h3[1]::text",
+          "unit_id": "RU-8dfbcef8d381d1e7ec5c",
+          "locator": "section[5]/div[1]/article[1]/div[2]/h3[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solix C300 Portable Power Station",
           "text_sha256": "6011ec377ea9a677414f071ee20a8b64605bfed494315f8abce515b88ac3cb03",
@@ -28028,8 +30266,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-4f332f695fdf7b79d022",
-          "locator": "section[4]/div[1]/article[1]/div[2]/p[1]::text",
+          "unit_id": "RU-cf01963ed07bbdbc10ca",
+          "locator": "section[5]/div[1]/article[1]/div[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "288Wh・本体約4.1kg",
           "text_sha256": "6378ac065104068ba6cc593161bda1204a922d7c277f4bcf88a8152b5c08a9a8",
@@ -28070,8 +30308,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-8e7e7610b0f9604192ec",
-          "locator": "section[4]/div[1]/article[1]/div[2]/p[2]::text",
+          "unit_id": "RU-89f4ba16b7003c4d7450",
+          "locator": "section[5]/div[1]/article[1]/div[2]/p[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "対象はAnker Solix C300 Portable Power Station(代表型番:A17225Z1)です。スマートフォンや照明などを定格300W以内で使い、本体約4.1kgを運べる場合に。",
           "text_sha256": "4683ea49fd89436f0329b773356f0adc8c098e079e02fc905146738a13c8c5c9",
@@ -28130,8 +30368,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c451057aa5d3233b4e71",
-          "locator": "section[4]/div[1]/article[1]/div[2]/p[3]::text",
+          "unit_id": "RU-6edb3eb47399bf090c97",
+          "locator": "section[5]/div[1]/article[1]/div[2]/p[3]::text",
           "channel": "VISIBLE_TEXT",
           "text": "おすすめする理由: 小型機器だけに備えるなら、必要以上に重い本体を選ばずに済みます。ただし、必要な使用時間を満たすかは、288Whの容量から別に見積もってください。",
           "text_sha256": "c81f53d7801ee1be1e105fb30dc0bfcb7a622a23a5b672e2db169a2b585bd832",
@@ -28221,8 +30459,8 @@
           }
         },
         {
-          "unit_id": "RU-64540a3a8dce1fc99087",
-          "locator": "section[4]/div[1]/article[1]/div[2]/dl[1]/div[1]/dt[1]::text",
+          "unit_id": "RU-d82038d552ad04945dee",
+          "locator": "section[5]/div[1]/article[1]/div[2]/dl[1]/div[1]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "容量",
           "text_sha256": "d8272b3c5f197b58409e2de014b8d60f2825e50e8aaa5613be40b742c3767364",
@@ -28243,8 +30481,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c154fc197cad916cebd8",
-          "locator": "section[4]/div[1]/article[1]/div[2]/dl[1]/div[1]/dd[1]::text",
+          "unit_id": "RU-2ca66a69a2b2d17eac14",
+          "locator": "section[5]/div[1]/article[1]/div[2]/dl[1]/div[1]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "288Wh 公式確認済み",
           "text_sha256": "acda216e14d47ff6a6557846a41f916e058527dedf0221d84084ad2c58790762",
@@ -28276,8 +30514,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-4bdeee7aba6aa795233e",
-          "locator": "section[4]/div[1]/article[1]/div[2]/dl[1]/div[2]/dt[1]::text",
+          "unit_id": "RU-1a7d2e19370bf93333f0",
+          "locator": "section[5]/div[1]/article[1]/div[2]/dl[1]/div[2]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "定格出力",
           "text_sha256": "aa9de4d0a77f18790ee831fc5065fe26d9ccd8ad85f4b82948831a00b903e695",
@@ -28298,8 +30536,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-6071d37eb7172158dfa7",
-          "locator": "section[4]/div[1]/article[1]/div[2]/dl[1]/div[2]/dd[1]::text",
+          "unit_id": "RU-e833af411b8c97634928",
+          "locator": "section[5]/div[1]/article[1]/div[2]/dl[1]/div[2]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "300W 公式確認済み",
           "text_sha256": "ab51894b1a5bcf03f63166fc2ff43b9b4cd6ed6e74cd817aae40b0b85f39a407",
@@ -28331,8 +30569,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-596d93a064c59afb437f",
-          "locator": "section[4]/div[1]/article[1]/div[2]/dl[1]/div[3]/dt[1]::text",
+          "unit_id": "RU-828c1a0a401d05839471",
+          "locator": "section[5]/div[1]/article[1]/div[2]/dl[1]/div[3]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "重量",
           "text_sha256": "5081ead9bbce7393cf80f2005c7332b037fda2e58d1a5912b3f52f1d8c436588",
@@ -28353,8 +30591,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-b037302c07d2e5360384",
-          "locator": "section[4]/div[1]/article[1]/div[2]/dl[1]/div[3]/dd[1]::text",
+          "unit_id": "RU-78ef7962860eacc6e762",
+          "locator": "section[5]/div[1]/article[1]/div[2]/dl[1]/div[3]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "約4.1kg 公式確認済み",
           "text_sha256": "f6be3f2faa511071ea0f95ab8d4234473bcaa5047580995beb542e4f0b3409cb",
@@ -28386,8 +30624,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-14fe0566034513f601cc",
-          "locator": "section[4]/div[1]/article[1]/div[2]/dl[1]/div[4]/dt[1]::text",
+          "unit_id": "RU-4c090ae0cc1286951f5c",
+          "locator": "section[5]/div[1]/article[1]/div[2]/dl[1]/div[4]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "本体寸法",
           "text_sha256": "8c9f9de544d66bf385d07e9801df318a3e1872772e25f116c5b98341c8271b5f",
@@ -28408,8 +30646,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-ff89140cd9357f61d837",
-          "locator": "section[4]/div[1]/article[1]/div[2]/dl[1]/div[4]/dd[1]::text",
+          "unit_id": "RU-d924a4911449ffb02f5a",
+          "locator": "section[5]/div[1]/article[1]/div[2]/dl[1]/div[4]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "幅約16.4×奥行約16.1×高さ約24.0cm 公式確認済み",
           "text_sha256": "482d47fc06f13edcf8ca918c34cb4bd0868b6bd2dcb80a5da541d9b054e0e444",
@@ -28439,8 +30677,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c0bd9266450b9754d584",
-          "locator": "section[4]/div[1]/article[1]/div[2]/div[1]/strong[1]::text",
+          "unit_id": "RU-1737ae915c01e6487af9",
+          "locator": "section[5]/div[1]/article[1]/div[2]/div[1]/strong[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "合いやすい条件",
           "text_sha256": "1612b3901dd51ea498d1ef1a05555672d79074bc5c61724bdff62f2ee161ea99",
@@ -28459,8 +30697,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-620cd7dac1726f5cd8b9",
-          "locator": "section[4]/div[1]/article[1]/div[2]/div[1]/ul[1]/li[1]::text",
+          "unit_id": "RU-8462e1320cf86bffb98e",
+          "locator": "section[5]/div[1]/article[1]/div[2]/div[1]/ul[1]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "小型機器を中心に使い、本体約4.1kgを運べる人",
           "text_sha256": "97ef28fa6a82a8d145c80d48d66c337399dd97437d9685d6498f89a4dde5d6db",
@@ -28492,8 +30730,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-9281a6cc4916a042d392",
-          "locator": "section[4]/div[1]/article[1]/div[2]/div[1]/ul[1]/li[2]::text",
+          "unit_id": "RU-bff73f60b3de2b89ea96",
+          "locator": "section[5]/div[1]/article[1]/div[2]/div[1]/ul[1]/li[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "定格300W以内で用途が収まる人",
           "text_sha256": "e47afc2d2dd0c7c8bb10cf87bc2591652e9f270c3015a97335466cd88a11569b",
@@ -28525,8 +30763,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-34fe75fcd857033c85e0",
-          "locator": "section[4]/div[1]/article[1]/div[2]/div[1]/strong[2]::text",
+          "unit_id": "RU-00ab7f93474af3a4a727",
+          "locator": "section[5]/div[1]/article[1]/div[2]/div[1]/strong[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "別の候補も検討したい条件",
           "text_sha256": "a24b5e0f817802c88d4a2ed6e6fe9e624074ed96891183bcf4ce1ea4d39cca23",
@@ -28545,8 +30783,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-710f9f06486ba36db7b1",
-          "locator": "section[4]/div[1]/article[1]/div[2]/div[1]/ul[2]/li[1]::text",
+          "unit_id": "RU-b9dc95e294c9d1870d44",
+          "locator": "section[5]/div[1]/article[1]/div[2]/div[1]/ul[2]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "定格300Wを超える機器を接続したい人",
           "text_sha256": "ed649a46c42ee2230e6399c5adfe6cf53d89c92aedf3a74da6e226786f985426",
@@ -28577,8 +30815,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-d0d5f7ba554ae920a888",
-          "locator": "section[4]/div[1]/article[1]/div[2]/div[1]/ul[2]/li[2]::text",
+          "unit_id": "RU-f72d3fceb4f465fcc881",
+          "locator": "section[5]/div[1]/article[1]/div[2]/div[1]/ul[2]/li[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "C800 Plus以上の容量帯を求める人",
           "text_sha256": "77e8734bba0aa653838b3a50ce8ca9ad35060889dbfbcddd7f065f792cdb838b",
@@ -28610,8 +30848,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-f28c0547ac5c474b5b68",
-          "locator": "section[4]/div[1]/article[1]/div[2]/p[4]::text",
+          "unit_id": "RU-26728fbba2560af9f70e",
+          "locator": "section[5]/div[1]/article[1]/div[2]/p[4]::text",
           "channel": "VISIBLE_TEXT",
           "text": "注意点: 4モデルで容量と定格出力は最小です。本体寸法は幅約16.4×奥行約16.1×高さ約24.0cmです。",
           "text_sha256": "53530e02a4fa501f6da02bb53a08f0aa1dfcb54ca199526790d234f250a0bb35",
@@ -28661,8 +30899,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-a39a2015b62c46492565",
-          "locator": "section[4]/div[1]/article[1]/div[2]/p[5]::text",
+          "unit_id": "RU-ff19660382d9bc06b9e4",
+          "locator": "section[5]/div[1]/article[1]/div[2]/p[5]::text",
           "channel": "VISIBLE_TEXT",
           "text": "情報確認日 2026年8月31日・",
           "text_sha256": "e9c4b4486d7e1dd129a06f7afa540a17844281f420f88671b87f884cb433b00c",
@@ -28683,8 +30921,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-a0469808af6023d6a4ef",
-          "locator": "section[4]/div[1]/article[1]/div[2]/p[5]/a[1]::text",
+          "unit_id": "RU-151647d733c1d7b91b1d",
+          "locator": "section[5]/div[1]/article[1]/div[2]/p[5]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "公式サイトで仕様を確認する",
           "text_sha256": "08494feef15b2198a5c3c2d03662cc9e27e7ec403acd3798c0dec3a7e9a42088",
@@ -28703,8 +30941,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-a2d2c35907c13366b352",
-          "locator": "section[4]/div[1]/article[1]/div[2]/div[2]/p[1]::text",
+          "unit_id": "RU-bd8d09d9c6195157464f",
+          "locator": "section[5]/div[1]/article[1]/div[2]/div[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式ページで、Anker Solix C300 Portable Power Station(代表型番:A17225Z1)の仕様を確認できます。一致する楽天商品を確認できなかったため、楽天購入リンクは掲載していません。",
           "text_sha256": "770755cfe3ec6f3026973cede4cc1292c937a5ec5981d5a6ea90d08bbe570c9c",
@@ -28744,8 +30982,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-0339d0a04b87f7ec95ba",
-          "locator": "section[4]/div[1]/article[1]/div[2]/div[2]/p[2]/a[1]::text",
+          "unit_id": "RU-d3855c2d1a5c947b17c4",
+          "locator": "section[5]/div[1]/article[1]/div[2]/div[2]/p[2]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式で仕様と型番を確認する",
           "text_sha256": "e418cbba61dee0b4c1780668942cd17325ae2482fb3b73c0f694579ef57d0c69",
@@ -28764,8 +31002,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-3beea3a38ba60344b7bc",
-          "locator": "section[4]/div[1]/article[2]/div[1]/p[1]::text",
+          "unit_id": "RU-611574290c6139360fd0",
+          "locator": "section[5]/div[1]/article[2]/div[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "商品画像未確認・購入導線停止",
           "text_sha256": "62dc632df8fd99b146501f15eb84fc982ea7b72111d24248626bb67120b55b2e",
@@ -28784,8 +31022,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-46fc2a3a8c1684c1a194",
-          "locator": "section[4]/div[1]/article[2]/div[2]/h3[1]::text",
+          "unit_id": "RU-89714620d0ab69578089",
+          "locator": "section[5]/div[1]/article[2]/div[2]/h3[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solix C800 Plus Portable Power Station",
           "text_sha256": "fb1b75bd98240157cb61558882eaa649c10f79763641395159f84f454ca6b1c6",
@@ -28817,8 +31055,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-478b94ef586204fb5e62",
-          "locator": "section[4]/div[1]/article[2]/div[2]/p[1]::text",
+          "unit_id": "RU-87392ac05d07a5a2f1da",
+          "locator": "section[5]/div[1]/article[2]/div[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "中容量帯",
           "text_sha256": "af97ee37e4cdaf41941956e97d06ec3a2b172790a74cfa7a48010f382b2ca97c",
@@ -28839,8 +31077,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-7461e0db533bbe025b2d",
-          "locator": "section[4]/div[1]/article[2]/div[2]/p[2]::text",
+          "unit_id": "RU-eaa8f2b0a71ff47757c9",
+          "locator": "section[5]/div[1]/article[2]/div[2]/p[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "対象はAnker Solix C800 Plus Portable Power Station(代表型番:A1754)です。768Wh・定格1200W・本体約10.9kgの組み合わせを必要とする場合に。",
           "text_sha256": "e42ef879b7ee988929e6e03b87b7b40321dcea3c9677edb4f8e178bbe6da0ac3",
@@ -28908,8 +31146,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-af952b3f3f1155ee0ece",
-          "locator": "section[4]/div[1]/article[2]/div[2]/p[3]::text",
+          "unit_id": "RU-320a0ddc0bd29b4eac12",
+          "locator": "section[5]/div[1]/article[2]/div[2]/p[3]::text",
           "channel": "VISIBLE_TEXT",
           "text": "おすすめする理由: C300では容量・出力が足りず、C1000系ほどの容量は要らない場合の中間候補です。軽さ優先の小型機とは違い、約10.9kgを保管場所から運ぶ前提になります。",
           "text_sha256": "cfc257139b50e6c640491e596d35c5f5495d98226304f61c9cbd41e25d0a6e54",
@@ -29101,8 +31339,8 @@
           }
         },
         {
-          "unit_id": "RU-1b4497680b0a9121cbe4",
-          "locator": "section[4]/div[1]/article[2]/div[2]/dl[1]/div[1]/dt[1]::text",
+          "unit_id": "RU-c47d1af365c9df105e32",
+          "locator": "section[5]/div[1]/article[2]/div[2]/dl[1]/div[1]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "容量",
           "text_sha256": "d8272b3c5f197b58409e2de014b8d60f2825e50e8aaa5613be40b742c3767364",
@@ -29123,8 +31361,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-cd3e9f1fb18ce1a39110",
-          "locator": "section[4]/div[1]/article[2]/div[2]/dl[1]/div[1]/dd[1]::text",
+          "unit_id": "RU-e48d48e14844ae9eb288",
+          "locator": "section[5]/div[1]/article[2]/div[2]/dl[1]/div[1]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "768Wh 公式確認済み",
           "text_sha256": "b871af3f6ed3f1955deb50f47deba1548987d3d89320a1c67fa9d2ed6884aef3",
@@ -29156,8 +31394,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-ba54a6eb2b8e788be8f8",
-          "locator": "section[4]/div[1]/article[2]/div[2]/dl[1]/div[2]/dt[1]::text",
+          "unit_id": "RU-c667b350ac6ea2ca2a3d",
+          "locator": "section[5]/div[1]/article[2]/div[2]/dl[1]/div[2]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "定格出力",
           "text_sha256": "aa9de4d0a77f18790ee831fc5065fe26d9ccd8ad85f4b82948831a00b903e695",
@@ -29178,8 +31416,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-5d4af1fcf3a4036c3ff7",
-          "locator": "section[4]/div[1]/article[2]/div[2]/dl[1]/div[2]/dd[1]::text",
+          "unit_id": "RU-a274d399ef3b798de327",
+          "locator": "section[5]/div[1]/article[2]/div[2]/dl[1]/div[2]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "1200W 公式確認済み",
           "text_sha256": "f9475645ed4528bb12eb4fddd0684608d23e1834665fbbd1dcf9d2c39f4aac34",
@@ -29211,8 +31449,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-171491615322c99e0d91",
-          "locator": "section[4]/div[1]/article[2]/div[2]/dl[1]/div[3]/dt[1]::text",
+          "unit_id": "RU-7d03e70b92ea1c9070a8",
+          "locator": "section[5]/div[1]/article[2]/div[2]/dl[1]/div[3]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "重量",
           "text_sha256": "5081ead9bbce7393cf80f2005c7332b037fda2e58d1a5912b3f52f1d8c436588",
@@ -29233,8 +31471,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-f17f25242217886497b9",
-          "locator": "section[4]/div[1]/article[2]/div[2]/dl[1]/div[3]/dd[1]::text",
+          "unit_id": "RU-95b023d0fe7287023ddd",
+          "locator": "section[5]/div[1]/article[2]/div[2]/dl[1]/div[3]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "約10.9kg 公式確認済み",
           "text_sha256": "4e257aa8d3dcd874857ab11f9e5fd11dc040aa70207c3e4d487ea4dd3751d7b2",
@@ -29266,8 +31504,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-103f69041a8bdf629fba",
-          "locator": "section[4]/div[1]/article[2]/div[2]/dl[1]/div[4]/dt[1]::text",
+          "unit_id": "RU-2cf205f572d6d82619da",
+          "locator": "section[5]/div[1]/article[2]/div[2]/dl[1]/div[4]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "本体寸法",
           "text_sha256": "8c9f9de544d66bf385d07e9801df318a3e1872772e25f116c5b98341c8271b5f",
@@ -29288,8 +31526,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-7748c6af62304239df27",
-          "locator": "section[4]/div[1]/article[2]/div[2]/dl[1]/div[4]/dd[1]::text",
+          "unit_id": "RU-f8818d4c7b5019ae1b64",
+          "locator": "section[5]/div[1]/article[2]/div[2]/dl[1]/div[4]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "幅約37.1×奥行約20.5×高さ約25.0cm 公式確認済み",
           "text_sha256": "755b54d0a42888379a278011a13dc4b4faa188901e82705b37ac7c2347f2577b",
@@ -29319,8 +31557,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-532dd65848f2411796da",
-          "locator": "section[4]/div[1]/article[2]/div[2]/div[1]/strong[1]::text",
+          "unit_id": "RU-24e818c91556dbbe2332",
+          "locator": "section[5]/div[1]/article[2]/div[2]/div[1]/strong[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "合いやすい条件",
           "text_sha256": "1612b3901dd51ea498d1ef1a05555672d79074bc5c61724bdff62f2ee161ea99",
@@ -29339,8 +31577,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-a6a33cd9ea7ae660f9a9",
-          "locator": "section[4]/div[1]/article[2]/div[2]/div[1]/ul[1]/li[1]::text",
+          "unit_id": "RU-97fa48fa0297464c0192",
+          "locator": "section[5]/div[1]/article[2]/div[2]/div[1]/ul[1]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "定格1200W以内の機器を使いたい人",
           "text_sha256": "64662ef8c57c8440c0616dbd0de47a383a51b63f7b12e4e3ccecf79dca91240d",
@@ -29372,8 +31610,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-90355cfdbd54a0a06911",
-          "locator": "section[4]/div[1]/article[2]/div[2]/div[1]/ul[1]/li[2]::text",
+          "unit_id": "RU-9a3cb3eb6000ce174add",
+          "locator": "section[5]/div[1]/article[2]/div[2]/div[1]/ul[1]/li[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "C1000系より軽い中容量帯を選びたい人",
           "text_sha256": "7a66eb3715c9b27ea8f1edf9185933281a8af6a265a04d516275283aa615e3b0",
@@ -29467,8 +31705,8 @@
           }
         },
         {
-          "unit_id": "RU-766ec44ec8c5d86e59cf",
-          "locator": "section[4]/div[1]/article[2]/div[2]/div[1]/strong[2]::text",
+          "unit_id": "RU-fad5f7a8cf9dcad6f33e",
+          "locator": "section[5]/div[1]/article[2]/div[2]/div[1]/strong[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "別の候補も検討したい条件",
           "text_sha256": "a24b5e0f817802c88d4a2ed6e6fe9e624074ed96891183bcf4ce1ea4d39cca23",
@@ -29487,8 +31725,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-078240eda91d12e62704",
-          "locator": "section[4]/div[1]/article[2]/div[2]/div[1]/ul[2]/li[1]::text",
+          "unit_id": "RU-c21466f74f98400467f1",
+          "locator": "section[5]/div[1]/article[2]/div[2]/div[1]/ul[2]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "C1000系の容量帯を求める人",
           "text_sha256": "55622439303c119ad54f85ce12d0bc0365610620c35b23b2a92ae79ab6695401",
@@ -29524,8 +31762,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c99c3a75e69c382d6ad5",
-          "locator": "section[4]/div[1]/article[2]/div[2]/div[1]/ul[2]/li[2]::text",
+          "unit_id": "RU-d5d80f1a0023233c8f6f",
+          "locator": "section[5]/div[1]/article[2]/div[2]/div[1]/ul[2]/li[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "本体約10.9kgを運べず、これより軽い候補が必要な人",
           "text_sha256": "26aca06dc41f21a73e25a6fe5fec164801b12b8731efec566788f7a2b6d63ecf",
@@ -29565,8 +31803,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-57e3e925476fbf2be1aa",
-          "locator": "section[4]/div[1]/article[2]/div[2]/p[4]::text",
+          "unit_id": "RU-a4ddfa6abb1cedb76f40",
+          "locator": "section[5]/div[1]/article[2]/div[2]/p[4]::text",
           "channel": "VISIBLE_TEXT",
           "text": "注意点: 本体は幅約37.1×奥行約20.5×高さ約25.0cm、約10.9kgです。設置場所と移動方法を確認してください。",
           "text_sha256": "dff74e5f5dc4e96fcfc02137c651a0855ab1c1baa087613b8ca274be82aa15d8",
@@ -29606,8 +31844,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-4637b90a2bb970ea8dbd",
-          "locator": "section[4]/div[1]/article[2]/div[2]/p[5]::text",
+          "unit_id": "RU-e55c6a571ba340a1a09e",
+          "locator": "section[5]/div[1]/article[2]/div[2]/p[5]::text",
           "channel": "VISIBLE_TEXT",
           "text": "情報確認日 2026年8月31日・",
           "text_sha256": "e9c4b4486d7e1dd129a06f7afa540a17844281f420f88671b87f884cb433b00c",
@@ -29628,8 +31866,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-09f16d8cb1654af16cdb",
-          "locator": "section[4]/div[1]/article[2]/div[2]/p[5]/a[1]::text",
+          "unit_id": "RU-c492fbbb46d843a22feb",
+          "locator": "section[5]/div[1]/article[2]/div[2]/p[5]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "公式サイトで仕様を確認する",
           "text_sha256": "08494feef15b2198a5c3c2d03662cc9e27e7ec403acd3798c0dec3a7e9a42088",
@@ -29648,8 +31886,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-91ae274378094199f98e",
-          "locator": "section[4]/div[1]/article[2]/div[2]/div[2]/p[1]::text",
+          "unit_id": "RU-370ad36e47cb2437847d",
+          "locator": "section[5]/div[1]/article[2]/div[2]/div[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式ページで、Anker Solix C800 Plus Portable Power Station(代表型番:A1754)の仕様を確認できます。一致する楽天商品を確認できなかったため、楽天購入リンクは掲載していません。",
           "text_sha256": "8bb658f58222219b2a59891f25854c0af149ecc883c79967febe4485cd5db04c",
@@ -29689,8 +31927,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-357bc459576ae4a687c3",
-          "locator": "section[4]/div[1]/article[2]/div[2]/div[2]/p[2]/a[1]::text",
+          "unit_id": "RU-cdaecc5b47c703fc9259",
+          "locator": "section[5]/div[1]/article[2]/div[2]/div[2]/p[2]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式で仕様と型番を確認する",
           "text_sha256": "e418cbba61dee0b4c1780668942cd17325ae2482fb3b73c0f694579ef57d0c69",
@@ -29709,8 +31947,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-b7479476c911da7592d9",
-          "locator": "section[4]/div[1]/article[3]/div[1]/p[1]::text",
+          "unit_id": "RU-c336199828dcd47a96d3",
+          "locator": "section[5]/div[1]/article[3]/div[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "商品画像未確認・購入導線停止",
           "text_sha256": "62dc632df8fd99b146501f15eb84fc982ea7b72111d24248626bb67120b55b2e",
@@ -29729,8 +31967,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-b4f2827f8ab546b9c687",
-          "locator": "section[4]/div[1]/article[3]/div[2]/h3[1]::text",
+          "unit_id": "RU-f3ee1c2c4cc18ca76836",
+          "locator": "section[5]/div[1]/article[3]/div[2]/h3[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solix C1000 Portable Power Station",
           "text_sha256": "3c9bf1dec69096edd308be9c05b05012242bd94cc95d6b171636a06ee5e39eee",
@@ -29766,8 +32004,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-ca5e606448e947f3d59d",
-          "locator": "section[4]/div[1]/article[3]/div[2]/p[1]::text",
+          "unit_id": "RU-8ed9ad5ad7346ab3ac22",
+          "locator": "section[5]/div[1]/article[3]/div[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "容量拡張・AC出力6口",
           "text_sha256": "d80b81acb28cd988c46cede6d465152ed005359f4047856077b0333aaa3196a0",
@@ -29797,8 +32035,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-e53de87804cc85972fa6",
-          "locator": "section[4]/div[1]/article[3]/div[2]/p[2]::text",
+          "unit_id": "RU-d52394e4bfe0cb465bdc",
+          "locator": "section[5]/div[1]/article[3]/div[2]/p[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "対象はAnker Solix C1000 Portable Power Station(代表型番:A17615Z1)です。1056Whを別売り拡張バッテリーで2112Whへ増設したい場合や、AC出力6口を使いたい場合に。",
           "text_sha256": "1db87b83fb7cd8653f1bbbc98f9731b238208ea71154b790dc184a5b8c33549b",
@@ -29872,8 +32110,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-33181ab9c9417d5cc03e",
-          "locator": "section[4]/div[1]/article[3]/div[2]/p[3]::text",
+          "unit_id": "RU-ab00ceaef9741dee0ec6",
+          "locator": "section[5]/div[1]/article[3]/div[2]/p[3]::text",
           "channel": "VISIBLE_TEXT",
           "text": "おすすめする理由: 後から容量を増やす予定や、AC出力6口を使う理由があるなら、第1世代を残して比較します。ただし、C1000 Gen 2のほうが約1.6kg軽いため、拡張性と持ち運びのどちらを優先するか決めます。",
           "text_sha256": "ca009c1d237e6d7cf3e51c14637804efd980441112ab04a1719df6b896666168",
@@ -30027,8 +32265,8 @@
           }
         },
         {
-          "unit_id": "RU-13be96ee48df82d54095",
-          "locator": "section[4]/div[1]/article[3]/div[2]/dl[1]/div[1]/dt[1]::text",
+          "unit_id": "RU-afd2d09c73fe6cf95182",
+          "locator": "section[5]/div[1]/article[3]/div[2]/dl[1]/div[1]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "容量",
           "text_sha256": "d8272b3c5f197b58409e2de014b8d60f2825e50e8aaa5613be40b742c3767364",
@@ -30049,8 +32287,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-f9a54882d42a05e03c2f",
-          "locator": "section[4]/div[1]/article[3]/div[2]/dl[1]/div[1]/dd[1]::text",
+          "unit_id": "RU-78466d8ec0d5ac1a2e3d",
+          "locator": "section[5]/div[1]/article[3]/div[2]/dl[1]/div[1]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "1056Wh 公式確認済み",
           "text_sha256": "8771e66cad05d6ac808c9461e3cf33d0e161fc6f5e47c841710675f19f98bcf7",
@@ -30082,8 +32320,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-1a77ba0c877bb1c5b05f",
-          "locator": "section[4]/div[1]/article[3]/div[2]/dl[1]/div[2]/dt[1]::text",
+          "unit_id": "RU-b62e040b6a9922ee48af",
+          "locator": "section[5]/div[1]/article[3]/div[2]/dl[1]/div[2]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "定格出力",
           "text_sha256": "aa9de4d0a77f18790ee831fc5065fe26d9ccd8ad85f4b82948831a00b903e695",
@@ -30104,8 +32342,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-fdeffed506f77568742e",
-          "locator": "section[4]/div[1]/article[3]/div[2]/dl[1]/div[2]/dd[1]::text",
+          "unit_id": "RU-bba8330e219f28af5633",
+          "locator": "section[5]/div[1]/article[3]/div[2]/dl[1]/div[2]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "1500W 公式確認済み",
           "text_sha256": "5efc072ddd63f202fc3c569744914743202827cb7b9e58a4cf4a0664403ed94e",
@@ -30135,8 +32373,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c8246a93413bae2d506d",
-          "locator": "section[4]/div[1]/article[3]/div[2]/dl[1]/div[3]/dt[1]::text",
+          "unit_id": "RU-bf4bc058e33469f136be",
+          "locator": "section[5]/div[1]/article[3]/div[2]/dl[1]/div[3]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "重量",
           "text_sha256": "5081ead9bbce7393cf80f2005c7332b037fda2e58d1a5912b3f52f1d8c436588",
@@ -30157,8 +32395,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-7039fe7d03c37e32357f",
-          "locator": "section[4]/div[1]/article[3]/div[2]/dl[1]/div[3]/dd[1]::text",
+          "unit_id": "RU-9dc8e275030002dbf613",
+          "locator": "section[5]/div[1]/article[3]/div[2]/dl[1]/div[3]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "約12.9kg 公式確認済み",
           "text_sha256": "d768e646c4f82c62c330a83a49e4069419d5c8f6137a24b91f4c0fc481a3626c",
@@ -30188,8 +32426,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-d696a2e6aa3cf5796eea",
-          "locator": "section[4]/div[1]/article[3]/div[2]/dl[1]/div[4]/dt[1]::text",
+          "unit_id": "RU-3905e300d82b39eaf75e",
+          "locator": "section[5]/div[1]/article[3]/div[2]/dl[1]/div[4]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "本体寸法",
           "text_sha256": "8c9f9de544d66bf385d07e9801df318a3e1872772e25f116c5b98341c8271b5f",
@@ -30210,8 +32448,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-79818b23e823d478239d",
-          "locator": "section[4]/div[1]/article[3]/div[2]/dl[1]/div[4]/dd[1]::text",
+          "unit_id": "RU-9490be12f6a46b35e994",
+          "locator": "section[5]/div[1]/article[3]/div[2]/dl[1]/div[4]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "幅約37.6×奥行約20.5×高さ約26.7cm 公式確認済み",
           "text_sha256": "42f0c2943d036101e03fe2d064a184af4bd746307119b3c60d66643a6a5b5940",
@@ -30241,8 +32479,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-86a5f4eaed41d01029e2",
-          "locator": "section[4]/div[1]/article[3]/div[2]/div[1]/strong[1]::text",
+          "unit_id": "RU-80cad575abe098f07606",
+          "locator": "section[5]/div[1]/article[3]/div[2]/div[1]/strong[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "合いやすい条件",
           "text_sha256": "1612b3901dd51ea498d1ef1a05555672d79074bc5c61724bdff62f2ee161ea99",
@@ -30261,8 +32499,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-f09a7fca6611f4f1bd5d",
-          "locator": "section[4]/div[1]/article[3]/div[2]/div[1]/ul[1]/li[1]::text",
+          "unit_id": "RU-f77ce626b7ffa89e7c3a",
+          "locator": "section[5]/div[1]/article[3]/div[2]/div[1]/ul[1]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "後から容量を2112Whへ増やす可能性がある人",
           "text_sha256": "3ab503dab51a15d31b883dda111c4a521df6c976de2a8d5dfa1f331df571d73d",
@@ -30294,8 +32532,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-3a871baa736434cd827d",
-          "locator": "section[4]/div[1]/article[3]/div[2]/div[1]/ul[1]/li[2]::text",
+          "unit_id": "RU-38b5ce83fce8d11b85e4",
+          "locator": "section[5]/div[1]/article[3]/div[2]/div[1]/ul[1]/li[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "AC出力6口またはSurgePad対応を必要とする人",
           "text_sha256": "91ea15e3d28bdff714e90567caf1aa889c2c3a67f26ad2191bb7128ceacb3bfb",
@@ -30325,8 +32563,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-42bef0fb721f92c5ec77",
-          "locator": "section[4]/div[1]/article[3]/div[2]/div[1]/strong[2]::text",
+          "unit_id": "RU-8d0a49386f87c456e4b7",
+          "locator": "section[5]/div[1]/article[3]/div[2]/div[1]/strong[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "別の候補も検討したい条件",
           "text_sha256": "a24b5e0f817802c88d4a2ed6e6fe9e624074ed96891183bcf4ce1ea4d39cca23",
@@ -30345,8 +32583,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-48a2df01319a7590f7f7",
-          "locator": "section[4]/div[1]/article[3]/div[2]/div[1]/ul[2]/li[1]::text",
+          "unit_id": "RU-1c8cfb6c6bded7826fac",
+          "locator": "section[5]/div[1]/article[3]/div[2]/div[1]/ul[2]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "C1000系で軽さを優先する人",
           "text_sha256": "510c4dc0aef8394688bacf965d9e86a0a10c7ee179adea9a95fec65c23c0d000",
@@ -30382,16 +32620,16 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-960bc0c945e4337999f3",
-          "locator": "section[4]/div[1]/article[3]/div[2]/div[1]/ul[2]/li[2]::text",
+          "unit_id": "RU-cebc33523aa4a3ff28e8",
+          "locator": "section[5]/div[1]/article[3]/div[2]/div[1]/ul[2]/li[2]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "4,000回以上の充放電サイクルやUSB-C 3口を優先する人",
-          "text_sha256": "7eb74f7e7bd03a8bf26b4591b061636f3aa44ac262d64b9966ffc611bd227343",
+          "text": "USB-C 3口のC1000 Gen 2を検討したい人",
+          "text_sha256": "2d54df0d0c3c9ddaed2d5ae923092eb73a0f671dd72a38b142b63d0d2cefcac4",
           "context": "DECISION",
           "subject_product_ids": [
-            "PRD-ANKER-SOLIX-C1000"
+            "PRD-ANKER-SOLIX-C1000-GEN2"
           ],
-          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
           "dimension_role": null,
           "dimension_axis": null,
           "kind": "EDITORIAL_INFERENCE",
@@ -30402,16 +32640,15 @@
           "evidence_bindings": [],
           "assertion_tokens": [
             {
-              "assertion_text": "4,000回以上",
+              "assertion_text": "3口",
               "occurrence_index": 0,
               "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-                "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
+                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
               ],
               "evidence_binding_ids": []
             },
             {
-              "assertion_text": "3口",
+              "assertion_text": "C1000",
               "occurrence_index": 0,
               "claim_ids": [
                 "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
@@ -30423,8 +32660,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-440a81eda7319c9de81c",
-          "locator": "section[4]/div[1]/article[3]/div[2]/p[4]::text",
+          "unit_id": "RU-57d5df8edca34e9c77bf",
+          "locator": "section[5]/div[1]/article[3]/div[2]/p[4]::text",
           "channel": "VISIBLE_TEXT",
           "text": "注意点: C1000 Gen 2より約1.6kg重いモデルです。別売り拡張バッテリーはC1000向けの公式対応品を選び、SurgePadは精密機器や電圧保護機能がある機器など対象外を確認してください。",
           "text_sha256": "344447e23136a3d55a2431ef2d74ada67033415d2f4dc9c7dad03e0a8e5f72f5",
@@ -30482,8 +32719,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-6bcb6685115d1ab7a78a",
-          "locator": "section[4]/div[1]/article[3]/div[2]/p[5]::text",
+          "unit_id": "RU-a0f669308e3ad8aaefd7",
+          "locator": "section[5]/div[1]/article[3]/div[2]/p[5]::text",
           "channel": "VISIBLE_TEXT",
           "text": "情報確認日 2026年8月31日・",
           "text_sha256": "e9c4b4486d7e1dd129a06f7afa540a17844281f420f88671b87f884cb433b00c",
@@ -30504,8 +32741,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-2cf273d25c09c7d30a81",
-          "locator": "section[4]/div[1]/article[3]/div[2]/p[5]/a[1]::text",
+          "unit_id": "RU-c45e9cb268f5028509ac",
+          "locator": "section[5]/div[1]/article[3]/div[2]/p[5]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "公式サイトで仕様を確認する",
           "text_sha256": "08494feef15b2198a5c3c2d03662cc9e27e7ec403acd3798c0dec3a7e9a42088",
@@ -30524,8 +32761,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-976a0ec4cac8c3ee925e",
-          "locator": "section[4]/div[1]/article[3]/div[2]/div[2]/p[1]::text",
+          "unit_id": "RU-9c3b84de4558ad8ae076",
+          "locator": "section[5]/div[1]/article[3]/div[2]/div[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式ページで、Anker Solix C1000 Portable Power Station(代表型番:A17615Z1)の仕様を確認できます。一致する楽天商品を確認できなかったため、楽天購入リンクは掲載していません。",
           "text_sha256": "9b3ca34be365bcfacbb8cd6ddf3bafb64e03284c4787c037bd5cdddd684f4d3b",
@@ -30569,8 +32806,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-7772f8cea8a7a6896d44",
-          "locator": "section[4]/div[1]/article[3]/div[2]/div[2]/p[2]/a[1]::text",
+          "unit_id": "RU-d8b2cdc5e3e0ebcdc267",
+          "locator": "section[5]/div[1]/article[3]/div[2]/div[2]/p[2]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式で仕様と型番を確認する",
           "text_sha256": "e418cbba61dee0b4c1780668942cd17325ae2482fb3b73c0f694579ef57d0c69",
@@ -30589,8 +32826,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-04246d1695e4bbb90fe3",
-          "locator": "section[4]/div[1]/article[4]/div[1]/p[1]::text",
+          "unit_id": "RU-10e21f7e020f6caaaac0",
+          "locator": "section[5]/div[1]/article[4]/div[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "商品画像未確認・購入導線停止",
           "text_sha256": "62dc632df8fd99b146501f15eb84fc982ea7b72111d24248626bb67120b55b2e",
@@ -30609,8 +32846,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-288c223634db15d9459b",
-          "locator": "section[4]/div[1]/article[4]/div[2]/h3[1]::text",
+          "unit_id": "RU-e45f19cea3dbd73e85fd",
+          "locator": "section[5]/div[1]/article[4]/div[2]/h3[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solix C1000 Gen 2 Portable Power Station",
           "text_sha256": "9f7ac1cae393b12e8af484982c2279abbcd8e0514a9331f70206efbd71181d88",
@@ -30646,11 +32883,11 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c24093511a2f4dad761a",
-          "locator": "section[4]/div[1]/article[4]/div[2]/p[1]::text",
+          "unit_id": "RU-0d6fad1e9368a395ed9c",
+          "locator": "section[5]/div[1]/article[4]/div[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "4,000回以上の公表サイクル数・USB-C 3口",
-          "text_sha256": "44ee2ee57b5823c3bb2e79a314314588c1d83c4bf845d4e8e8f8a61f1467931e",
+          "text": "軽さ・USB-C 3口",
+          "text_sha256": "79e14db5e3a44d0da8f01bfdd3eddb0f486ac74706680b5a97bc869018082b8e",
           "context": "DECISION",
           "subject_product_ids": [
             "PRD-ANKER-SOLIX-C1000-GEN2"
@@ -30666,23 +32903,6 @@
           "evidence_bindings": [],
           "assertion_tokens": [
             {
-              "assertion_text": "4,000回以上",
-              "occurrence_index": 0,
-              "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-                "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
-              ],
-              "evidence_binding_ids": []
-            },
-            {
-              "assertion_text": "USB-C",
-              "occurrence_index": 0,
-              "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
-              ],
-              "evidence_binding_ids": []
-            },
-            {
               "assertion_text": "3口",
               "occurrence_index": 0,
               "claim_ids": [
@@ -30695,11 +32915,11 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-6a71f31d4d0fc2b4b68e",
-          "locator": "section[4]/div[1]/article[4]/div[2]/p[2]::text",
+          "unit_id": "RU-a907b5986b014d27c8a2",
+          "locator": "section[5]/div[1]/article[4]/div[2]/p[2]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "対象はAnker Solix C1000 Gen 2 Portable Power Station(代表型番:A17635Z1)です。C1000系で本体重量を抑え、4,000回以上の充放電サイクルとUSB-C 3口を優先したい場合に。",
-          "text_sha256": "21085cf44e4926caf7270de04aff934ccb089a878bec7f0b191665913a934f87",
+          "text": "対象はAnker Solix C1000 Gen 2 Portable Power Station(代表型番:A17635Z1)です。C1000系で本体重量を抑え、USB-C 3口を優先したい場合に。",
+          "text_sha256": "a2bb5a418702ffd0d0727a8b32296d5334667eedb5f97e387c7b313482a1e957",
           "context": "DECISION",
           "subject_product_ids": [
             "PRD-ANKER-SOLIX-C1000-GEN2",
@@ -30755,18 +32975,6 @@
               "evidence_binding_ids": []
             },
             {
-              "assertion_text": "4,000回以上",
-              "occurrence_index": 0,
-              "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-SPECS",
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-                "CLM-ST1704-ANKER-C1000-GENERATION-DIFF",
-                "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
-                "CLM-ST1704-ANKER-C1000-GEN2-SPECS"
-              ],
-              "evidence_binding_ids": []
-            },
-            {
               "assertion_text": "3口",
               "occurrence_index": 0,
               "claim_ids": [
@@ -30783,8 +32991,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-9517012722a73cd482cd",
-          "locator": "section[4]/div[1]/article[4]/div[2]/p[3]::text",
+          "unit_id": "RU-827222202ba8116c3b83",
+          "locator": "section[5]/div[1]/article[4]/div[2]/p[3]::text",
           "channel": "VISIBLE_TEXT",
           "text": "おすすめする理由: 容量を後から増やす予定がなく、持ち運ぶ重さとUSB-Cの口数を優先する場合に向きます。第1世代から選び直すなら、容量拡張を手放してよいかを先に確認してください。",
           "text_sha256": "533a9f509bb81994431ba0813243c0c65db0b8cc451c246630e402d81f46c18a",
@@ -30866,8 +33074,8 @@
           }
         },
         {
-          "unit_id": "RU-15743f290d9f8048d10d",
-          "locator": "section[4]/div[1]/article[4]/div[2]/dl[1]/div[1]/dt[1]::text",
+          "unit_id": "RU-03f9f718738aba337a76",
+          "locator": "section[5]/div[1]/article[4]/div[2]/dl[1]/div[1]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "容量",
           "text_sha256": "d8272b3c5f197b58409e2de014b8d60f2825e50e8aaa5613be40b742c3767364",
@@ -30888,8 +33096,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-0ee7cfced533ef714ecb",
-          "locator": "section[4]/div[1]/article[4]/div[2]/dl[1]/div[1]/dd[1]::text",
+          "unit_id": "RU-7a6789c61b9987394787",
+          "locator": "section[5]/div[1]/article[4]/div[2]/dl[1]/div[1]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "1024Wh 公式確認済み",
           "text_sha256": "3e1338b57cfaf7c1567c386ff7e1f73a55fa5a58636ab823579072ac4966b1f7",
@@ -30919,8 +33127,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-cbef5475191f3d2607c9",
-          "locator": "section[4]/div[1]/article[4]/div[2]/dl[1]/div[2]/dt[1]::text",
+          "unit_id": "RU-0ccc871ad7d1b5ff687e",
+          "locator": "section[5]/div[1]/article[4]/div[2]/dl[1]/div[2]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "定格出力",
           "text_sha256": "aa9de4d0a77f18790ee831fc5065fe26d9ccd8ad85f4b82948831a00b903e695",
@@ -30941,8 +33149,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-49acc397ee3cfb936866",
-          "locator": "section[4]/div[1]/article[4]/div[2]/dl[1]/div[2]/dd[1]::text",
+          "unit_id": "RU-6d2618027521d31ee5fc",
+          "locator": "section[5]/div[1]/article[4]/div[2]/dl[1]/div[2]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "1550W 公式確認済み",
           "text_sha256": "56288f9f58ba9d290bd8c13dba979e4a5864afd853f71c87f8f8f6b6ada964b1",
@@ -30973,8 +33181,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-3f623e74a98fdda4c9c5",
-          "locator": "section[4]/div[1]/article[4]/div[2]/dl[1]/div[3]/dt[1]::text",
+          "unit_id": "RU-3a7f3501b1370bfc816e",
+          "locator": "section[5]/div[1]/article[4]/div[2]/dl[1]/div[3]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "重量",
           "text_sha256": "5081ead9bbce7393cf80f2005c7332b037fda2e58d1a5912b3f52f1d8c436588",
@@ -30995,8 +33203,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-caea55b5dfbc1eaf4500",
-          "locator": "section[4]/div[1]/article[4]/div[2]/dl[1]/div[3]/dd[1]::text",
+          "unit_id": "RU-f441499bd29130ae9e1a",
+          "locator": "section[5]/div[1]/article[4]/div[2]/dl[1]/div[3]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "約11.3kg 公式確認済み",
           "text_sha256": "9a6b53ee2e054ab67a558a14efb5b32680aa098dcc13b39678c89e66b4e58b3e",
@@ -31026,8 +33234,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-bb94858d017ef072f290",
-          "locator": "section[4]/div[1]/article[4]/div[2]/dl[1]/div[4]/dt[1]::text",
+          "unit_id": "RU-efaeae3c0318ac4e7968",
+          "locator": "section[5]/div[1]/article[4]/div[2]/dl[1]/div[4]/dt[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "本体寸法",
           "text_sha256": "8c9f9de544d66bf385d07e9801df318a3e1872772e25f116c5b98341c8271b5f",
@@ -31048,8 +33256,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-a07a7471db077a580adc",
-          "locator": "section[4]/div[1]/article[4]/div[2]/dl[1]/div[4]/dd[1]::text",
+          "unit_id": "RU-5e0a6e83619090e0ea75",
+          "locator": "section[5]/div[1]/article[4]/div[2]/dl[1]/div[4]/dd[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "幅約38.4×奥行約20.8×高さ約24.4cm 公式確認済み",
           "text_sha256": "7c4c071342e92e4a48e4a59463cb03ce4d95b4ab6599ca1c1ec5e5b214cbcfed",
@@ -31079,8 +33287,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-17794e698a24d72933aa",
-          "locator": "section[4]/div[1]/article[4]/div[2]/div[1]/strong[1]::text",
+          "unit_id": "RU-98594b9605ac1f50e0a8",
+          "locator": "section[5]/div[1]/article[4]/div[2]/div[1]/strong[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "合いやすい条件",
           "text_sha256": "1612b3901dd51ea498d1ef1a05555672d79074bc5c61724bdff62f2ee161ea99",
@@ -31099,11 +33307,11 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-0e0eb4d16f9f5460d8a5",
-          "locator": "section[4]/div[1]/article[4]/div[2]/div[1]/ul[1]/li[1]::text",
+          "unit_id": "RU-d43df7f1ffc3ad2eb51f",
+          "locator": "section[5]/div[1]/article[4]/div[2]/div[1]/ul[1]/li[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "USB-C 3口と4,000回以上の公表サイクル数を選定条件にする人",
-          "text_sha256": "1be7580392d04130d4d286b08d2f69f231b67913fa8b948d0d5a76b635624889",
+          "text": "USB-C 3口のC1000 Gen 2を検討したい人",
+          "text_sha256": "2d54df0d0c3c9ddaed2d5ae923092eb73a0f671dd72a38b142b63d0d2cefcac4",
           "context": "DECISION",
           "subject_product_ids": [
             "PRD-ANKER-SOLIX-C1000-GEN2"
@@ -31119,14 +33327,6 @@
           "evidence_bindings": [],
           "assertion_tokens": [
             {
-              "assertion_text": "USB-C",
-              "occurrence_index": 0,
-              "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
-              ],
-              "evidence_binding_ids": []
-            },
-            {
               "assertion_text": "3口",
               "occurrence_index": 0,
               "claim_ids": [
@@ -31135,11 +33335,10 @@
               "evidence_binding_ids": []
             },
             {
-              "assertion_text": "4,000回以上",
+              "assertion_text": "C1000",
               "occurrence_index": 0,
               "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-                "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
+                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
               ],
               "evidence_binding_ids": []
             }
@@ -31148,30 +33347,40 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-963741b1a97f936bc761",
-          "locator": "section[4]/div[1]/article[4]/div[2]/div[1]/ul[1]/li[2]::text",
+          "unit_id": "RU-4c7c6d2c3050291dfc7d",
+          "locator": "section[5]/div[1]/article[4]/div[2]/div[1]/ul[1]/li[2]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "頻繁に使う予定があり、公表サイクル数を重視する人。ただし、公表回数は使用年数を保証する値ではありません",
-          "text_sha256": "82418eae9785630554d93e282f398fe9750f8f63512fb0d638aabd2e928def91",
+          "text": "容量拡張を必要とせず、C1000系で持ち運ぶ重さを抑えたい人",
+          "text_sha256": "89b835e90ab2bc4ff02466fce0b216118d9f29c58f74fcd8aabe0403e44e8bf4",
           "context": "DECISION",
           "subject_product_ids": [
-            "PRD-ANKER-SOLIX-C1000-GEN2"
+            "PRD-ANKER-SOLIX-C1000"
           ],
-          "owner_product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+          "owner_product_id": "PRD-ANKER-SOLIX-C1000",
           "dimension_role": null,
           "dimension_axis": null,
-          "kind": "VERIFIABLE",
+          "kind": "EDITORIAL_INFERENCE",
           "claim_ids": [
-            "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
+            "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
+            "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
           ],
           "evidence_bindings": [],
-          "assertion_tokens": [],
+          "assertion_tokens": [
+            {
+              "assertion_text": "C1000",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
+              ],
+              "evidence_binding_ids": []
+            }
+          ],
           "exemption_code": null,
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c352b69097211c714bda",
-          "locator": "section[4]/div[1]/article[4]/div[2]/div[1]/strong[2]::text",
+          "unit_id": "RU-cdea0114727fb380e081",
+          "locator": "section[5]/div[1]/article[4]/div[2]/div[1]/strong[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "別の候補も検討したい条件",
           "text_sha256": "a24b5e0f817802c88d4a2ed6e6fe9e624074ed96891183bcf4ce1ea4d39cca23",
@@ -31190,8 +33399,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-d93b51994ae687c9e616",
-          "locator": "section[4]/div[1]/article[4]/div[2]/div[1]/ul[2]/li[1]::text",
+          "unit_id": "RU-16a6251af127e18c3bca",
+          "locator": "section[5]/div[1]/article[4]/div[2]/div[1]/ul[2]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "後から拡張バッテリーで容量を増やしたい人",
           "text_sha256": "9a37eb53412eff844efe3f7f419e43e3b35c2f90bbcb3298fa4cc4a4a037fac1",
@@ -31212,8 +33421,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-50e8205666da6b68d63c",
-          "locator": "section[4]/div[1]/article[4]/div[2]/div[1]/ul[2]/li[2]::text",
+          "unit_id": "RU-0ff56e888d6f2fece4cd",
+          "locator": "section[5]/div[1]/article[4]/div[2]/div[1]/ul[2]/li[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "AC出力6口やSurgePad対応を優先する人",
           "text_sha256": "7257f5a87a2c3ebe853a38828cfae6e8819c4511c8c91c96a0747c03c41e3fa7",
@@ -31243,8 +33452,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-849003c257afe1c22a51",
-          "locator": "section[4]/div[1]/article[4]/div[2]/p[4]::text",
+          "unit_id": "RU-329f35a9a491abcc3efa",
+          "locator": "section[5]/div[1]/article[4]/div[2]/p[4]::text",
           "channel": "VISIBLE_TEXT",
           "text": "注意点: 公表容量はC1000(第1世代)より32Wh小さく、拡張バッテリーには対応しません。停電時の切り替え時間は公式ページ内で記載が一致しないため、正確な値を選定条件にせず、購入時に最新の取扱説明書と接続機器の条件を確認してください。",
           "text_sha256": "2574b329f57685279ed3408529b98617385b87a42c276af74a4301c536ed9d4a",
@@ -31297,8 +33506,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-bb3fdcc48ff053a714ee",
-          "locator": "section[4]/div[1]/article[4]/div[2]/p[5]::text",
+          "unit_id": "RU-cd953c1e0c8b320a4d8a",
+          "locator": "section[5]/div[1]/article[4]/div[2]/p[5]::text",
           "channel": "VISIBLE_TEXT",
           "text": "情報確認日 2026年8月31日・",
           "text_sha256": "e9c4b4486d7e1dd129a06f7afa540a17844281f420f88671b87f884cb433b00c",
@@ -31319,8 +33528,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-892032825c5e9de596d1",
-          "locator": "section[4]/div[1]/article[4]/div[2]/p[5]/a[1]::text",
+          "unit_id": "RU-64e5a451d04116555eef",
+          "locator": "section[5]/div[1]/article[4]/div[2]/p[5]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "公式サイトで仕様を確認する",
           "text_sha256": "08494feef15b2198a5c3c2d03662cc9e27e7ec403acd3798c0dec3a7e9a42088",
@@ -31339,8 +33548,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-57456e9a90c04d080236",
-          "locator": "section[4]/div[1]/article[4]/div[2]/div[2]/p[1]::text",
+          "unit_id": "RU-b0597e8d59b92a8b648b",
+          "locator": "section[5]/div[1]/article[4]/div[2]/div[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式ページで、Anker Solix C1000 Gen 2 Portable Power Station(代表型番:A17635Z1)の仕様を確認できます。一致する楽天商品を確認できなかったため、楽天購入リンクは掲載していません。",
           "text_sha256": "031477a82bbe1fcd0ba2b0412a6a12bc83bf3c7a2b1b67e4f73f7280cadd29a3",
@@ -31384,8 +33593,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-eec371cef5874ec115c3",
-          "locator": "section[4]/div[1]/article[4]/div[2]/div[2]/p[2]/a[1]::text",
+          "unit_id": "RU-5383266468a59ee2d9ee",
+          "locator": "section[5]/div[1]/article[4]/div[2]/div[2]/p[2]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式で仕様と型番を確認する",
           "text_sha256": "e418cbba61dee0b4c1780668942cd17325ae2482fb3b73c0f694579ef57d0c69",
@@ -31404,8 +33613,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-2891ecdd64d960fdc01b",
-          "locator": "section[5]/header[1]/h2[1]::text",
+          "unit_id": "RU-c3e89ee7caa41ecfeae6",
+          "locator": "section[6]/header[1]/h2[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solix 4モデルの違いを整理する",
           "text_sha256": "ad10e3a0d3321ec571858b375556ad2091fa813d3994b92a5a522a62fa6cd01f",
@@ -31438,8 +33647,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-2172f389d1c89febc16a",
-          "locator": "section[5]/div[1]/section[1]/h3[1]::text",
+          "unit_id": "RU-f862c8f1dec23d14da75",
+          "locator": "section[6]/div[1]/section[1]/h3[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "この比較が役立つ人",
           "text_sha256": "dcac0d75cc8ec024c4d83294bf19fdba87e72e74e7ba3f09b00ebce74b08f075",
@@ -31456,8 +33665,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-2c6337183861fe2dacf4",
-          "locator": "section[5]/div[1]/section[1]/ul[1]/li[1]::text",
+          "unit_id": "RU-c2282bbdfe32d91dcd42",
+          "locator": "section[6]/div[1]/section[1]/ul[1]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solixの容量帯とC1000の世代差を型番単位で確認したい人",
           "text_sha256": "ed80bd11e013dad002f775919ecff1d4fdead82dde52013502e6f5ada59b9e9f",
@@ -31493,8 +33702,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c31031161d3057d7e138",
-          "locator": "section[5]/div[1]/section[2]/h3[1]::text",
+          "unit_id": "RU-d08dad1c8741d1129e51",
+          "locator": "section[6]/div[1]/section[2]/h3[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "この比較だけでは決めにくい人",
           "text_sha256": "1824ae64b7e4e783d81b178ccee1989bde018e8ebc1451760cbea285c741047d",
@@ -31511,8 +33720,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-6c53de378766c336a569",
-          "locator": "section[5]/div[1]/section[2]/ul[1]/li[1]::text",
+          "unit_id": "RU-2e31dbf4f91431484fbe",
+          "locator": "section[6]/div[1]/section[2]/ul[1]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "変動する価格だけでモデルを決めたい人",
           "text_sha256": "44cf22a247ed2478ae998ade1acb6c9e0e8cee02d76078df44dc3fba91c47155",
@@ -31529,8 +33738,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-81604bad3c5d390d163a",
-          "locator": "section[5]/div[1]/section[3]/h3[1]::text",
+          "unit_id": "RU-98207c7fe20a69eee210",
+          "locator": "section[6]/div[1]/section[3]/h3[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "購入前の前提",
           "text_sha256": "8f9cb9ad89264cda12aa84011c9672e7900b3c12009e5b18b9cfd865a3e9c63f",
@@ -31547,8 +33756,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-4b8e8b0d468c36c8b8d1",
-          "locator": "section[5]/div[1]/section[3]/ul[1]/li[1]::text",
+          "unit_id": "RU-aa9078f59fbc018c817b",
+          "locator": "section[6]/div[1]/section[3]/ul[1]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "必要な定格出力と持ち運べる重量を先に決める",
           "text_sha256": "9f1dbf62ad2e3566f1dc557e8b81e31d5574ddf50e11507441f50c94639a2000",
@@ -31565,8 +33774,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-5a300bd8dd4e52ff0833",
-          "locator": "section[5]/div[1]/section[3]/ul[1]/li[2]::text",
+          "unit_id": "RU-beae767dc3cda3339134",
+          "locator": "section[6]/div[1]/section[3]/ul[1]/li[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "スマートフォンや小型照明の短時間利用だけなら、手元のモバイルバッテリーで足りる可能性があります。必要時間を計算し、買い足す必要があるか先に確認します",
           "text_sha256": "cdc5f8e7ee2197ea0f6c0afb1210a4abcb6726f44d20c665eb74224391c47749",
@@ -31583,15 +33792,8 @@
           "decision_gate": null
         },
         {
-          "kind": "VERIFIABLE",
-          "claim_ids": [
-            "CLM-ST1704-ANKER-C300-SPECS"
-          ],
-          "evidence_bindings": [],
-          "assertion_tokens": [],
-          "exemption_code": null,
-          "unit_id": "RU-c3e89ee7caa41ecfeae6",
-          "locator": "section[6]/header[1]/h2[1]::text",
+          "unit_id": "RU-71589642482ee1b6c6b3",
+          "locator": "section[7]/header[1]/h2[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "型番・世代・拡張互換を分けて比べる",
           "text_sha256": "407f0d3aec7ede67bbe5ca95549798ce20e32acac5f628c89fcba41407cf3469",
@@ -31605,11 +33807,18 @@
           "owner_product_id": null,
           "dimension_role": null,
           "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-SPECS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
           "decision_gate": null
         },
         {
-          "unit_id": "RU-dbe78da077e81f92b36e",
-          "locator": "section[6]/header[1]/p[1]::text",
+          "unit_id": "RU-ede38047db98273f2a2c",
+          "locator": "section[7]/header[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Japanの公式情報で型番と主要仕様を確認できた4モデルを比較しています。",
           "text_sha256": "dc453047f31ef3023ddddf0682ef77284d5dad5ffd17f2251d3f1aca96e17682",
@@ -31642,15 +33851,8 @@
           "decision_gate": null
         },
         {
-          "kind": "VERIFIABLE",
-          "claim_ids": [
-            "CLM-ST1704-ANKER-C300-SPECS"
-          ],
-          "evidence_bindings": [],
-          "assertion_tokens": [],
-          "exemption_code": null,
-          "unit_id": "RU-4d4ebcc82b61bd4c6163",
-          "locator": "section[6]/div[1]/h3[1]::text",
+          "unit_id": "RU-7ad7b690473e935927fb",
+          "locator": "section[7]/div[1]/h3[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "比較対象にした条件",
           "text_sha256": "07b3d6df3e6b7bf96c955587112c555bc911dfa096e7b8969feb687e611cb2e9",
@@ -31664,9 +33866,6 @@
           "owner_product_id": null,
           "dimension_role": null,
           "dimension_axis": null,
-          "decision_gate": null
-        },
-        {
           "kind": "VERIFIABLE",
           "claim_ids": [
             "CLM-ST1704-ANKER-C300-SPECS"
@@ -31674,8 +33873,11 @@
           "evidence_bindings": [],
           "assertion_tokens": [],
           "exemption_code": null,
-          "unit_id": "RU-9567e86b9310eef26525",
-          "locator": "section[6]/div[1]/ul[1]/li[1]::text",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-cc837a5e86f4be2b2458",
+          "locator": "section[7]/div[1]/ul[1]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "容量、定格出力、重量、寸法を同じ項目で見比べられるモデルに限定",
           "text_sha256": "402a33bbf66966678f8b0635cc89bc537b74b8e7044dd52e21043b9e5ab4f31f",
@@ -31689,11 +33891,18 @@
           "owner_product_id": null,
           "dimension_role": null,
           "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-SPECS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
           "decision_gate": null
         },
         {
-          "unit_id": "RU-9dc6eefbacd59388cf55",
-          "locator": "section[6]/div[1]/ul[1]/li[2]::text",
+          "unit_id": "RU-7b81ba2fd94f0c89f362",
+          "locator": "section[7]/div[1]/ul[1]/li[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "C1000とC1000 Gen 2は別型番として比較",
           "text_sha256": "3241dc5c85120e518caec53634e0618748edcf9bb2a6b76289a77b027f4db7d1",
@@ -31742,15 +33951,8 @@
           "decision_gate": null
         },
         {
-          "kind": "VERIFIABLE",
-          "claim_ids": [
-            "CLM-ST1704-ANKER-C300-SPECS"
-          ],
-          "evidence_bindings": [],
-          "assertion_tokens": [],
-          "exemption_code": null,
-          "unit_id": "RU-10396937ee7f2409ac37",
-          "locator": "section[6]/div[1]/h3[2]::text",
+          "unit_id": "RU-3c967aef71b914e9ce86",
+          "locator": "section[7]/div[1]/h3[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "比較に含めていないもの",
           "text_sha256": "7f2b2ef3a198aee54287a500599efdc9efe7e0b7151ef47e1d18ef253b52e94a",
@@ -31764,9 +33966,6 @@
           "owner_product_id": null,
           "dimension_role": null,
           "dimension_axis": null,
-          "decision_gate": null
-        },
-        {
           "kind": "VERIFIABLE",
           "claim_ids": [
             "CLM-ST1704-ANKER-C300-SPECS"
@@ -31774,8 +33973,11 @@
           "evidence_bindings": [],
           "assertion_tokens": [],
           "exemption_code": null,
-          "unit_id": "RU-2f1a3bc7ef1cb665272f",
-          "locator": "section[6]/div[1]/ul[2]/li[1]::text",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-c8c012f00b167473ff94",
+          "locator": "section[7]/div[1]/ul[2]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "価格差、セール、在庫、報酬率による順位付けは行っていません",
           "text_sha256": "8fbb8fe6a87fd6ba86960409a5a8fdea3347aabe8847b7bfce5bea48edd8a4ca",
@@ -31789,9 +33991,31 @@
           "owner_product_id": null,
           "dimension_role": null,
           "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-SPECS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
           "decision_gate": null
         },
         {
+          "unit_id": "RU-b864500efbc541a3fb79",
+          "locator": "section[7]/div[1]/ul[2]/li[2]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "C300とC800 Plusのアクセサリ互換性や全モデルの実効容量は、公式情報で確認できないため推奨根拠に使いません",
+          "text_sha256": "dc59bbc9ea50401e4cc686888af4d8facda45a852df3c6c55da58f511921ac04",
+          "context": "GENERAL",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS",
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ],
+          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+          "dimension_role": null,
+          "dimension_axis": null,
           "kind": "EDITORIAL_INFERENCE",
           "claim_ids": [
             "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
@@ -31816,26 +34040,11 @@
             }
           ],
           "exemption_code": null,
-          "unit_id": "RU-a9b37f3457e0c8c3b864",
-          "locator": "section[6]/div[1]/ul[2]/li[2]::text",
-          "channel": "VISIBLE_TEXT",
-          "text": "C300とC800 Plusのアクセサリ互換性や全モデルの実効容量は、公式情報で確認できないため推奨根拠に使いません",
-          "text_sha256": "dc59bbc9ea50401e4cc686888af4d8facda45a852df3c6c55da58f511921ac04",
-          "context": "GENERAL",
-          "subject_product_ids": [
-            "PRD-ANKER-SOLIX-C800-PLUS",
-            "PRD-ANKER-SOLIX-C300",
-            "PRD-ANKER-SOLIX-C1000",
-            "PRD-ANKER-SOLIX-C1000-GEN2"
-          ],
-          "owner_product_id": "PRD-ANKER-SOLIX-C800-PLUS",
-          "dimension_role": null,
-          "dimension_axis": null,
           "decision_gate": null
         },
         {
-          "unit_id": "RU-a022683631a0f7df1f5a",
-          "locator": "section[6]/div[1]/ul[2]/li[3]::text",
+          "unit_id": "RU-7151177d37131688d875",
+          "locator": "section[7]/div[1]/ul[2]/li[3]::text",
           "channel": "VISIBLE_TEXT",
           "text": "停電時の正確な切り替え時間は、公式ページ内に約0.01秒と約0.02秒の記載が併存するため比較軸から外しています",
           "text_sha256": "abbda36835a76c43f41fd62b048cac971ba23a4f0fb1ca1e319ad97e73ba0e37",
@@ -31874,15 +34083,37 @@
           "decision_gate": null
         },
         {
-          "kind": "VERIFIABLE",
+          "unit_id": "RU-0e6017f257440c49bc81",
+          "locator": "section[7]/div[1]/ul[2]/li[4]::text",
+          "channel": "VISIBLE_TEXT",
+          "text": "残存容量の基準や試験条件が揃わないため、充放電サイクル数を使用年数に換算したり、世代の寿命を順位付けしたりしません。製品保証の期間と容量低下の基準は別の項目です。",
+          "text_sha256": "f18b7ea8759b77945a9c5f284922e99630776f07effa6f03ce712dd4324e57d8",
+          "context": "GENERAL",
+          "subject_product_ids": [
+            "PRD-ANKER-SOLIX-C1000",
+            "PRD-ANKER-SOLIX-C1000-GEN2",
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ],
+          "owner_product_id": null,
+          "dimension_role": null,
+          "dimension_axis": null,
+          "kind": "EDITORIAL_INFERENCE",
           "claim_ids": [
-            "CLM-ST1704-ANKER-C300-SPECS"
+            "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS",
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS",
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS",
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
           ],
           "evidence_bindings": [],
           "assertion_tokens": [],
           "exemption_code": null,
-          "unit_id": "RU-911b31b70a46fd59c374",
-          "locator": "section[6]/div[1]/p[1]::text",
+          "decision_gate": null
+        },
+        {
+          "unit_id": "RU-50ceaae67b0471006b01",
+          "locator": "section[7]/div[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "編集内容の最終確認日:2026年9月1日",
           "text_sha256": "89f2a23f5c78943c66ab8e14eb78dfd441ee1dfd2e43cc98794a2ae87a64407d",
@@ -31896,11 +34127,18 @@
           "owner_product_id": null,
           "dimension_role": null,
           "dimension_axis": null,
+          "kind": "VERIFIABLE",
+          "claim_ids": [
+            "CLM-ST1704-ANKER-C300-SPECS"
+          ],
+          "evidence_bindings": [],
+          "assertion_tokens": [],
+          "exemption_code": null,
           "decision_gate": null
         },
         {
-          "unit_id": "RU-71589642482ee1b6c6b3",
-          "locator": "section[7]/header[1]/h2[1]::text",
+          "unit_id": "RU-1539b510faf961b9d2e2",
+          "locator": "section[8]/header[1]/h2[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "比較表に加えなかったAnkerの現行候補",
           "text_sha256": "74faec0f409cb25e1ef87ef9a07ec0fbc20f1ca31afda785eb78bd343b4a4955",
@@ -31922,8 +34160,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-ede38047db98273f2a2c",
-          "locator": "section[7]/header[1]/p[1]::text",
+          "unit_id": "RU-1a8fbb58a64323768d68",
+          "locator": "section[8]/header[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "市場全体の順位ではありません。比較表の外に置いた候補も、販売状態と理由を公式情報へたどれる形で示します。",
           "text_sha256": "00aadb23150b208f03fbaec36d2b94fb24690a7b5b4bc74345ae40d68a137dc7",
@@ -31949,8 +34187,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-a7a1bd3dd3a254e554d0",
-          "locator": "section[7]/div[1]/section[1]/h3[1]::text",
+          "unit_id": "RU-3a5e61876c353e411455",
+          "locator": "section[8]/div[1]/section[1]/h3[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solix C1000 Plus Portable Power Station",
           "text_sha256": "014e6ff9182a63d49c89605acd2473f7a7c689d5b776f1b7b2b1d0ee1ef122de",
@@ -31981,8 +34219,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-09ec0139c2af4a347de0",
-          "locator": "section[7]/div[1]/section[1]/p[1]/a[1]::text",
+          "unit_id": "RU-b29758493a5f3c709a31",
+          "locator": "section[8]/div[1]/section[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker公式でSolix C1000 Plus Portable Power Station(A1765)の型番・販売表示を確認する",
           "text_sha256": "74cf8460439c5d3d61b1bbae00835a4fdd5b130564e5287f842d66101aabb8a5",
@@ -31999,8 +34237,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-6484a5f9cec797731f3a",
-          "locator": "section[7]/div[1]/section[1]/p[1]::text",
+          "unit_id": "RU-1f7dab3df47583877045",
+          "locator": "section[8]/div[1]/section[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "。メーカー公式で現行表示を確認。確認日:2026年8月31日。型番・対象範囲:A1765。",
           "text_sha256": "7b623f4c6a7d7bfc0df77502da4dfb8fefb6df1b9890d683cc5dcc9422a0572e",
@@ -32044,8 +34282,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-6943e2f3fcfaf9b246f7",
-          "locator": "section[7]/div[1]/section[1]/p[2]::text",
+          "unit_id": "RU-cef05f9e6f17ea2fdd88",
+          "locator": "section[8]/div[1]/section[1]/p[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "比較表に含めなかった理由:1024Wh・約11.3kg・USB-C 3口はC1000 Gen 2と共通し、定格1700W・AC出力4口・SurgePad 2000Wという違いがあります。本記事ではC1000第1世代との拡張性・端子数の世代差を示すためGen 2を比較表に残しました。1700Wの定格出力を優先する場合は、C1000 Plusも同列に確認してください。掲載外であることは製品の優劣を意味しません。",
           "text_sha256": "7ee5ff27934ecc988d8b2d9ede58081da14e8b720821783c72d1c99e9f4264a1",
@@ -32178,8 +34416,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-f4b169b7dc2cdc3784b5",
-          "locator": "section[7]/div[1]/section[2]/h3[1]::text",
+          "unit_id": "RU-4f0ce80b291e710b792f",
+          "locator": "section[8]/div[1]/section[2]/h3[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solix C800 Portable Power Station",
           "text_sha256": "9c2035c4667d5ee83b9d4a6679d471581d00a06afc18cd34bc9841fb3b66f8f0",
@@ -32209,8 +34447,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-b85b47e9fb0f3084cdf0",
-          "locator": "section[7]/div[1]/section[2]/p[1]/a[1]::text",
+          "unit_id": "RU-0b76db47af0036813dc3",
+          "locator": "section[8]/div[1]/section[2]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "関連する比較記事を確認する",
           "text_sha256": "e0329ce5ec5731d39f9890b1551540491c6eb445b4784b6fe97bd1d49834e748",
@@ -32231,8 +34469,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-19a20876b69bea1419fe",
-          "locator": "section[7]/div[1]/section[2]/p[1]::text",
+          "unit_id": "RU-d1fe90a4ec38114cd254",
+          "locator": "section[8]/div[1]/section[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "。A1753はブランドをまたぐ用途別候補として、停電対策用ポータブル電源の選び方で確認できます。この記事の4型番表には加えていません。",
           "text_sha256": "ece6b3abfba0b6f2d8b47a2f64da10014d52c10a6959df33af134c8cbd780989",
@@ -32320,8 +34558,8 @@
           }
         },
         {
-          "unit_id": "RU-1539b510faf961b9d2e2",
-          "locator": "section[8]/header[1]/h2[1]::text",
+          "unit_id": "RU-c6eb0a64ba2309ca0659",
+          "locator": "section[9]/header[1]/h2[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "用途からAnker Solixを絞る",
           "text_sha256": "5839fdc085715defa0662e9603e01fa9e65e847e80198e7dc4bf9190a4353f86",
@@ -32341,8 +34579,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-e33ff4f238c1050d87a6",
-          "locator": "section[8]/ul[1]/li[1]::text",
+          "unit_id": "RU-920efc7c38db1c078dff",
+          "locator": "section[9]/ul[1]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "容量: 必要時間と機器数に対するWhの差を見る軸です。",
           "text_sha256": "4b0259b84fe98a5eba0141c6b0c3da060d633c4195ccc5b797f2a831b16798ac",
@@ -32364,8 +34602,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-220cdaeb390b47d027ee",
-          "locator": "section[8]/ul[1]/li[2]::text",
+          "unit_id": "RU-76d3e2bd1db2bea2a370",
+          "locator": "section[9]/ul[1]/li[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "定格出力: 接続したい機器の消費電力と照合する軸です。",
           "text_sha256": "9ac9ab929bf7627c5e5f946353d8b0930fc99fab5d14881d661ba8720b445a40",
@@ -32387,8 +34625,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-419d4d2bb2d6bc8c2723",
-          "locator": "section[8]/ul[1]/li[3]::text",
+          "unit_id": "RU-554210bd5a659bfb1215",
+          "locator": "section[9]/ul[1]/li[3]::text",
           "channel": "VISIBLE_TEXT",
           "text": "重量: 保管場所から動かせるかを決める軸です。",
           "text_sha256": "8b30235258f9537f39ee610e419a3f46d3ba4317f5c9b5e5cb68c58af8233cc2",
@@ -32410,11 +34648,11 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-0f2b3bd0541831f3db8e",
-          "locator": "section[8]/ul[1]/li[4]::text",
+          "unit_id": "RU-b57ac9e1457bdb230e2c",
+          "locator": "section[9]/ul[1]/li[4]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "世代固有機能・拡張性: C1000は別売り拡張バッテリー、AC出力6口、SurgePad対応、C1000 Gen 2は4,000回以上の充放電サイクル、USB-C 3口、拡張バッテリー非対応という用途差があります。名称が似ていても対応品を共用できるとは限らないため、型番の公式対応表と照合します。",
-          "text_sha256": "ea719b01b91ffa179747e17a48ad9941d04f73201988568c02c2e3361f610b99",
+          "text": "世代固有機能・拡張性: C1000は別売り拡張バッテリー、AC出力6口、SurgePad対応、C1000 Gen 2はUSB-C 3口、拡張バッテリー非対応という用途差があります。名称が似ていても対応品を共用できるとは限らないため、型番の公式対応表と照合します。",
+          "text_sha256": "84cb6310287087c240ef260dadf616e5e66e9f10e55ad580110798b6c2462a36",
           "context": "GENERAL",
           "subject_product_ids": [
             "PRD-ANKER-SOLIX-C1000-GEN2",
@@ -32473,15 +34711,6 @@
               "evidence_binding_ids": []
             },
             {
-              "assertion_text": "4,000回以上",
-              "occurrence_index": 0,
-              "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-                "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
-              ],
-              "evidence_binding_ids": []
-            },
-            {
               "assertion_text": "USB-C",
               "occurrence_index": 0,
               "claim_ids": [
@@ -32510,8 +34739,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-246dde346b76132f6b5e",
-          "locator": "section[8]/ul[1]/li[5]::text",
+          "unit_id": "RU-b375abbb39fcda108287",
+          "locator": "section[9]/ul[1]/li[5]::text",
           "channel": "VISIBLE_TEXT",
           "text": "安全・リコール・保証窓口: 容量や出力だけで決めず、購入する型番の安全上の注意、使用温度、リコール、国内保証の条件、修理・回収窓口を購入前に確認します。",
           "text_sha256": "a2de764afe49af062f7645707d2df7e1c427dcaba8aee735e70c1a37415d5b65",
@@ -32534,8 +34763,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c6eb0a64ba2309ca0659",
-          "locator": "section[9]/header[1]/h2[1]::text",
+          "unit_id": "RU-47c44712c93c5aab4428",
+          "locator": "section[10]/header[1]/h2[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "容量帯と世代差で選ぶ",
           "text_sha256": "de70ce39518a7773b2fa8787a59e25b44429d090cfb76b07d31c752c715f7d90",
@@ -32557,8 +34786,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-65185ec46c2cc5a90ffe",
-          "locator": "section[9]/header[1]/p[1]::text",
+          "unit_id": "RU-2fc03c6f09a4d1797098",
+          "locator": "section[10]/header[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "まず必要な容量・出力と運べる重さを決めます。C1000の2世代で迷うなら、後から容量を増やす予定があるかを先に確認してください。",
           "text_sha256": "bdd90045dbe4be773f9a08b699a9216f0d850a27ca5f5f37ef000632ea8b91b4",
@@ -32590,8 +34819,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-741b1d2f1e5182ef5947",
-          "locator": "section[9]/ol[1]/li[1]::text",
+          "unit_id": "RU-88f4aa370f60cb91e96e",
+          "locator": "section[10]/ol[1]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "小型機器中心で、本体約4.1kgを運べる Anker Solix C300 Portable Power Station",
           "text_sha256": "6c218e2f973e8c6a02de0699248a79b28b36c10ecf049d4020ad75d8c3537695",
@@ -32632,8 +34861,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-46d991b829a57e24fc71",
-          "locator": "section[9]/ol[1]/li[1]/p[1]::text",
+          "unit_id": "RU-e23e68e02ca29395a614",
+          "locator": "section[10]/ol[1]/li[1]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "4モデルで最軽量。",
           "text_sha256": "8ecb6008b3397f142014283cf6da67cd54bbe38a37b2eb53f7db03385381eec0",
@@ -32674,8 +34903,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-ca9def4a1dfa630700b5",
-          "locator": "section[9]/ol[1]/li[1]/p[2]/a[1]::text",
+          "unit_id": "RU-a33459ecf2685f45a657",
+          "locator": "section[10]/ol[1]/li[1]/p[2]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式で販売状況を確認する",
           "text_sha256": "7ec3bead6a68d608d2cf944c5fb442e4cd88290c6e5cc883a896429b11050e1b",
@@ -32694,8 +34923,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-f6547e5449403eefff29",
-          "locator": "section[9]/ol[1]/li[2]::text",
+          "unit_id": "RU-14036208d449e25e4494",
+          "locator": "section[10]/ol[1]/li[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "768Whと1200Wの中容量帯 Anker Solix C800 Plus Portable Power Station",
           "text_sha256": "a84d598c82f0d644c5680c892c4610fc3c22a74b0178e1f1d55ed667f2817a11",
@@ -32745,8 +34974,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-50f51a204dde0f2b0cd4",
-          "locator": "section[9]/ol[1]/li[2]/p[1]::text",
+          "unit_id": "RU-40f74f8ac64c26f24dee",
+          "locator": "section[10]/ol[1]/li[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "容量768Wh・定格1200Wで、C300より大きくC1000系より小さい容量帯。",
           "text_sha256": "b9915f66ba646cb3352d35368e6cc25796d839cb797ac656cac23ab06a4bec6a",
@@ -32829,8 +35058,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-2bee7c4f5e34487212b0",
-          "locator": "section[9]/ol[1]/li[2]/p[2]/a[1]::text",
+          "unit_id": "RU-76fbcfb926111db7f1d4",
+          "locator": "section[10]/ol[1]/li[2]/p[2]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式で販売状況を確認する",
           "text_sha256": "7ec3bead6a68d608d2cf944c5fb442e4cd88290c6e5cc883a896429b11050e1b",
@@ -32849,8 +35078,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-737fe797fbf5dff8272d",
-          "locator": "section[9]/ol[1]/li[3]::text",
+          "unit_id": "RU-c13e0a9d172df1226373",
+          "locator": "section[10]/ol[1]/li[3]::text",
           "channel": "VISIBLE_TEXT",
           "text": "容量拡張・AC出力6口・SurgePad対応を優先 Anker Solix C1000 Portable Power Station",
           "text_sha256": "6c513bbceaf2e2b365563ac615f1abed9d0ba1dc25dc3f237d6e3d69c7673a33",
@@ -32894,8 +35123,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-4feaf36379f3e6304e17",
-          "locator": "section[9]/ol[1]/li[3]/p[1]::text",
+          "unit_id": "RU-0b49f086daa5c6b6587e",
+          "locator": "section[10]/ol[1]/li[3]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "1056Wh、別売り拡張バッテリー対応、AC出力6口、SurgePad 2000W対応。",
           "text_sha256": "9dfbba01ad3f393aaa8b35a4d35bf204a1f4a92c7449edd13c7ced7a46625ad6",
@@ -32944,8 +35173,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-064ec5a3f6c62d72d8d0",
-          "locator": "section[9]/ol[1]/li[3]/p[2]/a[1]::text",
+          "unit_id": "RU-9e838f8377e73944d04e",
+          "locator": "section[10]/ol[1]/li[3]/p[2]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式で販売状況を確認する",
           "text_sha256": "7ec3bead6a68d608d2cf944c5fb442e4cd88290c6e5cc883a896429b11050e1b",
@@ -32964,11 +35193,11 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-3af37f1f4c81d87a7565",
-          "locator": "section[9]/ol[1]/li[4]::text",
+          "unit_id": "RU-7cdfb0c0402c0c8ac90d",
+          "locator": "section[10]/ol[1]/li[4]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "軽さ・4,000回以上の公表サイクル数・USB-C 3口を優先 Anker Solix C1000 Gen 2 Portable Power Station",
-          "text_sha256": "592e2b1abe58316df39a810f8a0c0725284b8962fba4172775e17ddf5de2d37c",
+          "text": "軽さ・USB-C 3口を優先 Anker Solix C1000 Gen 2 Portable Power Station",
+          "text_sha256": "f66f3ac9cf16bc7b1b0cc1e78747093047b54bf9e1093560069142dbbec27d76",
           "context": "DECISION",
           "subject_product_ids": [
             "PRD-ANKER-SOLIX-C1000-GEN2"
@@ -32985,23 +35214,6 @@
           ],
           "evidence_bindings": [],
           "assertion_tokens": [
-            {
-              "assertion_text": "4,000回以上",
-              "occurrence_index": 0,
-              "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-                "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
-              ],
-              "evidence_binding_ids": []
-            },
-            {
-              "assertion_text": "USB-C",
-              "occurrence_index": 0,
-              "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
-              ],
-              "evidence_binding_ids": []
-            },
             {
               "assertion_text": "3口",
               "occurrence_index": 0,
@@ -33026,11 +35238,11 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-844a013eca73c5456219",
-          "locator": "section[9]/ol[1]/li[4]/p[1]::text",
+          "unit_id": "RU-0c16e0d63acae98a0436",
+          "locator": "section[10]/ol[1]/li[4]/p[1]::text",
           "channel": "VISIBLE_TEXT",
-          "text": "C1000より約1.6kg軽く、4,000回以上の充放電サイクルを公表。拡張バッテリーは非対応。",
-          "text_sha256": "f09f6dffb3afc6e6190e4c1ab4cdaad048c4f384b521c578c91276b7a556d205",
+          "text": "C1000より約1.6kg軽く、USB-C 3口を備える。拡張バッテリーは非対応。",
+          "text_sha256": "444ebd8adf8b64fc819875e4851af8e28037f891cd78b5fea5e08f8b3a0db322",
           "context": "DECISION",
           "subject_product_ids": [
             "PRD-ANKER-SOLIX-C1000-GEN2",
@@ -33068,11 +35280,18 @@
               "evidence_binding_ids": []
             },
             {
-              "assertion_text": "4,000回以上",
+              "assertion_text": "USB-C",
               "occurrence_index": 0,
               "claim_ids": [
-                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF",
-                "CLM-ST1704-ANKER-CONDITIONAL-CHOICES"
+                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
+              ],
+              "evidence_binding_ids": []
+            },
+            {
+              "assertion_text": "3口",
+              "occurrence_index": 0,
+              "claim_ids": [
+                "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
               ],
               "evidence_binding_ids": []
             },
@@ -33089,8 +35308,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-47aa3bee1620061b6bed",
-          "locator": "section[9]/ol[1]/li[4]/p[2]/a[1]::text",
+          "unit_id": "RU-22eb95796cd70ea4da87",
+          "locator": "section[10]/ol[1]/li[4]/p[2]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "メーカー公式で販売状況を確認する",
           "text_sha256": "7ec3bead6a68d608d2cf944c5fb442e4cd88290c6e5cc883a896429b11050e1b",
@@ -33315,8 +35534,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-47c44712c93c5aab4428",
-          "locator": "section[10]/header[1]/h2[1]::text",
+          "unit_id": "RU-6f818c5b13d2a198c9af",
+          "locator": "section[11]/header[1]/h2[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "確認に使った一次情報",
           "text_sha256": "2649d42159eee85146f622ba829b639162cd1e4368b980d1e84e8ebfa3bcad98",
@@ -33338,8 +35557,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-f7a37a0f8e38108dcc6a",
-          "locator": "section[10]/div[1]/ol[1]/li[1]::text",
+          "unit_id": "RU-f3c220b605e5f944bae4",
+          "locator": "section[11]/div[1]/ol[1]/li[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "1",
           "text_sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
@@ -33358,8 +35577,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-b246b9c1779eca01ab59",
-          "locator": "section[10]/div[1]/ol[1]/li[1]/p[1]/a[1]::text",
+          "unit_id": "RU-0b417e9481279cdbe7ee",
+          "locator": "section[11]/div[1]/ol[1]/li[1]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solix C300 Portable Power Station",
           "text_sha256": "6011ec377ea9a677414f071ee20a8b64605bfed494315f8abce515b88ac3cb03",
@@ -33391,8 +35610,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-e033c2aeb905df6e997f",
-          "locator": "section[10]/div[1]/ol[1]/li[2]::text",
+          "unit_id": "RU-08f5bc055ffd05df342b",
+          "locator": "section[11]/div[1]/ol[1]/li[2]::text",
           "channel": "VISIBLE_TEXT",
           "text": "2",
           "text_sha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
@@ -33411,8 +35630,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-9c84ea993cb82734bdf2",
-          "locator": "section[10]/div[1]/ol[1]/li[2]/p[1]/a[1]::text",
+          "unit_id": "RU-50e04e0c5c080a905305",
+          "locator": "section[11]/div[1]/ol[1]/li[2]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solix C800 Plus Portable Power Station",
           "text_sha256": "fb1b75bd98240157cb61558882eaa649c10f79763641395159f84f454ca6b1c6",
@@ -33444,8 +35663,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-3f82e6b050cf398ad498",
-          "locator": "section[10]/div[1]/ol[1]/li[3]::text",
+          "unit_id": "RU-80bc8e7b6bde5bf24487",
+          "locator": "section[11]/div[1]/ol[1]/li[3]::text",
           "channel": "VISIBLE_TEXT",
           "text": "3",
           "text_sha256": "4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce",
@@ -33464,8 +35683,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-be06afd727d093477609",
-          "locator": "section[10]/div[1]/ol[1]/li[3]/p[1]/a[1]::text",
+          "unit_id": "RU-258a8094a6a3e745cf82",
+          "locator": "section[11]/div[1]/ol[1]/li[3]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solix C1000 Portable Power Station",
           "text_sha256": "3c9bf1dec69096edd308be9c05b05012242bd94cc95d6b171636a06ee5e39eee",
@@ -33501,8 +35720,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-9fe7822984972fb16a3f",
-          "locator": "section[10]/div[1]/ol[1]/li[4]::text",
+          "unit_id": "RU-317eaedd9fe02b63397e",
+          "locator": "section[11]/div[1]/ol[1]/li[4]::text",
           "channel": "VISIBLE_TEXT",
           "text": "4",
           "text_sha256": "4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a",
@@ -33521,8 +35740,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-d9be62966c16f366ee93",
-          "locator": "section[10]/div[1]/ol[1]/li[4]/p[1]/a[1]::text",
+          "unit_id": "RU-f25004a1cd96e8bf0cba",
+          "locator": "section[11]/div[1]/ol[1]/li[4]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Anker Solix C1000 Gen 2 Portable Power Station",
           "text_sha256": "9f7ac1cae393b12e8af484982c2279abbcd8e0514a9331f70206efbd71181d88",
@@ -33558,8 +35777,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-5370f0be2ecd95ae5279",
-          "locator": "section[10]/div[1]/ol[1]/li[5]::text",
+          "unit_id": "RU-646ec5c4925e7496d7bb",
+          "locator": "section[11]/div[1]/ol[1]/li[5]::text",
           "channel": "VISIBLE_TEXT",
           "text": "5",
           "text_sha256": "ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d",
@@ -33581,8 +35800,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-7ec4fd54214780d33629",
-          "locator": "section[10]/div[1]/ol[1]/li[5]/p[1]/a[1]::text",
+          "unit_id": "RU-7e5b7ebdeba3a1651598",
+          "locator": "section[11]/div[1]/ol[1]/li[5]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "経済産業省 ポータブル電源の安全性要求事項(中間とりまとめ)",
           "text_sha256": "005b52f5cd291ef2ca5d48091c302421e65b6313e33781d4a4e9bc4acb226496",
@@ -33609,8 +35828,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-34f9c3ef7ad00f05d998",
-          "locator": "section[10]/div[1]/ol[1]/li[6]::text",
+          "unit_id": "RU-f1710aefd9f8ad8b6b95",
+          "locator": "section[11]/div[1]/ol[1]/li[6]::text",
           "channel": "VISIBLE_TEXT",
           "text": "6",
           "text_sha256": "e7f6c011776e8db7cd330b54174fd76f7d0216b612387a5ffcfb81e6f0919683",
@@ -33632,8 +35851,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-0eb0c5d4566ca2280551",
-          "locator": "section[10]/div[1]/ol[1]/li[6]/p[1]/a[1]::text",
+          "unit_id": "RU-4d8fade86ddf07648558",
+          "locator": "section[11]/div[1]/ol[1]/li[6]/p[1]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "経済産業省 家庭用電気製品のリコール情報",
           "text_sha256": "34afa2bb3b4fae0dc17b2c66745984a82c06a04da07d44281312358c5fc49386",
@@ -33660,8 +35879,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-fbc3eb19127ef50bb9d3",
-          "locator": "section[10]/div[2]/p[1]::text",
+          "unit_id": "RU-87983b43881fa6f702f0",
+          "locator": "section[11]/div[2]/p[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "商品情報の取得には楽天ウェブサービスを利用しています。",
           "text_sha256": "35f64d8e229c4fd8cd4a38d857be6e95a2dab496980cf99e5815f4210080a480",
@@ -33688,8 +35907,8 @@
           "decision_gate": null
         },
         {
-          "unit_id": "RU-c5e49c3493be36ac6e1f",
-          "locator": "section[10]/div[2]/a[1]::text",
+          "unit_id": "RU-930a90f068ce7b271234",
+          "locator": "section[11]/div[2]/a[1]::text",
           "channel": "VISIBLE_TEXT",
           "text": "Supported by Rakuten Developers",
           "text_sha256": "a8fe0852614a1d1856e0c53b1e3eb01d4d7421a5b6719bb5450939652ab15fa7",

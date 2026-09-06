@@ -2732,12 +2732,12 @@
                 ]
               },
               {
-                "condition": "軽さ、4,000回以上の公表サイクル数、USB-C 3口を優先",
+                "condition": "軽さとUSB-C 3口を優先",
                 "recommendation_ref": "REC-ANKER-C1000-GEN2",
                 "summary": [
                   {
                     "type": "text",
-                    "text": "約11.3kg・定格1550Wで、4,000回以上の充放電サイクルとUSB-C 3口を公表しています。拡張バッテリーには対応しません。"
+                    "text": "約11.3kg・定格1550Wで、USB-C 3口を備えます。拡張バッテリーには対応しません。"
                   }
                 ],
                 "claim_ids": [
@@ -2826,6 +2826,12 @@
                   "type": "text",
                   "text": "停電時の正確な切り替え時間は、公式ページ内に約0.01秒と約0.02秒の記載が併存するため比較軸から外しています"
                 }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "残存容量の基準や試験条件が揃わないため、充放電サイクル数を使用年数に換算したり、世代の寿命を順位付けしたりしません。製品保証の期間と容量低下の基準は別の項目です。"
+                }
               ]
             ],
             "data_checked_at": "2026-09-01T00:00:00Z"
@@ -2901,7 +2907,7 @@
                 "explanation": [
                   {
                     "type": "text",
-                    "text": "C1000は別売り拡張バッテリー、AC出力6口、SurgePad対応、C1000 Gen 2は4,000回以上の充放電サイクル、USB-C 3口、拡張バッテリー非対応という用途差があります。名称が似ていても対応品を共用できるとは限らないため、型番の公式対応表と照合します。"
+                    "text": "C1000は別売り拡張バッテリー、AC出力6口、SurgePad対応、C1000 Gen 2はUSB-C 3口、拡張バッテリー非対応という用途差があります。名称が似ていても対応品を共用できるとは限らないため、型番の公式対応表と照合します。"
                   }
                 ],
                 "claim_ids": [
@@ -2940,6 +2946,32 @@
               "AXIS-ANKER-WEIGHT",
               "AXIS-ANKER-SIZE",
               "AXIS-ANKER-COMPATIBILITY"
+            ],
+            "product_selection_refs": [
+              "PSEL-ANKER-C300",
+              "PSEL-ANKER-C800",
+              "PSEL-ANKER-C1000",
+              "PSEL-ANKER-C1000-GEN2"
+            ],
+            "display_mode": "desktop_table_mobile_cards",
+            "show_unknown_values": true
+          },
+          {
+            "block_id": "BLK-ANKER-LIFECYCLE-001",
+            "type": "comparison_table",
+            "claim_ids": [
+              "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS",
+              "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS",
+              "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS",
+              "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+            ],
+            "comparison_table_ref": "TABLE-ANKER-LIFECYCLE-V1",
+            "comparison_axis_refs": [
+              "AXIS-ANKER-LIFECYCLE-CYCLES",
+              "AXIS-ANKER-LIFECYCLE-CAPACITY",
+              "AXIS-ANKER-LIFECYCLE-TEST",
+              "AXIS-ANKER-LIFECYCLE-WARRANTY",
+              "AXIS-ANKER-LIFECYCLE-SOURCE"
             ],
             "product_selection_refs": [
               "PSEL-ANKER-C300",
@@ -3054,7 +3086,7 @@
             "benefit": [
               {
                 "type": "text",
-                "text": "C1000（第1世代）より軽く定格出力が50W高く、4,000回以上の充放電サイクルとUSB-C 3口を公表しています。"
+                "text": "C1000（第1世代）より軽く定格出力が50W高く、USB-C 3口を備えます。"
               }
             ],
             "cost_or_limitation": [
@@ -3066,7 +3098,7 @@
             "applies_when": [
               {
                 "type": "text",
-                "text": "C1000系で軽さ、公表サイクル数、USB-Cポート数を優先する場合"
+                "text": "C1000系で軽さとUSB-Cポート数を優先する場合"
               }
             ]
           },
@@ -3212,6 +3244,31 @@
             "comparison_axis_ref": "AXIS-ANKER-SAFETY-SUPPORT",
             "label": "安全・リコール・保証窓口",
             "description": "メーカーと経済産業省の一次情報を型番単位で確認する"
+          },
+          {
+            "comparison_axis_ref": "AXIS-ANKER-LIFECYCLE-CYCLES",
+            "label": "公表サイクル数",
+            "description": "電池の公表回数。使用年数への換算や寿命の順位付けには使わない"
+          },
+          {
+            "comparison_axis_ref": "AXIS-ANKER-LIFECYCLE-CAPACITY",
+            "label": "残存容量の基準",
+            "description": "公表回数がどの容量低下の基準に結び付くか。未確認は他モデルから補わない"
+          },
+          {
+            "comparison_axis_ref": "AXIS-ANKER-LIFECYCLE-TEST",
+            "label": "サイクル試験の条件",
+            "description": "試験温度、充放電レート、放電深度など。充電時間の試験条件や動作温度とは区別する"
+          },
+          {
+            "comparison_axis_ref": "AXIS-ANKER-LIFECYCLE-WARRANTY",
+            "label": "製品保証の案内と条件",
+            "description": "型番ごとの公式商品ページに記載された期間と会員条件。購入先での適用可否は別途確認する"
+          },
+          {
+            "comparison_axis_ref": "AXIS-ANKER-LIFECYCLE-SOURCE",
+            "label": "公式出典・寿命条件の確認日",
+            "description": "各行は同じ型番の公式製品ページ1件を参照。既存仕様の確認日は更新しない"
           }
         ],
         "comparison_tables": [
@@ -3394,7 +3451,7 @@
                   },
                   {
                     "axis_ref": "AXIS-ANKER-COMPATIBILITY",
-                    "value": "拡張バッテリー非対応・AC出力5口・USB-C 3口・電池4,000回サイクル",
+                    "value": "拡張バッテリー非対応・AC出力5口・USB-C 3口",
                     "claim_ids": [
                       "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
                     ],
@@ -3403,6 +3460,205 @@
                 ]
               }
             ]
+          },
+          {
+            "comparison_table_ref": "TABLE-ANKER-LIFECYCLE-V1",
+            "caption": "充放電サイクルの条件と製品保証",
+            "axis_refs": [
+              "AXIS-ANKER-LIFECYCLE-CYCLES",
+              "AXIS-ANKER-LIFECYCLE-CAPACITY",
+              "AXIS-ANKER-LIFECYCLE-TEST",
+              "AXIS-ANKER-LIFECYCLE-WARRANTY",
+              "AXIS-ANKER-LIFECYCLE-SOURCE"
+            ],
+            "rows": [
+              {
+                "product_selection_ref": "PSEL-ANKER-C300",
+                "cells": [
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-CYCLES",
+                    "value": "3,000回",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-CAPACITY",
+                    "value": "未確認（この型番の公表回数に対応する基準）",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "UNKNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-TEST",
+                    "value": "未確認（試験温度・充放電レート・放電深度）。充電時間の測定条件や動作温度は流用しない",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "UNKNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-WARRANTY",
+                    "value": "製品保証：通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-SOURCE",
+                    "value": "公式製品ページ（A17225Z1）。寿命条件確認：2026-09-06",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  }
+                ]
+              },
+              {
+                "product_selection_ref": "PSEL-ANKER-C800",
+                "cells": [
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-CYCLES",
+                    "value": "3,000回",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-CAPACITY",
+                    "value": "未確認（この型番の公表回数に対応する基準）",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "UNKNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-TEST",
+                    "value": "未確認（試験温度・充放電レート・放電深度）。充電時間の測定条件や動作温度は流用しない",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "UNKNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-WARRANTY",
+                    "value": "製品保証：通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-SOURCE",
+                    "value": "公式製品ページ（A1754）。寿命条件確認：2026-09-06",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  }
+                ]
+              },
+              {
+                "product_selection_ref": "PSEL-ANKER-C1000",
+                "cells": [
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-CYCLES",
+                    "value": "3,000回以上",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-CAPACITY",
+                    "value": "初期容量の80%まで低下するまで",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-TEST",
+                    "value": "未確認（試験温度・充放電レート・放電深度）。充電時間の測定条件や動作温度は流用しない",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "UNKNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-WARRANTY",
+                    "value": "製品保証：通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-SOURCE",
+                    "value": "公式製品ページ（A17615Z1）。寿命条件確認：2026-09-06",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  }
+                ]
+              },
+              {
+                "product_selection_ref": "PSEL-ANKER-C1000-GEN2",
+                "cells": [
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-CYCLES",
+                    "value": "4,000回以上の充放電サイクル",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-CAPACITY",
+                    "value": "初期容量の80%まで低下するまで",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-TEST",
+                    "value": "未確認（試験温度・充放電レート・放電深度）。充電時間の測定条件や動作温度は流用しない",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "UNKNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-WARRANTY",
+                    "value": "製品保証：通常18か月。Anker Japan公式オンラインストア会員は5年へ延長。購入先ごとの適用可否・除外条件は未確認",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  },
+                  {
+                    "axis_ref": "AXIS-ANKER-LIFECYCLE-SOURCE",
+                    "value": "公式製品ページ（A17635Z1）。寿命条件確認：2026-09-06",
+                    "claim_ids": [
+                      "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS"
+                    ],
+                    "state": "KNOWN"
+                  }
+                ]
+              }
+            ],
+            "presentation": {
+              "role": "supporting_evidence",
+              "checked_at": "2026-09-06",
+              "source_axis_ref": "AXIS-ANKER-LIFECYCLE-SOURCE",
+              "note": "残存容量の基準や試験条件が揃っていないため、充放電サイクル数を使用年数に換算したり、世代の寿命を順位付けしたりしません。製品保証の期間とも別の条件です。"
+            }
           }
         ],
         "difference_matrices": [
@@ -3456,8 +3712,8 @@
           {
             "recommendation_ref": "REC-ANKER-C1000-GEN2",
             "product_selection_ref": "PSEL-ANKER-C1000-GEN2",
-            "condition": "軽さ・4,000回以上の公表サイクル数・USB-C 3口を優先",
-            "rationale": "C1000より約1.6kg軽く、4,000回以上の充放電サイクルを公表。拡張バッテリーは非対応",
+            "condition": "軽さ・USB-C 3口を優先",
+            "rationale": "C1000より約1.6kg軽く、USB-C 3口を備える。拡張バッテリーは非対応",
             "claim_ids": [
               "CLM-ST1704-ANKER-C1000-SPECS",
               "CLM-ST1704-ANKER-C1000-GEN2-SPECS",
@@ -3652,7 +3908,7 @@
               ],
               "not_fits": [
                 "C1000系で軽さを優先する人",
-                "4,000回以上の充放電サイクルやUSB-C 3口を優先する人"
+                "USB-C 3口のC1000 Gen 2を検討したい人"
               ],
               "facts_checked_on": "2026-09-01",
               "official_source_ref": "SRC-ANKER-SOLIX-C1000",
@@ -3677,7 +3933,7 @@
             ],
             "affiliate_ref": "AFF-ANKER-SOLIX-C1000-GEN2",
             "media_asset_ref": "MEDIA-ANKER-SOLIX-C1000-GEN2",
-            "condition_label": "4,000回以上の公表サイクル数・USB-C 3口",
+            "condition_label": "軽さ・USB-C 3口",
             "confirmed_facts": [
               {
                 "label": "容量",
@@ -3708,14 +3964,14 @@
                 ]
               }
             ],
-            "editorial_fit": "C1000系で軽さ、4,000回以上の公表サイクル数、USB-Cポート数を優先する場合",
+            "editorial_fit": "C1000系で軽さとUSB-Cポート数を優先する場合",
             "caution": "公表容量はC1000（第1世代）より32Wh小さく、拡張バッテリーには対応しません。停電時の切り替え時間は公式ページ内で記載が一致しないため、正確な値を選定条件にせず、購入時に最新の取扱説明書と接続機器の条件を確認してください。",
             "presentation_v2": {
-              "benefit": "対象はAnker Solix C1000 Gen 2 Portable Power Station（代表型番：A17635Z1）です。C1000系で本体重量を抑え、4,000回以上の充放電サイクルとUSB-C 3口を優先したい場合に。",
+              "benefit": "対象はAnker Solix C1000 Gen 2 Portable Power Station（代表型番：A17635Z1）です。C1000系で本体重量を抑え、USB-C 3口を優先したい場合に。",
               "recommendation_reason": "容量を後から増やす予定がなく、持ち運ぶ重さとUSB-Cの口数を優先する場合に向きます。第1世代から選び直すなら、容量拡張を手放してよいかを先に確認してください。",
               "fits": [
-                "USB-C 3口と4,000回以上の公表サイクル数を選定条件にする人",
-                "頻繁に使う予定があり、公表サイクル数を重視する人。ただし、公表回数は使用年数を保証する値ではありません"
+                "USB-C 3口のC1000 Gen 2を検討したい人",
+                "容量拡張を必要とせず、C1000系で持ち運ぶ重さを抑えたい人"
               ],
               "not_fits": [
                 "後から拡張バッテリーで容量を増やしたい人",

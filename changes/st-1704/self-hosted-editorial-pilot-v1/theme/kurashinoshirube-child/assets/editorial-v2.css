@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: f2606fff14f1114ef8bd172e2ea890d187f3ba6a79ae2517b582aabf36e5ac88;
+  --raos-theme-runtime-revision-editorial-v2: 9e0c66f72040a6b36df62aa61623c1f749a387ae0bccbb0a650f1d2998f5f8ea;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -1375,3 +1375,19 @@
   overflow-wrap: anywhere;
   word-break: normal;
 }
+
+/* Household arithmetic is an optional enhancement of the local cost guide. */
+.raos-editorial-v2 .raos-cost-form { padding: clamp(1rem, 3vw, 2rem); margin-block: 1.5rem; border: 1px solid #bdcbd8; background: #f5f8fb; border-radius: .5rem; }
+.raos-editorial-v2 .raos-cost-form fieldset { min-inline-size: 0; padding: 0; margin: 0; border: 0; }
+.raos-editorial-v2 .raos-cost-form legend { padding: 0; margin-bottom: 1rem; font-size: 1.125rem; font-weight: 700; }
+.raos-editorial-v2 .raos-cost-form label { display: block; margin-block: 1rem .5rem; font-weight: 700; }
+.raos-editorial-v2 .raos-cost-form :where(input, select) { box-sizing: border-box; min-width: 0; width: 100%; max-width: 100%; min-height: 44px; padding: .75rem; border: 1px solid #647990; border-radius: .25rem; background: #fff; color: #17243f; font: inherit; line-height: 1.5; }
+.raos-editorial-v2 .raos-cost-form select { text-overflow: ellipsis; }
+.raos-editorial-v2 .raos-cost-form .raos-cost-help { margin-block: .5rem 1rem; font-size: .9375rem; line-height: 1.8; }
+.raos-editorial-v2 .raos-cost-form [aria-invalid="true"] { border: 2px solid #962d22; }
+.raos-editorial-v2 .raos-cost-form .raos-cost-error { color: #962d22; font-weight: 700; margin-block: .5rem; }
+.raos-editorial-v2 .raos-cost-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-block: 1.5rem; }
+.raos-editorial-v2 .raos-cost-actions button { min-height: 44px; max-width: 100%; white-space: normal; padding: .75rem 1rem; border: 1px solid #17243f; border-radius: .25rem; background: #17243f; color: #fff; font: inherit; line-height: 1.5; cursor: pointer; }
+.raos-editorial-v2 .raos-cost-actions button[type="reset"] { background: #fff; color: #17243f; }
+.raos-editorial-v2 .raos-cost-form :where(input, select, button):focus-visible { outline: 3px solid #246c9c; outline-offset: 3px; }
+.raos-editorial-v2 .raos-cost-result { border-top: 1px solid #bdcbd8; padding-top: 1rem; overflow-wrap: anywhere; }
