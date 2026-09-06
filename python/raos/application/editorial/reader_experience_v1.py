@@ -175,7 +175,9 @@ def validate_experience(
                 if not isinstance(option, Mapping):
                     issues.append("decision_summary.option_invalid")
                     continue
-                if any(not isinstance(option.get(key), str) or not option[key].strip() for key in ('reason', 'tradeoff')):
+                if any(not isinstance(option.get(key), str) or not option[key].strip() for key in ('reason',)):
+                    issues.append('decision_summary.option_incomplete')
+                if "tradeoff" in option and (not isinstance(option["tradeoff"], str) or not option["tradeoff"].strip()):
                     issues.append('decision_summary.option_incomplete')
                 product = option.get("product_ref")
                 if product is not None and (not isinstance(product, str) or product not in product_refs):
@@ -210,6 +212,12 @@ def validate_experience(
                 issues.append("products.unresolved_or_duplicate_reference")
             else:
                 seen.add(ref)
+            for field in ("tradeoffs", "not_for", "purchase_checks"):
+                items = product.get(field, [])
+                if not isinstance(items, list) or any(not isinstance(item, str) or not item.strip() for item in items):
+                    issues.append("products." + field + ".invalid")
+            if "selection_note" in product and (not isinstance(product["selection_note"], str) or not product["selection_note"].strip()):
+                issues.append("products.selection_note.invalid")
             facts = product.get("evidence_facts", [])
             if not isinstance(facts, list) or any(not isinstance(ref, str) or ref not in evidence_refs for ref in facts):
                 issues.append("products.evidence_must_reference_facts")
@@ -273,3 +281,10 @@ def reader_navigation(raw: object, articles: list[dict[str, object]]) -> dict[st
         raise ValueError('READER_HUB_SLUG_COLLISION')
     hubs.extend(groups)
     return {'hubs': hubs, 'primary_categories': {article: g['slug'] for g in groups if g['kind'] == 'category' for article in g['article_ids']}}
+
+
+def official_reference_identity(model: str, variant_scope: str) -> str:
+    """Add model/SKU tokens without copying marketing or sales notes into a link."""
+    codes = re.findall(r"(?<![A-Za-z0-9])(?:[A-Z]{2,}[A-Z0-9]*(?:-[A-Z0-9]+)+|[A-Z]+[0-9][A-Z0-9]+|[0-9]{5,8}(?:-[A-Z0-9]+)?)(?![A-Za-z0-9])", variant_scope)
+    additions = list(dict.fromkeys(code for code in codes if code not in model))
+    return model + ("（" + "／".join(additions) + "）" if additions else "")

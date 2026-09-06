@@ -107,7 +107,7 @@ def _normalize_product_profiles(root: Element) -> None:
                 paragraph.attrs['class'] = (paragraph.attrs.get('class') or '') + ' raos-product-card__facts'
 
 
-def _research(root: Element, article: Element, article_id: str) -> None:
+def _research(root: Element, article: Element, article_id: str, settings: Mapping[str, object]) -> None:
     facts = root.find(cls="raos-article-facts")
     if len(facts) != 1:
         return
@@ -117,10 +117,15 @@ def _research(root: Element, article: Element, article_id: str) -> None:
         for node in fact.children if isinstance(node, Element) and node.find(tag="dt") and node.find(tag="dd")
     }
     checked = pairs.get("最終確認日", "確認日未確認")
+    date_label = "記事確認"
+    source_dates = settings.get("_resolved_source_dates")
+    if isinstance(source_dates, list) and source_dates and all(isinstance(value, str) for value in source_dates):
+        checked = min(source_dates) + ("〜" + max(source_dates) if len(set(source_dates)) > 1 else "") + "（出典別）"
+        date_label = "公式情報確認"
     real_world = pairs.get("実機確認", "未確認")
     affiliate = any(n.attrs.get("data-raos-cta-type") == "offer" for n in root.walk())
     label = "広告リンクを含みます" if affiliate else "この記事の販売リンクは掲載していません"
-    status = block(f'<p class="raos-research-status" data-raos-article-id="{escape(article_id, quote=True)}"><span>公式情報確認：{escape(checked)} ／ 実機確認：{escape(real_world)}</span><span>{label}。<a href="#reader-evidence">出典・調査範囲</a></span></p>')
+    status = block(f'<p class="raos-research-status" data-raos-article-id="{escape(article_id, quote=True)}"><span>{date_label}：{escape(checked)} ／ 実機確認：{escape(real_world)}</span><span>{label}。<a href="#reader-evidence">出典・調査範囲</a></span></p>')
     article.children.insert(0, status)
     status.parent = article
     panel = block('<details class="raos-evidence-panel" id="reader-evidence" tabindex="-1"><summary>調査範囲・型番・確認日を詳しく見る</summary></details>')
@@ -159,13 +164,25 @@ def _summary(root: Element, settings: Mapping[str, object]) -> None:
             paragraphs = item.find(tag="p")
             if paragraphs:
                 paragraphs[0].children = [escape(str(option["reason"]))]
-                paragraphs[0].append(block(f'<span class="raos-summary-tradeoff"><strong>妥協点：</strong>{escape(str(option["tradeoff"]))}</span>'))
+                if isinstance(option.get("tradeoff"), str) and option["tradeoff"]:
+                    paragraphs[0].append(block(f'<span class="raos-summary-tradeoff"><strong>妥協点：</strong>{escape(str(option["tradeoff"]))}</span>'))
+    # Put the decision boundary before any candidate list, also on small screens.
+    first_list = next(iter(section.find(cls="decision-list") or section.find(tag="ul")), None)
+    def introduction(markup: str) -> None:
+        node = block(markup)
+        first_list.insert_before(node) if first_list is not None else section.append(node)
+
     difference = summary.get("key_difference")
     if isinstance(difference, str) and difference:
-        section.append(block(f'<p class="raos-key-difference"><strong>最大の違い：</strong>{escape(difference)}</p>'))
+        introduction(f'<p class="raos-key-difference"><strong>最大の違い：</strong>{escape(difference)}</p>')
     exclusion = summary.get("no_purchase_condition")
     if isinstance(exclusion, str) and exclusion:
-        section.append(block(f'<p class="raos-no-purchase"><strong>購入を見送る条件：</strong>{escape(exclusion)}</p>'))
+        introduction(f'<p class="raos-no-purchase"><strong>購入を見送る条件：</strong>{escape(exclusion)}</p>')
+    if settings.get("components_enabled") is True and settings.get("decision_axes"):
+        introduction('<p class="raos-summary-next"><a href="#reader-axes">先に、自宅で確かめる条件を見る</a></p>')
+    limits = summary.get("limits_note")
+    if isinstance(limits, str) and limits:
+        introduction('<p class="raos-selection-limit">' + escape(limits) + '</p>')
 
 
 def project_article(
@@ -192,7 +209,7 @@ def project_article(
         return root.html()
     if settings:
         _normalize_product_profiles(root)
-        _research(root, article, article_id)
+        _research(root, article, article_id, settings)
         _summary(root, settings)
         if settings.get("components_enabled") is True:
             _decision_components(root, article, settings)
@@ -259,23 +276,39 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
         exclusions = fit_lists[1].find(tag="li") if len(fit_lists) > 1 else []
         pairs = {pair.find(tag='dt')[0].text(): pair.find(tag='dd')[0].text() for dl in card.find(tag='dl') for pair in dl.children if isinstance(pair, Element) and pair.find(tag='dt') and pair.find(tag='dd')}
         product = product_settings.get(card.attrs.get('data-raos-product-id'), {})
-        not_for = product.get('not_for', [])
+        not_for = product.get('not_for', []) or [item.text() for item in exclusions]
+        if not not_for and pairs.get('別の候補が向く条件'):
+            not_for = [pairs['別の候補が向く条件']]
+        tradeoffs = product.get('tradeoffs', [])
+        checks = product.get('purchase_checks', [])
+        if tradeoffs:
+            card.append(block('<p class="raos-product-tradeoff"><strong>引き受ける妥協点：</strong>' + escape('。'.join(tradeoffs)) + '</p>'))
+        limit = product.get('selection_note')
+        if isinstance(limit, str) and limit:
+            card.append(block('<p class="raos-selection-limit">' + escape(limit) + '</p>'))
         if not_for and not pairs.get('別の候補が向く条件') and not exclusions:
             card.append(block('<p class="raos-product-card__caution"><strong>向かない条件：</strong>' + escape('。'.join(not_for)) + '</p>'))
         rows.append({
             "condition": labels[0].text() if labels else (fit_items[0].text() if fit_items else pairs.get('向く条件', "条件を確認して候補にする")),
             "product_name": headings[0].text(), "anchor": str(card.attrs["id"]),
             "reason": summary_reasons.get('#' + str(card.attrs['id']), fit_items[0].text() if fit_items else pairs.get('向く条件', "商品の選択条件を確認してください。")),
-            "tradeoff": exclusions[0].text() if exclusions else pairs.get('別の候補が向く条件', not_for[0] if not_for else (caution[0].text() if caution else "未確認")),
-            "purchase_check": caution[0].text() if caution else pairs.get('購入前の確認', "型番・同梱品・保証・販売元を確認してください。"),
+            "tradeoff": '。'.join(tradeoffs),
+            "not_for": '。'.join(not_for),
+            "selection_note": str(product.get('selection_note', '')),
+            "purchase_check": '。'.join(checks) if checks else (caution[0].text() if caution else pairs.get('購入前の確認', "型番・同梱品・保証・販売元を確認してください。")),
         })
     if summary is not None:
         by_anchor = {'#' + row['anchor']: row for row in rows}
         for item in summary.find(tag='li'):
             choice = next((by_anchor[str(a.attrs['href'])] for a in item.find(tag='a') if a.attrs.get('href') in by_anchor), None)
             paragraphs = item.find(tag='p')
-            if choice is not None and paragraphs and not item.find(cls='raos-summary-tradeoff'):
-                paragraphs[0].append(block('<span class="raos-summary-tradeoff"><strong>妥協点：</strong>' + escape(choice['tradeoff']) + '</span>'))
+            if choice is not None and paragraphs:
+                if choice['tradeoff']:
+                    for previous in item.find(cls='raos-summary-tradeoff'):
+                        previous.remove()
+                    paragraphs[0].append(block('<span class="raos-summary-tradeoff"><strong>妥協点：</strong>' + escape(choice['tradeoff']) + '</span>'))
+                if choice['selection_note']:
+                    paragraphs[0].append(block('<span class="raos-selection-limit">' + escape(choice['selection_note']) + '</span>'))
     if settings.get("article_type") != "status_check":
         table = components.decision_table(rows)
         if table is not None and insertion is not None and insertion.parent is not None:
@@ -363,15 +396,31 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
             specifications[0].insert_before(difference)
     media = settings.get('_resolved_dimensions', [])
     if isinstance(media, list):
-        diagrams = block('<section class="raos-reader-dimensions" aria-labelledby="reader-dimensions"><h2 id="reader-dimensions">本体と、扉を開く空間を分けて測る</h2></section>')
+        cards_by_product = {
+            card.attrs['data-raos-product-id']: card
+            for card in cards
+            if card.attrs.get('data-raos-product-id')
+        }
         for row in media:
-            figure = components.dimension_diagram(row['claim'], row['source'], row['asset'])
-            if figure is not None:
-                diagrams.append(figure)
-        if diagrams.find(tag='figure'):
-            specifications = root.find(cls='comparison-section')
-            if specifications:
-                specifications[0].insert_before(diagrams)
+            product_ref = row.get('product_ref') if isinstance(row, Mapping) else None
+            diagram_card = cards_by_product.get(product_ref) if isinstance(product_ref, str) else None
+            if diagram_card is None:
+                continue
+            figure = components.dimension_diagram(
+                row['claim'],
+                row['source'],
+                row['asset'],
+                product_ref=product_ref,
+                claim_refs=row['claim_refs'],
+            )
+            if figure is None:
+                continue
+            diagram_facts = next(iter(diagram_card.find(cls='raos-product-card__facts')), None)
+            if diagram_facts is not None and diagram_facts.parent is not None:
+                figure.parent = diagram_facts.parent
+                diagram_facts.parent.children.insert(diagram_facts.parent.children.index(diagram_facts) + 1, figure)
+            else:
+                diagram_card.append(figure)
     links = settings.get('_resolved_contextual_links', [])
     if isinstance(links, list):
         for link in links:
@@ -382,6 +431,66 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
                     targets[0].append(related_node)
     if summary is not None and summary.parent is not None:
         summary.parent.children.insert(summary.parent.children.index(summary) + 1, '<!-- raos-reader-toc -->')
+
+
+def _resolve_dimension_media(
+    experience: Mapping[str, object],
+    claims: Mapping[str, Mapping[str, object]],
+    sources: Mapping[str, Mapping[str, object]],
+    assets: Mapping[str, Mapping[str, object]],
+) -> list[dict[str, object]]:
+    """Bind approved diagram inputs through both product and claim identities."""
+    product_claims: dict[str, frozenset[str]] = {}
+    products = experience.get('products', [])
+    if isinstance(products, list):
+        for product in products:
+            if not isinstance(product, Mapping) or not isinstance(product.get('product_ref'), str):
+                continue
+            raw_refs = product.get('claim_refs', product.get('evidence_facts', []))
+            if isinstance(raw_refs, list) and all(isinstance(ref, str) for ref in raw_refs):
+                product_claims[product['product_ref']] = frozenset(raw_refs)
+    resolved: list[dict[str, object]] = []
+    media = experience.get('media', [])
+    if not isinstance(media, list):
+        return resolved
+    for item in media:
+        if not isinstance(item, Mapping) or item.get('role') != 'dimension':
+            continue
+        claim_id = item.get('evidence_ref')
+        claim = claims.get(claim_id) if isinstance(claim_id, str) else None
+        asset_ref = item.get('asset_ref')
+        asset = assets.get(asset_ref) if isinstance(asset_ref, str) else None
+        if claim is None or asset is None:
+            continue
+        subject_products = claim.get('subject_product_ids')
+        if not isinstance(subject_products, list) or len(subject_products) != 1:
+            continue
+        product_ref = subject_products[0]
+        claim_refs = product_claims.get(product_ref) if isinstance(product_ref, str) else None
+        if claim_refs is None or claim_id not in claim_refs:
+            continue
+        evidence_refs = claim.get('evidence_refs')
+        if not isinstance(evidence_refs, list):
+            continue
+        source = next(
+            (
+                sources[ref]
+                for ref in evidence_refs
+                if ref in sources and sources[ref].get('url') == asset.get('source')
+            ),
+            None,
+        )
+        if source is not None:
+            resolved.append(
+                {
+                    'asset': asset,
+                    'claim': claim,
+                    'source': source,
+                    'product_ref': product_ref,
+                    'claim_refs': claim_refs,
+                }
+            )
+    return resolved
 
 
 def project_registered_article(root: Path, markup: str, *, article_id: str, evidence: CtaEvidence = CtaEvidence(), approved_product_images: frozenset[str] = frozenset()) -> str:
@@ -403,6 +512,10 @@ def project_registered_article(root: Path, markup: str, *, article_id: str, evid
         sources = json.loads((root / 'changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json').read_text())
         claims = {c['claim_id']: c for p in sources['source_packets'] if p['article_id'] == article_id for c in p['claims']}
         source_refs = {s['source_ref']: s for s in sources['sources']}
+        experience['_resolved_source_dates'] = sorted({
+            source_refs[ref]['retrieved_on']
+            for claim in claims.values() for ref in claim['evidence_refs'] if ref in source_refs
+        })
         rule = experience.get('rule_status')
         if isinstance(rule, dict):
             claim = claims.get(rule.get('evidence_ref'), {})
@@ -410,14 +523,12 @@ def project_registered_article(root: Path, markup: str, *, article_id: str, evid
             if source is not None:
                 experience['_resolved_rule_status'] = {**rule, 'checked_at': source.get('retrieved_on'), 'url': source['url']}
         assets = {a['asset_ref']: a for a in registry.get('media', [])}
-        resolved = []
-        for media in experience.get('media', []):
-            asset, claim = assets.get(media['asset_ref']), claims.get(media.get('evidence_ref'))
-            if asset is not None and claim is not None:
-                source = next((source_refs.get(ref) for ref in claim['evidence_refs'] if source_refs.get(ref, {}).get('url') == asset.get('source')), None)
-                if source is not None:
-                    resolved.append(dict(asset=asset, claim=claim, source=source))
-        experience['_resolved_dimensions'] = resolved
+        experience['_resolved_dimensions'] = _resolve_dimension_media(
+            experience,
+            claims,
+            source_refs,
+            assets,
+        )
         difference = experience.get('difference_pair')
         if isinstance(difference, dict):
             inputs = json.loads((root / 'changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json').read_text())
