@@ -1,4 +1,4 @@
-"""The native header fallback must work without executing page scripts."""
+"""Native header controls remain usable until both core blocks initialize."""
 
 from __future__ import annotations
 
@@ -19,23 +19,23 @@ THEME = (
 
 def test_nojs_header_uses_existing_navigation_and_a_native_search_form() -> None:
     header = (THEME / "parts/header.html").read_text(encoding="utf-8")
-    fallback = re.search(r"<noscript\b[\s\S]*?</noscript>", header)
+    fallback = re.search(
+        r'<!-- wp:html -->\s*(<div class="raos-header-nojs-shell">[\s\S]*?)'
+        r"\s*<!-- /wp:html -->",
+        header,
+    )
     assert fallback is not None
-    markup = fallback.group()
+    markup = fallback.group(1)
     assert 'role="search" method="get" action="/"' in markup
     assert '<label for="raos-header-nojs-query">記事を検索</label>' in markup
     assert 'id="raos-header-nojs-query" type="search" name="s"' in markup
     assert '<button type="submit">検索</button>' in markup
-    assert not re.search(r"<(?:script|style|nav)\b|aria-hidden|onclick", markup)
+    assert not re.search(r"<(?:noscript|script|style|nav)\b|aria-hidden|onclick", markup)
     links = [json.loads(match) for match in re.findall(r'<!-- wp:navigation-link (\{.*?\}) /-->', header)]
     registry = json.loads((THEME / 'assets/editorial-navigation.v3.json').read_text())
     hub_paths = {'/' + hub['slug'] + '/' for hub in registry['reader_navigation']['hubs']}
     assert links and all(link['url'] in hub_paths for link in links)
     assert header.count("<!-- wp:search ") == 1
-    css = (THEME / "assets/theme.css").read_text(encoding="utf-8")
-    assert ".raos-header-nojs-shell {\n  display: none;\n}" in css
-    assert ".raos-header-nojs-shell:has(.raos-header-nojs)" in css
-    assert ".wp-site-blocks > header:has(.raos-site-header .raos-header-nojs)" in css
 
 
 def test_native_nojs_navigation_search_accessibility_and_scripted_isolation() -> None:
@@ -68,7 +68,8 @@ const { chromium }=require('playwright');
 const theme=process.argv[1];
 const css=fs.readFileSync(theme+'/assets/theme.css','utf8');
 const header=fs.readFileSync(theme+'/parts/header.html','utf8');
-const fallback=header.match(/<noscript\b[\s\S]*?<\/noscript>/)[0];
+// The WP HTML block boundary retains every nested closing div, including the shell.
+const fallback=header.match(/<!-- wp:html -->\s*(<div class="raos-header-nojs-shell">[\s\S]*?)\s*<!-- \/wp:html -->/)[1];
 const links=[...header.matchAll(/<!-- wp:navigation-link (\{.*?\}) \/-->/g)]
   .map(match=>JSON.parse(match[1]));
 const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
@@ -80,12 +81,21 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
   const cases=[];
   for(const width of [320,360,390,768,1024,1440]) for(const textSize of [100,200])
    for(const javaScriptEnabled of [false,true]) for(const home of [false,true])
-    cases.push({width,textSize,javaScriptEnabled,home});
+    cases.push({width,textSize,javaScriptEnabled,home,
+      readiness:javaScriptEnabled?'both':'none',representativeFailure:false});
+  // Synthetic initialized states exercise CSS behavior, not real core initialization.
+  // Only three representative JS-enabled failures supplement the original 96 cases.
+  for(const readiness of ['none','nav-only','search-only'])
+   cases.push({width:390,textSize:100,javaScriptEnabled:true,home:false,
+     readiness,representativeFailure:true});
   // Overlap actionability/frame waits with at most two independent contexts.
   // Keep real clicks, scroll stability checks, and the shared 60-second deadline.
   await Promise.all([0,1].map(async worker=>{
    for(let index=worker;index<cases.length;index+=2) {
-    const {width,textSize,javaScriptEnabled,home}=cases[index];
+    const {width,textSize,javaScriptEnabled,home,readiness,representativeFailure}=cases[index];
+    const nativeFallback=readiness!=='both';
+    const navReady=['both','nav-only'].includes(readiness)?' data-raos-nav-ready="false"':'';
+    const searchReady=['both','search-only'].includes(readiness)?' data-raos-search-ready="button"':'';
     const context=await browser.newContext({viewport:{width,height:900},javaScriptEnabled,
       serviceWorkers:'block',reducedMotion:'reduce'});
     const origin='http://127.0.0.1:48998';let blocked=0;
@@ -110,14 +120,14 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
         <header><div class="raos-site-header"><div class="raos-masthead is-layout-flex is-nowrap">
         <p class="raos-wordmark"><a href="/">暮らしのしるべ</a></p>
         <div class="raos-masthead__actions is-layout-flex is-nowrap">
-        <nav class="raos-primary-nav wp-block-navigation" aria-label="主要ナビゲーション">
+        <nav class="raos-primary-nav wp-block-navigation" aria-label="主要ナビゲーション"${navReady}>
         <button class="wp-block-navigation__responsive-container-open" aria-label="メニューを開く">☰</button>
         <div class="wp-block-navigation__responsive-container">
         <button class="wp-block-navigation__responsive-container-close" aria-label="メニューを閉じる">閉</button>
         <ul class="wp-block-navigation__container">${links.map(link=>
           `<li class="wp-block-navigation-item"><a class="wp-block-navigation-item__content"
            href="${link.url}">${link.label}</a></li>`).join('')}</ul></div></nav>
-        <form class="raos-header-search wp-block-search wp-block-search__searchfield-hidden">
+        <form class="raos-header-search wp-block-search wp-block-search__searchfield-hidden"${searchReady}>
         <input type="search" aria-hidden="true"><button type="button"
         class="wp-block-search__button" aria-label="検索欄を開く">⌕</button></form>
         </div>${fallback}</div></div></header>
@@ -128,13 +138,14 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
     const page=await context.newPage();await page.goto(origin+'/article/');
     const banner=page.getByRole('banner');
     const original=await page.evaluate(()=>({
-      fallback:!!document.querySelector('.raos-header-nojs'),
+      fallbackPresent:!!document.querySelector('header .raos-header-nojs-shell > .raos-header-nojs > form'),
+      fallback:document.querySelector('.raos-header-nojs').getClientRects().length>0,
       overflow:document.documentElement.scrollWidth>innerWidth+.5,
       headerHeight:document.querySelector('header').getBoundingClientRect().height,
       headerPosition:getComputedStyle(document.querySelector('header')).position,
       rawMarkupVisible:document.querySelector('header').innerText.includes('<form'),
     }));
-    if(!javaScriptEnabled){
+    if(nativeFallback){
       const names=[];
       for(let index=0;index<links.length+3;index++){
         await page.keyboard.press('Tab');names.push(await page.evaluate(()=>{
@@ -165,10 +176,13 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
       await page.keyboard.press('Enter');
       await page.waitForURL(url=>url.searchParams.get('s')==='選び方');
     } else {
-      if(await banner.getByRole('button',{name:'検索',exact:true}).count()) throw Error('Fallback visible with JS');
+      if(await banner.getByRole('button',{name:'検索',exact:true}).isVisible()) throw Error('Fallback visible after both blocks initialize');
       if(!(await banner.getByRole('button',{name:'検索欄を開く'}).isVisible())) throw Error('Normal search missing');
+      if(width<600&&!(await banner.getByRole('button',{name:'メニューを開く'}).isVisible()))
+        throw Error('Normal mobile menu missing');
     }
-    observations[index]={width,textSize,javaScriptEnabled,home,...original,blocked};
+    observations[index]={width,textSize,javaScriptEnabled,home,readiness,
+      representativeFailure,...original,blocked};
     await context.close();
    }
   }));
@@ -186,13 +200,20 @@ const bodyFont=JSON.parse(fs.readFileSync(theme+'/theme.json','utf8'))
         timeout=60,
     )
     observations = json.loads(result.stdout)
-    assert {(row['width'], row['textSize'], row['javaScriptEnabled'], row['home']) for row in observations} == set(product((320, 360, 390, 768, 1024, 1440), (100, 200), (False, True), (False, True)))
+    baseline = [row for row in observations if not row["representativeFailure"]]
+    assert {(row['width'], row['textSize'], row['javaScriptEnabled'], row['home']) for row in baseline} == set(product((320, 360, 390, 768, 1024, 1440), (100, 200), (False, True), (False, True)))
+    failures = [row for row in observations if row["representativeFailure"]]
+    assert {
+        (row["width"], row["textSize"], row["javaScriptEnabled"], row["readiness"])
+        for row in failures
+    } == {(390, 100, True, state) for state in ("none", "nav-only", "search-only")}
     for row in observations:
         assert row["overflow"] is False, row
         assert row["blocked"] == 0, row
         assert row["rawMarkupVisible"] is False, row
-        assert row["fallback"] is not row["javaScriptEnabled"], row
-        if not row["javaScriptEnabled"]:
+        assert row["fallbackPresent"] is True, row
+        assert row["fallback"] is (row["readiness"] != "both"), row
+        if row["readiness"] != "both":
             assert row["headerPosition"] == "static", row
         elif row["width"] < 600 and row["textSize"] == 100:
             assert row["headerHeight"] <= 80, row

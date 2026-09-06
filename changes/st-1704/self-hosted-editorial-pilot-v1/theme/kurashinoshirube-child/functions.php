@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.5.1';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '120e9b4a4888a27519d12d967cd5d43bdfc165f26c47661dd43b2369f3e8d11c';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '120e9b4a4888a27519d12d967cd5d43bdfc165f26c47661dd43b2369f3e8d11c';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '2d3ad1403001e73a5c58fb0b1d2e77330f5a5944f9d12c9ade5d3a6fb8a4dc2d';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '2d3ad1403001e73a5c58fb0b1d2e77330f5a5944f9d12c9ade5d3a6fb8a4dc2d';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -3540,6 +3540,33 @@ function kurashinoshirube_render_reader_hub($attributes, $content, $tag): string
     return '';
 }
 add_shortcode('kurashinoshirube_reader_hub', 'kurashinoshirube_render_reader_hub');
+
+/**
+ * Let the core bind directives signal successful client initialization.
+ * Their JS-only getters have no server value, so native controls remain the
+ * default when either module (or its interactivity dependency) fails to load.
+ */
+function kurashinoshirube_header_interactivity_readiness(string $html, array $block): string
+{
+    $targets = array(
+        'core/navigation' => array('raos-primary-nav', 'data-raos-nav-ready', 'state.isMenuOpen'),
+        'core/search' => array('raos-header-search', 'data-raos-search-ready', 'state.type'),
+    );
+    $name = $block['blockName'] ?? '';
+    if (! isset($targets[$name]) || ! class_exists('WP_HTML_Tag_Processor')) {
+        return $html;
+    }
+    [$class_name, $attribute, $state] = $targets[$name];
+    $processor = new WP_HTML_Tag_Processor($html);
+    if (! $processor->next_tag(array('class_name' => $class_name))
+        || $processor->get_attribute('data-wp-interactive') !== $name) {
+        return $html;
+    }
+    $processor->set_attribute('data-wp-bind--' . $attribute, $state);
+    return $processor->get_updated_html();
+}
+add_filter('render_block_core/navigation', 'kurashinoshirube_header_interactivity_readiness', 10, 2);
+add_filter('render_block_core/search', 'kurashinoshirube_header_interactivity_readiness', 10, 2);
 
 /** Core navigation also observes the same reachability gate. */
 function kurashinoshirube_reader_nav_block(string $html, array $block): string
