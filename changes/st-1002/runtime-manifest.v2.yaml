@@ -130,7 +130,7 @@ source_artifacts:
     role: DEPENDENCY_ARTIFACT
   - uri: repo://changes/st-0904/runtime-manifest.v2.yaml
     bytes: 12197
-    sha256: d890b0d3f9711f4848981a873079dbf7dfd57c882ec6fe807b26ef0beddd0754
+    sha256: e00f1cac632d9c8dd023fe23c136b8d197217a3a2c0a1940490b25caffd1472b
     role: DEPENDENCY_ARTIFACT
   - uri: repo://changes/st-0904/contracts/public-projection-runtime.v2.yaml
     bytes: 4503

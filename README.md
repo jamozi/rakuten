@@ -16,13 +16,14 @@ ASPは[接続guide](docs/affiliate-network-ingestion.md)を参照してくださ
 
 ## 開発コマンド
 
-通常の確認は `make fast` だけです。変更箇所の静的検査、関連テスト、生成物のdriftを
-同じ差分計画から実行します。修正後は失敗した検査を先に確認してから影響範囲を確認します。
+機能・生成入力・contract・境界・共通基盤の変更は `make fast` で確認します。静的検査、
+関連テスト、生成物のdriftを同じ差分計画から実行します。対象が確定した小さなPython修正は
+[局所検証](#局所検証)から開始し、利用側と影響範囲も確認します。
 
 ```bash
 make setup       # 初回・依存変更時
 make generate    # 生成入力を変更した場合
-make fast        # 日常の確認
+make fast        # 差分の検証
 ```
 
 `make check` は同じ選択による静的検査のみ、`make final` は任意の全体診断です。
@@ -51,6 +52,20 @@ skipはmergeの根拠になりません。
 pytestの結果に表示し、未実行を成功した実環境検証とは扱いません。定期CIの失敗は修正対象です。
 CIには検査ごとの所要時間と遅いテストを出力します。通常PRの中央値10分以内は改善目標であり、
 新しい停止条件ではありません。
+
+## 局所検証
+
+対象と関連テストが分かっているPython修正では、次の入口を使います。
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp .venv/bin/python -m pytest -q \
+  -m "not live and not external and not raos_owner_private and not database and not storage" \
+  tests/<target>.py
+```
+
+成功した対象テストに加え、利用側・隣接する契約への影響を確認します。検証不足・失敗や
+影響範囲の拡大が判明したら、関連テストと `make fast` の差分検査へ進みます。DB・Storageは
+専用partition、live・external・owner-privateは既存の実行境界を維持します。
 
 ## WordPress公開準備
 
@@ -83,7 +98,7 @@ DB／Storageは専用partitionに分け、localな全testがどれか1つのpart
 
 ## Contribution and operations
 
-小さな修正は対象test、機能変更は関連contractと利用側を確認してから`make fast`を実行します。
+検証の入口は[開発コマンド](#開発コマンド)を参照してください。
 Story IDは要求・依存・statusの追跡に使い、commit・PRの境界にはしません。
 通常の開発と外部適用の権限は[AGENTS](AGENTS.md)を参照してください。
 ローカル結果はstaging・Production検証を表しません。
