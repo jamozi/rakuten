@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Deployment
 {
-    const RUNTIME_REVISION = 'c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472';
+    const RUNTIME_REVISION = 'b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc';
     const MAX_PACKAGE_BYTES = 33554432;
     const MAX_FILE_BYTES = 8388608;
     const MAX_FILE_COUNT = 2048;
@@ -22,7 +22,7 @@ final class RAOS_Codex_MCP_Deployment
     const REVIEWED_MEASUREMENT_FILE_MANIFEST_SHA256 = 'a164328b4dbf2f16665f7b68edcd359bfb1c482279200da8b5ce2635f4a04772';
     const BOOTSTRAP_ARTIFACT_ID = 'raos-codex-mcp-abilities-v1';
     const BOOTSTRAP_SLUG = 'raos-codex-mcp-abilities';
-    const BOOTSTRAP_VERSION = '1.3.1';
+    const BOOTSTRAP_VERSION = '1.3.2';
 
     private $plugin;
 
@@ -163,7 +163,7 @@ final class RAOS_Codex_MCP_Deployment
      * Validate the sole manual-bootstrap exception without changing state.
      * The staged package, immutable proposal, installed tree, active plugin
      * header, host package pin, and loaded runtime must all describe one exact
-     * abilities 1.3.1 release.
+     * abilities 1.3.2 release.
      */
     public static function validate_manual_bootstrap_attestation($row)
     {

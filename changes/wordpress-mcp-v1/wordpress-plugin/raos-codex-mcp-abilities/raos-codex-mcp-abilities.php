@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RAOS Codex MCP Abilities
  * Description: Browser-independent, approval-bound content and deployment abilities for kurashinoshirube.com.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Requires at least: 7.1
  * Requires PHP: 8.1
  * Author: RAOS
@@ -14,10 +14,10 @@
 
 defined('ABSPATH') || exit;
 
-define('RAOS_CODEX_MCP_VERSION', '1.3.1');
+define('RAOS_CODEX_MCP_VERSION', '1.3.2');
 define(
     'RAOS_CODEX_MCP_RUNTIME_REVISION',
-    'c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472'
+    'b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc'
 );
 define('RAOS_CODEX_MCP_FILE', __FILE__);
 
@@ -27,7 +27,7 @@ require_once __DIR__ . '/includes/class-raos-codex-mcp-deployment.php';
 
 final class RAOS_Codex_MCP_Abilities
 {
-    const RUNTIME_REVISION = 'c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472';
+    const RUNTIME_REVISION = 'b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc';
     const ORIGIN = 'https://kurashinoshirube.com';
     const EDITOR_ROLE = 'raos_codex_mcp_editor';
     const OPERATOR_ROLE = 'raos_codex_deployment_operator';
@@ -935,7 +935,7 @@ final class RAOS_Codex_MCP_Abilities
             echo '<div class="notice notice-success inline"><p><strong>'
                 . esc_html__('Manual bootstrap attestation recorded.', 'raos-codex-mcp')
                 . '</strong> '
-                . esc_html__('The exact abilities 1.3.1 package was already installed manually by a human administrator. This form only recorded its proposal-bound readback receipt; it did not install or apply code.', 'raos-codex-mcp')
+                . esc_html__('The exact abilities 1.3.2 package was already installed manually by a human administrator. This form only recorded its proposal-bound readback receipt; it did not install or apply code.', 'raos-codex-mcp')
                 . '</p></div>';
         }
         if (empty($rows) && empty($batches)) {
@@ -1041,7 +1041,7 @@ final class RAOS_Codex_MCP_Abilities
                 echo '<div class="notice notice-warning inline"><p><strong>'
                     . esc_html__('Narrow manual-bootstrap receipt only.', 'raos-codex-mcp')
                     . '</strong> '
-                    . esc_html__('The installed and active abilities 1.3.1 tree, staged package, complete file manifest, host artifact pin, and immutable proposal currently match exactly. Confirm only if you personally installed that exact package in wp-admin. This does not create a reusable migration exception.', 'raos-codex-mcp')
+                    . esc_html__('The installed and active abilities 1.3.2 tree, staged package, complete file manifest, host artifact pin, and immutable proposal currently match exactly. Confirm only if you personally installed that exact package in wp-admin. This does not create a reusable migration exception.', 'raos-codex-mcp')
                     . '</p></div>';
                 echo '<table class="widefat striped" style="margin-bottom:1rem"><tbody>';
                 foreach (

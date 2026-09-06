@@ -394,6 +394,7 @@
     "assets/legacy-media-display-projection.v1.json",
     "assets/local-running-cost.js",
     "assets/measurement.js",
+    "assets/reader-measurement-runtime.v1.json",
     "assets/theme.css",
     "functions.php",
     "parts/footer.html",
@@ -408,8 +409,8 @@
     "theme-contract.v1.json",
     "theme.json"
   ],
-  "theme_runtime_revision": "9e0c66f72040a6b36df62aa61623c1f749a387ae0bccbb0a650f1d2998f5f8ea",
+  "theme_runtime_revision": "6b99bd06826adadd7d1a468b96ef988a265627e0d40922f336a8f839c55d4f41",
   "theme_slug": "kurashinoshirube-child",
-  "theme_source_fingerprint": "9e0c66f72040a6b36df62aa61623c1f749a387ae0bccbb0a650f1d2998f5f8ea",
+  "theme_source_fingerprint": "6b99bd06826adadd7d1a468b96ef988a265627e0d40922f336a8f839c55d4f41",
   "theme_version": "1.5.1"
 }

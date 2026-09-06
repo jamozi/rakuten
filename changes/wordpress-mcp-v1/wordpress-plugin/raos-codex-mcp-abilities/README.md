@@ -1,9 +1,9 @@
-# RAOS Codex MCP Abilities 1.3.1
+# RAOS Codex MCP Abilities 1.3.2
 
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
 The release is bound to runtime revision
-`c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472`;
+`b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc`;
 every loaded critical class must report that exact value before any ability or
 mutation is authorized.
 
@@ -71,7 +71,7 @@ only be approved through their exact registered batch; individual approval is
 available only for deliberate plugin-change handling.
 
 One bootstrap-only exception records, but never performs, a manual abilities
-1.3.1 installation. A different human administrator must first install and
+1.3.2 installation. A different human administrator must first install and
 activate the exact proposal package in wp-admin. The attestation form is shown
 only when the staged package, host pin, package/file-manifest hashes, installed
 tree, plugin version, loaded runtime, and immutable `MANUAL_REQUIRED` proposal

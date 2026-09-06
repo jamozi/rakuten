@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.5.1"
 THEME_RUNTIME_REVISION: Final = (
-    "9e0c66f72040a6b36df62aa61623c1f749a387ae0bccbb0a650f1d2998f5f8ea"
+    "6b99bd06826adadd7d1a468b96ef988a265627e0d40922f336a8f839c55d4f41"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -94,6 +94,8 @@ MEASUREMENT_CLIENT_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/measureme
 ANALYTICS_CONSENT_GATE_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/analytics-consent-gate.js"
 )
+READER_RUNTIME_BINDING_INPUT_PATH: Final = Path("changes/reader-measurement-v1/theme-runtime-binding.v1.json")
+READER_RUNTIME_ASSET_PATH: Final = THEME_REPOSITORY_ROOT / "assets/reader-measurement-runtime.v1.json"
 THEME_FUNCTIONS_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "functions.php"
 THEME_SOURCE_INPUT_PATHS: Final = (
     ANALYTICS_CONSENT_GATE_INPUT_PATH,
@@ -115,6 +117,7 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     THEME_REPOSITORY_ROOT / "assets/legacy-media-display-projection.v1.json",
     THEME_REPOSITORY_ROOT / "assets/local-running-cost.js",
     MEASUREMENT_CLIENT_INPUT_PATH,
+    READER_RUNTIME_ASSET_PATH,
     THEME_REPOSITORY_ROOT / "assets/theme.css",
     THEME_FUNCTIONS_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "parts/footer.html",
@@ -142,6 +145,7 @@ THEME_FINGERPRINT_SOURCE_FILES: Final = tuple(
     if relative not in THEME_FINGERPRINT_EXCLUDED_PATHS
 )
 PHP_INTEGRITY_BINDINGS: Final = {
+    "KURASHINOSHIRUBE_READER_RUNTIME_METADATA_SHA256": "assets/reader-measurement-runtime.v1.json",
     "KURASHINOSHIRUBE_LEGACY_MEDIA_PROJECTION_SHA256": (
         "assets/legacy-media-display-projection.v1.json"
     ),
@@ -522,7 +526,8 @@ def _load_json_payload(payload: bytes) -> dict[str, object]:
 def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
     """Render the complete non-circular theme identity from current owner inputs."""
 
-    sources = {relative: _read_source(relative) for relative in SOURCE_FILES}
+    reader_binding = _read_regular_path(ROOT / READER_RUNTIME_BINDING_INPUT_PATH)
+    sources = {relative: (reader_binding if relative == "assets/reader-measurement-runtime.v1.json" else _read_source(relative)) for relative in SOURCE_FILES}
     functions = _decoded_utf8(sources["functions.php"])
     for constant, relative in PHP_INTEGRITY_BINDINGS.items():
         payload = sources.get(relative)
@@ -548,6 +553,7 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
         revision,
     )
     rendered: dict[Path, bytes] = {
+        ROOT / READER_RUNTIME_ASSET_PATH: reader_binding,
         THEME_ROOT / "functions.php": functions.encode("utf-8"),
     }
     for relative, property_name in RUNTIME_STYLESHEET_SENTINELS.items():
@@ -637,7 +643,11 @@ def _write_theme_stamp_payloads(payloads: Mapping[Path, bytes]) -> None:
             payload = payloads[target]
             if type(payload) is not bytes or not payload:
                 _fail()
-            _read_regular_path(target)
+            if target == ROOT / READER_RUNTIME_ASSET_PATH and not target.exists():
+                if target.is_symlink() or target.parent.resolve() != target.parent or not target.parent.is_dir():
+                    _fail()
+            else:
+                _read_regular_path(target)
             temporary = target.with_name(f".{target.name}.{os.getpid()}.{index}.tmp")
             descriptor = os.open(
                 temporary,
