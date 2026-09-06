@@ -1,0 +1,2214 @@
+{
+  "version": 1,
+  "isolation_version": 3,
+  "ref": "9001a77b",
+  "working_tree": false,
+  "protocol_sha256": "f3de0b344752777dbc9fb958a5fdb91b6c6d22d524a21d0e3e5472c37528a58b",
+  "grader_sha256": "9a14ad57eb3718a5dfeae6b4fe46789b3badc476709c64d9aeefe5b0d7ddc0be",
+  "model": "gpt-6-astra",
+  "reasoning": "max",
+  "rubric": "behavioral proxies; semantic rationale requires human review",
+  "runs": [
+    {
+      "case": "A",
+      "run": 1,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 439200,
+        "cached_input_tokens": 396544,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 4816,
+        "reasoning_output_tokens": 2659
+      },
+      "commands": 21,
+      "test_commands_passed": 3,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 5305
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4906
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11027
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3203
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 1550
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3427
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4552
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1800
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 106
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 8149
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 14
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 7939
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 1959
+        },
+        {
+          "kind": "validation",
+          "exit_code": 1,
+          "output_characters": 4034
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 142
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 2801
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 784
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 824
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 79
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "docs/affiliate-network-ingestion.md",
+        "pyproject.toml",
+        "scripts/raos_build.py",
+        "scripts/raos_build_core.py",
+        "scripts/raos_checks.py",
+        "scripts/raos_test_plan.py",
+        "tests/conftest.py",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 53923,
+      "process_exit_code": 0,
+      "changed_paths": [
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/A-1",
+      "unexpected_changes": [],
+      "behavior": {
+        "zero_and_alias_precedence": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 232.14
+    },
+    {
+      "case": "A",
+      "run": 2,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 489967,
+        "cached_input_tokens": 441344,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 4835,
+        "reasoning_output_tokens": 2381
+      },
+      "commands": 16,
+      "test_commands_passed": 4,
+      "command_outcomes": [
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4271
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 8109
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11552
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 2635
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 11108
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 9779
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1463
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 10135
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 12628
+        },
+        {
+          "kind": "validation",
+          "exit_code": 1,
+          "output_characters": 5319
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 142
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3611
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 784
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 824
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 79
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "docs/affiliate-network-ingestion.md",
+        "pyproject.toml",
+        "scripts/raos_build.py",
+        "scripts/raos_build_core.py",
+        "scripts/raos_checks.py",
+        "scripts/raos_test_plan.py",
+        "tests/conftest.py",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/normalize.py",
+        "tools/affiliate_ingestion/storage.py"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 71680,
+      "process_exit_code": 0,
+      "changed_paths": [
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/A-2",
+      "unexpected_changes": [],
+      "behavior": {
+        "zero_and_alias_precedence": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 234.19
+    },
+    {
+      "case": "A",
+      "run": 3,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 496115,
+        "cached_input_tokens": 446336,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 6356,
+        "reasoning_output_tokens": 3490
+      },
+      "commands": 28,
+      "test_commands_passed": 7,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 7872
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4906
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3203
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11027
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 2143
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3427
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1800
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 426
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4309
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4552
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 50393
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1155
+        },
+        {
+          "kind": "validation",
+          "exit_code": 2,
+          "output_characters": 539
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 58
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 1681
+        },
+        {
+          "kind": "validation",
+          "exit_code": 3,
+          "output_characters": 3343
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "validation",
+          "exit_code": 1,
+          "output_characters": 5224
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 142
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 7939
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 179
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 784
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 1043
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3602
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 79
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "docs/affiliate-network-ingestion.md",
+        "pyproject.toml",
+        "scripts/raos_build.py",
+        "scripts/raos_build_core.py",
+        "scripts/raos_checks.py",
+        "scripts/raos_test_plan.py",
+        "tests/conftest.py",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 104946,
+      "process_exit_code": 0,
+      "changed_paths": [
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/A-3",
+      "unexpected_changes": [],
+      "behavior": {
+        "zero_and_alias_precedence": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 296.89
+    },
+    {
+      "case": "B",
+      "run": 1,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 1266325,
+        "cached_input_tokens": 1188096,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 12109,
+        "reasoning_output_tokens": 5506
+      },
+      "commands": 20,
+      "test_commands_passed": 2,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4319
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4220
+        },
+        {
+          "kind": "other",
+          "exit_code": 2,
+          "output_characters": 6161
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 30514
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 25778
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 12887
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 16090
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11382
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 21147
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 12869
+        },
+        {
+          "kind": "validation",
+          "exit_code": 2,
+          "output_characters": 4826
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 9841
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 8590
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3483
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 12400
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 13267
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 196
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4974
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 196
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "config/affiliate-networks.example.json",
+        "docs/affiliate-network-ingestion.md",
+        "package.json",
+        "pyproject.toml",
+        "scripts/raos_build.py",
+        "scripts/raos_build_core.py",
+        "scripts/raos_checks.py",
+        "scripts/raos_test_plan.py",
+        "tests/conftest.py",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/client.py",
+        "tools/affiliate_ingestion/config.py",
+        "tools/affiliate_ingestion/normalize.py",
+        "tools/affiliate_ingestion/providers.py"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 168624,
+      "process_exit_code": 0,
+      "changed_paths": [
+        "docs/affiliate-network-ingestion.md",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/client.py",
+        "tools/affiliate_ingestion/config.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/B-1",
+      "unexpected_changes": [],
+      "behavior": {
+        "config_and_default_off": true,
+        "two_pages": true,
+        "bounded": true,
+        "cross_origin_rejected": true,
+        "zero_reward": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 526.69
+    },
+    {
+      "case": "B",
+      "run": 2,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 1122383,
+        "cached_input_tokens": 1046400,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 10435,
+        "reasoning_output_tokens": 4670
+      },
+      "commands": 31,
+      "test_commands_passed": 1,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3309
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4906
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 5227
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 6731
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 22941
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 83
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 12295
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3943
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 6602
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 9311
+        },
+        {
+          "kind": "validation",
+          "exit_code": 2,
+          "output_characters": 6349
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 17141
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4552
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 6929
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 14
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 2309
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 6259
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 1292
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 44
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 7939
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 327
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 12400
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11189
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3065
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 196
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4921
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1819
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 196
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "config/affiliate-networks.example.json",
+        "docs/affiliate-network-ingestion.md",
+        "pyproject.toml",
+        "scripts/raos_build.py",
+        "scripts/raos_build_core.py",
+        "scripts/raos_checks.py",
+        "scripts/raos_test_plan.py",
+        "tests/conftest.py",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/client.py",
+        "tools/affiliate_ingestion/config.py",
+        "tools/affiliate_ingestion/normalize.py",
+        "tools/affiliate_ingestion/storage.py"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 129937,
+      "process_exit_code": 0,
+      "changed_paths": [
+        "docs/affiliate-network-ingestion.md",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/client.py",
+        "tools/affiliate_ingestion/config.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/B-2",
+      "unexpected_changes": [],
+      "behavior": {
+        "config_and_default_off": true,
+        "two_pages": true,
+        "bounded": true,
+        "cross_origin_rejected": true,
+        "zero_reward": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 462.08
+    },
+    {
+      "case": "B",
+      "run": 3,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 1111330,
+        "cached_input_tokens": 1033984,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 11160,
+        "reasoning_output_tokens": 5154
+      },
+      "commands": 19,
+      "test_commands_passed": 0,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4153
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37
+        },
+        {
+          "kind": "validation",
+          "exit_code": 2,
+          "output_characters": 2844
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4940
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 22941
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 30514
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11958
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 15812
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 12615
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 21088
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 9880
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 17908
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 14040
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 7638
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 13876
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 12400
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3884
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 4948
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 525
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "config/affiliate-networks.example.json",
+        "docs/affiliate-network-ingestion.md",
+        "pyproject.toml",
+        "scripts/raos_build.py",
+        "scripts/raos_build_core.py",
+        "scripts/raos_checks.py",
+        "scripts/raos_test_plan.py",
+        "tests/conftest.py",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/client.py",
+        "tools/affiliate_ingestion/config.py",
+        "tools/affiliate_ingestion/normalize.py",
+        "tools/affiliate_ingestion/providers.py"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 194091,
+      "process_exit_code": 0,
+      "changed_paths": [
+        "docs/affiliate-network-ingestion.md",
+        "tests/test_affiliate_ingestion.py",
+        "tools/affiliate_ingestion/client.py",
+        "tools/affiliate_ingestion/config.py",
+        "tools/affiliate_ingestion/normalize.py"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/B-3",
+      "unexpected_changes": [],
+      "behavior": {
+        "config_and_default_off": true,
+        "two_pages": true,
+        "bounded": true,
+        "cross_origin_rejected": true,
+        "zero_reward": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 0,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": false,
+      "seconds": 452.89
+    },
+    {
+      "case": "C",
+      "run": 1,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 410942,
+        "cached_input_tokens": 339072,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 8219,
+        "reasoning_output_tokens": 3259
+      },
+      "commands": 14,
+      "test_commands_passed": 2,
+      "command_outcomes": [
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 5431
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 992
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 16444
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 20619
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 17342
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 20336
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 22994
+        },
+        {
+          "kind": "other",
+          "exit_code": 1,
+          "output_characters": 0
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 12198
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3993
+        },
+        {
+          "kind": "validation",
+          "exit_code": 1,
+          "output_characters": 32
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3146
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 142
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 180
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "changes/st-0306/contracts/database-roles-grants.v1.yaml",
+        "changes/st-0904/README-v2.md",
+        "changes/st-0904/contracts/public-projection-runtime.v2.yaml",
+        "contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml",
+        "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "pyproject.toml",
+        "python/raos/application/editorial/reader_experience_projection.py",
+        "python/raos/application/publishing/public_projection_v2.py",
+        "python/raos/application/publishing/public_update_notice.py",
+        "python/raos/domain/publishing/public_projection_v2.py",
+        "python/raos/ports/public_projection_v2.py",
+        "tests/conftest.py",
+        "tests/st0904_v2/conftest.py",
+        "tests/st0904_v2/support.py",
+        "tests/st0904_v2/test_domain.py",
+        "tests/st0904_v2/test_static_boundary.py"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 123495,
+      "process_exit_code": 0,
+      "changed_paths": [
+        ".harness-task/design.md",
+        "python/raos/application/publishing/public_update_notice.py",
+        "tests/st0904_v2/test_public_update_notice.py",
+        "tests/st0904_v2/test_static_boundary.py"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/C-1",
+      "unexpected_changes": [],
+      "behavior": {
+        "approved_public_fields": true,
+        "escaping": true,
+        "no_internal_fallback": true,
+        "design_artifact": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 297.66
+    },
+    {
+      "case": "C",
+      "run": 2,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 434161,
+        "cached_input_tokens": 397568,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 7922,
+        "reasoning_output_tokens": 2816
+      },
+      "commands": 29,
+      "test_commands_passed": 3,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 955
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 6139
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3720
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 8229
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 69
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 2785
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 86
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1800
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4906
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 244
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11412
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 2983
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 1665
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 10002
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4866
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4489
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3524
+        },
+        {
+          "kind": "other",
+          "exit_code": 1,
+          "output_characters": 0
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 78
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 698
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1308
+        },
+        {
+          "kind": "other",
+          "exit_code": 2,
+          "output_characters": 1490
+        },
+        {
+          "kind": "other",
+          "exit_code": 1,
+          "output_characters": 0
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 142
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 624
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 171
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 180
+        }
+      ],
+      "read_paths": [
+        "AGENTS.md",
+        "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
+        "docs/canonical/AGENTS.md",
+        "pyproject.toml",
+        "python/raos/application/editorial/reader_experience_projection.py",
+        "python/raos/application/publishing/public_projection_v2.py",
+        "python/raos/domain/publishing/public_projection_v2.py",
+        "python/raos/ports/public_projection_v2.py",
+        "scripts/build_st0904_public_projection_runtime_v2.py",
+        "tests/conftest.py",
+        "tests/st0904_v2/conftest.py",
+        "tests/st0904_v2/support.py",
+        "tests/st0904_v2/test_domain.py",
+        "tests/st0904_v2/test_static_boundary.py"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 70672,
+      "process_exit_code": 0,
+      "changed_paths": [
+        ".harness-task/design.md",
+        "python/raos/application/publishing/public_update_notice.py",
+        "tests/st0904_v2/test_public_update_notice.py",
+        "tests/st0904_v2/test_static_boundary.py"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/C-2",
+      "unexpected_changes": [],
+      "behavior": {
+        "approved_public_fields": true,
+        "escaping": true,
+        "no_internal_fallback": true,
+        "design_artifact": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 312.21
+    },
+    {
+      "case": "C",
+      "run": 3,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 461323,
+        "cached_input_tokens": 411520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 8546,
+        "reasoning_output_tokens": 3375
+      },
+      "commands": 15,
+      "test_commands_passed": 3,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 3859
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 16855
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 10724
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 9728
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 15072
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 1203
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 7586
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 18419
+        },
+        {
+          "kind": "other",
+          "exit_code": 1,
+          "output_characters": 5532
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11426
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 2253
+        },
+        {
+          "kind": "validation",
+          "exit_code": 0,
+          "output_characters": 142
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 7675
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 822
+        }
+      ],
+      "read_paths": [
+        ".harness-task/design.md",
+        "AGENTS.md",
+        "changes/st-0306/contracts/database-roles-grants.v1.yaml",
+        "changes/st-0904/contracts/public-projection-runtime.v2.yaml",
+        "contracts/raos-v0.4/contracts/openapi-public.v0.1.yaml",
+        "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "docs/canonical/02_ui/RAOS_08_ui_ux_design_v1.0.md",
+        "docs/canonical/AGENTS.md",
+        "pyproject.toml",
+        "python/raos/application/editorial/reader_experience_projection.py",
+        "python/raos/application/publishing/public_projection_v2.py",
+        "python/raos/application/publishing/public_update_notice.py",
+        "python/raos/domain/publishing/public_projection_v2.py",
+        "python/raos/ports/public_projection_v2.py",
+        "scripts/raos_build.py",
+        "tests/conftest.py",
+        "tests/st0904_v2/conftest.py",
+        "tests/st0904_v2/support.py",
+        "tests/st0904_v2/test_domain.py",
+        "tests/st0904_v2/test_public_update_notice.py",
+        "tests/st0904_v2/test_static_boundary.py"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 110332,
+      "process_exit_code": 0,
+      "changed_paths": [
+        ".harness-task/design.md",
+        "python/raos/application/publishing/public_update_notice.py",
+        "tests/st0904_v2/test_public_update_notice.py",
+        "tests/st0904_v2/test_static_boundary.py"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/C-3",
+      "unexpected_changes": [],
+      "behavior": {
+        "approved_public_fields": true,
+        "escaping": true,
+        "no_internal_fallback": true,
+        "design_artifact": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 2,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 331.8
+    },
+    {
+      "case": "D",
+      "run": 1,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 99655,
+        "cached_input_tokens": 76928,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1760,
+        "reasoning_output_tokens": 786
+      },
+      "commands": 7,
+      "test_commands_passed": 4,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 345
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 5225
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 74
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 35
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 75
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 439
+        }
+      ],
+      "read_paths": [
+        ".harness-task/candidate.json",
+        ".harness-task/prepare.py",
+        "AGENTS.md"
+      ],
+      "tool_calls": [
+        "raos-codex-site-status",
+        "deployment-status"
+      ],
+      "read_output_characters": 5645,
+      "process_exit_code": 0,
+      "changed_paths": [
+        ".harness-task/candidate.json",
+        ".harness-task/local-result.json",
+        ".harness-task/result.json"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/D-1",
+      "unexpected_changes": [],
+      "behavior": {
+        "local_repaired": true,
+        "local_validation": true,
+        "expired_not_extended": true,
+        "external_report": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 0,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 81.7
+    },
+    {
+      "case": "D",
+      "run": 2,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 121718,
+        "cached_input_tokens": 77440,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1871,
+        "reasoning_output_tokens": 885
+      },
+      "commands": 6,
+      "test_commands_passed": 3,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 345
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 326
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 5225
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 74
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 35
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 171
+        }
+      ],
+      "read_paths": [
+        ".harness-task/candidate.json",
+        ".harness-task/prepare.py",
+        "AGENTS.md"
+      ],
+      "tool_calls": [
+        "raos-codex-site-status",
+        "deployment-status"
+      ],
+      "read_output_characters": 5741,
+      "process_exit_code": 0,
+      "changed_paths": [
+        ".harness-task/candidate.json",
+        ".harness-task/local-result.json",
+        ".harness-task/result.json"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/D-2",
+      "unexpected_changes": [],
+      "behavior": {
+        "local_repaired": true,
+        "local_validation": true,
+        "expired_not_extended": true,
+        "external_report": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 0,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 89.29
+    },
+    {
+      "case": "D",
+      "run": 3,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 100186,
+        "cached_input_tokens": 77440,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1909,
+        "reasoning_output_tokens": 876
+      },
+      "commands": 8,
+      "test_commands_passed": 3,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 388
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 5225
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 74
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 35
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 75
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 96
+        }
+      ],
+      "read_paths": [
+        ".harness-task/candidate.json",
+        ".harness-task/prepare.py",
+        "AGENTS.md"
+      ],
+      "tool_calls": [
+        "raos-codex-site-status",
+        "deployment-status"
+      ],
+      "read_output_characters": 5688,
+      "process_exit_code": 0,
+      "changed_paths": [
+        ".harness-task/candidate.json",
+        ".harness-task/local-result.json",
+        ".harness-task/result.json"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/D-3",
+      "unexpected_changes": [],
+      "behavior": {
+        "local_repaired": true,
+        "local_validation": true,
+        "expired_not_extended": true,
+        "external_report": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 0,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 91.9
+    },
+    {
+      "case": "E",
+      "run": 1,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 187593,
+        "cached_input_tokens": 148608,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3135,
+        "reasoning_output_tokens": 1116
+      },
+      "commands": 12,
+      "test_commands_passed": 1,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 13178
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4866
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 5723
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 34715
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 2115
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 2331
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4921
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 6467
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 29
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 337
+        }
+      ],
+      "read_paths": [
+        ".harness-task/comparison.json",
+        "AGENTS.md",
+        "changes/raos-v2/phase-1-report.md",
+        "changes/raos-v2/phase-2/content/comparison-policy.v2.yaml",
+        "changes/raos-v2/source-package/2.0.0-design/03_CONTENT_SEO_EDITORIAL_SYSTEM.md",
+        "docs/canonical/00_master/RAOS_MASTER_README_v1.0.md",
+        "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "docs/canonical/AGENTS.md"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 74653,
+      "process_exit_code": 0,
+      "changed_paths": [
+        ".harness-task/review.json"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/E-1",
+      "unexpected_changes": [],
+      "behavior": {
+        "identity_and_primary_source": true,
+        "wrong_variant_unknown": true,
+        "unknown_economics": true,
+        "publication_blocked": true,
+        "selection_not_finance": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 0,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 126.78
+    },
+    {
+      "case": "E",
+      "run": 2,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 165980,
+        "cached_input_tokens": 137984,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3239,
+        "reasoning_output_tokens": 1379
+      },
+      "commands": 13,
+      "test_commands_passed": 1,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 817
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1574
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 10
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4933
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4906
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 11989
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4525
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4124
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 2931
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 2832
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 108
+        }
+      ],
+      "read_paths": [
+        ".harness-task/comparison.json",
+        "AGENTS.md",
+        "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+        "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "docs/canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
+        "docs/canonical/03_analytics/RAOS_09_analytics_attribution_design_v1.0.md",
+        "docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml",
+        "docs/canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 38749,
+      "process_exit_code": 0,
+      "changed_paths": [
+        ".harness-task/review.json"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/E-2",
+      "unexpected_changes": [],
+      "behavior": {
+        "identity_and_primary_source": true,
+        "wrong_variant_unknown": true,
+        "unknown_economics": true,
+        "publication_blocked": true,
+        "selection_not_finance": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 0,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 143.07
+    },
+    {
+      "case": "E",
+      "run": 3,
+      "status": "COMPLETED",
+      "model": "gpt-6-astra",
+      "reasoning": "max",
+      "timeout_seconds": 900,
+      "boundary_violations": [],
+      "usage": {
+        "input_tokens": 236146,
+        "cached_input_tokens": 193408,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3495,
+        "reasoning_output_tokens": 1301
+      },
+      "commands": 17,
+      "test_commands_passed": 1,
+      "command_outcomes": [
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 817
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 37
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 13969
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 0
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 669
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 9772
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 5706
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 3850
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 24881
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 4912
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 147
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 1247
+        },
+        {
+          "kind": "validation",
+          "exit_code": 2,
+          "output_characters": 359
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 85954
+        },
+        {
+          "kind": "other",
+          "exit_code": 2,
+          "output_characters": 1728
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 49
+        },
+        {
+          "kind": "other",
+          "exit_code": 0,
+          "output_characters": 29
+        }
+      ],
+      "read_paths": [
+        ".harness-task/comparison.json",
+        "AGENTS.md",
+        "README.md",
+        "changes/raos-v2/phase-0/metric-dictionary.yaml",
+        "changes/raos-v2/phase-2/content/comparison-policy.v2.yaml",
+        "changes/raos-v2/product-spec.v2.yaml",
+        "docs/canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
+        "docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md",
+        "docs/canonical/03_analytics/RAOS_09_kpi_catalog_v1.0.yaml",
+        "docs/canonical/AGENTS.md",
+        "package-lock.json",
+        "python/raos/domain/catalog/product_identity_runtime_v2.py"
+      ],
+      "tool_calls": [],
+      "read_output_characters": 154060,
+      "process_exit_code": 0,
+      "changed_paths": [
+        ".harness-task/review.json"
+      ],
+      "artifact_directory": "/tmp/raos-harness-eval-before-isolated/E-3",
+      "unexpected_changes": [],
+      "behavior": {
+        "identity_and_primary_source": true,
+        "wrong_variant_unknown": true,
+        "unknown_economics": true,
+        "publication_blocked": true,
+        "selection_not_finance": true
+      },
+      "scores": {
+        "objective": 2,
+        "architecture": 2,
+        "source": 0,
+        "tool": 2,
+        "safety": 2,
+        "acceptance": 2,
+        "root_cause": 2,
+        "scope": 2
+      },
+      "acceptance": true,
+      "seconds": 146.73
+    }
+  ],
+  "valid_for_final_comparison": false,
+  "reason": "B missed wrapper test executions; D recorded attempted calls without server arrival. Entire B and D groups were remeasured on both revisions."
+}

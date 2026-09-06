@@ -11,7 +11,7 @@ from datetime import date
 from hashlib import sha256
 from html import escape
 import re
-from typing import Any
+from typing import TypeAlias, TypeGuard
 from urllib.parse import urlsplit
 
 from raos.application.editorial import reader_components as components
@@ -23,12 +23,17 @@ from raos.application.editorial.reader_experience_v1 import (
 )
 
 SCHEMA = "RAOS_LOCAL_READER_GUIDES_V1"
+Record: TypeAlias = Mapping[str, object]
 
 
 def _text(value: object) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ValueError("LOCAL_GUIDE_TEXT_REQUIRED")
     return value
+
+
+def _optional_text(value: object) -> str | None:
+    return value if isinstance(value, str) else None
 
 
 def _identifier(value: object) -> str:
@@ -45,23 +50,29 @@ def _dated(value: object, today: date) -> bool:
         return False
 
 
+def _is_object_list(value: object) -> TypeGuard[list[object]]:
+    return isinstance(value, list)
+
+
+def _is_record(value: object) -> TypeGuard[Record]:
+    return isinstance(value, Mapping)
+
+
 def _strings(value: object) -> list[str]:
-    if not isinstance(value, list) or any(
+    if not _is_object_list(value) or any(
         not isinstance(item, str) or not item.strip() for item in value
     ):
         raise ValueError("LOCAL_GUIDE_SCHEMA_INVALID")
-    return value
+    return [item for item in value if isinstance(item, str)]
 
 
-def _records(value: object) -> list[Mapping[str, Any]]:
-    if not isinstance(value, list) or any(
-        not isinstance(item, Mapping) for item in value
-    ):
+def _records(value: object) -> list[Record]:
+    if not _is_object_list(value) or any(not _is_record(item) for item in value):
         raise ValueError("LOCAL_GUIDE_SCHEMA_INVALID")
-    return value
+    return [item for item in value if _is_record(item)]
 
 
-def _validate_schema(registry: Mapping[str, Any]) -> None:
+def _validate_schema(registry: Mapping[str, object]) -> None:
     _strings(registry.get("official_hosts"))
     for source in _records(registry.get("sources")):
         _identifier(source.get("source_ref"))
@@ -105,14 +116,16 @@ def _validate_schema(registry: Mapping[str, Any]) -> None:
         for link in _records(article.get("contextual_links", [])):
             for field in ("question", "target_ref", "journey_stage"):
                 _text(link.get(field))
-        if article["article_type"] == "comparison":
+        if _text(article.get("article_type")) == "comparison":
             _strings(article.get("comparison_products"))
 
 
 def _bound(
-    fact: Mapping[str, Any], sources: Mapping[str, Any], hosts: set[str], today: date
+    fact: Record, sources: Mapping[str, Record], hosts: set[str], today: date
 ) -> bool:
-    source = sources.get(str(fact.get("source_ref", "")), {})
+    source = sources.get(str(fact.get("source_ref", "")))
+    if source is None:
+        return False
     parsed = urlsplit(str(source.get("url", "")))
     return bool(
         fact.get("state") == "KNOWN"
@@ -124,16 +137,16 @@ def _bound(
         and not parsed.username
         and not parsed.password
         and _dated(source.get("checked_at"), today)
-        and fact.get("exact_model") in source.get("models", [])
+        and fact.get("exact_model") in _strings(source.get("models", []))
     )
 
 
 def build_local_guides(
-    registry: Mapping[str, Any],
+    registry: Mapping[str, object],
     *,
     today: date,
-    existing_targets: Mapping[str, str] | None = None,
-) -> dict[str, Any]:
+    existing_targets: Mapping[object, object] | None = None,
+) -> dict[str, object]:
     """Resolve evidence before rendering; incomplete comparisons emit only blockers."""
     if (
         registry.get("schema") != SCHEMA
@@ -141,38 +154,45 @@ def build_local_guides(
     ):
         raise ValueError("LOCAL_GUIDE_BOUNDARY_INVALID")
     _validate_schema(registry)
-    hosts = set(registry["official_hosts"])
-    sources = {s["source_ref"]: s for s in registry["sources"]}
-    facts = {f["evidence_ref"]: f for f in registry["facts"]}
-    if len(sources) != len(registry["sources"]) or len(facts) != len(registry["facts"]):
+    hosts = set(_strings(registry["official_hosts"]))
+    source_rows = _records(registry["sources"])
+    fact_rows = _records(registry["facts"])
+    articles = _records(registry["articles"])
+    sources = {_identifier(source.get("source_ref")): source for source in source_rows}
+    facts = {_identifier(fact.get("evidence_ref")): fact for fact in fact_rows}
+    if len(sources) != len(source_rows) or len(facts) != len(fact_rows):
         raise ValueError("LOCAL_GUIDE_DUPLICATE_REFERENCE")
-    ready, blocked = [], []
-    ids, slugs = set(), set()
-    for article in registry["articles"]:
-        identifier = _identifier(article["article_id"])
-        slug = _text(article["local_slug"])
+    ready: list[Record] = []
+    blocked: list[dict[str, object]] = []
+    ids: set[str] = set()
+    slugs: set[str] = set()
+    for article in articles:
+        identifier = _identifier(article.get("article_id"))
+        slug = _text(article.get("local_slug"))
+        article_type = _text(article.get("article_type"))
         if not re.fullmatch(r"local-preview-[a-z0-9]+(?:-[a-z0-9]+)*", slug):
             raise ValueError("LOCAL_GUIDE_ROUTE_INVALID")
         if (
             identifier in ids
             or slug in slugs
-            or article["article_type"] not in {"guide", "comparison"}
+            or article_type not in {"guide", "comparison"}
         ):
             raise ValueError("LOCAL_GUIDE_IDENTITY_INVALID")
         ids.add(identifier)
         slugs.add(slug)
         for field in ("title", "dek", "summary", "category"):
-            _text(article[field])
-        section_ids = [_identifier(s["id"]) for s in article["sections"]]
+            _text(article.get(field))
+        sections = _records(article.get("sections"))
+        section_ids = [_identifier(section.get("id")) for section in sections]
         if len(section_ids) != len(set(section_ids)) or any(
             s.startswith("guide-") or s.startswith("reader-") for s in section_ids
         ):
             raise ValueError("LOCAL_GUIDE_SECTION_ID_INVALID")
-        refs = article["evidence_refs"]
-        issues = []
+        refs = _strings(article.get("evidence_refs", []))
+        issues: list[str] = []
         if not refs:
             issues.append("evidence.required")
-        valid = {}
+        valid: dict[str, Record] = {}
         for ref in refs:
             _identifier(ref)
             fact = facts.get(ref)
@@ -180,28 +200,35 @@ def build_local_guides(
                 issues.append("evidence." + ref)
             else:
                 valid[ref] = fact
-        for section in article["sections"]:
-            for paragraph in section["paragraphs"]:
-                _text(paragraph["text"])
-                if any(ref not in refs for ref in paragraph.get("evidence_refs", [])):
+        for section in sections:
+            for paragraph in _records(section.get("paragraphs")):
+                _text(paragraph.get("text"))
+                if any(
+                    ref not in refs
+                    for ref in _strings(paragraph.get("evidence_refs", []))
+                ):
                     issues.append("paragraph.unresolved_evidence")
-        if article["article_type"] == "comparison":
-            models = article.get("comparison_products", [])
+        if article_type == "comparison":
+            models = _strings(article.get("comparison_products", []))
             grouped: dict[str, dict[str, CheckedFact]] = {}
             for model in models:
                 grouped[model] = {}
                 for ref, fact in valid.items():
-                    if fact["exact_model"] != model:
+                    if _text(fact.get("exact_model")) != model:
                         continue
-                    requirement = fact["requirement"]
+                    requirement = _text(fact.get("requirement"))
                     if requirement in grouped[model]:
                         issues.append(
                             model + "." + requirement + ".conflicting_evidence"
                         )
                     grouped[model][requirement] = CheckedFact(
                         ref,
-                        fact["source_ref"],
-                        sources[fact["source_ref"]]["checked_at"],
+                        _identifier(fact.get("source_ref")),
+                        _optional_text(
+                            sources[_identifier(fact.get("source_ref"))].get(
+                                "checked_at"
+                            )
+                        ),
                         "KNOWN",
                     )
             issues.extend(comparison_issues(grouped))
@@ -214,7 +241,7 @@ def build_local_guides(
                         "real_world_tested": False,
                         "ranking_uses_commission": False,
                     },
-                    "dek": article["dek"],
+                    "dek": _text(article.get("dek")),
                     "local_guide": article,
                 },
                 product_refs=frozenset(),
@@ -233,63 +260,73 @@ def build_local_guides(
         models = _strings(candidate.get("exact_models"))
         refs = _strings(candidate.get("evidence_refs"))
         grouped = {model: {} for model in models}
-        candidate_issues = []
+        candidate_issues: list[str] = []
         for ref in refs:
             fact = facts.get(ref)
-            if fact is None or fact["exact_model"] not in grouped:
+            if fact is None or _text(fact.get("exact_model")) not in grouped:
                 candidate_issues.append("evidence." + ref)
                 continue
-            requirement = fact["requirement"]
+            requirement = _text(fact.get("requirement"))
             if requirement not in COMPARISON_REQUIREMENTS:
                 candidate_issues.append("requirement." + requirement)
                 continue
-            group = grouped[fact["exact_model"]]
+            group = grouped[_text(fact.get("exact_model"))]
             if requirement in group:
                 candidate_issues.append("evidence.conflicting." + requirement)
                 continue
-            source = sources.get(fact["source_ref"], {})
+            source = sources.get(_identifier(fact.get("source_ref")))
             group[requirement] = CheckedFact(
-                ref, fact["source_ref"], source.get("checked_at"),
+                ref,
+                _identifier(fact.get("source_ref")),
+                _optional_text(source.get("checked_at")) if source is not None else None,
                 "KNOWN" if _bound(fact, sources, hosts, today) else "UNKNOWN",
             )
         candidate_issues.extend(comparison_issues(grouped))
         if candidate_issues:
             blocked.append({"article_id": identifier, "issues": list(dict.fromkeys(candidate_issues))})
-    targets = dict(existing_targets or {})
-    if any(
-        not isinstance(url, str)
-        or not re.fullmatch(
+    targets: dict[str, str] = {}
+    for target_ref, url in (existing_targets or {}).items():
+        if not isinstance(url, str) or not re.fullmatch(
             r"/local-preview-[a-z0-9]+(?:-[a-z0-9]+)*/(?:#[A-Za-z0-9_-]+)?", url
-        )
-        for url in targets.values()
-    ):
-        raise ValueError("LOCAL_GUIDE_TARGET_INVALID")
-    targets.update({a["article_id"]: "/" + a["local_slug"] + "/" for a in ready})
-    documents = []
+        ):
+            raise ValueError("LOCAL_GUIDE_TARGET_INVALID")
+        if isinstance(target_ref, str):
+            targets[target_ref] = url
+    targets.update(
+        {
+            _identifier(article.get("article_id")): "/"
+            + _text(article.get("local_slug"))
+            + "/"
+            for article in ready
+        }
+    )
+    documents: list[dict[str, object]] = []
     for article in ready:
         html = _render(article, facts, sources, targets)
-        documents.append(
+        document: dict[str, object] = {
+            "article_id": _identifier(article.get("article_id")),
+            "local_slug": _text(article.get("local_slug")),
+            "article_type": _text(article.get("article_type")),
+            "title": _text(article.get("title")),
+            "dek": _text(article.get("dek")),
+            "category": _text(article.get("category")),
+            "purposes": _strings(article.get("purposes", [])),
+        }
+        document.update(
             {
-                k: article[k]
-                for k in (
-                    "article_id",
-                    "local_slug",
-                    "article_type",
-                    "title",
-                    "dek",
-                    "category",
-                    "purposes",
-                )
-            }
-            | {
                 "html": html,
                 "content_sha256": sha256(html.encode()).hexdigest(),
                 "checked_at": max(
-                    sources[facts[ref]["source_ref"]]["checked_at"]
-                    for ref in article["evidence_refs"]
+                    _text(
+                        sources[_identifier(facts[ref].get("source_ref"))].get(
+                            "checked_at"
+                        )
+                    )
+                    for ref in _strings(article.get("evidence_refs", []))
                 ),
             }
         )
+        documents.append(document)
     return {
         "schema": SCHEMA,
         "publication_authority": False,
@@ -299,25 +336,27 @@ def build_local_guides(
 
 
 def _render(
-    article: Mapping[str, Any],
-    facts: Mapping[str, Any],
-    sources: Mapping[str, Any],
+    article: Record,
+    facts: Mapping[str, Record],
+    sources: Mapping[str, Record],
     targets: Mapping[str, str],
 ) -> str:
-    body = [
+    body: list[str] = [
         '<div class="raos-editorial-v2"><span class="raos-reader-view" data-raos-article-id="'
-        + escape(article["article_id"], quote=True)
+        + escape(_identifier(article.get("article_id")), quote=True)
         + '" hidden></span>'
     ]
     body.append(
         '<p class="raos-article-category">選び方ガイド</p><p>'
-        + escape(article["dek"])
+        + escape(_text(article.get("dek")))
         + "</p>"
     )
     dates = sorted(
         {
-            sources[facts[ref]["source_ref"]]["checked_at"]
-            for ref in article["evidence_refs"]
+            _text(
+                sources[_identifier(facts[ref].get("source_ref"))].get("checked_at")
+            )
+            for ref in _strings(article.get("evidence_refs", []))
         }
     )
     body.append(
@@ -329,17 +368,26 @@ def _render(
         components.section(
             "guide-summary",
             "30秒で分かる、先にすること",
-            "<p>" + escape(article["summary"]) + "</p>",
+            "<p>" + escape(_text(article.get("summary"))) + "</p>",
             "raos-guide-summary",
         ).html()
     )
-    axes = components.decision_axes(article.get("decision_axes", []))
+    axes = components.decision_axes(
+        [
+            {
+                "label": _text(axis.get("label")),
+                "why_it_matters": _text(axis.get("why_it_matters")),
+                "how_to_check": _text(axis.get("how_to_check")),
+            }
+            for axis in _records(article.get("decision_axes", []))
+        ]
+    )
     if axes is not None:
         body.append(axes.html())
-    for section in article["sections"]:
-        paragraphs = []
-        for paragraph in section["paragraphs"]:
-            refs = paragraph.get("evidence_refs", [])
+    for section in _records(article.get("sections")):
+        paragraphs: list[str] = []
+        for paragraph in _records(section.get("paragraphs")):
+            refs = _strings(paragraph.get("evidence_refs", []))
             links = "".join(
                 ' <a href="#guide-evidence-'
                 + escape(ref, quote=True)
@@ -348,28 +396,42 @@ def _render(
                 + "</a>"
                 for i, ref in enumerate(refs, 1)
             )
-            paragraphs.append("<p>" + escape(paragraph["text"]) + links + "</p>")
+            paragraphs.append(
+                "<p>" + escape(_text(paragraph.get("text"))) + links + "</p>"
+            )
         body.append(
             components.section(
-                section["id"],
-                section["heading"],
+                _identifier(section.get("id")),
+                _text(section.get("heading")),
                 "".join(paragraphs),
                 "raos-guide-section",
             ).html()
         )
     for component in (
-        components.unknowns_panel(article.get("unknowns", [])),
-        components.purchase_checklist(article.get("purchase_checks", [])),
+        components.unknowns_panel(
+            [
+                {
+                    "topic": _text(unknown.get("topic")),
+                    "why_unknown": _text(unknown.get("why_unknown")),
+                    "how_to_verify": _text(unknown.get("how_to_verify")),
+                    "decision_effect": _text(unknown.get("decision_effect")),
+                }
+                for unknown in _records(article.get("unknowns", []))
+            ]
+        ),
+        components.purchase_checklist(
+            _strings(article.get("purchase_checks", []))
+        ),
     ):
         if component is not None:
             body.append(component.html())
-    for link in article.get("contextual_links", []):
-        target = targets.get(link["target_ref"])
+    for link in _records(article.get("contextual_links", [])):
+        target = targets.get(_text(link.get("target_ref")))
         if target:
             component = components.contextual_link(
-                link["question"],
+                _text(link.get("question")),
                 target,
-                link["journey_stage"],
+                _text(link.get("journey_stage")),
                 existing_targets=frozenset(targets.values()),
             )
             if component is not None:
@@ -377,24 +439,24 @@ def _render(
     body.append(
         '<section class="raos-evidence-panel" id="guide-evidence" aria-labelledby="guide-evidence-title"><h2 id="guide-evidence-title">型番・公式出典・確認日を確認する</h2>'
     )
-    for ref in article["evidence_refs"]:
+    for ref in _strings(article.get("evidence_refs", [])):
         fact = facts[ref]
-        source = sources[fact["source_ref"]]
+        source = sources[_identifier(fact.get("source_ref"))]
         body.append(
             '<div id="guide-evidence-'
             + escape(ref, quote=True)
             + '"><h3>'
-            + escape(fact["exact_model"])
+            + escape(_text(fact.get("exact_model")))
             + "</h3><p>"
-            + escape(fact["text"])
+            + escape(_text(fact.get("text")))
             + '</p><p><a data-raos-cta-type="verify" href="'
-            + escape(source["url"], quote=True)
+            + escape(_text(source.get("url")), quote=True)
             + '">'
-            + escape(source["title"])
+            + escape(_text(source.get("title")))
             + "</a>："
-            + escape(fact["locator"])
+            + escape(_text(fact.get("locator")))
             + " ／ 確認日："
-            + escape(source["checked_at"])
+            + escape(_text(source.get("checked_at")))
             + "</p></div>"
         )
     body.append("</section></div>")

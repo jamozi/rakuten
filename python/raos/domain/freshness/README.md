@@ -4,4 +4,4 @@
 
 Freshness policy and observation domain boundary.
 
-ST-0101 reserves this directory as an inert boundary. Functional content is owned by later backlog Stories.
+ST-0101 recorded an inert boundary here. See the [current documentation map](../../../../docs/README.md) for implementation status and ownership.

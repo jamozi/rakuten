@@ -258,3 +258,29 @@ def test_edited_generated_manifest_still_runs_its_owner_check(tmp_path: Path) ->
         root, {owner.owner_id: owner}, (Path("changes/example/manifest.yaml"),)
     )
     assert plan.generators == (owner.owner_id,)
+
+
+def test_saved_eval_text_keeps_its_original_checkout_link_context(
+    tmp_path: Path,
+) -> None:
+    from scripts.raos_checks import check_documents
+
+    artifact = "changes/codex-harness-v1/evals/artifacts/after/C-1/design.txt"
+    report = "changes/codex-harness-v1/report.md"
+    root = repository(
+        tmp_path,
+        {
+            artifact: "[original design](../docs/design.md)\n",
+            report: "[missing current document](missing.md)\n",
+        },
+    )
+    plan = create_plan(root, {}, (Path(artifact), Path(report)))
+    assert artifact not in plan.documents
+    assert report in plan.documents
+    with pytest.raises(ValueError, match="broken document reference"):
+        check_documents(root, plan.documents)
+    (root / report).write_text(
+        "Recorded evaluation output retains its original checkout paths.\n"
+    )
+    check_documents(root, plan.documents)
+    assert (root / artifact).read_text() == "[original design](../docs/design.md)\n"

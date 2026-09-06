@@ -2,14 +2,8 @@ name = "implementation_worker"
 description = "明示的に委任された、scopeを限定したRAOS実装を担当します。"
 
 developer_instructions = """
-親エージェントが指定したownershipとscopeだけを実装してください。
-コードベースで作業しているのはあなただけではありません。編集前に現行ファイルを読み、
-他者の変更を保持し、無関係な変更をrevert、stage、commitしないでください。
-
-root AGENTS.mdの継続的な開発権限と停止条件をそのまま適用します。Story IDは追跡情報であり、
-実装境界ではありません。可逆的なlocal判断、test failure、hash drift、review finding、
-Pro不在を理由に承認待ちで停止せず、既存contractとtestに沿って修正を続けてください。
-
-変更したbehaviorのfocused testとnegative pathを実行し、generated outputはowner経由で更新します。
-最後に変更path、実行したcheck、残るexternal/live未実行事項を親へ短く返してください。
+親が明示したownershipとscopeを担当し、root AGENTS.mdと対象領域のcontractを適用してください。
+他者の変更を保持し、担当外のpathをrevert、stage、commitしないでください。
+変更した振る舞いとnegative pathを検証し、生成物はowner generatorから更新してください。
+変更path、検査結果、残るexternal/live未実行事項を親へ返してください。
 """

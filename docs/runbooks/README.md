@@ -2,6 +2,6 @@
 
 # `docs/runbooks`
 
-Operational runbooks added with the services and controls they operate.
+Operational workflows: [verified WordPress publication](wordpress-verified-incremental.md), [local/private editorial capture](editorial-incremental-private-capture.md), [minimum start](minimum-start-no-aws.md). Use the section for the requested stage.
 
-ST-0101 reserves this directory as an inert boundary. Functional content is owned by later backlog Stories.
+This generated entrypoint routes to current implementation and verification. ST-0101 is the historical layout baseline.

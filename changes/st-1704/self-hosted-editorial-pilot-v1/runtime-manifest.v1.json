@@ -402,24 +402,24 @@
       "sha256": "044c351bfa0e9ecc1a3de56bc590170582bd690905b534605d6fab3308a55eef"
     },
     {
-      "bytes": 18399,
+      "bytes": 18522,
       "path": "python/raos/application/editorial/reader_components.py",
-      "sha256": "4de495d960f7bc9c2101114a0eca63d4e904687284b53e2799d9f5318a59d431"
+      "sha256": "6c4dc4d3ff06ac13a2ab2484a83839556fb6c4b4bc159fcfe79cf32dfbcc3542"
     },
     {
-      "bytes": 32741,
+      "bytes": 35122,
       "path": "python/raos/application/editorial/reader_experience_projection.py",
-      "sha256": "c6310140770a3eaddb9afb32b748770712bc30c0b5e7b08e5d95fe52acad6b38"
+      "sha256": "cf069b2e27edc3d8b505c69e8b1fd89838658641a8ccab8a548e3ab320c36e0b"
     },
     {
-      "bytes": 15167,
+      "bytes": 16250,
       "path": "python/raos/application/editorial/reader_experience_v1.py",
-      "sha256": "6af61f53315800bc9ad9b8cd823babae1a4febe6f38c8fc47df3e2e722ca478d"
+      "sha256": "e55527eabac0f278544c5ab59c7284d8dfd2868e4eacd2c2fdda67eac10c5b92"
     },
     {
-      "bytes": 3797,
+      "bytes": 3839,
       "path": "python/raos/application/editorial/reader_html.py",
-      "sha256": "7cf1b8fee50d603081aff474bd41cc7ee69273686a751245a5e569dc92b11855"
+      "sha256": "7c0c495d5b2be06095808339b44d600c4081953c4f68304dd999da4326759690"
     },
     {
       "bytes": 115335,

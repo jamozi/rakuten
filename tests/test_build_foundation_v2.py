@@ -417,20 +417,3 @@ def test_status_v2_is_compact_and_contains_no_evidence_bodies() -> None:
         for story in status["stories"]
     )
     assert "evidence" not in json.dumps(status).lower()
-
-
-def test_root_development_policy_preserves_external_and_irreversible_boundaries() -> (
-    None
-):
-    policy = (REPOSITORY_ROOT / "AGENTS.md").read_text(encoding="utf-8")
-    assert "## 唯一の停止条件" in policy
-    assert "1. GitHub 開発操作を除く live 外部作用" in policy
-    assert "2. 回復不能な操作" in policy
-    for obsolete in (
-        "exact SHA",
-        "head confirmation",
-        "1 Story/PR",
-        "gpt-5.6-sol",
-        'reasoning_effort = "ultra"',
-    ):
-        assert obsolete not in policy

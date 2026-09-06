@@ -18,8 +18,8 @@
     },
     {
       "path": "python/raos/adapters/persistence/sqlalchemy/google_live.py",
-      "sha256": "0f5a67867f4b5369ce3d5cc2ea056df4f7e520dacef441f2b254b7f553a350e3",
-      "size": 40247
+      "sha256": "b66f8e17e30b287c12fe3e4dd4abd241372b6c5c0c4f6fbfc2f148bdf8b105a6",
+      "size": 40455
     },
     {
       "path": "python/raos/application/analytics/google_live_import.py",

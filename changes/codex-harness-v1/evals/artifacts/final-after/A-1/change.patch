@@ -1,0 +1,89 @@
+diff --git a/tests/test_affiliate_ingestion.py b/tests/test_affiliate_ingestion.py
+index 07a888e..8a270a9 100644
+--- a/tests/test_affiliate_ingestion.py
++++ b/tests/test_affiliate_ingestion.py
+@@ -6,6 +6,7 @@ import stat
+ import tempfile
+ import unittest
+ import zipfile
++from decimal import Decimal
+ from pathlib import Path
+ 
+ from tools.affiliate_ingestion.client import FetchBatch, RawPage, parse_records
+@@ -128,6 +129,63 @@ class NormalizationAndStorageTests(unittest.TestCase):
+         self.assertEqual(normalized["price"], "1200")
+         self.assertEqual(normalized["raw"], source)
+ 
++    def test_normalization_preserves_zero_before_later_aliases(self) -> None:
++        for zero, expected_amount in (
++            (0, "0"),
++            (0.0, "0.0"),
++            (Decimal("0.00"), "0.00"),
++            ("0", "0"),
++        ):
++            for fallback in (
++                {},
++                {"program_id": "P-1", "unit_price": 1200, "reward": 30},
++            ):
++                with self.subTest(zero=zero, fallback=fallback):
++                    source = {**fallback, "id": zero, "price": zero, "commission": zero}
++                    normalized = normalize_record("a8net", "products", source)
++                    self.assertEqual(normalized["source_id"], zero)
++                    self.assertEqual(normalized["price"], expected_amount)
++                    self.assertEqual(normalized["commission"], expected_amount)
++                    self.assertEqual(normalized["raw"], source)
++
++    def test_normalization_preserves_empty_value_handling(self) -> None:
++        for empty in (None, "", False, [], {}):
++            with self.subTest(empty=empty):
++                source = {"id": empty, "price": empty, "commission": empty}
++                normalized = normalize_record("a8net", "products", source)
++                for field in ("source_id", "price", "commission"):
++                    self.assertIsNone(normalized[field])
++
++                normalized = normalize_record(
++                    "a8net",
++                    "products",
++                    {**source, "program_id": 0, "unit_price": 0, "reward": 0},
++                )
++                self.assertEqual(normalized["source_id"], 0)
++                self.assertEqual(normalized["price"], "0")
++                self.assertEqual(normalized["commission"], "0")
++
++        normalized = normalize_record("a8net", "products", {})
++        for field in ("source_id", "price", "commission"):
++            self.assertIsNone(normalized[field])
++
++    def test_normalization_keeps_earlier_nonzero_aliases(self) -> None:
++        normalized = normalize_record(
++            "a8net",
++            "products",
++            {
++                "program_id": 0,
++                "unit_price": 0,
++                "reward": 0,
++                "id": "P-1",
++                "price": 1200,
++                "commission": 30,
++            },
++        )
++        self.assertEqual(normalized["source_id"], "P-1")
++        self.assertEqual(normalized["price"], "1200")
++        self.assertEqual(normalized["commission"], "30")
++
+     def test_persist_batch_writes_manifest_raw_and_ndjson(self) -> None:
+         with tempfile.TemporaryDirectory() as directory:
+             batch = FetchBatch(
+diff --git a/tools/affiliate_ingestion/normalize.py b/tools/affiliate_ingestion/normalize.py
+index a0863dc..aa22872 100644
+--- a/tools/affiliate_ingestion/normalize.py
++++ b/tools/affiliate_ingestion/normalize.py
+@@ -68,7 +68,8 @@ def _flatten_keys(record: Mapping[str, Any]) -> dict[str, Any]:
+ def _first(record: Mapping[str, Any], aliases: Iterable[str]) -> Any:
+     for alias in aliases:
+         value = record.get(alias)
+-        if value:
++        # Keep numeric zero without changing fallback for other falsey values.
++        if value or (value == 0 and not isinstance(value, bool)):
+             return value
+     return None

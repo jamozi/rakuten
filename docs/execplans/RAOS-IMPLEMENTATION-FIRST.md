@@ -1,8 +1,11 @@
 # Standing ExecPlan: RAOS implementation-first completion waves
 
+> Historical planning snapshot. 現行の開発指示ではありません。
+> 現在の入口は[docs map](../README.md)と[developer guide](../../README.md)です。
+
 ## Standing authorization and objective
 
-- Status: `ACTIVE_UNDER_STANDING_DEVELOPMENT_AUTHORIZATION`
+- Status: `HISTORICAL` (former `ACTIVE_UNDER_STANDING_DEVELOPMENT_AUTHORIZATION`)
 - Authority source: root `AGENTS.md`. Reversible repository development and the
   normal GitHub development workflow do not require per-Story, per-slice,
   handoff, exact-hash, patch, head, or commit approval.

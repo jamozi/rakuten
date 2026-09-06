@@ -319,8 +319,8 @@ source_artifacts:
   bytes: 14026
   sha256: 7cb4054cc8ab9b950cc572c0d8fa23dafe5baf77c40c242f81dac0fc0a492f68
 - uri: repo://tests/conftest.py
-  bytes: 9661
-  sha256: aee3ea2422295c93c611781cefd99b1de4fe85171a22c12ca81dc5f8319063dd
+  bytes: 10396
+  sha256: afd6ffe5d20afee8f4537e344b07b1a847e43020063a3faa2af2a7af6d9c395f
 - uri: repo://tests/st0102/conftest.py
   bytes: 234
   sha256: 4166ba2470a04ed6f03ecdb48515ae63666e5368755704ffa88323d9c4bf5528
@@ -349,14 +349,14 @@ source_artifacts:
   bytes: 4693
   sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
 - uri: repo://.github/workflows/ci.yml
-  bytes: 6908
-  sha256: 184b85fd1aaec4bb05fd2fc2f40bbfb575aa1933c7625d0d24a008e2e7c42906
+  bytes: 7050
+  sha256: febdc60bfab310a56c11b1d7ca98e22dfbb94583ea345e0c34107f5ea168e8ab
 - uri: repo://Makefile
-  bytes: 3427
-  sha256: 4eb39cb5aefdda22eba5abfa74a6539d36444453aebb8a70b41510d4f6cf56c8
+  bytes: 3490
+  sha256: 9df01ce453622e0a2c3c624589a8de654efb721d484e412e525b650028e1dcee
 - uri: repo://README.md
-  bytes: 7310
-  sha256: dc504844e40b802f5105efa60330a3b8d4c1e161d7bf44213b25ceb64e69fd9a
+  bytes: 7650
+  sha256: 5e70e32980ac73e3939041429ff83e0d2a7184b4f3a8f331bb8639813386076f
 - uri: repo://changes/st-0105/manifest.json
   bytes: 250888
   sha256: 7f1ead0b00d7264f40b29c79a06f35cdad06610231a5c7f7a3e5e1d18054ceb7

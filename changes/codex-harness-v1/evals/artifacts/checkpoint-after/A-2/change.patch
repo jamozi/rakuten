@@ -1,0 +1,134 @@
+diff --git a/tests/test_affiliate_ingestion.py b/tests/test_affiliate_ingestion.py
+index 07a888e..6f66970 100644
+--- a/tests/test_affiliate_ingestion.py
++++ b/tests/test_affiliate_ingestion.py
+@@ -1,11 +1,13 @@
+ from __future__ import annotations
+ 
++import hashlib
+ import json
+ import os
+ import stat
+ import tempfile
+ import unittest
+ import zipfile
++from decimal import Decimal
+ from pathlib import Path
+ 
+ from tools.affiliate_ingestion.client import FetchBatch, RawPage, parse_records
+@@ -128,6 +130,82 @@ class NormalizationAndStorageTests(unittest.TestCase):
+         self.assertEqual(normalized["price"], "1200")
+         self.assertEqual(normalized["raw"], source)
+ 
++    def test_normalization_preserves_zero_values(self) -> None:
++        for aliases in (
++            ("id", "price", "commission"),
++            ("product_id", "unit_price", "commission_amount"),
++            ("order_id", "amount", "fee"),
++        ):
++            for value, amount in (
++                (0, "0"),
++                (0.0, "0.0"),
++                (Decimal("0.00"), "0.00"),
++                ("0", "0"),
++            ):
++                with self.subTest(aliases=aliases, value=value):
++                    source = dict.fromkeys(aliases, value)
++                    normalized = normalize_record("a8net", "products", source)
++                    self.assertEqual(normalized["source_id"], value)
++                    self.assertEqual(normalized["price"], amount)
++                    self.assertEqual(normalized["commission"], amount)
++                    self.assertEqual(normalized["raw"], source)
++
++    def test_normalization_preserves_alias_priority(self) -> None:
++        for preferred, fallback, amount in (
++            (0, 99, "0"),
++            (12, 0, "12"),
++            (12, 99, "12"),
++            (" \t", 99, " \t"),
++        ):
++            with self.subTest(preferred=preferred, fallback=fallback):
++                # Input order must not override the declared alias priority.
++                source = {
++                    "program_id": fallback,
++                    "unit_price": fallback,
++                    "commission_amount": fallback,
++                    "id": preferred,
++                    "price": preferred,
++                    "commission": preferred,
++                }
++                normalized = normalize_record("a8net", "products", source)
++                self.assertEqual(normalized["source_id"], preferred)
++                self.assertEqual(normalized["price"], amount)
++                self.assertEqual(normalized["commission"], amount)
++
++    def test_normalization_preserves_empty_value_handling(self) -> None:
++        for empty in (None, "", False, [], {}, (), set(), b""):
++            with self.subTest(empty=empty):
++                source = dict.fromkeys(("id", "price", "commission"), empty)
++                normalized = normalize_record("a8net", "products", source)
++                for field in ("source_id", "price", "commission"):
++                    self.assertIsNone(normalized[field])
++
++                source.update(
++                    program_id=0,
++                    product_id=99,
++                    unit_price=0,
++                    amount=99,
++                    reward=0,
++                    fee=99,
++                )
++                normalized = normalize_record("a8net", "products", source)
++                self.assertEqual(normalized["source_id"], 0)
++                self.assertEqual(normalized["price"], "0")
++                self.assertEqual(normalized["commission"], "0")
++
++    def test_normalization_keeps_absent_values_missing(self) -> None:
++        normalized = normalize_record("a8net", "products", {})
++        for field in ("source_id", "price", "commission"):
++            self.assertIsNone(normalized[field])
++
++    def test_zero_id_is_included_in_fingerprint(self) -> None:
++        normalized = normalize_record("a8net", "products", {"id": 0})
++        expected_seed = 'a8net\x1fproducts\x1f0\x1f\x1f{"id": 0}'
++        self.assertEqual(
++            normalized["fingerprint_sha256"],
++            hashlib.sha256(expected_seed.encode("utf-8")).hexdigest(),
++        )
++
+     def test_persist_batch_writes_manifest_raw_and_ndjson(self) -> None:
+         with tempfile.TemporaryDirectory() as directory:
+             batch = FetchBatch(
+diff --git a/tools/affiliate_ingestion/normalize.py b/tools/affiliate_ingestion/normalize.py
+index a0863dc..4e420b6 100644
+--- a/tools/affiliate_ingestion/normalize.py
++++ b/tools/affiliate_ingestion/normalize.py
+@@ -4,6 +4,7 @@ import hashlib
+ import json
+ from datetime import UTC, datetime
+ from decimal import Decimal, InvalidOperation
++from numbers import Number
+ from typing import Any, Iterable, Mapping
+ 
+ ALIASES: dict[str, tuple[str, ...]] = {
+@@ -68,7 +69,8 @@ def _flatten_keys(record: Mapping[str, Any]) -> dict[str, Any]:
+ def _first(record: Mapping[str, Any], aliases: Iterable[str]) -> Any:
+     for alias in aliases:
+         value = record.get(alias)
+-        if value:
++        # Numeric zero is present; keep skipping other falsey values, including False.
++        if value or (isinstance(value, Number) and not isinstance(value, bool)):
+             return value
+     return None
+ 
+@@ -102,8 +104,8 @@ def normalize_record(
+         [
+             provider,
+             resource,
+-            str(canonical.get("source_id") or ""),
+-            str(canonical.get("url") or ""),
++            str(canonical["source_id"]) if canonical["source_id"] is not None else "",
++            str(canonical["url"]) if canonical["url"] is not None else "",
+             raw_json,
+         ]
+     )

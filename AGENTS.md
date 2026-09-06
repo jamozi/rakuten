@@ -1,91 +1,83 @@
-# AGENTS.md — RAOS 開発ルール
+# RAOS — Codex entrypoint
 
-## 目的と優先順位
+## Mission
 
-- 最短で安全に実装を進める。Story ID は要求・依存・status の追跡に使うが、
-  commit、branch、PR、実装 slice の境界にはしない。
-- Product requirement は `docs/canonical/**` を正本とする。import 済みの canonical package
-  と checksum は変更しない。Canonical の旧 Codex workflow に含まれる PR 分割、preflight、
-  human-review 手順は現行の repository 開発 workflow には適用しない。
-- 矛盾しない可逆的な実装詳細は、現行 contract、既存 code/test、最小変更の順で決めて進む。
-  未決の実値は作らず、interface、fake/recorded adapter、disabled default まで実装する。
+読者に信頼できる商品比較・購入支援を提供し、品質制約を守って持続的な確定貢献利益を改善する。
+技術・記事数・SEO・CRO・自動化はこの目的の手段である。
+優先順: 製品目的 → 正確性・安全性 → 全体の設計品質 → 判断品質 → context効率 → 速度。
 
-## 継続的な開発権限
+## Non-negotiables
 
-- Repository 内の design、code、refactor、test、migration code、fixture、generator、docs、
-  status 修正、および通常の GitHub 開発操作は継続承認済みである。
-- edit、test、generate、stage、commit、push、PR 作成・更新、branch protection 更新、
-  required CI 合格後の merge は継続承認の範囲で進め、別個の開発確認を挟まない。
-- Security、migration、architecture、cross-module 変更も通常の local development とする。
-  問題は automated test、diff review、最終 integration CI で検出し、修正して続ける。
-- Pro は user が明示した場合だけ使える任意の助言機能であり、利用不能でも開発を止めない。
+- 商品同定、一次情報、鮮度、比較範囲、自然な日本語、広告表示を維持する。
+  料率・価格・楽天取扱有無を商品選定の加点要素にしない。未確認値はUNKNOWN/UNAVAILABLE。
+- 編集判断と財務を分離する。推計収益を確定報酬へ置換せず、計測欠損をゼロ・成功にしない。
+- 公開側は承認済みsnapshotのpublic projectionを読む。内部Evidence・Finance・raw AIへ直結しない。
+  auth/authz、public/internal分離、CTA、disclosure、publication、kill switchの既存testを維持する。
+- `docs/canonical/`、`docs/upstream/`、`zip/` はimmutable baseline。採用済み後継は対象機能だけに適用する。
+  baselineの旧Story/PR分割・preflight・human-review手順は現行開発workflowへ適用しない。
+- Generated outputはowner generatorから更新する。通常sourceのbyte hashを開発承認条件にしない。
+  runtime integrity、生成物、release provenanceのhashは維持する。
+- Secret、credential、personal/production data、raw prompt、禁止provider materialを読出し・記録・公開しない。
+- 他者の変更を保持し、無関係なdirty pathを編集・stage・削除しない。
 
-## 唯一の停止条件
+## Canonical source map
 
-次のいずれかを実際に行う必要がある場合だけ停止する。
+必要な行の入口から読み、リンク先の全履歴を一括投入しない。
 
-1. GitHub 開発操作を除く live 外部作用: credential の入力・開示、規約同意、支出、
-   live provider/user-facing write、publication、staging、deployment、release、Production、
-   live policy または kill-switch の変更。
-2. 回復不能な操作: data 削除、不可逆 migration/data transformation の適用、force push、
-   default branch/history の破壊。
+| 判断対象 | 正本への入口 |
+| --- | --- |
+| 仕様の適用範囲・後継・履歴 | [docs map](docs/README.md) |
+| 現行の編集・商品選定・利益指標 | [Editorial V3](changes/editorial-portfolio-v3/README.md) |
+| 構造・data flow・不変条件とtest | [current architecture](docs/architecture/current-system.md) |
+| v1の製品・安全制約 | [integration baseline](docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md) |
+| 実装状況・未実行事項 | [status v2](changes/status/README.md) |
+| 開発・CI・generator ownership | [developer guide](README.md) |
+| WordPressの段階・再開条件 | [publication runbook](docs/runbooks/wordpress-verified-incremental.md) |
 
-これらの port、migration code、rollback、fixture、simulation、test、draft artifact の local
-実装は停止条件ではない。Test failure、audit finding、設計の不足、作業量、hash drift、
-Pro 不在、formal/live evidence 未実行も停止条件ではなく、修正または正確な報告の対象とする。
+## Repository map
 
-## 実装規律
+- `python/raos/`: domain → application → ports / adapters。`apps/`: delivery。
+- `packages/`: UI・web contracts・bounded WordPress bridge。
+- `contracts/`, `schemas/`, `policies/`: versioned contracts。`migrations/`, `infra/`:適用前の定義。
+- `scripts/`: generator / deterministic validation。`tests/`: behavior / boundary検証。
+- `changes/`:採用済み後継と生成物・status。ownerは`changes/build/manifest.v2.json`。
 
-- 既存の user/他 agent の変更を保持し、無関係な dirty path を編集・stage・削除しない。
-- `docs/canonical/**`、`docs/upstream/**`、`zip/**` は immutable baseline として扱う。
-- Generated file は owner generator から更新する。Build input の digest 固定は canonical package、
-  dependency lock、container image に限定し、通常の tracked source や開発文書には使わない。
-- Runtime data integrity、generated output、release provenance の content hash は維持するが、
-  approval token や開発停止条件にはしない。
-- Secret、credential、personal/production data、raw prompt、prohibited provider material を読出し、
-  log、commit、fixture、回答へ含めない。
-- Product の auth/authz、public/internal isolation、publication、editorial/finance、disclosure、
-  kill-switch invariant は code と test で維持する。Local result を formal CI、staging、release、
-  Production evidence と呼ばない。
+## Task routing
 
-## WordPress ローカル確認ルール
+- S: 明確な局所修正は対象と関連testだけ。M: subsystem、contract、利用側まで。
+- L: data flow・外部interface変更は関連設計と隣接system。XL: business・security・publication・
+  主要architecture判断はMission、architecture、適用する決定まで確認する。
+- L/XLと曖昧なMではObjective Checksumを内部確認する:
+  要求 / 上位目的 / 成功指標 / 影響域 / 隣接影響 / 正本 / 不可逆作用 / 非対象。
+- 不具合は症状・根因・違反不変条件・隣接影響を確認し、最小の完全なsystem変更で解決する。
+- 記事・比較レビュー → `$raos-editorial-review`。WordPress編集・表示・公開準備 → `$raos-wordpress-workflow`。
+- code・architecture → local file / `rg`。Issue・PR・CI → GitHub app、未対応操作は`gh`。
+  Git → local git。現在のAPI仕様 → official docs/web。反復手順 → Skill、機械処理 → script。
+- 正本やIssueに必要情報があれば再探索せず、参照済み内容を再読するのは変更・不足がある時だけ。
+  Memoryは探索補助であり、仕様・承認の正本ではない。
 
-- 記事・固定ページ、ホームページ、子テーマ、テンプレート、CSS、表示系プラグインの変更は、最初に `changes/wordpress-local-preview-v1/` の非本番データとローカル WordPress へ反映し、本番を試作・初回確認の場にしない。
-- 公開入口は `make wordpress-production-request ARGS="plan|prepare|propose|apply|readback ..."`。引数なしは読み取り専用計画。対象を明示し、通常は段階公開・通常APIリンク・Codex監査を使う。
-- 記事の編集元はtracked sourceとし、ローカルで確認した不変候補を本番へ適用・照合する。本番での文章再編集を通常手順にしない。環境の実値は `make wordpress-preview-environment`、本番との差分はprepareの既存レポートで確認する。
-- `prepare` は出典・投稿ID・対象範囲を先に検証し、必要な生成・`fast --critical`・ローカル表示検査を実行する。URLと選択されたviewportのスクリーンショットを確認する。有効な同一入力の検査結果は原本の日時のまま再利用する。
-- 独立したCodexレビュー2巡は同じ自動検査原本を参照できる。各担当が自分の観察を記録し、修正後は影響項目と差分を確認して最終候補へ結び付ける。Required CI、wp-admin承認、対象ハッシュ、kill switch、適用後照合を維持する。
-- 対象確定後の任意の文章・デザイン改善は次回へ回す。進捗・引き継ぎは既存の準備レポートと監査記録から取得し、全履歴調査や監査担当の作り直しを標準にしない。既存の承認待ち候補と旧形式は書き換えない。
-- 未確認または失敗中は本番送付・公開提案・テーマ／プラグイン反映を行わない。合格は本番承認ではなく、MCP、別人承認、proposal、hash/precondition、kill switch、default-off gate を別途満たす。
-- 最終報告には確認 URL、検査、スクリーンショット保存先、本番送付・公開の実施／未実施を記す。
+## Validation and development
 
-## WordPress MCP 優先ルール
+- 通常は`make fast`。初回・依存変更は`make setup`、生成入力変更は`make generate`。
+  差分選択は`.venv/bin/python scripts/raos_build.py --base <ref> plan --json`。
+- `make check`は静的検査、`make final`は任意診断。連続実行やlocal全件合格を一律条件にしない。
+- 失敗した検査から修正・再実行し、変更がなければ同じ検査を繰り返さない。
+  通常testは並列、共有stateは`serial`、DB/Storageは専用partition。未実行をPASSと呼ばない。
+- design、code、refactor、security、migration code、fixture、docs、および通常GitHub開発操作は継続承認済み。
+  edit/test/generate/stage/commit/push/PR作成更新/branch protection更新/required CI合格後のmergeに再確認は不要。
+- Story IDは追跡情報。実装slice/branch/PR境界ではない。integration PRは1本にまとめる。
+  個別ExecPlan/worklog/debt logは必須ではない。Proは明示依頼時だけの任意助言。
 
-- `kurashinoshirube.com` の状態確認と記事・固定ページ・子テーマ・プラグイン作業は、対応能力がある限り他経路より先に project MCP の `wordpressEditor`／`wordpressDeployment` を実際に呼び、設定や過去結果だけで live 状態を推測しない。
-- 状態確認、一覧・取得、下書き更新、公開提案は `wordpressEditor`、別人が wp-admin 承認済みの公開反映、追跡テーマ／固定pluginの提案・反映、通信断回復は bounded `wordpressDeployment` を使う。
-- MCPで完結しない初回bootstrap、明示UI検証、障害診断だけを例外とし、先に `codex mcp list` とread-only statusを確認して利用不能理由と代替経路を報告する。
-- MCP優先は権限を広げない。別人承認、未失効proposal、hash/precondition、idempotency、kill switch、用途別default-offを維持し、自己承認、credential開示、gate有効化、任意command/PHP/SQL/URL実行を行わない。
+## External effects and escalation
 
-## 開発 workflow
-
-- 通常の確認は `make fast` に集約する。変更箇所の静的検査、関連 test、affected generator
-  drift を確認し、`check → fast → final` を毎回連続実行しない。
-- `make setup` は環境作成・依存変更時、`make generate` は生成入力変更時に実行する。
-  `make check` は静的検査のみ、`make final` は任意の全体診断であり、local 完了条件ではない。
-- 差分選択は `scripts/raos_build.py --base <ref> plan --json` で確認できる。通常コードの
-  import consumer、generator owner、component route、変更 test 自身を選択する。
-  未対応のコード・設定、lock、共通検査基盤の変更は全件へ戻す。
-- 通常 PR は影響範囲と重要回帰・secret 検査、毎日03:00 JSTと手動 CI は全件検査を行う。
-  Pyright は定期・手動の全件 CI に集約し、通常の Python 型検査は mypy を使う。
-- Draft PR は重い検査を省き、ready 時に実行する。専用 branch へ checkpoint push し、
-  integration PR は1本にまとめる。選択された検査がすべて成功した `Final Integration`
-  を条件に自動 merge する。選択外と失敗・cancel・必要な検査の未実行は区別する。
-- 修正後は失敗した検査を先に実行し、次に影響範囲を確認する。失敗や変更がなければ同じ
-  検査を繰り返さない。test は振る舞い・不具合再現を検証し、文書行数や総件数を固定しない。
-- 新規 test は原則並列実行し、共有 checkout や外部 process state を使う場合だけ
-  `serial` を明示する。DB／Storage は専用 partition で実行する。
-  CI は独立した最大20ジョブへ分割し、`serial` は各ジョブ内で直列実行する。差分 CI は対象数に応じて分割する。
-- 通常 PR の CI 中央値10分以内を改善目標とし、新しい停止条件にはしない。定期 CI の失敗は
-  修正対象として結果を残す。独自の証跡台帳、自動 revert、一律の開発停止は追加しない。
-- Preflight、Story ごとの ExecPlan/worklog/debt log は必須ではない。最終 PR に関連 Story IDs、
-  変更概要、検証結果、external/live 未実行事項を一度だけ記録する。
+- GitHub開発操作以外のlive write、credential入力・開示、規約同意、支出、公開、staging、
+  deployment/release/Production、live policy/kill-switch変更には対象操作の承認が必要。
+- data削除、不可逆migration適用・変換、force push、default branch/history破壊は停止して確認する。
+  localなport・rollback・simulation・draft artifactは継続する。不明な実値は作らずdefault-offで実装する。
+- WordPressは先に非本番データとlocal previewで確認する。対応能力があれば`wordpressEditor` /
+  `wordpressDeployment`を先に実呼出しする。状態を設定・過去結果から推定しない。
+- MCP不能時はlistとread-only statusで診断し、代替理由を記録する。MCP優先は権限を広げない。
+  未検証候補は送付・提案・反映しない。独立2巡、Required CI、wp-admin別人承認、期限・対象hash、
+  precondition、idempotency、kill switch、用途別default-offを維持する。自己承認・汎用CMS迂回は禁止。
+- test failure、設計不足、hash drift、Pro不在、live evidence未実行は修正または正確な報告の対象。
+  解消不能な仕様矛盾は根拠とUNKNOWNを示し、安全な独立作業を進める。

@@ -97,7 +97,7 @@ def _install_future_graph(monkeypatch: pytest.MonkeyPatch) -> catalog.RevisionSp
         revision="202608300002",
         down_revision=catalog.HEAD_REVISION,
         story_id="ST-0308",
-        relative_path=Path("migrations/versions/202608030007_future_fixture.py"),
+        relative_path=Path("migrations/versions/202608300002_future_fixture.py"),
         sha256=digest,
         runner_version="1.7.0",
         server_version_num=EXPECTED_SERVER_VERSION_NUM,
@@ -116,23 +116,21 @@ def _install_future_graph(monkeypatch: pytest.MonkeyPatch) -> catalog.RevisionSp
     )
     monkeypatch.setattr(runner, "REVISION_SPECS", (*catalog.REVISION_SPECS, future))
     monkeypatch.setattr(runner, "HEAD_REVISION", future.revision)
-    real_validate_installed = runner._validate_installed
+    # The metadata-only successor keeps the current Google schema. Validate its
+    # shape as that revision while retaining the real future version/history.
+    real_validate_google_shape = runner._validate_google_analytics_live_shape
 
-    def validate_extended_graph(connection, current_revision, **kwargs):
-        if current_revision != future.revision:
-            return real_validate_installed(connection, current_revision, **kwargs)
-        previous_database_roles_revision = runner.DATABASE_ROLES_REVISION
-        setattr(runner, "DATABASE_ROLES_REVISION", future.revision)
-        try:
-            return real_validate_installed(connection, current_revision, **kwargs)
-        finally:
-            setattr(
-                runner,
-                "DATABASE_ROLES_REVISION",
-                previous_database_roles_revision,
-            )
+    def validate_extended_google_shape(connection, current_revision):
+        schema_revision = (
+            catalog.GOOGLE_ANALYTICS_LIVE_REVISION
+            if current_revision == future.revision
+            else current_revision
+        )
+        return real_validate_google_shape(connection, schema_revision)
 
-    monkeypatch.setattr(runner, "_validate_installed", validate_extended_graph)
+    monkeypatch.setattr(
+        runner, "_validate_google_analytics_live_shape", validate_extended_google_shape
+    )
     with runner._verified_migration_root(expanded) as snapshot_root:
         runner._verify_graph(snapshot_root)
     monkeypatch.setattr(runner, "verify_repository", lambda _: expanded)
@@ -201,6 +199,43 @@ def test_empty_database_reaches_exact_head_atomically_and_repeats_as_noop(
             assert rows[started][7] != rows[succeeded][7]
         assert rows[0][1] != rows[0][8]
         assert rows[-1][1] == rows[-1][7] == rows[-1][8]
+
+
+@pytest.mark.parametrize(
+    "drift",
+    (
+        "ALTER TABLE analytics.ga4_property_config_snapshot ADD COLUMN unexpected text",
+        "GRANT UPDATE ON analytics.ga4_property_config_snapshot TO raos_worker_rw",
+    ),
+    ids=("google-column", "google-acl"),
+)
+def test_temporary_future_graph_retains_current_google_schema_validation(
+    drift: str,
+    postgresql_cluster: PostgreSQLCluster,
+    empty_database: str,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    future = _install_future_graph(monkeypatch)
+    instance = _migration_runner(postgresql_cluster, empty_database)
+    assert instance.upgrade().current_revision == future.revision
+    with postgresql_cluster.connect(empty_database) as connection:
+        connection.execute(drift)
+        before = connection.execute(
+            "SELECT count(*) FROM public.raos_migration_history"
+        ).fetchone()
+    with pytest.raises(MigrationError) as raised:
+        instance.upgrade()
+    assert raised.value.code is runner.MigrationErrorCode.HISTORY_INVALID
+    with postgresql_cluster.connect(empty_database) as connection:
+        assert connection.execute(
+            "SELECT version_num FROM public.raos_migration_version"
+        ).fetchone() == (future.revision,)
+        assert (
+            connection.execute(
+                "SELECT count(*) FROM public.raos_migration_history"
+            ).fetchone()
+            == before
+        )
 
 
 def test_temporary_future_graph_reaches_latest_with_per_revision_attempts(

@@ -250,13 +250,15 @@ def test_producer_manifest_must_cover_exact_source_set() -> None:
         design.verify_producer_manifest(producer, imported)
 
 
-def test_readme_required_artifacts_must_be_in_order(tmp_path: Path) -> None:
-    for relative_path in design.REQUIRED_READ_ORDER:
+def test_readme_navigation_does_not_prescribe_a_reading_order(tmp_path: Path) -> None:
+    for relative_path in design.BASELINE_ENTRY_TARGETS:
         target = tmp_path / relative_path
         target.parent.mkdir(parents=True, exist_ok=True)
         target.touch()
-    links = [f"[entry]({path})" for path in reversed(design.REQUIRED_READ_ORDER)]
+    links = [f"[entry]({path})" for path in reversed(design.BASELINE_ENTRY_TARGETS)]
     (tmp_path / "README.md").write_text("\n".join(links), encoding="utf-8")
 
-    with pytest.raises(design.DesignPackageError, match="reading order"):
-        design.verify_read_order(tmp_path)
+    design.verify_documentation_entry(tmp_path)
+    (tmp_path / "README.md").write_text(links[0], encoding="utf-8")
+    with pytest.raises(design.DesignPackageError, match="does not link baseline"):
+        design.verify_documentation_entry(tmp_path)

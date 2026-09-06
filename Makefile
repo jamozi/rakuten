@@ -17,6 +17,7 @@ setup:
 	$(UV) sync --locked --group dev
 	$(NPM) ci --cache .npm-cache --ignore-scripts --no-audit --no-fund
 	$(PYTHON) scripts/verify_dev_toolchain.py
+	$(PYTHON) scripts/verify_dev_toolchain.py --test-runtime-only
 
 generate:
 	$(PYTHON) scripts/raos_editorial_portfolio_v2.py generate-old-fixtures

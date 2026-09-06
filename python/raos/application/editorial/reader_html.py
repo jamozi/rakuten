@@ -11,8 +11,8 @@ VOID = frozenset("area base br col embed hr img input link meta param source tra
 @dataclass(eq=False)
 class Element:
     tag: str
-    attrs: dict[str, str | None] = field(default_factory=dict)
-    children: list[Element | str] = field(default_factory=list)
+    attrs: dict[str, str | None] = field(default_factory=dict[str, str | None])
+    children: list[Element | str] = field(default_factory=lambda: list[Element | str]())
     parent: Element | None = field(default=None, repr=False)
 
     def has(self, name: str) -> bool:

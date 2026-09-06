@@ -683,6 +683,9 @@ def _configuration_snapshot_id(session: Session, batch: Ga4ImportBatch) -> UUID:
             "snapshot_sha256": configuration.snapshot_sha256,
         },
     )
+    # The unique insert waits for a competing writer. At READ COMMITTED this
+    # separate SELECT sees its committed row; the immutable trigger prevents
+    # later UPDATE/DELETE. A row lock would unnecessarily require UPDATE rights.
     candidate = (
         session.execute(
             text(
@@ -700,7 +703,6 @@ def _configuration_snapshot_id(session: Session, batch: Ga4ImportBatch) -> UUID:
                    AND property_response_sha256 = :property_response_sha256
                    AND reporting_identity_response_sha256 =
                        :reporting_identity_response_sha256
-                 FOR SHARE
                 """
             ),
             {

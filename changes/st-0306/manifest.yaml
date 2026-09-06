@@ -57,11 +57,11 @@ source_artifacts:
   bytes: 2385
   sha256: dd0cc0a6e99483d1975feae553736e142db54440fa5ff42d34d0d50d15c9b488
 - uri: repo://README.md
-  bytes: 7310
-  sha256: dc504844e40b802f5105efa60330a3b8d4c1e161d7bf44213b25ceb64e69fd9a
+  bytes: 7650
+  sha256: 5e70e32980ac73e3939041429ff83e0d2a7184b4f3a8f331bb8639813386076f
 - uri: repo://Makefile
-  bytes: 3427
-  sha256: 4eb39cb5aefdda22eba5abfa74a6539d36444453aebb8a70b41510d4f6cf56c8
+  bytes: 3490
+  sha256: 9df01ce453622e0a2c3c624589a8de654efb721d484e412e525b650028e1dcee
 - uri: repo://docs/execplans/ST-0306.md
   bytes: 2107
   sha256: d8214c475262aae4e68de9909fc7ee7825e20aeae00ea7220b130ad54e179f3d
@@ -82,7 +82,7 @@ source_artifacts:
   sha256: 0525da397e16e535792364f6dd9ed1128218c1a080c07b6cb25f471f8e9cb78d
 - uri: repo://changes/st-0305/manifest.yaml
   bytes: 14860
-  sha256: 3ec4365153ea06710b1329c9416aee70ce221a3106402c4ff2b51005fc6e99b7
+  sha256: f31a168d88daa8e172b9833a6b75a981b0ac43743229332550e162955cfb9ea8
 - uri: repo://migrations/versions/202608030005_publication_analytics_finance.py
   bytes: 41097
   sha256: 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b
@@ -90,11 +90,11 @@ source_artifacts:
   bytes: 20865
   sha256: a4181b2d1de4a01a898b60b3e57a1640d7aa539be61f35b9e84c984df80b4839
 - uri: repo://python/raos/migrations/runner.py
-  bytes: 222535
-  sha256: 2e83bac7ca61ea44c08b95d8f13778e0b60de95ee7c43b6f04fe0886cc96145d
+  bytes: 222761
+  sha256: ace7997804a1f30b13ca4c5a5914396fa29eafd75b5a611d95cff9c5792c5d41
 - uri: repo://tests/postgresql18.py
-  bytes: 8178
-  sha256: 14d81fbbb7b35fd2672a11ccd162d8683905fe7216be6fb45b46d73d2b4d6085
+  bytes: 8458
+  sha256: c31b4624f25064f84ef3c4c08279bce5b0ff4181cda2170be906f4d2fda9ac09
 - uri: repo://tests/st0106/test_workflow_contract.py
   bytes: 4693
   sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc
@@ -111,8 +111,8 @@ source_artifacts:
   bytes: 7594
   sha256: b1f806aa383afe176f34f59bdf03bd107412061e52351c3adf8bafda887b6d70
 - uri: repo://tests/st0301/test_postgresql.py
-  bytes: 34214
-  sha256: f6273b69e73a7c98a790eb9208def9fa5b23f1d2c827a6628468afde6054e92f
+  bytes: 35558
+  sha256: ec7f984e4866e73d21e51311709437be6727ab0a93315d03d2e441abaf4ad91c
 - uri: repo://tests/st0301/test_runner.py
   bytes: 32118
   sha256: 71208aac56bc84825c0f140199fd388c09d1c9ec60e56c35719080f425e62d7e
@@ -129,8 +129,8 @@ source_artifacts:
   bytes: 17355
   sha256: 0b7ede7eb2a9db6f9108f0ca6b12099fc67b44a80a501382e35af500908f6703
 - uri: repo://tests/st0303/test_postgresql.py
-  bytes: 51303
-  sha256: 58ed5d965da4c2c2503bec8e47f60a049e7b1d842f72194b04a57e32bb0fe384
+  bytes: 52992
+  sha256: 25ca83e45cb71641ad21bed0edb645fc517e432874f9c99c3a7f886b7b441cd2
 - uri: repo://tests/st0304/test_generation.py
   bytes: 20144
   sha256: 9c8563fda758b4e4beb20ea1fa47b23130e9bc5835605d6f2a18fdedf39f3ecf
@@ -153,8 +153,8 @@ source_artifacts:
   bytes: 5109
   sha256: 922a7a7343a3e6a080b0febfe583c386cfe38e3195865d928f0fa0ccc2050ba2
 - uri: repo://tests/st0306/test_postgresql.py
-  bytes: 16120
-  sha256: e2f339a102168bbe744c5c86f1dc253885582670af43b07002f0c0b372e52c0e
+  bytes: 17092
+  sha256: 2c00aac02194845beab448da353d06e23f73f2a6a3dbc97bafa62e54a130d440
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://migrations/versions/202608030006_database_roles.py

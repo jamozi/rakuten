@@ -34,9 +34,9 @@ def decision_table(rows: Sequence[Mapping[str, str]]) -> Element | None:
         return None
     headings = ('条件', '候補', '選ぶ理由', '妥協点・選ばない条件', '購入前の確認')
     keys = ('condition', 'product_name', 'reason', 'tradeoff', 'purchase_check')
-    body = []
+    body: list[str] = []
     for row in rows:
-        cells = []
+        cells: list[str] = []
         for index, (label, key) in enumerate(zip(headings, keys, strict=True)):
             value = escape(row[key])
             if key == 'product_name':
@@ -152,6 +152,7 @@ def enhance_specification_tables(root: Element) -> None:
 def _dimension_row(raw: object) -> tuple[str, float, float, float] | None:
     if not isinstance(raw, Mapping):
         return None
+    raw = cast(Mapping[str, object], raw)
     values: list[float] = []
     for key in ('width_cm', 'depth_cm', 'height_cm'):
         value = raw.get(key)
@@ -182,7 +183,7 @@ def _comparison_plan(
     max_depth = max(row[2] for row in rows)
     available_width = 260 if overlay else 120
     scale = min(available_width / max_width, 150 / max_depth)
-    shapes = []
+    shapes: list[str] = []
     for index, (row, role) in enumerate(zip(rows, roles, strict=True)):
         width = row[1] * scale
         depth = row[2] * scale
@@ -287,6 +288,7 @@ def dimension_diagram(
     dimensions = claim.get('dimensions')
     if not isinstance(dimensions, list) or not dimensions:
         return None
+    dimensions = cast(list[object], dimensions)
     typed_dimensions = [_dimension_row(row) for row in dimensions]
     if any(row is None for row in typed_dimensions):
         return None

@@ -6,6 +6,7 @@ pytest.mark.serial/database/storage for new shared-resource tests; remove an
 entry after its shared checkout writes have been isolated in tmp_path.
 """
 
+import os
 from pathlib import Path
 import sys
 
@@ -15,6 +16,24 @@ sys.dont_write_bytecode = True
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPOSITORY_ROOT))
 sys.path.insert(0, str(REPOSITORY_ROOT / "python"))
+
+from scripts.raos_test_runtime import runtime_environment, validate_postgres  # noqa: E402
+
+os.environ.update(runtime_environment(os.environ))
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_runtest_setup(item: pytest.Item) -> None:
+    # Check before session fixtures can skip; session-level fixture hooks do not
+    # inherit this directory's hooks. Deselected live/private tests never run.
+    if "postgresql_cluster" in getattr(item, "fixturenames", ()):
+        if not getattr(item.session, "_raos_postgres_checked", False):
+            try:
+                validate_postgres(os.environ)
+            except RuntimeError as exc:
+                pytest.fail(str(exc))
+            item.session._raos_postgres_checked = True
+
 
 # Read-only checks now parallel: st0102/test_uv_cli.py, st0103/test_node_cli.py,
 # st1004_v2/test_generation.py. Their mutations use per-test temporary paths.

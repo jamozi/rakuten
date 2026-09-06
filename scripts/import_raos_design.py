@@ -32,14 +32,9 @@ BUFFER_SIZE = 1024 * 1024
 MAX_MEMBER_BYTES = 16 * 1024 * 1024
 MAX_PACKAGE_BYTES = 64 * 1024 * 1024
 MAX_COMPRESSION_RATIO = 200
-REQUIRED_READ_ORDER = (
+BASELINE_ENTRY_TARGETS = (
     "canonical/00_master/RAOS_MASTER_README_v1.0.md",
-    "canonical/08_codex/AGENTS.md",
-    "canonical/01_integration/RAOS_07_integration_design_v1.0.md",
-    "canonical/01_integration/RAOS_07_canonical_decisions_v1.0.yaml",
-    "canonical/01_integration/RAOS_07_open_decisions_v1.0.yaml",
-    "canonical/07_backlog/RAOS_13_story_backlog_v1.0.yaml",
-    "canonical/05_test/RAOS_11_test_suite_catalog_v1.0.yaml",
+    "manifest.json",
 )
 
 
@@ -631,29 +626,28 @@ def verify_producer_manifest(
     return len(producer_files)
 
 
-def verify_read_order(destination: Path) -> None:
+def verify_documentation_entry(destination: Path) -> None:
+    """Keep the immutable import discoverable without prescribing agent workflow.
+
+    Package membership, bytes and checksums are independently verified below.
+    A historical Codex reading order is not an integrity or security boundary.
+    """
     readme_path = destination / "README.md"
     try:
         readme = readme_path.read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError) as error:
         raise DesignPackageError(f"Cannot read {readme_path}: {error}") from error
 
-    previous_position = -1
-    for relative_path in REQUIRED_READ_ORDER:
+    for relative_path in BASELINE_ENTRY_TARGETS:
         target = destination / relative_path
         if not target.is_file():
-            raise DesignPackageError(f"Required reading artifact is missing: {target}")
+            raise DesignPackageError(f"Baseline navigation target is missing: {target}")
         link = f"]({relative_path})"
         position = readme.find(link)
         if position < 0:
             raise DesignPackageError(
-                f"README does not link required reading artifact: {relative_path}"
+                f"README does not link baseline entry: {relative_path}"
             )
-        if position <= previous_position:
-            raise DesignPackageError(
-                f"README reading order is incorrect at: {relative_path}"
-            )
-        previous_position = position
 
 
 def verify_import(destination: Path, *, require_readme: bool = True) -> None:
@@ -736,7 +730,7 @@ def verify_import(destination: Path, *, require_readme: bool = True) -> None:
         imported_by_package_path,
     )
     if require_readme:
-        verify_read_order(destination)
+        verify_documentation_entry(destination)
 
     result = {
         "status": "PASS",

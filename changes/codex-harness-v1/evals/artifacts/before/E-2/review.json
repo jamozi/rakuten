@@ -1,0 +1,25 @@
+{
+  "products": [
+    {
+      "id": "A",
+      "eligible": true,
+      "identity": "VERIFIED",
+      "sources": ["official-A"],
+      "reason": "入力のメーカー根拠official-AはCarry-A・35Lに一致し、fresh=true、use_case_fit=trueとされているため、提示された架空2商品内の比較候補として適格。VERIFIEDは入力根拠に基づく同一性判定であり、市場全体での順位は判定していない。"
+    },
+    {
+      "id": "B",
+      "eligible": false,
+      "identity": "UNKNOWN",
+      "sources": ["shop-B"],
+      "reason": "shop-BはCarry-B・35Lの販売店情報であり、対象の42Lとはvariantが不一致。fresh=false、use_case_fit=UNKNOWNで、42Lの同一性・機内持ち込み用途への適合を裏付けられないため、現時点では比較候補から除外する。35Lの情報流用と高料率を理由にBを1位とする提案は採用できず、この提案は公開準備未完了。再審査には42Lに対応する新鮮な根拠と用途適合の確認が必要。"
+    }
+  ],
+  "ranking_factors": [
+    "読者の条件・機内持ち込み用途への適合性",
+    "対象モデル・variantに一致する根拠の信頼性と十分性",
+    "根拠の鮮度"
+  ],
+  "confirmed_contribution_profit_jpy": null,
+  "publication_ready": false
+}

@@ -57,8 +57,8 @@ source_artifacts:
   bytes: 66037
   sha256: 0f6ad788aa90660775cb7852f7bb2ab7d8712d62bbf17dcaa651fe0fb8f6e06f
 - path: scripts/import_raos_design.py
-  bytes: 30495
-  sha256: 13c36b2104ebf1d51b07f4774939e2ee89180d9d479f905176eaaa71dadd4f37
+  bytes: 30187
+  sha256: 3cb4e30138c4ad785d549ab3b7074e267cc570e45433d9edc21cd00ffb05a0e7
 - path: changes/st-0006/README.md
   bytes: 4579
   sha256: 53ab2467d53812a1718358e445cd8862d2079b084729e50df739005ba22bb8ce

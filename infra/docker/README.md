@@ -4,4 +4,4 @@
 
 Container build assets; ST-0201 and ST-0202 contribute the cumulative root PostgreSQL and S3-compatible Compose services through scripts/build_local_compose.py, while further functional content remains deferred to later Stories.
 
-ST-0101 reserves this directory as an inert boundary. Functional content is owned by later backlog Stories.
+ST-0101 recorded an inert boundary here. See the [current documentation map](../../docs/README.md) for implementation status and ownership.
