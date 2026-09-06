@@ -1,6 +1,12 @@
 name: Setup locked RAOS dependencies
 description: Restore caches and synchronize the repository lockfiles.
 inputs:
+  php-fallback:
+    description: Load the digest-pinned image for actual PHP fallback regression tests.
+    default: 'false'
+  postgres:
+    description: Set up exact PostgreSQL 18.4 on Ubuntu 22.04 amd64.
+    default: 'false'
   node:
     description: Install Node dependencies.
     default: 'true'
@@ -30,3 +36,17 @@ runs:
     - shell: bash
       if: inputs.node == 'true'
       run: .venv/bin/python scripts/verify_dev_toolchain.py
+    - shell: bash
+      if: inputs.postgres == 'true'
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y --no-install-recommends libicu70 libldap-2.5-0 libnuma1 libxml2 liblz4-1 libzstd1
+        .venv/bin/python scripts/verify_dev_toolchain.py --test-runtime-only
+    - shell: bash
+      if: inputs.php-fallback == 'true'
+      run: |
+        .venv/bin/python - <<'PY'
+        import subprocess
+        from scripts.raos_test_runtime import PHP_IMAGE
+        subprocess.run(["docker", "pull", PHP_IMAGE], check=True)
+        PY

@@ -2676,6 +2676,9 @@ def _selected_domain_catalog_digests(
                 JOIN pg_catalog.pg_attribute AS attribute
                   ON attribute.attrelid = relation.oid
                  AND attribute.attnum > 0
+                 -- Dropped columns are invisible storage remnants after downgrade.
+                 -- Keep physical ordinals for active columns to detect reordered drift.
+                 AND attribute.attisdropped IS FALSE
                 LEFT JOIN pg_catalog.pg_attrdef AS attribute_default
                   ON attribute_default.adrelid = relation.oid
                  AND attribute_default.adnum = attribute.attnum

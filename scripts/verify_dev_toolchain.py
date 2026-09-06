@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 from pathlib import Path
@@ -25,7 +26,9 @@ def _version(command: list[str]) -> str:
             text=True,
         )
     except (OSError, subprocess.CalledProcessError) as exc:
-        raise SystemExit(f"unable to run tool version check: {' '.join(command)}") from exc
+        raise SystemExit(
+            f"unable to run tool version check: {' '.join(command)}"
+        ) from exc
     match = re.search(r"(?<![0-9])[0-9]+\.[0-9]+\.[0-9]+", result.stdout)
     if match is None:
         raise SystemExit(f"unable to parse tool version: {' '.join(command)}")
@@ -33,6 +36,27 @@ def _version(command: list[str]) -> str:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--test-runtime-only",
+        action="store_true",
+        help="set up the locked local PostgreSQL test runtime",
+    )
+    args = parser.parse_args()
+    if args.test_runtime_only:
+        from raos_test_runtime import setup_postgres
+
+        environment = setup_postgres(os.environ)
+        for key in ("RAOS_PG_BIN", "RAOS_PG_LIB", "LD_LIBRARY_PATH"):
+            if key in environment:
+                print(f"{key}={environment[key]}")
+        github_env = os.environ.get("GITHUB_ENV")
+        if github_env:
+            with open(github_env, "a", encoding="utf-8") as stream:
+                for key in ("RAOS_PG_BIN", "RAOS_PG_LIB", "LD_LIBRARY_PATH"):
+                    if key in environment:
+                        stream.write(f"{key}={environment[key]}\n")
+        return 0
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
     python_spec = project["project"]["requires-python"]
@@ -63,7 +87,10 @@ def main() -> int:
             raise SystemExit(
                 f"toolchain mismatch: {name}={observed[name]} expected={expected}"
             )
-    print("RAOS_TOOLCHAIN status=PASS " + " ".join(f"{k}={v}" for k, v in observed.items()))
+    print(
+        "RAOS_TOOLCHAIN status=PASS "
+        + " ".join(f"{k}={v}" for k, v in observed.items())
+    )
     return 0
 
 

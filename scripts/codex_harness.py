@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """RAOS context inventory, structural checks and isolated cold-start evals.
 
-No product network calls. Native eval uses existing Codex authentication only
+Live status is opt-in and read-only; native eval uses recorded product services.
+Native eval uses existing Codex authentication only
 in the controller; model shell commands cannot read it. Raw events/reasoning
 are consumed in memory and discarded. Reports contain counts and identifiers.
 """
@@ -77,22 +78,24 @@ def merge(lower, upper):
 
 
 def app_enabled(config, app):
-    apps = config.get("apps", {})
-    return apps.get(app, {}).get(
-        "enabled", apps.get("_default", {}).get("enabled", True)
-    )
+    apps = config.get("apps") or {}
+    default = (apps.get("_default") or {}).get("enabled")
+    enabled = (apps.get(app) or {}).get("enabled")
+    return enabled if enabled is not None else default if default is not None else True
 
 
 def app_tool_enabled(config, app, tool):
-    apps = config.get("apps", {})
-    settings = apps.get(app, {})
-    default = settings.get(
-        "default_tools_enabled",
-        apps.get("_default", {}).get("default_tools_enabled", True),
-    )
-    return app_enabled(config, app) and settings.get("tools", {}).get(tool, {}).get(
-        "enabled", default
-    )
+    # config/read serializes optional settings as null; null inherits defaults.
+    apps = config.get("apps") or {}
+    settings = apps.get(app) or {}
+    default = (apps.get("_default") or {}).get("default_tools_enabled")
+    selected = settings.get("default_tools_enabled")
+    if selected is not None:
+        default = selected
+    enabled = ((settings.get("tools") or {}).get(tool) or {}).get("enabled")
+    if enabled is None:
+        enabled = default if default is not None else True
+    return app_enabled(config, app) and enabled
 
 
 def size(text):
@@ -191,17 +194,43 @@ def line_queue(stream):
     return lines
 
 
-def skills_loaded(root, scoped=False, capabilities=False):
-    """Read-only app-server probe; never starts a model turn or reads memory."""
+def codex_executable():
+    """Use an explicit WSL binary when the desktop host PATH differs."""
+    selected = os.environ.get("RAOS_CODEX_BIN") or shutil.which("codex")
+    if not selected:
+        raise ValueError("Codex unavailable; set RAOS_CODEX_BIN to the WSL executable")
+    path = Path(selected).resolve()
+    if not path.is_file() or not os.access(path, os.X_OK):
+        raise ValueError("RAOS_CODEX_BIN must name an executable")
+    return path
+
+
+def skills_loaded(root, scoped=False, capabilities=False, wordpress=False):
+    """Probe actual loaded controls with all host paths mounted read-only."""
+    root = root.resolve()
+    with tempfile.TemporaryDirectory(prefix="raos-harness-inventory-") as directory:
+        disposable = Path(directory) / "repo"
+        disposable.mkdir()
+        command = controller_command(
+            disposable,
+            [
+                str(codex_executable()),
+                "-C",
+                str(root),
+                *overrides(project_skill_overrides(root) if scoped else {}),
+                "app-server",
+                "--listen",
+                "stdio://",
+            ],
+            inventory_root=root,
+        )
+        return _skills_loaded(root, command, capabilities, wordpress=wordpress)
+
+
+def _skills_loaded(root, command, capabilities, *, wordpress=False):
     started = time.monotonic()
     process = subprocess.Popen(
-        [
-            "codex",
-            *overrides(project_skill_overrides(root) if scoped else {}),
-            "app-server",
-            "--listen",
-            "stdio://",
-        ],
+        command,
         cwd=root,
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
@@ -294,10 +323,16 @@ def skills_loaded(root, scoped=False, capabilities=False):
                 }
             )
             servers = receive(identifier)
-        home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
-        effective = merge(
-            read_config(home / "config.toml"), read_config(root / ".codex/config.toml")
+        send(
+            {
+                "id": 7,
+                "method": "config/read",
+                "params": {"includeLayers": False, "cwd": str(root)},
+            }
         )
+        effective = receive(7)["config"]
+        if not isinstance(effective, dict):
+            raise ValueError("Codex effective configuration unavailable")
         costs = []
         for row in servers.get("data", []):
             selected = []
@@ -315,7 +350,7 @@ def skills_loaded(root, scoped=False, capabilities=False):
                         not setting.get("enabled_tools")
                         or name in setting["enabled_tools"]
                     )
-                    and name not in setting.get("disabled_tools", [])
+                    and name not in (setting.get("disabled_tools") or [])
                 )
                 if allowed:
                     selected.append(name)
@@ -340,8 +375,10 @@ def skills_loaded(root, scoped=False, capabilities=False):
                 }
             )
         # Do not serialize tool _meta: it may contain account/profile details.
-        return {
+        report = {
             "runtime_skills": skills,
+            "configuration_source": "codex-config-read",
+            "host_write_isolation": "read-only host; disposable controller state",
             "runtime_apps": [
                 {k: app.get(k) for k in ("id", "runtimeName", "enabled", "callable")}
                 for app in apps
@@ -365,6 +402,19 @@ def skills_loaded(root, scoped=False, capabilities=False):
             "runtime_policy_costs": costs,
             "runtime_probe_seconds": round(time.monotonic() - started, 2),
         }
+        if wordpress:
+            report["runtime_wordpress_status"] = wordpress_status(
+                root, effective.get("mcp_servers") or {}
+            )
+            report["status"] = (
+                "PASS"
+                if all(
+                    row["status"] == "PASS"
+                    for row in report["runtime_wordpress_status"]
+                )
+                else "FAIL"
+            )
+        return report
     finally:
         process.terminate()
         try:
@@ -374,7 +424,191 @@ def skills_loaded(root, scoped=False, capabilities=False):
             process.wait()
 
 
-def inventory(root, host=False, runtime=False):
+def valid_wordpress_status(server, value):
+    """Validate a bounded observation, not authorization or publication readiness."""
+    schemas = {
+        "wordpressEditor": "RAOSWordPressSiteStatusV1",
+        "wordpressDeployment": "RAOSWordPressDeploymentStatusV1",
+    }
+    if not isinstance(value, dict):
+        return False
+    authorization = value.get("apply_authorization")
+    return (
+        value.get("schema") == schemas[server]
+        and value.get("origin") == "https://kurashinoshirube.com"
+        and isinstance(authorization, dict)
+        and authorization.get("mode") == "approval_scoped_lease"
+        and authorization.get("default") is False
+        and authorization.get("single_use") is True
+    )
+
+
+def wordpress_status(root, servers):
+    """Use only resolved runtime transports and policy; never declared fallbacks."""
+    rows = []
+    for name, tool in (
+        ("wordpressEditor", "raos-codex-site-status"),
+        ("wordpressDeployment", "deployment-status"),
+    ):
+        setting = servers.get(name, {})
+        row = {"server": name, "status": "NOT_ALLOWED"}
+        rows.append(row)
+        if (
+            not setting.get("enabled", True)
+            or tool not in (setting.get("enabled_tools") or [])
+            or tool in (setting.get("disabled_tools") or [])
+            or not setting.get("command")
+        ):
+            continue
+        owner = Path(setting.get("cwd") or root).resolve()
+        row["startup_checkout"] = str(owner)
+        try:
+            row["startup_commit"] = run(["git", "rev-parse", "HEAD"], owner)
+        except subprocess.CalledProcessError:
+            row["startup_commit"] = "UNKNOWN"
+        with tempfile.TemporaryDirectory(prefix="raos-harness-status-") as directory:
+            disposable = Path(directory) / "repo"
+            disposable.mkdir()
+            command = controller_command(
+                disposable,
+                [
+                    "/usr/bin/env",
+                    "--chdir=" + str(owner),
+                    setting["command"],
+                    *setting.get("args", []),
+                ],
+                inventory_root=root,
+            )
+            process = subprocess.Popen(
+                command,
+                cwd=root,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                text=True,
+                bufsize=1,
+            )
+            lines = line_queue(process.stdout)
+
+            def send(identifier, method, params):
+                message = {"jsonrpc": "2.0", "method": method, "params": params}
+                if identifier is not None:
+                    message["id"] = identifier
+                process.stdin.write(json.dumps(message) + "\n")
+                process.stdin.flush()
+
+            def receive(identifier):
+                deadline = time.monotonic() + 60
+                while time.monotonic() < deadline:
+                    try:
+                        line = lines.get(timeout=1)
+                    except Empty:
+                        continue
+                    if line is None:
+                        break
+                    message = json.loads(line)
+                    if message.get("id") == identifier:
+                        if "error" in message:
+                            raise ValueError("MCP status request rejected")
+                        return message["result"]
+                raise TimeoutError("MCP status unavailable")
+
+            try:
+                send(
+                    1,
+                    "initialize",
+                    {
+                        "protocolVersion": "2024-11-05",
+                        "capabilities": {},
+                        "clientInfo": {"name": "raos-harness-status", "version": "1"},
+                    },
+                )
+                initialized = receive(1)
+                version = initialized.get("serverInfo", {}).get("version")
+                row["server_version"] = (
+                    version
+                    if isinstance(version, str)
+                    and re.fullmatch(r"[0-9]+(?:\.[0-9]+){0,3}", version)
+                    else "UNKNOWN"
+                )
+                send(None, "notifications/initialized", {})
+                send(2, "tools/list", {})
+                catalog = receive(2)
+                available = {item["name"] for item in catalog.get("tools", [])}
+                row["catalog_complete"] = not catalog.get("nextCursor")
+                row["catalog_tool_count"] = len(available)
+                row["configured_but_unavailable"] = sorted(
+                    set(setting["enabled_tools"]) - available
+                )
+                if tool not in available:
+                    row["status"] = "NOT_AVAILABLE"
+                    continue
+                send(3, "tools/call", {"name": tool, "arguments": {}})
+                row["called_tool"] = tool
+                row["response_fields"] = []
+                row["response_field_count"] = 0
+                result = receive(3)
+                if not isinstance(result, dict):
+                    raise ValueError("invalid MCP result container")
+                if result.get("isError") is True:
+                    row["status"] = "FAIL"
+                    continue
+                if result.get("isError") not in (None, False):
+                    raise ValueError("invalid MCP error flag")
+                structured = result.get("structuredContent")
+                if structured is None:
+                    contents = result.get("content", [])
+                    if not isinstance(contents, list):
+                        raise ValueError("invalid MCP content container")
+                    for content in contents:
+                        if not isinstance(content, dict):
+                            raise ValueError("invalid MCP content item")
+                        if content.get("type") == "text" and isinstance(
+                            content.get("text"), str
+                        ):
+                            try:
+                                structured = json.loads(content["text"])
+                            except KeyError, json.JSONDecodeError:
+                                continue
+                            break
+                row["status"] = (
+                    "PASS" if valid_wordpress_status(name, structured) else "ERROR"
+                )
+                # Even object keys can contain private material. Persist only
+                # fixed schema labels and counts, never arbitrary keys or values.
+                safe_fields = (
+                    "schema",
+                    "origin",
+                    "apply_authorization",
+                    "theme",
+                    "gates",
+                    "writes_enabled",
+                    "measurement",
+                    "wordpress_version",
+                    "plugin_runtime_revision",
+                )
+                row["response_fields"] = sorted(
+                    key
+                    for key in safe_fields
+                    if isinstance(structured, dict) and key in structured
+                )
+                row["response_field_count"] = (
+                    len(structured) if isinstance(structured, dict) else 0
+                )
+            except (OSError, ValueError, KeyError, TimeoutError) as error:
+                row["status"] = "ERROR"
+                row["error_type"] = type(error).__name__
+            finally:
+                process.terminate()
+                try:
+                    process.wait(timeout=3)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait()
+    return rows
+
+
+def inventory(root, host=False, runtime=False, wordpress=False):
     paths = run(
         ["git", "ls-files", "--cached", "--others", "--exclude-standard"], root
     ).splitlines()
@@ -433,7 +667,8 @@ def inventory(root, host=False, runtime=False):
         effective = merge(global_config, config)
         result["host"] = {
             "codex_home": str(home),
-            "version": run(["codex", "--version"]),
+            "version": run([str(codex_executable()), "--version"]),
+            "configuration_source": "declared user/project merge; not runtime resolution",
             "model": effective.get("model"),
             "reasoning": effective.get("model_reasoning_effort"),
             "instruction_configuration": {
@@ -493,7 +728,7 @@ def inventory(root, host=False, runtime=False):
                 }
             )
     if runtime:
-        result.update(skills_loaded(root, capabilities=True))
+        result.update(skills_loaded(root, capabilities=True, wordpress=wordpress))
         result["scoped_cli_skills"] = skills_loaded(root, scoped=True)
     return result
 
@@ -688,7 +923,7 @@ def sandbox_command(root, executable, policy, command):
     )
 
 
-def controller_command(root, command, *, user_home=None):
+def controller_command(root, command, *, user_home=None, inventory_root=None):
     """Keep even Codex's own config/cache writes inside a disposable mount.
 
     --ignore-user-config is not write isolation: CLI trust persistence can
@@ -729,6 +964,27 @@ def controller_command(root, command, *, user_home=None):
     for name in ("auth.json", "skills"):
         source = home / name
         if source.exists():
+            target = private / name
+            if source.is_dir():
+                target.mkdir(exist_ok=True)
+            else:
+                target.touch(exist_ok=True)
+            args += ["--ro-bind", str(source), str(target)]
+    if inventory_root is not None:
+        # Preserve actual settings and plugin/Skill discovery without permitting
+        # config persistence, catalog refreshes or MCP startup to alter the host.
+        args += ["--ro-bind", str(home), str(home)]
+        args += ["--ro-bind", str(inventory_root), str(inventory_root)]
+        for name in (
+            "config.toml",
+            "AGENTS.md",
+            "AGENTS.override.md",
+            "plugins",
+            "rules",
+        ):
+            source = home / name
+            if not source.exists():
+                continue
             target = private / name
             if source.is_dir():
                 target.mkdir(exist_ok=True)
@@ -905,7 +1161,7 @@ def evaluate_one(root, case, repetition, args):
             workspace,
         )
         evaluation_base = run(["git", "rev-parse", "HEAD"], workspace)
-        executable = Path(shutil.which("codex")).resolve()
+        executable = codex_executable()
         policy = isolation(workspace, executable)
         if not probe_isolation(workspace, executable, policy):
             record["status"] = "ISOLATION_FAILED"
@@ -1269,7 +1525,7 @@ def regrade(root, args):
             patch = (artifact / "change.patch").read_text()
             if patch.strip():
                 run(["git", "apply", "-"], workspace, input=patch.rstrip() + "\n")
-            executable = Path(shutil.which("codex")).resolve()
+            executable = codex_executable()
             policy = isolation(workspace, executable)
             grader = Path(folder) / "grader.py"
             shutil.copyfile(FIXTURES, grader)
@@ -1419,6 +1675,11 @@ def main():
     inv.add_argument("--host", action="store_true")
     inv.add_argument("--runtime", action="store_true")
     inv.add_argument(
+        "--wordpress-status",
+        action="store_true",
+        help="Call only the two configured read-only WordPress status tools",
+    )
+    inv.add_argument(
         "--tokenizer-python",
         type=Path,
         help="Existing Python with tiktoken; installs nothing",
@@ -1452,7 +1713,7 @@ def main():
             codex_args = codex_args[1:]
         return subprocess.run(
             [
-                "codex",
+                str(codex_executable()),
                 "-C",
                 str(args.root),
                 *overrides(project_skill_overrides(args.root)),
@@ -1462,6 +1723,8 @@ def main():
             check=False,
         ).returncode
     if args.command == "inventory":
+        if args.wordpress_status and not args.runtime:
+            parser.error("--wordpress-status requires --runtime")
         global TOKENIZER
         if args.tokenizer_python:
             TOKENIZER = subprocess.Popen(
@@ -1480,7 +1743,9 @@ def main():
             if TOKENIZER.stdout.readline().strip() != "READY":
                 raise SystemExit("requested tokenizer is unavailable")
         try:
-            result = inventory(args.root, args.host, args.runtime)
+            result = inventory(
+                args.root, args.host, args.runtime, args.wordpress_status
+            )
         finally:
             if TOKENIZER:
                 TOKENIZER.stdin.close()

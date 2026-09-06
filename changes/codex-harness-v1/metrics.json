@@ -109,10 +109,10 @@
     },
     {
       "path": "README.md",
-      "lines": 109,
-      "characters": 4536,
-      "bytes": 7478,
-      "tokens": 1933,
+      "lines": 111,
+      "characters": 4646,
+      "bytes": 7650,
+      "tokens": 1970,
       "encoding": "o200k_base"
     },
     {
@@ -133,10 +133,10 @@
     },
     {
       "path": "docs/architecture/current-system.md",
-      "lines": 126,
-      "characters": 6889,
-      "bytes": 9905,
-      "tokens": 2531,
+      "lines": 211,
+      "characters": 10582,
+      "bytes": 15474,
+      "tokens": 4034,
       "encoding": "o200k_base"
     },
     {
@@ -1771,5 +1771,27 @@
       "decision": "KEEP_SHARED_CACHE_NO_GLOBAL_CHANGE"
     }
   ],
-  "measurement_note": "o200k_base file measurements, not actual billed/always-loaded context. Global restore is pending; runtime estimates require re-verification."
+  "measurement_note": "File counts and o200k_base sizes are not actual model billing/context. After runtime is measured after known Global reconstruction; current inventory records declared, resolved catalog and actual fixed status calls separately. Global usage frequency and original missing preferences remain UNKNOWN. Native Desktop GSD is outside accepted scoped CLI operation.",
+  "runtime_after": {
+    "skill_catalog": 97,
+    "scoped_enabled_skills": 32,
+    "scoped_enabled_gsd": 0,
+    "selected_external_tools": 43,
+    "selected_schema_tokens": 10472,
+    "encoding": "o200k_base",
+    "configuration_source": "codex-config-read",
+    "catalog_complete": true,
+    "status_calls": [
+      {
+        "server": "wordpressEditor",
+        "called_tool": "raos-codex-site-status",
+        "status": "PASS"
+      },
+      {
+        "server": "wordpressDeployment",
+        "called_tool": "deployment-status",
+        "status": "PASS"
+      }
+    ]
+  }
 }

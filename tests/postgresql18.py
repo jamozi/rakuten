@@ -31,7 +31,7 @@ EXPECTED_SERVER_VERSION_NUM = 180004
 def _tools() -> tuple[dict[str, Path], dict[str, str]]:
     configured = os.environ.get("RAOS_PG_BIN")
     if configured is None:
-        pytest.skip("exact PostgreSQL 18.4 tests require RAOS_PG_BIN")
+        pytest.fail("exact PostgreSQL 18.4 tests require RAOS_PG_BIN; run make setup")
     directory = Path(configured)
     tools = {name: directory / name for name in POSTGRES_TOOLS}
     if any(not path.is_file() for path in tools.values()):
@@ -39,7 +39,16 @@ def _tools() -> tuple[dict[str, Path], dict[str, str]]:
     environment = dict(os.environ)
     library_path = environment.get("RAOS_PG_LIB")
     if library_path is not None:
-        environment["LD_LIBRARY_PATH"] = library_path
+        environment["LD_LIBRARY_PATH"] = os.pathsep.join(
+            dict.fromkeys(
+                [
+                    library_path,
+                    *filter(
+                        None, environment.get("LD_LIBRARY_PATH", "").split(os.pathsep)
+                    ),
+                ]
+            )
+        )
     version = subprocess.run(
         [os.fspath(tools["postgres"]), "--version"],
         text=True,

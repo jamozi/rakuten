@@ -2,8 +2,8 @@
 
 ## 1. Executive Summary
 
-- **未解決の重大事項:** 私が実装・実行した予備評価の隔離不足により、Codex CLIの一時checkoutのtrust保存がWindows側のGlobal `config.toml`を上書きした。完全な復元元を確認できておらず、ユーザーへバックアップの保存先を照会中。Globalを監査だけに留める方針に反した副作用であり、この状態を完了とは扱わない。
-- 評価controllerを読み取り専用のホストmount、独立したHome・PID・`/tmp`・cache、環境変数のallowlistで隔離した。認証ファイルは読み取り専用mountで参照し、値をコピー・表示しない。Global設定と認証ファイルへの書込み拒否を回帰テストで確認した。
+- 予備評価でGlobal設定を上書きした事故を修復した。ユーザー承認に従い、回収済み項目から再構成し、現在のDesktop・通知・Memory設定を保持した。一時評価のtrust 19件だけを除去した。完全な元ファイルの復元ではなく、不明な元設定は現在値または既定値を採用した。事故の経緯と限界は第11章に残す。
+- 評価とruntime inventoryのcontrollerを読み取り専用のホストmount、独立したHome・PID・`/tmp`・cache、環境変数のallowlistで隔離した。認証ファイルは読み取り専用mountで参照し、値をコピー・表示しない。Global設定と認証ファイルへの書込み拒否を回帰テストで確認した。
 - root AGENTSを開発手順中心の文書から、読者価値・確定貢献利益・安全境界を先に示すBootloaderへ変更した。91→83行、2,342→1,754 tokens（`o200k_base`、25.1%減）。
 - v1 baseline、対象限定のv2後継、現行Editorial V3、現在のstatus、履歴を目的別の地図へ接続した。一律の旧必読順をimport検証器が強制していた問題も修正した。
 - 生成READMEの「未実装の初期境界」という説明を歴史として位置付け、architecture・runbook・evalの入口を実装へ接続した。immutable packageは変更していない。
@@ -11,7 +11,7 @@
 - 継承される4つの不要AppとAPIキー設定MCPをProject設定で無効化し、GitHubを28 toolのallowlistにした。WordPressの2 server・承認境界・保存済みcheckout起動先は維持した。
 - Codex 0.153.4はProject層のSkill無効化を反映しない。65件のGSDをRAOS専用CLIのsession設定へ渡す互換経路を実装した。Desktopへの効果は主張しない。
 - Instructions・Skills・設定の変更を既存の差分検証へ接続した。文章の表現を固定する検査を外し、案内先・設定継承・公開/内部隔離・編集/財務・承認の検証へ接続した。
-- Before/After各15実行の比較はPASS。局所・複数module・Architectureは中央値16点を維持し、外部境界と事業ルールは14→16点。時間切れ・採点不能・未到達のMCP呼出しを合格に換算せず、計測の不備があったケース群は両条件で取り直した。
+- 初回Before/After各15実行の比較はPASS。再構成後の条件でBefore/After各15実行を再測定中。統合CIは未完了。局所・複数module・Architectureは中央値16点を維持し、外部境界と事業ルールは14→16点。時間切れ・採点不能・未到達のMCP呼出しを合格に換算せず、計測の不備があったケース群は両条件で取り直した。
 
 ## 2. Project Objective Map
 
@@ -38,7 +38,7 @@
 | root AGENTS | Mission、不変条件、案内、境界 | root作業時 | 83行 / 1,754 tokens | YES | 旧版は開発手順が先 | REWRITE |
 | canonical nested AGENTS ×2 | import時のbaseline | NO、対象scope次第 | 各90行 / 1,056 tokens | 履歴 | 同一内容と旧workflow | KEEP immutable、常時案内しない |
 | AGENTS.override | なし | NO | 0 | NO | なし | 追加しない |
-| README | 人間向け導入・commands・CI | NO | 109行 / 1,933 tokens | YES | WordPress手順の重複 | REWRITE、runbook参照 |
+| README | 人間向け導入・commands・CI | NO | 111行 / 1,970 tokens | YES | WordPress手順の重複 | REWRITE、runbook参照 |
 | docs map / architecture | 適用範囲・実装・検証先 | NO | metrics参照 | YES | 旧必読順、初期placeholder | REWRITE |
 | canonical / upstream / ZIP | 不変な原設計と由来 | NO | 必要な領域だけ取得 | YES | 現行statusと誤認しやすい | KEEP、適用範囲を明示 |
 | execution plans | 当時の判断・履歴 | NO | 履歴本文は維持 | 条件付き | 古いACTIVE表記 | 2入口に履歴注記 |
@@ -49,13 +49,13 @@
 | MCP / Apps | 外部情報・操作 | discovery / policy依存 | Project選択はGitHub28＋WP最大17 | YES | 不要Appの明示有効設定が継承される | explicit false＋allowlist |
 | rules | Globalの実行規則 | 条件付き | active homeに567 bytesの1ファイル | 頻度UNKNOWN | Project固有ではない | KEEP、Project rule追加なし |
 | hooks | 明示Project hookなし | NO | 追加0 | NO | proseを強制停止hookへ移す必要なし | 追加しない |
-| subagent | bounded implementation worker | 委任時 | 15→9行、245→131 tokens | 今回未使用 | root規律の複製 | root参照へ縮約 |
+| subagent | bounded implementation worker | 委任時 | 15→9行、245→131 tokens | DB・runtime実装と独立レビューに使用 | root規律の複製 | root参照へ縮約 |
 | fallback / model instruction | 明示設定なし | NO | defaultの上限は変更しない | NO | README強制読込を追加すべきでない | 追加しない |
 | Memory | 探索の補助 | 実ロード量UNKNOWN | 個人本文は取得しない | UNKNOWN | 正本・承認にしてはいけない | 設定変更なし |
 | helper scripts / CI | generator、差分選択、決定的検証 | NO | 既存build registryを利用 | YES | Instructionsが検証選択から除外 | 既存plannerへ接続 |
-| native eval CLI | inventory/check/eval/compare、scoped run | NO | 単一CLI＋fixture/grader | YES | controllerの書込み隔離不足 | mountで機械的に隔離 |
+| native eval CLI | inventory/check/eval/compare、scoped run | NO | 単一CLI＋fixture/grader | YES | controllerの書込み隔離不足 | evalとinventoryをmountで機械的に隔離 |
 
-Active homeはWindows側 `/mnt/c/Users/naoki/.codex`。Linux側の旧config・親ディレクトリのAGENTSを、このセッションにロードされた情報とはみなしていない。Globalの当初AGENTSは0 bytes。Global設定の復元待ちにより、現在のhost runtimeを通常状態として比較することはできない。
+Active homeはWindows側 `/mnt/c/Users/naoki/.codex`。Linux側の旧config・親ディレクトリのAGENTSを、このセッションにロードされた情報とはみなしていない。Globalの当初AGENTSは0 bytes。Global再構成後に通常CLIと専用CLIを新規起動して再確認した。通常97件、専用CLIは有効32件（GSD有効0件、Project Skill 2件）。AppはGitHubだけがenabled/callableで、実設定を`config/read`の明示cwd付き応答から確認した。
 
 ## 4. Redundancy / Conflict Matrix
 
@@ -72,7 +72,10 @@ Active homeはWindows側 `/mnt/c/Users/naoki/.codex`。Linux側の旧config・�
 | Apps継承 | Global個別true、Project `_default=false` | 個別trueはdefaultで消えない | Project explicit false | 継承を再現するnegative test |
 | GSD無効化 | Project `skills.config`、Codex0.153.4 | 設定を保存しても実Skill一覧へ反映されない | Project config＋scoped CLI | session selectorへ昇格、Desktop効果を分ける |
 | disabled MCP transport | 継承依存のnode_repl宣言 | 単独のProject読込でinvalid transport | Project config | `/usr/bin/false`の完全な無効宣言 |
-| user config無視 | eval CLI flag、CLI trust保存 | 読込を無視してもGlobalへの書込みが起きる | eval controller | 読み取り専用mountとprivate Homeで保証 |
+| user config無視 | eval CLI flag、CLI trust保存 | 読込を無視してもGlobalへの書込みが起きる | controller | eval・inventoryとも読み取り専用mountとprivate Homeで保証 |
+| runtime設定読取 | config/read、App catalog | cwdを省くとGlobal層だけを返す | Harness inventory | 明示cwdとnullable値を扱い、Project再公開の回帰検査 |
+| DB構造digest | PostgreSQL内部catalog、downgrade | 削除済み列の内部情報が有効構造へ混入 | migration runner | dropped列を除外、有効列・制約・権限の検査を維持 |
+| migration履歴とfixture | ST-0303/0306、future graph | 旧revisionと累積HEAD、後継fixtureが混在 | 対象revisionのgraph | 歴史と最新HEADを分け、後継revisionの履歴・排他を検査 |
 
 ## 5. Target Architecture
 
@@ -90,6 +93,8 @@ repository/
   docs/runbooks/                         # 既存の専門手順
   workspace-layout.json                 # generated READMEの入力
   scripts/codex_harness.py               # 計測・検査・実評価・比較・CLI互換起動
+  scripts/raos_test_runtime.py           # PostgreSQL/PHPの固定runtimeと子process環境
+  scripts/test-runtime-bin/php          # 既存PHP入口の隔離fallback
   tests/evals/codex_harness/              # synthetic入力、独立grader、回帰tests
   changes/codex-harness-v1/               # この監査の報告と計測結果
 ```
@@ -128,7 +133,7 @@ codeはlocal search、architectureはcanonical map、Issue/PR/CIはGitHub、Git�
 
 32のcache directoryには、codex-app-tools、computer-use/unified-computer-use、sites、visualize、旧curated/remoteのCanva・Figma・GitHub・Hugging Face・Notion・Slack、codex-security、WPWriter、WordPress.com、Google Drive、deep-research、openai-developers、openai-templates、Outlook、plugin-management、Replit、local documents/PDF/presentations/spreadsheets/template-creatorが含まれる。同名の旧versionを削除・uninstallしていない。個別versionとSkill一覧はmetricsを参照する。利用頻度はUNKNOWN。
 
-WordPress起動先は `/home/minami/rakuten` のまま。今回のworktreeとそのcheckoutのcode revisionは別物であり、設定だけでlive状態を推定しない。optionalなaggregate reportとoperation-statusの未公開をserver全体の障害と混同しない。serverごとの正確なstartup時間はUNKNOWN。catalog取得時間・公開tool数・選択schema量は別の量として記録する。
+WordPress起動先は `/home/minami/rakuten` のまま。今回のworktreeとそのcheckoutのcode revisionは別物であり、設定だけでlive状態を推定しない。optionalなaggregate reportとoperation-statusの未公開をserver全体の障害と混同しない。両MCPの固定status実呼出しは成功した。応答本文や個人情報を保存せず、tool名・応答field名・起動checkoutのSHAをinventoryへ保存する。serverごとの正確なstartup時間はUNKNOWN。catalog取得時間・公開tool数・選択schema量は別の量として記録する。
 
 仕様確認は導入済みCodex 0.153.4のhelp・app-server応答と、[公式config reference](https://learn.chatgpt.com/docs/config-file/config-reference)、[AGENTS](https://learn.chatgpt.com/docs/agent-configuration/agents-md)、[Skills](https://learn.chatgpt.com/docs/build-skills)、[MCP](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)、[rules](https://learn.chatgpt.com/docs/agent-configuration/rules)、[hooks](https://learn.chatgpt.com/docs/hooks)、[subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[memories](https://learn.chatgpt.com/docs/customization/memories)、[app-server](https://learn.chatgpt.com/docs/app-server)による。
 Project Skill filterには[OpenAI upstream issue #20210](https://github.com/openai/codex/issues/20210)と一致する制約があった。permissions profileの選択には実CLI/schemaが受け付ける`default_permissions`を使い、受け付けなかった`permissions.default`は採用していない。
@@ -149,6 +154,9 @@ Project Skill filterには[OpenAI upstream issue #20210](https://github.com/open
 | 既存Pro・Story・ST-0104・開発規則tests | 文言一致のassertを除去。transport/allowlist/worker schema、公開・承認の振舞い検査と実commandの案内検査は維持 |
 | 2つの旧ExecPlan入口 | 現行命令として扱わない履歴注記 |
 | generated manifests | 変更した入力に対応するowner生成物を更新。承認済みlive候補は変更しない |
+| google_live persistence / migration runner / PG tests | immutable snapshotのFOR SHAREを除去。worker権限を増やさず並行保存・競合・rollbackを保証。有効構造digestと歴史/最新/future graphを修正 |
+| raos_test_runtime / verify_dev_toolchain / conftest / CI | 固定PostgreSQL 18.4の実行ファイルとlibraryを子processへ渡し、必要DB検査のruntime欠落を失敗にする。PHP 8.3と7.4 CIを維持 |
+| runtime/phase3/history tests | PHP実行経路、上書き設定、隔離、現行workflowのzero-action・activation拒否を検証 |
 | .gitattributes / evals artifacts | unified diffの空context行のspaceを保持するため、保存patchだけに既存のbyte保存方式を適用。製品sourceのwhitespace検査は維持 |
 
 製品の公開API・データ契約・順位ロジックは変更していない。canonical/upstream/ZIPに差分はない。今回、記事・テーマ・pluginの本番送付、公開提案・適用、staging、deployment、releaseは実施していない。local generatorが出すProduction関連の検査表示は実Production evidenceではない。
@@ -160,16 +168,16 @@ Project Skill filterには[OpenAI upstream issue #20210](https://github.com/open
 | root AGENTS lines | 91 | 83 | 行数を合格条件にはしていない |
 | root characters / bytes | 4,906 / 8,962 | 3,973 / 6,535 | 日本語を含むUTF-8 |
 | root tokens | 2,342 | 1,754 | o200k_baseで25.1%減 |
-| README tokens | 1,858 | 1,933 | 人間向け説明と導入を整備したため増加、常時投入ではない |
+| README tokens | 1,858 | 1,970 | 人間向け説明と導入を整備したため増加、常時投入ではない |
 | docs map tokens | 815 | 1,110 | 現行・後継・実装の案内を追加、on-demand |
 | worker tokens | 245 | 131 | root規律の複製を縮約 |
 | Project Skills | 0 | 2 | workflowだけ追加 |
 | Project Skill name+description | 0 | 161 tokens | 本文は条件付きで1,225 tokens |
 | GSD name+description | 1,217 tokens / 65件 | scoped CLIでは無効化対象 | path表示・system instructionsを含む実投入量とは別 |
-| 通常CLI Skill一覧 | 監査時93件 | 設計上95件、scoped CLIは30件 | Global復元後の再確認が必要。Desktop効果は未達 |
+| 通常CLI Skill一覧 | 監査時93件 | 再構成後97件、scoped CLI有効32件 | 実ロード値。Global GSDを変更せず65件無効。Desktopは合意済み対象外 |
 | WordPress詳細の所有箇所 | AGENTS / README / runbook | runbook | 他は短い境界・入口へ。逐語的な重複率とは別 |
 | 新規nested AGENTS / hooks / plugins | 0 | 0 | 探索・運用面を増やさない |
-| 発見可能な能力 | セッション開始時320 | Project policyは外部43 toolを目標 | built-in・host catalog・実際のschema投入は異なる集合。現在の実ロード確定値として扱わない |
+| 外部能力 | セッション開始時320能力が発見可能 | runtime policy選択43 tool、catalogのAppsは484 tool | 集合が異なるため320→43の削減率にはしない。選択schemaは10,472 o200k tokens、常時投入量ではない |
 | 明示的に除外した継承能力 | 4 App＋API-key MCP | Projectでfalse | Globalのinstall/on状態は変更対象外 |
 
 rootとGSDのname+descriptionだけの小計は3,559 tokens。GSDを除外したscoped CLIのroot＋新規Skill metadataは1,915 tokensとなる。この差1,644 tokensは、共通Skills、path表示、system/developer指示、会話、動的tool schema、Memoryを含む総context削減量ではない。
@@ -210,26 +218,27 @@ DB partitionは最初101 pass / 233 skip。既存のPostgreSQL 18.4を指定し�
 
 ## 11. Remaining Gaps
 
-1. **Global設定の完全復元。** Windows側 `config.toml`が予備evalのtrust保存で上書きされた。監査前のフィルタ済み設定は一部回収できたが、notify・desktop・shell environment・projects等を含む完全な元ファイルがない。Linux側の旧configとVS Code履歴は別物であり、推測して置換しない。バックアップの保存先をユーザーへ照会中。
-2. **既存のPostgreSQL検査19件。** 変更前でも同じ失敗を再現。ST-0303/0306の2件は旧HEAD `202608030006` を期待するが現行は `202608300001`。ほかはmigration history / future graph / downgradeの16件とGoogle persistenceの1件で、詳細な根因はUNKNOWN。これらの製品module・testには今回差分がなく、本タスクでmigration実装を変更して帳尻を合わせていない。PHPの6件、履歴workflowの7件、PHP 7.4のformal CIも合格扱いにはしていない。
-3. **DesktopのGSD filter。** 現行CodexではProjectのSkill filterが適用されない。scoped CLIの互換入口は実装したが、Globalを変更せずDesktop全体から非表示にする効果はない。
-4. **Global復元後のruntime再確認。** Appの実callable状態、通常CLI/scoped CLIのSkill一覧、WordPress catalogを再確認する。今回の設定値・途中の観測値を現在の実状態へ置き換えない。
+実装した修復のうち、全体検証・最終After評価・Required CI・merge・ローカル同期の証拠は収集中。未実行をPASSに換算しない。
+
+Globalは既知項目の再構成で解決する方針をユーザーが承認した。書込み直前の再読込と排他アクセスで同時更新を検出し、書込み前ファイルを`C:/Users/naoki/.codex/recovery/config-before-raos-reconstruction-20260906-160103.toml`へ保全した。model、Skillの既存disable 2件、回収済みfeature/Plugin/App設定を項目単位で戻し、現在のDesktop・通知・Memory・Windows設定を保持した。今回の一時評価のtrust 19件を除去し、実在するRAOSの2 checkoutだけをtrustへ登録した。認証ファイル・Plugin本体・Linux側Global・Global GSDは変更していない。
+
+完全な元ファイルは存在せず、元の`model_reasoning_effort`、`preferred_auth_method`、`personality`、`service_tier`、`shell_environment_policy`は不明なため省略し、Codex既定値を使う。元の通知等もUNKNOWNだが、現在のアプリが保持している設定を優先した。これは合意済みの再構成であり、完全な原状復元を主張しない。個人Memoryの内容、利用頻度、未取得の事業実測値は監査の限界であり、架空の値で埋めない。
+
+DesktopのProject Skill filter制約は上流に残る。RAOS専用CLIを標準経路にする合意済み運用でGSD無効化を実測した。Globalの無効化やinstruction/catalog上限で隠す対処は採用しない。
 
 | Success criterion | Evidence / status |
 | --- | --- |
 | SC-01 | Missionをroot先頭から特定可能、現行V3へ1 link |
 | SC-02 | rootは83行、仕様全文は持たない |
 | SC-03 | docs map / architecture / Skillsとlinks・anchors検査 |
-| SC-04 | 商品同定・編集財務・公開隔離・承認の既存behavior testsを維持 |
+| SC-04 | 商品同定・編集財務・公開隔離・承認のbehavior tests、DB権限・並行実行検査 |
 | SC-05 | 詳細手順はrunbook、commands/CIはREADME、適用関係はdocs map |
 | SC-06 | 2つのcoherent workflow。Global frameworkは複製しない |
-| SC-07 | Project allowlist実装済み。runtime再確認とDesktop制約が残る |
-| SC-08 | Aの読取量中央値8.5%減、Cの設計とD/Eの正本取得を保存成果物で確認 |
-| SC-09 | 要求・目的・受入・境界・正本・隣接影響・非対象をCの成果物で確認。内的思考の計測とは区別 |
-| SC-10 | PASS、5種類×3回×Before/After、ケース別中央値を維持・改善、重大なモデル境界違反なし |
-| SC-11 | rootは25.1%減。Skill metadata削減はscoped CLI条件付き |
-| SC-12 | 製品のpublication/Production gateは変更していない。Global副作用の修復は未完了 |
+| SC-07 | 再構成後のApp/GitHub/WP実ロードと両statusが成功。専用CLIでGSD有効0件 |
+| SC-08 | 最終Before/After再評価中。Sの読取量とL/XLの必要context取得を確認する |
+| SC-09 | Objective ChecksumをC成果物で再確認中。内的思考の計測とは区別 |
+| SC-10 | 最終実装の5種類×3回×Before/Afterを再評価中 |
+| SC-11 | rootは25.1%減。Skill metadata削減は専用CLI条件付き |
+| SC-12 | 製品gateを維持、Global再構成済み、evalとinventoryのwrite isolationを回帰検査 |
 
-最終自己レビューの第一問にはYESと答えられる。現行V3やpublication runbookへ到達しなかったBeforeに対し、After全3回がそれぞれの正本へ到達し、必要な判断を成果物へ反映したためである。単に読書を省いただけではない。
-
-半年後の事前知識ゼロの作業については、採用関係・生成元・検証先・UNKNOWN・実行境界を辿る設計と今回のcold-start比較が根拠になる。ただしhost全体を含む無条件のYESとはしない。Global復元とruntime再確認が未完了であり、DesktopのSkill filterには既知の制約がある。このためタスク全体の状態は **INCOMPLETE** とする。
+自己レビューの最終結論は最終評価とRequired CI・同期の完了後に更新する。現在のタスク状態は **VALIDATING**。

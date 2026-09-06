@@ -139,11 +139,11 @@ source_artifacts:
   bytes: 1636
   sha256: 31bec8c705dfd1bfaeddba6334457c47b717f17602bcbaf0e9e5135519a5d9d1
 - uri: repo://Makefile
-  bytes: 3427
-  sha256: 4eb39cb5aefdda22eba5abfa74a6539d36444453aebb8a70b41510d4f6cf56c8
+  bytes: 3490
+  sha256: 9df01ce453622e0a2c3c624589a8de654efb721d484e412e525b650028e1dcee
 - uri: repo://README.md
-  bytes: 7478
-  sha256: 54e597c73c783360417b6f37b7b3497ff20e49bfedfdbeedb473ee5aa1349ec8
+  bytes: 7650
+  sha256: 5e70e32980ac73e3939041429ff83e0d2a7184b4f3a8f331bb8639813386076f
 - uri: repo://docs/execplans/ST-0304.md
   bytes: 2125
   sha256: 1c63270463dfa4afd6eb329d265ed18dd94dc9c9c6bace96796f4863be9772b8
@@ -157,8 +157,8 @@ source_artifacts:
   bytes: 138458
   sha256: afaf1fcd180593faac3404a4f978aa9f44452657a74b5f301924e78f1a9a1e39
 - uri: repo://changes/st-0303/manifest.yaml
-  bytes: 11451
-  sha256: 9bb081f43294e7a3c8bfd32755c1c7455f46bc6e0b1856482369f3f1f2679379
+  bytes: 11452
+  sha256: 2d01fe153425f317741d43438a852700e7d4456ae19676d87034270519ef575a
 - uri: repo://migrations/versions/202608030003_iam_ops_tables.py
   bytes: 62827
   sha256: a9e162915e7450e30a6c96bafd1a65485447f6163b88ef5771dedc3df14c2f4e
@@ -166,14 +166,14 @@ source_artifacts:
   bytes: 20865
   sha256: a4181b2d1de4a01a898b60b3e57a1640d7aa539be61f35b9e84c984df80b4839
 - uri: repo://python/raos/migrations/runner.py
-  bytes: 222535
-  sha256: 2e83bac7ca61ea44c08b95d8f13778e0b60de95ee7c43b6f04fe0886cc96145d
+  bytes: 222761
+  sha256: ace7997804a1f30b13ca4c5a5914396fa29eafd75b5a611d95cff9c5792c5d41
 - uri: repo://scripts/build_st0201_postgres_service.py
   bytes: 36955
   sha256: 847c9eab92236b8f40d63423b6640e0aa299cf5562040aa64f60358248ea4375
 - uri: repo://tests/postgresql18.py
-  bytes: 8178
-  sha256: 14d81fbbb7b35fd2672a11ccd162d8683905fe7216be6fb45b46d73d2b4d6085
+  bytes: 8458
+  sha256: c31b4624f25064f84ef3c4c08279bce5b0ff4181cda2170be906f4d2fda9ac09
 - uri: repo://tests/st0106/test_workflow_contract.py
   bytes: 4693
   sha256: 84629034a0e5483bea8cbd0611d675ae5bedd3ddc90628491a9e059f23c869fc

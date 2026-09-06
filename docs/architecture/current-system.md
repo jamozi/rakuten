@@ -69,14 +69,49 @@ v2 decision supportのルールは`changes/raos-v2/`と`domain/decision_support_
 
 AGENTSは常時の目的・不変条件と地図、READMEは人間の開発案内、Skillは反復workflowを所有します。
 S/M/L/XLとObjective ChecksumはAGENTSの探索方針を使い、各Skillへ複製しません。
+RAOSのscoped CLI起動・inventory・必要runtimeの手順はこの節を正本とします。
 
 Project設定は`.codex/config.toml`、workflowは`.agents/skills/`です。
 Global preference・Plugin install state・個人Memoryをrepositoryへコピーしません。
 GSDのdisable対象は現在ホストで発見したSKILL.md pathです。Codex 0.153.4には
 [project Skill filterの制約](https://github.com/openai/codex/issues/20210)があり、
-通常の起動ではこの設定をSkill一覧へ反映しません。下の`run`入口がprojectのSkill設定だけを
-session overrideへ渡します。Global設定と権限設定は変更しません。
-別ホストでは`inventory --runtime`で実ロードpathを確認してproject設定を合わせます。
+通常の起動ではこの設定をSkill一覧へ反映しません。RAOSでは実際のWSL checkoutから
+既存の`scripts/codex_harness.py run --`を使うscoped CLIを標準入口とします。
+この入口がprojectのSkill設定だけをsession overrideへ渡します。新しいlauncherは追加せず、
+Global GSDの設定・インストール状態と権限設定を維持します。
+
+以下のcheckout、Codex home、実行ファイルの絶対pathはこのホストの例です。別ホストでは
+実際のWSL checkoutと実行可能なWSL版Codexに置き換えます。`RAOS_CODEX_BIN`は明示した
+実行ファイルを選択し、未指定時だけPATH上の`codex`を使います。この例の実行ファイルは
+`--version`で`codex-cli 0.153.4`を確認しています。`CODEX_HOME`と`RAOS_CODEX_BIN`は
+起動processの環境として渡し、Global設定やshell profileへ保存しません。
+
+WSL shellでは、subshell内だけに環境を設定して起動します。
+
+```sh
+(
+  cd /home/minami/.codex/worktrees/0449/rakuten || exit 1
+  export CODEX_HOME=/mnt/c/Users/naoki/.codex
+  export RAOS_CODEX_BIN=/mnt/c/Users/naoki/.codex/bin/wsl/b53f5e5f7452dd19/codex
+  test -x "$RAOS_CODEX_BIN" || exit 1
+  .venv/bin/python scripts/codex_harness.py run --
+)
+```
+
+Windows PowerShellからも、Windows側の見かけのworktree pathではなく、
+`--cd`に実在するWSL checkoutを指定します。
+
+```powershell
+wsl -d Ubuntu-22.04 --cd /home/minami/.codex/worktrees/0449/rakuten --exec env `
+  CODEX_HOME=/mnt/c/Users/naoki/.codex `
+  RAOS_CODEX_BIN=/mnt/c/Users/naoki/.codex/bin/wsl/b53f5e5f7452dd19/codex `
+  .venv/bin/python scripts/codex_harness.py run --
+```
+
+native DesktopでGSDを非表示にすることは、このscoped CLIの合意済み範囲に含めません。
+Desktopの制約を受け入れた上でCLIを使い、Global GSDは変更しません。
+既存会話への遡及適用も前提にしません。別ホストや上流更新時には、同じprocess環境で
+`inventory --runtime`の実ロードpathと通常起動・scoped起動の差を確認してproject設定を合わせます。
 Instruction/Skillカタログ上限を削って情報を隠す方法は使いません。
 
 外部能力はGitHub appの必要toolと2つのbounded WordPress MCPに限定します。
@@ -84,17 +119,66 @@ MCPの保存済みcheckout起動先は資格情報を扱う既存境界であり
 設定されたtool、実際に公開されたtool、optional能力、接続不能は別々に診断します。
 live状態はMCP statusで確認し、過去の監査結果から推測しません。
 
+inventoryと構造検査は、上記subshell内で`run --`の代わりに次の既存コマンドを実行します。
+Windowsからは同じ`wsl ... --exec env ...`の末尾を置き換えます。
+
 ```sh
 .venv/bin/python scripts/codex_harness.py inventory --host --runtime --output /tmp/raos-harness.json
 .venv/bin/python scripts/codex_harness.py check
-.venv/bin/python scripts/codex_harness.py run --
 ```
 
+WordPress statusの実呼出しはopt-inです。`--wordpress-status`には`--runtime`が必要です。
+
+```sh
+.venv/bin/python scripts/codex_harness.py inventory --host --runtime --wordpress-status --output /tmp/raos-harness-status.json
+```
+
+このoptionは設定済みstdio bridgeを使い、`wordpressEditor`の`raos-codex-site-status`と
+`wordpressDeployment`の`deployment-status`だけを固定の読み取り専用呼出しとして実行します。
+通常のruntime inventoryと同じcontrollerでhost・config・auth・repositoryを読み取り専用に保ち、
+書込みstateを使い捨て領域へ分離します。bridgeの保存済み起動先は維持し、
+結果の`startup_checkout`・`startup_commit`でどのcheckoutを使ったか確認します。
+
+設定上の許可、`tools/list`に公開されたcatalog、`tools/call`の実行結果は別々の証拠です。
+`runtime_wordpress_status`で必須statusの実呼出し結果と`configured_but_unavailable`を確認します。
+optionalなaggregate・operation-status等はcatalogにない場合も区別して記録し、
+2つのstatus呼出しのPASSをoptional能力の存在・動作確認へ広げません。
+その時点のtool数・Skill数・commit・status結果はinventory出力で扱います。
+
 Host inventoryはSkill metadata・Plugin cache manifest・設定の非秘密項目だけを扱います。
+runtime inventoryのcontrollerはhost・config・auth・対象repositoryを読み取り専用で参照し、
+cache・state等の書込みは使い捨て領域へ分離します。認証値をコピー・表示しません。
+`config/read`には対象repositoryの`cwd`を明示し、そのcheckoutのproject設定を解決します。
+このinventory用の書込み隔離を、通常の対話用`run --`にも適用されるものとは扱いません。
 Plugin cacheの存在はinstall/on状態や利用頻度の証拠ではありません。
-`runtime_skills`は通常起動、`scoped_cli_skills`は上記入口の実ロード結果です。
-DesktopでのGSD非表示はこのCLI入口の効果に含めません。設定変更を既存会話へ遡及適用したと
-みなさず、再ロードして確認します。上流で対応した際も両結果を比較して互換経路を外します。
+`runtime_skills`は通常起動、`scoped_cli_skills`は標準入口の実ロード結果です。
+上流でproject Skill filterに対応した際も両結果を比較して互換経路を外します。
+
+必要なlocal validationはexact PostgreSQL 18.4とPHP 8.3を使います。
+取得先・digest・runtime探索は共有toolchainの`scripts/raos_test_runtime.py`が所有し、
+ここへ複製しません。`make setup`で依存とPostgreSQLを準備し、PostgreSQLだけを準備し直す場合は
+`.venv/bin/python scripts/verify_dev_toolchain.py --test-runtime-only`を使います。
+選択された必須DB testでruntime不在・version不一致をskipによる成功にしません。
+`RAOS_PG_BIN`・`RAOS_PG_LIB`・`LD_LIBRARY_PATH`はpytestの子processにも引き継ぎます。
+
+```sh
+.venv/bin/python -m pytest -q tests/test_runtime
+.venv/bin/python -m pytest -q \
+  tests/editorial_measurement_v1/test_contract.py \
+  tests/st1704_publication_operator/test_draft_writer_read_projection_behavior.py \
+  tests/st1704_publication_operator/test_draft_writer_role_behavior.py \
+  tests/st1704_publication_operator/test_terminal_reconciliation_behavior.py \
+  tests/wordpress_mcp_v1/test_batch_status_bindings.py
+```
+
+前者はPG18.4のsocket-only smokeとruntime境界、後者はPHP8.3のrate・retention・
+read projection・role・terminal reconciliation・batch statusの動作を確認します。
+local PHP CLIがない場合は共有toolchainの既存`scripts/test-runtime-bin/php`が固定imageの
+PHP CLIを使います。固定imageは事前配置が必要で、自動pullはしません。
+実行はnetworkなし・読み取り専用・capability削除とsource／synthetic fixture mountに
+限定します。WordPress serverは起動しません。`make fast`と直接のpytestはこの探索を共有します。
+PHP7.4互換性の専用CIは維持します。`live`・`external`・`raos_owner_private`と
+旧workflow proseに対する意図的skipはこの必須runtime検証と区別します。
 
 ## Cold-start evaluation
 
@@ -104,6 +188,7 @@ DesktopでのGSD非表示はこのCLI入口の効果に含めません。設定�
 .venv/bin/python scripts/codex_harness.py compare /tmp/raos-before.json /tmp/raos-after.json
 ```
 
+上の標準入口と同じprocess-scoped環境で実行します。
 各ケースは3回、新規checkoutと会話で実行します。Before/Afterとも`run`と同じSkill設定解決を
 使います。評価はlocal sourceとrecorded WordPressだけに限定し、shellのネットワーク・home・
 保存済みcheckoutへのアクセスを遮断します。既存Codex認証はcontrollerだけが利用します。

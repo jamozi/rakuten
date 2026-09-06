@@ -411,3 +411,244 @@ def test_snapshot_does_not_expose_grader_or_user_state(tmp_path):
     assert not (destination / "untracked-private").exists()
     assert not (destination / "tests/evals/codex_harness").exists()
     assert not (destination / "scripts/codex_harness.py").exists()
+
+
+def test_runtime_inventory_loads_real_controls_without_host_writes(
+    tmp_path, monkeypatch
+):
+    if shutil.which("bwrap") is None:
+        pytest.skip("bubblewrap is required for isolated runtime inventory")
+    home = tmp_path / "user"
+    home.mkdir()
+    (home / "config.toml").write_text('model="synthetic-original"\n')
+    (home / "auth.json").write_text("synthetic authentication sentinel")
+    root = tmp_path / "repo"
+    (root / ".codex").mkdir(parents=True)
+    (root / ".codex/config.toml").write_text("")
+    guard = root / "protected"
+    guard.write_text("repository sentinel")
+    fake = root / "codex"
+    fake.write_text(
+        f"#!{sys.executable}\n"
+        "import json,os,pathlib,sys,tomllib\n"
+        "home=pathlib.Path(os.environ['CODEX_HOME'])\n"
+        "settings=tomllib.loads((home/'config.toml').read_text())\n"
+        "denied=[]\n"
+        f"for path in [home/'config.toml',home/'auth.json',pathlib.Path({str(guard)!r})]:\n"
+        " try: path.write_text('forbidden'); denied.append(False)\n"
+        " except OSError: denied.append(True)\n"
+        "(home/'probe-cache').write_text('isolated state')\n"
+        "for line in sys.stdin:\n"
+        " request=json.loads(line)\n"
+        " if 'id' not in request: continue\n"
+        " method=request['method']\n"
+        " if method=='skills/list': result={'data':[{'skills':[{'name':settings['model'],'enabled':all(denied)}]}]}\n"
+        " elif method=='config/read':\n"
+        f"  scoped=request.get('params',{{}}).get('cwd')=={str(root)!r}\n"
+        "  result={'config':{'apps':{'_default':{'enabled':not scoped}}}}\n"
+        " elif method=='app/installed': result={'apps':[]}\n"
+        " elif method=='mcpServerStatus/list': result={'data':[{'name':'codex_apps','tools':{'forbidden':{'_meta':{'connector_id':'synthetic'}}}}]}\n"
+        " else: result={}\n"
+        " print(json.dumps({'id':request['id'],'result':result}),flush=True)\n"
+    )
+    fake.chmod(0o755)
+    monkeypatch.setenv("CODEX_HOME", str(home))
+    monkeypatch.setenv("RAOS_CODEX_BIN", str(fake))
+    monkeypatch.setenv("PATH", str(root) + ":" + __import__("os").environ["PATH"])
+    result = harness.skills_loaded(root, capabilities=True)
+    assert result["runtime_skills"] == [
+        {
+            "name": "synthetic-original",
+            "enabled": True,
+            "path": None,
+            "scope": None,
+            "pluginId": None,
+        }
+    ]
+    assert result["configuration_source"] == "codex-config-read"
+    assert result["runtime_policy_costs"][0]["policy_selected_tools"] == []
+    assert (home / "config.toml").read_text() == 'model="synthetic-original"\n'
+    assert (home / "auth.json").read_text() == "synthetic authentication sentinel"
+    assert guard.read_text() == "repository sentinel"
+    assert not (home / "probe-cache").exists()
+
+
+def test_runtime_config_null_defaults_preserve_explicit_app_controls():
+    config = {
+        "apps": {
+            "_default": None,
+            "blocked": {"enabled": False, "tools": None},
+            "selected": {
+                "enabled": True,
+                "default_tools_enabled": False,
+                "tools": {"github.fetch_pr": {"enabled": True}},
+            },
+            "inherited": {
+                "enabled": None,
+                "default_tools_enabled": None,
+                "tools": None,
+            },
+        }
+    }
+    assert not harness.app_tool_enabled(config, "blocked", "any")
+    assert harness.app_tool_enabled(config, "selected", "github.fetch_pr")
+    assert not harness.app_tool_enabled(config, "selected", "github.delete_file")
+    assert harness.app_tool_enabled(config, "inherited", "any")
+
+
+@pytest.mark.parametrize("failed", [False, True])
+@pytest.mark.parametrize(
+    "observation",
+    [
+        "valid",
+        "empty",
+        "private_key_only",
+        "null_result",
+        "null_content",
+        "mapping_content",
+    ],
+)
+def test_wordpress_diagnostic_calls_only_status_and_redacts_content(
+    tmp_path, monkeypatch, failed, observation
+):
+    if shutil.which("bwrap") is None:
+        pytest.skip("bubblewrap is required for isolated runtime inventory")
+    root = tmp_path / "repo"
+    (root / ".codex").mkdir(parents=True)
+    home = tmp_path / "user"
+    home.mkdir()
+    (home / "config.toml").write_text("")
+    monkeypatch.setenv("CODEX_HOME", str(home))
+    payload = {"isError": failed}
+    if observation == "valid":
+        payload["structuredContent"] = {
+            "schema": "RAOSWordPressDeploymentStatusV1",
+            "origin": "https://kurashinoshirube.com",
+            "apply_authorization": {
+                "mode": "approval_scoped_lease",
+                "default": False,
+                "single_use": True,
+            },
+            "SYNTHETIC_PRIVATE_MAP_KEY": "synthetic-secret-never-report",
+        }
+    elif observation == "private_key_only":
+        payload["structuredContent"] = {
+            "SYNTHETIC_PRIVATE_MAP_KEY": "synthetic-secret-never-report"
+        }
+    if observation == "null_result":
+        payload = None
+    elif observation == "null_content":
+        payload["content"] = None
+    elif observation == "mapping_content":
+        payload["content"] = {"text": "synthetic-secret-never-report"}
+    fake = root / "server.py"
+    fake.write_text(
+        "import json,sys\n"
+        "for line in sys.stdin:\n"
+        " r=json.loads(line)\n"
+        " if 'id' not in r: continue\n"
+        " method=r['method']\n"
+        " if method=='initialize': result={'serverInfo':{'name':'synthetic','version':'1'}}\n"
+        " elif method=='tools/list': result={'tools':[{'name':'deployment-status'}]}\n"
+        " elif method=='tools/call':\n"
+        "  assert r['params']=={'name':'deployment-status','arguments':{}}\n"
+        f"  result={payload!r}\n"
+        " else: raise AssertionError(method)\n"
+        " print(json.dumps({'jsonrpc':'2.0','id':r['id'],'result':result}),flush=True)\n"
+    )
+    config = {
+        "mcp_servers": {
+            "wordpressDeployment": {
+                "command": sys.executable,
+                "args": [str(fake)],
+                "cwd": str(root),
+                "enabled_tools": ["deployment-status", "operation-status"],
+            }
+        }
+    }
+    (root / ".codex/config.toml").write_text(
+        "mcp_servers=" + harness.toml(config["mcp_servers"])
+    )
+    rows = harness.wordpress_status(root, config["mcp_servers"])
+    row = next(r for r in rows if r["server"] == "wordpressDeployment")
+    assert row["status"] == (
+        "ERROR"
+        if observation == "null_result"
+        else "FAIL"
+        if failed
+        else "PASS"
+        if observation == "valid"
+        else "ERROR"
+    )
+    assert row["called_tool"] == "deployment-status"
+    assert row["configured_but_unavailable"] == ["operation-status"]
+    assert row["response_fields"] == (
+        ["apply_authorization", "origin", "schema"]
+        if observation == "valid" and not failed
+        else []
+    )
+    assert "SYNTHETIC_PRIVATE_MAP_KEY" not in json.dumps(rows)
+    assert "synthetic-secret-never-report" not in json.dumps(rows)
+    config["mcp_servers"]["wordpressDeployment"]["enabled_tools"] = [
+        "publication-apply"
+    ]
+    (root / ".codex/config.toml").write_text(
+        "mcp_servers=" + harness.toml(config["mcp_servers"])
+    )
+    row = next(
+        r
+        for r in harness.wordpress_status(root, config["mcp_servers"])
+        if r["server"] == "wordpressDeployment"
+    )
+    assert row["status"] == "NOT_ALLOWED"
+    assert "called_tool" not in row
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {},
+        {"schema": "wrong"},
+        {
+            "schema": "RAOSWordPressDeploymentStatusV1",
+            "origin": "https://untrusted.invalid",
+        },
+    ],
+)
+def test_wordpress_status_rejects_missing_or_malformed_observation(payload):
+    assert not harness.valid_wordpress_status("wordpressDeployment", payload)
+
+
+def test_status_probe_uses_effective_policy_not_project_declaration(
+    tmp_path, monkeypatch
+):
+    root = tmp_path / "repo"
+    (root / ".codex").mkdir(parents=True)
+    (root / ".codex/config.toml").write_text(
+        'mcp_servers.wordpressDeployment={command="/usr/bin/false",enabled_tools=["deployment-status"]}'
+    )
+    observed = []
+    monkeypatch.setattr(
+        harness,
+        "wordpress_status",
+        lambda path, settings: observed.append(settings) or [],
+    )
+    # Drive the complete runtime RPC path with the host-isolation fake above's
+    # transport mechanics. An empty actual catalog is valid for an effective deny.
+    fake = root / "server.py"
+    fake.write_text(
+        "import json,sys\n"
+        "for line in sys.stdin:\n"
+        " r=json.loads(line)\n"
+        " if 'id' not in r: continue\n"
+        " method=r['method']\n"
+        " if method=='skills/list': result={'data':[]}\n"
+        " elif method=='config/read': result={'config':{'mcp_servers':{'wordpressDeployment':{'enabled':False}}}}\n"
+        " elif method=='mcpServerStatus/list': result={'data':[]}\n"
+        " elif method=='app/installed': result={'apps':[]}\n"
+        " else: result={}\n"
+        " print(json.dumps({'id':r['id'],'result':result}),flush=True)\n"
+    )
+    monkeypatch.setattr(harness.time, "sleep", lambda seconds: None)
+    harness._skills_loaded(root, [sys.executable, str(fake)], True, wordpress=True)
+    assert observed == [{"wordpressDeployment": {"enabled": False}}]

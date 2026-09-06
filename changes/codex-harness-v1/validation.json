@@ -87,5 +87,261 @@
     "model_rerun": false
   },
   "global_config_restored": false,
-  "overall_status": "INCOMPLETE: Global config restoration and host capability re-verification pending; known baseline PostgreSQL failures remain"
+  "overall_status": "VALIDATING",
+  "measurement_phase": "Previous validation retained below; final follow-up pending",
+  "global_config_reconstructed": true,
+  "global_original_restore_required": false,
+  "global_recovery": {
+    "source_config_sha256": "27379e91d47b31b07e4f8a862ecbda7b3ad7a43d3543eb76067e01d7f91d3a02",
+    "candidate_sha256": "2acb34dc79dd680904540bbe3d4dd2fa304f8ebd123c8c77358e3251414e9771",
+    "restored_entries": [
+      "model",
+      "skills.config",
+      "skills.config",
+      "features.multi_agent",
+      "features.js_repl",
+      "plugins.slack@openai-curated",
+      "plugins.canva@openai-curated",
+      "plugins.github@openai-curated",
+      "plugins.hugging-face@openai-curated",
+      "plugins.notion@openai-curated",
+      "plugins.codex-security@openai-curated",
+      "plugins.figma@openai-curated",
+      "plugins.documents@openai-primary-runtime",
+      "plugins.pdf@openai-primary-runtime",
+      "plugins.spreadsheets@openai-primary-runtime",
+      "plugins.presentations@openai-primary-runtime",
+      "plugins.template-creator@openai-primary-runtime",
+      "apps.asdk_app_69d57a067de88191a2dee16c9d78e18c",
+      "apps.asdk_app_6a2b62fd753c8191bcff02ac79b54c6b",
+      "apps.connector_4aaab2856305417b993eca9a216aaf6e",
+      "apps.connector_68df038e0ba48191908c8434991bbac2",
+      "RAOS project trust",
+      "RAOS project trust"
+    ],
+    "removed_eval_trust_count": 19,
+    "unknown_original_fields": [
+      "model_reasoning_effort",
+      "preferred_auth_method",
+      "personality",
+      "service_tier",
+      "notify",
+      "windows",
+      "marketplaces",
+      "projects",
+      "desktop",
+      "shell_environment_policy"
+    ],
+    "preserved_current_keys": [
+      "desktop",
+      "features",
+      "marketplaces",
+      "mcp_servers",
+      "memories",
+      "notify",
+      "plugins",
+      "projects",
+      "windows"
+    ],
+    "mode": "RECONSTRUCTED_KNOWN_SETTINGS; not complete original recovery",
+    "applied": true,
+    "backup": "C:/Users/naoki/.codex/recovery/config-before-raos-reconstruction-20260906-160103.toml",
+    "verified_same_as_applied": true,
+    "remaining_eval_trust_entries": 0,
+    "original_unknown_using_current": [
+      "notify",
+      "windows",
+      "marketplaces",
+      "projects",
+      "desktop"
+    ],
+    "original_unknown_using_default": [
+      "model_reasoning_effort",
+      "preferred_auth_method",
+      "personality",
+      "service_tier",
+      "shell_environment_policy"
+    ],
+    "global_gsd_modified": false,
+    "authentication_files_modified": false,
+    "linux_global_modified": false,
+    "note": "Known entries reconstructed with current Desktop/notification/memory settings preserved; unknown missing originals use Codex defaults. Authentication is referenced read-only by sandbox; contents are not inspected."
+  },
+  "followup": {
+    "database_red_reproduced": 19,
+    "database_targeted_passed": 119,
+    "database_unit_passed": 183,
+    "database_independent_review": "PASS",
+    "harness_regressions_passed": 49,
+    "runtime_review": "PASS",
+    "php_previously_missing_passed": 6,
+    "historical_skips": 7,
+    "historical_replacement_behavior_cases": 7,
+    "runtime_inventory": "PASS",
+    "wordpress_readonly_status": "PASS",
+    "final_eval": "FRESH_BEFORE_AFTER_RUNNING",
+    "required_ci": "PENDING",
+    "merge": "PENDING",
+    "database_failure_resolution": [
+      {
+        "before_test_id": "tests/google_live/test_google_live_postgresql.py::test_atomic_replay_unchanged_supersession_and_no_raw_query_persistence",
+        "before": "FAIL",
+        "root_cause": "snapshot_read_lock_requires_update",
+        "after": "PASS",
+        "after_suite": "tests/google_live/test_google_live_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/google_live/test_google_live_postgresql.py::test_empty_successor_downgrade_and_reupgrade_are_structurally_reversible",
+        "before": "FAIL",
+        "root_cause": "dropped_attribute_in_digest",
+        "after": "PASS",
+        "after_suite": "tests/google_live/test_google_live_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_lost_advisory_lock_rolls_back_revision_before_forward_recovery",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_next_lock_holder_closes_interrupted_attempt_before_retry",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_post_bootstrap_failure_records_terminal_then_forward_recovers",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_session_loss_never_reconnects_without_lock_or_writes_failed_history",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0301/test_postgresql.py::test_temporary_future_graph_reaches_latest_with_per_revision_attempts",
+        "before": "FAIL",
+        "root_cause": "future_graph_validator_routed_to_old_schema",
+        "after": "PASS",
+        "after_suite": "tests/st0301/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0303/test_postgresql.py::test_zero_database_reaches_exact_cumulative_head_with_st0303_history",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0303/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_downgrade_revokes_database_authority_preserves_roles_and_recovers",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[bypassrls]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createdb]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[createrole]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[inherit]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[login]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[outbound-membership]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[replication]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_role_attribute_drift_fails_without_advancing_revision[superuser]",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      },
+      {
+        "before_test_id": "tests/st0306/test_postgresql.py::test_upgrade_installs_exact_roles_public_boundary_and_policies",
+        "before": "FAIL",
+        "root_cause": "historical_revision_vs_cumulative_head",
+        "after": "PASS",
+        "after_suite": "tests/st0306/test_postgresql.py",
+        "after_variant_note": "historical and current parameters"
+      },
+      {
+        "before_test_id": "tests/st0307/test_postgresql.py::test_production_predecessor_to_head_preserves_data_history_and_atomic_guards",
+        "before": "FAIL",
+        "root_cause": "dropped_attribute_in_digest",
+        "after": "PASS",
+        "after_suite": "tests/st0307/test_postgresql.py",
+        "after_variant_note": "same behavior retained"
+      }
+    ],
+    "harness_review": "PASS",
+    "harness_additional_reply_shape_cases_passed": 6,
+    "selection_regressions_passed": 19,
+    "php_runtime_review_tests_passed": 36,
+    "php_source_assertions": 85,
+    "php_generated_assertions": 85,
+    "generated_owners": "REFRESHING_FINAL_CI_INPUTS"
+  }
 }

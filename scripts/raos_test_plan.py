@@ -376,7 +376,11 @@ def create_plan(
         sorted(
             p.as_posix()
             for p in changed
-            if p.suffix in DOC_SUFFIXES and (root / p).is_file()
+            if p.suffix in DOC_SUFFIXES
+            and (root / p).is_file()
+            # Saved eval output retains links relative to its disposable checkout.
+            # The surrounding audit report remains a current repository document.
+            and not p.is_relative_to("changes/codex-harness-v1/evals/artifacts")
         )
     )
     static_python = tuple(

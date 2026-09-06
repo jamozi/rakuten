@@ -54,8 +54,8 @@ safety:
   owned_tree_enforced: true
 source_artifacts:
 - path: .gitattributes
-  bytes: 347
-  sha256: 0c457d0a68e0c65fed00ae0f95ca16c05bd626d7fa7b75965e7f867b7f199923
+  bytes: 494
+  sha256: e01fa63afe6ac437efdd9f1176fc752d4c5627c3ada992ff59c266b4438cefd6
 - path: scripts/build_st0005_status.py
   bytes: 152010
   sha256: 066a8e18761e97926508ea824ad66f1a0d93f2642d360c345779f5bf47872c2e

@@ -8,7 +8,8 @@
 ## Quick Start
 
 Python 3.14.6、uv 0.12.x、Node 24.18.1、npm 11.16.0を使います。
-初回は次の`make setup`でlockどおりに依存を準備します。ローカルWordPressは
+初回は次の`make setup`でlockどおりに依存を準備します。
+[scoped CLIと必須runtimeの手順](docs/architecture/current-system.md#codex-context-and-capability-boundaries)を参照してください。ローカルWordPressは
 [preview guide](changes/wordpress-local-preview-v1/README.md)に従って起動します。
 ASPは[接続guide](docs/affiliate-network-ingestion.md)を参照してください。
 各社の実接続・登録情報の受領は未完了で、初期設定は無効です。
@@ -84,8 +85,9 @@ DB／Storageは専用partitionに分け、localな全testがどれか1つのpart
 Story IDは要求・依存・statusの追跡に使い、commit・PRの境界にはしません。
 通常の開発と外部適用の権限は[AGENTS](AGENTS.md)を参照してください。
 ローカル結果はstaging・Production検証を表しません。
-Codex環境の検査は`.venv/bin/python scripts/codex_harness.py check`です。
-project内のSkill制御を使う[CLI起動・計測・評価](docs/architecture/current-system.md#codex-context-and-capability-boundaries)も用意しています。
+RAOSのCodex標準入口は、実際のWSL checkoutで使うscoped CLIです。
+起動・inventory・必要runtimeの確認は上記の手順、計測・評価は
+[cold-start evaluation](docs/architecture/current-system.md#cold-start-evaluation)を参照してください。
 
 ## Repository map
 
