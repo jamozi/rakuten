@@ -878,6 +878,48 @@ def _validate_asset_manifest(
         _fail()
 
 
+def _validate_header_navigation(header: str) -> None:
+    blocks = re.findall(
+        r"<!-- wp:navigation (\{[^\n]*\}) -->(.*?)<!-- /wp:navigation -->",
+        header,
+        flags=re.DOTALL,
+    )
+    if len(blocks) != 2:
+        _fail()
+    expected_modes = {"raos-primary-nav": "mobile", "raos-native-links": "never"}
+    expected_links = [
+        ("商品カテゴリ", "/categories/"),
+        ("悩み・目的", "/purposes/"),
+        ("選び方ガイド", "/guides/"),
+        ("比較・条件別の候補", "/comparisons/"),
+        ("最近更新したガイド", "/updates/"),
+    ]
+    seen: set[str] = set()
+    for attributes, body in blocks:
+        block = _load_json_payload(attributes.encode("utf-8"))
+        scope = block.get("className")
+        if (
+            not isinstance(scope, str)
+            or scope not in expected_modes
+            or scope in seen
+            or block.get("overlayMenu") != expected_modes[scope]
+        ):
+            _fail()
+        seen.add(scope)
+        links = [
+            _load_json_payload(raw.encode("utf-8"))
+            for raw in re.findall(r"<!-- wp:navigation-link (\{[^\n]*\}) /-->", body)
+        ]
+        if (
+            [(link.get("label"), link.get("url")) for link in links] != expected_links
+            or any(
+                link.get("kind") != "custom" or link.get("isTopLevelLink") is not True
+                for link in links
+            )
+        ):
+            _fail()
+
+
 def validate_sources() -> dict[str, str]:
     _validate_owner_bindings()
     _validate_exact_tree()
@@ -917,11 +959,13 @@ def validate_sources() -> dict[str, str]:
         or "記事を検索" not in not_found
     ):
         _fail()
-    navigation_chrome = _text("parts/header.html") + _text("parts/footer.html")
+    header = _text("parts/header.html")
+    _validate_header_navigation(header)
+    navigation_chrome = header + _text("parts/footer.html")
     if (
         "subscribe" in (navigation_chrome + front_page).lower()
         or "新しい記事" in navigation_chrome
-        or navigation_chrome.count("最近更新したガイド") != 2
+        or navigation_chrome.count("最近更新したガイド") != 3
     ):
         _fail()
 

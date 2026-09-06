@@ -107,7 +107,7 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "819f2324d7928a68647b338662eccd377c5a8be8bc5e3a53916ffd20f1a495d6",
+      "sha256": "6c2645921cb14d004f40628536f1400cf4c6ba979e7d6a9add2d949b33ed7fb8",
       "size": 81279
     },
     {
@@ -342,7 +342,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "4e8529ec6e4ae049427784e5519bd895db1e0fb5a674b1190ca26a6c46416c4e",
+      "sha256": "38b201620e28a8419364449bc024df20f0700bbacd4a87d1e2d03cd5d7eaff94",
       "size": 54277
     },
     {

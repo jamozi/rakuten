@@ -1972,9 +1972,9 @@
       "sha256": "b9b594f1510eee62ad85eeef1b29010aef71e41f4bfd31befac5731b4866d5b9"
     },
     {
-      "bytes": 47718,
+      "bytes": 49242,
       "path": "scripts/build_st1704_self_hosted_theme.py",
-      "sha256": "7e7fba5fbc5eeb48d09cef559150c0bceed7054d7ea4148444cc06e701d709a2"
+      "sha256": "060aebe2587d87db0785c4ecd19305fcc49caa8465b16910870609c039edfce9"
     },
     {
       "bytes": 17624,

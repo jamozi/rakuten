@@ -1515,7 +1515,7 @@ def test_navigation_and_listing_labels_are_reader_facing_japanese() -> None:
     archive = (THEME_ROOT / "templates/archive.html").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
 
-    assert header.count('"label":"最近更新したガイド","url":"/updates/"') == 1
+    theme_builder._validate_header_navigation(header)
     assert footer.count('"label":"最近更新したガイド","url":"/updates/"') == 1
     assert "新しい記事" not in header + footer
     assert '<p class="raos-home-eyebrow">記事を探す</p>' in search
