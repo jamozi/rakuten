@@ -1155,12 +1155,17 @@ def test_receipt_accepts_the_server_twenty_proposal_boundary(count):
             "idempotency_key": f"{index + 101:064x}",
         })
     receipt = {
+        "publication_profile": "verified-incremental",
         "proposals": proposals,
         "selected_slugs": sorted(row["slug"] for row in proposals),
         "selected_documents": {row["slug"]: "page" for row in proposals},
         "desired_theme_tree_sha256": "9" * 64,
     }
     assert len(publication._proposal_ids(receipt)) == count
+    if count > 14:
+        for legacy in ("full-portfolio", None):
+            with pytest.raises(publication.PublicationFailure, match="REQUEST_RECEIPT_INVALID"):
+                publication._proposal_ids({**receipt, "publication_profile": legacy})
     if count == 20:
         extra = {**proposals[-1], "proposal_id": "e" * 64, "slug": "extra"}
         receipt["proposals"].append(extra)
