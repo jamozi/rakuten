@@ -209,11 +209,21 @@ fixture or theme source.
 
 ## Browser evidence
 
+The additive reader view keeps a short research/advertising status before the
+decision summary and moves detailed sources into a native evidence disclosure.
+The audit inventory identifies migrated articles and requires their new structure.
+Unapproved hero/OG images and unverified offers are absent; legacy unmodified
+article expectations remain separate. The additional reader diagnostic covers
+the independent hubs as well: `browser/reader_experience_audit.mjs`. Its results
+are local diagnostics and do not authorize publication. See
+`../editorial-portfolio-v3/READER_IMPLEMENTATION_REPORT.md` for the current
+URLs, coverage and human-test status.
+
 The legacy full diagnostic `make wordpress-preview-check` audits the home page, all ten editorial
 drafts, the three fixed policy pages, true-empty and whitespace-only search,
 populated and zero-result search, an encoded hostile query, a second result
 page with its query preserved, all three category archives, the date and local
-author archives, and the 404 template at widths 360, 390, 768, and 1440 pixels.
+author archives, and the 404 template at widths 360, 390, 768, 1024, and 1440 pixels.
 The generated route contract records tag and custom-post-type archives as
 `NOT_APPLICABLE` with closed reason codes because the seed exposes neither; a
 missing applicable archive cannot be silently reclassified. The audit fails on HTTP errors,
@@ -248,7 +258,7 @@ Production expectations (`noindex, follow` for search/archive and `noindex,
 nofollow` for 404) remain a separate contract and are not claimed as observed
 by a local pass.
 
-Every article must expose exactly one visible monetization-status disclosure.
+Unmigrated legacy articles must expose exactly one visible monetization-status disclosure.
 Nine affiliate articles require the standard advertising disclosure before the
 first purchase CTA in both DOM and visual order, plus the comparison-policy link
 and native `details`/`summary` operation with Enter and Space at 390px. The A10

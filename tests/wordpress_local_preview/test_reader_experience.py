@@ -51,7 +51,7 @@ def test_status_article_cannot_become_a_recommendation_via_the_view_model() -> N
     experience = {
         "article_type": "status_check",
         "research_status": {"ranking_uses_commission": False, "real_world_tested": False},
-        "decision_summary": {"options": [{"product_ref": "a"}]},
+        "decision_summary": {"options": [{"product_ref": "a", "condition": "条件", "reason": "理由", "tradeoff": "妥協点"}]},
         "evidence": ["unknown-evidence"],
     }
     assert validate_experience(experience, product_refs=frozenset({"a"}), evidence_refs=frozenset()) == (
@@ -102,9 +102,9 @@ def test_registered_view_cannot_relabel_a_status_article(tmp_path) -> None:
 
 def test_unverified_experience_rejects_positive_claims_but_accepts_limits() -> None:
     base = {'article_type':'shortlist', 'research_status':{'real_world_tested':False,'ranking_uses_commission':False}}
-    for statement in ('実際に使って洗浄力を確認しました。', '使ってみると音が静かでした。'):
+    for statement in ('実際に使って洗浄力を確認しました。', '使ってみると音が静かでした。', '耐久性は未確認ですが、使ってみると音が静かでした。', '音が静かでしたが、耐久性は未確認です。', '音が静かですが耐久性は未確認です。'):
         assert 'research_status.unverified_experience_claim' in validate_experience({**base,'dek':statement},product_refs=frozenset(),evidence_refs=frozenset())
-    for statement in ('実際に使ってはいません。', '使ってみたときの洗浄力は未確認です。', '実際に使える時間は条件で変わります。', '実際に使う機器を先に決めます。'):
+    for statement in ('実際に使ってはいません。', '使ってみたときの洗浄力は未確認です。', '実際に使える時間は条件で変わります。', '実際に使う機器を先に決めます。', '音が静かでしたという評価は未確認です。'):
         assert not validate_experience({**base,'dek':statement},product_refs=frozenset(),evidence_refs=frozenset())
 
 
@@ -249,3 +249,28 @@ def test_safety_module_requires_evidence_and_retains_final_authority_and_excepti
     assert '便・機材・運賃' in panel.text()
     assert safety_rule_panel({**rule,'checked_at':''}) is None
     assert safety_rule_panel({**rule,'url':'javascript:alert(1)'}) is None
+
+
+def test_product_photo_needs_usage_approval_as_well_as_image_evidence(tmp_path) -> None:
+    import json
+    import shutil
+    from raos.application.editorial.reader_experience_projection import REGISTRY_PATH, project_registered_article
+    root = Path(__file__).resolve().parents[2]
+    for relative in (REGISTRY_PATH, Path('changes/editorial-portfolio-v2/editorial-portfolio.v2.json'), Path('changes/editorial-portfolio-v3/editorial-identities.v1.json'), Path('changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json')):
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(root / relative, target)
+    source = '<div class="raos-editorial-v2"><div class="raos-product-card__media"><img src="/recorded.jpg" data-raos-product-image-id="fixture-product" data-raos-product-image-placement="product_card" alt="old"></div><p>UNKNOWN</p></div>'
+    def render(markup=source):
+        return project_registered_article(tmp_path, markup, article_id='legacy-fixture', approved_product_images=frozenset({'fixture-product'}))
+    assert not fragment(render()).find(tag='img')
+    registry = json.loads((tmp_path / REGISTRY_PATH).read_text())
+    registry['media'].append(dict(asset_ref='fixture-product', asset_type='photo', source='https://official.test/photo', usage_basis='recorded fixture permission', checked_at='2026-08-31', approval='approved', alt='許可された商品識別画像', caption='画像出典と利用根拠の注記', aspect_ratio=[1,1], role='product_identity'))
+    (tmp_path / REGISTRY_PATH).write_text(json.dumps(registry))
+    result = fragment(render())
+    assert result.find(tag='img')[0].attrs['alt'] == '許可された商品識別画像'
+    assert '画像出典と利用根拠の注記' in result.text()
+    assert render(result.html()) == result.html()
+    registry['media'][-1]['approval'] = 'pending'
+    (tmp_path / REGISTRY_PATH).write_text(json.dumps(registry))
+    assert not fragment(render()).find(cls='raos-product-card__media')

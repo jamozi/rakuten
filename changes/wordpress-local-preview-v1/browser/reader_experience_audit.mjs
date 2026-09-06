@@ -48,7 +48,7 @@ try {
         const ids = [...document.querySelectorAll('[id]')].map(e=>e.id);
         const headings = [...main.querySelectorAll('h1,h2,h3,h4,[role="heading"][aria-level]')].filter(visible).map(e=>({level:Number(e.getAttribute('aria-level')||e.tagName[1]),id:e.id,text:e.textContent.trim()}));
         const links = [...main.querySelectorAll('a')].filter(visible).map(e=>({text:(e.textContent||e.getAttribute('aria-label')||e.querySelector('img')?.alt||'').trim(),url:e.getAttribute('href')}));
-        const localLinks = [...document.querySelectorAll('a[href]')].map(a=>new URL(a.href)).filter(u=>u.origin===location.origin).map(u=>{u.hash='';return u.href;});
+        const localLinks = [...document.querySelectorAll('a[href]')].map(a=>new URL(a.href)).filter(u=>u.origin===location.origin&&!(u.hash&&u.pathname===location.pathname&&u.search===location.search)).map(u=>u.href);
         const cards = [...document.querySelectorAll('.raos-home-latest .raos-guide-card')].map(e=>{const r=e.getBoundingClientRect();return{top:r.top,bottom:r.bottom,height:r.height,date:e.querySelector('.raos-guide-card__date')?.getBoundingClientRect().bottom};});
         const allSpecifications = [...main.querySelectorAll('.comparison-table-wrap table')].filter(t=>!t.closest('details:not([open])'));
         return {h1:headings.filter(e=>e.level===1),headings,links,localLinks,cards,
@@ -91,9 +91,15 @@ try {
   }
   }));
   const context = await browser.newContext();
+  const parserPage = await context.newPage();
   for (const href of internalLinks) {
     const response = await context.request.get(href,{maxRedirects:0});
     if (response.status() !== 200) errors.push({error:'INTERNAL_LINK_HTTP',url:href,status:response.status()});
+    const hash = new URL(href).hash;
+    if (response.status() === 200 && hash) {
+      const exists = await parserPage.evaluate(({markup,id})=>!!new DOMParser().parseFromString(markup,'text/html').getElementById(id), {markup:await response.text(),id:decodeURIComponent(hash.slice(1))});
+      if (!exists) errors.push({error:'INTERNAL_LINK_ANCHOR',url:href});
+    }
     await response.dispose();
   }
   await context.close();

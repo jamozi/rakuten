@@ -2387,7 +2387,7 @@ def test_article_type_density_ctas_and_cmp_are_responsive_without_home_scope() -
 
     mobile = editorial_css.split("@media (max-width: 48rem)", 1)[1]
     assert ".raos-comparison__table-view { display: block; }" in mobile
-    assert ".comparison-cards { display: none; }" in mobile
+    assert ":where(.comparison-cards, .raos-comparison__cards) { display: none; }" in mobile
     assert "overflow-x: auto" in editorial_css
     assert "grid-template-columns: minmax(0, 1fr)" in mobile
 

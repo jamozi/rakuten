@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 from typing import Any, cast
 
-from raos.application.editorial.reader_experience_v1 import CheckedFact, CtaEvidence, ROLE_TYPES, cta_visible, validate_experience
+from raos.application.editorial.reader_experience_v1 import CheckedFact, CtaEvidence, ROLE_TYPES, approved_media_record, cta_visible, validate_experience
 
 
 from raos.application.editorial.reader_html import Element, block, fragment
@@ -386,6 +386,15 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
 
 def project_registered_article(root: Path, markup: str, *, article_id: str, evidence: CtaEvidence = CtaEvidence(), approved_product_images: frozenset[str] = frozenset()) -> str:
     experience = load_experiences(root).get(article_id)
+    registry_path = root / REGISTRY_PATH
+    registry = json.loads(registry_path.read_text()) if registry_path.exists() else {}
+    product_assets = {
+        asset['asset_ref']: asset for asset in registry.get('media', [])
+        if isinstance(asset, dict) and approved_media_record(asset)
+        and asset.get('role') == 'product_identity' and asset.get('asset_type') != 'html_diagram'
+    }
+    # API image evidence and editorial usage approval are independent gates.
+    approved_product_images = approved_product_images & product_assets.keys()
     if isinstance(experience, dict):
         experience = dict(experience)
         portfolio = json.loads((root / 'changes/editorial-portfolio-v2/editorial-portfolio.v2.json').read_text())
@@ -400,7 +409,6 @@ def project_registered_article(root: Path, markup: str, *, article_id: str, evid
             source = next((source_refs[ref] for ref in claim.get('evidence_refs', []) if ref in source_refs), None)
             if source is not None:
                 experience['_resolved_rule_status'] = {**rule, 'checked_at': source.get('retrieved_on'), 'url': source['url']}
-        registry = json.loads((root / REGISTRY_PATH).read_text())
         assets = {a['asset_ref']: a for a in registry.get('media', [])}
         resolved = []
         for media in experience.get('media', []):
@@ -422,4 +430,16 @@ def project_registered_article(root: Path, markup: str, *, article_id: str, evid
                 if delta is not None:
                     rows.append(dict(label=label, meaning=meaning, delta=delta))
             experience['_resolved_differences'] = rows
-    return project_article(markup, article_id=article_id, experience=experience if isinstance(experience, dict) else None, evidence=evidence, approved_product_images=approved_product_images)
+    rendered = project_article(markup, article_id=article_id, experience=experience if isinstance(experience, dict) else None, evidence=evidence, approved_product_images=approved_product_images)
+    if approved_product_images:
+        document = fragment(rendered)
+        for image in document.find(tag='img'):
+            asset = product_assets.get(image.attrs.get('data-raos-product-image-id'))
+            if asset is not None:
+                image.attrs['alt'] = asset['alt']
+                image.attrs['data-raos-media-state'] = 'approved'
+                image.attrs['data-raos-media-checked-at'] = asset['checked_at']
+                if image.attrs.get('data-raos-product-image-placement') == 'product_card' and image.parent is not None and not image.parent.find(cls='raos-product-image-caption'):
+                    image.parent.append(block('<p class="raos-product-image-caption">' + escape(asset['caption']) + '</p>'))
+        return document.html()
+    return rendered

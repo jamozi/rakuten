@@ -164,7 +164,7 @@ def validate_experience(
 
     if isinstance(status, Mapping) and status.get("real_world_tested") is False:
         for text in prose(experience):
-            for sentence in re.split(r"[。！？\n]", text):
+            for sentence in re.split(r"[。、！？\n]|(?<=です)が|(?<=でした)が|(?<=た)が|だが|ものの|けれど", text):
                 if re.search(r"実際に使(?:って|った|いました)|使ってみ|使用したところ|実測した|試してみた|音が静か(?:です|でした)|使い心地[はが](?:良|快適)|よく落ちました|使いやすかった", sentence) and not re.search(r"未確認|未実施|いません|いない|していない|ではありません", sentence):
                     issues.append("research_status.unverified_experience_claim")
     summary = experience.get("decision_summary", {})
@@ -175,6 +175,8 @@ def validate_experience(
                 if not isinstance(option, Mapping):
                     issues.append("decision_summary.option_invalid")
                     continue
+                if any(not isinstance(option.get(key), str) or not option[key].strip() for key in ('reason', 'tradeoff')):
+                    issues.append('decision_summary.option_incomplete')
                 product = option.get("product_ref")
                 if product is not None and (not isinstance(product, str) or product not in product_refs):
                     issues.append("decision_summary.unknown_product")
