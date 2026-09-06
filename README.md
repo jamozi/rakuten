@@ -40,9 +40,11 @@ make fast BASE=origin/main
 未知のコード・設定、依存lock、共通検査基盤の変更は全件検査へ戻します。
 生成入力ではない文書のみの変更は文書・参照整合性を確認します。
 
-通常PRは影響範囲と重要な回帰・secret検査を実行します。Draftでは重い検査を省き、ready時に
-実行します。`Final Integration` は選択された検査の成功を集約し、未選択と失敗・cancel・
-必要な検査の未実行を区別します。自動mergeはDraft以外のPRのみが対象です。
+通常PRは影響範囲と重要な回帰・secret検査を実行します。Draftでは重い検査を省き、
+`Final Integration` は未検証として不合格に保ちます。Ready化後のCIで、選択された検査の
+成功を集約し、未選択と失敗・cancel・必要な検査の未実行を区別します。自動mergeには
+現在のPR head SHAで実行された `Final Integration` の成功が必要です。古い実行結果や
+skipはmergeの根拠になりません。
 
 毎日03:00 JSTと手動CIでは、全generator、Python・Node・PHP、契約、DB／Storage、secret検査を
 実行します。`live`、`external`、`raos_owner_private` は実行対象外です。環境依存のskipは

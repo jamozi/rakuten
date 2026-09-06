@@ -205,7 +205,7 @@ jobs:
 
   final:
     name: Final Integration
-    if: always() && needs.plan.outputs.draft != 'true'
+    if: always()
     needs: [plan, lock, static, tests, php, contracts, data, storage, secrets]
     runs-on: ubuntu-24.04
     steps:

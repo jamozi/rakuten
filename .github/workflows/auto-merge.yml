@@ -12,7 +12,7 @@ permissions:
 jobs:
   merge:
     name: Auto Merge
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request'
+    if: github.event.workflow_run.status == 'completed' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-24.04
     steps:
       - name: Enable squash auto-merge for the integration PR
@@ -20,11 +20,94 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
           RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
         run: |
-          pr_number="$(gh api "repos/$REPOSITORY/actions/runs/$RUN_ID" --jq '.pull_requests[0].number // empty')"
-          test -n "$pr_number"
-          pr_state="$(gh api "repos/$REPOSITORY/pulls/$pr_number" --jq 'if .draft then "draft" else .state end')"
-          if [[ "$pr_state" != open ]]; then
-            exit 0
-          fi
-          gh pr merge "$pr_number" --repo "$REPOSITORY" --squash --auto
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+
+
+          def require(condition, reason):
+              if not condition:
+                  raise SystemExit("Auto Merge blocked: " + reason)
+
+
+          def record(value, label):
+              require(isinstance(value, dict), "invalid " + label)
+              return value
+
+
+          def positive_integer(value):
+              return type(value) is int and value > 0
+
+
+          def api(path, *options):
+              return json.loads(subprocess.check_output(["gh", "api", path, *options], text=True))
+
+
+          repository = os.environ["REPOSITORY"]
+          run_id = int(os.environ["RUN_ID"])
+          attempt = int(os.environ["RUN_ATTEMPT"])
+          require(run_id > 0 and attempt > 0, "invalid triggering run")
+          run = record(api(f"repos/{repository}/actions/runs/{run_id}"), "run")
+          require(run.get("id") == run_id and type(run.get("run_attempt")) is int
+                  and run.get("run_attempt") == attempt,
+                  "triggering run or attempt changed")
+          require(run.get("status") == "completed" and run.get("conclusion") == "success"
+                  and run.get("event") == "pull_request", "run is not successful completed PR CI")
+          require(record(run.get("repository"), "run repository").get("full_name") == repository
+                  and run.get("path") == ".github/workflows/ci.yml", "unrelated CI workflow")
+          sha = run.get("head_sha")
+          require(isinstance(sha, str) and re.fullmatch(r"[0-9a-f]{40}", sha), "invalid run head")
+          associations = run.get("pull_requests")
+          require(isinstance(associations, list) and len(associations) == 1,
+                  "expected one associated PR")
+          number = record(associations[0], "PR association").get("number")
+          require(positive_integer(number), "invalid PR number")
+
+          # Read every page from this exact attempt; incomplete or ambiguous proof cannot merge.
+          pages = api(f"repos/{repository}/actions/runs/{run_id}/attempts/{attempt}/jobs?per_page=100",
+                      "--paginate", "--slurp")
+          require(isinstance(pages, list) and bool(pages), "missing job pages")
+          total = record(pages[0], "job page").get("total_count")
+          require(positive_integer(total), "invalid job count")
+          jobs = []
+          for page in pages:
+              page = record(page, "job page")
+              require(type(page.get("total_count")) is int and page["total_count"] == total
+                      and isinstance(page.get("jobs"), list), "inconsistent job pages")
+              jobs.extend(page["jobs"])
+          require(len(jobs) == total, "incomplete job pages")
+          ids = set()
+          gates = []
+          for job in jobs:
+              job = record(job, "job")
+              identifier = job.get("id")
+              require(positive_integer(identifier) and identifier not in ids,
+                      "invalid or duplicate job identity")
+              ids.add(identifier)
+              require(job.get("run_id") == run_id and job.get("head_sha") == sha,
+                      "job belongs to another run or head")
+              require(isinstance(job.get("name"), str), "invalid job name")
+              if job["name"] == "Final Integration":
+                  gates.append(job)
+          require(len(gates) == 1, "missing or ambiguous Final Integration gate")
+          gate = gates[0]
+          require(type(gate.get("run_attempt")) is int and gate.get("run_attempt") == attempt
+                  and gate.get("status") == "completed"
+                  and gate.get("conclusion") == "success", "Final Integration did not succeed")
+
+          # Fetch current PR state last, then let GitHub enforce the head again at merge time.
+          pr = record(api(f"repos/{repository}/pulls/{number}"), "current PR")
+          require(pr.get("number") == number and pr.get("state") == "open"
+                  and pr.get("draft") is False and pr.get("merged") is False,
+                  "PR is not open and ready")
+          base = record(pr.get("base"), "PR base")
+          require(record(base.get("repo"), "base repository").get("full_name") == repository,
+                  "PR targets another repository")
+          require(record(pr.get("head"), "PR head").get("sha") == sha, "CI head is stale")
+          subprocess.run(["gh", "pr", "merge", str(number), "--repo", repository,
+                          "--squash", "--auto", "--match-head-commit", sha], check=True)
+          PY
