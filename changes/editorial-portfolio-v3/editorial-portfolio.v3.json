@@ -672,7 +672,7 @@
       "content_ref": "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html",
       "content_role": "model_family_comparison",
       "content_role_label": "ブランド内比較",
-      "content_snapshot_sha256": "8e2f021494622205f60c5e564570f3a992367b56e9d5b3a2be854f2b97073d16",
+      "content_snapshot_sha256": "9e4571bfaa521c71321fffbd57470138226acec206ad43d7a35e357f364ab19e",
       "cta_bindings": [
         {
           "article_code": "a03",
@@ -685,7 +685,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-8e2f02149462"
+          "snapshot_id": "snp-a03-9e4571bfaa52"
         },
         {
           "article_code": "a03",
@@ -698,7 +698,7 @@
           "product_id": "PRD-ANKER-SOLIX-C300",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-8e2f02149462"
+          "snapshot_id": "snp-a03-9e4571bfaa52"
         },
         {
           "article_code": "a03",
@@ -711,7 +711,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-8e2f02149462"
+          "snapshot_id": "snp-a03-9e4571bfaa52"
         },
         {
           "article_code": "a03",
@@ -724,7 +724,7 @@
           "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-8e2f02149462"
+          "snapshot_id": "snp-a03-9e4571bfaa52"
         },
         {
           "article_code": "a03",
@@ -737,7 +737,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-8e2f02149462"
+          "snapshot_id": "snp-a03-9e4571bfaa52"
         },
         {
           "article_code": "a03",
@@ -750,7 +750,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-8e2f02149462"
+          "snapshot_id": "snp-a03-9e4571bfaa52"
         },
         {
           "article_code": "a03",
@@ -763,7 +763,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-card",
-          "snapshot_id": "snp-a03-8e2f02149462"
+          "snapshot_id": "snp-a03-9e4571bfaa52"
         },
         {
           "article_code": "a03",
@@ -776,7 +776,7 @@
           "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
           "provider_profile_state": "UNVERIFIED_DISABLED",
           "provider_slot_id": "rps-a03-final",
-          "snapshot_id": "snp-a03-8e2f02149462"
+          "snapshot_id": "snp-a03-9e4571bfaa52"
         }
       ],
       "excerpt": "Anker Solix 4モデルの容量・定格出力・重量・寸法を同じ表で比較。持ち運び、出力、C1000の世代差から条件別に選びます。",
@@ -890,7 +890,7 @@
               "CLM-ST1704-ANKER-C1000-FEATURE-DIFF"
             ],
             "not_for": [
-              "C1000系で軽さを優先する、またはUSB-Cの口数や公表サイクル数を優先する場合。"
+              "C1000系で軽さを優先する、またはUSB-C 3口のC1000 Gen 2を検討したい場合。"
             ],
             "product_ref": "PRD-ANKER-SOLIX-C1000",
             "purchase_checks": [
@@ -945,7 +945,7 @@
           "relationship": "broader_guide"
         }
       ],
-      "snapshot_id": "snp-a03-8e2f02149462",
+      "snapshot_id": "snp-a03-9e4571bfaa52",
       "source_kind": "st1704_renderer",
       "source_ref": "st1704-anker-solix-c300-c800-c1000-differences",
       "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い",

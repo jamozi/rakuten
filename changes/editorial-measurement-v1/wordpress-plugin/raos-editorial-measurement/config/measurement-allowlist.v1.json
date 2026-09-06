@@ -200,7 +200,7 @@
       "related_article_ids": [
         "st1704-portable-power-station-guide"
       ],
-      "snapshot_id": "snp-a03-8e2f02149462"
+      "snapshot_id": "snp-a03-9e4571bfaa52"
     },
     {
       "article_code": "a04",
@@ -573,7 +573,7 @@
   "source": {
     "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
     "schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
-    "sha256": "40d634de63b03af9fce4007f7ae21350627cceda0983a86474ab4ac81fc8145f",
+    "sha256": "64fc483c072ea4a540aa0d0687992653711567c83210344e32599b000e6c0e00",
     "version": "3.0.0"
   },
   "target_origin": "https://kurashinoshirube.com",

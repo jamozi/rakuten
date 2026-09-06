@@ -392,6 +392,7 @@
     "assets/images/brand-mark.svg",
     "assets/images/home-hero.webp",
     "assets/legacy-media-display-projection.v1.json",
+    "assets/local-running-cost.js",
     "assets/measurement.js",
     "assets/theme.css",
     "functions.php",
@@ -407,8 +408,8 @@
     "theme-contract.v1.json",
     "theme.json"
   ],
-  "theme_runtime_revision": "f2606fff14f1114ef8bd172e2ea890d187f3ba6a79ae2517b582aabf36e5ac88",
+  "theme_runtime_revision": "9e0c66f72040a6b36df62aa61623c1f749a387ae0bccbb0a650f1d2998f5f8ea",
   "theme_slug": "kurashinoshirube-child",
-  "theme_source_fingerprint": "f2606fff14f1114ef8bd172e2ea890d187f3ba6a79ae2517b582aabf36e5ac88",
+  "theme_source_fingerprint": "9e0c66f72040a6b36df62aa61623c1f749a387ae0bccbb0a650f1d2998f5f8ea",
   "theme_version": "1.5.1"
 }
