@@ -208,6 +208,33 @@
       "surface_id": "not-found"
     }
   ],
+  "reader_display": {
+    "article_ids": [
+      "carry-on-suitcase-under-100-seats",
+      "front-open-carry-on-suitcase-with-stopper",
+      "lightweight-carry-on-suitcase-under-3kg",
+      "roomba-mini-vs-switchbot-k11-pro",
+      "solota-vs-rakua-mini-plus",
+      "st1703-first-suitcase-comparison",
+      "st1704-anker-solix-c300-c800-c1000-differences",
+      "st1704-compact-robot-vacuum-shortlist",
+      "st1704-countertop-dishwasher-for-small-households",
+      "st1704-portable-power-station-guide"
+    ],
+    "primary_categories": {
+      "carry-on-suitcase-under-100-seats": "travel",
+      "front-open-carry-on-suitcase-with-stopper": "travel",
+      "lightweight-carry-on-suitcase-under-3kg": "travel",
+      "roomba-mini-vs-switchbot-k11-pro": "cleaning",
+      "solota-vs-rakua-mini-plus": "kitchen",
+      "st1703-first-suitcase-comparison": "travel",
+      "st1704-anker-solix-c300-c800-c1000-differences": "preparedness",
+      "st1704-compact-robot-vacuum-shortlist": "cleaning",
+      "st1704-countertop-dishwasher-for-small-households": "kitchen",
+      "st1704-portable-power-station-guide": "preparedness"
+    },
+    "social_images": {}
+  },
   "reader_hubs": [
     {
       "kind": "reader_hub",

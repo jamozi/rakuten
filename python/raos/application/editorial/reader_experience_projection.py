@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 from typing import Any, cast
 
-from raos.application.editorial.reader_experience_v1 import CtaEvidence, ROLE_TYPES, cta_visible, validate_experience
+from raos.application.editorial.reader_experience_v1 import CheckedFact, CtaEvidence, ROLE_TYPES, cta_visible, validate_experience
 
 
 from raos.application.editorial.reader_html import Element, block, fragment
@@ -39,7 +39,16 @@ def load_experiences(root: Path) -> dict[str, object]:
             claim["claim_id"] for packet in sources["source_packets"] if packet["article_id"] == article_id
             for claim in packet["claims"]
         )
-        issues = validate_experience(experience, product_refs=frozenset(bindings[article_id]["product_ids"]), evidence_refs=references)
+        checked_refs = frozenset(
+            claim['claim_id'] for packet in sources['source_packets'] if packet['article_id'] == article_id
+            for claim in packet['claims']
+            if claim['classification'] == 'MAJOR_VERIFIABLE' and claim['status'] == 'BOUND_TO_OFFICIAL_SOURCE'
+            and any(source['source_ref'] in claim['evidence_refs']
+                    and source.get('authority') in {'MANUFACTURER_OFFICIAL', 'CARRIER_OFFICIAL', 'GOVERNMENT_OFFICIAL'}
+                    and CheckedFact(claim['claim_id'], source['source_ref'], source.get('retrieved_on'), 'KNOWN').usable
+                    for source in sources['sources'])
+        )
+        issues = validate_experience(experience, product_refs=frozenset(bindings[article_id]["product_ids"]), evidence_refs=references, checked_fact_refs=checked_refs)
         if issues:
             raise ValueError("READER_EXPERIENCE_INVALID:" + article_id + ":" + ",".join(issues))
     return cast(dict[str, object], value["articles"])
@@ -88,7 +97,8 @@ def _paragraphs(root: Element) -> None:
 def _normalize_product_profiles(root: Element) -> None:
     """Adapt the later tracked HTML drafts without replacing their editing source."""
     for card in root.find(cls='product-profile'):
-        card.attrs['class'] = (card.attrs.get('class') or '') + ' raos-product-card'
+        if not card.has('raos-product-card'):
+            card.attrs['class'] = (card.attrs.get('class') or '') + ' raos-product-card'
         body = next(iter(card.find(cls='product-profile__body')), card)
         for paragraph in list(body.children):
             if (isinstance(paragraph, Element) and paragraph.tag == 'p'
@@ -197,6 +207,11 @@ def project_article(
 def _decision_components(root: Element, article: Element, settings: Mapping[str, object]) -> None:
     summary = next(iter(root.find(cls="decision-section")), None)
     insertion = summary
+    rule = settings.get('_resolved_rule_status')
+    if settings.get('article_type') == 'safety_rule' and isinstance(rule, dict):
+        rule_panel = components.safety_rule_panel(rule)
+        if rule_panel is not None:
+            summary.insert_before(rule_panel) if summary is not None else article.append(rule_panel)
     axes = settings.get("decision_axes", [])
     if isinstance(axes, list):
         axis_block = components.decision_axes(axes)
@@ -219,6 +234,18 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
     cards = root.find(cls="raos-product-card")
     product_entries = settings.get('products', [])
     product_settings = {p['product_ref']: p for p in product_entries} if isinstance(product_entries, list) else {}
+    summary_reasons = {}
+    if summary is not None:
+        for item in summary.find(tag='li'):
+            paragraphs = item.find(tag='p')
+            if not paragraphs:
+                continue
+            copy = block(paragraphs[0].html())
+            for tradeoff in copy.find(cls='raos-summary-tradeoff'):
+                tradeoff.remove()
+            for link in item.find(tag='a'):
+                if str(link.attrs.get('href', '')).startswith('#'):
+                    summary_reasons[link.attrs['href']] = copy.text()
     rows = []
     for card in cards:
         headings = card.find(tag="h3")
@@ -238,7 +265,7 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
         rows.append({
             "condition": labels[0].text() if labels else (fit_items[0].text() if fit_items else pairs.get('向く条件', "条件を確認して候補にする")),
             "product_name": headings[0].text(), "anchor": str(card.attrs["id"]),
-            "reason": fit_items[0].text() if fit_items else pairs.get('向く条件', "商品の選択条件を確認してください。"),
+            "reason": summary_reasons.get('#' + str(card.attrs['id']), fit_items[0].text() if fit_items else pairs.get('向く条件', "商品の選択条件を確認してください。")),
             "tradeoff": exclusions[0].text() if exclusions else pairs.get('別の候補が向く条件', not_for[0] if not_for else (caution[0].text() if caution else "未確認")),
             "purchase_check": caution[0].text() if caution else pairs.get('購入前の確認', "型番・同梱品・保証・販売元を確認してください。"),
         })
@@ -292,10 +319,10 @@ def _decision_components(root: Element, article: Element, settings: Mapping[str,
         consolidation = ("sources-section", "method-section", *(additional if isinstance(additional, list) else []))
         story = block('<section class="raos-reader-meaning" aria-labelledby="reader-meaning"><h2 id="reader-meaning">暮らしの場面に置き換えて考える</h2></section>')
         for child in list(article.children):
-            if isinstance(child, Element) and child is not evidence and any(child.has(cls) for cls in consolidation) and not child.has("raos-market-exclusions"):
+            if isinstance(child, Element) and child is not evidence and any(child.has(cls) for cls in consolidation):
                 for heading in child.find(tag="h2"):
                     heading.tag = "h3"
-                if settings.get('preserve_story') is True and (child.has('reader-section') or child.has('method-section')):
+                if settings.get('preserve_story') is True and (child.has('reader-section') or child.has('method-section')) and not child.has('raos-market-exclusions'):
                     story.append(child)
                 else:
                     evidence.append(child)
@@ -367,6 +394,12 @@ def project_registered_article(root: Path, markup: str, *, article_id: str, evid
         sources = json.loads((root / 'changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json').read_text())
         claims = {c['claim_id']: c for p in sources['source_packets'] if p['article_id'] == article_id for c in p['claims']}
         source_refs = {s['source_ref']: s for s in sources['sources']}
+        rule = experience.get('rule_status')
+        if isinstance(rule, dict):
+            claim = claims.get(rule.get('evidence_ref'), {})
+            source = next((source_refs[ref] for ref in claim.get('evidence_refs', []) if ref in source_refs), None)
+            if source is not None:
+                experience['_resolved_rule_status'] = {**rule, 'checked_at': source.get('retrieved_on'), 'url': source['url']}
         registry = json.loads((root / REGISTRY_PATH).read_text())
         assets = {a['asset_ref']: a for a in registry.get('media', [])}
         resolved = []

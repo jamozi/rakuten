@@ -212,3 +212,40 @@ def test_model_differences_derive_like_units_and_preserve_unknowns() -> None:
     assert numerical_difference('1500W', '1550W') == '+50W（+3.3%）'
     for left,right in [('UNKNOWN','10W'),('0W','1W'),('300W','300Wh'),('1〜2kg','2kg')]:
         assert numerical_difference(left,right) is None
+
+
+def test_all_tracked_articles_keep_products_official_links_and_original_dates() -> None:
+    import json
+    import re
+    from raos.application.editorial.reader_experience_projection import project_registered_article
+    root = Path(__file__).resolve().parents[2]
+    portfolio = json.loads((root / 'changes/editorial-portfolio-v2/editorial-portfolio.v2.json').read_text())
+    for article in portfolio['articles']:
+        original = fragment((root / article['content_ref']).read_text())
+        rendered = fragment(project_registered_article(root, original.html(), article_id=article['article_id']))
+        sources = {a.attrs['href'] for a in original.find(tag='a') if str(a.attrs.get('href', '')).startswith('https://') and 'data-raos-placement' not in a.attrs}
+        assert sources <= {a.attrs.get('href') for a in rendered.find(tag='a')}, article['article_id']
+        date_pattern = r'\d{4}(?:年\d{1,2}月\d{1,2}日|-\d{2}-\d{2})'
+        assert set(re.findall(date_pattern, original.text())) <= set(re.findall(date_pattern, rendered.text()))
+        assert {card.attrs['data-raos-product-id'] for card in rendered.find(cls='raos-product-card')} == set(article['product_ids'])
+        assert not any(a.attrs.get('data-raos-cta-type') == 'offer' for a in rendered.find(tag='a'))
+        assert len(rendered.find(tag='h2')) <= 9
+        assert len(rendered.find(cls='raos-evidence-panel')) == 1
+
+
+def test_core_facts_require_a_dated_official_source_not_only_a_known_claim_id() -> None:
+    experience = {'article_type':'shortlist', 'research_status':{'real_world_tested':False,'ranking_uses_commission':False}, 'products':[{'product_ref':'p','evidence_facts':['known-but-undated']}]}
+    assert validate_experience(experience, product_refs=frozenset({'p'}), evidence_refs=frozenset({'known-but-undated'}), checked_fact_refs=frozenset()) == ('products.official_checked_facts_required',)
+
+
+def test_safety_module_requires_evidence_and_retains_final_authority_and_exceptions() -> None:
+    from raos.application.editorial.reader_components import safety_rule_panel
+    base = {'article_type':'safety_rule','research_status':{'real_world_tested':False,'ranking_uses_commission':False}}
+    assert validate_experience(base, product_refs=frozenset(), evidence_refs=frozenset()) == ('rule_status.required',)
+    rule = dict(authority='規定主体', final_decision_by='運航者', exceptions='便・機材・運賃で変わる', scope_limit='専門判断を代替しない', evidence_ref='claim', checked_at='2026-08-31', url='https://official.test/rule')
+    assert not validate_experience({**base,'rule_status':rule}, product_refs=frozenset(), evidence_refs=frozenset({'claim'}))
+    panel = safety_rule_panel(rule)
+    assert panel is not None and '2026-08-31' in panel.text() and '運航者' in panel.text()
+    assert '便・機材・運賃' in panel.text()
+    assert safety_rule_panel({**rule,'checked_at':''}) is None
+    assert safety_rule_panel({**rule,'url':'javascript:alert(1)'}) is None

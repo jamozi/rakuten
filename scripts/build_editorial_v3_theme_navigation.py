@@ -690,6 +690,11 @@ def build_documents() -> tuple[bytes, bytes]:
             {'kind': 'reader_hub', 'surface_id': 'hub-' + hub['slug'], 'local_path': '/' + hub['slug'] + '/'}
             for hub in reader_hubs
         ],
+        "reader_display": {
+            "article_ids": sorted(key for key, profile in registry.get("articles", {}).items() if profile.get("components_enabled") is True),
+            "social_images": {raw["asset_ref"]: raw["path"] for raw in approved_media if isinstance(raw.get("path"), str)},
+            "primary_categories": projected_reader.get("primary_categories", {}),
+        },
         "target_origin": "https://kurashinoshirube.com",
         "version": "3.0.0",
         "viewports": list(AUDIT_VIEWPORTS),

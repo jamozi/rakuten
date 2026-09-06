@@ -12,7 +12,7 @@ from typing import cast
 
 from raos.application.editorial.reader_html import Element, block
 from raos.application.editorial.reader_experience_v1 import ArticleType, CtaType, CtaEvidence, cta_visible
-from raos.application.editorial.reader_experience_v1 import approved_media_record
+from raos.application.editorial.reader_experience_v1 import CheckedFact, approved_media_record
 import re
 
 
@@ -60,6 +60,18 @@ def purchase_checklist(checks: Sequence[str]) -> Element | None:
         return None
     items = ''.join(f'<li>{escape(check)}</li>' for check in checks)
     return section('reader-purchase-checks', '購入前に、この条件を確かめる', f'<ul class="raos-purchase-checklist">{items}</ul>', 'raos-reader-purchase-checklist')
+
+
+def safety_rule_panel(rule: Mapping[str, str]) -> Element | None:
+    """Optional rule module, supplied only after its official reference resolves."""
+    if any(not isinstance(rule.get(k), str) or not rule[k].strip() for k in ('authority', 'final_decision_by', 'exceptions', 'scope_limit', 'evidence_ref', 'url')):
+        return None
+    if not rule['url'].startswith('https://') or not CheckedFact(rule['evidence_ref'], rule['url'], rule.get('checked_at'), 'KNOWN').usable:
+        return None
+    rows = [('規定主体', rule['authority']), ('確認日', rule['checked_at']), ('最終確認と判断', rule['final_decision_by']), ('条件による違い', rule['exceptions']), ('この記事の範囲', rule['scope_limit'])]
+    content = '<dl>' + ''.join('<div><dt>' + escape(label) + '</dt><dd>' + escape(value) + '</dd></div>' for label,value in rows) + '</dl>'
+    content += '<p><a data-raos-cta-type="verify" href="' + escape(rule['url'], quote=True) + '">規定主体の公式案内で現在の条件を確認する</a></p>'
+    return section('reader-rule-status', '適用条件と、最後に確認する場所', content, 'raos-rule-status')
 
 
 def contextual_cta(kind: str, label: str, url: str, *, product_ref: str | None,
@@ -139,7 +151,8 @@ def dimension_diagram(claim: Mapping[str, object], source: Mapping[str, object],
         return None
     if (not approved_media_record(asset) or asset.get('asset_type') != 'html_diagram'
         or claim.get('classification') != 'MAJOR_VERIFIABLE' or claim.get('status') != 'BOUND_TO_OFFICIAL_SOURCE'
-        or source.get('authority') != 'MANUFACTURER_OFFICIAL' or not source.get('retrieved_on')
+        or source.get('authority') != 'MANUFACTURER_OFFICIAL'
+        or not CheckedFact(str(claim.get('claim_id', '')), str(source.get('source_ref', '')), cast(str | None, source.get('retrieved_on')), 'KNOWN').usable
         or source.get('url') != asset.get('source') or source.get('source_ref') not in references):
         return None
     dimensions = claim.get('dimensions')
@@ -153,7 +166,7 @@ def dimension_diagram(claim: Mapping[str, object], source: Mapping[str, object],
     opened = next((d for d in dimensions[1:] if isinstance(d, dict) and type(d.get('depth_cm')) in (int,float) and math.isfinite(d['depth_cm']) and d['depth_cm'] > 0 and any(t in str(d.get('subject')) for t in ('扉', 'ドア'))), None)
     door = f'扉を開いたときの奥行：{opened["depth_cm"]:g}cm（本体を含む）。' if opened else '扉開放時の寸法：この記事で確認できた資料では未確認。取扱説明書で確認してください。'
     identifier = escape(str(asset['asset_ref']), quote=True)
-    return block(f'<figure class="raos-dimension-diagram" id="{identifier}" data-raos-media-state="approved" data-source-ref="{escape(str(source["source_ref"]), quote=True)}" data-claim-id="{escape(str(claim["claim_id"]), quote=True)}"><figcaption><strong>{escape(str(body.get("subject", "本体寸法")))}</strong></figcaption><div class="raos-dimension-diagram__plan" role="img" aria-label="{escape(label)}" style="aspect-ratio:{width:g}/{depth:g}"><span>上から見た本体</span><span>幅 {width:g}cm × 奥行 {depth:g}cm</span></div><p>高さ：{height:g}cm。{escape(door)}</p><p>上方・左右の余白、給水・排水ホース、電源への経路は別に確かめます。</p><figcaption>{escape(str(asset["caption"]))} <a data-raos-cta-type="verify" href="{escape(str(source["url"]), quote=True)}">メーカー公式で設置条件を確認する</a>。公式情報確認：{escape(str(source["retrieved_on"]))}</figcaption></figure>')
+    return block(f'<figure class="raos-dimension-diagram" id="{identifier}" data-raos-media-state="approved" data-source-ref="{escape(str(source["source_ref"]), quote=True)}" data-claim-id="{escape(str(claim["claim_id"]), quote=True)}"><figcaption><strong>{escape(str(body.get("subject", "本体寸法")))}</strong></figcaption><div class="raos-dimension-diagram__plan" role="img" aria-label="{escape(label)}" style="aspect-ratio:{width:g}/{depth:g}"><span>上から見た本体</span><span>幅 {width:g}cm × 奥行 {depth:g}cm</span></div><p>高さ：{height:g}cm。{escape(door)}</p><p>上方・左右の余白、給水・排水ホース、電源への経路は別に確かめます。</p><p class="raos-dimension-source">{escape(str(asset["caption"]))} <a data-raos-cta-type="verify" href="{escape(str(source["url"]), quote=True)}">メーカー公式で設置条件を確認する</a>。公式情報確認：{escape(str(source["retrieved_on"]))}</p></figure>')
 
 
 def numerical_difference(left: str, right: str) -> str | None:

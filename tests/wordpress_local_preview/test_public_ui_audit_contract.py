@@ -370,6 +370,14 @@ const baseline = {
 const accepted = factory.validateSeoHead(structuredClone(baseline));
 if (accepted.failed) throw new Error('VALID_SEO_HEAD_REJECTED');
 
+const noApprovedImage = structuredClone(baseline);
+noApprovedImage.imageRequired = false;
+noApprovedImage.audit.openGraph.image = [];
+noApprovedImage.openGraphImageResponseValid = false;
+if (factory.validateSeoHead(noApprovedImage).failed) throw new Error('IMAGELESS_HEAD_REJECTED');
+noApprovedImage.audit.openGraph.image = [expectedOpenGraphImageUrl];
+if (!factory.validateSeoHead(noApprovedImage).failed) throw new Error('UNAPPROVED_IMAGE_ACCEPTED');
+
 function requireRejection(name, mutate) {
   const candidate = structuredClone(baseline);
   mutate(candidate);

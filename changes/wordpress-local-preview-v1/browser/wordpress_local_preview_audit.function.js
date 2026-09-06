@@ -7,6 +7,7 @@
     localNoindexHeaderValid,
     openGraphImageResponseValid,
     requiredJsonLdTypes,
+    imageRequired = true,
   }) => {
     const missingJsonLdTypes = requiredJsonLdTypes.filter(
       (type) => !audit.jsonLdTypes.includes(type),
@@ -17,13 +18,14 @@
     const invalidJsonLdTypes = audit.jsonLdTypes.filter(
       (type) => typeof type !== 'string' || !/^[A-Za-z][A-Za-z0-9]*$/.test(type),
     );
-    const openGraphFieldsValid = Object.values(audit.openGraph).every(
-      (values) => values.length === 1 && values[0] !== '',
+    const openGraphFieldsValid = Object.entries(audit.openGraph).every(
+      ([field, values]) => field === 'image' && !imageRequired
+        ? values.length === 0 : values.length === 1 && values[0] !== '',
     );
-    const openGraphImageValid =
-      audit.openGraph.image.length === 1 &&
-      audit.openGraph.image[0] === expectedOpenGraphImageUrl &&
-      openGraphImageResponseValid;
+    const openGraphImageValid = imageRequired
+      ? audit.openGraph.image.length === 1 &&
+        audit.openGraph.image[0] === expectedOpenGraphImageUrl && openGraphImageResponseValid
+      : audit.openGraph.image.length === 0;
     const metaRobotsDirectives = audit.metaRobots.flatMap((value) =>
       value
         .split(',')
@@ -363,6 +365,8 @@
   const robotsProfile = routeCoverage?.robots_profile;
   const rawClusters = inventory?.clusters;
   const widths = inventory?.viewports;
+  const readerDisplay = inventory?.reader_display;
+  const readerArticles = new Set(readerDisplay?.article_ids ?? []);
   const requiredWidths = [360, 390, 768, 1024, 1440];
   const articleRows = Array.isArray(publicSurfaces)
     ? publicSurfaces.filter((surface) => surface.kind === 'article')
@@ -602,6 +606,8 @@
   const surfaces = [...publicSurfaces, ...localSurfaces].map((surface) => ({
     ...surface,
     article: surface.kind === 'article',
+    readerComponents: readerArticles.has(surface.article_id),
+    imageRequired: !readerDisplay || Boolean(readerDisplay.social_images?.[surface.article_id || 'home']),
     expectedStatus: surface.expected_http_status || 200,
     name: surface.surface_id,
     path: surface.local_path,
@@ -791,10 +797,12 @@
     if (
       byType('BreadcrumbList').length !== 1 ||
       breadcrumb['@id'] !== `${expectedUrl}#breadcrumb` ||
-      !Array.isArray(items) || items.length !== 2 ||
+      !Array.isArray(items) || ![2, ...(surface.readerComponents ? [3] : [])].includes(items.length) ||
       items[0]?.position !== 1 || items[0]?.item !== `${origin}/` ||
-      items[1]?.position !== 2 || items[1]?.item !== expectedUrl ||
-      items[1]?.name !== audit.head.title
+      items.at(-1)?.position !== items.length || items.at(-1)?.item !== expectedUrl ||
+      items.at(-1)?.name !== audit.head.title ||
+      (items.length === 3 && (items[1]?.position !== 2 ||
+        items[1]?.item !== `${origin}/${readerDisplay.primary_categories[surface.article_id]}/`))
     ) return 'BREADCRUMB';
     if (surface.kind === 'article') {
       const article = byType('Article')[0];
@@ -805,7 +813,9 @@
         article.mainEntityOfPage !== expectedUrl || article.inLanguage !== 'ja-JP' ||
         article.author?.['@id'] !== organization['@id'] ||
         article.publisher?.['@id'] !== organization['@id'] ||
-        !Array.isArray(article.image) || article.image[0] !== audit.head.ogImage[0] ||
+        (surface.imageRequired
+          ? !Array.isArray(article.image) || article.image[0] !== audit.head.ogImage[0]
+          : article.image !== undefined) ||
         typeof article.articleSection !== 'string' || article.articleSection.length === 0 ||
         !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(article.datePublished || '') ||
         !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(article.dateModified || '') ||
@@ -901,6 +911,7 @@
         }
       }
       if (surface.article) {
+        if (surface.readerComponents) await page.locator('#reader-evidence > summary').click();
         await page.locator('.raos-disclosure')
           .scrollIntoViewIfNeeded();
         await page.evaluate(
@@ -1169,6 +1180,8 @@
           if (animationMs > 0.011 || transitionMs > 0.011) animatedElementCount += 1;
           if (style.scrollBehavior === 'smooth') smoothScrollElementCount += 1;
         }
+        const researchStatus = document.querySelector(".raos-research-status");
+        const evidencePanel = document.querySelector("#reader-evidence");
         const comparisonFocusability = [
           ...document.querySelectorAll('.comparison-table-wrap[role="region"]'),
         ].map((region) => {
@@ -1179,9 +1192,9 @@
             .filter(Boolean).join(' ');
           const accessibleName =
             region.getAttribute('aria-label')?.trim() || labelledByName;
-          const shouldBeFocusable = visible(region) &&
-            region.scrollWidth > region.clientWidth + 1 &&
-            ['auto', 'scroll'].includes(style.overflowX);
+          const shouldBeFocusable = visible(region) && (
+            (region.scrollWidth > region.clientWidth + 1 && ['auto', 'scroll'].includes(style.overflowX)) ||
+            (region.scrollHeight > region.clientHeight + 1 && ['auto', 'scroll'].includes(style.overflowY)));
           return {
             accessibleName,
             availableState: region.dataset.raosHorizontalScroll || null,
@@ -1191,6 +1204,15 @@
         });
         return {
           anchorSecurity,
+          reader: {
+            components: document.querySelectorAll('.raos-reader-view[data-raos-reader-components="true"]').length,
+            statusCount: document.querySelectorAll('.raos-research-status').length,
+            statusVisible: visible(researchStatus),
+            statusText: researchStatus?.textContent?.trim() || '',
+            evidenceCount: document.querySelectorAll('details#reader-evidence > summary').length,
+            sourceLink: researchStatus?.querySelector('a')?.getAttribute('href'),
+            evidenceValid: evidencePanel?.querySelectorAll('.raos-article-facts').length === 1,
+          },
           articleFacts: {
             contentRoleLabels: visibleFactValues('記事分類'),
             primaryQueryIntents: visibleFactValues('この記事で答えること'),
@@ -1459,6 +1481,7 @@
           localNoindexHeaderValid,
           openGraphImageResponseValid,
           requiredJsonLdTypes: requiredJsonLdTypesByKind[surface.kind],
+          imageRequired: surface.imageRequired,
         })
         : { failed: false };
       const seoHeadAuditFailed = seoHeadAudit.failed;
@@ -1469,14 +1492,14 @@
           head.ogTitle.length !== 1 || head.ogTitle[0] !== head.title ||
           head.ogDescription.length !== 1 || head.ogDescription[0] !== head.description[0] ||
           head.ogUrl.length !== 1 || head.ogUrl[0] !== expectedUrl ||
-          head.ogImage.length !== 1 || !head.ogImage[0].startsWith(`${origin}/`) ||
+          (surface.imageRequired ? head.ogImage.length !== 1 || !head.ogImage[0].startsWith(`${origin}/`) : head.ogImage.length !== 0) ||
           head.ogType.length !== 1 || head.ogType[0] !== (surface.article ? 'article' : 'website') ||
           head.ogLocale.length !== 1 || head.ogLocale[0] !== 'ja_JP' ||
           head.ogSiteName.length !== 1 || head.ogSiteName[0] !== '暮らしのしるべ' ||
-          head.twitterCard.length !== 1 || head.twitterCard[0] !== 'summary_large_image' ||
+          head.twitterCard.length !== 1 || head.twitterCard[0] !== (surface.imageRequired ? 'summary_large_image' : 'summary') ||
           head.twitterTitle.length !== 1 || head.twitterTitle[0] !== head.title ||
           head.twitterDescription.length !== 1 || head.twitterDescription[0] !== head.description[0] ||
-          head.twitterImage.length !== 1 || head.twitterImage[0] !== head.ogImage[0]
+          (surface.imageRequired ? head.twitterImage.length !== 1 || head.twitterImage[0] !== head.ogImage[0] : head.twitterImage.length !== 0)
         : head.titleCount !== 1 || !head.title || surface.expected_canonical !== 'ABSENT' ||
           head.canonical.length !== 0;
       const metaRobotsTokens = head.robots.length === 1
@@ -1558,11 +1581,11 @@
       let disclosureKeyboardFailure = null;
       if (
         surface.article && width === 390 &&
-        surface.article_id !== lifecycleStatusRouteArticleId
+        (surface.readerComponents || surface.article_id !== lifecycleStatusRouteArticleId)
       ) {
         disclosureKeyboardFailure = await (async () => {
           const details = page.locator(
-            '.raos-disclosure[aria-label="広告表示"] details',
+            surface.readerComponents ? '#reader-evidence' : '.raos-disclosure[aria-label="広告表示"] details',
           );
           const summary = details.locator(':scope > summary');
           if (await details.count() !== 1 || await summary.count() !== 1) {
@@ -1697,6 +1720,7 @@
             { hash: targetHash, id: targetId },
           );
           if (!targetReached) return 'TOC_FOCUS';
+          if (surface.readerComponents) return null;
           const back = page.locator('[id="' + targetId + '"]').locator(
             'xpath=ancestor::section[1]//a[' +
               'contains(concat(" ", normalize-space(@class), " "), " raos-back-to-toc ")][1]',
@@ -1728,7 +1752,8 @@
           const targetId = targetHash.slice(1);
           const isUnobscured = () => page.evaluate((id) => {
             const toc = document.querySelector('.raos-article-toc');
-            const main = document.querySelector('.raos-editorial-v2__main');
+            const reader = document.querySelector('.raos-reader-view[data-raos-reader-components="true"]');
+            const main = document.querySelector(reader ? '.raos-editorial-v2' : '.raos-editorial-v2__main');
             const target = document.getElementById(id);
             if (
               !(toc instanceof HTMLElement) || !(main instanceof HTMLElement) ||
@@ -1749,7 +1774,7 @@
               Math.max(0, targetRect.top + Math.min(targetRect.height / 2, 12)),
             );
             const topmost = document.elementFromPoint(sampleX, sampleY);
-            return tocRect.left >= mainRect.right + 12 &&
+            return (reader ? getComputedStyle(toc).position === 'static' : tocRect.left >= mainRect.right + 12) &&
               targetRect.left >= mainRect.left - 1 && targetRect.right <= mainRect.right + 1 &&
               targetRect.top >= (Number.isFinite(stickyTop) ? stickyTop : 0) - 1 &&
               targetRect.top < window.innerHeight &&
@@ -1794,7 +1819,7 @@
         const links = await page.evaluate(() => [...document.querySelectorAll(
           'a[data-raos-link-placement="article_body"],'
             + 'a[data-raos-link-placement="related_navigation"],'
-            + 'a[data-raos-link-placement="cluster_home"]',
+            + 'a[data-raos-link-placement="cluster_home"],a[data-raos-link-placement="category_hub"]',
         )].map((anchor) => ({
           clusterAnchor: anchor.getAttribute('data-raos-cluster-anchor'),
           href: anchor.href,
@@ -1804,7 +1829,8 @@
         const expected = [
           ['article_body', surface.contextual_article_id, ''],
           ...surface.related_article_ids.map((id) => ['related_navigation', id, '']),
-          ['cluster_home', null, surface.cluster_anchor],
+          ...(links.some(link => link.placement === 'category_hub')
+            ? [['category_hub', null, '']] : [['cluster_home', null, surface.cluster_anchor]]),
         ].map((row) => row.join('|')).sort();
         internalLinkFailure =
           new Set(links.map((link) => link.href)).size !== links.length ||
@@ -1815,6 +1841,10 @@
           const target = parseLocalUrl(link.href);
           if (target === null) {
             internalLinkFailure = true;
+            continue;
+          }
+          if (link.placement === 'category_hub') {
+            if (target.origin !== origin || target.pathname !== `/${readerDisplay?.primary_categories?.[surface.article_id]}/` || target.hash || target.search) internalLinkFailure = true;
             continue;
           }
           if (link.placement === 'cluster_home') {
@@ -1833,7 +1863,7 @@
       }
 
       let homeLinkFailure = false;
-      if (surface.kind === 'home' && width === 390) {
+      if (surface.kind === 'home' && width === 390 && !readerDisplay) {
         const expectedClusters = rawClusters.map((cluster) => ({
           anchor: cluster.anchor,
           paths: cluster.article_ids.map((articleId) => expectedPathByArticleId[articleId]),
@@ -1901,9 +1931,9 @@
       const notFoundFailure = surface.kind === 'not_found' &&
         (!audit.notFoundBodyClass || !head.title.includes('ページが見つかりません'));
       const tocFailure = surface.article && (
-        audit.toc.count !== 1 || audit.toc.backCount < 1 || !audit.toc.firstTarget ||
+        audit.toc.count !== 1 || (surface.readerComponents ? audit.toc.backCount !== 0 : audit.toc.backCount < 1) || !audit.toc.firstTarget ||
         audit.toc.titleText !== 'この記事の目次' ||
-        (width > 768
+        (width > 1024
           ? !audit.toc.detailsOpen || !audit.toc.listVisible || audit.toc.summaryVisible ||
             !audit.toc.titleVisible
           : audit.toc.detailsOpen || audit.toc.listVisible || !audit.toc.summaryVisible ||
@@ -1912,7 +1942,7 @@
       const boxInvalid = (box) => !Object.values(box).every(Number.isFinite) ||
         box.width <= 0 || box.height <= 0 || box.left < -0.5 ||
         box.right > audit.clientWidth + 0.5;
-      const expectedColumns = width === 1440 ? 3 : width === 768 ? 2 : 1;
+      const expectedColumns = width >= 1024 ? 3 : width === 768 ? 2 : 1;
       const isLifecycleStatusRoute = surface.article &&
         surface.article_id === lifecycleStatusRouteArticleId;
       const incrementalArticle = surface.article ? validateIncrementalArticle({
@@ -1922,18 +1952,23 @@
         (row) => row.article_id === surface.article_id);
       const isPreservedArticle = Boolean(incrementalExpected && !incrementalArticle.selected);
       const requiresAffiliateCta = surface.article &&
-        (incrementalExpected ? incrementalExpected.expected_ctas.length > 0 : !isLifecycleStatusRoute);
+        (incrementalExpected ? incrementalExpected.expected_ctas.length > 0 : !surface.readerComponents && !isLifecycleStatusRoute);
       const zeroProducts = audit.productIds.length === 0;
       const zeroCtas = audit.ctaBoxes.length === 0;
       const lifecycleProductCtaInvariantFailure = surface.article && (
         (surface.content_role === 'lifecycle_status_route') !== isLifecycleStatusRoute ||
         (incrementalExpected ? incrementalArticle.failed :
-          zeroProducts !== isLifecycleStatusRoute || zeroCtas !== isLifecycleStatusRoute) ||
+          zeroProducts !== isLifecycleStatusRoute || (surface.readerComponents ? !zeroCtas : zeroCtas !== isLifecycleStatusRoute)) ||
         audit.productProfileCount !== audit.productIds.length ||
         audit.productIds.some((productId) => productId === '') ||
         new Set(audit.productIds).size !== audit.productIds.length
       );
-      const disclosureSemanticsFailure = surface.article && (
+      const disclosureSemanticsFailure = surface.article && (surface.readerComponents ? (
+        audit.reader.components !== 1 || audit.reader.statusCount !== 1 || !audit.reader.statusVisible ||
+        !audit.reader.statusText.includes('公式情報確認：') || !audit.reader.statusText.includes('実機確認：') ||
+        !audit.reader.statusText.includes(requiresAffiliateCta ? '広告リンクを含みます' : '販売リンクは掲載していません') ||
+        audit.reader.evidenceCount !== 1 || !audit.reader.evidenceValid || audit.reader.sourceLink !== '#reader-evidence'
+      ) : (
         audit.disclosure.count !== 1 ||
         !audit.disclosure.opacityVisible || !audit.disclosure.inViewport ||
         !audit.disclosure.unobscured || audit.disclosure.policyLinkCount !==
@@ -1951,7 +1986,7 @@
             !audit.disclosure.summaryVisible ||
             audit.disclosure.standardPhraseCount !== 3 ||
             audit.disclosure.nonaffiliatePhraseCount !== 0)
-      );
+      ));
       const articleFactsFailure = surface.article
         ? isPreservedArticle
           ? !exactMultiset(audit.articleFacts.contentRoleLabels,
@@ -1992,8 +2027,9 @@
         articleFactsFailure ||
         (surface.article && (
           audit.editorialRootCount !== 1 ||
-          audit.heroNotice.count !== 1 || !audit.heroNotice.visible ||
-          audit.heroNotice.text !== '比較イメージ／商品写真ではありません' ||
+          (readerDisplay ? audit.heroNotice.count !== 0 :
+            audit.heroNotice.count !== 1 || !audit.heroNotice.visible ||
+            audit.heroNotice.text !== '比較イメージ／商品写真ではありません') ||
           (requiresAffiliateCta
             ? audit.ctaBoxes.length === 0 ||
               audit.ctaBoxes.some((box) => boxInvalid(box) || box.height < 44) ||
@@ -2141,7 +2177,7 @@
           const interactiveOutOfBounds = [...document.querySelectorAll(
             'a[href],button,input:not([type="hidden"]),select,textarea,summary',
           )].filter((element) => {
-            if (!isVisible(element)) return false;
+            if (!isVisible(element) || element.closest('.comparison-table-wrap')) return false;
             const rect = element.getBoundingClientRect();
             return rect.left < -0.5 || rect.right > clientWidth + 0.5;
           }).length;

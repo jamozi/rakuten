@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.5.1';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '0f7fb1afedb6fb258b4c1472fb43d8e64afd3ea0d34fddb55cab23112728c441';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '0f7fb1afedb6fb258b4c1472fb43d8e64afd3ea0d34fddb55cab23112728c441';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '88ef3e9724383d3f4f28f319161a1316e266bb3ba0f084f095baff00ea96b0d3';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '88ef3e9724383d3f4f28f319161a1316e266bb3ba0f084f095baff00ea96b0d3';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -3032,7 +3032,11 @@ function kurashinoshirube_render_related_guides($attributes, $content, $tag): st
     $home_url = (is_string($local_origin)
         ? $local_origin
         : KURASHINOSHIRUBE_SITE_ORIGIN) . '/#' . $relation['home_anchor'];
-    $items[] = '<li><a href="' . esc_url($home_url) . '"'
+    $category = kurashinoshirube_reader_article_category((int) get_queried_object_id());
+    $items[] = is_array($category)
+        ? '<li><a href="' . esc_url($category['url']) . '" data-raos-link-placement="category_hub">'
+            . esc_html($category['label'] . 'のガイドを探す') . '</a></li>'
+        : '<li><a href="' . esc_url($home_url) . '"'
         . ' data-raos-internal-link="cluster-home"'
         . ' data-raos-cluster-anchor="' . esc_attr($relation['home_anchor']) . '"'
         . ' data-raos-link-placement="cluster_home">'
@@ -3289,7 +3293,11 @@ function kurashinoshirube_render_reader_home($attributes, $content, $tag): strin
             }
         }
         if ($links === array()) { $links[] = '<a class="raos-home-button" href="#latest">最近更新したガイドを見る</a>'; }
-        return '<div class="raos-home-hero__actions">' . implode('', $links) . '</div>';
+        $legacy_anchors = '';
+        foreach (kurashinoshirube_editorial_navigation()['clusters'] ?? array() as $cluster) {
+            $legacy_anchors .= '<span id="' . esc_attr($cluster['anchor']) . '" aria-hidden="true"></span>';
+        }
+        return $legacy_anchors . '<div class="raos-home-hero__actions">' . implode('', $links) . '</div>';
     }
     if (in_array($section, array('purposes', 'categories'), true)) {
         $kind = $section === 'purposes' ? 'purpose' : 'category';

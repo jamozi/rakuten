@@ -137,7 +137,7 @@ def approved_media_record(raw: Mapping[str, object]) -> bool:
 
 def validate_experience(
     experience: Mapping[str, object], *, product_refs: frozenset[str],
-    evidence_refs: frozenset[str],
+    evidence_refs: frozenset[str], checked_fact_refs: frozenset[str] | None = None,
 ) -> tuple[str, ...]:
     """Validate the additive view model without making missing legacy data up."""
     issues: list[str] = []
@@ -210,6 +210,14 @@ def validate_experience(
             facts = product.get("evidence_facts", [])
             if not isinstance(facts, list) or any(not isinstance(ref, str) or ref not in evidence_refs for ref in facts):
                 issues.append("products.evidence_must_reference_facts")
+            elif checked_fact_refs is not None and any(ref not in checked_fact_refs for ref in facts):
+                issues.append("products.official_checked_facts_required")
+    if article_type == 'safety_rule':
+        rule = experience.get('rule_status')
+        if not isinstance(rule, Mapping) or any(not isinstance(rule.get(k), str) or not rule[k].strip() for k in ('authority', 'final_decision_by', 'exceptions', 'scope_limit', 'evidence_ref')):
+            issues.append('rule_status.required')
+        elif rule['evidence_ref'] not in (checked_fact_refs if checked_fact_refs is not None else evidence_refs):
+            issues.append('rule_status.official_checked_fact_required')
     if any(re.search(r"[0-9][0-9,]*\s*円", text) for text in prose(experience)):
         price = experience.get("price_snapshot")
         valid_price = False
