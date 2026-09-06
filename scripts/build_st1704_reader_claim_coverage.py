@@ -679,10 +679,11 @@ REVIEWED_READER_LEDGER_SHA256: Final = (
 )
 # Reconciled development ledger, not an independent review attestation. Keep
 # the reviewed anchor above unchanged until the separate review is completed.
-# Latest development reconciliation covers exact official reference navigation
-# labels and the dishwasher supply axis; existing evidence remains unchanged.
+# Latest development reconciliation adds the Anker supporting evidence table,
+# preserves explicit UNKNOWN cells, and rebinds the limited recommendation edits.
+# The other nine articles and production review anchor remain unchanged.
 DEVELOPMENT_READER_LEDGER_SHA256: Final = (
-    "351b8ccbe8c4617513ec58f1a80ccc50dbb0cac0899f8f99c2b3d155c820167e"
+    "6c635940abcd9ebf77a5ca6e853c0fc3c28dc7e8a17dc2ea43ef9030f431874a"
 )
 ADDITIONAL_OFFICIAL_SALES_HOSTS: Final = {
     # siroca separates product information and its first-party store across
@@ -774,6 +775,9 @@ UNKNOWN_RE: Final = re.compile(
 )
 UNKNOWN_STATUS_RE: Final = re.compile(
     r"(?:"
+    r"未確認\(この型番の公表回数に対応する基準\)|"
+    r"未確認\(試験温度・充放電レート・放電深度\)。"
+    r"充電時間の測定条件や動作温度は流用しない|"
     r"公式確認範囲では未確認|"
     r"(?:(?:メーカー公式情報では確認できず|公式の現行製品ページ本文で|"
     r"アクセサリ互換性は)\s*)?未確認"
@@ -1224,6 +1228,12 @@ LOCAL_MIXED_UNKNOWN_FIXED_TEXTS: Final = frozenset(
 )
 TABLE_OR_DEFINITION_LABELS: Final = frozenset(
     {
+        "充放電サイクルの条件と製品保証",
+        "公表サイクル数",
+        "残存容量の基準",
+        "サイクル試験の条件",
+        "製品保証の案内と条件",
+        "公式出典・寿命条件の確認日",
         "商品",
         "比較軸",
         "外寸",
@@ -6627,7 +6637,7 @@ def _accessibility_exemption_matches(
 
 def _table_or_definition_label_matches(unit: ReaderUnit) -> bool:
     return bool(
-        re.search(r"(?:^|/)(?:th|dt)\[\d+\]::text\Z", unit.locator)
+        re.search(r"(?:^|/)(?:th|dt|caption)\[\d+\]::text\Z", unit.locator)
         and unit.text in TABLE_OR_DEFINITION_LABELS
         and not required_assertion_tokens(unit.text, structural_fact=False)
     )

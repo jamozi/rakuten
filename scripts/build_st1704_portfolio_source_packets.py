@@ -206,6 +206,18 @@ CLAIM_SUBJECT_PRODUCT_IDS: Final[dict[str, tuple[str, ...]]] = {
     "CLM-ST1704-ANKER-C800-SPECS": ("PRD-ANKER-SOLIX-C800-PLUS",),
     "CLM-ST1704-ANKER-C1000-SPECS": ("PRD-ANKER-SOLIX-C1000",),
     "CLM-ST1704-ANKER-C1000-GEN2-SPECS": ("PRD-ANKER-SOLIX-C1000-GEN2",),
+    "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS": (
+        "PRD-ANKER-SOLIX-C300",
+    ),
+    "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS": (
+        "PRD-ANKER-SOLIX-C800-PLUS",
+    ),
+    "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS": (
+        "PRD-ANKER-SOLIX-C1000",
+    ),
+    "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS": (
+        "PRD-ANKER-SOLIX-C1000-GEN2",
+    ),
     "CLM-ST1704-ANKER-C1000-FEATURE-DIFF": (
         "PRD-ANKER-SOLIX-C1000",
         "PRD-ANKER-SOLIX-C1000-GEN2",
@@ -2034,6 +2046,54 @@ FIRST_FIVE_ADDITIONAL_CLAIMS: Final[dict[str, tuple[dict[str, object], ...]]] = 
     ),
     "SPV-ST1704-ANKER-DIFFERENCES-V1": (
         _claim(
+            "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS",
+            "寿命条件の限定確認日：2026-09-06。Anker Solix C300 Portable Power S"
+            "tation（代表型番：A17225Z1）の公式商品ページの比較表「寿命」は電池3,000回と記載する。確認し"
+            "た商品ページの本文と比較表では、この型番の公表回数に対応する残存容量の基準を確認できていない。サイクル試験の温"
+            "度・充放電レート・放電深度は未確認。充電時間の測定条件、動作温度、一般的な使用環境の説明をサイクル試験の条件へ"
+            "転用しない。同じ型番の商品ページの保証欄は、通常18か月の製品保証と、Anker Japan公式オンラインスト"
+            "ア会員を対象に5年へ延長する条件を案内する。購入先ごとの適用可否、購入証明・登録手続き、容量低下の扱いを含む除"
+            "外条件はこの限定確認では未確認。既存のsource取得日・他仕様の確認日・販売状態の観測日時を更新する確認では"
+            "ない。",
+            ["SRC-ANKER-SOLIX-C300"],
+        ),
+        _claim(
+            "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS",
+            "寿命条件の限定確認日：2026-09-06。Anker Solix C800 Plus Portable Po"
+            "wer Station（代表型番：A1754）の公式商品ページの比較表「寿命」は電池3,000回と記載する。確"
+            "認した商品ページの本文と比較表では、この型番の公表回数に対応する残存容量の基準を確認できていない。サイクル試験"
+            "の温度・充放電レート・放電深度は未確認。充電時間の測定条件、動作温度、一般的な使用環境の説明をサイクル試験の条"
+            "件へ転用しない。同じ型番の商品ページの保証欄は、通常18か月の製品保証と、Anker Japan公式オンライン"
+            "ストア会員を対象に5年へ延長する条件を案内する。購入先ごとの適用可否、購入証明・登録手続き、容量低下の扱いを含"
+            "む除外条件はこの限定確認では未確認。既存のsource取得日・他仕様の確認日・販売状態の観測日時を更新する確認"
+            "ではない。",
+            ["SRC-ANKER-SOLIX-C800-PLUS"],
+        ),
+        _claim(
+            "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS",
+            "寿命条件の限定確認日：2026-09-06。Anker Solix C1000 Portable Power "
+            "Station（代表型番：A17615Z1）の公式商品ページの比較表「寿命」は電池3,000回と記載する。同じ"
+            "C1000の商品本文の注記は、初期容量の80%まで低下するまでの回数として3,000回以上を案内する。サイクル"
+            "試験の温度・充放電レート・放電深度は未確認。充電時間の測定条件、動作温度、一般的な使用環境の説明をサイクル試験"
+            "の条件へ転用しない。同じ型番の商品ページの保証欄は、通常18か月の製品保証と、Anker Japan公式オンラ"
+            "インストア会員を対象に5年へ延長する条件を案内する。購入先ごとの適用可否、購入証明・登録手続き、容量低下の扱い"
+            "を含む除外条件はこの限定確認では未確認。既存のsource取得日・他仕様の確認日・販売状態の観測日時を更新する"
+            "確認ではない。",
+            ["SRC-ANKER-SOLIX-C1000"],
+        ),
+        _claim(
+            "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS",
+            "寿命条件の限定確認日：2026-09-06。Anker Solix C1000 Gen 2 Portable "
+            "Power Station（代表型番：A17635Z1）の公式商品ページの比較表「寿命」は電池4,000回と記"
+            "載する。同ページのサイクル数の注記は、初期容量の80%まで低下するまでの回数として4,000回以上を案内する。"
+            "サイクル試験の温度・充放電レート・放電深度は未確認。充電時間の測定条件、動作温度、一般的な使用環境の説明をサイ"
+            "クル試験の条件へ転用しない。同じ型番の商品ページの保証欄は、通常18か月の製品保証と、Anker Japan公"
+            "式オンラインストア会員を対象に5年へ延長する条件を案内する。購入先ごとの適用可否、購入証明・登録手続き、容量低"
+            "下の扱いを含む除外条件はこの限定確認では未確認。既存のsource取得日・他仕様の確認日・販売状態の観測日時を"
+            "更新する確認ではない。",
+            ["SRC-ANKER-SOLIX-C1000-GEN2"],
+        ),
+        _claim(
             "CLM-ST1704-ANKER-CONDITIONAL-CHOICES",
             "公表値ではC300が288Wh・定格300W・約4.1kgで4モデル中最小かつ最軽量、"
             "C800 Plusが768Wh・定格1200W・約10.9kgでC300より容量と出力が大きく、"
@@ -2041,8 +2101,8 @@ FIRST_FIVE_ADDITIONAL_CLAIMS: Final[dict[str, tuple[dict[str, object], ...]]] = 
             "Gen 2はC1000より約1.6kg軽く定格出力が50W高い一方、容量が32Wh小さい。"
             "必要出力、運べる重量、容量拡張、端子数で候補が変わる。C300は"
             "300W以内、C800 Plusは1200W以内の機器を条件とし、300Wを超える"
-            "機器はC800 Plus以上の出力帯を検討する。C1000 Gen 2は"
-            "4,000回以上の公表サイクル数を条件にする場合の候補である。",
+            "機器はC800 Plus以上の出力帯を検討する。残存容量の基準や試験条件が"
+            "揃っていないため、充放電サイクル数は世代間の寿命の優劣や推薦条件に使わない。",
             [
                 "SRC-ANKER-SOLIX-C300",
                 "SRC-ANKER-SOLIX-C800-PLUS",
@@ -3939,6 +3999,67 @@ ANKER_C1000_FEATURE_DIFF_FRAGMENTS: Final = (
 )
 
 CLAIM_FRAGMENT_OVERRIDES: Final[dict[tuple[str, str], tuple[str, ...]]] = {
+    # Observed 2026-09-06 on each exact product page. Bind the current-model
+    # first comparison column; repeated sibling values and spec fallbacks
+    # cannot establish lifecycle or warranty evidence.
+    (
+        "SRC-ANKER-SOLIX-C300",
+        "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS",
+    ): (
+        '<h1 id="product-title" class="product-content-title">Anker Solix C300 Portable Power Station</h1>',
+        '<th>寿命</th>\n'
+        '            <td>\n'
+        '              \n'
+        '                電池 3,000回\n'
+        '              \n'
+        '            </td>',
+        '<span>※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。</span>',
+        '<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)',
+    ),
+    (
+        "SRC-ANKER-SOLIX-C800-PLUS",
+        "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS",
+    ): (
+        '<h1 id="product-title" class="product-content-title">Anker Solix C800 Plus Portable Power Station</h1>',
+        '<th>寿命</th>\n'
+        '            <td>\n'
+        '              \n'
+        '                電池 3,000回 / 電子部品 50,000時間\n'
+        '              \n'
+        '            </td>',
+        '<span>※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。</span>',
+        '<td>A17545Z1 (ダークグレー) / A1754511 (ブラック)',
+    ),
+    (
+        "SRC-ANKER-SOLIX-C1000",
+        "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS",
+    ): (
+        '<h1 id="product-title" class="product-content-title">Anker Solix C1000 Portable Power Station</h1>',
+        '<th>寿命</th>\n'
+        '            <td>\n'
+        '              \n'
+        '                電池 3,000回/ 電子部品 50,000時間\n'
+        '              \n'
+        '            </td>',
+        '<span>※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。</span>',
+        '<td>A17615Z1 (ダークグレー) / A1761521 (ベージュ) / A1761511 (ブラック)',
+        '<small>※電池容量が初期容量の80%まで劣化するまでのサイクル回数は3,000回以上',
+    ),
+    (
+        "SRC-ANKER-SOLIX-C1000-GEN2",
+        "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS",
+    ): (
+        '<h1 id="product-title" class="product-content-title">Anker Solix C1000 Gen 2 Portable Power Station</h1>',
+        '<th>寿命</th>\n'
+        '            <td>\n'
+        '              \n'
+        '                電池 4,000回 / 電子部品 50,000時間\n'
+        '              \n'
+        '            </td>',
+        '<span>※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。</span>',
+        '<td>A17635Z1 (ダークグレー) / A1763521 (オフホワイト)',
+        '<h5>※電池容量が初期容量の80%まで劣化するまでのサイクル回数4,000回以上',
+    ),
     **{
         ("SRC-PANASONIC-NP-TMLK1", claim_id): PANASONIC_NP_TMLK1_IDENTITY_FRAGMENTS
         for claim_id in (

@@ -4,7 +4,7 @@
   "slice_id": "SELF_HOSTED_EDITORIAL_PILOT_V1",
   "publication_authority": "NONE",
   "generated_on": "2026-08-31",
-  "source_registry_sha256": "da13f63905809c677f876a16ebf70e26dc87eead27400b5629ea3196043a318e",
+  "source_registry_sha256": "275b3e98c3b7b5287cc38a55479e04fb994eb799f0510da6e3ac655d2415f639",
   "locator_policy": {
     "claim_statement_source": "TRACKED_SOURCE_PACKET_EXACT",
     "fragment_source": "TRACKED_REVIEWED_EXACT_UTF8_FRAGMENT",
@@ -232,6 +232,15 @@
             "<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)",
             "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C300-LIFECYCLE-CONDITIONS",
+          "exact_utf8_fragments": [
+            "<h1 id=\"product-title\" class=\"product-content-title\">Anker Solix C300 Portable Power Station</h1>",
+            "<th>寿命</th>\n            <td>\n              \n                電池 3,000回\n              \n            </td>",
+            "<span>※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。</span>",
+            "<td>A17225Z1 (ダークグレー) / A1722511 (ブラック)"
+          ]
         }
       ]
     },
@@ -397,6 +406,15 @@
             "<td>A17545Z1 (ダークグレー) / A1754511 (ブラック)",
             "※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。"
           ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C800-PLUS-LIFECYCLE-CONDITIONS",
+          "exact_utf8_fragments": [
+            "<h1 id=\"product-title\" class=\"product-content-title\">Anker Solix C800 Plus Portable Power Station</h1>",
+            "<th>寿命</th>\n            <td>\n              \n                電池 3,000回 / 電子部品 50,000時間\n              \n            </td>",
+            "<span>※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。</span>",
+            "<td>A17545Z1 (ダークグレー) / A1754511 (ブラック)"
+          ]
         }
       ]
     },
@@ -448,6 +466,16 @@
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約12.9kg</td>",
             "<td class=\"product-specs-heading\">出力</td>\n                <td>AC出力：1500W</td>",
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1056Wh</td>"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-LIFECYCLE-CONDITIONS",
+          "exact_utf8_fragments": [
+            "<h1 id=\"product-title\" class=\"product-content-title\">Anker Solix C1000 Portable Power Station</h1>",
+            "<th>寿命</th>\n            <td>\n              \n                電池 3,000回/ 電子部品 50,000時間\n              \n            </td>",
+            "<span>※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。</span>",
+            "<td>A17615Z1 (ダークグレー) / A1761521 (ベージュ) / A1761511 (ブラック)",
+            "<small>※電池容量が初期容量の80%まで劣化するまでのサイクル回数は3,000回以上"
           ]
         }
       ]
@@ -518,6 +546,16 @@
             "<td class=\"product-specs-heading\">重さ</td>\n                <td>約11.3kg</td>",
             "<td class=\"product-specs-heading\">バッテリー容量</td>\n                <td>1024Wh</td>",
             "<th>AC出力 (定格 / 瞬間最大)</th>\n            <td>\n              \n                1550W (50/60Hz) / 2300W"
+          ]
+        },
+        {
+          "claim_id": "CLM-ST1704-ANKER-C1000-GEN2-LIFECYCLE-CONDITIONS",
+          "exact_utf8_fragments": [
+            "<h1 id=\"product-title\" class=\"product-content-title\">Anker Solix C1000 Gen 2 Portable Power Station</h1>",
+            "<th>寿命</th>\n            <td>\n              \n                電池 4,000回 / 電子部品 50,000時間\n              \n            </td>",
+            "<span>※Anker Japan 公式オンラインストア会員を対象に、通常18ヶ月の製品保証を5年へ自動延長致します。</span>",
+            "<td>A17635Z1 (ダークグレー) / A1763521 (オフホワイト)",
+            "<h5>※電池容量が初期容量の80%まで劣化するまでのサイクル回数4,000回以上"
           ]
         }
       ]

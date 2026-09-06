@@ -378,12 +378,16 @@ def test_synthetic_fixture_has_ten_closed_local_articles() -> None:
         if is_lifecycle_route:
             assert not comparison_regions
         else:
-            assert len(comparison_regions) == 1
-            assert comparison_regions[0].get("role") == "region"
-            assert "tabindex" not in comparison_regions[0]
-            assert comparison_regions[0].get("aria-label") or comparison_regions[0].get(
-                "aria-labelledby"
-            )
+            expected_regions = 2 if "blk-anker-lifecycle-001-title" in article else 1
+            assert len(comparison_regions) == expected_regions
+            names = []
+            for region in comparison_regions:
+                assert region.get("role") == "region"
+                assert "tabindex" not in region
+                name = region.get("aria-labelledby") or region.get("aria-label")
+                assert name
+                names.append(name)
+            assert len(set(names)) == len(names)
         assert re.search(
             r"2026年(?:[1-9]|1[0-2])月(?:[1-9]|[12][0-9]|3[01])日", article
         )
@@ -452,9 +456,11 @@ def test_first_five_comparison_sections_do_not_duplicate_the_table_landmark_name
             for tag in re.findall(r"<section\b[^>]*>", article, re.IGNORECASE)
             if "comparison-section" in _html_attributes(tag).get("class", "").split()
         ]
-        assert len(comparison_sections) == 1
-        assert "aria-label" not in comparison_sections[0]
-        assert "aria-labelledby" not in comparison_sections[0]
+        expected_sections = 2 if filename.startswith("anker-solix-") else 1
+        assert len(comparison_sections) == expected_sections
+        for section in comparison_sections:
+            assert "aria-label" not in section
+            assert "aria-labelledby" not in section
 
 
 def test_dishwasher_lifecycle_route_has_distinct_navigation_landmarks() -> None:

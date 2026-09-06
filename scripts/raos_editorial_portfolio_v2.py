@@ -1942,7 +1942,10 @@ def _normalize_anker_compatibility(markup: str, article_id: str) -> str:
         'data-raos-evidence-level="UNKNOWN">未確認</span>'
     )
     c1000_text = "拡張バッテリー対応・AC出力6口・USB-C 2口・SurgePad 2000W"
-    gen2_text = "拡張バッテリー非対応・AC出力5口・USB-C 3口・電池4,000回サイクル"
+    gen2_text = "拡張バッテリー非対応・AC出力5口・USB-C 3口"
+    # Cycle counts now live with their capacity threshold and test conditions.
+    # Preserve generation compatibility without requiring an unconditional life claim.
+    normalized = normalized.replace(gen2_text + "・電池4,000回サイクル", gen2_text)
     normalized = (
         normalized.replace(
             "C1000 Gen 2との互換性は未確認</span>" + unknown_badge,

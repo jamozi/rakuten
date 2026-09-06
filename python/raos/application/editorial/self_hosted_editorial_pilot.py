@@ -410,11 +410,13 @@ def _index(
     *,
     key: str,
     exact_keys: set[str],
+    optional_keys: frozenset[str] = frozenset(),
 ) -> dict[str, Mapping[str, object]]:
     indexed: dict[str, Mapping[str, object]] = {}
     for raw in _list(values):
         item = _mapping(raw)
-        _exact(item, exact_keys)
+        if set(item) - optional_keys != exact_keys:
+            _fail()
         identifier = _text(item[key], maximum=300)
         if identifier in indexed:
             _fail()
@@ -1878,6 +1880,7 @@ class _Renderer:
             self.model["comparison_tables"],
             key="comparison_table_ref",
             exact_keys={"axis_refs", "caption", "comparison_table_ref", "rows"},
+            optional_keys=frozenset({"presentation"}),
         )
         self.recommendations = _index(
             self.model["recommendations"],
@@ -2072,6 +2075,19 @@ class _Renderer:
         if table is None:
             _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         axis_refs = [_text(value, maximum=300) for value in _list(table["axis_refs"])]
+        supporting = table.get("presentation")
+        source_axis: str | None = None
+        supporting_date: str | None = None
+        supporting_note = ""
+        if supporting is not None:
+            presentation = _mapping(supporting)
+            _exact(presentation, {"role", "checked_at", "source_axis_ref"} | ({"note"} if "note" in presentation else set()))
+            if "note" in presentation:
+                supporting_note = '<p class="raos-comparison__condition-note">' + escape(_text(presentation["note"], maximum=2000)) + '</p>'
+            source_axis = _text(presentation["source_axis_ref"], maximum=300)
+            supporting_date = _date(presentation["checked_at"])
+            if presentation["role"] != "supporting_evidence" or source_axis not in axis_refs:
+                _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
         if axis_refs != [
             _text(value, maximum=300) for value in _list(block["comparison_axis_refs"])
         ]:
@@ -2112,19 +2128,45 @@ class _Renderer:
             )
             if tuple(cells) != tuple(axis_refs):
                 _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+            cell_badges = {
+                ref: self.comparison_cell_badges(cells[ref]) for ref in axis_refs
+            }
+            def cell_value(ref: str) -> str:
+                value = escape(cast(str, cells[ref]["value"]))
+                if ref != source_axis:
+                    return value
+                source_refs: list[str] = []
+                for claim_id in _list(cells[ref]["claim_ids"]):
+                    claim = self.claims.get(_text(claim_id, maximum=300))
+                    if claim is None:
+                        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+                    for source_ref in _list(claim["evidence_refs"]):
+                        source_ref = _text(source_ref, maximum=300)
+                        if source_ref not in source_refs:
+                            source_refs.append(source_ref)
+                for source_ref in source_refs:
+                    source = self.sources.get(source_ref)
+                    if source is None:
+                        _fail(EditorialPilotFailureCode.RESOURCE_REFERENCE_INVALID)
+                    url = _source_url(source["url"])
+                    value += (' <a href="' + escape(url, quote=True) + '">'
+                              + escape(cast(str, card["product_name"]) + "の公式根拠") + '</a>')
+                return value
             rendered_cells = "".join(
                 '<td data-raos-difference="'
                 + ("true" if difference_axes[ref] else "false")
                 + '"><span>'
-                + escape(cast(str, cells[ref]["value"]))
+                + cell_value(ref)
                 + "</span>"
-                + self.comparison_cell_badges(cells[ref])
+                + ("" if supporting is not None else cell_badges[ref])
                 + "</td>"
                 for ref in axis_refs
             )
             product_id = cast(str, card["product_id"])
             evidence = self.evidences[product_id]
-            if self.product_media_verified:
+            if supporting is not None:
+                comparison_media = ""
+            elif self.product_media_verified:
                 comparison_media = (
                     '<img class="raos-comparison__product-image" '
                     f'src="{escape(evidence.image_url, quote=True)}" '
@@ -2160,8 +2202,8 @@ class _Renderer:
                 "<div><dt>"
                 + escape(cast(str, self.axes[ref]["label"]))
                 + "</dt><dd>"
-                + escape(cast(str, cells[ref]["value"]))
-                + self.comparison_cell_badges(cells[ref])
+                + cell_value(ref)
+                + ("" if supporting is not None else cell_badges[ref])
                 + "</dd></div>"
                 for ref in axis_refs
             )
@@ -2193,12 +2235,19 @@ class _Renderer:
             if first_checked_on == last_checked_on
             else f"{first_checked_on}〜{last_checked_on}"
         )
+        heading = _article_section_heading(self.article, "comparison_table", "公表仕様を比べる")
+        if supporting_date is not None:
+            heading = cast(str, table["caption"])
+            facts_checked_on = _display_date(supporting_date)
         return (
             '<section class="comparison-section">'
             '<header class="section-heading section-heading--inline"><div>'
-            f'<h2 id="{title_id}">{escape(_article_section_heading(self.article, "comparison_table", "公表仕様を比べる"))}</h2></div>'
-            f'<p class="raos-comparison__checked">一次情報の取得期間：{escape(facts_checked_on)}。'
-            "価格・在庫・カラーは候補の順序に反映していません。</p></header>"
+            f'<h2 id="{title_id}">{escape(heading)}</h2></div>'
+            f'<p class="raos-comparison__checked">{"この表の条件確認日" if supporting_date else "一次情報の取得期間"}：{escape(facts_checked_on)}。'
+            + ("" if supporting_date else "価格・在庫・カラーは候補の順序に反映していません。")
+            + "</p></header>"
+            + supporting_note
+            +
             f'<div class="raos-comparison comparison-table-wrap" role="region" aria-labelledby="{title_id}" '
             f'data-raos-article-id="{escape(cast(str, self.article["article_id"]), quote=True)}" '
             'data-raos-placement="comparison_table">'
