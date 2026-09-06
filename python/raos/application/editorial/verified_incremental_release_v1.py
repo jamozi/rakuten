@@ -15,7 +15,7 @@ does not renew it. Expired activations permit only inspection/readback.
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime, timedelta
 import json
 from typing import NoReturn, cast
@@ -32,6 +32,7 @@ from raos.application.editorial.verified_incremental_sources_v1 import (
 )
 
 SCHEMA = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_RELEASE_V1"
+SCHEMA_V2 = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_RELEASE_V2"
 READBACK_SCHEMA = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_READBACK_V1"
 PROFILE = manifest_contract.PROFILE
 LINK_MODE = "standard-api"
@@ -116,10 +117,11 @@ def _verify_audited_sources(
         evaluated = _time(observed.get("evaluated_at"))
         expected = sources.to_document()
         expected["evaluated_at"] = observed["evaluated_at"]
-        if raw != canonical_json_bytes(expected) or not (
-            max(_time(receipt.retrieved_at) for receipt in sources.sources.values())
-            <= evaluated
-            <= min(_time(sources.evaluated_at), audit_evaluated_at)
+        captures = [_time(receipt.retrieved_at) for receipt in sources.sources.values()]
+        if (
+            raw != canonical_json_bytes(expected)
+            or (captures and evaluated < max(captures))
+            or evaluated > min(_time(sources.evaluated_at), audit_evaluated_at)
         ):
             _fail("SOURCE_AUDIT_INVALID")
     except UnicodeError, ValueError, TypeError:
@@ -141,6 +143,7 @@ class PreparedReleaseInputsV1:
     article_documents: dict[str, object]
     expected_content: dict[str, str]
     expected_shared: dict[str, str]
+    page_documents: dict[str, object] = field(default_factory=dict)
 
 
 def validate_release_inputs_v1(
@@ -159,6 +162,8 @@ def validate_release_inputs_v1(
     expected_shared_readback_sha256: Mapping[str, str],
     source_article_id_by_article_id: Mapping[str, str],
     now: datetime,
+    reader_page_targets: Mapping[str, manifest_contract.ReaderPageTarget] | None = None,
+    reader_measurement: Mapping[str, object] | None = None,
 ) -> PreparedReleaseInputsV1:
     """Replay all source, identity, content and scope checks before expensive reviews."""
     if now.tzinfo is None or now.utcoffset() is None:
@@ -166,7 +171,8 @@ def validate_release_inputs_v1(
     doc = dict(manifest_document)
     manifest = validated_manifest
     if (
-        doc.get("schema") != manifest_contract.SCHEMA
+        doc.get("schema") not in (manifest_contract.SCHEMA, manifest_contract.SCHEMA_V2)
+        or doc.get("schema") != manifest.schema
         or doc.get("publication_profile") != PROFILE
         or doc.get("link_mode") != LINK_MODE
         or doc.get("measurement_collection_enabled") is not False
@@ -181,9 +187,24 @@ def validate_release_inputs_v1(
         <= (manifest.evaluated_at + timedelta(hours=24))
     ):
         _fail("EXPIRED")
+    pages = manifest_contract._validate_reader_pages(
+        doc,
+        inventory=inventory,
+        reader_page_targets=reader_page_targets,
+        artifact_bytes=artifact_bytes,
+    )
+    if pages != manifest.reader_pages:
+        _fail("PAGE_PROJECTION_INVALID")
+    profile = manifest_contract.validate_reader_measurement_binding(doc, pages=pages, artifact_bytes=artifact_bytes, expected=reader_measurement)
+    if profile != manifest.reader_measurement:
+        _fail("READER_RUNTIME_PROJECTION_INVALID")
+    manifest_contract._validate_inventory(inventory, pages)
+    if pages:
+        manifest_contract._validate_reader_article_targets(inventory, article_targets)
     rows = cast(list[dict[str, object]], doc["articles"])
     selected = {article.article_id: article for article in manifest.articles}
-    if not selected or len(selected) != len(rows):
+    page_only = bool(pages) and not selected
+    if (not selected and not pages) or len(selected) != len(rows):
         _fail("SCOPE_INVALID")
     if (
         len(set(article_targets.values())) != len(article_targets)
@@ -208,6 +229,19 @@ def validate_release_inputs_v1(
         or set(sources.contract_file_sha256) != {"source_registry", "locator_contract"}
     ):
         _fail("SOURCE_SCOPE_INVALID")
+    _hashes(sources.contract_file_sha256)
+    if page_only and (
+        sources.article_ids != ()
+        or sources.article_claim_sources
+        or sources.article_source_refs
+        or sources.sources
+        or sources.issues != ()
+        or sources.status != "NOT_REQUIRED"
+        or commerce_views
+        or image_article_products
+        or cta_bindings
+    ):
+        _fail("PAGE_ONLY_EVIDENCE_NOT_EMPTY")
     source_refs: set[str] = set()
     claim_source_refs: set[str] = set()
     source_expiries: list[datetime] = []
@@ -229,7 +263,9 @@ def validate_release_inputs_v1(
         ):
             _fail("SOURCE_EXPIRED_OR_INCONSISTENT")
         source_expiries.append(expires)
-    used_artifacts: set[str] = set()
+    used_artifacts: set[str] = (
+        {"reader-measurement-manifest"} if profile else set()
+    )
     selected_ctas: set[str] = set()
     selected_images: set[str] = set()
     commercial_products: set[str] = set()
@@ -356,7 +392,7 @@ def validate_release_inputs_v1(
             "local_artifact_sha256": article.local_sha256,
             "production_artifact_sha256": article.production_sha256,
         }
-    if source_refs != set(sources.sources) or not source_expiries:
+    if source_refs != set(sources.sources) or (selected and not source_expiries):
         _fail("SOURCE_SET_INVALID")
     if set(commerce_views) != commercial_products:
         _fail("COMMERCE_SET_INVALID")
@@ -381,7 +417,22 @@ def validate_release_inputs_v1(
         manifest.shared_artifact_sha256
     ) or doc["unchanged_documents"] != dict(manifest.unchanged_sha256):
         _fail("SHARED_OR_UNCHANGED_BINDING_INVALID")
-    for row in shared.values():
+    if (
+        len(selected) + len(set(shared) - {"theme", "seo"}) + int("theme" in shared)
+        > 20
+    ):
+        _fail("PROPOSAL_LIMIT_EXCEEDED")
+    for slug, row in shared.items():
+        if slug not in {"theme", "seo"}:
+            entry = inventory.get(slug)
+            if (
+                entry is None
+                or entry.post_type != "page"
+                or type(row["post_id"]) is not int
+                or row["post_id"] != entry.post_id
+                or row["baseline_sha256"] != entry.content_sha256
+            ):
+                _fail("SHARED_TARGET_INVALID")
         key = cast(str, row["key"])
         raw = artifact_bytes.get(key)
         if (
@@ -393,6 +444,15 @@ def validate_release_inputs_v1(
         used_artifacts.add(key)
     if used_artifacts != set(artifact_bytes):
         _fail("ARTIFACT_SET_INVALID")
+    page_documents: dict[str, object] = {
+        slug: {
+            **asdict(page),
+            "baseline_sha256": shared[slug]["baseline_sha256"],
+            "artifact_key": shared[slug]["key"],
+            "production_artifact_sha256": shared[slug]["sha256"],
+        }
+        for slug, page in pages.items()
+    }
     expected_content = _hashes(expected_production_content_sha256)
     expected_shared = _hashes(expected_shared_readback_sha256)
     if set(expected_content) != set(article_documents) | (
@@ -410,6 +470,7 @@ def validate_release_inputs_v1(
     scope = audit_scope.to_document()
     if (
         set(audit_scope.selected_article_ids) != set(selected)
+        or set(audit_scope.selected_page_slugs) != set(pages)
         or set(audit_scope.existing_article_ids) != set(article_targets)
         or set(audit_scope.rendered_article_ids)
         != {
@@ -446,6 +507,7 @@ def validate_release_inputs_v1(
         article_documents=article_documents,
         expected_content=expected_content,
         expected_shared=expected_shared,
+        page_documents=page_documents,
     )
 
 
@@ -468,6 +530,8 @@ def build_verified_incremental_release_v1(
     source_article_id_by_article_id: Mapping[str, str],
     now: datetime,
     activation_evaluated_at: datetime | None = None,
+    reader_page_targets: Mapping[str, manifest_contract.ReaderPageTarget] | None = None,
+    reader_measurement: Mapping[str, object] | None = None,
 ) -> VerifiedIncrementalReleaseV1:
     """Bind already-replayed contracts and actual local/production HTML bytes.
 
@@ -493,6 +557,8 @@ def build_verified_incremental_release_v1(
         expected_shared_readback_sha256=expected_shared_readback_sha256,
         source_article_id_by_article_id=source_article_id_by_article_id,
         now=now,
+        reader_page_targets=reader_page_targets,
+        reader_measurement=reader_measurement,
     )
     manifest = validated_manifest
     sources = prepared.sources
@@ -535,7 +601,7 @@ def build_verified_incremental_release_v1(
     _verify_audited_sources(
         sources,
         audit_artifact_bytes.get("source-replay"),
-        required=bool(source_refs - claim_source_refs),
+        required=bool(source_refs - claim_source_refs) or not manifest.articles,
         audit_evaluated_at=_time(audit_binding.evaluated_at),
     )
     activation = activation_evaluated_at or now.replace(microsecond=0)
@@ -589,6 +655,11 @@ def build_verified_incremental_release_v1(
         "evaluated_at": _stamp(activation),
         "expires_at": _stamp(expires),
     }
+    if manifest.schema == manifest_contract.SCHEMA_V2:
+        envelope["schema"] = SCHEMA_V2
+        envelope["selected_pages"] = prepared.page_documents
+    if manifest.reader_measurement:
+        envelope["reader_measurement"] = dict(manifest.reader_measurement)
     return VerifiedIncrementalReleaseV1(canonical_json_bytes(envelope))
 
 
@@ -605,7 +676,7 @@ def validate_release_envelope(
     if publication_profile != PROFILE or link_mode != LINK_MODE or stage not in STAGES:
         _fail("PROFILE_MODE_OR_STAGE_INVALID")
     if (
-        document.get("schema") != SCHEMA
+        document.get("schema") not in (SCHEMA, SCHEMA_V2)
         or document.get("publication_profile") != PROFILE
         or document.get("link_mode") != LINK_MODE
         or document.get("measurement_collection_enabled") is not False
@@ -651,9 +722,20 @@ def verify_release_readback(
     }
     for slug, previous in before.items():
         current = asdict(current_inventory[slug])
-        if any(
-            current[key] != previous[key]
-            for key in ("post_id", "slug", "post_type", "status")
+        pages = cast(dict[str, dict[str, object]], doc.get("selected_pages", {}))
+        page = pages.get(slug) if doc["schema"] == SCHEMA_V2 else None
+        expected_status = (
+            "publish"
+            if page is not None and page["kind"] == "hub"
+            else previous["status"]
+        )
+        if (
+            type(current["post_id"]) is not int
+            or any(
+                current[key] != previous[key]
+                for key in ("post_id", "slug", "post_type")
+            )
+            or current["status"] != expected_status
         ):
             _fail("READBACK_IDENTITY_CHANGED")
         if current["content_sha256"] != expected[slug]:

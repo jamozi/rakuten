@@ -19,6 +19,7 @@ import zipfile
 if TYPE_CHECKING:
     from scripts import (  # noqa: F401
         build_editorial_measurement_v1 as editorial_measurement_owner,
+        build_reader_measurement_v1 as reader_measurement_owner,
         build_editorial_v3_theme_navigation as editorial_navigation_owner,
         build_st1704_self_hosted_editorial_manifest as editorial_runtime_owner,
     )
@@ -27,9 +28,9 @@ if TYPE_CHECKING:
 ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
-PLUGIN_VERSION: Final = "1.3.1"
+PLUGIN_VERSION: Final = "1.3.2"
 PLUGIN_RUNTIME_REVISION: Final = (
-    "c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472"
+    "b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc"
 )
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
 MANIFEST_PATH: Final = Path("changes/wordpress-mcp-v1/runtime-manifest.v1.json")
@@ -39,6 +40,7 @@ REGISTRY_PATH: Final = Path(
 MEASUREMENT_MANIFEST_PATH: Final = Path(
     "changes/editorial-measurement-v1/runtime-manifest.v1.json"
 )
+READER_MEASUREMENT_MANIFEST_PATH: Final = Path("changes/reader-measurement-v1/runtime-manifest.v1.json")
 MANIFEST: Final = ROOT / MANIFEST_PATH
 REGISTRY: Final = ROOT / REGISTRY_PATH
 OUTPUT_PATHS: Final = (MANIFEST_PATH, REGISTRY_PATH)
@@ -231,6 +233,9 @@ RUNTIME_INPUT_PATHS: Final = (
     Path("scripts/raos_editorial_portfolio_v2.py"),
     Path("scripts/raos_wordpress_deployment_operator.py"),
     Path("scripts/raos_wordpress_baseline_media.py"),
+    Path("scripts/raos_reader_release_pages.py"),
+    Path("scripts/raos_wordpress_reader_hubs.py"),
+    Path("python/raos/application/editorial/reader_release_applicability_v1.py"),
     Path("scripts/raos_wordpress_incremental_candidate.py"),
     Path("scripts/raos_wordpress_incremental_preview.py"),
     Path("scripts/raos_wordpress_incremental_publication.py"),
@@ -506,6 +511,18 @@ def repo_artifact_registry() -> dict[str, object]:
         or type(measurement_files) is not list
     ):
         fail("WORDPRESS_MCP_V1_MEASUREMENT_MANIFEST_INVALID")
+    try:
+        reader = json.loads(read_regular(ROOT, READER_MEASUREMENT_MANIFEST_PATH.as_posix()))
+    except (ValueError, UnicodeError):
+        fail("WORDPRESS_MCP_V1_READER_MANIFEST_INVALID")
+    if (type(reader) is not dict or reader.get("schema") != "RAOS_READER_MEASUREMENT_RUNTIME_MANIFEST_V1"
+        or reader.get("artifact_id") != "raos-reader-measurement-v1"
+        or reader.get("plugin_slug") != "raos-reader-measurement"
+        or reader.get("plugin_version") != "1.0.0" or reader.get("default_enabled") is not False
+        or reader.get("migration_assessment") != "MANUAL_REVIEW_REQUIRED"
+        or not isinstance(reader.get("package_sha256"), str)
+        or re.fullmatch(r"[0-9a-f]{64}", reader["package_sha256"]) is None):
+        fail("WORDPRESS_MCP_V1_READER_MANIFEST_INVALID")
     abilities_sha256 = sha256(package_bytes(plugin_payloads()))
     return {
         "schema": "RAOS_WORDPRESS_REPO_PLUGIN_ARTIFACTS_V1",
@@ -524,6 +541,11 @@ def repo_artifact_registry() -> dict[str, object]:
                 "package_sha256": measurement["package_sha256"],
                 "slug": measurement["plugin_slug"],
                 "version": measurement["plugin_version"],
+            },
+            {
+                "artifact_id": reader["artifact_id"], "slug": reader["plugin_slug"],
+                "version": reader["plugin_version"], "package_sha256": reader["package_sha256"],
+                "migration_review": None,
             },
         ],
     }

@@ -333,12 +333,38 @@ def test_every_theme_fingerprint_input_rotates_the_revision(
         original = path.read_bytes()
         path.write_bytes(original + b"\n")
         try:
-            _tampered_payloads, tampered_revision = (
+            # Runtime integrity binds the bytes actually shipped, including
+            # generated metadata; regeneration must repair an altered copy.
+            assert theme_builder.theme_source_fingerprint() != baseline_revision
+            tampered_payloads, tampered_revision = (
                 theme_builder.render_theme_stamp_payloads()
             )
         finally:
             path.write_bytes(original)
-        assert tampered_revision != baseline_revision, relative
+        if relative == "assets/reader-measurement-runtime.v1.json":
+            assert tampered_revision == baseline_revision
+            assert tampered_payloads[theme_builder.ROOT / theme_builder.READER_RUNTIME_ASSET_PATH] == original
+        else:
+            assert tampered_revision != baseline_revision, relative
+
+
+def test_reader_runtime_owner_input_rotates_the_theme_revision(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source = (
+        theme_builder.ROOT / theme_builder.READER_RUNTIME_BINDING_INPUT_PATH
+    ).read_bytes()
+    binding = tmp_path / "reader-binding.json"
+    binding.write_bytes(source)
+    monkeypatch.setattr(
+        theme_builder, "READER_RUNTIME_BINDING_INPUT_PATH", binding
+    )
+    _before, baseline = theme_builder.render_theme_stamp_payloads()
+    binding.write_bytes(source + b"\n")
+    payloads, changed = theme_builder.render_theme_stamp_payloads()
+    assert changed != baseline
+    assert payloads[theme_builder.ROOT / theme_builder.READER_RUNTIME_ASSET_PATH] == source + b"\n"
 
 
 def test_only_exact_public_article_identities_disable_wordpress_wpautop() -> None:

@@ -68,7 +68,13 @@ def verify(world, current=BASELINE, *, opt_in=True):
         baseline_tree=BASELINE,
         candidate_tree=CANDIDATE,
         now=NOW,
-        snapshot={"documents": []},
+        snapshot={
+            "schema": "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
+            "documents": [
+                {"slug": "home", "status": "publish", "post_type": "page", "block_markup": ""},
+                {"slug": "guide", "status": "publish", "post_type": "post", "block_markup": ""},
+            ],
+        },
         runtime_transition=world.policy if opt_in else None,
     )
 
@@ -224,14 +230,20 @@ def test_parser_rejects_open_ended_or_ambiguous_exception_counts(count):
 def test_captured_relative_reference_is_baseline_only_and_page_bound(world):
     path = "/wp-content/themes/kurashinoshirube-child/assets/images/old-missing.png"
     markup = f'<img src="{path}" alt="">'
-    document = {"slug": "guide", "block_markup": markup}
+    document = {"slug": "guide", "status": "publish", "post_type": "post", "block_markup": markup}
     url = runtime.ORIGIN + "/guide/"
     world.responses[url] = replace(world.responses[url], body=(HINT + markup).encode())
     args = dict(
         baseline_tree=BASELINE,
         candidate_tree=CANDIDATE,
         now=NOW,
-        snapshot={"documents": [document]},
+        snapshot={
+            "schema": "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
+            "documents": [
+                {"slug": "home", "status": "publish", "post_type": "page", "block_markup": ""},
+                document,
+            ],
+        },
         runtime_transition=world.policy,
     )
     result = runtime.verify_before_write(current_tree=BASELINE, **args)

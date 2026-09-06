@@ -11,6 +11,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 import hashlib
+import re
 from pathlib import Path
 from typing import NoReturn, cast
 
@@ -117,7 +118,20 @@ class SelectedOfficialSourcesV1:
 
     @property
     def status(self) -> str:
-        return "BLOCKED" if self.issues else "VERIFIED"
+        if self.issues:
+            return "BLOCKED"
+        if not self.article_ids:
+            empty = (
+                not self.article_claim_sources and not self.article_source_refs
+                and not self.sources
+                and set(self.contract_file_sha256) == {"source_registry", "locator_contract"}
+                and all(
+                    type(value) is str and re.fullmatch(r"[0-9a-f]{64}", value)
+                    for value in self.contract_file_sha256.values()
+                )
+            )
+            return "NOT_REQUIRED" if empty else "BLOCKED"
+        return "VERIFIED"
 
     @property
     def source_receipt_sha256(self) -> dict[str, str]:
@@ -130,7 +144,7 @@ class SelectedOfficialSourcesV1:
         return min(source.expires_at for source in self.sources.values())
 
     def require_complete(self) -> SelectedOfficialSourcesV1:
-        if self.issues:
+        if self.status == "BLOCKED":
             _fail("SELECTED_SET_INCOMPLETE")
         return self
 
@@ -180,12 +194,27 @@ def _replay(
 ) -> SelectedOfficialSourceReceiptV1:
     if target.locator_status != "READY":
         _fail("LOCATORS_PENDING")
-    if target.media_type not in {"text/html", "application/pdf"}:
-        # The existing trusted evidence domain cannot represent JavaScript.
-        # Relabelling a JavaScript body as HTML would manufacture provenance.
+    if target.media_type not in {"text/html", "application/pdf", "text/javascript"}:
         _fail("MEDIA_TYPE_UNSUPPORTED_BY_READER")
-    evidence = read_official_source_capture_evidence(root, source_ref=target.source_ref)
-    if evidence.final_url != target.url or evidence.content_type != target.media_type:
+    if target.locator_mode == "PINNED_PDF_BODY_AND_REVIEWED_PAGE_TEXT":
+        evidence = read_official_source_capture_evidence(
+            root, source_ref=target.source_ref, reviewed_pdf_target=target
+        )
+    else:
+        evidence = read_official_source_capture_evidence(
+            root, source_ref=target.source_ref
+        )
+    # These MIME aliases already belong to the capture contract's JSON family.
+    # Preserve the response type in evidence; an HTML capture cannot satisfy it.
+    expected_media_types = (
+        {"application/json", "application/javascript", "text/javascript"}
+        if target.media_type == "text/javascript"
+        else {target.media_type}
+    )
+    if (
+        evidence.final_url != target.url
+        or evidence.content_type not in expected_media_types
+    ):
         _fail("TARGET_MISMATCH")
     expected = tuple(
         (
@@ -248,12 +277,16 @@ def validate_selected_official_sources(
     evidence_root: Path,
     article_ids: Sequence[str],
     now: datetime,
+    *,
+    allow_empty: bool = False,
 ) -> SelectedOfficialSourcesV1:
     """Replay selected sources, never requiring another article's capture files.
 
     `evidence_root` is the explicit repository-style root containing `.secrets`,
     not the `.secrets` directory itself. Source contracts always come from
     `repository_root`; no network request, credential read or write is made.
+    allow_empty is only for V2 page-only callers: it binds both actual contract
+    files without opening captures, and reports NOT_REQUIRED, never VERIFIED.
     """
     if (
         not isinstance(cast(object, repository_root), Path)
@@ -262,7 +295,8 @@ def validate_selected_official_sources(
         or not evidence_root.is_absolute()
         or not isinstance(cast(object, article_ids), Sequence)
         or isinstance(article_ids, (str, bytes))
-        or not article_ids
+        or type(allow_empty) is not bool
+        or (not article_ids and not allow_empty)
         or any(type(article) is not str or not article for article in article_ids)
         or len(set(article_ids)) != len(article_ids)
         or type(now) is not datetime
@@ -274,6 +308,13 @@ def validate_selected_official_sources(
     selected = tuple(sorted(article_ids))
     try:
         before = _contract_bytes(repository_root)
+        if not selected:
+            if _contract_bytes(repository_root) != before:
+                _fail("CONTRACT_CHANGED")
+            return SelectedOfficialSourcesV1(
+                (), {}, {}, {}, (), {key: _sha(raw) for key, raw in before.items()},
+                _timestamp(active_now),
+            )
         plan = load_source_capture_plan(repository_root)
         targets_by_article = {
             article: plan.for_article(article) for article in selected

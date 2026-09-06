@@ -33,7 +33,7 @@ def test_owner_generator_defaults_to_manifest_mode(monkeypatch) -> None:
     assert calls == ["manifest"]
 
 
-def test_repo_plugin_registry_has_one_deterministic_owner_for_both_packages() -> None:
+def test_repo_plugin_registry_keeps_reader_migration_manual() -> None:
     registry = json.loads(build_wordpress_mcp_v1.REGISTRY.read_text())
     expected = build_wordpress_mcp_v1.repo_artifact_registry()
     assert registry == expected
@@ -50,6 +50,10 @@ def test_repo_plugin_registry_has_one_deterministic_owner_for_both_packages() ->
     assert rows["raos-editorial-measurement-v1"]["package_sha256"] == (
         measurement["package_sha256"]
     )
+    reader = json.loads((ROOT / build_wordpress_mcp_v1.READER_MEASUREMENT_MANIFEST_PATH).read_text())
+    assert rows["raos-reader-measurement-v1"]["package_sha256"] == reader["package_sha256"]
+    assert rows["raos-reader-measurement-v1"]["migration_review"] is None
+    assert reader["default_enabled"] is False
     review = rows["raos-editorial-measurement-v1"]["migration_review"]
     file_hash = hashlib.sha256(json.dumps(
         measurement["plugin_files"], ensure_ascii=True, sort_keys=True,
@@ -61,14 +65,14 @@ def test_repo_plugin_registry_has_one_deterministic_owner_for_both_packages() ->
 
 
 def test_owner_plugin_version_is_bound_across_package_and_runtime() -> None:
-    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.3.1"
+    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.3.2"
     entrypoint = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(
         encoding="utf-8"
     )
-    assert " * Version: 1.3.1" in entrypoint
-    assert "define('RAOS_CODEX_MCP_VERSION', '1.3.1');" in entrypoint
+    assert " * Version: 1.3.2" in entrypoint
+    assert "define('RAOS_CODEX_MCP_VERSION', '1.3.2');" in entrypoint
     assert (PLUGIN / "README.md").read_text(encoding="utf-8").startswith(
-        "# RAOS Codex MCP Abilities 1.3.1\n"
+        "# RAOS Codex MCP Abilities 1.3.2\n"
     )
 
 
@@ -256,7 +260,7 @@ def test_public_contract_and_schema_are_valid() -> None:
     schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
     readme = (SLICE / "README.md").read_text(encoding="utf-8")
     Draft202012Validator.check_schema(schema)
-    assert contract["version"] == "1.3.1"
+    assert contract["version"] == "1.3.2"
     assert contract["wordpress_version"] == "7.1.x"
     assert contract["mcp_adapter"]["version"] == "0.6.1"
     assert contract["remote_proxy"]["version"] == "0.4.0"
@@ -784,7 +788,7 @@ def test_manual_bootstrap_attestation_is_wp_admin_only_and_exactly_bound() -> No
     for marker in (
         "BOOTSTRAP_ARTIFACT_ID = 'raos-codex-mcp-abilities-v1'",
         "BOOTSTRAP_SLUG = 'raos-codex-mcp-abilities'",
-        "BOOTSTRAP_VERSION = '1.3.1'",
+        "BOOTSTRAP_VERSION = '1.3.2'",
         "secure_staged_file($row['package_path'])",
         "validate_proposal_integrity($row)",
         "hash_equals($row['after_sha256'], $target['tree_sha256'])",

@@ -11,7 +11,7 @@ adapter's revalidated, at-most-15-minute activation envelope and owner approval.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime, timedelta
 import hashlib
 from html import escape, unescape
@@ -24,6 +24,35 @@ from urllib.parse import urlsplit
 
 PROFILE = "verified-incremental"
 SCHEMA = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_MANIFEST_V1"
+SCHEMA_V2 = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_MANIFEST_V2"
+READER_HUB_SLUGS = frozenset(
+    {
+        "categories",
+        "purposes",
+        "guides",
+        "comparisons",
+        "updates",
+        "travel",
+        "kitchen",
+        "cleaning",
+        "preparedness",
+        "small-space",
+        "save-housework",
+        "without-installation",
+        "easy-maintenance",
+        "comfortable-travel",
+        "prepare-outage",
+    }
+)
+READER_PAGE_SLUGS = READER_HUB_SLUGS | {"privacy-policy"}
+READER_PAGE_FIELDS = {
+    "kind",
+    "post_id",
+    "baseline_status",
+    "template_sha256",
+    "registry_sha256",
+}
+
 DNS_TRANSITION_MODE = "sitekit-dns-prefetch-removal-v1"
 DNS_TRANSITION_STATE = "BASELINE_DNS_HINT_REMOVAL_TRANSITION_VERIFIED"
 DNS_HINT = {"rel": "dns-prefetch", "href": "//www.googletagmanager.com"}
@@ -257,6 +286,153 @@ class ExistingDocument:
 
 
 @dataclass(frozen=True)
+class ReaderPageTarget:
+    """Trusted registered template and existing MCP identity, never create authority."""
+
+    kind: str
+    post_id: int
+    baseline_status: str
+    template_sha256: str
+    registry_sha256: str
+
+
+def _validate_reader_pages(
+    document: Mapping[str, object],
+    *,
+    inventory: Mapping[str, ExistingDocument],
+    reader_page_targets: Mapping[str, ReaderPageTarget] | None,
+    artifact_bytes: Mapping[str, bytes],
+) -> Mapping[str, ReaderPageTarget]:
+    if document.get("schema") != SCHEMA_V2:
+        if "reader_pages" in document:
+            fail("FIELDS_INVALID")
+        return MappingProxyType({})
+    rows = _mapping(document.get("reader_pages"), "READER_PAGE_SET_INVALID")
+    if not rows or not isinstance(reader_page_targets, Mapping):
+        fail("READER_PAGE_TARGETS_REQUIRED")
+    shared = _mapping(document.get("shared_artifacts"), "DOCUMENT_SET_INVALID")
+    pages: dict[str, ReaderPageTarget] = {}
+    for slug, raw in rows.items():
+        row = _object(raw, READER_PAGE_FIELDS)
+        target = reader_page_targets.get(slug)
+        if (
+            slug not in READER_PAGE_SLUGS
+            or type(target) is not ReaderPageTarget
+            or row != asdict(target)
+            or type(row["post_id"]) is not int
+            or row["post_id"] < 1
+            or row["baseline_status"] not in ("draft", "publish")
+            or (slug in READER_HUB_SLUGS and row["kind"] != "hub")
+            or (
+                slug == "privacy-policy"
+                and (
+                    row["kind"] != "reader_privacy"
+                    or row["baseline_status"] != "publish"
+                )
+            )
+        ):
+            fail("READER_PAGE_TARGET_MISMATCH")
+        _hash(row["registry_sha256"])
+        expected = _hash(row["template_sha256"])
+        entry = inventory.get(slug)
+        artifact = _object(
+            shared.get(slug), {"key", "sha256", "baseline_sha256", "post_id"}
+        )
+        key = _text(artifact["key"])
+        body = artifact_bytes.get(key)
+        if (
+            entry is None
+            or entry.slug != slug
+            or entry.post_type != "page"
+            or type(entry.post_id) is not int
+            or entry.post_id != row["post_id"]
+            or entry.status != row["baseline_status"]
+            or type(artifact["post_id"]) is not int
+            or artifact["post_id"] != entry.post_id
+            or _hash(artifact["baseline_sha256"]) != entry.content_sha256
+            or artifact["sha256"] != expected
+            or type(body) is not bytes
+            or digest(body) != expected
+        ):
+            fail("READER_PAGE_ARTIFACT_MISMATCH")
+        try:
+            _verify_reader_page_markup(body.decode("utf-8", errors="strict"), inventory)
+        except UnicodeError:
+            fail("MARKUP_ENCODING_INVALID")
+        pages[slug] = target
+    return MappingProxyType(pages)
+
+
+def _validate_inventory(
+    inventory: Mapping[str, ExistingDocument],
+    pages: Mapping[str, ReaderPageTarget],
+) -> None:
+    if len({entry.post_id for entry in inventory.values()}) != len(inventory):
+        fail("INVENTORY_INVALID")
+    for slug, existing in inventory.items():
+        if (
+            existing.slug != slug
+            or type(existing.post_id) is not int
+            or existing.post_id < 1
+            or existing.post_type not in {"post", "page"}
+            or (
+                existing.status != "publish"
+                and not (
+                    slug in pages
+                    and pages[slug].kind == "hub"
+                    and existing.status == pages[slug].baseline_status == "draft"
+                )
+            )
+        ):
+            fail("INVENTORY_INVALID")
+        _hash(existing.content_sha256)
+
+
+def _validate_reader_article_targets(
+    inventory: Mapping[str, ExistingDocument],
+    article_targets: Mapping[str, tuple[str, int]],
+) -> None:
+    if (
+        len(article_targets) != 10
+        or len(set(article_targets.values())) != 10
+        or {slug for slug, _ in article_targets.values()}
+        != {slug for slug, entry in inventory.items() if entry.post_type == "post"}
+        or any(
+            type(post_id) is not int or inventory[slug].post_id != post_id
+            for slug, post_id in article_targets.values()
+        )
+    ):
+        fail("READER_ARTICLE_BASELINE_INVALID")
+
+
+def validate_reader_measurement_binding(
+    document: Mapping[str, object], *, pages: Mapping[str, ReaderPageTarget],
+    artifact_bytes: Mapping[str, bytes], expected: Mapping[str, object] | None,
+) -> Mapping[str, object]:
+    """An OFF deployment profile is data-bound; activation is a separate human action."""
+    if "reader_measurement" not in document:
+        if expected:
+            fail("READER_RUNTIME_BINDING_MISSING")
+        return MappingProxyType({})
+    fields = {"schema", "profile", "manifest_sha256", "policy_sha256",
+              "contract_sha256", "revision", "expected_collection_enabled"}
+    row = _object(document["reader_measurement"], fields)
+    privacy = pages.get("privacy-policy")
+    if (document.get("schema") != SCHEMA_V2 or privacy is None
+        or privacy.kind != "reader_privacy" or not expected or row != dict(expected)
+        or row["schema"] != "RAOS_READER_MEASUREMENT_RELEASE_V1"
+        or row["profile"] != "reader-minimal-v1" or row["expected_collection_enabled"] is not False):
+        fail("READER_RUNTIME_BINDING_INVALID")
+    for key in ("manifest_sha256", "policy_sha256", "contract_sha256", "revision"):
+        _hash(row[key])
+    raw = artifact_bytes.get("reader-measurement-manifest")
+    if (type(raw) is not bytes or digest(raw) != row["manifest_sha256"]
+        or privacy.template_sha256 != row["policy_sha256"]):
+        fail("READER_RUNTIME_ARTIFACT_MISMATCH")
+    return MappingProxyType(row)
+
+
+@dataclass(frozen=True)
 class ArticleScope:
     article_id: str
     post_id: int
@@ -281,6 +457,12 @@ class VerifiedIncrementalManifest:
     shared_artifact_sha256: Mapping[str, str]
     evaluated_at: datetime
     expires_at: datetime
+    schema: str = SCHEMA
+    reader_pages: Mapping[str, ReaderPageTarget] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
+
+    reader_measurement: Mapping[str, object] = field(default_factory=lambda: MappingProxyType({}))
 
     @property
     def counts(self) -> dict[str, int]:
@@ -311,6 +493,8 @@ def validate_manifest(
     cta_article_products: Mapping[str, tuple[str, str]],
     artifact_bytes: Mapping[str, bytes],
     now: datetime,
+    reader_page_targets: Mapping[str, ReaderPageTarget] | None = None,
+    reader_measurement: Mapping[str, object] | None = None,
 ) -> VerifiedIncrementalManifest:
     """Replay exact selected sets against trusted adapters, not supplied counters.
 
@@ -322,6 +506,10 @@ def validate_manifest(
     optional_fields: set[str] = (
         {"runtime_transition"} if "runtime_transition" in raw_document else set()
     )
+    if raw_document.get("schema") == SCHEMA_V2:
+        optional_fields.add("reader_pages")
+        if "reader_measurement" in raw_document:
+            optional_fields.add("reader_measurement")
     value = _object(
         raw_document,
         {
@@ -340,7 +528,7 @@ def validate_manifest(
         | optional_fields,
     )
     if (
-        value["schema"] != SCHEMA
+        value["schema"] not in (SCHEMA, SCHEMA_V2)
         or value["publication_profile"] != PROFILE
         or value["link_mode"] != "standard-api"
         or value["measurement_collection_enabled"] is not False
@@ -352,20 +540,17 @@ def validate_manifest(
     evaluated, expires = _instant(value["evaluated_at"]), _instant(value["expires_at"])
     if not evaluated <= now < expires <= evaluated + AUDIT_SUBJECT_MAX_AGE:
         fail("EXPIRED")
-    if type(value["articles"]) is not list or not value["articles"]:
+    pages = _validate_reader_pages(
+        value,
+        inventory=inventory,
+        reader_page_targets=reader_page_targets,
+        artifact_bytes=artifact_bytes,
+    )
+    if type(value["articles"]) is not list or (not value["articles"] and not pages):
         fail("ARTICLE_SET_INVALID")
-    if len({entry.post_id for entry in inventory.values()}) != len(inventory):
-        fail("INVENTORY_INVALID")
-    for slug, existing in inventory.items():
-        if (
-            existing.slug != slug
-            or type(existing.post_id) is not int
-            or existing.post_id < 1
-            or existing.post_type not in {"post", "page"}
-            or existing.status != "publish"
-        ):
-            fail("INVENTORY_INVALID")
-        _hash(existing.content_sha256)
+    _validate_inventory(inventory, pages)
+    if pages:
+        _validate_reader_article_targets(inventory, article_targets)
     articles: list[ArticleScope] = []
     selected: set[str] = set()
     article_ids: set[str] = set()
@@ -497,7 +682,7 @@ def validate_manifest(
             "about-ad-policy",
             "comparison-policy",
             "privacy-policy",
-        }:
+        } | set(pages):
             fail("SHARED_TARGET_INVALID")
         row = _object(raw, {"key", "sha256", "baseline_sha256", "post_id"})
         key, expected = _text(row["key"]), _hash(row["sha256"])
@@ -526,6 +711,8 @@ def validate_manifest(
                 fail("EXISTING_TARGET_MISMATCH")
             shared_slugs.add(identifier)
         shared_hashes[identifier] = expected
+    if len(articles) + len(shared_slugs) + int("theme" in shared) > 20:
+        fail("PROPOSAL_LIMIT_EXCEEDED")
     if set(unchanged) != set(inventory) - selected - shared_slugs:
         fail("UNCHANGED_SET_MISMATCH")
     for slug, proof in unchanged.items():
@@ -536,6 +723,9 @@ def validate_manifest(
         shared and rendered != set(inventory)
     ):
         fail("MIXED_PREVIEW_REQUIRED")
+    reader_profile = validate_reader_measurement_binding(value, pages=pages, artifact_bytes=artifact_bytes, expected=reader_measurement)
+    if reader_profile:
+        used_artifacts.add("reader-measurement-manifest")
     if used_artifacts != set(artifact_bytes):
         fail("ARTIFACT_SET_MISMATCH")
     if "runtime_transition" in value:
@@ -567,6 +757,9 @@ def validate_manifest(
         shared_hashes,
         evaluated,
         expires,
+        schema=value["schema"],
+        reader_pages=pages,
+        reader_measurement=reader_profile,
     )
 
 
@@ -580,11 +773,15 @@ def verify_untouched_documents(
         fail("UNEXPECTED_DOCUMENT_CREATED_OR_REMOVED")
     for slug, previous in before.items():
         entry = current[slug]
+        page = manifest.reader_pages.get(slug)
+        status = (
+            "publish" if page is not None and page.kind == "hub" else previous.status
+        )
         if (entry.post_id, entry.slug, entry.post_type, entry.status) != (
             previous.post_id,
             previous.slug,
             previous.post_type,
-            previous.status,
+            status,
         ):
             fail("IDENTITY_CHANGED")
     for slug, expected in manifest.unchanged_sha256.items():
@@ -859,6 +1056,72 @@ def parse_markup_elements(markup: str) -> tuple[MarkupElement, ...]:
         )
         for element in parser.elements
     )
+
+
+def _verify_reader_page_markup(
+    markup: str, inventory: Mapping[str, ExistingDocument]
+) -> None:
+    """No product/source promotion through the page-only shared-content route."""
+    elements = parse_markup_elements(markup)
+    for element in elements:
+        attrs = element.attrs
+        if (
+            element.tag in {"img", "picture", "source"}
+            or any(
+                name.startswith(("data-raos-product", "data-raos-cta"))
+                or name in {"data-raos-placement", "data-raos-article-id"}
+                for name in attrs
+            )
+            or html_attribute_tokens(attrs.get("class")) & PURCHASE_CLASSES
+        ):
+            fail("READER_PAGE_COMMERCE_INVALID")
+        if element.tag != "a":
+            continue
+        href = attrs.get("href") or ""
+        if (
+            not href
+            or any(char.isspace() or ord(char) < 32 for char in href)
+            or "\\" in href
+            or re.search(r"%(?![0-9a-fA-F]{2})", href)
+        ):
+            fail("READER_PAGE_LINK_INVALID")
+        try:
+            parts = urlsplit(href)
+            if parts.username is not None or parts.password is not None:
+                fail("READER_PAGE_LINK_INVALID")
+            port = parts.port
+        except ValueError:
+            fail("READER_PAGE_LINK_INVALID")
+        if href.startswith("#"):
+            if len(href) == 1:
+                fail("READER_PAGE_LINK_INVALID")
+            continue
+        if href == "mailto:contact@kurashinoshirube.com":
+            continue
+        internal = parts.scheme == "" and parts.netloc == "" and href.startswith("/")
+        if parts.scheme == "https" and parts.netloc == "kurashinoshirube.com":
+            internal = True
+        if internal:
+            slug = parts.path.strip("/") or "home"
+            if (
+                parts.path != ("/" if slug == "home" else f"/{slug}/")
+                or slug not in inventory
+                or parts.query
+            ):
+                fail("READER_PAGE_LINK_INVALID")
+        elif (
+            parts.scheme != "https"
+            or not parts.hostname
+            or port is not None
+            or parts.hostname in PURCHASE_HOSTS
+            or parts.hostname == "afl.rakuten.co.jp"
+            or parts.hostname.endswith(".afl.rakuten.co.jp")
+        ):
+            fail("READER_PAGE_LINK_INVALID")
+        if attrs.get("target") == "_blank" and not (
+            {"noopener", "noreferrer"} <= html_attribute_tokens(attrs.get("rel"))
+        ):
+            fail("READER_PAGE_LINK_INVALID")
 
 
 def verify_commerce_markup(

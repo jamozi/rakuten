@@ -79,9 +79,36 @@
   const exactMultiset = (actual, expected) => Array.isArray(actual) && Array.isArray(expected) &&
     actual.length === expected.length && [...actual].sort().every(
       (value, index) => value === [...expected].sort()[index]);
+  const readerHubSlugs = [
+    'categories', 'purposes', 'guides', 'comparisons', 'updates', 'travel',
+    'kitchen', 'cleaning', 'preparedness', 'small-space', 'save-housework',
+    'without-installation', 'easy-maintenance', 'comfortable-travel', 'prepare-outage',
+  ];
+  const readerPageSlugs = [...readerHubSlugs, 'home', 'privacy-policy'];
+  const hasReaderScope = (scope) => scope !== null && typeof scope === 'object' &&
+    (Object.hasOwn(scope, 'reader_page_slugs') || Object.hasOwn(scope, 'core_document_slugs'));
+  const hubSlug = (row) => readerHubSlugs.find((slug) =>
+    row?.local_path === `/${slug}/`) || null;
+  const validReaderHub = (row) =>
+    exactKeys(row, ['kind', 'surface_id', 'local_path']) && row.kind === 'reader_hub' &&
+    hubSlug(row) !== null && row.surface_id === `hub-${hubSlug(row)}`;
+  const sortedSlugs = (values) => Array.isArray(values) &&
+    values.every((slug) => typeof slug === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) &&
+    exactSet(values, [...new Set(values)]) &&
+    values.every((slug, index) => slug === [...values].sort()[index]);
+  const coreSlug = (row) => {
+    if (row?.kind === 'home') return row.local_path === '/' && row.production_path === '/' ? 'home' : null;
+    if (row?.kind === 'reader_hub') return validReaderHub(row) ? hubSlug(row) : null;
+    if (!['article', 'policy'].includes(row?.kind) ||
+      !/^\/[a-z0-9]+(?:-[a-z0-9]+)*\/$/.test(row.production_path || '')) return null;
+    const slug = row.production_path.slice(1, -1);
+    if (row.kind === 'policy' &&
+      !['about-ad-policy', 'comparison-policy', 'privacy-policy'].includes(slug)) return null;
+    return slug;
+  };
   const ctaTuple = (row) => JSON.stringify([row.cta_id, row.product_id, row.placement]);
   const validateIncrementalScope = ({ publicationProfile, linkMode, incrementalScope, articleIds,
-    categorySurfaces = [],
+    categorySurfaces = [], coreSurfaces = null,
   }) => {
     if (publicationProfile === 'legacy-full') {
       if (incrementalScope !== null || !['standard-api', 'measured-admin'].includes(linkMode)) {
@@ -90,23 +117,35 @@
       return null;
     }
     const scope = incrementalScope;
+    const readerMode = hasReaderScope(scope);
     const identifier = (value) => typeof value === 'string' && value.length > 0 &&
       value.length <= 180 && /^[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*$/.test(value);
     if (publicationProfile !== 'verified-incremental' || linkMode !== 'standard-api' ||
       !exactKeys(scope, ['schema', 'publication_profile', 'link_mode', 'selected_article_ids',
         'articles', 'preparation_binding_sha256',
+        ...(readerMode ? ['reader_page_slugs', 'core_document_slugs'] : []),
         ...(categorySurfaces.length ? ['category_expectations'] : [])]) ||
       scope.schema !== 'RAOS_WORDPRESS_INCREMENTAL_BROWSER_SCOPE_V1' ||
       scope.publication_profile !== publicationProfile || scope.link_mode !== linkMode ||
       !/^[a-f0-9]{64}$/.test(scope.preparation_binding_sha256 || '') ||
       scope.preparation_binding_sha256 === '0'.repeat(64) ||
-      !Array.isArray(scope.selected_article_ids) || scope.selected_article_ids.length === 0 ||
+      !Array.isArray(scope.selected_article_ids) ||
+      (scope.selected_article_ids.length === 0 &&
+        (!readerMode || !Array.isArray(scope.reader_page_slugs) || scope.reader_page_slugs.length === 0)) ||
       !exactSet(scope.selected_article_ids, [...new Set(scope.selected_article_ids)]) ||
       scope.selected_article_ids.some((id) => !articleIds.includes(id)) ||
       !Array.isArray(scope.articles) ||
       !exactSet(scope.articles.map((row) => row?.article_id), articleIds)) {
       throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
     }
+    if (readerMode && (
+      !sortedSlugs(scope.reader_page_slugs) || !sortedSlugs(scope.core_document_slugs) ||
+      scope.reader_page_slugs.some((slug) => !readerPageSlugs.includes(slug) ||
+        !scope.core_document_slugs.includes(slug)) ||
+      !Array.isArray(coreSurfaces) || coreSurfaces.some((row) => coreSlug(row) === null) ||
+      !exactSet(scope.core_document_slugs, coreSurfaces.map(coreSlug)) ||
+      !exactSet(coreSurfaces.filter((row) => row.kind === 'article').map((row) => row.article_id), articleIds)
+    )) throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
     if (categorySurfaces.length) {
       const categories = scope.category_expectations;
       const knownCategories = new Map(['mobility', 'household', 'preparedness'].map(
@@ -343,10 +382,10 @@
     return failures;
   };
 
-  const factory = ({ artifactDirectory, axeSource, inventory, origin,
+  const buildAudit = ({ artifactDirectory, axeSource, inventory, origin,
     publicationProfile = 'legacy-full', linkMode = 'measured-admin', incrementalScope = null,
     selectedSurfaceIds = null, workers = 1,
-  }) => async (page) => {
+  }, isolatedWorker = false) => async (page) => {
   const publicPath = (value) =>
     typeof value === 'string' && /^\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)?$/.test(value);
   const localPath = (value, kind) => {
@@ -359,6 +398,10 @@
   };
   const rawSurfaces = inventory?.surfaces;
   const publicSurfaces = rawSurfaces;
+  const readerMode = hasReaderScope(incrementalScope);
+  const hubRows = Array.isArray(publicSurfaces)
+    ? publicSurfaces.filter((row) => row.kind === 'reader_hub') : [];
+  const hubCatalog = inventory?.reader_hubs;
   const localSurfaces = inventory?.local_surfaces;
   const routeCoverage = inventory?.route_coverage;
   const archiveCoverage = routeCoverage?.archive_types;
@@ -444,16 +487,26 @@
     inventory?.schema !== 'RAOS_WORDPRESS_AUDIT_INVENTORY_V3' ||
     inventory?.version !== '3.0.0' ||
     inventory?.target_origin !== 'https://kurashinoshirube.com' ||
-    !Array.isArray(publicSurfaces) || publicSurfaces.length !== 14 ||
-    !Array.isArray(localSurfaces) || localSurfaces.length !== 12 ||
+    !Array.isArray(publicSurfaces) ||
+    !Array.isArray(localSurfaces) ||
+    (readerMode
+      ? !Array.isArray(hubCatalog) || hubCatalog.some((row) => !validReaderHub(row)) ||
+        !exactSet(hubCatalog.map(hubSlug), readerHubSlugs) ||
+        hubRows.some((row) => !validReaderHub(row) ||
+          !hubCatalog.some((registered) => registered.surface_id === row.surface_id &&
+            registered.local_path === row.local_path))
+      : hubRows.length !== 0) ||
+    publicSurfaces.length !== homeRows.length + articleRows.length + policyRows.length + hubRows.length ||
     homeRows.length !== 1 || articleRows.length !== 10 || policyRows.length !== 3 ||
     comparisonPolicyRows.length !== 1 || !publicPath(comparisonPolicyPath) ||
     !Array.isArray(rawClusters) || rawClusters.length !== 3 ||
     !Array.isArray(widths) || widths.length !== requiredWidths.length ||
     widths.some((width, index) => width !== requiredWidths[index]) ||
-    new Set(rawSurfaces.map((surface) => surface.local_path)).size !== 14 ||
-    new Set(rawSurfaces.map((surface) => surface.production_path)).size !== 14 ||
-    new Set([...publicSurfaces, ...localSurfaces].map((row) => row.surface_id)).size !== 26 ||
+    new Set(rawSurfaces.map((surface) => surface.local_path)).size !== publicSurfaces.length ||
+    new Set(rawSurfaces.map((surface) => surface.kind === 'reader_hub'
+      ? surface.local_path : surface.production_path)).size !== publicSurfaces.length ||
+    new Set([...publicSurfaces, ...localSurfaces].map((row) => row.surface_id)).size !==
+      publicSurfaces.length + localSurfaces.length ||
     routeClassCounts.size !== 10 ||
     routeClassCounts.get('ARCHIVE_CATEGORY') !== 3 ||
     [...routeClassCounts].some(([routeClass, count]) =>
@@ -503,9 +556,9 @@
     localByRouteClass.get('SEARCH_PAGED_RESULTS')?.expected_page_number !== 2 ||
     publicSurfaces.some(
       (surface) =>
-        !['home', 'article', 'policy'].includes(surface.kind) ||
+        !['home', 'article', 'policy', ...(readerMode ? ['reader_hub'] : [])].includes(surface.kind) ||
         !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(surface.surface_id || '') ||
-        !publicPath(surface.local_path) || !publicPath(surface.production_path),
+        !publicPath(surface.local_path) || (surface.kind !== 'reader_hub' && !publicPath(surface.production_path)),
     ) ||
     localSurfaces.some(
       (surface) =>
@@ -598,6 +651,7 @@
   }
   const checkedIncrementalScope = validateIncrementalScope({
     publicationProfile, linkMode, incrementalScope, articleIds: [...articleIds],
+    coreSurfaces: publicSurfaces,
     categorySurfaces: localSurfaces.filter(
       (surface) => surface.kind === 'archive' && surface.archive_type === 'category',
     ),
@@ -611,7 +665,7 @@
     expectedStatus: surface.expected_http_status || 200,
     name: surface.surface_id,
     path: surface.local_path,
-    publicCore: ['home', 'article', 'policy'].includes(surface.kind),
+    publicCore: ['home', 'article', 'policy', 'reader_hub'].includes(surface.kind),
   }));
   if (selectedSurfaceIds !== null && (
     !Array.isArray(selectedSurfaceIds) || selectedSurfaceIds.length === 0 ||
@@ -623,6 +677,10 @@
   }
   const selectedSurfaces = surfaces.filter((surface) =>
     selectedSurfaceIds === null || selectedSurfaceIds.includes(surface.name));
+  if (readerMode && !isolatedWorker &&
+    publicSurfaces.some((row) => !selectedSurfaces.some((surface) => surface.name === row.surface_id))) {
+    throw new Error('RAOS_WORDPRESS_BROWSER_SELECTION_INVALID');
+  }
   if (workers > 1 && selectedSurfaces.length > 1) {
     const browser = page.context().browser();
     if (!browser) throw new Error('RAOS_WORDPRESS_BROWSER_CONTEXT_REQUIRED');
@@ -634,10 +692,10 @@
         const context = await browser.newContext({ locale: 'ja-JP' });
         try {
           const isolated = await context.newPage();
-          completed[index] = await factory({ artifactDirectory, axeSource, inventory, origin,
+          completed[index] = await buildAudit({ artifactDirectory, axeSource, inventory, origin,
             publicationProfile, linkMode, incrementalScope,
             selectedSurfaceIds: [selectedSurfaces[index].name], workers: 1,
-          })(isolated);
+          }, true)(isolated);
         } finally {
           await context.close();
         }
@@ -649,6 +707,7 @@
     home: ['Organization', 'WebSite'],
     article: ['Article', 'BreadcrumbList', 'Organization', 'WebSite'],
     policy: ['BreadcrumbList', 'Organization', 'WebSite'],
+    reader_hub: ['BreadcrumbList', 'Organization', 'WebSite', 'WebPage'],
   };
   const forbiddenJsonLdTypes = ['Product', 'Offer', 'Review', 'FAQPage'];
   const extractJsonLdTypes = (documents) => {
@@ -1205,6 +1264,7 @@
         return {
           anchorSecurity,
           reader: {
+            hubCount: document.querySelectorAll('.raos-reader-hub').length,
             components: document.querySelectorAll('.raos-reader-view[data-raos-reader-components="true"]').length,
             statusCount: document.querySelectorAll('.raos-research-status').length,
             statusVisible: visible(researchStatus),
@@ -2027,6 +2087,7 @@
           (box) => boxInvalid(box) || box.height < 44,
         ) ||
         articleFactsFailure ||
+        (surface.kind === 'reader_hub' && audit.reader.hubCount !== 1) ||
         (surface.article && (
           audit.editorialRootCount !== 1 ||
           (readerDisplay ? audit.heroNotice.count !== 0 :
@@ -2301,6 +2362,7 @@
   return results;
   };
 
+  const factory = (options) => buildAudit(options);
   factory.validateSeoHead = validateSeoHead;
   factory.validateIncrementalScope = validateIncrementalScope;
   factory.validateIncrementalArticle = validateIncrementalArticle;

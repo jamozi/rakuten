@@ -23,6 +23,120 @@ from raos.application.editorial.verified_incremental_v1 import (
     parse_markup_elements,
 )
 
+# Closed reader release surface. The public authoring helper is independently
+# checked against this set; application code must not import a scripts entrypoint.
+READER_HUB_SLUGS = frozenset(
+    {
+        "categories",
+        "purposes",
+        "guides",
+        "comparisons",
+        "updates",
+        "travel",
+        "kitchen",
+        "cleaning",
+        "preparedness",
+        "small-space",
+        "save-housework",
+        "without-installation",
+        "easy-maintenance",
+        "comfortable-travel",
+        "prepare-outage",
+    }
+)
+READER_PAGE_FIELDS = frozenset(
+    {
+        "post_type",
+        "title",
+        "slug",
+        "excerpt",
+        "block_markup",
+        "taxonomies",
+        "media_ids",
+    }
+)
+POLICY_SLUGS = frozenset({"about-ad-policy", "comparison-policy", "privacy-policy"})
+
+
+def reader_hub_body(slug: str) -> str:
+    return (
+        '<!-- wp:shortcode -->[kurashinoshirube_reader_hub slug="'
+        + slug
+        + '"]<!-- /wp:shortcode -->'
+    )
+
+
+def validate_reader_page(slug: str, value: Mapping[str, object]) -> dict[str, object]:
+    """Validate the closed source document without rewriting caller-owned bytes."""
+    if not isinstance(value, Mapping):
+        fail("PREVIEW_READER_PAGE_INVALID")
+    row = dict(value)
+    if (
+        slug not in READER_HUB_SLUGS | {"home", "privacy-policy"}
+        or set(row) != READER_PAGE_FIELDS
+        or row["slug"] != slug
+        or row["post_type"] != "page"
+        or any(
+            not isinstance(row[key], str) or not row[key]
+            for key in ("title", "excerpt", "block_markup")
+        )
+        or not isinstance(row["taxonomies"], dict)
+    ):
+        fail("PREVIEW_READER_PAGE_INVALID")
+    for key in ("title", "excerpt"):
+        if re.search(r"[<>\x00-\x1f]", cast(str, row[key])):
+            fail("PREVIEW_READER_PAGE_INVALID")
+    if len(cast(str, row["excerpt"]).encode()) > 512:
+        fail("PREVIEW_READER_PAGE_INVALID")
+    _positive_ids(row["media_ids"], "PREVIEW_READER_PAGE_INVALID")
+    for taxonomy, ids in cast(dict[object, object], row["taxonomies"]).items():
+        if not isinstance(taxonomy, str):
+            fail("PREVIEW_READER_PAGE_INVALID")
+        _positive_ids(ids, "PREVIEW_READER_PAGE_INVALID")
+    body = cast(str, row["block_markup"])
+    if (
+        len(body.encode()) > 131072
+        or re.search(
+            r"<\s*(?:script|style|iframe|form|input|object|embed)\b", body, re.I
+        )
+        or re.search(r"\bon[a-z]+\s*=", body, re.I)
+        or (slug != "home" and re.search(r"<\s*h1\b", body, re.I))
+    ):
+        fail("PREVIEW_READER_PAGE_MARKUP_INVALID")
+    if slug in READER_HUB_SLUGS:
+        if body != reader_hub_body(slug):
+            fail("PREVIEW_READER_PAGE_SHORTCODE_INVALID")
+    else:
+        shortcodes = re.findall(r"\[/?[A-Za-z_][A-Za-z0-9_-]*(?:\s[^\]]*)?\]", body)
+        allowed = (
+            {
+                '[kurashinoshirube_reader_home section="' + section + '"]'
+                for section in ("actions", "purposes", "categories", "guides")
+            }
+            | {"[kurashinoshirube_latest_guides]"}
+            if slug == "home"
+            else set()
+        )
+        if any(code not in allowed for code in shortcodes):
+            fail("PREVIEW_READER_PAGE_SHORTCODE_INVALID")
+    return deepcopy(row)
+
+
+def unpublished_reader_pages(
+    documents: Mapping[str, dict[str, object]],
+) -> dict[str, object]:
+    return {
+        slug: {
+            "production_id": live["id"],
+            "production_slug": slug,
+            "status": "draft",
+            "publication_date": "NOT_VERIFIED",
+            "public_taxonomies": "NOT_APPLICABLE",
+        }
+        for slug, live in sorted(documents.items())
+        if slug in READER_HUB_SLUGS and live["status"] == "draft"
+    }
+
 
 @dataclass(frozen=True)
 class MixedPreview:
@@ -207,7 +321,14 @@ def _public_metadata(
     captured = _record(metadata.get("documents"), "PREVIEW_METADATA_INVALID")
     terms = _record(metadata.get("terms"), "PREVIEW_METADATA_INVALID")
     verified: dict[str, _SeedDocument] = {}
+    drafts = set(unpublished_reader_pages(documents))
+    if snapshot.get("schema") == "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2" and (
+        set(captured) - set(documents) or set(captured) & drafts
+    ):
+        fail("PREVIEW_METADATA_INVALID")
     for slug, live in documents.items():
+        if slug in drafts:
+            continue
         entry_value = captured.get(slug)
         if entry_value is None:
             continue
@@ -331,7 +452,7 @@ def _public_metadata(
             "taxonomies": projected_terms,
             "source_content_sha256": live["content_sha256"],
         }
-    missing = sorted(set(documents) - set(verified))
+    missing = sorted(set(documents) - drafts - set(verified))
     blockers = [f"PUBLIC_METADATA_UNVERIFIED:{slug}" for slug in missing]
     if metadata.get("status") != "VERIFIED" or metadata.get("unverified"):
         blockers.append("PUBLIC_METADATA_CAPTURE_NOT_VERIFIED")
@@ -340,7 +461,11 @@ def _public_metadata(
 
 def _snapshot_documents(snapshot: Mapping[str, object]) -> dict[str, dict[str, object]]:
     if (
-        snapshot.get("schema") != "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1"
+        snapshot.get("schema")
+        not in {
+            "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
+            "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2",
+        }
         or snapshot.get("publication_profile") != "verified-incremental"
         or snapshot.get("source") != "BOUNDED_WORDPRESS_EDITOR_MCP"
         or snapshot.get("origin") != "https://kurashinoshirube.com"
@@ -349,7 +474,19 @@ def _snapshot_documents(snapshot: Mapping[str, object]) -> dict[str, dict[str, o
         fail("SNAPSHOT_INVALID")
     if type(snapshot.get("documents")) is not list:
         fail("SNAPSHOT_INVALID")
+    declared = snapshot.get("reader_page_slugs", [])
+    modern = snapshot["schema"] == "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2"
+    if (
+        not isinstance(declared, list)
+        or any(not isinstance(slug, str) for slug in declared)
+        or declared != sorted(set(declared))
+        or not set(declared) <= READER_HUB_SLUGS
+        or (not modern and "reader_page_slugs" in snapshot)
+        or (modern and "reader_page_slugs" not in snapshot)
+    ):
+        fail("SNAPSHOT_INVALID")
     documents: dict[str, dict[str, object]] = {}
+    identities: set[int] = set()
     for raw_value in cast(list[object], snapshot["documents"]):
         if type(raw_value) is not dict:
             fail("SNAPSHOT_INVALID")
@@ -357,8 +494,24 @@ def _snapshot_documents(snapshot: Mapping[str, object]) -> dict[str, dict[str, o
         slug = raw.get("slug")
         if type(slug) is not str:
             fail("SNAPSHOT_INVALID")
-        if slug in documents or raw.get("status") != "publish":
+        post_id = raw.get("id")
+        if (
+            slug in documents
+            or type(post_id) is not int
+            or post_id <= 0
+            or post_id in identities
+            or raw.get("schema") != "ContentDocumentV1"
+            or raw.get("post_type") not in {"post", "page"}
+            or (slug in declared and raw.get("post_type") != "page")
+            or raw.get("status")
+            not in ({"draft", "publish"} if slug in declared else {"publish"})
+            or any(
+                not isinstance(raw.get(key), str)
+                for key in ("title", "excerpt", "block_markup")
+            )
+        ):
             fail("SNAPSHOT_INVALID")
+        identities.add(post_id)
         # WordPress ContentDocumentV1 hashes its public projection, not revision
         # timestamps. Verify before any old text enters the local overlay.
         fields = {
@@ -384,6 +537,12 @@ def _snapshot_documents(snapshot: Mapping[str, object]) -> dict[str, dict[str, o
         if wp_hash != raw.get("content_sha256"):
             fail("SNAPSHOT_HASH_INVALID")
         documents[slug] = raw
+    if modern and (
+        {slug for slug, row in documents.items() if row["post_type"] == "page"}
+        != POLICY_SLUGS | {"home"} | set(declared)
+        or len([row for row in documents.values() if row["post_type"] == "post"]) != 10
+    ):
+        fail("SNAPSHOT_INVALID")
     return documents
 
 
@@ -610,6 +769,7 @@ def build_mixed_preview(
     source_page_bodies: Mapping[str, bytes] | None = None,
     updated_policy_slugs: frozenset[str] = frozenset(),
     home_mode: str = "preserve-live-baseline",
+    page_overrides: Mapping[str, Mapping[str, object]] | None = None,
 ) -> MixedPreview:
     """Use revised selected drafts and byte-exact unchanged MCP article bodies.
 
@@ -620,6 +780,28 @@ def build_mixed_preview(
     """
     documents = _snapshot_documents(snapshot)
     metadata, metadata_blockers = _public_metadata(snapshot, documents)
+    if page_overrides is not None and not isinstance(page_overrides, Mapping):
+        fail("PREVIEW_READER_PAGE_INVALID")
+    overrides = {
+        slug: validate_reader_page(slug, row)
+        for slug, row in (page_overrides or {}).items()
+    }
+    declared = set(cast(list[str], snapshot.get("reader_page_slugs", [])))
+    reader_mode = (
+        bool(overrides)
+        or snapshot["schema"] == "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2"
+    )
+    if any(
+        slug not in documents
+        or documents[slug]["post_type"] != "page"
+        or (slug in READER_HUB_SLUGS and slug not in declared)
+        for slug in overrides
+    ):
+        fail("PREVIEW_READER_PAGE_TARGET_INVALID")
+    managed_hubs = declared & (
+        set(overrides)
+        | {slug for slug, row in documents.items() if row["status"] == "publish"}
+    )
     fixture = deepcopy(dict(source_posts))
     if (
         set(fixture) != {"schema", "seed_version", "posts"}
@@ -642,7 +824,7 @@ def build_mixed_preview(
         slugs.add(slug)
         posts.append(row)
     if (
-        not selected_slugs
+        (not selected_slugs and not overrides)
         or not selected_slugs <= slugs
         or set(source_articles) != slugs
         or set(article_ids_by_slug) != slugs
@@ -703,6 +885,28 @@ def build_mixed_preview(
         for slug, live in documents.items()
         if live["post_type"] == "page"
     }
+    if (
+        reader_mode
+        and source_pages is None
+        and source_page_bodies is None
+        and not updated_policy_slugs
+    ):
+        if not POLICY_SLUGS | {"home"} <= set(baseline_pages):
+            fail("PREVIEW_READER_PAGE_TARGET_INVALID")
+        source_pages = {
+            "schema": "RAOS_WORDPRESS_PRODUCTION_POLICY_PAGES_V1",
+            "seed_version": fixture["seed_version"],
+            "pages": [
+                {
+                    "content_file": f"production-pages/{slug}.html",
+                    "excerpt": documents[slug]["excerpt"],
+                    "slug": slug,
+                    "title": documents[slug]["title"],
+                }
+                for slug in sorted(POLICY_SLUGS)
+            ],
+        }
+        source_page_bodies = {slug: baseline_pages[slug] for slug in POLICY_SLUGS}
     if source_pages is not None:
         page_fixture = deepcopy(dict(source_pages))
         if (
@@ -727,7 +931,7 @@ def build_mixed_preview(
             != {"about-ad-policy", "comparison-policy", "privacy-policy"}
             or set(source_page_bodies) != policy_slugs
             or not updated_policy_slugs <= policy_slugs
-            or set(baseline_pages) != policy_slugs | {"home"}
+            or set(baseline_pages) != policy_slugs | {"home"} | declared
         ):
             fail("PREVIEW_POLICY_TARGET_INVALID")
         for row in rows:
@@ -753,6 +957,24 @@ def build_mixed_preview(
                 )
                 page_bodies[slug] = baseline_pages[slug]
                 page_states[slug] = "PRESERVED_LIVE_PRODUCTION_POLICY"
+        if reader_mode:
+            by_slug = {cast(str, row["slug"]): row for row in rows}
+            for slug in sorted(managed_hubs | set(overrides)):
+                source = overrides.get(slug, documents[slug])
+                page_bodies[slug] = cast(str, source["block_markup"]).encode()
+                row = {
+                    "content_file": f"pages/{slug}.html",
+                    "excerpt": source["excerpt"],
+                    "slug": slug,
+                    "title": source["title"],
+                }
+                if slug in by_slug:
+                    by_slug[slug].update(row)
+                else:
+                    rows.append(row)
+                if slug in POLICY_SLUGS:
+                    page_states[slug] = "REVISED_READER_PAGE_NOT_VERIFIED"
+            page_fixture["pages"] = rows
         page_fixture["schema"] = "RAOS_WORDPRESS_LOCAL_PREVIEW_PAGES_V1"
         page_raw = (
             json.dumps(page_fixture, ensure_ascii=False, indent=2) + "\n"
@@ -771,6 +993,36 @@ def build_mixed_preview(
         if home_mode == "preserve-live-baseline"
         else "SHARED_THEME_CANDIDATE_NOT_VERIFIED",
     }
+    reader_binding: dict[str, object] = {}
+    if reader_mode:
+        page_baselines = {
+            slug: {
+                "production_id": row["id"],
+                "status": row["status"],
+                "source_content_sha256": row["content_sha256"],
+            }
+            for slug, row in sorted(documents.items())
+            if row["post_type"] == "page"
+        }
+        reader_binding = {
+            "reader_page_slugs": sorted(overrides),
+            "reader_page_documents": overrides,
+            "snapshot_reader_page_slugs": sorted(declared),
+            "reader_page_baselines": page_baselines,
+            "snapshot_document_sha256": {
+                slug: row["content_sha256"] for slug, row in sorted(documents.items())
+            },
+            "all_document_baselines": deepcopy(
+                snapshot.get("all_document_baselines", {})
+            ),
+            "unpublished_reader_pages": unpublished_reader_pages(documents),
+            "core_document_slugs": sorted(
+                slugs | POLICY_SLUGS | {"home"} | managed_hubs
+            ),
+        }
+        if "home" in overrides:
+            seed_metadata["home_state"] = "REVISED_READER_HOME_NOT_VERIFIED"
+        seed_metadata.update(reader_binding)
     seed_metadata_raw = canonical(seed_metadata)
     # The existing PHP seed deliberately checks the fixture field order. Keep
     # its owner projection order; the separate preparation binding is canonical.
@@ -829,6 +1081,7 @@ def build_mixed_preview(
             "link_mode": "standard-api",
             "publication_authority": False,
             "status": "NOT_VERIFIED_FOR_PUBLICATION",
+            **reader_binding,
             "selected_slugs": sorted(selected_slugs),
             "source_snapshot_sha256": digest(canonical(snapshot).rstrip(b"\n")),
             "baseline_document_sha256": baselines,
@@ -864,6 +1117,14 @@ def build_mixed_preview(
                     article_ids_by_slug[slug] for slug in selected_slugs
                 ),
                 "articles": scope_rows,
+                **(
+                    {
+                        "reader_page_slugs": sorted(overrides),
+                        "core_document_slugs": reader_binding["core_document_slugs"],
+                    }
+                    if reader_mode
+                    else {}
+                ),
             },
         },
         page_raw,

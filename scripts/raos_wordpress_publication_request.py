@@ -141,9 +141,9 @@ MAKE_BIN: Final = Path("/usr/bin/make")
 SG_BIN: Final = Path("/usr/bin/sg")
 DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
-EXPECTED_PLUGIN_VERSION: Final = "1.3.1"
+EXPECTED_PLUGIN_VERSION: Final = "1.3.2"
 EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
-    "c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472"
+    "b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc"
 )
 EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS: Final = 3600
 EXPECTED_APPLY_LEASE_TTL_SECONDS: Final = 900
@@ -2297,7 +2297,125 @@ def validate_site_status(
     *,
     require_measurement_ready: bool = False,
     require_measurement_off: bool = False,
+    allow_legacy_runtime: bool = False,
 ) -> None:
+    """Validate bounded status; legacy compatibility is for approved baseline routes only."""
+    reader = status.get("reader_measurement")
+    if "reader_measurement" in status:
+        if (
+            type(reader) is not dict
+            or set(reader)
+            != {
+                "schema",
+                "plugin_active",
+                "plugin_version",
+                "collection_enabled",
+                "contract_sha256",
+                "policy_sha256",
+                "approved_revision",
+                "cleanup",
+            }
+            or reader.get("schema") != "RAOSReaderMeasurementStatusV1"
+            or type(reader.get("plugin_active")) is not bool
+            or (
+                reader.get("collection_enabled") is not None
+                and type(reader.get("collection_enabled")) is not bool
+            )
+            or (
+                reader.get("plugin_version") is not None
+                and (
+                    type(reader.get("plugin_version")) is not str
+                    or re.fullmatch(
+                        r"[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}", reader["plugin_version"]
+                    )
+                    is None
+                )
+            )
+            or any(
+                reader[field] is not None
+                and (
+                    type(reader[field]) is not str
+                    or SHA256_RE.fullmatch(reader[field]) is None
+                )
+                for field in ("contract_sha256", "policy_sha256", "approved_revision")
+            )
+            or (
+                reader["plugin_active"] is True
+                and reader["collection_enabled"] is not None
+                and reader["plugin_version"] is None
+            )
+            or (
+                reader["collection_enabled"] is True
+                and (
+                    reader["plugin_active"] is not True
+                    or any(
+                        reader[field] is None
+                        for field in (
+                            "plugin_version",
+                            "contract_sha256",
+                            "policy_sha256",
+                            "approved_revision",
+                        )
+                    )
+                )
+            )
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
+        cleanup = reader["cleanup"]
+        if (
+            type(cleanup) is not dict
+            or set(cleanup) != {"healthy", "last_success_date", "last_error_code"}
+            or (
+                cleanup.get("healthy") is not None
+                and type(cleanup.get("healthy")) is not bool
+            )
+            or cleanup.get("last_error_code")
+            not in (
+                None,
+                "MAINTENANCE_UNAVAILABLE",
+                "CLEANUP_STALE",
+                "STORAGE_UNAVAILABLE",
+                "CLEANUP_FAILED",
+                "CLEANUP_STATUS_UNAVAILABLE",
+            )
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
+        last_success = cleanup["last_success_date"]
+        if last_success is not None:
+            if (
+                type(last_success) is not str
+                or re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", last_success) is None
+            ):
+                fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
+            try:
+                datetime.strptime(last_success, "%Y-%m-%d")
+            except ValueError:
+                fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
+        if (
+            require_measurement_off
+            and reader["plugin_active"] is True
+            and reader["collection_enabled"] is not False
+        ):
+            fail("RAOS_WORDPRESS_REQUEST_SITE_NOT_READY")
+
+    runtime_pair = (status.get("plugin_version"), status.get("plugin_runtime_revision"))
+    runtime_exact = runtime_pair == (
+        EXPECTED_PLUGIN_VERSION,
+        EXPECTED_PLUGIN_RUNTIME_REVISION,
+    )
+    # The reviewed 1.3.1 code already supports the approved first content/theme
+    # batches and draft preparation. Callers must limit this exception to those
+    # baseline routes, with no reader profile/privacy planned and plugin absent.
+    # Reader integration always requires the current runtime.
+    legacy_exact = (
+        allow_legacy_runtime is True
+        and runtime_pair
+        == (
+            "1.3.1",
+            "c0dfb252e3920e87128fed6952f6a5f9ce099b57f2aed96d380ce3b02556f472",
+        )
+        and ("reader_measurement" not in status or reader["plugin_active"] is False)
+    )
     writes = status.get("writes_enabled")
     theme = status.get("theme")
     yoast = status.get("yoast")
@@ -2310,8 +2428,7 @@ def validate_site_status(
         or status.get("wordpress_version_compatible") is not True
         or status.get("mcp_adapter_version") != "0.6.1"
         or status.get("mcp_adapter_version_compatible") is not True
-        or status.get("plugin_version") != EXPECTED_PLUGIN_VERSION
-        or status.get("plugin_runtime_revision") != EXPECTED_PLUGIN_RUNTIME_REVISION
+        or not (runtime_exact or legacy_exact)
         or type(writes) is not dict
         or any(
             writes.get(name) is not True

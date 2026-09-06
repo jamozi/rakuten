@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime, timedelta
+from html import escape
 from html.parser import HTMLParser
 import json
 import os
@@ -41,6 +43,8 @@ from raos.application.editorial.verified_incremental_release_v1 import (  # noqa
     validate_release_envelope,
 )
 from raos.application.editorial.verified_incremental_v1 import (  # noqa: E402
+    READER_HUB_SLUGS,
+    canonical as manifest_canonical,
     _Markup,
     digest,
     html_attribute_tokens,
@@ -50,6 +54,7 @@ from raos.application.editorial.verified_incremental_v1 import (  # noqa: E402
 
 PRIVATE = Path("/home/minami/rakuten/.secrets/wordpress-mcp/incremental-candidates")
 SCHEMA = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_PUBLIC_READBACK_V1"
+SCHEMA_V2 = "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_PUBLIC_READBACK_V2"
 VOID = frozenset(
     "area base br col embed hr img input link meta param source track wbr".split()
 )
@@ -482,6 +487,465 @@ def _baseline_image_expectations(
     return result
 
 
+
+@dataclass(frozen=True)
+class ReaderSeoMetadata:
+    """Immutable source bytes, rechecked against the audited theme on every replay."""
+
+    theme_files: tuple[tuple[str, bytes], ...]
+    theme_sha256: str
+
+    def to_document(self) -> dict[str, Any]:
+        if len(dict(self.theme_files)) != len(self.theme_files):
+            fail("READER_THEME_INVALID")
+        return _reader_seo_projection(dict(self.theme_files), self.theme_sha256)
+
+
+def reader_seo_metadata(
+    theme_files: Mapping[str, bytes], *, expected_tree: str
+) -> ReaderSeoMetadata:
+    """Opt in using the registered theme's navigation and approved media projection."""
+    result = ReaderSeoMetadata(tuple(sorted(theme_files.items())), expected_tree)
+    result.to_document()
+    return result
+
+
+def build_reader_seo_metadata(expected_tree: str) -> ReaderSeoMetadata:
+    return reader_seo_metadata(
+        runtime.trusted_theme_files(expected_tree), expected_tree=expected_tree
+    )
+
+
+def _reader_seo_projection(files: Mapping[str, bytes], expected_tree: str) -> dict[str, Any]:
+    from raos.application.editorial.local_scratch_theme_restore_v1 import (
+        theme_tree_sha256,
+    )
+    from raos.application.editorial.reader_experience_v1 import approved_media_record
+
+    if theme_tree_sha256(files) != expected_tree:
+        fail("READER_THEME_CHANGED")
+    path = "assets/editorial-navigation.v3.json"
+    raw = files.get(path, b"")
+    functions = files.get("functions.php", b"").decode("utf-8")
+    pins = re.findall(
+        r"^const KURASHINOSHIRUBE_EDITORIAL_NAVIGATION_SHA256 = '([a-f0-9]{64})';$",
+        functions, re.M,
+    )
+    if pins != [digest(raw)]:
+        fail("READER_NAVIGATION_PIN_INVALID")
+    navigation = _json(raw)
+    contract = seo.load_contract()
+    if (
+        navigation.get("schema") != "RAOS_EDITORIAL_THEME_NAVIGATION_V3"
+        or navigation.get("target_origin") != contract.origin
+    ):
+        fail("READER_NAVIGATION_INVALID")
+    articles = navigation.get("articles")
+    if type(articles) is not list or len(articles) != 10 or not all(
+        type(row) is dict for row in articles
+    ):
+        fail("READER_ARTICLE_SCOPE_INVALID")
+    if {row.get("article_code"): row.get("production_slug") for row in articles} != {
+        item.identifier: _item_slug(item) for item in contract.items if item.role == "article"
+    } or any(
+        not isinstance(row.get("article_id"), str)
+        or not row["article_id"]
+        or any(not isinstance(row.get(key), str) or not row[key]
+               for key in ("category_label", "content_role_label"))
+        for row in articles
+    ):
+        fail("READER_ARTICLE_SCOPE_INVALID")
+    article_ids = {row["article_id"] for row in articles}
+    if len(article_ids) != 10:
+        fail("READER_ARTICLE_SCOPE_INVALID")
+    registry = navigation.get("reader_navigation")
+    hubs = registry.get("hubs") if type(registry) is dict else None
+    if type(hubs) is not list or len(hubs) != 15 or any(
+        type(row) is not dict or not isinstance(row.get("slug"), str) for row in hubs
+    ) or {row["slug"] for row in hubs} != READER_HUB_SLUGS:
+        fail("READER_HUB_SCOPE_INVALID")
+    for row in hubs:
+        if (
+            row.get("kind") not in ("categories", "purposes", "category", "purpose", "collection", "updates")
+            or any(not isinstance(row.get(key), str) or not row[key]
+                   for key in ("label", "description"))
+            or type(row.get("article_ids")) is not list
+            or not row["article_ids"]
+            or any(not isinstance(value, str) for value in row["article_ids"])
+            or len(set(row["article_ids"])) != len(row["article_ids"])
+            or not set(row["article_ids"]) <= article_ids
+        ):
+            fail("READER_HUB_SCOPE_INVALID")
+    media = navigation.get("media_assets")
+    if type(media) is not list:
+        fail("READER_MEDIA_INVALID")
+    approved = {}
+    seen = set()
+    for asset in media:
+        if type(asset) is not dict or not isinstance(asset.get("asset_ref"), str):
+            fail("READER_MEDIA_INVALID")
+        ref = asset["asset_ref"]
+        if ref in seen:
+            fail("READER_MEDIA_AMBIGUOUS")
+        seen.add(ref)
+        # HTML diagrams have no raster slot. Missing approval never becomes an image.
+        if not approved_media_record(asset):
+            continue
+        if "path" not in asset and "sha256" not in asset:
+            continue
+        asset_path, expected = asset.get("path"), asset.get("sha256")
+        if (
+            not isinstance(asset_path, str)
+            or re.fullmatch(r"assets/images/[a-z0-9-]+\.(?:webp|svg)", asset_path) is None
+            or not isinstance(expected, str)
+            or re.fullmatch(r"[a-f0-9]{64}", expected) is None
+            or asset_path not in files
+            or digest(files[asset_path]) != expected
+        ):
+            fail("READER_MEDIA_BYTES_INVALID")
+        approved[ref] = {
+            **asset,
+            "url": contract.origin + "/wp-content/themes/kurashinoshirube-child/" + asset_path,
+            "width": asset["aspect_ratio"][0],
+            "height": asset["aspect_ratio"][1],
+        }
+    social = {
+        _item_slug(item): approved.get(
+            next(row["article_id"] for row in articles if row["production_slug"] == _item_slug(item))
+            if item.role == "article" else "home"
+        )
+        for item in contract.items
+    }
+    social.update({row["slug"]: approved.get("home") for row in hubs})
+    return {
+        "schema": "RAOS_WORDPRESS_READER_SEO_METADATA_V1",
+        "theme_sha256": expected_tree,
+        "navigation_sha256": digest(raw),
+        "registry_sha256": digest(manifest_canonical(registry)),
+        "articles": articles,
+        "hubs": hubs,
+        "social_images": social,
+        "approved_images": {row["url"]: row["sha256"] for row in approved.values()},
+    }
+
+
+def _item_slug(item: seo.InventoryItem) -> str:
+    return "home" if item.role == "home" else urlsplit(item.url).path.strip("/")
+
+
+def _stored_content_hash(document: Mapping[str, Any]) -> str:
+    fields = (
+        "schema", "post_type", "id", "status", "title", "slug", "excerpt",
+        "block_markup", "taxonomies", "media_ids",
+    )
+    if not set(fields) <= set(document):
+        fail("BASELINE_HASH_INVALID")
+    return digest(canonical({key: document[key] for key in fields}).rstrip(b"\n"))
+
+
+def _reader_inventory(
+    envelope: Mapping[str, Any], snapshot: Mapping[str, Any],
+    originals: Mapping[str, Mapping[str, Any]], contract: seo.AuditContract,
+) -> seo.AuditContract:
+    base = {_item_slug(item) for item in contract.items}
+    selected = envelope.get("selected_pages")
+    inventory = envelope.get("inventory")
+    legacy_privacy = (
+        snapshot.get("schema") == "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1"
+        and type(selected) is dict
+        and set(selected) == {"privacy-policy"}
+        and envelope.get("selected_articles") == {}
+        and "reader_page_slugs" not in snapshot
+        and len(base) == 14
+    )
+    # This compatibility reads the original V1 bytes; it never relabels a
+    # snapshot or grants permission to add a hub.
+    declared = [] if legacy_privacy else snapshot.get("reader_page_slugs")
+    if (
+        (snapshot.get("schema") != "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2"
+         and not legacy_privacy)
+        or snapshot.get("origin") != contract.origin
+        or snapshot.get("source") != "BOUNDED_WORDPRESS_EDITOR_MCP"
+        or snapshot.get("publication_authority") is not False
+        or type(selected) is not dict or not selected
+        or type(inventory) is not dict
+        or type(declared) is not list
+        or any(not isinstance(slug, str) for slug in declared)
+        or len(declared) != len(set(declared))
+        or not set(declared) <= READER_HUB_SLUGS
+        or set(originals) != base | set(declared)
+        or set(inventory) != set(originals)
+        or not set(selected) <= set(declared) | {"privacy-policy"}
+    ):
+        fail("CORE_INVENTORY_MISMATCH")
+    ids = set()
+    for slug, baseline in originals.items():
+        identifier = baseline.get("id")
+        if (
+            type(identifier) is not int or identifier <= 0 or identifier in ids
+            or inventory[slug] != {
+                "post_id": identifier, "slug": slug, "post_type": baseline.get("post_type"),
+                "status": baseline.get("status"), "content_sha256": baseline.get("content_sha256"),
+            }
+            or baseline.get("slug") != slug
+            or baseline.get("post_type") != (
+                "post" if slug in {_item_slug(item) for item in contract.items if item.role == "article"}
+                else "page"
+            )
+            or baseline.get("status") not in ("draft", "publish")
+            or baseline.get("status") == "draft" and (
+                slug not in selected or slug not in READER_HUB_SLUGS
+            )
+        ):
+            fail("BASELINE_INVENTORY_BINDING_INVALID")
+        ids.add(identifier)
+    for slug, row in selected.items():
+        baseline = originals[slug]
+        if type(row) is not dict or (
+            row.get("kind") != ("reader_privacy" if slug == "privacy-policy" else "hub")
+            or type(row.get("post_id")) is not int
+            or row.get("post_id") != baseline["id"]
+            or row.get("baseline_status") != baseline["status"]
+            or row.get("baseline_sha256") != baseline["content_sha256"]
+            or not isinstance(row.get("artifact_key"), str) or not row["artifact_key"]
+            or any(not isinstance(row.get(key), str) or re.fullmatch(r"[a-f0-9]{64}", row[key]) is None
+                   for key in ("template_sha256", "registry_sha256", "production_artifact_sha256"))
+            or slug == "privacy-policy" and baseline["status"] != "publish"
+        ):
+            fail("READER_PAGE_BINDING_INVALID")
+    items = contract.items + tuple(
+        seo.InventoryItem(contract.origin + "/" + slug + "/", "fixed_page", slug)
+        for slug in sorted(set(declared))
+    )
+    return replace(contract, items=items, content_urls=frozenset(
+        item.url for item in items if item.role != "home"
+    ))
+
+
+def _reader_graph_without_image(
+    graph: dict[str, Any] | None, item: seo.InventoryItem,
+    contract: seo.AuditContract, title: str, description: str,
+) -> bool:
+    if item.role != "article":
+        return seo._structured_data_semantics(graph, item, contract, title, description, "")
+    if graph is None or type(graph.get("@graph")) is not list:
+        return False
+    nodes = graph["@graph"]
+    if any(type(node) is not dict or not isinstance(node.get("@type"), str) for node in nodes):
+        return False
+    if sorted(node["@type"] for node in nodes) != ["Article", "BreadcrumbList", "Organization", "WebSite"]:
+        return False
+    by_type = {node["@type"]: node for node in nodes}
+    common = {"@context": graph.get("@context"), "@graph": [
+        by_type["Organization"], by_type["WebSite"]
+    ]}
+    home = next(entry for entry in contract.items if entry.role == "home")
+    if not seo._structured_data_semantics(common, home, contract, title, description, ""):
+        return False
+    article = by_type["Article"]
+    published, modified = article.get("datePublished"), article.get("dateModified")
+    if not seo._valid_utc_text(published) or not seo._valid_utc_text(modified):
+        return False
+    org = contract.origin + "/#organization"
+    return (
+        modified >= published
+        and article.get("articleSection") in ("移動", "家事", "備え")
+        and article == {
+            "@id": item.url + "#article", "@type": "Article",
+            "articleSection": article["articleSection"], "author": {"@id": org},
+            "breadcrumb": {"@id": item.url + "#breadcrumb"},
+            "datePublished": published, "dateModified": modified,
+            "description": description, "headline": title,
+            "inLanguage": "ja-JP", "mainEntityOfPage": item.url,
+            "publisher": {"@id": org}, "url": item.url,
+        }
+        and by_type["BreadcrumbList"] == {
+            "@id": item.url + "#breadcrumb", "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "item": contract.origin + "/", "name": "ホーム", "position": 1},
+                {"@type": "ListItem", "item": item.url, "name": title, "position": 2},
+            ],
+        }
+    )
+
+
+def _reader_seo_report(
+    report: dict[str, Any], contract: seo.AuditContract,
+    transport: _ObservedTransport, metadata: Mapping[str, Any],
+) -> None:
+    """Evaluate the explicit media form from actual HTML, retaining every other check."""
+    for item, row in zip(contract.items, report["pages"], strict=True):
+        response = transport.get(item.url)
+        parser = seo._SeoHtmlParser()
+        parser.feed(response.body.decode("utf-8"))
+        asset = metadata["social_images"][_item_slug(item)]
+        checks = row["checks"]
+        def check(ok: bool, detail: str) -> dict[str, str]:
+            return seo._check(ok, response.body_sha256, response.observed_at, detail)
+        if asset is None:
+            for key in ("og_image", "og_image_width", "og_image_height", "og_image_type", "twitter_image"):
+                del checks[key]
+            checks["social_image_absent"] = check(
+                not any(
+                    str(meta.get(key, "")).lower().startswith(("og:image", "twitter:image"))
+                    for meta in parser.meta for key in ("property", "name")
+                ), "APPROVED_PROJECTION_HAS_NO_IMAGE_SLOT",
+            )
+            checks["twitter_card"] = check(
+                seo._meta_values(parser, "name", "twitter:card") == ["summary"],
+                "EXACT_SUMMARY_WITHOUT_IMAGE",
+            )
+            graph, _types = seo._single_graph(parser)
+            descriptions = seo._meta_values(parser, "name", "description")
+            checks["structured_data_semantics"] = check(
+                _reader_graph_without_image(
+                    graph, item, contract, " ".join("".join(parser.title_parts).split()),
+                    descriptions[0] if len(descriptions) == 1 else "",
+                ), "EXACT_GRAPH_WITH_NO_IMAGE_CLAIM",
+            )
+        else:
+            for key, prop, wanted in (
+                ("og_image", "og:image", asset["url"]),
+                ("og_image_width", "og:image:width", str(asset["width"])),
+                ("og_image_height", "og:image:height", str(asset["height"])),
+            ):
+                checks[key] = check(
+                    seo._meta_values(parser, "property", prop) == [wanted],
+                    "EXACT_APPROVED_MEDIA_VALUE",
+                )
+            checks["twitter_image"] = check(
+                seo._meta_values(parser, "name", "twitter:image") == [asset["url"]],
+                "EXACT_APPROVED_MEDIA_VALUE",
+            )
+        row["status"] = "PASS" if all(v["status"] == "PASS" for v in checks.values()) else "FAIL"
+    report["surfaces"]["sitemap"]["detail"] = f"EXACT_{len(contract.content_urls)}_CONTENT_URLS"
+    report["status"] = "PASS" if (
+        all(row["status"] == "PASS" for row in report["pages"])
+        and all(row["status"] == "PASS" for row in report["surfaces"].values())
+    ) else "FAIL"
+
+
+def _reader_hub_body(
+    slug: str, metadata: Mapping[str, Any], documents: Mapping[str, Any],
+    public_metadata: Mapping[str, Any],
+) -> str:
+    hubs = metadata["hubs"]
+    hub = next(row for row in hubs if row["slug"] == slug)
+    cards = []
+    if hub["kind"] in ("categories", "purposes"):
+        kind = "category" if hub["kind"] == "categories" else "purpose"
+        for child in hubs:
+            if child["kind"] != kind or child["slug"] not in documents:
+                continue
+            cards.append(
+                '<li><a class="raos-guide-card raos-taxonomy-card" href="/' + child["slug"] + '/">'
+                '<span class="raos-guide-card__title" role="heading" aria-level="3">' + escape(child["label"]) + '</span>'
+                '<span class="raos-guide-card__excerpt">' + escape(child["description"]) + '</span>'
+                '<span class="raos-guide-card__date">' + str(len(child["article_ids"]))
+                + '記事を読む <span aria-hidden="true">→</span></span></a></li>'
+            )
+        grid = "raos-guide-grid raos-taxonomy-grid"
+    else:
+        rows = [row for row in metadata["articles"] if row["article_id"] in hub["article_ids"]]
+        if hub["kind"] == "updates":
+            rows.sort(key=lambda row: public_metadata[row["production_slug"]]["dates"]["modified"], reverse=True)
+        for row in rows:
+            article_slug = row["production_slug"]
+            document = documents[article_slug]
+            date = datetime.fromisoformat(public_metadata[article_slug]["dates"]["modified"])
+            asset = metadata["social_images"][article_slug]
+            media = "" if asset is None else (
+                '<span class="raos-guide-card__media"><img src="' + escape(asset["url"], quote=True)
+                + '" alt="' + escape(asset["alt"], quote=True)
+                + '" width="' + str(asset["width"]) + '" height="' + str(asset["height"])
+                + '" loading="lazy" decoding="async"><span class="raos-guide-card__caption">'
+                + escape(asset["caption"]) + '</span></span>'
+            )
+            cards.append(
+                '<li><a class="raos-guide-card" href="/' + article_slug + '/">' + media
+                + '<span class="raos-article-category">' + escape(row["category_label"] + " / " + row["content_role_label"]) + '</span>'
+                '<span class="raos-guide-card__title" role="heading" aria-level="3">' + escape(document["title"]) + '</span>'
+                '<span class="raos-guide-card__excerpt">' + escape(document["excerpt"]) + '</span>'
+                '<span class="raos-guide-card__date">更新 ' + f"{date.year}年{date.month}月{date.day}日" + '</span></a></li>'
+            )
+        grid = "raos-guide-grid"
+    body = ('<h2>条件から読み始める</h2><ul class="' + grid + '">' + "".join(cards) + "</ul>"
+            if cards else "<p>現在、条件に合う公開記事はありません。</p>")
+    return '<div class="raos-reader-hub"><p>' + escape(hub["description"]) + "</p>" + body + "</div>"
+
+
+
+def _reader_runtime_binding(
+    envelope: Mapping[str, Any], profile: runtime.ReaderMeasurementRuntime | None,
+    mode: str,
+) -> None:
+    if mode not in ("release", "post-activation-readback"):
+        fail("READER_MEASUREMENT_BINDING_MODE_INVALID")
+    binding = envelope.get("reader_measurement")
+    if profile is None:
+        if binding is not None or mode != "release":
+            fail("READER_MEASUREMENT_BINDING_MISSING")
+        return
+    if type(profile) is not runtime.ReaderMeasurementRuntime:
+        fail("READER_MEASUREMENT_BINDING_INVALID")
+    if mode == "post-activation-readback" and profile.expected_collection_enabled is not True:
+        fail("READER_MEASUREMENT_BINDING_STATE_INVALID")
+    if mode == "release" and (binding is None or profile.expected_collection_enabled is not False):
+        fail("READER_MEASUREMENT_BINDING_MISSING")
+    if binding is not None and (
+        type(binding) is not dict or binding != {
+            "schema": "RAOS_READER_MEASUREMENT_RELEASE_V1",
+            "profile": profile.profile,
+            "manifest_sha256": profile.manifest_sha256,
+            "policy_sha256": profile.policy_sha256,
+            "contract_sha256": profile.contract_sha256,
+            "revision": profile.revision,
+            "expected_collection_enabled": False,
+        } or binding.get("expected_collection_enabled") is not False
+    ):
+        fail("READER_MEASUREMENT_BINDING_MISMATCH")
+
+
+def _reader_runtime_status(
+    site_status: Mapping[str, Any], profile: runtime.ReaderMeasurementRuntime | None,
+) -> None:
+    status = site_status.get("reader_measurement")
+    if profile is None:
+        if status is not None and (
+            type(status) is not dict or status.get("plugin_active") is not False
+            or (status.get("collection_enabled") is not False and status.get("collection_enabled") is not None)
+        ):
+            fail("READER_MEASUREMENT_NOT_DECLARED")
+        return
+    if type(profile) is not runtime.ReaderMeasurementRuntime:
+        fail("READER_MEASUREMENT_PROFILE_INVALID")
+    if (
+        type(status) is not dict
+        or status.get("schema") != "RAOSReaderMeasurementStatusV1"
+        or status.get("plugin_active") is not True
+        or status.get("plugin_version") != profile.plugin_version
+        or status.get("collection_enabled") is not profile.expected_collection_enabled
+        or status.get("contract_sha256") != profile.contract_sha256
+        or status.get("policy_sha256") != profile.policy_sha256
+        or status.get("approved_revision") != (
+            profile.revision if profile.expected_collection_enabled else None
+        )
+        or profile.profile != "reader-minimal-v1"
+        or type(profile.expected_collection_enabled) is not bool
+    ):
+        fail("READER_MEASUREMENT_STATUS_MISMATCH")
+    cleanup = status.get("cleanup")
+    if type(cleanup) is not dict or (
+        cleanup.get("healthy") is not True or cleanup.get("last_error_code") is not None
+        or not isinstance(cleanup.get("last_success_date"), str)
+    ):
+        fail("READER_MEASUREMENT_CLEANUP_UNVERIFIED")
+    try:
+        datetime.strptime(cleanup["last_success_date"], "%Y-%m-%d")
+    except ValueError:
+        fail("READER_MEASUREMENT_CLEANUP_UNVERIFIED")
+
+
 def run_verified_incremental_public_audit(
     *,
     context: VerifiedIncrementalReleaseV1,
@@ -493,11 +957,14 @@ def run_verified_incremental_public_audit(
     site_status_readback: Mapping[str, Any] | None = None,
     transport: seo.HttpTransport | None = None,
     public_metadata_reader: Any | None = None,
+    reader_metadata: ReaderSeoMetadata | None = None,
+    reader_measurement: runtime.ReaderMeasurementRuntime | None = None,
+    reader_measurement_mode: str = "release",
     external_image_fetch: Callable[
         [str], baseline_media.ImageResponse
     ] = baseline_media.fetch_image,
 ) -> dict[str, object]:
-    """All fourteen URLs: semantic SEO plus candidate/baseline-exact readback.
+    """Every bound URL: semantic SEO plus candidate/baseline-exact readback.
 
     No credential is read here. The caller supplies fresh bounded MCP readbacks;
     missing dates are diagnosed with fixed-origin, unauthenticated REST reads.
@@ -514,7 +981,31 @@ def run_verified_incremental_public_audit(
     )
     if site_status_readback is None:
         fail("SITE_STATUS_MISSING")
-    publication.validate_site_status(site_status_readback, require_measurement_off=True)
+    _reader_runtime_binding(envelope, reader_measurement, reader_measurement_mode)
+    legacy_runtime = (
+        reader_measurement is None and "reader_measurement" not in envelope
+        and not any(row.get("kind") == "reader_privacy" for row in envelope.get("selected_pages", {}).values())
+    )
+    try:
+        publication.validate_site_status(
+            site_status_readback,
+            require_measurement_off=reader_measurement_mode != "post-activation-readback",
+            **({"allow_legacy_runtime": True} if legacy_runtime else {}),
+        )
+    except publication.PublicationFailure:
+        if reader_measurement is None:
+            raise
+        fail("SITE_STATUS_INVALID")
+    # An explicit reader ON readback never opens the legacy eight-event collector.
+    if site_status_readback.get("measurement", {}).get("collection_enabled") is not False:
+        fail("LEGACY_MEASUREMENT_NOT_OFF")
+    _reader_runtime_status(site_status_readback, reader_measurement)
+    is_v2 = envelope["schema"] == "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_RELEASE_V2"
+    if is_v2 and reader_metadata is None or reader_measurement is not None and reader_metadata is None:
+        fail("READER_METADATA_REQUIRED")
+    if reader_metadata is not None and type(reader_metadata) is not ReaderSeoMetadata:
+        fail("READER_METADATA_INVALID")
+    reader = reader_metadata.to_document() if reader_metadata is not None else None
     if (
         candidate_path.parent != PRIVATE
         or candidate_path.name != envelope["manifest_sha256"]
@@ -542,12 +1033,16 @@ def run_verified_incremental_public_audit(
         fail("PREPARATION_SCOPE_INVALID")
     originals = {row["slug"]: row for row in original_snapshot["documents"]}
     contract = seo.load_contract()
+    if is_v2:
+        if len(originals) != len(original_snapshot["documents"]):
+            fail("CORE_INVENTORY_MISMATCH")
+        contract = _reader_inventory(envelope, original_snapshot, originals, contract)
     slugs = {
         "home" if item.role == "home" else urlsplit(item.url).path.strip("/")
         for item in contract.items
     }
     if (
-        len(originals) != 14
+        len(originals) != len(contract.items)
         or set(originals) != slugs
         or set(envelope["inventory"]) != slugs
     ):
@@ -561,23 +1056,55 @@ def run_verified_incremental_public_audit(
     }
     if set(current) != slugs:
         fail("CORE_INVENTORY_MISMATCH")
+    if reader is not None:
+        baselines = original_snapshot.get("all_document_baselines", {})
+        if not isinstance(baselines, Mapping):
+            fail("UNSELECTED_DOCUMENT_CHANGED")
+        expected_extra = {
+            str(key): row for key, row in baselines.items()
+            if isinstance(row, Mapping) and row.get("slug") not in slugs
+        }
+        observed_extra = {}
+        ids = [row.get("id") for row in current_documents.values()]
+        if len(ids) != len(set(ids)):
+            fail("UNSELECTED_DOCUMENT_CHANGED")
+        for slug, row in current_documents.items():
+            if slug in slugs:
+                continue
+            if row.get("slug") != slug or publication.sha256_json({
+                "schema": "ContentDocumentV1", "id": row.get("id"),
+                "status": row.get("status"), **publication.document_projection(row),
+            }) != row.get("content_sha256"):
+                fail("UNSELECTED_DOCUMENT_CHANGED")
+            observed_extra[str(row["id"])] = publication._baseline_record(row)
+        if observed_extra != expected_extra:
+            fail("UNSELECTED_DOCUMENT_CHANGED")
     expected_hashes: dict[str, str] = {
         **envelope["unchanged_documents"],
         **envelope["expected_production_content_sha256"],
     }
+    if reader is not None and (
+        set(expected_hashes) != slugs
+        or set(envelope["unchanged_documents"]) & set(envelope["expected_production_content_sha256"])
+        or not set(envelope.get("selected_pages", {})) <= set(envelope["expected_production_content_sha256"])
+    ):
+        fail("PREPARED_TARGET_SET_MISMATCH")
     prepared = preparation["production_documents"]
     if set(prepared) != set(envelope["expected_production_content_sha256"]):
         fail("PREPARED_TARGET_SET_MISMATCH")
     expected = {}
     for slug in sorted(slugs):
         baseline, observed = originals[slug], current[slug]
-        if publication._content_after_sha256(baseline, baseline["id"]) != baseline.get(
-            "content_sha256"
-        ):
+        baseline_hash = (_stored_content_hash(baseline) if is_v2
+                         else publication._content_after_sha256(baseline, baseline["id"]))
+        if baseline_hash != baseline.get("content_sha256"):
             fail("BASELINE_HASH_INVALID")
+        status = "publish" if is_v2 and slug in envelope["selected_pages"] else baseline.get("status")
         if any(
             observed.get(key) != baseline.get(key)
-            for key in ("id", "slug", "post_type", "status")
+            for key in ("id", "slug", "post_type")
+        ) or observed.get("status") != status or (
+            reader is not None and (type(observed.get("id")) is not int or observed["id"] <= 0)
         ):
             fail("DOCUMENT_IDENTITY_CHANGED")
         if (
@@ -596,6 +1123,19 @@ def run_verified_incremental_public_audit(
             observed
         ) != publication._baseline_record(baseline):
             fail("UNTOUCHED_DOCUMENT_CHANGED")
+        if is_v2 and slug in envelope["selected_pages"]:
+            page_row = envelope["selected_pages"][slug]
+            artifact_sha = digest(target["block_markup"].encode())
+            if artifact_sha != page_row["template_sha256"] or artifact_sha != page_row["production_artifact_sha256"]:
+                fail("READER_PAGE_ARTIFACT_CHANGED")
+            if page_row["kind"] == "hub" and page_row["registry_sha256"] != reader["registry_sha256"]:
+                fail("READER_HUB_REGISTRY_CHANGED")
+        if reader is not None and slug in READER_HUB_SLUGS:
+            registered = next(row for row in reader["hubs"] if row["slug"] == slug)
+            template = '<!-- wp:shortcode -->[kurashinoshirube_reader_hub slug="' + slug + '"]<!-- /wp:shortcode -->'
+            if (target["block_markup"] != template or target["title"] != registered["label"]
+                or target["excerpt"] != registered["description"]):
+                fail("READER_HUB_TEMPLATE_CHANGED")
         expected[slug] = target
     theme = deployment_readback.get("theme", {})
     expected_tree = (
@@ -610,7 +1150,21 @@ def run_verified_incremental_public_audit(
         or theme.get("tree_sha256") != expected_tree
     ):
         fail("DEPLOYMENT_THEME_MISMATCH")
+    if reader is not None and reader["theme_sha256"] != expected_tree:
+        fail("READER_THEME_CHANGED")
     home_head, theme_images, runtime_resources = _theme_expectations(expected_tree)
+    if reader is not None:
+        theme_images = dict(reader["approved_images"])
+    resources = runtime._reader_resources(runtime_resources, reader_measurement)
+    if reader_measurement is not None:
+        if digest(expected["privacy-policy"]["block_markup"].encode()) != reader_measurement.policy_sha256:
+            fail("READER_MEASUREMENT_POLICY_CHANGED")
+        runtime_articles = json.loads(reader_measurement.articles)
+        if (type(runtime_articles) is not list or len(runtime_articles) != 10
+            or any(type(row) is not dict for row in runtime_articles)
+            or {row.get("article_id"): row.get("slug") for row in runtime_articles}
+            != {row["article_id"]: row["production_slug"] for row in reader["articles"]}):
+            fail("READER_MEASUREMENT_ARTICLE_SCOPE_CHANGED")
     metadata = capture_public_metadata(
         public_metadata_reader or PublicMetadataReader(), list(current.values())
     )
@@ -622,12 +1176,21 @@ def run_verified_incremental_public_audit(
         blockers
         or baseline_blockers
         or set(replayed) != slugs
-        or set(baseline_metadata) != slugs
+        or set(baseline_metadata) != (
+            {slug for slug in slugs if originals[slug]["status"] == "publish"}
+            if is_v2 else slugs
+        )
     ):
         fail("PUBLIC_METADATA_UNVERIFIED")
     for row in cast(dict[str, Any], metadata["documents"]).values():
         _require_current_timestamp(row["evidence"]["retrieved_at"], now)
     for slug in slugs:
+        if replayed[slug]["dates"]["modified_gmt"] < replayed[slug]["dates"]["date_gmt"]:
+            fail("PUBLIC_METADATA_DATE_ORDER_INVALID")
+        if slug not in baseline_metadata:
+            # A draft has no captured publication date. Only fresh post-publish
+            # REST evidence cross-checked against current MCP fields supplies it.
+            continue
         if (
             replayed[slug]["dates"]["date_gmt"]
             != baseline_metadata[slug]["dates"]["date_gmt"]
@@ -639,11 +1202,14 @@ def run_verified_incremental_public_audit(
     observed_http = _ObservedTransport(
         transport
         or seo.BoundedHttpsTransport(
-            contract, allowed_resource_urls=frozenset(runtime_resources)
+            contract, allowed_resource_urls=frozenset(resources) | frozenset(theme_images),
+            **({"reader_measurement": reader_measurement} if reader_measurement is not None else {}),
         ),
         now,
     )
     report = seo.run_audit(observed_http, contract)
+    if reader is not None:
+        _reader_seo_report(report, contract, observed_http, reader)
     if report["status"] != "PASS":
         fail("PUBLIC_SEO_FAILED")
     page_bindings = {}
@@ -666,16 +1232,20 @@ def run_verified_incremental_public_audit(
             wanted_head["description"]
         ]:
             fail("CANDIDATE_OR_BASELINE_HEAD_MISMATCH")
-        image = (
-            publication.EXPECTED_SOCIAL_IMAGE_URL
-            if item.role != "article"
-            else contract.origin
-            + "/wp-content/themes/kurashinoshirube-child/assets/images/"
-            + publication.EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG[slug]
-        )
-        if seo._meta_values(head, "property", "og:image") != [image]:
-            fail("SOCIAL_IMAGE_MISMATCH")
-        image_urls.add(image)
+        social_asset = reader["social_images"][slug] if reader is not None else None
+        if reader is None:
+            image = (
+                publication.EXPECTED_SOCIAL_IMAGE_URL
+                if item.role != "article"
+                else contract.origin
+                + "/wp-content/themes/kurashinoshirube-child/assets/images/"
+                + publication.EXPECTED_ARTICLE_SOCIAL_IMAGE_BY_SLUG[slug]
+            )
+            if seo._meta_values(head, "property", "og:image") != [image]:
+                fail("SOCIAL_IMAGE_MISMATCH")
+            image_urls.add(image)
+        elif social_asset is not None:
+            image_urls.add(social_asset["url"])
         graph, _types = seo._single_graph(head)
         if graph is None:
             fail("JSONLD_GRAPH_INVALID")
@@ -709,11 +1279,16 @@ def run_verified_incremental_public_audit(
                 )
             except LegacyMediaProjectionFailure:
                 fail("DISPLAY_PROJECTION_MISMATCH")
+        body_markup = (
+            _reader_hub_body(slug, reader, current, replayed)
+            if reader is not None and slug in READER_HUB_SLUGS
+            else target["block_markup"]
+        )
         projection_sha = (
             None
             if item.role == "home"
             else verify_rendered_body(
-                target["block_markup"],
+                body_markup,
                 markup,
                 article_id=display_article_id if item.role == "article" else None,
             )
@@ -725,15 +1300,31 @@ def run_verified_incremental_public_audit(
         assets = _PageAssets()
         assets.feed(markup)
         assets.close()
-        if assets.measurement_scripts or page.header_values("set-cookie"):
+        if (assets.measurement_scripts and reader_measurement is None) or page.header_values("set-cookie"):
             fail("PUBLIC_MEASUREMENT_OFF_MISMATCH")
-        runtime_evidence = runtime.verify_page(page, runtime_resources, observed_http)
-        if (
-            item.role == "home"
-            and not {entry.url for entry in contract.items if entry.role == "article"}
-            <= assets.links
-        ):
-            fail("HOME_ARTICLE_ROUTES_MISSING")
+        runtime_evidence = (
+            runtime.verify_page(page, runtime_resources, observed_http)
+            if reader_measurement is None else
+            runtime.verify_page(page, runtime_resources, observed_http, reader_measurement=reader_measurement)
+        )
+        if item.role == "home":
+            if reader is None:
+                required_routes = {entry.url for entry in contract.items if entry.role == "article"}
+            else:
+                # The approved home exposes category/purpose cards and its guide
+                # entry set; it no longer promises ten direct article links.
+                required_routes = {
+                    contract.origin + "/" + row["slug"] + "/"
+                    for row in reader["hubs"]
+                    if row["kind"] in ("category", "purpose") and row["slug"] in slugs
+                }
+                guide_ids = next(row["article_ids"] for row in reader["hubs"] if row["slug"] == "guides")
+                required_routes.update(
+                    contract.origin + "/" + row["production_slug"] + "/"
+                    for row in reader["articles"] if row["article_id"] in guide_ids
+                )
+            if not required_routes <= assets.links:
+                fail("HOME_ARTICLE_ROUTES_MISSING")
         image_urls.update(assets.images)
         page_bindings[slug] = {
             "url": item.url,
@@ -747,6 +1338,18 @@ def run_verified_incremental_public_audit(
             "measurement_state": "CLOSED_DECLARED_RUNTIME_VERIFIED",
             "runtime_resources": runtime_evidence,
         }
+        if reader is not None:
+            page_bindings[slug].update({
+                "baseline_status": originals[slug]["status"],
+                "status": current[slug]["status"],
+                "public_dates": replayed[slug]["dates"],
+                "baseline_publication_date": (
+                    "NOT_REQUIRED" if originals[slug]["status"] == "draft"
+                    else baseline_metadata[slug]["dates"]["date_gmt"]
+                ),
+                "social_image_state": "NOT_INCLUDED" if social_asset is None else "VERIFIED_PRESENT",
+                "social_image": social_asset,
+            })
     image_bindings = {}
     non_theme_urls = image_urls - set(theme_images)
     baseline_urls = set()
@@ -798,7 +1401,7 @@ def run_verified_incremental_public_audit(
             fail("THEME_IMAGE_BYTES_MISMATCH")
         image_bindings[url] = response.body_sha256
     result = {
-        "schema": SCHEMA,
+        "schema": SCHEMA_V2 if reader is not None else SCHEMA,
         "publication_profile": "verified-incremental",
         "link_mode": "standard-api",
         "measurement_collection_enabled": False,
@@ -812,7 +1415,7 @@ def run_verified_incremental_public_audit(
         "site_status_sha256": digest(canonical(site_status_readback)),
         "theme_tree_sha256": expected_tree,
         "generated_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "core_document_count": 14,
+        "core_document_count": len(contract.items),
         "page_evidence": page_bindings,
         "public_metadata_sha256": digest(canonical(metadata)),
         "seo_report_sha256": digest(canonical(report)),
@@ -827,4 +1430,17 @@ def run_verified_incremental_public_audit(
             "revenue",
         ],
     }
+    if reader is not None:
+        result["reader_metadata_sha256"] = digest(canonical(reader))
+        result["reader_measurement"] = (
+            {"profile": reader_measurement.profile,
+             "manifest_sha256": reader_measurement.manifest_sha256,
+             "contract_sha256": reader_measurement.contract_sha256,
+             "policy_sha256": reader_measurement.policy_sha256,
+             "revision": reader_measurement.revision,
+             "expected_collection_enabled": reader_measurement.expected_collection_enabled,
+             "mode": reader_measurement_mode,
+             "state": "DECLARED_RUNTIME_AND_MCP_STATUS_VERIFIED"}
+            if reader_measurement is not None else {"state": "NOT_INCLUDED"}
+        )
     return {**result, "binding_sha256": digest(canonical(result))}

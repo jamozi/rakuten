@@ -1038,7 +1038,14 @@ class OfficialSourceCaptureEvidence:
             or type(self.final_url) is not str
             or type(self.http_status) is not int
             or self.http_status != 200
-            or self.content_type not in {"application/pdf", "text/html"}
+            or self.content_type
+            not in {
+                "application/pdf",
+                "text/html",
+                "application/json",
+                "application/javascript",
+                "text/javascript",
+            }
             or type(self.locators) is not tuple
             or not self.locators
         ):

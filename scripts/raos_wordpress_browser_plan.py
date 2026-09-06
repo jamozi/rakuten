@@ -10,6 +10,7 @@ SHARED_PRESENTATION_INPUTS = (
     "changes/wordpress-local-preview-v1/gateway/",
     "changes/wordpress-local-preview-v1/compose.yaml",
     "changes/editorial-measurement-v1/wordpress-plugin/",
+    "changes/reader-measurement-v1/wordpress-plugin/",
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme/",
 )
 

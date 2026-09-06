@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Mapping
 from datetime import UTC, datetime
 import importlib
 import json
@@ -40,7 +41,7 @@ class WorkflowFailure(ValueError):
 
 
 def request_scope(arguments: argparse.Namespace) -> dict[str, Any]:
-    return {
+    result = {
         key: getattr(arguments, key)
         for key in (
             "articles",
@@ -50,13 +51,17 @@ def request_scope(arguments: argparse.Namespace) -> dict[str, Any]:
             "runtime_transition",
         )
     }
+    for key in ("include_home", "reader_pages", "reader_privacy"):
+        if getattr(arguments, key, None):
+            result[key] = getattr(arguments, key)
+    return result
 
 
 def restore_selection(arguments: argparse.Namespace, state: dict[str, Any]) -> None:
     # Only restore an exact user selection, never silently expand the target set.
     if (
         arguments.candidate is None
-        and arguments.articles
+        and (arguments.articles or getattr(arguments, "reader_pages", None) or getattr(arguments, "reader_privacy", False))
         and arguments.snapshot_name
         and state.get("request_scope") == request_scope(arguments)
         and state.get("candidate")
@@ -85,6 +90,10 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--articles", help="explicit existing slugs, or all")
     result.add_argument("--snapshot-name")
     result.add_argument("--include-theme", action="store_true")
+    result.add_argument("--include-home", action="store_true")
+    result.add_argument("--reader-pages", help="explicit registered hub slugs, comma separated")
+    result.add_argument("--reader-privacy", action="store_true")
+    result.add_argument("--reader-measurement-readback", action="store_true", help="read-only inspection of the separately approved enabled reader revision")
     result.add_argument("--update-policies", choices=("none", "all"), default="none")
     result.add_argument(
         "--runtime-transition",
@@ -144,6 +153,37 @@ def verification_inputs(base: str = "origin/main") -> dict[str, str]:
     return {**check_inputs(selected), "head_sha": head}
 
 
+def validate_explicit_selection(arguments: argparse.Namespace, manifest: Mapping[str, Any]) -> None:
+    from raos_reader_release_pages import selected_page_slugs
+    from raos_wordpress_publication_request import load_articles
+    articles = getattr(arguments, "articles", None)
+    if articles and {row.production_slug for row in load_articles(articles)} != {row["slug"] for row in manifest["articles"]}:
+        raise WorkflowFailure("article selection differs from the frozen candidate")
+    explicit_pages = any(getattr(arguments, key, None) for key in ("include_home", "reader_pages", "reader_privacy")) or getattr(arguments, "update_policies", "none") == "all"
+    if explicit_pages:
+        selected = set(selected_page_slugs(ROOT, arguments))
+        if getattr(arguments, "update_policies", "none") == "all":
+            selected.update({"privacy-policy", "about-ad-policy", "comparison-policy"})
+        frozen = set(manifest["shared_artifacts"]) - {"theme", "seo", "plugins"}
+        if selected != frozen:
+            raise WorkflowFailure("page selection differs from the frozen candidate")
+    if getattr(arguments, "include_theme", False) and "theme" not in manifest["shared_artifacts"]:
+        raise WorkflowFailure("theme selection differs from the frozen candidate")
+
+
+def validate_frozen_selection(arguments: argparse.Namespace) -> None:
+    if not (arguments.articles or arguments.include_home or arguments.reader_pages
+            or arguments.reader_privacy or arguments.include_theme
+            or arguments.update_policies == "all"):
+        return
+    port = importlib.import_module("raos_wordpress_incremental_publication")
+    port._candidate_directory(arguments.candidate)
+    manifest, raw = port.read_json(arguments.candidate, "manifest.v1.json")
+    if raw != port.canonical(manifest) or port.digest(raw) != arguments.candidate.name:
+        raise WorkflowFailure("frozen candidate hash differs from its directory")
+    validate_explicit_selection(arguments, manifest)
+
+
 def plan(arguments: argparse.Namespace) -> tuple[dict[str, Any], Any, Any]:
     registry = discover_registry()
     changes = changed_paths(base=arguments.base)
@@ -167,12 +207,8 @@ def plan(arguments: argparse.Namespace) -> tuple[dict[str, Any], Any, Any]:
             prepared.snapshot, prepared.manifest
         )
         targets = [row["slug"] for row in prepared.manifest["articles"]]
-        if (
-            arguments.articles
-            and arguments.articles != "all"
-            and set(arguments.articles.split(",")) != set(targets)
-        ):
-            raise WorkflowFailure("article selection differs from the frozen candidate")
+        validate_explicit_selection(arguments, prepared.manifest)
+        targets += sorted(set(prepared.preparation["production_documents"]) - set(targets))
         inventory = json.loads(
             (
                 ROOT
@@ -234,8 +270,11 @@ def plan(arguments: argparse.Namespace) -> tuple[dict[str, Any], Any, Any]:
             from raos_wordpress_publication_request import load_articles
 
             targets = [row.production_slug for row in load_articles(arguments.articles)]
-        if not arguments.articles:
-            missing.append("explicit articles or a frozen candidate")
+        from raos_reader_release_pages import selected_page_slugs
+        page_targets = selected_page_slugs(ROOT, arguments)
+        targets += page_targets
+        if not arguments.articles and not (getattr(arguments, "reader_pages", None) or getattr(arguments, "reader_privacy", False)):
+            missing.append("explicit articles, registered reader pages or a frozen candidate")
         if not arguments.snapshot_name:
             missing.append("an existing bounded MCP snapshot")
     return (
@@ -355,10 +394,14 @@ def prepare(arguments: argparse.Namespace) -> dict[str, Any]:
                 update_policies=",".join(
                     sorted(
                         set(prepared.manifest["shared_artifacts"])
-                        - {"theme", "seo", "plugins"}
+                        & {"about-ad-policy", "comparison-policy", "privacy-policy"}
+                        - set(prepared.manifest.get("reader_pages", {}))
                     )
                 )
                 or "none",
+                include_home="home" in prepared.manifest["shared_artifacts"],
+                reader_pages=",".join(sorted(slug for slug, row in prepared.manifest.get("reader_pages", {}).items() if row["kind"] == "hub")) or None,
+                reader_privacy="privacy-policy" in prepared.manifest.get("reader_pages", {}),
                 home_mode="shared-theme-candidate"
                 if "theme" in prepared.manifest["shared_artifacts"]
                 else "preserve-live-baseline",
@@ -509,6 +552,8 @@ def preview_origin(environment: dict[str, str]) -> str:
 def main(argv: list[str] | None = None) -> int:
     arguments = parser().parse_args(argv)
     try:
+        if arguments.reader_measurement_readback and arguments.stage != "readback":
+            raise WorkflowFailure("reader measurement ON inspection is readback-only")
         restore_selection(arguments, previous_report())
         if not 1 <= arguments.workers <= 32:
             raise WorkflowFailure("workers must be within 1..32")
@@ -519,6 +564,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             if arguments.candidate is None:
                 raise WorkflowFailure("an explicit candidate is required")
+            validate_frozen_selection(arguments)
             if arguments.stage == "propose" and not (
                 (arguments.candidate / "audit/report.v2.json").exists()
                 or (arguments.candidate / "publication-request.v1.json").exists()
@@ -545,6 +591,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             legacy.incremental_preview_fixture = arguments.preview_fixture
             legacy.incremental_base = arguments.base
+            legacy.incremental_reader_measurement_readback = arguments.reader_measurement_readback
             legacy.incremental_implementation_execution_id = (
                 arguments.implementation_execution_id
             )
