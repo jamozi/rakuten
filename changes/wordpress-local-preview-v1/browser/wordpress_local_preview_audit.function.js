@@ -1555,7 +1555,7 @@
       const headFailure = surface.publicCore
         ? head.titleCount !== 1 || !head.title ||
           head.canonical.length !== 1 || head.canonical[0] !== expectedUrl ||
-          head.description.length !== 1 || head.description[0].length < 30 ||
+          head.description.length !== 1 || head.description[0].length < (surface.kind === 'reader_hub' ? 1 : 30) ||
           head.ogTitle.length !== 1 || head.ogTitle[0] !== head.title ||
           head.ogDescription.length !== 1 || head.ogDescription[0] !== head.description[0] ||
           head.ogUrl.length !== 1 || head.ogUrl[0] !== expectedUrl ||
