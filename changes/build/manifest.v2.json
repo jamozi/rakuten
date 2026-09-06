@@ -29242,7 +29242,7 @@
         },
         {
           "bytes": 27271,
-          "sha256": "d3badc9ef29f04af824185c036d167bd81a248b233a03c812911ca688e479aac",
+          "sha256": "a61ba08ffbcd62b3c3b4a68756a5ce6b22d7f1bd51ac707e70ea254d58c3815b",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30068,7 +30068,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "538d9a0fec2d935e1db70eaaad42b39ee52b431b5505312481fe4409b9b2bb1e",
+          "sha256": "5fb06c8c4300e563adca07900aa38babb9900ac131837d4579581c8f5969dea5",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
