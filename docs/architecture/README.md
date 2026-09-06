@@ -2,6 +2,6 @@
 
 # `docs/architecture`
 
-Implementation-facing architecture documentation derived without modifying canonical inputs.
+Implementation map: [current system](current-system.md). Versioned decisions and applicability: [documentation map](../README.md). Historical ST documents remain reference snapshots.
 
-ST-0101 reserves this directory as an inert boundary. Functional content is owned by later backlog Stories.
+This generated entrypoint routes to current implementation and verification. ST-0101 is the historical layout baseline.

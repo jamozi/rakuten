@@ -108,6 +108,9 @@ PROTECTED_PREFIXES = (
 ACTIVATED_DIRECTORY_OWNERS = {
     "packages/web-contracts": "ST-0105",
 }
+NAVIGATION_DIRECTORIES = frozenset(
+    {"docs/architecture", "docs/runbooks", "tests/evals"}
+)
 PR_GET_DUMPABLE = 3
 PR_SET_DUMPABLE = 4
 
@@ -460,17 +463,32 @@ def marker_bytes(entry: Mapping[str, str]) -> bytes:
         "contract, never src/generated files by hand.\n"
         if owner is not None
         else (
-            "ST-0101 reserves this directory as an inert boundary. Functional "
-            "content is owned by later backlog Stories.\n"
+            "ST-0101 recorded an inert boundary here. See the "
+            "[current documentation map]("
+            + "../" * len(PurePosixPath(entry["path"]).parts)
+            + "docs/README.md) for implementation status and ownership.\n"
         )
     )
+    if entry["path"] in NAVIGATION_DIRECTORIES:
+        footer = (
+            "This generated entrypoint routes to current implementation and "
+            "verification. ST-0101 is the historical layout baseline.\n"
+        )
     text = (
-        f"{GENERATED_HEADER}\n\n"
-        f"# `{entry['path']}`\n\n"
-        f"{entry['purpose']}\n\n"
-        f"{footer}"
+        f"{GENERATED_HEADER}\n\n# `{entry['path']}`\n\n{entry['purpose']}\n\n{footer}"
     )
     return text.encode("utf-8")
+
+
+def expected_marker_bytes(root: Path, directory: str) -> bytes:
+    """Render another owner's marker without freezing ordinary source bytes."""
+    descriptor = _open_root_fd(root)
+    try:
+        config = load_config(descriptor)
+    finally:
+        os.close(descriptor)
+    entry = next(row for row in config["directories"] if row["path"] == directory)
+    return marker_bytes(entry)
 
 
 def _read_marker_at(

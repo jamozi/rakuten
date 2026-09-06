@@ -1,8 +1,8 @@
 # Project-local Codex policy for the Rakuten profit-optimization system.
 # This layer is loaded only when the repository is trusted.
 
-# Keep MCP declarations available for an explicitly re-enabled development
-# session, but do not start MCP transports during the hook-free autonomous run.
+# Codex 0.153.4: bounded WordPress transports are enabled; optional transports
+# remain declared but disabled. Project trust is required for this layer.
 web_search = "live"
 [mcp_servers.openaiDeveloperDocs]
 url = "https://developers.openai.com/mcp"
@@ -147,6 +147,12 @@ enabled = false
 url = "https://mcp.notion.com/mcp"
 enabled = false
 
+# API-key setup is not an ambient RAOS capability. Keep the shared plugin
+# installed, and shadow its local helper without starting a credential flow.
+[mcp_servers.openai-api-key-local-confirmation]
+command = "/usr/bin/false"
+enabled = false
+
 # Keep the claude-mem search declaration disabled alongside its plugin and
 # hooks so no worker, MCP transport, or port-37700 service is spawned.
 [plugins."claude-mem@claude-mem-local".mcp_servers."mcp-search"]
@@ -159,11 +165,11 @@ default_tools_approval_mode = "approve"
 enabled = false
 
 # Also disable the plugin-scoped declaration for clarity. The complete direct
-# declaration above is required by Codex 0.146 for a valid project override.
+# declaration above is required by Codex 0.153.4 for a valid project override.
 [plugins."github@openai-curated".mcp_servers.github]
 enabled = false
 
-# Codex 0.146 keeps plugin install/on-off state user-scoped. Disable the
+# Codex 0.153.4 keeps plugin install/on-off state user-scoped. Disable the
 # out-of-scope plugins' bundled apps in this project without uninstalling or
 # changing their global state.
 [apps._default]
@@ -174,6 +180,7 @@ enabled = false
 [apps.connector_76869538009648d5b282a4bb21c3d157]
 enabled = true
 default_tools_approval_mode = "auto"
+default_tools_enabled = false
 
 # Slack
 [apps.asdk_app_69a1d78e929881919bba0dbda1f6436d]
@@ -189,4 +196,375 @@ enabled = false
 
 # Hugging Face
 [apps.asdk_app_6939e86417648191b7bda087d872685b]
+enabled = false
+
+# Explicit app overrides are necessary: _default does not shadow an inherited
+# per-app enabled=true. No global install/on state is changed.
+
+# WPWriter
+[apps.asdk_app_69d57a067de88191a2dee16c9d78e18c]
+enabled = false
+
+# WordPress.com
+[apps.asdk_app_6a2b62fd753c8191bcff02ac79b54c6b]
+enabled = false
+
+# Outlook
+[apps.connector_4aaab2856305417b993eca9a216aaf6e]
+enabled = false
+
+# Figma
+[apps.connector_68df038e0ba48191908c8434991bbac2]
+enabled = false
+
+# Exact resource names from the hosted GitHub tool catalog. Local Git owns
+# branches/commits/files; gh covers operations missing from this bounded set.
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.fetch_issue"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.fetch_issue_comments"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.search_issues"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.search_prs"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.list_recent_issues"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.fetch_pr"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.get_pr_info"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.get_pr_diff"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.fetch_pr_file_patch"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.list_pr_changed_filenames"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.list_pull_request_reviews"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.list_pull_request_review_threads"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.fetch_pr_comments"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.get_commit_combined_status"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.fetch_commit_workflow_runs"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.fetch_workflow_run_jobs"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.fetch_workflow_job_steps"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.fetch_workflow_job_logs"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.fetch_workflow_run_artifacts"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.download_workflow_artifact"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.compare_commits"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.create_pull_request"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.update_pull_request"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.convert_pull_request_to_draft"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.mark_pull_request_ready_for_review"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.merge_pull_request"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.enable_auto_merge"]
+enabled = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157.tools."github.rerun_failed_workflow_run_jobs"]
+enabled = true
+
+# Host-discovered GSD workflows are not RAOS workflow authorities. File-path
+# matching was verified with session flags; Codex 0.153.4 ignores these entries
+# in the Project layer (openai/codex#20210). codex_harness.py run promotes them
+# to session flags. Other hosts must re-inventory paths.
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-add-tests/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ai-integration-phase/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-audit-fix/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-audit-milestone/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-audit-uat/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-autonomous/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-capture/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-cleanup/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-code-review/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-complete-milestone/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-config/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-debug/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-discuss-phase/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-docs-update/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-eval-review/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-execute-phase/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-explore/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-extract-learnings/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-fast/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-forensics/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-graphify/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-health/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-help/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-import/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-inbox/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ingest-docs/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-manager/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-map-codebase/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-milestone-summary/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-new-milestone/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-new-project/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ns-context/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ns-ideate/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ns-manage/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ns-project/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ns-review/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ns-workflow/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-pause-work/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-phase/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-plan-phase/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-plan-review-convergence/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-pr-branch/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-profile-user/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-progress/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-quick/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-resume-work/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-review-backlog/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-review/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-secure-phase/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-settings/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ship/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-sketch/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-spec-phase/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-spike/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-stats/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-thread/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ui-phase/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ui-review/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-ultraplan-phase/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-undo/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-update/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-validate-phase/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-verify-work/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-workspace/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "/home/minami/.agents/skills/gsd-workstreams/SKILL.md"
 enabled = false

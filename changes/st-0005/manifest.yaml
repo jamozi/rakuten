@@ -60,11 +60,11 @@ source_artifacts:
   bytes: 152010
   sha256: 066a8e18761e97926508ea824ad66f1a0d93f2642d360c345779f5bf47872c2e
 - path: scripts/import_raos_design.py
-  bytes: 30495
-  sha256: 13c36b2104ebf1d51b07f4774939e2ee89180d9d479f905176eaaa71dadd4f37
+  bytes: 30187
+  sha256: 3cb4e30138c4ad785d549ab3b7074e267cc570e45433d9edc21cd00ffb05a0e7
 - path: docs/README.md
-  bytes: 3259
-  sha256: 4ad983a0a8c415d67cf25351f1cb037f959750622bb4a4e79e3c824dc8ff7ab6
+  bytes: 3948
+  sha256: 63bdcd628ce342b7e53f7a3e817916943f6886bd5fdb56ae69ddbd7a76af10ba
 - path: changes/st-0005/README.md
   bytes: 10382
   sha256: 984e28ee8e12be99f08e07f7742739d6c72ed90a44844aaee0fe01444b4af8ce
@@ -75,8 +75,8 @@ source_artifacts:
   bytes: 10025
   sha256: 82dac563b2c327e81cfa538d1212877da467ddbe8cf4d85862a39573a3a56849
 - path: tests/test_import_raos_design.py
-  bytes: 8703
-  sha256: b3f15e47077f848c359b96637cb490696ec1769f53705cafb6feb5700a98c66e
+  bytes: 8853
+  sha256: 7d7246215a986856ce74394c27a875c1ded0a15954145402c528e91d69299d96
 - path: changes/st-0005/requests/0001-st-0001.yaml
   bytes: 991
   sha256: 577bbc41cd41dfcfe67d52a88858597ad65c28f576a3e57fb472aa4af16fc033

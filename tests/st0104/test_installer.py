@@ -26,7 +26,6 @@ from .support import (
 SOURCE_MANIFEST_SHA256 = (
     "5ba47a83548e6acfaa706ab4d3595cd05af39d9fa53fb411c17c44d7b478f458"
 )
-ROOT_README_SHA256 = "6ea0bb1d89007cf3a8cae6109d50963859ce764e05198a5b05c2a014733e5951"
 
 
 def sha256(path: Path) -> str:
@@ -200,7 +199,10 @@ def test_st0104_preserves_exact_separately_owned_v2_contract_root(
 
     def scan_with_unowned_file(root: Path) -> tuple[dict[str, Path], set[str]]:
         files, directories = real_scan_tree(root)
-        return {**files, "unowned.schema.json": root / "unowned.schema.json"}, directories
+        return {
+            **files,
+            "unowned.schema.json": root / "unowned.schema.json",
+        }, directories
 
     monkeypatch.setattr(installer_module, "_scan_tree", scan_with_unowned_file)
     with pytest.raises(RuntimeError, match="separately owned contract inventory drift"):
@@ -217,7 +219,11 @@ def test_manifest_render_is_deterministic(installer_module: ModuleType) -> None:
 
 
 def test_root_readme_and_source_bundle_remain_protected() -> None:
-    assert sha256(REPO_ROOT / "contracts" / "README.md") == ROOT_README_SHA256
+    from scripts.bootstrap_workspace import expected_marker_bytes
+
+    assert (REPO_ROOT / "contracts/README.md").read_bytes() == expected_marker_bytes(
+        REPO_ROOT, "contracts"
+    )
     assert sha256(SOURCE_ROOT / "manifest.yaml") == SOURCE_MANIFEST_SHA256
     assert not (VERSION_ROOT / "README.md").exists()
 

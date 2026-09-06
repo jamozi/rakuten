@@ -77,8 +77,8 @@
     },
     {
       "path": ".codex/config.toml",
-      "sha256": "e58f4dacfcf504cd1ae4ad7e4221ccd5e980c1813358fbbf90454b7be82ba454",
-      "size": 6138
+      "sha256": "0f869c150e85770b8de905cf9f004309d1bf77097dee99237201689838d81978",
+      "size": 16403
     },
     {
       "path": "Makefile",

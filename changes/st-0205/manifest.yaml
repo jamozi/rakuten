@@ -79,8 +79,8 @@ source_artifacts:
   bytes: 3427
   sha256: 4eb39cb5aefdda22eba5abfa74a6539d36444453aebb8a70b41510d4f6cf56c8
 - uri: repo://README.md
-  bytes: 7310
-  sha256: dc504844e40b802f5105efa60330a3b8d4c1e161d7bf44213b25ceb64e69fd9a
+  bytes: 7478
+  sha256: 54e597c73c783360417b6f37b7b3497ff20e49bfedfdbeedb473ee5aa1349ec8
 - uri: repo://package.json
   bytes: 2273
   sha256: 730029961c3713d0b2cd6888ae3f04c25d0dbf0ee97b2ed562a43ea792f7e968

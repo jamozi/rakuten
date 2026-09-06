@@ -177,8 +177,8 @@ source_artifacts:
   bytes: 3427
   sha256: 4eb39cb5aefdda22eba5abfa74a6539d36444453aebb8a70b41510d4f6cf56c8
 - uri: repo://README.md
-  bytes: 7310
-  sha256: dc504844e40b802f5105efa60330a3b8d4c1e161d7bf44213b25ceb64e69fd9a
+  bytes: 7478
+  sha256: 54e597c73c783360417b6f37b7b3497ff20e49bfedfdbeedb473ee5aa1349ec8
 - uri: repo://changes/st-0301/manifest.yaml
   bytes: 10295
   sha256: 7abb84a9e9560daaed49bd3127d69ea05f9bf9d5ba49ebf1d39776dee37ee8f6
@@ -214,7 +214,7 @@ source_artifacts:
   sha256: 58ed5d965da4c2c2503bec8e47f60a049e7b1d842f72194b04a57e32bb0fe384
 - uri: repo://changes/st-0302/manifest.yaml
   bytes: 8657
-  sha256: 7a23b541e3e93b39933e467cfdbf46cfdd18182ab321b95662f679d2619ee8e5
+  sha256: dd31c4875ddbeed74ff1b6cfba368b807e63dc313267de7022900ec4dd1a69a4
 generated_artifact_count: 3
 generated_artifacts:
 - uri: repo://migrations/versions/202608030003_iam_ops_tables.py

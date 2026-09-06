@@ -57,8 +57,8 @@ source_artifacts:
   bytes: 2385
   sha256: dd0cc0a6e99483d1975feae553736e142db54440fa5ff42d34d0d50d15c9b488
 - uri: repo://README.md
-  bytes: 7310
-  sha256: dc504844e40b802f5105efa60330a3b8d4c1e161d7bf44213b25ceb64e69fd9a
+  bytes: 7478
+  sha256: 54e597c73c783360417b6f37b7b3497ff20e49bfedfdbeedb473ee5aa1349ec8
 - uri: repo://Makefile
   bytes: 3427
   sha256: 4eb39cb5aefdda22eba5abfa74a6539d36444453aebb8a70b41510d4f6cf56c8
@@ -82,7 +82,7 @@ source_artifacts:
   sha256: 0525da397e16e535792364f6dd9ed1128218c1a080c07b6cb25f471f8e9cb78d
 - uri: repo://changes/st-0305/manifest.yaml
   bytes: 14860
-  sha256: 3ec4365153ea06710b1329c9416aee70ce221a3106402c4ff2b51005fc6e99b7
+  sha256: 17ecf1751a2d27bc55b9d66da4c7ae9223017fd548200fa65ba96b6062250105
 - uri: repo://migrations/versions/202608030005_publication_analytics_finance.py
   bytes: 41097
   sha256: 08e7f75a005e960dca0af9a7fe7cacbe90040aaafeea01d1f5a279a84bcdf38b

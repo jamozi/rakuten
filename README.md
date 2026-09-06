@@ -1,6 +1,17 @@
-# RAOS monorepo
+# RAOS / 暮らしのしるべ
 
-RAOS の実装、生成、検証を1つの統合workflowで管理するmonorepoです。Story IDは要求・依存・statusの追跡に使い、実装・commit・PRの境界には使いません。
+日本の読者へ商品比較・購入支援を提供する、編集・Evidence・公開・収益運営のmonorepoです。
+読者の信頼と有用性を維持し、持続的な確定貢献利益の改善を支えます。
+現在の製品contractは[Editorial V3](changes/editorial-portfolio-v3/README.md)、
+構造は[current architecture](docs/architecture/current-system.md)、目的別の仕様は[docs map](docs/README.md)から参照できます。
+
+## Quick Start
+
+Python 3.14.6、uv 0.12.x、Node 24.18.1、npm 11.16.0を使います。
+初回は次の`make setup`でlockどおりに依存を準備します。ローカルWordPressは
+[preview guide](changes/wordpress-local-preview-v1/README.md)に従って起動します。
+ASPは[接続guide](docs/affiliate-network-ingestion.md)を参照してください。
+各社の実接続・登録情報の受領は未完了で、初期設定は無効です。
 
 ## 開発コマンド
 
@@ -41,14 +52,8 @@ CIには検査ごとの所要時間と遅いテストを出力します。通常
 ## WordPress公開準備
 
 `make wordpress-production-request` は読み取り専用の計画を表示します。
-記事はローカルのtracked sourceで作成・確認し、確定候補を本番へ適用・照合します。
-`make wordpress-preview-environment`とprepareの既存レポートで実環境の差分を確認できます。
-通常のローカル表示は通常APIリンク・計測OFF・圧縮JavaScriptを使います。
-`ARGS='plan --articles <slug> --snapshot-name <name> --json'` で対象と選択検査を確認し、
-`prepare` で事前検証・必要な生成・関連検査・並列表示確認を実行します。
-同じ入力と期限内の結果は元の日時のまま再利用します。独立レビュー2巡とRequired CIの後、
-`propose → wp-admin所有者承認 → apply → readback` と進みます。
-詳細は[公開runbook](docs/runbooks/wordpress-verified-incremental.md)を参照してください。
+対象選択、local preview、再開、独立レビュー、承認と反映の手順は
+[公開runbook](docs/runbooks/wordpress-verified-incremental.md)が所有します。
 
 ## Generator ownership
 
@@ -60,7 +65,7 @@ CIには検査ごとの所要時間と遅いテストを出力します。通常
 - 通常のtracked sourceはURIとsemantic identity/versionで追跡し、mutable byte digestを承認条件にしません。
 - predecessor outputはowner ID/versionで参照し、生成順はowner graphで保証します。
 
-`docs/canonical/**` は不変baselineです。product requirementは正本として利用しますが、baseline内の旧Story/PR/preflight/human-review手順は現在の開発workflowには適用しません。
+仕様の適用範囲と履歴の扱いは[docs map](docs/README.md)を参照してください。
 
 ## Test layout
 
@@ -73,9 +78,14 @@ pytestは `--import-mode=importlib` で全suiteをcollectionします。通常�
 DB／Storageは専用partitionに分け、localな全testがどれか1つのpartitionに入るようにします。
 ファイル名による自動分類は廃止し、既存の共有状態testは明示的なmodule一覧で移行管理します。suite helperは各packageの `support.py` からrelative importします。
 
-## 外部作用の境界
+## Contribution and operations
 
-GitHub上の通常の開発操作を除くcredential入力、規約同意、支出、live provider変更、公開、staging、deployment、release、Production変更は自動実行しません。回復不能な削除、migration適用、Git history破壊も自動実行しません。ローカルのdesign、implementation、test、migration code、rollback logic、security hardeningはこの境界の内側で継続します。
+小さな修正は対象test、機能変更は関連contractと利用側を確認してから`make fast`を実行します。
+Story IDは要求・依存・statusの追跡に使い、commit・PRの境界にはしません。
+通常の開発と外部適用の権限は[AGENTS](AGENTS.md)を参照してください。
+ローカル結果はstaging・Production検証を表しません。
+Codex環境の検査は`.venv/bin/python scripts/codex_harness.py check`です。
+project内のSkill制御を使う[CLI起動・計測・評価](docs/architecture/current-system.md#codex-context-and-capability-boundaries)も用意しています。
 
 ## Repository map
 
