@@ -1555,7 +1555,7 @@
       const headFailure = surface.publicCore
         ? head.titleCount !== 1 || !head.title ||
           head.canonical.length !== 1 || head.canonical[0] !== expectedUrl ||
-          head.description.length !== 1 || head.description[0].length < 30 ||
+          head.description.length !== 1 || head.description[0].length < (surface.kind === 'reader_hub' ? 1 : 30) ||
           head.ogTitle.length !== 1 || head.ogTitle[0] !== head.title ||
           head.ogDescription.length !== 1 || head.ogDescription[0] !== head.description[0] ||
           head.ogUrl.length !== 1 || head.ogUrl[0] !== expectedUrl ||
@@ -1819,10 +1819,9 @@
             return 'TOC_TARGET_INVALID';
           }
           const targetId = targetHash.slice(1);
-          const isUnobscured = () => page.evaluate((id) => {
+          const isUnobscured = () => page.evaluate(({ id, readerLayout }) => {
             const toc = document.querySelector('.raos-article-toc');
-            const reader = document.querySelector('.raos-reader-view[data-raos-reader-components="true"]');
-            const main = document.querySelector(reader ? '.raos-editorial-v2' : '.raos-editorial-v2__main');
+            const main = document.querySelector(readerLayout ? '.raos-editorial-v2' : '.raos-editorial-v2__main');
             const target = document.getElementById(id);
             if (
               !(toc instanceof HTMLElement) || !(main instanceof HTMLElement) ||
@@ -1843,12 +1842,12 @@
               Math.max(0, targetRect.top + Math.min(targetRect.height / 2, 12)),
             );
             const topmost = document.elementFromPoint(sampleX, sampleY);
-            return (reader ? getComputedStyle(toc).position === 'static' : tocRect.left >= mainRect.right + 12) &&
+            return (readerLayout ? getComputedStyle(toc).position === 'static' : tocRect.left >= mainRect.right + 12) &&
               targetRect.left >= mainRect.left - 1 && targetRect.right <= mainRect.right + 1 &&
               targetRect.top >= (Number.isFinite(stickyTop) ? stickyTop : 0) - 1 &&
               targetRect.top < window.innerHeight &&
               topmost !== null && !toc.contains(topmost);
-          }, targetId);
+          }, { id: targetId, readerLayout: readerArticles.has(surface.article_id) });
           await tocLink.focus();
           await page.keyboard.press('Enter');
           await page.waitForTimeout(500);

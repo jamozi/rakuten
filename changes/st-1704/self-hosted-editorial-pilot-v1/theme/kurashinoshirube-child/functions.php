@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.5.1';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '6b99bd06826adadd7d1a468b96ef988a265627e0d40922f336a8f839c55d4f41';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '6b99bd06826adadd7d1a468b96ef988a265627e0d40922f336a8f839c55d4f41';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '120e9b4a4888a27519d12d967cd5d43bdfc165f26c47661dd43b2369f3e8d11c';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '120e9b4a4888a27519d12d967cd5d43bdfc165f26c47661dd43b2369f3e8d11c';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -2637,6 +2637,10 @@ function kurashinoshirube_editorial_v2_body_class(array $classes): array
     if (kurashinoshirube_is_policy_v3_page()) {
         $classes[] = 'raos-policy-v3-page';
     }
+    if (is_singular('page')
+        && kurashinoshirube_reader_hub_page_head((int) get_queried_object_id()) !== null) {
+        $classes[] = 'raos-reader-hub-page';
+    }
     if (is_search() || is_archive()) {
         $classes[] = 'raos-listing-page';
     }
@@ -2938,7 +2942,11 @@ function kurashinoshirube_resolve_related_target(string $target_id): ?array
     ) {
         return null;
     }
-    return array('title' => $binding['title'], 'url' => $expected_url);
+    $title = get_post_field('post_title', $target->ID, 'raw');
+    if (! kurashinoshirube_is_clean_text($title, 8, 100)) {
+        return null;
+    }
+    return array('title' => $title, 'url' => $expected_url);
 }
 
 /** Pick the most useful same-intent guide for the in-article decision handoff. */
@@ -3394,14 +3402,41 @@ function kurashinoshirube_reader_hub_content(string $slug): string
     return '<!-- wp:shortcode -->[kurashinoshirube_reader_hub slug="' . $slug . '"]<!-- /wp:shortcode -->';
 }
 
+/** Match public hub metadata to the registered page, excluding local guide extensions. */
+function kurashinoshirube_reader_hub_page_head(int $post_id): ?array
+{
+    if ($post_id <= 0 || get_post_type($post_id) !== 'page'
+        || get_post_status($post_id) !== 'publish'
+        || get_post_field('post_password', $post_id, 'raw') !== '') {
+        return null;
+    }
+    $slug = get_post_field('post_name', $post_id, 'raw');
+    foreach (kurashinoshirube_editorial_navigation()['reader_navigation']['hubs'] ?? array() as $hub) {
+        if (! is_array($hub) || ! is_string($slug) || ($hub['slug'] ?? null) !== $slug) {
+            continue;
+        }
+        if (! kurashinoshirube_is_clean_text($hub['label'] ?? null, 1, 100)
+            || ! kurashinoshirube_is_clean_text($hub['description'] ?? null, 1, 180)
+            || get_post_field('post_title', $post_id, 'raw') !== $hub['label']
+            || get_post_field('post_excerpt', $post_id, 'raw') !== $hub['description']
+            || get_post_field('post_content', $post_id, 'raw') !== kurashinoshirube_reader_hub_content($slug)) {
+            return null;
+        }
+        return array('title' => $hub['label'], 'description' => $hub['description']);
+    }
+    return null;
+}
+
 /** Enable a hub only after the exact tracked page is locally/publicly reachable. */
 function kurashinoshirube_reader_hub_url(string $slug): ?string
 {
     $known = array_column(kurashinoshirube_reader_hubs(), 'slug');
     if (! in_array($slug, $known, true)) { return null; }
     $page = get_page_by_path($slug, OBJECT, 'page');
-    if (! ($page instanceof WP_Post) || $page->post_status !== 'publish'
-        || $page->post_password !== '' || $page->post_content !== kurashinoshirube_reader_hub_content($slug)) {
+    if (! ($page instanceof WP_Post) || $page->post_name !== $slug
+        || $page->post_status !== 'publish' || $page->post_password !== ''
+        || $page->post_content !== kurashinoshirube_reader_hub_content($slug)
+        || kurashinoshirube_reader_hub_page_head((int) $page->ID) === null) {
         return null;
     }
     $url = get_permalink($page);
@@ -3942,7 +3977,7 @@ function kurashinoshirube_policy_page_head_map(): array
 }
 
 /**
- * Resolve one closed, public head context for home, Editorial V3, or policy.
+ * Resolve one closed, public head context for home, Editorial V3, policy, or hub.
  *
  * This is presentation data only. It never widens publication eligibility and
  * refuses a page whose persisted title or excerpt differs from the reviewed
@@ -4007,6 +4042,9 @@ function kurashinoshirube_public_head_context(): ?array
         $head = is_string($slug)
             ? (kurashinoshirube_policy_page_head_map()[$slug] ?? null)
             : null;
+        if ($head === null) {
+            $head = kurashinoshirube_reader_hub_page_head($post_id);
+        }
         if (
             ! is_array($head)
             || get_post_status($post_id) !== 'publish'

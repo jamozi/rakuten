@@ -86,7 +86,7 @@ function load_theme_function($name) {
 foreach (['kurashinoshirube_has_exact_keys', 'kurashinoshirube_article_bindings', 'kurashinoshirube_local_preview_origin', 'kurashinoshirube_is_local_preview',
     'kurashinoshirube_local_preview_article_identity', 'kurashinoshirube_public_article_identity',
     'kurashinoshirube_reader_hubs', 'kurashinoshirube_reader_eligible_posts', 'kurashinoshirube_reader_category_label',
-    'kurashinoshirube_reader_article_category', 'kurashinoshirube_reader_hub_content', 'kurashinoshirube_reader_hub_url',
+    'kurashinoshirube_reader_article_category', 'kurashinoshirube_reader_hub_content', 'kurashinoshirube_reader_hub_page_head', 'kurashinoshirube_reader_hub_url',
     'kurashinoshirube_reader_guide_card', 'kurashinoshirube_reader_group_cards',
     'kurashinoshirube_enqueue_local_running_cost', 'kurashinoshirube_verified_asset_uri',
     'kurashinoshirube_public_listing_post_is_eligible', 'kurashinoshirube_public_listing_excluded_post_ids'] as $name) {
@@ -179,7 +179,8 @@ check(kurashinoshirube_article_bindings() === $original_bindings, 'fixed binding
 check(count(kurashinoshirube_reader_eligible_posts(array_keys($articles))) === 5, 'hub eligibility');
 foreach (kurashinoshirube_reader_hubs() as $hub) {
     $GLOBALS['posts'][900 + count($GLOBALS['posts'])] = new WP_Post(['ID' => 900 + count($GLOBALS['posts']), 'post_type' => 'page',
-        'post_name' => $hub['slug'], 'post_content' => kurashinoshirube_reader_hub_content($hub['slug'])]);
+        'post_name' => $hub['slug'], 'post_title' => $hub['label'], 'post_excerpt' => $hub['description'],
+        'post_content' => kurashinoshirube_reader_hub_content($hub['slug'])]);
     $included = in_array('test-guide-1', $hub['article_ids'], true);
     check($included === in_array($hub['slug'], ['categories', 'purposes', 'guides', 'updates', 'kitchen', 'small-space', 'without-installation']), 'exact hub membership ' . $hub['slug']);
 }
