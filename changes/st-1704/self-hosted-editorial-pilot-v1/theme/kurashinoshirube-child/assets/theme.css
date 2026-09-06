@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 120e9b4a4888a27519d12d967cd5d43bdfc165f26c47661dd43b2369f3e8d11c;
+  --raos-theme-runtime-revision-base: d06e6a00a6fe6da0ce3bb1fe5ed1757fb4c08b4f27f25598ccd9fd7be4316bb4;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -76,17 +76,17 @@ a:hover {
   min-width: 0;
 }
 
-/* noscript children exist only when scripting is disabled. */
+/* Native navigation and search remain usable until both core blocks initialize. */
 .raos-header-nojs-shell {
-  display: none;
-}
-
-.raos-header-nojs-shell:has(.raos-header-nojs) {
   display: block;
   width: 100%;
 }
 
-.raos-site-header:has(.raos-header-nojs) .raos-masthead {
+.raos-site-header:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready]) .raos-header-nojs-shell {
+  display: none;
+}
+
+.raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready])) .raos-masthead {
   align-items: stretch;
   display: flex;
   flex-direction: column;
@@ -94,7 +94,7 @@ a:hover {
   padding-block: 1rem;
 }
 
-.raos-site-header:has(.raos-header-nojs) .raos-masthead__actions {
+.raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready])) .raos-masthead__actions {
   align-items: stretch;
   display: flex;
   flex-direction: column;
@@ -102,20 +102,20 @@ a:hover {
   width: 100%;
 }
 
-.raos-site-header:has(.raos-header-nojs) .raos-header-search,
-.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container-open,
-.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container-close {
+.raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready])) .raos-header-search,
+.raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready])) .wp-block-navigation__responsive-container-open,
+.raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready])) .wp-block-navigation__responsive-container-close {
   display: none;
 }
 
-.raos-site-header:has(.raos-header-nojs) .raos-primary-nav,
-.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__responsive-container {
+.raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready])) .raos-primary-nav,
+.raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready])) .wp-block-navigation__responsive-container {
   display: block;
   position: static;
   width: 100%;
 }
 
-.wp-site-blocks > header:has(.raos-site-header .raos-header-nojs) {
+.wp-site-blocks > header:has(.raos-site-header):not(:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready])) {
   /* An expanded native menu must not cover the page as a sticky panel. */
   position: static;
 }
@@ -128,7 +128,7 @@ a:hover {
   width: 100%;
 }
 
-.raos-site-header:has(.raos-header-nojs) .wp-block-navigation__container {
+.raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready])) .wp-block-navigation__container {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 1.25rem;
@@ -137,12 +137,12 @@ a:hover {
   padding: 0;
 }
 
-.raos-site-header:has(.raos-header-nojs) .wp-block-navigation-item {
+.raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready])) .wp-block-navigation-item {
   flex: 1 1 12rem;
   min-width: 0;
 }
 
-.raos-site-header:has(.raos-header-nojs) .wp-block-navigation-item__content {
+.raos-site-header:not(:has(.raos-primary-nav[data-raos-nav-ready]):has(.raos-header-search[data-raos-search-ready])) .wp-block-navigation-item__content {
   align-items: center;
   display: flex;
   font-size: 0.875rem;
@@ -1913,7 +1913,7 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0s !important;
   }
 }
 
@@ -3849,7 +3849,7 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0s !important;
   }
 }
 
