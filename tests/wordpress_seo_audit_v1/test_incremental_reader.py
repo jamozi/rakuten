@@ -46,6 +46,26 @@ def absent_images(markup):
     return markup[:match.start(2)] + json.dumps(graph) + markup[match.end(2):]
 
 
+def reader_article_graph(markup, item, navigation):
+    """Current theme: registered section and the fixture's published category hub."""
+    if item.role != "article":
+        return markup
+    article = next(row for row in navigation["articles"] if row["article_code"] == item.identifier)
+    categories = [hub for hub in navigation["reader_navigation"]["hubs"]
+                  if hub["kind"] == "category" and article["article_id"] in hub["article_ids"]]
+    assert len(categories) == 1
+    category = categories[0]
+    match = re.search(r'(<script type="application/ld\+json">)(.*?)(</script>)', markup, re.S)
+    graph = json.loads(match[2])
+    nodes = {node["@type"]: node for node in graph["@graph"]}
+    nodes["Article"]["articleSection"] = category["label"]
+    crumbs = nodes["BreadcrumbList"]["itemListElement"]
+    crumbs[-1]["position"] = 3
+    crumbs.insert(1, {"@type": "ListItem", "item": audit.publication.ORIGIN + "/" + category["slug"] + "/",
+                      "name": category["label"], "position": 2})
+    return markup[:match.start(2)] + json.dumps(graph) + markup[match.end(2):]
+
+
 def hub_html(hub, navigation, documents):
     cards = []
     if hub["kind"] in {"categories", "purposes"}:
@@ -146,7 +166,9 @@ def reader(mixed, monkeypatch):  # noqa: F811
         markup = markup.replace("Public content", "<h1>" + row["title"] + '</h1><div class="entry-content">' + body + "</div>")
         if slug == "home":
             markup = markup.replace("</body>", "".join('<a href="' + entry.url + '">Route</a>' for entry in items) + "</body>")
-        responses[item.url] = replace(responses[item.url], body=absent_images(markup).encode())
+        responses[item.url] = replace(responses[item.url], body=reader_article_graph(
+            absent_images(markup), item, navigation,
+        ).encode())
     mixed.update(current_documents=current, public_metadata_reader=old.Metadata(current),
                  transport=old.legacy.FakeTransport({url: replace(row, observed_at=old.STAMP) for url, row in responses.items()}),
                  reader_metadata=metadata)
@@ -173,6 +195,125 @@ def test_all_29_pages_and_draft_baselines_are_bound_without_fake_media(reader):
     assert result["schema"] == "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_PUBLIC_READBACK_V2"
     assert all(row["social_image_state"] == "NOT_INCLUDED" for row in result["page_evidence"].values())
     assert result["image_evidence_sha256"] == audit.digest(audit.canonical({}))
+
+
+@pytest.mark.parametrize("approved_image", [False, True])
+@pytest.mark.parametrize("change", [
+    "valid", "wrong_category", "wrong_hub", "unknown_hub", "missing_hub",
+    "extra_node", "extra_claim", "image",
+])
+def test_reader_article_graph_is_bound_to_registry_and_published_hub(reader, approved_image, change):
+    slug = "solota-vs-rakua-mini-plus"
+    url = audit.publication.ORIGIN + "/" + slug + "/"
+    response = reader["transport"].responses[url]
+    markup = response.body.decode()
+    if approved_image:
+        # Synthetic owned bytes and rights metadata, never production evidence.
+        asset = {
+            "asset_ref": slug, "source": "tests/wordpress_seo_audit_v1/test_incremental_reader.py",
+            "usage_basis": "Synthetic test fixture",
+            "checked_at": "2026-09-05", "approval": "approved", "alt": "Test diagram",
+            "caption": "Synthetic diagram", "aspect_ratio": [1200, 630], "role": "hero",
+            "asset_type": "illustration", "path": "assets/images/test-reader.webp",
+            "sha256": audit.digest(old.IMAGE),
+        }
+        metadata, _navigation, _files, tree = metadata_fixture(media=[asset])
+        reader["reader_metadata"] = metadata
+        reader["deployment_readback"]["theme"]["tree_sha256"] = tree
+        envelope = reader["context"].to_document()
+        envelope["expected_shared_readback_sha256"]["theme"] = tree
+        preparation = json.loads((reader["candidate_path"] / "candidate-preparation.v1.json").read_bytes())
+        seal(reader, envelope, preparation)
+        image = metadata.to_document()["social_images"][slug]["url"]
+        markup = markup.replace('content="summary"', 'content="summary_large_image"').replace(
+            "</head>", '<meta property="og:image" content="' + image + '">'
+            '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
+            '<meta property="og:image:type" content="image/webp"><meta name="twitter:image" content="' + image + '"></head>',
+        )
+        reader["transport"].responses[image] = replace(
+            response, url=image, body=old.IMAGE, headers=(("content-type", "image/webp"),),
+        )
+        card = '<li><a class="raos-guide-card" href="/' + slug + '/">'
+        card_image = ('<span class="raos-guide-card__media"><img src="' + image
+                      + '" alt="Test diagram" width="1200" height="630" loading="lazy" decoding="async">'
+                      '<span class="raos-guide-card__caption">Synthetic diagram</span></span>')
+        for hub in _navigation["reader_navigation"]["hubs"]:
+            hub_url = audit.publication.ORIGIN + "/" + hub["slug"] + "/"
+            hub_response = reader["transport"].responses[hub_url]
+            reader["transport"].responses[hub_url] = replace(
+                hub_response, body=hub_response.body.decode().replace(card, card + card_image).encode(),
+            )
+    match = re.search(r'(<script type="application/ld\+json">)(.*?)(</script>)', markup, re.S)
+    graph = json.loads(match[2])
+    nodes = {node["@type"]: node for node in graph["@graph"]}
+    article = nodes["Article"]
+    crumbs = nodes["BreadcrumbList"]["itemListElement"]
+    assert article["articleSection"] == "キッチン・家事"
+    assert crumbs[1] == {"@type": "ListItem", "item": audit.publication.ORIGIN + "/kitchen/",
+                         "name": "キッチン・家事", "position": 2}
+    if approved_image:
+        article["image"] = [image]
+    if change == "wrong_category":
+        article["articleSection"] = "旅行・外出"
+    elif change == "wrong_hub":
+        crumbs[1].update(item=audit.publication.ORIGIN + "/travel/", name="旅行・外出")
+    elif change == "unknown_hub":
+        crumbs[1]["item"] = audit.publication.ORIGIN + "/unregistered-category/"
+    elif change == "missing_hub":
+        crumbs.pop(1)
+        crumbs[-1]["position"] = 2
+    elif change == "extra_node":
+        graph["@graph"].append({"@type": "Product", "@id": url + "#unsupported"})
+    elif change == "extra_claim":
+        article["aggregateRating"] = {"ratingValue": 5}
+    elif change == "image":
+        article["image"] = [audit.publication.ORIGIN + "/unapproved.webp"]
+    def install_graph():
+        reader["transport"].responses[url] = replace(
+            response, body=(markup[:match.start(2)] + json.dumps(graph) + markup[match.end(2):]).encode(),
+        )
+    install_graph()
+    if change == "valid":
+        result = audit.run_verified_incremental_public_audit(**reader)
+        assert result["page_evidence"][slug]["social_image_state"] == (
+            "VERIFIED_PRESENT" if approved_image else "NOT_INCLUDED"
+        )
+        if approved_image:
+            article.pop("image")
+            install_graph()
+            with pytest.raises(audit.seo.AuditError, match="INCREMENTAL_PUBLIC_SEO_FAILED"):
+                audit.run_verified_incremental_public_audit(**reader)
+    else:
+        with pytest.raises(audit.seo.AuditError, match="INCREMENTAL_PUBLIC_SEO_FAILED"):
+            audit.run_verified_incremental_public_audit(**reader)
+
+
+@pytest.mark.parametrize("unavailable", ["unbound", "missing", "draft"])
+def test_category_section_does_not_authorize_unpublished_or_unbound_breadcrumb(reader, unavailable):
+    metadata = reader["reader_metadata"].to_document()
+    contract = audit.seo.load_contract()
+    item = next(row for row in contract.items if row.url.endswith("/solota-vs-rakua-mini-plus/"))
+    documents = deepcopy(reader["current_documents"])
+    if unavailable != "unbound":
+        contract = replace(contract, items=contract.items + (
+            audit.seo.InventoryItem(contract.origin + "/kitchen/", "fixed_page", "kitchen"),
+        ))
+    if unavailable == "missing":
+        documents.pop("kitchen")
+    elif unavailable == "draft":
+        documents["kitchen"]["status"] = "draft"
+    markup = reader["transport"].responses[item.url].body.decode()
+    graph = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', markup, re.S)[1])
+    document = documents["solota-vs-rakua-mini-plus"]
+    def valid():
+        return audit._reader_structured_data_semantics(
+            graph, item, contract, document["title"], document["excerpt"], metadata, documents,
+        )
+    assert not valid()
+    crumbs = next(node for node in graph["@graph"] if node["@type"] == "BreadcrumbList")["itemListElement"]
+    crumbs.pop(1)
+    crumbs[-1]["position"] = 2
+    assert valid()  # Registry section stays キッチン・家事, independent of hub publication.
 
 
 @pytest.mark.parametrize("change", [
