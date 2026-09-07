@@ -97,6 +97,15 @@ DIRECTIVES = {
         "data-wp-router-options": {'{"loadOnClientNavigation":true}'},
     },
 }
+# Exact core getters emitted by the approved header; no executable expressions.
+HEADER_READINESS_BINDINGS = {
+    "data-wp-bind--data-raos-nav-ready": (
+        "nav", "core/navigation", "raos-primary-nav", "state.isMenuOpen",
+    ),
+    "data-wp-bind--data-raos-search-ready": (
+        "form", "core/search", "raos-header-search", "state.type",
+    ),
+}
 SPECULATION = {
     "prefetch": [
         {
@@ -151,7 +160,16 @@ def validate_directives(tag: str, attrs: Mapping[str, str | None]) -> None:
     for key, value in attrs.items():
         if not key.startswith("data-wp-"):
             continue
-        if key == "data-wp-context":
+        if key in HEADER_READINESS_BINDINGS:
+            expected_tag, namespace, class_name, state = HEADER_READINESS_BINDINGS[key]
+            if (
+                tag != expected_tag
+                or attrs.get("data-wp-interactive") != namespace
+                or class_name not in re.split(r"[ \t\r\n\f]+", attrs.get("class") or "")
+                or value != state
+            ):
+                fail()
+        elif key == "data-wp-context":
             context = unique_json(value or "")
             if type(context) is not dict:
                 fail()
