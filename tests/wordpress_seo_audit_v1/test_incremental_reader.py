@@ -84,9 +84,12 @@ def hub_html(hub, navigation, documents):
             if row["article_id"] not in hub["article_ids"]:
                 continue
             document = documents[row["production_slug"]]
+            categories = [category for category in navigation["reader_navigation"]["hubs"]
+                          if category["kind"] == "category" and row["article_id"] in category["article_ids"]]
+            assert len(categories) == 1
             cards.append(
                 '<li><a class="raos-guide-card" href="/' + row["production_slug"] + '/">'
-                '<span class="raos-article-category">' + escape(row["category_label"] + " / " + row["content_role_label"]) + '</span>'
+                '<span class="raos-article-category">' + escape(categories[0]["label"] + " / " + row["content_role_label"]) + '</span>'
                 '<span class="raos-guide-card__title" role="heading" aria-level="3">' + escape(document["title"]) + '</span>'
                 '<span class="raos-guide-card__excerpt">' + escape(document["excerpt"]) + '</span>'
                 '<span class="raos-guide-card__date">更新 2026年9月5日</span></a></li>'
@@ -314,6 +317,50 @@ def test_category_section_does_not_authorize_unpublished_or_unbound_breadcrumb(r
     crumbs.pop(1)
     crumbs[-1]["position"] = 2
     assert valid()  # Registry section stays キッチン・家事, independent of hub publication.
+
+
+@pytest.mark.parametrize("change", ["missing", "ambiguous"])
+def test_article_graph_and_hub_cards_reject_nonunique_category_membership(reader, change):
+    files = dict(reader["reader_metadata"].theme_files)
+    navigation = json.loads(files[NAV])
+    old_sha = audit.digest(files[NAV])
+    hubs = {hub["slug"]: hub for hub in navigation["reader_navigation"]["hubs"]}
+    article_id = "solota-vs-rakua-mini-plus"
+    if change == "missing":
+        hubs["kitchen"]["article_ids"].remove(article_id)
+    else:
+        hubs["travel"]["article_ids"].append(article_id)
+    files[NAV] = audit.canonical(navigation)
+    files["functions.php"] = files["functions.php"].replace(old_sha.encode(), audit.digest(files[NAV]).encode())
+    metadata = audit.reader_seo_metadata(files, expected_tree=theme_tree_sha256(files)).to_document()
+    contract = audit.seo.load_contract()
+    item = next(row for row in contract.items if row.url.endswith("/" + article_id + "/"))
+    markup = reader["transport"].responses[item.url].body.decode()
+    graph = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', markup, re.S)[1])
+    documents = reader["current_documents"]
+    article = documents[article_id]
+    with pytest.raises(audit.seo.AuditError, match="READER_ARTICLE_CATEGORY_INVALID"):
+        audit._reader_structured_data_semantics(
+            graph, item, contract, article["title"], article["excerpt"], metadata, documents,
+        )
+    dates = {slug: {"dates": {"modified": row["modified_gmt"]}} for slug, row in documents.items()}
+    hub_slug = next(hub["slug"] for hub in metadata["hubs"]
+                    if hub["kind"] == "updates" and article_id in hub["article_ids"])
+    with pytest.raises(audit.seo.AuditError, match="READER_ARTICLE_CATEGORY_INVALID"):
+        audit._reader_hub_body(hub_slug, metadata, documents, dates)
+
+
+@pytest.mark.parametrize("label", ["家事", "旅行・外出"])
+def test_hub_card_rejects_legacy_or_other_article_category_label(reader, label):
+    url = audit.publication.ORIGIN + "/kitchen/"
+    response = reader["transport"].responses[url]
+    markup = response.body.decode()
+    assert "キッチン・家事 / " in markup
+    reader["transport"].responses[url] = replace(
+        response, body=markup.replace("キッチン・家事 / ", label + " / ").encode(),
+    )
+    with pytest.raises(audit.seo.AuditError, match="PUBLIC_BODY_OR_COMMERCE_MISMATCH"):
+        audit.run_verified_incremental_public_audit(**reader)
 
 
 @pytest.mark.parametrize("change", [

@@ -620,6 +620,54 @@ def test_arbitrary_same_count_product_and_cta_are_not_equivalent() -> None:
         audit.verify_rendered_body(stored, live)
 
 
+@pytest.mark.parametrize("number", ["08", "09", "11"])
+def test_editor_note_wptexturize_is_a_scoped_display_equivalence(number: str) -> None:
+    label = number + "\u3000EDITOR'S NOTE"
+    stored = ('<section>\n<p\n class="section-number" data-raos-section-id="note">'
+              + label + '</P \n><h2>編集部の補足</h2><p>MODEL\'S仕様</p>'
+              '<a href="https://example.com/MODEL\'S">公式仕様</a></section>')
+    def page(body: str) -> str:
+        return ('<div class="entry-content"><nav class="raos-article-toc">目次</nav>'
+                + body + '</div>')
+    baseline = audit.verify_rendered_body(stored, page(stored))
+    for apostrophe in ("’", "&#8217;", "&rsquo;"):
+        rendered = stored.replace(label, label.replace("'", apostrophe))
+        assert audit.verify_rendered_body(stored, page(rendered)) == baseline
+    already_texturized = stored.replace(label, label.replace("'", "’"))
+    assert audit.verify_rendered_body(already_texturized, page(stored)) == baseline
+    assert audit.verify_rendered_body(already_texturized, page(already_texturized)) == baseline
+
+
+@pytest.mark.parametrize("change", [
+    "body", "product_apostrophe", "href", "identity", "hidden", "handler",
+    "number", "label", "wrong_tag", "wrong_class", "nested_label", "left_quote",
+])
+def test_editor_note_display_equivalence_does_not_hide_tampering(change: str) -> None:
+    stored = ('<p class="section-number" data-raos-section-id="EDITOR\'S NOTE">09\u3000EDITOR\'S NOTE</p>'
+              '<h2>判断の根拠</h2><p>MODEL\'S仕様を確認</p>'
+              '<a href="https://example.com/MODEL\'S">公式仕様</a>')
+    actual = stored.replace("09\u3000EDITOR'S NOTE", "09\u3000EDITOR’S NOTE")
+    old_text, new_text = {
+        "body": ("仕様を確認", "仕様は確認済み"),
+        "product_apostrophe": ("<p>MODEL'S", "<p>MODEL’S"),
+        "href": ("https://example.com/MODEL'S", "https://example.com/MODEL’S"),
+        "identity": ('data-raos-section-id="EDITOR\'S NOTE"', 'data-raos-section-id="EDITOR’S NOTE"'),
+        "hidden": ('class="section-number"', 'class="section-number" hidden'),
+        "handler": ('class="section-number"', 'class="section-number" onclick="alert(1)"'),
+        "number": ("09\u3000EDITOR", "08\u3000EDITOR"),
+        "label": ("09\u3000EDITOR’S NOTE", "09\u3000EDITOR’S NOTES"),
+        "wrong_tag": ("<p class=", "<div class="),
+        "wrong_class": ('class="section-number"', 'class="section-number-extra"'),
+        "nested_label": ("09\u3000EDITOR’S NOTE", "09\u3000<span>EDITOR’S NOTE</span>"),
+        "left_quote": ("09\u3000EDITOR’S NOTE", "09\u3000EDITOR‘S NOTE"),
+    }[change]
+    actual = actual.replace(old_text, new_text)
+    if change == "wrong_tag":
+        actual = actual.replace("</p>", "</div>", 1)
+    with pytest.raises(audit.seo.AuditError):
+        audit.verify_rendered_body(stored, '<div class="entry-content">' + actual + '</div>')
+
+
 @pytest.mark.parametrize(
     "alternative",
     [
