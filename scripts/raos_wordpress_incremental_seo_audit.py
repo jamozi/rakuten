@@ -3,10 +3,11 @@
 
 from __future__ import annotations
 
+from collections import Counter
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime, timedelta
-from html import escape
+from html import escape, unescape
 from html.parser import HTMLParser
 import json
 import os
@@ -213,6 +214,10 @@ def _require_supported_element(
 
 
 class _SupportedBodyMarkup(_Markup):
+    def __init__(self, markup: str) -> None:
+        super().__init__(markup)
+        self.editor_note_text: list[tuple[int, int, str]] = []
+
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         _require_supported_element(
             tag,
@@ -230,6 +235,15 @@ class _SupportedBodyMarkup(_Markup):
             raw_starttag=self.get_starttag_text(),
         )
         super().handle_startendtag(tag, attrs)
+
+    def handle_endtag(self, tag: str) -> None:
+        element = self.stack[-1] if self.stack else None
+        closing_start = self.absolute_offset()
+        super().handle_endtag(tag)
+        if element is not None and tag == "p" and "section-number" in html_attribute_tokens(element.attrs.get("class")):
+            label = unescape(self.markup[element.opening_end:closing_start])
+            if re.fullmatch(r"[0-9]+[ \u3000]+EDITOR['’]S NOTE", label):
+                self.editor_note_text.append((element.opening_end, closing_start, label.replace("’", "'")))
 
 
 def _project(markup: str, *, rendered: bool) -> dict[str, object]:
@@ -252,11 +266,17 @@ def _project(markup: str, *, rendered: bool) -> dict[str, object]:
     filtered = markup
     for start, end in sorted(removed, reverse=True):
         filtered = filtered[:start] + filtered[end:]
-    evidence = publication._PublicPageEvidenceParser()
-    evidence.feed(filtered)
-    evidence.close()
-    projected = _Markup(filtered)
+    projected = _SupportedBodyMarkup(filtered)
     projected.feed(filtered)
+    projected.close()
+    # wptexturize changes this closed decorative label. Only visible text is
+    # canonicalized; original tags, attributes, URLs and identities stay intact.
+    display_text = filtered
+    for start, end, label in reversed(projected.editor_note_text):
+        display_text = display_text[:start] + label + display_text[end:]
+    evidence = publication._PublicPageEvidenceParser()
+    evidence.feed(display_text)
+    evidence.close()
     links, images, visibility, identities = [], [], [], []
     for element in projected.elements:
         attrs = element.attrs
@@ -324,6 +344,7 @@ class _PageAssets(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.images: set[str] = set()
+        self.image_counts: Counter[str] = Counter()
         self.links: set[str] = set()
         self.measurement_scripts = 0
         self._content_depth = 0
@@ -349,6 +370,7 @@ class _PageAssets(HTMLParser):
             if not values.get("src"):
                 fail("PUBLIC_IMAGE_SOURCE_MISSING")
             self.images.add(str(values["src"]))
+            self.image_counts[str(values["src"])] += 1
         if tag == "a" and values.get("href"):
             self.links.add(urljoin(publication.ORIGIN, str(values["href"])))
         if tag == "script" and re.search(
@@ -419,6 +441,32 @@ def _theme_expectations(
     )
 
 
+def _preserved_theme_images(
+    originals: Mapping[str, Any], updated: Mapping[str, Any], trusted: Mapping[str, str],
+) -> tuple[dict[str, Counter[str]], dict[str, str]]:
+    """Keep exact old-body root-relative paths, never grant them media approval."""
+    paths = {urlsplit(url).path: url for url in trusted
+             if url == publication.ORIGIN + urlsplit(url).path}
+    occurrences: dict[str, Counter[str]] = {}
+    hashes: dict[str, str] = {}
+    for slug, document in originals.items():
+        if document["post_type"] != "post" or slug in updated:
+            continue
+        article_id = next((key for key, target in LEGACY_MEDIA_TARGETS.items() if target[0] == slug), slug)
+        try:
+            markup = project_legacy_media(document["block_markup"], article_id, profile="production").markup
+        except LegacyMediaProjectionFailure:
+            fail("DISPLAY_PROJECTION_MISMATCH")
+        assets = _PageAssets()
+        assets.feed(markup)
+        assets.close()
+        counts = Counter({raw: count for raw, count in assets.image_counts.items() if raw in paths})
+        if counts:
+            occurrences[slug] = counts
+            hashes.update({paths[raw]: trusted[paths[raw]] for raw in counts})
+    return occurrences, hashes
+
+
 def _baseline_image_expectations(
     envelope: Mapping[str, Any],
     candidate_path: Path,
@@ -436,7 +484,11 @@ def _baseline_image_expectations(
         fail("BASELINE_IMAGE_AUDIT_CHANGED")
     report = _json(report_raw)
     if (
-        report.get("schema") != "RAOS_WORDPRESS_MIXED_BROWSER_AUDIT_V1"
+        report.get("schema") != (
+            "RAOS_WORDPRESS_MIXED_BROWSER_AUDIT_V2"
+            if envelope.get("schema") == "RAOS_WORDPRESS_VERIFIED_INCREMENTAL_RELEASE_V2"
+            else "RAOS_WORDPRESS_MIXED_BROWSER_AUDIT_V1"
+        )
         or report.get("status") != "LOCAL_MIXED_BROWSER_AUDIT_PASSED"
     ):
         fail("BASELINE_IMAGE_AUDIT_INVALID")
@@ -722,6 +774,14 @@ def _reader_inventory(
     ))
 
 
+def _reader_category(metadata: Mapping[str, Any], article_id: str) -> Mapping[str, Any]:
+    categories = [hub for hub in metadata["hubs"]
+                  if hub["kind"] == "category" and article_id in hub["article_ids"]]
+    if len(categories) != 1:
+        fail("READER_ARTICLE_CATEGORY_INVALID")
+    return categories[0]
+
+
 def _reader_structured_data_semantics(
     graph: dict[str, Any] | None, item: seo.InventoryItem,
     contract: seo.AuditContract, title: str, description: str,
@@ -735,11 +795,7 @@ def _reader_structured_data_semantics(
                 if row["article_code"] == item.identifier and row["production_slug"] == _item_slug(item)]
     if len(articles) != 1:
         return False
-    categories = [hub for hub in metadata["hubs"]
-                  if hub["kind"] == "category" and articles[0]["article_id"] in hub["article_ids"]]
-    if len(categories) != 1:
-        return False
-    category = categories[0]
+    category = _reader_category(metadata, articles[0]["article_id"])
     hub_slug = category["slug"]
     hub_url = contract.origin + "/" + hub_slug + "/"
     hub = documents.get(hub_slug, {})
@@ -879,6 +935,7 @@ def _reader_hub_body(
             rows.sort(key=lambda row: public_metadata[row["production_slug"]]["dates"]["modified"], reverse=True)
         for row in rows:
             article_slug = row["production_slug"]
+            category = _reader_category(metadata, row["article_id"])
             document = documents[article_slug]
             date = datetime.fromisoformat(public_metadata[article_slug]["dates"]["modified"])
             asset = metadata["social_images"][article_slug]
@@ -891,7 +948,7 @@ def _reader_hub_body(
             )
             cards.append(
                 '<li><a class="raos-guide-card" href="/' + article_slug + '/">' + media
-                + '<span class="raos-article-category">' + escape(row["category_label"] + " / " + row["content_role_label"]) + '</span>'
+                + '<span class="raos-article-category">' + escape(category["label"] + " / " + row["content_role_label"]) + '</span>'
                 '<span class="raos-guide-card__title" role="heading" aria-level="3">' + escape(document["title"]) + '</span>'
                 '<span class="raos-guide-card__excerpt">' + escape(document["excerpt"]) + '</span>'
                 '<span class="raos-guide-card__date">更新 ' + f"{date.year}年{date.month}月{date.day}日" + '</span></a></li>'
@@ -1181,8 +1238,12 @@ def run_verified_incremental_public_audit(
     if reader is not None and reader["theme_sha256"] != expected_tree:
         fail("READER_THEME_CHANGED")
     home_head, theme_images, runtime_resources = _theme_expectations(expected_tree)
+    preserved_counts: dict[str, Counter[str]] = {}
+    preserved_hashes: dict[str, str] = {}
     if reader is not None:
+        preserved_counts, preserved_hashes = _preserved_theme_images(originals, prepared, theme_images)
         theme_images = dict(reader["approved_images"])
+    preserved_paths = {raw for counts in preserved_counts.values() for raw in counts}
     resources = runtime._reader_resources(runtime_resources, reader_measurement)
     if reader_measurement is not None:
         if digest(expected["privacy-policy"]["block_markup"].encode()) != reader_measurement.policy_sha256:
@@ -1230,7 +1291,7 @@ def run_verified_incremental_public_audit(
     observed_http = _ObservedTransport(
         transport
         or seo.BoundedHttpsTransport(
-            contract, allowed_resource_urls=frozenset(resources) | frozenset(theme_images),
+            contract, allowed_resource_urls=frozenset(resources) | frozenset(theme_images) | frozenset(preserved_hashes),
             **({"reader_measurement": reader_measurement} if reader_measurement is not None else {}),
         ),
         now,
@@ -1328,6 +1389,13 @@ def run_verified_incremental_public_audit(
         assets = _PageAssets()
         assets.feed(markup)
         assets.close()
+        expected_preserved = preserved_counts.get(slug, Counter())
+        observed_preserved = Counter({
+            raw: count for raw, count in assets.image_counts.items()
+            if raw in preserved_paths or raw in preserved_hashes and raw not in theme_images
+        })
+        if observed_preserved != expected_preserved:
+            fail("BASELINE_THEME_IMAGE_OCCURRENCES_CHANGED")
         if (assets.measurement_scripts and reader_measurement is None) or page.header_values("set-cookie"):
             fail("PUBLIC_MEASUREMENT_OFF_MISMATCH")
         runtime_evidence = (
@@ -1353,7 +1421,7 @@ def run_verified_incremental_public_audit(
                 )
             if not required_routes <= assets.links:
                 fail("HOME_ARTICLE_ROUTES_MISSING")
-        image_urls.update(assets.images)
+        image_urls.update(publication.ORIGIN + raw if raw in expected_preserved else raw for raw in assets.images)
         page_bindings[slug] = {
             "url": item.url,
             "post_id": current[slug]["id"],
@@ -1378,8 +1446,14 @@ def run_verified_incremental_public_audit(
                 "social_image_state": "NOT_INCLUDED" if social_asset is None else "VERIFIED_PRESENT",
                 "social_image": social_asset,
             })
+            if expected_preserved:
+                page_bindings[slug]["baseline_preserved_theme_images"] = {
+                    raw: {"state": "BASELINE_PRESERVED", "count": count,
+                          "url": publication.ORIGIN + raw, "sha256": preserved_hashes[publication.ORIGIN + raw]}
+                    for raw, count in sorted(expected_preserved.items())
+                }
     image_bindings = {}
-    non_theme_urls = image_urls - set(theme_images)
+    non_theme_urls = image_urls - set(theme_images) - set(preserved_hashes)
     baseline_urls = set()
     for document in original_snapshot["documents"]:
         if document["post_type"] == "post" and document["slug"] not in prepared:
@@ -1427,6 +1501,8 @@ def run_verified_incremental_public_audit(
             fail("PUBLIC_IMAGE_BROKEN")
         if url in theme_images and response.body_sha256 != theme_images[url]:
             fail("THEME_IMAGE_BYTES_MISMATCH")
+        if url in preserved_hashes and response.body_sha256 != preserved_hashes[url]:
+            fail("BASELINE_THEME_IMAGE_BYTES_MISMATCH")
         image_bindings[url] = response.body_sha256
     result = {
         "schema": SCHEMA_V2 if reader is not None else SCHEMA,
