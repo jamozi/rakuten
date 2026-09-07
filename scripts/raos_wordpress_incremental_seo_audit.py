@@ -722,12 +722,43 @@ def _reader_inventory(
     ))
 
 
-def _reader_graph_without_image(
+def _reader_structured_data_semantics(
     graph: dict[str, Any] | None, item: seo.InventoryItem,
     contract: seo.AuditContract, title: str, description: str,
+    metadata: Mapping[str, Any], documents: Mapping[str, Any],
 ) -> bool:
+    asset = metadata["social_images"][_item_slug(item)]
+    image = asset["url"] if asset is not None else ""
     if item.role != "article":
-        return seo._structured_data_semantics(graph, item, contract, title, description, "")
+        return seo._structured_data_semantics(graph, item, contract, title, description, image)
+    articles = [row for row in metadata["articles"]
+                if row["article_code"] == item.identifier and row["production_slug"] == _item_slug(item)]
+    if len(articles) != 1:
+        return False
+    categories = [hub for hub in metadata["hubs"]
+                  if hub["kind"] == "category" and articles[0]["article_id"] in hub["article_ids"]]
+    if len(categories) != 1:
+        return False
+    category = categories[0]
+    hub_slug = category["slug"]
+    hub_url = contract.origin + "/" + hub_slug + "/"
+    hub = documents.get(hub_slug, {})
+    # These documents have already passed candidate/baseline identity and hash
+    # checks. Registry membership alone cannot authorize a public breadcrumb.
+    published_hub = (
+        any(entry.role == "fixed_page" and entry.identifier == hub_slug and entry.url == hub_url
+            for entry in contract.items)
+        and hub.get("slug") == hub_slug and hub.get("post_type") == "page"
+        and hub.get("status") == "publish"
+        and hub.get("title") == category["label"] and hub.get("excerpt") == category["description"]
+        and hub.get("block_markup") == '<!-- wp:shortcode -->[kurashinoshirube_reader_hub slug="' + hub_slug + '"]<!-- /wp:shortcode -->'
+    )
+    breadcrumbs = [
+        {"@type": "ListItem", "item": contract.origin + "/", "name": "ホーム", "position": 1},
+    ]
+    if published_hub:
+        breadcrumbs.append({"@type": "ListItem", "item": hub_url, "name": category["label"], "position": 2})
+    breadcrumbs.append({"@type": "ListItem", "item": item.url, "name": title, "position": len(breadcrumbs) + 1})
     if graph is None or type(graph.get("@graph")) is not list:
         return False
     nodes = graph["@graph"]
@@ -749,31 +780,28 @@ def _reader_graph_without_image(
     org = contract.origin + "/#organization"
     return (
         modified >= published
-        and article.get("articleSection") in ("移動", "家事", "備え")
         and article == {
             "@id": item.url + "#article", "@type": "Article",
-            "articleSection": article["articleSection"], "author": {"@id": org},
+            "articleSection": category["label"], "author": {"@id": org},
             "breadcrumb": {"@id": item.url + "#breadcrumb"},
             "datePublished": published, "dateModified": modified,
             "description": description, "headline": title,
             "inLanguage": "ja-JP", "mainEntityOfPage": item.url,
             "publisher": {"@id": org}, "url": item.url,
+            **({"image": [image]} if asset is not None else {}),
         }
         and by_type["BreadcrumbList"] == {
             "@id": item.url + "#breadcrumb", "@type": "BreadcrumbList",
-            "itemListElement": [
-                {"@type": "ListItem", "item": contract.origin + "/", "name": "ホーム", "position": 1},
-                {"@type": "ListItem", "item": item.url, "name": title, "position": 2},
-            ],
+            "itemListElement": breadcrumbs,
         }
     )
 
 
 def _reader_seo_report(
     report: dict[str, Any], contract: seo.AuditContract,
-    transport: _ObservedTransport, metadata: Mapping[str, Any],
+    transport: _ObservedTransport, metadata: Mapping[str, Any], documents: Mapping[str, Any],
 ) -> None:
-    """Evaluate the explicit media form from actual HTML, retaining every other check."""
+    """Check trusted reader taxonomy and media against candidate-bound documents."""
     for item, row in zip(contract.items, report["pages"], strict=True):
         response = transport.get(item.url)
         parser = seo._SeoHtmlParser()
@@ -795,14 +823,6 @@ def _reader_seo_report(
                 seo._meta_values(parser, "name", "twitter:card") == ["summary"],
                 "EXACT_SUMMARY_WITHOUT_IMAGE",
             )
-            graph, _types = seo._single_graph(parser)
-            descriptions = seo._meta_values(parser, "name", "description")
-            checks["structured_data_semantics"] = check(
-                _reader_graph_without_image(
-                    graph, item, contract, " ".join("".join(parser.title_parts).split()),
-                    descriptions[0] if len(descriptions) == 1 else "",
-                ), "EXACT_GRAPH_WITH_NO_IMAGE_CLAIM",
-            )
         else:
             for key, prop, wanted in (
                 ("og_image", "og:image", asset["url"]),
@@ -817,6 +837,14 @@ def _reader_seo_report(
                 seo._meta_values(parser, "name", "twitter:image") == [asset["url"]],
                 "EXACT_APPROVED_MEDIA_VALUE",
             )
+        graph, _types = seo._single_graph(parser)
+        descriptions = seo._meta_values(parser, "name", "description")
+        checks["structured_data_semantics"] = check(
+            _reader_structured_data_semantics(
+                graph, item, contract, " ".join("".join(parser.title_parts).split()),
+                descriptions[0] if len(descriptions) == 1 else "", metadata, documents,
+            ), "EXACT_READER_GRAPH_WITH_APPROVED_IMAGE" if asset is not None else "EXACT_GRAPH_WITH_NO_IMAGE_CLAIM",
+        )
         row["status"] = "PASS" if all(v["status"] == "PASS" for v in checks.values()) else "FAIL"
     report["surfaces"]["sitemap"]["detail"] = f"EXACT_{len(contract.content_urls)}_CONTENT_URLS"
     report["status"] = "PASS" if (
@@ -1209,7 +1237,7 @@ def run_verified_incremental_public_audit(
     )
     report = seo.run_audit(observed_http, contract)
     if reader is not None:
-        _reader_seo_report(report, contract, observed_http, reader)
+        _reader_seo_report(report, contract, observed_http, reader, current)
     if report["status"] != "PASS":
         fail("PUBLIC_SEO_FAILED")
     page_bindings = {}
