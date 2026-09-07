@@ -591,3 +591,28 @@ def test_current_dependency_lock_has_both_exact_variants_and_no_dynamic_imports(
         row["static_imports"] in ([], ["@wordpress/interactivity"]) for row in rows
     )
     assert len({row["path"] for row in rows}) == 6
+
+@pytest.mark.parametrize("tag,namespace,class_name,attribute,state", [
+    ("nav", "core/navigation", "raos-primary-nav", "data-wp-bind--data-raos-nav-ready", "state.isMenuOpen"),
+    ("form", "core/search", "raos-header-search", "data-wp-bind--data-raos-search-ready", "state.type"),
+])
+@pytest.mark.parametrize("change", ["valid", "value", "tag", "namespace", "class", "suffix"])
+def test_header_readiness_binding_is_exact(example, tag, namespace, class_name, attribute, state, change):
+    # These two getters only signal core initialization for the approved header.
+    if change == "value":
+        state = "actions.collect"
+    elif change == "tag":
+        tag = "div"
+    elif change == "namespace":
+        namespace = "core/search" if namespace == "core/navigation" else "core/navigation"
+    elif change == "class":
+        class_name = "unrelated"
+    elif change == "suffix":
+        attribute += "-other"
+    attrs = f'class="{class_name}" data-wp-interactive="{namespace}" {attribute}="{state}"'
+    markup = f"<{tag} {attrs}></{tag}>"
+    if change == "valid":
+        assert verify(example, markup) == {}
+    else:
+        with pytest.raises(audit.seo.AuditError, match="MEASUREMENT_OFF_MISMATCH"):
+            verify(example, markup)
