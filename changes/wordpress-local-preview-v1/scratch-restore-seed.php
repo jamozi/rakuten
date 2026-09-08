@@ -26,6 +26,65 @@ function scratch_canonical($value) {
     }
     return $value;
 }
+function scratch_bound_home_markup_allowed(string $content): bool {
+    $webp_count = 0;
+    $normalized = preg_replace('/data:image\\/webp;base64,[a-z0-9+\\/=]+/i', 'https://scratch.wordpress.invalid/bound.webp', $content, -1, $webp_count);
+    if (! is_string($normalized) || $webp_count !== 5 || stripos($normalized, 'data:') !== false) { return false; }
+    $allowed = wp_kses_allowed_html('post');
+    $allowed['form'] = array('action' => true, 'method' => true, 'class' => true, 'role' => true);
+    $allowed['input'] = array('type' => true, 'name' => true, 'placeholder' => true, 'id' => true, 'required' => true);
+    $allowed['button'] = array('type' => true);
+    $allowed['label'] = array('for' => true);
+    $normalizer = new WP_HTML_Tag_Processor($normalized);
+    while ($normalizer->next_tag()) {
+        $style = $normalizer->get_attribute('style');
+        if ($style !== null) {
+            if (! is_string($style)) { return false; }
+            $declarations = array_values(array_filter(array_map('trim', explode(';', $style)), 'strlen'));
+            if (count($declarations) !== 5) { return false; }
+            foreach ($declarations as $declaration) {
+                if (preg_match('/\\A--[a-z0-9_-]+\\s*:\\s*url\\(\\s*([\'\"]?)https:\\/\\/scratch\\.wordpress\\.invalid\\/bound\\.webp\\1\\s*\\)\\z/i', $declaration) !== 1) { return false; }
+            }
+            $safe_style = safecss_filter_attr($style);
+            if ($safe_style === '') { return false; }
+            $normalizer->set_attribute('style', $safe_style);
+        }
+        if ($normalizer->get_tag() === 'INPUT' && $normalizer->get_attribute('required') === true) {
+            $normalizer->set_attribute('required', 'required');
+        }
+    }
+    $normalized = $normalizer->get_updated_html();
+    $filtered = wp_kses($normalized, $allowed, wp_allowed_protocols());
+    if ($filtered !== $normalized) { return false; }
+    $processor = new WP_HTML_Tag_Processor($normalized);
+    $forms = 0; $inputs = 0; $buttons = 0; $labels = 0; $input_id = null; $label_for = null;
+    while ($processor->next_tag()) {
+        if ($processor->get_attribute('formaction') !== null) { return false; }
+        if ($processor->get_tag() === 'INPUT') {
+            $inputs++; $input_id = $processor->get_attribute('id');
+            if ($processor->get_attribute('type') !== 'search' || $processor->get_attribute('name') !== 's' || ! is_string($input_id)) { return false; }
+            continue;
+        }
+        if ($processor->get_tag() === 'BUTTON') {
+            $buttons++;
+            if ($processor->get_attribute('type') !== 'submit') { return false; }
+            continue;
+        }
+        if ($processor->get_tag() === 'LABEL') {
+            $labels++; $label_for = $processor->get_attribute('for');
+            if (! is_string($label_for)) { return false; }
+            continue;
+        }
+        if ($processor->get_tag() !== 'FORM') { continue; }
+        $forms++;
+        $method = $processor->get_attribute('method');
+        if (! is_string($method) || strtolower(trim($method)) !== 'get') { return false; }
+        $action = $processor->get_attribute('action');
+        if ($action !== '/' || $processor->get_attribute('role') !== 'search') { return false; }
+    }
+    $valid = $forms === 0 || ($forms === 1 && $inputs === 1 && $buttons === 1 && $labels === 1 && $input_id === $label_for);
+    return $valid;
+}
 $root = '/var/www/raos-scratch-backup';
 $raw = scratch_read($root . '/scratch-seed.v1.json', 16777216);
 $hash = hash('sha256', $raw);
@@ -126,7 +185,13 @@ foreach ($seed['documents'] as $slug => $row) {
             || dirname((string) realpath($path)) !== $root . '/content') { WP_CLI::error('RAOS_SCRATCH_CONTENT_PATH_INVALID'); }
         $content = scratch_read($path);
     }
-    if (hash('sha256', $content) !== ($row['content_sha256'] ?? null) || wp_kses_post($content) !== $content) { WP_CLI::error('RAOS_SCRATCH_BODY_INVALID'); }
+    $filtered_content = wp_kses_post($content);
+    $exact_bound_home = $reader_mode && ! $legacy_privacy && $slug === 'home'
+        && is_object($reader_objects->home ?? null) && is_string($reader_objects->home->block_markup ?? null)
+        && hash_equals($reader_objects->home->block_markup, $content);
+    $restore_raw_home = $exact_bound_home && $filtered_content !== $content;
+    if (hash('sha256', $content) !== ($row['content_sha256'] ?? null)
+        || ($filtered_content !== $content && (! $exact_bound_home || ! scratch_bound_home_markup_allowed($content)))) { WP_CLI::error('RAOS_SCRATCH_BODY_INVALID'); }
     if ($reader_mode) {
         $taxonomies = $row['taxonomy_ids_encoding'] === 'object' ? (object) $row['taxonomy_ids'] : $row['taxonomy_ids'];
         $projection = array('schema' => 'ContentDocumentV1', 'id' => $row['production_id'], 'slug' => $slug, 'post_type' => $row['post_type'], 'status' => $row['status'], 'title' => $row['title'], 'excerpt' => $row['excerpt'], 'block_markup' => $content, 'taxonomies' => $taxonomies, 'media_ids' => array());
@@ -135,7 +200,7 @@ foreach ($seed['documents'] as $slug => $row) {
             || wp_json_encode(scratch_canonical($projection), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
                !== wp_json_encode(scratch_canonical($reader_objects->{$slug}), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) { WP_CLI::error('RAOS_SCRATCH_READER_INPUT_MISMATCH'); }
     }
-    $prepared[$slug] = array('row' => $row, 'content' => $content);
+    $prepared[$slug] = array('row' => $row, 'content' => $content, 'restore_raw_home' => $restore_raw_home);
 }
 sort($page_slugs); sort($original_ids);
 if (! $reader_mode && $page_slugs !== array('about-ad-policy', 'comparison-policy', 'home', 'privacy-policy')) { WP_CLI::error('RAOS_SCRATCH_TARGET_INVALID'); }
@@ -172,6 +237,10 @@ foreach ($prepared as $target) {
     foreach ($row['dates'] as $field => $date) { $data['post_' . $field] = $date; }
     $id = wp_insert_post(wp_slash($data), true);
     if (is_wp_error($id) || (int) $id !== $row['production_id']) { WP_CLI::error('RAOS_SCRATCH_ORIGINAL_ID_NOT_RESTORED'); }
+    if ($target['restore_raw_home']) {
+        if ($wpdb->update($wpdb->posts, array('post_content' => $target['content']), array('ID' => $id), array('%s'), array('%d')) === false) { WP_CLI::error('RAOS_SCRATCH_HOME_BODY_NOT_RESTORED'); }
+        clean_post_cache($id);
+    }
     foreach ($row['taxonomy_ids'] as $taxonomy => $ids) {
         if (! taxonomy_exists($taxonomy) || is_wp_error(wp_set_object_terms($id, $ids, $taxonomy, false))) { WP_CLI::error('RAOS_SCRATCH_TAXONOMY_NOT_RESTORED'); }
     }

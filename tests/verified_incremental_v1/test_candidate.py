@@ -424,6 +424,52 @@ def _theme_projection() -> bytes:
     )
 
 
+def _theme_only_inputs() -> dict[str, object]:
+    from raos.application.editorial.verified_incremental_sources_v1 import (
+        validate_selected_official_sources,
+    )
+
+    inputs = sample()
+    inputs["articles"] = ()
+    inputs["sources"] = validate_selected_official_sources(
+        owner.ROOT, owner.ROOT, (), inputs["now"], allow_empty=True
+    )
+    inputs["snapshot"]["deployment_status"] = _deployment_baseline()
+    inputs["theme_projection"] = _theme_projection()
+    return inputs
+
+
+def test_theme_only_candidate_preserves_every_document_and_requires_no_sources():
+    inputs = _theme_only_inputs()
+    manifest, artifacts, preparation = owner.prepare_noncommercial_candidate(**inputs)
+
+    assert manifest["articles"] == []
+    assert set(manifest["shared_artifacts"]) == {"theme"}
+    assert set(manifest["unchanged_documents"]) == {
+        row["slug"] for row in inputs["snapshot"]["documents"]
+    }
+    assert set(manifest["rendered_document_slugs"]) == set(
+        manifest["unchanged_documents"]
+    )
+    assert set(preparation["production_documents"]) == set()
+    assert preparation["source_evidence"]["status"] == "NOT_REQUIRED"
+    assert preparation["counts"] == {
+        "articles": 0,
+        "editorial_products": 0,
+        "images": 0,
+        "ctas": 0,
+        "monetized_articles": 0,
+    }
+    assert artifacts == {"theme-tree": _theme_projection()}
+
+
+def test_truly_empty_candidate_is_rejected_even_with_not_required_sources():
+    inputs = _theme_only_inputs()
+    inputs["theme_projection"] = None
+    with pytest.raises(ValueError, match="ARTICLE_SET_INVALID"):
+        owner.prepare_noncommercial_candidate(**inputs)
+
+
 @pytest.mark.parametrize("mode", [None, [], {}, True, "automatic", "measured-admin"])
 def test_runtime_transition_mode_is_explicit_and_typed(mode):
     with pytest.raises(ValueError, match="DNS_TRANSITION_INVALID"):
@@ -778,6 +824,33 @@ def test_cli_explicit_shared_flags_load_production_policies_and_exact_theme(
     names = {name for path, name, _ in writes if path.name == "artifacts"}
     assert "theme-tree.v1.json" in names
     assert {f"production-{slug}.html" for slug in PAGES[1:]} <= names
+
+
+def test_cli_theme_only_requests_not_required_source_replay(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _, writes, _ = _stub_cli(monkeypatch, flags=("--include-theme",))
+    article_index = sys.argv.index("--articles")
+    del sys.argv[article_index : article_index + 2]
+    empty_sources = _theme_only_inputs()["sources"]
+    calls: list[dict[str, object]] = []
+
+    def validate_sources(**kwargs: object):
+        calls.append(kwargs)
+        return empty_sources
+
+    monkeypatch.setattr(owner, "validate_selected_official_sources", validate_sources)
+    monkeypatch.setattr(owner, "current_theme_projection", _theme_projection)
+
+    assert owner.main() == 0
+    assert len(calls) == 1
+    assert calls[0]["article_ids"] == ()
+    assert calls[0]["allow_empty"] is True
+    preparation = json.loads(
+        next(raw for _, name, raw in writes if name == "candidate-preparation.v1.json")
+    )
+    assert preparation["source_evidence"]["status"] == "NOT_REQUIRED"
+    assert preparation["production_documents"] == {}
 
 
 def test_cli_refuses_noncanonical_snapshot_name_before_writing_candidate(

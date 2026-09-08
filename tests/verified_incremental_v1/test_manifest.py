@@ -127,6 +127,50 @@ def dns_manifest():
     return document, inputs
 
 
+def theme_only_manifest():
+    document, inputs = sample()
+    theme = owner.canonical(
+        [{"path": "style.css", "size": 12, "sha256": "f" * 64}]
+    )
+    inputs["artifact_bytes"] = {"theme-tree": theme}
+    document["articles"] = []
+    document["shared_artifacts"] = {
+        "theme": {
+            "key": "theme-tree",
+            "sha256": owner.digest(theme),
+            "baseline_sha256": "d" * 64,
+            "post_id": None,
+        }
+    }
+    document["unchanged_documents"] = {
+        slug: entry.content_sha256 for slug, entry in inputs["inventory"].items()
+    }
+    document["rendered_document_slugs"] = sorted(inputs["inventory"])
+    return document, inputs
+
+
+def test_theme_only_manifest_is_a_nonempty_shared_selection():
+    document, inputs = theme_only_manifest()
+    result = owner.validate_manifest(document, **inputs)
+
+    assert result.articles == ()
+    assert result.shared_artifact_sha256 == {
+        "theme": document["shared_artifacts"]["theme"]["sha256"]
+    }
+    assert result.unchanged_sha256 == {
+        slug: entry.content_sha256 for slug, entry in inputs["inventory"].items()
+    }
+
+
+def test_manifest_without_articles_pages_or_theme_is_rejected():
+    document, inputs = theme_only_manifest()
+    document["shared_artifacts"] = {}
+    inputs["artifact_bytes"] = {}
+    document["rendered_document_slugs"] = []
+    with pytest.raises(owner.IncrementalPublicationFailure, match="ARTICLE_SET_INVALID"):
+        owner.validate_manifest(document, **inputs)
+
+
 def test_optional_dns_manifest_is_a_different_audit_subject():
     document, inputs = dns_manifest()
     transition = owner.validate_manifest(document, **inputs)

@@ -29,15 +29,22 @@ def test_hubs_are_the_fifteen_registered_pages_without_local_articles() -> None:
         assert "local-preview-" not in str(page.document())
 
 
-def test_home_is_derived_from_the_owned_template_without_site_chrome() -> None:
-    home = pages.load_home_page(ROOT)
-    assert home.production_slug == "home"
-    assert home.post_type == "page"
-    assert "暮らしに合うものを、" in home.block_markup
-    assert "wp:template-part" not in home.block_markup
-    assert "<main" not in home.block_markup
-    assert home.block_markup.count("<h1") == 1
-    assert '[kurashinoshirube_reader_home section="categories"]' in home.block_markup
+def test_template_shell_cannot_be_proposed_as_saved_home_content() -> None:
+    with pytest.raises(ValueError, match="READER_HOME_CONTENT_SOURCE_UNAVAILABLE"):
+        pages.load_home_page(ROOT)
+
+
+def saved_home_fixture() -> pages.Article:
+    """Legacy candidate compatibility uses an authored body, never the template."""
+    return pages.Article(
+        local_slug="home",
+        production_slug="home",
+        title="ホーム",
+        excerpt="保存されたホーム本文",
+        block_markup='<section><h1>保存されたホーム本文</h1></section>\n',
+        taxonomies={},
+        post_type="page",
+    )
 
 
 def test_local_guide_slug_cannot_be_requested_as_a_hub() -> None:
@@ -52,7 +59,7 @@ def test_duplicate_hub_selection_does_not_silently_deduplicate() -> None:
 
 def test_explicit_home_update_binds_original_id_without_changing_policies() -> None:
     inputs = sample()
-    home = pages.load_home_page(ROOT)
+    home = saved_home_fixture()
     manifest, artifacts, preparation = candidate.prepare_noncommercial_candidate(
         **inputs, home_article=home
     )
@@ -287,7 +294,7 @@ def test_explicit_home_or_theme_cannot_expand_a_frozen_candidate():
 
 def test_shared_candidate_cannot_omit_already_published_registered_hub():
     inputs = sample()
-    inputs["home_article"] = pages.load_home_page(ROOT)
+    inputs["home_article"] = saved_home_fixture()
     inputs["snapshot"]["all_document_baselines"] = {
         "999": {"id": 999, "slug": "categories", "status": "publish", "post_type": "page"}
     }
@@ -296,7 +303,7 @@ def test_shared_candidate_cannot_omit_already_published_registered_hub():
 
 def test_unselected_hub_draft_does_not_expand_shared_candidate():
     inputs = sample()
-    inputs["home_article"] = pages.load_home_page(ROOT)
+    inputs["home_article"] = saved_home_fixture()
     inputs["snapshot"]["all_document_baselines"] = {
         "999": {"id": 999, "slug": "categories", "status": "draft", "post_type": "page"}
     }

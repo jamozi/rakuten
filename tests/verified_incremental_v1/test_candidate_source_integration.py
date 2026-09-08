@@ -9,6 +9,8 @@ from dataclasses import replace
 from datetime import timedelta
 import importlib.util
 from pathlib import Path
+import sys
+from types import SimpleNamespace
 
 import pytest
 
@@ -17,6 +19,7 @@ from raos.application.editorial.verified_incremental_audit_v1 import (
     VerifiedIncrementalAuditBindingV1,
 )
 from scripts import raos_wordpress_incremental_publication as port
+from scripts import raos_wordpress_incremental_preview as preview
 
 spec = importlib.util.spec_from_file_location(
     "synthetic_candidate_source_examples", Path(__file__).with_name("test_candidate.py")
@@ -149,6 +152,235 @@ def test_source_and_release_inputs_validate_before_any_audit_or_browser(owner_in
     prepared = port.prepare_candidate(path, now=examples.NOW)
     assert prepared.manifest["articles"]
     assert current["audit_calls"] == current["browser_calls"] == 0
+
+
+def test_theme_only_candidate_replay_requests_not_required_sources(
+    monkeypatch, tmp_path
+):
+    inputs = examples._theme_only_inputs()
+    manifest, artifacts, preparation = (
+        port.candidate_owner.prepare_noncommercial_candidate(**inputs)
+    )
+    path = tmp_path / port.digest(port.canonical(manifest))
+    documents = {
+        "manifest.v1.json": manifest,
+        "candidate-preparation.v1.json": preparation,
+        preparation["snapshot_name"]: inputs["snapshot"],
+    }
+    artifact_files = {
+        preparation["artifact_files"][key]: raw for key, raw in artifacts.items()
+    }
+    source_calls = []
+
+    monkeypatch.setattr(port, "_candidate_directory", lambda _: None)
+    monkeypatch.setattr(
+        port,
+        "read_json",
+        lambda _, name: (deepcopy(documents[name]), port.canonical(documents[name])),
+    )
+    monkeypatch.setattr(port, "read_bytes", lambda _, name: artifact_files[name])
+    monkeypatch.setattr(
+        port, "load_editorial_portfolio_v3", lambda _: inputs["portfolio"]
+    )
+    monkeypatch.setattr(
+        port.candidate_owner, "current_theme_projection", lambda: artifacts["theme-tree"]
+    )
+    monkeypatch.setattr(
+        port.candidate_owner.reader_pages,
+        "reader_page_targets",
+        lambda *args, **kwargs: {},
+    )
+
+    def validate_sources(*args, **kwargs):
+        source_calls.append((args, kwargs))
+        return inputs["sources"]
+
+    monkeypatch.setattr(port, "validate_selected_official_sources", validate_sources)
+
+    prepared = port.prepare_candidate(path, now=examples.NOW)
+
+    assert len(source_calls) == 1
+    assert source_calls[0][0][2] == ()
+    assert source_calls[0][1]["allow_empty"] is True
+    assert prepared.manifest["articles"] == []
+    assert "home" not in prepared.preparation["production_documents"]
+    assert "production-home" not in prepared.artifacts
+    assert prepared.scope.selected_article_ids == ()
+    assert prepared.scope.rendered_article_ids == tuple(
+        sorted(binding.article_id for binding in inputs["portfolio"].articles)
+    )
+    assert prepared.scope.required_noncontent_rollback_targets == ("theme",)
+    monkeypatch.setitem(sys.modules, "raos_wordpress_incremental_publication", port)
+    monkeypatch.setattr(
+        preview,
+        "datetime",
+        SimpleNamespace(now=lambda _timezone: examples.NOW),
+    )
+    assert (
+        preview.page_overrides_for_preview(
+            SimpleNamespace(
+                candidate=path,
+                include_home=False,
+                home_page=False,
+                reader_privacy=False,
+                reader_pages=None,
+            )
+        )
+        == {}
+    )
+
+
+def frozen_home_candidate(monkeypatch, tmp_path):
+    inputs = examples.sample(selected=(1,))
+    portfolio = inputs["portfolio"]
+    inputs["portfolio"] = replace(
+        portfolio,
+        articles=(
+            replace(portfolio.articles[0], product_ids=(), cta_bindings=()),
+            *portfolio.articles[1:],
+        ),
+    )
+    inputs["articles"] = (
+        replace(
+            inputs["articles"][0],
+            block_markup=(
+                '<div class="raos-editorial-v2">'
+                '<dl class="raos-article-facts"><dt>実機</dt><dd>未使用</dd></dl>'
+                "<p>合成の型番確認ガイド。</p></div>"
+            ),
+        ),
+    )
+    frozen_markup = '<div id="legacy-home">Frozen editor-managed home body</div>'
+    inputs["home_article"] = port.publication.Article(
+        "frozen-candidate-home",
+        "home",
+        "Frozen home title",
+        "Frozen home excerpt",
+        frozen_markup,
+        {},
+        "page",
+    )
+    manifest, artifacts, preparation = (
+        port.candidate_owner.prepare_noncommercial_candidate(**inputs)
+    )
+    path = tmp_path / port.digest(port.canonical(manifest))
+    documents = {
+        "manifest.v1.json": manifest,
+        "candidate-preparation.v1.json": preparation,
+        preparation["snapshot_name"]: inputs["snapshot"],
+    }
+    artifact_files = {
+        preparation["artifact_files"][key]: raw for key, raw in artifacts.items()
+    }
+
+    monkeypatch.setattr(port, "_candidate_directory", lambda _: None)
+    monkeypatch.setattr(
+        port,
+        "read_json",
+        lambda _, name: (deepcopy(documents[name]), port.canonical(documents[name])),
+    )
+    monkeypatch.setattr(port, "read_bytes", lambda _, name: artifact_files[name])
+    monkeypatch.setattr(
+        port, "load_editorial_portfolio_v3", lambda _: inputs["portfolio"]
+    )
+    monkeypatch.setattr(port.publication, "load_articles", lambda _: inputs["articles"])
+    monkeypatch.setattr(port.publication, "load_policy_pages", lambda **_: ())
+    monkeypatch.setattr(
+        port, "validate_selected_official_sources", lambda *_args, **_kwargs: inputs["sources"]
+    )
+    monkeypatch.setattr(
+        port.candidate_owner.reader_pages,
+        "reader_page_targets",
+        lambda *_args, **_kwargs: {},
+    )
+    monkeypatch.setattr(
+        port.candidate_owner.reader_pages,
+        "load_home_page",
+        lambda _: pytest.fail("frozen candidate replay must not call the home authoring loader"),
+    )
+    return path, documents, artifact_files, frozen_markup
+
+
+def test_legacy_frozen_home_replay_uses_bound_candidate_artifact(
+    monkeypatch, tmp_path
+):
+    path, _documents, _artifact_files, frozen_markup = frozen_home_candidate(
+        monkeypatch, tmp_path
+    )
+
+    prepared = port.prepare_candidate(path, now=examples.NOW)
+
+    assert prepared.artifacts["production-home"] == frozen_markup.encode()
+    assert prepared.preparation["production_documents"]["home"]["document"][
+        "block_markup"
+    ] == frozen_markup
+    assert prepared.scope.shared_changes is True
+    assert prepared.scope.rendered_article_ids == tuple(
+        sorted(binding.article_id for binding in examples._portfolio().articles)
+    )
+
+
+def test_legacy_frozen_home_preview_uses_prepared_candidate_override(
+    monkeypatch, tmp_path
+):
+    path, _documents, _artifact_files, frozen_markup = frozen_home_candidate(
+        monkeypatch, tmp_path
+    )
+    monkeypatch.setattr(
+        preview,
+        "datetime",
+        SimpleNamespace(now=lambda _timezone: examples.NOW),
+    )
+    monkeypatch.setitem(sys.modules, "raos_wordpress_incremental_publication", port)
+
+    overrides = preview.page_overrides_for_preview(
+        SimpleNamespace(
+            candidate=path,
+            include_home=False,
+            home_page=False,
+            reader_privacy=False,
+            reader_pages=None,
+        )
+    )
+
+    assert set(overrides) == {"home"}
+    assert overrides["home"]["block_markup"] == frozen_markup
+    assert overrides["home"] == port.prepare_candidate(
+        path, now=examples.NOW
+    ).preparation["production_documents"]["home"]["document"]
+
+
+def test_standalone_home_preview_keeps_authoring_loader_fail_closed():
+    with pytest.raises(ValueError, match="READER_HOME_CONTENT_SOURCE_UNAVAILABLE"):
+        preview.page_overrides_for_preview(
+            SimpleNamespace(
+                candidate=None,
+                include_home=True,
+                home_page=False,
+                reader_privacy=False,
+                reader_pages=None,
+            )
+        )
+
+
+@pytest.mark.parametrize("mutation", ("artifact", "projection"))
+def test_legacy_frozen_home_replay_rejects_candidate_drift(
+    monkeypatch, tmp_path, mutation
+):
+    path, documents, artifact_files, _frozen_markup = frozen_home_candidate(
+        monkeypatch, tmp_path
+    )
+    if mutation == "artifact":
+        artifact_files["production-home.html"] = b"<p>tampered frozen body</p>"
+        expected = "ARTIFACT_CHANGED"
+    else:
+        documents["candidate-preparation.v1.json"]["production_documents"]["home"][
+            "document"
+        ]["title"] = "Tampered frozen title"
+        expected = "CANDIDATE_PREPARATION_CHANGED"
+
+    with pytest.raises(port.publication.PublicationFailure, match=expected):
+        port.prepare_candidate(path, now=examples.NOW)
 
 
 @pytest.mark.parametrize(

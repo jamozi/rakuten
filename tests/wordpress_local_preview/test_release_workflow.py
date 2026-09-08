@@ -271,6 +271,56 @@ def test_implicit_resume_reuses_valid_subject_but_preserves_changed_subject(
     assert original.read_bytes() == b"original frozen candidate"
 
 
+def test_theme_only_selection_can_resume_the_exact_valid_candidate(
+    monkeypatch, tmp_path
+):
+    from types import SimpleNamespace
+    from scripts import raos_wordpress_release_workflow as workflow
+
+    args = workflow.parser().parse_args(
+        ["prepare", "--include-theme", "--snapshot-name", "snapshot"]
+    )
+    old = tmp_path / "old-candidate"
+    old.mkdir()
+    monkeypatch.setattr(
+        workflow.importlib,
+        "import_module",
+        lambda name: SimpleNamespace(prepare_candidate=lambda *args, **kwargs: None),
+    )
+    state = {
+        "request_scope": workflow.request_scope(args),
+        "candidate": str(old),
+    }
+
+    workflow.restore_selection(args, state)
+
+    assert args.candidate == old
+
+
+def test_theme_only_plan_requires_snapshot_but_not_article_or_page_selection(
+    monkeypatch,
+):
+    from types import SimpleNamespace
+    from scripts import raos_wordpress_release_workflow as workflow
+
+    args = workflow.parser().parse_args(
+        ["plan", "--include-theme", "--snapshot-name", "snapshot"]
+    )
+    selected = SimpleNamespace(as_json=lambda: {"python_tests": []})
+    monkeypatch.setattr(workflow, "discover_registry", lambda: {})
+    monkeypatch.setattr(workflow, "changed_paths", lambda **kwargs: [])
+    monkeypatch.setattr(workflow, "create_plan", lambda *args, **kwargs: selected)
+    monkeypatch.setattr(workflow, "previous_report", lambda: {})
+    monkeypatch.setattr(workflow, "check_inputs", lambda value: {})
+    monkeypatch.setattr(workflow.verification, "reusable", lambda *args, **kwargs: False)
+    monkeypatch.setattr(workflow.environment_owner, "compare", lambda *args: {})
+
+    planned, _, _ = workflow.plan(args)
+
+    assert planned["targets"] == []
+    assert planned["missing_inputs"] == []
+
+
 def test_unchanged_prepare_runs_no_tests_generation_sync_or_capture(
     monkeypatch, tmp_path
 ):

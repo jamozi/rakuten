@@ -260,6 +260,79 @@ class PreparedCandidate:
     release_arguments: Mapping[str, Any]
 
 
+def _frozen_home_article(
+    path: Path,
+    manifest: Mapping[str, Any],
+    preparation: Mapping[str, Any],
+) -> publication.Article | None:
+    """Reconstruct an existing home proposal from its bound candidate bytes."""
+    shared = manifest.get("shared_artifacts", {})
+    if not isinstance(shared, Mapping) or "home" not in shared:
+        return None
+    home = shared["home"]
+    artifact_files = preparation.get("artifact_files")
+    production_documents = preparation.get("production_documents")
+    if (
+        not isinstance(home, Mapping)
+        or not isinstance(artifact_files, Mapping)
+        or not isinstance(production_documents, Mapping)
+        or not isinstance(home.get("key"), str)
+        or not isinstance(home.get("sha256"), str)
+    ):
+        fail("CANDIDATE_PREPARATION_CHANGED")
+    key = cast(str, home["key"])
+    filename = artifact_files.get(key)
+    proposal = production_documents.get("home")
+    if (
+        not isinstance(filename, str)
+        or not isinstance(proposal, Mapping)
+        or set(proposal)
+        != {"post_id", "baseline_precondition", "document", "after_sha256"}
+        or proposal.get("post_id") != home.get("post_id")
+    ):
+        fail("CANDIDATE_PREPARATION_CHANGED")
+    document = proposal.get("document")
+    if not isinstance(document, dict) or set(document) != {
+        "post_type",
+        "title",
+        "slug",
+        "excerpt",
+        "block_markup",
+        "taxonomies",
+        "media_ids",
+    }:
+        fail("CANDIDATE_PREPARATION_CHANGED")
+    raw = read_bytes(path / "artifacts", filename)
+    if digest(raw) != home["sha256"]:
+        fail("ARTIFACT_CHANGED")
+    try:
+        markup = raw.decode("utf-8", errors="strict")
+    except UnicodeError:
+        fail("ARTIFACT_CHANGED")
+    if (
+        document.get("post_type") != "page"
+        or document.get("slug") != "home"
+        or not isinstance(document.get("title"), str)
+        or not isinstance(document.get("excerpt"), str)
+        or document.get("block_markup") != markup
+        or not isinstance(document.get("taxonomies"), dict)
+        or not isinstance(document.get("media_ids"), list)
+        or type(proposal.get("post_id")) is not int
+        or publication._content_after_sha256(document, proposal["post_id"])
+        != proposal.get("after_sha256")
+    ):
+        fail("CANDIDATE_PREPARATION_CHANGED")
+    return publication.Article(
+        "frozen-candidate-home",
+        "home",
+        cast(str, document["title"]),
+        cast(str, document["excerpt"]),
+        markup,
+        cast(dict[str, list[int]], document["taxonomies"]),
+        "page",
+    )
+
+
 def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
     """Reject invalid inputs before tests, browser work, reviews or credentials."""
     _candidate_directory(path)
@@ -286,10 +359,24 @@ def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
     if "privacy-policy" in reader_bindings:
         page_articles.append(candidate_owner.reader_pages.load_reader_privacy_page(ROOT))
     page_targets = candidate_owner.reader_pages.reader_page_targets(ROOT, page_articles, snapshot)
-    sources = (validate_selected_official_sources(ROOT, OWNER, selected_ids, now, allow_empty=True)
-               if page_targets and not selected_ids else validate_selected_official_sources(ROOT, OWNER, selected_ids, now))
-    sources.require_complete()
     shared = manifest.get("shared_artifacts", {})
+    frozen_home = _frozen_home_article(path, manifest, preparation)
+    allow_empty_sources = not selected_ids and (
+        bool(page_targets)
+        or (isinstance(shared, Mapping) and "theme" in shared)
+    )
+    sources = (
+        validate_selected_official_sources(
+            ROOT,
+            OWNER,
+            selected_ids,
+            now,
+            allow_empty=True,
+        )
+        if allow_empty_sources
+        else validate_selected_official_sources(ROOT, OWNER, selected_ids, now)
+    )
+    sources.require_complete()
     policies = [
         article
         for article in (
@@ -320,7 +407,7 @@ def prepare_candidate(path: Path, *, now: datetime) -> PreparedCandidate:
             if "theme" in shared
             else None,
             policy_articles=policies,
-            home_article=candidate_owner.reader_pages.load_home_page(ROOT) if "home" in shared else None,
+            home_article=frozen_home,
             reader_page_articles=page_articles,
             reader_page_targets=page_targets,
             reader_measurement=measurement_profile,

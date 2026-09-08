@@ -594,6 +594,86 @@ def test_shared_theme_requires_full_article_audit_and_exact_shared_readback() ->
         build(document, inputs)
 
 
+def test_theme_only_release_keeps_full_audit_rollback_and_owner_approval_gates():
+    from tests.verified_incremental_v1.test_reader_page_contract import empty_sources
+
+    document, inputs = sample()
+    raw = b"synthetic-theme-package"
+    theme_sha256 = manifest.digest(raw)
+    document["articles"] = []
+    document["shared_artifacts"] = {
+        "theme": {
+            "key": "theme",
+            "sha256": theme_sha256,
+            "baseline_sha256": "9" * 64,
+            "post_id": None,
+        }
+    }
+    document["unchanged_documents"] = {
+        slug: entry.content_sha256 for slug, entry in inputs["inventory"].items()
+    }
+    document["rendered_document_slugs"] = sorted(inputs["inventory"])
+    inputs["artifact_bytes"] = {"theme": raw}
+    inputs["official_sources"] = empty_sources()
+    inputs["source_article_id_by_article_id"] = {}
+    inputs["expected_production_content_sha256"] = {}
+    inputs["expected_shared_readback_sha256"] = {"theme": theme_sha256}
+    inputs["validated_manifest"] = manifest.validate_manifest(
+        document,
+        inventory=inputs["inventory"],
+        article_targets=inputs["article_targets"],
+        shared_baseline_sha256={"theme": "9" * 64},
+        article_products={},
+        article_claims={},
+        claim_sources={},
+        source_receipt_sha256={},
+        verified_image_sha256={},
+        verified_cta_sha256={},
+        image_article_products={},
+        cta_article_products={},
+        artifact_bytes=inputs["artifact_bytes"],
+        now=NOW,
+    )
+    inputs["audit_scope"] = IncrementalAuditScopeV1(
+        selected_article_ids=(),
+        existing_article_ids=("article-1", "article-2"),
+        rendered_article_ids=("article-1", "article-2"),
+        shared_changes=True,
+        claim_ids_by_article={},
+        required_noncontent_rollback_targets=("theme",),
+    )
+    inputs["audit_artifact_bytes"] = {
+        "theme": raw,
+        "source-replay": release.canonical_json_bytes(
+            inputs["official_sources"].to_document()
+        ),
+    }
+    inputs["audit_binding"] = replace(
+        inputs["audit_binding"],
+        manifest_sha256=inputs["validated_manifest"].manifest_sha256,
+        scope_sha256=release._digest(inputs["audit_scope"].to_document()),
+        artifact_bundle_sha256=release._digest(
+            {
+                key: manifest.digest(value)
+                for key, value in inputs["audit_artifact_bytes"].items()
+            }
+        ),
+    )
+
+    context = build(document, inputs)
+    envelope = context.to_document()
+
+    assert envelope["selected_articles"] == {}
+    assert envelope["unchanged_documents"] == document["unchanged_documents"]
+    assert envelope["shared_artifact_sha256"] == {"theme": theme_sha256}
+    assert envelope["expected_shared_readback_sha256"] == {
+        "theme": theme_sha256
+    }
+    assert envelope["owner_approval_required"] is True
+    assert envelope["publication_authority"] is False
+    assert envelope["measurement_collection_enabled"] is False
+
+
 def test_zero_commerce_has_no_receipt_no_authority_and_shortest_expiry() -> None:
     context = build()
     doc = context.to_document()

@@ -103,23 +103,12 @@ def select_hub_pages(root: Path, slugs: Sequence[str]) -> list[Article]:
 
 
 def load_home_page(root: Path) -> Article:
-    """The front-page template owns both the displayed page and editor fragment."""
-    template = _read(root, THEME / "templates/front-page.html").decode("utf-8")
-    body = re.search(r"<main\b[^>]*>\s*(.*?)\s*</main>", template, flags=re.S)
-    if body is None or template.count("<main") != 1:
-        raise ValueError("READER_HOME_TEMPLATE_INVALID")
-    markup = body[1].strip() + "\n"
-    if "wp:template-part" in markup or markup.count("<h1") != 1:
-        raise ValueError("READER_HOME_TEMPLATE_INVALID")
-    return Article(
-        local_slug="home",
-        production_slug="home",
-        title="ホーム",
-        excerpt="サイズ、使い方、手入れの違いを整理し、暮らしに合う生活用品を選ぶためのガイドです。",
-        block_markup=markup,
-        taxonomies={},
-        post_type="page",
-    )
+    """Home is editor-managed; the theme shell is never an authoring source.
+
+    Keep explicit home writes fail closed until a separate content owner exists.
+    Theme-only previews replay the snapshot's stored body without a home proposal.
+    """
+    raise ValueError("READER_HOME_CONTENT_SOURCE_UNAVAILABLE")
 
 
 def load_reader_privacy_page(root: Path) -> Article:
@@ -150,7 +139,7 @@ def selected_page_slugs(root: Path, arguments: object) -> list[str]:
             raise ValueError("READER_PRIVACY_SELECTION_CONFLICT")
         selected.append(load_reader_privacy_page(root).production_slug)
     if getattr(arguments, "include_home", False):
-        selected.append(load_home_page(root).production_slug)
+        selected.append("home")
     return sorted(selected)
 
 

@@ -34,6 +34,159 @@ function raos_local_preview_sorted_keys(array $value): array
     return $keys;
 }
 
+function raos_local_preview_route_aliases_match($actual, array $expected): bool
+{
+    if (! is_array($actual)
+        || raos_local_preview_sorted_keys($actual) !== array('routes', 'schema')
+        || ($actual['schema'] ?? null) !== $expected['schema']
+        || ! is_array($actual['routes'] ?? null)
+        || ! array_is_list($actual['routes'])
+        || count($actual['routes']) !== count($expected['routes'])) {
+        return false;
+    }
+    $keys = array('kind', 'local_path', 'production_id', 'production_slug', 'source_path');
+    foreach ($expected['routes'] as $index => $row) {
+        $observed = $actual['routes'][$index] ?? null;
+        if (! is_array($observed) || raos_local_preview_sorted_keys($observed) !== $keys) {
+            return false;
+        }
+        foreach ($row as $key => $value) {
+            if (($observed[$key] ?? null) !== $value) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+/** Rebuild the closed production-route map from saved metadata and local fixtures. */
+function raos_local_preview_route_aliases(
+    ?array $binding,
+    ?array $metadata,
+    array $fixture,
+    array $page_fixture
+): array {
+    if ($binding === null || $metadata === null) {
+        return array();
+    }
+    $scope = $binding['incremental_scope'] ?? null;
+    if (! is_array($scope)) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
+    }
+    $binding_has_aliases = array_key_exists('local_route_aliases', $binding);
+    $scope_has_aliases = array_key_exists('local_route_aliases', $scope);
+    if ($binding_has_aliases !== $scope_has_aliases) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
+    }
+    if (! $binding_has_aliases) {
+        if (($binding['theme_only_candidate'] ?? false) === true
+            || ($scope['theme_only_candidate'] ?? false) === true) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
+        }
+        return array();
+    }
+    $documents = $metadata['documents'] ?? null;
+    if (! is_array($documents)) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
+    }
+    $identities = array();
+    $articles = array();
+    foreach ($fixture['posts'] ?? array() as $post) {
+        $local_slug = is_array($post) ? ($post['slug'] ?? null) : null;
+        if (! is_string($local_slug)
+            || preg_match('/\Alocal-preview-[a-z0-9]+(?:-[a-z0-9]+)*\z/D', $local_slug) !== 1) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
+        }
+        $slug = substr($local_slug, strlen('local-preview-'));
+        $observed = $documents[$slug] ?? null;
+        $production_id = is_array($observed) ? ($observed['production_id'] ?? null) : null;
+        if (! is_int($production_id) || $production_id <= 0
+            || ($observed['production_slug'] ?? null) !== $slug
+            || isset($identities[$production_id])) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
+        }
+        $identities[$production_id] = true;
+        $articles[] = array(
+            'kind' => 'post_slug',
+            'production_id' => $production_id,
+            'production_slug' => $slug,
+            'source_path' => '/' . $slug . '/',
+            'local_path' => '/' . $local_slug . '/',
+        );
+    }
+    usort($articles, static fn (array $left, array $right): int =>
+        $left['production_id'] <=> $right['production_id']);
+    $pages = array();
+    foreach ($page_fixture['pages'] ?? array() as $page) {
+        $slug = is_array($page) ? ($page['slug'] ?? null) : null;
+        if (! is_string($slug) || ! array_key_exists($slug, $documents)) {
+            continue;
+        }
+        $observed = $documents[$slug];
+        $production_id = is_array($observed) ? ($observed['production_id'] ?? null) : null;
+        if (! is_int($production_id) || $production_id <= 0
+            || ($observed['production_slug'] ?? null) !== $slug
+            || isset($identities[$production_id])) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
+        }
+        $identities[$production_id] = true;
+        $pages[] = array(
+            'kind' => 'page_id',
+            'production_id' => $production_id,
+            'production_slug' => $slug,
+            'source_path' => '/?page_id=' . (string) $production_id,
+            'local_path' => $slug === 'home' ? '/' : '/' . $slug . '/',
+        );
+    }
+    usort($pages, static fn (array $left, array $right): int =>
+        $left['production_id'] <=> $right['production_id']);
+    $routes = array_merge($articles, $pages);
+    $aliases = array('schema' => 'RAOS_WORDPRESS_LOCAL_ROUTE_ALIASES_V1', 'routes' => $routes);
+    if (! raos_local_preview_route_aliases_match($binding['local_route_aliases'] ?? null, $aliases)
+        || ! raos_local_preview_route_aliases_match(
+            $binding['incremental_scope']['local_route_aliases'] ?? null,
+            $aliases
+        )
+        || count(array_unique(array_column($routes, 'source_path'))) !== count($routes)
+        || count(array_unique(array_column($routes, 'local_path'))) !== count($routes)) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
+    }
+    return $routes;
+}
+
+/** A shared theme may render only the exact saved home unless home is a page target. */
+function raos_local_preview_shared_theme_home(?array $binding): bool
+{
+    if (! is_array($binding) || ($binding['home_mode'] ?? null) !== 'shared-theme-candidate'
+        || in_array('home', $binding['reader_page_slugs'] ?? array(), true)) {
+        return false;
+    }
+    $page_hash = $binding['page_body_sha256']['home'] ?? null;
+    $baseline_hash = $binding['baseline_page_sha256']['home'] ?? null;
+    if (! is_string($page_hash)
+        || preg_match('/\A[a-f0-9]{64}\z/D', $page_hash) !== 1
+        || $page_hash !== $baseline_hash) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_SHARED_HOME_BINDING_INVALID');
+    }
+    return true;
+}
+
+/** A content-empty candidate may replay only the saved home under a shared theme. */
+function raos_local_preview_theme_only_candidate(?array $binding): bool
+{
+    if (! is_array($binding) || ($binding['theme_only_candidate'] ?? false) !== true) {
+        return false;
+    }
+    if (! raos_local_preview_shared_theme_home($binding)
+        || ($binding['home_state'] ?? null) !== 'SHARED_THEME_CANDIDATE_NOT_VERIFIED'
+        || ($binding['selected_slugs'] ?? null) !== array()
+        || ($binding['reader_page_slugs'] ?? array()) !== array()
+        || ($binding['reader_page_documents'] ?? array()) !== array()) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_THEME_ONLY_BINDING_INVALID');
+    }
+    return true;
+}
+
 function raos_local_preview_reader_scope(array $binding, array $metadata): array
 {
     $fields = array('reader_page_slugs', 'reader_page_documents', 'snapshot_reader_page_slugs',
@@ -60,6 +213,7 @@ function raos_local_preview_reader_scope(array $binding, array $metadata): array
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_BINDING_INVALID');
     }
     $policies = array('about-ad-policy', 'comparison-policy', 'privacy-policy');
+    $shared_theme_home = raos_local_preview_shared_theme_home($binding);
     $baseline_pages = array_merge($policies, array('home'), $declared);
     sort($baseline_pages, SORT_STRING);
     if (raos_local_preview_sorted_keys($binding['reader_page_baselines']) !== $baseline_pages) {
@@ -90,6 +244,9 @@ function raos_local_preview_reader_scope(array $binding, array $metadata): array
             $managed[] = $slug;
         }
     }
+    if ($shared_theme_home) {
+        $managed[] = 'home';
+    }
     ksort($drafts);
     if ($binding['unpublished_reader_pages'] !== $drafts) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_BINDING_INVALID');
@@ -112,8 +269,8 @@ function raos_local_preview_reader_scope(array $binding, array $metadata): array
     return $managed;
 }
 
-/** H1 permission is limited to the exact selected front-page template fragment. */
-function raos_local_preview_reader_page_content(array $page, string $content, ?array $binding, string $home_template): bool
+/** H1 permission is limited to an exact selected or saved front-page body. */
+function raos_local_preview_reader_page_content(array $page, string $content, ?array $binding): bool
 {
     $slug = $page['slug'];
     $selected = $binding['reader_page_slugs'] ?? array();
@@ -128,12 +285,14 @@ function raos_local_preview_reader_page_content(array $page, string $content, ?a
             WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_PAGE_INVALID');
         }
     }
-    $home = $slug === 'home' && in_array('home', $selected, true);
+    $shared_theme_home = $slug === 'home' && raos_local_preview_shared_theme_home($binding);
+    if ($shared_theme_home
+        && hash('sha256', $content) !== ($binding['baseline_page_sha256']['home'] ?? null)) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_HOME_INVALID');
+    }
+    $home = $slug === 'home' && (in_array('home', $selected, true) || $shared_theme_home);
     if ($home) {
-        if (substr_count($home_template, '<main') !== 1
-            || preg_match('/<main\b[^>]*>\s*(.*?)\s*<\/main>/s', $home_template, $parts) !== 1
-            || trim($parts[1]) . "\n" !== $content
-            || substr_count($content, '<h1') !== 1) {
+        if (substr_count($content, '<h1') !== 1) {
             WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_HOME_INVALID');
         }
     } elseif (in_array($slug, raos_local_preview_reader_hub_slugs(), true)) {
@@ -160,6 +319,10 @@ $mixed_metadata = null;
 $mixed_binding = null;
 $reader_page_mode = false;
 $managed_reader_pages = array();
+$theme_only_candidate = false;
+$shared_theme_home = false;
+$local_route_aliases = array();
+$local_route_alias_targets = array();
 $publication_profile = getenv('RAOS_PREVIEW_PUBLICATION_PROFILE') ?: 'legacy-full';
 if (! in_array($publication_profile, array('legacy-full', 'verified-incremental'), true)) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PUBLICATION_PROFILE_INVALID');
@@ -197,6 +360,8 @@ if ($publication_profile === 'verified-incremental') {
     if ($reader_page_mode) {
         $managed_reader_pages = raos_local_preview_reader_scope($mixed_binding, $mixed_metadata);
     }
+    $theme_only_candidate = raos_local_preview_theme_only_candidate($mixed_binding);
+    $shared_theme_home = raos_local_preview_shared_theme_home($mixed_binding);
     $page_fixture_path = $mixed_root . '/pages.json';
     $page_content_root = $mixed_root;
 }
@@ -222,7 +387,6 @@ if (
 ) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_FIXTURE_INVALID');
 }
-
 if (
     ! is_file($page_fixture_path)
     || is_link($page_fixture_path)
@@ -244,10 +408,18 @@ if (
     || ! is_string($page_fixture['seed_version'])
     || preg_match('/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\.[1-9][0-9]*\z/D', $page_fixture['seed_version']) !== 1
     || ! is_array($page_fixture['pages'])
-    || count($page_fixture['pages']) !== ($reader_page_mode ? count($managed_reader_pages) : 3)
+    || count($page_fixture['pages']) !== ($reader_page_mode
+        ? count($managed_reader_pages)
+        : ($shared_theme_home ? 4 : 3))
 ) {
     WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
 }
+$local_route_aliases = raos_local_preview_route_aliases(
+    $mixed_binding,
+    $mixed_metadata,
+    $fixture,
+    $page_fixture
+);
 
 if (
     ! is_file($policy_profile_path)
@@ -485,7 +657,11 @@ update_option('blog_public', '0');
 update_option('timezone_string', 'Asia/Tokyo');
 update_option('date_format', 'Y年n月j日');
 update_option('posts_per_page', 3);
-update_option('permalink_structure', '/%postname%/');
+global $wp_rewrite;
+if (! ($wp_rewrite instanceof WP_Rewrite)) {
+    WP_CLI::error('RAOS_WORDPRESS_PREVIEW_REWRITE_UNAVAILABLE');
+}
+$wp_rewrite->set_permalink_structure('/%postname%/');
 update_option('default_comment_status', 'closed');
 update_option('default_ping_status', 'closed');
 update_option('default_pingback_flag', '0');
@@ -592,24 +768,19 @@ foreach ($page_fixture['pages'] as $page) {
     if ($mixed_binding !== null && hash('sha256', $content) !== ($mixed_binding['page_body_sha256'][$page['slug']] ?? null)) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_MIXED_POLICY_HASH_INVALID');
     }
-    $home_template = '';
-    if ($reader_page_mode && $page['slug'] === 'home') {
-        $template_path = get_stylesheet_directory() . '/templates/front-page.html';
-        if (! is_file($template_path) || is_link($template_path) || ! is_readable($template_path)) {
-            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_READER_HOME_INVALID');
-        }
-        $home_template = file_get_contents($template_path);
-    }
     $reader_home = is_string($content) && raos_local_preview_reader_page_content(
-        $page, $content, $mixed_binding, $home_template
+        $page, $content, $mixed_binding
     );
     if (
         ! is_string($content)
         || $content === ''
         || strlen($content) > 131072
-        || wp_kses_post($content) !== $content
+        || (! ($shared_theme_home && $page['slug'] === 'home')
+            && wp_kses_post($content) !== $content)
         || ! raos_local_preview_has_only_reviewed_https_links($content)
-        || preg_match('/<\s*(?:script|style|iframe|form|input|object|embed)\b/i', $content) === 1
+        || preg_match('/<\s*(?:script|style|iframe|object|embed)\b/i', $content) === 1
+        || (! ($shared_theme_home && $page['slug'] === 'home')
+            && preg_match('/<\s*(?:form|input)\b/i', $content) === 1)
         || (! $reader_home && preg_match('/<\s*h1\b/i', $content) === 1)
     ) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_FIXTURE_INVALID');
@@ -643,9 +814,20 @@ foreach ($page_fixture['pages'] as $page) {
     }
     // Draft hubs become visible only in this isolated preview. No production
     // publication date is synthesized; their metadata remains NOT_VERIFIED.
-    $result = wp_insert_post($reader_page_mode ? wp_slash($page_data) : $page_data, true);
+    $result = wp_insert_post(
+        ($reader_page_mode || ($shared_theme_home && $slug === 'home'))
+            ? wp_slash($page_data)
+            : $page_data,
+        true
+    );
     if (is_wp_error($result) || (int) $result <= 0) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_PAGE_SEED_FAILED');
+    }
+    foreach ($local_route_aliases as $alias) {
+        if ($alias['kind'] === 'page_id' && $alias['production_slug'] === $slug) {
+            $alias['local_post_id'] = (int) $result;
+            $local_route_alias_targets[$alias['source_path']] = $alias;
+        }
     }
     if ($mixed_metadata !== null) {
         if (get_post_field('post_content', (int) $result, 'raw') !== $content
@@ -855,6 +1037,13 @@ foreach ($fixture['posts'] as $index => $post) {
     if (is_wp_error($result) || (int) $result <= 0) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_POST_SEED_FAILED_' . (string) $index);
     }
+    foreach ($local_route_aliases as $alias) {
+        if ($alias['kind'] === 'post_slug'
+            && $alias['production_slug'] === $production_slug) {
+            $alias['local_post_id'] = (int) $result;
+            $local_route_alias_targets[$alias['source_path']] = $alias;
+        }
+    }
     if ($mixed_metadata !== null) {
         $tags_result = wp_set_object_terms((int) $result, $tag_ids, 'post_tag');
         if (is_wp_error($tags_result)) {
@@ -964,6 +1153,28 @@ if (
 }
 
 if ($mixed_binding !== null) {
+    $ordered_route_aliases = array();
+    foreach ($local_route_aliases as $alias) {
+        $source_path = $alias['source_path'];
+        if (! isset($local_route_alias_targets[$source_path])) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_SEED_INVALID');
+        }
+        $ordered_route_aliases[] = $local_route_alias_targets[$source_path];
+    }
+    if (count($ordered_route_aliases) !== count($local_route_alias_targets)) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_SEED_INVALID');
+    }
+    if ($local_route_aliases === array()) {
+        delete_option('raos_local_preview_route_aliases_v1');
+    } else {
+        update_option('raos_local_preview_route_aliases_v1', array(
+            'schema' => 'RAOS_WORDPRESS_LOCAL_ROUTE_ALIAS_STATE_V1',
+            'publication_profile' => 'verified-incremental',
+            'publication_authority' => false,
+            'preparation_binding_sha256' => hash('sha256', file_get_contents($mixed_binding_path)),
+            'routes' => $ordered_route_aliases,
+        ), false);
+    }
     ksort($mixed_policy_heads);
     update_option('raos_mixed_preview_policy_heads_v1', array(
         'schema' => 'RAOS_WORDPRESS_MIXED_PREVIEW_POLICY_HEADS_V1',
@@ -973,6 +1184,7 @@ if ($mixed_binding !== null) {
         'pages' => $mixed_policy_heads,
     ), false);
 } else {
+    delete_option('raos_local_preview_route_aliases_v1');
     delete_option('raos_mixed_preview_policy_heads_v1');
 }
 if ($mixed_metadata === null && function_exists('raos_local_reader_guides_seed')) {

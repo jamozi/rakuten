@@ -372,6 +372,42 @@ def test_article_only_release_can_render_selected_subset():
     validate(report, artifacts, current_scope)
 
 
+def test_theme_only_scope_keeps_full_rendering_and_rollback_requirements():
+    current_scope = audit.IncrementalAuditScopeV1(
+        selected_article_ids=(),
+        existing_article_ids=("a01", "a02"),
+        rendered_article_ids=("a01", "a02"),
+        shared_changes=True,
+        claim_ids_by_article={},
+        required_noncontent_rollback_targets=("theme",),
+    )
+
+    assert current_scope.to_document() == {
+        "selected_article_ids": [],
+        "existing_article_ids": ["a01", "a02"],
+        "rendered_article_ids": ["a01", "a02"],
+        "shared_changes": True,
+        "claim_ids_by_article": {},
+        "retained_product_ids": [],
+        "smart_device_product_ids": [],
+        "disposal_product_ids": [],
+        "affiliate_cta_ids": [],
+        "product_image_ids": [],
+        "required_noncontent_rollback_targets": ["theme"],
+    }
+
+
+def test_empty_scope_without_pages_or_theme_is_rejected():
+    with pytest.raises(audit.IncrementalAuditFailure):
+        audit.IncrementalAuditScopeV1(
+            selected_article_ids=(),
+            existing_article_ids=("a01", "a02"),
+            rendered_article_ids=(),
+            shared_changes=False,
+            claim_ids_by_article={},
+        ).to_document()
+
+
 @pytest.mark.parametrize(
     "surface,mutation",
     [

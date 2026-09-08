@@ -14,6 +14,111 @@ if (
     return;
 }
 
+function raos_local_preview_alias_sorted_keys(array $value): array
+{
+    $keys = array_keys($value);
+    sort($keys, SORT_STRING);
+    return $keys;
+}
+
+/** Resolve one exact saved production route to its bound local object. */
+function raos_local_preview_route_alias_target(
+    $state,
+    string $binding_hash,
+    string $method,
+    string $request_uri
+): ?string {
+    if (! in_array($method, array('GET', 'HEAD'), true)
+        || ! is_array($state)
+        || raos_local_preview_alias_sorted_keys($state) !== array(
+            'preparation_binding_sha256', 'publication_authority', 'publication_profile',
+            'routes', 'schema'
+        )
+        || ($state['schema'] ?? null) !== 'RAOS_WORDPRESS_LOCAL_ROUTE_ALIAS_STATE_V1'
+        || ($state['publication_profile'] ?? null) !== 'verified-incremental'
+        || ($state['publication_authority'] ?? null) !== false
+        || ($state['preparation_binding_sha256'] ?? null) !== $binding_hash
+        || preg_match('/\A[a-f0-9]{64}\z/D', $binding_hash) !== 1
+        || ! is_array($state['routes'] ?? null) || ! array_is_list($state['routes'])
+        || count($state['routes']) < 1 || count($state['routes']) > 64) {
+        return null;
+    }
+    $sources = array();
+    $targets = array();
+    $identities = array();
+    $local_identities = array();
+    $matched = null;
+    foreach ($state['routes'] as $route) {
+        if (! is_array($route)
+            || raos_local_preview_alias_sorted_keys($route) !== array(
+                'kind', 'local_path', 'local_post_id', 'production_id', 'production_slug',
+                'source_path'
+            )) {
+            return null;
+        }
+        $kind = $route['kind'];
+        $production_id = $route['production_id'];
+        $slug = $route['production_slug'];
+        $expected_source = $kind === 'post_slug' ? '/' . $slug . '/'
+            : ($kind === 'page_id' ? '/?page_id=' . (string) $production_id : null);
+        $expected_local = $kind === 'post_slug' ? '/local-preview-' . $slug . '/'
+            : ($kind === 'page_id' ? ($slug === 'home' ? '/' : '/' . $slug . '/') : null);
+        $local_post_id = $route['local_post_id'];
+        if (! is_int($production_id) || $production_id <= 0
+            || ! is_string($slug)
+            || preg_match('/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/D', $slug) !== 1
+            || ! is_int($local_post_id) || $local_post_id <= 0
+            || $route['source_path'] !== $expected_source
+            || $route['local_path'] !== $expected_local
+            || isset($sources[$expected_source]) || isset($targets[$expected_local])
+            || isset($identities[$production_id]) || isset($local_identities[$local_post_id])) {
+            return null;
+        }
+        $post = get_post($local_post_id);
+        $expected_type = $kind === 'post_slug' ? 'post' : 'page';
+        $expected_slug = $kind === 'post_slug' ? 'local-preview-' . $slug : $slug;
+        $expected_url = home_url($expected_local);
+        if (! ($post instanceof WP_Post) || $post->post_type !== $expected_type
+            || $post->post_status !== 'publish' || $post->post_name !== $expected_slug
+            || get_permalink($post) !== $expected_url) {
+            return null;
+        }
+        $sources[$expected_source] = true;
+        $targets[$expected_local] = true;
+        $identities[$production_id] = true;
+        $local_identities[$local_post_id] = true;
+        if ($request_uri === $expected_source) {
+            $matched = $expected_url;
+        }
+    }
+    return $matched;
+}
+
+function raos_local_preview_route_alias_redirect(): void
+{
+    $state = get_option('raos_local_preview_route_aliases_v1', null);
+    $heads = get_option('raos_mixed_preview_policy_heads_v1', null);
+    if (! is_array($heads)
+        || ($heads['schema'] ?? null) !== 'RAOS_WORDPRESS_MIXED_PREVIEW_POLICY_HEADS_V1'
+        || ($heads['publication_profile'] ?? null) !== 'verified-incremental'
+        || ($heads['publication_authority'] ?? null) !== false) {
+        return;
+    }
+    $hash = $heads['preparation_binding_sha256'] ?? '';
+    $target = raos_local_preview_route_alias_target(
+        $state,
+        $hash,
+        $_SERVER['REQUEST_METHOD'] ?? '',
+        $_SERVER['REQUEST_URI'] ?? ''
+    );
+    if ($target === null) {
+        return;
+    }
+    wp_safe_redirect($target, 301, 'RAOS Local Preview');
+    exit;
+}
+add_action('template_redirect', 'raos_local_preview_route_alias_redirect', -100);
+
 /** Always expose the local installation as non-indexable. */
 function raos_local_preview_robots(array $robots): array
 {

@@ -334,6 +334,137 @@ def validate_reader_candidate(inputs: dict, candidate: object) -> None:
                 reject()
 
 
+def validate_theme_only_candidate(inputs: dict, candidate: object) -> None:
+    """Bind an empty content scope to exactly one shared theme artifact."""
+    manifest, preparation = candidate.manifest, candidate.preparation
+    scope = inputs.get("scope", inputs.get("incremental_scope"))
+    if (
+        inputs.get("theme_only_candidate") is not True
+        or not isinstance(scope, dict)
+        or scope.get("theme_only_candidate") is not True
+        or scope.get("selected_article_ids") != []
+        or manifest.get("articles") != []
+        or manifest.get("reader_pages", {}) != {}
+        or set(manifest.get("shared_artifacts", {})) != {"theme"}
+        or preparation.get("production_documents") != {}
+    ):
+        reject()
+    if "reader_page_slugs" in inputs:
+        validate_reader_candidate(inputs, candidate)
+
+
+def validate_saved_home_candidate(
+    fixture_root: Path, binding: dict, candidate: object
+) -> str:
+    """Bind the private saved-home replay to the candidate's captured document."""
+    snapshot = getattr(candidate, "snapshot", None)
+    documents = snapshot.get("documents") if isinstance(snapshot, dict) else None
+    if not isinstance(documents, list):
+        reject()
+    homes = [
+        row
+        for row in documents
+        if isinstance(row, dict)
+        and row.get("post_type") == "page"
+        and row.get("slug") == "home"
+    ]
+    if len(homes) != 1:
+        reject()
+    home = homes[0]
+    snapshot_body = home.get("block_markup")
+    title = home.get("title")
+    excerpt = home.get("excerpt")
+    content_hash = home.get("content_sha256")
+    if (
+        binding.get("home_mode") != "shared-theme-candidate"
+        or type(snapshot_body) is not str
+        or not snapshot_body
+        or type(title) is not str
+        or type(excerpt) is not str
+        or re.fullmatch(r"[a-f0-9]{64}", str(content_hash)) is None
+        or sha(canonical(snapshot)) != binding.get("source_snapshot_sha256")
+    ):
+        reject()
+    snapshot_raw = snapshot_body.encode("utf-8")
+    snapshot_body_hash = sha(snapshot_raw)
+    manifest = getattr(candidate, "manifest", None)
+    preparation = getattr(candidate, "preparation", None)
+    artifacts = getattr(candidate, "artifacts", None)
+    shared = manifest.get("shared_artifacts") if isinstance(manifest, dict) else None
+    production = (
+        preparation.get("production_documents")
+        if isinstance(preparation, dict)
+        else None
+    )
+    if not isinstance(shared, dict) or not isinstance(production, dict):
+        reject()
+    if "home" in shared:
+        artifact = shared["home"]
+        prepared = production.get("home")
+        if (
+            not isinstance(artifact, dict)
+            or not isinstance(prepared, dict)
+            or not isinstance(prepared.get("document"), dict)
+            or not isinstance(artifacts, dict)
+        ):
+            reject()
+        selected = prepared["document"]
+        body = selected.get("block_markup")
+        title = selected.get("title")
+        excerpt = selected.get("excerpt")
+        artifact_raw = artifacts.get(artifact.get("key"))
+        if (
+            type(body) is not str
+            or not body
+            or type(title) is not str
+            or type(excerpt) is not str
+            or artifact_raw != body.encode("utf-8")
+        ):
+            reject()
+        body_raw = artifact_raw
+    else:
+        if "home" in production:
+            reject()
+        body = snapshot_body
+        body_raw = snapshot_raw
+    body_hash = sha(body_raw)
+    page_raw = read_private(fixture_root / "pages" / "home.html")
+    baseline_raw = read_private(fixture_root / "baseline-pages" / "home.html")
+    pages = json.loads(read_private(fixture_root / "pages.json"))
+    page_rows = pages.get("pages") if isinstance(pages, dict) else None
+    if not isinstance(page_rows, list):
+        reject()
+    fixture_homes = [
+        row
+        for row in page_rows
+        if isinstance(row, dict) and row.get("slug") == "home"
+    ]
+    expected_page = {
+        "content_file": "pages/home.html",
+        "excerpt": excerpt,
+        "slug": "home",
+        "title": title,
+    }
+    snapshot_hashes = binding.get("snapshot_document_sha256")
+    if (
+        page_raw != body_raw
+        or baseline_raw != snapshot_raw
+        or binding.get("page_body_sha256", {}).get("home") != body_hash
+        or binding.get("baseline_page_sha256", {}).get("home")
+        != snapshot_body_hash
+        or fixture_homes != [expected_page]
+        or (
+            snapshot_hashes is not None
+            and (
+                not isinstance(snapshot_hashes, dict)
+                or snapshot_hashes.get("home") != content_hash
+            )
+        )
+    ):
+        reject()
+    return body
+
+
 def current_inputs(
     fixture_root: Path,
     origin: str,
@@ -433,6 +564,8 @@ def current_inputs(
         inputs["outside_candidate_surface_ids"] = sorted(
             row["surface_id"] for row in inventory["local_surfaces"]
         )
+    if binding.get("theme_only_candidate") is True:
+        inputs["theme_only_candidate"] = True
     if candidate_path is not None:
         from raos_wordpress_incremental_publication import (
             prepare_candidate,
@@ -446,13 +579,22 @@ def current_inputs(
             row["article_id"] for row in candidate.manifest["articles"]
         } != set(scope["selected_article_ids"]):
             reject()
-        if "reader_page_slugs" in inputs:
+        if inputs.get("theme_only_candidate") is True:
+            validate_theme_only_candidate(inputs, candidate)
+        elif "reader_page_slugs" in inputs:
             validate_reader_candidate(inputs, candidate)
         elif (
             candidate.manifest.get("reader_pages")
             or "home" in candidate.manifest["shared_artifacts"]
         ):
             reject()
+        if binding.get("home_mode") == "shared-theme-candidate":
+            from raos_wordpress_incremental_seo_audit import _home_projection
+
+            home = validate_saved_home_candidate(fixture_root, binding, candidate)
+            inputs["home_body_projection_sha256"] = sha(
+                canonical(_home_projection(home))
+            )
         inputs["browser_plan"] = browser_plan(
             inventory,
             candidate.manifest,
@@ -528,6 +670,8 @@ def current_inputs(
                 ROOT / "changes/wordpress-local-preview-v1/runtime-fingerprint.php"
             )
         )
+    elif binding.get("home_mode") == "shared-theme-candidate":
+        reject()
     return inputs
 
 
@@ -593,6 +737,13 @@ def validate_results(
             or set(counts) != COUNT_FIELDS
             or any(type(value) is not int or value != 0 for value in counts.values())
         ):
+            reject()
+        if surface.get("kind") == "home":
+            if "home_body_projection_sha256" in inputs and row.get(
+                "homeBodyProjectionSha256"
+            ) != inputs["home_body_projection_sha256"]:
+                reject()
+        elif "homeBodyProjectionSha256" in row:
             reject()
         if surface.get("kind") == "article":
             article_id = surface["article_id"]
