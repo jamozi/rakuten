@@ -2237,6 +2237,7 @@ def test_content_is_visible_without_javascript() -> None:
         if re.search(r"\bdisplay\s*:\s*none\b", declarations)
     }
     assert hidden_selectors == {
+        "body.home.raos-home-v2-page #ks-magazine > .km-header",
         ".raos-comparison__cards",
         ".raos-comparison__table-view",
         "body.home.raos-home-v2-page #ks-magazine > .km-header",

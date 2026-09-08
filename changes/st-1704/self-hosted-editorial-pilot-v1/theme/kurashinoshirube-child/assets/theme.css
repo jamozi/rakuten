@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 8c3bd04318914638f5401ca70436ca3b1d2e7655fb94ebadb72b28b5e9cfcac3;
+  --raos-theme-runtime-revision-base: e4350f56e5ce2a0d0e84443aedc60f6d82188b0d3e2700ddbf02c90e429f1e47;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -3949,3 +3949,35 @@ body.home.raos-home-v2-page #ks-magazine .km-category > span {
 
 .raos-home-v2 #home-hero-title { text-wrap: wrap; }
 @media (max-width: 768px) { .raos-home-v2 #home-hero-title { font-size: clamp(1.75rem, 5.5vw, 2.5rem); } .raos-home-v2 #home-hero-title > span { white-space: normal; } }
+/* Reader journeys: real links, with no mandatory sequence between shelves. */
+.raos-journey-intro { font-size: 1.125rem; line-height: 1.9; max-width: 48rem; }
+.raos-journey-shortcuts { margin-block: 1.5rem 2rem; }
+.raos-journey-shortcuts ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: .75rem; padding: 0; list-style: none; }
+.raos-journey-shortcuts a { display: flex; align-items: center; justify-content: space-between; gap: .75rem; height: 100%; padding: 1rem 1.25rem; border: 1px solid #c5ccc6; border-radius: .5rem; color: #234638; background: #f5f7f3; text-decoration: none; box-sizing: border-box; line-height: 1.65; }
+.raos-journey-shortcuts a:hover { background: #eaf0e7; text-decoration: underline; }
+.raos-journey-shortcuts a:focus-visible { outline: 3px solid #234638; outline-offset: 3px; }
+.raos-journey-shelf { margin-block: 2.5rem; }
+.raos-journey-shelf > h2 { margin-bottom: 1.25rem; }
+
+body.home.raos-home-v2-page #ks-magazine .km-category > span {
+  color: #756e61;
+}
+
+
+#ks-magazine .km-section-head h2 { scroll-margin-top: 150px; }
+#ks-magazine .km-hero.km-carousel { background-image: none; min-height: 540px; }
+#ks-magazine .km-carousel-track { position: absolute; inset: 0; }
+#ks-magazine .km-hero a.km-carousel-slide { box-sizing: border-box; position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 32px 36px 84px; background-size: cover; background-position: center; transition: transform .65s ease; }
+#ks-magazine .km-hero .km-carousel-title { color: white; font-size: clamp(27px, 2.65vw, 40px); line-height: 1.4; margin: 13px 0; }
+#ks-magazine .km-carousel-slide .km-arrow { bottom: 82px; }
+#ks-magazine .km-carousel-controls { position: absolute; bottom: 12px; right: 20px; display: flex; align-items: center; gap: 4px; z-index: 2; }
+#ks-magazine .km-carousel-controls button { width: 40px; height: 40px; padding: 8px; border: 0; border-radius: 0; background: transparent; color: rgba(255,255,255,.65); font: 18px/1 sans-serif; cursor: pointer; }
+#ks-magazine .km-carousel-controls button:hover { color: #fff; }
+#ks-magazine .km-carousel-controls button:focus-visible { color: #fff; outline: 2px solid #fff; outline-offset: -4px; }
+@media (max-width: 600px) {
+  #ks-magazine .km-hero.km-carousel { min-height: 480px; }
+  #ks-magazine .km-hero a.km-carousel-slide { padding: 24px 20px 84px; }
+  #ks-magazine .km-hero .km-carousel-title { font-size: 26px; }
+  #ks-magazine .km-carousel-controls { right: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { #ks-magazine .km-hero a.km-carousel-slide { transition: none; } }

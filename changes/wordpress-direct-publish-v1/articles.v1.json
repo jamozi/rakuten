@@ -1,5 +1,105 @@
 {
   "schema": "RAOSOwnerDirectArticlesV1",
   "profile": "owner-direct-v1",
-  "articles": []
+  "articles": [
+    {
+      "article_key": "home",
+      "mode": "existing",
+      "post_id": 15,
+      "post_type": "page",
+      "slug": "home",
+      "title": "ホーム",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/home.html"
+    },
+    {
+      "article_key": "dishwasher-installation-measurement",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "slug": "dishwasher-installation-measurement",
+      "title": "卓上食洗機の置き場所を測る順番｜本体・扉・余白を確認する",
+      "excerpt": "設置面だけを測ると、扉やホースのために置けないことがあります。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、NP-TMLK1-K、TK-MDW22Bの公式寸法を対象に、購入前の測り方を整理します。",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_tag": [],
+        "post_format": []
+      },
+      "media_ids": []
+    },
+    {
+      "article_key": "dishwasher-water-supply-methods",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "slug": "dishwasher-water-supply-methods",
+      "title": "卓上食洗機の給水・排水方法｜毎回の作業から選ぶ",
+      "excerpt": "タンク式でも給水と排水の作業は必要です。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、TK-MDW22Bで確認できた条件を整理し、DWS-33B(W)の給水詳細とNP-TMLK1-Kの具体手順は未確認として扱います。",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_tag": [],
+        "post_format": []
+      },
+      "media_ids": []
+    },
+    {
+      "article_key": "dishwasher-detergent-guide",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "slug": "dishwasher-detergent-guide",
+      "title": "食洗機用洗剤の選び方｜型番ごとの量と入れてはいけないもの",
+      "excerpt": "洗剤は食洗機専用を使い、型番が示す量と使えない食器を先に確認します。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、NP-TMLK1-K、TK-MDW22Bの公式記録を対象に、共通に見える点と未確認の点を分けます。",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_tag": [],
+        "post_format": []
+      },
+      "media_ids": []
+    },
+    {
+      "article_key": "dishwasher-cleaning-guide",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "slug": "dishwasher-cleaning-guide",
+      "title": "卓上食洗機のお手入れ｜毎回・月1回・長く使わない時に分ける",
+      "excerpt": "お手入れは「いつ、どの部品をするか」を型番ごとに分けると続けやすくなります。SS-M171、TK-MDW22W、SS-MA251、TK-MDW22Bの確認済み手順を中心に、DWS-33B(W)とNP-TMLK1-Kで確認できない範囲も明示します。",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-cleaning-guide.html",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_tag": [],
+        "post_format": []
+      },
+      "media_ids": []
+    },
+    {
+      "article_key": "dishwasher-running-cost",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "slug": "dishwasher-running-cost",
+      "title": "卓上食洗機のランニングコスト｜電気・水道・洗剤を式で確認する",
+      "excerpt": "金額を比べる前に、公式の消費電力量と自宅の料金をそろえます。対象6機種で1回当たりWhを確認できたのはNP-TMLK1-Kだけです。他の5機種は電気代の比較を保留し、ここでは計算手順と不足値を整理します。 自宅の単価を空欄のフォームへ入力すると、公表条件で計算できる費目を確認できます。",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_tag": [],
+        "post_format": []
+      },
+      "media_ids": []
+    }
+  ]
 }

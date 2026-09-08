@@ -487,16 +487,14 @@ def readback(candidate, journal, call):
 
 
 def content_after_sha256(document, post_id):
-    return digest(
-        encoded(
-            {
-                "schema": "ContentDocumentV1",
-                "id": post_id,
-                "status": "publish",
-                **document,
-            }
-        )
-    )
+    # The server hashes UTF-8 JSON with unescaped slashes, while local candidate
+    # IDs intentionally keep the existing ASCII serialization contract.
+    material = {"schema": "ContentDocumentV1", "id": post_id,
+                "status": "publish", **document}
+    serialized = json.dumps(material, sort_keys=True, ensure_ascii=False,
+                            separators=(",", ":"), allow_nan=False)
+    serialized = serialized.replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
+    return digest(serialized.encode("utf-8"))
 
 
 def finish_batch(journal, action, call):

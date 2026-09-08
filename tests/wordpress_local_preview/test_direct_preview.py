@@ -117,3 +117,14 @@ def test_article_only_preview_cannot_use_a_different_theme_than_production(
     candidate["baseline_theme_tree_sha256"] = "0" * 64
     with pytest.raises(ValueError, match="THEME_DIFFERS_INCLUDE_THEME"):
         owner().runtime_fingerprint(candidate, tmp_path)
+
+
+def test_saved_home_is_previewed_at_front_url_without_duplicate_or_post_title(tmp_path):
+    candidate = fixture(tmp_path)
+    candidate['articles'][0]['document'].update(post_type='page', slug='home', title='ホーム')
+    theme = tmp_path / 'theme'
+    theme.mkdir()
+    candidate['theme'] = {'directory': 'theme'}
+    assert owner().preview_plan(candidate, tmp_path)['surfaces'] == [
+        {'kind': 'home', 'path': '/'}, {'kind': 'listing', 'path': '/?post_type=post'},
+    ]

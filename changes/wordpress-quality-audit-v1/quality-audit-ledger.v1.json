@@ -5,8 +5,8 @@
   "contract_sha256": "ea6f446808e6b5d1b5f65d8795e10a9f263487d12e87f01120b95f24a5347438",
   "evaluated_at": "2026-09-05T13:22:38Z",
   "repository_fingerprints": {
-    "source": "792bf396e36d23a0b892ec80d55865b41882ab34e5339674f9f9282c00429333",
-    "theme": "b3a174a05bf9b88a52bdffec8561999a2ddff7bad42f1b2202c99c1fe9fe3cab",
+    "source": "9b6b4f69dc6987853479b1b18b6b4b033efcc4ef8d0c9d4250f555e301c3f953",
+    "theme": "90c228575674d49450e4bfc2d5eeb95faa06345b3b201e695861f1c4cd794205",
     "fixture": "ab3a648118e79ebe81247603e36aaf6b8c7b9c3a3cd0466f66a11fb1fe68ee84",
     "navigation": "c4c11a8565110e006b89cb03fb123345f4c861a2583b83993a20ce50fa7bf08a",
     "inventory": "bc719d29a8598c9dfcfd754073486781404d9c85c96a83995dcf9c2c28952439"
@@ -40,13 +40,13 @@
       "started_at": "2026-09-05T13:22:38Z",
       "completed_at": "2026-09-05T13:22:38Z",
       "fingerprints": {
-        "source": "792bf396e36d23a0b892ec80d55865b41882ab34e5339674f9f9282c00429333",
-        "theme": "b3a174a05bf9b88a52bdffec8561999a2ddff7bad42f1b2202c99c1fe9fe3cab",
+        "source": "9b6b4f69dc6987853479b1b18b6b4b033efcc4ef8d0c9d4250f555e301c3f953",
+        "theme": "90c228575674d49450e4bfc2d5eeb95faa06345b3b201e695861f1c4cd794205",
         "fixture": "ab3a648118e79ebe81247603e36aaf6b8c7b9c3a3cd0466f66a11fb1fe68ee84",
         "navigation": "c4c11a8565110e006b89cb03fb123345f4c861a2583b83993a20ce50fa7bf08a",
         "inventory": "bc719d29a8598c9dfcfd754073486781404d9c85c96a83995dcf9c2c28952439"
       },
-      "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+      "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
       "previous_round_sha256": null,
       "surfaces": [
         {
@@ -242,14 +242,14 @@
           "surface_id": "code",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "daab7925c1579566fa970b512ae83f9721dc20cc4d43f06063a581bb0f9bde22"
+          "receipt_sha256": "c9691f3bf01eb2f4b93d0b7de6afc00991d14343aaccd7bcb088ae0dd52ba6c7"
         },
         {
           "receipt_id": "baseline-gate-receipt-002",
@@ -257,14 +257,14 @@
           "surface_id": "editorial_sources",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "8273013ac1a2ebcef8d39dc3d3527842b590983de2ebc750e4ce59362a4102dc"
+          "receipt_sha256": "2c7d95a18649a19716dd03a72122fbe7f0b957a3ad83a77c4753adaf6c777a03"
         },
         {
           "receipt_id": "baseline-gate-receipt-003",
@@ -272,14 +272,14 @@
           "surface_id": "epistemic_negative_claims_and_calculation_semantics",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "c6fb5e5783929cbe0c421792396e92962d0a205c8826a64df5bf30c6684852c2"
+          "receipt_sha256": "5ffe37867a0ddf236e93cb4b760fb3de825abd5d938645ec16db2a2b6b1bcdf9"
         },
         {
           "receipt_id": "baseline-gate-receipt-004",
@@ -287,14 +287,14 @@
           "surface_id": "editorial_language_story_ia",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "1faf100b07e48c1bb478cb902496a95878d7a3f738ae2d2a39310d77bde48ed5"
+          "receipt_sha256": "a39b6612fa9950df4612da8e6325b05e14c0e00d8e57d71146027c286d3b17ba"
         },
         {
           "receipt_id": "baseline-gate-receipt-005",
@@ -302,14 +302,14 @@
           "surface_id": "editorial_accountability_author_credentials_corrections",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "d5e3ec3265ec5913c493d25444f63f99361d9fcbc9e21f12426b824f3e406370"
+          "receipt_sha256": "cfcb333961d779243bfddae060933ba826bf3b53174b72fef6c83ab172fa6fd5"
         },
         {
           "receipt_id": "baseline-gate-receipt-006",
@@ -317,14 +317,14 @@
           "surface_id": "content_originality_copyright_near_duplicate_risk",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "523270267823e0d2f5101018e8b582efc26987c2c50fc7073883affb30299fca"
+          "receipt_sha256": "5460d8642417f8a9e3e0f8cacc83047b36b02d6bc234bb3e1c0576619fe400b3"
         },
         {
           "receipt_id": "baseline-gate-receipt-007",
@@ -332,14 +332,14 @@
           "surface_id": "contact_corrections_operational_deliverability",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "09faf68c1428626f288103156f4167f8dda2b46868cfed46104d82409202c3db"
+          "receipt_sha256": "853976719b9a27f67957fc90034556f9b869dca396fa13b8c7499e4bdc3b4b3a"
         },
         {
           "receipt_id": "baseline-gate-receipt-008",
@@ -347,14 +347,14 @@
           "surface_id": "search_intent_cannibalization_orphaning",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "44c1599edef26acdcb3a5dd059893daf4f1e9cacfe4b1d7686f62065402e263c"
+          "receipt_sha256": "73a594ea44ccc44fcc2c0f2d04a47630251b268196c40bb96048b10ff22e83b1"
         },
         {
           "receipt_id": "baseline-gate-receipt-009",
@@ -362,14 +362,14 @@
           "surface_id": "product_selection_lifecycle_support",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "7f0ef22ff997067995fdaad4a595c1299477c82de9798abe1afdfe3ca116ca95"
+          "receipt_sha256": "0cbdc30618428777c4c1c34182af75dcd62ac9013296a829554c450f39d0ea01"
         },
         {
           "receipt_id": "baseline-gate-receipt-010",
@@ -377,14 +377,14 @@
           "surface_id": "candidate_universe_representativeness_and_brand_blindspots",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "f8ceb53542120f7cf5b4842d2537ce4f1d5586b8eb2d3c518d280462ecdb6242"
+          "receipt_sha256": "fd52d9d16274ecc6d092617aae2bc3d6d6ad141e9c259251da89e4ef5eadfa99"
         },
         {
           "receipt_id": "baseline-gate-receipt-011",
@@ -392,14 +392,14 @@
           "surface_id": "consumer_safety_recall_compatibility",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "94dcf855008a6599b14c868233c6f8a283d297d392e095fecb6a9a8cce5a518d"
+          "receipt_sha256": "6595f6a1b9fd80f5e9cc93abf1d354c99dc0cf47c034756a8a5930ace3ea7f02"
         },
         {
           "receipt_id": "baseline-gate-receipt-012",
@@ -407,14 +407,14 @@
           "surface_id": "smart_device_app_cloud_security_update_eol_privacy",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "ed083977c13f419b1b4df0c93e39327454b8625afedbf17100416f0d2cc4d6a3"
+          "receipt_sha256": "4564fccaab34637716e437d44512b6e24ee33934145b35c774927d7b59a3c1f2"
         },
         {
           "receipt_id": "baseline-gate-receipt-013",
@@ -422,14 +422,14 @@
           "surface_id": "battery_large_appliance_disposal_recycling_transport",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "b9b1e3b92989cc641dfd1402d5e33fedd2d53c00662340e96b28399f0c23a8ca"
+          "receipt_sha256": "361df8122c8b359a10b49bbc80c550bfad2ae2d4a9c23af67d776a3dbaf2db35"
         },
         {
           "receipt_id": "baseline-gate-receipt-014",
@@ -437,14 +437,14 @@
           "surface_id": "freshness_maintenance_ownership",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "994b5724a2100e38dcd92a26752c29069adc58e428224f140beba03750a55af6"
+          "receipt_sha256": "5c942331ea722c08d28d8a0d16438615c7b4e33a388f1e1b06161a30e5a8a39e"
         },
         {
           "receipt_id": "baseline-gate-receipt-015",
@@ -452,14 +452,14 @@
           "surface_id": "affiliate_fairness_dark_patterns",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "5228ed50b367bad7c022a3388059a7e0ad7128b2b9d56e7fe6e37fefbcb7460e"
+          "receipt_sha256": "ad8b25299a7e04b8461c1e2784bbeec54d4f0d43c35f8f55517aa027da2f2101"
         },
         {
           "receipt_id": "baseline-gate-receipt-016",
@@ -467,14 +467,14 @@
           "surface_id": "legal_disclosure_media_rights",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "852befd334eea1cd0cc28843859f9f0e206298b85ffe869347dd234ab386b21f"
+          "receipt_sha256": "a2f5d19360da24f8d97f65be9ee47be3d16194f8d16349d6a116b4417749d56f"
         },
         {
           "receipt_id": "baseline-gate-receipt-017",
@@ -482,14 +482,14 @@
           "surface_id": "provenance_reproducibility_recovery",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "1179584c1184feeb82193ebf07cba53b16f319b11823e2af3957a3092be65447"
+          "receipt_sha256": "61e3275ccb86bf76ac98a405e432e793c5b4829f9c2e3fcd07ce51190327f2c6"
         },
         {
           "receipt_id": "baseline-gate-receipt-018",
@@ -497,14 +497,14 @@
           "surface_id": "wordpress_backup_rollback_reproducible_restoration",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "06e9bc25733edb15684d489a640d5a50e12944426980616a0c346873fffffcb5"
+          "receipt_sha256": "1a91030330ac7e1e516eed81348679c7afdc612dad752954b0e139e6fd91a89d"
         },
         {
           "receipt_id": "baseline-gate-receipt-019",
@@ -512,14 +512,14 @@
           "surface_id": "dependency_supply_chain_plugin_integrity",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "17df5e00c60f42295edf83b5024535bcb8b43a42e6ea3dd0e146fabdea89e8f4"
+          "receipt_sha256": "cb33699ed6173a8d6955adf96879b255747758aad4a5cc9a352029e8d98aa425"
         },
         {
           "receipt_id": "baseline-gate-receipt-020",
@@ -527,14 +527,14 @@
           "surface_id": "seo_schema",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "7b5966f2545dc0ab42296e9562ae35626603112af69fef0d311f9b4ad92e5ecd"
+          "receipt_sha256": "0d12911fee2222516b148a5de2dccd7b219db89ca95af2a8b2be7d3fb65ec939"
         },
         {
           "receipt_id": "baseline-gate-receipt-021",
@@ -542,14 +542,14 @@
           "surface_id": "policy_privacy_consent",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "7711385d0a2270c2163af07544cda0821a8b8e99c436bbe7bb3b7de7b133e1b8"
+          "receipt_sha256": "dba33620177f2b175edba32913362228b9cac9b6273e8b226d8174c95c9595f6"
         },
         {
           "receipt_id": "baseline-gate-receipt-022",
@@ -557,14 +557,14 @@
           "surface_id": "analytics_data_minimization_accuracy",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "6164752b5391538bb87b88247265f4f4e11b7e3455a0148f4ca9d0cb68558140"
+          "receipt_sha256": "f8d526c75377c46d9967e2d9ef0a9384bc5748d9bea944146cb6685ae6ae3497"
         },
         {
           "receipt_id": "baseline-gate-receipt-023",
@@ -572,14 +572,14 @@
           "surface_id": "ui_a11y_keyboard_zoom",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "0a1d7946caf51eddff31cd77c5d2023efb69a844e3a9883c538285f3a3f439f9"
+          "receipt_sha256": "22a6887d2666e7f8be505afb396cfdc9caa1b0d653a40264eb1eab5b39570de2"
         },
         {
           "receipt_id": "baseline-gate-receipt-024",
@@ -587,14 +587,14 @@
           "surface_id": "cognitive_accessibility_japanese_readability",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "bfb3262901db04146e6ece5822d5fe68341563ff6160b5a3aeda3262867e59df"
+          "receipt_sha256": "993ad91935f026e846d80fa58a665e79482ed54aea038f66d8cc0707ca0aab77"
         },
         {
           "receipt_id": "baseline-gate-receipt-025",
@@ -602,14 +602,14 @@
           "surface_id": "links_security_headers",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "12b3960d76698b5bf16d3e9f8c16044b3ed06ff5624fce97bd4d6c09f18ba21f"
+          "receipt_sha256": "740e9bfc747085f568a97c8acd593e4389785672d81042522d4d4ebe35f53dd8"
         },
         {
           "receipt_id": "baseline-gate-receipt-026",
@@ -617,14 +617,14 @@
           "surface_id": "product_media_cta_evidence",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "3c3dd68480988db60c5522b11e766f6ed3977aa493a03fff27af5bbd76e2fd0c"
+          "receipt_sha256": "e741ddf1ad694e99a2963dce596eb79f4923d1c6e336eaefd5563e91117a5bb4"
         },
         {
           "receipt_id": "baseline-gate-receipt-027",
@@ -632,14 +632,14 @@
           "surface_id": "search_archive_404",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "c09151f0883aeffe63d159b2a82d32581ee47da4ee62d7e6e9fcc653520c4c73"
+          "receipt_sha256": "c18dbafe25533441f5596b08fcdc30339480ae838fcf7ce904d4fa9329bec393"
         },
         {
           "receipt_id": "baseline-gate-receipt-028",
@@ -647,14 +647,14 @@
           "surface_id": "browser_resilience_no_js_error_recovery",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "fe03bdb88b4a82563293f2889439a60b671e98affe662fed7b8173a4154b974e"
+          "receipt_sha256": "95b9ece89af5db5421600b5dfabdcdb7367fabe53fedb6b00d5db3bbf017477c"
         },
         {
           "receipt_id": "baseline-gate-receipt-029",
@@ -662,14 +662,14 @@
           "surface_id": "browser_compatibility_restricted_environment_resilience",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "e999b9e140dc70e7fc08ef8c9e30fff330112b70d3ec01cdb01e00b176ef7d58"
+          "receipt_sha256": "0f0065fd077a3e8540c084baab9fb1b65ef6641119cde42546fb76dac27889b7"
         },
         {
           "receipt_id": "baseline-gate-receipt-030",
@@ -677,14 +677,14 @@
           "surface_id": "performance_browser",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "cd2fe849b81c3576f2629ec27e2a2583cd0f437af615cdee684314d29c646603"
+          "receipt_sha256": "b5cbccb684a1593529e23db02572f3b01403dbe5675fc105a83b007b71fd4068"
         },
         {
           "receipt_id": "baseline-gate-receipt-031",
@@ -692,14 +692,14 @@
           "surface_id": "task_based_decision_usability_reader_comprehension",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "d674b68496d1a381d1636f364ec3ac78959ed7815219c08e1f9c3ef0fe670b44"
+          "receipt_sha256": "ccb5893ff1764be58d3e4ac47bdbf249497bde46bc575e3e19bf6792583505d7"
         },
         {
           "receipt_id": "baseline-gate-receipt-032",
@@ -707,14 +707,14 @@
           "surface_id": "japanese_locale_measurement_semantics_inclusive_language",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "b68b8dfd731d3113a1ee2c7cd98bde7b7792ff0e1b761455f205c8de44571f5d"
+          "receipt_sha256": "9c262f80e81ada94e723925884c428046ed54f257c1dc8cb5dbf716098dcdc30"
         },
         {
           "receipt_id": "baseline-gate-receipt-033",
@@ -722,14 +722,14 @@
           "surface_id": "touch_gesture_orientation_400_percent_reflow_target_size",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "d7bdcd1f90423ca9c5d81c9e97e7707c9428a78065b66e91d52aa443b5c588a1"
+          "receipt_sha256": "2f86c76941eef7b24f48ceb1c52c010ea208637d13b32b50a80da525899aacbd"
         },
         {
           "receipt_id": "baseline-gate-receipt-034",
@@ -737,14 +737,14 @@
           "surface_id": "wordpress_public_attack_abuse_surface",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "18a0b69c6686aaa4fbad857c3e00c9cbe7c905f39f8af9d33c24d86a80e19719"
+          "receipt_sha256": "14e69bd08e517a12a4b6500f091a480c73ef6801c493cb2ce438ba46a35e4da9"
         },
         {
           "receipt_id": "baseline-gate-receipt-035",
@@ -752,14 +752,14 @@
           "surface_id": "operations_observability_incident_ownership",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "86bd3953e3b5d0b35bff002918b6c6dcda75f7ac86a964491581a5af8f944bf1"
+          "receipt_sha256": "28973e6f58998c779497d2d45d46a224f15e6acf19ad531d11ad6c02b8184417"
         },
         {
           "receipt_id": "baseline-gate-receipt-036",
@@ -767,14 +767,14 @@
           "surface_id": "affiliate_program_compliance_destination_integrity",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "af2f3ca9d9fe00f549d815d1bc822c481f4079d78419ce02d304d1c6ffff0d61"
+          "receipt_sha256": "869cb0cfb5c1f25f445984500e10e52971dd2d211b9c8388ee52ed409b53de6e"
         },
         {
           "receipt_id": "baseline-gate-receipt-037",
@@ -782,14 +782,14 @@
           "surface_id": "slow_device_network_resource_budget_caching",
           "round_id": "baseline-not-executed-round-001",
           "reviewer_id": "baseline-not-executed-reviewer-001",
-          "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+          "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
           "status": "NOT_EXECUTED",
           "evidence_sha256": null,
           "evidence_manifest_path": null,
           "evidence_manifest_sha256": null,
           "captured_at": null,
           "freshness": "NOT_EXECUTED",
-          "receipt_sha256": "1578276c69ce61eaf0333160b2cc6490c1a4ef4c20420015ad328ebd22411c96"
+          "receipt_sha256": "c6845e9fb5e09de71773a8289541d59b3882455d17662fedd4c1b78c83b79861"
         }
       ],
       "findings": [
@@ -1092,7 +1092,7 @@
       ],
       "actionable_finding_count": 37,
       "status": "BLOCKED",
-      "round_sha256": "53b5aeb5a6dddd3cfcaf47ee13fe1819c8e7c18d2a1dd84e07e1a5441790facd"
+      "round_sha256": "9c4013e2088b2f9c5dfb0d74c4d4adc6c9c832872b0d5d79e9934f17f657164e"
     }
   ],
   "completion": {
@@ -1102,13 +1102,13 @@
     "production_parity_state": "REQUIRED_NOT_EVALUATED",
     "required_consecutive_clean_rounds": 2,
     "consecutive_clean_rounds": 0,
-    "latest_round_sha256": "53b5aeb5a6dddd3cfcaf47ee13fe1819c8e7c18d2a1dd84e07e1a5441790facd",
-    "fingerprint_bundle_sha256": "9a586526f039e2996ad60a636521949d9a7f206e3cc570cf85bc9ca948ebb0fb",
+    "latest_round_sha256": "9c4013e2088b2f9c5dfb0d74c4d4adc6c9c832872b0d5d79e9934f17f657164e",
+    "fingerprint_bundle_sha256": "493d17c99a39d1bd06d965b617aba9a2fd950638aacc98ae0669c8f96708eef2",
     "reason_codes": [
       "LATEST_ROUND_NOT_CLEAN",
       "TWO_CONSECUTIVE_CLEAN_ROUNDS_REQUIRED",
       "INDEPENDENT_REVIEWER_ATTESTATION_NOT_VERIFIED"
     ]
   },
-  "ledger_sha256": "e3b26a50ca047a0f88f0a45b8e17669f4a937e67b6448c452a01849354fafe9b"
+  "ledger_sha256": "38dbe844af0422682a6be4ca77113e31e7d73e35cd6ea8596837c34fc1738385"
 }

@@ -526,13 +526,14 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "8c3bd04318914638f5401ca70436ca3b1d2e7655fb94ebadb72b28b5e9cfcac3",
-    "source_fingerprint": "8c3bd04318914638f5401ca70436ca3b1d2e7655fb94ebadb72b28b5e9cfcac3",
+    "revision": "e4350f56e5ce2a0d0e84443aedc60f6d82188b0d3e2700ddbf02c90e429f1e47",
+    "source_fingerprint": "e4350f56e5ce2a0d0e84443aedc60f6d82188b0d3e2700ddbf02c90e429f1e47",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",
       "assets/editorial-navigation.v3.json",
       "assets/editorial-v2.css",
+      "assets/home-magazine.css",
       "assets/images/article-anker-solix-generations.webp",
       "assets/images/article-countertop-dishwasher-guide.webp",
       "assets/images/article-portable-power-guide.webp",
@@ -545,6 +546,11 @@
       "assets/images/article-suitcase-under-3kg.webp",
       "assets/images/brand-mark.svg",
       "assets/images/home-hero.webp",
+      "assets/images/magazine-hero.webp",
+      "assets/images/magazine-kitchen.webp",
+      "assets/images/magazine-room.webp",
+      "assets/images/magazine-tools.webp",
+      "assets/images/magazine-travel.webp",
       "assets/legacy-media-display-projection.v1.json",
       "assets/local-running-cost.js",
       "assets/measurement.js",
