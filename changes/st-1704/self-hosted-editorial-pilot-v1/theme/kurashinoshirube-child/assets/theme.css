@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 4ad222979e665671fd9791fa416331352de8d5f2c36b2e045c91d7de816382d0;
+  --raos-theme-runtime-revision-base: 0447660894d23a1bcc06c9a5604b235d48696fca3ae85636363aa85c8274f633;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -3808,6 +3808,10 @@ body.home.raos-home-v2-page #ks-magazine .km-category > span {
     gap: 0.5rem;
     min-height: 4rem;
     padding-block: 0.5rem;
+  }
+
+  body.home.raos-home-v2-page:has(#ks-magazine):has(#ks-magazine):has(#ks-magazine) .wp-site-blocks > header.wp-block-template-part > .raos-site-header > .raos-masthead {
+    display: flex !important;
   }
 
   .raos-site-header .raos-wordmark {
