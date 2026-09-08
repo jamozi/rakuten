@@ -137,7 +137,6 @@
   const first = hero?.querySelector('a');
   const promos = root ? [...root.querySelectorAll('.km-promos .km-promo')] : [];
   if (!hero || !first || promos.length !== 3 || hero.dataset.carousel) return;
-  const photos = ['--km-hero-image', '--km-kitchen-image', '--km-travel-image', '--km-tools-image'];
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const track = document.createElement('div');
   track.className = 'km-carousel-track';
@@ -161,7 +160,6 @@
   })];
   slides.forEach((slide, i) => {
     slide.classList.add('km-carousel-slide');
-    slide.style.backgroundImage = `linear-gradient(to bottom, transparent 15%, rgba(25, 25, 22, .35) 40%, #25221d 82%), var(${photos[i]})`;
     track.append(slide);
   });
   const controls = document.createElement('div');

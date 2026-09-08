@@ -66,3 +66,19 @@ body.home #ks-magazine {
   --km-room-image: url('images/magazine-room.webp');
   --km-tools-image: url('images/magazine-tools.webp');
 }
+
+body.home #ks-magazine .km-carousel-slide:nth-child(1) {
+  background-image: linear-gradient(to bottom, transparent 15%, rgba(25, 25, 22, .35) 40%, #25221d 82%), var(--km-hero-image);
+}
+
+body.home #ks-magazine .km-carousel-slide:nth-child(2) {
+  background-image: linear-gradient(to bottom, transparent 15%, rgba(25, 25, 22, .35) 40%, #25221d 82%), var(--km-kitchen-image);
+}
+
+body.home #ks-magazine .km-carousel-slide:nth-child(3) {
+  background-image: linear-gradient(to bottom, transparent 15%, rgba(25, 25, 22, .35) 40%, #25221d 82%), var(--km-travel-image);
+}
+
+body.home #ks-magazine .km-carousel-slide:nth-child(4) {
+  background-image: linear-gradient(to bottom, transparent 15%, rgba(25, 25, 22, .35) 40%, #25221d 82%), var(--km-tools-image);
+}
