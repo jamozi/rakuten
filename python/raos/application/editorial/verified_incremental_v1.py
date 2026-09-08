@@ -546,7 +546,10 @@ def validate_manifest(
         reader_page_targets=reader_page_targets,
         artifact_bytes=artifact_bytes,
     )
-    if type(value["articles"]) is not list or (not value["articles"] and not pages):
+    shared = _mapping(value["shared_artifacts"], "DOCUMENT_SET_INVALID")
+    if type(value["articles"]) is not list or (
+        not value["articles"] and not pages and "theme" not in shared
+    ):
         fail("ARTICLE_SET_INVALID")
     _validate_inventory(inventory, pages)
     if pages:
@@ -671,7 +674,6 @@ def validate_manifest(
             )
         )
     unchanged = _mapping(value["unchanged_documents"], "DOCUMENT_SET_INVALID")
-    shared = _mapping(value["shared_artifacts"], "DOCUMENT_SET_INVALID")
     shared_slugs: set[str] = set()
     shared_hashes: dict[str, str] = {}
     for identifier, raw in shared.items():

@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: 2b9febdc12d253bf430e9dfeb0ea7029c3bf3a71ab42ea76683f20cf19b6493a;
+  --raos-theme-runtime-revision-editorial-v2: 8c4d3054a0ebd948425126fe8af3605e9179a57b824f8562871f17d51f43dfb2;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -409,6 +409,14 @@
     font-size: 0.82rem;
     font-weight: 800;
     letter-spacing: 0.04em;
+  }
+
+  body.single-post .raos-editorial-v2 .raos-article-toc summary {
+    display: none !important;
+  }
+
+  body.single-post .raos-editorial-v2 .raos-article-toc__title {
+    display: block !important;
   }
 
   .raos-editorial-v2 .raos-article-toc details:not([open]) > :not(summary) {
@@ -1194,6 +1202,12 @@
 
   .raos-editorial-v2 .source-list li.source-list__history {
     padding-left: 0;
+  }
+}
+
+@media (max-width: 37.5rem) {
+  .raos-editorial-v2 .lead-section .section-heading--side h2 {
+    word-break: normal;
   }
 }
 

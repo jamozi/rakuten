@@ -85,7 +85,7 @@ function load_theme_function($name) {
 }
 foreach (['kurashinoshirube_has_exact_keys', 'kurashinoshirube_article_bindings', 'kurashinoshirube_local_preview_origin', 'kurashinoshirube_is_local_preview',
     'kurashinoshirube_local_preview_article_identity', 'kurashinoshirube_direct_article_snapshot', 'kurashinoshirube_public_article_identity',
-    'kurashinoshirube_reader_hubs', 'kurashinoshirube_reader_eligible_posts', 'kurashinoshirube_reader_category_label',
+    'kurashinoshirube_published_reader_guides', 'kurashinoshirube_reader_hubs', 'kurashinoshirube_reader_eligible_posts', 'kurashinoshirube_reader_category_label',
     'kurashinoshirube_reader_article_category', 'kurashinoshirube_reader_hub_content', 'kurashinoshirube_reader_hub_page_head', 'kurashinoshirube_reader_hub_url',
     'kurashinoshirube_reader_guide_card', 'kurashinoshirube_reader_journeys', 'kurashinoshirube_reader_group_cards',
     'kurashinoshirube_reader_journey_stage', 'kurashinoshirube_reader_journey_shelves', 'kurashinoshirube_reader_journey_shortcuts',

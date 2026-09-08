@@ -6,68 +6,68 @@
     "st1704-portable-power-station-guide": {
       "slug": "portable-power-station-guide",
       "post_id": 28,
-      "baseline_document_sha256": "3e5cac69af6546078315cdf46a2e538fefead974768552e5710d78028e26677e",
+      "baseline_document_sha256": "5b9d78474bfecd361e8d97ff0c9163772f707ba37281cc3c04320cfbbeb8c316",
       "profiles": {
         "production": {
-          "input_sha256": "9e85ade1660b2ca9d8327779f8f6e6b1eb3d2b3a2ea7b82138a30d616f5d71e7",
-          "output_sha256": "91975e9df153cd7d5cce1cfe07c526d324863c39ad7ff84447c9a0aea4800224",
+          "input_sha256": "c8e9c4c92cbd1242a5b7de64a26fd93b718b9272976d1a4825dc7b2ec6dab42b",
+          "output_sha256": "569dd8ebd18e1a1f73750f7f05f742fac5f1edad87557d0df1a417f6325514fb",
           "removals": [
             {
-              "offset": 8679,
+              "offset": 9221,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 9571,
+              "offset": 10113,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 10449,
+              "offset": 10991,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 11309,
+              "offset": 11851,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 12290,
+              "offset": 12832,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 13198,
+              "offset": 13740,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 14092,
+              "offset": 14634,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 14968,
+              "offset": 15510,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 16166,
+              "offset": 16708,
               "length": 404,
               "sha256": "d11f101bf8c7addf5b07aed0d3ee8ac2f092f9c1dc57431072e436b6a70cb92d",
               "kind": "neutral-media"
             },
             {
-              "offset": 19401,
+              "offset": 19943,
               "length": 401,
               "sha256": "7209998d28bba6b9e00a9fcf6396fc3226e30cb38cb159e4b178b7b65d8a3cdf",
               "kind": "neutral-media"
@@ -75,65 +75,65 @@
           ]
         },
         "local-fixture": {
-          "input_sha256": "c5cb371501d7cb617cbe95725a434180837cfb94cddc2ba2b7545ab91f29857a",
-          "output_sha256": "ad3135e162bc7873be7f5d6294bbc7b4e9153daea5d733b6ca4f264b614c2933",
+          "input_sha256": "681214dce1ebbc57703a099cbf1bb53716d50731489b49b6d46ea0908afee77b",
+          "output_sha256": "5f44f7984ec76aa8501b3eff82fc15eeab35b0d8553fbe130ce1700a4fe2742f",
           "removals": [
             {
-              "offset": 8679,
+              "offset": 9221,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 9571,
+              "offset": 10113,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 10449,
+              "offset": 10991,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 11309,
+              "offset": 11851,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 12290,
+              "offset": 12832,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 13198,
+              "offset": 13740,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 14092,
+              "offset": 14634,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 14968,
+              "offset": 15510,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 16166,
+              "offset": 16708,
               "length": 404,
               "sha256": "d11f101bf8c7addf5b07aed0d3ee8ac2f092f9c1dc57431072e436b6a70cb92d",
               "kind": "neutral-media"
             },
             {
-              "offset": 19401,
+              "offset": 19943,
               "length": 401,
               "sha256": "7209998d28bba6b9e00a9fcf6396fc3226e30cb38cb159e4b178b7b65d8a3cdf",
               "kind": "neutral-media"
@@ -141,65 +141,65 @@
           ]
         },
         "local-stored": {
-          "input_sha256": "c5cb371501d7cb617cbe95725a434180837cfb94cddc2ba2b7545ab91f29857a",
-          "output_sha256": "ad3135e162bc7873be7f5d6294bbc7b4e9153daea5d733b6ca4f264b614c2933",
+          "input_sha256": "681214dce1ebbc57703a099cbf1bb53716d50731489b49b6d46ea0908afee77b",
+          "output_sha256": "5f44f7984ec76aa8501b3eff82fc15eeab35b0d8553fbe130ce1700a4fe2742f",
           "removals": [
             {
-              "offset": 8679,
+              "offset": 9221,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 9571,
+              "offset": 10113,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 10449,
+              "offset": 10991,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 11309,
+              "offset": 11851,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 12290,
+              "offset": 12832,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 13198,
+              "offset": 13740,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 14092,
+              "offset": 14634,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 14968,
+              "offset": 15510,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 16166,
+              "offset": 16708,
               "length": 404,
               "sha256": "d11f101bf8c7addf5b07aed0d3ee8ac2f092f9c1dc57431072e436b6a70cb92d",
               "kind": "neutral-media"
             },
             {
-              "offset": 19401,
+              "offset": 19943,
               "length": 401,
               "sha256": "7209998d28bba6b9e00a9fcf6396fc3226e30cb38cb159e4b178b7b65d8a3cdf",
               "kind": "neutral-media"
@@ -211,80 +211,80 @@
     "st1704-anker-solix-c300-c800-c1000-differences": {
       "slug": "anker-solix-c300-c800-c1000-differences",
       "post_id": 29,
-      "baseline_document_sha256": "a383f547b10aa2be92426e60644253055aeb17a2b4fc13af2b0dfcfcb3ae136c",
+      "baseline_document_sha256": "18cf55f840bac4ac51a50c57d572686548d3e2c1957f799cade70aaefd316365",
       "profiles": {
         "production": {
-          "input_sha256": "c8a8627dc0e69d5111d5663af37869c7d7c4b5ee7e04ebe64e94f05f3a603d49",
-          "output_sha256": "a8b8c743b046e98fba9e03fe3193dfaf0f0439fdc326ac16f42645d68ec561b3",
+          "input_sha256": "4b94f298c9ea757c6c85e2ddf6b41708faa1aa48531c80c8216e890363f1bc81",
+          "output_sha256": "ed9bd441890c913f6b874400486f3387a37434fc24466c1bb47209f6991e5447",
           "removals": [
             {
-              "offset": 8846,
+              "offset": 9427,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 9925,
+              "offset": 10506,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 11011,
+              "offset": 11592,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 12090,
+              "offset": 12671,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 13296,
+              "offset": 13877,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 14391,
+              "offset": 14972,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 15493,
+              "offset": 16074,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 16588,
+              "offset": 17169,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 18011,
+              "offset": 18592,
               "length": 404,
               "sha256": "d11f101bf8c7addf5b07aed0d3ee8ac2f092f9c1dc57431072e436b6a70cb92d",
               "kind": "neutral-media"
             },
             {
-              "offset": 21201,
+              "offset": 21782,
               "length": 414,
               "sha256": "a3961716794830c0b89112c5730e8a4d5413320e3150ae539fd5085de21131d8",
               "kind": "neutral-media"
             },
             {
-              "offset": 24414,
+              "offset": 24995,
               "length": 406,
               "sha256": "4efdfc57d63d4b0cdd665d65aaeae97e23222d1674083915dc7ed259883fd52a",
               "kind": "neutral-media"
             },
             {
-              "offset": 27613,
+              "offset": 28306,
               "length": 417,
               "sha256": "8e7539212ae5d08a496781f16e7f2a6935e15ba64a6417b5bce800c6c157cad1",
               "kind": "neutral-media"
@@ -292,77 +292,77 @@
           ]
         },
         "local-fixture": {
-          "input_sha256": "c8a8627dc0e69d5111d5663af37869c7d7c4b5ee7e04ebe64e94f05f3a603d49",
-          "output_sha256": "a8b8c743b046e98fba9e03fe3193dfaf0f0439fdc326ac16f42645d68ec561b3",
+          "input_sha256": "4b94f298c9ea757c6c85e2ddf6b41708faa1aa48531c80c8216e890363f1bc81",
+          "output_sha256": "ed9bd441890c913f6b874400486f3387a37434fc24466c1bb47209f6991e5447",
           "removals": [
             {
-              "offset": 8846,
+              "offset": 9427,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 9925,
+              "offset": 10506,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 11011,
+              "offset": 11592,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 12090,
+              "offset": 12671,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 13296,
+              "offset": 13877,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 14391,
+              "offset": 14972,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 15493,
+              "offset": 16074,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 16588,
+              "offset": 17169,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 18011,
+              "offset": 18592,
               "length": 404,
               "sha256": "d11f101bf8c7addf5b07aed0d3ee8ac2f092f9c1dc57431072e436b6a70cb92d",
               "kind": "neutral-media"
             },
             {
-              "offset": 21201,
+              "offset": 21782,
               "length": 414,
               "sha256": "a3961716794830c0b89112c5730e8a4d5413320e3150ae539fd5085de21131d8",
               "kind": "neutral-media"
             },
             {
-              "offset": 24414,
+              "offset": 24995,
               "length": 406,
               "sha256": "4efdfc57d63d4b0cdd665d65aaeae97e23222d1674083915dc7ed259883fd52a",
               "kind": "neutral-media"
             },
             {
-              "offset": 27613,
+              "offset": 28306,
               "length": 417,
               "sha256": "8e7539212ae5d08a496781f16e7f2a6935e15ba64a6417b5bce800c6c157cad1",
               "kind": "neutral-media"
@@ -370,77 +370,77 @@
           ]
         },
         "local-stored": {
-          "input_sha256": "c8a8627dc0e69d5111d5663af37869c7d7c4b5ee7e04ebe64e94f05f3a603d49",
-          "output_sha256": "a8b8c743b046e98fba9e03fe3193dfaf0f0439fdc326ac16f42645d68ec561b3",
+          "input_sha256": "60961b1161830143335afcfb1404e6d6a86b6a8d68e7ba7bed77ff8a5e87773e",
+          "output_sha256": "e8c4498b1c2034a7c299cec368c37b809436a78082029c84ae2ea6edeb78876f",
           "removals": [
             {
-              "offset": 8846,
+              "offset": 9441,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 9925,
+              "offset": 10520,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 11011,
+              "offset": 11606,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 12090,
+              "offset": 12685,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 13296,
+              "offset": 13891,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 14391,
+              "offset": 14986,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 15493,
+              "offset": 16088,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 16588,
+              "offset": 17183,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 18011,
+              "offset": 18606,
               "length": 404,
               "sha256": "d11f101bf8c7addf5b07aed0d3ee8ac2f092f9c1dc57431072e436b6a70cb92d",
               "kind": "neutral-media"
             },
             {
-              "offset": 21201,
+              "offset": 21796,
               "length": 414,
               "sha256": "a3961716794830c0b89112c5730e8a4d5413320e3150ae539fd5085de21131d8",
               "kind": "neutral-media"
             },
             {
-              "offset": 24414,
+              "offset": 25009,
               "length": 406,
               "sha256": "4efdfc57d63d4b0cdd665d65aaeae97e23222d1674083915dc7ed259883fd52a",
               "kind": "neutral-media"
             },
             {
-              "offset": 27613,
+              "offset": 28320,
               "length": 417,
               "sha256": "8e7539212ae5d08a496781f16e7f2a6935e15ba64a6417b5bce800c6c157cad1",
               "kind": "neutral-media"

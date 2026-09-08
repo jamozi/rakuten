@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 2b9febdc12d253bf430e9dfeb0ea7029c3bf3a71ab42ea76683f20cf19b6493a;
+  --raos-theme-runtime-revision-base: 8c4d3054a0ebd948425126fe8af3605e9179a57b824f8562871f17d51f43dfb2;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -2093,6 +2093,31 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
 }
 
 /* Header */
+/*
+ * The live legacy Additional CSS hides non-magazine headers with two ID
+ * selectors. Repeating the magazine predicate gives this bounded TOP rule
+ * greater specificity while leaving every page without the stored body alone.
+ */
+body.home.raos-home-v2-page:has(#ks-magazine):has(#ks-magazine):has(#ks-magazine) .wp-site-blocks > header.wp-block-template-part:has(.raos-site-header) {
+  display: block !important;
+}
+
+body.home.raos-home-v2-page:has(#ks-magazine):has(#ks-magazine):has(#ks-magazine) .wp-site-blocks > header.wp-block-template-part > .raos-site-header {
+  display: block !important;
+}
+
+body.home.raos-home-v2-page:has(#ks-magazine):has(#ks-magazine):has(#ks-magazine) .wp-site-blocks > header.wp-block-template-part > .raos-site-header > .raos-masthead {
+  display: grid !important;
+}
+
+body.home.raos-home-v2-page #ks-magazine > .km-header {
+  display: none !important;
+}
+
+body.home.raos-home-v2-page #ks-magazine .km-category > span {
+  color: #756e61;
+}
+
 .raos-home-v2-page .wp-site-blocks > header {
   background: rgb(255 253 248 / 96%);
   border-bottom: 1px solid var(--raos-home-line);
@@ -3783,6 +3808,10 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
     gap: 0.5rem;
     min-height: 4rem;
     padding-block: 0.5rem;
+  }
+
+  body.home.raos-home-v2-page:has(#ks-magazine):has(#ks-magazine):has(#ks-magazine) .wp-site-blocks > header.wp-block-template-part > .raos-site-header > .raos-masthead {
+    display: flex !important;
   }
 
   .raos-site-header .raos-wordmark {

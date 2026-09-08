@@ -51,8 +51,12 @@ def page_overrides_for_preview(
     selected = getattr(arguments, "reader_pages", None)
     hubs = [] if selected is None else selected.split(",")
     candidate_path = getattr(arguments, "candidate", None)
+    candidate_home: dict[str, object] | None = None
     if candidate_path is not None:
-        manifest = read_private_json(Path(candidate_path), "manifest.v1.json")
+        from raos_wordpress_incremental_publication import prepare_candidate
+
+        prepared = prepare_candidate(Path(candidate_path), now=datetime.now(UTC))
+        manifest = prepared.manifest
         shared = manifest.get("shared_artifacts", {})
         targets = manifest.get("reader_pages", {})
         if (
@@ -63,16 +67,38 @@ def page_overrides_for_preview(
         ):
             fail("PREVIEW_READER_PAGE_SELECTION_INVALID")
         include_home = "home" in shared
+        if include_home:
+            home = prepared.preparation["production_documents"].get("home")
+            shared_home = shared["home"]
+            if (
+                not isinstance(home, Mapping)
+                or not isinstance(home.get("document"), dict)
+                or not isinstance(shared_home, Mapping)
+                or not isinstance(shared_home.get("key"), str)
+            ):
+                fail("PREVIEW_CANDIDATE_BINDING")
+            document = cast(dict[str, object], home["document"])
+            raw = prepared.artifacts.get(cast(str, shared_home["key"]))
+            if (
+                raw is None
+                or not isinstance(document.get("block_markup"), str)
+                or document["block_markup"].encode() != raw
+            ):
+                fail("PREVIEW_CANDIDATE_BINDING")
+            candidate_home = dict(document)
         reader_privacy = "privacy-policy" in targets
         hubs = sorted(set(targets) & reader.HUB_SLUGS)
     pages = []
-    if include_home:
+    if include_home and candidate_home is None:
         pages.append(reader.load_home_page(root))
     if reader_privacy:
         pages.append(reader.load_reader_privacy_page(root))
     if hubs:
         pages.extend(reader.select_hub_pages(root, hubs))
-    return {page.production_slug: page.document() for page in pages}
+    overrides = {page.production_slug: page.document() for page in pages}
+    if candidate_home is not None:
+        overrides["home"] = candidate_home
+    return overrides
 
 
 def article_bodies_for_preview(

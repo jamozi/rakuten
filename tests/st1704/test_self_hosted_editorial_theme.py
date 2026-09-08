@@ -1459,6 +1459,36 @@ def test_front_page_renders_the_stored_home_body_once_with_shared_chrome() -> No
     assert "人気" not in front
 
 
+def test_homepage_restores_only_shared_header_and_hides_direct_magazine_header() -> None:
+    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    scope = (
+        "body.home.raos-home-v2-page:has(#ks-magazine):has(#ks-magazine)"
+        ":has(#ks-magazine)"
+    )
+    expected_displays = {
+        scope
+        + " .wp-site-blocks > header.wp-block-template-part:has(.raos-site-header)": (
+            "display: block !important;"
+        ),
+        scope
+        + " .wp-site-blocks > header.wp-block-template-part > .raos-site-header": (
+            "display: block !important;"
+        ),
+        scope
+        + " .wp-site-blocks > header.wp-block-template-part > .raos-site-header > .raos-masthead": (
+            "display: grid !important;"
+        ),
+        "body.home.raos-home-v2-page #ks-magazine > .km-header": (
+            "display: none !important;"
+        ),
+    }
+
+    for selector, declaration in expected_displays.items():
+        assert selector + " {" in css
+        rule = css.split(selector + " {", 1)[1].split("}", 1)[0]
+        assert declaration in rule
+    assert "#ks-magazine .km-header" not in css
+
 
 def test_homepage_cluster_anchors_clear_the_sticky_header() -> None:
     css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
@@ -2210,6 +2240,7 @@ def test_content_is_visible_without_javascript() -> None:
         "body.home.raos-home-v2-page #ks-magazine > .km-header",
         ".raos-comparison__cards",
         ".raos-comparison__table-view",
+        "body.home.raos-home-v2-page #ks-magazine > .km-header",
         ".raos-site-header .raos-wordmark::before",
         ".raos-header-nojs-shell > summary::-webkit-details-marker",
         ".raos-site-header:has(.raos-primary-nav[data-raos-nav-ready])"

@@ -79,9 +79,12 @@ def preview_plan(candidate: dict, candidate_dir: Path) -> dict:
             or raw.decode() != document["block_markup"]
         ):
             raise ValueError("DIRECT_PREVIEW_BODY_CHANGED")
-        surfaces.append(
-            {"kind": "article", "path": "/" + slug + "/", "title": document["title"]}
-        )
+        if document['post_type'] == 'page' and slug == 'home':
+            surfaces.append({'kind': 'home', 'path': '/'})
+        else:
+            surfaces.append(
+                {"kind": "article", "path": "/" + slug + "/", "title": document["title"]}
+            )
     if candidate.get("theme"):
         theme = contained(candidate_dir, candidate["theme"]["directory"])
         if not theme.is_dir():
@@ -96,7 +99,7 @@ def preview_plan(candidate: dict, candidate_dir: Path) -> dict:
             )
         surfaces.extend(
             [
-                {"kind": "home", "path": "/"},
+                *([] if any(s["kind"] == "home" for s in surfaces) else [{"kind": "home", "path": "/"}]),
                 {"kind": "listing", "path": "/?post_type=post"},
             ]
         )

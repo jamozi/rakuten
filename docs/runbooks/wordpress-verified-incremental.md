@@ -55,6 +55,8 @@ make wordpress-production-request                       # read-only plan
 make wordpress-production-request ARGS='plan --articles <slug> --snapshot-name <name> --json'
 make wordpress-production-request ARGS='prepare --articles <slug> --snapshot-name <name>'
 # 明示した共有変更だけ追加: --include-theme / --update-policies all
+# テーマだけを変更し、記事・固定ページの保存本文を保持する
+make wordpress-production-request ARGS='prepare --include-theme --snapshot-name <name>'
 # 同じ引数での再開は有効な既存候補と結果を使う
 make wordpress-production-request ARGS='plan --candidate <private-candidate> --json'
 ```
@@ -79,6 +81,17 @@ make wordpress-production-request ARGS='plan --candidate <private-candidate> --j
 修正後は影響する検査を実行します。公開処理の変更だけで表示入力が変わらない場合は撮影を再利用できます。
 表示検査の期限は2時間、監査は24時間、適用用証跡は15分です。失効した単位だけ更新し、
 未変更の検査や担当者を一律に作り直しません。バックアップの実際の復元・照合は引き続き必要です。
+
+TOPの本文は固定ページの保存内容を `core/post-content` で表示します。共通テーマだけの変更は
+`--include-theme` を指定し、homeを含む保存本文を候補へ再投入しません。snapshotには公開済みの
+登録ハブも含めます。ローカルではsnapshotのhome本文を同一ハッシュで再現し、ブラウザDOMの
+本文照合値と保存本文の照合値を比較します。既存の埋め込みWebPは保存済みの本文内だけで保持し、
+新たな画像権利・商品画像検証の証拠にはしません。
+
+`front-page.html` は共通領域と本文ブロックの器であり、編集本文の生成元ではありません。
+別の本文所有者を定義するまでは、新規候補の `--include-home` は
+`READER_HOME_CONTENT_SOURCE_UNAVAILABLE` で停止します。過去の凍結済み候補のhomeは、その候補内の
+ハッシュで拘束された本文・メタデータを使って照合し、現在のテーマ本文で置換しません。
 
 ## 監査対象と短命の公開証跡を分ける
 

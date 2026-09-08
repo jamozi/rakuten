@@ -175,6 +175,61 @@ try {
     return json.loads(result.stdout)
 
 
+@pytest.mark.parametrize(
+    ("kind", "pathname", "has_page_id", "expected"),
+    [
+        ("home", "/", True, True),
+        ("home", "/", False, False),
+        ("home", "/saved-post/", False, True),
+        ("home", "/saved-post/", True, True),
+        ("home", "/unknown/", True, False),
+        ("home", "/unknown/", False, False),
+        ("article", "/", True, False),
+        ("article", "/saved-post/", False, False),
+    ],
+)
+def test_alias_path_lookup_runs_without_node_url_globals(
+    kind: str, pathname: str, has_page_id: bool, expected: bool
+) -> None:
+    """The Playwright CLI sandbox omits URL outside page.evaluate."""
+    node = shutil.which("node")
+    assert node is not None
+    result = subprocess.run(
+        [
+            node,
+            "-e",
+            """
+const fs = require('fs');
+const vm = require('vm');
+const source = fs.readFileSync(process.argv[1], 'utf8');
+const input = JSON.parse(fs.readFileSync(0, 'utf8'));
+const parser = source.slice(source.indexOf('  const parseLocalUrl ='),
+  source.indexOf('  const runtimeErrors ='));
+const lookup = source.slice(source.indexOf('          const aliasPath ='),
+  source.indexOf('          if ((routeAlias && link.hash)'));
+const matched = vm.runInNewContext(parser + lookup + '; Boolean(aliasPath)', {
+  origin: 'http://127.0.0.1:28952',
+  surface: {kind: input.kind},
+  link: {pathname: input.pathname, hasPageId: input.has_page_id},
+  localRouteAliases: new Map([
+    ['/?page_id=20', {kind: 'page_id', source_path: '/?page_id=20'}],
+    ['/saved-post/', {kind: 'post_slug', source_path: '/saved-post/'}],
+  ]),
+});
+process.stdout.write(JSON.stringify(matched));
+""",
+            str(AUDIT),
+        ],
+        input=json.dumps(
+            {"kind": kind, "pathname": pathname, "has_page_id": has_page_id}
+        ),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert json.loads(result.stdout) is expected
+
+
 def test_incremental_exact_scope_accepts_two_positions_and_single_image() -> None:
     scope = _scope()
     result = _node({"scope": scope, "audit": _audit(scope)})
@@ -184,6 +239,50 @@ def test_incremental_exact_scope_accepts_two_positions_and_single_image() -> Non
         "selected": True,
         "commerceStatus": "EXPECTED_VERIFIED_SET_PRESENT",
     }
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [None, "missing", "production_id", "source", "target", "external", "duplicate"],
+)
+def test_theme_only_scope_accepts_only_closed_local_route_aliases(mutation) -> None:
+    scope = _scope()
+    scope["selected_article_ids"] = []
+    scope["theme_only_candidate"] = True
+    aliases = {
+        "schema": "RAOS_WORDPRESS_LOCAL_ROUTE_ALIASES_V1",
+        "routes": [
+            {
+                "kind": "post_slug",
+                "production_id": 10,
+                "production_slug": "saved-post",
+                "source_path": "/saved-post/",
+                "local_path": "/local-preview-saved-post/",
+            },
+            {
+                "kind": "page_id",
+                "production_id": 20,
+                "production_slug": "saved-page",
+                "source_path": "/?page_id=20",
+                "local_path": "/saved-page/",
+            },
+        ],
+    }
+    scope["local_route_aliases"] = aliases
+    if mutation == "missing":
+        del scope["local_route_aliases"]
+    elif mutation == "production_id":
+        aliases["routes"][0]["production_id"] = 0
+    elif mutation == "source":
+        aliases["routes"][0]["source_path"] = "/other/"
+    elif mutation == "target":
+        aliases["routes"][0]["local_path"] = "/local-preview-other/"
+    elif mutation == "external":
+        aliases["routes"][1]["local_path"] = "https://example.invalid/"
+    elif mutation == "duplicate":
+        aliases["routes"][1]["source_path"] = aliases["routes"][0]["source_path"]
+
+    assert _node({"scope": scope})["valid"] is (mutation is None)
 
 
 @pytest.mark.parametrize(

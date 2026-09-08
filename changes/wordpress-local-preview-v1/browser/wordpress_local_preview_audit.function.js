@@ -1,4 +1,39 @@
 (() => {
+  // Kept in parity with the strict frozen-home projection in the public
+  // readback owner. Only its digest leaves the browser; no stored body is logged.
+  const homeBodyProjectionSha256 = async (root) => {
+    if (!(root instanceof HTMLElement) || !root.matches('main#main-content > .wp-block-post-content')) {
+      throw new Error('RAOS_WORDPRESS_HOME_BODY_SCOPE_INVALID');
+    }
+    const tokens = [];
+    const voidTags = new Set('area base br col embed hr img input link meta param source track wbr'.split(' '));
+    const text = (value) => {
+      if (tokens.at(-1)?.[0] === 'text') tokens.at(-1)[1] += value;
+      else tokens.push(['text', value]);
+    };
+    const visit = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        if (node.parentNode !== root || node.textContent.replace(/[\t\n\f\r ]/g, '')) text(node.textContent);
+        return;
+      }
+      if (node.nodeType === Node.COMMENT_NODE) return;
+      if (!(node instanceof HTMLElement)) throw new Error('RAOS_WORDPRESS_HOME_BODY_ELEMENT_INVALID');
+      const tag = node.tagName.toLowerCase();
+      const attributes = [...node.attributes].map((attribute) => [attribute.name, attribute.value])
+        .sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0);
+      tokens.push(['open', tag, attributes]);
+      for (const child of node.childNodes) visit(child);
+      if (tag === 'span' && attributes.length === 0 && node.parentElement?.matches('div.km-spine[aria-hidden="true"]') &&
+        tokens.at(-1)?.[0] === 'text' && tokens.at(-1)[1] === 'EDITOR’S PICK') {
+        tokens.at(-1)[1] = "EDITOR'S PICK";
+      }
+      if (!voidTags.has(tag)) tokens.push(['close', tag]);
+    };
+    for (const child of root.childNodes) visit(child);
+    const raw = new TextEncoder().encode(JSON.stringify(tokens));
+    const hash = await crypto.subtle.digest('SHA-256', raw);
+    return [...new Uint8Array(hash)].map((value) => value.toString(16).padStart(2, '0')).join('');
+  };
   const validateSeoHead = ({
     audit,
     expectedOpenGraphImageUrl,
@@ -107,6 +142,41 @@
     return slug;
   };
   const ctaTuple = (row) => JSON.stringify([row.cta_id, row.product_id, row.placement]);
+  const validateLocalRouteAliases = (value) => {
+    if (!exactKeys(value, ['schema', 'routes']) ||
+      value.schema !== 'RAOS_WORDPRESS_LOCAL_ROUTE_ALIASES_V1' ||
+      !Array.isArray(value.routes) || value.routes.length === 0 || value.routes.length > 64) {
+      throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
+    }
+    const sourcePaths = new Set();
+    const localPaths = new Set();
+    const productionIds = new Set();
+    for (const row of value.routes) {
+      if (!exactKeys(row, ['kind', 'production_id', 'production_slug', 'source_path', 'local_path']) ||
+        !Number.isSafeInteger(row.production_id) || row.production_id <= 0 ||
+        typeof row.production_slug !== 'string' ||
+        !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(row.production_slug) ||
+        productionIds.has(row.production_id) || sourcePaths.has(row.source_path) ||
+        localPaths.has(row.local_path)) {
+        throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
+      }
+      const expectedSource = row.kind === 'post_slug'
+        ? `/${row.production_slug}/`
+        : row.kind === 'page_id' ? `/?page_id=${row.production_id}` : null;
+      const expectedLocal = row.kind === 'post_slug'
+        ? `/local-preview-${row.production_slug}/`
+        : row.kind === 'page_id'
+          ? (row.production_slug === 'home' ? '/' : `/${row.production_slug}/`)
+          : null;
+      if (row.source_path !== expectedSource || row.local_path !== expectedLocal) {
+        throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
+      }
+      productionIds.add(row.production_id);
+      sourcePaths.add(row.source_path);
+      localPaths.add(row.local_path);
+    }
+    return new Map(value.routes.map((row) => [row.source_path, row]));
+  };
   const validateIncrementalScope = ({ publicationProfile, linkMode, incrementalScope, articleIds,
     categorySurfaces = [], coreSurfaces = null,
   }) => {
@@ -118,11 +188,15 @@
     }
     const scope = incrementalScope;
     const readerMode = hasReaderScope(scope);
+    const themeOnly = scope?.theme_only_candidate === true;
+    const hasRouteAliases = scope?.local_route_aliases !== undefined;
     const identifier = (value) => typeof value === 'string' && value.length > 0 &&
       value.length <= 180 && /^[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*$/.test(value);
     if (publicationProfile !== 'verified-incremental' || linkMode !== 'standard-api' ||
       !exactKeys(scope, ['schema', 'publication_profile', 'link_mode', 'selected_article_ids',
         'articles', 'preparation_binding_sha256',
+        ...(hasRouteAliases ? ['local_route_aliases'] : []),
+        ...(themeOnly ? ['theme_only_candidate'] : []),
         ...(readerMode ? ['reader_page_slugs', 'core_document_slugs'] : []),
         ...(categorySurfaces.length ? ['category_expectations'] : [])]) ||
       scope.schema !== 'RAOS_WORDPRESS_INCREMENTAL_BROWSER_SCOPE_V1' ||
@@ -130,14 +204,18 @@
       !/^[a-f0-9]{64}$/.test(scope.preparation_binding_sha256 || '') ||
       scope.preparation_binding_sha256 === '0'.repeat(64) ||
       !Array.isArray(scope.selected_article_ids) ||
-      (scope.selected_article_ids.length === 0 &&
+      (scope.selected_article_ids.length === 0 && !themeOnly &&
         (!readerMode || !Array.isArray(scope.reader_page_slugs) || scope.reader_page_slugs.length === 0)) ||
+      (themeOnly && (scope.selected_article_ids.length !== 0 ||
+        !hasRouteAliases ||
+        (readerMode && (!Array.isArray(scope.reader_page_slugs) || scope.reader_page_slugs.length !== 0)))) ||
       !exactSet(scope.selected_article_ids, [...new Set(scope.selected_article_ids)]) ||
       scope.selected_article_ids.some((id) => !articleIds.includes(id)) ||
       !Array.isArray(scope.articles) ||
       !exactSet(scope.articles.map((row) => row?.article_id), articleIds)) {
       throw new Error('RAOS_WORDPRESS_INCREMENTAL_SCOPE_INVALID');
     }
+    if (hasRouteAliases) validateLocalRouteAliases(scope.local_route_aliases);
     if (readerMode && (
       !sortedSlugs(scope.reader_page_slugs) || !sortedSlugs(scope.core_document_slugs) ||
       scope.reader_page_slugs.some((slug) => !readerPageSlugs.includes(slug) ||
@@ -936,8 +1014,8 @@
         realScrollEvidence = await page.evaluate(async () => {
           const afterPaint = () => new Promise((resolve) =>
             requestAnimationFrame(() => requestAnimationFrame(resolve)));
-          const sections = [...document.querySelectorAll('.raos-home-v2 > *')]
-            .filter((element) => element instanceof HTMLElement);
+          const sections = [...document.querySelectorAll('main#main-content > .wp-block-post-content > *')]
+            .filter((element) => element instanceof HTMLElement && element.getClientRects().length > 0);
           const checkpoints = [];
           for (const section of sections) {
             section.scrollIntoView({ behavior: 'auto', block: 'start' });
@@ -955,7 +1033,7 @@
             document.documentElement.scrollHeight - innerHeight,
           );
           const reachedBottom = Math.abs(scrollY - maximumScrollY) <= 2;
-          const maximumObservedScrollY = Math.max(0, ...checkpoints.map((row) => row.scrollY));
+          const maximumObservedScrollY = Math.max(scrollY, ...checkpoints.map((row) => row.scrollY));
           scrollTo({ behavior: 'auto', left: 0, top: 0 });
           await afterPaint();
           return {
@@ -967,9 +1045,8 @@
           };
         });
         if (
-          realScrollEvidence.sectionCount < 4 ||
+          realScrollEvidence.sectionCount < 1 ||
           !realScrollEvidence.allSectionsIntersected ||
-          realScrollEvidence.maximumObservedScrollY <= 0 ||
           !realScrollEvidence.reachedBottom ||
           !realScrollEvidence.returnedToTop
         ) {
@@ -1005,6 +1082,9 @@
         normalizedPermissionsPolicy === expectedPermissionsPolicy ? null : 'permissions-policy',
         responseHeaders['x-frame-options'] === 'DENY' ? null : 'frame-protection',
       ].filter(Boolean);
+      const homeBodyDigest = surface.kind === 'home'
+        ? await page.locator('main#main-content > .wp-block-post-content').evaluate(homeBodyProjectionSha256)
+        : null;
       const audit = await page.evaluate(async ({
         comparisonPolicyPath, expectedPageNumber, expectedSearchQuery,
       }) => {
@@ -1347,6 +1427,16 @@
           footerDisplay: footerStyle?.display || '',
           footerLinkBoxes: boxes('.raos-footer a'),
           fullPostContentCount: document.querySelectorAll('.wp-block-post-content').length,
+          homeContent: {
+            postContentCount: document.querySelectorAll('main#main-content > .wp-block-post-content').length,
+            mainChildCount: document.querySelector('main#main-content')?.children.length || 0,
+        hasSavedBody: !!document.querySelector('main#main-content > .wp-block-post-content')?.textContent.trim(),
+            savedBodyVisible: visible(document.querySelector('main#main-content > .wp-block-post-content')),
+            oldTemplateBodyCount: document.querySelectorAll('main #home-hero-title, main #home-promise-title').length,
+            sharedHeaderVisible: visible(document.querySelector('.wp-site-blocks > header.wp-block-template-part')) && visible(document.querySelector('.raos-masthead')),
+            sharedFooterVisible: visible(document.querySelector('footer.wp-block-template-part')),
+            inlineHeaderHidden: [...document.querySelectorAll('main #ks-magazine > .km-header')].every((element) => !visible(element)),
+          },
           h1Count: document.querySelectorAll('h1').length,
           h1LineCount: new Set(lineTops).size,
           homeClusters: [...document.querySelectorAll('.raos-cluster-nav .raos-cluster')]
@@ -1930,25 +2020,21 @@
         }
       }
 
-      let homeLinkFailure = false;
-      if (surface.kind === 'home' && width === 390 && !readerDisplay) {
-        const expectedClusters = rawClusters.map((cluster) => ({
-          anchor: cluster.anchor,
-          paths: cluster.article_ids.map((articleId) => expectedPathByArticleId[articleId]),
-        }));
-        homeLinkFailure = audit.homeClusters.length !== expectedClusters.length ||
-          audit.homeClusters.some((cluster, index) => {
-            const expected = expectedClusters[index];
-            return !expected || cluster.anchor !== expected.anchor ||
-              cluster.links.length !== expected.paths.length ||
-              cluster.links.some((link, linkIndex) =>
-                link.pathname !== expected.paths[linkIndex] ||
-                parseLocalUrl(link.href) === null);
-          });
-      }
+      // Link readback below follows the stored body's actual links. The theme
+      // no longer owns an obligatory set of home clusters or article cards.
+      const homeContentFailure = surface.kind === 'home' && (
+        audit.homeContent.postContentCount !== 1 || audit.homeContent.mainChildCount !== 1 ||
+        !audit.homeContent.hasSavedBody || !audit.homeContent.savedBodyVisible || audit.homeContent.oldTemplateBodyCount !== 0 ||
+        !audit.homeContent.sharedHeaderVisible || !audit.homeContent.sharedFooterVisible ||
+        !audit.homeContent.inlineHeaderHidden
+      );
 
       let localLinkFailure = false;
       if (width === 390) {
+        const localRouteAliases = new Map(
+          (checkedIncrementalScope?.local_route_aliases?.routes || [])
+            .map((row) => [row.source_path, row]),
+        );
         const localLinks = await page.evaluate((localOrigin) => {
           const unique = new Map();
           for (const anchor of document.querySelectorAll('a[href]')) {
@@ -1959,6 +2045,8 @@
               continue;
             }
             if (target.origin === localOrigin) unique.set(target.href, {
+              hasPageId: target.searchParams.has('page_id'),
+              hasUserInfo: Boolean(target.username || target.password),
               hash: target.hash,
               href: target.href,
               pathname: target.pathname,
@@ -1970,6 +2058,11 @@
         const current = parseLocalUrl(page.url());
         if (current === null) localLinkFailure = true;
         for (const link of localLinks) {
+          const parsedLink = parseLocalUrl(link.href);
+          if (parsedLink === null || link.hasUserInfo) {
+            localLinkFailure = true;
+            continue;
+          }
           if (current && link.hash && link.pathname === current.pathname &&
             link.search === current.search) {
             const targetExists = await page.evaluate(
@@ -1977,6 +2070,54 @@
               decodeURIComponent(link.hash.slice(1)),
             );
             if (!targetExists) localLinkFailure = true;
+            continue;
+          }
+          const routeAlias = surface.kind === 'home'
+            ? localRouteAliases.get(`${link.pathname}${link.search}`)
+            : null;
+          const aliasPath = surface.kind === 'home'
+            ? [...localRouteAliases.values()].find((row) => {
+              const source = parseLocalUrl(`${origin}${row.source_path}`);
+              return source !== null && source.pathname === link.pathname &&
+                (row.kind === 'post_slug' || link.hasPageId);
+            })
+            : null;
+          if ((routeAlias && link.hash) || (!routeAlias && aliasPath)) {
+            localLinkFailure = true;
+            continue;
+          }
+          if (routeAlias) {
+            const expectedTarget = `${origin}${routeAlias.local_path}`;
+            const firstHop = await page.request.get(link.href, { maxRedirects: 0 });
+            const location = firstHop.headers().location;
+            const followed = await page.request.get(link.href, { maxRedirects: 1 });
+            if (firstHop.status() !== 301 || location !== expectedTarget ||
+              followed.status() !== 200 || followed.url() !== expectedTarget) {
+              localLinkFailure = true;
+              continue;
+            }
+            const clickPage = await page.context().newPage();
+            try {
+              const loaded = await clickPage.goto(page.url(), { waitUntil: 'networkidle' });
+              const anchors = clickPage.locator('a[href]');
+              const index = await anchors.evaluateAll(
+                (nodes, href) => nodes.findIndex((anchor) =>
+                  anchor.href === href && anchor.getClientRects().length > 0), link.href,
+              );
+              if (!loaded || loaded.status() !== 200 || index < 0) {
+                localLinkFailure = true;
+                continue;
+              }
+              const [clicked] = await Promise.all([
+                clickPage.waitForNavigation({ waitUntil: 'domcontentloaded' }),
+                anchors.nth(index).click(),
+              ]);
+              if (!clicked || clicked.status() !== 200 || clickPage.url() !== expectedTarget) {
+                localLinkFailure = true;
+              }
+            } finally {
+              await clickPage.close();
+            }
             continue;
           }
           const readback = await page.request.get(link.href, { maxRedirects: 0 });
@@ -2116,7 +2257,7 @@
         generalFailure || headFailure || seoHeadAuditFailed || robotsFailure || semanticGraphFailure ||
         securityHeaderFailure.length !== 0 || disclosureKeyboardFailure || focusFlowFailure ||
         navigationFailure || desktopTocPositionFailure || internalLinkFailure ||
-        homeLinkFailure || localLinkFailure || listingFailure || missingUiText.length !== 0 ||
+        homeContentFailure || localLinkFailure || listingFailure || missingUiText.length !== 0 ||
         lifecycleProductCtaInvariantFailure || notFoundFailure || routeFailure ||
         skipLinkFailure || tocFailure
       ) {
@@ -2125,7 +2266,7 @@
           JSON.stringify({ audit, browserCookieCount, desktopTocPositionFailure,
             articleFactsFailure, disclosureSemanticsFailure,
             disclosureKeyboardFailure, focusFlowFailure, generalFailure, headFailure,
-            homeLinkFailure, internalLinkFailure, listingFailure, localLinkFailure,
+            homeContentFailure, internalLinkFailure, listingFailure, localLinkFailure,
             missingUiText, navigationFailure, notFoundFailure, robotsFailure, routeFailure,
             semanticGraphFailure, seoHeadAudit, incrementalArticle,
             securityHeaderFailure, skipLinkFailure, tocFailure }),
@@ -2155,7 +2296,7 @@
           }
         }
         if (home) {
-          for (const section of document.querySelectorAll('.raos-home-v2 > *')) {
+          for (const section of document.querySelectorAll('main#main-content > .wp-block-post-content > *')) {
             section.scrollIntoView({ behavior: 'auto', block: 'start' });
             await afterPaint();
           }
@@ -2206,12 +2347,12 @@
           style.textContent = [
             '/* Capture-only: interaction and paint were already verified by real scrolling. */',
             'html[data-raos-audit-capture="expanded-after-real-scroll"]',
-            ' .raos-home-v2 > :not(.raos-home-hero) {',
+            ' main#main-content > .wp-block-post-content > * {',
             ' content-visibility: visible !important; }',
           ].join('');
           document.head.append(style);
           return style.sheet !== null &&
-            document.querySelectorAll('.raos-home-v2 > :not(.raos-home-hero)').length > 0
+            document.querySelectorAll('main#main-content > .wp-block-post-content > *').length > 0
             ? 'CAPTURE_ONLY_CONTENT_VISIBILITY_EXPANDED_AFTER_REAL_SCROLL'
             : null;
         });
@@ -2302,6 +2443,7 @@
         }
       }
       results.push({
+        ...(surface.kind === 'home' ? { homeBodyProjectionSha256: homeBodyDigest } : {}),
         auditResultSchema: 'RAOS_WORDPRESS_LOCAL_BROWSER_RESULT_V1',
         localPath: surface.local_path,
         productionPath: surface.production_path || null,
@@ -2377,5 +2519,6 @@
   factory.inspectImageLoading = inspectImageLoading;
   factory.classifyImageLoading = classifyImageLoading;
   factory.inspectHiddenLegacyImageResources = inspectHiddenLegacyImageResources;
+  factory.homeBodyProjectionSha256 = homeBodyProjectionSha256;
   return factory;
 })()

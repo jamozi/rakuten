@@ -29,6 +29,7 @@ function get_stylesheet_directory() { return $GLOBALS['theme']; }
 function get_option($name, $default = false) { return $default; }
 function get_queried_object_id() { return 501; }
 function get_post($id) { return $GLOBALS['post']; }
+function get_page_by_path($slug, ...$args) { return $GLOBALS['post']->post_name === $slug ? $GLOBALS['post'] : null; }
 function get_post_field($field, $id, $context = 'raw') { return $GLOBALS['post']->$field ?? null; }
 function get_post_type($id) { return 'post'; }
 function get_post_status($id) { return 'publish'; }
@@ -48,9 +49,15 @@ $GLOBALS['snapshot'] = array('id'=>501,'post_type'=>'post','slug'=>'new-guide',
     'block_markup'=>'<p>本文</p>','content_sha256'=>hash('sha256','<p>本文</p>'));
 require $argv[1] . '/functions.php';
 $valid = kurashinoshirube_public_head_context();
+$GLOBALS['post']->post_name = 'dishwasher-running-cost';
+$GLOBALS['snapshot']['slug'] = 'dishwasher-running-cost';
+$guide = kurashinoshirube_public_article_identity(501);
+$GLOBALS['post']->post_content = '<p>unreviewed edit</p>';
+$drift = kurashinoshirube_direct_article_snapshot(501);
+$GLOBALS['post']->post_content = '<p>本文</p>';
 $GLOBALS['snapshot'] = null;
 $invalid = kurashinoshirube_public_head_context();
-echo json_encode(array('valid'=>$valid,'invalid'=>$invalid), JSON_UNESCAPED_UNICODE);
+echo json_encode(array('valid'=>$valid,'invalid'=>$invalid,'guide'=>$guide,'drift'=>$drift), JSON_UNESCAPED_UNICODE);
 """
     result = subprocess.run(
         [php, "-r", program, str(THEME)],
@@ -69,3 +76,7 @@ echo json_encode(array('valid'=>$valid,'invalid'=>$invalid), JSON_UNESCAPED_UNIC
         "section": "記事",
     }
     assert value["invalid"] is None
+
+    assert value['guide']['article_id'] == 'dishwasher-running-cost'
+    assert value['guide']['section'] == '家事'
+    assert value['drift'] is None
