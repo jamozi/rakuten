@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "6708ccd11a574cb17eea8145ad932b363ecd31ba37ab55fd391d3f52771085d4"
+    "2b9febdc12d253bf430e9dfeb0ea7029c3bf3a71ab42ea76683f20cf19b6493a"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -102,6 +102,7 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     THEME_REPOSITORY_ROOT / "assets/editorial-navigation.js",
     EDITORIAL_NAVIGATION_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/editorial-v2.css",
+    THEME_REPOSITORY_ROOT / "assets/home-magazine.css",
     ANKER_GENERATIONS_ASSET_INPUT_PATH,
     DISHWASHER_ASSET_INPUT_PATH,
     PORTABLE_POWER_ASSET_INPUT_PATH,
@@ -936,10 +937,25 @@ def validate_sources() -> dict[str, str]:
     search = _text("templates/search.html")
     archive = _text("templates/archive.html")
     not_found = _text("templates/404.html")
+    front_page_markers = (
+        '<!-- wp:template-part {"slug":"header","tagName":"header"} /-->',
+        (
+            '<!-- wp:group {"tagName":"main","className":"raos-home-v2",'
+            '"anchor":"main-content","layout":{"type":"default"}} -->'
+        ),
+        '<main id="main-content" class="wp-block-group raos-home-v2">',
+        '<!-- wp:post-content {"layout":{"type":"default"}} /-->',
+        '<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->',
+    )
     if (
-        front_page.count('<h1 ') != 1
-        or front_page.count('[kurashinoshirube_latest_guides]') != 1
-        or 'raos-home-hero__image' in front_page
+        any(front_page.count(marker) != 1 for marker in front_page_markers)
+        or [front_page.index(marker) for marker in front_page_markers]
+        != sorted(front_page.index(marker) for marker in front_page_markers)
+        or front_page.count("wp:post-content") != 1
+        or "wp:post-title" in front_page
+        or "<h1" in front_page
+        or "wp:shortcode" in front_page
+        or "postId" in front_page
         or '[kurashinoshirube_article_hero]' in single
     ):
         _fail()

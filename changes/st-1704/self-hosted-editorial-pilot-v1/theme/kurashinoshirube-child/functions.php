@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '6708ccd11a574cb17eea8145ad932b363ecd31ba37ab55fd391d3f52771085d4';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '6708ccd11a574cb17eea8145ad932b363ecd31ba37ab55fd391d3f52771085d4';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '2b9febdc12d253bf430e9dfeb0ea7029c3bf3a71ab42ea76683f20cf19b6493a';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '2b9febdc12d253bf430e9dfeb0ea7029c3bf3a71ab42ea76683f20cf19b6493a';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -47,7 +47,7 @@ const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_SHA256 = '09b2bff8deba45af06
 const KURASHINOSHIRUBE_NAVIGATION_ASSET_PATH = 'assets/editorial-navigation.js';
 const KURASHINOSHIRUBE_LOCAL_COST_ASSET_PATH = 'assets/local-running-cost.js';
 const KURASHINOSHIRUBE_LOCAL_COST_ASSET_SHA256 = '416ad7ad1f8f3752e3193677bb1725a99ee431df6986e313a8717336de554c47';
-const KURASHINOSHIRUBE_NAVIGATION_ASSET_SHA256 = 'b0078de81ba4faadad8f8f2aa5ddd44b6196f01e513333e4bf0624c4abafc747';
+const KURASHINOSHIRUBE_NAVIGATION_ASSET_SHA256 = 'fd9936314317ec68e81eeb7dd1a9c53ca1c833632441655e4cfb1d9a62084df1';
 const KURASHINOSHIRUBE_HOMEPAGE_FEATURED_ARTICLE_ID = 'st1704-portable-power-station-guide';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ARTICLE_ID = 'st1703-first-suitcase-comparison';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ACTION = 'kurashinoshirube_apply_at003_review_v1';
@@ -2467,10 +2467,17 @@ add_action(
 );
 
 add_action('wp_enqueue_scripts', static function (): void {
+    $dependencies = array();
+    if (is_front_page() && str_contains((string) get_post_field('post_content', get_queried_object_id(), 'raw'), 'id="ks-magazine"')) {
+        wp_enqueue_style('kurashinoshirube-home-magazine',
+            get_stylesheet_directory_uri() . '/assets/home-magazine.css', array(),
+            KURASHINOSHIRUBE_THEME_RUNTIME_REVISION);
+        $dependencies[] = 'kurashinoshirube-home-magazine';
+    }
     wp_enqueue_style(
         'kurashinoshirube-editorial',
         get_stylesheet_directory_uri() . '/assets/theme.css',
-        array(),
+        $dependencies,
         KURASHINOSHIRUBE_THEME_RUNTIME_REVISION
     );
 });
@@ -2707,10 +2714,10 @@ add_action(
     20
 );
 
-/** Add focus handoff only on article routes that render the generated TOC. */
+/** Article focus handoff and the preserved photographic home's slideshow. */
 function kurashinoshirube_enqueue_editorial_navigation(): void
 {
-    if (! kurashinoshirube_is_editorial_v2_post()) {
+    if (! is_front_page() && ! kurashinoshirube_is_editorial_v2_post()) {
         return;
     }
     $asset_uri = kurashinoshirube_verified_asset_uri(

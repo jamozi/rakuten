@@ -526,13 +526,14 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "6708ccd11a574cb17eea8145ad932b363ecd31ba37ab55fd391d3f52771085d4",
-    "source_fingerprint": "6708ccd11a574cb17eea8145ad932b363ecd31ba37ab55fd391d3f52771085d4",
+    "revision": "2b9febdc12d253bf430e9dfeb0ea7029c3bf3a71ab42ea76683f20cf19b6493a",
+    "source_fingerprint": "2b9febdc12d253bf430e9dfeb0ea7029c3bf3a71ab42ea76683f20cf19b6493a",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",
       "assets/editorial-navigation.v3.json",
       "assets/editorial-v2.css",
+      "assets/home-magazine.css",
       "assets/images/article-anker-solix-generations.webp",
       "assets/images/article-countertop-dishwasher-guide.webp",
       "assets/images/article-portable-power-guide.webp",
