@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '2b76b16af71d1ab622560b4e18c8e946c4218449cf46d601c2d85c163c64345a';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '2b76b16af71d1ab622560b4e18c8e946c4218449cf46d601c2d85c163c64345a';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '6708ccd11a574cb17eea8145ad932b363ecd31ba37ab55fd391d3f52771085d4';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '6708ccd11a574cb17eea8145ad932b363ecd31ba37ab55fd391d3f52771085d4';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -3226,6 +3226,18 @@ function kurashinoshirube_render_related_guides($attributes, $content, $tag): st
     if (count($items) > 1) {
         return '';
     }
+    if (in_array($identity['article_id'], array('st1704-countertop-dishwasher-for-small-households',
+        'solota-vs-rakua-mini-plus'), true)) {
+        $questions = array('dishwasher-installation-measurement' => '本体・扉・ホースまで置けるか、測り方を確認する',
+            'dishwasher-running-cost' => '使用回数と自宅の単価から、使い続ける費用を考える',
+            'dishwasher-cleaning-guide' => '買う前に、続けられる手入れの作業を確認する');
+        foreach (kurashinoshirube_reader_eligible_posts(array_keys($questions)) as $post) {
+            $guide_identity = kurashinoshirube_public_article_identity((int) $post->ID);
+            if ($guide_identity === null || ! isset($questions[$guide_identity['article_id']])) { continue; }
+            $items[] = '<li><a href="' . esc_url(get_permalink($post)) . '">'
+                . esc_html($questions[$guide_identity['article_id']]) . '</a></li>';
+        }
+    }
     $local_origin = kurashinoshirube_local_preview_origin();
     $home_url = (is_string($local_origin)
         ? $local_origin
@@ -3498,17 +3510,95 @@ function kurashinoshirube_reader_eligible_posts(array $article_ids): array
     return $posts;
 }
 
-function kurashinoshirube_reader_group_cards(string $kind): string
+/** Editorial journey labels; availability is always resolved from eligible posts. */
+function kurashinoshirube_reader_journeys(): array
+{
+    return array(
+        'kitchen' => array('label' => '食洗機',
+            'intro' => '食後の洗い物を、どこまで任せたいですか。置き場所・食器量・給水の仕方から、自宅に合う候補を選びます。',
+            'shortcuts' => array('dishwasher-installation-measurement' => '置けるか確かめる',
+                'st1704-countertop-dishwasher-for-small-households' => '1〜2人向けの候補を比べる',
+                'solota-vs-rakua-mini-plus' => 'SOLOTA・ラクアmini Plusを確認する')),
+        'cleaning' => array('label' => 'ロボット掃除機',
+            'intro' => '床掃除と、掃除機の手入れ。どちらを減らしたいですか。本体が通れる場所と、置ける台の大きさから考えます。',
+            'shortcuts' => array('st1704-compact-robot-vacuum-shortlist' => '小型の候補と設置条件を比べる',
+                'roomba-mini-vs-switchbot-k11-pro' => 'Mini・K11+ Proの本体と台を確認する')),
+        'travel' => array('label' => 'スーツケース',
+            'intro' => '荷物と移動に合う一台を。容量・持ち込み条件・軽さ・開き方を、自分の旅に合わせて選びます。',
+            'shortcuts' => array('st1703-first-suitcase-comparison' => '旅の条件から候補を比べる',
+                'lightweight-carry-on-suitcase-under-3kg' => '軽さから比べる',
+                'front-open-carry-on-suitcase-with-stopper' => '前開きの違いを比べる')),
+        'preparedness' => array('label' => 'ポータブル電源',
+            'intro' => '停電時に、何を何時間使いたいですか。必要な容量と出力を分け、運搬・保管まで考えて選びます。',
+            'shortcuts' => array('st1704-portable-power-station-guide' => '使いたい機器から容量と出力を考える',
+                'st1704-anker-solix-c300-c800-c1000-differences' => 'Ankerの容量帯・世代を確認する')),
+    );
+}
+
+function kurashinoshirube_reader_journey_stage(string $id): string
+{
+    if (in_array($id, array('dishwasher-installation-measurement', 'dishwasher-water-supply-methods',
+        'st1704-portable-power-station-guide'), true)) { return 'conditions'; }
+    if (in_array($id, array('dishwasher-detergent-guide', 'dishwasher-cleaning-guide',
+        'dishwasher-running-cost'), true)) { return 'purchase'; }
+    return 'comparison';
+}
+
+/** Each eligible article appears in one shelf; hidden proposals never get links. */
+function kurashinoshirube_reader_journey_shelves(array $posts): string
+{
+    $shelves = array('conditions' => array(), 'comparison' => array(), 'purchase' => array());
+    foreach ($posts as $post) {
+        $identity = kurashinoshirube_public_article_identity((int) $post->ID);
+        if ($identity === null) { continue; }
+        $card = kurashinoshirube_reader_guide_card($post);
+        if ($card !== '') { $shelves[kurashinoshirube_reader_journey_stage($identity['article_id'])][] = '<li>' . $card . '</li>'; }
+    }
+    $html = '';
+    foreach (array('conditions' => '選び方・条件の確認', 'comparison' => '商品を比較する',
+        'purchase' => '購入前に確認する') as $stage => $label) {
+        if ($shelves[$stage] === array()) { continue; }
+        $html .= '<section class="raos-journey-shelf" aria-labelledby="journey-' . $stage . '">'
+            . '<h2 id="journey-' . $stage . '">' . $label . '</h2><ul class="raos-guide-grid">'
+            . implode('', $shelves[$stage]) . '</ul></section>';
+    }
+    return $html;
+}
+
+function kurashinoshirube_reader_journey_shortcuts(array $posts, array $labels): string
+{
+    $available = array();
+    foreach ($posts as $post) {
+        $identity = kurashinoshirube_public_article_identity((int) $post->ID);
+        if ($identity !== null) { $available[$identity['article_id']] = $post; }
+    }
+    $items = array();
+    foreach ($labels as $id => $label) {
+        if (! isset($available[$id])) { continue; }
+        $items[] = '<li><a href="' . esc_url(get_permalink($available[$id])) . '">' . esc_html($label) . ' <span aria-hidden="true">→</span></a></li>';
+    }
+    return $items === array() ? '' : '<nav class="raos-journey-shortcuts" aria-label="知りたいことから記事へ"><ul>' . implode('', $items) . '</ul></nav>';
+}
+
+function kurashinoshirube_reader_group_cards(string $kind, bool $home = false): string
 {
     $items = array();
-    foreach (kurashinoshirube_reader_hubs() as $hub) {
+    $journeys = kurashinoshirube_reader_journeys();
+    $hubs = kurashinoshirube_reader_hubs();
+    $order = $kind === 'category' ? array_keys($journeys)
+        : array('save-housework', 'small-space', 'prepare-outage', 'comfortable-travel', 'without-installation', 'easy-maintenance');
+    usort($hubs, static fn(array $a, array $b): int => (array_search($a['slug'], $order, true) === false ? 99 : array_search($a['slug'], $order, true))
+        <=> (array_search($b['slug'], $order, true) === false ? 99 : array_search($b['slug'], $order, true)));
+    foreach ($hubs as $hub) {
         if ($hub['kind'] !== $kind) { continue; }
+        if ($home && $kind === 'purpose' && ! in_array($hub['slug'], array_slice($order, 0, 4), true)) { continue; }
         $url = kurashinoshirube_reader_hub_url($hub['slug']);
         $count = count(kurashinoshirube_reader_eligible_posts($hub['article_ids']));
         if ($url === null || $count === 0) { continue; }
         $items[] = '<li><a class="raos-guide-card raos-taxonomy-card" href="' . esc_url($url) . '">'
-            . '<span class="raos-guide-card__title" role="heading" aria-level="3">' . esc_html($hub['label']) . '</span>'
-            . '<span class="raos-guide-card__excerpt">' . esc_html($hub['description']) . '</span>'
+            . '<span class="raos-guide-card__title" role="heading" aria-level="3">' . esc_html($journeys[$hub['slug']]['label'] ?? $hub['label']) . '</span>'
+            . (isset($journeys[$hub['slug']]) ? '<span class="raos-article-category">' . esc_html($hub['label']) . '</span>' : '')
+            . '<span class="raos-guide-card__excerpt">' . esc_html($journeys[$hub['slug']]['intro'] ?? $hub['description']) . '</span>'
             . '<span class="raos-guide-card__date">' . (int) $count . '記事を読む <span aria-hidden="true">→</span></span></a></li>';
     }
     return $items === array() ? '' : '<ul class="raos-guide-grid raos-taxonomy-grid">' . implode('', $items) . '</ul>';
@@ -3521,7 +3611,7 @@ function kurashinoshirube_render_reader_home($attributes, $content, $tag): strin
     $section = $attributes['section'];
     if ($section === 'actions') {
         $links = array();
-        foreach (array('purposes' => '悩みから探す', 'categories' => '商品カテゴリから探す') as $slug => $label) {
+        foreach (array('purposes' => '悩みから探す', 'categories' => '商品から探す') as $slug => $label) {
             if (kurashinoshirube_reader_hub_url($slug) !== null) {
                 $links[] = '<a class="raos-home-button" href="#' . $slug . '">' . $label . '</a>';
             }
@@ -3535,20 +3625,23 @@ function kurashinoshirube_render_reader_home($attributes, $content, $tag): strin
     }
     if (in_array($section, array('purposes', 'categories'), true)) {
         $kind = $section === 'purposes' ? 'purpose' : 'category';
-        $cards = kurashinoshirube_reader_group_cards($kind);
+        $cards = kurashinoshirube_reader_group_cards($kind, true);
         if ($cards === '' || kurashinoshirube_reader_hub_url($section) === null) { return ''; }
-        $label = $section === 'purposes' ? '悩み・目的から探す' : '商品カテゴリから探す';
+        $label = $section === 'purposes' ? '悩み・目的から探す' : '商品から探す';
+        $more = $section === 'purposes' ? '<p><a href="' . esc_url(kurashinoshirube_reader_hub_url('purposes')) . '">工事・手入れなど、ほかの目的から探す →</a></p>' : '';
         return '<section class="raos-home-section raos-reader-entry" id="' . $section . '" aria-labelledby="home-' . $section . '">'
-            . '<div class="raos-home-shell"><h2 id="home-' . $section . '">' . $label . '</h2>' . $cards . '</div></section>';
+            . '<div class="raos-home-shell"><h2 id="home-' . $section . '">' . $label . '</h2>' . $cards . $more . '</div></section>';
     }
     if ($section === 'guides') {
-        $hub = array_values(array_filter(kurashinoshirube_reader_hubs(), static fn(array $h): bool => $h['slug'] === 'guides'));
-        if ($hub === array()) { return ''; }
+        $selected = array('st1704-countertop-dishwasher-for-small-households', 'st1704-compact-robot-vacuum-shortlist',
+            'lightweight-carry-on-suitcase-under-3kg', 'st1704-portable-power-station-guide');
         $items = array();
-        foreach (kurashinoshirube_reader_eligible_posts($hub[0]['article_ids']) as $post) {
-            $items[] = '<li>' . kurashinoshirube_reader_guide_card($post) . '</li>';
+        foreach ($selected as $id) {
+            foreach (kurashinoshirube_reader_eligible_posts(array($id)) as $post) {
+                $items[] = '<li>' . kurashinoshirube_reader_guide_card($post) . '</li>';
+            }
         }
-        return $items === array() ? '' : '<section class="raos-home-section raos-reader-entry" id="first-guides" aria-labelledby="home-first-guides"><div class="raos-home-shell"><h2 id="home-first-guides">まず読むガイド</h2><p>何を測り、何を確かめるか。候補を絞る前の入口です。</p><ul class="raos-guide-grid">' . implode('', $items) . '</ul></div></section>';
+        return $items === array() ? '' : '<section class="raos-home-section raos-reader-entry" id="first-guides" aria-labelledby="home-first-guides"><div class="raos-home-shell"><h2 id="home-first-guides">いま読む比較・ガイド</h2><p>条件が分かっている方は、気になる比較へ直接進めます。</p><ul class="raos-guide-grid">' . implode('', $items) . '</ul></div></section>';
     }
     return '';
 }
@@ -3567,6 +3660,29 @@ function kurashinoshirube_render_reader_hub($attributes, $content, $tag): string
             $body = kurashinoshirube_reader_group_cards($hub['kind'] === 'categories' ? 'category' : 'purpose');
         } else {
             $posts = kurashinoshirube_reader_eligible_posts($hub['article_ids']);
+            if ($hub['kind'] === 'category') {
+                $journey = kurashinoshirube_reader_journeys()[$slug] ?? null;
+                if ($journey === null) { return ''; }
+                return '<div class="raos-reader-hub"><p class="raos-journey-intro">' . esc_html($journey['intro']) . '</p>'
+                    . kurashinoshirube_reader_journey_shortcuts($posts, $journey['shortcuts'])
+                    . '<p>知りたいところからお読みください。設置・安全・手入れの条件は、それぞれの比較記事でも確認できます。</p>'
+                    . kurashinoshirube_reader_journey_shelves($posts) . '</div>';
+            }
+            if ($hub['kind'] === 'purpose') {
+                foreach (kurashinoshirube_reader_journeys() as $category_slug => $journey) {
+                    $items = array();
+                    foreach ($posts as $post) {
+                        $category = kurashinoshirube_reader_article_category((int) $post->ID);
+                        if ($category === null || $category['url'] !== kurashinoshirube_reader_hub_url($category_slug)) { continue; }
+                        $items[] = '<li>' . kurashinoshirube_reader_guide_card($post) . '</li>';
+                    }
+                    if ($items !== array()) {
+                        $body .= '<section class="raos-journey-shelf"><h2>' . esc_html($journey['label']) . '</h2>'
+                            . '<ul class="raos-guide-grid">' . implode('', $items) . '</ul></section>';
+                    }
+                }
+                return '<div class="raos-reader-hub"><p>' . esc_html($hub['description']) . '</p>' . $body . '</div>';
+            }
             if ($hub['kind'] === 'updates') { usort($posts, static fn(WP_Post $a, WP_Post $b): int => strcmp($b->post_modified, $a->post_modified)); }
             $items = array_map(static fn(WP_Post $p): string => '<li>' . kurashinoshirube_reader_guide_card($p) . '</li>', $posts);
             if ($items !== array()) { $body = '<ul class="raos-guide-grid">' . implode('', $items) . '</ul>'; }

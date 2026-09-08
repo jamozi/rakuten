@@ -87,7 +87,8 @@ foreach (['kurashinoshirube_has_exact_keys', 'kurashinoshirube_article_bindings'
     'kurashinoshirube_local_preview_article_identity', 'kurashinoshirube_direct_article_snapshot', 'kurashinoshirube_public_article_identity',
     'kurashinoshirube_reader_hubs', 'kurashinoshirube_reader_eligible_posts', 'kurashinoshirube_reader_category_label',
     'kurashinoshirube_reader_article_category', 'kurashinoshirube_reader_hub_content', 'kurashinoshirube_reader_hub_page_head', 'kurashinoshirube_reader_hub_url',
-    'kurashinoshirube_reader_guide_card', 'kurashinoshirube_reader_group_cards',
+    'kurashinoshirube_reader_guide_card', 'kurashinoshirube_reader_journeys', 'kurashinoshirube_reader_group_cards',
+    'kurashinoshirube_reader_journey_stage', 'kurashinoshirube_reader_journey_shelves', 'kurashinoshirube_reader_journey_shortcuts',
     'kurashinoshirube_enqueue_local_running_cost', 'kurashinoshirube_verified_asset_uri',
     'kurashinoshirube_public_listing_post_is_eligible', 'kurashinoshirube_public_listing_excluded_post_ids'] as $name) {
     load_theme_function($name);
@@ -190,6 +191,15 @@ check(kurashinoshirube_reader_article_category($id)['url'] === home_url('/kitche
 $card = kurashinoshirube_reader_guide_card(get_post($id));
 check(str_contains($card, 'キッチン・家事 / 選び方ガイド') && str_contains($card, '/local-preview-test-guide-1/'), 'guide card metadata and local link');
 check(str_contains(kurashinoshirube_reader_group_cards('category'), '5記事を読む'), 'category card count');
+check(str_contains(kurashinoshirube_reader_group_cards('category'), '>食洗機</span>'), 'product name is the category card title');
+check(kurashinoshirube_reader_journey_stage('dishwasher-installation-measurement') === 'conditions', 'installation belongs to conditions');
+check(kurashinoshirube_reader_journey_stage('dishwasher-running-cost') === 'purchase', 'cost belongs to purchase checks');
+check(kurashinoshirube_reader_journey_stage('st1704-countertop-dishwasher-for-small-households') === 'comparison', 'comparison supports direct entry');
+$journey_posts = kurashinoshirube_reader_eligible_posts(array_keys($articles));
+$shelves = kurashinoshirube_reader_journey_shelves($journey_posts);
+check(substr_count($shelves, 'class="raos-guide-card"') === 5, 'every eligible post appears in exactly one shelf');
+$shortcuts = kurashinoshirube_reader_journey_shortcuts($journey_posts, ['test-guide-1' => '条件を確認する', 'unwritten-guide' => 'まだない記事']);
+check(str_contains($shortcuts, '/local-preview-test-guide-1/') && !str_contains($shortcuts, 'まだない記事'), 'shortcuts omit unavailable proposals');
 check(kurashinoshirube_public_listing_post_is_eligible($id, get_post($id)->post_name), 'search listing accepts valid guide');
 check(!kurashinoshirube_public_listing_post_is_eligible($id, 'wrong-route'), 'wrong supplied route excluded');
 
@@ -200,6 +210,7 @@ foreach (['post_content' => 'tampered', 'post_name' => 'foreign-route', 'post_ti
     check(raos_local_reader_guide_identity($id) === null, 'reject changed ' . $field);
     check(!kurashinoshirube_public_listing_post_is_eligible($id, get_post($id)->post_name), 'listing rejects changed ' . $field);
     check(kurashinoshirube_reader_guide_card(get_post($id)) === '', 'card rejects changed ' . $field);
+    check(kurashinoshirube_reader_journey_shortcuts([get_post($id)], ['test-guide-1' => '条件を確認する']) === '', 'shortcut rejects changed ' . $field);
     $GLOBALS['posts'][$id] = clone $original_post;
 }
 $GLOBALS['meta'][$id]['_raos_local_reader_guide_v1']['checked_at'] = '2000-01-01';
