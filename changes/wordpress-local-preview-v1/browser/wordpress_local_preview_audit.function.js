@@ -2045,12 +2045,11 @@
               continue;
             }
             if (target.origin === localOrigin) unique.set(target.href, {
+              hasUserInfo: Boolean(target.username || target.password),
               hash: target.hash,
               href: target.href,
-              password: target.password,
               pathname: target.pathname,
               search: target.search,
-              username: target.username,
             });
           }
           return [...unique.values()];
@@ -2059,7 +2058,7 @@
         if (current === null) localLinkFailure = true;
         for (const link of localLinks) {
           const parsedLink = parseLocalUrl(link.href);
-          if (parsedLink === null || link.username || link.password) {
+          if (parsedLink === null || link.hasUserInfo) {
             localLinkFailure = true;
             continue;
           }
