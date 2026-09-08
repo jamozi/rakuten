@@ -133,6 +133,13 @@ def test_fixed_template_baseline_parses_saved_home_without_requiring_it_in_outpu
     assert verify(world, home_markup=saved_home())["state"] == runtime.DNS_TRANSITION_STATE
 
 
+@pytest.mark.parametrize("markup", ["", "<p>Saved home body</p>"])
+def test_fixed_template_baseline_accepts_home_without_a_saved_heading(world, markup):
+    assert verify(world, home_markup=markup)["state"] == runtime.DNS_TRANSITION_STATE
+    with pytest.raises(runtime.seo.AuditError):
+        audit._home_projection(markup)
+
+
 def test_post_content_home_without_preserved_webp_style_remains_supported(world):
     markup = '<div id="ks-magazine"><h1>Home</h1></div>'
     world.after["templates/front-page.html"] = POST_CONTENT.encode()

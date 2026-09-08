@@ -454,7 +454,10 @@ class _HomeBodyMarkup(_Markup):
 
 
 def _home_projection(markup: str) -> list[list[Any]]:
-    return _parsed_home_body(markup).tokens
+    parser = _parsed_home_body(markup)
+    if sum(element.tag == "h1" for element in parser.elements) != 1:
+        fail("PUBLIC_HOME_BODY_INVALID")
+    return parser.tokens
 
 
 def _parsed_home_body(markup: str) -> _HomeBodyMarkup:
@@ -462,7 +465,7 @@ def _parsed_home_body(markup: str) -> _HomeBodyMarkup:
     parser.feed(markup)
     parser.close()
     ids = [element.attrs["id"] for element in parser.elements if element.attrs.get("id")]
-    if parser.stack or len(ids) != len(set(ids)) or sum(element.tag == "h1" for element in parser.elements) != 1:
+    if parser.stack or len(ids) != len(set(ids)):
         fail("PUBLIC_HOME_BODY_INVALID")
     return parser
 
