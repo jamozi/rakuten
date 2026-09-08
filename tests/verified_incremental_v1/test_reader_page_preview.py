@@ -181,9 +181,10 @@ def test_v1_default_serialization_is_unchanged():
         digest(result.seed_metadata)
         == "ca49feeaf88f89a67899e7c518422a73c27ce8af57ad01d910a85693e2efa09b"
     )
+    # The binding includes the current exact legacy-media contract digest.
     assert (
         digest(canonical(result.binding))
-        == "a8e5f61a7704a0ebad51dcd179b297a53b88969f81542deec6a0931c8e53c97b"
+        == "82302b8ce93c75b8d0fd80432fe25b6f827b9fdc763c4544645c1f7562477d3a"
     )
     assert build_mixed_preview(**data, page_overrides={}) == result
 
