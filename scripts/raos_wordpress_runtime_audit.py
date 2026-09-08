@@ -1452,7 +1452,13 @@ def verify_before_write(
     runtime_transition: Mapping[str, Any] | None = None,
     reader_measurement: ReaderMeasurementRuntime | None = None,
 ) -> dict[str, Any]:
-    from raos_wordpress_incremental_seo_audit import _ObservedTransport
+    from raos_wordpress_incremental_seo_audit import (
+        _ObservedTransport,
+        _preserved_home_style,
+        captured_home_theme_image_urls,
+        home_image_urls,
+        home_uses_post_content,
+    )
     import raos_wordpress_baseline_media as baseline_media
 
     if current_tree not in {baseline_tree, candidate_tree}:
@@ -1464,16 +1470,32 @@ def verify_before_write(
         THEME_PREFIX + path for path in files if path.startswith("assets/images/")
     }
     document_images: dict[str, set[str]] = {}
+    preserved_home_styles: dict[str, str] = {}
+    home_post_content = home_uses_post_content(files)
     for document in published_documents:
+        is_home = document["slug"] == "home"
+        if is_home and document["post_type"] != "page":
+            reader_fail()
         url = (
             ORIGIN
             + "/"
-            + (document["slug"] + "/" if document["slug"] != "home" else "")
+            + (document["slug"] + "/" if not is_home else "")
         )
-        document_images[url] = baseline_media.image_urls(document["block_markup"])
+        if is_home:
+            document_images[url] = home_image_urls(document["block_markup"])
+            if home_post_content:
+                style = _preserved_home_style(document["block_markup"])
+                if style is not None:
+                    preserved_home_styles[url] = style
+        else:
+            document_images[url] = baseline_media.image_urls(document["block_markup"])
         if current_tree == baseline_tree and current_tree != candidate_tree:
             document_images[url].update(
-                captured_theme_image_urls(document["block_markup"])
+                (
+                    captured_home_theme_image_urls(document["block_markup"])
+                    if is_home
+                    else captured_theme_image_urls(document["block_markup"])
+                )
             )
     contract = seo.load_contract()
     inventory = {item.url: item for item in contract.items}
@@ -1520,6 +1542,11 @@ def verify_before_write(
             ),
             expected_dns_hints=1 if transitional else 0,
             reader_measurement=reader_measurement,
+            **(
+                {"preserved_home_style": preserved_home_styles[item.url]}
+                if item.url in preserved_home_styles
+                else {}
+            ),
         )
         pages[item.url] = {"html_sha256": response.body_sha256, "resources": observed}
         if transitional:

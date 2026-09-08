@@ -454,13 +454,20 @@ class _HomeBodyMarkup(_Markup):
 
 
 def _home_projection(markup: str) -> list[list[Any]]:
+    parser = _parsed_home_body(markup)
+    if sum(element.tag == "h1" for element in parser.elements) != 1:
+        fail("PUBLIC_HOME_BODY_INVALID")
+    return parser.tokens
+
+
+def _parsed_home_body(markup: str) -> _HomeBodyMarkup:
     parser = _HomeBodyMarkup(markup)
     parser.feed(markup)
     parser.close()
     ids = [element.attrs["id"] for element in parser.elements if element.attrs.get("id")]
-    if parser.stack or len(ids) != len(set(ids)) or sum(element.tag == "h1" for element in parser.elements) != 1:
+    if parser.stack or len(ids) != len(set(ids)):
         fail("PUBLIC_HOME_BODY_INVALID")
-    return parser.tokens
+    return parser
 
 
 def verify_rendered_home_body(expected: str, actual_page: str) -> str:
@@ -472,12 +479,53 @@ def verify_rendered_home_body(expected: str, actual_page: str) -> str:
 
 
 def _preserved_home_style(markup: str) -> str | None:
-    parser = _HomeBodyMarkup(markup)
-    parser.feed(markup)
-    parser.close()
+    parser = _parsed_home_body(markup)
     return next((element.attrs["style"] for element in parser.elements
                  if element.tag == "div" and element.attrs.get("id") == "ks-magazine"
                  and "data:image/webp;base64," in (element.attrs.get("style") or "")), None)
+
+
+def home_image_urls(markup: str) -> set[str]:
+    """Extract only the existing closed home body's approved remote images."""
+    parser = _parsed_home_body(markup)
+    style = _preserved_home_style(markup)
+    if style is not None:
+        runtime.preserved_webp_style(style)
+    urls = set()
+    for element in parser.elements:
+        if element.tag != "img":
+            continue
+        value = element.attrs.get("src")
+        if not isinstance(value, str) or element.attrs.get("srcset"):
+            fail("PUBLIC_HOME_IMAGE_MARKUP_INVALID")
+        if value.startswith("https://"):
+            baseline_media.validate_url(value)
+            urls.add(value)
+        elif value.startswith("http:"):
+            fail("PUBLIC_HOME_IMAGE_URL_NOT_SUPPORTED")
+    return urls
+
+
+def captured_home_theme_image_urls(markup: str) -> frozenset[str]:
+    """Retain only exact old child-theme image references for baseline replay."""
+    parser = _parsed_home_body(markup)
+    return frozenset(
+        runtime.ORIGIN + source
+        for element in parser.elements
+        if element.tag == "img"
+        and type(source := element.attrs.get("src")) is str
+        and re.fullmatch(
+            r"/wp-content/themes/kurashinoshirube-child/assets/images/[a-z0-9-]+\.(?:png|webp|svg)",
+            source,
+        )
+        is not None
+    )
+
+
+def home_uses_post_content(files: Mapping[str, bytes]) -> bool:
+    return files.get("templates/front-page.html", b"").count(
+        b'<!-- wp:post-content {"layout":{"type":"default"}} /-->'
+    ) == 1
 
 
 class _PageAssets(HTMLParser):
@@ -814,10 +862,7 @@ def _reader_seo_projection(files: Mapping[str, bytes], expected_tree: str) -> di
         "schema": "RAOS_WORDPRESS_READER_SEO_METADATA_V1",
         "theme_sha256": expected_tree,
         "home_content_mode": (
-            "POST_CONTENT"
-            if files.get("templates/front-page.html", b"").count(
-                b'<!-- wp:post-content {"layout":{"type":"default"}} /-->'
-            ) == 1 else "TEMPLATE"
+            "POST_CONTENT" if home_uses_post_content(files) else "TEMPLATE"
         ),
         "navigation_sha256": digest(raw),
         "registry_sha256": digest(manifest_canonical(registry)),
