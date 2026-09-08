@@ -26,7 +26,8 @@ def test_only_confirmed_rollbacks_are_terminalized() -> None:
 
     content = method("apply_content", "complete_recovered_content")
     assert "begin_content_transaction" in content
-    assert content.count("rollback_content_transaction") == 3
+    assert content.count("rollback_content_transaction") == 4
+    assert content.index("remember_applied_content") < content.index("query('COMMIT')")
     assert "recoverable_from_error($receipt)" in content
     assert "raos_codex_content_commit_indeterminate" in content
 
@@ -421,7 +422,8 @@ def test_code_recovery_rechecks_full_tree_around_receipt_storage() -> None:
 
     apply = method("apply_proposal", "recover_operation")
     recover = method("recover_operation", "apply_content")
-    assert apply.count("self::finalize_applied_receipt") == 2
+    assert apply.count("self::finalize_applied_receipt") == 3
+    assert "isset($claimed['payload']['authorization_profile'])" in apply
     assert recover.count("self::finalize_applied_receipt") == 1
 
     failed_transition = method("mark_failed_and_finalize", "finalize_failed_operation")

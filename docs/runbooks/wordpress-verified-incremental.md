@@ -1,5 +1,9 @@
 # 既存記事の段階公開
 
+> この手順は既存の`verified-incremental`候補の互換・再開用です。
+> 新しい日常更新は[簡易公開](../../changes/wordpress-direct-publish-v1/README.md)を使います。
+> この文書の独立2巡監査・wp-admin別人承認・広範囲の表示検査を簡易公開に適用しません。
+
 `verified-incremental` は既存記事の一部と、明示した共通変更だけを扱う公開方式です。
 通常 API リンクの `standard-api` を指定し、公開候補の適用時は計測を OFF のままにします。
 読者行動3項目の専用候補・確認経路は末尾の「読者体験 V2」に従います。旧8イベントとGA4はOFFを維持します。

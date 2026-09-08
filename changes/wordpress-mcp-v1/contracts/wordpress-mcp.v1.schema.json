@@ -4,6 +4,8 @@
   "title": "RAOS browserless WordPress MCP contracts",
   "type": "object",
   "oneOf": [
+    { "$ref": "#/$defs/OwnerDirectBatchResultV1" },
+    { "$ref": "#/$defs/OwnerDirectDraftV1" },
     { "$ref": "#/$defs/ContentDocumentV1" },
     { "$ref": "#/$defs/ContentReleaseProposalV1" },
     { "$ref": "#/$defs/PublicationBatchV1" },
@@ -14,6 +16,54 @@
     { "$ref": "#/$defs/ReleaseWaitApplyReceiptV1" }
   ],
   "$defs": {
+    "OwnerDirectDraftV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "profile", "article_key", "id", "document"],
+      "properties": {
+        "schema": { "const": "RAOSOwnerDirectDraftV1" },
+        "profile": { "const": "owner-direct-v1" },
+        "article_key": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 120 },
+        "id": { "type": "integer", "minimum": 1 },
+        "document": { "$ref": "#/$defs/ContentDocumentV1" }
+      }
+    },
+    "OwnerDirectBatchResultV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "profile", "batch_token", "batch_manifest_sha256", "action", "state", "members"],
+      "properties": {
+        "schema": { "const": "RAOSOwnerDirectBatchResultV1" },
+        "profile": { "const": "owner-direct-v1" },
+        "batch_token": { "$ref": "#/$defs/Sha256" },
+        "batch_manifest_sha256": { "$ref": "#/$defs/Sha256" },
+        "action": { "enum": ["finalize", "rollback"] },
+        "state": { "enum": ["FINALIZED", "ROLLED_BACK", "PARTIAL_CONFLICT"] },
+        "members": {
+          "type": "array", "minItems": 1, "maxItems": 20,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["proposal_id", "state", "result_code"],
+            "properties": {
+              "proposal_id": { "$ref": "#/$defs/Sha256" },
+              "state": { "enum": ["FINALIZED", "ROLLED_BACK", "UNCHANGED", "CONFLICT"] },
+              "result_code": { "type": "string", "minLength": 1, "maxLength": 128 }
+            }
+          }
+        }
+      }
+    },
+    "OwnerDirectAuthorizationProfileV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "profile_sha256", "publisher_user_id", "article_key"],
+      "properties": {
+        "profile": { "const": "owner-direct-v1" },
+        "profile_sha256": { "$ref": "#/$defs/Sha256" },
+        "publisher_user_id": { "type": "integer", "minimum": 1 },
+        "article_key": { "type": ["string", "null"], "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 120 }
+      }
+    },
     "Sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
@@ -114,6 +164,7 @@
         "before_sha256": { "$ref": "#/$defs/Sha256" },
         "after_sha256": { "$ref": "#/$defs/Sha256" },
         "publication_manifest_sha256": { "$ref": "#/$defs/Sha256" },
+        "authorization_profile": { "$ref": "#/$defs/OwnerDirectAuthorizationProfileV1" },
         "idempotency_key": { "$ref": "#/$defs/Sha256" }
       }
     },

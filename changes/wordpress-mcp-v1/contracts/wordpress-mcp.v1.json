@@ -1,6 +1,6 @@
 {
   "schema": "RAOS_WORDPRESS_MCP_CONTRACT_V1",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "site_origin": "https://kurashinoshirube.com",
   "wordpress_version": "7.1.x",
   "mcp_adapter": {
@@ -41,8 +41,34 @@
     "theme-propose-release",
     "plugin-propose-change",
     "plugin-apply-change",
-    "operation-recover"
+    "operation-recover",
+    "owner-direct-status",
+    "owner-direct-document",
+    "owner-direct-ensure-draft",
+    "owner-direct-content-propose",
+    "owner-direct-theme-propose-candidate",
+    "owner-direct-authorize",
+    "owner-direct-operation-status",
+    "owner-direct-apply",
+    "owner-direct-finish"
   ],
+  "owner_direct": {
+    "profile": "owner-direct-v1",
+    "default_enabled": false,
+    "namespace": "raos-codex-owner-direct/v1",
+    "publisher_role": "raos_codex_owner_direct_publisher",
+    "application_password_name": "RAOS Codex Owner Direct Publisher",
+    "credential_store": ".secrets/wordpress-mcp/owner-direct-application-password.v1.json",
+    "administrator_setup_required": true,
+    "new_post_type": "post",
+    "theme_slug": "kurashinoshirube-child",
+    "legacy_proposal_promotion": false,
+    "lease_ttl_seconds": 900,
+    "lease_single_use": true,
+    "batch_compensation": "exact_applied_revision_and_theme_tree_only",
+    "concurrent_drift_result": "PARTIAL_CONFLICT",
+    "generic_cms_access": false
+  },
   "operation_status": {
     "command": "operation-status",
     "input_fields": ["operation_id"],

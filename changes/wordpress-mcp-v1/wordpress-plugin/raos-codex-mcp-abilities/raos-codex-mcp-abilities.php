@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RAOS Codex MCP Abilities
  * Description: Browser-independent, approval-bound content and deployment abilities for kurashinoshirube.com.
- * Version: 1.3.2
+ * Version: 1.4.0
  * Requires at least: 7.1
  * Requires PHP: 8.1
  * Author: RAOS
@@ -14,20 +14,21 @@
 
 defined('ABSPATH') || exit;
 
-define('RAOS_CODEX_MCP_VERSION', '1.3.2');
+define('RAOS_CODEX_MCP_VERSION', '1.4.0');
 define(
     'RAOS_CODEX_MCP_RUNTIME_REVISION',
-    'b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc'
+    '3959d130244e13994c252522bbbc4ae245d70c517817c7e6e64835c621659a19'
 );
 define('RAOS_CODEX_MCP_FILE', __FILE__);
 
 require_once __DIR__ . '/includes/class-raos-codex-mcp-store.php';
 require_once __DIR__ . '/includes/class-raos-codex-mcp-content.php';
 require_once __DIR__ . '/includes/class-raos-codex-mcp-deployment.php';
+require_once __DIR__ . '/includes/class-raos-codex-mcp-owner-direct.php';
 
 final class RAOS_Codex_MCP_Abilities
 {
-    const RUNTIME_REVISION = 'b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc';
+    const RUNTIME_REVISION = '3959d130244e13994c252522bbbc4ae245d70c517817c7e6e64835c621659a19';
     const ORIGIN = 'https://kurashinoshirube.com';
     const EDITOR_ROLE = 'raos_codex_mcp_editor';
     const OPERATOR_ROLE = 'raos_codex_deployment_operator';
@@ -42,6 +43,7 @@ final class RAOS_Codex_MCP_Abilities
 
     private $content;
     private $deployment;
+    private $owner_direct;
 
     public static function instance()
     {
@@ -55,12 +57,15 @@ final class RAOS_Codex_MCP_Abilities
     {
         $this->content = new RAOS_Codex_MCP_Content($this);
         $this->deployment = new RAOS_Codex_MCP_Deployment($this);
+        $this->owner_direct = new RAOS_Codex_MCP_Owner_Direct($this);
 
         add_filter('mcp_adapter_create_default_server', '__return_false', PHP_INT_MAX);
         add_action('wp_abilities_api_categories_init', array($this, 'register_category'));
         add_action('wp_abilities_api_init', array($this, 'register_abilities'));
         add_action('mcp_adapter_init', array($this, 'register_mcp_server'));
         add_action('rest_api_init', array($this->deployment, 'register_routes'));
+        add_action('rest_api_init', array($this->owner_direct, 'register_routes'));
+        add_action('admin_post_raos_codex_owner_direct_setup', array($this->owner_direct, 'handle_setup'));
         add_action('init', array($this, 'maybe_upgrade'), 0);
         add_action(
             'wp_authenticate_application_password_errors',
@@ -101,6 +106,7 @@ final class RAOS_Codex_MCP_Abilities
         }
         self::install_role(self::EDITOR_ROLE, self::editor_capabilities());
         self::install_role(self::OPERATOR_ROLE, self::operator_capabilities());
+        self::install_role(RAOS_Codex_MCP_Owner_Direct::PUBLISHER_ROLE, RAOS_Codex_MCP_Owner_Direct::capabilities());
         RAOS_Codex_MCP_Store::install();
     }
 
@@ -126,6 +132,7 @@ final class RAOS_Codex_MCP_Abilities
             'RAOS_Codex_MCP_Store',
             'RAOS_Codex_MCP_Content',
             'RAOS_Codex_MCP_Deployment',
+            'RAOS_Codex_MCP_Owner_Direct',
         );
         foreach ($critical_classes as $class_name) {
             $constant_name = $class_name . '::RUNTIME_REVISION';
@@ -168,6 +175,10 @@ final class RAOS_Codex_MCP_Abilities
             return;
         }
         RAOS_Codex_MCP_Store::maybe_upgrade();
+        // Install only the new empty role; never grant it to an existing user.
+        if (! get_role(RAOS_Codex_MCP_Owner_Direct::PUBLISHER_ROLE)) {
+            self::install_role(RAOS_Codex_MCP_Owner_Direct::PUBLISHER_ROLE, RAOS_Codex_MCP_Owner_Direct::capabilities());
+        }
     }
 
     private static function install_role($name, $capabilities)
@@ -286,6 +297,10 @@ final class RAOS_Codex_MCP_Abilities
             $role = self::OPERATOR_ROLE;
             $expected_name = self::OPERATOR_APP_NAME;
             $binding_name = self::OPERATOR_BINDING;
+        } elseif ($this->has_role_marker($user, RAOS_Codex_MCP_Owner_Direct::PUBLISHER_ROLE)) {
+            $role = RAOS_Codex_MCP_Owner_Direct::PUBLISHER_ROLE;
+            $expected_name = RAOS_Codex_MCP_Owner_Direct::APP_NAME;
+            $binding_name = RAOS_Codex_MCP_Owner_Direct::BINDING_OPTION;
         } else {
             return;
         }
@@ -305,7 +320,7 @@ final class RAOS_Codex_MCP_Abilities
             return;
         }
         $bound = get_option($binding_name, null);
-        if (is_null($bound)) {
+        if (is_null($bound) && RAOS_Codex_MCP_Owner_Direct::PUBLISHER_ROLE !== $role) {
             add_option($binding_name, (string) $user->ID, '', false);
             $bound = get_option($binding_name, null);
         }
@@ -351,9 +366,20 @@ final class RAOS_Codex_MCP_Abilities
             $allowed = '/raos-codex-mcp/v1/editor' === $request->get_route()
                 && $callback[0] instanceof \WP\MCP\Transport\HttpTransport
                 && 'handle_request' === $callback[1];
+        } elseif (RAOS_Codex_MCP_Owner_Direct::PUBLISHER_ROLE === self::$application_password_role) {
+            $allowed = $callback[0] === $this->owner_direct
+                && $this->allowed_owner_direct_handler($callback[1], $request);
+            if (! $allowed && $callback[0] === $this->deployment
+                && $this->allowed_operator_handler($callback[1], $request)
+                && ! in_array($callback[1], array('status', 'create_proposal'), true)) {
+                $allowed = $this->owner_direct_deployment_scope($request);
+            }
         } else {
             $allowed = $callback[0] === $this->deployment
                 && $this->allowed_operator_handler($callback[1], $request);
+            if ($allowed && ! in_array($callback[1], array('status', 'create_proposal'), true)) {
+                $allowed = $this->owner_direct_deployment_scope($request, false);
+            }
         }
         return $allowed ? $response : self::error('raos_codex_rest_scope_forbidden', 403);
     }
@@ -391,6 +417,62 @@ final class RAOS_Codex_MCP_Abilities
         return false;
     }
 
+    private function allowed_owner_direct_handler($method, $request)
+    {
+        $routes = array('status' => array('GET', '/status'), 'ensure_draft' => array('POST', '/ensure-draft'),
+            'content_proposal' => array('POST', '/content-proposals'), 'theme_proposal' => array('POST', '/theme-proposals'),
+            'authorize' => array('POST', '/authorize'));
+        if ('document' === $method) {
+            return 'GET' === $request->get_method()
+                && 1 === preg_match('#\A/raos-codex-owner-direct/v1/documents/[1-9][0-9]*\z#D', $request->get_route());
+        }
+        if ('finish' === $method) {
+            return 'POST' === $request->get_method()
+                && 1 === preg_match('#\A/raos-codex-owner-direct/v1/batches/[0-9a-f]{64}/finish\z#D', $request->get_route());
+        }
+        return isset($routes[$method]) && $routes[$method][0] === $request->get_method()
+            && '/raos-codex-owner-direct/v1' . $routes[$method][1] === $request->get_route();
+    }
+
+    private function owner_direct_deployment_scope($request, $direct_required = true)
+    {
+        $ids = array();
+        if (isset($request['batch_token'])) {
+            $batch = RAOS_Codex_MCP_Store::get_publication_batch($request['batch_token']);
+            if (is_wp_error($batch)) { return false; }
+            $ids = $batch['proposal_ids'];
+        } elseif (isset($request['proposal_id'])) {
+            $ids = array($request['proposal_id']);
+        } elseif (isset($request['operation_id'])) {
+            $ids = array($request['operation_id']);
+        }
+        if (empty($ids)) { return false; }
+        foreach ($ids as $id) {
+            $row = RAOS_Codex_MCP_Store::get($id);
+            if (is_wp_error($row)) { return false; }
+            if ($direct_required) {
+                if ((int) $row['created_by'] !== get_current_user_id()
+                    || is_wp_error(RAOS_Codex_MCP_Owner_Direct::validate_binding($row))) { return false; }
+            } elseif (RAOS_Codex_MCP_Owner_Direct::is_direct($row)) { return false; }
+        }
+        return true;
+    }
+
+    public static function human_admin_session()
+    {
+        return 0 === self::$application_password_user_id && is_user_logged_in()
+            && current_user_can('manage_options') && self::runtime_origin_is_exact();
+    }
+
+    public function owner_direct_permission()
+    {
+        $profile = RAOS_Codex_MCP_Owner_Direct::profile();
+        return self::runtime_identity_is_exact()
+            && $this->authenticated_for_role(RAOS_Codex_MCP_Owner_Direct::PUBLISHER_ROLE)
+            && current_user_can('raos_codex_owner_direct_publish')
+            && is_array($profile) && $profile['publisher_user_id'] === get_current_user_id();
+    }
+
     public function transport_permission($request = null)
     {
         return $request instanceof WP_REST_Request
@@ -410,9 +492,9 @@ final class RAOS_Codex_MCP_Abilities
 
     public function operator_rest_permission()
     {
-        return self::runtime_identity_is_exact()
+        return $this->owner_direct_permission() || (self::runtime_identity_is_exact()
             && $this->authenticated_for_role(self::OPERATOR_ROLE)
-            && current_user_can('raos_codex_deploy_access');
+            && current_user_can('raos_codex_deploy_access'));
     }
 
     private function authenticated_for_role($role)
@@ -453,7 +535,8 @@ final class RAOS_Codex_MCP_Abilities
         }
         $expected = self::EDITOR_ROLE === $role_name
             ? self::editor_capabilities()
-            : self::operator_capabilities();
+            : (RAOS_Codex_MCP_Owner_Direct::PUBLISHER_ROLE === $role_name
+                ? RAOS_Codex_MCP_Owner_Direct::capabilities() : self::operator_capabilities());
         ksort($expected, SORT_STRING);
         $actual = $role->capabilities;
         ksort($actual, SORT_STRING);
@@ -912,6 +995,7 @@ final class RAOS_Codex_MCP_Abilities
         $rows = RAOS_Codex_MCP_Store::pending_for_admin(50);
         $batches = RAOS_Codex_MCP_Store::pending_publication_batches_for_admin(20);
         echo '<div class="wrap"><h1>' . esc_html__('RAOS Codex proposals', 'raos-codex-mcp') . '</h1>';
+        if ($this->owner_direct instanceof RAOS_Codex_MCP_Owner_Direct) { $this->owner_direct->render_setup(); }
         echo '<p>' . esc_html__('Review the complete before/after hashes and payload. Approval issues one proposal-bound, single-use authorization; it never applies the change. The bounded operator must still pass If-Match, idempotency, TTL, the global kill switch, drift, backup, and readback checks.', 'raos-codex-mcp') . '</p>';
         if (isset($_GET['approved']) && '1' === sanitize_text_field(wp_unslash($_GET['approved']))) {
             echo '<div class="notice notice-success inline"><p><strong>'

@@ -57,6 +57,7 @@ PHP_MOUNTS = (
     "changes/editorial-measurement-v1/wordpress-plugin",
     "changes/st-1704/publication-operator-v2/wordpress-plugin",
     "changes/wordpress-mcp-v1/wordpress-plugin",
+    "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
     "changes/raos-v2/phase-3/wordpress",
     "changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json",
 )

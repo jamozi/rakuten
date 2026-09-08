@@ -23,7 +23,7 @@ import時の未実装statusと旧Codex手順は当時の記録です。現在の
 | v1のProduct/Security原則 | [integration design](canonical/01_integration/RAOS_07_integration_design_v1.0.md) | 同package内の領域設計・security controls |
 | v2の採用・意思決定支援 | [v2](../changes/raos-v2/product-spec.v2.yaml) | product-spec.v2.yaml、decision_support_v2、`tests/raos_v2/` |
 | 記事・Evidence・日本語・SEO/CRO | [editorial review Skill](../.agents/skills/raos-editorial-review/SKILL.md) | 現行portfolio、source locators、local表示検査 |
-| WordPressの準備・再開・承認 | [publication runbook](runbooks/wordpress-verified-incremental.md) | [workflow Skill](../.agents/skills/raos-wordpress-workflow/SKILL.md)、既存Make入口 |
+| WordPressの日常作成・公開 | [簡易公開](../changes/wordpress-direct-publish-v1/README.md) | [workflow Skill](../.agents/skills/raos-wordpress-workflow/SKILL.md)、既存Make入口。旧候補だけ[互換runbook](runbooks/wordpress-verified-incremental.md) |
 | ASP追加・取得・送信先制限 | [affiliate ingestion](affiliate-network-ingestion.md) | `tools/affiliate_ingestion/`、`tests/test_affiliate_ingestion.py` |
 | 実装status・外部未実行項目 | [status v2](../changes/status/README.md) | `status.v2.yaml`、GitHubの現行Issue/PR |
 | 開発・CI・生成元 | [developer guide](../README.md) | `raos_build.py`、`manifest.v2.json`、Final Integration |
