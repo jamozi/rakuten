@@ -1442,6 +1442,44 @@ def test_php_seed_binds_local_route_aliases_to_saved_metadata(
         assert result["error"] == "RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID"
 
 
+@pytest.mark.parametrize(
+    "case,expected_valid",
+    [
+        ("legacy_reader", True),
+        ("reader_top_only", False),
+        ("reader_scope_only", False),
+        ("theme_only_legacy", False),
+    ],
+)
+def test_php_seed_preserves_only_the_complete_pre_alias_reader_shape(
+    php_fixture_runner, case, expected_valid
+):
+    payload = (
+        theme_only_php_payload()
+        if case == "theme_only_legacy"
+        else php_payload(published=True)
+    )
+    if case in {"legacy_reader", "reader_scope_only", "theme_only_legacy"}:
+        del payload["binding"]["local_route_aliases"]
+    if case in {"legacy_reader", "reader_top_only", "theme_only_legacy"}:
+        del payload["binding"]["incremental_scope"]["local_route_aliases"]
+
+    result = php_fixture_runner(payload)
+
+    assert result["valid"] is expected_valid, result
+    if expected_valid:
+        assert result["aliases"] == []
+        assert result["writes"]
+    else:
+        assert result["error"] == "RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID"
+
+
+def test_seed_deletes_alias_state_when_the_legacy_reader_shape_is_used():
+    source = (ROOT / "changes/wordpress-local-preview-v1/seed.php").read_text()
+    assert "if ($local_route_aliases === array()) {" in source
+    assert "delete_option('raos_local_preview_route_aliases_v1');" in source
+
+
 def test_php_seed_reuses_saved_home_for_shared_theme_with_article_target(
     php_fixture_runner,
 ):

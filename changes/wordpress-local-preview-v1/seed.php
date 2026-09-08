@@ -69,6 +69,22 @@ function raos_local_preview_route_aliases(
     if ($binding === null || $metadata === null) {
         return array();
     }
+    $scope = $binding['incremental_scope'] ?? null;
+    if (! is_array($scope)) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
+    }
+    $binding_has_aliases = array_key_exists('local_route_aliases', $binding);
+    $scope_has_aliases = array_key_exists('local_route_aliases', $scope);
+    if ($binding_has_aliases !== $scope_has_aliases) {
+        WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
+    }
+    if (! $binding_has_aliases) {
+        if (($binding['theme_only_candidate'] ?? false) === true
+            || ($scope['theme_only_candidate'] ?? false) === true) {
+            WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
+        }
+        return array();
+    }
     $documents = $metadata['documents'] ?? null;
     if (! is_array($documents)) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID');
@@ -1148,13 +1164,17 @@ if ($mixed_binding !== null) {
     if (count($ordered_route_aliases) !== count($local_route_alias_targets)) {
         WP_CLI::error('RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_SEED_INVALID');
     }
-    update_option('raos_local_preview_route_aliases_v1', array(
-        'schema' => 'RAOS_WORDPRESS_LOCAL_ROUTE_ALIAS_STATE_V1',
-        'publication_profile' => 'verified-incremental',
-        'publication_authority' => false,
-        'preparation_binding_sha256' => hash('sha256', file_get_contents($mixed_binding_path)),
-        'routes' => $ordered_route_aliases,
-    ), false);
+    if ($local_route_aliases === array()) {
+        delete_option('raos_local_preview_route_aliases_v1');
+    } else {
+        update_option('raos_local_preview_route_aliases_v1', array(
+            'schema' => 'RAOS_WORDPRESS_LOCAL_ROUTE_ALIAS_STATE_V1',
+            'publication_profile' => 'verified-incremental',
+            'publication_authority' => false,
+            'preparation_binding_sha256' => hash('sha256', file_get_contents($mixed_binding_path)),
+            'routes' => $ordered_route_aliases,
+        ), false);
+    }
     ksort($mixed_policy_heads);
     update_option('raos_mixed_preview_policy_heads_v1', array(
         'schema' => 'RAOS_WORDPRESS_MIXED_PREVIEW_POLICY_HEADS_V1',
