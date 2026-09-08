@@ -167,8 +167,8 @@
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/wordpress_local_preview_audit.function.js",
-      "sha256": "3376105cbac460fb0b43703c54949e7204edee7328ca2673a4cc10da3c41b708",
-      "size": 132289
+      "sha256": "dc7fb572fb9b4550545ac297bc431f126a76ee17387fd20c06e0620632a96fc1",
+      "size": 132348
     },
     {
       "path": "changes/wordpress-local-preview-v1/compose.yaml",
@@ -347,7 +347,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "d7e121b146331c00088a959f5f6a9589f95d3b33869ac635075e09b971b0234d",
+      "sha256": "ea443a662465aa45860441042afc83271c9559e34e2a5f3f3db1e9f32860663c",
       "size": 54277
     },
     {

@@ -2045,6 +2045,7 @@
               continue;
             }
             if (target.origin === localOrigin) unique.set(target.href, {
+              hasPageId: target.searchParams.has('page_id'),
               hasUserInfo: Boolean(target.username || target.password),
               hash: target.hash,
               href: target.href,
@@ -2076,9 +2077,9 @@
             : null;
           const aliasPath = surface.kind === 'home'
             ? [...localRouteAliases.values()].find((row) => {
-              const source = new URL(row.source_path, origin);
-              return source.pathname === link.pathname &&
-                (row.kind === 'post_slug' || new URLSearchParams(link.search).has('page_id'));
+              const source = parseLocalUrl(`${origin}${row.source_path}`);
+              return source !== null && source.pathname === link.pathname &&
+                (row.kind === 'post_slug' || link.hasPageId);
             })
             : null;
           if ((routeAlias && link.hash) || (!routeAlias && aliasPath)) {

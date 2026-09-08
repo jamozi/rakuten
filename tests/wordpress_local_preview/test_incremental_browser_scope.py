@@ -175,6 +175,61 @@ try {
     return json.loads(result.stdout)
 
 
+@pytest.mark.parametrize(
+    ("kind", "pathname", "has_page_id", "expected"),
+    [
+        ("home", "/", True, True),
+        ("home", "/", False, False),
+        ("home", "/saved-post/", False, True),
+        ("home", "/saved-post/", True, True),
+        ("home", "/unknown/", True, False),
+        ("home", "/unknown/", False, False),
+        ("article", "/", True, False),
+        ("article", "/saved-post/", False, False),
+    ],
+)
+def test_alias_path_lookup_runs_without_node_url_globals(
+    kind: str, pathname: str, has_page_id: bool, expected: bool
+) -> None:
+    """The Playwright CLI sandbox omits URL outside page.evaluate."""
+    node = shutil.which("node")
+    assert node is not None
+    result = subprocess.run(
+        [
+            node,
+            "-e",
+            """
+const fs = require('fs');
+const vm = require('vm');
+const source = fs.readFileSync(process.argv[1], 'utf8');
+const input = JSON.parse(fs.readFileSync(0, 'utf8'));
+const parser = source.slice(source.indexOf('  const parseLocalUrl ='),
+  source.indexOf('  const runtimeErrors ='));
+const lookup = source.slice(source.indexOf('          const aliasPath ='),
+  source.indexOf('          if ((routeAlias && link.hash)'));
+const matched = vm.runInNewContext(parser + lookup + '; Boolean(aliasPath)', {
+  origin: 'http://127.0.0.1:28952',
+  surface: {kind: input.kind},
+  link: {pathname: input.pathname, hasPageId: input.has_page_id},
+  localRouteAliases: new Map([
+    ['/?page_id=20', {kind: 'page_id', source_path: '/?page_id=20'}],
+    ['/saved-post/', {kind: 'post_slug', source_path: '/saved-post/'}],
+  ]),
+});
+process.stdout.write(JSON.stringify(matched));
+""",
+            str(AUDIT),
+        ],
+        input=json.dumps(
+            {"kind": kind, "pathname": pathname, "has_page_id": has_page_id}
+        ),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert json.loads(result.stdout) is expected
+
+
 def test_incremental_exact_scope_accepts_two_positions_and_single_image() -> None:
     scope = _scope()
     result = _node({"scope": scope, "audit": _audit(scope)})
