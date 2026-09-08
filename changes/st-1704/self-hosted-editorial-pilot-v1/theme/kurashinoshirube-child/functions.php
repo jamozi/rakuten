@@ -12,9 +12,9 @@ const KURASHINOSHIRUBE_SNAPSHOT_META_KEY = '_raos_publication_snapshot_v1';
 const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
-const KURASHINOSHIRUBE_THEME_VERSION = '1.5.1';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '3ade5c1640ef3d17f209d1d42ab63f56a95137dc76e4fb4dc6149e3e59ae6640';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '3ade5c1640ef3d17f209d1d42ab63f56a95137dc76e4fb4dc6149e3e59ae6640';
+const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'a0014140fafdcee9b64516e677f5729e6b6a12534730561e27e24a2ecdee26ca';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'a0014140fafdcee9b64516e677f5729e6b6a12534730561e27e24a2ecdee26ca';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -1429,9 +1429,46 @@ function kurashinoshirube_local_preview_article_identity(
     return null;
 }
 
+/** Read only the applied owner-direct public projection, never its private registry. */
+function kurashinoshirube_direct_article_snapshot(int $post_id): ?array
+{
+    $snapshot = null;
+    if (class_exists('RAOS_Codex_MCP_Owner_Direct')) {
+        $snapshot = RAOS_Codex_MCP_Owner_Direct::public_article_snapshot($post_id);
+    } elseif (kurashinoshirube_is_local_preview()) {
+        $snapshot = get_post_meta($post_id, '_raos_owner_direct_preview_document', true);
+    }
+    if (!is_array($snapshot) || ($snapshot['id'] ?? null) !== $post_id
+        || ($snapshot['post_type'] ?? null) !== 'post' || get_post_status($post_id) !== 'publish') {
+        return null;
+    }
+    foreach (array('slug' => 'post_name', 'title' => 'post_title', 'excerpt' => 'post_excerpt',
+                   'block_markup' => 'post_content') as $key => $field) {
+        if (!is_string($snapshot[$key] ?? null)
+            || $snapshot[$key] !== get_post_field($field, $post_id, 'raw')) {
+            return null;
+        }
+    }
+    if (!preg_match('/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/D', $snapshot['slug'])
+        || !kurashinoshirube_is_clean_text($snapshot['title'], 1, 160)
+        || get_post_field('post_password', $post_id, 'raw') !== '') {
+        return null;
+    }
+    return $snapshot;
+}
+
 /** One predicate for every public presentation and discovery consumer. */
 function kurashinoshirube_public_article_identity(int $post_id): ?array
 {
+    $direct = kurashinoshirube_direct_article_snapshot($post_id);
+    if ($direct !== null) {
+        foreach (kurashinoshirube_article_bindings() as $article_id => $binding) {
+            if (($binding['slug'] ?? null) === $direct['slug']) {
+                return array('article_id' => $article_id, 'section' => $binding['category_label'], 'slug' => $direct['slug']);
+            }
+        }
+        return array('article_id' => 'owner-direct-' . $post_id, 'section' => '記事', 'slug' => $direct['slug']);
+    }
     $snapshot = kurashinoshirube_bound_post_snapshot($post_id, false);
     if ($snapshot !== null) {
         return array(
@@ -4026,6 +4063,13 @@ function kurashinoshirube_public_head_context(): ?array
     }
     if (is_singular('post')) {
         $post_id = (int) get_queried_object_id();
+        $direct = kurashinoshirube_direct_article_snapshot($post_id);
+        if ($direct !== null) {
+            $identity = kurashinoshirube_public_article_identity($post_id);
+            return array('canonical_url' => $origin . '/' . $direct['slug'] . '/',
+                'description' => $direct['excerpt'], 'kind' => 'article',
+                'section' => $identity['section'], 'title' => $direct['title']);
+        }
         $identity = $post_id > 0
             ? kurashinoshirube_public_article_identity($post_id)
             : null;
@@ -4412,6 +4456,11 @@ function kurashinoshirube_filter_robots($robots, $presentation)
             return 'noindex, nofollow';
         }
         $identity = kurashinoshirube_public_article_identity($post_id);
+        if (class_exists('RAOS_Codex_MCP_Owner_Direct')
+            && RAOS_Codex_MCP_Owner_Direct::is_direct_article($post_id)
+            && kurashinoshirube_direct_article_snapshot($post_id) === null) {
+            return 'noindex, nofollow';
+        }
         if (
             is_string($slug)
             && $status === 'publish'
@@ -4470,6 +4519,11 @@ function kurashinoshirube_public_listing_post_is_eligible(
 ): bool {
     if ($post_id <= 0 || strpos($slug, 'raos-review-') === 0) {
         return false;
+    }
+    if (class_exists('RAOS_Codex_MCP_Owner_Direct')
+        && RAOS_Codex_MCP_Owner_Direct::is_direct_article($post_id)) {
+        $direct = kurashinoshirube_direct_article_snapshot($post_id);
+        return $direct !== null && $direct['slug'] === $slug;
     }
     if (kurashinoshirube_is_local_preview() && function_exists('raos_local_reader_guide_listing_eligibility')) {
         $local_eligible = raos_local_reader_guide_listing_eligibility($post_id, $slug);

@@ -63,8 +63,8 @@ source_artifacts:
   bytes: 30187
   sha256: 3cb4e30138c4ad785d549ab3b7074e267cc570e45433d9edc21cd00ffb05a0e7
 - path: docs/README.md
-  bytes: 3948
-  sha256: 63bdcd628ce342b7e53f7a3e817916943f6886bd5fdb56ae69ddbd7a76af10ba
+  bytes: 4021
+  sha256: fb0d9551b6f230426a0c99a6aadac85b84cfbaaea240db52cf369194d11a6208
 - path: changes/st-0005/README.md
   bytes: 10382
   sha256: 984e28ee8e12be99f08e07f7742739d6c72ed90a44844aaee0fe01444b4af8ce

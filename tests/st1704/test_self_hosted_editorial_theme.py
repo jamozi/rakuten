@@ -192,11 +192,11 @@ def _assert_balanced_wordpress_blocks(source: str) -> None:
 def test_theme_is_an_isolated_1_5_0_successor_with_source_fingerprint() -> None:
     stylesheet = (THEME_ROOT / "style.css").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert stylesheet.count("\nVersion: 1.5.1\n") == 1
+    assert stylesheet.count("\nVersion: 1.6.0\n") == 1
     assert "Template: twentytwentyfive" in stylesheet
     assert "ST-1704" in stylesheet
-    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.5.1"
-    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.5.1'") == 1
+    assert _load_json(CONTRACT_PATH)["theme_version"] == "1.6.0"
+    assert functions.count("KURASHINOSHIRUBE_THEME_VERSION = '1.6.0'") == 1
     runtime_revision = theme_builder.THEME_RUNTIME_REVISION
     assert (
         functions.count(
@@ -439,7 +439,7 @@ def test_japanese_type_stacks_prefer_real_mincho_and_gothic_families() -> None:
 def test_asset_manifest_is_complete_and_hash_bound() -> None:
     manifest = _load_json(ASSET_MANIFEST_PATH)
     assert manifest["schema"] == "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V2"
-    assert manifest["theme_version"] == "1.5.1"
+    assert manifest["theme_version"] == "1.6.0"
     assert manifest["theme_source_fingerprint"] == (
         theme_builder.theme_source_fingerprint()
     )

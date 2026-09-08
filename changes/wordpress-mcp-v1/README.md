@@ -3,6 +3,12 @@
 This slice implements the browser-independent Codex workflow for the single
 self-hosted site `https://kurashinoshirube.com`.
 
+Ordinary article and child-theme publication now uses the optional
+[`owner-direct-v1` profile](../wordpress-direct-publish-v1/README.md), enabled once
+by a human administrator for a dedicated limited publisher. It starts OFF.
+Existing pending proposals and the review/approval descriptions below retain
+their legacy profile; they are not promoted into direct publication.
+
 ## Runtime topology
 
 There are exactly two project MCP servers:
@@ -15,12 +21,13 @@ There are exactly two project MCP servers:
    `@modelcontextprotocol/sdk@1.30.0`, over stdio.
 
 The WordPress plugin requires WordPress 7.1.x and exactly MCP Adapter 0.6.1.
-Abilities 1.3.2 is bound to runtime revision
-`b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc`;
+Abilities 1.4.0 is bound to runtime revision
+`3959d130244e13994c252522bbbc4ae245d70c517817c7e6e64835c621659a19`;
 the entrypoint and every critical class must report that exact identity.
 It disables MCP Adapter's generic default server and exposes only the nine
-tools listed in `contracts/wordpress-mcp.v1.json`. The local bridge exposes only
-eight typed operations. Neither path includes a generic request, command, PHP,
+tools listed in `contracts/wordpress-mcp.v1.json`. The local bridge exposes
+17 bounded operations: eight legacy and nine owner-direct operations. Neither
+path includes a generic request, command, PHP,
 SQL, filesystem-path, URL, media-write, delete, unpublish, uninstall, or
 arbitrary ZIP tool.
 
@@ -37,7 +44,7 @@ the build or tests:
    `23cb53e0b82f39238eec1c38cb055e28aa30fa7c`).
 2. Run `make -C changes/wordpress-mcp-v1 plugin-package`, verify the hash in
    `runtime-manifest.v1.json`, and install/activate the resulting owner-private
-   `raos-codex-mcp-abilities-1.3.2.zip` in wp-admin.
+   `raos-codex-mcp-abilities-1.4.0.zip` in wp-admin.
 3. Create one non-administrator user for each activation-created role, with no
    second role or direct capabilities:
    `raos_codex_mcp_editor` and `raos_codex_deployment_operator`.
@@ -70,7 +77,7 @@ the build or tests:
    `codex mcp list`. Only `wordpressEditor` and `wordpressDeployment` may be
    enabled.
 
-## Operation flow
+## Legacy operation flow
 
 For the ten tracked editorial articles, run the foreground workflow from the
 repository root:

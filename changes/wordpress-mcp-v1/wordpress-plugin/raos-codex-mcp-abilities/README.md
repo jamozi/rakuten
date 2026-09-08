@@ -1,9 +1,14 @@
-# RAOS Codex MCP Abilities 1.3.2
+# RAOS Codex MCP Abilities 1.4.0
+
+Ordinary article and child-theme publication uses the optional
+[owner-direct-v1 delegation](#owner-direct-v1-plugin-140). It starts OFF and
+requires one human administrator setup. The separate approval descriptions below
+apply to legacy proposals; direct publication does not repeat that approval.
 
 This plugin is the WordPress-side half of the browser-independent RAOS Codex
 workflow. It requires exactly WordPress 7.1.x, PHP 8.1+, and MCP Adapter 0.6.1.
 The release is bound to runtime revision
-`b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc`;
+`3959d130244e13994c252522bbbc4ae245d70c517817c7e6e64835c621659a19`;
 every loaded critical class must report that exact value before any ability or
 mutation is authorized.
 
@@ -19,14 +24,15 @@ ability. That tool is read-only and aggregate-only; no raw event or session
 read tool is present. If the measurement plugin is absent, MCP Adapter omits
 the unavailable ability rather than adding a generic execution surface.
 
-Activation creates two non-administrator roles but no users or Application
+Activation creates three non-administrator roles but no users or Application
 Passwords. A human administrator must create one dedicated user per role and
 one Application Password with the exact names below:
 
 - `raos_codex_mcp_editor`: `RAOS Codex Editor MCP`
 - `raos_codex_deployment_operator`: `RAOS Codex Deployment Bridge`
+- `raos_codex_owner_direct_publisher`: `RAOS Codex Owner Direct Publisher`
 
-Both roles are single-role identities. Their Application Passwords are denied
+All roles are single-role identities. Their Application Passwords are denied
 on XML-RPC, normal login, every core REST route, and every REST callback except
 their exact MCP/deployment callback.
 
@@ -83,3 +89,64 @@ migration approval and has no REST or MCP route.
 
 The plugin has no uninstall handler: users, bindings, proposals, receipts,
 packages, and backups are deliberately preserved for owner recovery/audit.
+## Owner-direct-v1 (plugin 1.4.0)
+
+This optional policy successor delegates ordinary article and
+`kurashinoshirube-child` publication to one dedicated limited account. It is OFF
+until a human administrator saves the delegation in **Tools → RAOS Codex
+proposals → Owner-direct-v1 publishing**. Create a separate user with role
+`raos_codex_owner_direct_publisher`; its only capabilities are `read` and
+`raos_codex_owner_direct_publish`. Create its application password with name
+`RAOS Codex Owner Direct Publisher`. Existing editor/operator accounts are not
+promoted. The credential is restricted to the exact direct routes and its own
+batch/operation routes; it cannot call general WordPress REST, plugin changes,
+generic abilities, or wp-admin setup.
+
+Setup accepts a bounded existing-target array of
+`{article_key, post_id, post_type, slug}`, the dedicated publisher user ID, an
+`allow_new_posts` flag, and the enabled checkbox. Existing identities are checked
+against WordPress. When new posts are enabled, `ensure-draft` creates only `post`
+drafts with safe ASCII keys/slugs; it rejects another article's slug and binds the
+actual new ID in a transaction. An identical request after response loss reads
+that binding instead of creating another post. Newly created IDs remain available
+for later updates without another administrator step. Every setup save changes
+the delegation generation and invalidates older direct proposals; disabling the
+checkbox revokes the publisher's mutations. The global kill switch remains
+required.
+
+The REST namespace is `/raos-codex-owner-direct/v1`:
+
+* `GET /status`: enabled delegation, bounded identities and current theme identity.
+* `GET /documents/{id}`: only a configured or direct-created content document.
+* `POST /ensure-draft`: `{profile, article_key, slug, idempotency_key}`.
+* `POST /content-proposals`: `{profile, article_key, id, precondition, document,
+  idempotency_key}`; freezes the existing content proposal and direct binding.
+* `POST /theme-proposals`: `{profile, kind:"theme_release", code_package,
+  package_base64, idempotency_key}`; only the configured child theme.
+* `POST /authorize`: `{profile, proposal_ids, expected_theme_tree_sha256}`;
+  returns the existing batch shape with a 15-minute single-use direct lease per
+  member. With a theme change the expected hash is the desired theme tree;
+  otherwise it is the preparation baseline. Exact retries do not extend leases.
+* `POST /batches/{batch_token}/finish`: `{profile, batch_manifest_sha256,
+  action:"finalize"|"rollback"}`. Finalize after all member and public readbacks;
+  roll back after a confirmed member failure. It returns a durable
+  `RAOSOwnerDirectBatchResultV1` with per-member outcomes.
+
+Every `profile` above is exactly `owner-direct-v1`. Existing batch claim, apply,
+operation status and recovery routes are reused with the same dedicated
+credential and the existing exact headers. Pending legacy proposals cannot be
+promoted. Direct proposals carry an immutable `authorization_profile`; direct
+leases use `RAOS_CODEX_OWNER_DIRECT_LEASE_V1` and cannot be exchanged with legacy
+approval leases. Independent reviews, audit packets and another wp-admin approval
+are not part of this profile.
+
+Applied direct theme backups and leases remain until batch finish. Compensation
+restores content before theme, and restores a newly created post to its own draft
+instead of deleting it. Content compensation requires the exact recorded applied
+revision, timestamp and hash under database locks; theme compensation uses the
+existing checked rename/backup mechanism. An unknown in-flight member must be
+recovered before compensation. Concurrent drift stops compensation and reports
+`PARTIAL_CONFLICT`; other people's edits are never overwritten. Finish retries
+return the same terminal result. Public article metadata comes only from the
+materialized applied document snapshot, and becomes unavailable if current public
+content no longer matches that snapshot.

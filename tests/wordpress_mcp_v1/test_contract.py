@@ -47,72 +47,77 @@ def test_repo_plugin_registry_keeps_reader_migration_manual() -> None:
     measurement = json.loads(
         (ROOT / build_wordpress_mcp_v1.MEASUREMENT_MANIFEST_PATH).read_text()
     )
-    assert rows["raos-editorial-measurement-v1"]["package_sha256"] == (
-        measurement["package_sha256"]
+    assert (
+        rows["raos-editorial-measurement-v1"]["package_sha256"]
+        == (measurement["package_sha256"])
     )
-    reader = json.loads((ROOT / build_wordpress_mcp_v1.READER_MEASUREMENT_MANIFEST_PATH).read_text())
-    assert rows["raos-reader-measurement-v1"]["package_sha256"] == reader["package_sha256"]
+    reader = json.loads(
+        (ROOT / build_wordpress_mcp_v1.READER_MEASUREMENT_MANIFEST_PATH).read_text()
+    )
+    assert (
+        rows["raos-reader-measurement-v1"]["package_sha256"] == reader["package_sha256"]
+    )
     assert rows["raos-reader-measurement-v1"]["migration_review"] is None
     assert reader["default_enabled"] is False
     review = rows["raos-editorial-measurement-v1"]["migration_review"]
-    file_hash = hashlib.sha256(json.dumps(
-        measurement["plugin_files"], ensure_ascii=True, sort_keys=True,
-        separators=(",", ":"),
-    ).encode("ascii")).hexdigest()
+    file_hash = hashlib.sha256(
+        json.dumps(
+            measurement["plugin_files"],
+            ensure_ascii=True,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("ascii")
+    ).hexdigest()
     assert review == build_wordpress_mcp_v1.measurement_migration_review(
         measurement["package_sha256"], file_hash
     )
 
 
 def test_owner_plugin_version_is_bound_across_package_and_runtime() -> None:
-    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.3.2"
-    entrypoint = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(
-        encoding="utf-8"
-    )
-    assert " * Version: 1.3.2" in entrypoint
-    assert "define('RAOS_CODEX_MCP_VERSION', '1.3.2');" in entrypoint
-    assert (PLUGIN / "README.md").read_text(encoding="utf-8").startswith(
-        "# RAOS Codex MCP Abilities 1.3.2\n"
+    assert build_wordpress_mcp_v1.PLUGIN_VERSION == "1.4.0"
+    entrypoint = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(encoding="utf-8")
+    assert " * Version: 1.4.0" in entrypoint
+    assert "define('RAOS_CODEX_MCP_VERSION', '1.4.0');" in entrypoint
+    assert (
+        (PLUGIN / "README.md")
+        .read_text(encoding="utf-8")
+        .startswith("# RAOS Codex MCP Abilities 1.4.0\n")
     )
 
 
 def test_owner_plugin_runtime_revision_is_bound_across_every_critical_class() -> None:
     revision = build_wordpress_mcp_v1.PLUGIN_RUNTIME_REVISION
     assert (
-        raos_wordpress_publication_request.EXPECTED_PLUGIN_RUNTIME_REVISION
-        == revision
+        raos_wordpress_publication_request.EXPECTED_PLUGIN_RUNTIME_REVISION == revision
     )
     assert re.fullmatch(r"[0-9a-f]{64}", revision)
-    entrypoint = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(
-        encoding="utf-8"
-    )
-    assert (
-        "'RAOS_CODEX_MCP_RUNTIME_REVISION',\n"
-        f"    '{revision}'" in entrypoint
-    )
+    entrypoint = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(encoding="utf-8")
+    assert f"'RAOS_CODEX_MCP_RUNTIME_REVISION',\n    '{revision}'" in entrypoint
     for relative in (
         "raos-codex-mcp-abilities.php",
         "includes/class-raos-codex-mcp-store.php",
         "includes/class-raos-codex-mcp-content.php",
         "includes/class-raos-codex-mcp-deployment.php",
+        "includes/class-raos-codex-mcp-owner-direct.php",
     ):
         source = (PLUGIN / relative).read_text(encoding="utf-8")
         assert source.count(f"const RUNTIME_REVISION = '{revision}';") == 1
-    assert build_wordpress_mcp_v1.runtime_manifest()["plugin"][
-        "runtime_revision"
-    ] == revision
+    assert (
+        build_wordpress_mcp_v1.runtime_manifest()["plugin"]["runtime_revision"]
+        == revision
+    )
 
 
 def test_review_and_apply_ttls_are_distinct_and_exposed_without_ambiguity() -> None:
-    store = (
-        PLUGIN / "includes/class-raos-codex-mcp-store.php"
-    ).read_text(encoding="utf-8")
-    content = (
-        PLUGIN / "includes/class-raos-codex-mcp-content.php"
-    ).read_text(encoding="utf-8")
-    deployment = (
-        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
-    ).read_text(encoding="utf-8")
+    store = (PLUGIN / "includes/class-raos-codex-mcp-store.php").read_text(
+        encoding="utf-8"
+    )
+    content = (PLUGIN / "includes/class-raos-codex-mcp-content.php").read_text(
+        encoding="utf-8"
+    )
+    deployment = (PLUGIN / "includes/class-raos-codex-mcp-deployment.php").read_text(
+        encoding="utf-8"
+    )
 
     assert "const PROPOSAL_REVIEW_TTL_SECONDS = 3600;" in store
     assert "const APPLY_LEASE_TTL_SECONDS = 900;" in store
@@ -126,12 +131,10 @@ def test_review_and_apply_ttls_are_distinct_and_exposed_without_ambiguity() -> N
         "RAOS_Codex_MCP_Store::PROPOSAL_REVIEW_TTL_SECONDS"
     ) in content
     assert (
-        "'lease_ttl_seconds' => "
-        "RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS"
+        "'lease_ttl_seconds' => RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS"
     ) in content
     assert (
-        "'lease_ttl_seconds' => "
-        "RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS"
+        "'lease_ttl_seconds' => RAOS_Codex_MCP_Store::APPLY_LEASE_TTL_SECONDS"
     ) in deployment
     assert "'proposal_ttl_seconds'" not in content
     assert "'ttl_seconds'" not in content
@@ -174,25 +177,21 @@ def test_publication_runtime_binds_portfolio_materializer_and_browser_audit() ->
                 required.add(imported.relative_to(ROOT).as_posix())
     assert required <= set(build_wordpress_mcp_v1.RUNTIME_PATHS)
     runtime_paths = {
-        row["path"] for row in build_wordpress_mcp_v1.runtime_manifest()["runtime_files"]
+        row["path"]
+        for row in build_wordpress_mcp_v1.runtime_manifest()["runtime_files"]
     }
     assert required <= runtime_paths
-    assert not any(
-        path.startswith(("output/", "tmp/")) for path in runtime_paths
-    )
+    assert not any(path.startswith(("output/", "tmp/")) for path in runtime_paths)
 
 
 def test_quality_audit_ledger_is_runtime_input_without_a_fingerprint_cycle() -> None:
     contract = json.loads(
         (
-            ROOT
-            / "changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json"
+            ROOT / "changes/wordpress-quality-audit-v1/quality-audit-contract.v1.json"
         ).read_text(encoding="utf-8")
     )
     fingerprint_inputs = {
-        value
-        for group in contract["fingerprint_groups"]
-        for value in group["inputs"]
+        value for group in contract["fingerprint_groups"] for value in group["inputs"]
     }
     runtime_paths = set(build_wordpress_mcp_v1.RUNTIME_PATHS)
 
@@ -260,7 +259,7 @@ def test_public_contract_and_schema_are_valid() -> None:
     schema = json.loads((SLICE / "contracts/wordpress-mcp.v1.schema.json").read_text())
     readme = (SLICE / "README.md").read_text(encoding="utf-8")
     Draft202012Validator.check_schema(schema)
-    assert contract["version"] == "1.3.2"
+    assert contract["version"] == "1.4.0"
     assert contract["wordpress_version"] == "7.1.x"
     assert contract["mcp_adapter"]["version"] == "0.6.1"
     assert contract["remote_proxy"]["version"] == "0.4.0"
@@ -419,9 +418,9 @@ def test_root_final_static_checks_wordpress_owner_manifest() -> None:
 
 
 def test_editor_status_exposes_loaded_theme_runtime_version_and_revision() -> None:
-    content = (
-        PLUGIN / "includes/class-raos-codex-mcp-content.php"
-    ).read_text(encoding="utf-8")
+    content = (PLUGIN / "includes/class-raos-codex-mcp-content.php").read_text(
+        encoding="utf-8"
+    )
     status = content.split("public function site_status", 1)[1].split(
         "public function content_list", 1
     )[0]
@@ -436,12 +435,12 @@ def test_editor_status_exposes_loaded_theme_runtime_version_and_revision() -> No
 
 
 def test_editor_status_and_publication_mutations_require_exact_yoast_28_3() -> None:
-    content = (
-        PLUGIN / "includes/class-raos-codex-mcp-content.php"
-    ).read_text(encoding="utf-8")
-    deployment = (
-        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
-    ).read_text(encoding="utf-8")
+    content = (PLUGIN / "includes/class-raos-codex-mcp-content.php").read_text(
+        encoding="utf-8"
+    )
+    deployment = (PLUGIN / "includes/class-raos-codex-mcp-deployment.php").read_text(
+        encoding="utf-8"
+    )
     status = content.split("public function site_status", 1)[1].split(
         "public function content_list", 1
     )[0]
@@ -478,15 +477,18 @@ def test_editor_status_and_publication_mutations_require_exact_yoast_28_3() -> N
     )
     assert "array('CONTENT_RELEASE', 'THEME_RELEASE')" in apply_gate
     assert "RAOS_Codex_MCP_Content::exact_yoast_gate()" in apply_gate
-    assert "PLUGIN_CHANGE" not in apply_gate.split("exact_yoast_gate", 1)[0].split(
-        "array('CONTENT_RELEASE', 'THEME_RELEASE')", 1
-    )[1]
+    assert (
+        "PLUGIN_CHANGE"
+        not in apply_gate.split("exact_yoast_gate", 1)[0].split(
+            "array('CONTENT_RELEASE', 'THEME_RELEASE')", 1
+        )[1]
+    )
 
 
 def test_deployment_status_exposes_loaded_theme_runtime_version_and_revision() -> None:
-    deployment = (
-        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
-    ).read_text(encoding="utf-8")
+    deployment = (PLUGIN / "includes/class-raos-codex-mcp-deployment.php").read_text(
+        encoding="utf-8"
+    )
     status = deployment.split("public function status", 1)[1].split(
         "public function create_proposal", 1
     )[0]
@@ -501,15 +503,15 @@ def test_deployment_status_exposes_loaded_theme_runtime_version_and_revision() -
 
 def test_plugin_runtime_aggregate_and_mutation_gates_fail_closed() -> None:
     main = (PLUGIN / "raos-codex-mcp-abilities.php").read_text(encoding="utf-8")
-    store = (
-        PLUGIN / "includes/class-raos-codex-mcp-store.php"
-    ).read_text(encoding="utf-8")
-    content = (
-        PLUGIN / "includes/class-raos-codex-mcp-content.php"
-    ).read_text(encoding="utf-8")
-    deployment = (
-        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
-    ).read_text(encoding="utf-8")
+    store = (PLUGIN / "includes/class-raos-codex-mcp-store.php").read_text(
+        encoding="utf-8"
+    )
+    content = (PLUGIN / "includes/class-raos-codex-mcp-content.php").read_text(
+        encoding="utf-8"
+    )
+    deployment = (PLUGIN / "includes/class-raos-codex-mcp-deployment.php").read_text(
+        encoding="utf-8"
+    )
 
     aggregate = main.split("public static function plugin_runtime_revision", 1)[1]
     aggregate = aggregate.split("public static function runtime_identity_is_exact", 1)[
@@ -550,7 +552,10 @@ def test_plugin_runtime_aggregate_and_mutation_gates_fail_closed() -> None:
 
     store_gate = store.split("private static function runtime_identity_gate", 1)[1]
     assert "defined('RAOS_CODEX_MCP_RUNTIME_REVISION')" in store_gate
-    assert "method_exists('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision')" in store_gate
+    assert (
+        "method_exists('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision')"
+        in store_gate
+    )
     assert "hash_equals(self::RUNTIME_REVISION, $revision)" in store_gate
     for method in (
         "install",
@@ -571,10 +576,13 @@ def test_plugin_runtime_aggregate_and_mutation_gates_fail_closed() -> None:
         assert "self::runtime_identity_gate()" in before_database
 
     for source in (content, deployment):
-        helper = source.split("private static function loaded_plugin_runtime_revision", 1)[
-            1
-        ]
-        assert "method_exists('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision')" in helper
+        helper = source.split(
+            "private static function loaded_plugin_runtime_revision", 1
+        )[1]
+        assert (
+            "method_exists('RAOS_Codex_MCP_Abilities', 'plugin_runtime_revision')"
+            in helper
+        )
         assert "hash_equals(self::RUNTIME_REVISION, $revision)" in helper
         assert "raos_codex_plugin_runtime_mixed" in helper
 
@@ -640,11 +648,12 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
     assert initialized["result"]["protocolVersion"] == "2025-11-25"
     instructions = initialized["result"]["instructions"]
     for boundary in (
-        "cannot approve",
+        "Legacy publication requires separate wp-admin approval",
+        "owner-direct-v1",
         "PHP",
         "SQL",
-        "If-Match",
-        "approval lease",
+        "preconditions",
+        "single-use leases",
     ):
         assert boundary in instructions
     tools = {tool["name"]: tool for tool in listed["result"]["tools"]}
@@ -652,6 +661,51 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
     raos_wordpress_publication_request._validate_deployment_tools(
         listed["result"]["tools"]
     )
+    # Mutate the actual SDK inventory: names alone cannot authorize an expanded
+    # writer, weakened hash/precondition schema, or misleading annotation.
+    from copy import deepcopy
+
+    for name, section, field, value in (
+        ("owner-direct-authorize", "annotations", "readOnlyHint", True),
+        ("owner-direct-apply", "annotations", "destructiveHint", False),
+        ("owner-direct-finish", "annotations", "openWorldHint", True),
+        (
+            "owner-direct-theme-propose-candidate",
+            "inputSchema",
+            "additionalProperties",
+            True,
+        ),
+        ("owner-direct-ensure-draft", "inputSchema", "required", []),
+        ("owner-direct-content-propose", "inputSchema", "properties", {}),
+        (
+            "owner-direct-status",
+            "inputSchema",
+            "$schema",
+            "https://invalid.example/schema",
+        ),
+    ):
+        changed = deepcopy(listed["result"]["tools"])
+        next(tool for tool in changed if tool["name"] == name)[section][field] = value
+        with pytest.raises(
+            raos_wordpress_publication_request.PublicationFailure,
+            match="DEPLOYMENT_TOOL_CONTRACT_INVALID",
+        ):
+            raos_wordpress_publication_request._validate_deployment_tools(changed)
+    for changed in (
+        listed["result"]["tools"]
+        + [dict(tools["owner-direct-apply"], name="arbitrary-publish")],
+        listed["result"]["tools"] + [tools["owner-direct-apply"]],
+        [
+            tool
+            for tool in listed["result"]["tools"]
+            if tool["name"] != "owner-direct-finish"
+        ],
+    ):
+        with pytest.raises(
+            raos_wordpress_publication_request.PublicationFailure,
+            match="DEPLOYMENT_TOOL_CONTRACT_INVALID",
+        ):
+            raos_wordpress_publication_request._validate_deployment_tools(changed)
     assert set(tools) == {
         "deployment-status",
         "operation-status",
@@ -661,6 +715,15 @@ def test_local_bridge_initialization_tool_schemas_and_annotations() -> None:
         "plugin-propose-change",
         "plugin-apply-change",
         "operation-recover",
+        "owner-direct-status",
+        "owner-direct-document",
+        "owner-direct-ensure-draft",
+        "owner-direct-content-propose",
+        "owner-direct-theme-propose-candidate",
+        "owner-direct-authorize",
+        "owner-direct-operation-status",
+        "owner-direct-apply",
+        "owner-direct-finish",
     }
     for tool in tools.values():
         assert tool["inputSchema"]["additionalProperties"] is False
@@ -768,9 +831,7 @@ def test_wordpress_plugin_hard_safety_boundaries_are_present() -> None:
 
 def test_manual_bootstrap_attestation_is_wp_admin_only_and_exactly_bound() -> None:
     main = (PLUGIN / "raos-codex-mcp-abilities.php").read_text()
-    deployment = (
-        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
-    ).read_text()
+    deployment = (PLUGIN / "includes/class-raos-codex-mcp-deployment.php").read_text()
     store = (PLUGIN / "includes/class-raos-codex-mcp-store.php").read_text()
     operator = (ROOT / "scripts/raos_wordpress_deployment_operator.py").read_text()
 
@@ -819,9 +880,7 @@ def test_reviewed_measurement_migration_identity_agrees_in_both_validators() -> 
         for row in registry["artifacts"]
         if row["artifact_id"] == "raos-editorial-measurement-v1"
     )
-    deployment = (
-        PLUGIN / "includes/class-raos-codex-mcp-deployment.php"
-    ).read_text()
+    deployment = (PLUGIN / "includes/class-raos-codex-mcp-deployment.php").read_text()
     operator = (ROOT / "scripts/raos_wordpress_deployment_operator.py").read_text()
     for value in (
         measurement["artifact_id"],
@@ -937,8 +996,7 @@ def test_disposable_code_artifacts_are_reproducible(tmp_path: Path) -> None:
     # clean-checkout reproducibility assertion is exercised in CI/release
     # checkouts while local development remains fail-closed.
     relative_theme = (
-        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/"
-        "kurashinoshirube-child"
+        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
     )
     if subprocess.run(
         ("git", "status", "--porcelain=v1", "--", relative_theme),
@@ -946,7 +1004,9 @@ def test_disposable_code_artifacts_are_reproducible(tmp_path: Path) -> None:
         check=True,
         stdout=subprocess.PIPE,
     ).stdout:
-        pytest.skip("candidate theme is intentionally dirty in the integration worktree")
+        pytest.skip(
+            "candidate theme is intentionally dirty in the integration worktree"
+        )
     script = ROOT / "tests/wordpress_mcp_v1/e2e/prepare_packages.py"
     first = tmp_path / "first"
     second = tmp_path / "second"

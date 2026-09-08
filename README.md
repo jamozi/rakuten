@@ -69,9 +69,11 @@ PYTHONDONTWRITEBYTECODE=1 TMPDIR=/tmp .venv/bin/python -m pytest -q \
 
 ## WordPress公開準備
 
-`make wordpress-production-request` は読み取り専用の計画を表示します。
-対象選択、local preview、再開、独立レビュー、承認と反映の手順は
-[公開runbook](docs/runbooks/wordpress-verified-incremental.md)が所有します。
+日常の操作は「Codexで作成 → ローカル確認 → 公開して」の3段階です。
+[簡易公開](changes/wordpress-direct-publish-v1/README.md)は新規・既存記事と子テーマに対応し、
+監査や管理画面での再承認を要求しません。Git保存と公開後の同期は自動です。
+引数なしの`make wordpress-production-request`は読み取り専用です。
+旧候補の再開だけは[旧公開runbook](docs/runbooks/wordpress-verified-incremental.md)を使います。
 
 ## Generator ownership
 

@@ -32,7 +32,7 @@
 | v1の製品・安全制約 | [integration baseline](docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md) |
 | 実装状況・未実行事項 | [status v2](changes/status/README.md) |
 | 開発・CI・generator ownership | [developer guide](README.md) |
-| WordPressの段階・再開条件 | [publication runbook](docs/runbooks/wordpress-verified-incremental.md) |
+| WordPressの日常公開・再開条件 | [簡易公開](changes/wordpress-direct-publish-v1/README.md)、旧候補のみ[publication runbook](docs/runbooks/wordpress-verified-incremental.md) |
 
 ## Repository map
 
@@ -69,6 +69,10 @@
   edit/test/generate/stage/commit/push/PR作成更新/branch protection更新/required CI合格後のmergeに再確認は不要。
 - Story IDは追跡情報。実装slice/branch/PR境界ではない。integration PRは1本にまとめる。
   個別ExecPlan/worklog/debt logは必須ではない。Proは明示依頼時だけの任意助言。
+- 記事・子テーマの日常更新は`owner-direct-v1`を使う。対象記事の基本確認、テーマ変更時の
+  構文と代表画面のPC/スマートフォン確認だけを公開前に実行する。独立監査、2巡レビュー、
+  監査報告書、全体test、全画面撮影、Lighthouse、復元演習、PR/CI待ちは日常公開の条件にしない。
+  公開機構・認証・共通基盤自体の開発には上記の関連回帰testと必須CIを適用する。
 
 ## External effects and escalation
 
@@ -78,8 +82,11 @@
   localなport・rollback・simulation・draft artifactは継続する。不明な実値は作らずdefault-offで実装する。
 - WordPressは先に非本番データとlocal previewで確認する。対応能力があれば`wordpressEditor` /
   `wordpressDeployment`を先に実呼出しする。状態を設定・過去結果から推定しない。
-- MCP不能時はlistとread-only statusで診断し、代替理由を記録する。MCP優先は権限を広げない。
-  未検証候補は送付・提案・反映しない。独立2巡、Required CI、wp-admin別人承認、期限・対象hash、
-  precondition、idempotency、kill switch、用途別default-offを維持する。自己承認・汎用CMS迂回は禁止。
+- MCP不能時はlistとread-only statusで診断し、既存の限定operatorによる代替理由を記録する。
+  日常公開は初回に所有者が設定した限定権限と、確認済み対象への会話上の具体的な公開指示を使う。
+  wp-adminでの再承認・別人承認は不要。previewや包括的な将来依頼だけで公開しない。
+  対象snapshot、precondition、idempotency、kill switch、限定権限のdefault-off、反映照合を維持する。
+  旧候補を新方式へ自動移行せず、旧承認の捏造や汎用CMS迂回をしない。
+  初回の本番連携plugin更新・権限設定は、具体的な更新物とlocal検証を示した後に対象操作の承認を得る。
 - test failure、設計不足、hash drift、Pro不在、live evidence未実行は修正または正確な報告の対象。
   解消不能な仕様矛盾は根拠とUNKNOWNを示し、安全な独立作業を進める。

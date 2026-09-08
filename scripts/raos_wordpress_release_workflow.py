@@ -563,6 +563,11 @@ def preview_origin(environment: dict[str, str]) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
+    supplied = list(sys.argv[1:] if argv is None else argv)
+    if supplied and (supplied[0] == "direct" or supplied[:2] == ["--publication-profile", "owner-direct-v1"]):
+        from raos_wordpress_direct_publish import main as direct_main
+
+        return direct_main(supplied[1:] if supplied[0] == "direct" else supplied[2:])
     arguments = parser().parse_args(argv)
     try:
         if arguments.reader_measurement_readback and arguments.stage != "readback":

@@ -70,6 +70,16 @@ type OperatorCommand =
   | 'plugin-propose-change'
   | 'plugin-apply-change'
   | 'operation-recover';
+type DirectCommand =
+  | 'owner-direct-status'
+  | 'owner-direct-document'
+  | 'owner-direct-ensure-draft'
+  | 'owner-direct-content-propose'
+  | 'owner-direct-theme-propose-candidate'
+  | 'owner-direct-authorize'
+  | 'owner-direct-apply'
+  | 'owner-direct-finish'
+  | 'owner-direct-operation-status';
 
 type OperatorResult = Record<string, unknown>;
 
@@ -83,7 +93,7 @@ class OperatorError extends Error {
 }
 
 function runOperator(
-  command: OperatorCommand,
+  command: OperatorCommand | DirectCommand,
   input: Record<string, unknown>,
 ): Promise<OperatorResult> {
   return new Promise((resolve, reject) => {
@@ -103,7 +113,8 @@ function runOperator(
     let stderrBytes = 0;
     let settled = false;
 
-    const timeoutMs = command === 'release-wait-and-apply' ? 4_620_000 : 90_000;
+    const timeoutMs =
+      command === 'release-wait-and-apply' || command === 'owner-direct-apply' ? 4_620_000 : 90_000;
     const timer = setTimeout(() => {
       if (!settled) {
         settled = true;
@@ -177,7 +188,7 @@ const server = new McpServer(
   { name: 'raos-wordpress-bridge', version: '1.1.0' },
   {
     instructions:
-      'Bounded deployment bridge for kurashinoshirube.com. It cannot approve, publish without a separate wp-admin approval, run commands, PHP, or SQL, delete content, uninstall plugins, accept URLs, or accept caller-selected package paths. Apply calls require an unexpired hash-bound proposal, If-Match, idempotency, the global kill switch, and a proposal-bound single-use approval lease.',
+      'Bounded deployment bridge for kurashinoshirube.com. Legacy publication requires separate wp-admin approval. The isolated owner-direct-v1 tools use a dedicated publisher principal configured once in wp-admin; invoke writes only after the user explicitly instructs publication of the exact reviewed frozen candidate. Preview or local flags are not approval. No arbitrary URLs, package paths, PHP, SQL, commands, deletes or plugin uninstall. All apply calls retain hash-bound proposals, preconditions, idempotency, kill switch and single-use leases.',
   },
 );
 
@@ -404,5 +415,139 @@ server.registerTool(
     }
   },
 );
+
+const directProfile = z.literal('owner-direct-v1');
+const articleKey = z.string().regex(/^[a-z0-9][a-z0-9-]{0,127}$/);
+const directDocument = z.strictObject({
+  post_type: z.enum(['post', 'page']),
+  title: z.string().min(1).max(500),
+  slug: articleKey,
+  excerpt: z.string().max(10000),
+  block_markup: z
+    .string()
+    .min(1)
+    .max(2 * 1024 * 1024),
+  taxonomies: z.record(z.string(), z.array(z.number().int().positive()).max(128)),
+  media_ids: z.array(z.number().int().positive()).max(128),
+});
+const directTools: Array<{
+  name: DirectCommand;
+  description: string;
+  schema: z.ZodObject;
+  readOnly: boolean;
+}> = [
+  {
+    name: 'owner-direct-finish',
+    description:
+      'Finalize the exact verified owner-direct batch or roll back only its own unchanged applied revisions. Preserve third-party changes and report partial conflicts.',
+    schema: z.strictObject({
+      profile: directProfile,
+      batch_token: sha256,
+      batch_manifest_sha256: sha256,
+      action: z.enum(['finalize', 'rollback']),
+    }),
+    readOnly: false,
+  },
+  {
+    name: 'owner-direct-status',
+    description: 'Read dedicated publisher scope and baseline theme; never writes.',
+    schema: z.strictObject({}),
+    readOnly: true,
+  },
+  {
+    name: 'owner-direct-document',
+    description: 'Read one document within the configured publisher scope.',
+    schema: z.strictObject({ id: z.number().int().positive() }),
+    readOnly: true,
+  },
+  {
+    name: 'owner-direct-ensure-draft',
+    description:
+      'Idempotently reserve a new post only after explicit publication instruction. Existing unrelated slugs are rejected.',
+    schema: z.strictObject({
+      profile: directProfile,
+      article_key: articleKey,
+      slug: articleKey,
+      idempotency_key: sha256,
+    }),
+    readOnly: false,
+  },
+  {
+    name: 'owner-direct-content-propose',
+    description:
+      'Register exact reviewed content under owner-direct-v1 with baseline revision; does not publish.',
+    schema: z.strictObject({
+      profile: directProfile,
+      article_key: articleKey,
+      id: z.number().int().positive(),
+      precondition: z.strictObject({
+        revision_id: z.number().int().positive(),
+        modified_gmt: z.string(),
+        content_sha256: sha256,
+      }),
+      document: directDocument,
+      idempotency_key: sha256,
+    }),
+    readOnly: false,
+  },
+  {
+    name: 'owner-direct-theme-propose-candidate',
+    description:
+      'Register the frozen tracked child-theme package by exact local candidate hash. No caller-selected paths or package bytes.',
+    schema: z.strictObject({ candidate_id: sha256 }),
+    readOnly: false,
+  },
+  {
+    name: 'owner-direct-authorize',
+    description:
+      'Authorize owner-direct-v1 proposals through the dedicated server principal after the user explicitly instructs publication of the exact reviewed candidate. Rejects legacy proposals.',
+    schema: z.strictObject({
+      profile: directProfile,
+      proposal_ids: releaseProposalIds,
+      expected_theme_tree_sha256: sha256,
+    }),
+    readOnly: false,
+  },
+  {
+    name: 'owner-direct-operation-status',
+    description:
+      'Read existing operation state using the dedicated publisher principal before retrying.',
+    schema: z.strictObject({ operation_id: sha256 }),
+    readOnly: true,
+  },
+  {
+    name: 'owner-direct-apply',
+    description:
+      'Apply or recover the exact owner-direct batch using bounded idempotent proposal operations. Requires explicit user publication instruction.',
+    schema: z.strictObject({
+      batch_token: sha256,
+      batch_manifest_sha256: sha256,
+      proposal_ids: releaseProposalIds,
+    }),
+    readOnly: false,
+  },
+];
+for (const tool of directTools) {
+  server.registerTool(
+    tool.name,
+    {
+      description: tool.description,
+      inputSchema: tool.schema,
+      annotations: {
+        readOnlyHint: tool.readOnly,
+        destructiveHint: !tool.readOnly,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async (input) => {
+      try {
+        return toolResult(await runOperator(tool.name, input));
+      } catch (error) {
+        return toolError(error);
+      }
+    },
+  );
+}
 
 await server.connect(new StdioServerTransport());

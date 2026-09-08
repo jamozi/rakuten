@@ -141,9 +141,9 @@ MAKE_BIN: Final = Path("/usr/bin/make")
 SG_BIN: Final = Path("/usr/bin/sg")
 DOCKER_SOCKET: Final = Path("/var/run/docker.sock")
 PROTOCOL_VERSION: Final = "2025-11-25"
-EXPECTED_PLUGIN_VERSION: Final = "1.3.2"
+EXPECTED_PLUGIN_VERSION: Final = "1.4.0"
 EXPECTED_PLUGIN_RUNTIME_REVISION: Final = (
-    "b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc"
+    "3959d130244e13994c252522bbbc4ae245d70c517817c7e6e64835c621659a19"
 )
 EXPECTED_PROPOSAL_REVIEW_TTL_SECONDS: Final = 3600
 EXPECTED_APPLY_LEASE_TTL_SECONDS: Final = 900
@@ -239,6 +239,17 @@ EXPECTED_DEPLOYMENT_TOOLS: Final = {
     "plugin-propose-change",
     "plugin-apply-change",
     "operation-recover",
+}
+EXPECTED_DIRECT_DEPLOYMENT_TOOLS: Final = {
+    "owner-direct-status",
+    "owner-direct-document",
+    "owner-direct-ensure-draft",
+    "owner-direct-content-propose",
+    "owner-direct-theme-propose-candidate",
+    "owner-direct-authorize",
+    "owner-direct-operation-status",
+    "owner-direct-apply",
+    "owner-direct-finish",
 }
 WRITE_FIELDS: Final = (
     "post_type",
@@ -3600,6 +3611,98 @@ def reconcile_drafts(
     return result
 
 
+def _direct_deployment_schemas() -> dict[str, dict[str, object]]:
+    """The closed JSON schemas emitted by the pinned SDK for owner-direct-v1."""
+
+    def closed(properties: dict[str, object]) -> dict[str, object]:
+        result: dict[str, object] = {
+            "type": "object",
+            "properties": properties,
+            "additionalProperties": False,
+        }
+        if properties:
+            result["required"] = list(properties)
+        return result
+
+    sha: dict[str, object] = {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+    profile: dict[str, object] = {"type": "string", "const": "owner-direct-v1"}
+    identity: dict[str, object] = {
+        "type": "integer",
+        "exclusiveMinimum": 0,
+        "maximum": 9007199254740991,
+    }
+    slug: dict[str, object] = {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]{0,127}$",
+    }
+    ids: dict[str, object] = {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 20,
+        "items": sha,
+    }
+    terms: dict[str, object] = {"type": "array", "maxItems": 128, "items": identity}
+    document = closed(
+        {
+            "post_type": {"type": "string", "enum": ["post", "page"]},
+            "title": {"type": "string", "minLength": 1, "maxLength": 500},
+            "slug": slug,
+            "excerpt": {"type": "string", "maxLength": 10000},
+            "block_markup": {"type": "string", "minLength": 1, "maxLength": 2097152},
+            "taxonomies": {
+                "type": "object",
+                "propertyNames": {"type": "string"},
+                "additionalProperties": terms,
+            },
+            "media_ids": terms,
+        }
+    )
+    return {
+        "owner-direct-status": closed({}),
+        "owner-direct-document": closed({"id": identity}),
+        "owner-direct-ensure-draft": closed(
+            {
+                "profile": profile,
+                "article_key": slug,
+                "slug": slug,
+                "idempotency_key": sha,
+            }
+        ),
+        "owner-direct-content-propose": closed(
+            {
+                "profile": profile,
+                "article_key": slug,
+                "id": identity,
+                "precondition": closed(
+                    {
+                        "revision_id": identity,
+                        "modified_gmt": {"type": "string"},
+                        "content_sha256": sha,
+                    }
+                ),
+                "document": document,
+                "idempotency_key": sha,
+            }
+        ),
+        "owner-direct-theme-propose-candidate": closed({"candidate_id": sha}),
+        "owner-direct-authorize": closed(
+            {"profile": profile, "proposal_ids": ids, "expected_theme_tree_sha256": sha}
+        ),
+        "owner-direct-operation-status": closed({"operation_id": sha}),
+        "owner-direct-apply": closed(
+            {"batch_token": sha, "batch_manifest_sha256": sha, "proposal_ids": ids}
+        ),
+        "owner-direct-finish": closed(
+            {
+                "profile": profile,
+                "batch_token": sha,
+                "batch_manifest_sha256": sha,
+                "action": {"type": "string", "enum": ["finalize", "rollback"]},
+            }
+        ),
+    }
+
+
 def _validate_deployment_tools(tools: object) -> None:
     if type(tools) is not list:
         fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
@@ -3607,10 +3710,15 @@ def _validate_deployment_tools(tools: object) -> None:
     for tool in tools:
         if type(tool) is not dict or type(tool.get("name")) is not str:
             fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
+        if tool["name"] in by_name:
+            fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
         by_name[tool["name"]] = tool
     if set(by_name) not in (
         EXPECTED_DEPLOYMENT_TOOLS,
         EXPECTED_DEPLOYMENT_TOOLS | {"operation-status"},
+        EXPECTED_DEPLOYMENT_TOOLS
+        | {"operation-status"}
+        | EXPECTED_DIRECT_DEPLOYMENT_TOOLS,
     ):
         fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
     for name, tool in by_name.items():
@@ -3619,8 +3727,13 @@ def _validate_deployment_tools(tools: object) -> None:
             "deployment-status",
             "publication-batch-status",
             "operation-status",
+            "owner-direct-status",
+            "owner-direct-document",
+            "owner-direct-operation-status",
         }
-        destructive = name in {
+        destructive = (
+            name in EXPECTED_DIRECT_DEPLOYMENT_TOOLS and not read_only
+        ) or name in {
             "release-wait-and-apply",
             "plugin-apply-change",
             "operation-recover",
@@ -3634,6 +3747,18 @@ def _validate_deployment_tools(tools: object) -> None:
             or annotations.get("idempotentHint") is not idempotent
             or annotations.get("openWorldHint") is not open_world
         ):
+            fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
+    for name, expected in _direct_deployment_schemas().items():
+        if name not in by_name:
+            continue
+        actual = by_name[name].get("inputSchema")
+        if type(actual) is not dict:
+            fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
+        normalized = dict(actual)
+        if "$schema" in normalized:
+            if normalized.pop("$schema") != "http://json-schema.org/draft-07/schema#":
+                fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
+        if canonical_json_bytes(normalized) != canonical_json_bytes(expected):
             fail("RAOS_WORDPRESS_REQUEST_DEPLOYMENT_TOOL_CONTRACT_INVALID")
     status_schema = by_name["deployment-status"].get("inputSchema")
     theme_schema = by_name["theme-propose-release"].get("inputSchema")
@@ -7029,6 +7154,13 @@ def parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     supplied = list(sys.argv[1:] if argv is None else argv)
+    if supplied and (
+        supplied[0] == "direct"
+        or supplied[:2] == ["--publication-profile", "owner-direct-v1"]
+    ):
+        from raos_wordpress_direct_publish import main as direct_main
+
+        return direct_main(supplied[1:] if supplied[0] == "direct" else supplied[2:])
     if not supplied or supplied[0] in {
         "plan",
         "prepare",

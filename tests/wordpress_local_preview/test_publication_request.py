@@ -843,7 +843,7 @@ def test_public_readback_accepts_exact_theme_stylesheet_materializations(
     )
 
     page = evidence[article.production_slug]
-    assert page["theme_version"] == "1.5.1"
+    assert page["theme_version"] == "1.6.0"
     assert page["theme_runtime_revision"] == (
         publication.EXPECTED_THEME_RUNTIME_REVISION
     )

@@ -231,7 +231,9 @@ def test_operation_status_transport_failure_never_retries_or_recovers(
     assert len(calls) == 1
 
 
-def bridge_calls(tmp_path: Path, inputs: list[dict]) -> tuple[list[dict], Path]:
+def bridge_calls(
+    tmp_path: Path, inputs: list[dict], tool_name: str = "operation-status"
+) -> tuple[list[dict], Path]:
     node = shutil.which("node")
     assert node is not None
     bridge = tmp_path / "packages/wordpress-mcp-bridge/src/index.ts"
@@ -270,7 +272,7 @@ def bridge_calls(tmp_path: Path, inputs: list[dict]) -> tuple[list[dict], Path]:
             "jsonrpc": "2.0",
             "id": index + 2,
             "method": "tools/call",
-            "params": {"name": "operation-status", "arguments": arguments},
+            "params": {"name": tool_name, "arguments": arguments},
         }
         for index, arguments in enumerate(inputs)
     )
@@ -311,4 +313,50 @@ def test_bridge_rejects_all_unbounded_operation_status_inputs_before_operator(
     responses, marker = bridge_calls(tmp_path, list(INVALID_INPUTS))
     assert len(responses) == len(INVALID_INPUTS)
     assert all(response["result"]["isError"] is True for response in responses)
+    assert not marker.exists()
+
+
+def test_direct_bridge_accepts_only_frozen_theme_candidate_id(tmp_path: Path) -> None:
+    responses, marker = bridge_calls(
+        tmp_path,
+        [{"candidate_id": OPERATION_ID}],
+        "owner-direct-theme-propose-candidate",
+    )
+    assert responses[0]["result"]["structuredContent"] == receipt()
+    assert (
+        json.loads(marker.read_text())["argv"][-1]
+        == "owner-direct-theme-propose-candidate"
+    )
+
+
+def test_direct_bridge_refuses_caller_package_paths_before_operator(
+    tmp_path: Path,
+) -> None:
+    responses, marker = bridge_calls(
+        tmp_path,
+        [
+            {"candidate_id": OPERATION_ID, "package_path": "/tmp/package.zip"},
+            {"candidate_id": "legacy"},
+        ],
+        "owner-direct-theme-propose-candidate",
+    )
+    assert all(response["result"]["isError"] for response in responses)
+    assert not marker.exists()
+
+
+def test_direct_bridge_refuses_legacy_profile_before_authorization(
+    tmp_path: Path,
+) -> None:
+    responses, marker = bridge_calls(
+        tmp_path,
+        [
+            {
+                "profile": "verified-incremental",
+                "proposal_ids": [OPERATION_ID],
+                "expected_theme_tree_sha256": "b" * 64,
+            }
+        ],
+        "owner-direct-authorize",
+    )
+    assert responses[0]["result"]["isError"] is True
     assert not marker.exists()

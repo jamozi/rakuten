@@ -123,8 +123,8 @@ def test_runtime_manifest_is_exact_and_keeps_st1703_as_predecessor() -> None:
 
 
 def test_theme_package_is_deterministic_closed_and_has_only_owned_javascript() -> None:
-    assert theme_builder.THEME_VERSION == "1.5.1"
-    assert theme_builder.OUTPUT_PATH.name == "kurashinoshirube-child-1.5.1.zip"
+    assert theme_builder.THEME_VERSION == "1.6.0"
+    assert theme_builder.OUTPUT_PATH.name == "kurashinoshirube-child-1.6.0.zip"
     assert "assets/theme.js" not in theme_builder.SOURCE_FILES
     first = theme_builder.build_package()
     second = theme_builder.build_package()

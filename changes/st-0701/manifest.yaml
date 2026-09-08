@@ -218,8 +218,8 @@ source_artifacts:
   bytes: 3602
   sha256: 383e20a86b294a6d2ac758aa0ce70d972fd46c58cbfc3295c7e511a1d35b13bc
 - uri: repo://README.md
-  bytes: 8511
-  sha256: 4723656cc642de2eddc311be0eb20ba360dc84fb19c5d64e11b0d2958578ab5a
+  bytes: 8765
+  sha256: a443f99bc4cee299a4b5b705db84b9c7af0bbf57f79aaeafd496da2b9c4b2575
 - uri: repo://.python-version
   bytes: 7
   sha256: 3a55324cbeddc91df012407d051dad08c88624c95a82fbdb856728729fbd14ab

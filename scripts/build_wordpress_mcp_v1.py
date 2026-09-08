@@ -28,9 +28,9 @@ if TYPE_CHECKING:
 ROOT: Final = Path(__file__).resolve().parents[1]
 SLICE: Final = ROOT / "changes/wordpress-mcp-v1"
 PLUGIN_SLUG: Final = "raos-codex-mcp-abilities"
-PLUGIN_VERSION: Final = "1.3.2"
+PLUGIN_VERSION: Final = "1.4.0"
 PLUGIN_RUNTIME_REVISION: Final = (
-    "b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc"
+    "3959d130244e13994c252522bbbc4ae245d70c517817c7e6e64835c621659a19"
 )
 PLUGIN_ROOT: Final = SLICE / "wordpress-plugin" / PLUGIN_SLUG
 MANIFEST_PATH: Final = Path("changes/wordpress-mcp-v1/runtime-manifest.v1.json")
@@ -67,6 +67,7 @@ PLUGIN_FILES: Final = (
     "README.md",
     "includes/class-raos-codex-mcp-content.php",
     "includes/class-raos-codex-mcp-deployment.php",
+    "includes/class-raos-codex-mcp-owner-direct.php",
     "includes/class-raos-codex-mcp-store.php",
     "raos-codex-mcp-abilities.php",
 )
@@ -81,6 +82,10 @@ PLUGIN_SOURCE_PATHS: Final = (
     Path(
         "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/"
         "includes/class-raos-codex-mcp-deployment.php"
+    ),
+    Path(
+        "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/"
+        "includes/class-raos-codex-mcp-owner-direct.php"
     ),
     Path(
         "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/"
@@ -385,6 +390,7 @@ def _validate_plugin_runtime_revision(payloads: dict[str, bytes]) -> None:
         "raos-codex-mcp-abilities.php": 1,
         "includes/class-raos-codex-mcp-store.php": 1,
         "includes/class-raos-codex-mcp-content.php": 1,
+        "includes/class-raos-codex-mcp-owner-direct.php": 1,
         "includes/class-raos-codex-mcp-deployment.php": 1,
     }
     if set(payloads) != set(PLUGIN_FILES):

@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Content
 {
-    const RUNTIME_REVISION = 'b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc';
+    const RUNTIME_REVISION = '3959d130244e13994c252522bbbc4ae245d70c517817c7e6e64835c621659a19';
     const MAX_CONTENT_BYTES = 1048576;
 
     private $plugin;
@@ -682,7 +682,7 @@ final class RAOS_Codex_MCP_Content
         return self::document((int) $post->ID);
     }
 
-    public function content_propose_release($input)
+    public function content_propose_release($input, $authorization_profile = null)
     {
         $runtime_gate = self::runtime_identity_gate();
         if (is_wp_error($runtime_gate)) {
@@ -747,6 +747,13 @@ final class RAOS_Codex_MCP_Content
             'after_sha256' => $after['content_sha256'],
             'publication_manifest_sha256' => $manifest_hash,
         );
+        if (null !== $authorization_profile) {
+            $proposal['authorization_profile'] = $authorization_profile;
+            $direct_gate = RAOS_Codex_MCP_Owner_Direct::validate_binding(array(
+                'kind' => 'CONTENT_RELEASE', 'created_by' => get_current_user_id(), 'payload' => $proposal,
+            ));
+            if (is_wp_error($direct_gate)) { return $direct_gate; }
+        }
         $row = RAOS_Codex_MCP_Store::create(
             'CONTENT_RELEASE',
             $proposal,

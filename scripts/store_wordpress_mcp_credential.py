@@ -19,10 +19,12 @@ ORIGIN: Final = "https://kurashinoshirube.com"
 PURPOSES: Final = {
     "editor_mcp": "editor-application-password.v1.json",
     "deployment_operator": "operator-application-password.v1.json",
+    "owner_direct_publisher": "owner-direct-application-password.v1.json",
 }
 APPLICATION_PASSWORD_NAMES: Final = {
     "editor_mcp": "RAOS Codex Editor MCP",
     "deployment_operator": "RAOS Codex Deployment Bridge",
+    "owner_direct_publisher": "RAOS Codex Owner Direct Publisher",
 }
 
 
@@ -59,6 +61,8 @@ def secure_existing(path: Path) -> dict[str, object]:
 
 
 def ensure_directory() -> None:
+    if any(path.is_symlink() for path in (DIRECTORY, *DIRECTORY.parents)):
+        fail("WORDPRESS_MCP_CREDENTIAL_DIRECTORY_INSECURE")
     DIRECTORY.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     DIRECTORY.mkdir(mode=0o700, exist_ok=True)
     os.chmod(DIRECTORY, 0o700)
@@ -77,6 +81,21 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--purpose", choices=tuple(PURPOSES), required=True)
     result.add_argument("--replace-username", action="store_true")
     return result
+
+
+def ensure_unique_password(purpose: str, application_password: str) -> None:
+    normalized = "".join(application_password.split())
+    for other_purpose, filename in PURPOSES.items():
+        if other_purpose == purpose:
+            continue
+        other = DIRECTORY / filename
+        if other.exists() or other.is_symlink():
+            other_record = secure_existing(other)
+            other_value = other_record.get("application_password")
+            if type(other_value) is not str:
+                fail("WORDPRESS_MCP_CREDENTIAL_INVALID")
+            if "".join(other_value.split()) == normalized:
+                fail("WORDPRESS_MCP_CREDENTIAL_REUSE_FORBIDDEN")
 
 
 def record_bytes(record: dict[str, object]) -> bytes:
@@ -151,6 +170,7 @@ def main() -> int:
             ):
                 fail("WORDPRESS_MCP_CREDENTIAL_INPUT_INVALID")
             record["username"] = username
+            ensure_unique_password(purpose, str(record["application_password"]))
             replace_record(target, record_bytes(record))
             print("WORDPRESS_MCP_CREDENTIAL_USERNAME_UPDATED")
             return 0
@@ -167,14 +187,7 @@ def main() -> int:
             or len(application_password) > 512
         ):
             fail("WORDPRESS_MCP_CREDENTIAL_INPUT_INVALID")
-        other_purpose = (
-            "deployment_operator" if purpose == "editor_mcp" else "editor_mcp"
-        )
-        other = DIRECTORY / PURPOSES[other_purpose]
-        if other.exists():
-            other_record = secure_existing(other)
-            if other_record.get("application_password") == application_password:
-                fail("WORDPRESS_MCP_CREDENTIAL_REUSE_FORBIDDEN")
+        ensure_unique_password(purpose, application_password)
         record = {
             "schema": "RAOS_WORDPRESS_APPLICATION_PASSWORD_V1",
             "origin": ORIGIN,
