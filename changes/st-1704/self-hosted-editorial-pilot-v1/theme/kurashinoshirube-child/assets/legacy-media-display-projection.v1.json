@@ -370,77 +370,77 @@
           ]
         },
         "local-stored": {
-          "input_sha256": "4b94f298c9ea757c6c85e2ddf6b41708faa1aa48531c80c8216e890363f1bc81",
-          "output_sha256": "ed9bd441890c913f6b874400486f3387a37434fc24466c1bb47209f6991e5447",
+          "input_sha256": "60961b1161830143335afcfb1404e6d6a86b6a8d68e7ba7bed77ff8a5e87773e",
+          "output_sha256": "e8c4498b1c2034a7c299cec368c37b809436a78082029c84ae2ea6edeb78876f",
           "removals": [
             {
-              "offset": 9427,
+              "offset": 9441,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 10506,
+              "offset": 10520,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 11592,
+              "offset": 11606,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 12671,
+              "offset": 12685,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 13877,
+              "offset": 13891,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 14972,
+              "offset": 14986,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 16074,
+              "offset": 16088,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 17169,
+              "offset": 17183,
               "length": 184,
               "sha256": "4426c6af131aeb3bbc23d5d62d08e9b18a0d0292bdb8bf650e5f2f47bcafad53",
               "kind": "decorative-image"
             },
             {
-              "offset": 18592,
+              "offset": 18606,
               "length": 404,
               "sha256": "d11f101bf8c7addf5b07aed0d3ee8ac2f092f9c1dc57431072e436b6a70cb92d",
               "kind": "neutral-media"
             },
             {
-              "offset": 21782,
+              "offset": 21796,
               "length": 414,
               "sha256": "a3961716794830c0b89112c5730e8a4d5413320e3150ae539fd5085de21131d8",
               "kind": "neutral-media"
             },
             {
-              "offset": 24995,
+              "offset": 25009,
               "length": 406,
               "sha256": "4efdfc57d63d4b0cdd665d65aaeae97e23222d1674083915dc7ed259883fd52a",
               "kind": "neutral-media"
             },
             {
-              "offset": 28306,
+              "offset": 28320,
               "length": 417,
               "sha256": "8e7539212ae5d08a496781f16e7f2a6935e15ba64a6417b5bce800c6c157cad1",
               "kind": "neutral-media"

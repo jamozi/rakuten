@@ -184,7 +184,7 @@ def test_v1_default_serialization_is_unchanged():
     # The binding includes the current exact legacy-media contract digest.
     assert (
         digest(canonical(result.binding))
-        == "82302b8ce93c75b8d0fd80432fe25b6f827b9fdc763c4544645c1f7562477d3a"
+        == "57c1e592529b789581b892bd32a552486cbb2de46e62b027ed12263648f17b7d"
     )
     assert build_mixed_preview(**data, page_overrides={}) == result
 
