@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 5c34221b47a6beea22ca9e86939b6ad9757960e06a2d77d545a596ec0a007dff;
+  --raos-theme-runtime-revision-base: e4350f56e5ce2a0d0e84443aedc60f6d82188b0d3e2700ddbf02c90e429f1e47;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -3958,27 +3958,6 @@ body.home.raos-home-v2-page #ks-magazine .km-category > span {
 .raos-journey-shortcuts a:focus-visible { outline: 3px solid #234638; outline-offset: 3px; }
 .raos-journey-shelf { margin-block: 2.5rem; }
 .raos-journey-shelf > h2 { margin-bottom: 1.25rem; }
-
-/*
- * The live legacy Additional CSS hides non-magazine headers with two ID
- * selectors. Repeating the magazine predicate gives this bounded TOP rule
- * greater specificity while leaving every page without the stored body alone.
- */
-body.home.raos-home-v2-page:has(#ks-magazine):has(#ks-magazine):has(#ks-magazine) .wp-site-blocks > header.wp-block-template-part:has(.raos-site-header) {
-  display: block !important;
-}
-
-body.home.raos-home-v2-page:has(#ks-magazine):has(#ks-magazine):has(#ks-magazine) .wp-site-blocks > header.wp-block-template-part > .raos-site-header {
-  display: block !important;
-}
-
-body.home.raos-home-v2-page:has(#ks-magazine):has(#ks-magazine):has(#ks-magazine) .wp-site-blocks > header.wp-block-template-part > .raos-site-header > .raos-masthead {
-  display: grid !important;
-}
-
-body.home.raos-home-v2-page #ks-magazine > .km-header {
-  display: none !important;
-}
 
 body.home.raos-home-v2-page #ks-magazine .km-category > span {
   color: #756e61;
