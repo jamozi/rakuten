@@ -3,6 +3,7 @@
 from copy import deepcopy
 from dataclasses import replace
 from datetime import UTC, datetime
+import base64
 from types import SimpleNamespace
 from unittest.mock import Mock
 
@@ -17,6 +18,20 @@ CANDIDATE = "c" * 64
 NOW = datetime(2026, 9, 6, tzinfo=UTC)
 URLS = frozenset({runtime.ORIGIN + "/", runtime.ORIGIN + "/guide/"})
 HINT = '<link rel="dns-prefetch" href="//www.googletagmanager.com">'
+POST_CONTENT = '<!-- wp:post-content {"layout":{"type":"default"}} /-->'
+
+
+def saved_home(*, image: str = "") -> str:
+    encoded = base64.b64encode(b"RIFF\x04\x00\x00\x00WEBP").decode()
+    return (
+        '<div id="ks-magazine" style="--km-hero-image:url(\'data:image/webp;base64,'
+        + encoded
+        + "')\"><header class=\"km-header\"><form action=\"/\" method=\"get\" role=\"search\">"
+        '<label for="search">Search</label><input id="search" name="s" type="search">'
+        '<button type="submit">Search</button></form></header><h1>Home</h1>'
+        + image
+        + "</div>"
+    )
 
 
 @pytest.fixture
@@ -62,7 +77,14 @@ def world(monkeypatch):
     )
 
 
-def verify(world, current=BASELINE, *, opt_in=True):
+def verify(
+    world,
+    current=BASELINE,
+    *,
+    opt_in=True,
+    home_markup="<div><h1>Home</h1></div>",
+    home_post_type="page",
+):
     return runtime.verify_before_write(
         current_tree=current,
         baseline_tree=BASELINE,
@@ -71,12 +93,91 @@ def verify(world, current=BASELINE, *, opt_in=True):
         snapshot={
             "schema": "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
             "documents": [
-                {"slug": "home", "status": "publish", "post_type": "page", "block_markup": ""},
+                {
+                    "slug": "home",
+                    "status": "publish",
+                    "post_type": home_post_type,
+                    "block_markup": home_markup,
+                },
                 {"slug": "guide", "status": "publish", "post_type": "post", "block_markup": ""},
             ],
         },
         runtime_transition=world.policy if opt_in else None,
     )
+
+
+def test_saved_home_runtime_uses_closed_parser_and_exact_style_only_for_post_content(
+    world,
+):
+    markup = saved_home()
+    world.after["templates/front-page.html"] = POST_CONTENT.encode()
+    for url, response in list(world.responses.items()):
+        world.responses[url] = replace(response, body=b"<p>Clean page</p>")
+    world.responses[runtime.ORIGIN + "/"] = replace(
+        world.responses[runtime.ORIGIN + "/"], body=markup.encode()
+    )
+    result = verify(world, current=CANDIDATE, home_markup=markup)
+    assert result["state"] == "CLOSED_DECLARED_RUNTIME_VERIFIED"
+
+    world.responses[runtime.ORIGIN + "/"] = replace(
+        world.responses[runtime.ORIGIN + "/"],
+        body=markup.replace("--km-hero-image", "--changed-image").encode(),
+    )
+    with pytest.raises(runtime.seo.AuditError):
+        verify(world, current=CANDIDATE, home_markup=markup)
+
+
+def test_fixed_template_baseline_parses_saved_home_without_requiring_it_in_output(
+    world,
+):
+    assert verify(world, home_markup=saved_home())["state"] == runtime.DNS_TRANSITION_STATE
+
+
+def test_post_content_home_without_preserved_webp_style_remains_supported(world):
+    markup = '<div id="ks-magazine"><h1>Home</h1></div>'
+    world.after["templates/front-page.html"] = POST_CONTENT.encode()
+    for url, response in list(world.responses.items()):
+        world.responses[url] = replace(response, body=b"<p>Clean page</p>")
+    world.responses[runtime.ORIGIN + "/"] = replace(
+        world.responses[runtime.ORIGIN + "/"], body=markup.encode()
+    )
+    assert (
+        verify(world, current=CANDIDATE, home_markup=markup)["state"]
+        == "CLOSED_DECLARED_RUNTIME_VERIFIED"
+    )
+
+
+def test_home_runtime_branch_requires_the_home_document_to_be_a_page(world):
+    with pytest.raises(runtime.seo.AuditError):
+        verify(world, home_post_type="post")
+
+
+@pytest.mark.parametrize(
+    "image",
+    [
+        '<img src="https://example.com/unbound.png" alt="">',
+        '<img src="x" onerror="alert(1)" alt="">',
+    ],
+)
+def test_saved_home_image_inventory_does_not_expand_urls_or_active_markup(image):
+    with pytest.raises((runtime.seo.AuditError, ValueError)):
+        audit.home_image_urls(saved_home(image=image))
+
+
+def test_captured_home_theme_reference_is_allowed_only_for_fixed_baseline(world):
+    path = "/wp-content/themes/kurashinoshirube-child/assets/images/old-missing.png"
+    markup = f'<div><h1>Home</h1><img src="{path}" alt=""></div>'
+    home_url = runtime.ORIGIN + "/"
+    world.responses[home_url] = replace(
+        world.responses[home_url], body=(HINT + markup).encode()
+    )
+    assert verify(world, home_markup=markup)["state"] == runtime.DNS_TRANSITION_STATE
+
+    world.responses[home_url] = replace(
+        world.responses[home_url], body=markup.encode()
+    )
+    with pytest.raises(runtime.seo.AuditError):
+        verify(world, current=CANDIDATE, opt_in=False, home_markup=markup)
 
 
 def test_baseline_transition_is_distinct_bound_and_does_not_fetch_external_host(world):
@@ -240,7 +341,12 @@ def test_captured_relative_reference_is_baseline_only_and_page_bound(world):
         snapshot={
             "schema": "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
             "documents": [
-                {"slug": "home", "status": "publish", "post_type": "page", "block_markup": ""},
+                {
+                    "slug": "home",
+                    "status": "publish",
+                    "post_type": "page",
+                    "block_markup": "<div><h1>Home</h1></div>",
+                },
                 document,
             ],
         },
