@@ -40,7 +40,16 @@ def repository(tmp_path: Path, *, identity: bool = True) -> Path:
     note.parent.mkdir()
     note.write_text("base\n", encoding="utf-8")
     git(root, "add", "--", ARTICLE_ROOT.as_posix(), "notes/user work.txt")
-    git(root, "commit", "-m", "initial")
+    git(
+        root,
+        "-c",
+        "user.name=RAOS Fixture",
+        "-c",
+        "user.email=raos-fixture@example.invalid",
+        "commit",
+        "-m",
+        "initial",
+    )
     return root
 
 

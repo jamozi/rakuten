@@ -291,11 +291,11 @@ def request_json(
     _ensure_request_deadline(deadline)
     if method not in {"GET", "POST"} or not path.startswith("/") or ".." in path:
         fail("WORDPRESS_MCP_TRANSPORT_INVALID")
-    token = _owner_direct.set(owner_direct or _owner_direct.get())
+    direct_context_reset = _owner_direct.set(owner_direct or _owner_direct.get())
     try:
         username, application_password = credentials()
     finally:
-        _owner_direct.reset(token)
+        _owner_direct.reset(direct_context_reset)
     api = f"{ORIGIN}/wp-json/raos-codex-owner-direct/v1" if owner_direct else DEPLOY_API
     headers = {
         "Accept": "application/json",
@@ -1511,7 +1511,7 @@ def owner_direct_run(command: str, inputs: dict[str, object]) -> dict[str, objec
         if "idempotency_key" in record:
             require_sha256(record["idempotency_key"])
         return request_json("POST", path, record, owner_direct=True)
-    token = _owner_direct.set(True)
+    direct_context_reset = _owner_direct.set(True)
     try:
         if command == "owner-direct-apply":
             return release_wait_and_apply(inputs)
@@ -1520,7 +1520,7 @@ def owner_direct_run(command: str, inputs: dict[str, object]) -> dict[str, objec
             kind, operation = _release_operation(require_sha256(record["operation_id"]))
             return {"kind": kind, "operation": operation}
     finally:
-        _owner_direct.reset(token)
+        _owner_direct.reset(direct_context_reset)
     fail("WORDPRESS_MCP_COMMAND_REFUSED")
 
 

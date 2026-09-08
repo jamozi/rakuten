@@ -842,11 +842,11 @@ def main(argv=None):
     except operator.OperatorFailure as error:
         print(str(error), file=sys.stderr)
         return 69
-    token = operator._private_owner.set(owner)
+    private_context_reset = operator._private_owner.set(owner)
     try:
         return execute_cli(args)
     finally:
-        operator._private_owner.reset(token)
+        operator._private_owner.reset(private_context_reset)
 
 
 def execute_cli(args):

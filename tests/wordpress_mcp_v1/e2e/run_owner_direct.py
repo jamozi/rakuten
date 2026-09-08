@@ -59,12 +59,12 @@ def main():
             "/*\nTheme Name: RAOS disposable child\nTemplate: twentytwentyfive\nVersion: 1.0.0\n*/\n"
         )
         (child / "functions.php").write_text("<?php // Synthetic theme fixture.\n")
-        password = secrets.token_urlsafe(32)
+        synthetic_db_value = secrets.token_urlsafe(32)
         environment = dict(
             os.environ,
-            MARIADB_PASSWORD=password,
-            MARIADB_ROOT_PASSWORD=password,
-            WORDPRESS_DB_PASSWORD=password,
+            MARIADB_PASSWORD=synthetic_db_value,
+            MARIADB_ROOT_PASSWORD=synthetic_db_value,
+            WORDPRESS_DB_PASSWORD=synthetic_db_value,
         )
 
         def private_run(args):

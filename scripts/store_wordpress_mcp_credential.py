@@ -91,10 +91,10 @@ def ensure_unique_password(purpose: str, application_password: str) -> None:
         other = DIRECTORY / filename
         if other.exists() or other.is_symlink():
             other_record = secure_existing(other)
-            password = other_record.get("application_password")
-            if type(password) is not str:
+            other_value = other_record.get("application_password")
+            if type(other_value) is not str:
                 fail("WORDPRESS_MCP_CREDENTIAL_INVALID")
-            if "".join(password.split()) == normalized:
+            if "".join(other_value.split()) == normalized:
                 fail("WORDPRESS_MCP_CREDENTIAL_REUSE_FORBIDDEN")
 
 
