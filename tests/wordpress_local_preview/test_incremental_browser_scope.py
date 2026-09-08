@@ -188,6 +188,50 @@ def test_incremental_exact_scope_accepts_two_positions_and_single_image() -> Non
 
 @pytest.mark.parametrize(
     "mutation",
+    [None, "missing", "production_id", "source", "target", "external", "duplicate"],
+)
+def test_theme_only_scope_accepts_only_closed_local_route_aliases(mutation) -> None:
+    scope = _scope()
+    scope["selected_article_ids"] = []
+    scope["theme_only_candidate"] = True
+    aliases = {
+        "schema": "RAOS_WORDPRESS_LOCAL_ROUTE_ALIASES_V1",
+        "routes": [
+            {
+                "kind": "post_slug",
+                "production_id": 10,
+                "production_slug": "saved-post",
+                "source_path": "/saved-post/",
+                "local_path": "/local-preview-saved-post/",
+            },
+            {
+                "kind": "page_id",
+                "production_id": 20,
+                "production_slug": "saved-page",
+                "source_path": "/?page_id=20",
+                "local_path": "/saved-page/",
+            },
+        ],
+    }
+    scope["local_route_aliases"] = aliases
+    if mutation == "missing":
+        del scope["local_route_aliases"]
+    elif mutation == "production_id":
+        aliases["routes"][0]["production_id"] = 0
+    elif mutation == "source":
+        aliases["routes"][0]["source_path"] = "/other/"
+    elif mutation == "target":
+        aliases["routes"][0]["local_path"] = "/local-preview-other/"
+    elif mutation == "external":
+        aliases["routes"][1]["local_path"] = "https://example.invalid/"
+    elif mutation == "duplicate":
+        aliases["routes"][1]["source_path"] = aliases["routes"][0]["source_path"]
+
+    assert _node({"scope": scope})["valid"] is (mutation is None)
+
+
+@pytest.mark.parametrize(
+    "mutation",
     [
         "wrong_product",
         "wrong_cta",

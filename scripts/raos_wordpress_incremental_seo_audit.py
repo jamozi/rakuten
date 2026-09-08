@@ -109,9 +109,11 @@ def _json(raw: bytes) -> dict[str, Any]:
 class _EntryContent(HTMLParser):
     """Locate the single rendered post body without trusting a substring match."""
 
-    def __init__(self, markup: str) -> None:
+    def __init__(self, markup: str, *, home: bool = False) -> None:
         super().__init__(convert_charrefs=False)
         self.markup = markup
+        self.home = home
+        self.main_count = 0
         self.offsets = [0] + [match.end() for match in re.finditer("\n", markup)]
         self.stack: list[tuple[str, int | None]] = []
         self.bodies: list[str] = []
@@ -121,9 +123,24 @@ class _EntryContent(HTMLParser):
         return self.offsets[line - 1] + column
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        values = dict(attrs)
+        if self.home:
+            if tag == "main":
+                self.main_count += 1
+                if values.get("id") != "main-content":
+                    fail("PUBLIC_HOME_SCOPE_INVALID")
+            if tag == "main" or "entry-content" in html_attribute_tokens(values.get("class")):
+                if {"hidden", "inert", "aria-hidden", "style"} & set(values):
+                    fail("PUBLIC_HOME_SCOPE_INVALID")
+            if self.stack and self.stack[-1][0] == "main":
+                if tag != "div" or not {"entry-content", "wp-block-post-content"} <= html_attribute_tokens(values.get("class")):
+                    fail("PUBLIC_HOME_SCOPE_INVALID")
+            if "entry-content" in html_attribute_tokens(values.get("class")) and (
+                not self.stack or self.stack[-1][0] != "main"
+            ):
+                fail("PUBLIC_HOME_SCOPE_INVALID")
         if tag in VOID:
             return
-        values = dict(attrs)
         start = None
         if "entry-content" in html_attribute_tokens(values.get("class")):
             if not supported_html_token_attributes(self.get_starttag_text() or ""):
@@ -132,8 +149,10 @@ class _EntryContent(HTMLParser):
         self.stack.append((tag, start))
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)
         if tag not in VOID:
-            self.handle_starttag(tag, attrs)
+            if self.home:
+                fail("PUBLIC_HOME_SCOPE_INVALID")
             self.handle_endtag(tag)
 
     def handle_endtag(self, tag: str) -> None:
@@ -143,12 +162,22 @@ class _EntryContent(HTMLParser):
         if start is not None:
             self.bodies.append(self.markup[start : self.absolute_offset()])
 
+    def handle_data(self, data: str) -> None:
+        if self.home and self.stack and self.stack[-1][0] == "main" and data.strip():
+            fail("PUBLIC_HOME_SCOPE_INVALID")
 
-def _body(markup: str) -> str:
-    parser = _EntryContent(markup)
+    def handle_entityref(self, name: str) -> None:
+        self.handle_data(unescape("&" + name + ";"))
+
+    def handle_charref(self, name: str) -> None:
+        self.handle_data(unescape("&#" + name + ";"))
+
+
+def _body(markup: str, *, home: bool = False) -> str:
+    parser = _EntryContent(markup, home=home)
     parser.feed(markup)
     parser.close()
-    if parser.stack or len(parser.bodies) != 1:
+    if parser.stack or len(parser.bodies) != 1 or home and parser.main_count != 1:
         fail("PUBLIC_BODY_SCOPE_INVALID")
     return parser.bodies[0]
 
@@ -340,9 +369,121 @@ def verify_rendered_body(
     return digest(canonical(expected_projection))
 
 
+class _HomeBodyMarkup(_Markup):
+    """Compare an existing home body including its exact inline styles.
+
+    This is readback of a frozen baseline, not permission to author CSS or media.
+    Article grammar and its stricter resource rules remain unchanged.
+    """
+
+    def __init__(self, markup: str) -> None:
+        super().__init__(markup)
+        self.tokens: list[list[Any]] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        values = dict(attrs)
+        if len(values) != len(attrs):
+            fail("PUBLIC_ATTRIBUTES_DUPLICATE")
+        if any(not unescape(reference) for reference in re.findall(
+            r"&#(?:[xX][0-9a-fA-F]+|[0-9]+);?", self.get_starttag_text() or ""
+        )):
+            fail("PUBLIC_HOME_ATTRIBUTE_REFERENCE_INVALID")
+        _require_supported_element(tag, values)
+        # The closed HTML grammar still validates tags, nesting and every other
+        # attribute. Styles are retained verbatim in the compared token stream.
+        shadow_tag, search_attributes = {
+            "form": ("div", {"action", "method"}),
+            "label": ("span", {"for"}),
+            "input": ("img", {"name", "type", "placeholder", "required"}),
+            "button": ("span", {"type"}),
+        }.get(tag, (tag, set()))
+        if tag in {"form", "label", "input", "button"}:
+            # Preserve the saved, same-site GET search in the hidden inline
+            # header. This does not authorize general forms or new form writes.
+            in_header = any("km-header" in html_attribute_tokens(row.attrs.get("class")) for row in self.stack)
+            in_search = any(row.tag == "form" and row.attrs.get("role") == "search" for row in self.stack)
+            if not in_header or (tag != "form" and not in_search) or (
+                tag == "form" and (values.get("method") != "get" or values.get("action") != "/" or values.get("role") != "search")
+                or tag == "input" and (values.get("type") != "search" or values.get("name") != "s")
+                or tag == "button" and values.get("type") != "submit"
+            ):
+                fail("PUBLIC_HOME_SEARCH_INVALID")
+        super().handle_starttag(shadow_tag, [(key, value) for key, value in attrs if key != "style" and key not in search_attributes])
+        self.elements[-1].tag = tag
+        self.elements[-1].attrs = values
+        self.tokens.append(["open", tag, sorted((key, value or "") for key, value in values.items())])
+
+    def handle_endtag(self, tag: str) -> None:
+        element = self.stack[-1] if self.stack else None
+        parent = self.stack[-2] if len(self.stack) >= 2 else None
+        if (
+            tag == "span" and element is not None and not element.attrs
+            and parent is not None and parent.tag == "div"
+            and "km-spine" in html_attribute_tokens(parent.attrs.get("class"))
+            and parent.attrs.get("aria-hidden") == "true"
+            and self.tokens and self.tokens[-1] == ["text", "EDITOR’S PICK"]
+        ):
+            # WordPress texturizes this one decorative label; never normalize
+            # editorial prose, attributes, URLs, images or arbitrary apostrophes.
+            self.tokens[-1] = ["text", "EDITOR'S PICK"]
+        super().handle_endtag(tag)
+        self.tokens.append(["close", tag])
+
+    def _text(self, data: str) -> None:
+        if not self.stack and not data.strip("\t\n\f\r "):
+            return
+        if self.tokens and self.tokens[-1][0] == "text":
+            self.tokens[-1][1] += data
+        else:
+            self.tokens.append(["text", data])
+
+    def handle_data(self, data: str) -> None:
+        super().handle_data(data)
+        self._text(data)
+
+    def handle_entityref(self, name: str) -> None:
+        super().handle_entityref(name)
+        self._text(unescape("&" + name + ";"))
+
+    def handle_charref(self, name: str) -> None:
+        super().handle_charref(name)
+        decoded = unescape("&#" + name + ";")
+        if not decoded:
+            fail("PUBLIC_HOME_TEXT_REFERENCE_INVALID")
+        self._text(decoded)
+
+
+def _home_projection(markup: str) -> list[list[Any]]:
+    parser = _HomeBodyMarkup(markup)
+    parser.feed(markup)
+    parser.close()
+    ids = [element.attrs["id"] for element in parser.elements if element.attrs.get("id")]
+    if parser.stack or len(ids) != len(set(ids)) or sum(element.tag == "h1" for element in parser.elements) != 1:
+        fail("PUBLIC_HOME_BODY_INVALID")
+    return parser.tokens
+
+
+def verify_rendered_home_body(expected: str, actual_page: str) -> str:
+    expected_projection = _home_projection(expected)
+    actual_projection = _home_projection(_body(actual_page, home=True))
+    if expected_projection != actual_projection:
+        fail("PUBLIC_HOME_BODY_MISMATCH")
+    return digest(canonical(expected_projection))
+
+
+def _preserved_home_style(markup: str) -> str | None:
+    parser = _HomeBodyMarkup(markup)
+    parser.feed(markup)
+    parser.close()
+    return next((element.attrs["style"] for element in parser.elements
+                 if element.tag == "div" and element.attrs.get("id") == "ks-magazine"
+                 and "data:image/webp;base64," in (element.attrs.get("style") or "")), None)
+
+
 class _PageAssets(HTMLParser):
-    def __init__(self) -> None:
+    def __init__(self, *, verified_home_body: bool = False) -> None:
         super().__init__(convert_charrefs=True)
+        self.verified_home_body = verified_home_body
         self.images: set[str] = set()
         self.image_counts: Counter[str] = Counter()
         self.links: set[str] = set()
@@ -356,7 +497,7 @@ class _PageAssets(HTMLParser):
         _require_supported_element(
             tag,
             values,
-            article_body=self._content_depth > 0,
+            article_body=self._content_depth > 0 and not self.verified_home_body,
             raw_starttag=self.get_starttag_text(),
         )
         if tag not in VOID:
@@ -672,6 +813,12 @@ def _reader_seo_projection(files: Mapping[str, bytes], expected_tree: str) -> di
     return {
         "schema": "RAOS_WORDPRESS_READER_SEO_METADATA_V1",
         "theme_sha256": expected_tree,
+        "home_content_mode": (
+            "POST_CONTENT"
+            if files.get("templates/front-page.html", b"").count(
+                b'<!-- wp:post-content {"layout":{"type":"default"}} /-->'
+            ) == 1 else "TEMPLATE"
+        ),
         "navigation_sha256": digest(raw),
         "registry_sha256": digest(manifest_canonical(registry)),
         "articles": articles,
@@ -1373,10 +1520,10 @@ def run_verified_incremental_public_audit(
             if reader is not None and slug in READER_HUB_SLUGS
             else target["block_markup"]
         )
+        home_post_content = item.role == "home" and reader is not None and reader["home_content_mode"] == "POST_CONTENT"
         projection_sha = (
-            None
-            if item.role == "home"
-            else verify_rendered_body(
+            verify_rendered_home_body(body_markup, markup)
+            if home_post_content else None if item.role == "home" else verify_rendered_body(
                 body_markup,
                 markup,
                 article_id=display_article_id if item.role == "article" else None,
@@ -1386,7 +1533,7 @@ def run_verified_incremental_public_audit(
         evidence.feed(markup)
         if item.role != "home" and evidence.h1_titles != [target["title"]]:
             fail("PUBLIC_H1_MISMATCH")
-        assets = _PageAssets()
+        assets = _PageAssets(verified_home_body=home_post_content)
         assets.feed(markup)
         assets.close()
         expected_preserved = preserved_counts.get(slug, Counter())
@@ -1398,12 +1545,13 @@ def run_verified_incremental_public_audit(
             fail("BASELINE_THEME_IMAGE_OCCURRENCES_CHANGED")
         if (assets.measurement_scripts and reader_measurement is None) or page.header_values("set-cookie"):
             fail("PUBLIC_MEASUREMENT_OFF_MISMATCH")
-        runtime_evidence = (
-            runtime.verify_page(page, runtime_resources, observed_http)
-            if reader_measurement is None else
-            runtime.verify_page(page, runtime_resources, observed_http, reader_measurement=reader_measurement)
-        )
-        if item.role == "home":
+        runtime_options = {}
+        if reader_measurement is not None:
+            runtime_options["reader_measurement"] = reader_measurement
+        if home_post_content:
+            runtime_options["preserved_home_style"] = _preserved_home_style(body_markup)
+        runtime_evidence = runtime.verify_page(page, runtime_resources, observed_http, **runtime_options)
+        if item.role == "home" and not home_post_content:
             if reader is None:
                 required_routes = {entry.url for entry in contract.items if entry.role == "article"}
             else:

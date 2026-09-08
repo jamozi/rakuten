@@ -1422,28 +1422,72 @@ def test_brand_mark_is_bounded_accessible_svg() -> None:
     assert "<script" not in mark.read_text(encoding="utf-8").lower()
 
 
-def test_homepage_routes_needs_before_policy_and_gates_independent_pages() -> None:
+def test_front_page_renders_the_stored_home_body_once_with_shared_chrome() -> None:
     header = (THEME_ROOT / "parts/header.html").read_text(encoding="utf-8")
     front = (THEME_ROOT / "templates/front-page.html").read_text(encoding="utf-8")
     functions = (THEME_ROOT / "functions.php").read_text(encoding="utf-8")
-    assert front.count("<h1") == front.count("</h1>") == 1
-    assert "暮らしに合うものを、迷わず選ぶ。" in re.sub(r"<[^>]+>", "", front)
-    assert "サイズ、使い方、手入れのしやすさまで。" in front
-    assert 'raos-home-hero__image' not in front
+    header_part = '<!-- wp:template-part {"slug":"header","tagName":"header"} /-->'
+    main_block = (
+        '<!-- wp:group {"tagName":"main","className":"raos-home-v2",'
+        '"anchor":"main-content","layout":{"type":"default"}} -->'
+    )
+    main_element = '<main id="main-content" class="wp-block-group raos-home-v2">'
+    post_content = '<!-- wp:post-content {"layout":{"type":"default"}} /-->'
+    footer_part = '<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->'
+
+    for marker in (header_part, main_block, main_element, post_content, footer_part):
+        assert front.count(marker) == 1
+    assert [front.index(marker) for marker in (header_part, main_block, main_element, post_content, footer_part)] == sorted(
+        front.index(marker)
+        for marker in (header_part, main_block, main_element, post_content, footer_part)
+    )
+    assert front.count("wp:post-content") == 1
+    assert "wp:post-title" not in front
+    assert "<h1" not in front
+    assert "wp:shortcode" not in front
+    assert "[kurashinoshirube_reader_home" not in front
+    assert "[kurashinoshirube_latest_guides]" not in front
+    assert "ID15" not in front and "postId" not in front and '"postId":15' not in front
     for slug in ('categories', 'purposes', 'guides', 'comparisons', 'updates'):
         assert f'"url":"/{slug}/"' in header
     assert '"url":"/#' not in header
     assert "kurashinoshirube_reader_hub_url" in functions
     assert "$page->post_status !== 'publish'" in functions
     assert "$page->post_content !== kurashinoshirube_reader_hub_content($slug)" in functions
-    markers = ['id="home-hero-title"', 'section="purposes"', 'section="categories"', 'section="guides"', '<section id="latest"', 'id="home-promise-title"']
-    assert [front.index(m) for m in markers] == sorted(front.index(m) for m in markers)
-    for text in ('公式仕様を確認', '向かない条件も掲載', '未確認は未確認と表示', '商品選定・評価は報酬条件とは切り離して行います。'):
-        assert text in front
     assert "[kurashinoshirube_published_clusters]" not in front
     assert "Codex" not in front
     assert "人気" not in front
-    assert front.count('[kurashinoshirube_latest_guides]') == 1
+
+
+def test_homepage_restores_only_shared_header_and_hides_direct_magazine_header() -> None:
+    css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
+    scope = (
+        "body.home.raos-home-v2-page:has(#ks-magazine):has(#ks-magazine)"
+        ":has(#ks-magazine)"
+    )
+    expected_displays = {
+        scope
+        + " .wp-site-blocks > header.wp-block-template-part:has(.raos-site-header)": (
+            "display: block !important;"
+        ),
+        scope
+        + " .wp-site-blocks > header.wp-block-template-part > .raos-site-header": (
+            "display: block !important;"
+        ),
+        scope
+        + " .wp-site-blocks > header.wp-block-template-part > .raos-site-header > .raos-masthead": (
+            "display: grid !important;"
+        ),
+        "body.home.raos-home-v2-page #ks-magazine > .km-header": (
+            "display: none !important;"
+        ),
+    }
+
+    for selector, declaration in expected_displays.items():
+        assert selector + " {" in css
+        rule = css.split(selector + " {", 1)[1].split("}", 1)[0]
+        assert declaration in rule
+    assert "#ks-magazine .km-header" not in css
 
 
 def test_homepage_cluster_anchors_clear_the_sticky_header() -> None:
@@ -2195,6 +2239,7 @@ def test_content_is_visible_without_javascript() -> None:
     assert hidden_selectors == {
         ".raos-comparison__cards",
         ".raos-comparison__table-view",
+        "body.home.raos-home-v2-page #ks-magazine > .km-header",
         ".raos-site-header .raos-wordmark::before",
         ".raos-header-nojs-shell > summary::-webkit-details-marker",
         ".raos-site-header:has(.raos-primary-nav[data-raos-nav-ready])"

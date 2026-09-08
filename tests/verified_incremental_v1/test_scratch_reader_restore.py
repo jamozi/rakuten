@@ -352,6 +352,7 @@ def test_v2_theme_rejects_any_stage_mutation(stage, change):
 
 def php_simulation(value, expected, *, mutation="", theme_expected=None):
     import base64
+    import os
     from pathlib import Path
     import shutil
     import subprocess
@@ -370,7 +371,7 @@ def php_simulation(value, expected, *, mutation="", theme_expected=None):
             "candidate-package": theme_expected.candidate_package.decode(),
             "content-receipt": theme_expected.content_receipt.decode(),
         }
-    php = shutil.which("php")
+    php = os.environ.get("RAOS_PHP_BIN") or shutil.which("php")
     assert php, "The explicit local, offline PHP runtime is required"
     result = subprocess.run(
         [
@@ -385,6 +386,130 @@ def php_simulation(value, expected, *, mutation="", theme_expected=None):
     )
     assert result.returncode == 0, result.stdout + result.stderr
     return json.loads(result.stdout)
+
+
+def bound_home_markup() -> str:
+    return (
+        '<div id="ks-magazine" style="'
+        + ";".join(
+            f"--km-image-{index}:url(data:image/webp;base64,UklGRg==)"
+            for index in range(5)
+        )
+        + '">'
+        '<form action="/" class="km-search" method="get" role="search">'
+        '<label for="km-search">検索</label><input id="km-search" name="s" '
+        'placeholder="検索" required type="search"><button type="submit">検索</button>'
+        "</form></div>"
+    )
+
+
+def set_bound_home(value, markup):
+    home = next(row for row in value["documents"] if row["slug"] == "home")
+    home["block_markup"] = markup
+    home["content_sha256"] = digest(
+        canonical({key: home[key] for key in FIELDS}).rstrip(b"\n")
+    )
+    return home
+
+
+def test_v2_php_import_preserves_exact_bound_home_with_inline_webp_and_form():
+    value, articles, pages = fixture()
+    home = set_bound_home(value, bound_home_markup())
+    _, expected = prepare(value, articles, pages)
+
+    proof = php_simulation(value, expected)
+
+    assert "synthetic_error" not in proof, proof
+    assert (
+        proof["synthetic_content"]["documents"]["home"]["block_markup"]
+        == home["block_markup"]
+    )
+
+
+def test_v2_php_import_does_not_extend_bound_home_exception_to_active_content():
+    value, articles, pages = fixture()
+    set_bound_home(value, bound_home_markup() + "<script>alert(1)</script>")
+    _, expected = prepare(value, articles, pages)
+
+    proof = php_simulation(value, expected)
+
+    assert proof == {
+        "synthetic_error": "RAOS_SCRATCH_BODY_INVALID",
+        "synthetic_inserted_count": 0,
+    }
+
+
+def test_v2_php_import_rejects_malformed_active_attribute_on_bound_home():
+    value, articles, pages = fixture()
+    set_bound_home(
+        value,
+        bound_home_markup().replace(
+            '<form action="/"', '<img/onerror=alert(1) src=x><form action="/"'
+        ),
+    )
+    _, expected = prepare(value, articles, pages)
+
+    proof = php_simulation(value, expected)
+
+    assert proof == {
+        "synthetic_error": "RAOS_SCRATCH_BODY_INVALID",
+        "synthetic_inserted_count": 0,
+    }
+
+
+@pytest.mark.parametrize(
+    "old,new",
+    (
+        ('method="get"', 'method="post"'),
+        ('action="/"', 'action="https://other.example/search"'),
+    ),
+)
+def test_v2_php_import_rejects_non_get_or_external_bound_home_form(old, new):
+    value, articles, pages = fixture()
+    set_bound_home(value, bound_home_markup().replace(old, new))
+    _, expected = prepare(value, articles, pages)
+
+    proof = php_simulation(value, expected)
+
+    assert proof == {
+        "synthetic_error": "RAOS_SCRATCH_BODY_INVALID",
+        "synthetic_inserted_count": 0,
+    }
+
+
+def test_v2_php_import_rejects_entity_encoded_javascript_url_on_bound_home():
+    value, articles, pages = fixture()
+    set_bound_home(
+        value,
+        bound_home_markup().replace(
+            "</form>", '<a href="java&#9;script:alert(1)">unsafe</a></form>'
+        ),
+    )
+    _, expected = prepare(value, articles, pages)
+
+    proof = php_simulation(value, expected)
+
+    assert proof == {
+        "synthetic_error": "RAOS_SCRATCH_BODY_INVALID",
+        "synthetic_inserted_count": 0,
+    }
+
+
+def test_v2_php_import_does_not_extend_bound_home_exception_to_other_documents():
+    value, articles, pages = fixture()
+    article = next(row for row in value["documents"] if row["post_type"] == "post")
+    article["block_markup"] = bound_home_markup()
+    article["content_sha256"] = digest(
+        canonical({key: article[key] for key in FIELDS}).rstrip(b"\n")
+    )
+    _, expected = prepare(value, articles, pages)
+
+    proof = php_simulation(value, expected)
+
+    assert proof == {
+        "synthetic_error": "RAOS_SCRATCH_BODY_INVALID",
+        "synthetic_inserted_count": 0,
+    }
 
 
 @pytest.mark.parametrize("hubs", [(), ("categories",), tuple(sorted(READER_HUB_SLUGS))])

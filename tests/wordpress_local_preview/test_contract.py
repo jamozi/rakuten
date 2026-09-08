@@ -906,8 +906,22 @@ def test_browser_audit_covers_core_and_local_templates_at_required_widths() -> N
         "cluster_home",
         "new Set(links.map((link) => link.href)).size",
         "page.request.get(link.href, { maxRedirects: 0 })",
-        "homeLinkFailure",
+        "homeContentFailure",
+        "audit.homeContent.postContentCount !== 1",
+        "audit.homeContent.mainChildCount !== 1",
+        "audit.homeContent.oldTemplateBodyCount !== 0",
+        "audit.homeContent.sharedHeaderVisible",
+        "audit.homeContent.sharedFooterVisible",
+        "audit.homeContent.inlineHeaderHidden",
+        "main#main-content > .wp-block-post-content > *",
         "localLinkFailure",
+        "RAOS_WORDPRESS_LOCAL_ROUTE_ALIASES_V1",
+        "firstHop.status() !== 301 || location !== expectedTarget",
+        "followed.status() !== 200 || followed.url() !== expectedTarget",
+        "clickPage.waitForNavigation({ waitUntil: 'domcontentloaded' })",
+        "anchors.nth(index).click()",
+        "parsedLink === null || link.username || link.password",
+        "(routeAlias && link.hash) || (!routeAlias && aliasPath)",
         "data-raos-to-article-id",
         "data-raos-link-placement",
         "visibleFactValues('記事分類')",
@@ -970,6 +984,20 @@ def test_browser_audit_covers_core_and_local_templates_at_required_widths() -> N
     assert "actual.length !== expected.length" in check
     assert "entry.isSymbolicLink()" in check
     assert '"$artifact_directory" "$published_artifact_directory"' in check
+
+
+def test_local_alias_redirect_is_seeded_and_bound_to_the_private_profile() -> None:
+    guard = (SLICE / "mu-plugins/raos-local-preview.php").read_text(
+        encoding="utf-8"
+    )
+    seed = (SLICE / "seed.php").read_text(encoding="utf-8")
+    assert (
+        "add_action('template_redirect', 'raos_local_preview_route_alias_redirect', -100);"
+        in guard
+    )
+    assert "wp_safe_redirect($target, 301, 'RAOS Local Preview');" in guard
+    assert "RAOS_WORDPRESS_LOCAL_ROUTE_ALIAS_STATE_V1" in seed
+    assert "preparation_binding_sha256" in guard
 
 
 def test_browser_audit_fails_closed_on_cross_cutting_security_and_a11y_tamper() -> None:

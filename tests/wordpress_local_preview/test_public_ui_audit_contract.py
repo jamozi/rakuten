@@ -5,6 +5,8 @@ from pathlib import Path
 import shutil
 import subprocess
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[2]
 AUDIT = ROOT / "scripts/wordpress_public_ui_audit.function.js"
 LOCAL_AUDIT = (
@@ -25,6 +27,103 @@ def _node_executable() -> str:
     node = shutil.which("node")
     assert node is not None
     return node
+
+
+@pytest.mark.parametrize(
+    ("href", "status", "location", "final_status", "expected"),
+    [
+        ("/?page_id=136", 301, "/kitchen/", 200, False),
+        ("/?page_id=136", 200, None, 200, False),
+        ("/kitchen/", 200, None, 200, False),
+        ("/?page_id=136", 302, "/kitchen/", 200, True),
+        ("/old-page/", 301, "/kitchen/", 200, True),
+        ("/?page_id=136&extra=1", 301, "/kitchen/", 200, True),
+        ("/?page_id=0", 301, "/kitchen/", 200, True),
+        ("/?page_id=136#section", 301, "/kitchen/", 200, True),
+        ("https://user@kurashinoshirube.com/?page_id=136", 301, "/kitchen/", 200, True),
+        ("https://user:pass@kurashinoshirube.com/?page_id=136", 301, "/kitchen/", 200, True),
+        ("https://user@kurashinoshirube.com/kitchen/", 200, None, 200, True),
+        ("/?page_id=136", 301, "https://external.example/kitchen/", 200, True),
+        ("/?page_id=136", 301, "https://user@kurashinoshirube.com/kitchen/", 200, True),
+        ("/?page_id=136", 301, "/kitchen/?extra=1", 200, True),
+        ("/?page_id=136", 301, "/kitchen/#section", 200, True),
+        ("/?page_id=136", 301, "/", 200, True),
+        ("/?page_id=136", 301, None, 200, True),
+        ("/?page_id=136", 301, "/kitchen/", 301, True),
+        ("/?page_id=136", 301, "/kitchen/", 404, True),
+    ],
+)
+def test_home_link_readback_only_follows_one_canonical_page_id_redirect(
+    href: str,
+    status: int,
+    location: str | None,
+    final_status: int,
+    expected: bool,
+) -> None:
+    script = r"""
+const fs = require('fs');
+const [auditPath, scenarioJson] = process.argv.slice(1);
+const source = fs.readFileSync(auditPath, 'utf8');
+const begin = source.indexOf('let homepageReadbackFailed = false;');
+const end = source.indexOf('const isLifecycleStatusRoute =', begin);
+if (begin < 0 || end < 0) throw new Error('HOME_READBACK_BLOCK_MISSING');
+const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+const run = new AsyncFunction('audit', 'surface', 'width', 'page', 'origin', 'cleanPath',
+  source.slice(begin, end) + 'return homepageReadbackFailed;');
+const scenario = JSON.parse(scenarioJson);
+const origin = 'https://kurashinoshirube.com';
+const link = new URL(scenario.href, origin);
+const requests = [];
+const page = { request: { get: async (url, options) => {
+  if (options.maxRedirects !== 0) throw new Error('AUTOMATIC_REDIRECT_FORBIDDEN');
+  requests.push(url);
+  if (requests.length > 2) throw new Error('TOO_MANY_REQUESTS');
+  return {
+    status: () => requests.length === 1 ? scenario.status : scenario.final_status,
+    url: () => url,
+    headers: () => ({ location: scenario.location }),
+  };
+}}};
+const audit = { homeContent: {
+  postContentCount: 1, mainChildCount: 1, hasSavedBody: true, savedBodyVisible: true,
+  oldTemplateBodyCount: 0, sharedHeaderVisible: true, sharedFooterVisible: true,
+  inlineHeaderHidden: true, links: [link],
+}};
+run(audit, {kind: 'home', path: '/'}, 390, page, origin,
+    (value) => /^\/[a-z0-9-]+\/$/.test(value))
+  .then((failed) => process.stdout.write(JSON.stringify({failed, requests})))
+  .catch((error) => { process.stderr.write(String(error)); process.exitCode = 1; });
+"""
+    result = subprocess.run(
+        [
+            _node_executable(),
+            "-e",
+            script,
+            str(AUDIT),
+            json.dumps(
+                {
+                    "href": href,
+                    "status": status,
+                    "location": location,
+                    "final_status": final_status,
+                }
+            ),
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    outcome = json.loads(result.stdout)
+    assert outcome["failed"] is expected
+    if "@" in href:
+        assert outcome["requests"] == []
+    else:
+        assert 1 <= len(outcome["requests"]) <= 2
+    assert all(
+        url.startswith("https://kurashinoshirube.com/")
+        for url in outcome["requests"]
+    )
 
 
 def test_generated_audit_inventory_is_public_safe_exact_v3_projection() -> None:
@@ -110,10 +209,14 @@ def test_public_audit_covers_home_ten_articles_and_three_pages_at_required_width
     assert "response.status() !== 200" in source
     assert "response.url() !== expectedUrl" in source
     for marker in (
-        "audit.homeClusters.length !== expectedClusters.length",
-        "cluster.anchor !== expected.anchor",
-        "cluster.links.length !== expected.paths.length",
-        "link.pathname !== expected.paths[linkIndex]",
+        "audit.homeContent.postContentCount !== 1",
+        "audit.homeContent.mainChildCount !== 1",
+        "audit.homeContent.oldTemplateBodyCount !== 0",
+        "audit.homeContent.sharedHeaderVisible",
+        "audit.homeContent.sharedFooterVisible",
+        "audit.homeContent.inlineHeaderHidden",
+        "main#main-content > .wp-block-post-content > *",
+        "document.getElementById(id) !== null",
         "audit.internalLinks.length !== expectedInternalLinks.length",
         "surface.contextual_article_id",
         "surface.content_role",

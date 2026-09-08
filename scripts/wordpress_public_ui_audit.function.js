@@ -150,8 +150,8 @@
         realScrollEvidence = await page.evaluate(async () => {
           const afterPaint = () => new Promise((resolve) =>
             requestAnimationFrame(() => requestAnimationFrame(resolve)));
-          const sections = [...document.querySelectorAll('.raos-home-v2 > *')]
-            .filter((element) => element instanceof HTMLElement);
+          const sections = [...document.querySelectorAll('main#main-content > .wp-block-post-content > *')]
+            .filter((element) => element instanceof HTMLElement && element.getClientRects().length > 0);
           const checkpoints = [];
           for (const section of sections) {
             section.scrollIntoView({ behavior: 'auto', block: 'start' });
@@ -169,7 +169,7 @@
             document.documentElement.scrollHeight - innerHeight,
           );
           const reachedBottom = Math.abs(scrollY - maximumScrollY) <= 2;
-          const maximumObservedScrollY = Math.max(0, ...checkpoints.map((row) => row.scrollY));
+          const maximumObservedScrollY = Math.max(scrollY, ...checkpoints.map((row) => row.scrollY));
           scrollTo({ behavior: 'auto', left: 0, top: 0 });
           await afterPaint();
           return {
@@ -181,9 +181,8 @@
           };
         });
         if (
-          realScrollEvidence.sectionCount < 4 ||
+          realScrollEvidence.sectionCount < 1 ||
           !realScrollEvidence.allSectionsIntersected ||
-          realScrollEvidence.maximumObservedScrollY <= 0 ||
           !realScrollEvidence.reachedBottom ||
           !realScrollEvidence.returnedToTop
         ) {
@@ -444,6 +443,17 @@
           },
           editorialRoots: document.querySelectorAll('.raos-editorial-v2').length,
           h1Count: document.querySelectorAll('h1').length,
+          homeContent: {
+            postContentCount: document.querySelectorAll('main#main-content > .wp-block-post-content').length,
+            mainChildCount: document.querySelector('main#main-content')?.children.length || 0,
+            hasSavedBody: !!document.querySelector('main#main-content > .wp-block-post-content')?.textContent.trim(),
+            savedBodyVisible: visible(document.querySelector('main#main-content > .wp-block-post-content')),
+            oldTemplateBodyCount: document.querySelectorAll('main #home-hero-title, main #home-promise-title').length,
+            sharedHeaderVisible: visible(document.querySelector('.wp-site-blocks > header.wp-block-template-part')) && visible(document.querySelector('.raos-masthead')),
+            sharedFooterVisible: visible(document.querySelector('footer.wp-block-template-part')),
+            inlineHeaderHidden: [...document.querySelectorAll('main #ks-magazine > .km-header')].every((element) => !visible(element)),
+            links: [...document.querySelectorAll('main#main-content > .wp-block-post-content a[href]')].map(linkRecord),
+          },
           homeClusters: [
             ...document.querySelectorAll('.raos-cluster-nav .raos-cluster'),
           ].map((cluster) => ({
@@ -623,40 +633,52 @@
 
       let homepageReadbackFailed = false;
       if (surface.kind === 'home') {
-        const expectedClusters = rawClusters.map((cluster) => ({
-          anchor: cluster.anchor,
-          paths: cluster.article_ids.map(
-            (articleId) => expectedPathByArticleId[articleId],
-          ),
-        }));
-        if (
-          audit.homeClusters.length !== expectedClusters.length ||
-          audit.homeClusters.some((cluster, index) => {
-            const expected = expectedClusters[index];
-            return !expected || cluster.anchor !== expected.anchor ||
-              cluster.links.length !== expected.paths.length ||
-              cluster.links.some(
-                (link, linkIndex) =>
-                  link.origin !== origin ||
-                  link.pathname !== expected.paths[linkIndex] ||
-                  link.search !== '' || link.hash !== '',
-              );
-          })
-        ) {
-          homepageReadbackFailed = true;
-        }
+        homepageReadbackFailed = audit.homeContent.postContentCount !== 1 ||
+          audit.homeContent.mainChildCount !== 1 || !audit.homeContent.hasSavedBody || !audit.homeContent.savedBodyVisible ||
+          audit.homeContent.oldTemplateBodyCount !== 0 || !audit.homeContent.sharedHeaderVisible ||
+          !audit.homeContent.sharedFooterVisible || !audit.homeContent.inlineHeaderHidden;
         if (width === 390) {
-          for (const cluster of audit.homeClusters) {
-            for (const link of cluster.links) {
-              const linkResponse = await page.request.get(link.href, { maxRedirects: 0 });
-              if (linkResponse.status() !== 200 || linkResponse.url() !== link.href) {
-                homepageReadbackFailed = true;
+          const homeLinks = [...new Map(audit.homeContent.links
+            .filter((row) => row.origin === origin).map((row) => [row.href, row])).values()];
+          for (const link of homeLinks) {
+            const sourceUrl = new URL(link.href);
+            if (sourceUrl.username || sourceUrl.password) {
+              homepageReadbackFailed = true;
+              continue;
+            }
+            if (link.hash && link.pathname === surface.path && link.search === '') {
+              const targetExists = await page.evaluate(
+                (id) => document.getElementById(id) !== null,
+                decodeURIComponent(link.hash.slice(1)),
+              );
+              if (!targetExists) homepageReadbackFailed = true;
+              continue;
+            }
+            const linkResponse = await page.request.get(link.href, { maxRedirects: 0 });
+            let validReadback = linkResponse.status() === 200 &&
+              linkResponse.url() === link.href.split('#')[0];
+            // WordPress resolves saved page-ID links to its canonical permalink.
+            // Follow one same-origin, query-free 301 only for that exact URL form.
+            if (!validReadback && link.pathname === '/' &&
+              /^\?page_id=[1-9][0-9]*$/.test(link.search) &&
+              !link.hash &&
+              linkResponse.status() === 301 && linkResponse.url() === link.href.split('#')[0]) {
+              const location = linkResponse.headers().location;
+              let canonical = null;
+              try { canonical = new URL(location, origin); } catch (error) { /* Invalid redirect. */ }
+              if (typeof location === 'string' && canonical &&
+                canonical.origin === origin && !canonical.username && !canonical.password &&
+                cleanPath(canonical.pathname) && canonical.pathname !== '/' &&
+                !canonical.search && !canonical.hash) {
+                const canonicalResponse = await page.request.get(canonical.href, { maxRedirects: 0 });
+                validReadback = canonicalResponse.status() === 200 && canonicalResponse.url() === canonical.href;
               }
+            }
+            if (!validReadback) {
+              homepageReadbackFailed = true;
             }
           }
         }
-      } else if (audit.homeClusters.length !== 0) {
-        homepageReadbackFailed = true;
       }
 
       const isLifecycleStatusRoute = surface.kind === 'article' &&
@@ -748,12 +770,12 @@
           style.textContent = [
             '/* Capture-only: interaction and paint were already verified by real scrolling. */',
             'html[data-raos-audit-capture="expanded-after-real-scroll"]',
-            ' .raos-home-v2 > :not(.raos-home-hero) {',
+            ' main#main-content > .wp-block-post-content > * {',
             ' content-visibility: visible !important; }',
           ].join('');
           document.head.append(style);
           return style.sheet !== null &&
-            document.querySelectorAll('.raos-home-v2 > :not(.raos-home-hero)').length > 0
+            document.querySelectorAll('main#main-content > .wp-block-post-content > *').length > 0
             ? 'CAPTURE_ONLY_CONTENT_VISIBILITY_EXPANDED_AFTER_REAL_SCROLL'
             : null;
         });

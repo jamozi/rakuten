@@ -203,8 +203,11 @@ def validate_release_inputs_v1(
         manifest_contract._validate_reader_article_targets(inventory, article_targets)
     rows = cast(list[dict[str, object]], doc["articles"])
     selected = {article.article_id: article for article in manifest.articles}
-    page_only = bool(pages) and not selected
-    if (not selected and not pages) or len(selected) != len(rows):
+    shared = cast(dict[str, dict[str, object]], doc["shared_artifacts"])
+    non_article_only = not selected
+    if (not selected and not pages and "theme" not in shared) or len(selected) != len(
+        rows
+    ):
         _fail("SCOPE_INVALID")
     if (
         len(set(article_targets.values())) != len(article_targets)
@@ -230,7 +233,7 @@ def validate_release_inputs_v1(
     ):
         _fail("SOURCE_SCOPE_INVALID")
     _hashes(sources.contract_file_sha256)
-    if page_only and (
+    if non_article_only and (
         sources.article_ids != ()
         or sources.article_claim_sources
         or sources.article_source_refs
@@ -412,7 +415,6 @@ def validate_release_inputs_v1(
         if not captured <= now < expires:
             _fail("PRODUCT_EXPIRED")
         product_expiries.append(expires)
-    shared = cast(dict[str, dict[str, object]], doc["shared_artifacts"])
     if {key: row["sha256"] for key, row in shared.items()} != dict(
         manifest.shared_artifact_sha256
     ) or doc["unchanged_documents"] != dict(manifest.unchanged_sha256):

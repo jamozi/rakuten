@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.5.1"
 THEME_RUNTIME_REVISION: Final = (
-    "6859fb7142699027b4906f3ce1acdc100c82e6977821559f0d1d8154a240d859"
+    "3ade5c1640ef3d17f209d1d42ab63f56a95137dc76e4fb4dc6149e3e59ae6640"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -936,10 +936,25 @@ def validate_sources() -> dict[str, str]:
     search = _text("templates/search.html")
     archive = _text("templates/archive.html")
     not_found = _text("templates/404.html")
+    front_page_markers = (
+        '<!-- wp:template-part {"slug":"header","tagName":"header"} /-->',
+        (
+            '<!-- wp:group {"tagName":"main","className":"raos-home-v2",'
+            '"anchor":"main-content","layout":{"type":"default"}} -->'
+        ),
+        '<main id="main-content" class="wp-block-group raos-home-v2">',
+        '<!-- wp:post-content {"layout":{"type":"default"}} /-->',
+        '<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->',
+    )
     if (
-        front_page.count('<h1 ') != 1
-        or front_page.count('[kurashinoshirube_latest_guides]') != 1
-        or 'raos-home-hero__image' in front_page
+        any(front_page.count(marker) != 1 for marker in front_page_markers)
+        or [front_page.index(marker) for marker in front_page_markers]
+        != sorted(front_page.index(marker) for marker in front_page_markers)
+        or front_page.count("wp:post-content") != 1
+        or "wp:post-title" in front_page
+        or "<h1" in front_page
+        or "wp:shortcode" in front_page
+        or "postId" in front_page
         or '[kurashinoshirube_article_hero]' in single
     ):
         _fail()

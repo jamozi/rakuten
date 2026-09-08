@@ -306,6 +306,117 @@ def test_common_changes_are_explicit_and_never_reuse_local_policy_text() -> None
         build_mixed_preview(**data)
 
 
+def test_theme_only_preview_seeds_the_exact_saved_home_without_a_content_target() -> None:
+    data = with_policies()
+    home = next(
+        row for row in data["snapshot"]["documents"] if row["slug"] == "home"
+    )
+    saved = (
+        '<div id="ks-magazine" style="--hero:url(data:image/webp;base64,UklGRg==)">'
+        "<h1>Saved home</h1></div>"
+    )
+    home.update(
+        title="Saved title",
+        excerpt="Saved excerpt",
+        block_markup=saved,
+    )
+    home["content_sha256"] = publication._content_after_sha256(home, home["id"])
+    data["snapshot"]["public_metadata"] = metadata_for(
+        data["snapshot"]["documents"]
+    )
+    data["selected_slugs"] = frozenset()
+    data["home_mode"] = "shared-theme-candidate"
+
+    result = build_mixed_preview(**data)
+
+    pages = {row["slug"]: row for row in json.loads(result.pages)["pages"]}
+    assert pages["home"] == {
+        "content_file": "pages/home.html",
+        "excerpt": "Saved excerpt",
+        "slug": "home",
+        "title": "Saved title",
+    }
+    assert result.page_bodies["home"] == saved.encode()
+    assert result.binding["page_body_sha256"]["home"] == hashlib.sha256(
+        saved.encode()
+    ).hexdigest()
+    assert result.binding["page_body_sha256"]["home"] == result.binding[
+        "baseline_page_sha256"
+    ]["home"]
+    assert result.binding["home_state"] == "SHARED_THEME_CANDIDATE_NOT_VERIFIED"
+    assert result.binding["theme_only_candidate"] is True
+    assert result.binding["incremental_scope"]["theme_only_candidate"] is True
+    assert result.binding["local_route_aliases"] == {
+        "schema": "RAOS_WORDPRESS_LOCAL_ROUTE_ALIASES_V1",
+        "routes": [
+            {
+                "kind": "post_slug",
+                "production_id": 1,
+                "production_slug": "first",
+                "source_path": "/first/",
+                "local_path": "/local-preview-first/",
+            },
+            {
+                "kind": "post_slug",
+                "production_id": 2,
+                "production_slug": "second",
+                "source_path": "/second/",
+                "local_path": "/local-preview-second/",
+            },
+            {
+                "kind": "page_id",
+                "production_id": 10,
+                "production_slug": "about-ad-policy",
+                "source_path": "/?page_id=10",
+                "local_path": "/about-ad-policy/",
+            },
+            {
+                "kind": "page_id",
+                "production_id": 11,
+                "production_slug": "comparison-policy",
+                "source_path": "/?page_id=11",
+                "local_path": "/comparison-policy/",
+            },
+            {
+                "kind": "page_id",
+                "production_id": 12,
+                "production_slug": "privacy-policy",
+                "source_path": "/?page_id=12",
+                "local_path": "/privacy-policy/",
+            },
+            {
+                "kind": "page_id",
+                "production_id": 13,
+                "production_slug": "home",
+                "source_path": "/?page_id=13",
+                "local_path": "/",
+            },
+        ],
+    }
+    assert (
+        result.binding["incremental_scope"]["local_route_aliases"]
+        == result.binding["local_route_aliases"]
+    )
+    assert "reader_page_documents" not in result.binding
+
+
+@pytest.mark.parametrize(
+    "home_mode,expected",
+    [
+        ("preserve-live-baseline", "PREVIEW_TARGET_INVALID"),
+        ("unregistered-mode", "PREVIEW_HOME_MODE_INVALID"),
+    ],
+)
+def test_empty_preview_scope_is_allowed_only_for_the_exact_theme_mode(
+    home_mode: str, expected: str
+) -> None:
+    data = with_policies()
+    data["selected_slugs"] = frozenset()
+    data["home_mode"] = home_mode
+    with pytest.raises(IncrementalPublicationFailure, match=expected):
+        build_mixed_preview(**data)
+
+
 @pytest.mark.parametrize("mutation", ["new_policy", "missing_home", "local_profile"])
 def test_common_target_or_profile_mismatch_is_rejected(mutation: str) -> None:
     data = with_policies()

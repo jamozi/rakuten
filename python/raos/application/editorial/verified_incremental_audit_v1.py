@@ -347,7 +347,13 @@ class IncrementalAuditScopeV1:
 
     def to_document(self) -> dict[str, object]:
         pages = set(_ids(self.selected_page_slugs, empty=True))
-        selected = set(_ids(self.selected_article_ids, empty=bool(pages)))
+        noncontent = set(_ids(self.required_noncontent_rollback_targets, empty=True))
+        selected = set(
+            _ids(
+                self.selected_article_ids,
+                empty=bool(pages) or noncontent == {"theme"},
+            )
+        )
         existing = set(_ids(self.existing_article_ids))
         rendered = set(_ids(self.rendered_article_ids))
         products = set(_ids(self.retained_product_ids, empty=True))
@@ -355,11 +361,11 @@ class IncrementalAuditScopeV1:
         disposal = set(_ids(self.disposal_product_ids, empty=True))
         ctas = _ids(self.affiliate_cta_ids, empty=True)
         images = _ids(self.product_image_ids, empty=True)
-        noncontent = _ids(self.required_noncontent_rollback_targets, empty=True)
         claims = _mapping(self.claim_ids_by_article)
         if (
             type(self.shared_changes) is not bool
             or not pages <= READER_PAGE_SLUGS
+            or (not selected and not pages and noncontent != {"theme"})
             or (pages and (not self.shared_changes or len(existing) != 10))
             or (not selected and (products or ctas or images))
             or not selected <= existing
@@ -369,7 +375,7 @@ class IncrementalAuditScopeV1:
             or not disposal <= products
             or set(claims) != selected
             or ((ctas or images) and not products)
-            or not set(noncontent) <= {"theme", "seo", "plugins"}
+            or not noncontent <= {"theme", "seo", "plugins"}
             or (noncontent and not self.shared_changes)
         ):
             _fail("SCOPE_INVALID")
@@ -888,6 +894,19 @@ def _backup_checks(
     expected_artifact_hashes: Mapping[str, str],
     expected_page_slugs: frozenset[str] = frozenset(),
 ) -> None:
+    # A shared theme can change every captured hub without proposing any page
+    # edits. Rehearse those original documents using the V2 snapshot scope;
+    # an empty publication selection must not fall back to fourteen-document V1.
+    if (
+        not expected_page_slugs
+        and required_noncontent_rollback_targets == ("theme",)
+        and expected_snapshot.get("schema")
+        == "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2"
+    ):
+        captured_pages = expected_snapshot.get("reader_page_slugs")
+        if type(captured_pages) is not list or not captured_pages:
+            _fail("BACKUP_READER_SCOPE_INVALID")
+        expected_page_slugs = frozenset(_ids(captured_pages))
     theme_fields: set[str] = (
         {
             "theme_backup_artifact_id",
