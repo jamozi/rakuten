@@ -1,0 +1,79 @@
+<?php
+/** Local-only materialization of exactly the reviewed owner-direct documents. */
+if (!defined('WP_CLI') || WP_CLI !== true || !defined('RAOS_LOCAL_PREVIEW') || RAOS_LOCAL_PREVIEW !== true
+    || wp_get_environment_type() !== 'local'
+    || !preg_match('~^http://127\.0\.0\.1:[0-9]{4,5}$~D', (string)get_option('home'))) {
+    exit(69);
+}
+$input = json_decode(file_get_contents('/var/www/raos-direct-candidate/preview-input.json'), true, 64);
+if (!is_array($input) || ($input['candidate']['profile'] ?? null) !== 'owner-direct-v1') {
+    WP_CLI::error('DIRECT_PREVIEW_INPUT_INVALID');
+}
+$candidate = $input['candidate'];
+$articles = $candidate['articles'];
+if (!$articles && !empty($candidate['theme'])) {
+    $articles = array(array('article_key' => 'direct-preview-example', 'document' => array(
+        'post_type' => 'post', 'slug' => 'direct-preview-example', 'title' => 'ローカル表示確認用の記事',
+        'excerpt' => 'テーマの表示だけを確認するローカル専用の記事です。本番には公開されません。',
+        'block_markup' => '<!-- wp:paragraph --><p>これはローカル専用の表示確認です。</p><!-- /wp:paragraph -->'
+            . '<!-- wp:heading --><h2 class="wp-block-heading">見出しと本文の確認</h2><!-- /wp:heading -->'
+            . '<!-- wp:paragraph --><p>スマートフォンとパソコンで文字と余白を確認します。</p><!-- /wp:paragraph -->',
+        'taxonomies' => array(), 'media_ids' => array(),
+    )));
+}
+foreach ($articles as $article) {
+    $document = $article['document'];
+    if (!in_array($document['post_type'] ?? null, array('post', 'page'), true)
+        || !preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/D', $document['slug'] ?? '')) {
+        WP_CLI::error('DIRECT_PREVIEW_DOCUMENT_INVALID');
+    }
+    $existing = get_page_by_path($document['slug'], OBJECT, $document['post_type']);
+    if ($existing && get_post_meta($existing->ID, '_raos_owner_direct_preview_key', true) !== $article['article_key']) {
+        WP_CLI::error('DIRECT_PREVIEW_LOCAL_SLUG_CONFLICT');
+    }
+    $fields = array('post_type' => $document['post_type'], 'post_name' => $document['slug'],
+        'post_title' => $document['title'], 'post_excerpt' => $document['excerpt'],
+        'post_content' => $document['block_markup'], 'post_status' => 'publish');
+    $unchanged = $existing !== null;
+    foreach ($fields as $key => $value) {
+        if (!$existing || $existing->$key !== $value) {
+            $unchanged = false;
+        }
+    }
+    if ($existing) {
+        $fields['ID'] = $existing->ID;
+    }
+    $id = $unchanged ? $existing->ID : wp_insert_post(wp_slash($fields), true);
+    if (is_wp_error($id) || !$id) {
+        WP_CLI::error('DIRECT_PREVIEW_INSERT_FAILED');
+    }
+    $saved = get_post($id);
+    foreach ($fields as $key => $value) {
+        if ($key !== 'ID' && $saved->$key !== $value) {
+            WP_CLI::error('DIRECT_PREVIEW_SAVED_CONTENT_MISMATCH');
+        }
+    }
+    update_post_meta($id, '_raos_owner_direct_preview_key', $article['article_key']);
+    update_post_meta($id, '_raos_owner_direct_preview_document', array(
+        'id' => $id, 'post_type' => $document['post_type'], 'slug' => $document['slug'],
+        'title' => $document['title'], 'excerpt' => $document['excerpt'],
+        'block_markup' => $document['block_markup'], 'content_sha256' => hash('sha256', $document['block_markup']),
+    ));
+}
+update_option('blog_public', '0');
+update_option('blogname', '暮らしのしるべ');
+update_option('timezone_string', 'Asia/Tokyo');
+update_option('WPLANG', 'ja');
+$wpseo = get_option('wpseo', array());
+foreach ($input['yoast_configuration']['wpseo_option_values'] as $key => $value) {
+    $wpseo[$key] = $value;
+}
+update_option('wpseo', $wpseo);
+$social = get_option('wpseo_social', array());
+foreach ($input['yoast_configuration']['wpseo_social_option_values'] as $key => $value) {
+    $social[$key] = $value === 'VERIFIED_THEME_SOCIAL_IMAGE_URI'
+        ? kurashinoshirube_verified_asset_uri(KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH, KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256, true)
+        : $value;
+}
+update_option('wpseo_social', $social);
+WP_CLI::log('DIRECT_PREVIEW_SEEDED');

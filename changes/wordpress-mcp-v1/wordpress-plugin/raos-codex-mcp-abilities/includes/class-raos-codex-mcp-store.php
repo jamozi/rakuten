@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Store
 {
-    const RUNTIME_REVISION = 'b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc';
+    const RUNTIME_REVISION = '3959d130244e13994c252522bbbc4ae245d70c517817c7e6e64835c621659a19';
     const SCHEMA_VERSION = '4';
     const SCHEMA_OPTION = 'raos_codex_mcp_store_schema_v1';
     const PROPOSAL_REVIEW_TTL_SECONDS = 3600;
@@ -763,6 +763,7 @@ final class RAOS_Codex_MCP_Store
         $theme_row = null;
         $content_target_ids = array();
         $content_target_slugs = array();
+        $direct_count = 0;
         foreach ($rows as $row) {
             if (! is_array($row)
                 || ! isset(
@@ -781,6 +782,11 @@ final class RAOS_Codex_MCP_Store
                 || ! self::nullable_hash_is_valid($row['before_sha256'])
                 || ! self::nullable_hash_is_valid($row['after_sha256'])) {
                 return new WP_Error('raos_codex_approval_batch_invalid', 'Approval batch is invalid.', array('status' => 409));
+            }
+            if (isset($row['payload']['authorization_profile'])) {
+                $direct_gate = RAOS_Codex_MCP_Owner_Direct::validate_binding($row);
+                if (is_wp_error($direct_gate)) { return $direct_gate; }
+                ++$direct_count;
             }
             if ('CONTENT_RELEASE' === $row['kind']) {
                 if (! isset($row['payload'])
@@ -829,7 +835,8 @@ final class RAOS_Codex_MCP_Store
                 'after_sha256' => $row['after_sha256'],
             );
         }
-        if ($content_count < 1 || $theme_count > 1) {
+        if (($direct_count > 0 && $direct_count !== count($rows))
+            || ($content_count < 1 && ! ($direct_count === count($rows) && 1 === $theme_count)) || $theme_count > 1) {
             return new WP_Error('raos_codex_approval_batch_invalid', 'Approval batch is invalid.', array('status' => 409));
         }
         $current_theme_sha256 = RAOS_Codex_MCP_Deployment::active_theme_tree_sha256();
@@ -929,8 +936,11 @@ final class RAOS_Codex_MCP_Store
                 || ! in_array($row['kind'], array('CONTENT_RELEASE', 'THEME_RELEASE'), true)) {
                 return new WP_Error('raos_codex_publication_batch_proposal_invalid', 'Publication batch proposal is invalid.', array('status' => 409));
             }
-            if (('CONTENT_RELEASE' === $row['kind'] && (int) $row['created_by'] !== $created_by)
-                || ('THEME_RELEASE' === $row['kind'] && (int) $row['created_by'] === $created_by)) {
+            $direct = isset($row['payload']['authorization_profile']);
+            if (($direct && ((int) $row['created_by'] !== $created_by
+                    || is_wp_error(RAOS_Codex_MCP_Owner_Direct::validate_binding($row))))
+                || (! $direct && (('CONTENT_RELEASE' === $row['kind'] && (int) $row['created_by'] !== $created_by)
+                    || ('THEME_RELEASE' === $row['kind'] && (int) $row['created_by'] === $created_by)))) {
                 return new WP_Error('raos_codex_publication_batch_owner_invalid', 'Publication batch ownership is invalid.', array('status' => 403));
             }
             $integrity = self::validate_proposal_integrity($row);
@@ -1709,12 +1719,16 @@ final class RAOS_Codex_MCP_Store
         $batch_token,
         $expected_batch_sha256,
         $approver_id,
-        $reason
+        $reason,
+        $owner_direct = false
     )
     {
         $runtime_gate = self::runtime_identity_gate();
         if (is_wp_error($runtime_gate)) {
             return $runtime_gate;
+        }
+        if (! is_bool($owner_direct)) {
+            return new WP_Error('raos_codex_approval_batch_invalid', 'Authorization profile invalid.', array('status' => 400));
         }
         global $wpdb;
         if (! self::is_sha256($batch_token)
@@ -1789,7 +1803,16 @@ final class RAOS_Codex_MCP_Store
                 if (is_wp_error($integrity)) {
                     throw new RuntimeException($integrity->get_error_code());
                 }
-                if ((int) $row['created_by'] === (int) $approver_id) {
+                if ($owner_direct) {
+                    $direct_gate = RAOS_Codex_MCP_Owner_Direct::validate_binding($row);
+                    if (is_wp_error($direct_gate)) { throw new RuntimeException($direct_gate->get_error_code()); }
+                    if ((int) $approver_id !== get_current_user_id() || (int) $row['created_by'] !== (int) $approver_id
+                        || ! current_user_can('raos_codex_owner_direct_publish')) {
+                        throw new RuntimeException('raos_codex_owner_direct_identity_forbidden');
+                    }
+                } elseif (isset($row['payload']['authorization_profile'])) {
+                    throw new RuntimeException('raos_codex_owner_direct_legacy_forbidden');
+                } elseif ((int) $row['created_by'] === (int) $approver_id) {
                     throw new RuntimeException('raos_codex_self_approval_forbidden');
                 }
                 $rows[] = $row;
@@ -2061,7 +2084,10 @@ final class RAOS_Codex_MCP_Store
                     $row['expires_at_gmt']
                 )
                 || ! in_array($row['kind'], array('CONTENT_RELEASE', 'THEME_RELEASE'), true)
-                || (int) $row['created_by'] === (int) $batch['approved_by']
+                || (! isset($row['payload']['authorization_profile']) && (int) $row['created_by'] === (int) $batch['approved_by'])
+                || (isset($row['payload']['authorization_profile'])
+                    && ((int) $row['created_by'] !== (int) $batch['approved_by']
+                        || is_wp_error(RAOS_Codex_MCP_Owner_Direct::validate_binding($row))))
                 || (int) $row['approved_by'] !== (int) $batch['approved_by']
                 || ! is_string($row['approved_at_gmt'])
                 || ! hash_equals($batch['approved_at_gmt'], $row['approved_at_gmt'])
@@ -2372,12 +2398,19 @@ final class RAOS_Codex_MCP_Store
             return $runtime_gate;
         }
         global $wpdb;
+        $authorization_predicate = ' AND approved_by IS NOT NULL AND approved_by <> created_by';
+        $candidate = self::get($proposal_id);
+        if (! is_wp_error($candidate) && isset($candidate['payload']['authorization_profile'])) {
+            $direct_gate = RAOS_Codex_MCP_Owner_Direct::validate_binding($candidate);
+            if (is_wp_error($direct_gate)) { return $direct_gate; }
+            $authorization_predicate = ' AND approved_by IS NOT NULL AND approved_by = created_by';
+        }
         $updated = $wpdb->query(
             $wpdb->prepare(
                 'UPDATE ' . self::table_name()
                 . " SET state = 'APPLYING', result_code = 'OPERATION_APPLYING', applying_at_gmt = %s"
                 . ' WHERE proposal_id = %s'
-                . ' AND approved_by IS NOT NULL AND approved_by <> created_by'
+                . $authorization_predicate
                 . " AND ((kind = 'PLUGIN_CHANGE' AND state = 'APPROVED'"
                 . " AND result_code = 'PROPOSAL_APPROVED' AND expires_at_gmt > %s)"
                 . " OR (kind IN ('CONTENT_RELEASE','THEME_RELEASE')"
@@ -2808,6 +2841,20 @@ final class RAOS_Codex_MCP_Store
             RAOS_Codex_MCP_Deployment::remove_approval_lease($proposal_id);
         }
         return self::get($proposal_id);
+    }
+
+    public static function record_owner_direct_rollback($row)
+    {
+        $gate = RAOS_Codex_MCP_Owner_Direct::validate_binding($row);
+        if (is_wp_error($gate)) { return $gate; }
+        global $wpdb;
+        $updated = $wpdb->query($wpdb->prepare(
+            'UPDATE ' . self::table_name()
+            . " SET state = 'FAILED', result_code = 'OWNER_DIRECT_ROLLED_BACK', receipt_json = NULL"
+            . " WHERE proposal_id = %s AND state = 'APPLIED' AND created_by = %d",
+            $row['proposal_id'], get_current_user_id()
+        ));
+        return 1 === $updated ? true : new WP_Error('raos_codex_owner_direct_rollback_record_failed', 'Rollback receipt was not stored.', array('status' => 503));
     }
 
     public static function pending_for_admin($limit = 50)

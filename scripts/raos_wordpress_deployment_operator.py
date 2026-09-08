@@ -50,6 +50,7 @@ OWNER_CHECKOUT: Final = Path("/home/minami/rakuten")
 _private_owner: ContextVar[Path | None] = ContextVar(
     "wordpress_private_owner", default=None
 )
+_owner_direct: ContextVar[bool] = ContextVar("wordpress_owner_direct", default=False)
 MAX_STDIN_BYTES: Final = 64 * 1024
 MAX_RESPONSE_BYTES: Final = 4 * 1024 * 1024
 MAX_PACKAGE_BYTES: Final = 32 * 1024 * 1024
@@ -165,9 +166,9 @@ def exact_object(
     return result
 
 
-def read_stdin() -> dict[str, object]:
-    payload = sys.stdin.buffer.read(MAX_STDIN_BYTES + 1)
-    if len(payload) > MAX_STDIN_BYTES:
+def read_stdin(maximum: int = MAX_STDIN_BYTES) -> dict[str, object]:
+    payload = sys.stdin.buffer.read(maximum + 1)
+    if len(payload) > maximum:
         fail("WORDPRESS_MCP_INPUT_TOO_LARGE")
     try:
         decoded = json.loads(payload.decode("utf-8", errors="strict"))
@@ -228,8 +229,16 @@ def _secure_regular_file(path: Path, maximum: int) -> bytes:
 
 
 def credentials() -> tuple[str, str]:
+    direct = _owner_direct.get()
     payload = _secure_regular_file(
-        private_location(CREDENTIAL_PATH, "operator-application-password.v1.json"),
+        private_location(
+            ROOT / ".secrets/wordpress-mcp/owner-direct-application-password.v1.json"
+            if direct
+            else CREDENTIAL_PATH,
+            "owner-direct-application-password.v1.json"
+            if direct
+            else "operator-application-password.v1.json",
+        ),
         16 * 1024,
     )
     try:
@@ -243,7 +252,8 @@ def credentials() -> tuple[str, str]:
     if (
         record["schema"] != "RAOS_WORDPRESS_APPLICATION_PASSWORD_V1"
         or record["origin"] != ORIGIN
-        or record["purpose"] != "deployment_operator"
+        or record["purpose"]
+        != ("owner_direct_publisher" if direct else "deployment_operator")
         or type(record["username"]) is not str
         or not record["username"]
         or type(record["application_password"]) is not str
@@ -276,11 +286,17 @@ def request_json(
     batch_manifest_sha256: str | None = None,
     *,
     deadline: float | None = None,
+    owner_direct: bool = False,
 ) -> dict[str, object]:
     _ensure_request_deadline(deadline)
     if method not in {"GET", "POST"} or not path.startswith("/") or ".." in path:
         fail("WORDPRESS_MCP_TRANSPORT_INVALID")
-    username, application_password = credentials()
+    direct_context_reset = _owner_direct.set(owner_direct or _owner_direct.get())
+    try:
+        username, application_password = credentials()
+    finally:
+        _owner_direct.reset(direct_context_reset)
+    api = f"{ORIGIN}/wp-json/raos-codex-owner-direct/v1" if owner_direct else DEPLOY_API
     headers = {
         "Accept": "application/json",
         "Authorization": "Basic "
@@ -305,7 +321,7 @@ def request_json(
         headers["X-RAOS-Batch-Token"] = require_sha256(batch_token)
         headers["X-RAOS-Batch-Manifest-SHA256"] = require_sha256(batch_manifest_sha256)
     request = urllib.request.Request(
-        DEPLOY_API + path,
+        api + path,
         data=data,
         headers=headers,
         method=method,
@@ -320,7 +336,7 @@ def request_json(
             timeout=_request_timeout_seconds(deadline),
         ) as response:
             _ensure_request_deadline(deadline)
-            if response.geturl() != DEPLOY_API + path:
+            if response.geturl() != api + path:
                 fail("WORDPRESS_MCP_REDIRECT_REFUSED")
             payload = response.read(MAX_RESPONSE_BYTES + 1)
             _ensure_request_deadline(deadline)
@@ -1414,7 +1430,103 @@ def plugin_package(inputs: dict[str, object]) -> tuple[bytes, dict[str, object]]
     return payload, descriptor
 
 
+def owner_direct_run(command: str, inputs: dict[str, object]) -> dict[str, object]:
+    """Closed owner profile; its dedicated server principal is the authority boundary."""
+    if command == "owner-direct-status":
+        exact_object(inputs, set())
+        return request_json("GET", "/status", owner_direct=True)
+    if command == "owner-direct-document":
+        record = exact_object(inputs, {"id"})
+        if type(record["id"]) is not int or record["id"] < 1:
+            fail("WORDPRESS_MCP_INPUT_INVALID")
+        return request_json("GET", f"/documents/{record['id']}", owner_direct=True)
+    if command == "owner-direct-finish":
+        record = exact_object(
+            inputs, {"profile", "batch_token", "batch_manifest_sha256", "action"}
+        )
+        batch_token = require_sha256(record.pop("batch_token"))
+        require_sha256(record["batch_manifest_sha256"])
+        if record["profile"] != "owner-direct-v1" or record["action"] not in {
+            "finalize",
+            "rollback",
+        }:
+            fail("WORDPRESS_MCP_INPUT_INVALID")
+        return request_json(
+            "POST", f"/batches/{batch_token}/finish", record, owner_direct=True
+        )
+    if command == "owner-direct-theme-propose-candidate":
+        record = exact_object(inputs, {"candidate_id"})
+        candidate_id = require_sha256(record["candidate_id"])
+        import raos_wordpress_direct_publish as direct
+
+        directory = ROOT / direct.PRIVATE / candidate_id
+        candidate = direct.load_candidate(directory, candidate_id)
+        theme = candidate.get("theme")
+        if type(theme) is not dict:
+            fail("WORDPRESS_MCP_DIRECT_THEME_REQUIRED")
+        return owner_direct_run(
+            "owner-direct-theme-propose",
+            {
+                "profile": "owner-direct-v1",
+                "kind": "theme_release",
+                "code_package": theme["descriptor"],
+                "package_base64": base64.b64encode(
+                    (directory / theme["package_file"]).read_bytes()
+                ).decode("ascii"),
+                "idempotency_key": direct.digest(
+                    direct.encoded([candidate_id, "theme"])
+                ),
+            },
+        )
+    routes = {
+        "owner-direct-ensure-draft": (
+            "/ensure-draft",
+            {"profile", "article_key", "slug", "idempotency_key"},
+        ),
+        "owner-direct-content-propose": (
+            "/content-proposals",
+            {
+                "profile",
+                "article_key",
+                "id",
+                "precondition",
+                "document",
+                "idempotency_key",
+            },
+        ),
+        "owner-direct-theme-propose": (
+            "/theme-proposals",
+            {"profile", "kind", "code_package", "package_base64", "idempotency_key"},
+        ),
+        "owner-direct-authorize": (
+            "/authorize",
+            {"profile", "proposal_ids", "expected_theme_tree_sha256"},
+        ),
+    }
+    if command in routes:
+        path, fields = routes[command]
+        record = exact_object(inputs, fields)
+        if record["profile"] != "owner-direct-v1":
+            fail("WORDPRESS_MCP_DIRECT_PROFILE_REQUIRED")
+        if "idempotency_key" in record:
+            require_sha256(record["idempotency_key"])
+        return request_json("POST", path, record, owner_direct=True)
+    direct_context_reset = _owner_direct.set(True)
+    try:
+        if command == "owner-direct-apply":
+            return release_wait_and_apply(inputs)
+        if command == "owner-direct-operation-status":
+            record = exact_object(inputs, {"operation_id"})
+            kind, operation = _release_operation(require_sha256(record["operation_id"]))
+            return {"kind": kind, "operation": operation}
+    finally:
+        _owner_direct.reset(direct_context_reset)
+    fail("WORDPRESS_MCP_COMMAND_REFUSED")
+
+
 def run(command: str, inputs: dict[str, object]) -> dict[str, object]:
+    if command.startswith("owner-direct-"):
+        return owner_direct_run(command, inputs)
     if command == "deployment-status":
         exact_object(inputs, set())
         return request_json("GET", "/status")
@@ -1497,6 +1609,16 @@ def parser() -> argparse.ArgumentParser:
             "plugin-propose-change",
             "plugin-apply-change",
             "operation-recover",
+            "owner-direct-status",
+            "owner-direct-document",
+            "owner-direct-ensure-draft",
+            "owner-direct-content-propose",
+            "owner-direct-theme-propose",
+            "owner-direct-theme-propose-candidate",
+            "owner-direct-authorize",
+            "owner-direct-apply",
+            "owner-direct-operation-status",
+            "owner-direct-finish",
         ),
     )
     return result
@@ -1508,7 +1630,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         owner = validated_owner_checkout(arguments.owner_checkout)
         private_context_reset = _private_owner.set(owner)
         try:
-            inputs = read_stdin()
+            if arguments.command == "owner-direct-theme-propose":
+                inputs = read_stdin(48 * 1024 * 1024)
+            elif arguments.command == "owner-direct-content-propose":
+                inputs = read_stdin(4 * 1024 * 1024)
+            else:
+                inputs = read_stdin()
             output = run(arguments.command, inputs)
         finally:
             _private_owner.reset(private_context_reset)

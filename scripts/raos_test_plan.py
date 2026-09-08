@@ -47,6 +47,14 @@ HARNESS_TESTS = (
     *CRITICAL_TESTS,
 )
 
+WORDPRESS_DIRECT_TESTS = (
+    "tests/wordpress_local_preview/test_direct_preview.py",
+    "tests/wordpress_local_preview/test_direct_theme.py",
+    "tests/wordpress_local_preview/test_publish_git.py",
+    "tests/wordpress_mcp_v1/test_owner_direct_client.py",
+    "tests/wordpress_mcp_v1/test_owner_direct_server.py",
+)
+
 COMPONENT_ROUTES = (
     (
         (
@@ -69,6 +77,7 @@ COMPONENT_ROUTES = (
         ("packages/wordpress-mcp-bridge/", "changes/wordpress-mcp-v1/"),
         ("tests/wordpress_mcp_v1",),
     ),
+    (("changes/wordpress-direct-publish-v1/",), WORDPRESS_DIRECT_TESTS),
     (("changes/wordpress-local-preview-v1/",), ("tests/wordpress_local_preview",)),
     (
         (
@@ -302,8 +311,8 @@ def create_plan(
             else:
                 add_test(path.parent, "shared test helper or fixture")
     for owner in owners:
-        for test in registry[owner].test_paths:
-            add_test(test, f"generator owner: {owner}")
+        for test_path in registry[owner].test_paths:
+            add_test(test_path, f"generator owner: {owner}")
 
     for path in changed:
         value = path.as_posix()
@@ -315,13 +324,13 @@ def create_plan(
             full_reasons.add(f"shared infrastructure: {value}")
         routed = path.name in {"AGENTS.md", "AGENTS.override.md"}
         if routed:
-            for test in HARNESS_TESTS:
-                add_test(Path(test), f"instruction input: {value}")
+            for test_name in HARNESS_TESTS:
+                add_test(Path(test_name), f"instruction input: {value}")
         for inputs, tests in COMPONENT_ROUTES:
             if any(_under(value, prefix) for prefix in inputs):
                 routed = True
-                for test in tests:
-                    add_test(Path(test), f"component input: {value}")
+                for test_name in tests:
+                    add_test(Path(test_name), f"component input: {value}")
         if value.startswith("tests/"):
             if not (root / path).is_file() or not (
                 path.name.startswith("test_")
@@ -349,10 +358,10 @@ def create_plan(
     elif critical and (
         not changed or owners or any(p.suffix not in DOC_SUFFIXES for p in changed)
     ):
-        for test in CRITICAL_TESTS:
-            if not (root / test).is_file():
-                raise ValueError(f"missing critical regression suite: {test}")
-            add_test(Path(test), "critical regression")
+        for test_name in CRITICAL_TESTS:
+            if not (root / test_name).is_file():
+                raise ValueError(f"missing critical regression suite: {test_name}")
+            add_test(Path(test_name), "critical regression")
     selected = {p for p in selected if (root / p).is_file()}
     python_tests = tuple(
         sorted(

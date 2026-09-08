@@ -50,13 +50,20 @@ PG_PACKAGES = (
 )
 PHP_MOUNTS = (
     "tests/editorial_measurement_v1",
+    "tests/reader_measurement_v1",
+    "tests/verified_incremental_v1",
     "tests/st1704_publication_operator/php",
     "tests/wordpress_mcp_v1/php",
     "tests/raos_v2",
     "packages/web-ui/src/decision-support-v2/wordpress/plugin",
     "changes/editorial-measurement-v1/wordpress-plugin",
+    "changes/reader-measurement-v1/wordpress-plugin",
+    "changes/editorial-portfolio-v3/reader-measurement-privacy.html",
+    "changes/wordpress-local-preview-v1/scratch-restore-seed.php",
+    "changes/wordpress-local-preview-v1/scratch-theme-restore.php",
     "changes/st-1704/publication-operator-v2/wordpress-plugin",
     "changes/wordpress-mcp-v1/wordpress-plugin",
+    "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child",
     "changes/raos-v2/phase-3/wordpress",
     "changes/raos-v2/phase-3/generated/wordpress-update-candidate.v1.json",
 )

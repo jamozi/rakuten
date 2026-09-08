@@ -138,6 +138,52 @@ def test_shared_or_unmapped_input_falls_back_to_full(tmp_path: Path, path: str) 
     assert set(plan.python_tests) == {"tests/test_one.py", "tests/test_two.py"}
 
 
+def test_wordpress_direct_sources_route_to_focused_direct_suites(
+    tmp_path: Path,
+) -> None:
+    root = repository(
+        tmp_path,
+        {
+            "changes/wordpress-direct-publish-v1/articles.v1.json": "{}\n",
+            "changes/wordpress-direct-publish-v1/preview-browser.mjs": "export {};\n",
+            "changes/wordpress-direct-publish-v1/preview-seed.php": "<?php\n",
+            "tests/wordpress_local_preview/test_direct_preview.py": "",
+            "tests/wordpress_local_preview/test_direct_theme.py": "",
+            "tests/wordpress_local_preview/test_publish_git.py": "",
+            "tests/wordpress_mcp_v1/test_owner_direct_client.py": "",
+            "tests/wordpress_mcp_v1/test_owner_direct_server.py": "",
+            "tests/test_unrelated.py": "",
+        },
+    )
+    article = Path(
+        "changes/wordpress-direct-publish-v1/articles/new daily article.html"
+    )
+    target = root / article
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("<p>new article</p>\n")
+
+    plan = create_plan(
+        root,
+        {},
+        (
+            Path("changes/wordpress-direct-publish-v1/articles.v1.json"),
+            article,
+            Path("changes/wordpress-direct-publish-v1/preview-browser.mjs"),
+            Path("changes/wordpress-direct-publish-v1/preview-seed.php"),
+        ),
+    )
+
+    assert not plan.full
+    assert not plan.full_reasons
+    assert set(plan.python_tests) == {
+        "tests/wordpress_local_preview/test_direct_preview.py",
+        "tests/wordpress_local_preview/test_direct_theme.py",
+        "tests/wordpress_local_preview/test_publish_git.py",
+        "tests/wordpress_mcp_v1/test_owner_direct_client.py",
+        "tests/wordpress_mcp_v1/test_owner_direct_server.py",
+    }
+
+
 def test_rename_spaces_and_untracked_test_are_in_changed_paths(tmp_path: Path) -> None:
     root = repository(
         tmp_path, {"tests/with space/test_old.py": "def test_old(): pass\n"}

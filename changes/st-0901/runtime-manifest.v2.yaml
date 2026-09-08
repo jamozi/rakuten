@@ -87,8 +87,8 @@ source_artifacts:
 - uri: repo://AGENTS.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown
-  bytes: 6811
-  sha256: 5203d5ee7a37175c9ab7b08fd0a5448c5c1e974c62423356199aa65d0c16fdd2
+  bytes: 7749
+  sha256: 19598cba6bbc2a3987a0738a769fa026a184ea484335a8c6d9f153355705eb25
 - uri: repo://docs/canonical/01_integration/RAOS_07_integration_design_v1.0.md
   artifact_role: CANONICAL_OR_DEPENDENCY_INPUT
   media_type: text/markdown

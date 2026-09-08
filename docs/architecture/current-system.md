@@ -44,11 +44,16 @@ rendererへ接続しません。Evidence locator・raw AI・Financeの内部値�
 | Snapshot approval / idempotency | `tests/st0901_pr3/test_authorization_idempotency.py`, `tests/st0902_v2/test_domain.py` |
 | Confirmed versus estimated economics | `tests/st1305_v2/test_reconciliation_negative.py`, `tests/editorial_portfolio_v3/test_economics_cli.py` |
 | Identity, freshness, comparison scope, zero-weight finance factors | `tests/editorial_portfolio_v3/test_contract.py`, `tests/raos_v2/test_decision_engine.py` |
-| WordPress expiry / separate approval / recovery / default-off | `tests/wordpress_mcp_v1/`, `tests/wordpress_local_preview/` |
+| WordPress bounded owner authority / snapshot / recovery / default-off | `tests/wordpress_mcp_v1/`, `tests/wordpress_local_preview/`。旧候補の別人承認は互換経路だけ |
 | AI truthfulness / no invented experience | [product eval](../../python/raos/application/ai/evaluation_harness.py), `tests/st0707_runtime/test_harness.py` |
 
 不変条件を変える場合は入力から公開・集計までの隣接影響を確認します。
 通常のlocal実装に追加承認台帳は不要です。外部適用は既存の実行境界に従います。
+
+WordPressの日常更新は[owner-direct-v1](../../changes/wordpress-direct-publish-v1/README.md)が
+旧公開手順の後継です。初回に設定した専用principalと会話上の対象への公開指示を使い、
+独立監査・繰り返しのwp-admin承認を不要にします。固定snapshotから限定bridgeへ送り、
+保存後のpublic projectionをテーマが読みます。Git checkpointは公開前、push/PR/CI/mergeは公開後です。
 
 ## Current product contracts
 

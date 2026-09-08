@@ -526,8 +526,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "6859fb7142699027b4906f3ce1acdc100c82e6977821559f0d1d8154a240d859",
-    "source_fingerprint": "6859fb7142699027b4906f3ce1acdc100c82e6977821559f0d1d8154a240d859",
+    "revision": "2b76b16af71d1ab622560b4e18c8e946c4218449cf46d601c2d85c163c64345a",
+    "source_fingerprint": "2b76b16af71d1ab622560b4e18c8e946c4218449cf46d601c2d85c163c64345a",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",
@@ -631,5 +631,5 @@
     ]
   },
   "theme_slug": "kurashinoshirube-child",
-  "theme_version": "1.5.1"
+  "theme_version": "1.6.0"
 }

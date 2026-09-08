@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "9a6d9a92e958088e72cf4e6d68548f5985777221981fe2514f6980c86055709a",
+          "sha256": "8201b189969dda3e221114810778e20e85deff30890a6581cfb9df47361f7053",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -5423,7 +5423,7 @@
         },
         {
           "bytes": 214073,
-          "sha256": "a51b34e0ad69a9adea5d1eb288bfd4f3d0d9dba3a784bbb0f3ca1950830af441",
+          "sha256": "e44d3f76c5fbee493d1770f75c81df6a9a1090b50960fb39b3a2782bb5c08f49",
           "uri": "repo://changes/st-0005/manifest.yaml"
         },
         {
@@ -9212,7 +9212,7 @@
       "outputs": [
         {
           "bytes": 5785,
-          "sha256": "036d321a988448b903cdd14c5b1abf460290f24cf235b6cc0ff96ddd9b71dcf8",
+          "sha256": "686c87e8a21025fbb938af2afda87cf0f156c76a60a072fe4a7b110252b7daab",
           "uri": "repo://changes/st-0203/manifest.yaml"
         }
       ],
@@ -9363,7 +9363,7 @@
       "outputs": [
         {
           "bytes": 5973,
-          "sha256": "a107c4d74cb2a4f6612f40dfbbe64169fcfc3004abfc9c69d9b3aa6e41472db9",
+          "sha256": "0092cd986f0a93a9232c9877a1be43359cfa85f0062055835243e258df2f94c5",
           "uri": "repo://changes/st-0204/manifest.yaml"
         }
       ],
@@ -9532,7 +9532,7 @@
         },
         {
           "bytes": 5352,
-          "sha256": "64539ce7acc92cc792b66d5275a5087fcf9ae45c241f29fbc9dfbc326f8fa2c8",
+          "sha256": "2aa88d294e5e7f850c223d498f83a8d76bf74deae804e356f78e711db8129079",
           "uri": "repo://changes/st-0205/manifest.yaml"
         }
       ],
@@ -9861,7 +9861,7 @@
         },
         {
           "bytes": 8659,
-          "sha256": "029c68fad3e8afa55fa93aa1f14c8836eebcf341be806cc4309cba6ada642668",
+          "sha256": "3cceeb0093e62618e7eca30e66ec518de8aa357453a260d8d309bd7c873fed91",
           "uri": "repo://changes/st-0302/manifest.yaml"
         },
         {
@@ -10152,7 +10152,7 @@
         },
         {
           "bytes": 11453,
-          "sha256": "bd60821ab563d19a19bb66e008d112e3debd95ddd6349c306990b15e29326f8d",
+          "sha256": "5642b39d7de4c590dbef2dfe571b46650e4a13b474339ca5dd2991d22dba60d9",
           "uri": "repo://changes/st-0303/manifest.yaml"
         },
         {
@@ -10509,7 +10509,7 @@
         },
         {
           "bytes": 11665,
-          "sha256": "72c17f3cc0bc4728b450058351408689c1d6ff5a148cb72f5c239617b8e42b02",
+          "sha256": "5a53d9bc7fe20f30663b07785e6aa6a0de433a83dec7ad45366e6036ef976864",
           "uri": "repo://changes/st-0304/manifest.yaml"
         },
         {
@@ -10729,7 +10729,7 @@
         },
         {
           "bytes": 14861,
-          "sha256": "370c52bdc79dc334c1afcd45babb758c79bdb9d624a4b0e479e6774881478583",
+          "sha256": "c359ae0999f3a4891bb07422206a47c89877537b43111971b4943bc16f26ca03",
           "uri": "repo://changes/st-0305/manifest.yaml"
         },
         {
@@ -10960,7 +10960,7 @@
         },
         {
           "bytes": 8658,
-          "sha256": "de2155bd81e020dfd6f800975831272a7d51423aee147bf07c16593fbc60a44b",
+          "sha256": "b895d4a5634adfb6dbc4d56eb955d16f59b93ffc02ba2ba03040b5570fbcfdcd",
           "uri": "repo://changes/st-0306/manifest.yaml"
         },
         {
@@ -11212,7 +11212,7 @@
         },
         {
           "bytes": 15544,
-          "sha256": "94e39bd17635fe79aa2e8cb1c2e0858b800a5058efb5fc5b64f25f05b1651a0c",
+          "sha256": "4aad944a4ba965bcbd0d844295e64d7227a973e8fabc30e4a676b7fde6801200",
           "uri": "repo://changes/st-0307/manifest.yaml"
         },
         {
@@ -14822,7 +14822,7 @@
         },
         {
           "bytes": 15113,
-          "sha256": "7b84012a7714de8801d718a0068f9d088329e131dd59d04692e266dd649e25d2",
+          "sha256": "f4f825f58e8eefcfe2aba3245066892c1afa63fd1abce2d134e2301187a14a91",
           "uri": "repo://changes/st-0701/manifest.yaml"
         }
       ],
@@ -15856,7 +15856,7 @@
       "outputs": [
         {
           "bytes": 7913,
-          "sha256": "cb9c01d94a262a05123296636bafb3ed33f597569123aabb8c23b2fbb5e44d7f",
+          "sha256": "2878aedb99d36773b101dce721a6d33690b6b81be758c3beec366f869a0b4409",
           "uri": "repo://changes/st-0709/runtime-manifest.v2.json"
         }
       ],
@@ -16081,7 +16081,7 @@
       "outputs": [
         {
           "bytes": 32584,
-          "sha256": "28e3a3771c75c71c943da730fb221ef9960e879d393c9d5474c650bd6e4ff53f",
+          "sha256": "49b13267705024689c51c758681e68d4fed3c98ff14b14548b792beb1b073756",
           "uri": "repo://changes/st-0801/manifest.yaml"
         }
       ],
@@ -17725,7 +17725,7 @@
       "outputs": [
         {
           "bytes": 9290,
-          "sha256": "7d399b54b4c6ecace05327535b7b50540ddb3a39c64c4bf8dcf5014c5ab7a4e8",
+          "sha256": "55577e338dcadb25f8705828e50cfc349331b2e3f1fc18206d5d2c533480b654",
           "uri": "repo://changes/st-0901/runtime-manifest.v2.yaml"
         }
       ],
@@ -18117,7 +18117,7 @@
       "outputs": [
         {
           "bytes": 11786,
-          "sha256": "8f1f5d975caefd143d27c49ecba84efccf19878cbffd256b2109611129bdc088",
+          "sha256": "65cfaa97ffb3efbaf3ea191874e3fa0386c87b9bbc5362ce3e22a56ca4a569aa",
           "uri": "repo://changes/st-0902/runtime-manifest.v2.yaml"
         }
       ],
@@ -18571,7 +18571,7 @@
       "outputs": [
         {
           "bytes": 13324,
-          "sha256": "aa1ea3b088f390d6eca02d8b9e2ce715e8e90fac850ad6acaa0b4a01aa153c4b",
+          "sha256": "0fe22c441d49ab4989b35cb5902b701241b87b36de60eedfb890125a3634feb7",
           "uri": "repo://changes/st-0903/runtime-manifest.v2.yaml"
         }
       ],
@@ -19078,7 +19078,7 @@
       "outputs": [
         {
           "bytes": 12197,
-          "sha256": "e00f1cac632d9c8dd023fe23c136b8d197217a3a2c0a1940490b25caffd1472b",
+          "sha256": "c141af86e8340caa8fde68ddc4729dbfbe1cd82f7ea29231fadb0c66031a4fe5",
           "uri": "repo://changes/st-0904/runtime-manifest.v2.yaml"
         }
       ],
@@ -19578,7 +19578,7 @@
         },
         {
           "bytes": 12185,
-          "sha256": "572429c74320eeeba611984442bb0a16e6d41acf7ef8bcf9d15eeeadbcbc5ab1",
+          "sha256": "548483009209ea0e6495538c7709e9755014bcd20ef6a3eba3c47767bb61b2a4",
           "uri": "repo://changes/st-0905/runtime-manifest.v2.yaml"
         }
       ],
@@ -20426,7 +20426,7 @@
         },
         {
           "bytes": 8759,
-          "sha256": "6295d6f87c98fc5a8bd68f9581711961ff5516bf30b019e016f6c93c0a8640e7",
+          "sha256": "675c3043adc8ece826fe709e5a2e6441fbfab022a5c57360ddd4bef71a520212",
           "uri": "repo://changes/st-1002/runtime-manifest.v2.yaml"
         },
         {
@@ -20683,7 +20683,7 @@
         },
         {
           "bytes": 7245,
-          "sha256": "c1cebc71b46a71c02d46501d88ae9f5ce95ece82928f605256378060af9357d8",
+          "sha256": "501c2d327bfc48414d2abb92ec3b4c1846b3e75d7532b67cb7b88016759645f4",
           "uri": "repo://changes/st-1004/runtime-manifest.v2.yaml"
         }
       ],
@@ -20782,7 +20782,7 @@
         },
         {
           "bytes": 4108,
-          "sha256": "74672b3d7ca4c4ab84811a44114cc9844defc4fd041b36afa1dab122474a4a1e",
+          "sha256": "16f210d2339a65a650c1ec638953e7dba599345ba54fe6378ba73376b6168cf2",
           "uri": "repo://changes/st-1006/runtime-manifest.v2.yaml"
         }
       ],
@@ -22012,7 +22012,7 @@
         },
         {
           "bytes": 9166,
-          "sha256": "70f552a1d58eefac78c4de1fcd2f05dc9c36273de6ef0ceb12ad3654de775c10",
+          "sha256": "c784a5d32dee790db11c533fcaaf9afa4bcc2f10fd3a31411ac7475f4d3f9562",
           "uri": "repo://changes/st-1202/runtime-manifest.v2.yaml"
         }
       ],
@@ -26504,7 +26504,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "36927dfb2239f13647ce2bd806793d9d898bb09aa96acc52d129cee136777156",
+          "sha256": "a655471b55c20ea9fe114df61be4700fd7fbcd7ae000d75de1737aab6fbeb488",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26735,7 +26735,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "6c2645921cb14d004f40628536f1400cf4c6ba979e7d6a9add2d949b33ed7fb8",
+          "sha256": "b56e97f6628d2f3979192e6f9b92d8fa71abe88e5b23ca79f58dd62da152d321",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29389,12 +29389,12 @@
       "outputs": [
         {
           "bytes": 817,
-          "sha256": "5bb82e95bcb6d24182b097ad34f98ca73e168678b81bbe6a9f2538a037cbaa3f",
+          "sha256": "6384462125cce4771c1e95ce33c6d56877b44a5b642c7ca37eab09d03f3b4c89",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
-          "bytes": 27819,
-          "sha256": "e8d9b753d189a7b1de90bbcded496ee63e490a10063c4327973d9e94c2180c70",
+          "bytes": 28258,
+          "sha256": "0ec099e97e1f0849412da4285f5a8680511751f08a35237991b34988e1d24e5c",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29737,6 +29737,12 @@
           "kind": "tracked",
           "semantic_id": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-deployment.php",
           "uri": "repo://changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-deployment.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-owner-direct.php",
+          "uri": "repo://changes/wordpress-mcp-v1/wordpress-plugin/raos-codex-mcp-abilities/includes/class-raos-codex-mcp-owner-direct.php",
           "version": 2
         },
         {
@@ -30245,7 +30251,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "77d56f8096e50a3544e991c5b31f2796fc21379288866c615aeffc87f221a5ac",
+          "sha256": "ea990182b442f512586ebb64aa91ffa6c39e667e0b24cb9fed5b975040441221",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 final class RAOS_Codex_MCP_Deployment
 {
-    const RUNTIME_REVISION = 'b59bfa666c92597486e4ee06a4e3c2f4a82ecb1d89eae26db07356ecec2e3bdc';
+    const RUNTIME_REVISION = '3959d130244e13994c252522bbbc4ae245d70c517817c7e6e64835c621659a19';
     const MAX_PACKAGE_BYTES = 33554432;
     const MAX_FILE_BYTES = 8388608;
     const MAX_FILE_COUNT = 2048;
@@ -329,7 +329,7 @@ final class RAOS_Codex_MCP_Deployment
             : $hash;
     }
 
-    public function create_proposal(WP_REST_Request $request)
+    public function create_proposal(WP_REST_Request $request, $authorization_profile = null)
     {
         $runtime_gate = self::runtime_identity_gate();
         if (is_wp_error($runtime_gate)) {
@@ -393,6 +393,13 @@ final class RAOS_Codex_MCP_Deployment
             'after_tree_sha256' => $validated['file_manifest_sha256'],
             'target_active' => $target['active'],
         );
+        if (null !== $authorization_profile) {
+            $payload['authorization_profile'] = $authorization_profile;
+            $direct_gate = RAOS_Codex_MCP_Owner_Direct::validate_binding(array(
+                'kind' => $kind, 'created_by' => get_current_user_id(), 'payload' => $payload,
+            ));
+            if (is_wp_error($direct_gate)) { @unlink($package_path); return $direct_gate; }
+        }
         $row = RAOS_Codex_MCP_Store::create(
             $kind,
             $payload,
@@ -844,6 +851,170 @@ final class RAOS_Codex_MCP_Deployment
         return 'APPLYING' === $row['state'] && ($at_before || $at_after);
     }
 
+    /** Complete or compensate the exact delegated batch, retaining legacy cleanup. */
+    public static function finish_owner_direct_batch($batch_token, $batch_hash, $action)
+    {
+        $gate = RAOS_Codex_MCP_Owner_Direct::gate();
+        if (is_wp_error($gate)) { return $gate; }
+        if ($gate['publisher_user_id'] !== get_current_user_id()
+            || ! current_user_can('raos_codex_owner_direct_publish')
+            || ! in_array($action, array('finalize', 'rollback'), true)) {
+            return self::error('raos_codex_owner_direct_identity_forbidden', 403);
+        }
+        $batch = RAOS_Codex_MCP_Store::get_publication_batch($batch_token);
+        if (is_wp_error($batch)) { return $batch; }
+        if (! is_string($batch_hash) || ! hash_equals($batch['batch_manifest_sha256'], $batch_hash)) {
+            return self::error('raos_codex_owner_direct_batch_conflict', 412);
+        }
+        $lock = self::acquire_publication_mutation_lock();
+        if (is_wp_error($lock)) { return $lock; }
+        try {
+            $name = 'raos_codex_owner_direct_finish_' . $batch_token;
+            $saved = get_option($name, null);
+            if (is_array($saved)) {
+                if (($saved['action'] ?? null) !== $action) { return self::error('raos_codex_owner_direct_batch_conflict', 409); }
+                if (in_array($saved['state'] ?? null, array('FINALIZED', 'ROLLED_BACK'), true)) { return $saved; }
+            }
+            $rows = array();
+            foreach ($batch['proposal_ids'] as $id) {
+                $row = RAOS_Codex_MCP_Store::get($id);
+                if (is_wp_error($row)) { return $row; }
+                $valid = RAOS_Codex_MCP_Owner_Direct::validate_binding($row);
+                if (is_wp_error($valid)) { return $valid; }
+                if ((int) $row['created_by'] !== get_current_user_id()) { return self::error('raos_codex_owner_direct_identity_forbidden', 403); }
+                if ('APPLYING' === $row['state'] && 'BATCH_CLAIMED' !== $row['result_code']) {
+                    return self::recoverable_error('raos_codex_owner_direct_member_outcome_unknown', 409);
+                }
+                if ('finalize' === $action && 'APPLIED' !== $row['state']) {
+                    return self::error('raos_codex_owner_direct_batch_incomplete', 409);
+                }
+                $rows[] = $row;
+            }
+            // Content was applied after theme; restore it before the theme tree.
+            usort($rows, static function ($a, $b) { return ('THEME_RELEASE' === $a['kind'] ? 1 : 0) <=> ('THEME_RELEASE' === $b['kind'] ? 1 : 0); });
+            $result = array('schema' => 'RAOSOwnerDirectBatchResultV1', 'profile' => 'owner-direct-v1',
+                'batch_token' => $batch_token, 'batch_manifest_sha256' => $batch_hash, 'action' => $action,
+                'state' => 'IN_PROGRESS', 'members' => array());
+            if ('finalize' === $action) {
+                // Check every member before disposing of any compensation backup.
+                foreach ($rows as $row) {
+                    $ready = self::finalize_owner_direct_member($row, true);
+                    if (is_wp_error($ready)) {
+                        $result['state'] = 'PARTIAL_CONFLICT';
+                        foreach ($rows as $member_row) {
+                            $conflict = $member_row['proposal_id'] === $row['proposal_id'];
+                            $result['members'][] = array('proposal_id' => $member_row['proposal_id'],
+                                'state' => $conflict ? 'CONFLICT' : 'UNCHANGED',
+                                'result_code' => $conflict ? $ready->get_error_code() : 'OWNER_DIRECT_NOT_FINALIZED');
+                        }
+                        return $result;
+                    }
+                }
+            }
+            update_option($name, $result, false);
+            if (get_option($name, null) !== $result) { return self::error('raos_codex_owner_direct_finish_record_failed', 503); }
+            foreach ($rows as $row) {
+                $member = array('proposal_id' => $row['proposal_id'], 'state' => 'UNCHANGED', 'result_code' => $row['result_code']);
+                if ('APPLIED' === $row['state']) {
+                    $finished = 'rollback' === $action ? self::rollback_owner_direct_member($row) : self::finalize_owner_direct_member($row);
+                    if (is_wp_error($finished)) {
+                        $member['state'] = 'CONFLICT'; $member['result_code'] = $finished->get_error_code();
+                        $result['members'][] = $member; $result['state'] = 'PARTIAL_CONFLICT';
+                        $reported = array_column($result['members'], 'proposal_id');
+                        foreach ($rows as $remaining) {
+                            if (! in_array($remaining['proposal_id'], $reported, true)) {
+                                $result['members'][] = array('proposal_id' => $remaining['proposal_id'], 'state' => 'UNCHANGED',
+                                    'result_code' => 'OWNER_DIRECT_COMPENSATION_STOPPED');
+                            }
+                        }
+                        update_option($name, $result, false);
+                        return $result;
+                    }
+                    $member['state'] = 'rollback' === $action ? 'ROLLED_BACK' : 'FINALIZED';
+                    $member['result_code'] = 'OWNER_DIRECT_' . $member['state'];
+                } elseif ('OWNER_DIRECT_ROLLED_BACK' === $row['result_code']) {
+                    $member['state'] = 'ROLLED_BACK';
+                } elseif ('APPLYING' === $row['state'] && 'BATCH_CLAIMED' === $row['result_code']) {
+                    $failed = RAOS_Codex_MCP_Store::mark_failed($row['proposal_id'], 'OWNER_DIRECT_BATCH_CANCELLED');
+                    if (is_wp_error($failed)) { return $failed; }
+                    $member['result_code'] = 'OWNER_DIRECT_BATCH_CANCELLED';
+                }
+                $result['members'][] = $member;
+            }
+            $result['state'] = 'rollback' === $action ? 'ROLLED_BACK' : 'FINALIZED';
+            update_option($name, $result, false);
+            return get_option($name, null) === $result ? $result : self::recoverable_error('raos_codex_owner_direct_finish_record_failed', 503);
+        } finally { self::release_operation_lock($lock); }
+    }
+
+    private static function finalize_owner_direct_member($row, $check_only = false)
+    {
+        if ('CONTENT_RELEASE' === $row['kind']) {
+            $undo = get_option('raos_codex_owner_direct_undo_' . $row['proposal_id'], null);
+            if (! is_array($undo) || ! isset($undo['applied_document'])) { return self::error('raos_codex_owner_direct_undo_unavailable', 409); }
+            $current = RAOS_Codex_MCP_Content::document($row['payload']['after']['id']);
+            $precondition = array_intersect_key($undo['applied_document'], array_flip(array('revision_id', 'modified_gmt', 'content_sha256')));
+            if (is_wp_error($current) || ! RAOS_Codex_MCP_Content::precondition_matches($current, $precondition)) {
+                return self::error('raos_codex_owner_direct_content_revision_conflict', 412);
+            }
+        } else {
+            $hash = self::active_theme_tree_sha256();
+            if (is_wp_error($hash) || ! hash_equals($row['after_sha256'], $hash)) { return self::error('raos_codex_owner_direct_theme_conflict', 412); }
+        }
+        return $check_only ? true : self::finalize_applied_receipt($row, null, null, null, true);
+    }
+
+    private static function rollback_owner_direct_member($row)
+    {
+        $authorization = self::validate_approval_lease($row);
+        if (is_wp_error($authorization)) { return $authorization; }
+        if ('CONTENT_RELEASE' === $row['kind']) {
+            global $wpdb;
+            $undo = get_option('raos_codex_owner_direct_undo_' . $row['proposal_id'], null);
+            if (! is_array($undo) || ! isset($undo['applied_document'])) { return self::error('raos_codex_owner_direct_undo_unavailable', 409); }
+            $locked = self::begin_content_transaction($undo['applied_document'], $row['after_sha256'], true, true);
+            if (is_wp_error($locked)) { return $locked; }
+            $before = $row['payload']['before'];
+            $written = self::write_content_document($before);
+            $readback = RAOS_Codex_MCP_Content::document($before['id']);
+            if (is_wp_error($written) || is_wp_error($readback) || ! hash_equals($row['before_sha256'], $readback['content_sha256'])) {
+                $rollback = self::rollback_content_transaction($undo['applied_document'], $row['after_sha256']);
+                return true === $rollback ? self::error('raos_codex_owner_direct_rollback_readback_failed', 503) : $rollback;
+            }
+            $recorded = RAOS_Codex_MCP_Store::record_owner_direct_rollback($row);
+            if (is_wp_error($recorded)) { $wpdb->query('ROLLBACK'); self::clean_content_read_cache($before['id'], $before['post_type']); return $recorded; }
+            $public_name = 'raos_codex_owner_direct_public_' . $before['id'];
+            if (is_array($undo['public_before'] ?? null)) {
+                update_option($public_name, $undo['public_before'], false);
+            } elseif ('publish' === $before['status']) {
+                update_option($public_name, array_intersect_key($before, array_flip(array('id', 'post_type', 'slug', 'title', 'excerpt', 'block_markup', 'content_sha256'))), false);
+            }
+            if (false === $wpdb->query('COMMIT')) {
+                $wpdb->query('ROLLBACK'); self::clean_content_read_cache($before['id'], $before['post_type']);
+                return self::recoverable_error('raos_codex_owner_direct_rollback_outcome_unknown', 503);
+            }
+            self::remove_approval_lease($row['proposal_id']);
+            return true;
+        }
+        $private = self::private_directory();
+        if (is_wp_error($private)) { return $private; }
+        $target = self::target_path($row['payload']['code_package']);
+        $current = self::tree_hash($target);
+        if (is_string($current) && hash_equals($row['before_sha256'], $current)) {
+            // Resume a journaled rollback after rename succeeded but its DB receipt did not.
+            $restored = true;
+        } elseif (is_string($current) && hash_equals($row['after_sha256'], $current)) {
+            $restored = self::restore_code_before($target, $private . '/operation-' . $row['proposal_id'] . '/before',
+                $row['before_sha256'], $row['after_sha256']);
+        } else { return self::error('raos_codex_owner_direct_theme_conflict', 412); }
+        if (true !== $restored) { return $restored; }
+        $recorded = RAOS_Codex_MCP_Store::record_owner_direct_rollback($row);
+        if (is_wp_error($recorded)) { return $recorded; }
+        self::remove_approval_lease($row['proposal_id']);
+        $row['state'] = 'FAILED';
+        return self::cleanup_completed_code_operation($row);
+    }
+
     public function apply_proposal(WP_REST_Request $request)
     {
         $runtime_gate = self::runtime_identity_gate();
@@ -947,6 +1118,10 @@ final class RAOS_Codex_MCP_Deployment
                 if (is_wp_error($failed)) {
                     return $failed;
                 }
+            }
+            if (! is_wp_error($receipt) && isset($claimed['payload']['authorization_profile'])) {
+                $completed = RAOS_Codex_MCP_Store::get($proposal_id);
+                return is_wp_error($completed) ? $completed : self::finalize_applied_receipt($completed);
             }
             return $receipt;
         } finally {
@@ -1413,6 +1588,13 @@ final class RAOS_Codex_MCP_Deployment
                 : self::error('raos_codex_content_theme_drift', 409);
         }
         global $wpdb;
+        if (isset($row['payload']['authorization_profile'])) {
+            $remembered = RAOS_Codex_MCP_Owner_Direct::remember_applied_content($row, $readback);
+            if (is_wp_error($remembered)) {
+                $rollback = self::rollback_content_transaction($before, $row['before_sha256']);
+                return true === $rollback ? $remembered : $rollback;
+            }
+        }
         if (false === $wpdb->query('COMMIT')) {
             // COMMIT can fail with an ambiguous network/database outcome.  A
             // readback decides only a confirmed before state is terminal-safe.
@@ -1430,7 +1612,8 @@ final class RAOS_Codex_MCP_Deployment
             $row['proposal_id'],
             'CONTENT_RELEASE_APPLIED',
             $current['content_sha256'],
-            $readback['content_sha256']
+            $readback['content_sha256'],
+            isset($row['payload']['authorization_profile'])
         );
         if (is_wp_error($receipt)) {
             return self::recoverable_from_error($receipt);
@@ -1713,7 +1896,8 @@ final class RAOS_Codex_MCP_Deployment
         $row,
         $invalidator = null,
         $opcache_active = null,
-        $cached_scripts = null
+        $cached_scripts = null,
+        $owner_direct_finish = false
     )
     {
         if (! is_array($row)
@@ -1731,6 +1915,10 @@ final class RAOS_Codex_MCP_Deployment
                 500
             );
         }
+        if (isset($row['payload']['authorization_profile']) && ! $owner_direct_finish) {
+            $projection = RAOS_Codex_MCP_Owner_Direct::materialize_public_snapshot($row);
+            return is_wp_error($projection) ? self::recoverable_from_error($projection) : $row['receipt'];
+        }
         $private = self::private_directory();
         if (is_wp_error($private)) {
             return self::recoverable_from_error($private);
@@ -1746,6 +1934,10 @@ final class RAOS_Codex_MCP_Deployment
             && (file_exists($package_path) || is_link($package_path));
         $deferred_cleanup = $operation_pending || $lease_pending || $package_pending;
         if (! $deferred_cleanup) {
+            if (isset($row['payload']['authorization_profile'])) {
+                $projection = RAOS_Codex_MCP_Owner_Direct::materialize_public_snapshot($row);
+                if (is_wp_error($projection)) { return self::recoverable_from_error($projection); }
+            }
             return $row['receipt'];
         }
         $gate = self::apply_gate($row['kind']);
@@ -1857,6 +2049,10 @@ final class RAOS_Codex_MCP_Deployment
                 'raos_codex_recovery_cleanup_indeterminate',
                 500
             );
+        }
+        if (isset($row['payload']['authorization_profile'])) {
+            $projection = RAOS_Codex_MCP_Owner_Direct::materialize_public_snapshot($row);
+            if (is_wp_error($projection)) { return self::recoverable_from_error($projection); }
         }
         return $row['receipt'];
     }
@@ -2131,6 +2327,7 @@ final class RAOS_Codex_MCP_Deployment
         }
         $transaction_tables = array(
             $wpdb->posts,
+            $wpdb->options,
             $wpdb->term_relationships,
             $wpdb->term_taxonomy,
         );
@@ -3755,6 +3952,13 @@ final class RAOS_Codex_MCP_Deployment
 
     public static function create_approval_lease($row, $approver_id, $approved_at_gmt)
     {
+        $direct = isset($row['payload']['authorization_profile']);
+        if ($direct) {
+            $gate = RAOS_Codex_MCP_Owner_Direct::validate_binding($row);
+            if (is_wp_error($gate) || (int) $approver_id !== (int) $row['created_by']) {
+                return self::error('raos_codex_owner_direct_identity_forbidden', 403);
+            }
+        }
         if (! is_array($row)
             || ! isset(
                 $row['proposal_id'],
@@ -3765,7 +3969,7 @@ final class RAOS_Codex_MCP_Deployment
             || ! RAOS_Codex_MCP_Store::is_sha256($row['proposal_id'])
             || ! in_array($row['kind'], array('CONTENT_RELEASE', 'THEME_RELEASE', 'PLUGIN_CHANGE'), true)
             || (int) $approver_id < 1
-            || (int) $approver_id === (int) $row['created_by']
+            || (! $direct && (int) $approver_id === (int) $row['created_by'])
             || ! is_string($approved_at_gmt)
             || false === strtotime($approved_at_gmt . ' UTC')) {
             return self::error('raos_codex_approval_lease_input_invalid', 500);
@@ -3792,6 +3996,10 @@ final class RAOS_Codex_MCP_Deployment
             'after_sha256' => $row['after_sha256'],
             'nonce_sha256' => $nonce_sha256,
         );
+        if ($direct) {
+            $material['schema'] = 'RAOS_CODEX_OWNER_DIRECT_LEASE_V1';
+            $material['authorization_profile_sha256'] = RAOS_Codex_MCP_Store::hash($row['payload']['authorization_profile']);
+        }
         $lease_id = RAOS_Codex_MCP_Store::hash($material);
         if (! RAOS_Codex_MCP_Store::is_sha256($lease_id)
             || ! is_string($material['approved_at_gmt'])
@@ -3816,6 +4024,11 @@ final class RAOS_Codex_MCP_Deployment
 
     public static function validate_approval_lease($row, $require_unexpired = false)
     {
+        $direct = isset($row['payload']['authorization_profile']);
+        if ($direct) {
+            $gate = RAOS_Codex_MCP_Owner_Direct::validate_binding($row);
+            if (is_wp_error($gate)) { return $gate; }
+        }
         if (! is_array($row)
             || ! isset($row['proposal_id'], $row['kind'], $row['created_by'], $row['approved_by'])
             || ! in_array($row['state'], array('APPROVED', 'APPLYING', 'APPLIED'), true)
@@ -3842,6 +4055,7 @@ final class RAOS_Codex_MCP_Deployment
             'nonce_sha256',
             'lease_id',
         );
+        if ($direct) { $expected_keys[] = 'authorization_profile_sha256'; }
         if (! self::has_exact_keys($lease, $expected_keys)) {
             return self::error('raos_codex_approval_lease_invalid', 409);
         }
@@ -3851,7 +4065,9 @@ final class RAOS_Codex_MCP_Deployment
         $expected_approved_at = RAOS_Codex_MCP_Store::timestamp_iso($row['approved_at_gmt']);
         $expected_expires_at = RAOS_Codex_MCP_Store::timestamp_iso($row['expires_at_gmt']);
         $lease_expires = strtotime($lease['expires_at_gmt']);
-        if ('RAOS_CODEX_APPROVAL_LEASE_V1' !== $lease['schema']
+        if (($direct ? 'RAOS_CODEX_OWNER_DIRECT_LEASE_V1' : 'RAOS_CODEX_APPROVAL_LEASE_V1') !== $lease['schema']
+            || ($direct && (! is_string($lease['authorization_profile_sha256'])
+                || ! hash_equals(RAOS_Codex_MCP_Store::hash($row['payload']['authorization_profile']), $lease['authorization_profile_sha256'])))
             || ! is_string($lease_id)
             || ! RAOS_Codex_MCP_Store::is_sha256($lease_id)
             || ! hash_equals($lease_id, (string) RAOS_Codex_MCP_Store::hash($material))
@@ -3859,7 +4075,8 @@ final class RAOS_Codex_MCP_Deployment
             || ! hash_equals($row['kind'], (string) $lease['kind'])
             || (int) $row['created_by'] !== (int) $lease['created_by']
             || (int) $row['approved_by'] !== (int) $lease['approved_by']
-            || (int) $row['created_by'] === (int) $row['approved_by']
+            || (! $direct && (int) $row['created_by'] === (int) $row['approved_by'])
+            || ($direct && (int) $row['created_by'] !== (int) $row['approved_by'])
             || ! is_string($expected_approved_at)
             || ! hash_equals($expected_approved_at, (string) $lease['approved_at_gmt'])
             || ! is_string($expected_expires_at)
