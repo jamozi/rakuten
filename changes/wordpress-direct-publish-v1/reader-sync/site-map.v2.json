@@ -1,0 +1,290 @@
+{
+  "schema": "RAOSReaderSiteMapV2",
+  "article_count": 15,
+  "categories": {
+    "travel": {
+      "post_id": 142,
+      "name": "スーツケース",
+      "lead": "利用便と荷物量を先に確認し、軽さ・開き方・容量から選ぶ。",
+      "choose": "行き帰りの移動手段、いつもの荷物、途中で取り出す物を整理します。航空会社・便・機材の条件は、商品表示とは別に確認してください。",
+      "checks": "通常時と拡張時の各辺・3辺合計、荷物込みの重さと個数、送料込みの総額、出発前の納期、保証を確認します。",
+      "hold": "利用便が未定、拡張しないと荷物が収まらない、走行音や耐久性が最優先の場合は、運航会社の規定や実物・同条件の検証情報を確認してから決めましょう。",
+      "order": [
+        82,
+        83,
+        84,
+        19
+      ]
+    },
+    "kitchen": {
+      "post_id": 136,
+      "name": "食洗機",
+      "lead": "置き場所・いつもの食器・毎回の給水から、続けられる一台を。",
+      "choose": "本体・扉・ホースに必要な空間、電源・アース、普段の食器の形と量を確認します。人数表示だけで収納できるとは判断しません。",
+      "checks": "設置と給排水、洗いたい食器の適合、必要部品、送料込みの購入総額、洗剤と手入れを確認します。「工事不要」はすべての設置確認が不要という意味ではありません。",
+      "hold": "置き場所やアースの条件が分からない、普段の食器が入るか不明、給水や手入れを続けにくい場合は、メーカーや適切な施工業者へ確認してください。",
+      "order": [
+        262,
+        263,
+        41,
+        86,
+        266,
+        264,
+        265
+      ]
+    },
+    "cleaning": {
+      "post_id": 131,
+      "name": "ロボット掃除機",
+      "lead": "本体と台の置き場、任せたい掃除、残る手入れを分けて選ぶ。",
+      "choose": "家具の間と家具下、段差、充電台の周囲を確認します。床の片づけ・ゴミ捨て・水拭きのうち、何を減らしたいかを決めましょう。",
+      "checks": "本体と台の寸法に加え、帰還と部品交換の空間、床材、通信条件、セット構成、消耗品、販売元と保証を確認します。",
+      "hold": "毛や砂の取り残し、障害物回避、段差の通過が最優先なら、寸法や公称吸引力だけでは決められません。同機種・似た住環境の比較可能な検証を確認してください。",
+      "order": [
+        30,
+        85
+      ]
+    },
+    "preparedness": {
+      "post_id": 138,
+      "name": "ポータブル電源",
+      "lead": "大きさより先に、使う機器と時間、運べる重さを決める。",
+      "choose": "使う機器、同時使用する組み合わせ、必要時間、保管場所と運ぶ経路を整理します。容量Whと出力Wは別の条件です。",
+      "checks": "起動時も含めた機器との対応、端子と必要付属品、使用・保管環境、重量、販売元と保証を確認。本体単体とパネルなどのセットは分けて総額を比べます。",
+      "hold": "接続機器との対応や必要な時間を確認できない場合は推測で決めません。住宅全体の電源設計、生命維持・医療機器への給電は本比較の対象外です。",
+      "order": [
+        28,
+        29
+      ]
+    }
+  },
+  "articles": [
+    {
+      "post_id": 19,
+      "slug": "carry-on-suitcase-comparison",
+      "category": "travel",
+      "title": "エースの3モデルを、軽さ・容量・開き方で比較",
+      "summary": "ブランド内で迷う方へ。クレスタ・ディフェレンス・マックスパス4の違いを整理します。",
+      "table_id": "blk-suitcase-007-title",
+      "evidence_id": "blk-suitcase-016-title"
+    },
+    {
+      "post_id": 82,
+      "slug": "carry-on-suitcase-under-100-seats",
+      "category": "travel",
+      "title": "100席未満の国内線向けスーツケース比較",
+      "summary": "利用便の条件から外寸を確認し、容量・軽さ・前開きで候補を絞ります。",
+      "table_id": "under-100-comparison-title",
+      "evidence_id": "under-100-sources-title"
+    },
+    {
+      "post_id": 83,
+      "slug": "lightweight-carry-on-suitcase-under-3kg",
+      "category": "travel",
+      "title": "30L以上・3kg以下のスーツケース比較",
+      "summary": "軽さに加えて、ストッパー・容量・交換車輪のどれを優先するかで選びます。",
+      "table_id": "under-3kg-comparison-title",
+      "evidence_id": "under-3kg-sources-title"
+    },
+    {
+      "post_id": 84,
+      "slug": "front-open-carry-on-suitcase-with-stopper",
+      "category": "travel",
+      "title": "前開き・ストッパー付きスーツケース比較",
+      "summary": "途中で何を取り出すか。前面から届く収納と、開き方の違いを比べます。",
+      "table_id": "comparison-title",
+      "evidence_id": "sources-title"
+    },
+    {
+      "post_id": 41,
+      "slug": "countertop-dishwasher-for-small-households",
+      "category": "kitchen",
+      "title": "1〜2人暮らし向け食洗機を比較",
+      "summary": "本体・扉の寸法、食器量、給水から候補を比較。設置できる条件を先に確認します。",
+      "table_id": "blk-dish-007-title",
+      "evidence_id": "blk-dish-018-title"
+    },
+    {
+      "post_id": 86,
+      "slug": "solota-vs-rakua-mini-plus",
+      "category": "kitchen",
+      "title": "SOLOTAとラクアmini Plusの違い",
+      "summary": "本体と扉の奥行、食器量、給水、乾燥方式を比較。実機性能の順位ではありません。",
+      "table_id": "solota-specs-title",
+      "evidence_id": "reader-evidence"
+    },
+    {
+      "post_id": 262,
+      "slug": "dishwasher-installation-measurement",
+      "category": "kitchen",
+      "title": "食洗機の置き場所・扉・余白の測り方",
+      "summary": "本体が載るだけで決めず、開閉空間・給排水・電源の条件を確認します。",
+      "table_id": "measure-footprint",
+      "evidence_id": "guide-evidence"
+    },
+    {
+      "post_id": 263,
+      "slug": "dishwasher-water-supply-methods",
+      "category": "kitchen",
+      "title": "食洗機の給水・排水方法",
+      "summary": "タンク補給と排水ホースの取り回しなど、毎回の作業から考えます。",
+      "table_id": "choose-supply",
+      "evidence_id": "guide-evidence"
+    },
+    {
+      "post_id": 264,
+      "slug": "dishwasher-detergent-guide",
+      "category": "kitchen",
+      "title": "食洗機用洗剤の種類・量・注意点",
+      "summary": "機種に合う専用洗剤と使用量、入れない食器を確認します。",
+      "table_id": "select-machine-detergent",
+      "evidence_id": "guide-evidence"
+    },
+    {
+      "post_id": 265,
+      "slug": "dishwasher-cleaning-guide",
+      "category": "kitchen",
+      "title": "食洗機のお手入れ",
+      "summary": "毎回の清掃と定期的な作業を分け、使い続けられる手順を確認します。",
+      "table_id": "clean-each-time",
+      "evidence_id": "guide-evidence"
+    },
+    {
+      "post_id": 266,
+      "slug": "dishwasher-running-cost",
+      "category": "kitchen",
+      "title": "食洗機の電気・水道・洗剤代",
+      "summary": "自宅の単価と運転回数で試算します。未確認の費目はゼロ円にしません。",
+      "table_id": "guide-cost-calculator",
+      "evidence_id": "guide-evidence"
+    },
+    {
+      "post_id": 30,
+      "slug": "compact-robot-vacuum-shortlist",
+      "category": "cleaning",
+      "title": "ロボット掃除機を設置寸法と手入れで比較",
+      "summary": "本体と台を分け、吸引・自動ゴミ収集・モップの手入れの範囲を比べます。",
+      "table_id": "blk-robot-007-title",
+      "evidence_id": "blk-robot-019-title"
+    },
+    {
+      "post_id": 85,
+      "slug": "roomba-mini-vs-switchbot-k11-pro",
+      "category": "cleaning",
+      "title": "Roomba MiniとK11+ Proの違い",
+      "summary": "小型2機種を台と構成から比較。自動ゴミ収集のないMini Slimは別構成として扱います。",
+      "table_id": "robot-comparison-title",
+      "evidence_id": "robot-sources-title"
+    },
+    {
+      "post_id": 28,
+      "slug": "portable-power-station-guide",
+      "category": "preparedness",
+      "title": "停電対策用ポータブル電源の選び方",
+      "summary": "使う機器と時間を先に決め、容量・定格出力・運べる重量で候補を比べます。",
+      "table_id": "blk-power-007-title",
+      "evidence_id": "blk-power-018-title"
+    },
+    {
+      "post_id": 29,
+      "slug": "anker-solix-c300-c800-c1000-differences",
+      "category": "preparedness",
+      "title": "Anker Solixの容量帯・世代の違い",
+      "summary": "C300・C800 Plus・C1000・C1000 Gen 2を別機種として比べます。",
+      "table_id": "blk-anker-008-title",
+      "evidence_id": "blk-anker-017-title"
+    }
+  ],
+  "pages": [
+    {
+      "post_id": 142,
+      "title": "スーツケースの選び方・比較",
+      "lead": "利用便と荷物量を先に確認し、軽さ・開き方・容量から選ぶ。",
+      "slug": "travel"
+    },
+    {
+      "post_id": 136,
+      "title": "食洗機の選び方・比較",
+      "lead": "置き場所・いつもの食器・毎回の給水から、続けられる一台を。",
+      "slug": "kitchen"
+    },
+    {
+      "post_id": 131,
+      "title": "ロボット掃除機の選び方・比較",
+      "lead": "本体と台の置き場、任せたい掃除、残る手入れを分けて選ぶ。",
+      "slug": "cleaning"
+    },
+    {
+      "post_id": 138,
+      "title": "ポータブル電源の選び方・比較",
+      "lead": "大きさより先に、使う機器と時間、運べる重さを決める。",
+      "slug": "preparedness"
+    },
+    {
+      "post_id": 130,
+      "title": "商品カテゴリから探す",
+      "lead": "スーツケース・食洗機・ロボット掃除機・ポータブル電源。各カテゴリで条件整理から比較、購入前の確認まで案内します。",
+      "slug": "categories"
+    },
+    {
+      "post_id": 141,
+      "title": "一人暮らし・省スペース",
+      "lead": "場所をとらずに使いたい。本体の寸法だけでなく、扉や台、使うための余白から選びます。",
+      "slug": "small-space"
+    },
+    {
+      "post_id": 140,
+      "title": "家事を短くしたい",
+      "lead": "任せたい家事と、自分に残る作業を分けて考えます。給水・片づけ・手入れまで続けられるかを確認しましょう。",
+      "slug": "save-housework"
+    },
+    {
+      "post_id": 144,
+      "title": "設置工事を避けたい",
+      "lead": "タンク給水対応でも設置・排水・電源の確認は必要です。先に自宅で使える条件を整理します。",
+      "slug": "without-installation"
+    },
+    {
+      "post_id": 134,
+      "title": "手入れを続けやすいものを選びたい",
+      "lead": "消耗品と手入れの手順を確認し、買ってから続けられる使い方を考えます。",
+      "slug": "easy-maintenance"
+    },
+    {
+      "post_id": 132,
+      "title": "旅行を快適にしたい",
+      "lead": "持ち上げる重さ、途中の出し入れ、旅の荷物。困っている場面から比較記事を選びます。",
+      "slug": "comfortable-travel"
+    },
+    {
+      "post_id": 137,
+      "title": "停電に備えたい",
+      "lead": "必要な機器と使いたい時間から電源を検討します。医療・生命維持や住宅全体の電源設計は対象外です。",
+      "slug": "prepare-outage"
+    },
+    {
+      "post_id": 139,
+      "title": "悩み・目的から探す",
+      "lead": "商品名が決まっていなくても大丈夫です。減らしたい負担や、買う前の不安から探せます。",
+      "slug": "purposes"
+    },
+    {
+      "post_id": 135,
+      "title": "選び方ガイド",
+      "lead": "まだ商品を決めていない方へ。測る・数える・確認する作業から、必要な条件を整理します。比較記事内の選び方解説も案内しています。",
+      "slug": "guides"
+    },
+    {
+      "post_id": 133,
+      "title": "比較・条件別の候補",
+      "lead": "選ぶ理由と妥協点を同じ軸で確認します。市場全体のランキングではなく、記事ごとの対象機種・条件に沿った比較です。",
+      "slug": "comparisons"
+    },
+    {
+      "post_id": 143,
+      "title": "更新した比較・ガイド",
+      "lead": "比較内容の確認日は各記事に記載しています。この一覧は、今回導線を整備した記事への入口です。",
+      "slug": "updates"
+    }
+  ]
+}

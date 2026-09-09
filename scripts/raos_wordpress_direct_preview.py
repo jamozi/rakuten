@@ -74,8 +74,12 @@ def preview_plan(candidate: dict, candidate_dir: Path) -> dict:
         if not body.is_file() or body.stat().st_nlink != 1:
             raise ValueError("DIRECT_PREVIEW_BODY_INVALID")
         raw = body.read_bytes()
+        expected_body = (
+            article.get("body_sha256") if article.get("patch_source")
+            else candidate["sources"][article["body_source"]]
+        )
         if (
-            digest(raw) != candidate["sources"][article["body_source"]]
+            digest(raw) != expected_body
             or raw.decode() != document["block_markup"]
         ):
             raise ValueError("DIRECT_PREVIEW_BODY_CHANGED")
