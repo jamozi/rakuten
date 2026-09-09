@@ -67,11 +67,15 @@ candidateの非公開領域へ保存し、ハッシュを表示runtimeへ束縛�
 ローカル全件経路は21,633 passed / 10 failed / 7 skipped / 58 subtests。
 検査中のテーマrevision更新で旧revisionを捕捉した10失敗は、最終版の該当3ファイル再検査で
 321 passed。最終の対象テストは127 passed / 30 subtests passed、Ruffも成功。
-required CIは統合PR #259の最終headで確認する。
+PR #259はhead31e8fa69の必須CI成功後f8c1b24eへ、購入ボタンの公開snapshot PR #262は
+head8b7dc6c3の必須CI成功後f8a36f6cへ、既存GitHub Actionsがmainに統合済み。
+その後のpreview画像検査・追加テストは後続PRの最終headの必須CIで確認する。
 旧失敗を後の成功でPASSへ書き換えない。
 
 最終本番確認では31ページ×390/1440pxの62画面でHTTP、H1、横はみ出し、画像読込、
 本文アンカー、JavaScriptエラー、旧Cookieリンクの検査に失敗なし。
+ホームから4カテゴリ、各カテゴリから記事、全15記事からカテゴリと他の記事への本文リンクあり。
+完全同一本文の重複0件。見出しと導線でガイド・条件別比較・2機種比較の役割を確認した。
 再実行した費用計算22項目もPASS。残る38 affiliate CTAはrel適正、販売先19件は
 HTTP200とtitleの型番一致。広告表示はCTAより前に存在する。
 
