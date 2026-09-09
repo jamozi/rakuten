@@ -24,3 +24,6 @@ body .ks-reader-start h2[id], body .raos-editorial-v2 h2[id] { scroll-margin-top
 #ks-magazine .km-decision-path .km-guide-copy { padding: 20px; }
 body .ks-route-grid > article { max-width: 100%; }
 body .ks-reader-start { overflow-wrap: anywhere; }
+body .product-profile img[data-raos-product-image-state="neutral"] { display: none; }
+body .raos-product-card__media:has(img[data-raos-product-image-state="neutral"]), body .product-profile > figure:has(img[data-raos-product-image-state="neutral"]) { display: none; }
+body .product-profile:has(img[data-raos-product-image-state="neutral"]) > .product-profile__body { grid-column: 1 / -1; }

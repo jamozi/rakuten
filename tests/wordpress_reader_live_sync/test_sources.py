@@ -1,8 +1,8 @@
 """Offline regression checks for the published reader-copy source handoff."""
-from html.parser import HTMLParser
 import json
-from pathlib import Path
 import unittest
+from html.parser import HTMLParser
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DIRECT = ROOT / 'changes/wordpress-direct-publish-v1'
@@ -88,6 +88,35 @@ class ReaderSources(unittest.TestCase):
         self.assertIn('id="travel-comparisons"', html)
         self.assertIn('href="#travel-comparisons"', html)
         self.assertNotIn('href="#journey-comparison"', html)
+
+    def test_article_fragments_are_not_publication_documents(self):
+        data = json.loads((DIRECT / 'reader-sync/article-fragments.v1.json').read_text())
+        self.assertIs(data['publication_authority'], False)
+        self.assertEqual(data['status'], 'CAPTURED_NOT_WIRED_TO_PUBLICATION')
+        self.assertEqual({row['post_id'] for row in data['articles']}, {83, 41, 30, 28, 86})
+        for row in data['articles']:
+            with self.subTest(post_id=row['post_id']):
+                parsed = Markup()
+                parsed.feed(row['html'])
+                self.assertEqual(parsed.ids.count(row['marker_id']), 1)
+                self.assertTrue(row['required_live_models'])
+                if row['post_id'] == 86:
+                    self.assertEqual(row['before_html'], '')
+                else:
+                    self.assertIn('広告', row['before_html'])
+
+    def test_article_fragments_have_no_external_or_executable_links(self):
+        data = json.loads((DIRECT / 'reader-sync/article-fragments.v1.json').read_text())
+        for row in data['articles']:
+            for field in ('html', 'before_html', 'related_section_html'):
+                text = row.get(field, '')
+                parsed = Markup()
+                parsed.feed(text)
+                for href in parsed.hrefs:
+                    self.assertTrue(href.startswith(('/', '#')))
+                    self.assertFalse(href.startswith('//'))
+                for token in ('<script', '<iframe', '<form', 'rafcid=', 'hb.afl.rakuten.co.jp'):
+                    self.assertNotIn(token, text.lower())
 
 if __name__ == '__main__':
     unittest.main()
