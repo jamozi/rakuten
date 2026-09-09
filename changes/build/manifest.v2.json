@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "585883ba0ac620da8024e7ae20c30b0b7ec7937a646e606e03f4d14a71937f74",
+          "sha256": "27cab6da4344919b4503bcb61a473afcbbd3c99cb611f40753605aefef426ff2",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -26504,7 +26504,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "b27e8e938d0e7c47fd525bf546a516a791ca94c33a53c7b9db4d90b2a5668312",
+          "sha256": "6a14851d879bf590b8bd1ced2493ad853bd9344ec72663dcccb68f8f0404fa93",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26735,7 +26735,7 @@
       "outputs": [
         {
           "bytes": 81278,
-          "sha256": "921ca18af335e93b161f06c48f926002fba1ff02cbc0e9a11e0f7119298c10e2",
+          "sha256": "94e20177e2aec0bfe49fcf21f45d25ec3c2c9d1f9ded6bc9266aec88b54bfcca",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27527,6 +27527,18 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-slim-official.jpg",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-slim-official.jpg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/legacy-media-display-projection.v1.json",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/legacy-media-display-projection.v1.json",
           "version": 2
@@ -27559,6 +27571,12 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/official-product-media.php",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/official-product-media.php",
           "version": 2
         },
         {
@@ -29430,7 +29448,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "d0cd4787641fa49f3b4d5b626858dac0487d6ff3d02bbf9382c31ce385342cf9",
+          "sha256": "bf6d0ecc5cf5a0a856cfe1fc7fb0845e1ad11edbc1c1d9b31225ffe1f8abb1a7",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30287,7 +30305,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "c64f558361dbec5b7edafd4724092018899720c767b57783f5960280df9f787e",
+          "sha256": "72b0b28a5bec86207c7aaa3facc141c97b9e3d444decc92658d7368ba236aa15",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

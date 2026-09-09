@@ -1766,7 +1766,7 @@ def test_single_article_titles_are_wide_balanced_and_responsive() -> None:
         mobile = stylesheet.rsplit(f"{selector} {{", 1)[1].split("}", 1)[0]
         assert "font-size: clamp(" in mobile
         assert "line-height:" in mobile
-    assert "--rx-prose: 50rem" in editorial_css
+    assert "--rx-prose: 54rem" in editorial_css
     assert "--rev2-content: 75rem" in editorial_css
 
     for selector in (
