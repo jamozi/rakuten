@@ -17,5 +17,8 @@
   "keep_existing_fragments": true,
   "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/kitchen/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機の選び方・記事一覧</a><a href=\"#blk-dish-007-title\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"/kitchen/#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
   "next_html": "",
-  "replacements": []
+  "replacements": [],
+  "unavailable_purchase_product_ids": [
+    "PRD-PANASONIC-NP-TSP1"
+  ]
 }
