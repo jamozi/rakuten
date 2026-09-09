@@ -1,141 +1,27 @@
 {
-  "schema": "RAOSOwnerDirectArticlesV1",
-  "profile": "owner-direct-v1",
-  "articles": [
-    {
-      "article_key": "home",
-      "mode": "existing",
-      "post_id": 15,
-      "post_type": "page",
-      "slug": "home",
-      "title": "ホーム",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/home.html"
-    },
-    {
-      "article_key": "dishwasher-installation-measurement",
-      "mode": "existing",
-      "post_id": 262,
-      "post_type": "post",
-      "slug": "dishwasher-installation-measurement",
-      "title": "卓上食洗機の置き場所を測る順番｜本体・扉・余白を確認する",
-      "excerpt": "設置面だけを測ると、扉やホースのために置けないことがあります。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、NP-TMLK1-K、TK-MDW22Bの公式寸法を対象に、購入前の測り方を整理します。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html",
-      "taxonomies": {
-        "category": [
-          5
-        ],
-        "post_tag": [],
-        "post_format": []
-      },
-      "media_ids": []
-    },
-    {
-      "article_key": "dishwasher-water-supply-methods",
-      "mode": "existing",
-      "post_id": 263,
-      "post_type": "post",
-      "slug": "dishwasher-water-supply-methods",
-      "title": "卓上食洗機の給水・排水方法｜毎回の作業から選ぶ",
-      "excerpt": "タンク式でも給水と排水の作業は必要です。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、TK-MDW22Bで確認できた条件を整理し、DWS-33B(W)の給水詳細とNP-TMLK1-Kの具体手順は未確認として扱います。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html",
-      "taxonomies": {
-        "category": [
-          5
-        ],
-        "post_tag": [],
-        "post_format": []
-      },
-      "media_ids": []
-    },
-    {
-      "article_key": "dishwasher-detergent-guide",
-      "mode": "existing",
-      "post_id": 264,
-      "post_type": "post",
-      "slug": "dishwasher-detergent-guide",
-      "title": "食洗機用洗剤の選び方｜型番ごとの量と入れてはいけないもの",
-      "excerpt": "洗剤は食洗機専用を使い、型番が示す量と使えない食器を先に確認します。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、NP-TMLK1-K、TK-MDW22Bの公式記録を対象に、共通に見える点と未確認の点を分けます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html",
-      "taxonomies": {
-        "category": [
-          5
-        ],
-        "post_tag": [],
-        "post_format": []
-      },
-      "media_ids": []
-    },
-    {
-      "article_key": "dishwasher-cleaning-guide",
-      "mode": "existing",
-      "post_id": 265,
-      "post_type": "post",
-      "slug": "dishwasher-cleaning-guide",
-      "title": "卓上食洗機のお手入れ｜毎回・月1回・長く使わない時に分ける",
-      "excerpt": "お手入れは「いつ、どの部品をするか」を型番ごとに分けると続けやすくなります。SS-M171、TK-MDW22W、SS-MA251、TK-MDW22Bの確認済み手順を中心に、DWS-33B(W)とNP-TMLK1-Kで確認できない範囲も明示します。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-cleaning-guide.html",
-      "taxonomies": {
-        "category": [
-          5
-        ],
-        "post_tag": [],
-        "post_format": []
-      },
-      "media_ids": []
-    },
-    {
-      "article_key": "dishwasher-running-cost",
-      "mode": "existing",
-      "post_id": 266,
-      "post_type": "post",
-      "slug": "dishwasher-running-cost",
-      "title": "卓上食洗機のランニングコスト｜電気・水道・洗剤を式で確認する",
-      "excerpt": "金額を比べる前に、公式の消費電力量と自宅の料金をそろえます。対象6機種で1回当たりWhを確認できたのはNP-TMLK1-Kだけです。他の5機種は電気代の比較を保留し、ここでは計算手順と不足値を整理します。 自宅の単価を空欄のフォームへ入力すると、公表条件で計算できる費目を確認できます。",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html",
-      "taxonomies": {
-        "category": [
-          5
-        ],
-        "post_tag": [],
-        "post_format": []
-      },
-      "media_ids": []
-    },
-    {
-      "article_key": "travel",
-      "mode": "existing",
-      "post_id": 142,
-      "post_type": "page",
-      "slug": "travel",
-      "title": "旅行・外出",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/travel.html"
-    },
-    {
-      "article_key": "kitchen",
-      "mode": "existing",
-      "post_id": 136,
-      "post_type": "page",
-      "slug": "kitchen",
-      "title": "キッチン・家事",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/kitchen.html"
-    },
-    {
-      "article_key": "cleaning",
-      "mode": "existing",
-      "post_id": 131,
-      "post_type": "page",
-      "slug": "cleaning",
-      "title": "掃除・時短",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/cleaning.html"
-    },
-    {
-      "article_key": "preparedness",
-      "mode": "existing",
-      "post_id": 138,
-      "post_type": "page",
-      "slug": "preparedness",
-      "title": "防災・電源",
-      "body_source": "changes/wordpress-direct-publish-v1/articles/preparedness.html"
-    }
+  "schema":"RAOSOwnerDirectArticlesV1",
+  "profile":"owner-direct-v1",
+  "articles":[
+    {"article_key":"home","mode":"existing","post_id":15,"post_type":"page","slug":"home","title":"ホーム","body_source":"changes/wordpress-direct-publish-v1/articles/home.html"},
+    {"article_key":"dishwasher-installation-measurement","mode":"existing","post_id":262,"post_type":"post","slug":"dishwasher-installation-measurement","title":"卓上食洗機の置き場所を測る順番｜本体・扉・余白を確認する","excerpt":"設置面だけを測ると、扉やホースのために置けないことがあります。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、NP-TMLK1-K、TK-MDW22Bの公式寸法を対象に、購入前の測り方を整理します。","body_source":"changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html","taxonomies":{"category":[5],"post_tag":[],"post_format":[]}},
+    {"article_key":"dishwasher-water-supply-methods","mode":"existing","post_id":263,"post_type":"post","slug":"dishwasher-water-supply-methods","title":"卓上食洗機の給水・排水方法｜毎回の作業から選ぶ","excerpt":"タンク式でも給水と排水の作業は必要です。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、TK-MDW22Bで確認できた条件を整理し、DWS-33B(W)の給水詳細とNP-TMLK1-Kの具体手順は未確認として扱います。","body_source":"changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html","taxonomies":{"category":[5],"post_tag":[],"post_format":[]}},
+    {"article_key":"dishwasher-detergent-guide","mode":"existing","post_id":264,"post_type":"post","slug":"dishwasher-detergent-guide","title":"食洗機用洗剤の選び方｜型番ごとの量と入れてはいけないもの","excerpt":"洗剤は食洗機専用を使い、型番が示す量と使えない食器を先に確認します。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、NP-TMLK1-K、TK-MDW22Bの公式記録を対象に、共通に見える点と未確認の点を分けます。","body_source":"changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html","taxonomies":{"category":[5],"post_tag":[],"post_format":[]}},
+    {"article_key":"dishwasher-cleaning-guide","mode":"existing","post_id":265,"post_type":"post","slug":"dishwasher-cleaning-guide","title":"卓上食洗機のお手入れ｜毎回・月1回・長く使わない時に分ける","excerpt":"お手入れは「いつ、どの部品をするか」を型番ごとに分けると続けやすくなります。SS-M171、TK-MDW22W、SS-MA251、TK-MDW22Bの確認済み手順を中心に、DWS-33B(W)とNP-TMLK1-Kで確認できない範囲も明示します。","body_source":"changes/wordpress-direct-publish-v1/articles/dishwasher-cleaning-guide.html","taxonomies":{"category":[5],"post_tag":[],"post_format":[]}},
+    {"article_key":"dishwasher-running-cost","mode":"existing","post_id":266,"post_type":"post","slug":"dishwasher-running-cost","title":"卓上食洗機のランニングコスト｜電気・水道・洗剤を式で確認する","excerpt":"金額を比べる前に、公式の消費電力量と自宅の料金をそろえます。対象6機種で1回当たりWhを確認できたのはNP-TMLK1-Kだけです。他の5機種は電気代の比較を保留し、ここでは計算手順と不足値を整理します。 自宅の単価を空欄のフォームへ入力すると、公表条件で計算できる費目を確認できます。","body_source":"changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html","taxonomies":{"category":[5],"post_tag":[],"post_format":[]}},
+    {"article_key":"travel","mode":"existing","post_id":142,"post_type":"page","slug":"travel","title":"スーツケースの選び方・比較","body_source":"changes/wordpress-direct-publish-v1/articles/travel.html"},
+    {"article_key":"kitchen","mode":"existing","post_id":136,"post_type":"page","slug":"kitchen","title":"食洗機の選び方・比較","body_source":"changes/wordpress-direct-publish-v1/articles/kitchen.html"},
+    {"article_key":"cleaning","mode":"existing","post_id":131,"post_type":"page","slug":"cleaning","title":"ロボット掃除機の選び方・比較","body_source":"changes/wordpress-direct-publish-v1/articles/cleaning.html"},
+    {"article_key":"preparedness","mode":"existing","post_id":138,"post_type":"page","slug":"preparedness","title":"ポータブル電源の選び方・比較","body_source":"changes/wordpress-direct-publish-v1/articles/preparedness.html"},
+    {"article_key":"categories","mode":"existing","post_id":130,"post_type":"page","slug":"categories","title":"商品カテゴリから探す","body_source":"changes/wordpress-direct-publish-v1/articles/categories.html"},
+    {"article_key":"guides","mode":"existing","post_id":135,"post_type":"page","slug":"guides","title":"選び方ガイド","body_source":"changes/wordpress-direct-publish-v1/articles/guides.html"},
+    {"article_key":"comparisons","mode":"existing","post_id":133,"post_type":"page","slug":"comparisons","title":"比較・条件別の候補","body_source":"changes/wordpress-direct-publish-v1/articles/comparisons.html"},
+    {"article_key":"purposes","mode":"existing","post_id":139,"post_type":"page","slug":"purposes","title":"悩み・目的から探す","body_source":"changes/wordpress-direct-publish-v1/articles/purposes.html"},
+    {"article_key":"updates","mode":"existing","post_id":143,"post_type":"page","slug":"updates","title":"最近更新したガイド","body_source":"changes/wordpress-direct-publish-v1/articles/updates.html"},
+    {"article_key":"small-space","mode":"existing","post_id":141,"post_type":"page","slug":"small-space","title":"一人暮らし・省スペース","body_source":"changes/wordpress-direct-publish-v1/articles/small-space.html"},
+    {"article_key":"save-housework","mode":"existing","post_id":140,"post_type":"page","slug":"save-housework","title":"家事を短くしたい","body_source":"changes/wordpress-direct-publish-v1/articles/save-housework.html"},
+    {"article_key":"without-installation","mode":"existing","post_id":144,"post_type":"page","slug":"without-installation","title":"設置工事を避けたい","body_source":"changes/wordpress-direct-publish-v1/articles/without-installation.html"},
+    {"article_key":"easy-maintenance","mode":"existing","post_id":134,"post_type":"page","slug":"easy-maintenance","title":"手入れを続けやすいものを選びたい","body_source":"changes/wordpress-direct-publish-v1/articles/easy-maintenance.html"},
+    {"article_key":"comfortable-travel","mode":"existing","post_id":132,"post_type":"page","slug":"comfortable-travel","title":"旅行を快適にしたい","body_source":"changes/wordpress-direct-publish-v1/articles/comfortable-travel.html"},
+    {"article_key":"prepare-outage","mode":"existing","post_id":137,"post_type":"page","slug":"prepare-outage","title":"防災に備えたい","body_source":"changes/wordpress-direct-publish-v1/articles/prepare-outage.html"}
   ]
 }

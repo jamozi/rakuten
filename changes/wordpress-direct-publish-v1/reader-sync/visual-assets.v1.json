@@ -1,0 +1,14 @@
+{
+  "schema": "KSReaderVisualAssetsV1",
+  "release": "20260910",
+  "generator": "ChatGPT built-in image generation",
+  "requested_model": "Images 2.5",
+  "exact_runtime_model": "not exposed by tool",
+  "assets": [
+    {"category":"travel","category_post_id":142,"media_id":401,"url":"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-travel-editorial-ai-20260910.webp","width":762,"height":506,"bytes":55228,"sha256":"5ebab08bbd163845f77fb91a4a2432a77c998d5871b5f3adc9e379e8a0b89389","caption":"AI生成の編集イメージ。掲載商品の実物写真ではありません。","alt":"玄関でスーツケースと衣類を揃えた旅支度のイメージ","purpose":"editorial_illustration","product_evidence":false,"article_post_ids":[82,83,84,19],"source_crop_size":[762,506],"upscaled":false},
+    {"category":"kitchen","category_post_id":136,"media_id":403,"url":"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-kitchen-editorial-ai-20260910.webp","width":762,"height":506,"bytes":59224,"sha256":"0f8018527cfbf0296a2d703156fe8918da61b8af7d94527d44ca9cf1011568d8","caption":"AI生成の編集イメージ。実物写真・収納例・設置図ではありません。","alt":"食器と小型食洗機のあるキッチンのイメージ","purpose":"editorial_illustration","product_evidence":false,"article_post_ids":[262,263,41,86,266,264,265],"source_crop_size":[762,506],"upscaled":false},
+    {"category":"cleaning","category_post_id":131,"media_id":404,"url":"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-cleaning-editorial-ai-20260910.webp","width":762,"height":506,"bytes":81436,"sha256":"a3d204730ae64c1d61a388e69cc7021e2bf41666a753f97b22640839e34e1c5a","caption":"AI生成の編集イメージ。実物写真や清掃性能の検証ではありません。","alt":"木の床と家具の間にロボット掃除機を配置した暮らしのイメージ","purpose":"editorial_illustration","product_evidence":false,"article_post_ids":[30,85],"source_crop_size":[762,506],"upscaled":false},
+    {"category":"preparedness","category_post_id":138,"media_id":405,"url":"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-preparedness-editorial-ai-20260910.webp","width":762,"height":506,"bytes":85756,"sha256":"c7ca0c718f4d4cdeba050327c79ab7e6d4925e7fc3a660f2299cf2056efe2d4b","caption":"AI生成の編集イメージ。実物写真・配線図・動作保証ではありません。","alt":"ポータブル電源とランタンを並べた備えのイメージ","purpose":"editorial_illustration","product_evidence":false,"article_post_ids":[28,29],"source_crop_size":[762,506],"upscaled":false}
+  ],
+  "publication_authority": false
+}
