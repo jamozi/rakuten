@@ -1,0 +1,8 @@
+/* Public editorial image layout. No product-evidence or measurement behavior. */
+body .ks-category-visual img { display: block; width: 100%; height: auto; aspect-ratio: 762/506; object-fit: cover; }
+body .ks-category-visual figcaption { font-size: 12px; line-height: 1.7; color: #5c5953; margin-top: 8px; }
+body .ks-directory a { display: inline-flex; align-items: center; min-height: 44px; padding: 4px 6px; color: #714332; }
+body .ks-directory section { margin-top: 28px; margin-bottom: 28px; }
+body .ks-route-grid { display: flex; flex-wrap: wrap; gap: 20px; }
+body .ks-route-grid > article { flex: 1 1 240px; min-width: 0; max-width: 100%; padding: 16px; border: 1px solid #d7d3cb; box-sizing: border-box; background: white; }
+body .ks-directory a:focus-visible, body .ks-image-categories a:focus-visible { outline: 3px solid #8b3f2b; outline-offset: 4px; }
