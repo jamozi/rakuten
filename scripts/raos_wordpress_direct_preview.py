@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 from datetime import UTC, datetime
 import hashlib
+from html.parser import HTMLParser
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -20,7 +21,8 @@ import subprocess
 import sys
 import time
 from typing import Any
-from urllib.request import urlopen
+from urllib.parse import urlsplit
+from urllib.request import HTTPRedirectHandler, build_opener, urlopen
 
 import yaml
 
@@ -208,6 +210,68 @@ def _theme_tree(theme: Path) -> str:
     return digest(canonical(rows))
 
 
+def download_product_image(url: str) -> tuple[bytes, str]:
+    class SameHostRedirect(HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            target = urlsplit(newurl)
+            if (target.scheme != "https" or target.hostname != "thumbnail.image.rakuten.co.jp"
+                    or target.username or target.password or target.port not in (None, 443)):
+                raise ValueError("DIRECT_PREVIEW_IMAGE_REDIRECT_REFUSED")
+            return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+    with build_opener(SameHostRedirect()).open(url, timeout=30) as response:
+        return response.read(2 * 1024 * 1024 + 1), response.headers.get_content_type()
+
+
+def product_image_mirror(candidate: dict, directory: Path, *, fetch=None) -> dict:
+    """Pin existing verified thumbnails privately; the browser stays offline."""
+    urls = set()
+
+    class Images(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            values = dict(attrs)
+            url = values.get("src") or ""
+            parsed = urlsplit(url)
+            if (tag == "img" and values.get("data-raos-product-image-state") == "verified"
+                    and parsed.scheme == "https" and parsed.hostname == "thumbnail.image.rakuten.co.jp"
+                    and not parsed.username and not parsed.password and parsed.port in (None, 443)):
+                urls.add(url)
+
+    for article in candidate["articles"]:
+        Images().feed(article["document"]["block_markup"])
+    if len(urls) > 64:
+        raise ValueError("DIRECT_PREVIEW_IMAGE_LIMIT")
+    if not urls:
+        return {}
+    folder = contained(directory, "preview-product-images")
+    manifest = contained(directory, "preview-product-images/manifest.json")
+    if manifest.exists():
+        rows = json.loads(manifest.read_bytes())
+    else:
+        if fetch is None:
+            raise ValueError("DIRECT_PREVIEW_IMAGE_MIRROR_REQUIRED")
+        _private_dir(folder)
+        rows = {}
+        for url in sorted(urls):
+            payload, mime = fetch(url)
+            if not 0 < len(payload) <= 2 * 1024 * 1024 or mime not in {"image/jpeg", "image/png", "image/webp"}:
+                raise ValueError("DIRECT_PREVIEW_IMAGE_INVALID")
+            relative = "preview-product-images/" + digest(url.encode()) + ".image"
+            _write(contained(directory, relative), payload)
+            rows[url] = {"path": relative, "sha256": digest(payload), "mime": mime}
+        _write(manifest, canonical(rows))
+    if set(rows) != urls:
+        raise ValueError("DIRECT_PREVIEW_IMAGE_SOURCE_CHANGED")
+    for url, row in rows.items():
+        expected_path = "preview-product-images/" + digest(url.encode()) + ".image"
+        if row.get("path") != expected_path or row.get("mime") not in {"image/jpeg", "image/png", "image/webp"}:
+            raise ValueError("DIRECT_PREVIEW_IMAGE_INVALID")
+        path = contained(directory, expected_path)
+        if not path.is_file() or path.stat().st_nlink != 1 or digest(path.read_bytes()) != row.get("sha256"):
+            raise ValueError("DIRECT_PREVIEW_IMAGE_CHANGED")
+    return rows
+
+
 def runtime_fingerprint(candidate: dict, candidate_dir: Path) -> str:
     theme = (
         contained(candidate_dir, candidate["theme"]["directory"])
@@ -234,6 +298,7 @@ def runtime_fingerprint(candidate: dict, candidate_dir: Path) -> str:
         canonical(
             {
                 "theme": _theme_tree(theme),
+                "product_images": product_image_mirror(candidate, candidate_dir),
                 "python": digest(Path(__file__).read_bytes()),
                 "seed": digest((DIRECT / "preview-seed.php").read_bytes()),
                 "browser": digest((DIRECT / "preview-browser.mjs").read_bytes()),
@@ -276,6 +341,7 @@ def verify_preview(candidate: dict, candidate_dir: Path, report: dict) -> None:
 
 def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
     planned = preview_plan(candidate, candidate_dir)
+    images = product_image_mirror(candidate, candidate_dir, fetch=download_product_image)
     runtime_sha = runtime_fingerprint(candidate, candidate_dir)
     identity = digest(str(ROOT).encode())[:12]
     port = 40000 + int(identity[:4], 16) % 12000
@@ -502,6 +568,7 @@ def prepare_candidate_preview(candidate: dict, candidate_dir: Path) -> dict:
                 "origin": origin,
                 "screenshots": str(screenshots),
                 "articles": candidate["articles"],
+                "images": {url: {**row, "path": str(candidate_dir / row["path"])} for url, row in images.items()},
             }
         ),
     )

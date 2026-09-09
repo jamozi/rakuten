@@ -45,6 +45,35 @@ def owner():
     return raos_wordpress_direct_preview
 
 
+def test_product_image_mirror_is_exact_offline_and_detects_tampering(tmp_path):
+    candidate = fixture(tmp_path)
+    url = "https://thumbnail.image.rakuten.co.jp/synthetic.jpg"
+    candidate["articles"][0]["document"]["block_markup"] = (
+        f'<img src="{url}" data-raos-product-image-state="verified">'
+    )
+    calls = []
+
+    def fetch(value):
+        calls.append(value)
+        return b"synthetic-image", "image/jpeg"
+
+    result = owner().product_image_mirror(candidate, tmp_path, fetch=fetch)
+    assert calls == [url]
+    assert owner().product_image_mirror(candidate, tmp_path) == result
+    (tmp_path / result[url]["path"]).write_bytes(b"changed")
+    with pytest.raises(ValueError, match="IMAGE_CHANGED"):
+        owner().product_image_mirror(candidate, tmp_path)
+
+
+def test_product_image_mirror_does_not_fetch_other_hosts_or_unverified_images(tmp_path):
+    candidate = fixture(tmp_path)
+    candidate["articles"][0]["document"]["block_markup"] = (
+        '<img src="https://other.invalid/a.jpg" data-raos-product-image-state="verified">'
+        '<img src="https://thumbnail.image.rakuten.co.jp/unverified.jpg">'
+    )
+    assert owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: pytest.fail("unexpected fetch")) == {}
+
+
 def test_content_preview_checks_only_selected_articles_at_two_widths(tmp_path):
     candidate = fixture(tmp_path)
     planned = owner().preview_plan(candidate, tmp_path)
