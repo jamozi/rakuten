@@ -92,6 +92,23 @@ class LivePatchTests(unittest.TestCase):
         with self.assertRaises(PatchFailure):
             self.apply('')
 
+    def test_unavailable_purchase_keeps_product_and_other_links(self):
+        body = BODY.replace('https://merchant.invalid/item', 'https://hb.afl.rakuten.co.jp/synthetic')
+        patch = copy.deepcopy(PATCH)
+        patch['unavailable_purchase_product_ids'] = ['DEMO']
+        output = self.apply(body, patch)
+        self.assertNotIn('href="https://hb.afl.rakuten.co.jp/synthetic"', output)
+        self.assertIn('data-raos-product-id="DEMO"', output)
+        self.assertIn('販売先を確認できないため', output)
+        self.assertIn('確認日：2026年8月23日', output)
+        self.assertEqual(output, self.apply(output, patch))
+
+    def test_unavailable_purchase_does_not_remove_manufacturer_evidence(self):
+        patch = copy.deepcopy(PATCH)
+        patch['unavailable_purchase_product_ids'] = ['DEMO']
+        with self.assertRaises(PatchFailure):
+            self.apply(BODY, patch)
+
 class StyleTests(unittest.TestCase):
 
     def test_generated_styles_survive_wordpress_safe_css(self):

@@ -50,7 +50,34 @@ post-sitemap.xmlは9件から15件になり、6記事すべてをURLのlocとし
 
 既知ASPの40 CTAすべてでsponsored/nofollowとCTAより前の広告表示を確認。
 購入リンクが存在しない記事・機種を低評価に変更していない。報酬率・取扱有無による順位変更なし。
-販売先の現況照合と最終テーマ公開・Gitの結果は最終回答に記載する。
+販売先20件（記事別の重複を含む）のうち、NP-TSP1の1件でHTTP404を別の取得方法でも再現。
+残る19件はHTTP200と販売ページtitleの型番一致を確認した。在庫・価格・選択中の色やセットは未確認。
+41 `countertop-dishwasher-for-small-households` の該当2 CTAのみ停止案内へ変更し、
+商品評価・仕様・順位・メーカー出典は保持した。その他38 CTAのURL/追跡属性は保持した。
+owner-direct反映・照合済みの追加候補は `e65d2a2322e8c10de3a3de03ccee6df3236142736131af045e77048990f4c040`。
+
+本番共通テーマcandidate `099c2e6e98e59b757892affad8b9b6b28e6b4d4800a8d3b2894cfcf3014bcdb9` は
+反映・照合済み。Cookieリンク修正後の1,072内部リンク出現、35リンク先で404/アンカー欠落0。
+
+既存の外部商品画像を持つ記事のpreviewは、確認済みthumbnail.image.rakuten.co.jp画像だけを
+candidateの非公開領域へ保存し、ハッシュを表示runtimeへ束縛する。ブラウザの外部通信は遮断したまま
+保存した画像で応答する。折りたたみ内の遅延画像も展開し、デコード後に検査する。
+画像URL・画像本体・追跡値をGitへ追加しない。
+
+ローカル全件経路は21,633 passed / 10 failed / 7 skipped / 58 subtests。
+検査中のテーマrevision更新で旧revisionを捕捉した10失敗は、最終版の該当3ファイル再検査で
+321 passed。最終の対象テストは127 passed / 30 subtests passed、Ruffも成功。
+PR #259はhead31e8fa69の必須CI成功後f8c1b24eへ、購入ボタンの公開snapshot PR #262は
+head8b7dc6c3の必須CI成功後f8a36f6cへ、既存GitHub Actionsがmainに統合済み。
+その後のpreview画像検査・追加テストは後続PRの最終headの必須CIで確認する。
+旧失敗を後の成功でPASSへ書き換えない。
+
+最終本番確認では31ページ×390/1440pxの62画面でHTTP、H1、横はみ出し、画像読込、
+本文アンカー、JavaScriptエラー、旧Cookieリンクの検査に失敗なし。
+ホームから4カテゴリ、各カテゴリから記事、全15記事からカテゴリと他の記事への本文リンクあり。
+完全同一本文の重複0件。見出しと導線でガイド・条件別比較・2機種比較の役割を確認した。
+再実行した費用計算22項目もPASS。残る38 affiliate CTAはrel適正、販売先19件は
+HTTP200とtitleの型番一致。広告表示はCTAより前に存在する。
 
 ## 残件と検証範囲
 
