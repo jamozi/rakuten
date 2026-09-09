@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'e4350f56e5ce2a0d0e84443aedc60f6d82188b0d3e2700ddbf02c90e429f1e47';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'e4350f56e5ce2a0d0e84443aedc60f6d82188b0d3e2700ddbf02c90e429f1e47';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '63b808fa75fec07715afe61acb585c6c3ed62f56248c22750064f95fdb20b7c4';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '63b808fa75fec07715afe61acb585c6c3ed62f56248c22750064f95fdb20b7c4';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -5137,6 +5137,17 @@ function kurashinoshirube_wp_consent_type(): string
     return 'optin';
 }
 add_filter('wp_get_consent_type', 'kurashinoshirube_wp_consent_type');
+
+/** Keep the saved footer useful without CookieYes; retain its optional UI hook. */
+function kurashinoshirube_cookie_link_fallback($block_content): string
+{
+    return str_replace(
+        '<a href="#cookie-settings" class="cky-banner-element">Cookie設定を変更</a>',
+        '<a href="/privacy-policy/" class="cky-banner-element">Cookie・個人情報の取り扱い</a>',
+        $block_content
+    );
+}
+add_filter('render_block', 'kurashinoshirube_cookie_link_fallback', 20);
 
 /** Keep WP Consent API choices aligned with CookieYes's reviewed 365-day term. */
 function kurashinoshirube_wp_consent_cookie_expiration(): int

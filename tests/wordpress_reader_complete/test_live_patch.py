@@ -94,6 +94,16 @@ class LivePatchTests(unittest.TestCase):
 
 class StyleTests(unittest.TestCase):
 
+    def test_generated_styles_survive_wordpress_safe_css(self):
+        from scripts.raos_reader_live_patch import Document, inline_reader_styles
+        body = '<section class="ks-reader-start"><p class="ks-reader-ad-note">広告を含みます</p><div class="ks-route-grid"><article>案内</article></div></section>'
+        result = inline_reader_styles(body)
+        for node in Document(result).nodes:
+            css = node.attrs.get('style') or ''
+            self.assertFalse(css.endswith(';'))
+            self.assertNotIn('box-sizing:', css)
+            self.assertNotIn('overflow-wrap:', css)
+
     def test_reader_style_survives_without_additional_css(self):
         from scripts.raos_reader_live_patch import inline_reader_styles
         body = '<section class="ks-reader-start"><div class="ks-route-grid"><article>案内</article></div></section>'
