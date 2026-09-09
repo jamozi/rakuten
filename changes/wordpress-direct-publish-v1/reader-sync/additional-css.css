@@ -1,0 +1,26 @@
+/* Source for the reader-specific Additional CSS applied through WPWriter.
+   This is not the entire site's Additional CSS and is not a theme bundle. */
+body .ks-reader-start { padding: 24px; margin: 24px auto; border-top: 3px solid #8b3f2b; background: #faf9f6; line-height: 1.85; }
+body .ks-route-grid { display: flex; flex-wrap: wrap; gap: 20px; }
+body .ks-route-grid > article { flex: 1 1 240px; padding: 16px; border: 1px solid #d7d3cb; }
+body .ks-reader-start { max-width: 76rem; box-sizing: border-box; color: #1b1b18; font-size: 1rem; }
+body .ks-reader-start h2 { font-size: clamp(1.35rem,2.3vw,1.9rem); line-height: 1.5; margin: 0 0 16px; }
+body .ks-route-grid > article { min-width: 0; box-sizing: border-box; background: white; }
+body .ks-route-grid h3 { font-size: 1.1rem; line-height: 1.6; }
+body .ks-reader-label { font-size: .85rem; font-weight: 700; color: #714332; }
+body .ks-reader-note { font-size: .9rem; }
+body .ks-inline-links { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+body .ks-inline-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 12px; border: 1px solid #b8afa2; background: white; color: #1b1b18; }
+body .ks-route-links { display: flex; flex-direction: column; }
+body .ks-route-grid a { display: inline-flex; align-items: center; min-height: 44px; color: #714332; }
+body .ks-reader-details { margin-top: 16px; border-top: 1px solid #d7d3cb; }
+body .ks-reader-details summary { min-height: 44px; padding: 8px 0; cursor: pointer; font-weight: 600; }
+#ks-magazine .ks-category-shortcuts { margin-top: 20px; }
+body .product-profile > .product-profile__body:only-child { grid-column: 1 / -1; width: 100%; }
+body .ks-reader-start a:focus-visible, body .ks-reader-start summary:focus-visible, body .ks-route-grid a:focus-visible { outline: 3px solid #8b3f2b; outline-offset: 4px; }
+body .ks-reader-start p { max-width: 52rem; }
+body .ks-reader-start h2[id], body .raos-editorial-v2 h2[id] { scroll-margin-top: 24px; }
+#ks-magazine .km-decision-path .km-guide { display: block; }
+#ks-magazine .km-decision-path .km-guide-copy { padding: 20px; }
+body .ks-route-grid > article { max-width: 100%; }
+body .ks-reader-start { overflow-wrap: anywhere; }
