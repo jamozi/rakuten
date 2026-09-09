@@ -202,8 +202,13 @@ def _source_allowed(path: str) -> bool:
     pure = PurePosixPath(path)
     if path == DIRECT_PREFIX + "articles.v1.json":
         return True
+    if path == "scripts/raos_reader_live_patch.py":
+        return True
     if path.startswith(DIRECT_PREFIX + "articles/"):
-        return len(pure.parts) == 4 and pure.suffix == ".html"
+        return len(pure.parts) == 4 and (
+            pure.suffix == ".html"
+            or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*\.patch\.json", pure.name) is not None
+        )
     if path in FIXTURE_REGISTRIES or path in EDITORIAL_SOURCES:
         return True
     if path.startswith(FIXTURE_PREFIX + "articles/"):

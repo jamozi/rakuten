@@ -239,7 +239,7 @@ def inline_reader_styles(body: str) -> str:
     tracking attribute or the magazine homepage. Only known reader components.
     """
     styles = {
-        "ks-reader-start": "box-sizing:border-box;max-width:76rem;padding:24px;margin:24px auto;border-top:3px solid #8b3f2b;background:#faf9f6;color:#1b1b18;line-height:1.85;overflow-wrap:anywhere;",
+        "ks-reader-start": "max-width:76rem;padding:24px;margin:24px auto;border-top:3px solid #8b3f2b;background:#faf9f6;color:#1b1b18;line-height:1.85;",
         "ks-route-grid": "display:flex;flex-wrap:wrap;gap:20px;margin:16px 0;",
         "ks-route-links": "display:flex;flex-direction:column;gap:6px;",
         "ks-inline-links": "display:flex;flex-wrap:wrap;gap:12px;margin:16px 0;",
@@ -256,12 +256,12 @@ def inline_reader_styles(body: str) -> str:
         css = "".join(styles[c] for c in classes if c in styles)
         parent = doc.nodes[node.parent] if node.parent is not None else None
         if node.tag == "article" and parent and "ks-route-grid" in (parent.attrs.get("class") or "").split():
-            css += "flex:1 1 240px;min-width:0;max-width:100%;padding:16px;border:1px solid #d7d3cb;background:#fff;box-sizing:border-box;"
+            css += "flex:1 1 240px;min-width:0;max-width:100%;padding:16px;border:1px solid #d7d3cb;background:#fff;"
         if not css:
             continue
         raw = body[node.start:node.open_end]
         raw = re.sub(r"\sstyle\s*=\s*(?:\"[^\"]*\"|'[^']*'|[^\s>]+)", "", raw, count=1, flags=re.I)
         css += node.attrs.get("style") or ""
-        replacement = raw[:-1] + ' style="' + escape(css, quote=True) + '" data-ks-inline-style="v1">'
+        replacement = raw[:-1] + ' style="' + escape(css.rstrip(";"), quote=True) + '" data-ks-inline-style="v1">'
         edits.append((node.start, node.open_end, replacement))
     return _edit(body, edits)
