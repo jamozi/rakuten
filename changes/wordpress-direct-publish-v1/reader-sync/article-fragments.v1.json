@@ -1,0 +1,60 @@
+{
+  "schema": "RAOSReaderLiveFragmentsV1",
+  "observed_on": "2026-09-10",
+  "publication_authority": false,
+  "application_mode": "manual-reconcile-existing-body",
+  "status": "CAPTURED_NOT_WIRED_TO_PUBLICATION",
+  "preserve": ["product identities and comparison scope", "original evidence observation dates", "existing affiliate href/rel/data attributes", "verified product images", "ad disclosure"],
+  "articles": [
+    {
+      "post_id": 83,
+      "slug": "lightweight-carry-on-suitcase-under-3kg",
+      "marker_id": "under-3kg-start",
+      "required_live_models": ["PROTECA エアロフレックスDX2 01521", "Samsonite C-Lite CS2*09007", "American Tourister APPLITE 4.0 QJ6-68002", "FREQUENTER LIEVE 1-250"],
+      "before_html": "<p class=\"ks-reader-ad-note\">この記事には広告・アフィリエイトリンクが含まれます。実機を使用したレビューではありません。</p>",
+      "html": "<section class=\"ks-reader-start ks-article-start\" id=\"under-3kg-start\" aria-labelledby=\"under-3kg-start-title\"><p class=\"ks-reader-label\">まず、軽さ以外の条件を一つ</p><h2 id=\"under-3kg-start-title\">ストッパー、容量、車輪交換。どれを残したいですか？</h2><p>ストッパー重視なら<strong>エアロフレックスDX2</strong>、軽いハードタイプなら<strong>C-Lite</strong>、ソフトタイプの通常容量なら<strong>APPLITE</strong>、車輪交換なら<strong>LIEVE</strong>が比較の入口です。総合順位ではなく、選びたい条件の違いで整理しています。</p><nav class=\"ks-inline-links\" aria-label=\"軽量スーツケース比較の近道\"><a href=\"#under-3kg-decision-title\">条件別の結論を見る</a><a href=\"#under-3kg-comparison-title\">4モデルの比較表へ</a><a href=\"#purchase-check\">購入前の確認へ</a></nav><details class=\"ks-reader-details\"><summary>この比較だけでは決められない条件</summary><p><strong>走行音・耐久性・荷物を入れた操作感</strong>は実機未確認です。静音性や壊れにくさを最優先する場合は、公称重量だけで決めず、同型番の比較可能な実測や店頭確認が必要です。</p><p><strong>予算</strong>は、同じ型番・状態の商品で送料と必要な付属品を含めて確認してください。現在価格はこの表で比較していません。<strong>機内持ち込み</strong>は、通常時と拡張時を分け、各辺・3辺合計・荷物込みの重量を利用便の条件と照合してください。</p></details></section>"
+    },
+    {
+      "post_id": 41,
+      "slug": "countertop-dishwasher-for-small-households",
+      "marker_id": "dish-start",
+      "required_live_models": ["Panasonic SOLOTA NP-TMLK1-K", "THANKO ラクアmini color TDWS25SBL", "siroca SS-MA251", "Panasonic NP-TSP1-W"],
+      "before_html": "<p class=\"ks-reader-ad-note\">この記事には広告・アフィリエイトリンクが含まれます。実機を使用したレビューではありません。</p>",
+      "html": "<section class=\"ks-reader-start ks-article-start\" id=\"dish-start\" aria-labelledby=\"dish-start-title\"><p class=\"ks-reader-label\">食後の洗い物を、どこまで任せたい？</p><h2 id=\"dish-start-title\">置き場所と一回分の食器が合う候補から選びましょう。</h2><p>少量と短い奥行なら<strong>SOLOTA</strong>、幅を抑えつつ収納を増やしたいなら<strong>ラクアmini color</strong>、収納量とオートオープンなら<strong>SS-MA251</strong>、より多い食器をまとめたいなら<strong>NP-TSP1</strong>が比較の入口です。</p><nav class=\"ks-inline-links\" aria-label=\"食洗機比較の近道\"><a href=\"#blk-dish-003-title\">条件別の結論を見る</a><a href=\"#blk-dish-007-title\">4モデルの比較表へ</a><a href=\"#dish-opening-space-title\">扉を開けた寸法を確認</a></nav><p class=\"ks-reader-note\"><strong>本体が載ることと、設置できることは別です。</strong>扉・給排水・電源やアースを先に確認し、標準食器点数だけで普段の皿や鍋が入ると判断しないでください。</p><details class=\"ks-reader-details\"><summary>購入を急がず、先に確認したいこと</summary><p>「一人用だから足りる」「乾燥機能があるから必ず乾く」とは限りません。一度に任せたい食器の形・大きさと残る手洗いを整理し、洗浄力や乾き具合を最優先する場合は、仕様以外の検証情報も確認してください。この比較では実機性能を順位付けしていません。</p><p>まだ測っていない方は<a href=\"/dishwasher-installation-measurement/\">置き場所の測り方</a>へ。毎日の負担が心配な方は<a href=\"/dishwasher-water-supply-methods/\">給水・排水の作業</a>を確認できます。ここで扱うラクアmini colorは、ラクアmini Plusとは別製品です。</p></details></section>",
+      "related_section_html": "<section class=\"reader-section\" aria-labelledby=\"dish-related-title\"><header class=\"section-heading\"><h2 id=\"dish-related-title\">まだ迷っている点だけ、次のガイドで確認</h2></header><div class=\"ks-route-grid\"><article><h3>自宅に置けるか不安</h3><p>本体だけでなく、扉・ホース・余白を含めて照合します。</p><a href=\"/dishwasher-installation-measurement/\">置き場所を測る順番へ</a></article><article><h3>毎日の給水が続くか不安</h3><p>水を入れる場所と、排水の経路を使う場面に合わせて確認します。</p><a href=\"/dishwasher-water-supply-methods/\">給水・排水の作業を読む</a></article><article><h3>買った後の費用が不安</h3><p>自宅の単価と使用回数で、電気・水道・洗剤代を考えます。</p><a href=\"/dishwasher-running-cost/\">ランニングコストの考え方へ</a></article></div><p>維持する作業は<a href=\"/dishwasher-cleaning-guide/\">お手入れガイド</a>へ。<a href=\"/solota-vs-rakua-mini-plus/\">ラクアmini Plusの確認案内</a>は、この記事のmini colorとは別製品を探している方のためのページです。条件が確認できた方は、ほかのガイドを経由せず上の商品欄から販売条件へ進めます。</p></section>"
+    },
+    {
+      "post_id": 30,
+      "slug": "compact-robot-vacuum-shortlist",
+      "marker_id": "robot-start",
+      "required_live_models": ["Roomba Mini + AutoEmpty F155260", "SwitchBot K11+ Pro", "SwitchBot K10+ Pro Combo", "Roomba Plus 515 Combo + AutoWash N285060"],
+      "before_html": "<p class=\"ks-reader-ad-note\">この記事には広告・アフィリエイトリンクが含まれます。実機を使用したレビューではありません。</p>",
+      "html": "<section class=\"ks-reader-start ks-article-start\" id=\"robot-start\" aria-labelledby=\"robot-start-title\"><p class=\"ks-reader-label\">小ささと、自動化したい作業を分けて考える</p><h2 id=\"robot-start-title\">本体と台の小ささを優先するなら、まず2候補から。</h2><p><strong>Roomba MiniとK11+ Pro</strong>は小型の本体・台を重視する場合の候補です。コードレス掃除機もまとめたいなら<strong>K10+ Pro Combo</strong>、モップ洗浄・乾燥まで重視するなら<strong>Roomba Plus 515 Combo</strong>も比較しますが、より大きな台の置き場が必要です。</p><nav class=\"ks-inline-links\" aria-label=\"ロボット掃除機比較の近道\"><a href=\"#blk-robot-003-title\">条件別の結論を見る</a><a href=\"#blk-robot-007-title\">本体と台を横並びで比較</a><a href=\"/roomba-mini-vs-switchbot-k11-pro/\">小型2機種を詳しく比べる</a></nav><p class=\"ks-reader-note\"><strong>本体寸法に収まる通路があっても、通過や帰還を保証するものではありません。</strong>家具下・段差・台の周囲の余白と、消耗品を交換する空間は別に確認してください。</p><details class=\"ks-reader-details\"><summary>何が自動でも、自分に残る作業は？</summary><p>シート式の水拭きはシート交換が必要です。自動ゴミ収集やモップ洗浄があっても、紙パック・ブラシ・タンクなど、機種ごとの手入れを確認しましょう。購入価格と消耗品費を分け、交換の頻度が分からない費用は推測で埋めません。</p><p>この比較では清掃性能、障害物回避、運転音を実機で検証していません。毛や砂の取り残しが最優先なら、同機種の実測や似た住環境の検証情報も確認してください。</p></details></section>"
+    },
+    {
+      "post_id": 28,
+      "slug": "portable-power-station-guide",
+      "marker_id": "power-start",
+      "required_live_models": ["Anker Solix C300 A17225Z1", "Jackery 500 New", "BLUETTI AC70", "EcoFlow DELTA 3 Classic"],
+      "before_html": "<p class=\"ks-reader-ad-note\">この記事には広告・アフィリエイトリンクが含まれます。実機を使用したレビューではありません。</p>",
+      "html": "<section class=\"ks-reader-start ks-article-start\" id=\"power-start\" aria-labelledby=\"power-start-title\"><p class=\"ks-reader-label\">まず決めるのは、使う機器と必要な時間</p><h2 id=\"power-start-title\">容量が大きい順ではなく、使える条件から選びましょう。</h2><p>持ち出しやすさなら<strong>C300</strong>、容量と重量の中間なら<strong>500 New</strong>、より大きな出力を検討するなら<strong>AC70・DELTA 3 Classic</strong>が比較の入口です。どの候補も、接続する機器との対応を確認してから選びます。</p><nav class=\"ks-inline-links\" aria-label=\"ポータブル電源比較の近道\"><a href=\"#blk-power-003-title\">条件別の結論を見る</a><a href=\"#blk-power-007-title\">容量・出力・重量の比較へ</a><a href=\"#blk-power-016-title\">対応条件と購入費用を確認</a></nav><p class=\"ks-reader-note\"><strong>容量Whが足りることと、機器を動かせることは別です。</strong>定格出力だけでなく、起動時の条件・接続方法・使用環境を確認してください。実際の稼働時間を測定した比較ではありません。</p><details class=\"ks-reader-details\"><summary>購入前に埋めたい、3つの空欄</summary><p><strong>何を使う：</strong>機器名、消費電力、同時に接続する機器。<br><strong>どれだけ使う：</strong>必要な時間と使う頻度。<br><strong>どこで使う：</strong>保管場所、運ぶ経路、メーカーが指定する使用条件。</p><p>未確認の条件がある間は「動く」と決めつけず、接続機器と電源のメーカー案内へ。費用は本体とセット品を混ぜず、送料・必要付属品・保証をそろえて比べます。住宅全体の電源設計、生命維持・医療機器の給電判断には、この比較を使用しないでください。</p></details></section>"
+    },
+    {
+      "post_id": 86,
+      "slug": "solota-vs-rakua-mini-plus",
+      "marker_id": "solota-reader-start",
+      "required_live_models": ["Panasonic SOLOTA NP-TMLK1-K", "THANKO ラクアmini Plus TK-MDW22B"],
+      "before_html": "",
+      "html": "<section class=\"ks-reader-start ks-article-start\" id=\"solota-reader-start\" aria-labelledby=\"solota-reader-start-title\"><p class=\"ks-reader-label\">SOLOTAとラクアmini Plusで迷っている方へ</p><h2 id=\"solota-reader-start-title\">まず、自宅で使うために残っている確認を。</h2><p>このページは2機種の洗浄力・乾燥性能の優劣を決める比較ではなく、購入前の確認案内です。「どちらがよいか」を根拠なく断定せず、置き場所・給水・販売条件を確かめる入口をまとめています。</p><nav class=\"ks-inline-links\" aria-label=\"小型食洗機の確認先\"><a href=\"/dishwasher-installation-measurement/\">置ける場所を測る</a><a href=\"/dishwasher-water-supply-methods/\">毎回の給水を考える</a><a href=\"/countertop-dishwasher-for-small-households/\">ほかの候補も含めて比較する</a></nav><p class=\"ks-reader-note\">比較記事のラクアmini colorは、ここで扱うmini Plusとは別製品です。確認時点の再入荷通知や購入リンクの有無だけで、現在の在庫・販売終了・商品の良し悪しは判断しません。</p></section>"
+    }
+  ],
+  "removed_comparison_images": [
+    {"post_id": 41, "count": 8, "reason": "same generic illustration is not a product photograph"},
+    {"post_id": 30, "count": 8, "reason": "same generic illustration is not a product photograph"},
+    {"post_id": 28, "count": 8, "reason": "same generic illustration is not a product photograph"}
+  ],
+  "removed_product_figures": [
+    {"post_id": 83, "product_anchor": "samsonite-c-lite-cs2-09007"},
+    {"post_id": 83, "product_anchor": "american-tourister-applite-qj6-68002"}
+  ]
+}
