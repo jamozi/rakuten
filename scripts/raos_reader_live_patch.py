@@ -116,9 +116,24 @@ def _fragment(text: str, marker: str, tag: str) -> Document:
     return doc
 
 
-def _protected(doc: Document) -> tuple[Any, ...]:
+def _product_id(doc: Document, node: Node) -> str | None:
+    while True:
+        if node.attrs.get("data-raos-product-id"):
+            return node.attrs["data-raos-product-id"]
+        if node.parent is None:
+            return None
+        node = doc.nodes[node.parent]
+
+
+def _unavailable_link(doc: Document, node: Node, products: set[str]) -> bool:
+    return (node.tag == "a" and _product_id(doc, node) in products
+            and urlsplit(node.attrs.get("href") or "").hostname == "hb.afl.rakuten.co.jp")
+
+
+def _protected(doc: Document, unavailable: set[str] | None = None) -> tuple[Any, ...]:
     links = tuple(doc.text[n.start:n.open_end] for n in doc.nodes
-                  if n.tag == "a" and not _internal(n.attrs.get("href") or ""))
+                  if n.tag == "a" and not _internal(n.attrs.get("href") or "")
+                  and not _unavailable_link(doc, n, unavailable or set()))
     images = tuple(doc.text[n.start:n.open_end] for n in doc.nodes
                    if n.tag == "img" and n.attrs.get("data-raos-product-image-state") == "verified")
     models = frozenset(n.attrs["data-raos-product-id"] for n in doc.nodes
@@ -146,7 +161,28 @@ def apply_patch(body: str, patch: dict[str, Any], *, article_key: str, post_id: 
             or type(post_id) is not int or patch.get("post_id") != post_id):
         raise PatchFailure("TARGET_MISMATCH")
     before = Document(body)
-    protected = _protected(before)
+    unavailable = patch.get("unavailable_purchase_product_ids", [])
+    if (not isinstance(unavailable, list)
+            or any(not isinstance(p, str) or not p for p in unavailable)
+            or len(set(unavailable)) != len(unavailable)):
+        raise PatchFailure("UNAVAILABLE_PRODUCTS_INVALID")
+    unavailable = set(unavailable)
+    protected = _protected(before, unavailable)
+    if not unavailable.issubset(protected[2]):
+        raise PatchFailure("UNAVAILABLE_PRODUCT_MISSING")
+    stopped = {n.attrs.get("data-raos-product-id") for n in before.nodes
+               if n.attrs.get("data-raos-purchase-unavailable") == "merchant-page-unavailable"}
+    matched = {p for n in before.nodes if _unavailable_link(before, n, unavailable)
+               for p in [_product_id(before, n)]}
+    if unavailable - stopped - matched:
+        raise PatchFailure("UNAVAILABLE_PURCHASE_LINK_MISSING")
+    body = _edit(body, [(n.start, n.end,
+        '<span class="raos-purchase-unavailable" role="note" '
+        'data-raos-purchase-unavailable="merchant-page-unavailable" data-raos-product-id="'
+        + escape(_product_id(before, n) or "", quote=True)
+        + '">販売先を確認できないため、この購入リンクは停止中です。'
+        '商品の評価とは別です。メーカーの案内で型番・販売条件をご確認ください。</span>')
+        for n in before.nodes if _unavailable_link(before, n, unavailable)])
     required = patch.get("required_ids")
     models = patch.get("required_product_ids")
     if not isinstance(required, list) or not isinstance(models, list):
