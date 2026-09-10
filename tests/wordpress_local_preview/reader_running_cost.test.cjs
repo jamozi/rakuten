@@ -65,3 +65,44 @@ test('overflow is reported, never rendered as Infinity or a complete sum', () =>
   assert.ok(Object.keys(result.errors).length > 0);
   assert.equal(result.complete, false);
 });
+
+test('model links and initial or changed hashes select only the bound exact profile', () => {
+  const { profileForModel, bindModelSelection } = context.module.exports;
+  const profiles = [
+    { id: 'legacy', model: 'TK-MDW22W' },
+    { id: 'color', model: 'TDWS25SBL / TDWS25SRD', anchor: 'product-dish-rakua-mini-color' },
+    { id: 'tsp1', model: 'NP-TSP1-W', anchor: 'product-dish-np-tsp1' },
+  ];
+  assert.equal(profileForModel(profiles, 'TDWS25SBL').id, 'color');
+  assert.equal(profileForModel(profiles, 'TDWS25SRD').id, 'color');
+  assert.equal(profileForModel(profiles, 'TK-MDW22W').id, 'legacy');
+  assert.equal(profileForModel(profiles, 'TK-MDW22B'), undefined);
+  assert.equal(profileForModel(profiles, 'NP-TSP1'), undefined);
+  const pageHandlers = {}, browserHandlers = {};
+  const page = { addEventListener: (name, handler) => { pageHandlers[name] = handler; } };
+  const browser = { location: { hash: '#product-dish-np-tsp1' }, addEventListener: (name, handler) => { browserHandlers[name] = handler; } };
+  const chosen = [];
+  bindModelSelection(profiles, page, browser, p => chosen.push(p.id));
+  assert.deepEqual(chosen, ['tsp1']);
+  browser.location.hash = '#product-dish-rakua-mini-color';
+  browserHandlers.hashchange();
+  assert.deepEqual(chosen, ['tsp1', 'color']);
+  for (const hash of ['', '#unrelated', '#%E0%A4']) {
+    browser.location.hash = hash;
+    browserHandlers.hashchange();
+  }
+  assert.equal(chosen.length, 2);
+  pageHandlers.click({ target: { closest: () => ({ getAttribute: () => 'TDWS25SRD' }) } });
+  assert.equal(chosen.at(-1), 'color');
+  pageHandlers.click({ target: { closest: () => ({ getAttribute: () => 'TK-MDW22B' }) } });
+  assert.equal(chosen.length, 3);
+});
+
+test('new NP-TSP1 and color profiles preserve unknown energy and units', () => {
+  const tsp = calculate({ energyWh: 670, waterLitres: 9 }, input);
+  assert.ok(Math.abs(tsp.fees.electricity - 20.569) < 1e-9);
+  assert.ok(Math.abs(tsp.fees.water - 2.358) < 1e-9);
+  const color = calculate({ energyWh: null, waterLitres: 3.2 }, input);
+  assert.equal(color.complete, false);
+  assert.equal(color.fees.electricity, null);
+});

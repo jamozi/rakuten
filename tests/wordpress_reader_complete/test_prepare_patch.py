@@ -42,7 +42,7 @@ class PreparePatchTests(unittest.TestCase):
         self.git('commit', '-qm', 'synthetic fixture')
         self.commit = self.git('rev-parse', 'HEAD').strip()
         self.baseline = {'id': 99, 'post_type': 'post', 'slug': 'demo', 'status': 'publish', 'title': '既存タイトル', 'excerpt': '既存抜粋', 'block_markup': BODY, 'taxonomies': {'category': [5]}, 'media_ids': [8], 'revision_id': 1, 'modified_gmt': 'fixture', 'content_sha256': 'a' * 64}
-        self.status = {'schema': 'RAOSOwnerDirectStatusV1', 'profile': 'owner-direct-v1', 'enabled': True, 'targets': [], 'profile_sha256': 'b' * 64, 'theme': {'tree_sha256': 'c' * 64}}
+        self.status = {'schema': 'RAOSOwnerDirectStatusV1', 'profile': 'owner-direct-v1', 'enabled': True, 'targets': [{'article_key': 'demo', 'post_id': 99, 'post_type': 'post', 'slug': 'demo'}], 'profile_sha256': 'b' * 64, 'theme': {'tree_sha256': 'c' * 64}}
         self.calls = []
         text = (ROOT / 'scripts/raos_wordpress_direct_publish.py').read_text()
         self.namespace = {'__file__': str(ROOT / 'scripts/raos_wordpress_direct_publish.py'), '__name__': 'reader_prepare_under_test'}

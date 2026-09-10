@@ -1,0 +1,80 @@
+{
+  "schema": "RAOS_PURCHASE_SUPPORT_EVALUATION_V1",
+  "baseline_observed_on": "2026-09-10",
+  "hypotheses": [
+    "費用の欠損を区別した用途・予算の絞り込みで、候補と購入保留理由を説明しやすくする。",
+    "比較から設置・費用・手入れへ同じ型番で移動できれば、機種を取り違えず残る確認を進められる。",
+    "同意した閲覧と購入先操作を同じ記事・snapshotで把握し、未帰属報酬と分ける。"
+  ],
+  "changes": [
+    "広告からの独立と購入費用の判断を分離",
+    "13既存IDの共通データによる本文・表示更新",
+    "16商品枠と具体的な調査管理",
+    "8機種の費用計算と4機種の関連記事接続",
+    "既定OFFのGA4とBasic Consent、別queryの閲覧分母"
+  ],
+  "owner_review": {
+    "status": "PENDING",
+    "method": "OWNER_OPERATION_CHECK",
+    "not_real_reader_research": true,
+    "tasks": [
+      {
+        "task": "予算内の候補を探す",
+        "status": "PENDING",
+        "candidate": null,
+        "reason": null,
+        "remaining_check": null,
+        "destination_or_defer": null
+      },
+      {
+        "task": "2候補を比較する",
+        "status": "PENDING",
+        "candidate": null,
+        "reason": null,
+        "remaining_check": null,
+        "destination_or_defer": null
+      },
+      {
+        "task": "条件に合わず見送る",
+        "status": "PENDING",
+        "candidate": null,
+        "reason": null,
+        "remaining_check": null,
+        "destination_or_defer": null
+      }
+    ]
+  },
+  "physical_devices": "NOT_TESTED",
+  "production_publication": "NOT_EXECUTED",
+  "ga4_property": "UNKNOWN",
+  "ga4_collection": "OFF",
+  "ga4_debugview": "NOT_EXECUTED",
+  "operating_minutes": null,
+  "operating_minutes_state": "UNAVAILABLE_NOT_MEASURED",
+  "ga4_sessions": null,
+  "consent_or_measurement_missingness": "UNAVAILABLE",
+  "asp_confirmed_reward_yen": null,
+  "unattributed_confirmed_reward_yen": null,
+  "confirmed_reward_per_1000_sessions": null,
+  "metric_state": "UNAVAILABLE_SCOPE_NOT_ALIGNED",
+  "evaluation_rule": "同期間・同記事群・同計測範囲が分子分母で一致する場合だけ算出。空欄や計測欠損を0へ変換しない。前後差は因果効果としない。",
+  "open_issues_source": "purchase-support.v1.json#research_issues",
+  "verification_record": "verification.md",
+  "local_preview": {
+    "status": "PASS",
+    "candidate_id": "4ce7b07c64ce69651d233a2833524321ed13d27e014d01d10a90413b36a98d27",
+    "checked_at": "2026-09-10T03:28:19.406830+00:00",
+    "screenshots": 30,
+    "viewports_px": [
+      390,
+      1440
+    ]
+  },
+  "agent_operation_check": {
+    "status": "PASS",
+    "checked_at": "2026-09-10T03:29:54.232Z",
+    "method": "LOCAL_CHROMIUM",
+    "owner_review": false,
+    "real_reader_research": false
+  }
+}

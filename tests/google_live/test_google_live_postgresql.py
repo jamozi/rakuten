@@ -599,3 +599,116 @@ def test_atomic_replay_unchanged_supersession_and_no_raw_query_persistence(
         instance.downgrade()
     assert raised.value.code is runner.MigrationErrorCode.MIGRATION_FAILED
     assert instance.status().current_revision == catalog.GOOGLE_ANALYTICS_LIVE_REVISION
+
+
+def test_purchase_cli_uses_independent_registered_jobs_and_replays_both_reports(
+    postgresql_cluster: PostgreSQLCluster,
+    empty_database: str,
+    monkeypatch,
+) -> None:
+    from argparse import Namespace
+    from dataclasses import replace
+    from scripts import raos_editorial_economics_v3 as cli
+    from raos.domain.analytics.google_live import (
+        GA4_PURCHASE_DIMENSIONS_V2,
+        GA4_PURCHASE_PAGE_VIEW_DIMENSIONS_V2,
+    )
+
+    _upgrade(postgresql_cluster, empty_database)
+    _seed_scope(postgresql_cluster, empty_database)
+    views_job_id = UUID("0198f8c4-1000-7000-8000-000000000015")
+    with postgresql_cluster.connect(empty_database) as connection:
+        connection.execute(
+            "INSERT INTO ops.job (id,display_id,job_type,queue_name,status,site_id,created_by_actor_type) VALUES (%s,'JOB-GA4-VIEWS',%s,'analytics','REQUESTED',%s,'SERVICE')",
+            (views_job_id, GA4_IMPORT_JOB_TYPE, SITE_ID),
+        )
+    engine = _worker_engine(postgresql_cluster, empty_database)
+    repository = SqlAlchemyAnalyticsImportRepository(
+        SqlAlchemyEngineProvider(engine, WorkloadProfile.WORKER_COMMAND)
+    )
+    original = _ga4_batch()
+
+    def batch(dimensions):
+        values = dict(original.rows[0].dimensions)
+        values["customEvent:seller_id"] = "official"
+        values["customEvent:snapshot_id"] = "ps-" + "a" * 32
+        values["eventName"] = (
+            "offer_click" if dimensions == GA4_PURCHASE_DIMENSIONS_V2 else "page_view"
+        )
+        pairs = tuple((name, values[name]) for name in dimensions)
+        row = replace(
+            original.rows[0],
+            dimensions=pairs,
+            grain_key_sha256=sha256_hex(
+                canonical_json_bytes(
+                    {"date": original.date_from.isoformat(), "dimensions": dict(pairs)}
+                )
+            ),
+        )
+        return replace(original, dimensions=dimensions, rows=(row,))
+
+    commits = []
+
+    class Service:
+        def import_ga4_with_batch(self, **kwargs):
+            result_batch = batch(kwargs["dimensions"])
+            result = repository.commit_ga4(
+                context=kwargs["context"], batch=result_batch
+            )
+            commits.append(result)
+            return result_batch, result
+
+    outputs = []
+    monkeypatch.setattr(
+        cli, "write_private_json", lambda *args: outputs.append(args[-1])
+    )
+    args = Namespace(
+        profile="purchase-v2",
+        date_from="2026-08-29",
+        date_to="2026-08-29",
+        ga4_output="purchase.json",
+        ga4_views_job_id=str(views_job_id),
+    )
+    try:
+        for _ in range(2):
+            cli._import_ga4_profile(
+                Service(), args, SITE_ID, GA4_JOB_ID, NOW, Path("unused")
+            )
+        assert len(outputs) == 2 and outputs[0] == outputs[1]
+        assert commits[:2] == commits[2:]
+        assert commits[0].import_run_id != commits[1].import_run_id
+        assert outputs[0]["rows"][0]["metrics"] == [
+            {"name": "eventCount", "value": "2"}
+        ]
+        assert outputs[0]["page_view_rows"]
+        for invalid_job in (None, str(GA4_JOB_ID)):
+            args.ga4_views_job_id = invalid_job
+            with pytest.raises(cli.EditorialEconomicsV3Failure):
+                cli._import_ga4_profile(
+                    Service(), args, SITE_ID, GA4_JOB_ID, NOW, Path("unused")
+                )
+        assert len(commits) == 4
+        # The repository continues to reject replay under a different query grain.
+        with pytest.raises(GoogleProviderFailure):
+            repository.commit_ga4(
+                context=GoogleImportExecutionContext(
+                    display_id="AIR-GA4-VIEWS-20260829-20260829",
+                    site_id=SITE_ID,
+                    ops_job_id=GA4_JOB_ID,
+                    started_at=NOW,
+                ),
+                batch=batch(GA4_PURCHASE_PAGE_VIEW_DIMENSIONS_V2),
+            )
+        # An arbitrary UUID is not a registered scope and remains forbidden.
+        with pytest.raises(GoogleProviderFailure):
+            repository.commit_ga4(
+                context=GoogleImportExecutionContext(
+                    display_id="AIR-GA4-UNREGISTERED",
+                    site_id=SITE_ID,
+                    ops_job_id=UUID("0198f8c4-1000-7000-8000-000000000099"),
+                    started_at=NOW,
+                ),
+                batch=batch(GA4_PURCHASE_PAGE_VIEW_DIMENSIONS_V2),
+            )
+    finally:
+        engine.dispose()

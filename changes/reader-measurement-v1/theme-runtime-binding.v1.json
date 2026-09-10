@@ -1,8 +1,8 @@
 {
-  "contract_sha256": "7504b64477d3e365574d60b33e0f9cf2e30a1a00a14e80412e888ff65a2a7f2c",
+  "contract_sha256": "a510d703a40468158c8cd89f07a9c356aa0944c71c47314a36d486c37fcb614a",
   "maintenance_file": "includes/reader-measurement-maintenance.php",
   "maintenance_sha256": "3f6a19c3b1f326545f685e7bd97edb2c1549b1192afee76d2d5ec8474c932beb",
-  "manifest_sha256": "e4f085e786953aacfad14b1e9686a9b6f6cb0cab588882cebd3c85999823be45",
+  "manifest_sha256": "b55afec55c7191ac301789bec53deca6d1232c461b8b7cfe1c27fcd1f8ec4113",
   "plugin_files": [
     {
       "path": "README.md",
@@ -21,12 +21,12 @@
     },
     {
       "path": "config/reader-allowlist.v1.json",
-      "sha256": "7504b64477d3e365574d60b33e0f9cf2e30a1a00a14e80412e888ff65a2a7f2c",
+      "sha256": "a510d703a40468158c8cd89f07a9c356aa0944c71c47314a36d486c37fcb614a",
       "size": 23683
     },
     {
       "path": "config/reader-runtime.v1.json",
-      "sha256": "27a80442cf63321ad17b949de89282d36c3c97863ee049bedfefb91661b8873f",
+      "sha256": "4e5ba29afc8e4b801c67e1f4ddfde1c4659f6c429063ad9298b090f048b29d34",
       "size": 1232
     },
     {
@@ -53,6 +53,6 @@
   "plugin_slug": "raos-reader-measurement",
   "plugin_version": "1.0.0",
   "policy_sha256": "fdf60e8d0b53666369963d25e17706ff80f2b179e91ba881708ccb5680d094a6",
-  "revision": "1bf3ef30bb38a474e93e1265f5aeb9dea68375c9d059594349fdfa00631b78db",
+  "revision": "334913a4b9a52fa043c5b4662cd99a5074a7d9b0345d686f134a9dc7a1ab8d6f",
   "schema": "RAOS_READER_MEASUREMENT_THEME_BINDING_V1"
 }

@@ -5,6 +5,24 @@ if (!defined('WP_CLI') || WP_CLI !== true || !defined('RAOS_LOCAL_PREVIEW') || R
     || !preg_match('~^http://127\.0\.0\.1:[0-9]{4,5}$~D', (string)get_option('home'))) {
     exit(69);
 }
+/** Adopt only WordPress's untouched install-time draft, never a custom local page.
+ * This reuses local ID 3 and its privacy option; production IDs are not involved.
+ */
+function raos_direct_preview_is_initial_privacy_draft($post, array $document): bool
+{
+    if (!$post || (int)$post->ID !== 3 || (int)get_option('wp_page_for_privacy_policy') !== 3
+        || ($document['post_type'] ?? null) !== 'page' || ($document['slug'] ?? null) !== 'privacy-policy'
+        || $post->post_type !== 'page' || $post->post_status !== 'draft' || $post->post_name !== 'privacy-policy'
+        || $post->post_title !== __('Privacy Policy') || $post->post_excerpt !== '' || (int)$post->post_parent !== 0
+        || $post->post_date !== $post->post_modified || $post->post_date_gmt !== $post->post_modified_gmt
+        || get_post_meta($post->ID) !== array('_wp_page_template' => array('default'))) {
+        return false;
+    }
+    if (!class_exists('WP_Privacy_Policy_Content')) {
+        require_once ABSPATH . 'wp-admin/includes/class-wp-privacy-policy-content.php';
+    }
+    return $post->post_content === WP_Privacy_Policy_Content::get_default_content();
+}
 $input = json_decode(file_get_contents('/var/www/raos-direct-candidate/preview-input.json'), true, 64);
 if (!is_array($input) || ($input['candidate']['profile'] ?? null) !== 'owner-direct-v1') {
     WP_CLI::error('DIRECT_PREVIEW_INPUT_INVALID');
@@ -33,7 +51,8 @@ foreach ($articles as $article) {
         WP_CLI::error('DIRECT_PREVIEW_DOCUMENT_INVALID');
     }
     $existing = get_page_by_path($document['slug'], OBJECT, $document['post_type']);
-    if ($existing && get_post_meta($existing->ID, '_raos_owner_direct_preview_key', true) !== $article['article_key']) {
+    if ($existing && get_post_meta($existing->ID, '_raos_owner_direct_preview_key', true) !== $article['article_key']
+        && !raos_direct_preview_is_initial_privacy_draft($existing, $document)) {
         WP_CLI::error('DIRECT_PREVIEW_LOCAL_SLUG_CONFLICT');
     }
     $fields = array('post_type' => $document['post_type'], 'post_name' => $document['slug'],

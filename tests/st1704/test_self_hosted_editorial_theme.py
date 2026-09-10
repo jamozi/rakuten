@@ -1367,7 +1367,22 @@ def test_consent_defaults_are_opt_in_and_global() -> None:
         assert event_name in gate
     assert "innerHTML" not in gate
     assert "eval(" not in gate
-    assert "localStorage" not in gate
+    # The only storage operation is the explicit purchase-owner opt-out read.
+    assert gate.count("localStorage") == 1
+    assert "window.localStorage.getItem('raos_purchase_ga4_opt_out') === '1'" in gate
+    activation = gate.split("  function activate() {", 1)[1].split(
+        "  function deactivate()", 1
+    )[0]
+    assert activation.index("if (!consentIsGranted())") < activation.index(
+        "readGateConfiguration()"
+    )
+    assert gate.count("readGateConfiguration()") == 2  # definition + consent-gated call
+    configuration = gate.split("  function readGateConfiguration() {", 1)[1].split(
+        "  function activate()", 1
+    )[0]
+    assert configuration.index("if (purchaseProfile)") < configuration.index(
+        "localStorage"
+    )
     assert "sessionStorage" not in gate
     assert "googlesitekit_analytics-4_tag_blocked" not in functions
     assert "googlesitekit_analytics-4_tag_block_on_consent" not in functions
@@ -1457,6 +1472,8 @@ def test_front_page_renders_the_stored_home_body_once_with_shared_chrome() -> No
     assert "[kurashinoshirube_published_clusters]" not in front
     assert "Codex" not in front
     assert "人気" not in front
+
+
 
 
 def test_homepage_restores_only_shared_header_and_hides_direct_magazine_header() -> None:
@@ -2220,7 +2237,7 @@ def test_content_is_visible_without_javascript() -> None:
         1
     ].split("function kurashinoshirube_bound_post_snapshot", 1)[0]
     assert (
-        "assets/(?:analytics-consent-gate|measurement|editorial-navigation|local-running-cost)\\.js"
+        "assets/(?:analytics-consent-gate|measurement|editorial-navigation|local-running-cost|purchase-support|purchase-analytics)\\.js"
         in verifier
     )
     measurement = (THEME_ROOT / "assets/measurement.js").read_text(encoding="utf-8")

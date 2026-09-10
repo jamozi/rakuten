@@ -15,8 +15,9 @@ class SiteSourceTests(unittest.TestCase):
         self.pages = {p['slug']: Document((DIRECT / 'articles' / (p['slug'] + '.html')).read_text()) for p in self.site['pages']}
 
     def test_all_existing_targets_have_one_source(self):
-        self.assertEqual(len(self.registry), 31)
-        self.assertEqual(len({r['post_id'] for r in self.registry}), 31)
+        expected = {p['post_id'] for p in self.site['pages'] + self.site['articles']} | {15, 3, 10, 120}
+        self.assertEqual({r['post_id'] for r in self.registry}, expected)
+        self.assertEqual(len(self.registry), len(expected))
         for row in self.registry:
             self.assertEqual(row['mode'], 'existing')
             self.assertNotEqual(bool(row.get('body_source')), bool(row.get('patch_source')))
@@ -32,7 +33,7 @@ class SiteSourceTests(unittest.TestCase):
 
     def test_each_article_is_directly_reachable_from_category(self):
         for article in self.site['articles']:
-            hrefs = {n.attrs.get('href') for n in self.pages[article['category']].nodes if n.tag == 'a'}
+            hrefs = {urlsplit(n.attrs.get('href') or '').path for n in self.pages[article['category']].nodes if n.tag == 'a'}
             self.assertIn('/' + article['slug'] + '/', hrefs)
 
     def test_all_source_routes_and_same_page_fragments_resolve(self):
@@ -53,7 +54,9 @@ class SiteSourceTests(unittest.TestCase):
 
     def test_article_recipes_preserve_richer_existing_sections(self):
         rows = [r for r in self.registry if r.get('patch_source')]
-        self.assertEqual(len(rows), 15)
+        purchase = json.loads((ROOT / 'changes/reader-purchase-support-v1/purchase-support.v1.json').read_text())
+        adopted = {a['slug'] for a in purchase['articles']}
+        self.assertEqual({r['slug'] for r in rows}, {a['slug'] for a in self.site['articles']} - adopted)
         for row in rows:
             recipe = json.loads((ROOT / row['patch_source']).read_text())
             self.assertEqual(recipe['article_key'], row['article_key'])
@@ -82,6 +85,10 @@ class SiteSourceTests(unittest.TestCase):
                 before_images = [n.attrs for n in doc.nodes if n.tag == 'img']
                 after_images = [n.attrs for n in Document(styled).nodes if n.tag == 'img']
                 self.assertEqual(before_images, after_images)
-                self.assertIn('data-ks-inline-style="v1"', styled)
+                if 'class="ps-article"' in doc.text:
+                    # The adopted snapshot loads the reviewed stylesheet from the theme.
+                    self.assertEqual(styled, doc.text)
+                else:
+                    self.assertIn('data-ks-inline-style="v1"', styled)
 if __name__ == '__main__':
     unittest.main()

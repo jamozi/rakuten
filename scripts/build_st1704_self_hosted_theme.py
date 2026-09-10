@@ -26,12 +26,13 @@ from scripts import (  # noqa: E402
     build_editorial_v3_theme_navigation as editorial_navigation_owner,
 )
 from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
+from scripts import build_reader_purchase_support_v1 as purchase_support_owner  # noqa: E402, F401
 
 
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4"
+    "0d71ff107c056641bc1e3ad8369dbf9f10eb838f939aa4625d7426eae1a5cf78"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -94,11 +95,21 @@ MEASUREMENT_CLIENT_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/measureme
 ANALYTICS_CONSENT_GATE_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/analytics-consent-gate.js"
 )
-READER_RUNTIME_BINDING_INPUT_PATH: Final = Path("changes/reader-measurement-v1/theme-runtime-binding.v1.json")
-READER_RUNTIME_ASSET_PATH: Final = THEME_REPOSITORY_ROOT / "assets/reader-measurement-runtime.v1.json"
+READER_RUNTIME_BINDING_INPUT_PATH: Final = Path(
+    "changes/reader-measurement-v1/theme-runtime-binding.v1.json"
+)
+READER_RUNTIME_ASSET_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/reader-measurement-runtime.v1.json"
+)
 THEME_FUNCTIONS_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "functions.php"
 THEME_SOURCE_INPUT_PATHS: Final = (
     ANALYTICS_CONSENT_GATE_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/purchase-support.js",
+    THEME_REPOSITORY_ROOT / "assets/purchase-support.css",
+    THEME_REPOSITORY_ROOT / "assets/purchase-support.v1.json",
+    THEME_REPOSITORY_ROOT / "assets/purchase-analytics.js",
+    THEME_REPOSITORY_ROOT / "inc/purchase-support.php",
+    THEME_REPOSITORY_ROOT / "inc/purchase-analytics.php",
     THEME_REPOSITORY_ROOT / "assets/editorial-navigation.js",
     EDITORIAL_NAVIGATION_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/editorial-v2.css",
@@ -143,8 +154,10 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     THEME_REPOSITORY_ROOT / "theme.json",
 )
 SOURCE_FILES: Final = tuple(
-    path.relative_to(THEME_REPOSITORY_ROOT).as_posix()
-    for path in THEME_SOURCE_INPUT_PATHS
+    sorted(
+        path.relative_to(THEME_REPOSITORY_ROOT).as_posix()
+        for path in THEME_SOURCE_INPUT_PATHS
+    )
 )
 THEME_FINGERPRINT_EXCLUDED_PATHS: Final = frozenset(
     {"raos-assets.v1.json", "theme-contract.v1.json"}
@@ -155,6 +168,9 @@ THEME_FINGERPRINT_SOURCE_FILES: Final = tuple(
     if relative not in THEME_FINGERPRINT_EXCLUDED_PATHS
 )
 PHP_INTEGRITY_BINDINGS: Final = {
+    "KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256": "assets/purchase-support.v1.json",
+    "KURASHINOSHIRUBE_PURCHASE_UI_SHA256": "assets/purchase-support.js",
+    "KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256": "assets/purchase-analytics.js",
     "KURASHINOSHIRUBE_READER_RUNTIME_METADATA_SHA256": "assets/reader-measurement-runtime.v1.json",
     "KURASHINOSHIRUBE_LEGACY_MEDIA_PROJECTION_SHA256": (
         "assets/legacy-media-display-projection.v1.json"
@@ -537,7 +553,14 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
     """Render the complete non-circular theme identity from current owner inputs."""
 
     reader_binding = _read_regular_path(ROOT / READER_RUNTIME_BINDING_INPUT_PATH)
-    sources = {relative: (reader_binding if relative == "assets/reader-measurement-runtime.v1.json" else _read_source(relative)) for relative in SOURCE_FILES}
+    sources = {
+        relative: (
+            reader_binding
+            if relative == "assets/reader-measurement-runtime.v1.json"
+            else _read_source(relative)
+        )
+        for relative in SOURCE_FILES
+    }
     functions = _decoded_utf8(sources["functions.php"])
     for constant, relative in PHP_INTEGRITY_BINDINGS.items():
         payload = sources.get(relative)
@@ -654,7 +677,11 @@ def _write_theme_stamp_payloads(payloads: Mapping[Path, bytes]) -> None:
             if type(payload) is not bytes or not payload:
                 _fail()
             if target == ROOT / READER_RUNTIME_ASSET_PATH and not target.exists():
-                if target.is_symlink() or target.parent.resolve() != target.parent or not target.parent.is_dir():
+                if (
+                    target.is_symlink()
+                    or target.parent.resolve() != target.parent
+                    or not target.parent.is_dir()
+                ):
                     _fail()
             else:
                 _read_regular_path(target)
@@ -920,12 +947,11 @@ def _validate_header_navigation(header: str) -> None:
             _load_json_payload(raw.encode("utf-8"))
             for raw in re.findall(r"<!-- wp:navigation-link (\{[^\n]*\}) /-->", body)
         ]
-        if (
-            [(link.get("label"), link.get("url")) for link in links] != expected_links
-            or any(
-                link.get("kind") != "custom" or link.get("isTopLevelLink") is not True
-                for link in links
-            )
+        if [
+            (link.get("label"), link.get("url")) for link in links
+        ] != expected_links or any(
+            link.get("kind") != "custom" or link.get("isTopLevelLink") is not True
+            for link in links
         ):
             _fail()
 
@@ -965,7 +991,7 @@ def validate_sources() -> dict[str, str]:
         or "<h1" in front_page
         or "wp:shortcode" in front_page
         or "postId" in front_page
-        or '[kurashinoshirube_article_hero]' in single
+        or "[kurashinoshirube_article_hero]" in single
     ):
         _fail()
     if single.count("wp:post-title") != 1:
@@ -1105,10 +1131,7 @@ def validate_sources() -> dict[str, str]:
             "PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK"
         )
         or contract.get("head", {}).get("raos_metadata_delivery")
-        != (
-            "PRODUCTION_YOAST_METADATA_FILTERS_WITH_LOCAL_PREVIEW_NO_YOAST_"
-            "FALLBACK"
-        )
+        != ("PRODUCTION_YOAST_METADATA_FILTERS_WITH_LOCAL_PREVIEW_NO_YOAST_FALLBACK")
         or contract.get("head", {}).get("local_preview_metadata_fallback")
         != {
             "active_when": (

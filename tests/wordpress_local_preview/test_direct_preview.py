@@ -76,6 +76,43 @@ def test_product_image_mirror_does_not_fetch_other_hosts_or_unverified_images(tm
     assert owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: pytest.fail("unexpected fetch")) == {}
 
 
+def test_registered_editorial_image_is_pinned_without_changing_public_url(tmp_path, monkeypatch):
+    candidate = fixture(tmp_path)
+    url = "https://kurashinoshirube.com/wp-content/uploads/2026/09/kitchen.webp"
+    payload = b"synthetic-owned-editorial-image"
+    registry = tmp_path / "editorial-images.json"
+    registry.write_text(json.dumps({"assets": [{
+        "url": url, "sha256": hashlib.sha256(payload).hexdigest(),
+        "purpose": "editorial_illustration", "product_evidence": False,
+    }]}))
+    monkeypatch.setattr(owner(), "EDITORIAL_VISUALS", registry, raising=False)
+    body = f'<figure><img src="{url}"><figcaption>AI image</figcaption></figure>'
+    candidate["articles"][0]["document"]["block_markup"] = body
+    result = owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: (payload, "image/webp"))
+    assert set(result) == {url}
+    assert candidate["articles"][0]["document"]["block_markup"] == body
+    assert owner().product_image_mirror(candidate, tmp_path) == result
+    registry.write_text(registry.read_text().replace(hashlib.sha256(payload).hexdigest(), "f" * 64))
+    with pytest.raises(ValueError, match="EDITORIAL_IMAGE_CHANGED"):
+        owner().product_image_mirror(candidate, tmp_path)
+
+
+def test_editorial_image_registry_cannot_allow_other_hosts_or_changed_bytes(tmp_path, monkeypatch):
+    candidate = fixture(tmp_path)
+    url = "https://kurashinoshirube.com/wp-content/uploads/2026/09/kitchen.webp"
+    registry = tmp_path / "editorial-images.json"
+    row = {"url": url, "sha256": "a" * 64, "purpose": "editorial_illustration", "product_evidence": False}
+    registry.write_text(json.dumps({"assets": [row]}))
+    monkeypatch.setattr(owner(), "EDITORIAL_VISUALS", registry, raising=False)
+    candidate["articles"][0]["document"]["block_markup"] = f'<img src="{url}">'
+    with pytest.raises(ValueError, match="EDITORIAL_IMAGE_CHANGED"):
+        owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: (b"changed", "image/webp"))
+    row["url"] = "https://other.invalid/image.webp"
+    registry.write_text(json.dumps({"assets": [row]}))
+    with pytest.raises(ValueError, match="EDITORIAL_IMAGE_REGISTRY_INVALID"):
+        owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: pytest.fail("unexpected fetch"))
+
+
 @pytest.mark.parametrize("image_host", ["thumbnail.image.rakuten.co.jp", "image.rakuten.co.jp", "other.invalid"])
 def test_frozen_affiliate_images_are_bounded_and_mirrored_without_html_changes(tmp_path, image_host):
     candidate = fixture(tmp_path)
@@ -178,6 +215,53 @@ def test_article_only_preview_cannot_use_a_different_theme_than_production(
     candidate["baseline_theme_tree_sha256"] = "0" * 64
     with pytest.raises(ValueError, match="THEME_DIFFERS_INCLUDE_THEME"):
         owner().runtime_fingerprint(candidate, tmp_path)
+
+
+def test_only_unedited_wordpress_initial_privacy_draft_can_be_adopted():
+    import subprocess
+    from scripts.raos_test_runtime import php_command
+
+    path = (
+        Path(__file__).resolve().parents[2]
+        / "changes/wordpress-direct-publish-v1/preview-seed.php"
+    )
+    source = path.read_text()
+    name = "function raos_direct_preview_is_initial_privacy_draft("
+    assert name in source
+    helper = name + source.split(name, 1)[1].split("\n$input =", 1)[0]
+    assert source.index("wp_get_environment_type() !== 'local'") < source.index(name)
+    harness = r"""
+class WP_Privacy_Policy_Content { static function get_default_content() { return 'core initial privacy content'; } }
+function __($value) { return $value; }
+function get_option($key) { global $privacy_option; return $privacy_option; }
+function get_post_meta($id) { global $meta; return $meta; }
+$privacy_option = '3';
+$meta = array('_wp_page_template' => array('default'));
+$initial = (object) array('ID'=>3, 'post_type'=>'page', 'post_status'=>'draft', 'post_name'=>'privacy-policy',
+    'post_title'=>'Privacy Policy', 'post_content'=>'core initial privacy content', 'post_excerpt'=>'',
+    'post_parent'=>0, 'post_date'=>'2026-09-10 00:00:00', 'post_modified'=>'2026-09-10 00:00:00',
+    'post_date_gmt'=>'2026-09-09 15:00:00', 'post_modified_gmt'=>'2026-09-09 15:00:00');
+$document = array('post_type'=>'page', 'slug'=>'privacy-policy');
+if (!raos_direct_preview_is_initial_privacy_draft($initial, $document)) { exit(1); }
+foreach (array('ID'=>4, 'post_type'=>'post', 'post_status'=>'publish', 'post_name'=>'custom',
+    'post_title'=>'Customized', 'post_content'=>'Edited content', 'post_excerpt'=>'Edited excerpt',
+    'post_parent'=>2, 'post_modified'=>'2026-09-11 00:00:00', 'post_modified_gmt'=>'2026-09-10 15:00:00') as $key=>$value) {
+    $changed = clone $initial; $changed->$key = $value;
+    if (raos_direct_preview_is_initial_privacy_draft($changed, $document)) { exit(2); }
+}
+foreach (array(array('_wp_page_template'=>array('custom')), array('_raos_owner_direct_preview_key'=>array('owned')), array('custom_owner'=>array('value'))) as $value) {
+    $meta = $value;
+    if (raos_direct_preview_is_initial_privacy_draft($initial, $document)) { exit(3); }
+}
+$meta = array('_wp_page_template'=>array('default'));
+$privacy_option = '4';
+if (raos_direct_preview_is_initial_privacy_draft($initial, $document)) { exit(4); }
+$privacy_option = '3';
+if (raos_direct_preview_is_initial_privacy_draft($initial, array('post_type'=>'post', 'slug'=>'privacy-policy'))
+    || raos_direct_preview_is_initial_privacy_draft($initial, array('post_type'=>'page', 'slug'=>'other'))) { exit(5); }
+echo "INITIAL_PRIVACY_DRAFT_ADOPTION_OK\n";
+"""
+    subprocess.run(php_command(["-r", helper + harness]), check=True)
 
 
 def test_saved_home_is_previewed_at_front_url_without_duplicate_or_post_title(tmp_path):

@@ -7,10 +7,14 @@
 ## 編集から公開まで
 
 記事台帳は`articles.v1.json`、通常の本文は`articles/`で管理します。
+購入判断の対象13件は`changes/reader-purchase-support-v1/articles/`と共通カタログを編集し、
+`scripts/build_reader_purchase_support_v1.py`でこの本文台帳へ生成します。
 台帳に記事キー、new/existing、投稿種別、slug、タイトル、抜粋、本文sourceを指定します。
 未取得の本番IDは作りません。本文はWordPress block markupです。
 商品同定・一次情報・鮮度・比較範囲・広告表示は作成時の要件です。
-価格や料率を商品選定の加点要素にしません。
+広告報酬・契約・リンク有無を評価と推薦に使いません。購入総額・維持費・納期・保証は、
+[購入判断の後継契約](../reader-purchase-support-v1/README.md)で用途と予算への適合に使います。
+値下げによる性能評価の加点は行いません。
 
 既存記事の初回取り込みは、現在のtracked本文を編集可能なsourceへコピーします。
 本番から本文を作り直す処理ではありません。旧fixtureを直接編集しません。

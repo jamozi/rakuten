@@ -1,0 +1,32 @@
+{
+  "schema": "RAOS_OWNER_DIRECT_SCOPE_ADDITIONS_V1",
+  "status": "PROPOSED_NOT_APPLIED",
+  "profile": "owner-direct-v1",
+  "preserve_existing_targets": true,
+  "targets_to_add": [
+    {
+      "article_key": "kitchen",
+      "post_id": 136,
+      "post_type": "page",
+      "slug": "kitchen"
+    },
+    {
+      "article_key": "about-ad-policy",
+      "post_id": 10,
+      "post_type": "page",
+      "slug": "about-ad-policy"
+    },
+    {
+      "article_key": "comparison-policy",
+      "post_id": 120,
+      "post_type": "page",
+      "slug": "comparison-policy"
+    },
+    {
+      "article_key": "privacy-policy",
+      "post_id": 3,
+      "post_type": "page",
+      "slug": "privacy-policy"
+    }
+  ]
+}

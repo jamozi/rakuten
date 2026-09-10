@@ -11,15 +11,15 @@ import re
 from typing import Final, Mapping, NoReturn, cast
 from urllib.parse import urlsplit
 
+from raos.domain.editorial.purchase_support import POLICY as PURCHASE_POLICY
+
 
 PORTFOLIO_RELATIVE_PATH: Final = Path(
     "changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
 )
 ARTICLE_CODE_RE: Final = re.compile(r"a[0-9]{2}\Z")
 PRODUCT_CODE_RE: Final = re.compile(r"p[0-9]{2}\Z")
-INTERNAL_CTA_ID_RE: Final = re.compile(
-    r"icta_a[0-9]{2}_p[0-9]{2}_(?:card|final)\Z"
-)
+INTERNAL_CTA_ID_RE: Final = re.compile(r"icta_a[0-9]{2}_p[0-9]{2}_(?:card|final)\Z")
 PROVIDER_SLOT_ID_RE: Final = re.compile(r"rps-a[0-9]{2}-(?:card|final)\Z")
 INTERNAL_CTA_NAMESPACE: Final = "RAOS_INTERNAL_CTA_V1"
 PROVIDER_SLOT_GRANULARITY: Final = "ARTICLE_PLACEMENT"
@@ -641,6 +641,15 @@ def load_editorial_portfolio_v3(repository_root: Path) -> EditorialPortfolioV3:
         or policy.get("additional_tracking_default_enabled") is not False
     ):
         _fail("RAOS_EDITORIAL_V3_CONTRACT_INVALID")
+    successor = document.get("purchase_decision_successor")
+    if successor is not None:
+        successor = _mapping(successor)
+        if (
+            successor.get("policy") != PURCHASE_POLICY
+            or successor.get("legacy_snapshot_mapping") != "NONE"
+            or successor.get("historical_performance_zero_weight_preserved") is not True
+        ):
+            _fail("RAOS_EDITORIAL_V3_PURCHASE_POLICY_INVALID")
     selection_policy = _mapping(document.get("selection_policy"))
     zero_weights = _mapping(selection_policy.get("zero_weight_factors"))
     if selection_policy != {
@@ -868,7 +877,9 @@ def load_editorial_portfolio_v3(repository_root: Path) -> EditorialPortfolioV3:
                 related_article_ids=related,
                 product_ids=product_refs,
                 cta_bindings=tuple(bindings),
-                reader_experience=_mapping(row["reader_experience"]) if "reader_experience" in row else None,
+                reader_experience=_mapping(row["reader_experience"])
+                if "reader_experience" in row
+                else None,
             )
         )
     article_by_id = {article.article_id: article for article in articles}

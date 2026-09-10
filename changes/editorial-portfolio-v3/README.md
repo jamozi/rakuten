@@ -1,5 +1,11 @@
 # Editorial V3 portfolio and owner-private economics
 
+2026-09-10採用: [読者の購入判断契約](../reader-purchase-support-v1/README.md)が対象4比較記事の
+予算・販売条件・同一商品ガイドを所有します。旧価格ゼロ加点は性能評価として維持し、
+購入総額・維持費・納期・保証による用途・予算判断を認めます。広告条件による評価・推薦は禁止です。
+生成V3の`purchase_decision_successor`と公開候補は同じpolicyを検証します。旧74CTAと
+20provider slotは旧snapshotの識別子であり、新しい4placementへ変換しません。
+
 `editorial-portfolio.v3.json` is an additive, generated successor to Editorial
 V2. It covers the current ten articles and thirty-three products without changing
 the historical V2 contract. `generated/navigation.v3.json` is the single

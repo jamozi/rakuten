@@ -5298,6 +5298,43 @@
       ]
     }
   ],
+  "purchase_decision_successor": {
+    "applies_to_articles": [
+      "countertop-dishwasher-for-small-households",
+      "lightweight-carry-on-suitcase-under-3kg",
+      "compact-robot-vacuum-shortlist",
+      "portable-power-station-guide"
+    ],
+    "historical_performance_zero_weight_preserved": true,
+    "legacy_snapshot_mapping": "NONE",
+    "policy": {
+      "conditional_points_and_coupons_subtracted": false,
+      "maximum_price_age_hours": 24,
+      "performance_excludes": [
+        "price",
+        "points",
+        "affiliate_reward_rate",
+        "advertising_contract",
+        "link_availability"
+      ],
+      "purchase_decision_inputs": [
+        "use_case",
+        "purchase_total",
+        "running_cost",
+        "delivery",
+        "warranty"
+      ],
+      "recommendation_excludes": [
+        "affiliate_reward_rate",
+        "advertising_contract",
+        "link_availability",
+        "rakuten_availability"
+      ],
+      "schema": "RAOS_READER_PURCHASE_POLICY_V1",
+      "unknown_is_zero": false
+    },
+    "source_uri": "repo://changes/reader-purchase-support-v1/purchase-support.v1.json"
+  },
   "rakuten_measurement_policy": {
     "activation_gate": "VERIFIED_SAMPLE_PROFILE_AND_PROVIDER_CONSOLE_RECONCILIATION",
     "additional_tracking_default_enabled": false,

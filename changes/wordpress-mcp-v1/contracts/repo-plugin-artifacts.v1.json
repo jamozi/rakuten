@@ -9,14 +9,14 @@
     {
       "artifact_id": "raos-editorial-measurement-v1",
       "migration_review": null,
-      "package_sha256": "ecb26fcc67292938440a82448861a340d03a64766caa32171dc64de6a6edb0c4",
+      "package_sha256": "463a5cc37c2534cc5ae9fcc0d5c258a483676739919b0e49ae887ca4842de9e5",
       "slug": "raos-editorial-measurement",
       "version": "1.0.0"
     },
     {
       "artifact_id": "raos-reader-measurement-v1",
       "migration_review": null,
-      "package_sha256": "7e1f80b62795e7bb34d5ceb60f61ca72fcdead32d0b98c403ad34827bddbdc0a",
+      "package_sha256": "5ab350f1e86424b331a8653765c2691e408e4cfa725a498c08d71c656dccdbfc",
       "slug": "raos-reader-measurement",
       "version": "1.0.0"
     }

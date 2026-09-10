@@ -38,13 +38,19 @@ from raos.adapters.persistence.sqlalchemy.provider import (  # noqa: E402
     SqlAlchemyEngineProvider,
 )
 from raos.application.analytics.google_live_import import (  # noqa: E402
+    LiveGoogleAnalyticsImport,
     compose_live_google_analytics_import,
 )
 from raos.application.analytics.google_live_projection import (  # noqa: E402
     ga4_baseline_document,
+    ga4_purchase_document_v2,
     gsc_baseline_document,
 )
 from raos.domain.analytics.google_live import (  # noqa: E402
+    GA4_BASELINE_DIMENSIONS,
+    GA4_PURCHASE_DIMENSIONS_V2,
+    GA4_PURCHASE_PAGE_VIEW_DIMENSIONS_V2,
+    Ga4ImportBatch,
     GoogleImportExecutionContext,
     GoogleProviderFailure,
 )
@@ -244,6 +250,26 @@ def _parser() -> argparse.ArgumentParser:
     refresh.add_argument("--t0-receipt")
     refresh.add_argument("--json-output", required=True)
     refresh.add_argument("--html-output", required=True)
+    ga4 = commands.add_parser(
+        "import-ga4", help="readonly Google fetch into local private aggregate storage"
+    )
+    ga4.add_argument("--profile", choices=("legacy", "purchase-v2"), required=True)
+    ga4.add_argument(
+        "--plan",
+        action="store_true",
+        help="print contract without credentials, database or network",
+    )
+    ga4.add_argument("--date-from", required=True)
+    ga4.add_argument("--date-to", required=True)
+    ga4.add_argument("--google-scope-receipt", default=DEFAULT_GOOGLE_SCOPE_RECEIPT)
+    ga4.add_argument(
+        "--ga4-views-job-id",
+        help="distinct pre-registered GA4 analytics job UUID for purchase-v2 page-view report",
+    )
+    ga4.add_argument("--database-host", default="127.0.0.1")
+    ga4.add_argument("--database-port", type=int, default=5432)
+    for name in ("database-name", "database-user", "database-password", "ga4-output"):
+        ga4.add_argument("--" + name)
     return parser
 
 
@@ -657,7 +683,7 @@ def _refresh_baseline(
     *,
     arguments: argparse.Namespace,
     private_root: Path,
-    portfolio: EditorialPortfolioV3,
+    portfolio: EditorialPortfolioV3 | None,
 ) -> None:
     # Imported here so all non-live owner workflows remain usable without
     # opening a database seam.
@@ -694,6 +720,11 @@ def _refresh_baseline(
             repository=repository,
         )
         suffix = f"{date_from:%Y%m%d}-{date_to:%Y%m%d}"
+        if arguments.command == "import-ga4":
+            _import_ga4_profile(
+                service, arguments, site_id, ga4_job_id, started_at, private_root
+            )
+            return
         gsc_batch, _ = service.import_search_console_with_batch(
             context=GoogleImportExecutionContext(
                 display_id=f"AIR-GSC-{suffix}",
@@ -718,6 +749,7 @@ def _refresh_baseline(
         ga4_document = ga4_baseline_document(ga4_batch)
         write_private_json(private_root, arguments.gsc_output, gsc_document)
         write_private_json(private_root, arguments.ga4_output, ga4_document)
+        assert portfolio is not None
         report = build_baseline_report(
             portfolio=portfolio,
             rakuten_commit=_optional_json(private_root, arguments.rakuten_commit),
@@ -737,10 +769,111 @@ def _refresh_baseline(
         engine.dispose()
 
 
+def _ga4_profile_plan(arguments: argparse.Namespace) -> dict[str, object]:
+    if _date(arguments.date_to) < _date(arguments.date_from):
+        raise EditorialEconomicsV3Failure("RAOS_EDITORIAL_V3_GOOGLE_DATE_INVALID")
+    purchase = arguments.profile == "purchase-v2"
+    return {
+        "profile": arguments.profile,
+        "date_from": arguments.date_from,
+        "date_to": arguments.date_to,
+        "click_dimensions": list(
+            GA4_PURCHASE_DIMENSIONS_V2 if purchase else GA4_BASELINE_DIMENSIONS
+        ),
+        "page_view_dimensions": list(GA4_PURCHASE_PAGE_VIEW_DIMENSIONS_V2)
+        if purchase
+        else [],
+        "required_custom_dimensions": [
+            name.removeprefix("customEvent:")
+            for name in GA4_PURCHASE_DIMENSIONS_V2
+            if name.startswith("customEvent:")
+        ]
+        if purchase
+        else [],
+        "denominator": "page_view sessions per article_id/snapshot_id; never sum CTA sessions",
+        "google_access": "READ_ONLY",
+        "local_database_write": "IMPORT_ONLY",
+        "credential_configuration": "NOT_CHECKED",
+        "live_verification": "NOT_EXECUTED",
+        "activation": "OFF/OWNER_CONFIRMATION_PENDING",
+        "independent_views_job_required": purchase,
+        "purchase_and_reward": "UNAVAILABLE",
+    }
+
+
+def _import_ga4_profile(
+    service: LiveGoogleAnalyticsImport,
+    arguments: argparse.Namespace,
+    site_id: UUID,
+    ga4_job_id: UUID,
+    started_at: datetime,
+    private_root: Path,
+) -> None:
+    purchase = arguments.profile == "purchase-v2"
+    date_from, date_to = _date(arguments.date_from), _date(arguments.date_to)
+    suffix = f"{date_from:%Y%m%d}-{date_to:%Y%m%d}"
+    views_job_id = ga4_job_id
+    if purchase:
+        views_job_id = _uuid(getattr(arguments, "ga4_views_job_id", None))
+        if views_job_id.int == 0 or views_job_id == ga4_job_id:
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_GOOGLE_DISTINCT_VIEWS_JOB_REQUIRED"
+            )
+
+    def fetch(dimensions: tuple[str, ...], label: str) -> Ga4ImportBatch:
+        return service.import_ga4_with_batch(
+            context=GoogleImportExecutionContext(
+                display_id=f"AIR-GA4-{label}-{suffix}",
+                site_id=site_id,
+                ops_job_id=views_job_id if label == "VIEWS" else ga4_job_id,
+                started_at=started_at,
+            ),
+            date_from=date_from,
+            date_to=date_to,
+            dimensions=dimensions,
+        )[0]
+
+    batch = fetch(
+        GA4_PURCHASE_DIMENSIONS_V2 if purchase else GA4_BASELINE_DIMENSIONS,
+        "PURCHASE" if purchase else "LEGACY",
+    )
+    document = (
+        ga4_purchase_document_v2(
+            batch, page_views=fetch(GA4_PURCHASE_PAGE_VIEW_DIMENSIONS_V2, "VIEWS")
+        )
+        if purchase
+        else ga4_baseline_document(batch)
+    )
+    write_private_json(private_root, arguments.ga4_output, document)
+
+
 def main(argv: list[str] | None = None) -> int:
     arguments = _parser().parse_args(argv)
     private_root = arguments.private_root
     try:
+        if arguments.command == "import-ga4":
+            plan = _ga4_profile_plan(arguments)
+            if arguments.plan:
+                print(json.dumps(plan, ensure_ascii=False, sort_keys=True))
+                return 0
+            if not all(
+                getattr(arguments, name)
+                for name in (
+                    "database_name",
+                    "database_user",
+                    "database_password",
+                    "ga4_output",
+                )
+            ):
+                raise EditorialEconomicsV3Failure(
+                    "RAOS_EDITORIAL_V3_GOOGLE_IMPORT_ARGUMENT_REQUIRED"
+                )
+            if arguments.profile == "purchase-v2":
+                _uuid(arguments.ga4_views_job_id)
+            _refresh_baseline(
+                arguments=arguments, private_root=private_root, portfolio=None
+            )
+            return 0
         portfolio = load_editorial_portfolio_v3(REPOSITORY_ROOT)
         if arguments.command == "rakuten-detect":
             sample = read_private_bytes(private_root, arguments.sample)

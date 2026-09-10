@@ -140,6 +140,8 @@ def test_theme_package_is_deterministic_closed_and_has_only_owned_javascript() -
             "kurashinoshirube-child/assets/editorial-navigation.js",
             "kurashinoshirube-child/assets/local-running-cost.js",
             "kurashinoshirube-child/assets/measurement.js",
+            "kurashinoshirube-child/assets/purchase-analytics.js",
+            "kurashinoshirube-child/assets/purchase-support.js",
         ]
         assert not any(name.endswith((".php~", ".zip")) for name in archive.namelist())
 

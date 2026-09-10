@@ -20,9 +20,20 @@ if str(REPOSITORY_ROOT) not in sys.path:
 
 from scripts.raos_build_core import atomic_write, canonical_json_bytes  # noqa: E402
 
+sys.path.insert(0, str(REPOSITORY_ROOT / "python"))
+from raos.domain.editorial.purchase_support import POLICY as PURCHASE_POLICY  # noqa: E402
 
+
+PURCHASE_INPUT_PATH: Final = Path(
+    "changes/reader-purchase-support-v1/purchase-support.v1.json"
+)
+PURCHASE_DOMAIN_INPUT_PATH: Final = Path(
+    "python/raos/domain/editorial/purchase_support.py"
+)
 GENERATOR_PATH: Final = Path("scripts/build_editorial_portfolio_v3.py")
-INPUT_READER_EXPERIENCE_PATH: Final = Path("changes/editorial-portfolio-v3/reader-experience.v1.json")
+INPUT_READER_EXPERIENCE_PATH: Final = Path(
+    "changes/editorial-portfolio-v3/reader-experience.v1.json"
+)
 INPUT_PORTFOLIO_PATH: Final = Path(
     "changes/editorial-portfolio-v2/editorial-portfolio.v2.json"
 )
@@ -660,6 +671,7 @@ def _validate_market_candidate_audit(
 def build_documents() -> tuple[dict[str, object], dict[str, object]]:
     sys.path.insert(0, str(REPOSITORY_ROOT / "python"))
     from raos.application.editorial.reader_experience_projection import load_experiences
+
     experiences = load_experiences(REPOSITORY_ROOT)
     v2 = _read_json(INPUT_PORTFOLIO_PATH)
     identities = _read_json(INPUT_IDENTITIES_PATH)
@@ -687,10 +699,7 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
         or len(v2_products) != required_product_count
     ):
         _fail("RAOS_EDITORIAL_V3_PREDECESSOR_CARDINALITY_INVALID")
-    if (
-        len(identity_articles) != 10
-        or len(identity_products) != required_product_count
-    ):
+    if len(identity_articles) != 10 or len(identity_products) != required_product_count:
         _fail("RAOS_EDITORIAL_V3_IDENTITIES_CARDINALITY_INVALID")
     selection_policy = _mapping(v2.get("selection_policy"))
     zero_weights = _mapping(selection_policy.get("zero_weight_factors"))
@@ -963,8 +972,7 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
                 relationship = "broader_guide"
             elif (
                 article_broader_by_id[related_id] == article_id
-                and article_content_role_by_id[related_id]
-                == "lifecycle_status_route"
+                and article_content_role_by_id[related_id] == "lifecycle_status_route"
             ):
                 relationship = "lifecycle_reference"
             elif article_broader_by_id[related_id] == article_id:
@@ -992,7 +1000,11 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
         v3_articles.append(
             {
                 **article,
-                **({"reader_experience": experiences[article_id]} if article_id in experiences else {}),
+                **(
+                    {"reader_experience": experiences[article_id]}
+                    if article_id in experiences
+                    else {}
+                ),
                 "v2_category": article.get("category"),
                 "article_code": article_code,
                 "cluster_id": cluster_id,
@@ -1088,7 +1100,21 @@ def build_documents() -> tuple[dict[str, object], dict[str, object]]:
         }
         for cluster in cluster_rows
     ]
+    purchase = json.loads((REPOSITORY_ROOT / PURCHASE_INPUT_PATH).read_text())
+    if purchase.get("policy") != PURCHASE_POLICY:
+        _fail("RAOS_EDITORIAL_V3_PURCHASE_POLICY_INVALID")
     portfolio = {
+        "purchase_decision_successor": {
+            "source_uri": "repo://" + PURCHASE_INPUT_PATH.as_posix(),
+            "policy": PURCHASE_POLICY,
+            "applies_to_articles": [
+                a["article_id"]
+                for a in purchase["articles"]
+                if a["kind"] == "comparison"
+            ],
+            "legacy_snapshot_mapping": "NONE",
+            "historical_performance_zero_weight_preserved": True,
+        },
         "schema": "RAOS_EDITORIAL_PORTFOLIO_V3",
         "version": "3.0.0",
         "predecessor": {
