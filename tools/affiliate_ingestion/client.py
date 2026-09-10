@@ -7,7 +7,9 @@ import http.client
 import io
 import ipaddress
 import json
+import math
 import random
+import re
 import socket
 import ssl
 import time
@@ -36,6 +38,35 @@ class FetchError(RuntimeError):
 
 class EndpointSecurityError(FetchError):
     pass
+
+
+LINKSHARE_TOKEN_ENDPOINT = "https://api.linksynergy.com/token"
+
+
+def linkshare_auth_settings(config: Mapping[str, Any]) -> tuple[str, Mapping[str, Any]]:
+    """Validate the official site-scoped grant without making a request."""
+    sid = config.get("account_id")
+    if not isinstance(sid, str) or not re.fullmatch(r"[1-9][0-9]{0,19}", sid):
+        raise ConfigError("LinkShare requires a numeric site SID")
+    endpoint = EndpointValidator.validate_syntax(str(config.get("endpoint", "")))
+    if (
+        endpoint.hostname != "api.linksynergy.com"
+        or endpoint.port not in (None, 443)
+        or endpoint.fragment
+    ):
+        raise ConfigError("LinkShare authentication requires the official API origin")
+    auth = resolve_indirections(config.get("auth", {}))
+    if not isinstance(auth, Mapping):
+        raise ConfigError("LinkShare auth must be an object")
+    for credential_field in ("client_id", "client_secret"):
+        value = auth.get(credential_field)
+        if not isinstance(value, str) or not re.fullmatch(r"[!-9;-~]{1,1024}", value):
+            raise ConfigError("LinkShare client credentials are missing or malformed")
+    if auth.get("token_url") not in (None, "", LINKSHARE_TOKEN_ENDPOINT):
+        raise ConfigError("LinkShare token endpoint cannot be overridden")
+    if auth.get("scope") not in (None, "", sid):
+        raise ConfigError("LinkShare scope must match the site SID")
+    return sid, auth
 
 
 @dataclass(slots=True)
@@ -303,6 +334,42 @@ class AffiliateHttpClient:
             raise FetchError("OAuth access_token is empty")
         return access_value
 
+    def linkshare_token(self, auth: Mapping[str, Any], sid: str) -> str:
+        # LinkShare's documented initial grant differs from generic OAuth:
+        # Bearer(base64(client_id:client_secret)), with the SID in form scope.
+        token_key = base64.b64encode(
+            f"{auth['client_id']}:{auth['client_secret']}".encode("ascii")
+        ).decode("ascii")
+        status, _, payload, _ = self.request(
+            LINKSHARE_TOKEN_ENDPOINT,
+            method="POST",
+            headers={
+                "Authorization": f"Bearer {token_key}",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json",
+            },
+            data=urllib.parse.urlencode({"scope": sid}).encode("ascii"),
+        )
+        try:
+            result = json.loads(payload)
+            if not isinstance(result, dict):
+                raise ValueError
+            access_value = result.get("access_token")
+            expires = result.get("expires_in")
+            if (
+                status != 200
+                or not isinstance(access_value, str)
+                or not re.fullmatch(r"[A-Za-z0-9._~+/-]{1,8192}=*", access_value)
+                or str(result.get("token_type", "")).casefold() != "bearer"
+                or type(expires) not in (int, float)
+                or not math.isfinite(expires)
+                or expires <= 0
+            ):
+                raise ValueError
+        except ValueError, UnicodeDecodeError, TypeError, OverflowError:
+            raise FetchError("LinkShare token response was rejected") from None
+        return access_value
+
 
 def _parse_retry_after(value: str | None) -> float | None:
     if not value:
@@ -566,6 +633,9 @@ def _authentication(
         headers["Authorization"] = f"Basic {value}"
     elif auth_type == "oauth2_client_credentials":
         headers["Authorization"] = f"Bearer {client.oauth2_token(auth)}"
+    elif auth_type == "linkshare_client_credentials":
+        sid, checked_auth = linkshare_auth_settings(config)
+        headers["Authorization"] = f"Bearer {client.linkshare_token(checked_auth, sid)}"
     elif auth_type == "custom_headers":
         secret_headers = auth.get("secret_headers")
         if not isinstance(secret_headers, Mapping):

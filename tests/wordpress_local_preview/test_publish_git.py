@@ -16,6 +16,40 @@ from scripts.raos_wordpress_publish_git import checkpoint, sync
 ARTICLE_ROOT = Path("changes/wordpress-local-preview-v1/fixtures/articles")
 
 
+def test_checkpoint_accepts_direct_patch_and_exact_patch_engine(tmp_path: Path) -> None:
+    root = repository(tmp_path)
+    paths = [
+        "changes/wordpress-direct-publish-v1/articles/demo.patch.json",
+        "scripts/raos_reader_live_patch.py",
+    ]
+    for relative in paths:
+        target = root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text("{}\n" if relative.endswith(".json") else "# engine\n")
+    before = git(root, "rev-parse", "HEAD")
+    result = checkpoint(root, paths, "direct-patch")
+    assert result["status"] == "created"
+    assert git(root, "rev-parse", "HEAD") == before
+    for relative in paths:
+        assert git(root, "show", f"{result['commit']}:{relative}") == (root / relative).read_bytes()
+
+
+@pytest.mark.parametrize("relative", [
+    "scripts/arbitrary.py",
+    "changes/wordpress-direct-publish-v1/articles/demo.json",
+    "changes/wordpress-direct-publish-v1/articles/nested/demo.patch.json",
+    "changes/wordpress-direct-publish-v1/articles/Bad_Key.patch.json",
+])
+def test_checkpoint_rejects_paths_adjacent_to_patch_scope(tmp_path: Path, relative: str) -> None:
+    root = repository(tmp_path)
+    target = root / relative
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("{}\n")
+    result = checkpoint(root, [relative], "not-a-patch")
+    assert result["status"] == "error"
+    assert result["reason"] == "PATH_NOT_ALLOWED"
+
+
 def git(root: Path, *arguments: str, input_bytes: bytes | None = None) -> bytes:
     return subprocess.run(
         ("git", *arguments),

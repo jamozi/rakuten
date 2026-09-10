@@ -20,7 +20,40 @@ $GLOBALS['synthetic_filters'] = array();
 function get_option($key, $fallback = false) { return $GLOBALS['synthetic_options'][$key] ?? $fallback; }
 function update_option($key, $value) { $GLOBALS['synthetic_options'][$key] = $value; return true; }
 function wp_json_encode($value, $flags = 0) { return json_encode($value, $flags); }
-function wp_kses_post($value) { return str_contains($value, '<script') ? '' : $value; }
+function wp_kses_post($value) {
+    return preg_match('/<(?:script|form)\\b|data:image\\/|[\\s\\/]on[a-z0-9_-]+\\s*=|java(?:&#0*9;|&#x0*9;|\\s)*script:/i', $value) ? '' : $value;
+}
+function wp_kses_allowed_html($context) { return array(); }
+function wp_allowed_protocols() { return array('http', 'https', 'mailto'); }
+function wp_kses($value, $allowed, $protocols) {
+    return preg_match('/<(?:script|iframe|object|embed)\\b|[\\s\\/]on[a-z0-9_-]+\\s*=|java(?:&#0*9;|&#x0*9;|\\s)*script:/i', $value) ? '' : $value;
+}
+function safecss_filter_attr($value) { return $value; }
+function wp_parse_url($value) { return parse_url($value); }
+class WP_HTML_Tag_Processor {
+    private array $tags = array();
+    private int $index = -1;
+    private array $attributes = array();
+    private string $html;
+    public function __construct(string $html) {
+        $this->html = $html;
+        preg_match_all('/<\\s*([a-z][a-z0-9:-]*)\\b([^>]*)>/i', $html, $this->tags, PREG_SET_ORDER);
+    }
+    public function next_tag($query = null): bool {
+        do { $this->index++; } while (isset($this->tags[$this->index]) && is_array($query) && isset($query['tag_name']) && strtoupper($this->tags[$this->index][1]) !== $query['tag_name']);
+        if (! isset($this->tags[$this->index])) { return false; }
+        $this->attributes = array();
+        preg_match_all('/[\\s\\/]([a-z_:][a-z0-9_.:-]*)(?:\\s*=\\s*(?:"([^"]*)"|\'([^\']*)\'|([^\\s>]+)))?/i', $this->tags[$this->index][2], $found, PREG_SET_ORDER);
+        foreach ($found as $attribute) {
+            $this->attributes[strtolower($attribute[1])] = $attribute[2] ?? $attribute[3] ?? $attribute[4] ?? true;
+        }
+        return true;
+    }
+    public function get_tag(): string { return strtoupper($this->tags[$this->index][1]); }
+    public function get_attribute(string $name) { return $this->attributes[strtolower($name)] ?? null; }
+    public function set_attribute(string $name, $value): bool { return true; }
+    public function get_updated_html(): string { return $this->html; }
+}
 function get_posts($args) {
     $found = array_filter($GLOBALS['synthetic_posts'], function ($post) use ($args) {
         return $args['post_type'] === 'any' || in_array($post->post_type, (array) $args['post_type'], true);
@@ -35,6 +68,7 @@ function clean_term_cache($id, $taxonomy) {}
 function add_filter($name, $callback, $priority) { $GLOBALS['synthetic_filters'][$name] = $callback; }
 function wp_slash($value) { return $value; }
 function wp_insert_post($data, $errors) {
+    $data['post_content'] = wp_kses_post($data['post_content']);
     if (isset($GLOBALS['synthetic_filters']['wp_insert_post_data'])) { $data = $GLOBALS['synthetic_filters']['wp_insert_post_data']($data); }
     if (($GLOBALS['synthetic_mutation'] ?? null) === 'promote' && $data['post_name'] === 'categories') { $data['post_status'] = 'publish'; }
     if (($GLOBALS['synthetic_mutation'] ?? null) === 'body' && $data['post_name'] === 'categories') { $data['post_content'] .= ' Changed'; }
@@ -62,6 +96,7 @@ class ScratchFakeDb {
     public $terms = 'wp_terms';
     public $term_taxonomy = 'wp_term_taxonomy';
     public $options = 'wp_options';
+    public $posts = 'wp_posts';
     public function get_col($sql) { return array_keys($GLOBALS['synthetic_terms']); }
     public function delete($table, $where, $format) {
         unset($GLOBALS[$table === $this->terms ? 'synthetic_terms' : 'synthetic_taxonomies'][$where['term_id']]); return 1;
@@ -71,6 +106,11 @@ class ScratchFakeDb {
             if (isset($GLOBALS['synthetic_terms'][$row['term_id']])) { throw new RuntimeException('SYNTHETIC_DUPLICATE_TERM'); }
             $GLOBALS['synthetic_terms'][$row['term_id']] = $row;
         } else { $GLOBALS['synthetic_taxonomies'][$row['term_id']] = $row['taxonomy']; }
+        return 1;
+    }
+    public function update($table, $row, $where, $formats, $where_formats) {
+        if ($table !== $this->posts || ! isset($GLOBALS['synthetic_posts'][$where['ID']])) { return false; }
+        foreach ($row as $key => $value) { $GLOBALS['synthetic_posts'][$where['ID']]->{$key} = $value; }
         return 1;
     }
     public function get_results($sql, $output) {

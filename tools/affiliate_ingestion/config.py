@@ -262,6 +262,7 @@ def provider_diagnostics(config: Mapping[str, Any], provider_key: str) -> list[s
         "api_key_query": ("api_key",),
         "basic": ("username", "password"),
         "oauth2_client_credentials": ("token_url", "client_id", "client_secret"),
+        "linkshare_client_credentials": ("client_id", "client_secret"),
         "custom_headers": ("secret_headers",),
         "none": (),
     }
@@ -286,6 +287,19 @@ def provider_diagnostics(config: Mapping[str, Any], provider_key: str) -> list[s
                             f"auth.{field} is empty for auth.type={auth_type}"
                         )
             errors.extend(_environment_errors(auth))
+            if auth_type == "linkshare_client_credentials":
+                from .client import linkshare_auth_settings
+
+                if provider_key != "linkshare":
+                    errors.append("LinkShare authentication is limited to LinkShare")
+                if resource.get(
+                    "account_id", provider.get("account_id")
+                ) != provider.get("account_id"):
+                    errors.append("resource SID must match the provider SID")
+                try:
+                    linkshare_auth_settings({**provider, **resource, "auth": auth})
+                except (ConfigError, FetchError) as exc:
+                    errors.append(str(exc))
             for field in ("headers", "query"):
                 effective = {**provider.get(field, {}), **resource.get(field, {})}
                 errors.extend(_environment_errors(effective))

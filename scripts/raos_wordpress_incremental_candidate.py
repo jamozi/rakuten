@@ -142,7 +142,11 @@ def prepare_noncommercial_candidate(
         if not published_hubs <= set(declared_hubs):
             fail("PUBLISHED_HUB_SNAPSHOT_REQUIRED")
     selected = {article.production_slug for article in articles}
-    if (not selected and not page_targets) or len(selected) != len(articles) or not selected <= existing_slugs:
+    if (
+        (not selected and not page_targets and theme_projection is None)
+        or len(selected) != len(articles)
+        or not selected <= existing_slugs
+    ):
         fail("ARTICLE_SET_INVALID")
     bindings = [portfolio.article_by_slug[slug] for slug in sorted(selected)]
     if set(sources.article_ids) != {binding.article_id for binding in bindings}:
@@ -473,7 +477,12 @@ def inspect_candidate(
     )
     now = datetime.now(UTC).replace(microsecond=0)
     sources = validate_selected_official_sources(
-        repository_root=ROOT, evidence_root=owner, article_ids=selected_ids, now=now, allow_empty=bool(page_articles)
+        repository_root=ROOT,
+        evidence_root=owner,
+        article_ids=selected_ids,
+        now=now,
+        allow_empty=not selected_ids
+        and (bool(page_articles) or bool(args.include_theme)),
     )
     if sources.issues:
         print(

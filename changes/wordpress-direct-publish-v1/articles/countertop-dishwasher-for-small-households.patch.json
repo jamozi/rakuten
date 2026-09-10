@@ -1,0 +1,24 @@
+{
+  "schema": "RAOSReaderLivePatchV1",
+  "article_key": "countertop-dishwasher-for-small-households",
+  "post_id": 41,
+  "required_ids": [
+    "blk-dish-007-title",
+    "blk-dish-018-title",
+    "dish-related-title"
+  ],
+  "required_product_ids": [
+    "PRD-PANASONIC-NP-TMLK1",
+    "PRD-THANKO-RAKUA-MINI-COLOR",
+    "PRD-SIROCA-SS-MA251",
+    "PRD-PANASONIC-NP-TSP1"
+  ],
+  "required_text": [],
+  "keep_existing_fragments": true,
+  "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/kitchen/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機の選び方・記事一覧</a><a href=\"#blk-dish-007-title\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"/kitchen/#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
+  "next_html": "",
+  "replacements": [],
+  "unavailable_purchase_product_ids": [
+    "PRD-PANASONIC-NP-TSP1"
+  ]
+}

@@ -746,3 +746,14 @@ def test_prepare_undelegated_existing_target_keeps_local_candidate_and_continues
     assert (
         directory / candidate["articles"][0]["body_file"]
     ).read_text() == "reviewed undelegated body"
+
+
+def test_content_hash_uses_server_utf8_json_without_changing_candidate_encoding():
+    document = {"title": "ホーム", "block_markup": "<p>選び方 / 使い方</p>", "taxonomies": []}
+    material = {"schema": "ContentDocumentV1", "id": 15, "status": "publish", **document}
+    import hashlib
+    import json
+    expected = hashlib.sha256(json.dumps(material, ensure_ascii=False, sort_keys=True,
+                                        separators=(",", ":")).encode()).hexdigest()
+    assert direct.content_after_sha256(document, 15) == expected
+    assert b"\\u30db" in direct.encoded(document)

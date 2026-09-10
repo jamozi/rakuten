@@ -70,6 +70,13 @@ def _parser() -> argparse.ArgumentParser:
         "fetch-all", help="fetch every enabled provider/resource"
     )
     fetch_all.add_argument("--dry-run", action="store_true")
+    automate = sub.add_parser("automate", help="acquire approved ads and build local article candidates")
+    automate.add_argument("--plan", type=Path, required=True)
+    automate.add_argument("--repo", type=Path, default=Path.cwd())
+    automate.add_argument("--output", type=Path, required=True)
+    automate.add_argument("--fetch", action="store_true", help="allow configured official API/feed requests")
+    automate.add_argument("--dry-run", action="store_true", help="validate setup without acquisition or writes")
+    automate.add_argument("--write-drafts", action="store_true", help="also update local owner-direct article sources")
     return parser
 
 
@@ -184,7 +191,7 @@ def _register(args: argparse.Namespace) -> int:
         )
         auth = provider.setdefault("auth", {"type": "none"})
         auth_type = _prompt(
-            "auth type (none/bearer/api_key_header/api_key_query/basic/oauth2_client_credentials/custom_headers)",
+            "auth type (" + "/".join(manifest.supported_auth_types) + ")",
             str(auth.get("type", "none")),
         )
         auth["type"] = auth_type
@@ -219,6 +226,11 @@ def _register(args: argparse.Namespace) -> int:
             )
             auth["scope"] = _prompt(
                 "OAuth scope (optional)", str(auth.get("scope", ""))
+            )
+        elif auth_type == "linkshare_client_credentials":
+            auth["client_id"] = _prompt("LinkShare client_id", secret=True)
+            auth["client_secret"] = _prompt(
+                "LinkShare client_secret (or env:NAME)", secret=True
             )
         provider["enabled"] = _bool_prompt("Enable provider", False)
         resource["enabled"] = _bool_prompt(f"Enable resource {resource_name}", False)
@@ -320,6 +332,13 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "register":
             return _register(args)
         config = load_config(args.config)
+        if args.command == "automate":
+            # The repository uses a python/ source tree without installing raos.
+            python_root = str(Path(__file__).resolve().parents[2] / "python")
+            if python_root not in sys.path:
+                sys.path.insert(0, python_root)
+            from .link_automation import run_cli
+            return run_cli(args, config)
         if args.command == "doctor":
             keys = (
                 list(PROVIDERS)

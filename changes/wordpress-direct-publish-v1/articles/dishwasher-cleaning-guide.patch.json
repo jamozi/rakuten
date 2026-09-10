@@ -1,0 +1,15 @@
+{
+  "schema": "RAOSReaderLivePatchV1",
+  "article_key": "dishwasher-cleaning-guide",
+  "post_id": 265,
+  "required_ids": [
+    "clean-each-time",
+    "guide-evidence"
+  ],
+  "required_product_ids": [],
+  "required_text": [],
+  "keep_existing_fragments": true,
+  "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/kitchen/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機の選び方・記事一覧</a><a href=\"#clean-each-time\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"/kitchen/#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
+  "next_html": "<section id=\"ks-next-read\" aria-labelledby=\"ks-next-read-title\" style=\"margin:32px 0;padding:24px;border-top:2px solid #1b1b18;background:#faf9f6;line-height:1.85;\"><h2 id=\"ks-next-read-title\">残っている疑問から、次の確認へ</h2><div class=\"ks-route-links\"><a href=\"/dishwasher-detergent-guide/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機用洗剤の種類・量・注意点</a><a href=\"/dishwasher-running-cost/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機の電気・水道・洗剤代</a><a href=\"/dishwasher-installation-measurement/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機の置き場所・扉・余白の測り方</a></div><p>記事ごとに対象機種が異なります。別機種の数値や手順を流用せず、必要な確認だけを選んで読めます。</p><a href=\"/kitchen/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機選びの全体像に戻る</a></section>",
+  "replacements": []
+}

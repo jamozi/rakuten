@@ -2,7 +2,9 @@
 
 from copy import deepcopy
 import hashlib
+import json
 from pathlib import Path
+from urllib.parse import quote
 
 import pytest
 
@@ -43,6 +45,65 @@ def owner():
     from scripts import raos_wordpress_direct_preview
 
     return raos_wordpress_direct_preview
+
+
+def test_product_image_mirror_is_exact_offline_and_detects_tampering(tmp_path):
+    candidate = fixture(tmp_path)
+    url = "https://thumbnail.image.rakuten.co.jp/synthetic.jpg"
+    candidate["articles"][0]["document"]["block_markup"] = (
+        f'<img src="{url}" data-raos-product-image-state="verified">'
+    )
+    calls = []
+
+    def fetch(value):
+        calls.append(value)
+        return b"synthetic-image", "image/jpeg"
+
+    result = owner().product_image_mirror(candidate, tmp_path, fetch=fetch)
+    assert calls == [url]
+    assert owner().product_image_mirror(candidate, tmp_path) == result
+    (tmp_path / result[url]["path"]).write_bytes(b"changed")
+    with pytest.raises(ValueError, match="IMAGE_CHANGED"):
+        owner().product_image_mirror(candidate, tmp_path)
+
+
+def test_product_image_mirror_does_not_fetch_other_hosts_or_unverified_images(tmp_path):
+    candidate = fixture(tmp_path)
+    candidate["articles"][0]["document"]["block_markup"] = (
+        '<img src="https://other.invalid/a.jpg" data-raos-product-image-state="verified">'
+        '<img src="https://thumbnail.image.rakuten.co.jp/unverified.jpg">'
+    )
+    assert owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: pytest.fail("unexpected fetch")) == {}
+
+
+@pytest.mark.parametrize("image_host", ["thumbnail.image.rakuten.co.jp", "image.rakuten.co.jp", "other.invalid"])
+def test_frozen_affiliate_images_are_bounded_and_mirrored_without_html_changes(tmp_path, image_host):
+    candidate = fixture(tmp_path)
+    candidate["theme"] = {"directory": "theme"}
+    assets = tmp_path / "theme/assets"
+    assets.mkdir(parents=True)
+    underlying = f"https://{image_host}/synthetic.jpg?_ex=300x300"
+    url = "https://hbb.afl.rakuten.co.jp/hgb/synthetic/?s=300x300&pc=" + quote(underlying, safe="")
+    source = f'<a href="https://hb.afl.rakuten.co.jp/hgc/synthetic/"><img src="{url}" alt=""></a>'
+    media = [{"slugs": ["example"], "sources": {"300": source}},
+             {"slugs": ["unselected"], "sources": {"300": '<img src="https://other.invalid/ignored.jpg">'}}]
+    path = assets / "rakuten-product-media.json"
+    path.write_text(json.dumps(media))
+    calls = []
+
+    def fetch(value):
+        calls.append(value)
+        return b"synthetic-image", "image/jpeg"
+
+    if image_host == "other.invalid":
+        with pytest.raises(ValueError, match="AFFILIATE_IMAGE_INVALID"):
+            owner().product_image_mirror(candidate, tmp_path, fetch=fetch)
+        assert calls == []
+    else:
+        result = owner().product_image_mirror(candidate, tmp_path, fetch=fetch)
+        assert calls == [url]
+        assert owner().product_image_mirror(candidate, tmp_path) == result
+        assert json.loads(path.read_text())[0]["sources"]["300"] == source
 
 
 def test_content_preview_checks_only_selected_articles_at_two_widths(tmp_path):
@@ -164,3 +225,14 @@ if (raos_direct_preview_is_initial_privacy_draft($initial, array('post_type'=>'p
 echo "INITIAL_PRIVACY_DRAFT_ADOPTION_OK\n";
 """
     subprocess.run(php_command(["-r", helper + harness]), check=True)
+
+
+def test_saved_home_is_previewed_at_front_url_without_duplicate_or_post_title(tmp_path):
+    candidate = fixture(tmp_path)
+    candidate['articles'][0]['document'].update(post_type='page', slug='home', title='ホーム')
+    theme = tmp_path / 'theme'
+    theme.mkdir()
+    candidate['theme'] = {'directory': 'theme'}
+    assert owner().preview_plan(candidate, tmp_path)['surfaces'] == [
+        {'kind': 'home', 'path': '/'}, {'kind': 'listing', 'path': '/?post_type=post'},
+    ]

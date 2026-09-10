@@ -61,7 +61,12 @@ def restore_selection(arguments: argparse.Namespace, state: dict[str, Any]) -> N
     # Only restore an exact user selection, never silently expand the target set.
     if (
         arguments.candidate is None
-        and (arguments.articles or getattr(arguments, "reader_pages", None) or getattr(arguments, "reader_privacy", False))
+        and (
+            arguments.articles
+            or arguments.include_theme
+            or getattr(arguments, "reader_pages", None)
+            or getattr(arguments, "reader_privacy", False)
+        )
         and arguments.snapshot_name
         and state.get("request_scope") == request_scope(arguments)
         and state.get("candidate")
@@ -273,7 +278,14 @@ def plan(arguments: argparse.Namespace) -> tuple[dict[str, Any], Any, Any]:
         from raos_reader_release_pages import selected_page_slugs
         page_targets = selected_page_slugs(ROOT, arguments)
         targets += page_targets
-        if not arguments.articles and not (getattr(arguments, "reader_pages", None) or getattr(arguments, "reader_privacy", False)):
+        if (
+            not arguments.articles
+            and not arguments.include_theme
+            and not (
+                getattr(arguments, "reader_pages", None)
+                or getattr(arguments, "reader_privacy", False)
+            )
+        ):
             missing.append("explicit articles, registered reader pages or a frozen candidate")
         if not arguments.snapshot_name:
             missing.append("an existing bounded MCP snapshot")

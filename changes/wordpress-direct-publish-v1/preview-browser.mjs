@@ -16,6 +16,12 @@ try {
     const context = await browser.newContext({ viewport: { width, height: 1000 }, reducedMotion: 'reduce' });
     await context.route('**/*', (route) => {
       const url = new URL(route.request().url());
+      const mirrored = input.images?.[url.href];
+      if (mirrored && route.request().resourceType() === 'image') {
+        const body = fs.readFileSync(mirrored.path);
+        if (crypto.createHash('sha256').update(body).digest('hex') !== mirrored.sha256) throw new Error('PINNED_IMAGE_CHANGED');
+        return route.fulfill({ status: 200, contentType: mirrored.mime, body });
+      }
       return url.origin === input.origin || url.protocol === 'data:' ? route.continue() : route.abort();
     });
     for (const [index, surface] of input.surfaces.entries()) {
@@ -24,6 +30,17 @@ try {
       const page = await context.newPage();
       page.on('pageerror', () => failures.push(`${surface.path}:${width}:javascript`));
       const response = await page.goto(url.href, { waitUntil: 'networkidle', timeout: 45000 });
+      for (const img of await page.locator('main img').all()) {
+        await img.evaluate((e) => {
+          for (let parent = e.parentElement; parent; parent = parent.parentElement) {
+            if (parent instanceof HTMLDetailsElement) parent.open = true;
+          }
+        });
+        if (await img.isVisible()) await img.scrollIntoViewIfNeeded();
+        await page.waitForFunction((e) => e.complete && e.naturalWidth > 0,
+          await img.elementHandle(), { timeout: 10000 }).catch(() => {});
+      }
+      await page.evaluate(() => scrollTo(0, 0));
       if (!response || response.status() !== 200) failures.push(`${surface.path}:${width}:http`);
       const result = await page.evaluate(({ kind, title }) => {
         const failures = [];

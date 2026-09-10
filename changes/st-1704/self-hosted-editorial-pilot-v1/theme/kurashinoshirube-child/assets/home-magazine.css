@@ -57,3 +57,28 @@ body.home:has(#ks-magazine) .wp-site-blocks,body.home:has(#ks-magazine) .wp-bloc
 
 /* --- WPWriter addition --- */
 @media(max-width:600px){#ks-magazine .km-guide{min-height:130px;}}@media(max-width:600px){#ks-magazine .km-guide h3{font-size:22px;}}@media(max-width:600px){#ks-magazine .km-editorial{grid-template-columns:1fr;}}@media(max-width:600px){#ks-magazine .km-editorial article{padding:20px;border-right:0;}}@media(max-width:600px){#ks-magazine .km-editorial h3{font-size:20px;}}@media(max-width:600px){#ks-magazine .km-editorial p{font-size:14px;}}@media(max-width:360px){#ks-magazine .km-brand{font-size:23px;}}@media(max-width:360px){#ks-magazine .km-brand small{font-size:8px;}}@media(max-width:360px){#ks-magazine .km-tools summary{width:34px;}}@media(max-width:360px){#ks-magazine .km-hero h1{font-size:24px;}}@media(max-width:360px){#ks-magazine .km-category{gap:9px;padding-inline:10px;}}@media(max-width:360px){#ks-magazine .km-category strong{font-size:14px;}}@media(prefers-reduced-motion:reduce){#ks-magazine *{scroll-behavior:auto!important;animation:none!important;transition:none!important;}}
+
+/* Preserved homepage image bytes, packaged with the reviewed theme. */
+body.home #ks-magazine {
+  --km-hero-image: url('images/magazine-hero.webp');
+  --km-kitchen-image: url('images/magazine-kitchen.webp');
+  --km-travel-image: url('images/magazine-travel.webp');
+  --km-room-image: url('images/magazine-room.webp');
+  --km-tools-image: url('images/magazine-tools.webp');
+}
+
+body.home #ks-magazine .km-carousel-slide:nth-child(1) {
+  background-image: linear-gradient(to bottom, transparent 15%, rgba(25, 25, 22, .35) 40%, #25221d 82%), var(--km-hero-image);
+}
+
+body.home #ks-magazine .km-carousel-slide:nth-child(2) {
+  background-image: linear-gradient(to bottom, transparent 15%, rgba(25, 25, 22, .35) 40%, #25221d 82%), var(--km-kitchen-image);
+}
+
+body.home #ks-magazine .km-carousel-slide:nth-child(3) {
+  background-image: linear-gradient(to bottom, transparent 15%, rgba(25, 25, 22, .35) 40%, #25221d 82%), var(--km-travel-image);
+}
+
+body.home #ks-magazine .km-carousel-slide:nth-child(4) {
+  background-image: linear-gradient(to bottom, transparent 15%, rgba(25, 25, 22, .35) 40%, #25221d 82%), var(--km-tools-image);
+}

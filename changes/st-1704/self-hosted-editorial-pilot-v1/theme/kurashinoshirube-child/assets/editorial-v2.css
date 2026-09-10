@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: ae71eaaf05a3e77a8132fc90ea267117b359dab12a27ce791f6b787892f89546;
+  --raos-theme-runtime-revision-editorial-v2: f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -409,6 +409,14 @@
     font-size: 0.82rem;
     font-weight: 800;
     letter-spacing: 0.04em;
+  }
+
+  body.single-post .raos-editorial-v2 .raos-article-toc summary {
+    display: none !important;
+  }
+
+  body.single-post .raos-editorial-v2 .raos-article-toc__title {
+    display: block !important;
   }
 
   .raos-editorial-v2 .raos-article-toc details:not([open]) > :not(summary) {
@@ -1197,6 +1205,12 @@
   }
 }
 
+@media (max-width: 37.5rem) {
+  .raos-editorial-v2 .lead-section .section-heading--side h2 {
+    word-break: normal;
+  }
+}
+
 /* Reflow against the actual article column, including enlarged text. */
 @container (max-width: 60rem) {
   .raos-editorial-v2 .decision-list li {
@@ -1235,7 +1249,7 @@
 }
 
 /* Shared reader layout: prose and comparison space have separate widths. */
-.raos-editorial-v2-page { --rev2-content: 75rem; --rx-prose: 50rem; --rx-body-size: 1.0625rem; --rx-leading: 1.9; --rx-section-gap: 3.5rem; }
+.raos-editorial-v2-page { --rev2-content: 75rem; --rx-prose: 54rem; --rx-body-size: 1.0625rem; --rx-leading: 1.8; --rx-section-gap: 2.5rem; }
 .raos-editorial-v2-page .raos-article-title-grid { display: block; max-width: var(--rx-prose); margin-inline: auto; padding-block: 2.5rem; }
 .raos-editorial-v2-page .raos-article-title-grid h1 { font-size: clamp(1.8rem, 3vw, 2.75rem); line-height: 1.5; }
 .raos-editorial-v2-page .raos-article-standfirst { border: 0; padding: 0; margin-top: 1.5rem; }
@@ -1246,9 +1260,31 @@
 .raos-editorial-v2 :where(section, .editors-note, .purchase-caution) { margin-block: var(--rx-section-gap); padding-block: 0; }
 .raos-editorial-v2 .section-heading { margin-bottom: 1.5rem; }
 .raos-editorial-v2 .section-heading--side > p:last-child:not(.section-number) { max-width: none; }
-.raos-editorial-v2 p { margin-block: 0 1.25rem; }
+.raos-editorial-v2 p { margin-block: 0 1rem; }
 .raos-editorial-v2 h2 { font-size: clamp(1.4rem, 2.2vw, 1.9rem); line-height: 1.55; }
-.raos-editorial-v2 :where(.raos-product-card, .product-profile) { grid-template-columns: minmax(0, 1fr); max-width: var(--rx-prose); margin-inline: auto; }
+.raos-editorial-v2 :is(.raos-product-card, .product-profile) { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 75rem; margin-inline: auto; gap: 1.5rem; padding-block: 2rem; align-items: start; }
+.raos-editorial-v2 :is(.raos-product-card, .product-profile) > :is(figure, .raos-product-card__media, .raos-product-card__body, .product-profile__body) { grid-column: 1; grid-row: auto; min-width: 0; }
+.raos-editorial-v2 :is(.raos-product-card, .product-profile) h3 { font-size: clamp(1.35rem, 2vw, 1.8rem); line-height: 1.5; word-break: normal; line-break: strict; }
+.raos-editorial-v2 .product-profile dl { margin-block: 1rem; padding-block: .75rem; }
+.raos-editorial-v2 .product-profile dl div { grid-template-columns: minmax(6rem, .3fr) minmax(0, 1fr); gap: .75rem; }
+.raos-editorial-v2 :is(.product-profile figure, .raos-product-card__media) { width: 100%; height: auto; min-height: 0; background: #fff; }
+.raos-editorial-v2 :is(.product-profile figure, .raos-product-card__media) img[data-raos-product-image-state="verified"] { display: block; width: 128px; height: 128px; max-width: 100%; margin-inline: auto; padding: 0; object-fit: contain; }
+.raos-editorial-v2 .product-profile figure.raos-official-product-photo { display: block; aspect-ratio: auto; overflow: visible; background: #fff; }
+.raos-editorial-v2 .product-profile figure.raos-official-product-photo img { display: block; width: 100%; height: auto; max-height: none; max-width: 100%; padding: 0; object-fit: contain; }
+.raos-editorial-v2 .product-profile figure.raos-official-product-photo figcaption { position: static; padding: .75rem 0; background: transparent; color: var(--rev2-muted); font-size: .8rem; line-height: 1.6; }
+.raos-editorial-v2 .product-profile figure.raos-rakuten-product-photo { display: block; aspect-ratio: auto; overflow: visible; text-align: center; }
+.raos-editorial-v2 .product-profile figure.raos-rakuten-product-photo img { display: inline-block; width: auto; height: auto; max-width: none; max-height: none; padding: 0; object-fit: contain; }
+.raos-editorial-v2 .product-profile figure.raos-rakuten-product-photo figcaption { position: static; padding: .75rem 0; background: transparent; color: var(--rev2-muted); font-size: .8rem; line-height: 1.6; }
+.raos-rakuten-image-240 { display: none; }
+@media (max-width: 359px) {
+  .raos-rakuten-image-300 { display: none; }
+  .raos-rakuten-image-240 { display: block; }
+}
+@media (min-width: 64rem) {
+  .raos-editorial-v2 :is(.raos-product-card, .product-profile):has(> :is(figure, .raos-product-card__media)) { grid-template-columns: minmax(19rem, .8fr) minmax(0, 1.8fr); gap: 2.5rem; }
+  .raos-editorial-v2 :is(.raos-product-card, .product-profile):has(> :is(figure, .raos-product-card__media)) > :is(.raos-product-card__body, .product-profile__body) { grid-column: 2; grid-row: 1; }
+  .raos-editorial-v2 :is(.raos-product-card, .product-profile) > :is(figure, .raos-product-card__media) { grid-row: 1; }
+}
 .raos-editorial-v2 :where(.raos-product-card__body, .product-profile__body) { padding-inline: 0; }
 .raos-editorial-v2 .decision-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .raos-editorial-v2 .decision-list li { display: flex; flex-direction: column; gap: .75rem; border: 1px solid var(--rev2-line-soft); padding: 1.25rem; }
@@ -1284,7 +1320,7 @@
 .raos-editorial-v2 :where(.decision-list li, .raos-product-card, .raos-key-difference, .raos-no-purchase) { overflow-wrap: anywhere; }
 .raos-editorial-v2 .raos-summary-tradeoff { display: block; margin-top: .75rem; }
 /* Long model names retain the closing punctuation inside enlarged text columns. */
-.raos-editorial-v2 .product-profile h3 { overflow-wrap: anywhere; line-break: anywhere; }
+.raos-editorial-v2 .product-profile h3 { overflow-wrap: break-word; line-break: strict; }
 /* Reader decision components: editorial judgment precedes source specifications. */
 .raos-editorial-v2 :where(.raos-decision-axes, .raos-unknowns-panel, .raos-reader-purchase-checklist) { max-width: var(--rx-prose); margin-inline: auto; }
 .raos-reader-axes { list-style: decimal; padding-inline-start: 1.5rem; }

@@ -198,6 +198,60 @@ def derive_article(markup: str, article_id: str) -> dict[str, object]:
     }
 
 
+def derive_local_route_aliases(
+    metadata: dict[str, object], article_slugs: set[str], page_slugs: set[str]
+) -> dict[str, object]:
+    """Rebuild local aliases from bound saved metadata and materialized targets."""
+    documents = metadata.get("documents")
+    if not isinstance(documents, dict):
+        reject()
+    routes: list[dict[str, object]] = []
+    identities: set[int] = set()
+
+    def identity(slug: str) -> int:
+        row = documents.get(slug)
+        if (
+            not isinstance(row, dict)
+            or row.get("production_slug") != slug
+            or type(row.get("production_id")) is not int
+            or row["production_id"] <= 0
+            or row["production_id"] in identities
+        ):
+            reject()
+        identities.add(row["production_id"])
+        return row["production_id"]
+
+    article_rows = [(identity(slug), slug) for slug in article_slugs]
+    for production_id, slug in sorted(article_rows):
+        routes.append(
+            {
+                "kind": "post_slug",
+                "production_id": production_id,
+                "production_slug": slug,
+                "source_path": f"/{slug}/",
+                "local_path": f"/local-preview-{slug}/",
+            }
+        )
+    page_rows = [
+        (identity(slug), slug) for slug in page_slugs if slug in documents
+    ]
+    for production_id, slug in sorted(page_rows):
+        routes.append(
+            {
+                "kind": "page_id",
+                "production_id": production_id,
+                "production_slug": slug,
+                "source_path": f"/?page_id={production_id}",
+                "local_path": "/" if slug == "home" else f"/{slug}/",
+            }
+        )
+    if len({row["source_path"] for row in routes}) != len(routes) or len(
+        {row["local_path"] for row in routes}
+    ) != len(routes):
+        reject()
+    return {"schema": "RAOS_WORDPRESS_LOCAL_ROUTE_ALIASES_V1", "routes": routes}
+
+
 READER_BINDING_FIELDS = (
     "reader_page_slugs",
     "reader_page_documents",
@@ -277,7 +331,11 @@ def reader_binding_scope(binding: dict, article_ids: dict) -> tuple[set, set, se
         "core_document_slugs"
     ) != sorted(set(article_ids) | set(POLICY_SLUGS) | {"home"} | managed_hubs):
         reject()
-    pages = set(POLICY_SLUGS) | managed_hubs | ({"home"} & set(selected))
+    pages = set(POLICY_SLUGS) | managed_hubs | (
+        {"home"}
+        if binding.get("home_mode") == "shared-theme-candidate"
+        else {"home"} & set(selected)
+    )
     return pages, baseline_slugs, set(article_ids) | baseline_slugs - set(drafts)
 
 
@@ -314,10 +372,21 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
     if any(key in binding for key in READER_BINDING_FIELDS) and not reader_mode:
         reject()
     selected = binding.get("selected_slugs")
+    theme_only_candidate = (
+        binding.get("home_mode") == "shared-theme-candidate"
+        and selected == []
+        and (not reader_mode or binding.get("reader_page_slugs") == [])
+    )
     if (
         len(article_ids) != 10
         or type(selected) is not list
-        or (not selected and not (reader_mode and binding.get("reader_page_slugs")))
+        or binding.get("theme_only_candidate", False) is not theme_only_candidate
+        or (not theme_only_candidate and "theme_only_candidate" in binding)
+        or (
+            not selected
+            and not (reader_mode and binding.get("reader_page_slugs"))
+            and not theme_only_candidate
+        )
         or len(set(selected)) != len(selected)
         or not set(selected) <= set(article_ids)
         or set(binding.get("article_body_sha256", {})) != set(article_ids)
@@ -374,6 +443,12 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
         "selected_article_ids": sorted(article_ids[slug] for slug in selected),
         "articles": scope_rows,
         **(
+            {"local_route_aliases": binding["local_route_aliases"]}
+            if "local_route_aliases" in binding
+            else {}
+        ),
+        **({"theme_only_candidate": True} if theme_only_candidate else {}),
+        **(
             {
                 "reader_page_slugs": binding["reader_page_slugs"],
                 "core_document_slugs": binding["core_document_slugs"],
@@ -382,7 +457,9 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
             else {}
         ),
     }
-    if scope != binding.get("incremental_scope"):
+    if (theme_only_candidate and "local_route_aliases" not in scope) or scope != binding.get(
+        "incremental_scope"
+    ):
         reject()
     categories = category_surfaces(inventory)
     if (categories or reader_mode) and "seed_metadata_sha256" not in binding:
@@ -411,7 +488,16 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
             for row in inventory["surfaces"]
             if row.get("kind") == "policy"
         }
-        expected_pages = reader_pages if reader_mode else policy_slugs
+        expected_pages = (
+            reader_pages
+            if reader_mode
+            else policy_slugs
+            | (
+                {"home"}
+                if binding.get("home_mode") == "shared-theme-candidate"
+                else set()
+            )
+        )
         expected_baselines = baseline_pages if reader_mode else policy_slugs | {"home"}
         expected_public = (
             public_documents
@@ -419,11 +505,23 @@ def load_scope(fixture_root: Path, inventory: dict[str, object]) -> dict[str, ob
             else set(article_ids) | policy_slugs | {"home"}
         )
         if (
+            "local_route_aliases" in binding
+            and binding["local_route_aliases"]
+            != derive_local_route_aliases(metadata, set(article_ids), expected_pages)
+        ):
+            reject()
+        if (
             len(policy_slugs) != 3
             or (reader_mode and policy_slugs != POLICY_SLUGS)
             or set(binding.get("page_body_sha256", {})) != expected_pages
             or set(binding.get("baseline_page_sha256", {})) != expected_baselines
             or set(metadata.get("documents", {})) != expected_public
+            or (
+                binding.get("home_mode") == "shared-theme-candidate"
+                and "home" not in binding.get("reader_page_documents", {})
+                and binding["page_body_sha256"].get("home")
+                != binding["baseline_page_sha256"].get("home")
+            )
         ):
             reject()
         page_raw = read_private(fixture_root / "pages.json")

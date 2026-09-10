@@ -2,7 +2,7 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 152,
+    "owner_count": 151,
     "version": "2.0.0"
   },
   "owners": [
@@ -11,12 +11,12 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "d952ba4329077031c5a413bddc49ac227d6fdfa6dd2ed1838423a841d3ae4186",
+          "sha256": "7eade69840e243824d447071b78873a5646b7f7aeb612dfc56952928fe88b841",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 18040,
-          "sha256": "3983571e00ec102f70114e04d4de400e3afa3574700c9139fd56c92d36a3a7df",
+          "sha256": "bdd5113e6454283f6074cec340bd85d000546fb33f966a45680ca43c7feaf79e",
           "uri": "repo://changes/editorial-measurement-v1/wordpress-plugin/raos-editorial-measurement/config/measurement-allowlist.v1.json"
         }
       ],
@@ -93,8 +93,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 258275,
-          "sha256": "76b3d0fe3e83169f3b788f8e2234177a60579c152c374892090885386b5d356b",
+          "bytes": 257146,
+          "sha256": "64fc483c072ea4a540aa0d0687992653711567c83210344e32599b000e6c0e00",
           "uri": "repo://changes/editorial-portfolio-v3/editorial-portfolio.v3.json"
         },
         {
@@ -141,12 +141,6 @@
           "kind": "tracked",
           "semantic_id": "changes/editorial-portfolio-v3/reader-experience.v1.json",
           "uri": "repo://changes/editorial-portfolio-v3/reader-experience.v1.json",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/purchase-support.v1.json",
-          "uri": "repo://changes/reader-purchase-support-v1/purchase-support.v1.json",
           "version": 2
         },
         {
@@ -265,12 +259,6 @@
         },
         {
           "kind": "tracked",
-          "semantic_id": "python/raos/domain/editorial/purchase_support.py",
-          "uri": "repo://python/raos/domain/editorial/purchase_support.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
           "semantic_id": "scripts/build_editorial_portfolio_v3.py",
           "uri": "repo://scripts/build_editorial_portfolio_v3.py",
           "version": 2
@@ -307,12 +295,12 @@
       "outputs": [
         {
           "bytes": 21211,
-          "sha256": "b29db99402f0b90635d06134a8462d53fa72b5bab6be0097dba8a0124c34caca",
+          "sha256": "1819c883c606843c59579dec8b605d888ae48b2675f34307ba7cc430ca564d29",
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
           "bytes": 31333,
-          "sha256": "f56f29e3dd4252b85cc366444b6cfd4806492ce8081c25a0b59362648bc94c42",
+          "sha256": "953ec5a45498174f5470d63cb35adc26bfdfe9c0516fb18ad80fb50e19efebbb",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
         }
       ],
@@ -365,8 +353,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 2625,
-          "sha256": "2ef92aa3a64d07537036c49db3a4701cd04dea9db3fd7b8eedbacf12a23169ce",
+          "bytes": 2624,
+          "sha256": "05a4a396fceeb687ab9653b2ff0304a46e836eeaf7dc761f825f200e3ea86e5d",
           "uri": "repo://changes/analytics-google-live-v1/runtime-manifest.v1.json"
         }
       ],
@@ -664,8 +652,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 80872,
-          "sha256": "5a20617d64b7be7c63c4b8c33dc7b01499c973ca2cb5a3d81bda19e69cb9de3e",
+          "bytes": 77655,
+          "sha256": "fe95cec3aaa0915b4f1b5f38a01ac9fbb7c806ba7f7bcc8b2152a98bb2b0fe59",
           "uri": "repo://changes/wordpress-local-preview-v1/fixtures/reader-guides.v1.json"
         }
       ],
@@ -1847,22 +1835,22 @@
       "outputs": [
         {
           "bytes": 4771,
-          "sha256": "b55afec55c7191ac301789bec53deca6d1232c461b8b7cfe1c27fcd1f8ec4113",
+          "sha256": "e4f085e786953aacfad14b1e9686a9b6f6cb0cab588882cebd3c85999823be45",
           "uri": "repo://changes/reader-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 2132,
-          "sha256": "3ac7bb5009737e105906c35de9aa619a94ffc38c0fc8538405177387f4a8ab87",
+          "sha256": "98a332d51bed13072af04ee85c1fe5a00ac2dec986ec8f8fb616b0d8ead75c13",
           "uri": "repo://changes/reader-measurement-v1/theme-runtime-binding.v1.json"
         },
         {
           "bytes": 23683,
-          "sha256": "a510d703a40468158c8cd89f07a9c356aa0944c71c47314a36d486c37fcb614a",
+          "sha256": "7504b64477d3e365574d60b33e0f9cf2e30a1a00a14e80412e888ff65a2a7f2c",
           "uri": "repo://changes/reader-measurement-v1/wordpress-plugin/raos-reader-measurement/config/reader-allowlist.v1.json"
         },
         {
           "bytes": 1232,
-          "sha256": "4e5ba29afc8e4b801c67e1f4ddfde1c4659f6c429063ad9298b090f048b29d34",
+          "sha256": "27a80442cf63321ad17b949de89282d36c3c97863ee049bedfefb91661b8873f",
           "uri": "repo://changes/reader-measurement-v1/wordpress-plugin/raos-reader-measurement/config/reader-runtime.v1.json"
         }
       ],
@@ -1952,207 +1940,6 @@
           "kind": "tracked",
           "semantic_id": "tests/reader_measurement_v1",
           "uri": "repo://tests/reader_measurement_v1",
-          "version": 2
-        }
-      ],
-      "story_ids": []
-    },
-    {
-      "output_scope": "tracked",
-      "outputs": [
-        {
-          "bytes": 15435,
-          "sha256": "43b352873b79dbe0a3578b4709a58fb5d66c9274cda68a87d125e8c67c1b7ac6",
-          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
-        },
-        {
-          "bytes": 5840,
-          "sha256": "4abf7a3236d9ebf319558637c3d60dbd8780cbffc306207263b54edf3b481f48",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/about-ad-policy.html"
-        },
-        {
-          "bytes": 25286,
-          "sha256": "5b31edc76f5f229c3240a8f5450c3916c579537f173464241f11c1d1aba162b8",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/compact-robot-vacuum-shortlist.html"
-        },
-        {
-          "bytes": 8208,
-          "sha256": "5f4416a5233996222706319034a74a69fc66c74b4890df35debd2476eb402366",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparison-policy.html"
-        },
-        {
-          "bytes": 34330,
-          "sha256": "f52704ec20e797da672fa7092c237e32d0dfb0697c7c8223edddf86b291185f4",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html"
-        },
-        {
-          "bytes": 12860,
-          "sha256": "0dd55e2a7497b62e8a3d497694b3bfc9c480e9dd85c2272e3858d63942386078",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-cleaning-guide.html"
-        },
-        {
-          "bytes": 12871,
-          "sha256": "5f8f05b8039374140905b76120dc6ede484fc0d83621b247ed66f505639f61e3",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html"
-        },
-        {
-          "bytes": 17229,
-          "sha256": "51fd84c6025b9e2d2d8368236dd4235a89cdd35fe60733ad65136a883b93d5df",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html"
-        },
-        {
-          "bytes": 27920,
-          "sha256": "4c41b8332ab6a87f58d59a20100f75e2ab8a4f0e4b30c3c728e1a8302f5af6f3",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html"
-        },
-        {
-          "bytes": 12839,
-          "sha256": "d3ab8716d5ebd1901efc7b489435da5c1ad6bd1c6e82f08c14af2eb332d9743e",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html"
-        },
-        {
-          "bytes": 1970,
-          "sha256": "3bf29afb925218eba637684310df31af60a71bd2ecad78af5959474e85b318e3",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/kitchen.html"
-        },
-        {
-          "bytes": 29464,
-          "sha256": "0742d211211dcf9447b81dcb4a7534464b9dc5735b6eee206dfef735aff7bf78",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/lightweight-carry-on-suitcase-under-3kg.html"
-        },
-        {
-          "bytes": 23725,
-          "sha256": "be0968f399d600c2865599dbe84a303b9a0ee1b458765f60d58264fc2028bd3a",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/portable-power-station-guide.html"
-        },
-        {
-          "bytes": 4886,
-          "sha256": "f5d1172522c14fa178706547111085457389b435301424b2f66e1d1ccb6dbde7",
-          "uri": "repo://changes/wordpress-direct-publish-v1/articles/privacy-policy.html"
-        }
-      ],
-      "owner_dependencies": [],
-      "owner_id": "build_reader_purchase_support_v1",
-      "owner_version": 2,
-      "semantic_inputs": [
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/editorial-portfolio-v3/local-reader-guides.v1.json",
-          "uri": "repo://changes/editorial-portfolio-v3/local-reader-guides.v1.json",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/about-ad-policy.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/about-ad-policy.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/compact-robot-vacuum-shortlist.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/compact-robot-vacuum-shortlist.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/comparison-policy.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/comparison-policy.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/countertop-dishwasher-for-small-households.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/countertop-dishwasher-for-small-households.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/dishwasher-cleaning-guide.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/dishwasher-cleaning-guide.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/dishwasher-detergent-guide.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/dishwasher-detergent-guide.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/dishwasher-installation-measurement.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/dishwasher-installation-measurement.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/dishwasher-running-cost.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/dishwasher-running-cost.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/dishwasher-water-supply-methods.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/dishwasher-water-supply-methods.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/kitchen.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/kitchen.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/lightweight-carry-on-suitcase-under-3kg.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/lightweight-carry-on-suitcase-under-3kg.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/portable-power-station-guide.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/portable-power-station-guide.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/articles/privacy-policy.html",
-          "uri": "repo://changes/reader-purchase-support-v1/articles/privacy-policy.html",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/reader-purchase-support-v1/purchase-support.v1.json",
-          "uri": "repo://changes/reader-purchase-support-v1/purchase-support.v1.json",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "python/raos/application/editorial/purchase_support.py",
-          "uri": "repo://python/raos/application/editorial/purchase_support.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "python/raos/application/editorial/reader_running_cost.py",
-          "uri": "repo://python/raos/application/editorial/reader_running_cost.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "python/raos/domain/editorial/purchase_support.py",
-          "uri": "repo://python/raos/domain/editorial/purchase_support.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "scripts/build_reader_purchase_support_v1.py",
-          "uri": "repo://scripts/build_reader_purchase_support_v1.py",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "tests/purchase_support",
-          "uri": "repo://tests/purchase_support",
           "version": 2
         }
       ],
@@ -5636,7 +5423,7 @@
         },
         {
           "bytes": 214073,
-          "sha256": "476d53cc1ed6e55aa1525ee1f2a7b3791e34589f56088f9d22c0c4fceaa09847",
+          "sha256": "e44d3f76c5fbee493d1770f75c81df6a9a1090b50960fb39b3a2782bb5c08f49",
           "uri": "repo://changes/st-0005/manifest.yaml"
         },
         {
@@ -17938,7 +17725,7 @@
       "outputs": [
         {
           "bytes": 9290,
-          "sha256": "aaac5387fa92567ea5da5d76f0e114ca39214709fd3c130bca79e096639bf4bf",
+          "sha256": "55577e338dcadb25f8705828e50cfc349331b2e3f1fc18206d5d2c533480b654",
           "uri": "repo://changes/st-0901/runtime-manifest.v2.yaml"
         }
       ],
@@ -18330,7 +18117,7 @@
       "outputs": [
         {
           "bytes": 11786,
-          "sha256": "52e93987888b8f294607bb2f8c810c803cfe353649c9d2380fd96944f1bb1be6",
+          "sha256": "65cfaa97ffb3efbaf3ea191874e3fa0386c87b9bbc5362ce3e22a56ca4a569aa",
           "uri": "repo://changes/st-0902/runtime-manifest.v2.yaml"
         }
       ],
@@ -18784,7 +18571,7 @@
       "outputs": [
         {
           "bytes": 13324,
-          "sha256": "dbce7ed9133e7f8b7c5dbdb56781d58f9362637c268333a0c1bc9a165df2bfba",
+          "sha256": "0fe22c441d49ab4989b35cb5902b701241b87b36de60eedfb890125a3634feb7",
           "uri": "repo://changes/st-0903/runtime-manifest.v2.yaml"
         }
       ],
@@ -19291,7 +19078,7 @@
       "outputs": [
         {
           "bytes": 12197,
-          "sha256": "e334438b2f350d05c6e90f1a9b741d093552ed3548b5fe024073da860cf6192b",
+          "sha256": "c141af86e8340caa8fde68ddc4729dbfbe1cd82f7ea29231fadb0c66031a4fe5",
           "uri": "repo://changes/st-0904/runtime-manifest.v2.yaml"
         }
       ],
@@ -19791,7 +19578,7 @@
         },
         {
           "bytes": 12185,
-          "sha256": "97ef576572f386a295d770ad9b0d695806ac7ecef951c3d3d43215d52708314d",
+          "sha256": "548483009209ea0e6495538c7709e9755014bcd20ef6a3eba3c47767bb61b2a4",
           "uri": "repo://changes/st-0905/runtime-manifest.v2.yaml"
         }
       ],
@@ -20639,7 +20426,7 @@
         },
         {
           "bytes": 8759,
-          "sha256": "03de508c679060b633f518180272ea1e1ed3f64de1d8000e0d60dd09486a0a92",
+          "sha256": "675c3043adc8ece826fe709e5a2e6441fbfab022a5c57360ddd4bef71a520212",
           "uri": "repo://changes/st-1002/runtime-manifest.v2.yaml"
         },
         {
@@ -20896,7 +20683,7 @@
         },
         {
           "bytes": 7245,
-          "sha256": "6f58cb81991736c7df762f95dde269f261200d71e311e78031eab232161961f1",
+          "sha256": "501c2d327bfc48414d2abb92ec3b4c1846b3e75d7532b67cb7b88016759645f4",
           "uri": "repo://changes/st-1004/runtime-manifest.v2.yaml"
         }
       ],
@@ -20995,7 +20782,7 @@
         },
         {
           "bytes": 4108,
-          "sha256": "8383de8f5d5b9ba2811029dc0c62c4c929161003e04d176b8cb0361cf13f6acb",
+          "sha256": "16f210d2339a65a650c1ec638953e7dba599345ba54fe6378ba73376b6168cf2",
           "uri": "repo://changes/st-1006/runtime-manifest.v2.yaml"
         }
       ],
@@ -22225,7 +22012,7 @@
         },
         {
           "bytes": 9166,
-          "sha256": "3503d42a3790c8e545f4640a4ebee9155412c952d3766428a5c7019ece9bfb11",
+          "sha256": "c784a5d32dee790db11c533fcaaf9afa4bcc2f10fd3a31411ac7475f4d3f9562",
           "uri": "repo://changes/st-1202/runtime-manifest.v2.yaml"
         }
       ],
@@ -26717,7 +26504,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "6adc38f220da9c9a619c9b3b2f27615eba06abd6c860a18b2e72c7972a49c6b8",
+          "sha256": "0f7ea1e75c7396ec0c81e96fb1310aeb89355c0538a2d6db1490d6d2175364ea",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26948,7 +26735,7 @@
       "outputs": [
         {
           "bytes": 81278,
-          "sha256": "afa66ab8b1cc8197fda1f0e79b61f59cad3a8106a8633818f2c4b42f26a09255",
+          "sha256": "cf237f651ad6e3c72c4e410a966435d2b3f05be27a4d0fae5d6d14dfab4605a8",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27577,7 +27364,6 @@
         "build_editorial_measurement_v1",
         "build_editorial_v3_theme_navigation",
         "build_reader_measurement_v1",
-        "build_reader_purchase_support_v1",
         "build_st1704_theme_assets"
       ],
       "owner_id": "build_st1704_self_hosted_theme",
@@ -27711,6 +27497,48 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/magazine-hero.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/magazine-hero.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/magazine-kitchen.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/magazine-kitchen.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/magazine-room.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/magazine-room.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/magazine-tools.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/magazine-tools.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/magazine-travel.webp",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/magazine-travel.webp",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-slim-official.jpg",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-slim-official.jpg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/legacy-media-display-projection.v1.json",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/legacy-media-display-projection.v1.json",
           "version": 2
@@ -27729,26 +27557,8 @@
         },
         {
           "kind": "tracked",
-          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-analytics.js",
-          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-analytics.js",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.css",
-          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.css",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
-          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json",
-          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/rakuten-product-media.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/rakuten-product-media.json",
           "version": 2
         },
         {
@@ -27771,14 +27581,8 @@
         },
         {
           "kind": "tracked",
-          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/inc/purchase-analytics.php",
-          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/inc/purchase-analytics.php",
-          "version": 2
-        },
-        {
-          "kind": "tracked",
-          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/inc/purchase-support.php",
-          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/inc/purchase-support.php",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/official-product-media.php",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/official-product-media.php",
           "version": 2
         },
         {
@@ -29645,12 +29449,12 @@
       "outputs": [
         {
           "bytes": 817,
-          "sha256": "c2dc8ba032221fbf5fd8f676f2bbd6d30e5664dc54eb85e3a6fd76d47a198b5c",
+          "sha256": "6384462125cce4771c1e95ce33c6d56877b44a5b642c7ca37eab09d03f3b4c89",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
-          "bytes": 28258,
-          "sha256": "6e5653ee1f573635a552e062a713214d5237a21531a51e54419c9ce3ec778d70",
+          "bytes": 28259,
+          "sha256": "270c66e80944a9976be04716fb857f8d46dea0f36223018831364b5bcb0fdd71",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30507,7 +30311,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "4a55411a64331bf4e45ccca21d67863f3bf4c6a7c2abe941a12080743d63d553",
+          "sha256": "21ebf377f34fa68b01fe8a72c356a2ad4d9e5dc26241c44fe843bbeed2ed75e5",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
@@ -30517,7 +30321,6 @@
         "build_editorial_v3_theme_navigation",
         "build_google_live_runtime_v1",
         "build_local_reader_guides",
-        "build_reader_purchase_support_v1",
         "build_st0104_contract_repository",
         "build_st0105_generated_contracts",
         "build_st1703_self_hosted_runtime_manifest",

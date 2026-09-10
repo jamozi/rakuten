@@ -1,0 +1,7 @@
+{
+  "schema": "RAOSAffiliateAutomationPlanV1",
+  "enabled": false,
+  "site_url": "https://reader.example",
+  "grants": [],
+  "placements": []
+}
