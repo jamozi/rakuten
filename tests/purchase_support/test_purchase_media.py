@@ -72,7 +72,16 @@ def test_all_sixteen_photos_and_thirty_unmodified_image_links_are_snapshot_bound
                 "/wp-content/themes/kurashinoshirube-child/assets/images/roomba-mini-official.jpg"
             ), "The same frozen theme image must work on the isolated preview origin."
         for b in image_bindings:
-            assert len(b) == 8 and b["placement"] == "product_card"
+            assert (
+                len(b)
+                == (10 if article["slug"] != "portable-power-station-guide" else 8)
+                and b["placement"] == "product_card"
+            )
+            if len(b) == 10:
+                assert (
+                    b["link_purpose"] == "affiliate_purchase"
+                    and b["affiliate"] == "true"
+                )
             wrapper = next(
                 n for n in root.walk() if n.attrs.get("data-raos-cta-id") == b["cta_id"]
             )
@@ -94,7 +103,7 @@ def test_all_sixteen_photos_and_thirty_unmodified_image_links_are_snapshot_bound
                 == sha256(record["sources"][size].encode()).hexdigest()
             )
     assert image_count == 30 and official_count == 1
-    assert len(catalog["offers"]) == 6
+    assert len(catalog["offers"]) == 7
     assert all(not o["offer_id"].startswith("image-") for o in catalog["offers"])
 
 

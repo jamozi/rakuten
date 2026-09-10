@@ -71,16 +71,28 @@ def test_all_sixteen_slots_have_actionable_research_and_preserve_identity_routes
         ]
         assert len(links) == len(a["bindings"])
         for b in a["bindings"]:
-            assert set(b) == {
-                "article_id",
-                "product_id",
-                "seller_id",
-                "offer_id",
-                "cta_id",
-                "placement",
-                "snapshot_id",
-                "href",
-            }
+            assert set(b) == (
+                {
+                    "article_id",
+                    "product_id",
+                    "seller_id",
+                    "offer_id",
+                    "cta_id",
+                    "placement",
+                    "snapshot_id",
+                    "href",
+                }
+                | (
+                    {"link_purpose", "affiliate"}
+                    if a["slug"] != "portable-power-station-guide"
+                    else set()
+                )
+            )
+            if len(b) == 10:
+                assert (b["link_purpose"], b["affiliate"]) in {
+                    ("merchant_purchase", "false"),
+                    ("affiliate_purchase", "true"),
+                }
             link = next(n for n in links if n.attrs["data-raos-cta-id"] == b["cta_id"])
             assert link.attrs["href"] == b["href"]
             assert all(

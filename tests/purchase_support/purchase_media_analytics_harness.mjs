@@ -20,7 +20,7 @@ function fixture() {
 }
 let f = fixture(); f.click();
 assert.equal(f.calls.length, 1);
-assert.equal(Object.keys(f.calls[0][2]).length, 9);
+assert.equal(Object.keys(f.calls[0][2]).length, 11);
 assert.equal(JSON.stringify(f.calls).includes('opaque'), false);
 assert.equal(JSON.stringify(f.calls).includes('https'), false);
 assert.equal(f.calls[0][2].offer_id, binding.offer_id);
