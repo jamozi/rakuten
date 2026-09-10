@@ -11,6 +11,11 @@ if (!is_array($input) || ($input['candidate']['profile'] ?? null) !== 'owner-dir
 }
 $candidate = $input['candidate'];
 $articles = $candidate['articles'];
+$preview_admin = get_user_by('login', 'raos-local-admin');
+if (!$preview_admin) { WP_CLI::error('DIRECT_PREVIEW_ADMIN_MISSING'); }
+wp_set_current_user($preview_admin->ID);
+kses_init();
+if (!current_user_can('unfiltered_html')) { WP_CLI::error('DIRECT_PREVIEW_HTML_CAPABILITY_MISSING'); }
 if (!$articles && !empty($candidate['theme'])) {
     $articles = array(array('article_key' => 'direct-preview-example', 'document' => array(
         'post_type' => 'post', 'slug' => 'direct-preview-example', 'title' => 'ローカル表示確認用の記事',
@@ -52,6 +57,10 @@ foreach ($articles as $article) {
         if ($key !== 'ID' && $saved->$key !== $value) {
             WP_CLI::error('DIRECT_PREVIEW_SAVED_CONTENT_MISMATCH');
         }
+    }
+    if ($document['post_type'] === 'page' && $document['slug'] === 'home') {
+        update_option('show_on_front', 'page');
+        update_option('page_on_front', $id);
     }
     update_post_meta($id, '_raos_owner_direct_preview_key', $article['article_key']);
     update_post_meta($id, '_raos_owner_direct_preview_document', array(

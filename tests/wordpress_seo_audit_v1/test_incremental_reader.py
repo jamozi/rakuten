@@ -1,6 +1,7 @@
 """Synthetic 29-page SEO readback; no live requests, regeneration or publication."""
 
 from copy import deepcopy
+import base64
 from dataclasses import replace
 from html import escape
 import json
@@ -635,3 +636,48 @@ def test_registered_hub_audit_rejects_changed_untargeted_draft(reader):
     reader["current_documents"][slug]["revision_id"] += 1
     with pytest.raises(audit.seo.AuditError, match="UNSELECTED_DOCUMENT"):
         audit.run_verified_incremental_public_audit(**reader)
+
+
+@pytest.mark.parametrize("changed_body", [False, True])
+def test_post_content_theme_checks_preserved_home_in_the_full_readback(reader, changed_body):
+    files = dict(reader["reader_metadata"].theme_files)
+    files["templates/front-page.html"] = b'<!-- wp:post-content {"layout":{"type":"default"}} /-->'
+    tree = theme_tree_sha256(files)
+    reader["reader_metadata"] = audit.reader_seo_metadata(files, expected_tree=tree)
+    reader["deployment_readback"]["theme"]["tree_sha256"] = tree
+    envelope = reader["context"].to_document()
+    envelope["expected_shared_readback_sha256"]["theme"] = tree
+    snapshot = reader["original_snapshot"]
+    baseline = next(row for row in snapshot["documents"] if row["slug"] == "home")
+    previous = baseline["block_markup"]
+    embedded = base64.b64encode(b'RIFF\x04\x00\x00\x00WEBP').decode()
+    body = '<div id="ks-magazine" data-release="synthetic" style="--km-hero-image:url(\'data:image/webp;base64,' + embedded + '\')"><h1>Saved home</h1><p>Preserved source</p><a href="/guides/">Guides</a></div>'
+    baseline["block_markup"] = body
+    baseline["content_sha256"] = audit.publication._content_after_sha256(baseline, baseline["id"])
+    reader["current_documents"]["home"] = deepcopy(baseline)
+    baseline_documents = {row["slug"]: row for row in snapshot["documents"]}
+    snapshot["public_metadata"] = audit.capture_public_metadata(
+        old.Metadata(baseline_documents),
+        [row for row in snapshot["documents"] if row["status"] == "publish"],
+    )
+    reader["public_metadata_reader"] = old.Metadata(reader["current_documents"])
+    envelope["inventory"]["home"]["content_sha256"] = baseline["content_sha256"]
+    envelope["unchanged_documents"]["home"] = baseline["content_sha256"]
+    preparation = json.loads((reader["candidate_path"] / "candidate-preparation.v1.json").read_bytes())
+    preparation["snapshot_sha256"] = audit.digest(audit.canonical(snapshot))
+    seal(reader, envelope, preparation)
+    url = audit.publication.ORIGIN + "/"
+    response = reader["transport"].responses[url]
+    old_fragment = '<h1>' + baseline["title"] + '</h1><div class="entry-content">' + previous + '</div>'
+    assert response.body.decode().count(old_fragment) == 1
+    actual = body.replace('Preserved source', 'Different source') if changed_body else body
+    html = response.body.decode().replace(old_fragment, '<main id="main-content"><div class="wp-block-post-content entry-content">' + actual + '</div></main>')
+    html = re.sub(r'<a href="[^"]+">Route</a>', '', html)
+    reader["transport"].responses[url] = replace(response, body=html.encode())
+    if changed_body:
+        with pytest.raises(audit.seo.AuditError, match="PUBLIC_HOME_BODY_MISMATCH"):
+            audit.run_verified_incremental_public_audit(**reader)
+    else:
+        result = audit.run_verified_incremental_public_audit(**reader)
+        assert result["page_evidence"]["home"]["state"] == "PRESERVED"
+        assert result["page_evidence"]["home"]["rendered_body_projection_sha256"] == audit.verify_rendered_home_body(body, html)

@@ -225,6 +225,30 @@ def inert_css(text: str) -> None:
         fail()
 
 
+def preserved_webp_style(text: str) -> None:
+    """Validate existing inline WebPs without permitting a network CSS fetch."""
+    count = 0
+
+    def image(match: re.Match[str]) -> str:
+        nonlocal count
+        encoded = match[2]
+        if len(encoded) > 2 * 1024 * 1024:
+            fail()
+        try:
+            raw = base64.b64decode(encoded, validate=True)
+        except ValueError:
+            fail()
+        if len(raw) < 12 or raw[:4] != b"RIFF" or raw[8:12] != b"WEBP" or int.from_bytes(raw[4:8], "little") != len(raw) - 8:
+            fail()
+        count += 1
+        return "none"
+
+    remainder = re.sub(r"url\((['\"])data:image/webp;base64,([A-Za-z0-9+/=]+)\1\)", image, text)
+    if not count:
+        fail()
+    inert_css(remainder)
+
+
 @dataclass(frozen=True)
 class Resource:
     sha256: str
@@ -816,12 +840,19 @@ class RuntimeMarkup(HTMLParser):
         expected_dns_hints: int = 0,
         reader_measurement: ReaderMeasurementRuntime | None = None,
         page_url: str | None = None,
+        preserved_home_style: str | None = None,
     ) -> None:
         super().__init__(convert_charrefs=False)
         if type(expected_dns_hints) is not int or expected_dns_hints not in {0, 1}:
             fail()
         self.expected_dns_hints = expected_dns_hints
         self.dns_hints = 0
+        self.preserved_home_style = preserved_home_style
+        self.home_style_seen = False
+        if preserved_home_style is not None:
+            if page_url != ORIGIN + "/":
+                fail()
+            preserved_webp_style(preserved_home_style)
         self.markup: str | None = None
         self.offsets: list[int] = []
         self.doctype_seen = False
@@ -986,7 +1017,13 @@ class RuntimeMarkup(HTMLParser):
         if tag == "meta" and "http-equiv" in values:
             fail()
         if "style" in values:
-            inert_css(values["style"] or "")
+            if self.preserved_home_style is not None and tag == "div" and identifier == "ks-magazine":
+                if self.home_style_seen or values["style"] != self.preserved_home_style:
+                    fail()
+                preserved_webp_style(values["style"] or "")
+                self.home_style_seen = True
+            else:
+                inert_css(values["style"] or "")
         if tag not in {"script", "img"} and "src" in values:
             fail()
         if tag == "img" and self.allowed_images is not None:
@@ -1215,6 +1252,8 @@ class RuntimeMarkup(HTMLParser):
             reader_fail()
         if self.dns_hints != self.expected_dns_hints:
             fail()
+        if self.preserved_home_style is not None and not self.home_style_seen:
+            fail()
         if self.current is not None or (self.modules and self.imports is None):
             fail()
         dependencies = {
@@ -1236,6 +1275,7 @@ def verify_page(
     allowed_images: frozenset[str] | None = None,
     expected_dns_hints: int = 0,
     reader_measurement: ReaderMeasurementRuntime | None = None,
+    preserved_home_style: str | None = None,
 ) -> dict[str, str]:
     if (
         page.status != 200
@@ -1255,6 +1295,7 @@ def verify_page(
         expected_dns_hints=expected_dns_hints,
         reader_measurement=reader_measurement,
         page_url=page.url,
+        preserved_home_style=preserved_home_style,
     )
     parser.feed(page.body.decode("utf-8", errors="strict"))
     parser.close()
@@ -1411,7 +1452,13 @@ def verify_before_write(
     runtime_transition: Mapping[str, Any] | None = None,
     reader_measurement: ReaderMeasurementRuntime | None = None,
 ) -> dict[str, Any]:
-    from raos_wordpress_incremental_seo_audit import _ObservedTransport
+    from raos_wordpress_incremental_seo_audit import (
+        _ObservedTransport,
+        _preserved_home_style,
+        captured_home_theme_image_urls,
+        home_image_urls,
+        home_uses_post_content,
+    )
     import raos_wordpress_baseline_media as baseline_media
 
     if current_tree not in {baseline_tree, candidate_tree}:
@@ -1423,16 +1470,32 @@ def verify_before_write(
         THEME_PREFIX + path for path in files if path.startswith("assets/images/")
     }
     document_images: dict[str, set[str]] = {}
+    preserved_home_styles: dict[str, str] = {}
+    home_post_content = home_uses_post_content(files)
     for document in published_documents:
+        is_home = document["slug"] == "home"
+        if is_home and document["post_type"] != "page":
+            reader_fail()
         url = (
             ORIGIN
             + "/"
-            + (document["slug"] + "/" if document["slug"] != "home" else "")
+            + (document["slug"] + "/" if not is_home else "")
         )
-        document_images[url] = baseline_media.image_urls(document["block_markup"])
+        if is_home:
+            document_images[url] = home_image_urls(document["block_markup"])
+            if home_post_content:
+                style = _preserved_home_style(document["block_markup"])
+                if style is not None:
+                    preserved_home_styles[url] = style
+        else:
+            document_images[url] = baseline_media.image_urls(document["block_markup"])
         if current_tree == baseline_tree and current_tree != candidate_tree:
             document_images[url].update(
-                captured_theme_image_urls(document["block_markup"])
+                (
+                    captured_home_theme_image_urls(document["block_markup"])
+                    if is_home
+                    else captured_theme_image_urls(document["block_markup"])
+                )
             )
     contract = seo.load_contract()
     inventory = {item.url: item for item in contract.items}
@@ -1479,6 +1542,11 @@ def verify_before_write(
             ),
             expected_dns_hints=1 if transitional else 0,
             reader_measurement=reader_measurement,
+            **(
+                {"preserved_home_style": preserved_home_styles[item.url]}
+                if item.url in preserved_home_styles
+                else {}
+            ),
         )
         pages[item.url] = {"html_sha256": response.body_sha256, "resources": observed}
         if transitional:

@@ -290,7 +290,25 @@ def prepare(root, keys, theme=False, call=invoke):
     rows = [r for r in registry["articles"] if r["article_key"] in keys]
     if len(rows) != len(set(keys)) or not (rows or theme):
         fail("SELECTION_INVALID")
-    paths = [REGISTRY] + [r["body_source"] for r in rows]
+    # A patch is an edit recipe, never a replacement HTML body. Both source
+    # types still enter the existing checkpoint and candidate integrity flow.
+    for row in rows:
+        if bool(row.get("body_source")) == bool(row.get("patch_source")):
+            fail("BODY_SOURCE_AMBIGUOUS")
+        if row.get("patch_source") and (
+            row.get("mode") != "existing"
+            or type(row.get("post_id")) is not int
+            or row["post_id"] < 1
+            or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", row["article_key"]) is None
+            or row["patch_source"] != (
+                "changes/wordpress-direct-publish-v1/articles/"
+                + row["article_key"] + ".patch.json"
+            )
+        ):
+            fail("PATCH_SOURCE_INVALID")
+    paths = [REGISTRY] + [r.get("patch_source") or r["body_source"] for r in rows]
+    if any(row.get("patch_source") for row in rows):
+        paths.append("scripts/raos_reader_live_patch.py")
     theme_prefix = operator.THEME_ROOT.relative_to(operator.ROOT).as_posix()
     if theme:
         paths += tracked(root, [theme_prefix])
@@ -399,7 +417,32 @@ def prepare(root, keys, theme=False, call=invoke):
             )
             for field in FIELDS
         }
-        document["block_markup"] = payloads[row["body_source"]].decode("utf-8")
+        if row.get("patch_source"):
+            from scripts.raos_reader_live_patch import apply_patch
+
+            if baseline is None:
+                fail("PATCH_BASELINE_REQUIRED")
+            if (
+                baseline.get("id") != post_id
+                or baseline.get("slug") != row["slug"]
+                or baseline.get("post_type") != row["post_type"]
+                or baseline.get("status") != "publish"
+            ):
+                fail("PATCH_BASELINE_MISMATCH")
+            try:
+                recipe = json.loads(payloads[row["patch_source"]].decode("utf-8"))
+                document["block_markup"] = apply_patch(
+                    baseline["block_markup"], recipe,
+                    article_key=row["article_key"], post_id=post_id,
+                )
+            except (KeyError, TypeError, ValueError):
+                fail("PATCH_REJECTED")
+            if "title" not in row:
+                document["title"] = baseline["title"]
+            body_file = "bodies/" + row["article_key"] + ".html"
+        else:
+            document["block_markup"] = payloads[row["body_source"]].decode("utf-8")
+            body_file = "sources/" + row["body_source"]
         if baseline:
             for field in ("excerpt", "taxonomies", "media_ids"):
                 if field not in row:
@@ -408,7 +451,9 @@ def prepare(root, keys, theme=False, call=invoke):
             {
                 **row,
                 "post_id": post_id,
-                "body_file": "sources/" + row["body_source"],
+                "body_file": body_file,
+                **({"body_sha256": digest(document["block_markup"].encode("utf-8"))}
+                   if row.get("patch_source") else {}),
                 "document": document,
                 "baseline": baseline,
             }
@@ -453,6 +498,14 @@ def prepare(root, keys, theme=False, call=invoke):
             destination.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             destination.write_bytes(payload)
             destination.chmod(0o600)
+    for article in articles:
+        if article.get("patch_source"):
+            # The live body (including opaque CTA values) remains owner-private.
+            target = directory / article["body_file"]
+            safe_ancestors(target)
+            target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+            target.write_text(article["document"]["block_markup"], encoding="utf-8")
+            target.chmod(0o600)
     if package:
         (directory / "theme.zip").write_bytes(package)
         (directory / "theme.zip").chmod(0o600)
@@ -487,16 +540,14 @@ def readback(candidate, journal, call):
 
 
 def content_after_sha256(document, post_id):
-    return digest(
-        encoded(
-            {
-                "schema": "ContentDocumentV1",
-                "id": post_id,
-                "status": "publish",
-                **document,
-            }
-        )
-    )
+    # The server hashes UTF-8 JSON with unescaped slashes, while local candidate
+    # IDs intentionally keep the existing ASCII serialization contract.
+    material = {"schema": "ContentDocumentV1", "id": post_id,
+                "status": "publish", **document}
+    serialized = json.dumps(material, sort_keys=True, ensure_ascii=False,
+                            separators=(",", ":"), allow_nan=False)
+    serialized = serialized.replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
+    return digest(serialized.encode("utf-8"))
 
 
 def finish_batch(journal, action, call):

@@ -64,7 +64,7 @@ const css=fs.readFileSync(process.argv[1],'utf8');
 const theme=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
 const bodyFont=theme.settings.typography.fontFamilies.find(
   family=>family.slug==='editorial-sans').fontFamily;
-const pageClasses=['raos-home-v2-page','raos-editorial-v2-page',
+const pageClasses=['home raos-home-v2-page','raos-editorial-v2-page',
   'raos-policy-v3-page','raos-listing-page','raos-not-found-page'];
 (async()=>{
   const browser=await chromium.launch({executablePath:process.argv[2],headless:true});
@@ -89,8 +89,10 @@ const pageClasses=['raos-home-v2-page','raos-editorial-v2-page',
           .screen-reader-text{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
           @media(min-width:600px){.wp-block-navigation__responsive-container-open{display:none}
             .wp-block-navigation__responsive-container{display:block}}
-          </style><style>${css}</style></head><body class="${pageClass}">
-          <div class="wp-site-blocks"><header><div class="raos-site-header">
+          </style><style>${css}</style><style>
+          body.home:has(#ks-magazine) header:not(#ks-magazine header){display:none!important}
+          </style></head><body class="${pageClass}">
+          <div class="wp-site-blocks"><header class="wp-block-template-part"><div class="raos-site-header">
             <div class="raos-masthead is-layout-flex is-nowrap">
               <p class="raos-wordmark"><a href="#main">暮らしのしるべ</a></p>
               <div class="raos-masthead__actions is-layout-flex is-nowrap">
@@ -109,7 +111,7 @@ const pageClasses=['raos-home-v2-page','raos-editorial-v2-page',
                     class="wp-block-search__button" aria-label="検索欄を開く">⌕</button></div>
                 </form>
               </div>
-            </div></div></header><main id="main">本文</main></div></body></html>`);
+            </div></div></header><main id="main">本文<div id="ks-magazine"></div></main></div></body></html>`);
         await page.evaluate(size=>{document.documentElement.style.fontSize=size+'%';},textSize);
         await page.evaluate(()=>document.fonts.ready);
         const observed=await page.evaluate(()=>{

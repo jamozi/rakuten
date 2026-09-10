@@ -20,6 +20,18 @@ from scripts import raos_reader_release_pages as sources
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def saved_home_document():
+    return {
+        "block_markup": "<section><h1>Saved home fixture</h1></section>\n",
+        "excerpt": "Saved home fixture excerpt",
+        "media_ids": [],
+        "post_type": "page",
+        "slug": "home",
+        "taxonomies": {},
+        "title": "Saved home fixture",
+    }
+
+
 def rehash(row):
     projection = {
         key: row[key]
@@ -84,10 +96,73 @@ def page_inputs(*, hubs=("categories",), draft=True, all_posts=True):
         [row for row in docs if row["status"] == "publish"]
     )
     data["selected_slugs"] = frozenset()
-    pages = [sources.load_home_page(ROOT), sources.load_reader_privacy_page(ROOT)]
+    pages = [sources.load_reader_privacy_page(ROOT)]
     if hubs:
         pages += sources.select_hub_pages(ROOT, list(hubs))
-    data["page_overrides"] = {page.production_slug: page.document() for page in pages}
+    data["page_overrides"] = {
+        "home": saved_home_document(),
+        **{page.production_slug: page.document() for page in pages},
+    }
+    return data
+
+
+def theme_only_inputs(*, schema="RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1"):
+    data = with_policies()
+    docs = data["snapshot"]["documents"]
+    original = docs[0]
+    for index in range(2, 10):
+        slug = f"article-{index}"
+        row = deepcopy(original)
+        row.update(id=100 + index, slug=slug, block_markup=f"<p>Old {slug}</p>")
+        rehash(row)
+        docs.append(row)
+        post = deepcopy(data["source_posts"]["posts"][0])
+        post.update(
+            slug=f"local-preview-{slug}", content_file=f"articles/{slug}.html"
+        )
+        data["source_posts"]["posts"].append(post)
+        data["source_articles"][slug] = b"<p>Unused new draft</p>"
+        data["article_ids_by_slug"][slug] = slug
+    data["snapshot"]["schema"] = schema
+    if schema.endswith("_V2"):
+        data["snapshot"]["reader_page_slugs"] = ["categories"]
+        hub = deepcopy(original)
+        hub.update(
+            id=200,
+            post_type="page",
+            slug="categories",
+            status="publish",
+            title="Saved categories",
+            excerpt="Saved categories excerpt",
+            taxonomies={},
+            block_markup=(
+                '<!-- wp:shortcode -->[kurashinoshirube_reader_hub slug="categories"]'
+                "<!-- /wp:shortcode -->"
+            ),
+        )
+        rehash(hub)
+        docs.append(hub)
+    home = next(
+        row for row in data["snapshot"]["documents"] if row["slug"] == "home"
+    )
+    home.update(
+        title="Saved home title",
+        excerpt="Saved home excerpt",
+        block_markup=(
+            '<div id="ks-magazine" '
+            'style="--cover:url(data:image/webp;base64,UklGRg==)">'
+            '<div class="km-header"><form role="search" method="get" action="/">'
+            '<input type="search" name="s"></form></div>'
+            "<h1>Saved home</h1></div>"
+        ),
+    )
+    rehash(home)
+    data["snapshot"]["public_metadata"] = metadata_for(
+        data["snapshot"]["documents"]
+    )
+    data["selected_slugs"] = frozenset()
+    data["page_overrides"] = {}
+    data["home_mode"] = "shared-theme-candidate"
     return data
 
 
@@ -106,9 +181,10 @@ def test_v1_default_serialization_is_unchanged():
         digest(result.seed_metadata)
         == "ca49feeaf88f89a67899e7c518422a73c27ce8af57ad01d910a85693e2efa09b"
     )
+    # The binding includes the current exact legacy-media contract digest.
     assert (
         digest(canonical(result.binding))
-        == "1893f599d27801ffc9e7776622376ccc358819a8bf85c86e96263fce2c387376"
+        == "57c1e592529b789581b892bd32a552486cbb2de46e62b027ed12263648f17b7d"
     )
     assert build_mixed_preview(**data, page_overrides={}) == result
 
@@ -320,18 +396,27 @@ def test_selector_defaults_flags_and_candidate_exact_set(monkeypatch):
 
     assert cli.page_overrides_for_preview(Namespace(), root=ROOT) == {}
     args = Namespace(
-        include_home=True, reader_pages="guides,categories", reader_privacy=True
+        include_home=False, reader_pages="guides,categories", reader_privacy=True
     )
     selected = cli.page_overrides_for_preview(args, root=ROOT)
-    assert set(selected) == {"home", "categories", "guides", "privacy-policy"}
-    assert selected["home"] == sources.load_home_page(ROOT).document()
+    assert set(selected) == {"categories", "guides", "privacy-policy"}
+    with pytest.raises(ValueError, match="READER_HOME_CONTENT_SOURCE_UNAVAILABLE"):
+        cli.page_overrides_for_preview(
+            Namespace(include_home=True, reader_pages=None, reader_privacy=False),
+            root=ROOT,
+        )
+    from types import SimpleNamespace
+    import raos_wordpress_incremental_publication as publication
+
     monkeypatch.setattr(
-        cli,
-        "read_private_json",
-        lambda *_: {
-            "reader_pages": {"travel": {}, "privacy-policy": {}},
-            "shared_artifacts": {"travel": {}, "privacy-policy": {}},
-        },
+        publication,
+        "prepare_candidate",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            manifest={
+                "reader_pages": {"travel": {}, "privacy-policy": {}},
+                "shared_artifacts": {"travel": {}, "privacy-policy": {}},
+            }
+        ),
     )
     args.candidate = Path("/synthetic/candidate")
     assert set(cli.page_overrides_for_preview(args, root=ROOT)) == {
@@ -442,6 +527,100 @@ def test_scope_replays_page_only_fixture_and_exact_target_set(tmp_path):
 
 
 @pytest.mark.parametrize(
+    "schema",
+    [
+        "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
+        "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2",
+    ],
+)
+def test_scope_replays_hash_bound_home_for_theme_only_candidate(tmp_path, schema):
+    scope, _ = browser_owners()
+    data = theme_only_inputs(schema=schema)
+    result = build_mixed_preview(**data)
+    root = write_preview(tmp_path, result)
+
+    loaded = scope.load_scope(root, inventory_for(data))
+
+    assert loaded["selected_article_ids"] == []
+    assert loaded["theme_only_candidate"] is True
+    assert {row["slug"] for row in json.loads(result.pages)["pages"]} == {
+        "home",
+        "about-ad-policy",
+        "comparison-policy",
+        "privacy-policy",
+        *({"categories"} if schema.endswith("_V2") else set()),
+    }
+    assert result.binding["page_body_sha256"]["home"] == result.binding[
+        "baseline_page_sha256"
+    ]["home"]
+    assert result.page_bodies["home"] == next(
+        row["block_markup"]
+        for row in data["snapshot"]["documents"]
+        if row["slug"] == "home"
+    ).encode()
+    assert result.binding.get("reader_page_documents") in (None, {})
+
+
+def test_scope_replays_saved_home_for_shared_theme_with_an_article_target(tmp_path):
+    scope, _ = browser_owners()
+    data = theme_only_inputs()
+    data["selected_slugs"] = frozenset({"first"})
+    result = build_mixed_preview(**data)
+    root = write_preview(tmp_path, result)
+
+    loaded = scope.load_scope(root, inventory_for(data))
+
+    assert loaded["selected_article_ids"] == ["article-first"]
+    assert "theme_only_candidate" not in loaded
+    assert result.binding["page_body_sha256"]["home"] == result.binding[
+        "baseline_page_sha256"
+    ]["home"]
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "mode_flag",
+        "scope_flag",
+        "home_body",
+        "alias_id",
+        "alias_target",
+        "alias_external",
+        "duplicate_alias_source",
+    ],
+)
+def test_scope_rejects_rebound_theme_only_or_home_drift(tmp_path, mutation):
+    scope, _ = browser_owners()
+    data = theme_only_inputs()
+    result = build_mixed_preview(**data)
+    binding = deepcopy(result.binding)
+    if mutation == "mode_flag":
+        del binding["theme_only_candidate"]
+    elif mutation == "scope_flag":
+        del binding["incremental_scope"]["theme_only_candidate"]
+    elif mutation.startswith("alias_") or mutation == "duplicate_alias_source":
+        aliases = deepcopy(binding["local_route_aliases"])
+        if mutation == "alias_id":
+            aliases["routes"][0]["production_id"] = 999
+            aliases["routes"][0]["source_path"] = "/?page_id=999"
+        elif mutation == "alias_target":
+            aliases["routes"][0]["local_path"] = "/local-preview-second/"
+        elif mutation == "alias_external":
+            aliases["routes"][0]["local_path"] = "https://example.invalid/"
+        else:
+            aliases["routes"][1]["source_path"] = aliases["routes"][0][
+                "source_path"
+            ]
+        binding["local_route_aliases"] = aliases
+        binding["incremental_scope"]["local_route_aliases"] = aliases
+    root = write_preview(tmp_path, result, binding=binding)
+    if mutation == "home_body":
+        (root / "pages/home.html").write_bytes(result.page_bodies["home"] + b"\n")
+    with pytest.raises((scope.ScopeFailure, IncrementalPublicationFailure)):
+        scope.load_scope(root, inventory_for(data))
+
+
+@pytest.mark.parametrize(
     "mutation", ["body", "title", "slug", "target_set", "draft_date", "baseline"]
 )
 def test_scope_rejects_rebound_page_drift(tmp_path, mutation):
@@ -545,6 +724,210 @@ def test_report_compares_actual_candidate_page_bytes_fields_and_targets(mutation
             report.validate_reader_candidate(dict(result.binding), candidate)
 
 
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        None,
+        "article",
+        "reader_page",
+        "content_shared",
+        "production_document",
+        "snapshot_fields",
+    ],
+)
+def test_report_binds_theme_only_scope_to_an_actual_shared_theme_candidate(mutation):
+    from types import SimpleNamespace
+
+    _, report = browser_owners()
+    data = theme_only_inputs(schema="RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2")
+    result = build_mixed_preview(**data)
+    inputs = deepcopy(result.binding)
+    candidate = SimpleNamespace(
+        manifest={
+            "articles": [],
+            "shared_artifacts": {
+                "theme": {
+                    "key": "theme-tree",
+                    "sha256": "a" * 64,
+                    "baseline_sha256": "b" * 64,
+                    "post_id": None,
+                }
+            },
+        },
+        snapshot=deepcopy(data["snapshot"]),
+        artifacts={},
+        preparation={"production_documents": {}},
+    )
+    if mutation == "article":
+        candidate.manifest["articles"].append({"article_id": "article-first"})
+    elif mutation == "reader_page":
+        candidate.manifest["reader_pages"] = {"privacy-policy": {}}
+    elif mutation == "content_shared":
+        candidate.manifest["shared_artifacts"]["home"] = {}
+    elif mutation == "production_document":
+        candidate.preparation["production_documents"]["home"] = {}
+    elif mutation == "snapshot_fields":
+        inputs["snapshot_reader_page_slugs"] = []
+
+    if mutation is None:
+        report.validate_theme_only_candidate(inputs, candidate)
+    else:
+        with pytest.raises(report.ReportFailure):
+            report.validate_theme_only_candidate(inputs, candidate)
+
+
+@pytest.mark.parametrize(
+    "schema",
+    [
+        "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
+        "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2",
+    ],
+)
+@pytest.mark.parametrize("mutation", [None, "body", "title", "excerpt"])
+def test_report_binds_saved_home_and_rejects_rehashed_fixture_drift(
+    tmp_path, schema, mutation
+):
+    from types import SimpleNamespace
+
+    _, report = browser_owners()
+    data = theme_only_inputs(schema=schema)
+    result = build_mixed_preview(**data)
+    binding = deepcopy(result.binding)
+    pages = json.loads(result.pages)
+    home_body = result.page_bodies["home"]
+    if mutation == "body":
+        home_body = home_body.replace(b"Saved home", b"Rebound home")
+        rebound = digest(home_body)
+        binding["page_body_sha256"]["home"] = rebound
+        binding["baseline_page_sha256"]["home"] = rebound
+    elif mutation in {"title", "excerpt"}:
+        home = next(row for row in pages["pages"] if row["slug"] == "home")
+        home[mutation] = f"Rebound {mutation}"
+        binding["pages_sha256"] = digest(canonical(pages))
+    fixture_root = write_preview(
+        tmp_path,
+        result,
+        binding=binding,
+        pages=canonical(pages),
+    )
+    if mutation == "body":
+        (fixture_root / "pages/home.html").write_bytes(home_body)
+        (fixture_root / "baseline-pages/home.html").write_bytes(home_body)
+    candidate = SimpleNamespace(
+        snapshot=deepcopy(data["snapshot"]),
+        manifest={"shared_artifacts": {"theme": {}}},
+        preparation={"production_documents": {}},
+        artifacts={},
+    )
+
+    if mutation is None:
+        assert (
+            report.validate_saved_home_candidate(fixture_root, binding, candidate)
+            == next(
+                row["block_markup"]
+                for row in data["snapshot"]["documents"]
+                if row["slug"] == "home"
+            )
+        )
+    else:
+        with pytest.raises(report.ReportFailure):
+            report.validate_saved_home_candidate(fixture_root, binding, candidate)
+
+
+@pytest.mark.parametrize(
+    "schema",
+    [
+        "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
+        "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2",
+    ],
+)
+@pytest.mark.parametrize(
+    "mutation", [None, "body_binding", "metadata_binding", "baseline_binding"]
+)
+def test_report_uses_explicit_candidate_home_and_keeps_snapshot_baseline(
+    tmp_path, schema, mutation
+):
+    _, report = browser_owners()
+    data = theme_only_inputs(schema=schema)
+    data["page_overrides"] = {"home": saved_home_document()}
+    result = build_mixed_preview(**data)
+    binding = deepcopy(result.binding)
+    pages = json.loads(result.pages)
+    page_body = result.page_bodies["home"]
+    baseline_body = result.baseline_pages["home"]
+    candidate = candidate_for(data, result)
+    candidate.manifest["shared_artifacts"]["theme"] = {
+        "key": "theme-tree",
+        "sha256": "a" * 64,
+        "baseline_sha256": "b" * 64,
+        "post_id": None,
+    }
+    if mutation == "body_binding":
+        page_body += b"<!-- rebound -->"
+        binding["page_body_sha256"]["home"] = digest(page_body)
+    elif mutation == "metadata_binding":
+        home = next(row for row in pages["pages"] if row["slug"] == "home")
+        home["title"] = "Rebound title"
+        binding["pages_sha256"] = digest(canonical(pages))
+    elif mutation == "baseline_binding":
+        baseline_body += b"<!-- rebound -->"
+        binding["baseline_page_sha256"]["home"] = digest(baseline_body)
+    fixture_root = write_preview(
+        tmp_path,
+        result,
+        binding=binding,
+        pages=canonical(pages),
+    )
+    (fixture_root / "pages/home.html").write_bytes(page_body)
+    (fixture_root / "baseline-pages/home.html").write_bytes(baseline_body)
+
+    def validate():
+        report.validate_reader_candidate(binding, candidate)
+        return report.validate_saved_home_candidate(fixture_root, binding, candidate)
+
+    if mutation is None:
+        assert validate() == saved_home_document()["block_markup"]
+    else:
+        with pytest.raises(report.ReportFailure):
+            validate()
+
+
+@pytest.mark.parametrize("mutation", [None, "home_hash", "nonhome_hash"])
+def test_report_binds_each_theme_only_home_result_to_the_saved_body_projection(
+    mutation,
+):
+    from tests.wordpress_local_preview import test_mixed_audit_report as fixtures
+
+    _, report = browser_owners()
+    inputs, results, inventory = fixtures.inputs_and_results()
+    expected = "c" * 64
+    inputs["theme_only_candidate"] = True
+    inputs["home_body_projection_sha256"] = expected
+    inputs["scope"]["selected_article_ids"] = []
+    inputs["scope"]["theme_only_candidate"] = True
+    for row in results:
+        if row["profileSemantics"]["incrementalCommerceStatus"] == "NOT_INCLUDED":
+            row["profileSemantics"]["incrementalCommerceStatus"] = (
+                "UNCHANGED_NOT_REVERIFIED"
+            )
+        if row["surface"] == "home":
+            row["homeBodyProjectionSha256"] = expected
+    if mutation == "home_hash":
+        next(row for row in results if row["surface"] == "home")[
+            "homeBodyProjectionSha256"
+        ] = "d" * 64
+    elif mutation == "nonhome_hash":
+        next(row for row in results if row["surface"] != "home")[
+            "homeBodyProjectionSha256"
+        ] = expected
+
+    if mutation is None:
+        report.validate_results(results, inventory, inputs)
+    else:
+        with pytest.raises(report.ReportFailure):
+            report.validate_results(results, inventory, inputs)
+
+
 def results_for(inventory, binding):
     _, report = browser_owners()
     rows = []
@@ -629,6 +1012,129 @@ def test_report_requires_real_29_surface_coverage_plus_five_widths_and_zoom():
 
 PHP_IMAGE = "wordpress:7.1.0-php8.3-apache@sha256:8801a1239d7ba9fb340a5fc5ba0bf7f8d3652adbd64893e3fba7992ba618108e"
 
+PHP_ALIAS_FIXTURE = r"""
+$input = json_decode(file_get_contents('php://stdin'), true, 64, JSON_THROW_ON_ERROR);
+class WP_Post {
+    public $ID, $post_type, $post_status, $post_name, $permalink;
+    function __construct($row) { foreach ($row as $key => $value) { $this->$key = $value; } }
+}
+function get_post($id) {
+    $row = $GLOBALS['input']['posts'][(string) $id] ?? null;
+    return is_array($row) ? new WP_Post($row) : null;
+}
+function home_url($path) { return 'http://127.0.0.1:28952' . $path; }
+function get_permalink($post) { return $post->permalink; }
+$GLOBALS['input'] = $input;
+$source = file_get_contents('/repo/changes/wordpress-local-preview-v1/mu-plugins/raos-local-preview.php');
+$start = strpos($source, 'function raos_local_preview_alias_sorted_keys(');
+$end = strpos($source, 'function raos_local_preview_route_alias_redirect(', $start);
+eval(substr($source, $start, $end - $start));
+$target = raos_local_preview_route_alias_target(
+    $input['state'], $input['hash'], $input['method'], $input['uri']
+);
+echo json_encode(['target' => $target], JSON_THROW_ON_ERROR);
+"""
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [None, "unknown", "query", "method", "hash", "external", "duplicate", "object"],
+)
+def test_local_alias_redirect_is_exact_binding_and_object_scoped(mutation):
+    import shutil
+    import subprocess
+
+    docker = shutil.which("docker")
+    if docker is None:
+        pytest.skip("Pinned PHP image is required; never pulls")
+    inspected = subprocess.run(
+        [docker, "image", "inspect", PHP_IMAGE], capture_output=True, timeout=15
+    )
+    if inspected.returncode:
+        pytest.skip("Pinned PHP image absent; never pulls")
+    payload = theme_only_php_payload()
+    aliases = deepcopy(payload["binding"]["local_route_aliases"])
+    state_routes, posts = [], {}
+    for index, row in enumerate(aliases["routes"], start=900):
+        state_routes.append({**row, "local_post_id": index})
+        local_slug = (
+            f"local-preview-{row['production_slug']}"
+            if row["kind"] == "post_slug"
+            else row["production_slug"]
+        )
+        posts[str(index)] = {
+            "ID": index,
+            "post_type": "post" if row["kind"] == "post_slug" else "page",
+            "post_status": "publish",
+            "post_name": local_slug,
+            "permalink": f"http://127.0.0.1:28952{row['local_path']}",
+        }
+    bound_hash = "a" * 64
+    state = {
+        "schema": "RAOS_WORDPRESS_LOCAL_ROUTE_ALIAS_STATE_V1",
+        "publication_profile": "verified-incremental",
+        "publication_authority": False,
+        "preparation_binding_sha256": bound_hash,
+        "routes": state_routes,
+    }
+    uri = aliases["routes"][0]["source_path"]
+    method = "GET"
+    if mutation == "unknown":
+        uri = "/unknown/"
+    elif mutation == "query":
+        uri += "?unexpected=1"
+    elif mutation == "method":
+        method = "POST"
+    elif mutation == "hash":
+        bound_hash = "b" * 64
+    elif mutation == "external":
+        aliases["routes"][0]["local_path"] = "https://example.invalid/"
+        state["routes"][0]["local_path"] = "https://example.invalid/"
+    elif mutation == "duplicate":
+        aliases["routes"][1]["source_path"] = aliases["routes"][0]["source_path"]
+        state["routes"][1]["source_path"] = state["routes"][0]["source_path"]
+    elif mutation == "object":
+        posts["900"]["post_name"] = "different"
+    binding = {
+        "schema": "RAOS_WORDPRESS_MIXED_PREVIEW_PREPARATION_V1",
+        "publication_profile": "verified-incremental",
+        "publication_authority": False,
+        "status": "NOT_VERIFIED_FOR_PUBLICATION",
+        "local_route_aliases": aliases,
+    }
+    result = subprocess.run(
+        [
+            docker, "run", "--pull=never", "--rm", "-i", "--network", "none",
+            "--read-only", "--cap-drop=ALL", "--security-opt", "no-new-privileges",
+            "--mount", f"type=bind,src={ROOT},dst=/repo,readonly",
+            "--entrypoint", "php", PHP_IMAGE, "-r", PHP_ALIAS_FIXTURE,
+        ],
+        input=json.dumps(
+            {"state": state, "binding": binding, "hash": bound_hash,
+             "method": method, "uri": uri, "posts": posts}
+        ),
+        text=True,
+        capture_output=True,
+        timeout=30,
+        check=True,
+    )
+    target = json.loads(result.stdout)["target"]
+    assert target == (
+        "http://127.0.0.1:28952/local-preview-first/"
+        if mutation is None
+        else None
+    )
+
+def test_seed_updates_the_current_request_rewrite_before_seeding_local_guides():
+    source = (ROOT / "changes/wordpress-local-preview-v1/seed.php").read_text()
+    rewrite = source.index(
+        "$wp_rewrite->set_permalink_structure('/%postname%/');"
+    )
+    guide_seed = source.index("raos_local_reader_guides_seed(")
+    assert rewrite < guide_seed
+    assert "update_option('permalink_structure', '/%postname%/');" not in source
+
+
 PHP_PAGE_FIXTURE = r"""
 $input = json_decode(file_get_contents('php://stdin'), true, 64, JSON_THROW_ON_ERROR);
 define('OBJECT', 'OBJECT');
@@ -674,6 +1180,7 @@ $end = strpos($source, "\n$" . "mode = getenv", $start);
 eval(substr($source, $start, $end - $start));
 $mixed_binding = $input['binding'];
 $mixed_metadata = $input['metadata'];
+$fixture = $input['posts'];
 $page_fixture = $input['pages'];
 $page_content_root = '/tmp/fixture';
 mkdir($page_content_root . '/pages', 0700, true);
@@ -681,18 +1188,25 @@ foreach ($input['bodies'] as $slug => $body) {
     file_put_contents($page_content_root . '/pages/' . $slug . '.html', $body);
 }
 $preview_author_id = 77;
-$reader_page_mode = true;
+$reader_page_mode = $input['reader_mode'];
 $GLOBALS['fixture_existing'] = [];
 foreach ($input['existing'] as $slug => $id) {
     $GLOBALS['fixture_existing'][$slug] = new WP_Post(['ID' => $id, 'post_type' => 'page', 'post_name' => $slug]);
 }
 $GLOBALS['writes'] = [];
 try {
-    $managed_reader_pages = raos_local_preview_reader_scope($mixed_binding, $mixed_metadata);
+    $theme_only_candidate = raos_local_preview_theme_only_candidate($mixed_binding);
+    $shared_theme_home = raos_local_preview_shared_theme_home($mixed_binding);
+    $managed_reader_pages = $reader_page_mode
+        ? raos_local_preview_reader_scope($mixed_binding, $mixed_metadata)
+        : array();
+    $local_route_aliases = raos_local_preview_route_aliases(
+        $mixed_binding, $mixed_metadata, $fixture, $page_fixture
+    );
     $start = strpos($source, "if ($" . "mixed_metadata !== null) {\n    // Core normally");
     $end = strpos($source, "$" . "article_path_replacements = array();", $start);
     eval(substr($source, $start, $end - $start));
-    echo json_encode(['valid' => true, 'writes' => $GLOBALS['writes'], 'heads' => $mixed_policy_heads], JSON_THROW_ON_ERROR);
+    echo json_encode(['valid' => true, 'writes' => $GLOBALS['writes'], 'heads' => $mixed_policy_heads, 'aliases' => $local_route_aliases], JSON_THROW_ON_ERROR);
 } catch (RuntimeException $error) {
     echo json_encode(['valid' => false, 'error' => $error->getMessage(), 'writes' => $GLOBALS['writes']], JSON_THROW_ON_ERROR);
 }
@@ -758,7 +1272,9 @@ def php_payload(*, existing_hub=True, published=False, hubs=("categories",)):
         "binding": deepcopy(result.binding),
         "metadata": json.loads(result.seed_metadata),
         "pages": json.loads(result.pages),
+        "posts": json.loads(result.posts),
         "bodies": {slug: raw.decode() for slug, raw in result.page_bodies.items()},
+        "reader_mode": "reader_page_slugs" in result.binding,
         "existing": {
             "home": 51,
             "about-ad-policy": 52,
@@ -769,6 +1285,45 @@ def php_payload(*, existing_hub=True, published=False, hubs=("categories",)):
     if existing_hub:
         payload["existing"]["categories"] = 55
     return payload
+
+
+def theme_only_php_payload(*, schema="RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1"):
+    data = theme_only_inputs(schema=schema)
+    result = build_mixed_preview(**data)
+    return {
+        "binding": deepcopy(result.binding),
+        "metadata": json.loads(result.seed_metadata),
+        "pages": json.loads(result.pages),
+        "posts": json.loads(result.posts),
+        "bodies": {slug: raw.decode() for slug, raw in result.page_bodies.items()},
+        "reader_mode": "reader_page_slugs" in result.binding,
+        "existing": {
+            "home": 51,
+            "about-ad-policy": 52,
+            "comparison-policy": 53,
+            "privacy-policy": 54,
+        },
+    }
+
+
+def shared_theme_article_php_payload():
+    data = theme_only_inputs()
+    data["selected_slugs"] = frozenset({"first"})
+    result = build_mixed_preview(**data)
+    return {
+        "binding": deepcopy(result.binding),
+        "metadata": json.loads(result.seed_metadata),
+        "pages": json.loads(result.pages),
+        "posts": json.loads(result.posts),
+        "bodies": {slug: raw.decode() for slug, raw in result.page_bodies.items()},
+        "reader_mode": False,
+        "existing": {
+            "home": 51,
+            "about-ad-policy": 52,
+            "comparison-policy": 53,
+            "privacy-policy": 54,
+        },
+    }
 
 
 @pytest.mark.parametrize(
@@ -805,6 +1360,163 @@ def test_php_seed_reuses_local_hubs_without_fabricating_publication_dates(
         )
     assert writes["home"]["ID"] == 51
     assert writes["privacy-policy"]["post_date"] == "2026-08-01 09:23:00"
+
+
+@pytest.mark.parametrize(
+    "schema",
+    [
+        "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V1",
+        "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2",
+    ],
+)
+def test_php_seed_reuses_exact_saved_home_for_theme_only_preview(
+    php_fixture_runner, schema
+):
+    payload = theme_only_php_payload(schema=schema)
+
+    result = php_fixture_runner(payload)
+
+    assert result["valid"], result
+    writes = {row["post_name"]: row for row in result["writes"]}
+    assert set(writes) == {
+        "home",
+        "about-ad-policy",
+        "comparison-policy",
+        "privacy-policy",
+        *({"categories"} if schema.endswith("_V2") else set()),
+    }
+    assert writes["home"]["ID"] == 51
+    assert writes["home"]["post_content"] == payload["bodies"]["home"]
+    assert writes["home"]["post_title"] == "Saved home title"
+    assert writes["home"]["post_excerpt"] == "Saved home excerpt"
+    assert "data:image/webp;base64," in writes["home"]["post_content"]
+
+
+def test_php_v1_theme_only_home_preserves_backslashes(php_fixture_runner):
+    payload = theme_only_php_payload()
+    payload["bodies"]["home"] = payload["bodies"]["home"].replace(
+        "Saved home", r"Saved \\ home"
+    )
+    rebound = digest(payload["bodies"]["home"].encode())
+    payload["binding"]["page_body_sha256"]["home"] = rebound
+    payload["binding"]["baseline_page_sha256"]["home"] = rebound
+
+    result = php_fixture_runner(payload)
+
+    assert result["valid"], result
+    home = next(row for row in result["writes"] if row["post_name"] == "home")
+    assert home["post_content"] == payload["bodies"]["home"]
+
+
+@pytest.mark.parametrize(
+    "mutation", [None, "id", "source", "target", "external", "duplicate"]
+)
+def test_php_seed_binds_local_route_aliases_to_saved_metadata(
+    php_fixture_runner, mutation
+):
+    payload = theme_only_php_payload()
+    aliases = deepcopy(payload["binding"]["local_route_aliases"])
+    if mutation == "id":
+        aliases["routes"][0]["production_id"] = 999
+    elif mutation == "source":
+        aliases["routes"][0]["source_path"] = "/different/"
+    elif mutation == "target":
+        aliases["routes"][0]["local_path"] = "/local-preview-different/"
+    elif mutation == "external":
+        aliases["routes"][0]["local_path"] = "https://example.invalid/"
+    elif mutation == "duplicate":
+        aliases["routes"][1]["source_path"] = aliases["routes"][0][
+            "source_path"
+        ]
+    if mutation is not None:
+        payload["binding"]["local_route_aliases"] = aliases
+        payload["binding"]["incremental_scope"]["local_route_aliases"] = aliases
+
+    result = php_fixture_runner(payload)
+
+    assert result["valid"] is (mutation is None), result
+    if mutation is None:
+        assert result["aliases"] == payload["binding"]["local_route_aliases"][
+            "routes"
+        ]
+    else:
+        assert result["error"] == "RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID"
+
+
+@pytest.mark.parametrize(
+    "case,expected_valid",
+    [
+        ("legacy_reader", True),
+        ("reader_top_only", False),
+        ("reader_scope_only", False),
+        ("theme_only_legacy", False),
+    ],
+)
+def test_php_seed_preserves_only_the_complete_pre_alias_reader_shape(
+    php_fixture_runner, case, expected_valid
+):
+    payload = (
+        theme_only_php_payload()
+        if case == "theme_only_legacy"
+        else php_payload(published=True)
+    )
+    if case in {"legacy_reader", "reader_scope_only", "theme_only_legacy"}:
+        del payload["binding"]["local_route_aliases"]
+    if case in {"legacy_reader", "reader_top_only", "theme_only_legacy"}:
+        del payload["binding"]["incremental_scope"]["local_route_aliases"]
+
+    result = php_fixture_runner(payload)
+
+    assert result["valid"] is expected_valid, result
+    if expected_valid:
+        assert result["aliases"] == []
+        assert result["writes"]
+    else:
+        assert result["error"] == "RAOS_WORDPRESS_PREVIEW_ROUTE_ALIAS_INVALID"
+
+
+def test_seed_deletes_alias_state_when_the_legacy_reader_shape_is_used():
+    source = (ROOT / "changes/wordpress-local-preview-v1/seed.php").read_text()
+    assert "if ($local_route_aliases === array()) {" in source
+    assert "delete_option('raos_local_preview_route_aliases_v1');" in source
+
+
+def test_php_seed_reuses_saved_home_for_shared_theme_with_article_target(
+    php_fixture_runner,
+):
+    payload = shared_theme_article_php_payload()
+    result = php_fixture_runner(payload)
+    assert result["valid"], result
+    writes = {row["post_name"]: row for row in result["writes"]}
+    assert writes["home"]["post_content"] == payload["bodies"]["home"]
+
+
+@pytest.mark.parametrize(
+    "mutation", ["home_body", "home_script", "home_mode", "missing_home"]
+)
+def test_php_theme_only_home_permission_remains_exact_and_existing_only(
+    php_fixture_runner, mutation
+):
+    payload = theme_only_php_payload()
+    if mutation == "home_body":
+        payload["bodies"]["home"] += "<!-- rebound -->"
+        payload["binding"]["page_body_sha256"]["home"] = digest(
+            payload["bodies"]["home"].encode()
+        )
+    elif mutation == "home_script":
+        payload["bodies"]["home"] += "<script>alert(1)</script>"
+        rebound = digest(payload["bodies"]["home"].encode())
+        payload["binding"]["page_body_sha256"]["home"] = rebound
+        payload["binding"]["baseline_page_sha256"]["home"] = rebound
+    elif mutation == "home_mode":
+        payload["binding"]["home_mode"] = "preserve-live-baseline"
+    else:
+        del payload["existing"]["home"]
+
+    result = php_fixture_runner(payload)
+
+    assert result["valid"] is False, result
+    assert result["error"].startswith("RAOS_WORDPRESS_PREVIEW_")
 
 
 @pytest.mark.parametrize(
@@ -868,8 +1580,9 @@ def test_php_seed_rejects_page_permission_or_metadata_widening(
     elif mutation == "undeclared":
         payload["binding"]["snapshot_reader_page_slugs"] = []
     payload["bodies"][target] = markup
-    payload["binding"]["reader_page_documents"][target]["block_markup"] = markup
-    payload["binding"]["page_body_sha256"][target] = digest(markup.encode())
+    if mutation != "home_bytes":
+        payload["binding"]["reader_page_documents"][target]["block_markup"] = markup
+        payload["binding"]["page_body_sha256"][target] = digest(markup.encode())
     scope, _ = browser_owners()
     for key in scope.READER_BINDING_FIELDS:
         payload["metadata"][key] = deepcopy(payload["binding"][key])

@@ -287,6 +287,7 @@ def theme_backup_fixture():
     from raos.application.editorial import local_scratch_theme_restore_v1 as theme
 
     snapshot, content_receipt, content_readback = backup_fixture()
+    snapshot["reader_page_slugs"] = ["categories"]
     baseline = theme.build_theme_package(
         {"style.css": b"Version: 1", "functions.php": b"<?php // old"}
     )
@@ -378,6 +379,60 @@ def theme_backup_fixture():
         "expected_page_slugs": frozenset({"categories"}),
     }
     return readback, receipt, args
+
+
+@pytest.mark.parametrize("change", [None, "missing-hub", "changed-home", "changed-options"])
+def test_theme_only_audit_restores_captured_hubs_without_selecting_page_updates(monkeypatch, change):
+    from dataclasses import replace
+
+    readback, receipt, args = theme_backup_fixture()
+    snapshot = args["snapshot"]
+    raw_snapshot = manifest.canonical(snapshot)
+    if change == "missing-hub":
+        readback["stages"][1]["content_readback"]["documents"].pop("categories")
+    elif change == "changed-home":
+        readback["stages"][1]["content_readback"]["documents"]["home"]["block_markup"] = "Changed"
+    elif change == "changed-options":
+        readback["stages"][1]["wordpress_options_sha256"] = "b" * 64
+    receipt["readback_sha256"] = manifest.digest(manifest.canonical(readback))
+    evidence = {
+        "synthetic-backup": raw_snapshot,
+        "synthetic-restoration": args["content_receipt_raw"],
+        "synthetic-readback": args["content_readback_raw"],
+        "synthetic-theme-backup": args["baseline_package_raw"],
+        "synthetic-theme-candidate": args["candidate_package_raw"],
+        "synthetic-theme-readback": manifest.canonical(readback),
+        "synthetic-theme-restoration": manifest.canonical(receipt),
+    }
+    monkeypatch.setattr(legacy, "BACKUP_SNAPSHOT", snapshot)
+    monkeypatch.setattr(legacy, "INPUTS", {
+        "source": "b" * 64,
+        "live-snapshot": manifest.digest(raw_snapshot),
+        "theme-tree": args["expected_candidate_tree_sha256"],
+    })
+    monkeypatch.setattr(legacy, "restoration_artifacts", lambda: dict(evidence))
+    scope = replace(
+        legacy.scope(), selected_article_ids=(), selected_page_slugs=(),
+        claim_ids_by_article={}, retained_product_ids=(), affiliate_cta_ids=(),
+        product_image_ids=(), shared_changes=True,
+        required_noncontent_rollback_targets=("theme",),
+    )
+    report, artifacts = legacy.synthetic_pair(scope)
+    for index in (0, 1):
+        legacy.mutate_proof(report, artifacts, audit.BACKUP_SURFACE,
+            lambda proof: proof["checks"].update(
+                theme_backup_artifact_id="synthetic-theme-backup",
+                theme_candidate_artifact_id="synthetic-theme-candidate",
+                theme_readback_artifact_id="synthetic-theme-readback",
+                theme_restoration_artifact_id="synthetic-theme-restoration",
+            ), round_index=index)
+    if change is None:
+        result = legacy.validate(report, artifacts, scope).to_document()
+        assert result["publication_authority"] is False
+        assert scope.selected_page_slugs == ()
+    else:
+        with pytest.raises(audit.IncrementalAuditFailure):
+            legacy.validate(report, artifacts, scope)
 
 
 @pytest.mark.parametrize(

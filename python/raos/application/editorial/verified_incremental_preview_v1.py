@@ -546,6 +546,46 @@ def _snapshot_documents(snapshot: Mapping[str, object]) -> dict[str, dict[str, o
     return documents
 
 
+def _local_route_aliases(
+    documents: Mapping[str, Mapping[str, object]],
+    article_slugs: set[str],
+    page_slugs: set[str],
+) -> dict[str, object]:
+    """Describe only saved public routes that the isolated seed materializes."""
+    routes: list[dict[str, object]] = []
+    for slug in sorted(article_slugs, key=lambda value: cast(int, documents[value]["id"])):
+        document = documents[slug]
+        if document["post_type"] != "post" or document["status"] != "publish":
+            fail("PREVIEW_LOCAL_ROUTE_ALIAS_INVALID")
+        routes.append(
+            {
+                "kind": "post_slug",
+                "production_id": document["id"],
+                "production_slug": slug,
+                "source_path": f"/{slug}/",
+                "local_path": f"/local-preview-{slug}/",
+            }
+        )
+    for slug in sorted(page_slugs, key=lambda value: cast(int, documents[value]["id"])):
+        document = documents[slug]
+        if document["post_type"] != "page" or document["status"] != "publish":
+            continue
+        routes.append(
+            {
+                "kind": "page_id",
+                "production_id": document["id"],
+                "production_slug": slug,
+                "source_path": f"/?page_id={document['id']}",
+                "local_path": "/" if slug == "home" else f"/{slug}/",
+            }
+        )
+    if len({cast(str, row["source_path"]) for row in routes}) != len(routes) or len(
+        {cast(str, row["local_path"]) for row in routes}
+    ) != len(routes):
+        fail("PREVIEW_LOCAL_ROUTE_ALIAS_INVALID")
+    return {"schema": "RAOS_WORDPRESS_LOCAL_ROUTE_ALIASES_V1", "routes": routes}
+
+
 def build_local_restoration(
     snapshot: Mapping[str, object], *, article_slugs: frozenset[str]
 ) -> LocalRestoration:
@@ -780,6 +820,8 @@ def build_mixed_preview(
     """
     documents = _snapshot_documents(snapshot)
     metadata, metadata_blockers = _public_metadata(snapshot, documents)
+    if home_mode not in {"preserve-live-baseline", "shared-theme-candidate"}:
+        fail("PREVIEW_HOME_MODE_INVALID")
     if page_overrides is not None and not isinstance(page_overrides, Mapping):
         fail("PREVIEW_READER_PAGE_INVALID")
     overrides = {
@@ -790,6 +832,11 @@ def build_mixed_preview(
     reader_mode = (
         bool(overrides)
         or snapshot["schema"] == "RAOS_WORDPRESS_INCREMENTAL_LIVE_SNAPSHOT_V2"
+    )
+    theme_only_candidate = (
+        home_mode == "shared-theme-candidate"
+        and not selected_slugs
+        and not overrides
     )
     if any(
         slug not in documents
@@ -824,7 +871,7 @@ def build_mixed_preview(
         slugs.add(slug)
         posts.append(row)
     if (
-        (not selected_slugs and not overrides)
+        (not selected_slugs and not overrides and not theme_only_candidate)
         or not selected_slugs <= slugs
         or set(source_articles) != slugs
         or set(article_ids_by_slug) != slugs
@@ -875,8 +922,6 @@ def build_mixed_preview(
             if not terms["category"]:
                 fail("PREVIEW_METADATA_CATEGORY_UNAVAILABLE")
             row["category"], row["date"] = terms["category"][0]["name"], dates["date"]
-    if home_mode not in {"preserve-live-baseline", "shared-theme-candidate"}:
-        fail("PREVIEW_HOME_MODE_INVALID")
     page_raw: bytes | None = None
     page_bodies: dict[str, bytes] = {}
     page_states: dict[str, str] = {}
@@ -957,6 +1002,16 @@ def build_mixed_preview(
                 )
                 page_bodies[slug] = baseline_pages[slug]
                 page_states[slug] = "PRESERVED_LIVE_PRODUCTION_POLICY"
+        if home_mode == "shared-theme-candidate" and "home" not in overrides:
+            rows.append(
+                {
+                    "content_file": "pages/home.html",
+                    "excerpt": documents["home"]["excerpt"],
+                    "slug": "home",
+                    "title": documents["home"]["title"],
+                }
+            )
+            page_bodies["home"] = baseline_pages["home"]
         if reader_mode:
             by_slug = {cast(str, row["slug"]): row for row in rows}
             for slug in sorted(managed_hubs | set(overrides)):
@@ -974,7 +1029,7 @@ def build_mixed_preview(
                     rows.append(row)
                 if slug in POLICY_SLUGS:
                     page_states[slug] = "REVISED_READER_PAGE_NOT_VERIFIED"
-            page_fixture["pages"] = rows
+        page_fixture["pages"] = rows
         page_fixture["schema"] = "RAOS_WORDPRESS_LOCAL_PREVIEW_PAGES_V1"
         page_raw = (
             json.dumps(page_fixture, ensure_ascii=False, indent=2) + "\n"
@@ -1072,6 +1127,9 @@ def build_mixed_preview(
                 **derive_editorial_browser_expectations(display.markup),
             }
         )
+    local_route_aliases = _local_route_aliases(
+        documents, set(articles), set(page_bodies)
+    )
     return MixedPreview(
         posts_raw,
         articles,
@@ -1082,6 +1140,7 @@ def build_mixed_preview(
             "publication_authority": False,
             "status": "NOT_VERIFIED_FOR_PUBLICATION",
             **reader_binding,
+            **({"theme_only_candidate": True} if theme_only_candidate else {}),
             "selected_slugs": sorted(selected_slugs),
             "source_snapshot_sha256": digest(canonical(snapshot).rstrip(b"\n")),
             "baseline_document_sha256": baselines,
@@ -1109,6 +1168,7 @@ def build_mixed_preview(
             "baseline_page_sha256": {
                 slug: digest(raw) for slug, raw in baseline_pages.items()
             },
+            "local_route_aliases": local_route_aliases,
             "incremental_scope": {
                 "schema": "RAOS_WORDPRESS_INCREMENTAL_BROWSER_SCOPE_V1",
                 "publication_profile": "verified-incremental",
@@ -1117,6 +1177,8 @@ def build_mixed_preview(
                     article_ids_by_slug[slug] for slug in selected_slugs
                 ),
                 "articles": scope_rows,
+                "local_route_aliases": local_route_aliases,
+                **({"theme_only_candidate": True} if theme_only_candidate else {}),
                 **(
                     {
                         "reader_page_slugs": sorted(overrides),

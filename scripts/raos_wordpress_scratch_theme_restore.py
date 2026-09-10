@@ -57,6 +57,10 @@ BASELINE_COMMITS_BY_TREE = {
     BASELINE_TREE: BASELINE_COMMIT,
     "c4dbbe41851a661208645cf5cb81112ced23e886e7f8dd8856760e1e61116ff4":
         "6b54cc98e18f895c2871de39ae36a0d32f8376f7",
+    # The 33-file live baseline was matched to the bounded deployment snapshot
+    # and exercised by the reviewed TOP theme restoration.
+    "44e5e99da7db93bce34423325880664125e8f73772a20088eb5ec5320a6d54a5":
+        "0f14af37f8a036618dece586c8a7ae7799dee98a",
 }
 THEME_RELATIVE = (
     "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"

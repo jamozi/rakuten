@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "2b76b16af71d1ab622560b4e18c8e946c4218449cf46d601c2d85c163c64345a"
+    "63b808fa75fec07715afe61acb585c6c3ed62f56248c22750064f95fdb20b7c4"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -102,6 +102,7 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     THEME_REPOSITORY_ROOT / "assets/editorial-navigation.js",
     EDITORIAL_NAVIGATION_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/editorial-v2.css",
+    THEME_REPOSITORY_ROOT / "assets/home-magazine.css",
     ANKER_GENERATIONS_ASSET_INPUT_PATH,
     DISHWASHER_ASSET_INPUT_PATH,
     PORTABLE_POWER_ASSET_INPUT_PATH,
@@ -114,6 +115,11 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     SUITCASE_UNDER_3KG_ASSET_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/images/brand-mark.svg",
     HOME_HERO_ASSET_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/images/magazine-hero.webp",
+    THEME_REPOSITORY_ROOT / "assets/images/magazine-kitchen.webp",
+    THEME_REPOSITORY_ROOT / "assets/images/magazine-room.webp",
+    THEME_REPOSITORY_ROOT / "assets/images/magazine-tools.webp",
+    THEME_REPOSITORY_ROOT / "assets/images/magazine-travel.webp",
     THEME_REPOSITORY_ROOT / "assets/legacy-media-display-projection.v1.json",
     THEME_REPOSITORY_ROOT / "assets/local-running-cost.js",
     MEASUREMENT_CLIENT_INPUT_PATH,
@@ -936,10 +942,25 @@ def validate_sources() -> dict[str, str]:
     search = _text("templates/search.html")
     archive = _text("templates/archive.html")
     not_found = _text("templates/404.html")
+    front_page_markers = (
+        '<!-- wp:template-part {"slug":"header","tagName":"header"} /-->',
+        (
+            '<!-- wp:group {"tagName":"main","className":"raos-home-v2",'
+            '"anchor":"main-content","layout":{"type":"default"}} -->'
+        ),
+        '<main id="main-content" class="wp-block-group raos-home-v2">',
+        '<!-- wp:post-content {"layout":{"type":"default"}} /-->',
+        '<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->',
+    )
     if (
-        front_page.count('<h1 ') != 1
-        or front_page.count('[kurashinoshirube_latest_guides]') != 1
-        or 'raos-home-hero__image' in front_page
+        any(front_page.count(marker) != 1 for marker in front_page_markers)
+        or [front_page.index(marker) for marker in front_page_markers]
+        != sorted(front_page.index(marker) for marker in front_page_markers)
+        or front_page.count("wp:post-content") != 1
+        or "wp:post-title" in front_page
+        or "<h1" in front_page
+        or "wp:shortcode" in front_page
+        or "postId" in front_page
         or '[kurashinoshirube_article_hero]' in single
     ):
         _fail()
