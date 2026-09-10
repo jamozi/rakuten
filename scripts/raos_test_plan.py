@@ -48,6 +48,7 @@ HARNESS_TESTS = (
 )
 
 WORDPRESS_DIRECT_TESTS = (
+    "tests/test_affiliate_prepare.py",
     "tests/wordpress_local_preview/test_direct_preview.py",
     "tests/wordpress_local_preview/test_direct_theme.py",
     "tests/wordpress_local_preview/test_publish_git.py",
@@ -72,7 +73,7 @@ COMPONENT_ROUTES = (
         ),
         HARNESS_TESTS,
     ),
-    (("tools/affiliate_ingestion/",), ("tests/test_affiliate_ingestion.py", "tests/test_affiliate_link_automation.py")),
+    (("tools/affiliate_ingestion/",), ("tests/test_affiliate_ingestion.py", "tests/test_affiliate_link_automation.py", "tests/test_affiliate_prepare.py")),
     (
         ("packages/wordpress-mcp-bridge/", "changes/wordpress-mcp-v1/"),
         ("tests/wordpress_mcp_v1",),

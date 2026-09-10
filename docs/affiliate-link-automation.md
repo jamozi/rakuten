@@ -14,7 +14,8 @@
 3. `automate`で公式ファイルを読み、更新候補、記事ごとの差分、HTMLを生成する。
    公式API/feedを取得する場合のみ`--fetch`を付ける。
 4. `--write-drafts`を付けると、検証済みの候補をローカルの記事sourceへ反映する。
-5. 既存の`direct prepare`と`direct preview`でWordPress表示を確認する。
+5. 既存記事の`patch_source`は`direct prepare --affiliate-plan`で、最新の公開本文への差分適用と
+   広告取得・挿入を行い、所有者専用のWordPress候補へ保存する。`direct preview`で表示を確認する。
 6. 対象を指定した公開指示があれば、既存の`direct publish`で反映・照合する。
 
 ```sh
@@ -34,6 +35,9 @@
 # 出力のarticle_keysを使う。別worktreeでは既存の認証保管先を指定する
 make wordpress-production-request ARGS='direct --owner-checkout /home/minami/rakuten prepare --articles <article-key>'
 make wordpress-production-request ARGS='direct --owner-checkout /home/minami/rakuten preview --candidate <candidate-id>'
+
+# 現行の既存記事（patch_source）：本文を読み直し、公式広告を取得して公開準備まで
+make wordpress-production-request ARGS='direct --owner-checkout /home/minami/rakuten prepare --articles <article-key> --affiliate-plan /home/minami/.config/raos/affiliate-links.json --affiliate-fetch'
 ```
 
 `automate`が表示するIDはリンク更新候補のID。`direct prepare`が表示するWordPress公開候補のIDとは別。
@@ -133,9 +137,12 @@ ASPが独自のstatus値を返す場合、契約を確認した正規化が別�
 ## 記事への挿入
 
 記事はowner-directの`articles.v1.json`に登録し、通常sourceの`articles/`内に置く。
-この版は`body_source`のHTML記事に対応する。現行の既存記事には`patch_source`で、
-本番本文を読み直してから限定差分を適用するものがある。これらは`PATCH_ARTICLE_REQUIRES_LIVE_BASELINE`で停止する。
-古いHTMLで置き換えず、初回接続時に最新本文を取得し、この方式へ広告候補を渡す接続を追加する必要がある。
+`automate --write-drafts`は`body_source`のHTML記事に対応する。現行の既存記事の`patch_source`は、
+`direct prepare --affiliate-plan`を使う。対象記事とplanの対象集合、WordPressの固定接続先と広告の掲載サイトを照合し、
+読取り直した本文へ既存patchを適用した後、広告を挿入する。広告URLや本文をGitに追加せず、候補の専用本文に保持する。
+設定を変える場合は`--affiliate-config`、公式API/feedの実取得には`--affiliate-fetch`を指定する。
+単独の`automate`にpatch記事を渡した場合は`PATCH_ARTICLE_REQUIRES_LIVE_BASELINE`で停止する。
+公開候補にも提携確認の有効期限を保存し、期限後の新規反映は再準備を要求する。適用済みの照合・復旧は継続できる。
 既存記事の初回取り込みには`direct import-existing`がある。生成fixtureを直接書き換えない。
 対象は、anchor_idのid属性とproduct_refのdata-raos-product-id属性を持つ、単一のarticle/section/div要素。
 
@@ -156,10 +163,11 @@ ASPが独自のstatus値を返す場合、契約を確認した正規化が別�
 ## 検証の境界
 
 ```sh
-.venv/bin/python -m pytest -q tests/test_affiliate_link_automation.py tests/test_affiliate_ingestion.py
+.venv/bin/python -m pytest -q tests/test_affiliate_link_automation.py tests/test_affiliate_ingestion.py tests/test_affiliate_prepare.py
 make fast
 ```
 
 合成の6社入力、API応答のフィールド対応、広告素材保持、商品・提携・期限の不一致、
 通信失敗、空結果、ページ上限、再実行、対象外パス、symlink、秘密値の出力抑止を検証する。
+既存の公開準備処理も合成のstatus/document応答で実行し、本文保持、候補の完全性、preview入力、期限切れ反映拒否を検証する。
 これらは実ASP接続・広告主提携・実商品リンク取得・本番公開の証拠ではない。

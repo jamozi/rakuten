@@ -338,6 +338,67 @@ def write_drafts(root: Path, before: dict, after: dict, finalize):
         raise
 
 
+def render_verified(plan, config, bodies, *, fetch=False, now=None):
+    """Acquire once and render already selected, fresh article bodies in memory."""
+    now = now or datetime.now(UTC)
+    grants, keys, sources = validate_plan(plan, config, now)
+    if set(bodies) != keys:
+        fail("ARTICLE_SELECTION_MISMATCH")
+    for body in bodies.values():
+        if not isinstance(body, str) or len(body.encode()) > MAX_INPUT_BYTES:
+            fail("ARTICLE_SOURCE_MISSING_OR_TOO_LARGE")
+        if any(
+            text in body
+            for text in ("この記事の販売リンクは掲載していません", "販売リンクなし")
+        ):
+            fail("ARTICLE_DISCLOSURE_REQUIRES_EDITORIAL_UPDATE")
+    if not fetch and any(mode != "file" for mode, _ in sources.values()):
+        fail("LIVE_FETCH_REQUIRES_EXPLICIT_FLAG")
+    batches = {}
+    for key, (_, fields) in sources.items():
+        batch = fetch_resource(config, *key)
+        if batch.warnings:
+            fail("FETCH_INCOMPLETE")
+        if not batch.records or len(batch.records) > 10000:
+            fail("FETCH_EMPTY_OR_TOO_LARGE")
+        batches[key] = [mapped(record, fields) for record in batch.records]
+    validate_plan(plan, config, max(now, datetime.now(UTC)))
+    after = dict(bodies)
+    for placement in plan["placements"]:
+        ad = select_creative(
+            placement, batches[placement["provider"], placement["resource"]], grants
+        )
+        key = placement["article_key"]
+        after[key] = insert_slot(after[key], placement, ad)
+    return after
+
+
+def prepare_affiliates(articles, plan_path, config_path, site_url, *, fetch=False):
+    """Add verified ads to the fresh owner-direct patch result, never to Git."""
+    from .config import load_config
+
+    plan = read_json(plan_path.expanduser().absolute(), private=True)
+    config = load_config(config_path)
+    if not isinstance(plan, dict):
+        fail("AUTOMATION_DISABLED_OR_INVALID")
+    if plan.get("site_url") != site_url:
+        fail("WORDPRESS_SITE_MISMATCH")
+    if any(not a.get("patch_source") or not a.get("baseline") for a in articles):
+        fail("PATCH_ARTICLE_REQUIRES_LIVE_BASELINE")
+    bodies = {a["article_key"]: a["document"]["block_markup"] for a in articles}
+    after = render_verified(plan, config, bodies, fetch=fetch)
+    valid_until = min(
+        min(instant(g["expires_at"]), instant(g["checked_at"]) + timedelta(days=1))
+        for g in plan["grants"]
+    )
+    receipt = {
+        "schema": "RAOSAffiliatePreparedArticlesV1",
+        "plan_sha256": sha256(json.dumps(plan, sort_keys=True).encode()).hexdigest(),
+        "valid_until": valid_until.isoformat(),
+    }
+    return after, receipt
+
+
 def automate(
     config: dict,
     plan_path: Path,
@@ -351,7 +412,7 @@ def automate(
 ):
     now = now or datetime.now(UTC)
     plan = read_json(plan_path.expanduser().absolute(), private=True)
-    grants, keys, sources = validate_plan(plan, config, now)
+    _, keys, sources = validate_plan(plan, config, now)
     root, output = root.absolute(), output.expanduser().absolute()
     no_symlinks(root)
     before = article_sources(root, keys)
@@ -363,26 +424,13 @@ def automate(
             "provider_requests": 0,
             "published": False,
         }
-    if not fetch and any(mode != "file" for mode, _ in sources.values()):
-        fail("LIVE_FETCH_REQUIRES_EXPLICIT_FLAG")
-    batches = {}
-    for key, (_, fields) in sources.items():
-        batch = fetch_resource(config, *key)
-        if batch.warnings:
-            fail("FETCH_INCOMPLETE")
-        if not batch.records or len(batch.records) > 10000:
-            fail("FETCH_EMPTY_OR_TOO_LARGE")
-        batches[key] = [mapped(record, fields) for record in batch.records]
-    # Revalidate time after slow provider calls. Expired grants cannot be used.
-    if now < datetime.now(UTC):
-        validate_plan(plan, config, datetime.now(UTC))
-    after = {key: text for key, (_, text) in before.items()}
-    for placement in plan["placements"]:
-        ad = select_creative(
-            placement, batches[placement["provider"], placement["resource"]], grants
-        )
-        key = placement["article_key"]
-        after[key] = insert_slot(after[key], placement, ad)
+    after = render_verified(
+        plan,
+        config,
+        {key: text for key, (_, text) in before.items()},
+        fetch=fetch,
+        now=now,
+    )
     material = {
         "schema": "RAOSAffiliateDraftCandidateV1",
         "site_url": plan["site_url"],
