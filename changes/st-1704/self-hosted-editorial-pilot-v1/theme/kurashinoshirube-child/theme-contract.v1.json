@@ -526,8 +526,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "a2a0f2a205292eb708c27591191a0e96d81bcbc8c0623f40a23c6dc925c8f731",
-    "source_fingerprint": "a2a0f2a205292eb708c27591191a0e96d81bcbc8c0623f40a23c6dc925c8f731",
+    "revision": "f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4",
+    "source_fingerprint": "f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",
@@ -556,6 +556,7 @@
       "assets/legacy-media-display-projection.v1.json",
       "assets/local-running-cost.js",
       "assets/measurement.js",
+      "assets/rakuten-product-media.json",
       "assets/reader-measurement-runtime.v1.json",
       "assets/theme.css",
       "functions.php",

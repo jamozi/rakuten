@@ -30,16 +30,33 @@ Other ordinary official-site images are **not cleared for reuse**. Sources:
 - SwitchBot: https://www.switchbot.jp/pages/contact . No applicable image
   redistribution permission has yet been established.
 
-Rakuten's official affiliate-link creation supports 400, 300, 240, 128, 80,
-and 64-pixel images: https://affiliate.rakuten.co.jp/guides/link/ . Its rules
-prohibit copying shop-page images without permission and arbitrary resizing:
-https://affiliate.rakuten.co.jp/guides/rule/ . Existing API-supplied 128px images
-therefore remain 128px, with their URL and bytes preserved. Larger official
-affiliate image snippets must be obtained through the link-creation interface;
-API image URLs have not been rewritten to manufacture such evidence.
+The remaining 28 products use image-only links generated while authenticated
+in Rakuten Affiliate on 2026-09-10. Each product has an unchanged 300px snippet
+and an unchanged 240px snippet for viewports below 360px. Sources, product IDs,
+article slugs and shop names are recorded in the theme's
+`assets/rakuten-product-media.json`. The generated link and image HTML is preserved
+verbatim; image gateway URLs, affiliate IDs, image dimensions and attributes are
+not rewritten. Images remain hosted by Rakuten. The preview privately mirrors
+only the exact frozen image URLs and renders with external requests blocked.
+
+Official documentation:
+
+- Link creation and supported image sizes: https://affiliate.rakuten.co.jp/guides/link/ .
+- Image and generated-code rules: https://affiliate.rakuten.co.jp/guides/rule/ .
+- The Item Search API returns 64px and 128px image URLs, not a 300px field:
+  https://webservice.rakuten.co.jp/documentation/ichiba-item-search .
+
+Manufacturer stores are preferred where the requested image is offered.
+SwitchBot's own K11+ Pro and K10+ Pro Combo link builders explicitly did not
+provide image links; the same exact models are supplied through Kojima and
+EC Current respectively. Product choice is unchanged, and prices and commission
+rates were not used to select products. Model-specific colour IDs are checked:
+APPLITE QJ6-68002 is grey/red; C-Lite CS2*09007 is black. Promotional price artwork
+is avoided where a matching product photograph is offered by the link builder.
 
 All fifteen articles receive the common layout correction. Product-card grid
 placement is explicit for both alternating layouts; text no longer lands in
 an unintended narrow column. Existing copy, model identities, dates, disclosures,
-and merchant links are preserved. Publication requires review of the frozen local
-candidate and an explicit publish instruction.
+and original purchase links are preserved. The additional image links come
+verbatim from Rakuten. Publication requires review of the frozen local candidate
+and an explicit publish instruction.

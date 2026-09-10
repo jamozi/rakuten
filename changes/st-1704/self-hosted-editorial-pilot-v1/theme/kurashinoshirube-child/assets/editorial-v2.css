@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: a2a0f2a205292eb708c27591191a0e96d81bcbc8c0623f40a23c6dc925c8f731;
+  --raos-theme-runtime-revision-editorial-v2: f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -1272,8 +1272,16 @@
 .raos-editorial-v2 .product-profile figure.raos-official-product-photo { display: block; aspect-ratio: auto; overflow: visible; background: #fff; }
 .raos-editorial-v2 .product-profile figure.raos-official-product-photo img { display: block; width: 100%; height: auto; max-height: none; max-width: 100%; padding: 0; object-fit: contain; }
 .raos-editorial-v2 .product-profile figure.raos-official-product-photo figcaption { position: static; padding: .75rem 0; background: transparent; color: var(--rev2-muted); font-size: .8rem; line-height: 1.6; }
+.raos-editorial-v2 .product-profile figure.raos-rakuten-product-photo { display: block; aspect-ratio: auto; overflow: visible; text-align: center; }
+.raos-editorial-v2 .product-profile figure.raos-rakuten-product-photo img { display: inline-block; width: auto; height: auto; max-width: none; max-height: none; padding: 0; object-fit: contain; }
+.raos-editorial-v2 .product-profile figure.raos-rakuten-product-photo figcaption { position: static; padding: .75rem 0; background: transparent; color: var(--rev2-muted); font-size: .8rem; line-height: 1.6; }
+.raos-rakuten-image-240 { display: none; }
+@media (max-width: 359px) {
+  .raos-rakuten-image-300 { display: none; }
+  .raos-rakuten-image-240 { display: block; }
+}
 @media (min-width: 64rem) {
-  .raos-editorial-v2 :is(.raos-product-card, .product-profile):has(> :is(figure, .raos-product-card__media)) { grid-template-columns: minmax(16rem, .8fr) minmax(0, 1.8fr); gap: 2.5rem; }
+  .raos-editorial-v2 :is(.raos-product-card, .product-profile):has(> :is(figure, .raos-product-card__media)) { grid-template-columns: minmax(19rem, .8fr) minmax(0, 1.8fr); gap: 2.5rem; }
   .raos-editorial-v2 :is(.raos-product-card, .product-profile):has(> :is(figure, .raos-product-card__media)) > :is(.raos-product-card__body, .product-profile__body) { grid-column: 2; grid-row: 1; }
   .raos-editorial-v2 :is(.raos-product-card, .product-profile) > :is(figure, .raos-product-card__media) { grid-row: 1; }
 }

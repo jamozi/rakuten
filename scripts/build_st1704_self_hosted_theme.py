@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "a2a0f2a205292eb708c27591191a0e96d81bcbc8c0623f40a23c6dc925c8f731"
+    "f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -125,6 +125,7 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     THEME_REPOSITORY_ROOT / "assets/legacy-media-display-projection.v1.json",
     THEME_REPOSITORY_ROOT / "assets/local-running-cost.js",
     MEASUREMENT_CLIENT_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/rakuten-product-media.json",
     READER_RUNTIME_ASSET_PATH,
     THEME_REPOSITORY_ROOT / "assets/theme.css",
     THEME_FUNCTIONS_INPUT_PATH,

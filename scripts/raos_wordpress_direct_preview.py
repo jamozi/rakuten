@@ -21,7 +21,7 @@ import subprocess
 import sys
 import time
 from typing import Any
-from urllib.parse import urlsplit
+from urllib.parse import parse_qs, urlsplit
 from urllib.request import HTTPRedirectHandler, build_opener, urlopen
 
 import yaml
@@ -214,7 +214,7 @@ def download_product_image(url: str) -> tuple[bytes, str]:
     class SameHostRedirect(HTTPRedirectHandler):
         def redirect_request(self, req, fp, code, msg, headers, newurl):
             target = urlsplit(newurl)
-            if (target.scheme != "https" or target.hostname != "thumbnail.image.rakuten.co.jp"
+            if (target.scheme != "https" or target.hostname not in {"thumbnail.image.rakuten.co.jp", "image.rakuten.co.jp"}
                     or target.username or target.password or target.port not in (None, 443)):
                 raise ValueError("DIRECT_PREVIEW_IMAGE_REDIRECT_REFUSED")
             return super().redirect_request(req, fp, code, msg, headers, newurl)
@@ -224,7 +224,7 @@ def download_product_image(url: str) -> tuple[bytes, str]:
 
 
 def product_image_mirror(candidate: dict, directory: Path, *, fetch=None) -> dict:
-    """Pin existing verified thumbnails privately; the browser stays offline."""
+    """Pin verified thumbnails and frozen theme image links for offline preview."""
     urls = set()
 
     class Images(HTMLParser):
@@ -239,7 +239,32 @@ def product_image_mirror(candidate: dict, directory: Path, *, fetch=None) -> dic
 
     for article in candidate["articles"]:
         Images().feed(article["document"]["block_markup"])
-    if len(urls) > 64:
+    theme = contained(directory, candidate["theme"]["directory"]) if candidate.get("theme") else THEME
+    media_source = theme / "assets/rakuten-product-media.json"
+    if media_source.is_file():
+        class AffiliateImages(HTMLParser):
+            def handle_starttag(self, tag, attrs):
+                if tag != "img":
+                    return
+                url = dict(attrs).get("src") or ""
+                parsed = urlsplit(url)
+                query = parse_qs(parsed.query)
+                underlying = urlsplit(query.get("pc", [""])[0])
+                if (parsed.scheme != "https" or parsed.hostname != "hbb.afl.rakuten.co.jp"
+                        or not parsed.path.startswith("/hgb/") or parsed.username or parsed.password
+                        or parsed.port not in (None, 443) or query.get("s") not in (["300x300"], ["240x240"])
+                        or underlying.scheme != "https" or underlying.hostname not in {"thumbnail.image.rakuten.co.jp", "image.rakuten.co.jp"}
+                        or underlying.username or underlying.password or underlying.port not in (None, 443)):
+                    raise ValueError("DIRECT_PREVIEW_AFFILIATE_IMAGE_INVALID")
+                urls.add(url)
+
+        selected_slugs = {article["document"]["slug"] for article in candidate["articles"]}
+        for photo in json.loads(media_source.read_bytes()):
+            if not selected_slugs.intersection(photo["slugs"]):
+                continue
+            for source in photo["sources"].values():
+                AffiliateImages().feed(source)
+    if len(urls) > 96:
         raise ValueError("DIRECT_PREVIEW_IMAGE_LIMIT")
     if not urls:
         return {}

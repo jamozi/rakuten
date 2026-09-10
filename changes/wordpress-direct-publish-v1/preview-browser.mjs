@@ -36,7 +36,7 @@ try {
             if (parent instanceof HTMLDetailsElement) parent.open = true;
           }
         });
-        await img.scrollIntoViewIfNeeded();
+        if (await img.isVisible()) await img.scrollIntoViewIfNeeded();
         await page.waitForFunction((e) => e.complete && e.naturalWidth > 0,
           await img.elementHandle(), { timeout: 10000 }).catch(() => {});
       }
