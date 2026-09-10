@@ -16,8 +16,70 @@
   "next_html": "<section id=\"ks-next-read\" aria-labelledby=\"ks-next-read-title\" style=\"margin:32px 0;padding:24px;border-top:2px solid #1b1b18;background:#faf9f6;line-height:1.85;\"><h2 id=\"ks-next-read-title\">残っている疑問から、次の確認へ</h2><div class=\"ks-route-links\"><a href=\"/dishwasher-installation-measurement/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機の置き場所・扉・余白の測り方</a><a href=\"/dishwasher-water-supply-methods/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機の給水・排水方法</a><a href=\"/countertop-dishwasher-for-small-households/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">1〜2人暮らし向け食洗機を比較</a></div><p>記事ごとに対象機種が異なります。別機種の数値や手順を流用せず、必要な確認だけを選んで読めます。</p><a href=\"/kitchen/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機選びの全体像に戻る</a></section>",
   "replacements": [
     {
-      "old": "overflow-x:auto",
-      "new": "overflow:auto",
+      "old": "置き場所は",
+      "new": "関連記事の対応範囲：設置・給排水・洗剤・手入れの各ガイドは、現在SOLOTA、ラクアmini color、SS-MA251、NP-TSP1を扱っています。ラクアmini Plus TK-MDW22Bの手順は含まれないため、mini colorの数値や手順を流用しないでください。mini Plusは本記事末尾のTHANKO公式案内から、対象型番の取扱説明書を確認してください。 設置寸法の確認は",
+      "max_count": 1
+    },
+    {
+      "old": "href=\"/dishwasher-installation-measurement/\"",
+      "new": "href=\"/dishwasher-installation-measurement/#product-dish-np-tmlk1\"",
+      "max_count": 1
+    },
+    {
+      "old": "href=\"/dishwasher-water-supply-methods/\"",
+      "new": "href=\"/dishwasher-water-supply-methods/#product-dish-np-tmlk1\"",
+      "max_count": 1
+    },
+    {
+      "old": "href=\"/dishwasher-detergent-guide/\"",
+      "new": "href=\"/dishwasher-detergent-guide/#product-dish-np-tmlk1\"",
+      "max_count": 1
+    },
+    {
+      "old": "href=\"/dishwasher-cleaning-guide/\"",
+      "new": "href=\"/dishwasher-cleaning-guide/#product-dish-np-tmlk1\"",
+      "max_count": 1
+    }
+  ],
+  "text_edits": [
+    {
+      "old": "本体・扉・余白の測り方",
+      "new": "SOLOTAの設置確認",
+      "max_count": 1
+    },
+    {
+      "old": "給水・排水のガイド",
+      "new": "SOLOTAの給水・排水",
+      "max_count": 1
+    },
+    {
+      "old": "専用洗剤の選び方",
+      "new": "SOLOTAの洗剤選び",
+      "max_count": 1
+    },
+    {
+      "old": "お手入れ",
+      "new": "SOLOTAのお手入れ",
+      "max_count": 1
+    },
+    {
+      "old": "食後の洗い物を減らしたいけれど、キッチンには余裕がない。SOLOTAとラクアmini Plusで迷うなら、まず",
+      "new": "食後の洗い物を減らしたいけれど、キッチンには余裕がない。SOLOTA（ソロタ）とラクアmini Plusで迷うなら、まず",
+      "max_count": 1
+    },
+    {
+      "old": "2026年9月10日に取得したメーカー公式ページの仕様。寸法は幅×奥行×高さです。",
+      "new": "2026年9月10日に取得したメーカー公式ページの仕様。mini Plusの給水量は9月11日に説明書p.12で再確認。水量の条件は機種ごとに異なります。寸法は幅×奥行×高さです。",
+      "max_count": 1
+    },
+    {
+      "old": "3.2L",
+      "new": "3.2L（使用前の必要給水量）",
+      "max_count": 1
+    },
+    {
+      "old": "食後の洗い物を減らしたいけれど、キッチンには余裕がない。SOLOTA（ソロタ）とラクアmini Plusで迷うなら、まず",
+      "new": "食後の洗い物を減らしたいけれど、キッチンには余裕がない。SOLOTA（ソロタ）とラクアmini Plus（ラクアミニプラス）で迷うなら、まず",
       "max_count": 1
     }
   ]

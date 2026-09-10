@@ -4,7 +4,8 @@
   "post_id": 84,
   "required_ids": [
     "comparison-title",
-    "sources-title"
+    "sources-title",
+    "decision-title"
   ],
   "required_product_ids": [
     "PRD-INNOVATOR-INV50",
@@ -16,5 +17,25 @@
   "keep_existing_fragments": true,
   "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/travel/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">スーツケースの選び方・記事一覧</a><a href=\"#comparison-title\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"/travel/#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
   "next_html": "<section id=\"ks-next-read\" aria-labelledby=\"ks-next-read-title\" style=\"margin:32px 0;padding:24px;border-top:2px solid #1b1b18;background:#faf9f6;line-height:1.85;\"><h2 id=\"ks-next-read-title\">残っている疑問から、次の確認へ</h2><div class=\"ks-route-links\"><a href=\"/lightweight-carry-on-suitcase-under-3kg/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">30L以上・3kg以下のスーツケース比較</a><a href=\"/carry-on-suitcase-comparison/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">エースの3モデルを、軽さ・容量・開き方で比較</a></div><p>記事ごとに対象機種が異なります。別機種の数値や手順を流用せず、必要な確認だけを選んで読めます。</p><a href=\"/travel/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">スーツケース選びの全体像に戻る</a></section>",
-  "replacements": []
+  "replacements": [],
+  "editorial_additions": [
+    {
+      "id": "front-open-practical-checks",
+      "target_id": "decision-title",
+      "position": "before_section",
+      "html": "<section id=\"front-open-practical-checks\" class=\"reader-section\"><h2>購入前に、取り出す荷物と開ける場所を確かめる</h2><p>ディフェレンス05721は前開きと中央開きに対応し、前ぶたはサイドベルトの着脱で90度・180度を使い分けられます。フレスターEX01551は前開き専用で、中央開きはできません。以下は、この構造の違いを自分の使い方に照らすための確認手順です。4モデルの開口寸法や、荷物を入れた状態での開閉を実測した評価ではありません。</p><ol><li><strong>取り出す物を決める。</strong>移動中に必要なPC、充電器、書類などを分けます。PCは画面のインチ数だけで判断せず、ケースに入れた状態の幅・高さ・厚さを測り、収納部と取り出し口の両方に収まるか確認します。</li><li><strong>荷物を入れた状態で取り出せるかを見る。</strong>前面収納の写真だけで決めず、メイン収納との仕切り、開けるファスナーの数、荷物の干渉を確認します。店頭で試せる場合は、普段に近い荷物で出し入れを確かめてください。空の展示品で開いたことだけでは、荷造り後の使いやすさは判断できません。</li><li><strong>開ける場所の幅と奥行を測る。</strong>玄関や宿泊先など、使う場所で床に置く範囲と自分が手を入れる余地を考えます。閉じた外寸やふたの角度だけで必要スペースを決めず、使う開き方での広がりを実物・メーカーの寸法案内と照合します。確認できない開閉寸法は推定で埋めません。</li><li><strong>荷造りの仕方で候補を分ける。</strong>前から小物を取り出し、中央から荷造りもしたいならディフェレンスの2WAYを確認します。中央開きを使わず片側から荷造りするならフレスターEXの内装を確認します。どちらも、拡張前の容量で荷物が収まるかと、出し入れの動作を確かめてから選んでください。</li></ol><p>構造の出典：<a href=\"https://store.ace.jp/shop/g/g05721-04/\">ディフェレンス05721の商品説明</a>、<a href=\"https://store.ace.jp/shop/g/g01551-01/\">フレスターEX01551の商品説明</a>（2026年9月10日確認）。</p></section>",
+      "sources": [
+        {
+          "url": "https://store.ace.jp/shop/g/g05721-04/",
+          "checked_on": "2026-09-10",
+          "locator": "商品説明：2WAY、前ぶた90度/180度"
+        },
+        {
+          "url": "https://store.ace.jp/shop/g/g01551-01/",
+          "checked_on": "2026-09-10",
+          "locator": "商品説明：フロントオープン、中央開き不可"
+        }
+      ]
+    }
+  ]
 }

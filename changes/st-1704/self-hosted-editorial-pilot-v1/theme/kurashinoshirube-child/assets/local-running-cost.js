@@ -2,10 +2,18 @@
 (() => {
   'use strict';
 
+  // Calculator input bounds, not claims about current utility tariffs.
+  const inputLimits = { electricity: 1000, water: 10000, detergent: 1000, runs: 1000 };
+  const inputRange = key => key === 'runs'
+    ? 'この計算では0〜1,000回の整数を入力できます。'
+    : `この計算では0〜${inputLimits[key].toLocaleString('ja-JP')}円、小数第4位まで入力できます。`;
   const parseInput = (raw, integer = false) => {
     if (typeof raw !== 'string') return { value: null, error: '数値を入力してください。' };
     const text = raw.normalize('NFKC').trim();
     if (text === '') return { value: null, error: null };
+    if (/^\d*(?:\.\d*)?[eE][+-]?\d+$/.test(text)) {
+      return { value: null, error: '指数表記は使わず、通常の数値で入力してください。' };
+    }
     const value = Number(text);
     if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(text) || !Number.isFinite(value) || value < 0) {
       return { value: null, error: '0以上の数値を入力してください（例：30.7）。' };
@@ -22,6 +30,14 @@
     const fees = { electricity: null, water: null, detergent: null };
     for (const key of ['electricity', 'water', 'detergent', 'runs']) {
       parsed[key] = parseInput(inputs[key], key === 'runs');
+      if (!parsed[key].error && parsed[key].value !== null) {
+        const text = inputs[key].normalize('NFKC').trim();
+        if (parsed[key].value > inputLimits[key]) {
+          parsed[key] = { value: null, error: `${inputRange(key)}桁と単位を確認してください。` };
+        } else if (key !== 'runs' && (text.split('.')[1] || '').length > 4) {
+          parsed[key] = { value: null, error: '小数第4位までに丸めて入力してください。自動では丸めません。' };
+        }
+      }
       if (parsed[key].error) errors[key] = parsed[key].error;
     }
     const known = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
@@ -121,7 +137,7 @@
     controls[key] = element('input', '', { id, type: 'text', inputmode, autocomplete: 'off', 'aria-describedby': `${id}-help ${id}-error` });
     errors[key] = element('p', '', { id: `${id}-error`, class: 'raos-cost-error', hidden: '' });
     group.append(element('label', label, { for: id }), controls[key],
-      element('p', help, { id: `${id}-help`, class: 'raos-cost-help' }), errors[key]);
+      element('p', `${help}${inputRange(key)}`, { id: `${id}-help`, class: 'raos-cost-help' }), errors[key]);
     fields.append(group);
   }
   const actions = element('div', '', { class: 'raos-cost-actions' });

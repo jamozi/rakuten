@@ -195,9 +195,9 @@
         const check = checkInstallation(required, Object.fromEntries(Object.entries(inputs).map(([key, node]) => [key, node.value])));
         for (const f of check.fields) {
           inputs[f.key].setAttribute('aria-invalid', String(f.invalid));
-          statuses[f.key].textContent = `${money(required[f.key]) ? `公表値：${required[f.key]}mm。` : '公表値：未確認。'}${f.invalid ? '0以上の数値で入力してください。' : f.state === 'MISMATCH' ? '条件不一致：入力寸法が不足しています。' : f.state === 'CONFIRMED' ? '確認済み：この数値条件を満たします。' : '未確認：公表値と測定値の両方が必要です。'}`;
+          statuses[f.key].textContent = `${money(required[f.key]) ? `照合基準：${required[f.key]}mm。` : '照合基準：未確認。'}${f.invalid ? '0以上の数値で入力してください。' : f.state === 'MISMATCH' ? '条件不一致：入力寸法が不足しています。' : f.state === 'CONFIRMED' ? '確認済み：この数値条件を満たします。' : '未確認：照合基準と測定値の両方が必要です。'}`;
         }
-        result.textContent = `${check.state === 'MISMATCH' ? '条件不一致：不足する寸法があります。' : check.state === 'CONFIRMED' ? '確認済み：9項目の公表寸法と入力値の照合を満たしました。' : '未確認：照合できていない寸法が残っています。'}これは寸法の数値照合だけです。食器の収納・性能や安全な設置を保証しません。台の強度・水平、排水、電源・アース、熱源との距離も別途確認してください。`;
+        result.textContent = `${check.state === 'MISMATCH' ? '条件不一致：不足する寸法があります。' : check.state === 'CONFIRMED' ? '確認済み：9項目の寸法条件と入力値の照合を満たしました。' : '未確認：照合できていない寸法が残っています。'}`;
       };
       fieldset.addEventListener('input', update);
       const reset = create('button', '測定値をクリア', { type: 'button' });
