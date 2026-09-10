@@ -1,5 +1,6 @@
 /* Reader purchase support. Keep every selector inside the article boundary. */
 .ps-article { --ps-ink: #172e49; --ps-line: #ccd5df; --ps-paper: #fff; --ps-soft: #f4f6f8; color: #202c38; background: var(--ps-paper); line-height: 1.9; overflow-wrap: anywhere; }
+.ps-article .ks-category-visual img { display: block; max-width: 100%; height: auto; }
 .ps-article [hidden] { display: none !important; }
 .ps-article h2, .ps-article h3 { color: var(--ps-ink); font-family: "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", serif; line-height: 1.55; }
 .ps-article h2 { margin-block: 2.4em 1em; padding-block-end: .5em; border-bottom: 2px solid var(--ps-ink); }
@@ -54,4 +55,20 @@
   .ps-article .ps-product[hidden], .ps-article .ps-comparison [hidden] { display: revert !important; }
   .ps-article :is(.ps-budget-controls, .ps-pair-controls) { display: none; }
   .ps-article .ps-table-scroll { overflow: visible; }
+}
+/* Authorized source markup stays byte-identical; only its outer frame is styled. */
+.ps-article .ps-product-image { box-sizing: border-box; width: 100%; max-width: none; margin: 1em 0; padding: .5em 0; text-align: center; }
+.ps-article .ps-product-image figcaption { font-size: .82em; line-height: 1.65; margin-top: .8em; text-align: left; color: #435164; }
+.ps-article .ps-rakuten-product-photo img { width: auto; height: auto; max-width: none; max-height: none; padding: 0; object-fit: contain; }
+.ps-article .ps-official-product-photo img { width: 300px; max-width: 100%; height: auto; max-height: none; object-fit: contain; }
+.ps-article .ps-product { container-type: inline-size; }
+.ps-article .raos-rakuten-image-240 { display: none; }
+.ps-article .raos-rakuten-image-300 { display: block; }
+@container (max-width: 319px) {
+  .ps-article .raos-rakuten-image-300 { display: none; }
+  .ps-article .raos-rakuten-image-240 { display: block; }
+}
+@media (max-width: 359px) {
+  .ps-article .raos-rakuten-image-300 { display: none; }
+  .ps-article .raos-rakuten-image-240 { display: block; }
 }

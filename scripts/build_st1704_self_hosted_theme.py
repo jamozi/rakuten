@@ -32,7 +32,7 @@ from scripts import build_reader_purchase_support_v1 as purchase_support_owner  
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "ae71eaaf05a3e77a8132fc90ea267117b359dab12a27ce791f6b787892f89546"
+    "0d71ff107c056641bc1e3ad8369dbf9f10eb838f939aa4625d7426eae1a5cf78"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -482,7 +482,7 @@ def _canonical_json(document: object) -> bytes:
             )
             + "\n"
         ).encode("utf-8", errors="strict")
-    except TypeError, ValueError, UnicodeError, RecursionError:
+    except (TypeError, ValueError, UnicodeError, RecursionError):
         _fail()
 
 
@@ -542,7 +542,7 @@ def _decoded_utf8(payload: bytes) -> str:
 def _load_json_payload(payload: bytes) -> dict[str, object]:
     try:
         document = json.loads(payload.decode("utf-8", errors="strict"))
-    except UnicodeError, json.JSONDecodeError:
+    except (UnicodeError, json.JSONDecodeError):
         _fail()
     if type(document) is not dict:
         _fail()
@@ -698,7 +698,7 @@ def _write_theme_stamp_payloads(payloads: Mapping[Path, bytes]) -> None:
             staged.append((target, temporary))
         for target, temporary in staged:
             os.replace(temporary, target)
-    except OSError, ThemeBuildFailure:
+    except (OSError, ThemeBuildFailure):
         for _target, temporary in staged:
             try:
                 temporary.unlink(missing_ok=True)
@@ -1351,7 +1351,7 @@ def _write_package(payload: bytes) -> None:
             os.fsync(handle.fileno())
         os.replace(temporary, OUTPUT_PATH)
         os.chmod(OUTPUT_PATH, 0o600)
-    except OSError, ThemeBuildFailure:
+    except (OSError, ThemeBuildFailure):
         _fail()
 
 

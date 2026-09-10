@@ -631,6 +631,7 @@ def test_purchase_cli_uses_independent_registered_jobs_and_replays_both_reports(
     def batch(dimensions):
         values = dict(original.rows[0].dimensions)
         values["customEvent:seller_id"] = "official"
+        values["customEvent:snapshot_id"] = "ps-" + "a" * 32
         values["eventName"] = (
             "offer_click" if dimensions == GA4_PURCHASE_DIMENSIONS_V2 else "page_view"
         )

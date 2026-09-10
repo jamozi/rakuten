@@ -99,7 +99,10 @@
         if (!purchaseConfig || purchaseConfig.enabled !== true ||
             purchaseConfig.profile !== 'purchase-support-v1' ||
             typeof purchaseConfig.debug_mode !== 'boolean' ||
-            !Array.isArray(purchaseConfig.bindings) || !purchaseConfig.bindings.length ||
+            !Array.isArray(purchaseConfig.bindings) || !purchaseConfig.article ||
+            Object.keys(purchaseConfig.article).length !== 2 ||
+            !['article_id', 'snapshot_id'].every(key => typeof purchaseConfig.article[key] === 'string' &&
+              /^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}$/.test(purchaseConfig.article[key])) ||
             window.localStorage.getItem('raos_purchase_ga4_opt_out') === '1') return null;
       } catch (_error) { return null; }
     }
@@ -148,8 +151,8 @@
         page_location: window.location.origin + window.location.pathname,
         page_referrer: '',
         page_title: '',
-        article_id: configuration.purchaseConfig.bindings[0].article_id,
-        snapshot_id: configuration.purchaseConfig.bindings[0].snapshot_id,
+        article_id: configuration.purchaseConfig.article.article_id,
+        snapshot_id: configuration.purchaseConfig.article.snapshot_id,
         debug_mode: configuration.purchaseConfig.debug_mode,
       } : {}),
     });

@@ -28,8 +28,8 @@
     },
     {
       "path": "python/raos/application/analytics/google_live_projection.py",
-      "sha256": "441480072872b64696108a05b2cf1819095e1b0389f4d2e6651b3476a3ce3ca3",
-      "size": 10190
+      "sha256": "14073f9d75d3befb54c98e04038d4558b80ef72bb4f13332b634c7bd1a1ef6fa",
+      "size": 11869
     },
     {
       "path": "python/raos/domain/analytics/google_live.py",
@@ -48,8 +48,8 @@
     },
     {
       "path": "scripts/raos_editorial_economics_v3.py",
-      "sha256": "331592dd8ecb34de4a6e4d98dc1661f0f13fcf259d0ed5d2db2b375a88fd23f9",
-      "size": 38118
+      "sha256": "6a2f48affaf7dcf6e389af9acd0d111d0ac537bc86e8fddc8de00ea0e83068c9",
+      "size": 38781
     },
     {
       "path": "scripts/raos_google_owner_private_v1.py",

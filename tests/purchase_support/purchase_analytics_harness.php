@@ -6,6 +6,14 @@ $binding = array('article_id'=>'article', 'product_id'=>'product', 'seller_id'=>
 $result = kurashinoshirube_purchase_ga4_configuration(array($binding));
 if ((in_array($argv[2], array('on', 'tampered'), true)) !== ($result !== null)) { exit(1); }
 if ($result !== null && $result['debug_mode'] !== false) { exit(2); }
+$article = array('article_id'=>'dishwasher-running-cost', 'snapshot_id'=>'ps-' . str_repeat('a',32));
+$guide = kurashinoshirube_purchase_ga4_configuration(array(), $article);
+if (in_array($argv[2], array('on','tampered'), true)) {
+    if ($guide === null || $guide['bindings'] !== array() || $guide['article'] !== $article) { exit(11); }
+} elseif ($guide !== null) { exit(12); }
+if (kurashinoshirube_purchase_ga4_configuration(array()) !== null
+    || kurashinoshirube_purchase_ga4_configuration(array($binding), $article) !== null
+    || kurashinoshirube_purchase_ga4_configuration(array(), array('article_id'=>'guide')) !== null) { exit(13); }
 $binding['extra'] = 'disallowed';
 if (kurashinoshirube_purchase_ga4_configuration(array($binding)) !== null) { exit(3); }
 echo "PURCHASE_PHP_" . strtoupper($argv[2]) . "_OK\n";

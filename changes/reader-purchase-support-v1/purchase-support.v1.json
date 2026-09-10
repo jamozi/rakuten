@@ -392,7 +392,7 @@
       ],
       "caution": "標準食器点数は6点です。一度に洗う食器が多い場合は、より容量の大きい候補も検討してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "one-person"
       ],
@@ -516,6 +516,18 @@
         "left_mm": null,
         "right_mm": null,
         "rear_mm": 17
+      },
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "4d3c7ae9748063005aef9ffb120b0c1a64bb643b5b1dde6c8a15cc393195a0f4",
+          "300": "d8bbdc9a84c82e68263b4e6871f59f4957e86ed8146968553ff1f54a476201f5"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "2e414d4d6650ed1fc9e50f0bf851ad17e202eb0fc97f6dbfd9e2b74af1985e97"
       }
     },
     {
@@ -591,7 +603,7 @@
       ],
       "caution": "扉を開いたときの奥行59.4cmを確保し、購入前に本体の色と販売単位を型番で確認してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "small-warm"
       ],
@@ -715,6 +727,18 @@
         "left_mm": 50,
         "right_mm": 50,
         "rear_mm": 50
+      },
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "a5105c27b1224f41a2d7515bec5f0ef3cfccda586266678bb2545e75167eb61d",
+          "300": "9debe937cc4ce362c25cb4ec3085f911d42e7ff9ca2c2d3211f646d1b72062dd"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "8842b4a2f389c735557f4274e8d99f9c286aa6c3ee9d3a85d2764db3f081c775"
       }
     },
     {
@@ -790,7 +814,7 @@
       ],
       "caution": "本体寸法は幅42×奥行44×高さ47cmです。扉の開閉空間も確認してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "two-way"
       ],
@@ -916,11 +940,16 @@
         "rear_mm": 60
       },
       "image_review": {
-        "status": "PERMISSION_REFRESH_REQUIRED",
-        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/siroca/cabinet/ss-ma251/thumb_ss-ma251_p2.jpg?_ex=128x128",
-        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
-        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
-        "next_check_on": "2026-09-11"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "96167aa95dbc9a9af48c1e7a09bab3401ca661dde0df1f4f976eb8634e2c851e",
+          "300": "3cc2db907c41722052ce1832e26c91d6e771c288aad57f34725ebf2274e9aec3"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "8f55fea1f4b21f13ad4c8a45ac62b260bb01d8c0c2fde97ea2b29809c831f77a"
       }
     },
     {
@@ -996,7 +1025,7 @@
       ],
       "caution": "本体寸法は幅約55×奥行約34.1×高さ約60cmで、重量は約19kgです。設置場所と移動方法を確認してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "more-dishes"
       ],
@@ -1113,11 +1142,16 @@
         "rear_mm": null
       },
       "image_review": {
-        "status": "PERMISSION_REFRESH_REQUIRED",
-        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/jyupro/cabinet/d-dish/np-tsp1-w.jpg?_ex=128x128",
-        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
-        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
-        "next_check_on": "2026-09-11"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "5d3e5e9772e0413932cbfb6bcc077b19ed90456b232bbc1af7197c4d14822ac4",
+          "300": "e5d388c9d455f953c3932e30ce1db8cc723c8a98b0dee8d9632cdca756d35175"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "e0c6e737d5f9fe41f07f965802fe14b7cb6343291ff4532505b6725d9605f0d9"
       }
     },
     {
@@ -1182,17 +1216,22 @@
       ],
       "caution": "購入前に型番と構成、設置・利用条件を確認してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "stopper"
       ],
       "guide_facts": [],
       "image_review": {
-        "status": "PERMISSION_REFRESH_REQUIRED",
-        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/ace-store/cabinet/item2025/proteca/01521.jpg?_ex=128x128",
-        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
-        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
-        "next_check_on": "2026-09-11"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "22863736527e3f0b3dbc39c9ba4f992ee35c75f2542b0c0a2f52283247251065",
+          "300": "e4836d1334abbe42a291f4ffecb3d1a23880d0437ca902245db15ed11f887b85"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "a9c6c7dc0e12ec861380c416a4c8aa07a60f94a4f6483fc79c0833c67b8699be"
       }
     },
     {
@@ -1257,11 +1296,23 @@
       ],
       "caution": "購入前に型番と構成、設置・利用条件を確認してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "hard"
       ],
-      "guide_facts": []
+      "guide_facts": [],
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "e1a507dc4859df7baab1e156957f419d5b87e1c365fd9370436f8116e16edcbf",
+          "300": "09c9fd1295c85301d8d8b82f46ebebcfc77e31ffc116d442a79576edf8b92fa5"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "95b4b881bdb0a51944e0dd28ba2470cff652213b3b65e49217404ad44742f419"
+      }
     },
     {
       "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
@@ -1325,11 +1376,23 @@
       ],
       "caution": "購入前に型番と構成、設置・利用条件を確認してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "soft"
       ],
-      "guide_facts": []
+      "guide_facts": [],
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "d0a37afb1afdb884b869a6058236f08de80f9873a5dc771165291f7cad11cbb4",
+          "300": "be131fffa1bebb2d191e3c1523dd675487c0e995914e8438e0a99b30ac5bceba"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "db16c44119284223b8e76396f3c9375eb1523d560330996595c150732b6f7ddf"
+      }
     },
     {
       "product_id": "PRD-FREQUENTER-LIEVE-1-250",
@@ -1393,17 +1456,22 @@
       ],
       "caution": "購入前に型番と構成、設置・利用条件を確認してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "wheels"
       ],
       "guide_facts": [],
       "image_review": {
-        "status": "PERMISSION_REFRESH_REQUIRED",
-        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/selection/cabinet/item33/freq-1-250_1.jpg?_ex=128x128",
-        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
-        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
-        "next_check_on": "2026-09-11"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "87e15d6c21a6f38fdbce59e3a50044bac1323b0bb85de91a5822ea4d7d1eefae",
+          "300": "8d009eef9c92efdb563144360fe7f7ad568b2c0011710877e1a9a5fe37a3234b"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "581ec3e6d1d1e602a55783315f84ed4e39056ebd720c066e3260f4aa5b6b3a8f"
       }
     },
     {
@@ -1461,11 +1529,19 @@
       ],
       "caution": "水拭きは使い捨てシート式で、モップの自動洗浄には対応していません。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "OFFICIAL_PUBLICATION_KIT",
       "use_cases": [
         "compact"
       ],
-      "guide_facts": []
+      "guide_facts": [],
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "OFFICIAL_PUBLICATION_KIT",
+        "source_asset": "assets/images/roomba-mini-official.jpg",
+        "source_sha256": "99967fab220f0e0b2ceea955b68fa98b3b0fbe52b63d0a421b6bb5df60a1c433",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "checked_on": "2026-09-10"
+      }
     },
     {
       "product_id": "PRD-SWITCHBOT-K11-PRO",
@@ -1522,17 +1598,22 @@
       ],
       "caution": "水拭きは市販のお掃除シートを使用後に捨てる方式で、モップの自動洗浄・乾燥は行いません。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "compact"
       ],
       "guide_facts": [],
       "image_review": {
-        "status": "PERMISSION_REFRESH_REQUIRED",
-        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/switchbot/cabinet/13479056/mainbg2.jpg?_ex=128x128",
-        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
-        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
-        "next_check_on": "2026-09-11"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "04730e70837f6ffb2d8414e45548c40da69c6c79dcb98d5c516731496e256073",
+          "300": "4831f1874093a539e569417d1e33afdf1d69d1d932c9e4100a7a019a679e108a"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "a609af08ad2440a3668d0784266a5eca3ff6766aa1b92da40230e5d306c55c8b"
       }
     },
     {
@@ -1590,11 +1671,23 @@
       ],
       "caution": "ステーションの最大底面辺は29.7cmです。最大底面辺を25cm以下に収めたい場合は別の候補も検討してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "vacuum"
       ],
-      "guide_facts": []
+      "guide_facts": [],
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "f013aa118d1795e7cb5073a1f508c5ac456d6169a9d575ddd55e75ef867b28b6",
+          "300": "0bc9a0807b5a7a5e603c083a89ce3bb2a80435dca2496d5b86c24b353e9b7f02"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "c18714bb7962316340663b0b7eb247d1cfa32d0792f1a7222e053f439e64c9e1"
+      }
     },
     {
       "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
@@ -1651,11 +1744,23 @@
       ],
       "caution": "本体の最大底面辺は30.3cm、ステーションは34.0cmです。どちらも25cm以下には収まりません。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "mop"
       ],
-      "guide_facts": []
+      "guide_facts": [],
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "2aea0c873a7aa1ceab654bb6bd86515f7231f52fe931439a539be93f8738736f",
+          "300": "e469f6d8d74802b406666c2a71c234c1c15a55416f437e0b95b8a0c887138ba8"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "c2f783a961665529600897a17739b69e498fd3d595d45059f157ec205a00fcb6"
+      }
     },
     {
       "product_id": "PRD-ANKER-SOLIX-C300",
@@ -1712,11 +1817,23 @@
       ],
       "caution": "容量と定格出力は4モデルで最小です。本体寸法は幅約16.4×奥行約16.1×高さ約24.0cmです。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "carry"
       ],
-      "guide_facts": []
+      "guide_facts": [],
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "540a75ac5b4b4712423515b1521fa4b1c6aad3b68bbb855b6a47c420fe8c4777",
+          "300": "18961c9dee2b09161790ef17c8617afc7d42748d7f1e4997e97e9a6a64afdac4"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "1872e596903339d501c745dd94a0d060b29109c6beb1a7ea4bcb2c40f9d47589"
+      }
     },
     {
       "product_id": "PRD-JACKERY-500-NEW",
@@ -1773,11 +1890,23 @@
       ],
       "caution": "本体寸法は幅31.1×奥行20.5×高さ15.7cmです。設置場所と移動経路に収まるか確認してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "carry"
       ],
-      "guide_facts": []
+      "guide_facts": [],
+      "image_review": {
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "addf6dc1b16a97414b30687a9bc912e4da804475decd9b7bc7901da5187cb19c",
+          "300": "0cb5c831e7307e1f7de8f2dc7e6109cc630e8f85d0087866c3ced4920a5ed7e9"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "e1e006dda70e3ec2cd79a2c1a16266dd393e1d2a2630f2d1ce216a3557c21ad4"
+      }
     },
     {
       "product_id": "PRD-BLUETTI-AC70",
@@ -1834,17 +1963,22 @@
       ],
       "caution": "本体は幅31.4×奥行20.95×高さ25.58cm、約10.2kgです。設置場所と移動方法を確認してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "middle"
       ],
       "guide_facts": [],
       "image_review": {
-        "status": "PERMISSION_REFRESH_REQUIRED",
-        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/bluettijapan/cabinet/12874450/13538031/13562753/imgrc0146958224.jpg?_ex=128x128",
-        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
-        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
-        "next_check_on": "2026-09-11"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "d9f46a99fe0e3fb1d2bf1d8efa46d62a55fef6504818723a16f2f01725bd3146",
+          "300": "3d07898e96bcebabdf362e54bc2d8190ccd9e8cabca9ce56ecd3e015c3ac94a1"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "80b8533e0aacd2e5892fe04b2459d8b8fc3e7f2911e8f64c151d8f809b864bb5"
       }
     },
     {
@@ -1902,17 +2036,22 @@
       ],
       "caution": "本体は幅39.8×奥行20.0×高さ28.3cm、約12.1kgです。保管場所から安全に運べるか確認してください。",
       "image_markup": "",
-      "image_basis": null,
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
         "larger"
       ],
       "guide_facts": [],
       "image_review": {
-        "status": "PERMISSION_REFRESH_REQUIRED",
-        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/ecoflow/cabinet/13793271/13807021/d3c.jpg?_ex=128x128",
-        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
-        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
-        "next_check_on": "2026-09-11"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
+        "source_sha256": {
+          "240": "d1876abfbb167d94a5b96a56b5b1bac113fa63c1b5f2d628542fa9c7347d6f74",
+          "300": "a631bf4d80ad9dabeb3944e5a6d4bea9ca71f4342a4cc5181028c6749796461a"
+        },
+        "checked_on": "2026-09-10",
+        "record_sha256": "2b9a068fde3d8f7a695241574d80404304ff231a9c11e77b17673d4fe7c42449"
       }
     }
   ],

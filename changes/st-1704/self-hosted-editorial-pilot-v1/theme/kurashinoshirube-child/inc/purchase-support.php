@@ -66,7 +66,8 @@ function kurashinoshirube_enqueue_purchase_support(): void
             KURASHINOSHIRUBE_THEME_RUNTIME_REVISION, array('in_footer' => true, 'strategy' => 'defer'));
     }
     // A separate profile closes the existing Google loader even while measurement is OFF.
-    kurashinoshirube_purchase_ga4_enqueue($context['bindings'] ?? array());
+    kurashinoshirube_purchase_ga4_enqueue($context['bindings'] ?? array(),
+        array('article_id' => $context['article_id'], 'snapshot_id' => $context['snapshot_id']));
     if (($context['slug'] ?? null) === 'dishwasher-running-cost') {
         $cost = kurashinoshirube_verified_asset_uri(KURASHINOSHIRUBE_LOCAL_COST_ASSET_PATH, KURASHINOSHIRUBE_LOCAL_COST_ASSET_SHA256, true);
         if ($cost !== null) {
@@ -84,3 +85,28 @@ add_filter('body_class', static function (array $classes): array {
     }
     return array_values(array_unique($classes));
 });
+
+/** Project only the theme-hash-bound media for the exact applied public body. */
+function kurashinoshirube_purchase_support_media($content)
+{
+    if (!is_string($content) || is_feed()) { return $content; }
+    $context = kurashinoshirube_purchase_support_context();
+    if ($context === null || ($context['kind'] ?? null) !== 'comparison') { return $content; }
+    $media = $context['media'] ?? null;
+    if (!is_array($media) || count($media) > 4) { return $content; }
+    $replacements = array();
+    foreach ($media as $product_id => $html) {
+        if (!is_string($product_id) || preg_match('/\APRD-[A-Z0-9-]{1,100}\z/D', $product_id) !== 1
+            || !is_string($html) || strlen($html) > 32768
+            || !str_starts_with($html, '<figure class="ps-product-image ')
+            || !str_ends_with($html, '</figure>')) { return $content; }
+        $placeholder = '<div class="ps-product-media" data-ps-media-product="' . $product_id . '"></div>';
+        if (substr_count($content, $placeholder) > 1) { return $content; }
+        if (substr_count($content, $placeholder) === 1) {
+            $replacements[$placeholder] = $html;
+        }
+    }
+    // strtr replaces exact known placeholders once; it never re-parses source snippets.
+    return strtr($content, $replacements);
+}
+add_filter('the_content', 'kurashinoshirube_purchase_support_media', 13);

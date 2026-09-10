@@ -24,10 +24,11 @@
           !window._googlesitekitConsents || window._googlesitekitConsents.analytics_storage !== 'granted') return;
       if (window.localStorage.getItem('raos_purchase_ga4_opt_out') === '1') return;
       const anchor = event.target && typeof event.target.closest === 'function'
-        ? event.target.closest('a[data-raos-cta-type="offer"]') : null;
-      const root = anchor && anchor.closest('[data-raos-purchase-support="v1"]');
+        ? event.target.closest('a') : null;
+      const wrapper = anchor && anchor.closest('[data-raos-cta-type="offer"]');
+      const root = wrapper && wrapper.closest('[data-raos-purchase-support="v1"]');
       if (!root) return;
-      const params = Object.fromEntries(keys.map(key => [key, anchor.getAttribute(`data-raos-${key.replaceAll('_', '-')}`)]));
+      const params = Object.fromEntries(keys.map(key => [key, wrapper.getAttribute(`data-raos-${key.replaceAll('_', '-')}`)]));
       if (!keys.every(key => typeof params[key] === 'string' && /^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}$/.test(params[key])) ||
           !placements.includes(params.placement) ||
           root.getAttribute('data-raos-article-id') !== params.article_id ||

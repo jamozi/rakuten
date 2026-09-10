@@ -47,6 +47,7 @@ def _purchase_batches():
     values.update(
         {
             "customEvent:seller_id": "official",
+            "customEvent:snapshot_id": "ps-" + "a" * 32,
             "eventName": "offer_click",
             "customEvent:placement": "top_summary",
         }
@@ -222,3 +223,122 @@ def test_purchase_analytics_php_owner_and_default_off():
             ],
             check=True,
         )
+
+
+def _analytics_row_values(row, updates):
+    dimensions = tuple(
+        (name, updates.get(name, value)) for name, value in row.dimensions
+    )
+    return replace(
+        row,
+        dimensions=dimensions,
+        grain_key_sha256=sha256_hex(
+            canonical_json_bytes(
+                {"date": row.metric_date.isoformat(), "dimensions": dict(dimensions)}
+            )
+        ),
+    )
+
+
+def test_purchase_scope_quarantines_legacy_and_reports_unknown_without_zero_metrics():
+    _, clicks, views = _purchase_batches()
+    legacy_click = _analytics_row_values(
+        clicks.rows[0],
+        {
+            "customEvent:snapshot_id": "old-snapshot-1",
+            "customEvent:placement": "old-slot",
+        },
+    )
+    legacy_view = _analytics_row_values(
+        views.rows[0], {"customEvent:snapshot_id": "old-snapshot-1"}
+    )
+    untagged_view = _analytics_row_values(
+        views.rows[0],
+        {"customEvent:snapshot_id": "(not set)", "customEvent:article_id": "(not set)"},
+    )
+    document = ga4_purchase_document_v2(
+        replace(clicks, rows=(*clicks.rows, legacy_click), provider_row_count=2),
+        page_views=replace(
+            views, rows=(*views.rows, legacy_view, untagged_view), provider_row_count=3
+        ),
+    )
+    assert len(document["rows"]) == len(document["page_view_rows"]) == 1
+    assert document["excluded_row_counts"] == {
+        "offer_click": {"NON_PURCHASE_SNAPSHOT": 1},
+        "page_view": {"NON_PURCHASE_SNAPSHOT": 1, "UNATTRIBUTED_SCOPE": 1},
+    }
+    assert document["scope_status"] == "PARTIAL_SCOPE_UNKNOWN"
+    assert document["rows"][0]["metrics"] == [{"name": "eventCount", "value": "3"}]
+    only_old = ga4_purchase_document_v2(
+        replace(clicks, rows=(legacy_click,)),
+        page_views=replace(views, rows=(legacy_view,)),
+    )
+    assert only_old["scope_status"] == "NO_PURCHASE_OBSERVATIONS"
+    assert only_old["rows"] == only_old["page_view_rows"] == []
+
+
+@pytest.mark.parametrize(
+    "snapshot", ["ps-broken", "ps-" + "g" * 32, "", "UNKNOWN", "(not set)"]
+)
+@pytest.mark.parametrize("report", ["click", "view"])
+def test_purchase_scope_ambiguous_identified_rows_fail_closed(snapshot, report):
+    _, clicks, views = _purchase_batches()
+    source = clicks if report == "click" else views
+    row = _analytics_row_values(source.rows[0], {"customEvent:snapshot_id": snapshot})
+    changed = replace(source, rows=(row,))
+    with pytest.raises(GoogleProviderFailure):
+        ga4_purchase_document_v2(
+            changed if report == "click" else clicks,
+            page_views=changed if report == "view" else views,
+        )
+
+
+def test_purchase_scope_keeps_distinct_purchase_snapshots_without_mapping_old_placements():
+    _, clicks, views = _purchase_batches()
+    older = _analytics_row_values(
+        clicks.rows[0], {"customEvent:snapshot_id": "ps-" + "b" * 32}
+    )
+    result = ga4_purchase_document_v2(
+        replace(clicks, rows=(*clicks.rows, older), provider_row_count=2),
+        page_views=views,
+    )
+    assert len(result["rows"]) == 2
+    assert result["scope_status"] == "OBSERVED_ROWS_ONLY"
+    bad = _analytics_row_values(older, {"customEvent:placement": "legacy-placement"})
+    with pytest.raises(GoogleProviderFailure):
+        ga4_purchase_document_v2(replace(clicks, rows=(bad,)), page_views=views)
+
+
+@pytest.mark.parametrize("report", ["click", "view"])
+def test_purchase_scope_only_untagged_rows_stay_unknown(report):
+    _, clicks, views = _purchase_batches()
+    source = clicks if report == "click" else views
+    unknown = _analytics_row_values(
+        source.rows[0],
+        {
+            name: "(not set)"
+            for name, _ in source.rows[0].dimensions
+            if name.startswith("customEvent:")
+        },
+    )
+    clicks = replace(clicks, rows=(), provider_row_count=0)
+    views = replace(views, rows=(), provider_row_count=0)
+    if report == "click":
+        clicks = replace(clicks, rows=(unknown,), provider_row_count=1)
+    else:
+        views = replace(views, rows=(unknown,), provider_row_count=1)
+    result = ga4_purchase_document_v2(clicks, page_views=views)
+    assert result["scope_status"] == "PARTIAL_SCOPE_UNKNOWN"
+    assert result["rows"] == result["page_view_rows"] == []
+    assert result["excluded_row_counts"][
+        "offer_click" if report == "click" else "page_view"
+    ] == {"UNATTRIBUTED_SCOPE": 1}
+
+
+def test_purchase_scope_page_view_requires_article_when_snapshot_is_scoped():
+    _, clicks, views = _purchase_batches()
+    missing = _analytics_row_values(
+        views.rows[0], {"customEvent:article_id": "(not set)"}
+    )
+    with pytest.raises(GoogleProviderFailure):
+        ga4_purchase_document_v2(clicks, page_views=replace(views, rows=(missing,)))

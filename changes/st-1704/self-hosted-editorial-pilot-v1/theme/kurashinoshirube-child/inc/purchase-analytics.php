@@ -1,13 +1,21 @@
 <?php
 /** Explicit, public-only configuration for the purchase GA4 profile. */
-function kurashinoshirube_purchase_ga4_configuration(array $bindings): ?array
+function kurashinoshirube_purchase_ga4_configuration(array $bindings, ?array $article = null): ?array
 {
     if (!defined('RAOS_PURCHASE_GA4_ENABLED') || RAOS_PURCHASE_GA4_ENABLED !== true
-        || is_user_logged_in() || !$bindings) {
+        || is_user_logged_in() || (!$bindings && $article === null)) {
         return null;
     }
     $keys = array('article_id', 'product_id', 'seller_id', 'offer_id', 'cta_id', 'placement', 'snapshot_id');
     $identity = null;
+    if ($article !== null) {
+        if (count($article) !== 2) { return null; }
+        foreach (array('article_id', 'snapshot_id') as $key) {
+            if (!isset($article[$key]) || !is_string($article[$key])
+                || preg_match('/\A[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}\z/D', $article[$key]) !== 1) { return null; }
+        }
+        $identity = array($article['article_id'], $article['snapshot_id']);
+    }
     foreach ($bindings as $binding) {
         if (!is_array($binding) || count($binding) !== 8) { return null; }
         foreach ($keys as $key) {
@@ -26,16 +34,17 @@ function kurashinoshirube_purchase_ga4_configuration(array $bindings): ?array
     }
     return array('profile' => 'purchase-support-v1', 'enabled' => true,
         'debug_mode' => defined('RAOS_PURCHASE_GA4_DEBUG') && RAOS_PURCHASE_GA4_DEBUG === true,
+        'article' => array('article_id' => $identity[0], 'snapshot_id' => $identity[1]),
         'bindings' => array_values($bindings));
 }
 
 /** Call on purchase pages even when disabled, so their Google loader stays closed. */
-function kurashinoshirube_purchase_ga4_enqueue(array $bindings): void
+function kurashinoshirube_purchase_ga4_enqueue(array $bindings, ?array $article = null): void
 {
     static $installed = false;
     if ($installed) { return; }
     $installed = true;
-    $configuration = kurashinoshirube_purchase_ga4_configuration($bindings);
+    $configuration = kurashinoshirube_purchase_ga4_configuration($bindings, $article);
     add_filter('script_loader_tag', static function ($tag, $handle) {
         if ($handle !== 'google_gtagjs' || !is_string($tag)) { return $tag; }
         return str_replace(' data-raos-consent-gate="statistics"',

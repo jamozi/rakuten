@@ -200,12 +200,15 @@ def ga4_purchase_document_v2(
     cast(dict[str, object], document["configuration"])[
         "required_event_custom_dimensions"
     ] = list(GA4_PURCHASE_EVENT_PARAMETER_NAMES_V2)
+    excluded: dict[str, dict[str, int]] = {"offer_click": {}, "page_view": {}}
     click_rows = []
     for row in batch.rows:
         dimensions = {
             key.removeprefix("customEvent:"): value for key, value in row.dimensions
         }
-        if dimensions.get("eventName") != "offer_click":
+        reason = _purchase_row_scope(dimensions, "offer_click")
+        if reason is not None:
+            excluded["offer_click"][reason] = excluded["offer_click"].get(reason, 0) + 1
             continue
         _purchase_identity(dimensions, GA4_PURCHASE_EVENT_PARAMETER_NAMES_V2)
         if dimensions["placement"] not in {
@@ -237,7 +240,9 @@ def ga4_purchase_document_v2(
         dimensions = {
             key.removeprefix("customEvent:"): value for key, value in row.dimensions
         }
-        if dimensions.get("eventName") != "page_view":
+        reason = _purchase_row_scope(dimensions, "page_view")
+        if reason is not None:
+            excluded["page_view"][reason] = excluded["page_view"].get(reason, 0) + 1
             continue
         _purchase_identity(dimensions, ("article_id", "snapshot_id"))
         view_rows.append(
@@ -264,8 +269,39 @@ def ga4_purchase_document_v2(
     document["data_loss_from_other_row"] = (
         batch.data_loss_from_other_row or page_views.data_loss_from_other_row
     )
+    document["excluded_row_counts"] = excluded
+    document["scope_status"] = (
+        "PARTIAL_SCOPE_UNKNOWN"
+        if any("UNATTRIBUTED_SCOPE" in reasons for reasons in excluded.values())
+        else "OBSERVED_ROWS_ONLY"
+        if click_rows or view_rows
+        else "NO_PURCHASE_OBSERVATIONS"
+    )
     document["purchase_and_reward"] = "UNAVAILABLE"
     return document
+
+
+def _purchase_row_scope(dimensions: dict[str, str], event: str) -> str | None:
+    """Quarantine explicit other profiles; unidentified scope is never success."""
+    _purchase_identity(dimensions, ("eventName",))
+    if dimensions["eventName"] != event:
+        return "OTHER_EVENT"
+    snapshot = dimensions.get("snapshot_id", "")
+    if re.fullmatch(r"ps-[0-9a-f]{32}", snapshot):
+        return None
+    missing = {"", "(NOT SET)", "UNKNOWN", "UNAVAILABLE"}
+    if snapshot.upper() in missing:
+        if all(
+            dimensions.get(key, "").upper() in missing
+            for key in GA4_PURCHASE_EVENT_PARAMETER_NAMES_V2
+        ):
+            return "UNATTRIBUTED_SCOPE"
+        # Populated IDs with missing snapshot cannot safely be assigned elsewhere.
+        fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+    if snapshot.lower().startswith("ps-"):
+        fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+    _purchase_identity(dimensions, ("snapshot_id",))
+    return "NON_PURCHASE_SNAPSHOT"
 
 
 def _purchase_identity(dimensions: dict[str, str], keys: tuple[str, ...]) -> None:

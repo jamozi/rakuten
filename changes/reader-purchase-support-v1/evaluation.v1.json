@@ -58,5 +58,23 @@
   "confirmed_reward_per_1000_sessions": null,
   "metric_state": "UNAVAILABLE_SCOPE_NOT_ALIGNED",
   "evaluation_rule": "同期間・同記事群・同計測範囲が分子分母で一致する場合だけ算出。空欄や計測欠損を0へ変換しない。前後差は因果効果としない。",
-  "open_issues_source": "purchase-support.v1.json#research_issues"
+  "open_issues_source": "purchase-support.v1.json#research_issues",
+  "verification_record": "verification.md",
+  "local_preview": {
+    "status": "PASS",
+    "candidate_id": "4ce7b07c64ce69651d233a2833524321ed13d27e014d01d10a90413b36a98d27",
+    "checked_at": "2026-09-10T03:28:19.406830+00:00",
+    "screenshots": 30,
+    "viewports_px": [
+      390,
+      1440
+    ]
+  },
+  "agent_operation_check": {
+    "status": "PASS",
+    "checked_at": "2026-09-10T03:29:54.232Z",
+    "method": "LOCAL_CHROMIUM",
+    "owner_review": false,
+    "real_reader_research": false
+  }
 }

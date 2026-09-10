@@ -123,9 +123,9 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "953ec5a45498174f5470d63cb35adc26bfdfe9c0516fb18ad80fb50e19efebbb",
+    "sha256": "f56f29e3dd4252b85cc366444b6cfd4806492ce8081c25a0b59362648bc94c42",
     "source_navigation_sha256": "e1bf6e02440bd86d9e6cf6808ed5e909376cc0e29c6ce0a29fd2324c89eea403",
-    "source_portfolio_sha256": "64fc483c072ea4a540aa0d0687992653711567c83210344e32599b000e6c0e00"
+    "source_portfolio_sha256": "76b3d0fe3e83169f3b788f8e2234177a60579c152c374892090885386b5d356b"
   },
   "editorial_v2": {
     "asset": "assets/editorial-v2.css",
@@ -526,8 +526,8 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4",
-    "source_fingerprint": "f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4",
+    "revision": "0d71ff107c056641bc1e3ad8369dbf9f10eb838f939aa4625d7426eae1a5cf78",
+    "source_fingerprint": "0d71ff107c056641bc1e3ad8369dbf9f10eb838f939aa4625d7426eae1a5cf78",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",
@@ -556,10 +556,16 @@
       "assets/legacy-media-display-projection.v1.json",
       "assets/local-running-cost.js",
       "assets/measurement.js",
+      "assets/purchase-analytics.js",
+      "assets/purchase-support.css",
+      "assets/purchase-support.js",
+      "assets/purchase-support.v1.json",
       "assets/rakuten-product-media.json",
       "assets/reader-measurement-runtime.v1.json",
       "assets/theme.css",
       "functions.php",
+      "inc/purchase-analytics.php",
+      "inc/purchase-support.php",
       "official-product-media.php",
       "parts/footer.html",
       "parts/header.html",

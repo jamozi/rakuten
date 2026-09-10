@@ -307,7 +307,7 @@ assert.equal(
 
 process.stdout.write('ANALYTICS_CONSENT_GATE_HARNESS_OK\n');
 
-const approved = {profile:'purchase-support-v1', enabled:true, debug_mode:false, bindings:[{cta_id:'test'}]};
+const approved = {profile:'purchase-support-v1', enabled:true, debug_mode:false, article:{article_id:'article',snapshot_id:'ps-'+'a'.repeat(32)}, bindings:[{cta_id:'test'}]};
 for (const configuration of [{purchase:true}, {purchase:true,purchaseConfig:{...approved,enabled:false}}, {purchase:true,purchaseConfig:approved,optout:true}]) {
   const result=runScenario({configuration,providers:{cookieYes:true,wpConsent:true,siteKit:true}});
   assert.equal(result.document.replacements.length,0);
@@ -319,4 +319,10 @@ assert.equal(on.document.replacements.length,1);
 const settings=on.window.dataLayer[2][2];
 assert.equal(settings.page_location,'https://preview.example.test/article/');
 assert.equal(settings.page_referrer,'');assert.equal(settings.send_page_view,true);
+const guide=runScenario({configuration:{purchase:true,purchaseConfig:{...approved,bindings:[]}},providers:{cookieYes:true,wpConsent:true,siteKit:true}});
+assert.equal(guide.document.replacements.length,1);
+assert.equal(guide.window.dataLayer[2][2].article_id,'article');
+assert.equal(guide.window.dataLayer[2][2].snapshot_id,approved.article.snapshot_id);
+const missing=runScenario({configuration:{purchase:true,purchaseConfig:{...approved,article:null}},providers:{cookieYes:true,wpConsent:true,siteKit:true}});
+assert.equal(missing.document.replacements.length,0);
 console.log('PURCHASE_CONSENT_GATE_OK');

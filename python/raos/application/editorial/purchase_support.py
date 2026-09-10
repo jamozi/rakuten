@@ -431,8 +431,127 @@ def preserved_details(template: str) -> str:
     return result
 
 
+def resolve_product_media(
+    catalog: Mapping[str, Any], registry: list[dict[str, Any]], official_image: bytes
+) -> dict[str, Any]:
+    """Freeze authorized source bytes; never load media registries on the public path."""
+    resolved = {}
+    for product in catalog["products"]:
+        review = product.get("image_review", {})
+        pid = product["product_id"]
+        if review.get("state") != "VERIFIED_REGISTERED_MEDIA":
+            raise ValueError("PURCHASE_MEDIA_REVIEW_REQUIRED")
+        if review.get("basis") == "OFFICIAL_PUBLICATION_KIT":
+            if pid != "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY" or sha256(
+                official_image
+            ).hexdigest() != review.get("source_sha256"):
+                raise ValueError("PURCHASE_OFFICIAL_MEDIA_DRIFT")
+            resolved[pid] = {"official": True, "sha256": review["source_sha256"]}
+            continue
+        records = [r for r in registry if r.get("product_id") == pid]
+        if len(records) != 1 or review.get("basis") != "RAKUTEN_GENERATED_VERBATIM":
+            raise ValueError("PURCHASE_MEDIA_IDENTITY_REQUIRED")
+        record = records[0]
+        if sha256(canonical(record).encode()).hexdigest() != review.get(
+            "record_sha256"
+        ):
+            raise ValueError("PURCHASE_MEDIA_RECORD_DRIFT")
+        source_url = urlsplit(record.get("item_url", ""))
+        shop = source_url.path.strip("/").split("/")[0]
+        if (
+            source_url.scheme != "https"
+            or source_url.hostname != "item.rakuten.co.jp"
+            or not re.fullmatch(r"[a-zA-Z0-9_-]{1,64}", shop)
+        ):
+            raise ValueError("PURCHASE_MEDIA_SHOP_INVALID")
+        sizes = {}
+        for size in ("240", "300"):
+            raw = record.get("sources", {}).get(size)
+            if not isinstance(raw, str) or sha256(
+                raw.encode()
+            ).hexdigest() != review.get("source_sha256", {}).get(size):
+                raise ValueError("PURCHASE_MEDIA_SOURCE_DRIFT")
+            nodes = list(fragment(raw).walk())
+            anchors = [n for n in nodes if n.tag == "a"]
+            if len(anchors) != 1 or not https(anchors[0].attrs.get("href")):
+                raise ValueError("PURCHASE_MEDIA_LINK_INVALID")
+            sizes[size] = {"raw": raw, "href": anchors[0].attrs["href"]}
+        resolved[pid] = {
+            "official": False,
+            "sizes": sizes,
+            "seller_id": "rakuten-" + shop,
+            "shop_name": record["shop_name"],
+            "slugs": record["slugs"],
+        }
+    return resolved
+
+
+def render_product_media(
+    product: Mapping[str, Any],
+    article: Mapping[str, Any],
+    snapshot: str,
+    media: Mapping[str, Any],
+) -> tuple[str, list[dict[str, str]]]:
+    if media.get("official"):
+        return (
+            '<figure class="ps-product-image ps-official-product-photo" data-ps-media-sha256="'
+            + escape(media["sha256"], quote=True)
+            + '"><img src="'
+            + '/wp-content/themes/kurashinoshirube-child/assets/images/roomba-mini-official.jpg"'
+            + ' width="2048" height="2048" loading="lazy" decoding="async"'
+            + ' alt="Roomba Mini（白）とAutoEmpty充電ステーション。公式提供写真。">'
+            + "<figcaption>アイロボット Roomba® Mini 掃除機＆床拭きロボット + AutoEmpty™ 充電ステーション"
+            + '<br>写真：<a href="https://irobotjp.mediaroom.com/media-kits?item=28">'
+            + "アイロボットジャパン 公式掲載用素材</a></figcaption></figure>",
+            [],
+        )
+    if article["slug"] not in media["slugs"]:
+        raise ValueError("PURCHASE_MEDIA_ARTICLE_SCOPE_MISMATCH")
+    bindings = []
+    parts = ['<figure class="ps-product-image ps-rakuten-product-photo">']
+    for size in ("300", "240"):
+        source = media["sizes"][size]
+        binding = {
+            "article_id": article["article_id"],
+            "product_id": product["product_id"],
+            "seller_id": media["seller_id"],
+            "offer_id": "image-" + product["product_id"] + "-" + size,
+            "cta_id": "purchase-image-" + product["product_id"] + "-" + size,
+            "placement": "product_card",
+            "snapshot_id": snapshot,
+        }
+        parts.append(
+            '<div class="raos-rakuten-image-'
+            + size
+            + '"'
+            + attrs(
+                {
+                    "data-raos-cta-type": "offer",
+                    **{
+                        "data-raos-" + k.replace("_", "-"): v
+                        for k, v in binding.items()
+                    },
+                }
+            )
+            + ">"
+            + source["raw"]
+            + "</div>"
+        )
+        bindings.append({**binding, "href": source["href"]})
+    parts.append(
+        "<figcaption>画像：楽天市場（"
+        + escape(media["shop_name"])
+        + "）。画像提供元の販売ページ。構成・送料・保証は未確認。</figcaption></figure>"
+    )
+    return "".join(parts), bindings
+
+
 def render_comparison(
-    article: Mapping[str, Any], catalog: Mapping[str, Any], template: str, snapshot: str
+    article: Mapping[str, Any],
+    catalog: Mapping[str, Any],
+    template: str,
+    snapshot: str,
+    product_media: Mapping[str, Any] | None = None,
 ) -> tuple[str, list[dict[str, str]]]:
     products = [
         next(p for p in catalog["products"] if p["product_id"] == pid)
@@ -553,8 +672,16 @@ def render_comparison(
             + escape(p["exact_model"])
             + "</p>"
         )
-        if p["image_markup"]:
-            out.append('<div class="ps-product-image">' + p["image_markup"] + "</div>")
+        if product_media is not None:
+            photo, photo_bindings = render_product_media(
+                p, article, snapshot, product_media[p["product_id"]]
+            )
+            out.append(
+                '<div class="ps-product-media" data-ps-media-product="'
+                + escape(p["product_id"], quote=True)
+                + '"></div>'
+            )
+            bindings.extend(photo_bindings)
         out.append(
             "<p>"
             + escape(p["lead"])
@@ -775,6 +902,7 @@ def compile_articles(
     catalog: Mapping[str, Any],
     templates: Mapping[str, str],
     guide_registry: Mapping[str, Any],
+    product_media: Mapping[str, Any] | None = None,
 ) -> tuple[dict[str, str], dict[str, Any]]:
     validate_catalog(catalog)
     outputs = {}
@@ -786,12 +914,29 @@ def compile_articles(
         template = templates[a["slug"]]
         snapshot = "ps-pending-content-digest"
         bindings: list[dict[str, str]] = []
+        display_media: dict[str, str] = {}
         if a["kind"] == "comparison":
-            html, bindings = render_comparison(a, catalog, template, snapshot)
+            html, bindings = render_comparison(
+                a, catalog, template, snapshot, product_media
+            )
+            if product_media is not None:
+                for pid in a["product_ids"]:
+                    product = next(
+                        p for p in catalog["products"] if p["product_id"] == pid
+                    )
+                    display_media[pid], _ = render_product_media(
+                        product, a, snapshot, product_media[pid]
+                    )
         elif a["kind"] == "guide":
             html = render_guide(a, catalog, guide_registry)
         elif a["kind"] == "hub":
             dish = next(x for x in catalog["articles"] if x["slug"] == MAIN_SLUG)
+            visuals = fragment(template).find(tag="figure", cls="ks-category-visual")
+            if len(visuals) != 1:
+                raise ValueError("PURCHASE_HUB_VISUAL_MISSING")
+            for visual_image in visuals[0].find(tag="img"):
+                # wp_kses_post removes this hint from normal post content.
+                visual_image.attrs.pop("decoding", None)
             conditions = "".join(
                 "<li>"
                 + escape(c["label"])
@@ -812,7 +957,9 @@ def compile_articles(
                 for c in dish["conditions"]
             )
             html = (
-                '<div class="ps-article"><p class="ps-lead">いつもの一食分・置き場所・予算から、食洗機の候補を絞れます。</p><section id="choose"><h2>条件から候補を見る</h2><ul>'
+                '<div class="ps-article">'
+                + visuals[0].html()
+                + '<p class="ps-lead">いつもの一食分・置き場所・予算から、食洗機の候補を絞れます。</p><section id="choose"><h2>条件から候補を見る</h2><ul>'
                 + conditions
                 + '</ul><p><a href="/'
                 + MAIN_SLUG
@@ -832,7 +979,10 @@ def compile_articles(
         if a["kind"] != "policy":
             html = add_compatibility_anchors(html, template)
         rendered = "<!-- wp:html -->\n" + html + "\n<!-- /wp:html -->\n"
-        final_snapshot = "ps-" + sha256(rendered.encode()).hexdigest()[:32]
+        final_snapshot = (
+            "ps-"
+            + sha256((rendered + canonical(display_media)).encode()).hexdigest()[:32]
+        )
         outputs[a["slug"]] = rendered.replace(snapshot, final_snapshot)
         for binding in bindings:
             binding["snapshot_id"] = final_snapshot
@@ -846,6 +996,10 @@ def compile_articles(
                 "snapshot_id": snapshot,
                 "body_sha256": sha256(outputs[a["slug"]].encode()).hexdigest(),
                 "bindings": bindings,
+                "media": {
+                    pid: markup.replace("ps-pending-content-digest", final_snapshot)
+                    for pid, markup in display_media.items()
+                },
             }
         )
     return outputs, runtime

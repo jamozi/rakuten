@@ -10,7 +10,10 @@ from typing import Final
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "python"))
-from raos.application.editorial.purchase_support import compile_articles  # noqa: E402
+from raos.application.editorial.purchase_support import (  # noqa: E402
+    compile_articles,
+    resolve_product_media,
+)
 
 CATALOG_INPUT_PATH: Final = (
     ROOT / "changes/reader-purchase-support-v1/purchase-support.v1.json"
@@ -24,6 +27,17 @@ RENDERER_INPUT_PATH: Final = (
 )
 COST_INPUT_PATH: Final = (
     ROOT / "python/raos/application/editorial/reader_running_cost.py"
+)
+MEDIA_INPUT_PATH: Final = (
+    ROOT
+    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/rakuten-product-media.json"
+)
+OFFICIAL_MEDIA_INPUT_PATH: Final = (
+    ROOT
+    / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg"
+)
+MEDIA_EVIDENCE_INPUT_PATH: Final = (
+    ROOT / "changes/wordpress-direct-publish-v1/official-media-sources.md"
 )
 TEMPLATE_INPUT_PATHS: Final = (
     ROOT
@@ -82,7 +96,12 @@ def build():
     catalog = json.loads(CATALOG_INPUT_PATH.read_text())
     guides = json.loads(GUIDES_INPUT_PATH.read_text())
     templates = {p.stem: p.read_text() for p in TEMPLATE_INPUT_PATHS}
-    articles, runtime = compile_articles(catalog, templates, guides)
+    media = resolve_product_media(
+        catalog,
+        json.loads(MEDIA_INPUT_PATH.read_text()),
+        OFFICIAL_MEDIA_INPUT_PATH.read_bytes(),
+    )
+    articles, runtime = compile_articles(catalog, templates, guides, media)
     return {
         **{p: articles[p.stem] for p in ARTICLE_OUTPUT_PATHS},
         RUNTIME_OUTPUT_PATH: json.dumps(runtime, ensure_ascii=False, indent=2) + "\n",

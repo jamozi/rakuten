@@ -76,6 +76,43 @@ def test_product_image_mirror_does_not_fetch_other_hosts_or_unverified_images(tm
     assert owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: pytest.fail("unexpected fetch")) == {}
 
 
+def test_registered_editorial_image_is_pinned_without_changing_public_url(tmp_path, monkeypatch):
+    candidate = fixture(tmp_path)
+    url = "https://kurashinoshirube.com/wp-content/uploads/2026/09/kitchen.webp"
+    payload = b"synthetic-owned-editorial-image"
+    registry = tmp_path / "editorial-images.json"
+    registry.write_text(json.dumps({"assets": [{
+        "url": url, "sha256": hashlib.sha256(payload).hexdigest(),
+        "purpose": "editorial_illustration", "product_evidence": False,
+    }]}))
+    monkeypatch.setattr(owner(), "EDITORIAL_VISUALS", registry, raising=False)
+    body = f'<figure><img src="{url}"><figcaption>AI image</figcaption></figure>'
+    candidate["articles"][0]["document"]["block_markup"] = body
+    result = owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: (payload, "image/webp"))
+    assert set(result) == {url}
+    assert candidate["articles"][0]["document"]["block_markup"] == body
+    assert owner().product_image_mirror(candidate, tmp_path) == result
+    registry.write_text(registry.read_text().replace(hashlib.sha256(payload).hexdigest(), "f" * 64))
+    with pytest.raises(ValueError, match="EDITORIAL_IMAGE_CHANGED"):
+        owner().product_image_mirror(candidate, tmp_path)
+
+
+def test_editorial_image_registry_cannot_allow_other_hosts_or_changed_bytes(tmp_path, monkeypatch):
+    candidate = fixture(tmp_path)
+    url = "https://kurashinoshirube.com/wp-content/uploads/2026/09/kitchen.webp"
+    registry = tmp_path / "editorial-images.json"
+    row = {"url": url, "sha256": "a" * 64, "purpose": "editorial_illustration", "product_evidence": False}
+    registry.write_text(json.dumps({"assets": [row]}))
+    monkeypatch.setattr(owner(), "EDITORIAL_VISUALS", registry, raising=False)
+    candidate["articles"][0]["document"]["block_markup"] = f'<img src="{url}">'
+    with pytest.raises(ValueError, match="EDITORIAL_IMAGE_CHANGED"):
+        owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: (b"changed", "image/webp"))
+    row["url"] = "https://other.invalid/image.webp"
+    registry.write_text(json.dumps({"assets": [row]}))
+    with pytest.raises(ValueError, match="EDITORIAL_IMAGE_REGISTRY_INVALID"):
+        owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: pytest.fail("unexpected fetch"))
+
+
 @pytest.mark.parametrize("image_host", ["thumbnail.image.rakuten.co.jp", "image.rakuten.co.jp", "other.invalid"])
 def test_frozen_affiliate_images_are_bounded_and_mirrored_without_html_changes(tmp_path, image_host):
     candidate = fixture(tmp_path)

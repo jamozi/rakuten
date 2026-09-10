@@ -29,6 +29,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 SLICE = ROOT / "changes/wordpress-local-preview-v1"
 DIRECT = ROOT / "changes/wordpress-direct-publish-v1"
+EDITORIAL_VISUALS = DIRECT / "reader-sync/visual-assets.v1.json"
 THEME = (
     ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
 )
@@ -211,10 +212,15 @@ def _theme_tree(theme: Path) -> str:
 
 
 def download_product_image(url: str) -> tuple[bytes, str]:
+    allowed_hosts = (
+        {"kurashinoshirube.com"}
+        if urlsplit(url).hostname == "kurashinoshirube.com"
+        else {"thumbnail.image.rakuten.co.jp", "image.rakuten.co.jp"}
+    )
     class SameHostRedirect(HTTPRedirectHandler):
         def redirect_request(self, req, fp, code, msg, headers, newurl):
             target = urlsplit(newurl)
-            if (target.scheme != "https" or target.hostname not in {"thumbnail.image.rakuten.co.jp", "image.rakuten.co.jp"}
+            if (target.scheme != "https" or target.hostname not in allowed_hosts
                     or target.username or target.password or target.port not in (None, 443)):
                 raise ValueError("DIRECT_PREVIEW_IMAGE_REDIRECT_REFUSED")
             return super().redirect_request(req, fp, code, msg, headers, newurl)
@@ -226,6 +232,17 @@ def download_product_image(url: str) -> tuple[bytes, str]:
 def product_image_mirror(candidate: dict, directory: Path, *, fetch=None) -> dict:
     """Pin verified thumbnails and frozen theme image links for offline preview."""
     urls = set()
+    editorial = {}
+    for row in json.loads(EDITORIAL_VISUALS.read_bytes())["assets"]:
+        url = row.get("url", "")
+        parsed = urlsplit(url)
+        if (parsed.scheme != "https" or parsed.netloc != "kurashinoshirube.com"
+                or parsed.query or parsed.fragment
+                or not re.fullmatch(r"/wp-content/uploads/[0-9]{4}/[0-9]{2}/[a-zA-Z0-9_-]+\.webp", parsed.path)
+                or row.get("purpose") != "editorial_illustration" or row.get("product_evidence") is not False
+                or not re.fullmatch(r"[0-9a-f]{64}", row.get("sha256", "")) or url in editorial):
+            raise ValueError("DIRECT_PREVIEW_EDITORIAL_IMAGE_REGISTRY_INVALID")
+        editorial[url] = row["sha256"]
 
     class Images(HTMLParser):
         def handle_starttag(self, tag, attrs):
@@ -235,6 +252,8 @@ def product_image_mirror(candidate: dict, directory: Path, *, fetch=None) -> dic
             if (tag == "img" and values.get("data-raos-product-image-state") == "verified"
                     and parsed.scheme == "https" and parsed.hostname == "thumbnail.image.rakuten.co.jp"
                     and not parsed.username and not parsed.password and parsed.port in (None, 443)):
+                urls.add(url)
+            elif tag == "img" and url in editorial:
                 urls.add(url)
 
     for article in candidate["articles"]:
@@ -281,6 +300,8 @@ def product_image_mirror(candidate: dict, directory: Path, *, fetch=None) -> dic
             payload, mime = fetch(url)
             if not 0 < len(payload) <= 2 * 1024 * 1024 or mime not in {"image/jpeg", "image/png", "image/webp"}:
                 raise ValueError("DIRECT_PREVIEW_IMAGE_INVALID")
+            if url in editorial and (mime != "image/webp" or digest(payload) != editorial[url]):
+                raise ValueError("DIRECT_PREVIEW_EDITORIAL_IMAGE_CHANGED")
             relative = "preview-product-images/" + digest(url.encode()) + ".image"
             _write(contained(directory, relative), payload)
             rows[url] = {"path": relative, "sha256": digest(payload), "mime": mime}
@@ -288,6 +309,8 @@ def product_image_mirror(candidate: dict, directory: Path, *, fetch=None) -> dic
     if set(rows) != urls:
         raise ValueError("DIRECT_PREVIEW_IMAGE_SOURCE_CHANGED")
     for url, row in rows.items():
+        if url in editorial and (row.get("sha256") != editorial[url] or row.get("mime") != "image/webp"):
+            raise ValueError("DIRECT_PREVIEW_EDITORIAL_IMAGE_CHANGED")
         expected_path = "preview-product-images/" + digest(url.encode()) + ".image"
         if row.get("path") != expected_path or row.get("mime") not in {"image/jpeg", "image/png", "image/webp"}:
             raise ValueError("DIRECT_PREVIEW_IMAGE_INVALID")

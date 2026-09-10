@@ -7,7 +7,7 @@ const binding = {article_id:'article-1', product_id:'product-1', seller_id:'offi
 function fixture() {
   const listeners = {}, calls = []; let granted=true, optout=null;
   const root={getAttribute: key => ({'data-raos-article-id':'article-1','data-raos-snapshot-id':'snapshot-1'})[key]};
-  const anchor={href:binding.href, getAttribute:key=>binding[key.replace('data-raos-', '').replaceAll('-', '_')], closest:()=>root};
+  const anchor={href:binding.href, getAttribute:key=>binding[key.replace('data-raos-', '').replaceAll('-', '_')], closest:selector=>selector === '[data-raos-cta-type="offer"]' ? anchor : root};
   const config = {profile:'purchase-support-v1',enabled:true,debug_mode:false,bindings:[{...binding}]};
   const nodes={'raos-purchase-ga4-config':{type:'application/json',get textContent(){return JSON.stringify(config);}}, 'google_gtagjs-js':{getAttribute:()=> 'G-ABC12345'}};
   const window={getCkyConsent:()=>({isUserActionCompleted:granted,categories:{analytics:granted}}),wp_has_consent:()=>granted,_googlesitekitConsents:{analytics_storage:'granted'},localStorage:{getItem:()=>optout},gtag:(...args)=>calls.push(args)};
