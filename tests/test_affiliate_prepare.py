@@ -1,12 +1,14 @@
 """Real owner-direct preparation against synthetic live reads and official files."""
 
 import json
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
 from scripts import raos_wordpress_direct_publish as direct
 from tests import test_affiliate_link_automation as ads
 from tests.wordpress_reader_complete import test_prepare_patch as patch_tests
+from tests.wordpress_mcp_v1 import test_owner_direct_client as client_tests
 
 
 @pytest.fixture
@@ -150,3 +152,76 @@ def test_expiry_does_not_repeat_an_already_applied_publication(tmp_path, monkeyp
         candidate["candidate_id"],
         lambda *a: pytest.fail("unexpected publish"),
     ) == {"status": "readback_only"}
+
+
+@pytest.mark.parametrize(
+    "expire_after", ["status", "content-propose", "authorize", None]
+)
+def test_deadline_is_rechecked_and_passed_to_bounded_apply(
+    tmp_path, monkeypatch, expire_after
+):
+    directory, candidate, baseline = client_tests.frozen(tmp_path)
+    start_time = datetime.now(UTC).replace(microsecond=0)
+    deadline = start_time + timedelta(seconds=60)
+
+    class Clock(datetime):
+        current = start_time
+
+        @classmethod
+        def now(cls, tz=None):
+            return cls.current
+
+    monkeypatch.setattr(direct, "datetime", Clock)
+    candidate["affiliate"] = {
+        "schema": "RAOSAffiliatePreparedArticlesV1",
+        "valid_until": deadline.isoformat(),
+    }
+    monkeypatch.setattr(direct, "load_candidate", lambda *a: candidate)
+    monkeypatch.setattr(direct, "verify_preview", lambda *a: None)
+    monkeypatch.setattr(direct, "finish_publication", lambda *a: a[3])
+    writes = []
+
+    def call(command, body):
+        if command == expire_after:
+            Clock.current = deadline + timedelta(seconds=5)
+        if command == "status":
+            return {
+                "profile": direct.PROFILE,
+                "enabled": True,
+                "profile_sha256": "e" * 64,
+                "theme": {"tree_sha256": "d" * 64},
+            }
+        if command == "document":
+            return baseline
+        if command == "operation-status":
+            return {"operation": {"state": "PENDING"}}
+        writes.append(command)
+        if command == "content-propose":
+            return {
+                "proposal_id": "b" * 64,
+                "after_sha256": direct.content_after_sha256(
+                    body["document"], body["id"]
+                ),
+            }
+        if command == "authorize":
+            return {"batch_token": "c" * 64, "batch_manifest_sha256": "d" * 64}
+        if command == "apply":
+            assert body["evidence_expires_at_gmt"] == deadline.strftime(
+                "%Y-%m-%dT%H:%M:%SZ"
+            )
+            return {"state": "APPLIED"}
+        pytest.fail(command)
+
+    if expire_after:
+        with pytest.raises(direct.DirectFailure, match="AFFILIATE_EXPIRED_REPREPARE"):
+            direct._publish(tmp_path, directory, candidate["candidate_id"], call)
+        assert "apply" not in writes
+        if expire_after == "status":
+            assert writes == []
+    else:
+        assert (
+            direct._publish(tmp_path, directory, candidate["candidate_id"], call)[
+                "publication_status"
+            ]
+            == "APPLIED"
+        )

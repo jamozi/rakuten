@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import argparse
 import base64
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 import fcntl
 import hashlib
 import io
@@ -730,6 +730,40 @@ def record_failure(directory, candidate_id, error, call):
     save(path, journal)
 
 
+def affiliate_expiry(candidate):
+    receipt = candidate.get("affiliate")
+    if not receipt:
+        return None
+    if receipt.get("schema") != "RAOSAffiliatePreparedArticlesV1":
+        fail("AFFILIATE_RECEIPT_INVALID")
+    try:
+        valid_until = datetime.fromisoformat(receipt["valid_until"])
+        active = valid_until.tzinfo is not None and datetime.now(UTC) < valid_until
+    except (KeyError, TypeError, ValueError):
+        active = False
+    if not active:
+        fail("AFFILIATE_EXPIRED_REPREPARE")
+    return valid_until.astimezone(UTC)
+
+
+def affiliate_bounded_call(candidate, invoke_call):
+    if affiliate_expiry(candidate) is None:
+        return invoke_call
+
+    def call(command, body):
+        if command in {"ensure-draft", "content-propose", "theme-propose", "authorize", "apply"}:
+            expires = affiliate_expiry(candidate)
+            if command == "apply":
+                now = datetime.now(UTC)
+                bound = min(expires, now + timedelta(seconds=operator.RELEASE_APPLY_RECOVERY_TIMEOUT_SECONDS - 1))
+                bound = bound.replace(microsecond=0)
+                if bound <= now:
+                    fail("AFFILIATE_EXPIRED_REPREPARE")
+                body = {**body, "evidence_expires_at_gmt": bound.strftime("%Y-%m-%dT%H:%M:%SZ")}
+        return invoke_call(command, body)
+    return call
+
+
 def _publish(root, directory, candidate_id, call):
     candidate = load_candidate(directory, candidate_id)
     path = directory / "journal.json"
@@ -755,17 +789,7 @@ def _publish(root, directory, candidate_id, call):
         fail("JOURNAL_MISMATCH")
     if journal["publication_status"] in {"APPLIED", "PUBLISHED_AND_READBACK_VERIFIED"}:
         return finish_publication(root, directory, candidate, journal, call)
-    if candidate.get("affiliate"):
-        receipt = candidate["affiliate"]
-        if receipt.get("schema") != "RAOSAffiliatePreparedArticlesV1":
-            fail("AFFILIATE_RECEIPT_INVALID")
-        try:
-            valid_until = datetime.fromisoformat(receipt["valid_until"])
-            active = valid_until.tzinfo is not None and datetime.now(UTC) < valid_until
-        except (KeyError, TypeError, ValueError):
-            active = False
-        if not active:
-            fail("AFFILIATE_EXPIRED_REPREPARE")
+    call = affiliate_bounded_call(candidate, call)
     preview = read_json(directory / "preview.json")
     if (
         preview.get("status") != "PASS"
