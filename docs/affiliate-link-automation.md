@@ -115,7 +115,8 @@ make wordpress-production-request ARGS='direct --owner-checkout /home/minami/rak
 | フィールド | 内容 |
 | --- | --- |
 | `offer_id`, `advertiser_id` | 素材ID、広告主ID。planの対象と完全一致 |
-| `model`, `variant`, `jan` | 型番、構成、JAN。planのmodel・variantは必須、JANを指定した場合は一致が必須 |
+| `site_url` | 公式素材を取得した掲載サイト。plan・提携確認のサイトとの完全一致が必須 |
+| `model`, `variant`, `jan` | 型番、構成、JAN。model・variantは必須。取得素材にJANがあれば、確認済みの期待値と照合する |
 | `status` | この版が採用する値は`active`。不明・終了・その他は採用しない |
 | `landing_url` | 商品遷移先。選定した商品の確認済みURLとの完全一致が必要 |
 | `affiliate_url` | 公式の広告URL。HTTPS、許可host、認証埋め込みなしを検証 |
@@ -124,12 +125,17 @@ make wordpress-production-request ARGS='direct --owner-checkout /home/minami/rak
 resourceに`link_fields`を指定すると、実レスポンスのフィールドへ明示的に対応付けられる。
 例えば`{"offer_id":"creative.id","model":"modelCode"}`。ドット区切りでobjectの子要素を選択できる。
 未指定の値は上表と同名のキーから取得する。存在しないフィールドから値を補完しない。
+APIが掲載サイトをレコードに返さない場合は、認証先SIDと対象サイトの対応を確認した取得処理が別途必要。
+複数サイトの素材が混ざったexportへ、一律のサイト名を付けて使うことはしない。
 ASPが独自のstatus値を返す場合、契約を確認した正規化が別途必要。都合よくactiveへ置換しない。
 任意のraw、Finance、秘密値は記事・候補・差分へコピーせず、必要フィールドのみ取り出す。
 
 ## 記事への挿入
 
 記事はowner-directの`articles.v1.json`に登録し、通常sourceの`articles/`内に置く。
+この版は`body_source`のHTML記事に対応する。現行の既存記事には`patch_source`で、
+本番本文を読み直してから限定差分を適用するものがある。これらは`PATCH_ARTICLE_REQUIRES_LIVE_BASELINE`で停止する。
+古いHTMLで置き換えず、初回接続時に最新本文を取得し、この方式へ広告候補を渡す接続を追加する必要がある。
 既存記事の初回取り込みには`direct import-existing`がある。生成fixtureを直接書き換えない。
 対象は、anchor_idのid属性とproduct_refのdata-raos-product-id属性を持つ、単一のarticle/section/div要素。
 

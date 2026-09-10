@@ -38,7 +38,7 @@ def https_url(value: object, hosts: set[str] | None = None) -> str:
 
 class CreativeParser(HTMLParser):
     def __init__(self, hosts: set[str]):
-        super().__init__(convert_charrefs=True)
+        super().__init__(convert_charrefs=False)
         self.hosts = hosts
         self.stack: list[str] = []
         self.anchors = 0
@@ -82,9 +82,15 @@ class CreativeParser(HTMLParser):
             self.stack.append(tag)
 
     def handle_startendtag(self, tag, attrs):
-        self.handle_starttag(tag, attrs)
         if tag not in {"img", "br"}:
-            self.handle_endtag(tag)
+            raise LinkError("CREATIVE_SELF_CLOSING_NONVOID")
+        self.handle_starttag(tag, attrs)
+
+    def handle_data(self, data):
+        # HTMLParser treats an unfinished tag as text on close(). Do not emit it
+        # unchanged where a browser could consume the following article markup.
+        if "<" in data:
+            raise LinkError("CREATIVE_INCOMPLETE_MARKUP")
 
     def handle_endtag(self, tag):
         if not self.stack or self.stack.pop() != tag:
@@ -108,6 +114,8 @@ def creative(value: object, hosts: set[str], destination: str) -> str:
         raise LinkError("CREATIVE_MISSING_OR_TOO_LARGE")
     parser = CreativeParser(hosts)
     parser.feed(value)
+    if parser.rawdata:
+        raise LinkError("CREATIVE_INCOMPLETE_MARKUP")
     parser.close()
     if parser.stack or parser.anchors != 1:
         raise LinkError("CREATIVE_REQUIRES_ONE_COMPLETE_LINK")
@@ -119,9 +127,8 @@ def creative(value: object, hosts: set[str], destination: str) -> str:
 class AnchorParser(HTMLParser):
     def __init__(self, source: str, anchor: str, product: str):
         super().__init__(convert_charrefs=True)
-        self.offsets = [0]
-        for line in source.splitlines(keepends=True):
-            self.offsets.append(self.offsets[-1] + len(line))
+        # HTMLParser advances its line number on LF only, not Unicode separators.
+        self.offsets = [0, *(match.end() for match in re.finditer("\n", source))]
         self.anchor, self.product = anchor, product
         self.stack: list[tuple[str, int | None]] = []
         self.ranges: list[tuple[int, int]] = []
@@ -164,7 +171,7 @@ class AnchorParser(HTMLParser):
     def handle_startendtag(self, tag, attrs):
         self.handle_starttag(tag, attrs)
         if self.stack and self.stack[-1][0] == tag:
-            self.handle_endtag(tag)
+            raise LinkError("ARTICLE_SELF_CLOSING_NONVOID")
 
     def handle_endtag(self, tag):
         if not self.stack or self.stack[-1][0] != tag:

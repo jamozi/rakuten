@@ -35,6 +35,7 @@ ID = re.compile(r"[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}\Z")
 FIELDS = {
     "offer_id",
     "advertiser_id",
+    "site_url",
     "model",
     "variant",
     "jan",
@@ -210,6 +211,8 @@ def article_sources(root: Path, keys: set[str]):
     for row in registry["articles"]:
         if row["article_key"] not in keys:
             continue
+        if row.get("patch_source"):
+            fail("PATCH_ARTICLE_REQUIRES_LIVE_BASELINE")
         name = row.get("body_source", "")
         if (
             not isinstance(name, str)
@@ -224,7 +227,7 @@ def article_sources(root: Path, keys: set[str]):
             fail("ARTICLE_SOURCE_AMBIGUOUS")
         if not path.is_file() or path.stat().st_size > MAX_INPUT_BYTES:
             fail("ARTICLE_SOURCE_MISSING_OR_TOO_LARGE")
-        body = path.read_text(encoding="utf-8")
+        body = path.read_bytes().decode("utf-8")
         if any(
             text in body
             for text in ("この記事の販売リンクは掲載していません", "販売リンクなし")
@@ -256,10 +259,11 @@ def select_creative(placement, records, grants):
         offer["status"] != "active"
         or offer["landing_url"] != placement["landing_url"]
         or any(offer[k] != v for k, v in placement["identity"].items())
+        or (offer["jan"] not in (None, "") and "jan" not in placement["identity"])
     ):
         fail("OFFER_INACTIVE_OR_IDENTITY_MISMATCH")
     grant = grants.get((placement["provider"], offer["advertiser_id"]))
-    if grant is None:
+    if grant is None or offer["site_url"] != grant["site_url"]:
         fail("OFFER_PARTNERSHIP_UNVERIFIED")
     hosts = set(grant["allowed_hosts"])
     url = https_url(offer["affiliate_url"], hosts)
@@ -307,10 +311,10 @@ def write_private(path: Path, payload: str):
         Path(temporary).unlink(missing_ok=True)
 
 
-def write_drafts(root: Path, before: dict, after: dict):
+def write_drafts(root: Path, before: dict, after: dict, finalize):
     for key, (name, text) in before.items():
         no_symlinks(root / name)
-        if (root / name).read_text(encoding="utf-8") != text:
+        if (root / name).read_bytes().decode("utf-8") != text:
             fail("ARTICLE_CHANGED_DURING_RUN")
     written = []
     try:
@@ -319,16 +323,17 @@ def write_drafts(root: Path, before: dict, after: dict):
                 continue
             path = root / name
             no_symlinks(path)
-            if path.read_text(encoding="utf-8") != text:
+            if path.read_bytes().decode("utf-8") != text:
                 fail("ARTICLE_CHANGED_DURING_RUN")
             write_private(path, after[key])
             written.append(key)
+        finalize()
     except Exception:
         for key in reversed(written):
             name, original = before[key]
             path = root / name
             no_symlinks(path)
-            if path.read_text(encoding="utf-8") == after[key]:
+            if path.read_bytes().decode("utf-8") == after[key]:
                 write_private(path, original)
         raise
 
@@ -416,12 +421,10 @@ def automate(
     for name, content in artifacts.items():
         path = directory / name
         no_symlinks(path)
-        if path.exists() and path.read_text(encoding="utf-8") != content:
+        if path.exists() and path.read_bytes().decode("utf-8") != content:
             fail("CANDIDATE_DRIFT")
         if not path.exists():
             write_private(path, content)
-    if apply:
-        write_drafts(root, before, after)
     result = {
         "status": "DRAFTS_UPDATED" if apply else "CANDIDATE_CREATED",
         "candidate_id": candidate_id,
@@ -431,9 +434,17 @@ def automate(
         "changed_articles": sum(after[key] != before[key][1] for key in keys),
         "published": False,
     }
-    write_private(
-        output / "latest.json", json.dumps(result, ensure_ascii=False, indent=2) + "\n"
-    )
+
+    def finalize():
+        write_private(
+            output / "latest.json",
+            json.dumps(result, ensure_ascii=False, indent=2) + "\n",
+        )
+
+    if apply:
+        write_drafts(root, before, after, finalize)
+    else:
+        finalize()
     return result
 
 

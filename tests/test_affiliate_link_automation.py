@@ -39,6 +39,7 @@ def setup_case(tmp_path, provider="linkshare", html=None):
     offer = {
         "offer_id": "offer-a",
         "advertiser_id": "merchant-a",
+        "site_url": SITE,
         "model": "MODEL-A",
         "variant": "standard",
         "jan": "1234567890128",
@@ -246,6 +247,8 @@ def test_missing_stale_or_other_site_grant_cannot_change_article(
         '<a href="https://tracking.example/click">buy</a><img src="https://evil.example/p">',
         '<iframe src="https://tracking.example"></iframe>',
         '<a href="https://tracking.example/click?id=offer-a">buy</a><![CDATA[hidden]]>',
+        '<a href="https://tracking.example/click?id=offer-a">buy</a><img src="https://pixel.example/p',
+        '<a href="https://tracking.example/click?id=offer-a"/>',
     ],
 )
 def test_unsafe_creative_is_rejected_not_sanitized(tmp_path, html):
@@ -426,6 +429,79 @@ def test_no_sale_disclosure_requires_editorial_update(tmp_path):
     (case[0] / ARTICLE).write_text(body)
     assert run_case(case, "--write-drafts") != 0
     assert (case[0] / ARTICLE).read_text() == body
+
+
+def test_live_patch_articles_require_a_fresh_baseline(tmp_path, capsys):
+    case = setup_case(tmp_path)
+    rewrite(
+        case[0] / "changes/wordpress-direct-publish-v1/articles.v1.json",
+        lambda registry: registry["articles"][0].update(
+            patch_source="guide.patch.json"
+        ),
+    )
+    assert run_case(case, "--write-drafts") != 0
+    assert "PATCH_ARTICLE_REQUIRES_LIVE_BASELINE" in capsys.readouterr().out
+    assert (case[0] / ARTICLE).read_text() == ORIGINAL
+
+
+@pytest.mark.parametrize("site", ["https://other.example", None])
+def test_offer_must_explicitly_belong_to_plan_site(tmp_path, site):
+    case = setup_case(tmp_path)
+    rewrite(case[3], lambda rows: rows[0].update(site_url=site))
+    assert run_case(case, "--write-drafts") != 0
+    assert (case[0] / ARTICLE).read_text() == ORIGINAL
+
+
+def test_supplied_offer_jan_requires_verified_expected_jan(tmp_path):
+    case = setup_case(tmp_path)
+    rewrite(case[2], lambda plan: plan["placements"][0]["identity"].pop("jan"))
+    assert run_case(case, "--write-drafts") != 0
+    assert (case[0] / ARTICLE).read_text() == ORIGINAL
+
+
+@pytest.mark.parametrize(
+    "prefix", ["<p>Intro\u2028</p>\n", "<p>Intro\r</p>\n", "<p>Intro\r\n</p>\r\n"]
+)
+def test_article_newlines_and_offsets_are_preserved(tmp_path, prefix):
+    case = setup_case(tmp_path)
+    source = prefix + ORIGINAL.replace("既存本文", "既存\u2029本文")
+    (case[0] / ARTICLE).write_bytes(source.encode())
+    assert run_case(case, "--write-drafts") == 0
+    updated = (case[0] / ARTICLE).read_bytes().decode()
+    start = updated.index("<!-- raos-affiliate:guide-product-a:start -->")
+    end = updated.index("<!-- raos-affiliate:guide-product-a:end -->") + len(
+        "<!-- raos-affiliate:guide-product-a:end -->"
+    )
+    assert updated[:start] + updated[end:] == source
+    assert updated[end:].startswith("</section>")
+    from hashlib import sha256
+
+    report = json.loads((case[4] / "latest.json").read_text())
+    candidate = json.loads(
+        (case[4] / report["candidate_id"] / "candidate.json").read_text()
+    )
+    assert (
+        candidate["articles"][0]["before_sha256"] == sha256(source.encode()).hexdigest()
+    )
+    assert run_case(case, "--write-drafts") == 0
+    assert (case[0] / ARTICLE).read_bytes().decode() == updated
+
+
+def test_report_write_failure_restores_updated_drafts(tmp_path, monkeypatch):
+    case = setup_case(tmp_path)
+    import tools.affiliate_ingestion.link_automation as automation
+
+    original_write = automation.write_private
+
+    def failed_report(path, content):
+        if path == case[4] / "latest.json":
+            raise OSError("synthetic report write failure")
+        original_write(path, content)
+
+    monkeypatch.setattr(automation, "write_private", failed_report)
+    assert run_case(case, "--write-drafts") != 0
+    assert (case[0] / ARTICLE).read_text() == ORIGINAL
+    assert not (case[4] / "latest.json").exists()
 
 
 def test_second_article_write_failure_restores_first_draft(tmp_path, monkeypatch):
