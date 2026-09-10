@@ -12,7 +12,14 @@ import re
 from typing import Any, cast
 from urllib.parse import urlsplit
 
-from raos.domain.editorial.purchase_support import POLICY, PLACEMENTS, money, timestamp
+from raos.domain.editorial.purchase_support import (
+    POLICY,
+    PLACEMENTS,
+    money,
+    timestamp,
+    resolve_offer,
+    offer_states,
+)
 from raos.application.editorial.reader_html import Element, fragment
 from raos.application.editorial.local_reader_guides import build_local_guides
 from raos.application.editorial.reader_running_cost import render_cost_profiles
@@ -117,12 +124,21 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
     offers = catalog.get("offers", [])
     if len({o["offer_id"] for o in offers}) != len(offers):
         raise ValueError("PURCHASE_DUPLICATE_OFFER")
+    if len(
+        {
+            (o["product_id"], o.get("variant_id", o.get("variant")), o["seller_id"])
+            for o in offers
+        }
+    ) != len(offers):
+        raise ValueError("PURCHASE_DUPLICATE_SELLER_VARIANT")
     for o in offers:
         p = next((p for p in products if p["product_id"] == o.get("product_id")), None)
         if (
             not p
             or o.get("product_model") != p["exact_model"]
-            or not https(o.get("url"))
+            or not https(
+                o.get("merchant_url") or o.get("affiliate_url") or o.get("url")
+            )
             or not https(o.get("source_url"))
         ):
             raise ValueError("PURCHASE_OFFER_IDENTITY_MISMATCH")
@@ -131,10 +147,11 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
                 raise ValueError("PURCHASE_MONEY_INVALID")
         if not timestamp(o.get("checked_at")) or not timestamp(o.get("valid_until")):
             raise ValueError("PURCHASE_OFFER_DATE_REQUIRED")
-        if o.get("affiliate") is True and (
+        if (o.get("affiliate") is True or o.get("affiliate_ready") is True) and (
             o.get("advertiser_authorized") is not True
             or o.get("link_usage_authorized") is not True
             or o.get("site_origin") != ORIGIN
+            or not resolve_offer(o)["affiliate_ready"]
         ):
             raise ValueError("PURCHASE_AFFILIATE_RIGHTS_REQUIRED")
         if any(
@@ -184,14 +201,7 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
 
 
 def eligible_link(o: Mapping[str, Any]) -> bool:
-    return (
-        o.get("identity_verified") is True
-        and o.get("state") in {"AVAILABLE", "PREORDER"}
-        and o.get("condition") == "new"
-        and bool(o.get("variant"))
-        and bool(o.get("warranty"))
-        and o.get("warranty") != "UNKNOWN"
-    )
+    return resolve_offer(o)["href"] is not None
 
 
 def attrs(values: Mapping[str, object]) -> str:
@@ -216,6 +226,7 @@ def cta(
 ) -> tuple[str, dict[str, str]]:
     if placement not in PLACEMENTS or not eligible_link(o):
         raise ValueError("PURCHASE_CTA_INELIGIBLE")
+    resolved = resolve_offer(o)
     binding = {
         k: str(v)
         for k, v in {
@@ -226,29 +237,34 @@ def cta(
             "cta_id": f"purchase-{article['post_id']}-{o['offer_id']}-{placement}",
             "placement": placement,
             "snapshot_id": snapshot,
+            "link_purpose": resolved["link_purpose"],
+            "affiliate": str(resolved["affiliate_ready"]).lower(),
         }.items()
     }
+    if article.get("purchase_normalization", True) is False:
+        binding.pop("link_purpose")
+        binding.pop("affiliate")
     attributes = {
         "data-raos-cta-type": "offer",
         **{"data-raos-" + k.replace("_", "-"): v for k, v in binding.items()},
     }
     rel = (
         "sponsored nofollow noopener noreferrer"
-        if o.get("affiliate")
+        if resolved["affiliate_ready"]
         else "noopener noreferrer"
     )
     link = (
         '<a class="ps-offer-link"'
         + attrs(attributes)
         + ' href="'
-        + escape(o["url"], quote=True)
+        + escape(resolved["href"], quote=True)
         + '" rel="'
         + rel
         + '">'
         + escape(o["seller"])
         + "で購入条件を見る</a>"
     )
-    return link, {**binding, "href": o["url"]}
+    return link, {**binding, "href": resolved["href"]}
 
 
 def offer_panel(
@@ -264,9 +280,11 @@ def offer_panel(
     for o in offers:
         # This is an explicitly dated observation, never a claim of live/current price.
         cells = " ／ ".join(
-            f"{LABELS[k]}：{o[k]:,}円"
-            if o.get(k) is not None
-            else f"{LABELS[k]}：未確認"
+            (
+                f"{LABELS[k]}：{o[k]:,}円"
+                if o.get(k) is not None
+                else f"{LABELS[k]}：未確認"
+            )
             for k in LABELS
         )
         observed = timestamp(o["checked_at"])
@@ -284,6 +302,18 @@ def offer_panel(
             "data-ps-complete": str(o.get("total_scope_complete") is True).lower(),
             "data-ps-condition": o["condition"],
         }
+        if article.get("purchase_normalization", True):
+            checked = timestamp(o["checked_at"])
+            if checked is None:
+                raise ValueError("PURCHASE_OFFER_DATE_REQUIRED")
+            states = offer_states(o, checked)
+            states["price_state"] = "RECHECK_REQUIRED"
+            data.update(
+                {
+                    "data-ps-" + key.replace("_", "-"): value
+                    for key, value in states.items()
+                }
+            )
         for key in LABELS:
             if o.get(key) is not None:
                 data["data-ps-" + key.replace("_", "-")] = o[key]
@@ -323,7 +353,11 @@ def offer_panel(
             rows += (
                 '<p class="ps-unavailable">'
                 + escape(
-                    o.get("unavailable_reason")
+                    (
+                        "売り切れです。"
+                        if o.get("state") == "SOLD_OUT"
+                        else o.get("unavailable_reason")
+                    )
                     or "販売条件の確認が完了していないため、購入先としての案内を保留しています。"
                 )
                 + "</p>"
@@ -519,7 +553,12 @@ def render_product_media(
             "cta_id": "purchase-image-" + product["product_id"] + "-" + size,
             "placement": "product_card",
             "snapshot_id": snapshot,
+            "link_purpose": "affiliate_purchase",
+            "affiliate": "true",
         }
+        if article.get("purchase_normalization", True) is False:
+            binding.pop("link_purpose")
+            binding.pop("affiliate")
         parts.append(
             '<div class="raos-rakuten-image-'
             + size
@@ -875,20 +914,85 @@ def render_guide(
     return "".join(out)
 
 
-def add_compatibility_anchors(rendered: str, template: str) -> str:
-    old = {
-        n.attrs["id"]
-        for n in fragment(template).walk()
+def add_compatibility_anchors(
+    rendered: str, template: str, *, normalize: bool = True
+) -> str:
+    old_root, root = fragment(template), fragment(rendered)
+    old_nodes = {
+        str(n.attrs["id"]): n
+        for n in old_root.walk()
         if isinstance(n.attrs.get("id"), str)
     }
+    old = set(old_nodes)
     new = {
-        n.attrs["id"]
-        for n in fragment(rendered).walk()
-        if isinstance(n.attrs.get("id"), str)
+        str(n.attrs["id"]) for n in root.walk() if isinstance(n.attrs.get("id"), str)
     }
-    # Keep incoming bookmarks valid without retaining duplicate introductory prose.
+    sections = {
+        n.attrs.get("data-ps-product"): n
+        for n in root.walk()
+        if n.has("ps-product-offers")
+    }
+    aliases = {}
+    for identity in sorted(old - new) if normalize and sections else []:
+        node = old_nodes[identity]
+        if not (
+            str(identity).endswith("-purchase")
+            or "data-raos-purchase-action" in node.attrs
+        ):
+            continue
+        products = {
+            n.attrs["data-raos-product-id"]
+            for n in node.walk()
+            if n.attrs.get("data-raos-product-id")
+        }
+        parent = node.parent
+        while not products and parent:
+            product = parent.attrs.get("data-raos-product-id") or parent.attrs.get(
+                "data-ps-product"
+            )
+            if product:
+                products.add(product)
+            parent = parent.parent
+        if len(products) != 1 or next(iter(products)) not in sections:
+            raise ValueError("PURCHASE_LEGACY_ANCHOR_IDENTITY_REQUIRED")
+        product = next(iter(products))
+        alias = Element("span", {"id": str(identity), "data-ps-purchase-alias": "true"})
+        section = sections[product]
+        section.children.insert(0, alias)
+        alias.parent = section
+        aliases[str(identity)] = product
+        new.add(identity)
+    section_ids = {str(n.attrs["id"]): product for product, n in sections.items()}
+    for link in root.find(tag="a") if normalize and sections else []:
+        href = link.attrs.get("href") or ""
+        if href.startswith("#") and href[1:] in {**aliases, **section_ids}:
+            product = {**aliases, **section_ids}[href[1:]]
+            source: Element | None = link
+            while source:
+                owner = source.attrs.get("data-raos-product-id") or source.attrs.get(
+                    "data-ps-product"
+                )
+                if owner and owner != product:
+                    raise ValueError("PURCHASE_ANCHOR_PRODUCT_MISMATCH")
+                source = source.parent
+            link.attrs.update(
+                {
+                    "data-raos-product-id": product,
+                    "data-raos-link-purpose": "internal_navigation",
+                }
+            )
+            # Preserve incoming bookmarks, but in-article actions go directly to the section.
+            link.attrs["href"] = "#" + str(sections[product].attrs["id"])
+        elif not href.startswith("#") and "公式仕様を見る" in link.text():
+            parent = link.parent
+            while parent and not parent.attrs.get("data-ps-product"):
+                parent = parent.parent
+            link.attrs["data-raos-link-purpose"] = "official_verify"
+            if parent:
+                link.attrs["data-raos-product-id"] = parent.attrs["data-ps-product"]
+    # Non-purchase bookmarks remain compatible; purchase aliases live inside their offer section.
     return (
-        rendered
+        (root.html() if normalize and sections else rendered)
         + '<div class="ps-compat-anchors" aria-hidden="true">'
         + "".join(
             '<span id="' + escape(str(i), quote=True) + '"></span>'
@@ -911,6 +1015,11 @@ def compile_articles(
         "articles": [],
     }
     for a in catalog["articles"]:
+        a = {
+            **a,
+            "purchase_normalization": a["post_id"]
+            in catalog.get("normalization_pilot_post_ids", [30, 83, 41]),
+        }
         template = templates[a["slug"]]
         snapshot = "ps-pending-content-digest"
         bindings: list[dict[str, str]] = []
@@ -977,7 +1086,9 @@ def compile_articles(
         else:
             html = template
         if a["kind"] != "policy":
-            html = add_compatibility_anchors(html, template)
+            html = add_compatibility_anchors(
+                html, template, normalize=a["purchase_normalization"]
+            )
         rendered = "<!-- wp:html -->\n" + html + "\n<!-- /wp:html -->\n"
         final_snapshot = (
             "ps-"

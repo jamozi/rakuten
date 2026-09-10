@@ -17,10 +17,21 @@ function fixture() {
   const click=(type='click',button=0)=>{const e={type,button,isTrusted:true,target:{closest:()=>anchor}};for(const fn of listeners[type])fn(e);};
   return {window,context,config,nodes,calls,click,listeners,anchor,deny:()=>granted=false,optout:()=>optout='1'};
 }
-let f=fixture(); f.click(); assert.equal(f.calls.length,1);assert.deepEqual(Object.keys(f.calls[0][2]).sort(),[...Object.keys(binding).filter(k=>k!=='href'),'send_to','debug_mode'].sort());assert.ok(!JSON.stringify(f.calls).includes('private'));
+let f=fixture(); f.click(); assert.equal(f.calls.length,1);assert.deepEqual(Object.keys(f.calls[0][2]).sort(),[...Object.keys(binding).filter(k=>k!=='href'),'send_to','debug_mode','link_purpose','affiliate'].sort());assert.ok(!JSON.stringify(f.calls).includes('private'));
 vm.runInContext(source,f.context); f.click();f.click(); assert.equal(f.calls.length,3);assert.equal(f.listeners.click.length,1);
 f.click('click',1);f.click('auxclick',1);f.click('auxclick',0);assert.equal(f.calls.length,4);
 for (const alter of [f=>f.deny(),f=>f.optout(),f=>delete f.window.gtag,f=>delete f.nodes['raos-purchase-ga4-config'],f=>f.config.enabled=false,f=>f.config.bindings[0].seller_id='unknown',f=>f.anchor.href+='&drift=1',f=>f.window.gtag.raosConsentGate=false,f=>f.window['ga-disable-G-ABC12345']=true]) {f=fixture();alter(f);f.click();assert.equal(f.calls.length,0);}
 f=fixture();f.config.debug_mode=true;f.click();assert.equal(f.calls[0][2].debug_mode,true);f.deny();f.click();assert.equal(f.calls.length,1);
 f=fixture();f.window.gtag=()=>{throw Error('network');};f.window.gtag.raosConsentGate=true;assert.doesNotThrow(()=>f.click());
 console.log('purchase analytics: payload, consent, no config/tag, allowlist/href drift, opt-out, revocation, debug, duplicate install, repeat/aux click, network failure PASS');
+
+f=fixture();f.click();assert.equal(f.calls[0][2].link_purpose,"merchant_purchase");assert.equal(f.calls[0][2].affiliate,false);
+f=fixture();
+const sameEvent={type:'click',button:0,isTrusted:true,target:{closest:()=>f.anchor}};
+f.listeners.click[0](sameEvent);f.listeners.click[0](sameEvent);assert.equal(f.calls.length,1);
+f=fixture();
+binding.link_purpose='affiliate_purchase';binding.affiliate='true';
+f.config.bindings[0]={...binding};f.click();assert.equal(f.calls.length,1);
+assert.equal(f.calls[0][2].link_purpose,'affiliate_purchase');assert.equal(f.calls[0][2].affiliate,true);
+f.config.bindings[0].affiliate='false';f.click();assert.equal(f.calls.length,1);
+delete binding.link_purpose;delete binding.affiliate;

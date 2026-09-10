@@ -2082,7 +2082,11 @@
       "identity_verified": true,
       "total_scope_complete": false,
       "affiliate": false,
-      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。",
+      "merchant_url": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976",
+      "affiliate_url": null,
+      "variant_id": "siroca-ss-ma251-silver",
+      "verified_at": "2026-09-10T01:43:25+00:00"
     },
     {
       "offer_id": "ace-01521-09",
@@ -2110,7 +2114,11 @@
       "identity_verified": true,
       "total_scope_complete": true,
       "affiliate": false,
-      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。",
+      "merchant_url": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on",
+      "affiliate_url": null,
+      "variant_id": "ace-01521-09",
+      "verified_at": "2026-09-10T01:43:25+00:00"
     },
     {
       "offer_id": "irobot-f155260-white",
@@ -2139,7 +2147,11 @@
       "identity_verified": true,
       "total_scope_complete": false,
       "affiliate": false,
-      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。",
+      "merchant_url": "https://store.irobot-jp.com/item/F155260.html",
+      "affiliate_url": null,
+      "variant_id": "irobot-f155260-white",
+      "verified_at": "2026-09-10T01:43:25+00:00"
     },
     {
       "offer_id": "switchbot-k11-pro-ivory",
@@ -2168,7 +2180,11 @@
       "identity_verified": true,
       "total_scope_complete": false,
       "affiliate": false,
-      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。",
+      "merchant_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "affiliate_url": null,
+      "variant_id": "switchbot-k11-pro-ivory",
+      "verified_at": "2026-09-10T01:43:25+00:00"
     },
     {
       "offer_id": "anker-a17225z1",
@@ -2196,7 +2212,11 @@
       "identity_verified": true,
       "total_scope_complete": true,
       "affiliate": false,
-      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。",
+      "merchant_url": "https://www.ankerjapan.com/products/a1722?from_business=1",
+      "affiliate_url": null,
+      "variant_id": "anker-a17225z1",
+      "verified_at": "2026-09-10T01:43:25+00:00"
     },
     {
       "offer_id": "jackery-500-new-base",
@@ -2224,7 +2244,42 @@
       "identity_verified": true,
       "total_scope_complete": false,
       "affiliate": false,
-      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。",
+      "merchant_url": "https://www.jackery.jp/products/explorer-500-new",
+      "affiliate_url": null,
+      "variant_id": "jackery-500-new-base",
+      "verified_at": "2026-09-10T01:43:25+00:00"
+    },
+    {
+      "offer_id": "samsonite-c-lite-134679-1041",
+      "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+      "product_model": "CS2*09007 / 134679-1041",
+      "seller_id": "samsonite",
+      "seller": "サムソナイト公式ストア",
+      "url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+      "merchant_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+      "affiliate_url": null,
+      "affiliate": false,
+      "source_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+      "source_urls": [
+        "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html"
+      ],
+      "checked_at": "2026-09-10T05:46:00+00:00",
+      "verified_at": "2026-09-10T05:46:00+00:00",
+      "valid_until": "2026-09-11T05:46:00+00:00",
+      "price_yen": 83600,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "AVAILABLE",
+      "condition": "new",
+      "variant_id": "134679-1041",
+      "variant": "CS2*09007 / 134679-1041 ブラック・55cm・36L（拡張時42L）・新品",
+      "warranty": "条件付き10年。電子機器部分は購入後1年。保証規定に従う。",
+      "delivery": "届け先・注文画面で確認",
+      "price_scope": "本体の税込表示。送料・必須費用を含む総額は未確認。",
+      "identity_verified": true,
+      "total_scope_complete": false,
+      "link_basis": "公式商品ページのSKU CS2*09007、ブラック、55cm、在庫あり表示とカート欄を確認。通常リンク。"
     }
   ],
   "research_issues": [
@@ -2615,5 +2670,10 @@
       "anchor": "product-dish-np-tsp1"
     }
   ],
-  "editorial_updated_on": "2026-09-10"
+  "editorial_updated_on": "2026-09-10",
+  "normalization_pilot_post_ids": [
+    30,
+    83,
+    41
+  ]
 }

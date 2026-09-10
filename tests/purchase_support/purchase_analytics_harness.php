@@ -57,3 +57,8 @@ if (in_array($argv[2], array('on', 'tampered'), true) && count($verified) !== 1)
 if ($argv[2] === 'on' && (count($enqueued) !== 1 || $enqueued[0][1] !== 'https://preview.example/verified.js')) { exit(9); }
 if ($argv[2] !== 'on' && count($enqueued) !== 0) { exit(10); }
 echo "PURCHASE_ASSET_INTEGRITY_OK\n";
+$extended = array_merge($binding, array('link_purpose'=>'affiliate_purchase', 'affiliate'=>'true'));
+$extended_result = kurashinoshirube_purchase_ga4_configuration(array($extended));
+if (in_array($argv[2], array('on','tampered'), true) && $extended_result === null) { exit(14); }
+$extended['affiliate'] = 'false';
+if (kurashinoshirube_purchase_ga4_configuration(array($extended)) !== null) { exit(15); }

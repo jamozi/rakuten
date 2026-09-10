@@ -36,6 +36,11 @@ PUBLIC_FIELDS = {
     "link_usage_authorized",
     "site_origin",
     "link_basis",
+    "merchant_url",
+    "affiliate_url",
+    "affiliate_ready",
+    "variant_id",
+    "verified_at",
 }
 
 
@@ -64,7 +69,7 @@ def approved_offer_from_normalized(
     if (
         not isinstance(offer, dict)
         or set(offer) - PUBLIC_FIELDS
-        or offer.get("url") != record.get("url")
+        or (offer.get("affiliate_url") or offer.get("url")) != record.get("url")
     ):
         raise ValueError("PURCHASE_ASP_EXACT_ISSUED_LINK_REQUIRED")
     if (
@@ -75,25 +80,20 @@ def approved_offer_from_normalized(
         or review.get("material_storage_authorized") is not True
     ):
         raise ValueError("PURCHASE_ASP_PERMISSION_REQUIRED")
-    if (
-        offer.get("identity_verified") is not True
-        or not all(
-            offer.get(k)
-            for k in (
-                "product_id",
-                "product_model",
-                "variant",
-                "seller_id",
-                "seller",
-                "warranty",
-                "link_basis",
-            )
+    if offer.get("identity_verified") is not True or not all(
+        offer.get(k)
+        for k in (
+            "product_id",
+            "product_model",
+            "variant",
+            "seller_id",
+            "seller",
+            "link_basis",
         )
-        or offer.get("warranty") == "UNKNOWN"
     ):
         raise ValueError("PURCHASE_ASP_IDENTITY_REVIEW_REQUIRED")
     if (
-        not https(offer.get("url"))
+        not https(offer.get("affiliate_url") or offer.get("url"))
         or not https(offer.get("source_url"))
         or not timestamp(offer.get("checked_at"))
         or not timestamp(offer.get("valid_until"))

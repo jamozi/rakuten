@@ -212,6 +212,10 @@
       for (const { node, offer } of sellers) {
         const cost = offerCost(offer, now), status = node.querySelector('.ps-price-status');
         const expiry = Math.min(time(offer.valid_until), time(offer.checked_at) + DAY);
+        if (node.dataset && 'psPriceState' in node.dataset) {
+          node.dataset.psPriceState = !money(offer.price_yen) || !Number.isFinite(expiry) || time(offer.checked_at) > now ? 'UNKNOWN'
+            : now >= expiry ? 'EXPIRED' : 'CURRENT';
+        }
         deadlines.push(expiry);
         if (status) status.textContent = cost.state === 'CURRENT' ? `確認した費目の購入総額：${formatter.format(cost.total)}円。表示期限：${new Date(expiry).toLocaleString('ja-JP')}。販売先で現在条件を再確認してください。` :
           `${cost.state === 'EXPIRED' ? '販売条件の表示期限切れ。' : '購入総額は未確認。'}${cost.subtotal === null ? '' : `確認時の費目の小計：${formatter.format(cost.subtotal)}円。`}現在の購入総額や予算内とは判断できません。販売先で再確認してください。`;
