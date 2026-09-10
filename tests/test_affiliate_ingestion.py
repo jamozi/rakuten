@@ -615,6 +615,151 @@ def test_oauth_token_request_uses_post_and_does_not_persist_payload():
     assert request.call_args.kwargs["data"] == b"grant_type=client_credentials"
 
 
+def linkshare_auth_config():
+    return {
+        "endpoint": "https://api.linksynergy.com/linklocator/1.0/getMerchByAppStatus/approved",
+        "account_id": "1234567",
+        "auth": {
+            "type": "linkshare_client_credentials",
+            "client_id": "example-client",
+            "client_secret": "example-secret",
+        },
+    }
+
+
+def test_linkshare_obtains_a_new_site_scoped_token_for_each_acquisition():
+    import base64
+
+    settings = initial_config()
+    client = AffiliateHttpClient(settings["http"], settings["storage"])
+    config = linkshare_auth_config()
+    with patch.object(
+        client,
+        "request",
+        return_value=response(
+            {
+                "access_token": "example-token",
+                "token_type": "bearer",
+                "expires_in": 3600,
+            }
+        ),
+    ) as request:
+        for _ in range(2):
+            assert _authentication(client, config) == (
+                {"Authorization": "Bearer example-token"},
+                {},
+            )
+    assert request.call_count == 2
+    assert request.call_args.args == ("https://api.linksynergy.com/token",)
+    assert request.call_args.kwargs["method"] == "POST"
+    assert request.call_args.kwargs["data"] == b"scope=1234567"
+    assert (
+        request.call_args.kwargs["headers"]["Authorization"]
+        == "Bearer " + base64.b64encode(b"example-client:example-secret").decode()
+    )
+    assert "token" not in config["auth"]
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("account_id", ""),
+        ("account_id", "123\n"),
+        ("account_id", "different-site"),
+        ("endpoint", "https://example.invalid/products"),
+        ("endpoint", "https://api.linksynergy.com.example.invalid/products"),
+        ("auth.client_id", ""),
+        ("auth.client_id", "other:client"),
+        ("auth.client_secret", "invalid\nsecret"),
+        ("auth.token_url", "https://example.invalid/token"),
+        ("auth.scope", "7654321"),
+    ],
+)
+def test_linkshare_rejects_unbound_or_invalid_auth_before_network(field, value):
+    config = linkshare_auth_config()
+    if field.startswith("auth."):
+        config["auth"][field.split(".")[1]] = value
+    else:
+        config[field] = value
+    settings = initial_config()
+    client = AffiliateHttpClient(settings["http"], settings["storage"])
+    with patch.object(client, "request") as request, pytest.raises(ConfigError):
+        _authentication(client, config)
+    request.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {},
+        [],
+        {"access_token": "example-token"},
+        {"access_token": 7, "token_type": "bearer", "expires_in": 3600},
+        {
+            "access_token": "example-token" + "\r\nheader",
+            "token_type": "bearer",
+            "expires_in": 3600,
+        },
+        {"access_token": "example-token", "token_type": "basic", "expires_in": 3600},
+        {"access_token": "example-token", "token_type": "bearer", "expires_in": 0},
+        {"access_token": "example-token", "token_type": "bearer", "expires_in": True},
+    ],
+)
+def test_linkshare_rejects_invalid_token_responses_without_echoing_values(payload):
+    settings = initial_config()
+    client = AffiliateHttpClient(settings["http"], settings["storage"])
+    with (
+        patch.object(client, "request", return_value=response(payload)),
+        pytest.raises(FetchError) as error,
+    ):
+        _authentication(client, linkshare_auth_config())
+    assert "example-token" not in str(error.value)
+    assert "invalid" not in str(error.value).lower()
+
+
+def test_linkshare_diagnostics_verify_binding_without_issuing_tokens():
+    config = initial_config()
+    provider = config["providers"]["linkshare"]
+    source = linkshare_auth_config()
+    provider.update(
+        {"enabled": True, "account_id": source["account_id"], "auth": source["auth"]}
+    )
+    provider["resources"]["programs"].update(
+        {"enabled": True, "endpoint": source["endpoint"]}
+    )
+    with patch.object(AffiliateHttpClient, "request") as request:
+        assert provider_diagnostics(config, "linkshare") == []
+        provider["resources"]["programs"]["account_id"] = "7654321"
+        assert provider_diagnostics(config, "linkshare")
+        config["providers"]["a8net"] = provider
+        assert provider_diagnostics(config, "a8net")
+    request.assert_not_called()
+
+
+def test_linkshare_fetch_keeps_token_response_out_of_raw_pages():
+    config = ready_config("linkshare")
+    auth = linkshare_auth_config()
+    provider = config["providers"]["linkshare"]
+    provider.update({"account_id": auth["account_id"], "auth": auth["auth"]})
+    provider["resources"]["products"]["endpoint"] = auth["endpoint"]
+    token_response = response(
+        {"access_token": "example-token", "token_type": "bearer", "expires_in": 3600}
+    )
+    product_response = response([{"id": "example-product"}])
+    with patch.object(
+        AffiliateHttpClient, "request", side_effect=[token_response, product_response]
+    ) as request:
+        batch = fetch_resource(config, "linkshare", "products")
+    assert request.call_count == 2
+    assert (
+        request.call_args_list[1].kwargs["headers"]["Authorization"]
+        == "Bearer example-token"
+    )
+    assert batch.records == [{"id": "example-product"}]
+    assert len(batch.pages) == 1
+    assert b"example-token" not in batch.pages[0].body
+
+
 def test_response_and_aggregate_limits_stop_fetch():
     config = ready_config()
     client = AffiliateHttpClient(config["http"], {"max_response_bytes": 2})

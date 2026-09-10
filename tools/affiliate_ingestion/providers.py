@@ -53,6 +53,16 @@ PROVIDERS: Final[dict[str, ProviderManifest]] = {
             aliases=("linkshare-affiliate", "rakuten-advertising", "リンクシェア"),
             env_prefix="LINKSHARE",
             account_id_label="publisher/SID account ID",
+            supported_auth_types=(
+                "none",
+                "bearer",
+                "api_key_header",
+                "api_key_query",
+                "basic",
+                "oauth2_client_credentials",
+                "custom_headers",
+                "linkshare_client_credentials",
+            ),
         ),
         ProviderManifest(
             key="accesstrade",

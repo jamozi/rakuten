@@ -57,6 +57,45 @@ make wordpress-production-request ARGS='direct --owner-checkout /home/minami/rak
 トークンの有効期間と更新方法を確認する。実応答を未確認のまま、URLや商品識別子を埋めない。
 最初の1社・1商品・1記事で実取得と表示が確認できてから、対象を増やす。
 
+継続運用には`auth.type=linkshare_client_credentials`を使う。
+[公式アクセストークンガイド](https://developers.linkshare.ne.jp/guides/access_tokens)では、
+ポータルの一時トークンは60分で期限切れになる。クライアントID・シークレットを所有者専用設定または
+環境変数に保管すると、取得処理は毎回、固定の`https://api.linksynergy.com/token`へ
+Bearer形式のトークンキーと`scope=SID`を送信し、その応答トークンをメモリ内だけで使う。
+一般的な`oauth2_client_credentials`とは認証ヘッダー・送信パラメータが異なるため、置き換えて使わない。
+既存トークンを失効させるrefresh操作は使わない。長時間の取得途中で認証が失効した場合は取得を中止し、
+次回の実行で新しいトークンを取得する。トークンの取得は、商品の型番照合や提携確認を代替しない。
+
+SIDは[マイアカウント → サイトアカウント](https://linkshare.zendesk.com/hc/ja/articles/115000899853)で、
+掲載対象のサイトURLと一緒に確認する。以下のSIDと環境変数名は合成例で、秘密値を含まない。
+
+```json
+{
+  "account_id": "1234567",
+  "auth": {
+    "type": "linkshare_client_credentials",
+    "client_id": "env:LINKSHARE_CLIENT_ID",
+    "client_secret": "example-secret"
+  },
+  "resources": {
+    "programs": {
+      "enabled": false,
+      "endpoint": "https://api.linksynergy.com/linklocator/1.0/getMerchByAppStatus/approved",
+      "format": "xml",
+      "record_tag": "return",
+      "pagination": {"type": "none", "max_pages": 1}
+    }
+  }
+}
+```
+
+上記の`example-secret`はダミー値。実設定では、`client_secret`に環境変数参照
+`env:LINKSHARE_CLIENT_SECRET`を指定するか、`register`の非表示入力で所有者専用設定に保管する。
+`doctor linkshare`はSID・認証情報の有無・公式接続先を通信せず検証する。
+この認証モードはLinkShareと公式API originに限定し、resource単位の別SID指定を拒否する。
+`programs`の承認一覧に紹介プログラムしかない場合は、商品広告主との提携完了を意味しない。
+商品検索の0件も通信失敗と分けて扱い、提携先や商品を補完して記事へ挿入しない。
+
 ## 所有者専用plan
 
 [無効な初期template](../config/affiliate-link-automation.example.json)を使い、実値はリポジトリ外に保存する。
