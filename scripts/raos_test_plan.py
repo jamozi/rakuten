@@ -72,7 +72,7 @@ COMPONENT_ROUTES = (
         ),
         HARNESS_TESTS,
     ),
-    (("tools/affiliate_ingestion/",), ("tests/test_affiliate_ingestion.py",)),
+    (("tools/affiliate_ingestion/",), ("tests/test_affiliate_ingestion.py", "tests/test_affiliate_link_automation.py")),
     (
         ("packages/wordpress-mcp-bridge/", "changes/wordpress-mcp-v1/"),
         ("tests/wordpress_mcp_v1",),
