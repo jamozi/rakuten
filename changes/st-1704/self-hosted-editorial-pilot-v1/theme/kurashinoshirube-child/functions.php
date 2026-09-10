@@ -13,8 +13,8 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '63b808fa75fec07715afe61acb585c6c3ed62f56248c22750064f95fdb20b7c4';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '63b808fa75fec07715afe61acb585c6c3ed62f56248c22750064f95fdb20b7c4';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -358,6 +358,7 @@ function kurashinoshirube_filter_legacy_media_display($content)
     return $result['markup'];
 }
 add_filter('the_content', 'kurashinoshirube_filter_legacy_media_display', 1);
+require_once __DIR__ . '/official-product-media.php';
 
 /** Load the generated public-safe Editorial V3 navigation or fail closed. */
 function kurashinoshirube_editorial_navigation(): array

@@ -863,6 +863,8 @@ if ($scenario==='maintenance_symlink') {
 $source=file_get_contents($argv[2]);
 $source=preg_replace("/const KURASHINOSHIRUBE_READER_RUNTIME_METADATA_SHA256 = '[a-f0-9]{64}';/",
     "const KURASHINOSHIRUBE_READER_RUNTIME_METADATA_SHA256 = '".$pin."';",$source);
+// eval has no source filename; preserve the theme's normal sibling includes.
+$source=str_replace('__DIR__',var_export(dirname($argv[2]),true),$source);
 eval(substr($source,5));
 if (!function_exists('kurashinoshirube_reader_runtime_profile')) {
     echo json_encode(array('profile'=>'MISSING')); exit;
