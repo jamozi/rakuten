@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+from urllib.parse import urlencode
 
 import pytest
 
@@ -375,11 +376,11 @@ def test_api_field_mapping_and_fetch_failure_keep_raw_private(
     latest = (case[4] / "latest.json").read_bytes()
 
     def broken(*args):
-        raise FetchError("https://api.example/?token=NEVER_PRINT_TOKEN")
+        raise FetchError("https://api.example/?" + urlencode({"token": "example-token"}))
 
     monkeypatch.setattr(automation, "fetch_resource", broken)
     assert run_case(case, "--fetch", "--write-drafts") != 0
-    assert "NEVER_PRINT_TOKEN" not in capsys.readouterr().out
+    assert "example-token" not in capsys.readouterr().out
     assert (case[4] / "latest.json").read_bytes() == latest
     assert (case[0] / ARTICLE).read_text() == ORIGINAL
 
