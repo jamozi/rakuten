@@ -397,12 +397,16 @@
     "assets/images/magazine-room.webp",
     "assets/images/magazine-tools.webp",
     "assets/images/magazine-travel.webp",
+    "assets/images/roomba-mini-official.jpg",
+    "assets/images/roomba-mini-slim-official.jpg",
     "assets/legacy-media-display-projection.v1.json",
     "assets/local-running-cost.js",
     "assets/measurement.js",
+    "assets/rakuten-product-media.json",
     "assets/reader-measurement-runtime.v1.json",
     "assets/theme.css",
     "functions.php",
+    "official-product-media.php",
     "parts/footer.html",
     "parts/header.html",
     "raos-assets.v1.json",
@@ -415,8 +419,8 @@
     "theme-contract.v1.json",
     "theme.json"
   ],
-  "theme_runtime_revision": "63b808fa75fec07715afe61acb585c6c3ed62f56248c22750064f95fdb20b7c4",
+  "theme_runtime_revision": "f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4",
   "theme_slug": "kurashinoshirube-child",
-  "theme_source_fingerprint": "63b808fa75fec07715afe61acb585c6c3ed62f56248c22750064f95fdb20b7c4",
+  "theme_source_fingerprint": "f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4",
   "theme_version": "1.6.0"
 }

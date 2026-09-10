@@ -31,7 +31,7 @@ from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "63b808fa75fec07715afe61acb585c6c3ed62f56248c22750064f95fdb20b7c4"
+    "f1214fae835b87e711565e94e10ad282d6895d8afc2cc394dd515fcb61c01fc4"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -120,12 +120,16 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/magazine-room.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-tools.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-travel.webp",
+    THEME_REPOSITORY_ROOT / "assets/images/roomba-mini-official.jpg",
+    THEME_REPOSITORY_ROOT / "assets/images/roomba-mini-slim-official.jpg",
     THEME_REPOSITORY_ROOT / "assets/legacy-media-display-projection.v1.json",
     THEME_REPOSITORY_ROOT / "assets/local-running-cost.js",
     MEASUREMENT_CLIENT_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/rakuten-product-media.json",
     READER_RUNTIME_ASSET_PATH,
     THEME_REPOSITORY_ROOT / "assets/theme.css",
     THEME_FUNCTIONS_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "official-product-media.php",
     THEME_REPOSITORY_ROOT / "parts/footer.html",
     THEME_REPOSITORY_ROOT / "parts/header.html",
     THEME_REPOSITORY_ROOT / "raos-assets.v1.json",
