@@ -163,6 +163,27 @@
       "post_id": 19,
       "post_type": "post",
       "slug": "carry-on-suitcase-comparison",
+      "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ",
+      "excerpt": "型番と一次情報を照合できたエース系3モデルを、軽さ・容量・開き方で条件別に比較。市場全体の順位ではなく、向く人と注意点を整理します。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "media_ids": [
+        401
+      ],
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 19,
+        "revision_id": 457,
+        "modified_gmt": "2026-09-10T00:45:49Z",
+        "content_sha256": "e09014aeb82514226cfc0d849c6c5a631bb3f098e51a2b4ab3c2bb9f14e67696",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write.",
+        "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.patch.json"
+      },
       "patch_source": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-comparison.patch.json"
     },
     {
@@ -171,6 +192,27 @@
       "post_id": 82,
       "post_type": "post",
       "slug": "carry-on-suitcase-under-100-seats",
+      "title": "100席未満の国内線向けスーツケース4モデルを機内持ち込み規定で比較",
+      "excerpt": "100席未満の国内線で確認したい幅35×奥行20×高さ45cm・3辺100cm以内を基準に、4モデルの外寸、重量、容量、開き方を公式情報から比較します。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "media_ids": [
+        401
+      ],
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 82,
+        "revision_id": 456,
+        "modified_gmt": "2026-09-10T00:45:45Z",
+        "content_sha256": "63eb9aa8e6116c8998f719c6b5d2bad36e6b11868e12c5f1bae905a1287bfcab",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write.",
+        "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.patch.json"
+      },
       "patch_source": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.patch.json"
     },
     {
@@ -197,6 +239,14 @@
         "content_sha256": "7abe30ccf1663ee7292dbd599f409995885a8c753525cd8e4a9127598ccc2e41",
         "revision_id": 455,
         "modified_gmt": "2026-09-10T00:45:29Z"
+      },
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 83,
+        "revision_id": 475,
+        "modified_gmt": "2026-09-10T07:59:08Z",
+        "content_sha256": "c978323e5461f1c45fa86da71af7e4669c78f48d4cc96136ede4beaab2b16f09",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
       }
     },
     {
@@ -205,6 +255,27 @@
       "post_id": 84,
       "post_type": "post",
       "slug": "front-open-carry-on-suitcase-with-stopper",
+      "title": "フロントオープンとキャスターストッパーを備えた機内持ち込みスーツケース4モデル比較",
+      "excerpt": "前開きとキャスターストッパーを備えた4モデルを、前面構造、容量、重量、PC収納、拡張時寸法から公式情報で比較します。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "media_ids": [
+        401
+      ],
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 84,
+        "revision_id": 453,
+        "modified_gmt": "2026-09-10T00:45:18Z",
+        "content_sha256": "dc66caf5a0924a3382eefe9a4aa1c5d68ebdde14a409d25fc9564cf30b973f09",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write.",
+        "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.patch.json"
+      },
       "patch_source": "changes/wordpress-direct-publish-v1/articles/front-open-carry-on-suitcase-with-stopper.patch.json"
     },
     {
@@ -213,8 +284,8 @@
       "post_id": 41,
       "post_type": "post",
       "slug": "countertop-dishwasher-for-small-households",
-      "title": "工事不要の食洗機を1〜2人暮らし向けに比較",
-      "excerpt": "工事不要で使えるタンク式食洗機4モデルを、設置寸法・食器点数・使用水量・乾燥方法で比較。狭いキッチンで向く条件を整理します。",
+      "title": "タンク式食洗機4モデルを1〜2人暮らし向けに比較",
+      "excerpt": "タンク式食洗機4モデルを、設置寸法・食器点数・使用水量・乾燥方法で比較。電源・アースを含む設置条件と、狭いキッチンで向く条件を整理します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html",
       "taxonomies": {
         "category": [
@@ -231,6 +302,14 @@
         "content_sha256": "023ceb8f72f1543e01131f776b99b1c15a5f9459de0f7797096ef66dd3676f5c",
         "revision_id": 452,
         "modified_gmt": "2026-09-09T23:15:19Z"
+      },
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 41,
+        "revision_id": 474,
+        "modified_gmt": "2026-09-10T07:59:05Z",
+        "content_sha256": "a35010297de6a8c83656010611c2cab64bd9f77f0b4f48810a9431191686d127",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
       }
     },
     {
@@ -239,6 +318,27 @@
       "post_id": 86,
       "post_type": "post",
       "slug": "solota-vs-rakua-mini-plus",
+      "title": "SOLOTAとラクアmini Plusの違い｜大きさ・食器量・乾燥方式を比較",
+      "excerpt": "SOLOTAとラクアmini Plusを、本体と扉の寸法、食器量、給水、乾燥方式から公式仕様で比較します。実機性能や現在の在庫を断定せず、設置・費用・手入れの確認先へ案内します。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "media_ids": [
+        403
+      ],
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 86,
+        "revision_id": 451,
+        "modified_gmt": "2026-09-09T22:54:50Z",
+        "content_sha256": "3cd1a795dbed0377630a388e9ccd11a5c3e4cfed7a7a0f1cd0051c7b6e26b8e9",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write.",
+        "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.patch.json"
+      },
       "patch_source": "changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.patch.json"
     },
     {
@@ -248,7 +348,7 @@
       "post_type": "post",
       "slug": "dishwasher-installation-measurement",
       "title": "卓上食洗機の置き場所を測る順番｜本体・扉・余白を確認する",
-      "excerpt": "設置面だけを測ると、扉やホースのために置けないことがあります。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、NP-TMLK1-K、TK-MDW22Bの公式寸法を対象に、購入前の測り方を整理します。",
+      "excerpt": "SOLOTA、ラクアmini color、SS-MA251、NP-TSP1を対象に、本体・扉を開く空間・周囲の余白を確認します。排水・電源・台の条件も分け、型番ごとの未確認事項を示します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html",
       "taxonomies": {
         "category": [
@@ -265,6 +365,14 @@
         "content_sha256": "80424caf009095ce9023f05b9b757ce3401a58e89258d79cb0f2585540f02bc9",
         "revision_id": 421,
         "modified_gmt": "2026-09-09T19:12:11Z"
+      },
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 262,
+        "revision_id": 471,
+        "modified_gmt": "2026-09-10T04:46:35Z",
+        "content_sha256": "03bf9406910b9ec2812498ceac14b4cc9bf9c5fcd771ec12f58b5d3cbe472ba4",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
       }
     },
     {
@@ -274,7 +382,7 @@
       "post_type": "post",
       "slug": "dishwasher-water-supply-methods",
       "title": "卓上食洗機の給水・排水方法｜毎回の作業から選ぶ",
-      "excerpt": "タンク式でも給水と排水の作業は必要です。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、TK-MDW22Bで確認できた条件を整理し、DWS-33B(W)の給水詳細とNP-TMLK1-Kの具体手順は未確認として扱います。",
+      "excerpt": "SOLOTA、ラクアmini color、SS-MA251、NP-TSP1の給水方式と排水ホースの条件を整理します。タンクへの給水、排水先、毎回残る作業を型番ごとに確認できます。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html",
       "taxonomies": {
         "category": [
@@ -291,6 +399,14 @@
         "content_sha256": "3528854dcdda00835d05e8fb31b60939628840d892a33aa9a2c1305a2d1a87d7",
         "revision_id": 422,
         "modified_gmt": "2026-09-09T19:12:23Z"
+      },
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 263,
+        "revision_id": 460,
+        "modified_gmt": "2026-09-10T04:46:09Z",
+        "content_sha256": "7159bcf2bc0d97851c5ae960787c96821f8cef3b45d86915207e1c92259e18fc",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
       }
     },
     {
@@ -300,7 +416,7 @@
       "post_type": "post",
       "slug": "dishwasher-detergent-guide",
       "title": "食洗機用洗剤の選び方｜型番ごとの量と入れてはいけないもの",
-      "excerpt": "洗剤は食洗機専用を使い、型番が示す量と使えない食器を先に確認します。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、NP-TMLK1-K、TK-MDW22Bの公式記録を対象に、共通に見える点と未確認の点を分けます。",
+      "excerpt": "SOLOTA、ラクアmini color、SS-MA251、NP-TSP1の食洗機専用洗剤を確認します。通常量と比較試験の量を分け、洗剤の表示と対象機の説明書で確かめる点を整理します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html",
       "taxonomies": {
         "category": [
@@ -317,6 +433,14 @@
         "content_sha256": "833c67ec2dc9aa3e81f45be9e4e2e3ac75749b0885325ae126d251530808212d",
         "revision_id": 423,
         "modified_gmt": "2026-09-09T19:12:32Z"
+      },
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 264,
+        "revision_id": 466,
+        "modified_gmt": "2026-09-10T04:46:25Z",
+        "content_sha256": "f0805cf30afa6f923e7293e7699bc633107a27f0c219cb15ce08ea2440a86f79",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
       }
     },
     {
@@ -326,7 +450,7 @@
       "post_type": "post",
       "slug": "dishwasher-cleaning-guide",
       "title": "卓上食洗機のお手入れ｜毎回・月1回・長く使わない時に分ける",
-      "excerpt": "お手入れは「いつ、どの部品をするか」を型番ごとに分けると続けやすくなります。SS-M171、TK-MDW22W、SS-MA251、TK-MDW22Bの確認済み手順を中心に、DWS-33B(W)とNP-TMLK1-Kで確認できない範囲も明示します。",
+      "excerpt": "SOLOTA、ラクアmini color、SS-MA251、NP-TSP1のフィルターやノズルなど、お手入れする部位と頻度を確認します。対象型番で確認できていない手順も明示します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-cleaning-guide.html",
       "taxonomies": {
         "category": [
@@ -343,6 +467,14 @@
         "content_sha256": "2f6006e85fbbcc0717d32c988195b142e330644bf83994c00f7c9fd74e15cd42",
         "revision_id": 424,
         "modified_gmt": "2026-09-09T19:12:41Z"
+      },
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 265,
+        "revision_id": 469,
+        "modified_gmt": "2026-09-10T04:46:31Z",
+        "content_sha256": "1ae9707cc2eeb9bd8228d3ae70323f37dc20212b1c43b7d4afd8b8dab599410d",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
       }
     },
     {
@@ -352,7 +484,7 @@
       "post_type": "post",
       "slug": "dishwasher-running-cost",
       "title": "卓上食洗機のランニングコスト｜電気・水道・洗剤を式で確認する",
-      "excerpt": "金額を比べる前に、公式の消費電力量と自宅の料金をそろえます。対象6機種で1回当たりWhを確認できたのはNP-TMLK1-Kだけです。他の5機種は電気代の比較を保留し、ここでは計算手順と不足値を整理します。 自宅の単価を空欄のフォームへ入力すると、公表条件で計算できる費目を確認できます。",
+      "excerpt": "8つの型番・コース条件を対象に、電気・上下水道・洗剤の従量費を計算します。消費電力量を確認できたのはSOLOTAとNP-TSP1の掲載条件です。未確認の費目は除き、計算できる小計と不足値を分けます。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html",
       "taxonomies": {
         "category": [
@@ -369,6 +501,14 @@
         "content_sha256": "dcd60c5d71db479899825ebbf423caf368243bc1dafcfa38886d1358dfb3b23d",
         "revision_id": 425,
         "modified_gmt": "2026-09-09T19:12:49Z"
+      },
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 266,
+        "revision_id": 465,
+        "modified_gmt": "2026-09-10T04:46:22Z",
+        "content_sha256": "7e0b0298d2b35966efdc1d297ad9d0379835d4c6deb5d3a36cf64493f89cf8c3",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
       }
     },
     {
@@ -378,7 +518,7 @@
       "post_type": "post",
       "slug": "compact-robot-vacuum-shortlist",
       "title": "省スペースのロボット掃除機を条件で絞る",
-      "excerpt": "省スペース候補のロボット掃除機4モデルを、本体の底面寸法・高さ・ステーション寸法・水拭き方式で比較。置ける条件から候補を絞ります。",
+      "excerpt": "小型の2候補を中心に、台の機能が異なる2候補も比較。本体・ステーションの寸法、水拭き方式、手入れから、置ける条件と任せたい作業に合う機種を絞ります。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/compact-robot-vacuum-shortlist.html",
       "taxonomies": {
         "category": [
@@ -395,6 +535,14 @@
         "content_sha256": "598aeb99c322f6c2cc7768cb58f51b0f0c26dc72dc658fd0f92af740a49a2302",
         "revision_id": 459,
         "modified_gmt": "2026-09-10T00:45:58Z"
+      },
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 30,
+        "revision_id": 473,
+        "modified_gmt": "2026-09-10T07:59:01Z",
+        "content_sha256": "3746ca361aaed16d77296e7b3c1a4e6668e3f23db5988073217697e474947abb",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
       }
     },
     {
@@ -403,6 +551,27 @@
       "post_id": 85,
       "post_type": "post",
       "slug": "roomba-mini-vs-switchbot-k11-pro",
+      "title": "Roomba MiniとSwitchBot K11+ Proを公式仕様で比較",
+      "excerpt": "Roomba MiniとSwitchBot K11+ Proを、本体・ステーション寸法、自動ゴミ収集、水拭き、Wi-Fi、消耗品から公式仕様で比べます。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "media_ids": [
+        404
+      ],
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 85,
+        "revision_id": 447,
+        "modified_gmt": "2026-09-09T22:45:03Z",
+        "content_sha256": "f74f4d0653e3edcf61cad8e2bbfb86aecfea85062ebf018994bf3a2418d1d830",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write.",
+        "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.patch.json"
+      },
       "patch_source": "changes/wordpress-direct-publish-v1/articles/roomba-mini-vs-switchbot-k11-pro.patch.json"
     },
     {
@@ -429,6 +598,14 @@
         "content_sha256": "195f79f3f71ad760a09da0301ff800ef184e96a508e32d78af489cf89a8405fd",
         "revision_id": 458,
         "modified_gmt": "2026-09-10T00:45:51Z"
+      },
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 28,
+        "revision_id": 467,
+        "modified_gmt": "2026-09-10T04:46:26Z",
+        "content_sha256": "551eec0a891e820857e2c8518859322a7d6c028ae324e2b0ee274b0e0b327fef",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write."
       }
     },
     {
@@ -437,6 +614,27 @@
       "post_id": 29,
       "post_type": "post",
       "slug": "anker-solix-c300-c800-c1000-differences",
+      "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い",
+      "excerpt": "Anker Solix 4モデルの容量・定格出力・重量・寸法を同じ表で比較。持ち運び、出力、C1000の世代差から条件別に選びます。",
+      "taxonomies": {
+        "category": [
+          5
+        ],
+        "post_format": [],
+        "post_tag": []
+      },
+      "media_ids": [
+        405
+      ],
+      "reconciliation_provenance": {
+        "source": "wordpressEditor ContentDocumentV1 read-only",
+        "post_id": 29,
+        "revision_id": 454,
+        "modified_gmt": "2026-09-10T00:45:22Z",
+        "content_sha256": "ca8d303d147f81d730d3d932dc62f978f0a67df7beedc2d433bfb61e16410564",
+        "note": "Imported tracked baseline reconciled to current saved document before editing; no live write.",
+        "previous_patch_source": "changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.patch.json"
+      },
       "patch_source": "changes/wordpress-direct-publish-v1/articles/anker-solix-c300-c800-c1000-differences.patch.json"
     },
     {
