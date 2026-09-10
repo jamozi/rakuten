@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+from datetime import UTC, datetime, timedelta
 import fcntl
 import hashlib
 import io
@@ -145,7 +146,7 @@ def load_candidate(directory, candidate_id):
         if digest(source_bytes(directory / "sources", name)) != expected:
             fail("SNAPSHOT_DRIFT")
     for article in candidate["articles"]:
-        if (directory / article["body_file"]).read_text() != article["document"][
+        if (directory / article["body_file"]).read_bytes().decode("utf-8") != article["document"][
             "block_markup"
         ]:
             fail("SNAPSHOT_DRIFT")
@@ -280,7 +281,9 @@ def import_existing(root):
     return {"status": "IMPORTED", "article_count": len(registry["articles"])}
 
 
-def prepare(root, keys, theme=False, call=invoke):
+def prepare(root, keys, theme=False, call=invoke, *, affiliate_plan=None, affiliate_config=None, affiliate_fetch=False):
+    if affiliate_plan is None and (affiliate_config is not None or affiliate_fetch):
+        fail("AFFILIATE_PLAN_REQUIRED")
     registry = read_json(root / REGISTRY)
     if (
         registry.get("schema") != "RAOSOwnerDirectArticlesV1"
@@ -458,6 +461,28 @@ def prepare(root, keys, theme=False, call=invoke):
                 "baseline": baseline,
             }
         )
+    affiliate_receipt = None
+    if affiliate_plan is not None:
+        python_root = str(ROOT / "python")
+        if python_root not in sys.path:
+            sys.path.insert(0, python_root)
+        from tools.affiliate_ingestion.link_automation import prepare_affiliates
+        from tools.affiliate_ingestion.config import DEFAULT_CONFIG_PATH, ConfigError
+        from tools.affiliate_ingestion.client import FetchError
+        from tools.affiliate_ingestion.link_markup import LinkError
+        try:
+            rendered, affiliate_receipt = prepare_affiliates(
+                articles, affiliate_plan, affiliate_config or DEFAULT_CONFIG_PATH,
+                operator.ORIGIN, fetch=affiliate_fetch,
+            )
+        except LinkError as error:
+            fail("AFFILIATE_" + str(error))
+        except (ConfigError, FetchError, OSError, ValueError, KeyError, TypeError):
+            fail("AFFILIATE_PREPARATION_FAILED")
+        for article in articles:
+            body = rendered[article["article_key"]]
+            article["document"]["block_markup"] = body
+            article["body_sha256"] = digest(body.encode("utf-8"))
     candidate = {
         "schema": SCHEMA,
         "profile": PROFILE,
@@ -471,6 +496,7 @@ def prepare(root, keys, theme=False, call=invoke):
         "publication_ready": ready,
         "status_unavailable_reason": status_error,
         "checkpoint": checkpoint,
+        **({"affiliate": affiliate_receipt} if affiliate_receipt else {}),
     }
     package = None
     if theme:
@@ -704,6 +730,40 @@ def record_failure(directory, candidate_id, error, call):
     save(path, journal)
 
 
+def affiliate_expiry(candidate):
+    receipt = candidate.get("affiliate")
+    if not receipt:
+        return None
+    if receipt.get("schema") != "RAOSAffiliatePreparedArticlesV1":
+        fail("AFFILIATE_RECEIPT_INVALID")
+    try:
+        valid_until = datetime.fromisoformat(receipt["valid_until"])
+        active = valid_until.tzinfo is not None and datetime.now(UTC) < valid_until
+    except (KeyError, TypeError, ValueError):
+        active = False
+    if not active:
+        fail("AFFILIATE_EXPIRED_REPREPARE")
+    return valid_until.astimezone(UTC)
+
+
+def affiliate_bounded_call(candidate, invoke_call):
+    if affiliate_expiry(candidate) is None:
+        return invoke_call
+
+    def call(command, body):
+        if command in {"ensure-draft", "content-propose", "theme-propose", "authorize", "apply"}:
+            expires = affiliate_expiry(candidate)
+            if command == "apply":
+                now = datetime.now(UTC)
+                bound = min(expires, now + timedelta(seconds=operator.RELEASE_APPLY_RECOVERY_TIMEOUT_SECONDS - 1))
+                bound = bound.replace(microsecond=0)
+                if bound <= now:
+                    fail("AFFILIATE_EXPIRED_REPREPARE")
+                body = {**body, "evidence_expires_at_gmt": bound.strftime("%Y-%m-%dT%H:%M:%SZ")}
+        return invoke_call(command, body)
+    return call
+
+
 def _publish(root, directory, candidate_id, call):
     candidate = load_candidate(directory, candidate_id)
     path = directory / "journal.json"
@@ -729,6 +789,7 @@ def _publish(root, directory, candidate_id, call):
         fail("JOURNAL_MISMATCH")
     if journal["publication_status"] in {"APPLIED", "PUBLISHED_AND_READBACK_VERIFIED"}:
         return finish_publication(root, directory, candidate, journal, call)
+    call = affiliate_bounded_call(candidate, call)
     preview = read_json(directory / "preview.json")
     if (
         preview.get("status") != "PASS"
@@ -880,6 +941,9 @@ def parser():
     create = commands.add_parser("prepare")
     create.add_argument("--articles", default="")
     create.add_argument("--theme", action="store_true")
+    create.add_argument("--affiliate-plan", type=Path)
+    create.add_argument("--affiliate-config", type=Path)
+    create.add_argument("--affiliate-fetch", action="store_true")
     for name in ("preview", "publish", "status", "sync"):
         command = commands.add_parser(name)
         command.add_argument("--candidate", required=name != "status")
@@ -908,7 +972,10 @@ def execute_cli(args):
             result = invoke("status", {})
         elif args.command == "prepare":
             candidate, directory = prepare(
-                ROOT, [x for x in args.articles.split(",") if x], args.theme
+                ROOT, [x for x in args.articles.split(",") if x], args.theme,
+                affiliate_plan=args.affiliate_plan,
+                affiliate_config=args.affiliate_config,
+                affiliate_fetch=args.affiliate_fetch,
             )
             result = {
                 "candidate_id": candidate["candidate_id"],
