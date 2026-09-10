@@ -166,3 +166,64 @@ def test_display_condition_cannot_override_bound_course():
     data["articles"][0]["cost_calculator"]["profiles"][0]["course_label"] = "洗浄のみ"
     with pytest.raises(ValueError, match="LOCAL_COST_LABEL_MUST_BELONG_TO_EVIDENCE"):
         render(data)
+
+
+def test_cost_profiles_allow_eight_but_reject_nine():
+    data = registry()
+    profiles = data["articles"][0]["cost_calculator"]["profiles"]
+    template = profiles[1]
+    profiles.extend({**template, "profile_id": f"unknown-{i}"} for i in range(6))
+    assert render(data).count(" data-raos-cost-profile=") == 8
+    profiles.append({**template, "profile_id": "ninth"})
+    with pytest.raises(ValueError, match="LOCAL_COST_PROFILES_INVALID"):
+        render(data)
+
+
+def test_new_cost_sources_preserve_exact_models_and_course_boundaries():
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[2]
+    data = json.loads(
+        (
+            root / "changes/editorial-portfolio-v3/local-reader-guides.v1.json"
+        ).read_text()
+    )
+    result = build_local_guides(data, today=date(2026, 9, 10))
+    html = next(
+        a["html"]
+        for a in result["articles"]
+        if a["article_id"] == "dishwasher-running-cost"
+    )
+    rows = {
+        n.attrs["data-raos-cost-profile"]: n.attrs
+        for n in fragment(html).walk()
+        if "data-raos-cost-profile" in n.attrs
+    }
+    assert len(rows) == 8
+    assert set(rows) >= {
+        "np-tmlk1-standard",
+        "ss-m171-spec",
+        "tk-mdw22w-spec",
+        "ss-ma251-spec",
+        "tk-mdw22b-spec",
+        "dws-33b-unknown",
+    }
+    mini = rows["tdws25s-normal"]
+    assert mini["data-raos-cost-model"] == "TDWS25SBL / TDWS25SRD"
+    assert mini["data-raos-cost-anchor"] == "product-dish-rakua-mini-color"
+    assert mini["data-raos-water-litres"] == "3.2"
+    assert "data-raos-energy-wh" not in mini
+    tsp = rows["np-tsp1-tank-level2"]
+    assert tsp["data-raos-cost-model"] == "NP-TSP1-W"
+    assert tsp["data-raos-cost-anchor"] == "product-dish-np-tsp1"
+    assert tsp["data-raos-energy-wh"] == "670"
+    assert tsp["data-raos-water-litres"] == "9"
+    assert tsp["data-raos-cost-course"] == "タンク給水・汚れレベル2・エコナビOFF"
+    assert "2026-09-10" in html and "2026-09-06" in html
+    article = next(
+        a for a in data["articles"] if a["article_id"] == "dishwasher-running-cost"
+    )
+    article["cost_calculator"]["profiles"][-1]["course"] = "branch-water"
+    with pytest.raises(ValueError, match="LOCAL_COST_QUANTITY_AMBIGUOUS_OR_MISSING"):
+        build_local_guides(data, today=date(2026, 9, 10))

@@ -9,7 +9,9 @@
 ## Non-negotiables
 
 - 商品同定、一次情報、鮮度、比較範囲、自然な日本語、広告表示を維持する。
-  料率・価格・楽天取扱有無を商品選定の加点要素にしない。未確認値はUNKNOWN/UNAVAILABLE。
+  広告報酬率・広告契約・広告リンク有無・楽天取扱有無を評価と推薦に使わない。
+  購入総額・維持費・納期・保証は用途と予算への適合判断に使う。値下げで性能評価を上げない。
+  未確認値はUNKNOWN/UNAVAILABLE。対象4比較記事の適用契約は[購入判断の後継](changes/reader-purchase-support-v1/README.md)。
 - 編集判断と財務を分離する。推計収益を確定報酬へ置換せず、計測欠損をゼロ・成功にしない。
 - 公開側は承認済みsnapshotのpublic projectionを読む。内部Evidence・Finance・raw AIへ直結しない。
   auth/authz、public/internal分離、CTA、disclosure、publication、kill switchの既存testを維持する。

@@ -55,6 +55,17 @@ WordPressの日常更新は[owner-direct-v1](../../changes/wordpress-direct-publ
 独立監査・繰り返しのwp-admin承認を不要にします。固定snapshotから限定bridgeへ送り、
 保存後のpublic projectionをテーマが読みます。Git checkpointは公開前、push/PR/CI/mergeは公開後です。
 
+## Reader purchase-support successor
+
+[購入判断契約](../../changes/reader-purchase-support-v1/README.md)は16商品枠と13既存URLに限定します。
+商品仕様・販売条件・調査課題・商品別guide routeを共通カタログから生成し、適用済みowner-direct
+snapshotの本文hashと一致するpublic runtimeだけでUIとCTA計測を有効にします。内部カタログや
+ASP rawをPHPへ渡しません。価格は性能評価へ加点せず、24時間以下の販売条件に基づく予算判定に
+使います。欠損費目・期限切れは予算未判定です。既存6機種の費用コースを残し、型番とコースが一致する
+一次情報だけを8機種へ展開します。公開済み262〜266は既存IDを明記して編集元へ取り込みました。
+GA4は同意と明示enableを必要とする既定OFFの別profileです。旧provider識別子の位置を推測せず、
+クリックとpage_view sessionを別集計し、財務の確定報酬へ変換しません。
+
 ## Current product contracts
 
 Editorial V3はV2の履歴を変更せずに採用された後継です。

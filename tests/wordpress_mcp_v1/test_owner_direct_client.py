@@ -637,3 +637,112 @@ def test_wrong_preview_candidate_does_not_invoke_server(tmp_path):
             candidate["candidate_id"],
             lambda *a: pytest.fail("server contacted"),
         )
+
+
+@pytest.mark.parametrize(
+    "mismatch",
+    [
+        "missing",
+        "article_key",
+        "post_id",
+        "post_type",
+        "slug",
+        "matched",
+        "disabled",
+        "offline",
+    ],
+)
+def test_prepare_undelegated_existing_target_keeps_local_candidate_and_continues(
+    tmp_path, mismatch
+):
+    import subprocess
+
+    def git(*args):
+        subprocess.run(["git", *args], cwd=tmp_path, capture_output=True, check=True)
+
+    git("init", "-b", "main")
+    git("config", "user.name", "Test")
+    git("config", "user.email", "test@example.invalid")
+    (tmp_path / "README.md").write_text("seed")
+    git("add", "README.md")
+    git("commit", "-m", "seed")
+    rows = []
+    for index, key in enumerate(("undelegated", "delegated"), 10):
+        source = f"changes/wordpress-direct-publish-v1/articles/{key}.html"
+        (tmp_path / source).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / source).write_text(f"reviewed {key} body")
+        rows.append(
+            {
+                "article_key": key,
+                "mode": "existing",
+                "post_id": index,
+                "post_type": "page",
+                "title": key,
+                "slug": key,
+                "body_source": source,
+            }
+        )
+    direct.save(
+        tmp_path / direct.REGISTRY,
+        {
+            "schema": "RAOSOwnerDirectArticlesV1",
+            "profile": direct.PROFILE,
+            "articles": rows,
+        },
+    )
+    targets = [
+        {key: row[key] for key in ("article_key", "post_id", "post_type", "slug")}
+        for row in rows
+    ]
+    if mismatch == "missing":
+        targets.pop(0)
+    elif mismatch not in {"matched", "disabled", "offline"}:
+        targets[0][mismatch] = 99 if mismatch == "post_id" else "different"
+    calls = []
+    baseline = {"excerpt": "", "taxonomies": {}, "media_ids": []}
+
+    def call(command, body):
+        calls.append((command, body))
+        if command == "status":
+            if mismatch == "offline":
+                raise operator.OperatorFailure("WORDPRESS_MCP_PRIVATE_FILE_UNAVAILABLE")
+            return {
+                "schema": "RAOSOwnerDirectStatusV1",
+                "profile": direct.PROFILE,
+                "enabled": mismatch != "disabled",
+                "profile_sha256": "a" * 64,
+                "theme": {"tree_sha256": "b" * 64},
+                "targets": targets,
+            }
+        return baseline
+
+    candidate, directory = direct.prepare(
+        tmp_path, ["undelegated", "delegated"], call=call
+    )
+    if mismatch == "matched":
+        assert calls == [
+            ("status", {}),
+            ("document", {"id": 10}),
+            ("document", {"id": 11}),
+        ]
+        assert candidate["publication_ready"] is True
+        assert all(article["baseline"] == baseline for article in candidate["articles"])
+    elif mismatch in {"disabled", "offline"}:
+        assert calls == [("status", {})]
+        assert candidate["publication_ready"] is False
+        assert all(article["baseline"] is None for article in candidate["articles"])
+    else:
+        assert calls == [("status", {}), ("document", {"id": 11})]
+        assert candidate["publication_ready"] is False
+        assert candidate["articles"][0]["baseline"] is None
+        assert candidate["articles"][0]["baseline_unavailable_reason"].startswith(
+            "TARGET_"
+        )
+        assert candidate["articles"][1]["baseline"] == baseline
+    assert candidate["status_unavailable_reason"] == (
+        "WORDPRESS_MCP_PRIVATE_FILE_UNAVAILABLE" if mismatch == "offline" else None
+    )
+    assert len(candidate["articles"]) == 2
+    assert (
+        directory / candidate["articles"][0]["body_file"]
+    ).read_text() == "reviewed undelegated body"

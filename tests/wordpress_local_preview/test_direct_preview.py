@@ -117,3 +117,50 @@ def test_article_only_preview_cannot_use_a_different_theme_than_production(
     candidate["baseline_theme_tree_sha256"] = "0" * 64
     with pytest.raises(ValueError, match="THEME_DIFFERS_INCLUDE_THEME"):
         owner().runtime_fingerprint(candidate, tmp_path)
+
+
+def test_only_unedited_wordpress_initial_privacy_draft_can_be_adopted():
+    import subprocess
+    from scripts.raos_test_runtime import php_command
+
+    path = (
+        Path(__file__).resolve().parents[2]
+        / "changes/wordpress-direct-publish-v1/preview-seed.php"
+    )
+    source = path.read_text()
+    name = "function raos_direct_preview_is_initial_privacy_draft("
+    assert name in source
+    helper = name + source.split(name, 1)[1].split("\n$input =", 1)[0]
+    assert source.index("wp_get_environment_type() !== 'local'") < source.index(name)
+    harness = r"""
+class WP_Privacy_Policy_Content { static function get_default_content() { return 'core initial privacy content'; } }
+function __($value) { return $value; }
+function get_option($key) { global $privacy_option; return $privacy_option; }
+function get_post_meta($id) { global $meta; return $meta; }
+$privacy_option = '3';
+$meta = array('_wp_page_template' => array('default'));
+$initial = (object) array('ID'=>3, 'post_type'=>'page', 'post_status'=>'draft', 'post_name'=>'privacy-policy',
+    'post_title'=>'Privacy Policy', 'post_content'=>'core initial privacy content', 'post_excerpt'=>'',
+    'post_parent'=>0, 'post_date'=>'2026-09-10 00:00:00', 'post_modified'=>'2026-09-10 00:00:00',
+    'post_date_gmt'=>'2026-09-09 15:00:00', 'post_modified_gmt'=>'2026-09-09 15:00:00');
+$document = array('post_type'=>'page', 'slug'=>'privacy-policy');
+if (!raos_direct_preview_is_initial_privacy_draft($initial, $document)) { exit(1); }
+foreach (array('ID'=>4, 'post_type'=>'post', 'post_status'=>'publish', 'post_name'=>'custom',
+    'post_title'=>'Customized', 'post_content'=>'Edited content', 'post_excerpt'=>'Edited excerpt',
+    'post_parent'=>2, 'post_modified'=>'2026-09-11 00:00:00', 'post_modified_gmt'=>'2026-09-10 15:00:00') as $key=>$value) {
+    $changed = clone $initial; $changed->$key = $value;
+    if (raos_direct_preview_is_initial_privacy_draft($changed, $document)) { exit(2); }
+}
+foreach (array(array('_wp_page_template'=>array('custom')), array('_raos_owner_direct_preview_key'=>array('owned')), array('custom_owner'=>array('value'))) as $value) {
+    $meta = $value;
+    if (raos_direct_preview_is_initial_privacy_draft($initial, $document)) { exit(3); }
+}
+$meta = array('_wp_page_template'=>array('default'));
+$privacy_option = '4';
+if (raos_direct_preview_is_initial_privacy_draft($initial, $document)) { exit(4); }
+$privacy_option = '3';
+if (raos_direct_preview_is_initial_privacy_draft($initial, array('post_type'=>'post', 'slug'=>'privacy-policy'))
+    || raos_direct_preview_is_initial_privacy_draft($initial, array('post_type'=>'page', 'slug'=>'other'))) { exit(5); }
+echo "INITIAL_PRIVACY_DRAFT_ADOPTION_OK\n";
+"""
+    subprocess.run(php_command(["-r", helper + harness]), check=True)

@@ -1,6 +1,8 @@
 (() => {
   'use strict';
 
+  if (window.raosAnalyticsConsentGateInstalled === true) return;
+  window.raosAnalyticsConsentGateInstalled = true;
   const gateId = 'google_gtagjs-js';
   const analyticsCookiePattern = /^_ga(?:_|$)/;
   let activated = false;
@@ -88,7 +90,20 @@
     ) {
       return null;
     }
-    return { gate, measurementId, source: parsed.href };
+    const purchaseProfile = gate.getAttribute('data-raos-analytics-profile') === 'purchase-support-v1';
+    let purchaseConfig = null;
+    if (purchaseProfile) {
+      try {
+        const node = document.getElementById('raos-purchase-ga4-config');
+        purchaseConfig = node && node.type === 'application/json' && JSON.parse(node.textContent);
+        if (!purchaseConfig || purchaseConfig.enabled !== true ||
+            purchaseConfig.profile !== 'purchase-support-v1' ||
+            typeof purchaseConfig.debug_mode !== 'boolean' ||
+            !Array.isArray(purchaseConfig.bindings) || !purchaseConfig.bindings.length ||
+            window.localStorage.getItem('raos_purchase_ga4_opt_out') === '1') return null;
+      } catch (_error) { return null; }
+    }
+    return { gate, measurementId, source: parsed.href, purchaseProfile, purchaseConfig };
   }
 
   function activate() {
@@ -129,12 +144,24 @@
       cookie_expires: 63072000,
       cookie_update: true,
       send_page_view: true,
+      ...(configuration.purchaseProfile ? {
+        page_location: window.location.origin + window.location.pathname,
+        page_referrer: '',
+        page_title: '',
+        article_id: configuration.purchaseConfig.bindings[0].article_id,
+        snapshot_id: configuration.purchaseConfig.bindings[0].snapshot_id,
+        debug_mode: configuration.purchaseConfig.debug_mode,
+      } : {}),
     });
     const loader = document.createElement('script');
     loader.id = gateId;
     loader.async = true;
     loader.dataset.cookieyes = 'cookieyes-analytics';
     loader.dataset.raosConsentActivated = 'statistics';
+    if (configuration.purchaseProfile) {
+      loader.setAttribute('data-raos-analytics-profile', 'purchase-support-v1');
+      loader.setAttribute('data-raos-measurement-id', configuration.measurementId);
+    }
     loader.src = configuration.source;
     activated = true;
     activeLoader = loader;
@@ -175,7 +202,9 @@
       }
     }
     const shouldReload = deactivate();
-    clearAnalyticsCookies();
+    const gate = document.getElementById(gateId);
+    const purchaseProfile = gate && gate.getAttribute('data-raos-analytics-profile') === 'purchase-support-v1';
+    if (!purchaseProfile || activated) clearAnalyticsCookies();
     if (
       shouldReload &&
       typeof window.location.reload === 'function'

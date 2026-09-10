@@ -1,0 +1,57 @@
+/* Reader purchase support. Keep every selector inside the article boundary. */
+.ps-article { --ps-ink: #172e49; --ps-line: #ccd5df; --ps-paper: #fff; --ps-soft: #f4f6f8; color: #202c38; background: var(--ps-paper); line-height: 1.9; overflow-wrap: anywhere; }
+.ps-article [hidden] { display: none !important; }
+.ps-article h2, .ps-article h3 { color: var(--ps-ink); font-family: "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", serif; line-height: 1.55; }
+.ps-article h2 { margin-block: 2.4em 1em; padding-block-end: .5em; border-bottom: 2px solid var(--ps-ink); }
+.ps-article h3 { margin-block: 0 1em; }
+.ps-article h4 { font-size: 1em; margin-block: 1.3em .4em; }
+.ps-article p, .ps-article ul { margin-block: .7em 1em; }
+.ps-article a { color: #163e6b; text-decoration: underline; text-underline-offset: .2em; }
+.ps-article :is(a, button, input, select, summary, [tabindex]):focus-visible { outline: 3px solid #93521e; outline-offset: 4px; }
+.ps-article :is(input, select, button) { box-sizing: border-box; max-width: 100%; font: inherit; color: inherit; min-height: 44px; border: 1px solid #708094; border-radius: 4px; padding: .5em .7em; background: #fff; }
+.ps-article input[type="checkbox"] { width: 1.25em; min-height: 1.25em; height: 1.25em; margin-inline-end: .5em; vertical-align: middle; }
+.ps-article button { cursor: pointer; color: #fff; background: var(--ps-ink); white-space: normal; }
+.ps-article input[aria-invalid="true"] { border: 2px solid #973b25; }
+.ps-article label { display: block; font-weight: 600; }
+.ps-article label :is(select, input:not([type="checkbox"])) { display: block; width: 100%; margin-top: .35em; }
+.ps-article :is(.ps-lead, .ps-installation-result) { font-size: 1.08em; }
+.ps-article :is(.ps-note, .ps-source, .ps-price-date, .ps-model, .ps-disclosure) { font-size: .92em; color: #435164; }
+.ps-article :is(.ps-toc, .ps-model-routes) { display: flex; flex-wrap: wrap; gap: .5em 1.2em; margin-block: 1.5em; }
+.ps-article :is(.ps-toc, .ps-model-routes) a { display: inline-flex; align-items: center; min-height: 44px; }
+.ps-article :is(.ps-condition-grid, .ps-product-grid) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2em; }
+.ps-article .ps-condition-grid > div { padding: 1.2em; background: var(--ps-soft); border-top: 3px solid var(--ps-ink); }
+.ps-article .ps-product { min-width: 0; padding: 1.4em; border: 1px solid var(--ps-line); border-radius: 4px; }
+/* Images accompany the model identity; all explanatory content remains in the same reading order. */
+.ps-article .ps-product-image { max-width: 18em; margin: 1em auto; }
+.ps-article .ps-product-image img { display: block; max-width: 100%; max-height: 12em; width: auto; height: auto; margin: auto; object-fit: contain; }
+.ps-article :is(.ps-budget-controls, .ps-pair-controls) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 1em; padding: 1.3em; margin-block: 1.4em; border: 1px solid var(--ps-line); background: var(--ps-soft); }
+.ps-article :is([data-ps-budget-result], [data-ps-pair-result]) { grid-column: 1 / -1; margin: 0; }
+.ps-article .ps-table-scroll { max-width: 100%; overflow: auto; margin-block: 1.2em; border: 1px solid var(--ps-line); -webkit-overflow-scrolling: touch; }
+.ps-article .ps-comparison { border-collapse: collapse; width: 100%; min-width: 40em; margin: 0; }
+.ps-article .ps-comparison caption { padding: 1em; text-align: left; font-weight: 600; background: var(--ps-soft); }
+.ps-article .ps-comparison :is(th, td) { padding: .9em; min-width: 9em; border: 1px solid var(--ps-line); vertical-align: top; text-align: left; }
+.ps-article .ps-comparison th { background: var(--ps-soft); color: var(--ps-ink); }
+.ps-article .ps-product-offers { padding-block: 1.3em; border-bottom: 1px solid var(--ps-line); }
+.ps-article .ps-seller { padding: 1.2em; margin-block: .8em; background: var(--ps-soft); border-inline-start: 3px solid var(--ps-ink); }
+.ps-article .ps-offer-link { display: inline-flex; align-items: center; min-height: 44px; padding: .65em 1em; background: var(--ps-ink); color: #fff; border-radius: 4px; }
+.ps-article details { padding: .8em 1em; margin-block: 1em; border: 1px solid var(--ps-line); }
+.ps-article summary { cursor: pointer; min-height: 44px; font-weight: 600; }
+.ps-article .ps-installation-controls { margin-block: 1.3em; }
+.ps-article .ps-installation-controls fieldset { min-width: 0; margin: 0 0 1em; padding: 1.2em; border: 1px solid var(--ps-line); }
+.ps-article .ps-installation-controls legend { padding-inline: .5em; font-weight: 600; }
+.ps-article .ps-installation-field { display: grid; grid-template-columns: minmax(10em, 1fr) minmax(6em, 10em); align-items: center; gap: .5em 1em; padding-block: .7em; border-bottom: 1px solid var(--ps-line); }
+.ps-article .ps-installation-field p { grid-column: 1 / -1; margin: 0; }
+.ps-article .ps-installation-result { padding: 1em; background: var(--ps-soft); border-inline-start: 3px solid var(--ps-ink); }
+.ps-article [id] { scroll-margin-top: 2em; }
+@media (max-width: 48em) {
+  .ps-article :is(.ps-condition-grid, .ps-product-grid, .ps-budget-controls, .ps-pair-controls) { grid-template-columns: minmax(0, 1fr); }
+  .ps-article .ps-product { padding: 1em; }
+  .ps-article .ps-installation-field { grid-template-columns: minmax(0, 1fr); }
+  .ps-article .ps-installation-field input { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .ps-article { scroll-behavior: auto; } }
+@media print {
+  .ps-article .ps-product[hidden], .ps-article .ps-comparison [hidden] { display: revert !important; }
+  .ps-article :is(.ps-budget-controls, .ps-pair-controls) { display: none; }
+  .ps-article .ps-table-scroll { overflow: visible; }
+}

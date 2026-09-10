@@ -375,6 +375,7 @@ def prepare(root, keys, theme=False, call=invoke):
         fail("STATUS_INVALID")
     targets = {t["article_key"]: t for t in status.get("targets", [])}
     ready = status.get("profile") == PROFILE and status.get("enabled") is True
+    status_ready = ready
     if ready:
         operator.require_sha256(status.get("profile_sha256"))
         operator.require_sha256(status.get("theme", {}).get("tree_sha256"))
@@ -387,7 +388,30 @@ def prepare(root, keys, theme=False, call=invoke):
         post_id = row.get("post_id") or targets.get(row["article_key"], {}).get(
             "post_id"
         )
-        baseline = call("document", {"id": post_id}) if post_id and ready else None
+        baseline_reason = None
+        document_ready = ready
+        if row["mode"] == "existing":
+            # One undelegated row closes publication, not later read-only baselines.
+            document_ready = status_ready
+            target = targets.get(row["article_key"])
+            if document_ready and target is None:
+                baseline_reason = "TARGET_NOT_DELEGATED"
+            elif document_ready:
+                mismatches = [
+                    field
+                    for field in ("article_key", "post_id", "post_type", "slug")
+                    if field not in row
+                    or field not in target
+                    or type(row[field]) is not type(target[field])
+                    or row[field] != target[field]
+                ]
+                if mismatches:
+                    baseline_reason = "TARGET_IDENTITY_MISMATCH:" + ",".join(mismatches)
+            if baseline_reason:
+                document_ready = False
+        baseline = (
+            call("document", {"id": post_id}) if post_id and document_ready else None
+        )
         if row["mode"] == "existing" and baseline is None:
             ready = False
         if row["mode"] == "new" and not status.get("allow_new_posts"):
@@ -411,6 +435,11 @@ def prepare(root, keys, theme=False, call=invoke):
                 "body_file": "sources/" + row["body_source"],
                 "document": document,
                 "baseline": baseline,
+                **(
+                    {"baseline_unavailable_reason": baseline_reason}
+                    if baseline_reason
+                    else {}
+                ),
             }
         )
     candidate = {

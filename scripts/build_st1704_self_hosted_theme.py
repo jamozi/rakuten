@@ -26,12 +26,13 @@ from scripts import (  # noqa: E402
     build_editorial_v3_theme_navigation as editorial_navigation_owner,
 )
 from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
+from scripts import build_reader_purchase_support_v1 as purchase_support_owner  # noqa: E402, F401
 
 
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "2b76b16af71d1ab622560b4e18c8e946c4218449cf46d601c2d85c163c64345a"
+    "ae71eaaf05a3e77a8132fc90ea267117b359dab12a27ce791f6b787892f89546"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -94,14 +95,25 @@ MEASUREMENT_CLIENT_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/measureme
 ANALYTICS_CONSENT_GATE_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/analytics-consent-gate.js"
 )
-READER_RUNTIME_BINDING_INPUT_PATH: Final = Path("changes/reader-measurement-v1/theme-runtime-binding.v1.json")
-READER_RUNTIME_ASSET_PATH: Final = THEME_REPOSITORY_ROOT / "assets/reader-measurement-runtime.v1.json"
+READER_RUNTIME_BINDING_INPUT_PATH: Final = Path(
+    "changes/reader-measurement-v1/theme-runtime-binding.v1.json"
+)
+READER_RUNTIME_ASSET_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/reader-measurement-runtime.v1.json"
+)
 THEME_FUNCTIONS_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "functions.php"
 THEME_SOURCE_INPUT_PATHS: Final = (
     ANALYTICS_CONSENT_GATE_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/purchase-support.js",
+    THEME_REPOSITORY_ROOT / "assets/purchase-support.css",
+    THEME_REPOSITORY_ROOT / "assets/purchase-support.v1.json",
+    THEME_REPOSITORY_ROOT / "assets/purchase-analytics.js",
+    THEME_REPOSITORY_ROOT / "inc/purchase-support.php",
+    THEME_REPOSITORY_ROOT / "inc/purchase-analytics.php",
     THEME_REPOSITORY_ROOT / "assets/editorial-navigation.js",
     EDITORIAL_NAVIGATION_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/editorial-v2.css",
+    THEME_REPOSITORY_ROOT / "assets/home-magazine.css",
     ANKER_GENERATIONS_ASSET_INPUT_PATH,
     DISHWASHER_ASSET_INPUT_PATH,
     PORTABLE_POWER_ASSET_INPUT_PATH,
@@ -133,8 +145,10 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     THEME_REPOSITORY_ROOT / "theme.json",
 )
 SOURCE_FILES: Final = tuple(
-    path.relative_to(THEME_REPOSITORY_ROOT).as_posix()
-    for path in THEME_SOURCE_INPUT_PATHS
+    sorted(
+        path.relative_to(THEME_REPOSITORY_ROOT).as_posix()
+        for path in THEME_SOURCE_INPUT_PATHS
+    )
 )
 THEME_FINGERPRINT_EXCLUDED_PATHS: Final = frozenset(
     {"raos-assets.v1.json", "theme-contract.v1.json"}
@@ -145,6 +159,9 @@ THEME_FINGERPRINT_SOURCE_FILES: Final = tuple(
     if relative not in THEME_FINGERPRINT_EXCLUDED_PATHS
 )
 PHP_INTEGRITY_BINDINGS: Final = {
+    "KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256": "assets/purchase-support.v1.json",
+    "KURASHINOSHIRUBE_PURCHASE_UI_SHA256": "assets/purchase-support.js",
+    "KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256": "assets/purchase-analytics.js",
     "KURASHINOSHIRUBE_READER_RUNTIME_METADATA_SHA256": "assets/reader-measurement-runtime.v1.json",
     "KURASHINOSHIRUBE_LEGACY_MEDIA_PROJECTION_SHA256": (
         "assets/legacy-media-display-projection.v1.json"
@@ -456,7 +473,7 @@ def _canonical_json(document: object) -> bytes:
             )
             + "\n"
         ).encode("utf-8", errors="strict")
-    except (TypeError, ValueError, UnicodeError, RecursionError):
+    except TypeError, ValueError, UnicodeError, RecursionError:
         _fail()
 
 
@@ -516,7 +533,7 @@ def _decoded_utf8(payload: bytes) -> str:
 def _load_json_payload(payload: bytes) -> dict[str, object]:
     try:
         document = json.loads(payload.decode("utf-8", errors="strict"))
-    except (UnicodeError, json.JSONDecodeError):
+    except UnicodeError, json.JSONDecodeError:
         _fail()
     if type(document) is not dict:
         _fail()
@@ -527,7 +544,14 @@ def render_theme_stamp_payloads() -> tuple[dict[Path, bytes], str]:
     """Render the complete non-circular theme identity from current owner inputs."""
 
     reader_binding = _read_regular_path(ROOT / READER_RUNTIME_BINDING_INPUT_PATH)
-    sources = {relative: (reader_binding if relative == "assets/reader-measurement-runtime.v1.json" else _read_source(relative)) for relative in SOURCE_FILES}
+    sources = {
+        relative: (
+            reader_binding
+            if relative == "assets/reader-measurement-runtime.v1.json"
+            else _read_source(relative)
+        )
+        for relative in SOURCE_FILES
+    }
     functions = _decoded_utf8(sources["functions.php"])
     for constant, relative in PHP_INTEGRITY_BINDINGS.items():
         payload = sources.get(relative)
@@ -644,7 +668,11 @@ def _write_theme_stamp_payloads(payloads: Mapping[Path, bytes]) -> None:
             if type(payload) is not bytes or not payload:
                 _fail()
             if target == ROOT / READER_RUNTIME_ASSET_PATH and not target.exists():
-                if target.is_symlink() or target.parent.resolve() != target.parent or not target.parent.is_dir():
+                if (
+                    target.is_symlink()
+                    or target.parent.resolve() != target.parent
+                    or not target.parent.is_dir()
+                ):
                     _fail()
             else:
                 _read_regular_path(target)
@@ -661,7 +689,7 @@ def _write_theme_stamp_payloads(payloads: Mapping[Path, bytes]) -> None:
             staged.append((target, temporary))
         for target, temporary in staged:
             os.replace(temporary, target)
-    except (OSError, ThemeBuildFailure):
+    except OSError, ThemeBuildFailure:
         for _target, temporary in staged:
             try:
                 temporary.unlink(missing_ok=True)
@@ -910,12 +938,11 @@ def _validate_header_navigation(header: str) -> None:
             _load_json_payload(raw.encode("utf-8"))
             for raw in re.findall(r"<!-- wp:navigation-link (\{[^\n]*\}) /-->", body)
         ]
-        if (
-            [(link.get("label"), link.get("url")) for link in links] != expected_links
-            or any(
-                link.get("kind") != "custom" or link.get("isTopLevelLink") is not True
-                for link in links
-            )
+        if [
+            (link.get("label"), link.get("url")) for link in links
+        ] != expected_links or any(
+            link.get("kind") != "custom" or link.get("isTopLevelLink") is not True
+            for link in links
         ):
             _fail()
 
@@ -936,11 +963,26 @@ def validate_sources() -> dict[str, str]:
     search = _text("templates/search.html")
     archive = _text("templates/archive.html")
     not_found = _text("templates/404.html")
+    front_page_markers = (
+        '<!-- wp:template-part {"slug":"header","tagName":"header"} /-->',
+        (
+            '<!-- wp:group {"tagName":"main","className":"raos-home-v2",'
+            '"anchor":"main-content","layout":{"type":"default"}} -->'
+        ),
+        '<main id="main-content" class="wp-block-group raos-home-v2">',
+        '<!-- wp:post-content {"layout":{"type":"default"}} /-->',
+        '<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->',
+    )
     if (
-        front_page.count('<h1 ') != 1
-        or front_page.count('[kurashinoshirube_latest_guides]') != 1
-        or 'raos-home-hero__image' in front_page
-        or '[kurashinoshirube_article_hero]' in single
+        any(front_page.count(marker) != 1 for marker in front_page_markers)
+        or [front_page.index(marker) for marker in front_page_markers]
+        != sorted(front_page.index(marker) for marker in front_page_markers)
+        or front_page.count("wp:post-content") != 1
+        or "wp:post-title" in front_page
+        or "<h1" in front_page
+        or "wp:shortcode" in front_page
+        or "postId" in front_page
+        or "[kurashinoshirube_article_hero]" in single
     ):
         _fail()
     if single.count("wp:post-title") != 1:
@@ -1080,10 +1122,7 @@ def validate_sources() -> dict[str, str]:
             "PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK"
         )
         or contract.get("head", {}).get("raos_metadata_delivery")
-        != (
-            "PRODUCTION_YOAST_METADATA_FILTERS_WITH_LOCAL_PREVIEW_NO_YOAST_"
-            "FALLBACK"
-        )
+        != ("PRODUCTION_YOAST_METADATA_FILTERS_WITH_LOCAL_PREVIEW_NO_YOAST_FALLBACK")
         or contract.get("head", {}).get("local_preview_metadata_fallback")
         != {
             "active_when": (
@@ -1303,7 +1342,7 @@ def _write_package(payload: bytes) -> None:
             os.fsync(handle.fileno())
         os.replace(temporary, OUTPUT_PATH)
         os.chmod(OUTPUT_PATH, 0o600)
-    except (OSError, ThemeBuildFailure):
+    except OSError, ThemeBuildFailure:
         _fail()
 
 

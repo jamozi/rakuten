@@ -1,0 +1,366 @@
+{
+  "schema": "RAOS_PURCHASE_ARTICLE_RUNTIME_V1",
+  "articles": [
+    {
+      "article_id": "countertop-dishwasher-for-small-households",
+      "slug": "countertop-dishwasher-for-small-households",
+      "post_type": "post",
+      "kind": "comparison",
+      "snapshot_id": "ps-b24b056cd26403fb9a5b433566c618eb",
+      "body_sha256": "f52704ec20e797da672fa7092c237e32d0dfb0697c7c8223edddf86b291185f4",
+      "bindings": [
+        {
+          "article_id": "countertop-dishwasher-for-small-households",
+          "product_id": "PRD-SIROCA-SS-MA251",
+          "seller_id": "siroca",
+          "offer_id": "siroca-ss-ma251-silver",
+          "cta_id": "purchase-41-siroca-ss-ma251-silver-top_summary",
+          "placement": "top_summary",
+          "snapshot_id": "ps-b24b056cd26403fb9a5b433566c618eb",
+          "href": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976"
+        },
+        {
+          "article_id": "countertop-dishwasher-for-small-households",
+          "product_id": "PRD-SIROCA-SS-MA251",
+          "seller_id": "siroca",
+          "offer_id": "siroca-ss-ma251-silver",
+          "cta_id": "purchase-41-siroca-ss-ma251-silver-comparison_table",
+          "placement": "comparison_table",
+          "snapshot_id": "ps-b24b056cd26403fb9a5b433566c618eb",
+          "href": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976"
+        },
+        {
+          "article_id": "countertop-dishwasher-for-small-households",
+          "product_id": "PRD-SIROCA-SS-MA251",
+          "seller_id": "siroca",
+          "offer_id": "siroca-ss-ma251-silver",
+          "cta_id": "purchase-41-siroca-ss-ma251-silver-product_card",
+          "placement": "product_card",
+          "snapshot_id": "ps-b24b056cd26403fb9a5b433566c618eb",
+          "href": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976"
+        },
+        {
+          "article_id": "countertop-dishwasher-for-small-households",
+          "product_id": "PRD-SIROCA-SS-MA251",
+          "seller_id": "siroca",
+          "offer_id": "siroca-ss-ma251-silver",
+          "cta_id": "purchase-41-siroca-ss-ma251-silver-final_summary",
+          "placement": "final_summary",
+          "snapshot_id": "ps-b24b056cd26403fb9a5b433566c618eb",
+          "href": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976"
+        }
+      ]
+    },
+    {
+      "article_id": "lightweight-carry-on-suitcase-under-3kg",
+      "slug": "lightweight-carry-on-suitcase-under-3kg",
+      "post_type": "post",
+      "kind": "comparison",
+      "snapshot_id": "ps-a43f90fbc0ee5bbd15c8bc5f692b3073",
+      "body_sha256": "0742d211211dcf9447b81dcb4a7534464b9dc5735b6eee206dfef735aff7bf78",
+      "bindings": [
+        {
+          "article_id": "lightweight-carry-on-suitcase-under-3kg",
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+          "seller_id": "ace",
+          "offer_id": "ace-01521-09",
+          "cta_id": "purchase-83-ace-01521-09-top_summary",
+          "placement": "top_summary",
+          "snapshot_id": "ps-a43f90fbc0ee5bbd15c8bc5f692b3073",
+          "href": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on"
+        },
+        {
+          "article_id": "lightweight-carry-on-suitcase-under-3kg",
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+          "seller_id": "ace",
+          "offer_id": "ace-01521-09",
+          "cta_id": "purchase-83-ace-01521-09-comparison_table",
+          "placement": "comparison_table",
+          "snapshot_id": "ps-a43f90fbc0ee5bbd15c8bc5f692b3073",
+          "href": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on"
+        },
+        {
+          "article_id": "lightweight-carry-on-suitcase-under-3kg",
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+          "seller_id": "ace",
+          "offer_id": "ace-01521-09",
+          "cta_id": "purchase-83-ace-01521-09-product_card",
+          "placement": "product_card",
+          "snapshot_id": "ps-a43f90fbc0ee5bbd15c8bc5f692b3073",
+          "href": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on"
+        },
+        {
+          "article_id": "lightweight-carry-on-suitcase-under-3kg",
+          "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+          "seller_id": "ace",
+          "offer_id": "ace-01521-09",
+          "cta_id": "purchase-83-ace-01521-09-final_summary",
+          "placement": "final_summary",
+          "snapshot_id": "ps-a43f90fbc0ee5bbd15c8bc5f692b3073",
+          "href": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on"
+        }
+      ]
+    },
+    {
+      "article_id": "compact-robot-vacuum-shortlist",
+      "slug": "compact-robot-vacuum-shortlist",
+      "post_type": "post",
+      "kind": "comparison",
+      "snapshot_id": "ps-5a128acd28b91889a32ce4d43e690612",
+      "body_sha256": "5b31edc76f5f229c3240a8f5450c3916c579537f173464241f11c1d1aba162b8",
+      "bindings": [
+        {
+          "article_id": "compact-robot-vacuum-shortlist",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "seller_id": "irobot",
+          "offer_id": "irobot-f155260-white",
+          "cta_id": "purchase-30-irobot-f155260-white-top_summary",
+          "placement": "top_summary",
+          "snapshot_id": "ps-5a128acd28b91889a32ce4d43e690612",
+          "href": "https://store.irobot-jp.com/item/F155260.html"
+        },
+        {
+          "article_id": "compact-robot-vacuum-shortlist",
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "switchbot",
+          "offer_id": "switchbot-k11-pro-ivory",
+          "cta_id": "purchase-30-switchbot-k11-pro-ivory-top_summary",
+          "placement": "top_summary",
+          "snapshot_id": "ps-5a128acd28b91889a32ce4d43e690612",
+          "href": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
+        },
+        {
+          "article_id": "compact-robot-vacuum-shortlist",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "seller_id": "irobot",
+          "offer_id": "irobot-f155260-white",
+          "cta_id": "purchase-30-irobot-f155260-white-comparison_table",
+          "placement": "comparison_table",
+          "snapshot_id": "ps-5a128acd28b91889a32ce4d43e690612",
+          "href": "https://store.irobot-jp.com/item/F155260.html"
+        },
+        {
+          "article_id": "compact-robot-vacuum-shortlist",
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "switchbot",
+          "offer_id": "switchbot-k11-pro-ivory",
+          "cta_id": "purchase-30-switchbot-k11-pro-ivory-comparison_table",
+          "placement": "comparison_table",
+          "snapshot_id": "ps-5a128acd28b91889a32ce4d43e690612",
+          "href": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
+        },
+        {
+          "article_id": "compact-robot-vacuum-shortlist",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "seller_id": "irobot",
+          "offer_id": "irobot-f155260-white",
+          "cta_id": "purchase-30-irobot-f155260-white-product_card",
+          "placement": "product_card",
+          "snapshot_id": "ps-5a128acd28b91889a32ce4d43e690612",
+          "href": "https://store.irobot-jp.com/item/F155260.html"
+        },
+        {
+          "article_id": "compact-robot-vacuum-shortlist",
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "switchbot",
+          "offer_id": "switchbot-k11-pro-ivory",
+          "cta_id": "purchase-30-switchbot-k11-pro-ivory-product_card",
+          "placement": "product_card",
+          "snapshot_id": "ps-5a128acd28b91889a32ce4d43e690612",
+          "href": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
+        },
+        {
+          "article_id": "compact-robot-vacuum-shortlist",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+          "seller_id": "irobot",
+          "offer_id": "irobot-f155260-white",
+          "cta_id": "purchase-30-irobot-f155260-white-final_summary",
+          "placement": "final_summary",
+          "snapshot_id": "ps-5a128acd28b91889a32ce4d43e690612",
+          "href": "https://store.irobot-jp.com/item/F155260.html"
+        },
+        {
+          "article_id": "compact-robot-vacuum-shortlist",
+          "product_id": "PRD-SWITCHBOT-K11-PRO",
+          "seller_id": "switchbot",
+          "offer_id": "switchbot-k11-pro-ivory",
+          "cta_id": "purchase-30-switchbot-k11-pro-ivory-final_summary",
+          "placement": "final_summary",
+          "snapshot_id": "ps-5a128acd28b91889a32ce4d43e690612",
+          "href": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro"
+        }
+      ]
+    },
+    {
+      "article_id": "portable-power-station-guide",
+      "slug": "portable-power-station-guide",
+      "post_type": "post",
+      "kind": "comparison",
+      "snapshot_id": "ps-0a7b6916c0d4c80534e2d017f5d1be90",
+      "body_sha256": "be0968f399d600c2865599dbe84a303b9a0ee1b458765f60d58264fc2028bd3a",
+      "bindings": [
+        {
+          "article_id": "portable-power-station-guide",
+          "product_id": "PRD-ANKER-SOLIX-C300",
+          "seller_id": "anker",
+          "offer_id": "anker-a17225z1",
+          "cta_id": "purchase-28-anker-a17225z1-top_summary",
+          "placement": "top_summary",
+          "snapshot_id": "ps-0a7b6916c0d4c80534e2d017f5d1be90",
+          "href": "https://www.ankerjapan.com/products/a1722?from_business=1"
+        },
+        {
+          "article_id": "portable-power-station-guide",
+          "product_id": "PRD-JACKERY-500-NEW",
+          "seller_id": "jackery",
+          "offer_id": "jackery-500-new-base",
+          "cta_id": "purchase-28-jackery-500-new-base-top_summary",
+          "placement": "top_summary",
+          "snapshot_id": "ps-0a7b6916c0d4c80534e2d017f5d1be90",
+          "href": "https://www.jackery.jp/products/explorer-500-new"
+        },
+        {
+          "article_id": "portable-power-station-guide",
+          "product_id": "PRD-ANKER-SOLIX-C300",
+          "seller_id": "anker",
+          "offer_id": "anker-a17225z1",
+          "cta_id": "purchase-28-anker-a17225z1-comparison_table",
+          "placement": "comparison_table",
+          "snapshot_id": "ps-0a7b6916c0d4c80534e2d017f5d1be90",
+          "href": "https://www.ankerjapan.com/products/a1722?from_business=1"
+        },
+        {
+          "article_id": "portable-power-station-guide",
+          "product_id": "PRD-JACKERY-500-NEW",
+          "seller_id": "jackery",
+          "offer_id": "jackery-500-new-base",
+          "cta_id": "purchase-28-jackery-500-new-base-comparison_table",
+          "placement": "comparison_table",
+          "snapshot_id": "ps-0a7b6916c0d4c80534e2d017f5d1be90",
+          "href": "https://www.jackery.jp/products/explorer-500-new"
+        },
+        {
+          "article_id": "portable-power-station-guide",
+          "product_id": "PRD-ANKER-SOLIX-C300",
+          "seller_id": "anker",
+          "offer_id": "anker-a17225z1",
+          "cta_id": "purchase-28-anker-a17225z1-product_card",
+          "placement": "product_card",
+          "snapshot_id": "ps-0a7b6916c0d4c80534e2d017f5d1be90",
+          "href": "https://www.ankerjapan.com/products/a1722?from_business=1"
+        },
+        {
+          "article_id": "portable-power-station-guide",
+          "product_id": "PRD-JACKERY-500-NEW",
+          "seller_id": "jackery",
+          "offer_id": "jackery-500-new-base",
+          "cta_id": "purchase-28-jackery-500-new-base-product_card",
+          "placement": "product_card",
+          "snapshot_id": "ps-0a7b6916c0d4c80534e2d017f5d1be90",
+          "href": "https://www.jackery.jp/products/explorer-500-new"
+        },
+        {
+          "article_id": "portable-power-station-guide",
+          "product_id": "PRD-ANKER-SOLIX-C300",
+          "seller_id": "anker",
+          "offer_id": "anker-a17225z1",
+          "cta_id": "purchase-28-anker-a17225z1-final_summary",
+          "placement": "final_summary",
+          "snapshot_id": "ps-0a7b6916c0d4c80534e2d017f5d1be90",
+          "href": "https://www.ankerjapan.com/products/a1722?from_business=1"
+        },
+        {
+          "article_id": "portable-power-station-guide",
+          "product_id": "PRD-JACKERY-500-NEW",
+          "seller_id": "jackery",
+          "offer_id": "jackery-500-new-base",
+          "cta_id": "purchase-28-jackery-500-new-base-final_summary",
+          "placement": "final_summary",
+          "snapshot_id": "ps-0a7b6916c0d4c80534e2d017f5d1be90",
+          "href": "https://www.jackery.jp/products/explorer-500-new"
+        }
+      ]
+    },
+    {
+      "article_id": "dishwasher-installation-measurement",
+      "slug": "dishwasher-installation-measurement",
+      "post_type": "post",
+      "kind": "guide",
+      "snapshot_id": "ps-51fd84c6025b9e2d2d8368236dd4235a",
+      "body_sha256": "51fd84c6025b9e2d2d8368236dd4235a89cdd35fe60733ad65136a883b93d5df",
+      "bindings": []
+    },
+    {
+      "article_id": "dishwasher-water-supply-methods",
+      "slug": "dishwasher-water-supply-methods",
+      "post_type": "post",
+      "kind": "guide",
+      "snapshot_id": "ps-d3ab8716d5ebd1901efc7b489435da5c",
+      "body_sha256": "d3ab8716d5ebd1901efc7b489435da5c1ad6bd1c6e82f08c14af2eb332d9743e",
+      "bindings": []
+    },
+    {
+      "article_id": "dishwasher-detergent-guide",
+      "slug": "dishwasher-detergent-guide",
+      "post_type": "post",
+      "kind": "guide",
+      "snapshot_id": "ps-5f8f05b8039374140905b76120dc6ede",
+      "body_sha256": "5f8f05b8039374140905b76120dc6ede484fc0d83621b247ed66f505639f61e3",
+      "bindings": []
+    },
+    {
+      "article_id": "dishwasher-cleaning-guide",
+      "slug": "dishwasher-cleaning-guide",
+      "post_type": "post",
+      "kind": "guide",
+      "snapshot_id": "ps-0dd55e2a7497b62e8a3d497694b3bfc9",
+      "body_sha256": "0dd55e2a7497b62e8a3d497694b3bfc9c480e9dd85c2272e3858d63942386078",
+      "bindings": []
+    },
+    {
+      "article_id": "dishwasher-running-cost",
+      "slug": "dishwasher-running-cost",
+      "post_type": "post",
+      "kind": "guide",
+      "snapshot_id": "ps-4c41b8332ab6a87f58d59a20100f75e2",
+      "body_sha256": "4c41b8332ab6a87f58d59a20100f75e2ab8a4f0e4b30c3c728e1a8302f5af6f3",
+      "bindings": []
+    },
+    {
+      "article_id": "kitchen",
+      "slug": "kitchen",
+      "post_type": "page",
+      "kind": "hub",
+      "snapshot_id": "ps-3bf29afb925218eba637684310df31af",
+      "body_sha256": "3bf29afb925218eba637684310df31af60a71bd2ecad78af5959474e85b318e3",
+      "bindings": []
+    },
+    {
+      "article_id": "about-ad-policy",
+      "slug": "about-ad-policy",
+      "post_type": "page",
+      "kind": "policy",
+      "snapshot_id": "ps-4abf7a3236d9ebf319558637c3d60dbd",
+      "body_sha256": "4abf7a3236d9ebf319558637c3d60dbd8780cbffc306207263b54edf3b481f48",
+      "bindings": []
+    },
+    {
+      "article_id": "comparison-policy",
+      "slug": "comparison-policy",
+      "post_type": "page",
+      "kind": "policy",
+      "snapshot_id": "ps-5f4416a5233996222706319034a74a69",
+      "body_sha256": "5f4416a5233996222706319034a74a69fc66c74b4890df35debd2476eb402366",
+      "bindings": []
+    },
+    {
+      "article_id": "privacy-policy",
+      "slug": "privacy-policy",
+      "post_type": "page",
+      "kind": "policy",
+      "snapshot_id": "ps-f5d1172522c14fa17870654711108545",
+      "body_sha256": "f5d1172522c14fa178706547111085457389b435301424b2f66e1d1ccb6dbde7",
+      "bindings": []
+    }
+  ]
+}

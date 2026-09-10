@@ -10,7 +10,8 @@
     "www.thanko.jp",
     "www.toshiba-lifestyle.com",
     "www.toshiba-living.jp",
-    "jpn.faq.panasonic.com"
+    "jpn.faq.panasonic.com",
+    "www.data.thanko.jp"
   ],
   "sources": [
     {
@@ -231,6 +232,26 @@
       "authority": "MANUFACTURER_OFFICIAL",
       "models": [
         "NP-TMLK1-K"
+      ]
+    },
+    {
+      "source_ref": "tdws25s-manual",
+      "url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+      "title": "ラクアmini カラー TDWS25SBL / TDWS25SRD 取扱説明書",
+      "checked_at": "2026-09-10",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "models": [
+        "TDWS25SBL / TDWS25SRD"
+      ]
+    },
+    {
+      "source_ref": "np-tsp1-eco",
+      "url": "https://panasonic.jp/dish/feature/SLIM/eco.html",
+      "title": "NP-TSP1 節水・省エネ 条件別公表値",
+      "checked_at": "2026-09-10",
+      "authority": "MANUFACTURER_OFFICIAL",
+      "models": [
+        "NP-TSP1-W"
       ]
     }
   ],
@@ -852,6 +873,52 @@
           "basis": "one_cycle"
         }
       ]
+    },
+    {
+      "evidence_ref": "tdws25s-normal-water",
+      "source_ref": "tdws25s-manual",
+      "exact_model": "TDWS25SBL / TDWS25SRD",
+      "requirement": "guide:cycle_water",
+      "locator": "表紙（両型番）およびpp.18–22 通常洗浄・使い方",
+      "text": "TDWS25SBLとTDWS25SRD共通の通常洗浄で使用水量3.2L。給水カップ容量ではない。消費Whは未確認。TK-MDW22Wやmini Plusには転用しない。",
+      "state": "KNOWN",
+      "quantities": [
+        {
+          "kind": "water_per_cycle",
+          "value": 3.2,
+          "unit": "L",
+          "course": "normal-wash-dry",
+          "course_label": "通常洗浄（乾燥を含む）",
+          "basis": "one_cycle"
+        }
+      ]
+    },
+    {
+      "evidence_ref": "np-tsp1-tank-level2-cycle",
+      "source_ref": "np-tsp1-eco",
+      "exact_model": "NP-TSP1-W",
+      "requirement": "guide:cycle_energy_water",
+      "locator": "NP-TSP1 明記の脚注1・AIエコナビ比較条件",
+      "text": "NP-TSP1-Wのタンク給水、汚れレベル2・エコナビOFFで約670Wh・約9L。食器24点と小物16点、水温20℃、洗剤5g、標準汚れの試験条件。分岐水栓給水や他コースに転用しない。",
+      "state": "KNOWN",
+      "quantities": [
+        {
+          "kind": "energy_per_cycle",
+          "value": 670,
+          "unit": "Wh",
+          "course": "tank-level2-econavi-off",
+          "course_label": "タンク給水・汚れレベル2・エコナビOFF",
+          "basis": "one_cycle"
+        },
+        {
+          "kind": "water_per_cycle",
+          "value": 9,
+          "unit": "L",
+          "course": "tank-level2-econavi-off",
+          "course_label": "タンク給水・汚れレベル2・エコナビOFF",
+          "basis": "one_cycle"
+        }
+      ]
     }
   ],
   "articles": [
@@ -1437,7 +1504,7 @@
         "save-housework"
       ],
       "title": "卓上食洗機のランニングコスト｜電気・水道・洗剤を式で確認する",
-      "dek": "金額を比べる前に、公式の消費電力量と自宅の料金をそろえます。対象6機種で1回当たりWhを確認できたのはNP-TMLK1-Kだけです。他の5機種は電気代の比較を保留し、ここでは計算手順と不足値を整理します。 自宅の単価を空欄のフォームへ入力すると、公表条件で計算できる費目を確認できます。",
+      "dek": "8つの型番・型番グループの公表条件を確認できます。1回当たりWhを確認できたのはNP-TMLK1-KとNP-TSP1-Wです。ほかは電気代を未計算とし、自宅の単価を入力して確認できた費目の小計を出します。対象コースが異なるため、この金額だけで機種の優劣は決められません。",
       "summary": "編集上の概算は、1回当たりkWh×電気単価、使用水量m3×水道・下水道の従量単価、一回分の洗剤代を足します。基本料金や段階料金による請求額の変化は別途確認し、定格Wと時間から消費Whを推計しません。",
       "decision_axes": [
         {
@@ -1483,6 +1550,13 @@
                 "np-tmlk1-standard-water-per-cycle",
                 "np-tmlk1-cycle-time",
                 "tk-mdw22b-cycle-water"
+              ]
+            },
+            {
+              "text": "追加したラクアmini カラー（TDWS25SBL／TDWS25SRD）は通常洗浄の使用水量3.2Lを確認し、電力量は未確認です。NP-TSP1-Wはタンク給水・汚れレベル2・エコナビOFFの試験条件で約670Wh・約9Lを使います。分岐水栓給水や別コースへ同じ値を使いません。ラクアmini、mini Plus、mini カラーは別の型番として扱います。",
+              "evidence_refs": [
+                "tdws25s-normal-water",
+                "np-tsp1-tank-level2-cycle"
               ]
             }
           ]
@@ -1556,6 +1630,12 @@
           "why_unknown": "タンク容量約6Lは確認できていますが、この記録では一回の使用水量との一致を確認していません。",
           "how_to_verify": "当該型番の説明書で、使うコースの使用水量を確認します。",
           "decision_effect": "タンク容量をそのまま水道代の式へ入れません。"
+        },
+        {
+          "topic": "TDWS25SBL／TDWS25SRDの通常洗浄1回当たりWh",
+          "why_unknown": "両型番の公式説明書で消費Whを確認できていません。",
+          "how_to_verify": "メーカーへ通常洗浄と乾燥を含む1回当たりWh・測定条件を問い合わせます。問い合わせは未実施です。",
+          "decision_effect": "電気代は未計算です。電気代を含む比較が必要なら購入判断を保留します。定格900Wと運転時間から補いません。"
         }
       ],
       "purchase_checks": [
@@ -1581,7 +1661,9 @@
         "tk-mdw22b-detergent",
         "tk-mdw22b-cycle-time",
         "tk-mdw22b-cycle-water",
-        "np-tmlk1-standard-water-per-cycle"
+        "np-tmlk1-standard-water-per-cycle",
+        "tdws25s-normal-water",
+        "np-tsp1-tank-level2-cycle"
       ],
       "contextual_links": [
         {
@@ -1598,7 +1680,8 @@
             "exact_model": "NP-TMLK1-K",
             "course": "standard-wash-dry",
             "energy_ref": "np-tmlk1-cycle-time",
-            "water_ref": "np-tmlk1-standard-water-per-cycle"
+            "water_ref": "np-tmlk1-standard-water-per-cycle",
+            "product_anchor": "product-dish-np-tmlk1"
           },
           {
             "profile_id": "ss-m171-spec",
@@ -1619,7 +1702,8 @@
             "exact_model": "SS-MA251",
             "course": "published-spec",
             "energy_ref": null,
-            "water_ref": "ss-ma251-water-drainage"
+            "water_ref": "ss-ma251-water-drainage",
+            "product_anchor": "product-dish-ss-ma251"
           },
           {
             "profile_id": "tk-mdw22b-spec",
@@ -1634,6 +1718,22 @@
             "course": "unconfirmed-course",
             "energy_ref": null,
             "water_ref": null
+          },
+          {
+            "profile_id": "tdws25s-normal",
+            "exact_model": "TDWS25SBL / TDWS25SRD",
+            "course": "normal-wash-dry",
+            "energy_ref": null,
+            "water_ref": "tdws25s-normal-water",
+            "product_anchor": "product-dish-rakua-mini-color"
+          },
+          {
+            "profile_id": "np-tsp1-tank-level2",
+            "exact_model": "NP-TSP1-W",
+            "course": "tank-level2-econavi-off",
+            "energy_ref": "np-tsp1-tank-level2-cycle",
+            "water_ref": "np-tsp1-tank-level2-cycle",
+            "product_anchor": "product-dish-np-tsp1"
           }
         ]
       }

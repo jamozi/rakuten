@@ -68,3 +68,6 @@ output/pytest/
 
 # Local publication checks are attached by hash, not committed as source.
 /output/publication/
+
+# Local source observations and disposable scratch work for purchase support.
+.local/purchase-support/

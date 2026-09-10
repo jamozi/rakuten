@@ -91,7 +91,7 @@ def render_cost_profiles(
     default = _identifier(config.get("default_profile"))
     if (
         not isinstance(profiles, list)
-        or not 1 <= len(profiles) <= 6
+        or not 1 <= len(profiles) <= 8
         or not isinstance(refs, list)
     ):
         raise ValueError("LOCAL_COST_PROFILES_INVALID")
@@ -115,6 +115,11 @@ def render_cost_profiles(
             + escape(model, quote=True)
             + '"'
         )
+        if "product_anchor" in profile:
+            anchor = _identifier(profile["product_anchor"])
+            if not anchor.startswith("product-dish-"):
+                raise ValueError("LOCAL_COST_PRODUCT_ANCHOR_INVALID")
+            attrs += ' data-raos-cost-anchor="' + escape(anchor, quote=True) + '"'
         labels: set[str] = set()
         cells: list[str] = []
         for key, kind, unit, attribute in (

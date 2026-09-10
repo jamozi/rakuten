@@ -9,7 +9,7 @@ import時の未実装statusと旧Codex手順は当時の記録です。現在の
 製品・安全の不変条件はbaselineを維持します。明示的に採用された後継は宣言された対象機能に
 だけ適用し、更新日時やversion番号だけで全仕様を上書きしません。
 [v2 clarifications](../changes/raos-v2/clarifications.v1.yaml)はv2の適用範囲を定めます。
-現行の記事・商品選定と利益指標はEditorial V3、v2 decision support等は各contractが正本です。
+現行の記事・商品選定と利益指標はEditorial V3、対象4比較記事の購入判断は[後継契約](../changes/reader-purchase-support-v1/README.md)、v2 decision support等は各contractが正本です。
 矛盾があれば対象・根拠・実装との差を記録し、不明な実値はUNKNOWNにします。
 
 ## Task map

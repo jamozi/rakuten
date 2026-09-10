@@ -47,6 +47,19 @@ GA4_BASELINE_DIMENSIONS = (
     *GA4_EVENT_CUSTOM_DIMENSIONS,
 )
 GA4_BASELINE_METRICS = ("eventCount", "sessions", "totalUsers")
+# Purchase v2 stays within GA4's nine-dimension limit; article_id replaces pagePath.
+GA4_PURCHASE_PAGE_VIEW_DIMENSIONS_V2 = (
+    "date",
+    "eventName",
+    "customEvent:article_id",
+    "customEvent:snapshot_id",
+)
+GA4_PURCHASE_EVENT_PARAMETER_NAMES_V2 = (*GA4_EVENT_PARAMETER_NAMES, "seller_id")
+GA4_PURCHASE_DIMENSIONS_V2 = (
+    "date",
+    "eventName",
+    *(f"customEvent:{name}" for name in GA4_PURCHASE_EVENT_PARAMETER_NAMES_V2),
+)
 
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z", re.ASCII)
 _PROPERTY_ID = re.compile(r"[1-9][0-9]{0,19}\Z", re.ASCII)

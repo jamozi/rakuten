@@ -1,12 +1,12 @@
 {
   "approval_required": true,
   "artifact_id": "raos-reader-measurement-v1",
-  "contract_sha256": "7504b64477d3e365574d60b33e0f9cf2e30a1a00a14e80412e888ff65a2a7f2c",
+  "contract_sha256": "a510d703a40468158c8cd89f07a9c356aa0944c71c47314a36d486c37fcb614a",
   "default_enabled": false,
   "maintenance_file": "includes/reader-measurement-maintenance.php",
   "migration_assessment": "MANUAL_REVIEW_REQUIRED",
-  "package_sha256": "7e1f80b62795e7bb34d5ceb60f61ca72fcdead32d0b98c403ad34827bddbdc0a",
-  "package_size": 28770,
+  "package_sha256": "5ab350f1e86424b331a8653765c2691e408e4cfa725a498c08d71c656dccdbfc",
+  "package_size": 28774,
   "plugin_files": [
     {
       "path": "README.md",
@@ -25,12 +25,12 @@
     },
     {
       "path": "config/reader-allowlist.v1.json",
-      "sha256": "7504b64477d3e365574d60b33e0f9cf2e30a1a00a14e80412e888ff65a2a7f2c",
+      "sha256": "a510d703a40468158c8cd89f07a9c356aa0944c71c47314a36d486c37fcb614a",
       "size": 23683
     },
     {
       "path": "config/reader-runtime.v1.json",
-      "sha256": "27a80442cf63321ad17b949de89282d36c3c97863ee049bedfefb91661b8873f",
+      "sha256": "4e5ba29afc8e4b801c67e1f4ddfde1c4659f6c429063ad9298b090f048b29d34",
       "size": 1232
     },
     {
@@ -59,7 +59,7 @@
   "plugin_version": "1.0.0",
   "policy_sha256": "fdf60e8d0b53666369963d25e17706ff80f2b179e91ba881708ccb5680d094a6",
   "privacy_source": "changes/editorial-portfolio-v3/reader-measurement-privacy.html",
-  "revision": "1bf3ef30bb38a474e93e1265f5aeb9dea68375c9d059594349fdfa00631b78db",
+  "revision": "334913a4b9a52fa043c5b4662cd99a5074a7d9b0345d686f134a9dc7a1ab8d6f",
   "runtime_files": [
     {
       "path": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
@@ -73,8 +73,8 @@
     },
     {
       "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
-      "sha256": "64fc483c072ea4a540aa0d0687992653711567c83210344e32599b000e6c0e00",
-      "size": 257146
+      "sha256": "76b3d0fe3e83169f3b788f8e2234177a60579c152c374892090885386b5d356b",
+      "size": 258275
     },
     {
       "path": "changes/editorial-portfolio-v3/reader-experience.v1.json",

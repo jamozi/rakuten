@@ -28,13 +28,13 @@
     },
     {
       "path": "python/raos/application/analytics/google_live_projection.py",
-      "sha256": "c452e34ca90f37f9a57c6728927664b5201e89099446e67ab4b36345d502943b",
-      "size": 5976
+      "sha256": "441480072872b64696108a05b2cf1819095e1b0389f4d2e6651b3476a3ce3ca3",
+      "size": 10190
     },
     {
       "path": "python/raos/domain/analytics/google_live.py",
-      "sha256": "2844214e69d33d3f308afe6a9779ecffaf727c821b3976c6301380fc5a954ee6",
-      "size": 27858
+      "sha256": "d7fd58a7eeb16dcc0e425785161b929a15560c4ec40c11062ed7869ec99d3088",
+      "size": 28300
     },
     {
       "path": "python/raos/ports/google_live.py",
@@ -48,8 +48,8 @@
     },
     {
       "path": "scripts/raos_editorial_economics_v3.py",
-      "sha256": "423e90ba999dec68a9a0a1336aa906cf919fe7f9275cc04f1a2159b1fd61505a",
-      "size": 33583
+      "sha256": "331592dd8ecb34de4a6e4d98dc1661f0f13fcf259d0ed5d2db2b375a88fd23f9",
+      "size": 38118
     },
     {
       "path": "scripts/raos_google_owner_private_v1.py",

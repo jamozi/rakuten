@@ -3,11 +3,16 @@
 from __future__ import annotations
 
 from datetime import datetime
+import re
+from typing import cast
 from urllib.parse import urlsplit, urlunsplit
 
 from raos.domain.analytics.google_live import (
     GA4_EVENT_CUSTOM_DIMENSIONS,
     GA4_EVENT_PARAMETER_NAMES,
+    GA4_PURCHASE_DIMENSIONS_V2,
+    GA4_PURCHASE_PAGE_VIEW_DIMENSIONS_V2,
+    GA4_PURCHASE_EVENT_PARAMETER_NAMES_V2,
     Ga4ImportBatch,
     GoogleProviderFailureCode,
     SearchConsoleImportBatch,
@@ -167,3 +172,107 @@ __all__ = [
     "gsc_baseline_document",
     "gsc_url_inspection_document",
 ]
+
+
+def ga4_purchase_document_v2(
+    batch: Ga4ImportBatch,
+    *,
+    page_views: Ga4ImportBatch,
+) -> dict[str, object]:
+    """Keep CTA counts and article page-view sessions at their own query grains."""
+    if (
+        type(batch) is not Ga4ImportBatch
+        or batch.dimensions != GA4_PURCHASE_DIMENSIONS_V2
+        or type(page_views) is not Ga4ImportBatch
+        or page_views.dimensions != GA4_PURCHASE_PAGE_VIEW_DIMENSIONS_V2
+        or (batch.site_id, batch.property_id, batch.date_from, batch.date_to)
+        != (
+            page_views.site_id,
+            page_views.property_id,
+            page_views.date_from,
+            page_views.date_to,
+        )
+    ):
+        fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+    document = ga4_baseline_document(batch)
+    document["schema_version"] = 2
+    document["profile"] = "purchase-support-v2"
+    cast(dict[str, object], document["configuration"])[
+        "required_event_custom_dimensions"
+    ] = list(GA4_PURCHASE_EVENT_PARAMETER_NAMES_V2)
+    click_rows = []
+    for row in batch.rows:
+        dimensions = {
+            key.removeprefix("customEvent:"): value for key, value in row.dimensions
+        }
+        if dimensions.get("eventName") != "offer_click":
+            continue
+        _purchase_identity(dimensions, GA4_PURCHASE_EVENT_PARAMETER_NAMES_V2)
+        if dimensions["placement"] not in {
+            "top_summary",
+            "comparison_table",
+            "product_card",
+            "final_summary",
+        }:
+            fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)
+        # CTA sessions cannot form a denominator and are omitted.
+        click_rows.append(
+            {
+                "metric_date": row.metric_date.isoformat(),
+                "dimensions": [
+                    {"name": key, "value": value} for key, value in dimensions.items()
+                ],
+                "metrics": [
+                    {"name": key, "value": value}
+                    for key, value in row.metrics
+                    if key == "eventCount"
+                ],
+                "grain_sha256": row.grain_key_sha256,
+                "request_sha256": row.source_request_sha256,
+                "is_thresholded": row.is_thresholded,
+            }
+        )
+    view_rows = []
+    for row in page_views.rows:
+        dimensions = {
+            key.removeprefix("customEvent:"): value for key, value in row.dimensions
+        }
+        if dimensions.get("eventName") != "page_view":
+            continue
+        _purchase_identity(dimensions, ("article_id", "snapshot_id"))
+        view_rows.append(
+            {
+                "metric_date": row.metric_date.isoformat(),
+                "dimensions": [
+                    {"name": key, "value": value} for key, value in dimensions.items()
+                ],
+                "metrics": [
+                    {"name": key, "value": value} for key, value in row.metrics
+                ],
+                "grain_sha256": row.grain_key_sha256,
+                "request_sha256": row.source_request_sha256,
+                "is_thresholded": row.is_thresholded,
+            }
+        )
+    document["rows"] = click_rows
+    document["row_count"] = len(click_rows)
+    document["page_view_rows"] = view_rows
+    document["page_view_request_sha256"] = page_views.request_sha256
+    document["subject_to_thresholding"] = (
+        batch.subject_to_thresholding or page_views.subject_to_thresholding
+    )
+    document["data_loss_from_other_row"] = (
+        batch.data_loss_from_other_row or page_views.data_loss_from_other_row
+    )
+    document["purchase_and_reward"] = "UNAVAILABLE"
+    return document
+
+
+def _purchase_identity(dimensions: dict[str, str], keys: tuple[str, ...]) -> None:
+    if any(
+        key not in dimensions
+        or dimensions[key].upper() in {"UNKNOWN", "UNAVAILABLE"}
+        or re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}", dimensions[key]) is None
+        for key in keys
+    ):
+        fail_google(GoogleProviderFailureCode.PROVIDER_RESPONSE_INVALID)

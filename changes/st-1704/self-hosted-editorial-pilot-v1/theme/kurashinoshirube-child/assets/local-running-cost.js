@@ -53,7 +53,27 @@
     return { fees, missing, errors, perCycle, monthly, complete: missing.length === 0 && !errors.total };
   };
 
-  if (typeof module !== 'undefined' && module.exports) module.exports = { parseInput, calculate };
+  // Exact identifiers only; a color variant may select its explicitly shared profile.
+  const profileForModel = (profiles, model) => profiles.find(p =>
+    p.model === model || p.model.split(' / ').includes(model));
+  const bindModelSelection = (profiles, page, browser, choose) => {
+    const fromHash = () => {
+      let id;
+      try { id = decodeURIComponent(browser.location.hash.slice(1)); } catch (_) { return; }
+      const profile = profiles.find(p => p.anchor === id);
+      if (profile) choose(profile);
+    };
+    page.addEventListener('click', event => {
+      const link = event.target.closest ? event.target.closest('[data-ps-cost-model]') : null;
+      if (!link) return;
+      const profile = profileForModel(profiles, link.getAttribute('data-ps-cost-model'));
+      if (profile) choose(profile);
+    });
+    browser.addEventListener('hashchange', fromHash);
+    fromHash();
+  };
+
+  if (typeof module !== 'undefined' && module.exports) module.exports = { parseInput, calculate, profileForModel, bindModelSelection };
   if (typeof document === 'undefined') return;
 
   const mount = document.querySelector('[data-raos-cost-calculator="v1"]');
@@ -63,6 +83,7 @@
     id: row.dataset.raosCostProfile,
     model: row.dataset.raosCostModel,
     course: row.dataset.raosCostCourse,
+    anchor: row.dataset.raosCostAnchor,
     energyWh: quantity(row, 'data-raos-energy-wh'),
     waterLitres: quantity(row, 'data-raos-water-litres'),
   }));
@@ -131,7 +152,7 @@
       }
     }
     output.replaceChildren();
-    output.append(element('p', result.complete ? '入力した3費目の従量費の概算' : '計算できた費目だけの小計（未計算の費目を含みません）'));
+    output.append(element('p', result.complete ? '入力した3費目の従量費の概算' : '確認できた費目の小計（未計算の費目を含みません）'));
     const list = element('ul');
     for (const [key, value] of Object.entries(result.fees)) {
       const reason = result.errors[key] ? '入力を確認してください' :
@@ -167,4 +188,9 @@
   mount.dataset.raosCostMounted = '1';
   condition();
   idle();
+  if (typeof window !== 'undefined') bindModelSelection(profiles, document, window, profile => {
+    select.value = profile.id;
+    condition();
+    output.textContent = '機種を選択しました。単価を確認し、「従量費の概算を計算」で結果を更新してください。';
+  });
 })();

@@ -123,9 +123,9 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "953ec5a45498174f5470d63cb35adc26bfdfe9c0516fb18ad80fb50e19efebbb",
+    "sha256": "f56f29e3dd4252b85cc366444b6cfd4806492ce8081c25a0b59362648bc94c42",
     "source_navigation_sha256": "e1bf6e02440bd86d9e6cf6808ed5e909376cc0e29c6ce0a29fd2324c89eea403",
-    "source_portfolio_sha256": "64fc483c072ea4a540aa0d0687992653711567c83210344e32599b000e6c0e00"
+    "source_portfolio_sha256": "76b3d0fe3e83169f3b788f8e2234177a60579c152c374892090885386b5d356b"
   },
   "editorial_v2": {
     "asset": "assets/editorial-v2.css",
@@ -526,13 +526,14 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "2b76b16af71d1ab622560b4e18c8e946c4218449cf46d601c2d85c163c64345a",
-    "source_fingerprint": "2b76b16af71d1ab622560b4e18c8e946c4218449cf46d601c2d85c163c64345a",
+    "revision": "ae71eaaf05a3e77a8132fc90ea267117b359dab12a27ce791f6b787892f89546",
+    "source_fingerprint": "ae71eaaf05a3e77a8132fc90ea267117b359dab12a27ce791f6b787892f89546",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",
       "assets/editorial-navigation.v3.json",
       "assets/editorial-v2.css",
+      "assets/home-magazine.css",
       "assets/images/article-anker-solix-generations.webp",
       "assets/images/article-countertop-dishwasher-guide.webp",
       "assets/images/article-portable-power-guide.webp",
@@ -548,9 +549,15 @@
       "assets/legacy-media-display-projection.v1.json",
       "assets/local-running-cost.js",
       "assets/measurement.js",
+      "assets/purchase-analytics.js",
+      "assets/purchase-support.css",
+      "assets/purchase-support.js",
+      "assets/purchase-support.v1.json",
       "assets/reader-measurement-runtime.v1.json",
       "assets/theme.css",
       "functions.php",
+      "inc/purchase-analytics.php",
+      "inc/purchase-support.php",
       "parts/footer.html",
       "parts/header.html",
       "style.css",

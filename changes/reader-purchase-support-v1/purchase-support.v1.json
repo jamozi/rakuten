@@ -1,0 +1,2480 @@
+{
+  "schema": "RAOS_READER_PURCHASE_SUPPORT_V1",
+  "version": 1,
+  "policy": {
+    "schema": "RAOS_READER_PURCHASE_POLICY_V1",
+    "performance_excludes": [
+      "price",
+      "points",
+      "affiliate_reward_rate",
+      "advertising_contract",
+      "link_availability"
+    ],
+    "recommendation_excludes": [
+      "affiliate_reward_rate",
+      "advertising_contract",
+      "link_availability",
+      "rakuten_availability"
+    ],
+    "purchase_decision_inputs": [
+      "use_case",
+      "purchase_total",
+      "running_cost",
+      "delivery",
+      "warranty"
+    ],
+    "unknown_is_zero": false,
+    "maximum_price_age_hours": 24,
+    "conditional_points_and_coupons_subtracted": false
+  },
+  "articles": [
+    {
+      "article_id": "countertop-dishwasher-for-small-households",
+      "post_id": 41,
+      "slug": "countertop-dishwasher-for-small-households",
+      "kind": "comparison",
+      "product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-PANASONIC-NP-TSP1"
+      ],
+      "title": "工事不要の食洗機を1〜2人暮らし向けに比較",
+      "excerpt": "工事不要で使えるタンク式食洗機4モデルを、設置寸法・食器点数・使用水量・乾燥方法で比較。狭いキッチンで向く条件を整理します。",
+      "conditions": [
+        {
+          "id": "one-person",
+          "label": "一食分が少なく、本体奥行を抑えたい",
+          "product_ids": [
+            "PRD-PANASONIC-NP-TMLK1"
+          ]
+        },
+        {
+          "id": "small-warm",
+          "label": "小型で温風乾燥も使いたい",
+          "product_ids": [
+            "PRD-THANKO-RAKUA-MINI-COLOR"
+          ]
+        },
+        {
+          "id": "two-way",
+          "label": "16点程度と給水2WAYを優先",
+          "product_ids": [
+            "PRD-SIROCA-SS-MA251"
+          ]
+        },
+        {
+          "id": "more-dishes",
+          "label": "大きめの食器量をまとめたい",
+          "product_ids": [
+            "PRD-PANASONIC-NP-TSP1"
+          ]
+        }
+      ],
+      "spec_labels": [
+        "本体寸法（幅×奥行×高さ）",
+        "標準食器点数",
+        "標準使用水量",
+        "乾燥・扉",
+        "開扉時の寸法",
+        "必要な余白"
+      ],
+      "intro": "一食分の食器と置き場所を先に合わせ、購入総額で候補を絞ります。人数表示だけでは、普段使う皿や鉢が収まるとは判断できません。",
+      "post_type": "post"
+    },
+    {
+      "article_id": "lightweight-carry-on-suitcase-under-3kg",
+      "post_id": 83,
+      "slug": "lightweight-carry-on-suitcase-under-3kg",
+      "kind": "comparison",
+      "product_ids": [
+        "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+        "PRD-FREQUENTER-LIEVE-1-250"
+      ],
+      "title": "30L以上・3kg以下の機内持ち込みスーツケース4モデルを比較",
+      "excerpt": "30L以上・本体3kg以下の機内持ち込み候補4モデルを、容量、素材、ストッパー、拡張時寸法、交換可能車輪から公式情報で比較します。",
+      "conditions": [
+        {
+          "id": "stopper",
+          "label": "軽さに加えてストッパーがほしい",
+          "product_ids": [
+            "PRD-PROTECA-AEROFLEX-DX2-01521"
+          ]
+        },
+        {
+          "id": "hard",
+          "label": "ハードケースと拡張を選びたい",
+          "product_ids": [
+            "PRD-SAMSONITE-C-LITE-CS2-09007"
+          ]
+        },
+        {
+          "id": "soft",
+          "label": "軽いソフトケースと容量を優先",
+          "product_ids": [
+            "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002"
+          ]
+        },
+        {
+          "id": "wheels",
+          "label": "自分で交換できる車輪を選びたい",
+          "product_ids": [
+            "PRD-FREQUENTER-LIEVE-1-250"
+          ]
+        }
+      ],
+      "spec_labels": [
+        "通常時外寸（幅×奥行×高さ）",
+        "3辺合計",
+        "容量",
+        "本体重量",
+        "選ぶ理由"
+      ],
+      "intro": "軽さに加えて残したい機能を選び、購入総額を確認します。航空会社ごとの持ち込み条件は別に照合してください。",
+      "post_type": "post"
+    },
+    {
+      "article_id": "compact-robot-vacuum-shortlist",
+      "post_id": 30,
+      "slug": "compact-robot-vacuum-shortlist",
+      "kind": "comparison",
+      "product_ids": [
+        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-SWITCHBOT-K11-PRO",
+        "PRD-SWITCHBOT-K10-PRO-COMBO",
+        "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+      ],
+      "title": "省スペースのロボット掃除機を条件で絞る",
+      "excerpt": "省スペース候補のロボット掃除機4モデルを、本体の底面寸法・高さ・ステーション寸法・水拭き方式で比較。置ける条件から候補を絞ります。",
+      "conditions": [
+        {
+          "id": "compact",
+          "label": "本体と台を小さくしたい",
+          "product_ids": [
+            "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+            "PRD-SWITCHBOT-K11-PRO"
+          ]
+        },
+        {
+          "id": "vacuum",
+          "label": "コードレス掃除機もまとめたい",
+          "product_ids": [
+            "PRD-SWITCHBOT-K10-PRO-COMBO"
+          ]
+        },
+        {
+          "id": "mop",
+          "label": "モップ洗浄・乾燥も任せたい",
+          "product_ids": [
+            "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+          ]
+        }
+      ],
+      "spec_labels": [
+        "本体寸法（幅×奥行×高さ）",
+        "ステーション寸法（幅×奥行×高さ）",
+        "水拭き",
+        "自動手入れ"
+      ],
+      "intro": "本体・台の寸法で候補を絞り、家具下、帰還経路、紙パックやタンクを交換する空間まで確認します。",
+      "post_type": "post"
+    },
+    {
+      "article_id": "portable-power-station-guide",
+      "post_id": 28,
+      "slug": "portable-power-station-guide",
+      "kind": "comparison",
+      "product_ids": [
+        "PRD-ANKER-SOLIX-C300",
+        "PRD-JACKERY-500-NEW",
+        "PRD-BLUETTI-AC70",
+        "PRD-ECOFLOW-DELTA3-CLASSIC"
+      ],
+      "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める",
+      "excerpt": "停電対策のポータブル電源4モデルを、容量・定格出力・重量・大きさで比較。使いたい機器と持ち運び条件から候補を絞ります。",
+      "conditions": [
+        {
+          "id": "carry",
+          "label": "小型機器用・持ち運びを優先",
+          "product_ids": [
+            "PRD-ANKER-SOLIX-C300",
+            "PRD-JACKERY-500-NEW"
+          ]
+        },
+        {
+          "id": "middle",
+          "label": "定格1000W級までを候補に",
+          "product_ids": [
+            "PRD-BLUETTI-AC70"
+          ]
+        },
+        {
+          "id": "larger",
+          "label": "定格1500W級までを候補に",
+          "product_ids": [
+            "PRD-ECOFLOW-DELTA3-CLASSIC"
+          ]
+        }
+      ],
+      "spec_labels": [
+        "容量",
+        "定格出力",
+        "重量",
+        "本体寸法（幅×奥行×高さ）"
+      ],
+      "intro": "使いたい機器の消費電力・起動電力と必要時間を先に整理し、容量帯ごとの候補と購入費用を確認します。異なる容量帯を性能順位にしません。",
+      "post_type": "post"
+    },
+    {
+      "article_id": "dishwasher-installation-measurement",
+      "post_id": 262,
+      "slug": "dishwasher-installation-measurement",
+      "kind": "guide",
+      "product_ids": [],
+      "title": "卓上食洗機の置き場所を測る順番｜本体・扉・余白を確認する",
+      "excerpt": "設置面だけを測ると、扉やホースのために置けないことがあります。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、NP-TMLK1-K、TK-MDW22Bの公式寸法を対象に、購入前の測り方を整理します。",
+      "post_type": "post"
+    },
+    {
+      "article_id": "dishwasher-water-supply-methods",
+      "post_id": 263,
+      "slug": "dishwasher-water-supply-methods",
+      "kind": "guide",
+      "product_ids": [],
+      "title": "卓上食洗機の給水・排水方法｜毎回の作業から選ぶ",
+      "excerpt": "タンク式でも給水と排水の作業は必要です。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、TK-MDW22Bで確認できた条件を整理し、DWS-33B(W)の給水詳細とNP-TMLK1-Kの具体手順は未確認として扱います。",
+      "post_type": "post"
+    },
+    {
+      "article_id": "dishwasher-detergent-guide",
+      "post_id": 264,
+      "slug": "dishwasher-detergent-guide",
+      "kind": "guide",
+      "product_ids": [],
+      "title": "食洗機用洗剤の選び方｜型番ごとの量と入れてはいけないもの",
+      "excerpt": "洗剤は食洗機専用を使い、型番が示す量と使えない食器を先に確認します。SS-M171、TK-MDW22W、SS-MA251、DWS-33B(W)、NP-TMLK1-K、TK-MDW22Bの公式記録を対象に、共通に見える点と未確認の点を分けます。",
+      "post_type": "post"
+    },
+    {
+      "article_id": "dishwasher-cleaning-guide",
+      "post_id": 265,
+      "slug": "dishwasher-cleaning-guide",
+      "kind": "guide",
+      "product_ids": [],
+      "title": "卓上食洗機のお手入れ｜毎回・月1回・長く使わない時に分ける",
+      "excerpt": "お手入れは「いつ、どの部品をするか」を型番ごとに分けると続けやすくなります。SS-M171、TK-MDW22W、SS-MA251、TK-MDW22Bの確認済み手順を中心に、DWS-33B(W)とNP-TMLK1-Kで確認できない範囲も明示します。",
+      "post_type": "post"
+    },
+    {
+      "article_id": "dishwasher-running-cost",
+      "post_id": 266,
+      "slug": "dishwasher-running-cost",
+      "kind": "guide",
+      "product_ids": [],
+      "title": "卓上食洗機のランニングコスト｜電気・水道・洗剤を式で確認する",
+      "excerpt": "金額を比べる前に、公式の消費電力量と自宅の料金をそろえます。対象6機種で1回当たりWhを確認できたのはNP-TMLK1-Kだけです。他の5機種は電気代の比較を保留し、ここでは計算手順と不足値を整理します。 自宅の単価を空欄のフォームへ入力すると、公表条件で計算できる費目を確認できます。",
+      "post_type": "post"
+    },
+    {
+      "article_id": "kitchen",
+      "post_id": 136,
+      "slug": "kitchen",
+      "kind": "hub",
+      "product_ids": [],
+      "title": "食洗機の選び方・比較",
+      "excerpt": "設置スペース、食器量、給排水から食洗機を絞ります。",
+      "post_type": "page"
+    },
+    {
+      "article_id": "about-ad-policy",
+      "post_id": 10,
+      "slug": "about-ad-policy",
+      "kind": "policy",
+      "product_ids": [],
+      "title": "運営・広告方針",
+      "excerpt": "暮らしのしるべの運営者、情報源と型番の照合、AI支援、広告との分離、更新・訂正の責任を説明します。",
+      "post_type": "page"
+    },
+    {
+      "article_id": "comparison-policy",
+      "post_id": 120,
+      "slug": "comparison-policy",
+      "kind": "policy",
+      "product_ids": [],
+      "title": "比較・編集方針",
+      "excerpt": "公式情報の確かめ方、実機未使用の明示、Codexによる調査支援と運営者の公開承認、訂正手順を説明します。",
+      "post_type": "page"
+    },
+    {
+      "article_id": "privacy-policy",
+      "post_id": 3,
+      "slug": "privacy-policy",
+      "kind": "policy",
+      "product_ids": [],
+      "title": "プライバシーポリシー",
+      "excerpt": "追加のアクセス・クリック計測を行わない方針と、問い合わせ情報や外部アフィリエイトリンクの取扱いを説明します。",
+      "post_type": "page"
+    }
+  ],
+  "products": [
+    {
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "exact_model": "NP-TMLK1-K",
+      "name": "SOLOTA",
+      "anchor": "product-dish-np-tmlk1",
+      "official_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "310×225×435mm",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "対象型番の本体寸法",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN",
+          "exact_model": "NP-TMLK1-K"
+        },
+        {
+          "label": "標準食器点数",
+          "text": "6点",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "NP-TMLK1-K"
+        },
+        {
+          "label": "標準使用水量",
+          "text": "約2.5L",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "NP-TMLK1-K"
+        },
+        {
+          "label": "乾燥・扉",
+          "text": "送風乾燥",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "NP-TMLK1-K"
+        },
+        {
+          "label": "開扉時の寸法",
+          "text": "開扉時の奥行は485mm。設置案内では蛇口までの奥行502mm、高さ490mmの確保を案内しています。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/installation.html",
+          "locator": "SOLOTA NP-TMLK1 の設置例",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "label": "必要な余白",
+          "text": "背面にはホース外径17mm分の空間が必要です。上部の蒸気を遮らず、熱源から150mm以上離します。設置例の総高さと、本体上の余白を混同しないでください。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/installation.html",
+          "locator": "SOLOTA の設置例・熱源との距離",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "1人分の食器を中心に洗い、カウンターの奥行を抑えたい場合に。",
+      "fit": [
+        "一度に洗う食器が標準6点程度の人",
+        "奥行の短い設置場所を優先する人"
+      ],
+      "avoid": [
+        "一度に洗う食器が標準6点を超える場合",
+        "家族分の食器をまとめて洗う場合"
+      ],
+      "caution": "標準食器点数は6点です。一度に洗う食器が多い場合は、より容量の大きい候補も検討してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "one-person"
+      ],
+      "guide_facts": [
+        {
+          "field": "dimensions",
+          "text": "本体は幅310×奥行225×高さ435mm。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "NP-TMLK1 仕様・本体外形寸法",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "door",
+          "text": "開扉時の奥行は485mm。設置案内では蛇口までの奥行502mm、高さ490mmの確保を案内しています。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/installation.html",
+          "locator": "SOLOTA NP-TMLK1 の設置例",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "clearance",
+          "text": "背面にはホース外径17mm分の空間が必要です。上部の蒸気を遮らず、熱源から150mm以上離します。設置例の総高さと、本体上の余白を混同しないでください。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/installation.html",
+          "locator": "SOLOTA の設置例・熱源との距離",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "installation",
+          "text": "水平で安定した台と電源・アースを確認します。小さい本体寸法だけで設置可否を決めません。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
+          "locator": "設置・タンク給水の案内",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "water_supply",
+          "text": "取り外せるタンクへ給水します。給水とタンクの取り出しに必要な動作も、設置場所で確認してください。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
+          "locator": "着脱式タンク",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "drainage",
+          "text": "排水ホースは約0.8m、電源コードは約1.9m。排水口との高低差や延長の可否は、この型番の説明書で追加確認が必要です。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "給排水・コードの長さ",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "energy",
+          "text": "標準コースの消費電力量は約230Wh。定格Wと運転時間からの推定値ではありません。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "消費電力量・標準コース",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "water",
+          "text": "標準コースの使用水量は約2.5L、洗浄から乾燥まで約120分です。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "標準使用水量・運転時間",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "detergent",
+          "text": "専用洗剤を使います。比較試験の2gを通常使用の推奨量へ転用しません。使用する洗剤の表示と機器の説明書で、一回分を確認してください。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
+          "locator": "節水比較の試験条件",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "accessories",
+          "text": "排水ホース・吸盤と専用洗剤の試供品が付属します。継続して使う洗剤や、必要なアース工事の費用は別に確認します。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+          "locator": "付属品",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "残さいフィルターは使用のたびに取り出して洗います。タンクの細部や庫内の手入れ手順は、対象型番の説明書で確認してから行ってください。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1/shopping.html",
+          "locator": "使用後のお手入れもカンタン",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "warranty",
+          "text": "購入先ごとの保証の適用条件は追加確認中です。確認できるまで保証年数を購入先比較の確定値にしません。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
+          "locator": "製品サポート確認先",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        }
+      ],
+      "installation": {
+        "width_mm": 310,
+        "depth_mm": 225,
+        "height_mm": 435,
+        "door_depth_mm": 485,
+        "door_height_mm": null,
+        "above_mm": null,
+        "left_mm": null,
+        "right_mm": null,
+        "rear_mm": 17
+      }
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "exact_model": "TDWS25SBL / TDWS25SRD",
+      "name": "ラクアmini color",
+      "anchor": "product-dish-rakua-mini-color",
+      "official_url": "https://www.thanko.jp/view/item/000000004715",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "308×315×415mm",
+          "source_url": "https://www.thanko.jp/view/item/000000004715",
+          "locator": "対象型番の本体寸法",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN",
+          "exact_model": "TDWS25SBL / TDWS25SRD"
+        },
+        {
+          "label": "標準食器点数",
+          "text": "11〜12点",
+          "source_url": "https://www.thanko.jp/view/item/000000004715",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "TDWS25SBL / TDWS25SRD"
+        },
+        {
+          "label": "標準使用水量",
+          "text": "3.2L",
+          "source_url": "https://www.thanko.jp/view/item/000000004715",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "TDWS25SBL / TDWS25SRD"
+        },
+        {
+          "label": "乾燥・扉",
+          "text": "温風乾燥",
+          "source_url": "https://www.thanko.jp/view/item/000000004715",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "TDWS25SBL / TDWS25SRD"
+        },
+        {
+          "label": "開扉時の寸法",
+          "text": "扉を開けたときの奥行は594mmです。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.thanko.jp/view/item/000000004715",
+          "locator": "仕様・開扉時奥行",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "label": "必要な余白",
+          "text": "上方500mm、背面50mm、左右それぞれ50mm以上を空け、熱源から150mm以上離します。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+          "locator": "説明書 p.10–12 設置",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "幅を約31cmに抑えながら、標準11〜12点の食器を洗いたい場合に。",
+      "fit": [
+        "設置幅を抑えつつ標準11〜12点を洗いたい人",
+        "温風乾燥を選定条件にする人"
+      ],
+      "avoid": [
+        "扉を開いたときの奥行59.4cmを確保しにくい場合",
+        "一度に洗いたい食器が標準11〜12点の目安を超える場合"
+      ],
+      "caution": "扉を開いたときの奥行59.4cmを確保し、購入前に本体の色と販売単位を型番で確認してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "small-warm"
+      ],
+      "guide_facts": [
+        {
+          "field": "dimensions",
+          "text": "本体は幅308×奥行315×高さ415mm。ミスティーブルーはTDWS25SBL、クラシックローズはTDWS25SRDです。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.thanko.jp/view/item/000000004715",
+          "locator": "仕様・カラー別型番",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "door",
+          "text": "扉を開けたときの奥行は594mmです。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.thanko.jp/view/item/000000004715",
+          "locator": "仕様・開扉時奥行",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "clearance",
+          "text": "上方500mm、背面50mm、左右それぞれ50mm以上を空け、熱源から150mm以上離します。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+          "locator": "説明書 p.10–12 設置",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "installation",
+          "text": "水平で安定した台、交流100V・定格15A以上の専用コンセント、アースを確認します。必要な工具や工事は家庭の設備によって変わります。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+          "locator": "説明書 p.10–12 設置・電源",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "water_supply",
+          "text": "上からタンクへ給水します。付属の給水カップは1.8Lです。3.2Lは公表された使用水量として扱い、カップ容量と混同しません。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.thanko.jp/view/item/000000004715",
+          "locator": "使用水量・付属品",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "drainage",
+          "text": "付属ホースは約1.6m。先端を設置面より低く固定し、水中へ沈めたり、途中を持ち上げたり、つぶしたりしないようにします。排水先がなければバケツ等の準備も必要です。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+          "locator": "説明書 p.10–12 排水ホース",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "energy",
+          "text": "通常洗浄コースに適用できるWhは未確認です。メーカーへ確認する問い合わせ文を準備しており、電気代をゼロ円や定格Wからの推定値にしません。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+          "locator": "説明書 コース・仕様",
+          "checked_at": "2026-09-10",
+          "state": "UNKNOWN"
+        },
+        {
+          "field": "water",
+          "text": "通常洗浄は使用水量3.2L、洗浄70分＋乾燥75分です。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+          "locator": "説明書 p.18–22 コース",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "detergent",
+          "text": "食洗機専用洗剤の目安は3〜5gです。食器の汚れや洗剤の表示に合わせ、手洗い用洗剤は使いません。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+          "locator": "説明書 p.18–22 洗剤",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "accessories",
+          "text": "トレー、カトラリーバスケット2個、排水ホース・クリップ、給水カップが付属します。専用洗剤や、設置用の工具・必要なアース工事は別に確認します。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.thanko.jp/view/item/000000004715",
+          "locator": "付属品",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "フィルターとメッシュトレイは運転終了後毎回、ノズルは月1回以上、汚れに応じて手入れします。外し方・戻し方は説明書の図に従ってください。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+          "locator": "説明書 p.20–22 お手入れ",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "warranty",
+          "text": "公式商品ページの保証期間は24か月です。注文時には対象型番・購入証明と、保証規定の適用条件を確認してください。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.thanko.jp/view/item/000000004715",
+          "locator": "保証期間",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        }
+      ],
+      "installation": {
+        "width_mm": 308,
+        "depth_mm": 315,
+        "height_mm": 415,
+        "door_depth_mm": 594,
+        "door_height_mm": null,
+        "above_mm": 500,
+        "left_mm": 50,
+        "right_mm": 50,
+        "rear_mm": 50
+      }
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "exact_model": "SS-MA251",
+      "name": "SS-MA251",
+      "anchor": "product-dish-ss-ma251",
+      "official_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "420×440×470mm",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "対象型番の本体寸法",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN",
+          "exact_model": "SS-MA251"
+        },
+        {
+          "label": "標準食器点数",
+          "text": "16点",
+          "source_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "SS-MA251"
+        },
+        {
+          "label": "標準使用水量",
+          "text": "約6L",
+          "source_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "SS-MA251"
+        },
+        {
+          "label": "乾燥・扉",
+          "text": "送風・オートオープン",
+          "source_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "SS-MA251"
+        },
+        {
+          "label": "開扉時の寸法",
+          "text": "開扉時の最大奥行は、今回確認できた一次資料では未確認です。販売元・メーカーに照会するまで、第三者の数値で設置を確定しません。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.21–22 設置",
+          "checked_at": "2026-09-10",
+          "state": "UNKNOWN"
+        },
+        {
+          "label": "必要な余白",
+          "text": "上方700mm、背面60mm、左右それぞれ50mm以上を空け、熱源から150mm以上離します。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.21–22 設置",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "標準収納16点と、洗浄後に扉が開くオートオープン機能を優先したい場合に。",
+      "fit": [
+        "一度に標準16点ほど洗いたい人",
+        "オートオープンを選定条件にする人"
+      ],
+      "avoid": [
+        "幅42×奥行44×高さ47cmと扉の開閉空間を確保しにくい場合",
+        "標準使用水量を約6Lより少なく抑えたい人"
+      ],
+      "caution": "本体寸法は幅42×奥行44×高さ47cmです。扉の開閉空間も確認してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "two-way"
+      ],
+      "guide_facts": [
+        {
+          "field": "dimensions",
+          "text": "本体は幅420×奥行440×高さ470mm。SS-MA251はオートオープンを備えます。SS-MU251のUV機能は転用しません。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.29 仕様",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "door",
+          "text": "開扉時の最大奥行は、今回確認できた一次資料では未確認です。販売元・メーカーに照会するまで、第三者の数値で設置を確定しません。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.21–22 設置",
+          "checked_at": "2026-09-10",
+          "state": "UNKNOWN"
+        },
+        {
+          "field": "clearance",
+          "text": "上方700mm、背面60mm、左右それぞれ50mm以上を空け、熱源から150mm以上離します。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.21–22 設置",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "installation",
+          "text": "水平で安定した台と、電源・アースを確認します。オートオープンの動きを妨げないことも必要です。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.21–22 設置",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "water_supply",
+          "text": "タンクへの手動給水と分岐水栓の両方に対応します。分岐水栓は別途適合確認が必要で、使用水圧は0.04〜1MPa。給湯器には接続しません。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.17–24 給水",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "drainage",
+          "text": "排水ホースの先端は設置面より低くし、吸盤で固定します。排水先がない場合の容器や、分岐水栓の費用は一律にゼロ円としません。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.17–24 排水",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "energy",
+          "text": "コースに紐づくWhは未確認です。消費電力の定格値から、一回の電気代を作りません。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.29 仕様",
+          "checked_at": "2026-09-10",
+          "state": "UNKNOWN"
+        },
+        {
+          "field": "water",
+          "text": "仕様上の使用水量は6Lですが、この値と費用計算の個別コースを結ぶ条件が未確認のため、計算には流用しません。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.29 仕様",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "detergent",
+          "text": "粉末・液体の食洗機専用洗剤は約4gが標準量です。タブレットは1個を目安に洗剤の説明書も確認します。手洗い用洗剤は使いません。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.14 洗剤",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "accessories",
+          "text": "給水ホース、排水ホース、給水カップ、かご・小物入れなどが付属します。専用洗剤・適合する分岐水栓・設置工事は利用条件に応じて別に確認します。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976",
+          "locator": "SS-MA251 の付属品",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "残さいフィルターとメッシュトレイは使用ごと、ノズルは月1回程度が目安です。手入れ前の停止と、分解・再装着の手順は説明書で確認してください。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.17–20 お手入れ",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "warranty",
+          "text": "通常の保証は購入日から1年。購入証明が必要で国内使用が対象です。公式通販の会員特典による延長は登録などの条件付きで、全購入者に自動適用されるとは扱いません。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 保証書・国内使用条件",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        }
+      ],
+      "installation": {
+        "width_mm": 420,
+        "depth_mm": 440,
+        "height_mm": 470,
+        "door_depth_mm": null,
+        "door_height_mm": null,
+        "above_mm": 700,
+        "left_mm": 50,
+        "right_mm": 50,
+        "rear_mm": 60
+      },
+      "image_review": {
+        "status": "PERMISSION_REFRESH_REQUIRED",
+        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/siroca/cabinet/ss-ma251/thumb_ss-ma251_p2.jpg?_ex=128x128",
+        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
+        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
+        "next_check_on": "2026-09-11"
+      }
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "exact_model": "NP-TSP1-W",
+      "name": "NP-TSP1",
+      "anchor": "product-dish-np-tsp1",
+      "official_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "550×341×600mm",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "対象型番の本体寸法",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN",
+          "exact_model": "NP-TSP1-W"
+        },
+        {
+          "label": "標準食器点数",
+          "text": "24点",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "NP-TSP1-W"
+        },
+        {
+          "label": "標準使用水量",
+          "text": "約9L",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "NP-TSP1-W"
+        },
+        {
+          "label": "乾燥・扉",
+          "text": "乾燥機能あり・リフトアップドア",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "NP-TSP1-W"
+        },
+        {
+          "label": "開扉時の寸法",
+          "text": "開扉時の奥行は386mm、高さは712mm。扉の途中の軌跡や必要な空間も確認します。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "ドア開放時寸法",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "label": "必要な余白",
+          "text": "この型番に適用できる上・左右・背面の必要余白は追加確認中です。後継のNP-TSP2の条件へ置き換えません。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "NP-TSP1 サポート確認先",
+          "checked_at": "2026-09-10",
+          "state": "UNKNOWN"
+        }
+      ],
+      "lead": "設置場所を広く確保でき、比較した4モデルで最も多い標準24点を洗いたい場合に。",
+      "fit": [
+        "標準24点を一度に洗いたい人",
+        "本体寸法（幅約55×奥行約34.1×高さ約60cm）に合う設置場所がある人"
+      ],
+      "avoid": [
+        "約19kgの本体を頻繁に移動する場合",
+        "コンパクトなカウンターへ置きたい人"
+      ],
+      "caution": "本体寸法は幅約55×奥行約34.1×高さ約60cmで、重量は約19kgです。設置場所と移動方法を確認してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "more-dishes"
+      ],
+      "guide_facts": [
+        {
+          "field": "dimensions",
+          "text": "本体は幅550×奥行341×高さ600mm。NP-TSP1-Wの仕様です。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "NP-TSP1 仕様",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "door",
+          "text": "開扉時の奥行は386mm、高さは712mm。扉の途中の軌跡や必要な空間も確認します。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "ドア開放時寸法",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "clearance",
+          "text": "この型番に適用できる上・左右・背面の必要余白は追加確認中です。後継のNP-TSP2の条件へ置き換えません。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "NP-TSP1 サポート確認先",
+          "checked_at": "2026-09-10",
+          "state": "UNKNOWN"
+        },
+        {
+          "field": "water_supply",
+          "text": "タンク給水時の公表条件を費用計算に使います。分岐水栓利用時の8Lと、タンク給水時の9Lを混同しません。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/feature/SLIM/eco.html",
+          "locator": "NP-TSP1 注1・給水方式別条件",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "drainage",
+          "text": "排水ホースは約1m、電源コードは約1.9m。排水先の高さや延長可否は、対象型番の説明書・メーカーへ確認が必要です。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "給排水・電源コード",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "energy",
+          "text": "タンク給水・汚れレベル2・エコナビOFFの条件で約670Whです。他コースの一回分には転用しません。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/feature/SLIM/eco.html",
+          "locator": "NP-TSP1 注1",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "water",
+          "text": "同じ公表条件の使用水量は約9Lです。試験条件には食器24点・小物16点、給水温度20℃が含まれます。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/feature/SLIM/eco.html",
+          "locator": "NP-TSP1 注1",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "detergent",
+          "text": "5gは掲載された比較試験の使用量です。通常使用の量は、洗剤表示と対象機の説明書で確認してください。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/feature/SLIM/eco.html",
+          "locator": "NP-TSP1 注1・洗剤の試験量",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "accessories",
+          "text": "排水ホース・バンド・吸盤、背面カバー、小物入れ、給水カップ、専用洗剤の試供品が付属します。継続用洗剤や必要な設置工事は別に確認します。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "付属品",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "「お手入れ」コースは月2〜3回を目安とする案内があります。日々のフィルター等の手順を代替するものではなく、詳細手順は対象型番の説明書で確認します。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "コース・お手入れ",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "warranty",
+          "text": "購入先・販売元を確定できていないため、保証の適用条件も未確認です。旧リンクの案内は停止し、照合できる購入先が見つかるまで保留します。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+          "locator": "製品サポート確認先",
+          "checked_at": "2026-09-10",
+          "state": "UNKNOWN"
+        }
+      ],
+      "installation": {
+        "width_mm": 550,
+        "depth_mm": 341,
+        "height_mm": 600,
+        "door_depth_mm": 386,
+        "door_height_mm": 712,
+        "above_mm": null,
+        "left_mm": null,
+        "right_mm": null,
+        "rear_mm": null
+      },
+      "image_review": {
+        "status": "PERMISSION_REFRESH_REQUIRED",
+        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/jyupro/cabinet/d-dish/np-tsp1-w.jpg?_ex=128x128",
+        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
+        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
+        "next_check_on": "2026-09-11"
+      }
+    },
+    {
+      "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+      "exact_model": "01521-09",
+      "name": "エアロフレックスDX2 01521",
+      "anchor": "aeroflex-dx2-01521",
+      "official_url": "https://www.proteca.jp/product/aeroflexDX2/",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "36×23×55cm",
+          "source_url": "https://www.proteca.jp/product/aeroflexDX2/",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "01521-09"
+        },
+        {
+          "label": "3辺合計",
+          "text": "114cm",
+          "source_url": "https://www.proteca.jp/product/aeroflexDX2/",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "01521-09"
+        },
+        {
+          "label": "容量",
+          "text": "35L",
+          "source_url": "https://www.proteca.jp/product/aeroflexDX2/",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "01521-09"
+        },
+        {
+          "label": "本体重量",
+          "text": "2.1kg",
+          "source_url": "https://www.proteca.jp/product/aeroflexDX2/",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "01521-09"
+        },
+        {
+          "label": "選ぶ理由",
+          "text": "ストッパー / 日本製",
+          "source_url": "https://www.proteca.jp/product/aeroflexDX2/",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "01521-09"
+        }
+      ],
+      "lead": "外寸は幅36×奥行23×高さ55cm、3辺合計114cm。35L、2.1kgで、ストッパーと日本製という条件が選び分けの中心です。ストッパーは平らな場所で止めるための機能で、傾斜では使用しません。効き方や操作感は実機では比較していません。",
+      "fit": [
+        "外寸は幅36×奥行23×高さ55cm、3辺合計114cm。35L、2.1kgで、ストッパーと日本製という条件が選び分けの中心です。ストッパーは平らな場所で止めるための機能で、傾斜では使用しません。効き方や操作感は実機では比較していません。"
+      ],
+      "avoid": [
+        "購入前に型番と構成、設置・利用条件を確認してください。"
+      ],
+      "caution": "購入前に型番と構成、設置・利用条件を確認してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "stopper"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "status": "PERMISSION_REFRESH_REQUIRED",
+        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/ace-store/cabinet/item2025/proteca/01521.jpg?_ex=128x128",
+        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
+        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
+        "next_check_on": "2026-09-11"
+      }
+    },
+    {
+      "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+      "exact_model": "CS2*09007 / 134679-1041",
+      "name": "C-Lite CS2*09007",
+      "anchor": "samsonite-c-lite-cs2-09007",
+      "official_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "40×20×55cm",
+          "source_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "CS2*09007 / 134679-1041"
+        },
+        {
+          "label": "3辺合計",
+          "text": "115cm拡張時118cm",
+          "source_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "CS2*09007 / 134679-1041"
+        },
+        {
+          "label": "容量",
+          "text": "36L拡張時42L",
+          "source_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "CS2*09007 / 134679-1041"
+        },
+        {
+          "label": "本体重量",
+          "text": "2.1kg",
+          "source_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "CS2*09007 / 134679-1041"
+        },
+        {
+          "label": "選ぶ理由",
+          "text": "ハード / 拡張",
+          "source_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "CS2*09007 / 134679-1041"
+        }
+      ],
+      "lead": "通常時は幅40×奥行20×高さ55cm、3辺合計115cm、36L、2.1kg。ハードタイプで軽さを優先する候補です。拡張すると幅40×奥行23×高さ55cm、42L、3辺合計118cmになるため、機内持ち込みの比較では通常時を基準にします。",
+      "fit": [
+        "通常時は幅40×奥行20×高さ55cm、3辺合計115cm、36L、2.1kg。ハードタイプで軽さを優先する候補です。拡張すると幅40×奥行23×高さ55cm、42L、3辺合計118cmになるため、機内持ち込みの比較では通常時を基準にします。"
+      ],
+      "avoid": [
+        "購入前に型番と構成、設置・利用条件を確認してください。"
+      ],
+      "caution": "購入前に型番と構成、設置・利用条件を確認してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "hard"
+      ],
+      "guide_facts": []
+    },
+    {
+      "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+      "exact_model": "QJ6-68002",
+      "name": "APPLITE 4.0 QJ6-68002",
+      "anchor": "american-tourister-applite-qj6-68002",
+      "official_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "35×25×55cm",
+          "source_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "QJ6-68002"
+        },
+        {
+          "label": "3辺合計",
+          "text": "115cm拡張時118cm",
+          "source_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "QJ6-68002"
+        },
+        {
+          "label": "容量",
+          "text": "38L拡張時40L",
+          "source_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "QJ6-68002"
+        },
+        {
+          "label": "本体重量",
+          "text": "2.1kg",
+          "source_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "QJ6-68002"
+        },
+        {
+          "label": "選ぶ理由",
+          "text": "ソフト / 拡張",
+          "source_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "QJ6-68002"
+        }
+      ],
+      "lead": "通常時は幅35×奥行25×高さ55cm、3辺合計115cm、38L、2.1kg。ソフトタイプで、4候補のうち通常時容量が最も大きい設計です。拡張すると幅35×奥行28×高さ55cm、40L、3辺合計118cmとなるため、預け入れへ切り替える場合などに分けて考えます。外装がふくらむほど実寸も変わります。",
+      "fit": [
+        "通常時は幅35×奥行25×高さ55cm、3辺合計115cm、38L、2.1kg。ソフトタイプで、4候補のうち通常時容量が最も大きい設計です。拡張すると幅35×奥行28×高さ55cm、40L、3辺合計118cmとなるため、預け入れへ切り替える場合などに分けて考えます。外装がふくらむほど実寸も変わります。"
+      ],
+      "avoid": [
+        "購入前に型番と構成、設置・利用条件を確認してください。"
+      ],
+      "caution": "購入前に型番と構成、設置・利用条件を確認してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "soft"
+      ],
+      "guide_facts": []
+    },
+    {
+      "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+      "exact_model": "1-250",
+      "name": "FREQUENTER LIEVE 1-250",
+      "anchor": "frequenter-lieve-1-250",
+      "official_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "35×23×55cm",
+          "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "1-250"
+        },
+        {
+          "label": "3辺合計",
+          "text": "113cm",
+          "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "1-250"
+        },
+        {
+          "label": "容量",
+          "text": "33L",
+          "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "1-250"
+        },
+        {
+          "label": "本体重量",
+          "text": "2.7kg",
+          "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "1-250"
+        },
+        {
+          "label": "選ぶ理由",
+          "text": "交換可能車輪",
+          "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "1-250"
+        }
+      ],
+      "lead": "外寸は幅35×奥行23×高さ55cm、3辺合計113cm。33L、2.7kgで、2.1kgの3候補より600g重い一方、消耗したタイヤには別売りの「1-623 交換用静音タイヤキット」が用意されています。交換できるのは対応するタイヤ部分のため、キットの適合と在庫、保証範囲を購入時に確認します。",
+      "fit": [
+        "外寸は幅35×奥行23×高さ55cm、3辺合計113cm。33L、2.7kgで、2.1kgの3候補より600g重い一方、消耗したタイヤには別売りの「1-623 交換用静音タイヤキット」が用意されています。交換できるのは対応するタイヤ部分のため、キットの適合と在庫、保証範囲を購入時に確認します。"
+      ],
+      "avoid": [
+        "購入前に型番と構成、設置・利用条件を確認してください。"
+      ],
+      "caution": "購入前に型番と構成、設置・利用条件を確認してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "wheels"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "status": "PERMISSION_REFRESH_REQUIRED",
+        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/selection/cabinet/item33/freq-1-250_1.jpg?_ex=128x128",
+        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
+        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
+        "next_check_on": "2026-09-11"
+      }
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "exact_model": "F155260",
+      "name": "Roomba Mini + AutoEmpty F155260",
+      "anchor": "product-robot-roomba-mini",
+      "official_url": "https://store.irobot-jp.com/item/F155260.html",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅24.5×奥行24.5×高さ9.2cm",
+          "source_url": "https://store.irobot-jp.com/item/F155260.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "F155260"
+        },
+        {
+          "label": "ステーション寸法（幅×奥行×高さ）",
+          "text": "幅17.8×奥行21.2×高さ28.5cm",
+          "source_url": "https://store.irobot-jp.com/item/F155260.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "F155260"
+        },
+        {
+          "label": "水拭き",
+          "text": "使い捨てシート式",
+          "source_url": "https://store.irobot-jp.com/item/F155260.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "F155260"
+        },
+        {
+          "label": "自動手入れ",
+          "text": "自動ゴミ収集",
+          "source_url": "https://store.irobot-jp.com/item/F155260.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "F155260"
+        }
+      ],
+      "lead": "本体と自動ゴミ収集ステーションの設置面積を小さくしたい場合に。",
+      "fit": [
+        "本体とステーションの最大底面辺を25cm以下に収めたい人",
+        "自動ゴミ収集を使いたい人"
+      ],
+      "avoid": [
+        "モップの自動洗浄・乾燥を求める人",
+        "シート式以外の水拭きを選びたい人"
+      ],
+      "caution": "水拭きは使い捨てシート式で、モップの自動洗浄には対応していません。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "compact"
+      ],
+      "guide_facts": []
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K11-PRO",
+      "exact_model": "K11+ Pro",
+      "name": "SwitchBot ロボット掃除機 K11+ Pro",
+      "anchor": "product-robot-k11-pro",
+      "official_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅24.8×奥行24.8×高さ9.2cm",
+          "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "K11+ Pro"
+        },
+        {
+          "label": "ステーション寸法（幅×奥行×高さ）",
+          "text": "幅24.0×奥行18.0×高さ25.0cm",
+          "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "K11+ Pro"
+        },
+        {
+          "label": "水拭き",
+          "text": "市販のお掃除シート式",
+          "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "K11+ Pro"
+        },
+        {
+          "label": "自動手入れ",
+          "text": "自動ゴミ収集",
+          "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "K11+ Pro"
+        }
+      ],
+      "lead": "小型の本体とステーションに、自動ゴミ収集を組み合わせたい場合に。",
+      "fit": [
+        "本体とステーションの最大底面辺を25cm以下に収めたい人",
+        "市販のお掃除シート式と自動ゴミ収集を組み合わせたい人"
+      ],
+      "avoid": [
+        "モップの自動洗浄・乾燥を求める人",
+        "使用後のシート交換を避けたい人"
+      ],
+      "caution": "水拭きは市販のお掃除シートを使用後に捨てる方式で、モップの自動洗浄・乾燥は行いません。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "compact"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "status": "PERMISSION_REFRESH_REQUIRED",
+        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/switchbot/cabinet/13479056/mainbg2.jpg?_ex=128x128",
+        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
+        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
+        "next_check_on": "2026-09-11"
+      }
+    },
+    {
+      "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+      "exact_model": "K10+ Pro Combo",
+      "name": "SwitchBot ロボット掃除機 K10+ Pro Combo",
+      "anchor": "product-robot-k10-pro-combo",
+      "official_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅24.8×奥行24.8×高さ9.2cm",
+          "source_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "K10+ Pro Combo"
+        },
+        {
+          "label": "ステーション寸法（幅×奥行×高さ）",
+          "text": "幅19.5×奥行29.7×高さ41.0cm",
+          "source_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "K10+ Pro Combo"
+        },
+        {
+          "label": "水拭き",
+          "text": "お掃除シート式",
+          "source_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "K10+ Pro Combo"
+        },
+        {
+          "label": "自動手入れ",
+          "text": "ロボット掃除機とコードレス掃除機を同じステーションで自動ゴミ収集",
+          "source_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "K10+ Pro Combo"
+        }
+      ],
+      "lead": "ロボット掃除機とコードレス掃除機を、1つのステーションへまとめたい場合に。",
+      "fit": [
+        "ロボット掃除機とコードレス掃除機の置き場所をまとめたい人",
+        "ステーションの最大底面辺29.7cmを確保できる人"
+      ],
+      "avoid": [
+        "ステーションの最大底面辺を25cm以下に収めたい人",
+        "コードレス掃除機を別に置きたい人"
+      ],
+      "caution": "ステーションの最大底面辺は29.7cmです。最大底面辺を25cm以下に収めたい場合は別の候補も検討してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "vacuum"
+      ],
+      "guide_facts": []
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "exact_model": "N285060",
+      "name": "Roomba Plus 515 Combo + AutoWash N285060",
+      "anchor": "product-robot-roomba-plus-515",
+      "official_url": "https://store.irobot-jp.com/item/N285060.html",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅30.3×奥行29.8×高さ8.4cm",
+          "source_url": "https://store.irobot-jp.com/item/N285060.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "N285060"
+        },
+        {
+          "label": "ステーション寸法（幅×奥行×高さ）",
+          "text": "幅34.0×奥行33.0×高さ48.5cm",
+          "source_url": "https://store.irobot-jp.com/item/N285060.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "N285060"
+        },
+        {
+          "label": "水拭き",
+          "text": "DualCleanモップパッド",
+          "source_url": "https://store.irobot-jp.com/item/N285060.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "N285060"
+        },
+        {
+          "label": "自動手入れ",
+          "text": "ゴミ収集・自動給水・温水洗浄・温風乾燥",
+          "source_url": "https://store.irobot-jp.com/item/N285060.html",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "N285060"
+        }
+      ],
+      "lead": "設置面積よりも、モップの給水・洗浄・乾燥まで自動化することを優先したい場合に。",
+      "fit": [
+        "水拭き後のモップ手入れを減らしたい人",
+        "ステーション（幅34.0×奥行33.0×高さ48.5cm）を置ける人"
+      ],
+      "avoid": [
+        "本体とステーションの最大底面辺を25cm以下に収めたい人",
+        "設置面積の小ささを最優先する人"
+      ],
+      "caution": "本体の最大底面辺は30.3cm、ステーションは34.0cmです。どちらも25cm以下には収まりません。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "mop"
+      ],
+      "guide_facts": []
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C300",
+      "exact_model": "A17225Z1",
+      "name": "Anker Solix C300 Portable Power Station",
+      "anchor": "product-power-c300",
+      "official_url": "https://www.ankerjapan.com/products/a1722",
+      "facts": [
+        {
+          "label": "容量",
+          "text": "288Wh",
+          "source_url": "https://www.ankerjapan.com/products/a1722",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "A17225Z1"
+        },
+        {
+          "label": "定格出力",
+          "text": "300W",
+          "source_url": "https://www.ankerjapan.com/products/a1722",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "A17225Z1"
+        },
+        {
+          "label": "重量",
+          "text": "約4.1kg",
+          "source_url": "https://www.ankerjapan.com/products/a1722",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "A17225Z1"
+        },
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅約16.4×奥行約16.1×高さ約24.0cm",
+          "source_url": "https://www.ankerjapan.com/products/a1722",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "A17225Z1"
+        }
+      ],
+      "lead": "停電時にスマートフォンや照明などの小型機器を使い、保管場所から持ち出しやすくしたい場合に。",
+      "fit": [
+        "スマートフォンや照明など、消費電力の小さい機器を中心に備えたい人",
+        "保管場所から持ち出す負担を抑えたい人"
+      ],
+      "avoid": [
+        "定格300Wを超える機器を接続したい人",
+        "4モデルで最大の容量を求める人"
+      ],
+      "caution": "容量と定格出力は4モデルで最小です。本体寸法は幅約16.4×奥行約16.1×高さ約24.0cmです。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "carry"
+      ],
+      "guide_facts": []
+    },
+    {
+      "product_id": "PRD-JACKERY-500-NEW",
+      "exact_model": "Jackery ポータブル電源 500 New",
+      "name": "Jackery ポータブル電源 500 New",
+      "anchor": "product-power-jackery-500-new",
+      "official_url": "https://www.jackery.jp/products/explorer-500-new",
+      "facts": [
+        {
+          "label": "容量",
+          "text": "512Wh",
+          "source_url": "https://www.jackery.jp/products/explorer-500-new",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "Jackery ポータブル電源 500 New"
+        },
+        {
+          "label": "定格出力",
+          "text": "500W",
+          "source_url": "https://www.jackery.jp/products/explorer-500-new",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "Jackery ポータブル電源 500 New"
+        },
+        {
+          "label": "重量",
+          "text": "5.7kg",
+          "source_url": "https://www.jackery.jp/products/explorer-500-new",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "Jackery ポータブル電源 500 New"
+        },
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅31.1×奥行20.5×高さ15.7cm",
+          "source_url": "https://www.jackery.jp/products/explorer-500-new",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "Jackery ポータブル電源 500 New"
+        }
+      ],
+      "lead": "C300より容量を増やしつつ、片付けや移動も現実的な重さに抑えたい場合に。",
+      "fit": [
+        "小型機器向けに500Wh前後の容量を備えたい人",
+        "5.7kgを保管場所から持ち出せる人"
+      ],
+      "avoid": [
+        "定格500Wを超える機器を接続したい人",
+        "本体寸法（幅31.1×奥行20.5×高さ15.7cm）より狭い場所へ設置する予定の人"
+      ],
+      "caution": "本体寸法は幅31.1×奥行20.5×高さ15.7cmです。設置場所と移動経路に収まるか確認してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "carry"
+      ],
+      "guide_facts": []
+    },
+    {
+      "product_id": "PRD-BLUETTI-AC70",
+      "exact_model": "AC70",
+      "name": "BLUETTI AC70",
+      "anchor": "product-power-bluetti-ac70",
+      "official_url": "https://www.bluetti.jp/products/bluetti-ac70",
+      "facts": [
+        {
+          "label": "容量",
+          "text": "768Wh",
+          "source_url": "https://www.bluetti.jp/products/bluetti-ac70",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "AC70"
+        },
+        {
+          "label": "定格出力",
+          "text": "1000W",
+          "source_url": "https://www.bluetti.jp/products/bluetti-ac70",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "AC70"
+        },
+        {
+          "label": "重量",
+          "text": "約10.2kg",
+          "source_url": "https://www.bluetti.jp/products/bluetti-ac70",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "AC70"
+        },
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅31.4×奥行20.95×高さ25.58cm",
+          "source_url": "https://www.bluetti.jp/products/bluetti-ac70",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "AC70"
+        }
+      ],
+      "lead": "定格500Wを超える機器も候補に入れつつ、容量を1000Wh未満に抑えたい場合に。",
+      "fit": [
+        "接続予定機器の消費電力が定格1000W以内に収まる人",
+        "約10.2kgを安全に移動できる人"
+      ],
+      "avoid": [
+        "頻繁に長い距離を持ち運びたい人",
+        "定格1000Wを超える機器を接続したい人"
+      ],
+      "caution": "本体は幅31.4×奥行20.95×高さ25.58cm、約10.2kgです。設置場所と移動方法を確認してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "middle"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "status": "PERMISSION_REFRESH_REQUIRED",
+        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/bluettijapan/cabinet/12874450/13538031/13562753/imgrc0146958224.jpg?_ex=128x128",
+        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
+        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
+        "next_check_on": "2026-09-11"
+      }
+    },
+    {
+      "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+      "exact_model": "EcoFlow DELTA 3 Classic",
+      "name": "EcoFlow DELTA 3 Classic",
+      "anchor": "product-power-delta-3-classic",
+      "official_url": "https://jp.ecoflow.com/products/delta-3-classic",
+      "facts": [
+        {
+          "label": "容量",
+          "text": "1024Wh",
+          "source_url": "https://jp.ecoflow.com/products/delta-3-classic",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "EcoFlow DELTA 3 Classic"
+        },
+        {
+          "label": "定格出力",
+          "text": "1500W",
+          "source_url": "https://jp.ecoflow.com/products/delta-3-classic",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "EcoFlow DELTA 3 Classic"
+        },
+        {
+          "label": "重量",
+          "text": "約12.1kg",
+          "source_url": "https://jp.ecoflow.com/products/delta-3-classic",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "EcoFlow DELTA 3 Classic"
+        },
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅39.8×奥行20.0×高さ28.3cm",
+          "source_url": "https://jp.ecoflow.com/products/delta-3-classic",
+          "locator": "既存公開記事の比較表に紐づく公式仕様",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED",
+          "exact_model": "EcoFlow DELTA 3 Classic"
+        }
+      ],
+      "lead": "比較した4モデルの中で、容量と定格出力を優先して停電時の備えを厚くしたい場合に。",
+      "fit": [
+        "定格1500W以内の機器を候補に入れたい人",
+        "約12.1kgを保管場所から安全に動かせる人"
+      ],
+      "avoid": [
+        "持ち出す頻度が高く、軽さを最優先する人",
+        "300W程度の小型機器だけに使う予定の人"
+      ],
+      "caution": "本体は幅39.8×奥行20.0×高さ28.3cm、約12.1kgです。保管場所から安全に運べるか確認してください。",
+      "image_markup": "",
+      "image_basis": null,
+      "use_cases": [
+        "larger"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "status": "PERMISSION_REFRESH_REQUIRED",
+        "source_url": "https://thumbnail.image.rakuten.co.jp/@0_mall/ecoflow/cabinet/13793271/13807021/d3c.jpg?_ex=128x128",
+        "prior_basis": "PRESERVED_PUBLISHED_SAME_PRODUCT",
+        "reason": "旧公開本文の検証済み表示は保持記録ですが、この候補へ再利用する許諾・素材の利用条件・鮮度を確認できていません。",
+        "next_check_on": "2026-09-11"
+      }
+    }
+  ],
+  "offers": [
+    {
+      "offer_id": "siroca-ss-ma251-silver",
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "product_model": "SS-MA251",
+      "seller_id": "siroca",
+      "seller": "シロカ公式通販",
+      "url": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976",
+      "source_url": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976",
+      "source_urls": [
+        "https://store.siroca.jp/products/ss-mu251?variant=41121812643976",
+        "https://www.siroca.co.jp/im/ss-ma251.pdf"
+      ],
+      "checked_at": "2026-09-10T01:43:25+00:00",
+      "valid_until": "2026-09-11T01:43:25+00:00",
+      "price_yen": 59800,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "AVAILABLE",
+      "condition": "new",
+      "variant": "SS-MA251 シルバー・オートオープン・新品",
+      "warranty": "購入から1年。会員特典の延長は登録条件あり。",
+      "delivery": "届け先・注文画面で確認",
+      "price_scope": "沖縄・離島等の送料、洗剤・設置用品が未確定のため小計。",
+      "identity_verified": true,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+    },
+    {
+      "offer_id": "ace-01521-09",
+      "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+      "product_model": "01521-09",
+      "seller_id": "ace",
+      "seller": "エース公式通販",
+      "url": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on",
+      "source_url": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on",
+      "source_urls": [
+        "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on",
+        "https://store.ace.jp/shop/pages/help_derivery.aspx"
+      ],
+      "checked_at": "2026-09-10T01:43:25+00:00",
+      "valid_until": "2026-09-11T01:43:25+00:00",
+      "price_yen": 82500,
+      "shipping_yen": 0,
+      "required_items_yen": 0,
+      "state": "AVAILABLE",
+      "condition": "new",
+      "variant": "01521-09 グレー×ホワイト・35L・新品",
+      "warranty": "製品保証10年、プレミアムケア3年。各保証規定に従う。",
+      "delivery": "当日出荷の案内あり。締切・休業日・届け先で変動。",
+      "price_scope": "国内通常配送・通常の荷物収納に必要な本体。任意ラッピングや支払手数料は含めない。",
+      "identity_verified": true,
+      "total_scope_complete": true,
+      "affiliate": false,
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+    },
+    {
+      "offer_id": "irobot-f155260-white",
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "product_model": "F155260",
+      "seller_id": "irobot",
+      "seller": "アイロボット公式ストア",
+      "url": "https://store.irobot-jp.com/item/F155260.html",
+      "source_url": "https://store.irobot-jp.com/item/F155260.html",
+      "source_urls": [
+        "https://store.irobot-jp.com/item/F155260.html",
+        "https://store.irobot-jp.com/ext/guide.html",
+        "https://store.irobot-jp.com/ext/terms.html"
+      ],
+      "checked_at": "2026-09-10T01:43:25+00:00",
+      "valid_until": "2026-09-11T01:43:25+00:00",
+      "price_yen": 49800,
+      "shipping_yen": 0,
+      "required_items_yen": 0,
+      "state": "PREORDER",
+      "condition": "new",
+      "variant": "F155260 白（SHIRO）・AutoEmpty付き・新品",
+      "warranty": "メーカー保証1年。公式の延長特典は対象商品・登録などの条件を要確認。",
+      "delivery": "予約受付。9月中旬入荷予定、前後する可能性あり。",
+      "price_scope": "本体と付属消耗品の初回使用分。予約品のため予算内の確定候補へは自動分類しない。",
+      "identity_verified": true,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+    },
+    {
+      "offer_id": "switchbot-k11-pro-ivory",
+      "product_id": "PRD-SWITCHBOT-K11-PRO",
+      "product_model": "K11+ Pro",
+      "seller_id": "switchbot",
+      "seller": "SwitchBot公式サイト",
+      "url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "source_urls": [
+        "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+        "https://www.switchbot.jp/pages/payments-shipping-policy",
+        "https://www.switchbot.jp/pages/robot-vacuum-cleaner-support"
+      ],
+      "checked_at": "2026-09-10T01:43:25+00:00",
+      "valid_until": "2026-09-11T01:43:25+00:00",
+      "price_yen": 59800,
+      "shipping_yen": 0,
+      "required_items_yen": null,
+      "state": "AVAILABLE",
+      "condition": "new",
+      "variant": "K11+ Pro アイボリー・SKU 810224630279JP・新品",
+      "warranty": "公式または正規販売店での購入は2年間。修理時送料等は規定に従う。",
+      "delivery": "通常は入金後1〜3営業日。商品別案内を優先。",
+      "price_scope": "箱に含まれる消耗品を追加照合中。カート操作時の割引は未適用。",
+      "identity_verified": true,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+    },
+    {
+      "offer_id": "anker-a17225z1",
+      "product_id": "PRD-ANKER-SOLIX-C300",
+      "product_model": "A17225Z1",
+      "seller_id": "anker",
+      "seller": "Anker公式ストア",
+      "url": "https://www.ankerjapan.com/products/a1722?from_business=1",
+      "source_url": "https://www.ankerjapan.com/products/a1722?from_business=1",
+      "source_urls": [
+        "https://www.ankerjapan.com/products/a1722?from_business=1",
+        "https://www.ankerjapan.com/pages/delivery"
+      ],
+      "checked_at": "2026-09-10T01:43:25+00:00",
+      "valid_until": "2026-09-11T01:43:25+00:00",
+      "price_yen": 49990,
+      "shipping_yen": 0,
+      "required_items_yen": 0,
+      "state": "AVAILABLE",
+      "condition": "new",
+      "variant": "A17225Z1 ダークグレー・本体セット・新品",
+      "warranty": "18か月＋会員登録で42か月延長、最大5年。",
+      "delivery": "届け先・注文画面で確認。沖縄の一部住所は配送不可。",
+      "price_scope": "国内配送可能な住所で、付属ACケーブルによる壁コンセント充電を想定。車載ケーブル・ソーラーパネルは含めない。",
+      "identity_verified": true,
+      "total_scope_complete": true,
+      "affiliate": false,
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+    },
+    {
+      "offer_id": "jackery-500-new-base",
+      "product_id": "PRD-JACKERY-500-NEW",
+      "product_model": "Jackery ポータブル電源 500 New",
+      "seller_id": "jackery",
+      "seller": "Jackery公式ストア",
+      "url": "https://www.jackery.jp/products/explorer-500-new",
+      "source_url": "https://www.jackery.jp/products/explorer-500-new",
+      "source_urls": [
+        "https://www.jackery.jp/products/explorer-500-new",
+        "https://www.jackery.jp/pages/warranty-and-returns"
+      ],
+      "checked_at": "2026-09-10T01:43:25+00:00",
+      "valid_until": "2026-09-10T14:59:00+00:00",
+      "price_yen": 47840,
+      "shipping_yen": null,
+      "required_items_yen": 0,
+      "state": "AVAILABLE",
+      "condition": "new",
+      "variant": "500 New 512Wh・500W・本体のみ・新品",
+      "warranty": "3年＋自動延長2年の合計5年。登録不要。",
+      "delivery": "届け先郵便番号を注文先で確認。",
+      "price_scope": "通常送料が未確認のため小計。付属ACケーブルで壁コンセントから充電する構成。",
+      "identity_verified": true,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。"
+    }
+  ],
+  "research_issues": [
+    {
+      "issue_id": "PRD-PANASONIC-NP-TMLK1-seller",
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "topic": "販売条件と排水経路",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "公式で本体の情報は確認できますが、注文できる構成・送料・保証と排水の高低差の照合が残っています。",
+      "target_url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-THANKO-RAKUA-MINI-COLOR-seller",
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "topic": "色別の在庫と電力量",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "2色とも再入荷案内があり、別画面の表示と一致しません。通常洗浄のWhも未確認です。",
+      "target_url": "https://www.thanko.jp/view/item/000000004715",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-SIROCA-SS-MA251-seller",
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "topic": "開扉時寸法と追加費用",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "開扉時の最大奥行・コース別Wh・届け先の送料・洗剤等の費用が残っています。",
+      "target_url": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-PANASONIC-NP-TSP1-seller",
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "topic": "購入先と設置条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "本体情報だけでは、注文可能な販売先・保証・必要余白を確定できません。旧購入リンクは停止しています。",
+      "target_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-PROTECA-AEROFLEX-DX2-01521-seller",
+      "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+      "topic": "旅行条件と購入時の再確認",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "通常時の外寸と搭乗便の持込条件を照合してください。保証の免責と出荷締切も注文時に確認します。",
+      "target_url": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-SAMSONITE-C-LITE-CS2-09007-seller",
+      "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+      "topic": "現行の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "対象の黒・拡張型について現在価格、注文可否、送料を確認できていません。",
+      "target_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002-seller",
+      "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+      "topic": "公式ページの再取得",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "公式ページの取得に失敗し、現在価格・在庫・保証を追加確認できていません。",
+      "target_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-FREQUENTER-LIEVE-1-250-seller",
+      "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+      "topic": "色別在庫と保証",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "楽天の商品ページはありますが、選べる色ごとの在庫・価格・送料と保証の適用条件が未確認です。",
+      "target_url": "https://item.rakuten.co.jp/selection/freq-1-250/",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY-seller",
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+      "topic": "予約納期と延長保証",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "9月中旬入荷予定は変動します。必要な日までに届くか、延長保証の対象となるかを確認してください。",
+      "target_url": "https://store.irobot-jp.com/item/F155260.html",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-SWITCHBOT-K11-PRO-seller",
+      "product_id": "PRD-SWITCHBOT-K11-PRO",
+      "topic": "箱の内容と消耗品",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "付属する袋・パッド等を照合してから、初回使用に必要な費目を確定します。",
+      "target_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-SWITCHBOT-K10-PRO-COMBO-seller",
+      "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+      "topic": "標準保証と構成",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "本体セットの注文可否・標準保証・付属品を照合中です。有料延長保証を標準保証と扱いません。",
+      "target_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO-seller",
+      "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "topic": "終了した値引き表示",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "取得ページに期限の過ぎたキャンペーン価格と別の価格が混在しています。現在の支払額として採用していません。",
+      "target_url": "https://store.irobot-jp.com/item/N285060.html",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-ANKER-SOLIX-C300-seller",
+      "product_id": "PRD-ANKER-SOLIX-C300",
+      "topic": "用途に必要な追加品",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "車載充電・太陽光充電の必要品や、届け先が配送可能かは別途確認します。",
+      "target_url": "https://www.ankerjapan.com/products/a1722?from_business=1",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-JACKERY-500-NEW-seller",
+      "product_id": "PRD-JACKERY-500-NEW",
+      "topic": "送料とセール期限",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "通常送料が未確認です。表示価格のセールは9月10日23:59までで、期限後は予算判定に使いません。",
+      "target_url": "https://www.jackery.jp/products/explorer-500-new",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-BLUETTI-AC70-seller",
+      "product_id": "PRD-BLUETTI-AC70",
+      "topic": "販売終了・在庫表示の不一致",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "購入ボタンに加え終売・売り切れ表示があり、対象本体の注文可否と保証を確定できません。",
+      "target_url": "https://www.bluetti.jp/products/bluetti-ac70",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-ECOFLOW-DELTA3-CLASSIC-seller",
+      "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+      "topic": "再入荷と保証条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "対象の本体のみ構成は売り切れ表示です。再入荷日と保証条件の確認が残っています。",
+      "target_url": "https://jp.ecoflow.com/products/delta-3-classic?variant=52762174554479",
+      "next_check_on": "2026-09-11",
+      "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。"
+    },
+    {
+      "issue_id": "PRD-THANKO-RAKUA-MINI-COLOR-manufacturer",
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "topic": "通常洗浄コースのWh",
+      "kind": "manufacturer_inquiry",
+      "status": "DRAFT_NOT_SENT",
+      "impact": "メーカーの回答が必要です。問い合わせ文を準備済みで、まだ送信していません。",
+      "target_url": "https://www.thanko.jp/view/item/000000004715",
+      "next_check_on": "2026-09-11",
+      "alternative": "回答までは対象項目を未確認として扱い、その条件での設置や費用を確定しません。"
+    },
+    {
+      "issue_id": "PRD-SIROCA-SS-MA251-manufacturer",
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "topic": "コース別Whと開扉時の最大奥行",
+      "kind": "manufacturer_inquiry",
+      "status": "DRAFT_NOT_SENT",
+      "impact": "メーカーの回答が必要です。問い合わせ文を準備済みで、まだ送信していません。",
+      "target_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+      "next_check_on": "2026-09-11",
+      "alternative": "回答までは対象項目を未確認として扱い、その条件での設置や費用を確定しません。"
+    },
+    {
+      "issue_id": "PRD-PANASONIC-NP-TSP1-manufacturer",
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "topic": "NP-TSP1-W専用の設置・排水条件",
+      "kind": "manufacturer_inquiry",
+      "status": "DRAFT_NOT_SENT",
+      "impact": "メーカーの回答が必要です。問い合わせ文を準備済みで、まだ送信していません。",
+      "target_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+      "next_check_on": "2026-09-11",
+      "alternative": "回答までは対象項目を未確認として扱い、その条件での設置や費用を確定しません。"
+    },
+    {
+      "issue_id": "PRD-PANASONIC-NP-TMLK1-manufacturer",
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "topic": "NP-TMLK1-Kの排水高低差とタンクの手入れ",
+      "kind": "manufacturer_inquiry",
+      "status": "DRAFT_NOT_SENT",
+      "impact": "メーカーの回答が必要です。問い合わせ文を準備済みで、まだ送信していません。",
+      "target_url": "https://panasonic.jp/dish/products/NP-TMLK1.html",
+      "next_check_on": "2026-09-11",
+      "alternative": "回答までは対象項目を未確認として扱い、その条件での設置や費用を確定しません。"
+    },
+    {
+      "issue_id": "PRD-PANASONIC-NP-TMLK1-home",
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "topic": "自宅の動作空間・排水・電源と使う食器",
+      "kind": "home_or_hands_on",
+      "status": "AWAITING_HOME_CHECK",
+      "impact": "台の寸法・強度、扉や給水の動き、排水先、電源・アースと食器の収まりは各家庭で確認が必要です。",
+      "target_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+      "next_check_on": "2026-09-11",
+      "alternative": "メジャーと説明書で測定し、電源工事等は専門家へ確認します。条件不一致や未確認が残れば購入を見送ります。"
+    },
+    {
+      "issue_id": "PRD-THANKO-RAKUA-MINI-COLOR-home",
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "topic": "自宅の動作空間・排水・電源と使う食器",
+      "kind": "home_or_hands_on",
+      "status": "AWAITING_HOME_CHECK",
+      "impact": "台の寸法・強度、扉や給水の動き、排水先、電源・アースと食器の収まりは各家庭で確認が必要です。",
+      "target_url": "https://www.thanko.jp/view/item/000000004715",
+      "next_check_on": "2026-09-11",
+      "alternative": "メジャーと説明書で測定し、電源工事等は専門家へ確認します。条件不一致や未確認が残れば購入を見送ります。"
+    },
+    {
+      "issue_id": "PRD-SIROCA-SS-MA251-home",
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "topic": "自宅の動作空間・排水・電源と使う食器",
+      "kind": "home_or_hands_on",
+      "status": "AWAITING_HOME_CHECK",
+      "impact": "台の寸法・強度、扉や給水の動き、排水先、電源・アースと食器の収まりは各家庭で確認が必要です。",
+      "target_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+      "next_check_on": "2026-09-11",
+      "alternative": "メジャーと説明書で測定し、電源工事等は専門家へ確認します。条件不一致や未確認が残れば購入を見送ります。"
+    },
+    {
+      "issue_id": "PRD-PANASONIC-NP-TSP1-home",
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "topic": "自宅の動作空間・排水・電源と使う食器",
+      "kind": "home_or_hands_on",
+      "status": "AWAITING_HOME_CHECK",
+      "impact": "台の寸法・強度、扉や給水の動き、排水先、電源・アースと食器の収まりは各家庭で確認が必要です。",
+      "target_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+      "next_check_on": "2026-09-11",
+      "alternative": "メジャーと説明書で測定し、電源工事等は専門家へ確認します。条件不一致や未確認が残れば購入を見送ります。"
+    }
+  ],
+  "routes": [
+    {
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "article_id": "dishwasher-installation-measurement",
+      "stage": "installation",
+      "anchor": "product-dish-np-tmlk1"
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "article_id": "dishwasher-water-supply-methods",
+      "stage": "water",
+      "anchor": "product-dish-np-tmlk1"
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "article_id": "dishwasher-running-cost",
+      "stage": "cost",
+      "anchor": "product-dish-np-tmlk1"
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "article_id": "dishwasher-detergent-guide",
+      "stage": "detergent",
+      "anchor": "product-dish-np-tmlk1"
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TMLK1",
+      "article_id": "dishwasher-cleaning-guide",
+      "stage": "maintenance",
+      "anchor": "product-dish-np-tmlk1"
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "article_id": "dishwasher-installation-measurement",
+      "stage": "installation",
+      "anchor": "product-dish-rakua-mini-color"
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "article_id": "dishwasher-water-supply-methods",
+      "stage": "water",
+      "anchor": "product-dish-rakua-mini-color"
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "article_id": "dishwasher-running-cost",
+      "stage": "cost",
+      "anchor": "product-dish-rakua-mini-color"
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "article_id": "dishwasher-detergent-guide",
+      "stage": "detergent",
+      "anchor": "product-dish-rakua-mini-color"
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "article_id": "dishwasher-cleaning-guide",
+      "stage": "maintenance",
+      "anchor": "product-dish-rakua-mini-color"
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "article_id": "dishwasher-installation-measurement",
+      "stage": "installation",
+      "anchor": "product-dish-ss-ma251"
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "article_id": "dishwasher-water-supply-methods",
+      "stage": "water",
+      "anchor": "product-dish-ss-ma251"
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "article_id": "dishwasher-running-cost",
+      "stage": "cost",
+      "anchor": "product-dish-ss-ma251"
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "article_id": "dishwasher-detergent-guide",
+      "stage": "detergent",
+      "anchor": "product-dish-ss-ma251"
+    },
+    {
+      "product_id": "PRD-SIROCA-SS-MA251",
+      "article_id": "dishwasher-cleaning-guide",
+      "stage": "maintenance",
+      "anchor": "product-dish-ss-ma251"
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "article_id": "dishwasher-installation-measurement",
+      "stage": "installation",
+      "anchor": "product-dish-np-tsp1"
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "article_id": "dishwasher-water-supply-methods",
+      "stage": "water",
+      "anchor": "product-dish-np-tsp1"
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "article_id": "dishwasher-running-cost",
+      "stage": "cost",
+      "anchor": "product-dish-np-tsp1"
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "article_id": "dishwasher-detergent-guide",
+      "stage": "detergent",
+      "anchor": "product-dish-np-tsp1"
+    },
+    {
+      "product_id": "PRD-PANASONIC-NP-TSP1",
+      "article_id": "dishwasher-cleaning-guide",
+      "stage": "maintenance",
+      "anchor": "product-dish-np-tsp1"
+    }
+  ],
+  "editorial_updated_on": "2026-09-10"
+}
