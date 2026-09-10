@@ -97,10 +97,12 @@ local結果を公開HTML PASSへ置き換えず、公開検査のFAIL/INCOMPLETE
 - Before検査はFAIL。83の空spanへの購入遷移と85の冒頭placement不一致を検出。85の旧購入欄も新しいsemantic section契約には未適合であり、これだけから旧欄への遷移が空になるとは断定しない。別ページfragmentの未取得はINCOMPLETE要因として別記。
 - `make setup` と `make generate`: PASS。生成対象79 ownerの更新と検査を実行。
 - `.venv/bin/python -m pytest -q tests/purchase_support tests/wordpress_public_acceptance`: 105 passed（最終の公開検査追加前）。追加後の `tests/purchase_support/test_purchase_paths.py tests/wordpress_public_acceptance`: 52 passed。
+- `make fast`の静的検査・生成物検査と並列Python検査: 21,817 passed、10 skipped、58 subtests passed。逐次検査とGitHub CIを含む最終結果は[PR #267](https://github.com/jamozi/rakuten/pull/267)へ記録。
 - 固定候補の `direct preview`: PASS。3記事を390px / 1440pxで表示し、代表画面を確認。
 - `purchase_paths_browser.mjs`: LOCAL_WORDPRESS PASS。6画面で購入アンカー計28回を実クリック。各画面幅で購入・画像リンク42 bindingのhref・属性・広告relが一致。
 - ローカルWordPressの完全HTMLを固定期待値と照合: 3記事とも購入経路findings 0。これは本番公開後の検査結果ではない。
 - 本番Beforeの3記事を新しい固定期待値と照合すると不一致を検出し、旧公開状態を新候補のPASSとしない。
+- 関連fragment遷移先を含む10ページの匿名取得も実行し、上記不一致を検出。料金計算ガイドはHTMLだけでは `COST_INTERACTION_UNVERIFIED` となるため、公開後検査では実ブラウザーの計算・欠損入力確認も行う。
 - 本文変更は3記事のみ。対象外10件のruntime entryがbase `1b3a027b` と完全一致することを確認。
 - 本番反映・公開後のhref / rel / 商品binding / placement / anchor / disclosure / SEO前後照合は未実施。Pilot公開ゲートは未通過。
 
