@@ -17,7 +17,12 @@ function kurashinoshirube_purchase_ga4_configuration(array $bindings, ?array $ar
         $identity = array($article['article_id'], $article['snapshot_id']);
     }
     foreach ($bindings as $binding) {
-        if (!is_array($binding) || count($binding) !== 8) { return null; }
+        if (!is_array($binding) || !in_array(count($binding), array(8, 10), true)) { return null; }
+        if (count($binding) === 10 && (
+            !in_array($binding['link_purpose'] ?? null, array('affiliate_purchase', 'merchant_purchase'), true)
+            || !in_array($binding['affiliate'] ?? null, array('true', 'false'), true)
+            || (($binding['link_purpose'] === 'affiliate_purchase') !== ($binding['affiliate'] === 'true'))
+        )) { return null; }
         foreach ($keys as $key) {
             if (!isset($binding[$key]) || !is_string($binding[$key])
                 || preg_match('/\A[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,127}\z/D', $binding[$key]) !== 1) { return null; }

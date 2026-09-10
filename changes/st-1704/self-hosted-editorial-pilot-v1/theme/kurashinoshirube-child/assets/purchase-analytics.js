@@ -33,8 +33,22 @@
           !placements.includes(params.placement) ||
           root.getAttribute('data-raos-article-id') !== params.article_id ||
           root.getAttribute('data-raos-snapshot-id') !== params.snapshot_id) return;
-      if (!config.bindings.some(binding => binding && Object.keys(binding).length === 8 &&
-          keys.every(key => binding[key] === params[key]) && binding.href === anchor.href)) return;
+      const binding = config.bindings.find(binding => binding && [8, 10].includes(Object.keys(binding).length) &&
+          keys.every(key => binding[key] === params[key]) && binding.href === anchor.href);
+      if (!binding) return;
+      if (Object.keys(binding).length === 10) {
+        if (!['affiliate_purchase', 'merchant_purchase'].includes(binding.link_purpose) ||
+            !['true', 'false'].includes(binding.affiliate) ||
+            (binding.link_purpose === 'affiliate_purchase') !== (binding.affiliate === 'true') ||
+            wrapper.getAttribute('data-raos-link-purpose') !== binding.link_purpose ||
+            wrapper.getAttribute('data-raos-affiliate') !== binding.affiliate) return;
+        params.link_purpose = binding.link_purpose;
+        params.affiliate = binding.affiliate === 'true';
+      } else {
+        // Previously approved eight-field purchase bindings retain their own snapshot.
+        params.affiliate = /^https:\/\/hb\.afl\.rakuten\.co\.jp\//.test(binding.href);
+        params.link_purpose = params.affiliate ? 'affiliate_purchase' : 'merchant_purchase';
+      }
       const gate = document.getElementById('google_gtagjs-js');
       const measurementId = gate && gate.getAttribute('data-raos-measurement-id');
       if (!measurementId || !/^G-[A-Z0-9]{6,20}$/.test(measurementId) || window[`ga-disable-${measurementId}`] === true) return;
