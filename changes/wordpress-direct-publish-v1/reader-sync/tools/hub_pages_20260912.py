@@ -208,7 +208,7 @@ BY_SLUG = {a['slug']: a for a in ARTICLES}
 CAT_ARTICLES = {c: [a for a in ARTICLES if a['cat'] == c] for c in CAT_ORDER}
 
 HEAD_STYLE = 'max-width:76rem;margin:1rem auto 3rem;padding:clamp(1rem,3vw,2.5rem);background:#faf9f6;color:#1b1b18;line-height:1.85'
-PR_BADGE = '<abbr class="ks-pr-badge" title="広告リンクを含む記事" style="display:inline-block;margin-right:.4rem;padding:0 .4rem;border:1px solid #714332;color:#714332;font-size:.875rem;font-weight:700;line-height:1.6;text-decoration:none">PR</abbr>'
+PR_BADGE = '<abbr class="ks-pr-badge" title="広告リンクを含む記事">PR</abbr>'
 NOTE = ('<p class="ks-reader-note">記事内の確認日と対象機種をご確認ください。実機で検証していない性能は順位付けしていません。'
         '比較記事（PR表示あり）には販売店への広告リンクが含まれます。ガイド記事には含まれません。</p>')
 POLICY_NAV = '<nav aria-label="編集方針"><a href="/comparison-policy/">比較・編集方針</a> ／ <a href="/about-ad-policy/">運営・広告方針</a></nav>'
