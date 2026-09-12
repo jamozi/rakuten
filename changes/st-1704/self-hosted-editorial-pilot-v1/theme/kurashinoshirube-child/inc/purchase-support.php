@@ -4,6 +4,15 @@ function kurashinoshirube_purchase_support_context(): ?array
 {
     if (is_admin() || !is_singular(array('post', 'page'))) { return null; }
     $post_id = (int) get_queried_object_id();
+    // The applied snapshot and the hashed runtime file do not change within one request.
+    static $resolved = array();
+    if (array_key_exists($post_id, $resolved)) { return $resolved[$post_id]; }
+    $resolved[$post_id] = kurashinoshirube_resolve_purchase_support_context($post_id);
+    return $resolved[$post_id];
+}
+
+function kurashinoshirube_resolve_purchase_support_context(int $post_id): ?array
+{
     $snapshot = null;
     if (class_exists('RAOS_Codex_MCP_Owner_Direct')) {
         $snapshot = RAOS_Codex_MCP_Owner_Direct::public_article_snapshot($post_id);
@@ -54,12 +63,17 @@ function kurashinoshirube_enqueue_purchase_support(): void
         }
         return;
     }
-    wp_enqueue_style('kurashinoshirube-editorial-v2',
-        get_stylesheet_directory_uri() . '/assets/editorial-v2.css',
-        array('kurashinoshirube-editorial'), KURASHINOSHIRUBE_THEME_RUNTIME_REVISION);
+    // Only article bodies use the Editorial V2 markup; hubs and policies keep the base sheet.
+    $article_kind = in_array($context['kind'] ?? null, array('comparison', 'guide'), true);
+    if ($article_kind) {
+        wp_enqueue_style('kurashinoshirube-editorial-v2',
+            get_stylesheet_directory_uri() . '/assets/editorial-v2.css',
+            array('kurashinoshirube-editorial'), KURASHINOSHIRUBE_THEME_RUNTIME_REVISION);
+    }
     wp_enqueue_style('kurashinoshirube-purchase-support',
         get_stylesheet_directory_uri() . '/assets/purchase-support.css',
-        array('kurashinoshirube-editorial-v2'), KURASHINOSHIRUBE_THEME_RUNTIME_REVISION);
+        array($article_kind ? 'kurashinoshirube-editorial-v2' : 'kurashinoshirube-editorial'),
+        KURASHINOSHIRUBE_THEME_RUNTIME_REVISION);
     $asset = kurashinoshirube_verified_asset_uri('assets/purchase-support.js', KURASHINOSHIRUBE_PURCHASE_UI_SHA256, true);
     if ($asset !== null) {
         wp_enqueue_script('kurashinoshirube-purchase-support', $asset, array(),

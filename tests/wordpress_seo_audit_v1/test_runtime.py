@@ -34,21 +34,52 @@ def html(item: audit.InventoryItem, required: frozenset[str]) -> str:
     description = "Valid description"
     image = origin + "/wp-content/themes/kurashinoshirube-child/assets/images/home-hero.webp"
     organization_id = origin + "/#organization"
+    editorial_team_id = origin + "/#editorial-team"
     website_id = origin + "/#website"
+    logo = origin + "/wp-content/themes/kurashinoshirube-child/assets/images/brand-mark-512.png"
     organization = {
         "@id": organization_id,
         "@type": "Organization",
-        "name": "暮らしのしるべ編集者",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "email": "contact@kurashinoshirube.com",
+        },
+        "logo": {
+            "@id": origin + "/#logo",
+            "@type": "ImageObject",
+            "contentUrl": logo,
+            "height": 512,
+            "url": logo,
+            "width": 512,
+        },
+        "name": "暮らしのしるべ",
         "url": origin + "/",
+    }
+    editorial_team = {
+        "@id": editorial_team_id,
+        "@type": "Organization",
+        "name": "暮らしのしるべ編集部",
+        "parentOrganization": {"@id": organization_id},
+        "url": origin + "/about-ad-policy/",
     }
     website = {
         "@id": website_id,
         "@type": "WebSite",
         "inLanguage": "ja-JP",
         "name": "暮らしのしるべ",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "query-input": "required name=search_term_string",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": origin + "/?s={search_term_string}",
+            },
+        },
         "publisher": {"@id": organization_id},
         "url": origin + "/",
     }
+    policy = item.identifier in {"about-ad-policy", "comparison-policy", "privacy-policy"}
     graph: list[dict[str, Any]] = []
     if item.role == "article":
         graph.append(
@@ -56,7 +87,7 @@ def html(item: audit.InventoryItem, required: frozenset[str]) -> str:
                 "@id": item.url + "#article",
                 "@type": "Article",
                 "articleSection": "移動",
-                "author": {"@id": organization_id},
+                "author": {"@id": editorial_team_id},
                 "breadcrumb": {"@id": item.url + "#breadcrumb"},
                 "dateModified": "2026-08-30T00:00:00Z",
                 "datePublished": "2026-08-29T00:00:00Z",
@@ -70,7 +101,12 @@ def html(item: audit.InventoryItem, required: frozenset[str]) -> str:
             }
         )
     elif item.role == "fixed_page":
-        page_type = "AboutPage" if item.identifier == "about-ad-policy" else "WebPage"
+        if item.identifier == "about-ad-policy":
+            page_type = "AboutPage"
+        elif policy:
+            page_type = "WebPage"
+        else:
+            page_type = "CollectionPage"
         graph.append(
             {
                 "@id": item.url + "#webpage",
@@ -84,27 +120,43 @@ def html(item: audit.InventoryItem, required: frozenset[str]) -> str:
             }
         )
     if item.role != "home":
+        crumbs = [
+            {
+                "@type": "ListItem",
+                "item": origin + "/",
+                "name": "ホーム",
+                "position": 1,
+            }
+        ]
+        if item.role == "article":
+            # Articles sit under their category hub: ホーム > hub > 記事.
+            crumbs.append(
+                {
+                    "@type": "ListItem",
+                    "item": origin + "/travel/",
+                    "name": "スーツケースの選び方・比較",
+                    "position": 2,
+                }
+            )
+        crumbs.append(
+            {
+                "@type": "ListItem",
+                "item": item.url,
+                "name": title,
+                "position": len(crumbs) + 1,
+            }
+        )
         graph.append(
             {
                 "@id": item.url + "#breadcrumb",
                 "@type": "BreadcrumbList",
-                "itemListElement": [
-                    {
-                        "@type": "ListItem",
-                        "item": origin + "/",
-                        "name": "ホーム",
-                        "position": 1,
-                    },
-                    {
-                        "@type": "ListItem",
-                        "item": item.url,
-                        "name": title,
-                        "position": 2,
-                    },
-                ],
+                "itemListElement": crumbs,
             }
         )
-    graph.extend([organization, website])
+    graph.append(organization)
+    if item.role == "article":
+        graph.append(editorial_team)
+    graph.append(website)
     return f"""<!doctype html><html><head>
 <title>{title}</title>
 <meta name="description" content="{description}">

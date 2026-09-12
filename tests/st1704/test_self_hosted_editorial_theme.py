@@ -444,7 +444,7 @@ def test_asset_manifest_is_complete_and_hash_bound() -> None:
         theme_builder.theme_source_fingerprint()
     )
     records = manifest["required_images"]
-    assert isinstance(records, list) and len(records) == 12
+    assert isinstance(records, list) and len(records) == 16
     for record in records:
         assert isinstance(record, dict)
         path = THEME_ROOT / str(record["path"])
@@ -658,7 +658,8 @@ def test_policy_v3_body_class_is_closed_to_exact_reviewed_pages() -> None:
     assert contract == {
         "body_class": "raos-policy-v3-page",
         "detection": (
-            "EXACT_PUBLISHED_PAGE_SLUG_TITLE_AND_EXCERPT_MATCH_CLOSED_HEAD_MAP"
+            "EXACT_PUBLISHED_PAGE_SLUG_AND_TITLE_MATCH_CLOSED_HEAD_MAP_"
+            "WITH_CLEAN_STORED_EXCERPT_OR_MAP_DESCRIPTION"
         ),
         "footer_presentation": ("SAME_RICH_RESPONSIVE_FOOTER_AS_HOME_AND_EDITORIAL_V2"),
         "scope": "EXACT_THREE_REVIEWED_WORDPRESS_POLICY_PAGES_ONLY",
@@ -672,11 +673,18 @@ def test_policy_v3_body_class_is_closed_to_exact_reviewed_pages() -> None:
         "get_queried_object_id()",
         "get_post_type($post_id) !== 'page'",
         "get_post_status($post_id) !== 'publish'",
-        "kurashinoshirube_policy_page_head_map()[$slug] ?? null",
-        "get_post_field('post_title', $post_id, 'raw') === $head['title']",
-        "get_post_field('post_excerpt', $post_id, 'raw') === $head['description']",
+        "kurashinoshirube_policy_page_head($post_id, $slug) !== null",
     ):
         assert marker in detector
+    head_record = functions.split("function kurashinoshirube_policy_page_head(", 1)[1].split(
+        "function kurashinoshirube_fixed_page_document_title", 1
+    )[0]
+    for marker in (
+        "kurashinoshirube_policy_page_head_map()[$slug] ?? null",
+        "get_post_field('post_title', $post_id, 'raw') !== $head['title']",
+        "kurashinoshirube_is_clean_text($excerpt, 30, 180) ? $excerpt : $head['description']",
+    ):
+        assert marker in head_record
     body_class = functions.split(
         "function kurashinoshirube_editorial_v2_body_class", 1
     )[1].split("add_filter('body_class'", 1)[0]
@@ -1470,7 +1478,9 @@ def test_front_page_renders_the_stored_home_body_once_with_shared_chrome() -> No
     assert '"url":"/#' not in header
     assert "kurashinoshirube_reader_hub_url" in functions
     assert "$page->post_status !== 'publish'" in functions
-    assert "$page->post_content !== kurashinoshirube_reader_hub_content($slug)" in functions
+    # Fail-open hub gate: the stored body is never compared against the shortcode.
+    assert "$page->post_content !== kurashinoshirube_reader_hub_content($slug)" not in functions
+    assert "kurashinoshirube_reader_hub_registration($slug) === null" in functions
     assert "[kurashinoshirube_published_clusters]" not in front
     assert "Codex" not in front
     assert "人気" not in front
@@ -2468,13 +2478,19 @@ def test_article_type_density_ctas_and_cmp_are_responsive_without_home_scope() -
     css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
     editorial_css = (THEME_ROOT / "assets/editorial-v2.css").read_text(encoding="utf-8")
 
+    # Meta text on article surfaces is never below 14px (0.875rem) on mobile.
     for selector in (
         ".raos-breadcrumb",
         ".raos-article-hero-image figcaption",
         ".raos-evidence-badge",
+        ".raos-listing-date",
+        ".raos-guide-card__date",
     ):
         rule = css.split(f"{selector} {{", 1)[1].split("}", 1)[0]
-        assert "font-size: 0.8rem;" in rule
+        assert "font-size: 0.875rem;" in rule
+    assert "font-size: 0.8rem;" not in css.split("/* CookieYes 3.5.5:", 1)[0].split(
+        ".raos-article-shell {", 1
+    )[1]
     for selector in (
         ".raos-article .raos-condition-label",
         ".raos-article-facts dt",
@@ -2497,7 +2513,9 @@ def test_article_type_density_ctas_and_cmp_are_responsive_without_home_scope() -
     )
     for selector in editorial_minimum_selectors:
         rule = editorial_css.split(f"{selector} {{", 1)[1].split("}", 1)[0]
-        assert "font-size: 0.8rem;" in rule
+        assert "font-size: 0.875rem;" in rule
+    assert "font-size: 0.8rem;" not in editorial_css
+    assert "font-size: 0.82rem;" not in editorial_css
     for selector in (
         ".raos-editorial-v2 .article-meta dt",
         ".raos-editorial-v2 .comparison-table thead th",
@@ -2815,8 +2833,9 @@ def test_yoast_is_the_production_owner_with_one_bounded_local_fallback() -> None
         assert "kurashinoshirube_public_head_context()" in owner
     assert "($context['kind'] ?? null) === 'article'" in author_filter
     assert "($context['kind'] ?? null) !== 'article'" in slack_filter
-    assert "'暮らしのしるべ編集者'" in author_filter
-    assert "array('執筆' => '暮らしのしるべ編集者')" in slack_filter
+    assert "'暮らしのしるべ編集部'" in author_filter
+    assert "array('執筆' => '暮らしのしるべ編集部')" in slack_filter
+    assert "kurashinoshirube_estimated_reading_minutes((int) get_queried_object_id())" in slack_filter
     assert "['読了時間の目安'] = (string) $minutes . '分';" in slack_filter
     for stale_copy in ("Written by", "Est. reading time", "raos-local-admin"):
         assert stale_copy not in source
@@ -2851,7 +2870,8 @@ def test_yoast_is_the_production_owner_with_one_bounded_local_fallback() -> None
         "remove_action('wp_head', 'rel_canonical');"
     )
     assert source.count('<meta name="description"') == 1
-    assert source.count('<link rel="canonical"') == 1
+    # One local fallback plus the self canonical for noindex listing routes.
+    assert source.count('<link rel="canonical"') == 2
     for property_name in ("og:title", "og:description", "og:url", "og:image"):
         assert source.count(f'<meta property="{property_name}"') == 1
     for forbidden in ('name="twitter:', "og:type"):
@@ -2866,7 +2886,10 @@ def test_local_head_fallback_preserves_core_title_and_unrelated_routes() -> None
     assert "defined('WPSEO_VERSION')" in title_filter
     assert "! kurashinoshirube_is_local_preview()" in title_filter
     assert "kurashinoshirube_public_head_context()" in title_filter
-    assert "$context === null ? $title : $context['title']" in title_filter
+    assert (
+        "$context === null ? $title : kurashinoshirube_fixed_page_document_title($context)"
+        in title_filter
+    )
     assert source.count("add_filter(\n    'pre_get_document_title'") == 1
     assert source.count("<title") == 0
 
@@ -2899,7 +2922,9 @@ def test_closed_head_contexts_cover_home_articles_and_exact_policy_excerpts() ->
     )["pages"]
     assert contract["head"]["closed_head_contexts"] == {
         "article": "EXACT_EDITORIAL_V3_PUBLIC_IDENTITY_PLUS_CLEAN_TITLE_AND_EXCERPT",
-        "fixed_page": "EXACT_THREE_POLICY_SLUG_TITLE_EXCERPT_RECORDS",
+        "fixed_page": (
+            "THREE_POLICY_SLUG_TITLE_RECORDS_OR_PUBLISHED_REGISTERED_HUB_PAGE_FAIL_OPEN"
+        ),
         "home": "FIXED_SITE_TITLE_AND_DESCRIPTION",
     }
     assert len(pages) == 3
@@ -3084,8 +3109,13 @@ def test_structured_data_is_one_closed_raos_graph() -> None:
         "AboutPage",
         "Article",
         "BreadcrumbList",
+        "CollectionPage",
+        "ContactPoint",
+        "EntryPoint",
+        "ImageObject",
         "ListItem",
         "Organization",
+        "SearchAction",
         "WebPage",
         "WebSite",
     ]
@@ -3109,8 +3139,26 @@ def test_structured_data_is_one_closed_raos_graph() -> None:
             "WebSite",
         ],
         "home": ["Organization", "WebSite"],
+        "hub": ["BreadcrumbList", "CollectionPage", "Organization", "WebSite"],
         "unknown_or_invalid": [],
     }
+    assert head["organization"] == {
+        "contact_point_email": "contact@kurashinoshirube.com",
+        "logo": "assets/images/brand-mark-512.png",
+        "name": "暮らしのしるべ",
+        "same_as": [],
+    }
+    assert head["article_author"] == {
+        "name": "暮らしのしるべ編集部",
+        "type": "Organization",
+        "url_path": "/about-ad-policy/",
+    }
+    assert head["website_search_action"] == "/?s={search_term_string}"
+    assert "'name' => '暮らしのしるべ編集部'" in emitter
+    assert "'@type' => 'SearchAction'" in emitter
+    assert "'@type' => 'ContactPoint'" in emitter
+    assert "'@type' => 'CollectionPage'" not in emitter
+    assert "$page_type = 'CollectionPage';" in emitter
 
 
 def test_editorial_v2_structured_data_dynamic_values_are_bounded() -> None:

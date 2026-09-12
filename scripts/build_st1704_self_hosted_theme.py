@@ -26,13 +26,14 @@ from scripts import (  # noqa: E402
     build_editorial_v3_theme_navigation as editorial_navigation_owner,
 )
 from scripts import build_st1704_theme_assets as theme_asset_owner  # noqa: E402
+from scripts import build_st1704_theme_icons as theme_icon_owner  # noqa: E402
 from scripts import build_reader_purchase_support_v1 as purchase_support_owner  # noqa: E402, F401
 
 
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "6e9b605f635208bb30fd9ea76ce7c7bc6115723cdde58ac6345c235b73e92e93"
+    "6bfe1b1d58d37175c9de8a6707d6cc04796cf083d6d6a4d110e9e54d570d3955"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -91,6 +92,18 @@ SUITCASE_UNDER_100_ASSET_INPUT_PATH: Final = (
 SUITCASE_UNDER_3KG_ASSET_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/images/article-suitcase-under-3kg.webp"
 )
+BRAND_LOGO_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/images/brand-mark-512.png"
+APPLE_TOUCH_ICON_INPUT_PATH: Final = (
+    THEME_REPOSITORY_ROOT / "assets/images/apple-touch-icon.png"
+)
+FAVICON_PNG_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/images/favicon-32.png"
+FAVICON_ICO_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/images/favicon.ico"
+THEME_ICON_INPUT_PATHS: Final = (
+    APPLE_TOUCH_ICON_INPUT_PATH,
+    BRAND_LOGO_INPUT_PATH,
+    FAVICON_PNG_INPUT_PATH,
+    FAVICON_ICO_INPUT_PATH,
+)
 MEASUREMENT_CLIENT_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "assets/measurement.js"
 ANALYTICS_CONSENT_GATE_INPUT_PATH: Final = (
     THEME_REPOSITORY_ROOT / "assets/analytics-consent-gate.js"
@@ -125,6 +138,10 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     SUITCASE_UNDER_100_ASSET_INPUT_PATH,
     SUITCASE_UNDER_3KG_ASSET_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/images/brand-mark.svg",
+    APPLE_TOUCH_ICON_INPUT_PATH,
+    BRAND_LOGO_INPUT_PATH,
+    FAVICON_PNG_INPUT_PATH,
+    FAVICON_ICO_INPUT_PATH,
     HOME_HERO_ASSET_INPUT_PATH,
     THEME_REPOSITORY_ROOT / "assets/images/magazine-hero.webp",
     THEME_REPOSITORY_ROOT / "assets/images/magazine-kitchen.webp",
@@ -208,6 +225,11 @@ PHP_INTEGRITY_BINDINGS: Final = {
         "assets/images/article-roomba-mini-k11-comparison.webp"
     ),
     "KURASHINOSHIRUBE_BRAND_MARK_SHA256": "assets/images/brand-mark.svg",
+    "KURASHINOSHIRUBE_BRAND_LOGO_SHA256": "assets/images/brand-mark-512.png",
+    "KURASHINOSHIRUBE_HOME_HERO_PHOTO_SHA256": "assets/images/magazine-hero.webp",
+    "KURASHINOSHIRUBE_APPLE_TOUCH_ICON_SHA256": "assets/images/apple-touch-icon.png",
+    "KURASHINOSHIRUBE_FAVICON_PNG_SHA256": "assets/images/favicon-32.png",
+    "KURASHINOSHIRUBE_FAVICON_ICO_SHA256": "assets/images/favicon.ico",
     "KURASHINOSHIRUBE_MEASUREMENT_ASSET_SHA256": "assets/measurement.js",
     "KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_SHA256": (
         "assets/analytics-consent-gate.js"
@@ -303,7 +325,10 @@ EDITORIAL_V2_PRESENTATION: Final = {
 
 POLICY_V3_PRESENTATION: Final = {
     "body_class": "raos-policy-v3-page",
-    "detection": ("EXACT_PUBLISHED_PAGE_SLUG_TITLE_AND_EXCERPT_MATCH_CLOSED_HEAD_MAP"),
+    "detection": (
+        "EXACT_PUBLISHED_PAGE_SLUG_AND_TITLE_MATCH_CLOSED_HEAD_MAP_"
+        "WITH_CLEAN_STORED_EXCERPT_OR_MAP_DESCRIPTION"
+    ),
     "footer_presentation": "SAME_RICH_RESPONSIVE_FOOTER_AS_HOME_AND_EDITORIAL_V2",
     "scope": "EXACT_THREE_REVIEWED_WORDPRESS_POLICY_PAGES_ONLY",
     "slugs": ["about-ad-policy", "comparison-policy", "privacy-policy"],
@@ -323,9 +348,13 @@ def _validate_owner_bindings() -> None:
     generated_theme_assets = {
         asset.output.relative_to(ROOT) for asset in theme_asset_owner.ASSETS
     }
+    generated_theme_icons = {
+        icon.output.relative_to(ROOT) for icon in theme_icon_owner.ICONS
+    }
     if (
         editorial_navigation_owner.OUTPUT.relative_to(ROOT)
         != EDITORIAL_NAVIGATION_INPUT_PATH
+        or generated_theme_icons != set(THEME_ICON_INPUT_PATHS)
         or generated_theme_assets
         != {
             ANKER_GENERATIONS_ASSET_INPUT_PATH,
@@ -822,11 +851,15 @@ def _validate_asset_manifest(
         _fail()
 
     records = assets.get("required_images")
-    if type(records) is not list or len(records) != 12:
+    if type(records) is not list or len(records) != 16:
         _fail()
     generated_assets = {
         asset.output.relative_to(THEME_ROOT).as_posix(): asset
         for asset in theme_asset_owner.ASSETS
+    }
+    generated_icons = {
+        icon.output.relative_to(THEME_ROOT).as_posix(): icon
+        for icon in theme_icon_owner.ICONS
     }
     seen_paths: set[str] = set()
     for value in records:
@@ -875,6 +908,17 @@ def _validate_asset_manifest(
             ):
                 _fail()
             continue
+        icon = generated_icons.get(path)
+        if icon is not None:
+            if (
+                record["canvas_width"] != icon.sizes[-1]
+                or record["canvas_height"] != icon.sizes[-1]
+                or record["delivery"] != icon.delivery
+                or record["usage"] != icon.usage
+                or record["provenance"] != theme_icon_owner.manifest_provenance(icon)
+            ):
+                _fail()
+            continue
         if path != "assets/images/brand-mark.svg":
             _fail()
         if record["provenance"] != {
@@ -910,7 +954,11 @@ def _validate_asset_manifest(
         "assets/images/article-suitcase-guide.webp",
         "assets/images/article-suitcase-under-100-seats.webp",
         "assets/images/article-suitcase-under-3kg.webp",
+        "assets/images/apple-touch-icon.png",
+        "assets/images/brand-mark-512.png",
         "assets/images/brand-mark.svg",
+        "assets/images/favicon-32.png",
+        "assets/images/favicon.ico",
         "assets/images/home-hero.webp",
     }:
         _fail()
@@ -1011,8 +1059,10 @@ def validate_sources() -> dict[str, str]:
         or "wp:post-content" in archive
         or "比較ガイド一覧" not in archive
         or ">GUIDES<" in archive
-        or "ページが見つかりませんでした" not in not_found
+        or "ページが見つかりません" not in not_found
+        or "ページが見つかりませんでした" in not_found
         or "記事を検索" not in not_found
+        or not_found.count("raos-not-found-links") != 1
     ):
         _fail()
     header = _text("parts/header.html")
@@ -1306,6 +1356,13 @@ def validate_sources() -> dict[str, str]:
 
     for asset in theme_asset_owner.ASSETS:
         _validate_webp(asset.output.relative_to(THEME_ROOT).as_posix())
+    for icon in theme_icon_owner.ICONS:
+        try:
+            theme_icon_owner.validate_output(
+                icon, _read_source(icon.output.relative_to(THEME_ROOT).as_posix())
+            )
+        except theme_icon_owner.IconGenerationFailure:
+            _fail()
     _validate_svg()
     return {
         relative: hashlib.sha256(payload).hexdigest()

@@ -58,8 +58,8 @@
     },
     {
       "path": "scripts/raos_wordpress_seo_audit.py",
-      "sha256": "be1c28d23e69d46abaf0c88a5acc690bfa9337931ed3179db48f3cb4928385ae",
-      "size": 47660
+      "sha256": "f56cc31d3d087bb51a20dfd8118a296f4d4909e7b91d02880d9446199a948872",
+      "size": 51689
     },
     {
       "path": "scripts/build_google_live_runtime_v1.py",

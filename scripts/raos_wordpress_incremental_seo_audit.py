@@ -992,45 +992,55 @@ def _reader_structured_data_semantics(
     hub_url = contract.origin + "/" + hub_slug + "/"
     hub = documents.get(hub_slug, {})
     # These documents have already passed candidate/baseline identity and hash
-    # checks. Registry membership alone cannot authorize a public breadcrumb.
+    # checks. The theme links a hub as soon as its page is published (fail-open);
+    # the crumb label is the hub page's own stored title.
+    hub_title = hub.get("title")
     published_hub = (
         any(entry.role == "fixed_page" and entry.identifier == hub_slug and entry.url == hub_url
             for entry in contract.items)
         and hub.get("slug") == hub_slug and hub.get("post_type") == "page"
         and hub.get("status") == "publish"
-        and hub.get("title") == category["label"] and hub.get("excerpt") == category["description"]
-        and hub.get("block_markup") == '<!-- wp:shortcode -->[kurashinoshirube_reader_hub slug="' + hub_slug + '"]<!-- /wp:shortcode -->'
+        and isinstance(hub_title, str) and hub_title.strip() != ""
     )
     breadcrumbs = [
         {"@type": "ListItem", "item": contract.origin + "/", "name": "ホーム", "position": 1},
     ]
     if published_hub:
-        breadcrumbs.append({"@type": "ListItem", "item": hub_url, "name": category["label"], "position": 2})
+        breadcrumbs.append({"@type": "ListItem", "item": hub_url, "name": hub_title, "position": 2})
     breadcrumbs.append({"@type": "ListItem", "item": item.url, "name": title, "position": len(breadcrumbs) + 1})
     if graph is None or type(graph.get("@graph")) is not list:
         return False
     nodes = graph["@graph"]
-    if any(type(node) is not dict or not isinstance(node.get("@type"), str) for node in nodes):
+    if any(type(node) is not dict or not isinstance(node.get("@type"), str)
+           or not isinstance(node.get("@id"), str) for node in nodes):
         return False
-    if sorted(node["@type"] for node in nodes) != ["Article", "BreadcrumbList", "Organization", "WebSite"]:
+    if sorted(node["@type"] for node in nodes) != [
+        "Article", "BreadcrumbList", "Organization", "Organization", "WebSite",
+    ]:
         return False
-    by_type = {node["@type"]: node for node in nodes}
-    common = {"@context": graph.get("@context"), "@graph": [
-        by_type["Organization"], by_type["WebSite"]
-    ]}
+    by_id = {node["@id"]: node for node in nodes}
+    if len(by_id) != len(nodes):
+        return False
+    org = contract.origin + "/#organization"
+    team = contract.origin + "/#editorial-team"
+    website = contract.origin + "/#website"
+    if org not in by_id or website not in by_id or team not in by_id:
+        return False
+    common = {"@context": graph.get("@context"), "@graph": [by_id[org], by_id[website]]}
     home = next(entry for entry in contract.items if entry.role == "home")
     if not seo._structured_data_semantics(common, home, contract, title, description, ""):
         return False
-    article = by_type["Article"]
+    if not seo._editorial_team_semantics(by_id[team], contract):
+        return False
+    article = by_id.get(item.url + "#article", {})
     published, modified = article.get("datePublished"), article.get("dateModified")
     if not seo._valid_utc_text(published) or not seo._valid_utc_text(modified):
         return False
-    org = contract.origin + "/#organization"
     return (
         modified >= published
         and article == {
             "@id": item.url + "#article", "@type": "Article",
-            "articleSection": category["label"], "author": {"@id": org},
+            "articleSection": category["label"], "author": {"@id": team},
             "breadcrumb": {"@id": item.url + "#breadcrumb"},
             "datePublished": published, "dateModified": modified,
             "description": description, "headline": title,
@@ -1038,7 +1048,7 @@ def _reader_structured_data_semantics(
             "publisher": {"@id": org}, "url": item.url,
             **({"image": [image]} if asset is not None else {}),
         }
-        and by_type["BreadcrumbList"] == {
+        and by_id.get(item.url + "#breadcrumb") == {
             "@id": item.url + "#breadcrumb", "@type": "BreadcrumbList",
             "itemListElement": breadcrumbs,
         }

@@ -45,6 +45,17 @@
 .ps-article .ps-installation-field p { grid-column: 1 / -1; margin: 0; }
 .ps-article .ps-installation-result { padding: 1em; background: var(--ps-soft); border-inline-start: 3px solid var(--ps-ink); }
 .ps-article [id] { scroll-margin-top: 2em; }
+/* Regenerated article components (2026-09-12): model routes, history, byline, condition facts, media notes. */
+.ps-article ul.ps-model-routes { list-style: none; padding-left: 0; }
+.ps-article ul.ps-model-routes li { margin: 0; }
+.ps-article .ps-history { margin-block: 1.5em; }
+.ps-article .ps-history ul { margin-block: .5em 0; padding-left: 1.2em; }
+.ps-article .ps-history li { font-size: .92em; }
+.ps-article .ps-byline { font-size: .92em; color: #435164; margin-block: .5em 1.5em; }
+.ps-article .ps-condition-facts { display: block; margin-block: .35em .7em; font-size: .95em; color: var(--ps-ink); font-weight: 600; }
+.ps-article .ps-product-media-note { margin: 1em 0; padding: .8em 1em; background: var(--ps-soft); font-size: .92em; color: #435164; }
+.ps-article .ps-legacy-note { margin-block: 1.2em; padding: .9em 1.1em; border-inline-start: 3px solid #708094; background: var(--ps-soft); font-size: .95em; }
+.ps-article .ps-legacy-note p { margin: 0; }
 @media (max-width: 48em) {
   .ps-article :is(.ps-condition-grid, .ps-product-grid, .ps-budget-controls, .ps-pair-controls) { grid-template-columns: minmax(0, 1fr); }
   .ps-article .ps-product { padding: 1em; }
@@ -63,13 +74,9 @@
 .ps-article .ps-rakuten-product-photo img { width: auto; height: auto; max-width: none; max-height: none; padding: 0; object-fit: contain; }
 .ps-article .ps-official-product-photo img { width: 300px; max-width: 100%; height: auto; max-height: none; object-fit: contain; }
 .ps-article .ps-product { container-type: inline-size; }
+/* One 300px affiliate image per product; the frame reserves its square before the image loads. */
+.ps-article .raos-rakuten-image-300 { display: block; box-sizing: border-box; width: 300px; max-width: 100%; aspect-ratio: 1 / 1; margin: 0 auto; }
+.ps-article .raos-rakuten-image-300 a { display: block; }
+.ps-article .raos-rakuten-image-300 img { display: block; width: 100%; max-width: 100%; height: auto; aspect-ratio: 1 / 1; margin: 0; object-fit: contain; }
 .ps-article .raos-rakuten-image-240 { display: none; }
-.ps-article .raos-rakuten-image-300 { display: block; }
-@container (max-width: 319px) {
-  .ps-article .raos-rakuten-image-300 { display: none; }
-  .ps-article .raos-rakuten-image-240 { display: block; }
-}
-@media (max-width: 359px) {
-  .ps-article .raos-rakuten-image-300 { display: none; }
-  .ps-article .raos-rakuten-image-240 { display: block; }
-}
+.ps-article .ps-product-image figcaption { font-size: .875em; }

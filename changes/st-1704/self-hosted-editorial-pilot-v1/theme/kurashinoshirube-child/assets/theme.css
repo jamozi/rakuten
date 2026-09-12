@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 6e9b605f635208bb30fd9ea76ce7c7bc6115723cdde58ac6345c235b73e92e93;
+  --raos-theme-runtime-revision-base: 6bfe1b1d58d37175c9de8a6707d6cc04796cf083d6d6a4d110e9e54d570d3955;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -660,7 +660,7 @@ a:hover {
 .raos-article-type,
 .raos-guide-card__date {
   color: var(--raos-muted);
-  font-size: 0.78rem;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   margin: 0;
@@ -707,7 +707,7 @@ a:hover {
 .raos-breadcrumb {
   border-bottom: 1px solid rgb(23 36 63 / 24%);
   color: var(--raos-muted);
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   letter-spacing: 0.04em;
   margin-bottom: 0;
   padding-block: 1.15rem;
@@ -739,8 +739,86 @@ a:hover {
   margin: 0;
 }
 
-.raos-article-ruleline .raos-article-date::after {
-  content: " UPDATED";
+.raos-article-dates {
+  column-gap: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin: 0;
+  row-gap: 0.25rem;
+}
+
+.raos-article-dates .raos-article-date {
+  white-space: nowrap;
+}
+
+.raos-date-label {
+  color: var(--raos-muted);
+  font-weight: 700;
+}
+
+/* Theme-owned advertising notice: under the title, before the standfirst and the table of contents. */
+.raos-ad-disclosure {
+  border-left: 3px solid var(--raos-warm);
+  color: var(--raos-ink);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  margin: 1rem 0 0;
+  padding: 0.35rem 0 0.35rem 0.85rem;
+}
+
+.raos-ad-disclosure--home {
+  border-left: 0;
+  border-bottom: 1px solid rgb(23 36 63 / 18%);
+  margin: 0 auto;
+  max-width: var(--raos-home-content, 76rem);
+  padding: 0.75rem clamp(1rem, 4vw, 2rem);
+}
+
+.raos-byline {
+  color: var(--raos-muted);
+  font-size: 0.875rem;
+  margin: 1rem 0 0;
+}
+
+/* Skip link inside the header navigation landmark; visible only on keyboard focus. */
+.raos-skip-links {
+  margin: 0;
+}
+
+.raos-skip-link {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  word-wrap: normal;
+}
+
+.raos-skip-link:focus {
+  background: #fff;
+  clip: auto;
+  clip-path: none;
+  color: var(--raos-ink);
+  font-size: 1rem;
+  font-weight: 700;
+  height: auto;
+  left: 0.75rem;
+  line-height: 1.4;
+  margin: 0;
+  outline: 3px solid var(--raos-warm);
+  outline-offset: 2px;
+  overflow: visible;
+  padding: 0.85rem 1.1rem;
+  position: fixed;
+  text-decoration: none;
+  top: 0.75rem;
+  width: auto;
+  z-index: 100000;
 }
 
 .raos-article-title-grid {
@@ -846,7 +924,7 @@ a:hover {
 
 .raos-article-hero-image figcaption {
   color: var(--raos-muted);
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   margin-top: 0.65rem;
   text-align: right;
 }
@@ -904,7 +982,7 @@ a:hover {
 
 .raos-article-category {
   color: var(--raos-warm);
-  font-size: 0.82rem;
+  font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   margin-bottom: 0.5rem;
@@ -1138,7 +1216,7 @@ figure.raos-first-article-lead-image > img {
   border-radius: 0;
   color: var(--raos-muted);
   display: inline-block;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   font-weight: 700;
   margin-inline-start: 0.4em;
   margin-top: 0.35rem;
@@ -1350,6 +1428,36 @@ figure.raos-first-article-lead-image > img {
   padding-left: 1.2rem;
 }
 
+.raos-related-guides__purposes-title {
+  font-size: 1rem;
+  margin: 1.75rem 0 0.5rem;
+}
+
+.raos-related-guides ul.raos-related-guides__purposes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  list-style: none;
+  padding-left: 0;
+}
+
+.raos-related-guides__purposes a {
+  align-items: center;
+  display: inline-flex;
+  min-height: 2.75rem;
+}
+
+.raos-api-credit {
+  color: var(--raos-muted);
+  font-size: 0.875rem;
+  margin: 2.5rem 0 0;
+}
+
+.raos-api-credit + .raos-source-link {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
 .raos-footer {
   background: var(--raos-ink);
   color: #fff;
@@ -1465,8 +1573,49 @@ figure.raos-first-article-lead-image > img {
 
 .raos-listing-date {
   color: var(--raos-muted);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   margin-top: 1rem;
+}
+
+.raos-listing-search {
+  margin-top: 1.5rem;
+  max-width: 34rem;
+}
+
+.raos-listing-hub-hint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.5rem;
+  margin: 1rem 0 0;
+}
+
+.raos-listing-hub-hint a {
+  align-items: center;
+  color: var(--raos-indigo);
+  display: inline-flex;
+  font-weight: 700;
+  min-height: 2.75rem;
+}
+
+.raos-not-found-links ul {
+  display: grid;
+  gap: 0.25rem 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  list-style: none;
+  margin: 1.5rem 0;
+  padding: 0;
+}
+
+.raos-not-found-links a {
+  align-items: center;
+  color: var(--raos-indigo);
+  display: inline-flex;
+  min-height: 2.75rem;
+}
+
+.raos-article small,
+.raos-footer small {
+  font-size: 0.875rem;
 }
 
 .raos-listing-query .wp-block-query-pagination {
@@ -1672,7 +1821,11 @@ figure.raos-first-article-lead-image > img {
   }
 
   .raos-article-ruleline .raos-article-date {
-    font-size: 0.8rem;
+    font-size: 0.875rem;
+  }
+
+  .raos-article-dates {
+    justify-content: flex-start;
   }
 
   .raos-article-title-grid {
@@ -1902,6 +2055,19 @@ body.single-post .cky-consent-container.cky-box-bottom-left:not(.cky-hide)
     padding: 7px 2px !important;
     white-space: normal !important;
     width: auto !important;
+  }
+}
+
+/* Mobile: the consent banner may cover at most a quarter of the viewport; focused
+   elements keep a scroll lane above it (WCAG 2.4.11). */
+@media (max-width: 47.99rem) {
+  .cky-consent-container:not(.cky-hide) {
+    max-height: 25vh !important;
+    overflow: auto !important;
+  }
+
+  body {
+    scroll-padding-bottom: 26vh;
   }
 }
 
@@ -3253,7 +3419,7 @@ body.home.raos-home-v2-page #ks-magazine .km-category > span {
   color: var(--raos-home-inverse, #f7f2e9);
   cursor: pointer;
   display: inline-flex;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   min-height: 2.75rem;
   padding: 0;
   text-align: left;
