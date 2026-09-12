@@ -1,5 +1,7 @@
 # Entry-page integration, 2026-09-13
 
+以下は作業中の確認履歴を含みます。現在の候補・統合後の検証結果・残件は [最終検証](verification.md) と [136項目の進捗](progress-evidence.v1.json) を参照してください。過去の候補の中断・未統合記述を現在の状態として使用しません。
+
 Implemented the home (41 main; 83 and 30 supporting), four category routes, six distinct purpose routes, guide/comparison/update indexes, and a separate kitchen template. Existing page IDs, URLs and original fragment IDs are retained. Existing approved category imagery is retained, with image captions; the home editorial image is used once.
 
 Owner: `scripts/build_site_editorial_pages.py`. Inputs are explicit in that script, including article bodies (advertising detection), registry (identity/title/excerpt), catalog (comparison models and supplementary configurations), and `entry-pages.v1.json` (membership, real editorial changes and inherited anchor compatibility). `OUTPUT_PATHS` and scoped `TEST_PATHS` declare ownership. Kitchen is emitted as `kitchen-template.html` for the root owner to incorporate. Root must merge `registry-updates.json` into the primary registry, and complete build registry/global generation.

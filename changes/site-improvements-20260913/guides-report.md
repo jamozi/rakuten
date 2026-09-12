@@ -1,5 +1,7 @@
 # Guide and policy changes — 2026-09-13
 
+以下は作業中の確認履歴を含みます。現在の候補・統合後の検証結果・残件は [最終検証](verification.md) と [136項目の進捗](progress-evidence.v1.json) を参照してください。過去の候補の中断・未統合記述を現在の状態として使用しません。
+
 Scope: PG262–266, PG010, PG120, PG003 text; G08/G09/G15. Local source work only; no publication, external writes, mail tests, or commits.
 
 ## Rendering and source ownership
