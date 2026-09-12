@@ -431,3 +431,5 @@ demand:
 Any future trusted implementation may emit at most
 `ELIGIBLE_FOR_HUMAN_PROPOSAL`; article creation and publication must remain
 disabled.
+
+制作briefの9項目と理解確認4課題の記録先は [Issue #272](https://github.com/jamozi/rakuten/issues/272) です。1改修＋1主稿＋測定小作業の同時枠、AF01/DH00の限定探索、所有者確認を実読者結果に転用しない規則もそこに置き、`status.v2.yaml` は手編集しません。
