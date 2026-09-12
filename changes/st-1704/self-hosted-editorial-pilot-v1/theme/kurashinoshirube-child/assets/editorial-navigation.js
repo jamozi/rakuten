@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const selector = '.raos-article-toc a[href^="#"],.raos-back-to-toc[href^="#"]';
+  const selector = '.raos-article-toc a[href^="#"],.raos-back-to-toc[href^="#"],.ps-article a[href^="#"]';
   const editorialRoot = document.querySelector('.raos-editorial-v2');
   const toc = document.querySelector('.raos-article-toc');
   const tocDetails = document.querySelector('.raos-article-toc details');
@@ -49,6 +49,9 @@
       if (ancestor instanceof HTMLDetailsElement) ancestor.open = true;
       ancestor = ancestor.parentElement;
     }
+    // Hidden or inert state belongs to another owner and is never cleared here.
+    if (target.closest('[hidden],[inert]')) return;
+    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
     window.requestAnimationFrame(() => {
       synchronizeScrollOffset();
       target.scrollIntoView({ behavior: 'auto', block: 'start' });
@@ -108,8 +111,12 @@
   if (initialTarget) revealHashTarget(initialTarget);
 
   document.addEventListener('click', (event) => {
+    // Modified, non-primary, download and new-window clicks keep the browser default.
+    if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey ||
+        event.shiftKey || event.altKey) return;
     const anchor = event.target instanceof Element ? event.target.closest(selector) : null;
     if (!(anchor instanceof HTMLAnchorElement)) return;
+    if (anchor.hasAttribute('download') || (anchor.target && anchor.target !== '_self')) return;
     let target;
     try {
       const destination = new URL(anchor.href, window.location.href);

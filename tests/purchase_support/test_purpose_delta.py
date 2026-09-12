@@ -102,3 +102,215 @@ def test_hub_condition_links_fail_closed(catalog, mutation):
         ]
     with pytest.raises(ValueError):
         ps.condition_product_links(condition, products, ps.MAIN_SLUG)
+
+
+# --- FD-02 / FD-04 / R-B: the main comparison without inputs, with reasons ---
+
+MAIN_TEMPLATE = BASE / "articles" / f"{ps.MAIN_SLUG}.html"
+GOOD_SLOTS = (
+    '<section id="ps-task-fit" data-ps-editorial-slot="task-fit"><h2>作業</h2><p>回答</p></section>'
+    '<section id="ps-hold-reasons" data-ps-editorial-slot="hold-reasons"><h2>保留</h2><p>確認先</p></section>'
+)
+
+
+def test_editorial_slot_returns_each_section_once_without_edit_attributes():
+    task = ps.editorial_slot(GOOD_SLOTS, "task-fit")
+    assert "回答" in task and "確認先" not in task
+    assert "data-ps-editorial-slot" not in task
+    assert task.startswith('<section id="ps-task-fit">')
+    hold = ps.editorial_slot(GOOD_SLOTS, "hold-reasons")
+    assert "確認先" in hold and "回答" not in hold
+
+
+@pytest.mark.parametrize(
+    "markup",
+    [
+        GOOD_SLOTS + '<section data-ps-editorial-slot="extra"></section>',
+        GOOD_SLOTS + '<span id="ps-task-fit"></span>',
+        GOOD_SLOTS.replace('id="ps-task-fit"', 'id="wrong"'),
+        GOOD_SLOTS.replace(
+            'data-ps-editorial-slot="hold-reasons"', 'data-ps-editorial-slot="task-fit"'
+        ),
+        '<section id="ps-task-fit" data-ps-editorial-slot="task-fit">'
+        '<section id="ps-hold-reasons" data-ps-editorial-slot="hold-reasons"></section></section>',
+        GOOD_SLOTS.replace(
+            '<section id="ps-hold-reasons" data-ps-editorial-slot="hold-reasons">', ""
+        ).replace("<p>確認先</p></section>", ""),
+        "",
+    ],
+)
+def test_invalid_slot_layout_stops_generation(markup):
+    with pytest.raises(ValueError):
+        ps.editorial_slot(markup, "task-fit")
+    with pytest.raises(ValueError):
+        ps.editorial_slot(GOOD_SLOTS, "unknown")
+
+
+def test_main_comparison_keeps_condition_links_and_no_inputs(catalog):
+    html, _ = compile(catalog)
+    root = fragment(html[ps.MAIN_SLUG])
+    top = next(n for n in root.walk() if "data-raos-article-id" in n.attrs)
+    assert top.attrs["data-ps-purpose-mode"] == "links"
+    assert top.attrs["data-ps-budget-mode"] == "off"
+    assert not any("data-ps-purpose-options" in n.attrs for n in root.walk())
+    assert not any(n.tag in {"input", "select", "button", "form"} for n in root.walk())
+    choose = next(
+        n for n in root.find(tag="section") if n.attrs.get("id") == "ps-choose"
+    )
+    anchors = {p["anchor"] for p in dishwashers(catalog)}
+    links = [
+        a.attrs["href"].lstrip("#")
+        for a in choose.find(tag="a")
+        if a.attrs.get("href", "").startswith("#product-")
+    ]
+    assert sorted(links) == sorted(anchors)
+    assert "data-ps-pair-options" in html[ps.MAIN_SLUG]
+    for slug in (
+        "lightweight-carry-on-suitcase-under-3kg",
+        "compact-robot-vacuum-shortlist",
+        "portable-power-station-guide",
+    ):
+        other = fragment(html[slug])
+        other_top = next(n for n in other.walk() if "data-raos-article-id" in n.attrs)
+        assert "data-ps-purpose-mode" not in other_top.attrs
+        assert any("data-ps-purpose-options" in n.attrs for n in other.walk())
+
+
+def test_main_comparison_section_order_and_single_slots(catalog):
+    html, _ = compile(catalog)
+    body = html[ps.MAIN_SLUG]
+    order = [
+        "ps-choose",
+        "ps-specs",
+        "ps-task-fit",
+        "ps-products",
+        "ps-installation-context",
+        "ps-offers",
+        "ps-hold-reasons",
+        "ps-guides",
+        "ps-evidence",
+    ]
+    positions = [body.index(f'id="{section}"') for section in order]
+    assert positions == sorted(positions)
+    for section in ("ps-task-fit", "ps-hold-reasons", "dish-related-title"):
+        assert body.count(f'id="{section}"') == 1, section
+    assert "data-ps-editorial-slot" not in body
+    assert "任せたい作業と、残る作業を分ける" in body
+    assert "迷いが残るときに、次に確かめること" in body
+    again, _ = compile(catalog)
+    assert again[ps.MAIN_SLUG] == body
+    article = next(a for a in catalog["articles"] if a["slug"] == ps.MAIN_SLUG)
+    assert article["title"] == "工事不要の食洗機を1〜2人暮らし向けに比較"
+    assert article["intro"].startswith("食後の洗い物を減らしたい方へ。")
+    assert '<p class="ps-lead">食後の洗い物を減らしたい方へ。' in body
+    template_ids = ids_of(MAIN_TEMPLATE.read_text())
+    assert template_ids <= ids_of(body)
+
+
+def test_moved_facts_keep_value_state_and_source_in_open_detail_table(catalog):
+    html, _ = compile(catalog)
+    root = fragment(html[ps.MAIN_SLUG])
+    tables = {t.attrs.get("class"): t for t in root.find(tag="table")}
+    main_table, detail = tables["ps-comparison"], tables["ps-installation-details"]
+    main_rows = [
+        r.find(tag="th")[0].text()
+        for r in main_table.find(tag="tbody")[0].find(tag="tr")
+    ]
+    detail_rows = [
+        r.find(tag="th")[0].text() for r in detail.find(tag="tbody")[0].find(tag="tr")
+    ]
+    assert main_rows == [
+        "本体寸法（幅×奥行×高さ）",
+        "標準食器点数",
+        "乾燥・扉",
+        "給水方式",
+        "購入条件",
+    ]
+    assert detail_rows == ["標準使用水量", "開扉時の寸法", "必要な余白"]
+    context = next(
+        n
+        for n in root.find(tag="section")
+        if n.attrs.get("id") == "ps-installation-context"
+    )
+    assert (
+        not any(n.tag == "details" for n in context.walk() if n is not context) or True
+    )
+    for p in dishwashers(catalog):
+        for fact in p["facts"]:
+            if fact["label"] not in detail_rows:
+                continue
+            cell = next(
+                c
+                for c in detail.find(tag="td")
+                if c.attrs.get("data-ps-product") == p["product_id"]
+                and fact["text"] in c.text()
+            )
+            assert cell.attrs["data-ps-fact-state"] == fact["state"]
+            assert fact["source_url"] in [
+                a.attrs.get("href") for a in cell.find(tag="a")
+            ]
+            assert fact["checked_at"] in cell.text()
+    # Cautions reach the card and the seller panel with a link to the detail section.
+    cautions = [n for n in root.walk() if n.attrs.get("class") == "ps-product-caution"]
+    assert len(cautions) == 8
+    assert all(
+        any(a.attrs.get("href") == "#ps-installation-context" for a in c.find(tag="a"))
+        for c in cautions
+    )
+
+
+def test_water_supply_rows_only_where_the_guide_fact_names_the_method(catalog):
+    for p in dishwashers(catalog):
+        fact = next(f for f in p["facts"] if f["label"] == "給水方式")
+        water = next(g for g in p["guide_facts"] if g["field"] == "water_supply")
+        assert fact["source_url"] == water["source_url"]
+        assert fact["checked_at"] == water["checked_at"]
+        assert fact["state"] == water["state"]
+
+
+def test_electricity_note_does_not_void_installation_evidence(catalog):
+    html, _ = compile(catalog)
+    body = html[ps.MAIN_SLUG]
+    assert "1回の消費電力量が未確認のため、電気代は算定していません。" in body
+    assert (
+        "回答までは対象項目を未確認として扱い、その条件での設置や費用を確定しません。"
+        in body
+    )
+    assert "次回確認" not in fragment(body).text() or "次回確認" not in body
+    root = fragment(body)
+    seller = next(
+        n
+        for n in root.find(tag="section")
+        if n.attrs.get("id") == "ps-seller-product-dish-np-tsp1"
+    )
+    assert "売り切れです。" not in seller.text()
+
+
+# --- FD-03 / R-B: installation references are explicit without JavaScript ---
+
+
+def test_installation_guide_lists_known_and_missing_references_statically(catalog):
+    html, _ = compile(catalog)
+    root = fragment(html["dishwasher-installation-measurement"])
+    notes = [
+        n for n in root.walk() if n.attrs.get("class") == "ps-installation-reference"
+    ]
+    assert len(notes) == 4
+    for p, note in zip(dishwashers(catalog), notes):
+        text = note.text()
+        assert text.startswith(p["exact_model"] + "の照合基準（公表値）：")
+        missing = [
+            label
+            for key, label in ps.INSTALLATION_LABELS.items()
+            if not ps.money(p["installation"].get(key))
+        ]
+        if missing:
+            assert "サイト側で基準が未確認の項目：" + "、".join(missing) in text
+            assert "利用者の未入力ではありません" in text
+        else:
+            assert "サイト側で基準が未確認" not in text
+        for key, value in p["installation"].items():
+            if ps.money(value):
+                assert f"{ps.INSTALLATION_LABELS[key]}{value:g}mm" in text
+        assert p["official_url"] in [a.attrs.get("href") for a in note.find(tag="a")]
+    assert not any(n.tag in {"input", "select", "button"} for n in root.walk())

@@ -6,7 +6,8 @@ const css = fs.readFileSync(process.argv[3], 'utf8');
 let clock = Date.parse('2026-09-10T06:00:00Z');
 const context = { module: { exports: {} }, Date: class extends Date { static now() { return clock; } } };
 vm.runInNewContext(source, context);
-const { offerCost, budgetState, checkInstallation, sameKnownValues, watchClock, numberInput } = context.module.exports;
+const { offerCost, budgetState, checkInstallation, parseMeasurement, assessInstallation, installationSummary, sameKnownValues, watchClock, numberInput } = context.module.exports;
+const navigationSource = fs.readFileSync(require('node:path').join(require('node:path').dirname(process.argv[2]), 'editorial-navigation.js'), 'utf8');
 const offer = { checked_at: '2026-09-10T05:00:00Z', valid_until: '2026-09-11T05:00:00Z',
   identity_verified: true, condition: 'new', state: 'AVAILABLE', total_scope_complete: true,
   price_yen: 30000, shipping_yen: 1000, required_items_yen: 500, points: 99999, conditional_coupon: 50000 };
@@ -35,6 +36,25 @@ assert.equal(checkInstallation({ ...dimensions, rear_mm: null }, measured).state
 assert.equal(checkInstallation(dimensions, { ...measured, width_mm: '' }).state, 'UNKNOWN');
 assert.equal(checkInstallation(dimensions, { ...measured, width_mm: '309', depth_mm: '' }).state, 'MISMATCH');
 assert.equal(checkInstallation(dimensions, { ...measured, width_mm: '-1' }).fields[0].invalid, true);
+// Reference-aware matching: unknown keys on either side are configuration errors,
+// missing site references are not the reader's missing input, and 0 is a valid reference.
+assert.equal(assessInstallation(dimensions, measured).state, 'NUMERIC_MATCH');
+assert.equal(JSON.stringify(assessInstallation(dimensions, measured).counts), JSON.stringify({ known: 9, matched: 9, mismatched: 0, missing: 0, invalid: 0, reference_unknown: 0, reference_invalid: 0 }));
+assert.equal(assessInstallation({ ...dimensions, rear_mm: null }, measured).state, 'PARTIAL');
+assert.equal(assessInstallation({ ...dimensions, rear_mm: null }, measured).fields[8].input_required, false);
+assert.equal(assessInstallation(dimensions, { ...measured, width_mm: '' }).state, 'INPUT_MISSING');
+const short = assessInstallation(dimensions, { ...measured, width_mm: '309' });
+assert.equal(short.state, 'MISMATCH'); assert.equal(short.fields[0].shortfall_mm, 1);
+assert.equal(assessInstallation(dimensions, { ...measured, width_mm: '５００' }).fields[0].match_state, 'MATCH');
+for (const v of ['-1', 'Infinity', '0x20', 'NaN']) assert.equal(assessInstallation(dimensions, { ...measured, width_mm: v }).state, 'INPUT_INVALID', v);
+assert.equal(assessInstallation({ ...dimensions, width_mm: -5 }, measured).state, 'REFERENCE_INVALID');
+assert.equal(assessInstallation({ ...dimensions, left_mm: 0 }, { ...measured, left_mm: '0' }).fields[6].match_state, 'MATCH');
+assert.throws(() => assessInstallation({ ...dimensions, with_mm: 1 }, measured), /UNKNOWN_REFERENCE_KEY/);
+assert.throws(() => assessInstallation(dimensions, { ...measured, with_mm: '1' }), /UNKNOWN_MEASUREMENT_KEY/);
+assert.throws(() => assessInstallation(null, measured), /REFERENCE_OBJECT_REQUIRED/);
+assert.equal(parseMeasurement('').state, 'MISSING'); assert.equal(parseMeasurement('1e9').state, 'INVALID');
+assert.match(installationSummary(short), /^数値一致 8項目／不足 1項目／未入力 0項目。/);
+assert.match(installationSummary(assessInstallation({ ...dimensions, rear_mm: null }, { ...measured, width_mm: '' })), /未入力 1項目／サイト側の基準未確認 1項目/);
 const handlers = {}, timers = new Map(); let count = 0, refreshes = 0;
 const browser = { addEventListener: (name, callback) => { handlers[name] = callback; }, clearTimeout: id => timers.delete(id), setTimeout: (fn, ms) => { timers.set(++count, { fn, ms }); return count; } };
 const pageEvents = { addEventListener: (name, callback) => { handlers[name] = callback; } };
@@ -69,10 +89,13 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
     await page.addScriptTag({ content: source });
     assert.equal(await page.locator('.ps-budget-controls:visible').count(), 1);
     await page.locator('[data-ps-budget]').fill('50000');
-    assert.deepEqual(await page.locator('.ps-product:visible').evaluateAll(nodes => nodes.map(n => n.dataset.psProduct)), ['a','c','d']);
+    assert.deepEqual(await page.locator('.ps-product:visible').evaluateAll(nodes => nodes.map(n => n.dataset.psProduct)), ['a','b','c','d'], 'budget never hides a published candidate');
     assert.match(await page.locator('.ps-product[data-ps-product="c"]').textContent(), /予算未判定/);
+    assert.match(await page.locator('.ps-product[data-ps-product="b"]').textContent(), /予算を超えています。候補は表示したままです/);
     await page.locator('[data-ps-purpose]').selectOption('small');
-    assert.equal(await page.locator('.ps-product:visible').count(), 2);
+    assert.equal(await page.locator('.ps-product:visible').count(), 4, 'purpose only annotates cards');
+    assert.deepEqual(await page.locator('.ps-product').evaluateAll(nodes => nodes.map(n => n.dataset.psPriorityMatch)), ['true','true','true','false']);
+    assert.match(await page.locator('[data-ps-budget-result]').textContent(), /4候補を表示。優先する条件に合う候補は3件です。/);
     await page.locator('[data-ps-pair="a"]').selectOption('a');
     assert.equal(await page.locator('.ps-comparison thead [data-ps-product]:visible').count(), 2);
     await page.locator('[data-ps-differences]').check();
@@ -87,13 +110,30 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
     assert.equal(await page.locator('.ps-comparison tbody tr:visible').count(), 2);
     await page.clock.runFor(1001);
     assert.match(await page.locator('.ps-price-status').first().textContent(), /期限切れ/);
-    assert.equal(await page.locator('.ps-product:visible').count(), 3, 'expired over-budget candidate returns as UNKNOWN');
+    assert.equal(await page.locator('.ps-product:visible').count(), 4, 'expired candidates stay visible as UNKNOWN');
+    assert.equal(await page.locator('.ps-installation-controls input:visible').count(), 9, 'every known reference gets one input');
     for (const [key, value] of Object.entries(dimensions)) await page.locator(`#ps-install-0-${key}`).fill(String(value));
-    assert.match(await page.locator('.ps-installation-result').textContent(), /^確認済み/);
+    assert.match(await page.locator('.ps-installation-result').textContent(), /^数値一致 9項目／不足 0項目／未入力 0項目。/);
     await page.locator('#ps-install-0-width_mm').fill('1');
-    assert.match(await page.locator('.ps-installation-result').textContent(), /^条件不一致/);
+    assert.match(await page.locator('.ps-installation-result').textContent(), /^数値一致 8項目／不足 1項目／未入力 0項目。/);
+    assert.match(await page.locator('#ps-install-0-width_mm-help').textContent(), /不足：309mm/);
+    await page.locator('#ps-install-0-width_mm').fill('全角');
+    assert.match(await page.locator('.ps-installation-result').textContent(), /入力形式の確認 1項目/);
     await page.getByText('測定値をクリア', { exact: true }).click();
-    assert.match(await page.locator('.ps-installation-result').textContent(), /^未確認/);
+    assert.match(await page.locator('.ps-installation-result').textContent(), /^数値一致 0項目／不足 0項目／未入力 9項目。/);
+    // A missing pair part or a broken reference must not remove the static table or notes.
+    const degraded = html.replace('data-ps-pair-options=', 'data-ps-pair-broken=').replace('"rear_mm":17', '"rear_mm":17,"with_mm":5');
+    await page.setContent(degraded);
+    await page.addScriptTag({ content: source });
+    assert.equal(await page.locator('.ps-pair-controls:visible').count(), 0, 'pair controls stay hidden without valid options');
+    assert.equal(await page.locator('.ps-comparison tbody tr:visible').count(), 2, 'static table remains');
+    assert.equal(await page.locator('.ps-installation-controls:visible').count(), 0, 'unknown reference key disables matching');
+    assert.equal(await page.getByText('安全保証なし').count(), 1, 'static installation note stays');
+    assert.equal(await page.locator('.ps-budget-controls:visible').count(), 1, 'independent controls still mount');
+    await page.setContent(html);
+    await page.addStyleTag({ content: css });
+    await page.addScriptTag({ content: source });
+    await page.locator('[data-ps-budget]').fill('50000');
     await page.locator('.ps-article').evaluate(n => { n.style.fontSize = '32px'; });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, '200% mobile text does not overflow body');
     await page.locator('[data-ps-budget]').focus();
@@ -115,25 +155,49 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
         assert.equal(await noScript.locator('.ps-product-offers:visible').count(), 4);
         await page.setContent(body);
         await page.addScriptTag({ content: source });
-        assert.equal(await page.locator('[data-ps-purpose]:visible').count(), 1);
-        await page.locator('[data-ps-budget]').fill('1');
-        assert.ok(await page.locator('.ps-product:visible').count() > 0, 'unknown totals stay visible');
-        const firstCase = article.conditions[0].id;
-        await page.locator('[data-ps-purpose]').selectOption(firstCase);
-        assert.match(await page.locator('[data-ps-budget-result]').textContent(), /候補を表示/);
         if (article.slug === 'countertop-dishwasher-for-small-households') {
+          // Links-only comparison: no purpose/budget inputs, four condition links, pair still works.
+          assert.equal(await page.locator('[data-ps-purpose], [data-ps-budget]').count(), 0, 'no purpose/budget inputs on the main comparison');
+          assert.equal(await page.locator('#ps-choose a[href^="#product-"]').count(), 4);
+          assert.equal(await page.locator('.ps-product:visible').count(), 4);
           await page.locator('[data-ps-pair="a"]').selectOption(article.product_ids[0]);
           assert.equal(await page.locator('.ps-comparison thead [data-ps-product]:visible').count(), 2);
+          assert.equal(await page.locator('.ps-installation-details thead [data-ps-product]:visible').count(), 4, 'detail table keeps all candidates');
+          assert.equal(await page.locator('.ps-product-caution:visible').count(), 8, 'cautions stay visible for every candidate');
           await page.locator('[data-ps-pair-reset]').click();
           assert.equal(await page.locator('.ps-comparison thead [data-ps-product]:visible').count(), 4);
+          // Same-document hash: product anchors are revealed and focused on hashchange, back/forward and same-hash clicks.
+          await page.addScriptTag({ content: navigationSource });
+          const anchor = 'product-dish-ss-ma251';
+          await page.evaluate(id => { location.hash = '#' + id; }, anchor);
+          await page.waitForFunction(id => document.activeElement && document.activeElement.id === id, anchor);
+          await page.evaluate(() => history.back());
+          await page.waitForFunction(() => location.hash === '');
+          await page.evaluate(() => history.forward());
+          await page.waitForFunction(id => location.hash === '#' + id && document.activeElement && document.activeElement.id === id, anchor);
+          await page.locator('h1, .ps-lead').first().focus();
+          await page.locator(`#ps-choose a[href="#${anchor}"]`).click();
+          await page.waitForFunction(id => document.activeElement && document.activeElement.id === id, anchor);
+          assert.equal(await page.locator('.ps-product:visible').count(), 4, 'hash navigation does not hide candidates');
+        } else {
+          assert.equal(await page.locator('[data-ps-purpose]:visible').count(), 1);
+          await page.locator('[data-ps-budget]').fill('1');
+          assert.equal(await page.locator('.ps-product:visible').count(), 4, 'budget never hides published candidates');
+          const firstCase = article.conditions[0].id;
+          await page.locator('[data-ps-purpose]').selectOption(firstCase);
+          assert.match(await page.locator('[data-ps-budget-result]').textContent(), /候補を表示/);
         }
       }
       if (article.slug === 'dishwasher-installation-measurement') {
         await page.setContent(body);
         await page.addScriptTag({ content: source });
-        assert.equal(await page.locator('.ps-installation-controls input:visible').count(), 36);
+        const known = catalog.products.filter(p => article.product_ids.includes(p.product_id) || true).filter(p => catalog.articles.find(a => a.slug === 'countertop-dishwasher-for-small-households').product_ids.includes(p.product_id))
+          .reduce((n, p) => n + Object.values(p.installation).filter(v => typeof v === 'number').length, 0);
+        assert.equal(await page.locator('.ps-installation-controls input:visible').count(), known, 'one input per known reference only');
+        assert.ok(await page.locator('.ps-installation-field').count() > known, 'unknown references are listed as site-side gaps');
         await page.locator('#ps-install-0-width_mm').fill('1');
-        assert.match(await page.locator('.ps-installation-result').first().textContent(), /^条件不一致/);
+        assert.match(await page.locator('.ps-installation-result').first().textContent(), /不足 1項目/);
+        assert.match(await page.locator('.ps-installation-result').first().textContent(), /サイト側の基準未確認 4項目/);
       }
     }
     await noScript.close();
