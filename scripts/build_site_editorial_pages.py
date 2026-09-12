@@ -147,16 +147,29 @@ def build() -> dict[Path, str]:
             )
             if body.count(placeholder) == 1:
                 bodies[slug] += markup
-    home_projection = build_home_product_media(
-        catalog,
-        data["home_product_media"],
-        json.loads((ROOT / INPUT_PATHS[5]).read_text()),
-        (ROOT / INPUT_PATHS[6]).read_bytes(),
-    )
+    home_image_style = data.get("home_image_style", "product")
+    if home_image_style not in {"editorial", "product"}:
+        raise ValueError("HOME_IMAGE_STYLE_INVALID")
+    home_projection = None
+    if home_image_style == "product":
+        home_projection = build_home_product_media(
+            catalog,
+            data["home_product_media"],
+            json.loads((ROOT / INPUT_PATHS[5]).read_text()),
+            (ROOT / INPUT_PATHS[6]).read_bytes(),
+        )
     pages, metadata, updates = render_pages(
-        registry, catalog, data, bodies, home_media=home_projection["slots"]
+        registry,
+        catalog,
+        data,
+        bodies,
+        home_media=home_projection["slots"] if home_projection else None,
     )
-    home_payload = bind_home_product_media(home_projection, pages["home"])
+    home_payload = (
+        bind_home_product_media(home_projection, pages["home"])
+        if home_projection
+        else None
+    )
     result = {}
     for path in OUTPUT_PATHS:
         if path.suffix == ".html":

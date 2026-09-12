@@ -691,6 +691,7 @@
     "28": "停電用の電源を比べる",
     "29": "Anker電源の違いを調べる"
   },
+  "home_image_style": "editorial",
   "home_product_media": {
     "schema": "RAOS_HOME_PRODUCT_MEDIA_V1",
     "post_id": 15,

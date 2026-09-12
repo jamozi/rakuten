@@ -86,10 +86,11 @@ class ProjectionTest(unittest.TestCase):
             "関連 4記事",
         ):
             self.assertNotIn(text, home)
-        self.assertEqual(home.count('data-ks-home-product="'), 6)
+        self.assertNotIn('data-ks-home-product="', home)
+        self.assertEqual(home.count('class="ks-feature-image"'), 3)
         self.assertNotIn(
             "hb.afl.rakuten.co.jp", home
-        )  # theme admits the unmodified image snippets.
+        )
         self.assertIn("/comparison-policy/", home)
 
 
