@@ -16,11 +16,6 @@
   "next_html": "<section id=\"ks-next-read\" aria-labelledby=\"ks-next-read-title\" style=\"margin:32px 0;padding:24px;border-top:2px solid #1b1b18;background:#faf9f6;line-height:1.85;\"><h2 id=\"ks-next-read-title\">残っている疑問から、次の確認へ</h2><div class=\"ks-route-links\"><a href=\"/dishwasher-installation-measurement/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機の置き場所・扉・余白の測り方</a><a href=\"/dishwasher-water-supply-methods/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機の給水・排水方法</a><a href=\"/countertop-dishwasher-for-small-households/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">1〜2人暮らし向け食洗機を比較</a></div><p>記事ごとに対象機種が異なります。別機種の数値や手順を流用せず、必要な確認だけを選んで読めます。</p><a href=\"/kitchen/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">食洗機選びの全体像に戻る</a></section>",
   "replacements": [
     {
-      "old": "置き場所は",
-      "new": "関連記事の対応範囲：設置・給排水・洗剤・手入れの各ガイドは、現在SOLOTA、ラクアmini color、SS-MA251、NP-TSP1を扱っています。ラクアmini Plus TK-MDW22Bの手順は含まれないため、mini colorの数値や手順を流用しないでください。mini Plusは本記事末尾のTHANKO公式案内から、対象型番の取扱説明書を確認してください。 設置寸法の確認は",
-      "max_count": 1
-    },
-    {
       "old": "href=\"/dishwasher-installation-measurement/\"",
       "new": "href=\"/dishwasher-installation-measurement/#product-dish-np-tmlk1\"",
       "max_count": 1
@@ -43,6 +38,16 @@
   ],
   "text_edits": [
     {
+      "old": "食後の洗い物を減らしたいけれど、キッチンには余裕がない。SOLOTA（ソロタ）とラクアmini Plusで迷うなら、まず",
+      "new": "食後の洗い物を減らしたいけれど、キッチンには余裕がない。SOLOTA（ソロタ）とラクアmini Plus（ラクアミニプラス）で迷うなら、まず",
+      "max_count": 1
+    },
+    {
+      "old": "2026年9月10日に取得したメーカー公式ページの仕様。mini Plusの給水量は9月11日に説明書p.12で再確認。水量の条件は機種ごとに異なります。寸法は幅×奥行×高さです。",
+      "new": "公式仕様 2026年9月10日確認。mini Plusの給水量は9月11日に説明書p.12で再確認。水量の条件は機種ごとに異なります。寸法は幅×奥行×高さです。",
+      "max_count": 1
+    },
+    {
       "old": "本体・扉・余白の測り方",
       "new": "SOLOTAの設置確認",
       "max_count": 1
@@ -64,12 +69,12 @@
     },
     {
       "old": "食後の洗い物を減らしたいけれど、キッチンには余裕がない。SOLOTAとラクアmini Plusで迷うなら、まず",
-      "new": "食後の洗い物を減らしたいけれど、キッチンには余裕がない。SOLOTA（ソロタ）とラクアmini Plusで迷うなら、まず",
+      "new": "食後の洗い物を減らしたいけれど、キッチンには余裕がない。SOLOTA（ソロタ）とラクアmini Plus（ラクアミニプラス）で迷うなら、まず",
       "max_count": 1
     },
     {
       "old": "2026年9月10日に取得したメーカー公式ページの仕様。寸法は幅×奥行×高さです。",
-      "new": "2026年9月10日に取得したメーカー公式ページの仕様。mini Plusの給水量は9月11日に説明書p.12で再確認。水量の条件は機種ごとに異なります。寸法は幅×奥行×高さです。",
+      "new": "公式仕様 2026年9月10日確認。mini Plusの給水量は9月11日に説明書p.12で再確認。水量の条件は機種ごとに異なります。寸法は幅×奥行×高さです。",
       "max_count": 1
     },
     {
@@ -78,9 +83,64 @@
       "max_count": 1
     },
     {
-      "old": "食後の洗い物を減らしたいけれど、キッチンには余裕がない。SOLOTA（ソロタ）とラクアmini Plusで迷うなら、まず",
-      "new": "食後の洗い物を減らしたいけれど、キッチンには余裕がない。SOLOTA（ソロタ）とラクアmini Plus（ラクアミニプラス）で迷うなら、まず",
+      "old": "奥行を抑えるか、一度に洗う食器を増やすか。",
+      "new": "奥行を抑えるか、一度に洗う食器を増やすか",
       "max_count": 1
+    },
+    {
+      "old": "関連記事の対応範囲：設置・給排水・洗剤・手入れの各ガイドは、現在SOLOTA、ラクアmini color、SS-MA251、NP-TSP1を扱っています。ラクアmini Plus TK-MDW22Bの手順は含まれないため、mini colorの数値や手順を流用しないでください。mini Plusは本記事末尾のTHANKO公式案内から、対象型番の取扱説明書を確認してください。 設置寸法の確認は",
+      "new": "関連記事の対応範囲：設置・給排水・洗剤・手入れの各ガイドの本文は、現在SOLOTA、ラクアmini color、SS-MA251、NP-TSP1を扱っています。ラクアmini Plus TK-MDW22Bは、各ガイド末尾の「以前掲載した機種の資料」に取扱説明書の確認記録があり、上の案内からたどれます。mini colorの数値や手順を流用しないでください。設置寸法の確認は",
+      "max_count": 1
+    }
+  ],
+  "editorial_additions": [
+    {
+      "id": "dish-seller-status",
+      "tag": "section",
+      "target_id": "ks-next-read-title",
+      "position": "before_section",
+      "html": "<section id=\"dish-seller-status\" aria-labelledby=\"dish-seller-status-title\"><h2 id=\"dish-seller-status-title\">2機種の販売先と、確認できた範囲</h2><ul><li><strong>SOLOTA NP-TMLK1-K：</strong>確認済みの販売先・購入総額・確認日は、比較記事の<a href=\"/countertop-dishwasher-for-small-households/#ps-seller-product-dish-np-tmlk1\">SOLOTAの購入総額と販売先</a>にまとめています。購入前にそちらで最新の条件を確認してください。</li><li><strong>ラクアmini Plus TK-MDW22B：</strong>楽天市場などの販売先は照合していません（販売先未照合）。代替として、2026年9月12日に<a href=\"https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin\">THANKO公式通販の商品ページ</a>を確認したところ、価格は29,800円（同ショップの案内では消費税込み）で、購入ボタンの代わりに「再入荷(予約開始)通知」の案内が表示されていました。注文できる在庫があるかと現在の価格は、販売元で確認してください。</li></ul><p class=\"table-note\">執筆・商品情報確認：暮らしのしるべ編集部。内容の訂正依頼は<a href=\"/about-ad-policy/\">運営・広告方針</a>の案内からお寄せください。</p></section>",
+      "sources": [
+        {
+          "url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+          "checked_on": "2026-09-12",
+          "locator": "商品名・型番TK-MDW22B、価格表示￥29,800、「再入荷(予約開始)通知」ボタン、フッターの消費税込み表示"
+        },
+        {
+          "url": "https://kurashinoshirube.com/countertop-dishwasher-for-small-households/",
+          "checked_on": "2026-09-12",
+          "locator": "販売先節 #ps-seller-product-dish-np-tmlk1（SOLOTAの購入総額・確認日）"
+        }
+      ]
+    },
+    {
+      "id": "rakua-mini-plus-guide-links",
+      "tag": "p",
+      "target_id": "ks-next-read-title",
+      "position": "before_section",
+      "html": "<p id=\"rakua-mini-plus-guide-links\">ラクアmini Plus TK-MDW22Bの取扱説明書に基づく確認記録は、各ガイドの「以前掲載した機種の資料」にあります：<a href=\"/dishwasher-installation-measurement/#guide-evidence-tk-mdw22b-door-installation\">設置寸法と扉</a>、<a href=\"/dishwasher-water-supply-methods/#guide-evidence-tk-mdw22b-water-drainage\">給水・排水</a>、<a href=\"/dishwasher-detergent-guide/#guide-evidence-tk-mdw22b-detergent\">洗剤</a>、<a href=\"/dishwasher-cleaning-guide/#guide-evidence-tk-mdw22b-maintenance\">手入れ</a>。mini colorの数値や手順は流用しないでください。</p>",
+      "sources": [
+        {
+          "url": "https://kurashinoshirube.com/dishwasher-installation-measurement/",
+          "checked_on": "2026-09-12",
+          "locator": "以前掲載した機種の資料 #guide-evidence-tk-mdw22b-door-installation"
+        },
+        {
+          "url": "https://kurashinoshirube.com/dishwasher-water-supply-methods/",
+          "checked_on": "2026-09-12",
+          "locator": "以前掲載した機種の資料 #guide-evidence-tk-mdw22b-water-drainage"
+        },
+        {
+          "url": "https://kurashinoshirube.com/dishwasher-detergent-guide/",
+          "checked_on": "2026-09-12",
+          "locator": "以前掲載した機種の資料 #guide-evidence-tk-mdw22b-detergent"
+        },
+        {
+          "url": "https://kurashinoshirube.com/dishwasher-cleaning-guide/",
+          "checked_on": "2026-09-12",
+          "locator": "以前掲載した機種の資料 #guide-evidence-tk-mdw22b-maintenance"
+        }
+      ]
     }
   ]
 }

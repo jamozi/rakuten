@@ -2,6 +2,7 @@
 
 from base64 import b64encode
 from copy import deepcopy
+from datetime import datetime, timezone
 from hashlib import sha256
 import importlib.util
 import json
@@ -102,7 +103,9 @@ def test_all_sixteen_photos_and_thirty_unmodified_image_links_are_snapshot_bound
                 sha256(body[start:end].encode()).hexdigest()
                 == sha256(record["sources"][size].encode()).hexdigest()
             )
-    assert image_count == 30 and official_count == 1
+    # Image links exist only for products with a matched, orderable seller:
+    # 41 (SOLOTA, SS-MA251), 83 (DX2, C-Lite), 30 (K11+ Pro), 28 (all four).
+    assert image_count == 18 and official_count == 1
     assert all(not o["offer_id"].startswith("image-") for o in catalog["offers"])
 
 
@@ -138,6 +141,12 @@ def test_public_media_projection_requires_exact_runtime_and_applied_body():
     runtime = json.loads(runtime_path.read_text())
     assert runtime_path.stat().st_size <= 262144
     comparisons = [a for a in runtime["articles"] if a["kind"] == "comparison"]
+    expected_figures = {
+        "countertop-dishwasher-for-small-households": 2,
+        "lightweight-carry-on-suitcase-under-3kg": 2,
+        "compact-robot-vacuum-shortlist": 2,
+        "portable-power-station-guide": 4,
+    }
     total_photos = 0
     for article in comparisons:
         body = (
@@ -193,11 +202,11 @@ def test_public_media_projection_requires_exact_runtime_and_applied_body():
             assert value["unknown_unchanged"]
             if mode in {"valid", "measurement-off", "owner"}:
                 assert value["sha256"] == sha256(rendered.encode()).hexdigest()
-                assert value["figures"] == 4
+                assert value["figures"] == expected_figures[article["slug"]]
             else:
                 assert value["unchanged"] and value["figures"] == 0
         total_photos += len(article["media"])
-    assert total_photos == 16
+    assert total_photos == 10
 
 
 def test_media_projection_changes_snapshot_even_when_placeholder_body_is_stable():
@@ -214,10 +223,11 @@ def test_media_projection_changes_snapshot_even_when_placeholder_body_is_stable(
             ROOT / "changes/editorial-portfolio-v3/local-reader-guides.v1.json"
         ).read_text()
     )
-    _, before = compile_articles(catalog, templates, guides, media)
+    now = datetime(2026, 9, 12, 12, tzinfo=timezone.utc)
+    _, before = compile_articles(catalog, templates, guides, media, now=now)
     modified = deepcopy(media)
     modified["PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"]["sha256"] = "f" * 64
-    _, after = compile_articles(catalog, templates, guides, modified)
+    _, after = compile_articles(catalog, templates, guides, modified, now=now)
     for a, b in zip(before["articles"], after["articles"], strict=True):
         if a["slug"] == "compact-robot-vacuum-shortlist":
             assert a["snapshot_id"] != b["snapshot_id"]

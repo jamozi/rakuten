@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 import argparse
+from datetime import date, datetime, time, timedelta, timezone
 import json
 from pathlib import Path
 import sys
@@ -101,7 +102,18 @@ def build():
         json.loads(MEDIA_INPUT_PATH.read_text()),
         OFFICIAL_MEDIA_INPUT_PATH.read_bytes(),
     )
-    articles, runtime = compile_articles(catalog, templates, guides, media)
+    # Render deterministically at the end of the editorial date (JST): offers whose
+    # deadline passed before the last editorial check show as expired, reruns on a
+    # later day produce byte-identical output, and the theme JS re-evaluates price
+    # expiry at view time for readers.
+    editorial_end = datetime.combine(
+        date.fromisoformat(catalog["editorial_updated_on"]),
+        time(23, 59, 59),
+        tzinfo=timezone(timedelta(hours=9)),
+    )
+    articles, runtime = compile_articles(
+        catalog, templates, guides, media, now=editorial_end
+    )
     return {
         **{p: articles[p.stem] for p in ARTICLE_OUTPUT_PATHS},
         RUNTIME_OUTPUT_PATH: json.dumps(runtime, ensure_ascii=False, indent=2) + "\n",

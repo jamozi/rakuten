@@ -309,11 +309,11 @@ def reader_navigation(raw: object, articles: list[dict[str, object]]) -> dict[st
     if sorted(categories) != sorted(known):
         raise ValueError('READER_PRIMARY_CATEGORY_MUST_BE_UNIQUE')
     core = [
-        ('categories', '商品カテゴリから探す', '道具の種類から、暮らしに合う条件を確認します。', 'categories', list(known)),
-        ('purposes', '悩み・目的から探す', '困っていることから、次に確認する条件を見つけます。', 'purposes', list(known)),
-        ('guides', '選び方ガイド', '商品名を決める前に、測る・数える・確認する条件を整理します。', 'collection', [k for k,a in known.items() if a['content_role'] == 'category_guide']),
-        ('comparisons', '比較・条件別の候補', '違いと妥協点を確認し、自分の条件に合う候補を絞ります。', 'collection', [k for k,a in known.items() if a['content_role'] != 'lifecycle_status_route']),
-        ('updates', '最近更新したガイド', '内容を更新した順に、比較と購入前確認のガイドを案内します。', 'updates', list(known)),
+        ('categories', '商品カテゴリから探す', 'スーツケース・食洗機・ロボット掃除機・ポータブル電源の4カテゴリから、置き場所や使い方などの条件整理、記事の比較、購入前の確認まで順に進める入口です。各カテゴリの記事数と対象商品も分かります。', 'categories', list(known)),
+        ('purposes', '悩み・目的から探す', '一人暮らし・家事の時短・設置工事の回避・手入れ・旅行・停電への備えの6つの入口。商品名が決まっていなくても、困りごとから最初に読む1本と、記事ごとに決まることを確かめられます。', 'purposes', list(known)),
+        ('guides', '選び方ガイド', '食洗機の置き場所・給排水・洗剤・手入れ・費用を確かめる5本のガイドと、各比較記事の条件整理の節をまとめました。商品名を決める前に測る・数える・確認する入口です。', 'collection', [k for k,a in known.items() if a['content_role'] == 'category_guide']),
+        ('comparisons', '比較・条件別の候補', 'スーツケース・食洗機・ロボット掃除機・ポータブル電源の比較記事10本を、比較軸と候補数つきで案内します。候補が決まっている方が同じ軸で違いと妥協点を確かめる入口です。', 'collection', [k for k,a in known.items() if a['content_role'] != 'lifecycle_status_route']),
+        ('updates', '最近更新したガイド', '暮らしのしるべの掲載記事15本を、公開ページで確認した更新日と1文の変更点つきで新しい順に並べた一覧です。本文の編集日と商品仕様の確認日は別で、一括の再確認ではありません。', 'updates', list(known)),
     ]
     hubs: list[dict[str, object]] = [dict(slug=slug, label=label, description=description, kind=kind, article_ids=ids) for slug,label,description,kind,ids in core]
     if slugs.intersection(cast(str, h['slug']) for h in hubs):

@@ -1,6 +1,7 @@
 """Exact identity, date/price and public projection boundaries across the 13 candidates."""
 
 from copy import deepcopy
+from datetime import datetime, timezone
 import json
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -20,6 +21,8 @@ from tools.affiliate_ingestion.normalize import normalize_record
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / "changes/reader-purchase-support-v1"
+# Offers checked on 2026-09-12 are current at this instant; the 2026-09-10 checks are expired.
+NOW = datetime(2026, 9, 12, 12, tzinfo=timezone.utc)
 
 
 @pytest.fixture
@@ -36,6 +39,7 @@ def compile(catalog):
                 ROOT / "changes/editorial-portfolio-v3/local-reader-guides.v1.json"
             ).read_text()
         ),
+        now=NOW,
     )
 
 
@@ -101,7 +105,10 @@ def test_all_sixteen_slots_have_actionable_research_and_preserve_identity_routes
                 if k != "href"
             )
         if a["bindings"]:
-            assert {b["placement"] for b in a["bindings"]} == set(PLACEMENTS)
+            # External purchase CTAs follow the reasons: product card and seller panel only.
+            placements = {b["placement"] for b in a["bindings"]}
+            assert placements == {"product_card", "final_summary"}
+            assert placements <= set(PLACEMENTS)
     tsp = next(p for p in catalog["products"] if p["exact_model"] == "NP-TSP1-W")
     assert not any(
         b["product_id"] == tsp["product_id"]
@@ -128,14 +135,15 @@ def test_comparison_sale_status_matches_verified_offers(catalog, state):
     cell = next(n for n in row.find(tag="td") if n.attrs.get("data-ps-product") == pid)
     links = cell.find(tag="a")
     assert len(links) == 1
+    assert links[0].attrs["href"] == "#ps-seller-" + product["anchor"]
+    assert "data-raos-cta-type" not in links[0].attrs
     if state == "SOLD_OUT":
         assert "確認した販売先は売り切れ" in cell.text()
         assert "販売先未確認" not in cell.text()
-        assert links[0].attrs["href"] == "#ps-seller-" + product["anchor"]
-        assert "data-raos-cta-type" not in links[0].attrs
     else:
+        # The table sends readers to the dated seller panel instead of an external CTA.
         assert "売り切れ" not in cell.text()
-        assert links[0].attrs["data-raos-cta-type"] == "offer"
+        assert "販売先と確認日を見る" in cell.text()
 
 
 @pytest.mark.parametrize(
@@ -224,9 +232,9 @@ def test_advertising_changes_do_not_change_conditions_or_model_selection(catalog
 @pytest.mark.parametrize(
     ("checked_at", "display"),
     [
-        ("2026-09-10T01:43:00+00:00", "2026年09月10日 10:43（日本時間）"),
-        ("2026-09-10T23:30:00+00:00", "2026年09月11日 08:30（日本時間）"),
-        ("2026-09-11T08:30:00+09:00", "2026年09月11日 08:30（日本時間）"),
+        ("2026-09-10T01:43:00+00:00", "2026年9月10日 10:43（日本時間）"),
+        ("2026-09-10T23:30:00+00:00", "2026年9月11日 08:30（日本時間）"),
+        ("2026-09-11T08:30:00+09:00", "2026年9月11日 08:30（日本時間）"),
     ],
 )
 def test_offer_time_displays_japan_time_without_changing_expiry_metadata(
@@ -295,8 +303,8 @@ def test_published_water_conditions_and_unknowns_reach_guides(catalog):
 @pytest.mark.parametrize(
     ("model", "slug", "primary", "secondary"),
     [
-        ("NP-TSP1-W", "dishwasher-cleaning-guide", "maintenance", "warranty"),
-        ("SS-MA251", "dishwasher-water-supply-methods", "water_supply", "drainage"),
+        ("NP-TSP1-W", "dishwasher-detergent-guide", "detergent", "prohibited"),
+        ("SS-MA251", "dishwasher-installation-measurement", "installation", "drainage"),
     ],
 )
 def test_new_procedure_details_stay_together_before_other_topics(
@@ -347,7 +355,9 @@ def test_guides_keep_unconfirmed_facts_without_repeating_seller_research(catalog
     for article in catalog["articles"]:
         if article["kind"] == "guide":
             assert 'class="ps-research"' not in html[article["slug"]]
-    assert "排水条件は未確認です。" in html["dishwasher-water-supply-methods"]
+    # Drainage conditions live in the installation guide; the water guide links to them.
+    assert "排水条件は未確認です。" in html["dishwasher-installation-measurement"]
+    assert "排水条件は未確認です。" not in html["dishwasher-water-supply-methods"]
     assert "必要余白は追加確認中" in html["dishwasher-installation-measurement"]
     assert "コース別の消費電力量は未確認" in html["dishwasher-running-cost"]
     assert 'class="ps-research"' in html["countertop-dishwasher-for-small-households"]
@@ -511,7 +521,7 @@ def test_kitchen_keeps_readable_preconditions_and_original_destinations(catalog)
     for identity, phrase in [
         ('kitchen-start', 'いつもの一食分'),
         ('kitchen-axes', '電源条件'),
-        ('kitchen-comparisons', '未確認の費目はゼロ円にしません'),
+        ('kitchen-comparisons', '未確認の機種は水道・洗剤だけ'),
         ('purchase-checks', '送料込み'),
     ]:
         node = next(n for n in root.walk() if n.attrs.get('id') == identity)

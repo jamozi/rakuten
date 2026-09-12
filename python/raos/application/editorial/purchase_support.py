@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from datetime import date
+from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
 from hashlib import sha256
@@ -16,12 +17,13 @@ from urllib.parse import urlsplit
 from raos.domain.editorial.purchase_support import (
     POLICY,
     PLACEMENTS,
+    MAX_PRICE_AGE,
     money,
     timestamp,
     resolve_offer,
     offer_states,
 )
-from raos.application.editorial.reader_html import Element, fragment
+from raos.application.editorial.reader_html import Element, block, fragment
 from raos.application.editorial.local_reader_guides import build_local_guides
 from raos.application.editorial.reader_running_cost import render_cost_profiles
 
@@ -34,18 +36,47 @@ STAGES = {
 }
 MAIN_SLUG = "countertop-dishwasher-for-small-households"
 ORIGIN = "https://kurashinoshirube.com"
+JST = timezone(timedelta(hours=9))
+EDITOR = "暮らしのしるべ編集部"
 LABELS = {
     "price_yen": "税込本体",
     "shipping_yen": "送料",
     "required_items_yen": "必須品",
 }
+# Each guide renders only the facts of its own stage; shared conditions are
+# linked to the guide that owns them instead of being repeated verbatim.
 GUIDE_REQUIREMENTS = {
     "installation": ("dimensions", "door", "clearance", "installation", "drainage"),
-    "water": ("water_supply", "drainage"),
-    "cost": ("energy", "water", "detergent"),
-    "detergent": ("detergent", "prohibited", "accessories"),
-    "maintenance": ("maintenance", "warranty"),
+    "water": ("water_supply",),
+    "cost": ("energy", "water"),
+    "detergent": ("detergent", "detergent_test", "prohibited", "accessories"),
+    "maintenance": ("maintenance",),
 }
+# Rows of the four-model decision table placed under the first heading.
+GUIDE_TABLE_ROWS = {
+    "water": ("給水方式", "1回の給水量と止める合図", "排水ホース"),
+    "detergent": ("使える洗剤の種類", "1回分の目安", "タブレットの条件", "公表試験条件の洗剤量"),
+    "maintenance": ("毎回", "月1回程度", "長く使わないとき"),
+    "cost": ("1回の消費電力量", "1回の使用水量", "洗剤の1回分", "計算できる費目"),
+}
+DISCLOSURE = (
+    "この記事には広告・アフィリエイトリンク（楽天アフィリエイトの購入・商品画像リンク）が含まれます。"
+    "運営者は購入リンクから成果報酬を受け取る場合があります。"
+    "実機で使用した評価ではなく、性能の評価に価格や広告報酬を加点しません。"
+)
+BYLINE = '<p class="ps-byline">執筆・商品情報確認：' + EDITOR + "</p>"
+EDITOR_LINE = (
+    '<p class="ps-editor">編集・確認：'
+    + EDITOR
+    + '／訂正依頼：<a href="/about-ad-policy/#production-about-correction">運営・広告方針のお問い合わせ先</a></p>'
+)
+RAKUTEN_CREDIT = (
+    '<p class="ps-note ps-media-credit">商品画像と商品情報の取得に Rakuten Developers API を利用しています'
+    '（<a href="https://developers.rakuten.com/">Supported by Rakuten Developers</a>）。</p>'
+)
+MEDIA_WITHHELD = (
+    '<p class="ps-product-media-note">商品写真：販売先を照合できるまで未掲載。</p>'
+)
 
 
 def canonical(value: object) -> str:
@@ -65,6 +96,44 @@ def https(url: object) -> bool:
     return (
         u.scheme == "https" and bool(u.hostname) and not u.username and not u.password
     )
+
+
+def tidy(text: object) -> str:
+    """Reader-facing notation: wave dash, no space after a full stop, no ideographic space."""
+    return (
+        str(text)
+        .replace("～", "〜")
+        .replace("。 ", "。")
+        .replace("　", " ")
+    )
+
+
+def jp_date(value: object) -> str:
+    """'2026-09-11', an ISO timestamp or a datetime (shown in JST) as '2026年9月11日'."""
+    if isinstance(value, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        day = date.fromisoformat(value)
+    else:
+        moment = value if isinstance(value, datetime) else timestamp(value)
+        if moment is None or moment.tzinfo is None:
+            return "未確認"
+        day = moment.astimezone(JST).date()
+    return f"{day.year}年{day.month}月{day.day}日"
+
+
+def jp_datetime(value: object) -> str:
+    moment = value if isinstance(value, datetime) else timestamp(value)
+    if moment is None or moment.tzinfo is None:
+        return "未確認"
+    local = moment.astimezone(JST)
+    return f"{local.year}年{local.month}月{local.day}日 {local.hour:02d}:{local.minute:02d}"
+
+
+def current_time(now: datetime | None) -> datetime:
+    if now is None:
+        return datetime.now(timezone.utc)
+    if now.tzinfo is None:
+        raise ValueError("PURCHASE_NOW_TIMEZONE_REQUIRED")
+    return now
 
 
 def validate_catalog(catalog: Mapping[str, Any]) -> None:
@@ -205,8 +274,54 @@ def eligible_link(o: Mapping[str, Any]) -> bool:
     return resolve_offer(o)["href"] is not None
 
 
+def product_offers(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> list[dict[str, Any]]:
+    return [o for o in catalog["offers"] if o["product_id"] == p["product_id"]]
+
+
+def purchasable_offer(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> dict[str, Any] | None:
+    return next((o for o in product_offers(p, catalog) if eligible_link(o)), None)
+
+
+def verified_offers(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> list[dict[str, Any]]:
+    return [o for o in product_offers(p, catalog) if o.get("identity_verified") is True]
+
+
+def media_allowed(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> bool:
+    """A Rakuten image block is an affiliate link, so it needs a matched, orderable seller.
+
+    Products the article itself describes as 販売先未確認 or 売り切れ get no
+    image link at all; the same offer data drives both decisions.
+    """
+    return purchasable_offer(p, catalog) is not None
+
+
+def price_expiry(o: Mapping[str, Any]) -> datetime | None:
+    checked, deadline = timestamp(o.get("checked_at")), timestamp(o.get("valid_until"))
+    if not checked or not deadline:
+        return None
+    return min(deadline, checked + MAX_PRICE_AGE)
+
+
+def price_expired(o: Mapping[str, Any], now: datetime) -> bool:
+    expiry = price_expiry(o)
+    checked, deadline = timestamp(o.get("checked_at")), timestamp(o.get("valid_until"))
+    return expiry is None or checked is None or deadline is None or deadline <= checked or now >= expiry
+
+
 def attrs(values: Mapping[str, object]) -> str:
     return "".join(f' {k}="{escape(str(v), quote=True)}"' for k, v in values.items())
+
+
+def internal_link(href: str, product_id: str, label: str) -> str:
+    return (
+        '<a href="'
+        + escape(href, quote=True)
+        + '" data-raos-product-id="'
+        + escape(product_id, quote=True)
+        + '" data-raos-link-purpose="internal_navigation">'
+        + escape(label)
+        + "</a>"
+    )
 
 
 def condition_product_links(
@@ -239,20 +354,20 @@ def condition_product_links(
 
 
 def route_links(p: Mapping[str, Any], *, current_slug: str | None = None) -> str:
-    """Stage links for one model; a guide passes its own slug to skip itself."""
+    """Stage links for one model as a headed list, not a navigation landmark."""
     links = [
-        f'<a href="/{slug}/#{p["anchor"]}">{label}</a>'
+        f'<li><a href="/{slug}/#{p["anchor"]}">{label}</a></li>'
         for label, slug in STAGES.values()
         if slug != current_slug
     ]
     if not links:
         return ""
     return (
-        '<nav class="ps-model-routes" aria-label="'
+        '<div class="ps-model-routes-block"><h4>ほかのガイドで'
         + escape(p["name"])
-        + 'の確認先">'
-        + " ".join(links)
-        + "</nav>"
+        + 'を確認</h4><ul class="ps-model-routes">'
+        + "".join(links)
+        + "</ul></div>"
     )
 
 
@@ -296,7 +411,7 @@ def cta(
         + '" rel="'
         + rel
         + '">'
-        + escape(o["seller"])
+        + escape(tidy(o["seller"]))
         + "で購入条件を見る</a>"
     )
     return link, {**binding, "href": resolved["href"]}
@@ -308,28 +423,19 @@ def offer_panel(
     article: Mapping[str, Any],
     snapshot: str,
     placement: str,
+    *,
+    now: datetime | None = None,
 ) -> tuple[str, list[dict[str, str]]]:
-    offers = [o for o in catalog["offers"] if o["product_id"] == p["product_id"]]
+    now = current_time(now)
+    offers = product_offers(p, catalog)
     bindings: list[dict[str, str]] = []
     parts = []
     for o in offers:
-        # This is an explicitly dated observation, never a claim of live/current price.
-        cells = " ／ ".join(
-            (
-                f"{LABELS[k]}：{o[k]:,}円"
-                if o.get(k) is not None
-                else f"{LABELS[k]}：未確認"
-            )
-            for k in LABELS
-        )
-        observed = timestamp(o["checked_at"])
-        day = (
-            observed.astimezone(timezone(timedelta(hours=9))).strftime(
-                "%Y年%m月%d日 %H:%M（日本時間）"
-            )
-            if observed
-            else "未確認"
-        )
+        checked = timestamp(o["checked_at"])
+        if checked is None:
+            raise ValueError("PURCHASE_OFFER_DATE_REQUIRED")
+        expired = price_expired(o, now)
+        expiry = price_expiry(o)
         data = {
             "data-ps-offer": o["offer_id"],
             "data-ps-checked-at": o["checked_at"],
@@ -340,17 +446,16 @@ def offer_panel(
             "data-ps-condition": o["condition"],
         }
         if article.get("purchase_normalization", True):
-            checked = timestamp(o["checked_at"])
-            if checked is None:
-                raise ValueError("PURCHASE_OFFER_DATE_REQUIRED")
             states = offer_states(o, checked)
-            states["price_state"] = "RECHECK_REQUIRED"
+            states["price_state"] = "EXPIRED" if expired else "RECHECK_REQUIRED"
             data.update(
                 {
                     "data-ps-" + key.replace("_", "-"): value
                     for key, value in states.items()
                 }
             )
+        else:
+            data["data-ps-price-state"] = "EXPIRED" if expired else "RECHECK_REQUIRED"
         for key in LABELS:
             if o.get(key) is not None:
                 data["data-ps-" + key.replace("_", "-")] = o[key]
@@ -358,52 +463,95 @@ def offer_panel(
             '<div class="ps-seller"'
             + attrs(data)
             + "><h4>"
-            + escape(o["seller"])
+            + escape(tidy(o["seller"]))
             + "</h4><p>"
-            + escape(o["variant"])
-            + "</p><p>"
-            + escape(cells)
+            + escape(tidy(o["variant"]))
             + "</p>"
         )
-        rows += '<p class="ps-price-status">確認時の販売条件です。現在価格の再確認が必要です。</p>'
+        # This is an explicitly dated observation, never a claim of live/current price.
+        if expired:
+            label = o.get("price_label")
+            rows += (
+                '<p class="ps-price-expired">'
+                + (
+                    escape(str(label))
+                    + "（"
+                    + escape(jp_datetime(expiry))
+                    + "まで）は終了しました。現在の価格は未確認です。"
+                    if label
+                    else "販売条件の期限切れ・再確認中（確認日 "
+                    + escape(jp_datetime(checked))
+                    + "、期限 "
+                    + escape(jp_datetime(expiry))
+                    + "）。現在の価格・送料は未確認です。"
+                )
+                + "</p>"
+            )
+        else:
+            cells = " ／ ".join(
+                (
+                    f"{LABELS[k]}：{o[k]:,}円"
+                    if o.get(k) is not None
+                    else f"{LABELS[k]}：未確認"
+                )
+                for k in LABELS
+            )
+            rows += (
+                "<p>"
+                + escape(cells)
+                + "（"
+                + escape(jp_datetime(expiry))
+                + "まで有効な確認値）</p>"
+                + '<p class="ps-price-status">確認時の販売条件です。現在価格の再確認が必要です。</p>'
+            )
         rows += (
             '<p class="ps-price-date">販売条件確認：<time datetime="'
             + escape(o["checked_at"])
             + '">'
-            + escape(day)
-            + "</time> ／ "
-            + escape(o.get("price_scope", "本体と記載した費目の範囲"))
+            + escape(jp_datetime(checked) + "（日本時間）")
+            + "</time>"
+            + ("（期限切れ）" if expired else "")
+            + "／"
+            + escape(tidy(o.get("price_scope", "本体と記載した費目の範囲")))
             + "</p>"
         )
         rows += (
             "<p>納期："
-            + escape(o.get("delivery") or "未確認")
-            + " ／ 保証："
-            + escape(o.get("warranty") or "未確認")
+            + escape(tidy(o.get("delivery") or "未確認"))
+            + "／保証："
+            + escape(tidy(o.get("warranty") or "未確認"))
             + "</p>"
         )
+        href = None
         if eligible_link(o):
             link, binding = cta(o, article, snapshot, placement)
             bindings.append(binding)
             rows += link
+            href = binding["href"]
         else:
             rows += (
                 '<p class="ps-unavailable">'
                 + escape(
-                    (
-                        "確認時は売り切れでした。現在の販売状態は、確認日時と販売先の案内を参照してください。"
-                        if o.get("state") == "SOLD_OUT"
-                        else o.get("unavailable_reason")
+                    tidy(
+                        o.get("unavailable_reason")
+                        or (
+                            "確認時は売り切れでした。現在の販売状態は、確認日時と販売先の案内を参照してください。"
+                            if o.get("state") == "SOLD_OUT"
+                            else "販売条件の確認が完了していないため、購入先としての案内を保留しています。"
+                        )
                     )
-                    or "販売条件の確認が完了していないため、購入先としての案内を保留しています。"
                 )
                 + "</p>"
             )
-        rows += (
-            '<p class="ps-source"><a href="'
-            + escape(o["source_url"], quote=True)
-            + '">販売条件の確認元</a></p></div>'
-        )
+        if href != o["source_url"]:
+            rows += (
+                '<p class="ps-source"><a href="'
+                + escape(o["source_url"], quote=True)
+                + '">販売条件の確認元：'
+                + escape(tidy(o["seller"]))
+                + "の商品ページ</a></p>"
+            )
+        rows += "</div>"
         parts.append(rows)
     if not parts:
         parts.append(
@@ -412,32 +560,80 @@ def offer_panel(
     return "".join(parts), bindings
 
 
-def research_panel(
-    p: Mapping[str, Any], catalog: Mapping[str, Any], *, show_next_check: bool = True
-) -> str:
-    rows = [
+def next_check_date(
+    issue: Mapping[str, Any], offers: list[dict[str, Any]], today: date
+) -> date:
+    """A planned check never sits in the past: it follows the latest offer deadline."""
+    planned = date.fromisoformat(issue["next_check_on"])
+    for o in offers:
+        deadline = timestamp(o.get("valid_until"))
+        if deadline is not None:
+            planned = max(planned, deadline.astimezone(JST).date() + timedelta(days=1))
+    if planned <= today:
+        planned = today + timedelta(days=1)
+    return planned
+
+
+def active_issues(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> list[dict[str, Any]]:
+    return [
         i
         for i in catalog["research_issues"]
         if i["product_id"] == p["product_id"] and i["status"] != "RESOLVED"
     ]
+
+
+def common_alternatives(
+    products: list[dict[str, Any]], catalog: Mapping[str, Any]
+) -> list[str]:
+    """Hold conditions shared by two or more candidates are stated once per article."""
+    counts: dict[str, int] = {}
+    for p in products:
+        for i in active_issues(p, catalog):
+            counts[i["alternative"]] = counts.get(i["alternative"], 0) + 1
+    return [text for text, count in counts.items() if count >= 2]
+
+
+def research_panel(
+    p: Mapping[str, Any],
+    catalog: Mapping[str, Any],
+    *,
+    show_next_check: bool = True,
+    now: datetime | None = None,
+    shared: list[str] | tuple[str, ...] = (),
+) -> str:
+    rows = active_issues(p, catalog)
     if not rows:
         return ""
-    return (
-        '<details class="ps-research"><summary>残る確認と、判断を保留する条件</summary>'
-        + "".join(
+    today = current_time(now).astimezone(JST).date()
+    offers = product_offers(p, catalog)
+    items = []
+    for i in rows:
+        item = (
             "<p><strong>"
             + escape(i["topic"])
             + "</strong>："
-            + escape(i["impact"])
-            + "</p><p>"
-            + escape(i["alternative"])
-            + '</p><p class="ps-source"><a href="'
-            + escape(i["target_url"], quote=True)
-            + '">確認先</a>'
-            + (" ／ 次回確認 " + escape(i["next_check_on"]) if show_next_check else "")
+            + escape(tidy(i["impact"]))
             + "</p>"
-            for i in rows
         )
+        if i["alternative"] not in shared:
+            item += "<p>" + escape(tidy(i["alternative"])) + "</p>"
+        item += (
+            '<p class="ps-source"><a href="'
+            + escape(i["target_url"], quote=True)
+            + '">'
+            + escape(i.get("target_label") or (i["topic"] + "の確認先"))
+            + "</a>"
+            + (
+                " ／ 次回確認 " + escape(jp_date(next_check_date(i, offers, today).isoformat()))
+                if show_next_check
+                else ""
+            )
+            + "</p>"
+        )
+        items.append(item)
+    return (
+        '<details class="ps-research"><summary>残る確認と、判断を保留する条件</summary>'
+        + "".join(items)
         + "</details>"
     )
 
@@ -475,8 +671,10 @@ def specification_table(
                 source = (
                     '<span class="ps-source"><a href="'
                     + escape(f["source_url"], quote=True)
-                    + '">確認元</a> ／ 仕様確認 '
-                    + escape(f["checked_at"])
+                    + '">'
+                    + escape(locator_label(f["locator"]))
+                    + "</a> ／ 仕様確認 "
+                    + escape(jp_date(f["checked_at"]))
                     + "</span>"
                 )
             cells.append(
@@ -485,7 +683,7 @@ def specification_table(
                 + '" data-ps-product="'
                 + p["product_id"]
                 + '">'
-                + escape(value)
+                + escape(tidy(value))
                 + source
                 + "</td>"
             )
@@ -505,6 +703,10 @@ def specification_table(
         + "".join(rows)
         + "</tbody></table></div>"
     )
+
+
+def locator_label(locator: str) -> str:
+    return locator.replace("既存公開記事の比較表に紐づく公式仕様", "公式仕様・製品情報")
 
 
 _SLOT_IDS = {"task-fit": "ps-task-fit", "hold-reasons": "ps-hold-reasons"}
@@ -560,20 +762,10 @@ def installation_context(
         caption="開扉時の寸法・必要な余白・使用水量。各欄に同じ型番の確認元と確認日を記載",
         with_sources=True,
     )
-    notes = "".join(
-        "<li><strong>"
-        + escape(p["name"])
-        + "</strong>："
-        + escape(p["caution"])
-        + "</li>"
-        for p in products
-    )
     return (
-        '<section id="ps-installation-context"><h2>設置条件の詳細と型番別の注意</h2><p>主表から移した項目です。本体寸法だけでは設置可否を判断せず、開扉時の寸法、周囲の余白、給排水・電源の条件を同じ型番の公表条件で確認してください。使用水量は機種ごとの公表条件つきの値で、同じ食器量・同じコースでの実測比較ではありません。</p>'
+        '<section id="ps-installation-context"><h2>設置条件の詳細</h2><p>主表から移した項目です。本体寸法だけでは設置可否を判断せず、開扉時の寸法、周囲の余白、給排水・電源の条件を同じ型番の公表条件で確認してください。使用水量は機種ごとの公表条件つきの値で、同じ食器量・同じコースでの実測比較ではありません。型番ごとの注意は上の商品カードに1回だけ記載しています。</p>'
         + table
-        + '<ul class="ps-installation-notes">'
-        + notes
-        + '</ul><p><a href="/dishwasher-installation-measurement/">置き場所を測る順番のガイドへ</a></p></section>'
+        + '<p><a href="/dishwasher-installation-measurement/">置き場所を測る順番のガイドへ</a></p></section>'
     )
 
 
@@ -593,8 +785,8 @@ INSTALLATION_LABELS = {
 def installation_reference_note(p: Mapping[str, Any]) -> str:
     """Static list of known and missing site-side references, readable without JS.
 
-    A missing reference is the site's gap, not the reader's missing input, so the
-    note names the model, the unresolved items and the official page to check.
+    A missing reference is the site's gap, not the reader's: the note names the
+    model, the items the official material does not give, and the page to check.
     """
     values = p.get("installation", {})
     known = [
@@ -616,9 +808,9 @@ def installation_reference_note(p: Mapping[str, Any]) -> str:
     )
     if unknown:
         note += (
-            "サイト側で基準が未確認の項目："
+            "公式資料で数値を確認できていない項目："
             + "、".join(unknown)
-            + "。この項目は数値照合の対象外で、利用者の未入力ではありません。"
+            + "。この項目は数値で照合できないため、設置場所の実測と公式資料で個別に確認してください。"
         )
     return (
         note
@@ -641,7 +833,18 @@ def preserved_details(template: str) -> str:
         ):
             if not any(parent is node for old in selected for parent in old.walk()):
                 selected.append(node)
-    result = "".join(n.html() for n in selected)
+    for node in selected:
+        # English section labels and the API credit are not part of the sources.
+        for label in node.find(tag="p", cls="section-number"):
+            label.remove()
+        for credit in node.find(tag="p", cls="raos-source-link"):
+            if any(
+                a.attrs.get("href") == "https://developers.rakuten.com/"
+                for a in credit.find(tag="a")
+            ):
+                credit.remove()
+    # Removing the English label leaves an indentation-only line behind; drop it.
+    result = re.sub(r"(?m)^[ \t]+$", "", "".join(n.html() for n in selected))
     # Evidence classifications stay in the data; no repeated badges in reader prose.
     result = re.sub(
         r'<span[^>]*class="raos-evidence-badge"[^>]*>.*?</span>', "", result
@@ -762,11 +965,90 @@ def render_product_media(
         )
         bindings.append({**binding, "href": source["href"]})
     parts.append(
-        "<figcaption>画像：楽天市場（"
-        + escape(media["shop_name"])
-        + "）。画像提供元の販売ページ。構成・送料・保証は未確認。</figcaption></figure>"
+        "<figcaption>広告リンク：楽天市場（"
+        + escape(tidy(media["shop_name"]))
+        + "）の販売ページへ進みます。構成・送料・保証は未確認。</figcaption></figure>"
     )
     return "".join(parts), bindings
+
+
+def condition_summary(
+    p: Mapping[str, Any],
+    article: Mapping[str, Any],
+    catalog: Mapping[str, Any],
+    now: datetime,
+) -> str:
+    """One line of decisive published values plus the next in-page action."""
+    labels = article.get("condition_fact_labels") or [
+        label for label in article["spec_labels"] if label != "選ぶ理由"
+    ][:3]
+    facts = {f["label"]: f for f in p["facts"]}
+    parts = [
+        re.sub(r"（.*）$", "", label) + "：" + tidy(facts[label]["text"])
+        for label in labels
+        if label in facts
+    ]
+    offer = purchasable_offer(p, catalog)
+    verified = verified_offers(p, catalog)
+    if offer:
+        if price_expired(offer, now):
+            parts.append(
+                "税込本体：確認値が期限切れのため再確認中（"
+                + jp_date(offer["checked_at"])
+                + "確認）"
+            )
+        else:
+            parts.append(
+                f"税込本体：{offer['price_yen']:,}円（{jp_date(offer['checked_at'])}確認）"
+                if offer.get("price_yen") is not None
+                else "税込本体：未確認"
+            )
+        action = internal_link("#ps-seller-" + p["anchor"], p["product_id"], "購入総額と販売先へ")
+    elif verified:
+        parts.append(
+            "確認した販売先は売り切れ・再入荷待ち（"
+            + jp_date(max(o["checked_at"] for o in verified))
+            + "確認）"
+        )
+        action = internal_link("#ps-seller-" + p["anchor"], p["product_id"], "販売状態と保留条件へ")
+    else:
+        parts.append("販売先未確認")
+        action = (
+            '<a href="' + escape(p["official_url"], quote=True) + '">公式仕様を見る</a>'
+        )
+    return (
+        '<p class="ps-condition-product"><a href="#'
+        + str(p["anchor"])
+        + '">'
+        + escape(str(p["name"]))
+        + '</a></p><p class="ps-condition-facts">'
+        + escape("／".join(parts))
+        + '</p><p class="ps-condition-links">'
+        + str(action)
+        + "</p>"
+    )
+
+
+def history_block(article: Mapping[str, Any]) -> str:
+    """Dated confirmation history and the editor line, shared by comparisons and guides."""
+    entries = article.get("history", [])
+    if not entries:
+        return EDITOR_LINE
+    return (
+        '<details class="ps-history"><summary>確認・更新履歴</summary><ul>'
+        + "".join(
+            '<li><time datetime="'
+            + escape(e["date"], quote=True)
+            + '">'
+            + escape(jp_date(e["date"]))
+            + "</time>："
+            + escape(tidy(e["text"]))
+            + "</li>"
+            for e in entries
+        )
+        + "</ul></details>"
+        + EDITOR_LINE
+    )
 
 
 def render_comparison(
@@ -775,7 +1057,10 @@ def render_comparison(
     template: str,
     snapshot: str,
     product_media: Mapping[str, Any] | None = None,
+    *,
+    now: datetime | None = None,
 ) -> tuple[str, list[dict[str, str]]]:
+    now = current_time(now)
     products = [
         next(p for p in catalog["products"] if p["product_id"] == pid)
         for pid in article["product_ids"]
@@ -793,13 +1078,13 @@ def render_comparison(
         root_attrs["data-ps-purpose-mode"] = "links"
         root_attrs["data-ps-budget-mode"] = "off"
     out = ['<div class="raos-editorial-v2 ps-article"' + attrs(root_attrs) + ">"]
-    out.append(
-        '<p class="ps-disclosure">この記事には広告・アフィリエイトリンクが含まれます。実機で使用した評価ではなく、公式資料から用途に合う条件を整理しています。</p>'
-    )
+    out.append('<p class="ps-disclosure">' + DISCLOSURE + "</p>")
     out.append(
         '<p class="ps-lead">'
         + escape(article["intro"])
-        + '</p><nav class="ps-toc" aria-label="記事の近道"><a href="#ps-choose">候補を絞る</a><a href="#ps-specs">仕様を比べる</a><a href="#ps-products">向く・向かない条件</a>'
+        + "</p>"
+        + BYLINE
+        + '<nav class="ps-toc" aria-label="記事の近道"><a href="#ps-choose">候補を絞る</a><a href="#ps-specs">仕様を比べる</a><a href="#ps-products">向く・向かない条件</a>'
         + ('<a href="#ps-installation-context">設置の詳細</a>' if main else "")
         + '<a href="#ps-offers">購入総額と販売先</a><a href="#ps-evidence">詳細・出典</a></nav>'
     )
@@ -831,30 +1116,24 @@ def render_comparison(
             next(p for p in products if p["product_id"] == pid)
             for pid in c["product_ids"]
         ]
-        names = "、".join(
-            '<a href="#' + p["anchor"] + '">' + escape(p["name"]) + "</a>"
-            if main
-            else escape(p["name"])
-            for p in chosen
-        )
-        out.append("<div><h3>" + escape(c["label"]) + "</h3><p>" + names + "</p>")
-        for pid in c["product_ids"]:
-            o = next(
-                (
-                    o
-                    for o in catalog["offers"]
-                    if o["product_id"] == pid and eligible_link(o)
-                ),
-                None,
+        out.append("<div><h3>" + escape(c["label"]) + "</h3>")
+        for p in chosen:
+            out.append(condition_summary(p, article, catalog, now))
+        if c.get("alternative"):
+            alternative = c["alternative"]
+            out.append(
+                '<p class="ps-note">'
+                + escape(tidy(alternative["text"]))
+                + '<a href="'
+                + escape(alternative["href"], quote=True)
+                + '">'
+                + escape(alternative["label"])
+                + "</a></p>"
             )
-            if o:
-                link, binding = cta(o, article, snapshot, "top_summary")
-                out.append(link)
-                bindings.append(binding)
         out.append("</div>")
     if main:
         out.append(
-            '</div><p class="ps-note">予算や用途の入力欄は設けていません。条件ごとの商品名から、その商品の理由・代償・販売条件へ進めます。JavaScriptなしでも、以下の仕様・販売条件・出典を比較できます。</p></section>'
+            '</div><p class="ps-note">条件ごとの商品名から、その商品の理由・代償・販売条件へ進めます。決め手の値は公表仕様と、確認日つきの販売条件です。</p></section>'
         )
     else:
         out.append(
@@ -869,7 +1148,7 @@ def render_comparison(
                     )
                 }
             )
-            + '></div><p class="ps-note">入力した条件や予算は保存・送信しません。購入総額に不足がある候補は「予算未判定」として残します。ポイントや条件付きクーポンを一律に差し引きません。</p><p>JavaScriptなしでも、以下の仕様・販売条件・出典を比較できます。予算は確認済み費目を合計して照合してください。</p></section>'
+            + '></div><p class="ps-note">条件や予算を入力した場合も、その内容は保存・送信しません。購入総額を確認できない候補は、理由を付けて残します。ポイントや条件付きクーポンを一律に差し引きません。</p></section>'
         )
     if decision_steps_placement == "after_conditions":
         out.append(decision_steps_html)
@@ -915,31 +1194,24 @@ def render_comparison(
     table = specification_table(article, products)
     cells = []
     for p in products:
-        o = next(
-            (
-                o
-                for o in catalog["offers"]
-                if o["product_id"] == p["product_id"] and eligible_link(o)
-            ),
-            None,
-        )
-        link = "販売先未確認"
-        if o:
-            link, binding = cta(o, article, snapshot, "comparison_table")
-            bindings.append(binding)
+        # The table sends readers to the dated seller panel; external purchase
+        # links only follow the reasons and the seller conditions.
+        if purchasable_offer(p, catalog):
+            link = internal_link(
+                "#ps-seller-" + p["anchor"], p["product_id"], "販売先と確認日を見る"
+            )
+        elif verified_offers(p, catalog):
+            link = internal_link(
+                "#ps-seller-" + p["anchor"],
+                p["product_id"],
+                "確認した販売先は売り切れ・再入荷待ち。確認日と販売条件を見る",
+            )
         else:
-            verified = [
-                offer
-                for offer in catalog["offers"]
-                if offer["product_id"] == p["product_id"]
-                and offer.get("identity_verified") is True
-            ]
-            if verified and all(offer.get("state") == "SOLD_OUT" for offer in verified):
-                link = (
-                    '<a href="#ps-seller-'
-                    + escape(p["anchor"], quote=True)
-                    + '">確認した販売先は売り切れ。確認日と販売条件を見る</a>'
-                )
+            link = (
+                '販売先未確認 ／ <a href="'
+                + escape(p["official_url"], quote=True)
+                + '">公式仕様を見る</a>'
+            )
         cells.append('<td data-ps-product="' + p["product_id"] + '">' + link + "</td>")
     table = table.replace(
         "</tbody>",
@@ -958,6 +1230,7 @@ def render_comparison(
     out.append(
         '<section id="ps-products"><h2>向く・向かない理由</h2><div class="ps-product-grid">'
     )
+    media_shown = False
     for p in products:
         out.append(
             '<article class="ps-product" id="'
@@ -976,57 +1249,67 @@ def render_comparison(
             + "</p>"
         )
         if product_media is not None:
-            photo, photo_bindings = render_product_media(
-                p, article, snapshot, product_media[p["product_id"]]
-            )
-            out.append(
-                '<div class="ps-product-media" data-ps-media-product="'
-                + escape(p["product_id"], quote=True)
-                + '"></div>'
-            )
-            bindings.extend(photo_bindings)
+            if media_allowed(p, catalog):
+                photo, photo_bindings = render_product_media(
+                    p, article, snapshot, product_media[p["product_id"]]
+                )
+                out.append(
+                    '<div class="ps-product-media" data-ps-media-product="'
+                    + escape(p["product_id"], quote=True)
+                    + '"></div>'
+                )
+                bindings.extend(photo_bindings)
+                media_shown = True
+            else:
+                out.append(MEDIA_WITHHELD)
         out.append(
             "<p>"
-            + escape(p["lead"])
+            + escape(tidy(p["lead"]))
             + "</p><h4>合いやすい条件</h4><ul>"
-            + "".join("<li>" + escape(x) + "</li>" for x in p["fit"])
+            + "".join("<li>" + escape(tidy(x)) + "</li>" for x in p["fit"])
             + "</ul><h4>別の候補も考えたい条件</h4><ul>"
-            + "".join("<li>" + escape(x) + "</li>" for x in p["avoid"])
+            + "".join("<li>" + escape(tidy(x)) + "</li>" for x in p["avoid"])
             + "</ul>"
         )
         if main:
             out.append(
                 '<p class="ps-product-caution">'
-                + escape(p["caution"])
-                + ' <a href="#ps-installation-context">設置条件の詳細へ</a></p>'
+                + escape(tidy(p["caution"]))
+                + '<a href="#ps-installation-context">設置条件の詳細へ</a></p>'
             )
         out.append('<p data-ps-product-budget role="status"></p>')
         if article["slug"] == MAIN_SLUG:
             out.append(route_links(p))
         out.append(
-            '<p><a href="#ps-seller-' + p["anchor"] + '">購入総額と販売先へ</a></p>'
+            "<p>"
+            + internal_link("#ps-seller-" + p["anchor"], p["product_id"], "購入総額と販売先へ")
+            + "</p>"
         )
-        o = next(
-            (
-                o
-                for o in catalog["offers"]
-                if o["product_id"] == p["product_id"] and eligible_link(o)
-            ),
-            None,
-        )
+        o = purchasable_offer(p, catalog)
         if o:
             link, binding = cta(o, article, snapshot, "product_card")
             out.append(link)
             bindings.append(binding)
         out.append("</article>")
-    out.append("</div></section>")
+    out.append("</div>")
+    if media_shown:
+        out.append(RAKUTEN_CREDIT)
+    out.append("</section>")
     if main:
         out.append(installation_context(article, products))
+    shared = common_alternatives(products, catalog)
     out.append(
-        '<section id="ps-offers"><h2>購入総額と販売先</h2><p>構成・送料・必須品・納期・保証を販売先ごとに確認します。異なる構成の価格を同じ商品価格として比べません。</p>'
+        '<section id="ps-offers"><h2>購入総額と販売先</h2><p>構成・送料・必須品・納期・保証を販売先ごとに確認します。異なる構成の価格を同じ商品価格として比べません。確認日から24時間、または販売先の期限までを価格の表示期限とし、期限後は価格を表示せず再確認中と示します。</p>'
+        + (
+            '<p class="ps-note">'
+            + "".join(escape(tidy(text)) for text in shared)
+            + "</p>"
+            if shared
+            else ""
+        )
     )
     for p in products:
-        panel, b = offer_panel(p, catalog, article, snapshot, "final_summary")
+        panel, b = offer_panel(p, catalog, article, snapshot, "final_summary", now=now)
         bindings.extend(b)
         out.append(
             '<section class="ps-product-offers" id="ps-seller-'
@@ -1036,18 +1319,13 @@ def render_comparison(
             + "><h3>"
             + escape(p["name"])
             + "</h3>"
-            + (
-                '<p class="ps-product-caution">'
-                + escape(p["caution"])
-                + ' <a href="#ps-installation-context">設置条件の詳細へ</a></p>'
-                if main
-                else ""
-            )
             + panel
             + '<p><a href="'
             + escape(p["official_url"], quote=True)
             + '">公式仕様を見る</a></p>'
-            + research_panel(p, catalog, show_next_check=not main)
+            + research_panel(
+                p, catalog, show_next_check=not main, now=now, shared=shared
+            )
             + "</section>"
         )
     out.append("</section>")
@@ -1076,13 +1354,9 @@ def render_comparison(
                 '<li><a href="'
                 + escape(f["source_url"], quote=True)
                 + '">'
-                + escape(
-                    f["locator"].replace(
-                        "既存公開記事の比較表に紐づく公式仕様", "公式仕様・製品情報"
-                    )
-                )
+                + escape(locator_label(f["locator"]))
                 + "</a> ／ 仕様確認 "
-                + escape(f["checked_at"])
+                + escape(jp_date(f["checked_at"]))
                 + "</li>"
             )
         out.append("</ul>")
@@ -1095,15 +1369,17 @@ def render_comparison(
         if any(n.attrs.get("id") == "under-3kg-caution-title" for n in caution.walk()):
             caution.attrs["id"] = "ps-flight-purchase-check"
             out.append(caution.html())
+    out.append(history_block(article))
     for note in article.get("historical_link_notes", []):
+        # Old bookmarks keep their ids as small footnotes, not as headed sections.
         out.append(
-            '<section id="'
+            '<aside class="ps-legacy-note" id="'
             + escape(note["id"], quote=True)
-            + '"><h2>'
+            + '"><p><strong>'
             + escape(note["title"])
-            + "</h2><p>"
-            + escape(note["text"])
-            + '</p><p><a href="#ps-specs">現在の比較候補と型番を確認する</a></p></section>'
+            + "</strong>："
+            + escape(tidy(note["text"]))
+            + '<a href="#ps-specs">現在の比較候補と型番を確認する</a></p></aside>'
         )
     for navigation in fragment(template).find(tag="nav"):
         if navigation.attrs.get("id") == "ks-article-nav":
@@ -1115,7 +1391,9 @@ def render_comparison(
     return "".join(out), bindings
 
 
-def legacy_source_notes(article: Mapping[str, Any], registry: Mapping[str, Any]) -> str:
+def legacy_source_notes(
+    article: Mapping[str, Any], registry: Mapping[str, Any], *, stage_label: str = ""
+) -> str:
     notes = article.get("legacy_source_notes", [])
     if not notes:
         return ""
@@ -1143,14 +1421,18 @@ def legacy_source_notes(article: Mapping[str, Any], registry: Mapping[str, Any])
             + '">'
             + escape(source["title"])
             + "</a>（"
-            + escape(fact["locator"])
+            + escape(tidy(fact["locator"]))
             + "）</li>"
         )
+    models = "・".join(groups)
     return (
         '<section id="guide-previous-models"><h2>以前掲載した機種の資料</h2>'
         "<details><summary>型番別の説明書・確認項目を開く</summary>"
-        "<p>次の型番をお使いの方は、該当する資料で条件を確認してください。"
-        "機種名や外観が似ていても、別の型番へ数値や手順を流用しないでください。</p>"
+        "<p>"
+        + escape(stage_label)
+        + "について以前掲載した"
+        + escape(models)
+        + "の資料です。機種名や外観が似ていても、別の型番へ数値や手順を流用しないでください。</p>"
         + "".join(
             "<h3>" + escape(model) + "</h3><ul>" + "".join(items) + "</ul>"
             for model, items in groups.items()
@@ -1159,59 +1441,197 @@ def legacy_source_notes(article: Mapping[str, Any], registry: Mapping[str, Any])
     )
 
 
+def summary_cell(p: Mapping[str, Any], stage: str, row: str) -> str:
+    value = p.get("guide_summary", {}).get(stage, {}).get(row)
+    return tidy(value) if value else "未確認"
+
+
+def guide_decision_table(stage: str, products: list[dict[str, Any]]) -> str:
+    """Four-model table under the first heading so the title question is answered at once."""
+    if stage == "installation":
+        rows: list[tuple[str, list[str]]] = []
+        dims, doors, gaps, weights = [], [], [], []
+        for p in products:
+            v = p.get("installation", {})
+
+            def mm(key: str) -> str:
+                return f"{v[key]:g}mm" if money(v.get(key)) else "未確認"
+
+            dims.append(f"{mm('width_mm')}×{mm('depth_mm')}×{mm('height_mm')}")
+            doors.append(f"奥行 {mm('door_depth_mm')}／高さ {mm('door_height_mm')}")
+            gaps.append(
+                f"上 {mm('above_mm')}／左右 {mm('left_mm')}・{mm('right_mm')}／後ろ {mm('rear_mm')}"
+            )
+            weights.append(summary_cell(p, stage, "質量"))
+        rows = [
+            ("本体寸法（幅×奥行×高さ）", dims),
+            ("扉を開いたとき", doors),
+            ("必要な余白", gaps),
+            ("質量", weights),
+        ]
+    else:
+        rows = [
+            (row, [summary_cell(p, stage, row) for p in products])
+            for row in GUIDE_TABLE_ROWS[stage]
+        ]
+    heads = "".join(
+        '<th scope="col" data-ps-product="'
+        + p["product_id"]
+        + '"><a href="#'
+        + p["anchor"]
+        + '">'
+        + escape(p["name"])
+        + "</a></th>"
+        for p in products
+    )
+    body = "".join(
+        '<tr><th scope="row">'
+        + escape(label)
+        + "</th>"
+        + "".join(
+            '<td data-ps-product="'
+            + p["product_id"]
+            + '"'
+            + (' data-ps-fact-state="UNKNOWN"' if cell == "未確認" else "")
+            + ">"
+            + escape(cell)
+            + "</td>"
+            for p, cell in zip(products, cells, strict=True)
+        )
+        + "</tr>"
+        for label, cells in rows
+    )
+    label = STAGES[stage][0]
+    return (
+        '<div class="ps-table-scroll" tabindex="0" role="region" aria-label="4機種の'
+        + escape(label, quote=True)
+        + 'の比較"><table class="ps-comparison ps-guide-table"><caption>4機種の'
+        + escape(label)
+        + "を決めるための表。値は下の機種別欄の出典から転記した公表条件で、同じ条件での実測比較ではありません。"
+        + '</caption><thead><tr><th scope="col">比較項目</th>'
+        + heads
+        + "</tr></thead><tbody>"
+        + body
+        + "</tbody></table></div>"
+    )
+
+
+def shared_guide_facts(
+    stage: str, products: list[dict[str, Any]]
+) -> tuple[str, set[tuple[str, str]]]:
+    """Identical official conditions shared by several models are stated once."""
+    groups: dict[tuple[str, str], list[tuple[dict[str, Any], dict[str, Any]]]] = {}
+    for p in products:
+        for f in p.get("guide_facts", []):
+            if f["field"] in GUIDE_REQUIREMENTS[stage]:
+                groups.setdefault((f["field"], tidy(f["text"])), []).append((p, f))
+    shared = {key: rows for key, rows in groups.items() if len(rows) >= 2}
+    if not shared:
+        return "", set()
+    parts = [
+        '<section class="ps-guide-shared" id="guide-'
+        + stage
+        + '-shared"><h3>複数機種で共通の条件</h3>'
+    ]
+    for (field, text), rows in shared.items():
+        parts.append(
+            "<p><strong>対象："
+            + escape("・".join(p["name"] for p, _ in rows))
+            + "</strong></p><p>"
+            + escape(text)
+            + "</p>"
+            + "".join(
+                '<p class="ps-source">'
+                + escape(p["exact_model"])
+                + '：<a href="'
+                + escape(f["source_url"], quote=True)
+                + '">'
+                + escape(locator_label(f["locator"]))
+                + "</a> ／ 仕様確認 "
+                + escape(jp_date(f["checked_at"]))
+                + "</p>"
+                for p, f in rows
+            )
+        )
+    parts.append("</section>")
+    return "".join(parts), set(shared)
+
+
 def render_guide(
     article: Mapping[str, Any],
     catalog: Mapping[str, Any],
     guide_registry: Mapping[str, Any],
     template: str,
+    *,
+    now: datetime | None = None,
 ) -> str:
+    now = current_time(now)
     stage = next(k for k, (_, slug) in STAGES.items() if slug == article["slug"])
+    stage_label = STAGES[stage][0]
     dish = next(a for a in catalog["articles"] if a["slug"] == MAIN_SLUG)["product_ids"]
     products = [p for p in catalog["products"] if p["product_id"] in dish]
+    steps_id = (
+        "guide-measurement-steps" if stage == "installation" else f"guide-{stage}-steps"
+    )
+    first_id = "guide-cost-scope" if stage == "cost" else steps_id
     out = [
-        '<div class="raos-editorial-v2 ps-article" data-raos-purchase-support="v1"><nav class="ps-toc" id="ks-article-nav"><a href="/kitchen/">食洗機の選び方</a><a href="/'
-        + MAIN_SLUG
-        + '/">4機種の比較に戻る</a></nav><p class="ps-lead">比較記事と同じ機種で、'
-        + STAGES[stage][0]
-        + "を確認できます。型番と使う条件をそろえて照合してください。</p>"
-    ]
-    if article.get("reader_intro"):
-        out[-1] = (
-            out[-1].split('<p class="ps-lead">')[0]
-            + '<p class="ps-lead">'
-            + escape(article["reader_intro"])
-            + "</p>"
+        '<div class="raos-editorial-v2 ps-article" data-raos-purchase-support="v1">'
+        '<nav class="ps-toc" id="ks-article-nav" aria-label="ガイドの近道"><a href="/kitchen/">食洗機の選び方</a><a href="#'
+        + first_id
+        + '">4機種の比較表へ</a></nav><p class="ps-lead">'
+        + escape(
+            article.get("reader_intro")
+            or "比較記事と同じ機種で、"
+            + stage_label
+            + "を確認できます。型番と使う条件をそろえて照合してください。"
         )
+        + "</p>"
+        + BYLINE
+    ]
     # FD-09: the model index follows the lead regardless of a reader_intro override.
     out.append(
-        '<nav class="ps-model-index" aria-label="機種別の手順"><p>お持ちの機種、または検討中の機種の手順へ直接進めます。購入は必須ではありません。</p>'
+        '<nav class="ps-model-index" aria-label="機種別の手順"><p>'
+        + escape(stage_label)
+        + "を確認する機種を選ぶ：</p>"
         + "".join(
             '<a href="#' + p["anchor"] + '">' + escape(p["name"]) + "</a>"
             for p in products
         )
         + "</nav>"
     )
+    table = guide_decision_table(stage, products)
     if article.get("reader_steps"):
         steps = article["reader_steps"]
         out.append(
             '<section id="'
-            + (
-                "guide-measurement-steps"
-                if stage == "installation"
-                else f"guide-{stage}-steps"
-            )
+            + steps_id
             + '"><h2>'
             + escape(steps["title"])
-            + "</h2><ol>"
+            + "</h2>"
+            + table
+            + "<ol>"
             + "".join(
                 f'<li id="guide-{stage}-step-{index}">' + escape(step) + "</li>"
                 for index, step in enumerate(steps["steps"], start=1)
             )
             + "</ol></section>"
         )
+    if stage == "installation":
+        out.append(
+            '<p class="ps-installation-safety">本体寸法・開扉時・必要余白は別々に確保します。寸法の数値照合だけでは、食器の収納・性能や安全な設置を保証しません。台の強度・水平、排水、電源・アース、熱源との距離も別途確認してください。</p>'
+        )
     if stage == "cost":
         cost_article = next(
             a for a in guide_registry["articles"] if a["article_id"] == article["slug"]
+        )
+        out.append(
+            '<section id="guide-cost-scope"><h2>4機種で計算できる費目と、できない費目</h2>'
+            + "".join(
+                "<p>" + escape(tidy(text)) + "</p>"
+                for text in article.get("scope_notes", [])
+            )
+            + table
+            + "</section>"
         )
         out.append(
             render_cost_profiles(
@@ -1219,12 +1639,14 @@ def render_guide(
             )
         )
         out.append(
-            '<section id="build-formula"><h2>確認できた費目の小計と、必要な入力</h2><p>電気代はWh÷1000×電気単価、上下水道代はL÷1000×上下水道の従量単価、洗剤代は適用する一回分の量から計算します。未確認の費目はゼロ円にしません。すべての費目がそろっても、請求総額や手洗いからの節約額を示すものではありません。</p><p>基本料金・調整額・料金段階、使用回数、使うコースは家庭ごとに異なります。定格W×運転時間やタンク容量を一回の消費量へ代用しません。</p><details><summary>仮の単価による記入例</summary><p>入力例に限り、電気30円/kWh・上下水道300円/m³・洗剤5円/回・月30回と仮定します。230Wh・2.5Lの公表条件なら、電気6.9円＋上下水道0.75円＋洗剤5円＝12.65円/回、30回で379.5円です。これらの単価は相場や推奨値ではなく、自宅の金額へ置き換える説明用です。</p></details></section>'
+            '<section id="build-formula"><h2>確認できた費目の小計と、必要な入力</h2><p>電気代はWh÷1000×電気単価、上下水道代はL÷1000×上下水道の従量単価、洗剤代は購入価格÷内容量（g）×1回分の量（g）で計算します。未確認の費目はゼロ円にしません。すべての費目がそろっても、請求総額や手洗いからの節約額を示すものではありません。</p><p>基本料金・調整額・料金段階、使用回数、使うコースは家庭ごとに異なります。定格W×運転時間やタンク容量を一回の消費量へ代用しません。</p><details><summary>仮の単価による記入例</summary><p>入力例に限り、電気30円/kWh・上下水道300円/m³・洗剤5円/回・月30回と仮定します。230Wh・2.5Lの公表条件なら、電気6.9円＋上下水道0.75円＋洗剤5円＝12.65円/回、30回で379.5円です。洗剤の1回分は、例えば600gで660円の粉末を1回4g使う場合、660÷600×4＝4.4円/回のように換算します。これらの単価や価格は相場や推奨値ではなく、自宅の金額へ置き換える説明用です。</p></details></section>'
         )
     if stage != "cost":
         out.append(
             '<section id="guide-evidence" aria-labelledby="guide-evidence-title"><h2 id="guide-evidence-title">機種別の条件と確認元</h2>'
         )
+    shared_html, shared_keys = shared_guide_facts(stage, products)
+    out.append(shared_html)
     model_heading = "h2" if stage == "cost" else "h3"
     for p in products:
         out.append(
@@ -1235,7 +1657,7 @@ def render_guide(
             + ">"
             + escape(p["name"])
             + "："
-            + STAGES[stage][0]
+            + stage_label
             + "</"
             + model_heading
             + "><p>"
@@ -1248,25 +1670,49 @@ def render_guide(
             for f in p.get("guide_facts", [])
             if f["field"] == field
         ]
+        shared_here = False
         for f in selected:
+            if (f["field"], tidy(f["text"])) in shared_keys:
+                shared_here = True
+                continue
             out.append(
                 "<p>"
-                + escape(f["text"])
+                + escape(tidy(f["text"]))
                 + '</p><p class="ps-source"><a href="'
                 + escape(f["source_url"], quote=True)
                 + '">'
-                + escape(
-                    f["locator"].replace(
-                        "既存公開記事の比較表に紐づく公式仕様", "公式仕様・製品情報"
-                    )
-                )
+                + escape(locator_label(f["locator"]))
                 + "</a> ／ 仕様確認 "
-                + escape(f["checked_at"])
+                + escape(jp_date(f["checked_at"]))
                 + "</p>"
+            )
+        if shared_here:
+            out.append(
+                '<p>複数機種で共通の条件は<a href="#guide-'
+                + stage
+                + '-shared">上の共通欄</a>を参照してください。</p>'
             )
         if not selected:
             out.append(
                 "<p>この型番に適用できる具体条件を、公式資料で追加確認しています。確認できるまで他機種の数値や手順は使いません。</p>"
+            )
+        if stage == "water":
+            out.append(
+                '<p>排水ホース・アースの条件は<a href="/dishwasher-installation-measurement/#'
+                + p["anchor"]
+                + '">設置ガイドの'
+                + escape(p["name"])
+                + "の欄</a>に、同じ型番の確認元つきで掲載しています。</p>"
+            )
+        if stage == "cost":
+            out.append(
+                "<p>洗剤：1回分の目安は"
+                + escape(summary_cell(p, "cost", "洗剤の1回分"))
+                + '（<a href="/dishwasher-detergent-guide/#'
+                + p["anchor"]
+                + '">洗剤ガイドの'
+                + escape(p["name"])
+                + "の欄</a>）。</p>"
             )
         if stage == "installation":
             out.append(
@@ -1282,7 +1728,7 @@ def render_guide(
                 )
                 + '><div class="ps-installation-controls" hidden></div>'
                 + installation_reference_note(p)
-                + '<p class="ps-installation-safety">本体寸法・開扉時・必要余白は別々に確保します。寸法の数値照合だけでは、食器の収納・性能や安全な設置を保証しません。台の強度・水平、排水、電源・アース、熱源との距離も別途確認してください。</p></div>'
+                + "</div>"
             )
         if stage == "cost":
             out.append(
@@ -1296,11 +1742,9 @@ def render_guide(
             + MAIN_SLUG
             + "/#"
             + p["anchor"]
-            + '">比較記事のこの機種の説明へ</a> ／ <a href="/'
-            + MAIN_SLUG
-            + "/#ps-seller-"
-            + p["anchor"]
-            + '">この機種の購入総額と販売先</a></p></section>'
+            + '">比較記事の'
+            + escape(p["name"])
+            + "の欄へ</a></p></section>"
         )
     if stage != "cost":
         out.append("</section>")
@@ -1323,11 +1767,25 @@ def render_guide(
             for n in fragment(approved["html"]).walk()
             if n.attrs.get("id") == "guide-evidence"
         )
-        out.append(source_section.html())
+        out.append(
+            re.sub(
+                r"確認日：(\d{4}-\d{2}-\d{2})",
+                lambda m: "確認日：" + jp_date(m.group(1)),
+                tidy(source_section.html()),
+            )
+        )
     out.append(
-        '<section id="reader-unknowns"><h2>実機での確認状況</h2><p>実機使用時の静音性、収納のしやすさ、洗浄・乾燥の実感、耐久性は確認していません。</p></section>'
+        '<section id="reader-unknowns"><h2>実機での確認状況</h2><p>'
+        + escape(
+            tidy(
+                article.get("reader_unknowns_note")
+                or "実機使用時の静音性、収納のしやすさ、洗浄・乾燥の実感、耐久性は確認していません。"
+            )
+        )
+        + "</p></section>"
     )
-    out.append(legacy_source_notes(article, guide_registry))
+    out.append(legacy_source_notes(article, guide_registry, stage_label=stage_label))
+    out.append(history_block(article))
     for section in fragment(template).find(tag="section"):
         if section.attrs.get("id") == "ks-next-read":
             out.append(section.html())
@@ -1442,13 +1900,71 @@ def add_compatibility_anchors(
     )
 
 
+def render_hub(
+    article: Mapping[str, Any], catalog: Mapping[str, Any], template: str
+) -> str:
+    """The category hub keeps the shared hub skeleton; only the condition list is generated."""
+    dish = next(x for x in catalog["articles"] if x["slug"] == MAIN_SLUG)
+    hub_template = fragment(template)
+    roots = [n for n in hub_template.children if isinstance(n, Element) and n.tag]
+    if len(roots) != 1 or not roots[0].has("ks-directory"):
+        raise ValueError("PURCHASE_HUB_ROOT_INVALID")
+    root = roots[0]
+    hub_sections = {node.attrs.get("id"): node for node in root.find(tag="section")}
+    for identity in ("kitchen-start", "kitchen-axes", "choose", "compare", "purchase-checks"):
+        if identity not in hub_sections:
+            raise ValueError("PURCHASE_HUB_SECTION_MISSING")
+    navs = {node.attrs.get("aria-label"): node for node in root.find(tag="nav")}
+    for label in ("このサイトの入口", "このページの読み方", "ほかの商品カテゴリ", "編集方針"):
+        if label not in navs:
+            raise ValueError("PURCHASE_HUB_NAV_MISSING")
+    if len(root.find(tag="p", cls="ks-reader-note")) != 1:
+        raise ValueError("PURCHASE_HUB_NOTE_MISSING")
+    visuals = root.find(tag="figure", cls="ks-category-visual")
+    if len(visuals) != 1:
+        raise ValueError("PURCHASE_HUB_VISUAL_MISSING")
+    for visual_image in visuals[0].find(tag="img"):
+        # wp_kses_post removes this hint from normal post content.
+        visual_image.attrs.pop("decoding", None)
+    conditions = "".join(
+        "<li>"
+        + escape(c["label"])
+        + "："
+        + condition_product_links(c, catalog["products"], MAIN_SLUG)
+        + "</li>"
+        for c in dish["conditions"]
+    )
+    choose = hub_sections["choose"]
+    choose.children = []
+    choose.append(
+        block(
+            "<div><h2>条件から候補を見る</h2><p>条件に合う機種の説明へ直接進めます。リンク先は広告リンクを含む比較記事です。設置・給排水・費用などの作業別ガイドは、下の記事一覧から確かめたい作業で選べます。</p><ul>"
+            + conditions
+            + '</ul><p><a href="/'
+            + MAIN_SLUG
+            + '/#ps-specs">決め手になる比較表（4機種）</a></p><p>比較の中心はSOLOTA・ラクアmini color・SS-MA251・NP-TSP1です。mini Plusはmini colorと別の型番として扱います。</p></div>'
+        )
+    )
+    inner = choose.children[0]
+    if not isinstance(inner, Element):
+        raise ValueError("PURCHASE_HUB_CHOOSE_INVALID")
+    choose.children = list(inner.children)
+    for child in choose.children:
+        if isinstance(child, Element):
+            child.parent = choose
+    return root.html()
+
+
 def compile_articles(
     catalog: Mapping[str, Any],
     templates: Mapping[str, str],
     guide_registry: Mapping[str, Any],
     product_media: Mapping[str, Any] | None = None,
+    *,
+    now: datetime | None = None,
 ) -> tuple[dict[str, str], dict[str, Any]]:
     validate_catalog(catalog)
+    now = current_time(now)
     outputs = {}
     runtime: dict[str, Any] = {
         "schema": "RAOS_PURCHASE_ARTICLE_RUNTIME_V1",
@@ -1466,55 +1982,22 @@ def compile_articles(
         display_media: dict[str, str] = {}
         if a["kind"] == "comparison":
             html, bindings = render_comparison(
-                a, catalog, template, snapshot, product_media
+                a, catalog, template, snapshot, product_media, now=now
             )
             if product_media is not None:
                 for pid in a["product_ids"]:
                     product = next(
                         p for p in catalog["products"] if p["product_id"] == pid
                     )
+                    if not media_allowed(product, catalog):
+                        continue
                     display_media[pid], _ = render_product_media(
                         product, a, snapshot, product_media[pid]
                     )
         elif a["kind"] == "guide":
-            html = render_guide(a, catalog, guide_registry, template)
+            html = render_guide(a, catalog, guide_registry, template, now=now)
         elif a["kind"] == "hub":
-            dish = next(x for x in catalog["articles"] if x["slug"] == MAIN_SLUG)
-            hub_template = fragment(template)
-            hub_sections = {
-                node.attrs.get("id"): node
-                for node in hub_template.find(tag="section")
-            }
-            for identity in ("kitchen-start", "kitchen-axes", "compare", "purchase-checks"):
-                if identity not in hub_sections:
-                    raise ValueError("PURCHASE_HUB_SECTION_MISSING")
-            visuals = hub_template.find(tag="figure", cls="ks-category-visual")
-            if len(visuals) != 1:
-                raise ValueError("PURCHASE_HUB_VISUAL_MISSING")
-            for visual_image in visuals[0].find(tag="img"):
-                # wp_kses_post removes this hint from normal post content.
-                visual_image.attrs.pop("decoding", None)
-            conditions = "".join(
-                "<li>"
-                + escape(c["label"])
-                + "："
-                + condition_product_links(c, catalog["products"], MAIN_SLUG)
-                + "</li>"
-                for c in dish["conditions"]
-            )
-            html = (
-                '<div class="ps-article">'
-                + hub_sections["kitchen-start"].html()
-                + hub_sections["kitchen-axes"].html()
-                + '<p class="ps-lead">候補を比べたい方は4機種の比較へ。設置や給水、購入後の手入れを確かめたい方は、該当する機種のガイドへ進めます。</p><section id="choose"><h2>条件から候補を見る</h2><ul>'
-                + conditions
-                + '</ul><p><a href="/'
-                + MAIN_SLUG
-                + '/#ps-specs">4機種の違いと、毎回の作業を比較する</a></p></section>'
-                + hub_sections["compare"].html()
-                + hub_sections["purchase-checks"].html()
-                + '<p>比較の中心はSOLOTA・ラクアmini color・SS-MA251・NP-TSP1です。mini Plusはmini colorと別の型番として扱います。</p></div>'
-            )
+            html = render_hub(a, catalog, template)
         else:
             html = template
         if a["kind"] != "policy":

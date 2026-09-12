@@ -13,9 +13,22 @@
   ],
   "required_text": [],
   "keep_existing_fragments": true,
-  "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/travel/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">スーツケースの選び方・記事一覧</a><a href=\"#blk-suitcase-007-title\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"/travel/#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
+  "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/travel/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">スーツケースの選び方・記事一覧</a><a href=\"#blk-suitcase-007-title\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
   "next_html": "<section id=\"ks-next-read\" aria-labelledby=\"ks-next-read-title\" style=\"margin:32px 0;padding:24px;border-top:2px solid #1b1b18;background:#faf9f6;line-height:1.85;\"><h2 id=\"ks-next-read-title\">残っている疑問から、次の確認へ</h2><div class=\"ks-route-links\"><a href=\"/lightweight-carry-on-suitcase-under-3kg/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">30L以上・3kg以下のスーツケース比較</a><a href=\"/front-open-carry-on-suitcase-with-stopper/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">前開き・ストッパー付きスーツケース比較</a></div><p>記事ごとに対象機種が異なります。別機種の数値や手順を流用せず、必要な確認だけを選んで読めます。</p><a href=\"/travel/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">スーツケース選びの全体像に戻る</a></section>",
-  "replacements": [],
+  "replacements": [
+    {
+      "old": "aside class=\"raos-caution purchase-caution\"",
+      "new": "aside id=\"purchase-checks\" class=\"raos-caution purchase-caution\"",
+      "max_count": 1,
+      "exclusive": true
+    },
+    {
+      "old": "href=\"/travel/#purchase-checks\"",
+      "new": "href=\"#purchase-checks\"",
+      "max_count": 1,
+      "exclusive": true
+    }
+  ],
   "text_edits": [
     {
       "old": "START HERE",
@@ -101,6 +114,41 @@
       "old": "この3モデルで軽さを優先するならクレスタ、開き方を使い分けたいならディフェレンス、拡張しない容量を重視するならマックスパス4。候補が決まったら、下のリンクで好みの色・送料込みの価格・出発日までに届くかを確認しましょう。",
       "new": "購入する型番と色をそろえ、送料を含む支払額・出発日までに受け取れるか・返品条件を確認します。以下は楽天市場へのリンクです。公式通販の条件は後の「公式通販で、型番・色と購入条件を確認する」にまとめています。販売店ごとの条件を確かめて選びましょう。",
       "max_count": 1
+    },
+    {
+      "old": "最終確認日",
+      "new": "商品仕様の確認日",
+      "max_count": 1
+    },
+    {
+      "old": "14インチPCや小物を前面から取り出したい人",
+      "new": "14インチまでのPC（公式仕様のPC収納可能サイズ：幅33×高さ24×奥行2.5cm）や小物を前面から取り出したい人",
+      "max_count": 1
+    },
+    {
+      "old": "さらに本体を軽くしたい方は",
+      "new": "候補を変えたい場合は、",
+      "max_count": 1
+    },
+    {
+      "old": "30L以上・3kg以下の4モデル比較",
+      "new": "3kg以下の軽量モデル比較",
+      "max_count": 1
+    },
+    {
+      "old": "へ。開き方を詳しく選びたい方は",
+      "new": "か",
+      "max_count": 1
+    },
+    {
+      "old": "前開きとストッパー付きモデルの比較",
+      "new": "前開き・ストッパー付き比較",
+      "max_count": 1
+    },
+    {
+      "old": "をご覧ください。",
+      "new": "へ。",
+      "max_count": 1
     }
   ],
   "editorial_additions": [
@@ -140,6 +188,34 @@
           "url": "https://store.ace.jp/shop/pages/new_proteca_warranty.aspx",
           "checked_on": "2026-09-11",
           "locator": "対象色の商品コード・容量、国内送料・保証条件の該当欄"
+        }
+      ]
+    },
+    {
+      "id": "rakuten-developers-attribution-note",
+      "tag": "p",
+      "target_id": "blk-suitcase-016-title",
+      "position": "after_header",
+      "html": "<p id=\"rakuten-developers-attribution-note\" class=\"table-note\">一覧の末尾にある「Supported by Rakuten Developers」は、商品情報の取得にRakuten Developers（楽天ウェブサービス）のAPIを利用していることの表示で、出典ではありません。</p>",
+      "sources": [
+        {
+          "url": "https://developers.rakuten.com/",
+          "checked_on": "2026-09-12",
+          "locator": "商品情報APIの提供元（記事内クレジット表示のリンク先。到達を確認）"
+        }
+      ]
+    },
+    {
+      "id": "maxpass4-pc-storage-spec",
+      "tag": "p",
+      "target_id": "blk-suitcase-014-title",
+      "position": "before_section",
+      "html": "<p id=\"maxpass4-pc-storage-spec\" class=\"table-note\">マックスパス4 01471のPC収納可能サイズは、<a href=\"https://store.ace.jp/shop/g/g01471-02/\">エース公式通販の商品ページ</a>で14.0インチ（幅33×高さ24×奥行2.5cm）と案内されています。<span class=\"raos-evidence-badge\" data-raos-evidence-level=\"A\">公式仕様</span>2026年9月12日確認。ケースに入れた状態のPCの実寸が収納部に収まるかは、購入前に別途確かめてください。</p>",
+      "sources": [
+        {
+          "url": "https://store.ace.jp/shop/g/g01471-02/",
+          "checked_on": "2026-09-12",
+          "locator": "商品仕様欄「PC収納可能サイズ：14.0インチ(W33×H24×D2.5cm)」"
         }
       ]
     }
