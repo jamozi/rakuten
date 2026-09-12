@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "cc266ebccf3a6667fc47bffc784df52c0b93785da296e03bc9dbbeabb23ebd94",
+          "sha256": "621807827d7d7a69b353c711d5eeef3113b1e11c0c2e61bbe106a591d510e79a",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -1962,7 +1962,7 @@
       "outputs": [
         {
           "bytes": 93609,
-          "sha256": "6b8b2ec508c64c8510bfe026d775364f39ebe7bb7662ba750a5080e420c88d09",
+          "sha256": "6664b84e2bb756236ed03e46cd421fec7a2b05a0fc2072fea3036f37e18b540f",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
@@ -2011,8 +2011,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html"
         },
         {
-          "bytes": 7491,
-          "sha256": "fa823fecc4f2c8ea0fdfced26bab38d9e8ca564489485e4aa17f06f73137b0c1",
+          "bytes": 7275,
+          "sha256": "b6ad6dd309a9d24d358f69b8ff742a27625c45aa13b6f4ff25147736a34c130d",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/kitchen.html"
         },
         {
@@ -26735,7 +26735,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "5928d4640440be5f5337f1c93189c2986a637a7fa6a74322deb0367929ab0dd7",
+          "sha256": "6ad4e844bcb741dae65a02ed2d9180be06991e0dc6846b0109cae064e6f66ad8",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26966,7 +26966,7 @@
       "outputs": [
         {
           "bytes": 81278,
-          "sha256": "963d5ebc7b3171d45e65f44f00705590198408708c4cedac3e513aa44c999b3a",
+          "sha256": "029b17f2d3ef432942e8eefe44d31197a9b1cf318bc43da1cb6b3affb6c71b99",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29728,7 +29728,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "de32861c09948c4d4f44c1e5bff3853b4d11d8e4bca340093a3d49e1f307232e",
+          "sha256": "f4828448ad14b2c2238b1f4d357c668a01eaba53274109d581631ecbfee3bc98",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30585,7 +30585,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "7843345e0979109de6345a891c3250d4b55ec9c7eafd406431a8c6e91c96fc61",
+          "sha256": "62689e22cf9bc45c8b04fa2030f7ab025c1b5af4911c26374e8fdefaad5173f1",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
