@@ -279,13 +279,24 @@ for (const configuration of [
 
 const preexisting = runScenario({
   existingGtag: true,
+  existingDataLayer: [['config', 'G-ABCDEF12']],
   providers: { cookieYes: true, wpConsent: true, siteKit: true },
 });
 assert.equal(preexisting.document.replacements.length, 0);
-assert.equal(preexisting.window.dataLayer.length, 0);
+assert.equal(preexisting.window.dataLayer.length, 1);
 assert.equal(preexisting.window['ga-disable-G-ABCDEF12'], true);
 assert.equal(preexisting.document.cookies.has('_ga'), false);
 assert.equal(preexisting.document.cookies.has('_ga_CONTAINER'), false);
+
+// Site Kit's consent-mode stub (gtag defined, only consent commands queued, no loader) is replaced.
+const siteKitStub = runScenario({
+  existingGtag: true,
+  existingDataLayer: [['consent', 'default', { analytics_storage: 'denied', wait_for_update: 2000 }]],
+  providers: { cookieYes: true, wpConsent: true, siteKit: true },
+});
+assert.equal(siteKitStub.document.replacements.length, 1);
+assert.equal(Array.from(siteKitStub.window.dataLayer[0])[0], 'consent');
+assert.equal(siteKitStub.window.gtag.raosConsentGate, true);
 
 const unownedQueue = runScenario({
   existingDataLayer: [['event', 'unreviewed-command']],

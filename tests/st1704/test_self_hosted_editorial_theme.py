@@ -1354,7 +1354,9 @@ def test_consent_defaults_are_opt_in_and_global() -> None:
         "window.location.reload()",
         "analyticsCookiePattern",
         "parsed.search !== `?id=${measurementId}`",
-        "typeof window.gtag !== 'undefined'",
+        "typeof window.gtag !== 'undefined' && !consentModeStubOnly()",
+        "function consentModeStubOnly()",
+        "entry[0] === 'consent'",
         "allow_google_signals: false",
         "allow_ad_personalization_signals: false",
     ):

@@ -109,6 +109,27 @@
     return { gate, measurementId, source: parsed.href, purchaseProfile, purchaseConfig };
   }
 
+  // Site Kit's consent mode defines a global gtag() that only queues consent
+  // commands before any loader exists. That stub is replaced by the owned gtag;
+  // any other pre-existing executable command keeps the gate closed.
+  function consentModeStubOnly() {
+    if (!window._googlesitekitConsents) {
+      return false;
+    }
+    if (
+      typeof document.querySelector === 'function' &&
+      document.querySelector('script[src*="googletagmanager.com/gtag/js"]')
+    ) {
+      return false;
+    }
+    if (!Array.isArray(window.dataLayer)) {
+      return false;
+    }
+    return window.dataLayer.every(
+      (entry) => entry && entry.length > 0 && entry[0] === 'consent'
+    );
+  }
+
   function activate() {
     if (activated) {
       return true;
@@ -120,7 +141,7 @@
     if (!configuration) {
       return false;
     }
-    if (typeof window.gtag !== 'undefined') {
+    if (typeof window.gtag !== 'undefined' && !consentModeStubOnly()) {
       window[`ga-disable-${configuration.measurementId}`] = true;
       return false;
     }
