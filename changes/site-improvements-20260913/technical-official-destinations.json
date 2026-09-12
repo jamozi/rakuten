@@ -1,0 +1,308 @@
+[
+  {
+    "product_id": "PRD-PANASONIC-NP-TMLK1",
+    "official_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
+    "redirect_statuses": [],
+    "title": "NP-TMLK1 仕様・詳細情報 - 食器洗い乾燥機 | 食器洗い乾燥機（食洗機） | Panasonic",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+    "official_url": "https://www.thanko.jp/view/item/000000004715",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.thanko.jp/view/item/000000004715",
+    "redirect_statuses": [],
+    "title": "タンク式食洗機「ラクアmini color」 | 【公式】サンコー通販サイト",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-SIROCA-SS-MA251",
+    "official_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
+    "redirect_statuses": [],
+    "title": "食器洗い乾燥機 アドバンスシリーズ｜シロカ",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-PANASONIC-NP-TSP1",
+    "official_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
+    "redirect_statuses": [],
+    "title": "NP-TSP1 仕様・詳細情報 - 食器洗い乾燥機 | 食器洗い乾燥機（食洗機） | Panasonic",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-PROTECA-AEROFLEX-DX2-01521",
+    "official_url": "https://www.proteca.jp/product/aeroflexDX2/",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.proteca.jp/product/aeroflexDX2/",
+    "redirect_statuses": [],
+    "title": "ã¨ã¢ã­ãã¬ãã¯ã¹DX2ï½Protecaï¼ãã­ãã«ï¼ ï¼»ã¨ã¼ã¹æ ªå¼ä¼ç¤¾ï¼½",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-SAMSONITE-C-LITE-CS2-09007",
+    "official_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+    "checked_on": "2026-09-13",
+    "status": 406,
+    "final_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
+    "redirect_statuses": [],
+    "title": null,
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+    "official_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+    "checked_on": "2026-09-13",
+    "access_error": "SSLError"
+  },
+  {
+    "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+    "official_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+    "redirect_statuses": [],
+    "title": "【1-250】FREQUENTER LIEVE リエーヴェ4輪キャリー 48cm | エンドーラゲージストア",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+    "official_url": "https://store.irobot-jp.com/item/F155260.html",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://store.irobot-jp.com/item/F155260.html",
+    "redirect_statuses": [],
+    "title": "Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション | アイロボット公式オンラインストア",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-SWITCHBOT-K11-PRO",
+    "official_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+    "redirect_statuses": [],
+    "title": "SwitchBot ロボット掃除機 K11+ Pro\n– SwitchBot (スイッチボット)",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+    "official_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+    "redirect_statuses": [],
+    "title": "SwitchBot ロボット掃除機 K10＋Pro Combo | ロボット+スティックが1つのステーションに\n– SwitchBot (スイッチボット)",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+    "official_url": "https://store.irobot-jp.com/item/N285060.html",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://store.irobot-jp.com/item/N285060.html",
+    "redirect_statuses": [],
+    "title": "Roomba Plus 515 Combo ロボット + AutoWash 充電ステーション | アイロボット公式オンラインストア",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-ANKER-SOLIX-C300",
+    "official_url": "https://www.ankerjapan.com/products/a1722",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.ankerjapan.com/products/a1722",
+    "redirect_statuses": [],
+    "title": "Anker Solix C300 Portable Power Station | ポータブル電源の製品情報 | Anker Japan 公式オンラインストア",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-JACKERY-500-NEW",
+    "official_url": "https://www.jackery.jp/products/explorer-500-new",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.jackery.jp/products/explorer-500-new",
+    "redirect_statuses": [],
+    "title": "Jackery ポータブル電源 500 New | 512Wh・500W出力・LFP長寿命 | 防災・キャンプ・車中泊    – Jackery Japan",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-BLUETTI-AC70",
+    "official_url": "https://www.bluetti.jp/products/bluetti-ac70",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.bluetti.jp/products/bluetti-ac70",
+    "redirect_statuses": [],
+    "title": "BLUETTI AC70 小型ポータブル電源 | 防災推奨・車中泊・キャンプ |768Wh、1000W\n      \n      \n      ブルーティ",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+    "official_url": "https://jp.ecoflow.com/products/delta-3-classic",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://jp.ecoflow.com/products/delta-3-classic",
+    "redirect_statuses": [],
+    "title": "エコフロー ポータブル電源 DELTA 3 Classic (1024Wh)\n– EcoFlow Japan",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-ACE-CRESTA-06316",
+    "official_url": "https://store.ace.jp/shop/g/g06316-01/",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://store.ace.jp/shop/g/g06316-01/",
+    "redirect_statuses": [],
+    "title": "【WEB限定】 ACE クレスタ スーツケース 34/39L エキスパンド機能 機内持ち込み 06316(01：ブラックカーボン): ACE｜エース公式通販",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-ACE-DIFFERENCE-05721",
+    "official_url": "https://store.ace.jp/shop/g/g05721-04",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://store.ace.jp/shop/g/g05721-04",
+    "redirect_statuses": [],
+    "title": "ace.／エース ディフェレンス フロントオープン 機内持ち込み エキスパンド機能 32/38L 05721(04：グリーン): ace.｜エース公式通販",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-ACE-MAXPASS4-01471",
+    "official_url": "https://store.ace.jp/shop/g/g01471-02",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://store.ace.jp/shop/g/g01471-02",
+    "redirect_statuses": [],
+    "title": "PROTECA／プロテカ マックスパス4 スーツケース 01471 日本製 40L 機内持ち込み フロントポケット キャスターストッパー(02：ガンメタリック): プロテカ｜エース公式通販",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+    "official_url": "https://store.ace.jp/shop/g/g02350-12/",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://store.ace.jp/shop/g/g02350-12/",
+    "redirect_statuses": [],
+    "title": "PROTECA／プロテカ スタリアCXR 02350 スーツケース 日本製 コインロッカー 機内持ち込み 22L(12：シフォンブルー): プロテカ｜エース公式通販",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+    "official_url": "https://store.ace.jp/shop/g/g01550-11/",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://store.ace.jp/shop/g/g01550-11/",
+    "redirect_statuses": [],
+    "title": "PROTECA／プロテカ フレスターEX 機内持ち込み キャスターストッパー フロントオープン 26/33L 01550(11：シルバーヘアライン): プロテカ｜エース公式通販",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-ACE-PALISADES3-Z-06910",
+    "official_url": "https://store.ace.jp/shop/g/g06910-03/",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://store.ace.jp/shop/g/g06910-03/",
+    "redirect_statuses": [],
+    "title": "ace.／エース パリセイド3-Z 06910 スーツケース 機内持ち込み キャスターストッパー 21L(03：ネイビーカーボン): ace.｜エース公式通販",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-BERMAS-INTER-CITY-60524",
+    "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+    "redirect_statuses": [],
+    "title": "No.60524 フロントオープン22L 38cm｜機内持ち込み対応・コインロッカー収納対応・PC収納付き｜BERMAS",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-INNOVATOR-INV50",
+    "official_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+    "redirect_statuses": [],
+    "title": "INV50 Pale Blue 38L Cabin – innovator",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-PROTECA-FRESTER-EX-01551",
+    "official_url": "https://store.ace.jp/shop/g/g01551-01/",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://store.ace.jp/shop/g/g01551-01/",
+    "redirect_statuses": [],
+    "title": "PROTECA／プロテカ フレスターEX 機内持ち込み キャスターストッパー フロントオープン 日本製 36/45L 01551(01：ブラック【直営限定】): プロテカ｜エース公式通販",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+    "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+    "redirect_statuses": [],
+    "title": "No.60561：フロントオープン 36L 47cm | BERMAS OFFICIAL WEB SHOP",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+    "official_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+    "redirect_statuses": [],
+    "title": "Roomba Mini Slim 掃除機＆床拭きロボット + SlimCharge 充電スタンド | アイロボット公式オンラインストア",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+    "official_url": "https://www.ankerjapan.com/products/a1754",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.ankerjapan.com/products/a1754",
+    "redirect_statuses": [],
+    "title": "Anker Solix C800 Plus Portable Power Station | リン酸鉄ポータブル電源の製品情報 | Anker Japan 公式オンラインストア",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-ANKER-SOLIX-C1000",
+    "official_url": "https://www.ankerjapan.com/products/a1761",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.ankerjapan.com/products/a1761",
+    "redirect_statuses": [],
+    "title": "Anker Solix C1000 Portable Power Station | リン酸鉄ポータブル電源の製品情報 | Anker Japan 公式オンラインストア",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+    "official_url": "https://www.ankerjapan.com/products/a1763",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.ankerjapan.com/products/a1763",
+    "redirect_statuses": [],
+    "title": "Anker Solix C1000 Gen 2 Portable Power Station | ポータブル電源の製品情報 | Anker Japan 公式オンラインストア",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  },
+  {
+    "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
+    "official_url": "https://www.thanko.jp/view/item/000000004055",
+    "checked_on": "2026-09-13",
+    "status": 200,
+    "final_url": "https://www.thanko.jp/view/item/000000004055",
+    "redirect_statuses": [],
+    "title": "工事不要でシンク横に置けるタンク式食洗機「ラクアmini Plus」 | 【公式】サンコー通販サイト",
+    "identity_evidence_required": "型番・色・構成・注文可能状態の一致は HTTP 成功だけでは確認済みにしない。catalog research-catalog.md の個別照合と併読。"
+  }
+]

@@ -493,6 +493,7 @@
   "schema": "SELF_HOSTED_EDITORIAL_THEME_ASSETS_V2",
   "source_files": [
     "assets/analytics-consent-gate.js",
+    "assets/consent-controls.js",
     "assets/editorial-navigation.js",
     "assets/editorial-navigation.v3.json",
     "assets/editorial-v2.css",
@@ -529,6 +530,7 @@
     "assets/purchase-support.v1.json",
     "assets/rakuten-product-media.json",
     "assets/reader-measurement-runtime.v1.json",
+    "assets/site-editorial-metadata.v1.json",
     "assets/theme.css",
     "functions.php",
     "inc/purchase-analytics.php",
@@ -547,8 +549,8 @@
     "theme-contract.v1.json",
     "theme.json"
   ],
-  "theme_runtime_revision": "b5128c273345b2b22b604eef4bac348c66f0b5f10826d3a28659985f64b2fc51",
+  "theme_runtime_revision": "d4636a7f049e5e2102a39d68375ca8364e1ad95a938a6f9e84ec2f0187a28872",
   "theme_slug": "kurashinoshirube-child",
-  "theme_source_fingerprint": "b5128c273345b2b22b604eef4bac348c66f0b5f10826d3a28659985f64b2fc51",
+  "theme_source_fingerprint": "d4636a7f049e5e2102a39d68375ca8364e1ad95a938a6f9e84ec2f0187a28872",
   "theme_version": "1.6.0"
 }

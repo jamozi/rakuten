@@ -1,0 +1,2738 @@
+{
+  "schema": "RAOSSiteImprovementsProgressEvidenceV1",
+  "scope": "exact136 audit IDs; unpublished local work and pre-change public baseline separated",
+  "items": {
+    "G01": {
+      "title": "記事テンプレート",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：記事テンプレートの共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G02": {
+      "title": "商品・画像・販売先",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：商品・画像・販売先の共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G03": {
+      "title": "販売価格の期限",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：販売価格の期限の共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G04": {
+      "title": "購入総額の表現",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：購入総額の表現の共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G05": {
+      "title": "広告・通常リンク",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：広告・通常リンクの共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G06": {
+      "title": "未確認の種類",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済・事実残件：未確認を原因/影響/確認先で分類",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "メーカー未公表・実機・個体・選択構成の事実は未確認。問い合わせ下書き未送信。未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G07": {
+      "title": "更新日・件数",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：更新日・件数の共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G08": {
+      "title": "画像の用途と権利",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済・画像再掲載保留：未照合画像停止、型番別の説明図",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "最終候補の通常幅では画像ロード/画像拡大/横はみ出しの検出なし。未照合画像の同一性と転用権は未確認のため再掲載しない。未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G09": {
+      "title": "言い切りと読者への丸投げ",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：言い切りと読者への丸投げの共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G10": {
+      "title": "入口の役割",
+      "priority": "P2",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：入口の役割の共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G11": {
+      "title": "購入導線",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：購入導線の共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G12": {
+      "title": "文字組み",
+      "priority": "P2",
+      "wp_id": "全体",
+      "implementation": "ローカル実装・表示検証済：全34ページの文字200%と表領域の横スクロール",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json",
+        "output/site-improvements-20260913/wrapfix-entry-zoom.json",
+        "output/site-improvements-20260913/wrapfix-article-summary.json"
+      ],
+      "validation": {
+        "local": "最新候補2d579：全34×5幅PASS、全34ページ320px文字のみ200%PASS、26表のキーボード操作PASS。フッターメールの横はみ出し修正を実描画で確認。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。本番反映後の確認は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G13": {
+      "title": "比較表とスマホ",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装・表示検証済：全34ページの文字200%と表領域の横スクロール",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json",
+        "output/site-improvements-20260913/wrapfix-entry-zoom.json",
+        "output/site-improvements-20260913/wrapfix-article-summary.json"
+      ],
+      "validation": {
+        "local": "最新候補2d579：全34×5幅PASS、全34ページ320px文字のみ200%PASS、26表のキーボード操作PASS。フッターメールの横はみ出し修正を実描画で確認。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。本番反映後の確認は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G14": {
+      "title": "画像・広告・入力の遅延表示",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：画像・広告・入力の遅延表示の共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G15": {
+      "title": "確認根拠",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：確認根拠の共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G16": {
+      "title": "計測と収益",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "部分確認：同意のpassive本番baselineを取得",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "changes/site-improvements-20260913/technical-public-verification.json",
+        "changes/site-improvements-20260913/technical-ad-destinations.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "同意UIと広告/参考リンク境界を23e2候補へ統合。実アカウント計測・確定収益の検証ではない。最終make fastは文字拡大修正で中断。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "GSC/GA4アカウント設定・実クリック/注文/ASP確定報酬はUNAVAILABLE。送信観測やリンク到達を確定収益にしない。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G17": {
+      "title": "変更管理",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済：変更管理の共通処理・対象本文を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "136項目の候補IDと実行済み検査を記録。最終tests/追加意味検証の追記と、公開指示後の反映照合が残る。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "G18": {
+      "title": "拡張の判断",
+      "priority": "P2",
+      "wp_id": "全体",
+      "implementation": "適用：新記事・新カテゴリを増やさず既存34ページの改善を優先",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "今回のscopeは既存34ページ。新記事は作成していない",
+        "public_baseline": "拡張判断の根拠にはしない",
+        "external": "新記事追加の判断は今回対象外"
+      },
+      "residual": "今後追加する場合に独自検索意図・既存との差・流入先・購入/非購入分岐・更新担当と一次情報を用意する。GSC取得をこの項目固有の必須条件へ追加しない。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG015-01": {
+      "title": "掲載記事の一覧・更新日",
+      "priority": "P1",
+      "wp_id": "15",
+      "implementation": "ローカル実装済：掲載記事の一覧・更新日を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG015-02": {
+      "title": "ファーストビューと記事配置",
+      "priority": "P2",
+      "wp_id": "15",
+      "implementation": "ローカル実装済：ファーストビューと記事配置を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG015-03": {
+      "title": "画像と購入前確認",
+      "priority": "P2",
+      "wp_id": "15",
+      "implementation": "ローカル実装済：画像と購入前確認を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG130-01": {
+      "title": "4つのカテゴリカード",
+      "priority": "P2",
+      "wp_id": "130",
+      "implementation": "ローカル実装済：4つのカテゴリカードを入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG130-02": {
+      "title": "記事数・広告有無の説明",
+      "priority": "P1",
+      "wp_id": "130",
+      "implementation": "ローカル実装済：記事数・広告有無の説明を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG130-03": {
+      "title": "入口の案内文",
+      "priority": "P2",
+      "wp_id": "130",
+      "implementation": "ローカル実装済：入口の案内文を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG139-01": {
+      "title": "6つの目的の切り分け",
+      "priority": "P2",
+      "wp_id": "139",
+      "implementation": "ローカル実装済：6つの目的の切り分けを入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG139-02": {
+      "title": "目的名と範囲",
+      "priority": "P1",
+      "wp_id": "139",
+      "implementation": "ローカル実装済：目的名と範囲を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG139-03": {
+      "title": "カードの情報量",
+      "priority": "P2",
+      "wp_id": "139",
+      "implementation": "ローカル実装済：カードの情報量を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG135-01": {
+      "title": "独立記事と記事内の節",
+      "priority": "P2",
+      "wp_id": "135",
+      "implementation": "ローカル実装済：独立記事と記事内の節を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG135-02": {
+      "title": "深いリンク",
+      "priority": "P1",
+      "wp_id": "135",
+      "implementation": "ローカル実装済：深いリンクを入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG135-03": {
+      "title": "カード見出しと断定",
+      "priority": "P2",
+      "wp_id": "135",
+      "implementation": "ローカル実装済：カード見出しと断定を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG133-01": {
+      "title": "ページ名と比較カード",
+      "priority": "P2",
+      "wp_id": "133",
+      "implementation": "ローカル実装済：ページ名と比較カードを入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG133-02": {
+      "title": "購入確認の戻り導線",
+      "priority": "P1",
+      "wp_id": "133",
+      "implementation": "ローカル実装済：購入確認の戻り導線を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG133-03": {
+      "title": "候補数・型番・広告ラベル",
+      "priority": "P1",
+      "wp_id": "133",
+      "implementation": "ローカル実装済：候補数・型番・広告ラベルを入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG143-01": {
+      "title": "日付別の7本/8本のグループ",
+      "priority": "P1",
+      "wp_id": "143",
+      "implementation": "ローカル実装済：日付別の7本/8本のグループを入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG143-02": {
+      "title": "変更点の説明",
+      "priority": "P2",
+      "wp_id": "143",
+      "implementation": "ローカル実装済：変更点の説明を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG143-03": {
+      "title": "新着と更新の区別",
+      "priority": "P2",
+      "wp_id": "143",
+      "implementation": "ローカル実装済：新着と更新の区別を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG142-01": {
+      "title": "利用便の入口",
+      "priority": "P1",
+      "wp_id": "142",
+      "implementation": "ローカル実装済：利用便の入口を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG142-02": {
+      "title": "条件から候補を見る",
+      "priority": "P2",
+      "wp_id": "142",
+      "implementation": "ローカル実装済：条件から候補を見るを入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG142-03": {
+      "title": "旅の目的別ページとの分担",
+      "priority": "P2",
+      "wp_id": "142",
+      "implementation": "ローカル実装済：旅の目的別ページとの分担を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG136-01": {
+      "title": "買う前と購入後",
+      "priority": "P1",
+      "wp_id": "136",
+      "implementation": "ローカル実装済：買う前と購入後を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG136-02": {
+      "title": "候補の販売状況と対象",
+      "priority": "P1",
+      "wp_id": "136",
+      "implementation": "ローカル実装済：候補の販売状況と対象を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG136-03": {
+      "title": "ガイドの紹介文",
+      "priority": "P2",
+      "wp_id": "136",
+      "implementation": "ローカル実装済：ガイドの紹介文を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG131-01": {
+      "title": "任せたい作業の説明",
+      "priority": "P1",
+      "wp_id": "131",
+      "implementation": "ローカル実装済：任せたい作業の説明を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG131-02": {
+      "title": "必要な空間",
+      "priority": "P1",
+      "wp_id": "131",
+      "implementation": "ローカル実装済：必要な空間を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG131-03": {
+      "title": "5構成の案内",
+      "priority": "P2",
+      "wp_id": "131",
+      "implementation": "ローカル実装済：5構成の案内を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG138-01": {
+      "title": "出力別の候補",
+      "priority": "P1",
+      "wp_id": "138",
+      "implementation": "ローカル実装済：出力別の候補を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG138-02": {
+      "title": "容量を選ぶ入口",
+      "priority": "P2",
+      "wp_id": "138",
+      "implementation": "ローカル実装済：容量を選ぶ入口を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG138-03": {
+      "title": "prepare-outageとの分担",
+      "priority": "P2",
+      "wp_id": "138",
+      "implementation": "ローカル実装済：prepare-outageとの分担を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG141-01": {
+      "title": "SOLOTA/Plusの紹介文",
+      "priority": "P1",
+      "wp_id": "141",
+      "implementation": "ローカル実装済：SOLOTA/Plusの紹介文を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG141-02": {
+      "title": "設置可否の断定",
+      "priority": "P1",
+      "wp_id": "141",
+      "implementation": "ローカル実装済：設置可否の断定を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG141-03": {
+      "title": "最初に読む1本",
+      "priority": "P2",
+      "wp_id": "141",
+      "implementation": "ローカル実装済：最初に読む1本を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG140-01": {
+      "title": "時短の判断材料",
+      "priority": "P1",
+      "wp_id": "140",
+      "implementation": "ローカル実装済：時短の判断材料を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG140-02": {
+      "title": "洗い物と床掃除の入口",
+      "priority": "P2",
+      "wp_id": "140",
+      "implementation": "ローカル実装済：洗い物と床掃除の入口を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG140-03": {
+      "title": "清掃頻度の紹介文",
+      "priority": "P1",
+      "wp_id": "140",
+      "implementation": "ローカル実装済：清掃頻度の紹介文を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG144-01": {
+      "title": "ページタイトル",
+      "priority": "P1",
+      "wp_id": "144",
+      "implementation": "ローカル実装済：ページタイトルを入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG144-02": {
+      "title": "購入前チェック",
+      "priority": "P1",
+      "wp_id": "144",
+      "implementation": "ローカル実装済：購入前チェックを入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG144-03": {
+      "title": "工事なしで置けるという紹介",
+      "priority": "P1",
+      "wp_id": "144",
+      "implementation": "ローカル実装済：工事なしで置けるという紹介を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG134-01": {
+      "title": "商品別の読み始め",
+      "priority": "P2",
+      "wp_id": "134",
+      "implementation": "ローカル実装済：商品別の読み始めを入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG134-02": {
+      "title": "継続費用と部品",
+      "priority": "P1",
+      "wp_id": "134",
+      "implementation": "ローカル実装済：継続費用と部品を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG134-03": {
+      "title": "頻度の共通化",
+      "priority": "P1",
+      "wp_id": "134",
+      "implementation": "ローカル実装済：頻度の共通化を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG132-01": {
+      "title": "カテゴリとの差別化",
+      "priority": "P2",
+      "wp_id": "132",
+      "implementation": "ローカル実装済：カテゴリとの差別化を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG132-02": {
+      "title": "最初に読む軽量記事",
+      "priority": "P1",
+      "wp_id": "132",
+      "implementation": "ローカル実装済：最初に読む軽量記事を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG132-03": {
+      "title": "選定の言い切り",
+      "priority": "P1",
+      "wp_id": "132",
+      "implementation": "ローカル実装済：選定の言い切りを入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG137-01": {
+      "title": "防災という対象範囲",
+      "priority": "P1",
+      "wp_id": "137",
+      "implementation": "ローカル実装済：防災という対象範囲を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG137-02": {
+      "title": "商品を買う前",
+      "priority": "P2",
+      "wp_id": "137",
+      "implementation": "ローカル実装済：商品を買う前を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG137-03": {
+      "title": "起動電力の案内",
+      "priority": "P1",
+      "wp_id": "137",
+      "implementation": "ローカル実装済：起動電力の案内を入口ページ生成元へ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "changes/site-improvements-20260913/entry-pages.v1.json",
+        "scripts/build_site_editorial_pages.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG041-01": {
+      "title": "4機種の結論と販売状況",
+      "priority": "P1",
+      "wp_id": "41",
+      "implementation": "ローカル実装済・事実残件：4機種の結論と販売状況",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "同用途で今買える代替の色/構成別注文可否は未確認。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG041-02": {
+      "title": "一食分・毎回の作業",
+      "priority": "P1",
+      "wp_id": "41",
+      "implementation": "ローカル実装済：一食分・毎回の作業を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "食器量・給水・残さい処理は型番別に具体化。実機収納写真/収納実績は未作成。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG041-03": {
+      "title": "購入総額と関連記事",
+      "priority": "P1",
+      "wp_id": "41",
+      "implementation": "ローカル実装済：購入総額と関連記事を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG086-01": {
+      "title": "mini Plusの販売状況",
+      "priority": "P1",
+      "wp_id": "86",
+      "implementation": "ローカル実装済・事実残件：mini Plusの販売状況",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "mini Plus公式再入荷通知は確認。色別注文可否・全店舗在庫・再入荷日は未確認。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG086-02": {
+      "title": "Plusと4機種ガイドの接続",
+      "priority": "P1",
+      "wp_id": "86",
+      "implementation": "ローカル実装済：Plusと4機種ガイドの接続を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "mini Plusとmini colorを独立型番で案内し旧根拠アンカー維持。mini Plusは日付付き型番別原典を保持し今回全手順再調査ではない。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG086-03": {
+      "title": "価格・比較表・購入ボタン",
+      "priority": "P1",
+      "wp_id": "86",
+      "implementation": "ローカル実装済：価格・比較表・購入ボタンを共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG262-01": {
+      "title": "NP-TSP1の上方余白",
+      "priority": "P1",
+      "wp_id": "262",
+      "implementation": "ローカル実装済：公式115mmと総高720−本体600＝120mmを区別",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG262-02": {
+      "title": "採寸図",
+      "priority": "P1",
+      "wp_id": "262",
+      "implementation": "ローカル実装済：3方向の番号付き採寸模式図と紙の記入欄",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG262-03": {
+      "title": "設置照合の入力",
+      "priority": "P1",
+      "wp_id": "262",
+      "implementation": "ローカル実装済：設置照合の入力の共通境界処理・表示を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG263-01": {
+      "title": "給水と排水の図解",
+      "priority": "P1",
+      "wp_id": "263",
+      "implementation": "ローカル実装済：型番別に給水元→満水→排水の経路を表示",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG263-02": {
+      "title": "2WAYの分岐水栓利用",
+      "priority": "P1",
+      "wp_id": "263",
+      "implementation": "ローカル実装済：NP-TSP1分岐水栓の部材・圧力/流量条件を追加",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG263-03": {
+      "title": "通常給水と清掃の例外",
+      "priority": "P1",
+      "wp_id": "263",
+      "implementation": "ローカル実装済：通常給水の禁止と型番限定のタンク清掃例外を分離",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG264-01": {
+      "title": "最初の答え",
+      "priority": "P1",
+      "wp_id": "264",
+      "implementation": "ローカル実装済：型番/種類/通常量/投入先の冒頭4列表",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG264-02": {
+      "title": "mini colorの対応洗剤",
+      "priority": "P1",
+      "wp_id": "264",
+      "implementation": "ローカル実装済・事実残件：mini colorの対応洗剤",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "mini colorの粉末/液体/ジェル/タブレット・標準3〜5gを公式p14で確認。タブレット個数/サイズは原典未記載でUNKNOWN。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG264-03": {
+      "title": "投入位置・洗えない物",
+      "priority": "P1",
+      "wp_id": "264",
+      "implementation": "ローカル実装済：現行4型番の材質/禁止理由/例外表と投入位置",
+      "evidence": [
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "changes/site-improvements-20260913/guides-report.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "changes/site-improvements-20260913/guide-catalog-completion-updates.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。 guide単独5tests合格済み。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG265-01": {
+      "title": "清掃頻度の見出し",
+      "priority": "P1",
+      "wp_id": "265",
+      "implementation": "ローカル実装済：清掃頻度の見出しを共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG265-02": {
+      "title": "機種ごとの具体的手順",
+      "priority": "P1",
+      "wp_id": "265",
+      "implementation": "ローカル実装済：現行4機種の部品取り外し/洗浄/復帰・庫内/タンク清掃を原典で具体化",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "changes/site-improvements-20260913/guide-catalog-completion-updates.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。 guide単独5tests合格済み。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG265-03": {
+      "title": "所有者向けの使いやすさ",
+      "priority": "P2",
+      "wp_id": "265",
+      "implementation": "ローカル実装済：機種別リンクと印刷用□欄、清掃例外の相互リンク",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG266-01": {
+      "title": "1回・月額の例",
+      "priority": "P1",
+      "wp_id": "266",
+      "implementation": "ローカル実装済：明示した架空条件12.65円/回379.5円/月の例",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG266-02": {
+      "title": "電気代未確認の機種",
+      "priority": "P1",
+      "wp_id": "266",
+      "implementation": "ローカル実装済：電気代未確認の機種の共通境界処理・表示を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG266-03": {
+      "title": "入力と現行・旧機種",
+      "priority": "P1",
+      "wp_id": "266",
+      "implementation": "ローカル実装済：入力と現行・旧機種の共通境界処理・表示を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG083-01": {
+      "title": "軽量のメリット",
+      "priority": "P1",
+      "wp_id": "83",
+      "implementation": "ローカル実装済：軽量のメリットを共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG083-02": {
+      "title": "通常時・拡張時と便の規定",
+      "priority": "P1",
+      "wp_id": "83",
+      "implementation": "ローカル実装済：通常時・拡張時と便の規定を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG083-03": {
+      "title": "販売確認と旧アンカー",
+      "priority": "P1",
+      "wp_id": "83",
+      "implementation": "ローカル実装済：販売確認と旧アンカーを共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG082-01": {
+      "title": "BERMAS 60524の商品画像",
+      "priority": "P0",
+      "wp_id": "82",
+      "implementation": "ローカル実装済・事実残件：BERMAS 60524の商品画像",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "60524新仕様を確認し未照合画像を候補から除外。販売店画像の同一性・転用範囲は未確認。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG082-02": {
+      "title": "比較表までの前置き",
+      "priority": "P1",
+      "wp_id": "82",
+      "implementation": "ローカル実装済：比較表までの前置きを共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG082-03": {
+      "title": "拡張の扱い・更新日",
+      "priority": "P1",
+      "wp_id": "82",
+      "implementation": "ローカル実装済：拡張の扱い・更新日を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG084-01": {
+      "title": "4種類の前開き",
+      "priority": "P1",
+      "wp_id": "84",
+      "implementation": "ローカル実装済・事実残件：4種類の前開き",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "確認できた4候補のアクセス経路を示す。INV50一次情報再取得不能、必要床面積/開閉余白の未公表値は未確認。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG084-02": {
+      "title": "ストッパーとPC収納",
+      "priority": "P1",
+      "wp_id": "84",
+      "implementation": "ローカル実装済・事実残件：ストッパーとPC収納",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "確認済み操作は反映。全4機種PC内寸・停止車輪数/位置は揃っていない。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG084-03": {
+      "title": "比較表の位置・写真",
+      "priority": "P2",
+      "wp_id": "84",
+      "implementation": "ローカル実装済：比較表の位置・写真を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG019-01": {
+      "title": "軽さという結論",
+      "priority": "P1",
+      "wp_id": "19",
+      "implementation": "ローカル実装済：軽さという結論を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG019-02": {
+      "title": "開き方と拡張の未確認",
+      "priority": "P1",
+      "wp_id": "19",
+      "implementation": "ローカル実装済・事実残件：開き方と拡張の未確認",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "06316メイン収納開閉形式・01471拡張の明記は未確認。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG019-03": {
+      "title": "バッジ・商品カード・保証",
+      "priority": "P2",
+      "wp_id": "19",
+      "implementation": "ローカル実装済・事実残件：バッジ・商品カード・保証",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "販売先ごとの保証最終適用は未確認。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG030-01": {
+      "title": "省スペースの比較範囲",
+      "priority": "P1",
+      "wp_id": "30",
+      "implementation": "ローカル実装済：省スペースの比較範囲を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG030-02": {
+      "title": "K11の寸法軸と底面判定",
+      "priority": "P1",
+      "wp_id": "30",
+      "implementation": "ローカル実装済・事実残件：K11の寸法軸と底面判定",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "K11+ Pro240×180×250mmの軸名は公式説明書にもなく未解決。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG030-03": {
+      "title": "購入状態と詳しい比較への導線",
+      "priority": "P1",
+      "wp_id": "30",
+      "implementation": "ローカル実装済：購入状態と詳しい比較への導線を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG085-01": {
+      "title": "台の外寸と周囲の余白",
+      "priority": "P1",
+      "wp_id": "85",
+      "implementation": "ローカル実装済・事実残件：台の外寸と周囲の余白",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "外寸と周囲余白を分離。K11+ Pro軸付き寸法・同縮尺の設置図は公式根拠がなく未完。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG085-02": {
+      "title": "手入れの具体性",
+      "priority": "P1",
+      "wp_id": "85",
+      "implementation": "ローカル実装済・事実残件：手入れの具体性",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "K11清掃/交換目安を具体化。Miniの頻度・対応品番・消耗品費用と両社の条件統一は未確認。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG085-03": {
+      "title": "Miniの2構成と画像",
+      "priority": "P1",
+      "wp_id": "85",
+      "implementation": "ローカル実装済：Miniの2構成と画像を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "主比較2とMini Slim補足を分離。補足の未照合画像は非掲載。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG028-01": {
+      "title": "計算説明の順序",
+      "priority": "P1",
+      "wp_id": "28",
+      "implementation": "ローカル実装済：計算説明の順序を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG028-02": {
+      "title": "販売価格の状態",
+      "priority": "P1",
+      "wp_id": "28",
+      "implementation": "ローカル実装済：販売価格の状態を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG028-03": {
+      "title": "安全上の境界",
+      "priority": "P1",
+      "wp_id": "28",
+      "implementation": "ローカル実装済・事実残件：安全上の境界",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "AC70公式更新案内を再確認。手元個体・版への適用は未確認。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG029-01": {
+      "title": "商品画像リンクの説明と方針",
+      "priority": "P0",
+      "wp_id": "29",
+      "implementation": "ローカル実装済・事実残件：商品画像リンクの説明と方針",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "Anker4製品の未照合画像は非掲載。再掲載に必要な画像同一性/権利は未確認。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG029-02": {
+      "title": "決め手と比較表",
+      "priority": "P1",
+      "wp_id": "29",
+      "implementation": "ローカル実装済：決め手と比較表を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG029-03": {
+      "title": "Gen 2の1500W/1550W",
+      "priority": "P1",
+      "wp_id": "29",
+      "implementation": "ローカル実装済・事実残件：Gen 2の1500W/1550W",
+      "evidence": [
+        "changes/site-improvements-20260913/research-catalog.md",
+        "changes/reader-purchase-support-v1/purchase-support.v1.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "単口1500W/複数口合計1550Wを説明書で確認。特設表の説明不足についてメーカー回答未取得。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG120-01": {
+      "title": "画像の同一性と価格期限",
+      "priority": "P1",
+      "wp_id": "120",
+      "implementation": "ローカル実装済：画像の同一性と価格期限の共通境界処理・表示を統合",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG120-02": {
+      "title": "根拠の区分",
+      "priority": "P1",
+      "wp_id": "120",
+      "implementation": "ローカル実装済：メーカー値/測定/感想/計算の使い分け表",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG120-03": {
+      "title": "読者用の概要",
+      "priority": "P2",
+      "wp_id": "120",
+      "implementation": "ローカル実装済：読者用の概要を共通描画・本文・根拠データへ反映",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG010-01": {
+      "title": "広告の対象",
+      "priority": "P1",
+      "wp_id": "10",
+      "implementation": "ローカル実装済：広告リンクと公式参考リンクを明確化",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG010-02": {
+      "title": "運営者・編集者の実態",
+      "priority": "P2",
+      "wp_id": "10",
+      "implementation": "ローカル実装済・事実残件：運営者・編集者の実態",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "公開済み責任者・筆名のみ保持。公開可能な追加人数/経験/資格は未提供で、創作しない。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG010-03": {
+      "title": "問い合わせ・訂正",
+      "priority": "P1",
+      "wp_id": "10",
+      "implementation": "ローカル実装済・事実残件：問い合わせ・訂正",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "訂正依頼のURL/該当箇所/原典を案内。メール受信/返信/送信元認証は未実施、下書き未送信。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG003-01": {
+      "title": "同意前・拒否・撤回後のGA4",
+      "priority": "P1",
+      "wp_id": "3",
+      "implementation": "ローカル実装済・事実残件：同意前・拒否・撤回後のGA4",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "旧本番の初回/拒否/許可/撤回/再訪passive通信観測済み。2500ms窓の観測で全将来挙動やGA4実設定の証明ではない。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG003-02": {
+      "title": "外部送信一覧",
+      "priority": "P1",
+      "wp_id": "3",
+      "implementation": "ローカル実装済・事実残件：外部送信一覧",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "画像配信と成果計測を分離。全配信ホストの実送信項目・サービス実設定は未確認。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "PG003-03": {
+      "title": "保存期間と利用者の操作",
+      "priority": "P1",
+      "wp_id": "3",
+      "implementation": "ローカル実装済・事実残件：保存期間と利用者の操作",
+      "evidence": [
+        "changes/site-improvements-20260913/guides-report.md",
+        "python/raos/application/editorial/site_guide_improvements.py",
+        "changes/site-improvements-20260913/entry-pages-report.md",
+        "output/site-improvements-20260913/consent-controls-local-verification.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccを41398でpreview PASS（34ページ）。34ページ×320/375/390/768/1440px=170画面のDOM検査PASS。文字のみ200%の全34ページ、15記事の意味/JS無効表示、26表のキーボード操作PASS。最終make fast実行中。",
+        "public_baseline": "個別受入条件の証明には使用していない",
+        "external": "未実施／該当範囲のみ別途確認"
+      },
+      "residual": "CookieYesフッター/枠内操作はローカル修正・320/390px注入試験済み。実ログ/問い合わせ/GA4保持期間はUNKNOWN。 未公開。最終make fast実行中。公開承認後の本番反映照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q01": {
+      "title": "HTTP・サイトマップ・robots",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル検証済：全34URLの取得・既存本番robots/sitemap/404確認",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "changes/site-improvements-20260913/technical-public-verification.json",
+        "changes/site-improvements-20260913/technical-official-destinations.json",
+        "changes/site-improvements-20260913/technical-ad-destinations.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補34全件HTTP200。既存本番34URL/robots/sitemap/404はtechnical-publicで確認。",
+        "public_baseline": "34URL200、sitemap掲載34、欠落URL404",
+        "external": "本番baselineと候補の反映確認は別"
+      },
+      "residual": "公開後の意図した公開URL・robots・sitemap・404再確認は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q02": {
+      "title": "タイトル・H1・canonical",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル検証済：34件title/H1/canonicalと重複検査",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "最終候補34件のtitle/H1/canonical、重複title/ID検出なし。",
+        "public_baseline": "34件の一意title・H1各1・productioncanonical一致",
+        "external": "本番baselineと候補の反映確認は別"
+      },
+      "residual": "意味と本文の最終照合は追加検証進行中。公開反映後照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q03": {
+      "title": "検索意図と登録状態",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "未実施：GSCの需要/登録状態",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "GSC登録・検索需要はローカルDOM検査の対象外。所有者の実データUNAVAILABLE。",
+        "public_baseline": "UNAVAILABLE",
+        "external": "UNAVAILABLE"
+      },
+      "residual": "GSC owner-private実データが必要。順位/需要を推定しない",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q04": {
+      "title": "分類・自動生成ページ",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "外部読み取り確認済：WP分類・ハブ・自動生成ページ",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "changes/site-improvements-20260913/technical-public-verification.json",
+        "changes/site-improvements-20260913/technical-official-destinations.json",
+        "changes/site-improvements-20260913/technical-ad-destinations.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "4編集ハブのメタデータを統合。34ページの最終DOM検査PASS。",
+        "public_baseline": "動的分類アーカイブの意味と重複は未検証",
+        "external": "公開REST15投稿19固定。全投稿category5、タグなし。カテゴリ2はupdatesへ301、添付5は画像へ301、検索200/noindex。著者URL未取得401。"
+      },
+      "residual": "4ハブは4WPカテゴリではない。著者の実在URLは401で未取得。Google登録/被リンク状態は未取得。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q05": {
+      "title": "構造化データ",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル部分検証済：全34のJSON-LD構文・型",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "最終候補34件JSON-LD構文検出なし。",
+        "public_baseline": "34URLのJSON-LD構文は有効",
+        "external": "本番baselineと候補の反映確認は別"
+      },
+      "residual": "可視本文/商品/価格/日付との意味一致は追加検証結果待ち。Google採用は未確認。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q06": {
+      "title": "内部リンク・アンカー",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル検証済：全34内部URL/旧アンカー",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "最終候補34ページ間の内部リンク/アンカー切れ・duplicateIDなし。",
+        "public_baseline": "34URL間の内部アンカー切れなし。追加about200",
+        "external": "本番baselineと候補の反映確認は別"
+      },
+      "residual": "読者経路の意味は追加検証と公開後照合を区別。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q07": {
+      "title": "購入リンクの最終到達",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "外部到達実施・構成残件：採用runtime26リンク",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "changes/site-improvements-20260913/technical-public-verification.json",
+        "changes/site-improvements-20260913/technical-official-destinations.json",
+        "changes/site-improvements-20260913/technical-ad-destinations.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "ローカルDOMのリンク保持とアンカー確認済み。",
+        "public_baseline": "未実施（購入リンクをクリックしていない）",
+        "external": "公式31件は29到達・406/SSL各1取得不能。採用runtime26件は広告16全到達、通常9到達1取得不能。variant/色/在庫は未確定。"
+      },
+      "residual": "広告16件は全到達200、通常10件中9到達・Samsonite406。色/variant/在庫/保証適用/成果帰属は未確認。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q08": {
+      "title": "画像・広告の描画",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル検証済・画像再掲載保留：停止状態/ロード/サイズ",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "changes/site-improvements-20260913/technical-public-verification.json",
+        "changes/site-improvements-20260913/technical-official-destinations.json",
+        "changes/site-improvements-20260913/technical-ad-destinations.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "最終候補170画面で画像未ロード/拡大/横はみ出し検出なし。未照合画像を非掲載。",
+        "public_baseline": "全画像ロード完了。WP84画像266px→300px拡大を検出",
+        "external": "本番baselineと候補の反映確認は別"
+      },
+      "residual": "画像の存在・到達を転用許諾や全販売構成一致としない。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q09": {
+      "title": "価格期限・キャッシュ",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済・最終tests中断：価格/期限/未知費目",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "静的価格を排除し期限/費目不足/予算判定を共通実装。test_all_pages_improvementsが関連。",
+        "public_baseline": "期限境界のbaseline実行なし",
+        "external": "本番baselineと候補の反映確認は別"
+      },
+      "residual": "最終make fast・JS無効・キャッシュ/期限境界の追加結果は未確定。公開後の再読は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q10": {
+      "title": "同意と外部通信",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "通信観測済・ローカル修正：CookieYes同意操作",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "フッター設定操作とモバイル枠内化を最終候補へ統合。注入試験/fixture確認済み。",
+        "public_baseline": "初回/拒否/撤回後/再訪に観測Google送信なし。許可時のみタグ+passive送信",
+        "external": "本番baselineと候補の反映確認は別"
+      },
+      "residual": "旧本番2500ms窓で初回/拒否/撤回後Google送信なし。全将来挙動・実保持設定は未確認。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q11": {
+      "title": "費用・採寸計算機",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装済・最終tests中断：費用/採寸境界",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "cm/mm・未知費目・入力不要の表示を実装し最終候補へ統合。",
+        "public_baseline": "baseline入力試験なし",
+        "external": "本番baselineと候補の反映確認は別"
+      },
+      "residual": "最終make fast・JS無効/拡大/入力の追加結果は未確定。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q12": {
+      "title": "スマホ・拡大・キーボード",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "ローカル実装・表示検証済：全34ページの文字200%と表領域の横スクロール",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json",
+        "output/site-improvements-20260913/wrapfix-entry-zoom.json",
+        "output/site-improvements-20260913/wrapfix-article-summary.json"
+      ],
+      "validation": {
+        "local": "最新候補2d579：全34×5幅PASS、全34ページ320px文字のみ200%PASS、26表のキーボード操作PASS。フッターメールの横はみ出し修正を実描画で確認。",
+        "public_baseline": "34PC+代表9×5幅では本文の横はみ出しなし。CookieYes旧フッター不具合検出",
+        "external": "本番baselineと候補の反映確認は別"
+      },
+      "residual": "未公開。本番反映後の確認は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q13": {
+      "title": "読み込み速度・レイアウトずれ",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "部分確認：代表3ページのlabLCP/CLS",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "23e2候補の通常幅DOM検査PASS。候補のfieldINP/CWVは取得していない。記録したLCP/CLSは既存本番の代表3ページ単発lab観測。",
+        "public_baseline": "390px単発無負荷LCP624/1104/920ms・CLS0",
+        "external": "本番baselineと候補の反映確認は別"
+      },
+      "residual": "INP/fieldデータUNAVAILABLE。実機ネットワーク速度保証やCWV合格ではない",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q14": {
+      "title": "クリック計測と実成果",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "計測境界は実装・実成果未取得：クリック/注文/確定報酬を分離",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "tests/purchase_support/test_all_pages_improvements.py",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "計測と広告/参考リンクの境界は統合。最終make fastは文字拡大修正のため中断・未合格。",
+        "public_baseline": "GSC/GA4/ASPアカウント情報UNAVAILABLE",
+        "external": "UNAVAILABLE"
+      },
+      "residual": "クリック操作や成果イベントを捏造しない。実承認を別途確認",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q15": {
+      "title": "デザイン反映とキャッシュ",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "候補固定・ローカル検証済：34ページ表示",
+      "evidence": [
+        "output/site-improvements-20260913/public-baseline-summary.md",
+        "output/site-improvements-20260913/public-baseline.json",
+        "output/site-improvements-20260913/consent-lab-baseline.json",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "候補2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6ccのpreview PASS34、170画面検査PASS。",
+        "public_baseline": "既存本番baselineのみ",
+        "external": "本番baselineと候補の反映確認は別"
+      },
+      "residual": "公開前のため新HTML/CSSの本番配信・キャッシュ混在解消は未検証。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    },
+    "Q16": {
+      "title": "安全な公開と復元",
+      "priority": "P1",
+      "wp_id": "全体",
+      "implementation": "公開準備済・未公開：固定候補/差分/安全な反映境界",
+      "evidence": [
+        "changes/site-improvements-20260913/README.md",
+        "changes/wordpress-direct-publish-v1/README.md",
+        "output/site-improvements-20260913/local-final-audit.json",
+        "output/site-improvements-20260913/local-wrapfix-audit.json"
+      ],
+      "validation": {
+        "local": "owner-direct固定候補のpreview PASS34。ローカル変更・進捗/差分を保持。",
+        "public_baseline": "公開前の読み取りのみ。本番変更・復元は未実施",
+        "external": "具体的候補への公開承認と反映後照合は未実施"
+      },
+      "residual": "最終testsと公開承認待ち。実際の本番公開・復元・反映後フォーム/同意/リンク照合は未実施。",
+      "publication_version": "候補 2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc／未公開・本番反映照合未実施"
+    }
+  },
+  "candidate_id": "2d579e6521715b8f412fdc04c556a088ff42ac9dcb5932c872dd61c41085a6cc",
+  "candidate_origin": "http://127.0.0.1:41398",
+  "final_test_status": "RUNNING",
+  "candidate_state": "PREVIEW_AND_BROWSER_VERIFIED_UNPUBLISHED"
+}

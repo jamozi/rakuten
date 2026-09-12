@@ -103,3 +103,84 @@ body.home #ks-magazine .km-carousel-slide:nth-child(4) {
 #cluster-mobility,#cluster-home,#cluster-ready{scroll-margin-top:24px;}
 @media(max-width:1000px){#ks-magazine .km-features{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:600px){#ks-magazine .km-features{grid-template-columns:1fr;}#ks-magazine .km-article-groups{grid-template-columns:1fr;}#ks-magazine .km-section-lead{font-size:14px;}#ks-magazine .km-promos-title{font-size:17px;}}
+
+/* One main feature and two supporting stories, then distinct entry points. */
+body #ks-magazine.ks-editorial-page{position:static;left:auto;transform:none;width:100%;max-width:72rem;padding:0 20px;box-sizing:border-box}
+body .ks-home-feature-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:1.5rem}
+body .ks-home-feature-grid>div{display:grid;gap:1rem}
+body .ks-home-feature-grid>.ks-editorial-card{background:#efede5;border-top:4px solid #8b3f2b;display:flex;flex-direction:column;justify-content:center}
+body .ks-home-feature-grid>.ks-editorial-card h3{font-size:clamp(1.5rem,2.4vw,2.15rem)}
+body .ks-home-feature h1{font-size:clamp(1.8rem,4vw,3.3rem);line-height:1.35}
+@media(max-width:700px){body .ks-home-feature-grid{grid-template-columns:minmax(0,1fr)}body #ks-magazine.ks-editorial-page{padding-inline:16px}}
+
+/* Reviewed magazine composition: align to the masthead and avoid empty card fill. */
+body #ks-magazine.ks-editorial-page {
+  width: calc(100% - 48px);
+  max-width: 76rem;
+  margin: 24px auto 64px !important;
+  padding: 0;
+  background: transparent;
+}
+body #ks-magazine .ks-home-masthead {
+  display: grid;
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 56px);
+  padding-block: 12px 32px;
+  border-bottom: 1px solid #d7d3cb;
+}
+body #ks-magazine .ks-home-intro h1 {
+  font-size: clamp(2rem, 3.3vw, 3rem);
+  line-height: 1.45;
+  margin-block: 14px 18px;
+  letter-spacing: .06em;
+}
+body #ks-magazine .ks-home-intro>p:last-child { line-height: 1.9; color: #5c5953; }
+body #ks-magazine .ks-home-mood { margin: 0; width: 100%; max-width: none; }
+body #ks-magazine .ks-home-mood img { display: block; width: 100%; height: auto; }
+body #ks-magazine figcaption { font-size: .7rem; line-height: 1.6; color: #716d65; padding-top: 6px; }
+body #ks-magazine .ks-home-feature-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+  align-items: start;
+}
+body #ks-magazine .ks-home-feature-grid>.ks-editorial-card {
+  display: block;
+  padding: 0 0 20px;
+  border: 0;
+  border-bottom: 1px solid #d7d3cb;
+  background: transparent;
+}
+body #ks-magazine .ks-feature-image { margin: 0 0 16px; width: 100%; max-width: none; }
+body #ks-magazine .ks-feature-image img { display: block; width: 100%; aspect-ratio: 762/506; object-fit: cover; }
+body #ks-magazine .ks-home-feature-grid h3 { font-size: 1.2rem; margin-block: 10px; line-height: 1.6; }
+body #ks-magazine .ks-home-feature-grid>.ks-editorial-card:first-child h3 { font-size: 1.65rem; }
+body #ks-magazine .ks-home-feature-grid>.ks-editorial-card>p { font-size: .9rem; line-height: 1.85; }
+body #ks-magazine .ks-pr-badge { display: inline-block; width: auto; font-size: .7rem; }
+body #ks-magazine section>h2 { font-size: clamp(1.4rem, 2.2vw, 2rem); margin-bottom: 20px; }
+body #ks-magazine section { margin-block: 0 40px; }
+body #ks-magazine #km-categories-title .ks-route-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+body #ks-magazine .ks-home-updates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+body #ks-magazine .ks-home-updates h3 { margin-block: 10px; }
+@media (max-width: 900px) {
+  body #ks-magazine #km-categories-title .ks-route-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body #ks-magazine .ks-home-feature-grid { gap: 16px; }
+}
+@media (max-width: 650px) {
+  body #ks-magazine.ks-editorial-page { width: calc(100% - 32px); margin-top: 20px !important; padding: 0; }
+  body #ks-magazine .ks-home-masthead { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-top: 0; }
+  body #ks-magazine .ks-home-intro h1 { font-size: clamp(1.75rem, 7vw, 2.35rem); margin-block: 12px; }
+  body #ks-magazine .ks-home-intro>p:last-child br { display: none; }
+  body #ks-magazine .ks-home-feature-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 24px; }
+  body #ks-magazine .ks-home-feature-grid>.ks-editorial-card:first-child h3 { font-size: 1.4rem; }
+  body #ks-magazine .ks-home-feature-grid>.ks-editorial-card:not(:first-child) .ks-feature-image { float: left; width: 38%; margin: 0 16px 8px 0; }
+  body #ks-magazine .ks-home-feature-grid>.ks-editorial-card:not(:first-child)::after { content: ''; display: block; clear: both; }
+  body #ks-magazine .ks-home-feature-grid>.ks-editorial-card:not(:first-child) .ks-card-meta { clear: both; }
+  body #ks-magazine .ks-home-updates { grid-template-columns: minmax(0, 1fr); }
+  body #ks-magazine #km-categories-title .ks-route-grid { gap: 12px; }
+  body #ks-magazine .ks-editorial-card { padding: 16px; }
+}
+body #ks-magazine #km-purposes-title .ks-route-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 650px) { body #ks-magazine #km-purposes-title .ks-route-grid { grid-template-columns: minmax(0, 1fr); } }

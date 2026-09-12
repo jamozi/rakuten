@@ -1,12 +1,12 @@
 {
   "approval_required": true,
   "artifact_id": "raos-reader-measurement-v1",
-  "contract_sha256": "31f3d14319edc20a1c4a22847e02767869db98b71359e4aab3d12774eb35b7cb",
+  "contract_sha256": "967eed61df88c3c6bcbfff653cf5ca3461a2eb5420c68eb05c3bb3bd0c9b7fb7",
   "default_enabled": false,
   "maintenance_file": "includes/reader-measurement-maintenance.php",
   "migration_assessment": "MANUAL_REVIEW_REQUIRED",
-  "package_sha256": "f7a4ae1a1387acd264ef7eda6f1c134a6ff8ebeed90cec49e1ece47b1c9328f6",
-  "package_size": 28773,
+  "package_sha256": "0cb73e0eeb9c866f9b63c6db5fc38e75f6bcac3d96be77f59e09c224dde715aa",
+  "package_size": 28766,
   "plugin_files": [
     {
       "path": "README.md",
@@ -25,12 +25,12 @@
     },
     {
       "path": "config/reader-allowlist.v1.json",
-      "sha256": "31f3d14319edc20a1c4a22847e02767869db98b71359e4aab3d12774eb35b7cb",
+      "sha256": "967eed61df88c3c6bcbfff653cf5ca3461a2eb5420c68eb05c3bb3bd0c9b7fb7",
       "size": 23683
     },
     {
       "path": "config/reader-runtime.v1.json",
-      "sha256": "41f90d54350f2174c480707cbf21ce1d780269d963e0dad0d0b10d9dd52a1b9f",
+      "sha256": "44615cf669558493219c728a48266c7ee19166276a24a1e010b942453319a46b",
       "size": 1232
     },
     {
@@ -59,7 +59,7 @@
   "plugin_version": "1.0.0",
   "policy_sha256": "fdf60e8d0b53666369963d25e17706ff80f2b179e91ba881708ccb5680d094a6",
   "privacy_source": "changes/editorial-portfolio-v3/reader-measurement-privacy.html",
-  "revision": "9af593292a36bb2b798e773e98c95565d51b14a6c60d946a78bccc90d839750a",
+  "revision": "a95c186dfe66b2701ed3ac007318930787943b9730dd79ebba331c56c1d5da36",
   "runtime_files": [
     {
       "path": "changes/editorial-portfolio-v2/editorial-portfolio.v2.json",
@@ -73,13 +73,13 @@
     },
     {
       "path": "changes/editorial-portfolio-v3/editorial-portfolio.v3.json",
-      "sha256": "76b3d0fe3e83169f3b788f8e2234177a60579c152c374892090885386b5d356b",
-      "size": 258275
+      "sha256": "cbe6ca9cdf5258e4648869452ae9447fcfef975ff74655fea7326ff43de5142f",
+      "size": 258533
     },
     {
       "path": "changes/editorial-portfolio-v3/reader-experience.v1.json",
-      "sha256": "339983556c69dbf528b4bc2afd8f443b8d10e1dac852bbf434e3850dbf4ab579",
-      "size": 82116
+      "sha256": "19c946247828475f261244c31b633026beb574beb1a5af1e5eb47e8eb66a62b2",
+      "size": 80757
     },
     {
       "path": "changes/editorial-portfolio-v3/reader-measurement-privacy.html",
@@ -108,8 +108,8 @@
     },
     {
       "path": "python/raos/application/editorial/reader_experience_v1.py",
-      "sha256": "31376cf234eb236bae23f7b160176b08ce3a8a1214e029e7be9ebd50f3b65a9a",
-      "size": 17129
+      "sha256": "ff0e3bafaf5b830e5f26c82696ded3bd8bd0c23d2eeb2205c0db6da402a11bd2",
+      "size": 16640
     },
     {
       "path": "python/raos/application/editorial/reader_html.py",

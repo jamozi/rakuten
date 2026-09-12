@@ -33,7 +33,7 @@ from scripts import build_reader_purchase_support_v1 as purchase_support_owner  
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "b5128c273345b2b22b604eef4bac348c66f0b5f10826d3a28659985f64b2fc51"
+    "d4636a7f049e5e2102a39d68375ca8364e1ad95a938a6f9e84ec2f0187a28872"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -117,6 +117,8 @@ READER_RUNTIME_ASSET_PATH: Final = (
 THEME_FUNCTIONS_INPUT_PATH: Final = THEME_REPOSITORY_ROOT / "functions.php"
 THEME_SOURCE_INPUT_PATHS: Final = (
     ANALYTICS_CONSENT_GATE_INPUT_PATH,
+    THEME_REPOSITORY_ROOT / "assets/consent-controls.js",
+    THEME_REPOSITORY_ROOT / "assets/site-editorial-metadata.v1.json",
     THEME_REPOSITORY_ROOT / "assets/purchase-support.js",
     THEME_REPOSITORY_ROOT / "assets/purchase-support.css",
     THEME_REPOSITORY_ROOT / "assets/purchase-support.v1.json",

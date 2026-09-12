@@ -1,0 +1,677 @@
+{
+  "schema": "RAOS_SITE_EDITORIAL_PAGES_V1",
+  "articles": {
+    "19": {
+      "category": "travel",
+      "published_on": "2026-08-23",
+      "updated_on": "2026-09-13",
+      "change_summary": "3機種内の軽さを明示し、クレスタのアクセス・マックスパス4のPC寸法を公式確認しました。",
+      "comparison_anchor": "blk-suitcase-007-title",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-08-23T07:17:15Z"
+    },
+    "82": {
+      "category": "travel",
+      "published_on": "2026-08-29",
+      "updated_on": "2026-09-13",
+      "change_summary": "通常時と拡張時を分け、60524新仕様を再確認。型番未照合の画像を非掲載にしました。",
+      "comparison_anchor": "under-100-comparison-title",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-08-29T09:34:09Z"
+    },
+    "83": {
+      "category": "travel",
+      "published_on": "2026-08-29",
+      "updated_on": "2026-09-13",
+      "change_summary": "商品台帳を統一し、未確認条件の理由と確認先を記録しました。",
+      "comparison_anchor": "under-3kg-comparison-title",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-08-29T09:34:12Z"
+    },
+    "84": {
+      "category": "travel",
+      "published_on": "2026-08-29",
+      "updated_on": "2026-09-13",
+      "change_summary": "開口部のアクセス経路とストッパー操作、PC寸法の未確認理由を整理しました。",
+      "comparison_anchor": "comparison-title",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-08-29T09:34:07Z"
+    },
+    "41": {
+      "category": "kitchen",
+      "published_on": "2026-08-28",
+      "updated_on": "2026-09-13",
+      "change_summary": "商品と確認理由を共通台帳に揃え、機種別の洗剤投入先を公式説明書から追記しました。",
+      "comparison_anchor": "blk-dish-007-title",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-08-28T09:33:50Z"
+    },
+    "86": {
+      "category": "kitchen",
+      "published_on": "2026-08-29",
+      "updated_on": "2026-09-13",
+      "change_summary": "mini Plusの別型番を共通台帳に加え、公式の再入荷通知表示と代替候補を確認しました。",
+      "comparison_anchor": "solota-specs-title",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-08-29T09:34:10Z"
+    },
+    "262": {
+      "category": "kitchen",
+      "published_on": "2026-09-09",
+      "updated_on": "2026-09-13",
+      "change_summary": "採寸図を追加し、NP-TSP1の上方空間115mmと総高さからの計算値120mmを区別しました。",
+      "comparison_anchor": "measure-footprint",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-09-08T18:16:01Z"
+    },
+    "263": {
+      "category": "kitchen",
+      "published_on": "2026-09-09",
+      "updated_on": "2026-09-13",
+      "change_summary": "型番別の給排水経路と、タンク給水・分岐水栓の条件を区別しました。",
+      "comparison_anchor": "choose-supply",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-09-08T18:16:05Z"
+    },
+    "264": {
+      "category": "kitchen",
+      "published_on": "2026-09-09",
+      "updated_on": "2026-09-13",
+      "change_summary": "専用洗剤の種類・量・投入先を一覧化し、mini colorの公式説明書を確認しました。",
+      "comparison_anchor": "select-machine-detergent",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-09-08T18:16:08Z"
+    },
+    "265": {
+      "category": "kitchen",
+      "published_on": "2026-09-09",
+      "updated_on": "2026-09-13",
+      "change_summary": "型番別の清掃チェック欄を追加し、mini colorの清掃手順を具体化しました。",
+      "comparison_anchor": "clean-each-time",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-09-08T18:16:12Z"
+    },
+    "266": {
+      "category": "kitchen",
+      "published_on": "2026-09-09",
+      "updated_on": "2026-09-13",
+      "change_summary": "入力なしでも読める仮の単価による1回12.65円・月379.5円の計算例を追加しました。",
+      "comparison_anchor": "guide-cost-calculator",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-09-08T18:16:15Z"
+    },
+    "30": {
+      "category": "cleaning",
+      "published_on": "2026-08-24",
+      "updated_on": "2026-09-13",
+      "change_summary": "小型・収納統合・モップ手入れの3用途に分け、K11の台の軸順未確認を統一しました。",
+      "comparison_anchor": "blk-robot-007-title",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-08-24T09:55:06Z"
+    },
+    "85": {
+      "category": "cleaning",
+      "published_on": "2026-08-29",
+      "updated_on": "2026-09-13",
+      "change_summary": "自動収集付き2機種とSlim別構成を分離し、台の軸順・設置空間を区別しました。",
+      "comparison_anchor": "robot-comparison-title",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-08-29T09:34:04Z"
+    },
+    "28": {
+      "category": "preparedness",
+      "published_on": "2026-08-24",
+      "updated_on": "2026-09-13",
+      "change_summary": "240Whの仮定と70/80%効率・起動負荷の例を整理し、C300の画像同一性未確認を反映しました。",
+      "comparison_anchor": "blk-power-007-title",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-08-24T09:54:57Z"
+    },
+    "29": {
+      "category": "preparedness",
+      "published_on": "2026-08-24",
+      "updated_on": "2026-09-13",
+      "change_summary": "日本語説明書でGen2単口1500W・合計1550Wを確認し、AC/USB-C口別仕様を比較表へ追加しました。",
+      "comparison_anchor": "blk-anker-008-title",
+      "specification_checked_on": null,
+      "sales_checked_at": null,
+      "published_at": "2026-08-24T09:55:17Z"
+    }
+  },
+  "pages": {
+    "home": {
+      "title": "ホーム",
+      "post_id": 15,
+      "anchors": [
+        "ks-magazine",
+        "km-hero-title",
+        "km-categories-title",
+        "ks-visual-categories",
+        "cluster-mobility",
+        "cluster-home",
+        "cluster-ready",
+        "km-purposes-title",
+        "km-articles-title",
+        "km-editorial-title",
+        "home-purchase-check",
+        "home-purchase-check-title"
+      ],
+      "images": [],
+      "description": "置き場所・使い方・残る手間をもとに、暮らしの道具を比較するメディアです。商品カテゴリと悩みの両方から記事を探せます。"
+    },
+    "travel": {
+      "title": "スーツケースの選び方・比較",
+      "post_id": 142,
+      "anchors": [
+        "travel-start",
+        "travel-start-title",
+        "ks-visual-travel",
+        "travel-axes",
+        "travel-axes-title",
+        "choose",
+        "compare",
+        "travel-comparisons",
+        "purchase-checks"
+      ],
+      "images": [
+        "<figure class=\"ks-category-visual\" id=\"ks-visual-travel\" style=\"margin:0\"><img src=\"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-travel-editorial-ai-20260910.webp\" width=\"762\" height=\"506\" alt=\"玄関でスーツケースと衣類を揃えた旅支度のイメージ\"><figcaption>AI生成の編集イメージ。掲載商品の実物写真ではありません。</figcaption></figure>"
+      ],
+      "description": "スーツケースの各辺・総外寸・重量・容量・開口構造を比較します。利用便の制約と拡張時の条件を分けて案内します。"
+    },
+    "kitchen": {
+      "title": "食洗機の選び方・比較",
+      "post_id": 136,
+      "anchors": [
+        "kitchen-start",
+        "kitchen-start-title",
+        "ks-visual-kitchen",
+        "kitchen-axes",
+        "kitchen-axes-title",
+        "choose",
+        "compare",
+        "kitchen-comparisons",
+        "purchase-checks"
+      ],
+      "images": [
+        "<figure class=\"ks-category-visual\" id=\"ks-visual-kitchen\" style=\"margin:0\"><img src=\"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-kitchen-editorial-ai-20260910.webp\" width=\"762\" height=\"506\" alt=\"食器と小型食洗機のあるキッチンのイメージ\"><figcaption>AI生成の編集イメージ。実物写真・収納例・設置図ではありません。</figcaption></figure>"
+      ],
+      "description": "食洗機を買う前の採寸・給排水・比較と、購入後の洗剤・手入れ・費用を分けて案内します。"
+    },
+    "cleaning": {
+      "title": "ロボット掃除機の選び方・比較",
+      "post_id": 131,
+      "anchors": [
+        "cleaning-start",
+        "cleaning-start-title",
+        "ks-visual-cleaning",
+        "cleaning-axes",
+        "cleaning-axes-title",
+        "choose",
+        "compare",
+        "cleaning-comparisons",
+        "purchase-checks"
+      ],
+      "images": [
+        "<figure class=\"ks-category-visual\" id=\"ks-visual-cleaning\" style=\"margin:0\"><img src=\"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-cleaning-editorial-ai-20260910.webp\" width=\"762\" height=\"506\" alt=\"木の床と家具の間にロボット掃除機を配置した暮らしのイメージ\"><figcaption>AI生成の編集イメージ。実物写真や清掃性能の検証ではありません。</figcaption></figure>"
+      ],
+      "description": "吸引・水拭き・自動収集・モップ洗浄乾燥を分け、本体と台の寸法、帰還経路、部品交換の空間を比べます。"
+    },
+    "preparedness": {
+      "title": "ポータブル電源の選び方・比較",
+      "post_id": 138,
+      "anchors": [
+        "preparedness-start",
+        "preparedness-start-title",
+        "ks-visual-preparedness",
+        "preparedness-axes",
+        "preparedness-axes-title",
+        "choose",
+        "compare",
+        "preparedness-comparisons",
+        "purchase-checks"
+      ],
+      "images": [
+        "<figure class=\"ks-category-visual\" id=\"ks-visual-preparedness\" style=\"margin:0\"><img src=\"https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-preparedness-editorial-ai-20260910.webp\" width=\"762\" height=\"506\" alt=\"ポータブル電源とランタンを並べた備えのイメージ\"><figcaption>AI生成の編集イメージ。実物写真・配線図・動作保証ではありません。</figcaption></figure>"
+      ],
+      "description": "必要な容量Wh、同時使用W、起動時の条件、端子を分けて比較します。製品の違いと容量計算例へ直接進めます。"
+    },
+    "categories": {
+      "title": "商品カテゴリから探す",
+      "post_id": 130,
+      "anchors": [
+        "category-cards",
+        "category-undecided"
+      ],
+      "images": [],
+      "description": "スーツケース・食洗機・ロボット掃除機・ポータブル電源から選べます。代表比較と採寸・条件整理へ直接進めます。"
+    },
+    "small-space": {
+      "title": "一人暮らし・省スペース",
+      "post_id": 141,
+      "anchors": [
+        "first-read",
+        "purpose-articles",
+        "next-step"
+      ],
+      "images": [],
+      "description": "本体・可動部・周囲空間を分けて採寸します。"
+    },
+    "save-housework": {
+      "title": "家事を短くしたい",
+      "post_id": 140,
+      "anchors": [
+        "first-read",
+        "purpose-articles",
+        "next-step"
+      ],
+      "images": [],
+      "description": "洗い物と床掃除で、準備・片づけ・手入れを比べます。"
+    },
+    "without-installation": {
+      "title": "設置工事を避けたい",
+      "post_id": 144,
+      "anchors": [
+        "first-read",
+        "purpose-articles",
+        "next-step"
+      ],
+      "images": [],
+      "description": "給水と、電源・接地・排水・台の条件を分けます。"
+    },
+    "easy-maintenance": {
+      "title": "手入れを続けやすいものを選びたい",
+      "post_id": 134,
+      "anchors": [
+        "first-read",
+        "purpose-articles",
+        "next-step"
+      ],
+      "images": [],
+      "description": "食洗機・掃除機・スーツケースごとに確認できます。"
+    },
+    "comfortable-travel": {
+      "title": "旅行を快適にしたい",
+      "post_id": 132,
+      "anchors": [
+        "first-read",
+        "purpose-articles",
+        "next-step"
+      ],
+      "images": [],
+      "description": "階段・車内・保安検査・宿・帰路の荷物で考えます。"
+    },
+    "prepare-outage": {
+      "title": "防災に備えたい",
+      "post_id": 137,
+      "anchors": [
+        "first-read",
+        "purpose-articles",
+        "next-step"
+      ],
+      "images": [],
+      "description": "使う機器・必要時間・場所から、買い足す必要を考えます。"
+    },
+    "purposes": {
+      "title": "悩み・目的から探す",
+      "post_id": 139,
+      "anchors": [
+        "purpose-cards"
+      ],
+      "images": [],
+      "description": "省スペース・残る家事・給排水・手入れ・旅行の荷物・停電への備えを、それぞれの問いから整理します。"
+    },
+    "guides": {
+      "title": "選び方ガイド",
+      "post_id": 135,
+      "anchors": [
+        "ks-guide-jump",
+        "travel-guides",
+        "kitchen-guides",
+        "cleaning-guides",
+        "preparedness-guides"
+      ],
+      "images": [],
+      "description": "置き場所を測る、給水作業を比べる、費用を試算するなど、知りたい作業から選べます。ガイド記事と比較記事内の選び方を区別しています。"
+    },
+    "comparisons": {
+      "title": "比較・条件別の候補",
+      "post_id": 133,
+      "anchors": [
+        "ks-comparison-jump",
+        "compare-travel",
+        "compare-kitchen",
+        "compare-cleaning",
+        "compare-preparedness",
+        "buyer-offer-check",
+        "buyer-offer-check-title"
+      ],
+      "images": [],
+      "description": "商品ごとの比較記事を、主な違いと比較対象数つきで案内します。比較表と販売条件へ直接進めます。"
+    },
+    "updates": {
+      "title": "最近更新したガイド",
+      "post_id": 143,
+      "anchors": [
+        "updated-20260912",
+        "updated-20260911"
+      ],
+      "images": [],
+      "description": "新規公開と実質的な本文変更を区別した記事一覧です。公開日・内容更新日・具体的な変更点を確認できます。"
+    }
+  },
+  "categories": {
+    "travel": {
+      "post_id": 142,
+      "name": "スーツケース",
+      "lead": "利用便と荷物量を先に確認し、軽さ・開き方・容量から選ぶ。",
+      "choose": "行き帰りの移動手段、いつもの荷物、途中で取り出す物を整理します。航空会社・便・機材の条件は、商品表示とは別に確認してください。",
+      "checks": "通常時と拡張時の各辺・3辺合計、荷物込みの重さと個数、送料込みの総額、出発前の納期、保証を確認します。",
+      "hold": "利用便が未定、拡張しないと荷物が収まらない、走行音や耐久性が最優先の場合は、運航会社の規定や実物・同条件の検証情報を確認してから決めましょう。",
+      "order": [
+        82,
+        83,
+        84,
+        19
+      ]
+    },
+    "kitchen": {
+      "post_id": 136,
+      "name": "食洗機",
+      "lead": "置き場所・いつもの食器・毎回の給水から、続けられる一台を。",
+      "choose": "本体・扉・ホースに必要な空間、電源・アース、普段の食器の形と量を確認します。人数表示だけで収納できるとは判断しません。",
+      "checks": "設置と給排水、洗いたい食器の適合、必要部品、送料込みの購入総額、洗剤と手入れを確認します。「工事不要」はすべての設置確認が不要という意味ではありません。",
+      "hold": "置き場所やアースの条件が分からない、普段の食器が入るか不明、給水や手入れを続けにくい場合は、メーカーや適切な施工業者へ確認してください。",
+      "order": [
+        262,
+        263,
+        41,
+        86,
+        266,
+        264,
+        265
+      ]
+    },
+    "cleaning": {
+      "post_id": 131,
+      "name": "ロボット掃除機",
+      "lead": "本体と台の置き場、任せたい掃除、残る手入れを分けて選ぶ。",
+      "choose": "家具の間と家具下、段差、充電台の周囲を確認します。床の片づけ・ゴミ捨て・水拭きのうち、何を減らしたいかを決めましょう。",
+      "checks": "本体と台の寸法に加え、帰還と部品交換の空間、床材、通信条件、セット構成、消耗品、販売元と保証を確認します。",
+      "hold": "毛や砂の取り残し、障害物回避、段差の通過が最優先なら、寸法や公称吸引力だけでは決められません。同機種・似た住環境の比較可能な検証を確認してください。",
+      "order": [
+        30,
+        85
+      ]
+    },
+    "preparedness": {
+      "post_id": 138,
+      "name": "ポータブル電源",
+      "lead": "大きさより先に、使う機器と時間、運べる重さを決める。",
+      "choose": "使う機器、同時使用する組み合わせ、必要時間、保管場所と運ぶ経路を整理します。容量Whと出力Wは別の条件です。",
+      "checks": "起動時も含めた機器との対応、端子と必要付属品、使用・保管環境、重量、販売元と保証を確認。本体単体とパネルなどのセットは分けて総額を比べます。",
+      "hold": "接続機器との対応や必要な時間を確認できない場合は推測で決めません。住宅全体の電源設計、生命維持・医療機器への給電は本比較の対象外です。",
+      "order": [
+        28,
+        29
+      ]
+    }
+  },
+  "publication_date_evidence": {
+    "source": "public WordPress REST posts/pages, fields id,date,date_gmt,slug,link",
+    "checked_on": "2026-09-13",
+    "records": {
+      "266": {
+        "id": 266,
+        "date": "2026-09-09T03:16:15",
+        "date_gmt": "2026-09-08T18:16:15",
+        "slug": "dishwasher-running-cost",
+        "link": "https://kurashinoshirube.com/dishwasher-running-cost/"
+      },
+      "265": {
+        "id": 265,
+        "date": "2026-09-09T03:16:12",
+        "date_gmt": "2026-09-08T18:16:12",
+        "slug": "dishwasher-cleaning-guide",
+        "link": "https://kurashinoshirube.com/dishwasher-cleaning-guide/"
+      },
+      "264": {
+        "id": 264,
+        "date": "2026-09-09T03:16:08",
+        "date_gmt": "2026-09-08T18:16:08",
+        "slug": "dishwasher-detergent-guide",
+        "link": "https://kurashinoshirube.com/dishwasher-detergent-guide/"
+      },
+      "263": {
+        "id": 263,
+        "date": "2026-09-09T03:16:05",
+        "date_gmt": "2026-09-08T18:16:05",
+        "slug": "dishwasher-water-supply-methods",
+        "link": "https://kurashinoshirube.com/dishwasher-water-supply-methods/"
+      },
+      "262": {
+        "id": 262,
+        "date": "2026-09-09T03:16:01",
+        "date_gmt": "2026-09-08T18:16:01",
+        "slug": "dishwasher-installation-measurement",
+        "link": "https://kurashinoshirube.com/dishwasher-installation-measurement/"
+      },
+      "83": {
+        "id": 83,
+        "date": "2026-08-29T18:34:12",
+        "date_gmt": "2026-08-29T09:34:12",
+        "slug": "lightweight-carry-on-suitcase-under-3kg",
+        "link": "https://kurashinoshirube.com/lightweight-carry-on-suitcase-under-3kg/"
+      },
+      "86": {
+        "id": 86,
+        "date": "2026-08-29T18:34:10",
+        "date_gmt": "2026-08-29T09:34:10",
+        "slug": "solota-vs-rakua-mini-plus",
+        "link": "https://kurashinoshirube.com/solota-vs-rakua-mini-plus/"
+      },
+      "82": {
+        "id": 82,
+        "date": "2026-08-29T18:34:09",
+        "date_gmt": "2026-08-29T09:34:09",
+        "slug": "carry-on-suitcase-under-100-seats",
+        "link": "https://kurashinoshirube.com/carry-on-suitcase-under-100-seats/"
+      },
+      "84": {
+        "id": 84,
+        "date": "2026-08-29T18:34:07",
+        "date_gmt": "2026-08-29T09:34:07",
+        "slug": "front-open-carry-on-suitcase-with-stopper",
+        "link": "https://kurashinoshirube.com/front-open-carry-on-suitcase-with-stopper/"
+      },
+      "85": {
+        "id": 85,
+        "date": "2026-08-29T18:34:04",
+        "date_gmt": "2026-08-29T09:34:04",
+        "slug": "roomba-mini-vs-switchbot-k11-pro",
+        "link": "https://kurashinoshirube.com/roomba-mini-vs-switchbot-k11-pro/"
+      },
+      "41": {
+        "id": 41,
+        "date": "2026-08-28T18:33:50",
+        "date_gmt": "2026-08-28T09:33:50",
+        "slug": "countertop-dishwasher-for-small-households",
+        "link": "https://kurashinoshirube.com/countertop-dishwasher-for-small-households/"
+      },
+      "29": {
+        "id": 29,
+        "date": "2026-08-24T18:55:17",
+        "date_gmt": "2026-08-24T09:55:17",
+        "slug": "anker-solix-c300-c800-c1000-differences",
+        "link": "https://kurashinoshirube.com/anker-solix-c300-c800-c1000-differences/"
+      },
+      "30": {
+        "id": 30,
+        "date": "2026-08-24T18:55:06",
+        "date_gmt": "2026-08-24T09:55:06",
+        "slug": "compact-robot-vacuum-shortlist",
+        "link": "https://kurashinoshirube.com/compact-robot-vacuum-shortlist/"
+      },
+      "28": {
+        "id": 28,
+        "date": "2026-08-24T18:54:57",
+        "date_gmt": "2026-08-24T09:54:57",
+        "slug": "portable-power-station-guide",
+        "link": "https://kurashinoshirube.com/portable-power-station-guide/"
+      },
+      "19": {
+        "id": 19,
+        "date": "2026-08-23T16:17:15",
+        "date_gmt": "2026-08-23T07:17:15",
+        "slug": "carry-on-suitcase-comparison",
+        "link": "https://kurashinoshirube.com/carry-on-suitcase-comparison/"
+      },
+      "141": {
+        "id": 141,
+        "date": "2026-09-07T10:20:07",
+        "date_gmt": "2026-09-07T01:20:07",
+        "slug": "small-space",
+        "link": "https://kurashinoshirube.com/small-space/"
+      },
+      "134": {
+        "id": 134,
+        "date": "2026-09-07T10:20:06",
+        "date_gmt": "2026-09-07T01:20:06",
+        "slug": "easy-maintenance",
+        "link": "https://kurashinoshirube.com/easy-maintenance/"
+      },
+      "130": {
+        "id": 130,
+        "date": "2026-09-07T10:20:04",
+        "date_gmt": "2026-09-07T01:20:04",
+        "slug": "categories",
+        "link": "https://kurashinoshirube.com/categories/"
+      },
+      "138": {
+        "id": 138,
+        "date": "2026-09-07T10:20:02",
+        "date_gmt": "2026-09-07T01:20:02",
+        "slug": "preparedness",
+        "link": "https://kurashinoshirube.com/preparedness/"
+      },
+      "144": {
+        "id": 144,
+        "date": "2026-09-07T10:19:58",
+        "date_gmt": "2026-09-07T01:19:58",
+        "slug": "without-installation",
+        "link": "https://kurashinoshirube.com/without-installation/"
+      },
+      "137": {
+        "id": 137,
+        "date": "2026-09-07T10:19:56",
+        "date_gmt": "2026-09-07T01:19:56",
+        "slug": "prepare-outage",
+        "link": "https://kurashinoshirube.com/prepare-outage/"
+      },
+      "139": {
+        "id": 139,
+        "date": "2026-09-07T10:19:54",
+        "date_gmt": "2026-09-07T01:19:54",
+        "slug": "purposes",
+        "link": "https://kurashinoshirube.com/purposes/"
+      },
+      "136": {
+        "id": 136,
+        "date": "2026-09-07T10:19:52",
+        "date_gmt": "2026-09-07T01:19:52",
+        "slug": "kitchen",
+        "link": "https://kurashinoshirube.com/kitchen/"
+      },
+      "142": {
+        "id": 142,
+        "date": "2026-09-07T10:19:51",
+        "date_gmt": "2026-09-07T01:19:51",
+        "slug": "travel",
+        "link": "https://kurashinoshirube.com/travel/"
+      },
+      "140": {
+        "id": 140,
+        "date": "2026-09-07T10:19:49",
+        "date_gmt": "2026-09-07T01:19:49",
+        "slug": "save-housework",
+        "link": "https://kurashinoshirube.com/save-housework/"
+      },
+      "131": {
+        "id": 131,
+        "date": "2026-09-07T10:19:47",
+        "date_gmt": "2026-09-07T01:19:47",
+        "slug": "cleaning",
+        "link": "https://kurashinoshirube.com/cleaning/"
+      },
+      "135": {
+        "id": 135,
+        "date": "2026-09-07T10:19:45",
+        "date_gmt": "2026-09-07T01:19:45",
+        "slug": "guides",
+        "link": "https://kurashinoshirube.com/guides/"
+      },
+      "143": {
+        "id": 143,
+        "date": "2026-09-07T10:19:41",
+        "date_gmt": "2026-09-07T01:19:41",
+        "slug": "updates",
+        "link": "https://kurashinoshirube.com/updates/"
+      },
+      "133": {
+        "id": 133,
+        "date": "2026-09-07T10:19:38",
+        "date_gmt": "2026-09-07T01:19:38",
+        "slug": "comparisons",
+        "link": "https://kurashinoshirube.com/comparisons/"
+      },
+      "132": {
+        "id": 132,
+        "date": "2026-09-07T10:19:35",
+        "date_gmt": "2026-09-07T01:19:35",
+        "slug": "comfortable-travel",
+        "link": "https://kurashinoshirube.com/comfortable-travel/"
+      },
+      "120": {
+        "id": 120,
+        "date": "2026-08-30T22:20:35",
+        "date_gmt": "2026-08-30T13:20:35",
+        "slug": "comparison-policy",
+        "link": "https://kurashinoshirube.com/comparison-policy/"
+      },
+      "10": {
+        "id": 10,
+        "date": "2026-08-14T06:05:02",
+        "date_gmt": "2026-08-13T21:05:02",
+        "slug": "about-ad-policy",
+        "link": "https://kurashinoshirube.com/about-ad-policy/"
+      },
+      "15": {
+        "id": 15,
+        "date": "2026-08-14T06:02:05",
+        "date_gmt": "2026-08-13T21:02:05",
+        "slug": "home",
+        "link": "https://kurashinoshirube.com/"
+      },
+      "3": {
+        "id": 3,
+        "date": "2026-08-14T00:42:00",
+        "date_gmt": "2026-08-13T15:42:00",
+        "slug": "privacy-policy",
+        "link": "https://kurashinoshirube.com/privacy-policy/"
+      }
+    }
+  }
+}

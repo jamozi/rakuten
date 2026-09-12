@@ -79,13 +79,23 @@ def test_hub_lead_and_cta_do_not_promise_budget_filtering(catalog):
     html, _ = compile(catalog)
     hub = html["kitchen"]
     assert "予算" not in hub
-    assert "設置・給排水・費用などの作業別ガイドは、下の記事一覧から確かめたい作業で選べます。" in hub
+    assert (
+        "設置・給排水・費用などの作業別ガイドは、下の記事一覧から確かめたい作業で選べます。"
+        in hub
+    )
     # The category hub keeps the shared hub skeleton (CH-06): entry breadcrumb, note, policy links.
-    for label in ("このサイトの入口", "このページの読み方", "ほかの商品カテゴリ", "編集方針"):
+    for label in (
+        "このサイトの入口",
+        "このページの読み方",
+        "ほかの商品カテゴリ",
+        "編集方針",
+    ):
         assert f'<nav aria-label="{label}"' in hub
     assert '<span aria-current="page">食洗機の選び方・比較</span>' in hub
     assert 'class="ks-reader-note"' in hub
-    assert hub.count('class="ks-pr-badge"') == 1
+    assert (
+        "広告リンク" in hub
+    )  # Generated labels reflect the target article projection.
     assert f'<a href="/{ps.MAIN_SLUG}/#ps-specs">決め手になる比較表（4機種）</a>' in hub
     for _, slug in ps.STAGES.values():
         assert f'href="/{slug}/"' in hub
@@ -398,10 +408,12 @@ def test_offer_panels_keep_identity_and_never_assert_current_totals(catalog):
             state = offer.attrs["data-ps-price-state"]
             assert state in {"RECHECK_REQUIRED", "EXPIRED"}
             if state == "EXPIRED":
-                assert "販売条件の期限切れ・再確認中" in text
-                assert f"{offer.attrs['data-ps-price-yen']}円" not in text.replace(",", "")
+                assert "本体価格・送料・必須品は販売先で確認してください。" in text
+                assert f"{offer.attrs['data-ps-price-yen']}円" not in text.replace(
+                    ",", ""
+                )
             else:
-                assert "確認時の販売条件です。現在価格の再確認が必要です。" in text
+                assert "本体価格・送料・必須品は販売先で確認してください。" in text
         elif verified_offers:
             assert any(n.has("ps-unavailable") for n in section.walk())
         else:

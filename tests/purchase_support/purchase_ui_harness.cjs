@@ -81,7 +81,7 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
     const prices = [30000, 60000, 90000, 10000];
     const offers = ids.map((id, i) => `<section class="ps-product-offers" data-ps-product="${id}"><div data-ps-offer="offer-${id}" data-ps-checked-at="2026-09-10T05:00:00Z" data-ps-valid-until="2026-09-10T06:00:01Z" data-ps-identity="true" data-ps-state="AVAILABLE" data-ps-condition="new" data-ps-complete="${id === 'c' ? 'false' : 'true'}" data-ps-price-yen="${prices[i]}" data-ps-shipping-yen="0" data-ps-required-items-yen="0"><p class="ps-price-status">確認時の条件</p></div></section>`).join('');
     const row = values => `<tr><th>項目</th>${ids.map((id,i) => `<td data-ps-product="${id}">${values[i]}</td>`).join('')}</tr>`;
-    const html = `<div class="ps-article"><div class="ps-budget-controls" hidden data-ps-purpose-options='[{"id":"small","label":"少量"}]'></div><div class="ps-pair-controls" hidden data-ps-pair-options='${JSON.stringify(ids.map(id => ({ id, label: id })))}'></div><div class="ps-table-scroll" tabindex="0"><table class="ps-comparison"><thead><tr><th>項目</th>${ids.map(id => `<th data-ps-product="${id}">${id}</th>`).join('')}</tr></thead><tbody>${row(['同値','同値','別','別'])}${row(['未確認','未確認','未確認','未確認'])}</tbody></table></div><div class="ps-product-grid">${ids.map(id => `<article class="ps-product" data-ps-product="${id}" data-ps-use-cases="${id === 'd' ? 'large' : 'small'}"><h3>${id}</h3><p data-ps-product-budget role="status"></p></article>`).join('')}</div>${offers}<div class="ps-installation" data-ps-installation='${JSON.stringify(dimensions)}'><div class="ps-installation-controls" hidden></div><p>安全保証なし</p></div></div>`;
+    const html = `<div class="ps-article"><div class="ps-budget-controls" hidden data-ps-purpose-options='[{"id":"small","label":"少量"}]'></div><div class="ps-pair-controls" hidden data-ps-pair-options='${JSON.stringify(ids.map(id => ({ id, label: id })))}'></div><div class="ps-table-scroll" tabindex="0"><table class="ps-comparison"><thead><tr><th>項目</th>${ids.map(id => `<th data-ps-product="${id}">${id}</th>`).join('')}</tr></thead><tbody>${row(['同値<sup class="ps-reference">[1]</sup>','同値<sup class="ps-reference">[2]</sup>','別','別'])}${row(['未確認','未確認','未確認','未確認'])}</tbody></table></div><div class="ps-product-grid">${ids.map(id => `<article class="ps-product" data-ps-product="${id}" data-ps-use-cases="${id === 'd' ? 'large' : 'small'}"><h3>${id}</h3><p data-ps-product-budget role="status"></p></article>`).join('')}</div>${offers}<div class="ps-installation" data-ps-installation='${JSON.stringify(dimensions)}'><div class="ps-installation-controls" hidden></div><p>安全保証なし</p></div></div>`;
     await page.setContent(html);
     await page.addStyleTag({ content: css });
     assert.equal(await page.locator('.ps-product:visible').count(), 4, 'all products before JS');
@@ -151,10 +151,13 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
       await noScript.setContent(body);
       assert.equal(await noScript.locator('input, select, button, noscript').count(), 0, `${article.slug}: inert published content`);
       if (article.kind === 'comparison') {
-        assert.equal(await noScript.locator('.ps-product:visible').count(), 4);
-        assert.equal(await noScript.locator('.ps-product-offers:visible').count(), 4);
+        assert.equal(await noScript.locator('.ps-product:visible').count(), article.product_ids.length);
+        assert.equal(await noScript.locator('.ps-product-offers:visible').count(), article.product_ids.length + (article.supplementary_product_ids || []).length);
         await page.setContent(body);
         await page.addScriptTag({ content: source });
+        assert.equal(await page.locator('.ps-pair-controls:visible').count(), 1, `${article.slug}: main comparison size supported`);
+        assert.equal(await page.locator('[data-ps-pair="a"] option').count(), article.product_ids.length);
+        assert.equal(await page.locator('[data-ps-pair-reset]').textContent(), `${article.product_ids.length}候補に戻す`);
         if (article.slug === 'countertop-dishwasher-for-small-households') {
           // Links-only comparison: no purpose/budget inputs, four condition links, pair still works.
           assert.equal(await page.locator('[data-ps-purpose], [data-ps-budget]').count(), 0, 'no purpose/budget inputs on the main comparison');
@@ -183,7 +186,7 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
         } else {
           assert.equal(await page.locator('[data-ps-purpose]:visible').count(), 1);
           await page.locator('[data-ps-budget]').fill('1');
-          assert.equal(await page.locator('.ps-product:visible').count(), 4, 'budget never hides published candidates');
+          assert.equal(await page.locator('.ps-product:visible').count(), article.product_ids.length, 'budget never hides published candidates');
           const firstCase = article.conditions[0].id;
           await page.locator('[data-ps-purpose]').selectOption(firstCase);
           assert.match(await page.locator('[data-ps-budget-result]').textContent(), /候補を表示/);

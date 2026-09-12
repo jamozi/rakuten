@@ -133,7 +133,14 @@
         {
           "date": "2026-09-12",
           "text": "期限を過ぎた価格の非表示、商品画像広告の掲載条件（販売先を照合できた候補のみ）、結論の決め手、注意文の重複、確認先の表記を修正。SS-MA251の販売ページの型番選択と、ラクアmini colorの公式通販の状態（再入荷待ち）、SOLOTAの上・左右の余白が公式資料で未確認であることを追記"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "商品台帳を全比較記事で共通化し、確認不能理由と更新履歴を整理。結論の条件・公式資料で確認した値を分けて表示。"
         }
+      ],
+      "preserved_editorial_sections": [
+        "dish-meal-work-title"
       ]
     },
     {
@@ -235,7 +242,14 @@
         {
           "date": "2026-09-12",
           "text": "期限を過ぎた価格の非表示、販売先を照合できない候補の商品画像広告の非掲載、旧掲載型番の注記の整理（C-Lite 134679-1549は同じスタイルの色違いと確認）、サムソナイト公式ストアの販売条件の再確認"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "商品台帳を全比較記事で共通化し、確認不能理由と更新履歴を整理。結論の条件・公式資料で確認した値を分けて表示。"
         }
+      ],
+      "preserved_editorial_sections": [
+        "suitcase-weight-example-title"
       ]
     },
     {
@@ -254,7 +268,7 @@
       "conditions": [
         {
           "id": "compact",
-          "label": "本体と台を小さくしたい",
+          "label": "台の小ささを重視する2機種",
           "product_ids": [
             "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
             "PRD-SWITCHBOT-K11-PRO"
@@ -267,14 +281,14 @@
         },
         {
           "id": "vacuum",
-          "label": "コードレス掃除機もまとめたい",
+          "label": "コードレス掃除機と収納をまとめる",
           "product_ids": [
             "PRD-SWITCHBOT-K10-PRO-COMBO"
           ]
         },
         {
           "id": "mop",
-          "label": "モップ洗浄・乾燥も任せたい",
+          "label": "モップ洗浄・乾燥の手間を減らす",
           "product_ids": [
             "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
           ]
@@ -312,9 +326,7 @@
         "title": "MiniとK11+ Proが残ったら、接続条件と台の周囲を比べる",
         "steps": [
           "アプリに接続するWi-Fiを確認します。Roomba Mini + AutoEmpty F155260は2.4GHz・5GHz、K11+ Proは2.4GHzに対応します。5GHzでの接続を条件にするならMiniを確認候補に。K11+ Proを選ぶ場合は、設置場所で2.4GHzを使えるか先に確かめてください。周波数が合っても、ルーター設定などによって接続できない場合があります。",
-          "すでに使っているアプリとの関係を考えます。2.4GHzを使え、SwitchBot機器を同じアプリで管理したいならK11+ Proが候補になります。iRobotのRoomba Homeアプリを使いたいならMiniを確認します。アプリの操作性や清掃力を実機で順位付けした判断ではありません。",
-          "台の外寸だけで置けると判断しません。K11+ Proの日本語説明書は、左右各0.5m・前方と上方各1.5mの空間を指定しています。Miniについても、台の前の帰還経路とごみ捨て・ふた開閉の余地を型番別説明書で確認してください。K11+ Proの余白をMiniへ流用しません。",
-          "通信と設置の両方を満たしても決まらなければ、紙パック・交換部品の入手先と費用、購入先の保証をそろえて比較します。吸引力のPa表示や本体の数mm差だけで優劣は決めません。確認できない条件が残る場合は、購入を保留して下の機種別の確認事項へ進んでください。"
+          "設置余白と紙パック・ブラシの確認は2機種比較にまとめています。購入する機種が決まっている場合は、このページの販売条件へ直接進めます。"
         ],
         "source_url": "/roomba-mini-vs-switchbot-k11-pro/#robot-connectivity-title",
         "source_label": "2機種の通信・設置条件と、公式仕様・日本語説明書の出典を確認する",
@@ -345,6 +357,10 @@
         {
           "date": "2026-09-12",
           "text": "期限を過ぎた価格の非表示、販売先を照合できない候補の商品画像広告の非掲載、結論への充電台が最小の構成（Roomba Mini Slim + SlimCharge）の案内を追加"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "商品台帳を全比較記事で共通化し、確認不能理由と更新履歴を整理。結論の条件・公式資料で確認した値を分けて表示。"
         }
       ]
     },
@@ -415,11 +431,9 @@
       "decision_steps": {
         "title": "使いたい時間から、必要なWhとWを分けて考える",
         "steps": [
-          "機器ごとに消費電力Wと使いたい時間hを書き出します。以下は説明用の仮定で、実測した家電の値ではありません。照明10Wを8時間、扇風機40Wを4時間使うなら、10×8＋40×4＝240Whが機器側で必要な電力量です。実際には手元の機器の表示・説明書や測定値に置き換えてください。",
-          "AC変換などの損失を見込みます。蓄電容量の80％を使えると仮定すると、240÷0.8＝300Whが計算上の必要容量です。70％なら約343Whになります。80％はメーカーの解説でも使う概算条件で、この4機種すべての実効効率を確認した値ではありません。温度、負荷、待機消費、劣化、充電残量でも変わり、稼働時間を保証しません。",
-          "この例では288Whは300Whに届きません。512Wh以上を次の確認候補にできますが、容量だけでは使えると判断できません。使用時間を延ばす場合は再計算し、停電中に充電できることを前提にしないでください。",
-          "同時に使う機器のWと起動時のWを、電源の定格出力・出力端子・対応条件に照合します。上の仮定で照明と扇風機を同時使用する通常時は50Wですが、起動電力は別に確認が必要です。Whは使える長さ、Wは同時に動かせる負荷の判断に使います。",
-          "最後に、両方の説明書で接続可否と使用条件を確認します。定格内でも、起動時の負荷や機器側の制限によって使えないことがあります。適合を確認できない機器は使用可能と扱わず、容量・出力・接続条件を満たす候補の重量と置き場所を比べてください。"
+          "仮定：照明10W×8時間＋扇風機40W×4時間＝240Wh。効率80%なら必要容量300Wh、70%なら約343Wh。いずれも実測効率ではなく、稼働時間を保証しません。",
+          "この例では288Whは300Whに届かず、512Wh以上を次の候補にします。同時消費は通常50Wでも、起動電力・端子・機器側の制限を別に確認します。",
+          "手元の機器のWと時間に置き換えて再計算してください。定格以内でも動作保証にはならず、停電中に充電できることを前提にしません。医療機器・住宅全体への給電は比較対象外です。"
         ],
         "source_url": "https://www.ankerjapan.com/blogs/magazine/power-electric-fan",
         "source_label": "計算の考え方：Anker公式「ポータブル電源で扇風機は何時間使える？」（2026年9月10日確認）"
@@ -449,6 +463,10 @@
         {
           "date": "2026-09-12",
           "text": "Jackery 500 Newの9月10日までのセール価格を除き、公式ストアの通常価格を確認して更新。期限を過ぎた価格は再確認中と表示"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "商品台帳を全比較記事で共通化し、確認不能理由と更新履歴を整理。結論の条件・公式資料で確認した値を分けて表示。"
         }
       ]
     },
@@ -804,6 +822,510 @@
       "title": "プライバシーポリシー",
       "excerpt": "暮らしのしるべが取得する情報と利用目的、CookieYesによる同意管理、同意後にのみ読み込むGoogle Analytics 4、楽天市場の商品画像に伴う外部送信、Cookieの名称・保存期間と同意の撤回方法を説明します。",
       "post_type": "page"
+    },
+    {
+      "article_id": "carry-on-suitcase-comparison",
+      "slug": "carry-on-suitcase-comparison",
+      "post_id": 19,
+      "kind": "comparison",
+      "product_ids": [
+        "PRD-ACE-CRESTA-06316",
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-ACE-MAXPASS4-01471"
+      ],
+      "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方",
+      "excerpt": "型番と一次情報を照合できたエース系3モデル（クレスタ 06316、ディフェレンス 05721、マックスパス4 01471）を、軽さ・容量・開き方で条件別に比較。100席以上の便で使う前提で、向く人と注意点を整理します。",
+      "post_type": "post",
+      "intro": "今回のエース3モデルの中では、軽さはクレスタ、開き方の使い分けはディフェレンス、非拡張40Lはマックスパス4が候補です。3kg以下が条件なら、軽量モデル比較へ進んでください。",
+      "conditions": [
+        {
+          "id": "choice-1",
+          "label": "この3モデルで本体の軽さを優先",
+          "product_ids": [
+            "PRD-ACE-CRESTA-06316"
+          ],
+          "alternative": {
+            "text": "3kg以下を必須にする場合は、この3モデルは対象外です。",
+            "href": "/lightweight-carry-on-suitcase-under-3kg/",
+            "label": "30L以上・3kg以下の4モデルを比較する"
+          }
+        },
+        {
+          "id": "choice-2",
+          "label": "前開きと中央開きを使い分ける",
+          "product_ids": [
+            "PRD-ACE-DIFFERENCE-05721"
+          ]
+        },
+        {
+          "id": "choice-3",
+          "label": "拡張せず40Lを確保",
+          "product_ids": [
+            "PRD-ACE-MAXPASS4-01471"
+          ]
+        }
+      ],
+      "spec_labels": [
+        "通常時外寸（幅×奥行×高さ）",
+        "容量",
+        "本体重量",
+        "アクセス方法",
+        "拡張"
+      ],
+      "condition_fact_labels": [
+        "容量",
+        "本体重量"
+      ],
+      "history": [
+        {
+          "date": "2026-09-12",
+          "text": "現行公開本文の内容を維持して移行。原典の過去確認日は個別出典を参照。"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "エース3機種内の軽さを明示し、クレスタの隠しポケットとマックスパス4のPC収納寸法を公式で再確認。"
+        }
+      ],
+      "legacy_anchor_targets": {
+        "ks-start-19": "ps-choose",
+        "product-cresta-06316-caution": "product-cresta-06316",
+        "product-cresta-06316-cta-note": "ps-seller-product-cresta-06316",
+        "product-difference-05721-caution": "product-difference-05721",
+        "product-difference-05721-cta-note": "ps-seller-product-difference-05721",
+        "product-maxpass4-01471-caution": "product-maxpass4-01471",
+        "product-maxpass4-01471-cta-note": "ps-seller-product-maxpass4-01471",
+        "purchase-checks": "ps-offers",
+        "suitcase-official-purchase-conditions": "ps-offers",
+        "suitcase-official-purchase-conditions-title": "ps-offers"
+      },
+      "spec_detail_labels": [
+        "PC収納（幅×高さ×厚さ）"
+      ],
+      "preserved_editorial_sections": [
+        "ace-scope-title"
+      ]
+    },
+    {
+      "article_id": "carry-on-suitcase-under-100-seats",
+      "slug": "carry-on-suitcase-under-100-seats",
+      "post_id": 82,
+      "kind": "comparison",
+      "product_ids": [
+        "PRD-PROTECA-STARIA-CXR-02350",
+        "PRD-PROTECA-FRESTER-EX-01550",
+        "PRD-ACE-PALISADES3-Z-06910",
+        "PRD-BERMAS-INTER-CITY-60524"
+      ],
+      "title": "100席未満の国内線向け機内持ち込みスーツケース4モデル比較",
+      "excerpt": "100席未満の国内線で確認したい幅35×奥行20×高さ45cm・3辺100cm以内を基準に、スタリアCXR、フレスターEX、パリセイド3-Z、INTER CITY 60524の外寸、重量、容量、開き方を公式情報から比較します。",
+      "post_type": "post",
+      "intro": "4モデルとも通常時の公称外寸は幅34×奥行20×高さ45cm。使う便の各辺・個数・重量の条件を先に確認し、軽さ・前開き・PC収納で選びます。フレスターEXの拡張状態はこの比較条件の対象外です。",
+      "conditions": [
+        {
+          "id": "choice-1",
+          "label": "小型機向け4候補で本体の軽さを優先",
+          "product_ids": [
+            "PRD-PROTECA-STARIA-CXR-02350"
+          ]
+        },
+        {
+          "id": "choice-2",
+          "label": "通常時26Lと前開き",
+          "product_ids": [
+            "PRD-PROTECA-FRESTER-EX-01550"
+          ]
+        },
+        {
+          "id": "choice-3",
+          "label": "21Lで収まり前開きを使う",
+          "product_ids": [
+            "PRD-ACE-PALISADES3-Z-06910"
+          ]
+        },
+        {
+          "id": "choice-4",
+          "label": "PCを衣類と分けて収納",
+          "product_ids": [
+            "PRD-BERMAS-INTER-CITY-60524"
+          ]
+        }
+      ],
+      "spec_labels": [
+        "通常時外寸（幅×奥行×高さ）",
+        "3辺合計",
+        "容量",
+        "本体重量",
+        "使い分け"
+      ],
+      "condition_fact_labels": [
+        "容量",
+        "本体重量"
+      ],
+      "history": [
+        {
+          "date": "2026-09-12",
+          "text": "現行公開本文の内容を維持して移行。原典の過去確認日は個別出典を参照。"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "通常時と拡張時を区別し、60524新仕様を公式で再確認。未照合画像を非掲載。"
+        }
+      ],
+      "legacy_anchor_targets": {
+        "ks-start-82": "ps-choose",
+        "under-100-introduction-title": "ps-choose",
+        "under-100-decision-title": "ps-choose",
+        "under-100-reader-title": "ps-choose",
+        "under-100-comparison-title": "ps-specs",
+        "under-100-products-title": "ps-products",
+        "staria-cxr-02350-purchase": "ps-seller-staria-cxr-02350",
+        "under-100-cta-01-note": "staria-cxr-02350",
+        "frester-ex-01550-purchase": "ps-seller-frester-ex-01550",
+        "under-100-cta-02-note": "frester-ex-01550",
+        "palisades3-z-06910-purchase": "ps-seller-palisades3-z-06910",
+        "under-100-cta-03-note": "palisades3-z-06910",
+        "bermas-inter-city-60524-purchase": "ps-seller-bermas-inter-city-60524",
+        "under-100-cta-04-note": "bermas-inter-city-60524",
+        "purchase-checks": "ps-offers",
+        "under-100-caution-title": "ps-offers"
+      },
+      "preserved_editorial_sections": [
+        "small-flight-limits-title"
+      ]
+    },
+    {
+      "article_id": "front-open-carry-on-suitcase-with-stopper",
+      "slug": "front-open-carry-on-suitcase-with-stopper",
+      "post_id": 84,
+      "kind": "comparison",
+      "product_ids": [
+        "PRD-INNOVATOR-INV50",
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-PROTECA-FRESTER-EX-01551",
+        "PRD-BERMAS-INTER-CITY-II-60561"
+      ],
+      "title": "前開き・ストッパー付き機内持ち込みスーツケース4モデル比較",
+      "excerpt": "前開きとキャスターストッパーを備えた機内持ち込みサイズの4モデル（INV50、ディフェレンス 05721、フレスターEX 01551、INTER CITY II 60561）を、前面構造、容量、重量、PC収納、拡張時寸法で比較。",
+      "post_type": "post",
+      "intro": "INV50は3室、ディフェレンスは前と中央の2通り、フレスターEXは前から片側、INTER CITY IIは前面のPC区画が選ぶ理由です。開ける場所と取り出す物を照合してください。",
+      "conditions": [
+        {
+          "id": "choice-1",
+          "label": "3室に荷物を分ける",
+          "product_ids": [
+            "PRD-INNOVATOR-INV50"
+          ]
+        },
+        {
+          "id": "choice-2",
+          "label": "前と中央を使い分ける",
+          "product_ids": [
+            "PRD-ACE-DIFFERENCE-05721"
+          ]
+        },
+        {
+          "id": "choice-3",
+          "label": "片側から荷造りする",
+          "product_ids": [
+            "PRD-PROTECA-FRESTER-EX-01551"
+          ]
+        },
+        {
+          "id": "choice-4",
+          "label": "PC区画とUSB端子を使う",
+          "product_ids": [
+            "PRD-BERMAS-INTER-CITY-II-60561"
+          ]
+        }
+      ],
+      "spec_labels": [
+        "通常時外寸（幅×奥行×高さ）",
+        "容量",
+        "本体重量",
+        "前開きの整理",
+        "キャスターストッパー",
+        "拡張時",
+        "固有の検討軸"
+      ],
+      "condition_fact_labels": [
+        "容量",
+        "本体重量"
+      ],
+      "history": [
+        {
+          "date": "2026-09-12",
+          "text": "現行公開本文の内容を維持して移行。原典の過去確認日は個別出典を参照。"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "4構造のアクセス経路図と、ストッパー操作・PC収納実寸の確認状態を追加。"
+        }
+      ],
+      "legacy_anchor_targets": {
+        "ks-start-84": "ps-choose",
+        "introduction-title": "ps-choose",
+        "decision-title": "ps-choose",
+        "reader-title": "ps-choose",
+        "comparison": "ps-specs",
+        "comparison-title": "ps-specs",
+        "products-title": "ps-products",
+        "innovator-inv50-purchase": "ps-seller-innovator-inv50",
+        "cta-inv50-note": "innovator-inv50",
+        "ace-difference-05721": "product-difference-05721",
+        "ace-difference-05721-purchase": "ps-seller-product-difference-05721",
+        "cta-05721-note": "product-difference-05721",
+        "proteca-frester-ex-01551-purchase": "ps-seller-proteca-frester-ex-01551",
+        "cta-01551-note": "proteca-frester-ex-01551",
+        "bermas-inter-city-ii-60561-purchase": "ps-seller-bermas-inter-city-ii-60561",
+        "cta-60561-note": "bermas-inter-city-ii-60561",
+        "purchase-checks": "ps-offers",
+        "purchase-caution-title": "ps-offers"
+      },
+      "spec_detail_labels": [
+        "PC収納（幅×高さ×厚さ）",
+        "ストッパーの操作",
+        "USBと付属電源"
+      ],
+      "preserved_editorial_sections": [
+        "opening-map-title"
+      ]
+    },
+    {
+      "article_id": "roomba-mini-vs-switchbot-k11-pro",
+      "slug": "roomba-mini-vs-switchbot-k11-pro",
+      "post_id": 85,
+      "kind": "comparison",
+      "product_ids": [
+        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-SWITCHBOT-K11-PRO"
+      ],
+      "title": "Roomba MiniとK11+ Pro｜台の寸法と手入れで比較",
+      "excerpt": "Roomba Mini + AutoEmptyとSwitchBot K11+ Proを、本体・台の寸法、自動ゴミ収集、Wi-Fi、手入れの公式仕様で比較。台を小さくしたい人向けにMini Slim（F115060）も扱います。",
+      "post_type": "post",
+      "intro": "自動ゴミ収集付きのRoomba Mini F155260とK11+ Proを比較します。台の外寸に加えて帰還経路・ふた開閉・消耗品交換の空間を確認してください。自動収集なしのMini Slimは別構成です。",
+      "conditions": [
+        {
+          "id": "choice-1",
+          "label": "Roomba Home・2.4/5GHzを使う",
+          "product_ids": [
+            "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"
+          ]
+        },
+        {
+          "id": "choice-2",
+          "label": "SwitchBot・2.4GHzを使う",
+          "product_ids": [
+            "PRD-SWITCHBOT-K11-PRO"
+          ]
+        }
+      ],
+      "spec_labels": [
+        "本体寸法（幅×奥行×高さ）",
+        "本体重量",
+        "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
+        "自動ゴミ収集",
+        "紙パック容量",
+        "アプリ / Wi-Fi"
+      ],
+      "condition_fact_labels": [
+        "本体寸法（幅×奥行×高さ）"
+      ],
+      "history": [
+        {
+          "date": "2026-09-12",
+          "text": "現行公開本文の内容を維持して移行。原典の過去確認日は個別出典を参照。"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "自動収集付き2機種とSlimを分離。K11の説明書で軸名なしと部品交換目安を確認。"
+        }
+      ],
+      "legacy_anchor_targets": {
+        "ks-start-85": "ps-choose",
+        "ks-start-85-title": "ps-choose",
+        "robot-introduction-title": "ps-choose",
+        "robot-decision-title": "ps-choose",
+        "robot-reader-title": "ps-choose",
+        "robot-comparison-title": "ps-specs",
+        "robot-products-title": "ps-products",
+        "roomba-mini-autoempty-f155260": "product-robot-roomba-mini",
+        "roomba-mini-autoempty-f155260-purchase": "ps-seller-product-robot-roomba-mini",
+        "robot-cta-f155260-note": "product-robot-roomba-mini",
+        "switchbot-k11-pro": "product-robot-k11-pro",
+        "switchbot-k11-pro-purchase": "ps-seller-product-robot-k11-pro",
+        "robot-cta-k11-note": "product-robot-k11-pro",
+        "roomba-mini-slim-f115060-purchase": "ps-seller-roomba-mini-slim-f115060",
+        "robot-cta-slim-note": "roomba-mini-slim-f115060",
+        "purchase-notes": "ps-offers",
+        "robot-caution-title": "ps-offers"
+      },
+      "supplementary_product_ids": [
+        "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060"
+      ],
+      "preserved_editorial_sections": [
+        "robot-clearance-summary-title",
+        "robot-care-title",
+        "robot-connectivity-title"
+      ]
+    },
+    {
+      "article_id": "solota-vs-rakua-mini-plus",
+      "slug": "solota-vs-rakua-mini-plus",
+      "post_id": 86,
+      "kind": "comparison",
+      "product_ids": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-PLUS"
+      ],
+      "title": "SOLOTAとラクアmini Plus｜大きさ・食器量・乾燥方式",
+      "excerpt": "SOLOTAとラクアmini Plusを、本体と扉の寸法、食器量、給水、乾燥方式から公式仕様で比較します。実機性能や現在の在庫を断定せず、設置・費用・手入れの確認先へ案内します。",
+      "post_type": "post",
+      "intro": "奥行を抑えたいならSOLOTA、一度に洗う食器と熱風乾燥を重視するならラクアmini Plusが確認候補です。本体の寸法と扉を開けた奥行を分けて比べます。",
+      "conditions": [
+        {
+          "id": "choice-1",
+          "label": "少量の食器・本体奥行を抑える",
+          "product_ids": [
+            "PRD-PANASONIC-NP-TMLK1"
+          ]
+        },
+        {
+          "id": "choice-2",
+          "label": "食器量・熱風乾燥を重視",
+          "product_ids": [
+            "PRD-THANKO-RAKUA-MINI-PLUS"
+          ]
+        }
+      ],
+      "spec_labels": [
+        "本体寸法（幅×奥行×高さ）",
+        "標準食器点数",
+        "乾燥・扉",
+        "給水方式"
+      ],
+      "condition_fact_labels": [
+        "本体寸法（幅×奥行×高さ）"
+      ],
+      "history": [
+        {
+          "date": "2026-09-12",
+          "text": "現行公開本文の内容を維持して移行。原典の過去確認日は個別出典を参照。"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "mini Plusを別型番として共通化。公式の再入荷通知表示と代替候補への案内を整理。"
+        }
+      ],
+      "legacy_anchor_targets": {
+        "solota-reader-start": "ps-choose",
+        "solota-reader-start-title": "ps-choose",
+        "solota-specs": "ps-specs",
+        "solota-specs-title": "ps-specs",
+        "reader-axes": "ps-choose",
+        "dish-purchase-check-title": "ps-offers",
+        "dish-seller-status": "ps-offers",
+        "dish-seller-status-title": "ps-offers",
+        "reader-evidence": "ps-choose"
+      },
+      "spec_detail_labels": [
+        "開扉時の寸法",
+        "公表使用水量（条件は機種別）"
+      ],
+      "preserved_editorial_sections": [
+        "mini-plus-alternative-title",
+        "mini-plus-guide-sources-title",
+        "mini-plus-daily-title"
+      ],
+      "media_exclusions": {
+        "PRD-PANASONIC-NP-TMLK1": "この比較記事への画像の掲載範囲を確認できていないため、写真を掲載していません。型番と仕様は比較表・公式出典で確認できます。"
+      }
+    },
+    {
+      "article_id": "anker-solix-c300-c800-c1000-differences",
+      "slug": "anker-solix-c300-c800-c1000-differences",
+      "post_id": 29,
+      "kind": "comparison",
+      "product_ids": [
+        "PRD-ANKER-SOLIX-C300",
+        "PRD-ANKER-SOLIX-C800-PLUS",
+        "PRD-ANKER-SOLIX-C1000",
+        "PRD-ANKER-SOLIX-C1000-GEN2"
+      ],
+      "title": "Anker Solix 4モデルの違い｜容量・出力・重量で選ぶ",
+      "excerpt": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の容量・定格出力・重量・寸法を公式仕様で比較。持ち運び優先か、AC端子数や容量拡張が必要かなど条件別の選び方と、C1000の世代差の注意点を整理します。",
+      "post_type": "post",
+      "intro": "C300は持ち運ぶ小型機器用、C800 Plusは中容量、C1000はAC6口とBP1000拡張、Gen 2は約11.3kgとUSB-C3口が選ぶ理由です。Gen 2の日本語説明書はAC単口1500W・合計1550Wと区別しています。",
+      "conditions": [
+        {
+          "id": "choice-1",
+          "label": "持ち運ぶ小型機器用",
+          "product_ids": [
+            "PRD-ANKER-SOLIX-C300"
+          ]
+        },
+        {
+          "id": "choice-2",
+          "label": "容量768Wh・定格1200W級",
+          "product_ids": [
+            "PRD-ANKER-SOLIX-C800-PLUS"
+          ]
+        },
+        {
+          "id": "choice-3",
+          "label": "AC6口とBP1000の拡張",
+          "product_ids": [
+            "PRD-ANKER-SOLIX-C1000"
+          ]
+        },
+        {
+          "id": "choice-4",
+          "label": "約11.3kgとUSB-C3口を優先",
+          "product_ids": [
+            "PRD-ANKER-SOLIX-C1000-GEN2"
+          ]
+        }
+      ],
+      "spec_labels": [
+        "容量",
+        "定格出力",
+        "重量",
+        "本体寸法（幅×奥行×高さ）",
+        "AC口数",
+        "USB-C口別最大出力",
+        "拡張バッテリー",
+        "同時利用の制限"
+      ],
+      "condition_fact_labels": [
+        "容量",
+        "定格出力",
+        "重量"
+      ],
+      "history": [
+        {
+          "date": "2026-09-12",
+          "text": "現行公開本文の内容を維持して移行。原典の過去確認日は個別出典を参照。"
+        },
+        {
+          "date": "2026-09-13",
+          "text": "Gen2日本語説明書で単口1500W・合計1550Wを確認。全4機種のAC/USB-Cと同時制約を追加。"
+        }
+      ],
+      "legacy_anchor_targets": {
+        "ks-start-29": "ps-choose",
+        "ks-start-29-title": "ps-choose",
+        "product-anker-c300": "product-power-c300",
+        "product-anker-c300-caution": "product-power-c300",
+        "product-anker-c300-cta-note": "ps-seller-product-power-c300",
+        "product-anker-c800-plus-caution": "product-anker-c800-plus",
+        "product-anker-c800-plus-cta-note": "ps-seller-product-anker-c800-plus",
+        "product-anker-c1000-caution": "product-anker-c1000",
+        "product-anker-c1000-cta-note": "ps-seller-product-anker-c1000",
+        "product-anker-c1000-gen2-caution": "product-anker-c1000-gen2",
+        "product-anker-c1000-gen2-cta-note": "ps-seller-product-anker-c1000-gen2"
+      },
+      "preserved_editorial_sections": [
+        "anker-port-summary-title"
+      ]
     }
   ],
   "products": [
@@ -891,7 +1413,8 @@
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
-        "one-person"
+        "one-person",
+        "choice-1"
       ],
       "guide_facts": [
         {
@@ -985,42 +1508,6 @@
           "state": "KNOWN"
         },
         {
-          "field": "maintenance",
-          "text": "毎回：運転終了後30分以上待ち、電源プラグを抜いてから、残さいフィルターを取り外して水洗いします。元の向きに確実に戻してください。フィルターの下に水が残ること自体は異常ではありません。",
-          "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
-          "locator": "p.16 清掃前の注意・残さいフィルター",
-          "checked_at": "2026-09-10",
-          "state": "KNOWN"
-        },
-        {
-          "field": "maintenance",
-          "text": "月1回が目安：ノズルとタンク・給水フィルターを取り外して水洗いします。ノズルは元に戻した後、手で軽く回ることを確認します。本体はよく絞った柔らかい布で拭き、庫内へ水を入れたり水に浸けたりしないでください。",
-          "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
-          "locator": "p.17〜18 ノズル・本体・タンクと給水フィルター",
-          "checked_at": "2026-09-10",
-          "state": "KNOWN"
-        },
-        {
-          "field": "maintenance",
-          "text": "タンクの汚れが気になるとき：取り外したタンクに食洗機専用の庫内クリーナー15gを入れ、39℃以下のぬるま湯をFULLまで注ぎます。キャップをしっかり閉めて振り溶かし、約60分つけ置きします。中の水を捨て、水道水をFULLまで入れてすすいでください。",
-          "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
-          "locator": "p.18 タンクの汚れが気になるとき",
-          "checked_at": "2026-09-10",
-          "state": "KNOWN"
-        },
-        {
-          "field": "maintenance",
-          "text": "長期間使わず、排水溝のようなにおいがするとき：食器を入れず、食洗機専用の粉末・液体洗剤4g、または3cm未満のタブレット洗剤1個を使い、一度運転してから使用します。食器を洗う通常の準備・給水手順に従ってください。",
-          "exact_model": "NP-TMLK1-K",
-          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
-          "locator": "p.21 長期間使わなかった場合のにおい",
-          "checked_at": "2026-09-10",
-          "state": "KNOWN"
-        },
-        {
           "field": "warranty",
           "text": "購入先ごとの保証の適用条件は追加確認中です。確認できるまで保証年数を購入先比較の確定値にしません。",
           "exact_model": "NP-TMLK1-K",
@@ -1064,6 +1551,51 @@
           "locator": "脚注2：NP-TMLK1の専用洗剤2gという試験条件",
           "checked_at": "2026-09-06",
           "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "タンクの汚れが気になるとき：取り外したタンクに食洗機専用の庫内クリーナー15gを入れ、39℃以下のぬるま湯をFULLまで注ぎます。キャップをしっかり閉めて振り溶かし、約60分つけ置きします。中の水を捨て、水道水をFULLまで入れてすすいでください。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
+          "locator": "p.18 タンクの汚れが気になるとき",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "長期間使わず、排水溝のようなにおいがするとき：食器を入れず、食洗機専用の粉末・液体洗剤4g、または3cm未満のタブレット洗剤1個を使い、一度運転してから使用します。食器を洗う通常の準備・給水手順に従ってください。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
+          "locator": "p.21 長期間使わなかった場合のにおい",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "毎回：運転終了後30分以上待ち、電源プラグを抜きます。かごを上へ持ち上げて外し、残さいフィルターを取り外して水洗いします。フィルターは庫内の右側へすき間なく戻し、かごは側面の溝を奥側にして取り付けます。フィルター下の残水は異常ではありません。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
+          "locator": "取扱説明書 p.16 残さいフィルター・かごの取り外しと取り付け",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "月1回の目安：かごを外し、ノズル中央を持って真上へ引き、水洗いします。逆の手順で戻して「カチッ」と音がするまで押し込み、手で軽く回ることを確かめます。本体はよく絞った柔らかい布で拭きます。外側には漂白剤・洗剤・クレンザー等を使わず、庫内へ水や湯を注ぎません。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
+          "locator": "取扱説明書 p.17 ノズル・本体",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "月1回の目安：タンクと給水フィルターを取り外して水洗いします。格子部・排水口・残さいフィルター下のヒーター周辺は、洗い上がりや汚れが気になるときに柔らかいブラシなどで手入れします。柔らかい布で水気を拭き、残さいフィルターを元通りに取り付けます。給水フィルターのはめ込み位置はp.18の図で照合してください。",
+          "exact_model": "NP-TMLK1-K",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/873/000000000379873/np-tml1_guide.pdf",
+          "locator": "取扱説明書 p.18 タンク・給水フィルター、格子部・排水口・ヒーター周辺",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
         }
       ],
       "installation": {
@@ -1102,7 +1634,8 @@
           "使える洗剤の種類": "食洗機専用の粉末・液体・タブレット",
           "1回分の目安": "通常約2g（油・色素汚れは約4g）",
           "タブレットの条件": "3cm未満を1個",
-          "公表試験条件の洗剤量": "2g（公式仕様の脚注）"
+          "公表試験条件の洗剤量": "2g（公式仕様の脚注）",
+          "投入位置": "食器を入れたかごの手前側から庫内へ（取扱説明書p.6の投入図）"
         },
         "maintenance": {
           "毎回": "運転終了後30分以上待って電源プラグを抜き、残さいフィルターを水洗い（活用ガイド p.16）",
@@ -1278,11 +1811,11 @@
         },
         {
           "field": "detergent",
-          "text": "食洗機専用洗剤の目安は3〜5gです。食器の汚れや洗剤の表示に合わせ、手洗い用洗剤は使いません。",
+          "text": "食洗機専用の粉末・液体・ジェル・タブレットを使用できます。標準量は約3〜5gで、開いたドア内側の洗剤投入場所へ入れます。タブレットの個数・サイズ条件は説明書に記載がなく未確認です。手洗い用洗剤と重曹は少量でも使いません。",
           "exact_model": "TDWS25SBL / TDWS25SRD",
           "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
-          "locator": "説明書 p.14 洗剤の入れ方",
-          "checked_at": "2026-09-10",
+          "locator": "説明書p.14 洗剤の入れ方・洗剤投入場所の図",
+          "checked_at": "2026-09-13",
           "state": "KNOWN"
         },
         {
@@ -1296,11 +1829,11 @@
         },
         {
           "field": "maintenance",
-          "text": "フィルターとメッシュトレイは運転終了後毎回、ノズルは月1回以上、汚れに応じて手入れします。外し方・戻し方は説明書の図に従ってください。",
+          "text": "毎回、電源を切ってプラグを抜き、庫内が常温になったことを確認します。トレイを引き出し、フィルターを反時計回りに回して上へ外し、メッシュトレイを上へ引き出します。内部フィルターを引き抜き、残さいを捨てて柔らかいブラシで掃除し、水気を拭いて乾かします。内部フィルターは底面の穴とツメを合わせて差し込み、フィルターとメッシュトレイを本体へ戻します。",
           "exact_model": "TDWS25SBL / TDWS25SRD",
           "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
-          "locator": "説明書 p.20–22 お手入れ",
-          "checked_at": "2026-09-10",
+          "locator": "説明書p.20〜21 フィルターとメッシュトレイ",
+          "checked_at": "2026-09-13",
           "state": "KNOWN"
         },
         {
@@ -1314,11 +1847,20 @@
         },
         {
           "field": "prohibited",
-          "text": "強化ガラス、飛ばされやすい軽い物、耐熱75℃未満または耐熱表示のないプラスチックは入れません。耐熱75℃以上のプラスチックでも、乾燥のみモードは使えません。ひびの入った食器、木製・竹製の物、銀・アルミ・銅・鉄などの金属、フッ素加工のフライパン、包丁、食品用以外の物も対象外です。食器側の表示も確認してください。",
+          "text": "強化ガラスと飛ばされやすい軽いものは入れません。耐熱75℃未満または耐熱表示のないプラスチックは使えず、耐熱75℃以上は使用可能と記載されています。傷やひびのある食器、木製の柄の鍋や包丁、銀・洋銀・アルミ・銅、木・竹・とう、漆・金箔・上絵、クリスタル、さびるおそれのある鉄製品、表面に傷のあるフッ素加工品、口の狭いびん・徳利も対象外です。食器・洗剤側の表示にも従います。",
           "exact_model": "TDWS25SBL / TDWS25SRD",
           "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
-          "locator": "説明書 p.13 洗えないもの",
-          "checked_at": "2026-09-10",
+          "locator": "説明書p.13 洗えないもの（種類・耐熱条件）",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "月1回以上、汚れに応じてノズルを洗います。トレイを外し、上ノズル中央のつまみを下から見て時計回りに回して下へ引き抜き、底面ノズルは上へ引き抜きます。流水で洗い、穴の残さいはつまようじなどで取り除きます。上ノズルは下から見て反時計回りに回して戻し、底面ノズルはまっすぐ下へ押し込みます。",
+          "exact_model": "TDWS25SBL / TDWS25SRD",
+          "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+          "locator": "説明書p.22 ノズル",
+          "checked_at": "2026-09-13",
           "state": "KNOWN"
         }
       ],
@@ -1355,10 +1897,11 @@
           "排水ホース": "付属約1.6m。先端を設置面より低く固定"
         },
         "detergent": {
-          "使える洗剤の種類": "食洗機専用洗剤（種類別の可否は未確認）",
+          "使える洗剤の種類": "食洗機専用の粉末・液体・ジェル・タブレット（説明書p.14）",
           "1回分の目安": "3〜5g",
           "タブレットの条件": "未確認",
-          "公表試験条件の洗剤量": "未確認"
+          "公表試験条件の洗剤量": "未確認",
+          "投入位置": "開いたドア内側の洗剤投入場所（説明書p.14の図）"
         },
         "maintenance": {
           "毎回": "フィルターとメッシュトレイを運転終了後に手入れ（説明書 p.20〜22）",
@@ -1521,7 +2064,13 @@
           "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
           "locator": "説明書 p.29 仕様",
           "checked_at": "2026-09-10",
-          "state": "UNKNOWN"
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "research_pending",
+            "impact": "コース別の消費電力量は未確認のため、1回の電気代を算出できません。消費電力の定格値だけでは計算できません。",
+            "next_action": "対象型番の一次情報を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
         },
         {
           "field": "water",
@@ -1551,15 +2100,6 @@
           "state": "KNOWN"
         },
         {
-          "field": "maintenance",
-          "text": "残さいフィルターとメッシュトレイは使用ごと、ノズルは月1回程度が目安です。運転終了後30分以上待ち、電源プラグを抜いてから手入れします。1週間以上使わないときは、ドアパッキンと庫内の汚れを固く絞った布で拭き、柔らかい布で乾拭きしてください。長期間使わない間は電源プラグを抜きます。",
-          "exact_model": "SS-MA251",
-          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
-          "locator": "説明書 p.2–3・17–20：手入れ前の安全、頻度、1週間以上使わない場合",
-          "checked_at": "2026-09-10",
-          "state": "KNOWN"
-        },
-        {
           "field": "warranty",
           "text": "通常の保証は購入日から1年。購入証明が必要で国内使用が対象です。公式通販の会員特典による延長は登録などの条件付きで、全購入者に自動適用されるとは扱いません。",
           "exact_model": "SS-MA251",
@@ -1584,6 +2124,42 @@
           "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
           "locator": "説明書 p.2・22 アース接続",
           "checked_at": "2026-09-10",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "毎回：電源を切ってプラグを抜き、庫内が常温であることを確認します。かごを前へ引き、少し持ち上げてフックをドアの縁から外します。残さいフィルターを反時計回りに回してトレイごと上へ取り出し、フィルターのツメ2か所を外して分離します。上部をまっすぐ引き抜き、残さいを捨てて流水で洗い、水気を拭いて乾かします。トレイの突起は取り外せません。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "取扱説明書 p.17〜18 残さいフィルターとメッシュトレイ",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "復帰：フィルター上部のツメ2か所と下部の穴を合わせてまっすぐ差し込み、メッシュトレイへ取り付けます。▼刻印を説明書の図の位置に合わせて庫内へ戻し、時計回りに回して固定マークへ合わせます。フィルターとトレイが確実に取り付いていることを確認します。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "取扱説明書 p.18 フィルターの組み立てと復帰",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "月1回程度：かごを取り出し、庫内底のノズル（大）のツメ2か所を外して取り外します。流水で洗い、穴はつまようじ等で残さいを取り除きます。庫内底へまっすぐ押し込んで戻します。他機種のねじ回し方向をこのノズルに流用しません。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "取扱説明書 p.19 ノズル",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "本体は定期的に、ドアパッキンが汚れたらその都度、よく絞った柔らかい布で拭き、乾拭きします。目の粗いスポンジ・クレンザーは使いません。庫内洗浄は食器を入れず、電源を入れて給水を準備し、「ソフト」と「おいそぎ」を同時に約3秒長押しします。専用洗剤4gを入れ、「スタート／一時停止」を押します。1週間以上使わないときは庫内とパッキンの汚れを拭き、乾拭きします。",
+          "exact_model": "SS-MA251",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "取扱説明書 p.20 本体・庫内洗浄コース",
+          "checked_at": "2026-09-13",
           "state": "KNOWN"
         }
       ],
@@ -1623,7 +2199,8 @@
           "使える洗剤の種類": "食洗機専用の粉末・液体・タブレット",
           "1回分の目安": "約4g",
           "タブレットの条件": "1個（サイズの条件は洗剤の説明書で確認）",
-          "公表試験条件の洗剤量": "未確認"
+          "公表試験条件の洗剤量": "未確認",
+          "投入位置": "ドアを開けて庫内へ。タブレットはメッシュトレイ上（説明書p.14）"
         },
         "maintenance": {
           "毎回": "残さいフィルターとメッシュトレイを使用ごとに手入れ。運転終了後30分以上待ち、電源プラグを抜く（説明書 p.17〜20）",
@@ -1745,11 +2322,11 @@
         },
         {
           "field": "clearance",
-          "text": "左右・背面は各5mm以上、設置面からの高さは720mm以上を確保します。説明書の上方離隔は115mmですが、本体高600mmから設置面上720mmを確保するため、設置場所を測る際は上の余白を120mm以上で確認します。熱源からは150mm以上離し、上部の排気を妨げない空間も確かめてください。",
+          "text": "メーカー指定は可燃物から上方115mm、左右・後方各5mm以上。別に設置面から720mm以上という設置図の条件があります。本体高600mmとの差720−600＝120mmは当サイトの入力照合に使う計算値で、115mmをメーカーが120mmと指定した意味ではありません。上部排気口のため、できるだけ空間を空け、熱源から150mm以上離します。",
           "exact_model": "NP-TSP1-W",
           "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/370/092/000000000370092/np-tsp1.pdf",
-          "locator": "p.15 設置場所の図・上方離隔と設置面からの高さ",
-          "checked_at": "2026-09-10",
+          "locator": "取扱説明書P9901-17D10 p.15：可燃物離隔11.5cm、設置面から72cm以上",
+          "checked_at": "2026-09-13",
           "state": "KNOWN"
         },
         {
@@ -1807,15 +2384,6 @@
           "state": "KNOWN"
         },
         {
-          "field": "maintenance",
-          "text": "庫内のお手入れは月2〜3回が目安です。食器を入れず、指定量の食洗機用洗剤を使い、電源を入れて給水し、「お手入れ」を選んでスタートします。洗剤の量や詳しい操作は公式案内で確認してください。タンクの清掃とは別の手順です。",
-          "exact_model": "NP-TSP1-W",
-          "source_url": "https://jpn.faq.panasonic.com/app/answers/detail/a_id/26688/p/1776",
-          "locator": "公式FAQ：庫内のお手入れ／NP-TSP1",
-          "checked_at": "2026-09-10",
-          "state": "KNOWN"
-        },
-        {
           "field": "warranty",
           "text": "購入先・販売元を照合できるまで、保証の適用条件は未確認です。",
           "exact_model": "NP-TSP1-W",
@@ -1823,15 +2391,6 @@
           "locator": "製品サポート確認先",
           "checked_at": "2026-09-10",
           "state": "UNKNOWN"
-        },
-        {
-          "field": "maintenance",
-          "text": "タンクの汚れが気になるときは、専用庫内クリーナーを溶かして給水し、電源を切って約60分つけ置きした後、指定操作で排水します。その後、水道水を入れてもう一度排水する、すすぎの作業も必要です。クリーナーの量・水温・ボタン操作はNP-TSP1用の公式手順に従ってください。台所用液体洗剤・クエン酸・重曹は使えません。",
-          "exact_model": "NP-TSP1-W",
-          "source_url": "https://jpn.faq.panasonic.com/app/answers/detail/a_id/17177/related/1",
-          "locator": "公式FAQ：タンクのお手入れ／NP-TSP1",
-          "checked_at": "2026-09-10",
-          "state": "KNOWN"
         },
         {
           "field": "prohibited",
@@ -1870,21 +2429,21 @@
           "state": "KNOWN"
         },
         {
-          "field": "maintenance",
-          "text": "毎回の作業として指定された手入れはありません。残さいフィルターは週に1回が目安で、上部を上げてフィルターを回して外し、掃除します。食器の取り出しや残さいフィルターなどの手入れは、運転終了後30分以上経過してから行います。",
+          "field": "detergent_test",
+          "text": "公表条件（約670Wh・約9L）の試験は、食器24点・小物16点、水温20℃、食洗機専用洗剤5gの条件です。日常の投入量（通常約5g）とは別に確認します。",
           "exact_model": "NP-TSP1-W",
-          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/370/092/000000000370092/np-tsp1.pdf",
-          "locator": "p.2 安全上のご注意・p.11 お手入れする（残さいフィルター 週に1回）",
-          "checked_at": "2026-09-12",
+          "source_url": "https://panasonic.jp/dish/feature/SLIM/eco.html",
+          "locator": "NP-TSP1 注1：試験条件（洗剤5g）",
+          "checked_at": "2026-09-10",
           "state": "KNOWN"
         },
         {
-          "field": "maintenance",
-          "text": "本体は月に1回、よく絞った柔らかい布で拭きます。漂白剤・洗剤・シンナー・ベンジン・クレンザー・ワックス・殺虫剤は使えません。排水口カバーは中性洗剤を含ませた柔らかいスポンジで洗い、手入れ後は必ず元通りに取り付けます。",
+          "field": "water_supply",
+          "text": "分岐水栓運用は、自宅の水栓型番に適合する分岐水栓と別売の給水ホースが必要です。水圧0.03〜1MPa、全開時の流量毎分8L以上が条件で、水栓メーカー・販売店または水道工事事業者へ確認します。タンク給水の「分岐水栓工事不要」とは条件が異なります。取り付け後は給水方式の設定変更と試運転も説明書に従います。",
           "exact_model": "NP-TSP1-W",
           "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/370/092/000000000370092/np-tsp1.pdf",
-          "locator": "p.11 お手入れする（本体 月に1回・排水口カバー）",
-          "checked_at": "2026-09-12",
+          "locator": "取扱説明書P9901-17D10 p.12・15・18〜22 分岐水栓を取り付ける場合",
+          "checked_at": "2026-09-13",
           "state": "KNOWN"
         },
         {
@@ -1898,20 +2457,47 @@
         },
         {
           "field": "maintenance",
-          "text": "庫内にたまった水を排水（水抜き）する方法として、公式FAQは「乾燥」のみでの運転を案内しています。しばらく使用しない場合の案内も同じFAQにあります。NP-TSP1のFAQ一覧に掲載された卓上型共通の案内で、型番固有の追加条件は未確認です。",
+          "text": "残さいフィルターは週1回が目安（1日2回使用の場合）。運転終了後に残さいがあればAをその都度掃除します。運転終了後30分以上待ち、プラグを抜いてから、フィルター上部を上げて回し、取り外します。Aを外してからBを取り外し、それぞれ柔らかいブラシ等で掃除します。逆の順序で戻し、「カチッ」と音がするまで回して固定します。",
           "exact_model": "NP-TSP1-W",
-          "source_url": "https://jpn.faq.panasonic.com/app/answers/detail/p/1776/a_id/11545/",
-          "locator": "公式FAQ：庫内にたまった水を排水（水抜き）する方法（NP-TSP1のFAQ一覧）",
-          "checked_at": "2026-09-12",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
+          "locator": "取扱説明書 p.22〜23 タンク給水時の残さいフィルターA/B",
+          "checked_at": "2026-09-13",
           "state": "KNOWN"
         },
         {
-          "field": "detergent_test",
-          "text": "公表条件（約670Wh・約9L）の試験は、食器24点・小物16点、水温20℃、食洗機専用洗剤5gの条件です。日常の投入量（通常約5g）とは別に確認します。",
+          "field": "maintenance",
+          "text": "排水口カバーは月1回が目安（庫内を定期的に手入れする場合）。下かごと残さいフィルターを先に取り出してからカバーを外します。中性洗剤を含ませた柔らかいスポンジで洗い、洗剤をよく洗い落として元通りに取り付けます。周囲や排水口に残さいがあるときも掃除します。",
           "exact_model": "NP-TSP1-W",
-          "source_url": "https://panasonic.jp/dish/feature/SLIM/eco.html",
-          "locator": "NP-TSP1 注1：試験条件（洗剤5g）",
-          "checked_at": "2026-09-10",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
+          "locator": "取扱説明書 p.23 排水口カバー",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "庫内は月2〜3回。食器を入れず、通常汚れの目安の2倍の食洗機専用洗剤（粉末・液体なら10g）を専用洗剤入れへ入れます。電源を入れ、給水口へ音が3回鳴るまで給水し、「お手入れ」→「一時停止／スタート」を押します。塩素系洗剤は使えません。これはタンクのつけ置きとは別の運転です。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
+          "locator": "取扱説明書 p.24 タンク給水時の庫内お手入れ",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "タンク清掃の例外手順：電源を入れ、付属カップ1杯の39℃以下のぬるま湯に専用庫内クリーナー約60gを溶かし、給水口から入れます。音が3回鳴るまで水を足し、ふたを閉じて電源を切り、約60分つけ置きします。電源を入れ「お手入れ」を5秒以上長押しし、「一時停止／スタート」で排水します。すすぎのため再度電源を入れ、音が3回鳴るまで水道水を注ぎ、同じ長押しとスタートで排水します。通常給水に洗剤を入れる案内ではありません。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
+          "locator": "取扱説明書 p.25 タンクの汚れが気になったら",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "field": "maintenance",
+          "text": "本体は月1回、かごを取り出してよく絞った柔らかい布で拭きます。パッキンを引っ張らず、本体外側に漂白剤・洗剤・クレンザー等を使いません。本体・給排水ホースの下部も月1回拭きます。庫内へ水や湯を注ぎません。",
+          "exact_model": "NP-TSP1-W",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/003/059/015/000000003059015/np-tsp1_guide.pdf",
+          "locator": "取扱説明書 p.25 本体 月1回",
+          "checked_at": "2026-09-13",
           "state": "KNOWN"
         }
       ],
@@ -1951,10 +2537,11 @@
           "使える洗剤の種類": "食洗機専用の粉末・液体・タブレット",
           "1回分の目安": "通常約5g（汚れが多いときは約10g）",
           "タブレットの条件": "通常1個（3cm未満なら汚れが多いとき2個）",
-          "公表試験条件の洗剤量": "5g（公表条件の試験）"
+          "公表試験条件の洗剤量": "5g（公表条件の試験）",
+          "投入位置": "かごの専用洗剤入れ（取扱説明書p.8）"
         },
         "maintenance": {
-          "毎回": "毎回の指定なし。残さいフィルターは週に1回が目安（説明書 p.11）",
+          "毎回": "運転後に残さいがある場合はフィルターAをその都度。全体は週1回目安（1日2回使用時）",
           "月1回程度": "本体は月に1回（説明書 p.11）、庫内はお手入れコースで月に2〜3回（公式FAQ）、タンクは汚れが気になったら（説明書 p.12）",
           "長く使わないとき": "電源プラグを抜く（説明書 p.2）。庫内の水は「乾燥」のみの運転で排水（卓上型共通の公式FAQ）。ほかの保管手順は未確認"
         },
@@ -2328,6 +2915,42 @@
           "checked_at": "2026-08-23",
           "state": "PRESERVED",
           "exact_model": "F155260"
+        },
+        {
+          "label": "本体重量",
+          "text": "約2kg",
+          "exact_model": "F155260",
+          "source_url": "https://store.irobot-jp.com/item/F155260.html",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "自動ゴミ収集",
+          "text": "あり",
+          "exact_model": "F155260",
+          "source_url": "https://store.irobot-jp.com/item/F155260.html",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "紙パック容量",
+          "text": "比較できる公式容量値なし",
+          "exact_model": "F155260",
+          "source_url": "https://store.irobot-jp.com/item/F155260.html",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "アプリ / Wi-Fi",
+          "text": "Roomba Homeアプリ / 2.4GHz・5GHz",
+          "exact_model": "F155260",
+          "source_url": "https://store.irobot-jp.com/item/F155260.html",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
         }
       ],
       "lead": "本体と自動ゴミ収集ステーションの設置面積を小さくしたい場合に。",
@@ -2343,7 +2966,8 @@
       "image_markup": "",
       "image_basis": "OFFICIAL_PUBLICATION_KIT",
       "use_cases": [
-        "compact"
+        "compact",
+        "choice-1"
       ],
       "guide_facts": [],
       "image_review": {
@@ -2373,12 +2997,18 @@
         },
         {
           "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
-          "text": "24×18×25cm（公式掲載順をcm換算。軸順は未確認）",
-          "source_url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
-          "locator": "日本語取扱説明書27ページ：寸法240×180×250mm。軸名の記載なし",
-          "checked_at": "2026-09-10",
-          "state": "PRESERVED",
-          "exact_model": "K11+ Pro"
+          "text": "240×180×250mm（公式掲載順。幅・奥行・高さとの対応は未確認）",
+          "exact_model": "K11+ Pro",
+          "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "locator": "公式製品仕様および日本語説明書K11_Pro-SMS-JP-2604-Q印刷p27（PDF16枚目）を目視確認。240×180×250mmと記載、軸名なし。",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "240×180×250mm（公式掲載順。幅・奥行・高さとの対応は未確認）",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
         },
         {
           "label": "水拭き",
@@ -2397,6 +3027,42 @@
           "checked_at": "2026-08-23",
           "state": "PRESERVED",
           "exact_model": "K11+ Pro"
+        },
+        {
+          "label": "本体重量",
+          "text": "約2.3kg",
+          "exact_model": "K11+ Pro",
+          "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "自動ゴミ収集",
+          "text": "あり",
+          "exact_model": "K11+ Pro",
+          "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "紙パック容量",
+          "text": "4L",
+          "exact_model": "K11+ Pro",
+          "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "アプリ / Wi-Fi",
+          "text": "SwitchBotアプリ 2.4GHz Wi-Fi対応。初期設定にはBluetoothも使用",
+          "exact_model": "K11+ Pro",
+          "source_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
         }
       ],
       "lead": "小型の本体とステーションに、自動ゴミ収集を組み合わせたい場合に。",
@@ -2408,11 +3074,12 @@
         "モップの自動洗浄・乾燥を求める人",
         "使用後のシート交換を避けたい人"
       ],
-      "caution": "水拭きは市販のお掃除シートを使用後に捨てる方式で、モップの自動洗浄・乾燥は行いません。",
+      "caution": "公表3辺はいずれも250mm以下ですが、軸順が未確認のため底面積や実際の設置可否は計算しません。左右各0.5m・前と上各1.5mの必要空間、部品交換の動線も別に確認します。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
-        "compact"
+        "compact",
+        "choice-2"
       ],
       "guide_facts": [],
       "image_review": {
@@ -2616,35 +3283,66 @@
           "checked_at": "2026-08-23",
           "state": "PRESERVED",
           "exact_model": "A17225Z1"
+        },
+        {
+          "label": "AC口数",
+          "text": "3口",
+          "exact_model": "A17225Z1",
+          "source_url": "https://www.ankerjapan.com/products/a1763",
+          "locator": "公式4モデル比較表・出力ポート構成",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "USB-C口別最大出力",
+          "text": "C1：15W／C2・C3：各140W（C2のみ本体への入力にも対応）",
+          "exact_model": "A17225Z1",
+          "source_url": "https://lp.ankerjapan.com/hubfs/aoos/manual/A1722Manual.pdf",
+          "locator": "PDF2〜4・11〜12枚目：ポート構成・仕様",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "拡張バッテリー",
+          "text": "非対応",
+          "exact_model": "A17225Z1",
+          "source_url": "https://www.ankerjapan.com/products/a1763",
+          "locator": "公式4モデル比較表・拡張バッテリー対応。C1000はBP1000公式案内も参照",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "同時利用の制限",
+          "text": "USB-A+C1は合計20W。製品合計360W、AC最大300W。C2とソーラー／シガー入力は同時使用不可。",
+          "exact_model": "A17225Z1",
+          "source_url": "https://lp.ankerjapan.com/hubfs/aoos/manual/A1722Manual.pdf",
+          "locator": "PDF3〜4・12枚目：同時入力・合計出力",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
         }
       ],
       "lead": "停電時にスマートフォンや照明などの小型機器を使い、保管場所から持ち出しやすくしたい場合に。",
       "fit": [
-        "スマートフォンや照明など、消費電力の小さい機器を中心に備えたい人",
-        "保管場所から持ち出す負担を抑えたい人"
+        "小型機器を中心に使い、持ち運びやすさを優先する人",
+        "定格300W以内で用途が収まる人"
       ],
       "avoid": [
         "定格300Wを超える機器を接続したい人",
-        "4モデルで最大の容量を求める人"
+        "700Wh以上の容量を求める人"
       ],
       "caution": "容量と定格出力は4モデルで最小です。本体寸法は幅約16.4×奥行約16.1×高さ約24.0cmです。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
-        "carry"
+        "carry",
+        "choice-1"
       ],
       "guide_facts": [],
       "image_review": {
-        "state": "VERIFIED_REGISTERED_MEDIA",
-        "basis": "RAKUTEN_GENERATED_VERBATIM",
-        "source_registry": "assets/rakuten-product-media.json",
-        "evidence": "changes/wordpress-direct-publish-v1/official-media-sources.md",
-        "source_sha256": {
-          "240": "540a75ac5b4b4712423515b1521fa4b1c6aad3b68bbb855b6a47c420fe8c4777",
-          "300": "18961c9dee2b09161790ef17c8617afc7d42748d7f1e4997e97e9a6a64afdac4"
-        },
-        "checked_on": "2026-09-10",
-        "record_sha256": "1872e596903339d501c745dd94a0d060b29109c6beb1a7ea4bcb2c40f9d47589"
+        "state": "UNVERIFIED",
+        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
+        "source": "https://www.ankerjapan.com/products/a1722",
+        "checked_on": "2026-09-13"
       }
     },
     {
@@ -2773,7 +3471,7 @@
         "頻繁に長い距離を持ち運びたい人",
         "定格1000Wを超える機器を接続したい人"
       ],
-      "caution": "本体は幅31.4×奥行20.95×高さ25.58cm、約10.2kgです。設置場所と移動方法を確認してください。",
+      "caution": "AC70は使用機器の起動負荷と放熱空間を確認してください。2024年6月12日付のメーカー更新案内は2026年9月13日に再確認し、アプリで最新ファームウェアにする案内が継続しています。全個体が現在故障しているという意味ではありません。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
@@ -2863,6 +3561,1599 @@
         },
         "checked_on": "2026-09-10",
         "record_sha256": "2b9a068fde3d8f7a695241574d80404304ff231a9c11e77b17673d4fe7c42449"
+      },
+      "image_link_note": "画像のリンク先はECメゾンの販売ページです。2026年9月13日の商品名に「新品・1年保証」と表示されており、下のEcoFlow公式ストア購入品の保証案内とは区別してください。具体的な保証対象・受付条件は販売店で確認してください。"
+    },
+    {
+      "product_id": "PRD-ACE-CRESTA-06316",
+      "exact_model": "06316",
+      "name": "ACE クレスタ 06316",
+      "anchor": "product-cresta-06316",
+      "official_url": "https://store.ace.jp/shop/g/g06316-01/",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "幅35×奥行25×高さ55cm",
+          "exact_model": "06316",
+          "source_url": "https://store.ace.jp/shop/g/g06316-01/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "容量",
+          "text": "34L",
+          "exact_model": "06316",
+          "source_url": "https://store.ace.jp/shop/g/g06316-01/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体重量",
+          "text": "3.2kg",
+          "exact_model": "06316",
+          "source_url": "https://store.ace.jp/shop/g/g06316-01/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "アクセス方法",
+          "text": "拡張部上部の隠しポケットへ外・内からアクセス可能。メイン収納の開閉形式の明記は未確認。",
+          "exact_model": "06316",
+          "source_url": "https://store.ace.jp/shop/g/g06316-01/",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "拡張部上部の隠しポケットへ外・内からアクセス可能。メイン収納の開閉形式の明記は未確認。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "拡張",
+          "text": "39L・幅35×奥行29×高さ55cm",
+          "exact_model": "06316",
+          "source_url": "https://store.ace.jp/shop/g/g06316-01/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "PC収納（幅×高さ×厚さ）",
+          "text": "対象型番で、この比較項目の公表値を今回確認できていません。",
+          "exact_model": "06316",
+          "source_url": "https://store.ace.jp/shop/g/g06316-01/",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "research_pending",
+            "impact": "対象型番で、この比較項目の公表値を今回確認できていません。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        }
+      ],
+      "lead": "おすすめする理由： 比較した3モデルでは3.2kgと最も軽く、非拡張で34Lを確保できるためです。",
+      "fit": [
+        "短期旅行の荷物を入れつつ、持ち上げる場面の負担を抑えたい人"
+      ],
+      "avoid": [
+        "拡張した状態のまま機内へ持ち込みたい人",
+        "40Lの非拡張容量を優先する人"
+      ],
+      "caution": "型番・構成と利用条件を照合し、未確認の機能で適合を判断しないでください。",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-1"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g06316-01/"
+      }
+    },
+    {
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "exact_model": "05721",
+      "name": "ace.TOKYO LABEL ディフェレンス 05721",
+      "anchor": "product-difference-05721",
+      "official_url": "https://store.ace.jp/shop/g/g05721-04",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "幅36×奥行24×高さ55cm",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "容量",
+          "text": "32L",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体重量",
+          "text": "3.5kg",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "アクセス方法",
+          "text": "2通りの開き方",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "拡張",
+          "text": "38L・幅36×奥行27×高さ55cm",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "前開きの整理",
+          "text": "フロントオープンと中央ファスナーの2通り。ふたのベルトを外し90度・180度を使い分ける。",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "キャスターストッパー",
+          "text": "公表あり",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "拡張時",
+          "text": "36×27×55cm / 38L",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "固有の検討軸",
+          "text": "2WAY",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "ストッパーの操作",
+          "text": "システムハンドル下のボタンを横へスライドしてON/OFF。止まる車輪の数・位置は本文資料で未確認。",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "システムハンドル下のボタンを横へスライドしてON/OFF。止まる車輪の数・位置は本文資料で未確認。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "PC収納（幅×高さ×厚さ）",
+          "text": "対象型番の収納部の幅・高さ・厚さを今回確認できず。インチ数や外寸でPCの適合を保証しません。",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "対象型番の収納部の幅・高さ・厚さを今回確認できず。インチ数や外寸でPCの適合を保証しません。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "USBと付属電源",
+          "text": "対象型番で、この比較項目の公表値を今回確認できていません。",
+          "exact_model": "05721",
+          "source_url": "https://store.ace.jp/shop/g/g05721-04",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "research_pending",
+            "impact": "対象型番で、この比較項目の公表値を今回確認できていません。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        }
+      ],
+      "lead": "狭いホテルの床で大きく広げにくい場面や、移動中に荷物を出し入れしたい場面に。",
+      "fit": [
+        "フロントオープンとセンターオープンを使い分けたい人",
+        "電車やバスで転がりを抑えるストッパーを重視する人"
+      ],
+      "avoid": [
+        "3モデルで最軽量の本体を求める人",
+        "拡張状態で機内へ持ち込みたい人"
+      ],
+      "caution": "型番・構成と利用条件を照合し、未確認の機能で適合を判断しないでください。",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-2"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g05721-04"
+      }
+    },
+    {
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "exact_model": "01471",
+      "name": "PROTECA マックスパス4 01471",
+      "anchor": "product-maxpass4-01471",
+      "official_url": "https://store.ace.jp/shop/g/g01471-02",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "幅40×奥行25×高さ50cm",
+          "exact_model": "01471",
+          "source_url": "https://store.ace.jp/shop/g/g01471-02",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "容量",
+          "text": "40L",
+          "exact_model": "01471",
+          "source_url": "https://store.ace.jp/shop/g/g01471-02",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体重量",
+          "text": "3.6kg",
+          "exact_model": "01471",
+          "source_url": "https://store.ace.jp/shop/g/g01471-02",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-26",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "アクセス方法",
+          "text": "フロントポケット内の本体側ファスナーからメイン気室へアクセス",
+          "exact_model": "01471",
+          "source_url": "https://store.ace.jp/shop/g/g01471-02",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "拡張",
+          "text": "拡張機能の記載を公式の仕様・機能一覧で確認できず。機能なしとは断定しません。",
+          "exact_model": "01471",
+          "source_url": "https://store.ace.jp/shop/g/g01471-02",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "拡張機能の記載を公式の仕様・機能一覧で確認できず。機能なしとは断定しません。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "PC収納（幅×高さ×厚さ）",
+          "text": "33×24×2.5cm（14インチ目安。ケース装着後のPC実寸も照合）",
+          "exact_model": "01471",
+          "source_url": "https://store.ace.jp/shop/g/g01471-02",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "100席以上向け115cm枠で容量を確保し、出張中にPCや小物を前から取り出したい場面に。",
+      "fit": [
+        "非拡張容量と前面収納を優先する人",
+        "14インチまでのPC（公式仕様のPC収納可能サイズ：幅33×高さ24×奥行2.5cm）や小物を前面から取り出したい人"
+      ],
+      "avoid": [
+        "ケース本体の軽さを最優先する人",
+        "100席未満の航空機向け寸法を探している人"
+      ],
+      "caution": "型番・構成と利用条件を照合し、未確認の機能で適合を判断しないでください。",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-3"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g01471-02"
+      }
+    },
+    {
+      "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+      "exact_model": "02350",
+      "name": "スタリアCXR 02350",
+      "anchor": "staria-cxr-02350",
+      "official_url": "https://store.ace.jp/shop/g/g02350-12/",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "34×20×45cm",
+          "exact_model": "02350",
+          "source_url": "https://store.ace.jp/shop/g/g02350-12/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "3辺合計",
+          "text": "99cm",
+          "exact_model": "02350",
+          "source_url": "https://store.ace.jp/shop/g/g02350-12/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "容量",
+          "text": "22L",
+          "exact_model": "02350",
+          "source_url": "https://store.ace.jp/shop/g/g02350-12/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体重量",
+          "text": "2.4kg",
+          "exact_model": "02350",
+          "source_url": "https://store.ace.jp/shop/g/g02350-12/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "使い分け",
+          "text": "ストッパー",
+          "exact_model": "02350",
+          "source_url": "https://store.ace.jp/shop/g/g02350-12/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        }
+      ],
+      "lead": "外寸は幅34×奥行20×高さ45cm、3辺合計99cm。22L、2.4kgで、4候補のうち本体が最も軽いモデルです。荷物を詰めた後の総重量に余白を残しやすい一方、厚手の衣類や予備の靴まで入れる旅では、持ち物を絞る必要があります。",
+      "fit": [
+        "本体重量を抑え、1泊分を小さくまとめたい"
+      ],
+      "avoid": [
+        "容量を優先し、帰路の荷物も多めに見込みたい"
+      ],
+      "caution": "色ごとの在庫、ストッパーの操作条件、保証範囲",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-1"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g02350-12/"
+      }
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+      "exact_model": "01550",
+      "name": "フレスターEX 01550",
+      "anchor": "frester-ex-01550",
+      "official_url": "https://store.ace.jp/shop/g/g01550-11/",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "34×20×45cm 拡張時 34×24×45cm",
+          "exact_model": "01550",
+          "source_url": "https://store.ace.jp/shop/g/g01550-11/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "3辺合計",
+          "text": "99cm 拡張時103cm",
+          "exact_model": "01550",
+          "source_url": "https://store.ace.jp/shop/g/g01550-11/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "容量",
+          "text": "26L 拡張時33L",
+          "exact_model": "01550",
+          "source_url": "https://store.ace.jp/shop/g/g01550-11/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体重量",
+          "text": "2.8kg",
+          "exact_model": "01550",
+          "source_url": "https://store.ace.jp/shop/g/g01550-11/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "使い分け",
+          "text": "前開き / ストッパー",
+          "exact_model": "01550",
+          "source_url": "https://store.ace.jp/shop/g/g01550-11/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        }
+      ],
+      "lead": "通常時は幅34×奥行20×高さ45cm、3辺合計99cm、26L、2.8kg。前開きとストッパーを備え、4候補のうち通常時の容量が最大です。拡張すると幅34×奥行24×高さ45cm、33L、3辺合計103cmになるため、100席未満便では拡張ファスナーを閉じた状態が比較対象です。",
+      "fit": [
+        "移動中に前面から荷物を出し入れし、通常時の容量も確保したい"
+      ],
+      "avoid": [
+        "拡張状態の容量を保ったまま100席未満便を利用したい"
+      ],
+      "caution": "拡張部を含む各寸法、前開き内部の仕切り、ストッパー仕様",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-2"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g01550-11/"
+      }
+    },
+    {
+      "product_id": "PRD-ACE-PALISADES3-Z-06910",
+      "exact_model": "06910",
+      "name": "パリセイド3-Z 06910",
+      "anchor": "palisades3-z-06910",
+      "official_url": "https://store.ace.jp/shop/g/g06910-03/",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "34×20×45cm",
+          "exact_model": "06910",
+          "source_url": "https://store.ace.jp/shop/g/g06910-03/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "3辺合計",
+          "text": "99cm",
+          "exact_model": "06910",
+          "source_url": "https://store.ace.jp/shop/g/g06910-03/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "容量",
+          "text": "21L",
+          "exact_model": "06910",
+          "source_url": "https://store.ace.jp/shop/g/g06910-03/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体重量",
+          "text": "2.6kg",
+          "exact_model": "06910",
+          "source_url": "https://store.ace.jp/shop/g/g06910-03/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "使い分け",
+          "text": "前開き / ストッパー",
+          "exact_model": "06910",
+          "source_url": "https://store.ace.jp/shop/g/g06910-03/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        }
+      ],
+      "lead": "外寸は幅34×奥行20×高さ45cm、3辺合計99cm。21L、2.6kgで、前開きとストッパーを備えています。容量は4候補のうち最も小さいため、書類や充電器を途中で取り出しつつ、衣類を必要最小限にまとめる旅に向きます。",
+      "fit": [
+        "同じ外寸の候補の中で、21Lで荷物が収まり、前開きと2.6kgの重量を選ぶ"
+      ],
+      "avoid": [
+        "21Lでは足りず、旅先で荷物が増える予定がある"
+      ],
+      "caution": "前開き部の収納寸法、色ごとの在庫、ストッパー仕様",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-3"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g06910-03/"
+      }
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "exact_model": "60524（新仕様・USBポートなし）",
+      "name": "BERMAS INTER CITY 60524",
+      "anchor": "bermas-inter-city-60524",
+      "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "34×20×45cm（全体寸法）",
+          "exact_model": "60524（新仕様・USBポートなし）",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "3辺合計",
+          "text": "99cm",
+          "exact_model": "60524（新仕様・USBポートなし）",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "容量",
+          "text": "約22L",
+          "exact_model": "60524（新仕様・USBポートなし）",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体重量",
+          "text": "約2.8kg 付属物を除く",
+          "exact_model": "60524（新仕様・USBポートなし）",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "使い分け",
+          "text": "PC収納 / ストッパー 新仕様はUSBポートなし",
+          "exact_model": "60524（新仕様・USBポートなし）",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "PC収納（幅×高さ×厚さ）",
+          "text": "27×27×4cm（13インチは目安）",
+          "exact_model": "60524（新仕様・USBポートなし）",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "仕様区分",
+          "text": "60524新仕様：USBポート廃止・内装変更・背面トラベルセントリーID追加。旧60504と区別。",
+          "exact_model": "60524（新仕様・USBポートなし）",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "アクセス方法",
+          "text": "フロントポケットからメインルームとPCクッションポケットへアクセス",
+          "exact_model": "60524（新仕様・USBポートなし）",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "外寸は幅34×奥行20×高さ45cm、3辺合計99cm。約22L、約2.8kg（付属物を除く）で、PC収納とストッパーを備えています。現行の新仕様ではUSBポートがなく、トラベルセントリーIDが追加されています。PCクッションポケットは幅27×高さ27×奥行4cmです。13インチまでは目安で、機器によっては収まらない場合があります。ケースに入れたPCの実寸も確認してください。",
+      "fit": [
+        "PCを衣類と分けて収め、移動中に取り出したい"
+      ],
+      "avoid": [
+        "PC収納を使わず、同じ22Lでも衣類の有効空間を優先する"
+      ],
+      "caution": "新仕様かどうか、PC収納の対応寸法、付属品、保証範囲",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-4"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
+        "source": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+        "checked_on": "2026-09-13"
+      }
+    },
+    {
+      "product_id": "PRD-INNOVATOR-INV50",
+      "exact_model": "INV50",
+      "name": "INV50",
+      "anchor": "innovator-inv50",
+      "official_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "35×25×55cm",
+          "exact_model": "INV50",
+          "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "容量",
+          "text": "38L",
+          "exact_model": "INV50",
+          "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体重量",
+          "text": "3.3kg",
+          "exact_model": "INV50",
+          "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "前開きの整理",
+          "text": "3room / フロントとミドルを開放",
+          "exact_model": "INV50",
+          "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "キャスターストッパー",
+          "text": "公表あり",
+          "exact_model": "INV50",
+          "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "拡張時",
+          "text": "拡張機能なし",
+          "exact_model": "INV50",
+          "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "固有の検討軸",
+          "text": "38L / 3.3kg / 3room",
+          "exact_model": "INV50",
+          "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "PC収納（幅×高さ×厚さ）",
+          "text": "対象型番の収納部の幅・高さ・厚さを今回確認できず。インチ数や外寸でPCの適合を保証しません。",
+          "exact_model": "INV50",
+          "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "source_unavailable",
+            "impact": "対象型番の収納部の幅・高さ・厚さを今回確認できず。インチ数や外寸でPCの適合を保証しません。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "ストッパーの操作",
+          "text": "公表されている搭載有無と、操作位置・止まる車輪の対応を分けて確認中。",
+          "exact_model": "INV50",
+          "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "source_unavailable",
+            "impact": "公表されている搭載有無と、操作位置・止まる車輪の対応を分けて確認中。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "USBと付属電源",
+          "text": "対象型番で、この比較項目の公表値を今回確認できていません。",
+          "exact_model": "INV50",
+          "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "research_pending",
+            "impact": "対象型番で、この比較項目の公表値を今回確認できていません。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        }
+      ],
+      "lead": "公表仕様： 幅35×奥行25×高さ55cm、38L、3.3kg。独立した3room収納、フロントとミドルの間を開放できるワイドオープン、ブレーキ機能を備えるモデルです。",
+      "fit": [
+        "通常時38Lと3.3kgを両立し、3room収納を使い分けたい"
+      ],
+      "avoid": [
+        "中央開きとの2WAYや、USB端子を必須にしている"
+      ],
+      "caution": "型番・構成と利用条件を照合し、未確認の機能で適合を判断しないでください。",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-1"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue"
+      }
+    },
+    {
+      "product_id": "PRD-PROTECA-FRESTER-EX-01551",
+      "exact_model": "01551",
+      "name": "フレスターEX 01551",
+      "anchor": "proteca-frester-ex-01551",
+      "official_url": "https://store.ace.jp/shop/g/g01551-01/",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "37×23×55cm",
+          "exact_model": "01551",
+          "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "容量",
+          "text": "36L",
+          "exact_model": "01551",
+          "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体重量",
+          "text": "3.4kg",
+          "exact_model": "01551",
+          "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "前開きの整理",
+          "text": "前から全体へアクセス",
+          "exact_model": "01551",
+          "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "キャスターストッパー",
+          "text": "公表あり",
+          "exact_model": "01551",
+          "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "拡張時",
+          "text": "37×27×55cm / 45L",
+          "exact_model": "01551",
+          "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "固有の検討軸",
+          "text": "日本製 / 片側で荷造り",
+          "exact_model": "01551",
+          "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "ストッパーの操作",
+          "text": "手元ボタンで固定。止まる車輪の数・位置は本文資料で未確認。",
+          "exact_model": "01551",
+          "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "手元ボタンで固定。止まる車輪の数・位置は本文資料で未確認。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "PC収納（幅×高さ×厚さ）",
+          "text": "対象型番の収納部の幅・高さ・厚さを今回確認できず。インチ数や外寸でPCの適合を保証しません。",
+          "exact_model": "01551",
+          "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "対象型番の収納部の幅・高さ・厚さを今回確認できず。インチ数や外寸でPCの適合を保証しません。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "USBと付属電源",
+          "text": "対象型番で、この比較項目の公表値を今回確認できていません。",
+          "exact_model": "01551",
+          "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "research_pending",
+            "impact": "対象型番で、この比較項目の公表値を今回確認できていません。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        }
+      ],
+      "lead": "公表仕様： 通常時は幅37×奥行23×高さ55cm、36L、3.4kg。拡張時は幅37×奥行27×高さ55cm、45Lです。フロントオープン、キャスターストッパー、日本製で、中央開きはできないと案内されています。",
+      "fit": [
+        "片側で荷造りする構造と、通常時から36Lの容量を重視する"
+      ],
+      "avoid": [
+        "前面の独立PCポケットとUSB端子を必須にしている"
+      ],
+      "caution": "型番・構成と利用条件を照合し、未確認の機能で適合を判断しないでください。",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-3"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.ace.jp/shop/g/g01551-01/"
+      }
+    },
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+      "exact_model": "60561",
+      "name": "INTER CITY II 60561",
+      "anchor": "bermas-inter-city-ii-60561",
+      "official_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+      "facts": [
+        {
+          "label": "通常時外寸（幅×奥行×高さ）",
+          "text": "35×25×55cm",
+          "exact_model": "60561",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "容量",
+          "text": "約36L",
+          "exact_model": "60561",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体重量",
+          "text": "約3.5kg 付属物を除く",
+          "exact_model": "60561",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "前開きの整理",
+          "text": "PC前面区画 / メインへアクセス",
+          "exact_model": "60561",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "キャスターストッパー",
+          "text": "公表あり",
+          "exact_model": "60561",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "拡張時",
+          "text": "拡張機能なし",
+          "exact_model": "60561",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "固有の検討軸",
+          "text": "PC収納 / USB-A・USB-C",
+          "exact_model": "60561",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "PC収納（幅×高さ×厚さ）",
+          "text": "対象型番の収納部の幅・高さ・厚さを今回確認できず。インチ数や外寸でPCの適合を保証しません。",
+          "exact_model": "60561",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "対象型番の収納部の幅・高さ・厚さを今回確認できず。インチ数や外寸でPCの適合を保証しません。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "ストッパーの操作",
+          "text": "公表されている搭載有無と、操作位置・止まる車輪の対応を分けて確認中。",
+          "exact_model": "60561",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "research_pending",
+            "impact": "公表されている搭載有無と、操作位置・止まる車輪の対応を分けて確認中。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "USBと付属電源",
+          "text": "USB-A・USB-Cポートは公表仕様。モバイルバッテリー同梱の確認はできず、電源付属を前提にしない。",
+          "exact_model": "60561",
+          "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "research_pending",
+            "impact": "USB-A・USB-Cポートは公表仕様。モバイルバッテリー同梱の確認はできず、電源付属を前提にしない。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        }
+      ],
+      "lead": "公表仕様： 幅35×奥行25×高さ55cm、約36L、約3.5kg（付属物を除く）。13インチまでを目安とするPC収納、USB-A・USB-C端子、キャスターストッパーを備えます。",
+      "fit": [
+        "PC収納とUSB-A・USB-C端子を優先条件に含める"
+      ],
+      "avoid": [
+        "容量の拡張や、中央開きのない片面アクセス構造を優先している"
+      ],
+      "caution": "型番・構成と利用条件を照合し、未確認の機能で適合を判断しないでください。",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-4"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561"
+      }
+    },
+    {
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+      "exact_model": "F115060",
+      "name": "Roomba Mini Slim + SlimCharge F115060",
+      "anchor": "roomba-mini-slim-f115060",
+      "official_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "約24.5×24.5×9.2cm 公式仕様",
+          "exact_model": "F115060",
+          "source_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体重量",
+          "text": "約2kg 公式仕様",
+          "exact_model": "F115060",
+          "source_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
+          "text": "約22.2×8.6×12.3cm",
+          "exact_model": "F115060",
+          "source_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "自動ゴミ収集",
+          "text": "なし 本体から手動でごみ捨て",
+          "exact_model": "F115060",
+          "source_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "紙パック容量",
+          "text": "該当なし",
+          "exact_model": "F115060",
+          "source_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "アプリ / Wi-Fi",
+          "text": "Roomba Homeアプリ / 2.4GHz・5GHz",
+          "exact_model": "F115060",
+          "source_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-29",
+          "state": "PRESERVED"
+        }
+      ],
+      "lead": "F115060は本体が幅約24.5×奥行約24.5×高さ約9.2cm、約2kgで、充電台は縦置き時に幅約22.2×奥行約8.6×高さ約12.3cmです。3構成のうち充電台の設置面積が最も小さい一方、自動ゴミ収集はなく、本体ダスト容器を手動で空にします。",
+      "fit": [
+        "充電台の床面積と高さを抑え、手動でのごみ捨てを許容できる"
+      ],
+      "avoid": [
+        "本体ダスト容器へ触れる回数を減らすことを最優先する"
+      ],
+      "caution": "F115060の色・販売状況、同梱品、対応OS・ネットワーク条件、消耗品、保証",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "checked_on": "2026-09-13",
+        "source": "https://store.irobot-jp.com/category/ROOMBA/F115060.html"
+      }
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+      "exact_model": "A1754",
+      "name": "Anker Solix C800 Plus Portable Power Station",
+      "anchor": "product-anker-c800-plus",
+      "official_url": "https://www.ankerjapan.com/products/a1754",
+      "facts": [
+        {
+          "label": "容量",
+          "text": "768Wh",
+          "exact_model": "A1754",
+          "source_url": "https://www.ankerjapan.com/products/a1754",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "定格出力",
+          "text": "1200W",
+          "exact_model": "A1754",
+          "source_url": "https://www.ankerjapan.com/products/a1754",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "重量",
+          "text": "約10.9kg",
+          "exact_model": "A1754",
+          "source_url": "https://www.ankerjapan.com/products/a1754",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅約37.1×奥行約20.5×高さ約25.0cm",
+          "exact_model": "A1754",
+          "source_url": "https://www.ankerjapan.com/products/a1754",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "AC口数",
+          "text": "5口",
+          "exact_model": "A1754",
+          "source_url": "https://www.ankerjapan.com/products/a1763",
+          "locator": "公式4モデル比較表・出力ポート構成",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "USB-C口別最大出力",
+          "text": "100W×1口・30W×1口",
+          "exact_model": "A1754",
+          "source_url": "https://lp.ankerjapan.com/hubfs/aoos/manual/A1754Manual.pdf",
+          "locator": "日本語取扱説明書 製品の仕様（Gen2 p17 / C800Plus PDF8枚目）",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "拡張バッテリー",
+          "text": "非対応",
+          "exact_model": "A1754",
+          "source_url": "https://www.ankerjapan.com/products/a1763",
+          "locator": "公式4モデル比較表・拡張バッテリー対応。C1000はBP1000公式案内も参照",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "同時利用の制限",
+          "text": "合計出力と接続機器の起動負荷を確認。各ポートの最大値を足して同時出力と扱わない。",
+          "exact_model": "A1754",
+          "source_url": "https://www.ankerjapan.com/products/a1754",
+          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "condition_dependent",
+            "impact": "合計出力と接続機器の起動負荷を確認。各ポートの最大値を足して同時出力と扱わない。",
+            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        },
+        {
+          "label": "付属品の注意",
+          "text": "公式製品ページは、説明書記載のソーラー充電ケーブル同梱を誤りと訂正しています。購入構成の内容を確認してください。",
+          "exact_model": "A1754",
+          "source_url": "https://www.ankerjapan.com/products/a1754",
+          "locator": "公式製品ページ パッケージ内容の訂正注記",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "C300より容量と出力を増やしながら、C1000系より軽いモデルを選びたい場合に。",
+      "fit": [
+        "定格1200W以内の機器を使いたい人",
+        "C1000系より軽い中容量帯を選びたい人"
+      ],
+      "avoid": [
+        "1000Wh以上の公表容量を求める人",
+        "本体を頻繁に持ち運ぶため、より軽いモデルを選びたい人"
+      ],
+      "caution": "型番・構成と利用条件を照合し、未確認の機能で適合を判断しないでください。",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-2"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
+        "source": "https://www.ankerjapan.com/products/a1754",
+        "checked_on": "2026-09-13"
+      }
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000",
+      "exact_model": "A1761",
+      "name": "Anker Solix C1000 Portable Power Station",
+      "anchor": "product-anker-c1000",
+      "official_url": "https://www.ankerjapan.com/products/a1761",
+      "facts": [
+        {
+          "label": "容量",
+          "text": "1056Wh",
+          "exact_model": "A1761",
+          "source_url": "https://www.ankerjapan.com/products/a1761",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "定格出力",
+          "text": "1500W",
+          "exact_model": "A1761",
+          "source_url": "https://www.ankerjapan.com/products/a1761",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "重量",
+          "text": "約12.9kg",
+          "exact_model": "A1761",
+          "source_url": "https://www.ankerjapan.com/products/a1761",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅約37.6×奥行約20.5×高さ約26.7cm",
+          "exact_model": "A1761",
+          "source_url": "https://www.ankerjapan.com/products/a1761",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "AC口数",
+          "text": "6口",
+          "exact_model": "A1761",
+          "source_url": "https://www.ankerjapan.com/products/a1763",
+          "locator": "公式4モデル比較表・出力ポート構成",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "USB-C口別最大出力",
+          "text": "100W×1口・30W×1口",
+          "exact_model": "A1761",
+          "source_url": "https://lp.ankerjapan.com/hubfs/aoos/manual/A1761Manual.pdf",
+          "locator": "PDF7枚目：製品の仕様",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "拡張バッテリー",
+          "text": "BP1000対応",
+          "exact_model": "A1761",
+          "source_url": "https://www.ankerjapan.com/products/a1763",
+          "locator": "公式4モデル比較表・拡張バッテリー対応。C1000はBP1000公式案内も参照",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "同時利用の制限",
+          "text": "AC出力はインバーター時最大1500W、パススルー時最大1200W。各端子の最大値を合算して使わない。",
+          "exact_model": "A1761",
+          "source_url": "https://lp.ankerjapan.com/hubfs/aoos/manual/A1761Manual.pdf",
+          "locator": "PDF7枚目：AC出力の動作モード別制限",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "おすすめする理由： Gen 2よりAC端子が1口多く、拡張バッテリーに対応するためです。端子数と同時に使える出力は分けて確認してください。",
+      "fit": [
+        "BP1000で容量を追加したい人",
+        "AC端子を6口使いたい人（合計出力と機器の適合は別途確認）"
+      ],
+      "avoid": [
+        "C1000系で軽さを優先する人",
+        "付属品や拡張バッテリーをC1000 Gen 2と共用する予定の人"
+      ],
+      "caution": "型番・構成と利用条件を照合し、未確認の機能で適合を判断しないでください。",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-3"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
+        "source": "https://www.ankerjapan.com/products/a1761",
+        "checked_on": "2026-09-13"
+      }
+    },
+    {
+      "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+      "exact_model": "A17635Z1 / A1763521",
+      "name": "Anker Solix C1000 Gen 2 Portable Power Station",
+      "anchor": "product-anker-c1000-gen2",
+      "official_url": "https://www.ankerjapan.com/products/a1763",
+      "facts": [
+        {
+          "label": "容量",
+          "text": "1024Wh",
+          "exact_model": "A17635Z1 / A1763521",
+          "source_url": "https://www.ankerjapan.com/products/a1763",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "定格出力",
+          "text": "AC単口1500W／複数口合計1550W（日本語説明書）。特設ページの1500W表記は条件説明が不足。",
+          "exact_model": "A17635Z1 / A1763521",
+          "source_url": "https://lp.ankerjapan.com/hubfs/aoos/manual/A1763Manual.pdf",
+          "locator": "印刷p16 FAQ1・p17 AC出力電力（PDF18・19枚目）",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "重量",
+          "text": "約11.3kg",
+          "exact_model": "A17635Z1 / A1763521",
+          "source_url": "https://www.ankerjapan.com/products/a1763",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "幅約38.4×奥行約20.8×高さ約24.4cm",
+          "exact_model": "A17635Z1 / A1763521",
+          "source_url": "https://www.ankerjapan.com/products/a1763",
+          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
+          "checked_at": "2026-08-23",
+          "state": "PRESERVED"
+        },
+        {
+          "label": "AC口数",
+          "text": "5口",
+          "exact_model": "A17635Z1 / A1763521",
+          "source_url": "https://www.ankerjapan.com/products/a1763",
+          "locator": "公式4モデル比較表・出力ポート構成",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "USB-C口別最大出力",
+          "text": "C1：15W／C2・C3：各100W",
+          "exact_model": "A17635Z1 / A1763521",
+          "source_url": "https://lp.ankerjapan.com/hubfs/aoos/manual/A1763Manual.pdf",
+          "locator": "日本語取扱説明書 製品の仕様（Gen2 p17 / C800Plus PDF8枚目）",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "拡張バッテリー",
+          "text": "非対応",
+          "exact_model": "A17635Z1 / A1763521",
+          "source_url": "https://www.ankerjapan.com/products/a1763",
+          "locator": "公式4モデル比較表・拡張バッテリー対応。C1000はBP1000公式案内も参照",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "同時利用の制限",
+          "text": "ACは単口1500W・合計1550W。USB-AとUSB-C1は合計20W。USB-Cは機器への出力専用。",
+          "exact_model": "A17635Z1 / A1763521",
+          "source_url": "https://lp.ankerjapan.com/hubfs/aoos/manual/A1763Manual.pdf",
+          "locator": "印刷p16 FAQ1/3・p17 製品の仕様",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        }
+      ],
+      "lead": "C1000第1世代より約1.6kg軽い約11.3kgで、USB-Cは3口。ACは単口1500Wと複数口合計1550Wを区別します。",
+      "fit": [
+        "C1000系で持ち運ぶ負担を抑えたい人",
+        "USB-C端子を3口使いたい人（各端子の出力は異なります）"
+      ],
+      "avoid": [
+        "BP1000で容量を追加したい人",
+        "AC端子を6口使いたい人"
+      ],
+      "caution": "拡張バッテリー非対応。特設ページの表は1500Wとだけ記載していますが、日本語説明書p16・17は単口1500W／合計1550Wと説明しています。50W差を機器の適合保証や性能上の優位性に使いません。",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "choice-4"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
+        "source": "https://www.ankerjapan.com/products/a1763",
+        "checked_on": "2026-09-13"
+      }
+    },
+    {
+      "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
+      "exact_model": "TK-MDW22B",
+      "name": "ラクアmini Plus",
+      "anchor": "product-dish-rakua-mini-plus",
+      "official_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+      "facts": [
+        {
+          "label": "本体寸法（幅×奥行×高さ）",
+          "text": "308×315×415mm",
+          "exact_model": "TK-MDW22B",
+          "source_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+          "locator": "公式製品ページ 仕様欄・TK-MDW22B/JAN4580060595242",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "開扉時の寸法",
+          "text": "開扉時の奥行594mm",
+          "exact_model": "TK-MDW22B",
+          "source_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+          "locator": "公式製品ページ 仕様欄・TK-MDW22B/JAN4580060595242",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "標準食器点数",
+          "text": "11〜12点",
+          "exact_model": "TK-MDW22B",
+          "source_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+          "locator": "公式製品ページ 仕様欄・TK-MDW22B/JAN4580060595242",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "公表使用水量（条件は機種別）",
+          "text": "3.2L（使用前の必要給水量。説明書は2026年9月11日に確認）",
+          "exact_model": "TK-MDW22B",
+          "source_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+          "locator": "公式製品ページ 仕様欄・TK-MDW22B/JAN4580060595242",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "給水方式",
+          "text": "タンク式・給水カップ付属",
+          "exact_model": "TK-MDW22B",
+          "source_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+          "locator": "公式製品ページ 仕様欄・TK-MDW22B/JAN4580060595242",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "乾燥・扉",
+          "text": "熱風乾燥",
+          "exact_model": "TK-MDW22B",
+          "source_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+          "locator": "公式製品ページ 仕様欄・TK-MDW22B/JAN4580060595242",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "本体重量",
+          "text": "約8kg",
+          "exact_model": "TK-MDW22B",
+          "source_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+          "locator": "公式製品ページ 仕様欄・TK-MDW22B/JAN4580060595242",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
+        },
+        {
+          "label": "消費電力量",
+          "text": "1回当たりの消費電力量は確認できません。定格900Wから運転1回の電気代は算出しません。",
+          "exact_model": "TK-MDW22B",
+          "source_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+          "locator": "仕様欄は定格消費電力のみ。1回のWhは記載を確認できず",
+          "checked_at": "2026-09-13",
+          "state": "UNKNOWN",
+          "unknown_reason": {
+            "kind": "manufacturer_not_published",
+            "impact": "電気代を含む総額は計算できません。",
+            "next_action": "対象コースの1回当たりWhの公表資料を確認する",
+            "owner": "暮らしのしるべ編集部"
+          }
+        }
+      ],
+      "lead": "SOLOTAより一度に洗う食器を増やし、熱風乾燥を使いたい場合の候補。奥行と給水の手間を確認します。",
+      "fit": [
+        "標準11〜12点の食器と熱風乾燥を重視する人"
+      ],
+      "avoid": [
+        "開扉時奥行594mmを確保できない人",
+        "着脱タンクで蛇口から直接給水したい人"
+      ],
+      "caution": "TK-MDW22Bの比較です。mini color TDWS25SBL / TDWS25SRDや白いTK-STTDPSWHへ仕様を読み替えません。",
+      "image_markup": "",
+      "image_basis": "RAKUTEN_GENERATED_VERBATIM",
+      "use_cases": [
+        "more-dishes",
+        "choice-2"
+      ],
+      "guide_facts": [],
+      "image_review": {
+        "state": "UNVERIFIED",
+        "reason": "TK-MDW22B本体構成の画像と販売ページの同一性を今回照合していません。",
+        "source": "https://www.thanko.jp/view/item/000000004055",
+        "checked_on": "2026-09-13"
       }
     }
   ],
@@ -2886,7 +5177,7 @@
       "required_items_yen": null,
       "state": "AVAILABLE",
       "condition": "new",
-      "variant": "SS-MA251 シルバー・オートオープン・新品。SS-MU251（UV除菌タイプ）と共通の販売ページです。注文前に「オートオープンタイプ/シルバー(SS-MA251)」が選択されていることを確認してください（2026年9月12日にこのリンク先でSS-MA251が選択済み・税込59,800円・カート追加可の表示を確認）。",
+      "variant": "SS-MA251 シルバー・オートオープン・新品。SS-MU251（UV除菌タイプ）と共通の販売ページです。注文前に「オートオープンタイプ/シルバー(SS-MA251)」が選択されていることを確認してください（2026年9月12日にこのリンク先でSS-MA251が選択済み・価格は販売先で確認・カート追加可の表示を確認）。",
       "warranty": "購入から1年。会員特典の延長は登録条件あり。",
       "delivery": "届け先・注文画面で確認",
       "price_scope": "沖縄・離島等の送料、洗剤・設置用品が未確定のため小計。",
@@ -3238,7 +5529,7 @@
       "required_items_yen": null,
       "state": "SOLD_OUT",
       "condition": "new",
-      "variant": "TDWS25SBL（ミスティーブルー）／TDWS25SRD（クラシックローズ）・本体のみ・新品。スチールラックセット（税込44,480円）は別構成。",
+      "variant": "TDWS25SBL（ミスティーブルー）／TDWS25SRD（クラシックローズ）・本体のみ・新品。スチールラックセット（価格は販売先で確認）は別構成。",
       "warranty": "公式通販の表示は購入日より24か月。適用条件は注文前に確認。",
       "delivery": "再入荷（予約開始）通知の受付中。入荷日は未確認。",
       "price_scope": "公式通販の税込表示価格。送料・洗剤等は未確認のため小計。",
@@ -3251,6 +5542,614 @@
       "affiliate_url": null,
       "variant_id": "thanko-tdws25s",
       "verified_at": "2026-09-12T10:38:00+00:00"
+    },
+    {
+      "offer_id": "official-american-tourister-applite-4-qj6-68002",
+      "product_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+      "product_model": "QJ6-68002",
+      "seller_id": "manufacturer-american",
+      "seller": "メーカー公式通販",
+      "url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+      "merchant_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+      "affiliate_url": null,
+      "source_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
+      "source_urls": [
+        "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "QJ6-68002・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "QJ6-68002",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-frequenter-lieve-1-250",
+      "product_id": "PRD-FREQUENTER-LIEVE-1-250",
+      "product_model": "1-250",
+      "seller_id": "manufacturer-frequenter",
+      "seller": "メーカー公式通販",
+      "url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+      "merchant_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+      "affiliate_url": null,
+      "source_url": "https://www.bagworld.co.jp/c/brands/frequenter/1-250",
+      "source_urls": [
+        "https://www.bagworld.co.jp/c/brands/frequenter/1-250"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "1-250・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "1-250",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-switchbot-k10-pro-combo",
+      "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO",
+      "product_model": "K10+ Pro Combo",
+      "seller_id": "manufacturer-switchbot",
+      "seller": "メーカー公式通販",
+      "url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+      "merchant_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+      "affiliate_url": null,
+      "source_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
+      "source_urls": [
+        "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "K10+ Pro Combo・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "K10+ Pro Combo",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-irobot-roomba-plus-515-combo",
+      "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
+      "product_model": "N285060",
+      "seller_id": "manufacturer-irobot",
+      "seller": "メーカー公式通販",
+      "url": "https://store.irobot-jp.com/item/N285060.html",
+      "merchant_url": "https://store.irobot-jp.com/item/N285060.html",
+      "affiliate_url": null,
+      "source_url": "https://store.irobot-jp.com/item/N285060.html",
+      "source_urls": [
+        "https://store.irobot-jp.com/item/N285060.html"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "N285060・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "N285060",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-ace-cresta-06316",
+      "product_id": "PRD-ACE-CRESTA-06316",
+      "product_model": "06316",
+      "seller_id": "manufacturer-ace",
+      "seller": "メーカー公式通販",
+      "url": "https://store.ace.jp/shop/g/g06316-01/",
+      "merchant_url": "https://store.ace.jp/shop/g/g06316-01/",
+      "affiliate_url": null,
+      "source_url": "https://store.ace.jp/shop/g/g06316-01/",
+      "source_urls": [
+        "https://store.ace.jp/shop/g/g06316-01/"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "06316・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "06316",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-ace-difference-05721",
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "product_model": "05721",
+      "seller_id": "manufacturer-ace",
+      "seller": "メーカー公式通販",
+      "url": "https://store.ace.jp/shop/g/g05721-04",
+      "merchant_url": "https://store.ace.jp/shop/g/g05721-04",
+      "affiliate_url": null,
+      "source_url": "https://store.ace.jp/shop/g/g05721-04",
+      "source_urls": [
+        "https://store.ace.jp/shop/g/g05721-04"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "05721・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "05721",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-ace-maxpass4-01471",
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "product_model": "01471",
+      "seller_id": "manufacturer-ace",
+      "seller": "メーカー公式通販",
+      "url": "https://store.ace.jp/shop/g/g01471-02",
+      "merchant_url": "https://store.ace.jp/shop/g/g01471-02",
+      "affiliate_url": null,
+      "source_url": "https://store.ace.jp/shop/g/g01471-02",
+      "source_urls": [
+        "https://store.ace.jp/shop/g/g01471-02"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "01471・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "01471",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-proteca-staria-cxr-02350",
+      "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+      "product_model": "02350",
+      "seller_id": "manufacturer-proteca",
+      "seller": "メーカー公式通販",
+      "url": "https://store.ace.jp/shop/g/g02350-12/",
+      "merchant_url": "https://store.ace.jp/shop/g/g02350-12/",
+      "affiliate_url": null,
+      "source_url": "https://store.ace.jp/shop/g/g02350-12/",
+      "source_urls": [
+        "https://store.ace.jp/shop/g/g02350-12/"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "02350・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "02350",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-proteca-frester-ex-01550",
+      "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+      "product_model": "01550",
+      "seller_id": "manufacturer-proteca",
+      "seller": "メーカー公式通販",
+      "url": "https://store.ace.jp/shop/g/g01550-11/",
+      "merchant_url": "https://store.ace.jp/shop/g/g01550-11/",
+      "affiliate_url": null,
+      "source_url": "https://store.ace.jp/shop/g/g01550-11/",
+      "source_urls": [
+        "https://store.ace.jp/shop/g/g01550-11/"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "01550・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "01550",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-ace-palisades3-z-06910",
+      "product_id": "PRD-ACE-PALISADES3-Z-06910",
+      "product_model": "06910",
+      "seller_id": "manufacturer-ace",
+      "seller": "メーカー公式通販",
+      "url": "https://store.ace.jp/shop/g/g06910-03/",
+      "merchant_url": "https://store.ace.jp/shop/g/g06910-03/",
+      "affiliate_url": null,
+      "source_url": "https://store.ace.jp/shop/g/g06910-03/",
+      "source_urls": [
+        "https://store.ace.jp/shop/g/g06910-03/"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "06910・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "06910",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-bermas-inter-city-60524",
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "product_model": "60524（新仕様・USBポートなし）",
+      "seller_id": "manufacturer-bermas",
+      "seller": "メーカー公式通販",
+      "url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+      "merchant_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+      "affiliate_url": null,
+      "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+      "source_urls": [
+        "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "60524（新仕様・USBポートなし）・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "60524（新仕様・USBポートなし）",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-innovator-inv50",
+      "product_id": "PRD-INNOVATOR-INV50",
+      "product_model": "INV50",
+      "seller_id": "manufacturer-innovator",
+      "seller": "メーカー公式通販",
+      "url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+      "merchant_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+      "affiliate_url": null,
+      "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+      "source_urls": [
+        "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "INV50・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "INV50",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-proteca-frester-ex-01551",
+      "product_id": "PRD-PROTECA-FRESTER-EX-01551",
+      "product_model": "01551",
+      "seller_id": "manufacturer-proteca",
+      "seller": "メーカー公式通販",
+      "url": "https://store.ace.jp/shop/g/g01551-01/",
+      "merchant_url": "https://store.ace.jp/shop/g/g01551-01/",
+      "affiliate_url": null,
+      "source_url": "https://store.ace.jp/shop/g/g01551-01/",
+      "source_urls": [
+        "https://store.ace.jp/shop/g/g01551-01/"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "01551・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "01551",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-bermas-inter-city-ii-60561",
+      "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+      "product_model": "60561",
+      "seller_id": "manufacturer-bermas",
+      "seller": "メーカー公式通販",
+      "url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+      "merchant_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+      "affiliate_url": null,
+      "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+      "source_urls": [
+        "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "60561・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "60561",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-irobot-roomba-mini-slim-f115060",
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+      "product_model": "F115060",
+      "seller_id": "manufacturer-irobot",
+      "seller": "メーカー公式通販",
+      "url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+      "merchant_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+      "affiliate_url": null,
+      "source_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+      "source_urls": [
+        "https://store.irobot-jp.com/category/ROOMBA/F115060.html"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "F115060・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "F115060",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-anker-solix-c800-plus",
+      "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+      "product_model": "A1754",
+      "seller_id": "manufacturer-anker",
+      "seller": "メーカー公式通販",
+      "url": "https://www.ankerjapan.com/products/a1754",
+      "merchant_url": "https://www.ankerjapan.com/products/a1754",
+      "affiliate_url": null,
+      "source_url": "https://www.ankerjapan.com/products/a1754",
+      "source_urls": [
+        "https://www.ankerjapan.com/products/a1754"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "A1754・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "A1754",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-anker-solix-c1000",
+      "product_id": "PRD-ANKER-SOLIX-C1000",
+      "product_model": "A1761",
+      "seller_id": "manufacturer-anker",
+      "seller": "メーカー公式通販",
+      "url": "https://www.ankerjapan.com/products/a1761",
+      "merchant_url": "https://www.ankerjapan.com/products/a1761",
+      "affiliate_url": null,
+      "source_url": "https://www.ankerjapan.com/products/a1761",
+      "source_urls": [
+        "https://www.ankerjapan.com/products/a1761"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "A1761・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "A1761",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-anker-solix-c1000-gen2",
+      "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+      "product_model": "A17635Z1 / A1763521",
+      "seller_id": "manufacturer-anker",
+      "seller": "メーカー公式通販",
+      "url": "https://www.ankerjapan.com/products/a1763",
+      "merchant_url": "https://www.ankerjapan.com/products/a1763",
+      "affiliate_url": null,
+      "source_url": "https://www.ankerjapan.com/products/a1763",
+      "source_urls": [
+        "https://www.ankerjapan.com/products/a1763"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "A17635Z1 / A1763521・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "A17635Z1 / A1763521",
+      "warranty": "販売先で対象型番・購入経路への適用条件を確認してください。",
+      "delivery": "届け先への納期は未確認です。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
+    },
+    {
+      "offer_id": "official-thanko-rakua-mini-plus",
+      "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
+      "product_model": "TK-MDW22B",
+      "seller_id": "manufacturer-thanko",
+      "seller": "メーカー公式通販",
+      "url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+      "merchant_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+      "affiliate_url": null,
+      "source_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+      "source_urls": [
+        "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin"
+      ],
+      "checked_at": "2026-09-13T04:08:19+09:00",
+      "valid_until": "2026-09-14T04:08:19+09:00",
+      "verified_at": null,
+      "price_yen": null,
+      "shipping_yen": null,
+      "required_items_yen": null,
+      "state": "UNAVAILABLE",
+      "condition": "new",
+      "variant": "TK-MDW22B・本体構成（選択中の色と付属品は購入前に確認）",
+      "variant_id": "TK-MDW22B",
+      "warranty": "公式仕様に購入日より12か月。対象型番と購入先の適用条件を確認。",
+      "delivery": "再入荷時期と届け先への納期は未確認。",
+      "price_scope": "本体価格・送料・必要品の小計も未確定です。",
+      "unavailable_reason": "2026年9月13日に公式商品ページは再入荷（予約開始）通知の表示を確認。色・セットを選択した注文可否は未照合のため、全販売先の売切れとは判定しません。",
+      "identity_verified": false,
+      "total_scope_complete": false,
+      "affiliate": false,
+      "link_basis": "対象型番の公式製品ページへの通常リンク。公開本文に記録された確認先を維持。"
     }
   ],
   "research_issues": [
@@ -3264,7 +6163,13 @@
       "target_url": "https://item.rakuten.co.jp/panasonic-store/np-tml1-w/",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "Panasonic Store Plus 楽天市場店のSOLOTA商品ページ（色・価格・保証）"
+      "target_label": "Panasonic Store Plus 楽天市場店のSOLOTA商品ページ（色・価格・保証）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "公式楽天市場店でブラックを選択し、NP-TMLK1-Kの表示価格・注文ボタン・メーカー1年保証を確認しました。白との共通ページなので、購入時にもブラックを選び、型番・送料・納期・保証条件を確認してください。洗剤や設置用品を含む総額は未確定です。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-THANKO-RAKUA-MINI-COLOR-seller",
@@ -3276,7 +6181,13 @@
       "target_url": "https://www.thanko.jp/view/item/000000004715",
       "next_check_on": "2026-09-11",
       "alternative": "注文できる状態を確認するまで、標準6点で奥行を抑えるSOLOTAか、16点で給水2WAYのSS-MA251を比較するか、購入を保留してください。",
-      "target_label": "サンコー公式通販のラクアmini color商品ページ（色別の在庫・価格）"
+      "target_label": "サンコー公式通販のラクアmini color商品ページ（色別の在庫・価格）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "サンコー公式通販では2色（ミスティーブルーTDWS25SBL・クラシックローズTDWS25SRD）とも税込36,800円・保証24か月の表示ですが、2026年9月12日の確認時は「再入荷(予約開始)通知」の受付中で注文できませんでした。通常洗浄の消費電力量も未確認です。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-SIROCA-SS-MA251-seller",
@@ -3288,7 +6199,13 @@
       "target_url": "https://store.siroca.jp/products/ss-mu251?variant=41121812643976",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "シロカ公式通販のSS-MA251販売ページ（価格・送料）"
+      "target_label": "シロカ公式通販のSS-MA251販売ページ（価格・送料）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "コース別Wh・水量の適用条件・届け先の送料・洗剤等の費用が残っています。開扉奥行約760mmは公式の据え付け案内で確認済みです。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-PANASONIC-NP-TSP1-seller",
@@ -3300,7 +6217,13 @@
       "target_url": "https://item.rakuten.co.jp/panasonic-store/np-tsp1-w/",
       "next_check_on": "2026-09-11",
       "alternative": "再入荷を確認するまで、食器量が近い16点のSS-MA251か、1人分向けのSOLOTAを比較するか、購入を保留してください。型番・構成を照合できる別店舗は確認できていません。",
-      "target_label": "Panasonic Store Plus 楽天市場店のNP-TSP1-W商品ページ（再入荷・販売条件）"
+      "target_label": "Panasonic Store Plus 楽天市場店のNP-TSP1-W商品ページ（再入荷・販売条件）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "公式楽天市場店のNP-TSP1-Wは確認時に売り切れでした。再入荷日と注文再開は未確認です。購入を検討する場合は、販売状態・送料を含む総額・保証・納期を改めて確認してください。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-PROTECA-AEROFLEX-DX2-01521-seller",
@@ -3312,7 +6235,13 @@
       "target_url": "https://store.ace.jp/shop/g/g01521-09/?ismodesmartphone=on",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "エース公式通販のNo.01521商品ページ（外寸・保証・出荷）"
+      "target_label": "エース公式通販のNo.01521商品ページ（外寸・保証・出荷）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "通常時の外寸と搭乗便の持込条件を照合してください。保証の免責と出荷締切も注文時に確認します。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-SAMSONITE-C-LITE-CS2-09007-seller",
@@ -3324,7 +6253,13 @@
       "target_url": "https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "サムソナイト公式ストアのC-Lite 134679-1041商品ページ（価格・在庫）"
+      "target_label": "サムソナイト公式ストアのC-Lite 134679-1041商品ページ（価格・在庫）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "対象の黒・拡張型は、掲載の確認時点で税込本体価格と注文受付の表示を確認しています。送料・必須費用を含む総額と届け先への納期は未確認です。注文前に最新の条件を確認してください。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002-seller",
@@ -3336,7 +6271,13 @@
       "target_url": "https://www.americantourister.jp/american-tourister/applite4_0/spinner55exp/grey_red",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "アメリカンツーリスター公式のAPPLITE 4.0商品ページ（価格・在庫・保証）"
+      "target_label": "アメリカンツーリスター公式のAPPLITE 4.0商品ページ（価格・在庫・保証）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "アメリカンツーリスター公式ページを確認できておらず（2026年9月12日時点でサーバー証明書の検証に失敗し取得できません）、現在価格・在庫・保証を追加確認できていません。サムソナイト公式ストアにもAPPLITEの掲載はありませんでした。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-FREQUENTER-LIEVE-1-250-seller",
@@ -3348,7 +6289,13 @@
       "target_url": "https://item.rakuten.co.jp/selection/freq-1-250/",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "楽天市場のFREQUENTER LIEVE 1-250商品ページ（色別の在庫・価格）"
+      "target_label": "楽天市場のFREQUENTER LIEVE 1-250商品ページ（色別の在庫・価格）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "楽天の商品ページはありますが、選べる色ごとの在庫・価格・送料と保証の適用条件が未確認です。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY-seller",
@@ -3360,7 +6307,13 @@
       "target_url": "https://store.irobot-jp.com/item/F155260.html",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "アイロボット公式ストアのF155260商品ページ（予約納期・保証）"
+      "target_label": "アイロボット公式ストアのF155260商品ページ（予約納期・保証）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "9月中旬入荷予定は変動します。必要な日までに届くか、延長保証の対象となるかを確認してください。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-SWITCHBOT-K11-PRO-seller",
@@ -3372,7 +6325,13 @@
       "target_url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "SwitchBot公式サイトのK11+ Pro商品ページ（同梱品）"
+      "target_label": "SwitchBot公式サイトのK11+ Pro商品ページ（同梱品）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "付属する袋・パッド等を照合してから、初回使用に必要な費目を確定します。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-SWITCHBOT-K10-PRO-COMBO-seller",
@@ -3384,7 +6343,13 @@
       "target_url": "https://www.switchbot.jp/products/robot-vacuum-cleaner-k10-pro-combo",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "SwitchBot公式サイトのK10+ Pro Combo商品ページ（注文可否・保証・付属品）"
+      "target_label": "SwitchBot公式サイトのK10+ Pro Combo商品ページ（注文可否・保証・付属品）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "本体セットの注文可否・標準保証・付属品を照合中です。有料延長保証を標準保証と扱いません。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO-seller",
@@ -3396,7 +6361,13 @@
       "target_url": "https://store.irobot-jp.com/item/N285060.html",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "アイロボット公式ストアのN285060商品ページ（現在の価格表示）"
+      "target_label": "アイロボット公式ストアのN285060商品ページ（現在の価格表示）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "取得ページに期限の過ぎたキャンペーン価格と別の価格が混在しています。現在の支払額として採用していません。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-ANKER-SOLIX-C300-seller",
@@ -3408,7 +6379,13 @@
       "target_url": "https://www.ankerjapan.com/products/a1722?from_business=1",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "Anker公式ストアのSolix C300商品ページ（追加品・配送可否）"
+      "target_label": "Anker公式ストアのSolix C300商品ページ（追加品・配送可否）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "車載充電・太陽光充電の必要品や、届け先が配送可能かは別途確認します。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-JACKERY-500-NEW-seller",
@@ -3420,7 +6397,13 @@
       "target_url": "https://www.jackery.jp/products/explorer-500-new",
       "next_check_on": "2026-09-11",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "Jackery公式ストアの500 New商品ページ（送料・現在の価格）"
+      "target_label": "Jackery公式ストアの500 New商品ページ（送料・現在の価格）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "通常送料が未確認です。9月10日23:59までのセール価格は終了し、2026年9月12日に公式ストアの商品データで通常価格を確認しました（比較価格との差なし）。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-BLUETTI-AC70-seller",
@@ -3432,7 +6415,13 @@
       "target_url": "https://www.bluetti.jp/products/bluetti-ac70?variant=47264013942944",
       "next_check_on": "2026-09-12",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "BLUETTI公式ストアのAC70商品ページ（納期・追加用品）"
+      "target_label": "BLUETTI公式ストアのAC70商品ページ（納期・追加用品）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "本体のみの構成で注文ボタンが有効であること、表示価格、国内送料無料、注文日から5年保証の案内を確認しました。届け先の納期と、使用機器に必要な追加用品・保証の適用条件は注文前に確認してください。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-ECOFLOW-DELTA3-CLASSIC-seller",
@@ -3444,7 +6433,13 @@
       "target_url": "https://jp.ecoflow.com/products/delta-3-classic?variant=52762174554479",
       "next_check_on": "2026-09-12",
       "alternative": "必要な条件を確認できない間は、用途が合う別候補を比較するか購入を保留してください。",
-      "target_label": "EcoFlow公式ストアのDELTA 3 Classic商品ページ（納期・追加用品）"
+      "target_label": "EcoFlow公式ストアのDELTA 3 Classic商品ページ（納期・追加用品）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "本体のみの構成で注文ボタンが有効であること、表示価格、国内送料無料、製品到着後5年間の品質保証の案内を確認しました。届け先の納期と、使用機器に必要な追加用品・保証の適用条件は注文前に確認してください。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-THANKO-RAKUA-MINI-COLOR-manufacturer",
@@ -3456,7 +6451,13 @@
       "target_url": "https://www.thanko.jp/view/item/000000004715",
       "next_check_on": "2026-09-11",
       "alternative": "1回の消費電力量が未確認のため、電気代は算定していません。確認できた水道・洗剤代だけの小計と区別します。設置条件は、寸法・余白・給排水・電源の根拠で別に確認します。",
-      "target_label": "サンコー公式通販のラクアmini color商品ページ（仕様欄）"
+      "target_label": "サンコー公式通販のラクアmini color商品ページ（仕様欄）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "通常洗浄1回の電気代を算出できないため、他機種と同じ条件で維持費の総額を比較できません。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-SIROCA-SS-MA251-manufacturer",
@@ -3468,7 +6469,13 @@
       "target_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
       "next_check_on": "2026-09-11",
       "alternative": "コース別の消費電力量・水量の公表値を確認できるまで、1回の電気・水道費は確定しません。開扉奥行約760mmは確認済みですが、周囲の余白も別に必要です。",
-      "target_label": "SS-MA251 取扱説明書（p.29 仕様）"
+      "target_label": "SS-MA251 取扱説明書（p.29 仕様）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "コース別の消費量が未確認のため、1回の電気代・水道代を確定できません。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-PANASONIC-NP-TSP1-manufacturer",
@@ -3480,7 +6487,13 @@
       "target_url": "https://panasonic.jp/dish/products/NP-TSP1/support.html",
       "next_check_on": "2026-09-11",
       "alternative": "自宅の設置・動作条件は別途確認してください。",
-      "target_label": "NP-TSP1 サポートページ"
+      "target_label": "NP-TSP1 サポートページ",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "対象型番を明記した公式説明書・活用ガイドで条件を確認し、機種別ガイドに反映済みです。メーカーへの問い合わせ送信・回答取得は行っていません。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-PANASONIC-NP-TMLK1-manufacturer",
@@ -3492,7 +6505,13 @@
       "target_url": "https://panasonic.jp/dish/products/NP-TMLK1/support.html",
       "next_check_on": "2026-09-11",
       "alternative": "自宅の設置・動作条件は別途確認してください。",
-      "target_label": "NP-TMLK1 サポートページ"
+      "target_label": "NP-TMLK1 サポートページ",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "対象型番を明記した公式説明書・活用ガイドで条件を確認し、機種別ガイドに反映済みです。メーカーへの問い合わせ送信・回答取得は行っていません。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-PANASONIC-NP-TMLK1-home",
@@ -3504,7 +6523,13 @@
       "target_url": "https://panasonic.jp/dish/products/NP-TMLK1/spec.html",
       "next_check_on": "2026-09-11",
       "alternative": "メジャーと説明書で測定し、電源工事等は専門家へ確認します。条件不一致や未確認が残れば購入を見送ります。",
-      "target_label": "NP-TMLK1 公式仕様（寸法・付属品）"
+      "target_label": "NP-TMLK1 公式仕様（寸法・付属品）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "タンクを引き出して蛇口まで運び、給水後に本体の奥まで戻せるかを確認してください。扉を開けて食器を出し入れする空間も必要です。台の強度・水平、排水、電源・アースと、使う食器の収まりも確認が必要です。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-THANKO-RAKUA-MINI-COLOR-home",
@@ -3516,7 +6541,13 @@
       "target_url": "https://www.thanko.jp/view/item/000000004715",
       "next_check_on": "2026-09-11",
       "alternative": "メジャーと説明書で測定し、電源工事等は専門家へ確認します。条件不一致や未確認が残れば購入を見送ります。",
-      "target_label": "サンコー公式通販のラクアmini color商品ページ（寸法・給水口）"
+      "target_label": "サンコー公式通販のラクアmini color商品ページ（寸法・給水口）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "本体上部の給水口へカップを傾けて注げるか、棚などが邪魔にならないかを確認してください。分岐水栓は使えないため、毎回の給水と、開いた扉の前で食器を出し入れする動きを確かめます。台の強度・水平、排水、電源・アースと、使う食器の収まりも確認が必要です。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-SIROCA-SS-MA251-home",
@@ -3528,7 +6559,13 @@
       "target_url": "https://www.siroca.co.jp/product/dishwasher_advance/",
       "next_check_on": "2026-09-11",
       "alternative": "メジャーと説明書で測定し、電源工事等は専門家へ確認します。条件不一致や未確認が残れば購入を見送ります。",
-      "target_label": "シロカ公式のSS-MA251製品ページ（給水方式・寸法）"
+      "target_label": "シロカ公式のSS-MA251製品ページ（給水方式・寸法）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "タンク給水を選ぶなら、給水トレイを付けてカップで注ぐ動きを確かめてください。分岐水栓を選ぶ場合は適合と設置を相談します。ドアを開けたときの奥行と、背面の余白は別々に確保してください。台の強度・水平、排水、電源・アースと、使う食器の収まりも確認が必要です。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-PANASONIC-NP-TSP1-home",
@@ -3540,7 +6577,13 @@
       "target_url": "https://panasonic.jp/dish/products/NP-TSP1/spec.html",
       "next_check_on": "2026-09-11",
       "alternative": "メジャーと説明書で測定し、電源工事等は専門家へ確認します。条件不一致や未確認が残れば購入を見送ります。",
-      "target_label": "NP-TSP1 公式仕様（ドア開放時寸法）"
+      "target_label": "NP-TSP1 公式仕様（ドア開放時寸法）",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "扉を開けたときの高さだけでなく、開閉途中の軌跡と上方の余白も確かめてください。タンク給水ではドアを閉めて注ぐため、その状態で給水口へカップを運べるかも確認します。台の強度・水平、排水、電源・アースと、使う食器の収まりも確認が必要です。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     },
     {
       "issue_id": "PRD-BLUETTI-AC70-firmware",
@@ -3552,7 +6595,14 @@
       "target_url": "https://www.bluetti.jp/blogs/news/ac70-upgrade",
       "next_check_on": "2026-09-12",
       "alternative": "対象機種の公式案内とアプリの手順を確認し、更新方法が分からない場合はメーカーへ相談してください。",
-      "target_label": "BLUETTI公式のAC70ファームウェア更新のお知らせ"
+      "target_label": "BLUETTI公式のAC70ファームウェア更新のお知らせ",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "手元の個体の更新状況は確認できません。",
+        "next_action": "公式案内とBLUETTIアプリで対象個体の更新を確認する",
+        "owner": "購入者（編集部は案内の再確認を担当）"
+      },
+      "checked_at": "2026-09-13"
     },
     {
       "issue_id": "PRD-PANASONIC-NP-TMLK1-clearance",
@@ -3564,7 +6614,283 @@
       "target_url": "https://panasonic.jp/dish/installation.html",
       "target_label": "Panasonic 食洗機置き場のつくり方（パーソナルタイプの設置例）",
       "next_check_on": "2026-09-19",
-      "alternative": "上棚や側壁が近い場所では設置可と決めず、メーカーへ確認してから購入を判断してください。"
+      "alternative": "上棚や側壁が近い場所では設置可と決めず、メーカーへ確認してから購入を判断してください。",
+      "unknown_reason": {
+        "kind": "research_pending",
+        "impact": "公式の設置案内は本体上方を「できるだけあける」とし、左右の数値は記載がありません。上・左右の必要余白は公式資料で未確認です（2026年9月12日確認）。",
+        "next_action": "対象型番の資料・選択中の販売構成を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-ACE-CRESTA-06316-sales",
+      "product_id": "PRD-ACE-CRESTA-06316",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://store.ace.jp/shop/g/g06316-01/",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-ACE-DIFFERENCE-05721-sales",
+      "product_id": "PRD-ACE-DIFFERENCE-05721",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://store.ace.jp/shop/g/g05721-04",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-ACE-MAXPASS4-01471-sales",
+      "product_id": "PRD-ACE-MAXPASS4-01471",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://store.ace.jp/shop/g/g01471-02",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-PROTECA-STARIA-CXR-02350-sales",
+      "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://store.ace.jp/shop/g/g02350-12/",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-PROTECA-FRESTER-EX-01550-sales",
+      "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://store.ace.jp/shop/g/g01550-11/",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-ACE-PALISADES3-Z-06910-sales",
+      "product_id": "PRD-ACE-PALISADES3-Z-06910",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://store.ace.jp/shop/g/g06910-03/",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-BERMAS-INTER-CITY-60524-sales",
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-INNOVATOR-INV50-sales",
+      "product_id": "PRD-INNOVATOR-INV50",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-PROTECA-FRESTER-EX-01551-sales",
+      "product_id": "PRD-PROTECA-FRESTER-EX-01551",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://store.ace.jp/shop/g/g01551-01/",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-BERMAS-INTER-CITY-II-60561-sales",
+      "product_id": "PRD-BERMAS-INTER-CITY-II-60561",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity2/60561",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060-sales",
+      "product_id": "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-ANKER-SOLIX-C800-PLUS-sales",
+      "product_id": "PRD-ANKER-SOLIX-C800-PLUS",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://www.ankerjapan.com/products/a1754",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-ANKER-SOLIX-C1000-sales",
+      "product_id": "PRD-ANKER-SOLIX-C1000",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://www.ankerjapan.com/products/a1761",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-ANKER-SOLIX-C1000-GEN2-sales",
+      "product_id": "PRD-ANKER-SOLIX-C1000-GEN2",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "現在の選択中の構成・本体価格・送料・必要品を組み合わせた確認が未完了です。未取得を売切れとは判断しません。",
+      "target_url": "https://www.ankerjapan.com/products/a1763",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
+    },
+    {
+      "issue_id": "PRD-THANKO-RAKUA-MINI-PLUS-sales",
+      "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
+      "topic": "型番・選択構成と現在の販売条件",
+      "kind": "official_documents",
+      "status": "RESEARCHING",
+      "impact": "2026年9月13日に公式商品ページは再入荷（予約開始）通知の表示を確認。色・セットを選択した注文可否は未照合のため、全販売先の売切れとは判定しません。",
+      "target_url": "https://www.thanko.jp/view/item/000000004055?category_page_id=thanko-origin",
+      "target_label": "公式の製品・販売条件",
+      "next_check_on": "2026-09-14",
+      "alternative": "仕様と用途が合う別候補を比較するか、条件確認まで購入を保留します。",
+      "unknown_reason": {
+        "kind": "condition_dependent",
+        "impact": "色・構成・届け先を揃えた価格・送料・納期は未確認です。",
+        "next_action": "公式販売先で対象の色・構成と届け先への条件を確認する",
+        "owner": "暮らしのしるべ編集部"
+      }
     }
   ],
   "routes": [
@@ -3689,10 +7015,22 @@
       "anchor": "product-dish-np-tsp1"
     }
   ],
-  "editorial_updated_on": "2026-09-12",
+  "editorial_updated_on": "2026-09-13",
   "normalization_pilot_post_ids": [
     30,
     83,
     41
+  ],
+  "target_post_ids": [
+    41,
+    83,
+    30,
+    28,
+    19,
+    82,
+    84,
+    85,
+    86,
+    29
   ]
 }

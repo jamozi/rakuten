@@ -92,12 +92,12 @@
     },
     {
       "path": "changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json",
-      "sha256": "b29db99402f0b90635d06134a8462d53fa72b5bab6be0097dba8a0124c34caca",
+      "sha256": "359c7623cf4408ba96f5d15e199e0be254d9259c343e7d47ee3068b1251e613a",
       "size": 21211
     },
     {
       "path": "changes/editorial-measurement-v1/runtime-manifest.v1.json",
-      "sha256": "fd99f7a997531376851baae78763a575767c0c25227a0013243af7d111c6fda1",
+      "sha256": "71e7e675f930de40306352d8e45f0eb00c5d0c5ad8987f0d64965540a2ed6c7b",
       "size": 2879
     },
     {
@@ -107,12 +107,12 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json",
-      "sha256": "68b98b2e86e57652cc56f0e01fc41fcc413a333975e7c9fd39bb54e6e7a8f28d",
+      "sha256": "84ce6fa2067f6755d0ad1028b90bdfc986e9f44fe5af595a9c004272477e3c85",
       "size": 3365
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json",
-      "sha256": "a3dd53d96ffd1fa4b8b15f6dc9cef34f35b08264750ae296613fae23ef6fee79",
+      "sha256": "ca4daa757ee6c54ae58969a7524b1b3a38daf4e52a13e3265cf350950a93506f",
       "size": 81279
     },
     {
@@ -347,7 +347,7 @@
     },
     {
       "path": "changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json",
-      "sha256": "5cf3144006f6f1cb22a83ee8717ff4e8b55d66319834d9efc025862e02a93aca",
+      "sha256": "55a58b12fb77437e97cd00d03a31eaf755971fd2416789ae8bac72537d9b5a1e",
       "size": 54277
     },
     {
@@ -397,8 +397,8 @@
     },
     {
       "path": "python/raos/application/editorial/reader_experience_v1.py",
-      "sha256": "31376cf234eb236bae23f7b160176b08ce3a8a1214e029e7be9ebd50f3b65a9a",
-      "size": 17129
+      "sha256": "ff0e3bafaf5b830e5f26c82696ded3bd8bd0c23d2eeb2205c0db6da402a11bd2",
+      "size": 16640
     },
     {
       "path": "python/raos/application/editorial/reader_experience_projection.py",
@@ -417,8 +417,8 @@
     },
     {
       "path": "changes/editorial-portfolio-v3/reader-experience.v1.json",
-      "sha256": "339983556c69dbf528b4bc2afd8f443b8d10e1dac852bbf434e3850dbf4ab579",
-      "size": 82116
+      "sha256": "19c946247828475f261244c31b633026beb574beb1a5af1e5eb47e8eb66a62b2",
+      "size": 80757
     },
     {
       "path": "changes/wordpress-local-preview-v1/browser/reader_experience_audit.mjs",

@@ -56,7 +56,10 @@ function kurashinoshirube_enqueue_purchase_support(): void
             'compact-robot-vacuum-shortlist', 'portable-power-station-guide',
             'dishwasher-installation-measurement', 'dishwasher-water-supply-methods',
             'dishwasher-detergent-guide', 'dishwasher-cleaning-guide', 'dishwasher-running-cost',
-            'kitchen', 'about-ad-policy', 'comparison-policy', 'privacy-policy');
+            'kitchen', 'about-ad-policy', 'comparison-policy', 'privacy-policy',
+            'carry-on-suitcase-comparison', 'carry-on-suitcase-under-100-seats',
+            'front-open-carry-on-suitcase-with-stopper', 'solota-vs-rakua-mini-plus',
+            'roomba-mini-vs-switchbot-k11-pro', 'anker-solix-c300-c800-c1000-differences');
         if (!is_admin() && is_singular(array('post', 'page'))
             && in_array(get_post_field('post_name', get_queried_object_id(), 'raw'), $slugs, true)) {
             kurashinoshirube_purchase_ga4_enqueue(array());

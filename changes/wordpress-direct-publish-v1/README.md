@@ -7,7 +7,7 @@
 ## 編集から公開まで
 
 記事台帳は`articles.v1.json`、通常の本文は`articles/`で管理します。
-購入判断の対象13件は`changes/reader-purchase-support-v1/articles/`と共通カタログを編集し、
+購入判断の対象19件（比較10記事・手順5記事・方針3ページ・キッチン入口）は`changes/reader-purchase-support-v1/articles/`と共通カタログを編集し、
 `scripts/build_reader_purchase_support_v1.py`でこの本文台帳へ生成します。
 台帳に記事キー、new/existing、投稿種別、slug、タイトル、抜粋、本文sourceを指定します。
 未取得の本番IDは作りません。本文はWordPress block markupです。

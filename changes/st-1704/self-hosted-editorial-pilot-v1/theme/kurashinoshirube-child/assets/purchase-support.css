@@ -80,3 +80,31 @@
 .ps-article .raos-rakuten-image-300 img { display: block; width: 100%; max-width: 100%; height: auto; aspect-ratio: 1 / 1; margin: 0; object-fit: contain; }
 .ps-article .raos-rakuten-image-240 { display: none; }
 .ps-article .ps-product-image figcaption { font-size: .875em; }
+/* September site audit: prose stays readable; comparison data owns its scroll. */
+.ps-article { max-width: 72rem; margin-inline: auto; font-size: clamp(1rem, .96rem + .2vw, 1.125rem); }
+.ps-article > :is(p, ul, ol, nav), .ps-article section > :is(p, ul, ol), .ps-article .ps-comparison-method { max-width: 44rem; margin-inline: auto; }
+.ps-article section, .ps-article .ps-guide-diagrams > figure { min-width: 0; }
+.ps-article .ps-table-scroll { overscroll-behavior-inline: contain; }
+.ps-article .ps-comparison thead th { position: sticky; top: 0; z-index: 1; }
+.ps-article .ps-comparison tbody th { position: sticky; left: 0; z-index: 1; min-width: 6.5em; }
+.ps-article .ps-reference { margin-inline-start: .25em; white-space: nowrap; }
+.ps-article .ps-source { display: block; margin-top: .5em; }
+.ps-article .ps-guide-diagrams { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; }
+.ps-article .ps-guide-diagrams figure { margin: 0; padding: 1rem; background: var(--ps-soft); border: 1px solid var(--ps-line); }
+.ps-article .ps-guide-diagrams pre { margin: .8em 0 0; padding: 0; white-space: pre-wrap; font: .9em/1.6 monospace; background: transparent; }
+.ps-article .ps-guide-diagrams figcaption { font-size: .9em; font-weight: 600; }
+.ps-article .ps-guide-print { padding: 1rem; border: 1px solid var(--ps-line); }
+.ps-article .ps-guide-answer table { border-collapse: collapse; min-width: 38rem; width: 100%; }
+.ps-article .ps-guide-answer :is(th, td) { padding: .8em; text-align: left; vertical-align: top; border: 1px solid var(--ps-line); }
+.ps-article .ps-guide-answer th { background: var(--ps-soft); }
+@media (max-width: 30em) {
+  .ps-article .ps-comparison :is(th, td) { padding: .65em; }
+  .ps-article .ps-comparison tbody th { min-width: 5em; max-width: 6.5em; }
+  .ps-article .ps-product { padding: .85em; }
+}
+@media print {
+  .ps-article details.ps-guide-print > * { display: block !important; }
+  .ps-article .ps-guide-print { break-inside: avoid; }
+  .ps-article .ps-comparison { min-width: 0; font-size: .75em; }
+  .ps-article .ps-comparison :is(th, td) { position: static; min-width: 0; padding: .3em; }
+}

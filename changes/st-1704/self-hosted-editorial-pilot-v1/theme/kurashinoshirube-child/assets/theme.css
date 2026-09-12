@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: b5128c273345b2b22b604eef4bac348c66f0b5f10826d3a28659985f64b2fc51;
+  --raos-theme-runtime-revision-base: d4636a7f049e5e2102a39d68375ca8364e1ad95a938a6f9e84ec2f0187a28872;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4163,4 +4163,82 @@ body.home.raos-home-v2-page #ks-magazine .km-category > span {
   font-weight: 700;
   line-height: 1.6;
   text-decoration: none;
+}
+
+/* Editorial pages: prose and comparison regions have separate readable widths. */
+body .ks-editorial-page{width:100%;max-width:72rem;margin-inline:auto;min-width:0;font-size:clamp(1rem,.95rem + .2vw,1.125rem);line-height:1.85;overflow-wrap:anywhere}
+body .ks-editorial-page :where(p,ul,ol){max-width:46rem}
+body .ks-editorial-page>section{margin-block:2.5rem}
+body .ks-editorial-page h2{border-top:1px solid #d7d3cb;padding-top:1rem;line-height:1.45}
+body .ks-editorial-page h3{line-height:1.55;font-size:1.15rem}
+body .ks-editorial-page .ks-route-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:1.25rem}
+body .ks-editorial-card{min-width:0;border:1px solid #d7d3cb;padding:1.25rem;background:#faf9f6}
+body .ks-card-meta,body .ks-card-kind{font-size:.85rem;color:#5c5953}
+body .ks-editorial-table{max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain}
+body .ks-editorial-table table{width:100%;border-collapse:collapse;font-size:1rem;min-width:32rem}
+body .ks-editorial-table :where(th,td){padding:.8rem;text-align:left;vertical-align:top;border:1px solid #d7d3cb;white-space:normal}
+body .ks-editorial-table th{background:#f0eee8}
+body .ks-space-diagram{display:flex;flex-wrap:wrap;gap:.75rem}
+body .ks-space-diagram span{padding:1rem;border:3px solid #8b3f2b}
+body .ks-space-diagram span:nth-child(2){border-color:#49675b}
+body .ks-space-diagram span:nth-child(3){border-color:#7a682f}
+body .ks-space-diagram span:nth-child(4){border-color:#5d617f}
+body .ks-editorial-page img{max-width:100%;height:auto}
+body .ks-editorial-page figure{max-width:30rem;margin:2rem 0}
+body .ks-anchor-alias{display:block;scroll-margin-top:6rem}
+body :where(section,h2,h3,details)[id]{scroll-margin-top:6rem}
+body .ks-editorial-page :focus-visible{outline:3px solid #8b3f2b;outline-offset:4px}
+@media(max-width:600px){body .ks-editorial-page{padding-inline:16px;box-sizing:border-box}body .ks-editorial-card{padding:1rem}}
+
+/* Keep CookieYes controls inside the viewport; only the settings body scrolls. */
+body .cky-modal {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  max-height: calc(100dvh - 32px) !important;
+}
+body .cky-preference-center {
+  box-sizing: border-box;
+  max-height: calc(100vh - 32px) !important;
+  max-height: calc(100dvh - 32px) !important;
+  transform: none !important;
+  margin-block: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+body .cky-preference-center .cky-preference-header,
+body .cky-preference-center .cky-footer-wrapper {
+  flex: 0 0 auto;
+}
+body .cky-preference-center .cky-preference-body-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@media (max-width: 600px) {
+  body .cky-modal {
+    width: calc(100% - 32px) !important;
+    max-width: calc(100% - 32px) !important;
+  }
+  body .cky-preference-center { width: 100% !important; max-width: 100% !important; }
+  body .cky-preference-center .cky-footer-wrapper {
+    padding: 12px !important;
+  }
+  body .cky-preference-center .cky-prefrence-btn-wrapper {
+    gap: 8px !important;
+  }
+  body .cky-preference-center .cky-btn {
+    min-height: 44px;
+  }
+}
+
+/* Keep long contact links readable when visitors enlarge text independently. */
+body .raos-footer :where(a, p) {
+  overflow-wrap: anywhere;
+}
+body .raos-footer__grid > *,
+body .raos-footer :where(.raos-footer__policy, .raos-footer__nav, .wp-block-navigation__container, .wp-block-navigation-item) {
+  min-width: 0;
 }

@@ -1,0 +1,172 @@
+[
+  {
+    "post_id": 15,
+    "title": "ホーム",
+    "path": "/"
+  },
+  {
+    "post_id": 130,
+    "title": "商品カテゴリから探す",
+    "path": "/categories/"
+  },
+  {
+    "post_id": 139,
+    "title": "悩み・目的から探す",
+    "path": "/purposes/"
+  },
+  {
+    "post_id": 135,
+    "title": "選び方ガイド",
+    "path": "/guides/"
+  },
+  {
+    "post_id": 133,
+    "title": "比較・条件別の候補",
+    "path": "/comparisons/"
+  },
+  {
+    "post_id": 143,
+    "title": "最近更新したガイド",
+    "path": "/updates/"
+  },
+  {
+    "post_id": 142,
+    "title": "スーツケースの選び方・比較",
+    "path": "/travel/"
+  },
+  {
+    "post_id": 136,
+    "title": "食洗機の選び方・比較",
+    "path": "/kitchen/"
+  },
+  {
+    "post_id": 131,
+    "title": "ロボット掃除機の選び方・比較",
+    "path": "/cleaning/"
+  },
+  {
+    "post_id": 138,
+    "title": "ポータブル電源の選び方・比較",
+    "path": "/preparedness/"
+  },
+  {
+    "post_id": 141,
+    "title": "一人暮らし・省スペース",
+    "path": "/small-space/"
+  },
+  {
+    "post_id": 140,
+    "title": "家事を短くしたい",
+    "path": "/save-housework/"
+  },
+  {
+    "post_id": 144,
+    "title": "設置工事を避けたい",
+    "path": "/without-installation/"
+  },
+  {
+    "post_id": 134,
+    "title": "手入れを続けやすいものを選びたい",
+    "path": "/easy-maintenance/"
+  },
+  {
+    "post_id": 132,
+    "title": "旅行を快適にしたい",
+    "path": "/comfortable-travel/"
+  },
+  {
+    "post_id": 137,
+    "title": "防災に備えたい",
+    "path": "/prepare-outage/"
+  },
+  {
+    "post_id": 41,
+    "title": "タンク式食洗機4モデルを1〜2人暮らし向けに比較",
+    "path": "/countertop-dishwasher-for-small-households/"
+  },
+  {
+    "post_id": 86,
+    "title": "SOLOTAとラクアmini Plus｜大きさ・食器量・乾燥方式",
+    "path": "/solota-vs-rakua-mini-plus/"
+  },
+  {
+    "post_id": 262,
+    "title": "卓上食洗機の置き場所を測る順番",
+    "path": "/dishwasher-installation-measurement/"
+  },
+  {
+    "post_id": 263,
+    "title": "卓上食洗機の給水・排水方法",
+    "path": "/dishwasher-water-supply-methods/"
+  },
+  {
+    "post_id": 264,
+    "title": "食洗機用洗剤の選び方",
+    "path": "/dishwasher-detergent-guide/"
+  },
+  {
+    "post_id": 265,
+    "title": "卓上食洗機のお手入れ",
+    "path": "/dishwasher-cleaning-guide/"
+  },
+  {
+    "post_id": 266,
+    "title": "卓上食洗機のランニングコスト",
+    "path": "/dishwasher-running-cost/"
+  },
+  {
+    "post_id": 83,
+    "title": "30L以上・3kg以下の機内持ち込みスーツケース4モデルを比較",
+    "path": "/lightweight-carry-on-suitcase-under-3kg/"
+  },
+  {
+    "post_id": 82,
+    "title": "100席未満の国内線向け機内持ち込みスーツケース4モデル比較",
+    "path": "/carry-on-suitcase-under-100-seats/"
+  },
+  {
+    "post_id": 84,
+    "title": "前開き・ストッパー付き機内持ち込みスーツケース4モデル比較",
+    "path": "/front-open-carry-on-suitcase-with-stopper/"
+  },
+  {
+    "post_id": 19,
+    "title": "エースの機内持ち込みスーツケース3モデル比較",
+    "path": "/carry-on-suitcase-comparison/"
+  },
+  {
+    "post_id": 30,
+    "title": "省スペースのロボット掃除機を条件で絞る",
+    "path": "/compact-robot-vacuum-shortlist/"
+  },
+  {
+    "post_id": 85,
+    "title": "Roomba MiniとK11+ Pro｜台の寸法と手入れで比較",
+    "path": "/roomba-mini-vs-switchbot-k11-pro/"
+  },
+  {
+    "post_id": 28,
+    "title": "停電対策のポータブル電源4モデル比較",
+    "path": "/portable-power-station-guide/"
+  },
+  {
+    "post_id": 29,
+    "title": "Anker Solix 4モデルの違い",
+    "path": "/anker-solix-c300-c800-c1000-differences/"
+  },
+  {
+    "post_id": 120,
+    "title": "比較・編集方針",
+    "path": "/comparison-policy/"
+  },
+  {
+    "post_id": 10,
+    "title": "運営・広告方針",
+    "path": "/about-ad-policy/"
+  },
+  {
+    "post_id": 3,
+    "title": "プライバシーポリシー",
+    "path": "/privacy-policy/"
+  }
+]

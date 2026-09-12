@@ -55,7 +55,12 @@ GUIDE_REQUIREMENTS = {
 # Rows of the four-model decision table placed under the first heading.
 GUIDE_TABLE_ROWS = {
     "water": ("給水方式", "1回の給水量と止める合図", "排水ホース"),
-    "detergent": ("使える洗剤の種類", "1回分の目安", "タブレットの条件", "公表試験条件の洗剤量"),
+    "detergent": (
+        "使える洗剤の種類",
+        "1回分の目安",
+        "タブレットの条件",
+        "公表試験条件の洗剤量",
+    ),
     "maintenance": ("毎回", "月1回程度", "長く使わないとき"),
     "cost": ("1回の消費電力量", "1回の使用水量", "洗剤の1回分", "計算できる費目"),
 }
@@ -100,12 +105,7 @@ def https(url: object) -> bool:
 
 def tidy(text: object) -> str:
     """Reader-facing notation: wave dash, no space after a full stop, no ideographic space."""
-    return (
-        str(text)
-        .replace("～", "〜")
-        .replace("。 ", "。")
-        .replace("　", " ")
-    )
+    return str(text).replace("～", "〜").replace("。 ", "。").replace("　", " ")
 
 
 def jp_date(value: object) -> str:
@@ -144,17 +144,57 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
         raise ValueError("PURCHASE_POLICY_INVALID")
     products = catalog.get("products", [])
     ids = [p["product_id"] for p in products]
-    if len(ids) != 16 or len(set(ids)) != 16:
-        raise ValueError("PURCHASE_SIXTEEN_IDENTITIES_REQUIRED")
+    expanded = "target_post_ids" in catalog
+    if not ids or len(ids) != len(set(ids)) or (not expanded and len(ids) != 16):
+        raise ValueError("PURCHASE_PRODUCT_IDENTITIES_REQUIRED")
     articles = catalog.get("articles", [])
     if len({a["article_id"] for a in articles}) != len(articles):
         raise ValueError("PURCHASE_DUPLICATE_ARTICLE")
     comparisons = [a for a in articles if a["kind"] == "comparison"]
-    if len(comparisons) != 4 or any(
-        len(a["product_ids"]) != 4 or not set(a["product_ids"]) <= set(ids)
-        for a in comparisons
+    expected = (
+        {41, 83, 30, 28, 19, 82, 84, 85, 86, 29} if expanded else {41, 83, 30, 28}
+    )
+    if (
+        expanded
+        and (
+            len(catalog["target_post_ids"]) != len(expected)
+            or set(catalog["target_post_ids"]) != expected
+        )
+    ) or (
+        len(comparisons) != len(expected)
+        or {a["post_id"] for a in comparisons} != expected
     ):
-        raise ValueError("PURCHASE_FOUR_COMPARISONS_REQUIRED")
+        raise ValueError("PURCHASE_COMPARISON_SCOPE_REQUIRED")
+    used = set()
+    for a in comparisons:
+        main_ids = a.get("product_ids", [])
+        extra_ids = a.get("supplementary_product_ids", [])
+        if (
+            len(main_ids) not in ({2, 3, 4} if expanded else {4})
+            or len(main_ids) != len(set(main_ids))
+            or len(extra_ids) != len(set(extra_ids))
+            or len(extra_ids) > 4
+            or set(main_ids) & set(extra_ids)
+            or not set(main_ids + extra_ids) <= set(ids)
+        ):
+            raise ValueError("PURCHASE_COMPARISON_PRODUCTS_INVALID")
+        if any(
+            not set(c["product_ids"]) <= set(main_ids) for c in a.get("conditions", [])
+        ):
+            raise ValueError("PURCHASE_CONDITION_PRODUCT_MISMATCH")
+        exclusions = a.get("media_exclusions", {})
+        if (
+            not isinstance(exclusions, dict)
+            or not set(exclusions) <= set(main_ids)
+            or any(
+                not isinstance(reason, str) or not reason.strip()
+                for reason in exclusions.values()
+            )
+        ):
+            raise ValueError("PURCHASE_MEDIA_EXCLUSION_INVALID")
+        used.update(main_ids + extra_ids)
+    if used != set(ids):
+        raise ValueError("PURCHASE_UNUSED_PRODUCT")
     for p in products:
         if not p["exact_model"] or not https(p["official_url"]):
             raise ValueError("PURCHASE_IDENTITY_SOURCE_REQUIRED")
@@ -258,6 +298,26 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
             )
         ):
             raise ValueError("PURCHASE_RESEARCH_MANAGEMENT_REQUIRED")
+    reason_kinds = {
+        "research_pending",
+        "manufacturer_not_published",
+        "source_unavailable",
+        "source_conflict",
+        "expired",
+        "hands_on_required",
+        "condition_dependent",
+    }
+    for issue in issues:
+        reason = issue.get("unknown_reason")
+        if reason is not None and (
+            not isinstance(reason, dict)
+            or reason.get("kind") not in reason_kinds
+            or not all(
+                isinstance(reason.get(k), str) and reason[k].strip()
+                for k in ("impact", "next_action", "owner")
+            )
+        ):
+            raise ValueError("PURCHASE_UNKNOWN_REASON_INVALID")
     targets = {a["article_id"] for a in articles}
     anchors = {p["product_id"]: p["anchor"] for p in products}
     for r in catalog.get("routes", []):
@@ -274,15 +334,21 @@ def eligible_link(o: Mapping[str, Any]) -> bool:
     return resolve_offer(o)["href"] is not None
 
 
-def product_offers(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> list[dict[str, Any]]:
+def product_offers(
+    p: Mapping[str, Any], catalog: Mapping[str, Any]
+) -> list[dict[str, Any]]:
     return [o for o in catalog["offers"] if o["product_id"] == p["product_id"]]
 
 
-def purchasable_offer(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> dict[str, Any] | None:
+def purchasable_offer(
+    p: Mapping[str, Any], catalog: Mapping[str, Any]
+) -> dict[str, Any] | None:
     return next((o for o in product_offers(p, catalog) if eligible_link(o)), None)
 
 
-def verified_offers(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> list[dict[str, Any]]:
+def verified_offers(
+    p: Mapping[str, Any], catalog: Mapping[str, Any]
+) -> list[dict[str, Any]]:
     return [o for o in product_offers(p, catalog) if o.get("identity_verified") is True]
 
 
@@ -292,7 +358,10 @@ def media_allowed(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> bool:
     Products the article itself describes as 販売先未確認 or 売り切れ get no
     image link at all; the same offer data drives both decisions.
     """
-    return purchasable_offer(p, catalog) is not None
+    return (
+        p.get("image_review", {}).get("state") == "VERIFIED_REGISTERED_MEDIA"
+        and purchasable_offer(p, catalog) is not None
+    )
 
 
 def price_expiry(o: Mapping[str, Any]) -> datetime | None:
@@ -305,7 +374,13 @@ def price_expiry(o: Mapping[str, Any]) -> datetime | None:
 def price_expired(o: Mapping[str, Any], now: datetime) -> bool:
     expiry = price_expiry(o)
     checked, deadline = timestamp(o.get("checked_at")), timestamp(o.get("valid_until"))
-    return expiry is None or checked is None or deadline is None or deadline <= checked or now >= expiry
+    return (
+        expiry is None
+        or checked is None
+        or deadline is None
+        or deadline <= checked
+        or now >= expiry
+    )
 
 
 def attrs(values: Mapping[str, object]) -> str:
@@ -435,7 +510,6 @@ def offer_panel(
         if checked is None:
             raise ValueError("PURCHASE_OFFER_DATE_REQUIRED")
         expired = price_expired(o, now)
-        expiry = price_expiry(o)
         data = {
             "data-ps-offer": o["offer_id"],
             "data-ps-checked-at": o["checked_at"],
@@ -468,49 +542,18 @@ def offer_panel(
             + escape(tidy(o["variant"]))
             + "</p>"
         )
-        # This is an explicitly dated observation, never a claim of live/current price.
-        if expired:
-            label = o.get("price_label")
-            rows += (
-                '<p class="ps-price-expired">'
-                + (
-                    escape(str(label))
-                    + "（"
-                    + escape(jp_datetime(expiry))
-                    + "まで）は終了しました。現在の価格は未確認です。"
-                    if label
-                    else "販売条件の期限切れ・再確認中（確認日 "
-                    + escape(jp_datetime(checked))
-                    + "、期限 "
-                    + escape(jp_datetime(expiry))
-                    + "）。現在の価格・送料は未確認です。"
-                )
-                + "</p>"
-            )
-        else:
-            cells = " ／ ".join(
-                (
-                    f"{LABELS[k]}：{o[k]:,}円"
-                    if o.get(k) is not None
-                    else f"{LABELS[k]}：未確認"
-                )
-                for k in LABELS
-            )
-            rows += (
-                "<p>"
-                + escape(cells)
-                + "（"
-                + escape(jp_datetime(expiry))
-                + "まで有効な確認値）</p>"
-                + '<p class="ps-price-status">確認時の販売条件です。現在価格の再確認が必要です。</p>'
-            )
+        # Cacheable HTML never contains a price amount in readable content. The
+        # clock-checked enhancement is the only owner of ephemeral price text.
+        rows += (
+            '<p class="ps-price-status" role="status">本体価格・送料・必須品は販売先で確認してください。'
+            "確認値は有効期限内に限り補助表示します。</p>"
+        )
         rows += (
             '<p class="ps-price-date">販売条件確認：<time datetime="'
             + escape(o["checked_at"])
             + '">'
             + escape(jp_datetime(checked) + "（日本時間）")
             + "</time>"
-            + ("（期限切れ）" if expired else "")
             + "／"
             + escape(tidy(o.get("price_scope", "本体と記載した費目の範囲")))
             + "</p>"
@@ -574,7 +617,9 @@ def next_check_date(
     return planned
 
 
-def active_issues(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> list[dict[str, Any]]:
+def active_issues(
+    p: Mapping[str, Any], catalog: Mapping[str, Any]
+) -> list[dict[str, Any]]:
     return [
         i
         for i in catalog["research_issues"]
@@ -615,6 +660,24 @@ def research_panel(
             + escape(tidy(i["impact"]))
             + "</p>"
         )
+        reason = i.get("unknown_reason")
+        if reason:
+            label = {
+                "research_pending": "追加調査中",
+                "manufacturer_not_published": "メーカー未公表",
+                "source_unavailable": "資料を再確認中",
+                "source_conflict": "公式表記に不一致",
+                "expired": "確認期限切れ",
+                "hands_on_required": "実機での確認が必要",
+                "condition_dependent": "利用条件により異なる",
+            }[reason["kind"]]
+            item += (
+                '<p class="ps-unknown-reason">'
+                + escape(label)
+                + "："
+                + escape(tidy(reason["next_action"]))
+                + "</p>"
+            )
         if i["alternative"] not in shared:
             item += "<p>" + escape(tidy(i["alternative"])) + "</p>"
         item += (
@@ -624,7 +687,8 @@ def research_panel(
             + escape(i.get("target_label") or (i["topic"] + "の確認先"))
             + "</a>"
             + (
-                " ／ 次回確認 " + escape(jp_date(next_check_date(i, offers, today).isoformat()))
+                " ／ 次回確認 "
+                + escape(jp_date(next_check_date(i, offers, today).isoformat()))
                 if show_next_check
                 else ""
             )
@@ -636,6 +700,18 @@ def research_panel(
         + "".join(items)
         + "</details>"
     )
+
+
+def fact_reference(
+    product: Mapping[str, Any], fact: Mapping[str, Any]
+) -> tuple[str, int]:
+    keys = list(
+        dict.fromkeys(
+            (f["source_url"], f["locator"], f["checked_at"]) for f in product["facts"]
+        )
+    )
+    number = keys.index((fact["source_url"], fact["locator"], fact["checked_at"])) + 1
+    return "ps-source-" + product["anchor"] + "-" + str(number), number
 
 
 def specification_table(
@@ -676,6 +752,21 @@ def specification_table(
                     + "</a> ／ 仕様確認 "
                     + escape(jp_date(f["checked_at"]))
                     + "</span>"
+                )
+            if f and not with_sources:
+                source_id, number = fact_reference(p, f)
+                source = (
+                    '<sup class="ps-reference"><a href="#'
+                    + escape(source_id, quote=True)
+                    + '" aria-label="'
+                )
+                source += (
+                    escape(
+                        p["name"] + "：" + label + "の出典" + str(number), quote=True
+                    )
+                    + '">['
+                    + str(number)
+                    + "]</a></sup>"
                 )
             cells.append(
                 '<td data-ps-fact-state="'
@@ -860,6 +951,13 @@ def resolve_product_media(
     for product in catalog["products"]:
         review = product.get("image_review", {})
         pid = product["product_id"]
+        if (
+            review.get("state") == "UNVERIFIED"
+            and isinstance(review.get("reason"), str)
+            and review["reason"].strip()
+        ):
+            resolved[pid] = {"withheld": True, "reason": review["reason"]}
+            continue
         if review.get("state") != "VERIFIED_REGISTERED_MEDIA":
             raise ValueError("PURCHASE_MEDIA_REVIEW_REQUIRED")
         if review.get("basis") == "OFFICIAL_PUBLICATION_KIT":
@@ -967,7 +1065,13 @@ def render_product_media(
     parts.append(
         "<figcaption>広告リンク：楽天市場（"
         + escape(tidy(media["shop_name"]))
-        + "）の販売ページへ進みます。構成・送料・保証は未確認。</figcaption></figure>"
+        + "）の販売ページへ進みます。構成・送料・保証の適用条件は未確認です。販売先で確認してください。"
+        + (
+            " " + escape(product["image_link_note"])
+            if product.get("image_link_note")
+            else ""
+        )
+        + "</figcaption></figure>"
     )
     return "".join(parts), bindings
 
@@ -979,9 +1083,10 @@ def condition_summary(
     now: datetime,
 ) -> str:
     """One line of decisive published values plus the next in-page action."""
-    labels = article.get("condition_fact_labels") or [
-        label for label in article["spec_labels"] if label != "選ぶ理由"
-    ][:3]
+    labels = (
+        article.get("condition_fact_labels")
+        or [label for label in article["spec_labels"] if label != "選ぶ理由"][:3]
+    )
     facts = {f["label"]: f for f in p["facts"]}
     parts = [
         re.sub(r"（.*）$", "", label) + "：" + tidy(facts[label]["text"])
@@ -991,26 +1096,23 @@ def condition_summary(
     offer = purchasable_offer(p, catalog)
     verified = verified_offers(p, catalog)
     if offer:
-        if price_expired(offer, now):
-            parts.append(
-                "税込本体：確認値が期限切れのため再確認中（"
-                + jp_date(offer["checked_at"])
-                + "確認）"
-            )
-        else:
-            parts.append(
-                f"税込本体：{offer['price_yen']:,}円（{jp_date(offer['checked_at'])}確認）"
-                if offer.get("price_yen") is not None
-                else "税込本体：未確認"
-            )
-        action = internal_link("#ps-seller-" + p["anchor"], p["product_id"], "購入総額と販売先へ")
+        parts.append(
+            "販売条件は"
+            + jp_date(offer["checked_at"])
+            + "確認。現在の価格・注文可否は販売先で確認"
+        )
+        action = internal_link(
+            "#ps-seller-" + p["anchor"], p["product_id"], "費目と販売先へ"
+        )
     elif verified:
         parts.append(
             "確認した販売先は売り切れ・再入荷待ち（"
             + jp_date(max(o["checked_at"] for o in verified))
             + "確認）"
         )
-        action = internal_link("#ps-seller-" + p["anchor"], p["product_id"], "販売状態と保留条件へ")
+        action = internal_link(
+            "#ps-seller-" + p["anchor"], p["product_id"], "販売状態と保留条件へ"
+        )
     else:
         parts.append("販売先未確認")
         action = (
@@ -1051,6 +1153,38 @@ def history_block(article: Mapping[str, Any]) -> str:
     )
 
 
+def contain_editorial_tables(html: str) -> str:
+    """Give authored comparison tables a keyboard-focusable, local scroll region."""
+    root = fragment(html)
+    for table in root.find(tag="table"):
+        ancestor = table.parent
+        contained = False
+        while ancestor:
+            if any(
+                ancestor.has(name)
+                for name in ("ps-table-scroll", "comparison-table-wrap", "table-scroll")
+            ):
+                contained = True
+                break
+            ancestor = ancestor.parent
+        if not contained:
+            captions = table.find(tag="caption")
+            region = Element(
+                "div",
+                {
+                    "class": "ps-table-scroll",
+                    "tabindex": "0",
+                    "role": "region",
+                    "aria-label": captions[0].text()
+                    if captions
+                    else "比較表（左右にスクロールできます）",
+                },
+            )
+            table.insert_before(region)
+            region.append(table)
+    return root.html()
+
+
 def render_comparison(
     article: Mapping[str, Any],
     catalog: Mapping[str, Any],
@@ -1086,7 +1220,7 @@ def render_comparison(
         + BYLINE
         + '<nav class="ps-toc" aria-label="記事の近道"><a href="#ps-choose">候補を絞る</a><a href="#ps-specs">仕様を比べる</a><a href="#ps-products">向く・向かない条件</a>'
         + ('<a href="#ps-installation-context">設置の詳細</a>' if main else "")
-        + '<a href="#ps-offers">購入総額と販売先</a><a href="#ps-evidence">詳細・出典</a></nav>'
+        + '<a href="#ps-offers">購入費用と販売先</a><a href="#ps-evidence">詳細・出典</a></nav>'
     )
     decision_steps_html = ""
     decision_steps_placement = "before_conditions"
@@ -1106,8 +1240,6 @@ def render_comparison(
             + escape(steps["source_label"])
             + "</a></p></section>"
         )
-    if decision_steps_placement == "before_conditions":
-        out.append(decision_steps_html)
     out.append(
         '<section id="ps-choose"><h2>条件別の結論</h2><div class="ps-condition-grid">'
     )
@@ -1150,8 +1282,7 @@ def render_comparison(
             )
             + '></div><p class="ps-note">条件や予算を入力した場合も、その内容は保存・送信しません。購入総額を確認できない候補は、理由を付けて残します。ポイントや条件付きクーポンを一律に差し引きません。</p></section>'
         )
-    if decision_steps_placement == "after_conditions":
-        out.append(decision_steps_html)
+    method_parts = []
     if article.get("preserved_method_heading"):
         method_id = article["preserved_method_heading"]
         methods = [
@@ -1164,33 +1295,32 @@ def render_comparison(
         for label in methods[0].find(tag="p", cls="section-number"):
             if label.parent is not None:
                 label.parent.children.remove(label)
-        out.append(re.sub(r"(?m)^[ \t]+$", "", methods[0].html()))
+        method_parts.append(re.sub(r"(?m)^[ \t]+$", "", methods[0].html()))
     if article.get("comparison_scope"):
         scope = article["comparison_scope"]
-        out.append(
+        method_parts.append(
             '<section><h2 id="'
             + escape(scope["heading_id"], quote=True)
             + '">比較のしかた</h2><p>'
             + escape(scope["intro"])
-            + '</p><h3>比較対象にした条件</h3><ul>'
+            + "</p><h3>比較対象にした条件</h3><ul>"
             + "".join("<li>" + escape(item) + "</li>" for item in scope["included"])
-            + '</ul><h3>比較に含めていないもの</h3><ul>'
+            + "</ul><h3>比較に含めていないもの</h3><ul>"
             + "".join("<li>" + escape(item) + "</li>" for item in scope["excluded"])
-            + '</ul><p>市場全体の順位ではありません。性能評価に価格・在庫・ポイント・広告報酬を加点せず、購入費用は別に確認します。</p></section>'
+            + "</ul><p>市場全体の順位ではありません。性能評価に価格・在庫・ポイント・広告報酬を加点せず、購入費用は別に確認します。</p></section>"
         )
     out.append('<section id="ps-specs"><h2>決め手になる比較表</h2>')
-    if article["slug"] == MAIN_SLUG:
-        out.append(
-            '<div class="ps-pair-controls" hidden'
-            + attrs(
-                {
-                    "data-ps-pair-options": canonical(
-                        [{"id": p["product_id"], "label": p["name"]} for p in products]
-                    )
-                }
-            )
-            + "></div>"
+    out.append(
+        '<div class="ps-pair-controls" hidden'
+        + attrs(
+            {
+                "data-ps-pair-options": canonical(
+                    [{"id": p["product_id"], "label": p["name"]} for p in products]
+                )
+            }
         )
+        + "></div>"
+    )
     table = specification_table(article, products)
     cells = []
     for p in products:
@@ -1225,6 +1355,18 @@ def render_comparison(
             '<p class="ps-note">本体寸法だけでは設置可否を判断しません。<a href="#ps-installation-context">開扉時の寸法と必要な余白</a>を、同じ型番の公表条件で確認してください。</p>'
         )
     out.append("</section>")
+    if decision_steps_html:
+        out.append(decision_steps_html)
+    for heading_id in article.get("preserved_editorial_sections", []):
+        matches = [
+            section
+            for section in fragment(template).find(tag="section")
+            if section.attrs.get("id") == heading_id
+            or any(n.attrs.get("id") == heading_id for n in section.find(tag="h2"))
+        ]
+        if len(matches) != 1:
+            raise ValueError("PURCHASE_EDITORIAL_SECTION_REQUIRED")
+        out.append(matches[0].html())
     if main:
         out.append(editorial_slot(template, "task-fit"))
     out.append(
@@ -1249,7 +1391,9 @@ def render_comparison(
             + "</p>"
         )
         if product_media is not None:
-            if media_allowed(p, catalog):
+            if media_allowed(p, catalog) and p["product_id"] not in article.get(
+                "media_exclusions", {}
+            ):
                 photo, photo_bindings = render_product_media(
                     p, article, snapshot, product_media[p["product_id"]]
                 )
@@ -1261,7 +1405,16 @@ def render_comparison(
                 bindings.extend(photo_bindings)
                 media_shown = True
             else:
-                out.append(MEDIA_WITHHELD)
+                reason = article.get("media_exclusions", {}).get(
+                    p["product_id"]
+                ) or p.get("image_review", {}).get("reason")
+                out.append(
+                    '<p class="ps-media-withheld">商品写真：'
+                    + escape(tidy(reason))
+                    + "</p>"
+                    if reason
+                    else MEDIA_WITHHELD
+                )
         out.append(
             "<p>"
             + escape(tidy(p["lead"]))
@@ -1282,7 +1435,9 @@ def render_comparison(
             out.append(route_links(p))
         out.append(
             "<p>"
-            + internal_link("#ps-seller-" + p["anchor"], p["product_id"], "購入総額と販売先へ")
+            + internal_link(
+                "#ps-seller-" + p["anchor"], p["product_id"], "購入費用と販売先へ"
+            )
             + "</p>"
         )
         o = purchasable_offer(p, catalog)
@@ -1295,11 +1450,50 @@ def render_comparison(
     if media_shown:
         out.append(RAKUTEN_CREDIT)
     out.append("</section>")
+    supplementary = [
+        p
+        for p in catalog["products"]
+        if p["product_id"] in article.get("supplementary_product_ids", [])
+    ]
+    if supplementary:
+        out.append(
+            '<section class="ps-supplementary" id="ps-other-configurations"><h2>主比較とは別の構成</h2><p>以下は主比較の仕様・付属品・自動化範囲とは区別して確認してください。</p>'
+        )
+        for p in supplementary:
+            out.append(
+                '<article id="'
+                + escape(p["anchor"], quote=True)
+                + '"><h3>'
+                + escape(p["name"])
+                + "</h3><p>"
+                + escape(p["exact_model"])
+                + "</p><p>"
+                + escape(tidy(p["lead"]))
+                + "</p><p>"
+                + escape(tidy(p["caution"]))
+                + '</p><p><a href="'
+                + escape(p["official_url"], quote=True)
+                + '">この構成の公式仕様を確認する</a></p>'
+            )
+            panel, extra_bindings = offer_panel(
+                p, catalog, article, snapshot, "final_summary", now=now
+            )
+            bindings.extend(extra_bindings)
+            out.append(
+                '<section class="ps-product-offers" id="ps-seller-'
+                + escape(p["anchor"], quote=True)
+                + '" data-ps-product="'
+                + escape(p["product_id"], quote=True)
+                + '"><h4>この別構成の販売条件</h4>'
+                + panel
+                + "</section></article>"
+            )
+        out.append("</section>")
     if main:
         out.append(installation_context(article, products))
     shared = common_alternatives(products, catalog)
     out.append(
-        '<section id="ps-offers"><h2>購入総額と販売先</h2><p>構成・送料・必須品・納期・保証を販売先ごとに確認します。異なる構成の価格を同じ商品価格として比べません。確認日から24時間、または販売先の期限までを価格の表示期限とし、期限後は価格を表示せず再確認中と示します。</p>'
+        '<section id="ps-offers"><h2>購入費用と販売先</h2><p>構成・送料・必須品・納期・保証を販売先ごとに確認します。異なる構成の価格を同じ商品価格として比べません。確認日から24時間、または販売先の期限までを価格の表示期限とし、期限後は価格を表示せず再確認中と示します。</p>'
         + (
             '<p class="ps-note">'
             + "".join(escape(tidy(text)) for text in shared)
@@ -1339,6 +1533,12 @@ def render_comparison(
             )
             + "</ul></section>"
         )
+    if method_parts:
+        out.append(
+            '<details class="ps-comparison-method"><summary>比較範囲・条件と選び方の詳細</summary>'
+            + "".join(method_parts)
+            + "</details>"
+        )
     out.append(
         '<section id="ps-evidence"><h2>必要な詳細と出典</h2><p>性能の評価に価格や広告報酬を加点しません。購入費用は用途・予算に合う候補を選ぶために別に比較します。掲載候補は市場全体の順位ではありません。</p><details><summary>仕様の確認元・適用条件</summary>'
     )
@@ -1350,8 +1550,11 @@ def render_comparison(
             if key in seen:
                 continue
             seen.add(key)
+            source_id, _ = fact_reference(p, f)
             out.append(
-                '<li><a href="'
+                '<li id="'
+                + escape(source_id, quote=True)
+                + '"><a href="'
                 + escape(f["source_url"], quote=True)
                 + '">'
                 + escape(locator_label(f["locator"]))
@@ -1388,7 +1591,11 @@ def render_comparison(
         if section.attrs.get("id") == "ks-next-read":
             out.append(section.html())
     out.append("</div>")
-    return "".join(out), bindings
+    if not any(b.get("affiliate") == "true" for b in bindings):
+        out[1] = (
+            '<p class="ps-disclosure">この記事にアフィリエイトリンクはありません。実機で使用した評価ではなく、型番ごとの公式情報に基づく比較です。</p>'
+        )
+    return contain_editorial_tables("".join(out)), bindings
 
 
 def legacy_source_notes(
@@ -1599,6 +1806,12 @@ def render_guide(
         )
         + "</nav>"
     )
+    from raos.application.editorial.site_guide_improvements import (
+        render_guide_intro,
+        render_model_handout,
+    )
+
+    out.append(render_guide_intro(stage, products))
     table = guide_decision_table(stage, products)
     if article.get("reader_steps"):
         steps = article["reader_steps"]
@@ -1664,6 +1877,7 @@ def render_guide(
             + escape(p["exact_model"])
             + "</p>"
         )
+        out.append(render_model_handout(stage, p))
         selected = [
             f
             for field in GUIDE_REQUIREMENTS[stage]
@@ -1839,6 +2053,10 @@ def add_compatibility_anchors(
         if len(products) != 1 or next(iter(products)) not in sections:
             raise ValueError("PURCHASE_LEGACY_ANCHOR_IDENTITY_REQUIRED")
         product = next(iter(products))
+        if identity in (anchor_targets or {}):
+            if (anchor_targets or {})[identity] != sections[product].attrs.get("id"):
+                raise ValueError("PURCHASE_ANCHOR_PRODUCT_MISMATCH")
+            continue  # The explicit, identity-checked alias is installed below.
         alias = Element("span", {"id": str(identity), "data-ps-purchase-alias": "true"})
         section = sections[product]
         section.children.insert(0, alias)
@@ -1878,7 +2096,12 @@ def add_compatibility_anchors(
         if identity not in old or identity in new:
             raise ValueError("PURCHASE_LEGACY_ALIAS_SOURCE_INVALID")
         targets = [n for n in root.walk() if n.attrs.get("id") == target_id]
-        if len(targets) != 1 or targets[0].tag not in {"section", "article", "li", "aside"}:
+        if len(targets) != 1 or targets[0].tag not in {
+            "section",
+            "article",
+            "li",
+            "aside",
+        }:
             raise ValueError("PURCHASE_LEGACY_ALIAS_TARGET_INVALID")
         section = targets[0]
         alias = Element(
@@ -1911,11 +2134,22 @@ def render_hub(
         raise ValueError("PURCHASE_HUB_ROOT_INVALID")
     root = roots[0]
     hub_sections = {node.attrs.get("id"): node for node in root.find(tag="section")}
-    for identity in ("kitchen-start", "kitchen-axes", "choose", "compare", "purchase-checks"):
+    for identity in (
+        "kitchen-start",
+        "kitchen-axes",
+        "choose",
+        "compare",
+        "purchase-checks",
+    ):
         if identity not in hub_sections:
             raise ValueError("PURCHASE_HUB_SECTION_MISSING")
     navs = {node.attrs.get("aria-label"): node for node in root.find(tag="nav")}
-    for label in ("このサイトの入口", "このページの読み方", "ほかの商品カテゴリ", "編集方針"):
+    for label in (
+        "このサイトの入口",
+        "このページの読み方",
+        "ほかの商品カテゴリ",
+        "編集方針",
+    ):
         if label not in navs:
             raise ValueError("PURCHASE_HUB_NAV_MISSING")
     if len(root.find(tag="p", cls="ks-reader-note")) != 1:
@@ -1973,8 +2207,7 @@ def compile_articles(
     for a in catalog["articles"]:
         a = {
             **a,
-            "purchase_normalization": a["post_id"]
-            in catalog.get("normalization_pilot_post_ids", [30, 83, 41]),
+            "purchase_normalization": True,
         }
         template = templates[a["slug"]]
         snapshot = "ps-pending-content-digest"
@@ -1989,7 +2222,9 @@ def compile_articles(
                     product = next(
                         p for p in catalog["products"] if p["product_id"] == pid
                     )
-                    if not media_allowed(product, catalog):
+                    if not media_allowed(product, catalog) or pid in a.get(
+                        "media_exclusions", {}
+                    ):
                         continue
                     display_media[pid], _ = render_product_media(
                         product, a, snapshot, product_media[pid]

@@ -97,6 +97,7 @@ def render_cost_profiles(
         raise ValueError("LOCAL_COST_PROFILES_INVALID")
     seen: set[str] = set()
     rows: list[str] = []
+    legacy_rows: list[str] = []
     for profile in profiles:
         if not isinstance(profile, Mapping):
             raise ValueError("LOCAL_COST_PROFILE_INVALID")
@@ -155,7 +156,7 @@ def render_cost_profiles(
         label = next(iter(labels)) if labels else "コース別の消費量は未確認"
         attrs += ' data-raos-cost-course="' + escape(label, quote=True) + '"'
         scope = "現行比較対象" if "product_anchor" in profile else "参考（比較対象外）"
-        rows.append(
+        (rows if "product_anchor" in profile else legacy_rows).append(
             "<tr"
             + attrs
             + '><th scope="row">'
@@ -184,7 +185,11 @@ def render_cost_profiles(
         '<table><caption id="guide-cost-values-caption">計算に使える公表値と対象条件（実測値ではありません）</caption>'
         '<thead><tr><th scope="col">型番</th><th scope="col">区分</th><th scope="col">コース・条件</th>'
         '<th scope="col">消費電力量／回</th><th scope="col">使用水量／回</th></tr></thead><tbody>'
+        + '<tr><th colspan="5" scope="rowgroup">現行比較の4機種</th></tr>'
         + "".join(rows)
+        + "</tbody><tbody>"
+        + '<tr><th colspan="5" scope="rowgroup">以前の掲載機種（現行の比較対象外）</th></tr>'
+        + "".join(legacy_rows)
         + "</tbody></table></div></div>"
         "<p>計算できるのは入力した条件での従量費の概算です。基本料金・段階料金、"
         "家庭での消費量の変化を含む請求額や、手洗いとの差額を示すものではありません。</p>",

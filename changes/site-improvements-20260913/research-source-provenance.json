@@ -1,0 +1,54 @@
+{
+  "retrieved_on": "2026-09-13",
+  "method": "wordpressEditor.raos_codex_content_get",
+  "records": [
+    {
+      "id": 19,
+      "slug": "carry-on-suitcase-comparison",
+      "status": "publish",
+      "revision_id": 535,
+      "modified_gmt": "2026-09-12T17:23:07Z",
+      "content_sha256": "2134d20e5a97288191445af4ab861ccdc18ae3bb6bb8d51bf205cc86d2c5d002"
+    },
+    {
+      "id": 82,
+      "slug": "carry-on-suitcase-under-100-seats",
+      "status": "publish",
+      "revision_id": 548,
+      "modified_gmt": "2026-09-12T17:23:35Z",
+      "content_sha256": "5a06aa6721aef94590f4e82381b40170b6b9ef9ce438d19685845c271bdb06b4"
+    },
+    {
+      "id": 84,
+      "slug": "front-open-carry-on-suitcase-with-stopper",
+      "status": "publish",
+      "revision_id": 539,
+      "modified_gmt": "2026-09-12T17:23:16Z",
+      "content_sha256": "edb8369304b0f961a7e5c0291145da3c9fa165854971cfdb47eeb887a017b46b"
+    },
+    {
+      "id": 85,
+      "slug": "roomba-mini-vs-switchbot-k11-pro",
+      "status": "publish",
+      "revision_id": 540,
+      "modified_gmt": "2026-09-12T17:23:19Z",
+      "content_sha256": "56e9f49b65794caeb7c9d333340fda83d90330e25266a33e668f3c5519441d1a"
+    },
+    {
+      "id": 86,
+      "slug": "solota-vs-rakua-mini-plus",
+      "status": "publish",
+      "revision_id": 543,
+      "modified_gmt": "2026-09-12T17:23:25Z",
+      "content_sha256": "a34aabddd5541165d26774eeb933943daf990c9454fb86a7bc9777c732869320"
+    },
+    {
+      "id": 29,
+      "slug": "anker-solix-c300-c800-c1000-differences",
+      "status": "publish",
+      "revision_id": 542,
+      "modified_gmt": "2026-09-12T17:23:22Z",
+      "content_sha256": "913c7cf78d2011e235e0afc221ad770ab374bb8f7f891a154d53362d9c4be84b"
+    }
+  ]
+}

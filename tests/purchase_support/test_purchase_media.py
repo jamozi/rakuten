@@ -21,6 +21,38 @@ THEME = (
 )
 
 
+# Explicit editorial acceptance: unknown images cannot reappear merely because a
+# matching ID is added to the catalog or a merchant changes its generic picture.
+EXPECTED_MEDIA = {
+    "countertop-dishwasher-for-small-households": {
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-SIROCA-SS-MA251",
+    },
+    "lightweight-carry-on-suitcase-under-3kg": {
+        "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "PRD-SAMSONITE-C-LITE-CS2-09007",
+    },
+    "compact-robot-vacuum-shortlist": {
+        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-SWITCHBOT-K11-PRO",
+    },
+    "portable-power-station-guide": {
+        "PRD-JACKERY-500-NEW",
+        "PRD-BLUETTI-AC70",
+        "PRD-ECOFLOW-DELTA3-CLASSIC",
+    },
+    "carry-on-suitcase-comparison": set(),
+    "carry-on-suitcase-under-100-seats": set(),
+    "front-open-carry-on-suitcase-with-stopper": set(),
+    "roomba-mini-vs-switchbot-k11-pro": {
+        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-SWITCHBOT-K11-PRO",
+    },
+    "solota-vs-rakua-mini-plus": set(),
+    "anker-solix-c300-c800-c1000-differences": set(),
+}
+
+
 def inputs():
     return (
         json.loads(
@@ -33,7 +65,7 @@ def inputs():
     )
 
 
-def test_all_sixteen_photos_and_thirty_unmodified_image_links_are_snapshot_bound():
+def test_only_reviewed_in_scope_media_and_unmodified_links_are_snapshot_bound():
     spec = importlib.util.spec_from_file_location(
         "purchase_media_build", ROOT / "scripts/build_reader_purchase_support_v1.py"
     )
@@ -52,6 +84,8 @@ def test_all_sixteen_photos_and_thirty_unmodified_image_links_are_snapshot_bound
         ]
         assert sha256(body.encode()).hexdigest() == article["body_sha256"]
         assert not any(n.has("ps-product-image") for n in fragment(body).walk())
+        if article["kind"] == "comparison":
+            assert set(article["media"]) == EXPECTED_MEDIA[article["slug"]]
         for pid, markup in article["media"].items():
             placeholder = (
                 '<div class="ps-product-media" data-ps-media-product="'
@@ -73,11 +107,7 @@ def test_all_sixteen_photos_and_thirty_unmodified_image_links_are_snapshot_bound
                 "/wp-content/themes/kurashinoshirube-child/assets/images/roomba-mini-official.jpg"
             ), "The same frozen theme image must work on the isolated preview origin."
         for b in image_bindings:
-            assert (
-                len(b)
-                == (10 if article["slug"] != "portable-power-station-guide" else 8)
-                and b["placement"] == "product_card"
-            )
+            assert len(b) == 10 and b["placement"] == "product_card"
             if len(b) == 10:
                 assert (
                     b["link_purpose"] == "affiliate_purchase"
@@ -103,9 +133,9 @@ def test_all_sixteen_photos_and_thirty_unmodified_image_links_are_snapshot_bound
                 sha256(body[start:end].encode()).hexdigest()
                 == sha256(record["sources"][size].encode()).hexdigest()
             )
-    # Image links exist only for products with a matched, orderable seller:
-    # 41 (SOLOTA, SS-MA251), 83 (DX2, C-Lite), 30 (K11+ Pro), 28 (all four).
-    assert image_count == 18 and official_count == 1
+    # The same reviewed Mini/K11 media is bound to both robot comparisons;
+    # unreviewed C300 and the new comparison identities remain withheld.
+    assert image_count == 18 and official_count == 2
     assert all(not o["offer_id"].startswith("image-") for o in catalog["offers"])
 
 
@@ -141,12 +171,8 @@ def test_public_media_projection_requires_exact_runtime_and_applied_body():
     runtime = json.loads(runtime_path.read_text())
     assert runtime_path.stat().st_size <= 262144
     comparisons = [a for a in runtime["articles"] if a["kind"] == "comparison"]
-    expected_figures = {
-        "countertop-dishwasher-for-small-households": 2,
-        "lightweight-carry-on-suitcase-under-3kg": 2,
-        "compact-robot-vacuum-shortlist": 2,
-        "portable-power-station-guide": 4,
-    }
+    expected_figures = {slug: len(pids) for slug, pids in EXPECTED_MEDIA.items()}
+    assert {a["slug"] for a in comparisons} == set(EXPECTED_MEDIA)
     total_photos = 0
     for article in comparisons:
         body = (
@@ -206,7 +232,7 @@ def test_public_media_projection_requires_exact_runtime_and_applied_body():
             else:
                 assert value["unchanged"] and value["figures"] == 0
         total_photos += len(article["media"])
-    assert total_photos == 10
+    assert total_photos == sum(map(len, EXPECTED_MEDIA.values()))
 
 
 def test_media_projection_changes_snapshot_even_when_placeholder_body_is_stable():
@@ -229,7 +255,39 @@ def test_media_projection_changes_snapshot_even_when_placeholder_body_is_stable(
     modified["PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"]["sha256"] = "f" * 64
     _, after = compile_articles(catalog, templates, guides, modified, now=now)
     for a, b in zip(before["articles"], after["articles"], strict=True):
-        if a["slug"] == "compact-robot-vacuum-shortlist":
+        if a["slug"] in {
+            "compact-robot-vacuum-shortlist",
+            "roomba-mini-vs-switchbot-k11-pro",
+        }:
             assert a["snapshot_id"] != b["snapshot_id"]
         else:
             assert a["snapshot_id"] == b["snapshot_id"]
+
+
+def test_unverified_images_are_withheld_without_deleting_product_facts():
+    catalog, records, official = inputs()
+    blocked = {
+        "PRD-BERMAS-INTER-CITY-60524",
+        "PRD-ANKER-SOLIX-C300",
+        "PRD-ANKER-SOLIX-C800-PLUS",
+        "PRD-ANKER-SOLIX-C1000",
+        "PRD-ANKER-SOLIX-C1000-GEN2",
+    }
+    products = {p["product_id"]: p for p in catalog["products"]}
+    for pid in blocked:
+        assert products[pid]["image_review"]["state"] == "UNVERIFIED"
+        assert products[pid]["image_review"]["reason"]
+        assert products[pid]["facts"] and products[pid]["official_url"].startswith(
+            "https://"
+        )
+    media = resolve_product_media(catalog, records, official)
+    for pid in blocked:
+        assert media[pid] == {
+            "withheld": True,
+            "reason": products[pid]["image_review"]["reason"],
+        }
+    # An article-specific scope exclusion does not revoke the approved same-product
+    # photo in the original four-model dishwasher comparison.
+    pair = next(a for a in catalog["articles"] if a["post_id"] == 86)
+    assert pair["media_exclusions"]["PRD-PANASONIC-NP-TMLK1"]
+    assert "PRD-PANASONIC-NP-TMLK1" in media
