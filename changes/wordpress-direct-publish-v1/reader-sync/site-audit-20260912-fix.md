@@ -134,6 +134,7 @@ theme が hub 15 ページの head (title「｜暮らしのしるべ」区切り
 
 - 生成順: `build_reader_purchase_support_v1.py` → `build_editorial_portfolio_v3.py` → `build_editorial_v3_theme_navigation.py` → `build_st1704_theme_icons.py --check` → `build_st1704_self_hosted_theme.py --generate` → `make generate` で収束 (theme revision `6bfe1b1d…`)。
 - `make check` PASS、`ruff` / `mypy` / `npm run format:check` / `lint` / `typecheck` PASS、`php -l` (functions.php / inc/*.php) OK、`make final-secrets` OK。
+- local preview (owner-direct candidate、theme 同梱) で 34 URL を機械検査: header nav 5 リンク、パンくず 3 段、hub の og:type website + CollectionPage、og:image と寸法、description 80-140 字、generator 無し、楽天画像の alt/寸法/1 サイズ、広告表記の位置、`/wp-json/wp/v2/users` 401、`?author=1` 404、REST index の名前空間、セキュリティヘッダ、favicon.ico、footer、JSON-LD、feed の creator、検索・404・大文字 URL。preview 後に見つかった 2 件 (render 時に投影される楽天画像を広告表記が見ていない、`%E6…` を大文字と誤認する redirect) を追加修正 (commit 8f05f92b)。
 - 旧仕様を固定していた test は新仕様に更新: `tests/wordpress_public_acceptance/test_directories.py` (guides/comparisons の役割分担と注記文)、`tests/purchase_support/*` (画像 18・EXPIRED・JST 表示)、`tests/st1704/*` (fail-open・3 段パンくず・icons)、`tests/wordpress_reader_navigation_v3/*` (hero img 13 枚・CSS の scroll-margin)。
 
 ### 生成記事 13 本・policy 3・kitchen (編集元 `changes/reader-purchase-support-v1/`、renderer `python/raos/application/editorial/purchase_support.py`)
