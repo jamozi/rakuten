@@ -33,7 +33,7 @@ from scripts import build_reader_purchase_support_v1 as purchase_support_owner  
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "d7a5b69d84f3e924c912a602134bb8663ab8cce87a15e8196b2aea53c627fe67"
+    "0b67339edb497f6bee351d3a5d518cedc337e90a2c4358e029f87f54b39712fa"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -188,6 +188,7 @@ THEME_FINGERPRINT_SOURCE_FILES: Final = tuple(
     if relative not in THEME_FINGERPRINT_EXCLUDED_PATHS
 )
 PHP_INTEGRITY_BINDINGS: Final = {
+    "KURASHINOSHIRUBE_SITE_EDITORIAL_METADATA_SHA256": "assets/site-editorial-metadata.v1.json",
     "KURASHINOSHIRUBE_CONSENT_CONTROLS_ASSET_SHA256": "assets/consent-controls.js",
     "KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256": "assets/purchase-support.v1.json",
     "KURASHINOSHIRUBE_PURCHASE_UI_SHA256": "assets/purchase-support.js",

@@ -184,3 +184,18 @@ body #ks-magazine .ks-home-updates h3 { margin-block: 10px; }
 }
 body #ks-magazine #km-purposes-title .ks-route-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 650px) { body #ks-magazine #km-purposes-title .ks-route-grid { grid-template-columns: minmax(0, 1fr); } }
+/* Original 240px product images; never resize or crop the Rakuten snippets. */
+body #ks-magazine .ks-home-feature-grid>.ks-editorial-card { container-type:inline-size; }
+body #ks-magazine .ks-home-product-images { display:grid; grid-template-columns:240px; justify-content:center; gap:16px 8px; align-items:start; }
+body #ks-magazine .ks-home-product-images figure { margin:0; min-width:0; }
+body #ks-magazine .ks-home-product-images a { display:block; }
+body #ks-magazine .ks-home-product-images img { display:block; width:auto; max-width:none; height:auto; margin-inline:auto; }
+body #ks-magazine [data-ks-home-product="PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"] img { width:240px; height:auto; }
+body #ks-magazine .ks-home-product-images figcaption { overflow-wrap:anywhere; }
+body #ks-magazine #km-categories-title h3,body #ks-magazine #km-purposes-title h3 { margin:0; }
+body #ks-magazine #km-categories-title h3 a,body #ks-magazine #km-purposes-title h3 a { display:block; padding-block:8px; }
+@container (min-width:488px) { body #ks-magazine .ks-home-product-images { grid-template-columns:repeat(2,240px); } }
+body #ks-magazine .ks-home-feature-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+body #ks-magazine .ks-home-feature-grid>.ks-editorial-card:first-child { grid-column:1 / -1; }
+body #ks-magazine .ks-home-feature-grid h3 { text-align:center; }
+@media(max-width:650px) { body #ks-magazine .ks-home-feature-grid { grid-template-columns:minmax(0,1fr); } }

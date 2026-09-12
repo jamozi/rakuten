@@ -11,12 +11,23 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "python"))
 from raos.application.editorial.site_editorial_pages import render_pages  # noqa: E402
+from raos.application.editorial.home_product_media import (  # noqa: E402
+    build_home_product_media,
+    bind_home_product_media,
+)
 
 INPUT_PATHS = (
     Path("changes/site-improvements-20260913/entry-pages.v1.json"),
     Path("changes/wordpress-direct-publish-v1/articles.v1.json"),
     Path("changes/reader-purchase-support-v1/purchase-support.v1.json"),
     Path("python/raos/application/editorial/site_editorial_pages.py"),
+    Path("python/raos/application/editorial/home_product_media.py"),
+    Path(
+        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/rakuten-product-media.json"
+    ),
+    Path(
+        "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg"
+    ),
 )
 SOURCE_ARTICLE_PATHS = (
     Path(
@@ -136,7 +147,16 @@ def build() -> dict[Path, str]:
             )
             if body.count(placeholder) == 1:
                 bodies[slug] += markup
-    pages, metadata, updates = render_pages(registry, catalog, data, bodies)
+    home_projection = build_home_product_media(
+        catalog,
+        data["home_product_media"],
+        json.loads((ROOT / INPUT_PATHS[5]).read_text()),
+        (ROOT / INPUT_PATHS[6]).read_bytes(),
+    )
+    pages, metadata, updates = render_pages(
+        registry, catalog, data, bodies, home_media=home_projection["slots"]
+    )
+    home_payload = bind_home_product_media(home_projection, pages["home"])
     result = {}
     for path in OUTPUT_PATHS:
         if path.suffix == ".html":
@@ -146,7 +166,11 @@ def build() -> dict[Path, str]:
             value = (
                 updates
                 if path.name == "registry-updates.json"
-                else {"schema": "RAOS_SITE_EDITORIAL_METADATA_V1", "articles": metadata}
+                else {
+                    "schema": "RAOS_SITE_EDITORIAL_METADATA_V1",
+                    "articles": metadata,
+                    "home_product_media": home_payload,
+                }
             )
             result[path] = json.dumps(value, ensure_ascii=False, indent=2) + "\n"
     return result

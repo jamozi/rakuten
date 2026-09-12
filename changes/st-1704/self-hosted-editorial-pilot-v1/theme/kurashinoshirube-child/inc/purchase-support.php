@@ -127,3 +127,74 @@ function kurashinoshirube_purchase_support_media($content)
     return strtr($content, $replacements);
 }
 add_filter('the_content', 'kurashinoshirube_purchase_support_media', 13);
+
+/** Home-only media uses the same applied-document boundary as article media. */
+function kurashinoshirube_home_product_media($content)
+{
+    if (!is_string($content) || is_admin() || is_feed() || !is_front_page()
+        || (int) get_queried_object_id() !== 15 || (int) get_the_ID() !== 15) { return $content; }
+    $snapshot = null;
+    if (class_exists('RAOS_Codex_MCP_Owner_Direct')) {
+        $snapshot = RAOS_Codex_MCP_Owner_Direct::public_article_snapshot(15);
+    } elseif (kurashinoshirube_is_local_preview()) {
+        $snapshot = get_post_meta(15, '_raos_owner_direct_preview_document', true);
+    }
+    if (!is_array($snapshot) || ($snapshot['id'] ?? null) !== 15
+        || ($snapshot['post_type'] ?? null) !== 'page' || ($snapshot['slug'] ?? null) !== 'home'
+        || get_post_status(15) !== 'publish' || get_post_field('post_password', 15, 'raw') !== '') {
+        return $content;
+    }
+    foreach (array('slug' => 'post_name', 'title' => 'post_title', 'excerpt' => 'post_excerpt',
+                   'block_markup' => 'post_content', 'post_type' => 'post_type') as $key => $field) {
+        if (!is_string($snapshot[$key] ?? null)
+            || $snapshot[$key] !== get_post_field($field, 15, 'raw')) { return $content; }
+    }
+    $path = get_stylesheet_directory() . '/assets/site-editorial-metadata.v1.json';
+    if (is_link($path) || !is_file($path) || !is_readable($path) || filesize($path) > 262144) {
+        return $content;
+    }
+    $bytes = file_get_contents($path);
+    if (!is_string($bytes) || !hash_equals(KURASHINOSHIRUBE_SITE_EDITORIAL_METADATA_SHA256, hash('sha256', $bytes))) {
+        return $content;
+    }
+    $document = json_decode($bytes, true);
+    $media = is_array($document) ? ($document['home_product_media'] ?? null) : null;
+    if (($document['schema'] ?? null) !== 'RAOS_SITE_EDITORIAL_METADATA_V1'
+        || !is_array($media) || ($media['schema'] ?? null) !== 'RAOS_HOME_PRODUCT_MEDIA_V1'
+        || ($media['post_id'] ?? null) !== 15 || ($media['post_type'] ?? null) !== 'page'
+        || ($media['slug'] ?? null) !== 'home' || !is_string($media['body_sha256'] ?? null)
+        || !hash_equals($media['body_sha256'], hash('sha256', $snapshot['block_markup']))
+        || !is_array($media['products'] ?? null)) { return $content; }
+    $expected = array(
+        'PRD-PANASONIC-NP-TMLK1' => 'NP-TMLK1-K',
+        'PRD-SIROCA-SS-MA251' => 'SS-MA251',
+        'PRD-PROTECA-AEROFLEX-DX2-01521' => '01521-09',
+        'PRD-SAMSONITE-C-LITE-CS2-09007' => 'CS2*09007 / 134679-1041',
+        'PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY' => 'F155260',
+        'PRD-SWITCHBOT-K11-PRO' => 'K11+ Pro',
+    );
+    if (count($media['products']) !== count($expected)
+        || array_diff_key($expected, $media['products']) !== array()
+        || array_diff_key($media['products'], $expected) !== array()) { return $content; }
+    if (substr_count($content, 'class="ks-home-product-slot"') !== count($expected)) { return $content; }
+    $replacements = array();
+    foreach ($expected as $pid => $model) {
+        $product = $media['products'][$pid];
+        if (!is_array($product) || ($product['exact_model'] ?? null) !== $model
+            || !is_string($product['html'] ?? null) || strlen($product['html']) > 16384
+            || !is_string($product['sha256'] ?? null)
+            || !hash_equals($product['sha256'], hash('sha256', $product['html']))
+            || !str_starts_with($product['html'], '<figure class="ks-home-product-image" data-ks-home-product="' . $pid . '">')
+            || !str_ends_with($product['html'], '</figure>')
+            || !is_array($product['source_sha256'] ?? null)) { return $content; }
+        $source_key = $pid === 'PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY' ? 'official' : '240';
+        if (count($product['source_sha256']) !== 1 || !array_key_exists($source_key, $product['source_sha256'])
+            || !is_string($product['source_sha256'][$source_key])
+            || preg_match('/\A[0-9a-f]{64}\z/D', $product['source_sha256'][$source_key]) !== 1) { return $content; }
+        $placeholder = '<div class="ks-home-product-slot" data-ks-home-product="' . $pid . '"></div>';
+        if (substr_count($content, $placeholder) !== 1) { return $content; }
+        $replacements[$placeholder] = $product['html'];
+    }
+    return strtr($content, $replacements);
+}
+add_filter('the_content', 'kurashinoshirube_home_product_media', 14);

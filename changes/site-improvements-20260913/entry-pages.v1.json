@@ -673,5 +673,42 @@
         "link": "https://kurashinoshirube.com/privacy-policy/"
       }
     }
+  },
+  "home_short_titles": {
+    "41": "タンク式食洗機を比べる",
+    "83": "軽いスーツケースを比べる",
+    "30": "省スペースの掃除機を比べる",
+    "262": "食洗機の置き場所を測る",
+    "263": "給水と排水を確認する",
+    "264": "食洗機の洗剤を選ぶ",
+    "265": "食洗機を手入れする",
+    "266": "食洗機の費用を調べる",
+    "86": "SOLOTAとmini Plusを比べる",
+    "82": "小型機に持ち込むスーツケース",
+    "84": "前開きスーツケースを比べる",
+    "19": "スーツケースの容量と開き方",
+    "85": "小さい自動収集台を比べる",
+    "28": "停電用の電源を比べる",
+    "29": "Anker電源の違いを調べる"
+  },
+  "home_product_media": {
+    "schema": "RAOS_HOME_PRODUCT_MEDIA_V1",
+    "post_id": 15,
+    "post_type": "page",
+    "slug": "home",
+    "groups": {
+      "41": [
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-SIROCA-SS-MA251"
+      ],
+      "83": [
+        "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "PRD-SAMSONITE-C-LITE-CS2-09007"
+      ],
+      "30": [
+        "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
+        "PRD-SWITCHBOT-K11-PRO"
+      ]
+    }
   }
 }

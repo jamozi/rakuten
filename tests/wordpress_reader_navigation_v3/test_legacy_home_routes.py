@@ -5,6 +5,7 @@ import re
 import unittest
 from pathlib import Path
 from scripts.raos_reader_live_patch import Document
+from scripts.build_site_editorial_pages import build
 
 ROOT = Path(__file__).resolve().parents[2]
 DIRECT = ROOT / "changes/wordpress-direct-publish-v1"
@@ -16,7 +17,9 @@ HOME_CSS = (
 
 class LegacyHomeRoutes(unittest.TestCase):
     def setUp(self):
-        self.doc = Document((DIRECT / "articles/home.html").read_text())
+        self.doc = Document(
+            build()[Path("changes/wordpress-direct-publish-v1/articles/home.html")]
+        )
         self.text = self.doc.text
 
     def test_legacy_breadcrumb_destinations_are_real_category_links(self):
@@ -61,7 +64,7 @@ class LegacyHomeRoutes(unittest.TestCase):
             self.assertEqual(self.text[n.start : n.end].count("<article "), count)
         self.assertIn('href="/updates/"', self.text)
         # Entire inventory remains reachable through category/list pages, not repeated on home.
-        self.assertIn("掲載 15記事", self.text)
+        self.assertNotIn("掲載 15記事", self.text)
 
     def test_one_unlinked_h1_and_no_skipped_heading_levels(self):
         headings = [n for n in self.doc.nodes if n.tag in ("h1", "h2", "h3")]
@@ -75,21 +78,34 @@ class LegacyHomeRoutes(unittest.TestCase):
         n = headings[0]
         self.assertNotEqual(self.doc.nodes[n.parent].tag, "a")
 
-    def test_only_approved_hero_and_three_editorial_images_are_used(self):
+    def test_hero_and_six_explicit_product_slots_preserve_media_boundaries(self):
         images = [n.attrs for n in self.doc.nodes if n.tag == "img"]
-        self.assertEqual(len(images), 4)
+        self.assertEqual(len(images), 1)
         self.assertTrue(images[0]["src"].endswith("/assets/images/magazine-hero.webp"))
         self.assertEqual((images[0]["width"], images[0]["height"]), ("842", "495"))
-        approved = json.loads(
-            (DIRECT / "reader-sync/visual-assets.v1.json").read_text()
-        )["assets"]
-        urls = {a["url"] for a in approved}
-        for image in images[1:]:
-            self.assertIn(image["src"], urls)
-            self.assertEqual((image["width"], image["height"]), ("762", "506"))
-            self.assertTrue(image["alt"])
-        self.assertIn("AI編集イメージ・実物写真ではありません", self.text)
-        self.assertIn("掲載順・評価は報酬条件と切り離しています", self.text)
+        data = json.loads(
+            (
+                ROOT / "changes/site-improvements-20260913/entry-pages.v1.json"
+            ).read_text()
+        )
+        expected = [
+            p for group in data["home_product_media"]["groups"].values() for p in group
+        ]
+        slots = [
+            n.attrs["data-ks-home-product"]
+            for n in self.doc.nodes
+            if "data-ks-home-product" in n.attrs
+        ]
+        self.assertCountEqual(slots, expected)
+        self.assertEqual(len(set(slots)), 6)
+        self.assertNotIn("hb.afl.rakuten.co.jp", self.text)
+        template = (
+            ROOT
+            / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/templates/front-page.html"
+        ).read_text()
+        self.assertEqual(template.count('data-raos-ad-disclosure="site"'), 1)
+        self.assertIn('href="/about-ad-policy/"', template)
+        self.assertIn("広告を含みます", template)
 
     def test_all_preserved_anchors_have_content(self):
         data = json.loads(

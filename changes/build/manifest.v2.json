@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "a1b46beedef193e93640ef8c81af42bde596f39b5ef960f75e824974d9947bcf",
+          "sha256": "d2ea06e93d8e1b3b83b5d71a6d4db5beb7c1182ef187d63571c5fbb52a34fba6",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -2262,8 +2262,8 @@
           "uri": "repo://changes/site-improvements-20260913/registry-updates.json"
         },
         {
-          "bytes": 15579,
-          "sha256": "f1e2a58a14e827e243d423f73d013ca6ec8d47108b81e2348671a7910b7687d5",
+          "bytes": 23674,
+          "sha256": "eae8a337b914bacde990e64fc3d9e1d8e91ea329ec56c17ac7906738e9209a1b",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/site-editorial-metadata.v1.json"
         },
         {
@@ -2297,8 +2297,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/guides.html"
         },
         {
-          "bytes": 10878,
-          "sha256": "d377475632a71660c88df32f87d720ef03190b667c8f667bfa6e5f780b433011",
+          "bytes": 4904,
+          "sha256": "977a5ea040589f3cfdb62db70d2b10240da771df42b9200bf61d6e26634996ec",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/home.html"
         },
         {
@@ -2360,8 +2360,20 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/roomba-mini-official.jpg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/rakuten-product-media.json",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/rakuten-product-media.json",
           "version": 2
         },
         {
@@ -2494,6 +2506,12 @@
           "kind": "tracked",
           "semantic_id": "changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.patch.json",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.patch.json",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "python/raos/application/editorial/home_product_media.py",
+          "uri": "repo://python/raos/application/editorial/home_product_media.py",
           "version": 2
         },
         {
@@ -27076,7 +27094,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "37ce7c6fe8e803c2973311a04a33206c5ec165a80320e8e32420bffd999865d3",
+          "sha256": "fd82be8a0fccbb7a80d499fe9a4dc433da78cac174059debf500d910dbb418a0",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27307,7 +27325,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "c2434d028c578e71ccbb9c6be2b0e7b62dc17940acca47410b48bc76112433bf",
+          "sha256": "0640389fadab6edb6f998ed680b794bcd81b1d8363a6494b2ebc9609369d6af4",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30157,7 +30175,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "b896c7f7f2a66337e37cdd9b8e3646598616d5c7ecd7fc7944ffcfaf108db389",
+          "sha256": "b74042ba221dde0cca5c0ddfa8e0decbcab3ffddef7a9e7fa348ff91626b2182",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31014,7 +31032,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "2d3fb0f92be58ad60e8d893f911f8b1103114a725e1bcce12a2c26decc84fa85",
+          "sha256": "aa50c91287381e8bffae9ba71863420c408bf1b3a8260f72acccfc4507c0ed68",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

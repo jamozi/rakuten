@@ -135,6 +135,7 @@ def render_pages(
     catalog: dict[str, Any],
     data: dict[str, Any],
     bodies: dict[str, str],
+    home_media: dict[int, str] | None = None,
 ) -> tuple[dict[str, str], dict[str, Any], list[dict[str, str]]]:
     meta = metadata(registry, catalog, data, bodies)
     by_id = {a["post_id"]: a for a in meta.values()}
@@ -197,10 +198,39 @@ def render_pages(
                 category_link = category_link.replace(
                     "<a ", f'<a id="{legacy[slug]}" ', 1
                 )
+            if home:
+                label_link = category_link.replace(
+                    "カテゴリを見る", escape(cat["name"])
+                )
+                out += (
+                    '<article class="ks-editorial-card"><h3>'
+                    + label_link
+                    + "</h3></article>"
+                )
+                continue
             out += f'<article class="ks-editorial-card"><h3>{escape(cat["name"])}</h3><p>{len(ids)}記事・広告リンクを含む記事 {ads}本</p><ul><li>{category_link}</li><li>{link(article_url(reps[slug]), "代表比較を読む")}</li><li>{link(article_url(pid, anchor), "採寸・条件整理")}</li></ul></article>'
         return '<div class="ks-route-grid">' + out + "</div>"
 
-    def purpose_cards() -> str:
+    def purpose_cards(home: bool = False) -> str:
+        if home:
+            labels = [
+                "省スペース",
+                "家事を短く",
+                "分岐水栓工事を避ける",
+                "手入れを楽に",
+                "旅行の荷物を楽に",
+                "停電に備える",
+            ]
+            return (
+                '<div class="ks-route-grid">'
+                + "".join(
+                    '<article class="ks-editorial-card"><h3>'
+                    + link("/" + slug + "/", label)
+                    + "</h3></article>"
+                    for slug, label in zip(PURPOSES, labels, strict=True)
+                )
+                + "</div>"
+            )
         return (
             '<div class="ks-route-grid">'
             + "".join(
@@ -233,7 +263,12 @@ def render_pages(
         if slug == "home":
 
             def feature(pid: int, image_category: str, caption: str) -> str:
-                markup = card(pid)
+                label = data["home_short_titles"].get(str(pid), by_id[pid]["title"])
+                markup = (
+                    '<article class="ks-editorial-card"><h3>'
+                    + link(article_url(pid), label)
+                    + "</h3></article>"
+                )
                 media = (
                     '<figure class="ks-feature-image"><img src="https://kurashinoshirube.com/wp-content/uploads/2026/09/ks-'
                     + image_category
@@ -241,6 +276,15 @@ def render_pages(
                     + escape(caption, quote=True)
                     + '" loading="lazy"><figcaption>AI編集イメージ・実物写真ではありません</figcaption></figure>'
                 )
+                media = media.replace(
+                    "<img ", '<a href="' + article_url(pid) + '"><img ', 1
+                ).replace("<figcaption>", "</a><figcaption>", 1)
+                if home_media and pid in home_media:
+                    media = (
+                        '<div class="ks-home-product-images">'
+                        + home_media[pid]
+                        + "</div>"
+                    )
                 return markup.replace(
                     '<article class="ks-editorial-card">',
                     '<article class="ks-editorial-card">' + media,
@@ -248,7 +292,7 @@ def render_pages(
                 )
 
             body = (
-                '<section class="ks-home-feature"><div class="ks-home-masthead"><div class="ks-home-intro"><p class="km-tag">暮らしの道具を、納得して選ぶ</p><h1 id="km-hero-title">あなたの暮らしに、<br>合うものを。</h1><p>選ぶ理由も、選ばない理由も。<br>置き場所、使い方、残る手間から、<br>自分に合う候補を比較できます。</p></div><figure class="ks-home-mood"><img src="https://kurashinoshirube.com/wp-content/themes/kurashinoshirube-child/assets/images/magazine-hero.webp" width="842" height="495" alt="暮らしの道具を選ぶ編集イメージ"><figcaption>編集イメージ。商品同定や実測の根拠ではありません。</figcaption></figure></div><h2 id="km-articles-title">暮らしに合う道具を比較する</h2><div class="ks-home-feature-grid">'
+                '<section class="ks-home-feature"><div class="ks-home-masthead"><div class="ks-home-intro"><p class="km-tag">暮らしの道具を、納得して選ぶ</p><h1 id="km-hero-title">あなたの暮らしに、<br>合うものを。</h1><p>置き場所と使い方から、道具を選ぶ。</p></div><figure class="ks-home-mood"><img src="https://kurashinoshirube.com/wp-content/themes/kurashinoshirube-child/assets/images/magazine-hero.webp" width="842" height="495" alt="暮らしの道具を選ぶ編集イメージ"><figcaption>編集イメージ。商品同定や実測の根拠ではありません。</figcaption></figure></div><h2 id="km-articles-title">暮らしに合う道具を比較する</h2><div class="ks-home-feature-grid">'
                 + feature(41, "kitchen", "食器と食洗機のあるキッチンのイメージ")
                 + feature(83, "travel", "スーツケースと衣類を揃えた旅支度のイメージ")
                 + feature(30, "cleaning", "ロボット掃除機を置いた部屋のイメージ")
@@ -256,7 +300,9 @@ def render_pages(
             )
             body += section(
                 "商品カテゴリから探す", category_cards(home=True), "km-categories-title"
-            ) + section("悩み・目的から探す", purpose_cards(), "km-purposes-title")
+            ) + section(
+                "悩み・目的から探す", purpose_cards(home=True), "km-purposes-title"
+            )
             recent = sorted(
                 (a for a in meta.values() if a.get("updated_on")),
                 key=lambda a: (a["updated_on"], a["post_id"]),
@@ -266,7 +312,12 @@ def render_pages(
                 "新着・内容を更新した記事",
                 '<div class="ks-home-updates">'
                 + "".join(
-                    card(a["post_id"], summary=a.get("change_summary") or a["excerpt"])
+                    '<article class="ks-editorial-card"><h3>'
+                    + link(
+                        article_url(a["post_id"]),
+                        data["home_short_titles"].get(str(a["post_id"]), a["title"]),
+                    )
+                    + "</h3></article>"
                     for a in recent
                 )
                 + "</div>"
@@ -274,11 +325,7 @@ def render_pages(
                 else "<p>実質的な本文更新の記録を照合中です。</p>",
                 "km-updates-title",
             )
-            body += (
-                "<p>"
-                + link("/updates/", "更新内容と記事一覧を見る")
-                + f"（掲載 {len(meta)}記事）</p>"
-            )
+            body += "<p>" + link("/updates/", "更新内容と記事一覧を見る") + "</p>"
         elif slug == "categories":
             body = (
                 "<p>商品名が決まっていれば代表比較へ。置き場所や条件が不安なら採寸・条件整理へ進めます。</p>"
@@ -628,6 +675,15 @@ def render_pages(
             return content
 
         if slug == "home":
+            policy = section(
+                "編集方針",
+                '<nav aria-label="編集方針">'
+                + link("/comparison-policy/", "比較方針")
+                + " ／ "
+                + link("/about-ad-policy/", "運営・広告方針")
+                + "</nav>",
+                "site-editorial-policy",
+            )
             body = body.replace(
                 '<section id="km-categories-title"><h2>',
                 '<section id="km-categories-title"><h2 id="ks-visual-categories">',
@@ -635,9 +691,10 @@ def render_pages(
             )
             # The old purchase URL now offers the actual article-specific conditions.
             purchase = (
-                '<h3 id="home-purchase-check-title">各記事の購入条件を確認する</h3><p>'
+                '<h3 id="home-purchase-check-title">各記事の購入条件</h3><p>'
                 + " ／ ".join(
-                    al(i, by_id[i]["title"], "ps-offers") for i in [41, 83, 30]
+                    al(i, data["home_short_titles"][str(i)], "ps-offers")
+                    for i in [41, 83, 30]
                 )
                 + "</p>"
             )

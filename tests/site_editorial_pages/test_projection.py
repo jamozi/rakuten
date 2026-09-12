@@ -58,7 +58,8 @@ class ProjectionTest(unittest.TestCase):
         )
         pages, _, _ = render_pages(registry, catalog, changed, {})
         self.assertIn("比較対象の構成を整理しました。", pages["updates"])
-        self.assertIn("内容更新日：2026-09-13", pages["home"])
+        self.assertNotIn("内容更新日：", pages["home"])
+        self.assertIn("内容更新日：2026-09-13", pages["updates"])
         self.assertNotIn("新しく公開：2026-09-13", pages["updates"])
 
     def test_home_feature_order(self):
@@ -71,8 +72,25 @@ class ProjectionTest(unittest.TestCase):
         ]
         positions = [home.index("/" + s + "/") for s in slugs]
         self.assertEqual(positions, sorted(positions))
-        self.assertIn("旅行の荷物・移動を楽にしたい", home)
-        self.assertIn("停電に備えたい", home)
+        self.assertIn("旅行の荷物を楽に", home)
+        self.assertIn("停電に備える", home)
+
+    def test_home_uses_short_links_without_card_metadata(self):
+        result = builder.build()
+        home = next(v for k, v in result.items() if k.name == "home.html")
+        for text in (
+            "PR・広告リンクあり",
+            "広告リンクなし",
+            "主比較",
+            "内容更新日：",
+            "関連 4記事",
+        ):
+            self.assertNotIn(text, home)
+        self.assertEqual(home.count('data-ks-home-product="'), 6)
+        self.assertNotIn(
+            "hb.afl.rakuten.co.jp", home
+        )  # theme admits the unmodified image snippets.
+        self.assertIn("/comparison-policy/", home)
 
 
 if __name__ == "__main__":

@@ -316,5 +316,68 @@
       ],
       "has_ads": false
     }
+  },
+  "home_product_media": {
+    "schema": "RAOS_HOME_PRODUCT_MEDIA_V1",
+    "post_id": 15,
+    "post_type": "page",
+    "slug": "home",
+    "products": {
+      "PRD-PANASONIC-NP-TMLK1": {
+        "exact_model": "NP-TMLK1-K",
+        "source_article_slug": "countertop-dishwasher-for-small-households",
+        "source_sha256": {
+          "240": "4d3c7ae9748063005aef9ffb120b0c1a64bb643b5b1dde6c8a15cc393195a0f4"
+        },
+        "html": "<figure class=\"ks-home-product-image\" data-ks-home-product=\"PRD-PANASONIC-NP-TMLK1\"><div class=\"ks-home-rakuten-240\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1705.0f98d6cd.575e1706.95396c60/?me_id=1217830&item_id=11227174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Femedama%2Fcabinet%2F5769%2F4550719155769_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>SOLOTA（ソロタ）（楽天市場）</figcaption></figure>",
+        "sha256": "539cfc5354265b630ad248a17ae537603169bd2d974b44b81fcaff0580ce54de"
+      },
+      "PRD-SIROCA-SS-MA251": {
+        "exact_model": "SS-MA251",
+        "source_article_slug": "countertop-dishwasher-for-small-households",
+        "source_sha256": {
+          "240": "96167aa95dbc9a9af48c1e7a09bab3401ca661dde0df1f4f976eb8634e2c851e"
+        },
+        "html": "<figure class=\"ks-home-product-image\" data-ks-home-product=\"PRD-SIROCA-SS-MA251\"><div class=\"ks-home-rakuten-240\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsiroca%2Fss-ma251%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1746.5f2b7bcb.575e1747.2b6a6dcb/?me_id=1406186&item_id=10000024&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fsiroca%2Fcabinet%2Fss-ma251%2F49464_01.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>シロカ SS-MA251（楽天市場）</figcaption></figure>",
+        "sha256": "39d2da01e4725c412f5e38acfeef7aaa0a34c3d6f72aaa1569e7912cce2e6a80"
+      },
+      "PRD-PROTECA-AEROFLEX-DX2-01521": {
+        "exact_model": "01521-09",
+        "source_article_slug": "lightweight-carry-on-suitcase-under-3kg",
+        "source_sha256": {
+          "240": "22863736527e3f0b3dbc39c9ba4f992ee35c75f2542b0c0a2f52283247251065"
+        },
+        "html": "<figure class=\"ks-home-product-image\" data-ks-home-product=\"PRD-PROTECA-AEROFLEX-DX2-01521\"><div class=\"ks-home-rakuten-240\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01521%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009188&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Face-store%2Fcabinet%2Fitem2025%2Fproteca%2F01521_9re.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>エアロフレックスDX2 01521（楽天市場）</figcaption></figure>",
+        "sha256": "d23638d69b86c8cddde7b2d64fd7ab2d39a01cf8e1f13aae9ea5398f619bd8d9"
+      },
+      "PRD-SAMSONITE-C-LITE-CS2-09007": {
+        "exact_model": "CS2*09007 / 134679-1041",
+        "source_article_slug": "lightweight-carry-on-suitcase-under-3kg",
+        "source_sha256": {
+          "240": "e1a507dc4859df7baab1e156957f419d5b87e1c365fd9370436f8116e16edcbf"
+        },
+        "html": "<figure class=\"ks-home-product-image\" data-ks-home-product=\"PRD-SAMSONITE-C-LITE-CS2-09007\"><div class=\"ks-home-rakuten-240\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e2571.ea470346.575e2572.0c956b2d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fsamsonite%2Fcs2-007%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e2571.ea470346.575e2572.0c956b2d/?me_id=1212086&item_id=10002672&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fsamsonite%2Fcabinet%2Fc-lite%2Fcs2-09007.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>C-Lite（シーライト）CS2*09007（楽天市場）</figcaption></figure>",
+        "sha256": "c60bdd8cdf344ebe02187f00945b787a37cf5396e6f37a07e7495a952e293aaa"
+      },
+      "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY": {
+        "exact_model": "F155260",
+        "source_article_slug": "compact-robot-vacuum-shortlist",
+        "source_sha256": {
+          "official": "99967fab220f0e0b2ceea955b68fa98b3b0fbe52b63d0a421b6bb5df60a1c433"
+        },
+        "html": "<figure class=\"ks-home-product-image\" data-ks-home-product=\"PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY\"><a href=\"/compact-robot-vacuum-shortlist/#product-robot-roomba-mini\"><img src=\"/wp-content/themes/kurashinoshirube-child/assets/images/roomba-mini-official.jpg\" width=\"2048\" height=\"2048\" loading=\"lazy\" decoding=\"async\" alt=\"Roomba Mini（白）とAutoEmpty充電ステーション。公式提供写真。\"></a><figcaption>アイロボット Roomba® Mini 掃除機＆床拭きロボット + AutoEmpty™ 充電ステーション<br>写真：<a href=\"https://irobotjp.mediaroom.com/media-kits?item=28\">アイロボットジャパン 公式掲載用素材</a></figcaption></figure>",
+        "sha256": "2ca18fcf1e72c82843332df0ca6d2ec3f4957bb3fa1b6e5e5b057fefed1a41dd"
+      },
+      "PRD-SWITCHBOT-K11-PRO": {
+        "exact_model": "K11+ Pro",
+        "source_article_slug": "compact-robot-vacuum-shortlist",
+        "source_sha256": {
+          "240": "04730e70837f6ffb2d8414e45548c40da69c6c79dcb98d5c516731496e256073"
+        },
+        "html": "<figure class=\"ks-home-product-image\" data-ks-home-product=\"PRD-SWITCHBOT-K11-PRO\"><div class=\"ks-home-rakuten-240\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e0c58.ad10f485.575e0c59.ae531612/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fr-kojima%2F0810224630279%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e0c58.ad10f485.575e0c59.ae531612/?me_id=1270903&item_id=11737771&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fr-kojima%2Fcabinet%2Fn0000001822%2F0810224630279_2.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>SwitchBot（スイッチボット）ロボット掃除機 K11+ Pro（楽天市場）</figcaption></figure>",
+        "sha256": "4d3cd06f42e63f00e039f3d8872d272d33e778bd4f390f36f925e58a9522d50e"
+      }
+    },
+    "body_sha256": "977a5ea040589f3cfdb62db70d2b10240da771df42b9200bf61d6e26634996ec"
   }
 }
