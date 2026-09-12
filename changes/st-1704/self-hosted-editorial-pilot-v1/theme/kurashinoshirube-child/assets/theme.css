@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 7b6051d6a8a038925df57f7174ab9d5a25a38682599acef6058d0df4ad55d18f;
+  --raos-theme-runtime-revision-base: b523ee6aef1bc74f992daf715532c564165e2dcec12bde080aa7c804e9c8242c;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4151,3 +4151,16 @@ body.home.raos-home-v2-page #ks-magazine .km-category > span {
 /* Category illustrations fit the directory columns. */
 .ks-directory .ks-category-visual { min-width: 0; }
 .ks-directory .ks-category-visual img { display: block; max-width: 100%; height: auto; }
+
+/* PR badge on hub / home cards (markup carries no inline style: hosting WAF rejects the repeated declarations). */
+.ks-pr-badge {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0 0.4rem;
+  border: 1px solid #714332;
+  color: #714332;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.6;
+  text-decoration: none;
+}
