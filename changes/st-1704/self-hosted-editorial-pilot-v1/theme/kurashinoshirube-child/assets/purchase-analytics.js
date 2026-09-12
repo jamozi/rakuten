@@ -52,7 +52,10 @@
       const gate = document.getElementById('google_gtagjs-js');
       const measurementId = gate && gate.getAttribute('data-raos-measurement-id');
       if (!measurementId || !/^(?:G|GT)-[A-Z0-9]{6,20}$/.test(measurementId) || window[`ga-disable-${measurementId}`] === true) return;
-      window.gtag('event', 'offer_click', {...params, send_to: measurementId, debug_mode: config.debug_mode});
+      // gtag drops events addressed to a Google tag ID (GT-); the owned config is the only destination,
+      // so route by send_to only for a GA4 measurement ID (G-).
+      const routing = /^GT-/.test(measurementId) ? {} : {send_to: measurementId};
+      window.gtag('event', 'offer_click', {...params, ...routing, debug_mode: config.debug_mode});
     } catch (_error) {
       // Consent/storage/provider failures never interrupt the shopper's navigation.
     }

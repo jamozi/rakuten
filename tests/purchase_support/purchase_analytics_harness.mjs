@@ -26,6 +26,11 @@ f=fixture();f.window.gtag=()=>{throw Error('network');};f.window.gtag.raosConsen
 console.log('purchase analytics: payload, consent, no config/tag, allowlist/href drift, opt-out, revocation, debug, duplicate install, repeat/aux click, network failure PASS');
 
 f=fixture();f.click();assert.equal(f.calls[0][2].link_purpose,"merchant_purchase");assert.equal(f.calls[0][2].affiliate,false);
+// A GA4 measurement ID is addressed with send_to; a Google tag ID (GT-) is not, because gtag drops events addressed to it.
+f=fixture();f.click();assert.equal(f.calls[0][2].send_to,'G-ABC12345');
+f=fixture();f.nodes['google_gtagjs-js']={getAttribute:()=>'GT-ABC12345'};f.click();assert.equal(f.calls.length,1);assert.equal('send_to' in f.calls[0][2],false);assert.equal(f.calls[0][2].cta_id,'cta-1');assert.equal(f.calls[0][2].link_purpose,'merchant_purchase');
+f=fixture();f.nodes['google_gtagjs-js']={getAttribute:()=>'GT-ABC12345'};f.window['ga-disable-GT-ABC12345']=true;f.click();assert.equal(f.calls.length,0);
+f=fixture();f.nodes['google_gtagjs-js']={getAttribute:()=>'GTM-ABC1234'};f.click();assert.equal(f.calls.length,0);
 f=fixture();
 const sameEvent={type:'click',button:0,isTrusted:true,target:{closest:()=>f.anchor}};
 f.listeners.click[0](sameEvent);f.listeners.click[0](sameEvent);assert.equal(f.calls.length,1);
