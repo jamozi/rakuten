@@ -15,9 +15,9 @@ const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
 const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = '5900b21a1e1a3d985598bdac8f3a55a60d4d9f371ae3f889c2f4867f8c49727e';
 const KURASHINOSHIRUBE_PURCHASE_UI_SHA256 = '575619ac8485a1f5f42243dd12cdd1a2f2acef0aaf8834a42ca19c101e619fb0';
-const KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256 = 'ed9c35c5251ab2275bb17d2053bd92d7cbe4ae66f1fab5ea085c76c4dfc65c4b';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '7d0f9cc8914f3d251a266fbae6cd633975d63939c22ee39dc05143dd1f75ad08';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '7d0f9cc8914f3d251a266fbae6cd633975d63939c22ee39dc05143dd1f75ad08';
+const KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256 = '8795624b6c37d7ff86f0745e99720de1d5bd9fed47d1f4b1d69bef728db36795';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'e5fbfb66025d2c6dd6f292f32eaa77faad55dc7fa530a5f5fd39129e2ae94afc';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'e5fbfb66025d2c6dd6f292f32eaa77faad55dc7fa530a5f5fd39129e2ae94afc';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -46,7 +46,7 @@ const KURASHINOSHIRUBE_BRAND_MARK_SHA256 = 'bd9f84f40eca90fb88b7e8a3967f6d7ceb5d
 const KURASHINOSHIRUBE_MEASUREMENT_ASSET_PATH = 'assets/measurement.js';
 const KURASHINOSHIRUBE_MEASUREMENT_ASSET_SHA256 = '181dff17451e52bb5bc548964e6c951573a4ddde42072ee0f1165bfc6faa1772';
 const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_PATH = 'assets/analytics-consent-gate.js';
-const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_SHA256 = '0b0f5dcc78c58b3d9426e0acfaa88efc232396dc376c2d6b85505f05746359b9';
+const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_SHA256 = 'eee50d10d1340d2a3532096bc09383cf6aa6dc00e24b5218c51e6c28e9071f49';
 const KURASHINOSHIRUBE_NAVIGATION_ASSET_PATH = 'assets/editorial-navigation.js';
 const KURASHINOSHIRUBE_LOCAL_COST_ASSET_PATH = 'assets/local-running-cost.js';
 const KURASHINOSHIRUBE_LOCAL_COST_ASSET_SHA256 = 'dc1b94094cb9904630c140d037c1c4d3c364ccc5e3c57f45d462de9350caeee2';
@@ -5215,7 +5215,7 @@ add_filter(
     'kurashinoshirube_site_kit_global_consent_defaults'
 );
 
-/** Replace Site Kit's executable payload with one closed inert configuration. */
+/** Replace Site Kit's executable payload with one closed inert configuration (GA4 measurement ID or Google tag ID). */
 function kurashinoshirube_gate_site_kit_analytics_loader($tag, $handle)
 {
     if (
@@ -5250,7 +5250,7 @@ function kurashinoshirube_gate_site_kit_analytics_loader($tag, $handle)
         || isset($source_parts['fragment'])
         || !is_string($source_parts['query'] ?? null)
         || preg_match(
-            '/\Aid=(G-[A-Z0-9]{6,20})\z/D',
+            '/\Aid=((?:G|GT)-[A-Z0-9]{6,20})\z/D',
             $source_parts['query'],
             $measurement_match
         ) !== 1

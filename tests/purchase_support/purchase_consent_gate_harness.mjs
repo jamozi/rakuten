@@ -271,7 +271,14 @@ for (const configuration of [
       'https://www.googletagmanager.com/gtag/js?id=G-ABCDEF12&debug=1',
   },
   { source: 'https://user@www.googletagmanager.com/gtag/js?id=G-ABCDEF12' },
-  { measurementId: 'GT-ABCDEF12' },
+  {
+    measurementId: 'GTM-ABCDEF1',
+    source: 'https://www.googletagmanager.com/gtag/js?id=GTM-ABCDEF1',
+  },
+  {
+    measurementId: 'AW-12345678',
+    source: 'https://www.googletagmanager.com/gtag/js?id=AW-12345678',
+  },
   { type: 'text/javascript' },
 ]) {
   const scenario = runScenario({
@@ -281,6 +288,25 @@ for (const configuration of [
   assert.equal(scenario.document.replacements.length, 0);
   assert.equal(scenario.window.dataLayer.length, 0);
 }
+
+// Site Kit places the stream's Google tag ID (GT-) when the property's Google tag carries one.
+const googleTag = runScenario({
+  configuration: {
+    measurementId: 'GT-ABCDEF12',
+    source: 'https://www.googletagmanager.com/gtag/js?id=GT-ABCDEF12',
+  },
+  providers: { cookieYes: true, wpConsent: true, siteKit: true },
+});
+assert.equal(googleTag.document.replacements.length, 1);
+assert.equal(
+  googleTag.document.replacements[0].src,
+  'https://www.googletagmanager.com/gtag/js?id=GT-ABCDEF12'
+);
+assert.equal(googleTag.window.dataLayer.length, 3);
+assert.equal(Array.from(googleTag.window.dataLayer[2])[0], 'config');
+assert.equal(Array.from(googleTag.window.dataLayer[2])[1], 'GT-ABCDEF12');
+googleTag.revoke();
+assert.equal(googleTag.window['ga-disable-GT-ABCDEF12'], true);
 
 const preexisting = runScenario({
   existingGtag: true,
