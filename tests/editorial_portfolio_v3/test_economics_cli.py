@@ -570,3 +570,80 @@ def test_nested_database_password_rejects_links(tmp_path: Path, link_kind: str) 
         cli._database_credential_snapshot(
             private_root, "google/database/worker-password.txt"
         )
+
+
+def test_observation_summary_cli_reads_private_report_without_credentials(
+    tmp_path: Path, capsys
+) -> None:
+    private_root = tmp_path / "private"
+    private_root.mkdir(mode=0o700)
+    private_root.chmod(0o700)
+    dimensions = [
+        {"name": name, "value": value}
+        for name, value in (
+            ("eventName", "offer_click"),
+            ("article_id", "countertop-dishwasher-for-small-households"),
+            ("product_id", "PRD-SIROCA-SS-MA251"),
+            ("seller_id", "siroca"),
+            ("offer_id", "siroca-ss-ma251-silver"),
+            ("cta_id", "purchase-41-siroca-ss-ma251-silver-top_summary"),
+            ("placement", "top_summary"),
+            ("snapshot_id", "ps-" + "0" * 32),
+        )
+    ]
+    document = {
+        "scope_status": "OBSERVED_ROWS_ONLY",
+        "excluded_row_counts": {"offer_click": {}, "page_view": {}},
+        "rows": [
+            {
+                "dimensions": dimensions,
+                "metrics": [{"name": "eventCount", "value": "2"}],
+            }
+        ],
+        "page_view_rows": [],
+    }
+    _write_0600(private_root / "ga4.json", json.dumps(document).encode())
+    arguments = cli._parser().parse_args(
+        [
+            "--private-root",
+            private_root.as_posix(),
+            "summarize-purchase-observations",
+            "--ga4-input",
+            "ga4.json",
+            "--value-basis",
+            "DIRECT_EVENT_COUNTS",
+            "--quality-flag",
+            "PARTIAL_WINDOW",
+            "--output",
+            "summary.json",
+        ]
+    )
+    assert not hasattr(arguments, "ga4_ops_job_id")
+    assert not hasattr(arguments, "database_password")
+    assert (
+        cli.main(
+            [
+                "--private-root",
+                private_root.as_posix(),
+                "summarize-purchase-observations",
+                "--ga4-input",
+                "ga4.json",
+                "--value-basis",
+                "DIRECT_EVENT_COUNTS",
+                "--quality-flag",
+                "PARTIAL_WINDOW",
+                "--output",
+                "summary.json",
+            ]
+        )
+        == 0
+    )
+    printed = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
+    stored = json.loads((private_root / "summary.json").read_bytes())
+    assert printed == stored
+    # The synthetic snapshot is not in the tracked bindings, so the click stays unclassified.
+    assert stored["total_observed_clicks"] == 2
+    assert stored["unclassified_clicks"] == 2
+    assert stored["quality_flags"] == ["PARTIAL_WINDOW"]
+    assert stored["purchase_and_reward"] == "UNAVAILABLE"
+    assert (private_root / "summary.json").stat().st_mode & 0o777 == 0o600

@@ -74,12 +74,15 @@
       "spec_labels": [
         "本体寸法（幅×奥行×高さ）",
         "標準食器点数",
-        "公表使用水量（条件は機種別）",
         "乾燥・扉",
+        "給水方式"
+      ],
+      "spec_detail_labels": [
+        "公表使用水量（条件は機種別）",
         "開扉時の寸法",
         "必要な余白"
       ],
-      "intro": "一食分の食器と置き場所を先に合わせ、購入総額で候補を絞ります。人数表示だけでは、普段使う皿や鉢が収まるとは判断できません。",
+      "intro": "食後の洗い物を減らしたい方へ。タンク式4機種を、食器の量・置き場所・毎回の作業で比べます。選ぶ理由と、給水・片付けなど残る手間を整理しました。",
       "post_type": "post",
       "legacy_anchor_targets": {
         "blk-dish-003-title": "ps-choose",
@@ -99,8 +102,7 @@
         "blk-dish-002-title": "ps-choose",
         "blk-dish-004-title": "ps-choose",
         "blk-dish-006-title": "ps-products",
-        "dish-opening-space-title": "ps-products",
-        "dish-related-title": "ps-products"
+        "dish-opening-space-title": "ps-products"
       },
       "comparison_scope": {
         "heading_id": "blk-dish-005-title",
@@ -729,6 +731,15 @@
           "locator": "SOLOTA の設置例・熱源との距離",
           "checked_at": "2026-09-10",
           "state": "KNOWN"
+        },
+        {
+          "label": "給水方式",
+          "text": "着脱タンクへ手動給水",
+          "source_url": "https://panasonic.jp/content/dam/panasonic/jp/ja/pim-assets/support/manual/000/000/000/379/872/000000000379872/np-tml1.pdf",
+          "locator": "p.6 タンク給水",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN",
+          "exact_model": "NP-TMLK1-K"
         }
       ],
       "lead": "1人分の食器を中心に洗い、カウンターの奥行を抑えたい場合に。",
@@ -740,7 +751,7 @@
         "一度に洗う食器が標準6点を超える場合",
         "家族分の食器をまとめて洗う場合"
       ],
-      "caution": "標準食器点数は6点です。一度に洗う食器が多い場合は、より容量の大きい候補も検討してください。",
+      "caution": "本体奥行225mmと、扉を開けたときの奥行485mmは別の値です。着脱タンクを出し入れする動線、周囲の余白、電源は別に確認してください。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
@@ -994,6 +1005,15 @@
           "locator": "説明書 p.10–12 設置",
           "checked_at": "2026-09-10",
           "state": "KNOWN"
+        },
+        {
+          "label": "給水方式",
+          "text": "上部からカップで給水（付属カップ1.8L）",
+          "source_url": "https://www.data.thanko.jp/download/manual/tdws25s_man_web_01.pdf",
+          "locator": "説明書 p.15 電源を入れる・タンクに給水する",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN",
+          "exact_model": "TDWS25SBL / TDWS25SRD"
         }
       ],
       "lead": "幅を約31cmに抑えながら、標準11〜12点の食器を洗いたい場合に。",
@@ -1005,7 +1025,7 @@
         "扉を開いたときの奥行59.4cmを確保しにくい場合",
         "一度に洗いたい食器が標準11〜12点の目安を超える場合"
       ],
-      "caution": "扉を開いたときの奥行59.4cmを確保し、購入前に本体の色と販売単位を型番で確認してください。",
+      "caution": "本体幅308mmだけで設置可とは判断できません。上からカップで給水する空間、扉を開けたときの奥行594mm、周囲の余白の条件があります。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
@@ -1214,6 +1234,15 @@
           "locator": "説明書 p.21–22 設置",
           "checked_at": "2026-09-10",
           "state": "KNOWN"
+        },
+        {
+          "label": "給水方式",
+          "text": "タンク給水／分岐水栓（適合確認が別途必要）",
+          "source_url": "https://www.siroca.co.jp/im/ss-ma251.pdf",
+          "locator": "説明書 p.12 給水する",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN",
+          "exact_model": "SS-MA251"
         }
       ],
       "lead": "標準収納16点と、洗浄後に扉が開くオートオープン機能を優先したい場合に。",
@@ -1225,7 +1254,7 @@
         "幅42×奥行44×高さ47cmと扉の開閉空間を確保しにくい場合",
         "タンク給水で、毎回カップ4〜5杯分を注ぐ作業を避けたい人"
       ],
-      "caution": "本体寸法は幅42×奥行44×高さ47cmです。扉の開閉空間も確認してください。",
+      "caution": "給水2WAYは、自宅の水栓に無条件で適合するという意味ではありません。本体寸法、開扉時の寸法、背面の余白は分けて確認してください。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
@@ -1443,6 +1472,15 @@
           "locator": "p.15 設置場所の図・上方離隔と設置面からの高さ",
           "checked_at": "2026-09-10",
           "state": "KNOWN"
+        },
+        {
+          "label": "給水方式",
+          "text": "タンク給水／分岐水栓（給水方式ごとの条件あり）",
+          "source_url": "https://jpn.faq.panasonic.com/app/answers/detail/a_id/17176",
+          "locator": "公式FAQ：タンクへの給水／NP-TSP1",
+          "checked_at": "2026-09-10",
+          "state": "KNOWN",
+          "exact_model": "NP-TSP1-W"
         }
       ],
       "lead": "設置場所を広く確保でき、比較した4モデルで最も多い標準24点を洗いたい場合に。",
@@ -1454,7 +1492,7 @@
         "約19kgの本体を頻繁に移動する場合",
         "コンパクトなカウンターへ置きたい人"
       ],
-      "caution": "本体寸法は幅約55×奥行約34.1×高さ約60cmで、重量は約19kgです。設置場所と移動方法を確認してください。",
+      "caution": "上方へ動く扉の最大高さ712mmと、周囲の余白は分けて確認してください。1店舗の過去の売り切れを、市場全体の販売終了とは扱いません。",
       "image_markup": "",
       "image_basis": "RAKUTEN_GENERATED_VERBATIM",
       "use_cases": [
@@ -3071,7 +3109,7 @@
       "impact": "通常洗浄1回の電気代を算出できないため、他機種と同じ条件で維持費の総額を比較できません。",
       "target_url": "https://www.thanko.jp/view/item/000000004715",
       "next_check_on": "2026-09-11",
-      "alternative": "回答までは対象項目を未確認として扱い、その条件での設置や費用を確定しません。"
+      "alternative": "1回の消費電力量が未確認のため、電気代は算定していません。確認できた水道・洗剤代だけの小計と区別します。設置条件は、寸法・余白・給排水・電源の根拠で別に確認します。"
     },
     {
       "issue_id": "PRD-SIROCA-SS-MA251-manufacturer",

@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const selector = '.raos-article-toc a[href^="#"],.raos-back-to-toc[href^="#"]';
+  const selector = '.raos-article-toc a[href^="#"],.raos-back-to-toc[href^="#"],.ps-article a[href^="#"]';
   const editorialRoot = document.querySelector('.raos-editorial-v2');
   const toc = document.querySelector('.raos-article-toc');
   const tocDetails = document.querySelector('.raos-article-toc details');
@@ -49,6 +49,9 @@
       if (ancestor instanceof HTMLDetailsElement) ancestor.open = true;
       ancestor = ancestor.parentElement;
     }
+    // Hidden or inert state belongs to another owner and is never cleared here.
+    if (target.closest('[hidden],[inert]')) return;
+    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
     window.requestAnimationFrame(() => {
       synchronizeScrollOffset();
       target.scrollIntoView({ behavior: 'auto', block: 'start' });
@@ -108,8 +111,12 @@
   if (initialTarget) revealHashTarget(initialTarget);
 
   document.addEventListener('click', (event) => {
+    // Modified, non-primary, download and new-window clicks keep the browser default.
+    if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey ||
+        event.shiftKey || event.altKey) return;
     const anchor = event.target instanceof Element ? event.target.closest(selector) : null;
     if (!(anchor instanceof HTMLAnchorElement)) return;
+    if (anchor.hasAttribute('download') || (anchor.target && anchor.target !== '_self')) return;
     let target;
     try {
       const destination = new URL(anchor.href, window.location.href);
@@ -127,88 +134,4 @@
     synchronizeScrollOffset();
     revealHashTarget(target);
   });
-})();
-
-// Keep the existing editorial copy and links as the no-JavaScript fallback.
-(() => {
-  'use strict';
-  const root = document.querySelector('#ks-magazine');
-  const hero = root?.querySelector('.km-hero');
-  const first = hero?.querySelector('a');
-  const promos = root ? [...root.querySelectorAll('.km-promos .km-promo')] : [];
-  if (!hero || !first || promos.length !== 3 || hero.dataset.carousel) return;
-  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const track = document.createElement('div');
-  track.className = 'km-carousel-track';
-  track.id = 'km-editor-pick-slides';
-  const slides = [first, ...promos.map((promo) => {
-    const slide = document.createElement('a');
-    slide.href = promo.href;
-    const tag = document.createElement('span');
-    tag.className = 'km-tag';
-    tag.textContent = promo.querySelector('.km-eyebrow')?.textContent || 'FEATURE';
-    const title = document.createElement('h2');
-    title.className = 'km-carousel-title';
-    title.textContent = promo.querySelector('h3').textContent;
-    const description = promo.querySelector('p').cloneNode(true);
-    const arrow = document.createElement('span');
-    arrow.className = 'km-arrow';
-    arrow.setAttribute('aria-hidden', 'true');
-    arrow.textContent = '⟶';
-    slide.append(tag, title, description, arrow);
-    return slide;
-  })];
-  slides.forEach((slide, i) => {
-    slide.classList.add('km-carousel-slide');
-    track.append(slide);
-  });
-  const controls = document.createElement('div');
-  controls.className = 'km-carousel-controls';
-  controls.setAttribute('role', 'group');
-  controls.setAttribute('aria-label', '特集スライドの操作');
-  const button = (label, text) => {
-    const el = document.createElement('button');
-    el.type = 'button';
-    el.setAttribute('aria-label', label);
-    el.setAttribute('aria-controls', track.id);
-    el.textContent = text;
-    return el;
-  };
-  const previous = button('前の特集', '←');
-  const next = button('次の特集', '→');
-  controls.append(previous, next);
-  hero.append(track, controls);
-  hero.classList.add('km-carousel');
-  hero.dataset.carousel = 'ready';
-  let index = 0;
-  let timer;
-  let hovered = false;
-  let focused = false;
-  let visible = true;
-  const schedule = () => {
-    window.clearTimeout(timer);
-    if (!motion.matches && !hovered && !focused && visible && !document.hidden) {
-      timer = window.setTimeout(() => show(index + 1), 5000);
-    }
-  };
-  const show = (value) => {
-    index = (value + slides.length) % slides.length;
-    hero.dataset.slide = String(index);
-    slides.forEach((slide, i) => {
-      slide.style.transform = `translateX(${(i - index) * 100}%)`;
-      slide.inert = i !== index;
-      slide.setAttribute('aria-hidden', String(i !== index));
-    });
-    schedule();
-  };
-  previous.addEventListener('click', () => show(index - 1));
-  next.addEventListener('click', () => show(index + 1));
-  hero.addEventListener('pointerenter', (event) => { if (event.pointerType === 'mouse') { hovered = true; schedule(); } });
-  hero.addEventListener('pointerleave', () => { hovered = false; schedule(); });
-  hero.addEventListener('focusin', () => { focused = true; schedule(); });
-  hero.addEventListener('focusout', (event) => { focused = hero.contains(event.relatedTarget); schedule(); });
-  document.addEventListener('visibilitychange', schedule);
-  motion.addEventListener('change', schedule);
-  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; schedule(); }).observe(hero);
-  show(0);
 })();

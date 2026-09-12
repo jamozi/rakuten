@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "621807827d7d7a69b353c711d5eeef3113b1e11c0c2e61bbe106a591d510e79a",
+          "sha256": "46786f883c47ac81778be8edfca20ac859e40acc59aee69c5dd77c27f3f77827",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -366,7 +366,7 @@
       "outputs": [
         {
           "bytes": 2625,
-          "sha256": "b26257a09283b95c61d9895d2c4e37f856c630caa429be7efa575d74856cf7f7",
+          "sha256": "d0750a9be160eab4ed61d80bff4362ce6d633508fbb06960a141dcef6f16c16a",
           "uri": "repo://changes/analytics-google-live-v1/runtime-manifest.v1.json"
         }
       ],
@@ -1962,7 +1962,7 @@
       "outputs": [
         {
           "bytes": 93609,
-          "sha256": "6664b84e2bb756236ed03e46cd421fec7a2b05a0fc2072fea3036f37e18b540f",
+          "sha256": "5900b21a1e1a3d985598bdac8f3a55a60d4d9f371ae3f889c2f4867f8c49727e",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
@@ -1981,38 +1981,38 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparison-policy.html"
         },
         {
-          "bytes": 40391,
-          "sha256": "63d693ba696032efb8be3793f620630085a63afa756d9eaf87937e8a788e0091",
+          "bytes": 50162,
+          "sha256": "151a9238b647f01e3d028fb1be27575d8a9a2818c13f21bec72039c1c31f56f1",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html"
         },
         {
-          "bytes": 13653,
-          "sha256": "a557e11b8b87d8835b4347f66c5f7bc06f3fcc64de5e2a802690ef03824ead84",
+          "bytes": 14321,
+          "sha256": "ebf2036356440e79352ee7082cdc300db0e9dad57013fb82b553e28dc4da1637",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-cleaning-guide.html"
         },
         {
-          "bytes": 15650,
-          "sha256": "bb0be3edf5d363bae3576c368eb94a7d43157bbc477c0b771489569437224ad8",
+          "bytes": 16326,
+          "sha256": "463ab4e0f773d76df6e65b63fb483e10ee73fe99dbbcf142b8a6afd92d3292ef",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html"
         },
         {
-          "bytes": 21370,
-          "sha256": "63bb894bad8feec8e01057eba6c86e84c6dface90d0bb114efda486ac6d17e65",
+          "bytes": 23817,
+          "sha256": "1a3ab2ac399f032d59adb658a2f0679a51d4df7ac8479e04f565bc28f06bc443",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html"
         },
         {
-          "bytes": 26394,
-          "sha256": "9814cbac4e061d318bfdd82b72c8cd3896d09b40bf7c4f988dc7a84bfd9779f4",
+          "bytes": 27070,
+          "sha256": "1e905e02ce887a9970701db93e8cc569f17b22e8e0389000a2d546d2199b35c3",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html"
         },
         {
-          "bytes": 15007,
-          "sha256": "695ba00555d86f6cbd27baccde4bf8ffeae701bfe912e9b8265980f0cd97c758",
+          "bytes": 15627,
+          "sha256": "d4bcd99cbef1183e032ed1a0bfc8ee2f13fdab6f73c20d94c0c1dbc0f61c944c",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html"
         },
         {
-          "bytes": 7275,
-          "sha256": "b6ad6dd309a9d24d358f69b8ff742a27625c45aa13b6f4ff25147736a34c130d",
+          "bytes": 7402,
+          "sha256": "1ad674d2337d94416ae71e4ec00532ab5d15dd6613a0af17771992d0e6c3ef74",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/kitchen.html"
         },
         {
@@ -26735,7 +26735,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "6ad4e844bcb741dae65a02ed2d9180be06991e0dc6846b0109cae064e6f66ad8",
+          "sha256": "c1d4d934bb83cd3e991338091abd71b7333cb5b537597d26a216712aece34554",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26966,7 +26966,7 @@
       "outputs": [
         {
           "bytes": 81278,
-          "sha256": "029b17f2d3ef432942e8eefe44d31197a9b1cf318bc43da1cb6b3affb6c71b99",
+          "sha256": "ffe46bb6dd92b2124061fbc12142bfa61c11ecfe3be6f91bded3d5a0595879e0",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -29728,7 +29728,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "f4828448ad14b2c2238b1f4d357c668a01eaba53274109d581631ecbfee3bc98",
+          "sha256": "47baed0c03aff4a67ff3176d0330a2980776012ca395e58b189e58d11417ffe0",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30585,7 +30585,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "62689e22cf9bc45c8b04fa2030f7ab025c1b5af4911c26374e8fdefaad5173f1",
+          "sha256": "1f8f4d3c0714090d347ef7edf5b75da4333ee6abe28e35685fcd7db93d4ff92c",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],

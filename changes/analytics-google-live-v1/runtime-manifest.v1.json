@@ -48,8 +48,8 @@
     },
     {
       "path": "scripts/raos_editorial_economics_v3.py",
-      "sha256": "6a2f48affaf7dcf6e389af9acd0d111d0ac537bc86e8fddc8de00ea0e83068c9",
-      "size": 38781
+      "sha256": "853c374eaf99289caf6f9f6a98faf26f5c541f27da954ce0b223cc2f062959ae",
+      "size": 51805
     },
     {
       "path": "scripts/raos_google_owner_private_v1.py",

@@ -209,15 +209,49 @@ def attrs(values: Mapping[str, object]) -> str:
     return "".join(f' {k}="{escape(str(v), quote=True)}"' for k, v in values.items())
 
 
-def route_links(p: Mapping[str, Any]) -> str:
+def condition_product_links(
+    condition: Mapping[str, Any],
+    products: list[Mapping[str, Any]] | tuple[Mapping[str, Any], ...],
+    main_slug: str,
+) -> str:
+    """Link every product of a hub condition to its own comparison anchor.
+
+    The anchors already exist in the published comparison, so the category page
+    never sends all products back to one shared entry.
+    """
+    index = {p["product_id"]: p for p in products}
+    links = []
+    for pid in condition["product_ids"]:
+        if pid not in index:
+            raise ValueError("PURCHASE_CONDITION_PRODUCT_MISSING")
+        product = index[pid]
+        if not product.get("anchor"):
+            raise ValueError("PURCHASE_CONDITION_ANCHOR_MISSING")
+        href = f"/{main_slug}/#{product['anchor']}"
+        links.append(
+            '<a href="'
+            + escape(href, quote=True)
+            + '">'
+            + escape(product["name"])
+            + "</a>"
+        )
+    return "、".join(links)
+
+
+def route_links(p: Mapping[str, Any], *, current_slug: str | None = None) -> str:
+    """Stage links for one model; a guide passes its own slug to skip itself."""
+    links = [
+        f'<a href="/{slug}/#{p["anchor"]}">{label}</a>'
+        for label, slug in STAGES.values()
+        if slug != current_slug
+    ]
+    if not links:
+        return ""
     return (
         '<nav class="ps-model-routes" aria-label="'
         + escape(p["name"])
         + 'の確認先">'
-        + " ".join(
-            f'<a href="/{slug}/#{p["anchor"]}">{label}</a>'
-            for label, slug in STAGES.values()
-        )
+        + " ".join(links)
         + "</nav>"
     )
 
@@ -357,7 +391,7 @@ def offer_panel(
                 '<p class="ps-unavailable">'
                 + escape(
                     (
-                        "売り切れです。"
+                        "確認時は売り切れでした。現在の販売状態は、確認日時と販売先の案内を参照してください。"
                         if o.get("state") == "SOLD_OUT"
                         else o.get("unavailable_reason")
                     )
@@ -378,7 +412,9 @@ def offer_panel(
     return "".join(parts), bindings
 
 
-def research_panel(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> str:
+def research_panel(
+    p: Mapping[str, Any], catalog: Mapping[str, Any], *, show_next_check: bool = True
+) -> str:
     rows = [
         i
         for i in catalog["research_issues"]
@@ -397,8 +433,8 @@ def research_panel(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> str:
             + escape(i["alternative"])
             + '</p><p class="ps-source"><a href="'
             + escape(i["target_url"], quote=True)
-            + '">確認先</a> ／ 次回確認 '
-            + escape(i["next_check_on"])
+            + '">確認先</a>'
+            + (" ／ 次回確認 " + escape(i["next_check_on"]) if show_next_check else "")
             + "</p>"
             for i in rows
         )
@@ -407,9 +443,16 @@ def research_panel(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> str:
 
 
 def specification_table(
-    article: Mapping[str, Any], products: list[dict[str, Any]]
+    article: Mapping[str, Any],
+    products: list[dict[str, Any]],
+    *,
+    labels: list[str] | None = None,
+    table_class: str = "ps-comparison",
+    region_label: str = "候補の仕様比較",
+    caption: str = "決め手になる仕様。公表値の条件・確認日は商品ごとの出典に記載",
+    with_sources: bool = False,
 ) -> str:
-    labels = article["spec_labels"]
+    labels = article["spec_labels"] if labels is None else labels
     heads = "".join(
         '<th scope="col" data-ps-product="'
         + p["product_id"]
@@ -426,6 +469,16 @@ def specification_table(
         for p in products:
             f = next((f for f in p["facts"] if f["label"] == label), None)
             value = f["text"] if f else "未確認"
+            source = ""
+            if with_sources and f:
+                # Moved rows keep their own source and check date next to the value.
+                source = (
+                    '<span class="ps-source"><a href="'
+                    + escape(f["source_url"], quote=True)
+                    + '">確認元</a> ／ 仕様確認 '
+                    + escape(f["checked_at"])
+                    + "</span>"
+                )
             cells.append(
                 '<td data-ps-fact-state="'
                 + escape(f["state"] if f else "UNKNOWN")
@@ -433,17 +486,145 @@ def specification_table(
                 + p["product_id"]
                 + '">'
                 + escape(value)
+                + source
                 + "</td>"
             )
         rows.append(
             '<tr><th scope="row">' + escape(label) + "</th>" + "".join(cells) + "</tr>"
         )
     return (
-        '<div class="ps-table-scroll" tabindex="0" role="region" aria-label="候補の仕様比較"><table class="ps-comparison"><caption>決め手になる仕様。公表値の条件・確認日は商品ごとの出典に記載</caption><thead><tr><th scope="col">比較項目</th>'
+        '<div class="ps-table-scroll" tabindex="0" role="region" aria-label="'
+        + escape(region_label, quote=True)
+        + '"><table class="'
+        + escape(table_class, quote=True)
+        + '"><caption>'
+        + escape(caption)
+        + '</caption><thead><tr><th scope="col">比較項目</th>'
         + heads
         + "</tr></thead><tbody>"
         + "".join(rows)
         + "</tbody></table></div>"
+    )
+
+
+_SLOT_IDS = {"task-fit": "ps-task-fit", "hold-reasons": "ps-hold-reasons"}
+
+
+def editorial_slot(template: str, slot_name: str) -> str:
+    """Extract one static editorial section kept only for the main comparison.
+
+    The template marks the two sections with ``data-ps-editorial-slot``. Unknown,
+    duplicate, nested or mis-identified slots stop the generation instead of
+    silently dropping or doubling reader-facing copy. This is not a sanitizer;
+    the existing HTML checks still apply to the extracted markup.
+    """
+    if slot_name not in _SLOT_IDS:
+        raise ValueError("PURCHASE_EDITORIAL_SLOT_UNKNOWN")
+    root = fragment(template)
+    nodes = [n for n in root.walk() if n.tag]
+    by_name: dict[str, Element] = {}
+    for node in nodes:
+        if "data-ps-editorial-slot" not in node.attrs:
+            continue
+        name = node.attrs["data-ps-editorial-slot"] or ""
+        if name not in _SLOT_IDS or name in by_name:
+            raise ValueError("PURCHASE_EDITORIAL_SLOT_UNKNOWN_OR_DUPLICATE")
+        if node.tag != "section" or node.attrs.get("id") != _SLOT_IDS[name]:
+            raise ValueError("PURCHASE_EDITORIAL_SLOT_ID_MISMATCH")
+        parent = node.parent
+        while parent is not None:
+            if "data-ps-editorial-slot" in parent.attrs:
+                raise ValueError("PURCHASE_EDITORIAL_SLOT_NESTED")
+            parent = parent.parent
+        by_name[name] = node
+    if set(by_name) != set(_SLOT_IDS):
+        raise ValueError("PURCHASE_EDITORIAL_SLOT_REQUIRED_ONCE")
+    ids = [n.attrs["id"] for n in nodes if n.attrs.get("id")]
+    if len(ids) != len(set(ids)):
+        raise ValueError("PURCHASE_EDITORIAL_SLOT_ID_COLLISION")
+    node = by_name[slot_name]
+    node.attrs.pop("data-ps-editorial-slot")
+    return node.html()
+
+
+def installation_context(
+    article: Mapping[str, Any], products: list[dict[str, Any]]
+) -> str:
+    """Always-visible home for the rows moved out of the main comparison table."""
+    table = specification_table(
+        article,
+        products,
+        labels=article["spec_detail_labels"],
+        table_class="ps-installation-details",
+        region_label="設置条件の詳細",
+        caption="開扉時の寸法・必要な余白・使用水量。各欄に同じ型番の確認元と確認日を記載",
+        with_sources=True,
+    )
+    notes = "".join(
+        "<li><strong>"
+        + escape(p["name"])
+        + "</strong>："
+        + escape(p["caution"])
+        + "</li>"
+        for p in products
+    )
+    return (
+        '<section id="ps-installation-context"><h2>設置条件の詳細と型番別の注意</h2><p>主表から移した項目です。本体寸法だけでは設置可否を判断せず、開扉時の寸法、周囲の余白、給排水・電源の条件を同じ型番の公表条件で確認してください。使用水量は機種ごとの公表条件つきの値で、同じ食器量・同じコースでの実測比較ではありません。</p>'
+        + table
+        + '<ul class="ps-installation-notes">'
+        + notes
+        + '</ul><p><a href="/dishwasher-installation-measurement/">置き場所を測る順番のガイドへ</a></p></section>'
+    )
+
+
+INSTALLATION_LABELS = {
+    "width_mm": "幅",
+    "depth_mm": "奥行",
+    "height_mm": "高さ",
+    "door_depth_mm": "開扉時の奥行",
+    "door_height_mm": "開扉時の高さ",
+    "above_mm": "上の余白",
+    "left_mm": "左の余白",
+    "right_mm": "右の余白",
+    "rear_mm": "後ろの余白",
+}
+
+
+def installation_reference_note(p: Mapping[str, Any]) -> str:
+    """Static list of known and missing site-side references, readable without JS.
+
+    A missing reference is the site's gap, not the reader's missing input, so the
+    note names the model, the unresolved items and the official page to check.
+    """
+    values = p.get("installation", {})
+    known = [
+        escape(INSTALLATION_LABELS[key]) + escape(f"{values[key]:g}") + "mm"
+        for key in INSTALLATION_LABELS
+        if money(values.get(key))
+    ]
+    unknown = [
+        escape(INSTALLATION_LABELS[key])
+        for key in INSTALLATION_LABELS
+        if not money(values.get(key))
+    ]
+    note = (
+        '<p class="ps-installation-reference">'
+        + escape(p["exact_model"])
+        + "の照合基準（公表値）："
+        + ("／".join(known) if known else "未確認")
+        + "。"
+    )
+    if unknown:
+        note += (
+            "サイト側で基準が未確認の項目："
+            + "、".join(unknown)
+            + "。この項目は数値照合の対象外で、利用者の未入力ではありません。"
+        )
+    return (
+        note
+        + '<a href="'
+        + escape(p["official_url"], quote=True)
+        + '">型番の公式仕様で確認する</a></p>'
     )
 
 
@@ -600,24 +781,27 @@ def render_comparison(
         for pid in article["product_ids"]
     ]
     bindings: list[dict[str, str]] = []
-    out = [
-        '<div class="raos-editorial-v2 ps-article"'
-        + attrs(
-            {
-                "data-raos-purchase-support": "v1",
-                "data-raos-article-id": article["article_id"],
-                "data-raos-snapshot-id": snapshot,
-            }
-        )
-        + ">"
-    ]
+    main = article["slug"] == MAIN_SLUG
+    root_attrs = {
+        "data-raos-purchase-support": "v1",
+        "data-raos-article-id": article["article_id"],
+        "data-raos-snapshot-id": snapshot,
+    }
+    if main:
+        # The main comparison keeps four condition links; purpose and budget
+        # inputs are not generated, so no script version can bring them back.
+        root_attrs["data-ps-purpose-mode"] = "links"
+        root_attrs["data-ps-budget-mode"] = "off"
+    out = ['<div class="raos-editorial-v2 ps-article"' + attrs(root_attrs) + ">"]
     out.append(
         '<p class="ps-disclosure">この記事には広告・アフィリエイトリンクが含まれます。実機で使用した評価ではなく、公式資料から用途に合う条件を整理しています。</p>'
     )
     out.append(
         '<p class="ps-lead">'
         + escape(article["intro"])
-        + '</p><nav class="ps-toc" aria-label="記事の近道"><a href="#ps-choose">候補を絞る</a><a href="#ps-specs">仕様を比べる</a><a href="#ps-products">向く・向かない条件</a><a href="#ps-offers">購入総額と販売先</a><a href="#ps-evidence">詳細・出典</a></nav>'
+        + '</p><nav class="ps-toc" aria-label="記事の近道"><a href="#ps-choose">候補を絞る</a><a href="#ps-specs">仕様を比べる</a><a href="#ps-products">向く・向かない条件</a>'
+        + ('<a href="#ps-installation-context">設置の詳細</a>' if main else "")
+        + '<a href="#ps-offers">購入総額と販売先</a><a href="#ps-evidence">詳細・出典</a></nav>'
     )
     decision_steps_html = ""
     decision_steps_placement = "before_conditions"
@@ -643,13 +827,17 @@ def render_comparison(
         '<section id="ps-choose"><h2>条件別の結論</h2><div class="ps-condition-grid">'
     )
     for c in article["conditions"]:
-        names = "、".join(
-            next(p["name"] for p in products if p["product_id"] == pid)
+        chosen = [
+            next(p for p in products if p["product_id"] == pid)
             for pid in c["product_ids"]
+        ]
+        names = "、".join(
+            '<a href="#' + p["anchor"] + '">' + escape(p["name"]) + "</a>"
+            if main
+            else escape(p["name"])
+            for p in chosen
         )
-        out.append(
-            "<div><h3>" + escape(c["label"]) + "</h3><p>" + escape(names) + "</p>"
-        )
+        out.append("<div><h3>" + escape(c["label"]) + "</h3><p>" + names + "</p>")
         for pid in c["product_ids"]:
             o = next(
                 (
@@ -664,20 +852,25 @@ def render_comparison(
                 out.append(link)
                 bindings.append(binding)
         out.append("</div>")
-    out.append(
-        '</div><div class="ps-budget-controls" hidden'
-        + attrs(
-            {
-                "data-ps-purpose-options": canonical(
-                    [
-                        {"id": c["id"], "label": c["label"]}
-                        for c in article["conditions"]
-                    ]
-                )
-            }
+    if main:
+        out.append(
+            '</div><p class="ps-note">予算や用途の入力欄は設けていません。条件ごとの商品名から、その商品の理由・代償・販売条件へ進めます。JavaScriptなしでも、以下の仕様・販売条件・出典を比較できます。</p></section>'
         )
-        + '></div><p class="ps-note">入力した条件や予算は保存・送信しません。購入総額に不足がある候補は「予算未判定」として残します。ポイントや条件付きクーポンを一律に差し引きません。</p><p>JavaScriptなしでも、以下の仕様・販売条件・出典を比較できます。予算は確認済み費目を合計して照合してください。</p></section>'
-    )
+    else:
+        out.append(
+            '</div><div class="ps-budget-controls" hidden'
+            + attrs(
+                {
+                    "data-ps-purpose-options": canonical(
+                        [
+                            {"id": c["id"], "label": c["label"]}
+                            for c in article["conditions"]
+                        ]
+                    )
+                }
+            )
+            + '></div><p class="ps-note">入力した条件や予算は保存・送信しません。購入総額に不足がある候補は「予算未判定」として残します。ポイントや条件付きクーポンを一律に差し引きません。</p><p>JavaScriptなしでも、以下の仕様・販売条件・出典を比較できます。予算は確認済み費目を合計して照合してください。</p></section>'
+        )
     if decision_steps_placement == "after_conditions":
         out.append(decision_steps_html)
     if article.get("preserved_method_heading"):
@@ -754,9 +947,16 @@ def render_comparison(
         + "".join(cells)
         + "</tr></tbody>",
     )
+    out.append(table)
+    if main:
+        out.append(
+            '<p class="ps-note">本体寸法だけでは設置可否を判断しません。<a href="#ps-installation-context">開扉時の寸法と必要な余白</a>を、同じ型番の公表条件で確認してください。</p>'
+        )
+    out.append("</section>")
+    if main:
+        out.append(editorial_slot(template, "task-fit"))
     out.append(
-        table
-        + '</section><section id="ps-products"><h2>向く・向かない理由</h2><div class="ps-product-grid">'
+        '<section id="ps-products"><h2>向く・向かない理由</h2><div class="ps-product-grid">'
     )
     for p in products:
         out.append(
@@ -794,6 +994,12 @@ def render_comparison(
             + "".join("<li>" + escape(x) + "</li>" for x in p["avoid"])
             + "</ul>"
         )
+        if main:
+            out.append(
+                '<p class="ps-product-caution">'
+                + escape(p["caution"])
+                + ' <a href="#ps-installation-context">設置条件の詳細へ</a></p>'
+            )
         out.append('<p data-ps-product-budget role="status"></p>')
         if article["slug"] == MAIN_SLUG:
             out.append(route_links(p))
@@ -813,8 +1019,11 @@ def render_comparison(
             out.append(link)
             bindings.append(binding)
         out.append("</article>")
+    out.append("</div></section>")
+    if main:
+        out.append(installation_context(article, products))
     out.append(
-        '</div></section><section id="ps-offers"><h2>購入総額と販売先</h2><p>構成・送料・必須品・納期・保証を販売先ごとに確認します。異なる構成の価格を同じ商品価格として比べません。</p>'
+        '<section id="ps-offers"><h2>購入総額と販売先</h2><p>構成・送料・必須品・納期・保証を販売先ごとに確認します。異なる構成の価格を同じ商品価格として比べません。</p>'
     )
     for p in products:
         panel, b = offer_panel(p, catalog, article, snapshot, "final_summary")
@@ -827,15 +1036,33 @@ def render_comparison(
             + "><h3>"
             + escape(p["name"])
             + "</h3>"
+            + (
+                '<p class="ps-product-caution">'
+                + escape(p["caution"])
+                + ' <a href="#ps-installation-context">設置条件の詳細へ</a></p>'
+                if main
+                else ""
+            )
             + panel
             + '<p><a href="'
             + escape(p["official_url"], quote=True)
             + '">公式仕様を見る</a></p>'
-            + research_panel(p, catalog)
+            + research_panel(p, catalog, show_next_check=not main)
             + "</section>"
         )
+    out.append("</section>")
+    if main:
+        out.append(editorial_slot(template, "hold-reasons"))
+        out.append(
+            '<section id="ps-guides"><h2 id="dish-related-title">残る問いに対応する5ガイド</h2><p>全員に必読ではありません。残った疑問のガイドだけを、同じ4機種の条件で確認できます。</p><ul>'
+            + "".join(
+                '<li><a href="/' + slug + '/">' + label + "を機種ごとに確認</a></li>"
+                for label, slug in STAGES.values()
+            )
+            + "</ul></section>"
+        )
     out.append(
-        '</section><section id="ps-evidence"><h2>必要な詳細と出典</h2><p>性能の評価に価格や広告報酬を加点しません。購入費用は用途・予算に合う候補を選ぶために別に比較します。掲載候補は市場全体の順位ではありません。</p><details><summary>仕様の確認元・適用条件</summary>'
+        '<section id="ps-evidence"><h2>必要な詳細と出典</h2><p>性能の評価に価格や広告報酬を加点しません。購入費用は用途・予算に合う候補を選ぶために別に比較します。掲載候補は市場全体の順位ではありません。</p><details><summary>仕様の確認元・適用条件</summary>'
     )
     for p in products:
         seen = set()
@@ -955,6 +1182,15 @@ def render_guide(
             + escape(article["reader_intro"])
             + "</p>"
         )
+    # FD-09: the model index follows the lead regardless of a reader_intro override.
+    out.append(
+        '<nav class="ps-model-index" aria-label="機種別の手順"><p>お持ちの機種、または検討中の機種の手順へ直接進めます。購入は必須ではありません。</p>'
+        + "".join(
+            '<a href="#' + p["anchor"] + '">' + escape(p["name"]) + "</a>"
+            for p in products
+        )
+        + "</nav>"
+    )
     if article.get("reader_steps"):
         steps = article["reader_steps"]
         out.append(
@@ -1044,7 +1280,9 @@ def render_guide(
                         )
                     }
                 )
-                + '><div class="ps-installation-controls" hidden></div><p class="ps-installation-safety">本体寸法・開扉時・必要余白は別々に確保します。寸法の数値照合だけでは、食器の収納・性能や安全な設置を保証しません。台の強度・水平、排水、電源・アース、熱源との距離も別途確認してください。</p></div>'
+                + '><div class="ps-installation-controls" hidden></div>'
+                + installation_reference_note(p)
+                + '<p class="ps-installation-safety">本体寸法・開扉時・必要余白は別々に確保します。寸法の数値照合だけでは、食器の収納・性能や安全な設置を保証しません。台の強度・水平、排水、電源・アース、熱源との距離も別途確認してください。</p></div>'
             )
         if stage == "cost":
             out.append(
@@ -1053,8 +1291,12 @@ def render_guide(
                 + '">この機種の公表条件を計算フォームで選ぶ</a></p>'
             )
         out.append(
-            route_links(p)
+            route_links(p, current_slug=article["slug"])
             + '<p><a href="/'
+            + MAIN_SLUG
+            + "/#"
+            + p["anchor"]
+            + '">比較記事のこの機種の説明へ</a> ／ <a href="/'
             + MAIN_SLUG
             + "/#ps-seller-"
             + p["anchor"]
@@ -1255,31 +1497,20 @@ def compile_articles(
             conditions = "".join(
                 "<li>"
                 + escape(c["label"])
-                + '：<a href="/'
-                + MAIN_SLUG
-                + '/#ps-choose">'
-                + escape(
-                    "、".join(
-                        next(
-                            p["name"]
-                            for p in catalog["products"]
-                            if p["product_id"] == pid
-                        )
-                        for pid in c["product_ids"]
-                    )
-                )
-                + "</a></li>"
+                + "："
+                + condition_product_links(c, catalog["products"], MAIN_SLUG)
+                + "</li>"
                 for c in dish["conditions"]
             )
             html = (
                 '<div class="ps-article">'
                 + hub_sections["kitchen-start"].html()
                 + hub_sections["kitchen-axes"].html()
-                + '<p class="ps-lead">いつもの一食分・置き場所・予算から、食洗機の候補を絞れます。</p><section id="choose"><h2>条件から候補を見る</h2><ul>'
+                + '<p class="ps-lead">候補を比べたい方は4機種の比較へ。設置や給水、購入後の手入れを確かめたい方は、該当する機種のガイドへ進めます。</p><section id="choose"><h2>条件から候補を見る</h2><ul>'
                 + conditions
                 + '</ul><p><a href="/'
                 + MAIN_SLUG
-                + '/#ps-choose">4機種を、予算と置き場所から比較する</a></p></section>'
+                + '/#ps-specs">4機種の違いと、毎回の作業を比較する</a></p></section>'
                 + hub_sections["compare"].html()
                 + hub_sections["purchase-checks"].html()
                 + '<p>比較の中心はSOLOTA・ラクアmini color・SS-MA251・NP-TSP1です。mini Plusはmini colorと別の型番として扱います。</p></div>'

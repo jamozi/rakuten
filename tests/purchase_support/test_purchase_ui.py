@@ -65,11 +65,19 @@ def test_published_controls_are_inert_before_browser_enhancement():
             for node in nodes
         ), article["slug"]
         if article["kind"] == "comparison":
-            config = next(
+            configs = [
                 n.attrs["data-ps-purpose-options"]
                 for n in nodes
                 if "data-ps-purpose-options" in n.attrs
-            )
-            assert json.loads(config) == [
-                {"id": c["id"], "label": c["label"]} for c in article["conditions"]
             ]
+            root_node = next(n for n in nodes if "data-raos-article-id" in n.attrs)
+            if article["slug"] == "countertop-dishwasher-for-small-households":
+                # The main comparison links the four conditions instead of inputs.
+                assert configs == []
+                assert root_node.attrs["data-ps-purpose-mode"] == "links"
+                assert root_node.attrs["data-ps-budget-mode"] == "off"
+            else:
+                assert "data-ps-purpose-mode" not in root_node.attrs
+                assert json.loads(configs[0]) == [
+                    {"id": c["id"], "label": c["label"]} for c in article["conditions"]
+                ]
