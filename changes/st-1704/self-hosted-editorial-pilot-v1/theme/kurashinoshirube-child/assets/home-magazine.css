@@ -201,6 +201,8 @@ body #ks-magazine .ks-home-feature-grid h3 { text-align:center; }
 @media(max-width:650px) { body #ks-magazine .ks-home-feature-grid { grid-template-columns:minmax(0,1fr); } }
 body #ks-magazine .ks-home-feature-grid .ks-feature-image { max-width:762px; margin-inline:auto; }
 body #ks-magazine .ks-home-feature-grid .ks-feature-image img { height:auto; }
+body #ks-magazine .ks-home-category-grid>.ks-editorial-card:first-child { grid-column:auto; }
+body #ks-magazine .ks-home-category-grid>.ks-editorial-card:first-child h3 { font-size:1.2rem; }
 @media(max-width:700px) {
   body #ks-magazine .ks-home-feature-grid>.ks-editorial-card:not(:first-child) .ks-feature-image { float:none; width:100%; margin:0 auto 16px; }
 }

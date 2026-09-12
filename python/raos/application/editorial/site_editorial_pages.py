@@ -263,10 +263,21 @@ def render_pages(
         if slug == "home":
 
             def feature(pid: int, image_category: str, caption: str) -> str:
-                label = data["home_short_titles"].get(str(pid), by_id[pid]["title"])
+                label = data["categories"][image_category]["name"]
+                destination = "/" + image_category + "/"
+                label_link = link(destination, label)
+                legacy_anchor = {
+                    "kitchen": "cluster-home",
+                    "travel": "cluster-mobility",
+                    "preparedness": "cluster-ready",
+                }.get(image_category)
+                if legacy_anchor:
+                    label_link = label_link.replace(
+                        "<a ", f'<a id="{legacy_anchor}" ', 1
+                    )
                 markup = (
                     '<article class="ks-editorial-card"><h3>'
-                    + link(article_url(pid), label)
+                    + label_link
                     + "</h3></article>"
                 )
                 media = (
@@ -274,11 +285,11 @@ def render_pages(
                     + image_category
                     + '-editorial-ai-20260910.webp" width="762" height="506" alt="'
                     + escape(caption, quote=True)
-                    + '" loading="lazy"><figcaption>AI編集イメージ・実物写真ではありません</figcaption></figure>'
+                    + '" loading="lazy"></figure>'
                 )
                 media = media.replace(
-                    "<img ", '<a href="' + article_url(pid) + '"><img ', 1
-                ).replace("<figcaption>", "</a><figcaption>", 1)
+                    "<img ", '<a href="' + destination + '"><img ', 1
+                ).replace("</figure>", "</a></figure>", 1)
                 if home_media and pid in home_media:
                     media = (
                         '<div class="ks-home-product-images">'
@@ -292,15 +303,16 @@ def render_pages(
                 )
 
             body = (
-                '<section class="ks-home-feature"><div class="ks-home-masthead"><div class="ks-home-intro"><p class="km-tag">暮らしの道具を、納得して選ぶ</p><h1 id="km-hero-title">あなたの暮らしに、<br>合うものを。</h1><p>置き場所と使い方から、道具を選ぶ。</p></div><figure class="ks-home-mood"><img src="https://kurashinoshirube.com/wp-content/themes/kurashinoshirube-child/assets/images/magazine-hero.webp" width="842" height="495" alt="暮らしの道具を選ぶ編集イメージ"><figcaption>編集イメージ。商品同定や実測の根拠ではありません。</figcaption></figure></div><h2 id="km-articles-title">暮らしに合う道具を比較する</h2><div class="ks-home-feature-grid">'
+                '<section class="ks-home-feature"><div class="ks-home-masthead"><div class="ks-home-intro"><p class="km-tag">暮らしの道具を、納得して選ぶ</p><h1 id="km-hero-title">あなたの暮らしに、<br>合うものを。</h1><p>置き場所と使い方から、道具を選ぶ。</p></div><figure class="ks-home-mood"><img src="https://kurashinoshirube.com/wp-content/themes/kurashinoshirube-child/assets/images/magazine-hero.webp" width="842" height="495" alt="暮らしの道具を選ぶ編集イメージ"><figcaption>編集イメージ。商品同定や実測の根拠ではありません。</figcaption></figure></div><section id="km-categories-title"><h2 id="km-articles-title">商品カテゴリから探す</h2><div class="ks-home-feature-grid ks-home-category-grid">'
                 + feature(41, "kitchen", "食器と食洗機のあるキッチンのイメージ")
                 + feature(83, "travel", "スーツケースと衣類を揃えた旅支度のイメージ")
                 + feature(30, "cleaning", "ロボット掃除機を置いた部屋のイメージ")
-                + "</div></section>"
+                + feature(
+                    28, "preparedness", "ポータブル電源とランタンを並べた備えのイメージ"
+                )
+                + "</div></section></section>"
             )
             body += section(
-                "商品カテゴリから探す", category_cards(home=True), "km-categories-title"
-            ) + section(
                 "悩み・目的から探す", purpose_cards(home=True), "km-purposes-title"
             )
             recent = sorted(

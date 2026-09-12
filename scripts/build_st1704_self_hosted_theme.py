@@ -33,7 +33,7 @@ from scripts import build_reader_purchase_support_v1 as purchase_support_owner  
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "bfc7b2210fe99e0070e6b87cf4889e8261a076e2567dcb572478920a1565bf8c"
+    "836668e25f165c1e2a65e722104db6d2bdfb2185f088418ec79be3b8d023dd2c"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",

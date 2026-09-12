@@ -2353,12 +2353,14 @@ def test_navigation_script_keeps_the_home_hero_static() -> None:
     assert home.count("<h1") == 1
     feature = home.split('class="ks-home-feature"', 1)[1].split("</section>", 1)[0]
     assert re.findall(r'href="([^"]+)"', feature) == [
-        "/countertop-dishwasher-for-small-households/",
-        "/countertop-dishwasher-for-small-households/",
-        "/lightweight-carry-on-suitcase-under-3kg/",
-        "/lightweight-carry-on-suitcase-under-3kg/",
-        "/compact-robot-vacuum-shortlist/",
-        "/compact-robot-vacuum-shortlist/",
+        "/kitchen/",
+        "/kitchen/",
+        "/travel/",
+        "/travel/",
+        "/cleaning/",
+        "/cleaning/",
+        "/preparedness/",
+        "/preparedness/",
     ]
     assert 'aria-hidden="true"' not in feature
     assert " inert" not in feature

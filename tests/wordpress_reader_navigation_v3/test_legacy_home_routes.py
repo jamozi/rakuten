@@ -40,17 +40,20 @@ class LegacyHomeRoutes(unittest.TestCase):
         self.assertIn("各記事の購入条件", content)
         self.assertNotIn("選び方の3ステップ", self.text)
 
-    def test_featured_articles_are_main41_and_support83_30(self):
+    def test_four_image_cards_use_category_destinations(self):
         n = next(
-            n for n in self.doc.nodes if n.attrs.get("class") == "ks-home-feature-grid"
+            n
+            for n in self.doc.nodes
+            if "ks-home-category-grid" in n.attrs.get("class", "").split()
         )
-        urls = re.findall(r'<h3><a href="([^"]+)">', self.text[n.start : n.end])
+        urls = re.findall(r'<h3><a [^>]*href="([^"]+)">', self.text[n.start : n.end])
         self.assertEqual(
             urls,
             [
-                "/countertop-dishwasher-for-small-households/",
-                "/lightweight-carry-on-suitcase-under-3kg/",
-                "/compact-robot-vacuum-shortlist/",
+                "/kitchen/",
+                "/travel/",
+                "/cleaning/",
+                "/preparedness/",
             ],
         )
 
@@ -80,7 +83,7 @@ class LegacyHomeRoutes(unittest.TestCase):
 
     def test_hero_and_editorial_feature_images_preserve_media_boundaries(self):
         images = [n.attrs for n in self.doc.nodes if n.tag == "img"]
-        self.assertEqual(len(images), 4)
+        self.assertEqual(len(images), 5)
         self.assertTrue(images[0]["src"].endswith("/assets/images/magazine-hero.webp"))
         self.assertEqual((images[0]["width"], images[0]["height"]), ("842", "495"))
         data = json.loads(
@@ -89,7 +92,9 @@ class LegacyHomeRoutes(unittest.TestCase):
             ).read_text()
         )
         self.assertEqual(data["home_image_style"], "editorial")
-        for image, category in zip(images[1:], ("kitchen", "travel", "cleaning")):
+        for image, category in zip(
+            images[1:], ("kitchen", "travel", "cleaning", "preparedness")
+        ):
             self.assertTrue(
                 image["src"].endswith(f"/ks-{category}-editorial-ai-20260910.webp")
             )

@@ -62,13 +62,14 @@ class ProjectionTest(unittest.TestCase):
         self.assertIn("内容更新日：2026-09-13", pages["updates"])
         self.assertNotIn("新しく公開：2026-09-13", pages["updates"])
 
-    def test_home_feature_order(self):
+    def test_home_category_order(self):
         result = builder.build()
         home = next(v for k, v in result.items() if k.name == "home.html")
         slugs = [
-            "countertop-dishwasher-for-small-households",
-            "lightweight-carry-on-suitcase-under-3kg",
-            "compact-robot-vacuum-shortlist",
+            "kitchen",
+            "travel",
+            "cleaning",
+            "preparedness",
         ]
         positions = [home.index("/" + s + "/") for s in slugs]
         self.assertEqual(positions, sorted(positions))
@@ -87,10 +88,11 @@ class ProjectionTest(unittest.TestCase):
         ):
             self.assertNotIn(text, home)
         self.assertNotIn('data-ks-home-product="', home)
-        self.assertEqual(home.count('class="ks-feature-image"'), 3)
-        self.assertNotIn(
-            "hb.afl.rakuten.co.jp", home
-        )
+        self.assertEqual(home.count('class="ks-feature-image"'), 4)
+        self.assertEqual(home.count("商品カテゴリから探す"), 1)
+        self.assertNotIn("暮らしに合う道具を比較する", home)
+        self.assertNotIn("AI編集イメージ・実物写真ではありません", home)
+        self.assertNotIn("hb.afl.rakuten.co.jp", home)
         self.assertIn("/comparison-policy/", home)
 
 
