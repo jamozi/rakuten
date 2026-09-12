@@ -342,3 +342,146 @@ def test_purchase_scope_page_view_requires_article_when_snapshot_is_scoped():
     )
     with pytest.raises(GoogleProviderFailure):
         ga4_purchase_document_v2(clicks, page_views=replace(views, rows=(missing,)))
+
+
+def _observation_binding(document, **overrides):
+    dimensions = {d["name"]: d["value"] for d in document["rows"][0]["dimensions"]}
+    ns = runpy.run_path(str(ROOT / "scripts/raos_editorial_economics_v3.py"))
+    binding = {key: dimensions[key] for key in ns["OBSERVATION_BINDING_KEYS"]}
+    binding.update({"link_purpose": "merchant_purchase", "affiliate": "false"})
+    binding.update(overrides)
+    return ns, binding
+
+
+def _observation_row(document, count, **identity):
+    dimensions = [
+        {"name": d["name"], "value": identity.get(d["name"], d["value"])}
+        for d in document["rows"][0]["dimensions"]
+    ]
+    return {
+        "dimensions": dimensions,
+        "metrics": [{"name": "eventCount", "value": str(count)}],
+    }
+
+
+def test_purchase_observation_summary_separates_retrieved_scope_and_estimates():
+    _, clicks, views = _purchase_batches()
+    document = ga4_purchase_document_v2(clicks, page_views=views)
+    ns, merchant = _observation_binding(document)
+    summarize = ns["purchase_observation_summary"]
+    summary = summarize(document, [merchant], value_basis="DIRECT_EVENT_COUNTS")
+    assert summary["retrieval_state"] == "OBSERVED"
+    assert summary["scope_state"] == "REPORT_SCOPE_CONFIRMED"
+    assert summary["total_observed_clicks"] == summary["ordinary_clicks"] == 3
+    assert summary["ad_clicks"] == 0 and summary["unclassified_clicks"] == 0
+    assert summary["classification_coverage"] == 1.0
+    assert summary["ad_share_exact"] == 0.0 and summary["ad_share_bounds"] == [0.0, 0.0]
+    assert summary["purchase_and_reward"] == "UNAVAILABLE"
+    assert summary["causal_effect_established"] is False
+    assert summary["all_visitors_covered"] is False
+    # AC16: a binding from a different snapshot never claims a historic click.
+    stale = dict(merchant, snapshot_id="ps-" + "b" * 32)
+    partial = summarize(document, [stale], value_basis="DIRECT_EVENT_COUNTS")
+    assert partial["unclassified_clicks"] == 3
+    assert partial["state"] == "PARTIALLY_CLASSIFIED"
+    assert partial["classification_coverage"] == 0.0
+    assert partial["ad_share_bounds"] == [0.0, 1.0]
+    assert partial["ad_share_exact"] is None
+    # AC34: sampled or unresolved bases and unknown scopes keep reported counts only.
+    for basis in ("SAMPLED_ESTIMATE", "UNKNOWN"):
+        estimate = summarize(document, [merchant], value_basis=basis)
+        assert estimate["total_observed_clicks"] is None
+        assert estimate["ad_share_bounds"] is None
+        assert estimate["reported_counts"]["ordinary"] == 3
+    unknown = summarize(
+        document, [merchant], value_basis="DIRECT_EVENT_COUNTS", scope_unknown=True
+    )
+    assert unknown["state"] == "SCOPE_UNKNOWN"
+    assert unknown["total_observed_clicks"] is None
+    assert unknown["reported_counts"]["ordinary"] == 3
+    # AC17 / AC33: not retrieved is null, an explicit empty report is zero, no ratio either way.
+    missing = summarize(None, [merchant], value_basis="UNKNOWN")
+    assert missing["retrieval_state"] == "NOT_RETRIEVED"
+    assert missing["total_observed_clicks"] is None
+    assert missing["reported_counts"] is None
+    empty = ga4_purchase_document_v2(
+        replace(clicks, rows=(), provider_row_count=0),
+        page_views=replace(views, rows=(), provider_row_count=0),
+    )
+    zero = summarize(empty, [merchant], value_basis="DIRECT_EVENT_COUNTS")
+    assert zero["scope_status"] == "NO_PURCHASE_OBSERVATIONS"
+    assert zero["total_observed_clicks"] == 0
+    assert zero["state"] == "NO_OBSERVATIONS"
+    assert zero["ratio_state"] == "NO_DENOMINATOR"
+    assert zero["classification_coverage"] is None
+    # AC15: 20 ad / 10 ordinary / 10 unclassified inside one confirmed scope.
+    ad_identity = {
+        "cta_id": "purchase-image-x",
+        "offer_id": "image-x",
+        "seller_id": "shop",
+    }
+    synthetic = {
+        "scope_status": "OBSERVED_ROWS_ONLY",
+        "excluded_row_counts": {"offer_click": {}, "page_view": {}},
+        "rows": [
+            _observation_row(document, 20, **ad_identity),
+            _observation_row(document, 10),
+            _observation_row(document, 10, cta_id="purchase-old", offer_id="old"),
+        ],
+    }
+    ad_binding = dict(
+        merchant, link_purpose="affiliate_purchase", affiliate="true", **ad_identity
+    )
+    mixed = summarize(
+        synthetic, [merchant, ad_binding], value_basis="DIRECT_EVENT_COUNTS"
+    )
+    assert mixed["total_observed_clicks"] == 40
+    assert mixed["ad_clicks"] == 20 and mixed["ordinary_clicks"] == 10
+    assert mixed["unclassified_clicks"] == 10
+    assert mixed["classification_coverage"] == 0.75
+    assert mixed["ad_share_bounds"] == [0.5, 0.75]
+    assert mixed["ad_share_exact"] is None
+    assert mixed["reported_counts"]["detail"]["affiliate_image"] == 20
+    thresholded = dict(
+        synthetic, rows=[dict(synthetic["rows"][1], is_thresholded=True)]
+    )
+    flagged = summarize(thresholded, [merchant], value_basis="DIRECT_EVENT_COUNTS")
+    assert flagged["quality_flags"] == ["SUBJECT_TO_THRESHOLDING"]
+    assert flagged["total_observed_clicks"] == 10
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "duplicate_binding",
+        "unset_binding",
+        "purpose_conflict",
+        "other_event",
+        "bad_count",
+        "bad_flag",
+    ],
+)
+def test_purchase_observation_summary_fails_closed(mutation):
+    _, clicks, views = _purchase_batches()
+    document = ga4_purchase_document_v2(clicks, page_views=views)
+    ns, merchant = _observation_binding(document)
+    summarize = ns["purchase_observation_summary"]
+    bindings, doc, flags = [merchant], document, ()
+    if mutation == "duplicate_binding":
+        bindings = [merchant, dict(merchant)]
+    elif mutation == "unset_binding":
+        bindings = [dict(merchant, seller_id="(not set)")]
+    elif mutation == "purpose_conflict":
+        bindings = [dict(merchant, affiliate="true")]
+    elif mutation == "other_event":
+        doc = dict(
+            document, rows=[_observation_row(document, 1, eventName="page_view")]
+        )
+    elif mutation == "bad_count":
+        row = _observation_row(document, 1)
+        row["metrics"] = [{"name": "eventCount", "value": "-1"}]
+        doc = dict(document, rows=[row])
+    else:
+        flags = ("NOT_A_FLAG",)
+    with pytest.raises(ns["EditorialEconomicsV3Failure"]):
+        summarize(doc, bindings, value_basis="DIRECT_EVENT_COUNTS", quality_flags=flags)

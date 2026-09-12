@@ -79,6 +79,31 @@ from raos.application.finance.editorial_economics_v3 import (  # noqa: E402
 
 
 DEFAULT_PRIVATE_ROOT: Final = REPOSITORY_ROOT / ".secrets/editorial-portfolio-v3"
+DEFAULT_PURCHASE_BINDINGS: Final = (
+    "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child"
+    "/assets/purchase-support.v1.json"
+)
+OBSERVATION_VALUE_BASES: Final = ("DIRECT_EVENT_COUNTS", "SAMPLED_ESTIMATE", "UNKNOWN")
+OBSERVATION_QUALITY_FLAGS: Final = frozenset(
+    {
+        "SUBJECT_TO_THRESHOLDING",
+        "OTHER_ROW_PRESENT",
+        "PARTIAL_WINDOW",
+        "CONTRACT_CHANGED",
+        "REPORTED_SCHEMA_RESTRICTION",
+        "CONSENT_SCOPE_CHANGED",
+    }
+)
+OBSERVATION_BINDING_KEYS: Final = (
+    "article_id",
+    "product_id",
+    "seller_id",
+    "offer_id",
+    "cta_id",
+    "placement",
+    "snapshot_id",
+)
+_UNSET_IDENTITY: Final = frozenset({"", "UNKNOWN", "UNAVAILABLE", "(not set)"})
 DEFAULT_GOOGLE_SCOPE_RECEIPT: Final = "google/local-scope.v1.json"
 GOOGLE_SCOPE_RECEIPT_SCHEMA: Final = "raos.owner-private.google-local-scope.v1"
 GOOGLE_SCOPE_RECEIPT_KEYS: Final = frozenset(
@@ -270,6 +295,35 @@ def _parser() -> argparse.ArgumentParser:
     ga4.add_argument("--database-port", type=int, default=5432)
     for name in ("database-name", "database-user", "database-password", "ga4-output"):
         ga4.add_argument("--" + name)
+    observation = commands.add_parser(
+        "summarize-purchase-observations",
+        help="classify an imported purchase-v2 GA4 document by publication bindings; no credentials, database or network",
+    )
+    observation.add_argument(
+        "--ga4-input",
+        required=True,
+        help="private purchase-v2 GA4 document written by import-ga4",
+    )
+    observation.add_argument(
+        "--bindings",
+        default=DEFAULT_PURCHASE_BINDINGS,
+        help="tracked runtime projection carrying the publication-time bindings",
+    )
+    observation.add_argument(
+        "--value-basis", choices=OBSERVATION_VALUE_BASES, required=True
+    )
+    observation.add_argument(
+        "--quality-flag",
+        action="append",
+        default=[],
+        choices=sorted(OBSERVATION_QUALITY_FLAGS),
+    )
+    observation.add_argument(
+        "--scope-unknown",
+        action="store_true",
+        help="the report population cannot be identified; keep reported counts only",
+    )
+    observation.add_argument("--output", help="optional private output name")
     return parser
 
 
@@ -801,6 +855,257 @@ def _ga4_profile_plan(arguments: argparse.Namespace) -> dict[str, object]:
     }
 
 
+def _binding_bucket(binding: Mapping[str, object]) -> str | None:
+    """Classify one publication-time binding; non-purchase links are ignored."""
+    affiliate = binding.get("affiliate") in (True, "true")
+    purpose = binding.get("link_purpose")
+    if purpose == "affiliate_purchase" and affiliate:
+        surface = binding.get("surface")
+        if surface is None:
+            surface = (
+                "product_image"
+                if str(binding.get("offer_id", "")).startswith("image-")
+                else "product_text"
+            )
+        return {
+            "product_image": "affiliate_image",
+            "product_text": "affiliate_text",
+        }.get(str(surface), "affiliate_surface_unknown")
+    if purpose == "merchant_purchase" and binding.get("affiliate") in (False, "false"):
+        return "merchant"
+    if purpose in {"affiliate_purchase", "merchant_purchase"}:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_OBSERVATION_BINDING_PURPOSE_CONFLICT"
+        )
+    return None
+
+
+def classify_offer_click_rows(rows: object, bindings: object) -> dict[str, object]:
+    """Join retained offer_click rows to the publication-time bindings by 7 IDs.
+
+    A row whose identity has no binding stays unclassified; historic snapshots are
+    never re-read against newer bindings. Counts are the provider's row values and
+    do not extend to visits that were not returned.
+    """
+    if not isinstance(rows, list) or not isinstance(bindings, list):
+        raise EditorialEconomicsV3Failure("RAOS_EDITORIAL_V3_OBSERVATION_INPUT_INVALID")
+    index: dict[tuple[str, ...], str] = {}
+    for binding in bindings:
+        if not isinstance(binding, Mapping):
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_OBSERVATION_BINDING_INVALID"
+            )
+        bucket = _binding_bucket(binding)
+        if bucket is None:
+            continue
+        key = tuple(str(binding.get(name, "")) for name in OBSERVATION_BINDING_KEYS)
+        if any(value in _UNSET_IDENTITY for value in key):
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_OBSERVATION_BINDING_INVALID"
+            )
+        if key in index:
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_OBSERVATION_BINDING_DUPLICATE"
+            )
+        index[key] = bucket
+    counts = {
+        "affiliate_text": 0,
+        "affiliate_image": 0,
+        "affiliate_surface_unknown": 0,
+        "merchant": 0,
+        "unclassified": 0,
+    }
+    flags: set[str] = set()
+    grains: set[tuple[object, tuple[str, ...]]] = set()
+    for row in rows:
+        if not isinstance(row, Mapping):
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_OBSERVATION_ROW_INVALID"
+            )
+        dimensions = {
+            str(item.get("name", "")).removeprefix("customEvent:"): str(
+                item.get("value", "")
+            )
+            for item in row.get("dimensions", [])
+            if isinstance(item, Mapping)
+        }
+        if dimensions.get("eventName", "offer_click") != "offer_click":
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_OBSERVATION_OFFER_CLICK_REQUIRED"
+            )
+        metric = next(
+            (
+                item
+                for item in row.get("metrics", [])
+                if isinstance(item, Mapping) and item.get("name") == "eventCount"
+            ),
+            None,
+        )
+        if metric is None or not re.fullmatch(
+            r"\d{1,12}", str(metric.get("value", ""))
+        ):
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_OBSERVATION_EVENT_COUNT_INVALID"
+            )
+        key = tuple(dimensions.get(name, "") for name in OBSERVATION_BINDING_KEYS)
+        grain = (row.get("metric_date", row.get("date")), key)
+        if grain in grains:
+            raise EditorialEconomicsV3Failure(
+                "RAOS_EDITORIAL_V3_OBSERVATION_ROW_DUPLICATE"
+            )
+        grains.add(grain)
+        counts[index.get(key, "unclassified")] += int(str(metric["value"]))
+        if row.get("is_thresholded"):
+            flags.add("SUBJECT_TO_THRESHOLDING")
+    return {"counts": counts, "quality_flags": sorted(flags)}
+
+
+def purchase_observation_summary(
+    document: Mapping[str, object] | None,
+    bindings: object,
+    *,
+    value_basis: str,
+    quality_flags: object = (),
+    scope_unknown: bool = False,
+) -> dict[str, object]:
+    """Observation envelope for one already imported purchase-v2 GA4 document.
+
+    Unretrieved reports carry null counts, an explicit empty report carries zero,
+    and neither produces a ratio. Sampled or unresolved value bases and unknown
+    scopes keep the provider's reported counts only. Direct counts describe the
+    returned rows: no CTR/CVR/EPC, no causal effect, no all-visitor coverage.
+    """
+    if value_basis not in OBSERVATION_VALUE_BASES:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_OBSERVATION_VALUE_BASIS_INVALID"
+        )
+    if not isinstance(quality_flags, (list, tuple)):
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_OBSERVATION_QUALITY_FLAG_INVALID"
+        )
+    flags = [str(flag) for flag in quality_flags]
+    if len(set(flags)) != len(flags) or any(
+        flag not in OBSERVATION_QUALITY_FLAGS for flag in flags
+    ):
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_OBSERVATION_QUALITY_FLAG_INVALID"
+        )
+    nulls: dict[str, object] = {
+        "total_observed_clicks": None,
+        "ad_clicks": None,
+        "ordinary_clicks": None,
+        "unclassified_clicks": None,
+        "classification_coverage": None,
+        "ad_share_exact": None,
+        "ad_share_bounds": None,
+    }
+    base: dict[str, object] = {
+        "value_basis": value_basis,
+        "quality_flags": sorted(flags),
+        "population": "OBSERVED_OFFER_CLICK_ROWS_ONLY",
+        "unobserved_clicks": None,
+        "reported_counts": None,
+        "excluded_row_counts": None,
+        "causal_effect_established": False,
+        "all_visitors_covered": False,
+        "purchase_and_reward": "UNAVAILABLE",
+        "not_derived": ["CTR", "CVR", "EPC", "causal_effect"],
+    }
+    if document is None:
+        return {
+            **base,
+            **nulls,
+            "retrieval_state": "NOT_RETRIEVED",
+            "scope_state": "UNKNOWN",
+            "state": "NOT_RETRIEVED",
+            "population": "NO_REPORT_RETRIEVED",
+            "ratio_state": "NOT_RETRIEVED",
+        }
+    if not isinstance(document, Mapping):
+        raise EditorialEconomicsV3Failure("RAOS_EDITORIAL_V3_OBSERVATION_INPUT_INVALID")
+    scope_map = {
+        "OBSERVED_ROWS_ONLY": "REPORT_SCOPE_CONFIRMED",
+        "PARTIAL_SCOPE_UNKNOWN": "PARTIAL",
+        "NO_PURCHASE_OBSERVATIONS": "REPORT_SCOPE_CONFIRMED",
+    }
+    scope_status = document.get("scope_status")
+    if scope_status not in scope_map:
+        raise EditorialEconomicsV3Failure(
+            "RAOS_EDITORIAL_V3_OBSERVATION_SCOPE_STATUS_INVALID"
+        )
+    scope_state = "UNKNOWN" if scope_unknown else scope_map[str(scope_status)]
+    classified = classify_offer_click_rows(document.get("rows", []), bindings)
+    counts = cast(dict[str, int], classified["counts"])
+    ad = (
+        counts["affiliate_text"]
+        + counts["affiliate_image"]
+        + counts["affiliate_surface_unknown"]
+    )
+    envelope: dict[str, object] = {
+        **base,
+        "quality_flags": sorted(
+            set(flags) | set(cast(list[str], classified["quality_flags"]))
+        ),
+        "retrieval_state": "OBSERVED",
+        "scope_state": scope_state,
+        "scope_status": scope_status,
+        "excluded_row_counts": document.get("excluded_row_counts"),
+        "reported_counts": {
+            "ad": ad,
+            "ordinary": counts["merchant"],
+            "unclassified": counts["unclassified"],
+            "detail": counts,
+        },
+    }
+    if scope_state == "UNKNOWN" or value_basis != "DIRECT_EVENT_COUNTS":
+        if scope_state == "UNKNOWN":
+            population, state, ratio_state = (
+                "REPORT_SCOPE_UNRESOLVED",
+                "SCOPE_UNKNOWN",
+                "NOT_IDENTIFIED_SCOPE",
+            )
+        elif value_basis == "SAMPLED_ESTIMATE":
+            population, state, ratio_state = (
+                "REPORTED_ESTIMATES_ONLY",
+                "ESTIMATED_NOT_OBSERVED",
+                "NOT_IDENTIFIED_FROM_ESTIMATES",
+            )
+        else:
+            population, state, ratio_state = (
+                "REPORT_VALUE_BASIS_UNRESOLVED",
+                "VALUE_BASIS_UNKNOWN",
+                "NOT_IDENTIFIED_VALUE_BASIS",
+            )
+        return {
+            **envelope,
+            **nulls,
+            "population": population,
+            "state": state,
+            "ratio_state": ratio_state,
+        }
+    total = ad + counts["merchant"] + counts["unclassified"]
+    result: dict[str, object] = {
+        **envelope,
+        "total_observed_clicks": total,
+        "ad_clicks": ad,
+        "ordinary_clicks": counts["merchant"],
+        "unclassified_clicks": counts["unclassified"],
+        "classification_coverage": None,
+        "ad_share_exact": None,
+        "ad_share_bounds": None,
+        "state": "NO_OBSERVATIONS"
+        if total == 0
+        else ("PARTIALLY_CLASSIFIED" if counts["unclassified"] else "CLASSIFIED"),
+        "ratio_state": "RETURNED_EVENTS_ARITHMETIC_ONLY" if total else "NO_DENOMINATOR",
+    }
+    if total:
+        result["classification_coverage"] = (ad + counts["merchant"]) / total
+        result["ad_share_bounds"] = [ad / total, (ad + counts["unclassified"]) / total]
+        if not counts["unclassified"]:
+            result["ad_share_exact"] = ad / total
+    return result
+
+
 def _import_ga4_profile(
     service: LiveGoogleAnalyticsImport,
     arguments: argparse.Namespace,
@@ -873,6 +1178,36 @@ def main(argv: list[str] | None = None) -> int:
             _refresh_baseline(
                 arguments=arguments, private_root=private_root, portfolio=None
             )
+            return 0
+        if arguments.command == "summarize-purchase-observations":
+            document = read_private_json(private_root, arguments.ga4_input)
+            bindings_path = Path(arguments.bindings)
+            if not bindings_path.is_absolute():
+                bindings_path = REPOSITORY_ROOT / bindings_path
+            bindings_path = bindings_path.resolve()
+            if (
+                not bindings_path.is_relative_to(REPOSITORY_ROOT.resolve())
+                or not bindings_path.is_file()
+            ):
+                raise EditorialEconomicsV3Failure(
+                    "RAOS_EDITORIAL_V3_OBSERVATION_BINDINGS_INVALID"
+                )
+            runtime = json.loads(bindings_path.read_text(encoding="utf-8"))
+            bindings = [
+                binding
+                for article in runtime.get("articles", [])
+                for binding in article.get("bindings", [])
+            ]
+            summary = purchase_observation_summary(
+                document,
+                bindings,
+                value_basis=arguments.value_basis,
+                quality_flags=arguments.quality_flag,
+                scope_unknown=arguments.scope_unknown,
+            )
+            if arguments.output:
+                write_private_json(private_root, arguments.output, summary)
+            print(json.dumps(summary, ensure_ascii=False, sort_keys=True))
             return 0
         portfolio = load_editorial_portfolio_v3(REPOSITORY_ROOT)
         if arguments.command == "rakuten-detect":

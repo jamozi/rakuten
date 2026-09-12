@@ -16,5 +16,18 @@
   "keep_existing_fragments": true,
   "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/preparedness/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">ポータブル電源の選び方・記事一覧</a><a href=\"#blk-anker-008-title\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"/preparedness/#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
   "next_html": "<section id=\"ks-next-read\" aria-labelledby=\"ks-next-read-title\" style=\"margin:32px 0;padding:24px;border-top:2px solid #1b1b18;background:#faf9f6;line-height:1.85;\"><h2 id=\"ks-next-read-title\">残っている疑問から、次の確認へ</h2><div class=\"ks-route-links\"><a href=\"/portable-power-station-guide/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">停電対策用ポータブル電源の選び方</a></div><p>記事ごとに対象機種が異なります。別機種の数値や手順を流用せず、必要な確認だけを選んで読めます。</p><a href=\"/preparedness/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">ポータブル電源選びの全体像に戻る</a></section>",
-  "replacements": []
+  "replacements": [
+    {
+      "old": "C1000より約1.6kg軽い約11.3kgで、定格出力が50W高いためです。",
+      "new": "公表本体重量はC1000より約1.6kg軽い約11.3kgです。拡張バッテリーが不要で、重量とUSB-C端子数を重視する人に向きます。",
+      "max_count": 1,
+      "exclusive": true
+    },
+    {
+      "old": "C1000系で重量と出力を優先",
+      "new": "C1000系で重量とUSB-C端子数を優先",
+      "max_count": 1,
+      "exclusive": true
+    }
+  ]
 }

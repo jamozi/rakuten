@@ -196,7 +196,12 @@ def apply_patch(body: str, patch: dict[str, Any], *, article_key: str, post_id: 
             raise PatchFailure("REQUIRED_TEXT_MISSING")
     for change in patch.get("replacements", []):
         old, new, maximum = change.get("old"), change.get("new"), change.get("max_count", 1)
+        exclusive = change.get("exclusive", False)
         if not isinstance(old, str) or not old or not isinstance(new, str) or not new:
+            raise PatchFailure("REPLACEMENT_INVALID")
+        # An exclusive edit must be able to tell the old and new sentence apart on
+        # every run; overlapping sentences would turn the second run into a mixed state.
+        if type(exclusive) is not bool or (exclusive and (old in new or new in old)):
             raise PatchFailure("REPLACEMENT_INVALID")
         if any(c in old + new for c in "<>"):
             raise PatchFailure("REPLACEMENT_MARKUP_FORBIDDEN")
@@ -204,6 +209,10 @@ def apply_patch(body: str, patch: dict[str, Any], *, article_key: str, post_id: 
         if type(maximum) is not int or maximum < 1 or count > maximum:
             raise PatchFailure("REPLACEMENT_COUNT_MISMATCH")
         if count:
+            # Old and new text coexisting is a mixed document: stop this edit and
+            # let the operator re-check the current body instead of doubling it.
+            if exclusive and new in body:
+                raise PatchFailure("REPLACEMENT_MIXED_STATE")
             body = body.replace(old, new)
         elif new not in body:
             raise PatchFailure("REPLACEMENT_NOT_FOUND")
