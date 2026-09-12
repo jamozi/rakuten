@@ -51,8 +51,8 @@
     },
     {
       "path": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/functions.php",
-      "sha256": "e70ddf8232f60325b316bafe7f447c092f1c2ca6827a44bae11cca418d40c287",
-      "size": 213269
+      "sha256": "7babd4f05575ce62b67f9db21dc2d265c7835210f19fcfff34d435dd2d4cbec6",
+      "size": 214608
     },
     {
       "path": "scripts/build_editorial_measurement_v1.py",

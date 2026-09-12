@@ -32,7 +32,7 @@ from scripts import build_reader_purchase_support_v1 as purchase_support_owner  
 THEME_SLUG: Final = "kurashinoshirube-child"
 THEME_VERSION: Final = "1.6.0"
 THEME_RUNTIME_REVISION: Final = (
-    "169eb49833e73b037caa2bf425651f9826c658184365ae526ce845a49e4bfc3d"
+    "16976edf01ff9d78010bc7ffde1b6e3a1b8ca9aedf08ada3c0407d84350de5e4"
 )
 RUNTIME_STYLESHEET_SENTINELS: Final = {
     "assets/theme.css": "--raos-theme-runtime-revision-base",
@@ -148,6 +148,7 @@ THEME_SOURCE_INPUT_PATHS: Final = (
     THEME_REPOSITORY_ROOT / "templates/404.html",
     THEME_REPOSITORY_ROOT / "templates/archive.html",
     THEME_REPOSITORY_ROOT / "templates/front-page.html",
+    THEME_REPOSITORY_ROOT / "templates/home.html",
     THEME_REPOSITORY_ROOT / "templates/search.html",
     THEME_REPOSITORY_ROOT / "templates/single.html",
     THEME_REPOSITORY_ROOT / "theme-contract.v1.json",
@@ -971,6 +972,7 @@ def validate_sources() -> dict[str, str]:
     single = _text("templates/single.html")
     search = _text("templates/search.html")
     archive = _text("templates/archive.html")
+    home = _text("templates/home.html")
     not_found = _text("templates/404.html")
     front_page_markers = (
         '<!-- wp:template-part {"slug":"header","tagName":"header"} /-->',
@@ -1002,6 +1004,9 @@ def validate_sources() -> dict[str, str]:
         or search.count("[kurashinoshirube_search_empty_state]") != 1
         or "記事を探す" not in search
         or ">SEARCH<" in search
+        or home.count("wp:post-excerpt") != 1
+        or "wp:post-content" in home
+        or "記事一覧" not in home
         or archive.count("wp:post-excerpt") != 1
         or "wp:post-content" in archive
         or "比較ガイド一覧" not in archive

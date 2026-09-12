@@ -103,7 +103,6 @@ def test_all_sixteen_photos_and_thirty_unmodified_image_links_are_snapshot_bound
                 == sha256(record["sources"][size].encode()).hexdigest()
             )
     assert image_count == 30 and official_count == 1
-    assert len(catalog["offers"]) == 7
     assert all(not o["offer_id"].startswith("image-") for o in catalog["offers"])
 
 

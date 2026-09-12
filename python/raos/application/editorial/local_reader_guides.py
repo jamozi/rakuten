@@ -87,6 +87,8 @@ def _validate_schema(registry: Mapping[str, object]) -> None:
             _identifier(fact.get(field))
         for field in ("exact_model", "requirement", "text", "state"):
             _text(fact.get(field))
+        if "heading_topic" in fact:
+            _text(fact["heading_topic"])
         if not isinstance(fact.get("locator"), str):
             raise ValueError("LOCAL_GUIDE_LOCATOR_INVALID")
     for article in _records(registry.get("articles")):
@@ -279,12 +281,19 @@ def build_local_guides(
             group[requirement] = CheckedFact(
                 ref,
                 _identifier(fact.get("source_ref")),
-                _optional_text(source.get("checked_at")) if source is not None else None,
+                _optional_text(source.get("checked_at"))
+                if source is not None
+                else None,
                 "KNOWN" if _bound(fact, sources, hosts, today) else "UNKNOWN",
             )
         candidate_issues.extend(comparison_issues(grouped))
         if candidate_issues:
-            blocked.append({"article_id": identifier, "issues": list(dict.fromkeys(candidate_issues))})
+            blocked.append(
+                {
+                    "article_id": identifier,
+                    "issues": list(dict.fromkeys(candidate_issues)),
+                }
+            )
     targets: dict[str, str] = {}
     for target_ref, url in (existing_targets or {}).items():
         if not isinstance(url, str) or not re.fullmatch(
@@ -354,9 +363,7 @@ def _render(
     )
     dates = sorted(
         {
-            _text(
-                sources[_identifier(facts[ref].get("source_ref"))].get("checked_at")
-            )
+            _text(sources[_identifier(facts[ref].get("source_ref"))].get("checked_at"))
             for ref in _strings(article.get("evidence_refs", []))
         }
     )
@@ -421,9 +428,7 @@ def _render(
                 for unknown in _records(article.get("unknowns", []))
             ]
         ),
-        components.purchase_checklist(
-            _strings(article.get("purchase_checks", []))
-        ),
+        components.purchase_checklist(_strings(article.get("purchase_checks", []))),
     ):
         if component is not None:
             body.append(component.html())
@@ -449,6 +454,11 @@ def _render(
             + escape(ref, quote=True)
             + '"><h3>'
             + escape(_text(fact.get("exact_model")))
+            + (
+                "：" + escape(_text(fact["heading_topic"]))
+                if "heading_topic" in fact
+                else ""
+            )
             + "</h3><p>"
             + escape(_text(fact.get("text")))
             + '</p><p><a data-raos-cta-type="verify" href="'

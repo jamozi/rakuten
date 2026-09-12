@@ -51,7 +51,14 @@ def test_published_controls_are_inert_before_browser_enhancement():
             / (article["slug"] + ".html")
         ).read_text()
         if article["kind"] == "comparison":
-            body, _ = render_comparison(article, catalog, "", "test-inert-boundary")
+            template = (
+                root
+                / "changes/reader-purchase-support-v1/articles"
+                / (article["slug"] + ".html")
+            ).read_text()
+            body, _ = render_comparison(
+                article, catalog, template, "test-inert-boundary"
+            )
         nodes = list(fragment(body).walk())
         assert not any(
             node.tag in {"input", "select", "button", "noscript", "form"}

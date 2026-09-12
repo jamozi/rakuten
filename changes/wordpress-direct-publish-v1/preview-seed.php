@@ -23,6 +23,18 @@ function raos_direct_preview_is_initial_privacy_draft($post, array $document): b
     }
     return $post->post_content === WP_Privacy_Policy_Content::get_default_content();
 }
+/** Recognize only the untouched English install sample in this local database. */
+function raos_direct_preview_is_initial_sample($post): bool
+{
+    return $post && (int)$post->ID === 1 && (int)$post->post_author === 1
+        && $post->post_type === 'post' && $post->post_status === 'publish'
+        && $post->post_name === 'hello-world' && $post->post_title === 'Hello world!'
+        && $post->post_excerpt === '' && (int)$post->post_parent === 0
+        && $post->post_date === $post->post_modified
+        && $post->post_date_gmt === $post->post_modified_gmt
+        && get_post_meta($post->ID) === array()
+        && $post->post_content === "<!-- wp:paragraph -->\n<p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p>\n<!-- /wp:paragraph -->";
+}
 $input = json_decode(file_get_contents('/var/www/raos-direct-candidate/preview-input.json'), true, 64);
 if (!is_array($input) || ($input['candidate']['profile'] ?? null) !== 'owner-direct-v1') {
     WP_CLI::error('DIRECT_PREVIEW_INPUT_INVALID');
@@ -34,6 +46,14 @@ if (!$preview_admin) { WP_CLI::error('DIRECT_PREVIEW_ADMIN_MISSING'); }
 wp_set_current_user($preview_admin->ID);
 kses_init();
 if (!current_user_can('unfiltered_html')) { WP_CLI::error('DIRECT_PREVIEW_HTML_CAPABILITY_MISSING'); }
+// Reversible local cleanup; edited or owner-bound posts are left untouched.
+if (raos_direct_preview_is_initial_sample(get_post(1))) {
+    $sample_result = wp_update_post(array('ID' => 1, 'post_status' => 'draft'), true);
+    if (is_wp_error($sample_result) || get_post_status(1) !== 'draft') {
+        WP_CLI::error('DIRECT_PREVIEW_SAMPLE_DRAFT_FAILED');
+    }
+}
+
 if (!$articles && !empty($candidate['theme'])) {
     $articles = array(array('article_key' => 'direct-preview-example', 'document' => array(
         'post_type' => 'post', 'slug' => 'direct-preview-example', 'title' => 'ローカル表示確認用の記事',

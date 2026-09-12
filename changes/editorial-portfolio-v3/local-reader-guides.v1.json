@@ -88,7 +88,7 @@
       "source_ref": "local-official-381bf043dfca0e77",
       "url": "https://www.toshiba-lifestyle.com/jp/dish-drye/dws-33b/",
       "title": "DWS-33B | 東芝ライフスタイル",
-      "checked_at": "2026-09-06",
+      "checked_at": "2026-09-11",
       "authority": "MANUFACTURER_OFFICIAL",
       "models": [
         "DWS-33B(W)"
@@ -282,7 +282,8 @@
           "basis": "one_cycle",
           "course_label": "仕様掲載条件（コース別値は未確認）"
         }
-      ]
+      ],
+      "heading_topic": "給水・排水"
     },
     {
       "evidence_ref": "ss-m171-earth",
@@ -300,7 +301,8 @@
       "requirement": "guide:detergent_and_prohibitions",
       "locator": "PDF pp.8-9",
       "text": "専用洗剤のみ。粉末/液体6g、タブレット1個。台所用洗剤・重曹禁止。洗えない食器一覧あり。",
-      "state": "KNOWN"
+      "state": "KNOWN",
+      "heading_topic": "洗剤と禁止事項"
     },
     {
       "evidence_ref": "ss-m171-maintenance",
@@ -309,7 +311,8 @@
       "requirement": "guide:maintenance",
       "locator": "PDF pp.16-19",
       "text": "フィルター/トレイ毎回、ノズル月1回。本体は定期的。1週間以上不使用時は庫内を拭き乾燥。",
-      "state": "KNOWN"
+      "state": "KNOWN",
+      "heading_topic": "お手入れ"
     },
     {
       "evidence_ref": "ss-m171-cycle-energy",
@@ -318,7 +321,8 @@
       "requirement": "guide:cycle_time_and_energy",
       "locator": "PDF pp.13, 29",
       "text": "標準97分、念入り134分、おいそぎ45分、ソフト105分。定格512/526W。1サイクルWhは未確認。",
-      "state": "KNOWN"
+      "state": "KNOWN",
+      "heading_topic": "運転時間・消費電力量"
     },
     {
       "evidence_ref": "ss-m171-warranty",
@@ -364,7 +368,8 @@
           "basis": "one_cycle",
           "course_label": "仕様掲載条件（コース別値は未確認）"
         }
-      ]
+      ],
+      "heading_topic": "給水・排水"
     },
     {
       "evidence_ref": "tk-mdw22w-earth",
@@ -382,7 +387,8 @@
       "requirement": "guide:detergent_and_prohibitions",
       "locator": "PDF pp.10-11",
       "text": "専用洗剤3～5g。粉末/液体・ジェル/タブレット可。台所用洗剤・重曹禁止。洗えない食器一覧あり。",
-      "state": "KNOWN"
+      "state": "KNOWN",
+      "heading_topic": "洗剤と禁止事項"
     },
     {
       "evidence_ref": "tk-mdw22w-maintenance",
@@ -400,7 +406,8 @@
       "requirement": "guide:cycle_time_and_energy",
       "locator": "PDF pp.15, 23",
       "text": "通常69+75分、強力89+75分、スピード29+75分、水洗い19分。定格900W。Wh未確認。",
-      "state": "KNOWN"
+      "state": "KNOWN",
+      "heading_topic": "運転時間・消費電力量"
     },
     {
       "evidence_ref": "tk-mdw22w-warranty",
@@ -446,7 +453,8 @@
           "basis": "one_cycle",
           "course_label": "仕様掲載条件（コース別値は未確認）"
         }
-      ]
+      ],
+      "heading_topic": "給水・排水"
     },
     {
       "evidence_ref": "ss-ma251-earth",
@@ -464,7 +472,8 @@
       "requirement": "guide:detergent_and_prohibitions",
       "locator": "PDF pp.8-9",
       "text": "専用洗剤のみ。粉末/液体4g、タブレット1個。台所用洗剤・重曹禁止。洗えない食器一覧あり。",
-      "state": "KNOWN"
+      "state": "KNOWN",
+      "heading_topic": "洗剤と禁止事項"
     },
     {
       "evidence_ref": "ss-ma251-maintenance",
@@ -482,7 +491,8 @@
       "requirement": "guide:cycle_time_and_energy",
       "locator": "PDF pp.13, 29",
       "text": "標準65、念入り72、おいそぎ37、ソフト62、高温すすぎ57分。定格726/740W。Wh未確認。",
-      "state": "KNOWN"
+      "state": "KNOWN",
+      "heading_topic": "運転時間・消費電力量"
     },
     {
       "evidence_ref": "ss-ma251-warranty",
@@ -516,9 +526,10 @@
       "source_ref": "local-official-381bf043dfca0e77",
       "exact_model": "DWS-33B(W)",
       "requirement": "guide:water_supply_and_drainage",
-      "locator": "寸法/仕様・脚注1",
-      "text": "タンク約6L。シンク外排水は7L以上のバケツ、先端を底面より低く固定し、バケツ水を毎回捨てる。給水具体手順は未確認。",
-      "state": "KNOWN"
+      "locator": "寸法/仕様・脚注1・脚注4",
+      "text": "公表使用水量は約6L（標準コース条件）。シンク外排水は7L以上のバケツ、先端を底面より低く固定し、バケツ水を毎回捨てる。給水具体手順は未確認。",
+      "state": "KNOWN",
+      "heading_topic": "給水・排水"
     },
     {
       "evidence_ref": "dws-33b-earth",
@@ -663,7 +674,8 @@
           "basis": "one_cycle",
           "course_label": "標準（洗浄〜送風乾燥）"
         }
-      ]
+      ],
+      "heading_topic": "運転時間"
     },
     {
       "evidence_ref": "np-tmlk1-weight",
@@ -744,7 +756,8 @@
       "requirement": "water_supply_and_drainage",
       "locator": "PDF pp.9, 12, 19",
       "text": "分岐水栓不可。毎回3.2Lをカップ約2杯。排水先端は底面より低く固定。",
-      "state": "KNOWN"
+      "state": "KNOWN",
+      "heading_topic": "給水・排水"
     },
     {
       "evidence_ref": "tk-mdw22b-capacity",
@@ -762,7 +775,8 @@
       "requirement": "detergent",
       "locator": "PDF pp.10-11",
       "text": "専用3～5g。粉末/液体・ジェル/タブレット可。台所用洗剤・重曹不可。",
-      "state": "KNOWN"
+      "state": "KNOWN",
+      "heading_topic": "洗剤"
     },
     {
       "evidence_ref": "tk-mdw22b-maintenance",
@@ -780,7 +794,8 @@
       "requirement": "cycle_time",
       "locator": "PDF p.15",
       "text": "通常69+75分、強力89+75分、スピード29+75分、水洗い19分。",
-      "state": "KNOWN"
+      "state": "KNOWN",
+      "heading_topic": "運転時間"
     },
     {
       "evidence_ref": "tk-mdw22b-weight",
@@ -853,7 +868,8 @@
           "basis": "one_cycle",
           "course_label": "仕様掲載条件（コース別値は未確認）"
         }
-      ]
+      ],
+      "heading_topic": "1運転当たりの水量"
     },
     {
       "evidence_ref": "np-tmlk1-standard-water-per-cycle",
@@ -872,15 +888,16 @@
           "course_label": "標準（洗浄〜送風乾燥）",
           "basis": "one_cycle"
         }
-      ]
+      ],
+      "heading_topic": "標準使用水量"
     },
     {
       "evidence_ref": "tdws25s-normal-water",
       "source_ref": "tdws25s-manual",
       "exact_model": "TDWS25SBL / TDWS25SRD",
       "requirement": "guide:cycle_water",
-      "locator": "表紙（両型番）およびpp.18–22 通常洗浄・使い方",
-      "text": "TDWS25SBLとTDWS25SRD共通の通常洗浄で使用水量3.2L。給水カップ容量ではない。消費Whは未確認。TK-MDW22Wやmini Plusには転用しない。",
+      "locator": "表紙（両型番）、p.18 洗浄モード、p.19 手順4（洗浄・すすぎに必要な水量）",
+      "text": "TDWS25SBLとTDWS25SRD共通の説明書では、洗浄・すすぎに必要な水量を3.2Lと記載。通常洗浄もこの給水手順に従うため、水道代は1運転3.2Lで試算する。コース別の実測消費量ではない。消費Whは未確認。TK-MDW22Wやmini Plusには転用しない。",
       "state": "KNOWN",
       "quantities": [
         {
@@ -891,7 +908,8 @@
           "course_label": "通常洗浄（乾燥を含む）",
           "basis": "one_cycle"
         }
-      ]
+      ],
+      "heading_topic": "1運転当たりの水量"
     },
     {
       "evidence_ref": "np-tsp1-tank-level2-cycle",
@@ -916,6 +934,27 @@
           "unit": "L",
           "course": "tank-level2-econavi-off",
           "course_label": "タンク給水・汚れレベル2・エコナビOFF",
+          "basis": "one_cycle"
+        }
+      ],
+      "heading_topic": "対象コースの消費電力量・水量"
+    },
+    {
+      "evidence_ref": "dws-33b-standard-water",
+      "source_ref": "local-official-381bf043dfca0e77",
+      "exact_model": "DWS-33B(W)",
+      "requirement": "guide:cycle_water",
+      "locator": "使用水量欄と脚注4、色表示(W)ホワイト",
+      "text": "DWS-33B(W)の標準コースで使用水量は約6L。食器18点・小物12点、水温20℃、専用洗剤4.5gの公表試験条件。タンク容量からの推定ではなく、標準コースの水道代試算に使う。他コースへの転用や手洗いとの差額は計算しない。1運転当たりWhは未確認。",
+      "state": "KNOWN",
+      "heading_topic": "標準コースの使用水量",
+      "quantities": [
+        {
+          "kind": "water_per_cycle",
+          "value": 6,
+          "unit": "L",
+          "course": "standard-published",
+          "course_label": "標準（食器18点・小物12点、水温20℃）",
           "basis": "one_cycle"
         }
       ]
@@ -1123,7 +1162,7 @@
               ]
             },
             {
-              "text": "サンコーの各説明書p.12では、TK-MDW22WとTK-MDW22Bは分岐水栓に対応せず、電源を入れて毎回3.2Lを給水します。カップ約2杯が目安ですが、チャイムが鳴り給水ランプが消える合図で止めます。DWS-33B(W)はタンク容量が約6Lで、1.8Lカップと給水トレイが付属します。容量から一回の給水量や注ぐ回数を決めず、満水の合図とあわせて当該型番の説明書で確認します。購入前に、水を取って運び、給水口に注ぐ動きを確認します。",
+              "text": "サンコーの各説明書p.12では、TK-MDW22WとTK-MDW22Bは分岐水栓に対応せず、電源を入れて毎回3.2Lを給水します。カップ約2杯が目安ですが、チャイムが鳴り給水ランプが消える合図で止めます。DWS-33B(W)は標準コースの公表使用水量が約6Lで、1.8Lカップと給水トレイが付属します。使用水量から注ぐ回数を決めず、満水の合図とあわせて当該型番の説明書で確認します。購入前に、水を取って運び、給水口に注ぐ動きを確認します。",
               "evidence_refs": [
                 "tk-mdw22w-water-drainage",
                 "dws-33b-water-drainage",
@@ -1189,7 +1228,7 @@
         },
         {
           "topic": "DWS-33B(W)の給水詳細",
-          "why_unknown": "タンク容量約6L、付属カップと給水トレイは既知ですが、一回の給水量・満水合図・具体的な給水回数・水温条件は未確認です。",
+          "why_unknown": "標準コースの公表使用水量約6L、付属カップと給水トレイは既知ですが、一回の給水量・満水合図・具体的な給水回数・水温条件は未確認です。",
           "how_to_verify": "購入前に当該型番の説明書と公式案内で確認します。",
           "decision_effect": "他機種の給水回数や満水合図を当てはめません。"
         }
@@ -1540,7 +1579,7 @@
               ]
             },
             {
-              "text": "標準条件のNP-TMLK1-Kは一回の使用水量約2.5Lと約230Whを同じ条件で確認しています。仕様欄の使用水量はSS-M171が約5L、TK-MDW22WとTK-MDW22Bが3.2L、SS-MA251が約6Lですが、これら4機種のコース別の水量・Whは未確認です。DWS-33B(W)の約6Lはタンク容量のため計算に使いません。これらは家庭での実消費量や手洗いとの差額を示す値ではありません。",
+              "text": "標準条件のNP-TMLK1-Kは一回の使用水量約2.5Lと約230Whを同じ条件で確認しています。仕様欄の使用水量はSS-M171が約5L、TK-MDW22WとTK-MDW22Bが3.2L、SS-MA251が約6Lですが、これら4機種のコース別の水量・Whは未確認です。DWS-33B(W)は標準コースの公表使用水量約6Lを、その試験条件での水道代試算に使います。これらは家庭での実消費量や手洗いとの差額を示す値ではありません。",
               "evidence_refs": [
                 "ss-m171-water-drainage",
                 "tk-mdw22w-water-drainage",
@@ -1549,7 +1588,8 @@
                 "tk-mdw22b-water-drainage",
                 "np-tmlk1-standard-water-per-cycle",
                 "np-tmlk1-cycle-time",
-                "tk-mdw22b-cycle-water"
+                "tk-mdw22b-cycle-water",
+                "dws-33b-standard-water"
               ]
             },
             {
@@ -1626,12 +1666,6 @@
           "decision_effect": "一律の節約額や家計への効果を示しません。"
         },
         {
-          "topic": "DWS-33B(W)の一回の使用水量",
-          "why_unknown": "タンク容量約6Lは確認できていますが、この記録では一回の使用水量との一致を確認していません。",
-          "how_to_verify": "当該型番の説明書で、使うコースの使用水量を確認します。",
-          "decision_effect": "タンク容量をそのまま水道代の式へ入れません。"
-        },
-        {
           "topic": "TDWS25SBL／TDWS25SRDの通常洗浄1回当たりWh",
           "why_unknown": "両型番の公式説明書で消費Whを確認できていません。",
           "how_to_verify": "メーカーへ通常洗浄と乾燥を含む1回当たりWh・測定条件を問い合わせます。問い合わせは未実施です。",
@@ -1663,7 +1697,8 @@
         "tk-mdw22b-cycle-water",
         "np-tmlk1-standard-water-per-cycle",
         "tdws25s-normal-water",
-        "np-tsp1-tank-level2-cycle"
+        "np-tsp1-tank-level2-cycle",
+        "dws-33b-standard-water"
       ],
       "contextual_links": [
         {
@@ -1715,9 +1750,9 @@
           {
             "profile_id": "dws-33b-unknown",
             "exact_model": "DWS-33B(W)",
-            "course": "unconfirmed-course",
+            "course": "standard-published",
             "energy_ref": null,
-            "water_ref": null
+            "water_ref": "dws-33b-standard-water"
           },
           {
             "profile_id": "tdws25s-normal",
