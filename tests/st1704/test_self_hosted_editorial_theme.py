@@ -2293,6 +2293,31 @@ def test_navigation_script_integrity_constant_matches_asset() -> None:
     assert match.group(1) == _sha256(navigation_script)
 
 
+def test_navigation_script_keeps_the_home_hero_static() -> None:
+    script = (THEME_ROOT / "assets/editorial-navigation.js").read_text(encoding="utf-8")
+    # FD-07: the saved H1 and the three feature links stay readable at 0/6/12 seconds;
+    # no carousel, timer, inert or aria-hidden state is added to the site description.
+    for forbidden in (
+        "km-carousel",
+        "km-hero",
+        ".inert =",
+        "setAttribute('aria-hidden'",
+        "dataset.carousel",
+        "setInterval",
+        "setTimeout",
+        "IntersectionObserver",
+    ):
+        assert forbidden not in script, forbidden
+    assert len(re.findall(r"^\(\(\) => \{$", script, re.M)) == 1
+    assert "window.addEventListener('hashchange'" in script
+    assert "window.matchMedia('(min-width: 64.0625rem)')" in script
+    home = (
+        REPOSITORY_ROOT / "changes/wordpress-direct-publish-v1/articles/home.html"
+    ).read_text(encoding="utf-8")
+    assert 'id="km-hero-title"' in home
+    assert home.count('class="km-promo"') == 3
+
+
 def test_product_images_are_not_cropped_or_upscaled() -> None:
     css = (THEME_ROOT / "assets/theme.css").read_text(encoding="utf-8")
     match = re.search(r"\.raos-product-card__media img\s*\{([^}]*)\}", css)
