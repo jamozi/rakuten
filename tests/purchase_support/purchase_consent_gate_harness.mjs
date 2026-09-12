@@ -308,15 +308,39 @@ assert.equal(Array.from(googleTag.window.dataLayer[2])[1], 'GT-ABCDEF12');
 googleTag.revoke();
 assert.equal(googleTag.window['ga-disable-GT-ABCDEF12'], true);
 
+// An unowned gtag that already queued an executable command keeps the gate closed.
 const preexisting = runScenario({
   existingGtag: true,
+  existingDataLayer: [['config', 'G-ABCDEF12']],
   providers: { cookieYes: true, wpConsent: true, siteKit: true },
 });
 assert.equal(preexisting.document.replacements.length, 0);
-assert.equal(preexisting.window.dataLayer.length, 0);
+assert.equal(preexisting.window.dataLayer.length, 1);
 assert.equal(preexisting.window['ga-disable-G-ABCDEF12'], true);
 assert.equal(preexisting.document.cookies.has('_ga'), false);
 assert.equal(preexisting.document.cookies.has('_ga_CONTAINER'), false);
+
+// Site Kit's consent-mode stub (gtag defined, only consent commands queued, no loader) is replaced.
+const siteKitStub = runScenario({
+  existingGtag: true,
+  existingDataLayer: [['consent', 'default', { analytics_storage: 'denied', wait_for_update: 2000 }]],
+  providers: { cookieYes: true, wpConsent: true, siteKit: true },
+});
+assert.equal(siteKitStub.document.replacements.length, 1);
+assert.equal(siteKitStub.window.dataLayer.length, 3);
+assert.equal(Array.from(siteKitStub.window.dataLayer[0])[0], 'consent');
+assert.equal(Array.from(siteKitStub.window.dataLayer[0])[1], 'update');
+assert.equal(Array.from(siteKitStub.window.dataLayer[2])[0], 'config');
+assert.equal(siteKitStub.window.gtag.raosConsentGate, true);
+assert.equal(siteKitStub.window['ga-disable-G-ABCDEF12'], undefined);
+
+// The same stub without Site Kit's consent object is not trusted.
+const strangerStub = runScenario({
+  existingGtag: true,
+  existingDataLayer: [['consent', 'default', { analytics_storage: 'denied' }]],
+  providers: { cookieYes: true, wpConsent: true },
+});
+assert.equal(strangerStub.document.replacements.length, 0);
 
 const unownedQueue = runScenario({
   existingDataLayer: [['event', 'unreviewed-command']],
