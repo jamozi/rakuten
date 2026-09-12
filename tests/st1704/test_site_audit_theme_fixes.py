@@ -64,6 +64,18 @@ $out['minutes_empty'] = kurashinoshirube_estimated_reading_minutes(0);
 $out['disclosure'] = kurashinoshirube_render_article_disclosure(array(), null, 'kurashinoshirube_article_disclosure');
 $GLOBALS['page']->post_content = '<p>広告リンクのない本文です。</p>';
 $out['disclosure_none'] = kurashinoshirube_render_article_disclosure(array(), null, 'kurashinoshirube_article_disclosure');
+$GLOBALS['page']->post_name = 'anker-solix-c300-c800-c1000-differences';
+$GLOBALS['page']->post_content = '<article class="raos-product-card" data-raos-product-id="PRD-ANKER-SOLIX-C300">'
+    . '<div class="product-profile__body"><h3>Anker Solix C300</h3></div></article>';
+$out['disclosure_projected'] = kurashinoshirube_render_article_disclosure(array(), null, 'kurashinoshirube_article_disclosure');
+$GLOBALS['page']->post_name = 'carry-on-suitcase-comparison';
+$out['lowercase_paths'] = array(
+    kurashinoshirube_lowercase_request_path('/ANKER-SOLIX-C300-C800-C1000-DIFFERENCES/'),
+    kurashinoshirube_lowercase_request_path('/category/%E6%9A%AE%E3%82%89%E3%81%97%E3%81%AE%E9%81%93%E5%85%B7/'),
+    kurashinoshirube_lowercase_request_path('/Category/%E6%9A%AE/'),
+    kurashinoshirube_lowercase_request_path('/wp-json/WP/v2/'),
+    kurashinoshirube_lowercase_request_path('/kitchen/'),
+);
 $out['minutes_short'] = kurashinoshirube_estimated_reading_minutes(19);
 $GLOBALS['page']->post_content = "  \n ";
 $out['minutes_blank'] = kurashinoshirube_estimated_reading_minutes(19);
@@ -183,10 +195,24 @@ def test_reading_time_comes_from_the_stored_body(rendered) -> None:
 def test_article_disclosure_reflects_affiliate_presence(rendered) -> None:
     affiliate = str(rendered["disclosure"])
     assert affiliate.startswith('<p class="raos-ad-disclosure" data-raos-ad-disclosure="affiliate">')
+    # Legacy articles receive Rakuten-generated photos at render time (official-product-media.php);
+    # the stored body has no affiliate link, yet the page does.
+    projected = str(rendered["disclosure_projected"])
+    assert 'data-raos-ad-disclosure="affiliate"' in projected
     assert "この記事には広告（楽天アフィリエイトの購入・商品画像リンク）が含まれます。成果報酬は評価や掲載順に影響しません。" in affiliate
     none = str(rendered["disclosure_none"])
     assert 'data-raos-ad-disclosure="none"' in none
     assert "この記事にアフィリエイトリンクはありません。" in none
+
+
+def test_lowercase_redirect_ignores_percent_encoding_and_wp_paths(rendered) -> None:
+    assert rendered["lowercase_paths"] == [
+        "/anker-solix-c300-c800-c1000-differences/",
+        None,
+        "/category/%E6%9A%AE/",
+        None,
+        None,
+    ]
 
 
 def test_excerpts_are_whole_sentences_not_word_cuts(rendered) -> None:

@@ -114,6 +114,28 @@ theme が hub 15 ページの head (title「｜暮らしのしるべ」区切り
 
 ## repo 側の修正 (findings.json の key ごと)
 
+### 子テーマ (`changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/`)
+
+- T-01: `kurashinoshirube_reader_hub_page_head` / `kurashinoshirube_reader_hub_url` を fail-open 化 (登録済 slug + publish + 非パスワードで通す。post_content の shortcode 比較を廃止)。navigation-link を削る filter を削除し header / footer の hub 5 リンクを常時出力。パンくず・BreadcrumbList の hub 段は hub page の post_title。
+- T-03: `rest_endpoints` で `/wp/v2/users` を匿名 401、`is_author()` を 404 (`?author=N` も 404)、`oembed_response_data` の author 除去。
+- T-05: hub を fixed_page として head 生成 (title `｜暮らしのしるべ`、description = post_excerpt が 30-180 字なら採用、無ければ JSON、og:type website、CollectionPage + BreadcrumbList)。
+- T-06: article_id → 既存 webp 15 件のマップ (食洗機ガイド 5 本は countertop、86 は solota-rakua、home/hub/policy は home-hero) で og:image / width / height / type / twitter:image / Article.image を出力。
+- T-08 / T-09 / T-10 / T-14 / T-15: core block の inline style 分離と上限、`send_headers` のセキュリティヘッダ (HSTS は https 時のみ)、generator 除去と匿名 REST index の `wp/v2`・`oembed/1.0` 限定、大文字 URL の 301 と archive の self canonical、コメント feed link 停止と tagline fallback。
+- T-11 / T-13: `scripts/build_st1704_theme_icons.py` (brand-mark.svg → 512px PNG / apple-touch-icon 180px / favicon-32 / favicon.ico、sha256 固定)、`theme-color`、`do_faviconico` で ICO を直接応答。JSON-LD は Organization「暮らしのしるべ」(logo ImageObject、contactPoint)、WebSite の SearchAction、Article.author = `#editorial-team`「暮らしのしるべ編集部」。single.html に公開日/更新日ラベルと「執筆・確認：暮らしのしるべ編集部」。
+- T-16 / T-22 / T-27: `the_content` (priority 14) で楽天画像リンクの `<img>` に alt「<商品名> の商品画像（楽天市場）」・width/height・loading=lazy を付与し、240px 版 wrapper を出力から除外 (保存 HTML と原文コードは不変)。CSS で `aspect-ratio:1/1`。
+- T-18 / CP-08: footer = hub 5 + 方針 3 + 問い合わせ (mailto)。
+- T-21: `[kurashinoshirube_article_disclosure]` を h1 直下 (目次より前) に出力。`hb.afl.rakuten.co.jp` を含む記事だけ広告文、他は「アフィリエイトリンクはありません」。front-page は header 直下。
+- T-23 / T-24 / T-25 / T-26 / T-28 / T-29: メタ情報を 0.875rem 以上、Cookie バナーを 390px で 25vh 以内 + focus guard、theme 独自の skip link nav、目次の初期状態を viewport で統一、hub page 解決の request cache + transient 1h、CookieYes script の defer、editorial-v2.css を記事だけに限定、front page の hero を preload。
+- CA-23 / CA-24 / CA-28 / CB-16 / CB-17 / CP-05 / CP-07 / CP-14 / CP-15 / CP-18 / CP-19 / CP-20: 挿入リンクの条件文、Rakuten Developers 表記を出典外へ (表示時)、読了時間を本文文字数から算出、post-date のラベル、抜粋を語中で切らない、archive を更新日順、公開面の著者名固定、検索の hub 案内、再検索フォーム、カードの二重リンク解消、404 の hub 導線と h1、唯一の category archive を /updates/ へ 301。
+- 関連ガイド末尾に「目的別の入口」(所属 purpose hub) を追加 (T-19)。
+- SEO 監査 script (`scripts/raos_wordpress_seo_audit.py`) と test を新しい JSON-LD グラフに更新。
+
+### 統合 (生成チェーンと検証)
+
+- 生成順: `build_reader_purchase_support_v1.py` → `build_editorial_portfolio_v3.py` → `build_editorial_v3_theme_navigation.py` → `build_st1704_theme_icons.py --check` → `build_st1704_self_hosted_theme.py --generate` → `make generate` で収束 (theme revision `6bfe1b1d…`)。
+- `make check` PASS、`ruff` / `mypy` / `npm run format:check` / `lint` / `typecheck` PASS、`php -l` (functions.php / inc/*.php) OK、`make final-secrets` OK。
+- 旧仕様を固定していた test は新仕様に更新: `tests/wordpress_public_acceptance/test_directories.py` (guides/comparisons の役割分担と注記文)、`tests/purchase_support/*` (画像 18・EXPIRED・JST 表示)、`tests/st1704/*` (fail-open・3 段パンくず・icons)、`tests/wordpress_reader_navigation_v3/*` (hero img 13 枚・CSS の scroll-margin)。
+
 ### 生成記事 13 本・policy 3・kitchen (編集元 `changes/reader-purchase-support-v1/`、renderer `python/raos/application/editorial/purchase_support.py`)
 
 - CA-06 / CA-05: renderer が `min(valid_until, checked_at+24h)` を過ぎた offer の価格行を出さず「販売条件の期限切れ・再確認中（確認日／期限）」(`data-ps-price-state="EXPIRED"`) に切り替え、現行価格は「（…まで有効な確認値）」を同じ行に表示。「次回確認」は valid_until 翌日以降を自動算出。Jackery 500 New は公式ストアで通常価格 59,800 円 (2026-09-12 確認) に offer を更新しセール終了を記録。生成は `editorial_updated_on` の JST 終端を基準にして再現可能 (閲覧時の期限判定は theme の purchase-support.js)。

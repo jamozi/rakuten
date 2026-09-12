@@ -16,8 +16,8 @@ const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
 const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = 'd6def186a550a06318255f8daba5b0741908574a16c5d1a9a3196d3e6103f557';
 const KURASHINOSHIRUBE_PURCHASE_UI_SHA256 = '575619ac8485a1f5f42243dd12cdd1a2f2acef0aaf8834a42ca19c101e619fb0';
 const KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256 = '813d6b37f2db2cfee9d3edde33c7d07558536bbe2968f026e0a1b3b4b226cef5';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '6bfe1b1d58d37175c9de8a6707d6cc04796cf083d6d6a4d110e9e54d570d3955';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '6bfe1b1d58d37175c9de8a6707d6cc04796cf083d6d6a4d110e9e54d570d3955';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '7b6051d6a8a038925df57f7174ab9d5a25a38682599acef6058d0df4ad55d18f';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '7b6051d6a8a038925df57f7174ab9d5a25a38682599acef6058d0df4ad55d18f';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -5982,6 +5982,12 @@ function kurashinoshirube_article_has_affiliate_links(int $post_id): bool
     if (is_string($content) && str_contains($content, 'hb.afl.rakuten.co.jp')) {
         return true;
     }
+    // Rakuten-generated photos projected into legacy articles at render time carry affiliate links too.
+    $slug = $post_id > 0 ? get_post_field('post_name', $post_id, 'raw') : null;
+    if (is_string($content) && is_string($slug) && function_exists('kurashinoshirube_rakuten_product_media')
+        && str_contains(kurashinoshirube_rakuten_product_media($content, $slug), 'hb.afl.rakuten.co.jp')) {
+        return true;
+    }
     if (function_exists('kurashinoshirube_purchase_support_context')) {
         $context = kurashinoshirube_purchase_support_context();
         $media = is_array($context) ? ($context['media'] ?? array()) : array();
@@ -6280,6 +6286,18 @@ function kurashinoshirube_send_security_headers(): void
 add_action('send_headers', 'kurashinoshirube_send_security_headers');
 
 /** Upper-case request paths are one canonical lower-case URL. */
+/** Lower-cased canonical form of a request path, or null when no ASCII uppercase letter needs a redirect. */
+function kurashinoshirube_lowercase_request_path(string $path): ?string
+{
+    // Compare the decoded path so percent-encoded bytes (%E6…) never count as uppercase letters.
+    $decoded = rawurldecode($path);
+    if (preg_match('/[A-Z]/', $decoded) !== 1
+        || preg_match('#\A/wp-(?:admin|login|json|includes|content)#', strtolower($decoded)) === 1) {
+        return null;
+    }
+    return implode('/', array_map('rawurlencode', explode('/', strtolower($decoded))));
+}
+
 function kurashinoshirube_redirect_uppercase_request_path(): void
 {
     if (is_admin() || (function_exists('wp_doing_ajax') && wp_doing_ajax())
@@ -6293,10 +6311,11 @@ function kurashinoshirube_redirect_uppercase_request_path(): void
     }
     $query = strpos($uri, '?');
     $path = $query === false ? $uri : substr($uri, 0, $query);
-    if (preg_match('/[A-Z]/', $path) !== 1 || preg_match('#\A/wp-(?:admin|login|json|includes|content)#', strtolower($path)) === 1) {
+    $lowered = kurashinoshirube_lowercase_request_path($path);
+    if ($lowered === null) {
         return;
     }
-    $target = home_url(strtolower($path) . ($query === false ? '' : substr($uri, $query)));
+    $target = home_url($lowered . ($query === false ? '' : substr($uri, $query)));
     if (wp_safe_redirect($target, 301)) {
         exit;
     }
