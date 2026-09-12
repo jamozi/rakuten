@@ -1329,7 +1329,7 @@ def test_consent_defaults_are_opt_in_and_global() -> None:
     assert "$handle !== 'google_gtagjs'" in analytics_filter
     assert "www.googletagmanager.com" in analytics_filter
     assert "'/gtag/js'" in analytics_filter
-    assert "G-[A-Z0-9]{6,20}" in analytics_filter
+    assert "(?:G|GT)-[A-Z0-9]{6,20}" in analytics_filter
     assert "isset($source_parts['fragment'])" in analytics_filter
     assert "rawurlencode($measurement_id)" in analytics_filter
     assert 'data-raos-consent-gate="statistics"' in analytics_filter

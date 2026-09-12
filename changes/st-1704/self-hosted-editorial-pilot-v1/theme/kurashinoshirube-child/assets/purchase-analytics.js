@@ -51,7 +51,7 @@
       }
       const gate = document.getElementById('google_gtagjs-js');
       const measurementId = gate && gate.getAttribute('data-raos-measurement-id');
-      if (!measurementId || !/^G-[A-Z0-9]{6,20}$/.test(measurementId) || window[`ga-disable-${measurementId}`] === true) return;
+      if (!measurementId || !/^(?:G|GT)-[A-Z0-9]{6,20}$/.test(measurementId) || window[`ga-disable-${measurementId}`] === true) return;
       window.gtag('event', 'offer_click', {...params, send_to: measurementId, debug_mode: config.debug_mode});
     } catch (_error) {
       // Consent/storage/provider failures never interrupt the shopper's navigation.

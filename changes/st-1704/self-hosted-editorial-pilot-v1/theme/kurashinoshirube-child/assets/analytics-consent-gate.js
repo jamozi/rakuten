@@ -69,7 +69,7 @@
     }
     const measurementId = gate.getAttribute('data-raos-measurement-id') || '';
     const source = gate.getAttribute('data-raos-source') || '';
-    if (!/^G-[A-Z0-9]{6,20}$/.test(measurementId)) {
+    if (!/^(?:G|GT)-[A-Z0-9]{6,20}$/.test(measurementId)) {
       return null;
     }
     let parsed;
