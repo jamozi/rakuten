@@ -16,8 +16,8 @@ const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
 const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = 'a9c24425f9102eb864fb42e85ca540f60b9981031a4604323c53affd3ab3a6f6';
 const KURASHINOSHIRUBE_PURCHASE_UI_SHA256 = '575619ac8485a1f5f42243dd12cdd1a2f2acef0aaf8834a42ca19c101e619fb0';
 const KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256 = '813d6b37f2db2cfee9d3edde33c7d07558536bbe2968f026e0a1b3b4b226cef5';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'b523ee6aef1bc74f992daf715532c564165e2dcec12bde080aa7c804e9c8242c';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'b523ee6aef1bc74f992daf715532c564165e2dcec12bde080aa7c804e9c8242c';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = 'b5128c273345b2b22b604eef4bac348c66f0b5f10826d3a28659985f64b2fc51';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = 'b5128c273345b2b22b604eef4bac348c66f0b5f10826d3a28659985f64b2fc51';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -6268,6 +6268,36 @@ function kurashinoshirube_unhook_core_head_extras(): void
 }
 add_action('after_setup_theme', 'kurashinoshirube_unhook_core_head_extras', 1);
 add_filter('the_generator', '__return_empty_string');
+
+/**
+ * Site Kit prints its own generator meta from a closure on wp_head, which cannot be
+ * unhooked by name. Buffer the head output and drop only that tag (T-10).
+ */
+function kurashinoshirube_start_head_generator_buffer(): void
+{
+    if (is_admin() || is_feed()) {
+        return;
+    }
+    $GLOBALS['kurashinoshirube_head_buffer_level'] = ob_get_level();
+    ob_start();
+}
+add_action('wp_head', 'kurashinoshirube_start_head_generator_buffer', -1000);
+
+function kurashinoshirube_flush_head_without_plugin_generator(): void
+{
+    if (! isset($GLOBALS['kurashinoshirube_head_buffer_level'])
+        || ob_get_level() <= (int) $GLOBALS['kurashinoshirube_head_buffer_level']) {
+        return;
+    }
+    unset($GLOBALS['kurashinoshirube_head_buffer_level']);
+    $head = ob_get_clean();
+    if (! is_string($head)) {
+        return;
+    }
+    $filtered = preg_replace('#<meta\s+name="generator"\s+content="[^"]*"\s*/?>\s*#i', '', $head);
+    echo is_string($filtered) ? $filtered : $head;
+}
+add_action('wp_head', 'kurashinoshirube_flush_head_without_plugin_generator', PHP_INT_MAX);
 
 /** Baseline response hardening; CSP stays with the server configuration. */
 function kurashinoshirube_send_security_headers(): void

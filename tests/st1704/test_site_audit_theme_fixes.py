@@ -293,6 +293,8 @@ def test_public_surface_hooks_are_registered(rendered) -> None:
         ("action", "after_setup_theme", "kurashinoshirube_unhook_core_head_extras"),
         ("action", "do_faviconico", "kurashinoshirube_serve_favicon_ico"),
         ("action", "wp_head", "kurashinoshirube_emit_archive_canonical"),
+        ("action", "wp_head", "kurashinoshirube_start_head_generator_buffer"),
+        ("action", "wp_head", "kurashinoshirube_flush_head_without_plugin_generator"),
         ("action", "wp_footer", "kurashinoshirube_print_focus_guard_script"),
         ("filter", "rest_endpoints", "kurashinoshirube_restrict_user_rest_routes"),
         ("filter", "rest_index", "kurashinoshirube_restrict_public_rest_index"),
