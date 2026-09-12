@@ -65,3 +65,26 @@
 | PRD-PANASONIC-NP-TSP1 | NP-TSP1-W | facts[label=給水方式] ← guide_facts[field=water_supply] / NP-TSP1 注1・給水方式別条件 | タンク給水／分岐水栓（給水方式ごとの条件あり） | guide_facts.water_supply の記述から方式名だけを短縮。数値・条件は追加していない | https://panasonic.jp/dish/feature/SLIM/eco.html | 2026-09-10 | KNOWN | guide_facts（給排水ガイドの根拠） | 主表 `.ps-comparison` の行「給水方式」 | 比較の判断軸として給水方式を主表へ追加（同じ出典・確認日・状態を継承） | tests/purchase_support/test_purpose_delta.py::test_water_supply_rows_only_where_the_guide_fact_names_the_method |
 | PRD-PANASONIC-NP-TSP1 | NP-TSP1-W | products.caution | 上方へ動く扉の最大高さ712mmと、周囲の余白は分けて確認してください。1店舗の過去の売り切れを、市場全体の販売終了とは扱いません。 | 本体寸法と開扉時・余白の読み分け。数値は既存factの値のみを参照 | 既存facts（開扉時の寸法・必要な余白）の出典 | 既存factsの確認日を継承 | 既存fieldを更新（従来はrendererで未使用） | catalog内のみ（未表示） | 商品カード `.ps-product-caution` と販売枠 `#ps-seller-*`、`#ps-installation-context` の一覧 | 詳細を閉領域だけに置かず、直接流入でも必要な限界が読めるようにする | tests/purchase_support/test_purpose_delta.py::test_moved_facts_keep_value_state_and_source_in_open_detail_table |
 | PRD-THANKO-RAKUA-MINI-COLOR | TDWS25SBL / TDWS25SRD | research_issues[manufacturer_inquiry 通常洗浄コースのWh].alternative | （文面。値なし） | 電気代未算定と設置根拠の分離 | 既存research_issueのtarget_url | 既存next_check_onを維持 | DRAFT_NOT_SENT（変更なし） | 旧文「回答までは対象項目を未確認として扱い、その条件での設置や費用を確定しません。」 | 新文「1回の消費電力量が未確認のため、電気代は算定していません。…設置条件は…別に確認します。」（41と5ガイドに反映） | CP41-02。電気代未算定を設置の確認済み根拠の無効化に読ませない（AC12） | tests/purchase_support/test_purpose_delta.py::test_electricity_note_does_not_void_installation_evidence |
+
+## 販売経路の棚卸し（FD-05、2026-09-12）
+
+比較41と83の現在本文が投影する販売先を、通常リンク・広告文面・広告画像に分けて記録する。本文の非広告リンクだけを見て収益化ゼロと判定しない。価格鮮度（RECHECK_REQUIRED）・注文可能性・広告権限・商品同一性は別の判定で、価格未確認だけで正しい通常リンクを外さず、広告未契約を商品の不向き理由にしない。新しいaffiliate parameterや仮URLは追加していない。ASP各社の提携状態は既存準備文書のまま未接続。
+
+| post_id | product | exact_model | kind | seller | url_host | variant_or_note | identity | state | checked_at | rights | handling |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 41 | SOLOTA | NP-TMLK1-K | 通常（未確認） | 販売先未確認 |  |  |  | NO_OFFER |  | 調査課題で管理 | 候補の評価は販売先の有無に依存しない |
+| 41 | SOLOTA | NP-TMLK1-K | 広告画像 | 画像提供元（楽天） | hb.afl.rakuten.co.jp | 画像リンク先の構成・送料・保証は未確認 | 画像の同定は登録素材のSHA-256 | RUNTIME_BINDING | 公開時snapshotに固定 | advertiser/link_usage は既存確認票で管理 | 画像リンクを価格・保証の確認と扱わない |
+| 41 | ラクアmini color | TDWS25SBL / TDWS25SRD | 通常（未確認） | 販売先未確認 |  |  |  | NO_OFFER |  | 調査課題で管理 | 候補の評価は販売先の有無に依存しない |
+| 41 | ラクアmini color | TDWS25SBL / TDWS25SRD | 広告画像 | 画像提供元（楽天） | hb.afl.rakuten.co.jp | 画像リンク先の構成・送料・保証は未確認 | 画像の同定は登録素材のSHA-256 | RUNTIME_BINDING | 公開時snapshotに固定 | advertiser/link_usage は既存確認票で管理 | 画像リンクを価格・保証の確認と扱わない |
+| 41 | SS-MA251 | SS-MA251 | 通常 | シロカ公式通販 | store.siroca.jp | SS-MA251 シルバー・オートオープン・新品 | True | AVAILABLE | 2026-09-10T01:43:25+00:00 | affiliate=False／link_basis=公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。 | 価格は確認時点。現在総額は断定しない |
+| 41 | SS-MA251 | SS-MA251 | 広告画像 | 画像提供元（楽天） | hb.afl.rakuten.co.jp | 画像リンク先の構成・送料・保証は未確認 | 画像の同定は登録素材のSHA-256 | RUNTIME_BINDING | 公開時snapshotに固定 | advertiser/link_usage は既存確認票で管理 | 画像リンクを価格・保証の確認と扱わない |
+| 41 | NP-TSP1 | NP-TSP1-W | 通常（未確認） | 販売先未確認 |  |  |  | NO_OFFER |  | 調査課題で管理 | 候補の評価は販売先の有無に依存しない |
+| 41 | NP-TSP1 | NP-TSP1-W | 広告画像 | 画像提供元（楽天） | hb.afl.rakuten.co.jp | 画像リンク先の構成・送料・保証は未確認 | 画像の同定は登録素材のSHA-256 | RUNTIME_BINDING | 公開時snapshotに固定 | advertiser/link_usage は既存確認票で管理 | 画像リンクを価格・保証の確認と扱わない |
+| 83 | エアロフレックスDX2 01521 | 01521-09 | 通常 | エース公式通販 | store.ace.jp | 01521-09 グレー×ホワイト・35L・新品 | True | AVAILABLE | 2026-09-10T01:43:25+00:00 | affiliate=False／link_basis=公式販売ページへの通常リンク。広告素材・計測パラメーターは使用しない。 | 価格は確認時点。現在総額は断定しない |
+| 83 | エアロフレックスDX2 01521 | 01521-09 | 広告画像 | 画像提供元（楽天） | hb.afl.rakuten.co.jp | 画像リンク先の構成・送料・保証は未確認 | 画像の同定は登録素材のSHA-256 | RUNTIME_BINDING | 公開時snapshotに固定 | advertiser/link_usage は既存確認票で管理 | 画像リンクを価格・保証の確認と扱わない |
+| 83 | C-Lite CS2*09007 | CS2*09007 / 134679-1041 | 通常 | サムソナイト公式ストア | www.samsonite.co.jp | CS2*09007 / 134679-1041 ブラック・55cm・36L（拡張時42L）・新品 | True | AVAILABLE | 2026-09-10T05:46:00+00:00 | affiliate=False／link_basis=公式商品ページのSKU CS2*09007、ブラック、55cm、在庫あり表示とカート欄を確認。通常リンク。 | 価格は確認時点。現在総額は断定しない |
+| 83 | C-Lite CS2*09007 | CS2*09007 / 134679-1041 | 広告画像 | 画像提供元（楽天） | hb.afl.rakuten.co.jp | 画像リンク先の構成・送料・保証は未確認 | 画像の同定は登録素材のSHA-256 | RUNTIME_BINDING | 公開時snapshotに固定 | advertiser/link_usage は既存確認票で管理 | 画像リンクを価格・保証の確認と扱わない |
+| 83 | APPLITE 4.0 QJ6-68002 | QJ6-68002 | 通常（未確認） | 販売先未確認 |  |  |  | NO_OFFER |  | 調査課題で管理 | 候補の評価は販売先の有無に依存しない |
+| 83 | APPLITE 4.0 QJ6-68002 | QJ6-68002 | 広告画像 | 画像提供元（楽天） | hb.afl.rakuten.co.jp | 画像リンク先の構成・送料・保証は未確認 | 画像の同定は登録素材のSHA-256 | RUNTIME_BINDING | 公開時snapshotに固定 | advertiser/link_usage は既存確認票で管理 | 画像リンクを価格・保証の確認と扱わない |
+| 83 | FREQUENTER LIEVE 1-250 | 1-250 | 通常（未確認） | 販売先未確認 |  |  |  | NO_OFFER |  | 調査課題で管理 | 候補の評価は販売先の有無に依存しない |
+| 83 | FREQUENTER LIEVE 1-250 | 1-250 | 広告画像 | 画像提供元（楽天） | hb.afl.rakuten.co.jp | 画像リンク先の構成・送料・保証は未確認 | 画像の同定は登録素材のSHA-256 | RUNTIME_BINDING | 公開時snapshotに固定 | advertiser/link_usage は既存確認票で管理 | 画像リンクを価格・保証の確認と扱わない |

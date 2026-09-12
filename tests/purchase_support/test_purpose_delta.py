@@ -360,3 +360,45 @@ def test_water_guide_offers_a_model_index_and_no_self_links(catalog):
             assert f'href="/{ps.MAIN_SLUG}/#ps-seller-{p["anchor"]}"' in html[slug]
     body = html["dishwasher-water-supply-methods"]
     assert body.index('class="ps-model-index"') < body.index('class="ps-guide-model"')
+
+
+# --- FD-05 / R-M: sale routes are described without asserting current totals ---
+
+
+def test_offer_panels_keep_identity_and_never_assert_current_totals(catalog):
+    html, runtime = compile(catalog)
+    root = fragment(html[ps.MAIN_SLUG])
+    sellers = {
+        n.attrs["id"]: n
+        for n in root.find(tag="section")
+        if n.attrs.get("id", "").startswith("ps-seller-")
+    }
+    assert len(sellers) == 4
+    verified = sellers["ps-seller-product-dish-ss-ma251"]
+    offer = next(n for n in verified.walk() if "data-ps-offer" in n.attrs)
+    assert offer.attrs["data-ps-price-state"] == "RECHECK_REQUIRED"
+    assert "確認時の販売条件です。現在価格の再確認が必要です。" in verified.text()
+    assert "現在最安" not in verified.text() and "在庫あり" not in verified.text()
+    for anchor in ("np-tmlk1", "rakua-mini-color", "np-tsp1"):
+        text = sellers[f"ps-seller-product-dish-{anchor}"].text()
+        assert "販売先未確認" in text
+        assert "売り切れです。" not in text
+    # Image bindings need the media projection, so read the tracked runtime output.
+    tracked = json.loads(
+        (
+            ROOT
+            / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
+        ).read_text()
+    )
+    bindings = next(a for a in tracked["articles"] if a["slug"] == ps.MAIN_SLUG)[
+        "bindings"
+    ]
+    kinds = {(b["link_purpose"], b["affiliate"]) for b in bindings}
+    assert ("merchant_purchase", "false") in kinds
+    assert ("affiliate_purchase", "true") in kinds
+    for p in dishwashers(catalog):
+        card = next(
+            n for n in root.find(tag="article") if n.attrs.get("id") == p["anchor"]
+        )
+        assert p["lead"] in card.text()
+        assert all(item in card.text() for item in p["fit"] + p["avoid"])
