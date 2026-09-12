@@ -85,7 +85,7 @@ class Visuals(unittest.TestCase):
 
     def test_home_keeps_purchase_target(self):
         html = (DIRECT / 'articles/home.html').read_text()
-        self.assertIn('href="#home-purchase-check"', html)
+        self.assertIn('href="/countertop-dishwasher-for-small-households/#ps-offers"', html)
         self.assertIn('id="home-purchase-check"', html)
         self.assertIn('id="ks-visual-categories"', html)
 

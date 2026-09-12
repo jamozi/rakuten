@@ -60,7 +60,7 @@ class ReaderSources(unittest.TestCase):
             self.assertIn('<a href=', html)
     def test_home_purchase_route_has_a_real_target(self):
         html = (DIRECT / 'articles/home.html').read_text()
-        self.assertIn('href="#home-purchase-check"', html)
+        self.assertIn('href="/countertop-dishwasher-for-small-households/#ps-offers"', html)
         self.assertIn('id="home-purchase-check"', html)
         self.assertNotIn('href="/updates/"><div class="km-guide-copy"><span class="km-eyebrow">STEP 3', html)
     def test_new_sources_have_unique_ids_and_local_anchors(self):
@@ -86,7 +86,7 @@ class ReaderSources(unittest.TestCase):
     def test_travel_shortcut_does_not_depend_on_generated_anchor(self):
         html = (DIRECT / 'articles/travel.html').read_text()
         self.assertIn('id="travel-comparisons"', html)
-        self.assertIn('href="#compare"', html)
+        self.assertIn('href="/carry-on-suitcase-comparison/"', html)
         self.assertIn('id="compare"', html)
         self.assertNotIn('href="#journey-comparison"', html)
     def test_article_fragments_are_not_publication_documents(self):

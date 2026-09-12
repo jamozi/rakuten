@@ -174,7 +174,7 @@ def render_pages(
     def cards(ids: list[int]) -> str:
         return '<div class="ks-route-grid">' + "".join(card(i) for i in ids) + "</div>"
 
-    def category_cards() -> str:
+    def category_cards(home: bool = False) -> str:
         reps = {"travel": 83, "kitchen": 41, "cleaning": 30, "preparedness": 28}
         guides = {
             "travel": (82, "ps-choose"),
@@ -187,7 +187,17 @@ def render_pages(
             ids = [a["post_id"] for a in meta.values() if a["category"] == slug]
             ads = sum(by_id[i]["has_ads"] for i in ids)
             pid, anchor = guides[slug]
-            out += f'<article class="ks-editorial-card"><h3>{escape(cat["name"])}</h3><p>{len(ids)}記事・広告リンクを含む記事 {ads}本</p><ul><li>{link("/" + slug + "/", "カテゴリを見る")}</li><li>{link(article_url(reps[slug]), "代表比較を読む")}</li><li>{link(article_url(pid, anchor), "採寸・条件整理")}</li></ul></article>'
+            category_link = link("/" + slug + "/", "カテゴリを見る")
+            legacy = {
+                "travel": "cluster-mobility",
+                "kitchen": "cluster-home",
+                "preparedness": "cluster-ready",
+            }
+            if home and slug in legacy:
+                category_link = category_link.replace(
+                    "<a ", f'<a id="{legacy[slug]}" ', 1
+                )
+            out += f'<article class="ks-editorial-card"><h3>{escape(cat["name"])}</h3><p>{len(ids)}記事・広告リンクを含む記事 {ads}本</p><ul><li>{category_link}</li><li>{link(article_url(reps[slug]), "代表比較を読む")}</li><li>{link(article_url(pid, anchor), "採寸・条件整理")}</li></ul></article>'
         return '<div class="ks-route-grid">' + out + "</div>"
 
     def purpose_cards() -> str:
@@ -238,14 +248,14 @@ def render_pages(
                 )
 
             body = (
-                '<section class="ks-home-feature"><div class="ks-home-masthead"><div class="ks-home-intro"><p class="km-tag">暮らしの道具を、納得して選ぶ</p><h1>あなたの暮らしに、<br>合うものを。</h1><p>選ぶ理由も、選ばない理由も。<br>置き場所、使い方、残る手間から、<br>自分に合う候補を比較できます。</p></div><figure class="ks-home-mood"><img src="https://kurashinoshirube.com/wp-content/themes/kurashinoshirube-child/assets/images/magazine-hero.webp" width="842" height="495" alt="暮らしの道具を選ぶ編集イメージ"><figcaption>編集イメージ。商品同定や実測の根拠ではありません。</figcaption></figure></div><div class="ks-home-feature-grid">'
+                '<section class="ks-home-feature"><div class="ks-home-masthead"><div class="ks-home-intro"><p class="km-tag">暮らしの道具を、納得して選ぶ</p><h1 id="km-hero-title">あなたの暮らしに、<br>合うものを。</h1><p>選ぶ理由も、選ばない理由も。<br>置き場所、使い方、残る手間から、<br>自分に合う候補を比較できます。</p></div><figure class="ks-home-mood"><img src="https://kurashinoshirube.com/wp-content/themes/kurashinoshirube-child/assets/images/magazine-hero.webp" width="842" height="495" alt="暮らしの道具を選ぶ編集イメージ"><figcaption>編集イメージ。商品同定や実測の根拠ではありません。</figcaption></figure></div><h2 id="km-articles-title">暮らしに合う道具を比較する</h2><div class="ks-home-feature-grid">'
                 + feature(41, "kitchen", "食器と食洗機のあるキッチンのイメージ")
                 + feature(83, "travel", "スーツケースと衣類を揃えた旅支度のイメージ")
                 + feature(30, "cleaning", "ロボット掃除機を置いた部屋のイメージ")
                 + "</div></section>"
             )
             body += section(
-                "商品カテゴリから探す", category_cards(), "km-categories-title"
+                "商品カテゴリから探す", category_cards(home=True), "km-categories-title"
             ) + section("悩み・目的から探す", purpose_cards(), "km-purposes-title")
             recent = sorted(
                 (a for a in meta.values() if a.get("updated_on")),
@@ -281,6 +291,14 @@ def render_pages(
             )
         elif slug == "comparisons":
             title = "商品比較の記事一覧"
+            body = (
+                '<nav id="ks-comparison-jump" aria-label="比較する商品カテゴリ">'
+                + " ／ ".join(
+                    link("#compare-" + c, v["name"])
+                    for c, v in data["categories"].items()
+                )
+                + "</nav>"
+            )
             for category, cat in data["categories"].items():
                 contents = ""
                 for a in meta.values():
@@ -294,10 +312,10 @@ def render_pages(
                         + al(a["post_id"], "販売条件へ", "ps-offers")
                         + "</p>"
                     )
-                body += section(cat["name"], contents)
+                body += section(cat["name"], contents, "compare-" + category)
             body += section(
                 "購入前の4項目",
-                "<ul><li>型番・セット構成</li><li>自宅や利用便への適合条件</li><li>送料・必要品を含む総額</li><li>納期・販売元・保証</li></ul><p>条件が残る場合は買わずに保留できます。</p>",
+                "<ul><li>型番・セット構成</li><li>自宅や利用便への適合条件</li><li>送料・必要品を含む総額</li><li>納期・販売元・保証</li></ul><p>ポイントや条件付きクーポンは、支払額と分けて確認します。条件が残る場合は買わずに保留できます。</p>",
                 "purchase-checks",
             )
         elif slug == "guides":
@@ -569,41 +587,144 @@ def render_pages(
             )
         policy = section(
             "編集方針",
-            "<p>公式仕様・計算・編集判断を分け、未確認の性能を実測したように評価しません。記事ごとの広告表示は実際のリンクに基づきます。</p><p>"
+            '<p>公式仕様・計算・編集判断を分け、未確認の性能を実測したように評価しません。記事ごとの広告表示は実際のリンクに基づきます。掲載順・評価は報酬条件と切り離しています。</p><nav aria-label="編集方針">'
             + link("/comparison-policy/", "比較・編集方針")
             + " ／ "
             + link("/about-ad-policy/", "運営・広告方針")
-            + "</p>",
+            + "</nav>",
             "site-editorial-policy",
         )
-        if slug != "home":
+
+        # Legacy hashes bind to readable destinations, never empty page-top placeholders.
+        def wrap(content: str, *ids: str) -> str:
+            for ident in reversed(ids):
+                content = f'<div id="{escape(ident, quote=True)}">{content}</div>'
+            return content
+
+        if slug == "home":
+            body = body.replace(
+                '<section id="km-categories-title"><h2>',
+                '<section id="km-categories-title"><h2 id="ks-visual-categories">',
+                1,
+            )
+            # The old purchase URL now offers the actual article-specific conditions.
+            purchase = (
+                '<h3 id="home-purchase-check-title">各記事の購入条件を確認する</h3><p>'
+                + " ／ ".join(
+                    al(i, by_id[i]["title"], "ps-offers") for i in [41, 83, 30]
+                )
+                + "</p>"
+            )
+            policy += wrap(purchase, "home-purchase-check")
+            policy = wrap(policy, "km-editorial-title")
+        elif slug in data["categories"] and slug != "kitchen":
+            # Category-specific explanations remain first; compare hashes land on cards.
+            if f'id="{slug}-axes"' not in body:
+                body = body.replace("<section>", f'<section id="{slug}-axes">', 1)
+            first_card = body.find('<div class="ks-route-grid">')
+            if first_card >= 0:
+                body = wrap(
+                    body[:first_card], slug + "-start", slug + "-start-title", "choose"
+                ) + wrap(body[first_card:], "compare", slug + "-comparisons")
+            body += section(
+                "購入条件を確認する",
+                "<p>"
+                + " ／ ".join(
+                    al(a["post_id"], a["title"], "ps-offers")
+                    for a in meta.values()
+                    if a["category"] == slug and a["comparison_count"]
+                )
+                + "</p>",
+                "purchase-checks",
+            )
+        elif slug == "categories":
+            body = wrap(body, "category-cards") + wrap(
+                "<p>" + link("/purposes/", "商品が未定なら悩み・目的から探す") + "</p>",
+                "category-undecided",
+            )
+        elif slug == "purposes":
+            body = wrap(body, "purpose-cards")
+        elif slug in PURPOSES:
+            first_end = body.find("</section>") + len("</section>")
+            body = wrap(body[:first_end], "first-read") + wrap(
+                body[first_end:], "purpose-articles"
+            )
+            policy = wrap(policy, "next-step")
+        elif slug == "guides":
+            body = body.replace("<section>", '<section id="kitchen-guides">', 1)
+            for category, pid in [
+                ("travel", 83),
+                ("cleaning", 30),
+                ("preparedness", 28),
+            ]:
+                marker = '<article class="ks-editorial-card">'
+                target = body.index(
+                    article_url(pid, "ps-decision-steps" if pid == 28 else "ps-choose")
+                )
+                pos = body.rfind(marker, 0, target)
+                body = body[:pos] + body[pos:].replace(
+                    marker,
+                    f'<article id="{category}-guides" class="ks-editorial-card">',
+                    1,
+                )
             body = (
-                '<header class="ks-reader-hub-lead"><p>'
-                + link("/", "ホーム")
-                + " ／ "
-                + link("/categories/", "商品カテゴリ")
-                + " ／ "
-                + link("/purposes/", "悩み・目的")
-                + '</p><p class="ks-directory-lead">'
+                '<nav id="ks-guide-jump" aria-label="採寸と条件整理">'
+                + " ／ ".join(
+                    link("#" + c + "-guides", v["name"])
+                    for c, v in data["categories"].items()
+                )
+                + "</nav>"
+                + body
+            )
+        elif slug == "comparisons":
+            body = body.replace(
+                '<section id="purchase-checks"><h2>',
+                '<section id="purchase-checks"><h2 id="buyer-offer-check-title">',
+                1,
+            )
+            purchase_start = body.index('<section id="purchase-checks">')
+            body = body[:purchase_start] + wrap(body[purchase_start:], "buyer-offer-check")
+        if slug != "home":
+            parent = (
+                "categories"
+                if slug in data["categories"]
+                else "purposes"
+                if slug in PURPOSES
+                else None
+            )
+            crumbs = link("/", "ホーム") + " ＞ "
+            if parent:
+                crumbs += (
+                    link("/" + parent + "/", data["pages"][parent]["title"]) + " ＞ "
+                )
+            crumbs += '<span aria-current="page">' + escape(title) + "</span>"
+            body = (
+                '<header class="ks-reader-hub-lead"><nav aria-label="このサイトの入口">'
+                + crumbs
+                + '</nav><p class="ks-directory-lead">'
                 + escape(page["description"])
                 + "</p></header>"
                 + body
             )
             body += "".join(page.get("images", []))
-        # Compatibility anchors remain once, even when a prior section was consolidated.
-        present = set(re.findall(r'\bid="([^"]+)"', body + policy)) | (
+        present = set(re.findall(r'\bid="([^\"]+)"', body + policy)) | (
             {"ks-magazine"} if slug == "home" else set()
         )
-        aliases = "".join(
-            f'<span id="{escape(a, quote=True)}" class="ks-anchor-alias" aria-hidden="true"></span>'
-            for a in page["anchors"]
-            if a not in present
-        )
+        # Consolidated heading/date aliases wrap the corresponding readable content.
+        for ident in page["anchors"]:
+            if ident not in present:
+                if ident.endswith("-axes-title") and f'id="{slug}-axes"' in body:
+                    body = body.replace(
+                        f'id="{slug}-axes"><h2>',
+                        f'id="{slug}-axes"><h2 id="{ident}">',
+                        1,
+                    )
+                else:
+                    body = wrap(body, ident)
         pages[slug] = (
             '<!-- wp:html -->\n<div class="ks-reader-hub ks-editorial-page"'
             + (' id="ks-magazine"' if slug == "home" else "")
             + ">"
-            + aliases
             + body
             + policy
             + "</div>\n<!-- /wp:html -->\n"

@@ -4243,45 +4243,45 @@
           "text": "35×25×55cm",
           "exact_model": "INV50",
           "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
-          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
-          "checked_at": "2026-08-29",
-          "state": "PRESERVED"
+          "locator": "商品本文「品番・サイズ」欄 H55×W35×D25cm。比較表の幅×奥行×高さへ順序を合わせた。",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
         },
         {
           "label": "容量",
           "text": "38L",
           "exact_model": "INV50",
           "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
-          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
-          "checked_at": "2026-08-29",
-          "state": "PRESERVED"
+          "locator": "商品本文「容量」欄 38L。",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
         },
         {
           "label": "本体重量",
           "text": "3.3kg",
           "exact_model": "INV50",
           "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
-          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
-          "checked_at": "2026-08-29",
-          "state": "PRESERVED"
+          "locator": "商品本文「重量」欄 3.3kg。",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
         },
         {
           "label": "前開きの整理",
-          "text": "3room / フロントとミドルを開放",
+          "text": "3室収納。フロントとミドルの間のファスナーを開いて出し入れする",
           "exact_model": "INV50",
           "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
-          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
-          "checked_at": "2026-08-29",
-          "state": "PRESERVED"
+          "locator": "商品本文「3 ROOM収納」「ワイドオープン」。前室とミドル室の間のファスナーで開放。前室とメイン室の直通とは書かれていない。",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
         },
         {
           "label": "キャスターストッパー",
-          "text": "公表あり",
+          "text": "ブレーキ搭載。ワンタッチでオン・オフ",
           "exact_model": "INV50",
           "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
-          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
-          "checked_at": "2026-08-29",
-          "state": "PRESERVED"
+          "locator": "商品本文「ブレーキ機能」。ワンタッチでオン・オフと明記。操作位置・停止輪数の根拠とはしない。",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
         },
         {
           "label": "拡張時",
@@ -4297,37 +4297,37 @@
           "text": "38L / 3.3kg / 3room",
           "exact_model": "INV50",
           "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
-          "locator": "公開保存本文の公式仕様表。原典を今回再確認した値ではありません。",
-          "checked_at": "2026-08-29",
-          "state": "PRESERVED"
+          "locator": "商品本文「容量」「重量」「3 ROOM収納」を照合。38L・3.3kg・3室。",
+          "checked_at": "2026-09-13",
+          "state": "KNOWN"
         },
         {
           "label": "PC収納（幅×高さ×厚さ）",
-          "text": "対象型番の収納部の幅・高さ・厚さを今回確認できず。インチ数や外寸でPCの適合を保証しません。",
+          "text": "14インチ薄型ノートPCの案内はありますが、この製品ページでは収納部の幅・高さ・厚さの明記を確認できず。説明書・メーカー確認待ちのため、インチ数や外寸だけで適合を保証しません。",
           "exact_model": "INV50",
           "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
-          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "locator": "商品本文「3 ROOM収納」には14インチ薄型ノートパソコンと記載。収納部の実寸は今回取得した本文内では確認できない。",
           "checked_at": "2026-09-13",
           "state": "UNKNOWN",
           "unknown_reason": {
-            "kind": "source_unavailable",
-            "impact": "対象型番の収納部の幅・高さ・厚さを今回確認できず。インチ数や外寸でPCの適合を保証しません。",
-            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "kind": "research_pending",
+            "impact": "14インチ薄型ノートPCの案内はありますが、この製品ページでは収納部の幅・高さ・厚さの明記を確認できず。説明書・メーカー確認待ちのため、インチ数や外寸だけで適合を保証しません。",
+            "next_action": "INV50の説明書またはメーカー情報で収納部実寸・ブレーキ操作位置・停止輪数の該当項目を確認する",
             "owner": "暮らしのしるべ編集部"
           }
         },
         {
           "label": "ストッパーの操作",
-          "text": "公表されている搭載有無と、操作位置・止まる車輪の対応を分けて確認中。",
+          "text": "ワンタッチでオン・オフできると公表されていますが、この製品ページでは操作位置と止まる車輪の数の明記を確認できず。説明書・メーカー確認待ちです。",
           "exact_model": "INV50",
           "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
-          "locator": "公式製品ページの対象型番の仕様・説明欄",
+          "locator": "商品本文「ブレーキ機能」のオン・オフ説明を確認。操作部の位置・停止輪数は今回取得した本文内では確認できない。",
           "checked_at": "2026-09-13",
           "state": "UNKNOWN",
           "unknown_reason": {
-            "kind": "source_unavailable",
-            "impact": "公表されている搭載有無と、操作位置・止まる車輪の対応を分けて確認中。",
-            "next_action": "対象型番の公式説明書・仕様の改訂を再確認する",
+            "kind": "research_pending",
+            "impact": "ワンタッチでオン・オフできると公表されていますが、この製品ページでは操作位置と止まる車輪の数の明記を確認できず。説明書・メーカー確認待ちです。",
+            "next_action": "INV50の説明書またはメーカー情報で収納部実寸・ブレーキ操作位置・停止輪数の該当項目を確認する",
             "owner": "暮らしのしるべ編集部"
           }
         },
