@@ -78,9 +78,9 @@ class LegacyHomeRoutes(unittest.TestCase):
         n = headings[0]
         self.assertNotEqual(self.doc.nodes[n.parent].tag, "a")
 
-    def test_hero_and_six_explicit_product_slots_preserve_media_boundaries(self):
+    def test_hero_and_editorial_feature_images_preserve_media_boundaries(self):
         images = [n.attrs for n in self.doc.nodes if n.tag == "img"]
-        self.assertEqual(len(images), 1)
+        self.assertEqual(len(images), 4)
         self.assertTrue(images[0]["src"].endswith("/assets/images/magazine-hero.webp"))
         self.assertEqual((images[0]["width"], images[0]["height"]), ("842", "495"))
         data = json.loads(
@@ -88,16 +88,18 @@ class LegacyHomeRoutes(unittest.TestCase):
                 ROOT / "changes/site-improvements-20260913/entry-pages.v1.json"
             ).read_text()
         )
-        expected = [
-            p for group in data["home_product_media"]["groups"].values() for p in group
-        ]
+        self.assertEqual(data["home_image_style"], "editorial")
+        for image, category in zip(images[1:], ("kitchen", "travel", "cleaning")):
+            self.assertTrue(
+                image["src"].endswith(f"/ks-{category}-editorial-ai-20260910.webp")
+            )
+            self.assertEqual((image["width"], image["height"]), ("762", "506"))
         slots = [
             n.attrs["data-ks-home-product"]
             for n in self.doc.nodes
             if "data-ks-home-product" in n.attrs
         ]
-        self.assertCountEqual(slots, expected)
-        self.assertEqual(len(set(slots)), 6)
+        self.assertEqual(slots, [])
         self.assertNotIn("hb.afl.rakuten.co.jp", self.text)
         template = (
             ROOT
