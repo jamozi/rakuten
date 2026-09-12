@@ -132,22 +132,27 @@ add_filter('the_content', 'kurashinoshirube_purchase_support_media', 13);
 function kurashinoshirube_home_product_media($content)
 {
     if (!is_string($content) || is_admin() || is_feed() || !is_front_page()
-        || (int) get_queried_object_id() !== 15 || (int) get_the_ID() !== 15) { return $content; }
+        ) { return $content; }
+    $post_id = 15;
+    $local_preview = kurashinoshirube_is_local_preview() && !class_exists('RAOS_Codex_MCP_Owner_Direct');
+    if ($local_preview) { $post_id = (int) get_option('page_on_front'); }
+    if ($post_id <= 0 || (int) get_queried_object_id() !== $post_id
+        || (int) get_the_ID() !== $post_id) { return $content; }
     $snapshot = null;
     if (class_exists('RAOS_Codex_MCP_Owner_Direct')) {
         $snapshot = RAOS_Codex_MCP_Owner_Direct::public_article_snapshot(15);
-    } elseif (kurashinoshirube_is_local_preview()) {
-        $snapshot = get_post_meta(15, '_raos_owner_direct_preview_document', true);
+    } elseif ($local_preview) {
+        $snapshot = get_post_meta($post_id, '_raos_owner_direct_preview_document', true);
     }
-    if (!is_array($snapshot) || ($snapshot['id'] ?? null) !== 15
+    if (!is_array($snapshot) || ($snapshot['id'] ?? null) !== $post_id
         || ($snapshot['post_type'] ?? null) !== 'page' || ($snapshot['slug'] ?? null) !== 'home'
-        || get_post_status(15) !== 'publish' || get_post_field('post_password', 15, 'raw') !== '') {
+        || get_post_status($post_id) !== 'publish' || get_post_field('post_password', $post_id, 'raw') !== '') {
         return $content;
     }
     foreach (array('slug' => 'post_name', 'title' => 'post_title', 'excerpt' => 'post_excerpt',
                    'block_markup' => 'post_content', 'post_type' => 'post_type') as $key => $field) {
         if (!is_string($snapshot[$key] ?? null)
-            || $snapshot[$key] !== get_post_field($field, 15, 'raw')) { return $content; }
+            || $snapshot[$key] !== get_post_field($field, $post_id, 'raw')) { return $content; }
     }
     $path = get_stylesheet_directory() . '/assets/site-editorial-metadata.v1.json';
     if (is_link($path) || !is_file($path) || !is_readable($path) || filesize($path) > 262144) {

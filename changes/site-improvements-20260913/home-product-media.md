@@ -21,8 +21,8 @@ Mini は画像全体・比率・色を保持し、「アイロボット Roomba®
 
 ## 表示と計測の境界
 
-純粋 helper は共有catalogの型番、画像レビュー、販売先同定、購入可能offer、原典payloadのhashを確認し、指定6商品だけを作成する。保存本文には安全なslotだけを入れ、元の楽天HTMLはPHPで投影する。ホームID15・front-page query・現在の投稿ID15・公開済みsnapshotと保存フィールドの一致・saved body hash・themeに結び付いたmetadata hash・6商品ID/型番・個別HTML hash・各slotが1個ずつ存在することを確認し、不一致時は投影しない。既存比較記事のkind、最大4商品、掲載先bindingは変更しない。
+純粋 helper は共有catalogの型番、画像レビュー、販売先同定、購入可能offer、原典payloadのhashを確認し、指定6商品だけを作成する。保存本文には安全なslotだけを入れ、元の楽天HTMLはPHPで投影する。ホームID15・front-page query・現在の投稿ID15・公開済みsnapshotと保存フィールドの一致・saved body hash・themeに結び付いたmetadata hash・6商品ID/型番・個別HTML hash・各slotが1個ずつ存在することを確認し、不一致時は投影しない。既存比較記事のkind、最大4商品、掲載先bindingは変更しない。既存のローカルプレビュー判定が成立し、本番 owner-direct class が存在しない場合だけ、再採番された page_on_front を使用する。この場合も query・現在投稿・snapshot の実ID、home slug、保存フィールド、本文hashの一致を必須とし、本番のID15制限は維持する。
 
 ホーム画像には記事の計測属性・bindingを付けず、記事41/83/30のクリックイベントへ混ぜない。新しい計測を有効化せず、この画像経由の成果は未計測として扱う。現行analyticsコードを使うテストでは、6画像の通常/中ボタンクリックについて同意拒否・許可の両方で送信0を確認した。
 
-局所検証は22 tests通過（PHP内15境界ケースを含む）、Ruff通過。本書作成時点では新ホームは未公開。生成物・統合プレビュー・本番反映の状態は親タスクの候補別結果で判断する。
+局所検証は22 tests通過（PHP内21境界ケースを含む）、Ruff通過。本書作成時点では新ホームは未公開。生成物・統合プレビュー・本番反映の状態は親タスクの候補別結果で判断する。

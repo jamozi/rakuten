@@ -198,6 +198,12 @@ def test_php_home_projection_preserves_public_snapshot_and_payload_boundaries():
     )
     cases = [
         "valid",
+        "local_valid",
+        "local_wrong_current",
+        "local_wrong_query",
+        "local_wrong_snapshot",
+        "local_wrong_slug",
+        "local_wrong_front",
         "wrong_page",
         "wrong_current_post",
         "not_front",
@@ -252,9 +258,14 @@ file_put_contents($GLOBALS['root'] . '/assets/site-editorial-metadata.v1.json', 
 function is_admin() { return false; }
 function is_feed() { return false; }
 function is_front_page() { return $GLOBALS['input']['case'] !== 'not_front'; }
-function get_queried_object_id() { return $GLOBALS['input']['case'] === 'wrong_page' ? 41 : 15; }
-function get_the_ID() { return $GLOBALS['input']['case'] === 'wrong_current_post' ? 41 : 15; }
-function kurashinoshirube_is_local_preview() { return false; }
+function local_case() { return str_starts_with($GLOBALS['input']['case'], 'local_'); }
+function get_option($key) { return $GLOBALS['input']['case'] === 'local_wrong_front' ? 6 : 5; }
+function get_queried_object_id() { return local_case() ? ($GLOBALS['input']['case'] === 'local_wrong_query' ? 6 : 5) : ($GLOBALS['input']['case'] === 'wrong_page' ? 41 : 15); }
+function get_the_ID() { return local_case() ? ($GLOBALS['input']['case'] === 'local_wrong_current' ? 6 : 5) : ($GLOBALS['input']['case'] === 'wrong_current_post' ? 41 : 15); }
+function kurashinoshirube_is_local_preview() { return local_case(); }
+function get_post_meta($id, $key, $single) {
+ return array('id'=>$GLOBALS['input']['case']==='local_wrong_snapshot'?6:5,'post_type'=>'page','slug'=>$GLOBALS['input']['case']==='local_wrong_slug'?'other':'home','title'=>'Home','excerpt'=>'Excerpt','block_markup'=>$GLOBALS['input']['body']);
+}
 function get_stylesheet_directory() { return $GLOBALS['root']; }
 function get_post_status($id) { return $GLOBALS['input']['case'] === 'draft' ? 'draft' : 'publish'; }
 function get_post_field($field, $id, $context) {
@@ -263,11 +274,13 @@ function get_post_field($field, $id, $context) {
         'post_content'=>$GLOBALS['input']['body'] . ($GLOBALS['input']['case']==='stored_body'?'changed':''));
     return $values[$field];
 }
+if (!local_case()) {
 class RAOS_Codex_MCP_Owner_Direct {
     public static function public_article_snapshot($id) {
         if ($GLOBALS['input']['case'] === 'missing_snapshot') return null;
         return array('id'=>15,'post_type'=>'page','slug'=>'home','title'=>'Home','excerpt'=>'Excerpt','block_markup'=>$GLOBALS['input']['body']);
     }
+}
 }
 """.replace("ENCODED", encoded)
             + function
@@ -283,7 +296,7 @@ rmdir($GLOBALS['root'] . '/assets'); rmdir($GLOBALS['root']);
         )
         assert run.returncode == 0, run.stderr
         result = json.loads(run.stdout)["html"]
-        if case == "valid":
+        if case in {"valid", "local_valid"}:
             assert result.count('<figure class="ks-home-product-image"') == 6
             assert 'class="ks-home-product-slot"' not in result
         else:
