@@ -208,6 +208,35 @@ def attrs(values: Mapping[str, object]) -> str:
     return "".join(f' {k}="{escape(str(v), quote=True)}"' for k, v in values.items())
 
 
+def condition_product_links(
+    condition: Mapping[str, Any],
+    products: list[Mapping[str, Any]] | tuple[Mapping[str, Any], ...],
+    main_slug: str,
+) -> str:
+    """Link every product of a hub condition to its own comparison anchor.
+
+    The anchors already exist in the published comparison, so the category page
+    never sends all products back to one shared entry.
+    """
+    index = {p["product_id"]: p for p in products}
+    links = []
+    for pid in condition["product_ids"]:
+        if pid not in index:
+            raise ValueError("PURCHASE_CONDITION_PRODUCT_MISSING")
+        product = index[pid]
+        if not product.get("anchor"):
+            raise ValueError("PURCHASE_CONDITION_ANCHOR_MISSING")
+        href = f"/{main_slug}/#{product['anchor']}"
+        links.append(
+            '<a href="'
+            + escape(href, quote=True)
+            + '">'
+            + escape(product["name"])
+            + "</a>"
+        )
+    return "、".join(links)
+
+
 def route_links(p: Mapping[str, Any]) -> str:
     return (
         '<nav class="ps-model-routes" aria-label="'
@@ -1049,30 +1078,19 @@ def compile_articles(
             conditions = "".join(
                 "<li>"
                 + escape(c["label"])
-                + '：<a href="/'
-                + MAIN_SLUG
-                + '/#ps-choose">'
-                + escape(
-                    "、".join(
-                        next(
-                            p["name"]
-                            for p in catalog["products"]
-                            if p["product_id"] == pid
-                        )
-                        for pid in c["product_ids"]
-                    )
-                )
-                + "</a></li>"
+                + "："
+                + condition_product_links(c, catalog["products"], MAIN_SLUG)
+                + "</li>"
                 for c in dish["conditions"]
             )
             html = (
                 '<div class="ps-article">'
                 + visuals[0].html()
-                + '<p class="ps-lead">いつもの一食分・置き場所・予算から、食洗機の候補を絞れます。</p><section id="choose"><h2>条件から候補を見る</h2><ul>'
+                + '<p class="ps-lead">候補を比べたい方は4機種の比較へ。設置や給水、購入後の手入れを確かめたい方は、該当する機種のガイドへ進めます。</p><section id="choose"><h2>条件から候補を見る</h2><ul>'
                 + conditions
                 + '</ul><p><a href="/'
                 + MAIN_SLUG
-                + '/#ps-choose">4機種を、予算と置き場所から比較する</a></p></section><section id="compare"><h2>残った疑問を確認する</h2><ul>'
+                + '/#ps-specs">4機種の違いと、毎回の作業を比較する</a></p></section><section id="compare"><h2>残った疑問を確認する</h2><ul>'
                 + "".join(
                     '<li><a href="/'
                     + slug
