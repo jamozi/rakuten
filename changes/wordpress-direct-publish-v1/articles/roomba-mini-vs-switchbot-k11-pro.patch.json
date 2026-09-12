@@ -4,7 +4,8 @@
   "post_id": 85,
   "required_ids": [
     "robot-comparison-title",
-    "robot-sources-title"
+    "robot-sources-title",
+    "robot-installation-title"
   ],
   "required_product_ids": [
     "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
@@ -15,5 +16,93 @@
   "keep_existing_fragments": true,
   "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/cleaning/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">ロボット掃除機の選び方・記事一覧</a><a href=\"#robot-comparison-title\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"/cleaning/#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
   "next_html": "<section id=\"ks-next-read\" aria-labelledby=\"ks-next-read-title\" style=\"margin:32px 0;padding:24px;border-top:2px solid #1b1b18;background:#faf9f6;line-height:1.85;\"><h2 id=\"ks-next-read-title\">残っている疑問から、次の確認へ</h2><div class=\"ks-route-links\"><a href=\"/compact-robot-vacuum-shortlist/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">ロボット掃除機を設置寸法と手入れで比較</a></div><p>記事ごとに対象機種が異なります。別機種の数値や手順を流用せず、必要な確認だけを選んで読めます。</p><a href=\"/cleaning/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">ロボット掃除機選びの全体像に戻る</a></section>",
-  "replacements": []
+  "replacements": [],
+  "text_edits": [
+    {
+      "old": "Roomba MiniとK11+ Proは、自動収集の有無や付属する台によって暮らしとの相性が変わります。本体が小さいだけでは決まらないので、まず比較表で台の寸法と手入れの違いを確認してください。置ける候補が見えてきたら、商品欄から同梱品・消耗品・価格の確認へ進めます。",
+      "new": "主に比べるのは、自動ゴミ収集付きのRoomba Mini + AutoEmpty（F155260）とK11+ Proです。自動収集を使いたい方は、この2機種の台・通信条件・手入れを比べてください。自動収集を省いて充電台を小さくしたい方には、別モデルのRoomba Mini Slim + SlimCharge（F115060）を代替候補として紹介します。",
+      "max_count": 1
+    },
+    {
+      "old": "比較するのは、iRobot「Roomba Mini 掃除機＆床拭きロボット + AutoEmpty 充電ステーション」（型番：F155260）、SwitchBot「ロボット掃除機 K11+ Pro」、iRobot「Roomba Mini Slim 掃除機＆床拭きロボット + SlimCharge 充電スタンド」（代表型番：F115060）です。この記事では寸法を幅×奥行×高さの順にそろえ、公式仕様で分かることと実機試験が必要なことを分けます。",
+      "new": "SlimChargeは自動ゴミ収集機能のない充電スタンドです。AutoEmpty付きと同じ機能を備えた廉価な構成とは扱わず、手動でごみを捨てる条件で比較します。この記事では軸名を確認できた寸法を幅×奥行×高さの順にそろえ、公式仕様で分かることと実機試験が必要なことを分けます。",
+      "max_count": 1
+    },
+    {
+      "old": "充電台の床面積を最小にし、手動のごみ捨てを許容する",
+      "new": "代替候補：自動収集を省き、手動でごみを捨てる",
+      "max_count": 1
+    },
+    {
+      "old": "寸法は幅×奥行×高さの順に換算しています。仕様値は2026年8月29日にメーカー公式情報と照合しました。",
+      "new": "軸名を確認できた寸法は幅×奥行×高さ順です。K11+ Proの台は公式掲載順で、軸定義は未確認です。仕様は2026年8月29日確認を基に、Mini AutoEmptyの台寸法とK11+ Proの通信条件を9月10日に再確認しました。",
+      "max_count": 1
+    },
+    {
+      "old": "2026年8月29日に確認した3構成の公式仕様比較。実機試験による性能順位ではありません。",
+      "new": "2026年8月29日の基礎仕様を基に、自動収集付き2機種と、手動ごみ捨てのMini Slim。公式仕様の比較で、実機試験による性能順位ではありません。",
+      "max_count": 1
+    },
+    {
+      "old": "約17.8×21.2×28.5cm",
+      "new": "約21.2×17.8×28.5cm",
+      "max_count": 2
+    },
+    {
+      "old": "約24×18×25cm",
+      "new": "24×18×25cm（公式掲載順をcm換算。軸順は未確認）",
+      "max_count": 2
+    },
+    {
+      "old": "周波数帯・接続条件は購入時に公式サポートで確認",
+      "new": "2.4GHz Wi-Fi対応。初期設定にはBluetoothも使用",
+      "max_count": 1
+    },
+    {
+      "old": "3構成を、暮らしの条件から読む。",
+      "new": "自動収集付き2機種と、手動でごみを捨てる代替候補。",
+      "max_count": 1
+    },
+    {
+      "old": "本体は幅約24.5×奥行約24.5×高さ約9.2cm、約2kg。ステーションは幅約17.8×奥行約21.2×高さ約28.5cmで、自動ゴミ収集を使えます。Roomba Homeアプリと2.4GHz・5GHz対応を選定条件にでき、実際の接続可否はルーター設定などにも左右されます。",
+      "new": "本体は幅約24.5×奥行約24.5×高さ約9.2cm、約2kg。ステーションは幅約21.2×奥行約17.8×高さ約28.5cmで、自動ゴミ収集を使えます。Roomba Homeアプリと2.4GHz・5GHz対応を選定条件にでき、実際の接続可否はルーター設定などにも左右されます。",
+      "max_count": 1
+    },
+    {
+      "old": "本体は幅約24.8×奥行約24.8×高さ約9.2cm、約2.3kg。ステーションは幅約24×奥行約18×高さ約25cmで、自動ゴミ収集と4L紙パックが案内されています。最大12,000Paという公表値やSwitchBotアプリとの連携を条件にできますが、iRobotは吸引力をPaで公表していないため、この数値だけで清掃性能は順位付けできません。",
+      "new": "本体は幅約24.8×奥行約24.8×高さ約9.2cm、約2.3kg。ステーションは24×18×25cm（公式掲載順をcm換算。軸順は未確認）で、自動ゴミ収集と4L紙パックが案内されています。最大12,000Paという公表値やSwitchBotアプリとの連携を条件にできますが、iRobotは吸引力をPaで公表していないため、この数値だけで清掃性能は順位付けできません。",
+      "max_count": 1
+    },
+    {
+      "old": "K11+ Proの対応周波数帯、初期設定手順、必要権限を購入時に公式サポートで確認する。",
+      "new": "日本語説明書では2.4GHz Wi-Fi・Bluetooth 4.2対応。アプリの利用にはインターネット接続、ルーター、Bluetooth 4.2以降に対応したスマートフォン、SwitchBotアカウントが必要です。5GHzだけの環境では、2.4GHzを利用できるか先に確認してください。",
+      "max_count": 1
+    },
+    {
+      "old": "ステーション寸法（幅×奥行×高さ）",
+      "new": "ステーション寸法（幅×奥行×高さ。K11+ Proは軸順未確認）",
+      "max_count": 1
+    },
+    {
+      "old": "主に比べるのは、自動ゴミ収集付きのRoomba Mini + AutoEmpty（F155260）とK11+ Proです。自動収集を使いたい方は、この2機種の台・通信条件・手入れを比べてください。自動収集を省いて充電台を小さくしたい方には、別モデルのRoomba Mini Slim + SlimCharge（F115060）を代替候補として紹介します。",
+      "new": "主に比べるのは、自動ゴミ収集付きのRoomba Mini（ルンバ ミニ）+ AutoEmpty（F155260）とK11+ Proです。自動収集を使いたい方は、この2機種の台・通信条件・手入れを比べてください。自動収集を省いて充電台を小さくしたい方には、別モデルのRoomba Mini Slim + SlimCharge（F115060）を代替候補として紹介します。",
+      "max_count": 1
+    }
+  ],
+  "editorial_additions": [
+    {
+      "id": "robot-installation-requirements",
+      "tag": "p",
+      "target_id": "robot-installation-title",
+      "position": "after_header",
+      "html": "<p id=\"robot-installation-requirements\">K11+ Proの日本語説明書は、ステーションの左右に各0.5m、前方および上方に各1.5mの空間を指定しています。台の外寸だけで設置可能とは判断せず、この空間も実測してください。<a href=\"https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900\">取扱説明書12ページ（通信条件は14・27ページ）</a>で2026年9月10日に確認しました。</p>",
+      "sources": [
+        {
+          "url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+          "checked_on": "2026-09-10",
+          "locator": "K11+ Pro日本語説明書12・14・27ページ"
+        }
+      ]
+    }
+  ]
 }

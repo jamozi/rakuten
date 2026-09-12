@@ -1,5 +1,5 @@
 .raos-editorial-v2-page {
-  --raos-theme-runtime-revision-editorial-v2: 169eb49833e73b037caa2bf425651f9826c658184365ae526ce845a49e4bfc3d;
+  --raos-theme-runtime-revision-editorial-v2: 16976edf01ff9d78010bc7ffde1b6e3a1b8ca9aedf08ada3c0407d84350de5e4;
   --rev2-page: #fff;
   --rev2-ink: #17243f;
   --rev2-indigo: #24365f;
@@ -1427,3 +1427,16 @@
 .raos-editorial-v2 .raos-cost-actions button[type="reset"] { background: #fff; color: #17243f; }
 .raos-editorial-v2 .raos-cost-form :where(input, select, button):focus-visible { outline: 3px solid #246c9c; outline-offset: 3px; }
 .raos-editorial-v2 .raos-cost-result { border-top: 1px solid #bdcbd8; padding-top: 1rem; overflow-wrap: anywhere; }
+
+/* Narrow tables must expose the full cell instead of covering it with a wide model name. */
+@media (max-width: 48rem) {
+  .raos-editorial-v2 table {
+    table-layout: fixed;
+  }
+  .raos-editorial-v2 table thead th:first-child,
+  .raos-editorial-v2 table tbody th:first-child {
+    left: auto;
+    width: 9rem;
+    max-width: 12rem;
+  }
+}

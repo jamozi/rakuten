@@ -1,7 +1,8 @@
 """Bounded, offline edits against a freshly read WordPress document.
 
 Never grants publication authority. Merchant links remain opaque; no network,
-credentials, tracking configuration, source dates, or product claims are added.
+credentials or tracking configuration are added. Reviewed editorial additions
+carry explicit sources and never replace existing merchant links or images.
 """
 from __future__ import annotations
 
@@ -42,6 +43,7 @@ class Document(HTMLParser):
         self.stack: list[int] = []
         self.lines = [0] + [m.end() for m in re.finditer("\n", text)]
         self.ids: dict[str, Node] = {}
+        self.text_nodes: list[tuple[int, int, str]] = []
         try:
             self.feed(text)
             self.close()
@@ -69,6 +71,12 @@ class Document(HTMLParser):
         self.nodes.append(node)
         if tag not in VOID:
             self.stack.append(len(self.nodes) - 1)
+
+    def handle_data(self, data: str) -> None:
+        if self.stack and self.nodes[self.stack[-1]].tag in {"script", "style"}:
+            return
+        start = self.position()
+        self.text_nodes.append((start, start + len(data), data))
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.handle_starttag(tag, attrs)
@@ -98,7 +106,7 @@ def _internal(href: str) -> bool:
     )
 
 
-def _fragment(text: str, marker: str, tag: str) -> Document:
+def _fragment(text: str, marker: str, tag: str, source_urls: frozenset[str] = frozenset()) -> Document:
     doc = Document(text)
     roots = [n for n in doc.nodes if n.parent is None]
     if len(roots) != 1 or roots[0].tag != tag or roots[0].attrs.get("id") != marker:
@@ -109,7 +117,7 @@ def _fragment(text: str, marker: str, tag: str) -> Document:
         for key, value in node.attrs.items():
             if key.startswith("on") or key in {"src", "srcdoc", "action", "formaction"}:
                 raise PatchFailure("FRAGMENT_ATTRIBUTE_FORBIDDEN")
-            if key == "href" and not _internal(value or ""):
+            if key == "href" and not _internal(value or "") and value not in source_urls:
                 raise PatchFailure("FRAGMENT_LINK_FORBIDDEN")
             if key == "style" and re.search(r"url\s*\(|expression\s*\(|@import|behavior\s*:", value or "", re.I):
                 raise PatchFailure("FRAGMENT_STYLE_FORBIDDEN")
@@ -208,6 +216,24 @@ def apply_patch(body: str, patch: dict[str, Any], *, article_key: str, post_id: 
         elif new not in body:
             raise PatchFailure("REPLACEMENT_NOT_FOUND")
 
+    if not isinstance(patch.get("text_edits", []), list):
+        raise PatchFailure("TEXT_EDIT_INVALID")
+    for change in patch.get("text_edits", []):
+        if not isinstance(change, dict):
+            raise PatchFailure("TEXT_EDIT_INVALID")
+        old, new, maximum = change.get("old"), change.get("new"), change.get("max_count", 1)
+        if (not isinstance(old, str) or not old.strip() or not isinstance(new, str)
+                or not new.strip() or any(c in old + new for c in "<>&")
+                or type(maximum) is not int or maximum < 1):
+            raise PatchFailure("TEXT_EDIT_INVALID")
+        doc = Document(body)
+        matches = [(a, b, new) for a, b, text in doc.text_nodes if text == old]
+        if len(matches) > maximum:
+            raise PatchFailure("TEXT_EDIT_COUNT_MISMATCH")
+        if not matches and not any(text == new for _, _, text in doc.text_nodes):
+            raise PatchFailure("TEXT_EDIT_NOT_FOUND")
+        body = _edit(body, matches)
+
     # Remove only explicitly neutral pictures or known decorative table images.
     doc = Document(body)
     removals: list[tuple[int, int, str]] = []
@@ -265,6 +291,63 @@ def apply_patch(body: str, patch: dict[str, Any], *, article_key: str, post_id: 
                 href = node.attrs.get("href") or ""
                 if href.startswith("#") and unquote(href[1:]) not in after.ids:
                     raise PatchFailure("FRAGMENT_DESTINATION_MISSING")
+    # Editorial additions are applied only after all original protection checks.
+    # They cannot delete or replace any part of the existing document.
+    if not isinstance(patch.get("editorial_additions", []), list):
+        raise PatchFailure("EDITORIAL_ADDITION_INVALID")
+    for addition in patch.get("editorial_additions", []):
+        if not isinstance(addition, dict):
+            raise PatchFailure("EDITORIAL_ADDITION_INVALID")
+        marker, markup = addition.get("id"), addition.get("html")
+        sources = addition.get("sources")
+        if (not isinstance(marker, str) or not marker or not isinstance(markup, str)
+                or not isinstance(sources, list) or not sources):
+            raise PatchFailure("EDITORIAL_ADDITION_INVALID")
+        urls = set()
+        for source in sources:
+            if not isinstance(source, dict):
+                raise PatchFailure("EDITORIAL_SOURCE_INVALID")
+            url = source.get("url", "")
+            checked_on = source.get("checked_on")
+            parsed = urlsplit(url) if isinstance(url, str) else None
+            if (not parsed or parsed.scheme != "https" or not parsed.hostname
+                    or parsed.username or parsed.password
+                    or any(x in url.lower() for x in ("hb.afl.", "rafcid=", "sk-proj-"))
+                    or not isinstance(checked_on, str)
+                    or not re.fullmatch(r"20\d{2}-\d{2}-\d{2}", checked_on)
+                    or not isinstance(source.get("locator"), str) or not source["locator"].strip()):
+                raise PatchFailure("EDITORIAL_SOURCE_INVALID")
+            urls.add(url)
+        fragment = _fragment(markup, marker, addition.get("tag", "section"), frozenset(urls))
+        if fragment.nodes[0].tag not in {"section", "p"} or any(
+            "data-raos-product-id" in n.attrs or "sponsored" in (n.attrs.get("rel") or "").split()
+            for n in fragment.nodes
+        ):
+            raise PatchFailure("EDITORIAL_ADDITION_PROTECTED_ATTRIBUTE")
+        doc = Document(body)
+        existing = doc.ids.get(marker)
+        if existing:
+            if body[existing.start:existing.end] != markup:
+                raise PatchFailure("EDITORIAL_ADDITION_DRIFT")
+            continue
+        if set(fragment.ids) & set(doc.ids):
+            raise PatchFailure("FRAGMENT_ID_CONFLICT")
+        node = doc.ids.get(addition.get("target_id"))
+        position = addition.get("position")
+        target_tag = {"before_section": "section", "after_header": "header"}.get(position)
+        if not node or not target_tag:
+            raise PatchFailure("EDITORIAL_TARGET_INVALID")
+        while node.tag != target_tag and node.parent is not None:
+            node = doc.nodes[node.parent]
+        if node.tag != target_tag:
+            raise PatchFailure("EDITORIAL_TARGET_INVALID")
+        point = node.start if position == "before_section" else node.end
+        body = body[:point] + markup + body[point:]
+        final = Document(body)
+        for link in fragment.nodes:
+            href = link.attrs.get("href") or ""
+            if href.startswith("#") and unquote(href[1:]) not in final.ids:
+                raise PatchFailure("FRAGMENT_DESTINATION_MISSING")
     return body
 
 

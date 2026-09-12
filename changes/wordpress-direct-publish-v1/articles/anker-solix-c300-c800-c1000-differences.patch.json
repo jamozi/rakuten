@@ -4,7 +4,8 @@
   "post_id": 29,
   "required_ids": [
     "blk-anker-008-title",
-    "blk-anker-017-title"
+    "blk-anker-017-title",
+    "blk-anker-003-title"
   ],
   "required_product_ids": [
     "PRD-ANKER-SOLIX-C300",
@@ -16,5 +17,183 @@
   "keep_existing_fragments": true,
   "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/preparedness/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">ポータブル電源の選び方・記事一覧</a><a href=\"#blk-anker-008-title\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"/preparedness/#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
   "next_html": "<section id=\"ks-next-read\" aria-labelledby=\"ks-next-read-title\" style=\"margin:32px 0;padding:24px;border-top:2px solid #1b1b18;background:#faf9f6;line-height:1.85;\"><h2 id=\"ks-next-read-title\">残っている疑問から、次の確認へ</h2><div class=\"ks-route-links\"><a href=\"/portable-power-station-guide/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">停電対策用ポータブル電源の選び方</a></div><p>記事ごとに対象機種が異なります。別機種の数値や手順を流用せず、必要な確認だけを選んで読めます。</p><a href=\"/preparedness/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">ポータブル電源選びの全体像に戻る</a></section>",
-  "replacements": []
+  "replacements": [],
+  "text_edits": [
+    {
+      "old": "実機を使用したレビューではありません。このページはメーカー公式の案内を掲載しています。関連記事には広告・アフィリエイトリンクが含まれる場合があります。",
+      "new": "実機を使用したレビューではありません。仕様確認用のボタンはメーカー公式へ進みます。商品画像には販売店へ進む広告・アフィリエイトリンクが含まれます。画像の販売先と、本文で説明する公式の確認先は異なります。",
+      "max_count": 1
+    },
+    {
+      "old": "1056Wh・1500W。C1000 Gen 2より容量が32Wh大きいモデルです。",
+      "new": "AC端子6口とBP1000による容量拡張を選定条件にできます。接続機器の合計出力と適合は別に確認してください。",
+      "max_count": 1
+    },
+    {
+      "old": "公表容量はC1000（第1世代）より32Wh小さいモデルです。付属品や拡張バッテリーは、C1000 Gen 2の公式対応情報を確認してください。",
+      "new": "公表容量はC1000（第1世代）より32Wh小さいモデルです。Gen 2は拡張バッテリー非対応です。第1世代のBP1000を使う前提では選べません。",
+      "max_count": 2
+    },
+    {
+      "old": "メーカー公式ページで、Anker Solix C300 Portable Power Station（代表型番：A17225Z1）の仕様を確認できます。一致する楽天商品を確認できなかったため、楽天購入リンクは掲載していません。",
+      "new": "メーカー公式ページで、Anker Solix C300 Portable Power Station（代表型番：A17225Z1）の仕様を確認できます。一致する楽天商品を確認できなかったため、本文の購入案内はメーカー公式としています。商品画像の広告リンクは、画像提供元の販売ページへ進みます。",
+      "max_count": 1
+    },
+    {
+      "old": "メーカー公式ページで、Anker Solix C800 Plus Portable Power Station（代表型番：A1754）の仕様を確認できます。一致する楽天商品を確認できなかったため、楽天購入リンクは掲載していません。",
+      "new": "メーカー公式ページで、Anker Solix C800 Plus Portable Power Station（代表型番：A1754）の仕様を確認できます。一致する楽天商品を確認できなかったため、本文の購入案内はメーカー公式としています。商品画像の広告リンクは、画像提供元の販売ページへ進みます。",
+      "max_count": 1
+    },
+    {
+      "old": "C1000 Gen 2より公表容量を少し多く確保し、定格1500Wで用途が足りる場合に。",
+      "new": "AC端子6口や、BP1000による容量拡張を必要とする場合に。",
+      "max_count": 1
+    },
+    {
+      "old": "1056WhでC1000 Gen 2より32Wh大きい一方、定格出力は1500Wのモデルだからです。",
+      "new": "Gen 2よりAC端子が1口多く、拡張バッテリーに対応するためです。端子数と同時に使える出力は分けて確認してください。",
+      "max_count": 1
+    },
+    {
+      "old": "1056Whを優先し1500Wで足りる",
+      "new": "AC端子の数や容量拡張を優先",
+      "max_count": 1
+    },
+    {
+      "old": "Gen 2より32Wh大きい公表容量。",
+      "new": "AC端子6口。BP1000による容量拡張に対応。",
+      "max_count": 1
+    },
+    {
+      "old": "C1000（第1世代）より約1.6kg軽く定格出力が50W高い。",
+      "new": "約1.6kg軽く、USB-C端子は3口。AC端子は5口、拡張バッテリーは非対応。",
+      "max_count": 1
+    },
+    {
+      "old": "1056Whの公表容量を優先し、1500Wで足りる",
+      "new": "AC端子6口やBP1000による容量拡張が必要",
+      "max_count": 1
+    },
+    {
+      "old": "1056Whを優先",
+      "new": "AC端子数・容量拡張を優先",
+      "max_count": 1
+    },
+    {
+      "old": "1056Whの公表容量を優先する人",
+      "new": "BP1000で容量を追加したい人",
+      "max_count": 2
+    },
+    {
+      "old": "定格1500W以内で用途が収まる人",
+      "new": "AC端子を6口使いたい人（合計出力と機器の適合は別途確認）",
+      "max_count": 1
+    },
+    {
+      "old": "C1000系で重量を抑え、1550Wを選ぶ",
+      "new": "拡張は不要で、重量とUSB-C端子数を重視",
+      "max_count": 1
+    },
+    {
+      "old": "定格1550Wを選定条件にする人",
+      "new": "USB-C端子を3口使いたい人（各端子の出力は異なります）",
+      "max_count": 1
+    },
+    {
+      "old": "C1000用付属品を共用する予定の人",
+      "new": "AC端子を6口使いたい人",
+      "max_count": 1
+    },
+    {
+      "old": "A：公式仕様",
+      "new": "公式仕様",
+      "max_count": 52
+    },
+    {
+      "old": "D：編集部の判断",
+      "new": "編集部の判断",
+      "max_count": 2
+    },
+    {
+      "old": "UNKNOWN：未確認",
+      "new": "未確認",
+      "max_count": 8
+    },
+    {
+      "old": "C1000 Gen 2との互換性は未確認",
+      "new": "拡張バッテリー以外の付属品をGen 2と共用できるかは未確認",
+      "max_count": 2
+    },
+    {
+      "old": "C1000（第1世代）との互換性は未確認",
+      "new": "拡張バッテリー以外の付属品を第1世代と共用できるかは未確認",
+      "max_count": 2
+    },
+    {
+      "old": "C1000 Gen 2より約1.6kg重いモデルです。付属品や拡張バッテリーは、C1000の公式対応情報を確認してください。",
+      "new": "C1000 Gen 2より約1.6kg重いモデルです。容量拡張はBP1000に対応します。その他の付属品の共用は、品番ごとの公式対応情報を確認してください。",
+      "max_count": 2
+    },
+    {
+      "old": "付属品や拡張バッテリーを組み合わせる場合に、購入する型番の公式対応情報と照合する項目です。",
+      "new": "拡張バッテリーの対応は上の世代差で確認できます。その他の付属品は、品番ごとの共用可否を公式情報と照合します。",
+      "max_count": 1
+    },
+    {
+      "old": "C1000とC1000 Gen 2は別型番です。付属品や拡張バッテリーを組み合わせる場合は、購入する型番の公式対応情報を確認し、購入先の商品名と型番を照合してください。",
+      "new": "C1000とC1000 Gen 2は別型番です。第1世代の容量拡張はBP1000に対応し、Gen 2は拡張バッテリー非対応です。その他の付属品を組み合わせる場合は、品番ごとの公式対応情報と購入先の型番を照合してください。",
+      "max_count": 1
+    },
+    {
+      "old": "約11.3kg・1550Wで、C1000より軽く定格出力が50W高いモデルです。",
+      "new": "約11.3kgで、第1世代より軽いモデルです。定格出力は製品ページ1550W・特設ページ仕様表1500Wと記載が分かれるため、50Wの差を選定理由にしていません。",
+      "max_count": 1
+    },
+    {
+      "old": "1550W",
+      "new": "1550W（製品ページ。特設仕様表は1500W）",
+      "max_count": 3
+    },
+    {
+      "old": "重量と1550Wを優先",
+      "new": "本体重量を優先。定格出力は要確認",
+      "max_count": 1
+    },
+    {
+      "old": "C1000系で本体重量を抑え、定格1550Wを選びたい場合に。",
+      "new": "C1000系で本体重量を抑えたい場合に。定格出力の公式表記に不一致があるため、必要な負荷に対応するかは購入前に型番を指定して確認してください。",
+      "max_count": 1
+    }
+  ],
+  "editorial_additions": [
+    {
+      "id": "c1000-generation-choice",
+      "tag": "section",
+      "target_id": "blk-anker-003-title",
+      "position": "before_section",
+      "html": "<section aria-labelledby=\"c1000-generation-choice-title\" class=\"reader-section\" id=\"c1000-generation-choice\"><h2 id=\"c1000-generation-choice-title\">C1000の世代差は、使う端子と拡張の予定で選ぶ</h2><p>2026年9月10日に公式比較表で確認した違いです。第1世代はAC6口・USB-C2口・USB-A2口、Gen 2はAC5口・USB-C3口・USB-A1口です。Gen 2のUSB-Cは最大100Wが2口、最大15Wが1口で、3口とも同じ出力ではありません。</p><p>第1世代はBP1000拡張バッテリーに対応し、Gen 2は拡張バッテリー非対応です。手持ちのBP1000を使いたい場合や容量を追加したい場合は、この違いを先に確認してください。別売品の購入費用・在庫も本体と分けて確認します。</p><p>容量の差は1056−1024＝32Whで、1024Whに対して約3.1％です。この差だけで使える時間の優劣は確定しません。拡張が不要で持ち運ぶなら、約12.9kgと約11.3kgの重量差や接続端子を比べてください。Gen 2の定格出力には公式表記の不一致があり、50Wの優位性は判断材料にしていません。起動時の負荷が大きい機器への適合も別途確認が必要です。</p><p>出典：<a href=\"https://www.ankerjapan.com/products/a1761\">C1000公式仕様</a>、<a href=\"https://www.ankerjapan.com/products/a1763\">C1000 Gen 2公式比較表・製品仕様</a>。必要容量は<a href=\"/portable-power-station-guide/#ps-decision-steps\">機器と時間から計算する手順</a>へ進めます。</p><p>拡張バッテリーの対応は2026年9月11日に再確認しました。<a href=\"https://www.ankerjapan.com/products/a17611a1-85\">BP1000公式案内</a>と、上記のGen 2公式比較表を参照しています。その他の付属品すべての共用可否を確認したものではありません。</p><p id=\"c1000-rated-output-discrepancy\">定格出力の確認状況（2026年9月11日）：<a href=\"https://www.ankerjapan.com/products/a1763\">Gen 2製品ページ</a>は1550W、<a href=\"https://www.ankerjapan.com/pages/solix-c1000-gen2\">公式特設ページ</a>は本文1550W・仕様表とシリーズ比較1500Wです。不一致の理由は未確認です。表には製品ページの数値と不一致を併記しています。1500Wを超える負荷に対応できる前提では選ばず、購入先の型番に対応する説明書やメーカー回答で定格出力を確認してください。</p></section>",
+      "sources": [
+        {
+          "url": "https://www.ankerjapan.com/products/a1761",
+          "checked_on": "2026-09-10",
+          "locator": "公式製品仕様・比較表"
+        },
+        {
+          "url": "https://www.ankerjapan.com/products/a1763",
+          "checked_on": "2026-09-10",
+          "locator": "公式製品仕様・比較表"
+        },
+        {
+          "url": "https://www.ankerjapan.com/products/a17611a1-85",
+          "checked_on": "2026-09-11",
+          "locator": "BP1000製品案内：C1000以外のポータブル電源には非対応。容量拡張1056Whから2112Wh。"
+        },
+        {
+          "url": "https://www.ankerjapan.com/pages/solix-c1000-gen2",
+          "checked_on": "2026-09-11",
+          "locator": "製品仕様AC出力欄・シリーズ比較Gen 2は1500W、特徴本文は1550W。相違理由未確認。"
+        }
+      ]
+    }
+  ]
 }
