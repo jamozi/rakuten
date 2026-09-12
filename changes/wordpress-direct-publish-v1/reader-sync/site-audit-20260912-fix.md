@@ -1,19 +1,22 @@
 # 全ページ監査 (2026-09-12) の修正記録と所有者作業
 
 対象: `output/site-audit-20260912/REPORT.md` (指摘 103 件 = P0 6 / P1 45 / P2 52)。
-repo 内で直せるものは branch `claude/site-audit-fix-20260912` で修正した (下記「repo 側の修正」)。
-サーバー設定・WordPress 管理画面・外部照合が必要なものは、この文書の「所有者作業」に手順を書いた。
-公開 (publish) と push / PR は所有者の指示後に行う。
+repo 内で直せるものは PR #278 / #280 (main 8e816048) で修正し、2026-09-12 (UTC) に owner-direct-v1 で live に公開した。
+サーバー設定・WordPress 管理画面・外部照合が必要なものは「所有者作業」に手順を書いた。
 
-## 公開の手順 (repo 側の修正を live に反映する)
+## 公開の記録 (2026-09-12)
 
-最終ツリー (commit 8f05f92b 以降) で固定した候補: `62195e7c914b83c40e6d8b27be048ce0b958b7de8f3c923eb443c7ed3f44bbf8` (`publication_ready: true`、preview PASS、screenshots 70 枚は候補 dir の `screenshots/`)。この候補をそのまま `direct publish` できる。source が変わった場合は下記 1 から作り直す。
+- plugin の承認バッチは proposal 20 件までなので、theme + 固定ページ 19 件 (候補 `698cd49b…`) と記事 15 件 (候補 `6b99c41e…`) の 2 回に分けて publish した。いずれも `PUBLISHED_AND_READBACK_VERIFIED`、git sync は main と同一 tree のため noop。
+- 最初の一括候補 (`5a998464…`、35 件) は proposal 作成まで成功し authorize で件数上限に当たった。その前の候補 (`62195e7c…`) は hub の PR バッジ inline style を本番 WAF が拒否し content-propose が HTTP 403 になった (PR #280 で解消)。この 2 候補の未承認 proposal (35 + 9 件) が本番に残っているので、「ツール → RAOS Codex proposals」で破棄してよい。
+- 公開後の live 機械検査 (34 URL): header nav 5 リンク、パンくず 3 段、hub の og:type website + CollectionPage、og:image と寸法、description、楽天画像の alt/寸法/1 サイズ、h1 直下の広告表記、`/wp-json/wp/v2/users` 401、`?author=1` 404、REST index の名前空間限定、セキュリティヘッダ、favicon.ico、feed の creator、検索・404、大文字 URL 301、category archive → /updates/ 301 をすべて確認。残りは下記「所有者作業」の footer 上書きと Site Kit の generator meta (theme 側で除去する対応を PR で追加)。
+- 記事本文: 29 の「一致する楽天商品を確認できなかった」0、英語ラベル 0、28 の期限切れ価格 0、privacy の GA4 / CookieYes 記述あり。
 
-1. `make wordpress-production-request ARGS='direct --owner-checkout /home/minami/rakuten prepare --theme --articles home,travel,kitchen,cleaning,preparedness,categories,small-space,save-housework,without-installation,easy-maintenance,comfortable-travel,prepare-outage,purposes,guides,comparisons,updates,carry-on-suitcase-comparison,carry-on-suitcase-under-100-seats,lightweight-carry-on-suitcase-under-3kg,front-open-carry-on-suitcase-with-stopper,countertop-dishwasher-for-small-households,solota-vs-rakua-mini-plus,dishwasher-installation-measurement,dishwasher-water-supply-methods,dishwasher-detergent-guide,dishwasher-cleaning-guide,dishwasher-running-cost,compact-robot-vacuum-shortlist,roomba-mini-vs-switchbot-k11-pro,portable-power-station-guide,anker-solix-c300-c800-c1000-differences,about-ad-policy,comparison-policy,privacy-policy'`
-   で候補を固定する (theme 変更を含むため `--theme` 必須。patch 方式の 6 記事は live 本文の再読込に対して patch が適用できない場合、fail-closed で READY にならない)。
-2. `direct preview --candidate <id>` で home / 記事 (390px・1440px) / 一覧の代表画面を確認する。
-3. `direct publish --candidate <id>`、その後 `direct sync --candidate <id>`。
-4. 公開後の再計測: `output/site-audit-20260912/tools/README.md` の手順 (collect.py → linkcheck.py → browser_audit.mjs → lighthouse_run.sh → build_report.py)。
+## 公開の手順 (次回以降)
+
+1. `make wordpress-production-request ARGS='direct --owner-checkout /home/minami/rakuten prepare --theme --articles <キー,…>'` (proposal は theme 込みで 20 件以内に分ける)
+2. `direct preview --candidate <id>` で 390px・1440px の代表画面を確認
+3. `direct publish --candidate <id>`、続けて `direct sync --candidate <id>`
+4. 再計測: `output/site-audit-20260912/tools/README.md` の手順
 
 ## 所有者作業 (repo からは変更できない項目)
 
@@ -87,9 +90,9 @@ theme に `favicon.ico` / `apple-touch-icon.png` / 32px PNG と `<meta name="the
 - T-24: CookieYes 管理画面 > バナー > レイアウト を「バー (画面下)」にし、モバイルで画面高の 25% 以下に収める。theme 側でも CSS (`max-height:25vh; overflow:auto`) と `scroll-padding-bottom` を当てたが、plugin 設定で小型化するのが本筋。
 - T-08: CookieYes Lite はバナーの CSS/JS (約 85 KB) を全ページに inline 出力する。plugin 設定に外部ファイル化のオプションが無い場合は、軽量な同意バナー (WP Consent API 対応) への置換を検討する。T-07 の圧縮を先に入れると転送量への影響は大きく下がる。
 
-### T-18 footer の template part 上書き
+### T-18 footer の template part 上書き (公開後も未解消・要対応)
 
-live の footer は repo の `parts/footer.html` と一致しない (live: `/about/` 「このメディアについて」など 4 本)。WordPress の「外観 > エディター > テンプレートパーツ > footer」に保存された上書きが存在する可能性が高い。theme の新 footer (hub 5 + 方針 3 + 問い合わせ) を有効にするため、上書きがあれば「リセット (テーマの版に戻す)」を行う。header も同様に確認する。
+公開後の live でも footer は `/about/` 「このメディアについて」など旧 4 リンクのままで、theme の `parts/footer.html` (hub 5 + 方針 3 + 問い合わせ) が反映されていない。WordPress の「外観 > エディター > テンプレートパーツ > footer」に保存された上書きが原因。theme の新 footer (hub 5 + 方針 3 + 問い合わせ) を有効にするため、上書きがあれば「リセット (テーマの版に戻す)」を行う。header も同様に確認する。
 
 ### T-05 Yoast の固定ページ既定テンプレート
 
