@@ -570,6 +570,133 @@ def _same_origin_https_url(value: object, origin: str) -> bool:
     )
 
 
+POLICY_PAGE_IDENTIFIERS: Final = frozenset(
+    {"about-ad-policy", "comparison-policy", "privacy-policy"}
+)
+SITE_NAME: Final = "暮らしのしるべ"
+EDITORIAL_TEAM_NAME: Final = "暮らしのしるべ編集部"
+CONTACT_EMAIL: Final = "contact@kurashinoshirube.com"
+
+
+def _site_organization_semantics(node: object, contract: AuditContract) -> bool:
+    """Exact site Organization: name, logo ImageObject, contact point, no sameAs."""
+    if not isinstance(node, dict):
+        return False
+    logo = node.get("logo")
+    if not isinstance(logo, dict):
+        return False
+    logo_url = logo.get("url")
+    if (
+        not _same_origin_https_url(logo_url, contract.origin)
+        or not str(logo_url).endswith(".png")
+        or logo
+        != {
+            "@id": contract.origin + "/#logo",
+            "@type": "ImageObject",
+            "contentUrl": logo_url,
+            "height": 512,
+            "url": logo_url,
+            "width": 512,
+        }
+    ):
+        return False
+    return node == {
+        "@id": contract.origin + "/#organization",
+        "@type": "Organization",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer support",
+            "email": CONTACT_EMAIL,
+        },
+        "logo": logo,
+        "name": SITE_NAME,
+        "url": contract.origin + "/",
+    }
+
+
+def _website_semantics(node: object, contract: AuditContract) -> bool:
+    return node == {
+        "@id": contract.origin + "/#website",
+        "@type": "WebSite",
+        "inLanguage": "ja-JP",
+        "name": SITE_NAME,
+        "potentialAction": {
+            "@type": "SearchAction",
+            "query-input": "required name=search_term_string",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": contract.origin + "/?s={search_term_string}",
+            },
+        },
+        "publisher": {"@id": contract.origin + "/#organization"},
+        "url": contract.origin + "/",
+    }
+
+
+def _editorial_team_semantics(node: object, contract: AuditContract) -> bool:
+    return node == {
+        "@id": contract.origin + "/#editorial-team",
+        "@type": "Organization",
+        "name": EDITORIAL_TEAM_NAME,
+        "parentOrganization": {"@id": contract.origin + "/#organization"},
+        "url": contract.origin + "/about-ad-policy/",
+    }
+
+
+def _breadcrumb_semantics(
+    node: object,
+    item: InventoryItem,
+    contract: AuditContract,
+    title: str,
+    *,
+    minimum: int,
+    maximum: int,
+    parent_paths: tuple[str, ...] | None = None,
+) -> bool:
+    """ホーム > (parent hub) > current page; intermediate crumbs stay same-origin."""
+    if not isinstance(node, dict):
+        return False
+    items = node.get("itemListElement")
+    if (
+        node.get("@id") != item.url + "#breadcrumb"
+        or node.get("@type") != "BreadcrumbList"
+        or set(node) != {"@id", "@type", "itemListElement"}
+        or not isinstance(items, list)
+        or not minimum <= len(items) <= maximum
+    ):
+        return False
+    if items[0] != {
+        "@type": "ListItem",
+        "item": contract.origin + "/",
+        "name": "ホーム",
+        "position": 1,
+    } or items[-1] != {
+        "@type": "ListItem",
+        "item": item.url,
+        "name": title,
+        "position": len(items),
+    }:
+        return False
+    for position, crumb in enumerate(items[1:-1], start=2):
+        if (
+            not isinstance(crumb, dict)
+            or set(crumb) != {"@type", "item", "name", "position"}
+            or crumb["@type"] != "ListItem"
+            or crumb["position"] != position
+            or not _same_origin_https_url(crumb["item"], contract.origin)
+            or crumb["item"] in {contract.origin + "/", item.url}
+            or not str(crumb["item"]).endswith("/")
+            or not isinstance(crumb["name"], str)
+            or not crumb["name"].strip()
+            or (
+                parent_paths is not None
+                and crumb["item"] not in {contract.origin + path for path in parent_paths}
+            )
+        ):
+            return False
+    return True
+
+
 def _structured_data_semantics(
     document: dict[str, Any] | None,
     item: InventoryItem,
@@ -587,12 +714,22 @@ def _structured_data_semantics(
     top_types = [node.get("@type") for node in typed_nodes]
     if not all(isinstance(value, str) for value in top_types):
         return False
-    expected_page_type = (
-        "AboutPage" if item.identifier == "about-ad-policy" else "WebPage"
-    )
+    policy = item.identifier in POLICY_PAGE_IDENTIFIERS
+    if item.identifier == "about-ad-policy":
+        expected_page_type = "AboutPage"
+    elif policy:
+        expected_page_type = "WebPage"
+    else:
+        expected_page_type = "CollectionPage"
     expected_types = {
         "home": ["Organization", "WebSite"],
-        "article": ["Article", "BreadcrumbList", "Organization", "WebSite"],
+        "article": [
+            "Article",
+            "BreadcrumbList",
+            "Organization",
+            "Organization",
+            "WebSite",
+        ],
         "fixed_page": [
             expected_page_type,
             "BreadcrumbList",
@@ -612,53 +749,25 @@ def _structured_data_semantics(
         )
     ):
         return False
-    by_type = {str(node["@type"]): node for node in typed_nodes}
+    by_id = {str(node["@id"]): node for node in typed_nodes}
     organization_id = contract.origin + "/#organization"
     website_id = contract.origin + "/#website"
-    organization = by_type.get("Organization", {})
-    website = by_type.get("WebSite", {})
-    if organization != {
-        "@id": organization_id,
-        "@type": "Organization",
-        "name": "暮らしのしるべ編集者",
-        "url": contract.origin + "/",
-    }:
-        return False
-    if website != {
-        "@id": website_id,
-        "@type": "WebSite",
-        "inLanguage": "ja-JP",
-        "name": "暮らしのしるべ",
-        "publisher": {"@id": organization_id},
-        "url": contract.origin + "/",
-    }:
+    editorial_team_id = contract.origin + "/#editorial-team"
+    if not _site_organization_semantics(
+        by_id.get(organization_id), contract
+    ) or not _website_semantics(by_id.get(website_id), contract):
         return False
     if item.role == "home":
         return len(typed_nodes) == 2
-    breadcrumb = by_type.get("BreadcrumbList", {})
-    items = breadcrumb.get("itemListElement")
-    if (
-        breadcrumb.get("@id") != item.url + "#breadcrumb"
-        or not isinstance(items, list)
-        or len(items) != 2
-        or items[0]
-        != {
-            "@type": "ListItem",
-            "item": contract.origin + "/",
-            "name": "ホーム",
-            "position": 1,
-        }
-        or items[1]
-        != {
-            "@type": "ListItem",
-            "item": item.url,
-            "name": title,
-            "position": 2,
-        }
-    ):
-        return False
+    breadcrumb = by_id.get(item.url + "#breadcrumb")
     if item.role == "article":
-        article = by_type.get("Article", {})
+        if not _editorial_team_semantics(by_id.get(editorial_team_id), contract):
+            return False
+        if not _breadcrumb_semantics(
+            breadcrumb, item, contract, title, minimum=3, maximum=3
+        ):
+            return False
+        article = by_id.get(item.url + "#article", {})
         published = article.get("datePublished")
         modified = article.get("dateModified")
         if not _valid_utc_text(published) or not _valid_utc_text(modified):
@@ -667,8 +776,9 @@ def _structured_data_semantics(
         return (
             modified >= published
             and article.get("@id") == item.url + "#article"
+            and article.get("@type") == "Article"
             and article.get("articleSection") in {"移動", "家事", "備え"}
-            and article.get("author") == {"@id": organization_id}
+            and article.get("author") == {"@id": editorial_team_id}
             and article.get("breadcrumb") == {"@id": item.url + "#breadcrumb"}
             and article.get("description") == description
             and article.get("headline") == title
@@ -678,7 +788,17 @@ def _structured_data_semantics(
             and article.get("publisher") == {"@id": organization_id}
             and article.get("url") == item.url
         )
-    page = by_type.get(expected_page_type, {})
+    if not _breadcrumb_semantics(
+        breadcrumb,
+        item,
+        contract,
+        title,
+        minimum=2,
+        maximum=2 if policy else 3,
+        parent_paths=None if policy else ("/categories/", "/purposes/"),
+    ):
+        return False
+    page = by_id.get(item.url + "#webpage", {})
     return page == {
         "@id": item.url + "#webpage",
         "@type": expected_page_type,

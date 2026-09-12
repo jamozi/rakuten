@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 import json
 from pathlib import Path
 
@@ -13,6 +14,7 @@ from raos.application.editorial.reader_html import fragment
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / "changes/reader-purchase-support-v1"
 PUBLISHED = ROOT / "changes/wordpress-direct-publish-v1/articles"
+NOW = datetime(2026, 9, 12, 12, tzinfo=timezone.utc)
 DISHWASHERS = (
     "PRD-PANASONIC-NP-TMLK1",
     "PRD-THANKO-RAKUA-MINI-COLOR",
@@ -35,6 +37,7 @@ def compile(catalog):
                 ROOT / "changes/editorial-portfolio-v3/local-reader-guides.v1.json"
             ).read_text()
         ),
+        now=NOW,
     )
 
 
@@ -76,14 +79,14 @@ def test_hub_lead_and_cta_do_not_promise_budget_filtering(catalog):
     html, _ = compile(catalog)
     hub = html["kitchen"]
     assert "予算" not in hub
-    assert (
-        "候補を比べたい方は4機種の比較へ。設置や給水、購入後の手入れを確かめたい方は、"
-        "該当する機種のガイドへ進めます。"
-    ) in hub
-    assert (
-        f'<a href="/{ps.MAIN_SLUG}/#ps-specs">4機種の違いと、毎回の作業を比較する</a>'
-        in hub
-    )
+    assert "設置・給排水・費用などの作業別ガイドは、下の記事一覧から確かめたい作業で選べます。" in hub
+    # The category hub keeps the shared hub skeleton (CH-06): entry breadcrumb, note, policy links.
+    for label in ("このサイトの入口", "このページの読み方", "ほかの商品カテゴリ", "編集方針"):
+        assert f'<nav aria-label="{label}"' in hub
+    assert '<span aria-current="page">食洗機の選び方・比較</span>' in hub
+    assert 'class="ks-reader-note"' in hub
+    assert hub.count('class="ks-pr-badge"') == 1
+    assert f'<a href="/{ps.MAIN_SLUG}/#ps-specs">決め手になる比較表（4機種）</a>' in hub
     for _, slug in ps.STAGES.values():
         assert f'href="/{slug}/"' in hub
     assert 'href="/solota-vs-rakua-mini-plus/"' in hub
@@ -249,10 +252,10 @@ def test_moved_facts_keep_value_state_and_source_in_open_detail_table(catalog):
             assert fact["source_url"] in [
                 a.attrs.get("href") for a in cell.find(tag="a")
             ]
-            assert fact["checked_at"] in cell.text()
-    # Cautions reach the card and the seller panel with a link to the detail section.
+            assert ps.jp_date(fact["checked_at"]) in cell.text()
+    # Each caution is stated once, on the product card, with a link to the detail section.
     cautions = [n for n in root.walk() if n.attrs.get("class") == "ps-product-caution"]
-    assert len(cautions) == 8
+    assert len(cautions) == 4
     assert all(
         any(a.attrs.get("href") == "#ps-installation-context" for a in c.find(tag="a"))
         for c in cautions
@@ -307,10 +310,10 @@ def test_installation_guide_lists_known_and_missing_references_statically(catalo
             if not ps.money(p["installation"].get(key))
         ]
         if missing:
-            assert "サイト側で基準が未確認の項目：" + "、".join(missing) in text
-            assert "利用者の未入力ではありません" in text
+            assert "公式資料で数値を確認できていない項目：" + "、".join(missing) in text
+            assert "利用者の未入力" not in text
         else:
-            assert "サイト側で基準が未確認" not in text
+            assert "確認できていない項目" not in text
         for key, value in p["installation"].items():
             if ps.money(value):
                 assert f"{ps.INSTALLATION_LABELS[key]}{value:g}mm" in text
@@ -350,8 +353,9 @@ def test_water_guide_offers_a_model_index_and_no_self_links(catalog):
             n.attrs.get("id") for n in root.find(tag="section", cls="ps-guide-model")
         }
         assert set(anchors) <= sections
-        assert "購入は必須ではありません" in index.text()
-        for route in root.find(tag="nav", cls="ps-model-routes"):
+        assert "を確認する機種を選ぶ" in index.text()
+        assert not root.find(tag="nav", cls="ps-model-routes")
+        for route in root.find(tag="ul", cls="ps-model-routes"):
             assert not any(
                 a.attrs.get("href", "").startswith(f"/{slug}/")
                 for a in route.find(tag="a")
@@ -359,7 +363,8 @@ def test_water_guide_offers_a_model_index_and_no_self_links(catalog):
             assert len(route.find(tag="a")) == len(ps.STAGES) - 1
         for p in dishwashers(catalog):
             assert f'href="/{ps.MAIN_SLUG}/#{p["anchor"]}"' in html[slug]
-            assert f'href="/{ps.MAIN_SLUG}/#ps-seller-{p["anchor"]}"' in html[slug]
+        # One comparison link per model plus the next-read link keeps the guide at <= 5.
+        assert html[slug].count(f'href="/{ps.MAIN_SLUG}/') <= 5
     body = html["dishwasher-water-supply-methods"]
     assert body.index('class="ps-model-index"') < body.index('class="ps-guide-model"')
 
@@ -390,14 +395,20 @@ def test_offer_panels_keep_identity_and_never_assert_current_totals(catalog):
         assert "現在最安" not in text and "在庫あり" not in text
         if any(o["state"] == "AVAILABLE" for o in verified_offers):
             offer = next(n for n in section.walk() if "data-ps-offer" in n.attrs)
-            assert offer.attrs["data-ps-price-state"] == "RECHECK_REQUIRED"
-            assert "確認時の販売条件です。現在価格の再確認が必要です。" in text
+            state = offer.attrs["data-ps-price-state"]
+            assert state in {"RECHECK_REQUIRED", "EXPIRED"}
+            if state == "EXPIRED":
+                assert "販売条件の期限切れ・再確認中" in text
+                assert f"{offer.attrs['data-ps-price-yen']}円" not in text.replace(",", "")
+            else:
+                assert "確認時の販売条件です。現在価格の再確認が必要です。" in text
         elif verified_offers:
-            assert "確認時は売り切れでした。" in text
+            assert any(n.has("ps-unavailable") for n in section.walk())
         else:
             assert "販売先未確認" in text
             unverified.add(section_id)
-    assert unverified == {"ps-seller-product-dish-rakua-mini-color"}
+    # Every dishwasher now has a matched official seller or a dated sold-out record.
+    assert unverified == set()
     # Image bindings need the media projection, so read the tracked runtime output.
     tracked = json.loads(
         (

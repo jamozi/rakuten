@@ -18,6 +18,7 @@
       "post_type": "page",
       "slug": "travel",
       "title": "スーツケースの選び方・比較",
+      "excerpt": "機内持ち込みスーツケースの比較記事4本。利用便の規定と荷物量を先に確かめ、軽さ・容量・前開き・ストッパーの条件から候補を絞り、搭乗前と購入前に確認する項目まで案内します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/travel.html"
     },
     {
@@ -27,7 +28,7 @@
       "post_type": "page",
       "slug": "kitchen",
       "title": "食洗機の選び方・比較",
-      "excerpt": "設置スペース、食器量、給排水から食洗機を絞ります。",
+      "excerpt": "SOLOTA・ラクアmini color・SS-MA251・NP-TSP1のタンク式食洗機を、置ける寸法・一食分の食器量・給水方式から比較する入口です。設置・給排水・洗剤・手入れ・維持費の作業別ガイドと、購入前の確認事項をまとめます。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/kitchen.html",
       "taxonomies": [],
       "media_ids": [
@@ -47,6 +48,7 @@
       "post_type": "page",
       "slug": "cleaning",
       "title": "ロボット掃除機の選び方・比較",
+      "excerpt": "ロボット掃除機の比較記事2本。本体とステーションの置き場、任せたい掃除と自分に残る手入れを分けて考え、小型2機種を中心に家に無理なく迎えられる構成を選ぶ入口です。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/cleaning.html"
     },
     {
@@ -56,6 +58,7 @@
       "post_type": "page",
       "slug": "preparedness",
       "title": "ポータブル電源の選び方・比較",
+      "excerpt": "ポータブル電源の比較記事2本。停電時に使いたい機器と時間から必要な容量Whと出力Wを分けて考え、運べる重さ、Anker Solixの世代差、購入前の確認項目まで案内します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/preparedness.html"
     },
     {
@@ -65,6 +68,7 @@
       "post_type": "page",
       "slug": "categories",
       "title": "商品カテゴリから探す",
+      "excerpt": "スーツケース・食洗機・ロボット掃除機・ポータブル電源の4カテゴリから、置き場所や使い方などの条件整理、記事の比較、購入前の確認まで順に進める入口です。各カテゴリの記事数と対象商品も分かります。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/categories.html"
     },
     {
@@ -74,6 +78,7 @@
       "post_type": "page",
       "slug": "small-space",
       "title": "一人暮らし・省スペース",
+      "excerpt": "一人暮らしや狭い部屋で、食洗機やロボット掃除機を置きたい方へ。本体寸法だけでなく扉を開く空間や充電台の余白まで測り、まず読む1本と各記事で決まることを案内します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/small-space.html"
     },
     {
@@ -83,6 +88,7 @@
       "post_type": "page",
       "slug": "save-housework",
       "title": "家事を短くしたい",
+      "excerpt": "洗い物や床掃除を任せて家事を短くしたい方へ。食洗機とロボット掃除機で任せられる作業と、給水・ゴミ捨て・手入れなど自分に残る作業を分け、まず読む1本から案内します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/save-housework.html"
     },
     {
@@ -92,6 +98,7 @@
       "post_type": "page",
       "slug": "without-installation",
       "title": "設置工事を避けたい",
+      "excerpt": "分岐水栓の工事をせずにタンク式食洗機を使いたい方へ。「工事不要」の表示だけで決めず、置き場所・排水・電源・アースの確認順と、条件に合う機種の比較記事4本を案内します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/without-installation.html"
     },
     {
@@ -101,6 +108,7 @@
       "post_type": "page",
       "slug": "easy-maintenance",
       "title": "手入れを続けやすいものを選びたい",
+      "excerpt": "買ったあとの手入れや消耗品を続けやすいものを選びたい方へ。食洗機の洗剤・清掃・費用のガイドと、ロボット掃除機やスーツケースで残る作業を確かめる記事を案内します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/easy-maintenance.html"
     },
     {
@@ -110,6 +118,7 @@
       "post_type": "page",
       "slug": "comfortable-travel",
       "title": "旅行を快適にしたい",
+      "excerpt": "旅行の荷物を軽くしたい、移動中に取り出したい、小型機に持ち込みたい方へ。利用便と荷物量から機内持ち込みスーツケースの比較記事4本を選び、搭乗前の確認まで案内します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/comfortable-travel.html"
     },
     {
@@ -119,6 +128,7 @@
       "post_type": "page",
       "slug": "prepare-outage",
       "title": "防災に備えたい",
+      "excerpt": "停電に備えてポータブル電源を選びたい方へ。使いたい機器と時間から必要な容量と出力を決め、4モデルの比較とAnker Solixの世代差の記事へ。医療機器への給電は対象外です。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/prepare-outage.html"
     },
     {
@@ -128,6 +138,7 @@
       "post_type": "page",
       "slug": "purposes",
       "title": "悩み・目的から探す",
+      "excerpt": "一人暮らし・家事の時短・設置工事の回避・手入れ・旅行・停電への備えの6つの入口。商品名が決まっていなくても、困りごとから最初に読む1本と、記事ごとに決まることを確かめられます。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/purposes.html"
     },
     {
@@ -137,6 +148,7 @@
       "post_type": "page",
       "slug": "guides",
       "title": "選び方ガイド",
+      "excerpt": "食洗機の置き場所・給排水・洗剤・手入れ・費用を確かめる5本のガイドと、各比較記事の条件整理の節をまとめました。商品名を決める前に測る・数える・確認する入口です。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/guides.html"
     },
     {
@@ -146,6 +158,7 @@
       "post_type": "page",
       "slug": "comparisons",
       "title": "比較・条件別の候補",
+      "excerpt": "スーツケース・食洗機・ロボット掃除機・ポータブル電源の比較記事10本を、比較軸と候補数つきで案内します。候補が決まっている方が同じ軸で違いと妥協点を確かめる入口です。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/comparisons.html"
     },
     {
@@ -155,6 +168,7 @@
       "post_type": "page",
       "slug": "updates",
       "title": "最近更新したガイド",
+      "excerpt": "暮らしのしるべの掲載記事15本を、公開ページで確認した更新日と1文の変更点つきで新しい順に並べた一覧です。本文の編集日と商品仕様の確認日は別で、一括の再確認ではありません。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/updates.html"
     },
     {
@@ -163,8 +177,8 @@
       "post_id": 19,
       "post_type": "post",
       "slug": "carry-on-suitcase-comparison",
-      "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方で選ぶ",
-      "excerpt": "型番と一次情報を照合できたエース系3モデルを、軽さ・容量・開き方で条件別に比較。市場全体の順位ではなく、向く人と注意点を整理します。",
+      "title": "エースの機内持ち込みスーツケース3モデル比較｜軽さ・容量・開き方",
+      "excerpt": "型番と一次情報を照合できたエース系3モデル（クレスタ 06316、ディフェレンス 05721、マックスパス4 01471）を、軽さ・容量・開き方で条件別に比較。100席以上の便で使う前提で、向く人と注意点を整理します。",
       "taxonomies": {
         "category": [
           5
@@ -192,8 +206,8 @@
       "post_id": 82,
       "post_type": "post",
       "slug": "carry-on-suitcase-under-100-seats",
-      "title": "100席未満の国内線向けスーツケース4モデルを機内持ち込み規定で比較",
-      "excerpt": "100席未満の国内線で確認したい幅35×奥行20×高さ45cm・3辺100cm以内を基準に、4モデルの外寸、重量、容量、開き方を公式情報から比較します。",
+      "title": "100席未満の国内線向け機内持ち込みスーツケース4モデル比較",
+      "excerpt": "100席未満の国内線で確認したい幅35×奥行20×高さ45cm・3辺100cm以内を基準に、スタリアCXR、フレスターEX、パリセイド3-Z、INTER CITY 60524の外寸、重量、容量、開き方を公式情報から比較します。",
       "taxonomies": {
         "category": [
           5
@@ -222,7 +236,7 @@
       "post_type": "post",
       "slug": "lightweight-carry-on-suitcase-under-3kg",
       "title": "30L以上・3kg以下の機内持ち込みスーツケース4モデルを比較",
-      "excerpt": "30L以上・本体3kg以下の機内持ち込み候補4モデルを、容量、素材、ストッパー、拡張時寸法、交換可能車輪から公式情報で比較します。",
+      "excerpt": "本体3kg以下・30L以上の機内持ち込みスーツケース4モデル（エアロフレックスDX2・C-Lite・APPLITE 4.0・LIEVE）を、外寸・3辺合計・容量・重量と、ストッパー・拡張・交換車輪の条件で公式情報から比較します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/lightweight-carry-on-suitcase-under-3kg.html",
       "taxonomies": {
         "category": [
@@ -255,8 +269,8 @@
       "post_id": 84,
       "post_type": "post",
       "slug": "front-open-carry-on-suitcase-with-stopper",
-      "title": "フロントオープンとキャスターストッパーを備えた機内持ち込みスーツケース4モデル比較",
-      "excerpt": "前開きとキャスターストッパーを備えた4モデルを、前面構造、容量、重量、PC収納、拡張時寸法から公式情報で比較します。",
+      "title": "前開き・ストッパー付き機内持ち込みスーツケース4モデル比較",
+      "excerpt": "前開きとキャスターストッパーを備えた機内持ち込みサイズの4モデル（INV50、ディフェレンス 05721、フレスターEX 01551、INTER CITY II 60561）を、前面構造、容量、重量、PC収納、拡張時寸法で比較。",
       "taxonomies": {
         "category": [
           5
@@ -285,7 +299,7 @@
       "post_type": "post",
       "slug": "countertop-dishwasher-for-small-households",
       "title": "タンク式食洗機4モデルを1〜2人暮らし向けに比較",
-      "excerpt": "タンク式食洗機4モデルを、設置寸法・食器点数・使用水量・乾燥方法で比較。電源・アースを含む設置条件と、狭いキッチンで向く条件を整理します。",
+      "excerpt": "SOLOTA・ラクアmini color・SS-MA251・NP-TSP1のタンク式食洗機4モデルを、本体寸法・食器点数・給水方式・乾燥方式で比較。開扉時の寸法や余白などの設置条件と、確認日つきの販売条件も整理します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html",
       "taxonomies": {
         "category": [
@@ -318,7 +332,7 @@
       "post_id": 86,
       "post_type": "post",
       "slug": "solota-vs-rakua-mini-plus",
-      "title": "SOLOTAとラクアmini Plusの違い｜大きさ・食器量・乾燥方式を比較",
+      "title": "SOLOTAとラクアmini Plus｜大きさ・食器量・乾燥方式",
       "excerpt": "SOLOTAとラクアmini Plusを、本体と扉の寸法、食器量、給水、乾燥方式から公式仕様で比較します。実機性能や現在の在庫を断定せず、設置・費用・手入れの確認先へ案内します。",
       "taxonomies": {
         "category": [
@@ -484,7 +498,7 @@
       "post_type": "post",
       "slug": "dishwasher-running-cost",
       "title": "卓上食洗機のランニングコスト｜電気・水道・洗剤を式で確認する",
-      "excerpt": "8つの型番・コース条件を対象に、電気・上下水道・洗剤の従量費を計算します。消費電力量を確認できたのはSOLOTAとNP-TSP1の掲載条件です。未確認の費目は除き、計算できる小計と不足値を分けます。",
+      "excerpt": "SOLOTA・ラクアmini color・SS-MA251・NP-TSP1の4機種を中心に、電気・上下水道・洗剤の従量費を式で確認します。以前の掲載機種4つは参考として計算表に残し、未確認の費目は除いて計算できる小計と不足値を分けます。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html",
       "taxonomies": {
         "category": [
@@ -518,7 +532,7 @@
       "post_type": "post",
       "slug": "compact-robot-vacuum-shortlist",
       "title": "省スペースのロボット掃除機を条件で絞る",
-      "excerpt": "小型の2候補を中心に、台の機能が異なる2候補も比較。本体・ステーションの寸法、水拭き方式、手入れから、置ける条件と任せたい作業に合う機種を絞ります。",
+      "excerpt": "Roomba Mini・SwitchBot K11+ Pro・K10+ Pro Combo・Roomba Plus 515を、本体と台の寸法、水拭き方式、自動手入れから比較。置ける場所と任せたい作業で候補を絞り、購入前の確認先も示します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/compact-robot-vacuum-shortlist.html",
       "taxonomies": {
         "category": [
@@ -551,8 +565,8 @@
       "post_id": 85,
       "post_type": "post",
       "slug": "roomba-mini-vs-switchbot-k11-pro",
-      "title": "Roomba MiniとSwitchBot K11+ Proを公式仕様で比較",
-      "excerpt": "Roomba MiniとSwitchBot K11+ Proを、本体・ステーション寸法、自動ゴミ収集、水拭き、Wi-Fi、消耗品から公式仕様で比べます。",
+      "title": "Roomba MiniとK11+ Pro｜台の寸法と手入れで比較",
+      "excerpt": "Roomba Mini + AutoEmptyとSwitchBot K11+ Proを、本体・台の寸法、自動ゴミ収集、Wi-Fi、手入れの公式仕様で比較。台を小さくしたい人向けにMini Slim（F115060）も扱います。",
       "taxonomies": {
         "category": [
           5
@@ -580,8 +594,8 @@
       "post_id": 28,
       "post_type": "post",
       "slug": "portable-power-station-guide",
-      "title": "停電対策用ポータブル電源の選び方｜容量・定格出力・持ち運びで決める",
-      "excerpt": "停電対策のポータブル電源4モデルを、容量・定格出力・重量・大きさで比較。使いたい機器と持ち運び条件から候補を絞ります。",
+      "title": "停電対策のポータブル電源4モデル比較｜容量・出力・重さで選ぶ",
+      "excerpt": "Anker Solix C300・Jackery 500 New・BLUETTI AC70・EcoFlow DELTA 3 Classicを容量・定格出力・重量で比較。使う機器から必要なWhを計算し、確認日つきの販売条件も整理します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/portable-power-station-guide.html",
       "taxonomies": {
         "category": [
@@ -614,8 +628,8 @@
       "post_id": 29,
       "post_type": "post",
       "slug": "anker-solix-c300-c800-c1000-differences",
-      "title": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の違い",
-      "excerpt": "Anker Solix 4モデルの容量・定格出力・重量・寸法を同じ表で比較。持ち運び、出力、C1000の世代差から条件別に選びます。",
+      "title": "Anker Solix 4モデルの違い｜容量・出力・重量で選ぶ",
+      "excerpt": "Anker Solix C300・C800 Plus・C1000・C1000 Gen 2の容量・定格出力・重量・寸法を公式仕様で比較。持ち運び優先か、AC端子数や容量拡張が必要かなど条件別の選び方と、C1000の世代差の注意点を整理します。",
       "taxonomies": {
         "category": [
           5
@@ -644,7 +658,7 @@
       "post_type": "page",
       "slug": "about-ad-policy",
       "title": "運営・広告方針",
-      "excerpt": "暮らしのしるべの運営者、情報源と型番の照合、AI支援、広告との分離、更新・訂正の責任を説明します。",
+      "excerpt": "暮らしのしるべの運営者と編集責任、編集部が扱う領域と根拠の確認手順、楽天アフィリエイト広告と商品画像リンクの扱い、更新・訂正の方針と問い合わせ先、運営者情報の請求への対応を説明します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/about-ad-policy.html",
       "taxonomies": [],
       "media_ids": [],
@@ -662,7 +676,7 @@
       "post_type": "page",
       "slug": "comparison-policy",
       "title": "比較・編集方針",
-      "excerpt": "公式情報の確かめ方、実機未使用の明示、Codexによる調査支援と運営者の公開承認、訂正手順を説明します。",
+      "excerpt": "公式情報を優先する根拠の区分、第三者報告と引用の要件、実機を使っていない場合の表現、掲載順と広告の分離、購入総額と確認日の扱いなど、暮らしのしるべの比較記事の作り方と限界を説明します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/comparison-policy.html",
       "taxonomies": [],
       "media_ids": [],
@@ -680,7 +694,7 @@
       "post_type": "page",
       "slug": "privacy-policy",
       "title": "プライバシーポリシー",
-      "excerpt": "追加のアクセス・クリック計測を行わない方針と、問い合わせ情報や外部アフィリエイトリンクの取扱いを説明します。",
+      "excerpt": "暮らしのしるべが取得する情報と利用目的、CookieYesによる同意管理、同意後にのみ読み込むGoogle Analytics 4、楽天市場の商品画像に伴う外部送信、Cookieの名称・保存期間と同意の撤回方法を説明します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/privacy-policy.html",
       "taxonomies": [],
       "media_ids": [],

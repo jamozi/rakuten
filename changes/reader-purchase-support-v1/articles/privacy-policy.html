@@ -1,33 +1,46 @@
 <section aria-labelledby="production-privacy-overview">
   <h2 id="production-privacy-overview">運営者と適用範囲</h2>
-  <p>暮らしのしるべ編集者は、本サイトの閲覧、お問い合わせ、外部リンクの利用に関して取り扱う情報を本ページに示します。取得項目や利用目的を変更する場合は、実装と本文を同時に更新します。</p>
-  <p><strong>最終更新日：</strong><time datetime="2026-09-10">2026年9月10日</time></p>
+  <p>暮らしのしるべ編集者は、本サイトの閲覧、お問い合わせ、外部リンクの利用に関して取り扱う情報を本ページに示します。取得項目や利用目的を変更する場合は、実装と本文を同時に更新します。運営者の氏名・所在地は、下記のお問い合わせ先への請求に応じて遅滞なく回答します。</p>
+  <p><strong>最終更新日：</strong><time datetime="2026-09-12">2026年9月12日</time>（改定内容：CookieYesによる同意管理と、統計目的への同意後にのみ読み込むGoogle Analytics 4の運用に本文を合わせ、外部送信先の一覧、Cookieの名称・保存期間、同意の撤回方法、楽天市場の商品画像に伴う通信を記載）</p>
 </section>
 <section aria-labelledby="production-privacy-collected">
   <h2 id="production-privacy-collected">取得する情報と利用目的</h2>
   <h3>サーバー運用情報</h3>
   <p>サーバーの運用に伴い、IPアドレス、ブラウザ・端末情報、参照元URL、アクセス日時、閲覧URLなどがアクセスログに記録される場合があります。不正アクセスの防止、障害調査、安全な運営のために利用します。</p>
-  <h3>記事の入力欄</h3><p>購入予算、自宅の測定値、費用計算の入力値は、そのページ内での照合にだけ使います。サイトや外部サービスへ送信せず、ブラウザの保存領域にも記録しません。ページを離れると入力は保持されません。</p><h3>お問い合わせ情報</h3>
+  <h3>記事の入力欄</h3>
+  <p>購入予算、自宅の測定値、費用計算の入力値は、そのページ内での照合にだけ使います。サイトや外部サービスへ送信せず、ブラウザの保存領域にも記録しません。ページを離れると入力は保持されません。</p>
+  <h3>お問い合わせ情報</h3>
   <p>お問い合わせ時にメールアドレスとお問い合わせ内容を取得します。回答、必要な連絡、不正利用の防止、対応記録のために利用します。</p>
 </section>
 <section aria-labelledby="production-privacy-measurement">
-  <h2 id="production-privacy-measurement">任意の利用計測</h2>
-  <p>現在、テーマが追加する記事閲覧、比較操作、商品カード表示、購入リンク表示・クリック、記事内リンクなどの利用計測は無効です。これらの行動を計測する識別子の保存や、計測イベントの送信は行いません。</p>
-  <p>将来、計測を導入する場合は、取得項目、目的、送信・保存先、保持期間、同意の拒否・撤回方法を本ページへ記載してから有効化します。同意管理機能が利用可能で、統計目的への明示的な同意があり、運営者が有効化した場合に限り送信する方針です。</p>
+  <h2 id="production-privacy-measurement">同意に基づく利用計測（Google Analytics 4）</h2>
+  <p>記事の使われ方と購入先への案内を改善するため、統計目的への同意があった場合に限り、Google Analytics 4（Googleタグ GT-5TWW6GFS、測定ID G-7CV8F96487）を読み込みます。同意前、または統計目的を拒否した場合はGoogleタグを読み込みません。計測用の識別子の保存やイベントの送信も行いません。</p>
+  <p>計測する内容は、記事の閲覧と購入先リンクの操作（記事・商品・販売先・ボタン・掲載位置・公開版の識別子）、およびGoogleタグが扱う閲覧時刻、端末・ブラウザなどの技術情報です。記事URLのクエリー、外部リンクのクエリー、予算・測定・費用計算の入力値、氏名やメールアドレスは送信しません。クリックを購入や成果報酬の確定として記録しません。</p>
 </section>
 <section aria-labelledby="production-privacy-consent">
   <h2 id="production-privacy-consent">Cookie、同意、拒否・撤回</h2>
-  <p>任意の統計・マーケティング目的の計測は無効です。計測への同意を求める画面や、存在しないCookie設定へのリンクは設けません。記事閲覧や外部の商品ページへの移動のために、任意の計測への同意を求めることもありません。</p>
-  <p>運営者のログインなど、サイト管理に必要なCookieは利用される場合があります。ブラウザの設定から保存済みCookieを確認・削除できます。将来の同意設定を開く操作は、実際に動作する同意管理機能を導入した場合に限って表示します。</p>
+  <p>同意はCookieYesの同意管理画面で取得し、WordPressのConsent APIと連携して、統計目的への同意がある場合にだけ計測用のタグを有効にします。必須Cookie以外は既定で無効です。閲覧や外部の商品ページへの移動に、計測への同意は必要ありません。</p>
+  <p>同意の変更・撤回は、各ページのフッターにある「Cookie・個人情報の取り扱い」から設定画面を開いて行えます。統計目的を拒否または撤回すると、Google Analytics 4は読み込まれません。それ以降の送信も行われません。ブラウザの設定から保存済みCookieを削除することもできます。撤回前に送信された情報の取扱いについてはお問い合わせください。</p>
+  <p>運営者のログインなど、サイト管理に必要なCookieは、同意の対象外として利用される場合があります。</p>
 </section>
 <section aria-labelledby="production-privacy-ga4">
-  <h2 id="production-privacy-ga4">外部の解析サービスと商品リンク</h2>
-  <p>当サイトではGoogle Analytics 4を読み込まず、追加のアクセス解析サービスへ閲覧行動を送信しません。外部の画像を表示する際は、画像配信元への通信が発生する場合があります。これは当サイトが追加する閲覧・クリック計測とは区別されます。</p>
-  <p>メーカーや販売店など外部サイトへ移動した後は、遷移先の規約とプライバシーポリシーが適用されます。楽天アフィリエイトリンクの遷移先における取扱いは、<a href="https://privacy.rakuten.co.jp/" target="_blank" rel="noopener noreferrer">楽天グループの個人情報保護方針</a>をご確認ください。当サイトは遷移先で入力する氏名、住所、決済情報を受け取りません。</p>
+  <h2 id="production-privacy-ga4">外部送信の一覧（送信先・内容・目的・Cookie）</h2>
+  <div class="ps-article"><div class="ps-table-scroll" role="region" tabindex="0" aria-label="外部送信の一覧"><table class="ps-comparison">
+    <caption>本サイトの閲覧に伴って外部の事業者へ送信される情報</caption>
+    <thead><tr><th scope="col">送信先</th><th scope="col">送信される情報</th><th scope="col">利用目的</th><th scope="col">送信のタイミング</th><th scope="col">Cookie（標準的な名称・保存期間）</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Google LLC（Google Analytics 4／Googleタグ GT-5TWW6GFS）</th><td>閲覧ページ、購入先リンクの操作、閲覧時刻、端末・ブラウザなどの技術情報、計測用の識別子</td><td>統計目的（記事の使われ方と購入先への案内の改善）</td><td>統計目的への同意後のみ</td><td>_ga（最長2年）、_ga_*（最長2年）</td></tr>
+      <tr><th scope="row">CookieYes Limited（同意管理）</th><td>同意の選択内容と同意日時</td><td>同意状態の記録と再表示の制御</td><td>同意画面の操作時</td><td>cookieyes-consent（1年）</td></tr>
+      <tr><th scope="row">楽天グループ株式会社（楽天市場・楽天アフィリエイト）</th><td>商品画像の取得リクエストに伴うIPアドレス、ブラウザ情報、参照元URL、アフィリエイトの計測情報</td><td>商品画像の配信とアフィリエイトの成果計測</td><td>商品画像ブロックを表示する記事の閲覧時（同意の前でも発生）</td><td>楽天側の設定による（当サイトは指定しません）</td></tr>
+    </tbody>
+  </table></div></div>
+  <p>Cookieの名称と保存期間は各サービスの標準的な値です。実際に使用されるCookieの一覧と分類（必須／統計／マーケティング）は、フッターの「Cookie・個人情報の取り扱い」から開く設定画面で確認できます。</p>
+  <p>楽天市場の商品画像は、記事の商品画像ブロックを表示する際に楽天のサーバー（hbb.afl.rakuten.co.jp、thumbnail.image.rakuten.co.jp、image.rakuten.co.jp）へ画像の取得リクエストが送られ、あわせてアフィリエイトの計測が行われます。この通信は画像を表示するために同意の前でも発生します。商品画像は楽天市場の販売店ページへ進む広告リンクです（<a href="/about-ad-policy/#production-about-advertising">運営・広告方針の「広告・アフィリエイト」</a>を参照）。</p>
+  <p>メーカーや販売店など外部サイトへ移動した後は、遷移先の規約とプライバシーポリシーが適用されます。当サイトは遷移先で入力する氏名、住所、決済情報を受け取りません。送信後の取扱いは、<a href="https://policies.google.com/privacy?hl=ja" target="_blank" rel="noopener noreferrer">Googleのプライバシーポリシー</a>、<a href="https://www.cookieyes.com/privacy-policy/" target="_blank" rel="noopener noreferrer">CookieYesのプライバシーポリシー</a>、<a href="https://privacy.rakuten.co.jp/" target="_blank" rel="noopener noreferrer">楽天グループの個人情報保護方針</a>をご確認ください。</p>
 </section>
 <section aria-labelledby="production-privacy-rights">
   <h2 id="production-privacy-rights">確認・訂正・削除とお問い合わせ</h2>
-  <p>本ポリシー、利用者情報の取扱い、確認・訂正・削除のご相談は、<a href="mailto:contact@kurashinoshirube.com">contact@kurashinoshirube.com</a> までお知らせください。本人確認が必要な請求では、対象と必要な範囲を個別に案内します。</p>
+  <p>本ポリシー、利用者情報の取扱い、確認・訂正・削除のご相談、運営者の氏名・所在地の請求は、<a href="mailto:contact@kurashinoshirube.com">contact@kurashinoshirube.com</a> までお知らせください。本人確認が必要な請求では、対象と必要な範囲を個別に案内します。</p>
   <p>取得した情報への不正アクセス、漏えい、改ざん、紛失を防ぐため、取扱う情報の性質に応じた安全管理を行います。</p>
   <p><a href="/about-ad-policy/">運営・広告方針を読む</a>／<a href="/comparison-policy/">比較・編集方針を読む</a></p>
 </section>

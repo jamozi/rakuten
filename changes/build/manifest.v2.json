@@ -2,7 +2,7 @@
   "document": {
     "id": "RAOS-BUILD-MANIFEST-002",
     "mutable_source_hash_authority": false,
-    "owner_count": 152,
+    "owner_count": 153,
     "version": "2.0.0"
   },
   "owners": [
@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "fa33ac6bb1559345e29014fb39eeb343037d6ddb0b1576abfd9016a1e08a6fef",
+          "sha256": "10133f991bbd2bcc77ba28357cd468a42a2ac88106f278bb2a511b7d9ae99bdb",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -311,8 +311,8 @@
           "uri": "repo://changes/editorial-portfolio-v3/generated/wordpress-audit-inventory.v3.json"
         },
         {
-          "bytes": 31333,
-          "sha256": "f56f29e3dd4252b85cc366444b6cfd4806492ce8081c25a0b59362648bc94c42",
+          "bytes": 33781,
+          "sha256": "be60b5b43b94c239265795c51ff40fbd72e12f82f928c78742a1c3470a0f88a5",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-navigation.v3.json"
         }
       ],
@@ -366,7 +366,7 @@
       "outputs": [
         {
           "bytes": 2625,
-          "sha256": "d0750a9be160eab4ed61d80bff4362ce6d633508fbb06960a141dcef6f16c16a",
+          "sha256": "a9c012814683aa89ce4c9734e5a6ae2a5bfce094e7065aeca3ee7b2968f0a14e",
           "uri": "repo://changes/analytics-google-live-v1/runtime-manifest.v1.json"
         }
       ],
@@ -664,8 +664,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 82491,
-          "sha256": "43f02529e79f5f57c9e12347c3ce50a553326065d328331d4e37aad5935ba019",
+          "bytes": 84971,
+          "sha256": "93dc713fb6dbc130d73c4ebd5eaf0dd33e778ab388874141f7758ef80ae4365d",
           "uri": "repo://changes/wordpress-local-preview-v1/fixtures/reader-guides.v1.json"
         }
       ],
@@ -1847,22 +1847,22 @@
       "outputs": [
         {
           "bytes": 4771,
-          "sha256": "b55afec55c7191ac301789bec53deca6d1232c461b8b7cfe1c27fcd1f8ec4113",
+          "sha256": "a3d2368928a509ec1472221951bb42912134d61d571c010fe156103602948498",
           "uri": "repo://changes/reader-measurement-v1/runtime-manifest.v1.json"
         },
         {
           "bytes": 2132,
-          "sha256": "3ac7bb5009737e105906c35de9aa619a94ffc38c0fc8538405177387f4a8ab87",
+          "sha256": "dc33285cf2a8d9586d6bdfb12896baf59eb14cdc5c8d17512f86d055e321a815",
           "uri": "repo://changes/reader-measurement-v1/theme-runtime-binding.v1.json"
         },
         {
           "bytes": 23683,
-          "sha256": "a510d703a40468158c8cd89f07a9c356aa0944c71c47314a36d486c37fcb614a",
+          "sha256": "31f3d14319edc20a1c4a22847e02767869db98b71359e4aab3d12774eb35b7cb",
           "uri": "repo://changes/reader-measurement-v1/wordpress-plugin/raos-reader-measurement/config/reader-allowlist.v1.json"
         },
         {
           "bytes": 1232,
-          "sha256": "4e5ba29afc8e4b801c67e1f4ddfde1c4659f6c429063ad9298b090f048b29d34",
+          "sha256": "41f90d54350f2174c480707cbf21ce1d780269d963e0dad0d0b10d9dd52a1b9f",
           "uri": "repo://changes/reader-measurement-v1/wordpress-plugin/raos-reader-measurement/config/reader-runtime.v1.json"
         }
       ],
@@ -1961,73 +1961,73 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 93609,
-          "sha256": "5900b21a1e1a3d985598bdac8f3a55a60d4d9f371ae3f889c2f4867f8c49727e",
+          "bytes": 55430,
+          "sha256": "d6def186a550a06318255f8daba5b0741908574a16c5d1a9a3196d3e6103f557",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json"
         },
         {
-          "bytes": 5840,
-          "sha256": "4abf7a3236d9ebf319558637c3d60dbd8780cbffc306207263b54edf3b481f48",
+          "bytes": 7157,
+          "sha256": "bd2e7fa8d69dc7ab4e0a026b552d08bb7bd9b809ae3fc63dd74cd746176ea651",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/about-ad-policy.html"
         },
         {
-          "bytes": 31149,
-          "sha256": "ab08cc354d4835924374d1746e8af572cda76e65cad3c12dcf19d4ea5b13f739",
+          "bytes": 32413,
+          "sha256": "042f00520b60b0e78e954782fee44b840ce7a6a731a11b2108aaa8eb87fc7cba",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/compact-robot-vacuum-shortlist.html"
         },
         {
-          "bytes": 8208,
-          "sha256": "5f4416a5233996222706319034a74a69fc66c74b4890df35debd2476eb402366",
+          "bytes": 8370,
+          "sha256": "30706a92557d1b3383d4b1332c15980dd2b59d3c63bf69334903e319dfd10173",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/comparison-policy.html"
         },
         {
-          "bytes": 50162,
-          "sha256": "151a9238b647f01e3d028fb1be27575d8a9a2818c13f21bec72039c1c31f56f1",
+          "bytes": 52821,
+          "sha256": "58addfb120b57b5412dddba0d5d06fa0e79c0b4fdd5003a607124ef9d893f5cb",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html"
         },
         {
-          "bytes": 14321,
-          "sha256": "ebf2036356440e79352ee7082cdc300db0e9dad57013fb82b553e28dc4da1637",
+          "bytes": 19420,
+          "sha256": "3cb8e824991b23339dfd2ff7161c4045edbfcefc90d7d13187993d16df390b35",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-cleaning-guide.html"
         },
         {
-          "bytes": 16326,
-          "sha256": "463ab4e0f773d76df6e65b63fb483e10ee73fe99dbbcf142b8a6afd92d3292ef",
+          "bytes": 20195,
+          "sha256": "9761110f5225d36e7ed8c3d0b5003afc0356e688cea310f4175f0a443860ff18",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-detergent-guide.html"
         },
         {
-          "bytes": 23817,
-          "sha256": "1a3ab2ac399f032d59adb658a2f0679a51d4df7ac8479e04f565bc28f06bc443",
+          "bytes": 26679,
+          "sha256": "535a629b0c5f2c0352ae221b96bf4b1aa2a835f6e251c2daa3be8315905bae7f",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-installation-measurement.html"
         },
         {
-          "bytes": 27070,
-          "sha256": "1e905e02ce887a9970701db93e8cc569f17b22e8e0389000a2d546d2199b35c3",
+          "bytes": 32348,
+          "sha256": "d68248d3d2e1fe5c15d23428083597c70f5e15e4e4ad2c2a8d6a7cead9fa6088",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-running-cost.html"
         },
         {
-          "bytes": 15627,
-          "sha256": "d4bcd99cbef1183e032ed1a0bfc8ee2f13fdab6f73c20d94c0c1dbc0f61c944c",
+          "bytes": 16598,
+          "sha256": "cc8337697a3a01cc0a48ddf064e2acb6a76760a5d97fe33436b9f6d526a1161b",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/dishwasher-water-supply-methods.html"
         },
         {
-          "bytes": 7402,
-          "sha256": "1ad674d2337d94416ae71e4ec00532ab5d15dd6613a0af17771992d0e6c3ef74",
+          "bytes": 8655,
+          "sha256": "58cdff6a6e33cd766aa5cbaaeeadbc1be7a91065ce9d2eb8f7554d28d3806d2a",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/kitchen.html"
         },
         {
-          "bytes": 38169,
-          "sha256": "8c95d26091454489329fe976f1446aa427c9179670755d17762e4355c752418d",
+          "bytes": 39058,
+          "sha256": "074a67aa25981cab01110cfc431f6366b9165bed682c34bc55aa8b0597358e53",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/lightweight-carry-on-suitcase-under-3kg.html"
         },
         {
-          "bytes": 35201,
-          "sha256": "edc4f684a16ec449f31f7b4d073cc6bf4170695b1f07ece187413cba7985d822",
+          "bytes": 34643,
+          "sha256": "484a34119c84809410526a15abad7ff408e52c0ffcb60997a8e0e9de99996a24",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/portable-power-station-guide.html"
         },
         {
-          "bytes": 4886,
-          "sha256": "f5d1172522c14fa178706547111085457389b435301424b2f66e1d1ccb6dbde7",
+          "bytes": 8434,
+          "sha256": "360c983a6db755831c19d3a365cb92ca599722482c09d4b0940e7076f7248763",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/privacy-policy.html"
         }
       ],
@@ -26735,7 +26735,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "47a718d9ba7f32d250b4c128cb8970901be6eeccd3cbfe80406579866d4554cc",
+          "sha256": "ea252a78be6c9e52d61b7b241e562c14a9e8d272f65dfcffa49e5f54a8f07882",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -26965,8 +26965,8 @@
       "output_scope": "tracked",
       "outputs": [
         {
-          "bytes": 81278,
-          "sha256": "3ca3cf3c83676df44458ffa7668b58f5fbf1d3f8c2e8a8a7e4b7e9d2664b9910",
+          "bytes": 81279,
+          "sha256": "243bc353b55a9f72a5a7393dbefaa4102857221df63a7f5607984c73ff824fd7",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -27596,7 +27596,8 @@
         "build_editorial_v3_theme_navigation",
         "build_reader_measurement_v1",
         "build_reader_purchase_support_v1",
-        "build_st1704_theme_assets"
+        "build_st1704_theme_assets",
+        "build_st1704_theme_icons"
       ],
       "owner_id": "build_st1704_self_hosted_theme",
       "owner_version": 2,
@@ -27653,6 +27654,12 @@
           "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/home-magazine.css",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/home-magazine.css",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/apple-touch-icon.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/apple-touch-icon.png",
           "version": 2
         },
         {
@@ -27717,8 +27724,26 @@
         },
         {
           "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark-512.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark-512.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
           "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/favicon-32.png",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/favicon-32.png",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/favicon.ico",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/favicon.ico",
           "version": 2
         },
         {
@@ -28079,6 +28104,57 @@
           "kind": "tracked",
           "semantic_id": "scripts/build_st1704_theme_assets.py",
           "uri": "repo://scripts/build_st1704_theme_assets.py",
+          "version": 2
+        }
+      ],
+      "story_ids": [
+        "ST-1704"
+      ]
+    },
+    {
+      "output_scope": "tracked",
+      "outputs": [
+        {
+          "bytes": 1388,
+          "sha256": "b4f5c749c4eb6319ceb115ef504d4bbfadc9e7eed0c8839468c5d309e0e8fec5",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/apple-touch-icon.png"
+        },
+        {
+          "bytes": 4323,
+          "sha256": "80587716081d3abc82d411068e264a8c3b2b4a833a05532b2668e728d540431e",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark-512.png"
+        },
+        {
+          "bytes": 230,
+          "sha256": "f659ea0e294df0d3618c9207fa5be59170e4a08f69c25f00138571b1106edd0b",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/favicon-32.png"
+        },
+        {
+          "bytes": 15086,
+          "sha256": "1781bc5617878f763a6e292baa734b9c3a6a3c89540073c86bc375184fa36cc5",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/favicon.ico"
+        }
+      ],
+      "owner_dependencies": [],
+      "owner_id": "build_st1704_theme_icons",
+      "owner_version": 2,
+      "semantic_inputs": [
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
+          "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/images/brand-mark.svg",
+          "version": 2
+        },
+        {
+          "kind": "tracked",
+          "semantic_id": "scripts/build_st1704_theme_icons.py",
+          "uri": "repo://scripts/build_st1704_theme_icons.py",
           "version": 2
         }
       ],
@@ -29723,12 +29799,12 @@
       "outputs": [
         {
           "bytes": 817,
-          "sha256": "c2dc8ba032221fbf5fd8f676f2bbd6d30e5664dc54eb85e3a6fd76d47a198b5c",
+          "sha256": "4cb168bd48e31da67fde7bcb1689b99574abf055fa33e9aafae793fc6e4abf62",
           "uri": "repo://changes/wordpress-mcp-v1/contracts/repo-plugin-artifacts.v1.json"
         },
         {
           "bytes": 28259,
-          "sha256": "0ce977e84d18d2e9166e30bab0d3294ce249021f827d19c6d48dbb632f7d8e08",
+          "sha256": "00938580066d7b359880d49a526866ecd59a8d9780fcffbae3791407d794dfa3",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30585,7 +30661,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "020f2bb01f797269218a801a3d501d9f1decc715a319e2ed157da9eec28ca4d8",
+          "sha256": "415761191255b6ea37296a210aa335eaf71160e332760eb7aa6f7ad37eec49ff",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
@@ -30602,7 +30678,8 @@
         "build_st1704_product_safety_manufacturer_plan",
         "build_st1704_rakuten_capture_manifest",
         "build_st1704_self_hosted_editorial_manifest",
-        "build_st1704_theme_assets"
+        "build_st1704_theme_assets",
+        "build_st1704_theme_icons"
       ],
       "owner_id": "build_wordpress_quality_baseline",
       "owner_version": 2,

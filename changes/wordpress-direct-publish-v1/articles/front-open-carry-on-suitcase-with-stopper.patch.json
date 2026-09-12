@@ -17,7 +17,13 @@
   "keep_existing_fragments": true,
   "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/travel/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">スーツケースの選び方・記事一覧</a><a href=\"#comparison-title\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"/travel/#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
   "next_html": "<section id=\"ks-next-read\" aria-labelledby=\"ks-next-read-title\" style=\"margin:32px 0;padding:24px;border-top:2px solid #1b1b18;background:#faf9f6;line-height:1.85;\"><h2 id=\"ks-next-read-title\">残っている疑問から、次の確認へ</h2><div class=\"ks-route-links\"><a href=\"/lightweight-carry-on-suitcase-under-3kg/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">30L以上・3kg以下のスーツケース比較</a><a href=\"/carry-on-suitcase-comparison/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">エースの3モデルを、軽さ・容量・開き方で比較</a></div><p>記事ごとに対象機種が異なります。別機種の数値や手順を流用せず、必要な確認だけを選んで読めます。</p><a href=\"/travel/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">スーツケース選びの全体像に戻る</a></section>",
-  "replacements": [],
+  "replacements": [
+    {
+      "old": "NOTES &amp; SOURCES",
+      "new": "出典",
+      "max_count": 1
+    }
+  ],
   "editorial_additions": [
     {
       "id": "front-open-practical-checks",
@@ -36,6 +42,177 @@
           "locator": "商品説明：フロントオープン、中央開き不可"
         }
       ]
+    },
+    {
+      "id": "front-open-seat-class-premise",
+      "tag": "p",
+      "target_id": "ks-start-84",
+      "position": "before_section",
+      "html": "<p id=\"front-open-seat-class-premise\" class=\"table-note\">この記事の4モデルは、100席以上の便の一般的な機内持ち込み枠（幅40×奥行25×高さ55cm以内・3辺合計115cm以内）を前提に選んでいます。100席未満の便を使う予定がある方は、高さ45cm・3辺合計100cm以内を基準にした<a href=\"/carry-on-suitcase-under-100-seats/\">100席未満の国内線向け4モデル比較</a>を先に確認してください。</p>",
+      "sources": [
+        {
+          "url": "https://www.ana.co.jp/ja/jp/guide/boarding-procedures/baggage/domestic/carry-rule/",
+          "checked_on": "2026-08-29",
+          "locator": "座席数ごとの機内持ち込み手荷物のサイズ（100席以上・100席未満）"
+        },
+        {
+          "url": "https://www.jal.co.jp/jp/ja/dom/baggage/inflight/",
+          "checked_on": "2026-08-29",
+          "locator": "座席数ごとの機内持ち込み手荷物のサイズ（100席以上・100席未満）"
+        }
+      ]
+    }
+  ],
+  "text_edits": [
+    {
+      "old": "START HERE",
+      "new": "先に結論",
+      "max_count": 1
+    },
+    {
+      "old": "前開きとストッパーが必要かを、使う場面から決める",
+      "new": "前開き・ストッパー付きの4モデルを、使い方で選ぶ",
+      "max_count": 1
+    },
+    {
+      "old": "候補を残せる条件",
+      "new": "容量と軽さを両立するなら",
+      "max_count": 1
+    },
+    {
+      "old": "移動中に荷物を取り出したいか、電車やバスで転がりを抑えたいかを起点に、容量・重量・開き方の違いを比べられます。",
+      "new": "innovator INV50。通常時38L・3.3kgで、独立した3室収納とワイドオープンを使い分けたい人に。拡張機能はありません。",
+      "max_count": 1
+    },
+    {
+      "old": "この比較だけでは決められないこと",
+      "new": "開き方で選ぶなら",
+      "max_count": 1
+    },
+    {
+      "old": "前面収納の使いやすさ、ストッパー操作、荷物を入れた状態の走行感は実機で比較していません。",
+      "new": "前開きと中央開きを使い分けるなら、ace.TOKYO LABEL ディフェレンス 05721（通常時32L・3.5kg）。左右に広げず片側だけで荷造りするなら、PROTECA フレスターEX 01551（通常時36L・3.4kg、日本製）。どちらも拡張時は奥行27cmになり、機内持ち込みの判定は別です。",
+      "max_count": 1
+    },
+    {
+      "old": "最後に確認すること",
+      "new": "PC収納とUSB端子を優先するなら",
+      "max_count": 1
+    },
+    {
+      "old": "PCや手荷物の実寸、開閉に必要な場所、非拡張時の外寸、利用便の条件を確認します。",
+      "new": "BERMAS INTER CITY II 60561。約36L・約3.5kg（付属物を除く）で、13インチまでを目安とするPC収納とUSB-A・USB-C端子付き。4モデルとも100席以上の便の一般的な枠（3辺合計115cm以内・高さ55cm）を前提にしています。",
+      "max_count": 1
+    },
+    {
+      "old": "小物を分ける収納、前と中央を使い分ける開き方、片側から衣類まで届く構造。この違いを比べて、いつもの荷物に合う候補を探しましょう。気になるモデルが決まったら、商品欄から内装写真や色・価格を確認できます。まずは下の使い方別の結論をご覧ください。",
+      "new": "小物を分ける収納、前と中央を使い分ける開き方、片側から衣類まで届く構造。この違いを比べて、いつもの荷物に合う候補を探しましょう。候補ごとの一行結論は冒頭の「先に結論」に、使い方別の候補は次の確認手順の後にまとめています。気になるモデルが決まったら、商品欄から内装写真や色・価格を確認できます。",
+      "max_count": 1
+    },
+    {
+      "old": "通常時38Lと本体3.3kgを両立",
+      "new": "3室収納で容量と軽さを両立",
+      "max_count": 1
+    },
+    {
+      "old": "SPECIFICATIONS CHECKED / 2026.08.29",
+      "new": "仕様確認日 / 2026.08.29",
+      "max_count": 1
+    },
+    {
+      "old": "01　INTRODUCTION",
+      "new": "01　はじめに",
+      "max_count": 1
+    },
+    {
+      "old": "02　THE SHORT ANSWER",
+      "new": "02　使い方別の候補",
+      "max_count": 1
+    },
+    {
+      "old": "03　WHO THIS IS FOR",
+      "new": "03　対象読者",
+      "max_count": 1
+    },
+    {
+      "old": "04　HOW WE COMPARED",
+      "new": "04　比較のしかた",
+      "max_count": 1
+    },
+    {
+      "old": "05　AT A GLANCE",
+      "new": "05　一覧で比べる",
+      "max_count": 1
+    },
+    {
+      "old": "06　FOUR PORTRAITS",
+      "new": "06　候補ごとの詳細",
+      "max_count": 1
+    },
+    {
+      "old": "MODEL 01　/　THREE ROOMS",
+      "new": "候補01　/　3室収納",
+      "max_count": 1
+    },
+    {
+      "old": "MODEL 02　/　TWO-WAY OPEN",
+      "new": "候補02　/　2WAYオープン",
+      "max_count": 1
+    },
+    {
+      "old": "MODEL 03　/　ONE-SIDE PACKING",
+      "new": "候補03　/　片側で荷造り",
+      "max_count": 1
+    },
+    {
+      "old": "MODEL 04　/　BUSINESS ACCESS",
+      "new": "候補04　/　PC収納と端子",
+      "max_count": 1
+    },
+    {
+      "old": "07　FOUR SCENES",
+      "new": "07　使う場面",
+      "max_count": 1
+    },
+    {
+      "old": "08　EDITOR'S NOTE",
+      "new": "08　編集後記",
+      "max_count": 1
+    },
+    {
+      "old": "09　QUESTIONS",
+      "new": "09　よくある疑問",
+      "max_count": 1
+    },
+    {
+      "old": "通常時38Lと本体3.3kgを両立し、3room収納とワイドオープンを使い分けたい場合の候補です。",
+      "new": "通常時38Lと本体3.3kgを両立し、3room収納とワイドオープンを使い分けたい場合の候補です。リンク先へ進む前に、下の比較表と購入前の確認をご覧ください。",
+      "max_count": 1
+    },
+    {
+      "old": "前開きと中央開きを使い分ける2WAYです。開き方を一つに固定したくない場合の候補です。",
+      "new": "前開きと中央開きを使い分ける2WAYです。開き方を一つに固定したくない場合の候補です。リンク先へ進む前に、下の比較表と購入前の確認をご覧ください。",
+      "max_count": 1
+    },
+    {
+      "old": "前側からメイン収納全体へ届くため、ケースを左右に広げず片側で荷造りしたい場合の候補です。",
+      "new": "前側からメイン収納全体へ届くため、ケースを左右に広げず片側で荷造りしたい場合の候補です。リンク先へ進む前に、下の比較表と購入前の確認をご覧ください。",
+      "max_count": 1
+    },
+    {
+      "old": "PC収納、USB-A・USB-C端子という公表機能を、出張時の条件に含めたい場合の候補です。公称重量は付属物を除く約3.5kgです。",
+      "new": "PC収納、USB-A・USB-C端子という公表機能を、出張時の条件に含めたい場合の候補です。公称重量は付属物を除く約3.5kgです。リンク先へ進む前に、下の比較表と購入前の確認をご覧ください。",
+      "max_count": 1
+    },
+    {
+      "old": "実機試験",
+      "new": "実機試験・確認者",
+      "max_count": 1
+    },
+    {
+      "old": "未実施",
+      "new": "未実施／執筆・商品情報確認：暮らしのしるべ編集部",
+      "max_count": 1
     }
   ]
 }

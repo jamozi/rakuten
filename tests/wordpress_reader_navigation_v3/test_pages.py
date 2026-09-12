@@ -56,8 +56,8 @@ class ReaderPageTests(unittest.TestCase):
 
     def test_home_shared_guide_is_not_travel_only(self):
         home = (ARTICLES / "home.html").read_text(encoding="utf-8")
-        self.assertIn('<h2 id="km-decision-path-title">選び方の3ステップ</h2>', home)
-        self.assertIn('<a href="/categories/">商品別に選び方を見る ', home)
+        self.assertIn('<h2 class="km-promos-title">選び方の3ステップ</h2>', home)
+        self.assertIn('<a href="/categories/">商品カテゴリから探す ', home)
         self.assertNotIn('href="/travel/">スーツケース選びを始める', home)
 
     def test_home_retains_photos_and_purchase_target(self):

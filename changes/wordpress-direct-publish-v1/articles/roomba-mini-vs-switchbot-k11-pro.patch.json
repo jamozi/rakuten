@@ -16,11 +16,27 @@
   "keep_existing_fragments": true,
   "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/cleaning/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">ロボット掃除機の選び方・記事一覧</a><a href=\"#robot-comparison-title\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"/cleaning/#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
   "next_html": "<section id=\"ks-next-read\" aria-labelledby=\"ks-next-read-title\" style=\"margin:32px 0;padding:24px;border-top:2px solid #1b1b18;background:#faf9f6;line-height:1.85;\"><h2 id=\"ks-next-read-title\">残っている疑問から、次の確認へ</h2><div class=\"ks-route-links\"><a href=\"/compact-robot-vacuum-shortlist/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">ロボット掃除機を設置寸法と手入れで比較</a></div><p>記事ごとに対象機種が異なります。別機種の数値や手順を流用せず、必要な確認だけを選んで読めます。</p><a href=\"/cleaning/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">ロボット掃除機選びの全体像に戻る</a></section>",
-  "replacements": [],
+  "replacements": [
+    {
+      "old": "09　APP &amp; WI-FI",
+      "new": "09　アプリとWi-Fi",
+      "max_count": 1
+    },
+    {
+      "old": "NOTES &amp; SOURCES",
+      "new": "出典",
+      "max_count": 1
+    }
+  ],
   "text_edits": [
     {
+      "old": "主に比べるのは、自動ゴミ収集付きのRoomba Mini + AutoEmpty（F155260）とK11+ Proです。自動収集を使いたい方は、この2機種の台・通信条件・手入れを比べてください。自動収集を省いて充電台を小さくしたい方には、別モデルのRoomba Mini Slim + SlimCharge（F115060）を代替候補として紹介します。",
+      "new": "主に比べるのは、自動ゴミ収集付きのRoomba Mini（ルンバ ミニ）+ AutoEmpty（F155260）とK11+ Proです。自動収集を使いたい方は、この2機種の台・通信条件・手入れを比べてください。自動収集を省いて充電台を小さくしたい方には、別モデルのRoomba Mini Slim + SlimCharge（F115060）を代替候補として紹介します。",
+      "max_count": 1
+    },
+    {
       "old": "Roomba MiniとK11+ Proは、自動収集の有無や付属する台によって暮らしとの相性が変わります。本体が小さいだけでは決まらないので、まず比較表で台の寸法と手入れの違いを確認してください。置ける候補が見えてきたら、商品欄から同梱品・消耗品・価格の確認へ進めます。",
-      "new": "主に比べるのは、自動ゴミ収集付きのRoomba Mini + AutoEmpty（F155260）とK11+ Proです。自動収集を使いたい方は、この2機種の台・通信条件・手入れを比べてください。自動収集を省いて充電台を小さくしたい方には、別モデルのRoomba Mini Slim + SlimCharge（F115060）を代替候補として紹介します。",
+      "new": "主に比べるのは、自動ゴミ収集付きのRoomba Mini（ルンバ ミニ）+ AutoEmpty（F155260）とK11+ Proです。自動収集を使いたい方は、この2機種の台・通信条件・手入れを比べてください。自動収集を省いて充電台を小さくしたい方には、別モデルのRoomba Mini Slim + SlimCharge（F115060）を代替候補として紹介します。",
       "max_count": 1
     },
     {
@@ -84,8 +100,93 @@
       "max_count": 1
     },
     {
-      "old": "主に比べるのは、自動ゴミ収集付きのRoomba Mini + AutoEmpty（F155260）とK11+ Proです。自動収集を使いたい方は、この2機種の台・通信条件・手入れを比べてください。自動収集を省いて充電台を小さくしたい方には、別モデルのRoomba Mini Slim + SlimCharge（F115060）を代替候補として紹介します。",
-      "new": "主に比べるのは、自動ゴミ収集付きのRoomba Mini（ルンバ ミニ）+ AutoEmpty（F155260）とK11+ Proです。自動収集を使いたい方は、この2機種の台・通信条件・手入れを比べてください。自動収集を省いて充電台を小さくしたい方には、別モデルのRoomba Mini Slim + SlimCharge（F115060）を代替候補として紹介します。",
+      "old": "01　INTRODUCTION",
+      "new": "01　はじめに",
+      "max_count": 1
+    },
+    {
+      "old": "02　THE SHORT ANSWER",
+      "new": "02　条件別の結論",
+      "max_count": 1
+    },
+    {
+      "old": "03　WHAT CAN BE COMPARED",
+      "new": "03　比べられること",
+      "max_count": 1
+    },
+    {
+      "old": "04　HOW WE COMPARED",
+      "new": "04　比較のしかた",
+      "max_count": 1
+    },
+    {
+      "old": "05　AT A GLANCE",
+      "new": "05　一覧で比べる",
+      "max_count": 1
+    },
+    {
+      "old": "06　INSTALLATION",
+      "new": "06　設置",
+      "max_count": 1
+    },
+    {
+      "old": "07　THREE PORTRAITS",
+      "new": "07　候補ごとの詳細",
+      "max_count": 1
+    },
+    {
+      "old": "MODEL 01　/　AUTOEMPTY",
+      "new": "候補01　/　自動ゴミ収集",
+      "max_count": 1
+    },
+    {
+      "old": "MODEL 02　/　SWITCHBOT",
+      "new": "候補02　/　SwitchBot連携",
+      "max_count": 1
+    },
+    {
+      "old": "MODEL 03　/　SLIM CHARGE",
+      "new": "候補03　/　小型充電台",
+      "max_count": 1
+    },
+    {
+      "old": "08　CARE ROUTINE",
+      "new": "08　手入れ",
+      "max_count": 1
+    },
+    {
+      "old": "10　FAQ",
+      "new": "10　よくある質問",
+      "max_count": 1
+    },
+    {
+      "old": "11　EDITOR'S NOTE",
+      "new": "11　編集後記",
+      "max_count": 1
+    },
+    {
+      "old": "一次情報",
+      "new": "一次情報・確認者",
+      "max_count": 1
+    },
+    {
+      "old": "メーカー公式の製品情報・仕様表",
+      "new": "メーカー公式の製品情報・仕様表／執筆・商品情報確認：暮らしのしるべ編集部",
+      "max_count": 1
+    },
+    {
+      "old": "F155260は2.4GHz・5GHz対応が案内され、自動ゴミ収集までiRobotでそろえたい場合の候補です。ステーションの高さは約28.5cmあります。",
+      "new": "F155260は2.4GHz・5GHz対応が案内され、自動ゴミ収集までiRobotでそろえたい場合の候補です。ステーションの高さは約28.5cmあります。リンク先へ進む前に、下の比較表と購入前の確認をご覧ください。",
+      "max_count": 1
+    },
+    {
+      "old": "最大12,000Pa、4L紙パックが公表されています。既存のSwitchBot環境へまとめ、自動収集ステーションの床面積も抑えたい場合の候補です。",
+      "new": "最大12,000Pa、4L紙パックが公表されています。既存のSwitchBot環境へまとめ、自動収集ステーションの床面積も抑えたい場合の候補です。リンク先へ進む前に、下の比較表と購入前の確認をご覧ください。",
+      "max_count": 1
+    },
+    {
+      "old": "F115060の充電台は幅22.2×奥行8.6×高さ12.3cmで、自動ゴミ収集はありません。台の床面積を抑え、ダスト容器は手動で空にする運用です。",
+      "new": "F115060の充電台は幅22.2×奥行8.6×高さ12.3cmで、自動ゴミ収集はありません。台の床面積を抑え、ダスト容器は手動で空にする運用です。リンク先へ進む前に、下の比較表と購入前の確認をご覧ください。",
       "max_count": 1
     }
   ],
@@ -101,6 +202,35 @@
           "url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
           "checked_on": "2026-09-10",
           "locator": "K11+ Pro日本語説明書12・14・27ページ"
+        }
+      ]
+    },
+    {
+      "id": "ks-start-85",
+      "tag": "section",
+      "target_id": "robot-introduction-title",
+      "position": "before_section",
+      "html": "<section id=\"ks-start-85\" class=\"ks-decision-intro\" aria-labelledby=\"ks-start-85-title\" style=\"max-width:76rem;margin:0 auto clamp(2rem,4vw,3.5rem);padding:clamp(1.3rem,3vw,2rem);background:#f4f0e8;border-top:3px solid #1b1b18\"><p class=\"ks-decision-intro__eyebrow\">先に結論</p><h2 id=\"ks-start-85-title\">自動ゴミ収集の要否と、台の大きさで選ぶ</h2><div class=\"ks-decision-intro__grid\" style=\"display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem 1.5rem\"><div><strong>iRobotで自動収集を使うなら</strong><p>Roomba Mini + AutoEmpty（F155260）。本体は約24.5×24.5×9.2cm・約2kg、ステーションは約21.2×17.8×28.5cm。Roomba Homeアプリと2.4GHz・5GHzに対応します。</p></div><div><strong>SwitchBot連携と4L紙パックを条件にするなら</strong><p>SwitchBot K11+ Pro。本体は約24.8×24.8×9.2cm・約2.3kg、ステーションは24×18×25cm（公式掲載順。軸順は未確認）。2.4GHz Wi-Fi対応で、最大12,000Paの公表値はiRobotと同じ基準では比べられません。</p></div><div><strong>台を最小にし、手動でごみを捨てるなら</strong><p>Roomba Mini Slim + SlimCharge（F115060）。本体は約24.5×24.5×9.2cm・約2kgで、充電台は約22.2×8.6×12.3cm。自動ゴミ収集はありません。</p></div></div><p><small>公式仕様（2026年8月29日確認。Mini AutoEmptyの台寸法とK11+ Proの通信条件は2026年9月10日に再確認）による選び分けで、実機試験による順位ではありません。</small></p></section>",
+      "sources": [
+        {
+          "url": "https://store.irobot-jp.com/item/F155260.html",
+          "checked_on": "2026-09-10",
+          "locator": "Roomba Mini + AutoEmpty（F155260）本体・ステーション寸法、重量、Wi-Fi周波数帯"
+        },
+        {
+          "url": "https://www.switchbot.jp/products/switchbot-robot-vacuum-cleaner-k11-pro",
+          "checked_on": "2026-08-29",
+          "locator": "K11+ Pro本体・ステーション寸法、重量、最大12,000Pa、4L紙パック"
+        },
+        {
+          "url": "https://cdn.shopify.com/s/files/1/0522/2458/9999/files/K11_Pro-SMS-JP-2604-Q.pdf?v=1784279900",
+          "checked_on": "2026-09-10",
+          "locator": "K11+ Pro日本語説明書14・27ページ（2.4GHz Wi-Fi・Bluetooth）"
+        },
+        {
+          "url": "https://store.irobot-jp.com/category/ROOMBA/F115060.html",
+          "checked_on": "2026-08-29",
+          "locator": "Roomba Mini Slim + SlimCharge（F115060）本体・充電台寸法、重量、自動ゴミ収集なし"
         }
       ]
     }

@@ -61,9 +61,9 @@ def reader_article_graph(markup, item, navigation):
     nodes = {node["@type"]: node for node in graph["@graph"]}
     nodes["Article"]["articleSection"] = category["label"]
     crumbs = nodes["BreadcrumbList"]["itemListElement"]
-    crumbs[-1]["position"] = 3
-    crumbs.insert(1, {"@type": "ListItem", "item": audit.publication.ORIGIN + "/" + category["slug"] + "/",
-                      "name": category["label"], "position": 2})
+    assert len(crumbs) == 3
+    crumbs[1] = {"@type": "ListItem", "item": audit.publication.ORIGIN + "/" + category["slug"] + "/",
+                 "name": category["label"], "position": 2}
     return markup[:match.start(2)] + json.dumps(graph) + markup[match.end(2):]
 
 

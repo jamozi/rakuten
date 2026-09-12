@@ -88,3 +88,30 @@
 | 83 | APPLITE 4.0 QJ6-68002 | QJ6-68002 | 広告画像 | 画像提供元（楽天） | hb.afl.rakuten.co.jp | 画像リンク先の構成・送料・保証は未確認 | 画像の同定は登録素材のSHA-256 | RUNTIME_BINDING | 公開時snapshotに固定 | advertiser/link_usage は既存確認票で管理 | 画像リンクを価格・保証の確認と扱わない |
 | 83 | FREQUENTER LIEVE 1-250 | 1-250 | 通常（未確認） | 販売先未確認 |  |  |  | NO_OFFER |  | 調査課題で管理 | 候補の評価は販売先の有無に依存しない |
 | 83 | FREQUENTER LIEVE 1-250 | 1-250 | 広告画像 | 画像提供元（楽天） | hb.afl.rakuten.co.jp | 画像リンク先の構成・送料・保証は未確認 | 画像の同定は登録素材のSHA-256 | RUNTIME_BINDING | 公開時snapshotに固定 | advertiser/link_usage は既存確認票で管理 | 画像リンクを価格・保証の確認と扱わない |
+
+## 全ページ監査（2026-09-12）の修正記録（WS-B: 生成記事13本）
+
+renderer（`python/raos/application/editorial/purchase_support.py`）、カタログ、費用profile、編集元13本を更新し、`scripts/build_reader_purchase_support_v1.py` で再生成した。価格の表示期限は生成時刻（`datetime.now(timezone.utc)`）で判定し、`--check` は同日中のみ再現する。
+
+- 期限判定: `valid_until` と `checked_at`+24h の早い方を過ぎた offer は価格を表示せず「販売条件の期限切れ・再確認中（確認日／期限）」を表示、`data-ps-price-state="EXPIRED"`。「次回確認」は `valid_until` 翌日以降の未来日を自動表示。
+- 商品画像（楽天広告リンク）は、型番照合済みで注文可能な販売先がある候補にだけ投影する（41: SOLOTA・SS-MA251、83: エアロフレックスDX2・C-Lite、30: K11+ Pro、28: 4候補）。それ以外は「商品写真：販売先を照合できるまで未掲載。」の1行。画像リンクbindingは30→18。
+- 外部購入CTAは商品カード末尾と販売先パネルの2箇所（結論・比較表は `#ps-seller-…` への内部リンク）。
+- 販売先へのリンク数: 41=10（文字CTA4＋画像2サイズ×2＋確認元1）、83=8、30=6、28=16（文字CTA8＋画像2サイズ×4。4候補すべて販売先照合済みのため「合計≤10」は未達。240px版はtheme CSSで非表示）。
+
+### 2026-09-12 に確認した外部情報
+
+| 確認先 | 方法 | 結果 |
+|---|---|---|
+| https://www.thanko.jp/view/item/000000004715 | WebFetch 10:38Z | TDWS25SBL（ミスティーブルー）／TDWS25SRD（クラシックローズ）、税込36,800円、保証24か月、2色とも「再入荷(予約開始)通知」。offer `thanko-tdws25s` を SOLD_OUT 相当で追加 |
+| https://store.siroca.jp/products/ss-mu251?variant=41121812643976 | WebFetch 10:38Z ＋ 商品データ（.js）10:59Z | 「オートオープンタイプ/シルバー(SS-MA251) / 通常商品」が選択済み、税込59,800円、available=true。CB-20 の型番選択注記を追加し確認日時を更新 |
+| https://www.samsonite.co.jp/samsonite/c-lite/spinner55exp/black/ss-134679-1041.html | WebFetch 10:38Z | SKU CS2*09007、134679=スタイル・末尾=色。134679-1549はミッドナイトブルー、-1041はブラック。税込83,600円・在庫あり。83の旧型番注記を「同じスタイルの色違い」に |
+| https://www.jackery.jp/products/explorer-500-new（.json/.js 商品データ） | curl 10:44Z/10:59Z | 本体のみ 価格59,800円＝比較価格（値引きなし）、available=true。セール価格47,840円は9月10日で終了と扱い、通常価格に更新。HTMLページの価格表示はWebFetchで取得不可 |
+| https://panasonic.jp/dish/installation.html | WebFetch | SOLOTAは上方「できるだけあける」、左右の数値記載なし。41・262に「上・左右の必要余白は公式資料で未確認」を明記 |
+| np-tsp1.pdf（取扱説明書） | curl＋pypdf（scratchpad） | p.2 長期間使わないときは電源プラグを抜く、p.11 残さいフィルター週に1回・本体月に1回・庫内月に2〜3回、p.12 タンク、p.15 離隔 上方11.5cm・側方0.5cm・後方0.5cm |
+| https://jpn.faq.panasonic.com/app/answers/detail/p/1776/a_id/11545/ ほか | WebFetch | 庫内の水抜きは「乾燥」のみ運転（卓上型共通）。26688で庫内お手入れ月2〜3回（NP-TSP1明記） |
+| np-tml1.pdf・tdws25s_man_web_01.pdf | pypdf | 本文テキストを抽出できず（フォント埋め込み／画像）。SOLOTAの保管前手順、mini colorの長期不使用手順は「未確認」 |
+| https://www.americantourister.jp/（トップ・APPLITE） | WebFetch | サーバー証明書の検証に失敗し取得不可。samsonite.co.jp の検索にもAPPLITEなし。URLは維持し文言を読者向けに変更 |
+| https://www.data.thanko.jp/download/manual/tk-mdw22{w,b}_man_web_01.pdf | curl -I | 200（旧 data.thanko.jp は302）。registry の出典URLを更新 |
+| item.rakuten.co.jp/panasonic-store/{np-tml1-w,np-tsp1-w} | WebFetch | 価格・在庫の文字列を抽出できず。既存offerは確認日のまま（期限切れ表示） |
+
+未確認のまま残した項目: SOLOTA上・左右余白（数値）、SOLOTA保管前手順、mini color長期不使用手順・洗剤種別・試験条件の洗剤量、SS-MA251試験条件の洗剤量、APPLITE現行販売条件、NP-TSP1再入荷、SOLOTA/NP-TSP1楽天店の現在価格。

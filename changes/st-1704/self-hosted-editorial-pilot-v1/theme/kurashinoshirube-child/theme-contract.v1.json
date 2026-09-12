@@ -123,7 +123,7 @@
     "generated_by": "scripts/build_editorial_v3_theme_navigation.py",
     "path": "assets/editorial-navigation.v3.json",
     "schema": "RAOS_EDITORIAL_THEME_NAVIGATION_V3",
-    "sha256": "f56f29e3dd4252b85cc366444b6cfd4806492ce8081c25a0b59362648bc94c42",
+    "sha256": "be60b5b43b94c239265795c51ff40fbd72e12f82f928c78742a1c3470a0f88a5",
     "source_navigation_sha256": "e1bf6e02440bd86d9e6cf6808ed5e909376cc0e29c6ce0a29fd2324c89eea403",
     "source_portfolio_sha256": "76b3d0fe3e83169f3b788f8e2234177a60579c152c374892090885386b5d356b"
   },
@@ -149,11 +149,21 @@
       "AboutPage",
       "Article",
       "BreadcrumbList",
+      "CollectionPage",
+      "ContactPoint",
+      "EntryPoint",
+      "ImageObject",
       "ListItem",
       "Organization",
+      "SearchAction",
       "WebPage",
       "WebSite"
     ],
+    "article_author": {
+      "name": "暮らしのしるべ編集部",
+      "type": "Organization",
+      "url_path": "/about-ad-policy/"
+    },
     "canonical": {
       "editorial_v2_fallback": "FIXED_SITE_ORIGIN_PLUS_SLUG_FOR_SINGULAR_PUBLISHED_CLOSED_PUBLIC_ARTICLE_IDENTITY",
       "invalid_or_unpublished_policy": "PRESERVE_UPSTREAM_VALUE",
@@ -161,7 +171,7 @@
     },
     "closed_head_contexts": {
       "article": "EXACT_EDITORIAL_V3_PUBLIC_IDENTITY_PLUS_CLEAN_TITLE_AND_EXCERPT",
-      "fixed_page": "EXACT_THREE_POLICY_SLUG_TITLE_EXCERPT_RECORDS",
+      "fixed_page": "THREE_POLICY_SLUG_TITLE_RECORDS_OR_PUBLISHED_REGISTERED_HUB_PAGE_FAIL_OPEN",
       "home": "FIXED_SITE_TITLE_AND_DESCRIPTION"
     },
     "document_title_deduplication": {
@@ -182,6 +192,7 @@
       "Product",
       "Review"
     ],
+    "hub_page_gate": "PUBLISHED_UNPROTECTED_PAGE_WITH_REGISTERED_SLUG_FAIL_OPEN",
     "local_preview_metadata_fallback": {
       "active_when": "EXACT_RAOS_LOCAL_PREVIEW_AND_WPSEO_VERSION_UNDEFINED_AND_CLOSED_HEAD_CONTEXT_AND_VERIFIED_SOCIAL_IMAGE",
       "canonical_owner": "RAOS_THEME_AFTER_REMOVING_CORE_REL_CANONICAL",
@@ -197,6 +208,12 @@
       "production_effect": "NONE"
     },
     "metadata_owner": "PRODUCTION_YOAST_SEO_FILTERED_BY_VALID_RAOS_SNAPSHOT_OR_CLOSED_PUBLIC_HEAD_CONTEXT_AND_CONFIG_READBACK",
+    "organization": {
+      "contact_point_email": "contact@kurashinoshirube.com",
+      "logo": "assets/images/brand-mark-512.png",
+      "name": "暮らしのしるべ",
+      "same_as": []
+    },
     "raos_metadata_delivery": "PRODUCTION_YOAST_METADATA_FILTERS_WITH_LOCAL_PREVIEW_NO_YOAST_FALLBACK",
     "rest_output": {
       "preserved_route": "/wp/v2/posts",
@@ -218,6 +235,10 @@
         "post"
       ],
       "taxonomies": []
+    },
+    "social_image": {
+      "fallback": "assets/images/home-hero.webp",
+      "owner": "CLOSED_ARTICLE_ID_TO_THEME_WEBP_MAP_THEN_HOME_HERO"
     },
     "structured_data_article_values": {
       "editorial_v2": "CLOSED_PUBLISHED_IDENTITY_PLUS_CLEAN_RAW_TITLE_8_TO_100_AND_EXCERPT_30_TO_180_WITH_FIXED_ORIGIN_CANONICAL",
@@ -242,9 +263,16 @@
         "Organization",
         "WebSite"
       ],
+      "hub": [
+        "BreadcrumbList",
+        "CollectionPage",
+        "Organization",
+        "WebSite"
+      ],
       "unknown_or_invalid": []
     },
     "structured_data_owner": "RAOS_THEME",
+    "website_search_action": "/?s={search_term_string}",
     "yoast_configuration_authority": "HUMAN_PERSISTED_OPTIONS_WITH_THEME_READBACK_GATE",
     "yoast_headless_rest": "PERSISTED_OPTION_PLUS_REST_OUTPUT_FILTER",
     "yoast_option_write": "ABSENT",
@@ -430,7 +458,7 @@
   },
   "policy_v3": {
     "body_class": "raos-policy-v3-page",
-    "detection": "EXACT_PUBLISHED_PAGE_SLUG_TITLE_AND_EXCERPT_MATCH_CLOSED_HEAD_MAP",
+    "detection": "EXACT_PUBLISHED_PAGE_SLUG_AND_TITLE_MATCH_CLOSED_HEAD_MAP_WITH_CLEAN_STORED_EXCERPT_OR_MAP_DESCRIPTION",
     "footer_presentation": "SAME_RICH_RESPONSIVE_FOOTER_AS_HOME_AND_EDITORIAL_V2",
     "scope": "EXACT_THREE_REVIEWED_WORDPRESS_POLICY_PAGES_ONLY",
     "slugs": [
@@ -526,14 +554,15 @@
     "target_requirement": "PUBLISHED_EXACT_SAME_ORIGIN_PERMALINK_WITH_CLOSED_PUBLIC_ARTICLE_IDENTITY"
   },
   "runtime_evidence": {
-    "revision": "6e9b605f635208bb30fd9ea76ce7c7bc6115723cdde58ac6345c235b73e92e93",
-    "source_fingerprint": "6e9b605f635208bb30fd9ea76ce7c7bc6115723cdde58ac6345c235b73e92e93",
+    "revision": "7b6051d6a8a038925df57f7174ab9d5a25a38682599acef6058d0df4ad55d18f",
+    "source_fingerprint": "7b6051d6a8a038925df57f7174ab9d5a25a38682599acef6058d0df4ad55d18f",
     "source_fingerprint_files": [
       "assets/analytics-consent-gate.js",
       "assets/editorial-navigation.js",
       "assets/editorial-navigation.v3.json",
       "assets/editorial-v2.css",
       "assets/home-magazine.css",
+      "assets/images/apple-touch-icon.png",
       "assets/images/article-anker-solix-generations.webp",
       "assets/images/article-countertop-dishwasher-guide.webp",
       "assets/images/article-portable-power-guide.webp",
@@ -544,7 +573,10 @@
       "assets/images/article-suitcase-guide.webp",
       "assets/images/article-suitcase-under-100-seats.webp",
       "assets/images/article-suitcase-under-3kg.webp",
+      "assets/images/brand-mark-512.png",
       "assets/images/brand-mark.svg",
+      "assets/images/favicon-32.png",
+      "assets/images/favicon.ico",
       "assets/images/home-hero.webp",
       "assets/images/magazine-hero.webp",
       "assets/images/magazine-kitchen.webp",

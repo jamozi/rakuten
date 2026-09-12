@@ -33,8 +33,23 @@
   ],
   "text_edits": [
     {
+      "old": "実機を使用したレビューではありません。仕様確認用のボタンはメーカー公式へ進みます。商品画像には販売店へ進む広告・アフィリエイトリンクが含まれます。画像の販売先と、本文で説明する公式の確認先は異なります。",
+      "new": "この記事には広告（商品画像＝楽天市場の販売店へ進むアフィリエイトリンク）が含まれます。本文のボタンはメーカー公式へ進みます。実機を使用したレビューではありません。",
+      "max_count": 1
+    },
+    {
+      "old": "メーカー公式ページで、Anker Solix C300 Portable Power Station（代表型番：A17225Z1）の仕様を確認できます。一致する楽天商品を確認できなかったため、本文の購入案内はメーカー公式としています。商品画像の広告リンクは、画像提供元の販売ページへ進みます。",
+      "new": "メーカー公式ページで、Anker Solix C300 Portable Power Station（代表型番：A17225Z1）の仕様を確認できます。本文の購入案内はメーカー公式です。商品画像は、楽天市場に出店するAnker公式店ではない販売店（ディーショップワン）の販売ページへ進む広告リンクで、販売ページの型番・構成の照合は行っていません。",
+      "max_count": 1
+    },
+    {
+      "old": "メーカー公式ページで、Anker Solix C800 Plus Portable Power Station（代表型番：A1754）の仕様を確認できます。一致する楽天商品を確認できなかったため、本文の購入案内はメーカー公式としています。商品画像の広告リンクは、画像提供元の販売ページへ進みます。",
+      "new": "メーカー公式ページで、Anker Solix C800 Plus Portable Power Station（代表型番：A1754）の仕様を確認できます。本文の購入案内はメーカー公式です。商品画像は、楽天市場に出店するAnker公式店ではない販売店（ディーショップワン）の販売ページへ進む広告リンクで、販売ページの型番・構成の照合は行っていません。",
+      "max_count": 1
+    },
+    {
       "old": "実機を使用したレビューではありません。このページはメーカー公式の案内を掲載しています。関連記事には広告・アフィリエイトリンクが含まれる場合があります。",
-      "new": "実機を使用したレビューではありません。仕様確認用のボタンはメーカー公式へ進みます。商品画像には販売店へ進む広告・アフィリエイトリンクが含まれます。画像の販売先と、本文で説明する公式の確認先は異なります。",
+      "new": "この記事には広告（商品画像＝楽天市場の販売店へ進むアフィリエイトリンク）が含まれます。本文のボタンはメーカー公式へ進みます。実機を使用したレビューではありません。",
       "max_count": 1
     },
     {
@@ -49,12 +64,12 @@
     },
     {
       "old": "メーカー公式ページで、Anker Solix C300 Portable Power Station（代表型番：A17225Z1）の仕様を確認できます。一致する楽天商品を確認できなかったため、楽天購入リンクは掲載していません。",
-      "new": "メーカー公式ページで、Anker Solix C300 Portable Power Station（代表型番：A17225Z1）の仕様を確認できます。一致する楽天商品を確認できなかったため、本文の購入案内はメーカー公式としています。商品画像の広告リンクは、画像提供元の販売ページへ進みます。",
+      "new": "メーカー公式ページで、Anker Solix C300 Portable Power Station（代表型番：A17225Z1）の仕様を確認できます。本文の購入案内はメーカー公式です。商品画像は、楽天市場に出店するAnker公式店ではない販売店（ディーショップワン）の販売ページへ進む広告リンクで、販売ページの型番・構成の照合は行っていません。",
       "max_count": 1
     },
     {
       "old": "メーカー公式ページで、Anker Solix C800 Plus Portable Power Station（代表型番：A1754）の仕様を確認できます。一致する楽天商品を確認できなかったため、楽天購入リンクは掲載していません。",
-      "new": "メーカー公式ページで、Anker Solix C800 Plus Portable Power Station（代表型番：A1754）の仕様を確認できます。一致する楽天商品を確認できなかったため、本文の購入案内はメーカー公式としています。商品画像の広告リンクは、画像提供元の販売ページへ進みます。",
+      "new": "メーカー公式ページで、Anker Solix C800 Plus Portable Power Station（代表型番：A1754）の仕様を確認できます。本文の購入案内はメーカー公式です。商品画像は、楽天市場に出店するAnker公式店ではない販売店（ディーショップワン）の販売ページへ進む広告リンクで、販売ページの型番・構成の照合は行っていません。",
       "max_count": 1
     },
     {
@@ -176,6 +191,21 @@
       "old": "C1000系で本体重量を抑え、定格1550Wを選びたい場合に。",
       "new": "C1000系で本体重量を抑えたい場合に。定格出力の公式表記に不一致があるため、必要な負荷に対応するかは購入前に型番を指定して確認してください。",
       "max_count": 1
+    },
+    {
+      "old": "C1000の容量と出力が用途に合い、重さも許容できる方は、公式ページで購入時の条件を確認しましょう。Gen 2と比較する際は、名称だけでなく世代・同梱品・保証をそろえてください。一致する楽天商品を確認できていないため、ここでは公式案内を掲載しています。",
+      "new": "C1000の容量と出力が用途に合い、重さも許容できる方は、公式ページで購入時の条件を確認しましょう。Gen 2と比較する際は、名称だけでなく世代・同梱品・保証をそろえてください。本文の購入案内はメーカー公式です。商品画像は、楽天市場に出店するAnker公式店ではない販売店（株式会社ECメゾン）の販売ページへ進む広告リンクで、販売ページの型番・構成の照合は行っていません。",
+      "max_count": 1
+    },
+    {
+      "old": "C1000系で持ち運ぶ重さを抑えたい方は、Gen 2を候補に。公式ページで用途に合う出力・端子・付属品の対応を確かめ、購入時の価格や保証を比較してください。第1世代向けの付属品をそのまま使えるとは判断しないでください。一致する楽天商品を確認できていないため、公式案内を掲載しています。",
+      "new": "C1000系で持ち運ぶ重さを抑えたい方は、Gen 2を候補に。公式ページで用途に合う出力・端子・付属品の対応を確かめ、購入時の価格や保証を比較してください。第1世代向けの付属品をそのまま使えるとは判断しないでください。本文の購入案内はメーカー公式です。商品画像は、楽天市場のアンカー・ダイレクト楽天市場店の商品ページ（URL上の商品番号はa1763）へ進む広告リンクで、販売ページの型番・構成の照合は行っていません。",
+      "max_count": 1
+    },
+    {
+      "old": "最終確認日",
+      "new": "商品仕様の確認日",
+      "max_count": 1
     }
   ],
   "editorial_additions": [
@@ -205,6 +235,59 @@
           "url": "https://www.ankerjapan.com/pages/solix-c1000-gen2",
           "checked_on": "2026-09-11",
           "locator": "製品仕様AC出力欄・シリーズ比較Gen 2は1500W、特徴本文は1550W。相違理由未確認。"
+        }
+      ]
+    },
+    {
+      "id": "ks-start-29",
+      "tag": "section",
+      "target_id": "blk-anker-002-title",
+      "position": "before_section",
+      "html": "<section id=\"ks-start-29\" class=\"ks-decision-intro\" aria-labelledby=\"ks-start-29-title\" style=\"max-width:76rem;margin:0 auto clamp(2rem,4vw,3.5rem);padding:clamp(1.3rem,3vw,2rem);background:#f4f0e8;border-top:3px solid #1b1b18\"><p class=\"ks-decision-intro__eyebrow\">先に結論</p><h2 id=\"ks-start-29-title\">容量帯と、C1000の世代差で選ぶ</h2><div class=\"ks-decision-intro__grid\" style=\"display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem 1.5rem\"><div><strong>小型機器中心で、持ち運びを優先するなら</strong><p>Anker Solix C300（A17225Z1）。288Wh・定格300W・約4.1kgで、4モデルの中で最も小さい容量帯です。</p></div><div><strong>容量と出力を一段増やすなら</strong><p>Anker Solix C800 Plus（A1754）。768Wh・定格1200W・約10.9kgで、C1000系より軽い中容量帯です。</p></div><div><strong>AC端子6口や容量拡張が必要なら</strong><p>Anker Solix C1000（A17615Z1）。1056Wh・定格1500W・約12.9kg。BP1000拡張バッテリーに対応し、AC端子は6口です。</p></div><div><strong>拡張は不要で、重さとUSB-C端子数を重視するなら</strong><p>Anker Solix C1000 Gen 2（A17635Z1）。1024Wh・約11.3kgでUSB-C端子は3口。定格出力は製品ページ1550W・特設ページ仕様表1500Wと表記が分かれ、拡張バッテリーには非対応です。</p></div></div><p><small>公式仕様（2026年8月23日確認。C1000の世代差は2026年9月10日・11日に再確認）による選び分けで、実機試験による順位ではありません。商品画像は楽天市場の販売店へ進む広告リンク、本文のボタンはメーカー公式へ進みます。</small></p></section>",
+      "sources": [
+        {
+          "url": "https://www.ankerjapan.com/products/a1722",
+          "checked_on": "2026-08-23",
+          "locator": "C300製品仕様（容量・定格出力・重量）"
+        },
+        {
+          "url": "https://www.ankerjapan.com/products/a1754",
+          "checked_on": "2026-08-23",
+          "locator": "C800 Plus製品仕様（容量・定格出力・重量）"
+        },
+        {
+          "url": "https://www.ankerjapan.com/products/a1761",
+          "checked_on": "2026-08-23",
+          "locator": "C1000製品仕様・比較表（容量・定格出力・重量・AC端子数）"
+        },
+        {
+          "url": "https://www.ankerjapan.com/products/a1763",
+          "checked_on": "2026-09-11",
+          "locator": "C1000 Gen 2製品仕様・比較表（容量・重量・USB-C端子数・定格出力1550W）"
+        },
+        {
+          "url": "https://www.ankerjapan.com/pages/solix-c1000-gen2",
+          "checked_on": "2026-09-11",
+          "locator": "特設ページ仕様表・シリーズ比較の定格出力1500W"
+        },
+        {
+          "url": "https://www.ankerjapan.com/products/a17611a1-85",
+          "checked_on": "2026-09-11",
+          "locator": "BP1000拡張バッテリーの対応機種（C1000）"
+        }
+      ]
+    },
+    {
+      "id": "rakuten-developers-attribution-note",
+      "tag": "p",
+      "target_id": "blk-anker-017-title",
+      "position": "after_header",
+      "html": "<p id=\"rakuten-developers-attribution-note\" class=\"table-note\">一覧の末尾にある「Supported by Rakuten Developers」は、商品情報の取得にRakuten Developers（楽天ウェブサービス）のAPIを利用していることの表示で、出典ではありません。</p>",
+      "sources": [
+        {
+          "url": "https://developers.rakuten.com/",
+          "checked_on": "2026-09-12",
+          "locator": "商品情報APIの提供元（記事内クレジット表示のリンク先。到達を確認）"
         }
       ]
     }

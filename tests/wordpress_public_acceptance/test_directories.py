@@ -35,7 +35,7 @@ class DirectoryTests(unittest.TestCase):
         doc = Page(self.text("guides"))
         self.assertIn("ks-guide-jump", doc.ids)
         self.assertTrue(
-            {"#travel-guides", "#dish-guides", "#robot-guides", "#power-guides"}
+            {"#travel-guides", "#kitchen-guides", "#cleaning-guides", "#preparedness-guides"}
             <= {x[0] for x in doc.links}
         )
 
@@ -49,40 +49,43 @@ class DirectoryTests(unittest.TestCase):
 
     def test_preserves_comparison_article_routes(self):
         doc = Page(self.text("comparisons"))
+        hubs = {
+            "/", "/categories/", "/purposes/", "/guides/", "/comparisons/", "/updates/",
+            "/travel/", "/kitchen/", "/cleaning/", "/preparedness/",
+            "/comparison-policy/", "/about-ad-policy/", "/privacy-policy/",
+        }
         article_links = {
             h
             for h, _, _ in doc.links
-            if h.startswith("/")
-            and h
-            not in {
-                "/",
-                "/categories/",
-                "/purposes/",
-                "/comparison-policy/",
-                "/about-ad-policy/",
-            }
+            if h.startswith("/") and h not in hubs and not h.startswith("/#")
         }
         self.assertEqual(len(article_links), 10)
         self.assertIn("/solota-vs-rakua-mini-plus/", article_links)
         self.assertIn("/anker-solix-c300-c800-c1000-differences/", article_links)
 
-    def test_preserves_all_eleven_guide_article_routes(self):
+    def test_guides_list_five_guides_and_condition_sections_of_ten_comparisons(self):
+        # 2026-09-12 audit CH-05: guide-type articles are listed as routes; comparison
+        # articles appear only through fragment links to their condition sections.
         doc = Page(self.text("guides"))
-        article_links = {
-            h
-            for h, _, _ in doc.links
-            if h.startswith("/")
-            and h
-            not in {
-                "/",
-                "/categories/",
-                "/purposes/",
-                "/comparisons/",
-                "/comparison-policy/",
-                "/about-ad-policy/",
-            }
+        hubs = {
+            "/", "/categories/", "/purposes/", "/comparisons/", "/comparison-policy/",
+            "/about-ad-policy/", "/without-installation/",
         }
-        self.assertEqual(len(article_links), 11)
+        routes = {h for h, _, _ in doc.links if h.startswith("/") and h not in hubs}
+        plain = {h for h in routes if "#" not in h}
+        fragments = {h.split("#")[0] for h in routes if "#" in h}
+        self.assertEqual(
+            plain,
+            {
+                "/dishwasher-installation-measurement/",
+                "/dishwasher-water-supply-methods/",
+                "/dishwasher-detergent-guide/",
+                "/dishwasher-cleaning-guide/",
+                "/dishwasher-running-cost/",
+            },
+        )
+        self.assertEqual(len(fragments), 10)
+        self.assertFalse(plain & fragments)
 
     def test_payment_and_points_are_separate(self):
         text = self.text("comparisons")
@@ -92,7 +95,7 @@ class DirectoryTests(unittest.TestCase):
 
     def test_guide_does_not_promise_active_calculator(self):
         text = self.text("guides")
-        self.assertIn("公表値と計算式で費用を考えます", text)
+        self.assertIn("公表値と自宅の単価から計算する式が決まります", text)
         self.assertNotIn("計算フォーム", text)
 
     def test_no_external_or_tracking_links_added(self):
@@ -101,7 +104,9 @@ class DirectoryTests(unittest.TestCase):
                 self.assertTrue(
                     href.startswith(("/", "#")) and not href.startswith("//")
                 )
-            self.assertIn("関連記事には広告が含まれる場合があります", self.text(slug))
+            self.assertIn(
+                "比較記事（PR表示あり）には販売店への広告リンクが含まれます", self.text(slug)
+            )
 
 
 if __name__ == "__main__":

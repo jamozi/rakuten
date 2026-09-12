@@ -6,11 +6,16 @@
 <article class="wp-block-group raos-article">
 <!-- wp:group {"className":"raos-article-ruleline","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"}} -->
 <div class="wp-block-group raos-article-ruleline"><!-- wp:shortcode -->[kurashinoshirube_article_category]<!-- /wp:shortcode -->
-<!-- wp:post-date {"format":"Y.m.d","displayType":"modified","className":"raos-article-date"} /--></div>
+<!-- wp:group {"className":"raos-article-dates","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"right"}} -->
+<div class="wp-block-group raos-article-dates"><!-- wp:post-date {"format":"Y年n月j日","className":"raos-article-date raos-article-date--published"} /-->
+<!-- wp:post-date {"format":"Y年n月j日","displayType":"modified","className":"raos-article-date raos-article-date--modified"} /--></div>
+<!-- /wp:group --></div>
 <!-- /wp:group -->
 <!-- wp:group {"align":"wide","className":"raos-article-title-grid","layout":{"type":"default"}} -->
 <div class="wp-block-group alignwide raos-article-title-grid"><!-- wp:post-title {"level":1} /-->
-<!-- wp:post-excerpt {"moreText":"","showMoreOnNewLine":false,"className":"raos-article-standfirst"} /--></div>
+<!-- wp:shortcode -->[kurashinoshirube_article_disclosure]<!-- /wp:shortcode -->
+<!-- wp:post-excerpt {"moreText":"","showMoreOnNewLine":false,"excerptLength":200,"className":"raos-article-standfirst"} /-->
+<!-- wp:paragraph {"className":"raos-byline"} --><p class="raos-byline">執筆・確認：<a href="/about-ad-policy/">暮らしのしるべ編集部</a></p><!-- /wp:paragraph --></div>
 <!-- /wp:group -->
 <!-- wp:post-content {"layout":{"type":"constrained"}} /-->
 <!-- wp:shortcode -->[kurashinoshirube_related_guides]<!-- /wp:shortcode -->

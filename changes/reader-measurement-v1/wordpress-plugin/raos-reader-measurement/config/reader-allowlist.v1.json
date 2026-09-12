@@ -605,7 +605,7 @@
     "changes/editorial-portfolio-v2/editorial-portfolio.v2.json": "f97c305223f18e7cd493a6a32d576c75098b4b5206d1a93531b8c5339aa65d2d",
     "changes/editorial-portfolio-v3/editorial-identities.v1.json": "b807ec8dcc55b3994ebaf78b6e3d4350b8b3b403093efed308b7007267250430",
     "changes/editorial-portfolio-v3/editorial-portfolio.v3.json": "76b3d0fe3e83169f3b788f8e2234177a60579c152c374892090885386b5d356b",
-    "changes/editorial-portfolio-v3/reader-experience.v1.json": "356748babb2ac8758a0328439113056638111dce6a6b0273210243529f9269ba",
+    "changes/editorial-portfolio-v3/reader-experience.v1.json": "339983556c69dbf528b4bc2afd8f443b8d10e1dac852bbf434e3850dbf4ab579",
     "changes/st-1704/self-hosted-editorial-pilot-v1/content/articles.v1.json": "7b87b1b8f12fcc193c7e8bdff6f2f1215f89143d8f5aeb4fcfba98bcd5249109",
     "changes/st-1704/self-hosted-editorial-pilot-v1/sources/source-registry.v1.json": "482e6d19690b5488323c5d0a4e079fefcbbe5a2dda51c2fb5e53a63283a30850",
     "changes/wordpress-local-preview-v1/fixtures/articles/anker-solix-c300-c800-c1000-differences.html": "9e4571bfaa521c71321fffbd57470138226acec206ad43d7a35e357f364ab19e",
@@ -620,7 +620,7 @@
     "changes/wordpress-local-preview-v1/fixtures/articles/solota-vs-rakua-mini-plus.html": "6ce5b81a1cef0bcddc2bb7d154d7e07ae55faedfbec7a1083caa2f1afc3001dc",
     "python/raos/application/editorial/reader_components.py": "6c4dc4d3ff06ac13a2ab2484a83839556fb6c4b4bc159fcfe79cf32dfbcc3542",
     "python/raos/application/editorial/reader_experience_projection.py": "3b6a3dde7469a31094619d14d5117fa43021b3f9d074fdcf4a7e83c5466cdae7",
-    "python/raos/application/editorial/reader_experience_v1.py": "e55527eabac0f278544c5ab59c7284d8dfd2868e4eacd2c2fdda67eac10c5b92",
+    "python/raos/application/editorial/reader_experience_v1.py": "31376cf234eb236bae23f7b160176b08ce3a8a1214e029e7be9ebd50f3b65a9a",
     "python/raos/application/editorial/reader_html.py": "7c0c495d5b2be06095808339b44d600c4081953c4f68304dd999da4326759690"
   },
   "target_origin": "https://kurashinoshirube.com",

@@ -17,7 +17,8 @@ from scripts.raos_public_acceptance import Page, purchase_findings
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / "changes/reader-purchase-support-v1"
-NOW = datetime(2026, 9, 12, tzinfo=timezone.utc)
+# Two days after the latest seller check, so every catalog price is expired here.
+NOW = datetime(2026, 9, 14, tzinfo=timezone.utc)
 
 
 def offer():

@@ -154,12 +154,15 @@ def render_cost_profiles(
             raise ValueError("LOCAL_COST_CONDITION_MISMATCH")
         label = next(iter(labels)) if labels else "コース別の消費量は未確認"
         attrs += ' data-raos-cost-course="' + escape(label, quote=True) + '"'
+        scope = "現行比較対象" if "product_anchor" in profile else "参考（比較対象外）"
         rows.append(
             "<tr"
             + attrs
             + '><th scope="row">'
             + escape(model)
             + "</th><td>"
+            + escape(scope)
+            + "</td><td>"
             + escape(label)
             + "</td>"
             + "".join(cells)
@@ -170,7 +173,7 @@ def render_cost_profiles(
     return components.section(
         "guide-cost-calculator",
         "自宅の単価で、一回分と月の従量費を計算する",
-        "<p>消費電力量は公表された一運転当たりの値を使います。水量は、公表使用水量または説明書の必要給水量を一運転分の前提として試算します。未確認の費目は計算に含めず、"
+        "<p>消費電力量は公表された一運転当たりの値を使います。水量は、公表使用水量または説明書の必要給水量を一運転分の前提として試算します。「参考（比較対象外）」の行は以前の掲載機種で、現行の比較記事の候補ではありません。未確認の費目は計算に含めず、"
         "定格W・運転時間・タンク容量から補いません。表の条件を選び、自宅の単価を入力してください。機種間で対象コースが揃っていないため、使用水量だけの横比較には使えません。</p>"
         '<div class="raos-cost-calculator" data-raos-cost-calculator="v1" data-raos-default-profile="'
         + escape(default, quote=True)
@@ -179,7 +182,7 @@ def render_cost_profiles(
         "下の公表値と本文の式で確認できます。入力した内容は保存・送信しません。</p>"
         '<div class="comparison-table-wrap" role="region" aria-labelledby="guide-cost-values-caption" tabindex="0">'
         '<table><caption id="guide-cost-values-caption">計算に使える公表値と対象条件（実測値ではありません）</caption>'
-        '<thead><tr><th scope="col">型番</th><th scope="col">コース・条件</th>'
+        '<thead><tr><th scope="col">型番</th><th scope="col">区分</th><th scope="col">コース・条件</th>'
         '<th scope="col">消費電力量／回</th><th scope="col">使用水量／回</th></tr></thead><tbody>'
         + "".join(rows)
         + "</tbody></table></div></div>"

@@ -31,7 +31,8 @@ if($mode==='valid'){
  if($result!==$entry){throw new RuntimeException('approved snapshot did not bind');}
  kurashinoshirube_enqueue_purchase_support();
  $handles=array_column($styles,0);
- if(!in_array('kurashinoshirube-editorial-v2',$handles,true)||!in_array('kurashinoshirube-purchase-support',$handles,true)){throw new RuntimeException('missing styles');}
+ $article=in_array($entry['kind'],array('comparison','guide'),true);
+ if(($article&&!in_array('kurashinoshirube-editorial-v2',$handles,true))||(!$article&&in_array('kurashinoshirube-editorial-v2',$handles,true))||!in_array('kurashinoshirube-purchase-support',$handles,true)){throw new RuntimeException('missing styles');}
  if(count($analytics)!==1){throw new RuntimeException('profile not closed/loaded');}
  if($slug==='dishwasher-running-cost'&&!in_array('kurashinoshirube-local-running-cost',array_column($scripts,0),true)){throw new RuntimeException('cost not loaded');}
 }else{

@@ -1150,28 +1150,52 @@ def changed_paths(
     return tuple(sorted(tracked))
 
 
+_OWNED_PATHS_CACHE: dict[int, tuple[Mapping[str, BuildSpec], dict[str, tuple[str, ...]]]] = {}
+
+
+def _owned_paths(registry: Mapping[str, BuildSpec]) -> dict[str, tuple[str, ...]]:
+    """Generator, outputs and repo inputs per owner as normalized POSIX strings.
+
+    The planner asks for affected owners once per changed path, so the owned set
+    is computed once per registry instead of per call.
+    """
+    cached = _OWNED_PATHS_CACHE.get(id(registry))
+    if cached is not None and cached[0] is registry:
+        return cached[1]
+    owned_by_owner: dict[str, tuple[str, ...]] = {}
+    for owner, spec in registry.items():
+        owned = {spec.generator.as_posix(), *(output.as_posix() for output in spec.outputs)}
+        owned.update(
+            Path(item.uri.removeprefix("repo://")).as_posix()
+            for item in spec.inputs
+            if item.uri.startswith("repo://")
+        )
+        owned_by_owner[owner] = tuple(sorted(owned))
+    _OWNED_PATHS_CACHE.clear()
+    _OWNED_PATHS_CACHE[id(registry)] = (registry, owned_by_owner)
+    return owned_by_owner
+
+
+def _paths_overlap(candidate: str, path: str) -> bool:
+    """Same semantics as Path equality / is_relative_to in either direction."""
+    if candidate == path or candidate == "." or path == ".":
+        return True
+    return path.startswith(candidate + "/") or candidate.startswith(path + "/")
+
+
 def affected_owners(
     registry: Mapping[str, BuildSpec], paths: Iterable[Path]
 ) -> tuple[str, ...]:
     changed = set(paths)
     if changed & BUILD_INFRASTRUCTURE_PATHS:
         return topological_order(registry)
+    changed_posix = {path.as_posix() for path in changed}
     direct: set[str] = set()
-    for owner, spec in registry.items():
-        owned = {spec.generator, *spec.outputs}
-        owned.update(
-            Path(item.uri.removeprefix("repo://"))
-            for item in spec.inputs
-            if item.uri.startswith("repo://")
-        )
+    for owner, owned in _owned_paths(registry).items():
         if any(
-            any(
-                candidate == path
-                or path.is_relative_to(candidate)
-                or candidate.is_relative_to(path)
-                for path in changed
-            )
+            _paths_overlap(candidate, path)
             for candidate in owned
+            for path in changed_posix
         ):
             direct.add(owner)
     reverse: dict[str, set[str]] = defaultdict(set)

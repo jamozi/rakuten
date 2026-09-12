@@ -163,7 +163,8 @@ assert.equal(refreshes, 5); assert.equal(timers.size, 1);
           await page.locator('[data-ps-pair="a"]').selectOption(article.product_ids[0]);
           assert.equal(await page.locator('.ps-comparison thead [data-ps-product]:visible').count(), 2);
           assert.equal(await page.locator('.ps-installation-details thead [data-ps-product]:visible').count(), 4, 'detail table keeps all candidates');
-          assert.equal(await page.locator('.ps-product-caution:visible').count(), 8, 'cautions stay visible for every candidate');
+          // Each caution is stated once, on its product card (the seller panel no longer repeats it).
+          assert.equal(await page.locator('.ps-product-caution:visible').count(), 4, 'cautions stay visible for every candidate');
           await page.locator('[data-ps-pair-reset]').click();
           assert.equal(await page.locator('.ps-comparison thead [data-ps-product]:visible').count(), 4);
           // Same-document hash: product anchors are revealed and focused on hashchange, back/forward and same-hash clicks.
