@@ -383,6 +383,17 @@ def render_pages(
                         ],
                     ),
                 )
+                + "<ul>"
+                + "".join(
+                    "<li>" + al(pid, label, "ps-specs") + "</li>"
+                    for pid, label in [
+                        (82, "小型機の寸法条件を比較表で確認する"),
+                        (83, "本体の軽さを比較表で確認する"),
+                        (84, "前面収納とストッパーを比較表で確認する"),
+                        (19, "容量・拡張・車輪の違いを比較表で確認する"),
+                    ]
+                )
+                + "</ul>"
                 + cards([82, 83, 84, 19])
                 + "<p>"
                 + link("/comfortable-travel/", "旅の場面から荷物・移動を考える")
@@ -437,6 +448,21 @@ def render_pages(
                                 "定格出力とは別に、機器の起動負荷と電源の対応条件。",
                             ],
                             ["端子・制限", "接続機器の指定、波形、端子、使用環境。"],
+                        ],
+                    )
+                    + "<p>次の3項目を紙やメモに書き出してから、計算例に当てはめられます。未記入のまま特定の機種に決める必要はありません。</p>"
+                    + table(
+                        [
+                            "用途：何を使うか",
+                            "時間：何時間使うか",
+                            "同時使用：一緒に動かす機器",
+                        ],
+                        [
+                            [
+                                "記入：＿＿＿＿＿＿",
+                                "記入：＿＿時間",
+                                "記入：＿＿＿＿＿＿",
+                            ]
                         ],
                     )
                     + al(28, "必要Whの計算例へ", "ps-decision-steps"),
@@ -683,7 +709,9 @@ def render_pages(
                 1,
             )
             purchase_start = body.index('<section id="purchase-checks">')
-            body = body[:purchase_start] + wrap(body[purchase_start:], "buyer-offer-check")
+            body = body[:purchase_start] + wrap(
+                body[purchase_start:], "buyer-offer-check"
+            )
         if slug != "home":
             parent = (
                 "categories"

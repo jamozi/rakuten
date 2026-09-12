@@ -2123,10 +2123,72 @@ def add_compatibility_anchors(
     )
 
 
-def render_hub(
-    article: Mapping[str, Any], catalog: Mapping[str, Any], template: str
+def hub_sales_record(
+    product: Mapping[str, Any], catalog: Mapping[str, Any], now: datetime
 ) -> str:
-    """The category hub keeps the shared hub skeleton; only the condition list is generated."""
+    """Historical seller observations only: never a current market availability claim."""
+    offers = verified_offers(product, catalog)
+    records = []
+    labels = {
+        "AVAILABLE": "注文可の表示",
+        "SOLD_OUT": "売り切れの表示",
+        "UNAVAILABLE": "販売条件未確認",
+    }
+    for offer in offers:
+        checked = timestamp(offer.get("checked_at"))
+        if (
+            checked is None
+            or checked > now
+            or not offer.get("seller_id")
+            or not offer.get("seller")
+        ):
+            continue
+        state = labels.get(str(offer.get("state")), "販売条件未確認")
+        deadline = timestamp(offer.get("valid_until"))
+        validity = (
+            "記録の確認期限は未確認。"
+            if deadline is None or deadline <= checked
+            else "記録の確認期限切れ。"
+            if now >= deadline
+            else ""
+        )
+        deadline_label = (
+            jp_datetime(deadline) + " JST"
+            if deadline and deadline > checked
+            else "未確認"
+        )
+        records.append(
+            escape(offer["seller"])
+            + "：確認時は"
+            + state
+            + "（確認日時："
+            + escape(jp_datetime(checked))
+            + " JST）。"
+            + validity
+            + "現在の状況は未確認のため販売先で再確認。記録の有効期限："
+            + escape(deadline_label)
+            + "。"
+        )
+    return (
+        "<p>"
+        + (
+            " ／ ".join(records)
+            if records
+            else "型番と販売先の対応・販売状態・確認日時は未確認。"
+        )
+        + "市場全体の在庫や終売を示すものではありません。</p>"
+    )
+
+
+def render_hub(
+    article: Mapping[str, Any],
+    catalog: Mapping[str, Any],
+    template: str,
+    *,
+    now: datetime | None = None,
+) -> str:
+    """Keep the hub skeleton and project model-bound conditions and seller history."""
+    now = current_time(now)
     dish = next(x for x in catalog["articles"] if x["slug"] == MAIN_SLUG)
     hub_template = fragment(template)
     roots = [n for n in hub_template.children if isinstance(n, Element) and n.tag]
@@ -2165,8 +2227,31 @@ def render_hub(
         + escape(c["label"])
         + "："
         + condition_product_links(c, catalog["products"], MAIN_SLUG)
+        + "".join(
+            hub_sales_record(
+                next(p for p in catalog["products"] if p["product_id"] == pid),
+                catalog,
+                now,
+            )
+            for pid in c["product_ids"]
+        )
         + "</li>"
         for c in dish["conditions"]
+    )
+    main_ids = set(dish["product_ids"])
+    alternative: Mapping[str, Any] = next(
+        (a for a in catalog["articles"] if a.get("post_id") == 86), {"product_ids": []}
+    )
+    alternatives = "".join(
+        "<p>別記事の比較対象："
+        + escape(p["name"])
+        + "（"
+        + escape(p["exact_model"])
+        + "）</p>"
+        + hub_sales_record(p, catalog, now)
+        for p in catalog["products"]
+        if p["product_id"] in alternative["product_ids"]
+        and p["product_id"] not in main_ids
     )
     choose = hub_sections["choose"]
     choose.children = []
@@ -2176,7 +2261,9 @@ def render_hub(
             + conditions
             + '</ul><p><a href="/'
             + MAIN_SLUG
-            + '/#ps-specs">決め手になる比較表（4機種）</a></p><p>比較の中心はSOLOTA・ラクアmini color・SS-MA251・NP-TSP1です。mini Plusはmini colorと別の型番として扱います。</p></div>'
+            + '/#ps-specs">決め手になる比較表（4機種）</a></p><p>比較の中心はSOLOTA・ラクアmini color・SS-MA251・NP-TSP1です。mini Plusはmini colorと別の型番として扱います。</p>'
+            + alternatives
+            + "</div>"
         )
     )
     inner = choose.children[0]
@@ -2232,7 +2319,7 @@ def compile_articles(
         elif a["kind"] == "guide":
             html = render_guide(a, catalog, guide_registry, template, now=now)
         elif a["kind"] == "hub":
-            html = render_hub(a, catalog, template)
+            html = render_hub(a, catalog, template, now=now)
         else:
             html = template
         if a["kind"] != "policy":

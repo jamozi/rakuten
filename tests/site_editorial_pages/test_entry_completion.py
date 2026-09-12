@@ -1,0 +1,133 @@
+"""Remaining accepted entry actions, using in-memory generation only."""
+
+import copy
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import unittest
+
+from raos.application.editorial.purchase_support import hub_sales_record, render_hub
+from raos.application.editorial.site_editorial_pages import render_pages
+from scripts.raos_reader_live_patch import Document
+
+ROOT = Path(__file__).resolve().parents[2]
+CATALOG = ROOT / "changes/reader-purchase-support-v1/purchase-support.v1.json"
+
+
+class EntryCompletion(unittest.TestCase):
+    def setUp(self):
+        self.catalog = json.loads(CATALOG.read_text())
+        self.now = datetime(2026, 9, 13, 15, tzinfo=timezone.utc)
+
+    def test_kitchen_two_entrances_precede_purchase_explanations(self):
+        template = (
+            ROOT / "changes/reader-purchase-support-v1/articles/kitchen.html"
+        ).read_text()
+        doc = Document(render_hub({}, self.catalog, template, now=self.now))
+        for ident in ("kitchen-before-buying", "kitchen-after-buying"):
+            links = [
+                n
+                for n in doc.nodes
+                if n.tag == "a" and n.attrs.get("href") == "#" + ident
+            ]
+            self.assertEqual(len(links), 1)
+            self.assertLess(links[0].start, doc.ids["kitchen-start"].start)
+            target = doc.ids[ident]
+            self.assertIn('<a href="/', doc.text[target.start : target.end])
+        self.assertIn(
+            "専用洗剤の種類", doc.text[doc.ids["kitchen-after-buying"].start :]
+        )
+        self.assertIn("確認期限切れ", doc.text)
+        self.assertIn("mini Plus", doc.text)
+        self.assertIn("確認日時は未確認", doc.text)
+        choose = doc.ids["choose"]
+        self.assertNotRegex(doc.text[choose.start : choose.end], r"[0-9,]+円")
+
+    def test_seller_record_is_model_bound_historical_and_keeps_unknown(self):
+        product = self.catalog["products"][0]
+        offer = next(
+            o
+            for o in self.catalog["offers"]
+            if o["product_id"] == product["product_id"]
+        )
+        catalog = copy.deepcopy(self.catalog)
+        catalog["offers"] = [
+            {
+                **offer,
+                "checked_at": "2026-09-13T14:00:00Z",
+                "valid_until": "2026-09-14T14:00:00Z",
+                "state": "AVAILABLE",
+            }
+        ]
+        fresh = hub_sales_record(product, catalog, self.now)
+        self.assertIn("確認時は注文可の表示", fresh)
+        self.assertIn("確認日時：2026年9月13日 23:00 JST", fresh)
+        self.assertNotIn("確認期限切れ", fresh)
+        self.assertNotIn(str(offer["price_yen"]), fresh)
+        catalog["offers"][0]["valid_until"] = "2026-09-13T14:30:00Z"
+        self.assertIn("確認期限切れ", hub_sales_record(product, catalog, self.now))
+        catalog["offers"][0]["identity_verified"] = False
+        self.assertIn("確認日時は未確認", hub_sales_record(product, catalog, self.now))
+        catalog["offers"][0]["identity_verified"] = True
+        catalog["offers"][0]["checked_at"] = "2026-09-14T14:00:00Z"
+        self.assertIn("確認日時は未確認", hub_sales_record(product, catalog, self.now))
+
+    def test_missing_seller_deadline_and_legacy_catalog_remain_safe(self):
+        product = self.catalog["products"][0]
+        offer = next(
+            o
+            for o in self.catalog["offers"]
+            if o["product_id"] == product["product_id"]
+        )
+        catalog = copy.deepcopy(self.catalog)
+        catalog["offers"] = [{**offer, "seller_id": ""}]
+        self.assertIn("確認日時は未確認", hub_sales_record(product, catalog, self.now))
+        catalog["offers"] = [{**offer, "valid_until": None}]
+        text = hub_sales_record(product, catalog, self.now)
+        self.assertIn("記録の有効期限：未確認", text)
+        self.assertNotIn("未確認 JST", text)
+        self.assertIn("現在の状況は未確認", text)
+        catalog["articles"] = [a for a in catalog["articles"] if a["post_id"] != 86]
+        template = (
+            ROOT / "changes/reader-purchase-support-v1/articles/kitchen.html"
+        ).read_text()
+        self.assertIn('id="choose"', render_hub({}, catalog, template, now=self.now))
+
+    def test_power_memo_and_travel_comparison_links(self):
+        registry = json.loads(
+            (ROOT / "changes/wordpress-direct-publish-v1/articles.v1.json").read_text()
+        )
+        data = json.loads(
+            (
+                ROOT / "changes/site-improvements-20260913/entry-pages.v1.json"
+            ).read_text()
+        )
+        pages, _, _ = render_pages(registry, self.catalog, data, {})
+        power = pages["preparedness"]
+        for text in (
+            "用途：何を使うか",
+            "時間：何時間使うか",
+            "同時使用：一緒に動かす機器",
+        ):
+            self.assertIn(text, power)
+        self.assertEqual(power.count("記入："), 3)
+        self.assertIn("/portable-power-station-guide/#ps-decision-steps", power)
+        travel = Document(pages["travel"])
+        urls = [n.attrs.get("href") for n in travel.nodes if n.tag == "a"]
+        for slug in (
+            "carry-on-suitcase-under-100-seats",
+            "lightweight-carry-on-suitcase-under-3kg",
+            "front-open-carry-on-suitcase-with-stopper",
+            "carry-on-suitcase-comparison",
+        ):
+            self.assertIn("/" + slug + "/#ps-specs", urls)
+            self.assertIn(
+                "ps-specs",
+                Document(
+                    (
+                        ROOT
+                        / "changes/wordpress-direct-publish-v1/articles"
+                        / (slug + ".html")
+                    ).read_text()
+                ).ids,
+            )
