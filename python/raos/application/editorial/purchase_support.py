@@ -237,15 +237,20 @@ def condition_product_links(
     return "、".join(links)
 
 
-def route_links(p: Mapping[str, Any]) -> str:
+def route_links(p: Mapping[str, Any], *, current_slug: str | None = None) -> str:
+    """Stage links for one model; a guide passes its own slug to skip itself."""
+    links = [
+        f'<a href="/{slug}/#{p["anchor"]}">{label}</a>'
+        for label, slug in STAGES.values()
+        if slug != current_slug
+    ]
+    if not links:
+        return ""
     return (
         '<nav class="ps-model-routes" aria-label="'
         + escape(p["name"])
         + 'の確認先">'
-        + " ".join(
-            f'<a href="/{slug}/#{p["anchor"]}">{label}</a>'
-            for label, slug in STAGES.values()
-        )
+        + " ".join(links)
         + "</nav>"
     )
 
@@ -1035,6 +1040,12 @@ def render_guide(
         + '/">4機種の比較に戻る</a></nav><p class="ps-lead">比較記事と同じ機種で、'
         + STAGES[stage][0]
         + "を確認できます。型番と使う条件をそろえて照合してください。</p>"
+        + '<nav class="ps-model-index" aria-label="機種別の手順"><p>お持ちの機種、または検討中の機種の手順へ直接進めます。購入は必須ではありません。</p>'
+        + "".join(
+            '<a href="#' + p["anchor"] + '">' + escape(p["name"]) + "</a>"
+            for p in products
+        )
+        + "</nav>"
     ]
     if stage == "cost":
         cost_article = next(
@@ -1105,8 +1116,12 @@ def render_guide(
             )
         out.append(
             research_panel(p, catalog)
-            + route_links(p)
+            + route_links(p, current_slug=article["slug"])
             + '<p><a href="/'
+            + MAIN_SLUG
+            + "/#"
+            + p["anchor"]
+            + '">比較記事のこの機種の説明へ</a> ／ <a href="/'
             + MAIN_SLUG
             + "/#ps-seller-"
             + p["anchor"]

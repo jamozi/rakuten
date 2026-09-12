@@ -314,3 +314,49 @@ def test_installation_guide_lists_known_and_missing_references_statically(catalo
                 assert f"{ps.INSTALLATION_LABELS[key]}{value:g}mm" in text
         assert p["official_url"] in [a.attrs.get("href") for a in note.find(tag="a")]
     assert not any(n.tag in {"input", "select", "button"} for n in root.walk())
+
+
+# --- FD-09 / R-G: guides route to the reader's own model and never to themselves ---
+
+
+def test_route_links_skip_only_the_current_guide(catalog):
+    product = dishwashers(catalog)[0]
+    comparison = ps.route_links(product)
+    assert comparison.count("<a ") == len(ps.STAGES)
+    for _, slug in ps.STAGES.values():
+        guide = ps.route_links(product, current_slug=slug)
+        assert f'href="/{slug}/#' not in guide
+        assert guide.count("<a ") == len(ps.STAGES) - 1
+        assert all(
+            f'href="/{other}/#{product["anchor"]}"' in guide
+            for _, other in ps.STAGES.values()
+            if other != slug
+        )
+    assert ps.route_links(product, current_slug="unrelated-slug") == comparison
+
+
+def test_water_guide_offers_a_model_index_and_no_self_links(catalog):
+    html, _ = compile(catalog)
+    for _, slug in ps.STAGES.values():
+        root = fragment(html[slug])
+        index = next(
+            n for n in root.find(tag="nav") if n.attrs.get("class") == "ps-model-index"
+        )
+        anchors = [a.attrs["href"].lstrip("#") for a in index.find(tag="a")]
+        assert anchors == [p["anchor"] for p in dishwashers(catalog)]
+        sections = {
+            n.attrs.get("id") for n in root.find(tag="section", cls="ps-guide-model")
+        }
+        assert set(anchors) <= sections
+        assert "購入は必須ではありません" in index.text()
+        for route in root.find(tag="nav", cls="ps-model-routes"):
+            assert not any(
+                a.attrs.get("href", "").startswith(f"/{slug}/")
+                for a in route.find(tag="a")
+            )
+            assert len(route.find(tag="a")) == len(ps.STAGES) - 1
+        for p in dishwashers(catalog):
+            assert f'href="/{ps.MAIN_SLUG}/#{p["anchor"]}"' in html[slug]
+            assert f'href="/{ps.MAIN_SLUG}/#ps-seller-{p["anchor"]}"' in html[slug]
+    body = html["dishwasher-water-supply-methods"]
+    assert body.index('class="ps-model-index"') < body.index('class="ps-guide-model"')

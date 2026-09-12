@@ -17,8 +17,9 @@
 .ps-article label :is(select, input:not([type="checkbox"])) { display: block; width: 100%; margin-top: .35em; }
 .ps-article :is(.ps-lead, .ps-installation-result) { font-size: 1.08em; }
 .ps-article :is(.ps-note, .ps-source, .ps-price-date, .ps-model, .ps-disclosure) { font-size: .92em; color: #435164; }
-.ps-article :is(.ps-toc, .ps-model-routes) { display: flex; flex-wrap: wrap; gap: .5em 1.2em; margin-block: 1.5em; }
-.ps-article :is(.ps-toc, .ps-model-routes) a { display: inline-flex; align-items: center; min-height: 44px; }
+.ps-article :is(.ps-toc, .ps-model-routes, .ps-model-index) { display: flex; flex-wrap: wrap; gap: .5em 1.2em; margin-block: 1.5em; }
+.ps-article :is(.ps-toc, .ps-model-routes, .ps-model-index) a { display: inline-flex; align-items: center; min-height: 44px; }
+.ps-article .ps-model-index p { flex-basis: 100%; margin: 0; }
 .ps-article :is(.ps-condition-grid, .ps-product-grid) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2em; }
 .ps-article .ps-condition-grid > div { padding: 1.2em; background: var(--ps-soft); border-top: 3px solid var(--ps-ink); }
 .ps-article .ps-product { min-width: 0; padding: 1.4em; border: 1px solid var(--ps-line); border-radius: 4px; }
