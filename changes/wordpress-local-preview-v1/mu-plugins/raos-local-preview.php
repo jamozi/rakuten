@@ -243,6 +243,13 @@ function raos_local_reader_guides_boundary(): bool
 }
 
 /** Validate the entire ready set before any writes; blocked entries never seed. */
+/** Editorial confirmation dates use the site's Japanese calendar day. */
+function raos_local_reader_guides_today(?DateTimeImmutable $now = null): string
+{
+    return ($now ?? new DateTimeImmutable('now'))
+        ->setTimezone(new DateTimeZone('Asia/Tokyo'))->format('Y-m-d');
+}
+
 function raos_local_reader_guides_validate($fixture): ?array
 {
     if (! is_array($fixture) || ($fixture['schema'] ?? null) !== 'RAOS_LOCAL_READER_GUIDES_V1'
@@ -296,7 +303,7 @@ function raos_local_reader_guides_validate($fixture): ?array
             || ! hash_equals($article['content_sha256'], hash('sha256', $html))
             || preg_match('/\A([0-9]{4})-([0-9]{2})-([0-9]{2})\z/D', $article['checked_at'], $date) !== 1
             || ! checkdate((int) $date[2], (int) $date[3], (int) $date[1])
-            || $article['checked_at'] > gmdate('Y-m-d')) {
+            || $article['checked_at'] > raos_local_reader_guides_today()) {
             return null;
         }
         $purposes = array();

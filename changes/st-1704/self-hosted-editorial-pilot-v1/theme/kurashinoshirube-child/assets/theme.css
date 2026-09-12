@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 26eee804cbccaf30bcd990c35ecde2bad745cdb62219493635f86209928bcc94;
+  --raos-theme-runtime-revision-base: 7d0f9cc8914f3d251a266fbae6cd633975d63939c22ee39dc05143dd1f75ad08;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -3981,3 +3981,7 @@ body.home.raos-home-v2-page #ks-magazine .km-category > span {
   #ks-magazine .km-carousel-controls { right: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { #ks-magazine .km-hero a.km-carousel-slide { transition: none; } }
+
+/* Category illustrations fit the directory columns. */
+.ks-directory .ks-category-visual { min-width: 0; }
+.ks-directory .ks-category-visual img { display: block; max-width: 100%; height: auto; }

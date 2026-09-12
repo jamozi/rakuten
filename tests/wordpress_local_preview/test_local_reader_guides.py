@@ -222,38 +222,63 @@ def test_evidence_anchors_are_visible_without_javascript_or_details_support():
     )
 
 
-
 def test_candidate_request_cannot_generate_comparison_prose():
     data = fixture()
-    data["comparison_candidates"] = [{
-        "candidate_id": "comparison-awaiting-evidence",
-        "exact_models": ["MODEL-A", "MODEL-B"],
-        "evidence_refs": [],
-    }]
+    data["comparison_candidates"] = [
+        {
+            "candidate_id": "comparison-awaiting-evidence",
+            "exact_models": ["MODEL-A", "MODEL-B"],
+            "evidence_refs": [],
+        }
+    ]
     result = build_local_guides(data, today=date(2026, 9, 6))
     assert [a["article_id"] for a in result["articles"]] == ["installation"]
     assert len(result["blocked"][0]["issues"]) == 2 * len(COMPARISON_REQUIREMENTS)
 
 
-
 def test_authored_guides_return_to_existing_comparison_and_block_incomplete_new_one():
     import sys
     from pathlib import Path
+
     root = Path(__file__).resolve().parents[2]
     sys.path.insert(0, str(root))
     from scripts.build_local_reader_guides import build_documents
+
     result = build_documents()[0]
     articles = {a["article_id"]: a for a in result["articles"]}
     assert set(articles) == {
-        "dishwasher-installation-measurement", "dishwasher-water-supply-methods",
-        "dishwasher-detergent-guide", "dishwasher-cleaning-guide", "dishwasher-running-cost",
+        "dishwasher-installation-measurement",
+        "dishwasher-water-supply-methods",
+        "dishwasher-detergent-guide",
+        "dishwasher-cleaning-guide",
+        "dishwasher-running-cost",
     }
-    assert '/local-preview-countertop-dishwasher-for-small-households/' in articles["dishwasher-running-cost"]["html"]
-    assert result["blocked"] == [{
-        "article_id": "solota-rakua-mini-plus-comparison",
-        "issues": [
-            "NP-TMLK1-K.water_supply_and_drainage",
-            "NP-TMLK1-K.maintenance", "NP-TMLK1-K.warranty",
-        ],
-    }]
-    assert all("data-raos-cta-type=\"offer\"" not in a["html"] for a in articles.values())
+    assert (
+        "/local-preview-countertop-dishwasher-for-small-households/"
+        in articles["dishwasher-running-cost"]["html"]
+    )
+    assert result["blocked"] == [
+        {
+            "article_id": "solota-rakua-mini-plus-comparison",
+            "issues": [
+                "NP-TMLK1-K.water_supply_and_drainage",
+                "NP-TMLK1-K.maintenance",
+                "NP-TMLK1-K.warranty",
+            ],
+        }
+    ]
+    assert all('data-raos-cta-type="offer"' not in a["html"] for a in articles.values())
+
+
+def test_evidence_heading_topic_preserves_model_and_fragment_and_escapes_markup():
+    data = fixture()
+    data["facts"][0]["heading_topic"] = "扉 < 開く空間"
+    article = build_local_guides(data, today=date(2026, 9, 6))["articles"][0]
+    assert (
+        '<div id="guide-evidence-a-install"><h3>MODEL-A：扉 &lt; 開く空間</h3>'
+        in article["html"]
+    )
+    assert data["facts"][0]["text"] in article["html"]
+    data["facts"][0]["heading_topic"] = ""
+    with pytest.raises(ValueError, match="LOCAL_GUIDE_TEXT_REQUIRED"):
+        build_local_guides(data, today=date(2026, 9, 6))

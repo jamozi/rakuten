@@ -83,7 +83,7 @@ class SiteSourceTests(unittest.TestCase):
         self.assertIn('定格出力が50W高いためです', edits[0]['old'])
         self.assertEqual(edits[1]['old'], 'C1000系で重量と出力を優先')
         self.assertTrue(recipe['keep_existing_fragments'])
-        self.assertEqual(recipe['required_ids'], ['blk-anker-008-title', 'blk-anker-017-title'])
+        self.assertEqual(recipe['required_ids'], ['blk-anker-008-title', 'blk-anker-017-title', 'blk-anker-003-title'])
 
     def test_sources_do_not_contain_merchant_tracking_values(self):
         for path in (DIRECT / 'articles').glob('*'):

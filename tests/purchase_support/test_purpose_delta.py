@@ -200,7 +200,7 @@ def test_main_comparison_section_order_and_single_slots(catalog):
     again, _ = compile(catalog)
     assert again[ps.MAIN_SLUG] == body
     article = next(a for a in catalog["articles"] if a["slug"] == ps.MAIN_SLUG)
-    assert article["title"] == "工事不要の食洗機を1〜2人暮らし向けに比較"
+    assert article["title"] == "タンク式食洗機4モデルを1〜2人暮らし向けに比較"
     assert article["intro"].startswith("食後の洗い物を減らしたい方へ。")
     assert '<p class="ps-lead">食後の洗い物を減らしたい方へ。' in body
     template_ids = ids_of(MAIN_TEMPLATE.read_text())
@@ -226,7 +226,7 @@ def test_moved_facts_keep_value_state_and_source_in_open_detail_table(catalog):
         "給水方式",
         "購入条件",
     ]
-    assert detail_rows == ["標準使用水量", "開扉時の寸法", "必要な余白"]
+    assert detail_rows == ["公表使用水量（条件は機種別）", "開扉時の寸法", "必要な余白"]
     context = next(
         n
         for n in root.find(tag="section")
@@ -271,13 +271,15 @@ def test_water_supply_rows_only_where_the_guide_fact_names_the_method(catalog):
 def test_electricity_note_does_not_void_installation_evidence(catalog):
     html, _ = compile(catalog)
     body = html[ps.MAIN_SLUG]
-    assert "1回の消費電力量が未確認のため、電気代は算定していません。" in body
-    assert (
-        "回答までは対象項目を未確認として扱い、その条件での設置や費用を確定しません。"
-        in body
-    )
-    assert "次回確認" not in fragment(body).text() or "次回確認" not in body
     root = fragment(body)
+    mini = next(
+        n
+        for n in root.find(tag="section")
+        if n.attrs.get("id") == "ps-seller-product-dish-rakua-mini-color"
+    )
+    assert "1回の消費電力量が未確認のため、電気代は算定していません。" in mini.text()
+    assert "回答までは対象項目を未確認として扱い" not in mini.text()
+    assert "次回確認" not in body
     seller = next(
         n
         for n in root.find(tag="section")
@@ -374,15 +376,28 @@ def test_offer_panels_keep_identity_and_never_assert_current_totals(catalog):
         if n.attrs.get("id", "").startswith("ps-seller-")
     }
     assert len(sellers) == 4
-    verified = sellers["ps-seller-product-dish-ss-ma251"]
-    offer = next(n for n in verified.walk() if "data-ps-offer" in n.attrs)
-    assert offer.attrs["data-ps-price-state"] == "RECHECK_REQUIRED"
-    assert "確認時の販売条件です。現在価格の再確認が必要です。" in verified.text()
-    assert "現在最安" not in verified.text() and "在庫あり" not in verified.text()
-    for anchor in ("np-tmlk1", "rakua-mini-color", "np-tsp1"):
-        text = sellers[f"ps-seller-product-dish-{anchor}"].text()
-        assert "販売先未確認" in text
+    products = {p["anchor"]: p for p in dishwashers(catalog)}
+    unverified = set()
+    for section_id, section in sellers.items():
+        p = products[section_id.removeprefix("ps-seller-")]
+        verified_offers = [
+            o
+            for o in catalog["offers"]
+            if o["product_id"] == p["product_id"] and o.get("identity_verified") is True
+        ]
+        text = section.text()
         assert "売り切れです。" not in text
+        assert "現在最安" not in text and "在庫あり" not in text
+        if any(o["state"] == "AVAILABLE" for o in verified_offers):
+            offer = next(n for n in section.walk() if "data-ps-offer" in n.attrs)
+            assert offer.attrs["data-ps-price-state"] == "RECHECK_REQUIRED"
+            assert "確認時の販売条件です。現在価格の再確認が必要です。" in text
+        elif verified_offers:
+            assert "確認時は売り切れでした。" in text
+        else:
+            assert "販売先未確認" in text
+            unverified.add(section_id)
+    assert unverified == {"ps-seller-product-dish-rakua-mini-color"}
     # Image bindings need the media projection, so read the tracked runtime output.
     tracked = json.loads(
         (

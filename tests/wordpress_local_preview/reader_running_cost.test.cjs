@@ -60,8 +60,33 @@ test('missing or invalid monthly count leaves the per-cycle subtotal usable', ()
     assert.ok(result.perCycle > 0);
   }
 });
+test('documented input bounds reject digit errors without replacing them with zero', () => {
+  for (const [key, maximum] of Object.entries({ electricity: 1000, water: 10000, detergent: 1000, runs: 1000 })) {
+    assert.equal(calculate(profile, { ...input, [key]: String(maximum) }).errors[key], undefined);
+    for (const value of [String(maximum + 1), '999999999999']) {
+      const result = calculate(profile, { ...input, [key]: value });
+      assert.match(result.errors[key], /桁と単位/);
+      if (key === 'runs') {
+        assert.equal(result.monthly, null);
+        assert.ok(result.perCycle > 0);
+      } else {
+        assert.equal(result.fees[key], null);
+        assert.equal(result.complete, false);
+        assert.ok(result.missing.includes(key));
+      }
+    }
+  }
+});
+test('exponent notation and excessive decimal precision receive distinct correction messages', () => {
+  for (const key of ['electricity', 'water', 'detergent']) {
+    assert.equal(calculate(profile, { ...input, [key]: '３０．７１２３' }).errors[key], undefined);
+    assert.match(calculate(profile, { ...input, [key]: '30.71234' }).errors[key], /小数第4位/);
+    assert.match(calculate(profile, { ...input, [key]: '1e2' }).errors[key], /指数表記/);
+    assert.equal(calculate(profile, { ...input, [key]: '0.00001' }).fees[key], null);
+  }
+});
 test('overflow is reported, never rendered as Infinity or a complete sum', () => {
-  const result = calculate({ energyWh: 1e308, waterLitres: 2.5 }, { ...input, electricity: '999999999' });
+  const result = calculate({ energyWh: 230, waterLitres: 1e308 }, { ...input, water: '10000' });
   assert.ok(Object.keys(result.errors).length > 0);
   assert.equal(result.complete, false);
 });

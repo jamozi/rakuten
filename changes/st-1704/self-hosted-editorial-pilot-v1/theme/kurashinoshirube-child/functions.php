@@ -13,11 +13,11 @@ const KURASHINOSHIRUBE_SNAPSHOT_SCHEMA = 'RAOS_PUBLICATION_SNAPSHOT_V1';
 const KURASHINOSHIRUBE_SNAPSHOT_MAX_BYTES = 16384;
 const KURASHINOSHIRUBE_SITE_ORIGIN = 'https://kurashinoshirube.com';
 const KURASHINOSHIRUBE_THEME_VERSION = '1.6.0';
-const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = '96d2fbcca9beefaa1d7882a77f2e18cab922b6d20f5289e2ae6ccc0134e0a5f5';
+const KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256 = '5900b21a1e1a3d985598bdac8f3a55a60d4d9f371ae3f889c2f4867f8c49727e';
 const KURASHINOSHIRUBE_PURCHASE_UI_SHA256 = '575619ac8485a1f5f42243dd12cdd1a2f2acef0aaf8834a42ca19c101e619fb0';
 const KURASHINOSHIRUBE_PURCHASE_ANALYTICS_SHA256 = 'ed9c35c5251ab2275bb17d2053bd92d7cbe4ae66f1fab5ea085c76c4dfc65c4b';
-const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '26eee804cbccaf30bcd990c35ecde2bad745cdb62219493635f86209928bcc94';
-const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '26eee804cbccaf30bcd990c35ecde2bad745cdb62219493635f86209928bcc94';
+const KURASHINOSHIRUBE_THEME_RUNTIME_REVISION = '7d0f9cc8914f3d251a266fbae6cd633975d63939c22ee39dc05143dd1f75ad08';
+const KURASHINOSHIRUBE_THEME_SOURCE_FINGERPRINT = '7d0f9cc8914f3d251a266fbae6cd633975d63939c22ee39dc05143dd1f75ad08';
 const KURASHINOSHIRUBE_EDITORIAL_V2_ROOT = '<div class="raos-editorial-v2">';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_PATH = 'assets/images/home-hero.webp';
 const KURASHINOSHIRUBE_SOCIAL_IMAGE_SHA256 = '9a2d6d390ffd4ef0642d4c0a7a12da9daf7e904934ffd3f9e95e29907aedc493';
@@ -49,7 +49,7 @@ const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_PATH = 'assets/analytics-con
 const KURASHINOSHIRUBE_ANALYTICS_CONSENT_GATE_ASSET_SHA256 = '0b0f5dcc78c58b3d9426e0acfaa88efc232396dc376c2d6b85505f05746359b9';
 const KURASHINOSHIRUBE_NAVIGATION_ASSET_PATH = 'assets/editorial-navigation.js';
 const KURASHINOSHIRUBE_LOCAL_COST_ASSET_PATH = 'assets/local-running-cost.js';
-const KURASHINOSHIRUBE_LOCAL_COST_ASSET_SHA256 = '0db02bb54fbd5a0c4e81470b62f0c328be84f4077db7d882d3542c3cfd035c80';
+const KURASHINOSHIRUBE_LOCAL_COST_ASSET_SHA256 = 'dc1b94094cb9904630c140d037c1c4d3c364ccc5e3c57f45d462de9350caeee2';
 const KURASHINOSHIRUBE_NAVIGATION_ASSET_SHA256 = 'b8270f45ff4633598f5c099219509fb8761dcd91d4eca519cedd181d76ab3c90';
 const KURASHINOSHIRUBE_HOMEPAGE_FEATURED_ARTICLE_ID = 'st1704-portable-power-station-guide';
 const KURASHINOSHIRUBE_EXISTING_UPDATE_ARTICLE_ID = 'st1703-first-suitcase-comparison';
@@ -4202,6 +4202,37 @@ function kurashinoshirube_policy_page_head_map(): array
     return $heads;
 }
 
+/** Give each page of the public post listing its own stable URL. */
+function kurashinoshirube_post_listing_head_context(string $origin): ?array
+{
+    $query = $GLOBALS['wp_query'] ?? null;
+    if (
+        ! ($query instanceof WP_Query)
+        || ! $query->is_home()
+        || $query->is_search()
+        || $query->is_404()
+        || $query->get('post_type') !== 'post'
+    ) {
+        return null;
+    }
+    $paged = $query->get('paged');
+    if (! is_int($paged) && ! (is_string($paged) && preg_match('/\A[0-9]*\z/D', $paged))) {
+        return null;
+    }
+    if ((int) $paged < 0) {
+        return null;
+    }
+    $page = max(1, (int) $paged);
+    return array(
+        'canonical_url' => $origin . ($page === 1 ? '/' : '/page/' . $page . '/')
+            . '?post_type=post',
+        'description' => '食洗機・ロボット掃除機・スーツケース・ポータブル電源の記事一覧。用途や設置条件、仕様の違い、購入前の確認事項から、必要な比較やガイドを探せます。',
+        'kind' => 'article_listing',
+        'title' => '記事一覧' . ($page === 1 ? '' : '（' . $page . 'ページ目）')
+            . '｜暮らしのしるべ',
+    );
+}
+
 /**
  * Resolve one closed, public head context for home, Editorial V3, policy, or hub.
  *
@@ -4222,6 +4253,10 @@ function kurashinoshirube_public_head_context(): ?array
             'kind' => 'home',
             'title' => KURASHINOSHIRUBE_HOME_TITLE,
         );
+    }
+    $listing = kurashinoshirube_post_listing_head_context($origin);
+    if ($listing !== null) {
+        return $listing;
     }
     if (is_singular('post')) {
         $post_id = (int) get_queried_object_id();

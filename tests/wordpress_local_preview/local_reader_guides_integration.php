@@ -15,6 +15,8 @@ $without_plugin = in_array('--without-plugin', $argv, true);
 if (!$without_plugin) {
     require __DIR__ . '/../../changes/wordpress-local-preview-v1/mu-plugins/raos-local-preview.php';
     check(function_exists('raos_local_reader_guides_validate'), 'missing local guide fixture validator');
+    check(raos_local_reader_guides_today(new DateTimeImmutable('2030-09-10T14:59:59Z')) === '2030-09-10', 'JST before midnight');
+    check(raos_local_reader_guides_today(new DateTimeImmutable('2030-09-10T15:00:00Z')) === '2030-09-11', 'JST midnight');
 }
 
 define('WP_CLI', true);
@@ -139,6 +141,9 @@ for ($n = 1; $n <= 5; $n++) {
 }
 $articles = raos_local_reader_guides_validate($fixture);
 check(count($articles ?? []) === 5, 'five valid ready guides');
+$future = $fixture;
+$future['articles'][0]['checked_at'] = (new DateTimeImmutable('tomorrow', new DateTimeZone('Asia/Tokyo')))->format('Y-m-d');
+check(raos_local_reader_guides_validate($future) === null, 'future Japanese confirmation day rejected');
 $bad = $fixture; $bad['publication_authority'] = true;
 check(raos_local_reader_guides_validate($bad) === null, 'publication authority rejected');
 foreach (['local_slug' => 'production-route', 'article_type' => 'comparison', 'category' => 'travel',

@@ -189,7 +189,7 @@ def test_new_cost_sources_preserve_exact_models_and_course_boundaries():
             root / "changes/editorial-portfolio-v3/local-reader-guides.v1.json"
         ).read_text()
     )
-    result = build_local_guides(data, today=date(2026, 9, 10))
+    result = build_local_guides(data, today=date(2026, 9, 11))
     html = next(
         a["html"]
         for a in result["articles"]
@@ -226,4 +226,4 @@ def test_new_cost_sources_preserve_exact_models_and_course_boundaries():
     )
     article["cost_calculator"]["profiles"][-1]["course"] = "branch-water"
     with pytest.raises(ValueError, match="LOCAL_COST_QUANTITY_AMBIGUOUS_OR_MISSING"):
-        build_local_guides(data, today=date(2026, 9, 10))
+        build_local_guides(data, today=date(2026, 9, 11))

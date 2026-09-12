@@ -15,5 +15,133 @@
   "keep_existing_fragments": true,
   "nav_html": "<nav id=\"ks-article-nav\" aria-label=\"記事内の近道\" style=\"display:flex;flex-wrap:wrap;gap:8px 16px;\"><a href=\"/travel/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">スーツケースの選び方・記事一覧</a><a href=\"#blk-suitcase-007-title\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">必要な比較・確認へ</a><a href=\"/travel/#purchase-checks\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">購入前の確認へ</a></nav>",
   "next_html": "<section id=\"ks-next-read\" aria-labelledby=\"ks-next-read-title\" style=\"margin:32px 0;padding:24px;border-top:2px solid #1b1b18;background:#faf9f6;line-height:1.85;\"><h2 id=\"ks-next-read-title\">残っている疑問から、次の確認へ</h2><div class=\"ks-route-links\"><a href=\"/lightweight-carry-on-suitcase-under-3kg/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">30L以上・3kg以下のスーツケース比較</a><a href=\"/front-open-carry-on-suitcase-with-stopper/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">前開き・ストッパー付きスーツケース比較</a></div><p>記事ごとに対象機種が異なります。別機種の数値や手順を流用せず、必要な確認だけを選んで読めます。</p><a href=\"/travel/\" style=\"display:inline-flex;align-items:center;min-height:44px;padding:4px 6px;\">スーツケース選びの全体像に戻る</a></section>",
-  "replacements": []
+  "replacements": [],
+  "text_edits": [
+    {
+      "old": "START HERE",
+      "new": "先に選び分け",
+      "max_count": 1
+    },
+    {
+      "old": "ブランド名ではなく、旅で譲れない条件から選ぶ",
+      "new": "100席以上向けの3モデルを、条件で選ぶ",
+      "max_count": 1
+    },
+    {
+      "old": "候補を残せる条件",
+      "new": "軽さを優先するなら",
+      "max_count": 1
+    },
+    {
+      "old": "本体の軽さ、開き方とストッパー、非拡張時の容量のうち、どれを優先するかで3モデルを整理できます。",
+      "new": "クレスタ 06316。この3モデルで本体が最も軽く、階段や収納棚へ持ち上げる場面を重視する人に。搭乗時は拡張しない状態で確認します。",
+      "max_count": 1
+    },
+    {
+      "old": "この比較だけでは決められないこと",
+      "new": "開き方とストッパーを優先するなら",
+      "max_count": 1
+    },
+    {
+      "old": "走行音、荷物を入れた操作感、長期耐久性は同条件で確認していません。使用感を最優先する場合は実物確認が必要です。",
+      "new": "ディフェレンス 05721。前開きと中央開きを使い分けたい人に。キャスターストッパーを備えます。拡張時の外寸は搭乗条件を別に確認してください。",
+      "max_count": 1
+    },
+    {
+      "old": "最後に確認すること",
+      "new": "拡張せずに容量を確保するなら",
+      "max_count": 1
+    },
+    {
+      "old": "拡張前後の外寸、荷物込みの重量、販売ページの対象型番・価格・納期・保証を確認します。",
+      "new": "マックスパス4 01471。非拡張で40Lあり、前側から荷物を出し入れできます。この3モデルでは最も重いため、荷物込みの重量も確認してください。3モデルとも、価格・送料・納期・保証は購入先で確かめます。",
+      "max_count": 1
+    },
+    {
+      "old": "次の旅行で、何をもっと楽にしたいですか。",
+      "new": "候補を絞ったら、条件を詳しく確認",
+      "max_count": 1
+    },
+    {
+      "old": "駅の階段で持ち上げるとき、ホテルで荷物を広げるとき、帰りの荷物を詰めるとき。スーツケースに求める使い勝手は、旅のどこで困っているかによって変わります。まずは",
+      "new": "次の比較では、",
+      "max_count": 1
+    },
+    {
+      "old": "ここではクレスタ 06316、ディフェレンス 05721、マックスパス4 01471の3モデルを比較します。軽さを重視する場合、開き方を使い分けたい場合、拡張せずに容量を確保したい場合に分けて、選ぶ理由と注意点を整理しました。",
+      "new": "拡張機能を使う場合は、広げた状態でも利用便のサイズ制限内か確認してください。",
+      "max_count": 1
+    },
+    {
+      "old": "比較表で条件に合う候補を見つけたら、商品欄で内装や拡張時の注意点を確認してください。候補が決まった方は、楽天市場で色・価格・お届け予定日を確認する段階へ進めます。市場全体のランキングや、実機で走行性を比べたレビューではありません。",
+      "new": "市場全体のランキングや、実機で走行性を比べたレビューではありません。",
+      "max_count": 1
+    },
+    {
+      "old": "D：編集部の判断",
+      "new": "編集部の判断",
+      "max_count": 11
+    },
+    {
+      "old": "A：公式仕様",
+      "new": "公式仕様",
+      "max_count": 41
+    },
+    {
+      "old": "UNKNOWN：未確認",
+      "new": "未確認",
+      "max_count": 4
+    },
+    {
+      "old": "旅で譲れない条件を決めたら、色と購入条件を確認",
+      "new": "候補が決まったら、同じ型番・色で購入条件を確認",
+      "max_count": 1
+    },
+    {
+      "old": "この3モデルで軽さを優先するならクレスタ、開き方を使い分けたいならディフェレンス、拡張しない容量を重視するならマックスパス4。候補が決まったら、下のリンクで好みの色・送料込みの価格・出発日までに届くかを確認しましょう。",
+      "new": "購入する型番と色をそろえ、送料を含む支払額・出発日までに受け取れるか・返品条件を確認します。以下は楽天市場へのリンクです。公式通販の条件は後の「公式通販で、型番・色と購入条件を確認する」にまとめています。販売店ごとの条件を確かめて選びましょう。",
+      "max_count": 1
+    }
+  ],
+  "editorial_additions": [
+    {
+      "id": "suitcase-official-purchase-conditions",
+      "tag": "section",
+      "target_id": "blk-suitcase-016-title",
+      "position": "before_section",
+      "html": "<section class=\"reader-section\" id=\"suitcase-official-purchase-conditions\" aria-labelledby=\"suitcase-official-purchase-conditions-title\"><h2 id=\"suitcase-official-purchase-conditions-title\">公式通販で、型番・色と購入条件を確認する</h2><p>エース公式通販の案内です。以下のリンクは色まで指定しています。色を変えるときも、型番と容量が同じか確かめてください。販売価格・在庫・到着日はリンク先で確認できます。</p><ul><li><a href=\"https://store.ace.jp/shop/g/g06316-02/\">クレスタ 06316-02：ブラック、34/39L</a></li><li><a href=\"https://store.ace.jp/shop/g/g05721-01/\">ディフェレンス 05721-01：ブラック、32/38L</a></li><li><a href=\"https://store.ace.jp/shop/g/g01471-02/\">マックスパス4 01471-02：ガンメタリック、40L</a></li></ul><p>2026年9月11日に確認した国内配送の条件では、税込3,300円以上の注文は送料無料です。決済方法による手数料や選択する追加サービスは別に確認してください。当日出荷の案内は到着日の保証ではないため、出発日までに受け取れるかは配送先を指定して確かめましょう。<a href=\"https://store.ace.jp/shop/pages/help_derivery.aspx\">送料・出荷・配送条件</a></p><p>保証はブランドごとに異なります。ACEの案内は一部製品を除き5年、ace.のスーツケースは10年で、素材・製造上の不具合などが対象です。購入証明を保管し、対象外条件も確認してください。<a href=\"https://store.ace.jp/shop/pages/new_warranty.aspx\">ACE・ace.の保証条件</a></p><p>マックスパス4の商品ページは製品保証10年とプレミアムケア3年を案内しています。プレミアムケアはセール品・アウトレット品・並行輸入品などが対象外です。また、ディフェレンスのセール商品には返品・交換対象外の表示があります。価格だけでなく、購入する商品の条件を確認してください。<a href=\"https://store.ace.jp/shop/pages/new_proteca_warranty.aspx\">プロテカの保証条件</a></p></section>",
+      "sources": [
+        {
+          "url": "https://store.ace.jp/shop/g/g06316-02/",
+          "checked_on": "2026-09-11",
+          "locator": "対象色の商品コード・容量、国内送料・保証条件の該当欄"
+        },
+        {
+          "url": "https://store.ace.jp/shop/g/g05721-01/",
+          "checked_on": "2026-09-11",
+          "locator": "対象色の商品コード・容量、国内送料・保証条件の該当欄"
+        },
+        {
+          "url": "https://store.ace.jp/shop/g/g01471-02/",
+          "checked_on": "2026-09-11",
+          "locator": "対象色の商品コード・容量、国内送料・保証条件の該当欄"
+        },
+        {
+          "url": "https://store.ace.jp/shop/pages/help_derivery.aspx",
+          "checked_on": "2026-09-11",
+          "locator": "対象色の商品コード・容量、国内送料・保証条件の該当欄"
+        },
+        {
+          "url": "https://store.ace.jp/shop/pages/new_warranty.aspx",
+          "checked_on": "2026-09-11",
+          "locator": "対象色の商品コード・容量、国内送料・保証条件の該当欄"
+        },
+        {
+          "url": "https://store.ace.jp/shop/pages/new_proteca_warranty.aspx",
+          "checked_on": "2026-09-11",
+          "locator": "対象色の商品コード・容量、国内送料・保証条件の該当欄"
+        }
+      ]
+    }
+  ]
 }

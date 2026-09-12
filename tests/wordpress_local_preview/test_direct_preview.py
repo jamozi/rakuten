@@ -73,57 +73,101 @@ def test_product_image_mirror_does_not_fetch_other_hosts_or_unverified_images(tm
         '<img src="https://other.invalid/a.jpg" data-raos-product-image-state="verified">'
         '<img src="https://thumbnail.image.rakuten.co.jp/unverified.jpg">'
     )
-    assert owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: pytest.fail("unexpected fetch")) == {}
+    assert (
+        owner().product_image_mirror(
+            candidate, tmp_path, fetch=lambda _: pytest.fail("unexpected fetch")
+        )
+        == {}
+    )
 
 
-def test_registered_editorial_image_is_pinned_without_changing_public_url(tmp_path, monkeypatch):
+def test_registered_editorial_image_is_pinned_without_changing_public_url(
+    tmp_path, monkeypatch
+):
     candidate = fixture(tmp_path)
     url = "https://kurashinoshirube.com/wp-content/uploads/2026/09/kitchen.webp"
     payload = b"synthetic-owned-editorial-image"
     registry = tmp_path / "editorial-images.json"
-    registry.write_text(json.dumps({"assets": [{
-        "url": url, "sha256": hashlib.sha256(payload).hexdigest(),
-        "purpose": "editorial_illustration", "product_evidence": False,
-    }]}))
+    registry.write_text(
+        json.dumps(
+            {
+                "assets": [
+                    {
+                        "url": url,
+                        "sha256": hashlib.sha256(payload).hexdigest(),
+                        "purpose": "editorial_illustration",
+                        "product_evidence": False,
+                    }
+                ]
+            }
+        )
+    )
     monkeypatch.setattr(owner(), "EDITORIAL_VISUALS", registry, raising=False)
     body = f'<figure><img src="{url}"><figcaption>AI image</figcaption></figure>'
     candidate["articles"][0]["document"]["block_markup"] = body
-    result = owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: (payload, "image/webp"))
+    result = owner().product_image_mirror(
+        candidate, tmp_path, fetch=lambda _: (payload, "image/webp")
+    )
     assert set(result) == {url}
     assert candidate["articles"][0]["document"]["block_markup"] == body
     assert owner().product_image_mirror(candidate, tmp_path) == result
-    registry.write_text(registry.read_text().replace(hashlib.sha256(payload).hexdigest(), "f" * 64))
+    registry.write_text(
+        registry.read_text().replace(hashlib.sha256(payload).hexdigest(), "f" * 64)
+    )
     with pytest.raises(ValueError, match="EDITORIAL_IMAGE_CHANGED"):
         owner().product_image_mirror(candidate, tmp_path)
 
 
-def test_editorial_image_registry_cannot_allow_other_hosts_or_changed_bytes(tmp_path, monkeypatch):
+def test_editorial_image_registry_cannot_allow_other_hosts_or_changed_bytes(
+    tmp_path, monkeypatch
+):
     candidate = fixture(tmp_path)
     url = "https://kurashinoshirube.com/wp-content/uploads/2026/09/kitchen.webp"
     registry = tmp_path / "editorial-images.json"
-    row = {"url": url, "sha256": "a" * 64, "purpose": "editorial_illustration", "product_evidence": False}
+    row = {
+        "url": url,
+        "sha256": "a" * 64,
+        "purpose": "editorial_illustration",
+        "product_evidence": False,
+    }
     registry.write_text(json.dumps({"assets": [row]}))
     monkeypatch.setattr(owner(), "EDITORIAL_VISUALS", registry, raising=False)
     candidate["articles"][0]["document"]["block_markup"] = f'<img src="{url}">'
     with pytest.raises(ValueError, match="EDITORIAL_IMAGE_CHANGED"):
-        owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: (b"changed", "image/webp"))
+        owner().product_image_mirror(
+            candidate, tmp_path, fetch=lambda _: (b"changed", "image/webp")
+        )
     row["url"] = "https://other.invalid/image.webp"
     registry.write_text(json.dumps({"assets": [row]}))
     with pytest.raises(ValueError, match="EDITORIAL_IMAGE_REGISTRY_INVALID"):
-        owner().product_image_mirror(candidate, tmp_path, fetch=lambda _: pytest.fail("unexpected fetch"))
+        owner().product_image_mirror(
+            candidate, tmp_path, fetch=lambda _: pytest.fail("unexpected fetch")
+        )
 
 
-@pytest.mark.parametrize("image_host", ["thumbnail.image.rakuten.co.jp", "image.rakuten.co.jp", "other.invalid"])
-def test_frozen_affiliate_images_are_bounded_and_mirrored_without_html_changes(tmp_path, image_host):
+@pytest.mark.parametrize(
+    "image_host",
+    ["thumbnail.image.rakuten.co.jp", "image.rakuten.co.jp", "other.invalid"],
+)
+def test_frozen_affiliate_images_are_bounded_and_mirrored_without_html_changes(
+    tmp_path, image_host
+):
     candidate = fixture(tmp_path)
     candidate["theme"] = {"directory": "theme"}
     assets = tmp_path / "theme/assets"
     assets.mkdir(parents=True)
     underlying = f"https://{image_host}/synthetic.jpg?_ex=300x300"
-    url = "https://hbb.afl.rakuten.co.jp/hgb/synthetic/?s=300x300&pc=" + quote(underlying, safe="")
+    url = "https://hbb.afl.rakuten.co.jp/hgb/synthetic/?s=300x300&pc=" + quote(
+        underlying, safe=""
+    )
     source = f'<a href="https://hb.afl.rakuten.co.jp/hgc/synthetic/"><img src="{url}" alt=""></a>'
-    media = [{"slugs": ["example"], "sources": {"300": source}},
-             {"slugs": ["unselected"], "sources": {"300": '<img src="https://other.invalid/ignored.jpg">'}}]
+    media = [
+        {"slugs": ["example"], "sources": {"300": source}},
+        {
+            "slugs": ["unselected"],
+            "sources": {"300": '<img src="https://other.invalid/ignored.jpg">'},
+        },
+    ]
     path = assets / "rakuten-product-media.json"
     path.write_text(json.dumps(media))
     calls = []
@@ -266,10 +310,44 @@ echo "INITIAL_PRIVACY_DRAFT_ADOPTION_OK\n";
 
 def test_saved_home_is_previewed_at_front_url_without_duplicate_or_post_title(tmp_path):
     candidate = fixture(tmp_path)
-    candidate['articles'][0]['document'].update(post_type='page', slug='home', title='ホーム')
-    theme = tmp_path / 'theme'
+    candidate["articles"][0]["document"].update(
+        post_type="page", slug="home", title="ホーム"
+    )
+    theme = tmp_path / "theme"
     theme.mkdir()
-    candidate['theme'] = {'directory': 'theme'}
-    assert owner().preview_plan(candidate, tmp_path)['surfaces'] == [
-        {'kind': 'home', 'path': '/'}, {'kind': 'listing', 'path': '/?post_type=post'},
+    candidate["theme"] = {"directory": "theme"}
+    assert owner().preview_plan(candidate, tmp_path)["surfaces"] == [
+        {"kind": "home", "path": "/"},
+        {"kind": "listing", "path": "/?post_type=post"},
     ]
+
+
+def test_only_untouched_local_install_sample_can_be_drafted():
+    import subprocess
+    from scripts.raos_test_runtime import php_command
+
+    source = (
+        Path(__file__).resolve().parents[2]
+        / "changes/wordpress-direct-publish-v1/preview-seed.php"
+    ).read_text()
+    name = "function raos_direct_preview_is_initial_sample("
+    helper = name + source.split(name, 1)[1].split("\n$input =", 1)[0]
+    assert source.index("wp_get_environment_type() !== 'local'") < source.index(name)
+    harness = r"""
+function get_post_meta($id) { global $meta; return $meta; }
+$meta = array();
+$p=(object)array('ID'=>1,'post_author'=>1,'post_type'=>'post','post_status'=>'publish',
+'post_name'=>'hello-world','post_title'=>'Hello world!','post_excerpt'=>'','post_parent'=>0,
+'post_date'=>'2026-09-11','post_modified'=>'2026-09-11','post_date_gmt'=>'2026-09-10','post_modified_gmt'=>'2026-09-10',
+'post_content'=>"<!-- wp:paragraph -->\n<p>Welcome to WordPress. This is your first post. Edit or delete it, then start writing!</p>\n<!-- /wp:paragraph -->");
+if (!raos_direct_preview_is_initial_sample($p)) { exit(1); }
+foreach(array('ID'=>2,'post_author'=>2,'post_type'=>'page','post_status'=>'draft','post_name'=>'custom',
+'post_title'=>'My post','post_excerpt'=>'Edited','post_parent'=>2,'post_modified'=>'changed',
+'post_modified_gmt'=>'changed','post_content'=>'custom content') as $k=>$v) {
+ $q=clone $p; $q->$k=$v; if(raos_direct_preview_is_initial_sample($q)) { exit(2); }
+}
+$meta=array('_raos_owner_direct_preview_key'=>array('owned'));
+if(raos_direct_preview_is_initial_sample($p) || raos_direct_preview_is_initial_sample(null)) { exit(3); }
+echo "INITIAL_SAMPLE_GUARD_OK\n";
+"""
+    subprocess.run(php_command(["-r", helper + harness]), check=True)
