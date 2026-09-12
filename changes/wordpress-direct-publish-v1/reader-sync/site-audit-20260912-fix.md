@@ -7,6 +7,8 @@ repo 内で直せるものは branch `claude/site-audit-fix-20260912` で修正�
 
 ## 公開の手順 (repo 側の修正を live に反映する)
 
+最終ツリー (commit 8f05f92b 以降) で固定した候補: `62195e7c914b83c40e6d8b27be048ce0b958b7de8f3c923eb443c7ed3f44bbf8` (`publication_ready: true`、preview PASS、screenshots 70 枚は候補 dir の `screenshots/`)。この候補をそのまま `direct publish` できる。source が変わった場合は下記 1 から作り直す。
+
 1. `make wordpress-production-request ARGS='direct --owner-checkout /home/minami/rakuten prepare --theme --articles home,travel,kitchen,cleaning,preparedness,categories,small-space,save-housework,without-installation,easy-maintenance,comfortable-travel,prepare-outage,purposes,guides,comparisons,updates,carry-on-suitcase-comparison,carry-on-suitcase-under-100-seats,lightweight-carry-on-suitcase-under-3kg,front-open-carry-on-suitcase-with-stopper,countertop-dishwasher-for-small-households,solota-vs-rakua-mini-plus,dishwasher-installation-measurement,dishwasher-water-supply-methods,dishwasher-detergent-guide,dishwasher-cleaning-guide,dishwasher-running-cost,compact-robot-vacuum-shortlist,roomba-mini-vs-switchbot-k11-pro,portable-power-station-guide,anker-solix-c300-c800-c1000-differences,about-ad-policy,comparison-policy,privacy-policy'`
    で候補を固定する (theme 変更を含むため `--theme` 必須。patch 方式の 6 記事は live 本文の再読込に対して patch が適用できない場合、fail-closed で READY にならない)。
 2. `direct preview --candidate <id>` で home / 記事 (390px・1440px) / 一覧の代表画面を確認する。
