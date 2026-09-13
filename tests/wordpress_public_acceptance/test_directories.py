@@ -1,5 +1,6 @@
 """Regression checks for the two reader-facing directories, with no network."""
 
+import json
 import os
 from pathlib import Path
 import unittest
@@ -154,9 +155,19 @@ class DirectoryTests(unittest.TestCase):
                     + content.count("広告リンクなし"),
                     1,
                 )
-            # Advertising is disclosed per article, not asserted for every comparison.
-            self.assertIn("PR・広告リンクあり", text)
-            self.assertIn("広告リンクなし", text)
+                metadata = json.loads(
+                    (
+                        ROOT
+                        / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/site-editorial-metadata.v1.json"
+                    ).read_text()
+                )["articles"]
+                target = urlsplit(Page(content).links[0][0]).path.strip("/")
+                expected = (
+                    "PR・広告リンクあり"
+                    if metadata[target]["has_ads"]
+                    else "広告リンクなし"
+                )
+                self.assertIn(expected, content)
 
 
 if __name__ == "__main__":

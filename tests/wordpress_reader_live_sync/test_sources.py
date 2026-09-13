@@ -86,7 +86,8 @@ class ReaderSources(unittest.TestCase):
     def test_travel_shortcut_does_not_depend_on_generated_anchor(self):
         html = (DIRECT / 'articles/travel.html').read_text()
         self.assertIn('id="travel-comparisons"', html)
-        self.assertIn('href="/carry-on-suitcase-comparison/"', html)
+        self.assertIn('href="/small-carry-on-suitcase-comparison/"', html)
+        self.assertTrue((DIRECT / 'articles/small-carry-on-suitcase-comparison.html').is_file())
         self.assertIn('id="compare"', html)
         self.assertNotIn('href="#journey-comparison"', html)
     def test_article_fragments_are_not_publication_documents(self):

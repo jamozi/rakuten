@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 5668e829a6ba74d13caa429aff995397d795f3feea596e5ca3f35acd857158ed;
+  --raos-theme-runtime-revision-base: 5e64da9e289d65119c6a4d4841646f3e9dabbbc47a70b3576cdf0261696b3c8a;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4854,3 +4854,9 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 
 .ps-row-scroll .ps-row-spec-label, .ps-row-scroll .ps-row-dimensions { display:block; margin-top:6px; }
 .ps-row-scroll .ps-row-spec-label { font-size:12px; color:#59685d; }
+
+/* Separate product/specification lines and keep airline scrolling in one region. */
+.small-carry-on-comparison .ps-row-scroll .ps-row-comparison tbody th strong,
+.small-carry-on-comparison .ps-row-scroll .ps-row-comparison small { display:block; }
+.small-carry-on-comparison .sc-airline-scroll > .ps-table-scroll { overflow:visible; border:0; margin:0; }
+.small-carry-on-comparison .sc-airline-table th:first-child { position:sticky; left:0; z-index:2; background:#fafbf8; }

@@ -11,7 +11,7 @@
       "outputs": [
         {
           "bytes": 2879,
-          "sha256": "6ef22c1bdf314de5b4ef1ebfe4fc3af614af28a84e4b6cc14f5e5e26fd5a8387",
+          "sha256": "8cbd52c73957598b8e18c9c5fa559e68a76a25edc5aff301445cbae4dbec2fd9",
           "uri": "repo://changes/editorial-measurement-v1/runtime-manifest.v1.json"
         },
         {
@@ -2338,8 +2338,8 @@
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/small-space.html"
         },
         {
-          "bytes": 7012,
-          "sha256": "e0e2da0757bee6914809fbe913fa440ba05e1813254cb671218f8014c6406f5d",
+          "bytes": 7333,
+          "sha256": "1a7e636609f1956a9bb4e692bd1228c8197259cf073545e58b24580d36290f5b",
           "uri": "repo://changes/wordpress-direct-publish-v1/articles/travel.html"
         },
         {
@@ -27129,7 +27129,7 @@
       "outputs": [
         {
           "bytes": 3365,
-          "sha256": "089ceadbd8f9cb390fb367d7d1c85018d9add541434fb8f1b474f5799207e227",
+          "sha256": "cb869579c67af7c76dfbf08bccfd18eecf5868cf5e9c91580828f2140b43df04",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/rakuten-capture-runtime-manifest.v1.json"
         }
       ],
@@ -27360,7 +27360,7 @@
       "outputs": [
         {
           "bytes": 81279,
-          "sha256": "88f039097a9a6530284c23702fe717207f7bb2f9fd85a33e035ca5e9e7e623d9",
+          "sha256": "491a5b1a31ab4129535246c4499d4eefb728dc9fe3e86977ad0200d7e9c73ddf",
           "uri": "repo://changes/st-1704/self-hosted-editorial-pilot-v1/runtime-manifest.v1.json"
         }
       ],
@@ -30300,7 +30300,7 @@
         },
         {
           "bytes": 28259,
-          "sha256": "4047fe8407ddf8645d614ccd8ed0d2a29dc3f13dd4744e41a67ff3046c905205",
+          "sha256": "862a92185f7713a9413696a0c2cb9a08e3d6583e5c5c583b172b370b7baf38b9",
           "uri": "repo://changes/wordpress-mcp-v1/runtime-manifest.v1.json"
         }
       ],
@@ -31157,7 +31157,7 @@
       "outputs": [
         {
           "bytes": 54277,
-          "sha256": "c60d612ef029dd12545dfc9d1708a6bd99976d09cc658778ac9411fea1bf64e6",
+          "sha256": "651e76142b70c83fba95272e99c0bc78461248b53b758f8e83d566ecef359615",
           "uri": "repo://changes/wordpress-quality-audit-v1/quality-audit-ledger.v1.json"
         }
       ],
