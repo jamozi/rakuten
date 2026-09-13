@@ -1,8 +1,8 @@
 {
   "schema": "RAOS_COMMON_LAYOUT_APPLICATION_V1",
-  "updated_at": "2026-09-13T09:08:01.457436+00:00",
+  "updated_at": "2026-09-13T09:51:28.991407+00:00",
   "production_published": false,
-  "shared_candidate": "6e1e5b33e8a6e190f65934d7f338b8573e75bc3777ba5ad2dc12aa5dac02e054",
+  "shared_candidate": "ab3183434544c45cda7a761fdcc0e6bf16544481917743a57e0098e630e6ac0b",
   "previous_shared_robot_structure_verified": true,
   "new_headings_shared": true,
   "rows": [
@@ -15,7 +15,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -23,9 +23,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -37,7 +37,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -45,9 +45,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -59,7 +59,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -67,9 +67,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -81,7 +81,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -89,9 +89,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -103,7 +103,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -111,9 +111,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -125,7 +125,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -133,9 +133,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -147,7 +147,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -155,9 +155,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -169,7 +169,7 @@
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -177,9 +177,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -191,7 +191,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -199,9 +199,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -213,7 +213,7 @@
       "initial_horizontal_tables": 3,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -221,9 +221,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -235,7 +235,7 @@
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -243,9 +243,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -257,7 +257,7 @@
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -265,9 +265,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -279,7 +279,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -287,9 +287,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -301,7 +301,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -309,9 +309,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -323,7 +323,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -331,9 +331,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -345,7 +345,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -353,9 +353,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -365,9 +365,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -375,10 +375,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -388,9 +388,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -398,10 +398,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -411,9 +411,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
-      "common_product_format": "APPROVED_LAYOUT_PARITY_VERIFIED",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "common_product_format": "APPROVED_DEDICATED_LAYOUT_PRESERVED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "PARITY_320_390_768_1440_VERIFIED",
       "reader_approval": "COMPLETE",
       "checked_widths": [
         320,
@@ -421,12 +421,13 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "shared_parity": "PASS_320_390_768_1440",
       "narrow_layout": "APPROVED_AUTHOR_LAYOUT_EXCEPTION",
-      "card_conversion_final_solution": false
+      "card_conversion_final_solution": false,
+      "comparison_table": "APPROVED_DEDICATED_LAYOUT_PRESERVED"
     },
     {
       "slug": "front-open-carry-on-suitcase-with-stopper",
@@ -435,9 +436,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -445,10 +446,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -458,9 +459,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 2,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -468,10 +469,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -481,9 +482,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -491,10 +492,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -505,8 +506,8 @@
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -514,9 +515,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -526,9 +527,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
-      "common_product_format": "NOT_APPLICABLE",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -536,10 +537,11 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "card_conversion_final_solution": false
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "card_conversion_final_solution": false,
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED"
     },
     {
       "slug": "dishwasher-detergent-guide",
@@ -549,8 +551,8 @@
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 6,
       "common_product_format": "NOT_APPLICABLE",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -558,9 +560,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -571,8 +573,8 @@
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -580,9 +582,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -593,8 +595,8 @@
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 2,
       "common_product_format": "NOT_APPLICABLE",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "HORIZONTAL_TABLE_PRESENT_AWAITING_MATRIX_SOLUTION",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -602,9 +604,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -615,8 +617,8 @@
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
       "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -624,9 +626,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "conclusions_approval": "COMPLETE",
       "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
@@ -638,9 +640,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -648,10 +650,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -661,9 +663,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -671,10 +673,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -684,9 +686,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -694,10 +696,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -709,7 +711,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -717,9 +719,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -731,7 +733,7 @@
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -739,9 +741,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -753,7 +755,7 @@
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -761,9 +763,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -773,9 +775,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 2,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -783,10 +785,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -796,9 +798,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -806,10 +808,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -819,9 +821,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 3,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -829,10 +831,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -843,8 +845,8 @@
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
       "common_product_format": "NOT_APPLICABLE",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -852,9 +854,9 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
+      "duplicate_disclosures": "NONE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -864,9 +866,9 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
-      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
-      "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "common_product_format": "SHARED_NATIVE_TABLE_VERIFIED",
+      "heading_alignment": "VERIFIED_FOR_ARTICLE_HEADINGS",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE",
       "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
       "checked_widths": [
         320,
@@ -874,10 +876,10 @@
         768,
         1440
       ],
-      "body_overflow": "NONE",
+      "body_overflow": "NONE_VERIFIED",
       "broken_internal_anchors": [],
-      "duplicate_disclosures": "NONE",
-      "comparison_table": "NATIVE_TABLE_IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "comparison_table": "SHARED_NATIVE_TABLE_VERIFIED",
       "card_conversion_final_solution": false
     },
     {
@@ -887,7 +889,12 @@
       "source_checked": false,
       "common_product_format": "NOT_APPLICABLE",
       "shared_check": "PENDING",
-      "card_conversion_final_solution": false
+      "card_conversion_final_solution": false,
+      "body_overflow": "NONE_VERIFIED",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE"
     },
     {
       "slug": "search",
@@ -896,7 +903,12 @@
       "source_checked": false,
       "common_product_format": "NOT_APPLICABLE",
       "shared_check": "PENDING",
-      "card_conversion_final_solution": false
+      "card_conversion_final_solution": false,
+      "body_overflow": "NONE_VERIFIED",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE"
     },
     {
       "slug": "not-found",
@@ -905,10 +917,15 @@
       "source_checked": false,
       "common_product_format": "NOT_APPLICABLE",
       "shared_check": "PENDING",
-      "card_conversion_final_solution": false
+      "card_conversion_final_solution": false,
+      "body_overflow": "NONE_VERIFIED",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE_VERIFIED",
+      "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
+      "table_layout": "VERIFIED_NATIVE_TABLES_OR_NO_TABLE"
     }
   ],
-  "table_acceptance": "ROBOT_NATIVE_TABLE_VERIFIED_COMMON_EXPANSION_IN_PROGRESS",
+  "table_acceptance": "LOCAL_NATIVE_TABLE_CHECKS_COMPLETE_USER_REVIEW_SEPARATE",
   "latest_user_clarification": "robotで実表を共有確認後、Ankerを含む全比較記事と他ページの比較表・今後のひな型へ適用。結論は1列を維持。",
   "further_card_conversion": "STOPPED",
   "shared_card_conversion_candidate": "6e1e5b33e8a6e190f65934d7f338b8573e75bc3777ba5ad2dc12aa5dac02e054",
@@ -916,6 +933,56 @@
   "validation": {
     "focused_tests": "248 passed, 18 subtests",
     "native_table_preservation": "14 articles: product order, row text, links, old IDs and conditions preserved",
-    "make_fast": "Prior attempt stopped after user expanded table restoration; final run pending"
+    "make_fast": {
+      "status": "PASS_AFTER_FAILED_CASE_RECHECK_AND_REMAINING_PARTITIONS",
+      "base": "ac41ceed",
+      "site_source_commit": "d98087d2",
+      "test_clock_fix_commit": "a64bee27",
+      "make_fast_command_exit_status": 2,
+      "full_parallel": {
+        "passed": 21988,
+        "failed": 1,
+        "skipped": 7,
+        "subtests": 157,
+        "failure": "Synthetic partnership timestamp crossed the processing clock boundary. The production validation remains unchanged."
+      },
+      "failed_module_recheck": "53 passed; synthetic grant moved one minute inside its validity window; explicit future/expired tests retained.",
+      "remaining_partitions": [
+        "2042 passed, 22657 deselected in 514.96s (0:08:34)",
+        "RAOS_CHECK name=pytest-serial seconds=520.33 result=0",
+        "RAOS_CHECK name=node-tests seconds=1.99 result=0",
+        "RAOS_CHECK name=vitest seconds=0.48 result=0",
+        "RAOS_CHECK name=php-lint-harness seconds=0.37 result=0",
+        "RAOS_CHECK name=php-lint-source seconds=0.35 result=0",
+        "RAOS_CHECK name=php-runtime-source seconds=0.37 result=0",
+        "RAOS_CHECK name=php-lint-generated seconds=0.36 result=0",
+        "RAOS_CHECK name=php-runtime-generated seconds=0.35 result=0",
+        "349 passed, 24350 deselected, 2 warnings in 350.03s (0:05:50)",
+        "RAOS_CHECK name=pytest-data seconds=355.45 result=0",
+        "91 passed, 24608 deselected in 27.13s",
+        "RAOS_CHECK name=pytest-storage seconds=32.37 result=0"
+      ],
+      "unresolved_local_test_failures": 0,
+      "single_full_make_fast_pass_claimed": false,
+      "completed_at": "2026-09-13T10:34:24.851272+00:00",
+      "full_log": "output/site-improvements-20260913/table-update-progress/make-fast-full.log",
+      "recheck_log": "output/site-improvements-20260913/table-update-progress/affiliate-clock-recheck.log",
+      "remaining_log": "output/site-improvements-20260913/table-update-progress/remaining-fast-partitions.log"
+    },
+    "shared_all_pages": "PASS 42 x 4 widths",
+    "comparison_images_links": "PASS 14 x 6 widths",
+    "native_tables": "PASS 13 x 5 widths; approved lightweight exception",
+    "water": "PASS 5 photos/5 issued CTA/5 widths/8 price lifecycle cases",
+    "evidence_directory": "output/site-improvements-20260913/common-layout-review"
+  },
+  "shared_state_note": "39本文＋テーマを統合候補ab318343へ反映しlocal preview PASS。比較表は80fd2d0e、給水表は1e5335f7とab318343の候補別検証を保持。本番未公開。",
+  "comparison_tables_verified_candidate": "80fd2d0e46c48b67b718976ed039c074cddc7f3277d7dd68f663e97940523d24",
+  "combined_candidate": {
+    "candidate_id": "ab3183434544c45cda7a761fdcc0e6bf16544481917743a57e0098e630e6ac0b",
+    "source_commit": "d98087d2",
+    "scope": "39 documents plus theme",
+    "preview_status": "PASS",
+    "production_published": false,
+    "verified_at": "2026-09-13T10:05:44.533525+00:00"
   }
 }

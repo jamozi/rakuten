@@ -1,10 +1,10 @@
 {
   "schema": "RAOS_COMMON_PRODUCT_DISPLAY_PROGRESS_V1",
-  "checked_at": "2026-09-13T06:57:15.879754+00:00",
+  "checked_at": "2026-09-13T09:51:28.991407+00:00",
   "scope": "21 product leaf pages: 14 comparison rows verified; 7 guide commerce additions remain separately pending",
   "publication_authorized": false,
-  "source_commit": "fface1a6e90b711941b605e635ce9228f0f1b538",
-  "shared_candidate": "498e64af203150fd2de62ab22ea36505aa25c8f49ce40d86cb21a308640c90e3",
+  "source_commit": "d98087d2",
+  "shared_candidate": "ab3183434544c45cda7a761fdcc0e6bf16544481917743a57e0098e630e6ac0b",
   "pages": [
     {
       "slug": "countertop-dishwasher-for-small-households",
@@ -19,9 +19,9 @@
       ],
       "author_thread": "01a098c1-da26-7933-832b-d986f44fd858",
       "common_information_status": "READY",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "User review / publication not implied",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/countertop-dishwasher-for-small-households/"
     },
     {
@@ -37,9 +37,9 @@
       ],
       "author_thread": "01a098c1-97e7-7d60-bb84-ff4a60c5d413",
       "common_information_status": "READY",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "User review / publication not implied",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/lightweight-carry-on-suitcase-under-3kg/"
     },
     {
@@ -55,9 +55,9 @@
       ],
       "author_thread": "01a098c1-e5eb-7a22-959d-e7ef541ee59a",
       "common_information_status": "READY",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "User review / publication not implied",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/compact-robot-vacuum-shortlist/"
     },
     {
@@ -73,9 +73,9 @@
       ],
       "author_thread": "01a098c1-f344-7012-bfb7-a6ad5dd1a3e4",
       "common_information_status": "READY",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "User review / publication not implied",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/portable-power-station-guide/"
     },
     {
@@ -90,9 +90,9 @@
       ],
       "author_thread": "01a098c1-8a77-7550-ba35-7aa7883acf9b",
       "common_information_status": "READY",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "User review / publication not implied",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/carry-on-suitcase-comparison/"
     },
     {
@@ -107,10 +107,10 @@
         "PRD-BERMAS-INTER-CITY-60524"
       ],
       "author_thread": "01a098c1-9120-7361-bf09-1674bde6c692",
-      "common_information_status": "READY_WITH_MEDIA_GAPS",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "旧仕様とUSBなし仕様の同一性を解消できず。確認済み公式リンクを保持。",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/carry-on-suitcase-under-100-seats/"
     },
     {
@@ -125,10 +125,10 @@
         "PRD-BERMAS-INTER-CITY-II-60561"
       ],
       "author_thread": "01a098c1-9f67-7d51-b78f-9ab404bf95d6",
-      "common_information_status": "READY_WITH_MEDIA_GAPS",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/front-open-carry-on-suitcase-with-stopper/"
     },
     {
@@ -142,9 +142,9 @@
       ],
       "author_thread": "01a098c1-ed2e-78c3-9e19-1d12ac1c79a5",
       "common_information_status": "READY",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "User review / publication not implied",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/roomba-mini-vs-switchbot-k11-pro/"
     },
     {
@@ -158,9 +158,9 @@
       ],
       "author_thread": "01a098c1-df93-7df3-bdf8-e0f374cdf7ea",
       "common_information_status": "READY",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "User review / publication not implied",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/solota-vs-rakua-mini-plus/"
     },
     {
@@ -176,9 +176,9 @@
       ],
       "author_thread": "01a098c2-24e9-7693-b030-b6a97bf3eab0",
       "common_information_status": "READY",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "User review / publication not implied",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/anker-solix-c300-c800-c1000-differences/"
     },
     {
@@ -194,9 +194,9 @@
       ],
       "author_thread": "01a09879-c31a-71a0-bc4a-8e25573f797b",
       "common_information_status": "READY",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "User review / publication not implied",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/compact-dishwasher-comparison/"
     },
     {
@@ -220,10 +220,10 @@
         "PRD-STANDARD-DISHWASHER-ADW-M28B"
       ],
       "author_thread": "01a0987c-8828-7a51-9473-762925e96608",
-      "common_information_status": "READY_WITH_MEDIA_GAPS",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "白STTDWADWの発行画像はNO IMAGE、別売場は404。取得済み販売リンクと参考価格を保持。",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/standard-dishwasher-comparison/"
     },
     {
@@ -241,9 +241,9 @@
       ],
       "author_thread": "01a0987c-d1ab-7923-b9eb-610731e0e655",
       "common_information_status": "READY",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "User review / publication not implied",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/large-dishwasher-comparison/"
     },
     {
@@ -264,10 +264,10 @@
         "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX",
         "PRD-SMALL-CARRY-ON-SUITCASE-MUJI-76431312"
       ],
-      "common_information_status": "READY_WITH_MEDIA_GAPS",
-      "shared_preview_stage": "SHARED_ROWS_VERIFIED",
+      "common_information_status": "READY",
+      "shared_preview_stage": "NATIVE_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_VERIFIED",
-      "pending": "82353704・アイボリー・EAN4003743040278の利用可能な実写真と発行購入リンクが未取得。公式リンクを保持。; INV50とINV50Gの販売素材が混在。対象INV50の公式リンクを保持。",
+      "pending": "最終ユーザーレビュー・公開は会話台帳で別管理。",
       "local_url": "http://127.0.0.1:41398/small-carry-on-suitcase-comparison/"
     },
     {
@@ -313,11 +313,15 @@
         "PRD-PANASONIC-NP-TSP1"
       ],
       "author_thread": "01a0987c-3d94-7ec2-9bcc-c447e2ce4154",
-      "common_information_status": "IN_PROGRESS",
-      "shared_preview_stage": "INITIAL_LAYOUT_ONLY",
+      "common_information_status": "READY",
+      "shared_preview_stage": "PHOTOS_AND_TABLE_VERIFIED",
       "brand_labels": "SHARED_CATALOG_UPDATED",
-      "pending": "Exact product media rights, issued affiliate links, current dated Rakuten offers, article-specific rendering and user review",
-      "comparison_row_scope": "EXCLUDED_GUIDE_PENDING"
+      "pending": "変更後の最終ユーザー了承・本番公開指示待ち。",
+      "comparison_row_scope": "GUIDE_MAIN4_SUPPLEMENT1",
+      "supplementary_product_ids": [
+        "PRD-LARGE-DISHWASHER-SS-LH451"
+      ],
+      "evidence": "output/site-improvements-20260913/water-table-review/verification.json"
     },
     {
       "slug": "dishwasher-detergent-guide",
@@ -492,7 +496,7 @@
           "240": "96167aa95dbc9a9af48c1e7a09bab3401ca661dde0df1f4f976eb8634e2c851e",
           "300": "3cc2db907c41722052ce1832e26c91d6e771c288aad57f34725ebf2274e9aec3"
         },
-        "record_sha256": "9d8dddb1450afc155ca99867893429dc802d23aa83e868b7eaf8089f75535339",
+        "record_sha256": "e9e76d283c66b8e3a42e2f0ccdfba47447107d56c94cdbeb576e1d95596aba3a",
         "display_purpose": "verified_listing_reference",
         "listing_url": "https://item.rakuten.co.jp/siroca/ss-ma251/",
         "visual_identity_verified": true,
@@ -537,7 +541,7 @@
           "240": "5d3e5e9772e0413932cbfb6bcc077b19ed90456b232bbc1af7197c4d14822ac4",
           "300": "e5d388c9d455f953c3932e30ce1db8cc723c8a98b0dee8d9632cdca756d35175"
         },
-        "record_sha256": "4fed23630d64278311776e50d17c3fd7024f5b61eb5a76aa68a3509aec8363e6",
+        "record_sha256": "8e25c62a4050e252f1e32d4f413929b46908b935a259e6cbd00de3d40f29b58b",
         "display_purpose": "verified_listing_reference",
         "listing_url": "https://item.rakuten.co.jp/edion/4549980451250/",
         "visual_identity_verified": true,
@@ -1379,10 +1383,27 @@
       "exact_model": "60524（新仕様・USBポートなし）",
       "source_url": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
       "image_review": {
-        "state": "UNVERIFIED",
-        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
-        "source": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
-        "checked_on": "2026-09-13"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "e465095a9e70d0ea5da614b3c6429c98b16e357f513d1371b127662b6f479d2a",
+          "240": "307a9f1057892597336f2f972bda15480c0e69bb8c603a949aabc9106e08cae9"
+        },
+        "record_sha256": "213e8626ebf12dfc975176ce9f36b5ba1d5efbc681b1edde83c7fed59c11c805",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/business-bugs/bermas-60524/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "60524新仕様／シルバー・前面／側面／背面",
+        "listing_identity": {
+          "product_id": "PRD-BERMAS-INTER-CITY-60524",
+          "exact_model": "60524（新仕様・USBポートなし）",
+          "variant": "60524新仕様／シルバー・前面／側面／背面",
+          "condition": "UNKNOWN"
+        }
       },
       "offers": [
         {
@@ -1403,10 +1424,27 @@
       "exact_model": "INV50",
       "source_url": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue",
       "image_review": {
-        "state": "UNVERIFIED",
-        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "9ea89a4a6ffd51755d9cc916d25b5c9ac596278488002d4c9c74679be34a2d73",
+          "240": "8febd0c2a8aec8443e85521e374d0bc1dfc8eb7395840c8482f0cf924da233b6"
+        },
+        "record_sha256": "4e10dce7c93cc42b00023a64a6805adc85aa5e2967f777cc896e4bbe2883c39c",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/newbag/i02inv50/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
         "checked_on": "2026-09-13",
-        "source": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue"
+        "caption": "INV50／ペールブルー・スチールグレー",
+        "listing_identity": {
+          "product_id": "PRD-INNOVATOR-INV50",
+          "exact_model": "INV50",
+          "variant": "INV50／ペールブルー・スチールグレー",
+          "condition": "UNKNOWN"
+        }
       },
       "offers": [
         {
@@ -1882,9 +1920,27 @@
       "exact_model": "STTDWADW",
       "source_url": "https://www.thanko.jp/view/item/000000003491",
       "image_review": {
-        "state": "UNVERIFIED",
-        "reason": "発行画像がNO IMAGEのため掲載しない。別売場の対象ページも404。確認済みの販売リンクと参考価格は保持。",
-        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "eb0da82c108aacc9daa78ac60bdb660caf290a6247b1eb975ad6b0a5666ea214",
+          "240": "45d9a4450ca2557b39e17e4fa4bb922817a8212e63e11a0f89e774d6b1df715d"
+        },
+        "record_sha256": "4f5329c1dbd20df9ca0bec5e90e6a523351ef31da7523c43bf6b74101b671e49",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/thanko/000000003491/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "STTDWADW／ホワイト・本体",
+        "listing_identity": {
+          "product_id": "PRD-STANDARD-DISHWASHER-STTDWADW",
+          "exact_model": "STTDWADW",
+          "variant": "STTDWADW／ホワイト・本体",
+          "condition": "UNKNOWN"
+        }
       },
       "offers": [
         {
@@ -2158,7 +2214,7 @@
           "240": "fde30382ed0c0a1262872d5a7e5b5b2687d4e067defa76e0e08eac83ba1f66ce",
           "300": "818f08adaa251b49bc918f92c89c8b222844085cb22572d569077a2767e039c9"
         },
-        "record_sha256": "b76be4fcc5502c4fedda4bd3fc2ae5a10cc4a2b3d8556d142f8d44a255f68bf9",
+        "record_sha256": "b39ad337f07245d42c25b1b967a2187cca91eafd67c630477af1a5b0e15377f1",
         "display_purpose": "verified_listing_reference",
         "listing_url": "https://item.rakuten.co.jp/siroca/ss-lh451/",
         "visual_identity_verified": true,
@@ -2360,8 +2416,27 @@
       "exact_model": "82353704",
       "source_url": "https://www.rimowa.com/jp/ja/luggage/colour/beige/キャビン/82353704.html",
       "image_review": {
-        "state": "UNVERIFIED",
-        "reason": "同一型番・構成の利用できる画像を確認中。"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "417cc4a2e8bcf9bdda5b6d8f018229db0f519afc9b95ba9b6b6f181abf52b622",
+          "240": "e01be7ee53e9e0f7f11dd9a3f9e154b8e50b5ffedd1b270aabb6bd53a745f4a6"
+        },
+        "record_sha256": "b1453c01aed43316d07deae398a535b49f3a53b0b71040e6f4d990e32e924e8d",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/retro/276129/?variantId=276129",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "82353704／アイボリー・中古掲載品の写真",
+        "listing_identity": {
+          "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704",
+          "exact_model": "82353704",
+          "variant": "82353704／アイボリー・中古掲載品の写真",
+          "condition": "used"
+        }
       },
       "offers": []
     },
@@ -2527,7 +2602,17 @@
       "changes/site-improvements-20260913/rakuten-affiliate-captures-20260913.v1.json",
       "changes/site-improvements-20260913/rakuten-affiliate-leaf-captures-20260913.v1.json",
       "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json"
-    ]
+    ],
+    "recovered_images": "changes/site-improvements-20260913/recovered-product-images.v1.json"
   },
-  "comparison_progress": "changes/site-improvements-20260913/comparison-row-progress.v1.json"
+  "comparison_progress": "changes/site-improvements-20260913/comparison-row-progress.v1.json",
+  "shared_state_note": "39本文＋テーマを統合候補ab318343へ反映しlocal preview PASS。比較表は80fd2d0e、給水表は1e5335f7とab318343の候補別検証を保持。本番未公開。",
+  "combined_candidate": {
+    "candidate_id": "ab3183434544c45cda7a761fdcc0e6bf16544481917743a57e0098e630e6ac0b",
+    "source_commit": "d98087d2",
+    "scope": "39 documents plus theme",
+    "preview_status": "PASS",
+    "production_published": false,
+    "verified_at": "2026-09-13T10:05:44.533525+00:00"
+  }
 }
