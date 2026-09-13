@@ -4244,6 +4244,7 @@ body .raos-footer :where(.raos-footer__policy, .raos-footer__nav, .wp-block-navi
 }
 
 /* Kitchen gateway: dish amount and water supply lead to existing advice. */
+body .wp-block-post-content:has(> .ks-kitchen-guide) { padding-inline: 0; }
 body .ks-kitchen-guide {
   box-sizing: border-box;
   width: calc(100% - 48px);
