@@ -1,10 +1,10 @@
 {
   "schema": "RAOS_COMMON_LAYOUT_APPLICATION_V1",
-  "updated_at": "2026-09-13T08:26:36.472658+00:00",
+  "updated_at": "2026-09-13T08:42:05.087434+00:00",
   "production_published": false,
-  "shared_candidate": "243d72d90258fae86167d330e587c9a9a6124244e71bfb0f1c97726ecc6cb277",
+  "shared_candidate": "6e1e5b33e8a6e190f65934d7f338b8573e75bc3777ba5ad2dc12aa5dac02e054",
   "previous_shared_robot_structure_verified": true,
-  "new_headings_shared": false,
+  "new_headings_shared": true,
   "rows": [
     {
       "slug": "home",
@@ -16,7 +16,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "travel",
@@ -28,7 +37,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "kitchen",
@@ -40,7 +58,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "cleaning",
@@ -52,7 +79,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "preparedness",
@@ -64,7 +100,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "categories",
@@ -76,7 +121,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "small-space",
@@ -88,7 +142,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "save-housework",
@@ -99,8 +162,17 @@
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "without-installation",
@@ -112,7 +184,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "easy-maintenance",
@@ -123,8 +204,17 @@
       "initial_horizontal_tables": 3,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "comfortable-travel",
@@ -135,8 +225,17 @@
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "prepare-outage",
@@ -147,8 +246,17 @@
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "purposes",
@@ -160,7 +268,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "guides",
@@ -172,7 +289,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "comparisons",
@@ -184,7 +310,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "updates",
@@ -196,7 +331,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "carry-on-suitcase-comparison",
@@ -205,10 +349,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "carry-on-suitcase-under-100-seats",
@@ -217,10 +370,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "lightweight-carry-on-suitcase-under-3kg",
@@ -229,10 +391,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "APPROVED_LAYOUT_PRESERVED",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "COMPLETE",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "front-open-carry-on-suitcase-with-stopper",
@@ -241,10 +412,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "countertop-dishwasher-for-small-households",
@@ -253,10 +433,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 2,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "solota-vs-rakua-mini-plus",
@@ -265,10 +454,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "dishwasher-installation-measurement",
@@ -279,8 +477,17 @@
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "dishwasher-water-supply-methods",
@@ -291,8 +498,17 @@
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "dishwasher-detergent-guide",
@@ -303,8 +519,17 @@
       "initial_horizontal_tables": 6,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "dishwasher-cleaning-guide",
@@ -315,8 +540,17 @@
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "dishwasher-running-cost",
@@ -327,8 +561,17 @@
       "initial_horizontal_tables": 2,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "HORIZONTAL_TABLE_PRESENT_AWAITING_MATRIX_SOLUTION",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "compact-robot-vacuum-shortlist",
@@ -337,10 +580,21 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE",
+      "conclusions_approval": "COMPLETE",
+      "comparison_table": "AUTHOR_REVISION_PENDING"
     },
     {
       "slug": "roomba-mini-vs-switchbot-k11-pro",
@@ -349,10 +603,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "portable-power-station-guide",
@@ -361,10 +624,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "anker-solix-c300-c800-c1000-differences",
@@ -373,10 +645,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "about-ad-policy",
@@ -388,7 +669,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "comparison-policy",
@@ -400,7 +690,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "privacy-policy",
@@ -411,8 +710,17 @@
       "initial_horizontal_tables": 1,
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "NOT_APPLICABLE_TO_ARTICLE_ONLY_CHANGE",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "compact-dishwasher-comparison",
@@ -421,10 +729,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 2,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "standard-dishwasher-comparison",
@@ -433,10 +750,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 0,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "large-dishwasher-comparison",
@@ -445,10 +771,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 3,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "dishwasher-branch-faucet-guide",
@@ -460,7 +795,16 @@
       "common_product_format": "NOT_APPLICABLE",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
       "table_layout": "NO_ISSUE_IN_INITIAL_CHECK",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "small-carry-on-suitcase-comparison",
@@ -469,10 +813,19 @@
       "source_checked": true,
       "shared_initial_check": "HTTP_200_NO_BODY_OVERFLOW",
       "initial_horizontal_tables": 1,
-      "common_product_format": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
+      "common_product_format": "SHARED_PHOTOS_CTA_VERIFIED_MATRIX_LAYOUT_REVIEW_PENDING",
       "heading_alignment": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "table_layout": "IMPLEMENTED_AWAITING_SHARED_VERIFICATION",
-      "reader_approval": "SEPARATE_CONVERSATION_LEDGER"
+      "table_layout": "SHARED_CARD_CONVERSION_RECORDED_REVIEW_PENDING",
+      "reader_approval": "SEPARATE_CONVERSATION_LEDGER",
+      "checked_widths": [
+        320,
+        390,
+        768,
+        1440
+      ],
+      "body_overflow": "NONE",
+      "broken_internal_anchors": [],
+      "duplicate_disclosures": "NONE"
     },
     {
       "slug": "posts",
@@ -498,5 +851,9 @@
       "common_product_format": "NOT_APPLICABLE",
       "shared_check": "PENDING"
     }
-  ]
+  ],
+  "table_acceptance": "PENDING_MATRIX_TABLE_REVIEW_NOT_SATISFIED_BY_NO_OVERFLOW",
+  "latest_user_clarification": "結論のみ1列。比較は横スクロールなしで行列の揃う実表。了承済み軽量の表示を保持。",
+  "further_card_conversion": "STOPPED",
+  "shared_card_conversion_candidate": "6e1e5b33e8a6e190f65934d7f338b8573e75bc3777ba5ad2dc12aa5dac02e054"
 }

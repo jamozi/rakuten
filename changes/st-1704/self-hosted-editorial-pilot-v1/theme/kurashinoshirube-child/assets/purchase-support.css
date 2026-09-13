@@ -126,3 +126,10 @@
 .ps-article h2 { text-align:center; text-wrap:balance; }
 .ps-article .sources-section { display:block; }
 .ps-article .purchase-caution { padding-inline-end:calc(1.6rem + 3px); }
+/* The editorial decorator inserts a main wrapper around ordinary sections. */
+.ps-article .raos-editorial-v2__main > section { margin-inline:auto; }
+.ps-article .method-section > h2 { grid-column:1 / -1; }
+/* Preserve the accepted 1080px desktop table through the WP decoration wrapper. */
+@media (min-width:1180px) {
+  .ps-article.lw-carry-guide .ps-row-scroll { max-width:none; }
+}

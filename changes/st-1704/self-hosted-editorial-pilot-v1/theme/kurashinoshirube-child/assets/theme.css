@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 6aa304accbb0424b1fc1b684fb379c37d4a8c50f152f50c56ff09f9e19dbc2ab;
+  --raos-theme-runtime-revision-base: 58ac2fe9446c230487200259967b12f8d71d107c303ba5bf5fab6cb9b16c6f60;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -5287,3 +5287,6 @@ body:has(.lw-carry-guide) #raos-related-title { text-align:center; text-wrap:bal
 .single-post .wp-block-post-content h2,
 .single-post #raos-related-title { text-align:center; text-wrap:balance; }
 .single-post .wp-block-post-content .sources-section { display:block; }
+
+.single-post .raos-article-title-grid h1 { grid-column:1 / -1; width:100%; margin-inline:auto; }
+.ks-branch-guide .ks-branch-opening { grid-template-columns:minmax(0,1fr); }

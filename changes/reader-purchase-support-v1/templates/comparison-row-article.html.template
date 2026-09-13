@@ -1,3 +1,4 @@
+<!-- 条件別結論だけを1列にする。比較は狭幅でも行列のある実表を維持し、専有CSSを実測する。商品カードへの変換を標準として流用しない。 -->
 <article class="ps-article">
   <p class="ps-disclosure">広告表示は生成時にリンクと一致させます。</p>
   <section id="comparison-conditions"><h2>条件別の結論</h2><div class="ps-condition-grid">

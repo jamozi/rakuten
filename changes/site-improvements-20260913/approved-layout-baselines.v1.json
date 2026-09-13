@@ -14,9 +14,15 @@
       "style_sha256_before_heading_followup": "cb966883a896c5331881c7dc3e6e739c5c6fc52dc614ee1dd5e7bc19d2fa02ad",
       "latest_style_sha256": "2fe4c099c8085bc1dc1e9535923113c7d6e93071f4c573fb88dc78d01a52baf7",
       "source": "/home/minami/rakuten/changes/site-improvements-20260913/page-drafts/lightweight-carry-on-suitcase-under-3kg/integrated-review/final-revision/article.template.html",
-      "user_review": "CONTENT_AND_LAYOUT_ACCEPTED",
-      "new_layout_review": "HEADING_FOLLOWUP_PENDING_USER_REVIEW",
-      "publication_authorized": false
+      "user_review": "FINAL_LAYOUT_ACCEPTED",
+      "new_layout_review": "USER_REVIEW_COMPLETE",
+      "publication_authorized": false,
+      "accepted_scope": "本文・順序・見出し中央配置・広告告知1回",
+      "user_statement": "軽量スーツケースはこれで完了でOK",
+      "confirmation_source_thread": "01a097f8-b30e-7fe3-9d84-efd422123292",
+      "preview_html_sha256": "eef06b7938a38153acc61855c5acbbc572a013cd0cc3e7b33142d0f7f7f65aaf",
+      "shared_candidate": "6e1e5b33e8a6e190f65934d7f338b8573e75bc3777ba5ad2dc12aa5dac02e054",
+      "shared_validation": "PASS_320_375_390_600_768_1440"
     }
   }
 }

@@ -30,5 +30,6 @@
       "key": "condition-b",
       "product_id": "REGISTERED_PRODUCT_ID_B"
     }
-  ]
+  ],
+  "responsive_layout": "authored"
 }

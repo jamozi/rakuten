@@ -3243,7 +3243,7 @@ def consolidate_comparison_details(html: str) -> str:
                     Element("span", {"id": n.attrs["id"], "tabindex": "-1"})
                 )
         for link in section.find(tag="a"):
-            url = link.attrs.get("href", "")
+            url = link.attrs.get("href") or ""
             if url.startswith("https://") and url not in outside:
                 li = Element("li", {})
                 li.append(block(link.html()))
@@ -3260,10 +3260,14 @@ def responsive_comparison_markup(html: str) -> str:
     root = fragment(html)
     for table in root.find(tag="table"):
         if table.has("compact-integrated-table"):
-            table.attrs["class"] += " ps-row-comparison"
+            table.attrs["class"] = (
+                table.attrs.get("class") or ""
+            ) + " ps-row-comparison"
             table.attrs["data-ps-spec-columns"] = "2"
             if table.parent and not table.parent.has("ps-row-scroll"):
-                table.parent.attrs["class"] += " ps-row-scroll"
+                table.parent.attrs["class"] = (
+                    table.parent.attrs.get("class") or ""
+                ) + " ps-row-scroll"
         if not table.has("ps-row-comparison"):
             continue
         headers = table.find(tag="thead")
@@ -3278,8 +3282,9 @@ def responsive_comparison_markup(html: str) -> str:
                 table.parent.attrs.get("class") or ""
             ) + " ps-responsive-scroll"
             for attr in ("aria-label",):
-                if table.parent.attrs.get(attr):
-                    table.parent.attrs[attr] = table.parent.attrs[attr].replace(
+                value = table.parent.attrs.get(attr)
+                if value:
+                    table.parent.attrs[attr] = value.replace(
                         "。横にスクロールできます", ""
                     )
         for row in table.find(tag="tbody")[0].find(tag="tr"):
