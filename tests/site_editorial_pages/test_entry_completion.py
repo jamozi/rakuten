@@ -51,10 +51,8 @@ class EntryCompletion(unittest.TestCase):
         )
         self.assertLess(capacity.start, choose.start)
         self.assertLess(choose.start, doc.ids["compare"].start)
-        self.assertLess(doc.ids["compare"].start, doc.ids["kitchen-after-buying"].start)
-        self.assertIn(
-            "洗剤の種類と量", doc.text[doc.ids["kitchen-after-buying"].start :]
-        )
+        self.assertNotIn("kitchen-after-buying", doc.ids)
+        self.assertNotIn('href="#kitchen-after-buying"', doc.text)
         for stale_inventory in (
             "確認期限切れ",
             "確認日時は未確認",

@@ -547,7 +547,7 @@ def test_kitchen_keeps_readable_preconditions_and_original_destinations(catalog)
     assert len(root.find(tag="figure", cls="ks-category-visual")) == 1
     assert "SS-MA251" not in root.text()
     assert "外部容器からの自動給水" in root.text()
-    assert len(root.find(tag="img")) == 7
+    assert len(root.find(tag="img")) == 5
 
 
 def test_luggage_bookmarks_reach_weight_formula_and_flight_checks(catalog):
