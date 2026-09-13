@@ -15,7 +15,7 @@ GENERATOR = ROOT / "scripts/build_st1704_theme_assets.py"
 
 
 def test_reviewed_assets_are_generated_webp_with_png_kept_outside_theme() -> None:
-    assert len(generator.ASSETS) == 19
+    assert len(generator.ASSETS) == 33
     for asset in generator.ASSETS:
         source = asset.source.read_bytes()
         output = asset.output.read_bytes()
@@ -42,7 +42,7 @@ def test_owner_generator_validates_the_tracked_webp() -> None:
         f"{asset.output.name}:{asset.output_sha256}" for asset in generator.ASSETS
     )
     assert completed.stdout == (
-        f"ST1704_THEME_ASSETS_OK assets=19 sha256={inventory}\n"
+        f"ST1704_THEME_ASSETS_OK assets={len(generator.ASSETS)} sha256={inventory}\n"
     )
 
 

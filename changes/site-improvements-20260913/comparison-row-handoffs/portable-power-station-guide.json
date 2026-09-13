@@ -1,0 +1,196 @@
+{
+  "schema": "RAOS_COMMON_COMPARISON_ROW_HANDOFF_V1",
+  "publication_authorized": false,
+  "root_candidate_pending": true,
+  "immutable_snapshot": "acbef952bdefa03a2d2e",
+  "body_source": "changes/wordpress-direct-publish-v1/articles/portable-power-station-guide.html",
+  "runtime_article": {
+    "article_id": "portable-power-station-guide",
+    "slug": "portable-power-station-guide",
+    "post_type": "post",
+    "kind": "comparison",
+    "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+    "body_sha256": "1af2c8c780baa513d7e69a3ce738863d7cb81ba15707b11b08951b37d3a38231",
+    "bindings": [
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-ANKER-SOLIX-C300",
+        "seller_id": "rakuten-d-shop1one",
+        "offer_id": "image-PRD-ANKER-SOLIX-C300-300",
+        "cta_id": "purchase-image-PRD-ANKER-SOLIX-C300-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-ANKER-SOLIX-C300",
+        "seller_id": "rakuten-d-shop1one",
+        "offer_id": "image-PRD-ANKER-SOLIX-C300-240",
+        "cta_id": "purchase-image-PRD-ANKER-SOLIX-C300-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-ANKER-SOLIX-C300",
+        "seller_id": "rakuten-d-shop1one",
+        "offer_id": "rakuten-observed-anker-solix-c300-d-shop1one",
+        "cta_id": "purchase-28-rakuten-observed-anker-solix-c300-d-shop1one-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-JACKERY-500-NEW",
+        "seller_id": "rakuten-jackery-japan",
+        "offer_id": "image-PRD-JACKERY-500-NEW-300",
+        "cta_id": "purchase-image-PRD-JACKERY-500-NEW-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e179b.7cd88447.575e179c.6ef44ecb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjackery-japan%2Fn-p-400200-bkor-jk2%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-JACKERY-500-NEW",
+        "seller_id": "rakuten-jackery-japan",
+        "offer_id": "image-PRD-JACKERY-500-NEW-240",
+        "cta_id": "purchase-image-PRD-JACKERY-500-NEW-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e179b.7cd88447.575e179c.6ef44ecb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjackery-japan%2Fn-p-400200-bkor-jk2%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-JACKERY-500-NEW",
+        "seller_id": "rakuten-jackery-japan",
+        "offer_id": "rakuten-observed-jackery-500-new-jackery-japan",
+        "cta_id": "purchase-28-rakuten-observed-jackery-500-new-jackery-japan-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e179b.7cd88447.575e179c.6ef44ecb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjackery-japan%2Fn-p-400200-bkor-jk2%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-BLUETTI-AC70",
+        "seller_id": "rakuten-bluettijapan",
+        "offer_id": "image-PRD-BLUETTI-AC70-300",
+        "cta_id": "purchase-image-PRD-BLUETTI-AC70-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e17db.03a02739.575e17dc.4f5e842e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbluettijapan%2Fbluettijapan_ac70%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-BLUETTI-AC70",
+        "seller_id": "rakuten-bluettijapan",
+        "offer_id": "image-PRD-BLUETTI-AC70-240",
+        "cta_id": "purchase-image-PRD-BLUETTI-AC70-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e17db.03a02739.575e17dc.4f5e842e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbluettijapan%2Fbluettijapan_ac70%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-BLUETTI-AC70",
+        "seller_id": "rakuten-bluettijapan",
+        "offer_id": "rakuten-observed-bluetti-ac70-bluettijapan",
+        "cta_id": "purchase-28-rakuten-observed-bluetti-ac70-bluettijapan-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e17db.03a02739.575e17dc.4f5e842e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbluettijapan%2Fbluettijapan_ac70%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+        "seller_id": "rakuten-ecmaison",
+        "offer_id": "image-PRD-ECOFLOW-DELTA3-CLASSIC-300",
+        "cta_id": "purchase-image-PRD-ECOFLOW-DELTA3-CLASSIC-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1782726434%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+        "seller_id": "rakuten-ecmaison",
+        "offer_id": "image-PRD-ECOFLOW-DELTA3-CLASSIC-240",
+        "cta_id": "purchase-image-PRD-ECOFLOW-DELTA3-CLASSIC-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1782726434%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "portable-power-station-guide",
+        "product_id": "PRD-ECOFLOW-DELTA3-CLASSIC",
+        "seller_id": "rakuten-ecmaison",
+        "offer_id": "rakuten-observed-ecoflow-delta3-classic-ecmaison",
+        "cta_id": "purchase-28-rakuten-observed-ecoflow-delta3-classic-ecmaison-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-dcba5d065d29d449fd1d5940505f6759",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1782726434%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      }
+    ],
+    "media": {
+      "PRD-ANKER-SOLIX-C300": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"portable-power-station-guide\" data-raos-product-id=\"PRD-ANKER-SOLIX-C300\" data-raos-seller-id=\"rakuten-d-shop1one\" data-raos-offer-id=\"image-PRD-ANKER-SOLIX-C300-300\" data-raos-cta-id=\"purchase-image-PRD-ANKER-SOLIX-C300-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-dcba5d065d29d449fd1d5940505f6759\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1ff2.1e28d246.575e1ff3.a2171eaa/?me_id=1297887&item_id=10242119&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fd-shop1one%2Fcabinet%2Fwhite-item2%2F4571411221002.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"portable-power-station-guide\" data-raos-product-id=\"PRD-ANKER-SOLIX-C300\" data-raos-seller-id=\"rakuten-d-shop1one\" data-raos-offer-id=\"image-PRD-ANKER-SOLIX-C300-240\" data-raos-cta-id=\"purchase-image-PRD-ANKER-SOLIX-C300-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-dcba5d065d29d449fd1d5940505f6759\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1ff2.1e28d246.575e1ff3.a2171eaa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fd-shop1one%2F4571411221002%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1ff2.1e28d246.575e1ff3.a2171eaa/?me_id=1297887&item_id=10242119&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fd-shop1one%2Fcabinet%2Fwhite-item2%2F4571411221002.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>A17225Z1／販売ページの本体・同梱構成例（広告）</figcaption></figure>",
+      "PRD-JACKERY-500-NEW": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"portable-power-station-guide\" data-raos-product-id=\"PRD-JACKERY-500-NEW\" data-raos-seller-id=\"rakuten-jackery-japan\" data-raos-offer-id=\"image-PRD-JACKERY-500-NEW-300\" data-raos-cta-id=\"purchase-image-PRD-JACKERY-500-NEW-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-dcba5d065d29d449fd1d5940505f6759\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e179b.7cd88447.575e179c.6ef44ecb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjackery-japan%2Fn-p-400200-bkor-jk2%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e179b.7cd88447.575e179c.6ef44ecb/?me_id=1374756&item_id=10000000&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fjackery-japan%2Fcabinet%2F11954865%2F500new.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"portable-power-station-guide\" data-raos-product-id=\"PRD-JACKERY-500-NEW\" data-raos-seller-id=\"rakuten-jackery-japan\" data-raos-offer-id=\"image-PRD-JACKERY-500-NEW-240\" data-raos-cta-id=\"purchase-image-PRD-JACKERY-500-NEW-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-dcba5d065d29d449fd1d5940505f6759\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e179b.7cd88447.575e179c.6ef44ecb/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fjackery-japan%2Fn-p-400200-bkor-jk2%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e179b.7cd88447.575e179c.6ef44ecb/?me_id=1374756&item_id=10000000&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fjackery-japan%2Fcabinet%2F11954865%2F500new.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>Jackery ポータブル電源 500 New／販売ページの本体・同梱構成例（広告）</figcaption></figure>",
+      "PRD-BLUETTI-AC70": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"portable-power-station-guide\" data-raos-product-id=\"PRD-BLUETTI-AC70\" data-raos-seller-id=\"rakuten-bluettijapan\" data-raos-offer-id=\"image-PRD-BLUETTI-AC70-300\" data-raos-cta-id=\"purchase-image-PRD-BLUETTI-AC70-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-dcba5d065d29d449fd1d5940505f6759\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e17db.03a02739.575e17dc.4f5e842e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbluettijapan%2Fbluettijapan_ac70%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e17db.03a02739.575e17dc.4f5e842e/?me_id=1406431&item_id=10000107&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fbluettijapan%2Fcabinet%2F13205169%2Fac70.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"portable-power-station-guide\" data-raos-product-id=\"PRD-BLUETTI-AC70\" data-raos-seller-id=\"rakuten-bluettijapan\" data-raos-offer-id=\"image-PRD-BLUETTI-AC70-240\" data-raos-cta-id=\"purchase-image-PRD-BLUETTI-AC70-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-dcba5d065d29d449fd1d5940505f6759\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e17db.03a02739.575e17dc.4f5e842e/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbluettijapan%2Fbluettijapan_ac70%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e17db.03a02739.575e17dc.4f5e842e/?me_id=1406431&item_id=10000107&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fbluettijapan%2Fcabinet%2F13205169%2Fac70.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>AC70／販売ページの本体・同梱構成例（広告）</figcaption></figure>",
+      "PRD-ECOFLOW-DELTA3-CLASSIC": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"portable-power-station-guide\" data-raos-product-id=\"PRD-ECOFLOW-DELTA3-CLASSIC\" data-raos-seller-id=\"rakuten-ecmaison\" data-raos-offer-id=\"image-PRD-ECOFLOW-DELTA3-CLASSIC-300\" data-raos-cta-id=\"purchase-image-PRD-ECOFLOW-DELTA3-CLASSIC-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-dcba5d065d29d449fd1d5940505f6759\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1782726434%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1fec.f2662f96.575e1fed.7c2f016b/?me_id=1433039&item_id=10000665&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fecmaison%2Fcabinet%2Fcompass1782726354.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"portable-power-station-guide\" data-raos-product-id=\"PRD-ECOFLOW-DELTA3-CLASSIC\" data-raos-seller-id=\"rakuten-ecmaison\" data-raos-offer-id=\"image-PRD-ECOFLOW-DELTA3-CLASSIC-240\" data-raos-cta-id=\"purchase-image-PRD-ECOFLOW-DELTA3-CLASSIC-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-dcba5d065d29d449fd1d5940505f6759\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1fec.f2662f96.575e1fed.7c2f016b/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fecmaison%2Fcompass1782726434%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1fec.f2662f96.575e1fed.7c2f016b/?me_id=1433039&item_id=10000665&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fecmaison%2Fcabinet%2Fcompass1782726354.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>EcoFlow DELTA 3 Classic／販売ページの本体・同梱構成例（広告）</figcaption></figure>"
+    }
+  },
+  "price_ui_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
+  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/purchase-support.js",
+  "price_ui_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
+  "style_sources": [
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+      "sha256": "6df19139692f2440e251dfa2288dc29f676c6f24cc6fe828c99085ba08165a36"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
+      "sha256": "27f2a8d61f50f399c6c9f268391d4d9cefaae3edab354ae96a2ecec04033fd89"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.css",
+      "sha256": "e88803965fb86579df284bfa7516d1d0e05d5083547c07ccb01b8e9becf52013"
+    }
+  ],
+  "product_ids": [
+    "PRD-ANKER-SOLIX-C300",
+    "PRD-JACKERY-500-NEW",
+    "PRD-BLUETTI-AC70",
+    "PRD-ECOFLOW-DELTA3-CLASSIC"
+  ],
+  "supplementary_product_ids": [],
+  "row_products": null,
+  "missing_media": [],
+  "local_url": "http://127.0.0.1:41398/portable-power-station-guide/",
+  "shared_local_status": "PENDING_NEW_CANDIDATE",
+  "immutable_handoff": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/portable-power-station-guide.json"
+}

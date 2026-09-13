@@ -48,7 +48,7 @@ def test_all_thirty_one_identities_preserve_actionable_research_and_routes(
 ):
     validate_catalog(catalog)
     html, runtime = compile(catalog)
-    assert len(html) == 19 and len(catalog["products"]) == 31
+    assert len(html) == 23 and len(catalog["products"]) == 54
     roots = {slug: fragment(body) for slug, body in html.items()}
     for slug, root in roots.items():
         ids = [n.attrs["id"] for n in root.walk() if "id" in n.attrs]
@@ -101,45 +101,27 @@ def test_all_thirty_one_identities_preserve_actionable_research_and_routes(
                 if k != "href"
             )
         if a["bindings"]:
-            # External purchase CTAs follow the reasons: product card and seller panel only.
             placements = {b["placement"] for b in a["bindings"]}
-            assert placements == {"product_card", "final_summary"}
+            assert placements <= {"comparison_table", "final_summary"}
+            assert "comparison_table" in placements
             assert placements <= set(PLACEMENTS)
-    tsp = next(p for p in catalog["products"] if p["exact_model"] == "NP-TSP1-W")
-    assert not any(
-        b["product_id"] == tsp["product_id"]
-        for a in runtime["articles"]
-        for b in a["bindings"]
-    )
 
 
 @pytest.mark.parametrize("state", ["SOLD_OUT", "AVAILABLE", "UNKNOWN"])
 def test_comparison_sale_status_matches_verified_offers(catalog, state):
     product = catalog["products"][0]
     pid = product["product_id"]
-    offer = deepcopy(catalog["offers"][0])
-    offer.update(
-        product_id=pid,
-        product_model=product["exact_model"],
-        state=state,
-        identity_verified=True,
-    )
-    catalog["offers"] = [offer]
+    for offer in catalog["offers"]:
+        if offer["product_id"] == pid:
+            offer.update(state=state, identity_verified=True)
     html, _ = compile(catalog)
     root = fragment(html["countertop-dishwasher-for-small-households"])
-    row = next(n for n in root.find(tag="tr") if "data-ps-keep-row" in n.attrs)
-    cell = next(n for n in row.find(tag="td") if n.attrs.get("data-ps-product") == pid)
-    links = cell.find(tag="a")
+    row = next(n for n in root.find(tag="tr") if n.attrs.get("data-product-id") == pid)
+    links = [n for n in row.find(tag="a") if n.has("ps-offer-link")]
     assert len(links) == 1
-    assert links[0].attrs["href"] == "#ps-seller-" + product["anchor"]
-    assert "data-raos-cta-type" not in links[0].attrs
-    if state == "SOLD_OUT":
-        assert "確認した販売先は売り切れ" in cell.text()
-        assert "販売先未確認" not in cell.text()
-    else:
-        # The table sends readers to the dated seller panel instead of an external CTA.
-        assert "売り切れ" not in cell.text()
-        assert "販売先と確認日を見る" in cell.text()
+    assert links[0].attrs["data-raos-product-id"] == pid
+    assert links[0].attrs["data-raos-placement"] == "comparison_table"
+    assert not any(term in links[0].text() for term in ("在庫あり", "購入可能", "最安"))
 
 
 @pytest.mark.parametrize(
@@ -411,8 +393,11 @@ def test_reviewed_bookmarks_land_in_current_section_and_reject_missing_targets(c
         for identity, target in article["legacy_anchor_targets"].items():
             aliases = [n for n in root.walk() if n.attrs.get("id") == identity]
             assert len(aliases) == 1
-            assert aliases[0].parent.attrs.get("id") == target
-            assert aliases[0].parent.text()
+            ancestor = aliases[0].parent
+            if ancestor.tag == "th":
+                ancestor = ancestor.parent
+            assert ancestor.attrs.get("id") == target
+            assert ancestor.text()
     article = next(
         a
         for a in catalog["articles"]
@@ -611,7 +596,7 @@ def test_ten_comparisons_share_exact_identities_and_keep_slim_supplementary(cata
     }
     assert set(catalog["target_post_ids"]) == set(comparisons)
     products = {p["product_id"]: p for p in catalog["products"]}
-    assert len(products) == len(catalog["products"]) == 31
+    assert len(products) == len(catalog["products"]) == 54
     assert set(comparisons[85]["product_ids"]) <= set(comparisons[30]["product_ids"])
     assert "PRD-ANKER-SOLIX-C300" in set(comparisons[28]["product_ids"]) & set(
         comparisons[29]["product_ids"]

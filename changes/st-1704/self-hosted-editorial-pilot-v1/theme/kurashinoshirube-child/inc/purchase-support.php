@@ -29,7 +29,9 @@ function kurashinoshirube_resolve_purchase_support_context(int $post_id): ?array
             || $snapshot[$key] !== get_post_field($field, $post_id, 'raw')) { return null; }
     }
     $path = get_stylesheet_directory() . '/assets/purchase-support.v1.json';
-    if (is_link($path) || !is_file($path) || filesize($path) > 262144) { return null; }
+    // Explicitly registered comparison rows can include up to 32 products.
+    // Keep a bounded payload while retaining the exact asset/snapshot hashes.
+    if (is_link($path) || !is_file($path) || filesize($path) > 1048576) { return null; }
     $bytes = file_get_contents($path);
     if (!is_string($bytes) || !hash_equals(KURASHINOSHIRUBE_PURCHASE_RUNTIME_SHA256, hash('sha256', $bytes))) { return null; }
     $runtime = json_decode($bytes, true);
@@ -59,7 +61,8 @@ function kurashinoshirube_enqueue_purchase_support(): void
             'kitchen', 'about-ad-policy', 'comparison-policy', 'privacy-policy',
             'carry-on-suitcase-comparison', 'carry-on-suitcase-under-100-seats',
             'front-open-carry-on-suitcase-with-stopper', 'solota-vs-rakua-mini-plus',
-            'roomba-mini-vs-switchbot-k11-pro', 'anker-solix-c300-c800-c1000-differences');
+            'roomba-mini-vs-switchbot-k11-pro', 'anker-solix-c300-c800-c1000-differences',
+            'compact-dishwasher-comparison');
         if (!is_admin() && is_singular(array('post', 'page'))
             && in_array(get_post_field('post_name', get_queried_object_id(), 'raw'), $slugs, true)) {
             kurashinoshirube_purchase_ga4_enqueue(array());
@@ -67,7 +70,7 @@ function kurashinoshirube_enqueue_purchase_support(): void
         return;
     }
     // Only article bodies use the Editorial V2 markup; hubs and policies keep the base sheet.
-    $article_kind = in_array($context['kind'] ?? null, array('comparison', 'guide'), true);
+    $article_kind = in_array($context['kind'] ?? null, array('comparison', 'guide', 'curated_comparison'), true);
     if ($article_kind) {
         wp_enqueue_style('kurashinoshirube-editorial-v2',
             get_stylesheet_directory_uri() . '/assets/editorial-v2.css',
@@ -97,7 +100,7 @@ add_action('wp_enqueue_scripts', 'kurashinoshirube_enqueue_purchase_support', 27
 
 add_filter('body_class', static function (array $classes): array {
     $context = kurashinoshirube_purchase_support_context();
-    if ($context !== null && in_array($context['kind'] ?? null, array('comparison', 'guide'), true)) {
+    if ($context !== null && in_array($context['kind'] ?? null, array('comparison', 'guide', 'curated_comparison'), true)) {
         $classes[] = 'raos-editorial-v2-page';
     }
     return array_values(array_unique($classes));
@@ -108,9 +111,10 @@ function kurashinoshirube_purchase_support_media($content)
 {
     if (!is_string($content) || is_feed()) { return $content; }
     $context = kurashinoshirube_purchase_support_context();
-    if ($context === null || ($context['kind'] ?? null) !== 'comparison') { return $content; }
+    if ($context === null || !in_array($context['kind'] ?? null, array('comparison', 'guide', 'curated_comparison'), true)) { return $content; }
     $media = $context['media'] ?? null;
-    if (!is_array($media) || count($media) > 4) { return $content; }
+    $maximum = ($context['kind'] ?? null) === 'curated_comparison' ? 32 : 4;
+    if (!is_array($media) || count($media) > $maximum) { return $content; }
     $replacements = array();
     foreach ($media as $product_id => $html) {
         if (!is_string($product_id) || preg_match('/\APRD-[A-Z0-9-]{1,100}\z/D', $product_id) !== 1

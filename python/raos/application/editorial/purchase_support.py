@@ -22,8 +22,9 @@ from raos.domain.editorial.purchase_support import (
     timestamp,
     resolve_offer,
     offer_states,
+    reference_price,
 )
-from raos.application.editorial.reader_html import Element, fragment
+from raos.application.editorial.reader_html import Element, block, fragment
 from raos.application.editorial.local_reader_guides import build_local_guides
 from raos.application.editorial.reader_running_cost import render_cost_profiles
 
@@ -193,6 +194,18 @@ def validate_catalog(catalog: Mapping[str, Any]) -> None:
         ):
             raise ValueError("PURCHASE_MEDIA_EXCLUSION_INVALID")
         used.update(main_ids + extra_ids)
+    for article in articles:
+        if article["kind"] != "curated_comparison":
+            continue
+        selected = article.get("product_ids", [])
+        if (
+            not 2 <= len(selected) <= 32
+            or len(selected) != len(set(selected))
+            or not set(selected) <= set(ids)
+            or not article.get("commerce_anchor")
+        ):
+            raise ValueError("PURCHASE_CURATED_SCOPE_INVALID")
+        used.update(selected)
     if used != set(ids):
         raise ValueError("PURCHASE_UNUSED_PRODUCT")
     for p in products:
@@ -353,15 +366,27 @@ def verified_offers(
 
 
 def media_allowed(p: Mapping[str, Any], catalog: Mapping[str, Any]) -> bool:
-    """A Rakuten image block is an affiliate link, so it needs a matched, orderable seller.
+    """Keep reviewed product identification separate from an orderability claim.
 
-    Products the article itself describes as 販売先未確認 or 売り切れ get no
-    image link at all; the same offer data drives both decisions.
+    A newly reviewed listing reference can show the exact authorized picture
+    when the listing is sold out or its new condition is still unknown. It must
+    identify that same seller and product; it never makes its price eligible.
+    Unreviewed media retains the existing closed behavior.
     """
-    return (
-        p.get("image_review", {}).get("state") == "VERIFIED_REGISTERED_MEDIA"
-        and purchasable_offer(p, catalog) is not None
-    )
+    review = p.get("image_review", {})
+    if review.get("state") != "VERIFIED_REGISTERED_MEDIA":
+        return False
+    if review.get("display_purpose") == "verified_listing_reference":
+        return any(
+            o.get("identity_verified") is True
+            and o.get("merchant_url") == review.get("listing_url")
+            and o.get("state") in {"AVAILABLE", "PREORDER", "SOLD_OUT", "UNKNOWN"}
+            and o.get("condition") in {"new", "UNKNOWN"}
+            and review.get("visual_identity_verified") is True
+            and timestamp(review.get("reviewed_at")) is not None
+            for o in product_offers(p, catalog)
+        )
+    return purchasable_offer(p, catalog) is not None
 
 
 def price_expiry(o: Mapping[str, Any]) -> datetime | None:
@@ -447,11 +472,39 @@ def route_links(p: Mapping[str, Any], *, current_slug: str | None = None) -> str
 
 
 def cta(
-    o: Mapping[str, Any], article: Mapping[str, Any], snapshot: str, placement: str
+    o: Mapping[str, Any],
+    article: Mapping[str, Any],
+    snapshot: str,
+    placement: str,
+    *,
+    listing_reference: bool = False,
 ) -> tuple[str, dict[str, str]]:
-    if placement not in PLACEMENTS or not eligible_link(o):
+    if placement not in PLACEMENTS:
         raise ValueError("PURCHASE_CTA_INELIGIBLE")
     resolved = resolve_offer(o)
+    if listing_reference:
+        href = (
+            (o.get("affiliate_url") or o.get("url"))
+            if resolved["affiliate_ready"]
+            else o.get("merchant_url")
+        )
+        if (
+            o.get("identity_verified") is not True
+            or not o.get("variant")
+            or o.get("condition") not in {"new", "UNKNOWN"}
+            or o.get("state") not in {"AVAILABLE", "PREORDER", "UNKNOWN", "SOLD_OUT"}
+            or not https(href)
+        ):
+            raise ValueError("PURCHASE_CTA_INELIGIBLE")
+        resolved = {
+            **resolved,
+            "href": href,
+            "link_purpose": "affiliate_purchase"
+            if resolved["affiliate_ready"]
+            else "merchant_purchase",
+        }
+    elif not eligible_link(o):
+        raise ValueError("PURCHASE_CTA_INELIGIBLE")
     binding = {
         k: str(v)
         for k, v in {
@@ -459,7 +512,7 @@ def cta(
             "product_id": o["product_id"],
             "seller_id": o["seller_id"],
             "offer_id": o["offer_id"],
-            "cta_id": f"purchase-{article['post_id']}-{o['offer_id']}-{placement}",
+            "cta_id": f"purchase-{article.get('post_id') or article['slug']}-{o['offer_id']}-{placement}",
             "placement": placement,
             "snapshot_id": snapshot,
             "link_purpose": resolved["link_purpose"],
@@ -486,8 +539,15 @@ def cta(
         + '" rel="'
         + rel
         + '">'
-        + escape(tidy(o["seller"]))
-        + "で購入条件を見る</a>"
+        + (
+            "楽天で見る"
+            if listing_reference
+            and urlsplit(o.get("merchant_url", "")).hostname == "item.rakuten.co.jp"
+            else "販売先で見る"
+            if listing_reference
+            else escape(tidy(o["seller"])) + "で購入条件を見る"
+        )
+        + "</a>"
     )
     return link, {**binding, "href": resolved["href"]}
 
@@ -548,6 +608,18 @@ def offer_panel(
             '<p class="ps-price-status" role="status">本体価格・送料・必須品は販売先で確認してください。'
             "確認値は有効期限内に限り補助表示します。</p>"
         )
+        if o.get("condition_note"):
+            rows += (
+                '<p class="ps-condition-note">'
+                + escape(tidy(o["condition_note"]))
+                + "</p>"
+            )
+        if o.get("shipping_note"):
+            rows += (
+                '<p class="ps-shipping-note">'
+                + escape(tidy(o["shipping_note"]))
+                + "</p>"
+            )
         rows += (
             '<p class="ps-price-date">販売条件確認：<time datetime="'
             + escape(o["checked_at"])
@@ -601,6 +673,19 @@ def offer_panel(
             '<p class="ps-unavailable">販売先未確認。型番・構成・販売条件を照合できるまで、購入先の案内を保留しています。</p>'
         )
     return "".join(parts), bindings
+
+
+def reference_price_markup(
+    product: Mapping[str, Any], offer: Mapping[str, Any], now: datetime
+) -> str:
+    """Emit inert, snapshot-bound price data; readable amounts are clock-owned."""
+    ref = reference_price(offer, product, now)
+    data: dict[str, object] = {"class": "ps-reference-price", "role": "status"}
+    if ref is not None:
+        data["data-ps-reference-price"] = canonical(
+            {**ref, "seller": offer["seller"], "seller_id": offer["seller_id"]}
+        )
+    return "<p" + attrs(data) + ">価格は販売先で確認</p>"
 
 
 def next_check_date(
@@ -971,6 +1056,12 @@ def resolve_product_media(
         if len(records) != 1 or review.get("basis") != "RAKUTEN_GENERATED_VERBATIM":
             raise ValueError("PURCHASE_MEDIA_IDENTITY_REQUIRED")
         record = records[0]
+        if review.get("display_purpose") == "verified_listing_reference" and (
+            review.get("listing_url") != record.get("item_url")
+            or review.get("visual_identity_verified") is not True
+            or not timestamp(review.get("reviewed_at"))
+        ):
+            raise ValueError("PURCHASE_MEDIA_LISTING_REVIEW_REQUIRED")
         if sha256(canonical(record).encode()).hexdigest() != review.get(
             "record_sha256"
         ):
@@ -1062,6 +1153,13 @@ def render_product_media(
             + "</div>"
         )
         bindings.append({**binding, "href": source["href"]})
+    if article.get("commerce_presentation") in {"images_and_links", "comparison_rows"}:
+        parts.append(
+            "<figcaption>"
+            + escape(product.get("image_review", {}).get("caption", product["name"]))
+            + "（広告）</figcaption></figure>"
+        )
+        return "".join(parts), bindings
     parts.append(
         "<figcaption>広告リンク：楽天市場（"
         + escape(tidy(media["shop_name"]))
@@ -1106,7 +1204,11 @@ def condition_summary(
         )
     elif verified:
         parts.append(
-            "確認した販売先は売り切れ・再入荷待ち（"
+            (
+                "確認した販売先は売り切れ（"
+                if all(o.get("state") == "SOLD_OUT" for o in verified)
+                else "販売条件の一部を確認中（"
+            )
             + jp_date(max(o["checked_at"] for o in verified))
             + "確認）"
         )
@@ -1334,7 +1436,7 @@ def render_comparison(
             link = internal_link(
                 "#ps-seller-" + p["anchor"],
                 p["product_id"],
-                "確認した販売先は売り切れ・再入荷待ち。確認日と販売条件を見る",
+                "販売状態と確認条件を見る",
             )
         else:
             link = (
@@ -1542,7 +1644,7 @@ def render_comparison(
     out.append(
         '<section id="ps-evidence"><h2>必要な詳細と出典</h2><p>性能の評価に価格や広告報酬を加点しません。購入費用は用途・予算に合う候補を選ぶために別に比較します。掲載候補は市場全体の順位ではありません。</p><details><summary>仕様の確認元・適用条件</summary>'
     )
-    for p in products:
+    for p in products + supplementary:
         seen = set()
         out.append("<h3>" + escape(p["name"]) + "</h3><ul>")
         for f in p["facts"]:
@@ -1595,7 +1697,12 @@ def render_comparison(
         out[1] = (
             '<p class="ps-disclosure">この記事にアフィリエイトリンクはありません。実機で使用した評価ではなく、型番ごとの公式情報に基づく比較です。</p>'
         )
-    return contain_editorial_tables("".join(out)), bindings
+    html = contain_editorial_tables("".join(out))
+    if article.get("commerce_presentation") == "comparison_rows":
+        return integrate_product_rows(
+            html, article, catalog, snapshot, product_media, now, bindings
+        )
+    return html, bindings
 
 
 def legacy_source_notes(
@@ -2161,9 +2268,16 @@ def add_compatibility_anchors(
             "article",
             "li",
             "aside",
+            "tr",
+            "span",
         }:
             raise ValueError("PURCHASE_LEGACY_ALIAS_TARGET_INVALID")
         section = targets[0]
+        if section.tag == "tr":
+            cells = section.find(tag="th")
+            if not cells or cells[0].attrs.get("scope") != "row":
+                raise ValueError("PURCHASE_LEGACY_ALIAS_TARGET_INVALID")
+            section = cells[0]
         alias = Element(
             "span",
             {"id": identity, "data-ps-content-alias": target_id, "tabindex": "-1"},
@@ -2282,6 +2396,632 @@ def render_hub(
     return root.html()
 
 
+def render_curated_commerce(
+    template: str,
+    article: Mapping[str, Any],
+    catalog: Mapping[str, Any],
+    snapshot: str,
+    product_media: Mapping[str, Any] | None,
+    now: datetime,
+) -> tuple[str, list[dict[str, str]], dict[str, str]]:
+    """Bind one authored commerce section to the common product and offer records."""
+    root = fragment(template)
+    if article.get("row_products") is not None:
+        containers = [node for node in root.children if isinstance(node, Element)]
+        if len(containers) != 1:
+            raise ValueError("PURCHASE_CURATED_ROOT_REQUIRED")
+        container = containers[0]
+        if not container.has("ps-article"):
+            container.attrs["class"] = (
+                container.attrs.get("class") or ""
+            ) + " ps-article"
+        notices = [
+            node
+            for node in container.find(tag="p")
+            if node.text().startswith("広告")
+            or node.has("std-disclosure")
+            or node.has("sc-disclosure")
+            or node.has("lg-disclosure")
+        ]
+        if not notices:
+            notice = block('<p class="ps-disclosure">公式資料による比較です。</p>')
+            container.children.insert(0, notice)
+            notice.parent = container
+            notices = [notice]
+        if len(notices) != 1:
+            raise ValueError("PURCHASE_CURATED_DISCLOSURE_REQUIRED")
+        if not notices[0].has("ps-disclosure"):
+            notices[0].attrs["class"] = (
+                notices[0].attrs.get("class") or ""
+            ) + " ps-disclosure"
+    targets = [
+        n
+        for n in root.find(tag="section")
+        if n.attrs.get("id") == article["commerce_anchor"]
+    ]
+    if len(targets) != 1:
+        raise ValueError("PURCHASE_CURATED_ANCHOR_REQUIRED")
+    target = targets[0]
+    if article.get("commerce_presentation") == "comparison_rows":
+        return bind_comparison_rows(
+            root, target, article, catalog, snapshot, product_media, now
+        )
+    target.children.clear()
+    target.append(block("<h2>商品画像と販売先</h2>"))
+    cards = Element("div", {"class": "ps-product-grid"})
+    target.append(cards)
+    bindings: list[dict[str, str]] = []
+    media: dict[str, str] = {}
+    for pid in article["product_ids"]:
+        product = next(p for p in catalog["products"] if p["product_id"] == pid)
+        card = Element(
+            "section",
+            {"class": "ps-product", "id": product["anchor"], "data-ps-product": pid},
+        )
+        card.append(block("<h3>" + escape(product["name"]) + "</h3>"))
+        if product_media is not None and media_allowed(product, catalog):
+            markup, links = render_product_media(
+                product, article, snapshot, product_media[pid]
+            )
+            card.append(
+                Element(
+                    "div", {"class": "ps-product-media", "data-ps-media-product": pid}
+                )
+            )
+            media[pid] = markup
+            bindings.extend(links)
+        if article.get("commerce_presentation") == "images_and_links":
+            matching = [
+                o
+                for o in product_offers(product, catalog)
+                if o.get("merchant_url")
+                == product.get("image_review", {}).get("listing_url")
+            ]
+            if len(matching) != 1 or not media_allowed(product, catalog):
+                raise ValueError("PURCHASE_CURATED_LISTING_REQUIRED")
+            link, binding = cta(
+                matching[0], article, snapshot, "product_card", listing_reference=True
+            )
+            card.append(block("<p>" + link + "</p>"))
+            bindings.append(binding)
+        else:
+            seller, links = offer_panel(
+                product, catalog, article, snapshot, "product_card", now=now
+            )
+            bindings.extend(links)
+            card.append(
+                block(
+                    "<details><summary>販売状況と条件</summary>" + seller + "</details>"
+                )
+            )
+        card.append(
+            block(
+                '<p><a href="'
+                + escape(product["official_url"], quote=True)
+                + '" data-raos-link-purpose="official_verify">公式の仕様を見る</a></p>'
+            )
+        )
+        cards.append(card)
+    return contain_editorial_tables(root.html()), bindings, media
+
+
+def row_commerce(
+    product: Mapping[str, Any],
+    article: Mapping[str, Any],
+    catalog: Mapping[str, Any],
+    snapshot: str,
+    product_media: Mapping[str, Any] | None,
+    now: datetime,
+) -> tuple[str, str, list[dict[str, str]], dict[str, str]]:
+    """One product's image and seller, independent of table shape or stock state.
+
+    Selection follows an explicit offer id, the reviewed image listing, then the
+    catalog's editorial order. Neither commission nor the amount orders offers.
+    A missing photo does not remove an independently verified seller link.
+    """
+    pid = product["product_id"]
+    media: dict[str, str] = {}
+    bindings: list[dict[str, str]] = []
+    photo = ""
+    if (
+        product_media is not None
+        and media_allowed(product, catalog)
+        and pid not in article.get("media_exclusions", {})
+    ):
+        media[pid], links = render_product_media(
+            product, article, snapshot, product_media[pid]
+        )
+        bindings.extend(links)
+        photo = (
+            '<div class="ps-product-media" data-ps-media-product="'
+            + escape(pid, quote=True)
+            + '"></div>'
+        )
+    offers = product_offers(product, catalog)
+    explicit = product.get("display_offer_id")
+    if explicit:
+        offers = [offer for offer in offers if offer["offer_id"] == explicit]
+        if len(offers) != 1:
+            raise ValueError("PURCHASE_ROW_DISPLAY_OFFER_INVALID")
+    else:
+        listing = product.get("image_review", {}).get("listing_url")
+        offers = sorted(offers, key=lambda offer: offer.get("merchant_url") != listing)
+    seller = ""
+    for offer in offers:
+        if offer.get("product_model") != product["exact_model"]:
+            raise ValueError("PURCHASE_ROW_OFFER_MODEL_MISMATCH")
+        if (
+            offer.get("identity_verified") is not True
+            or offer.get("condition") not in {"new", "UNKNOWN"}
+            or offer.get("state")
+            not in {"AVAILABLE", "PREORDER", "SOLD_OUT", "UNKNOWN"}
+            or not offer.get("variant")
+        ):
+            continue
+        link, binding = cta(
+            offer, article, snapshot, "comparison_table", listing_reference=True
+        )
+        seller = reference_price_markup(product, offer, now)
+        seller += "<p>" + link + "</p>"
+        if article.get("row_products") is not None:
+            seller += (
+                '<details class="ps-row-variant"><summary>色・構成を確認</summary><p>'
+                + escape(tidy(offer["variant"]))
+                + "</p></details>"
+            )
+        bindings.append(binding)
+        break
+    if not seller:
+        seller = (
+            '<p class="ps-reference-price" role="status">価格は確認中</p><p><a href="'
+            + escape(product["official_url"], quote=True)
+            + '" data-raos-link-purpose="official_verify">公式の商品情報を見る</a></p>'
+        )
+    return photo, seller, bindings, media
+
+
+def row_fact_cell(product: Mapping[str, Any], labels: list[str]) -> str:
+    parts = []
+    for label in labels:
+        facts = [fact for fact in product["facts"] if fact["label"] == label]
+        if len(facts) > 1:
+            raise ValueError("PURCHASE_ROW_FACT_DUPLICATE")
+        fact = facts[0] if facts else None
+        source = ""
+        if fact:
+            source_id, number = fact_reference(product, fact)
+            source = (
+                '<sup class="ps-reference"><a href="#'
+                + escape(source_id, quote=True)
+                + '" aria-label="'
+                + escape(product["name"] + "：" + label + "の出典", quote=True)
+                + '">['
+                + str(number)
+                + "]</a></sup>"
+            )
+        parts.append(
+            '<div class="ps-row-fact" data-ps-fact-state="'
+            + escape(fact["state"] if fact else "UNKNOWN", quote=True)
+            + '"><span class="ps-row-fact-label">'
+            + escape(label)
+            + "</span>"
+            + escape(tidy(fact["text"] if fact else "未確認（追加調査中）"))
+            + source
+            + "</div>"
+        )
+    return "".join(parts)
+
+
+def comparison_row_columns(article: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Category axes are data references; future articles use rows by default."""
+    columns = article.get("comparison_row_columns")
+    if columns is None:
+        columns = [{"heading": "仕様", "fact_labels": article["spec_labels"]}]
+    if (
+        not isinstance(columns, list)
+        or not 1 <= len(columns) <= 4
+        or any(
+            not isinstance(column, dict)
+            or not isinstance(column.get("heading"), str)
+            or not column["heading"].strip()
+            or not isinstance(column.get("fact_labels"), list)
+            or not column["fact_labels"]
+            or any(
+                not isinstance(label, str) or not label
+                for label in column["fact_labels"]
+            )
+            for column in columns
+        )
+    ):
+        raise ValueError("PURCHASE_ROW_COLUMNS_INVALID")
+    labels = [label for column in columns for label in column["fact_labels"]]
+    if len(labels) != len(set(labels)) or not set(article["spec_labels"]) <= set(
+        labels
+    ):
+        raise ValueError("PURCHASE_ROW_FACT_COVERAGE_INVALID")
+    return columns
+
+
+def integrate_product_rows(
+    html: str,
+    article: Mapping[str, Any],
+    catalog: Mapping[str, Any],
+    snapshot: str,
+    product_media: Mapping[str, Any] | None,
+    now: datetime,
+    bindings: list[dict[str, str]],
+) -> tuple[str, list[dict[str, str]]]:
+    """Project the same facts and authored rationale into one shared row format.
+
+    Existing editorial sections and source ids remain. Only the main comparison
+    and its duplicate image/seller placements move; supplementary scope remains
+    separate. All purchase amounts still use the clock-owned renderer.
+    """
+    root = fragment(html)
+    table = root.find(cls="ps-comparison")
+    if len(table) != 1 or table[0].parent is None:
+        raise ValueError("PURCHASE_ROW_MAIN_TABLE_REQUIRED")
+    scroll = table[0].parent
+    scroll.attrs["class"] = "ps-table-scroll ps-row-scroll"
+    for controls in root.find(cls="ps-pair-controls"):
+        controls.remove()
+    columns = comparison_row_columns(article)
+    headings = "".join(
+        '<th scope="col">' + escape(c["heading"]) + "</th>" for c in columns
+    )
+    markup = (
+        '<table class="ps-row-comparison" data-ps-spec-columns="'
+        + str(len(columns))
+        + '"><caption>商品・仕様・参考価格を横に比較</caption><thead><tr>'
+        + '<th scope="col">商品・写真</th>'
+        + headings
+        + '<th scope="col">参考価格・販売先</th></tr></thead><tbody></tbody></table>'
+    )
+    replacement = block(markup)
+    table[0].insert_before(replacement)
+    table[0].remove()
+    tbody = replacement.find(tag="tbody")[0]
+    by_id = {p["product_id"]: p for p in catalog["products"]}
+    new_bindings: list[dict[str, str]] = []
+    for pid in article["product_ids"]:
+        product = by_id[pid]
+        cards = [
+            node
+            for node in root.find(cls="ps-product")
+            if node.attrs.get("id") == product["anchor"]
+        ]
+        panels = [
+            node
+            for node in root.find(cls="ps-product-offers")
+            if node.attrs.get("id") == "ps-seller-" + product["anchor"]
+        ]
+        if len(cards) != 1 or len(panels) != 1:
+            raise ValueError("PURCHASE_ROW_EXISTING_ANCHORS_REQUIRED")
+        card, panel = cards[0], panels[0]
+        card.attrs["id"] = "ps-reason-" + product["anchor"]
+        for duplicate in (
+            card.find(cls="ps-product-media")
+            + card.find(cls="ps-media-withheld")
+            + card.find(cls="ps-offer-link")
+            + panel.find(cls="ps-offer-link")
+        ):
+            duplicate.remove()
+        reasons = Element("details", {"class": "ps-row-reasons"})
+        reasons.append(
+            block(
+                "<summary>" + escape(product["name"]) + "が向く条件・注意点</summary>"
+            )
+        )
+        card.insert_before(reasons)
+        reasons.append(card)
+        photo, seller, links, _ = row_commerce(
+            product, article, catalog, snapshot, product_media, now
+        )
+        new_bindings.extend(links)
+        row = block(
+            '<tr id="'
+            + escape(product["anchor"], quote=True)
+            + '" data-product-id="'
+            + escape(pid, quote=True)
+            + '">'
+            + '<th scope="row" class="ps-row-identity"><strong>'
+            + escape(product["name"])
+            + '</strong><small class="ps-row-model">'
+            + escape(product.get("model_number") or product["exact_model"])
+            + "</small>"
+            + photo
+            + ('<p class="ps-row-image-pending">画像は確認中</p>' if not photo else "")
+            + "</th>"
+            + "".join(
+                "<td>" + row_fact_cell(product, column["fact_labels"]) + "</td>"
+                for column in columns
+            )
+            + '<td class="ps-row-offer">'
+            + seller
+            + "</td></tr>"
+        )
+        condition_details = Element("details", {"class": "ps-row-conditions"})
+        condition_details.append(block("<summary>送料・必要なもの・保証</summary>"))
+        condition_details.append(panel)
+        row.find(tag="td")[-1].append(condition_details)
+        tbody.append(row)
+    # A separately scoped configuration uses the same row commerce without
+    # adding it to the main comparison count or discarding its old bookmarks.
+    extras = article.get("supplementary_product_ids", [])
+    if extras:
+        supplementary = root.find(cls="ps-supplementary")[0]
+        extra_table = block(
+            '<div class="ps-table-scroll ps-row-scroll" tabindex="0" role="region"'
+            ' aria-label="主比較とは別の構成"><table class="ps-row-comparison"'
+            ' data-ps-spec-columns="1"><caption>主比較とは別の構成</caption>'
+            '<thead><tr><th scope="col">商品・写真</th><th scope="col">構成と仕様</th>'
+            '<th scope="col">参考価格・販売先</th></tr></thead><tbody></tbody></table></div>'
+        )
+        supplementary.append(extra_table)
+        for pid in extras:
+            product = by_id[pid]
+            card = next(
+                node
+                for node in supplementary.find(tag="article")
+                if node.attrs.get("id") == product["anchor"]
+            )
+            panel = card.find(cls="ps-product-offers")[0]
+            for link in panel.find(cls="ps-offer-link"):
+                link.remove()
+            card.attrs["id"] = "ps-reason-" + product["anchor"]
+            photo, seller, links, _ = row_commerce(
+                product, article, catalog, snapshot, product_media, now
+            )
+            new_bindings.extend(links)
+            row = block(
+                '<tr id="'
+                + escape(product["anchor"], quote=True)
+                + '" data-product-id="'
+                + escape(pid, quote=True)
+                + '" data-ps-supplementary="true"><th scope="row"><strong>'
+                + escape(product["name"])
+                + '</strong><small class="ps-row-model">'
+                + escape(product["exact_model"])
+                + "</small>"
+                + photo
+                + "</th><td>"
+                + row_fact_cell(product, [f["label"] for f in product["facts"]])
+                + '</td><td class="ps-row-offer">'
+                + seller
+                + "</td></tr>"
+            )
+            reasons = block(
+                '<details class="ps-row-reasons"><summary>この構成の注意点</summary></details>'
+            )
+            reasons.append(card)
+            row.find(tag="td")[0].append(reasons)
+            conditions = block(
+                '<details class="ps-row-conditions"><summary>送料・必要なもの・保証</summary></details>'
+            )
+            conditions.append(panel)
+            row.find(tag="td")[-1].append(conditions)
+            extra_table.find(tag="tbody")[0].append(row)
+    # Move the old offer section's bookmark to the table; explanatory text stays
+    # collapsed with the conditions, rather than leaving an empty lower gallery.
+    old_offers = [
+        node for node in root.find(tag="section") if node.attrs.get("id") == "ps-offers"
+    ]
+    if len(old_offers) != 1:
+        raise ValueError("PURCHASE_ROW_OFFERS_ANCHOR_REQUIRED")
+    offer_notes = old_offers[0]
+    offer_notes.attrs.pop("id")
+    for heading in offer_notes.find(tag="h2"):
+        heading.remove()
+    details = Element("details", {"class": "ps-row-price-notes"})
+    details.append(block("<summary>参考価格と購入費用について</summary>"))
+    details.append(offer_notes)
+    offer_table = Element("section", {"id": "ps-offers"})
+    scroll.insert_before(offer_table)
+    offer_table.append(scroll)
+    offer_table.append(details)
+    remaining_ids = {node.attrs.get("data-raos-cta-id") for node in root.walk()}
+    kept = [binding for binding in bindings if binding["cta_id"] in remaining_ids]
+    # Media lives in the separately hash-bound projection, so its new bindings
+    # are retained explicitly together with the generated row CTAs.
+    kept.extend(new_bindings)
+    disclosures = root.find(cls="ps-disclosure")
+    if disclosures and any(binding.get("affiliate") == "true" for binding in kept):
+        disclosures[0].children = [escape(DISCLOSURE)]
+    return root.html(), kept
+
+
+def bind_comparison_rows(
+    root: Element,
+    target: Element,
+    article: Mapping[str, Any],
+    catalog: Mapping[str, Any],
+    snapshot: str,
+    product_media: Mapping[str, Any] | None,
+    now: datetime,
+) -> tuple[str, list[dict[str, str]], dict[str, str]]:
+    """Keep authored specifications, bind each row to its own vetted commerce."""
+    row_products = article.get("row_products")
+    if row_products is not None:
+        keyed = {entry["key"]: entry["product_id"] for entry in row_products}
+        rows_by_key = [
+            row for row in target.find(tag="tr") if row.attrs.get("data-product-key")
+        ]
+        if (
+            len(keyed) != len(row_products)
+            or [row.attrs["data-product-key"] for row in rows_by_key] != list(keyed)
+            or list(keyed.values()) != article["product_ids"]
+        ):
+            raise ValueError("PURCHASE_COMPARISON_ROW_SCOPE_INVALID")
+        for row in rows_by_key:
+            key = str(row.attrs["data-product-key"])
+            pid = keyed[key]
+            if row.attrs.get("data-product-id", pid) != pid:
+                raise ValueError("PURCHASE_COMPARISON_ROW_SCOPE_INVALID")
+            row.attrs["data-product-id"] = pid
+            for node in row.walk():
+                classes = (node.attrs.get("class") or "").split()
+                for suffix, common in (
+                    ("-brand", "ps-row-brand"),
+                    ("-product-model", "ps-row-model"),
+                    ("-spec-label", "ps-row-spec-label"),
+                    ("-dimensions", "ps-row-dimensions"),
+                ):
+                    if (
+                        any(name.endswith(suffix) for name in classes)
+                        and common not in classes
+                    ):
+                        classes.append(common)
+                if classes:
+                    node.attrs["class"] = " ".join(classes)
+            for kind in ("media", "offer"):
+                slots = row.find(cls="ps-row-" + kind)
+                if len(slots) != 1 or slots[0].attrs.get("data-product-key") != key:
+                    raise ValueError("PURCHASE_COMPARISON_ROW_SLOT_INVALID")
+                slots[0].attrs["data-product-id"] = pid
+                slots[0].attrs.pop("data-ps-media-product", None)
+        for table in target.find(tag="table"):
+            if not any(
+                row.attrs.get("data-product-key") for row in table.find(tag="tr")
+            ):
+                continue
+            heads = table.find(tag="thead")[0].find(tag="th")
+            if not 3 <= len(heads) <= 6 or table.parent is None:
+                raise ValueError("PURCHASE_ROW_COLUMNS_INVALID")
+            table.attrs["class"] = "ps-row-comparison"
+            for colgroup in table.find(tag="colgroup"):
+                colgroup.remove()
+            table.attrs["data-ps-spec-columns"] = str(len(heads) - 2)
+            table.parent.attrs["class"] = "ps-table-scroll ps-row-scroll"
+    rows = [r for r in target.find(tag="tr") if r.attrs.get("data-product-id")]
+    if [r.attrs["data-product-id"] for r in rows] != article["product_ids"]:
+        raise ValueError("PURCHASE_COMPARISON_ROW_SCOPE_INVALID")
+    bindings: list[dict[str, str]] = []
+    media: dict[str, str] = {}
+    for row in rows:
+        pid = str(row.attrs["data-product-id"])
+        product = next(p for p in catalog["products"] if p["product_id"] == pid)
+        photos = row.find(
+            cls="ps-row-media" if row_products is not None else "compact-product-media"
+        )
+        sellers = row.find(
+            cls="ps-row-offer" if row_products is not None else "compact-product-offer"
+        )
+        if (
+            len(photos) != 1
+            or len(sellers) != 1
+            or any(
+                node.attrs.get("data-product-id") != pid for node in photos + sellers
+            )
+        ):
+            raise ValueError("PURCHASE_COMPARISON_ROW_SLOT_INVALID")
+        photos[0].children.clear()
+        sellers[0].children.clear()
+        photo, seller, links, images = row_commerce(
+            product, article, catalog, snapshot, product_media, now
+        )
+        if photo:
+            photos[0].append(block(photo))
+        for child in list(fragment(seller).children):
+            sellers[0].append(child)
+        bindings.extend(links)
+        media.update(images)
+    if row_products is not None:
+        notice = root.find(cls="ps-disclosure")[0]
+        notice.children = [
+            "広告：この記事にはアフィリエイトリンクが含まれます。広告報酬で評価・掲載順を決めません。"
+            if any(binding.get("affiliate") == "true" for binding in bindings)
+            else "この記事にアフィリエイトリンクはありません。公式資料による比較で、実機試験ではありません。"
+        ]
+    return (
+        contain_editorial_tables(root.html())
+        if row_products is not None
+        else root.html(),
+        bindings,
+        media,
+    )
+
+
+def bind_guide_purchase_slots(
+    html: str,
+    article: Mapping[str, Any],
+    catalog: Mapping[str, Any],
+    snapshot: str,
+    product_media: Mapping[str, Any] | None,
+    now: datetime,
+) -> tuple[str, list[dict[str, str]], dict[str, str]]:
+    """Attach reviewed purchase information to existing model sections only."""
+    slots = article.get("purchase_slots", [])
+    if not slots:
+        return html, [], {}
+    if article["kind"] != "guide" or len(slots) > 4:
+        raise ValueError("PURCHASE_GUIDE_SLOT_SCOPE_INVALID")
+    root = fragment(html)
+    bindings: list[dict[str, str]] = []
+    media: dict[str, str] = {}
+    seen: set[str] = set()
+    for slot in slots:
+        pid = slot["product_id"]
+        if pid in seen:
+            raise ValueError("PURCHASE_GUIDE_SLOT_DUPLICATE")
+        seen.add(pid)
+        products = [p for p in catalog["products"] if p["product_id"] == pid]
+        if len(products) != 1:
+            raise ValueError("PURCHASE_GUIDE_SLOT_PRODUCT_INVALID")
+        product = products[0]
+        sections = [
+            n
+            for n in root.find(cls="ps-guide-model")
+            if n.attrs.get("id") == product["anchor"]
+        ]
+        if len(sections) != 1:
+            raise ValueError("PURCHASE_GUIDE_SLOT_MODEL_REQUIRED")
+        section = sections[0]
+        seller, links = offer_panel(
+            product, catalog, article, snapshot, "product_card", now=now
+        )
+        bindings.extend(links)
+        markup = (
+            '<div class="ps-guide-purchase" data-ps-product="'
+            + escape(pid, quote=True)
+            + '">'
+        )
+        if (
+            product_media is not None
+            and media_allowed(product, catalog)
+            and pid not in article.get("media_exclusions", {})
+        ):
+            media[pid], image_links = render_product_media(
+                product, article, snapshot, product_media[pid]
+            )
+            bindings.extend(image_links)
+            markup += (
+                '<div class="ps-product-media" data-ps-media-product="'
+                + escape(pid, quote=True)
+                + '"></div>'
+            )
+        markup += (
+            "<details><summary>販売先と購入条件</summary>" + seller + "</details></div>"
+        )
+        inserted = next(n for n in fragment(markup).children if isinstance(n, Element))
+        if slot.get("position") == "before_routes":
+            targets = section.find(cls="ps-model-routes-block")
+            if len(targets) != 1:
+                raise ValueError("PURCHASE_GUIDE_SLOT_ROUTE_REQUIRED")
+            targets[0].insert_before(inserted)
+        elif slot.get("position") == "after_identity":
+            paragraphs = [
+                n for n in section.children if isinstance(n, Element) and n.tag == "p"
+            ]
+            if not paragraphs:
+                raise ValueError("PURCHASE_GUIDE_SLOT_IDENTITY_REQUIRED")
+            index = section.children.index(paragraphs[0]) + 1
+            inserted.parent = section
+            section.children.insert(index, inserted)
+        else:
+            raise ValueError("PURCHASE_GUIDE_SLOT_POSITION_INVALID")
+    return root.html(), bindings, media
+
+
 def compile_articles(
     catalog: Mapping[str, Any],
     templates: Mapping[str, str],
@@ -2311,7 +3051,11 @@ def compile_articles(
                 a, catalog, template, snapshot, product_media, now=now
             )
             if product_media is not None:
-                for pid in a["product_ids"]:
+                for pid in a["product_ids"] + (
+                    a.get("supplementary_product_ids", [])
+                    if a.get("commerce_presentation") == "comparison_rows"
+                    else []
+                ):
                     product = next(
                         p for p in catalog["products"] if p["product_id"] == pid
                     )
@@ -2322,8 +3066,15 @@ def compile_articles(
                     display_media[pid], _ = render_product_media(
                         product, a, snapshot, product_media[pid]
                     )
+        elif a["kind"] == "curated_comparison":
+            html, bindings, display_media = render_curated_commerce(
+                template, a, catalog, snapshot, product_media, now
+            )
         elif a["kind"] == "guide":
             html = render_guide(a, catalog, guide_registry, template, now=now)
+            html, bindings, display_media = bind_guide_purchase_slots(
+                html, a, catalog, snapshot, product_media, now
+            )
         elif a["kind"] == "hub":
             html = render_hub(a, catalog, template, now=now)
         else:

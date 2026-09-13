@@ -44,6 +44,16 @@ MEDIA_EVIDENCE_INPUT_PATH: Final = (
     ROOT / "changes/wordpress-direct-publish-v1/official-media-sources.md"
 )
 TEMPLATE_INPUT_PATHS: Final = (
+    *(
+        ROOT / "changes/reader-purchase-support-v1/articles" / (slug + ".html")
+        for slug in (
+            "standard-dishwasher-comparison",
+            "large-dishwasher-comparison",
+            "small-carry-on-suitcase-comparison",
+        )
+    ),
+    ROOT
+    / "changes/reader-purchase-support-v1/articles/compact-dishwasher-comparison.html",
     ROOT
     / "changes/reader-purchase-support-v1/articles/countertop-dishwasher-for-small-households.html",
     ROOT
@@ -77,6 +87,16 @@ TEMPLATE_INPUT_PATHS: Final = (
     / "changes/reader-purchase-support-v1/articles/anker-solix-c300-c800-c1000-differences.html",
 )
 ARTICLE_OUTPUT_PATHS: Final = (
+    *(
+        ROOT / "changes/wordpress-direct-publish-v1/articles" / (slug + ".html")
+        for slug in (
+            "standard-dishwasher-comparison",
+            "large-dishwasher-comparison",
+            "small-carry-on-suitcase-comparison",
+        )
+    ),
+    ROOT
+    / "changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html",
     ROOT
     / "changes/wordpress-direct-publish-v1/articles/countertop-dishwasher-for-small-households.html",
     ROOT

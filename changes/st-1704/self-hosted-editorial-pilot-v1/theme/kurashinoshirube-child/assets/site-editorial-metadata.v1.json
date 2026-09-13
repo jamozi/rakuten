@@ -21,7 +21,7 @@
         "05721",
         "01471"
       ],
-      "has_ads": false
+      "has_ads": true
     },
     "carry-on-suitcase-under-100-seats": {
       "category": "travel",
@@ -44,7 +44,7 @@
         "06910",
         "60524（新仕様・USBポートなし）"
       ],
-      "has_ads": false
+      "has_ads": true
     },
     "lightweight-carry-on-suitcase-under-3kg": {
       "category": "travel",
@@ -90,7 +90,7 @@
         "01551",
         "60561"
       ],
-      "has_ads": false
+      "has_ads": true
     },
     "countertop-dishwasher-for-small-households": {
       "category": "kitchen",
@@ -134,7 +134,7 @@
         "NP-TMLK1-K",
         "TK-MDW22B"
       ],
-      "has_ads": false
+      "has_ads": true
     },
     "dishwasher-installation-measurement": {
       "category": "kitchen",
@@ -314,7 +314,7 @@
         "A1761",
         "A17635Z1 / A1763521"
       ],
-      "has_ads": false
+      "has_ads": true
     }
   },
   "home_product_media": null

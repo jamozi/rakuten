@@ -739,6 +739,16 @@
       "slug": "dishwasher-branch-faucet-guide",
       "excerpt": "毎回の注水を省きたい方へ。卓上食洗機を分岐水栓で使う前に、蛇口の適合、住まいと置き場所、部品・工事費を確認します。",
       "body_source": "changes/wordpress-direct-publish-v1/articles/dishwasher-branch-faucet-guide.html"
+    },
+    {
+      "article_key": "small-carry-on-suitcase-comparison",
+      "mode": "new",
+      "post_id": null,
+      "post_type": "post",
+      "slug": "small-carry-on-suitcase-comparison",
+      "title": "小型・機内持ち込みスーツケース比較｜軽さ・開き方・移動で選ぶ",
+      "excerpt": "小型スーツケース12モデルを、軽さ・開き方・移動のしやすさから比較します。便ごとの持ち込み条件と、型番別の仕様・販売先を確認できます。",
+      "body_source": "changes/wordpress-direct-publish-v1/articles/small-carry-on-suitcase-comparison.html"
     }
   ]
 }

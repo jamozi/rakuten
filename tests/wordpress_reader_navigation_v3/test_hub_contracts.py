@@ -36,12 +36,12 @@ class HubContracts(unittest.TestCase):
                 nav = next(
                     n
                     for n in doc.nodes
-                    if n.attrs.get("aria-label") == "このサイトの入口"
+                    if n.attrs.get("aria-label") in {"このサイトの入口", "パンくずリスト"}
                 )
                 html = doc.text[nav.start : nav.end]
                 self.assertIn('<a href="/">ホーム</a>', html)
                 self.assertIn(
-                    'aria-current="page">' + self.routes["/" + slug + "/"]["title"],
+                    'aria-current="page">' + {'travel': 'スーツケース', 'cleaning': 'ロボット掃除機', 'preparedness': 'ポータブル電源', 'without-installation': '工事なし'}.get(slug, self.routes['/' + slug + '/']['title']),
                     html,
                 )
                 if slug in DATA["categories"]:
@@ -53,7 +53,7 @@ class HubContracts(unittest.TestCase):
                     "comparisons",
                     "updates",
                 ):
-                    self.assertIn('href="/purposes/"', html)
+                    self.assertIn('href="/kitchen/"' if slug == "without-installation" else 'href="/purposes/"', html)
                 self.assertNotIn(
                     "<h1", doc.text
                 )  # WordPress page template owns the title.
@@ -61,8 +61,8 @@ class HubContracts(unittest.TestCase):
     def test_public_policy_explains_actual_advertising_without_release_markers(self):
         for slug, doc in self.pages.items():
             with self.subTest(slug=slug):
-                self.assertIn("記事ごとの広告表示は実際のリンクに基づきます", doc.text)
-                self.assertIn("掲載順・評価は報酬条件と切り離しています", doc.text)
+                self.assertIn('href="/about-ad-policy/"', doc.text)
+                self.assertIn('href="/comparison-policy/"', doc.text)
                 self.assertIn('aria-label="編集方針"', doc.text)
                 self.assertNotIn("data-reader-release=", doc.text)
 
@@ -70,7 +70,7 @@ class HubContracts(unittest.TestCase):
         records = META["articles"]
         checked = 0
         for doc in self.pages.values():
-            for card in (n for n in doc.nodes if n.tag == "article"):
+            for card in (n for n in doc.nodes if n.tag == "article" and "ks-editorial-card" in (n.attrs.get("class") or "").split()):
                 html = doc.text[card.start : card.end]
                 match = re.search(r'<h3><a href="/([^/]+)/', html)
                 if not match or match[1] not in records:

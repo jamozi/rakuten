@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from datetime import datetime, timedelta
 from math import isfinite
+import re
 from typing import Any, TypeGuard
 from urllib.parse import urlsplit
 
@@ -56,6 +57,85 @@ def money(value: object) -> TypeGuard[int | float]:
         and isfinite(value)
         and 0 <= value <= 1_000_000_000
     )
+
+
+def reference_price(
+    offer: Mapping[str, Any], product: Mapping[str, Any], now: datetime
+) -> dict[str, Any] | None:
+    """A dated base-unit observation, never a purchasability or total claim."""
+    ref = offer.get("reference_price")
+    if not isinstance(ref, Mapping):
+        return None
+    checked, deadline = (
+        timestamp(ref.get("checked_at")),
+        timestamp(ref.get("valid_until")),
+    )
+    amount = ref.get("amount_yen")
+    source = ref.get("source_url")
+    try:
+        parsed = urlsplit(source) if isinstance(source, str) else None
+    except ValueError:
+        return None
+    if (
+        ref.get("schema") != "RAOS_REFERENCE_PRICE_V1"
+        or ref.get("verified") is not True
+        or offer.get("identity_verified") is not True
+        or offer.get("condition") not in {"new", "UNKNOWN"}
+        or offer.get("state") not in {"AVAILABLE", "PREORDER", "SOLD_OUT", "UNKNOWN"}
+        or ref.get("product_id") != product.get("product_id")
+        or offer.get("product_id") != product.get("product_id")
+        or ref.get("exact_model") != product.get("exact_model")
+        or offer.get("product_model") != product.get("exact_model")
+        or not ref.get("variant")
+        or ref.get("variant") != offer.get("variant")
+        or not ref.get("variant_id")
+        or ref.get("variant_id") != offer.get("variant_id")
+        or not isinstance(amount, int)
+        or isinstance(amount, bool)
+        or not 0 < amount <= 1_000_000_000
+        or ref.get("currency") != "JPY"
+        or ref.get("tax_included") is not True
+        or ref.get("scope") != "base_unit"
+        or ref.get("pricing_basis") != "listed_sale_price"
+        or not isinstance(source, str)
+        or source != offer.get("merchant_url")
+        or not parsed
+        or parsed.scheme != "https"
+        or not parsed.hostname
+        or parsed.username
+        or parsed.password
+        or any(c.isspace() for c in source)
+        or not ref.get("source_locator")
+        or not re.fullmatch(r"[a-f0-9]{64}", str(ref.get("evidence_sha256", "")))
+        or not checked
+        or not deadline
+        or now.tzinfo is None
+        or checked > now
+        or deadline <= checked
+        or now >= min(deadline, checked + MAX_PRICE_AGE)
+    ):
+        return None
+    public_keys = (
+        "schema",
+        "verified",
+        "product_id",
+        "exact_model",
+        "variant",
+        "variant_id",
+        "amount_yen",
+        "currency",
+        "tax_included",
+        "scope",
+        "pricing_basis",
+        "source_url",
+        "source_locator",
+        "evidence_sha256",
+        "checked_at",
+    )
+    return {
+        **{key: ref[key] for key in public_keys},
+        "valid_until": min(deadline, checked + MAX_PRICE_AGE).isoformat(),
+    }
 
 
 def offer_cost(offer: Mapping[str, Any], now: datetime) -> dict[str, Any]:
@@ -144,7 +224,9 @@ def resolve_offer(offer: Mapping[str, Any]) -> dict[str, Any]:
         "link_purpose": (
             "affiliate_purchase"
             if href and ready
-            else "merchant_purchase" if href else "unavailable"
+            else "merchant_purchase"
+            if href
+            else "unavailable"
         ),
     }
 
@@ -153,8 +235,9 @@ def offer_states(offer: Mapping[str, Any], now: datetime) -> dict[str, str]:
     """Public evidence dimensions; incomplete totals do not disable an exact link."""
     resolved = resolve_offer(offer)
     # Price freshness alone, without confusing missing shipping with missing price.
-    checked, deadline = timestamp(offer.get("checked_at")), timestamp(
-        offer.get("valid_until")
+    checked, deadline = (
+        timestamp(offer.get("checked_at")),
+        timestamp(offer.get("valid_until")),
     )
     price = "UNKNOWN"
     if (
@@ -205,7 +288,9 @@ def budget_decision(offer: Mapping[str, Any], budget: object, now: datetime) -> 
     return (
         "UNKNOWN"
         if total is None
-        else "WITHIN_BUDGET" if total <= budget else "OVER_BUDGET"
+        else "WITHIN_BUDGET"
+        if total <= budget
+        else "OVER_BUDGET"
     )
 
 

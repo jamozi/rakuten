@@ -72,7 +72,10 @@ def _quantity(
 
 
 def render_cost_profiles(
-    article: Mapping[str, object], facts: Mapping[str, Mapping[str, object]]
+    article: Mapping[str, object],
+    facts: Mapping[str, Mapping[str, object]],
+    *,
+    model_labels: Mapping[str, str] | None = None,
 ) -> str:
     """Called only after the guide's official sources and references are validated.
 
@@ -160,7 +163,7 @@ def render_cost_profiles(
             "<tr"
             + attrs
             + '><th scope="row">'
-            + escape(model)
+            + escape((model_labels or {}).get(model, model))
             + "</th><td>"
             + escape(scope)
             + "</td><td>"

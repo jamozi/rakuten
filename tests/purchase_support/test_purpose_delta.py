@@ -154,7 +154,7 @@ def test_main_comparison_keeps_condition_links_and_no_inputs(catalog):
         if a.attrs.get("href", "").startswith("#product-")
     ]
     assert sorted(links) == sorted(anchors)
-    assert "data-ps-pair-options" in html[ps.MAIN_SLUG]
+    assert "data-ps-pair-options" not in html[ps.MAIN_SLUG]
     for slug in (
         "lightweight-carry-on-suitcase-under-3kg",
         "compact-robot-vacuum-shortlist",
@@ -172,10 +172,10 @@ def test_main_comparison_section_order_and_single_slots(catalog):
     order = [
         "ps-choose",
         "ps-specs",
+        "ps-offers",
         "ps-task-fit",
         "ps-products",
         "ps-installation-context",
-        "ps-offers",
         "ps-hold-reasons",
         "ps-guides",
         "ps-evidence",
@@ -201,20 +201,19 @@ def test_moved_facts_keep_value_state_and_source_in_open_detail_table(catalog):
     html, _ = compile(catalog)
     root = fragment(html[ps.MAIN_SLUG])
     tables = {t.attrs.get("class"): t for t in root.find(tag="table")}
-    main_table, detail = tables["ps-comparison"], tables["ps-installation-details"]
+    main_table, detail = tables["ps-row-comparison"], tables["ps-installation-details"]
     main_rows = [
-        r.find(tag="th")[0].text()
+        r.attrs["data-product-id"]
         for r in main_table.find(tag="tbody")[0].find(tag="tr")
     ]
+    assert (
+        main_rows
+        == next(a for a in catalog["articles"] if a["slug"] == ps.MAIN_SLUG)[
+            "product_ids"
+        ]
+    )
     detail_rows = [
         r.find(tag="th")[0].text() for r in detail.find(tag="tbody")[0].find(tag="tr")
-    ]
-    assert main_rows == [
-        "本体寸法（幅×奥行×高さ）",
-        "標準食器点数",
-        "乾燥・扉",
-        "給水方式",
-        "購入条件",
     ]
     assert detail_rows == ["公表使用水量（条件は機種別）", "開扉時の寸法", "必要な余白"]
     context = next(
@@ -411,11 +410,13 @@ def test_offer_panels_keep_identity_and_never_assert_current_totals(catalog):
         "bindings"
     ]
     kinds = {(b["link_purpose"], b["affiliate"]) for b in bindings}
-    assert ("merchant_purchase", "false") in kinds
+    assert kinds <= {("merchant_purchase", "false"), ("affiliate_purchase", "true")}
     assert ("affiliate_purchase", "true") in kinds
     for p in dishwashers(catalog):
         card = next(
-            n for n in root.find(tag="article") if n.attrs.get("id") == p["anchor"]
+            n
+            for n in root.find(tag="article")
+            if n.attrs.get("id") == "ps-reason-" + p["anchor"]
         )
         assert p["lead"] in card.text()
         assert all(item in card.text() for item in p["fit"] + p["avoid"])

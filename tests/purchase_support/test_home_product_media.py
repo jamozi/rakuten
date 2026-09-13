@@ -32,12 +32,13 @@ THEME = (
 
 
 def inputs():
+    # Keep the retired feature's integrity tests independent of current article
+    # media reviews. The live homepage uses anonymous lifestyle imagery.
+    fixture = json.loads(
+        (ROOT / "tests/purchase_support/fixtures/legacy-home-media.v1.json").read_text()
+    )
     return (
-        json.loads(
-            (
-                ROOT / "changes/reader-purchase-support-v1/purchase-support.v1.json"
-            ).read_text()
-        ),
+        fixture["catalog"],
         {
             "schema": SCHEMA,
             "post_id": 15,
@@ -45,7 +46,7 @@ def inputs():
             "slug": "home",
             "groups": {k: list(v) for k, v in GROUPS.items()},
         },
-        json.loads((THEME / "assets/rakuten-product-media.json").read_text()),
+        fixture["records"],
         (THEME / "assets/images/roomba-mini-official.jpg").read_bytes(),
     )
 

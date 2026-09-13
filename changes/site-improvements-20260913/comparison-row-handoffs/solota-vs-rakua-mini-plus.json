@@ -1,0 +1,120 @@
+{
+  "schema": "RAOS_COMMON_COMPARISON_ROW_HANDOFF_V1",
+  "publication_authorized": false,
+  "root_candidate_pending": true,
+  "immutable_snapshot": "acbef952bdefa03a2d2e",
+  "body_source": "changes/wordpress-direct-publish-v1/articles/solota-vs-rakua-mini-plus.html",
+  "runtime_article": {
+    "article_id": "solota-vs-rakua-mini-plus",
+    "slug": "solota-vs-rakua-mini-plus",
+    "post_type": "post",
+    "kind": "comparison",
+    "snapshot_id": "ps-0c623b5450b8dab25d871f8a8fb94c58",
+    "body_sha256": "06cbaa14f0d73616ac0d92e52281a45711d999ffe2dc94fe5808f11afd605859",
+    "bindings": [
+      {
+        "article_id": "solota-vs-rakua-mini-plus",
+        "product_id": "PRD-PANASONIC-NP-TMLK1",
+        "seller_id": "rakuten-emedama",
+        "offer_id": "image-PRD-PANASONIC-NP-TMLK1-300",
+        "cta_id": "purchase-image-PRD-PANASONIC-NP-TMLK1-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-0c623b5450b8dab25d871f8a8fb94c58",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "solota-vs-rakua-mini-plus",
+        "product_id": "PRD-PANASONIC-NP-TMLK1",
+        "seller_id": "rakuten-emedama",
+        "offer_id": "image-PRD-PANASONIC-NP-TMLK1-240",
+        "cta_id": "purchase-image-PRD-PANASONIC-NP-TMLK1-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-0c623b5450b8dab25d871f8a8fb94c58",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "solota-vs-rakua-mini-plus",
+        "product_id": "PRD-PANASONIC-NP-TMLK1",
+        "seller_id": "rakuten-emedama",
+        "offer_id": "rakuten-ui-solota-20260913",
+        "cta_id": "purchase-86-rakuten-ui-solota-20260913-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-0c623b5450b8dab25d871f8a8fb94c58",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "solota-vs-rakua-mini-plus",
+        "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
+        "seller_id": "rakuten-thanko",
+        "offer_id": "image-PRD-THANKO-RAKUA-MINI-PLUS-300",
+        "cta_id": "purchase-image-PRD-THANKO-RAKUA-MINI-PLUS-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-0c623b5450b8dab25d871f8a8fb94c58",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004055%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "solota-vs-rakua-mini-plus",
+        "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
+        "seller_id": "rakuten-thanko",
+        "offer_id": "image-PRD-THANKO-RAKUA-MINI-PLUS-240",
+        "cta_id": "purchase-image-PRD-THANKO-RAKUA-MINI-PLUS-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-0c623b5450b8dab25d871f8a8fb94c58",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004055%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "solota-vs-rakua-mini-plus",
+        "product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
+        "seller_id": "rakuten-thanko",
+        "offer_id": "rakuten-ui-mini-plus-20260913",
+        "cta_id": "purchase-86-rakuten-ui-mini-plus-20260913-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-0c623b5450b8dab25d871f8a8fb94c58",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004055%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      }
+    ],
+    "media": {
+      "PRD-PANASONIC-NP-TMLK1": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"solota-vs-rakua-mini-plus\" data-raos-product-id=\"PRD-PANASONIC-NP-TMLK1\" data-raos-seller-id=\"rakuten-emedama\" data-raos-offer-id=\"image-PRD-PANASONIC-NP-TMLK1-300\" data-raos-cta-id=\"purchase-image-PRD-PANASONIC-NP-TMLK1-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-0c623b5450b8dab25d871f8a8fb94c58\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1705.0f98d6cd.575e1706.95396c60/?me_id=1217830&item_id=11227174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Femedama%2Fcabinet%2F5769%2F4550719155769_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"solota-vs-rakua-mini-plus\" data-raos-product-id=\"PRD-PANASONIC-NP-TMLK1\" data-raos-seller-id=\"rakuten-emedama\" data-raos-offer-id=\"image-PRD-PANASONIC-NP-TMLK1-240\" data-raos-cta-id=\"purchase-image-PRD-PANASONIC-NP-TMLK1-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-0c623b5450b8dab25d871f8a8fb94c58\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1705.0f98d6cd.575e1706.95396c60/?me_id=1217830&item_id=11227174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Femedama%2Fcabinet%2F5769%2F4550719155769_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>NP-TMLK1-K／ブラック・本体（広告）</figcaption></figure>",
+      "PRD-THANKO-RAKUA-MINI-PLUS": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"solota-vs-rakua-mini-plus\" data-raos-product-id=\"PRD-THANKO-RAKUA-MINI-PLUS\" data-raos-seller-id=\"rakuten-thanko\" data-raos-offer-id=\"image-PRD-THANKO-RAKUA-MINI-PLUS-300\" data-raos-cta-id=\"purchase-image-PRD-THANKO-RAKUA-MINI-PLUS-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-0c623b5450b8dab25d871f8a8fb94c58\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004055%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005052&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother19%2Ftk-mdw22b-t11.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"solota-vs-rakua-mini-plus\" data-raos-product-id=\"PRD-THANKO-RAKUA-MINI-PLUS\" data-raos-seller-id=\"rakuten-thanko\" data-raos-offer-id=\"image-PRD-THANKO-RAKUA-MINI-PLUS-240\" data-raos-cta-id=\"purchase-image-PRD-THANKO-RAKUA-MINI-PLUS-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-0c623b5450b8dab25d871f8a8fb94c58\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004055%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005052&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother19%2Ftk-mdw22b-t11.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>TK-MDW22B／ブラック・本体（広告）</figcaption></figure>"
+    }
+  },
+  "price_ui_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
+  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/purchase-support.js",
+  "price_ui_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
+  "style_sources": [
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+      "sha256": "6df19139692f2440e251dfa2288dc29f676c6f24cc6fe828c99085ba08165a36"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
+      "sha256": "27f2a8d61f50f399c6c9f268391d4d9cefaae3edab354ae96a2ecec04033fd89"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.css",
+      "sha256": "e88803965fb86579df284bfa7516d1d0e05d5083547c07ccb01b8e9becf52013"
+    }
+  ],
+  "product_ids": [
+    "PRD-PANASONIC-NP-TMLK1",
+    "PRD-THANKO-RAKUA-MINI-PLUS"
+  ],
+  "supplementary_product_ids": [],
+  "row_products": null,
+  "missing_media": [],
+  "local_url": "http://127.0.0.1:41398/solota-vs-rakua-mini-plus/",
+  "shared_local_status": "PENDING_NEW_CANDIDATE",
+  "immutable_handoff": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/solota-vs-rakua-mini-plus.json"
+}

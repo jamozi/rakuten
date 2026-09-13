@@ -1,5 +1,5 @@
 <?php
-$fixture = json_decode(base64_decode($argv[3]), true);
+$fixture = json_decode(gzuncompress(base64_decode($argv[3], true)), true);
 $fixture['runtime'] = file_get_contents(dirname(dirname($argv[1])) . '/assets/purchase-support.v1.json');
 $mode = $argv[2] ?? 'valid';
 $fixture['theme'] = sys_get_temp_dir() . '/purchase-media-' . uniqid();

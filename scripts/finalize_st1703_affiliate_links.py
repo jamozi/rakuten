@@ -82,7 +82,7 @@ from raos.domain.editorial.self_hosted_wordpress import (  # noqa: E402
 
 OWNER_REPOSITORY_ROOT = Path("/home/minami/rakuten")
 OWNER_RESULT_STORE = OWNER_REPOSITORY_ROOT / ".secrets/rakuten-owner-local/results"
-OWNER_REQUEST_ROOT = OWNER_REPOSITORY_ROOT / ".secrets/rakuten-owner-local/requests"
+OWNER_REQUEST_ROOT = OWNER_REPOSITORY_ROOT / ".secrets/rakuten-owner-requests"
 MAX_FUTURE_SKEW = timedelta(minutes=5)
 MAX_JSON_DEPTH = 32
 MAX_JSON_NODES = 50_000

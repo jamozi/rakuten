@@ -1,0 +1,18 @@
+<article class="ps-article">
+  <p class="ps-disclosure">広告表示は生成時にリンクと一致させます。</p>
+  <p>確認済みの用途別の結論。</p>
+  <section id="product-comparison">
+    <h2>商品を比べる</h2>
+    <div class="ps-table-scroll ps-row-scroll" tabindex="0" role="region" aria-label="商品比較表">
+      <table>
+        <caption>同じ用途で比較する対象型番</caption>
+        <thead><tr><th scope="col">商品・写真</th><th scope="col">用途に必要な仕様</th><th scope="col">参考価格・販売先</th></tr></thead>
+        <tbody>
+          <tr data-product-key="model-a"><th scope="row">登録した商品名・型番A<div class="ps-row-media" data-product-key="model-a"></div></th><td>同一型番の出典つき仕様。未確認の理由も記載。</td><td><div class="ps-row-offer" data-product-key="model-a"></div></td></tr>
+          <tr data-product-key="model-b"><th scope="row">登録した商品名・型番B<div class="ps-row-media" data-product-key="model-b"></div></th><td>同一型番の出典つき仕様。未確認の理由も記載。</td><td><div class="ps-row-offer" data-product-key="model-b"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section id="comparison-sources"><h2>比較条件・出典</h2><p>比較範囲・確認元・確認日・注意点を記載。</p></section>
+</article>

@@ -1,0 +1,165 @@
+{
+  "schema": "RAOS_COMMON_COMPARISON_ROW_HANDOFF_V1",
+  "publication_authorized": false,
+  "root_candidate_pending": true,
+  "immutable_snapshot": "acbef952bdefa03a2d2e",
+  "body_source": "changes/wordpress-direct-publish-v1/articles/carry-on-suitcase-under-100-seats.html",
+  "runtime_article": {
+    "article_id": "carry-on-suitcase-under-100-seats",
+    "slug": "carry-on-suitcase-under-100-seats",
+    "post_type": "post",
+    "kind": "comparison",
+    "snapshot_id": "ps-42760fceb522b68ad224bc48e4ca3b35",
+    "body_sha256": "77df3c2f3991d617d85e0d281d2cfa892e9cc5ddf14c004b89d1bd6843e91245",
+    "bindings": [
+      {
+        "article_id": "carry-on-suitcase-under-100-seats",
+        "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-PROTECA-STARIA-CXR-02350-300",
+        "cta_id": "purchase-image-PRD-PROTECA-STARIA-CXR-02350-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-42760fceb522b68ad224bc48e4ca3b35",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F02350%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-under-100-seats",
+        "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-PROTECA-STARIA-CXR-02350-240",
+        "cta_id": "purchase-image-PRD-PROTECA-STARIA-CXR-02350-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-42760fceb522b68ad224bc48e4ca3b35",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F02350%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-under-100-seats",
+        "product_id": "PRD-PROTECA-STARIA-CXR-02350",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "rakuten-observed-proteca-staria-cxr-02350-ace-store",
+        "cta_id": "purchase-82-rakuten-observed-proteca-staria-cxr-02350-ace-store-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-42760fceb522b68ad224bc48e4ca3b35",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F02350%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-under-100-seats",
+        "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-PROTECA-FRESTER-EX-01550-300",
+        "cta_id": "purchase-image-PRD-PROTECA-FRESTER-EX-01550-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-42760fceb522b68ad224bc48e4ca3b35",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01550%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-under-100-seats",
+        "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-PROTECA-FRESTER-EX-01550-240",
+        "cta_id": "purchase-image-PRD-PROTECA-FRESTER-EX-01550-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-42760fceb522b68ad224bc48e4ca3b35",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01550%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-under-100-seats",
+        "product_id": "PRD-PROTECA-FRESTER-EX-01550",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "rakuten-observed-proteca-frester-ex-01550-ace-store",
+        "cta_id": "purchase-82-rakuten-observed-proteca-frester-ex-01550-ace-store-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-42760fceb522b68ad224bc48e4ca3b35",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01550%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-under-100-seats",
+        "product_id": "PRD-ACE-PALISADES3-Z-06910",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-ACE-PALISADES3-Z-06910-300",
+        "cta_id": "purchase-image-PRD-ACE-PALISADES3-Z-06910-300",
+        "placement": "product_card",
+        "snapshot_id": "ps-42760fceb522b68ad224bc48e4ca3b35",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06910%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-under-100-seats",
+        "product_id": "PRD-ACE-PALISADES3-Z-06910",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "image-PRD-ACE-PALISADES3-Z-06910-240",
+        "cta_id": "purchase-image-PRD-ACE-PALISADES3-Z-06910-240",
+        "placement": "product_card",
+        "snapshot_id": "ps-42760fceb522b68ad224bc48e4ca3b35",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06910%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      },
+      {
+        "article_id": "carry-on-suitcase-under-100-seats",
+        "product_id": "PRD-ACE-PALISADES3-Z-06910",
+        "seller_id": "rakuten-ace-store",
+        "offer_id": "rakuten-observed-ace-palisades3-z-06910-ace-store",
+        "cta_id": "purchase-82-rakuten-observed-ace-palisades3-z-06910-ace-store-comparison_table",
+        "placement": "comparison_table",
+        "snapshot_id": "ps-42760fceb522b68ad224bc48e4ca3b35",
+        "link_purpose": "affiliate_purchase",
+        "affiliate": "true",
+        "href": "https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06910%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9"
+      }
+    ],
+    "media": {
+      "PRD-PROTECA-STARIA-CXR-02350": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-under-100-seats\" data-raos-product-id=\"PRD-PROTECA-STARIA-CXR-02350\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-PROTECA-STARIA-CXR-02350-300\" data-raos-cta-id=\"purchase-image-PRD-PROTECA-STARIA-CXR-02350-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-42760fceb522b68ad224bc48e4ca3b35\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F02350%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10008100&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2023%2Fproteca%2F02350.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-under-100-seats\" data-raos-product-id=\"PRD-PROTECA-STARIA-CXR-02350\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-PROTECA-STARIA-CXR-02350-240\" data-raos-cta-id=\"purchase-image-PRD-PROTECA-STARIA-CXR-02350-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-42760fceb522b68ad224bc48e4ca3b35\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F02350%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10008100&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2023%2Fproteca%2F02350.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>02350／販売ページの本体・同梱構成例（広告）</figcaption></figure>",
+      "PRD-PROTECA-FRESTER-EX-01550": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-under-100-seats\" data-raos-product-id=\"PRD-PROTECA-FRESTER-EX-01550\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-PROTECA-FRESTER-EX-01550-300\" data-raos-cta-id=\"purchase-image-PRD-PROTECA-FRESTER-EX-01550-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-42760fceb522b68ad224bc48e4ca3b35\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01550%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009746&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2026%2Fproteca%2F01550.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-under-100-seats\" data-raos-product-id=\"PRD-PROTECA-FRESTER-EX-01550\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-PROTECA-FRESTER-EX-01550-240\" data-raos-cta-id=\"purchase-image-PRD-PROTECA-FRESTER-EX-01550-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-42760fceb522b68ad224bc48e4ca3b35\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F01550%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009746&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2026%2Fproteca%2F01550.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>01550／販売ページの本体・同梱構成例（広告）</figcaption></figure>",
+      "PRD-ACE-PALISADES3-Z-06910": "<figure class=\"ps-product-image ps-rakuten-product-photo\"><div class=\"raos-rakuten-image-300\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-under-100-seats\" data-raos-product-id=\"PRD-ACE-PALISADES3-Z-06910\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-ACE-PALISADES3-Z-06910-300\" data-raos-cta-id=\"purchase-image-PRD-ACE-PALISADES3-Z-06910-300\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-42760fceb522b68ad224bc48e4ca3b35\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06910%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009334&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2025%2Facetokyo%2F06910.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><div class=\"raos-rakuten-image-240\" data-raos-cta-type=\"offer\" data-raos-article-id=\"carry-on-suitcase-under-100-seats\" data-raos-product-id=\"PRD-ACE-PALISADES3-Z-06910\" data-raos-seller-id=\"rakuten-ace-store\" data-raos-offer-id=\"image-PRD-ACE-PALISADES3-Z-06910-240\" data-raos-cta-id=\"purchase-image-PRD-ACE-PALISADES3-Z-06910-240\" data-raos-placement=\"product_card\" data-raos-snapshot-id=\"ps-42760fceb522b68ad224bc48e4ca3b35\" data-raos-link-purpose=\"affiliate_purchase\" data-raos-affiliate=\"true\"><a href=\"https://hb.afl.rakuten.co.jp/ichiba/56f79628.6976363e.56f79629.e3dbf943/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Face-store%2F06910%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/56f79628.6976363e.56f79629.e3dbf943/?me_id=1240825&item_id=10009334&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Face-store%2Fcabinet%2Fitem2025%2Facetokyo%2F06910.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a></div><figcaption>06910／販売ページの本体・同梱構成例（広告）</figcaption></figure>"
+    }
+  },
+  "price_ui_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.js",
+  "price_ui_frozen_source": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/purchase-support.js",
+  "price_ui_sha256": "c3b022a18bdab284528f54bfb55d7ec95f774371f88fcf2004dd44adaaaa3f76",
+  "style_sources": [
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/theme.css",
+      "sha256": "6df19139692f2440e251dfa2288dc29f676c6f24cc6fe828c99085ba08165a36"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/editorial-v2.css",
+      "sha256": "27f2a8d61f50f399c6c9f268391d4d9cefaae3edab354ae96a2ecec04033fd89"
+    },
+    {
+      "path": "/home/minami/rakuten/.worktrees/all-pages-20260913/changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.css",
+      "sha256": "e88803965fb86579df284bfa7516d1d0e05d5083547c07ccb01b8e9becf52013"
+    }
+  ],
+  "product_ids": [
+    "PRD-PROTECA-STARIA-CXR-02350",
+    "PRD-PROTECA-FRESTER-EX-01550",
+    "PRD-ACE-PALISADES3-Z-06910",
+    "PRD-BERMAS-INTER-CITY-60524"
+  ],
+  "supplementary_product_ids": [],
+  "row_products": null,
+  "missing_media": [
+    {
+      "product_id": "PRD-BERMAS-INTER-CITY-60524",
+      "model": "60524（新仕様・USBポートなし）",
+      "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。"
+    }
+  ],
+  "local_url": "http://127.0.0.1:41398/carry-on-suitcase-under-100-seats/",
+  "shared_local_status": "PENDING_NEW_CANDIDATE",
+  "immutable_handoff": "/home/minami/rakuten/.worktrees/all-pages-20260913/output/site-improvements-20260913/comparison-row-snapshots/acbef952bdefa03a2d2e/carry-on-suitcase-under-100-seats.json"
+}

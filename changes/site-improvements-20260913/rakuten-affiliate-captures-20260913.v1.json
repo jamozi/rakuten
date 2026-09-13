@@ -1,0 +1,151 @@
+{
+  "schema": "RAOS_OWNER_UI_AFFILIATE_CAPTURE_V1",
+  "source_html_modified": false,
+  "records": [
+    {
+      "capture_key": "solota",
+      "provisional_product_id": "PRD-PANASONIC-NP-TMLK1",
+      "exact_model": "NP-TMLK1-K",
+      "color": "ブラック",
+      "item_url": "https://item.rakuten.co.jp/emedama/4550719155769/",
+      "shop_name": "カメラのキタムラ",
+      "acquisition": "OWNER_AUTHORIZED_RAKUTEN_AFFILIATE_LOGGED_IN_UI",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1217830&item_id=11227174&l-id=af_header_cta_link",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1705.0f98d6cd.575e1706.95396c60/?me_id=1217830&item_id=11227174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Femedama%2Fcabinet%2F5769%2F4550719155769_1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/575e1705.0f98d6cd.575e1706.95396c60/?me_id=1217830&item_id=11227174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Femedama%2Fcabinet%2F5769%2F4550719155769_1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "source_sha256": {
+        "240": "b88100f0664f6f626b34d8c33db7151cca3877f29f6623fa166e01e6b9198a86",
+        "300": "679d17d06c9d8ccc8eb828ea36864c138036ea171dfbc6c27a8a2269267f365e"
+      },
+      "captured_at": {
+        "240": "2026-09-13T03:55:36.415Z",
+        "300": "2026-09-13T03:57:04.897Z"
+      },
+      "image_identity_state": "VERIFIED_MODEL_COLOR_AND_BASE_UNIT",
+      "new_condition": "UNKNOWN",
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/575e1705.0f98d6cd.575e1706.95396c60/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Femedama%2F4550719155769%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "visual_evidence": "output/site-improvements-20260913/compact-issued-images.png",
+      "loading_evidence": "output/site-improvements-20260913/compact-issued-images-checks.json",
+      "reuse_basis": "楽天アフィリエイトのログイン済み商品リンク作成画面で発行。原文を保持して広告リンク付きで使用する。",
+      "publication_state": "LOCAL_CAPTURE_ONLY"
+    },
+    {
+      "capture_key": "mini",
+      "provisional_product_id": "PRD-THANKO-TK-MDW22W",
+      "exact_model": "TK-MDW22W",
+      "color": "ホワイト",
+      "item_url": "https://item.rakuten.co.jp/thanko/000000003922/",
+      "shop_name": "サンコーレアモノショップ",
+      "acquisition": "OWNER_AUTHORIZED_RAKUTEN_AFFILIATE_LOGGED_IN_UI",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1216480&item_id=10004940&l-id=af_header_cta_link",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000003922%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10004940&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fthanko%2Fcabinet%2Fother19%2Ftk-mdw22w-t14.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000003922%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10004940&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fthanko%2Fcabinet%2Fother19%2Ftk-mdw22w-t14.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "source_sha256": {
+        "240": "eb3d57422d71d5100c8102d610f9bd680452f204c4fd1fe475afa372541e4316",
+        "300": "9d8f50f7578ffe772b2351d4c377e95207ecc03e7f7faa1975353e598a08e761"
+      },
+      "captured_at": {
+        "240": "2026-09-13T03:58:20.936Z",
+        "300": "2026-09-13T03:58:18.569Z"
+      },
+      "image_identity_state": "VERIFIED_MODEL_COLOR_AND_BASE_UNIT",
+      "new_condition": "UNKNOWN",
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000003922%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "visual_evidence": "output/site-improvements-20260913/compact-issued-images.png",
+      "loading_evidence": "output/site-improvements-20260913/compact-issued-images-checks.json",
+      "reuse_basis": "楽天アフィリエイトのログイン済み商品リンク作成画面で発行。原文を保持して広告リンク付きで使用する。",
+      "publication_state": "LOCAL_CAPTURE_ONLY"
+    },
+    {
+      "capture_key": "mini-plus",
+      "provisional_product_id": "PRD-THANKO-RAKUA-MINI-PLUS",
+      "exact_model": "TK-MDW22B",
+      "color": "ブラック",
+      "item_url": "https://item.rakuten.co.jp/thanko/000000004055/",
+      "shop_name": "サンコーレアモノショップ",
+      "acquisition": "OWNER_AUTHORIZED_RAKUTEN_AFFILIATE_LOGGED_IN_UI",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1216480&item_id=10005052&l-id=af_header_cta_link",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004055%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005052&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother19%2Ftk-mdw22b-t11.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004055%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005052&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother19%2Ftk-mdw22b-t11.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "source_sha256": {
+        "240": "5d5825b3a76ee3ad54cf2dd49b74967d0fd40da2ea884597725b2a525d890867",
+        "300": "4b2e15ced446009ef521c7b1203a8eb328043aa3e1d082f5b96d7a0ddd9bc360"
+      },
+      "captured_at": {
+        "240": "2026-09-13T03:59:04.363Z",
+        "300": "2026-09-13T03:59:02.514Z"
+      },
+      "image_identity_state": "VERIFIED_MODEL_COLOR_AND_BASE_UNIT",
+      "new_condition": "UNKNOWN",
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004055%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "visual_evidence": "output/site-improvements-20260913/compact-issued-images.png",
+      "loading_evidence": "output/site-improvements-20260913/compact-issued-images-checks.json",
+      "reuse_basis": "楽天アフィリエイトのログイン済み商品リンク作成画面で発行。原文を保持して広告リンク付きで使用する。",
+      "publication_state": "LOCAL_CAPTURE_ONLY"
+    },
+    {
+      "capture_key": "mini-color",
+      "provisional_product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "exact_model": "TDWS25SBL",
+      "color": "ミスティーブルー",
+      "item_url": "https://item.rakuten.co.jp/thanko/000000004715/",
+      "shop_name": "サンコーレアモノショップ",
+      "acquisition": "OWNER_AUTHORIZED_RAKUTEN_AFFILIATE_LOGGED_IN_UI",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1216480&item_id=10005443&l-id=af_header_cta_link",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004715%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005443&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother22%2Ftdws25sbl-1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004715%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005443&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fthanko%2Fcabinet%2Fother22%2Ftdws25sbl-1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "source_sha256": {
+        "240": "d5efb3d95bea889582d24354f38729e7109699c4b104e322a604338fca8c933d",
+        "300": "4120bf1c2d22a19bc0d0066ff882469c435c15012f2e71572d70644a90752a65"
+      },
+      "captured_at": {
+        "240": "2026-09-13T03:59:47.837Z",
+        "300": "2026-09-13T03:59:45.993Z"
+      },
+      "image_identity_state": "VERIFIED_MODEL_COLOR_AND_BASE_UNIT",
+      "new_condition": "UNKNOWN",
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004715%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "visual_evidence": "output/site-improvements-20260913/compact-issued-images.png",
+      "loading_evidence": "output/site-improvements-20260913/compact-issued-images-checks.json",
+      "reuse_basis": "楽天アフィリエイトのログイン済み商品リンク作成画面で発行。原文を保持して広告リンク付きで使用する。",
+      "publication_state": "LOCAL_CAPTURE_ONLY"
+    },
+    {
+      "capture_key": "mini-color-rose",
+      "provisional_product_id": "PRD-THANKO-RAKUA-MINI-COLOR",
+      "exact_model": "TDWS25SRD",
+      "color": "クラシックローズ",
+      "item_url": "https://item.rakuten.co.jp/thanko/000000004715/",
+      "shop_name": "サンコーレアモノショップ",
+      "acquisition": "OWNER_AUTHORIZED_RAKUTEN_AFFILIATE_LOGGED_IN_UI",
+      "source_page": "https://affiliate.rakuten.co.jp/link/pc/item?type=item&me_id=1216480&item_id=10005443&l-id=af_header_cta_link",
+      "sources": {
+        "240": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004715%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005443&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fthanko%2Fcabinet%2Fother22%2Ftdws25srd-1.jpg%3F_ex%3D240x240&s=240x240&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>",
+        "300": "<a href=\"https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004715%2F&link_type=pict&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0Iiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9\" target=\"_blank\" rel=\"nofollow sponsored noopener\" style=\"word-wrap:break-word;\"><img src=\"https://hbb.afl.rakuten.co.jp/hgb/577c1126.dc94c45f.577c1127.af3d1c27/?me_id=1216480&item_id=10005443&pc=https%3A%2F%2Fimage.rakuten.co.jp%2Fthanko%2Fcabinet%2Fother22%2Ftdws25srd-1.jpg%3F_ex%3D300x300&s=300x300&t=pict\" border=\"0\" style=\"margin:2px\" alt=\"\" title=\"\"></a>"
+      },
+      "source_sha256": {
+        "240": "e88165bdaa4ffd4638483e06958836df78c10dc7c86a61635a4df42f4c5865bb",
+        "300": "fed9d5c1053548ca1ce1ad9c0320d1361d39b28f7ef143a6ffbb334bfb42db66"
+      },
+      "captured_at": {
+        "240": "2026-09-13T03:59:50.267Z",
+        "300": "2026-09-13T03:59:52.872Z"
+      },
+      "image_identity_state": "VERIFIED_MODEL_COLOR_AND_BASE_UNIT",
+      "new_condition": "UNKNOWN",
+      "issued_text_cta_url": "https://hb.afl.rakuten.co.jp/ichiba/577c1126.dc94c45f.577c1127.af3d1c27/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fthanko%2F000000004715%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjMwMHgzMDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9",
+      "visual_evidence": "output/site-improvements-20260913/compact-issued-images.png",
+      "loading_evidence": "output/site-improvements-20260913/compact-issued-images-checks.json",
+      "reuse_basis": "楽天アフィリエイトのログイン済み商品リンク作成画面で発行。原文を保持して広告リンク付きで使用する。",
+      "publication_state": "LOCAL_CAPTURE_ONLY"
+    }
+  ]
+}

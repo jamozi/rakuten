@@ -38,6 +38,21 @@
       `${cost.subtotal === null ? '' : `確認できた費目の小計：${format.format(cost.subtotal)}円。`}購入総額は未確認です。`;
     return { state: cost.state, text: `${amounts}。${total}表示期限：${new Date(expiry).toLocaleString('ja-JP', {timeZone:'Asia/Tokyo'})}（日本時間）。現在の販売条件は販売先で再確認してください。` };
   };
+  const referencePricePresentation = (ref, now) => {
+    const fallback = { state: 'UNKNOWN', text: '価格は販売先で確認', expiry: NaN };
+    if (!ref || ref.schema !== 'RAOS_REFERENCE_PRICE_V1' || ref.verified !== true ||
+        !Number.isSafeInteger(ref.amount_yen) || ref.amount_yen <= 0 || ref.amount_yen > 1000000000 ||
+        ref.currency !== 'JPY' || ref.tax_included !== true || ref.scope !== 'base_unit' ||
+        ref.pricing_basis !== 'listed_sale_price' || !ref.product_id || !ref.exact_model ||
+        !ref.variant || !ref.variant_id || !ref.seller || !ref.seller_id ||
+        typeof ref.source_url !== 'string' || !/^https:\/\//.test(ref.source_url) ||
+        !ref.source_locator || !/^[a-f0-9]{64}$/.test(ref.evidence_sha256 || '')) return fallback;
+    const checked = time(ref.checked_at), deadline = time(ref.valid_until), expiry = Math.min(deadline, checked + DAY);
+    if (!Number.isFinite(checked) || !Number.isFinite(deadline) || !Number.isFinite(now) || checked > now || deadline <= checked) return fallback;
+    if (now >= expiry) return { ...fallback, state: 'EXPIRED', expiry };
+    const date = new Date(checked).toLocaleString('ja-JP', {timeZone:'Asia/Tokyo', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit'});
+    return {state:'CURRENT_REFERENCE', expiry, text:`参考価格 ${new Intl.NumberFormat('ja-JP').format(ref.amount_yen)}円\n本体・税込\n${ref.seller}\n${date} 確認`};
+  };
   const budgetState = (offers, budget, now) => {
     if (!money(budget)) return 'UNKNOWN';
     const costs = offers.map(o => offerCost(o, now));
@@ -328,6 +343,14 @@
     }));
     watchClock(browser, page, now => {
       const deadlines = [];
+      for (const node of all('[data-ps-reference-price]')) {
+        let ref = null;
+        try { ref = JSON.parse(node.getAttribute('data-ps-reference-price')); } catch (_) { /* no unverified amount */ }
+        const result = referencePricePresentation(ref, now);
+        node.textContent = result.text;
+        node.dataset.psReferenceState = result.state;
+        deadlines.push(result.expiry);
+      }
       for (const { node, offer } of sellers) {
         const presentation = pricePresentation(offer, now), status = node.querySelector('.ps-price-status');
         const expiry = Math.min(time(offer.valid_until), time(offer.checked_at) + DAY);
@@ -340,6 +363,6 @@
     });
     root.dataset.psMounted = '1';
   };
-  if (typeof module !== 'undefined' && module.exports) module.exports = { numberInput, offerCost, pricePresentation, budgetState, sameKnownValues, checkInstallation, parseMeasurement, assessInstallation, installationSummary, watchClock, mount };
+  if (typeof module !== 'undefined' && module.exports) module.exports = { numberInput, offerCost, pricePresentation, referencePricePresentation, budgetState, sameKnownValues, checkInstallation, parseMeasurement, assessInstallation, installationSummary, watchClock, mount };
   if (typeof document !== 'undefined' && typeof window !== 'undefined') document.querySelectorAll('.ps-article').forEach(root => mount(root, document, window));
 })();

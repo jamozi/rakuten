@@ -1,12 +1,13 @@
 """Authorized media is frozen verbatim and has independent image-link bindings."""
 
-from base64 import b64encode
 from copy import deepcopy
 from datetime import datetime, timezone
 from hashlib import sha256
 import importlib.util
 import json
 from pathlib import Path
+from base64 import b64encode
+from zlib import compress
 import subprocess
 import shutil
 
@@ -25,31 +26,99 @@ THEME = (
 # matching ID is added to the catalog or a merchant changes its generic picture.
 EXPECTED_MEDIA = {
     "countertop-dishwasher-for-small-households": {
+        "PRD-PANASONIC-NP-TSP1",
         "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
         "PRD-SIROCA-SS-MA251",
     },
     "lightweight-carry-on-suitcase-under-3kg": {
-        "PRD-PROTECA-AEROFLEX-DX2-01521",
         "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "PRD-FREQUENTER-LIEVE-1-250",
+        "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+        "PRD-PROTECA-AEROFLEX-DX2-01521",
     },
     "compact-robot-vacuum-shortlist": {
+        "PRD-IROBOT-ROOMBA-PLUS-515-COMBO",
         "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
         "PRD-SWITCHBOT-K11-PRO",
+        "PRD-SWITCHBOT-K10-PRO-COMBO",
     },
     "portable-power-station-guide": {
+        "PRD-ECOFLOW-DELTA3-CLASSIC",
         "PRD-JACKERY-500-NEW",
         "PRD-BLUETTI-AC70",
-        "PRD-ECOFLOW-DELTA3-CLASSIC",
+        "PRD-ANKER-SOLIX-C300",
     },
-    "carry-on-suitcase-comparison": set(),
-    "carry-on-suitcase-under-100-seats": set(),
-    "front-open-carry-on-suitcase-with-stopper": set(),
+    "carry-on-suitcase-comparison": {
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-ACE-CRESTA-06316",
+        "PRD-ACE-MAXPASS4-01471",
+    },
+    "carry-on-suitcase-under-100-seats": {
+        "PRD-ACE-PALISADES3-Z-06910",
+        "PRD-PROTECA-STARIA-CXR-02350",
+        "PRD-PROTECA-FRESTER-EX-01550",
+    },
+    "front-open-carry-on-suitcase-with-stopper": {
+        "PRD-ACE-DIFFERENCE-05721",
+        "PRD-BERMAS-INTER-CITY-II-60561",
+        "PRD-PROTECA-FRESTER-EX-01551",
+    },
     "roomba-mini-vs-switchbot-k11-pro": {
         "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY",
         "PRD-SWITCHBOT-K11-PRO",
+        "PRD-IROBOT-ROOMBA-MINI-SLIM-F115060",
     },
-    "solota-vs-rakua-mini-plus": set(),
-    "anker-solix-c300-c800-c1000-differences": set(),
+    "solota-vs-rakua-mini-plus": {
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-PLUS",
+    },
+    "anker-solix-c300-c800-c1000-differences": {
+        "PRD-ANKER-SOLIX-C1000",
+        "PRD-ANKER-SOLIX-C1000-GEN2",
+        "PRD-ANKER-SOLIX-C800-PLUS",
+        "PRD-ANKER-SOLIX-C300",
+    },
+    "compact-dishwasher-comparison": {
+        "PRD-PANASONIC-NP-TMLK1",
+        "PRD-THANKO-RAKUA-MINI-PLUS",
+        "PRD-THANKO-RAKUA-MINI-COLOR",
+        "PRD-THANKO-TK-MDW22W",
+    },
+    "standard-dishwasher-comparison": {
+        "PRD-PANASONIC-NP-TSP1",
+        "PRD-SIROCA-SS-MA251",
+        "PRD-STANDARD-DISHWASHER-SS-M171",
+        "PRD-STANDARD-DISHWASHER-PDW-M151",
+        "PRD-STANDARD-DISHWASHER-SS-MU251",
+        "PRD-STANDARD-DISHWASHER-AX-S7",
+        "PRD-STANDARD-DISHWASHER-DWS-33B-W",
+        "PRD-STANDARD-DISHWASHER-NP-TCR5-W",
+        "PRD-STANDARD-DISHWASHER-TKDWSLHWH",
+        "PRD-STANDARD-DISHWASHER-NP-TSK2",
+        "PRD-STANDARD-DISHWASHER-TKDWWDHWH",
+        "PRD-STANDARD-DISHWASHER-ADW-M28B",
+    },
+    "large-dishwasher-comparison": {
+        "PRD-LARGE-DISHWASHER-SS-LH451",
+        "PRD-LARGE-DISHWASHER-ADW-L40B",
+        "PRD-LARGE-DISHWASHER-NP-TA5",
+        "PRD-LARGE-DISHWASHER-NP-TZ500",
+        "PRD-LARGE-DISHWASHER-NP-TH5",
+        "PRD-LARGE-DISHWASHER-SS-LA451",
+    },
+    "small-carry-on-suitcase-comparison": {
+        "PRD-SAMSONITE-C-LITE-CS2-09007",
+        "PRD-FREQUENTER-LIEVE-1-250",
+        "PRD-BERMAS-INTER-CITY-II-60561",
+        "PRD-AMERICAN-TOURISTER-APPLITE-4-QJ6-68002",
+        "PRD-ACE-CRESTA-06316",
+        "PRD-PROTECA-AEROFLEX-DX2-01521",
+        "PRD-SMALL-CARRY-ON-SUITCASE-MUJI-76431312",
+        "PRD-SMALL-CARRY-ON-SUITCASE-LEGEND-WALKER-5208-49",
+        "PRD-SMALL-CARRY-ON-SUITCASE-TUMI-0228793DTX",
+        "PRD-SMALL-CARRY-ON-SUITCASE-DELSEY-D00167680106",
+    },
 }
 
 
@@ -84,7 +153,7 @@ def test_only_reviewed_in_scope_media_and_unmodified_links_are_snapshot_bound():
         ]
         assert sha256(body.encode()).hexdigest() == article["body_sha256"]
         assert not any(n.has("ps-product-image") for n in fragment(body).walk())
-        if article["kind"] == "comparison":
+        if article["kind"] in {"comparison", "curated_comparison"}:
             assert set(article["media"]) == EXPECTED_MEDIA[article["slug"]]
         for pid, markup in article["media"].items():
             placeholder = (
@@ -135,7 +204,7 @@ def test_only_reviewed_in_scope_media_and_unmodified_links_are_snapshot_bound():
             )
     # The same reviewed Mini/K11 media is bound to both robot comparisons;
     # unreviewed C300 and the new comparison identities remain withheld.
-    assert image_count == 18 and official_count == 2
+    assert image_count == 128 and official_count == 2
     assert all(not o["offer_id"].startswith("image-") for o in catalog["offers"])
 
 
@@ -169,8 +238,12 @@ def test_media_click_uses_outer_binding_without_sending_url():
 def test_public_media_projection_requires_exact_runtime_and_applied_body():
     runtime_path = THEME / "assets/purchase-support.v1.json"
     runtime = json.loads(runtime_path.read_text())
-    assert runtime_path.stat().st_size <= 262144
-    comparisons = [a for a in runtime["articles"] if a["kind"] == "comparison"]
+    assert runtime_path.stat().st_size <= 1048576
+    comparisons = [
+        a
+        for a in runtime["articles"]
+        if a["kind"] in {"comparison", "curated_comparison"}
+    ]
     expected_figures = {slug: len(pids) for slug, pids in EXPECTED_MEDIA.items()}
     assert {a["slug"] for a in comparisons} == set(EXPECTED_MEDIA)
     total_photos = 0
@@ -216,7 +289,9 @@ def test_public_media_projection_requires_exact_runtime_and_applied_body():
                     .removeprefix("<?php"),
                     str(THEME / "inc/purchase-support.php"),
                     mode,
-                    b64encode(json.dumps({"snapshot": snapshot}).encode()).decode(),
+                    b64encode(
+                        compress(json.dumps({"snapshot": snapshot}).encode())
+                    ).decode(),
                 ],
                 cwd=ROOT,
                 text=True,
@@ -268,10 +343,7 @@ def test_unverified_images_are_withheld_without_deleting_product_facts():
     catalog, records, official = inputs()
     blocked = {
         "PRD-BERMAS-INTER-CITY-60524",
-        "PRD-ANKER-SOLIX-C300",
-        "PRD-ANKER-SOLIX-C800-PLUS",
-        "PRD-ANKER-SOLIX-C1000",
-        "PRD-ANKER-SOLIX-C1000-GEN2",
+        "PRD-INNOVATOR-INV50",
     }
     products = {p["product_id"]: p for p in catalog["products"]}
     for pid in blocked:
@@ -289,5 +361,6 @@ def test_unverified_images_are_withheld_without_deleting_product_facts():
     # An article-specific scope exclusion does not revoke the approved same-product
     # photo in the original four-model dishwasher comparison.
     pair = next(a for a in catalog["articles"] if a["post_id"] == 86)
-    assert pair["media_exclusions"]["PRD-PANASONIC-NP-TMLK1"]
+    assert "PRD-PANASONIC-NP-TMLK1" not in pair.get("media_exclusions", {})
+    assert "solota-vs-rakua-mini-plus" in media["PRD-PANASONIC-NP-TMLK1"]["slugs"]
     assert "PRD-PANASONIC-NP-TMLK1" in media

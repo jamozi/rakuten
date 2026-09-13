@@ -20,7 +20,7 @@ DESIGN_HANDOFF_V1:
       cms: SELF_HOSTED_WORDPRESS
       hosting_migration: DISABLED
       child_theme_version: 1.5.0
-      child_theme_runtime_revision: 7832abcbc004a0dde9d8228fc6c52db97337a94733d83bbedfebb0bbee3ce50e
+      child_theme_runtime_revision: 5668e829a6ba74d13caa429aff995397d795f3feea596e5ca3f35acd857158ed
       stylesheet_runtime_evidence: TWO_DISTINCT_SAME_ORIGIN_SENTINELS
     editorial:
       article_slots: 5

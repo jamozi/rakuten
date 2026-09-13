@@ -27,10 +27,12 @@ class SiteSourceTests(unittest.TestCase):
         expected = {
             p["post_id"] for p in self.site["pages"] + self.site["articles"]
         } | {15, 3, 10, 120}
-        self.assertEqual({r["post_id"] for r in self.registry}, expected)
-        self.assertEqual(len(self.registry), len(expected))
+        self.assertEqual({r["post_id"] for r in self.registry if r["mode"] == "existing"}, expected)
+        self.assertEqual(len([r for r in self.registry if r["mode"] == "existing"]), len(expected))
         for row in self.registry:
-            self.assertEqual(row["mode"], "existing")
+            self.assertIn(row["mode"], {"existing", "new"})
+            if row["mode"] == "new":
+                self.assertIsNone(row["post_id"])
             self.assertNotEqual(
                 bool(row.get("body_source")), bool(row.get("patch_source"))
             )
@@ -46,11 +48,12 @@ class SiteSourceTests(unittest.TestCase):
                 self.assertNotIn("現在、条件に合う公開記事はありません", doc.text)
                 self.assertTrue(any((n.tag == "a" for n in doc.nodes)))
 
-    def test_each_article_is_directly_reachable_from_category(self):
+    def test_each_article_is_reachable_from_category_or_public_index(self):
         for article in self.site["articles"]:
             hrefs = {
                 urlsplit(n.attrs.get("href") or "").path
-                for n in self.pages[article["category"]].nodes
+                for doc in (self.pages[article["category"]], self.pages["comparisons"], self.pages["guides"])
+                for n in doc.nodes
                 if n.tag == "a"
             }
             self.assertIn("/" + article["slug"] + "/", hrefs)
@@ -64,7 +67,11 @@ class SiteSourceTests(unittest.TestCase):
                     continue
                 href = node.attrs.get("href") or ""
                 parsed = urlsplit(href)
-                self.assertFalse(parsed.scheme or parsed.netloc)
+                if parsed.scheme or parsed.netloc:
+                    self.assertEqual(parsed.scheme, "https")
+                    self.assertTrue(parsed.hostname)
+                    self.assertFalse(parsed.username or parsed.password)
+                    continue
                 if parsed.path:
                     self.assertIn(parsed.path, routes)
                 target = self.pages.get(parsed.path.strip("/")) if parsed.path else doc
@@ -121,12 +128,25 @@ class SiteSourceTests(unittest.TestCase):
         )
 
     def test_sources_do_not_contain_merchant_tracking_values(self):
+        runtime = json.loads(
+            (ROOT / "changes/st-1704/self-hosted-editorial-pilot-v1/theme/kurashinoshirube-child/assets/purchase-support.v1.json").read_text()
+        )
+        entries = {a["slug"]: a for a in runtime["articles"]}
         for path in (DIRECT / "articles").glob("*"):
             if path.stem == "home":
                 continue
             text = path.read_text()
-            for forbidden in ("hb.afl.rakuten.co.jp", "rafcid=", "sk-proj-"):
+            for forbidden in ("rafcid=", "sk-proj-"):
                 self.assertNotIn(forbidden, text)
+            allowed = {
+                b["cta_id"]: b["href"] for b in entries.get(path.stem, {}).get("bindings", [])
+                if b.get("affiliate") == "true"
+            }
+            for node in Document(text).nodes:
+                href = node.attrs.get("href", "")
+                if "hb.afl.rakuten.co.jp" in href:
+                    self.assertEqual(allowed.get(node.attrs.get("data-raos-cta-id")), href)
+                    self.assertIn("sponsored", node.attrs.get("rel", "").split())
 
     def test_reader_styles_can_be_applied_without_losing_images(self):
         for slug, doc in self.pages.items():
