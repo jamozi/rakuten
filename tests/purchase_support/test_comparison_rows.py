@@ -83,7 +83,8 @@ def test_every_comparison_binds_the_same_product_across_each_row(rendered):
             )
             assert (
                 sum(
-                    node.attrs.get("data-ps-media-product") == pid
+                    node.has("ps-product-media")
+                    and node.attrs.get("data-ps-media-product") == pid
                     for node in body.walk()
                 )
                 == 1
@@ -230,15 +231,19 @@ def test_jackery_model_number_is_in_the_same_identity_cell_as_its_image(rendered
     assert identity.find(cls="ps-product-media")
 
 
-def test_compact_approved_body_is_unchanged():
-    path = (
-        builder.ROOT
-        / "changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html"
+def test_compact_approved_version_is_preserved_for_reconfirmation():
+    record = json.loads(
+        (
+            builder.ROOT
+            / "changes/site-improvements-20260913/approved-layout-baselines.v1.json"
+        ).read_text()
     )
+    baseline = record["articles"]["compact-dishwasher-comparison"]
     assert (
-        sha256(path.read_bytes()).hexdigest()
+        baseline["body_sha256"]
         == "a8788ae876dcc34b3d86660f91db03476683926b6b7db48438bfa85856b589ad"
     )
+    assert baseline["new_layout_review"] == "PENDING_USER_REVIEW"
 
 
 def test_new_article_template_uses_shared_rows_and_reviewed_media_scope(rendered):

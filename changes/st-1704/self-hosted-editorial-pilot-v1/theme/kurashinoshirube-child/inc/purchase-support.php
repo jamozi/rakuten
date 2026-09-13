@@ -127,6 +127,23 @@ function kurashinoshirube_purchase_support_media($content)
             $replacements[$placeholder] = $html;
         }
     }
+    $conditions = $context['condition_media'] ?? array();
+    if (!is_array($conditions) || count($conditions) > 32) { return $content; }
+    foreach ($conditions as $identity => $entry) {
+        if (!is_array($entry)) { return $content; }
+        $product_id = $entry['product_id'] ?? null;
+        $condition_id = $entry['condition_id'] ?? null;
+        $html = $entry['html'] ?? null;
+        if (!is_string($product_id) || !array_key_exists($product_id, $media)
+            || !is_string($condition_id) || preg_match('/\A[a-z0-9-]{1,32}\z/D', $condition_id) !== 1
+            || $identity !== $condition_id . '--' . $product_id
+            || !is_string($html) || strlen($html) > 32768
+            || !str_starts_with($html, '<figure class="ps-product-image ')
+            || !str_ends_with($html, '</figure>')) { return $content; }
+        $placeholder = '<div class="ps-condition-product-media" data-ps-media-product="' . $product_id . '" data-ps-condition="' . $condition_id . '"></div>';
+        if (substr_count($content, $placeholder) > 1) { return $content; }
+        if (substr_count($content, $placeholder) === 1) { $replacements[$placeholder] = $html; }
+    }
     // strtr replaces exact known placeholders once; it never re-parses source snippets.
     return strtr($content, $replacements);
 }

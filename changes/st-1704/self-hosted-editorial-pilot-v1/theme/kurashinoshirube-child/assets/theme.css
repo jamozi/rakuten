@@ -1,5 +1,5 @@
 :root {
-  --raos-theme-runtime-revision-base: 01bf6b1643a4f03e4bdec7661576643bea525525a53ee1e1b6dadc586cdb2e93;
+  --raos-theme-runtime-revision-base: 18586a5860b75819e16c9a940b7a27e06de8115361c1eae8a7fec1d43e07a9db;
   --raos-font-serif: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif CJK JP", "Noto Serif JP", serif;
   --raos-paper: #ffffff;
   --raos-surface: #ffffff;
@@ -4863,3 +4863,290 @@ body:has(.ks-power-category) .wp-block-post-content { margin-top: 0; }
 
 .small-carry-on-comparison .sc-airline-table thead th:first-child { z-index:5; background:#eef3ed; }
 .small-carry-on-comparison .sc-airline-table small { display:block; }
+
+/* Large article only. Preserve the common body, original media and commerce bindings. */
+.ks-large-guide .lg-integrated-comparison .lg-scroll-hint{display:none}
+.ks-large-guide .ps-row-scroll{overflow:visible;border:0;max-width:100%;container-type:inline-size}
+.ks-large-guide .ps-row-scroll .ps-row-comparison{width:100%;min-width:0;max-width:100%;table-layout:fixed}
+.ks-large-guide .ps-row-scroll .ps-row-comparison th,
+.ks-large-guide .ps-row-scroll .ps-row-comparison td{min-width:0;max-width:none;overflow-wrap:anywhere;font-size:15px}
+.ks-large-guide .ps-row-scroll .ps-row-comparison th:first-child{position:static;width:26%;min-width:0;box-shadow:none}
+.ks-large-guide .ps-row-scroll .ps-row-comparison thead th:nth-child(n+2){width:auto}
+.ks-large-guide .ps-row-scroll .raos-rakuten-image-300{width:220px;max-width:100%}
+.ks-large-guide .ps-row-scroll .ps-product-image figcaption{font-size:12px;line-height:1.65}
+.ks-large-guide .ps-row-scroll .ps-reference-price{font-size:14px;line-height:1.7}
+.ks-large-guide .ps-row-scroll .ps-reference-price::first-line{font-size:18px}
+.ks-large-guide .ps-row-scroll .ps-offer-link{font-size:15px;min-height:44px}
+@container (max-width:900px){
+ .ks-large-guide .ps-row-scroll .ps-row-comparison{display:block;border:0;background:transparent}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison caption{display:block;width:100%;margin:0 0 18px;text-align:left}
+ /* Keep column headings available to assistive technology while cards carry readable labels. */
+ .ks-large-guide .ps-row-scroll .ps-row-comparison thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody{display:grid;gap:24px;width:100%}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr{display:grid;grid-template-columns:minmax(180px,36%) minmax(0,1fr);grid-template-areas:"product facts" "product decision" "product offer";column-gap:28px;row-gap:18px;align-items:start;padding:24px;border:1px solid #d8dfd7;border-radius:8px;background:#fff;width:100%;box-sizing:border-box}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>th,
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>td{display:block;padding:0;margin:0;border:0;width:auto;min-width:0;max-width:100%;font-size:15px;line-height:1.8;background:transparent}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>th:first-child{grid-area:product;position:static;box-shadow:none;width:auto;min-width:0;max-width:100%}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>td:nth-child(2){grid-area:facts}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>td:nth-child(3){grid-area:decision}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>td:nth-child(3)::before{content:"選ぶ前に";display:block;font-size:14px;font-weight:700;color:#354d3e;margin-bottom:6px}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>td:last-child{grid-area:offer;border-top:1px solid #e0e5dd;padding-top:16px}
+ .ks-large-guide .ps-row-scroll .lg-brand{font-size:13px;margin-bottom:6px}
+ .ks-large-guide .ps-row-scroll .lg-product-kind{display:block;font-size:15px;font-weight:500;line-height:1.6;margin-bottom:5px}
+ .ks-large-guide .ps-row-scroll .lg-model{display:block;font-size:20px;font-weight:700;line-height:1.5}
+ .ks-large-guide .ps-row-scroll .ps-product-image{margin:18px 0 0}
+ .ks-large-guide .ps-row-scroll .ps-row-variant{margin:16px 0 0;padding:10px 0;border:0;border-top:1px solid #e0e5dd}
+ .ks-large-guide .ps-row-scroll .ps-row-variant summary{font-size:13px}
+}
+@container (max-width:540px){
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr{grid-template-columns:minmax(0,1fr);grid-template-areas:"product" "facts" "decision" "offer";padding:18px;row-gap:20px}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>th{display:grid;grid-template-columns:minmax(0,1fr) minmax(145px,48%);column-gap:16px;align-content:start}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>th>.lg-brand,
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>th>.lg-product-kind,
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>th>.lg-model{grid-column:1}
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>th>.ps-row-media{grid-column:2;grid-row:1 / span 4}
+ .ks-large-guide .ps-row-scroll .ps-product-image{margin:0}
+ .ks-large-guide .ps-row-scroll .lg-model{font-size:18px}
+ .ks-large-guide .ps-row-scroll .ps-product-image figcaption{font-size:11px}
+ .ks-large-guide .ps-row-scroll .ps-offer-link{max-width:100%;padding:12px}
+}
+@container (max-width:300px){
+ .ks-large-guide .ps-row-scroll .ps-row-comparison tbody>tr>th{display:block}
+ .ks-large-guide .ps-row-scroll .ps-product-image{margin-top:16px}
+ .ks-large-guide .ps-row-scroll .raos-rakuten-image-300{width:190px}
+}
+
+/* Local proposal: opt in only the standard article. Shared assets stay original. */
+.std-capacity #std-comparison .std-scroll-hint { display: none; }
+.std-capacity #std-comparison .ps-row-scroll {
+  container-name: std-product-list;
+  container-type: inline-size;
+  overflow: visible;
+  max-width: 100%;
+}
+.std-capacity #std-comparison .ps-row-comparison {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+}
+.std-capacity #std-comparison .ps-row-comparison th:first-child {
+  position: static;
+  width: 260px;
+  min-width: 0;
+  box-shadow: none;
+}
+.std-capacity #std-comparison .ps-row-comparison thead th:nth-child(n+2) {
+  width: calc((100% - 260px) / 3);
+}
+.std-capacity #std-comparison td.std-spec-cell::before,
+.std-capacity #std-comparison td.std-use-cell::before,
+.std-capacity #std-comparison td.std-reference-cell::before { display: none; }
+.std-capacity #std-comparison .ps-row-comparison td { min-width: 0; }
+
+@container std-product-list (max-width: 900px) {
+  .std-capacity #std-comparison .ps-row-comparison,
+  .std-capacity #std-comparison .ps-row-comparison tbody {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+  .std-capacity #std-comparison .ps-row-comparison caption {
+    display: block;
+    margin: 0 0 16px;
+    padding: 0;
+  }
+  /* Keep column headings available to assistive technology. */
+  .std-capacity #std-comparison .ps-row-comparison thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .std-capacity #std-comparison .ps-row-comparison tbody tr {
+    display: grid;
+    grid-template-columns: 236px minmax(0, 1fr);
+    grid-template-areas: "product capacity" "product use" "product offer";
+    margin: 0 0 24px;
+    border: 1px solid #cdd5cd;
+    background: #fff;
+  }
+  .std-capacity #std-comparison .ps-row-comparison tbody th,
+  .std-capacity #std-comparison .ps-row-comparison tbody td {
+    display: block;
+    width: auto;
+    min-width: 0;
+    padding: 18px;
+    border: 0;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+  .std-capacity #std-comparison .ps-row-comparison tbody th:first-child {
+    grid-area: product;
+    width: auto;
+    min-width: 0;
+    border-right: 1px solid #d6dfd8;
+    background: #f8faf5;
+  }
+  .std-capacity #std-comparison .std-spec-cell { grid-area: capacity; }
+  .std-capacity #std-comparison .std-use-cell { grid-area: use; }
+  .std-capacity #std-comparison .std-reference-cell { grid-area: offer; }
+  .std-capacity #std-comparison .ps-row-comparison tbody td + td {
+    border-top: 1px solid #e0e6df;
+  }
+  .std-capacity #std-comparison td.std-spec-cell::before,
+.std-capacity #std-comparison td.std-use-cell::before,
+.std-capacity #std-comparison td.std-reference-cell::before {
+    display: block;
+
+    margin-bottom: 10px;
+    color: #526558;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+  .std-capacity #std-comparison .std-product-name {
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  .std-capacity #std-comparison .ps-row-model {
+    font-size: 14px;
+    line-height: 1.7;
+    margin-top: 8px;
+  }
+  .std-capacity #std-comparison .ps-row-brand { font-size: 13px; }
+  .std-capacity #std-comparison .ps-product-image { margin: 20px 0 0; }
+  .std-capacity #std-comparison .raos-rakuten-image-300 {
+    width: 228px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  .std-capacity #std-comparison .ps-product-image figcaption {
+    font-size: 12px;
+    line-height: 1.8;
+    margin-top: 12px;
+  }
+  .std-capacity #std-comparison .ps-reference-price {
+    font-size: 14px;
+    line-height: 1.85;
+    margin-top: 0;
+  }
+  .std-capacity #std-comparison .ps-reference-price::first-line { font-size: 20px; }
+  .std-capacity #std-comparison .ps-offer-link {
+    width: 100%;
+    max-width: 240px;
+    padding: 13px 16px;
+    font-size: 16px;
+  }
+  .std-capacity #std-comparison .ps-row-variant {
+    margin-top: 16px;
+    padding: 10px 0;
+  }
+}
+
+@container std-product-list (max-width: 540px) {
+  .std-capacity #std-comparison .ps-row-comparison tbody tr {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "product" "capacity" "use" "offer";
+    margin-bottom: 28px;
+  }
+  .std-capacity #std-comparison .ps-row-comparison tbody th:first-child {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(145px, 48%);
+    column-gap: 16px;
+    align-content: start;
+    border-right: 0;
+    border-bottom: 1px solid #d6dfd8;
+  }
+  .std-capacity #std-comparison .ps-row-comparison tbody th:first-child > span { grid-column: 1; }
+  .std-capacity #std-comparison .ps-row-comparison tbody th:first-child > .ps-row-media {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    min-width: 0;
+  }
+  .std-capacity #std-comparison .ps-product-image {
+    max-width: 100%;
+    margin: 0;
+  }
+  .std-capacity #std-comparison .ps-product-image figcaption { font-size: 11px; }
+  .std-capacity #std-comparison .ps-offer-link { max-width: 100%; }
+}
+
+/* The supplemental tables also stay within a narrow article column. */
+.std-capacity #std-space .ps-table-scroll,
+.std-capacity #std-everyday .ps-table-scroll { overflow: visible; }
+@media (max-width: 640px) {
+  .std-capacity .std-compare tr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .std-capacity .std-compare td { min-width: 0; overflow-wrap: anywhere; }
+}
+
+/* Reuse the existing table headings as visible labels when rows become cards. */
+.std-capacity #std-comparison .std-spec-cell::before { content: "容量・本体サイズ"; }
+.std-capacity #std-comparison .std-use-cell::before { content: "給水・使い方"; }
+.std-capacity #std-comparison .std-reference-cell::before { content: "参考価格・販売先"; }
+
+
+/* Shared comparison format: one conclusion per row, then readable product cards. */
+.ps-article .ps-condition-grid,
+.ps-article .ps-condition-grid.compact-choices,
+.ps-article .ps-condition-grid.lg-picks { display:grid; grid-template-columns:minmax(0,1fr); gap:24px; }
+.ps-article .ps-condition-grid > div { min-width:0; padding:24px; }
+.ps-article .ps-condition-item { display:grid; grid-template-columns:minmax(160px,220px) minmax(0,1fr); gap:24px; align-items:center; margin:20px 0 0; }
+.ps-article .ps-condition-copy { min-width:0; }
+.ps-article .ps-condition-item .ps-product-image { margin:0; padding:0; }
+.ps-article .ps-condition-item .raos-rakuten-image-300 { width:220px; max-width:100%; margin:auto; }
+.ps-article .ps-condition-item .ps-product-image img { max-width:100%; height:auto; }
+.ps-article .ps-condition-item .ps-product-image figcaption { font-size:12px; line-height:1.6; }
+.ps-article .ps-condition-item .ps-condition-product { font-size:20px; font-weight:700; line-height:1.6; margin-top:0; }
+.ps-article .ps-condition-product-purchase .ps-offer-link { display:inline-flex; justify-content:center; align-items:center; min-height:44px; padding:12px 24px; max-width:100%; border-radius:4px; background:#1b334e; color:#fff; text-decoration:none; font-size:16px; }
+.ps-article .ps-condition-product-purchase .ps-offer-link:focus-visible { outline:3px solid #b6732d; outline-offset:3px; }
+.ps-article .ps-row-scroll.ps-responsive-scroll { overflow:visible; container-type:inline-size; max-width:100%; border:0; }
+.ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison { width:100%; min-width:0; max-width:100%; table-layout:fixed; --ps-fact-rows:2; }
+.ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison[data-ps-spec-columns="2"] { --ps-fact-rows:3; }
+.ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison[data-ps-spec-columns="3"] { --ps-fact-rows:4; }
+.ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison[data-ps-spec-columns="4"] { --ps-fact-rows:5; }
+.ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison th,
+.ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison td { min-width:0; max-width:100%; overflow-wrap:anywhere; font-size:15px; }
+.ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison th:first-child { position:static; width:26%; min-width:0; box-shadow:none; }
+.ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison thead th:nth-child(n+2) { width:auto; }
+.ps-article .ps-responsive-scroll .raos-rakuten-image-300 { width:220px; max-width:100%; }
+.ps-article .ps-responsive-scroll .ps-product-image figcaption { font-size:12px; }
+.ps-article .ps-responsive-scroll .ps-row-model { font-size:13px; }
+.ps-article .ps-responsive-scroll .ps-reference-price { font-size:14px; }
+.ps-article .ps-responsive-scroll .ps-reference-price::first-line { font-size:18px; }
+.ps-article .ps-responsive-scroll .ps-offer-link { font-size:16px; min-height:44px; }
+@container (max-width:1200px) {
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison { display:block; border:0; background:transparent; }
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison caption { display:block; width:100%; margin:0 0 18px; text-align:left; }
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison tbody { display:grid; gap:24px; width:100%; }
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison tbody>tr { display:grid; grid-template-columns:minmax(180px,34%) minmax(0,1fr); grid-template-areas:none; gap:18px 28px; align-items:start; padding:24px; border:1px solid #d8dfd7; border-radius:8px; background:#fff; width:100%; box-sizing:border-box; }
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison tbody>tr>th,
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison tbody>tr>td { display:block; grid-area:auto; grid-column:2; margin:0; padding:0; border:0; width:auto; min-width:0; max-width:100%; font-size:16px; line-height:1.8; background:transparent; }
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison tbody>tr>th:first-child { grid-column:1; grid-row:1 / span var(--ps-fact-rows); position:static; width:auto; min-width:0; box-shadow:none; }
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison tbody>tr>td::before { content:attr(data-ps-column-label); display:block; margin-bottom:8px; font-size:14px; font-weight:700; color:#354d3e; }
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison tbody>tr>td:last-child { border-top:1px solid #d8dfd7; padding-top:16px; }
+}
+@container (max-width:540px) {
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison tbody>tr { grid-template-columns:minmax(0,1fr); grid-template-areas:none; padding:18px; gap:20px; }
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison tbody>tr>th:first-child,
+ .ps-article .ps-row-scroll.ps-responsive-scroll .ps-row-comparison tbody>tr>td { display:block; grid-area:auto; grid-column:1; width:auto; }
+ .ps-article .ps-responsive-scroll .ps-product-image { margin:18px auto 0; max-width:240px; }
+ .ps-article .ps-responsive-scroll .ps-offer-link { max-width:100%; padding:12px; }
+}
+@media (max-width:600px) {
+ .ps-article .ps-condition-grid > div { padding:18px; }
+ .ps-article .ps-condition-item { grid-template-columns:minmax(0,1fr); gap:16px; }
+ .ps-article .ps-condition-item .ps-product-image { max-width:240px; margin:auto; }
+ .ps-article .ps-condition-item .ps-condition-product { font-size:18px; }
+}
+/* Conclusions read as a simple vertical list, without panel backgrounds. */
+.ps-article .ps-condition-grid > div,
+.ps-article .ps-condition-grid.compact-choices > div,
+.ps-article .ps-condition-grid.lg-picks > div { background:transparent; border:0; border-bottom:1px solid #d8dfd7; border-radius:0; box-shadow:none; padding:0 0 28px; }
+.ps-article .ps-condition-grid { gap:28px; }
+.ps-article .ps-condition-grid h3 { margin-top:0; }
+.ps-article .ps-comparison-constraints { margin-block:24px; }

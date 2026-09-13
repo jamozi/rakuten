@@ -346,26 +346,7 @@
       ],
       "intro": "本体・台の寸法で候補を絞り、家具下、帰還経路、紙パックやタンクを交換する空間まで確認します。",
       "post_type": "post",
-      "legacy_anchor_targets": {
-        "blk-robot-003-title": "ps-choose",
-        "blk-robot-007-title": "ps-specs",
-        "blk-robot-008-title": "ps-products",
-        "robot-start": "ps-choose",
-        "robot-start-title": "ps-choose",
-        "blk-robot-016-title": "ps-products",
-        "blk-robot-017-title": "ps-products",
-        "product-robot-roomba-mini-caution": "product-robot-roomba-mini",
-        "product-robot-roomba-mini-cta-note": "ps-seller-product-robot-roomba-mini",
-        "product-robot-k11-pro-caution": "product-robot-k11-pro",
-        "product-robot-k11-pro-cta-note": "ps-seller-product-robot-k11-pro",
-        "product-robot-k10-pro-combo-caution": "product-robot-k10-pro-combo",
-        "product-robot-k10-pro-combo-cta-note": "ps-seller-product-robot-k10-pro-combo",
-        "product-robot-roomba-plus-515-caution": "product-robot-roomba-plus-515",
-        "product-robot-roomba-plus-515-cta-note": "ps-seller-product-robot-roomba-plus-515",
-        "blk-robot-002-title": "ps-choose",
-        "blk-robot-004-title": "ps-choose",
-        "blk-robot-006-title": "ps-products"
-      },
+      "legacy_anchor_targets": {},
       "decision_steps": {
         "title": "MiniとK11+ Proが残ったら、接続条件と台の周囲を比べる",
         "steps": [
@@ -428,7 +409,45 @@
             "自動手入れ"
           ]
         }
-      ]
+      ],
+      "authored_comparison": true,
+      "row_products": [
+        {
+          "key": "roomba-mini",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"
+        },
+        {
+          "key": "k11-pro",
+          "product_id": "PRD-SWITCHBOT-K11-PRO"
+        },
+        {
+          "key": "k10-pro-combo",
+          "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO"
+        },
+        {
+          "key": "roomba-plus-515",
+          "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+        }
+      ],
+      "condition_slots": [
+        {
+          "key": "compact",
+          "product_id": "PRD-IROBOT-ROOMBA-MINI-AUTOEMPTY"
+        },
+        {
+          "key": "compact",
+          "product_id": "PRD-SWITCHBOT-K11-PRO"
+        },
+        {
+          "key": "vacuum",
+          "product_id": "PRD-SWITCHBOT-K10-PRO-COMBO"
+        },
+        {
+          "key": "mop",
+          "product_id": "PRD-IROBOT-ROOMBA-PLUS-515-COMBO"
+        }
+      ],
+      "commerce_anchor": "ps-specs"
     },
     {
       "article_id": "portable-power-station-guide",
@@ -1603,7 +1622,37 @@
       ],
       "commerce_anchor": "compact-compare",
       "title": "コンパクト食洗機を比較｜少量の食器に合う小型機を選ぶ",
-      "commerce_presentation": "comparison_rows"
+      "commerce_presentation": "comparison_rows",
+      "condition_slots": [
+        {
+          "key": "choice-1",
+          "product_id": "PRD-PANASONIC-NP-TMLK1"
+        },
+        {
+          "key": "choice-2",
+          "product_id": "PRD-THANKO-TK-MDW22W"
+        },
+        {
+          "key": "choice-2",
+          "product_id": "PRD-THANKO-RAKUA-MINI-PLUS"
+        },
+        {
+          "key": "choice-2",
+          "product_id": "PRD-THANKO-RAKUA-MINI-COLOR"
+        },
+        {
+          "key": "choice-3",
+          "product_id": "PRD-THANKO-TK-MDW22W"
+        },
+        {
+          "key": "choice-3",
+          "product_id": "PRD-THANKO-RAKUA-MINI-PLUS"
+        },
+        {
+          "key": "choice-3",
+          "product_id": "PRD-THANKO-RAKUA-MINI-COLOR"
+        }
+      ]
     },
     {
       "article_id": "standard-dishwasher-comparison",
@@ -1728,7 +1777,25 @@
           "product_id": "PRD-LARGE-DISHWASHER-SS-LA451"
         }
       ],
-      "editorial_updated_on": "2026-09-13"
+      "editorial_updated_on": "2026-09-13",
+      "condition_slots": [
+        {
+          "key": "choice-1",
+          "product_id": "PRD-LARGE-DISHWASHER-SS-LH451"
+        },
+        {
+          "key": "choice-2",
+          "product_id": "PRD-LARGE-DISHWASHER-ADW-L40B"
+        },
+        {
+          "key": "choice-3",
+          "product_id": "PRD-LARGE-DISHWASHER-NP-TA5"
+        },
+        {
+          "key": "choice-4",
+          "product_id": "PRD-LARGE-DISHWASHER-NP-TZ500"
+        }
+      ]
     },
     {
       "article_id": "small-carry-on-suitcase-comparison",
@@ -4891,10 +4958,27 @@
       ],
       "guide_facts": [],
       "image_review": {
-        "state": "UNVERIFIED",
-        "reason": "画像の掲載元・販売ページと比較対象の型番・世代・構成の一致を今回確認できていません。商品写真と画像広告を非掲載にし、公式仕様への通常リンクを残します。",
-        "source": "https://www.bermas.co.jp/c/series/businesstravel/intercity/60524-1",
-        "checked_on": "2026-09-13"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "e465095a9e70d0ea5da614b3c6429c98b16e357f513d1371b127662b6f479d2a",
+          "240": "307a9f1057892597336f2f972bda15480c0e69bb8c603a949aabc9106e08cae9"
+        },
+        "record_sha256": "213e8626ebf12dfc975176ce9f36b5ba1d5efbc681b1edde83c7fed59c11c805",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/business-bugs/bermas-60524/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "60524新仕様／シルバー・前面／側面／背面",
+        "listing_identity": {
+          "product_id": "PRD-BERMAS-INTER-CITY-60524",
+          "exact_model": "60524（新仕様・USBポートなし）",
+          "variant": "60524新仕様／シルバー・前面／側面／背面",
+          "condition": "UNKNOWN"
+        }
       }
     },
     {
@@ -5028,10 +5112,27 @@
       ],
       "guide_facts": [],
       "image_review": {
-        "state": "UNVERIFIED",
-        "reason": "今回、画像の型番・構成と販売ページの同一性を確認していないため掲載しません。公式仕様リンクは利用できます。",
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "9ea89a4a6ffd51755d9cc916d25b5c9ac596278488002d4c9c74679be34a2d73",
+          "240": "8febd0c2a8aec8443e85521e374d0bc1dfc8eb7395840c8482f0cf924da233b6"
+        },
+        "record_sha256": "4e10dce7c93cc42b00023a64a6805adc85aa5e2967f777cc896e4bbe2883c39c",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/newbag/i02inv50/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
         "checked_on": "2026-09-13",
-        "source": "https://shop.innovator.co.jp/collections/suitcase-all/products/inv50-paleblue"
+        "caption": "INV50／ペールブルー・スチールグレー",
+        "listing_identity": {
+          "product_id": "PRD-INNOVATOR-INV50",
+          "exact_model": "INV50",
+          "variant": "INV50／ペールブルー・スチールグレー",
+          "condition": "UNKNOWN"
+        }
       }
     },
     {
@@ -6095,9 +6196,27 @@
       "lead": "型番ごとの確認済み仕様は比較表を参照。",
       "caution": "設置・利用条件は公式情報で確認。",
       "image_review": {
-        "state": "UNVERIFIED",
-        "reason": "発行画像がNO IMAGEのため掲載しない。別売場の対象ページも404。確認済みの販売リンクと参考価格は保持。",
-        "evidence": "changes/site-improvements-20260913/rakuten-affiliate-new-row-captures-20260913.v1.json"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "eb0da82c108aacc9daa78ac60bdb660caf290a6247b1eb975ad6b0a5666ea214",
+          "240": "45d9a4450ca2557b39e17e4fa4bb922817a8212e63e11a0f89e774d6b1df715d"
+        },
+        "record_sha256": "4f5329c1dbd20df9ca0bec5e90e6a523351ef31da7523c43bf6b74101b671e49",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/thanko/000000003491/",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "STTDWADW／ホワイト・本体",
+        "listing_identity": {
+          "product_id": "PRD-STANDARD-DISHWASHER-STTDWADW",
+          "exact_model": "STTDWADW",
+          "variant": "STTDWADW／ホワイト・本体",
+          "condition": "UNKNOWN"
+        }
       },
       "editorial_source": {
         "path": "changes/reader-purchase-support-v1/articles/standard-dishwasher-comparison.html",
@@ -6573,8 +6692,27 @@
       "lead": "型番ごとの確認済み仕様は比較表を参照。",
       "caution": "設置・利用条件は公式情報で確認。",
       "image_review": {
-        "state": "UNVERIFIED",
-        "reason": "同一型番・構成の利用できる画像を確認中。"
+        "state": "VERIFIED_REGISTERED_MEDIA",
+        "basis": "RAKUTEN_GENERATED_VERBATIM",
+        "source_registry": "assets/rakuten-product-media.json",
+        "evidence": "changes/site-improvements-20260913/recovered-product-images.v1.json",
+        "source_sha256": {
+          "300": "417cc4a2e8bcf9bdda5b6d8f018229db0f519afc9b95ba9b6b6f181abf52b622",
+          "240": "e01be7ee53e9e0f7f11dd9a3f9e154b8e50b5ffedd1b270aabb6bd53a745f4a6"
+        },
+        "record_sha256": "b1453c01aed43316d07deae398a535b49f3a53b0b71040e6f4d990e32e924e8d",
+        "display_purpose": "verified_image_reference",
+        "listing_url": "https://item.rakuten.co.jp/retro/276129/?variantId=276129",
+        "visual_identity_verified": true,
+        "reviewed_at": "2026-09-13T07:41:42.077341+00:00",
+        "checked_on": "2026-09-13",
+        "caption": "82353704／アイボリー・中古掲載品の写真",
+        "listing_identity": {
+          "product_id": "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704",
+          "exact_model": "82353704",
+          "variant": "82353704／アイボリー・中古掲載品の写真",
+          "condition": "used"
+        }
       },
       "editorial_source": {
         "path": "changes/reader-purchase-support-v1/articles/small-carry-on-suitcase-comparison.html",

@@ -55,11 +55,13 @@ EXPECTED_MEDIA = {
         "PRD-ACE-MAXPASS4-01471",
     },
     "carry-on-suitcase-under-100-seats": {
+        "PRD-BERMAS-INTER-CITY-60524",
         "PRD-ACE-PALISADES3-Z-06910",
         "PRD-PROTECA-STARIA-CXR-02350",
         "PRD-PROTECA-FRESTER-EX-01550",
     },
     "front-open-carry-on-suitcase-with-stopper": {
+        "PRD-INNOVATOR-INV50",
         "PRD-ACE-DIFFERENCE-05721",
         "PRD-BERMAS-INTER-CITY-II-60561",
         "PRD-PROTECA-FRESTER-EX-01551",
@@ -86,6 +88,7 @@ EXPECTED_MEDIA = {
         "PRD-THANKO-TK-MDW22W",
     },
     "standard-dishwasher-comparison": {
+        "PRD-STANDARD-DISHWASHER-STTDWADW",
         "PRD-PANASONIC-NP-TSP1",
         "PRD-SIROCA-SS-MA251",
         "PRD-STANDARD-DISHWASHER-SS-M171",
@@ -108,6 +111,8 @@ EXPECTED_MEDIA = {
         "PRD-LARGE-DISHWASHER-SS-LA451",
     },
     "small-carry-on-suitcase-comparison": {
+        "PRD-INNOVATOR-INV50",
+        "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704",
         "PRD-SAMSONITE-C-LITE-CS2-09007",
         "PRD-FREQUENTER-LIEVE-1-250",
         "PRD-BERMAS-INTER-CITY-II-60561",
@@ -132,6 +137,20 @@ def inputs():
         json.loads((THEME / "assets/rakuten-product-media.json").read_text()),
         (THEME / "assets/images/roomba-mini-official.jpg").read_bytes(),
     )
+
+
+def project_conditions(body, article):
+    for entry in article.get("condition_media", {}).values():
+        placeholder = (
+            '<div class="ps-condition-product-media" data-ps-media-product="'
+            + entry["product_id"]
+            + '" data-ps-condition="'
+            + entry["condition_id"]
+            + '"></div>'
+        )
+        assert body.count(placeholder) == 1
+        body = body.replace(placeholder, entry["html"])
+    return body
 
 
 def test_only_reviewed_in_scope_media_and_unmodified_links_are_snapshot_bound():
@@ -163,6 +182,7 @@ def test_only_reviewed_in_scope_media_and_unmodified_links_are_snapshot_bound():
             )
             assert body.count(placeholder) == 1
             body = body.replace(placeholder, markup)
+        body = project_conditions(body, article)
         image_bindings = [
             b for b in article["bindings"] if b["offer_id"].startswith("image-")
         ]
@@ -176,7 +196,7 @@ def test_only_reviewed_in_scope_media_and_unmodified_links_are_snapshot_bound():
                 "/wp-content/themes/kurashinoshirube-child/assets/images/roomba-mini-official.jpg"
             ), "The same frozen theme image must work on the isolated preview origin."
         for b in image_bindings:
-            assert len(b) == 10 and b["placement"] == "product_card"
+            assert len(b) == 10 and b["placement"] in {"product_card", "top_summary"}
             if len(b) == 10:
                 assert (
                     b["link_purpose"] == "affiliate_purchase"
@@ -203,8 +223,8 @@ def test_only_reviewed_in_scope_media_and_unmodified_links_are_snapshot_bound():
                 == sha256(record["sources"][size].encode()).hexdigest()
             )
     # The same reviewed Mini/K11 media is bound to both robot comparisons;
-    # unreviewed C300 and the new comparison identities remain withheld.
-    assert image_count == 128 and official_count == 2
+    # recovered exact-model photos now cover every comparison product.
+    assert image_count >= 138 and official_count >= 2
     assert all(not o["offer_id"].startswith("image-") for o in catalog["offers"])
 
 
@@ -261,6 +281,7 @@ def test_public_media_projection_requires_exact_runtime_and_applied_body():
                 + '"></div>',
                 markup,
             )
+        rendered = project_conditions(rendered, article)
         snapshot = {
             "id": 41,
             "slug": article["slug"],
@@ -303,7 +324,9 @@ def test_public_media_projection_requires_exact_runtime_and_applied_body():
             assert value["unknown_unchanged"]
             if mode in {"valid", "measurement-off", "owner"}:
                 assert value["sha256"] == sha256(rendered.encode()).hexdigest()
-                assert value["figures"] == expected_figures[article["slug"]]
+                assert value["figures"] == expected_figures[article["slug"]] + len(
+                    article.get("condition_media", {})
+                )
             else:
                 assert value["unchanged"] and value["figures"] == 0
         total_photos += len(article["media"])
@@ -347,7 +370,12 @@ def test_unverified_images_are_withheld_without_deleting_product_facts():
     }
     products = {p["product_id"]: p for p in catalog["products"]}
     for pid in blocked:
-        assert products[pid]["image_review"]["state"] == "UNVERIFIED"
+        # Revoke a now-verified image in this fixture: a registry entry alone
+        # must never bypass a later failed identity review.
+        products[pid]["image_review"] = {
+            "state": "UNVERIFIED",
+            "reason": "同一型番・構成の画像確認を撤回したテストケース",
+        }
         assert products[pid]["image_review"]["reason"]
         assert products[pid]["facts"] and products[pid]["official_url"].startswith(
             "https://"

@@ -142,3 +142,74 @@ def test_guide_slots_preserve_model_identity_and_reject_duplicates():
             None,
             now,
         )
+
+
+def recovered_inputs():
+    catalog, _ = inputs()
+    product = next(
+        p
+        for p in catalog["products"]
+        if p["product_id"] == "PRD-SMALL-CARRY-ON-SUITCASE-RIMOWA-82353704"
+    )
+    return catalog, product
+
+
+def test_separately_reviewed_used_photo_does_not_create_a_price_or_offer():
+    catalog, product = recovered_inputs()
+    assert product["image_review"]["listing_identity"]["condition"] == "used"
+    assert "中古" in product["image_review"]["caption"]
+    assert all(
+        o.get("merchant_url") != product["image_review"]["listing_url"]
+        for o in catalog["offers"]
+    )
+    original_offers = json.dumps(catalog["offers"], sort_keys=True)
+    assert media_allowed(product, catalog)
+    resolved = resolve_product_media(
+        catalog,
+        json.loads((THEME / "assets/rakuten-product-media.json").read_text()),
+        (THEME / "assets/images/roomba-mini-official.jpg").read_bytes(),
+    )
+    assert not resolved[product["product_id"]].get("withheld")
+    assert json.dumps(catalog["offers"], sort_keys=True) == original_offers
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        "model",
+        "product",
+        "variant",
+        "condition",
+        "caption",
+        "review",
+        "date",
+        "listing",
+    ],
+)
+def test_independent_photo_requires_exact_identity_and_disclosed_used_condition(change):
+    catalog, product = recovered_inputs()
+    review = product["image_review"]
+    if change == "model":
+        review["listing_identity"]["exact_model"] = "another-generation"
+    elif change == "product":
+        review["listing_identity"]["product_id"] = "PRD-WRONG"
+    elif change == "variant":
+        review["listing_identity"]["variant"] = ""
+    elif change == "condition":
+        review["listing_identity"]["condition"] = "unreviewed"
+    elif change == "caption":
+        review["caption"] = "アイボリー"
+    elif change == "review":
+        review["visual_identity_verified"] = False
+    elif change == "date":
+        review["reviewed_at"] = ""
+    elif change == "listing":
+        review["listing_url"] = "https://item.rakuten.co.jp/wrong/listing/"
+    if change != "listing":
+        assert not media_allowed(product, catalog)
+    with pytest.raises(ValueError, match="PURCHASE_MEDIA_IMAGE_REVIEW_REQUIRED"):
+        resolve_product_media(
+            catalog,
+            json.loads((THEME / "assets/rakuten-product-media.json").read_text()),
+            (THEME / "assets/images/roomba-mini-official.jpg").read_bytes(),
+        )

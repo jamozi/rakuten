@@ -1,0 +1,13 @@
+{
+  "schema": "RAOS_APPROVED_LAYOUT_BASELINES_V1",
+  "reason": "2026-09-13 user explicitly requested the new common comparison layout on all comparison articles. Prior acceptance remains historical only.",
+  "articles": {
+    "compact-dishwasher-comparison": {
+      "git_commit": "9e83fc54",
+      "path": "changes/wordpress-direct-publish-v1/articles/compact-dishwasher-comparison.html",
+      "body_sha256": "a8788ae876dcc34b3d86660f91db03476683926b6b7db48438bfa85856b589ad",
+      "snapshot_id": "ps-8d00cc73210b7f0cf9fd28bed19631af",
+      "new_layout_review": "PENDING_USER_REVIEW"
+    }
+  }
+}

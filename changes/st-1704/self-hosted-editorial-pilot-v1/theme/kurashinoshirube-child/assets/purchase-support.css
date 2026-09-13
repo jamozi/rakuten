@@ -108,3 +108,7 @@
   .ps-article .ps-comparison { min-width: 0; font-size: .75em; }
   .ps-article .ps-comparison :is(th, td) { position: static; min-width: 0; padding: .3em; }
 }
+
+/* User-approved common direction: simple one-column condition introductions. */
+.ps-article .ps-condition-grid { grid-template-columns:minmax(0,1fr); gap:28px; }
+.ps-article .ps-condition-grid > div { background:transparent; border:0; border-bottom:1px solid #d8dfd7; border-radius:0; box-shadow:none; padding:0 0 28px; }
