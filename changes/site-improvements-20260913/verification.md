@@ -1,5 +1,8 @@
 # 全34ページ改善の実装・検証
 
+> 最新のホーム構成と公開候補は [home-layout-preview.md](home-layout-preview.md) を参照。以下は前候補の記録。
+
+
 > 最新のホーム画像変更と公開候補は [home-editorial-verification.md](home-editorial-verification.md) を参照。以下は前候補c69の全体改善・検証の記録。
 
 既存34ページを対象に、比較10記事・31商品の共通化、手順5記事、ホームと入口、方針ページを修正した。公開ID・URLを維持し、新しい記事は追加していない。元監査の136項目は `progress-evidence.v1.json` と別の進捗Excelで追跡する。
