@@ -1272,6 +1272,17 @@
       "slug": "dishwasher-water-supply-methods",
       "post_type": "post",
       "kind": "guide",
+      "guide_product_scope": {
+        "main": [
+          "PRD-PANASONIC-NP-TMLK1",
+          "PRD-THANKO-RAKUA-MINI-COLOR",
+          "PRD-SIROCA-SS-MA251",
+          "PRD-PANASONIC-NP-TSP1"
+        ],
+        "supplementary": [
+          "PRD-LARGE-DISHWASHER-SS-LH451"
+        ]
+      },
       "snapshot_id": "ps-64e1f3195a65c2b021833614492584ec",
       "body_sha256": "e030641254b7a7cc3ac4f6c6666e3210d0b80c88ccc8c8829428c1df2520011d",
       "bindings": [

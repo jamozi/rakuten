@@ -266,6 +266,13 @@ def test_public_media_projection_requires_exact_runtime_and_applied_body():
     ]
     expected_figures = {slug: len(pids) for slug, pids in EXPECTED_MEDIA.items()}
     assert {a["slug"] for a in comparisons} == set(EXPECTED_MEDIA)
+    guide = next(
+        a for a in runtime["articles"] if a["slug"] == "dishwasher-water-supply-methods"
+    )
+    assert len(guide["guide_product_scope"]["main"]) == 4
+    assert len(guide["guide_product_scope"]["supplementary"]) == 1
+    comparisons.append(guide)
+    expected_figures[guide["slug"]] = 5
     total_photos = 0
     for article in comparisons:
         body = (
@@ -297,7 +304,11 @@ def test_public_media_projection_requires_exact_runtime_and_applied_body():
             "body-tamper",
             "runtime-tamper",
             "no-snapshot",
-        ]:
+        ] + (
+            ["missing-guide-scope", "duplicate-guide-scope", "unregistered-guide-media"]
+            if article["kind"] == "guide"
+            else []
+        ):
             result = subprocess.run(
                 [
                     "php",
@@ -330,7 +341,7 @@ def test_public_media_projection_requires_exact_runtime_and_applied_body():
             else:
                 assert value["unchanged"] and value["figures"] == 0
         total_photos += len(article["media"])
-    assert total_photos == sum(map(len, EXPECTED_MEDIA.values()))
+    assert total_photos == sum(map(len, EXPECTED_MEDIA.values())) + 5
 
 
 def test_media_projection_changes_snapshot_even_when_placeholder_body_is_stable():

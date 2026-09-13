@@ -2236,6 +2236,8 @@ def bind_water_table_facts(
     rows = [r for r in root.find(tag="tr") if r.attrs.get("data-product-id")]
     if (
         not scope
+        or len(main) > 4
+        or len(extras) > 1
         or len(scope) != len(set(scope))
         or not set(scope) <= products.keys()
         or [products[pid]["anchor"] for pid in main]
@@ -3601,6 +3603,17 @@ def compile_articles(
                 "slug": a["slug"],
                 "post_type": a["post_type"],
                 "kind": a["kind"],
+                **(
+                    {
+                        "guide_product_scope": {
+                            "main": a["product_ids"],
+                            "supplementary": a.get("supplementary_product_ids", []),
+                        }
+                    }
+                    if a["kind"] == "guide"
+                    and a.get("commerce_presentation") == "comparison_rows"
+                    else {}
+                ),
                 "snapshot_id": snapshot,
                 "body_sha256": sha256(outputs[a["slug"]].encode()).hexdigest(),
                 "bindings": bindings,

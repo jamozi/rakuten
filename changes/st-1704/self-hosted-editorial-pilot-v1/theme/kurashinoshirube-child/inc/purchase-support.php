@@ -114,6 +114,19 @@ function kurashinoshirube_purchase_support_media($content)
     if ($context === null || !in_array($context['kind'] ?? null, array('comparison', 'guide', 'curated_comparison'), true)) { return $content; }
     $media = $context['media'] ?? null;
     $maximum = ($context['kind'] ?? null) === 'curated_comparison' ? 32 : 4;
+    if (($context['kind'] ?? null) === 'guide' && array_key_exists('guide_product_scope', $context)) {
+        $scope = $context['guide_product_scope'];
+        if (!is_array($scope) || !is_array($scope['main'] ?? null) || !is_array($scope['supplementary'] ?? null)
+            || !array_is_list($scope['main']) || !array_is_list($scope['supplementary'])
+            || count($scope['main']) < 1 || count($scope['main']) > 4 || count($scope['supplementary']) > 1) { return $content; }
+        $ids = array_merge($scope['main'], $scope['supplementary']);
+        foreach ($ids as $pid) {
+            if (!is_string($pid) || preg_match('/\APRD-[A-Z0-9-]{1,100}\z/D', $pid) !== 1) { return $content; }
+        }
+        if (count(array_unique($ids)) !== count($ids) || !is_array($media)
+            || array_diff(array_keys($media), $ids) !== array()) { return $content; }
+        $maximum = count($ids);
+    }
     if (!is_array($media) || count($media) > $maximum) { return $content; }
     $replacements = array();
     foreach ($media as $product_id => $html) {
